@@ -2,7 +2,6 @@ package com.nhl.dflib.join;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.filter.DataRowJoinPredicate;
 import com.nhl.dflib.zip.Zipper;
 
 import java.util.ArrayList;
@@ -29,21 +28,24 @@ public class Joiner extends BaseJoiner {
     }
 
     public DataFrame joinRows(Index joinedColumns, DataFrame lf, DataFrame rf) {
+
+        JoinContext context = new JoinContext(lf.getColumns(), rf.getColumns(), joinedColumns);
+
         switch (semantics) {
             case inner:
-                return innerJoin(joinedColumns, lf, rf);
+                return innerJoin(context, lf, rf);
             case left:
-                return leftJoin(joinedColumns, lf, rf);
+                return leftJoin(context, lf, rf);
             case right:
-                return rightJoin(joinedColumns, lf, rf);
+                return rightJoin(context, lf, rf);
             case full:
-                return fullJoin(joinedColumns, lf, rf);
+                return fullJoin(context, lf, rf);
             default:
                 throw new IllegalStateException("Unsupported join semantics: " + semantics);
         }
     }
 
-    private DataFrame innerJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
+    private DataFrame innerJoin(JoinContext context, DataFrame lf, DataFrame rf) {
 
         List<Object[]> lRows = new ArrayList<>();
         List<Object[]> rRows = new ArrayList<>();
@@ -52,19 +54,19 @@ public class Joiner extends BaseJoiner {
 
         for (Object[] lr : lf) {
             for (Object[] rr : allRRows) {
-                if (joinPredicate.test(lr, rr)) {
+                if (joinPredicate.test(context, lr, rr)) {
                     lRows.add(lr);
                     rRows.add(rr);
                 }
             }
         }
 
-        return zipJoinSides(joinedColumns,
-                DataFrame.create(lf.getColumns(), lRows),
-                DataFrame.create(rf.getColumns(), rRows));
+        return zipJoinSides(context.getJoinIndex(),
+                DataFrame.create(context.getLeftIndex(), lRows),
+                DataFrame.create(context.getRightIndex(), rRows));
     }
 
-    private DataFrame leftJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
+    private DataFrame leftJoin(JoinContext context, DataFrame lf, DataFrame rf) {
 
         List<Object[]> lRows = new ArrayList<>();
         List<Object[]> rRows = new ArrayList<>();
@@ -75,7 +77,7 @@ public class Joiner extends BaseJoiner {
 
             boolean hadMatches = false;
             for (Object[] rr : allRRows) {
-                if (joinPredicate.test(lr, rr)) {
+                if (joinPredicate.test(context, lr, rr)) {
                     lRows.add(lr);
                     rRows.add(rr);
                     hadMatches = true;
@@ -88,12 +90,12 @@ public class Joiner extends BaseJoiner {
             }
         }
 
-        return zipJoinSides(joinedColumns,
-                DataFrame.create(lf.getColumns(), lRows),
-                DataFrame.create(rf.getColumns(), rRows));
+        return zipJoinSides(context.getJoinIndex(),
+                DataFrame.create(context.getLeftIndex(), lRows),
+                DataFrame.create(context.getRightIndex(), rRows));
     }
 
-    private DataFrame rightJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
+    private DataFrame rightJoin(JoinContext context, DataFrame lf, DataFrame rf) {
 
         List<Object[]> lRows = new ArrayList<>();
         List<Object[]> rRows = new ArrayList<>();
@@ -104,7 +106,7 @@ public class Joiner extends BaseJoiner {
 
             boolean hadMatches = false;
             for (Object[] lr : allLRows) {
-                if (joinPredicate.test(lr, rr)) {
+                if (joinPredicate.test(context, lr, rr)) {
                     lRows.add(lr);
                     rRows.add(rr);
                     hadMatches = true;
@@ -117,12 +119,12 @@ public class Joiner extends BaseJoiner {
             }
         }
 
-        return zipJoinSides(joinedColumns,
-                DataFrame.create(lf.getColumns(), lRows),
-                DataFrame.create(rf.getColumns(), rRows));
+        return zipJoinSides(context.getJoinIndex(),
+                DataFrame.create(context.getLeftIndex(), lRows),
+                DataFrame.create(context.getRightIndex(), rRows));
     }
 
-    private DataFrame fullJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
+    private DataFrame fullJoin(JoinContext context, DataFrame lf, DataFrame rf) {
 
         List<Object[]> lRows = new ArrayList<>();
         Set<Object[]> rRows = new LinkedHashSet<>();
@@ -135,7 +137,7 @@ public class Joiner extends BaseJoiner {
             boolean hadMatches = false;
 
             for (Object[] rr : allRRows) {
-                if (joinPredicate.test(lr, rr)) {
+                if (joinPredicate.test(context, lr, rr)) {
                     lRows.add(lr);
                     rRows.add(rr);
                     hadMatches = true;
@@ -157,9 +159,9 @@ public class Joiner extends BaseJoiner {
             }
         }
 
-        return zipJoinSides(joinedColumns,
-                DataFrame.create(lf.getColumns(), lRows),
-                DataFrame.create(rf.getColumns(), rRows));
+        return zipJoinSides(context.getJoinIndex(),
+                DataFrame.create(context.getLeftIndex(), lRows),
+                DataFrame.create(context.getRightIndex(), rRows));
     }
 
     // "materialize" frame rows to avoid recalculation of each row on multiple iterations.

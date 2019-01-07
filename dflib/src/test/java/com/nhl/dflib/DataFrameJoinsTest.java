@@ -25,7 +25,7 @@ public class DataFrameJoinsTest {
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
 
-        DataFrame df = df1.join(df2, (lr, rr) -> Objects.equals(lr[0], rr[0]));
+        DataFrame df = df1.join(df2, (c, lr, rr) -> Objects.equals(c.getLeft(lr, 0), c.getRight(rr, 0)));
 
         new DFAsserts(df, "a", "b", "c", "d")
                 .assertLength(2)
@@ -47,7 +47,7 @@ public class DataFrameJoinsTest {
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
 
-        DataFrame df = df1.join(df2, (lr, rr) -> false);
+        DataFrame df = df1.join(df2, (c, lr, rr) -> false);
 
         new DFAsserts(df, "a", "b", "c", "d")
                 .assertLength(0);
@@ -67,7 +67,7 @@ public class DataFrameJoinsTest {
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
 
-        DataFrame df = df1.join(df2, (lr, rr) -> Objects.equals(lr[0], rr[0]));
+        DataFrame df = df1.join(df2, (c, lr, rr) -> Objects.equals(c.getLeft(lr, 0), c.getRight(rr, 0)));
 
         new DFAsserts(df, "a", "b", "a_", "b_")
                 .assertLength(2)
@@ -89,7 +89,9 @@ public class DataFrameJoinsTest {
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
 
-        Joiner joiner = new Joiner((lr, rr) -> Objects.equals(lr[0], rr[0]), JoinSemantics.left);
+        Joiner joiner = new Joiner(
+                (c, lr, rr) -> Objects.equals(c.getLeft(lr, 0), c.getRight(rr, 0)),
+                JoinSemantics.left);
         DataFrame df = df1.join(df2, joiner);
 
         new DFAsserts(df, "a", "b", "c", "d")
@@ -113,7 +115,9 @@ public class DataFrameJoinsTest {
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
 
-        Joiner joiner = new Joiner((lr, rr) -> Objects.equals(lr[0], rr[0]), JoinSemantics.right);
+        Joiner joiner = new Joiner(
+                (c, lr, rr) -> Objects.equals(c.getLeft(lr, 0), c.getRight(rr, 0)),
+                JoinSemantics.right);
         DataFrame df = df2.join(df1, joiner);
 
         new DFAsserts(df, "c", "d", "a", "b")
@@ -137,7 +141,9 @@ public class DataFrameJoinsTest {
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
 
-        Joiner joiner = new Joiner((lr, rr) -> Objects.equals(lr[0], rr[0]), JoinSemantics.full);
+        Joiner joiner = new Joiner(
+                (c, lr, rr) -> Objects.equals(c.getLeft(lr, 0), c.getRight(rr, 0)),
+                JoinSemantics.full);
         DataFrame df = df1.join(df2, joiner);
 
         new DFAsserts(df, "a", "b", "c", "d")

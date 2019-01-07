@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.filter.DataRowJoinPredicate;
+import com.nhl.dflib.join.DataRowJoinPredicate;
 import com.nhl.dflib.filter.DataRowPredicate;
 import com.nhl.dflib.join.IndexedJoiner;
 import com.nhl.dflib.join.JoinSemantics;
