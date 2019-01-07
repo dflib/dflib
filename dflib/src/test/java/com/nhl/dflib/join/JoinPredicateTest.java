@@ -27,9 +27,9 @@ public class JoinPredicateTest {
         DataFrame df = df1.innerJoin(df2, JoinPredicate.on("a", "c"));
 
         new DFAsserts(df, "a", "b", "c", "d")
-                .assertLength(2)
-                .assertRow(0, 2, "y", 2, "a")
-                .assertRow(1, 2, "y", 2, "b");
+                .expectHeight(2)
+                .expectRow(0, 2, "y", 2, "a")
+                .expectRow(1, 2, "y", 2, "b");
     }
 
     @Test
@@ -49,9 +49,9 @@ public class JoinPredicateTest {
         DataFrame df = df1.innerJoin(df2, JoinPredicate.on(0, 0));
 
         new DFAsserts(df, "a", "b", "c", "d")
-                .assertLength(2)
-                .assertRow(0, 2, "y", 2, "a")
-                .assertRow(1, 2, "y", 2, "b");
+                .expectHeight(2)
+                .expectRow(0, 2, "y", 2, "a")
+                .expectRow(1, 2, "y", 2, "b");
     }
 
     @Test
@@ -71,8 +71,8 @@ public class JoinPredicateTest {
         DataFrame df = df1.innerJoin(df2, JoinPredicate.on("a", "c").and("b", "d"));
 
         new DFAsserts(df, "a", "b", "c", "d")
-                .assertLength(1)
-                .assertRow(0, 2, "y", 2, "y");
+                .expectHeight(1)
+                .expectRow(0, 2, "y", 2, "y");
     }
 
     @Test
@@ -92,7 +92,7 @@ public class JoinPredicateTest {
         DataFrame df = df1.innerJoin(df2, JoinPredicate.on(0, 0).and(1, 1));
 
         new DFAsserts(df, "a", "b", "c", "d")
-                .assertLength(1)
-                .assertRow(0, 2, "y", 2, "y");
+                .expectHeight(1)
+                .expectRow(0, 2, "y", 2, "y");
     }
 }

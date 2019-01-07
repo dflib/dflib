@@ -27,9 +27,9 @@ public class JoinKeyMapperTest {
         DataFrame df = df1.innerJoin(df2, JoinKeyMapper.keyColumn("a"), JoinKeyMapper.keyColumn("a"));
 
         new DFAsserts(df, "a", "b", "a_", "b_")
-                .assertLength(2)
-                .assertRow(0, 2, "y", 2, "a")
-                .assertRow(1, 2, "y", 2, "b");
+                .expectHeight(2)
+                .expectRow(0, 2, "y", 2, "a")
+                .expectRow(1, 2, "y", 2, "b");
     }
 
     @Test
@@ -49,9 +49,9 @@ public class JoinKeyMapperTest {
         DataFrame df = df1.innerJoin(df2, JoinKeyMapper.keyColumn(0), JoinKeyMapper.keyColumn(0));
 
         new DFAsserts(df, "a", "b", "a_", "b_")
-                .assertLength(2)
-                .assertRow(0, 2, "y", 2, "a")
-                .assertRow(1, 2, "y", 2, "b");
+                .expectHeight(2)
+                .expectRow(0, 2, "y", 2, "a")
+                .expectRow(1, 2, "y", 2, "b");
     }
 
     @Test
@@ -73,8 +73,8 @@ public class JoinKeyMapperTest {
                 JoinKeyMapper.keyColumn("x").and("y").and("z"));
 
         new DFAsserts(df, "a", "b", "c", "x", "y", "z")
-                .assertLength(1)
-                .assertRow(0, 2, "y", 4L, 2, "y", 4L);
+                .expectHeight(1)
+                .expectRow(0, 2, "y", 4L, 2, "y", 4L);
     }
 
     @Test
@@ -96,7 +96,7 @@ public class JoinKeyMapperTest {
                 JoinKeyMapper.keyColumn(0).and(1).and(2));
 
         new DFAsserts(df, "a", "b", "c", "x", "y", "z")
-                .assertLength(1)
-                .assertRow(0, 2, "y", 4L, 2, "y", 4L);
+                .expectHeight(1)
+                .expectRow(0, 2, "y", 4L, 2, "y", 4L);
     }
 }

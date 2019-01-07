@@ -28,12 +28,12 @@ public class DFAsserts {
         df.forEach(rows::add);
     }
 
-    public DFAsserts assertLength(int expectedLength) {
-        assertEquals("Unexpected DataFrame length", expectedLength, rows.size());
+    public DFAsserts expectHeight(int expectedHeight) {
+        assertEquals("Unexpected DataFrame height", expectedHeight, rows.size());
         return this;
     }
 
-    public DFAsserts assertRow(int pos, Object... expectedValues) {
+    public DFAsserts expectRow(int pos, Object... expectedValues) {
 
         Object[] row = rows.get(pos);
 

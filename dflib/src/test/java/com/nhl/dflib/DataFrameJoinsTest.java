@@ -29,9 +29,9 @@ public class DataFrameJoinsTest {
         DataFrame df = df1.innerJoin(df2, JoinPredicate.on(0, 0));
 
         new DFAsserts(df, "a", "b", "c", "d")
-                .assertLength(2)
-                .assertRow(0, 2, "y", 2, "a")
-                .assertRow(1, 2, "y", 2, "b");
+                .expectHeight(2)
+                .expectRow(0, 2, "y", 2, "a")
+                .expectRow(1, 2, "y", 2, "b");
     }
 
     @Test
@@ -51,7 +51,7 @@ public class DataFrameJoinsTest {
         DataFrame df = df1.innerJoin(df2, (c, lr, rr) -> false);
 
         new DFAsserts(df, "a", "b", "c", "d")
-                .assertLength(0);
+                .expectHeight(0);
     }
 
     @Test
@@ -71,9 +71,9 @@ public class DataFrameJoinsTest {
         DataFrame df = df1.innerJoin(df2, JoinPredicate.on(0, 0));
 
         new DFAsserts(df, "a", "b", "a_", "b_")
-                .assertLength(2)
-                .assertRow(0, 2, "y", 2, "a")
-                .assertRow(1, 2, "y", 2, "b");
+                .expectHeight(2)
+                .expectRow(0, 2, "y", 2, "a")
+                .expectRow(1, 2, "y", 2, "b");
     }
 
     @Test
@@ -93,10 +93,10 @@ public class DataFrameJoinsTest {
         DataFrame df = df1.join(df2, JoinPredicate.on(0, 0), JoinSemantics.left);
 
         new DFAsserts(df, "a", "b", "c", "d")
-                .assertLength(3)
-                .assertRow(0, 1, "x", null, null)
-                .assertRow(1, 2, "y", 2, "a")
-                .assertRow(2, 2, "y", 2, "b");
+                .expectHeight(3)
+                .expectRow(0, 1, "x", null, null)
+                .expectRow(1, 2, "y", 2, "a")
+                .expectRow(2, 2, "y", 2, "b");
     }
 
     @Test
@@ -116,10 +116,10 @@ public class DataFrameJoinsTest {
         DataFrame df = df2.join(df1, JoinPredicate.on(0, 0), JoinSemantics.right);
 
         new DFAsserts(df, "c", "d", "a", "b")
-                .assertLength(3)
-                .assertRow(0, null, null, 1, "x")
-                .assertRow(1, 2, "a", 2, "y")
-                .assertRow(2, 2, "b", 2, "y");
+                .expectHeight(3)
+                .expectRow(0, null, null, 1, "x")
+                .expectRow(1, 2, "a", 2, "y")
+                .expectRow(2, 2, "b", 2, "y");
     }
 
     @Test
@@ -143,11 +143,11 @@ public class DataFrameJoinsTest {
         DataFrame df = df1.join(df2, JoinPredicate.on(0, 0), JoinSemantics.full);
 
         new DFAsserts(df, "a", "b", "c", "d")
-                .assertLength(4)
-                .assertRow(0, 1, "x", null, null)
-                .assertRow(1, 2, "y", 2, "a")
-                .assertRow(2, 2, "y", 2, "b")
-                .assertRow(3, null, null, 3, "c");
+                .expectHeight(4)
+                .expectRow(0, 1, "x", null, null)
+                .expectRow(1, 2, "y", 2, "a")
+                .expectRow(2, 2, "y", 2, "b")
+                .expectRow(3, null, null, 3, "c");
     }
 
     @Test
@@ -167,9 +167,9 @@ public class DataFrameJoinsTest {
         DataFrame df = df1.innerJoin(df2, JoinKeyMapper.keyColumn(0), JoinKeyMapper.keyColumn(1));
 
         new DFAsserts(df, "a", "b", "c", "d")
-                .assertLength(2)
-                .assertRow(0, 2, "y", "a", 2)
-                .assertRow(1, 2, "y", "b", 2);
+                .expectHeight(2)
+                .expectRow(0, 2, "y", "a", 2)
+                .expectRow(1, 2, "y", "b", 2);
     }
 
     @Test
@@ -189,9 +189,9 @@ public class DataFrameJoinsTest {
         DataFrame df = df1.innerJoin(df2, JoinKeyMapper.keyColumn(0), JoinKeyMapper.keyColumn(0));
 
         new DFAsserts(df, "a", "b", "a_", "b_")
-                .assertLength(2)
-                .assertRow(0, 2, "y", 2, "a")
-                .assertRow(1, 2, "y", 2, "b");
+                .expectHeight(2)
+                .expectRow(0, 2, "y", 2, "a")
+                .expectRow(1, 2, "y", 2, "b");
     }
 
     @Test
@@ -211,10 +211,10 @@ public class DataFrameJoinsTest {
         DataFrame df = df1.join(df2, JoinKeyMapper.keyColumn(0), JoinKeyMapper.keyColumn(0), JoinSemantics.left);
 
         new DFAsserts(df, "a", "b", "c", "d")
-                .assertLength(3)
-                .assertRow(0, 1, "x", null, null)
-                .assertRow(1, 2, "y", 2, "a")
-                .assertRow(2, 2, "y", 2, "b");
+                .expectHeight(3)
+                .expectRow(0, 1, "x", null, null)
+                .expectRow(1, 2, "y", 2, "a")
+                .expectRow(2, 2, "y", 2, "b");
     }
 
     @Test
@@ -234,10 +234,10 @@ public class DataFrameJoinsTest {
         DataFrame df = df2.join(df1, JoinKeyMapper.keyColumn(0), JoinKeyMapper.keyColumn(0), JoinSemantics.right);
 
         new DFAsserts(df, "c", "d", "a", "b")
-                .assertLength(3)
-                .assertRow(0, null, null, 1, "x")
-                .assertRow(1, 2, "a", 2, "y")
-                .assertRow(2, 2, "b", 2, "y");
+                .expectHeight(3)
+                .expectRow(0, null, null, 1, "x")
+                .expectRow(1, 2, "a", 2, "y")
+                .expectRow(2, 2, "b", 2, "y");
     }
 
     @Test
@@ -257,11 +257,11 @@ public class DataFrameJoinsTest {
         DataFrame df = df1.join(df2, JoinKeyMapper.keyColumn(0), JoinKeyMapper.keyColumn(0), JoinSemantics.full);
 
         new DFAsserts(df, "a", "b", "c", "d")
-                .assertLength(4)
-                .assertRow(0, 1, "x", null, null)
-                .assertRow(1, 2, "y", 2, "a")
-                .assertRow(2, 2, "y", 2, "b")
-                .assertRow(3, null, null, 3, "c");
+                .expectHeight(4)
+                .expectRow(0, 1, "x", null, null)
+                .expectRow(1, 2, "y", 2, "a")
+                .expectRow(2, 2, "y", 2, "b")
+                .expectRow(3, null, null, 3, "c");
     }
 
 }

@@ -52,9 +52,9 @@ public class HeadDataFrameTest {
         assertNotSame(df, df3);
 
         new DFAsserts(df3, columns)
-                .assertLength(2)
-                .assertRow(0, "one")
-                .assertRow(1, "two");
+                .expectHeight(2)
+                .expectRow(0, "one")
+                .expectRow(1, "two");
     }
 
     @Test
@@ -64,10 +64,10 @@ public class HeadDataFrameTest {
                 .map(columns, (c, r) -> c.mapColumn(r, "a", (cx, v) -> v[0] + "_"));
 
         new DFAsserts(df, columns)
-                .assertLength(3)
-                .assertRow(0, "one_")
-                .assertRow(1, "two_")
-                .assertRow(2, "three_");
+                .expectHeight(3)
+                .expectRow(0, "one_")
+                .expectRow(1, "two_")
+                .expectRow(2, "three_");
     }
 
     @Test
@@ -79,9 +79,9 @@ public class HeadDataFrameTest {
                 .map(i1, (c, r) -> c.target(r[0] + "_"));
 
         new DFAsserts(df, i1)
-                .assertLength(2)
-                .assertRow(0, "one_")
-                .assertRow(1, "two_");
+                .expectHeight(2)
+                .expectRow(0, "one_")
+                .expectRow(1, "two_");
     }
 
     @Test
@@ -92,7 +92,7 @@ public class HeadDataFrameTest {
         DataFrame df = new HeadDataFrame(new SimpleDataFrame(columns, Collections.emptyList()), 2)
                 .map(i1, (c, r) -> c.target(r[0] + "_"));
 
-        new DFAsserts(df, i1).assertLength(0);
+        new DFAsserts(df, i1).expectHeight(0);
     }
 
     @Test
@@ -112,7 +112,7 @@ public class HeadDataFrameTest {
         DataFrame df = new HeadDataFrame(df1, 1).zip(df2);
 
         new DFAsserts(df, "a", "b")
-                .assertLength(1)
-                .assertRow(0, 1, 10);
+                .expectHeight(1)
+                .expectRow(0, 1, 10);
     }
 }

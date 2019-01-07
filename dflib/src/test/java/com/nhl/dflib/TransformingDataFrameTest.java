@@ -20,9 +20,9 @@ public class TransformingDataFrameTest {
                 SELF_MAPPER);
 
         new DFAsserts(df, "a", "b")
-                .assertLength(2)
-                .assertRow(0, "one", 1)
-                .assertRow(1, "two", 2);
+                .expectHeight(2)
+                .expectRow(0, "one", 1)
+                .expectRow(1, "two", 2);
     }
 
     @Test
@@ -36,9 +36,9 @@ public class TransformingDataFrameTest {
                 SELF_MAPPER).head(2);
 
         new DFAsserts(df, columns)
-                .assertLength(2)
-                .assertRow(0, "one", 1)
-                .assertRow(1, "two", 2);
+                .expectHeight(2)
+                .expectRow(0, "one", 1)
+                .expectRow(1, "two", 2);
     }
 
     @Test
@@ -51,9 +51,9 @@ public class TransformingDataFrameTest {
                 SELF_MAPPER).renameColumn("b", "c");
 
         new DFAsserts(df, "a", "c")
-                .assertLength(2)
-                .assertRow(0, "one", 1)
-                .assertRow(1, "two", 2);
+                .expectHeight(2)
+                .expectRow(0, "one", 1)
+                .expectRow(1, "two", 2);
     }
 
     @Test
@@ -67,9 +67,9 @@ public class TransformingDataFrameTest {
                 SELF_MAPPER).mapColumn("b", (c, r) -> c.get(r, 1).toString());
 
         new DFAsserts(df, "a", "b")
-                .assertLength(2)
-                .assertRow(0, "one", "1")
-                .assertRow(1, "two", "2");
+                .expectHeight(2)
+                .expectRow(0, "one", "1")
+                .expectRow(1, "two", "2");
     }
 
     @Test
@@ -84,9 +84,9 @@ public class TransformingDataFrameTest {
                 .map(i, (c, r) -> c.mapColumn(r, "a", (cx, rx) -> cx.get(rx, 0) + "_"));
 
         new DFAsserts(df, "a", "b")
-                .assertLength(2)
-                .assertRow(0, "one_", 1)
-                .assertRow(1, "two_", 2);
+                .expectHeight(2)
+                .expectRow(0, "one_", 1)
+                .expectRow(1, "two_", 2);
     }
 
     @Test
@@ -105,9 +105,9 @@ public class TransformingDataFrameTest {
                         r[1]));
 
         new DFAsserts(df, i1)
-                .assertLength(2)
-                .assertRow(0, "one", 10, 1)
-                .assertRow(1, "two", 20, 2);
+                .expectHeight(2)
+                .expectRow(0, "one", 10, 1)
+                .expectRow(1, "two", 20, 2);
     }
 
     @Test
@@ -130,9 +130,9 @@ public class TransformingDataFrameTest {
                         r[1]));
 
         new DFAsserts(df, i2)
-                .assertLength(2)
-                .assertRow(0, "one", 10)
-                .assertRow(1, "two", 20);
+                .expectHeight(2)
+                .expectRow(0, "one", 10)
+                .expectRow(1, "two", 20);
     }
 
     @Test
@@ -146,7 +146,7 @@ public class TransformingDataFrameTest {
 
         assertSame(i1, df.getColumns());
 
-        new DFAsserts(df, i1).assertLength(0);
+        new DFAsserts(df, i1).expectHeight(0);
     }
 
     @Test
@@ -176,9 +176,9 @@ public class TransformingDataFrameTest {
 
         DataFrame df = df1.zip(df2);
         new DFAsserts(df, "a", "b")
-                .assertLength(2)
-                .assertRow(0, 1, 10)
-                .assertRow(1, 2, 20);
+                .expectHeight(2)
+                .expectRow(0, 1, 10)
+                .expectRow(1, 2, 20);
     }
 
     @Test
@@ -192,9 +192,9 @@ public class TransformingDataFrameTest {
         DataFrame df = df1.zip(df1);
 
         new DFAsserts(df, "a", "a_")
-                .assertLength(2)
-                .assertRow(0, 1, 1)
-                .assertRow(1, 2, 2);
+                .expectHeight(2)
+                .expectRow(0, 1, 1)
+                .expectRow(1, 2, 2);
     }
 
     @Test
@@ -210,8 +210,8 @@ public class TransformingDataFrameTest {
 
         DataFrame df = df1.zip(df2);
         new DFAsserts(df, "a", "b")
-                .assertLength(1)
-                .assertRow(0, 2, 10);
+                .expectHeight(1)
+                .expectRow(0, 2, 10);
     }
 
     @Test
@@ -228,8 +228,8 @@ public class TransformingDataFrameTest {
 
         DataFrame df = df2.zip(df1);
         new DFAsserts(df, "b", "a")
-                .assertLength(1)
-                .assertRow(0, 10, 2);
+                .expectHeight(1)
+                .expectRow(0, 10, 2);
     }
 
     @Test
@@ -242,7 +242,7 @@ public class TransformingDataFrameTest {
 
         DataFrame df = df1.filter((c, r) -> ((int) c.get(r, 0)) > 15);
         new DFAsserts(df, "a")
-                .assertLength(1)
-                .assertRow(0, 20);
+                .expectHeight(1)
+                .expectRow(0, 20);
     }
 }

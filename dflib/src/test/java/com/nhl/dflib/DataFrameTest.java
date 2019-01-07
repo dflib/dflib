@@ -15,9 +15,9 @@ public class DataFrameTest {
                 new Object[]{2}));
 
         new DFAsserts(df, i)
-                .assertLength(2)
-                .assertRow(0, 1)
-                .assertRow(1, 2);
+                .expectHeight(2)
+                .expectRow(0, 1)
+                .expectRow(1, 2);
     }
 
     @Test
@@ -29,9 +29,9 @@ public class DataFrameTest {
                 .addColumn("c", (c, r) -> ((int) c.get(r, 0)) * 10);
 
         new DFAsserts(df, "a", "b", "c")
-                .assertLength(2)
-                .assertRow(0, 1, "x", 10)
-                .assertRow(1, 2, "y", 20);
+                .expectHeight(2)
+                .expectRow(0, 1, "x", 10)
+                .expectRow(1, 2, "y", 20);
     }
 
     @Test
@@ -44,9 +44,9 @@ public class DataFrameTest {
                 .addColumn("c", (c, r) -> ((int) c.get(r, 0)) * 10);
 
         new DFAsserts(df, "a", "c")
-                .assertLength(2)
-                .assertRow(0, 1, 10)
-                .assertRow(1, 2, 20);
+                .expectHeight(2)
+                .expectRow(0, 1, 10)
+                .expectRow(1, 2, 20);
     }
 
     @Test
@@ -58,9 +58,9 @@ public class DataFrameTest {
                 .selectColumns("b");
 
         new DFAsserts(df, new IndexPosition(0, 1, "b"))
-                .assertLength(2)
-                .assertRow(0, "x")
-                .assertRow(1, "y");
+                .expectHeight(2)
+                .expectRow(0, "x")
+                .expectRow(1, "y");
     }
 
     @Test
@@ -72,9 +72,9 @@ public class DataFrameTest {
                 .selectColumns("b", "b", "b");
 
         new DFAsserts(df, new IndexPosition(0, 1, "b"), new IndexPosition(1, 1, "b_"), new IndexPosition(2, 1, "b__"))
-                .assertLength(2)
-                .assertRow(0, "x", "x", "x")
-                .assertRow(1, "y", "y", "y");
+                .expectHeight(2)
+                .expectRow(0, "x", "x", "x")
+                .expectRow(1, "y", "y", "y");
     }
 
     @Test
@@ -86,9 +86,9 @@ public class DataFrameTest {
                 .dropColumns("a");
 
         new DFAsserts(df, new IndexPosition(0, 1, "b"))
-                .assertLength(2)
-                .assertRow(0, "x")
-                .assertRow(1, "y");
+                .expectHeight(2)
+                .expectRow(0, "x")
+                .expectRow(1, "y");
     }
 
     @Test
@@ -100,9 +100,9 @@ public class DataFrameTest {
                 .dropColumns("b");
 
         new DFAsserts(df, new IndexPosition(0, 0, "a"))
-                .assertLength(2)
-                .assertRow(0, 1)
-                .assertRow(1, 2);
+                .expectHeight(2)
+                .expectRow(0, 1)
+                .expectRow(1, 2);
     }
 
     @Test
@@ -114,9 +114,9 @@ public class DataFrameTest {
                 .dropColumns();
 
         new DFAsserts(df, "a", "b")
-                .assertLength(2)
-                .assertRow(0, 1, "x")
-                .assertRow(1, 2, "y");
+                .expectHeight(2)
+                .expectRow(0, 1, "x")
+                .expectRow(1, 2, "y");
     }
 
     @Test
@@ -128,9 +128,9 @@ public class DataFrameTest {
                 .dropColumns("no_such_column");
 
         new DFAsserts(df, "a", "b")
-                .assertLength(2)
-                .assertRow(0, 1, "x")
-                .assertRow(1, 2, "y");
+                .expectHeight(2)
+                .expectRow(0, 1, "x")
+                .expectRow(1, 2, "y");
     }
 
     @Test
@@ -142,9 +142,9 @@ public class DataFrameTest {
                 .map((c, r) -> c.mapColumn(r, "a", (cx, rx) -> ((int) cx.get(rx, "a")) * 10));
 
         new DFAsserts(df, "a", "b")
-                .assertLength(2)
-                .assertRow(0, 10, "x")
-                .assertRow(1, 20, "y");
+                .expectHeight(2)
+                .expectRow(0, 10, "x")
+                .expectRow(1, 20, "y");
     }
 
     @Test
@@ -157,9 +157,9 @@ public class DataFrameTest {
                 .map((c, r) -> c.mapColumn(r, "b", (cx, rx) -> cx.get(rx, "b") + "_"));
 
         new DFAsserts(df, new IndexPosition(0, 0, "b"))
-                .assertLength(2)
-                .assertRow(0, "x_")
-                .assertRow(1, "y_");
+                .expectHeight(2)
+                .expectRow(0, "x_")
+                .expectRow(1, "y_");
     }
 
     @Test
@@ -171,9 +171,9 @@ public class DataFrameTest {
                 .mapColumn("a", (c, r) -> ((int) c.get(r, 0)) * 10);
 
         new DFAsserts(df, "a", "b")
-                .assertLength(2)
-                .assertRow(0, 10, "x")
-                .assertRow(1, 20, "y");
+                .expectHeight(2)
+                .expectRow(0, 10, "x")
+                .expectRow(1, 20, "y");
     }
 
     @Test
@@ -186,8 +186,8 @@ public class DataFrameTest {
                 .mapColumn("b", (c, r) -> c.get(r, 0) + "_");
 
         new DFAsserts(df, "b")
-                .assertLength(2)
-                .assertRow(0, "x_")
-                .assertRow(1, "y_");
+                .expectHeight(2)
+                .expectRow(0, "x_")
+                .expectRow(1, "y_");
     }
 }

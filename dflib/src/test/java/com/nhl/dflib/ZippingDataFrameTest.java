@@ -23,9 +23,9 @@ public class ZippingDataFrameTest {
         DataFrame df = new ZippingDataFrame(Index.withNames("a", "b"), df1, df2, Zipper.rowZipper());
 
         new DFAsserts(df, "a", "b")
-                .assertLength(2)
-                .assertRow(0, 1, 10)
-                .assertRow(1, 2, 20);
+                .expectHeight(2)
+                .expectRow(0, 1, 10)
+                .expectRow(1, 2, 20);
     }
 
     @Test
@@ -48,9 +48,9 @@ public class ZippingDataFrameTest {
                 Zipper.rowZipper());
 
         new DFAsserts(df, "z1", "z2")
-                .assertLength(2)
-                .assertRow(0, 1, 10)
-                .assertRow(1, 3, 30);
+                .expectHeight(2)
+                .expectRow(0, 1, 10)
+                .expectRow(1, 3, 30);
     }
 
     @Test
@@ -73,9 +73,9 @@ public class ZippingDataFrameTest {
                 Zipper.rowZipper());
 
         new DFAsserts(df, "b", "c")
-                .assertLength(2)
-                .assertRow(0, 1, 10)
-                .assertRow(1, 3, 30);
+                .expectHeight(2)
+                .expectRow(0, 1, 10)
+                .expectRow(1, 3, 30);
     }
 
     @Test
@@ -94,8 +94,8 @@ public class ZippingDataFrameTest {
                 .head(1);
 
         new DFAsserts(df, "a", "b")
-                .assertLength(1)
-                .assertRow(0, 1, 10);
+                .expectHeight(1)
+                .expectRow(0, 1, 10);
     }
 
     @Test
@@ -115,9 +115,9 @@ public class ZippingDataFrameTest {
                 .renameColumn("b", "c");
 
         new DFAsserts(df, "a", "c")
-                .assertLength(2)
-                .assertRow(0, 1, 10)
-                .assertRow(1, 2, 20);
+                .expectHeight(2)
+                .expectRow(0, 1, 10)
+                .expectRow(1, 2, 20);
     }
 
     @Test
@@ -139,9 +139,9 @@ public class ZippingDataFrameTest {
                 .map((c, r) -> c.mapColumn(r, "x", (cx, rx) -> cx.get(rx, 0) + "_"));
 
         new DFAsserts(df, zippedColumns)
-                .assertLength(2)
-                .assertRow(0, "one_", 1)
-                .assertRow(1, "two_", 2);
+                .expectHeight(2)
+                .expectRow(0, "one_", 1)
+                .expectRow(1, "two_", 2);
     }
 
     @Test
@@ -165,8 +165,8 @@ public class ZippingDataFrameTest {
                         r[1]));
 
         new DFAsserts(df, mappedColumns)
-                .assertLength(2)
-                .assertRow(0, "one", 10, 1)
-                .assertRow(1, "two", 20, 2);
+                .expectHeight(2)
+                .expectRow(0, "one", 10, 1)
+                .expectRow(1, "two", 20, 2);
     }
 }
