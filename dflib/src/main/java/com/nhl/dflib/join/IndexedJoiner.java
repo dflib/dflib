@@ -12,18 +12,18 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A DataFrame joiner based on a pair of functions that can calculate compareable keys for the left and right row.
+ * A DataFrame joiner based on a pair of functions that can calculate comparable keys for the left and right row.
  * Should theoretically have O(N + M) performance.
  */
 public class IndexedJoiner<K> extends BaseJoiner {
 
-    private IndexedJoinKeyMapper<K> leftKeyMapper;
-    private IndexedJoinKeyMapper<K> rightKeyMapper;
+    private JoinKeyMapper<K> leftKeyMapper;
+    private JoinKeyMapper<K> rightKeyMapper;
     private JoinSemantics semantics;
 
     public IndexedJoiner(
-            IndexedJoinKeyMapper<K> leftKeyMapper,
-            IndexedJoinKeyMapper<K> rightKeyMapper,
+            JoinKeyMapper<K> leftKeyMapper,
+            JoinKeyMapper<K> rightKeyMapper,
             JoinSemantics semantics) {
 
         this.leftKeyMapper = leftKeyMapper;
@@ -178,7 +178,7 @@ public class IndexedJoiner<K> extends BaseJoiner {
                 DataFrame.create(rf.getColumns(), rRows));
     }
 
-    private Map<K, List<Object[]>> groupByKey(IndexedJoinKeyMapper<K> keyMapper, DataFrame df) {
+    private Map<K, List<Object[]>> groupByKey(JoinKeyMapper<K> keyMapper, DataFrame df) {
 
         Index columns = df.getColumns();
 
