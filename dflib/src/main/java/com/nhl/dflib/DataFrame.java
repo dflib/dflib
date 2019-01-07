@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.join.DataRowJoinPredicate;
+import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.filter.DataRowPredicate;
 import com.nhl.dflib.join.IndexedJoiner;
 import com.nhl.dflib.join.JoinSemantics;
@@ -144,7 +144,7 @@ public interface DataFrame extends Iterable<Object[]> {
         return new ZippingDataFrame(zippedColumns, this, df, c).materialize();
     }
 
-    default DataFrame join(DataFrame df, DataRowJoinPredicate p) {
+    default DataFrame join(DataFrame df, JoinPredicate p) {
         return join(df, new Joiner(p, JoinSemantics.inner));
     }
 

@@ -15,10 +15,10 @@ import java.util.Set;
  */
 public class Joiner extends BaseJoiner {
 
-    private DataRowJoinPredicate joinPredicate;
+    private JoinPredicate joinPredicate;
     private JoinSemantics semantics;
 
-    public Joiner(DataRowJoinPredicate joinPredicate, JoinSemantics semantics) {
+    public Joiner(JoinPredicate joinPredicate, JoinSemantics semantics) {
         this.joinPredicate = Objects.requireNonNull(joinPredicate);
         this.semantics = Objects.requireNonNull(semantics);
     }
