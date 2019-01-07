@@ -54,7 +54,7 @@ Index columns = Index.withNames("a", "b", "c");
 DataFrame df = DataFrame.create(columns, data)
    .filter((c, r) -> c.get(r, 0).startsWith("a"))
    .mapColumn("b", (c, r) -> c.get(r, "b")).toString().toLowerCase())
-   .join(anotherDF, (lr, rr) -> Objects.equals(lr[0], rr[0]));
+   .join(anotherDF, (c, lr, rr) -> Objects.equals(c.getLeft(lr, 0), c.getRight(rr, 0));
 ```
 
 ## Difference with Pandas
