@@ -17,7 +17,8 @@ ubiquitous in data transformation and analysis
 in Python ([pandas](https://pandas.pydata.org/)), R,
 [Apache Spark](https://spark.apache.org/docs/latest/sql-programming-guide.html#datasets-and-dataframes), etc.
 But somehow there is no common lightweight DataFrame implementation
-for Java that can be executed in memory without special infrastructure.
+for Java that can be created and executed in memory without special
+infrastructure.
 
 YADF project's goal is to feel this gap. _Its use cases cover manipulating
 data sets that can either fully fit in the program memory, or can be cleanly split into
