@@ -71,5 +71,5 @@ possible).
 * There is no "row index" (yet?) in DFLib. Only the "column index".
 
 * While there's a big conceptual overlap, DFLib makes no attempt to follow
-Pandas API naming. So e.g. YADF `join` is closer to pandas `merge`,
+Pandas API naming. So e.g. DFLib `join` is closer to pandas `merge`,
 not `join` (DFLib `join` is also closer to SQL `join`).
