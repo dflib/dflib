@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.join.JoinKeyMapper;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinSemantics;
 import com.nhl.dflib.join.Joiner;
@@ -163,7 +164,7 @@ public class DataFrameJoinsTest {
                 DataRow.row("b", 2),
                 DataRow.row("c", 3)));
 
-        DataFrame df = df1.innerJoin(df2, (c, r) -> r[0], (c, r) -> r[1]);
+        DataFrame df = df1.innerJoin(df2, JoinKeyMapper.keyColumn(0), JoinKeyMapper.keyColumn(1));
 
         new DFAsserts(df, "a", "b", "c", "d")
                 .assertLength(2)
@@ -185,7 +186,7 @@ public class DataFrameJoinsTest {
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
 
-        DataFrame df = df1.innerJoin(df2, (c, r) -> r[0], (c, r) -> r[0]);
+        DataFrame df = df1.innerJoin(df2, JoinKeyMapper.keyColumn(0), JoinKeyMapper.keyColumn(0));
 
         new DFAsserts(df, "a", "b", "a_", "b_")
                 .assertLength(2)
@@ -207,7 +208,7 @@ public class DataFrameJoinsTest {
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
 
-        DataFrame df = df1.join(df2, (c, r) -> r[0], (c, r) -> r[0], JoinSemantics.left);
+        DataFrame df = df1.join(df2, JoinKeyMapper.keyColumn(0), JoinKeyMapper.keyColumn(0), JoinSemantics.left);
 
         new DFAsserts(df, "a", "b", "c", "d")
                 .assertLength(3)
@@ -230,7 +231,7 @@ public class DataFrameJoinsTest {
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
 
-        DataFrame df = df2.join(df1, (c, r) -> r[0], (c, r) -> r[0], JoinSemantics.right);
+        DataFrame df = df2.join(df1, JoinKeyMapper.keyColumn(0), JoinKeyMapper.keyColumn(0), JoinSemantics.right);
 
         new DFAsserts(df, "c", "d", "a", "b")
                 .assertLength(3)
@@ -253,7 +254,7 @@ public class DataFrameJoinsTest {
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
 
-        DataFrame df = df1.join(df2, (c, r) -> r[0], (c, r) -> r[0], JoinSemantics.full);
+        DataFrame df = df1.join(df2, JoinKeyMapper.keyColumn(0), JoinKeyMapper.keyColumn(0), JoinSemantics.full);
 
         new DFAsserts(df, "a", "b", "c", "d")
                 .assertLength(4)
