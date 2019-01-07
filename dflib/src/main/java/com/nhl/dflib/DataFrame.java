@@ -52,7 +52,14 @@ public interface DataFrame extends Iterable<Object[]> {
 
     Index getColumns();
 
-    default long count() {
+    /**
+     * Returns the number of rows in this DataFrame. Aka the DataFrame "height". Note that depending on the type of
+     * the DataFrame this operation may or may not be constant speed. In the worst case it would require a full scan
+     * through all rows.
+     *
+     * @return a long indicating the number of rows in the DataFrame
+     */
+    default long height() {
 
         // not a very efficient implementation; implementors should provide faster versions when possible
         long count = 0;
@@ -64,6 +71,18 @@ public interface DataFrame extends Iterable<Object[]> {
         return count;
     }
 
+    default long width() {
+        return getColumns().size();
+    }
+
+    /**
+     * Resolves this DataFrame to an implementation that does not require evaluation of the internal
+     * mapping/zip/filter functions on every iteration. A call to {@link #materialize()} would not necessarily
+     * cause an immediate expensive recalculation. Instead it may return a DataFrame that is  evaluated lazily when
+     * the first iterator is requested directly or indirectly.
+     *
+     * @return a DataFrame optimized for multiple iterations, calls to {@link #height()}, etc.
+     */
     default DataFrame materialize() {
         return new MaterializedDataFrame(this);
     }

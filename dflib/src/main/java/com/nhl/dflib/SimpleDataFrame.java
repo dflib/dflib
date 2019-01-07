@@ -31,7 +31,7 @@ public class SimpleDataFrame implements DataFrame {
     }
 
     @Override
-    public long count() {
+    public long height() {
 
         // avoid iteration if possible
         if (source instanceof Collection) {
@@ -39,10 +39,10 @@ public class SimpleDataFrame implements DataFrame {
         }
 
         if(source instanceof DataFrame) {
-            return ((DataFrame) source).count();
+            return ((DataFrame) source).height();
         }
 
-        return DataFrame.super.count();
+        return DataFrame.super.height();
     }
 
     @Override

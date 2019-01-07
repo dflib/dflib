@@ -24,8 +24,8 @@ public class TransformingDataFrame implements DataFrame {
     }
 
     @Override
-    public long count() {
-        return source.count();
+    public long height() {
+        return source.height();
     }
 
     @Override

@@ -43,7 +43,7 @@ public class MaterializedDataFrame implements DataFrame {
     }
 
     @Override
-    public long count() {
+    public long height() {
         return getMaterialized().size();
     }
 

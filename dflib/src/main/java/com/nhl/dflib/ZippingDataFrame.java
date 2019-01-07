@@ -31,8 +31,8 @@ public class ZippingDataFrame implements DataFrame {
     }
 
     @Override
-    public long count() {
-        return leftSource.count();
+    public long height() {
+        return leftSource.height();
     }
 
     @Override
