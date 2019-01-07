@@ -24,9 +24,10 @@ _Its primary use case is manipulating data sets that can either fully
 fit in the app memory, or can be split into batches, with
 each batch individually processed in memory._
 
-YADF can do filtering and data alteration in both table dimensions, it
-supports grouping, joins and other forms of recombination of multiple
-DataFrames, and can be extended with any number of custom data operations.
+YADF can do filtering, data alteration and restructuring in both table
+dimensions, it supports grouping, joins and other forms of recombination
+of multiple DataFrames, and can be extended with any number of custom
+data operations.
 
 YADF is easy to convert to and from other tabular formats, such as
 RDBMS tables, CSV. It can also be mapped to hierarchical formats like
