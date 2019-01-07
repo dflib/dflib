@@ -12,7 +12,7 @@ can use them in-memory and over dynamically defined data structures.
 
 DataFrame is a 2-dimensional table containing some data (numbers, Strings, Objects)
 in columns and rows. You can think of it as a programming analog of a
-table in a spreadsheet (or in a DB). DataFrame is a data structure
+table in a spreadsheet (or in a DB). DataFrame data structure is
 ubiquitous in data transformation and analysis
 in Python ([pandas](https://pandas.pydata.org/)), R,
 [Apache Spark](https://spark.apache.org/docs/latest/sql-programming-guide.html#datasets-and-dataframes), etc.
