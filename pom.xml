@@ -36,6 +36,19 @@
         <tag>HEAD</tag>
     </scm>
 
+    <distributionManagement>
+        <repository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>oss-sonatype-releases</id>
+            <name>Deployment Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+        <snapshotRepository>
+            <id>agrest-snapshots</id>
+            <url>http://maven.objectstyle.org/nexus/content/repositories/linkrest-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -50,4 +63,46 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.1.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.0.1</version>
+                    <configuration>
+                        <!-- Java 8 is too strict about Javadoc omissions -->
+                        <doclint>none</doclint>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.8.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <!-- Older versions of release plugin do not work with Git properly -->
+                    <version>2.5.3</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.0.0-M3</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>
