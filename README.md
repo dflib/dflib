@@ -48,11 +48,10 @@ Include DFLib in a project:
 Create a DataFrame and do some transformations:
 
 ```java
-List<Object[]> data = ...
 Index columns = Index.withNames("a", "b", "c");
 
-DataFrame df = DataFrame.create(columns, data)
-   .filter((c, r) -> c.get(r, 0).startsWith("a"))
+DataFrame df = DataFrame.fromStream(columns, IntStream.range(1, 10000).boxed())
+   .filterColumn("a", (Integer v) -> v % 2 == 0)
    .mapColumn("b", v -> v.toString().toLowerCase())
    .map((context, row) -> context.target(row))  // now that we cloned the row, we can change it
    .join(anotherDF, JoinPredicate.on("a", "x")); // join with some other DataFrame

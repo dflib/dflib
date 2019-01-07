@@ -14,12 +14,12 @@ public class JoinPredicateTest {
     public void testOn_ColumnNames() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromList(i1, asList(
+        DataFrame df1 = DataFrame.fromRowsList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")));
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.fromList(i2, asList(
+        DataFrame df2 = DataFrame.fromRowsList(i2, asList(
                 DataRow.row(2, "a"),
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
@@ -36,12 +36,12 @@ public class JoinPredicateTest {
     public void testOn_ColumnIndexes() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromList(i1, asList(
+        DataFrame df1 = DataFrame.fromRowsList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")));
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.fromList(i2, asList(
+        DataFrame df2 = DataFrame.fromRowsList(i2, asList(
                 DataRow.row(2, "a"),
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
@@ -58,12 +58,12 @@ public class JoinPredicateTest {
     public void testAnd_ColumnNames() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromList(i1, asList(
+        DataFrame df1 = DataFrame.fromRowsList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")));
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.fromList(i2, asList(
+        DataFrame df2 = DataFrame.fromRowsList(i2, asList(
                 DataRow.row(2, "a"),
                 DataRow.row(2, "y"),
                 DataRow.row(3, "c")));
@@ -79,12 +79,12 @@ public class JoinPredicateTest {
     public void testAnd_ColumnIndexes() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromList(i1, asList(
+        DataFrame df1 = DataFrame.fromRowsList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")));
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.fromList(i2, asList(
+        DataFrame df2 = DataFrame.fromRowsList(i2, asList(
                 DataRow.row(2, "a"),
                 DataRow.row(2, "y"),
                 DataRow.row(3, "c")));

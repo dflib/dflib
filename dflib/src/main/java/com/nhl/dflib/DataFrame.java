@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 
@@ -38,7 +39,45 @@ import static java.util.Arrays.asList;
 public interface DataFrame extends Iterable<Object[]> {
 
     /**
-     * Creates a DataFrame by folding provided array of objects into rows and columns.
+     * Creates a DataFrame by folding the provided stream of objects into rows and columns.
+     */
+    static <T> DataFrame fromStream(Index columns, Stream<T> stream) {
+
+        int width = columns.size();
+        if (width == 0) {
+            throw new IllegalArgumentException("Empty columns");
+        }
+
+        List<Object[]> folded = new ArrayList<>();
+        Iterator<T> it = stream.iterator();
+
+        int i = 0;
+        Object[] row = null;
+
+        while (it.hasNext()) {
+
+            // first iteration
+            if (row == null) {
+                row = new Object[width];
+            }
+            // previous row finished
+            else if (i % width == 0) {
+                folded.add(row);
+                row = new Object[width];
+            }
+
+            row[i % width] = it.next();
+            i++;
+        }
+
+        // add last row
+        folded.add(row);
+
+        return new MaterializedDataFrame(columns, folded);
+    }
+
+    /**
+     * Creates a DataFrame by folding the provided array of objects into rows and columns.
      */
     static DataFrame fromSequence(Index columns, Object... sequence) {
 
@@ -67,7 +106,7 @@ public interface DataFrame extends Iterable<Object[]> {
         return new MaterializedDataFrame(columns, asList(sources));
     }
 
-    static DataFrame fromList(Index columns, List<Object[]> sources) {
+    static DataFrame fromRowsList(Index columns, List<Object[]> sources) {
         return new MaterializedDataFrame(columns, sources);
     }
 

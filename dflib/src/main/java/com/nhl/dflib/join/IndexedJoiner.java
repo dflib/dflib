@@ -72,8 +72,8 @@ public class IndexedJoiner<K> extends BaseJoiner {
         }
 
         return zipJoinSides(joinedColumns,
-                DataFrame.fromList(lf.getColumns(), lRows),
-                DataFrame.fromList(rf.getColumns(), rRows));
+                DataFrame.fromRowsList(lf.getColumns(), lRows),
+                DataFrame.fromRowsList(rf.getColumns(), rRows));
     }
 
     private DataFrame leftJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
@@ -102,8 +102,8 @@ public class IndexedJoiner<K> extends BaseJoiner {
         }
 
         return zipJoinSides(joinedColumns,
-                DataFrame.fromList(lf.getColumns(), lRows),
-                DataFrame.fromList(rf.getColumns(), rRows));
+                DataFrame.fromRowsList(lf.getColumns(), lRows),
+                DataFrame.fromRowsList(rf.getColumns(), rRows));
     }
 
     private DataFrame rightJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
@@ -132,8 +132,8 @@ public class IndexedJoiner<K> extends BaseJoiner {
         }
 
         return zipJoinSides(joinedColumns,
-                DataFrame.fromList(lf.getColumns(), lRows),
-                DataFrame.fromList(rf.getColumns(), rRows));
+                DataFrame.fromRowsList(lf.getColumns(), lRows),
+                DataFrame.fromRowsList(rf.getColumns(), rRows));
     }
 
     private DataFrame fullJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
@@ -174,7 +174,7 @@ public class IndexedJoiner<K> extends BaseJoiner {
         }
 
         return zipJoinSides(joinedColumns,
-                DataFrame.fromList(lf.getColumns(), lRows),
+                DataFrame.fromRowsList(lf.getColumns(), lRows),
                 DataFrame.fromRows(rf.getColumns(), rRows));
     }
 
