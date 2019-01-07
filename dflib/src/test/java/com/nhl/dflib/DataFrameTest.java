@@ -163,7 +163,7 @@ public class DataFrameTest {
     }
 
     @Test
-    public void testMapColumn() {
+    public void testMapColumn_FromRow() {
         Index i1 = Index.withNames("a", "b");
         DataFrame df = DataFrame.create(i1, asList(
                 DataRow.row(1, "x"),
@@ -177,7 +177,7 @@ public class DataFrameTest {
     }
 
     @Test
-    public void testMapColumn_Sparse() {
+    public void testMapColumn_FromRow_Sparse() {
         Index i1 = Index.withNames("a", "b");
         DataFrame df = DataFrame.create(i1, asList(
                 DataRow.row(1, "x"),
@@ -189,5 +189,19 @@ public class DataFrameTest {
                 .expectHeight(2)
                 .expectRow(0, "x_")
                 .expectRow(1, "y_");
+    }
+
+    @Test
+    public void testMapColumn_FromValue() {
+        Index i1 = Index.withNames("a", "b");
+        DataFrame df = DataFrame.create(i1, asList(
+                DataRow.row(1, "x"),
+                DataRow.row(2, "y")))
+                .mapColumn("a", v -> ((int) v) * 10);
+
+        new DFAsserts(df, "a", "b")
+                .expectHeight(2)
+                .expectRow(0, 10, "x")
+                .expectRow(1, 20, "y");
     }
 }

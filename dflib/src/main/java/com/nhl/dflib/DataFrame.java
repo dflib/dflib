@@ -10,6 +10,7 @@ import com.nhl.dflib.map.DataRowCombiner;
 import com.nhl.dflib.map.DataRowConsumer;
 import com.nhl.dflib.map.DataRowMapper;
 import com.nhl.dflib.map.DataRowToValueMapper;
+import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.zip.Zipper;
 
 import java.util.Collections;
@@ -104,18 +105,25 @@ public interface DataFrame extends Iterable<Object[]> {
         return new TransformingDataFrame(mappedColumns, this, rowMapper).materialize();
     }
 
-    default <T> DataFrame mapColumn(String columnName, DataRowToValueMapper<T> m) {
+    default <V, VR> DataFrame mapColumn(String columnName, ValueMapper<V, VR> m) {
         Index index = getColumns();
         Index compactIndex = index.compactIndex();
         int pos = index.position(columnName).ordinal();
         return map(compactIndex, (c, r) -> c.mapColumn(r, pos, m));
     }
 
-    default <T> DataFrame addColumn(String columnName, DataRowToValueMapper<T> columnValueProducer) {
+    default <V> DataFrame mapColumn(String columnName, DataRowToValueMapper<V> m) {
+        Index index = getColumns();
+        Index compactIndex = index.compactIndex();
+        int pos = index.position(columnName).ordinal();
+        return map(compactIndex, (c, r) -> c.mapColumn(r, pos, m));
+    }
+
+    default <V> DataFrame addColumn(String columnName, DataRowToValueMapper<V> columnValueProducer) {
         return addColumns(new String[]{columnName}, columnValueProducer);
     }
 
-    default <T> DataFrame addColumns(String[] columnNames, DataRowToValueMapper<T>... columnValueProducers) {
+    default <V> DataFrame addColumns(String[] columnNames, DataRowToValueMapper<V>... columnValueProducers) {
         Index index = getColumns();
         Index expandedIndex = index.addNames(columnNames);
         return map(expandedIndex, (c, r) -> index.addValues(c, r, columnValueProducers));
