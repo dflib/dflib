@@ -225,7 +225,7 @@ public class DataFrameTest {
         DataFrame df = DataFrame.create(i1,
                 DataRow.row(10),
                 DataRow.row(20)).filterColumn(0, (Integer v) -> v > 15);
-        
+
         new DFAsserts(df, "a")
                 .expectHeight(1)
                 .expectRow(0, 20);

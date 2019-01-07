@@ -85,8 +85,9 @@ public interface DataFrame extends Iterable<Object[]> {
     /**
      * Resolves this DataFrame to an implementation that does not require evaluation of the internal
      * mapping/zip/filter functions on every iteration. A call to {@link #materialize()} would not necessarily
-     * cause an immediate expensive recalculation. Instead it may return a DataFrame that is  evaluated lazily when
-     * the first iterator is requested directly or indirectly.
+     * cause an immediate expensive recalculation. Instead it may return a DataFrame that is evaluated lazily when
+     * the first iterator is requested directly or indirectly. Certain operations, such as {@link #map(Index, DataRowMapper)},
+     * are materialized by default.
      *
      * @return a DataFrame optimized for multiple iterations, calls to {@link #height()}, etc.
      */
