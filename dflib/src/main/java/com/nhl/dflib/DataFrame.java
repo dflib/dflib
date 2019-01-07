@@ -114,8 +114,8 @@ public interface DataFrame extends Iterable<Object[]> {
         return new SimpleDataFrame(columns, source);
     }
 
-    static <T> DataFrame fromObjects(Index columns, Iterable<T> source, Function<T, Object[]> toArrayMapper) {
-        return new SimpleDataFrame(columns, new TransformingIterable<>(source, toArrayMapper));
+    static <T> DataFrame fromObjects(Index columns, Iterable<T> source, Function<T, Object[]> rowMapper) {
+        return new SimpleDataFrame(columns, new TransformingIterable<>(source, rowMapper));
     }
 
     /**
