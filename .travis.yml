@@ -1,0 +1,19 @@
+language: java
+
+branches:
+  only:
+    - "master"
+
+jdk:
+  - oraclejdk8
+
+script:
+   - 'if [ "$TRAVIS_SECURE_ENV_VARS" = "true" ]; then mvn clean source:jar deploy --settings travis_settings.xml; fi'
+   - 'if [ "$TRAVIS_SECURE_ENV_VARS" = "false" ]; then mvn verify; fi'
+
+# travis encrypt -r nhl/yadf "CI_DEPLOY_USERNAME='name'"
+# travis encrypt -r nhl/yadf "CI_DEPLOY_PASSWORD='password'"
+env:
+  global:
+    - secure: "s+Y2ojzOVQu+hzYGIlO5kqeGiLDRVpr+OGqnRE2LUMJWYV6DFySBxpTE+xiaLKuKp9ZgvhQ/zGy+XjjYKcrjBsDnCP46QVdrYMQ/GsF6FV7+HoYCk88KK6ALnK/TLAYc9TVJXtYjWub88u5YbDco9R+HYnCtea1THZ++cub4OXF2BSRM5DX8VtrrJ2qSBEacaCwc6265rbpzxeCHFyrFtmN3CxOXxaCi98aTJVe7Rk6Q1vRsXG8WM+J7mT+VDv6DHF2LBQX3d1Do1TTgE+025Ahxzbp/O9j1Pus9QvP+RcVgsU8Hf0knL0JoJ6TxJvmDWO4gAjVDsiyn0YHJOEA3JTN/f5qFPCvektVwsliFz6H83XK75p6sHww+PiqsiZPb6UEx+H/NkoDcvbTzsaiWPg8x60wqkkwIrTlq8jovN0BqY+tPOmII3oIWASK582TVbs38NKfc5Pj1CMWtYpEqZ3adbjrXbLL7YG3owtevXL8tXk4qq/zEgjhkeJS9HzDXU8mYLe5Rdz7Hwqiaxml/9VQ8SlYcnhsxwJuq0XKSJ1wGxHDP3HLhxKUTe2IulxFib1GsV9Hg3liFReJFYPuS7ASY8U3n8KlcuBRLeI5mPDYHJPggGrTkq/MZSSqrQ0WXtm2iVFDJJu2Ul5qmhQrKhxXXWhs7/vs9m5JeSXhKmvs="
+    - secure: "aaqCcfUKzFy/VgxrQaEz2KlQdaewcMTUYhZaL952X7jzu/gpvp3Y7ZjhOK9tCcXVOUjZPAKpGbQ1t1Td4N/uDXbxYhrNC35YADjTPpL8UXIGZPOp2VjbwUk8WTevdwF9dYIPv1HkRdHa0IrMFNFBo1wvcgVCel391YWZxj1dsXnBHoU/nuOmv2YoNFXYKUhDBQRwBEa4KpxlpHpGg2WEPFi9KuDitj43Lc95epeQJOMlLDpaDEL+93CSvswm6STxO9w5fifbvRYj2HOXONbhQThVkC4U6Za5fCLU1ryR1t3PsIv5mkVc2PcLmd+HGxfXOifAKpdpgCt0d2rKRELVpbUlSAxUw1ENsfMz1zNWDx1W81+h+etBd8tB8XYvhWBe5vIyjLwjKRoJ14BDHcsaR7W00HjPDCGSrTHv4Q+AduPAVdRmHn/HmjDBYgkzVtlHNMX4lD8+utx2uasV+E80c0BRppbBf8ySyJkfd4KAnDIqH+FoDcafF1g8+kZbnBNv75YLhEYb8qBIGQGKSwfc7IeBj89Xhor/ye1N+/rmXkGr/xBnLiolDn1fzG0RmhFuYhk/teXdKs1XdNW4Xx87zpfK8LtAu7FkxzxcvbSCVWcSl+/JA8aCOHjcJZRuxcLZ8JPxyE+WyB1+xAHm0+p7j4vMANoGC2XH9g4tcucNq6k="
