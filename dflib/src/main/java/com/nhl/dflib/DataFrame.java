@@ -119,7 +119,7 @@ public interface DataFrame extends Iterable<Object[]> {
      * object to a row (i.e. Object[]).
      */
     static <T> DataFrame fromObjects(Index columns, Iterable<T> source, Function<T, Object[]> rowMapper) {
-        return new SimpleDataFrame(columns, new TransformingIterable<>(source, rowMapper));
+        return new SimpleDataFrame(columns, new TransformingIterable<>(source, rowMapper)).materialize();
     }
 
     /**
