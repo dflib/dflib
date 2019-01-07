@@ -2,6 +2,10 @@ package com.nhl.dflib;
 
 import java.util.Map;
 
+/**
+ * An index whose IndexPosition's ordinals and rowIndexes are the same. As opposed to {@link SparseIndex} this index
+ * starts from position zero and has no gaps.
+ */
 public class ContinuousIndex extends Index {
 
     protected ContinuousIndex(IndexPosition... positions) {
