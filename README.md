@@ -4,25 +4,31 @@
 # YADF
 
 YADF ("Yet Another DataFrame") is a simple Java implementation of a common
-DataFrame data structure.
+DataFrame data structure. With YADF you get essentially the same tools
+you may be used to having with SQL (such as queries and joins), only you
+can use them in-memory and over dynamically defined data structures.
 
 ## What is DataFrame
 
 DataFrame is a 2-dimensional table containing some data (numbers, Strings, Objects).
 You can think of it as a programming analog of a table in a spreadsheet.
-DataFrame is a data structure ubiquitous in data analysis and transformation
+DataFrame is a data structure ubiquitous in data transformation and analysis
 in Python ([pandas](https://pandas.pydata.org/)), R,
 [Apache Spark](https://spark.apache.org/docs/latest/sql-programming-guide.html#datasets-and-dataframes), etc.
 But somehow there is no common lightweight DataFrame implementation
 for Java that can be executed in memory without special infrastructure.
 
-YADF project goal is to feel this gap. Its use cases cover data sets that
-can either fully fit in memory, or can be cleanly split into batches before
-processing.
+YADF project's goal is to feel this gap. _Its use cases cover manipulating
+data sets that can either fully fit in the program memory, or can be cleanly split into
+batches before processing._
 
-YADF can do data filtering and alteration on both table dimensions, it
+YADF can do filtering and data alteration in both table dimensions, it
 supports grouping, joins and other forms of recombination of multiple
 DataFrames, and can be extended with any number of custom data operations.
+
+YADF is easy to convert to and from other tabular formats, such as
+RDBMS tables, CSV. It can also be mapped to hierarchical formats like
+JSON and XML.
 
 ## Usage Examples
 
@@ -50,8 +56,14 @@ DataFrame df = DataFrame.create(columns, data)
 
 ## Difference with Pandas
 
+* YADF is implemented in Java.
+
 * YADF DataFrames are immutable. So each transformation creates a new
-copy (of course copying the internal data matrix is avoided whenever
+copy (of course cloning the internal data matrix is avoided whenever
 possible).
 
 * There is no "row index" (yet?) in YADF. Only the "column index".
+
+* While there's a big conceptual overlap, YADF makes no attempt to follow
+Pandas API naming. So e.g. YADF `join` is closer to pandas `merge`,
+not `join` (YADF `join` is also closer to SQL `join`).
