@@ -24,7 +24,7 @@ public class JoinPredicateTest {
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
 
-        DataFrame df = df1.join(df2, JoinPredicate.on("a", "c"));
+        DataFrame df = df1.innerJoin(df2, JoinPredicate.on("a", "c"));
 
         new DFAsserts(df, "a", "b", "c", "d")
                 .assertLength(2)
@@ -46,7 +46,7 @@ public class JoinPredicateTest {
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
 
-        DataFrame df = df1.join(df2, JoinPredicate.on(0, 0));
+        DataFrame df = df1.innerJoin(df2, JoinPredicate.on(0, 0));
 
         new DFAsserts(df, "a", "b", "c", "d")
                 .assertLength(2)
@@ -68,7 +68,7 @@ public class JoinPredicateTest {
                 DataRow.row(2, "y"),
                 DataRow.row(3, "c")));
 
-        DataFrame df = df1.join(df2, JoinPredicate.on("a", "c").andOn("b", "d"));
+        DataFrame df = df1.innerJoin(df2, JoinPredicate.on("a", "c").andOn("b", "d"));
 
         new DFAsserts(df, "a", "b", "c", "d")
                 .assertLength(1)
@@ -89,7 +89,7 @@ public class JoinPredicateTest {
                 DataRow.row(2, "y"),
                 DataRow.row(3, "c")));
 
-        DataFrame df = df1.join(df2, JoinPredicate.on(0, 0).andOn(1, 1));
+        DataFrame df = df1.innerJoin(df2, JoinPredicate.on(0, 0).andOn(1, 1));
 
         new DFAsserts(df, "a", "b", "c", "d")
                 .assertLength(1)

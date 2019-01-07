@@ -2,6 +2,12 @@ package com.nhl.dflib.join;
 
 import java.util.Objects;
 
+/**
+ * Defines a join condition for a pair of rows. A slower, but more flexible version of join condition compared to
+ * {@link JoinKeyMapper}.
+ *
+ * @see JoinKeyMapper
+ */
 @FunctionalInterface
 public interface JoinPredicate {
 

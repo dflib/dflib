@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.join.IndexedJoiner;
+import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinSemantics;
 import com.nhl.dflib.join.Joiner;
 import org.junit.Test;
@@ -12,7 +12,7 @@ import static java.util.Arrays.asList;
 public class DataFrameJoinsTest {
 
     @Test
-    public void testJoin_Inner() {
+    public void testInnerJoin_Inner() {
 
         Index i1 = Index.withNames("a", "b");
         DataFrame df1 = DataFrame.create(i1, asList(
@@ -25,7 +25,7 @@ public class DataFrameJoinsTest {
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
 
-        DataFrame df = df1.join(df2, (c, lr, rr) -> Objects.equals(c.getLeft(lr, 0), c.getRight(rr, 0)));
+        DataFrame df = df1.innerJoin(df2, JoinPredicate.on(0, 0));
 
         new DFAsserts(df, "a", "b", "c", "d")
                 .assertLength(2)
@@ -34,7 +34,7 @@ public class DataFrameJoinsTest {
     }
 
     @Test
-    public void testJoin_NoMatches() {
+    public void testInnerJoin_NoMatches() {
 
         Index i1 = Index.withNames("a", "b");
         DataFrame df1 = DataFrame.create(i1, asList(
@@ -47,14 +47,14 @@ public class DataFrameJoinsTest {
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
 
-        DataFrame df = df1.join(df2, (c, lr, rr) -> false);
+        DataFrame df = df1.innerJoin(df2, (c, lr, rr) -> false);
 
         new DFAsserts(df, "a", "b", "c", "d")
                 .assertLength(0);
     }
 
     @Test
-    public void testJoin_IndexOverlap() {
+    public void testInnerJoin_IndexOverlap() {
 
         Index i1 = Index.withNames("a", "b");
         DataFrame df1 = DataFrame.create(i1, asList(
@@ -67,7 +67,7 @@ public class DataFrameJoinsTest {
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
 
-        DataFrame df = df1.join(df2, (c, lr, rr) -> Objects.equals(c.getLeft(lr, 0), c.getRight(rr, 0)));
+        DataFrame df = df1.innerJoin(df2, JoinPredicate.on(0, 0));
 
         new DFAsserts(df, "a", "b", "a_", "b_")
                 .assertLength(2)
@@ -89,10 +89,7 @@ public class DataFrameJoinsTest {
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
 
-        Joiner joiner = new Joiner(
-                (c, lr, rr) -> Objects.equals(c.getLeft(lr, 0), c.getRight(rr, 0)),
-                JoinSemantics.left);
-        DataFrame df = df1.join(df2, joiner);
+        DataFrame df = df1.join(df2, JoinPredicate.on(0, 0), JoinSemantics.left);
 
         new DFAsserts(df, "a", "b", "c", "d")
                 .assertLength(3)
@@ -115,10 +112,7 @@ public class DataFrameJoinsTest {
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
 
-        Joiner joiner = new Joiner(
-                (c, lr, rr) -> Objects.equals(c.getLeft(lr, 0), c.getRight(rr, 0)),
-                JoinSemantics.right);
-        DataFrame df = df2.join(df1, joiner);
+        DataFrame df = df2.join(df1, JoinPredicate.on(0, 0), JoinSemantics.right);
 
         new DFAsserts(df, "c", "d", "a", "b")
                 .assertLength(3)
@@ -144,7 +138,8 @@ public class DataFrameJoinsTest {
         Joiner joiner = new Joiner(
                 (c, lr, rr) -> Objects.equals(c.getLeft(lr, 0), c.getRight(rr, 0)),
                 JoinSemantics.full);
-        DataFrame df = df1.join(df2, joiner);
+
+        DataFrame df = df1.join(df2, JoinPredicate.on(0, 0), JoinSemantics.full);
 
         new DFAsserts(df, "a", "b", "c", "d")
                 .assertLength(4)
@@ -155,7 +150,7 @@ public class DataFrameJoinsTest {
     }
 
     @Test
-    public void testJoin_InnerIndexed() {
+    public void testInnerJoin_Indexed() {
 
         Index i1 = Index.withNames("a", "b");
         DataFrame df1 = DataFrame.create(i1, asList(
@@ -168,8 +163,7 @@ public class DataFrameJoinsTest {
                 DataRow.row("b", 2),
                 DataRow.row("c", 3)));
 
-        IndexedJoiner<Object> joiner = new IndexedJoiner<>((c, r) -> r[0], (c, r) -> r[1], JoinSemantics.inner);
-        DataFrame df = df1.join(df2, joiner);
+        DataFrame df = df1.innerJoin(df2, (c, r) -> r[0], (c, r) -> r[1]);
 
         new DFAsserts(df, "a", "b", "c", "d")
                 .assertLength(2)
@@ -178,7 +172,7 @@ public class DataFrameJoinsTest {
     }
 
     @Test
-    public void testJoin_Indexed_IndexOverlap() {
+    public void testInnerJoin_Indexed_IndexOverlap() {
 
         Index i1 = Index.withNames("a", "b");
         DataFrame df1 = DataFrame.create(i1, asList(
@@ -191,8 +185,7 @@ public class DataFrameJoinsTest {
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
 
-        IndexedJoiner<Object> joiner = new IndexedJoiner<>((c, r) -> r[0], (c, r) -> r[0], JoinSemantics.inner);
-        DataFrame df = df1.join(df2, joiner);
+        DataFrame df = df1.innerJoin(df2, (c, r) -> r[0], (c, r) -> r[0]);
 
         new DFAsserts(df, "a", "b", "a_", "b_")
                 .assertLength(2)
@@ -214,8 +207,7 @@ public class DataFrameJoinsTest {
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
 
-        IndexedJoiner<Object> joiner = new IndexedJoiner<>((c, r) -> r[0], (c, r) -> r[0], JoinSemantics.left);
-        DataFrame df = df1.join(df2, joiner);
+        DataFrame df = df1.join(df2, (c, r) -> r[0], (c, r) -> r[0], JoinSemantics.left);
 
         new DFAsserts(df, "a", "b", "c", "d")
                 .assertLength(3)
@@ -238,8 +230,7 @@ public class DataFrameJoinsTest {
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
 
-        IndexedJoiner<Object> joiner = new IndexedJoiner<>((c, r) -> r[0], (c, r) -> r[0], JoinSemantics.right);
-        DataFrame df = df2.join(df1, joiner);
+        DataFrame df = df2.join(df1, (c, r) -> r[0], (c, r) -> r[0], JoinSemantics.right);
 
         new DFAsserts(df, "c", "d", "a", "b")
                 .assertLength(3)
@@ -262,8 +253,7 @@ public class DataFrameJoinsTest {
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
 
-        IndexedJoiner<Object> joiner = new IndexedJoiner<>((c, r) -> r[0], (c, r) -> r[0], JoinSemantics.full);
-        DataFrame df = df1.join(df2, joiner);
+        DataFrame df = df1.join(df2, (c, r) -> r[0], (c, r) -> r[0], JoinSemantics.full);
 
         new DFAsserts(df, "a", "b", "c", "d")
                 .assertLength(4)

@@ -1,8 +1,9 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.filter.DataRowPredicate;
 import com.nhl.dflib.join.IndexedJoiner;
+import com.nhl.dflib.join.JoinKeyMapper;
+import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinSemantics;
 import com.nhl.dflib.join.Joiner;
 import com.nhl.dflib.map.DataRowCombiner;
@@ -144,16 +145,29 @@ public interface DataFrame extends Iterable<Object[]> {
         return new ZippingDataFrame(zippedColumns, this, df, c).materialize();
     }
 
-    default DataFrame join(DataFrame df, JoinPredicate p) {
-        return join(df, new Joiner(p, JoinSemantics.inner));
+    default DataFrame innerJoin(DataFrame df, JoinPredicate p) {
+        return join(df, p, JoinSemantics.inner);
     }
 
-    default DataFrame join(DataFrame df, Joiner joiner) {
+    default DataFrame join(DataFrame df, JoinPredicate predicate, JoinSemantics semantics) {
+        Joiner joiner = new Joiner(predicate, semantics);
         Index joinedIndex = joiner.joinIndex(getColumns(), df.getColumns());
         return joiner.joinRows(joinedIndex, this, df);
     }
 
-    default DataFrame join(DataFrame df, IndexedJoiner<?> joiner) {
+    default <K> DataFrame innerJoin(
+            DataFrame df,
+            JoinKeyMapper<K> leftKeyMapper,
+            JoinKeyMapper<K> rightKeyMapper) {
+        return join(df, leftKeyMapper, rightKeyMapper, JoinSemantics.inner);
+    }
+
+    default <K> DataFrame join(
+            DataFrame df,
+            JoinKeyMapper<K> leftKeyMapper,
+            JoinKeyMapper<K> rightKeyMapper,
+            JoinSemantics semantics) {
+        IndexedJoiner<K> joiner = new IndexedJoiner<>(leftKeyMapper, rightKeyMapper, semantics);
         Index joinedIndex = joiner.joinIndex(getColumns(), df.getColumns());
         return joiner.joinRows(joinedIndex, this, df);
     }
