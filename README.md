@@ -20,7 +20,7 @@ But somehow there is no common lightweight DataFrame implementation
 for Java that can be created and executed in memory without special
 infrastructure.
 
-YADF project's goal is to feel this gap. _Its use cases cover manipulating
+YADF project's goal is to feel this gap. _Its primary use case is manipulating
 data sets that can either fully fit in the program memory, or can be cleanly split into
 batches before processing._
 
