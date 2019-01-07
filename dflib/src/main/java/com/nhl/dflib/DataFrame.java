@@ -1,6 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.filter.DataRowPredicate;
+import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.join.IndexedJoiner;
 import com.nhl.dflib.join.JoinKeyMapper;
 import com.nhl.dflib.join.JoinPredicate;
@@ -163,6 +164,16 @@ public interface DataFrame extends Iterable<Object[]> {
 
     default DataFrame filter(DataRowPredicate p) {
         return new FilteredDataFrame(this, p).materialize();
+    }
+
+    default <V> DataFrame filterColumn(String columnName, ValuePredicate<V> p) {
+        int pos = getColumns().position(columnName).ordinal();
+        return filterColumn(pos, p);
+    }
+
+    default <V> DataFrame filterColumn(int columnPos, ValuePredicate<V> p) {
+        DataRowPredicate drp = (c, r) -> p.test((V) c.get(r, columnPos));
+        return new FilteredDataFrame(this, drp).materialize();
     }
 
     /**

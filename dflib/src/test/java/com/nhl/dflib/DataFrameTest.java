@@ -204,4 +204,30 @@ public class DataFrameTest {
                 .expectRow(0, 10, "x")
                 .expectRow(1, 20, "y");
     }
+
+    @Test
+    public void testFilterColumn_Name() {
+
+        Index i1 = Index.withNames("a");
+        DataFrame df = DataFrame.create(i1,
+                DataRow.row(10),
+                DataRow.row(20)).filterColumn("a", (Integer v) -> v > 15);
+
+        new DFAsserts(df, "a")
+                .expectHeight(1)
+                .expectRow(0, 20);
+    }
+
+    @Test
+    public void testFilterColumn_Pos() {
+
+        Index i1 = Index.withNames("a");
+        DataFrame df = DataFrame.create(i1,
+                DataRow.row(10),
+                DataRow.row(20)).filterColumn(0, (Integer v) -> v > 15);
+        
+        new DFAsserts(df, "a")
+                .expectHeight(1)
+                .expectRow(0, 20);
+    }
 }

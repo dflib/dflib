@@ -245,4 +245,32 @@ public class TransformingDataFrameTest {
                 .expectHeight(1)
                 .expectRow(0, 20);
     }
+
+    @Test
+    public void testFilterColumn_Name() {
+
+        Index i1 = Index.withNames("a");
+        DataFrame df1 = new TransformingDataFrame(i1, DataFrame.create(i1,
+                DataRow.row(10),
+                DataRow.row(20)), SELF_MAPPER);
+
+        DataFrame df = df1.filterColumn("a", (Integer v) -> v > 15);
+        new DFAsserts(df, "a")
+                .expectHeight(1)
+                .expectRow(0, 20);
+    }
+
+    @Test
+    public void testFilterColumn_Pos() {
+
+        Index i1 = Index.withNames("a");
+        DataFrame df1 = new TransformingDataFrame(i1, DataFrame.create(i1,
+                DataRow.row(10),
+                DataRow.row(20)), SELF_MAPPER);
+
+        DataFrame df = df1.filterColumn(0, (Integer v) -> v > 15);
+        new DFAsserts(df, "a")
+                .expectHeight(1)
+                .expectRow(0, 20);
+    }
 }
