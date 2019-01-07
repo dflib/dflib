@@ -61,6 +61,9 @@ DataFrame df = DataFrame.create(columns, data)
 
 * YADF is implemented in Java.
 
+* YADF is nowhere near the amount of features that pandas has. The goal
+is to add any currently missing functionality as it is requested by the users.
+
 * YADF DataFrames are immutable. So each transformation creates a new
 copy (of course cloning the internal data matrix is avoided whenever
 possible).
