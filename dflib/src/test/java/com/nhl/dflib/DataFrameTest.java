@@ -2,11 +2,36 @@ package com.nhl.dflib;
 
 import org.junit.Test;
 
+import java.util.List;
 import java.util.stream.IntStream;
 
 import static java.util.Arrays.asList;
 
 public class DataFrameTest {
+
+    @Test
+    public void testFromObjects() {
+
+        class Bean {
+            int a;
+            int b;
+
+            Bean(int a, int b) {
+                this.a = a;
+                this.b = b;
+            }
+        }
+
+        List<Bean> beans = asList(new Bean(5, 4), new Bean(3, 1));
+
+        Index i = Index.withNames("a", "b");
+        DataFrame df = DataFrame.fromObjects(i, beans, b -> DataRow.row(b.a, b.b));
+
+        new DFAsserts(df, i)
+                .expectHeight(2)
+                .expectRow(0, 5, 4)
+                .expectRow(1, 3, 1);
+    }
 
     @Test
     public void testFromStream0() {
