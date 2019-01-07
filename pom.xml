@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.nhl.yadf</groupId>
+    <artifactId>yadf-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>yadf-parent: Parent of the YADF DataFrame library</name>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>yadf</module>
+    </modules>
+
+    <licenses>
+        <license>
+            <name>Apache License</name>
+            <url>https://github.com/nhl/yadf/blob/master/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+    </properties>
+
+    <scm>
+        <connection>scm:git:https://github.com/nhl/yadf</connection>
+        <developerConnection>scm:git:ssh://git@github.com/nhl/yadf</developerConnection>
+        <url>https://github.com/nhl/yadf</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.11</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>1.9.5-rc1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
