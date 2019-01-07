@@ -1,10 +1,10 @@
-[![Maven Central](https://img.shields.io/maven-central/v/com.nhl.yadf/yadf.svg)](https://maven-badges.herokuapp.com/maven-central/com.nhl.yadf/yadf/)
-[![Build Status](https://travis-ci.org/nhl/yadf.svg?branch=master)](https://travis-ci.org/nhl/yadf)
+[![Maven Central](https://img.shields.io/maven-central/v/com.nhl.dflib/dflib.svg)](https://maven-badges.herokuapp.com/maven-central/com.nhl.dflib/dflib/)
+[![Build Status](https://travis-ci.org/nhl/dflib.svg?branch=master)](https://travis-ci.org/nhl/dflib)
 
-# YADF
+# DFLib
 
-YADF ("Yet Another DataFrame") is a simple Java implementation of a common
-DataFrame data structure. With YADF you get essentially the same tools
+DFLib ("DataFrame Library") is a simple Java implementation of a common
+DataFrame data structure. With DFLib you get essentially the same tools
 you may be used to having with SQL (such as queries and joins), only you
 can use them in-memory and over dynamically defined data structures.
 
@@ -18,29 +18,29 @@ in Python ([pandas](https://pandas.pydata.org/)), R,
 [Apache Spark](https://spark.apache.org/docs/latest/sql-programming-guide.html#datasets-and-dataframes), etc.
 But somehow there is no common lightweight DataFrame implementation
 for Java that can be created and executed in memory without special
-infrastructure. YADF project's goal is to feel this gap.
+infrastructure. DFLib project's goal is to feel this gap.
 
 _Its primary use case is manipulating data sets that can either fully
 fit in the app memory, or can be split into batches, with
 each batch individually processed in memory._
 
-YADF can do filtering, data alteration and restructuring in both table
+DFLib can do filtering, data alteration and restructuring in both table
 dimensions, it supports grouping, joins and other forms of recombination
 of multiple DataFrames, and can be extended with any number of custom
 data operations.
 
-YADF is easy to convert to and from other tabular formats, such as
+DFLib is easy to convert to and from other tabular formats, such as
 RDBMS tables, CSV. It can also be mapped to hierarchical formats like
 JSON and XML.
 
 ## Usage Examples
 
-Include YADF in a project:
+Include DFLib in a project:
 
 ```xml
 <dependency>
-    <groupId>com.nhl.yadf</groupId>
-    <artifactId>yadf</artifactId>
+    <groupId>com.nhl.dflib</groupId>
+    <artifactId>dflib</artifactId>
     <version>1.0-SNAPSHOT</version>
 </dependency>
 ```
@@ -59,17 +59,17 @@ DataFrame df = DataFrame.create(columns, data)
 
 ## Difference with Pandas
 
-* YADF is implemented in Java.
+* DFLib is implemented in Java.
 
-* YADF is nowhere near the amount of features that pandas has. The goal
+* DFLib has nowhere near the amount of features that pandas has. The goal
 is to add any currently missing functionality as it is requested by the users.
 
-* YADF DataFrames are immutable. So each transformation creates a new
+* DFLib DataFrames are immutable. So each transformation creates a new
 copy (of course cloning the internal data matrix is avoided whenever
 possible).
 
-* There is no "row index" (yet?) in YADF. Only the "column index".
+* There is no "row index" (yet?) in DFLib. Only the "column index".
 
-* While there's a big conceptual overlap, YADF makes no attempt to follow
+* While there's a big conceptual overlap, DFLib makes no attempt to follow
 Pandas API naming. So e.g. YADF `join` is closer to pandas `merge`,
-not `join` (YADF `join` is also closer to SQL `join`).
+not `join` (DFLib `join` is also closer to SQL `join`).

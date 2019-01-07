@@ -3,20 +3,20 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.nhl.yadf</groupId>
-    <artifactId>yadf-parent</artifactId>
+    <groupId>com.nhl.dflib</groupId>
+    <artifactId>dflib-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>yadf-parent: Parent of the YADF DataFrame library</name>
+    <name>dflib-parent: Parent of the dflib DataFrame library</name>
     <packaging>pom</packaging>
 
     <modules>
-        <module>yadf</module>
+        <module>dflib</module>
     </modules>
 
     <licenses>
         <license>
             <name>Apache License</name>
-            <url>https://github.com/nhl/yadf/blob/master/LICENSE</url>
+            <url>https://github.com/nhl/dflib/blob/master/LICENSE</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -30,9 +30,9 @@
     </properties>
 
     <scm>
-        <connection>scm:git:https://github.com/nhl/yadf</connection>
-        <developerConnection>scm:git:ssh://git@github.com/nhl/yadf</developerConnection>
-        <url>https://github.com/nhl/yadf</url>
+        <connection>scm:git:https://github.com/nhl/dflib</connection>
+        <developerConnection>scm:git:ssh://git@github.com/nhl/dflib</developerConnection>
+        <url>https://github.com/nhl/dflib</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -44,7 +44,7 @@
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
         </repository>
         <snapshotRepository>
-            <id>yadf-snapshots</id>
+            <id>dflib-snapshots</id>
             <url>http://maven.objectstyle.org/nexus/content/repositories/linkrest-snapshots</url>
         </snapshotRepository>
     </distributionManagement>

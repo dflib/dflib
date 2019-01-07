@@ -11,8 +11,8 @@ script:
    - 'if [ "$TRAVIS_SECURE_ENV_VARS" = "true" ]; then mvn clean source:jar deploy --settings travis_settings.xml; fi'
    - 'if [ "$TRAVIS_SECURE_ENV_VARS" = "false" ]; then mvn verify; fi'
 
-# travis encrypt -r nhl/yadf "CI_DEPLOY_USERNAME='name'"
-# travis encrypt -r nhl/yadf "CI_DEPLOY_PASSWORD='password'"
+# travis encrypt -r nhl/dflib "CI_DEPLOY_USERNAME='name'"
+# travis encrypt -r nhl/dflib "CI_DEPLOY_PASSWORD='password'"
 env:
   global:
     - secure: "pfUDVoF2sgfh/QeRAZWOJs3njCmEM0+HF6t2e/fUILXB18OMluZHo/NFJ0ysypcjcoT6GRe1C2hQ6NhZJxz5CcnjUoIS6myAfeWmw4ANEpq1qhbWzIJ0WP63oF62P8ei9KlwTiKaRSOhPakHsuXt/+iA4unMoRF+TqpC98999XKeLG/jr87vWroiM4E/ikJUTP9kGUuGOKgpiMP0u7ifPIi5NsqYie1VcHzMhREsqGvGrwlK5ozXhmhlok7qmn9t8P75dMdKVwvEgYoao+26PW40KYqKSOdbEOKkeownpJ8WjN5xji59IqRAYElqgYprxZpwc9/QMr2MQWIzfbi6hArcvtnKXCQGcSxZYMDGq9iTxYyEGHzhuw8Gfdm0R05jZ/muplKtBpP2L0oX5P5Dpymkzx8OjciBtbMi1sAFNa/+y+UEPiL2eUEl262uSMqLSB4/sgZIipFCJsKJF5CBjqSfwKbwaCtXObmy5H321hVGvSAYTkMP6C8GX0QtS/athiPNaens7sfk+gDS5mn2lcY9c9y9iJprMlrQKVFt/MDM3IBjgzd1uNSnsU76dTKyxpjCUbOFBYcKLZ46GPKPODCslOyDEBIOZOfy3Bf+osO+z1FJ97mpb5lN6FM8+DDsJxN/1zj8k0TyrhmLPZ2hnAvSHhMDwAAo0iA+UazDnb0="
