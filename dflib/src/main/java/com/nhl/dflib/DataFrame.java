@@ -51,6 +51,11 @@ public interface DataFrame extends Iterable<Object[]> {
         return new SimpleDataFrame(columns, new TransformingIterable<>(source, toArrayMapper));
     }
 
+    /**
+     * Returns DataFrame column index.
+     *
+     * @return DataFrame column index
+     */
     Index getColumns();
 
     /**

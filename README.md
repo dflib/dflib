@@ -53,20 +53,21 @@ Index columns = Index.withNames("a", "b", "c");
 
 DataFrame df = DataFrame.create(columns, data)
    .filter((c, r) -> c.get(r, 0).startsWith("a"))
-   .mapColumn("b", (c, r) -> c.get(r, "b")).toString().toLowerCase())
-   .join(anotherDF, JoinPredicate.on("a", "x"));
+   .mapColumn("b", v -> v.toString().toLowerCase())
+   .map((context, row) -> context.target(row))  // now that we cloned the row, we can change it
+   .join(anotherDF, JoinPredicate.on("a", "x")); // join with some other DataFrame
 ```
 
 ## Difference with Pandas
 
-* DFLib is implemented in Java.
+* DFLib is implemented in Java (instead of Python).
 
 * DFLib has nowhere near the amount of features that pandas has. The goal
 is to add any currently missing functionality as it is requested by the users.
 
-* DFLib DataFrames are immutable. So each transformation creates a new
-copy (of course cloning the internal data matrix is avoided whenever
-possible).
+* DFLib DataFrames are immutable (this is important for your sanity!)
+So each transformation creates a new copy (of course cloning the internal
+data matrix is avoided whenever possible).
 
 * There is no "row index" (yet?) in DFLib. Only the "column index".
 
