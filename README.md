@@ -1,5 +1,5 @@
 [![Maven Central](https://img.shields.io/maven-central/v/com.nhl.yadf/yadf.svg)](https://maven-badges.herokuapp.com/maven-central/com.nhl.yadf/yadf/)
-[![Build Status](https://travis-ci.org/nhl/yadf.svg)](https://travis-ci.org/nhl/yadf)
+[![Build Status](https://travis-ci.org/nhl/yadf.svg?branch=master)](https://travis-ci.org/nhl/yadf)
 
 # YADF
 
