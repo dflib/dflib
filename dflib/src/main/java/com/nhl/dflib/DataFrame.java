@@ -14,6 +14,7 @@ import com.nhl.dflib.map.DataRowToValueMapper;
 import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.zip.Zipper;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -35,6 +36,32 @@ import static java.util.Arrays.asList;
  * </p>
  */
 public interface DataFrame extends Iterable<Object[]> {
+
+    /**
+     * Creates a DataFrame by folding provided array of objects into rows and columns.
+     */
+    static DataFrame fromSequence(Index columns, Object... sequence) {
+
+        int width = columns.size();
+        int rows = sequence.length / width;
+
+        List<Object[]> folded = new ArrayList<>(rows + 1);
+        for (int i = 0; i < rows; i++) {
+            Object[] row = new Object[width];
+            System.arraycopy(sequence, i * width, row, 0, width);
+            folded.add(row);
+        }
+
+        // copy partial last row
+        int leftover = sequence.length % width;
+        if (leftover > 0) {
+            Object[] row = new Object[width];
+            System.arraycopy(sequence, rows * width, row, 0, leftover);
+            folded.add(row);
+        }
+
+        return new MaterializedDataFrame(columns, folded);
+    }
 
     static DataFrame create(Index columns, Object[]... sources) {
         return new MaterializedDataFrame(columns, asList(sources));

@@ -7,6 +7,50 @@ import static java.util.Arrays.asList;
 public class DataFrameTest {
 
     @Test
+    public void testFromSequence0() {
+
+        Index i = Index.withNames("a", "b");
+        DataFrame df = DataFrame.fromSequence(i);
+
+        new DFAsserts(df, i).expectHeight(0);
+    }
+
+    @Test
+    public void testFromSequence1() {
+
+        Index i = Index.withNames("a", "b");
+        DataFrame df = DataFrame.fromSequence(i, 1, 2);
+
+        new DFAsserts(df, i)
+                .expectHeight(1)
+                .expectRow(0, 1, 2);
+    }
+
+    @Test
+    public void testFromSequence2() {
+
+        Index i = Index.withNames("a", "b");
+        DataFrame df = DataFrame.fromSequence(i, 1, 2, 3);
+
+        new DFAsserts(df, i)
+                .expectHeight(2)
+                .expectRow(0, 1, 2)
+                .expectRow(1, 3, null);
+    }
+
+    @Test
+    public void testFromSequence3() {
+
+        Index i = Index.withNames("a", "b");
+        DataFrame df = DataFrame.fromSequence(i, 1, 2, 3, 4);
+
+        new DFAsserts(df, i)
+                .expectHeight(2)
+                .expectRow(0, 1, 2)
+                .expectRow(1, 3, 4);
+    }
+
+    @Test
     public void testCreate() {
 
         Index i = Index.withNames("a");
