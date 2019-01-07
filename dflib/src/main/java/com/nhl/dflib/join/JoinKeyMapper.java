@@ -12,5 +12,23 @@ import com.nhl.dflib.Index;
 @FunctionalInterface
 public interface JoinKeyMapper<V> {
 
+    static JoinKeyMapper keyColumn(String column) {
+        return (c, r) -> c.get(r, column);
+    }
+
+    static JoinKeyMapper keyColumn(int column) {
+        return (c, r) -> c.get(r, column);
+    }
+
+    default JoinKeyMapper and(String column) {
+        JoinKeyMapper and = JoinKeyMapper.keyColumn(column);
+        return (c, r) -> new CombinationKey(map(c, r), and.map(c, r));
+    }
+
+    default JoinKeyMapper and(int column) {
+        JoinKeyMapper and = JoinKeyMapper.keyColumn(column);
+        return (c, r) -> new CombinationKey(map(c, r), and.map(c, r));
+    }
+
     V map(Index columns, Object[] row);
 }

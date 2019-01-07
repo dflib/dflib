@@ -19,12 +19,12 @@ public interface JoinPredicate {
         return (c, lr, rr) -> Objects.equals(c.getLeft(lr, leftColumn), c.getRight(rr, rightColumn));
     }
 
-    default JoinPredicate andOn(String leftColumn, String rightColumn) {
+    default JoinPredicate and(String leftColumn, String rightColumn) {
         JoinPredicate and = JoinPredicate.on(leftColumn, rightColumn);
         return (c, lr, rr) -> this.test(c, lr, rr) && and.test(c, lr, rr);
     }
 
-    default JoinPredicate andOn(int leftColumn, int rightColumn) {
+    default JoinPredicate and(int leftColumn, int rightColumn) {
         JoinPredicate and = JoinPredicate.on(leftColumn, rightColumn);
         return (c, lr, rr) -> this.test(c, lr, rr) && and.test(c, lr, rr);
     }

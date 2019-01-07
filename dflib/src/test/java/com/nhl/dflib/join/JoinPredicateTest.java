@@ -55,7 +55,7 @@ public class JoinPredicateTest {
     }
 
     @Test
-    public void testAndOn_ColumnNames() {
+    public void testAnd_ColumnNames() {
 
         Index i1 = Index.withNames("a", "b");
         DataFrame df1 = DataFrame.create(i1, asList(
@@ -68,7 +68,7 @@ public class JoinPredicateTest {
                 DataRow.row(2, "y"),
                 DataRow.row(3, "c")));
 
-        DataFrame df = df1.innerJoin(df2, JoinPredicate.on("a", "c").andOn("b", "d"));
+        DataFrame df = df1.innerJoin(df2, JoinPredicate.on("a", "c").and("b", "d"));
 
         new DFAsserts(df, "a", "b", "c", "d")
                 .assertLength(1)
@@ -76,7 +76,7 @@ public class JoinPredicateTest {
     }
 
     @Test
-    public void testAndOn_ColumnIndexes() {
+    public void testAnd_ColumnIndexes() {
 
         Index i1 = Index.withNames("a", "b");
         DataFrame df1 = DataFrame.create(i1, asList(
@@ -89,7 +89,7 @@ public class JoinPredicateTest {
                 DataRow.row(2, "y"),
                 DataRow.row(3, "c")));
 
-        DataFrame df = df1.innerJoin(df2, JoinPredicate.on(0, 0).andOn(1, 1));
+        DataFrame df = df1.innerJoin(df2, JoinPredicate.on(0, 0).and(1, 1));
 
         new DFAsserts(df, "a", "b", "c", "d")
                 .assertLength(1)
