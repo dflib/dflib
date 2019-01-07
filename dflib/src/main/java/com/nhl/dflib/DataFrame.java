@@ -63,19 +63,19 @@ public interface DataFrame extends Iterable<Object[]> {
         return new MaterializedDataFrame(columns, folded);
     }
 
-    static DataFrame create(Index columns, Object[]... sources) {
+    static DataFrame fromRows(Index columns, Object[]... sources) {
         return new MaterializedDataFrame(columns, asList(sources));
     }
 
-    static DataFrame create(Index columns, List<Object[]> sources) {
+    static DataFrame fromList(Index columns, List<Object[]> sources) {
         return new MaterializedDataFrame(columns, sources);
     }
 
-    static DataFrame create(Index columns, Iterable<Object[]> source) {
+    static DataFrame fromRows(Index columns, Iterable<Object[]> source) {
         return new SimpleDataFrame(columns, source);
     }
 
-    static <T> DataFrame create(Index columns, Iterable<T> source, Function<T, Object[]> toArrayMapper) {
+    static <T> DataFrame fromObjects(Index columns, Iterable<T> source, Function<T, Object[]> toArrayMapper) {
         return new SimpleDataFrame(columns, new TransformingIterable<>(source, toArrayMapper));
     }
 

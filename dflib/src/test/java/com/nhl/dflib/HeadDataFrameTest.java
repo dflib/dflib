@@ -99,12 +99,12 @@ public class HeadDataFrameTest {
     public void testZip_LeftIsShorter() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = DataFrame.create(i1, asList(
+        DataFrame df1 = DataFrame.fromList(i1, asList(
                 DataRow.row(1),
                 DataRow.row(2)));
 
         Index i2 = Index.withNames("b");
-        DataFrame df2 = DataFrame.create(i2, asList(
+        DataFrame df2 = DataFrame.fromList(i2, asList(
                 DataRow.row(10),
                 DataRow.row(20)));
 

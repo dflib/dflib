@@ -16,12 +16,12 @@ public class DataFrameJoinsTest {
     public void testInnerJoin_Inner() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.create(i1, asList(
+        DataFrame df1 = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")));
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.create(i2, asList(
+        DataFrame df2 = DataFrame.fromList(i2, asList(
                 DataRow.row(2, "a"),
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
@@ -38,12 +38,12 @@ public class DataFrameJoinsTest {
     public void testInnerJoin_NoMatches() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.create(i1, asList(
+        DataFrame df1 = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")));
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.create(i2, asList(
+        DataFrame df2 = DataFrame.fromList(i2, asList(
                 DataRow.row(2, "a"),
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
@@ -58,12 +58,12 @@ public class DataFrameJoinsTest {
     public void testInnerJoin_IndexOverlap() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.create(i1, asList(
+        DataFrame df1 = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")));
 
         Index i2 = Index.withNames("a", "b");
-        DataFrame df2 = DataFrame.create(i2, asList(
+        DataFrame df2 = DataFrame.fromList(i2, asList(
                 DataRow.row(2, "a"),
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
@@ -80,12 +80,12 @@ public class DataFrameJoinsTest {
     public void testJoin_Left() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.create(i1, asList(
+        DataFrame df1 = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")));
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.create(i2, asList(
+        DataFrame df2 = DataFrame.fromList(i2, asList(
                 DataRow.row(2, "a"),
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
@@ -103,12 +103,12 @@ public class DataFrameJoinsTest {
     public void testJoin_Right() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.create(i1, asList(
+        DataFrame df1 = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")));
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.create(i2, asList(
+        DataFrame df2 = DataFrame.fromList(i2, asList(
                 DataRow.row(2, "a"),
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
@@ -126,12 +126,12 @@ public class DataFrameJoinsTest {
     public void testJoin_Full() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.create(i1, asList(
+        DataFrame df1 = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")));
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.create(i2, asList(
+        DataFrame df2 = DataFrame.fromList(i2, asList(
                 DataRow.row(2, "a"),
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
@@ -154,12 +154,12 @@ public class DataFrameJoinsTest {
     public void testInnerJoin_Indexed() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.create(i1, asList(
+        DataFrame df1 = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")));
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.create(i2, asList(
+        DataFrame df2 = DataFrame.fromList(i2, asList(
                 DataRow.row("a", 2),
                 DataRow.row("b", 2),
                 DataRow.row("c", 3)));
@@ -176,12 +176,12 @@ public class DataFrameJoinsTest {
     public void testInnerJoin_Indexed_IndexOverlap() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.create(i1, asList(
+        DataFrame df1 = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")));
 
         Index i2 = Index.withNames("a", "b");
-        DataFrame df2 = DataFrame.create(i2, asList(
+        DataFrame df2 = DataFrame.fromList(i2, asList(
                 DataRow.row(2, "a"),
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
@@ -198,12 +198,12 @@ public class DataFrameJoinsTest {
     public void testJoin_LeftIndexed() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.create(i1, asList(
+        DataFrame df1 = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")));
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.create(i2, asList(
+        DataFrame df2 = DataFrame.fromList(i2, asList(
                 DataRow.row(2, "a"),
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
@@ -221,12 +221,12 @@ public class DataFrameJoinsTest {
     public void testJoin_RightIndexed() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.create(i1, asList(
+        DataFrame df1 = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")));
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.create(i2, asList(
+        DataFrame df2 = DataFrame.fromList(i2, asList(
                 DataRow.row(2, "a"),
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
@@ -244,12 +244,12 @@ public class DataFrameJoinsTest {
     public void testJoin_FullIndexed() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.create(i1, asList(
+        DataFrame df1 = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")));
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.create(i2, asList(
+        DataFrame df2 = DataFrame.fromList(i2, asList(
                 DataRow.row(2, "a"),
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));

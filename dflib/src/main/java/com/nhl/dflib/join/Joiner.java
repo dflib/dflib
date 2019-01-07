@@ -62,8 +62,8 @@ public class Joiner extends BaseJoiner {
         }
 
         return zipJoinSides(context.getJoinIndex(),
-                DataFrame.create(context.getLeftIndex(), lRows),
-                DataFrame.create(context.getRightIndex(), rRows));
+                DataFrame.fromList(context.getLeftIndex(), lRows),
+                DataFrame.fromList(context.getRightIndex(), rRows));
     }
 
     private DataFrame leftJoin(JoinContext context, DataFrame lf, DataFrame rf) {
@@ -91,8 +91,8 @@ public class Joiner extends BaseJoiner {
         }
 
         return zipJoinSides(context.getJoinIndex(),
-                DataFrame.create(context.getLeftIndex(), lRows),
-                DataFrame.create(context.getRightIndex(), rRows));
+                DataFrame.fromList(context.getLeftIndex(), lRows),
+                DataFrame.fromList(context.getRightIndex(), rRows));
     }
 
     private DataFrame rightJoin(JoinContext context, DataFrame lf, DataFrame rf) {
@@ -120,8 +120,8 @@ public class Joiner extends BaseJoiner {
         }
 
         return zipJoinSides(context.getJoinIndex(),
-                DataFrame.create(context.getLeftIndex(), lRows),
-                DataFrame.create(context.getRightIndex(), rRows));
+                DataFrame.fromList(context.getLeftIndex(), lRows),
+                DataFrame.fromList(context.getRightIndex(), rRows));
     }
 
     private DataFrame fullJoin(JoinContext context, DataFrame lf, DataFrame rf) {
@@ -160,8 +160,8 @@ public class Joiner extends BaseJoiner {
         }
 
         return zipJoinSides(context.getJoinIndex(),
-                DataFrame.create(context.getLeftIndex(), lRows),
-                DataFrame.create(context.getRightIndex(), rRows));
+                DataFrame.fromList(context.getLeftIndex(), lRows),
+                DataFrame.fromRows(context.getRightIndex(), rRows));
     }
 
     // "materialize" frame rows to avoid recalculation of each row on multiple iterations.

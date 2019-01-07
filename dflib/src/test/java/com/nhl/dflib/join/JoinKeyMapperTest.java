@@ -14,12 +14,12 @@ public class JoinKeyMapperTest {
     public void testKeyColumn_ColumnName() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.create(i1, asList(
+        DataFrame df1 = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")));
 
         Index i2 = Index.withNames("a", "b");
-        DataFrame df2 = DataFrame.create(i2, asList(
+        DataFrame df2 = DataFrame.fromList(i2, asList(
                 DataRow.row(2, "a"),
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
@@ -36,12 +36,12 @@ public class JoinKeyMapperTest {
     public void testKeyColumn_ColumnIndex() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.create(i1, asList(
+        DataFrame df1 = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")));
 
         Index i2 = Index.withNames("a", "b");
-        DataFrame df2 = DataFrame.create(i2, asList(
+        DataFrame df2 = DataFrame.fromList(i2, asList(
                 DataRow.row(2, "a"),
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
@@ -58,12 +58,12 @@ public class JoinKeyMapperTest {
     public void testAnd_ColumnName() {
 
         Index i1 = Index.withNames("a", "b", "c");
-        DataFrame df1 = DataFrame.create(i1, asList(
+        DataFrame df1 = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x", 5L),
                 DataRow.row(2, "y", 4L)));
 
         Index i2 = Index.withNames("x", "y", "z");
-        DataFrame df2 = DataFrame.create(i2, asList(
+        DataFrame df2 = DataFrame.fromList(i2, asList(
                 DataRow.row(2, "a", 6L),
                 DataRow.row(2, "y", 4L),
                 DataRow.row(3, "c", 5L)));
@@ -81,12 +81,12 @@ public class JoinKeyMapperTest {
     public void testAnd_ColumnIndex() {
 
         Index i1 = Index.withNames("a", "b", "c");
-        DataFrame df1 = DataFrame.create(i1, asList(
+        DataFrame df1 = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x", 5L),
                 DataRow.row(2, "y", 4L)));
 
         Index i2 = Index.withNames("x", "y", "z");
-        DataFrame df2 = DataFrame.create(i2, asList(
+        DataFrame df2 = DataFrame.fromList(i2, asList(
                 DataRow.row(2, "a", 6L),
                 DataRow.row(2, "y", 4L),
                 DataRow.row(3, "c", 5L)));

@@ -51,10 +51,10 @@ public class DataFrameTest {
     }
 
     @Test
-    public void testCreate() {
+    public void testFromList() {
 
         Index i = Index.withNames("a");
-        DataFrame df = DataFrame.create(i, asList(
+        DataFrame df = DataFrame.fromList(i, asList(
                 new Object[]{1},
                 new Object[]{2}));
 
@@ -67,7 +67,7 @@ public class DataFrameTest {
     @Test
     public void testAddColumn() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.create(i1, asList(
+        DataFrame df = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")))
                 .addColumn("c", (c, r) -> ((int) c.get(r, 0)) * 10);
@@ -81,7 +81,7 @@ public class DataFrameTest {
     @Test
     public void testAddColumn_Sparse() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.create(i1, asList(
+        DataFrame df = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")))
                 .selectColumns("a")
@@ -96,7 +96,7 @@ public class DataFrameTest {
     @Test
     public void testSelectColumns() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.create(i1, asList(
+        DataFrame df = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")))
                 .selectColumns("b");
@@ -110,7 +110,7 @@ public class DataFrameTest {
     @Test
     public void testSelectColumns_DuplicateColumn() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.create(i1, asList(
+        DataFrame df = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")))
                 .selectColumns("b", "b", "b");
@@ -124,7 +124,7 @@ public class DataFrameTest {
     @Test
     public void testDropColumns1() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.create(i1, asList(
+        DataFrame df = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")))
                 .dropColumns("a");
@@ -138,7 +138,7 @@ public class DataFrameTest {
     @Test
     public void testDropColumns2() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.create(i1, asList(
+        DataFrame df = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")))
                 .dropColumns("b");
@@ -152,7 +152,7 @@ public class DataFrameTest {
     @Test
     public void testDropColumns3() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.create(i1, asList(
+        DataFrame df = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")))
                 .dropColumns();
@@ -166,7 +166,7 @@ public class DataFrameTest {
     @Test
     public void testDropColumns4() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.create(i1, asList(
+        DataFrame df = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")))
                 .dropColumns("no_such_column");
@@ -180,7 +180,7 @@ public class DataFrameTest {
     @Test
     public void testMap_SameIndex() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.create(i1, asList(
+        DataFrame df = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")))
                 .map((c, r) -> c.mapColumn(r, "a", (cx, rx) -> ((int) cx.get(rx, "a")) * 10));
@@ -194,7 +194,7 @@ public class DataFrameTest {
     @Test
     public void testMap_SameIndex_Sparse() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.create(i1, asList(
+        DataFrame df = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")))
                 .dropColumns("a")
@@ -209,7 +209,7 @@ public class DataFrameTest {
     @Test
     public void testMapColumn_FromRow() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.create(i1, asList(
+        DataFrame df = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")))
                 .mapColumn("a", (c, r) -> ((int) c.get(r, 0)) * 10);
@@ -223,7 +223,7 @@ public class DataFrameTest {
     @Test
     public void testMapColumn_FromRow_Sparse() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.create(i1, asList(
+        DataFrame df = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")))
                 .selectColumns("b")
@@ -238,7 +238,7 @@ public class DataFrameTest {
     @Test
     public void testMapColumn_FromValue() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.create(i1, asList(
+        DataFrame df = DataFrame.fromList(i1, asList(
                 DataRow.row(1, "x"),
                 DataRow.row(2, "y")))
                 .mapColumn("a", v -> ((int) v) * 10);
@@ -253,7 +253,7 @@ public class DataFrameTest {
     public void testFilterColumn_Name() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df = DataFrame.create(i1,
+        DataFrame df = DataFrame.fromRows(i1,
                 DataRow.row(10),
                 DataRow.row(20)).filterColumn("a", (Integer v) -> v > 15);
 
@@ -266,7 +266,7 @@ public class DataFrameTest {
     public void testFilterColumn_Pos() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df = DataFrame.create(i1,
+        DataFrame df = DataFrame.fromRows(i1,
                 DataRow.row(10),
                 DataRow.row(20)).filterColumn(0, (Integer v) -> v > 15);
 
