@@ -102,18 +102,23 @@ public interface DataFrame extends Iterable<Object[]> {
         return map(expandedIndex, (c, r) -> index.addValues(c, r, columnValueProducers));
     }
 
+    default DataFrame renameColumns(String... columnNames) {
+        Index renamed = getColumns().rename(columnNames);
+        return new SimpleDataFrame(renamed, this);
+    }
+
     default DataFrame renameColumn(String oldName, String newName) {
         return renameColumns(Collections.singletonMap(oldName, newName));
     }
 
     default DataFrame renameColumns(Map<String, String> oldToNewNames) {
-        Index newColumns = getColumns().rename(oldToNewNames);
-        return new SimpleDataFrame(newColumns, this);
+        Index renamed = getColumns().rename(oldToNewNames);
+        return new SimpleDataFrame(renamed, this);
     }
 
     default DataFrame selectColumns(String... columnNames) {
-        Index sparse = getColumns().selectNames(columnNames);
-        return new SimpleDataFrame(sparse, this);
+        Index select = getColumns().selectNames(columnNames);
+        return new SimpleDataFrame(select, this);
     }
 
     default DataFrame dropColumns(String... columnNames) {

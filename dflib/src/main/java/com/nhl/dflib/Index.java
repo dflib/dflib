@@ -5,6 +5,7 @@ import com.nhl.dflib.map.MapContext;
 import com.nhl.dflib.zip.Zipper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -63,8 +64,8 @@ public abstract class Index implements Iterable<IndexPosition> {
     public Iterator<IndexPosition> iterator() {
         return new Iterator<IndexPosition>() {
 
-            private int counter = 0;
             private final int len = size();
+            private int counter = 0;
 
             @Override
             public boolean hasNext() {
@@ -85,6 +86,21 @@ public abstract class Index implements Iterable<IndexPosition> {
     public abstract Object[] compactCopy(Object[] row, Object[] to, int toOffset);
 
     public abstract Index rename(Map<String, String> oldToNewNames);
+
+    public Index rename(String... newNames) {
+
+        if (newNames.length != size()) {
+            throw new IllegalArgumentException("New columns length does not match existing index size: "
+                    + newNames.length + " vs " + size());
+        }
+
+        Map<String, String> nameMap = new HashMap<>((int) (newNames.length / 0.75));
+        for (int i = 0; i < newNames.length; i++) {
+            nameMap.put(positions[i].name(), newNames[i]);
+        }
+
+        return rename(nameMap);
+    }
 
     public abstract Index compactIndex();
 
