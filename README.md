@@ -18,11 +18,11 @@ in Python ([pandas](https://pandas.pydata.org/)), R,
 [Apache Spark](https://spark.apache.org/docs/latest/sql-programming-guide.html#datasets-and-dataframes), etc.
 But somehow there is no common lightweight DataFrame implementation
 for Java that can be created and executed in memory without special
-infrastructure.
+infrastructure. YADF project's goal is to feel this gap.
 
-YADF project's goal is to feel this gap. _Its primary use case is manipulating
-data sets that can either fully fit in the program memory, or can be cleanly split into
-batches before processing._
+_Its primary use case is manipulating data sets that can either fully
+fit in the app memory, or can be split into batches, with
+each batch individually processed in memory._
 
 YADF can do filtering and data alteration in both table dimensions, it
 supports grouping, joins and other forms of recombination of multiple
