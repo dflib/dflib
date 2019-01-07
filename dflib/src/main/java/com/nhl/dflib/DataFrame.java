@@ -114,6 +114,10 @@ public interface DataFrame extends Iterable<Object[]> {
         return new SimpleDataFrame(columns, source);
     }
 
+    /**
+     * Creates a DataFrame from an iterable over arbitrary objects. The last argument is a function that converts an
+     * object to a row (i.e. Object[]).
+     */
     static <T> DataFrame fromObjects(Index columns, Iterable<T> source, Function<T, Object[]> rowMapper) {
         return new SimpleDataFrame(columns, new TransformingIterable<>(source, rowMapper));
     }
