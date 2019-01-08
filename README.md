@@ -59,7 +59,7 @@ DataFrame df2 = df1
    
 // joins
 DataFrame df3 = DataFrame.fromSequence(columns, 2, "a", "b", 4, "c", "d")
-   .join(df2, JoinPredicate.on("a", "a"));
+   .innerJoin(df2, JoinPredicate.on("a", "a"));
 ```
 
 ## Difference with Pandas
