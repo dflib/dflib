@@ -4,9 +4,9 @@
 # DFLib
 
 DFLib ("DataFrame Library") is a simple Java implementation of a common
-DataFrame data structure. With DFLib you get essentially the same tools
-you may be used to in SQL (such as queries and joins), only you
-can use them in-memory and over dynamically defined data structures.
+DataFrame data structure. With DFLib you get essentially the same data 
+manipulation tools you may be used to in SQL (such as queries and joins), 
+only you can use them in-memory and over dynamically defined data structures.
 
 ## What is DataFrame
 
