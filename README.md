@@ -44,7 +44,7 @@ Include DFLib in a project:
 </dependency>
 ```
 
-Create a DataFrame and do some transformations:
+Create a DataFrame and do some common operations:
 
 ```java
 // creation
