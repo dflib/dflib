@@ -18,7 +18,7 @@ in Python ([pandas](https://pandas.pydata.org/)), R,
 [Apache Spark](https://spark.apache.org/docs/latest/sql-programming-guide.html#datasets-and-dataframes), etc.
 But somehow there is no common lightweight DataFrame implementation
 for Java that can be created and executed in memory without special
-infrastructure. DFLib project's goal is to feel this gap.
+infrastructure. DFLib project's goal is to fill this gap.
 
 _Its primary use case is manipulating data sets that can either fully
 fit in the app memory, or can be split into batches, with
