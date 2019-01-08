@@ -47,13 +47,19 @@ Include DFLib in a project:
 Create a DataFrame and do some transformations:
 
 ```java
+// creation
 Index columns = Index.withNames("a", "b", "c");
+DataFrame df1 = DataFrame.fromStream(columns, IntStream.range(1, 10000).boxed())
 
-DataFrame df = DataFrame.fromStream(columns, IntStream.range(1, 10000).boxed())
+// filtering, mapping
+DataFrame df2 = df1
    .filterColumn("a", (Integer v) -> v % 2 == 0)
-   .mapColumn("b", v -> v.toString().toLowerCase())
-   .map((context, row) -> context.target(row))  // now that we cloned the row, we can change it
-   .join(anotherDF, JoinPredicate.on("a", "x")); // join with some other DataFrame
+   .mapColumn("b", (Integer v) -> v * 5)
+   .map((context, row) -> context.target(row)); // now that we cloned the row, we can change it
+   
+// joins
+DataFrame df3 = DataFrame.fromSequence(columns, 2, "a", "b", 4, "c", "d")
+   .join(df2, JoinPredicate.on("a", "a"));
 ```
 
 ## Difference with Pandas
