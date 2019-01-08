@@ -1,7 +1,9 @@
 package com.nhl.dflib.map;
 
+import com.nhl.dflib.Index;
+
 @FunctionalInterface
 public interface DataRowToValueMapper<V> {
 
-    V map(MapContext c, Object[] row);
+    V map(Index c, Object[] row);
 }

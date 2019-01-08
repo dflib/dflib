@@ -1,7 +1,6 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.map.DataRowToValueMapper;
-import com.nhl.dflib.map.MapContext;
 import com.nhl.dflib.zip.Zipper;
 
 import java.util.ArrayList;
@@ -116,7 +115,7 @@ public abstract class Index implements Iterable<IndexPosition> {
         return Zipper.zipIndex(this, withNames(extraNames));
     }
 
-    public <VR> Object[] addValues(MapContext context, Object[] row, DataRowToValueMapper<VR>... valueProducers) {
+    public <VR> Object[] addValues(Object[] row, DataRowToValueMapper<VR>... valueProducers) {
 
         int oldWidth = size();
         int expansionWidth = valueProducers.length;
@@ -124,7 +123,7 @@ public abstract class Index implements Iterable<IndexPosition> {
         Object[] expandedRow = compactCopy(row, new Object[oldWidth + expansionWidth], 0);
 
         for (int i = 0; i < expansionWidth; i++) {
-            expandedRow[oldWidth + i] = valueProducers[i].map(context, row);
+            expandedRow[oldWidth + i] = valueProducers[i].map(this, row);
         }
 
         return expandedRow;

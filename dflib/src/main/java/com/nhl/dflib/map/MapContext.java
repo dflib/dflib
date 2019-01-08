@@ -69,7 +69,7 @@ public class MapContext {
         Object[] target = copyToTarget(sourceRow);
 
         // since target is a compact version of the source, we can use "sourcePos" index directly on it
-        target[sourcePos] = m.map(this, sourceRow);
+        target[sourcePos] = m.map(getSourceIndex(), sourceRow);
         return target;
     }
 
