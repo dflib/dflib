@@ -21,7 +21,9 @@ public class MultiColumnAggregator implements Aggregator {
             names[i] = aggregators[i].getIndexMapper().map(columns).name();
         }
 
-        return Index.withNames(names);
+
+        // 'selectNames' does name deduplication
+        return columns.selectNames(names);
     }
 
     @Override

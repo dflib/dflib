@@ -174,4 +174,46 @@ public class DataFrame_AggTest {
         assertArrayEquals(new Object[]{1., 5.}, aggregated);
     }
 
+    @Test
+    public void testAgg_First() {
+        Index i = Index.withNames("a", "b");
+        DataFrame df = DataFrame.fromSequence(i,
+                1, 100,
+                2, 5);
+
+        Object[] aggregated = df.agg(
+                Aggregator.first("a"),
+                Aggregator.first(1));
+
+        assertNotNull(aggregated);
+        assertArrayEquals(new Object[]{1, 100}, aggregated);
+    }
+
+    @Test
+    public void testAgg_First_Empty() {
+        Index i = Index.withNames("a", "b");
+        DataFrame df = DataFrame.fromSequence(i);
+
+        Object[] aggregated = df.agg(
+                Aggregator.first("a"),
+                Aggregator.first(1));
+
+        assertNotNull(aggregated);
+        assertArrayEquals(new Object[]{null, null}, aggregated);
+    }
+
+    @Test
+    public void testAgg_First_Nulls() {
+        Index i = Index.withNames("a", "b");
+        DataFrame df = DataFrame.fromSequence(i,
+                1, null,
+                null, 5);
+
+        Object[] aggregated = df.agg(
+                Aggregator.first("a"),
+                Aggregator.first(1));
+
+        assertNotNull(aggregated);
+        assertArrayEquals(new Object[]{1, 5}, aggregated);
+    }
 }

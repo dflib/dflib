@@ -20,6 +20,28 @@ public interface Aggregator {
                 : new MultiColumnAggregator(columnAggregators);
     }
 
+    /**
+     * Returns the first value in an aggregation range. Useful in extracting key columns during group by, as presumably
+     * all values in the range are the same.
+     *
+     * @param column
+     * @return a new ColumnAggregator
+     */
+    static ColumnAggregator first(String column) {
+        return of(column, Collectors.reducing(null, (l, r) -> l != null ? l : r));
+    }
+
+    /**
+     * Returns the first value in an aggregation range. Useful in extracting key columns during group by, as presumably
+     * all values in the range are the same.
+     *
+     * @param column
+     * @return a new ColumnAggregator
+     */
+    static ColumnAggregator first(int column) {
+        return of(column, Collectors.reducing(null, (l, r) -> l != null ? l : r));
+    }
+
     static ColumnAggregator count(String column) {
         return of(column, Collectors.counting());
     }

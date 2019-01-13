@@ -73,4 +73,24 @@ public class DataFrameGroupByTest {
                 .expectRow(1, 2L, "y")
                 .expectRow(2, 0L, "a");
     }
+
+    @Test
+    public void testGroupBy_Agg_MultipleAggregationsForKey() {
+        Index i = Index.withNames("a", "b");
+        DataFrame df1 = DataFrame.fromSequence(i,
+                1, "x",
+                2, "y",
+                1, "y",
+                0, "a",
+                1, "x");
+
+        DataFrame df = df1.groupBy("b")
+                .agg(Aggregator.first("b"), Aggregator.sum("a"), Aggregator.median("a"));
+
+        new DFAsserts(df, "b", "a", "a_")
+                .expectHeight(3)
+                .expectRow(0, "x", 2L, 1.)
+                .expectRow(1, "y", 3L, 1.5)
+                .expectRow(2, "a", 0L, 0.);
+    }
 }

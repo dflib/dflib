@@ -52,6 +52,7 @@ public abstract class Index implements Iterable<IndexPosition> {
     }
 
     public static Index withNames(String... names) {
+        // TODO: dedupe names like "selectNames" does?
         return new ContinuousIndex(continuousPositions(names));
     }
 
