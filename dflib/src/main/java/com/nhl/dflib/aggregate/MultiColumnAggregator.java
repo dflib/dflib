@@ -1,6 +1,7 @@
 package com.nhl.dflib.aggregate;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Index;
 
 import java.util.function.BiConsumer;
 
@@ -10,6 +11,17 @@ public class MultiColumnAggregator implements Aggregator {
 
     public MultiColumnAggregator(ColumnAggregator[] aggregators) {
         this.aggregators = aggregators;
+    }
+
+    @Override
+    public Index aggregateIndex(Index columns) {
+        String[] names = new String[aggregators.length];
+
+        for (int i = 0; i < aggregators.length; i++) {
+            names[i] = aggregators[i].getIndexMapper().map(columns).name();
+        }
+
+        return Index.withNames(names);
     }
 
     @Override

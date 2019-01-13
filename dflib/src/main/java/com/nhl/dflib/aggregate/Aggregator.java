@@ -1,7 +1,9 @@
 package com.nhl.dflib.aggregate;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Index;
 import com.nhl.dflib.map.DataRowToValueMapper;
+import com.nhl.dflib.map.IndexMapper;
 
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -10,7 +12,6 @@ import java.util.stream.Collectors;
  * Defines aggregation operation on a DataFrame. Provides methods for composing an aggregator from individual columns
  * aggregators.
  */
-@FunctionalInterface
 public interface Aggregator {
 
     static Aggregator forColumns(ColumnAggregator... columnAggregators) {
@@ -60,21 +61,29 @@ public interface Aggregator {
     }
 
     static ColumnAggregator concat(String column, String delimiter) {
-        return new ColumnAggregator(AggregatorFunctions.toString(column), Collectors.joining(delimiter));
+        return new ColumnAggregator(
+                IndexMapper.mapper(column),
+                AggregatorFunctions.toString(column),
+                Collectors.joining(delimiter));
     }
 
     static ColumnAggregator concat(int column, String delimiter) {
-        return new ColumnAggregator(AggregatorFunctions.toString(column), Collectors.joining(delimiter));
+        return new ColumnAggregator(
+                IndexMapper.mapper(column),
+                AggregatorFunctions.toString(column),
+                Collectors.joining(delimiter));
     }
 
     static ColumnAggregator concat(String column, String delimiter, String prefix, String suffix) {
         return new ColumnAggregator(
+                IndexMapper.mapper(column),
                 AggregatorFunctions.toString(column),
                 Collectors.joining(delimiter, prefix, suffix));
     }
 
     static ColumnAggregator concat(int column, String delimiter, String prefix, String suffix) {
         return new ColumnAggregator(
+                IndexMapper.mapper(column),
                 AggregatorFunctions.toString(column),
                 Collectors.joining(delimiter, prefix, suffix));
     }
@@ -96,12 +105,20 @@ public interface Aggregator {
     }
 
     static ColumnAggregator of(String column, Collector<?, ?, ?> columnAggregator) {
-        return new ColumnAggregator(DataRowToValueMapper.columnReader(column), columnAggregator);
+        return new ColumnAggregator(
+                IndexMapper.mapper(column),
+                DataRowToValueMapper.columnReader(column),
+                columnAggregator);
     }
 
     static ColumnAggregator of(int column, Collector<?, ?, ?> columnAggregator) {
-        return new ColumnAggregator(DataRowToValueMapper.columnReader(column), columnAggregator);
+        return new ColumnAggregator(
+                IndexMapper.mapper(column),
+                DataRowToValueMapper.columnReader(column),
+                columnAggregator);
     }
+
+    Index aggregateIndex(Index columns);
 
     Object[] aggregate(DataFrame df);
 }

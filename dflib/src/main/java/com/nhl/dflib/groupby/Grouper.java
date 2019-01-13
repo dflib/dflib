@@ -36,6 +36,6 @@ public class Grouper {
             e.setValue(DataFrame.fromRows(columns, (List<Object[]>) e.getValue()));
         }
 
-        return new GroupBy((Map<Object, DataFrame>) groups);
+        return new GroupBy(df.getColumns(), (Map<Object, DataFrame>) groups);
     }
 }

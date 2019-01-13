@@ -65,7 +65,7 @@ public class DataFrameGroupByTest {
                 0, "a",
                 1, "x");
 
-        DataFrame df = df1.groupBy("a").agg(i, Aggregator.sum("a"), Aggregator.concat("b", ";"));
+        DataFrame df = df1.groupBy("a").agg(Aggregator.sum("a"), Aggregator.concat("b", ";"));
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(3)

@@ -10,9 +10,11 @@ import java.util.Map;
 
 public class GroupBy {
 
+    private Index ungroupedColumns;
     private Map<Object, DataFrame> groups;
 
-    public GroupBy(Map<Object, DataFrame> groups) {
+    public GroupBy(Index ungroupedColumns, Map<Object, DataFrame> groups) {
+        this.ungroupedColumns = ungroupedColumns;
         this.groups = groups;
     }
 
@@ -28,6 +30,10 @@ public class GroupBy {
         return groups.get(key);
     }
 
+    public DataFrame agg(ColumnAggregator... aggregators) {
+        return agg(Aggregator.forColumns(aggregators));
+    }
+
     public DataFrame agg(Index index, ColumnAggregator... aggregators) {
 
         if (index.size() != aggregators.length) {
@@ -35,7 +41,14 @@ public class GroupBy {
                     + index.size() + " vs. " + aggregators.length);
         }
 
-        Aggregator aggregator = Aggregator.forColumns(aggregators);
+        return agg(index, Aggregator.forColumns(aggregators));
+    }
+
+    public DataFrame agg(Aggregator aggregator) {
+        return agg(aggregator.aggregateIndex(ungroupedColumns), aggregator);
+    }
+
+    public DataFrame agg(Index index, Aggregator aggregator) {
 
         List<Object[]> result = new ArrayList<>(groups.size());
         for (DataFrame df : groups.values()) {
