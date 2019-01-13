@@ -71,7 +71,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void testAgg_List() {
+    public void testAgg_list() {
         Index i = Index.withNames("a", "b");
         DataFrame df = DataFrame.fromSequence(i,
                 1, "x",
@@ -82,4 +82,96 @@ public class DataFrame_AggTest {
         assertNotNull(aggregated);
         assertArrayEquals(new Object[]{asList(1, 2, 1), asList("x", "x", "a")}, aggregated);
     }
+
+    @Test
+    public void testAgg_average() {
+        Index i = Index.withNames("a", "b");
+        DataFrame df = DataFrame.fromSequence(i,
+                1, 4L,
+                0, 55.5);
+
+        Object[] aggregated = df.agg(
+                Aggregator.average("a"),
+                Aggregator.average(1));
+
+        assertNotNull(aggregated);
+        assertArrayEquals(new Object[]{0.5, 29.75}, aggregated);
+    }
+
+    @Test
+    public void testAgg_median_odd() {
+        Index i = Index.withNames("a", "b");
+        DataFrame df = DataFrame.fromSequence(i,
+                1, 100,
+                0, 55.5,
+                4, 0);
+
+        Object[] aggregated = df.agg(
+                Aggregator.median("a"),
+                Aggregator.median(1));
+
+        assertNotNull(aggregated);
+        assertArrayEquals(new Object[]{1., 55.5}, aggregated);
+    }
+
+    @Test
+    public void testAgg_median_even() {
+        Index i = Index.withNames("a", "b");
+        DataFrame df = DataFrame.fromSequence(i,
+                1, 100,
+                0, 55.5,
+                4, 0,
+                3, 5);
+
+        Object[] aggregated = df.agg(
+                Aggregator.median("a"),
+                Aggregator.median(1));
+
+        assertNotNull(aggregated);
+        assertArrayEquals(new Object[]{2., 30.25}, aggregated);
+    }
+
+    @Test
+    public void testAgg_median_zero() {
+        Index i = Index.withNames("a", "b");
+        DataFrame df = DataFrame.fromSequence(i);
+
+        Object[] aggregated = df.agg(
+                Aggregator.median("a"),
+                Aggregator.median(1));
+
+        assertNotNull(aggregated);
+        assertArrayEquals(new Object[]{0., 0.}, aggregated);
+    }
+
+    @Test
+    public void testAgg_median_one() {
+        Index i = Index.withNames("a", "b");
+        DataFrame df = DataFrame.fromSequence(i, 1, 100);
+
+        Object[] aggregated = df.agg(
+                Aggregator.median("a"),
+                Aggregator.median(1));
+
+        assertNotNull(aggregated);
+        assertArrayEquals(new Object[]{1., 100.}, aggregated);
+    }
+
+    @Test
+    public void testAgg_median_nulls() {
+        Index i = Index.withNames("a", "b");
+        DataFrame df = DataFrame.fromSequence(i,
+                1, null,
+                0, 55.5,
+                4, 0,
+                null, 5);
+
+        Object[] aggregated = df.agg(
+                Aggregator.median("a"),
+                Aggregator.median(1));
+
+        assertNotNull(aggregated);
+        assertArrayEquals(new Object[]{1., 5.}, aggregated);
+    }
+
 }

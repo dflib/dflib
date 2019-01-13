@@ -27,6 +27,22 @@ public interface Aggregator {
         return of(column, Collectors.counting());
     }
 
+    static ColumnAggregator average(String column) {
+        return of(column, Collectors.averagingDouble((Number v) -> v.doubleValue()));
+    }
+
+    static ColumnAggregator average(int column) {
+        return of(column, Collectors.averagingDouble((Number v) -> v.doubleValue()));
+    }
+
+    static ColumnAggregator median(String column) {
+        return of(column, AggregatorFunctions.medianCollector());
+    }
+
+    static ColumnAggregator median(int column) {
+        return of(column, AggregatorFunctions.medianCollector());
+    }
+
     static ColumnAggregator sum(String column) {
         return of(column, Collectors.summingLong((Number v) -> v.longValue()));
     }
