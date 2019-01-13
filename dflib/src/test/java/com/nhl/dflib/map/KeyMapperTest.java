@@ -1,14 +1,15 @@
-package com.nhl.dflib.join;
+package com.nhl.dflib.map;
 
 import com.nhl.dflib.DFAsserts;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DataRow;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.map.KeyMapper;
 import org.junit.Test;
 
 import static java.util.Arrays.asList;
 
-public class JoinKeyMapperTest {
+public class KeyMapperTest {
 
     @Test
     public void testKeyColumn_ColumnName() {
@@ -24,7 +25,7 @@ public class JoinKeyMapperTest {
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
 
-        DataFrame df = df1.innerJoin(df2, JoinKeyMapper.keyColumn("a"), JoinKeyMapper.keyColumn("a"));
+        DataFrame df = df1.innerJoin(df2, KeyMapper.keyColumn("a"), KeyMapper.keyColumn("a"));
 
         new DFAsserts(df, "a", "b", "a_", "b_")
                 .expectHeight(2)
@@ -46,7 +47,7 @@ public class JoinKeyMapperTest {
                 DataRow.row(2, "b"),
                 DataRow.row(3, "c")));
 
-        DataFrame df = df1.innerJoin(df2, JoinKeyMapper.keyColumn(0), JoinKeyMapper.keyColumn(0));
+        DataFrame df = df1.innerJoin(df2, KeyMapper.keyColumn(0), KeyMapper.keyColumn(0));
 
         new DFAsserts(df, "a", "b", "a_", "b_")
                 .expectHeight(2)
@@ -69,8 +70,8 @@ public class JoinKeyMapperTest {
                 DataRow.row(3, "c", 5L)));
 
         DataFrame df = df1.innerJoin(df2,
-                JoinKeyMapper.keyColumn("a").and("b").and("c"),
-                JoinKeyMapper.keyColumn("x").and("y").and("z"));
+                KeyMapper.keyColumn("a").and("b").and("c"),
+                KeyMapper.keyColumn("x").and("y").and("z"));
 
         new DFAsserts(df, "a", "b", "c", "x", "y", "z")
                 .expectHeight(1)
@@ -92,8 +93,8 @@ public class JoinKeyMapperTest {
                 DataRow.row(3, "c", 5L)));
 
         DataFrame df = df1.innerJoin(df2,
-                JoinKeyMapper.keyColumn(0).and(1).and(2),
-                JoinKeyMapper.keyColumn(0).and(1).and(2));
+                KeyMapper.keyColumn(0).and(1).and(2),
+                KeyMapper.keyColumn(0).and(1).and(2));
 
         new DFAsserts(df, "a", "b", "c", "x", "y", "z")
                 .expectHeight(1)

@@ -4,8 +4,8 @@ import com.nhl.dflib.aggregate.Aggregator;
 import com.nhl.dflib.aggregate.ColumnAggregator;
 import com.nhl.dflib.filter.DataRowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
+import com.nhl.dflib.groupby.Grouper;
 import com.nhl.dflib.join.IndexedJoiner;
-import com.nhl.dflib.join.JoinKeyMapper;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinSemantics;
 import com.nhl.dflib.join.Joiner;
@@ -13,6 +13,7 @@ import com.nhl.dflib.map.DataRowCombiner;
 import com.nhl.dflib.map.DataRowConsumer;
 import com.nhl.dflib.map.DataRowMapper;
 import com.nhl.dflib.map.DataRowToValueMapper;
+import com.nhl.dflib.map.KeyMapper;
 import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.zip.Zipper;
 
@@ -278,17 +279,27 @@ public interface DataFrame extends Iterable<Object[]> {
 
     default <K> DataFrame innerJoin(
             DataFrame df,
-            JoinKeyMapper<K> leftKeyMapper,
-            JoinKeyMapper<K> rightKeyMapper) {
+            KeyMapper leftKeyMapper,
+            KeyMapper rightKeyMapper) {
         return join(df, leftKeyMapper, rightKeyMapper, JoinSemantics.inner);
     }
 
-    default <K> DataFrame join(
+    /**
+     * Calculates an "indexed" join. Join is performed by comparing left and right row "keys", which is generally a faster
+     * version to join rows compared to using {@link JoinPredicate}.
+     *
+     * @param df
+     * @param leftKeyMapper
+     * @param rightKeyMapper
+     * @param semantics
+     * @return a DataFrame that is a result of a join between this and another DataFrame.
+     */
+    default DataFrame join(
             DataFrame df,
-            JoinKeyMapper<K> leftKeyMapper,
-            JoinKeyMapper<K> rightKeyMapper,
+            KeyMapper leftKeyMapper,
+            KeyMapper rightKeyMapper,
             JoinSemantics semantics) {
-        IndexedJoiner<K> joiner = new IndexedJoiner<>(leftKeyMapper, rightKeyMapper, semantics);
+        IndexedJoiner joiner = new IndexedJoiner(leftKeyMapper, rightKeyMapper, semantics);
         Index joinedIndex = joiner.joinIndex(getColumns(), df.getColumns());
         return joiner.joinRows(joinedIndex, this, df);
     }
@@ -299,6 +310,24 @@ public interface DataFrame extends Iterable<Object[]> {
 
     default Object[] agg(ColumnAggregator... aggregators) {
         return Aggregator.forColumns(aggregators).aggregate(this);
+    }
+
+    default GroupBy groupBy(String... columns) {
+
+        if (columns.length == 0) {
+            throw new IllegalArgumentException("No columns for 'groupBy' specified");
+        }
+
+        KeyMapper mapper = KeyMapper.keyColumn(columns[0]);
+        for (int i = 1; i < columns.length; i++) {
+            mapper = mapper.and(columns[i]);
+        }
+
+        return groupBy(mapper);
+    }
+
+    default GroupBy groupBy(KeyMapper by) {
+        return new Grouper(by).group(this);
     }
 
     @Override

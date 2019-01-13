@@ -2,6 +2,7 @@ package com.nhl.dflib.join;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.map.KeyMapper;
 import com.nhl.dflib.zip.Zipper;
 
 import java.util.ArrayList;
@@ -15,15 +16,15 @@ import java.util.Set;
  * A DataFrame joiner based on a pair of functions that can calculate comparable keys for the left and right row.
  * Should theoretically have O(N + M) performance.
  */
-public class IndexedJoiner<K> extends BaseJoiner {
+public class IndexedJoiner extends BaseJoiner {
 
-    private JoinKeyMapper<K> leftKeyMapper;
-    private JoinKeyMapper<K> rightKeyMapper;
+    private KeyMapper leftKeyMapper;
+    private KeyMapper rightKeyMapper;
     private JoinSemantics semantics;
 
     public IndexedJoiner(
-            JoinKeyMapper<K> leftKeyMapper,
-            JoinKeyMapper<K> rightKeyMapper,
+            KeyMapper leftKeyMapper,
+            KeyMapper rightKeyMapper,
             JoinSemantics semantics) {
 
         this.leftKeyMapper = leftKeyMapper;
@@ -57,11 +58,11 @@ public class IndexedJoiner<K> extends BaseJoiner {
 
         Index lColumns = lf.getColumns();
 
-        Map<K, List<Object[]>> rightIndex = groupByKey(rightKeyMapper, rf);
+        Map<Object, List<Object[]>> rightIndex = groupByKey(rightKeyMapper, rf);
 
         for (Object[] lr : lf) {
 
-            K lKey = leftKeyMapper.map(lColumns, lr);
+            Object lKey = leftKeyMapper.map(lColumns, lr);
             List<Object[]> rightMatches = rightIndex.get(lKey);
             if (rightMatches != null) {
                 for (Object[] rr : rightMatches) {
@@ -83,11 +84,11 @@ public class IndexedJoiner<K> extends BaseJoiner {
 
         Index lColumns = lf.getColumns();
 
-        Map<K, List<Object[]>> rightIndex = groupByKey(rightKeyMapper, rf);
+        Map<Object, List<Object[]>> rightIndex = groupByKey(rightKeyMapper, rf);
 
         for (Object[] lr : lf) {
 
-            K lKey = leftKeyMapper.map(lColumns, lr);
+            Object lKey = leftKeyMapper.map(lColumns, lr);
             List<Object[]> rightMatches = rightIndex.get(lKey);
 
             if (rightMatches != null) {
@@ -113,11 +114,11 @@ public class IndexedJoiner<K> extends BaseJoiner {
 
         Index rColumns = rf.getColumns();
 
-        Map<K, List<Object[]>> leftIndex = groupByKey(leftKeyMapper, lf);
+        Map<Object, List<Object[]>> leftIndex = groupByKey(leftKeyMapper, lf);
 
         for (Object[] rr : rf) {
 
-            K rKey = rightKeyMapper.map(rColumns, rr);
+            Object rKey = rightKeyMapper.map(rColumns, rr);
             List<Object[]> leftMatches = leftIndex.get(rKey);
 
             if (leftMatches != null) {
@@ -143,12 +144,12 @@ public class IndexedJoiner<K> extends BaseJoiner {
 
         Index lColumns = lf.getColumns();
 
-        Map<K, List<Object[]>> rightIndex = groupByKey(rightKeyMapper, rf);
+        Map<Object, List<Object[]>> rightIndex = groupByKey(rightKeyMapper, rf);
         Set<Object[]> seenRights = new LinkedHashSet<>();
 
         for (Object[] lr : lf) {
 
-            K lKey = leftKeyMapper.map(lColumns, lr);
+            Object lKey = leftKeyMapper.map(lColumns, lr);
             List<Object[]> rightMatches = rightIndex.get(lKey);
 
             if (rightMatches != null) {
@@ -178,14 +179,17 @@ public class IndexedJoiner<K> extends BaseJoiner {
                 DataFrame.fromRows(rf.getColumns(), rRows));
     }
 
-    private Map<K, List<Object[]>> groupByKey(JoinKeyMapper<K> keyMapper, DataFrame df) {
+    // TODO: this is the same exact logic as in Grouper, only without wrapping the Map in a DataFrame.. Alos it uses
+    //  HashMap instead of LinkedHashMap which is somewhat faster for "get". Is it worth
+    //  reusing the Grouper here vs. small overhead it introduces?
+    private Map<Object, List<Object[]>> groupByKey(KeyMapper keyMapper, DataFrame df) {
 
         Index columns = df.getColumns();
 
-        Map<K, List<Object[]>> index = new HashMap<>();
+        Map<Object, List<Object[]>> index = new HashMap<>();
 
         for (Object[] r : df) {
-            K key = keyMapper.map(columns, r);
+            Object key = keyMapper.map(columns, r);
             index.computeIfAbsent(key, k -> new ArrayList<>()).add(r);
         }
 

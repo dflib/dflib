@@ -1,10 +1,10 @@
-package com.nhl.dflib.join;
+package com.nhl.dflib.map;
 
 import java.util.Objects;
 
 /**
- * An opaque object used as a row comparision key in the indexed joins. The key made out of two components that are
- * compared positionally with another CombinationKey.
+ * An opaque object used as a comparision key for multi-column row comparisons. The key is made out of two components
+ * that are compared positionally with another CombinationKey.
  */
 public class CombinationKey {
 

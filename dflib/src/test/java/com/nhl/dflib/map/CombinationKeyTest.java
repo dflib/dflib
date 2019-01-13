@@ -1,5 +1,6 @@
-package com.nhl.dflib.join;
+package com.nhl.dflib.map;
 
+import com.nhl.dflib.map.CombinationKey;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
