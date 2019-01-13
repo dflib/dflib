@@ -18,7 +18,11 @@ public class DataFrame_AggTest {
                 2, "y", "a", 2.5,
                 0, "a", "z", 0.001);
 
-        Object[] aggregated = df.agg(Aggregator.sum("a").andCount(2).andSumDouble("d"));
+        Object[] aggregated = df.agg(
+                Aggregator.sum("a"),
+                Aggregator.count(2),
+                Aggregator.sumDouble("d"));
+
         assertNotNull(aggregated);
         assertArrayEquals(new Object[]{3L, 3L, 3.501}, aggregated);
     }
@@ -30,7 +34,10 @@ public class DataFrame_AggTest {
                 1, "x",
                 0, "a");
 
-        Object[] aggregated = df.agg(Aggregator.count("a").andCount("b"));
+        Object[] aggregated = df.agg(
+                Aggregator.count("a"),
+                Aggregator.count(1));
+
         assertNotNull(aggregated);
         assertArrayEquals(new Object[]{2L, 2L}, aggregated);
     }
@@ -42,7 +49,10 @@ public class DataFrame_AggTest {
                 1, "x",
                 0, "a");
 
-        Object[] aggregated = df.agg(Aggregator.concat("a", "_").andConcat(1, " ", "[", "]"));
+        Object[] aggregated = df.agg(
+                Aggregator.concat("a", "_"),
+                Aggregator.concat(1, " ", "[", "]"));
+
         assertNotNull(aggregated);
         assertArrayEquals(new Object[]{"1_0", "[x a]"}, aggregated);
     }
@@ -55,7 +65,7 @@ public class DataFrame_AggTest {
                 2, "x",
                 1, "a");
 
-        Object[] aggregated = df.agg(Aggregator.set("a").andSet(1));
+        Object[] aggregated = df.agg(Aggregator.set("a"), Aggregator.set(1));
         assertNotNull(aggregated);
         assertArrayEquals(new Object[]{new HashSet<>(asList(1, 2)), new HashSet<>(asList("x", "a"))}, aggregated);
     }
@@ -68,7 +78,7 @@ public class DataFrame_AggTest {
                 2, "x",
                 1, "a");
 
-        Object[] aggregated = df.agg(Aggregator.list("a").andList(1));
+        Object[] aggregated = df.agg(Aggregator.list("a"), Aggregator.list(1));
         assertNotNull(aggregated);
         assertArrayEquals(new Object[]{asList(1, 2, 1), asList("x", "x", "a")}, aggregated);
     }

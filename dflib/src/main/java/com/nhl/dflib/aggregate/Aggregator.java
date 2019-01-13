@@ -10,141 +10,82 @@ import java.util.stream.Collectors;
  * Defines aggregation operation on a DataFrame. Provides methods for composing an aggregator from individual columns
  * aggregators.
  */
+@FunctionalInterface
 public interface Aggregator {
 
-    static Aggregator count(String column) {
+    static Aggregator forColumns(ColumnAggregator... columnAggregators) {
+        return columnAggregators.length == 1
+                ? columnAggregators[0]
+                : new MultiColumnAggregator(columnAggregators);
+    }
+
+    static ColumnAggregator count(String column) {
         return of(column, Collectors.counting());
     }
 
-    static Aggregator count(int column) {
+    static ColumnAggregator count(int column) {
         return of(column, Collectors.counting());
     }
 
-    static Aggregator sum(String column) {
+    static ColumnAggregator sum(String column) {
         return of(column, Collectors.summingLong((Number v) -> v.longValue()));
     }
 
-    static Aggregator sum(int column) {
+    static ColumnAggregator sum(int column) {
         return of(column, Collectors.summingLong((Number v) -> v.longValue()));
     }
 
-    static Aggregator sumDouble(String column) {
+    static ColumnAggregator sumDouble(String column) {
         return of(column, Collectors.summingDouble((Number v) -> v.doubleValue()));
     }
 
-    static Aggregator sumDouble(int column) {
+    static ColumnAggregator sumDouble(int column) {
         return of(column, Collectors.summingDouble((Number v) -> v.doubleValue()));
     }
 
-    static Aggregator concat(String column, String delimiter) {
-        return new SingleColumnAggregator(AggregatorFunctions.toString(column), Collectors.joining(delimiter));
+    static ColumnAggregator concat(String column, String delimiter) {
+        return new ColumnAggregator(AggregatorFunctions.toString(column), Collectors.joining(delimiter));
     }
 
-    static Aggregator concat(int column, String delimiter) {
-        return new SingleColumnAggregator(AggregatorFunctions.toString(column), Collectors.joining(delimiter));
+    static ColumnAggregator concat(int column, String delimiter) {
+        return new ColumnAggregator(AggregatorFunctions.toString(column), Collectors.joining(delimiter));
     }
 
-    static Aggregator concat(String column, String delimiter, String prefix, String suffix) {
-        return new SingleColumnAggregator(
+    static ColumnAggregator concat(String column, String delimiter, String prefix, String suffix) {
+        return new ColumnAggregator(
                 AggregatorFunctions.toString(column),
                 Collectors.joining(delimiter, prefix, suffix));
     }
 
-    static Aggregator concat(int column, String delimiter, String prefix, String suffix) {
-        return new SingleColumnAggregator(
+    static ColumnAggregator concat(int column, String delimiter, String prefix, String suffix) {
+        return new ColumnAggregator(
                 AggregatorFunctions.toString(column),
                 Collectors.joining(delimiter, prefix, suffix));
     }
 
-    static Aggregator list(String column) {
+    static ColumnAggregator list(String column) {
         return of(column, Collectors.toList());
     }
 
-    static Aggregator list(int column) {
+    static ColumnAggregator list(int column) {
         return of(column, Collectors.toList());
     }
 
-    static Aggregator set(String column) {
+    static ColumnAggregator set(String column) {
         return of(column, Collectors.toSet());
     }
 
-    static Aggregator set(int column) {
+    static ColumnAggregator set(int column) {
         return of(column, Collectors.toSet());
     }
 
-    static Aggregator of(String column, Collector<?, ?, ?> columnAggregator) {
-        return new SingleColumnAggregator(DataRowToValueMapper.columnReader(column), columnAggregator);
+    static ColumnAggregator of(String column, Collector<?, ?, ?> columnAggregator) {
+        return new ColumnAggregator(DataRowToValueMapper.columnReader(column), columnAggregator);
     }
 
-    static Aggregator of(int column, Collector<?, ?, ?> columnAggregator) {
-        return new SingleColumnAggregator(DataRowToValueMapper.columnReader(column), columnAggregator);
+    static ColumnAggregator of(int column, Collector<?, ?, ?> columnAggregator) {
+        return new ColumnAggregator(DataRowToValueMapper.columnReader(column), columnAggregator);
     }
-
-    default Aggregator and(String column, Collector<?, ?, ?> columnAggregator) {
-        return and(DataRowToValueMapper.columnReader(column), columnAggregator);
-    }
-
-    default Aggregator and(int column, Collector<?, ?, ?> columnAggregator) {
-        return and(DataRowToValueMapper.columnReader(column), columnAggregator);
-    }
-
-    default Aggregator andCount(String column) {
-        return and(DataRowToValueMapper.columnReader(column), Collectors.counting());
-    }
-
-    default Aggregator andCount(int column) {
-        return and(DataRowToValueMapper.columnReader(column), Collectors.counting());
-    }
-
-    default Aggregator andSum(String column) {
-        return and(DataRowToValueMapper.columnReader(column), Collectors.summingLong((Number v) -> v.longValue()));
-    }
-
-    default Aggregator andSum(int column) {
-        return and(DataRowToValueMapper.columnReader(column), Collectors.summingLong((Number v) -> v.longValue()));
-    }
-
-    default Aggregator andSumDouble(String column) {
-        return and(DataRowToValueMapper.columnReader(column), Collectors.summingDouble((Number v) -> v.doubleValue()));
-    }
-
-    default Aggregator andSumDouble(int column) {
-        return and(DataRowToValueMapper.columnReader(column), Collectors.summingDouble((Number v) -> v.doubleValue()));
-    }
-
-    default Aggregator andConcat(String column, String delimiter) {
-        return and(AggregatorFunctions.toString(column), Collectors.joining(delimiter));
-    }
-
-    default Aggregator andConcat(int column, String delimiter) {
-        return and(AggregatorFunctions.toString(column), Collectors.joining(delimiter));
-    }
-
-    default Aggregator andConcat(String column, String delimiter, String prefix, String suffix) {
-        return and(AggregatorFunctions.toString(column), Collectors.joining(delimiter, prefix, suffix));
-    }
-
-    default Aggregator andConcat(int column, String delimiter, String prefix, String suffix) {
-        return and(AggregatorFunctions.toString(column), Collectors.joining(delimiter, prefix, suffix));
-    }
-
-    default Aggregator andList(String column) {
-        return and(DataRowToValueMapper.columnReader(column), Collectors.toList());
-    }
-
-    default Aggregator andList(int column) {
-        return and(DataRowToValueMapper.columnReader(column), Collectors.toList());
-    }
-
-    default Aggregator andSet(String column) {
-        return and(DataRowToValueMapper.columnReader(column), Collectors.toSet());
-    }
-
-    default Aggregator andSet(int column) {
-        return and(DataRowToValueMapper.columnReader(column), Collectors.toSet());
-    }
-
-    Aggregator and(DataRowToValueMapper columnReader, Collector<?, ?, ?> columnAggregator);
 
     Object[] aggregate(DataFrame df);
 }

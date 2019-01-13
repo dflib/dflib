@@ -1,6 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.Aggregator;
+import com.nhl.dflib.aggregate.ColumnAggregator;
 import com.nhl.dflib.filter.DataRowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.join.IndexedJoiner;
@@ -294,6 +295,10 @@ public interface DataFrame extends Iterable<Object[]> {
 
     default Object[] agg(Aggregator aggregator) {
         return aggregator.aggregate(this);
+    }
+
+    default Object[] agg(ColumnAggregator... aggregators) {
+        return Aggregator.forColumns(aggregators).aggregate(this);
     }
 
     @Override
