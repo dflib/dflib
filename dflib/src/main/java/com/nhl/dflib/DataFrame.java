@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.aggregate.Aggregator;
 import com.nhl.dflib.filter.DataRowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.join.IndexedJoiner;
@@ -289,6 +290,10 @@ public interface DataFrame extends Iterable<Object[]> {
         IndexedJoiner<K> joiner = new IndexedJoiner<>(leftKeyMapper, rightKeyMapper, semantics);
         Index joinedIndex = joiner.joinIndex(getColumns(), df.getColumns());
         return joiner.joinRows(joinedIndex, this, df);
+    }
+
+    default Object[] agg(Aggregator aggregator) {
+        return aggregator.aggregate(this);
     }
 
     @Override
