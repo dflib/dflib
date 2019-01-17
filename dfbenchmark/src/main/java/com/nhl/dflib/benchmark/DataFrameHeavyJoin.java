@@ -5,8 +5,8 @@ import java.util.stream.StreamSupport;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinSemantics;
-import com.nhl.dflib.map.KeyMapper;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -24,9 +24,9 @@ import org.openjdk.jmh.annotations.Warmup;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(2)
 @State(Scope.Thread)
-public class DataFrameMerge {
+public class DataFrameHeavyJoin {
 
-    private static final int DATASET_SIZE = 1_000_000;
+    private static final int DATASET_SIZE = 5_000;
 
     private DataFrame df1;
     private DataFrame df2;
@@ -45,41 +45,30 @@ public class DataFrameMerge {
     }
 
     @Benchmark
-    public Object indexJoinLeft() {
+    public Object leftJoin() {
         return df1
-                .join(df2, KeyMapper.keyColumn("id"), KeyMapper.keyColumn("rev_id"), JoinSemantics.left)
-                .materialize()
-                .iterator();
+                .join(df2, JoinPredicate.on("rev_id", "id"), JoinSemantics.left)
+                .materialize().iterator();
     }
 
     @Benchmark
-    public Object indexJoinRight() {
+    public Object rightJoin() {
         return df1
-                .join(df2, KeyMapper.keyColumn("id"), KeyMapper.keyColumn("rev_id"), JoinSemantics.right)
-                .materialize()
-                .iterator();
+                .join(df2, JoinPredicate.on("rev_id", "id"), JoinSemantics.right)
+                .materialize().iterator();
     }
 
     @Benchmark
-    public Object indexJoinInner() {
+    public Object innerJoin() {
         return df1
-                .join(df2, KeyMapper.keyColumn("id"), KeyMapper.keyColumn("rev_id"), JoinSemantics.inner)
-                .materialize()
-                .iterator();
+                .join(df2, JoinPredicate.on("rev_id", "id"), JoinSemantics.inner)
+                .materialize().iterator();
     }
 
     @Benchmark
-    public Object indexJoinFull() {
+    public Object fullJoin() {
         return df1
-                .join(df2, KeyMapper.keyColumn("id"), KeyMapper.keyColumn("rev_id"), JoinSemantics.full)
-                .materialize()
-                .iterator();
-    }
-
-    @Benchmark
-    public Object zip() {
-        return df1
-                .zip(df2)
+                .join(df2, JoinPredicate.on("rev_id", "id"), JoinSemantics.inner)
                 .materialize().iterator();
     }
 
