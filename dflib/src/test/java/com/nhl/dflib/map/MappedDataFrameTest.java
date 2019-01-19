@@ -1,11 +1,14 @@
-package com.nhl.dflib;
+package com.nhl.dflib.map;
 
-import com.nhl.dflib.map.DataRowMapper;
+import com.nhl.dflib.DFAsserts;
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.DataRow;
+import com.nhl.dflib.Index;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class TransformingDataFrameTest {
+public class MappedDataFrameTest {
 
     private static final DataRowMapper SELF_MAPPER = (c, r) -> r;
 
@@ -14,7 +17,7 @@ public class TransformingDataFrameTest {
 
         Index i = Index.withNames("a", "b");
 
-        TransformingDataFrame df = new TransformingDataFrame(
+        MappedDataFrame df = new MappedDataFrame(
                 i,
                 DataFrame.fromRows(i, DataRow.row("one", 1), DataRow.row("two", 2)),
                 SELF_MAPPER);
@@ -30,7 +33,7 @@ public class TransformingDataFrameTest {
 
         Index columns = Index.withNames("a", "b");
 
-        DataFrame df = new TransformingDataFrame(
+        DataFrame df = new MappedDataFrame(
                 columns,
                 DataFrame.fromRows(columns, DataRow.row("one", 1), DataRow.row("two", 2), DataRow.row("three", 3)),
                 SELF_MAPPER).head(2);
@@ -45,7 +48,7 @@ public class TransformingDataFrameTest {
     public void testRenameColumn() {
         Index i = Index.withNames("a", "b");
 
-        DataFrame df = new TransformingDataFrame(
+        DataFrame df = new MappedDataFrame(
                 i,
                 DataFrame.fromRows(i, DataRow.row("one", 1), DataRow.row("two", 2)),
                 SELF_MAPPER).renameColumn("b", "c");
@@ -61,7 +64,7 @@ public class TransformingDataFrameTest {
 
         Index i = Index.withNames("a", "b");
 
-        DataFrame df = new TransformingDataFrame(
+        DataFrame df = new MappedDataFrame(
                 i,
                 DataFrame.fromRows(i, DataRow.row("one", 1), DataRow.row("two", 2)),
                 SELF_MAPPER).mapColumn("b", (c, r) -> c.get(r, 1).toString());
@@ -77,7 +80,7 @@ public class TransformingDataFrameTest {
 
         Index i = Index.withNames("a", "b");
 
-        DataFrame df = new TransformingDataFrame(
+        DataFrame df = new MappedDataFrame(
                 i,
                 DataFrame.fromRows(i, DataRow.row("one", 1), DataRow.row("two", 2)),
                 SELF_MAPPER)
@@ -95,7 +98,7 @@ public class TransformingDataFrameTest {
         Index i = Index.withNames("a", "b");
         Index i1 = Index.withNames("c", "d", "e");
 
-        DataFrame df = new TransformingDataFrame(
+        DataFrame df = new MappedDataFrame(
                 i,
                 DataFrame.fromRows(i, DataRow.row("one", 1), DataRow.row("two", 2)),
                 SELF_MAPPER)
@@ -117,7 +120,7 @@ public class TransformingDataFrameTest {
         Index i1 = Index.withNames("c", "d", "e");
         Index i2 = Index.withNames("f", "g");
 
-        DataFrame df = new TransformingDataFrame(
+        DataFrame df = new MappedDataFrame(
                 i,
                 DataFrame.fromRows(i, DataRow.row("one", 1), DataRow.row("two", 2)),
                 SELF_MAPPER)
@@ -141,7 +144,7 @@ public class TransformingDataFrameTest {
         Index i = Index.withNames("a", "b");
         Index i1 = Index.withNames("c", "d", "e");
 
-        DataFrame df = new TransformingDataFrame(i, DataFrame.fromRows(i), SELF_MAPPER)
+        DataFrame df = new MappedDataFrame(i, DataFrame.fromRows(i), SELF_MAPPER)
                 .map(i1, (c, r) -> c.target(r[0], ((int) r[1]) * 10, r[1]));
 
         assertSame(i1, df.getColumns());
@@ -152,25 +155,25 @@ public class TransformingDataFrameTest {
     @Test
     public void testToString() {
         Index i = Index.withNames("a", "b");
-        DataFrame df = new TransformingDataFrame(i, DataFrame.fromRows(i,
+        DataFrame df = new MappedDataFrame(i, DataFrame.fromRows(i,
                 DataRow.row("one", 1),
                 DataRow.row("two", 2),
                 DataRow.row("three", 3),
                 DataRow.row("four", 4)), SELF_MAPPER);
 
-        assertEquals("TransformingDataFrame [{a:one,b:1},{a:two,b:2},{a:three,b:3},...]", df.toString());
+        assertEquals("MappedDataFrame [{a:one,b:1},{a:two,b:2},{a:three,b:3},...]", df.toString());
     }
 
     @Test
     public void testZip() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = new TransformingDataFrame(i1, DataFrame.fromRows(i1,
+        DataFrame df1 = new MappedDataFrame(i1, DataFrame.fromRows(i1,
                 DataRow.row(1),
                 DataRow.row(2)), SELF_MAPPER);
 
         Index i2 = Index.withNames("b");
-        DataFrame df2 = new TransformingDataFrame(i2, DataFrame.fromRows(i2,
+        DataFrame df2 = new MappedDataFrame(i2, DataFrame.fromRows(i2,
                 DataRow.row(10),
                 DataRow.row(20)), SELF_MAPPER);
 
@@ -185,7 +188,7 @@ public class TransformingDataFrameTest {
     public void testZip_Self() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = new TransformingDataFrame(i1, DataFrame.fromRows(i1,
+        DataFrame df1 = new MappedDataFrame(i1, DataFrame.fromRows(i1,
                 DataRow.row(1),
                 DataRow.row(2)), SELF_MAPPER);
 
@@ -201,10 +204,10 @@ public class TransformingDataFrameTest {
     public void testZip_LeftIsShorter() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = new TransformingDataFrame(i1, DataFrame.fromRows(i1, DataRow.row(2)), SELF_MAPPER);
+        DataFrame df1 = new MappedDataFrame(i1, DataFrame.fromRows(i1, DataRow.row(2)), SELF_MAPPER);
 
         Index i2 = Index.withNames("b");
-        DataFrame df2 = new TransformingDataFrame(i2, DataFrame.fromRows(i2,
+        DataFrame df2 = new MappedDataFrame(i2, DataFrame.fromRows(i2,
                 DataRow.row(10),
                 DataRow.row(20)), SELF_MAPPER);
 
@@ -218,11 +221,11 @@ public class TransformingDataFrameTest {
     public void testZip_RightIsShorter() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = new TransformingDataFrame(i1, DataFrame.fromRows(i1,
+        DataFrame df1 = new MappedDataFrame(i1, DataFrame.fromRows(i1,
                 DataRow.row(2)), SELF_MAPPER);
 
         Index i2 = Index.withNames("b");
-        DataFrame df2 = new TransformingDataFrame(i2, DataFrame.fromRows(i2,
+        DataFrame df2 = new MappedDataFrame(i2, DataFrame.fromRows(i2,
                 DataRow.row(10),
                 DataRow.row(20)), SELF_MAPPER);
 
@@ -236,7 +239,7 @@ public class TransformingDataFrameTest {
     public void testFilter() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = new TransformingDataFrame(i1, DataFrame.fromRows(i1,
+        DataFrame df1 = new MappedDataFrame(i1, DataFrame.fromRows(i1,
                 DataRow.row(10),
                 DataRow.row(20)), SELF_MAPPER);
 
@@ -250,7 +253,7 @@ public class TransformingDataFrameTest {
     public void testFilterColumn_Name() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = new TransformingDataFrame(i1, DataFrame.fromRows(i1,
+        DataFrame df1 = new MappedDataFrame(i1, DataFrame.fromRows(i1,
                 DataRow.row(10),
                 DataRow.row(20)), SELF_MAPPER);
 
@@ -264,7 +267,7 @@ public class TransformingDataFrameTest {
     public void testFilterColumn_Pos() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = new TransformingDataFrame(i1, DataFrame.fromRows(i1,
+        DataFrame df1 = new MappedDataFrame(i1, DataFrame.fromRows(i1,
                 DataRow.row(10),
                 DataRow.row(20)), SELF_MAPPER);
 

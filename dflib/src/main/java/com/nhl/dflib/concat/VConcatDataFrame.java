@@ -1,5 +1,8 @@
-package com.nhl.dflib;
+package com.nhl.dflib.concat;
 
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Index;
+import com.nhl.dflib.IndexPosition;
 import com.nhl.dflib.print.InlinePrinter;
 
 import java.util.Iterator;

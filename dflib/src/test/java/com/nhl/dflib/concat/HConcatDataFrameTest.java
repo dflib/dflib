@@ -1,10 +1,10 @@
-package com.nhl.dflib;
+package com.nhl.dflib.concat;
 
+import com.nhl.dflib.DFAsserts;
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Index;
 import com.nhl.dflib.join.JoinType;
-import com.nhl.dflib.concat.HConcat;
 import org.junit.Test;
-
-import static java.util.Arrays.asList;
 
 public class HConcatDataFrameTest {
 
@@ -12,14 +12,14 @@ public class HConcatDataFrameTest {
     public void testConstructor() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = new SimpleDataFrame(i1, asList(
-                DataRow.row(1),
-                DataRow.row(2)));
+        DataFrame df1 = DataFrame.fromSequence(i1,
+                1,
+                2);
 
         Index i2 = Index.withNames("b");
-        DataFrame df2 = new SimpleDataFrame(i2, asList(
-                DataRow.row(10),
-                DataRow.row(20)));
+        DataFrame df2 = DataFrame.fromSequence(i2,
+                10,
+                20);
 
         DataFrame df = new HConcatDataFrame(Index.withNames("a", "b"), JoinType.inner, df1, df2, HConcat.concatenator());
 
@@ -33,14 +33,14 @@ public class HConcatDataFrameTest {
     public void testConstructor_SparseDF() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = new SimpleDataFrame(i1, asList(
-                DataRow.row(0, 1),
-                DataRow.row(2, 3))).selectColumns("b");
+        DataFrame df1 = DataFrame.fromSequence(i1,
+                0, 1,
+                2, 3).selectColumns("b");
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = new SimpleDataFrame(i2, asList(
-                DataRow.row(10, 20),
-                DataRow.row(30, 40))).selectColumns("c");
+        DataFrame df2 = DataFrame.fromSequence(i2,
+                10, 20,
+                30, 40).selectColumns("c");
 
         DataFrame df = new HConcatDataFrame(
                 Index.withNames("z1", "z2"),
@@ -59,14 +59,14 @@ public class HConcatDataFrameTest {
     public void testConstructor_SparseDF_ZippedIndex() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = new SimpleDataFrame(i1, asList(
-                DataRow.row(0, 1),
-                DataRow.row(2, 3))).selectColumns("b");
+        DataFrame df1 = DataFrame.fromSequence(i1,
+                0, 1,
+                2, 3).selectColumns("b");
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = new SimpleDataFrame(i2, asList(
-                DataRow.row(10, 20),
-                DataRow.row(30, 40))).selectColumns("c");
+        DataFrame df2 = DataFrame.fromSequence(i2,
+                10, 20,
+                30, 40).selectColumns("c");
 
         DataFrame df = new HConcatDataFrame(
                 HConcat.zipIndex(df1.getColumns(), df2.getColumns()),
@@ -84,14 +84,14 @@ public class HConcatDataFrameTest {
     @Test
     public void testHead() {
         Index i1 = Index.withNames("a");
-        DataFrame df1 = new SimpleDataFrame(i1, asList(
-                DataRow.row(1),
-                DataRow.row(2)));
+        DataFrame df1 = DataFrame.fromSequence(i1,
+                1,
+                2);
 
         Index i2 = Index.withNames("b");
-        DataFrame df2 = new SimpleDataFrame(i2, asList(
-                DataRow.row(10),
-                DataRow.row(20)));
+        DataFrame df2 = DataFrame.fromSequence(i2,
+                10,
+                20);
 
         DataFrame df = new HConcatDataFrame(Index.withNames("a", "b"), JoinType.inner, df1, df2, HConcat.concatenator())
                 .head(1);
@@ -105,14 +105,14 @@ public class HConcatDataFrameTest {
     public void testRenameColumn() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = new SimpleDataFrame(i1, asList(
-                DataRow.row(1),
-                DataRow.row(2)));
+        DataFrame df1 = DataFrame.fromSequence(i1,
+                1,
+                2);
 
         Index i2 = Index.withNames("b");
-        DataFrame df2 = new SimpleDataFrame(i2, asList(
-                DataRow.row(10),
-                DataRow.row(20)));
+        DataFrame df2 = DataFrame.fromSequence(i2,
+                10,
+                20);
 
         DataFrame df = new HConcatDataFrame(Index.withNames("a", "b"), JoinType.inner, df1, df2, HConcat.concatenator())
                 .renameColumn("b", "c");
@@ -127,14 +127,14 @@ public class HConcatDataFrameTest {
     public void testMap() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = new SimpleDataFrame(i1, asList(
-                DataRow.row("one"),
-                DataRow.row("two")));
+        DataFrame df1 = DataFrame.fromSequence(i1,
+                "one",
+                "two");
 
         Index i2 = Index.withNames("b");
-        DataFrame df2 = new SimpleDataFrame(i2, asList(
-                DataRow.row(1),
-                DataRow.row(2)));
+        DataFrame df2 = DataFrame.fromSequence(i2,
+                1,
+                2);
 
         Index zippedColumns = Index.withNames("x", "y");
 
@@ -151,14 +151,14 @@ public class HConcatDataFrameTest {
     public void testMap_ChangeRowStructure() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = new SimpleDataFrame(i1, asList(
-                DataRow.row("one"),
-                DataRow.row("two")));
+        DataFrame df1 = DataFrame.fromSequence(i1,
+                "one",
+                "two");
 
         Index i2 = Index.withNames("b");
-        DataFrame df2 = new SimpleDataFrame(i2, asList(
-                DataRow.row(1),
-                DataRow.row(2)));
+        DataFrame df2 = DataFrame.fromSequence(i2,
+                1,
+                2);
 
         Index mappedColumns = Index.withNames("x", "y", "z");
         DataFrame df = new HConcatDataFrame(Index.withNames("a", "b"), JoinType.inner, df1, df2, HConcat.concatenator())

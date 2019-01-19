@@ -3,7 +3,6 @@ package com.nhl.dflib.concat;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IndexPosition;
-import com.nhl.dflib.VConcatDataFrame;
 import com.nhl.dflib.join.JoinType;
 
 import java.util.EnumMap;

@@ -1,5 +1,7 @@
-package com.nhl.dflib;
+package com.nhl.dflib.concat;
 
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Index;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.CombineContext;
 import com.nhl.dflib.map.DataRowCombiner;

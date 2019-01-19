@@ -1,7 +1,7 @@
-package com.nhl.dflib;
+package com.nhl.dflib.map;
 
-import com.nhl.dflib.map.DataRowMapper;
-import com.nhl.dflib.map.MapContext;
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Index;
 import com.nhl.dflib.print.InlinePrinter;
 
 import java.util.Iterator;
@@ -11,13 +11,13 @@ import java.util.Objects;
  * A DataFrame over an Iterable of unknown (possibly very long) length. Its per-row operations are not applied
  * immediately and are instead deferred until the caller iterates over the contents.
  */
-public class TransformingDataFrame implements DataFrame {
+public class MappedDataFrame implements DataFrame {
 
     private DataFrame source;
     private Index columns;
     private DataRowMapper rowMapper;
 
-    protected TransformingDataFrame(Index columns, DataFrame source, DataRowMapper rowMapper) {
+    public MappedDataFrame(Index columns, DataFrame source, DataRowMapper rowMapper) {
         this.source = Objects.requireNonNull(source);
         this.columns = Objects.requireNonNull(columns);
         this.rowMapper = Objects.requireNonNull(rowMapper);
@@ -37,7 +37,7 @@ public class TransformingDataFrame implements DataFrame {
     public Iterator<Object[]> iterator() {
         return new Iterator<Object[]>() {
 
-            private final Iterator<Object[]> delegateIt = TransformingDataFrame.this.source.iterator();
+            private final Iterator<Object[]> delegateIt = MappedDataFrame.this.source.iterator();
             private final MapContext context = new MapContext(source.getColumns(), columns);
 
             @Override
@@ -54,6 +54,6 @@ public class TransformingDataFrame implements DataFrame {
 
     @Override
     public String toString() {
-        return InlinePrinter.getInstance().print(new StringBuilder("TransformingDataFrame ["), this).append("]").toString();
+        return InlinePrinter.getInstance().print(new StringBuilder("MappedDataFrame ["), this).append("]").toString();
     }
 }

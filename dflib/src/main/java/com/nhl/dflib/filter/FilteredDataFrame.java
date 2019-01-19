@@ -1,5 +1,7 @@
-package com.nhl.dflib;
+package com.nhl.dflib.filter;
 
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Index;
 import com.nhl.dflib.filter.DataRowPredicate;
 import com.nhl.dflib.print.InlinePrinter;
 

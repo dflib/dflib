@@ -1,5 +1,10 @@
-package com.nhl.dflib;
+package com.nhl.dflib.filter;
 
+import com.nhl.dflib.DFAsserts;
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.DataRow;
+import com.nhl.dflib.Index;
+import com.nhl.dflib.filter.FilteredDataFrame;
 import org.junit.Test;
 
 public class FilteredDataFrameTest {

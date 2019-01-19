@@ -3,8 +3,10 @@ package com.nhl.dflib;
 import com.nhl.dflib.aggregate.Aggregator;
 import com.nhl.dflib.aggregate.ColumnAggregator;
 import com.nhl.dflib.concat.HConcat;
+import com.nhl.dflib.concat.HConcatDataFrame;
 import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.filter.DataRowPredicate;
+import com.nhl.dflib.filter.FilteredDataFrame;
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.groupby.Grouper;
 import com.nhl.dflib.join.JoinPredicate;
@@ -16,6 +18,7 @@ import com.nhl.dflib.map.DataRowConsumer;
 import com.nhl.dflib.map.DataRowMapper;
 import com.nhl.dflib.map.DataRowToValueMapper;
 import com.nhl.dflib.map.KeyMapper;
+import com.nhl.dflib.map.MappedDataFrame;
 import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.sort.SortedDataFrame;
 import com.nhl.dflib.sort.Sorters;
@@ -183,7 +186,7 @@ public interface DataFrame extends Iterable<Object[]> {
     }
 
     default DataFrame map(Index mappedColumns, DataRowMapper rowMapper) {
-        return new TransformingDataFrame(mappedColumns, this, rowMapper).materialize();
+        return new MappedDataFrame(mappedColumns, this, rowMapper).materialize();
     }
 
     default <V, VR> DataFrame mapColumn(String columnName, ValueMapper<V, VR> m) {

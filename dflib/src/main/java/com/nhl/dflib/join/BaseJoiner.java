@@ -2,7 +2,7 @@ package com.nhl.dflib.join;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.HConcatDataFrame;
+import com.nhl.dflib.concat.HConcatDataFrame;
 import com.nhl.dflib.concat.HConcat;
 
 public abstract class BaseJoiner {
