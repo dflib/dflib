@@ -3,7 +3,7 @@ package com.nhl.dflib.join;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.map.KeyMapper;
-import com.nhl.dflib.zip.Zipper;
+import com.nhl.dflib.concat.HConcat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,16 +16,16 @@ import java.util.Set;
  * A DataFrame joiner based on a pair of functions that can calculate comparable keys for the left and right row.
  * Should theoretically have O(N + M) performance.
  */
-public class IndexedJoiner extends BaseJoiner {
+public class MappedJoiner extends BaseJoiner {
 
     private KeyMapper leftKeyMapper;
     private KeyMapper rightKeyMapper;
-    private JoinSemantics semantics;
+    private JoinType semantics;
 
-    public IndexedJoiner(
+    public MappedJoiner(
             KeyMapper leftKeyMapper,
             KeyMapper rightKeyMapper,
-            JoinSemantics semantics) {
+            JoinType semantics) {
 
         this.leftKeyMapper = leftKeyMapper;
         this.rightKeyMapper = rightKeyMapper;
@@ -33,7 +33,7 @@ public class IndexedJoiner extends BaseJoiner {
     }
 
     public Index joinIndex(Index li, Index ri) {
-        return Zipper.zipIndex(li, ri);
+        return HConcat.zipIndex(li, ri);
     }
 
     public DataFrame joinRows(Index joinedColumns, DataFrame lf, DataFrame rf) {
@@ -179,7 +179,7 @@ public class IndexedJoiner extends BaseJoiner {
                 DataFrame.fromRows(rf.getColumns(), rRows));
     }
 
-    // TODO: this is the same exact logic as in Grouper, only without wrapping the Map in a DataFrame.. Alos it uses
+    // TODO: this is the same exact logic as in Grouper, only without wrapping the Map in a DataFrame.. Also it uses
     //  HashMap instead of LinkedHashMap which is somewhat faster for "get". Is it worth
     //  reusing the Grouper here vs. small overhead it introduces?
     private Map<Object, List<Object[]>> groupByKey(KeyMapper keyMapper, DataFrame df) {

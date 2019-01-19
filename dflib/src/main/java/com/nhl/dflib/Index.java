@@ -1,7 +1,7 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.map.DataRowToValueMapper;
-import com.nhl.dflib.zip.Zipper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +24,7 @@ public abstract class Index implements Iterable<IndexPosition> {
     protected Index(IndexPosition... positions) {
         this.positions = positions;
     }
+
 
     protected static IndexPosition[] continuousPositions(String... names) {
         IndexPosition[] positions = new IndexPosition[names.length];
@@ -113,7 +114,7 @@ public abstract class Index implements Iterable<IndexPosition> {
     }
 
     public Index addNames(String... extraNames) {
-        return Zipper.zipIndex(this, withNames(extraNames));
+        return HConcat.zipIndex(this, withNames(extraNames));
     }
 
     public <VR> Object[] addValues(Object[] row, DataRowToValueMapper<VR>... valueProducers) {

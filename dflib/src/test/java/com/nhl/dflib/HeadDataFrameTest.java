@@ -109,7 +109,7 @@ public class HeadDataFrameTest {
                 DataRow.row(20)));
 
 
-        DataFrame df = new HeadDataFrame(df1, 1).zip(df2);
+        DataFrame df = new HeadDataFrame(df1, 1).hConcat(df2);
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(1)

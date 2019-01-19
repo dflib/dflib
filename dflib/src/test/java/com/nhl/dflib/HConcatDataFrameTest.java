@@ -1,11 +1,12 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.zip.Zipper;
+import com.nhl.dflib.join.JoinType;
+import com.nhl.dflib.concat.HConcat;
 import org.junit.Test;
 
 import static java.util.Arrays.asList;
 
-public class ZippingDataFrameTest {
+public class HConcatDataFrameTest {
 
     @Test
     public void testConstructor() {
@@ -20,7 +21,7 @@ public class ZippingDataFrameTest {
                 DataRow.row(10),
                 DataRow.row(20)));
 
-        DataFrame df = new ZippingDataFrame(Index.withNames("a", "b"), df1, df2, Zipper.rowZipper());
+        DataFrame df = new HConcatDataFrame(Index.withNames("a", "b"), JoinType.inner, df1, df2, HConcat.concatenator());
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(2)
@@ -41,11 +42,12 @@ public class ZippingDataFrameTest {
                 DataRow.row(10, 20),
                 DataRow.row(30, 40))).selectColumns("c");
 
-        DataFrame df = new ZippingDataFrame(
+        DataFrame df = new HConcatDataFrame(
                 Index.withNames("z1", "z2"),
+                JoinType.inner,
                 df1,
                 df2,
-                Zipper.rowZipper());
+                HConcat.concatenator());
 
         new DFAsserts(df, "z1", "z2")
                 .expectHeight(2)
@@ -66,11 +68,12 @@ public class ZippingDataFrameTest {
                 DataRow.row(10, 20),
                 DataRow.row(30, 40))).selectColumns("c");
 
-        DataFrame df = new ZippingDataFrame(
-                Zipper.zipIndex(df1.getColumns(), df2.getColumns()),
+        DataFrame df = new HConcatDataFrame(
+                HConcat.zipIndex(df1.getColumns(), df2.getColumns()),
+                JoinType.inner,
                 df1,
                 df2,
-                Zipper.rowZipper());
+                HConcat.concatenator());
 
         new DFAsserts(df, "b", "c")
                 .expectHeight(2)
@@ -90,7 +93,7 @@ public class ZippingDataFrameTest {
                 DataRow.row(10),
                 DataRow.row(20)));
 
-        DataFrame df = new ZippingDataFrame(Index.withNames("a", "b"), df1, df2, Zipper.rowZipper())
+        DataFrame df = new HConcatDataFrame(Index.withNames("a", "b"), JoinType.inner, df1, df2, HConcat.concatenator())
                 .head(1);
 
         new DFAsserts(df, "a", "b")
@@ -111,7 +114,7 @@ public class ZippingDataFrameTest {
                 DataRow.row(10),
                 DataRow.row(20)));
 
-        DataFrame df = new ZippingDataFrame(Index.withNames("a", "b"), df1, df2, Zipper.rowZipper())
+        DataFrame df = new HConcatDataFrame(Index.withNames("a", "b"), JoinType.inner, df1, df2, HConcat.concatenator())
                 .renameColumn("b", "c");
 
         new DFAsserts(df, "a", "c")
@@ -135,7 +138,7 @@ public class ZippingDataFrameTest {
 
         Index zippedColumns = Index.withNames("x", "y");
 
-        DataFrame df = new ZippingDataFrame(zippedColumns, df1, df2, Zipper.rowZipper())
+        DataFrame df = new HConcatDataFrame(zippedColumns, JoinType.inner, df1, df2, HConcat.concatenator())
                 .map((c, r) -> c.mapColumn(r, "x", (cx, rx) -> cx.get(rx, 0) + "_"));
 
         new DFAsserts(df, zippedColumns)
@@ -158,7 +161,7 @@ public class ZippingDataFrameTest {
                 DataRow.row(2)));
 
         Index mappedColumns = Index.withNames("x", "y", "z");
-        DataFrame df = new ZippingDataFrame(Index.withNames("a", "b"), df1, df2, Zipper.rowZipper())
+        DataFrame df = new HConcatDataFrame(Index.withNames("a", "b"), JoinType.inner, df1, df2, HConcat.concatenator())
                 .map(mappedColumns, (c, r) -> c.target(
                         r[0],
                         ((int) r[1]) * 10,

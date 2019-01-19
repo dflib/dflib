@@ -2,7 +2,7 @@ package com.nhl.dflib.join;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.zip.Zipper;
+import com.nhl.dflib.concat.HConcat;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -16,15 +16,15 @@ import java.util.Set;
 public class Joiner extends BaseJoiner {
 
     private JoinPredicate joinPredicate;
-    private JoinSemantics semantics;
+    private JoinType semantics;
 
-    public Joiner(JoinPredicate joinPredicate, JoinSemantics semantics) {
+    public Joiner(JoinPredicate joinPredicate, JoinType semantics) {
         this.joinPredicate = Objects.requireNonNull(joinPredicate);
         this.semantics = Objects.requireNonNull(semantics);
     }
 
     public Index joinIndex(Index li, Index ri) {
-        return Zipper.zipIndex(li, ri);
+        return HConcat.zipIndex(li, ri);
     }
 
     public DataFrame joinRows(Index joinedColumns, DataFrame lf, DataFrame rf) {

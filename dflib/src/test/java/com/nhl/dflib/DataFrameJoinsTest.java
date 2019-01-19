@@ -2,7 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.map.KeyMapper;
 import com.nhl.dflib.join.JoinPredicate;
-import com.nhl.dflib.join.JoinSemantics;
+import com.nhl.dflib.join.JoinType;
 import org.junit.Test;
 
 public class DataFrameJoinsTest {
@@ -85,7 +85,7 @@ public class DataFrameJoinsTest {
                 2, "b",
                 3, "c");
 
-        DataFrame df = df1.join(df2, JoinPredicate.on(0, 0), JoinSemantics.left);
+        DataFrame df = df1.join(df2, JoinPredicate.on(0, 0), JoinType.left);
 
         new DFAsserts(df, "a", "b", "c", "d")
                 .expectHeight(3)
@@ -108,7 +108,7 @@ public class DataFrameJoinsTest {
                 2, "b",
                 3, "c");
 
-        DataFrame df = df2.join(df1, JoinPredicate.on(0, 0), JoinSemantics.right);
+        DataFrame df = df2.join(df1, JoinPredicate.on(0, 0), JoinType.right);
 
         new DFAsserts(df, "c", "d", "a", "b")
                 .expectHeight(3)
@@ -131,7 +131,7 @@ public class DataFrameJoinsTest {
                 2, "b",
                 3, "c");
 
-        DataFrame df = df1.join(df2, JoinPredicate.on(0, 0), JoinSemantics.full);
+        DataFrame df = df1.join(df2, JoinPredicate.on(0, 0), JoinType.full);
 
         new DFAsserts(df, "a", "b", "c", "d")
                 .expectHeight(4)
@@ -199,7 +199,7 @@ public class DataFrameJoinsTest {
                 2, "b",
                 3, "c");
 
-        DataFrame df = df1.join(df2, KeyMapper.keyColumn(0), KeyMapper.keyColumn(0), JoinSemantics.left);
+        DataFrame df = df1.join(df2, KeyMapper.keyColumn(0), KeyMapper.keyColumn(0), JoinType.left);
 
         new DFAsserts(df, "a", "b", "c", "d")
                 .expectHeight(3)
@@ -222,7 +222,7 @@ public class DataFrameJoinsTest {
                 2, "b",
                 3, "c");
 
-        DataFrame df = df2.join(df1, KeyMapper.keyColumn(0), KeyMapper.keyColumn(0), JoinSemantics.right);
+        DataFrame df = df2.join(df1, KeyMapper.keyColumn(0), KeyMapper.keyColumn(0), JoinType.right);
 
         new DFAsserts(df, "c", "d", "a", "b")
                 .expectHeight(3)
@@ -245,7 +245,7 @@ public class DataFrameJoinsTest {
                 2, "b",
                 3, "c");
 
-        DataFrame df = df1.join(df2, KeyMapper.keyColumn(0), KeyMapper.keyColumn(0), JoinSemantics.full);
+        DataFrame df = df1.join(df2, KeyMapper.keyColumn(0), KeyMapper.keyColumn(0), JoinType.full);
 
         new DFAsserts(df, "a", "b", "c", "d")
                 .expectHeight(4)

@@ -174,7 +174,7 @@ public class TransformingDataFrameTest {
                 DataRow.row(10),
                 DataRow.row(20)), SELF_MAPPER);
 
-        DataFrame df = df1.zip(df2);
+        DataFrame df = df1.hConcat(df2);
         new DFAsserts(df, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, 1, 10)
@@ -189,7 +189,7 @@ public class TransformingDataFrameTest {
                 DataRow.row(1),
                 DataRow.row(2)), SELF_MAPPER);
 
-        DataFrame df = df1.zip(df1);
+        DataFrame df = df1.hConcat(df1);
 
         new DFAsserts(df, "a", "a_")
                 .expectHeight(2)
@@ -208,7 +208,7 @@ public class TransformingDataFrameTest {
                 DataRow.row(10),
                 DataRow.row(20)), SELF_MAPPER);
 
-        DataFrame df = df1.zip(df2);
+        DataFrame df = df1.hConcat(df2);
         new DFAsserts(df, "a", "b")
                 .expectHeight(1)
                 .expectRow(0, 2, 10);
@@ -226,7 +226,7 @@ public class TransformingDataFrameTest {
                 DataRow.row(10),
                 DataRow.row(20)), SELF_MAPPER);
 
-        DataFrame df = df2.zip(df1);
+        DataFrame df = df2.hConcat(df1);
         new DFAsserts(df, "b", "a")
                 .expectHeight(1)
                 .expectRow(0, 10, 2);

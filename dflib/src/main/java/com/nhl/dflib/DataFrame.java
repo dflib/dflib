@@ -5,17 +5,18 @@ import com.nhl.dflib.aggregate.ColumnAggregator;
 import com.nhl.dflib.filter.DataRowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.groupby.Grouper;
-import com.nhl.dflib.join.IndexedJoiner;
 import com.nhl.dflib.join.JoinPredicate;
-import com.nhl.dflib.join.JoinSemantics;
+import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.join.Joiner;
+import com.nhl.dflib.join.MappedJoiner;
 import com.nhl.dflib.map.DataRowCombiner;
 import com.nhl.dflib.map.DataRowConsumer;
 import com.nhl.dflib.map.DataRowMapper;
 import com.nhl.dflib.map.DataRowToValueMapper;
 import com.nhl.dflib.map.KeyMapper;
 import com.nhl.dflib.map.ValueMapper;
-import com.nhl.dflib.zip.Zipper;
+import com.nhl.dflib.concat.VConcat;
+import com.nhl.dflib.concat.HConcat;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -156,11 +157,9 @@ public interface DataFrame extends Iterable<Object[]> {
     }
 
     /**
-     * Resolves this DataFrame to an implementation that does not require evaluation of the internal
-     * mapping/zip/filter functions on every iteration. A call to {@link #materialize()} would not necessarily
-     * cause an immediate expensive recalculation. Instead it may return a DataFrame that is evaluated lazily when
-     * the first iterator is requested directly or indirectly. Certain operations, such as {@link #map(Index, DataRowMapper)},
-     * are materialized by default.
+     * Resolves this DataFrame to an implementation that evaluates internal mapping/concat/filter functions no more
+     * than once, reusing the first evaluation result for subsequent iterations. Certain operations in DataFrame, such as
+     * {@link #map(Index, DataRowMapper)}, etc. are materialized by default.
      *
      * @return a DataFrame optimized for multiple iterations, calls to {@link #height()}, etc.
      */
@@ -251,20 +250,68 @@ public interface DataFrame extends Iterable<Object[]> {
     }
 
     /**
-     * Returns a DataFrame that combines columns from this and another DataFrame. If the lengths of the DataFrames are
-     * not the same, the data from the longest DataFrame is truncated. If two DataFrames have have conflicting columns,
-     * an underscore suffix ("_") is added to the column names coming from the right-hand side DataFrame.
+     * Horizontally concatenates a DataFrame with another DataFrame, producing a "wider" DataFrame. If the heights of
+     * the DataFrames are not the same, the behavior is governed by the "how" parameter. Rows on the left or right sides
+     * can be either truncated or padded. If two DataFrames have have conflicting columns, an underscore suffix ("_")
+     * is added to the column names coming from the right-hand side DataFrame.
      *
      * @param df another DataFrame.
-     * @return a new DataFrame that is a combination of columns from this DataFrame and a DataFrame argument.
+     * @return a new "wider" DataFrame that is a combination of columns from this DataFrame and a DataFrame argument.
      */
-    default DataFrame zip(DataFrame df) {
-        Index zipIndex = Zipper.zipIndex(getColumns(), df.getColumns());
-        return zip(zipIndex, df, Zipper.rowZipper());
+    default DataFrame hConcat(DataFrame df) {
+        return hConcat(JoinType.inner, df);
     }
 
-    default DataFrame zip(Index zippedColumns, DataFrame df, DataRowCombiner c) {
-        return new ZippingDataFrame(zippedColumns, this, df, c).materialize();
+    /**
+     * Returns a DataFrame that combines columns from this and another DataFrame. If two DataFrames have have
+     * conflicting columns, an underscore suffix ("_") is added to the column names coming from the right-hand side
+     * DataFrame. If the heights of the DataFrames are not the same, the behavior is governed by the "how" parameter.
+     * Rows on the left or right sides can be either truncated or padded.
+     *
+     * @param df  another DataFrame
+     * @param how semantics of zip operation
+     * @return a new "wider" DataFrame that is a combination of columns from this DataFrame and a DataFrame argument
+     */
+    default DataFrame hConcat(JoinType how, DataFrame df) {
+        Index zipIndex = HConcat.zipIndex(getColumns(), df.getColumns());
+        return hConcat(zipIndex, how, df, HConcat.concatenator());
+    }
+
+    default DataFrame hConcat(Index zippedColumns, JoinType how, DataFrame df, DataRowCombiner c) {
+        return new HConcatDataFrame(zippedColumns, how, this, df, c).materialize();
+    }
+
+    /**
+     * A form of {@link #vConcat(JoinType, DataFrame...)} with "left" join semantics. I.e. all columns
+     * of this DataFrame will be preserved and extended with data from matching columns of other DataFrames.
+     *
+     * @param dfs DataFrames to concatenate with this one
+     * @return a new "taller" DataFrame
+     */
+    default DataFrame vConcat(DataFrame... dfs) {
+        return vConcat(JoinType.left, dfs);
+    }
+
+    /**
+     * Vertically concatenates columns of this DataFrame with those of one or more other DataFrames, producing a "taller"
+     * DataFrame. Column data is aligned by name. Which columns are included in the final result is determined by the
+     * "how" parameter.
+     *
+     * @param how determines which columns are included in concatenated result
+     * @param dfs DataFrames to concatenate with this one
+     * @return a new "taller" DataFrame
+     */
+    default DataFrame vConcat(JoinType how, DataFrame... dfs) {
+
+        if (dfs.length == 0) {
+            return this;
+        }
+
+        DataFrame[] combined = new DataFrame[dfs.length + 1];
+        combined[0] = this;
+        System.arraycopy(dfs, 0, combined, 1, dfs.length);
+
+        return VConcat.concat(how, combined);
     }
 
     /**
@@ -277,21 +324,21 @@ public interface DataFrame extends Iterable<Object[]> {
      * @return a DataFrame that is a result of this join
      */
     default DataFrame innerJoin(DataFrame df, JoinPredicate p) {
-        return join(df, p, JoinSemantics.inner);
+        return join(df, p, JoinType.inner);
     }
 
     /**
      * Joins this DataFrame with another DataFrame based on a row predicate and specified join semantics. This style of
      * join has a rather slow O(N^2) performance, as each pair of rows needs to be evaluated. Consider using indexed
-     * joins instead, e.g. {@link #join(DataFrame, KeyMapper, KeyMapper, JoinSemantics)}.
+     * joins instead, e.g. {@link #join(DataFrame, KeyMapper, KeyMapper, JoinType)}.
      *
-     * @param df        a DataFrame to join with this one
-     * @param p         join condition of a pair of rows
-     * @param semantics join semantics (inner, left, right, full)
+     * @param df  a DataFrame to join with this one
+     * @param p   join condition of a pair of rows
+     * @param how join semantics (inner, left, right, full)
      * @return a DataFrame that is a result of this join
      */
-    default DataFrame join(DataFrame df, JoinPredicate p, JoinSemantics semantics) {
-        Joiner joiner = new Joiner(p, semantics);
+    default DataFrame join(DataFrame df, JoinPredicate p, JoinType how) {
+        Joiner joiner = new Joiner(p, how);
         Index joinedIndex = joiner.joinIndex(getColumns(), df.getColumns());
         return joiner.joinRows(joinedIndex, this, df);
     }
@@ -310,25 +357,25 @@ public interface DataFrame extends Iterable<Object[]> {
             DataFrame df,
             KeyMapper leftKeyMapper,
             KeyMapper rightKeyMapper) {
-        return join(df, leftKeyMapper, rightKeyMapper, JoinSemantics.inner);
+        return join(df, leftKeyMapper, rightKeyMapper, JoinType.inner);
     }
 
     /**
      * Calculates an "indexed" join. The join is performed by comparing left and right row "keys", which is a faster
-     * version to join rows compared to using join predicate ({@link #join(DataFrame, JoinPredicate, JoinSemantics)}).
+     * version to join rows compared to using join predicate ({@link #join(DataFrame, JoinPredicate, JoinType)}).
      *
      * @param df             a DataFrame to join with this one
      * @param leftKeyMapper
      * @param rightKeyMapper
-     * @param semantics
+     * @param how
      * @return a DataFrame that is a result of this join
      */
     default DataFrame join(
             DataFrame df,
             KeyMapper leftKeyMapper,
             KeyMapper rightKeyMapper,
-            JoinSemantics semantics) {
-        IndexedJoiner joiner = new IndexedJoiner(leftKeyMapper, rightKeyMapper, semantics);
+            JoinType how) {
+        MappedJoiner joiner = new MappedJoiner(leftKeyMapper, rightKeyMapper, how);
         Index joinedIndex = joiner.joinIndex(getColumns(), df.getColumns());
         return joiner.joinRows(joinedIndex, this, df);
     }
