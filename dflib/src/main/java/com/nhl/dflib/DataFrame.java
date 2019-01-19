@@ -267,16 +267,45 @@ public interface DataFrame extends Iterable<Object[]> {
         return new ZippingDataFrame(zippedColumns, this, df, c).materialize();
     }
 
+    /**
+     * Joins this DataFrame with another DataFrame based on a row predicate and "inner" join semantics. This style of
+     * join has a rather slow O(N^2) performance, as each pair of rows needs to be evaluated. Consider using indexed
+     * joins instead, e.g. {@link #innerJoin(DataFrame, KeyMapper, KeyMapper)}
+     *
+     * @param df a DataFrame to join with this one
+     * @param p  join condition of a pair of rows
+     * @return a DataFrame that is a result of this join
+     */
     default DataFrame innerJoin(DataFrame df, JoinPredicate p) {
         return join(df, p, JoinSemantics.inner);
     }
 
-    default DataFrame join(DataFrame df, JoinPredicate predicate, JoinSemantics semantics) {
-        Joiner joiner = new Joiner(predicate, semantics);
+    /**
+     * Joins this DataFrame with another DataFrame based on a row predicate and specified join semantics. This style of
+     * join has a rather slow O(N^2) performance, as each pair of rows needs to be evaluated. Consider using indexed
+     * joins instead, e.g. {@link #join(DataFrame, KeyMapper, KeyMapper, JoinSemantics)}.
+     *
+     * @param df        a DataFrame to join with this one
+     * @param p         join condition of a pair of rows
+     * @param semantics join semantics (inner, left, right, full)
+     * @return a DataFrame that is a result of this join
+     */
+    default DataFrame join(DataFrame df, JoinPredicate p, JoinSemantics semantics) {
+        Joiner joiner = new Joiner(p, semantics);
         Index joinedIndex = joiner.joinIndex(getColumns(), df.getColumns());
         return joiner.joinRows(joinedIndex, this, df);
     }
 
+    /**
+     * Calculates an "indexed" inner join. The join is performed by comparing left and right row "keys", which is
+     * a faster version to join rows compared to using join predicate ({@link #innerJoin(DataFrame, JoinPredicate)}).
+     *
+     * @param df             a DataFrame to join with this one
+     * @param leftKeyMapper
+     * @param rightKeyMapper
+     * @param <K>
+     * @return a DataFrame that is a result of this join
+     */
     default <K> DataFrame innerJoin(
             DataFrame df,
             KeyMapper leftKeyMapper,
@@ -285,14 +314,14 @@ public interface DataFrame extends Iterable<Object[]> {
     }
 
     /**
-     * Calculates an "indexed" join. Join is performed by comparing left and right row "keys", which is generally a faster
-     * version to join rows compared to using {@link JoinPredicate}.
+     * Calculates an "indexed" join. The join is performed by comparing left and right row "keys", which is a faster
+     * version to join rows compared to using join predicate ({@link #join(DataFrame, JoinPredicate, JoinSemantics)}).
      *
-     * @param df
+     * @param df             a DataFrame to join with this one
      * @param leftKeyMapper
      * @param rightKeyMapper
      * @param semantics
-     * @return a DataFrame that is a result of a join between this and another DataFrame.
+     * @return a DataFrame that is a result of this join
      */
     default DataFrame join(
             DataFrame df,
