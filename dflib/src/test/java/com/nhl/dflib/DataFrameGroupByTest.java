@@ -26,19 +26,19 @@ public class DataFrameGroupByTest {
         assertNotNull(gb);
 
         assertEquals(3, gb.size());
-        assertEquals(new HashSet<>(asList(0, 1, 2)), new HashSet<>(gb.groups()));
+        assertEquals(new HashSet<>(asList(0, 1, 2)), new HashSet<>(gb.getGroups()));
 
-        new DFAsserts(gb.group(0), "a", "b")
+        new DFAsserts(gb.getGroup(0), "a", "b")
                 .expectHeight(1)
                 .expectRow(0, 0, "a");
 
-        new DFAsserts(gb.group(1), "a", "b")
+        new DFAsserts(gb.getGroup(1), "a", "b")
                 .expectHeight(3)
                 .expectRow(0, 1, "x")
                 .expectRow(1, 1, "z")
                 .expectRow(2, 1, "x");
 
-        new DFAsserts(gb.group(2), "a", "b")
+        new DFAsserts(gb.getGroup(2), "a", "b")
                 .expectHeight(1)
                 .expectRow(0, 2, "y");
     }
@@ -52,7 +52,7 @@ public class DataFrameGroupByTest {
         assertNotNull(gb);
 
         assertEquals(0, gb.size());
-        assertEquals(Collections.emptySet(), new HashSet<>(gb.groups()));
+        assertEquals(Collections.emptySet(), new HashSet<>(gb.getGroups()));
     }
 
     @Test

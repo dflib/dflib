@@ -22,11 +22,11 @@ public class GroupBy {
         return groups.size();
     }
 
-    public Collection<Object> groups() {
+    public Collection<Object> getGroups() {
         return groups.keySet();
     }
 
-    public DataFrame group(Object key) {
+    public DataFrame getGroup(Object key) {
         return groups.get(key);
     }
 
