@@ -2,11 +2,11 @@ package com.nhl.dflib.concat;
 
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IndexPosition;
-import com.nhl.dflib.map.DataRowCombiner;
+import com.nhl.dflib.map.RowCombiner;
 
 public class HConcat {
 
-    private static final DataRowCombiner ROW_CONCATENATOR = (c, lr, rr) -> c.copyToTarget(lr, rr, 0, c.getLeftIndex().size());
+    private static final RowCombiner ROW_CONCATENATOR = (c, lr, rr) -> c.copyToTarget(lr, rr, 0, c.getLeftIndex().size());
 
     public static Index zipIndex(Index leftIndex, Index rightIndex) {
 
@@ -39,7 +39,7 @@ public class HConcat {
         return Index.withPositions(zipped);
     }
 
-    public static DataRowCombiner concatenator() {
+    public static RowCombiner concatenator() {
         return ROW_CONCATENATOR;
     }
 }

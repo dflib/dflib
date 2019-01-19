@@ -1,7 +1,7 @@
 package com.nhl.dflib.map;
 
 @FunctionalInterface
-public interface DataRowMapper {
+public interface RowMapper {
 
     Object[] map(MapContext c, Object[] row);
 }

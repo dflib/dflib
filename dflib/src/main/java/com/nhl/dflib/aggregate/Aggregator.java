@@ -2,7 +2,7 @@ package com.nhl.dflib.aggregate;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.map.DataRowToValueMapper;
+import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.IndexMapper;
 
 import java.util.stream.Collector;
@@ -129,14 +129,14 @@ public interface Aggregator {
     static ColumnAggregator of(String column, Collector<?, ?, ?> columnAggregator) {
         return new ColumnAggregator(
                 IndexMapper.mapper(column),
-                DataRowToValueMapper.columnReader(column),
+                RowToValueMapper.columnReader(column),
                 columnAggregator);
     }
 
     static ColumnAggregator of(int column, Collector<?, ?, ?> columnAggregator) {
         return new ColumnAggregator(
                 IndexMapper.mapper(column),
-                DataRowToValueMapper.columnReader(column),
+                RowToValueMapper.columnReader(column),
                 columnAggregator);
     }
 

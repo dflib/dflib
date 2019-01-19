@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 
 public class MappedDataFrameTest {
 
-    private static final DataRowMapper SELF_MAPPER = (c, r) -> r;
+    private static final RowMapper SELF_MAPPER = (c, r) -> r;
 
     @Test
     public void testIterator() {

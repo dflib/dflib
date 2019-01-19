@@ -15,9 +15,9 @@ public class MappedDataFrame implements DataFrame {
 
     private DataFrame source;
     private Index columns;
-    private DataRowMapper rowMapper;
+    private RowMapper rowMapper;
 
-    public MappedDataFrame(Index columns, DataFrame source, DataRowMapper rowMapper) {
+    public MappedDataFrame(Index columns, DataFrame source, RowMapper rowMapper) {
         this.source = Objects.requireNonNull(source);
         this.columns = Objects.requireNonNull(columns);
         this.rowMapper = Objects.requireNonNull(rowMapper);

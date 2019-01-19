@@ -61,11 +61,11 @@ public class MapContext {
         return copyToTarget(sourceRow, 0);
     }
 
-    public <T> Object[] mapColumn(Object[] sourceRow, String name, DataRowToValueMapper<T> m) {
+    public <T> Object[] mapColumn(Object[] sourceRow, String name, RowToValueMapper<T> m) {
         return mapColumn(sourceRow, sourceIndex.position(name).ordinal(), m);
     }
 
-    public <T> Object[] mapColumn(Object[] sourceRow, int sourcePos, DataRowToValueMapper<T> m) {
+    public <T> Object[] mapColumn(Object[] sourceRow, int sourcePos, RowToValueMapper<T> m) {
         Object[] target = copyToTarget(sourceRow);
 
         // since target is a compact version of the source, we can use "sourcePos" index directly on it

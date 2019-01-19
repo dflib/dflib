@@ -2,7 +2,6 @@ package com.nhl.dflib.filter;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.filter.DataRowPredicate;
 import com.nhl.dflib.print.InlinePrinter;
 
 import java.util.Iterator;
@@ -11,9 +10,9 @@ import java.util.NoSuchElementException;
 public class FilteredDataFrame implements DataFrame {
 
     private DataFrame source;
-    private DataRowPredicate rowFilter;
+    private RowPredicate rowFilter;
 
-    public FilteredDataFrame(DataFrame source, DataRowPredicate rowFilter) {
+    public FilteredDataFrame(DataFrame source, RowPredicate rowFilter) {
         this.source = source;
         this.rowFilter = rowFilter;
     }

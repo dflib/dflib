@@ -2,13 +2,13 @@ package com.nhl.dflib.sort;
 
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IndexPosition;
-import com.nhl.dflib.map.DataRowToValueMapper;
+import com.nhl.dflib.map.RowToValueMapper;
 
 import java.util.Comparator;
 
 public interface Sorters {
 
-    static <V extends Comparable<? super V>> Comparator<Object[]> sorter(Index columns, DataRowToValueMapper<V> m) {
+    static <V extends Comparable<? super V>> Comparator<Object[]> sorter(Index columns, RowToValueMapper<V> m) {
         return Comparator.comparing(o -> m.map(columns, o));
     }
 

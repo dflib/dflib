@@ -5,7 +5,7 @@ import com.nhl.dflib.aggregate.ColumnAggregator;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.HConcatDataFrame;
 import com.nhl.dflib.concat.VConcat;
-import com.nhl.dflib.filter.DataRowPredicate;
+import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.FilteredDataFrame;
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.groupby.Grouper;
@@ -13,10 +13,10 @@ import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.join.Joiner;
 import com.nhl.dflib.join.MappedJoiner;
-import com.nhl.dflib.map.DataRowCombiner;
-import com.nhl.dflib.map.DataRowConsumer;
-import com.nhl.dflib.map.DataRowMapper;
-import com.nhl.dflib.map.DataRowToValueMapper;
+import com.nhl.dflib.map.RowCombiner;
+import com.nhl.dflib.map.RowConsumer;
+import com.nhl.dflib.map.RowMapper;
+import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.KeyMapper;
 import com.nhl.dflib.map.MappedDataFrame;
 import com.nhl.dflib.map.ValueMapper;
@@ -174,7 +174,7 @@ public interface DataFrame extends Iterable<Object[]> {
     /**
      * Resolves this DataFrame to an implementation that evaluates internal mapping/concat/filter functions no more
      * than once, reusing the first evaluation result for subsequent iterations. Certain operations in DataFrame, such as
-     * {@link #map(Index, DataRowMapper)}, etc. are materialized by default.
+     * {@link #map(Index, RowMapper)}, etc. are materialized by default.
      *
      * @return a DataFrame optimized for multiple iterations, calls to {@link #height()}, etc.
      */
@@ -186,16 +186,16 @@ public interface DataFrame extends Iterable<Object[]> {
         return new HeadDataFrame(this, len);
     }
 
-    default void consume(DataRowConsumer consumer) {
+    default void consume(RowConsumer consumer) {
         Index columns = getColumns();
         forEach(r -> consumer.consume(columns, r));
     }
 
-    default DataFrame map(DataRowMapper rowMapper) {
+    default DataFrame map(RowMapper rowMapper) {
         return map(getColumns().compactIndex(), rowMapper);
     }
 
-    default DataFrame map(Index mappedColumns, DataRowMapper rowMapper) {
+    default DataFrame map(Index mappedColumns, RowMapper rowMapper) {
         return new MappedDataFrame(mappedColumns, this, rowMapper).materialize();
     }
 
@@ -206,18 +206,18 @@ public interface DataFrame extends Iterable<Object[]> {
         return map(compactIndex, (c, r) -> c.mapColumn(r, pos, m));
     }
 
-    default <V> DataFrame mapColumn(String columnName, DataRowToValueMapper<V> m) {
+    default <V> DataFrame mapColumn(String columnName, RowToValueMapper<V> m) {
         Index index = getColumns();
         Index compactIndex = index.compactIndex();
         int pos = index.position(columnName).ordinal();
         return map(compactIndex, (c, r) -> c.mapColumn(r, pos, m));
     }
 
-    default <V> DataFrame addColumn(String columnName, DataRowToValueMapper<V> columnValueProducer) {
+    default <V> DataFrame addColumn(String columnName, RowToValueMapper<V> columnValueProducer) {
         return addColumns(new String[]{columnName}, columnValueProducer);
     }
 
-    default <V> DataFrame addColumns(String[] columnNames, DataRowToValueMapper<V>... columnValueProducers) {
+    default <V> DataFrame addColumns(String[] columnNames, RowToValueMapper<V>... columnValueProducers) {
         Index index = getColumns();
         Index expandedIndex = index.addNames(columnNames);
         return map(expandedIndex, (c, r) -> index.addValues(r, columnValueProducers));
@@ -250,7 +250,7 @@ public interface DataFrame extends Iterable<Object[]> {
                 : new SimpleDataFrame(newIndex, this);
     }
 
-    default DataFrame filter(DataRowPredicate p) {
+    default DataFrame filter(RowPredicate p) {
         return new FilteredDataFrame(this, p).materialize();
     }
 
@@ -260,11 +260,11 @@ public interface DataFrame extends Iterable<Object[]> {
     }
 
     default <V> DataFrame filterColumn(int columnPos, ValuePredicate<V> p) {
-        DataRowPredicate drp = (c, r) -> p.test((V) c.get(r, columnPos));
+        RowPredicate drp = (c, r) -> p.test((V) c.get(r, columnPos));
         return new FilteredDataFrame(this, drp).materialize();
     }
 
-    default <V extends Comparable<? super V>> DataFrame sort(DataRowToValueMapper<V> m) {
+    default <V extends Comparable<? super V>> DataFrame sort(RowToValueMapper<V> m) {
         return new SortedDataFrame(this, Sorters.sorter(getColumns(), m));
     }
 
@@ -312,7 +312,7 @@ public interface DataFrame extends Iterable<Object[]> {
         return hConcat(zipIndex, how, df, HConcat.concatenator());
     }
 
-    default DataFrame hConcat(Index zippedColumns, JoinType how, DataFrame df, DataRowCombiner c) {
+    default DataFrame hConcat(Index zippedColumns, JoinType how, DataFrame df, RowCombiner c) {
         return new HConcatDataFrame(zippedColumns, how, this, df, c).materialize();
     }
 

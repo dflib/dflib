@@ -4,7 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.CombineContext;
-import com.nhl.dflib.map.DataRowCombiner;
+import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.print.InlinePrinter;
 
 import java.util.Iterator;
@@ -17,14 +17,14 @@ public class HConcatDataFrame implements DataFrame {
     private DataFrame leftSource;
     private DataFrame rightSource;
     private Index columns;
-    private DataRowCombiner rowCombiner;
+    private RowCombiner rowCombiner;
 
     public HConcatDataFrame(
             Index columns,
             JoinType joinType,
             DataFrame leftSource,
             DataFrame rightSource,
-            DataRowCombiner rowCombiner) {
+            RowCombiner rowCombiner) {
 
         this.joinType = joinType;
         this.leftSource = leftSource;
