@@ -24,11 +24,11 @@ public class MaterializedDataFrame implements DataFrame {
 
     public MaterializedDataFrame(DataFrame source) {
         this.source = source;
-        this.columns = source.getColumns().compactIndex();
+        this.columns = source.getColumns();
     }
 
     public MaterializedDataFrame(Index columns, List<Object[]> materialized) {
-        this.columns = columns.compactIndex();
+        this.columns = columns;
         this.materialized = materialized;
     }
 
