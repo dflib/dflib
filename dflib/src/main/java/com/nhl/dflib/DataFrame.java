@@ -2,6 +2,8 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.Aggregator;
 import com.nhl.dflib.aggregate.ColumnAggregator;
+import com.nhl.dflib.concat.HConcat;
+import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.filter.DataRowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.groupby.Grouper;
@@ -15,8 +17,8 @@ import com.nhl.dflib.map.DataRowMapper;
 import com.nhl.dflib.map.DataRowToValueMapper;
 import com.nhl.dflib.map.KeyMapper;
 import com.nhl.dflib.map.ValueMapper;
-import com.nhl.dflib.concat.VConcat;
-import com.nhl.dflib.concat.HConcat;
+import com.nhl.dflib.sort.SortedDataFrame;
+import com.nhl.dflib.sort.Sorters;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -247,6 +249,26 @@ public interface DataFrame extends Iterable<Object[]> {
     default <V> DataFrame filterColumn(int columnPos, ValuePredicate<V> p) {
         DataRowPredicate drp = (c, r) -> p.test((V) c.get(r, columnPos));
         return new FilteredDataFrame(this, drp).materialize();
+    }
+
+    default <V extends Comparable<? super V>> DataFrame sort(DataRowToValueMapper<V> m) {
+        return new SortedDataFrame(this, Sorters.sorter(getColumns(), m));
+    }
+
+    default <V extends Comparable<? super V>> DataFrame sortByColumns(String... columns) {
+        if(columns.length == 0) {
+            return this;
+        }
+
+        return new SortedDataFrame(this, Sorters.sorter(getColumns(), columns));
+    }
+
+    default <V extends Comparable<? super V>> DataFrame sortByColumns(int... columns) {
+        if(columns.length == 0) {
+            return this;
+        }
+
+        return new SortedDataFrame(this, Sorters.sorter(getColumns(), columns));
     }
 
     /**

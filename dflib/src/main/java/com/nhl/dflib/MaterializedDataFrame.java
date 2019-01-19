@@ -52,7 +52,7 @@ public class MaterializedDataFrame implements DataFrame {
         return getMaterialized().iterator();
     }
 
-    private List<Object[]> getMaterialized() {
+    protected List<Object[]> getMaterialized() {
 
         if (materialized == null) {
             synchronized (this) {
@@ -65,7 +65,7 @@ public class MaterializedDataFrame implements DataFrame {
         return materialized;
     }
 
-    private List<Object[]> doMaterialize() {
+    protected List<Object[]> doMaterialize() {
         List<Object[]> materialized = new ArrayList<>();
         source.forEach(materialized::add);
 
