@@ -264,8 +264,8 @@ public interface DataFrame extends Iterable<Object[]> {
         return new FilteredDataFrame(this, drp).materialize();
     }
 
-    default <V extends Comparable<? super V>> DataFrame sort(RowToValueMapper<V> m) {
-        return new SortedDataFrame(this, Sorters.sorter(getColumns(), m));
+    default <V extends Comparable<? super V>> DataFrame sort(RowToValueMapper<V> sortKeyExtractor) {
+        return new SortedDataFrame(this, Sorters.sorter(getColumns(), sortKeyExtractor));
     }
 
     default <V extends Comparable<? super V>> DataFrame sortByColumns(String... columns) {

@@ -8,8 +8,10 @@ import java.util.Comparator;
 
 public interface Sorters {
 
-    static <V extends Comparable<? super V>> Comparator<Object[]> sorter(Index columns, RowToValueMapper<V> m) {
-        return Comparator.comparing(o -> m.map(columns, o));
+    static <V extends Comparable<? super V>> Comparator<Object[]> sorter(
+            Index columns,
+            RowToValueMapper<V> sortKeyExtractor) {
+        return Comparator.comparing(o -> sortKeyExtractor.map(columns, o));
     }
 
     static Comparator<Object[]> sorter(Index columns, String... sortColumns) {
