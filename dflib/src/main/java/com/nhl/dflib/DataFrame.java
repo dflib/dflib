@@ -254,12 +254,12 @@ public interface DataFrame extends Iterable<Object[]> {
         return new FilteredDataFrame(this, p).materialize();
     }
 
-    default <V> DataFrame filterColumn(String columnName, ValuePredicate<V> p) {
+    default <V> DataFrame filterByColumn(String columnName, ValuePredicate<V> p) {
         int pos = getColumns().position(columnName).ordinal();
-        return filterColumn(pos, p);
+        return filterByColumn(pos, p);
     }
 
-    default <V> DataFrame filterColumn(int columnPos, ValuePredicate<V> p) {
+    default <V> DataFrame filterByColumn(int columnPos, ValuePredicate<V> p) {
         RowPredicate drp = (c, r) -> p.test((V) c.get(r, columnPos));
         return new FilteredDataFrame(this, drp).materialize();
     }

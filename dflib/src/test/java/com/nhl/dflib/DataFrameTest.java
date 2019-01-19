@@ -306,7 +306,7 @@ public class DataFrameTest {
 
         Index i1 = Index.withNames("a");
         DataFrame df = DataFrame.fromSequence(i1, 10, 20)
-                .filterColumn("a", (Integer v) -> v > 15);
+                .filterByColumn("a", (Integer v) -> v > 15);
 
         new DFAsserts(df, "a")
                 .expectHeight(1)
@@ -318,7 +318,7 @@ public class DataFrameTest {
 
         Index i1 = Index.withNames("a");
         DataFrame df = DataFrame.fromSequence(i1, 10, 20)
-                .filterColumn(0, (Integer v) -> v > 15);
+                .filterByColumn(0, (Integer v) -> v > 15);
 
         new DFAsserts(df, "a")
                 .expectHeight(1)

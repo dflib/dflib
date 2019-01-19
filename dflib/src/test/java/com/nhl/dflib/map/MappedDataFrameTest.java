@@ -256,7 +256,7 @@ public class MappedDataFrameTest {
                 DataFrame.row(10),
                 DataFrame.row(20)), SELF_MAPPER);
 
-        DataFrame df = df1.filterColumn("a", (Integer v) -> v > 15);
+        DataFrame df = df1.filterByColumn("a", (Integer v) -> v > 15);
         new DFAsserts(df, "a")
                 .expectHeight(1)
                 .expectRow(0, 20);
@@ -270,7 +270,7 @@ public class MappedDataFrameTest {
                 DataFrame.row(10),
                 DataFrame.row(20)), SELF_MAPPER);
 
-        DataFrame df = df1.filterColumn(0, (Integer v) -> v > 15);
+        DataFrame df = df1.filterByColumn(0, (Integer v) -> v > 15);
         new DFAsserts(df, "a")
                 .expectHeight(1)
                 .expectRow(0, 20);
