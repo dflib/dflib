@@ -333,10 +333,23 @@ public interface DataFrame extends Iterable<Object[]> {
         return joiner.joinRows(joinedIndex, this, df);
     }
 
+    /**
+     * Aggregates DataFrame contents into an Object[] of values, using provided aggregator.
+     *
+     * @param aggregator an aggregator function
+     * @return an Object[] with aggregated results
+     */
     default Object[] agg(Aggregator aggregator) {
         return aggregator.aggregate(this);
     }
 
+    /**
+     * Aggregates DataFrame columns into an Object[] using provided per-column aggregators. Note that aggregator
+     * positions correspond to resulting array positions and do not necessarily match column positions in the DataFrame.
+     *
+     * @param aggregators an array of aggregators corresponding to the aggregated result columns
+     * @return an Object[] with aggregated results
+     */
     default Object[] agg(ColumnAggregator... aggregators) {
         return Aggregator.forColumns(aggregators).aggregate(this);
     }
