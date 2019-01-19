@@ -2,9 +2,7 @@ package com.nhl.dflib.filter;
 
 import com.nhl.dflib.DFAsserts;
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.DataRow;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.filter.FilteredDataFrame;
 import org.junit.Test;
 
 public class FilteredDataFrameTest {
@@ -15,7 +13,7 @@ public class FilteredDataFrameTest {
         Index i = Index.withNames("a");
 
         FilteredDataFrame df = new FilteredDataFrame(
-                DataFrame.fromRows(i, DataRow.row(1), DataRow.row(4)),
+                DataFrame.fromRows(i, DataFrame.row(1), DataFrame.row(4)),
                 (c, r) -> ((int) c.get(r, 0)) > 2);
 
         new DFAsserts(df, "a")
@@ -33,8 +31,8 @@ public class FilteredDataFrameTest {
     @Test
     public void testIterator_NoMatch() {
         Index i = Index.withNames("a");
-        FilteredDataFrame df = new FilteredDataFrame(DataFrame.fromRows(i, DataRow.row(1),
-                DataRow.row(4)), (c, r) -> ((int) c.get(r, 0)) > 4);
+        FilteredDataFrame df = new FilteredDataFrame(DataFrame.fromRows(i, DataFrame.row(1),
+                DataFrame.row(4)), (c, r) -> ((int) c.get(r, 0)) > 4);
 
         new DFAsserts(df, "a").expectHeight(0);
     }
@@ -44,7 +42,7 @@ public class FilteredDataFrameTest {
 
         Index i = Index.withNames("a");
         DataFrame df = new FilteredDataFrame(
-                DataFrame.fromRows(i, DataRow.row("one"), DataRow.row("two")),
+                DataFrame.fromRows(i, DataFrame.row("one"), DataFrame.row("two")),
                 (c, r) -> c.get(r, 0).equals("two"))
                 .map(i, (c, r) -> c.mapColumn(r, "a", (cx, v) -> v[0] + "_"));
 
@@ -58,7 +56,7 @@ public class FilteredDataFrameTest {
         Index i = Index.withNames("a", "b");
 
         DataFrame df = new FilteredDataFrame(
-                DataFrame.fromRows(i, DataRow.row("one", 1), DataRow.row("two", 2)),
+                DataFrame.fromRows(i, DataFrame.row("one", 1), DataFrame.row("two", 2)),
                 (c, r) -> true).renameColumn("b", "c");
 
         new DFAsserts(df, "a", "c")

@@ -19,10 +19,10 @@ public class HeadDataFrameTest {
     public void initDataFrame() {
         this.columns = Index.withNames("a");
         this.rows = asList(
-                DataRow.row("one"),
-                DataRow.row("two"),
-                DataRow.row("three"),
-                DataRow.row("four"));
+                DataFrame.row("one"),
+                DataFrame.row("two"),
+                DataFrame.row("three"),
+                DataFrame.row("four"));
     }
 
     @Test
@@ -100,13 +100,13 @@ public class HeadDataFrameTest {
 
         Index i1 = Index.withNames("a");
         DataFrame df1 = DataFrame.fromRowsList(i1, asList(
-                DataRow.row(1),
-                DataRow.row(2)));
+                DataFrame.row(1),
+                DataFrame.row(2)));
 
         Index i2 = Index.withNames("b");
         DataFrame df2 = DataFrame.fromRowsList(i2, asList(
-                DataRow.row(10),
-                DataRow.row(20)));
+                DataFrame.row(10),
+                DataFrame.row(20)));
 
 
         DataFrame df = new HeadDataFrame(df1, 1).hConcat(df2);

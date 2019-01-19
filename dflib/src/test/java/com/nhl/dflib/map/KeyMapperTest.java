@@ -2,9 +2,7 @@ package com.nhl.dflib.map;
 
 import com.nhl.dflib.DFAsserts;
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.DataRow;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.map.KeyMapper;
 import org.junit.Test;
 
 import static java.util.Arrays.asList;
@@ -16,14 +14,14 @@ public class KeyMapperTest {
 
         Index i1 = Index.withNames("a", "b");
         DataFrame df1 = DataFrame.fromRowsList(i1, asList(
-                DataRow.row(1, "x"),
-                DataRow.row(2, "y")));
+                DataFrame.row(1, "x"),
+                DataFrame.row(2, "y")));
 
         Index i2 = Index.withNames("a", "b");
         DataFrame df2 = DataFrame.fromRowsList(i2, asList(
-                DataRow.row(2, "a"),
-                DataRow.row(2, "b"),
-                DataRow.row(3, "c")));
+                DataFrame.row(2, "a"),
+                DataFrame.row(2, "b"),
+                DataFrame.row(3, "c")));
 
         DataFrame df = df1.innerJoin(df2, KeyMapper.keyColumn("a"), KeyMapper.keyColumn("a"));
 
@@ -38,14 +36,14 @@ public class KeyMapperTest {
 
         Index i1 = Index.withNames("a", "b");
         DataFrame df1 = DataFrame.fromRowsList(i1, asList(
-                DataRow.row(1, "x"),
-                DataRow.row(2, "y")));
+                DataFrame.row(1, "x"),
+                DataFrame.row(2, "y")));
 
         Index i2 = Index.withNames("a", "b");
         DataFrame df2 = DataFrame.fromRowsList(i2, asList(
-                DataRow.row(2, "a"),
-                DataRow.row(2, "b"),
-                DataRow.row(3, "c")));
+                DataFrame.row(2, "a"),
+                DataFrame.row(2, "b"),
+                DataFrame.row(3, "c")));
 
         DataFrame df = df1.innerJoin(df2, KeyMapper.keyColumn(0), KeyMapper.keyColumn(0));
 
@@ -60,14 +58,14 @@ public class KeyMapperTest {
 
         Index i1 = Index.withNames("a", "b", "c");
         DataFrame df1 = DataFrame.fromRowsList(i1, asList(
-                DataRow.row(1, "x", 5L),
-                DataRow.row(2, "y", 4L)));
+                DataFrame.row(1, "x", 5L),
+                DataFrame.row(2, "y", 4L)));
 
         Index i2 = Index.withNames("x", "y", "z");
         DataFrame df2 = DataFrame.fromRowsList(i2, asList(
-                DataRow.row(2, "a", 6L),
-                DataRow.row(2, "y", 4L),
-                DataRow.row(3, "c", 5L)));
+                DataFrame.row(2, "a", 6L),
+                DataFrame.row(2, "y", 4L),
+                DataFrame.row(3, "c", 5L)));
 
         DataFrame df = df1.innerJoin(df2,
                 KeyMapper.keyColumn("a").and("b").and("c"),
@@ -83,14 +81,14 @@ public class KeyMapperTest {
 
         Index i1 = Index.withNames("a", "b", "c");
         DataFrame df1 = DataFrame.fromRowsList(i1, asList(
-                DataRow.row(1, "x", 5L),
-                DataRow.row(2, "y", 4L)));
+                DataFrame.row(1, "x", 5L),
+                DataFrame.row(2, "y", 4L)));
 
         Index i2 = Index.withNames("x", "y", "z");
         DataFrame df2 = DataFrame.fromRowsList(i2, asList(
-                DataRow.row(2, "a", 6L),
-                DataRow.row(2, "y", 4L),
-                DataRow.row(3, "c", 5L)));
+                DataFrame.row(2, "a", 6L),
+                DataFrame.row(2, "y", 4L),
+                DataFrame.row(3, "c", 5L)));
 
         DataFrame df = df1.innerJoin(df2,
                 KeyMapper.keyColumn(0).and(1).and(2),

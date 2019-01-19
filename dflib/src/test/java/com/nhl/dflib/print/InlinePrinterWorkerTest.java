@@ -1,6 +1,6 @@
 package com.nhl.dflib.print;
 
-import com.nhl.dflib.DataRow;
+import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,10 +19,10 @@ public class InlinePrinterWorkerTest {
     public void initDataFrameParts() {
         this.columns = Index.withNames("col1", "column2");
         this.rows = asList(
-                DataRow.row("one", 1),
-                DataRow.row("two", 2),
-                DataRow.row("three", 3),
-                DataRow.row("four", 4));
+                DataFrame.row("one", 1),
+                DataFrame.row("two", 2),
+                DataFrame.row("three", 3),
+                DataFrame.row("four", 4));
     }
 
     @Test

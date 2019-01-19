@@ -132,6 +132,16 @@ public interface DataFrame extends Iterable<Object[]> {
     }
 
     /**
+     * Syntactic sugar for DataFrame row (aka simple Object[]) construction. Equivalent to "new Object[] {x, y, z}".
+     *
+     * @param values a varargs array of values
+     * @return "values" vararg unchanged
+     */
+    static Object[] row(Object... values) {
+        return values;
+    }
+
+    /**
      * Returns DataFrame column index.
      *
      * @return DataFrame column index
@@ -259,7 +269,7 @@ public interface DataFrame extends Iterable<Object[]> {
     }
 
     default <V extends Comparable<? super V>> DataFrame sortByColumns(String... columns) {
-        if(columns.length == 0) {
+        if (columns.length == 0) {
             return this;
         }
 
@@ -267,7 +277,7 @@ public interface DataFrame extends Iterable<Object[]> {
     }
 
     default <V extends Comparable<? super V>> DataFrame sortByColumns(int... columns) {
-        if(columns.length == 0) {
+        if (columns.length == 0) {
             return this;
         }
 

@@ -2,7 +2,6 @@ package com.nhl.dflib.join;
 
 import com.nhl.dflib.DFAsserts;
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.DataRow;
 import com.nhl.dflib.Index;
 import org.junit.Test;
 
@@ -15,14 +14,14 @@ public class JoinPredicateTest {
 
         Index i1 = Index.withNames("a", "b");
         DataFrame df1 = DataFrame.fromRowsList(i1, asList(
-                DataRow.row(1, "x"),
-                DataRow.row(2, "y")));
+                DataFrame.row(1, "x"),
+                DataFrame.row(2, "y")));
 
         Index i2 = Index.withNames("c", "d");
         DataFrame df2 = DataFrame.fromRowsList(i2, asList(
-                DataRow.row(2, "a"),
-                DataRow.row(2, "b"),
-                DataRow.row(3, "c")));
+                DataFrame.row(2, "a"),
+                DataFrame.row(2, "b"),
+                DataFrame.row(3, "c")));
 
         DataFrame df = df1.innerJoin(df2, JoinPredicate.on("a", "c"));
 
@@ -37,14 +36,14 @@ public class JoinPredicateTest {
 
         Index i1 = Index.withNames("a", "b");
         DataFrame df1 = DataFrame.fromRowsList(i1, asList(
-                DataRow.row(1, "x"),
-                DataRow.row(2, "y")));
+                DataFrame.row(1, "x"),
+                DataFrame.row(2, "y")));
 
         Index i2 = Index.withNames("c", "d");
         DataFrame df2 = DataFrame.fromRowsList(i2, asList(
-                DataRow.row(2, "a"),
-                DataRow.row(2, "b"),
-                DataRow.row(3, "c")));
+                DataFrame.row(2, "a"),
+                DataFrame.row(2, "b"),
+                DataFrame.row(3, "c")));
 
         DataFrame df = df1.innerJoin(df2, JoinPredicate.on(0, 0));
 
@@ -59,14 +58,14 @@ public class JoinPredicateTest {
 
         Index i1 = Index.withNames("a", "b");
         DataFrame df1 = DataFrame.fromRowsList(i1, asList(
-                DataRow.row(1, "x"),
-                DataRow.row(2, "y")));
+                DataFrame.row(1, "x"),
+                DataFrame.row(2, "y")));
 
         Index i2 = Index.withNames("c", "d");
         DataFrame df2 = DataFrame.fromRowsList(i2, asList(
-                DataRow.row(2, "a"),
-                DataRow.row(2, "y"),
-                DataRow.row(3, "c")));
+                DataFrame.row(2, "a"),
+                DataFrame.row(2, "y"),
+                DataFrame.row(3, "c")));
 
         DataFrame df = df1.innerJoin(df2, JoinPredicate.on("a", "c").and("b", "d"));
 
@@ -80,14 +79,14 @@ public class JoinPredicateTest {
 
         Index i1 = Index.withNames("a", "b");
         DataFrame df1 = DataFrame.fromRowsList(i1, asList(
-                DataRow.row(1, "x"),
-                DataRow.row(2, "y")));
+                DataFrame.row(1, "x"),
+                DataFrame.row(2, "y")));
 
         Index i2 = Index.withNames("c", "d");
         DataFrame df2 = DataFrame.fromRowsList(i2, asList(
-                DataRow.row(2, "a"),
-                DataRow.row(2, "y"),
-                DataRow.row(3, "c")));
+                DataFrame.row(2, "a"),
+                DataFrame.row(2, "y"),
+                DataFrame.row(3, "c")));
 
         DataFrame df = df1.innerJoin(df2, JoinPredicate.on(0, 0).and(1, 1));
 

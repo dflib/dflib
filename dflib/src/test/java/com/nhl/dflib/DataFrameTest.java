@@ -25,7 +25,7 @@ public class DataFrameTest {
         List<Bean> beans = asList(new Bean(5, 4), new Bean(3, 1));
 
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromObjects(i, beans, b -> DataRow.row(b.a, b.b));
+        DataFrame df = DataFrame.fromObjects(i, beans, b -> DataFrame.row(b.a, b.b));
 
         new DFAsserts(df, i)
                 .expectHeight(2)
