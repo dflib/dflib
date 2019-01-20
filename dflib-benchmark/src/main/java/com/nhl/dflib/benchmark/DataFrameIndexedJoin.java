@@ -10,6 +10,7 @@ import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
@@ -26,7 +27,8 @@ import java.util.stream.StreamSupport;
 @State(Scope.Thread)
 public class DataFrameIndexedJoin {
 
-    private static final int DATASET_SIZE = 1_000_000;
+    @Param("1000000")
+    public int rows;
 
     private DataFrame df1;
     private DataFrame df2;
@@ -36,11 +38,11 @@ public class DataFrameIndexedJoin {
         Index index = Index.withNames("id", "data", "rev_id", "text");
         df1 = DataFrame.fromStream(
                 index,
-                StreamSupport.stream(new DataSetSpliterator(DATASET_SIZE), false)
+                StreamSupport.stream(new DataSetSpliterator(rows), false)
         );
         df2 = DataFrame.fromStream(
                 index,
-                StreamSupport.stream(new DataSetSpliterator(DATASET_SIZE), false)
+                StreamSupport.stream(new DataSetSpliterator(rows), false)
         );
     }
 

@@ -10,6 +10,7 @@ import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
@@ -27,8 +28,11 @@ import java.util.stream.StreamSupport;
 @State(Scope.Thread)
 public class DataFrameGroupBy {
 
-    private static final int DATASET_SIZE = 1_000_000;
-    private static final int GROUPS_SIZE = 500;
+    @Param("1000000")
+    public int rows;
+
+    @Param("500")
+    public int groups;
 
     private DataFrame df;
     private GroupBy gb;
@@ -40,9 +44,9 @@ public class DataFrameGroupBy {
         Index index = Index.withNames("id", "data", "rev_id", "text");
         df = DataFrame.fromStream(
                 index,
-                StreamSupport.stream(new DataSetSpliterator(DATASET_SIZE), false))
+                StreamSupport.stream(new DataSetSpliterator(rows), false))
                 // reduce the number of categories
-                .mapColumn("rev_id", (Integer i) -> random.nextInt(GROUPS_SIZE));
+                .mapColumn("rev_id", (Integer i) -> random.nextInt(groups));
 
         gb = df.groupBy("rev_id");
     }
