@@ -2,8 +2,6 @@ package com.nhl.dflib.benchmark;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.join.JoinPredicate;
-import com.nhl.dflib.join.JoinType;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -24,9 +22,9 @@ import java.util.stream.StreamSupport;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(2)
 @State(Scope.Thread)
-public class DataFrameHeavyJoin {
+public class DataFrameConcat {
 
-    private static final int DATASET_SIZE = 5_000;
+    private static final int DATASET_SIZE = 1_000_000;
 
     private DataFrame df1;
     private DataFrame df2;
@@ -45,30 +43,16 @@ public class DataFrameHeavyJoin {
     }
 
     @Benchmark
-    public Object leftJoin() {
+    public Object hConcat() {
         return df1
-                .join(df2, JoinPredicate.on("rev_id", "id"), JoinType.left)
+                .hConcat(df2)
                 .materialize().iterator();
     }
 
     @Benchmark
-    public Object rightJoin() {
+    public Object vConcat() {
         return df1
-                .join(df2, JoinPredicate.on("rev_id", "id"), JoinType.right)
-                .materialize().iterator();
-    }
-
-    @Benchmark
-    public Object innerJoin() {
-        return df1
-                .join(df2, JoinPredicate.on("rev_id", "id"), JoinType.inner)
-                .materialize().iterator();
-    }
-
-    @Benchmark
-    public Object fullJoin() {
-        return df1
-                .join(df2, JoinPredicate.on("rev_id", "id"), JoinType.inner)
+                .vConcat(df2)
                 .materialize().iterator();
     }
 
