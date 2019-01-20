@@ -15,6 +15,7 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.StreamSupport;
 
@@ -27,17 +28,21 @@ import java.util.stream.StreamSupport;
 public class DataFrameGroupBy {
 
     private static final int DATASET_SIZE = 1_000_000;
+    private static final int GROUPS_SIZE = 500;
 
     private DataFrame df;
     private GroupBy gb;
 
     @Setup
     public void setUp() {
+        Random random = new Random();
+
         Index index = Index.withNames("id", "data", "rev_id", "text");
         df = DataFrame.fromStream(
                 index,
-                StreamSupport.stream(new DataSetSpliterator(DATASET_SIZE), false)
-        );
+                StreamSupport.stream(new DataSetSpliterator(DATASET_SIZE), false))
+                // reduce the number of categories
+                .mapColumn("rev_id", (Integer i) -> random.nextInt(GROUPS_SIZE));
 
         gb = df.groupBy("rev_id");
     }
