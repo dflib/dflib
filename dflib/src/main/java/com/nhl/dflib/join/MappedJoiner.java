@@ -140,7 +140,7 @@ public class MappedJoiner extends BaseJoiner {
     private DataFrame fullJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
 
         List<Object[]> lRows = new ArrayList<>();
-        Set<Object[]> rRows = new LinkedHashSet<>();
+        List<Object[]> rRows = new ArrayList<>();
 
         Index lColumns = lf.getColumns();
 
@@ -165,12 +165,10 @@ public class MappedJoiner extends BaseJoiner {
         }
 
         // add missing right rows
-        for (List<Object[]> rrl : rightIndex.values()) {
-            for (Object[] rr : rrl) {
-                if (!seenRights.contains(rr)) {
-                    lRows.add(null);
-                    rRows.add(rr);
-                }
+        for (Object[] rr : rf) {
+            if (!seenRights.contains(rr)) {
+                lRows.add(null);
+                rRows.add(rr);
             }
         }
 
