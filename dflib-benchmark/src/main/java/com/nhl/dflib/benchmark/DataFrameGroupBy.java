@@ -1,6 +1,7 @@
 package com.nhl.dflib.benchmark;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.aggregate.Aggregator;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -23,11 +24,12 @@ import java.util.stream.StreamSupport;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(2)
 @State(Scope.Thread)
-public class DataFrameOperation {
+public class DataFrameGroupBy {
 
-    private static final int DATASET_SIZE = 5_000_000;
+    private static final int DATASET_SIZE = 1_000_000;
 
     private DataFrame df;
+    private GroupBy gb;
 
     @Setup
     public void setUp() {
@@ -36,56 +38,19 @@ public class DataFrameOperation {
                 index,
                 StreamSupport.stream(new DataSetSpliterator(DATASET_SIZE), false)
         );
+
+        gb = df.groupBy("rev_id");
     }
 
     @Benchmark
-    public Object median() {
-        return df.agg(Aggregator.median("id"));
+    public Object groupBy() {
+        return df.groupBy("rev_id");
     }
 
     @Benchmark
-    public Object filter() {
-        return df
-                .filterByColumn("id", (Integer i) -> i % 2 == 0)
+    public Object aggregate() {
+        return gb.agg(Aggregator.sum("id"))
                 .materialize()
                 .iterator();
-    }
-
-    @Benchmark
-    public Object mapColumn() {
-        return df
-                .mapColumn("data", (String s) -> s.split("_"))
-                .materialize()
-                .iterator();
-    }
-
-    @Benchmark
-    public Object medianWithFilter() {
-        return df
-                .filterByColumn("id", (Integer i) -> i % 2 == 0)
-                .agg(Aggregator.median(0));
-    }
-
-    @Benchmark
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public Object head() {
-        return df
-                .head(100)
-                .materialize()
-                .iterator();
-    }
-
-    @Benchmark
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public long height() {
-        return df.height();
-    }
-
-    @Benchmark
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public long width() {
-        return df.width();
     }
 }
-
-
