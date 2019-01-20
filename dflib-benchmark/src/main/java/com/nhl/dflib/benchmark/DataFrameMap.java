@@ -2,7 +2,6 @@ package com.nhl.dflib.benchmark;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.aggregate.Aggregator;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -23,9 +22,9 @@ import java.util.stream.StreamSupport;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(2)
 @State(Scope.Thread)
-public class DataFrameOperation {
+public class DataFrameMap {
 
-    private static final int DATASET_SIZE = 5_000_000;
+    private static final int DATASET_SIZE = 1_000_000;
 
     private DataFrame df;
 
@@ -39,45 +38,19 @@ public class DataFrameOperation {
     }
 
     @Benchmark
-    public Object median() {
-        return df.agg(Aggregator.median("id"));
-    }
-
-    @Benchmark
-    public Object filter() {
+    public Object map() {
         return df
-                .filterByColumn("id", (Integer i) -> i % 2 == 0)
+                .map((c, r) -> c.copyToTarget(r))
                 .materialize()
                 .iterator();
     }
 
     @Benchmark
-    public Object medianWithFilter() {
+    public Object mapColumn() {
         return df
-                .filterByColumn("id", (Integer i) -> i % 2 == 0)
-                .agg(Aggregator.median(0));
-    }
-
-    @Benchmark
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public Object head() {
-        return df
-                .head(100)
+                // using cheap "map" function to test benchmark DF overhead
+                .mapColumn("rev_id", (Integer i) -> 1)
                 .materialize()
                 .iterator();
-    }
-
-    @Benchmark
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public long height() {
-        return df.height();
-    }
-
-    @Benchmark
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public long width() {
-        return df.width();
     }
 }
-
-
