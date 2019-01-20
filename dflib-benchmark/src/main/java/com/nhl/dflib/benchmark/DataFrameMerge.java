@@ -83,4 +83,11 @@ public class DataFrameMerge {
                 .materialize().iterator();
     }
 
+    @Benchmark
+    public Object vConcat() {
+        return df1
+                .vConcat(df2)
+                .materialize().iterator();
+    }
+
 }
