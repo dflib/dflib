@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>dfbenchmark</artifactId>
+    <artifactId>dflib-benchmark</artifactId>
 
     <properties>
         <jmh.version>1.21</jmh.version>
