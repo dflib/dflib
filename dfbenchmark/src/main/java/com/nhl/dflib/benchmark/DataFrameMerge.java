@@ -1,11 +1,8 @@
 package com.nhl.dflib.benchmark;
 
-import java.util.concurrent.TimeUnit;
-import java.util.stream.StreamSupport;
-
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.join.JoinSemantics;
+import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.KeyMapper;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -17,6 +14,9 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
+
+import java.util.concurrent.TimeUnit;
+import java.util.stream.StreamSupport;
 
 @Warmup(iterations = 2, time = 1)
 @Measurement(iterations = 3, time = 1)
@@ -47,7 +47,7 @@ public class DataFrameMerge {
     @Benchmark
     public Object indexJoinLeft() {
         return df1
-                .join(df2, KeyMapper.keyColumn("id"), KeyMapper.keyColumn("rev_id"), JoinSemantics.left)
+                .join(df2, KeyMapper.keyColumn("id"), KeyMapper.keyColumn("rev_id"), JoinType.left)
                 .materialize()
                 .iterator();
     }
@@ -55,7 +55,7 @@ public class DataFrameMerge {
     @Benchmark
     public Object indexJoinRight() {
         return df1
-                .join(df2, KeyMapper.keyColumn("id"), KeyMapper.keyColumn("rev_id"), JoinSemantics.right)
+                .join(df2, KeyMapper.keyColumn("id"), KeyMapper.keyColumn("rev_id"), JoinType.right)
                 .materialize()
                 .iterator();
     }
@@ -63,7 +63,7 @@ public class DataFrameMerge {
     @Benchmark
     public Object indexJoinInner() {
         return df1
-                .join(df2, KeyMapper.keyColumn("id"), KeyMapper.keyColumn("rev_id"), JoinSemantics.inner)
+                .join(df2, KeyMapper.keyColumn("id"), KeyMapper.keyColumn("rev_id"), JoinType.inner)
                 .materialize()
                 .iterator();
     }
@@ -71,15 +71,15 @@ public class DataFrameMerge {
     @Benchmark
     public Object indexJoinFull() {
         return df1
-                .join(df2, KeyMapper.keyColumn("id"), KeyMapper.keyColumn("rev_id"), JoinSemantics.full)
+                .join(df2, KeyMapper.keyColumn("id"), KeyMapper.keyColumn("rev_id"), JoinType.full)
                 .materialize()
                 .iterator();
     }
 
     @Benchmark
-    public Object zip() {
+    public Object hConcat() {
         return df1
-                .zip(df2)
+                .hConcat(df2)
                 .materialize().iterator();
     }
 

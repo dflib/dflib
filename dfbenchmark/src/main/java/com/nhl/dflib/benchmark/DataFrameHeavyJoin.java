@@ -1,12 +1,9 @@
 package com.nhl.dflib.benchmark;
 
-import java.util.concurrent.TimeUnit;
-import java.util.stream.StreamSupport;
-
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.join.JoinPredicate;
-import com.nhl.dflib.join.JoinSemantics;
+import com.nhl.dflib.join.JoinType;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -17,6 +14,9 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
+
+import java.util.concurrent.TimeUnit;
+import java.util.stream.StreamSupport;
 
 @Warmup(iterations = 2, time = 1)
 @Measurement(iterations = 3, time = 1)
@@ -47,28 +47,28 @@ public class DataFrameHeavyJoin {
     @Benchmark
     public Object leftJoin() {
         return df1
-                .join(df2, JoinPredicate.on("rev_id", "id"), JoinSemantics.left)
+                .join(df2, JoinPredicate.on("rev_id", "id"), JoinType.left)
                 .materialize().iterator();
     }
 
     @Benchmark
     public Object rightJoin() {
         return df1
-                .join(df2, JoinPredicate.on("rev_id", "id"), JoinSemantics.right)
+                .join(df2, JoinPredicate.on("rev_id", "id"), JoinType.right)
                 .materialize().iterator();
     }
 
     @Benchmark
     public Object innerJoin() {
         return df1
-                .join(df2, JoinPredicate.on("rev_id", "id"), JoinSemantics.inner)
+                .join(df2, JoinPredicate.on("rev_id", "id"), JoinType.inner)
                 .materialize().iterator();
     }
 
     @Benchmark
     public Object fullJoin() {
         return df1
-                .join(df2, JoinPredicate.on("rev_id", "id"), JoinSemantics.inner)
+                .join(df2, JoinPredicate.on("rev_id", "id"), JoinType.inner)
                 .materialize().iterator();
     }
 

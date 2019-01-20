@@ -1,8 +1,5 @@
 package com.nhl.dflib.benchmark;
 
-import java.util.concurrent.TimeUnit;
-import java.util.stream.StreamSupport;
-
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.aggregate.Aggregator;
@@ -16,6 +13,9 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
+
+import java.util.concurrent.TimeUnit;
+import java.util.stream.StreamSupport;
 
 @Warmup(iterations = 3, time = 1)
 @Measurement(iterations = 3, time = 1)
@@ -46,7 +46,7 @@ public class DataFrameOperation {
     @Benchmark
     public Object filter() {
         return df
-                .filterColumn("id", (Integer i) -> i % 2 == 0)
+                .filterByColumn("id", (Integer i) -> i % 2 == 0)
                 .materialize()
                 .iterator();
     }
@@ -71,7 +71,7 @@ public class DataFrameOperation {
     @Benchmark
     public Object medianWithFilter() {
         return df
-                .filterColumn("id", (Integer i) -> i % 2 == 0)
+                .filterByColumn("id", (Integer i) -> i % 2 == 0)
                 .agg(Aggregator.median(0));
     }
 
