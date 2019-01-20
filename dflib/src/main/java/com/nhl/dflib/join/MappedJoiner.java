@@ -174,7 +174,7 @@ public class MappedJoiner extends BaseJoiner {
 
         return zipJoinSides(joinedColumns,
                 DataFrame.fromRowsList(lf.getColumns(), lRows),
-                DataFrame.fromRows(rf.getColumns(), rRows));
+                DataFrame.fromRowsList(rf.getColumns(), rRows));
     }
 
     // TODO: this is the same exact logic as in Grouper, only without wrapping the Map in a DataFrame.. Also it uses
