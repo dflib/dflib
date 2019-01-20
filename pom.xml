@@ -11,6 +11,7 @@
 
     <modules>
         <module>dflib</module>
+        <module>dfbenchmark</module>
     </modules>
 
     <licenses>
