@@ -110,7 +110,7 @@ public abstract class Index implements Iterable<IndexPosition> {
     }
 
     public Object get(Object[] row, int columnPos) {
-        return getPositions()[columnPos].get(row);
+        return positions[columnPos].get(row);
     }
 
     public Index addNames(String... extraNames) {
