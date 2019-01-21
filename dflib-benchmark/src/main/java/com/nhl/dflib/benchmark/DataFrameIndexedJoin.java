@@ -55,6 +55,15 @@ public class DataFrameIndexedJoin {
     }
 
     @Benchmark
+    public Object leftJoin_ByPosition() {
+        return df1
+                .join(df2, KeyMapper.keyColumn(0), KeyMapper.keyColumn(2), JoinType.left)
+                .materialize()
+                .iterator();
+    }
+
+
+    @Benchmark
     public Object rightJoin() {
         return df1
                 .join(df2, KeyMapper.keyColumn("id"), KeyMapper.keyColumn("rev_id"), JoinType.right)
