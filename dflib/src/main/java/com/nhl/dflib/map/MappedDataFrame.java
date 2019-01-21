@@ -24,7 +24,7 @@ public class MappedDataFrame implements DataFrame {
     }
 
     @Override
-    public long height() {
+    public int height() {
         return source.height();
     }
 

@@ -153,12 +153,12 @@ public interface DataFrame extends Iterable<Object[]> {
      * the DataFrame this operation may or may not be constant speed. In the worst case it would require a full scan
      * through all rows.
      *
-     * @return a long indicating the number of rows in the DataFrame
+     * @return an int indicating the number of rows in the DataFrame
      */
-    default long height() {
+    default int height() {
 
         // not a very efficient implementation; implementors should provide faster versions when possible
-        long count = 0;
+        int count = 0;
         Iterator<Object[]> it = iterator();
         while (it.hasNext()) {
             count++;
@@ -167,7 +167,7 @@ public interface DataFrame extends Iterable<Object[]> {
         return count;
     }
 
-    default long width() {
+    default int width() {
         return getColumns().size();
     }
 

@@ -31,7 +31,7 @@ public class SimpleDataFrame implements DataFrame {
     }
 
     @Override
-    public long height() {
+    public int height() {
 
         // avoid iteration if possible
         if (source instanceof Collection) {
