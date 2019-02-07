@@ -3,7 +3,7 @@ package com.nhl.dflib.groupby;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.map.KeyMapper;
+import com.nhl.dflib.map.Hasher;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -12,10 +12,10 @@ import java.util.Map;
 
 public class Grouper {
 
-    private KeyMapper keyMapper;
+    private Hasher hasher;
 
-    public Grouper(KeyMapper keyMapper) {
-        this.keyMapper = keyMapper;
+    public Grouper(Hasher hasher) {
+        this.hasher = hasher;
     }
 
     @SuppressWarnings("unchecked")
@@ -27,7 +27,7 @@ public class Grouper {
         Index columns = df.getColumns();
 
         for (Object[] r : df) {
-            Object key = keyMapper.map(columns, r);
+            Object key = hasher.map(columns, r);
             ((List<Object[]>) groups.computeIfAbsent(key, k -> new ArrayList<>())).add(r);
         }
 

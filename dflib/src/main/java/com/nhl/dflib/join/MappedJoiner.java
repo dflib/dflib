@@ -2,7 +2,7 @@ package com.nhl.dflib.join;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.map.KeyMapper;
+import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.concat.HConcat;
 
 import java.util.ArrayList;
@@ -18,17 +18,17 @@ import java.util.Set;
  */
 public class MappedJoiner extends BaseJoiner {
 
-    private KeyMapper leftKeyMapper;
-    private KeyMapper rightKeyMapper;
+    private Hasher leftHasher;
+    private Hasher rightHasher;
     private JoinType semantics;
 
     public MappedJoiner(
-            KeyMapper leftKeyMapper,
-            KeyMapper rightKeyMapper,
+            Hasher leftHasher,
+            Hasher rightHasher,
             JoinType semantics) {
 
-        this.leftKeyMapper = leftKeyMapper;
-        this.rightKeyMapper = rightKeyMapper;
+        this.leftHasher = leftHasher;
+        this.rightHasher = rightHasher;
         this.semantics = semantics;
     }
 
@@ -58,11 +58,11 @@ public class MappedJoiner extends BaseJoiner {
 
         Index lColumns = lf.getColumns();
 
-        Map<Object, List<Object[]>> rightIndex = groupByKey(rightKeyMapper, rf);
+        Map<Object, List<Object[]>> rightIndex = groupByKey(rightHasher, rf);
 
         for (Object[] lr : lf) {
 
-            Object lKey = leftKeyMapper.map(lColumns, lr);
+            Object lKey = leftHasher.map(lColumns, lr);
             List<Object[]> rightMatches = rightIndex.get(lKey);
             if (rightMatches != null) {
                 for (Object[] rr : rightMatches) {
@@ -84,11 +84,11 @@ public class MappedJoiner extends BaseJoiner {
 
         Index lColumns = lf.getColumns();
 
-        Map<Object, List<Object[]>> rightIndex = groupByKey(rightKeyMapper, rf);
+        Map<Object, List<Object[]>> rightIndex = groupByKey(rightHasher, rf);
 
         for (Object[] lr : lf) {
 
-            Object lKey = leftKeyMapper.map(lColumns, lr);
+            Object lKey = leftHasher.map(lColumns, lr);
             List<Object[]> rightMatches = rightIndex.get(lKey);
 
             if (rightMatches != null) {
@@ -114,11 +114,11 @@ public class MappedJoiner extends BaseJoiner {
 
         Index rColumns = rf.getColumns();
 
-        Map<Object, List<Object[]>> leftIndex = groupByKey(leftKeyMapper, lf);
+        Map<Object, List<Object[]>> leftIndex = groupByKey(leftHasher, lf);
 
         for (Object[] rr : rf) {
 
-            Object rKey = rightKeyMapper.map(rColumns, rr);
+            Object rKey = rightHasher.map(rColumns, rr);
             List<Object[]> leftMatches = leftIndex.get(rKey);
 
             if (leftMatches != null) {
@@ -144,12 +144,12 @@ public class MappedJoiner extends BaseJoiner {
 
         Index lColumns = lf.getColumns();
 
-        Map<Object, List<Object[]>> rightIndex = groupByKey(rightKeyMapper, rf);
+        Map<Object, List<Object[]>> rightIndex = groupByKey(rightHasher, rf);
         Set<Object[]> seenRights = new LinkedHashSet<>();
 
         for (Object[] lr : lf) {
 
-            Object lKey = leftKeyMapper.map(lColumns, lr);
+            Object lKey = leftHasher.map(lColumns, lr);
             List<Object[]> rightMatches = rightIndex.get(lKey);
 
             if (rightMatches != null) {
@@ -180,14 +180,14 @@ public class MappedJoiner extends BaseJoiner {
     // TODO: this is the same exact logic as in Grouper, only without wrapping the Map in a DataFrame.. Also it uses
     //  HashMap instead of LinkedHashMap which is somewhat faster for "get". Is it worth
     //  reusing the Grouper here vs. small overhead it introduces?
-    private Map<Object, List<Object[]>> groupByKey(KeyMapper keyMapper, DataFrame df) {
+    private Map<Object, List<Object[]>> groupByKey(Hasher hasher, DataFrame df) {
 
         Index columns = df.getColumns();
 
         Map<Object, List<Object[]>> index = new HashMap<>();
 
         for (Object[] r : df) {
-            Object key = keyMapper.map(columns, r);
+            Object key = hasher.map(columns, r);
             index.computeIfAbsent(key, k -> new ArrayList<>()).add(r);
         }
 

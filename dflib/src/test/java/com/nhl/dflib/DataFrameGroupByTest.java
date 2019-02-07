@@ -1,7 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.Aggregator;
-import com.nhl.dflib.map.KeyMapper;
+import com.nhl.dflib.map.Hasher;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -22,7 +22,7 @@ public class DataFrameGroupByTest {
                 0, "a",
                 1, "x");
 
-        GroupBy gb = df.groupBy(KeyMapper.keyColumn("a"));
+        GroupBy gb = df.groupBy(Hasher.keyColumn("a"));
         assertNotNull(gb);
 
         assertEquals(3, gb.size());
@@ -48,7 +48,7 @@ public class DataFrameGroupByTest {
         Index i = Index.withNames("a", "b");
         DataFrame df = DataFrame.fromSequence(i);
 
-        GroupBy gb = df.groupBy(KeyMapper.keyColumn("a"));
+        GroupBy gb = df.groupBy(Hasher.keyColumn("a"));
         assertNotNull(gb);
 
         assertEquals(0, gb.size());

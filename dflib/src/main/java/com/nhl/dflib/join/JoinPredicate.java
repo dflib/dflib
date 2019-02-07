@@ -1,14 +1,14 @@
 package com.nhl.dflib.join;
 
-import com.nhl.dflib.map.KeyMapper;
+import com.nhl.dflib.map.Hasher;
 
 import java.util.Objects;
 
 /**
  * Defines a join condition for a pair of rows. A slower, but more flexible version of join condition compared to
- * {@link KeyMapper}.
+ * {@link Hasher}.
  *
- * @see KeyMapper
+ * @see Hasher
  */
 @FunctionalInterface
 public interface JoinPredicate {

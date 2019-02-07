@@ -17,7 +17,7 @@ import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.map.RowConsumer;
 import com.nhl.dflib.map.RowMapper;
 import com.nhl.dflib.map.RowToValueMapper;
-import com.nhl.dflib.map.KeyMapper;
+import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.map.MappedDataFrame;
 import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.sort.SortedDataFrame;
@@ -350,9 +350,11 @@ public interface DataFrame extends Iterable<Object[]> {
     }
 
     /**
-     * Joins this DataFrame with another DataFrame based on a row predicate and "inner" join semantics. This style of
-     * join has a rather slow O(N^2) performance, as each pair of rows needs to be evaluated. Consider using indexed
-     * joins instead, e.g. {@link #innerJoin(DataFrame, KeyMapper, KeyMapper)}
+     * Joins this DataFrame with another DataFrame based on a row predicate and specified join semantics. Uses
+     * <a href="https://en.wikipedia.org/wiki/Nested_loop_join">"nested loop join"</a> algorithm, which is rather slow,
+     * exhibiting O(N*M) performance. Most of the time you should consider using faster "hash" joins instead, e.g.
+     * {@link #innerJoin(DataFrame, Hasher, Hasher)}. Use this type of join only when a predicate can not be reduced
+     * to a simple equality of hashes.
      *
      * @param df a DataFrame to join with this one
      * @param p  join condition of a pair of rows
@@ -363,9 +365,11 @@ public interface DataFrame extends Iterable<Object[]> {
     }
 
     /**
-     * Joins this DataFrame with another DataFrame based on a row predicate and specified join semantics. This style of
-     * join has a rather slow O(N^2) performance, as each pair of rows needs to be evaluated. Consider using indexed
-     * joins instead, e.g. {@link #join(DataFrame, KeyMapper, KeyMapper, JoinType)}.
+     * Joins this DataFrame with another DataFrame based on a row predicate and specified join semantics. Uses
+     * <a href="https://en.wikipedia.org/wiki/Nested_loop_join">"nested loop join"</a> algorithm, which is rather slow,
+     * exhibiting O(N*M) performance. Most of the time you should consider using faster "hash" joins instead, e.g.
+     * {@link #join(DataFrame, Hasher, Hasher, JoinType)}. Use this type of join only when a predicate can not be reduced
+     * to a simple equality of hashes.
      *
      * @param df  a DataFrame to join with this one
      * @param p   join condition of a pair of rows
@@ -379,38 +383,40 @@ public interface DataFrame extends Iterable<Object[]> {
     }
 
     /**
-     * Calculates an "indexed" inner join. The join is performed by comparing left and right row "keys", which is
-     * a faster version to join rows compared to using join predicate ({@link #innerJoin(DataFrame, JoinPredicate)}).
+     * Calculates a join using <a href="https://en.wikipedia.org/wiki/Hash_join">"hash join"</a> algorithm. It requires
+     * two custom "hash" functions for the rows on the left and the right sides of the join, each producing
+     * values, whose equality can be used as a join condition. This is the fastest known way to join two data sets.
      *
-     * @param df             a DataFrame to join with this one
-     * @param leftKeyMapper
-     * @param rightKeyMapper
+     * @param df          a DataFrame to join with this one
+     * @param leftHasher  a hash function for the left-side rows
+     * @param rightHasher a hash function for the right-side rows
      * @param <K>
      * @return a DataFrame that is a result of this join
      */
     default <K> DataFrame innerJoin(
             DataFrame df,
-            KeyMapper leftKeyMapper,
-            KeyMapper rightKeyMapper) {
-        return join(df, leftKeyMapper, rightKeyMapper, JoinType.inner);
+            Hasher leftHasher,
+            Hasher rightHasher) {
+        return join(df, leftHasher, rightHasher, JoinType.inner);
     }
 
     /**
-     * Calculates an "indexed" join. The join is performed by comparing left and right row "keys", which is a faster
-     * version to join rows compared to using join predicate ({@link #join(DataFrame, JoinPredicate, JoinType)}).
+     * Calculates a join using <a href="https://en.wikipedia.org/wiki/Hash_join">hash join</a> algorithm. It requires
+     * two custom "hash" functions for the rows on the left and the right sides of the join, each producing
+     * values, whose equality can be used as a join condition. This is the fastest known way to join two data sets.
      *
-     * @param df             a DataFrame to join with this one
-     * @param leftKeyMapper
-     * @param rightKeyMapper
-     * @param how
+     * @param df          a DataFrame to join with this one
+     * @param leftHasher  a hash function for the left-side rows
+     * @param rightHasher a hash function for the right-side rows
+     * @param how         join semantics
      * @return a DataFrame that is a result of this join
      */
     default DataFrame join(
             DataFrame df,
-            KeyMapper leftKeyMapper,
-            KeyMapper rightKeyMapper,
+            Hasher leftHasher,
+            Hasher rightHasher,
             JoinType how) {
-        MappedJoiner joiner = new MappedJoiner(leftKeyMapper, rightKeyMapper, how);
+        MappedJoiner joiner = new MappedJoiner(leftHasher, rightHasher, how);
         Index joinedIndex = joiner.joinIndex(getColumns(), df.getColumns());
         return joiner.joinRows(joinedIndex, this, df);
     }
@@ -442,7 +448,7 @@ public interface DataFrame extends Iterable<Object[]> {
             throw new IllegalArgumentException("No columns for 'groupBy' specified");
         }
 
-        KeyMapper mapper = KeyMapper.keyColumn(columns[0]);
+        Hasher mapper = Hasher.keyColumn(columns[0]);
         for (int i = 1; i < columns.length; i++) {
             mapper = mapper.and(columns[i]);
         }
@@ -450,7 +456,7 @@ public interface DataFrame extends Iterable<Object[]> {
         return groupBy(mapper);
     }
 
-    default GroupBy groupBy(KeyMapper by) {
+    default GroupBy groupBy(Hasher by) {
         return new Grouper(by).group(this);
     }
 

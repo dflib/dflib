@@ -3,7 +3,7 @@ package com.nhl.dflib.benchmark;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.join.JoinType;
-import com.nhl.dflib.map.KeyMapper;
+import com.nhl.dflib.map.Hasher;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -49,7 +49,7 @@ public class DataFrameIndexedJoin {
     @Benchmark
     public Object leftJoin() {
         return df1
-                .join(df2, KeyMapper.keyColumn("id"), KeyMapper.keyColumn("rev_id"), JoinType.left)
+                .join(df2, Hasher.keyColumn("id"), Hasher.keyColumn("rev_id"), JoinType.left)
                 .materialize()
                 .iterator();
     }
@@ -57,7 +57,7 @@ public class DataFrameIndexedJoin {
     @Benchmark
     public Object leftJoin_ByPosition() {
         return df1
-                .join(df2, KeyMapper.keyColumn(0), KeyMapper.keyColumn(2), JoinType.left)
+                .join(df2, Hasher.keyColumn(0), Hasher.keyColumn(2), JoinType.left)
                 .materialize()
                 .iterator();
     }
@@ -66,7 +66,7 @@ public class DataFrameIndexedJoin {
     @Benchmark
     public Object rightJoin() {
         return df1
-                .join(df2, KeyMapper.keyColumn("id"), KeyMapper.keyColumn("rev_id"), JoinType.right)
+                .join(df2, Hasher.keyColumn("id"), Hasher.keyColumn("rev_id"), JoinType.right)
                 .materialize()
                 .iterator();
     }
@@ -74,7 +74,7 @@ public class DataFrameIndexedJoin {
     @Benchmark
     public Object innerJoin() {
         return df1
-                .join(df2, KeyMapper.keyColumn("id"), KeyMapper.keyColumn("rev_id"), JoinType.inner)
+                .join(df2, Hasher.keyColumn("id"), Hasher.keyColumn("rev_id"), JoinType.inner)
                 .materialize()
                 .iterator();
     }
@@ -82,7 +82,7 @@ public class DataFrameIndexedJoin {
     @Benchmark
     public Object fullJoin() {
         return df1
-                .join(df2, KeyMapper.keyColumn("id"), KeyMapper.keyColumn("rev_id"), JoinType.full)
+                .join(df2, Hasher.keyColumn("id"), Hasher.keyColumn("rev_id"), JoinType.full)
                 .materialize()
                 .iterator();
     }
