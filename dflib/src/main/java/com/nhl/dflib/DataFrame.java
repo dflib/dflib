@@ -386,12 +386,13 @@ public interface DataFrame extends Iterable<Object[]> {
      * Calculates a join using <a href="https://en.wikipedia.org/wiki/Hash_join">"hash join"</a> algorithm. It requires
      * two custom "hash" functions for the rows on the left and the right sides of the join, each producing
      * values, whose equality can be used as a join condition. This is the fastest known way to join two data sets.
+     * See the {@link Hasher} class for common hashers, such as those comparing column values.
      *
      * @param df          a DataFrame to join with this one
      * @param leftHasher  a hash function for the left-side rows
      * @param rightHasher a hash function for the right-side rows
      * @param <K>
-     * @return a DataFrame that is a result of this join
+     * @return a DsataFrame that is a result of this join
      */
     default <K> DataFrame innerJoin(
             DataFrame df,
@@ -404,6 +405,7 @@ public interface DataFrame extends Iterable<Object[]> {
      * Calculates a join using <a href="https://en.wikipedia.org/wiki/Hash_join">hash join</a> algorithm. It requires
      * two custom "hash" functions for the rows on the left and the right sides of the join, each producing
      * values, whose equality can be used as a join condition. This is the fastest known way to join two data sets.
+     * See the {@link Hasher} class for common hashers, such as those comparing column values.
      *
      * @param df          a DataFrame to join with this one
      * @param leftHasher  a hash function for the left-side rows
