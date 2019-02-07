@@ -450,7 +450,7 @@ public interface DataFrame extends Iterable<Object[]> {
             throw new IllegalArgumentException("No columns for 'groupBy' specified");
         }
 
-        Hasher mapper = Hasher.keyColumn(columns[0]);
+        Hasher mapper = Hasher.forColumn(columns[0]);
         for (int i = 1; i < columns.length; i++) {
             mapper = mapper.and(columns[i]);
         }

@@ -22,7 +22,7 @@ public class DataFrameGroupByTest {
                 0, "a",
                 1, "x");
 
-        GroupBy gb = df.groupBy(Hasher.keyColumn("a"));
+        GroupBy gb = df.groupBy(Hasher.forColumn("a"));
         assertNotNull(gb);
 
         assertEquals(3, gb.size());
@@ -48,7 +48,7 @@ public class DataFrameGroupByTest {
         Index i = Index.withNames("a", "b");
         DataFrame df = DataFrame.fromSequence(i);
 
-        GroupBy gb = df.groupBy(Hasher.keyColumn("a"));
+        GroupBy gb = df.groupBy(Hasher.forColumn("a"));
         assertNotNull(gb);
 
         assertEquals(0, gb.size());
