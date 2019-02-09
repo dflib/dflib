@@ -34,7 +34,7 @@ public class MapContext {
     }
 
     public MapContext set(Object[] targetRow, int columnPos, Object value) {
-        // TODO: should we assuming the target array is compact, and set it directly on the array?
+        // TODO: should we assume the target array is compact, and set it directly on the array?
         //  or are we second-guessing the compiler here?
         targetIndex.set(targetRow, columnPos, value);
         return this;
