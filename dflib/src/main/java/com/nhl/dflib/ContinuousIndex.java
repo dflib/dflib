@@ -18,9 +18,8 @@ public class ContinuousIndex extends Index {
     }
 
     @Override
-    public Object[] compactCopy(Object[] row, Object[] to, int toOffset) {
+    public void compactCopy(Object[] row, Object[] to, int toOffset) {
         System.arraycopy(row, 0, to, toOffset, positions.length);
-        return to;
     }
 
     public Index rename(Map<String, String> oldToNewNames) {

@@ -42,7 +42,7 @@ public class DataFrameMap {
     @Benchmark
     public Object map() {
         return df
-                .map((c, r) -> c.copyToTarget(r))
+                .map((c, r) -> c.target(r))
                 .materialize()
                 .iterator();
     }

@@ -62,7 +62,8 @@ public class MapContext {
     }
 
     public <T> Object[] mapColumn(Object[] sourceRow, int sourcePos, RowToValueMapper<T> m) {
-        Object[] target = copyToTarget(sourceRow);
+        Object[] target = new Object[targetIndex.size()];
+        sourceIndex.compactCopy(sourceRow, target, 0);
 
         // since target is a compact version of the source, we can use "sourcePos" index directly on it
         target[sourcePos] = m.map(getSourceIndex(), sourceRow);
@@ -74,25 +75,12 @@ public class MapContext {
     }
 
     public <V, VR> Object[] mapColumn(Object[] sourceRow, int sourcePos, ValueMapper<V, VR> m) {
-        Object[] target = copyToTarget(sourceRow);
+
+        Object[] target = new Object[targetIndex.size()];
+        sourceIndex.compactCopy(sourceRow, target, 0);
 
         // since target is a compact version of the source, we can use "sourcePos" index directly on it
         target[sourcePos] = m.map((V) get(sourceRow, sourcePos));
-        return target;
-    }
-
-    public Object[] copyToTarget(Object[] sourceRow) {
-        return copyToTarget(sourceRow, 0);
-    }
-
-    public Object[] copyToTarget(Object[] sourceRow, int targetOffset) {
-        Object[] target = target();
-
-        if (targetOffset > target.length) {
-            return target;
-        }
-
-        System.arraycopy(sourceRow, 0, target, targetOffset, Math.min(target.length - targetOffset, sourceRow.length));
         return target;
     }
 }

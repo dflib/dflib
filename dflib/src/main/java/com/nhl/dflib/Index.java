@@ -84,7 +84,7 @@ public abstract class Index implements Iterable<IndexPosition> {
         };
     }
 
-    public abstract Object[] compactCopy(Object[] row, Object[] to, int toOffset);
+    public abstract void compactCopy(Object[] row, Object[] to, int toOffset);
 
     public abstract Index rename(Map<String, String> oldToNewNames);
 
@@ -130,7 +130,8 @@ public abstract class Index implements Iterable<IndexPosition> {
         int oldWidth = size();
         int expansionWidth = valueProducers.length;
 
-        Object[] expandedRow = compactCopy(row, new Object[oldWidth + expansionWidth], 0);
+        Object[] expandedRow = new Object[oldWidth + expansionWidth];
+        compactCopy(row, expandedRow, 0);
 
         for (int i = 0; i < expansionWidth; i++) {
             expandedRow[oldWidth + i] = valueProducers[i].map(this, row);
