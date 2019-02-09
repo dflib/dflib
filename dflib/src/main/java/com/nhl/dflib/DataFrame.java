@@ -220,7 +220,7 @@ public interface DataFrame extends Iterable<Object[]> {
     default <V> DataFrame addColumns(String[] columnNames, RowToValueMapper<V>... columnValueProducers) {
         Index index = getColumns();
         Index expandedIndex = index.addNames(columnNames);
-        return map(expandedIndex, (c, r) -> index.addValues(r, columnValueProducers));
+        return map(expandedIndex, (c, r) -> c.addValues(r, columnValueProducers));
     }
 
     default DataFrame renameColumns(String... columnNames) {

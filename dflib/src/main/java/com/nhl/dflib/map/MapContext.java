@@ -57,6 +57,21 @@ public class MapContext {
         return target;
     }
 
+    public Object[] addValues(Object[] sourceRow, RowToValueMapper<?>... valueProducers) {
+
+        Object[] target = new Object[targetIndex.size()];
+        sourceIndex.compactCopy(sourceRow, target, 0);
+
+        int oldWidth = sourceIndex.size();
+        int expansionWidth = valueProducers.length;
+
+        for (int i = 0; i < expansionWidth; i++) {
+            target[oldWidth + i] = valueProducers[i].map(sourceIndex, sourceRow);
+        }
+
+        return target;
+    }
+
     public <T> Object[] mapColumn(Object[] sourceRow, String name, RowToValueMapper<T> m) {
         return mapColumn(sourceRow, sourceIndex.position(name).ordinal(), m);
     }
