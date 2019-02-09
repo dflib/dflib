@@ -236,7 +236,7 @@ public class DataFrameTest {
         DataFrame df = DataFrame.fromSequence(i1,
                 1, "x",
                 2, "y")
-                .map(RowMapper.columnMapper("a", (cx, rx) -> ((int) cx.get(rx, "a")) * 10));
+                .map(RowMapper.mapColumn("a", (cx, rx) -> ((int) cx.get(rx, "a")) * 10));
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(2)
@@ -251,7 +251,7 @@ public class DataFrameTest {
                 1, "x",
                 2, "y")
                 .dropColumns("a")
-                .map(RowMapper.columnMapper("b", (cx, rx) -> cx.get(rx, "b") + "_"));
+                .map(RowMapper.mapColumn("b", (cx, rx) -> cx.get(rx, "b") + "_"));
 
         new DFAsserts(df, new IndexPosition(0, 0, "b"))
                 .expectHeight(2)

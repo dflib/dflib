@@ -45,7 +45,7 @@ public class FilteredDataFrameTest {
         DataFrame df = new FilteredDataFrame(
                 DataFrame.fromRows(i, DataFrame.row("one"), DataFrame.row("two")),
                 (c, r) -> c.get(r, 0).equals("two"))
-                .map(i, RowMapper.columnMapper("a", (cx, v) -> v[0] + "_"));
+                .map(i, RowMapper.mapColumn("a", (cx, v) -> v[0] + "_"));
 
         new DFAsserts(df, i)
                 .expectHeight(1)

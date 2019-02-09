@@ -1,7 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.join.JoinType;
-import com.nhl.dflib.concat.HConcat;
+import com.nhl.dflib.map.RowCombiner;
 import org.junit.Test;
 
 public class DataFrame_HConcat_Test {
@@ -70,7 +70,7 @@ public class DataFrame_HConcat_Test {
                 .selectColumns("c");
 
 
-        DataFrame df = df1.hConcat(Index.withNames("x", "y"), JoinType.inner, df2, HConcat.concatenator());
+        DataFrame df = df1.hConcat(Index.withNames("x", "y"), JoinType.inner, df2, RowCombiner.zip());
 
         new DFAsserts(df, "x", "y")
                 .expectHeight(2)

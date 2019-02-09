@@ -203,14 +203,14 @@ public interface DataFrame extends Iterable<Object[]> {
         Index index = getColumns();
         Index compactIndex = index.compactIndex();
         int pos = index.position(columnName).ordinal();
-        return map(compactIndex, RowMapper.columnMapper(pos, m));
+        return map(compactIndex, RowMapper.mapColumn(pos, m));
     }
 
     default <V> DataFrame mapColumn(String columnName, RowToValueMapper<V> m) {
         Index index = getColumns();
         Index compactIndex = index.compactIndex();
         int pos = index.position(columnName).ordinal();
-        return map(compactIndex, RowMapper.columnMapper(pos, m));
+        return map(compactIndex, RowMapper.mapColumn(pos, m));
     }
 
     default <V> DataFrame addColumn(String columnName, RowToValueMapper<V> columnValueProducer) {
@@ -220,7 +220,7 @@ public interface DataFrame extends Iterable<Object[]> {
     default <V> DataFrame addColumns(String[] columnNames, RowToValueMapper<V>... columnValueProducers) {
         Index index = getColumns();
         Index expandedIndex = index.addNames(columnNames);
-        return map(expandedIndex, RowMapper.columnAdder(columnValueProducers));
+        return map(expandedIndex, RowMapper.addColumns(columnValueProducers));
     }
 
     default DataFrame renameColumns(String... columnNames) {
@@ -309,7 +309,7 @@ public interface DataFrame extends Iterable<Object[]> {
      */
     default DataFrame hConcat(JoinType how, DataFrame df) {
         Index zipIndex = HConcat.zipIndex(getColumns(), df.getColumns());
-        return hConcat(zipIndex, how, df, HConcat.concatenator());
+        return hConcat(zipIndex, how, df, RowCombiner.zip());
     }
 
     default DataFrame hConcat(Index zippedColumns, JoinType how, DataFrame df, RowCombiner c) {

@@ -5,39 +5,39 @@ import com.nhl.dflib.Index;
 @FunctionalInterface
 public interface RowMapper {
 
-    static RowMapper copyMapper() {
+    static RowMapper copy() {
         return (c, sr, tr) -> c.getSourceIndex().compactCopy(sr, tr, 0);
     }
 
-    static RowMapper columnMapper(String column, RowToValueMapper<?> m) {
+    static RowMapper mapColumn(String column, RowToValueMapper<?> m) {
         return (c, sr, tr) -> {
             c.getSourceIndex().compactCopy(sr, tr, 0);
             c.set(tr, column, m.map(c.getSourceIndex(), sr));
         };
     }
 
-    static RowMapper columnMapper(int column, RowToValueMapper<?> m) {
+    static RowMapper mapColumn(int column, RowToValueMapper<?> m) {
         return (c, sr, tr) -> {
             c.getSourceIndex().compactCopy(sr, tr, 0);
             c.set(tr, column, m.map(c.getSourceIndex(), sr));
         };
     }
 
-    static <V> RowMapper columnMapper(String column, ValueMapper<V, ?> m) {
+    static <V> RowMapper mapColumn(String column, ValueMapper<V, ?> m) {
         return (c, sr, tr) -> {
             c.getSourceIndex().compactCopy(sr, tr, 0);
             c.set(tr, column, m.map((V) c.get(sr, column)));
         };
     }
 
-    static <V> RowMapper columnMapper(int column, ValueMapper<V, ?> m) {
+    static <V> RowMapper mapColumn(int column, ValueMapper<V, ?> m) {
         return (c, sr, tr) -> {
             c.getSourceIndex().compactCopy(sr, tr, 0);
             c.set(tr, column, m.map((V) c.get(sr, column)));
         };
     }
 
-    static <V> RowMapper columnAdder(RowToValueMapper<?>... valueProducers) {
+    static <V> RowMapper addColumns(RowToValueMapper<?>... valueProducers) {
         return (c, sr, tr) -> {
 
             Index sourceIndex = c.getSourceIndex();

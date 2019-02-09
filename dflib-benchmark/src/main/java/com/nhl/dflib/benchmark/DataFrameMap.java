@@ -43,7 +43,7 @@ public class DataFrameMap {
     @Benchmark
     public Object map() {
         return df
-                .map(RowMapper.copyMapper())
+                .map(RowMapper.copy())
                 .materialize()
                 .iterator();
     }

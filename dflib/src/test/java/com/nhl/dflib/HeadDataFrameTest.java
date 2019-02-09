@@ -62,7 +62,7 @@ public class HeadDataFrameTest {
     public void testMap() {
 
         DataFrame df = new HeadDataFrame(new SimpleDataFrame(columns, rows), 3)
-                .map(columns, RowMapper.columnMapper("a", (cx, v) -> v[0] + "_"));
+                .map(columns, RowMapper.mapColumn("a", (cx, v) -> v[0] + "_"));
 
         new DFAsserts(df, columns)
                 .expectHeight(3)

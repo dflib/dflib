@@ -96,7 +96,9 @@ public class HConcatDataFrame implements DataFrame {
             }
 
             private Object[] transform(Object[] leftR, Object[] rightR) {
-                return rowCombiner.combine(context, leftR, rightR);
+                Object[] target = new Object[context.getCombinedIndex().size()];
+                rowCombiner.combine(context, leftR, rightR, target);
+                return target;
             }
         };
     }

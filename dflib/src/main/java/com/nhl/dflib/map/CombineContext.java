@@ -41,39 +41,4 @@ public class CombineContext {
     public Object getRight(Object[] rightRow, int columnPos) {
         return rightIndex.getPositions()[columnPos].get(rightRow);
     }
-
-    public Object[] target(Object... values) {
-
-        if (values.length == combinedIndex.size()) {
-            return values;
-        }
-
-        if (values.length > combinedIndex.size()) {
-            throw new IllegalArgumentException("Provided values won't fit in the combined row: "
-                    + values.length + " > " + combinedIndex.size());
-        }
-
-        Object[] target = new Object[combinedIndex.size()];
-        if (values.length > 0) {
-            System.arraycopy(values, 0, target, 0, values.length);
-        }
-
-        return target;
-    }
-
-    public Object[] copyToTarget(Object[] leftRow, Object[] rightRow, int leftOffset, int rightOffset) {
-        Object[] target = target();
-
-        // rows can be null in case of outer joins...
-
-        if (leftRow != null && leftOffset <= target.length) {
-            leftIndex.compactCopy(leftRow, target, leftOffset);
-        }
-
-        if (rightRow != null && rightOffset <= target.length) {
-            rightIndex.compactCopy(rightRow, target, rightOffset);
-        }
-
-        return target;
-    }
 }
