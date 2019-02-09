@@ -392,7 +392,7 @@ public interface DataFrame extends Iterable<Object[]> {
      * @param leftHasher  a hash function for the left-side rows
      * @param rightHasher a hash function for the right-side rows
      * @param <K>
-     * @return a DsataFrame that is a result of this join
+     * @return a DataFrame that is a result of this join
      */
     default <K> DataFrame innerJoin(
             DataFrame df,
