@@ -49,6 +49,14 @@ public class DataFrameMap {
     }
 
     @Benchmark
+    public Object mapWithChange() {
+        return df
+                .map(RowMapper.copy().and((c, s, t) -> c.set(t, 2, 1)))
+                .materialize()
+                .iterator();
+    }
+
+    @Benchmark
     public Object mapColumn() {
         return df
                 // using cheap "map" function to test benchmark DF overhead
