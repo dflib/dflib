@@ -113,6 +113,14 @@ public abstract class Index implements Iterable<IndexPosition> {
         return positions[columnPos].get(row);
     }
 
+    public void set(Object[] row, String columnName, Object value) {
+        position(columnName).set(row, value);
+    }
+
+    public void set(Object[] row, int columnPos, Object value) {
+        positions[columnPos].set(row, value);
+    }
+
     public Index addNames(String... extraNames) {
         return HConcat.zipIndex(this, withNames(extraNames));
     }

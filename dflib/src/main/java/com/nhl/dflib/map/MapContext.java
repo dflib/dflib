@@ -29,12 +29,12 @@ public class MapContext {
     }
 
     public MapContext set(Object[] targetRow, String columnName, Object value) {
-        targetIndex.position(columnName).set(targetRow, value);
+        targetIndex.set(targetRow, columnName, value);
         return this;
     }
 
     public MapContext set(Object[] targetRow, int columnPos, Object value) {
-        targetIndex.getPositions()[columnPos].set(targetRow, value);
+        targetIndex.set(targetRow, columnPos, value);
         return this;
     }
 
