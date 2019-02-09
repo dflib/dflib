@@ -47,7 +47,9 @@ public class MappedDataFrame implements DataFrame {
 
             @Override
             public Object[] next() {
-                return rowMapper.map(context, delegateIt.next());
+                Object[] mapped = new Object[columns.size()];
+                rowMapper.map(context, delegateIt.next(), mapped);
+                return mapped;
             }
         };
     }

@@ -3,6 +3,7 @@ package com.nhl.dflib.filter;
 import com.nhl.dflib.DFAsserts;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.map.RowMapper;
 import org.junit.Test;
 
 public class FilteredDataFrameTest {
@@ -44,7 +45,7 @@ public class FilteredDataFrameTest {
         DataFrame df = new FilteredDataFrame(
                 DataFrame.fromRows(i, DataFrame.row("one"), DataFrame.row("two")),
                 (c, r) -> c.get(r, 0).equals("two"))
-                .map(i, (c, r) -> c.mapColumn(r, "a", (cx, v) -> v[0] + "_"));
+                .map(i, RowMapper.columnMapper("a", (cx, v) -> v[0] + "_"));
 
         new DFAsserts(df, i)
                 .expectHeight(1)

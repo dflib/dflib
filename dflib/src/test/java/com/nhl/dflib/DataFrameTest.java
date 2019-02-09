@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.map.RowMapper;
 import org.junit.Test;
 
 import java.util.List;
@@ -235,7 +236,7 @@ public class DataFrameTest {
         DataFrame df = DataFrame.fromSequence(i1,
                 1, "x",
                 2, "y")
-                .map((c, r) -> c.mapColumn(r, "a", (cx, rx) -> ((int) cx.get(rx, "a")) * 10));
+                .map(RowMapper.columnMapper("a", (cx, rx) -> ((int) cx.get(rx, "a")) * 10));
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(2)
@@ -250,7 +251,7 @@ public class DataFrameTest {
                 1, "x",
                 2, "y")
                 .dropColumns("a")
-                .map((c, r) -> c.mapColumn(r, "b", (cx, rx) -> cx.get(rx, "b") + "_"));
+                .map(RowMapper.columnMapper("b", (cx, rx) -> cx.get(rx, "b") + "_"));
 
         new DFAsserts(df, new IndexPosition(0, 0, "b"))
                 .expectHeight(2)

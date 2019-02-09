@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.map.RowMapper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,7 +62,7 @@ public class HeadDataFrameTest {
     public void testMap() {
 
         DataFrame df = new HeadDataFrame(new SimpleDataFrame(columns, rows), 3)
-                .map(columns, (c, r) -> c.mapColumn(r, "a", (cx, v) -> v[0] + "_"));
+                .map(columns, RowMapper.columnMapper("a", (cx, v) -> v[0] + "_"));
 
         new DFAsserts(df, columns)
                 .expectHeight(3)
@@ -76,7 +77,7 @@ public class HeadDataFrameTest {
         Index i1 = Index.withNames("c");
 
         DataFrame df = new HeadDataFrame(new SimpleDataFrame(columns, rows), 2)
-                .map(i1, (c, r) -> c.target(r[0] + "_"));
+                .map(i1, (c, sr, tr) -> c.set(tr, 0, sr[0] + "_"));
 
         new DFAsserts(df, i1)
                 .expectHeight(2)
@@ -90,7 +91,7 @@ public class HeadDataFrameTest {
         Index i1 = Index.withNames("c");
 
         DataFrame df = new HeadDataFrame(new SimpleDataFrame(columns, Collections.emptyList()), 2)
-                .map(i1, (c, r) -> c.target(r[0] + "_"));
+                .map(i1, (c, sr, tr) -> c.set(tr, 0, sr[0] + "_"));
 
         new DFAsserts(df, i1).expectHeight(0);
     }

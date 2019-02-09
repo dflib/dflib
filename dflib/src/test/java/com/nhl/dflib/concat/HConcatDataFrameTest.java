@@ -4,6 +4,7 @@ import com.nhl.dflib.DFAsserts;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.join.JoinType;
+import com.nhl.dflib.map.RowMapper;
 import org.junit.Test;
 
 public class HConcatDataFrameTest {
@@ -139,7 +140,7 @@ public class HConcatDataFrameTest {
         Index zippedColumns = Index.withNames("x", "y");
 
         DataFrame df = new HConcatDataFrame(zippedColumns, JoinType.inner, df1, df2, HConcat.concatenator())
-                .map((c, r) -> c.mapColumn(r, "x", (cx, rx) -> cx.get(rx, 0) + "_"));
+                .map(RowMapper.columnMapper("x", (cx, rx) -> cx.get(rx, 0) + "_"));
 
         new DFAsserts(df, zippedColumns)
                 .expectHeight(2)
@@ -162,10 +163,10 @@ public class HConcatDataFrameTest {
 
         Index mappedColumns = Index.withNames("x", "y", "z");
         DataFrame df = new HConcatDataFrame(Index.withNames("a", "b"), JoinType.inner, df1, df2, HConcat.concatenator())
-                .map(mappedColumns, (c, r) -> c.target(
-                        r[0],
-                        ((int) r[1]) * 10,
-                        r[1]));
+                .map(mappedColumns, (c, sr, tr) -> c
+                        .set(tr, 0, sr[0])
+                        .set(tr, 1, ((int) sr[1]) * 10)
+                        .set(tr, 2, sr[1]));
 
         new DFAsserts(df, mappedColumns)
                 .expectHeight(2)

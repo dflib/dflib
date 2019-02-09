@@ -2,6 +2,7 @@ package com.nhl.dflib.benchmark;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.map.RowMapper;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -42,7 +43,7 @@ public class DataFrameMap {
     @Benchmark
     public Object map() {
         return df
-                .map((c, r) -> c.target(r))
+                .map(RowMapper.copyMapper())
                 .materialize()
                 .iterator();
     }

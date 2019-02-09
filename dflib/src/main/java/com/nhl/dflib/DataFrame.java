@@ -203,14 +203,14 @@ public interface DataFrame extends Iterable<Object[]> {
         Index index = getColumns();
         Index compactIndex = index.compactIndex();
         int pos = index.position(columnName).ordinal();
-        return map(compactIndex, (c, r) -> c.mapColumn(r, pos, m));
+        return map(compactIndex, RowMapper.columnMapper(pos, m));
     }
 
     default <V> DataFrame mapColumn(String columnName, RowToValueMapper<V> m) {
         Index index = getColumns();
         Index compactIndex = index.compactIndex();
         int pos = index.position(columnName).ordinal();
-        return map(compactIndex, (c, r) -> c.mapColumn(r, pos, m));
+        return map(compactIndex, RowMapper.columnMapper(pos, m));
     }
 
     default <V> DataFrame addColumn(String columnName, RowToValueMapper<V> columnValueProducer) {
@@ -220,7 +220,7 @@ public interface DataFrame extends Iterable<Object[]> {
     default <V> DataFrame addColumns(String[] columnNames, RowToValueMapper<V>... columnValueProducers) {
         Index index = getColumns();
         Index expandedIndex = index.addNames(columnNames);
-        return map(expandedIndex, (c, r) -> c.addValues(r, columnValueProducers));
+        return map(expandedIndex, RowMapper.columnAdder(columnValueProducers));
     }
 
     default DataFrame renameColumns(String... columnNames) {

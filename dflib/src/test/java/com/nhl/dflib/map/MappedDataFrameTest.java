@@ -8,9 +8,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class MappedDataFrameTest {
-
-    private static final RowMapper SELF_MAPPER = (c, r) -> r;
-
+    
     @Test
     public void testIterator() {
 
@@ -19,7 +17,7 @@ public class MappedDataFrameTest {
         MappedDataFrame df = new MappedDataFrame(
                 i,
                 DataFrame.fromRows(i, DataFrame.row("one", 1), DataFrame.row("two", 2)),
-                SELF_MAPPER);
+                RowMapper.copyMapper());
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(2)
@@ -35,7 +33,7 @@ public class MappedDataFrameTest {
         DataFrame df = new MappedDataFrame(
                 columns,
                 DataFrame.fromRows(columns, DataFrame.row("one", 1), DataFrame.row("two", 2), DataFrame.row("three", 3)),
-                SELF_MAPPER).head(2);
+                RowMapper.copyMapper()).head(2);
 
         new DFAsserts(df, columns)
                 .expectHeight(2)
@@ -50,7 +48,7 @@ public class MappedDataFrameTest {
         DataFrame df = new MappedDataFrame(
                 i,
                 DataFrame.fromRows(i, DataFrame.row("one", 1), DataFrame.row("two", 2)),
-                SELF_MAPPER).renameColumn("b", "c");
+                RowMapper.copyMapper()).renameColumn("b", "c");
 
         new DFAsserts(df, "a", "c")
                 .expectHeight(2)
@@ -66,7 +64,7 @@ public class MappedDataFrameTest {
         DataFrame df = new MappedDataFrame(
                 i,
                 DataFrame.fromRows(i, DataFrame.row("one", 1), DataFrame.row("two", 2)),
-                SELF_MAPPER).mapColumn("b", (c, r) -> c.get(r, 1).toString());
+                RowMapper.copyMapper()).mapColumn("b", (c, r) -> c.get(r, 1).toString());
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(2)
@@ -82,8 +80,8 @@ public class MappedDataFrameTest {
         DataFrame df = new MappedDataFrame(
                 i,
                 DataFrame.fromRows(i, DataFrame.row("one", 1), DataFrame.row("two", 2)),
-                SELF_MAPPER)
-                .map(i, (c, r) -> c.mapColumn(r, "a", (cx, rx) -> cx.get(rx, 0) + "_"));
+                RowMapper.copyMapper())
+                .map(i, RowMapper.columnMapper("a", (cx, rx) -> cx.get(rx, 0) + "_"));
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(2)
@@ -100,11 +98,11 @@ public class MappedDataFrameTest {
         DataFrame df = new MappedDataFrame(
                 i,
                 DataFrame.fromRows(i, DataFrame.row("one", 1), DataFrame.row("two", 2)),
-                SELF_MAPPER)
-                .map(i1, (c, r) -> DataFrame.row(
-                        r[0],
-                        ((int) r[1]) * 10,
-                        r[1]));
+                RowMapper.copyMapper())
+                .map(i1, (c, sr, tr) -> c
+                        .set(tr, 0, sr[0])
+                        .set(tr, 1, ((int) sr[1]) * 10)
+                        .set(tr, 2, sr[1]));
 
         new DFAsserts(df, i1)
                 .expectHeight(2)
@@ -122,14 +120,14 @@ public class MappedDataFrameTest {
         DataFrame df = new MappedDataFrame(
                 i,
                 DataFrame.fromRows(i, DataFrame.row("one", 1), DataFrame.row("two", 2)),
-                SELF_MAPPER)
-                .map(i1, (c, r) -> c.target(
-                        r[0],
-                        ((int) r[1]) * 10,
-                        r[1]))
-                .map(i2, (c, r) -> c.target(
-                        r[0],
-                        r[1]));
+                RowMapper.copyMapper())
+                .map(i1, (c, sr, tr) -> c
+                        .set(tr, 0, sr[0])
+                        .set(tr, 1, ((int) sr[1]) * 10)
+                        .set(tr, 2, sr[1]))
+                .map(i2, (c, sr, tr) -> c
+                        .set(tr, 0, sr[0])
+                        .set(tr, 1, sr[1]));
 
         new DFAsserts(df, i2)
                 .expectHeight(2)
@@ -143,8 +141,11 @@ public class MappedDataFrameTest {
         Index i = Index.withNames("a", "b");
         Index i1 = Index.withNames("c", "d", "e");
 
-        DataFrame df = new MappedDataFrame(i, DataFrame.fromRows(i), SELF_MAPPER)
-                .map(i1, (c, r) -> c.target(r[0], ((int) r[1]) * 10, r[1]));
+        DataFrame df = new MappedDataFrame(i, DataFrame.fromRows(i), RowMapper.copyMapper())
+                .map(i1, (c, sr, tr) -> c
+                        .set(tr, 0, sr[0])
+                        .set(tr, 1, ((int) sr[1]) * 10)
+                        .set(tr, 2, sr[1]));
 
         assertSame(i1, df.getColumns());
 
@@ -158,7 +159,7 @@ public class MappedDataFrameTest {
                 DataFrame.row("one", 1),
                 DataFrame.row("two", 2),
                 DataFrame.row("three", 3),
-                DataFrame.row("four", 4)), SELF_MAPPER);
+                DataFrame.row("four", 4)), RowMapper.copyMapper());
 
         assertEquals("MappedDataFrame [{a:one,b:1},{a:two,b:2},{a:three,b:3},...]", df.toString());
     }
@@ -169,12 +170,12 @@ public class MappedDataFrameTest {
         Index i1 = Index.withNames("a");
         DataFrame df1 = new MappedDataFrame(i1, DataFrame.fromRows(i1,
                 DataFrame.row(1),
-                DataFrame.row(2)), SELF_MAPPER);
+                DataFrame.row(2)), RowMapper.copyMapper());
 
         Index i2 = Index.withNames("b");
         DataFrame df2 = new MappedDataFrame(i2, DataFrame.fromRows(i2,
                 DataFrame.row(10),
-                DataFrame.row(20)), SELF_MAPPER);
+                DataFrame.row(20)), RowMapper.copyMapper());
 
         DataFrame df = df1.hConcat(df2);
         new DFAsserts(df, "a", "b")
@@ -189,7 +190,7 @@ public class MappedDataFrameTest {
         Index i1 = Index.withNames("a");
         DataFrame df1 = new MappedDataFrame(i1, DataFrame.fromRows(i1,
                 DataFrame.row(1),
-                DataFrame.row(2)), SELF_MAPPER);
+                DataFrame.row(2)), RowMapper.copyMapper());
 
         DataFrame df = df1.hConcat(df1);
 
@@ -203,12 +204,12 @@ public class MappedDataFrameTest {
     public void testZip_LeftIsShorter() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = new MappedDataFrame(i1, DataFrame.fromRows(i1, DataFrame.row(2)), SELF_MAPPER);
+        DataFrame df1 = new MappedDataFrame(i1, DataFrame.fromRows(i1, DataFrame.row(2)), RowMapper.copyMapper());
 
         Index i2 = Index.withNames("b");
         DataFrame df2 = new MappedDataFrame(i2, DataFrame.fromRows(i2,
                 DataFrame.row(10),
-                DataFrame.row(20)), SELF_MAPPER);
+                DataFrame.row(20)), RowMapper.copyMapper());
 
         DataFrame df = df1.hConcat(df2);
         new DFAsserts(df, "a", "b")
@@ -221,12 +222,12 @@ public class MappedDataFrameTest {
 
         Index i1 = Index.withNames("a");
         DataFrame df1 = new MappedDataFrame(i1, DataFrame.fromRows(i1,
-                DataFrame.row(2)), SELF_MAPPER);
+                DataFrame.row(2)), RowMapper.copyMapper());
 
         Index i2 = Index.withNames("b");
         DataFrame df2 = new MappedDataFrame(i2, DataFrame.fromRows(i2,
                 DataFrame.row(10),
-                DataFrame.row(20)), SELF_MAPPER);
+                DataFrame.row(20)), RowMapper.copyMapper());
 
         DataFrame df = df2.hConcat(df1);
         new DFAsserts(df, "b", "a")
@@ -240,7 +241,7 @@ public class MappedDataFrameTest {
         Index i1 = Index.withNames("a");
         DataFrame df1 = new MappedDataFrame(i1, DataFrame.fromRows(i1,
                 DataFrame.row(10),
-                DataFrame.row(20)), SELF_MAPPER);
+                DataFrame.row(20)), RowMapper.copyMapper());
 
         DataFrame df = df1.filter((c, r) -> ((int) c.get(r, 0)) > 15);
         new DFAsserts(df, "a")
@@ -254,7 +255,7 @@ public class MappedDataFrameTest {
         Index i1 = Index.withNames("a");
         DataFrame df1 = new MappedDataFrame(i1, DataFrame.fromRows(i1,
                 DataFrame.row(10),
-                DataFrame.row(20)), SELF_MAPPER);
+                DataFrame.row(20)), RowMapper.copyMapper());
 
         DataFrame df = df1.filterByColumn("a", (Integer v) -> v > 15);
         new DFAsserts(df, "a")
@@ -268,7 +269,7 @@ public class MappedDataFrameTest {
         Index i1 = Index.withNames("a");
         DataFrame df1 = new MappedDataFrame(i1, DataFrame.fromRows(i1,
                 DataFrame.row(10),
-                DataFrame.row(20)), SELF_MAPPER);
+                DataFrame.row(20)), RowMapper.copyMapper());
 
         DataFrame df = df1.filterByColumn(0, (Integer v) -> v > 15);
         new DFAsserts(df, "a")
