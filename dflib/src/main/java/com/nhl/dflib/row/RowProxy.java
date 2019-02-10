@@ -20,5 +20,5 @@ public interface RowProxy {
         copyTo(to, 0);
     }
 
-    void copyTo(RowBuilder to, int targetOffset);
+    void copyTo(RowBuilder to, int toOffset);
 }
