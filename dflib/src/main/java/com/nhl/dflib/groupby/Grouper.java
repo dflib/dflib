@@ -33,7 +33,7 @@ public class Grouper {
 
         for (Object o : groups.entrySet()) {
             Map.Entry<?, Object> e = (Map.Entry) o;
-            e.setValue(DataFrame.fromRows(columns, (List<Object[]>) e.getValue()));
+            e.setValue(DataFrame.fromRowsList(columns, (List<Object[]>) e.getValue()));
         }
 
         return new GroupBy(df.getColumns(), (Map<Object, DataFrame>) groups);
