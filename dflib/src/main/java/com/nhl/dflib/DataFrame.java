@@ -161,6 +161,7 @@ public interface DataFrame extends Iterable<Object[]> {
         int count = 0;
         Iterator<Object[]> it = iterator();
         while (it.hasNext()) {
+            it.next();
             count++;
         }
 
