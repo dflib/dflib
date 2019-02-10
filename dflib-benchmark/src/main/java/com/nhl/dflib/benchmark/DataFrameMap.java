@@ -51,7 +51,7 @@ public class DataFrameMap {
     @Benchmark
     public Object mapWithChange() {
         return df
-                .map(RowMapper.copy().and((c, s, t) -> c.set(t, 2, 1)))
+                .map(RowMapper.copy().and((s, t) -> t.set(2, 1)))
                 .materialize()
                 .iterator();
     }
@@ -60,7 +60,7 @@ public class DataFrameMap {
     public Object mapColumn() {
         return df
                 // using cheap "map" function to test benchmark DF overhead
-                .mapColumn("rev_id", (Integer i) -> 1)
+                .mapColumnValue("rev_id", (Integer i) -> 1)
                 .materialize()
                 .iterator();
     }

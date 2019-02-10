@@ -3,6 +3,9 @@ package com.nhl.dflib.map;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.print.InlinePrinter;
+import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.row.ArrayRowBuilder;
+import com.nhl.dflib.row.RowIterator;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -37,19 +40,19 @@ public class MappedDataFrame implements DataFrame {
     public Iterator<Object[]> iterator() {
         return new Iterator<Object[]>() {
 
-            private final Iterator<Object[]> delegateIt = MappedDataFrame.this.source.iterator();
-            private final MapContext context = new MapContext(source.getColumns(), columns);
+            private final Iterator<RowProxy> source = RowIterator.overDataFrame(MappedDataFrame.this.source);
+            private final ArrayRowBuilder target = new ArrayRowBuilder(columns);
 
             @Override
             public boolean hasNext() {
-                return delegateIt.hasNext();
+                return source.hasNext();
             }
 
             @Override
             public Object[] next() {
-                Object[] mapped = new Object[columns.size()];
-                rowMapper.map(context, delegateIt.next(), mapped);
-                return mapped;
+                RowProxy next = source.next();
+                rowMapper.map(next, target);
+                return target.reset();
             }
         };
     }

@@ -46,7 +46,7 @@ public class DataFrameGroupBy {
                 index,
                 StreamSupport.stream(new DataSetSpliterator(rows), false))
                 // reduce the number of categories
-                .mapColumn("rev_id", (Integer i) -> random.nextInt(groups));
+                .mapColumnValue("rev_id", (Integer i) -> random.nextInt(groups));
 
         gb = df.groupBy("rev_id");
     }

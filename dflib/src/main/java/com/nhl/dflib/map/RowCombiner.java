@@ -1,23 +1,26 @@
 package com.nhl.dflib.map;
 
+import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.row.RowBuilder;
+
 @FunctionalInterface
 public interface RowCombiner {
 
-    static RowCombiner zip() {
-        return (c, lr, rr, tr) -> {
+    static RowCombiner zip(int rightOffset) {
+        return (lr, rr, tr) -> {
 
             // rows can be null in case of outer joins...
 
             if (lr != null) {
-                c.getLeftIndex().compactCopy(lr, tr, 0);
+                lr.copyTo(tr);
             }
 
             if (rr != null) {
-                c.getRightIndex().compactCopy(rr, tr, c.getLeftIndex().size());
+                rr.copyTo(tr, rightOffset);
             }
         };
     }
 
 
-    void combine(CombineContext context, Object[] lr, Object[] rr, Object[] tr);
+    void combine(RowProxy lr, RowProxy rr, RowBuilder tr);
 }

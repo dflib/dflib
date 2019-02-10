@@ -1,17 +1,17 @@
 package com.nhl.dflib.map;
 
-import com.nhl.dflib.Index;
+import com.nhl.dflib.row.RowProxy;
 
 @FunctionalInterface
 public interface RowToValueMapper<V> {
 
     static <V> RowToValueMapper columnReader(String column) {
-        return (c, r) -> c.get(r, column);
+        return r -> r.get(column);
     }
 
     static <V> RowToValueMapper columnReader(int column) {
-        return (c, r) -> c.get(r, column);
+        return r -> r.get(column);
     }
 
-    V map(Index c, Object[] row);
+    V map(RowProxy row);
 }

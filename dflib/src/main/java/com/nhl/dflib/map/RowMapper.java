@@ -1,64 +1,63 @@
 package com.nhl.dflib.map;
 
-import com.nhl.dflib.Index;
+import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.row.RowBuilder;
 
 @FunctionalInterface
 public interface RowMapper {
 
     static RowMapper copy() {
-        return (c, sr, tr) -> c.getSourceIndex().compactCopy(sr, tr, 0);
+        return (s, t) -> s.copyTo(t);
     }
 
     static RowMapper mapColumn(String column, RowToValueMapper<?> m) {
-        return (c, sr, tr) -> {
-            c.getSourceIndex().compactCopy(sr, tr, 0);
-            c.set(tr, column, m.map(c.getSourceIndex(), sr));
+        return (s, t) -> {
+            s.copyTo(t);
+            t.set(column, m.map(s));
         };
     }
 
     static RowMapper mapColumn(int column, RowToValueMapper<?> m) {
-        return (c, sr, tr) -> {
-            c.getSourceIndex().compactCopy(sr, tr, 0);
-            c.set(tr, column, m.map(c.getSourceIndex(), sr));
+        return (s, t) -> {
+            s.copyTo(t);
+            t.set(column, m.map(s));
         };
     }
 
-    static <V> RowMapper mapColumn(String column, ValueMapper<V, ?> m) {
-        return (c, sr, tr) -> {
-            c.getSourceIndex().compactCopy(sr, tr, 0);
-            c.set(tr, column, m.map((V) c.get(sr, column)));
+    static <V> RowMapper mapColumnValue(String column, ValueMapper<V, ?> m) {
+        return (s, t) -> {
+            s.copyTo(t);
+            t.set(column, m.map((V) s.get(column)));
         };
     }
 
-    static <V> RowMapper mapColumn(int column, ValueMapper<V, ?> m) {
-        return (c, sr, tr) -> {
-            c.getSourceIndex().compactCopy(sr, tr, 0);
-            c.set(tr, column, m.map((V) c.get(sr, column)));
+    static <V> RowMapper mapColumnValue(int column, ValueMapper<V, ?> m) {
+        return (s, t) -> {
+            s.copyTo(t);
+            t.set(column, m.map((V) s.get(column)));
         };
     }
 
     static <V> RowMapper addColumns(RowToValueMapper<?>... valueProducers) {
-        return (c, sr, tr) -> {
+        return (s, t) -> {
 
-            Index sourceIndex = c.getSourceIndex();
+            s.copyTo(t);
 
-            c.getSourceIndex().compactCopy(sr, tr, 0);
-
-            int oldWidth = sourceIndex.size();
+            int oldWidth = s.getIndex().size();
             int expansionWidth = valueProducers.length;
 
             for (int i = 0; i < expansionWidth; i++) {
-                c.set(tr, oldWidth + i, valueProducers[i].map(sourceIndex, sr));
+                t.set(oldWidth + i, valueProducers[i].map(s));
             }
         };
     }
 
-    void map(MapContext c, Object[] sourceRow, Object[] targetRow);
+    void map(RowProxy from, RowBuilder to);
 
     default RowMapper and(RowMapper m) {
-        return (c, sr, tr) -> {
-            this.map(c, sr, tr);
-            m.map(c, sr, tr);
+        return (s, t) -> {
+            this.map(s, t);
+            m.map(s, t);
         };
     }
 }

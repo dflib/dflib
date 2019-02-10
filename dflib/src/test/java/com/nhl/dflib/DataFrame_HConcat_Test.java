@@ -70,7 +70,7 @@ public class DataFrame_HConcat_Test {
                 .selectColumns("c");
 
 
-        DataFrame df = df1.hConcat(Index.withNames("x", "y"), JoinType.inner, df2, RowCombiner.zip());
+        DataFrame df = df1.hConcat(Index.withNames("x", "y"), JoinType.inner, df2, RowCombiner.zip(df1.width()));
 
         new DFAsserts(df, "x", "y")
                 .expectHeight(2)

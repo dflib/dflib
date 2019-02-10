@@ -3,6 +3,7 @@ package com.nhl.dflib.sort;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IndexPosition;
 import com.nhl.dflib.map.RowToValueMapper;
+import com.nhl.dflib.row.ArrayRowProxy;
 
 import java.util.Comparator;
 
@@ -11,7 +12,9 @@ public interface Sorters {
     static <V extends Comparable<? super V>> Comparator<Object[]> sorter(
             Index columns,
             RowToValueMapper<V> sortKeyExtractor) {
-        return Comparator.comparing(o -> sortKeyExtractor.map(columns, o));
+
+        ArrayRowProxy rowProxy = new ArrayRowProxy(columns);
+        return Comparator.comparing(o -> sortKeyExtractor.map(rowProxy.reset(o)));
     }
 
     static Comparator<Object[]> sorter(Index columns, String... sortColumns) {

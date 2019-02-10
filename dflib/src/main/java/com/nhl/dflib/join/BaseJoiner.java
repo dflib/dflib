@@ -8,6 +8,6 @@ import com.nhl.dflib.map.RowCombiner;
 public abstract class BaseJoiner {
 
     protected DataFrame zipJoinSides(Index joinedColumns, DataFrame lf, DataFrame rf) {
-        return new HConcatDataFrame(joinedColumns, JoinType.full, lf, rf, RowCombiner.zip()).materialize();
+        return new HConcatDataFrame(joinedColumns, JoinType.full, lf, rf, RowCombiner.zip(lf.width())).materialize();
     }
 }

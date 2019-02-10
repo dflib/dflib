@@ -3,9 +3,11 @@ package com.nhl.dflib.concat;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.join.JoinType;
-import com.nhl.dflib.map.CombineContext;
 import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.print.InlinePrinter;
+import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.row.ArrayRowBuilder;
+import com.nhl.dflib.row.RowIterator;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -47,13 +49,13 @@ public class HConcatDataFrame implements DataFrame {
     public Iterator<Object[]> iterator() {
         return new Iterator<Object[]>() {
 
-            final CombineContext context = new CombineContext(leftSource.getColumns(), rightSource.getColumns(), columns);
-            final Iterator<Object[]> leftIt = HConcatDataFrame.this.leftSource.iterator();
-            final Iterator<Object[]> rightIt = HConcatDataFrame.this.rightSource.iterator();
+            final ArrayRowBuilder target = new ArrayRowBuilder(columns);
+            final Iterator<RowProxy> leftIt = RowIterator.overDataFrame(HConcatDataFrame.this.leftSource);
+            final Iterator<RowProxy> rightIt = RowIterator.overDataFrame(HConcatDataFrame.this.rightSource);
 
-            BiPredicate<Object[], Object[]> hasNext = buildPredicate();
-            Object[] nextL;
-            Object[] nextR;
+            BiPredicate<RowProxy, RowProxy> hasNext = buildPredicate();
+            RowProxy nextL;
+            RowProxy nextR;
 
             {
                 rewind();
@@ -64,7 +66,7 @@ public class HConcatDataFrame implements DataFrame {
                 nextR = rightIt.hasNext() ? rightIt.next() : null;
             }
 
-            private BiPredicate<Object[], Object[]> buildPredicate() {
+            private BiPredicate<RowProxy, RowProxy> buildPredicate() {
                 switch (joinType) {
                     case full:
                         return (l, r) -> l != null || r != null;
@@ -95,10 +97,9 @@ public class HConcatDataFrame implements DataFrame {
                 return o;
             }
 
-            private Object[] transform(Object[] leftR, Object[] rightR) {
-                Object[] target = new Object[context.getCombinedIndex().size()];
-                rowCombiner.combine(context, leftR, rightR, target);
-                return target;
+            private Object[] transform(RowProxy leftR, RowProxy rightR) {
+                rowCombiner.combine(leftR, rightR, target);
+                return target.reset();
             }
         };
     }

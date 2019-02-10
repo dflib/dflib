@@ -1,6 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.concat.HConcat;
+import com.nhl.dflib.row.RowBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,7 +84,7 @@ public abstract class Index implements Iterable<IndexPosition> {
         };
     }
 
-    public abstract void compactCopy(Object[] row, Object[] to, int toOffset);
+    public abstract void compactCopy(Object[] from, RowBuilder to, int toOffset);
 
     public abstract Index rename(Map<String, String> oldToNewNames);
 

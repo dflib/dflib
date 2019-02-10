@@ -1,5 +1,7 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.row.RowBuilder;
+
 import java.util.Map;
 
 /**
@@ -18,8 +20,8 @@ public class ContinuousIndex extends Index {
     }
 
     @Override
-    public void compactCopy(Object[] row, Object[] to, int toOffset) {
-        System.arraycopy(row, 0, to, toOffset, positions.length);
+    public void compactCopy(Object[] from, RowBuilder to, int toOffset) {
+        to.bulkSet(from, toOffset, positions.length);
     }
 
     public Index rename(Map<String, String> oldToNewNames) {

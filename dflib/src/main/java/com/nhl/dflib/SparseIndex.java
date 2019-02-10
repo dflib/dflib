@@ -1,5 +1,7 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.row.RowBuilder;
+
 import java.util.Map;
 
 public class SparseIndex extends Index {
@@ -18,10 +20,9 @@ public class SparseIndex extends Index {
     }
 
     @Override
-    public void compactCopy(Object[] row, Object[] to, int toOffset) {
-
+    public void compactCopy(Object[] from, RowBuilder to, int toOffset) {
         for (int i = 0; i < positions.length; i++) {
-            to[toOffset + i] = positions[i].get(row);
+            to.set(i + toOffset, positions[i].get(from));
         }
     }
 

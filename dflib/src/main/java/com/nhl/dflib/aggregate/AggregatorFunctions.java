@@ -12,12 +12,12 @@ class AggregatorFunctions {
 
     static RowToValueMapper<String> toString(String column) {
         RowToValueMapper<?> reader = RowToValueMapper.columnReader(column);
-        return (c, r) -> String.valueOf(reader.map(c, r));
+        return r -> String.valueOf(reader.map(r));
     }
 
     static RowToValueMapper<String> toString(int column) {
         RowToValueMapper<?> reader = RowToValueMapper.columnReader(column);
-        return (c, r) -> String.valueOf(reader.map(c, r));
+        return r -> String.valueOf(reader.map(r));
     }
 
     static Collector<Number, List<Double>, Double> medianCollector() {

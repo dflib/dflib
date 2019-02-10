@@ -123,7 +123,7 @@ public class DataFrameTest {
         DataFrame df = DataFrame.fromSequence(i1,
                 1, "x",
                 2, "y")
-                .addColumn("c", (c, r) -> ((int) c.get(r, 0)) * 10);
+                .addColumn("c", r -> ((int) r.get(0)) * 10);
 
         new DFAsserts(df, "a", "b", "c")
                 .expectHeight(2)
@@ -138,7 +138,7 @@ public class DataFrameTest {
                 1, "x",
                 2, "y")
                 .selectColumns("a")
-                .addColumn("c", (c, r) -> ((int) c.get(r, 0)) * 10);
+                .addColumn("c", r -> ((int) r.get(0)) * 10);
 
         new DFAsserts(df, "a", "c")
                 .expectHeight(2)
@@ -236,7 +236,7 @@ public class DataFrameTest {
         DataFrame df = DataFrame.fromSequence(i1,
                 1, "x",
                 2, "y")
-                .map(RowMapper.mapColumn("a", (cx, rx) -> ((int) cx.get(rx, "a")) * 10));
+                .map(RowMapper.mapColumn("a", r -> ((int) r.get("a")) * 10));
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(2)
@@ -251,7 +251,7 @@ public class DataFrameTest {
                 1, "x",
                 2, "y")
                 .dropColumns("a")
-                .map(RowMapper.mapColumn("b", (cx, rx) -> cx.get(rx, "b") + "_"));
+                .map(RowMapper.mapColumn("b", r -> r.get("b") + "_"));
 
         new DFAsserts(df, new IndexPosition(0, 0, "b"))
                 .expectHeight(2)
@@ -265,7 +265,7 @@ public class DataFrameTest {
         DataFrame df = DataFrame.fromSequence(i1,
                 1, "x",
                 2, "y")
-                .mapColumn("a", (c, r) -> ((int) c.get(r, 0)) * 10);
+                .mapColumn("a", r -> ((int) r.get(0)) * 10);
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(2)
@@ -280,7 +280,7 @@ public class DataFrameTest {
                 1, "x",
                 2, "y")
                 .selectColumns("b")
-                .mapColumn("b", (c, r) -> c.get(r, 0) + "_");
+                .mapColumn("b", r -> r.get(0) + "_");
 
         new DFAsserts(df, "b")
                 .expectHeight(2)
@@ -294,7 +294,7 @@ public class DataFrameTest {
         DataFrame df = DataFrame.fromSequence(i1,
                 1, "x",
                 2, "y")
-                .mapColumn("a", v -> ((int) v) * 10);
+                .mapColumnValue("a", v -> ((int) v) * 10);
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(2)

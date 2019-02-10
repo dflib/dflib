@@ -8,7 +8,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class MappedDataFrameTest {
-    
+
     @Test
     public void testIterator() {
 
@@ -57,14 +57,14 @@ public class MappedDataFrameTest {
     }
 
     @Test
-    public void testMapColumn() {
+    public void testMapColumnFromRow() {
 
         Index i = Index.withNames("a", "b");
 
         DataFrame df = new MappedDataFrame(
                 i,
                 DataFrame.fromRows(i, DataFrame.row("one", 1), DataFrame.row("two", 2)),
-                RowMapper.copy()).mapColumn("b", (c, r) -> c.get(r, 1).toString());
+                RowMapper.copy()).mapColumn("b", r -> r.get(1).toString());
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(2)
@@ -81,7 +81,7 @@ public class MappedDataFrameTest {
                 i,
                 DataFrame.fromRows(i, DataFrame.row("one", 1), DataFrame.row("two", 2)),
                 RowMapper.copy())
-                .map(i, RowMapper.mapColumn("a", (cx, rx) -> cx.get(rx, 0) + "_"));
+                .map(i, RowMapper.mapColumn("a", r -> r.get(0) + "_"));
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(2)
@@ -99,10 +99,10 @@ public class MappedDataFrameTest {
                 i,
                 DataFrame.fromRows(i, DataFrame.row("one", 1), DataFrame.row("two", 2)),
                 RowMapper.copy())
-                .map(i1, (c, sr, tr) -> c
-                        .set(tr, 0, sr[0])
-                        .set(tr, 1, ((int) sr[1]) * 10)
-                        .set(tr, 2, sr[1]));
+                .map(i1, (s, t) -> t.bulkSet(
+                        s.get(0),
+                        ((int) s.get(1)) * 10,
+                        s.get(1)));
 
         new DFAsserts(df, i1)
                 .expectHeight(2)
@@ -121,13 +121,13 @@ public class MappedDataFrameTest {
                 i,
                 DataFrame.fromRows(i, DataFrame.row("one", 1), DataFrame.row("two", 2)),
                 RowMapper.copy())
-                .map(i1, (c, sr, tr) -> c
-                        .set(tr, 0, sr[0])
-                        .set(tr, 1, ((int) sr[1]) * 10)
-                        .set(tr, 2, sr[1]))
-                .map(i2, (c, sr, tr) -> c
-                        .set(tr, 0, sr[0])
-                        .set(tr, 1, sr[1]));
+                .map(i1, (s, t) -> t.bulkSet(
+                        s.get(0),
+                        ((int) s.get(1)) * 10,
+                        s.get(1)))
+                .map(i2, (s, t) -> t.bulkSet(
+                        s.get(0),
+                        s.get(1)));
 
         new DFAsserts(df, i2)
                 .expectHeight(2)
@@ -142,10 +142,10 @@ public class MappedDataFrameTest {
         Index i1 = Index.withNames("c", "d", "e");
 
         DataFrame df = new MappedDataFrame(i, DataFrame.fromRows(i), RowMapper.copy())
-                .map(i1, (c, sr, tr) -> c
-                        .set(tr, 0, sr[0])
-                        .set(tr, 1, ((int) sr[1]) * 10)
-                        .set(tr, 2, sr[1]));
+                .map(i1, (s, t) -> t.bulkSet(
+                        s.get(0),
+                        ((int) s.get(1)) * 10,
+                        s.get(1)));
 
         assertSame(i1, df.getColumns());
 

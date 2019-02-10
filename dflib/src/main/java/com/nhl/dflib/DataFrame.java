@@ -5,20 +5,20 @@ import com.nhl.dflib.aggregate.ColumnAggregator;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.HConcatDataFrame;
 import com.nhl.dflib.concat.VConcat;
-import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.FilteredDataFrame;
+import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.groupby.Grouper;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.join.Joiner;
 import com.nhl.dflib.join.MappedJoiner;
+import com.nhl.dflib.map.Hasher;
+import com.nhl.dflib.map.MappedDataFrame;
 import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.map.RowConsumer;
 import com.nhl.dflib.map.RowMapper;
 import com.nhl.dflib.map.RowToValueMapper;
-import com.nhl.dflib.map.Hasher;
-import com.nhl.dflib.map.MappedDataFrame;
 import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.sort.SortedDataFrame;
 import com.nhl.dflib.sort.Sorters;
@@ -199,11 +199,11 @@ public interface DataFrame extends Iterable<Object[]> {
         return new MappedDataFrame(mappedColumns, this, rowMapper).materialize();
     }
 
-    default <V, VR> DataFrame mapColumn(String columnName, ValueMapper<V, VR> m) {
+    default <V, VR> DataFrame mapColumnValue(String columnName, ValueMapper<V, VR> m) {
         Index index = getColumns();
         Index compactIndex = index.compactIndex();
         int pos = index.position(columnName).ordinal();
-        return map(compactIndex, RowMapper.mapColumn(pos, m));
+        return map(compactIndex, RowMapper.mapColumnValue(pos, m));
     }
 
     default <V> DataFrame mapColumn(String columnName, RowToValueMapper<V> m) {
@@ -309,7 +309,7 @@ public interface DataFrame extends Iterable<Object[]> {
      */
     default DataFrame hConcat(JoinType how, DataFrame df) {
         Index zipIndex = HConcat.zipIndex(getColumns(), df.getColumns());
-        return hConcat(zipIndex, how, df, RowCombiner.zip());
+        return hConcat(zipIndex, how, df, RowCombiner.zip(width()));
     }
 
     default DataFrame hConcat(Index zippedColumns, JoinType how, DataFrame df, RowCombiner c) {

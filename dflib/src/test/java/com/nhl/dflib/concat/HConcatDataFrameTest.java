@@ -28,7 +28,7 @@ public class HConcatDataFrameTest {
                 JoinType.inner,
                 df1,
                 df2,
-                RowCombiner.zip());
+                RowCombiner.zip(df1.width()));
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(2)
@@ -54,7 +54,7 @@ public class HConcatDataFrameTest {
                 JoinType.inner,
                 df1,
                 df2,
-                RowCombiner.zip());
+                RowCombiner.zip(df1.width()));
 
         new DFAsserts(df, "z1", "z2")
                 .expectHeight(2)
@@ -80,7 +80,7 @@ public class HConcatDataFrameTest {
                 JoinType.inner,
                 df1,
                 df2,
-                RowCombiner.zip());
+                RowCombiner.zip(df1.width()));
 
         new DFAsserts(df, "b", "c")
                 .expectHeight(2)
@@ -105,7 +105,7 @@ public class HConcatDataFrameTest {
                 JoinType.inner,
                 df1,
                 df2,
-                RowCombiner.zip()).head(1);
+                RowCombiner.zip(df1.width())).head(1);
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(1)
@@ -125,7 +125,7 @@ public class HConcatDataFrameTest {
                 10,
                 20);
 
-        DataFrame df = new HConcatDataFrame(Index.withNames("a", "b"), JoinType.inner, df1, df2, RowCombiner.zip())
+        DataFrame df = new HConcatDataFrame(Index.withNames("a", "b"), JoinType.inner, df1, df2, RowCombiner.zip(df1.width()))
                 .renameColumn("b", "c");
 
         new DFAsserts(df, "a", "c")
@@ -149,8 +149,8 @@ public class HConcatDataFrameTest {
 
         Index zippedColumns = Index.withNames("x", "y");
 
-        DataFrame df = new HConcatDataFrame(zippedColumns, JoinType.inner, df1, df2, RowCombiner.zip())
-                .map(RowMapper.mapColumn("x", (cx, rx) -> cx.get(rx, 0) + "_"));
+        DataFrame df = new HConcatDataFrame(zippedColumns, JoinType.inner, df1, df2, RowCombiner.zip(df1.width()))
+                .map(RowMapper.mapColumn("x", r -> r.get(0) + "_"));
 
         new DFAsserts(df, zippedColumns)
                 .expectHeight(2)
@@ -172,11 +172,11 @@ public class HConcatDataFrameTest {
                 2);
 
         Index mappedColumns = Index.withNames("x", "y", "z");
-        DataFrame df = new HConcatDataFrame(Index.withNames("a", "b"), JoinType.inner, df1, df2, RowCombiner.zip())
-                .map(mappedColumns, (c, sr, tr) -> c
-                        .set(tr, 0, sr[0])
-                        .set(tr, 1, ((int) sr[1]) * 10)
-                        .set(tr, 2, sr[1]));
+        DataFrame df = new HConcatDataFrame(Index.withNames("a", "b"), JoinType.inner, df1, df2, RowCombiner.zip(df1.width()))
+                .map(mappedColumns, (s, t) -> t.bulkSet(
+                        s.get(0),
+                        ((int) s.get(1)) * 10,
+                        s.get(1)));
 
         new DFAsserts(df, mappedColumns)
                 .expectHeight(2)

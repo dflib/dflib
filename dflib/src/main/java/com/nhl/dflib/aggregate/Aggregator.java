@@ -2,8 +2,8 @@ package com.nhl.dflib.aggregate;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.IndexMapper;
+import com.nhl.dflib.map.RowToValueMapper;
 
 import java.util.stream.Collector;
 import java.util.stream.Collectors;

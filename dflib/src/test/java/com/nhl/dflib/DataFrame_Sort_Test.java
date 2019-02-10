@@ -14,7 +14,7 @@ public class DataFrame_Sort_Test {
                 2, 3,
                 -1, 2);
 
-        DataFrame df = dfi.sort((c, r) -> (Integer) c.get(r, "a"));
+        DataFrame df = dfi.sort(r -> (Integer) r.get("a"));
         assertNotSame(dfi, df);
 
         new DFAsserts(dfi, "a", "b")

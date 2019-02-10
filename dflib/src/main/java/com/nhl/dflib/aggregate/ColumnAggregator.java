@@ -3,8 +3,9 @@ package com.nhl.dflib.aggregate;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IndexPosition;
-import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.IndexMapper;
+import com.nhl.dflib.map.RowToValueMapper;
+import com.nhl.dflib.row.ArrayRowProxy;
 
 import java.util.function.BiConsumer;
 import java.util.stream.Collector;
@@ -42,7 +43,8 @@ public class ColumnAggregator implements Aggregator {
         BiConsumer accumulator = collector.accumulator();
         Object accumResult = collector.supplier().get();
 
-        df.consume((ix, r) -> accumulator.accept(accumResult, reader.map(ix, r)));
+        ArrayRowProxy rowProxy = new ArrayRowProxy(df.getColumns());
+        df.consume((ix, r) -> accumulator.accept(accumResult, reader.map(rowProxy.reset(r))));
 
         Object result = collector.finisher().apply(accumResult);
         return new Object[]{result};
