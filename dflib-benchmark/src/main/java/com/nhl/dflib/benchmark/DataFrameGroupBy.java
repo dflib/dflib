@@ -57,8 +57,15 @@ public class DataFrameGroupBy {
     }
 
     @Benchmark
-    public Object aggregate() {
+    public Object aggregate_by_name() {
         return gb.agg(Aggregator.sum("id"))
+                .materialize()
+                .iterator();
+    }
+
+    @Benchmark
+    public Object aggregate_by_pos() {
+        return gb.agg(Aggregator.sum(0))
                 .materialize()
                 .iterator();
     }
