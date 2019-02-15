@@ -11,8 +11,8 @@ import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.groupby.Grouper;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
-import com.nhl.dflib.join.Joiner;
-import com.nhl.dflib.join.MappedJoiner;
+import com.nhl.dflib.join.NestedLoopJoiner;
+import com.nhl.dflib.join.HashJoiner;
 import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.map.MappedDataFrame;
 import com.nhl.dflib.map.RowCombiner;
@@ -378,7 +378,7 @@ public interface DataFrame extends Iterable<Object[]> {
      * @return a DataFrame that is a result of this join
      */
     default DataFrame join(DataFrame df, JoinPredicate p, JoinType how) {
-        Joiner joiner = new Joiner(p, how);
+        NestedLoopJoiner joiner = new NestedLoopJoiner(p, how);
         Index joinedIndex = joiner.joinIndex(getColumns(), df.getColumns());
         return joiner.joinRows(joinedIndex, this, df);
     }
@@ -419,7 +419,7 @@ public interface DataFrame extends Iterable<Object[]> {
             Hasher leftHasher,
             Hasher rightHasher,
             JoinType how) {
-        MappedJoiner joiner = new MappedJoiner(leftHasher, rightHasher, how);
+        HashJoiner joiner = new HashJoiner(leftHasher, rightHasher, how);
         Index joinedIndex = joiner.joinIndex(getColumns(), df.getColumns());
         return joiner.joinRows(joinedIndex, this, df);
     }

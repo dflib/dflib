@@ -13,16 +13,17 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A DataFrame joiner based on a pair of functions that can calculate comparable keys for the left and right row.
- * Should theoretically have O(N + M) performance.
+ * A DataFrame joiner using <a href="https://en.wikipedia.org/wiki/Hash_join">"hash join"</a> algorithm. It requires
+ * two custom "hash" functions for the rows on the left and the right sides of the join, each producing values, whose
+ * equality can be used as a join condition. Should theoretically have O(N + M) performance.
  */
-public class MappedJoiner extends BaseJoiner {
+public class HashJoiner extends BaseJoiner {
 
     private Hasher leftHasher;
     private Hasher rightHasher;
     private JoinType semantics;
 
-    public MappedJoiner(
+    public HashJoiner(
             Hasher leftHasher,
             Hasher rightHasher,
             JoinType semantics) {
