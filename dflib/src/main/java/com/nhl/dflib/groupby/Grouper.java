@@ -28,14 +28,15 @@ public class Grouper {
 
         Index columns = df.getColumns();
 
+        int len = Math.min(columns.span(), df.getColumns().span());
         ArrayRowBuilder rowBuilder = new ArrayRowBuilder(columns);
 
         for (RowProxy r : df) {
             Object key = hasher.map(r);
 
-            // Internally "RowBuilder.bulkSet" will avoid value copy, and use the original array reference. So this
+            // Internally "RowBuilder.setRange" will avoid value copy, and use the original array reference. So this
             // operation should be fast and take no extra memory
-            r.copyAll(rowBuilder, 0);
+            r.copyRange(rowBuilder, 0, 0, len);
 
             ((List<Object[]>) groups.computeIfAbsent(key, k -> new ArrayList<>())).add(rowBuilder.reset());
         }

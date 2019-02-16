@@ -70,9 +70,10 @@ public class MaterializableDataFrame implements DataFrame {
     protected List<Object[]> doMaterialize() {
         List<Object[]> materialized = new ArrayList<>();
 
+        int len = Math.min(columns.span(), source.getColumns().span());
         ArrayRowBuilder rowBuilder = new ArrayRowBuilder(columns);
         source.consume(r -> {
-            r.copyAll(rowBuilder, 0);
+            r.copyRange(rowBuilder, 0, 0, len);
             materialized.add(rowBuilder.reset());
         });
 

@@ -19,7 +19,8 @@ public interface RowProxy {
     void copyRange(RowBuilder to, int fromOffset, int toOffset, int len);
 
     default void copyAll(RowBuilder to, int toOffset) {
-        // TODO: likely hotspot - same params calculated for every row
+        // likely hotspot - same params calculated for every row.. In internal code precalculate parameters
+        // for the entire DF and use "copyRange"
         copyRange(to, 0, toOffset, Math.min(to.getIndex().span() - toOffset, getIndex().span()));
     }
 }
