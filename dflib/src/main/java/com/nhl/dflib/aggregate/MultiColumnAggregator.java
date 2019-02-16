@@ -45,7 +45,7 @@ public class MultiColumnAggregator implements Aggregator {
             accumResults[i] = aggregators[i].getCollector().supplier().get();
         }
 
-        df.consume(r -> {
+        df.forEach(r -> {
             for (int i = 0; i < len; i++) {
                 accums[i].accept(accumResults[i], aggregators[i].getReader().map(r));
             }

@@ -16,7 +16,6 @@ import com.nhl.dflib.join.NestedLoopJoiner;
 import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.map.MappedDataFrame;
 import com.nhl.dflib.map.RowCombiner;
-import com.nhl.dflib.map.RowConsumer;
 import com.nhl.dflib.map.RowMapper;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.ValueMapper;
@@ -180,10 +179,6 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     default DataFrame head(int len) {
         return new HeadDataFrame(this, len);
-    }
-
-    default void consume(RowConsumer consumer) {
-        forEach(consumer::consume);
     }
 
     default DataFrame map(RowMapper rowMapper) {

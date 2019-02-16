@@ -72,7 +72,7 @@ public class MaterializableDataFrame implements DataFrame {
 
         int len = Math.min(columns.span(), source.getColumns().span());
         ArrayRowBuilder rowBuilder = new ArrayRowBuilder(columns);
-        source.consume(r -> {
+        source.forEach(r -> {
             r.copyRange(rowBuilder, 0, 0, len);
             materialized.add(rowBuilder.reset());
         });

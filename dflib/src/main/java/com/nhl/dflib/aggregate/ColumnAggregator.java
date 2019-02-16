@@ -42,7 +42,7 @@ public class ColumnAggregator implements Aggregator {
         BiConsumer accumulator = collector.accumulator();
         Object accumResult = collector.supplier().get();
 
-        df.consume(r -> accumulator.accept(accumResult, reader.map(r)));
+        df.forEach(r -> accumulator.accept(accumResult, reader.map(r)));
 
         Object result = collector.finisher().apply(accumResult);
         return new Object[]{result};
