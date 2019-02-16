@@ -43,7 +43,7 @@ public class DataFrameJoinsTest {
                 2, "b",
                 3, "c");
 
-        DataFrame df = df1.innerJoin(df2, (c, lr, rr) -> false);
+        DataFrame df = df1.innerJoin(df2, (lr, rr) -> false);
 
         new DFAsserts(df, "a", "b", "c", "d")
                 .expectHeight(0);

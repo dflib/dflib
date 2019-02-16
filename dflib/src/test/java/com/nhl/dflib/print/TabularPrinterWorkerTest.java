@@ -5,20 +5,17 @@ import com.nhl.dflib.Index;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
-
-import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 
 public class TabularPrinterWorkerTest {
 
-    private Index columns;
-    private List<Object[]> rows;
+    private DataFrame df;
 
     @Before
     public void initDataFrameParts() {
-        this.columns = Index.withNames("col1", "column2");
-        this.rows = asList(
+
+        Index columns = Index.withNames("col1", "column2");
+        this.df = DataFrame.fromRows(columns,
                 DataFrame.row("one", 1),
                 DataFrame.row("two", 2),
                 DataFrame.row("three", 3),
@@ -43,7 +40,7 @@ public class TabularPrinterWorkerTest {
                 "one   1      " + System.lineSeparator() +
                 "two   2      " + System.lineSeparator() +
                 "three 3      " + System.lineSeparator() +
-                "four  4      ", w.print(columns, rows.iterator()).toString());
+                "four  4      ", w.print(df).toString());
     }
 
     @Test
@@ -55,7 +52,7 @@ public class TabularPrinterWorkerTest {
                 "---- -------" + System.lineSeparator() +
                 "one  1      " + System.lineSeparator() +
                 "two  2      " + System.lineSeparator() +
-                "...", w.print(columns, rows.iterator()).toString());
+                "...", w.print(df).toString());
     }
 
     @Test
@@ -68,6 +65,6 @@ public class TabularPrinterWorkerTest {
                 "one  1   " + System.lineSeparator() +
                 "two  2   " + System.lineSeparator() +
                 "t..e 3   " + System.lineSeparator() +
-                "four 4   ", w.print(columns, rows.iterator()).toString());
+                "four 4   ", w.print(df).toString());
     }
 }

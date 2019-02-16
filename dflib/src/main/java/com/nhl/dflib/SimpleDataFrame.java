@@ -1,6 +1,8 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.print.InlinePrinter;
+import com.nhl.dflib.row.RowIterator;
+import com.nhl.dflib.row.RowProxy;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -26,8 +28,8 @@ public class SimpleDataFrame implements DataFrame {
     }
 
     @Override
-    public Iterator<Object[]> iterator() {
-        return source.iterator();
+    public Iterator<RowProxy> iterator() {
+        return RowIterator.overArrays(columns, source);
     }
 
     @Override
@@ -36,10 +38,6 @@ public class SimpleDataFrame implements DataFrame {
         // avoid iteration if possible
         if (source instanceof Collection) {
             return ((Collection) source).size();
-        }
-
-        if(source instanceof DataFrame) {
-            return ((DataFrame) source).height();
         }
 
         return DataFrame.super.height();

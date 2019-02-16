@@ -1,8 +1,6 @@
 package com.nhl.dflib.print;
 
-import com.nhl.dflib.Index;
-
-import java.util.Iterator;
+import com.nhl.dflib.DataFrame;
 
 public abstract class BasePrinterWorker {
 
@@ -34,5 +32,5 @@ public abstract class BasePrinterWorker {
         return string.substring(0, startOffset) + ".." + string.substring(endOffset);
     }
 
-    abstract StringBuilder print(Index index, Iterator<Object[]> values);
+    abstract StringBuilder print(DataFrame df);
 }

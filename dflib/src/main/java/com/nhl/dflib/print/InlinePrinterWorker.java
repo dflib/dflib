@@ -1,7 +1,9 @@
 package com.nhl.dflib.print;
 
+import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IndexPosition;
+import com.nhl.dflib.row.RowProxy;
 
 import java.util.Iterator;
 
@@ -12,7 +14,10 @@ public class InlinePrinterWorker extends BasePrinterWorker {
     }
 
     @Override
-    StringBuilder print(Index columns, Iterator<Object[]> values) {
+    StringBuilder print(DataFrame df) {
+
+        Index columns = df.getColumns();
+        Iterator<RowProxy> values = df.iterator();
 
         int width = columns.size();
         if (width == 0) {
@@ -30,7 +35,7 @@ public class InlinePrinterWorker extends BasePrinterWorker {
                 out.append(",");
             }
 
-            Object[] dr = values.next();
+            RowProxy dr = values.next();
 
             out.append("{");
             for (int j = 0; j < width; j++) {
@@ -41,7 +46,7 @@ public class InlinePrinterWorker extends BasePrinterWorker {
 
                 appendTruncate(positions[j].name());
                 out.append(":");
-                appendTruncate(String.valueOf(positions[j].get(dr)));
+                appendTruncate(String.valueOf(dr.get(j)));
             }
 
             out.append("}");

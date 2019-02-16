@@ -1,13 +1,20 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.row.RowBuilder;
-
 import java.util.Map;
 
 public class SparseIndex extends Index {
 
+    private int span;
+
     protected SparseIndex(IndexPosition... positions) {
         super(positions);
+
+        int maxIndex = 0;
+        for (int i = 0; i < positions.length; i++) {
+            maxIndex = Math.max(positions[i].rowIndex(), maxIndex);
+        }
+
+        this.span = maxIndex + 1;
     }
 
     @Override
@@ -20,10 +27,13 @@ public class SparseIndex extends Index {
     }
 
     @Override
-    public void compactCopy(Object[] from, RowBuilder to, int toOffset) {
-        for (int i = 0; i < positions.length; i++) {
-            to.set(i + toOffset, positions[i].get(from));
-        }
+    public boolean isCompact() {
+        return false;
+    }
+
+    @Override
+    public int span() {
+        return span;
     }
 
     public Index rename(Map<String, String> oldToNewNames) {

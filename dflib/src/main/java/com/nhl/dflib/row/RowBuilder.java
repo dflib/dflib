@@ -16,10 +16,10 @@ public interface RowBuilder {
 
     void set(String columnName, Object value);
 
-    default void bulkSet(Object... values) {
-        bulkSet(values, 0, values.length);
-    }
+    void setRange(Object[] values, int fromOffset, int toOffset, int len);
 
-    void bulkSet(Object[] values, int offset, int length);
+    default void setValues(Object... values) {
+        setRange(values, 0, 0, getIndex().span());
+    }
 }
 

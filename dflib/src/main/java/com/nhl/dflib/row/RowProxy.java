@@ -16,9 +16,10 @@ public interface RowProxy {
 
     Object get(String columnName);
 
-    default void copyTo(RowBuilder to) {
-        copyTo(to, 0);
-    }
+    void copyRange(RowBuilder to, int fromOffset, int toOffset, int len);
 
-    void copyTo(RowBuilder to, int toOffset);
+    default void copyAll(RowBuilder to, int toOffset) {
+        // TODO: likely hotspot - same params calculated for every row
+        copyRange(to, 0, toOffset, Math.min(to.getIndex().span() - toOffset, getIndex().span()));
+    }
 }

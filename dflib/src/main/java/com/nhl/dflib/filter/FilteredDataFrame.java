@@ -3,6 +3,7 @@ package com.nhl.dflib.filter;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.print.InlinePrinter;
+import com.nhl.dflib.row.RowProxy;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -23,44 +24,51 @@ public class FilteredDataFrame implements DataFrame {
     }
 
     @Override
-    public Iterator<Object[]> iterator() {
-        return new Iterator<Object[]>() {
+    public Iterator<RowProxy> iterator() {
+        return new Iterator<RowProxy>() {
 
-            private final Index columns = source.getColumns();
-            private final Iterator<Object[]> delegateIt = source.iterator();
+            private final Iterator<RowProxy> it = source.iterator();
 
-            private Object[] lastResolved;
+            // extra caution needs to be taken when caching RowProxy.. Specifically, we can't rewind the underlying
+            // Iterator until the entry is consumed by this iterator's caller
+            private RowProxy row;
+            private boolean rowUnconsumed;
 
-            {
-                rewind();
-            }
+            private void rewindIfNeeded() {
 
-            private void rewind() {
-                lastResolved = null;
-                while (delegateIt.hasNext()) {
-                    Object[] next = delegateIt.next();
-                    if (rowFilter.test(columns, next)) {
-                        lastResolved = next;
+                if (rowUnconsumed) {
+                    return;
+                }
+
+                row = null;
+                while (it.hasNext()) {
+                    RowProxy next = it.next();
+                    if (rowFilter.test(next)) {
+                        row = next;
                         break;
                     }
                 }
+
+                rowUnconsumed = true;
             }
 
             @Override
             public boolean hasNext() {
-                return lastResolved != null;
+                rewindIfNeeded();
+                return row != null;
             }
 
             @Override
-            public Object[] next() {
+            public RowProxy next() {
 
-                if (lastResolved == null) {
+                rewindIfNeeded();
+
+                if (row == null) {
                     throw new NoSuchElementException("No next element");
                 }
 
-                Object[] next = lastResolved;
-                rewind();
-                return next;
+                rowUnconsumed = false;
+                return row;
             }
         };
     }

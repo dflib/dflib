@@ -1,6 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.print.InlinePrinter;
+import com.nhl.dflib.row.RowProxy;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -26,26 +27,26 @@ public class HeadDataFrame implements DataFrame {
     }
 
     @Override
-    public Iterator<Object[]> iterator() {
+    public Iterator<RowProxy> iterator() {
 
-        return new Iterator<Object[]>() {
+        return new Iterator<RowProxy>() {
 
             private int counter = 0;
-            private Iterator<Object[]> delegateIt = HeadDataFrame.this.source.iterator();
+            private final Iterator<RowProxy> it = source.iterator();
 
             @Override
             public boolean hasNext() {
-                return counter < len && delegateIt.hasNext();
+                return counter < len && it.hasNext();
             }
 
             @Override
-            public Object[] next() {
+            public RowProxy next() {
                 if (counter >= len) {
                     throw new NoSuchElementException("Past the end of the iterator");
                 }
 
                 counter++;
-                return delegateIt.next();
+                return it.next();
             }
         };
     }

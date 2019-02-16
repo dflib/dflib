@@ -12,11 +12,11 @@ public interface RowCombiner {
             // rows can be null in case of outer joins...
 
             if (lr != null) {
-                lr.copyTo(tr);
+                lr.copyAll(tr, 0);
             }
 
             if (rr != null) {
-                rr.copyTo(tr, rightOffset);
+                rr.copyAll(tr, rightOffset);
             }
         };
     }

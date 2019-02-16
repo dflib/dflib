@@ -9,10 +9,10 @@ import com.nhl.dflib.filter.FilteredDataFrame;
 import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.groupby.Grouper;
+import com.nhl.dflib.join.HashJoiner;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.join.NestedLoopJoiner;
-import com.nhl.dflib.join.HashJoiner;
 import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.map.MappedDataFrame;
 import com.nhl.dflib.map.RowCombiner;
@@ -20,6 +20,7 @@ import com.nhl.dflib.map.RowConsumer;
 import com.nhl.dflib.map.RowMapper;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.ValueMapper;
+import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.sort.SortedDataFrame;
 import com.nhl.dflib.sort.Sorters;
 
@@ -35,17 +36,11 @@ import static java.util.Arrays.asList;
 
 /**
  * An immutable 2D data container with support for a variety of data transformations, queries, joins, etc. Every such
- * transformation returns a new DataFrame object and does not affect the original DataFrame.
- * <p>DataFrame allows to iterate over its contents as Object[]. You need to know two things about these arrays:
- * <ul>
- * <li>While Java arrays are mutable by nature, it will violate the DataFrame contract if a user attempts to change them
- * directly. Don't do that!</li>
- * <li>The size and positions of data values in the array may not exactly match the size of the index. So use {@link Index}
- * API to find the right values and the extents of the record.</li>
- * </ul>
- * </p>
+ * transformation returns a new DataFrame object and does not affect the original DataFrame. DataFrame allows to iterate
+ * over its contents via {@link RowProxy} instances. You should not attempt to store {@link RowProxy} instances or
+ * otherwise rely on their state outside a single iteration.
  */
-public interface DataFrame extends Iterable<Object[]> {
+public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * Creates a DataFrame by folding the provided stream of objects into rows and columns.
@@ -159,7 +154,7 @@ public interface DataFrame extends Iterable<Object[]> {
 
         // not a very efficient implementation; implementors should provide faster versions when possible
         int count = 0;
-        Iterator<Object[]> it = iterator();
+        Iterator<?> it = iterator();
         while (it.hasNext()) {
             it.next();
             count++;
@@ -180,7 +175,7 @@ public interface DataFrame extends Iterable<Object[]> {
      * @return a DataFrame optimized for multiple iterations, calls to {@link #height()}, etc.
      */
     default DataFrame materialize() {
-        return new MaterializedDataFrame(this);
+        return new MaterializableDataFrame(this);
     }
 
     default DataFrame head(int len) {
@@ -188,8 +183,7 @@ public interface DataFrame extends Iterable<Object[]> {
     }
 
     default void consume(RowConsumer consumer) {
-        Index columns = getColumns();
-        forEach(r -> consumer.consume(columns, r));
+        forEach(consumer::consume);
     }
 
     default DataFrame map(RowMapper rowMapper) {
@@ -226,7 +220,7 @@ public interface DataFrame extends Iterable<Object[]> {
 
     default DataFrame renameColumns(String... columnNames) {
         Index renamed = getColumns().rename(columnNames);
-        return new SimpleDataFrame(renamed, this);
+        return new MaterializableDataFrame(renamed, this);
     }
 
     default DataFrame renameColumn(String oldName, String newName) {
@@ -235,20 +229,24 @@ public interface DataFrame extends Iterable<Object[]> {
 
     default DataFrame renameColumns(Map<String, String> oldToNewNames) {
         Index renamed = getColumns().rename(oldToNewNames);
-        return new SimpleDataFrame(renamed, this);
+        return new MaterializableDataFrame(renamed, this);
     }
 
     default DataFrame selectColumns(String... columnNames) {
         Index select = getColumns().selectNames(columnNames);
-        return new SimpleDataFrame(select, this);
+        return new MaterializableDataFrame(select, this);
     }
 
     default DataFrame dropColumns(String... columnNames) {
         Index index = getColumns();
         Index newIndex = index.dropNames(columnNames);
-        return newIndex.size() == index.size()
-                ? this
-                : new SimpleDataFrame(newIndex, this);
+
+        // if no columns were dropped (e.g. the names didn't match anything
+        if (newIndex.size() == index.size()) {
+            return this;
+        }
+
+       return new MaterializableDataFrame(newIndex, this);
     }
 
     default DataFrame filter(RowPredicate p) {
@@ -261,7 +259,7 @@ public interface DataFrame extends Iterable<Object[]> {
     }
 
     default <V> DataFrame filterByColumn(int columnPos, ValuePredicate<V> p) {
-        RowPredicate drp = (c, r) -> p.test((V) c.get(r, columnPos));
+        RowPredicate drp = r -> p.test((V) r.get(columnPos));
         return new FilteredDataFrame(this, drp).materialize();
     }
 
@@ -464,5 +462,5 @@ public interface DataFrame extends Iterable<Object[]> {
     }
 
     @Override
-    Iterator<Object[]> iterator();
+    Iterator<RowProxy> iterator();
 }

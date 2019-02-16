@@ -1,7 +1,9 @@
 package com.nhl.dflib.print;
 
+import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IndexPosition;
+import com.nhl.dflib.row.RowProxy;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,14 +15,17 @@ class TabularPrinterWorker extends BasePrinterWorker {
         super(out, maxDisplayRows, maxDisplayColumnWith);
     }
 
-    StringBuilder print(Index index, Iterator<Object[]> values) {
+    StringBuilder print(DataFrame df) {
 
-        int width = index.size();
+        Index columns = df.getColumns();
+        Iterator<RowProxy> values = df.iterator();
+
+        int width = columns.size();
         if (width == 0) {
             return out;
         }
 
-        IndexPosition[] positions = index.getPositions();
+        IndexPosition[] positions = columns.getPositions();
 
 
         int[] columnWidth = new int[width];
@@ -35,11 +40,11 @@ class TabularPrinterWorker extends BasePrinterWorker {
                 break;
             }
 
-            Object[] dr = values.next();
+            RowProxy dr = values.next();
             String[] drValue = new String[width];
 
             for (int j = 0; j < width; j++) {
-                drValue[j] = String.valueOf(positions[j].get(dr));
+                drValue[j] = String.valueOf(dr.get(j));
                 columnWidth[j] = Math.max(columnWidth[j], drValue[j].length());
             }
 

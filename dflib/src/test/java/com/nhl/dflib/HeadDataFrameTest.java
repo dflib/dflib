@@ -33,9 +33,11 @@ public class HeadDataFrameTest {
 
         HeadDataFrame df = new HeadDataFrame(new SimpleDataFrame(columns, rows), 3);
 
-        df.forEach(consumed::add);
-
-        assertEquals(rows.subList(0, 3), consumed);
+        new DFAsserts(df, columns)
+                .expectHeight(3)
+                .expectRow(0, "one")
+                .expectRow(1, "two")
+                .expectRow(2, "three");
     }
 
     @Test
@@ -77,7 +79,7 @@ public class HeadDataFrameTest {
         Index i1 = Index.withNames("c");
 
         DataFrame df = new HeadDataFrame(new SimpleDataFrame(columns, rows), 2)
-                .map(i1, (s, t) -> t.bulkSet(s.get(0) + "_"));
+                .map(i1, (s, t) -> t.setValues(s.get(0) + "_"));
 
         new DFAsserts(df, i1)
                 .expectHeight(2)
@@ -91,7 +93,7 @@ public class HeadDataFrameTest {
         Index i1 = Index.withNames("c");
 
         DataFrame df = new HeadDataFrame(new SimpleDataFrame(columns, Collections.emptyList()), 2)
-                .map(i1, (s, t) -> t.bulkSet(s.get(0) + "_"));
+                .map(i1, (s, t) -> t.setValues(s.get(0) + "_"));
 
         new DFAsserts(df, i1).expectHeight(0);
     }

@@ -1,15 +1,10 @@
 package com.nhl.dflib.row;
 
-import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 
 import java.util.Iterator;
 
 public class RowIterator {
-
-    public static Iterator<RowProxy> overDataFrame(DataFrame df) {
-        return overArrays(df.getColumns(), df);
-    }
 
     public static Iterator<RowProxy> overArrays(Index index, Iterable<Object[]> iterable) {
 

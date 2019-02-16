@@ -1,15 +1,17 @@
 package com.nhl.dflib.join;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.concat.HConcat;
+import com.nhl.dflib.map.Hasher;
+import com.nhl.dflib.map.RowCombiner;
+import com.nhl.dflib.row.ArrayRowBuilder;
+import com.nhl.dflib.row.RowProxy;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -17,7 +19,7 @@ import java.util.Set;
  * two custom "hash" functions for the rows on the left and the right sides of the join, each producing values, whose
  * equality can be used as a join condition. Should theoretically have O(N + M) performance.
  */
-public class HashJoiner extends BaseJoiner {
+public class HashJoiner {
 
     private Hasher leftHasher;
     private Hasher rightHasher;
@@ -54,144 +56,120 @@ public class HashJoiner extends BaseJoiner {
 
     private DataFrame innerJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
 
-        List<Object[]> lRows = new ArrayList<>();
-        List<Object[]> rRows = new ArrayList<>();
+        List<Object[]> joined = new ArrayList<>();
+        RowCombiner combiner = RowCombiner.zip(lf.width());
+        ArrayRowBuilder rowBuilder = new ArrayRowBuilder(joinedColumns);
 
-        Index lColumns = lf.getColumns();
+        GroupBy rightIndex = rf.groupBy(rightHasher);
 
-        Map<Object, List<Object[]>> rightIndex = groupByKey(rightHasher, rf);
+        for (RowProxy lr : lf) {
 
-        for (Object[] lr : lf) {
-
-            Object lKey = leftHasher.map(lColumns, lr);
-            List<Object[]> rightMatches = rightIndex.get(lKey);
+            Object lKey = leftHasher.map(lr);
+            DataFrame rightMatches = rightIndex.getGroup(lKey);
             if (rightMatches != null) {
-                for (Object[] rr : rightMatches) {
-                    lRows.add(lr);
-                    rRows.add(rr);
+                for (RowProxy rr : rightMatches) {
+                    combiner.combine(lr, rr, rowBuilder);
+                    joined.add(rowBuilder.reset());
                 }
             }
         }
 
-        return zipJoinSides(joinedColumns,
-                DataFrame.fromRowsList(lf.getColumns(), lRows),
-                DataFrame.fromRowsList(rf.getColumns(), rRows));
+        return DataFrame.fromRowsList(joinedColumns, joined);
     }
 
     private DataFrame leftJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
 
-        List<Object[]> lRows = new ArrayList<>();
-        List<Object[]> rRows = new ArrayList<>();
+        List<Object[]> joined = new ArrayList<>();
+        RowCombiner combiner = RowCombiner.zip(lf.width());
+        ArrayRowBuilder rowBuilder = new ArrayRowBuilder(joinedColumns);
 
-        Index lColumns = lf.getColumns();
+        GroupBy rightIndex = rf.groupBy(rightHasher);
 
-        Map<Object, List<Object[]>> rightIndex = groupByKey(rightHasher, rf);
+        for (RowProxy lr : lf) {
 
-        for (Object[] lr : lf) {
-
-            Object lKey = leftHasher.map(lColumns, lr);
-            List<Object[]> rightMatches = rightIndex.get(lKey);
+            Object lKey = leftHasher.map(lr);
+            DataFrame rightMatches = rightIndex.getGroup(lKey);
 
             if (rightMatches != null) {
-                for (Object[] rr : rightMatches) {
-                    lRows.add(lr);
-                    rRows.add(rr);
+                for (RowProxy rr : rightMatches) {
+                    combiner.combine(lr, rr, rowBuilder);
+                    joined.add(rowBuilder.reset());
                 }
             } else {
-                lRows.add(lr);
-                rRows.add(null);
+                combiner.combine(lr, null, rowBuilder);
+                joined.add(rowBuilder.reset());
             }
         }
 
-        return zipJoinSides(joinedColumns,
-                DataFrame.fromRowsList(lf.getColumns(), lRows),
-                DataFrame.fromRowsList(rf.getColumns(), rRows));
+        return DataFrame.fromRowsList(joinedColumns, joined);
     }
 
     private DataFrame rightJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
 
-        List<Object[]> lRows = new ArrayList<>();
-        List<Object[]> rRows = new ArrayList<>();
+        List<Object[]> joined = new ArrayList<>();
+        RowCombiner combiner = RowCombiner.zip(lf.width());
+        ArrayRowBuilder rowBuilder = new ArrayRowBuilder(joinedColumns);
 
-        Index rColumns = rf.getColumns();
+        GroupBy leftIndex = lf.groupBy(leftHasher);
 
-        Map<Object, List<Object[]>> leftIndex = groupByKey(leftHasher, lf);
+        for (RowProxy rr : rf) {
 
-        for (Object[] rr : rf) {
-
-            Object rKey = rightHasher.map(rColumns, rr);
-            List<Object[]> leftMatches = leftIndex.get(rKey);
+            Object rKey = rightHasher.map(rr);
+            DataFrame leftMatches = leftIndex.getGroup(rKey);
 
             if (leftMatches != null) {
-                for (Object[] lr : leftMatches) {
-                    lRows.add(lr);
-                    rRows.add(rr);
+                for (RowProxy lr : leftMatches) {
+                    combiner.combine(lr, rr, rowBuilder);
+                    joined.add(rowBuilder.reset());
                 }
             } else {
-                lRows.add(null);
-                rRows.add(rr);
+                combiner.combine(null, rr, rowBuilder);
+                joined.add(rowBuilder.reset());
             }
         }
 
-        return zipJoinSides(joinedColumns,
-                DataFrame.fromRowsList(lf.getColumns(), lRows),
-                DataFrame.fromRowsList(rf.getColumns(), rRows));
+        return DataFrame.fromRowsList(joinedColumns, joined);
     }
 
     private DataFrame fullJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
 
-        List<Object[]> lRows = new ArrayList<>();
-        List<Object[]> rRows = new ArrayList<>();
+        List<Object[]> joined = new ArrayList<>();
+        RowCombiner combiner = RowCombiner.zip(lf.width());
+        ArrayRowBuilder rowBuilder = new ArrayRowBuilder(joinedColumns);
 
-        Index lColumns = lf.getColumns();
+        GroupBy rightIndex = rf.groupBy(rightHasher);
+        Set<Object> seenRightKeys = new LinkedHashSet<>();
 
-        Map<Object, List<Object[]>> rightIndex = groupByKey(rightHasher, rf);
-        Set<Object[]> seenRights = new LinkedHashSet<>();
+        for (RowProxy lr : lf) {
 
-        for (Object[] lr : lf) {
-
-            Object lKey = leftHasher.map(lColumns, lr);
-            List<Object[]> rightMatches = rightIndex.get(lKey);
+            Object lKey = leftHasher.map(lr);
+            DataFrame rightMatches = rightIndex.getGroup(lKey);
 
             if (rightMatches != null) {
-                for (Object[] rr : rightMatches) {
-                    lRows.add(lr);
-                    rRows.add(rr);
-                    seenRights.add(rr);
+
+                seenRightKeys.add(lKey);
+
+                for (RowProxy rr : rightMatches) {
+                    combiner.combine(lr, rr, rowBuilder);
+                    joined.add(rowBuilder.reset());
                 }
+
             } else {
-                lRows.add(lr);
-                rRows.add(null);
+                combiner.combine(lr, null, rowBuilder);
+                joined.add(rowBuilder.reset());
             }
         }
 
         // add missing right rows
-        for (Object[] rr : rf) {
-            if (!seenRights.contains(rr)) {
-                lRows.add(null);
-                rRows.add(rr);
+        for (Object key : rightIndex.getGroups()) {
+            if (!seenRightKeys.contains(key)) {
+                for (RowProxy rr : rightIndex.getGroup(key)) {
+                    combiner.combine(null, rr, rowBuilder);
+                    joined.add(rowBuilder.reset());
+                }
             }
         }
 
-        return zipJoinSides(joinedColumns,
-                DataFrame.fromRowsList(lf.getColumns(), lRows),
-                DataFrame.fromRowsList(rf.getColumns(), rRows));
-    }
-
-    // TODO: this is the same exact logic as in Grouper, only without wrapping the Map in a DataFrame.. Also it uses
-    //  HashMap instead of LinkedHashMap which is somewhat faster for "get". Is it worth
-    //  reusing the Grouper here vs. small overhead it introduces?
-    private Map<Object, List<Object[]>> groupByKey(Hasher hasher, DataFrame df) {
-
-        Index columns = df.getColumns();
-
-        Map<Object, List<Object[]>> index = new HashMap<>();
-
-        for (Object[] r : df) {
-            Object key = hasher.map(columns, r);
-            index.computeIfAbsent(key, k -> new ArrayList<>()).add(r);
-        }
-
-        return index;
+        return DataFrame.fromRowsList(joinedColumns, joined);
     }
 }

@@ -3,9 +3,9 @@ package com.nhl.dflib.map;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.print.InlinePrinter;
-import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.row.ArrayRowBuilder;
-import com.nhl.dflib.row.RowIterator;
+import com.nhl.dflib.row.ArrayRowProxy;
+import com.nhl.dflib.row.RowProxy;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -37,22 +37,23 @@ public class MappedDataFrame implements DataFrame {
     }
 
     @Override
-    public Iterator<Object[]> iterator() {
-        return new Iterator<Object[]>() {
+    public Iterator<RowProxy> iterator() {
+        return new Iterator<RowProxy>() {
 
-            private final Iterator<RowProxy> source = RowIterator.overDataFrame(MappedDataFrame.this.source);
-            private final ArrayRowBuilder target = new ArrayRowBuilder(columns);
+            private final Iterator<RowProxy> it = source.iterator();
+            private final ArrayRowBuilder rowBuilder = new ArrayRowBuilder(columns);
+            private final ArrayRowProxy rowProxy = new ArrayRowProxy(columns);
 
             @Override
             public boolean hasNext() {
-                return source.hasNext();
+                return it.hasNext();
             }
 
             @Override
-            public Object[] next() {
-                RowProxy next = source.next();
-                rowMapper.map(next, target);
-                return target.reset();
+            public RowProxy next() {
+                RowProxy next = it.next();
+                rowMapper.map(next, rowBuilder);
+                return rowProxy.reset(rowBuilder.reset());
             }
         };
     }

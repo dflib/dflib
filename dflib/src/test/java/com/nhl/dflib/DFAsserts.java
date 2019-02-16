@@ -1,5 +1,7 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.row.ArrayRowBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +27,12 @@ public class DFAsserts {
 
         this.expectedColumns = expectedColumns;
         this.rows = new ArrayList<>();
-        df.forEach(rows::add);
+
+        ArrayRowBuilder rowBuilder = new ArrayRowBuilder(df.getColumns());
+        df.forEach(r -> {
+            r.copyAll(rowBuilder, 0);
+            rows.add(rowBuilder.reset());
+        });
     }
 
     public DFAsserts expectHeight(int expectedHeight) {

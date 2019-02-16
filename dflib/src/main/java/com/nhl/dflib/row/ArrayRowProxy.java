@@ -27,10 +27,18 @@ public class ArrayRowProxy implements RowProxy {
     }
 
     @Override
-    public void copyTo(RowBuilder to, int toOffset) {
+    public void copyRange(RowBuilder to, int fromOffset, int toOffset, int len) {
         // row can be null in joins...
         if (row != null) {
-            index.compactCopy(row, to, toOffset);
+
+            // TODO: may be a hotspot?
+            if (index.isCompact()) {
+                to.setRange(row, fromOffset, toOffset, len);
+            } else {
+                for (int i = 0; i < index.size(); i++) {
+                    to.set(i + toOffset, index.get(row, i));
+                }
+            }
         }
     }
 

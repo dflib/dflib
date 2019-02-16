@@ -4,6 +4,8 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.map.Hasher;
+import com.nhl.dflib.row.ArrayRowBuilder;
+import com.nhl.dflib.row.RowProxy;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -26,9 +28,16 @@ public class Grouper {
 
         Index columns = df.getColumns();
 
-        for (Object[] r : df) {
-            Object key = hasher.map(columns, r);
-            ((List<Object[]>) groups.computeIfAbsent(key, k -> new ArrayList<>())).add(r);
+        ArrayRowBuilder rowBuilder = new ArrayRowBuilder(columns);
+
+        for (RowProxy r : df) {
+            Object key = hasher.map(r);
+
+            // Internally "RowBuilder.bulkSet" will avoid value copy, and use the original array reference. So this
+            // operation should be fast and take no extra memory
+            r.copyAll(rowBuilder, 0);
+
+            ((List<Object[]>) groups.computeIfAbsent(key, k -> new ArrayList<>())).add(rowBuilder.reset());
         }
 
         for (Object o : groups.entrySet()) {
@@ -36,6 +45,6 @@ public class Grouper {
             e.setValue(DataFrame.fromRowsList(columns, (List<Object[]>) e.getValue()));
         }
 
-        return new GroupBy(df.getColumns(), (Map<Object, DataFrame>) groups);
+        return new GroupBy(columns, (Map<Object, DataFrame>) groups);
     }
 }

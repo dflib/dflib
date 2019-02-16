@@ -1,6 +1,6 @@
 package com.nhl.dflib.map;
 
-import com.nhl.dflib.Index;
+import com.nhl.dflib.row.RowProxy;
 
 /**
  * A row "hash function" that maps a row to a value that can be used for "group by" or "hash join" operations.
@@ -9,22 +9,22 @@ import com.nhl.dflib.Index;
 public interface Hasher {
 
     static Hasher forColumn(String column) {
-        return (c, r) -> c.get(r, column);
+        return r -> r.get(column);
     }
 
     static Hasher forColumn(int column) {
-        return (c, r) -> c.get(r, column);
+        return r -> r.get(column);
     }
 
     default Hasher and(String column) {
         Hasher and = Hasher.forColumn(column);
-        return (c, r) -> new CombinationHash(map(c, r), and.map(c, r));
+        return r -> new CombinationHash(map(r), and.map(r));
     }
 
     default Hasher and(int column) {
         Hasher and = Hasher.forColumn(column);
-        return (c, r) -> new CombinationHash(map(c, r), and.map(c, r));
+        return r -> new CombinationHash(map(r), and.map(r));
     }
 
-    Object map(Index columns, Object[] row);
+    Object map(RowProxy row);
 }

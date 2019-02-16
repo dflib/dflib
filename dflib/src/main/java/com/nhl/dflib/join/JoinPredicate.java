@@ -1,6 +1,7 @@
 package com.nhl.dflib.join;
 
 import com.nhl.dflib.map.Hasher;
+import com.nhl.dflib.row.RowProxy;
 
 import java.util.Objects;
 
@@ -14,22 +15,22 @@ import java.util.Objects;
 public interface JoinPredicate {
 
     static JoinPredicate on(String leftColumn, String rightColumn) {
-        return (c, lr, rr) -> Objects.equals(c.getLeft(lr, leftColumn), c.getRight(rr, rightColumn));
+        return (lr, rr) -> Objects.equals(lr.get(leftColumn), rr.get(rightColumn));
     }
 
     static JoinPredicate on(int leftColumn, int rightColumn) {
-        return (c, lr, rr) -> Objects.equals(c.getLeft(lr, leftColumn), c.getRight(rr, rightColumn));
+        return (lr, rr) -> Objects.equals(lr.get(leftColumn), rr.get(rightColumn));
     }
 
     default JoinPredicate and(String leftColumn, String rightColumn) {
         JoinPredicate and = JoinPredicate.on(leftColumn, rightColumn);
-        return (c, lr, rr) -> this.test(c, lr, rr) && and.test(c, lr, rr);
+        return (lr, rr) -> this.test(lr, rr) && and.test(lr, rr);
     }
 
     default JoinPredicate and(int leftColumn, int rightColumn) {
         JoinPredicate and = JoinPredicate.on(leftColumn, rightColumn);
-        return (c, lr, rr) -> this.test(c, lr, rr) && and.test(c, lr, rr);
+        return (lr, rr) -> this.test(lr, rr) && and.test(lr, rr);
     }
 
-    boolean test(JoinContext context, Object[] lr, Object[] rr);
+    boolean test(RowProxy lr, RowProxy rr);
 }

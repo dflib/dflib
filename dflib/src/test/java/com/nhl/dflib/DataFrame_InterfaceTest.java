@@ -1,5 +1,7 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.row.RowIterator;
+import com.nhl.dflib.row.RowProxy;
 import org.junit.Test;
 
 import java.util.Iterator;
@@ -53,8 +55,8 @@ public class DataFrame_InterfaceTest {
         }
 
         @Override
-        public Iterator<Object[]> iterator() {
-            return data.iterator();
+        public Iterator<RowProxy> iterator() {
+            return RowIterator.overArrays(columns, data);
         }
     }
 }

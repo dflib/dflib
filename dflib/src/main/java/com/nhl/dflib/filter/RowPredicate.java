@@ -1,9 +1,9 @@
 package com.nhl.dflib.filter;
 
-import com.nhl.dflib.Index;
+import com.nhl.dflib.row.RowProxy;
 
 @FunctionalInterface
 public interface RowPredicate {
 
-    boolean test(Index columns, Object[] r);
+    boolean test(RowProxy r);
 }

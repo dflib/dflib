@@ -1,9 +1,9 @@
 package com.nhl.dflib.map;
 
-import com.nhl.dflib.Index;
+import com.nhl.dflib.row.RowProxy;
 
 @FunctionalInterface
 public interface RowConsumer {
 
-    void consume(Index columns, Object[] row);
+    void consume(RowProxy row);
 }

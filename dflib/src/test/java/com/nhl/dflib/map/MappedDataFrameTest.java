@@ -99,7 +99,7 @@ public class MappedDataFrameTest {
                 i,
                 DataFrame.fromRows(i, DataFrame.row("one", 1), DataFrame.row("two", 2)),
                 RowMapper.copy())
-                .map(i1, (s, t) -> t.bulkSet(
+                .map(i1, (s, t) -> t.setValues(
                         s.get(0),
                         ((int) s.get(1)) * 10,
                         s.get(1)));
@@ -121,11 +121,11 @@ public class MappedDataFrameTest {
                 i,
                 DataFrame.fromRows(i, DataFrame.row("one", 1), DataFrame.row("two", 2)),
                 RowMapper.copy())
-                .map(i1, (s, t) -> t.bulkSet(
+                .map(i1, (s, t) -> t.setValues(
                         s.get(0),
                         ((int) s.get(1)) * 10,
                         s.get(1)))
-                .map(i2, (s, t) -> t.bulkSet(
+                .map(i2, (s, t) -> t.setValues(
                         s.get(0),
                         s.get(1)));
 
@@ -142,7 +142,7 @@ public class MappedDataFrameTest {
         Index i1 = Index.withNames("c", "d", "e");
 
         DataFrame df = new MappedDataFrame(i, DataFrame.fromRows(i), RowMapper.copy())
-                .map(i1, (s, t) -> t.bulkSet(
+                .map(i1, (s, t) -> t.setValues(
                         s.get(0),
                         ((int) s.get(1)) * 10,
                         s.get(1)));
@@ -243,7 +243,7 @@ public class MappedDataFrameTest {
                 DataFrame.row(10),
                 DataFrame.row(20)), RowMapper.copy());
 
-        DataFrame df = df1.filter((c, r) -> ((int) c.get(r, 0)) > 15);
+        DataFrame df = df1.filter(r -> ((int) r.get(0)) > 15);
         new DFAsserts(df, "a")
                 .expectHeight(1)
                 .expectRow(0, 20);

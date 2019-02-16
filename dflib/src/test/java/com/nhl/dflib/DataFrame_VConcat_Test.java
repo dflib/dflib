@@ -6,7 +6,7 @@ import org.junit.Test;
 public class DataFrame_VConcat_Test {
 
     @Test
-    public void testZipColumns_Default() {
+    public void testVConcat_Default() {
 
         Index i = Index.withNames("a");
         DataFrame df1 = DataFrame.fromSequence(i, 1, 2);
@@ -24,7 +24,7 @@ public class DataFrame_VConcat_Test {
     }
 
     @Test
-    public void testZipColumns_Default_Multiple() {
+    public void testVConcat_Default_Multiple() {
 
         Index i = Index.withNames("a");
         DataFrame df1 = DataFrame.fromSequence(i, 1, 2);
@@ -42,7 +42,7 @@ public class DataFrame_VConcat_Test {
     }
 
     @Test
-    public void testZipColumns_Default_Left() {
+    public void testVConcat_Default_Left() {
 
         Index i1 = Index.withNames("a", "b");
         DataFrame df1 = DataFrame.fromSequence(i1,
@@ -65,7 +65,7 @@ public class DataFrame_VConcat_Test {
     }
 
     @Test
-    public void testZipColumns_Left() {
+    public void testVConcat_Left() {
 
         Index i1 = Index.withNames("a", "b");
         DataFrame df1 = DataFrame.fromSequence(i1,
@@ -88,7 +88,7 @@ public class DataFrame_VConcat_Test {
     }
 
     @Test
-    public void testZipColumns_Right() {
+    public void testVConcat_Right() {
 
         Index i1 = Index.withNames("a", "b");
         DataFrame df1 = DataFrame.fromSequence(i1,
@@ -111,7 +111,7 @@ public class DataFrame_VConcat_Test {
     }
 
     @Test
-    public void testZipColumns_Inner_Multiple() {
+    public void testVConcat_Inner_Multiple() {
 
         Index i1 = Index.withNames("a", "b");
         DataFrame df1 = DataFrame.fromSequence(i1,
@@ -141,7 +141,7 @@ public class DataFrame_VConcat_Test {
     }
 
     @Test
-    public void testZipColumns_Full() {
+    public void testVConcat_Full() {
 
         Index i1 = Index.withNames("a", "b");
         DataFrame df1 = DataFrame.fromSequence(i1,

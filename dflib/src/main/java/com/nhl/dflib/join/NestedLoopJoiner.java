@@ -3,6 +3,9 @@ package com.nhl.dflib.join;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.concat.HConcat;
+import com.nhl.dflib.map.RowCombiner;
+import com.nhl.dflib.row.ArrayRowBuilder;
+import com.nhl.dflib.row.RowProxy;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -13,7 +16,7 @@ import java.util.Set;
 /**
  * A DataFrame joiner based on rows comparing predicate. Should theoretically have O(N * M) performance.
  */
-public class NestedLoopJoiner extends BaseJoiner {
+public class NestedLoopJoiner {
 
     private JoinPredicate joinPredicate;
     private JoinType semantics;
@@ -29,149 +32,143 @@ public class NestedLoopJoiner extends BaseJoiner {
 
     public DataFrame joinRows(Index joinedColumns, DataFrame lf, DataFrame rf) {
 
-        JoinContext context = new JoinContext(lf.getColumns(), rf.getColumns(), joinedColumns);
-
         switch (semantics) {
             case inner:
-                return innerJoin(context, lf, rf);
+                return innerJoin(joinedColumns, lf, rf);
             case left:
-                return leftJoin(context, lf, rf);
+                return leftJoin(joinedColumns, lf, rf);
             case right:
-                return rightJoin(context, lf, rf);
+                return rightJoin(joinedColumns, lf, rf);
             case full:
-                return fullJoin(context, lf, rf);
+                return fullJoin(joinedColumns, lf, rf);
             default:
                 throw new IllegalStateException("Unsupported join semantics: " + semantics);
         }
     }
 
-    private DataFrame innerJoin(JoinContext context, DataFrame lf, DataFrame rf) {
+    private DataFrame innerJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
 
-        List<Object[]> lRows = new ArrayList<>();
-        List<Object[]> rRows = new ArrayList<>();
+        List<Object[]> joined = new ArrayList<>();
+        RowCombiner combiner = RowCombiner.zip(lf.width());
+        ArrayRowBuilder rowBuilder = new ArrayRowBuilder(joinedColumns);
 
-        List<Object[]> allRRows = toList(rf);
+        // make sure we don't recalculate this frame inside the inner loop
+        DataFrame rfm = rf.materialize();
 
-        for (Object[] lr : lf) {
-            for (Object[] rr : allRRows) {
-                if (joinPredicate.test(context, lr, rr)) {
-                    lRows.add(lr);
-                    rRows.add(rr);
+        for (RowProxy lr : lf) {
+            for (RowProxy rr : rfm) {
+                if (joinPredicate.test(lr, rr)) {
+                    combiner.combine(lr, rr, rowBuilder);
+                    joined.add(rowBuilder.reset());
                 }
             }
         }
 
-        return zipJoinSides(context.getJoinIndex(),
-                DataFrame.fromRowsList(context.getLeftIndex(), lRows),
-                DataFrame.fromRowsList(context.getRightIndex(), rRows));
+        return DataFrame.fromRowsList(joinedColumns, joined);
     }
 
-    private DataFrame leftJoin(JoinContext context, DataFrame lf, DataFrame rf) {
+    private DataFrame leftJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
 
-        List<Object[]> lRows = new ArrayList<>();
-        List<Object[]> rRows = new ArrayList<>();
+        List<Object[]> joined = new ArrayList<>();
+        RowCombiner combiner = RowCombiner.zip(lf.width());
+        ArrayRowBuilder rowBuilder = new ArrayRowBuilder(joinedColumns);
 
-        List<Object[]> allRRows = toList(rf);
+        // make sure we don't recalculate this frame inside the inner loop
+        DataFrame rfm = rf.materialize();
 
-        for (Object[] lr : lf) {
+        for (RowProxy lr : lf) {
 
             boolean hadMatches = false;
-            for (Object[] rr : allRRows) {
-                if (joinPredicate.test(context, lr, rr)) {
-                    lRows.add(lr);
-                    rRows.add(rr);
+            for (RowProxy rr : rfm) {
+                if (joinPredicate.test(lr, rr)) {
+                    combiner.combine(lr, rr, rowBuilder);
+                    joined.add(rowBuilder.reset());
                     hadMatches = true;
                 }
             }
 
             if (!hadMatches) {
-                lRows.add(lr);
-                rRows.add(null);
+                combiner.combine(lr, null, rowBuilder);
+                joined.add(rowBuilder.reset());
             }
         }
 
-        return zipJoinSides(context.getJoinIndex(),
-                DataFrame.fromRowsList(context.getLeftIndex(), lRows),
-                DataFrame.fromRowsList(context.getRightIndex(), rRows));
+        return DataFrame.fromRowsList(joinedColumns, joined);
     }
 
-    private DataFrame rightJoin(JoinContext context, DataFrame lf, DataFrame rf) {
+    private DataFrame rightJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
 
-        List<Object[]> lRows = new ArrayList<>();
-        List<Object[]> rRows = new ArrayList<>();
+        List<Object[]> joined = new ArrayList<>();
+        RowCombiner combiner = RowCombiner.zip(lf.width());
+        ArrayRowBuilder rowBuilder = new ArrayRowBuilder(joinedColumns);
 
-        List<Object[]> allLRows = toList(lf);
+        // make sure we don't recalculate this frame inside the inner loop
+        DataFrame lfm  = lf.materialize();
 
-        for (Object[] rr : rf) {
+        for (RowProxy rr : rf) {
 
             boolean hadMatches = false;
-            for (Object[] lr : allLRows) {
-                if (joinPredicate.test(context, lr, rr)) {
-                    lRows.add(lr);
-                    rRows.add(rr);
+            for (RowProxy lr : lfm) {
+                if (joinPredicate.test(lr, rr)) {
+                    combiner.combine(lr, rr, rowBuilder);
+                    joined.add(rowBuilder.reset());
                     hadMatches = true;
                 }
             }
 
             if (!hadMatches) {
-                lRows.add(null);
-                rRows.add(rr);
+                combiner.combine(null, rr, rowBuilder);
+                joined.add(rowBuilder.reset());
             }
         }
 
-        return zipJoinSides(context.getJoinIndex(),
-                DataFrame.fromRowsList(context.getLeftIndex(), lRows),
-                DataFrame.fromRowsList(context.getRightIndex(), rRows));
+        return DataFrame.fromRowsList(joinedColumns, joined);
     }
 
-    private DataFrame fullJoin(JoinContext context, DataFrame lf, DataFrame rf) {
+    private DataFrame fullJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
 
-        List<Object[]> lRows = new ArrayList<>();
-        Set<Object[]> rRows = new LinkedHashSet<>();
+        List<Object[]> joined = new ArrayList<>();
+        RowCombiner combiner = RowCombiner.zip(lf.width());
+        ArrayRowBuilder rowBuilder = new ArrayRowBuilder(joinedColumns);
 
-        List<Object[]> allRRows = toList(rf);
-        Set<Object[]> seenRights = new LinkedHashSet<>();
+        // make sure we don't recalculate this frame inside the inner loop
+        DataFrame rfm = rf.materialize();
 
-        for (Object[] lr : lf) {
+        Set<Integer> seenRights = new LinkedHashSet<>();
+
+        for (RowProxy lr : lf) {
 
             boolean hadMatches = false;
 
-            for (Object[] rr : allRRows) {
-                if (joinPredicate.test(context, lr, rr)) {
-                    lRows.add(lr);
-                    rRows.add(rr);
+            int i = 0;
+            for (RowProxy rr : rfm) {
+                if (joinPredicate.test(lr, rr)) {
+                    combiner.combine(lr, rr, rowBuilder);
+                    joined.add(rowBuilder.reset());
+                    seenRights.add(i);
                     hadMatches = true;
-                    seenRights.add(rr);
                 }
+
+                i++;
             }
 
             if (!hadMatches) {
-                lRows.add(lr);
-                rRows.add(null);
+                combiner.combine(lr, null, rowBuilder);
+                joined.add(rowBuilder.reset());
             }
         }
 
         // add missing right rows
-        for (Object[] rr : allRRows) {
-            if (!seenRights.contains(rr)) {
-                lRows.add(null);
-                rRows.add(rr);
+        int i = 0;
+        for (RowProxy rr : rfm) {
+            if (!seenRights.contains(i)) {
+                combiner.combine(null, rr, rowBuilder);
+                joined.add(rowBuilder.reset());
             }
+
+            i++;
         }
 
-        return zipJoinSides(context.getJoinIndex(),
-                DataFrame.fromRowsList(context.getLeftIndex(), lRows),
-                DataFrame.fromRows(context.getRightIndex(), rRows));
-    }
-
-    // "materialize" frame rows to avoid recalculation of each row on multiple iterations.
-
-    // TODO: should we just add a caching / materialization wrapper around the DataFrame and assume elsewhere that DF
-    //  iterator performance is decent?
-
-    private List<Object[]> toList(DataFrame df) {
-        List<Object[]> materialized = new ArrayList<>();
-        df.forEach(materialized::add);
-        return materialized;
+        return DataFrame.fromRowsList(joinedColumns, joined);
     }
 }

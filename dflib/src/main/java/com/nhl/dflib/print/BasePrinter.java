@@ -24,7 +24,7 @@ public abstract class BasePrinter {
     }
 
     public StringBuilder print(StringBuilder out, DataFrame df) {
-        return newWorker(out).print(df.getColumns(), df.iterator());
+        return newWorker(out).print(df);
     }
 
     protected abstract BasePrinterWorker newWorker(StringBuilder out);

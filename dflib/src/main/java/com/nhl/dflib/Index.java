@@ -1,7 +1,6 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.concat.HConcat;
-import com.nhl.dflib.row.RowBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -84,7 +83,7 @@ public abstract class Index implements Iterable<IndexPosition> {
         };
     }
 
-    public abstract void compactCopy(Object[] from, RowBuilder to, int toOffset);
+    public abstract boolean isCompact();
 
     public abstract Index rename(Map<String, String> oldToNewNames);
 
@@ -189,6 +188,14 @@ public abstract class Index implements Iterable<IndexPosition> {
     public int size() {
         return positions.length;
     }
+
+    /**
+     * Returns min size of an array addressable by this index. This value is equal to {@link #size()} for compact indexes,
+     * but generally is equal to the max row index value among index positions.
+     *
+     * @return an int indicating the min size of an array addressable by this index
+     */
+    public abstract int span();
 
     public IndexPosition position(String name) {
         if (positionsIndex == null) {

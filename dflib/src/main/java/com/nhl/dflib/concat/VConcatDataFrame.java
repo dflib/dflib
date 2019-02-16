@@ -2,8 +2,10 @@ package com.nhl.dflib.concat;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.IndexPosition;
 import com.nhl.dflib.print.InlinePrinter;
+import com.nhl.dflib.row.ArrayRowBuilder;
+import com.nhl.dflib.row.ArrayRowProxy;
+import com.nhl.dflib.row.RowProxy;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -24,14 +26,15 @@ public class VConcatDataFrame implements DataFrame {
     }
 
     @Override
-    public Iterator<Object[]> iterator() {
-        return new Iterator<Object[]>() {
+    public Iterator<RowProxy> iterator() {
+        return new Iterator<RowProxy>() {
 
-            int pos = 0;
-            Iterator<Object[]> it;
-            Object[] next;
-
-            IndexPosition[] translator;
+            private final ArrayRowBuilder rowBuilder = new ArrayRowBuilder(columns);
+            private final ArrayRowProxy rowProxy = new ArrayRowProxy(columns);
+            int[] ordinals;
+            private int pos = 0;
+            private Iterator<RowProxy> it;
+            private RowProxy next;
 
             {
                 rewind();
@@ -43,7 +46,7 @@ public class VConcatDataFrame implements DataFrame {
                     next = it.next();
                 } else if (pos < dataFrames.length) {
                     it = dataFrames[pos].iterator();
-                    translator = buildTranslator(dataFrames[pos].getColumns());
+                    ordinals = buildOridinals(dataFrames[pos].getColumns());
                     pos++;
 
                     rewind();
@@ -58,38 +61,39 @@ public class VConcatDataFrame implements DataFrame {
             }
 
             @Override
-            public Object[] next() {
+            public RowProxy next() {
                 if (!hasNext()) {
                     throw new NoSuchElementException("Past the end of the iterator");
                 }
 
-                Object[] o = transform(next);
+                RowProxy o = transform(next);
                 rewind();
                 return o;
             }
 
-            private IndexPosition[] buildTranslator(Index index) {
+            private int[] buildOridinals(Index index) {
                 int len = columns.size();
-                IndexPosition[] translator = new IndexPosition[len];
+                int[] ordinals = new int[len];
 
                 for (int i = 0; i < len; i++) {
                     String column = columns.getPositions()[i].name();
-                    translator[i] = index.hasName(column) ? index.position(column) : null;
+                    ordinals[i] = index.hasName(column) ? index.position(column).ordinal() : -1;
                 }
 
-                return translator;
+                return ordinals;
             }
 
-            private Object[] transform(Object[] row) {
+            private RowProxy transform(RowProxy row) {
 
-                int len = translator.length;
-                Object[] transformed = new Object[len];
+                int len = ordinals.length;
 
                 for (int i = 0; i < len; i++) {
-                    transformed[i] = translator[i] != null ? translator[i].get(row) : null;
+                    if (ordinals[i] >= 0) {
+                        rowBuilder.set(i, row.get(ordinals[i]));
+                    }
                 }
 
-                return transformed;
+                return rowProxy.reset(rowBuilder.reset());
             }
         };
     }

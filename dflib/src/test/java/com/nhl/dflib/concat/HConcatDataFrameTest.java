@@ -173,7 +173,7 @@ public class HConcatDataFrameTest {
 
         Index mappedColumns = Index.withNames("x", "y", "z");
         DataFrame df = new HConcatDataFrame(Index.withNames("a", "b"), JoinType.inner, df1, df2, RowCombiner.zip(df1.width()))
-                .map(mappedColumns, (s, t) -> t.bulkSet(
+                .map(mappedColumns, (s, t) -> t.setValues(
                         s.get(0),
                         ((int) s.get(1)) * 10,
                         s.get(1)));
