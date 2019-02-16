@@ -72,10 +72,11 @@ public class MaterializableDataFrame implements DataFrame {
 
         int len = Math.min(columns.span(), source.getColumns().span());
         ArrayRowBuilder rowBuilder = new ArrayRowBuilder(columns);
-        source.forEach(r -> {
+
+        for(RowProxy r : source) {
             r.copyRange(rowBuilder, 0, 0, len);
             materialized.add(rowBuilder.reset());
-        });
+        }
 
         // reset source reference, allowing to free up memory..
         source = null;

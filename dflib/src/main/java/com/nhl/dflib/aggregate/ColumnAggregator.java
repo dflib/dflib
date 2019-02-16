@@ -5,6 +5,7 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.IndexPosition;
 import com.nhl.dflib.map.IndexMapper;
 import com.nhl.dflib.map.RowToValueMapper;
+import com.nhl.dflib.row.RowProxy;
 
 import java.util.function.BiConsumer;
 import java.util.stream.Collector;
@@ -42,7 +43,9 @@ public class ColumnAggregator implements Aggregator {
         BiConsumer accumulator = collector.accumulator();
         Object accumResult = collector.supplier().get();
 
-        df.forEach(r -> accumulator.accept(accumResult, reader.map(r)));
+        for(RowProxy r : df) {
+            accumulator.accept(accumResult, reader.map(r));
+        }
 
         Object result = collector.finisher().apply(accumResult);
         return new Object[]{result};

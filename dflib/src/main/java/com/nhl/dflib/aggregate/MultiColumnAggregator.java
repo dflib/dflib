@@ -2,6 +2,7 @@ package com.nhl.dflib.aggregate;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.row.RowProxy;
 
 import java.util.function.BiConsumer;
 
@@ -45,11 +46,11 @@ public class MultiColumnAggregator implements Aggregator {
             accumResults[i] = aggregators[i].getCollector().supplier().get();
         }
 
-        df.forEach(r -> {
+        for(RowProxy r : df) {
             for (int i = 0; i < len; i++) {
                 accums[i].accept(accumResults[i], aggregators[i].getReader().map(r));
             }
-        });
+        }
 
         for (int i = 0; i < len; i++) {
             result[i] = aggregators[i].getCollector().finisher().apply(accumResults[i]);
