@@ -2,11 +2,11 @@ package com.nhl.dflib.join;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.concat.HConcat;
+import com.nhl.dflib.map.Hasher;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -146,7 +146,7 @@ public class HashJoiner extends BaseJoiner {
         Index lColumns = lf.getColumns();
 
         Map<Object, List<Object[]>> rightIndex = groupByKey(rightHasher, rf);
-        Set<Object[]> seenRights = new LinkedHashSet<>();
+        Set<Object> seenRightKeys = new LinkedHashSet<>();
 
         for (Object[] lr : lf) {
 
@@ -154,10 +154,11 @@ public class HashJoiner extends BaseJoiner {
             List<Object[]> rightMatches = rightIndex.get(lKey);
 
             if (rightMatches != null) {
+                seenRightKeys.add(lKey);
+
                 for (Object[] rr : rightMatches) {
                     lRows.add(lr);
                     rRows.add(rr);
-                    seenRights.add(rr);
                 }
             } else {
                 lRows.add(lr);
@@ -166,10 +167,12 @@ public class HashJoiner extends BaseJoiner {
         }
 
         // add missing right rows
-        for (Object[] rr : rf) {
-            if (!seenRights.contains(rr)) {
-                lRows.add(null);
-                rRows.add(rr);
+        for (Map.Entry<Object, List<Object[]>> e : rightIndex.entrySet()) {
+            if (!seenRightKeys.contains(e.getKey())) {
+                for (Object[] rr : e.getValue()) {
+                    lRows.add(null);
+                    rRows.add(rr);
+                }
             }
         }
 
@@ -178,14 +181,14 @@ public class HashJoiner extends BaseJoiner {
                 DataFrame.fromRowsList(rf.getColumns(), rRows));
     }
 
-    // TODO: this is the same exact logic as in Grouper, only without wrapping the Map in a DataFrame.. Also it uses
-    //  HashMap instead of LinkedHashMap which is somewhat faster for "get". Is it worth
-    //  reusing the Grouper here vs. small overhead it introduces?
+
+    // this is the same exact logic as in Grouper, only without wrapping the Map in a DataFrame. In benchmarks not using
+    // Grouper gives a small (5-10%) speed advantage
     private Map<Object, List<Object[]>> groupByKey(Hasher hasher, DataFrame df) {
 
         Index columns = df.getColumns();
 
-        Map<Object, List<Object[]>> index = new HashMap<>();
+        Map<Object, List<Object[]>> index = new LinkedHashMap<>();
 
         for (Object[] r : df) {
             Object key = hasher.map(columns, r);
@@ -194,4 +197,5 @@ public class HashJoiner extends BaseJoiner {
 
         return index;
     }
+
 }
