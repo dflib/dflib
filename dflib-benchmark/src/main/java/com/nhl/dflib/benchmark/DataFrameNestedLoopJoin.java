@@ -25,7 +25,7 @@ import java.util.stream.StreamSupport;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(2)
 @State(Scope.Thread)
-public class DataFramePredicatedJoin {
+public class DataFrameNestedLoopJoin {
 
     @Param("5000")
     public int rows;

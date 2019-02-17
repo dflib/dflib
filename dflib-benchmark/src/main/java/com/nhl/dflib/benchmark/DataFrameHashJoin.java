@@ -25,7 +25,7 @@ import java.util.stream.StreamSupport;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(2)
 @State(Scope.Thread)
-public class DataFrameIndexedJoin {
+public class DataFrameHashJoin {
 
     @Param("1000000")
     public int rows;
