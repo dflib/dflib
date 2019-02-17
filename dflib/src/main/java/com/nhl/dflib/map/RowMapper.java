@@ -7,33 +7,33 @@ import com.nhl.dflib.row.RowBuilder;
 public interface RowMapper {
 
     static RowMapper copy() {
-        return (s, t) -> s.copyAll(t, 0);
+        return (s, t) -> s.copy(t, 0);
     }
 
     static RowMapper mapColumn(String column, RowToValueMapper<?> m) {
         return (s, t) -> {
-            s.copyAll(t, 0);
+            s.copy(t, 0);
             t.set(column, m.map(s));
         };
     }
 
     static RowMapper mapColumn(int column, RowToValueMapper<?> m) {
         return (s, t) -> {
-            s.copyAll(t, 0);
+            s.copy(t, 0);
             t.set(column, m.map(s));
         };
     }
 
     static <V> RowMapper mapColumnValue(String column, ValueMapper<V, ?> m) {
         return (s, t) -> {
-            s.copyAll(t, 0);
+            s.copy(t, 0);
             t.set(column, m.map((V) s.get(column)));
         };
     }
 
     static <V> RowMapper mapColumnValue(int column, ValueMapper<V, ?> m) {
         return (s, t) -> {
-            s.copyAll(t, 0);
+            s.copy(t, 0);
             t.set(column, m.map((V) s.get(column)));
         };
     }
@@ -41,7 +41,7 @@ public interface RowMapper {
     static <V> RowMapper addColumns(RowToValueMapper<?>... valueProducers) {
         return (s, t) -> {
 
-            s.copyAll(t, 0);
+            s.copy(t, 0);
 
             int oldWidth = s.getIndex().size();
             int expansionWidth = valueProducers.length;

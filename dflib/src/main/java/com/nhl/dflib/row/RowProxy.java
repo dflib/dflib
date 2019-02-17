@@ -18,11 +18,11 @@ public interface RowProxy {
 
     void copyRange(RowBuilder to, int fromOffset, int toOffset, int len);
 
-    default void copyAll(RowBuilder to) {
+    default void copy(RowBuilder to) {
         copyRange(to, 0, 0, Math.min(to.getIndex().span(), getIndex().span()));
     }
 
-    default void copyAll(RowBuilder to, int toOffset) {
+    default void copy(RowBuilder to, int toOffset) {
         copyRange(to, 0, toOffset, Math.min(to.getIndex().span() - toOffset, getIndex().span()));
     }
 }

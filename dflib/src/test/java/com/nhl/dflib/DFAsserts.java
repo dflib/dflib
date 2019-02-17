@@ -30,7 +30,7 @@ public class DFAsserts {
 
         ArrayRowBuilder rowBuilder = new ArrayRowBuilder(df.getColumns());
         df.forEach(r -> {
-            r.copyAll(rowBuilder, 0);
+            r.copy(rowBuilder, 0);
             rows.add(rowBuilder.reset());
         });
     }
