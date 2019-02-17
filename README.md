@@ -53,15 +53,15 @@ DataFrame df1 = DataFrame.fromStream(columns, IntStream.range(1, 10000).boxed())
 
 // filtering, mapping
 DataFrame df2 = df1
-   .filterColumn("a", (Integer v) -> v % 2 == 0)
-   .mapColumn("b", (Integer v) -> v * 5)        // 1. transform a single column
-   .map((context, row) -> context.target(row)); // 2. transform the entire row. 
-                                                // Showing how the row is copied.
-                                                // Transforming code must not alter the original row.
+   .filterByColumn("a", (Integer v) -> v % 2 == 0)
+   .mapColumnValue("b", (Integer v) -> v * 5)        // 1. transform a single column
+   .map((from, to) -> from.copy(to)); // 2. transform the entire row. 
+                                      // Showing how the row is copied.
+                                      // Transforming code must not alter the original row.
    
 // joins
 DataFrame df3 = DataFrame.fromSequence(columns, 2, "a", "b", 4, "c", "d")
-   .innerJoin(df2, JoinPredicate.on("a", "a"));
+   .innerJoin(df2, Hasher.forColumn("a"), Hasher.forColumn("a"));
 ```
 
 ## Difference with Pandas

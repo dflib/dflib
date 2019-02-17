@@ -303,7 +303,7 @@ public class DataFrameTest {
     }
 
     @Test
-    public void testFilterColumn_Name() {
+    public void testFilterByColumn_Name() {
 
         Index i1 = Index.withNames("a");
         DataFrame df = DataFrame.fromSequence(i1, 10, 20)
@@ -315,7 +315,7 @@ public class DataFrameTest {
     }
 
     @Test
-    public void testFilterColumn_Pos() {
+    public void testFilterByColumn_Pos() {
 
         Index i1 = Index.withNames("a");
         DataFrame df = DataFrame.fromSequence(i1, 10, 20)
