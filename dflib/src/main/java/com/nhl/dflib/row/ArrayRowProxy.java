@@ -42,7 +42,7 @@ public class ArrayRowProxy implements RowProxy {
         }
     }
 
-    public ArrayRowProxy reset(Object[] row) {
+    public ArrayRowProxy reset(Object... row) {
         this.row = row;
         return this;
     }
