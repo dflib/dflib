@@ -1,7 +1,5 @@
 package com.nhl.dflib.jdbc;
 
-import com.nhl.dflib.DataFrame;
-
 import javax.sql.DataSource;
 
 public class JdbcTableLoader {
@@ -20,7 +18,4 @@ public class JdbcTableLoader {
         return this;
     }
 
-    public DataFrame load() {
-
-    }
 }

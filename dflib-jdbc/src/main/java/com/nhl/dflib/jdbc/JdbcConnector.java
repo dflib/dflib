@@ -10,7 +10,11 @@ public class JdbcConnector {
         this.dataSource = dataSource;
     }
 
-    public JdbcTableLoader readTable(String name) {
-        return new JdbcTableLoader(dataSource);
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
+    public JdbcTableLoader readTable(String tableName) {
+        return new JdbcTableLoader(dataSource, tableName);
     }
 }
