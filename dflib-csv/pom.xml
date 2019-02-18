@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>dflib-csv</artifactId>
-    <name>dflib-csv: DFLib read/write support for CSV and Excel formats</name>
+    <name>dflib-csv: read/write DataFrames from/to CSV</name>
     <packaging>jar</packaging>
 
     <dependencies>
