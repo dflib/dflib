@@ -3,6 +3,7 @@ package com.nhl.dflib.csv;
 import com.nhl.dflib.DFAsserts;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.map.ValueMapper;
+import org.apache.commons.csv.CSVFormat;
 import org.junit.Test;
 
 import java.io.StringReader;
@@ -30,6 +31,26 @@ public class CsvLoaderTest extends BaseCsvTest {
                 .expectHeight(2)
                 .expectRow(0, "1", "2", "3")
                 .expectRow(1, "4", "5", "6");
+    }
+
+    @Test
+    public void testFromFile_DefaultFormat_Excel() {
+        DataFrame df = new CsvLoader().fromFile(csvPath("from_excel.csv"));
+        new DFAsserts(df, "A", "b", "C")
+                .expectHeight(2)
+                .expectRow(0, "commas,quotes\"'", "-85.7", "3")
+                .expectRow(1, "with, commas", "5.50001", "6");
+    }
+
+    @Test
+    public void testFromFile_MySQLFormat() {
+        DataFrame df = new CsvLoader().format(CSVFormat.MYSQL).fromFile(csvPath("from_mysql.csv"));
+        new DFAsserts(df, "1", "3365430", " xxxx")
+                .expectHeight(4)
+                .expectRow(0, "2", "2289959", "yyyy")
+                .expectRow(1, "3", "3995478", "zzzzz")
+                .expectRow(2, "4", "4112467", "nnn")
+                .expectRow(3, "5", "1474364", "eee");
     }
 
     @Test

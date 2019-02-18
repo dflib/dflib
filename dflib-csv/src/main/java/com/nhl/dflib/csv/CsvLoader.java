@@ -81,6 +81,19 @@ public class CsvLoader {
         return this;
     }
 
+    /**
+     * Optionally sets the style or format of the imported CSV. CSVFormat comes from "commons-csv" library and
+     * contains a number of predefined formats, such as CSVFormat.MYSQL, etc. It also allows to customize the format
+     * further, by defining custom delimiters, line separators, etc.
+     *
+     * @param format a format object defined in commons-csv library
+     * @return this loader instance
+     */
+    public CsvLoader format(CSVFormat format) {
+        this.format = format;
+        return this;
+    }
+
     public DataFrame fromFile(String filePath) {
         try (Reader r = readerFromFilePath(filePath)) {
             return fromReader(r);
