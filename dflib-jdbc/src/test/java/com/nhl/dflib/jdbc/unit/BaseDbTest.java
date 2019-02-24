@@ -1,5 +1,6 @@
 package com.nhl.dflib.jdbc.unit;
 
+import io.bootique.jdbc.test.Column;
 import io.bootique.jdbc.test.Table;
 import io.bootique.jdbc.test.TestDataManager;
 import io.bootique.test.junit.BQTestFactory;
@@ -8,6 +9,9 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 
 import javax.sql.DataSource;
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 public abstract class BaseDbTest {
 
@@ -31,5 +35,9 @@ public abstract class BaseDbTest {
 
     protected DataSource getDataSource() {
         return DATA_SOURCE;
+    }
+
+    protected static List<String> columnNames(Table table) {
+        return table.getColumns().stream().map(Column::getName).collect(toList());
     }
 }

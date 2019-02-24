@@ -1,6 +1,7 @@
 package com.nhl.dflib.jdbc;
 
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
+import com.nhl.dflib.jdbc.connector.JdbcConnectorBuilder;
 
 import javax.sql.DataSource;
 

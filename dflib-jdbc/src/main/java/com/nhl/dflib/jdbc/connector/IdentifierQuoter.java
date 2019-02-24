@@ -2,13 +2,13 @@ package com.nhl.dflib.jdbc.connector;
 
 import java.util.Objects;
 
-public interface IdentifierQuotationStrategy {
+public interface IdentifierQuoter {
 
     /**
      * @param quote a quote symbol for identifiers.
      * @return a strategy that will enclose identifiers in the provided quotation symbol.
      */
-    static IdentifierQuotationStrategy forQuoteSymbol(String quote) {
+    static IdentifierQuoter forQuoteSymbol(String quote) {
         Objects.requireNonNull(quote);
         return id -> quote + id + quote;
     }
@@ -16,7 +16,7 @@ public interface IdentifierQuotationStrategy {
     /**
      * @return a strategy that will returns identifiers unchanged.
      */
-    static IdentifierQuotationStrategy noQuote() {
+    static IdentifierQuoter noQuote() {
         return id -> id;
     }
 

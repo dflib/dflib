@@ -16,6 +16,10 @@ public class DFAsserts {
         this(df, expectedColumns.getPositions());
     }
 
+    public DFAsserts(DataFrame df, List<String> expectedColumns) {
+        this(df, expectedColumns.toArray(new String[expectedColumns.size()]));
+    }
+
     public DFAsserts(DataFrame df, String... expectedColumns) {
         this(df, Index.continuousPositions(expectedColumns));
     }

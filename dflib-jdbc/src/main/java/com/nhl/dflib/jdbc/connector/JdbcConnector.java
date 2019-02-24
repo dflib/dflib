@@ -1,37 +1,43 @@
 package com.nhl.dflib.jdbc.connector;
 
-import com.nhl.dflib.jdbc.JdbcTableLoader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.nhl.dflib.jdbc.table.JdbcTableLoader;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A thin abstraction on top of the JDBC DataSource intended to smoothen DB-specific syntax issues.
  */
 public class JdbcConnector {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JdbcConnector.class);
-
-    protected DataSource dataSource;
-
-    protected IdentifierQuotationStrategy quoter;
-    protected BindingValueToStringConverter valueToStringConverter;
-    protected ObjectValueConverter objectValueConverter;
+    private DataSource dataSource;
+    private IdentifierQuoter quoter;
+    private ValueReaderFactory defaultValueReaderFactory;
+    private Map<Integer, ValueReaderFactory> valueReaderFactories;
 
     public JdbcConnector(DataSource dataSource) {
-
-        LOGGER.debug("JdbcConnector opened...");
-
         this.dataSource = dataSource;
-        this.valueToStringConverter = new BindingValueToStringConverter();
-        this.objectValueConverter = new ObjectValueConverter();
+
+        this.defaultValueReaderFactory = ValueReaderFactory::objectReader;
+
+        // default type conversions... custom conversions can be done via the DataFrame
+        this.valueReaderFactories = new HashMap<>();
+        this.valueReaderFactories.put(Types.DATE, ValueReaderFactory::dateReader);
+        this.valueReaderFactories.put(Types.TIME, ValueReaderFactory::timeReader);
+        this.valueReaderFactories.put(Types.TIMESTAMP, ValueReaderFactory::timestampReader);
     }
 
-    public JdbcTableLoader table(String tableName) {
+    public JdbcTableLoader tableLoader(String tableName) {
         return new JdbcTableLoader(this, tableName);
+    }
+
+    public JdbcOperation<ResultSet, Object> getValueReader(int type, int pos) {
+        return valueReaderFactories.getOrDefault(type, defaultValueReaderFactory).reader(pos);
     }
 
     public Connection getConnection() {
@@ -59,7 +65,7 @@ public class JdbcConnector {
         return getOrCreateQuoter(connection).quoted(bareIdentifier);
     }
 
-    private IdentifierQuotationStrategy getOrCreateQuoter(Connection connection) {
+    private IdentifierQuoter getOrCreateQuoter(Connection connection) {
 
         if (quoter == null) {
             quoter = createQuoter(connection);
@@ -68,7 +74,7 @@ public class JdbcConnector {
         return quoter;
     }
 
-    private IdentifierQuotationStrategy createQuoter(Connection connection) {
+    private IdentifierQuoter createQuoter(Connection connection) {
         String identifierQuote;
         try {
             identifierQuote = connection.getMetaData().getIdentifierQuoteString();
@@ -79,7 +85,7 @@ public class JdbcConnector {
         // if no quotations are supported, per JDBC spec the returned value is space
 
         return " ".equals(identifierQuote)
-                ? IdentifierQuotationStrategy.noQuote()
-                : IdentifierQuotationStrategy.forQuoteSymbol(identifierQuote);
+                ? IdentifierQuoter.noQuote()
+                : IdentifierQuoter.forQuoteSymbol(identifierQuote);
     }
 }
