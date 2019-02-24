@@ -45,11 +45,53 @@ public class DFAsserts {
         Object[] row = rows.get(pos);
 
         for (int i = 0; i < expectedColumns.length; i++) {
-            assertEquals("Unexpected value for '" + expectedColumns[i] + " (" + i + ")'",
-                    expectedValues[i],
-                    expectedColumns[i].get(row));
+
+            IndexPosition c = expectedColumns[i];
+            Object a = c.get(row);
+            Object e = expectedValues[i];
+
+            if (e == null) {
+                assertNull("Unexpected value at " + c, a);
+            } else if (e.getClass().isArray()) {
+                assertTrue("Was expecting array at " + c, a.getClass().isArray());
+                expectArrayRow(c, e, a);
+            } else {
+                assertEquals("Unexpected value at " + c, e, a);
+            }
         }
 
         return this;
+    }
+
+    private void expectArrayRow(IndexPosition column, Object expected, Object actual) {
+
+        String eArrayClass = expected.getClass().getSimpleName();
+        String aArrayClass = actual.getClass().getSimpleName();
+        assertEquals("Unexpected array type at '" + column, eArrayClass, aArrayClass);
+
+        // remove []
+        String type = eArrayClass.substring(0, eArrayClass.length() - 2);
+        switch (type) {
+            case "char":
+                assertArrayEquals("Unexpected value at " + column, (char[]) expected, (char[]) actual);
+                break;
+            case "long":
+                assertArrayEquals("Unexpected value at " + column, (long[]) expected, (long[]) actual);
+                break;
+            case "int":
+                assertArrayEquals("Unexpected value at " + column, (int[]) expected, (int[]) actual);
+                break;
+            case "byte":
+                assertArrayEquals("Unexpected value at " + column, (byte[]) expected, (byte[]) actual);
+                break;
+            case "double":
+                assertArrayEquals("Unexpected value at " + column, (double[]) expected, (double[]) actual, 0.00001);
+                break;
+            case "float":
+                assertArrayEquals("Unexpected value at " + column, (float[]) expected, (float[]) actual, 0.00001f);
+                break;
+            default:
+                assertArrayEquals("Unexpected value at " + column, (Object[]) expected, (Object[]) actual);
+        }
     }
 }
