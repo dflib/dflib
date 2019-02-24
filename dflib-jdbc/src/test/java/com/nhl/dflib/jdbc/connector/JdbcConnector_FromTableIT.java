@@ -1,4 +1,4 @@
-package com.nhl.dflib.jdbc.table;
+package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DFAsserts;
 import com.nhl.dflib.DataFrame;
@@ -10,16 +10,20 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class JdbcTableLoaderIT extends BaseDbTest {
+public class JdbcConnector_FromTableIT extends BaseDbTest {
+
+    private JdbcConnector createConnector() {
+        return Jdbc.connector(getDataSource());
+    }
 
     @Test
-    public void testLoadTable() {
+    public void test() {
 
         T1.insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.);
 
-        DataFrame df = Jdbc.connector(getDataSource())
-                .tableLoader("t1")
+        DataFrame df = createConnector()
+                .fromTable("t1")
                 .load();
 
         new DFAsserts(df, columnNames(T1))
@@ -29,13 +33,13 @@ public class JdbcTableLoaderIT extends BaseDbTest {
     }
 
     @Test
-    public void testLoadTable_IncludeColumns() {
+    public void testIncludeColumns() {
 
         T1.insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.);
 
-        DataFrame df = Jdbc.connector(getDataSource())
-                .tableLoader("t1")
+        DataFrame df = createConnector()
+                .fromTable("t1")
                 .includeColumns("id", "salary")
                 .load();
 
@@ -46,7 +50,7 @@ public class JdbcTableLoaderIT extends BaseDbTest {
     }
 
     @Test
-    public void testLoadDataType_Default() {
+    public void testDataTypeConversions() {
 
         LocalDate ld = LocalDate.of(1977, 02, 05);
         LocalDateTime ldt = LocalDateTime.of(2019, 02, 03, 1, 2, 5);
@@ -58,8 +62,8 @@ public class JdbcTableLoaderIT extends BaseDbTest {
         T2.insert(l1, 67, 7.8, true, "s1", ldt, ld, lt, bytes)
                 .insert(null, null, null, false, null, null, null, null, null);
 
-        DataFrame df = Jdbc.connector(getDataSource())
-                .tableLoader("t2")
+        DataFrame df = createConnector()
+                .fromTable("t2")
                 .load();
 
         new DFAsserts(df, columnNames(T2))
@@ -69,14 +73,14 @@ public class JdbcTableLoaderIT extends BaseDbTest {
     }
 
     @Test
-    public void testLoadTable_MaxRows() {
+    public void testMaxRows() {
 
         T1.insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 20_000.);
 
-        DataFrame df = Jdbc.connector(getDataSource())
-                .tableLoader("t1")
+        DataFrame df = createConnector()
+                .fromTable("t1")
                 .maxRows(2)
                 .load();
 

@@ -1,6 +1,7 @@
 package com.nhl.dflib.jdbc.connector;
 
-import com.nhl.dflib.jdbc.table.JdbcTableLoader;
+import com.nhl.dflib.jdbc.load.SqlLoader;
+import com.nhl.dflib.jdbc.load.TableLoader;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -32,8 +33,12 @@ public class JdbcConnector {
         this.valueReaderFactories.put(Types.TIMESTAMP, ValueReaderFactory::timestampReader);
     }
 
-    public JdbcTableLoader tableLoader(String tableName) {
-        return new JdbcTableLoader(this, tableName);
+    public TableLoader fromTable(String tableName) {
+        return new TableLoader(this, tableName);
+    }
+
+    public SqlLoader withSql(String sql) {
+        return new SqlLoader(this, sql);
     }
 
     public JdbcOperation<ResultSet, Object> getValueReader(int type, int pos) {
