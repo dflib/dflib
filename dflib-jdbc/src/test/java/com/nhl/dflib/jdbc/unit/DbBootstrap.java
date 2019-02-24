@@ -40,4 +40,13 @@ public class DbBootstrap {
                 .initColumnTypesFromDBMetadata()
                 .build();
     }
+
+    public Table getT2() {
+        return runtime.getInstance(DatabaseChannelFactory.class)
+                .getChannel()
+                .newTable("t2")
+                .columnNames("bigint", "int", "double", "boolean", "string", "timestamp", "date", "bytes")
+                .initColumnTypesFromDBMetadata()
+                .build();
+    }
 }

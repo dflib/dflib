@@ -1,4 +1,4 @@
-package com.nhl.dflib.jdbc;
+package com.nhl.dflib.jdbc.datasource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

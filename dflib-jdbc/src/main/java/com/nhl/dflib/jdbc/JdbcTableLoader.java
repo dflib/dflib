@@ -1,81 +1,58 @@
 package com.nhl.dflib.jdbc;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
+import com.nhl.dflib.jdbc.connector.JdbcConnector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.List;
 
 public class JdbcTableLoader {
 
-    private DataSource dataSource;
+    private static final Logger LOGGER = LoggerFactory.getLogger(JdbcTableLoader.class);
+
+    private JdbcConnector connector;
     private String tableName;
-    private int maxRows;
-    private String identifierQuote;
 
+    private String[] columns;
+    private Class[] columnTypes;
 
-    public JdbcTableLoader(DataSource dataSource, String tableName) {
-        this.dataSource = dataSource;
+    public JdbcTableLoader(JdbcConnector connector, String tableName) {
+        this.connector = connector;
         this.tableName = tableName;
     }
 
-    public JdbcTableLoader maxRows(int maxRows) {
-        this.maxRows = maxRows;
+    public DataFrame load() {
+        return new JdbcQueryLoader(connector, this::buildSql).load();
+    }
+
+    public JdbcTableLoader includeColumns(String... columns) {
+        this.columns = columns;
         return this;
     }
 
-    public DataFrame load() {
-        return load(buildSql());
+    protected String buildSql(Connection connection) {
+        String columns = buildColumnsSql(connection);
+        String name = connector.quoteIdentifier(connection, tableName);
+        return "select " + columns + " from " + name;
     }
 
-    protected String buildSql() {
+    protected String buildColumnsSql(Connection connection) {
 
-        String name = identifierQuote != null ? identifierQuote + tableName + identifierQuote : tableName;
-
-        return "select * from " + tableName;
-    }
-
-    protected DataFrame load(String sql) {
-        try (Connection c = dataSource.getConnection()) {
-            return load(c, sql);
-        } catch (SQLException e) {
-            throw new RuntimeException("Error loading data from DB", e);
+        if (this.columns == null || columns.length == 0) {
+            return "*";
         }
-    }
 
-    protected DataFrame load(Connection c, String sql) throws SQLException {
+        StringBuilder buf = new StringBuilder();
 
-        try (PreparedStatement st = c.prepareStatement(sql)) {
-
-            try (ResultSet rs = st.executeQuery()) {
-
-                Index columns = loadColumns(rs.getMetaData());
-                List<Object[]> data = loadData(rs);
-                return DataFrame.fromRowsList(columns, data);
+        for (int i = 0; i < columns.length; i++) {
+            if (i > 0) {
+                buf.append(", ");
             }
-        }
-    }
 
-    protected Index loadColumns(ResultSetMetaData rsmd) throws SQLException {
-
-        int count = rsmd.getColumnCount();
-        String[] names = new String[count];
-
-        for (int i = 0; i < count; i++) {
-            names[i] = rsmd.getColumnLabel(i + 1);
+            buf.append(connector.quoteIdentifier(connection, columns[i]));
         }
 
-        return Index.withNames(names);
+        return buf.toString();
     }
-
-    protected List<Object[]> loadData(ResultSet rs) {
-        return Collections.emptyList();
-    }
-
 }
