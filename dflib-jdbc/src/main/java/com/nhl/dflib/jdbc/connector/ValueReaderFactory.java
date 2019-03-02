@@ -10,30 +10,30 @@ import java.time.LocalTime;
 
 public interface ValueReaderFactory<T> {
 
-    static JdbcOperation<ResultSet, Object> objectReader(int pos) {
+    static JdbcFunction<ResultSet, Object> objectReader(int pos) {
         return rs -> rs.getObject(pos);
     }
 
-    static JdbcOperation<ResultSet, LocalDate> dateReader(int pos) {
+    static JdbcFunction<ResultSet, LocalDate> dateReader(int pos) {
         return rs -> {
             Date date = rs.getDate(pos);
             return date != null ? date.toLocalDate() : null;
         };
     }
 
-    static JdbcOperation<ResultSet, LocalTime> timeReader(int pos) {
+    static JdbcFunction<ResultSet, LocalTime> timeReader(int pos) {
         return rs -> {
             Time time = rs.getTime(pos);
             return time != null ? time.toLocalTime() : null;
         };
     }
 
-    static JdbcOperation<ResultSet, LocalDateTime> timestampReader(int pos) {
+    static JdbcFunction<ResultSet, LocalDateTime> timestampReader(int pos) {
         return rs -> {
             Timestamp timestamp = rs.getTimestamp(pos);
             return timestamp != null ? timestamp.toLocalDateTime() : null;
         };
     }
 
-    JdbcOperation<ResultSet, T> reader(int pos);
+    JdbcFunction<ResultSet, T> reader(int pos);
 }

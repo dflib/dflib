@@ -5,6 +5,7 @@ import com.nhl.dflib.jdbc.connector.JdbcConnector;
 import com.nhl.dflib.jdbc.select.StatementBinder;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -41,7 +42,7 @@ public class TableLoader extends BaseLoader {
     }
 
     @Override
-    protected StatementBinder createBinder() {
+    protected StatementBinder createBinder(PreparedStatement statement) {
         return new StatementBinder();
     }
 

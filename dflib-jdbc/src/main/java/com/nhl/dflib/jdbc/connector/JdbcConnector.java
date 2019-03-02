@@ -2,9 +2,11 @@ package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.jdbc.load.SqlLoader;
 import com.nhl.dflib.jdbc.load.TableLoader;
+import com.nhl.dflib.jdbc.select.Binding;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -18,19 +20,27 @@ public class JdbcConnector {
 
     private DataSource dataSource;
     private IdentifierQuoter quoter;
+
     private ValueReaderFactory defaultValueReaderFactory;
     private Map<Integer, ValueReaderFactory> valueReaderFactories;
+
+    private StatementBinderFactory defaultStatementBinderFactory;
+    private Map<Integer, StatementBinderFactory> statementBinderFactories;
 
     public JdbcConnector(DataSource dataSource) {
         this.dataSource = dataSource;
 
         this.defaultValueReaderFactory = ValueReaderFactory::objectReader;
-
-        // default type conversions... custom conversions can be done via the DataFrame
         this.valueReaderFactories = new HashMap<>();
         this.valueReaderFactories.put(Types.DATE, ValueReaderFactory::dateReader);
         this.valueReaderFactories.put(Types.TIME, ValueReaderFactory::timeReader);
         this.valueReaderFactories.put(Types.TIMESTAMP, ValueReaderFactory::timestampReader);
+
+        this.defaultStatementBinderFactory = StatementBinderFactory::objectBinder;
+        this.statementBinderFactories = new HashMap<>();
+        this.statementBinderFactories.put(Types.DATE, StatementBinderFactory::dateBinder);
+        this.statementBinderFactories.put(Types.TIME, StatementBinderFactory::timeBinder);
+        this.statementBinderFactories.put(Types.TIMESTAMP, StatementBinderFactory::timestampBinder);
     }
 
     public TableLoader fromTable(String tableName) {
@@ -49,8 +59,14 @@ public class JdbcConnector {
         return new SqlLoader(this, sql);
     }
 
-    public JdbcOperation<ResultSet, Object> getValueReader(int type, int pos) {
+    public JdbcFunction<ResultSet, Object> getValueReader(int type, int pos) {
         return valueReaderFactories.getOrDefault(type, defaultValueReaderFactory).reader(pos);
+    }
+
+    public JdbcConsumer<PreparedStatement> getStatementBinder(int type, int pos, Object value) {
+        return statementBinderFactories
+                .getOrDefault(type, defaultStatementBinderFactory)
+                .binder(new Binding(type, pos, value));
     }
 
     public Connection getConnection() {

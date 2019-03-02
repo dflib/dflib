@@ -3,12 +3,13 @@ package com.nhl.dflib.jdbc.load;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
-import com.nhl.dflib.jdbc.connector.JdbcOperation;
+import com.nhl.dflib.jdbc.connector.JdbcFunction;
 import com.nhl.dflib.jdbc.select.JdbcSelector;
 import com.nhl.dflib.jdbc.select.RowReader;
 import com.nhl.dflib.jdbc.select.StatementBinder;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -31,14 +32,12 @@ public abstract class BaseLoader {
                 connector,
                 this::buildSql,
                 this::createIndex,
+                this::createBinder,
                 this::createRowReader,
-                createBinder(),
                 maxRows).load();
     }
 
     protected abstract String buildSql(Connection connection);
-
-    protected abstract StatementBinder createBinder();
 
     protected Index createIndex(ResultSet rs) throws SQLException {
 
@@ -56,7 +55,7 @@ public abstract class BaseLoader {
     protected RowReader createRowReader(ResultSet resultSet) throws SQLException {
         ResultSetMetaData rsmd = resultSet.getMetaData();
         int width = rsmd.getColumnCount();
-        JdbcOperation<ResultSet, Object>[] readers = new JdbcOperation[width];
+        JdbcFunction<ResultSet, Object>[] readers = new JdbcFunction[width];
 
         for (int i = 0; i < width; i++) {
             int jdbcPos = i + 1;
@@ -65,4 +64,6 @@ public abstract class BaseLoader {
 
         return new RowReader(readers);
     }
+
+    protected abstract StatementBinder createBinder(PreparedStatement statement) throws SQLException;
 }

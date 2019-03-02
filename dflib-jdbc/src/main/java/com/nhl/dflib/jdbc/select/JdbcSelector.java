@@ -3,7 +3,7 @@ package com.nhl.dflib.jdbc.select;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
-import com.nhl.dflib.jdbc.connector.JdbcOperation;
+import com.nhl.dflib.jdbc.connector.JdbcFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,18 +19,18 @@ public class JdbcSelector {
     private static final Logger LOGGER = LoggerFactory.getLogger(JdbcSelector.class);
 
     private JdbcConnector connector;
-    private JdbcOperation<Connection, String> sqlFactory;
-    private JdbcOperation<ResultSet, Index> indexFactory;
-    private JdbcOperation<ResultSet, RowReader> rowReaderFactory;
-    private StatementBinder binder;
+    private JdbcFunction<Connection, String> sqlFactory;
+    private JdbcFunction<ResultSet, Index> indexFactory;
+    private JdbcFunction<PreparedStatement, StatementBinder> binder;
+    private JdbcFunction<ResultSet, RowReader> rowReaderFactory;
     private int maxRows;
 
     public JdbcSelector(
             JdbcConnector connector,
-            JdbcOperation<Connection, String> sqlFactory,
-            JdbcOperation<ResultSet, Index> indexFactory,
-            JdbcOperation<ResultSet, RowReader> rowReaderFactory,
-            StatementBinder binder,
+            JdbcFunction<Connection, String> sqlFactory,
+            JdbcFunction<ResultSet, Index> indexFactory,
+            JdbcFunction<PreparedStatement, StatementBinder> binder,
+            JdbcFunction<ResultSet, RowReader> rowReaderFactory,
             int maxRows
     ) {
 
@@ -46,16 +46,16 @@ public class JdbcSelector {
 
         try (Connection c = connector.getConnection()) {
 
-            String sql = sqlFactory.exec(c);
+            String sql = sqlFactory.apply(c);
             LOGGER.info("Loading DataFrame with SQL: {}", sql);
 
             try (PreparedStatement st = c.prepareStatement(sql)) {
 
-                binder.bind(st);
+                binder.apply(st).bind(st);
 
                 try (ResultSet rs = st.executeQuery()) {
 
-                    Index columns = indexFactory.exec(rs);
+                    Index columns = indexFactory.apply(rs);
                     List<Object[]> data = loadData(rs);
                     return DataFrame.fromRowsList(columns, data);
                 }
@@ -67,7 +67,7 @@ public class JdbcSelector {
 
     private List<Object[]> loadData(ResultSet rs) throws SQLException {
 
-        RowReader reader = rowReaderFactory.exec(rs);
+        RowReader reader = rowReaderFactory.apply(rs);
         List<Object[]> results = new ArrayList<>();
         while (rs.next() && results.size() < maxRows) {
             results.add(reader.readRow(rs));

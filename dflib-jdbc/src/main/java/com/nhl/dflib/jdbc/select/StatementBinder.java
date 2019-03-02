@@ -1,22 +1,25 @@
 package com.nhl.dflib.jdbc.select;
 
+import com.nhl.dflib.jdbc.connector.JdbcConsumer;
+
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class StatementBinder {
 
-    private Binding[] bindings;
+    private JdbcConsumer<PreparedStatement>[] binders;
 
     public StatementBinder() {
     }
 
-    public StatementBinder(Binding[] bindings) {
-        this.bindings = bindings;
+    public StatementBinder(JdbcConsumer<PreparedStatement>[] binders) {
+        this.binders = binders;
     }
 
-    public void bind(PreparedStatement statement) {
-        if (bindings != null) {
-            for (int i = 0; i < bindings.length; i++) {
-                bindings[i].bind(statement, i);
+    public void bind(PreparedStatement statement) throws SQLException {
+        if (binders != null) {
+            for (JdbcConsumer<PreparedStatement> b : binders) {
+                b.accept(statement);
             }
         }
     }

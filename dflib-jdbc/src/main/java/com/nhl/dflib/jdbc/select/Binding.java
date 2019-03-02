@@ -2,60 +2,29 @@ package com.nhl.dflib.jdbc.select;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.function.UnaryOperator;
 
 public class Binding {
 
-    static final int NO_TYPE = Integer.MIN_VALUE;
-
     private Object value;
     private int type;
+    private int position;
 
-    public Binding(Object value) {
-        this(value, NO_TYPE);
-    }
-
-    public Binding(Object value, int type) {
+    public Binding(int type, int position, Object value) {
         this.value = value;
         this.type = type;
+        this.position = position;
     }
 
-    protected boolean typeUnknown() {
-        return type == NO_TYPE;
+    public Binding mapValue(UnaryOperator<Object> transformer) {
+        return new Binding(type, position, transformer.apply(value));
     }
 
-    public void bind(PreparedStatement statement, int position) {
-
-        try {
-            if (value == null) {
-                bindNull(statement, position);
-            } else {
-                bindNotNull(statement, position, value);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Error binding value at position '" + position + "'", e);
-        }
-    }
-
-    protected void bindNull(PreparedStatement statement, int position) throws SQLException {
-
-        int jdbcPosition = position + 1;
-        int type = this.type;
-
-        if (typeUnknown()) {
-            type = statement.getParameterMetaData().getParameterType(jdbcPosition);
-        }
-
-        statement.setNull(jdbcPosition, type);
-    }
-
-    protected void bindNotNull(PreparedStatement statement, int position, Object value) throws SQLException {
-
-        int jdbcPosition = position + 1;
-
-        if (typeUnknown()) {
-            statement.setObject(jdbcPosition, value);
+    public void bind(PreparedStatement statement) throws SQLException {
+        if (value == null) {
+            statement.setNull(position, type);
         } else {
-            statement.setObject(jdbcPosition, value, type);
+            statement.setObject(position, value, type);
         }
     }
 }
