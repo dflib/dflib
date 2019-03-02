@@ -3,7 +3,6 @@ package com.nhl.dflib.jdbc.connector;
 import com.nhl.dflib.Index;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -29,19 +28,15 @@ public class TableLoader extends BaseLoader {
     }
 
     @Override
-    protected String buildSql(Connection connection) {
+    protected SqlStatement buildSql(Connection connection) {
 
         // TODO: should maxRows be translated into the SQL LIMIT clause?
         //  Some DBs have crazy limit syntax, so this may be hard to generalize..
 
         String columns = buildColumnsSql(connection);
         String name = connector.quoteIdentifier(connection, tableName);
-        return "select " + columns + " from " + name;
-    }
-
-    @Override
-    protected StatementBinder createBinder(PreparedStatement statement) {
-        return new StatementBinder();
+        String sql = "select " + columns + " from " + name;
+        return new SqlStatementNoParams(sql);
     }
 
     protected String buildColumnsSql(Connection connection) {

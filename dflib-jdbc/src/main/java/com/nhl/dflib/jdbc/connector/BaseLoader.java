@@ -4,7 +4,6 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -27,12 +26,11 @@ public abstract class BaseLoader {
                 connector::getConnection,
                 this::buildSql,
                 this::createIndex,
-                this::createBinder,
                 this::createRowReader,
                 maxRows).load();
     }
 
-    protected abstract String buildSql(Connection connection);
+    protected abstract SqlStatement buildSql(Connection connection);
 
     protected Index createIndex(ResultSet rs) throws SQLException {
 
@@ -59,6 +57,4 @@ public abstract class BaseLoader {
 
         return new RowReader(readers);
     }
-
-    protected abstract StatementBinder createBinder(PreparedStatement statement) throws SQLException;
 }

@@ -17,26 +17,23 @@ public class JdbcSelector {
     private static final Logger LOGGER = LoggerFactory.getLogger(JdbcSelector.class);
 
     private JdbcSupplier<Connection> connectionProvider;
-    private JdbcFunction<Connection, String> sqlFactory;
+    private JdbcFunction<Connection, SqlStatement> statementFactory;
     private JdbcFunction<ResultSet, Index> indexFactory;
-    private JdbcFunction<PreparedStatement, StatementBinder> binder;
     private JdbcFunction<ResultSet, RowReader> rowReaderFactory;
     private int maxRows;
 
     public JdbcSelector(
             JdbcSupplier<Connection> connectionProvider,
-            JdbcFunction<Connection, String> sqlFactory,
+            JdbcFunction<Connection, SqlStatement> statementFactory,
             JdbcFunction<ResultSet, Index> indexFactory,
-            JdbcFunction<PreparedStatement, StatementBinder> binder,
             JdbcFunction<ResultSet, RowReader> rowReaderFactory,
             int maxRows
     ) {
 
         this.connectionProvider = connectionProvider;
-        this.sqlFactory = sqlFactory;
+        this.statementFactory = statementFactory;
         this.indexFactory = indexFactory;
         this.rowReaderFactory = rowReaderFactory;
-        this.binder = binder;
         this.maxRows = maxRows;
     }
 
@@ -44,14 +41,12 @@ public class JdbcSelector {
 
         try (Connection c = connectionProvider.get()) {
 
-            String sql = sqlFactory.apply(c);
+            SqlStatement sql = statementFactory.apply(c);
             LOGGER.debug("Loading DataFrame with SQL: {}", sql);
 
-            // TODO: log bindings somehow
+            // TODO: log bindings
 
-            try (PreparedStatement st = c.prepareStatement(sql)) {
-
-                binder.apply(st).bind(st);
+            try (PreparedStatement st = sql.toJdbcStatement(c)) {
 
                 try (ResultSet rs = st.executeQuery()) {
 

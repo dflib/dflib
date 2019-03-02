@@ -10,7 +10,6 @@ public class SqlLoader extends BaseLoader {
     private String sql;
     private Object[] params;
 
-
     public SqlLoader(JdbcConnector connector, String sql) {
         super(connector);
         this.sql = sql;
@@ -27,27 +26,24 @@ public class SqlLoader extends BaseLoader {
     }
 
     @Override
-    protected String buildSql(Connection connection) {
-        return sql;
+    protected SqlStatement buildSql(Connection connection) {
+        return (params == null || params.length == 0)
+                ? new SqlStatementNoParams(sql)
+                : new SqlStatementWithParams(sql, params, this::createBinder);
     }
 
-    @Override
     protected StatementBinder createBinder(PreparedStatement statement) throws SQLException {
-        if (params == null || params.length == 0) {
-            return new StatementBinder();
-        }
 
-        int len = params.length;
-        JdbcConsumer<PreparedStatement>[] bindings = new JdbcConsumer[len];
         ParameterMetaData pmd = statement.getParameterMetaData();
+        int len = pmd.getParameterCount();
+        JdbcConsumer<Object>[] bindings = new JdbcConsumer[len];
 
         for (int i = 0; i < len; i++) {
             int jdbcPos = i + 1;
             int jdbcType = pmd.getParameterType(jdbcPos);
-            bindings[i] = connector.getStatementBinder(jdbcType, jdbcPos, params[i]);
+            bindings[i] = connector.getStatementBinder(statement, jdbcType, jdbcPos);
         }
 
         return new StatementBinder(bindings);
-
     }
 }

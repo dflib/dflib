@@ -59,10 +59,10 @@ public class JdbcConnector {
         return valueReaderFactories.getOrDefault(type, defaultValueReaderFactory).reader(pos);
     }
 
-    protected JdbcConsumer<PreparedStatement> getStatementBinder(int type, int pos, Object value) {
+    protected JdbcConsumer<Object> getStatementBinder(PreparedStatement statement, int type, int pos) {
         return statementBinderFactories
                 .getOrDefault(type, defaultStatementBinderFactory)
-                .binder(new Binding(type, pos, value));
+                .binder(new StatementPosition(statement, type, pos));
     }
 
     protected Connection getConnection() throws SQLException {
