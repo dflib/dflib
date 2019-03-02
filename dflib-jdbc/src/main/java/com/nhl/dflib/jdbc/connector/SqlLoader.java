@@ -17,7 +17,7 @@ import java.util.List;
 public class SqlLoader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SqlLoader.class);
-    
+
     protected JdbcConnector connector;
     protected int maxRows;
     private JdbcFunction<Connection, String> sqlProducer;
@@ -51,9 +51,6 @@ public class SqlLoader {
         try (Connection c = connector.getConnection()) {
 
             SqlStatement sql = buildSql(c);
-            LOGGER.debug("Loading DataFrame with SQL: {}", sql);
-
-            // TODO: log bindings
 
             try (PreparedStatement st = sql.toJdbcStatement(c)) {
 
@@ -71,9 +68,35 @@ public class SqlLoader {
 
     protected SqlStatement buildSql(Connection connection) throws SQLException {
         String sql = sqlProducer.apply(connection);
+        logSql(sql);
         return (params == null || params.length == 0)
                 ? new SqlStatementNoParams(sql)
                 : new SqlStatementWithParams(sql, params, this::createBinder);
+    }
+
+    protected void logSql(String sql) {
+        if (LOGGER.isInfoEnabled()) {
+
+            StringBuilder log = new StringBuilder("DataFrame SQL: ").append(sql);
+
+            if (params != null && params.length > 0) {
+
+                BindingDebugConverter paramConverter = connector.getBindingDebugConverter();
+
+                log.append(" [");
+                for (int i = 0; i < params.length; i++) {
+                    if (i > 0) {
+                        log.append(", ");
+                    }
+
+                    log.append(paramConverter.convert(params[i]));
+                }
+
+                log.append("]");
+            }
+
+            LOGGER.info(log.toString());
+        }
     }
 
     protected StatementBinder createBinder(PreparedStatement statement) throws SQLException {

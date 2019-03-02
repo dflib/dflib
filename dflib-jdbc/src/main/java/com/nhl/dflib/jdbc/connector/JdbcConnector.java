@@ -10,7 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A thin abstraction on top of the JDBC DataSource intended to smoothen DB-specific syntax issues.
+ * A thin abstraction on top of the JDBC DataSource intended to smoothen DB-specific syntax issues, value types to JDBC
+ * types conversion, etc.
  */
 public class JdbcConnector {
 
@@ -22,6 +23,8 @@ public class JdbcConnector {
 
     private StatementBinderFactory defaultStatementBinderFactory;
     private Map<Integer, StatementBinderFactory> statementBinderFactories;
+
+    private BindingDebugConverter bindingDebugConverter;
 
     public JdbcConnector(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -37,6 +40,8 @@ public class JdbcConnector {
         this.statementBinderFactories.put(Types.DATE, StatementBinderFactory::dateBinder);
         this.statementBinderFactories.put(Types.TIME, StatementBinderFactory::timeBinder);
         this.statementBinderFactories.put(Types.TIMESTAMP, StatementBinderFactory::timestampBinder);
+
+        this.bindingDebugConverter = new BindingDebugConverter();
     }
 
     public TableLoader fromTable(String tableName) {
@@ -63,6 +68,10 @@ public class JdbcConnector {
         return statementBinderFactories
                 .getOrDefault(type, defaultStatementBinderFactory)
                 .binder(new StatementPosition(statement, type, pos));
+    }
+
+    protected BindingDebugConverter getBindingDebugConverter() {
+        return bindingDebugConverter;
     }
 
     protected Connection getConnection() throws SQLException {
