@@ -1,4 +1,4 @@
-package com.nhl.dflib.jdbc.select;
+package com.nhl.dflib.jdbc.connector;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

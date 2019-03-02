@@ -6,7 +6,8 @@ import com.nhl.dflib.jdbc.connector.JdbcConnectorBuilder;
 import javax.sql.DataSource;
 
 /**
- * An entry point to JDBC access functionality.
+ * An entry point to JDBC access functionality. Allows callers to build a {@link JdbcConnector} that can be reused for
+ * loading one or more DataFrames from the database.
  */
 public class Jdbc {
 

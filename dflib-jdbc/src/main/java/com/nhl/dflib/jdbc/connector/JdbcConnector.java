@@ -1,9 +1,5 @@
 package com.nhl.dflib.jdbc.connector;
 
-import com.nhl.dflib.jdbc.load.SqlLoader;
-import com.nhl.dflib.jdbc.load.TableLoader;
-import com.nhl.dflib.jdbc.select.Binding;
-
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -59,24 +55,19 @@ public class JdbcConnector {
         return new SqlLoader(this, sql);
     }
 
-    public JdbcFunction<ResultSet, Object> getValueReader(int type, int pos) {
+    JdbcFunction<ResultSet, Object> getValueReader(int type, int pos) {
         return valueReaderFactories.getOrDefault(type, defaultValueReaderFactory).reader(pos);
     }
 
-    public JdbcConsumer<PreparedStatement> getStatementBinder(int type, int pos, Object value) {
+    JdbcConsumer<PreparedStatement> getStatementBinder(int type, int pos, Object value) {
         return statementBinderFactories
                 .getOrDefault(type, defaultStatementBinderFactory)
                 .binder(new Binding(type, pos, value));
     }
 
-    public Connection getConnection() {
+    Connection getConnection() throws SQLException {
 
-        Connection connection;
-        try {
-            connection = dataSource.getConnection();
-        } catch (SQLException e) {
-            throw new RuntimeException("Error opening connection", e);
-        }
+        Connection connection = dataSource.getConnection();
 
         try {
             connection.setAutoCommit(false);
@@ -86,11 +77,14 @@ public class JdbcConnector {
                 connection.close();
             } catch (SQLException ignored) {
             }
+
+            throw e;
         }
+
         return connection;
     }
 
-    public String quoteIdentifier(Connection connection, String bareIdentifier) {
+    String quoteIdentifier(Connection connection, String bareIdentifier) {
         return getOrCreateQuoter(connection).quoted(bareIdentifier);
     }
 

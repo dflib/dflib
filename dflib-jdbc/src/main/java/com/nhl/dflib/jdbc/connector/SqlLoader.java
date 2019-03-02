@@ -1,8 +1,4 @@
-package com.nhl.dflib.jdbc.load;
-
-import com.nhl.dflib.jdbc.connector.JdbcConnector;
-import com.nhl.dflib.jdbc.connector.JdbcConsumer;
-import com.nhl.dflib.jdbc.select.StatementBinder;
+package com.nhl.dflib.jdbc.connector;
 
 import java.sql.Connection;
 import java.sql.ParameterMetaData;

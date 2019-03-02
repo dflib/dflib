@@ -1,8 +1,6 @@
-package com.nhl.dflib.jdbc.load;
+package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.Index;
-import com.nhl.dflib.jdbc.connector.JdbcConnector;
-import com.nhl.dflib.jdbc.select.StatementBinder;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

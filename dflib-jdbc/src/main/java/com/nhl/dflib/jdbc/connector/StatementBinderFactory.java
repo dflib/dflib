@@ -1,7 +1,5 @@
 package com.nhl.dflib.jdbc.connector;
 
-import com.nhl.dflib.jdbc.select.Binding;
-
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Time;

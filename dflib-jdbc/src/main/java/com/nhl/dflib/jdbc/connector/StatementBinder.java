@@ -1,4 +1,4 @@
-package com.nhl.dflib.jdbc.select;
+package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.jdbc.connector.JdbcConsumer;
 

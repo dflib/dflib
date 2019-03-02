@@ -1,12 +1,7 @@
-package com.nhl.dflib.jdbc.load;
+package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.jdbc.connector.JdbcConnector;
-import com.nhl.dflib.jdbc.connector.JdbcFunction;
-import com.nhl.dflib.jdbc.select.JdbcSelector;
-import com.nhl.dflib.jdbc.select.RowReader;
-import com.nhl.dflib.jdbc.select.StatementBinder;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,7 +24,7 @@ public abstract class BaseLoader {
         // TODO: should maxRows be translated into the SQL LIMIT clause?
         //  Some DBs have crazy limit syntax, so this may be hard to generalize..
         return new JdbcSelector(
-                connector,
+                connector::getConnection,
                 this::buildSql,
                 this::createIndex,
                 this::createBinder,
