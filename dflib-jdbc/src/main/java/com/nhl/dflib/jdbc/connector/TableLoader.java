@@ -1,18 +1,19 @@
 package com.nhl.dflib.jdbc.connector;
 
-import com.nhl.dflib.Index;
+import com.nhl.dflib.DataFrame;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
-public class TableLoader extends BaseLoader {
+public class TableLoader {
 
+    protected JdbcConnector connector;
+    protected int maxRows;
     private String tableName;
     private String[] columns;
 
     public TableLoader(JdbcConnector connector, String tableName) {
-        super(connector);
+        this.connector = connector;
+        this.maxRows = Integer.MAX_VALUE;
         this.tableName = tableName;
     }
 
@@ -27,16 +28,20 @@ public class TableLoader extends BaseLoader {
         return this;
     }
 
-    @Override
-    protected SqlStatement buildSql(Connection connection) {
+    public DataFrame load() {
+        return new SqlLoader(connector, this::buildSql)
+                .maxRows(maxRows)
+                .load();
+    }
+
+    protected String buildSql(Connection connection) {
 
         // TODO: should maxRows be translated into the SQL LIMIT clause?
         //  Some DBs have crazy limit syntax, so this may be hard to generalize..
 
         String columns = buildColumnsSql(connection);
         String name = connector.quoteIdentifier(connection, tableName);
-        String sql = "select " + columns + " from " + name;
-        return new SqlStatementNoParams(sql);
+        return "select " + columns + " from " + name;
     }
 
     protected String buildColumnsSql(Connection connection) {
@@ -56,12 +61,5 @@ public class TableLoader extends BaseLoader {
         }
 
         return buf.toString();
-    }
-
-    @Override
-    protected Index createIndex(ResultSet rs) throws SQLException {
-        return (this.columns == null || columns.length == 0)
-                ? super.createIndex(rs)
-                : Index.withNames(columns);
     }
 }
