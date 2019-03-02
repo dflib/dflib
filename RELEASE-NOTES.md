@@ -7,3 +7,4 @@
 * #5 'sort' and 'sortByColumns' to reorder DataFrames
 * #6 Load DataFrames from CSV
 * #7 RowProxy - "flyweight" API to hide access to Object[]
+* #9 JDBC loader for DataFrames
