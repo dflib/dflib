@@ -34,6 +34,18 @@ public class JdbcConnector_WithSqlIT extends BaseDbTest {
     }
 
     @Test
+    public void testEmpty() {
+
+        T1.insert(1L, "n1", 50_000.01);
+
+        DataFrame df = createConnector()
+                .withSql("SELECT \"id\", \"salary\" from \"t1\" WHERE \"id\" > 1")
+                .load();
+
+        new DFAsserts(df, "id", "salary").expectHeight(0);
+    }
+
+    @Test
     public void testMaxRows() {
 
         T1.insert(1L, "n1", 50_000.01)

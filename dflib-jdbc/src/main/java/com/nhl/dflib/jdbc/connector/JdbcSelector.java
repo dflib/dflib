@@ -45,7 +45,9 @@ public class JdbcSelector {
         try (Connection c = connectionProvider.get()) {
 
             String sql = sqlFactory.apply(c);
-            LOGGER.info("Loading DataFrame with SQL: {}", sql);
+            LOGGER.debug("Loading DataFrame with SQL: {}", sql);
+
+            // TODO: log bindings somehow
 
             try (PreparedStatement st = c.prepareStatement(sql)) {
 

@@ -55,17 +55,17 @@ public class JdbcConnector {
         return new SqlLoader(this, sql);
     }
 
-    JdbcFunction<ResultSet, Object> getValueReader(int type, int pos) {
+    protected JdbcFunction<ResultSet, Object> getValueReader(int type, int pos) {
         return valueReaderFactories.getOrDefault(type, defaultValueReaderFactory).reader(pos);
     }
 
-    JdbcConsumer<PreparedStatement> getStatementBinder(int type, int pos, Object value) {
+    protected JdbcConsumer<PreparedStatement> getStatementBinder(int type, int pos, Object value) {
         return statementBinderFactories
                 .getOrDefault(type, defaultStatementBinderFactory)
                 .binder(new Binding(type, pos, value));
     }
 
-    Connection getConnection() throws SQLException {
+    protected Connection getConnection() throws SQLException {
 
         Connection connection = dataSource.getConnection();
 
@@ -84,7 +84,7 @@ public class JdbcConnector {
         return connection;
     }
 
-    String quoteIdentifier(Connection connection, String bareIdentifier) {
+    protected String quoteIdentifier(Connection connection, String bareIdentifier) {
         return getOrCreateQuoter(connection).quoted(bareIdentifier);
     }
 

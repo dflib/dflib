@@ -16,8 +16,8 @@ public class Binding {
         this.position = position;
     }
 
-    public Binding mapValue(UnaryOperator<Object> transformer) {
-        return new Binding(type, position, transformer.apply(value));
+    public Binding mapValue(UnaryOperator<Object> valueMapper) {
+        return new Binding(type, position, valueMapper.apply(value));
     }
 
     public void bind(PreparedStatement statement) throws SQLException {
