@@ -22,6 +22,7 @@ public class JdbcSelector {
     private JdbcOperation<Connection, String> sqlFactory;
     private JdbcOperation<ResultSet, Index> indexFactory;
     private JdbcOperation<ResultSet, RowReader> rowReaderFactory;
+    private StatementBinder binder;
     private int maxRows;
 
     public JdbcSelector(
@@ -29,12 +30,15 @@ public class JdbcSelector {
             JdbcOperation<Connection, String> sqlFactory,
             JdbcOperation<ResultSet, Index> indexFactory,
             JdbcOperation<ResultSet, RowReader> rowReaderFactory,
-            int maxRows) {
+            StatementBinder binder,
+            int maxRows
+    ) {
 
         this.connector = connector;
         this.sqlFactory = sqlFactory;
         this.indexFactory = indexFactory;
         this.rowReaderFactory = rowReaderFactory;
+        this.binder = binder;
         this.maxRows = maxRows;
     }
 
@@ -46,6 +50,9 @@ public class JdbcSelector {
             LOGGER.info("Loading DataFrame with SQL: {}", sql);
 
             try (PreparedStatement st = c.prepareStatement(sql)) {
+
+                binder.bind(st);
+
                 try (ResultSet rs = st.executeQuery()) {
 
                     Index columns = indexFactory.exec(rs);

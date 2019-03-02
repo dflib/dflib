@@ -2,6 +2,7 @@ package com.nhl.dflib.jdbc.load;
 
 import com.nhl.dflib.Index;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
+import com.nhl.dflib.jdbc.select.StatementBinder;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -37,6 +38,11 @@ public class TableLoader extends BaseLoader {
         String columns = buildColumnsSql(connection);
         String name = connector.quoteIdentifier(connection, tableName);
         return "select " + columns + " from " + name;
+    }
+
+    @Override
+    protected StatementBinder createBinder() {
+        return new StatementBinder();
     }
 
     protected String buildColumnsSql(Connection connection) {

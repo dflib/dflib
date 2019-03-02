@@ -6,6 +6,7 @@ import com.nhl.dflib.jdbc.connector.JdbcConnector;
 import com.nhl.dflib.jdbc.connector.JdbcOperation;
 import com.nhl.dflib.jdbc.select.JdbcSelector;
 import com.nhl.dflib.jdbc.select.RowReader;
+import com.nhl.dflib.jdbc.select.StatementBinder;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -31,10 +32,13 @@ public abstract class BaseLoader {
                 this::buildSql,
                 this::createIndex,
                 this::createRowReader,
+                createBinder(),
                 maxRows).load();
     }
 
     protected abstract String buildSql(Connection connection);
+
+    protected abstract StatementBinder createBinder();
 
     protected Index createIndex(ResultSet rs) throws SQLException {
 

@@ -37,6 +37,14 @@ public class JdbcConnector {
         return new TableLoader(this, tableName);
     }
 
+    /**
+     * Creates a new {@link SqlLoader} to load DataFrame from a custom SQL query.
+     *
+     * @param sql a parameterized SQL statement that should be run to get the DataFrame data. Format of the SQL String
+     *            corresponds to the JDBC {@link java.sql.PreparedStatement}. So e.g. it may contain "?" placeholders
+     *            for bound parameters. Bound parameters are then passed via {@link SqlLoader#params(Object...)}.
+     * @return a new SqlLoader
+     */
     public SqlLoader withSql(String sql) {
         return new SqlLoader(this, sql);
     }
