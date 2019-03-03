@@ -4,7 +4,6 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.map.ValueMapper;
 import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
 import java.io.FileNotFoundException;
@@ -103,8 +102,8 @@ public class CsvLoader {
     }
 
     public DataFrame fromReader(Reader reader) {
-        try (CSVParser parser = format.parse(reader)) {
-            Iterator<CSVRecord> it = parser.iterator();
+        try  {
+            Iterator<CSVRecord> it = format.parse(reader).iterator();
 
             rewind(it);
             Index columns = createColumns(it);

@@ -9,7 +9,7 @@ public class CsvTest extends BaseCsvTest {
 
     @Test
     public void testFromFile() {
-        DataFrame df = Csv.fromFile(csvPath("f1.csv"));
+        DataFrame df = Csv.fromFile(inPath("f1.csv"));
         new DFAsserts(df, "A", "b", "C")
                 .expectHeight(2)
                 .expectRow(0, "1", "2", "3")
@@ -18,7 +18,7 @@ public class CsvTest extends BaseCsvTest {
 
     @Test
     public void testLoader_FromFile() {
-        DataFrame df = Csv.loader().fromFile(csvPath("f1.csv"));
+        DataFrame df = Csv.loader().fromFile(inPath("f1.csv"));
         new DFAsserts(df, "A", "b", "C")
                 .expectHeight(2)
                 .expectRow(0, "1", "2", "3")

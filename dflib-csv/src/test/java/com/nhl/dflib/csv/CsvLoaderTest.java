@@ -26,7 +26,7 @@ public class CsvLoaderTest extends BaseCsvTest {
 
     @Test
     public void testFromFile() {
-        DataFrame df = new CsvLoader().fromFile(csvPath("f1.csv"));
+        DataFrame df = new CsvLoader().fromFile(inPath("f1.csv"));
         new DFAsserts(df, "A", "b", "C")
                 .expectHeight(2)
                 .expectRow(0, "1", "2", "3")
@@ -35,7 +35,7 @@ public class CsvLoaderTest extends BaseCsvTest {
 
     @Test
     public void testFromFile_DefaultFormat_Excel() {
-        DataFrame df = new CsvLoader().fromFile(csvPath("from_excel.csv"));
+        DataFrame df = new CsvLoader().fromFile(inPath("from_excel.csv"));
         new DFAsserts(df, "A", "b", "C")
                 .expectHeight(2)
                 .expectRow(0, "commas,quotes\"'", "-85.7", "3")
@@ -44,7 +44,7 @@ public class CsvLoaderTest extends BaseCsvTest {
 
     @Test
     public void testFromFile_MySQLFormat() {
-        DataFrame df = new CsvLoader().format(CSVFormat.MYSQL).fromFile(csvPath("from_mysql.csv"));
+        DataFrame df = new CsvLoader().format(CSVFormat.MYSQL).fromFile(inPath("from_mysql.csv"));
         new DFAsserts(df, "1", "3365430", " xxxx")
                 .expectHeight(4)
                 .expectRow(0, "2", "2289959", "yyyy")
@@ -55,7 +55,7 @@ public class CsvLoaderTest extends BaseCsvTest {
 
     @Test
     public void testFromFile_Columns() {
-        DataFrame df = new CsvLoader().columns("X", "Y", "Z").fromFile(csvPath("f1.csv"));
+        DataFrame df = new CsvLoader().columns("X", "Y", "Z").fromFile(inPath("f1.csv"));
         new DFAsserts(df, "X", "Y", "Z")
                 .expectHeight(3)
                 .expectRow(0, "A", "b", "C")
@@ -65,7 +65,7 @@ public class CsvLoaderTest extends BaseCsvTest {
 
     @Test
     public void testFromFile_SkipRows() {
-        DataFrame df = new CsvLoader().skipRows(1).fromFile(csvPath("f1.csv"));
+        DataFrame df = new CsvLoader().skipRows(1).fromFile(inPath("f1.csv"));
         new DFAsserts(df, "1", "2", "3")
                 .expectHeight(1)
                 .expectRow(0, "4", "5", "6");
@@ -76,7 +76,7 @@ public class CsvLoaderTest extends BaseCsvTest {
         DataFrame df = new CsvLoader()
                 .columnType(0, ValueMapper.stringToInt())
                 .columnType(2, ValueMapper.stringToLong())
-                .fromFile(csvPath("f1.csv"));
+                .fromFile(inPath("f1.csv"));
         new DFAsserts(df, "A", "b", "C")
                 .expectHeight(2)
                 .expectRow(0, 1, "2", 3L)
@@ -88,7 +88,7 @@ public class CsvLoaderTest extends BaseCsvTest {
         DataFrame df = new CsvLoader()
                 .columnType(0, ValueMapper.stringToInt())
                 .columnType("A", ValueMapper.stringToLong())
-                .fromFile(csvPath("f1.csv"));
+                .fromFile(inPath("f1.csv"));
         new DFAsserts(df, "A", "b", "C")
                 .expectHeight(2)
                 .expectRow(0, 1L, "2", "3")
@@ -99,7 +99,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     public void testFromFile_ColumnTypes() {
         DataFrame df = new CsvLoader()
                 .columnTypes(ValueMapper.stringToInt(), ValueMapper.stringToString(), ValueMapper.stringToDouble())
-                .fromFile(csvPath("f1.csv"));
+                .fromFile(inPath("f1.csv"));
         new DFAsserts(df, "A", "b", "C")
                 .expectHeight(2)
                 .expectRow(0, 1, "2", 3.)
