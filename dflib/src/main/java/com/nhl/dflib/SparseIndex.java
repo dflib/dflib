@@ -11,7 +11,7 @@ public class SparseIndex extends Index {
 
         int maxIndex = 0;
         for (int i = 0; i < positions.length; i++) {
-            maxIndex = Math.max(positions[i].rowIndex(), maxIndex);
+            maxIndex = Math.max(positions[i].position(), maxIndex);
         }
 
         this.span = maxIndex + 1;
@@ -44,7 +44,7 @@ public class SparseIndex extends Index {
         for (int i = 0; i < len; i++) {
             IndexPosition pos = positions[i];
             String newName = oldToNewNames.get(pos.name());
-            newPositions[i] = newName != null ? new IndexPosition(i, pos.rowIndex(), newName) : pos;
+            newPositions[i] = newName != null ? new IndexPosition(i, pos.position(), newName) : pos;
         }
 
         return new SparseIndex(newPositions);

@@ -38,12 +38,12 @@ public abstract class Index implements Iterable<IndexPosition> {
 
         // true if starts with zero and increments by one
 
-        if (positions.length > 0 && positions[0].rowIndex() > 0) {
+        if (positions.length > 0 && positions[0].position() > 0) {
             return false;
         }
 
         for (int i = 1; i < positions.length; i++) {
-            if (positions[i].rowIndex() != positions[i - 1].rowIndex() + 1) {
+            if (positions[i].position() != positions[i - 1].position() + 1) {
                 return false;
             }
         }
@@ -139,7 +139,7 @@ public abstract class Index implements Iterable<IndexPosition> {
                 name = name + "_";
             }
 
-            positions[i] = new IndexPosition(i, p.rowIndex(), name);
+            positions[i] = new IndexPosition(i, p.position(), name);
         }
 
         return Index.withPositions(positions);
@@ -173,7 +173,7 @@ public abstract class Index implements Iterable<IndexPosition> {
             IndexPosition p = positions[i];
 
             if (!toDrop.contains(p)) {
-                toKeep[j] = new IndexPosition(j, p.rowIndex(), p.name());
+                toKeep[j] = new IndexPosition(j, p.position(), p.name());
                 j++;
             }
         }
