@@ -4,11 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class SqlStatementNoParams implements SqlStatement {
+public class SelectStatementNoParams implements SelectStatement {
 
     private String sql;
 
-    public SqlStatementNoParams(String sql) {
+    public SelectStatementNoParams(String sql) {
         this.sql = sql;
     }
 

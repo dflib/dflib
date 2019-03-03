@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public interface SqlStatement {
+public interface SelectStatement {
 
     PreparedStatement toJdbcStatement(Connection connection) throws SQLException;
 

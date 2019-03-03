@@ -2,6 +2,7 @@ package com.nhl.dflib.jdbc.connector;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -44,6 +45,10 @@ public class JdbcConnector {
         this.bindingDebugConverter = new BindingDebugConverter();
     }
 
+    public TableSaver tableSaver(String tableName) {
+        return new TableSaver(this, tableName);
+    }
+
     public TableLoader tableLoader(String tableName) {
         return new TableLoader(this, tableName);
     }
@@ -64,10 +69,19 @@ public class JdbcConnector {
         return valueReaderFactories.getOrDefault(type, defaultValueReaderFactory).reader(pos);
     }
 
-    protected JdbcConsumer<Object> getStatementBinder(PreparedStatement statement, int type, int pos) {
-        return statementBinderFactories
-                .getOrDefault(type, defaultStatementBinderFactory)
-                .binder(new StatementPosition(statement, type, pos));
+    protected StatementBinder createBinder(PreparedStatement statement) throws SQLException {
+
+        ParameterMetaData pmd = statement.getParameterMetaData();
+        int len = pmd.getParameterCount();
+        JdbcConsumer<Object>[] bindings = new JdbcConsumer[len];
+
+        for (int i = 0; i < len; i++) {
+            int jdbcPos = i + 1;
+            int jdbcType = pmd.getParameterType(jdbcPos);
+            bindings[i] = getStatementBinder(statement, jdbcType, jdbcPos);
+        }
+
+        return new StatementBinder(bindings);
     }
 
     protected BindingDebugConverter getBindingDebugConverter() {
@@ -119,5 +133,11 @@ public class JdbcConnector {
         return " ".equals(identifierQuote)
                 ? IdentifierQuoter.noQuote()
                 : IdentifierQuoter.forQuoteSymbol(identifierQuote);
+    }
+
+    private JdbcConsumer<Object> getStatementBinder(PreparedStatement statement, int type, int pos) {
+        return statementBinderFactories
+                .getOrDefault(type, defaultStatementBinderFactory)
+                .binder(new StatementPosition(statement, type, pos));
     }
 }

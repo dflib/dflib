@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
-import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -50,11 +49,11 @@ public class SqlLoader {
 
         try (Connection c = connector.getConnection()) {
 
-            SqlStatement sql = buildSql(c);
+            SelectStatement statement = createStatement(c);
 
-            try (PreparedStatement st = sql.toJdbcStatement(c)) {
+            try (PreparedStatement ps = statement.toJdbcStatement(c)) {
 
-                try (ResultSet rs = st.executeQuery()) {
+                try (ResultSet rs = ps.executeQuery()) {
 
                     Index columns = createIndex(rs);
                     List<Object[]> data = loadData(rs);
@@ -66,18 +65,18 @@ public class SqlLoader {
         }
     }
 
-    protected SqlStatement buildSql(Connection connection) throws SQLException {
+    protected SelectStatement createStatement(Connection connection) throws SQLException {
         String sql = sqlProducer.apply(connection);
         logSql(sql);
         return (params == null || params.length == 0)
-                ? new SqlStatementNoParams(sql)
-                : new SqlStatementWithParams(sql, params, this::createBinder);
+                ? new SelectStatementNoParams(sql)
+                : new SelectStatementWithParams(sql, params, connector::createBinder);
     }
 
     protected void logSql(String sql) {
         if (LOGGER.isInfoEnabled()) {
 
-            StringBuilder log = new StringBuilder("DataFrame SQL: ").append(sql);
+            StringBuilder log = new StringBuilder("Loading DataFrame... ").append(sql);
 
             if (params != null && params.length > 0) {
 
@@ -97,21 +96,6 @@ public class SqlLoader {
 
             LOGGER.info(log.toString());
         }
-    }
-
-    protected StatementBinder createBinder(PreparedStatement statement) throws SQLException {
-
-        ParameterMetaData pmd = statement.getParameterMetaData();
-        int len = pmd.getParameterCount();
-        JdbcConsumer<Object>[] bindings = new JdbcConsumer[len];
-
-        for (int i = 0; i < len; i++) {
-            int jdbcPos = i + 1;
-            int jdbcType = pmd.getParameterType(jdbcPos);
-            bindings[i] = connector.getStatementBinder(statement, jdbcType, jdbcPos);
-        }
-
-        return new StatementBinder(bindings);
     }
 
     protected Index createIndex(ResultSet rs) throws SQLException {

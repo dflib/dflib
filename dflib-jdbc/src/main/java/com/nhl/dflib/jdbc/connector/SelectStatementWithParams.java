@@ -4,13 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class SqlStatementWithParams implements SqlStatement {
+public class SelectStatementWithParams implements SelectStatement {
 
     private String sql;
     private Object[] params;
     private JdbcFunction<PreparedStatement, StatementBinder> binderFactory;
 
-    public SqlStatementWithParams(
+    public SelectStatementWithParams(
             String sql,
             Object[] params,
             JdbcFunction<PreparedStatement, StatementBinder> binderFactory) {
