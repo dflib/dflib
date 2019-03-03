@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class JdbcConnector_FromTableIT extends BaseDbTest {
+public class JdbcConnector_TableLoaderIT extends BaseDbTest {
 
     private JdbcConnector createConnector() {
         return Jdbc.connector(getDataSource());
@@ -23,7 +23,7 @@ public class JdbcConnector_FromTableIT extends BaseDbTest {
                 .insert(2L, "n2", 120_000.);
 
         DataFrame df = createConnector()
-                .fromTable("t1")
+                .tableLoader("t1")
                 .load();
 
         new DFAsserts(df, columnNames(T1))
@@ -39,7 +39,7 @@ public class JdbcConnector_FromTableIT extends BaseDbTest {
                 .insert(2L, "n2", 120_000.);
 
         DataFrame df = createConnector()
-                .fromTable("t1")
+                .tableLoader("t1")
                 .includeColumns("id", "salary")
                 .load();
 
@@ -63,7 +63,7 @@ public class JdbcConnector_FromTableIT extends BaseDbTest {
                 .insert(null, null, null, false, null, null, null, null, null);
 
         DataFrame df = createConnector()
-                .fromTable("t2")
+                .tableLoader("t2")
                 .load();
 
         new DFAsserts(df, columnNames(T2))
@@ -80,7 +80,7 @@ public class JdbcConnector_FromTableIT extends BaseDbTest {
                 .insert(3L, "n3", 20_000.);
 
         DataFrame df = createConnector()
-                .fromTable("t1")
+                .tableLoader("t1")
                 .maxRows(2)
                 .load();
 

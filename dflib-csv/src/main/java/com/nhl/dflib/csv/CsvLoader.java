@@ -6,7 +6,7 @@ import com.nhl.dflib.map.ValueMapper;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -28,14 +28,6 @@ public class CsvLoader {
     public CsvLoader() {
         this.format = CSVFormat.DEFAULT;
         this.converters = new ArrayList<>();
-    }
-
-    private static Reader readerFromFilePath(String path) {
-        try {
-            return new FileReader(path);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("File not found: " + path, e);
-        }
     }
 
     /**
@@ -93,15 +85,23 @@ public class CsvLoader {
         return this;
     }
 
-    public DataFrame fromFile(String filePath) {
-        try (Reader r = readerFromFilePath(filePath)) {
-            return fromReader(r);
+    public DataFrame load(File file) {
+        try (Reader r = new FileReader(file)) {
+            return load(r);
         } catch (IOException e) {
-            throw new RuntimeException("Error closing file reader: " + filePath, e);
+            throw new RuntimeException("Error reading file: " + file, e);
         }
     }
 
-    public DataFrame fromReader(Reader reader) {
+    public DataFrame load(String filePath) {
+        try (Reader r = new FileReader(filePath)) {
+            return load(r);
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading file: " + filePath, e);
+        }
+    }
+
+    public DataFrame load(Reader reader) {
         try  {
             Iterator<CSVRecord> it = format.parse(reader).iterator();
 

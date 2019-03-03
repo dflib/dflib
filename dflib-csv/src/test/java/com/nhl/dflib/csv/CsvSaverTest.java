@@ -21,7 +21,7 @@ public class CsvSaverTest extends BaseCsvTest {
                 3, 4);
 
         StringWriter out = new StringWriter();
-        Csv.saver().toWriter(df, out);
+        Csv.saver().save(df, out);
         assertEquals("A,B\r\n" +
                 "1,2\r\n" +
                 "3,4\r\n", out.toString());
@@ -35,7 +35,7 @@ public class CsvSaverTest extends BaseCsvTest {
                 3, 4);
 
         StringWriter out = new StringWriter();
-        Csv.saver().format(CSVFormat.MYSQL).toWriter(df, out);
+        Csv.saver().format(CSVFormat.MYSQL).save(df, out);
 
         assertEquals("A\tB\n" +
                 "1\t2\n" +
@@ -51,7 +51,7 @@ public class CsvSaverTest extends BaseCsvTest {
                 1, 2,
                 3, 4);
 
-        Csv.saver().toFile(df, file);
+        Csv.saver().save(df, file);
         assertEquals("A,B\r\n" +
                 "1,2\r\n" +
                 "3,4\r\n", readFile(file.getAbsolutePath()));
@@ -66,7 +66,7 @@ public class CsvSaverTest extends BaseCsvTest {
                 1, 2,
                 3, 4);
 
-        Csv.saver().toFile(df, filePath);
+        Csv.saver().save(df, filePath);
         assertEquals("A,B\r\n" +
                 "1,2\r\n" +
                 "3,4\r\n", readFile(filePath));

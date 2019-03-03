@@ -44,7 +44,7 @@ public class JdbcConnector {
         this.bindingDebugConverter = new BindingDebugConverter();
     }
 
-    public TableLoader fromTable(String tableName) {
+    public TableLoader tableLoader(String tableName) {
         return new TableLoader(this, tableName);
     }
 
@@ -56,7 +56,7 @@ public class JdbcConnector {
      *            for bound parameters. Bound parameters are then passed via {@link SqlLoader#params(Object...)}.
      * @return a new SqlLoader
      */
-    public SqlLoader withSql(String sql) {
+    public SqlLoader sqlLoader(String sql) {
         return new SqlLoader(this, sql);
     }
 

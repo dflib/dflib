@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class JdbcConnector_WithSqlIT extends BaseDbTest {
+public class JdbcConnector_SqlLoaderIT extends BaseDbTest {
 
     private JdbcConnector createConnector() {
         return Jdbc.connector(getDataSource());
@@ -24,7 +24,7 @@ public class JdbcConnector_WithSqlIT extends BaseDbTest {
                 .insert(3L, "n3", 1_000.);
 
         DataFrame df = createConnector()
-                .withSql("SELECT \"id\", \"salary\" from \"t1\" WHERE \"id\" > 1")
+                .sqlLoader("SELECT \"id\", \"salary\" from \"t1\" WHERE \"id\" > 1")
                 .load();
 
         new DFAsserts(df, "id", "salary")
@@ -39,7 +39,7 @@ public class JdbcConnector_WithSqlIT extends BaseDbTest {
         T1.insert(1L, "n1", 50_000.01);
 
         DataFrame df = createConnector()
-                .withSql("SELECT \"id\", \"salary\" from \"t1\" WHERE \"id\" > 1")
+                .sqlLoader("SELECT \"id\", \"salary\" from \"t1\" WHERE \"id\" > 1")
                 .load();
 
         new DFAsserts(df, "id", "salary").expectHeight(0);
@@ -53,7 +53,7 @@ public class JdbcConnector_WithSqlIT extends BaseDbTest {
                 .insert(3L, "n3", 20_000.);
 
         DataFrame df = createConnector()
-                .withSql("SELECT * from \"t1\"")
+                .sqlLoader("SELECT * from \"t1\"")
                 .maxRows(2)
                 .load();
 
@@ -77,7 +77,7 @@ public class JdbcConnector_WithSqlIT extends BaseDbTest {
                 .insert(null, null, null, false, null, null, null, null, null);
 
         DataFrame df = createConnector()
-                .withSql("SELECT * from \"t2\"" +
+                .sqlLoader("SELECT * from \"t2\"" +
                         " WHERE \"bigint\" = ?" +
                         " AND \"int\" = ?" +
                         " AND \"double\" = ?" +

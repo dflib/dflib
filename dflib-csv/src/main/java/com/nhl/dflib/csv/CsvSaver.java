@@ -33,25 +33,25 @@ public class CsvSaver {
         return this;
     }
 
-    public void toFile(DataFrame df, File file) {
+    public void save(DataFrame df, File file) {
 
         try (FileWriter out = new FileWriter(file)) {
-            toWriter(df, out);
+            save(df, out);
         } catch (IOException e) {
             throw new RuntimeException("Error writing CSV to " + file, e);
         }
     }
 
-    public void toFile(DataFrame df, String fileName) {
+    public void save(DataFrame df, String fileName) {
 
         try (FileWriter out = new FileWriter(fileName)) {
-            toWriter(df, out);
+            save(df, out);
         } catch (IOException e) {
             throw new RuntimeException("Error writing CSV to " + fileName, e);
         }
     }
 
-    public void toWriter(DataFrame df, Writer out) {
+    public void save(DataFrame df, Writer out) {
 
         try {
             CSVPrinter printer = new CSVPrinter(out, format);
