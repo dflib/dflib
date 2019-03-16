@@ -4,10 +4,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- * Testing DataFrame interface methods behavior, by not using factory methods that create subclasses that override
- * base methods.
- */
 public class DataFrame_ShapeTest {
 
     @Test
