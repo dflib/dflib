@@ -2,15 +2,12 @@ package com.nhl.dflib.columnar;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.MaterializedDataFrame;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.print.InlinePrinter;
 import com.nhl.dflib.row.RowProxy;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 public class ColumnarDataFrame implements DataFrame {
 
@@ -23,32 +20,74 @@ public class ColumnarDataFrame implements DataFrame {
     }
 
     /**
-     * Creates a columnar DataFrame by folding the provided array of objects into rows and columns.
+     * Creates a columnar DataFrame from the provided array that stores data column-by-column.
      */
-    public static DataFrame fromSequence(Index columns, Object... sequence) {
+    public static DataFrame fromColumnSequence(Index columns, Object... sequence) {
+
+        int w = columns.size();
+        int lastColumnH = sequence.length % w;
+        boolean partialLastColumn = lastColumnH > 0;
+        int fullColumnsW = partialLastColumn
+                ? w - 1
+                : w;
+
+        int h = partialLastColumn
+                ? 1 + sequence.length / w
+                : sequence.length / w;
+
+        Object[][] data = new Object[w][h];
+
+        for (int i = 0; i < fullColumnsW; i++) {
+            System.arraycopy(sequence, i * h, data[i], 0, h);
+        }
+
+        if (partialLastColumn) {
+            System.arraycopy(sequence, fullColumnsW * h, data[fullColumnsW], 0, lastColumnH);
+        }
+
+        Series[] series = new Series[w];
+
+        for (int i = 0; i < w; i++) {
+            series[i] = new ArraySeries(data[i]);
+        }
+
+        return new ColumnarDataFrame(columns, series);
+    }
+
+    /**
+     * Creates a columnar DataFrame from the provided array that stores data row-by-row. This is NOT a very efficient
+     * way to initialize a columnar DataFrame. Use {@link #fromColumnSequence(Index, Object...)} when possible.
+     */
+    public static DataFrame fromRowSequence(Index columns, Object... sequence) {
 
         int width = columns.size();
-        int rows = sequence.length / width;
+        int lastRowWidth = sequence.length % width;
 
-        Series[] data = new Series[width];
-        
+        int minHeight = sequence.length / width;
+        int fullHeight = lastRowWidth > 0 ? minHeight + 1 : minHeight;
 
-        List<Object[]> folded = new ArrayList<>(rows + 1);
-        for (int i = 0; i < rows; i++) {
-            Object[] row = new Object[width];
-            System.arraycopy(sequence, i * width, row, 0, width);
-            folded.add(row);
+        Object[][] data = new Object[width][fullHeight];
+
+        for (int i = 0; i < minHeight; i++) {
+            for (int j = 0; j < width; j++) {
+                data[j][i] = sequence[i * width + j];
+            }
         }
 
-        // copy partial last row
-        int leftover = sequence.length % width;
-        if (leftover > 0) {
-            Object[] row = new Object[width];
-            System.arraycopy(sequence, rows * width, row, 0, leftover);
-            folded.add(row);
+        if (lastRowWidth > 0) {
+            int lastRowIndex = minHeight;
+            for (int j = 0; j < lastRowWidth; j++) {
+                data[j][lastRowIndex] = sequence[lastRowIndex * width + j];
+            }
         }
 
-        return new ColumnarDataFrame(columns, folded);
+        Series[] series = new Series[width];
+
+        for (int i = 0; i < width; i++) {
+            series[i] = new ArraySeries(data[i]);
+        }
+
+        return new ColumnarDataFrame(columns, series);
     }
 
     @Override

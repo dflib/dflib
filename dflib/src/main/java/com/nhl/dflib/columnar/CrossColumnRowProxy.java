@@ -15,6 +15,7 @@ public class CrossColumnRowProxy implements RowProxy {
         this.columns = columns;
         this.data = data;
         this.height = height;
+        this.rowIndex = -1;
     }
 
     @Override
@@ -43,7 +44,7 @@ public class CrossColumnRowProxy implements RowProxy {
     }
 
     public boolean hasNext() {
-        return rowIndex < height;
+        return rowIndex + 1 < height;
     }
 
     public CrossColumnRowProxy rewind() {
