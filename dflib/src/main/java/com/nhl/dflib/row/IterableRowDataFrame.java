@@ -6,6 +6,7 @@ import com.nhl.dflib.print.InlinePrinter;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.function.Function;
 
 public class IterableRowDataFrame implements DataFrame {
 
@@ -15,6 +16,14 @@ public class IterableRowDataFrame implements DataFrame {
     public IterableRowDataFrame(Index columns, Iterable<Object[]> source) {
         this.source = source;
         this.columns = columns;
+    }
+
+    /**
+     * Creates a DataFrame from an iterable over arbitrary objects. Each object will be converted to a row by applying
+     * a function passed as the last argument.
+     */
+    public static <T> DataFrame fromObjects(Index columns, Iterable<T> rows, Function<T, Object[]> rowMapper) {
+        return new IterableRowDataFrame(columns, new TransformingIterable<>(rows, rowMapper)).materialize();
     }
 
     @Override

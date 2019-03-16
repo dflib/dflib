@@ -15,7 +15,7 @@ public class DataFrameGroupByTest {
     @Test
     public void testGroupBy() {
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i,
                 1, "x",
                 2, "y",
                 1, "z",
@@ -46,7 +46,7 @@ public class DataFrameGroupByTest {
     @Test
     public void testGroupBy_Empty() {
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i);
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i);
 
         GroupBy gb = df.groupBy(Hasher.forColumn("a"));
         assertNotNull(gb);
@@ -58,7 +58,7 @@ public class DataFrameGroupByTest {
     @Test
     public void testGroupBy_Agg() {
         Index i = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromSequence(i,
+        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i,
                 1, "x",
                 2, "y",
                 1, "z",
@@ -77,7 +77,7 @@ public class DataFrameGroupByTest {
     @Test
     public void testGroupBy_Agg_MultipleAggregationsForKey() {
         Index i = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromSequence(i,
+        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i,
                 1, "x",
                 2, "y",
                 1, "y",

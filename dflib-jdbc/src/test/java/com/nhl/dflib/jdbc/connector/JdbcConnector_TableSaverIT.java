@@ -16,7 +16,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
     @Test
     public void test() {
 
-        DataFrame df = DataFrame.fromSequence(
+        DataFrame df = DataFrame.fromSequenceFoldByRow(
                 Index.withNames("id", "name", "salary"),
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
@@ -38,7 +38,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
     @Test
     public void testEmpty() {
 
-        DataFrame df = DataFrame.fromSequence(Index.withNames("id", "name", "salary"));
+        DataFrame df = DataFrame.fromSequenceFoldByRow(Index.withNames("id", "name", "salary"));
 
         createConnector()
                 .tableSaver("t1")
@@ -54,12 +54,12 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
     @Test
     public void testAppend() {
 
-        DataFrame df1 = DataFrame.fromSequence(
+        DataFrame df1 = DataFrame.fromSequenceFoldByRow(
                 Index.withNames("id", "name", "salary"),
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
-        DataFrame df2 = DataFrame.fromSequence(
+        DataFrame df2 = DataFrame.fromSequenceFoldByRow(
                 Index.withNames("id", "name", "salary"),
                 3L, "n3", 60_000.01,
                 4L, "n4", 20_000.);
@@ -84,12 +84,12 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
     @Test
     public void testDeleteTableData() {
 
-        DataFrame df1 = DataFrame.fromSequence(
+        DataFrame df1 = DataFrame.fromSequenceFoldByRow(
                 Index.withNames("id", "name", "salary"),
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
-        DataFrame df2 = DataFrame.fromSequence(
+        DataFrame df2 = DataFrame.fromSequenceFoldByRow(
                 Index.withNames("id", "name", "salary"),
                 3L, "n3", 60_000.01,
                 4L, "n4", 20_000.);
@@ -114,7 +114,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
     @Test
     public void testStoreRowNumber() {
 
-        DataFrame df = DataFrame.fromSequence(
+        DataFrame df = DataFrame.fromSequenceFoldByRow(
                 Index.withNames("name", "salary"),
                 "n1", 50_000.01,
                 "n2", 120_000.);

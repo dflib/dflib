@@ -5,7 +5,6 @@ import com.nhl.dflib.row.IterableRowDataFrame;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,8 +28,6 @@ public class HeadDataFrameTest {
 
     @Test
     public void testConstructor() {
-
-        List<Object[]> consumed = new ArrayList<>();
 
         HeadDataFrame df = new HeadDataFrame(new IterableRowDataFrame(columns, rows), 3);
 
@@ -103,12 +100,12 @@ public class HeadDataFrameTest {
     public void testZip_LeftIsShorter() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = DataFrame.fromRowsList(i1, asList(
+        DataFrame df1 = DataFrame.fromListOfRows(i1, asList(
                 DataFrame.row(1),
                 DataFrame.row(2)));
 
         Index i2 = Index.withNames("b");
-        DataFrame df2 = DataFrame.fromRowsList(i2, asList(
+        DataFrame df2 = DataFrame.fromListOfRows(i2, asList(
                 DataFrame.row(10),
                 DataFrame.row(20)));
 

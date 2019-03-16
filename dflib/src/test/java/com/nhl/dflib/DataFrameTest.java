@@ -38,7 +38,7 @@ public class DataFrameTest {
     public void testFromStream0() {
 
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromStream(i, IntStream.range(1, 5).boxed());
+        DataFrame df = DataFrame.fromStreamFoldByRow(i, IntStream.range(1, 5).boxed());
 
         new DFAsserts(df, i)
                 .expectHeight(2)
@@ -50,7 +50,7 @@ public class DataFrameTest {
     public void testFromStream1() {
 
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromStream(i, IntStream.range(1, 6).boxed());
+        DataFrame df = DataFrame.fromStreamFoldByRow(i, IntStream.range(1, 6).boxed());
 
         new DFAsserts(df, i)
                 .expectHeight(3)
@@ -63,7 +63,7 @@ public class DataFrameTest {
     public void testFromSequence0() {
 
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i);
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i);
 
         new DFAsserts(df, i).expectHeight(0);
     }
@@ -72,7 +72,7 @@ public class DataFrameTest {
     public void testFromSequence1() {
 
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i, 1, 2);
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i, 1, 2);
 
         new DFAsserts(df, i)
                 .expectHeight(1)
@@ -83,7 +83,7 @@ public class DataFrameTest {
     public void testFromSequence2() {
 
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i, 1, 2, 3);
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i, 1, 2, 3);
 
         new DFAsserts(df, i)
                 .expectHeight(2)
@@ -95,7 +95,7 @@ public class DataFrameTest {
     public void testFromSequence3() {
 
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i, 1, 2, 3, 4);
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i, 1, 2, 3, 4);
 
         new DFAsserts(df, i)
                 .expectHeight(2)
@@ -104,10 +104,10 @@ public class DataFrameTest {
     }
 
     @Test
-    public void testFromRowsList() {
+    public void testFromListOfRows() {
 
         Index i = Index.withNames("a");
-        DataFrame df = DataFrame.fromRowsList(i, asList(
+        DataFrame df = DataFrame.fromListOfRows(i, asList(
                 new Object[]{1},
                 new Object[]{2}));
 
@@ -120,7 +120,7 @@ public class DataFrameTest {
     @Test
     public void testAddColumn() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i1,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i1,
                 1, "x",
                 2, "y")
                 .addColumn("c", r -> ((int) r.get(0)) * 10);
@@ -134,7 +134,7 @@ public class DataFrameTest {
     @Test
     public void testAddColumn_Sparse() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i1,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i1,
                 1, "x",
                 2, "y")
                 .selectColumns("a")
@@ -149,7 +149,7 @@ public class DataFrameTest {
     @Test
     public void testSelectColumns() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i1,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i1,
                 1, "x",
                 2, "y")
                 .selectColumns("b");
@@ -163,7 +163,7 @@ public class DataFrameTest {
     @Test
     public void testSelectColumns_DuplicateColumn() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i1,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i1,
                 1, "x",
                 2, "y")
                 .selectColumns("b", "b", "b");
@@ -177,7 +177,7 @@ public class DataFrameTest {
     @Test
     public void testDropColumns1() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i1,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i1,
                 1, "x",
                 2, "y")
                 .dropColumns("a");
@@ -191,7 +191,7 @@ public class DataFrameTest {
     @Test
     public void testDropColumns2() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i1,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i1,
                 1, "x",
                 2, "y")
                 .dropColumns("b");
@@ -205,7 +205,7 @@ public class DataFrameTest {
     @Test
     public void testDropColumns3() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i1,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i1,
                 1, "x",
                 2, "y")
                 .dropColumns();
@@ -219,7 +219,7 @@ public class DataFrameTest {
     @Test
     public void testDropColumns4() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i1,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i1,
                 1, "x",
                 2, "y")
                 .dropColumns("no_such_column");
@@ -233,7 +233,7 @@ public class DataFrameTest {
     @Test
     public void testMap_SameIndex() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i1,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i1,
                 1, "x",
                 2, "y")
                 .map(RowMapper.mapColumn("a", r -> ((int) r.get("a")) * 10));
@@ -247,7 +247,7 @@ public class DataFrameTest {
     @Test
     public void testMap_SameIndex_Sparse() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i1,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i1,
                 1, "x",
                 2, "y")
                 .dropColumns("a")
@@ -262,7 +262,7 @@ public class DataFrameTest {
     @Test
     public void testMapColumn_FromRow() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i1,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i1,
                 1, "x",
                 2, "y")
                 .mapColumn("a", r -> ((int) r.get(0)) * 10);
@@ -276,7 +276,7 @@ public class DataFrameTest {
     @Test
     public void testMapColumn_FromRow_Sparse() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i1,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i1,
                 1, "x",
                 2, "y")
                 .selectColumns("b")
@@ -291,7 +291,7 @@ public class DataFrameTest {
     @Test
     public void testMapColumn_FromValue() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i1,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i1,
                 1, "x",
                 2, "y")
                 .mapColumnValue("a", v -> ((int) v) * 10);
@@ -306,7 +306,7 @@ public class DataFrameTest {
     public void testFilterByColumn_Name() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df = DataFrame.fromSequence(i1, 10, 20)
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i1, 10, 20)
                 .filterByColumn("a", (Integer v) -> v > 15);
 
         new DFAsserts(df, "a")
@@ -318,7 +318,7 @@ public class DataFrameTest {
     public void testFilterByColumn_Pos() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df = DataFrame.fromSequence(i1, 10, 20)
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i1, 10, 20)
                 .filterByColumn(0, (Integer v) -> v > 15);
 
         new DFAsserts(df, "a")

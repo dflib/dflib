@@ -57,7 +57,7 @@ public class SqlLoader {
 
                     Index columns = createIndex(rs);
                     List<Object[]> data = loadData(rs);
-                    return DataFrame.fromRowsList(columns, data);
+                    return DataFrame.fromListOfRows(columns, data);
                 }
             }
         } catch (SQLException e) {

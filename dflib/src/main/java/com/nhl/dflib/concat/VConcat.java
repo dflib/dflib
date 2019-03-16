@@ -50,7 +50,7 @@ public class VConcat {
 
         switch (dfs.length) {
             case 0:
-                return DataFrame.fromSequence(Index.withNames());
+                return DataFrame.fromSequenceFoldByRow(Index.withNames());
             case 1:
                 return dfs[0];
             default:

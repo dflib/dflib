@@ -74,7 +74,7 @@ public class HashJoiner {
             }
         }
 
-        return DataFrame.fromRowsList(joinedColumns, joined);
+        return DataFrame.fromListOfRows(joinedColumns, joined);
     }
 
     private DataFrame leftJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
@@ -101,7 +101,7 @@ public class HashJoiner {
             }
         }
 
-        return DataFrame.fromRowsList(joinedColumns, joined);
+        return DataFrame.fromListOfRows(joinedColumns, joined);
     }
 
     private DataFrame rightJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
@@ -128,7 +128,7 @@ public class HashJoiner {
             }
         }
 
-        return DataFrame.fromRowsList(joinedColumns, joined);
+        return DataFrame.fromListOfRows(joinedColumns, joined);
     }
 
     private DataFrame fullJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
@@ -170,6 +170,6 @@ public class HashJoiner {
             }
         }
 
-        return DataFrame.fromRowsList(joinedColumns, joined);
+        return DataFrame.fromListOfRows(joinedColumns, joined);
     }
 }

@@ -13,12 +13,12 @@ public class HasherTest {
     public void testKeyColumn_ColumnName() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromRowsList(i1, asList(
+        DataFrame df1 = DataFrame.fromListOfRows(i1, asList(
                 DataFrame.row(1, "x"),
                 DataFrame.row(2, "y")));
 
         Index i2 = Index.withNames("a", "b");
-        DataFrame df2 = DataFrame.fromRowsList(i2, asList(
+        DataFrame df2 = DataFrame.fromListOfRows(i2, asList(
                 DataFrame.row(2, "a"),
                 DataFrame.row(2, "b"),
                 DataFrame.row(3, "c")));
@@ -35,12 +35,12 @@ public class HasherTest {
     public void testKeyColumn_ColumnIndex() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromRowsList(i1, asList(
+        DataFrame df1 = DataFrame.fromListOfRows(i1, asList(
                 DataFrame.row(1, "x"),
                 DataFrame.row(2, "y")));
 
         Index i2 = Index.withNames("a", "b");
-        DataFrame df2 = DataFrame.fromRowsList(i2, asList(
+        DataFrame df2 = DataFrame.fromListOfRows(i2, asList(
                 DataFrame.row(2, "a"),
                 DataFrame.row(2, "b"),
                 DataFrame.row(3, "c")));
@@ -57,12 +57,12 @@ public class HasherTest {
     public void testAnd_ColumnName() {
 
         Index i1 = Index.withNames("a", "b", "c");
-        DataFrame df1 = DataFrame.fromRowsList(i1, asList(
+        DataFrame df1 = DataFrame.fromListOfRows(i1, asList(
                 DataFrame.row(1, "x", 5L),
                 DataFrame.row(2, "y", 4L)));
 
         Index i2 = Index.withNames("x", "y", "z");
-        DataFrame df2 = DataFrame.fromRowsList(i2, asList(
+        DataFrame df2 = DataFrame.fromListOfRows(i2, asList(
                 DataFrame.row(2, "a", 6L),
                 DataFrame.row(2, "y", 4L),
                 DataFrame.row(3, "c", 5L)));
@@ -80,12 +80,12 @@ public class HasherTest {
     public void testAnd_ColumnIndex() {
 
         Index i1 = Index.withNames("a", "b", "c");
-        DataFrame df1 = DataFrame.fromRowsList(i1, asList(
+        DataFrame df1 = DataFrame.fromListOfRows(i1, asList(
                 DataFrame.row(1, "x", 5L),
                 DataFrame.row(2, "y", 4L)));
 
         Index i2 = Index.withNames("x", "y", "z");
-        DataFrame df2 = DataFrame.fromRowsList(i2, asList(
+        DataFrame df2 = DataFrame.fromListOfRows(i2, asList(
                 DataFrame.row(2, "a", 6L),
                 DataFrame.row(2, "y", 4L),
                 DataFrame.row(3, "c", 5L)));

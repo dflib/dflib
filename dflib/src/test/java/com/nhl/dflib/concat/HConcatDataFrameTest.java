@@ -14,12 +14,12 @@ public class HConcatDataFrameTest {
     public void testConstructor() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = DataFrame.fromSequence(i1,
+        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i1,
                 1,
                 2);
 
         Index i2 = Index.withNames("b");
-        DataFrame df2 = DataFrame.fromSequence(i2,
+        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i2,
                 10,
                 20);
 
@@ -40,12 +40,12 @@ public class HConcatDataFrameTest {
     public void testConstructor_SparseDF() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromSequence(i1,
+        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i1,
                 0, 1,
                 2, 3).selectColumns("b");
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.fromSequence(i2,
+        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i2,
                 10, 20,
                 30, 40).selectColumns("c");
 
@@ -66,12 +66,12 @@ public class HConcatDataFrameTest {
     public void testConstructor_SparseDF_ZippedIndex() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromSequence(i1,
+        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i1,
                 0, 1,
                 2, 3).selectColumns("b");
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.fromSequence(i2,
+        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i2,
                 10, 20,
                 30, 40).selectColumns("c");
 
@@ -91,12 +91,12 @@ public class HConcatDataFrameTest {
     @Test
     public void testHead() {
         Index i1 = Index.withNames("a");
-        DataFrame df1 = DataFrame.fromSequence(i1,
+        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i1,
                 1,
                 2);
 
         Index i2 = Index.withNames("b");
-        DataFrame df2 = DataFrame.fromSequence(i2,
+        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i2,
                 10,
                 20);
 
@@ -116,12 +116,12 @@ public class HConcatDataFrameTest {
     public void testRenameColumn() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = DataFrame.fromSequence(i1,
+        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i1,
                 1,
                 2);
 
         Index i2 = Index.withNames("b");
-        DataFrame df2 = DataFrame.fromSequence(i2,
+        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i2,
                 10,
                 20);
 
@@ -138,12 +138,12 @@ public class HConcatDataFrameTest {
     public void testMap() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = DataFrame.fromSequence(i1,
+        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i1,
                 "one",
                 "two");
 
         Index i2 = Index.withNames("b");
-        DataFrame df2 = DataFrame.fromSequence(i2,
+        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i2,
                 1,
                 2);
 
@@ -162,12 +162,12 @@ public class HConcatDataFrameTest {
     public void testMap_ChangeRowStructure() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = DataFrame.fromSequence(i1,
+        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i1,
                 "one",
                 "two");
 
         Index i2 = Index.withNames("b");
-        DataFrame df2 = DataFrame.fromSequence(i2,
+        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i2,
                 1,
                 2);
 
