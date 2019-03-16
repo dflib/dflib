@@ -1,23 +1,18 @@
-package com.nhl.dflib;
+package com.nhl.dflib.row;
 
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Index;
 import com.nhl.dflib.print.InlinePrinter;
-import com.nhl.dflib.row.RowIterator;
-import com.nhl.dflib.row.RowProxy;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 
-public class SimpleDataFrame implements DataFrame {
+public class IterableRowDataFrame implements DataFrame {
 
     private Iterable<Object[]> source;
     private Index columns;
 
-    protected SimpleDataFrame(Index columns) {
-        this(columns, Collections.emptyList());
-    }
-
-    protected SimpleDataFrame(Index columns, Iterable<Object[]> source) {
+    public IterableRowDataFrame(Index columns, Iterable<Object[]> source) {
         this.source = source;
         this.columns = columns;
     }

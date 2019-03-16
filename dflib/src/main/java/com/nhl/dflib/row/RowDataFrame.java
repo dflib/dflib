@@ -1,5 +1,7 @@
-package com.nhl.dflib;
+package com.nhl.dflib.row;
 
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Index;
 import com.nhl.dflib.print.InlinePrinter;
 import com.nhl.dflib.row.RowIterator;
 import com.nhl.dflib.row.RowProxy;
@@ -7,14 +9,14 @@ import com.nhl.dflib.row.RowProxy;
 import java.util.Iterator;
 import java.util.List;
 
-public class MaterializedDataFrame implements DataFrame {
+public class RowDataFrame implements DataFrame {
 
     private Index columns;
-    private List<Object[]> materialized;
+    private List<Object[]> rows;
 
-    public MaterializedDataFrame(Index columns, List<Object[]> materialized) {
+    public RowDataFrame(Index columns, List<Object[]> rows) {
         this.columns = columns;
-        this.materialized = materialized;
+        this.rows = rows;
     }
 
     @Override
@@ -29,12 +31,12 @@ public class MaterializedDataFrame implements DataFrame {
 
     @Override
     public int height() {
-        return materialized.size();
+        return rows.size();
     }
 
     @Override
     public Iterator<RowProxy> iterator() {
-        return RowIterator.overArrays(columns, materialized);
+        return RowIterator.overArrays(columns, rows);
     }
 
     @Override

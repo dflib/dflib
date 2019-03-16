@@ -19,6 +19,9 @@ import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.map.RowMapper;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.ValueMapper;
+import com.nhl.dflib.row.IterableRowDataFrame;
+import com.nhl.dflib.row.MaterializableRowDataFrame;
+import com.nhl.dflib.row.RowDataFrame;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.sort.SortedDataFrame;
 import com.nhl.dflib.sort.Sorters;
@@ -76,7 +79,7 @@ public interface DataFrame extends Iterable<RowProxy> {
         // add last row
         folded.add(row);
 
-        return new MaterializedDataFrame(columns, folded);
+        return new RowDataFrame(columns, folded);
     }
 
     /**
@@ -102,19 +105,19 @@ public interface DataFrame extends Iterable<RowProxy> {
             folded.add(row);
         }
 
-        return new MaterializedDataFrame(columns, folded);
+        return new RowDataFrame(columns, folded);
     }
 
     static DataFrame fromRows(Index columns, Object[]... sources) {
-        return new MaterializedDataFrame(columns, asList(sources));
+        return new RowDataFrame(columns, asList(sources));
     }
 
     static DataFrame fromRowsList(Index columns, List<Object[]> sources) {
-        return new MaterializedDataFrame(columns, sources);
+        return new RowDataFrame(columns, sources);
     }
 
     static DataFrame fromRows(Index columns, Iterable<Object[]> source) {
-        return new SimpleDataFrame(columns, source);
+        return new IterableRowDataFrame(columns, source);
     }
 
     /**
@@ -122,7 +125,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * object to a row (i.e. Object[]).
      */
     static <T> DataFrame fromObjects(Index columns, Iterable<T> source, Function<T, Object[]> rowMapper) {
-        return new SimpleDataFrame(columns, new TransformingIterable<>(source, rowMapper)).materialize();
+        return new IterableRowDataFrame(columns, new TransformingIterable<>(source, rowMapper)).materialize();
     }
 
     /**
@@ -174,7 +177,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a DataFrame optimized for multiple iterations, calls to {@link #height()}, etc.
      */
     default DataFrame materialize() {
-        return new MaterializableDataFrame(this);
+        return new MaterializableRowDataFrame(this);
     }
 
     default DataFrame head(int len) {
@@ -215,7 +218,7 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     default DataFrame renameColumns(String... columnNames) {
         Index renamed = getColumns().rename(columnNames);
-        return new MaterializableDataFrame(renamed, this);
+        return new MaterializableRowDataFrame(renamed, this);
     }
 
     default DataFrame renameColumn(String oldName, String newName) {
@@ -224,12 +227,12 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     default DataFrame renameColumns(Map<String, String> oldToNewNames) {
         Index renamed = getColumns().rename(oldToNewNames);
-        return new MaterializableDataFrame(renamed, this);
+        return new MaterializableRowDataFrame(renamed, this);
     }
 
     default DataFrame selectColumns(String... columnNames) {
         Index select = getColumns().selectNames(columnNames);
-        return new MaterializableDataFrame(select, this);
+        return new MaterializableRowDataFrame(select, this);
     }
 
     default DataFrame dropColumns(String... columnNames) {
@@ -241,7 +244,7 @@ public interface DataFrame extends Iterable<RowProxy> {
             return this;
         }
 
-       return new MaterializableDataFrame(newIndex, this);
+       return new MaterializableRowDataFrame(newIndex, this);
     }
 
     default DataFrame filter(RowPredicate p) {
