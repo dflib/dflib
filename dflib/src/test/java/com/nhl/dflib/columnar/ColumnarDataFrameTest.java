@@ -5,7 +5,54 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import org.junit.Test;
 
+import java.util.stream.Stream;
+
 public class ColumnarDataFrameTest {
+
+    @Test
+    public void testFromRowStream0() {
+
+        Index i = Index.withNames("a", "b");
+        DataFrame df = ColumnarDataFrame.fromRowStream(i, Stream.empty());
+
+        new DFAsserts(df, i).expectHeight(0);
+    }
+
+    @Test
+    public void testFromRowStream1() {
+
+        Index i = Index.withNames("a", "b");
+        DataFrame df = ColumnarDataFrame.fromRowStream(i, Stream.of(1, 2));
+
+        new DFAsserts(df, i)
+                .expectHeight(1)
+                .expectRow(0, 1, 2);
+    }
+
+    @Test
+    public void testFromRowStream2() {
+
+        Index i = Index.withNames("a", "b");
+        DataFrame df = ColumnarDataFrame.fromRowStream(i, Stream.of(1, 2, 3));
+
+        new DFAsserts(df, i)
+                .expectHeight(2)
+                .expectRow(0, 1, 2)
+                .expectRow(1, 3, null);
+    }
+
+    @Test
+    public void testFromRowStream3() {
+
+        Index i = Index.withNames("a", "b");
+        DataFrame df = ColumnarDataFrame.fromRowStream(i, Stream.of(1, 2, 3, 4));
+
+        new DFAsserts(df, i)
+                .expectHeight(2)
+                .expectRow(0, 1, 2)
+                .expectRow(1, 3, 4);
+    }
+
 
     @Test
     public void testFromRowSequence0() {

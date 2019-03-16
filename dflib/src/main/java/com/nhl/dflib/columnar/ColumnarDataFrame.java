@@ -7,7 +7,10 @@ import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.print.InlinePrinter;
 import com.nhl.dflib.row.RowProxy;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Stream;
 
 public class ColumnarDataFrame implements DataFrame {
 
@@ -17,6 +20,38 @@ public class ColumnarDataFrame implements DataFrame {
     public ColumnarDataFrame(Index columnsIndex, Series[] columnsData) {
         this.columnsIndex = columnsIndex;
         this.columnsData = columnsData;
+    }
+
+    public static <T> DataFrame fromRowStream(Index columns, Stream<T> stream) {
+
+        int width = columns.size();
+        if (width == 0) {
+            throw new IllegalArgumentException("Empty columns");
+        }
+
+        List<Object>[] data = new List[width];
+        for (int i = 0; i < width; i++) {
+            data[i] = new ArrayList<>();
+        }
+
+        Iterator<T> it = stream.iterator();
+
+        int p = 0;
+        while (it.hasNext()) {
+            data[p % width].add(it.next());
+            p++;
+        }
+
+        // 'height' is max height; some columns may be smaller
+        int height = data[0].size();
+        Series[] columnsData = new Series[width];
+        for (int i = 0; i < width; i++) {
+            Object[] columnData = new Object[height];
+            data[i].toArray(columnData);
+            columnsData[i] = new ArraySeries(columnData);
+        }
+
+        return new ColumnarDataFrame(columns, columnsData);
     }
 
     /**

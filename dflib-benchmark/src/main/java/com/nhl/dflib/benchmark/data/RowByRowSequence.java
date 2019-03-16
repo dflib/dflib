@@ -2,6 +2,7 @@ package com.nhl.dflib.benchmark.data;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.columnar.ColumnarDataFrame;
 
 import java.util.Spliterators;
 import java.util.function.Consumer;
@@ -44,6 +45,19 @@ public class RowByRowSequence extends Spliterators.AbstractSpliterator<Object> {
 
         Index index = Index.withNames(columnNames);
         return DataFrame.fromStream(index, dataStream(rows, columnValueMakers));
+    }
+
+    public static DataFrame columnarDf(int rows, ValueMaker<?>... columnValueMakers) {
+
+        String[] columnNames = new String[columnValueMakers.length];
+        for (int i = 0; i < columnValueMakers.length; i++) {
+            columnNames[i] = "c" + i;
+        }
+
+        Index index = Index.withNames(columnNames);
+
+        // TODO: use per column streams for columnar DF
+        return ColumnarDataFrame.fromRowStream(index, dataStream(rows, columnValueMakers));
     }
 
     private static Stream<Object> dataStream(int rows, ValueMaker<?>... columnValueMakers) {
