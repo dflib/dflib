@@ -5,7 +5,6 @@ import com.nhl.dflib.Index;
 
 import java.util.Spliterators;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -13,11 +12,11 @@ public class RowByRowSequence extends Spliterators.AbstractSpliterator<Object> {
 
     private int width;
     private int height;
-    private Supplier<Object>[] columnValueMakers;
+    private ValueMaker<?>[] columnValueMakers;
 
     private int index;
 
-    protected RowByRowSequence(Supplier<Object>[] columnValueMakers, int height) {
+    protected RowByRowSequence(ValueMaker<?>[] columnValueMakers, int height) {
         super(height, 0);
         this.columnValueMakers = columnValueMakers;
         this.height = height;
@@ -30,13 +29,13 @@ public class RowByRowSequence extends Spliterators.AbstractSpliterator<Object> {
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate sollicitudin ligula sit amet ornare.";
 
         return df(rows,
-                ValueMakers.intSequence(),
-                ValueMakers.stringSequence(),
-                ValueMakers.randomIntSequence(rows / 2),
-                ValueMakers.constStringSequence(string));
+                ValueMaker.intSeq(),
+                ValueMaker.stringSeq(),
+                ValueMaker.randomIntSeq(rows / 2),
+                ValueMaker.constStringSeq(string));
     }
 
-    public static DataFrame df(int rows, Supplier<Object>... columnValueMakers) {
+    public static DataFrame df(int rows, ValueMaker<?>... columnValueMakers) {
 
         String[] columnNames = new String[columnValueMakers.length];
         for (int i = 0; i < columnValueMakers.length; i++) {
@@ -47,7 +46,7 @@ public class RowByRowSequence extends Spliterators.AbstractSpliterator<Object> {
         return DataFrame.fromStream(index, dataStream(rows, columnValueMakers));
     }
 
-    private static Stream<Object> dataStream(int rows, Supplier<Object>... columnValueMakers) {
+    private static Stream<Object> dataStream(int rows, ValueMaker<?>... columnValueMakers) {
         return StreamSupport.stream(new RowByRowSequence(columnValueMakers, rows), false);
     }
 

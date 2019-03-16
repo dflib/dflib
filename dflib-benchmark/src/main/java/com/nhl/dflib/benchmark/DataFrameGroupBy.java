@@ -4,7 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.aggregate.Aggregator;
 import com.nhl.dflib.benchmark.data.RowByRowSequence;
-import com.nhl.dflib.benchmark.data.ValueMakers;
+import com.nhl.dflib.benchmark.data.ValueMaker;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -45,11 +45,11 @@ public class DataFrameGroupBy {
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate sollicitudin ligula sit amet ornare.";
 
         df = RowByRowSequence.df(rows,
-                ValueMakers.intSequence(),
-                ValueMakers.stringSequence(),
+                ValueMaker.intSeq(),
+                ValueMaker.stringSeq(),
                 // keep the number of categories relatively low
-                ValueMakers.randomIntSequence(groups),
-                ValueMakers.constStringSequence(string));
+                ValueMaker.randomIntSeq(groups),
+                ValueMaker.constStringSeq(string));
 
         gb = df.groupBy("c2");
     }
