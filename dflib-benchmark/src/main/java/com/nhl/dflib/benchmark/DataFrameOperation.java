@@ -1,8 +1,8 @@
 package com.nhl.dflib.benchmark;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
 import com.nhl.dflib.aggregate.Aggregator;
+import com.nhl.dflib.benchmark.data.RowByRowSequence;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -16,7 +16,6 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 
 import java.util.concurrent.TimeUnit;
-import java.util.stream.StreamSupport;
 
 @Warmup(iterations = 3, time = 1)
 @Measurement(iterations = 3, time = 1)
@@ -33,22 +32,18 @@ public class DataFrameOperation {
 
     @Setup
     public void setUp() {
-        Index index = Index.withNames("id", "data", "rev_id", "text");
-        df = DataFrame.fromStream(
-                index,
-                StreamSupport.stream(new DataSetSpliterator(rows), false)
-        );
+        df = RowByRowSequence.dfWithMixedData(rows);
     }
 
     @Benchmark
     public Object median() {
-        return df.agg(Aggregator.median("id"));
+        return df.agg(Aggregator.median("c0"));
     }
 
     @Benchmark
     public Object filter() {
         return df
-                .filterByColumn("id", (Integer i) -> i % 2 == 0)
+                .filterByColumn("c0", (Integer i) -> i % 2 == 0)
                 .materialize()
                 .iterator();
     }
@@ -56,7 +51,7 @@ public class DataFrameOperation {
     @Benchmark
     public Object medianWithFilter() {
         return df
-                .filterByColumn("id", (Integer i) -> i % 2 == 0)
+                .filterByColumn("c0", (Integer i) -> i % 2 == 0)
                 .agg(Aggregator.median(0));
     }
 

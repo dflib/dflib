@@ -1,7 +1,7 @@
 package com.nhl.dflib.benchmark;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
+import com.nhl.dflib.benchmark.data.RowByRowSequence;
 import com.nhl.dflib.map.RowMapper;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -16,7 +16,6 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 
 import java.util.concurrent.TimeUnit;
-import java.util.stream.StreamSupport;
 
 @Warmup(iterations = 3, time = 1)
 @Measurement(iterations = 3, time = 1)
@@ -33,11 +32,7 @@ public class DataFrameMap {
 
     @Setup
     public void setUp() {
-        Index index = Index.withNames("id", "data", "rev_id", "text");
-        df = DataFrame.fromStream(
-                index,
-                StreamSupport.stream(new DataSetSpliterator(rows), false)
-        );
+        df = RowByRowSequence.dfWithMixedData(rows);
     }
 
     @Benchmark
@@ -60,7 +55,7 @@ public class DataFrameMap {
     public Object mapColumn() {
         return df
                 // using cheap "map" function to test benchmark DF overhead
-                .mapColumnValue("rev_id", (Integer i) -> 1)
+                .mapColumnValue("c2", (Integer i) -> 1)
                 .materialize()
                 .iterator();
     }

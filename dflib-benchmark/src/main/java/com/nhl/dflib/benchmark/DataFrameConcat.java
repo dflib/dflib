@@ -1,7 +1,7 @@
 package com.nhl.dflib.benchmark;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
+import com.nhl.dflib.benchmark.data.RowByRowSequence;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -15,7 +15,6 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 
 import java.util.concurrent.TimeUnit;
-import java.util.stream.StreamSupport;
 
 @Warmup(iterations = 2, time = 1)
 @Measurement(iterations = 3, time = 1)
@@ -33,15 +32,8 @@ public class DataFrameConcat {
 
     @Setup
     public void setUp() {
-        Index index = Index.withNames("id", "data", "rev_id", "text");
-        df1 = DataFrame.fromStream(
-                index,
-                StreamSupport.stream(new DataSetSpliterator(rows), false)
-        );
-        df2 = DataFrame.fromStream(
-                index,
-                StreamSupport.stream(new DataSetSpliterator(rows), false)
-        );
+        df1 = RowByRowSequence.dfWithMixedData(rows);
+        df2 = RowByRowSequence.dfWithMixedData(rows);
     }
 
     @Benchmark
@@ -57,5 +49,4 @@ public class DataFrameConcat {
                 .vConcat(df2)
                 .materialize().iterator();
     }
-
 }

@@ -2,8 +2,9 @@ package com.nhl.dflib.benchmark;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.GroupBy;
-import com.nhl.dflib.Index;
 import com.nhl.dflib.aggregate.Aggregator;
+import com.nhl.dflib.benchmark.data.RowByRowSequence;
+import com.nhl.dflib.benchmark.data.ValueMakers;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -18,7 +19,6 @@ import org.openjdk.jmh.annotations.Warmup;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.StreamSupport;
 
 @Warmup(iterations = 3, time = 1)
 @Measurement(iterations = 3, time = 1)
@@ -41,24 +41,27 @@ public class DataFrameGroupBy {
     public void setUp() {
         Random random = new Random();
 
-        Index index = Index.withNames("id", "data", "rev_id", "text");
-        df = DataFrame.fromStream(
-                index,
-                StreamSupport.stream(new DataSetSpliterator(rows), false))
-                // reduce the number of categories
-                .mapColumnValue("rev_id", (Integer i) -> random.nextInt(groups));
+        String string =
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate sollicitudin ligula sit amet ornare.";
 
-        gb = df.groupBy("rev_id");
+        df = RowByRowSequence.df(rows,
+                ValueMakers.intSequence(),
+                ValueMakers.stringSequence(),
+                // keep the number of categories relatively low
+                ValueMakers.randomIntSequence(groups),
+                ValueMakers.constStringSequence(string));
+
+        gb = df.groupBy("c2");
     }
 
     @Benchmark
     public Object groupBy() {
-        return df.groupBy("rev_id");
+        return df.groupBy("c2");
     }
 
     @Benchmark
     public Object aggregate_by_name() {
-        return gb.agg(Aggregator.sum("id"))
+        return gb.agg(Aggregator.sum("c0"))
                 .materialize()
                 .iterator();
     }

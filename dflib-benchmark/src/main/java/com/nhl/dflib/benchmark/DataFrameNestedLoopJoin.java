@@ -1,7 +1,7 @@
 package com.nhl.dflib.benchmark;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
+import com.nhl.dflib.benchmark.data.RowByRowSequence;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -17,7 +17,6 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 
 import java.util.concurrent.TimeUnit;
-import java.util.stream.StreamSupport;
 
 @Warmup(iterations = 2, time = 1)
 @Measurement(iterations = 3, time = 1)
@@ -35,42 +34,35 @@ public class DataFrameNestedLoopJoin {
 
     @Setup
     public void setUp() {
-        Index index = Index.withNames("id", "data", "rev_id", "text");
-        df1 = DataFrame.fromStream(
-                index,
-                StreamSupport.stream(new DataSetSpliterator(rows), false)
-        );
-        df2 = DataFrame.fromStream(
-                index,
-                StreamSupport.stream(new DataSetSpliterator(rows), false)
-        );
+        df1 = RowByRowSequence.dfWithMixedData(rows);
+        df2 = RowByRowSequence.dfWithMixedData(rows);
     }
 
     @Benchmark
     public Object leftJoin() {
         return df1
-                .join(df2, JoinPredicate.on("rev_id", "id"), JoinType.left)
+                .join(df2, JoinPredicate.on("c2", "c0"), JoinType.left)
                 .materialize().iterator();
     }
 
     @Benchmark
     public Object rightJoin() {
         return df1
-                .join(df2, JoinPredicate.on("rev_id", "id"), JoinType.right)
+                .join(df2, JoinPredicate.on("c2", "c0"), JoinType.right)
                 .materialize().iterator();
     }
 
     @Benchmark
     public Object innerJoin() {
         return df1
-                .join(df2, JoinPredicate.on("rev_id", "id"), JoinType.inner)
+                .join(df2, JoinPredicate.on("c2", "c0"), JoinType.inner)
                 .materialize().iterator();
     }
 
     @Benchmark
     public Object fullJoin() {
         return df1
-                .join(df2, JoinPredicate.on("rev_id", "id"), JoinType.inner)
+                .join(df2, JoinPredicate.on("c2", "c0"), JoinType.inner)
                 .materialize().iterator();
     }
 
