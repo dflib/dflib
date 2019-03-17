@@ -1,43 +1,33 @@
-package com.nhl.dflib.concat;
+package com.nhl.dflib.row;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.RowCombiner;
-import com.nhl.dflib.print.InlinePrinter;
-import com.nhl.dflib.row.ArrayRowBuilder;
-import com.nhl.dflib.row.ArrayRowProxy;
-import com.nhl.dflib.row.RowProxy;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.BiPredicate;
 
-public class HConcatDataFrame implements DataFrame {
+public class HConcatRowDataFrame extends BaseRowDataFrame {
 
     private JoinType joinType;
     private DataFrame leftSource;
     private DataFrame rightSource;
-    private Index columns;
     private RowCombiner rowCombiner;
 
-    public HConcatDataFrame(
+    public HConcatRowDataFrame(
             Index columns,
             JoinType joinType,
             DataFrame leftSource,
             DataFrame rightSource,
             RowCombiner rowCombiner) {
 
+        super(columns);
         this.joinType = joinType;
         this.leftSource = leftSource;
         this.rightSource = rightSource;
-        this.columns = columns;
         this.rowCombiner = rowCombiner;
-    }
-
-    @Override
-    public Index getColumns() {
-        return columns;
     }
 
     @Override
@@ -104,10 +94,5 @@ public class HConcatDataFrame implements DataFrame {
                 return rowProxy.reset(rowBuilder.reset());
             }
         };
-    }
-
-    @Override
-    public String toString() {
-        return InlinePrinter.getInstance().print(new StringBuilder("HConcatDataFrame ["), this).append("]").toString();
     }
 }

@@ -1,26 +1,20 @@
-package com.nhl.dflib.filter;
+package com.nhl.dflib.row;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
-import com.nhl.dflib.print.InlinePrinter;
-import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.filter.RowPredicate;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class FilteredDataFrame implements DataFrame {
+public class FilteredRowDataFrame extends BaseRowDataFrame {
 
     private DataFrame source;
     private RowPredicate rowFilter;
 
-    public FilteredDataFrame(DataFrame source, RowPredicate rowFilter) {
+    public FilteredRowDataFrame(DataFrame source, RowPredicate rowFilter) {
+        super(source.getColumns());
         this.source = source;
         this.rowFilter = rowFilter;
-    }
-
-    @Override
-    public Index getColumns() {
-        return source.getColumns();
     }
 
     @Override
@@ -71,10 +65,5 @@ public class FilteredDataFrame implements DataFrame {
                 return row;
             }
         };
-    }
-
-    @Override
-    public String toString() {
-        return InlinePrinter.getInstance().print(new StringBuilder("FilteredDataFrame ["), this).append("]").toString();
     }
 }

@@ -2,7 +2,6 @@ package com.nhl.dflib.row;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.print.InlinePrinter;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -17,11 +16,10 @@ import java.util.List;
  * <li>Allows to free memory taken by the delegate DataFrame upon materialization.</li>
  * </ul>
  */
-public class MaterializableRowDataFrame implements DataFrame {
+public class MaterializableRowDataFrame extends BaseRowDataFrame {
 
     private DataFrame source;
 
-    private Index columns;
     private volatile List<Object[]> materialized;
 
     public MaterializableRowDataFrame(DataFrame source) {
@@ -29,18 +27,13 @@ public class MaterializableRowDataFrame implements DataFrame {
     }
 
     public MaterializableRowDataFrame(Index columns, DataFrame source) {
+        super(columns);
         this.source = source;
-        this.columns = columns;
     }
 
     @Override
     public DataFrame materialize() {
         return this;
-    }
-
-    @Override
-    public Index getColumns() {
-        return columns;
     }
 
     @Override
@@ -81,10 +74,5 @@ public class MaterializableRowDataFrame implements DataFrame {
         source = null;
 
         return materialized;
-    }
-
-    @Override
-    public String toString() {
-        return InlinePrinter.getInstance().print(new StringBuilder("MaterializableRowDataFrame ["), this).append("]").toString();
     }
 }

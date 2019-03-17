@@ -4,6 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IndexPosition;
 import com.nhl.dflib.join.JoinType;
+import com.nhl.dflib.row.VConcatRowDataFrame;
 
 import java.util.EnumMap;
 import java.util.Iterator;
@@ -60,7 +61,7 @@ public class VConcat {
                 }
 
                 Index combinedColumns = getInstance(how).zipIndex(indices);
-                return new VConcatDataFrame(combinedColumns, dfs);
+                return new VConcatRowDataFrame(combinedColumns, dfs);
         }
     }
 

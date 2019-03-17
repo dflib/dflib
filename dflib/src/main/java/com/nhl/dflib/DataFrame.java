@@ -3,9 +3,7 @@ package com.nhl.dflib;
 import com.nhl.dflib.aggregate.Aggregator;
 import com.nhl.dflib.aggregate.ColumnAggregator;
 import com.nhl.dflib.concat.HConcat;
-import com.nhl.dflib.concat.HConcatDataFrame;
 import com.nhl.dflib.concat.VConcat;
-import com.nhl.dflib.filter.FilteredDataFrame;
 import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.groupby.Grouper;
@@ -14,18 +12,12 @@ import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.join.NestedLoopJoiner;
 import com.nhl.dflib.map.Hasher;
-import com.nhl.dflib.map.MappedDataFrame;
 import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.map.RowMapper;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.ValueMapper;
-import com.nhl.dflib.row.HeadRowDataFrame;
-import com.nhl.dflib.row.IterableRowDataFrame;
-import com.nhl.dflib.row.MaterializableRowDataFrame;
-import com.nhl.dflib.row.RowDataFrame;
+import com.nhl.dflib.row.BaseRowDataFrame;
 import com.nhl.dflib.row.RowProxy;
-import com.nhl.dflib.sort.SortedDataFrame;
-import com.nhl.dflib.sort.Sorters;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -33,8 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
-
-import static java.util.Arrays.asList;
 
 /**
  * An immutable 2D data container with support for a variety of data transformations, queries, joins, etc. Every such
@@ -48,26 +38,26 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Creates a DataFrame by folding the provided stream of objects into rows and columns row by row.
      */
     static <T> DataFrame fromStreamFoldByRow(Index columns, Stream<T> stream) {
-        return RowDataFrame.fromStreamFoldByRow(columns, stream);
+        return BaseRowDataFrame.fromStreamFoldByRow(columns, stream);
     }
 
     /**
      * Creates a DataFrame by folding the provided array of objects into rows and columns row by row.
      */
     static DataFrame fromSequenceFoldByRow(Index columns, Object... sequence) {
-        return RowDataFrame.fromSequenceFoldByRow(columns, sequence);
+        return BaseRowDataFrame.fromSequenceFoldByRow(columns, sequence);
     }
 
     static DataFrame fromRows(Index columns, Object[]... rows) {
-        return new RowDataFrame(columns, asList(rows));
+        return BaseRowDataFrame.fromRows(columns, rows);
     }
 
     static DataFrame fromListOfRows(Index columns, List<Object[]> sources) {
-        return new RowDataFrame(columns, sources);
+        return BaseRowDataFrame.fromListOfRows(columns, sources);
     }
 
     static DataFrame fromRows(Index columns, Iterable<Object[]> source) {
-        return new IterableRowDataFrame(columns, source);
+        return BaseRowDataFrame.fromRows(columns, source);
     }
 
     /**
@@ -75,7 +65,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * a function passed as the last argument.
      */
     static <T> DataFrame fromObjects(Index columns, Iterable<T> rows, Function<T, Object[]> rowMapper) {
-        return IterableRowDataFrame.fromObjects(columns, rows, rowMapper);
+        return BaseRowDataFrame.fromObjects(columns, rows, rowMapper);
     }
 
     /**
@@ -102,22 +92,13 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @return an int indicating the number of rows in the DataFrame
      */
-    default int height() {
-
-        // not a very efficient implementation; implementors should provide faster versions when possible
-        int count = 0;
-        Iterator<?> it = iterator();
-        while (it.hasNext()) {
-            it.next();
-            count++;
-        }
-
-        return count;
-    }
+    int height();
 
     default int width() {
         return getColumns().size();
     }
+
+    DataFrame head(int len);
 
     /**
      * Resolves this DataFrame to an implementation that evaluates internal mapping/concat/filter functions no more
@@ -128,17 +109,11 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     DataFrame materialize();
 
-    default DataFrame head(int len) {
-        return new HeadRowDataFrame(this, len);
-    }
-
     default DataFrame map(RowMapper rowMapper) {
         return map(getColumns().compactIndex(), rowMapper);
     }
 
-    default DataFrame map(Index mappedColumns, RowMapper rowMapper) {
-        return new MappedDataFrame(mappedColumns, this, rowMapper).materialize();
-    }
+    DataFrame map(Index mappedColumns, RowMapper rowMapper);
 
     default <V, VR> DataFrame mapColumnValue(String columnName, ValueMapper<V, VR> m) {
         Index index = getColumns();
@@ -164,70 +139,32 @@ public interface DataFrame extends Iterable<RowProxy> {
         return map(expandedIndex, RowMapper.addColumns(columnValueProducers));
     }
 
-    default DataFrame renameColumns(String... columnNames) {
-        Index renamed = getColumns().rename(columnNames);
-        return new MaterializableRowDataFrame(renamed, this);
-    }
+    DataFrame renameColumns(String... columnNames);
 
     default DataFrame renameColumn(String oldName, String newName) {
         return renameColumns(Collections.singletonMap(oldName, newName));
     }
 
-    default DataFrame renameColumns(Map<String, String> oldToNewNames) {
-        Index renamed = getColumns().rename(oldToNewNames);
-        return new MaterializableRowDataFrame(renamed, this);
-    }
+    DataFrame renameColumns(Map<String, String> oldToNewNames);
 
-    default DataFrame selectColumns(String... columnNames) {
-        Index select = getColumns().selectNames(columnNames);
-        return new MaterializableRowDataFrame(select, this);
-    }
+    DataFrame selectColumns(String... columnNames);
 
-    default DataFrame dropColumns(String... columnNames) {
-        Index index = getColumns();
-        Index newIndex = index.dropNames(columnNames);
+    DataFrame dropColumns(String... columnNames);
 
-        // if no columns were dropped (e.g. the names didn't match anything
-        if (newIndex.size() == index.size()) {
-            return this;
-        }
-
-        return new MaterializableRowDataFrame(newIndex, this);
-    }
-
-    default DataFrame filter(RowPredicate p) {
-        return new FilteredDataFrame(this, p).materialize();
-    }
+    DataFrame filter(RowPredicate p);
 
     default <V> DataFrame filterByColumn(String columnName, ValuePredicate<V> p) {
         int pos = getColumns().position(columnName).ordinal();
         return filterByColumn(pos, p);
     }
 
-    default <V> DataFrame filterByColumn(int columnPos, ValuePredicate<V> p) {
-        RowPredicate drp = r -> p.test((V) r.get(columnPos));
-        return new FilteredDataFrame(this, drp).materialize();
-    }
+    <V> DataFrame filterByColumn(int columnPos, ValuePredicate<V> p);
 
-    default <V extends Comparable<? super V>> DataFrame sort(RowToValueMapper<V> sortKeyExtractor) {
-        return new SortedDataFrame(this, Sorters.sorter(getColumns(), sortKeyExtractor));
-    }
+    <V extends Comparable<? super V>> DataFrame sort(RowToValueMapper<V> sortKeyExtractor);
 
-    default <V extends Comparable<? super V>> DataFrame sortByColumns(String... columns) {
-        if (columns.length == 0) {
-            return this;
-        }
+    <V extends Comparable<? super V>> DataFrame sortByColumns(String... columns);
 
-        return new SortedDataFrame(this, Sorters.sorter(getColumns(), columns));
-    }
-
-    default <V extends Comparable<? super V>> DataFrame sortByColumns(int... columns) {
-        if (columns.length == 0) {
-            return this;
-        }
-
-        return new SortedDataFrame(this, Sorters.sorter(getColumns(), columns));
-    }
+    <V extends Comparable<? super V>> DataFrame sortByColumns(int... columns);
 
     /**
      * Horizontally concatenates a DataFrame with another DataFrame, producing a "wider" DataFrame. If the heights of
@@ -257,9 +194,7 @@ public interface DataFrame extends Iterable<RowProxy> {
         return hConcat(zipIndex, how, df, RowCombiner.zip(width()));
     }
 
-    default DataFrame hConcat(Index zippedColumns, JoinType how, DataFrame df, RowCombiner c) {
-        return new HConcatDataFrame(zippedColumns, how, this, df, c).materialize();
-    }
+    DataFrame hConcat(Index zippedColumns, JoinType how, DataFrame df, RowCombiner c);
 
     /**
      * A form of {@link #vConcat(JoinType, DataFrame...)} with "left" join semantics. I.e. all columns
