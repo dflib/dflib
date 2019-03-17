@@ -1,7 +1,9 @@
-package com.nhl.dflib.benchmark.row;
+package com.nhl.dflib.benchmark.speed.row;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.benchmark.data.DataGenerator;
+import com.nhl.dflib.benchmark.DataGenerator;
+import com.nhl.dflib.join.JoinPredicate;
+import com.nhl.dflib.join.JoinType;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -22,9 +24,9 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(2)
 @State(Scope.Thread)
-public class DataFrameConcat {
+public class DataFrameNestedLoopJoin {
 
-    @Param("1000000")
+    @Param("5000")
     public int rows;
 
     private DataFrame df1;
@@ -37,16 +39,31 @@ public class DataFrameConcat {
     }
 
     @Benchmark
-    public Object hConcat() {
+    public Object leftJoin() {
         return df1
-                .hConcat(df2)
+                .join(df2, JoinPredicate.on("c2", "c0"), JoinType.left)
                 .materialize().iterator();
     }
 
     @Benchmark
-    public Object vConcat() {
+    public Object rightJoin() {
         return df1
-                .vConcat(df2)
+                .join(df2, JoinPredicate.on("c2", "c0"), JoinType.right)
                 .materialize().iterator();
     }
+
+    @Benchmark
+    public Object innerJoin() {
+        return df1
+                .join(df2, JoinPredicate.on("c2", "c0"), JoinType.inner)
+                .materialize().iterator();
+    }
+
+    @Benchmark
+    public Object fullJoin() {
+        return df1
+                .join(df2, JoinPredicate.on("c2", "c0"), JoinType.inner)
+                .materialize().iterator();
+    }
+
 }

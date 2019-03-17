@@ -1,4 +1,4 @@
-package com.nhl.dflib.benchmark.data;
+package com.nhl.dflib.benchmark;
 
 import java.util.Random;
 

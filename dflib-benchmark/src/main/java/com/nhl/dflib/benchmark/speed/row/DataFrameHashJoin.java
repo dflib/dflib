@@ -1,7 +1,7 @@
-package com.nhl.dflib.benchmark.row;
+package com.nhl.dflib.benchmark.speed.row;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.benchmark.data.DataGenerator;
+import com.nhl.dflib.benchmark.DataGenerator;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.Hasher;
 import org.openjdk.jmh.annotations.Benchmark;
