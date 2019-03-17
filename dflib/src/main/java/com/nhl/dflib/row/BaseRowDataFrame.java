@@ -12,6 +12,7 @@ import com.nhl.dflib.print.InlinePrinter;
 import com.nhl.dflib.sort.Sorters;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -211,7 +212,8 @@ public abstract class BaseRowDataFrame implements DataFrame {
 
     @Override
     public <V extends Comparable<? super V>> DataFrame sort(RowToValueMapper<V> sortKeyExtractor) {
-        return new SortedRowDataFrame(this, Sorters.sorter(getColumns(), sortKeyExtractor));
+        Comparator<RowProxy> rowComparator = Sorters.sorter(sortKeyExtractor);
+        return new SortedRowDataFrame(this, toArrayComparator(rowComparator));
     }
 
     @Override
@@ -220,7 +222,8 @@ public abstract class BaseRowDataFrame implements DataFrame {
             return this;
         }
 
-        return new SortedRowDataFrame(this, Sorters.sorter(getColumns(), columns));
+        Comparator<RowProxy> rowComparator = Sorters.sorter(getColumns(), columns);
+        return new SortedRowDataFrame(this, toArrayComparator(rowComparator));
     }
 
     @Override
@@ -229,7 +232,14 @@ public abstract class BaseRowDataFrame implements DataFrame {
             return this;
         }
 
-        return new SortedRowDataFrame(this, Sorters.sorter(getColumns(), columns));
+        Comparator<RowProxy> rowComparator = Sorters.sorter(getColumns(), columns);
+        return new SortedRowDataFrame(this, toArrayComparator(rowComparator));
+    }
+
+    private Comparator<Object[]> toArrayComparator(Comparator<RowProxy> rowComparator) {
+        ArrayRowProxy rp1 = new ArrayRowProxy(columns);
+        ArrayRowProxy rp2 = new ArrayRowProxy(columns);
+        return (a1, a2) -> rowComparator.compare(rp1.reset(a1), rp2.reset(a2));
     }
 
     @Override
