@@ -19,6 +19,7 @@ import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.map.RowMapper;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.ValueMapper;
+import com.nhl.dflib.row.HeadRowDataFrame;
 import com.nhl.dflib.row.IterableRowDataFrame;
 import com.nhl.dflib.row.MaterializableRowDataFrame;
 import com.nhl.dflib.row.RowDataFrame;
@@ -130,7 +131,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     default DataFrame head(int len) {
-        return new HeadDataFrame(this, len);
+        return new HeadRowDataFrame(this, len);
     }
 
     default DataFrame map(RowMapper rowMapper) {
