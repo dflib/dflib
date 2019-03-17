@@ -29,6 +29,12 @@ public class HeadRowDataFrameTest {
     }
 
     @Test
+    public void testToString() {
+        HeadRowDataFrame df = new HeadRowDataFrame(DataFrame.fromSequenceFoldByRow(columns, "one", "two", "three"), 2);
+        assertEquals("HeadRowDataFrame [{a:one},{a:two}]", df.toString());
+    }
+
+    @Test
     public void testConstructor() {
 
         HeadRowDataFrame df = new HeadRowDataFrame(new IterableRowDataFrame(columns, rows), 3);

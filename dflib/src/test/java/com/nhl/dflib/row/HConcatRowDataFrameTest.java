@@ -1,14 +1,16 @@
-package com.nhl.dflib.concat;
+package com.nhl.dflib.row;
 
 import com.nhl.dflib.DFAsserts;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.map.RowMapper;
+import com.nhl.dflib.row.HConcatRowDataFrame;
 import org.junit.Test;
 
-public class HConcatDataFrameTest {
+public class HConcatRowDataFrameTest {
 
     @Test
     public void testConstructor() {
@@ -23,7 +25,7 @@ public class HConcatDataFrameTest {
                 10,
                 20);
 
-        DataFrame df = new HConcatDataFrame(
+        DataFrame df = new HConcatRowDataFrame(
                 Index.withNames("a", "b"),
                 JoinType.inner,
                 df1,
@@ -49,7 +51,7 @@ public class HConcatDataFrameTest {
                 10, 20,
                 30, 40).selectColumns("c");
 
-        DataFrame df = new HConcatDataFrame(
+        DataFrame df = new HConcatRowDataFrame(
                 Index.withNames("z1", "z2"),
                 JoinType.inner,
                 df1,
@@ -75,7 +77,7 @@ public class HConcatDataFrameTest {
                 10, 20,
                 30, 40).selectColumns("c");
 
-        DataFrame df = new HConcatDataFrame(
+        DataFrame df = new HConcatRowDataFrame(
                 HConcat.zipIndex(df1.getColumns(), df2.getColumns()),
                 JoinType.inner,
                 df1,
@@ -100,7 +102,7 @@ public class HConcatDataFrameTest {
                 10,
                 20);
 
-        DataFrame df = new HConcatDataFrame(
+        DataFrame df = new HConcatRowDataFrame(
                 Index.withNames("a", "b"),
                 JoinType.inner,
                 df1,
@@ -125,7 +127,7 @@ public class HConcatDataFrameTest {
                 10,
                 20);
 
-        DataFrame df = new HConcatDataFrame(Index.withNames("a", "b"), JoinType.inner, df1, df2, RowCombiner.zip(df1.width()))
+        DataFrame df = new HConcatRowDataFrame(Index.withNames("a", "b"), JoinType.inner, df1, df2, RowCombiner.zip(df1.width()))
                 .renameColumn("b", "c");
 
         new DFAsserts(df, "a", "c")
@@ -149,7 +151,7 @@ public class HConcatDataFrameTest {
 
         Index zippedColumns = Index.withNames("x", "y");
 
-        DataFrame df = new HConcatDataFrame(zippedColumns, JoinType.inner, df1, df2, RowCombiner.zip(df1.width()))
+        DataFrame df = new HConcatRowDataFrame(zippedColumns, JoinType.inner, df1, df2, RowCombiner.zip(df1.width()))
                 .map(RowMapper.mapColumn("x", r -> r.get(0) + "_"));
 
         new DFAsserts(df, zippedColumns)
@@ -172,7 +174,7 @@ public class HConcatDataFrameTest {
                 2);
 
         Index mappedColumns = Index.withNames("x", "y", "z");
-        DataFrame df = new HConcatDataFrame(Index.withNames("a", "b"), JoinType.inner, df1, df2, RowCombiner.zip(df1.width()))
+        DataFrame df = new HConcatRowDataFrame(Index.withNames("a", "b"), JoinType.inner, df1, df2, RowCombiner.zip(df1.width()))
                 .map(mappedColumns, (s, t) -> t.setValues(
                         s.get(0),
                         ((int) s.get(1)) * 10,

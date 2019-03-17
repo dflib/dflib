@@ -1,18 +1,17 @@
 package com.nhl.dflib.row;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
-import com.nhl.dflib.print.InlinePrinter;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class HeadRowDataFrame implements DataFrame {
+public class HeadRowDataFrame extends BaseRowDataFrame {
 
     private DataFrame source;
     private int len;
 
     public HeadRowDataFrame(DataFrame source, int len) {
+        super(source.getColumns());
         this.source = source;
         this.len = len;
     }
@@ -20,11 +19,6 @@ public class HeadRowDataFrame implements DataFrame {
     @Override
     public DataFrame head(int len) {
         return len >= this.len ? this : source.head(len);
-    }
-
-    @Override
-    public Index getColumns() {
-        return source.getColumns();
     }
 
     @Override
@@ -50,10 +44,5 @@ public class HeadRowDataFrame implements DataFrame {
                 return it.next();
             }
         };
-    }
-
-    @Override
-    public String toString() {
-        return InlinePrinter.getInstance().print(new StringBuilder("HeadDataFrame ["), this).append("]").toString();
     }
 }

@@ -1,28 +1,18 @@
-package com.nhl.dflib.concat;
+package com.nhl.dflib.row;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.print.InlinePrinter;
-import com.nhl.dflib.row.ArrayRowBuilder;
-import com.nhl.dflib.row.ArrayRowProxy;
-import com.nhl.dflib.row.RowProxy;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class VConcatDataFrame implements DataFrame {
+public class VConcatRowDataFrame extends BaseRowDataFrame {
 
-    private Index columns;
     private DataFrame[] dataFrames;
 
-    public VConcatDataFrame(Index columns, DataFrame... dataFrames) {
-        this.columns = columns;
+    public VConcatRowDataFrame(Index columns, DataFrame... dataFrames) {
+        super(columns);
         this.dataFrames = dataFrames;
-    }
-
-    @Override
-    public Index getColumns() {
-        return columns;
     }
 
     @Override
@@ -96,10 +86,5 @@ public class VConcatDataFrame implements DataFrame {
                 return rowProxy.reset(rowBuilder.reset());
             }
         };
-    }
-
-    @Override
-    public String toString() {
-        return InlinePrinter.getInstance().print(new StringBuilder("VConcatDataFrame ["), this).append("]").toString();
     }
 }

@@ -1,11 +1,8 @@
-package com.nhl.dflib.map;
+package com.nhl.dflib.row;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.print.InlinePrinter;
-import com.nhl.dflib.row.ArrayRowBuilder;
-import com.nhl.dflib.row.ArrayRowProxy;
-import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.map.RowMapper;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -14,26 +11,20 @@ import java.util.Objects;
  * A DataFrame over an Iterable of unknown (possibly very long) length. Its per-row operations are not applied
  * immediately and are instead deferred until the caller iterates over the contents.
  */
-public class MappedDataFrame implements DataFrame {
+public class MappedRowDataFrame extends BaseRowDataFrame {
 
     private DataFrame source;
-    private Index columns;
     private RowMapper rowMapper;
 
-    public MappedDataFrame(Index columns, DataFrame source, RowMapper rowMapper) {
+    public MappedRowDataFrame(Index columns, DataFrame source, RowMapper rowMapper) {
+        super(columns);
         this.source = Objects.requireNonNull(source);
-        this.columns = Objects.requireNonNull(columns);
         this.rowMapper = Objects.requireNonNull(rowMapper);
     }
 
     @Override
     public int height() {
         return source.height();
-    }
-
-    @Override
-    public Index getColumns() {
-        return columns;
     }
 
     @Override
@@ -56,10 +47,5 @@ public class MappedDataFrame implements DataFrame {
                 return rowProxy.reset(rowBuilder.reset());
             }
         };
-    }
-
-    @Override
-    public String toString() {
-        return InlinePrinter.getInstance().print(new StringBuilder("MappedDataFrame ["), this).append("]").toString();
     }
 }

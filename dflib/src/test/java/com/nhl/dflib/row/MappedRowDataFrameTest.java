@@ -1,20 +1,21 @@
-package com.nhl.dflib.map;
+package com.nhl.dflib.row;
 
 import com.nhl.dflib.DFAsserts;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.map.RowMapper;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class MappedDataFrameTest {
+public class MappedRowDataFrameTest {
 
     @Test
     public void testIterator() {
 
         Index i = Index.withNames("a", "b");
 
-        MappedDataFrame df = new MappedDataFrame(
+        MappedRowDataFrame df = new MappedRowDataFrame(
                 i,
                 DataFrame.fromRows(i, DataFrame.row("one", 1), DataFrame.row("two", 2)),
                 RowMapper.copy());
@@ -30,7 +31,7 @@ public class MappedDataFrameTest {
 
         Index columns = Index.withNames("a", "b");
 
-        DataFrame df = new MappedDataFrame(
+        DataFrame df = new MappedRowDataFrame(
                 columns,
                 DataFrame.fromRows(columns, DataFrame.row("one", 1), DataFrame.row("two", 2), DataFrame.row("three", 3)),
                 RowMapper.copy()).head(2);
@@ -45,7 +46,7 @@ public class MappedDataFrameTest {
     public void testRenameColumn() {
         Index i = Index.withNames("a", "b");
 
-        DataFrame df = new MappedDataFrame(
+        DataFrame df = new MappedRowDataFrame(
                 i,
                 DataFrame.fromRows(i, DataFrame.row("one", 1), DataFrame.row("two", 2)),
                 RowMapper.copy()).renameColumn("b", "c");
@@ -61,7 +62,7 @@ public class MappedDataFrameTest {
 
         Index i = Index.withNames("a", "b");
 
-        DataFrame df = new MappedDataFrame(
+        DataFrame df = new MappedRowDataFrame(
                 i,
                 DataFrame.fromRows(i, DataFrame.row("one", 1), DataFrame.row("two", 2)),
                 RowMapper.copy()).mapColumn("b", r -> r.get(1).toString());
@@ -77,7 +78,7 @@ public class MappedDataFrameTest {
 
         Index i = Index.withNames("a", "b");
 
-        DataFrame df = new MappedDataFrame(
+        DataFrame df = new MappedRowDataFrame(
                 i,
                 DataFrame.fromRows(i, DataFrame.row("one", 1), DataFrame.row("two", 2)),
                 RowMapper.copy())
@@ -95,7 +96,7 @@ public class MappedDataFrameTest {
         Index i = Index.withNames("a", "b");
         Index i1 = Index.withNames("c", "d", "e");
 
-        DataFrame df = new MappedDataFrame(
+        DataFrame df = new MappedRowDataFrame(
                 i,
                 DataFrame.fromRows(i, DataFrame.row("one", 1), DataFrame.row("two", 2)),
                 RowMapper.copy())
@@ -117,7 +118,7 @@ public class MappedDataFrameTest {
         Index i1 = Index.withNames("c", "d", "e");
         Index i2 = Index.withNames("f", "g");
 
-        DataFrame df = new MappedDataFrame(
+        DataFrame df = new MappedRowDataFrame(
                 i,
                 DataFrame.fromRows(i, DataFrame.row("one", 1), DataFrame.row("two", 2)),
                 RowMapper.copy())
@@ -141,7 +142,7 @@ public class MappedDataFrameTest {
         Index i = Index.withNames("a", "b");
         Index i1 = Index.withNames("c", "d", "e");
 
-        DataFrame df = new MappedDataFrame(i, DataFrame.fromRows(i), RowMapper.copy())
+        DataFrame df = new MappedRowDataFrame(i, DataFrame.fromRows(i), RowMapper.copy())
                 .map(i1, (s, t) -> t.setValues(
                         s.get(0),
                         ((int) s.get(1)) * 10,
@@ -155,25 +156,25 @@ public class MappedDataFrameTest {
     @Test
     public void testToString() {
         Index i = Index.withNames("a", "b");
-        DataFrame df = new MappedDataFrame(i, DataFrame.fromRows(i,
+        DataFrame df = new MappedRowDataFrame(i, DataFrame.fromRows(i,
                 DataFrame.row("one", 1),
                 DataFrame.row("two", 2),
                 DataFrame.row("three", 3),
                 DataFrame.row("four", 4)), RowMapper.copy());
 
-        assertEquals("MappedDataFrame [{a:one,b:1},{a:two,b:2},{a:three,b:3},...]", df.toString());
+        assertEquals("MappedRowDataFrame [{a:one,b:1},{a:two,b:2},{a:three,b:3},...]", df.toString());
     }
 
     @Test
     public void testZip() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = new MappedDataFrame(i1, DataFrame.fromRows(i1,
+        DataFrame df1 = new MappedRowDataFrame(i1, DataFrame.fromRows(i1,
                 DataFrame.row(1),
                 DataFrame.row(2)), RowMapper.copy());
 
         Index i2 = Index.withNames("b");
-        DataFrame df2 = new MappedDataFrame(i2, DataFrame.fromRows(i2,
+        DataFrame df2 = new MappedRowDataFrame(i2, DataFrame.fromRows(i2,
                 DataFrame.row(10),
                 DataFrame.row(20)), RowMapper.copy());
 
@@ -188,7 +189,7 @@ public class MappedDataFrameTest {
     public void testZip_Self() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = new MappedDataFrame(i1, DataFrame.fromRows(i1,
+        DataFrame df1 = new MappedRowDataFrame(i1, DataFrame.fromRows(i1,
                 DataFrame.row(1),
                 DataFrame.row(2)), RowMapper.copy());
 
@@ -204,10 +205,10 @@ public class MappedDataFrameTest {
     public void testZip_LeftIsShorter() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = new MappedDataFrame(i1, DataFrame.fromRows(i1, DataFrame.row(2)), RowMapper.copy());
+        DataFrame df1 = new MappedRowDataFrame(i1, DataFrame.fromRows(i1, DataFrame.row(2)), RowMapper.copy());
 
         Index i2 = Index.withNames("b");
-        DataFrame df2 = new MappedDataFrame(i2, DataFrame.fromRows(i2,
+        DataFrame df2 = new MappedRowDataFrame(i2, DataFrame.fromRows(i2,
                 DataFrame.row(10),
                 DataFrame.row(20)), RowMapper.copy());
 
@@ -221,11 +222,11 @@ public class MappedDataFrameTest {
     public void testZip_RightIsShorter() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = new MappedDataFrame(i1, DataFrame.fromRows(i1,
+        DataFrame df1 = new MappedRowDataFrame(i1, DataFrame.fromRows(i1,
                 DataFrame.row(2)), RowMapper.copy());
 
         Index i2 = Index.withNames("b");
-        DataFrame df2 = new MappedDataFrame(i2, DataFrame.fromRows(i2,
+        DataFrame df2 = new MappedRowDataFrame(i2, DataFrame.fromRows(i2,
                 DataFrame.row(10),
                 DataFrame.row(20)), RowMapper.copy());
 
@@ -239,7 +240,7 @@ public class MappedDataFrameTest {
     public void testFilter() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = new MappedDataFrame(i1, DataFrame.fromRows(i1,
+        DataFrame df1 = new MappedRowDataFrame(i1, DataFrame.fromRows(i1,
                 DataFrame.row(10),
                 DataFrame.row(20)), RowMapper.copy());
 
@@ -253,7 +254,7 @@ public class MappedDataFrameTest {
     public void testFilterColumn_Name() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = new MappedDataFrame(i1, DataFrame.fromRows(i1,
+        DataFrame df1 = new MappedRowDataFrame(i1, DataFrame.fromRows(i1,
                 DataFrame.row(10),
                 DataFrame.row(20)), RowMapper.copy());
 
@@ -267,7 +268,7 @@ public class MappedDataFrameTest {
     public void testFilterColumn_Pos() {
 
         Index i1 = Index.withNames("a");
-        DataFrame df1 = new MappedDataFrame(i1, DataFrame.fromRows(i1,
+        DataFrame df1 = new MappedRowDataFrame(i1, DataFrame.fromRows(i1,
                 DataFrame.row(10),
                 DataFrame.row(20)), RowMapper.copy());
 
