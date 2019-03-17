@@ -56,28 +56,28 @@ public class DataFrameNestedLoopJoin {
     @Benchmark
     public Object leftJoin() {
         return df1
-                .join(df2, JoinPredicate.on("c2", "c0"), JoinType.left)
+                .join(df2, JoinPredicate.on("c0", "c2"), JoinType.left)
                 .materialize().iterator();
     }
 
     @Benchmark
     public Object rightJoin() {
         return df1
-                .join(df2, JoinPredicate.on("c2", "c0"), JoinType.right)
+                .join(df2, JoinPredicate.on("c0", "c2"), JoinType.right)
                 .materialize().iterator();
     }
 
     @Benchmark
     public Object innerJoin() {
         return df1
-                .join(df2, JoinPredicate.on("c2", "c0"), JoinType.inner)
+                .join(df2, JoinPredicate.on("c0", "c2"), JoinType.inner)
                 .materialize().iterator();
     }
 
     @Benchmark
     public Object fullJoin() {
         return df1
-                .join(df2, JoinPredicate.on("c2", "c0"), JoinType.inner)
+                .join(df2, JoinPredicate.on("c0", "c2"), JoinType.inner)
                 .materialize().iterator();
     }
 

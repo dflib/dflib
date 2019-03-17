@@ -35,7 +35,7 @@ public interface ValueMaker<T> {
         return () -> {
             int result = val[0];
             // cyclic function
-            val[0] = result < to ? result++ : from;
+            val[0] = result < to ? result + 1 : from;
             return result;
         };
     }
