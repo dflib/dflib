@@ -9,7 +9,7 @@ public class DataFrame_Sort_Test {
     @Test
     public void testSort() {
         Index i = Index.withNames("a", "b");
-        DataFrame dfi = DataFrame.fromSequence(i,
+        DataFrame dfi = DataFrame.fromSequenceFoldByRow(i,
                 0, 1,
                 2, 3,
                 -1, 2);
@@ -34,7 +34,7 @@ public class DataFrame_Sort_Test {
     @Test
     public void testSortByColumns_Names() {
         Index i = Index.withNames("a", "b");
-        DataFrame dfi = DataFrame.fromSequence(i,
+        DataFrame dfi = DataFrame.fromSequenceFoldByRow(i,
                 0, 4,
                 2, 2,
                 0, 2);
@@ -62,7 +62,7 @@ public class DataFrame_Sort_Test {
     @Test
     public void testSortByColumns_Positions() {
         Index i = Index.withNames("a", "b");
-        DataFrame dfi = DataFrame.fromSequence(i,
+        DataFrame dfi = DataFrame.fromSequenceFoldByRow(i,
                 0, 4,
                 2, 2,
                 0, 2);

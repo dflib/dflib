@@ -19,11 +19,13 @@ import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.map.RowMapper;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.ValueMapper;
+import com.nhl.dflib.row.IterableRowDataFrame;
+import com.nhl.dflib.row.MaterializableRowDataFrame;
+import com.nhl.dflib.row.RowDataFrame;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.sort.SortedDataFrame;
 import com.nhl.dflib.sort.Sorters;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -42,87 +44,37 @@ import static java.util.Arrays.asList;
 public interface DataFrame extends Iterable<RowProxy> {
 
     /**
-     * Creates a DataFrame by folding the provided stream of objects into rows and columns.
+     * Creates a DataFrame by folding the provided stream of objects into rows and columns row by row.
      */
-    static <T> DataFrame fromStream(Index columns, Stream<T> stream) {
-
-        int width = columns.size();
-        if (width == 0) {
-            throw new IllegalArgumentException("Empty columns");
-        }
-
-        List<Object[]> folded = new ArrayList<>();
-        Iterator<T> it = stream.iterator();
-
-        int i = 0;
-        Object[] row = null;
-
-        while (it.hasNext()) {
-
-            // first iteration
-            if (row == null) {
-                row = new Object[width];
-            }
-            // previous row finished
-            else if (i % width == 0) {
-                folded.add(row);
-                row = new Object[width];
-            }
-
-            row[i % width] = it.next();
-            i++;
-        }
-
-        // add last row
-        folded.add(row);
-
-        return new MaterializedDataFrame(columns, folded);
+    static <T> DataFrame fromStreamFoldByRow(Index columns, Stream<T> stream) {
+        return RowDataFrame.fromStreamFoldByRow(columns, stream);
     }
 
     /**
-     * Creates a DataFrame by folding the provided array of objects into rows and columns.
+     * Creates a DataFrame by folding the provided array of objects into rows and columns row by row.
      */
-    static DataFrame fromSequence(Index columns, Object... sequence) {
-
-        int width = columns.size();
-        int rows = sequence.length / width;
-
-        List<Object[]> folded = new ArrayList<>(rows + 1);
-        for (int i = 0; i < rows; i++) {
-            Object[] row = new Object[width];
-            System.arraycopy(sequence, i * width, row, 0, width);
-            folded.add(row);
-        }
-
-        // copy partial last row
-        int leftover = sequence.length % width;
-        if (leftover > 0) {
-            Object[] row = new Object[width];
-            System.arraycopy(sequence, rows * width, row, 0, leftover);
-            folded.add(row);
-        }
-
-        return new MaterializedDataFrame(columns, folded);
+    static DataFrame fromSequenceFoldByRow(Index columns, Object... sequence) {
+        return RowDataFrame.fromSequenceFoldByRow(columns, sequence);
     }
 
-    static DataFrame fromRows(Index columns, Object[]... sources) {
-        return new MaterializedDataFrame(columns, asList(sources));
+    static DataFrame fromRows(Index columns, Object[]... rows) {
+        return new RowDataFrame(columns, asList(rows));
     }
 
-    static DataFrame fromRowsList(Index columns, List<Object[]> sources) {
-        return new MaterializedDataFrame(columns, sources);
+    static DataFrame fromListOfRows(Index columns, List<Object[]> sources) {
+        return new RowDataFrame(columns, sources);
     }
 
     static DataFrame fromRows(Index columns, Iterable<Object[]> source) {
-        return new SimpleDataFrame(columns, source);
+        return new IterableRowDataFrame(columns, source);
     }
 
     /**
-     * Creates a DataFrame from an iterable over arbitrary objects. The last argument is a function that converts an
-     * object to a row (i.e. Object[]).
+     * Creates a DataFrame from an iterable over arbitrary objects. Each object will be converted to a row by applying
+     * a function passed as the last argument.
      */
-    static <T> DataFrame fromObjects(Index columns, Iterable<T> source, Function<T, Object[]> rowMapper) {
-        return new SimpleDataFrame(columns, new TransformingIterable<>(source, rowMapper)).materialize();
+    static <T> DataFrame fromObjects(Index columns, Iterable<T> rows, Function<T, Object[]> rowMapper) {
+        return IterableRowDataFrame.fromObjects(columns, rows, rowMapper);
     }
 
     /**
@@ -174,7 +126,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a DataFrame optimized for multiple iterations, calls to {@link #height()}, etc.
      */
     default DataFrame materialize() {
-        return new MaterializableDataFrame(this);
+        return new MaterializableRowDataFrame(this);
     }
 
     default DataFrame head(int len) {
@@ -215,7 +167,7 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     default DataFrame renameColumns(String... columnNames) {
         Index renamed = getColumns().rename(columnNames);
-        return new MaterializableDataFrame(renamed, this);
+        return new MaterializableRowDataFrame(renamed, this);
     }
 
     default DataFrame renameColumn(String oldName, String newName) {
@@ -224,12 +176,12 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     default DataFrame renameColumns(Map<String, String> oldToNewNames) {
         Index renamed = getColumns().rename(oldToNewNames);
-        return new MaterializableDataFrame(renamed, this);
+        return new MaterializableRowDataFrame(renamed, this);
     }
 
     default DataFrame selectColumns(String... columnNames) {
         Index select = getColumns().selectNames(columnNames);
-        return new MaterializableDataFrame(select, this);
+        return new MaterializableRowDataFrame(select, this);
     }
 
     default DataFrame dropColumns(String... columnNames) {
@@ -241,7 +193,7 @@ public interface DataFrame extends Iterable<RowProxy> {
             return this;
         }
 
-       return new MaterializableDataFrame(newIndex, this);
+        return new MaterializableRowDataFrame(newIndex, this);
     }
 
     default DataFrame filter(RowPredicate p) {

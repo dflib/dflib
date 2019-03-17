@@ -1,4 +1,4 @@
-package com.nhl.dflib;
+package com.nhl.dflib.row;
 
 import java.util.Iterator;
 import java.util.function.Function;
@@ -8,7 +8,7 @@ class TransformingIterable<S, T> implements Iterable<T> {
     private Iterable<S> source;
     private Function<S, T> transformer;
 
-    public TransformingIterable(Iterable<S> source, Function<S, T> transformer) {
+    TransformingIterable(Iterable<S> source, Function<S, T> transformer) {
         this.source = source;
         this.transformer = transformer;
     }

@@ -57,7 +57,7 @@ public class FilteredDataFrameTest {
         Index i = Index.withNames("a", "b");
 
         DataFrame df = new FilteredDataFrame(
-                DataFrame.fromSequence(i,
+                DataFrame.fromSequenceFoldByRow(i,
                         "one", 1,
                         "two", 2),
                 r -> true).renameColumn("b", "c");

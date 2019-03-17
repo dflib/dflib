@@ -13,7 +13,7 @@ public class DataFrame_AggTest {
     @Test
     public void testAgg() {
         Index i = Index.withNames("a", "b", "c", "d");
-        DataFrame df = DataFrame.fromSequence(i,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i,
                 1, "x", "n", 1.0,
                 2, "y", "a", 2.5,
                 0, "a", "z", 0.001);
@@ -30,7 +30,7 @@ public class DataFrame_AggTest {
     @Test
     public void testAgg_Count() {
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i,
                 1, "x",
                 0, "a");
 
@@ -45,7 +45,7 @@ public class DataFrame_AggTest {
     @Test
     public void testAgg_Concat() {
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i,
                 1, "x",
                 0, "a");
 
@@ -60,7 +60,7 @@ public class DataFrame_AggTest {
     @Test
     public void testAgg_Set() {
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i,
                 1, "x",
                 2, "x",
                 1, "a");
@@ -73,7 +73,7 @@ public class DataFrame_AggTest {
     @Test
     public void testAgg_list() {
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i,
                 1, "x",
                 2, "x",
                 1, "a");
@@ -86,7 +86,7 @@ public class DataFrame_AggTest {
     @Test
     public void testAgg_average() {
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i,
                 1, 4L,
                 0, 55.5);
 
@@ -101,7 +101,7 @@ public class DataFrame_AggTest {
     @Test
     public void testAgg_median_odd() {
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i,
                 1, 100,
                 0, 55.5,
                 4, 0);
@@ -117,7 +117,7 @@ public class DataFrame_AggTest {
     @Test
     public void testAgg_median_even() {
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i,
                 1, 100,
                 0, 55.5,
                 4, 0,
@@ -134,7 +134,7 @@ public class DataFrame_AggTest {
     @Test
     public void testAgg_median_zero() {
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i);
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i);
 
         Object[] aggregated = df.agg(
                 Aggregator.median("a"),
@@ -147,7 +147,7 @@ public class DataFrame_AggTest {
     @Test
     public void testAgg_median_one() {
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i, 1, 100);
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i, 1, 100);
 
         Object[] aggregated = df.agg(
                 Aggregator.median("a"),
@@ -160,7 +160,7 @@ public class DataFrame_AggTest {
     @Test
     public void testAgg_median_nulls() {
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i,
                 1, null,
                 0, 55.5,
                 4, 0,
@@ -177,7 +177,7 @@ public class DataFrame_AggTest {
     @Test
     public void testAgg_First() {
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i,
                 1, 100,
                 2, 5);
 
@@ -192,7 +192,7 @@ public class DataFrame_AggTest {
     @Test
     public void testAgg_First_Empty() {
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i);
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i);
 
         Object[] aggregated = df.agg(
                 Aggregator.first("a"),
@@ -205,7 +205,7 @@ public class DataFrame_AggTest {
     @Test
     public void testAgg_First_Nulls() {
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequence(i,
+        DataFrame df = DataFrame.fromSequenceFoldByRow(i,
                 1, null,
                 null, 5);
 

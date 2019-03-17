@@ -1,13 +1,13 @@
 package com.nhl.dflib.sort;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.MaterializableDataFrame;
+import com.nhl.dflib.row.MaterializableRowDataFrame;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class SortedDataFrame<T> extends MaterializableDataFrame {
+public class SortedDataFrame<T> extends MaterializableRowDataFrame {
 
     private Comparator<Object[]> rowComparator;
 

@@ -44,7 +44,7 @@ public class RowByRowSequence extends Spliterators.AbstractSpliterator<Object> {
         }
 
         Index index = Index.withNames(columnNames);
-        return DataFrame.fromStream(index, dataStream(rows, columnValueMakers));
+        return DataFrame.fromStreamFoldByRow(index, dataStream(rows, columnValueMakers));
     }
 
     public static DataFrame columnarDf(int rows, ValueMaker<?>... columnValueMakers) {

@@ -27,7 +27,7 @@ class CsvLoaderWorker {
             rows.add(loadRow(columns, it.next()));
         }
 
-        return DataFrame.fromRowsList(columns, rows);
+        return DataFrame.fromListOfRows(columns, rows);
     }
 
     private Object[] loadRow(Index columns, CSVRecord record) {
