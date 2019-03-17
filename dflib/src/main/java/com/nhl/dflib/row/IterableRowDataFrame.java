@@ -8,14 +8,13 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.function.Function;
 
-public class IterableRowDataFrame implements DataFrame {
+public class IterableRowDataFrame extends BaseRowDataFrame {
 
     private Iterable<Object[]> source;
-    private Index columns;
 
     public IterableRowDataFrame(Index columns, Iterable<Object[]> source) {
+        super(columns);
         this.source = source;
-        this.columns = columns;
     }
 
     /**
@@ -24,11 +23,6 @@ public class IterableRowDataFrame implements DataFrame {
      */
     public static <T> DataFrame fromObjects(Index columns, Iterable<T> rows, Function<T, Object[]> rowMapper) {
         return new IterableRowDataFrame(columns, new TransformingIterable<>(rows, rowMapper)).materialize();
-    }
-
-    @Override
-    public Index getColumns() {
-        return columns;
     }
 
     @Override
@@ -44,7 +38,7 @@ public class IterableRowDataFrame implements DataFrame {
             return ((Collection) source).size();
         }
 
-        return DataFrame.super.height();
+        return super.height();
     }
 
     @Override

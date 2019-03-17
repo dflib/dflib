@@ -126,9 +126,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @return a DataFrame optimized for multiple iterations, calls to {@link #height()}, etc.
      */
-    default DataFrame materialize() {
-        return new MaterializableRowDataFrame(this);
-    }
+    DataFrame materialize();
 
     default DataFrame head(int len) {
         return new HeadRowDataFrame(this, len);
