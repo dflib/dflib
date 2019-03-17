@@ -1,7 +1,9 @@
-package com.nhl.dflib;
+package com.nhl.dflib.row;
 
+import com.nhl.dflib.DFAsserts;
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Index;
 import com.nhl.dflib.map.RowMapper;
-import com.nhl.dflib.row.IterableRowDataFrame;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,7 +13,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 
-public class HeadDataFrameTest {
+public class HeadRowDataFrameTest {
 
     private Index columns;
     private List<Object[]> rows;
@@ -29,7 +31,7 @@ public class HeadDataFrameTest {
     @Test
     public void testConstructor() {
 
-        HeadDataFrame df = new HeadDataFrame(new IterableRowDataFrame(columns, rows), 3);
+        HeadRowDataFrame df = new HeadRowDataFrame(new IterableRowDataFrame(columns, rows), 3);
 
         new DFAsserts(df, columns)
                 .expectHeight(3)
@@ -41,7 +43,7 @@ public class HeadDataFrameTest {
     @Test
     public void testHead() {
 
-        HeadDataFrame df = new HeadDataFrame(new IterableRowDataFrame(columns, rows), 3);
+        HeadRowDataFrame df = new HeadRowDataFrame(new IterableRowDataFrame(columns, rows), 3);
 
         DataFrame df1 = df.head(3);
         assertSame(df, df1);
@@ -61,7 +63,7 @@ public class HeadDataFrameTest {
     @Test
     public void testMap() {
 
-        DataFrame df = new HeadDataFrame(new IterableRowDataFrame(columns, rows), 3)
+        DataFrame df = new HeadRowDataFrame(new IterableRowDataFrame(columns, rows), 3)
                 .map(columns, RowMapper.mapColumn("a", r -> r.get(0) + "_"));
 
         new DFAsserts(df, columns)
@@ -76,7 +78,7 @@ public class HeadDataFrameTest {
 
         Index i1 = Index.withNames("c");
 
-        DataFrame df = new HeadDataFrame(new IterableRowDataFrame(columns, rows), 2)
+        DataFrame df = new HeadRowDataFrame(new IterableRowDataFrame(columns, rows), 2)
                 .map(i1, (s, t) -> t.setValues(s.get(0) + "_"));
 
         new DFAsserts(df, i1)
@@ -90,7 +92,7 @@ public class HeadDataFrameTest {
 
         Index i1 = Index.withNames("c");
 
-        DataFrame df = new HeadDataFrame(new IterableRowDataFrame(columns, Collections.emptyList()), 2)
+        DataFrame df = new HeadRowDataFrame(new IterableRowDataFrame(columns, Collections.emptyList()), 2)
                 .map(i1, (s, t) -> t.setValues(s.get(0) + "_"));
 
         new DFAsserts(df, i1).expectHeight(0);
@@ -110,7 +112,7 @@ public class HeadDataFrameTest {
                 DataFrame.row(20)));
 
 
-        DataFrame df = new HeadDataFrame(df1, 1).hConcat(df2);
+        DataFrame df = new HeadRowDataFrame(df1, 1).hConcat(df2);
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(1)

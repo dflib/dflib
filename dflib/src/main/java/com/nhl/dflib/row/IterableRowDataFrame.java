@@ -49,6 +49,6 @@ public class IterableRowDataFrame implements DataFrame {
 
     @Override
     public String toString() {
-        return InlinePrinter.getInstance().print(new StringBuilder("SimpleDataFrame ["), this).append("]").toString();
+        return InlinePrinter.getInstance().print(new StringBuilder("IterableRowDataFrame ["), this).append("]").toString();
     }
 }

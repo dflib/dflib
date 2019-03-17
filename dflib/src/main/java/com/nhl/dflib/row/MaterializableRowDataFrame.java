@@ -85,6 +85,6 @@ public class MaterializableRowDataFrame implements DataFrame {
 
     @Override
     public String toString() {
-        return InlinePrinter.getInstance().print(new StringBuilder("MaterializableDataFrame ["), this).append("]").toString();
+        return InlinePrinter.getInstance().print(new StringBuilder("MaterializableRowDataFrame ["), this).append("]").toString();
     }
 }

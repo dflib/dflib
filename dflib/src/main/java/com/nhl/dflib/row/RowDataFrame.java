@@ -105,6 +105,6 @@ public class RowDataFrame implements DataFrame {
 
     @Override
     public String toString() {
-        return InlinePrinter.getInstance().print(new StringBuilder("MaterializedDataFrame ["), this).append("]").toString();
+        return InlinePrinter.getInstance().print(new StringBuilder("RowDataFrame ["), this).append("]").toString();
     }
 }
