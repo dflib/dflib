@@ -48,16 +48,27 @@ public class DataGenerator extends Spliterators.AbstractSpliterator<Object> {
         return BaseRowDataFrame.fromStreamFoldByRow(index, dataStream(rows, columnValueMakers));
     }
 
-    public static DataFrame columnarDf(int rows, ValueMaker<?>... columnValueMakers) {
+    public static DataFrame columnarDFWithMixedData(int rows) {
+
+        String string =
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate sollicitudin ligula sit amet ornare.";
+
+        return columnarDF(rows,
+                ValueMaker.intSeq(),
+                ValueMaker.stringSeq(),
+                ValueMaker.randomIntSeq(rows / 2),
+                ValueMaker.constStringSeq(string));
+    }
+
+    public static DataFrame columnarDF(int rows, ValueMaker<?>... columnValueMakers) {
 
         String[] columnNames = new String[columnValueMakers.length];
         for (int i = 0; i < columnValueMakers.length; i++) {
             columnNames[i] = "c" + i;
         }
 
+        // TODO: fold by column - much faster for columnar DF
         Index index = Index.withNames(columnNames);
-
-        // TODO: use per column streams for columnar DF
         return ColumnDataFrame.fromStreamFoldByRow(index, dataStream(rows, columnValueMakers));
     }
 
