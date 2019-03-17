@@ -1,7 +1,7 @@
-package com.nhl.dflib.benchmark;
+package com.nhl.dflib.benchmark.row;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.benchmark.data.RowByRowSequence;
+import com.nhl.dflib.benchmark.data.DataGenerator;
 import com.nhl.dflib.map.RowToValueMapper;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -33,7 +33,7 @@ public class DataFrameSort {
 
     @Setup
     public void setUp() {
-        df = RowByRowSequence.dfWithMixedData(rows);
+        df = DataGenerator.rowDFWithMixedData(rows);
     }
 
     @Benchmark

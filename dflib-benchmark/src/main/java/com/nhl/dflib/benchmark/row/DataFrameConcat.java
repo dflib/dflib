@@ -1,7 +1,7 @@
-package com.nhl.dflib.benchmark;
+package com.nhl.dflib.benchmark.row;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.benchmark.data.RowByRowSequence;
+import com.nhl.dflib.benchmark.data.DataGenerator;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -32,8 +32,8 @@ public class DataFrameConcat {
 
     @Setup
     public void setUp() {
-        df1 = RowByRowSequence.dfWithMixedData(rows);
-        df2 = RowByRowSequence.dfWithMixedData(rows);
+        df1 = DataGenerator.rowDFWithMixedData(rows);
+        df2 = DataGenerator.rowDFWithMixedData(rows);
     }
 
     @Benchmark

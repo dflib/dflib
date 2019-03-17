@@ -1,10 +1,8 @@
-package com.nhl.dflib.benchmark;
+package com.nhl.dflib.benchmark.row;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.aggregate.Aggregator;
-import com.nhl.dflib.benchmark.data.RowByRowSequence;
-import com.nhl.dflib.benchmark.data.ValueMaker;
+import com.nhl.dflib.benchmark.data.DataGenerator;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -17,7 +15,6 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @Warmup(iterations = 3, time = 1)
@@ -26,50 +23,58 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(2)
 @State(Scope.Thread)
-public class DataFrameGroupBy {
+public class DataFrameOperation {
 
-    @Param("1000000")
+    @Param("5000000")
     public int rows;
 
-    @Param("500")
-    public int groups;
-
     private DataFrame df;
-    private GroupBy gb;
 
     @Setup
     public void setUp() {
-        Random random = new Random();
-
-        String string =
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate sollicitudin ligula sit amet ornare.";
-
-        df = RowByRowSequence.df(rows,
-                ValueMaker.intSeq(),
-                ValueMaker.stringSeq(),
-                // keep the number of categories relatively low
-                ValueMaker.randomIntSeq(groups),
-                ValueMaker.constStringSeq(string));
-
-        gb = df.groupBy("c2");
+        df = DataGenerator.rowDFWithMixedData(rows);
     }
 
     @Benchmark
-    public Object groupBy() {
-        return df.groupBy("c2");
+    public Object median() {
+        return df.agg(Aggregator.median("c0"));
     }
 
     @Benchmark
-    public Object aggregate_by_name() {
-        return gb.agg(Aggregator.sum("c0"))
+    public Object filter() {
+        return df
+                .filterByColumn("c0", (Integer i) -> i % 2 == 0)
                 .materialize()
                 .iterator();
     }
 
     @Benchmark
-    public Object aggregate_by_pos() {
-        return gb.agg(Aggregator.sum(0))
+    public Object medianWithFilter() {
+        return df
+                .filterByColumn("c0", (Integer i) -> i % 2 == 0)
+                .agg(Aggregator.median(0));
+    }
+
+    @Benchmark
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public Object head() {
+        return df
+                .head(100)
                 .materialize()
                 .iterator();
+    }
+
+    @Benchmark
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public long height() {
+        return df.height();
+    }
+
+    @Benchmark
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
+    public long width() {
+        return df.width();
     }
 }
+
+

@@ -1,9 +1,9 @@
-package com.nhl.dflib.benchmark;
+package com.nhl.dflib.benchmark.row;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.benchmark.data.RowByRowSequence;
+import com.nhl.dflib.benchmark.data.DataGenerator;
+import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
-import com.nhl.dflib.map.Hasher;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -24,9 +24,9 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(2)
 @State(Scope.Thread)
-public class DataFrameHashJoin {
+public class DataFrameNestedLoopJoin {
 
-    @Param("1000000")
+    @Param("5000")
     public int rows;
 
     private DataFrame df1;
@@ -34,48 +34,36 @@ public class DataFrameHashJoin {
 
     @Setup
     public void setUp() {
-        df1 = RowByRowSequence.dfWithMixedData(rows);
-        df2 = RowByRowSequence.dfWithMixedData(rows);
+        df1 = DataGenerator.rowDFWithMixedData(rows);
+        df2 = DataGenerator.rowDFWithMixedData(rows);
     }
 
     @Benchmark
     public Object leftJoin() {
         return df1
-                .join(df2, Hasher.forColumn("c0"), Hasher.forColumn("c2"), JoinType.left)
-                .materialize()
-                .iterator();
+                .join(df2, JoinPredicate.on("c2", "c0"), JoinType.left)
+                .materialize().iterator();
     }
-
-    @Benchmark
-    public Object leftJoin_ByPosition() {
-        return df1
-                .join(df2, Hasher.forColumn(0), Hasher.forColumn(2), JoinType.left)
-                .materialize()
-                .iterator();
-    }
-
 
     @Benchmark
     public Object rightJoin() {
         return df1
-                .join(df2, Hasher.forColumn("c0"), Hasher.forColumn("c2"), JoinType.right)
-                .materialize()
-                .iterator();
+                .join(df2, JoinPredicate.on("c2", "c0"), JoinType.right)
+                .materialize().iterator();
     }
 
     @Benchmark
     public Object innerJoin() {
         return df1
-                .join(df2, Hasher.forColumn("c0"), Hasher.forColumn("c2"), JoinType.inner)
-                .materialize()
-                .iterator();
+                .join(df2, JoinPredicate.on("c2", "c0"), JoinType.inner)
+                .materialize().iterator();
     }
 
     @Benchmark
     public Object fullJoin() {
         return df1
-                .join(df2, Hasher.forColumn("c0"), Hasher.forColumn("c2"), JoinType.full)
-                .materialize()
-                .iterator();
+                .join(df2, JoinPredicate.on("c2", "c0"), JoinType.inner)
+                .materialize().iterator();
     }
+
 }
