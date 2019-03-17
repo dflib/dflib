@@ -52,4 +52,9 @@ public class CrossColumnRowProxy implements RowProxy {
         this.rowIndex++;
         return this;
     }
+
+    public CrossColumnRowProxy rewind(int index) {
+        this.rowIndex = index;
+        return this;
+    }
 }

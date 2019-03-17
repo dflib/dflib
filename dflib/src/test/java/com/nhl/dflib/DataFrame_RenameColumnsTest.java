@@ -1,16 +1,31 @@
 package com.nhl.dflib;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DataFrame_RenameColumnsTest {
+import static java.util.Arrays.asList;
+
+@RunWith(Parameterized.class)
+public class DataFrame_RenameColumnsTest extends BaseDataFrameTest {
+
+    public DataFrame_RenameColumnsTest(boolean columnar) {
+        super(columnar);
+    }
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return asList(new Object[][]{{false}, {true}});
+    }
 
     @Test
     public void testRenameColumns_All() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequenceFoldByRow(i1,
+        DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
                 .renameColumns("c", "d");
@@ -24,7 +39,7 @@ public class DataFrame_RenameColumnsTest {
     @Test(expected = IllegalArgumentException.class)
     public void testRenameColumns_SizeMismatch() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame.fromSequenceFoldByRow(i1,
+        createDf(i1,
                 1, "x",
                 2, "y")
                 .renameColumns("c");
@@ -37,7 +52,7 @@ public class DataFrame_RenameColumnsTest {
         names.put("b", "c");
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequenceFoldByRow(i1,
+        DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
                 .renameColumns(names);

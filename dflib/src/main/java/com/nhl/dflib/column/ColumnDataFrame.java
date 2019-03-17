@@ -3,17 +3,32 @@ package com.nhl.dflib.column;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.column.filter.ColumnarFilterIndexer;
+import com.nhl.dflib.column.map.ColumnarMapper;
+import com.nhl.dflib.column.sort.ColumnarSortIndexer;
+import com.nhl.dflib.filter.RowPredicate;
+import com.nhl.dflib.filter.ValuePredicate;
+import com.nhl.dflib.join.JoinType;
+import com.nhl.dflib.map.RowCombiner;
+import com.nhl.dflib.map.RowMapper;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.print.InlinePrinter;
+import com.nhl.dflib.row.HConcatRowDataFrame;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.ColumnMappedSeries;
+import com.nhl.dflib.series.HeadSeries;
+import com.nhl.dflib.series.IndexedSeries;
 import com.nhl.dflib.series.RowMappedSeries;
+import com.nhl.dflib.sort.Sorters;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 public class ColumnDataFrame implements DataFrame {
@@ -22,8 +37,8 @@ public class ColumnDataFrame implements DataFrame {
     private Series[] columnsData;
 
     public ColumnDataFrame(Index columnsIndex, Series[] columnsData) {
-        this.columnsIndex = columnsIndex;
-        this.columnsData = columnsData;
+        this.columnsIndex = Objects.requireNonNull(columnsIndex);
+        this.columnsData = Objects.requireNonNull(columnsData);
     }
 
     public static <T> DataFrame fromStreamFoldByRow(Index columns, Stream<T> stream) {
@@ -137,6 +152,116 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public Index getColumns() {
         return columnsIndex;
+    }
+
+    @Override
+    public DataFrame head(int len) {
+
+        if (len < 0) {
+            throw new IllegalArgumentException("Length must be non-negative: " + len);
+        }
+
+        int maxLen = height();
+        if (maxLen <= len) {
+            return this;
+        }
+
+        int width = width();
+        Series<?>[] newColumnsData = new Series[width];
+        for (int i = 0; i < width; i++) {
+            newColumnsData[i] = new HeadSeries<>(columnsData[i], len);
+        }
+
+        return new ColumnDataFrame(columnsIndex, newColumnsData);
+    }
+
+    @Override
+    public DataFrame materialize() {
+        return this;
+    }
+
+    @Override
+    public DataFrame map(Index mappedColumns, RowMapper rowMapper) {
+        return ColumnarMapper.map(this, mappedColumns, rowMapper);
+    }
+
+    @Override
+    public DataFrame renameColumns(String... newColumnNames) {
+        Index renamed = getColumns().rename(newColumnNames);
+        return new ColumnDataFrame(renamed, columnsData);
+    }
+
+    @Override
+    public DataFrame renameColumns(Map<String, String> oldToNewNames) {
+        Index renamed = getColumns().rename(oldToNewNames);
+        return new ColumnDataFrame(renamed, columnsData);
+    }
+
+    @Override
+    public DataFrame filter(RowPredicate p) {
+        Series<Integer> filteredIndex = ColumnarFilterIndexer.filteredIndex(this, p);
+        return filterWithIndex(filteredIndex);
+    }
+
+    @Override
+    public <V> DataFrame filterByColumn(int columnPos, ValuePredicate<V> p) {
+        Series<Integer> filteredIndex = ColumnarFilterIndexer.filteredIndex(columnsData[columnPos], p);
+        return filterWithIndex(filteredIndex);
+    }
+
+    private DataFrame filterWithIndex(Series<Integer> filteredIndex) {
+        if (filteredIndex.size() == height()) {
+            return this;
+        }
+
+        int width = width();
+        Series<?>[] newColumnsData = new Series[width];
+        for (int i = 0; i < width; i++) {
+            newColumnsData[i] = new IndexedSeries<>(columnsData[i], filteredIndex);
+        }
+
+        return new ColumnDataFrame(columnsIndex, newColumnsData);
+    }
+
+    @Override
+    public <V extends Comparable<? super V>> DataFrame sort(RowToValueMapper<V> sortKeyExtractor) {
+        return sort(Sorters.sorter(sortKeyExtractor));
+    }
+
+    @Override
+    public <V extends Comparable<? super V>> DataFrame sortByColumns(String... columns) {
+        return sort(Sorters.sorter(getColumns(), columns));
+    }
+
+    @Override
+    public <V extends Comparable<? super V>> DataFrame sortByColumns(int... columns) {
+        return sort(Sorters.sorter(getColumns(), columns));
+    }
+
+    private DataFrame sort(Comparator<RowProxy> comparator) {
+        Comparator<Integer> rowComparator = toIntComparator(comparator);
+        Series<Integer> sortedIndex = ColumnarSortIndexer.sortedIndex(this, rowComparator);
+
+        int width = width();
+        Series<?>[] newColumnsData = new Series[width];
+        for (int i = 0; i < width; i++) {
+            newColumnsData[i] = new IndexedSeries<>(columnsData[i], sortedIndex);
+        }
+
+        return new ColumnDataFrame(columnsIndex, newColumnsData);
+    }
+
+    private Comparator<Integer> toIntComparator(Comparator<RowProxy> rowComparator) {
+        int h = height();
+        CrossColumnRowProxy p1 = new CrossColumnRowProxy(columnsIndex, columnsData, h);
+        CrossColumnRowProxy p2 = new CrossColumnRowProxy(columnsIndex, columnsData, h);
+        return (i1, i2) -> rowComparator.compare(p1.rewind(i1), p2.rewind(i2));
+    }
+
+    @Override
+    public DataFrame hConcat(Index zippedColumns, JoinType how, DataFrame df, RowCombiner c) {
+        // TODO: columnar implementation...
+        return new HConcatRowDataFrame(zippedColumns, how, this, df, c).materialize();
     }
 
     @Override

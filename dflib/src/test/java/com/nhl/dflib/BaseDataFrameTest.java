@@ -1,7 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.column.ColumnDataFrame;
-import com.nhl.dflib.row.RowDataFrame;
+import com.nhl.dflib.row.BaseRowDataFrame;
 
 public class BaseDataFrameTest {
 
@@ -14,6 +14,6 @@ public class BaseDataFrameTest {
     protected DataFrame createDf(Index i, Object... sequenceFoldedByRow) {
         return columnar
                 ? ColumnDataFrame.fromSequenceFoldByRow(i, sequenceFoldedByRow)
-                : RowDataFrame.fromSequenceFoldByRow(i, sequenceFoldedByRow);
+                : BaseRowDataFrame.fromSequenceFoldByRow(i, sequenceFoldedByRow);
     }
 }
