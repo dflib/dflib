@@ -29,6 +29,17 @@ public interface ValueMaker<T> {
         return () -> random.nextInt(max);
     }
 
+    static ValueMaker<Integer> intSeq(int from, int to) {
+        int[] val = new int[1];
+        val[0] = from;
+        return () -> {
+            int result = val[0];
+            // cyclic function
+            val[0] = result < to ? result + 1 : from;
+            return result;
+        };
+    }
+
     static ValueMaker<String> stringSeq() {
         int[] val = new int[1];
         return () -> "data_" + val[0]++;
