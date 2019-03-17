@@ -1,4 +1,4 @@
-package com.nhl.dflib.benchmark.data;
+package com.nhl.dflib.benchmark;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
