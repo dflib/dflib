@@ -1,15 +1,16 @@
-package com.nhl.dflib.benchmark.data;
+package com.nhl.dflib.benchmark;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.column.ColumnDataFrame;
+import com.nhl.dflib.row.BaseRowDataFrame;
 
 import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class RowByRowSequence extends Spliterators.AbstractSpliterator<Object> {
+public class DataGenerator extends Spliterators.AbstractSpliterator<Object> {
 
     private int width;
     private int height;
@@ -17,26 +18,26 @@ public class RowByRowSequence extends Spliterators.AbstractSpliterator<Object> {
 
     private int index;
 
-    protected RowByRowSequence(ValueMaker<?>[] columnValueMakers, int height) {
+    protected DataGenerator(ValueMaker<?>[] columnValueMakers, int height) {
         super(height, 0);
         this.columnValueMakers = columnValueMakers;
         this.height = height;
         this.width = columnValueMakers.length;
     }
 
-    public static DataFrame dfWithMixedData(int rows) {
+    public static DataFrame rowDFWithMixedData(int rows) {
 
         String string =
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate sollicitudin ligula sit amet ornare.";
 
-        return df(rows,
+        return rowDF(rows,
                 ValueMaker.intSeq(),
                 ValueMaker.stringSeq(),
                 ValueMaker.randomIntSeq(rows / 2),
                 ValueMaker.constStringSeq(string));
     }
 
-    public static DataFrame df(int rows, ValueMaker<?>... columnValueMakers) {
+    public static DataFrame rowDF(int rows, ValueMaker<?>... columnValueMakers) {
 
         String[] columnNames = new String[columnValueMakers.length];
         for (int i = 0; i < columnValueMakers.length; i++) {
@@ -44,7 +45,7 @@ public class RowByRowSequence extends Spliterators.AbstractSpliterator<Object> {
         }
 
         Index index = Index.withNames(columnNames);
-        return DataFrame.fromStreamFoldByRow(index, dataStream(rows, columnValueMakers));
+        return BaseRowDataFrame.fromStreamFoldByRow(index, dataStream(rows, columnValueMakers));
     }
 
     public static DataFrame columnarDf(int rows, ValueMaker<?>... columnValueMakers) {
@@ -61,7 +62,7 @@ public class RowByRowSequence extends Spliterators.AbstractSpliterator<Object> {
     }
 
     private static Stream<Object> dataStream(int rows, ValueMaker<?>... columnValueMakers) {
-        return StreamSupport.stream(new RowByRowSequence(columnValueMakers, rows), false);
+        return StreamSupport.stream(new DataGenerator(columnValueMakers, rows), false);
     }
 
     @Override

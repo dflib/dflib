@@ -1,8 +1,8 @@
-package com.nhl.dflib.benchmark;
+package com.nhl.dflib.benchmark.speed.row;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.benchmark.data.RowByRowSequence;
-import com.nhl.dflib.map.RowToValueMapper;
+import com.nhl.dflib.benchmark.DataGenerator;
+import com.nhl.dflib.map.RowMapper;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -17,14 +17,13 @@ import org.openjdk.jmh.annotations.Warmup;
 
 import java.util.concurrent.TimeUnit;
 
-// in my tests time for iteration #3 time spikes (why?), so make sure it happens during warmup
 @Warmup(iterations = 3, time = 1)
 @Measurement(iterations = 3, time = 1)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(2)
 @State(Scope.Thread)
-public class DataFrameSort {
+public class DataFrameMap {
 
     @Param("1000000")
     public int rows;
@@ -33,13 +32,30 @@ public class DataFrameSort {
 
     @Setup
     public void setUp() {
-        df = RowByRowSequence.dfWithMixedData(rows);
+        df = DataGenerator.rowDFWithMixedData(rows);
     }
 
     @Benchmark
-    public Object sort() {
+    public Object map() {
         return df
-                .sort(RowToValueMapper.columnReader(2))
+                .map(RowMapper.copy())
+                .materialize()
+                .iterator();
+    }
+
+    @Benchmark
+    public Object mapWithChange() {
+        return df
+                .map(RowMapper.copy().and((s, t) -> t.set(2, 1)))
+                .materialize()
+                .iterator();
+    }
+
+    @Benchmark
+    public Object mapColumn() {
+        return df
+                // using cheap "map" function to test benchmark DF overhead
+                .mapColumnValue("c2", (Integer i) -> 1)
                 .materialize()
                 .iterator();
     }

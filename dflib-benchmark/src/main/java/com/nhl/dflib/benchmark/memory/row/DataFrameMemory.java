@@ -1,9 +1,9 @@
-package com.nhl.dflib.benchmark.memory;
+package com.nhl.dflib.benchmark.memory.row;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.benchmark.data.RowByRowSequence;
-import com.nhl.dflib.benchmark.data.ValueMaker;
-import com.nhl.dflib.benchmark.memory.base.MemoryTest;
+import com.nhl.dflib.benchmark.DataGenerator;
+import com.nhl.dflib.benchmark.ValueMaker;
+import com.nhl.dflib.benchmark.memory.MemoryTest;
 
 public class DataFrameMemory extends MemoryTest {
 
@@ -23,7 +23,7 @@ public class DataFrameMemory extends MemoryTest {
     }
 
     public DataFrame nullCells() {
-        DataFrame df = RowByRowSequence.df(ROWS,
+        DataFrame df = DataGenerator.rowDF(ROWS,
                 ValueMaker.nullSeq(),
                 ValueMaker.nullSeq());
         df.materialize().iterator();
@@ -31,7 +31,7 @@ public class DataFrameMemory extends MemoryTest {
     }
 
     public DataFrame intCells() {
-        DataFrame df = RowByRowSequence.df(ROWS,
+        DataFrame df = DataGenerator.rowDF(ROWS,
                 ValueMaker.intSeq(),
                 ValueMaker.intSeq());
         df.materialize().iterator();
@@ -39,7 +39,7 @@ public class DataFrameMemory extends MemoryTest {
     }
 
     public DataFrame longCells() {
-        DataFrame df = RowByRowSequence.df(ROWS,
+        DataFrame df = DataGenerator.rowDF(ROWS,
                 ValueMaker.longSeq(),
                 ValueMaker.longSeq());
         df.materialize().iterator();
@@ -47,7 +47,7 @@ public class DataFrameMemory extends MemoryTest {
     }
 
     public DataFrame boolCells() {
-        DataFrame df = RowByRowSequence.df(ROWS,
+        DataFrame df = DataGenerator.rowDF(ROWS,
                 ValueMaker.booleanSeq(),
                 ValueMaker.booleanSeq());
         df.materialize().iterator();
@@ -55,7 +55,7 @@ public class DataFrameMemory extends MemoryTest {
     }
 
     public DataFrame repeatingStringCells() {
-        DataFrame df = RowByRowSequence.df(ROWS,
+        DataFrame df = DataGenerator.rowDF(ROWS,
                 ValueMaker.constStringSeq("abc"),
                 ValueMaker.constStringSeq("xyz"));
         df.materialize().iterator();
@@ -63,7 +63,7 @@ public class DataFrameMemory extends MemoryTest {
     }
 
     public DataFrame randStringCells() {
-        DataFrame df = RowByRowSequence.df(ROWS,
+        DataFrame df = DataGenerator.rowDF(ROWS,
                 ValueMaker.semiRandomStringSeq("abc", ROWS),
                 ValueMaker.semiRandomStringSeq("xyz", ROWS));
         df.materialize().iterator();

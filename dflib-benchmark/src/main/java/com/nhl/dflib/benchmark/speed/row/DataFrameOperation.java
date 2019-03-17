@@ -1,8 +1,8 @@
-package com.nhl.dflib.benchmark;
+package com.nhl.dflib.benchmark.speed.row;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.aggregate.Aggregator;
-import com.nhl.dflib.benchmark.data.RowByRowSequence;
+import com.nhl.dflib.benchmark.DataGenerator;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -32,7 +32,7 @@ public class DataFrameOperation {
 
     @Setup
     public void setUp() {
-        df = RowByRowSequence.dfWithMixedData(rows);
+        df = DataGenerator.rowDFWithMixedData(rows);
     }
 
     @Benchmark

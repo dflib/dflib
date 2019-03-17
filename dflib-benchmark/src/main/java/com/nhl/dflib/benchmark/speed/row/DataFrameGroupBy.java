@@ -1,10 +1,10 @@
-package com.nhl.dflib.benchmark;
+package com.nhl.dflib.benchmark.speed.row;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.aggregate.Aggregator;
-import com.nhl.dflib.benchmark.data.RowByRowSequence;
-import com.nhl.dflib.benchmark.data.ValueMaker;
+import com.nhl.dflib.benchmark.DataGenerator;
+import com.nhl.dflib.benchmark.ValueMaker;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -17,7 +17,6 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @Warmup(iterations = 3, time = 1)
@@ -39,12 +38,11 @@ public class DataFrameGroupBy {
 
     @Setup
     public void setUp() {
-        Random random = new Random();
 
         String string =
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate sollicitudin ligula sit amet ornare.";
 
-        df = RowByRowSequence.df(rows,
+        df = DataGenerator.rowDF(rows,
                 ValueMaker.intSeq(),
                 ValueMaker.stringSeq(),
                 // keep the number of categories relatively low

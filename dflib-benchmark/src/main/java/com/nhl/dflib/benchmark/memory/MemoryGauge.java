@@ -1,4 +1,4 @@
-package com.nhl.dflib.benchmark.memory.base;
+package com.nhl.dflib.benchmark.memory;
 
 public class MemoryGauge {
 
