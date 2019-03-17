@@ -1,8 +1,7 @@
-package com.nhl.dflib.benchmark.column;
+package com.nhl.dflib.benchmark.speed.column;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.benchmark.DataGenerator;
-import com.nhl.dflib.map.RowMapper;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -17,46 +16,37 @@ import org.openjdk.jmh.annotations.Warmup;
 
 import java.util.concurrent.TimeUnit;
 
-@Warmup(iterations = 3, time = 1)
+@Warmup(iterations = 2, time = 1)
 @Measurement(iterations = 3, time = 1)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(2)
 @State(Scope.Thread)
-public class DataFrameMap {
+public class DataFrameConcat {
 
     @Param("1000000")
     public int rows;
 
-    private DataFrame df;
+    private DataFrame df1;
+    private DataFrame df2;
 
     @Setup
     public void setUp() {
-        df = DataGenerator.columnarDFWithMixedData(rows);
+        df1 = DataGenerator.columnarDFWithMixedData(rows);
+        df2 = DataGenerator.columnarDFWithMixedData(rows);
     }
 
     @Benchmark
-    public Object map() {
-        return df
-                .map(RowMapper.copy())
-                .materialize()
-                .iterator();
+    public Object hConcat() {
+        return df1
+                .hConcat(df2)
+                .materialize().iterator();
     }
 
     @Benchmark
-    public Object mapWithChange() {
-        return df
-                .map(RowMapper.copy().and((s, t) -> t.set(2, 1)))
-                .materialize()
-                .iterator();
-    }
-
-    @Benchmark
-    public Object mapColumn() {
-        return df
-                // using cheap "map" function to test benchmark DF overhead
-                .mapColumnValue("c2", (Integer i) -> 1)
-                .materialize()
-                .iterator();
+    public Object vConcat() {
+        return df1
+                .vConcat(df2)
+                .materialize().iterator();
     }
 }

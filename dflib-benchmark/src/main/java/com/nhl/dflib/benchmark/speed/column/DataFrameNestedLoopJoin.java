@@ -1,7 +1,8 @@
-package com.nhl.dflib.benchmark.column;
+package com.nhl.dflib.benchmark.speed.column;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.benchmark.DataGenerator;
+import com.nhl.dflib.benchmark.ValueMaker;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -29,40 +30,54 @@ public class DataFrameNestedLoopJoin {
     @Param("5000")
     public int rows;
 
+    @Param("2500")
+    public int joinGroups;
+
     private DataFrame df1;
     private DataFrame df2;
 
     @Setup
     public void setUp() {
-        df1 = DataGenerator.columnarDFWithMixedData(rows);
-        df2 = DataGenerator.columnarDFWithMixedData(rows);
+        df1 = DataGenerator.rowDF(rows,
+                // this column is used in join. Must be predictable and overlap with keys in df2
+                ValueMaker.intSeq(joinGroups / 2, (int) (joinGroups * 1.5)),
+                ValueMaker.stringSeq(),
+                ValueMaker.randomIntSeq(rows / 2),
+                ValueMaker.constStringSeq("abcd"));
+
+        df2 = DataGenerator.rowDF(rows,
+                ValueMaker.intSeq(),
+                ValueMaker.stringSeq(),
+                // this column is used in join. Must be predictable and overlap with keys in df1
+                ValueMaker.intSeq(1, joinGroups),
+                ValueMaker.constStringSeq("abcd"));
     }
 
     @Benchmark
     public Object leftJoin() {
         return df1
-                .join(df2, JoinPredicate.on("c2", "c0"), JoinType.left)
+                .join(df2, JoinPredicate.on("c0", "c2"), JoinType.left)
                 .materialize().iterator();
     }
 
     @Benchmark
     public Object rightJoin() {
         return df1
-                .join(df2, JoinPredicate.on("c2", "c0"), JoinType.right)
+                .join(df2, JoinPredicate.on("c0", "c2"), JoinType.right)
                 .materialize().iterator();
     }
 
     @Benchmark
     public Object innerJoin() {
         return df1
-                .join(df2, JoinPredicate.on("c2", "c0"), JoinType.inner)
+                .join(df2, JoinPredicate.on("c0", "c2"), JoinType.inner)
                 .materialize().iterator();
     }
 
     @Benchmark
     public Object fullJoin() {
         return df1
-                .join(df2, JoinPredicate.on("c2", "c0"), JoinType.inner)
+                .join(df2, JoinPredicate.on("c0", "c2"), JoinType.inner)
                 .materialize().iterator();
     }
 

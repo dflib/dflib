@@ -1,4 +1,4 @@
-package com.nhl.dflib.benchmark.column;
+package com.nhl.dflib.benchmark.speed.column;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.benchmark.DataGenerator;

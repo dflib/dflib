@@ -52,6 +52,7 @@ public class DataFrameMap {
     }
 
     @Benchmark
+    @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public Object mapColumn() {
         return df
                 // using cheap "map" function to test benchmark DF overhead

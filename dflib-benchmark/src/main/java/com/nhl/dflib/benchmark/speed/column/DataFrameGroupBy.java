@@ -1,8 +1,10 @@
-package com.nhl.dflib.benchmark.column;
+package com.nhl.dflib.benchmark.speed.column;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.aggregate.Aggregator;
 import com.nhl.dflib.benchmark.DataGenerator;
+import com.nhl.dflib.benchmark.ValueMaker;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -23,58 +25,49 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(2)
 @State(Scope.Thread)
-public class DataFrameOperation {
+public class DataFrameGroupBy {
 
-    @Param("5000000")
+    @Param("1000000")
     public int rows;
 
+    @Param("500")
+    public int groups;
+
     private DataFrame df;
+    private GroupBy gb;
 
     @Setup
     public void setUp() {
-        df = DataGenerator.columnarDFWithMixedData(rows);
+
+        String string =
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate sollicitudin ligula sit amet ornare.";
+
+        df = DataGenerator.columnarDF(rows,
+                ValueMaker.intSeq(),
+                ValueMaker.stringSeq(),
+                // keep the number of categories relatively low
+                ValueMaker.randomIntSeq(groups),
+                ValueMaker.constStringSeq(string));
+
+        gb = df.groupBy("c2");
     }
 
     @Benchmark
-    public Object median() {
-        return df.agg(Aggregator.median("c0"));
+    public Object groupBy() {
+        return df.groupBy("c2");
     }
 
     @Benchmark
-    public Object filter() {
-        return df
-                .filterByColumn("c0", (Integer i) -> i % 2 == 0)
+    public Object aggregate_by_name() {
+        return gb.agg(Aggregator.sum("c0"))
                 .materialize()
                 .iterator();
     }
 
     @Benchmark
-    public Object medianWithFilter() {
-        return df
-                .filterByColumn("c0", (Integer i) -> i % 2 == 0)
-                .agg(Aggregator.median(0));
-    }
-
-    @Benchmark
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public Object head() {
-        return df
-                .head(100)
+    public Object aggregate_by_pos() {
+        return gb.agg(Aggregator.sum(0))
                 .materialize()
                 .iterator();
-    }
-
-    @Benchmark
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public long height() {
-        return df.height();
-    }
-
-    @Benchmark
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public long width() {
-        return df.width();
     }
 }
-
-
