@@ -1,23 +1,24 @@
-package com.nhl.dflib.columnar;
+package com.nhl.dflib.series;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.row.RowProxy;
 
 public class RowMappedSeries<T> implements Series<T> {
 
-    private DataFrame dataFrame;
+    private DataFrame source;
     private RowToValueMapper<T> mapper;
     private Series<T> materialized;
 
-    public RowMappedSeries(DataFrame dataFrame, RowToValueMapper<T> mapper) {
-        this.dataFrame = dataFrame;
+    public RowMappedSeries(DataFrame source, RowToValueMapper<T> mapper) {
+        this.source = source;
         this.mapper = mapper;
     }
 
     @Override
     public int size() {
-        return dataFrame.height();
+        return source.height();
     }
 
     @Override
@@ -38,12 +39,16 @@ public class RowMappedSeries<T> implements Series<T> {
     }
 
     protected Series<T> doMaterialize() {
-        Object[] data = new Object[dataFrame.height()];
+        Object[] data = new Object[source.height()];
 
         int i = 0;
-        for (RowProxy row : dataFrame) {
+        for (RowProxy row : source) {
             data[i++] = mapper.map(row);
         }
+
+        // reset source reference, allowing to free up memory..
+        source = null;
+        mapper = null;
 
         return new ArraySeries(data);
     }

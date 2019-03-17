@@ -1,22 +1,38 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
+import com.nhl.dflib.map.Hasher;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
-public class DataFrameJoinsTest {
+import java.util.Collection;
+
+import static java.util.Arrays.asList;
+
+@RunWith(Parameterized.class)
+public class DataFrameJoinsTest extends BaseDataFrameTest {
+
+    public DataFrameJoinsTest(boolean columnar) {
+        super(columnar);
+    }
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return asList(new Object[][]{{false}, {true}});
+    }
 
     @Test
     public void testInnerJoin_Inner() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i1,
+        DataFrame df1 = createDf(i1,
                 1, "x",
                 2, "y");
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i2,
+        DataFrame df2 = createDf(i2,
                 2, "a",
                 2, "b",
                 3, "c");
@@ -33,12 +49,12 @@ public class DataFrameJoinsTest {
     public void testInnerJoin_NoMatches() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i1,
+        DataFrame df1 = createDf(i1,
                 1, "x",
                 2, "y");
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i2,
+        DataFrame df2 = createDf(i2,
                 2, "a",
                 2, "b",
                 3, "c");
@@ -53,12 +69,12 @@ public class DataFrameJoinsTest {
     public void testInnerJoin_IndexOverlap() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i1,
+        DataFrame df1 = createDf(i1,
                 1, "x",
                 2, "y");
 
         Index i2 = Index.withNames("a", "b");
-        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i2,
+        DataFrame df2 = createDf(i2,
                 2, "a",
                 2, "b",
                 3, "c");
@@ -75,12 +91,12 @@ public class DataFrameJoinsTest {
     public void testJoin_Left() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i1,
+        DataFrame df1 = createDf(i1,
                 1, "x",
                 2, "y");
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i2,
+        DataFrame df2 = createDf(i2,
                 2, "a",
                 2, "b",
                 3, "c");
@@ -98,12 +114,12 @@ public class DataFrameJoinsTest {
     public void testJoin_Right() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i1,
+        DataFrame df1 = createDf(i1,
                 1, "x",
                 2, "y");
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i2,
+        DataFrame df2 = createDf(i2,
                 2, "a",
                 2, "b",
                 3, "c");
@@ -121,12 +137,12 @@ public class DataFrameJoinsTest {
     public void testJoin_Full() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i1,
+        DataFrame df1 = createDf(i1,
                 1, "x",
                 2, "y");
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i2,
+        DataFrame df2 = createDf(i2,
                 2, "a",
                 2, "b",
                 3, "c");
@@ -145,12 +161,12 @@ public class DataFrameJoinsTest {
     public void testInnerJoin_Indexed() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i1,
+        DataFrame df1 = createDf(i1,
                 1, "x",
                 2, "y");
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i2,
+        DataFrame df2 = createDf(i2,
                 "a", 2,
                 "b", 2,
                 "c", 3);
@@ -167,12 +183,12 @@ public class DataFrameJoinsTest {
     public void testInnerJoin_Indexed_IndexOverlap() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i1,
+        DataFrame df1 = createDf(i1,
                 1, "x",
                 2, "y");
 
         Index i2 = Index.withNames("a", "b");
-        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i2,
+        DataFrame df2 = createDf(i2,
                 2, "a",
                 2, "b",
                 3, "c");
@@ -189,12 +205,12 @@ public class DataFrameJoinsTest {
     public void testJoin_LeftIndexed() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i1,
+        DataFrame df1 = createDf(i1,
                 1, "x",
                 2, "y");
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i2,
+        DataFrame df2 = createDf(i2,
                 2, "a",
                 2, "b",
                 3, "c");
@@ -212,12 +228,12 @@ public class DataFrameJoinsTest {
     public void testJoin_RightIndexed() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i1,
+        DataFrame df1 = createDf(i1,
                 1, "x",
                 2, "y");
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i2,
+        DataFrame df2 = createDf(i2,
                 2, "a",
                 2, "b",
                 3, "c");
@@ -235,12 +251,12 @@ public class DataFrameJoinsTest {
     public void testJoin_FullIndexed() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i1,
+        DataFrame df1 = createDf(i1,
                 1, "x",
                 2, "y");
 
         Index i2 = Index.withNames("c", "d");
-        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i2,
+        DataFrame df2 = createDf(i2,
                 2, "a",
                 2, "b",
                 3, "c");

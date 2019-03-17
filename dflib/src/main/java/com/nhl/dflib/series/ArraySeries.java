@@ -1,4 +1,6 @@
-package com.nhl.dflib.columnar;
+package com.nhl.dflib.series;
+
+import com.nhl.dflib.Series;
 
 public class ArraySeries<T> implements Series<T> {
 

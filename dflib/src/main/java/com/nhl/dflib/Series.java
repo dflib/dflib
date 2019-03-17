@@ -1,4 +1,4 @@
-package com.nhl.dflib.columnar;
+package com.nhl.dflib;
 
 public interface Series<T> {
 

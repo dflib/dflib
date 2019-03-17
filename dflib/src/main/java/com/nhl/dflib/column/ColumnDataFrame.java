@@ -1,28 +1,32 @@
-package com.nhl.dflib.columnar;
+package com.nhl.dflib.column;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.print.InlinePrinter;
 import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.series.ArraySeries;
+import com.nhl.dflib.series.ColumnMappedSeries;
+import com.nhl.dflib.series.RowMappedSeries;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class ColumnarDataFrame implements DataFrame {
+public class ColumnDataFrame implements DataFrame {
 
     private Index columnsIndex;
     private Series[] columnsData;
 
-    public ColumnarDataFrame(Index columnsIndex, Series[] columnsData) {
+    public ColumnDataFrame(Index columnsIndex, Series[] columnsData) {
         this.columnsIndex = columnsIndex;
         this.columnsData = columnsData;
     }
 
-    public static <T> DataFrame fromRowStream(Index columns, Stream<T> stream) {
+    public static <T> DataFrame fromStreamFoldByRow(Index columns, Stream<T> stream) {
 
         int width = columns.size();
         if (width == 0) {
@@ -51,13 +55,13 @@ public class ColumnarDataFrame implements DataFrame {
             columnsData[i] = new ArraySeries(columnData);
         }
 
-        return new ColumnarDataFrame(columns, columnsData);
+        return new ColumnDataFrame(columns, columnsData);
     }
 
     /**
      * Creates a columnar DataFrame from the provided array that stores data column-by-column.
      */
-    public static DataFrame fromColumnSequence(Index columns, Object... sequence) {
+    public static DataFrame fromSequenceFoldByColumn(Index columns, Object... sequence) {
 
         int w = columns.size();
         int lastColumnH = sequence.length % w;
@@ -86,14 +90,14 @@ public class ColumnarDataFrame implements DataFrame {
             series[i] = new ArraySeries(data[i]);
         }
 
-        return new ColumnarDataFrame(columns, series);
+        return new ColumnDataFrame(columns, series);
     }
 
     /**
      * Creates a columnar DataFrame from the provided array that stores data row-by-row. This is NOT a very efficient
-     * way to initialize a columnar DataFrame. Use {@link #fromColumnSequence(Index, Object...)} when possible.
+     * way to initialize a columnar DataFrame. Use {@link #fromSequenceFoldByColumn(Index, Object...)} when possible.
      */
-    public static DataFrame fromRowSequence(Index columns, Object... sequence) {
+    public static DataFrame fromSequenceFoldByRow(Index columns, Object... sequence) {
 
         int width = columns.size();
         int lastRowWidth = sequence.length % width;
@@ -122,7 +126,7 @@ public class ColumnarDataFrame implements DataFrame {
             series[i] = new ArraySeries(data[i]);
         }
 
-        return new ColumnarDataFrame(columns, series);
+        return new ColumnDataFrame(columns, series);
     }
 
     @Override
@@ -149,7 +153,7 @@ public class ColumnarDataFrame implements DataFrame {
             newData[width + i] = new RowMappedSeries(this, columnValueProducers[i]);
         }
 
-        return new ColumnarDataFrame(expandedIndex, newData);
+        return new ColumnDataFrame(expandedIndex, newData);
     }
 
     @Override
@@ -162,13 +166,13 @@ public class ColumnarDataFrame implements DataFrame {
 
         int pos = columnsIndex.position(columnName).ordinal();
         newData[pos] = new ColumnMappedSeries(columnsData[pos], m);
-        return new ColumnarDataFrame(columnsIndex, newData);
+        return new ColumnDataFrame(columnsIndex, newData);
     }
 
     @Override
     public DataFrame dropColumns(String... columnNames) {
 
-        Index newIndex = columnsIndex.dropNames(columnNames).compactIndex();
+        Index newIndex = columnsIndex.dropNames(columnNames);
 
         // if no columns were dropped (e.g. the names didn't match anything
         if (newIndex.size() == columnsIndex.size()) {
@@ -177,11 +181,24 @@ public class ColumnarDataFrame implements DataFrame {
 
         Series[] newColumns = new Series[newIndex.size()];
         for (int i = 0; i < newColumns.length; i++) {
-            int oldIndex = columnsIndex.position(newIndex.getPositions()[i].name()).ordinal();
-            newColumns[i] = columnsData[oldIndex];
+            newColumns[i] = columnsData[newIndex.getPositions()[i].position()];
         }
 
-        return new ColumnarDataFrame(newIndex, newColumns);
+        // note that we compact the index only after resolving series positions above
+        return new ColumnDataFrame(newIndex.compactIndex(), newColumns);
+    }
+
+    @Override
+    public DataFrame selectColumns(String... columnNames) {
+        Index newIndex = columnsIndex.selectNames(columnNames);
+
+        Series[] newColumns = new Series[newIndex.size()];
+        for (int i = 0; i < newColumns.length; i++) {
+            newColumns[i] = columnsData[newIndex.getPositions()[i].position()];
+        }
+
+        // note that we compact the index only after resolving series positions above
+        return new ColumnDataFrame(newIndex.compactIndex(), newColumns);
     }
 
     @Override

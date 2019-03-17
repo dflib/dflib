@@ -1,5 +1,6 @@
-package com.nhl.dflib.columnar;
+package com.nhl.dflib.series;
 
+import com.nhl.dflib.Series;
 import com.nhl.dflib.map.ValueMapper;
 
 public class ColumnMappedSeries<S, T> implements Series<T> {
@@ -41,6 +42,10 @@ public class ColumnMappedSeries<S, T> implements Series<T> {
         for(int i = 0; i < data.length; i++) {
             data[i] = mapper.map(source.get(i));
         }
+
+        // reset source reference, allowing to free up memory..
+        source = null;
+        mapper = null;
 
         return new ArraySeries(data);
     }

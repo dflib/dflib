@@ -2,7 +2,7 @@ package com.nhl.dflib.benchmark.data;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.columnar.ColumnarDataFrame;
+import com.nhl.dflib.column.ColumnDataFrame;
 
 import java.util.Spliterators;
 import java.util.function.Consumer;
@@ -57,7 +57,7 @@ public class RowByRowSequence extends Spliterators.AbstractSpliterator<Object> {
         Index index = Index.withNames(columnNames);
 
         // TODO: use per column streams for columnar DF
-        return ColumnarDataFrame.fromRowStream(index, dataStream(rows, columnValueMakers));
+        return ColumnDataFrame.fromStreamFoldByRow(index, dataStream(rows, columnValueMakers));
     }
 
     private static Stream<Object> dataStream(int rows, ValueMaker<?>... columnValueMakers) {

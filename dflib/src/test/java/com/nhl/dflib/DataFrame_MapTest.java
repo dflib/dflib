@@ -2,13 +2,29 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.map.RowMapper;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
-public class DataFrame_MapTest {
+import java.util.Collection;
+
+import static java.util.Arrays.asList;
+
+@RunWith(Parameterized.class)
+public class DataFrame_MapTest extends BaseDataFrameTest {
+
+    public DataFrame_MapTest(boolean columnar) {
+        super(columnar);
+    }
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return asList(new Object[][]{{false}, {true}});
+    }
 
     @Test
     public void testMap_SameIndex() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequenceFoldByRow(i1,
+        DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
                 .map(RowMapper.mapColumn("a", r -> ((int) r.get("a")) * 10));
@@ -22,7 +38,7 @@ public class DataFrame_MapTest {
     @Test
     public void testMap_SameIndex_Sparse() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequenceFoldByRow(i1,
+        DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
                 .dropColumns("a")
@@ -37,7 +53,7 @@ public class DataFrame_MapTest {
     @Test
     public void testMapColumn_FromRow() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequenceFoldByRow(i1,
+        DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
                 .mapColumn("a", r -> ((int) r.get(0)) * 10);
@@ -51,7 +67,7 @@ public class DataFrame_MapTest {
     @Test
     public void testMapColumn_FromRow_Sparse() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequenceFoldByRow(i1,
+        DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
                 .selectColumns("b")
@@ -66,7 +82,7 @@ public class DataFrame_MapTest {
     @Test
     public void testMapColumn_FromValue() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequenceFoldByRow(i1,
+        DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
                 .mapColumnValue("a", v -> ((int) v) * 10);

@@ -1,4 +1,4 @@
-package com.nhl.dflib.columnar;
+package com.nhl.dflib.column;
 
 import com.nhl.dflib.DFAsserts;
 import com.nhl.dflib.DataFrame;
@@ -7,13 +7,13 @@ import org.junit.Test;
 
 import java.util.stream.Stream;
 
-public class ColumnarDataFrameTest {
+public class ColumnDataFrameTest {
 
     @Test
     public void testFromRowStream0() {
 
         Index i = Index.withNames("a", "b");
-        DataFrame df = ColumnarDataFrame.fromRowStream(i, Stream.empty());
+        DataFrame df = ColumnDataFrame.fromStreamFoldByRow(i, Stream.empty());
 
         new DFAsserts(df, i).expectHeight(0);
     }
@@ -22,7 +22,7 @@ public class ColumnarDataFrameTest {
     public void testFromRowStream1() {
 
         Index i = Index.withNames("a", "b");
-        DataFrame df = ColumnarDataFrame.fromRowStream(i, Stream.of(1, 2));
+        DataFrame df = ColumnDataFrame.fromStreamFoldByRow(i, Stream.of(1, 2));
 
         new DFAsserts(df, i)
                 .expectHeight(1)
@@ -33,7 +33,7 @@ public class ColumnarDataFrameTest {
     public void testFromRowStream2() {
 
         Index i = Index.withNames("a", "b");
-        DataFrame df = ColumnarDataFrame.fromRowStream(i, Stream.of(1, 2, 3));
+        DataFrame df = ColumnDataFrame.fromStreamFoldByRow(i, Stream.of(1, 2, 3));
 
         new DFAsserts(df, i)
                 .expectHeight(2)
@@ -45,7 +45,7 @@ public class ColumnarDataFrameTest {
     public void testFromRowStream3() {
 
         Index i = Index.withNames("a", "b");
-        DataFrame df = ColumnarDataFrame.fromRowStream(i, Stream.of(1, 2, 3, 4));
+        DataFrame df = ColumnDataFrame.fromStreamFoldByRow(i, Stream.of(1, 2, 3, 4));
 
         new DFAsserts(df, i)
                 .expectHeight(2)
@@ -58,7 +58,7 @@ public class ColumnarDataFrameTest {
     public void testFromRowSequence0() {
 
         Index i = Index.withNames("a", "b");
-        DataFrame df = ColumnarDataFrame.fromRowSequence(i);
+        DataFrame df = ColumnDataFrame.fromSequenceFoldByRow(i);
 
         new DFAsserts(df, i).expectHeight(0);
     }
@@ -67,7 +67,7 @@ public class ColumnarDataFrameTest {
     public void testFromRowSequence1() {
 
         Index i = Index.withNames("a", "b");
-        DataFrame df = ColumnarDataFrame.fromRowSequence(i, 1, 2);
+        DataFrame df = ColumnDataFrame.fromSequenceFoldByRow(i, 1, 2);
 
         new DFAsserts(df, i)
                 .expectHeight(1)
@@ -78,7 +78,7 @@ public class ColumnarDataFrameTest {
     public void testFromRowSequence2() {
 
         Index i = Index.withNames("a", "b");
-        DataFrame df = ColumnarDataFrame.fromRowSequence(i, 1, 2, 3);
+        DataFrame df = ColumnDataFrame.fromSequenceFoldByRow(i, 1, 2, 3);
 
         new DFAsserts(df, i)
                 .expectHeight(2)
@@ -90,7 +90,7 @@ public class ColumnarDataFrameTest {
     public void testFromRowSequence3() {
 
         Index i = Index.withNames("a", "b");
-        DataFrame df = ColumnarDataFrame.fromRowSequence(i, 1, 2, 3, 4);
+        DataFrame df = ColumnDataFrame.fromSequenceFoldByRow(i, 1, 2, 3, 4);
 
         new DFAsserts(df, i)
                 .expectHeight(2)
@@ -102,7 +102,7 @@ public class ColumnarDataFrameTest {
     public void testFromColumnSequence0() {
 
         Index i = Index.withNames("a", "b");
-        DataFrame df = ColumnarDataFrame.fromColumnSequence(i);
+        DataFrame df = ColumnDataFrame.fromSequenceFoldByColumn(i);
 
         new DFAsserts(df, i).expectHeight(0);
     }
@@ -111,7 +111,7 @@ public class ColumnarDataFrameTest {
     public void testFromColumnSequence1() {
 
         Index i = Index.withNames("a", "b");
-        DataFrame df = ColumnarDataFrame.fromColumnSequence(i, 1, 2);
+        DataFrame df = ColumnDataFrame.fromSequenceFoldByColumn(i, 1, 2);
 
         new DFAsserts(df, i)
                 .expectHeight(1)
@@ -122,7 +122,7 @@ public class ColumnarDataFrameTest {
     public void testFromColumnSequence2() {
 
         Index i = Index.withNames("a", "b");
-        DataFrame df = ColumnarDataFrame.fromColumnSequence(i, 1, 2, 3);
+        DataFrame df = ColumnDataFrame.fromSequenceFoldByColumn(i, 1, 2, 3);
 
         new DFAsserts(df, i)
                 .expectHeight(2)
@@ -134,7 +134,7 @@ public class ColumnarDataFrameTest {
     public void testFromColumnSequence3() {
 
         Index i = Index.withNames("a", "b");
-        DataFrame df = ColumnarDataFrame.fromColumnSequence(i, 1, 2, 3, 4);
+        DataFrame df = ColumnDataFrame.fromSequenceFoldByColumn(i, 1, 2, 3, 4);
 
         new DFAsserts(df, i)
                 .expectHeight(2)
@@ -145,7 +145,7 @@ public class ColumnarDataFrameTest {
     @Test
     public void testAddColumn() {
         Index i1 = Index.withNames("a", "b");
-        DataFrame df = ColumnarDataFrame.fromRowSequence(i1,
+        DataFrame df = ColumnDataFrame.fromSequenceFoldByRow(i1,
                 1, "x",
                 2, "y")
                 .addColumn("c", r -> ((int) r.get(0)) * 10);

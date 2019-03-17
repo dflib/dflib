@@ -2,15 +2,31 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.join.JoinType;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
-public class DataFrame_VConcat_Test {
+import java.util.Collection;
+
+import static java.util.Arrays.asList;
+
+@RunWith(Parameterized.class)
+public class DataFrame_VConcat_Test extends BaseDataFrameTest {
+
+    public DataFrame_VConcat_Test(boolean columnar) {
+        super(columnar);
+    }
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return asList(new Object[][]{{false}, {true}});
+    }
 
     @Test
     public void testVConcat_Default() {
 
         Index i = Index.withNames("a");
-        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i, 1, 2);
-        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i, 10, 20);
+        DataFrame df1 = createDf(i, 1, 2);
+        DataFrame df2 = createDf(i, 10, 20);
 
 
         DataFrame df = df1.vConcat(df2);
@@ -27,9 +43,9 @@ public class DataFrame_VConcat_Test {
     public void testVConcat_Default_Multiple() {
 
         Index i = Index.withNames("a");
-        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i, 1, 2);
-        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i, 10);
-        DataFrame df3 = DataFrame.fromSequenceFoldByRow(i, 20);
+        DataFrame df1 = createDf(i, 1, 2);
+        DataFrame df2 = createDf(i, 10);
+        DataFrame df3 = createDf(i, 20);
 
         DataFrame df = df1.vConcat(df2, df3);
 
@@ -45,12 +61,12 @@ public class DataFrame_VConcat_Test {
     public void testVConcat_Default_Left() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i1,
+        DataFrame df1 = createDf(i1,
                 1, 2,
                 3, 4);
 
         Index i2 = Index.withNames("c", "b");
-        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i2,
+        DataFrame df2 = createDf(i2,
                 10, 20,
                 30, 40);
 
@@ -68,12 +84,12 @@ public class DataFrame_VConcat_Test {
     public void testVConcat_Left() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i1,
+        DataFrame df1 = createDf(i1,
                 1, 2,
                 3, 4);
 
         Index i2 = Index.withNames("c", "b");
-        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i2,
+        DataFrame df2 = createDf(i2,
                 10, 20,
                 30, 40);
 
@@ -91,12 +107,12 @@ public class DataFrame_VConcat_Test {
     public void testVConcat_Right() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i1,
+        DataFrame df1 = createDf(i1,
                 1, 2,
                 3, 4);
 
         Index i2 = Index.withNames("c", "b");
-        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i2,
+        DataFrame df2 = createDf(i2,
                 10, 20,
                 30, 40);
 
@@ -114,17 +130,17 @@ public class DataFrame_VConcat_Test {
     public void testVConcat_Inner_Multiple() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i1,
+        DataFrame df1 = createDf(i1,
                 1, 2,
                 3, 4);
 
         Index i2 = Index.withNames("c", "b");
-        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i2,
+        DataFrame df2 = createDf(i2,
                 10, 20,
                 30, 40);
 
         Index i3 = Index.withNames("b", "d");
-        DataFrame df3 = DataFrame.fromSequenceFoldByRow(i3,
+        DataFrame df3 = createDf(i3,
                 100, 200,
                 300, 400);
 
@@ -144,12 +160,12 @@ public class DataFrame_VConcat_Test {
     public void testVConcat_Full() {
 
         Index i1 = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i1,
+        DataFrame df1 = createDf(i1,
                 1, 2,
                 3, 4);
 
         Index i2 = Index.withNames("c", "b");
-        DataFrame df2 = DataFrame.fromSequenceFoldByRow(i2,
+        DataFrame df2 = createDf(i2,
                 10, 20,
                 30, 40);
 

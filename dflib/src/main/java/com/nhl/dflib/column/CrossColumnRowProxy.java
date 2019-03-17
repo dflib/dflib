@@ -1,8 +1,9 @@
-package com.nhl.dflib.columnar;
+package com.nhl.dflib.column;
 
 import com.nhl.dflib.Index;
 import com.nhl.dflib.row.RowBuilder;
 import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.Series;
 
 public class CrossColumnRowProxy implements RowProxy {
 

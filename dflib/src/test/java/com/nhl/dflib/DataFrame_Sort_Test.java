@@ -1,15 +1,30 @@
 package com.nhl.dflib;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
+import java.util.Collection;
+
+import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 
-public class DataFrame_Sort_Test {
+@RunWith(Parameterized.class)
+public class DataFrame_Sort_Test extends BaseDataFrameTest {
+
+    public DataFrame_Sort_Test(boolean columnar) {
+        super(columnar);
+    }
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return asList(new Object[][]{{false}, {true}});
+    }
 
     @Test
     public void testSort() {
         Index i = Index.withNames("a", "b");
-        DataFrame dfi = DataFrame.fromSequenceFoldByRow(i,
+        DataFrame dfi = createDf(i,
                 0, 1,
                 2, 3,
                 -1, 2);
@@ -34,7 +49,7 @@ public class DataFrame_Sort_Test {
     @Test
     public void testSortByColumns_Names() {
         Index i = Index.withNames("a", "b");
-        DataFrame dfi = DataFrame.fromSequenceFoldByRow(i,
+        DataFrame dfi = createDf(i,
                 0, 4,
                 2, 2,
                 0, 2);
@@ -62,7 +77,7 @@ public class DataFrame_Sort_Test {
     @Test
     public void testSortByColumns_Positions() {
         Index i = Index.withNames("a", "b");
-        DataFrame dfi = DataFrame.fromSequenceFoldByRow(i,
+        DataFrame dfi = createDf(i,
                 0, 4,
                 2, 2,
                 0, 2);

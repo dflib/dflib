@@ -3,19 +3,32 @@ package com.nhl.dflib;
 import com.nhl.dflib.aggregate.Aggregator;
 import com.nhl.dflib.map.Hasher;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 
-public class DataFrameGroupByTest {
+@RunWith(Parameterized.class)
+public class DataFrameGroupByTest extends BaseDataFrameTest {
+
+    public DataFrameGroupByTest(boolean columnar) {
+        super(columnar);
+    }
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return asList(new Object[][]{{false}, {true}});
+    }
 
     @Test
     public void testGroupBy() {
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequenceFoldByRow(i,
+        DataFrame df = createDf(i,
                 1, "x",
                 2, "y",
                 1, "z",
@@ -46,7 +59,7 @@ public class DataFrameGroupByTest {
     @Test
     public void testGroupBy_Empty() {
         Index i = Index.withNames("a", "b");
-        DataFrame df = DataFrame.fromSequenceFoldByRow(i);
+        DataFrame df = createDf(i);
 
         GroupBy gb = df.groupBy(Hasher.forColumn("a"));
         assertNotNull(gb);
@@ -58,7 +71,7 @@ public class DataFrameGroupByTest {
     @Test
     public void testGroupBy_Agg() {
         Index i = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i,
+        DataFrame df1 = createDf(i,
                 1, "x",
                 2, "y",
                 1, "z",
@@ -77,7 +90,7 @@ public class DataFrameGroupByTest {
     @Test
     public void testGroupBy_Agg_MultipleAggregationsForKey() {
         Index i = Index.withNames("a", "b");
-        DataFrame df1 = DataFrame.fromSequenceFoldByRow(i,
+        DataFrame df1 = createDf(i,
                 1, "x",
                 2, "y",
                 1, "y",
