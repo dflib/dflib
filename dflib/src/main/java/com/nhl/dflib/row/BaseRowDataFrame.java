@@ -2,6 +2,7 @@ package com.nhl.dflib.row;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.join.JoinType;
@@ -9,6 +10,7 @@ import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.map.RowMapper;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.print.InlinePrinter;
+import com.nhl.dflib.series.ArrayIterator;
 import com.nhl.dflib.sort.Sorters;
 
 import java.util.ArrayList;
@@ -142,6 +144,25 @@ public abstract class BaseRowDataFrame implements DataFrame {
     @Override
     public Index getColumns() {
         return columns;
+    }
+
+    @Override
+    public Iterator<Series<?>> getDataColumns() {
+
+        int w = width();
+        int h = height();
+        Object[][] data = new Object[w][h];
+
+        int j = 0;
+        for (RowProxy r : this) {
+            for (int i = 0; i < w; h++) {
+                data[i][j] = r.get(i);
+            }
+
+            j++;
+        }
+
+        return new ArrayIterator<>(Series.fromColumnarData(data));
     }
 
     @Override

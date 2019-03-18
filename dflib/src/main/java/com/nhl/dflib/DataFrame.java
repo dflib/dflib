@@ -86,6 +86,13 @@ public interface DataFrame extends Iterable<RowProxy> {
     Index getColumns();
 
     /**
+     * Returns a read-only iterator over DataFrame columnar data.
+     *
+     * @return a read-only iterator over DataFrame columnar data
+     */
+    Iterator<Series<?>> getDataColumns();
+
+    /**
      * Returns the number of rows in this DataFrame. Aka the DataFrame "height". Note that depending on the type of
      * the DataFrame this operation may or may not be constant speed. In the worst case it would require a full scan
      * through all rows.

@@ -1,6 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.concat.HConcat;
+import com.nhl.dflib.series.ArrayIterator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +10,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
@@ -62,25 +62,7 @@ public abstract class Index implements Iterable<IndexPosition> {
 
     @Override
     public Iterator<IndexPosition> iterator() {
-        return new Iterator<IndexPosition>() {
-
-            private final int len = size();
-            private int counter = 0;
-
-            @Override
-            public boolean hasNext() {
-                return counter < len;
-            }
-
-            @Override
-            public IndexPosition next() {
-                if (!hasNext()) {
-                    throw new NoSuchElementException("Past the end of the iterator");
-                }
-
-                return positions[counter++];
-            }
-        };
+        return new ArrayIterator(positions);
     }
 
     public abstract boolean isCompact();

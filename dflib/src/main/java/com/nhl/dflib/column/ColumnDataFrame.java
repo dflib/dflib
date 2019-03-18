@@ -16,6 +16,7 @@ import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.print.InlinePrinter;
 import com.nhl.dflib.row.HConcatRowDataFrame;
 import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.series.ArrayIterator;
 import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.ColumnMappedSeries;
 import com.nhl.dflib.series.HeadSeries;
@@ -34,11 +35,11 @@ import java.util.stream.Stream;
 public class ColumnDataFrame implements DataFrame {
 
     private Index columnsIndex;
-    private Series[] columnsData;
+    private Series[] dataColumns;
 
-    public ColumnDataFrame(Index columnsIndex, Series[] columnsData) {
+    public ColumnDataFrame(Index columnsIndex, Series[] dataColumns) {
         this.columnsIndex = Objects.requireNonNull(columnsIndex);
-        this.columnsData = Objects.requireNonNull(columnsData);
+        this.dataColumns = Objects.requireNonNull(dataColumns);
     }
 
     public static <T> DataFrame fromStreamFoldByRow(Index columns, Stream<T> stream) {
@@ -99,12 +100,7 @@ public class ColumnDataFrame implements DataFrame {
             System.arraycopy(sequence, fullColumnsW * h, data[fullColumnsW], 0, lastColumnH);
         }
 
-        Series[] series = new Series[w];
-
-        for (int i = 0; i < w; i++) {
-            series[i] = new ArraySeries(data[i]);
-        }
-
+        Series[] series = Series.fromColumnarData(data);
         return new ColumnDataFrame(columns, series);
     }
 
@@ -135,23 +131,23 @@ public class ColumnDataFrame implements DataFrame {
             }
         }
 
-        Series[] series = new Series[width];
-
-        for (int i = 0; i < width; i++) {
-            series[i] = new ArraySeries(data[i]);
-        }
-
+        Series[] series = Series.fromColumnarData(data);
         return new ColumnDataFrame(columns, series);
     }
 
     @Override
     public int height() {
-        return columnsData.length > 0 ? columnsData[0].size() : 0;
+        return dataColumns.length > 0 ? dataColumns[0].size() : 0;
     }
 
     @Override
     public Index getColumns() {
         return columnsIndex;
+    }
+
+    @Override
+    public Iterator<Series<?>> getDataColumns() {
+        return new ArrayIterator(dataColumns);
     }
 
     @Override
@@ -169,7 +165,7 @@ public class ColumnDataFrame implements DataFrame {
         int width = width();
         Series<?>[] newColumnsData = new Series[width];
         for (int i = 0; i < width; i++) {
-            newColumnsData[i] = new HeadSeries<>(columnsData[i], len);
+            newColumnsData[i] = new HeadSeries<>(dataColumns[i], len);
         }
 
         return new ColumnDataFrame(columnsIndex, newColumnsData);
@@ -188,13 +184,13 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public DataFrame renameColumns(String... newColumnNames) {
         Index renamed = getColumns().rename(newColumnNames);
-        return new ColumnDataFrame(renamed, columnsData);
+        return new ColumnDataFrame(renamed, dataColumns);
     }
 
     @Override
     public DataFrame renameColumns(Map<String, String> oldToNewNames) {
         Index renamed = getColumns().rename(oldToNewNames);
-        return new ColumnDataFrame(renamed, columnsData);
+        return new ColumnDataFrame(renamed, dataColumns);
     }
 
     @Override
@@ -205,7 +201,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public <V> DataFrame filterByColumn(int columnPos, ValuePredicate<V> p) {
-        Series<Integer> filteredIndex = ColumnarFilterIndexer.filteredIndex(columnsData[columnPos], p);
+        Series<Integer> filteredIndex = ColumnarFilterIndexer.filteredIndex(dataColumns[columnPos], p);
         return filterWithIndex(filteredIndex);
     }
 
@@ -217,7 +213,7 @@ public class ColumnDataFrame implements DataFrame {
         int width = width();
         Series<?>[] newColumnsData = new Series[width];
         for (int i = 0; i < width; i++) {
-            newColumnsData[i] = new IndexedSeries<>(columnsData[i], filteredIndex);
+            newColumnsData[i] = new IndexedSeries<>(dataColumns[i], filteredIndex);
         }
 
         return new ColumnDataFrame(columnsIndex, newColumnsData);
@@ -245,7 +241,7 @@ public class ColumnDataFrame implements DataFrame {
         int width = width();
         Series<?>[] newColumnsData = new Series[width];
         for (int i = 0; i < width; i++) {
-            newColumnsData[i] = new IndexedSeries<>(columnsData[i], sortedIndex);
+            newColumnsData[i] = new IndexedSeries<>(dataColumns[i], sortedIndex);
         }
 
         return new ColumnDataFrame(columnsIndex, newColumnsData);
@@ -253,8 +249,8 @@ public class ColumnDataFrame implements DataFrame {
 
     private Comparator<Integer> toIntComparator(Comparator<RowProxy> rowComparator) {
         int h = height();
-        CrossColumnRowProxy p1 = new CrossColumnRowProxy(columnsIndex, columnsData, h);
-        CrossColumnRowProxy p2 = new CrossColumnRowProxy(columnsIndex, columnsData, h);
+        CrossColumnRowProxy p1 = new CrossColumnRowProxy(columnsIndex, dataColumns, h);
+        CrossColumnRowProxy p2 = new CrossColumnRowProxy(columnsIndex, dataColumns, h);
         return (i1, i2) -> rowComparator.compare(p1.rewind(i1), p2.rewind(i2));
     }
 
@@ -272,7 +268,7 @@ public class ColumnDataFrame implements DataFrame {
         Index expandedIndex = columnsIndex.addNames(columnNames);
 
         Series[] newData = new Series[width + extraWidth];
-        System.arraycopy(columnsData, 0, newData, 0, width);
+        System.arraycopy(dataColumns, 0, newData, 0, width);
 
         for (int i = 0; i < extraWidth; i++) {
             newData[width + i] = new RowMappedSeries(this, columnValueProducers[i]);
@@ -287,10 +283,10 @@ public class ColumnDataFrame implements DataFrame {
         int width = width();
 
         Series[] newData = new Series[width];
-        System.arraycopy(columnsData, 0, newData, 0, width);
+        System.arraycopy(dataColumns, 0, newData, 0, width);
 
         int pos = columnsIndex.position(columnName).ordinal();
-        newData[pos] = new ColumnMappedSeries(columnsData[pos], m);
+        newData[pos] = new ColumnMappedSeries(dataColumns[pos], m);
         return new ColumnDataFrame(columnsIndex, newData);
     }
 
@@ -306,7 +302,7 @@ public class ColumnDataFrame implements DataFrame {
 
         Series[] newColumns = new Series[newIndex.size()];
         for (int i = 0; i < newColumns.length; i++) {
-            newColumns[i] = columnsData[newIndex.getPositions()[i].position()];
+            newColumns[i] = dataColumns[newIndex.getPositions()[i].position()];
         }
 
         // note that we compact the index only after resolving series positions above
@@ -319,7 +315,7 @@ public class ColumnDataFrame implements DataFrame {
 
         Series[] newColumns = new Series[newIndex.size()];
         for (int i = 0; i < newColumns.length; i++) {
-            newColumns[i] = columnsData[newIndex.getPositions()[i].position()];
+            newColumns[i] = dataColumns[newIndex.getPositions()[i].position()];
         }
 
         // note that we compact the index only after resolving series positions above
@@ -330,7 +326,7 @@ public class ColumnDataFrame implements DataFrame {
     public Iterator<RowProxy> iterator() {
         return new Iterator<RowProxy>() {
 
-            final CrossColumnRowProxy rowProxy = new CrossColumnRowProxy(columnsIndex, columnsData, height());
+            final CrossColumnRowProxy rowProxy = new CrossColumnRowProxy(columnsIndex, dataColumns, height());
 
             @Override
             public boolean hasNext() {
