@@ -49,7 +49,7 @@ Create a DataFrame and do some common operations:
 ```java
 // creation
 Index columns = Index.withNames("a", "b", "c");
-DataFrame df1 = DataFrame.fromStream(columns, IntStream.range(1, 10000).boxed())
+DataFrame df1 = DataFrame.fromStreamFoldByRow(columns, IntStream.range(1, 10000).boxed())
 
 // filtering, mapping
 DataFrame df2 = df1
@@ -60,7 +60,7 @@ DataFrame df2 = df1
                                       // Transforming code must not alter the original row.
    
 // joins
-DataFrame df3 = DataFrame.fromSequence(columns, 2, "a", "b", 4, "c", "d")
+DataFrame df3 = DataFrame.fromSequenceFoldByRow(columns, 2, "a", "b", 4, "c", "d")
    .innerJoin(df2, Hasher.forColumn("a"), Hasher.forColumn("a"));
 ```
 
