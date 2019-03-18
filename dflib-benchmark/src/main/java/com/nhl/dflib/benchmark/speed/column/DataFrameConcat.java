@@ -32,11 +32,12 @@ public class DataFrameConcat {
 
     @Setup
     public void setUp() {
-        df1 = DataGenerator.columnarDFWithMixedData(rows);
-        df2 = DataGenerator.columnarDFWithMixedData(rows);
+        df1 = DataGenerator.columnarDFWithMixedData(rows + 5);
+        df2 = DataGenerator.columnarDFWithMixedData(rows - 5);
     }
 
     @Benchmark
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public Object hConcat() {
         return df1
                 .hConcat(df2)

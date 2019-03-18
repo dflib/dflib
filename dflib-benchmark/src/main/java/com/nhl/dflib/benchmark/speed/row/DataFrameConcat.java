@@ -37,6 +37,7 @@ public class DataFrameConcat {
     }
 
     @Benchmark
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public Object hConcat() {
         return df1
                 .hConcat(df2)
