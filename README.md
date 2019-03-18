@@ -57,7 +57,6 @@ DataFrame df2 = df1
    .mapColumnValue("b", (Integer v) -> v * 5)        // 1. transform a single column
    .map((from, to) -> from.copy(to)); // 2. transform the entire row. 
                                       // Showing how the row is copied.
-                                      // Transforming code must not alter the original row.
    
 // joins
 DataFrame df3 = DataFrame.fromSequenceFoldByRow(columns, 2, "a", "b", 4, "c", "d")
