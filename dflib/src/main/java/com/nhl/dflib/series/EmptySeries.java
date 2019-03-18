@@ -13,4 +13,11 @@ public class EmptySeries<T> implements Series<T> {
     public T get(int index) {
         throw new ArrayIndexOutOfBoundsException(index);
     }
+
+    @Override
+    public void copyTo(Object[] to, int fromOffset, int toOffset, int len) {
+        if (fromOffset + len > 0) {
+            throw new ArrayIndexOutOfBoundsException(fromOffset + len);
+        }
+    }
 }

@@ -24,6 +24,11 @@ public class ColumnMappedSeries<S, T> implements Series<T> {
         return getMaterialized().get(index);
     }
 
+    @Override
+    public void copyTo(Object[] to, int fromOffset, int toOffset, int len) {
+        getMaterialized().copyTo(to, fromOffset, toOffset, len);
+    }
+
     protected Series<T> getMaterialized() {
         if (materialized == null) {
             synchronized (this) {

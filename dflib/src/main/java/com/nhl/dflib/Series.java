@@ -23,6 +23,8 @@ public interface Series<T> {
 
     T get(int index);
 
+    void copyTo(Object[] to, int fromOffset, int toOffset, int len);
+
     /**
      * Returns a {@link Series} that contains a range of data from this series. If the "toExclusive" parameter
      *

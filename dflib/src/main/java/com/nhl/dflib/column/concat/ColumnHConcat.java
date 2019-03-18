@@ -5,8 +5,8 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.column.ColumnDataFrame;
 import com.nhl.dflib.join.JoinType;
+import com.nhl.dflib.series.ArraySeries;
 
-import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 public class ColumnHConcat {
@@ -37,16 +37,24 @@ public class ColumnHConcat {
         for (Series<?> s : rf.getDataColumns()) {
             newData[i++] = rt.apply(s);
         }
-        
+
         return new ColumnDataFrame(joinedColumns, newData);
     }
 
     private UnaryOperator<Series<?>> seriesTrimmer(int seriesHeight, int desiredHeight) {
-        if (seriesHeight == desiredHeight) {
-            return UnaryOperator.identity();
+        if (seriesHeight < desiredHeight) {
+            return s -> padSeries(s, desiredHeight - seriesHeight);
         } else if (seriesHeight > desiredHeight) {
-            return s -> s.openClosedRange(0, desiredHeight)
+            return s -> s.openClosedRange(0, desiredHeight);
+        } else {
+            return UnaryOperator.identity();
         }
+    }
+
+    private <T> Series<T> padSeries(Series<T> series, int paddingSize) {
+        Object[] padded = new Object[series.size() + paddingSize];
+        series.copyTo(padded, 0, 0, series.size());
+        return new ArraySeries(padded);
     }
 
     private int concatHeight(int lh, int rh) {

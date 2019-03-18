@@ -30,4 +30,13 @@ public class HeadSeries<T> implements Series<T> {
 
         return source.get(index);
     }
+
+    @Override
+    public void copyTo(Object[] to, int fromOffset, int toOffset, int len) {
+        if (fromOffset + len > this.len) {
+            throw new ArrayIndexOutOfBoundsException(fromOffset + len);
+        }
+
+        source.copyTo(to, fromOffset, toOffset, len);
+    }
 }

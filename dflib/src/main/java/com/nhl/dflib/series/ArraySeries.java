@@ -19,4 +19,9 @@ public class ArraySeries<T> implements Series<T> {
     public T get(int index) {
         return data[index];
     }
+
+    @Override
+    public void copyTo(Object[] to, int fromOffset, int toOffset, int len) {
+        System.arraycopy(data, fromOffset, to, toOffset, len);
+    }
 }

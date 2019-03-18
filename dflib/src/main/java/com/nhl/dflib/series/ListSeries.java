@@ -21,4 +21,11 @@ public class ListSeries<T> implements Series<T> {
     public T get(int index) {
         return data.get(index);
     }
+
+    @Override
+    public void copyTo(Object[] to, int fromOffset, int toOffset, int len) {
+        for(int i = 0; i < len ; i++) {
+            to[toOffset + i] = data.get(fromOffset + i);
+        }
+    }
 }

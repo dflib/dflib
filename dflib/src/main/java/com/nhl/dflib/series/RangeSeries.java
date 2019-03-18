@@ -18,7 +18,7 @@ public class RangeSeries<T> implements Series<T> {
             throw new IllegalArgumentException("Negative 'from' index: " + from);
         }
 
-        if (from > delegate.size() ) {
+        if (from > delegate.size()) {
             throw new IllegalArgumentException("From is out of range: " + from + " (" + delegate.size() + ")");
         }
 
@@ -39,5 +39,15 @@ public class RangeSeries<T> implements Series<T> {
         }
 
         return delegate.get(from + index);
+    }
+
+    @Override
+    public void copyTo(Object[] to, int fromOffset, int toOffset, int len) {
+
+        if (fromOffset + len > size) {
+            throw new ArrayIndexOutOfBoundsException(fromOffset + len);
+        }
+
+        delegate.copyTo(to, this.from + fromOffset, toOffset, len);
     }
 }
