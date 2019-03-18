@@ -90,7 +90,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @return a read-only iterator over DataFrame columnar data
      */
-    Iterator<Series<?>> getDataColumns();
+    Iterable<Series<?>> getDataColumns();
 
     /**
      * Returns the number of rows in this DataFrame. Aka the DataFrame "height". Note that depending on the type of

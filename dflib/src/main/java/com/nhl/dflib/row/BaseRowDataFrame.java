@@ -147,22 +147,24 @@ public abstract class BaseRowDataFrame implements DataFrame {
     }
 
     @Override
-    public Iterator<Series<?>> getDataColumns() {
+    public Iterable<Series<?>> getDataColumns() {
 
-        int w = width();
-        int h = height();
-        Object[][] data = new Object[w][h];
+        return () -> {
+            int w = width();
+            int h = height();
+            Object[][] data = new Object[w][h];
 
-        int j = 0;
-        for (RowProxy r : this) {
-            for (int i = 0; i < w; h++) {
-                data[i][j] = r.get(i);
+            int j = 0;
+            for (RowProxy r : BaseRowDataFrame.this) {
+                for (int i = 0; i < w; h++) {
+                    data[i][j] = r.get(i);
+                }
+
+                j++;
             }
 
-            j++;
-        }
-
-        return new ArrayIterator<>(Series.fromColumnarData(data));
+            return new ArrayIterator<>(Series.fromColumnarData(data));
+        };
     }
 
     @Override

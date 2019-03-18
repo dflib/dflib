@@ -3,9 +3,11 @@ package com.nhl.dflib.column;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.column.concat.ColumnHConcat;
 import com.nhl.dflib.column.filter.ColumnarFilterIndexer;
 import com.nhl.dflib.column.map.ColumnarMapper;
 import com.nhl.dflib.column.sort.ColumnarSortIndexer;
+import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.join.JoinType;
@@ -146,8 +148,8 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public Iterator<Series<?>> getDataColumns() {
-        return new ArrayIterator(dataColumns);
+    public Iterable<Series<?>> getDataColumns() {
+        return () -> new ArrayIterator(dataColumns);
     }
 
     @Override
@@ -252,6 +254,12 @@ public class ColumnDataFrame implements DataFrame {
         CrossColumnRowProxy p1 = new CrossColumnRowProxy(columnsIndex, dataColumns, h);
         CrossColumnRowProxy p2 = new CrossColumnRowProxy(columnsIndex, dataColumns, h);
         return (i1, i2) -> rowComparator.compare(p1.rewind(i1), p2.rewind(i2));
+    }
+
+    @Override
+    public DataFrame hConcat(JoinType how, DataFrame df) {
+        Index zipIndex = HConcat.zipIndex(getColumns(), df.getColumns());
+        return new ColumnHConcat(how).concat(zipIndex, this, df);
     }
 
     @Override
