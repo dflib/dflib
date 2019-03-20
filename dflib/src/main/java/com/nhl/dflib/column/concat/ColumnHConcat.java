@@ -5,6 +5,7 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.column.ColumnDataFrame;
 import com.nhl.dflib.join.JoinType;
+import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.series.ArraySeries;
 
 import java.util.function.UnaryOperator;
@@ -15,6 +16,30 @@ public class ColumnHConcat {
 
     public ColumnHConcat(JoinType semantics) {
         this.semantics = semantics;
+    }
+
+    public DataFrame concat(Index joinedColumns, DataFrame lf, DataFrame rf, RowCombiner rowCombiner) {
+        int lh = lf.height();
+        int rh = rf.height();
+
+        int h = concatHeight(lh, rh);
+
+        UnaryOperator<Series<?>> lt = seriesTrimmer(lh, h);
+        UnaryOperator<Series<?>> rt = seriesTrimmer(rh, h);
+
+        int w = joinedColumns.size();
+        Series<?>[] newData = new Series[w];
+        int i = 0;
+
+        for (Series<?> s : lf.getDataColumns()) {
+            newData[i++] = lt.apply(s);
+        }
+
+        for (Series<?> s : rf.getDataColumns()) {
+            newData[i++] = rt.apply(s);
+        }
+
+        return new ColumnDataFrame(joinedColumns, newData);
     }
 
     public DataFrame concat(Index joinedColumns, DataFrame lf, DataFrame rf) {

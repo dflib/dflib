@@ -16,7 +16,6 @@ import com.nhl.dflib.map.RowMapper;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.print.InlinePrinter;
-import com.nhl.dflib.row.HConcatRowDataFrame;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.ArrayIterator;
 import com.nhl.dflib.series.ArraySeries;
@@ -264,8 +263,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public DataFrame hConcat(Index zippedColumns, JoinType how, DataFrame df, RowCombiner c) {
-        // TODO: columnar implementation...
-        return new HConcatRowDataFrame(zippedColumns, how, this, df, c).materialize();
+        return new ColumnHConcat(how).concat(zippedColumns, this, df, c);
     }
 
     @Override
