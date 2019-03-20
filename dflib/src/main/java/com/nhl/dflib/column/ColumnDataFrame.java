@@ -4,6 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.column.concat.ColumnHConcat;
+import com.nhl.dflib.column.concat.ColumnVConcat;
 import com.nhl.dflib.column.filter.ColumnarFilterIndexer;
 import com.nhl.dflib.column.map.ColumnarMapper;
 import com.nhl.dflib.column.sort.ColumnarSortIndexer;
@@ -264,6 +265,19 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public DataFrame hConcat(Index zippedColumns, JoinType how, DataFrame df, RowCombiner c) {
         return new ColumnHConcat(how).concat(zippedColumns, this, df, c);
+    }
+
+    @Override
+    public DataFrame vConcat(JoinType how, DataFrame... dfs) {
+        if (dfs.length == 0) {
+            return this;
+        }
+
+        DataFrame[] combined = new DataFrame[dfs.length + 1];
+        combined[0] = this;
+        System.arraycopy(dfs, 0, combined, 1, dfs.length);
+
+        return ColumnVConcat.concat(how, combined);
     }
 
     @Override
