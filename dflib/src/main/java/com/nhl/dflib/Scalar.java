@@ -2,6 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.Aggregator;
 import com.nhl.dflib.aggregate.ColumnAggregator;
+import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.row.RowBuilder;
 import com.nhl.dflib.row.RowProxy;
@@ -47,5 +48,25 @@ public class Scalar<T> {
 
     public ColumnAggregator first() {
         return Aggregator.first(position);
+    }
+
+    public ColumnAggregator count() {
+        return Aggregator.count(position);
+    }
+
+    public ColumnAggregator average() {
+        return Aggregator.average(position);
+    }
+
+    public ColumnAggregator median() {
+        return Aggregator.median(position);
+    }
+
+    public ColumnAggregator sum() {
+        return Aggregator.sum(position);
+    }
+
+    public <O> JoinPredicate join(Scalar<O> other) {
+        return JoinPredicate.on(position, other.position);
     }
 }
