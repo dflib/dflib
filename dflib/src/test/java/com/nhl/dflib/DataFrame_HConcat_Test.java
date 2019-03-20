@@ -95,6 +95,40 @@ public class DataFrame_HConcat_Test extends BaseDataFrameTest {
     }
 
     @Test
+    public void testZipRows_SparseDF_ReorgColumns() {
+
+        Index i1 = Index.withNames("a", "b");
+        DataFrame df1 = createDf(i1,
+                0, 1,
+                2, 3);
+
+        Index i2 = Index.withNames("c", "d");
+        DataFrame df2 = createDf(i2,
+                10, 20,
+                30, 40,
+                50, 60);
+
+        RowCombiner c = (lr, rr, tr) -> {
+
+            if (rr != null) {
+                tr.set(0, rr.get(1));
+            }
+
+            if (lr != null) {
+                tr.set(1, lr.get(0));
+            }
+        };
+
+        DataFrame df = df1.hConcat(Index.withNames("x", "y"), JoinType.right, df2, c);
+
+        new DFAsserts(df, "x", "y")
+                .expectHeight(3)
+                .expectRow(0, 20, 0)
+                .expectRow(1, 40, 2)
+                .expectRow(2, 60, null);
+    }
+
+    @Test
     public void testZipRows_InnerJoin() {
 
         Index i1 = Index.withNames("a", "b");

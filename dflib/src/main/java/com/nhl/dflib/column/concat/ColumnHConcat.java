@@ -4,10 +4,13 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.column.ColumnDataFrame;
+import com.nhl.dflib.column.map.MultiSeriesRowBuilder;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.RowCombiner;
+import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.ArraySeries;
 
+import java.util.Iterator;
 import java.util.function.UnaryOperator;
 
 public class ColumnHConcat {
@@ -24,22 +27,21 @@ public class ColumnHConcat {
 
         int h = concatHeight(lh, rh);
 
-        UnaryOperator<Series<?>> lt = seriesTrimmer(lh, h);
-        UnaryOperator<Series<?>> rt = seriesTrimmer(rh, h);
+        MultiSeriesRowBuilder tr = new MultiSeriesRowBuilder(joinedColumns, h);
 
-        int w = joinedColumns.size();
-        Series<?>[] newData = new Series[w];
-        int i = 0;
+        Iterator<RowProxy> li = lf.iterator();
+        Iterator<RowProxy> ri = rf.iterator();
 
-        for (Series<?> s : lf.getDataColumns()) {
-            newData[i++] = lt.apply(s);
+        for (int i = 0; i < h; i++) {
+
+            RowProxy lr = i < lh ? li.next() : null;
+            RowProxy rr = i < rh ? ri.next() : null;
+
+            rowCombiner.combine(lr, rr, tr);
+            tr.reset();
         }
 
-        for (Series<?> s : rf.getDataColumns()) {
-            newData[i++] = rt.apply(s);
-        }
-
-        return new ColumnDataFrame(joinedColumns, newData);
+        return new ColumnDataFrame(joinedColumns, tr.getData());
     }
 
     public DataFrame concat(Index joinedColumns, DataFrame lf, DataFrame rf) {
