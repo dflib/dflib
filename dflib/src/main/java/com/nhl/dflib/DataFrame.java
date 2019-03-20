@@ -2,7 +2,6 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.Aggregator;
 import com.nhl.dflib.aggregate.ColumnAggregator;
-import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.groupby.Grouper;
@@ -212,18 +211,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param dfs DataFrames to concatenate with this one
      * @return a new "taller" DataFrame
      */
-    default DataFrame vConcat(JoinType how, DataFrame... dfs) {
-
-        if (dfs.length == 0) {
-            return this;
-        }
-
-        DataFrame[] combined = new DataFrame[dfs.length + 1];
-        combined[0] = this;
-        System.arraycopy(dfs, 0, combined, 1, dfs.length);
-
-        return VConcat.concat(how, combined);
-    }
+    DataFrame vConcat(JoinType how, DataFrame... dfs);
 
     /**
      * Joins this DataFrame with another DataFrame based on a row predicate and specified join semantics. Uses

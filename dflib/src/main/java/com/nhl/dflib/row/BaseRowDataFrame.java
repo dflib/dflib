@@ -3,6 +3,7 @@ package com.nhl.dflib.row;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.concat.HConcat;
+import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.join.JoinType;
@@ -154,6 +155,20 @@ public abstract class BaseRowDataFrame implements DataFrame {
     @Override
     public DataFrame hConcat(Index zippedColumns, JoinType how, DataFrame df, RowCombiner c) {
         return new HConcatRowDataFrame(zippedColumns, how, this, df, c).materialize();
+    }
+
+    @Override
+    public DataFrame vConcat(JoinType how, DataFrame... dfs) {
+
+        if (dfs.length == 0) {
+            return this;
+        }
+
+        DataFrame[] combined = new DataFrame[dfs.length + 1];
+        combined[0] = this;
+        System.arraycopy(dfs, 0, combined, 1, dfs.length);
+
+        return VConcat.concat(how, combined);
     }
 
     @Override
