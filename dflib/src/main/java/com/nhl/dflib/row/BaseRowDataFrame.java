@@ -10,6 +10,7 @@ import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.map.RowMapper;
 import com.nhl.dflib.map.RowToValueMapper;
+import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.print.InlinePrinter;
 import com.nhl.dflib.sort.Sorters;
 
@@ -118,6 +119,13 @@ public abstract class BaseRowDataFrame implements DataFrame {
     }
 
     @Override
+    public <V> DataFrame addColumns(String[] columnNames, RowToValueMapper<V>... columnValueProducers) {
+        Index index = getColumns();
+        Index expandedIndex = index.addNames(columnNames);
+        return map(expandedIndex, RowMapper.addColumns(columnValueProducers));
+    }
+
+    @Override
     public DataFrame dropColumns(String... columnNames) {
         Index index = getColumns();
         Index newIndex = index.dropNames(columnNames);
@@ -200,6 +208,14 @@ public abstract class BaseRowDataFrame implements DataFrame {
     @Override
     public DataFrame map(Index mappedColumns, RowMapper rowMapper) {
         return new MappedRowDataFrame(mappedColumns, this, rowMapper).materialize();
+    }
+
+    @Override
+    public <V, VR> DataFrame mapColumnValue(String columnName, ValueMapper<V, VR> m) {
+        Index index = getColumns();
+        Index compactIndex = index.compactIndex();
+        int pos = index.position(columnName).ordinal();
+        return map(compactIndex, RowMapper.mapColumnValue(pos, m));
     }
 
     /**

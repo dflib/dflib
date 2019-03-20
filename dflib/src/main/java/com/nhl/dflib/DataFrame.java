@@ -113,12 +113,7 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     DataFrame map(Index mappedColumns, RowMapper rowMapper);
 
-    default <V, VR> DataFrame mapColumnValue(String columnName, ValueMapper<V, VR> m) {
-        Index index = getColumns();
-        Index compactIndex = index.compactIndex();
-        int pos = index.position(columnName).ordinal();
-        return map(compactIndex, RowMapper.mapColumnValue(pos, m));
-    }
+    <V, VR> DataFrame mapColumnValue(String columnName, ValueMapper<V, VR> m);
 
     default <V> DataFrame mapColumn(String columnName, RowToValueMapper<V> m) {
         Index index = getColumns();
@@ -131,11 +126,7 @@ public interface DataFrame extends Iterable<RowProxy> {
         return addColumns(new String[]{columnName}, columnValueProducer);
     }
 
-    default <V> DataFrame addColumns(String[] columnNames, RowToValueMapper<V>... columnValueProducers) {
-        Index index = getColumns();
-        Index expandedIndex = index.addNames(columnNames);
-        return map(expandedIndex, RowMapper.addColumns(columnValueProducers));
-    }
+    <V> DataFrame addColumns(String[] columnNames, RowToValueMapper<V>... columnValueProducers);
 
     DataFrame renameColumns(String... columnNames);
 
