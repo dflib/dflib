@@ -10,3 +10,4 @@
 *  #8 Store DataFrames in CSV
 *  #9 JDBC loader for DataFrames
 * #10 JDBC saver for DataFrames
+* #14 Scalar: helper accessor to DataFrame values

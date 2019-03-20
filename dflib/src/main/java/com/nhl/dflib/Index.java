@@ -24,7 +24,6 @@ public abstract class Index implements Iterable<IndexPosition> {
         this.positions = positions;
     }
 
-
     protected static IndexPosition[] continuousPositions(String... names) {
         IndexPosition[] positions = new IndexPosition[names.length];
         for (int i = 0; i < names.length; i++) {
@@ -49,6 +48,23 @@ public abstract class Index implements Iterable<IndexPosition> {
         }
 
         return true;
+    }
+
+    /**
+     * Creates a new index based on enum values.
+     *
+     * @param columns enum type that defines Index columns
+     * @return a new Index with columns matching the provided Enum
+     */
+    public static <E extends Enum<E>> Index withNames(Class<E> columns) {
+
+        E[] enumValues = columns.getEnumConstants();
+        String[] names = new String[enumValues.length];
+        for (int i = 0; i < enumValues.length; i++) {
+            names[i] = enumValues[i].name();
+        }
+
+        return withNames(names);
     }
 
     public static Index withNames(String... names) {
