@@ -2,7 +2,6 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.Aggregator;
 import com.nhl.dflib.aggregate.ColumnAggregator;
-import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
@@ -186,13 +185,10 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Rows on the left or right sides can be either truncated or padded.
      *
      * @param df  another DataFrame
-     * @param how semantics of zip operation
+     * @param how semantics of concat operation
      * @return a new "wider" DataFrame that is a combination of columns from this DataFrame and a DataFrame argument
      */
-    default DataFrame hConcat(JoinType how, DataFrame df) {
-        Index zipIndex = HConcat.zipIndex(getColumns(), df.getColumns());
-        return hConcat(zipIndex, how, df, RowCombiner.zip(width()));
-    }
+    DataFrame hConcat(JoinType how, DataFrame df);
 
     DataFrame hConcat(Index zippedColumns, JoinType how, DataFrame df, RowCombiner c);
 
