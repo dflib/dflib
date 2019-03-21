@@ -6,7 +6,9 @@ import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
+import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
+import com.nhl.dflib.join.NestedLoopJoiner;
 import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.map.RowMapper;
 import com.nhl.dflib.map.RowToValueMapper;
@@ -177,6 +179,13 @@ public abstract class BaseRowDataFrame implements DataFrame {
         System.arraycopy(dfs, 0, combined, 1, dfs.length);
 
         return VConcat.concat(how, combined);
+    }
+
+    @Override
+    public DataFrame join(DataFrame df, JoinPredicate p, JoinType how) {
+        NestedLoopJoiner joiner = new NestedLoopJoiner(p, how);
+        Index joinedIndex = joiner.joinIndex(getColumns(), df.getColumns());
+        return joiner.joinRows(joinedIndex, this, df);
     }
 
     @Override
