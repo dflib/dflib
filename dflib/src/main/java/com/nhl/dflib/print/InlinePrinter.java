@@ -5,17 +5,11 @@ package com.nhl.dflib.print;
  */
 public class InlinePrinter extends BasePrinter {
 
-    private static final InlinePrinter DEFAULT_PRINTER = new InlinePrinter();
-
     public InlinePrinter() {
     }
 
     public InlinePrinter(int maxDisplayRows, int maxDisplayColumnWith) {
         super(maxDisplayRows, maxDisplayColumnWith);
-    }
-
-    public static InlinePrinter getInstance() {
-        return DEFAULT_PRINTER;
     }
 
     @Override
