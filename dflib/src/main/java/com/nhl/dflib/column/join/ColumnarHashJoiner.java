@@ -10,8 +10,11 @@ import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.series.ListSeries;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -57,25 +60,30 @@ public class ColumnarHashJoiner {
 
     private DataFrame innerJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
 
-        RowCombiner combiner = RowCombiner.zip(lf.width());
-        MultiListRowBuilder rowBuilder = new MultiListRowBuilder(joinedColumns, 10);
+        List<Integer> li = new ArrayList<>();
+        List<Integer> ri = new ArrayList<>();
 
-        GroupBy rightIndex = rf.groupBy(rightHasher);
+        int[] counter = new int[1];
+        DataFrame rfi = rf.addColumn("$row_index", r -> counter[0]++);
 
+        GroupBy rightIndex = rfi.groupBy(rightHasher);
+
+        int i = 0;
         for (RowProxy lr : lf) {
 
             Object lKey = leftHasher.map(lr);
             DataFrame rightMatches = rightIndex.getGroup(lKey);
             if (rightMatches != null) {
-
                 for (RowProxy rr : rightMatches) {
-                    rowBuilder.startRow();
-                    combiner.combine(lr, rr, rowBuilder);
+                    li.add(i);
+                    ri.add((Integer) rr.get("$row_index"));
                 }
             }
+
+            i++;
         }
 
-        return new ColumnDataFrame(joinedColumns, rowBuilder.getData());
+        return new JoinMerger(new ListSeries<>(li), new ListSeries<>(ri)).join(joinedColumns, lf, rf);
     }
 
     private DataFrame leftJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
