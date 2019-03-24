@@ -20,18 +20,17 @@ class TabularPrinterWorker extends BasePrinterWorker {
         Index columns = df.getColumns();
         Iterator<RowProxy> values = df.iterator();
 
-        int width = columns.size();
-        if (width == 0) {
+        int w = columns.size();
+        if (w == 0) {
             return out;
         }
 
         IndexPosition[] positions = columns.getPositions();
 
-
-        int[] columnWidth = new int[width];
+        int[] columnWidth = new int[w];
         List<String[]> data = new ArrayList<>();
 
-        for (int i = 0; i < width; i++) {
+        for (int i = 0; i < w; i++) {
             columnWidth[i] = positions[i].name().length();
         }
 
@@ -41,9 +40,9 @@ class TabularPrinterWorker extends BasePrinterWorker {
             }
 
             RowProxy dr = values.next();
-            String[] drValue = new String[width];
+            String[] drValue = new String[w];
 
-            for (int j = 0; j < width; j++) {
+            for (int j = 0; j < w; j++) {
                 drValue[j] = String.valueOf(dr.get(j));
                 columnWidth[j] = Math.max(columnWidth[j], drValue[j].length());
             }
@@ -52,12 +51,12 @@ class TabularPrinterWorker extends BasePrinterWorker {
         }
 
         // constrain column width
-        for (int i = 0; i < width; i++) {
+        for (int i = 0; i < w; i++) {
             columnWidth[i] = Math.min(columnWidth[i], maxDisplayColumnWith);
         }
 
         // print header
-        for (int i = 0; i < width; i++) {
+        for (int i = 0; i < w; i++) {
             if (i > 0) {
                 append(" ");
             }
@@ -66,7 +65,7 @@ class TabularPrinterWorker extends BasePrinterWorker {
 
         // print header separator
         appendNewLine();
-        for (int i = 0; i < width; i++) {
+        for (int i = 0; i < w; i++) {
             if (i > 0) {
                 append(" ");
             }
@@ -76,11 +75,10 @@ class TabularPrinterWorker extends BasePrinterWorker {
             }
         }
 
-
         // print data
         for (String[] row : data) {
             appendNewLine();
-            for (int i = 0; i < width; i++) {
+            for (int i = 0; i < w; i++) {
                 if (i > 0) {
                     append(" ");
                 }
@@ -91,6 +89,12 @@ class TabularPrinterWorker extends BasePrinterWorker {
         if (values.hasNext()) {
             appendNewLine().append("...");
         }
+
+        int h = df.height();
+
+        String rowsLabel = h == 1 ? " row x " : " rows x ";
+        String columnsLabel = w == 1 ? " column" : " columns";
+        appendNewLine().append(h).append(rowsLabel).append(w).append(columnsLabel);
 
         return out;
     }
