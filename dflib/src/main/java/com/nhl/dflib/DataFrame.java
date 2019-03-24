@@ -2,7 +2,6 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.Aggregator;
 import com.nhl.dflib.aggregate.ColumnAggregator;
-import com.nhl.dflib.column.ColumnDataFrame;
 import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.join.JoinPredicate;

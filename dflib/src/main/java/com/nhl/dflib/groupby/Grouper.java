@@ -1,10 +1,10 @@
-package com.nhl.dflib.column.groupby;
+package com.nhl.dflib.groupby;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.column.ColumnDataFrame;
+import com.nhl.dflib.ColumnDataFrame;
 import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.IndexedSeries;
@@ -16,11 +16,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ColumnGrouper {
+public class Grouper {
 
     private Hasher hasher;
 
-    public ColumnGrouper(Hasher hasher) {
+    public Grouper(Hasher hasher) {
         this.hasher = hasher;
     }
 

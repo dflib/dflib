@@ -1,15 +1,13 @@
-package com.nhl.dflib.column.filter;
+package com.nhl.dflib.filter;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.filter.RowPredicate;
-import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.series.ListSeries;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ColumnarFilterIndexer {
+public class FilterIndexer {
 
     public static Series<Integer> filteredIndex(DataFrame source, RowPredicate p) {
 

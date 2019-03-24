@@ -1,8 +1,6 @@
-package com.nhl.dflib.column;
+package com.nhl.dflib.row;
 
 import com.nhl.dflib.Index;
-import com.nhl.dflib.row.RowBuilder;
-import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.Series;
 
 public class CrossColumnRowProxy implements RowProxy {

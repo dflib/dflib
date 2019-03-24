@@ -1,9 +1,9 @@
-package com.nhl.dflib.column.join;
+package com.nhl.dflib.join;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.column.ColumnDataFrame;
+import com.nhl.dflib.ColumnDataFrame;
 import com.nhl.dflib.series.IndexedSeries;
 
 import java.util.Iterator;

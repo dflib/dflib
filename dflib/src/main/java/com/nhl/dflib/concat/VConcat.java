@@ -1,10 +1,10 @@
-package com.nhl.dflib.column.concat;
+package com.nhl.dflib.concat;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IndexPosition;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.column.ColumnDataFrame;
+import com.nhl.dflib.ColumnDataFrame;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.series.ArraySeries;
 
@@ -15,36 +15,36 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-public class ColumnVConcat {
-    private static final EnumMap<JoinType, ColumnVConcat> JOINERS = new EnumMap<>(JoinType.class);
+public class VConcat {
+    private static final EnumMap<JoinType, VConcat> JOINERS = new EnumMap<>(JoinType.class);
 
     static {
         for (JoinType s : JoinType.values()) {
             Function<Index[], Index> joiner;
             switch (s) {
                 case inner:
-                    joiner = ColumnVConcat::innerJoin;
+                    joiner = VConcat::innerJoin;
                     break;
                 case left:
-                    joiner = ColumnVConcat::leftJoin;
+                    joiner = VConcat::leftJoin;
                     break;
                 case right:
-                    joiner = ColumnVConcat::rightJoin;
+                    joiner = VConcat::rightJoin;
                     break;
                 case full:
-                    joiner = ColumnVConcat::fullJoin;
+                    joiner = VConcat::fullJoin;
                     break;
                 default:
                     throw new IllegalStateException("Unexpected join semantics: " + s);
             }
 
-            JOINERS.put(s, new ColumnVConcat(joiner));
+            JOINERS.put(s, new VConcat(joiner));
         }
     }
 
     private Function<Index[], Index> zipper;
 
-    protected ColumnVConcat(Function<Index[], Index> zipper) {
+    protected VConcat(Function<Index[], Index> zipper) {
         this.zipper = zipper;
     }
 
@@ -60,7 +60,7 @@ public class ColumnVConcat {
         }
     }
 
-    public static ColumnVConcat getInstance(JoinType how) {
+    public static VConcat getInstance(JoinType how) {
         return JOINERS.get(Objects.requireNonNull(how, "Null 'how' (join semantics)"));
     }
 

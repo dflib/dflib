@@ -1,12 +1,11 @@
-package com.nhl.dflib.column.map;
+package com.nhl.dflib.map;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.column.ColumnDataFrame;
-import com.nhl.dflib.map.RowMapper;
+import com.nhl.dflib.ColumnDataFrame;
 
-public class ColumnarMapper {
+public class Mapper {
 
     public static DataFrame map(DataFrame source, Index mappedColumns, RowMapper mapper) {
         return new ColumnDataFrame(mappedColumns, mapData(source, mappedColumns, mapper));

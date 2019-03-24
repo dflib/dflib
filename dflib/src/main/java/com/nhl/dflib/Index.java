@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.column.concat.ColumnHConcat;
+import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.series.ArrayIterator;
 
 import java.util.ArrayList;
@@ -119,7 +119,7 @@ public abstract class Index implements Iterable<IndexPosition> {
     }
 
     public Index addNames(String... extraNames) {
-        return ColumnHConcat.zipIndex(this, withNames(extraNames));
+        return HConcat.zipIndex(this, withNames(extraNames));
     }
 
     public Index selectNames(String... names) {

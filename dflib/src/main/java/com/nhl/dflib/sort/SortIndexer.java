@@ -1,4 +1,4 @@
-package com.nhl.dflib.column.sort;
+package com.nhl.dflib.sort;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class ColumnarSortIndexer {
+public class SortIndexer {
 
     public static Series<Integer> sortedIndex(DataFrame source, Comparator<Integer> indexComparator) {
 

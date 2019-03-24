@@ -1,11 +1,11 @@
-package com.nhl.dflib.column.concat;
+package com.nhl.dflib.concat;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IndexPosition;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.column.ColumnDataFrame;
-import com.nhl.dflib.column.map.MultiArrayRowBuilder;
+import com.nhl.dflib.ColumnDataFrame;
+import com.nhl.dflib.map.MultiArrayRowBuilder;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.row.RowProxy;
@@ -14,11 +14,11 @@ import com.nhl.dflib.series.ArraySeries;
 import java.util.Iterator;
 import java.util.function.UnaryOperator;
 
-public class ColumnHConcat {
+public class HConcat {
 
     private JoinType semantics;
 
-    public ColumnHConcat(JoinType semantics) {
+    public HConcat(JoinType semantics) {
         this.semantics = semantics;
     }
 

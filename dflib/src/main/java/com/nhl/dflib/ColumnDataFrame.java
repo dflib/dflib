@@ -1,19 +1,15 @@
-package com.nhl.dflib.column;
+package com.nhl.dflib;
 
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.GroupBy;
-import com.nhl.dflib.Index;
-import com.nhl.dflib.Printers;
-import com.nhl.dflib.Series;
-import com.nhl.dflib.column.concat.ColumnHConcat;
-import com.nhl.dflib.column.concat.ColumnVConcat;
-import com.nhl.dflib.column.filter.ColumnarFilterIndexer;
-import com.nhl.dflib.column.groupby.ColumnGrouper;
-import com.nhl.dflib.column.join.ColumnarHashJoiner;
-import com.nhl.dflib.column.join.ColumnarNestedLoopJoiner;
-import com.nhl.dflib.column.join.JoinMerger;
-import com.nhl.dflib.column.map.ColumnarMapper;
-import com.nhl.dflib.column.sort.ColumnarSortIndexer;
+import com.nhl.dflib.concat.HConcat;
+import com.nhl.dflib.concat.VConcat;
+import com.nhl.dflib.filter.FilterIndexer;
+import com.nhl.dflib.groupby.Grouper;
+import com.nhl.dflib.join.HashJoiner;
+import com.nhl.dflib.join.NestedLoopJoiner;
+import com.nhl.dflib.join.JoinMerger;
+import com.nhl.dflib.map.Mapper;
+import com.nhl.dflib.row.CrossColumnRowProxy;
+import com.nhl.dflib.sort.SortIndexer;
 import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.join.JoinPredicate;
@@ -265,7 +261,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public DataFrame map(Index mappedColumns, RowMapper rowMapper) {
-        return ColumnarMapper.map(this, mappedColumns, rowMapper);
+        return Mapper.map(this, mappedColumns, rowMapper);
     }
 
     @Override
@@ -282,13 +278,13 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public DataFrame filter(RowPredicate p) {
-        Series<Integer> filteredIndex = ColumnarFilterIndexer.filteredIndex(this, p);
+        Series<Integer> filteredIndex = FilterIndexer.filteredIndex(this, p);
         return filterWithIndex(filteredIndex);
     }
 
     @Override
     public <V> DataFrame filterByColumn(int columnPos, ValuePredicate<V> p) {
-        Series<Integer> filteredIndex = ColumnarFilterIndexer.filteredIndex(dataColumns[columnPos], p);
+        Series<Integer> filteredIndex = FilterIndexer.filteredIndex(dataColumns[columnPos], p);
         return filterWithIndex(filteredIndex);
     }
 
@@ -323,7 +319,7 @@ public class ColumnDataFrame implements DataFrame {
 
     private DataFrame sort(Comparator<RowProxy> comparator) {
         Comparator<Integer> rowComparator = toIntComparator(comparator);
-        Series<Integer> sortedIndex = ColumnarSortIndexer.sortedIndex(this, rowComparator);
+        Series<Integer> sortedIndex = SortIndexer.sortedIndex(this, rowComparator);
 
         int width = width();
         Series<?>[] newColumnsData = new Series[width];
@@ -343,13 +339,13 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public DataFrame hConcat(JoinType how, DataFrame df) {
-        Index zipIndex = ColumnHConcat.zipIndex(getColumns(), df.getColumns());
-        return new ColumnHConcat(how).concat(zipIndex, this, df);
+        Index zipIndex = HConcat.zipIndex(getColumns(), df.getColumns());
+        return new HConcat(how).concat(zipIndex, this, df);
     }
 
     @Override
     public DataFrame hConcat(Index zippedColumns, JoinType how, DataFrame df, RowCombiner c) {
-        return new ColumnHConcat(how).concat(zippedColumns, this, df, c);
+        return new HConcat(how).concat(zippedColumns, this, df, c);
     }
 
     @Override
@@ -362,19 +358,19 @@ public class ColumnDataFrame implements DataFrame {
         combined[0] = this;
         System.arraycopy(dfs, 0, combined, 1, dfs.length);
 
-        return ColumnVConcat.concat(how, combined);
+        return VConcat.concat(how, combined);
     }
 
     @Override
     public DataFrame join(DataFrame df, JoinPredicate p, JoinType how) {
-        ColumnarNestedLoopJoiner joiner = new ColumnarNestedLoopJoiner(p, how);
+        NestedLoopJoiner joiner = new NestedLoopJoiner(p, how);
         JoinMerger merger = joiner.joinMerger(this, df);
         return merger.join(joiner.joinIndex(this.getColumns(), df.getColumns()), this, df);
     }
 
     @Override
     public DataFrame join(DataFrame df, Hasher leftHasher, Hasher rightHasher, JoinType how) {
-        ColumnarHashJoiner joiner = new ColumnarHashJoiner(leftHasher, rightHasher, how);
+        HashJoiner joiner = new HashJoiner(leftHasher, rightHasher, how);
         JoinMerger merger = joiner.joinMerger(this, df);
         return merger.join(joiner.joinIndex(this.getColumns(), df.getColumns()), this, df);
     }
@@ -443,7 +439,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public GroupBy groupBy(Hasher by) {
-        return new ColumnGrouper(by).group(this);
+        return new Grouper(by).group(this);
     }
 
     @Override

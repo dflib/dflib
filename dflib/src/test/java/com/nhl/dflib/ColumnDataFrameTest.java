@@ -1,5 +1,6 @@
-package com.nhl.dflib.column;
+package com.nhl.dflib;
 
+import com.nhl.dflib.ColumnDataFrame;
 import com.nhl.dflib.DFAsserts;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;

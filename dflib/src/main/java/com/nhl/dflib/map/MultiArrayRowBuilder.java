@@ -1,4 +1,4 @@
-package com.nhl.dflib.column.map;
+package com.nhl.dflib.map;
 
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;

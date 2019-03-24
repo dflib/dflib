@@ -2,7 +2,7 @@ package com.nhl.dflib.benchmark;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.column.ColumnDataFrame;
+import com.nhl.dflib.ColumnDataFrame;
 
 import java.util.Spliterators;
 import java.util.function.Consumer;

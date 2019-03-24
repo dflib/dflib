@@ -1,10 +1,8 @@
-package com.nhl.dflib.column.join;
+package com.nhl.dflib.join;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.column.concat.ColumnHConcat;
-import com.nhl.dflib.join.JoinPredicate;
-import com.nhl.dflib.join.JoinType;
+import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.ListSeries;
 
@@ -17,18 +15,18 @@ import java.util.Set;
 /**
  * A DataFrame joiner based on rows comparing predicate. Should theoretically have O(N * M) performance.
  */
-public class ColumnarNestedLoopJoiner {
+public class NestedLoopJoiner {
 
     private JoinPredicate joinPredicate;
     private JoinType semantics;
 
-    public ColumnarNestedLoopJoiner(JoinPredicate joinPredicate, JoinType semantics) {
+    public NestedLoopJoiner(JoinPredicate joinPredicate, JoinType semantics) {
         this.joinPredicate = Objects.requireNonNull(joinPredicate);
         this.semantics = Objects.requireNonNull(semantics);
     }
 
     public Index joinIndex(Index li, Index ri) {
-        return ColumnHConcat.zipIndex(li, ri);
+        return HConcat.zipIndex(li, ri);
     }
 
     public JoinMerger joinMerger(DataFrame lf, DataFrame rf) {

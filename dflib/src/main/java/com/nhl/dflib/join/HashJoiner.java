@@ -1,10 +1,9 @@
-package com.nhl.dflib.column.join;
+package com.nhl.dflib.join;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.column.concat.ColumnHConcat;
-import com.nhl.dflib.join.JoinType;
+import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.ListSeries;
@@ -19,7 +18,7 @@ import java.util.Set;
  * two custom "hash" functions for the rows on the left and the right sides of the join, each producing values, whose
  * equality can be used as a join condition. Should theoretically have O(N + M) performance.
  */
-public class ColumnarHashJoiner {
+public class HashJoiner {
 
     private static final String ROW_INDEX_COLUMN = "$row_index_" + System.currentTimeMillis();
 
@@ -27,7 +26,7 @@ public class ColumnarHashJoiner {
     private Hasher rightHasher;
     private JoinType semantics;
 
-    public ColumnarHashJoiner(
+    public HashJoiner(
             Hasher leftHasher,
             Hasher rightHasher,
             JoinType semantics) {
@@ -38,7 +37,7 @@ public class ColumnarHashJoiner {
     }
 
     public Index joinIndex(Index li, Index ri) {
-        return ColumnHConcat.zipIndex(li, ri);
+        return HConcat.zipIndex(li, ri);
     }
 
     public JoinMerger joinMerger(DataFrame lf, DataFrame rf) {
