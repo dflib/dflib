@@ -1,25 +1,10 @@
 package com.nhl.dflib;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
-import java.util.Collection;
-
-import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 
-@RunWith(Parameterized.class)
 public class DataFrame_Sort_Test extends BaseDataFrameTest {
-
-    public DataFrame_Sort_Test(boolean columnar) {
-        super(columnar);
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return asList(new Object[][]{{false}, {true}});
-    }
 
     @Test
     public void testSort() {

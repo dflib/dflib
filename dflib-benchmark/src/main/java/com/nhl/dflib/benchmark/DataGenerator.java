@@ -3,7 +3,6 @@ package com.nhl.dflib.benchmark;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.column.ColumnDataFrame;
-import com.nhl.dflib.row.BaseRowDataFrame;
 
 import java.util.Spliterators;
 import java.util.function.Consumer;
@@ -23,29 +22,6 @@ public class DataGenerator extends Spliterators.AbstractSpliterator<Object> {
         this.columnValueMakers = columnValueMakers;
         this.height = height;
         this.width = columnValueMakers.length;
-    }
-
-    public static DataFrame rowDFWithMixedData(int rows) {
-
-        String string =
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate sollicitudin ligula sit amet ornare.";
-
-        return rowDF(rows,
-                ValueMaker.intSeq(),
-                ValueMaker.stringSeq(),
-                ValueMaker.randomIntSeq(rows / 2),
-                ValueMaker.constStringSeq(string));
-    }
-
-    public static DataFrame rowDF(int rows, ValueMaker<?>... columnValueMakers) {
-
-        String[] columnNames = new String[columnValueMakers.length];
-        for (int i = 0; i < columnValueMakers.length; i++) {
-            columnNames[i] = "c" + i;
-        }
-
-        Index index = Index.withNames(columnNames);
-        return BaseRowDataFrame.fromStreamFoldByRow(index, dataStream(rows, columnValueMakers));
     }
 
     public static DataFrame columnarDFWithMixedData(int rows) {

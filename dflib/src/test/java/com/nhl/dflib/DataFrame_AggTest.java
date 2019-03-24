@@ -2,26 +2,13 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.Aggregator;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
-import java.util.Collection;
 import java.util.HashSet;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 
-@RunWith(Parameterized.class)
 public class DataFrame_AggTest extends BaseDataFrameTest {
-
-    public DataFrame_AggTest(boolean columnar) {
-        super(columnar);
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return asList(new Object[][]{{false}, {true}});
-    }
 
     @Test
     public void testAgg() {

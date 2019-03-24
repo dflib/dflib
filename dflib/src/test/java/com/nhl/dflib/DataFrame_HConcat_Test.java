@@ -3,24 +3,8 @@ package com.nhl.dflib;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.RowCombiner;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
-import java.util.Collection;
-
-import static java.util.Arrays.asList;
-
-@RunWith(Parameterized.class)
 public class DataFrame_HConcat_Test extends BaseDataFrameTest {
-
-    public DataFrame_HConcat_Test(boolean columnar) {
-        super(columnar);
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return asList(new Object[][]{{false}, {true}});
-    }
 
     @Test
     public void testZipRows_ImplicitInnerJoin() {

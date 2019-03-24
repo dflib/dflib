@@ -1,8 +1,8 @@
-package com.nhl.dflib.row;
+package com.nhl.dflib;
 
-import com.nhl.dflib.Index;
+import com.nhl.dflib.row.RowBuilder;
 
-public class ArrayRowBuilder implements RowBuilder {
+class ArrayRowBuilder implements RowBuilder {
 
     private Index index;
     private Object[] row;
@@ -78,3 +78,4 @@ public class ArrayRowBuilder implements RowBuilder {
         return returned;
     }
 }
+

@@ -4,24 +4,8 @@ import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.Hasher;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
-import java.util.Collection;
-
-import static java.util.Arrays.asList;
-
-@RunWith(Parameterized.class)
 public class DataFrameJoinsTest extends BaseDataFrameTest {
-
-    public DataFrameJoinsTest(boolean columnar) {
-        super(columnar);
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return asList(new Object[][]{{false}, {true}});
-    }
 
     @Test
     public void testInnerJoin() {

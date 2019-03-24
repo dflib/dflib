@@ -1,9 +1,9 @@
-package com.nhl.dflib.benchmark.memory.column;
+package com.nhl.dflib.benchmark.memory;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.benchmark.DataGenerator;
 import com.nhl.dflib.benchmark.ValueMaker;
-import com.nhl.dflib.benchmark.memory.MemoryTest;
+import com.nhl.dflib.benchmark.memory.benchmark.MemoryTest;
 
 public class ColumnarDataFrameMemory extends MemoryTest {
 

@@ -1,10 +1,8 @@
-package com.nhl.dflib.benchmark.speed.row;
+package com.nhl.dflib.benchmark.speed;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.GroupBy;
-import com.nhl.dflib.aggregate.Aggregator;
 import com.nhl.dflib.benchmark.DataGenerator;
-import com.nhl.dflib.benchmark.ValueMaker;
+import com.nhl.dflib.map.RowMapper;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -25,48 +23,40 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(2)
 @State(Scope.Thread)
-public class DataFrameGroupBy {
+public class DataFrameMap {
 
     @Param("1000000")
     public int rows;
 
-    @Param("500")
-    public int groups;
-
     private DataFrame df;
-    private GroupBy gb;
 
     @Setup
     public void setUp() {
-
-        String string =
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate sollicitudin ligula sit amet ornare.";
-
-        df = DataGenerator.rowDF(rows,
-                ValueMaker.intSeq(),
-                ValueMaker.stringSeq(),
-                // keep the number of categories relatively low
-                ValueMaker.randomIntSeq(groups),
-                ValueMaker.constStringSeq(string));
-
-        gb = df.groupBy("c2");
+        df = DataGenerator.columnarDFWithMixedData(rows);
     }
 
     @Benchmark
-    public Object groupBy() {
-        return df.groupBy("c2");
-    }
-
-    @Benchmark
-    public Object aggregate_by_name() {
-        return gb.agg(Aggregator.sum("c0"))
+    public Object map() {
+        return df
+                .map(df.getColumns().compactIndex(), RowMapper.copy())
                 .materialize()
                 .iterator();
     }
 
     @Benchmark
-    public Object aggregate_by_pos() {
-        return gb.agg(Aggregator.sum(0))
+    public Object mapWithChange() {
+        return df
+                .map(df.getColumns().compactIndex(), RowMapper.copy().and((s, t) -> t.set(2, 1)))
+                .materialize()
+                .iterator();
+    }
+
+    @Benchmark
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public Object mapColumn() {
+        return df
+                // using cheap "map" function to test benchmark DF overhead
+                .mapColumnValue("c2", (Integer i) -> 1)
                 .materialize()
                 .iterator();
     }

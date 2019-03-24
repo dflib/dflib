@@ -14,7 +14,6 @@ import com.nhl.dflib.column.join.ColumnarNestedLoopJoiner;
 import com.nhl.dflib.column.join.JoinMerger;
 import com.nhl.dflib.column.map.ColumnarMapper;
 import com.nhl.dflib.column.sort.ColumnarSortIndexer;
-import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.join.JoinPredicate;
@@ -25,6 +24,7 @@ import com.nhl.dflib.map.RowMapper;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.row.TransformingIterable;
 import com.nhl.dflib.series.ArrayIterator;
 import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.ColumnMappedSeries;
@@ -39,6 +39,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class ColumnDataFrame implements DataFrame {
@@ -49,6 +50,68 @@ public class ColumnDataFrame implements DataFrame {
     public ColumnDataFrame(Index columnsIndex, Series[] dataColumns) {
         this.columnsIndex = Objects.requireNonNull(columnsIndex);
         this.dataColumns = Objects.requireNonNull(dataColumns);
+    }
+
+    public static DataFrame fromRows(Index columns, Object[]... rows) {
+
+        int width = columns.size();
+        if (width == 0) {
+            throw new IllegalArgumentException("Empty columns");
+        }
+
+        List<Object>[] data = new List[width];
+        for (int i = 0; i < width; i++) {
+            data[i] = new ArrayList<>();
+        }
+
+        for (Object[] r : rows) {
+            for (int i = 0; i < width; i++) {
+                data[i].add(r[i]);
+            }
+        }
+
+        int height = data[0].size();
+        Series[] columnsData = new Series[width];
+        for (int i = 0; i < width; i++) {
+            Object[] columnData = new Object[height];
+            data[i].toArray(columnData);
+            columnsData[i] = new ArraySeries(columnData);
+        }
+
+        return new ColumnDataFrame(columns, columnsData);
+    }
+
+    public static DataFrame fromListOfRows(Index columns, List<Object[]> sources) {
+        return fromRows(columns, sources);
+    }
+
+    public static DataFrame fromRows(Index columns, Iterable<Object[]> sources) {
+
+        int width = columns.size();
+        if (width == 0) {
+            throw new IllegalArgumentException("Empty columns");
+        }
+
+        List<Object>[] data = new List[width];
+        for (int i = 0; i < width; i++) {
+            data[i] = new ArrayList<>();
+        }
+
+        for (Object[] r : sources) {
+            for (int i = 0; i < width; i++) {
+                data[i].add(r[i]);
+            }
+        }
+
+        int height = data[0].size();
+        Series[] columnsData = new Series[width];
+        for (int i = 0; i < width; i++) {
+            Object[] columnData = new Object[height];
+            data[i].toArray(columnData);
+            columnsData[i] = new ArraySeries(columnData);
+        }
+
+        return new ColumnDataFrame(columns, columnsData);
     }
 
     public static <T> DataFrame fromStreamFoldByRow(Index columns, Stream<T> stream) {
@@ -142,6 +205,14 @@ public class ColumnDataFrame implements DataFrame {
 
         Series[] series = Series.fromColumnarData(data);
         return new ColumnDataFrame(columns, series);
+    }
+
+    /**
+     * Creates a DataFrame from an iterable over arbitrary objects. Each object will be converted to a row by applying
+     * a function passed as the last argument.
+     */
+    public static <T> DataFrame fromObjects(Index columns, Iterable<T> rows, Function<T, Object[]> rowMapper) {
+        return fromRows(columns, new TransformingIterable<>(rows, rowMapper)).materialize();
     }
 
     @Override
@@ -272,7 +343,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public DataFrame hConcat(JoinType how, DataFrame df) {
-        Index zipIndex = HConcat.zipIndex(getColumns(), df.getColumns());
+        Index zipIndex = ColumnHConcat.zipIndex(getColumns(), df.getColumns());
         return new ColumnHConcat(how).concat(zipIndex, this, df);
     }
 

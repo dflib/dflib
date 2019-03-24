@@ -1,25 +1,8 @@
 package com.nhl.dflib;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
-import java.util.Collection;
-
-import static java.util.Arrays.asList;
-
-@RunWith(Parameterized.class)
 public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
-
-
-    public DataFrame_AddDropSelectColumnsTest(boolean columnar) {
-        super(columnar);
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return asList(new Object[][]{{false}, {true}});
-    }
 
     @Test
     public void testAddColumn() {
@@ -58,10 +41,7 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
                 2, "y")
                 .selectColumns("b");
 
-        // columnar result is compact; row result is sparse
-        IndexPosition expectedPos = columnar
-                ? new IndexPosition(0, 0, "b")
-                : new IndexPosition(0, 1, "b");
+        IndexPosition expectedPos = new IndexPosition(0, 0, "b");
 
         new DFAsserts(df, expectedPos)
                 .expectHeight(2)
@@ -77,18 +57,9 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
                 2, "y")
                 .selectColumns("b", "b", "b");
 
-        // columnar result is compact; row result is sparse
-        IndexPosition pos0 = columnar
-                ? new IndexPosition(0, 0, "b")
-                : new IndexPosition(0, 1, "b");
-
-        IndexPosition pos1 = columnar
-                ? new IndexPosition(1, 1, "b_")
-                : new IndexPosition(1, 1, "b_");
-
-        IndexPosition pos2 = columnar
-                ? new IndexPosition(2, 2, "b__")
-                : new IndexPosition(2, 1, "b__");
+        IndexPosition pos0 = new IndexPosition(0, 0, "b");
+        IndexPosition pos1 = new IndexPosition(1, 1, "b_");
+        IndexPosition pos2 = new IndexPosition(2, 2, "b__");
 
         new DFAsserts(df, pos0, pos1, pos2)
                 .expectHeight(2)
@@ -104,10 +75,7 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
                 2, "y")
                 .dropColumns("a");
 
-        // columnar result is compact; row result is sparse
-        IndexPosition expectedPos = columnar
-                ? new IndexPosition(0, 0, "b")
-                : new IndexPosition(0, 1, "b");
+        IndexPosition expectedPos = new IndexPosition(0, 0, "b");
 
         new DFAsserts(df, expectedPos)
                 .expectHeight(2)

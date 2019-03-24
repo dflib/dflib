@@ -2,6 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.Aggregator;
 import com.nhl.dflib.aggregate.ColumnAggregator;
+import com.nhl.dflib.column.ColumnDataFrame;
 import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.join.JoinPredicate;
@@ -11,7 +12,6 @@ import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.map.RowMapper;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.ValueMapper;
-import com.nhl.dflib.row.BaseRowDataFrame;
 import com.nhl.dflib.row.RowProxy;
 
 import java.util.Collections;
@@ -33,26 +33,26 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Creates a DataFrame by folding the provided stream of objects into rows and columns row by row.
      */
     static <T> DataFrame fromStreamFoldByRow(Index columns, Stream<T> stream) {
-        return BaseRowDataFrame.fromStreamFoldByRow(columns, stream);
+        return ColumnDataFrame.fromStreamFoldByRow(columns, stream);
     }
 
     /**
      * Creates a DataFrame by folding the provided array of objects into rows and columns row by row.
      */
     static DataFrame fromSequenceFoldByRow(Index columns, Object... sequence) {
-        return BaseRowDataFrame.fromSequenceFoldByRow(columns, sequence);
+        return ColumnDataFrame.fromSequenceFoldByRow(columns, sequence);
     }
 
     static DataFrame fromRows(Index columns, Object[]... rows) {
-        return BaseRowDataFrame.fromRows(columns, rows);
+        return ColumnDataFrame.fromRows(columns, rows);
     }
 
     static DataFrame fromListOfRows(Index columns, List<Object[]> sources) {
-        return BaseRowDataFrame.fromListOfRows(columns, sources);
+        return ColumnDataFrame.fromListOfRows(columns, sources);
     }
 
     static DataFrame fromRows(Index columns, Iterable<Object[]> source) {
-        return BaseRowDataFrame.fromRows(columns, source);
+        return ColumnDataFrame.fromRows(columns, source);
     }
 
     /**
@@ -60,7 +60,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * a function passed as the last argument.
      */
     static <T> DataFrame fromObjects(Index columns, Iterable<T> rows, Function<T, Object[]> rowMapper) {
-        return BaseRowDataFrame.fromObjects(columns, rows, rowMapper);
+        return ColumnDataFrame.fromObjects(columns, rows, rowMapper);
     }
 
     /**

@@ -1,7 +1,5 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.row.ArrayRowBuilder;
-
 import java.util.ArrayList;
 import java.util.List;
 

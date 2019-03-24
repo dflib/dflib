@@ -3,7 +3,7 @@ package com.nhl.dflib.column.join;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.concat.HConcat;
+import com.nhl.dflib.column.concat.ColumnHConcat;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.row.RowProxy;
@@ -38,7 +38,7 @@ public class ColumnarHashJoiner {
     }
 
     public Index joinIndex(Index li, Index ri) {
-        return HConcat.zipIndex(li, ri);
+        return ColumnHConcat.zipIndex(li, ri);
     }
 
     public JoinMerger joinMerger(DataFrame lf, DataFrame rf) {

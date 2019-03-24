@@ -1,4 +1,4 @@
-package com.nhl.dflib.benchmark.memory;
+package com.nhl.dflib.benchmark.memory.benchmark;
 
 // TODO: should we wrap this in JUnit?
 public abstract class MemoryTest {
