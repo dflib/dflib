@@ -1,12 +1,14 @@
 package com.nhl.dflib.column;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Printers;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.column.concat.ColumnHConcat;
 import com.nhl.dflib.column.concat.ColumnVConcat;
 import com.nhl.dflib.column.filter.ColumnarFilterIndexer;
+import com.nhl.dflib.column.groupby.ColumnGrouper;
 import com.nhl.dflib.column.join.ColumnarHashJoiner;
 import com.nhl.dflib.column.join.ColumnarNestedLoopJoiner;
 import com.nhl.dflib.column.join.JoinMerger;
@@ -366,6 +368,11 @@ public class ColumnDataFrame implements DataFrame {
 
         // note that we compact the index only after resolving series positions above
         return new ColumnDataFrame(newIndex.compactIndex(), newColumns);
+    }
+
+    @Override
+    public GroupBy groupBy(Hasher by) {
+        return new ColumnGrouper(by).group(this);
     }
 
     @Override

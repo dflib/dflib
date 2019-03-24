@@ -4,7 +4,6 @@ import com.nhl.dflib.aggregate.Aggregator;
 import com.nhl.dflib.aggregate.ColumnAggregator;
 import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
-import com.nhl.dflib.groupby.Grouper;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.Hasher;
@@ -307,9 +306,7 @@ public interface DataFrame extends Iterable<RowProxy> {
         return groupBy(mapper);
     }
 
-    default GroupBy groupBy(Hasher by) {
-        return new Grouper(by).group(this);
-    }
+    GroupBy groupBy(Hasher by);
 
     @Override
     Iterator<RowProxy> iterator();

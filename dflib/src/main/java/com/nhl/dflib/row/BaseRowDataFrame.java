@@ -1,6 +1,7 @@
 package com.nhl.dflib.row;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Printers;
 import com.nhl.dflib.Series;
@@ -8,6 +9,7 @@ import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
+import com.nhl.dflib.groupby.Grouper;
 import com.nhl.dflib.join.HashJoiner;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
@@ -316,6 +318,11 @@ public abstract class BaseRowDataFrame implements DataFrame {
 
         Comparator<RowProxy> rowComparator = Sorters.sorter(getColumns(), columns);
         return new SortedRowDataFrame(this, toArrayComparator(rowComparator));
+    }
+
+    @Override
+    public GroupBy groupBy(Hasher by) {
+        return new Grouper(by).group(this);
     }
 
     private Comparator<Object[]> toArrayComparator(Comparator<RowProxy> rowComparator) {
