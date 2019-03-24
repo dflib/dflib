@@ -50,4 +50,11 @@ public class RangeSeries<T> implements Series<T> {
 
         delegate.copyTo(to, this.from + fromOffset, toOffset, len);
     }
+
+    @Override
+    public Series<T> materialize() {
+        Object[] range = new Object[size];
+        delegate.copyTo(range, this.from, 0, size);
+        return new ArraySeries<>((T[]) range);
+    }
 }

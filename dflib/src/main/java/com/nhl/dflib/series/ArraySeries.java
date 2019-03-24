@@ -24,4 +24,9 @@ public class ArraySeries<T> implements Series<T> {
     public void copyTo(Object[] to, int fromOffset, int toOffset, int len) {
         System.arraycopy(data, fromOffset, to, toOffset, len);
     }
+
+    @Override
+    public Series<T> materialize() {
+        return this;
+    }
 }

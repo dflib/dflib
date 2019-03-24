@@ -180,7 +180,14 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public DataFrame materialize() {
-        return this;
+
+        int width = width();
+        Series<?>[] newColumnsData = new Series[width];
+        for (int i = 0; i < width; i++) {
+            newColumnsData[i] = dataColumns[i].materialize();
+        }
+
+        return new ColumnDataFrame(columnsIndex, newColumnsData);
     }
 
     @Override

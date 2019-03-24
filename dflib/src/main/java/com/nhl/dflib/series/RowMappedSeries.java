@@ -23,15 +23,16 @@ public class RowMappedSeries<T> implements Series<T> {
 
     @Override
     public T get(int index) {
-        return getMaterialized().get(index);
+        return materialize().get(index);
     }
 
     @Override
     public void copyTo(Object[] to, int fromOffset, int toOffset, int len) {
-        getMaterialized().copyTo(to, fromOffset, toOffset, len);
+        materialize().copyTo(to, fromOffset, toOffset, len);
     }
 
-    protected Series<T> getMaterialized() {
+    @Override
+    public Series<T> materialize() {
         if (materialized == null) {
             synchronized (this) {
                 if (materialized == null) {

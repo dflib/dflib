@@ -28,4 +28,10 @@ public class ListSeries<T> implements Series<T> {
             to[toOffset + i] = data.get(fromOffset + i);
         }
     }
+
+    @Override
+    public Series<T> materialize() {
+        Object[] copy = new Object[data.size()];
+        return new ArraySeries<>((T[]) data.toArray(copy));
+    }
 }

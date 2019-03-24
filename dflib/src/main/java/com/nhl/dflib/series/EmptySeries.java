@@ -20,4 +20,9 @@ public class EmptySeries<T> implements Series<T> {
             throw new ArrayIndexOutOfBoundsException(fromOffset + len);
         }
     }
+
+    @Override
+    public Series<T> materialize() {
+        return this;
+    }
 }

@@ -39,4 +39,11 @@ public class HeadSeries<T> implements Series<T> {
 
         source.copyTo(to, fromOffset, toOffset, len);
     }
+
+    @Override
+    public Series<T> materialize() {
+        Object[] head = new Object[len];
+        source.copyTo(head, 0, 0, len);
+        return new ArraySeries<>((T[]) head);
+    }
 }

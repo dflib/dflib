@@ -43,4 +43,6 @@ public interface Series<T> {
                 // RangeSeries does range checking
                 : new RangeSeries<>(this, fromInclusive, toExclusive - fromInclusive);
     }
+
+    Series<T> materialize();
 }
