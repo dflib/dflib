@@ -123,6 +123,11 @@ public interface DataFrame extends Iterable<RowProxy> {
         return map(compactIndex, RowMapper.mapColumn(pos, m));
     }
 
+    default DataFrame addRowIndexColumn(String name) {
+        int[] counter = new int[1];
+        return addColumn(name, r -> counter[0]++);
+    }
+
     default <V> DataFrame addColumn(String columnName, RowToValueMapper<V> columnValueProducer) {
         return addColumns(new String[]{columnName}, columnValueProducer);
     }

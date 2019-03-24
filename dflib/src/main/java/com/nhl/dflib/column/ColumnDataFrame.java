@@ -9,6 +9,7 @@ import com.nhl.dflib.column.concat.ColumnVConcat;
 import com.nhl.dflib.column.filter.ColumnarFilterIndexer;
 import com.nhl.dflib.column.join.ColumnarHashJoiner;
 import com.nhl.dflib.column.join.ColumnarNestedLoopJoiner;
+import com.nhl.dflib.column.join.JoinMerger;
 import com.nhl.dflib.column.map.ColumnarMapper;
 import com.nhl.dflib.column.sort.ColumnarSortIndexer;
 import com.nhl.dflib.concat.HConcat;
@@ -287,13 +288,15 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public DataFrame join(DataFrame df, JoinPredicate p, JoinType how) {
         ColumnarNestedLoopJoiner joiner = new ColumnarNestedLoopJoiner(p, how);
-        return joiner.joinRows(joiner.joinIndex(this.getColumns(), df.getColumns()), this, df);
+        JoinMerger merger = joiner.joinMerger(this, df);
+        return merger.join(joiner.joinIndex(this.getColumns(), df.getColumns()), this, df);
     }
 
     @Override
     public DataFrame join(DataFrame df, Hasher leftHasher, Hasher rightHasher, JoinType how) {
         ColumnarHashJoiner joiner = new ColumnarHashJoiner(leftHasher, rightHasher, how);
-        return joiner.joinRows(joiner.joinIndex(this.getColumns(), df.getColumns()), this, df);
+        JoinMerger merger = joiner.joinMerger(this, df);
+        return merger.join(joiner.joinIndex(this.getColumns(), df.getColumns()), this, df);
     }
 
     @Override

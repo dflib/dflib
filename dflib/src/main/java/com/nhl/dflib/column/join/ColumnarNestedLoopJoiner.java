@@ -31,23 +31,23 @@ public class ColumnarNestedLoopJoiner {
         return HConcat.zipIndex(li, ri);
     }
 
-    public DataFrame joinRows(Index joinedColumns, DataFrame lf, DataFrame rf) {
+    public JoinMerger joinMerger(DataFrame lf, DataFrame rf) {
 
         switch (semantics) {
             case inner:
-                return innerJoin(joinedColumns, lf, rf);
+                return innerJoin(lf, rf);
             case left:
-                return leftJoin(joinedColumns, lf, rf);
+                return leftJoin(lf, rf);
             case right:
-                return rightJoin(joinedColumns, lf, rf);
+                return rightJoin(lf, rf);
             case full:
-                return fullJoin(joinedColumns, lf, rf);
+                return fullJoin(lf, rf);
             default:
                 throw new IllegalStateException("Unsupported join semantics: " + semantics);
         }
     }
 
-    private DataFrame innerJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
+    private JoinMerger innerJoin(DataFrame lf, DataFrame rf) {
 
         List<Integer> li = new ArrayList<>();
         List<Integer> ri = new ArrayList<>();
@@ -72,10 +72,10 @@ public class ColumnarNestedLoopJoiner {
             i++;
         }
 
-        return new JoinMerger(new ListSeries<>(li), new ListSeries<>(ri)).join(joinedColumns, lf, rf);
+        return new JoinMerger(new ListSeries<>(li), new ListSeries<>(ri));
     }
 
-    private DataFrame leftJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
+    private JoinMerger leftJoin(DataFrame lf, DataFrame rf) {
 
         List<Integer> li = new ArrayList<>();
         List<Integer> ri = new ArrayList<>();
@@ -106,10 +106,10 @@ public class ColumnarNestedLoopJoiner {
             i++;
         }
 
-        return new JoinMerger(new ListSeries<>(li), new ListSeries<>(ri)).join(joinedColumns, lf, rf);
+        return new JoinMerger(new ListSeries<>(li), new ListSeries<>(ri));
     }
 
-    private DataFrame rightJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
+    private JoinMerger rightJoin(DataFrame lf, DataFrame rf) {
 
         List<Integer> li = new ArrayList<>();
         List<Integer> ri = new ArrayList<>();
@@ -140,10 +140,10 @@ public class ColumnarNestedLoopJoiner {
             i++;
         }
 
-        return new JoinMerger(new ListSeries<>(li), new ListSeries<>(ri)).join(joinedColumns, lf, rf);
+        return new JoinMerger(new ListSeries<>(li), new ListSeries<>(ri));
     }
 
-    private DataFrame fullJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
+    private JoinMerger fullJoin(DataFrame lf, DataFrame rf) {
 
         List<Integer> li = new ArrayList<>();
         List<Integer> ri = new ArrayList<>();
@@ -187,6 +187,6 @@ public class ColumnarNestedLoopJoiner {
             }
         }
 
-        return new JoinMerger(new ListSeries<>(li), new ListSeries<>(ri)).join(joinedColumns, lf, rf);
+        return new JoinMerger(new ListSeries<>(li), new ListSeries<>(ri));
     }
 }

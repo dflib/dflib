@@ -3,12 +3,9 @@ package com.nhl.dflib.column.join;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.column.ColumnDataFrame;
-import com.nhl.dflib.column.map.MultiListRowBuilder;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.Hasher;
-import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.ListSeries;
 
@@ -24,6 +21,7 @@ import java.util.Set;
  */
 public class ColumnarHashJoiner {
 
+    private static final String ROW_INDEX_COLUMN = "$row_index_" + System.currentTimeMillis();
 
     private Hasher leftHasher;
     private Hasher rightHasher;
@@ -43,28 +41,28 @@ public class ColumnarHashJoiner {
         return HConcat.zipIndex(li, ri);
     }
 
-    public DataFrame joinRows(Index joinedColumns, DataFrame lf, DataFrame rf) {
+    public JoinMerger joinMerger(DataFrame lf, DataFrame rf) {
         switch (semantics) {
             case inner:
-                return innerJoin(joinedColumns, lf, rf);
+                return innerJoin(lf, rf);
             case left:
-                return leftJoin(joinedColumns, lf, rf);
+                return leftJoin(lf, rf);
             case right:
-                return rightJoin(joinedColumns, lf, rf);
+                return rightJoin(lf, rf);
             case full:
-                return fullJoin(joinedColumns, lf, rf);
+                return fullJoin(lf, rf);
             default:
                 throw new IllegalStateException("Unsupported join semantics: " + semantics);
         }
     }
 
-    private DataFrame innerJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
+    private JoinMerger innerJoin(DataFrame lf, DataFrame rf) {
 
         List<Integer> li = new ArrayList<>();
         List<Integer> ri = new ArrayList<>();
 
-        int[] counter = new int[1];
-        DataFrame rfi = rf.addColumn("$row_index", r -> counter[0]++);
+        DataFrame rfi = rf.addRowIndexColumn(ROW_INDEX_COLUMN);
+        int rfip = rfi.getColumns().position(ROW_INDEX_COLUMN).position();
 
         GroupBy rightIndex = rfi.groupBy(rightHasher);
 
@@ -76,23 +74,27 @@ public class ColumnarHashJoiner {
             if (rightMatches != null) {
                 for (RowProxy rr : rightMatches) {
                     li.add(i);
-                    ri.add((Integer) rr.get("$row_index"));
+                    ri.add((Integer) rr.get(rfip));
                 }
             }
 
             i++;
         }
 
-        return new JoinMerger(new ListSeries<>(li), new ListSeries<>(ri)).join(joinedColumns, lf, rf);
+        return new JoinMerger(new ListSeries<>(li), new ListSeries<>(ri));
     }
 
-    private DataFrame leftJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
+    private JoinMerger leftJoin(DataFrame lf, DataFrame rf) {
 
-        RowCombiner combiner = RowCombiner.zip(lf.width());
-        MultiListRowBuilder rowBuilder = new MultiListRowBuilder(joinedColumns, lf.height());
+        List<Integer> li = new ArrayList<>();
+        List<Integer> ri = new ArrayList<>();
 
-        GroupBy rightIndex = rf.groupBy(rightHasher);
+        DataFrame rfi = rf.addRowIndexColumn(ROW_INDEX_COLUMN);
+        int rfip = rfi.getColumns().position(ROW_INDEX_COLUMN).position();
 
+        GroupBy rightIndex = rfi.groupBy(rightHasher);
+
+        int i = 0;
         for (RowProxy lr : lf) {
 
             Object lKey = leftHasher.map(lr);
@@ -100,25 +102,31 @@ public class ColumnarHashJoiner {
 
             if (rightMatches != null) {
                 for (RowProxy rr : rightMatches) {
-                    rowBuilder.startRow();
-                    combiner.combine(lr, rr, rowBuilder);
+                    li.add(i);
+                    ri.add((Integer) rr.get(rfip));
                 }
             } else {
-                rowBuilder.startRow();
-                combiner.combine(lr, null, rowBuilder);
+                li.add(i);
+                ri.add(-1);
             }
+
+            i++;
         }
 
-        return new ColumnDataFrame(joinedColumns, rowBuilder.getData());
+        return new JoinMerger(new ListSeries<>(li), new ListSeries<>(ri));
     }
 
-    private DataFrame rightJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
+    private JoinMerger rightJoin(DataFrame lf, DataFrame rf) {
 
-        RowCombiner combiner = RowCombiner.zip(lf.width());
-        MultiListRowBuilder rowBuilder = new MultiListRowBuilder(joinedColumns, rf.height());
+        List<Integer> li = new ArrayList<>();
+        List<Integer> ri = new ArrayList<>();
 
-        GroupBy leftIndex = lf.groupBy(leftHasher);
+        DataFrame lfi = lf.addRowIndexColumn(ROW_INDEX_COLUMN);
+        int lfip = lfi.getColumns().position(ROW_INDEX_COLUMN).position();
 
+        GroupBy leftIndex = lfi.groupBy(leftHasher);
+
+        int i = 0;
         for (RowProxy rr : rf) {
 
             Object rKey = rightHasher.map(rr);
@@ -126,24 +134,29 @@ public class ColumnarHashJoiner {
 
             if (leftMatches != null) {
                 for (RowProxy lr : leftMatches) {
-                    rowBuilder.startRow();
-                    combiner.combine(lr, rr, rowBuilder);
+                    li.add((Integer) lr.get(lfip));
+                    ri.add(i);
                 }
             } else {
-                rowBuilder.startRow();
-                combiner.combine(null, rr, rowBuilder);
+                li.add(-1);
+                ri.add(i);
             }
+
+            i++;
         }
 
-        return new ColumnDataFrame(joinedColumns, rowBuilder.getData());
+        return new JoinMerger(new ListSeries<>(li), new ListSeries<>(ri));
     }
 
-    private DataFrame fullJoin(Index joinedColumns, DataFrame lf, DataFrame rf) {
+    private JoinMerger fullJoin(DataFrame lf, DataFrame rf) {
 
-        RowCombiner combiner = RowCombiner.zip(lf.width());
-        MultiListRowBuilder rowBuilder = new MultiListRowBuilder(joinedColumns, Math.max(rf.height(), lf.height()));
+        List<Integer> li = new ArrayList<>();
+        List<Integer> ri = new ArrayList<>();
 
-        GroupBy rightIndex = rf.groupBy(rightHasher);
+        DataFrame rfi = rf.addRowIndexColumn(ROW_INDEX_COLUMN);
+        int rfip = rfi.getColumns().position(ROW_INDEX_COLUMN).position();
+
+        GroupBy rightIndex = rfi.groupBy(rightHasher);
         Set<Object> seenRightKeys = new LinkedHashSet<>();
 
         int i = 0;
@@ -153,29 +166,29 @@ public class ColumnarHashJoiner {
             DataFrame rightMatches = rightIndex.getGroup(lKey);
 
             if (rightMatches != null) {
-
                 seenRightKeys.add(lKey);
-
                 for (RowProxy rr : rightMatches) {
-                    rowBuilder.startRow();
-                    combiner.combine(lr, rr, rowBuilder);
+                    li.add(i);
+                    ri.add((Integer) rr.get(rfip));
                 }
             } else {
-                rowBuilder.startRow();
-                combiner.combine(lr, null, rowBuilder);
+                li.add(i);
+                ri.add(-1);
             }
+
+            i++;
         }
 
         // add missing right rows
         for (Object key : rightIndex.getGroups()) {
             if (!seenRightKeys.contains(key)) {
                 for (RowProxy rr : rightIndex.getGroup(key)) {
-                    rowBuilder.startRow();
-                    combiner.combine(null, rr, rowBuilder);
+                    li.add(-1);
+                    ri.add((Integer) rr.get(rfip));
                 }
             }
         }
 
-        return new ColumnDataFrame(joinedColumns, rowBuilder.getData());
+        return new JoinMerger(new ListSeries<>(li), new ListSeries<>(ri));
     }
 }
