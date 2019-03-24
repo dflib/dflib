@@ -106,10 +106,6 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     DataFrame materialize();
 
-    default DataFrame map(RowMapper rowMapper) {
-        return map(getColumns().compactIndex(), rowMapper);
-    }
-
     DataFrame map(Index mappedColumns, RowMapper rowMapper);
 
     <V, VR> DataFrame mapColumnValue(String columnName, ValueMapper<V, VR> m);
