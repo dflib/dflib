@@ -4,7 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.column.ColumnDataFrame;
-import com.nhl.dflib.column.map.MultiSeriesRowBuilder;
+import com.nhl.dflib.column.map.MultiArrayRowBuilder;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.row.RowProxy;
@@ -27,7 +27,7 @@ public class ColumnHConcat {
 
         int h = concatHeight(lh, rh);
 
-        MultiSeriesRowBuilder tr = new MultiSeriesRowBuilder(joinedColumns, h);
+        MultiArrayRowBuilder tr = new MultiArrayRowBuilder(joinedColumns, h);
 
         Iterator<RowProxy> li = lf.iterator();
         Iterator<RowProxy> ri = rf.iterator();

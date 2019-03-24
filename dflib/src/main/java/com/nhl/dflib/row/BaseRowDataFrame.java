@@ -2,15 +2,17 @@ package com.nhl.dflib.row;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.Series;
 import com.nhl.dflib.Printers;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
+import com.nhl.dflib.join.HashJoiner;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.join.NestedLoopJoiner;
+import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.map.RowMapper;
 import com.nhl.dflib.map.RowToValueMapper;
@@ -206,6 +208,17 @@ public abstract class BaseRowDataFrame implements DataFrame {
     @Override
     public DataFrame join(DataFrame df, JoinPredicate p, JoinType how) {
         NestedLoopJoiner joiner = new NestedLoopJoiner(p, how);
+        Index joinedIndex = joiner.joinIndex(getColumns(), df.getColumns());
+        return joiner.joinRows(joinedIndex, this, df);
+    }
+
+    @Override
+    public DataFrame join(
+            DataFrame df,
+            Hasher leftHasher,
+            Hasher rightHasher,
+            JoinType how) {
+        HashJoiner joiner = new HashJoiner(leftHasher, rightHasher, how);
         Index joinedIndex = joiner.joinIndex(getColumns(), df.getColumns());
         return joiner.joinRows(joinedIndex, this, df);
     }

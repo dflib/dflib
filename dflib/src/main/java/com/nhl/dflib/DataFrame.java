@@ -5,7 +5,6 @@ import com.nhl.dflib.aggregate.ColumnAggregator;
 import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.groupby.Grouper;
-import com.nhl.dflib.join.HashJoiner;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.Hasher;
@@ -266,15 +265,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param how         join semantics
      * @return a DataFrame that is a result of this join
      */
-    default DataFrame join(
-            DataFrame df,
-            Hasher leftHasher,
-            Hasher rightHasher,
-            JoinType how) {
-        HashJoiner joiner = new HashJoiner(leftHasher, rightHasher, how);
-        Index joinedIndex = joiner.joinIndex(getColumns(), df.getColumns());
-        return joiner.joinRows(joinedIndex, this, df);
-    }
+    DataFrame join(DataFrame df, Hasher leftHasher, Hasher rightHasher, JoinType how);
 
     /**
      * Aggregates DataFrame contents into an Object[] of values, using provided aggregator.

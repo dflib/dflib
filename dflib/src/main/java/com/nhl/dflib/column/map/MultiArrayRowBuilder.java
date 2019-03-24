@@ -5,13 +5,13 @@ import com.nhl.dflib.Series;
 import com.nhl.dflib.row.RowBuilder;
 import com.nhl.dflib.series.ArraySeries;
 
-public class MultiSeriesRowBuilder implements RowBuilder {
+public class MultiArrayRowBuilder implements RowBuilder {
 
     private Index index;
     private Object[][] data;
     private int row;
 
-    public MultiSeriesRowBuilder(Index index, int height) {
+    public MultiArrayRowBuilder(Index index, int height) {
         this.index = index;
         this.data = new Object[index.size()][height];
     }

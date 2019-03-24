@@ -14,7 +14,7 @@ public class ColumnarMapper {
 
     private static Series<?>[] mapData(DataFrame source, Index mappedColumns, RowMapper mapper) {
 
-        MultiSeriesRowBuilder rowBuilder = new MultiSeriesRowBuilder(mappedColumns, source.height());
+        MultiArrayRowBuilder rowBuilder = new MultiArrayRowBuilder(mappedColumns, source.height());
 
         source.forEach(from -> {
             mapper.map(from, rowBuilder);

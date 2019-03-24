@@ -163,20 +163,23 @@ public class DataFrameJoinsTest extends BaseDataFrameTest {
         Index i1 = Index.withNames("a", "b");
         DataFrame df1 = createDf(i1,
                 1, "x",
-                2, "y");
+                2, "y",
+                4, "z");
 
         Index i2 = Index.withNames("c", "d");
         DataFrame df2 = createDf(i2,
                 "a", 2,
                 "b", 2,
+                "x", 4,
                 "c", 3);
 
         DataFrame df = df1.innerJoin(df2, Hasher.forColumn(0), Hasher.forColumn(1));
 
         new DFAsserts(df, "a", "b", "c", "d")
-                .expectHeight(2)
+                .expectHeight(3)
                 .expectRow(0, 2, "y", "a", 2)
-                .expectRow(1, 2, "y", "b", 2);
+                .expectRow(1, 2, "y", "b", 2)
+                .expectRow(2, 4, "z", "x", 4);
     }
 
     @Test
