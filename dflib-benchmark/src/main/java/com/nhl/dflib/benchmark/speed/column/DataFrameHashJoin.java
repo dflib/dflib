@@ -38,14 +38,14 @@ public class DataFrameHashJoin {
 
     @Setup
     public void setUp() {
-        df1 = DataGenerator.rowDF(rows,
+        df1 = DataGenerator.columnarDF(rows,
                 // this column is used in join. Must be predictable and overlap with keys in df2
                 ValueMaker.intSeq(joinGroups / 2, (int) (joinGroups * 1.5)),
                 ValueMaker.stringSeq(),
                 ValueMaker.randomIntSeq(rows / 2),
                 ValueMaker.constStringSeq("abcd"));
 
-        df2 = DataGenerator.rowDF(rows,
+        df2 = DataGenerator.columnarDF(rows,
                 ValueMaker.intSeq(),
                 ValueMaker.stringSeq(),
                 // this column is used in join. Must be predictable and overlap with keys in df1
