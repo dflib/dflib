@@ -37,4 +37,52 @@ public class ValuePredicateTest {
                 .expectRow(1, 40);
     }
 
+    @Test
+    public void testAnd() {
+
+        ValuePredicate<Integer> p = ValuePredicate.isIn(20, 40).and(ValuePredicate.isIn(10, 20));
+
+        Index i1 = Index.withNames("a");
+        DataFrame df = DataFrame
+                .fromSequenceFoldByRow(i1, 10, 20, 30, 40)
+                .filterByColumn("a", p);
+
+        new DFAsserts(df, "a")
+                .expectHeight(1)
+                .expectRow(0, 20);
+    }
+
+    @Test
+    public void testOr() {
+
+        ValuePredicate<Integer> p = ValuePredicate.isIn(20, 40).or(ValuePredicate.isIn(10, 20));
+
+        Index i1 = Index.withNames("a");
+        DataFrame df = DataFrame
+                .fromSequenceFoldByRow(i1, 10, 20, 30, 40)
+                .filterByColumn("a", p);
+
+        new DFAsserts(df, "a")
+                .expectHeight(3)
+                .expectRow(0, 10)
+                .expectRow(1, 20)
+                .expectRow(2, 40);
+    }
+
+    @Test
+    public void testNegate() {
+
+        ValuePredicate<Integer> p = ValuePredicate.isIn(20, 40).negate();
+
+        Index i1 = Index.withNames("a");
+        DataFrame df = DataFrame
+                .fromSequenceFoldByRow(i1, 10, 20, 30, 40)
+                .filterByColumn("a", p);
+
+        new DFAsserts(df, "a")
+                .expectHeight(2)
+                .expectRow(0, 10)
+                .expectRow(1, 30);
+    }
+
 }
