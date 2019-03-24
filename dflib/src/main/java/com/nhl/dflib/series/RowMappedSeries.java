@@ -18,7 +18,7 @@ public class RowMappedSeries<T> implements Series<T> {
 
     @Override
     public int size() {
-        return source.height();
+        return source != null ? source.height() : materialize().size();
     }
 
     @Override

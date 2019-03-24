@@ -16,7 +16,7 @@ public class ColumnMappedSeries<S, T> implements Series<T> {
 
     @Override
     public int size() {
-        return source.size();
+        return source != null ? source.size() : materialize().size();
     }
 
     @Override

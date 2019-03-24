@@ -18,7 +18,7 @@ public class IndexedSeries<T> implements Series<T> {
 
     @Override
     public int size() {
-        return includePositions.size();
+        return includePositions != null ? includePositions.size() : materialize().size();
     }
 
     @Override
