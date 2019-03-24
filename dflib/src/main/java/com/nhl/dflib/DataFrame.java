@@ -8,7 +8,6 @@ import com.nhl.dflib.groupby.Grouper;
 import com.nhl.dflib.join.HashJoiner;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
-import com.nhl.dflib.join.NestedLoopJoiner;
 import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.map.RowMapper;
@@ -113,10 +112,6 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a DataFrame optimized for multiple iterations, calls to {@link #height()}, etc.
      */
     DataFrame materialize();
-
-    default DataFrame map(RowMapper rowMapper) {
-        return map(getColumns().compactIndex(), rowMapper);
-    }
 
     DataFrame map(Index mappedColumns, RowMapper rowMapper);
 
@@ -238,11 +233,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param how join semantics (inner, left, right, full)
      * @return a DataFrame that is a result of this join
      */
-    default DataFrame join(DataFrame df, JoinPredicate p, JoinType how) {
-        NestedLoopJoiner joiner = new NestedLoopJoiner(p, how);
-        Index joinedIndex = joiner.joinIndex(getColumns(), df.getColumns());
-        return joiner.joinRows(joinedIndex, this, df);
-    }
+    DataFrame join(DataFrame df, JoinPredicate p, JoinType how);
 
     /**
      * Calculates a join using <a href="https://en.wikipedia.org/wiki/Hash_join">"hash join"</a> algorithm. It requires

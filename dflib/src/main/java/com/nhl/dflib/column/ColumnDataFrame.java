@@ -2,6 +2,7 @@ package com.nhl.dflib.column;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.Printers;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.column.concat.ColumnHConcat;
 import com.nhl.dflib.column.concat.ColumnVConcat;
@@ -362,6 +363,6 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public String toString() {
-        return InlinePrinter.getInstance().print(new StringBuilder("ColumnarMaterializedDataFrame ["), this).append("]").toString();
+        return Printers.inline.append(this, new StringBuilder("ColumnarDataFrame [")).append("]").toString();
     }
 }

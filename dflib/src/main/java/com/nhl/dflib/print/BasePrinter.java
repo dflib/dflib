@@ -2,7 +2,7 @@ package com.nhl.dflib.print;
 
 import com.nhl.dflib.DataFrame;
 
-public abstract class BasePrinter {
+public abstract class BasePrinter implements Printer {
 
     private static final int MAX_DISPLAY_ROWS = 3;
     private static final int MAX_DISPLAY_COLUMN_WIDTH = 30;
@@ -19,11 +19,8 @@ public abstract class BasePrinter {
         this.maxDisplayColumnWith = maxDisplayColumnWith;
     }
 
-    public String toString(DataFrame df) {
-        return print(new StringBuilder(), df).toString();
-    }
-
-    public StringBuilder print(StringBuilder out, DataFrame df) {
+    @Override
+    public StringBuilder append(DataFrame df, StringBuilder out) {
         return newWorker(out).print(df);
     }
 

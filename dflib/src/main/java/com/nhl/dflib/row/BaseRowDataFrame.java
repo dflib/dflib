@@ -3,16 +3,18 @@ package com.nhl.dflib.row;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.Printers;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
+import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
+import com.nhl.dflib.join.NestedLoopJoiner;
 import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.map.RowMapper;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.ValueMapper;
-import com.nhl.dflib.print.InlinePrinter;
 import com.nhl.dflib.series.ArrayIterator;
 import com.nhl.dflib.sort.Sorters;
 
@@ -202,6 +204,13 @@ public abstract class BaseRowDataFrame implements DataFrame {
     }
 
     @Override
+    public DataFrame join(DataFrame df, JoinPredicate p, JoinType how) {
+        NestedLoopJoiner joiner = new NestedLoopJoiner(p, how);
+        Index joinedIndex = joiner.joinIndex(getColumns(), df.getColumns());
+        return joiner.joinRows(joinedIndex, this, df);
+    }
+
+    @Override
     public DataFrame head(int len) {
         return new HeadRowDataFrame(this, len);
     }
@@ -305,9 +314,6 @@ public abstract class BaseRowDataFrame implements DataFrame {
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder(getClass().getSimpleName()).append(" [");
-        return InlinePrinter
-                .getInstance()
-                .print(out, this).append("]")
-                .toString();
+        return Printers.inline.append(this, out).append("]").toString();
     }
 }

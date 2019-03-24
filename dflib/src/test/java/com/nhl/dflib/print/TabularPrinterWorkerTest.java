@@ -40,7 +40,8 @@ public class TabularPrinterWorkerTest {
                 "one   1      " + System.lineSeparator() +
                 "two   2      " + System.lineSeparator() +
                 "three 3      " + System.lineSeparator() +
-                "four  4      ", w.print(df).toString());
+                "four  4      " + System.lineSeparator() +
+                "4 rows x 2 columns", w.print(df).toString());
     }
 
     @Test
@@ -52,7 +53,8 @@ public class TabularPrinterWorkerTest {
                 "---- -------" + System.lineSeparator() +
                 "one  1      " + System.lineSeparator() +
                 "two  2      " + System.lineSeparator() +
-                "...", w.print(df).toString());
+                "..." + System.lineSeparator() +
+                "4 rows x 2 columns", w.print(df).toString());
     }
 
     @Test
@@ -65,6 +67,7 @@ public class TabularPrinterWorkerTest {
                 "one  1   " + System.lineSeparator() +
                 "two  2   " + System.lineSeparator() +
                 "t..e 3   " + System.lineSeparator() +
-                "four 4   ", w.print(df).toString());
+                "four 4   " + System.lineSeparator() +
+                "4 rows x 2 columns", w.print(df).toString());
     }
 }

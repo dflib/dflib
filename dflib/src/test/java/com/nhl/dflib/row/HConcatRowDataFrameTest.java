@@ -7,7 +7,6 @@ import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.map.RowMapper;
-import com.nhl.dflib.row.HConcatRowDataFrame;
 import org.junit.Test;
 
 public class HConcatRowDataFrameTest {
@@ -152,7 +151,7 @@ public class HConcatRowDataFrameTest {
         Index zippedColumns = Index.withNames("x", "y");
 
         DataFrame df = new HConcatRowDataFrame(zippedColumns, JoinType.inner, df1, df2, RowCombiner.zip(df1.width()))
-                .map(RowMapper.mapColumn("x", r -> r.get(0) + "_"));
+                .map(zippedColumns, RowMapper.mapColumn("x", r -> r.get(0) + "_"));
 
         new DFAsserts(df, zippedColumns)
                 .expectHeight(2)

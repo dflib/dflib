@@ -22,32 +22,17 @@ public class DataFrame_MapTest extends BaseDataFrameTest {
     }
 
     @Test
-    public void testMap_SameIndex() {
+    public void testMap() {
         Index i1 = Index.withNames("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
-                .map(RowMapper.mapColumn("a", r -> ((int) r.get("a")) * 10));
+                .map(i1, RowMapper.mapColumn("a", r -> ((int) r.get("a")) * 10));
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, 10, "x")
                 .expectRow(1, 20, "y");
-    }
-
-    @Test
-    public void testMap_SameIndex_Sparse() {
-        Index i1 = Index.withNames("a", "b");
-        DataFrame df = createDf(i1,
-                1, "x",
-                2, "y")
-                .dropColumns("a")
-                .map(RowMapper.mapColumn("b", r -> r.get("b") + "_"));
-
-        new DFAsserts(df, new IndexPosition(0, 0, "b"))
-                .expectHeight(2)
-                .expectRow(0, "x_")
-                .expectRow(1, "y_");
     }
 
     @Test
