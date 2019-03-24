@@ -7,17 +7,18 @@ import com.nhl.dflib.Series;
 import com.nhl.dflib.column.concat.ColumnHConcat;
 import com.nhl.dflib.column.concat.ColumnVConcat;
 import com.nhl.dflib.column.filter.ColumnarFilterIndexer;
+import com.nhl.dflib.column.join.ColumnarNestedLoopJoiner;
 import com.nhl.dflib.column.map.ColumnarMapper;
 import com.nhl.dflib.column.sort.ColumnarSortIndexer;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
+import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.map.RowMapper;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.ValueMapper;
-import com.nhl.dflib.print.InlinePrinter;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.ArrayIterator;
 import com.nhl.dflib.series.ArraySeries;
@@ -279,6 +280,12 @@ public class ColumnDataFrame implements DataFrame {
         System.arraycopy(dfs, 0, combined, 1, dfs.length);
 
         return ColumnVConcat.concat(how, combined);
+    }
+
+    @Override
+    public DataFrame join(DataFrame df, JoinPredicate p, JoinType how) {
+        ColumnarNestedLoopJoiner joiner = new ColumnarNestedLoopJoiner(p, how);
+        return joiner.joinRows(joiner.joinIndex(this.getColumns(), df.getColumns()), this, df);
     }
 
     @Override

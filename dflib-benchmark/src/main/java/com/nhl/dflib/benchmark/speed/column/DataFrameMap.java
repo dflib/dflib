@@ -38,7 +38,7 @@ public class DataFrameMap {
     @Benchmark
     public Object map() {
         return df
-                .map(RowMapper.copy())
+                .map(df.getColumns().compactIndex(), RowMapper.copy())
                 .materialize()
                 .iterator();
     }
@@ -46,7 +46,7 @@ public class DataFrameMap {
     @Benchmark
     public Object mapWithChange() {
         return df
-                .map(RowMapper.copy().and((s, t) -> t.set(2, 1)))
+                .map(df.getColumns().compactIndex(), RowMapper.copy().and((s, t) -> t.set(2, 1)))
                 .materialize()
                 .iterator();
     }

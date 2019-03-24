@@ -45,12 +45,15 @@ public class IndexedSeries<T> implements Series<T> {
 
     protected ArraySeries doMaterialize() {
 
-        int fl = includePositions.size();
+        int h = includePositions.size();
 
-        Object[] data = new Object[fl];
+        Object[] data = new Object[h];
 
-        for (int i = 0; i < fl; i++) {
-            data[i] = source.get(includePositions.get(i));
+        for (int i = 0; i < h; i++) {
+            int index = includePositions.get(i);
+
+            // skipped positions (index < 0) are found in joins
+            data[i] = index < 0 ? null : source.get(index);
         }
 
         // reset source reference, allowing to free up memory..

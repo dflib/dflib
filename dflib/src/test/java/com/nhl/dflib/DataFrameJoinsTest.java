@@ -24,7 +24,7 @@ public class DataFrameJoinsTest extends BaseDataFrameTest {
     }
 
     @Test
-    public void testInnerJoin_Inner() {
+    public void testInnerJoin() {
 
         Index i1 = Index.withNames("a", "b");
         DataFrame df1 = createDf(i1,
