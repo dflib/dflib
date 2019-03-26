@@ -3,6 +3,9 @@ package com.nhl.dflib.map;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.row.RowBuilder;
 
+/**
+ * Maps source row value to target row values.
+ */
 @FunctionalInterface
 public interface RowMapper {
 
