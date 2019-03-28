@@ -132,6 +132,8 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     <V> DataFrame addColumns(String[] columnNames, RowToValueMapper<V>... columnValueProducers);
 
+    <V> DataFrame addColumn(String columnName, Series<V> column);
+
     DataFrame renameColumns(String... columnNames);
 
     default DataFrame renameColumn(String oldName, String newName) {

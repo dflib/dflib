@@ -168,7 +168,7 @@ public class ColumnDataFrame implements DataFrame {
             System.arraycopy(sequence, fullColumnsW * h, data[fullColumnsW], 0, lastColumnH);
         }
 
-        Series[] series = Series.fromColumnarData(data);
+        Series[] series = ColumnDataFrame.columnarDataToSeries(data);
         return new ColumnDataFrame(columns, series);
     }
 
@@ -199,8 +199,21 @@ public class ColumnDataFrame implements DataFrame {
             }
         }
 
-        Series[] series = Series.fromColumnarData(data);
+        Series[] series = ColumnDataFrame.columnarDataToSeries(data);
         return new ColumnDataFrame(columns, series);
+    }
+
+    static Series<?>[] columnarDataToSeries(Object[][] columnarData) {
+
+        int w = columnarData.length;
+
+        Series[] series = new Series[w];
+
+        for (int i = 0; i < w; i++) {
+            series[i] = new ArraySeries(columnarData[i]);
+        }
+
+        return series;
     }
 
     /**
@@ -390,6 +403,26 @@ public class ColumnDataFrame implements DataFrame {
         }
 
         return new ColumnDataFrame(expandedIndex, newData);
+    }
+
+    @Override
+    public <V> DataFrame addColumn(String columnName, Series<V> column) {
+
+        int ch = column.size();
+        int h = height();
+
+        if (ch != h) {
+            throw new IllegalArgumentException("The new column height (" + ch + ") is different from the DataFrame height (" + h + ")");
+        }
+
+        Index newIndex = columnsIndex.addNames(columnName);
+
+        int w = dataColumns.length;
+        Series<?>[] newDataColumns = new Series[w + 1];
+        System.arraycopy(dataColumns, 0, newDataColumns, 0, w);
+        newDataColumns[w] = column;
+
+        return new ColumnDataFrame(newIndex, newDataColumns);
     }
 
     @Override

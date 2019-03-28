@@ -6,17 +6,8 @@ import com.nhl.dflib.series.RangeSeries;
 
 public interface Series<T> {
 
-    static Series<?>[] fromColumnarData(Object[][] columnarData) {
-
-        int w = columnarData.length;
-
-        Series[] series = new Series[w];
-
-        for (int i = 0; i < w; i++) {
-            series[i] = new ArraySeries(columnarData[i]);
-        }
-
-        return series;
+    static <T> Series<T> from(T... data) {
+        return new ArraySeries<>(data);
     }
 
     int size();

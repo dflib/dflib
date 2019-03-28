@@ -34,6 +34,46 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
     }
 
     @Test
+    public void testAddColumn_Series() {
+
+        Series<String> column = Series.from("m", "n");
+
+        Index i1 = Index.withNames("a", "b");
+        DataFrame df = createDf(i1,
+                1, "x",
+                2, "y").addColumn("c", column);
+
+
+        new DFAsserts(df, "a", "b", "c")
+                .expectHeight(2)
+                .expectRow(0, 1, "x", "m")
+                .expectRow(1, 2, "y", "n");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddColumn_Series_Shorter() {
+
+        Series<String> column = Series.from("m");
+
+        Index i1 = Index.withNames("a", "b");
+        createDf(i1,
+                1, "x",
+                2, "y").addColumn("c", column);
+
+    }
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddColumn_Series_Longer() {
+
+        Series<String> column = Series.from("m", "n", "o");
+
+        Index i1 = Index.withNames("a", "b");
+        createDf(i1,
+                1, "x",
+                2, "y").addColumn("c", column);
+
+    }
+
+    @Test
     public void testSelectColumns() {
         Index i1 = Index.withNames("a", "b");
         DataFrame df = createDf(i1,
