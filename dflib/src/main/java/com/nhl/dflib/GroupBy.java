@@ -42,7 +42,7 @@ public class GroupBy {
         return new GroupBy(ungroupedColumns, sorted);
     }
 
-    public <V extends Comparable<? super V>> GroupBy sortByColumns(String[] columns, boolean[] ascending) {
+    public GroupBy sortByColumns(String[] columns, boolean[] ascending) {
         if (columns.length == 0) {
             return this;
         }
@@ -56,7 +56,7 @@ public class GroupBy {
         return new GroupBy(ungroupedColumns, sorted);
     }
 
-    public <V extends Comparable<? super V>> GroupBy sortByColumns(int[] columns, boolean[] ascending) {
+    public GroupBy sortByColumns(int[] columns, boolean[] ascending) {
         if (columns.length == 0) {
             return this;
         }
