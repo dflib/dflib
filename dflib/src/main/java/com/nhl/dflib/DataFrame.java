@@ -157,9 +157,9 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     <V extends Comparable<? super V>> DataFrame sort(RowToValueMapper<V> sortKeyExtractor);
 
-    <V extends Comparable<? super V>> DataFrame sortByColumns(String... columns);
+    DataFrame sortByColumns(String... columns);
 
-    <V extends Comparable<? super V>> DataFrame sortByColumns(int... columns);
+    DataFrame sortByColumns(int... columns);
 
     /**
      * Horizontally concatenates a DataFrame with another DataFrame, producing a "wider" DataFrame. If the heights of
