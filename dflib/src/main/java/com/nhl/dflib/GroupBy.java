@@ -42,7 +42,7 @@ public class GroupBy {
         return new GroupBy(ungroupedColumns, sorted);
     }
 
-    public <V extends Comparable<? super V>> GroupBy sortByColumns(String... columns) {
+    public <V extends Comparable<? super V>> GroupBy sortByColumns(String[] columns, boolean[] ascending) {
         if (columns.length == 0) {
             return this;
         }
@@ -50,13 +50,13 @@ public class GroupBy {
         Map<Object, DataFrame> sorted = new LinkedHashMap<>((int) (groups.size() / 0.75));
 
         for (Map.Entry<Object, DataFrame> e : groups.entrySet()) {
-            sorted.put(e.getKey(), e.getValue().sortByColumns(columns));
+            sorted.put(e.getKey(), e.getValue().sortByColumns(columns, ascending));
         }
 
         return new GroupBy(ungroupedColumns, sorted);
     }
 
-    public <V extends Comparable<? super V>> GroupBy sortByColumns(int... columns) {
+    public <V extends Comparable<? super V>> GroupBy sortByColumns(int[] columns, boolean[] ascending) {
         if (columns.length == 0) {
             return this;
         }
@@ -64,7 +64,7 @@ public class GroupBy {
         Map<Object, DataFrame> sorted = new LinkedHashMap<>((int) (groups.size() / 0.75));
 
         for (Map.Entry<Object, DataFrame> e : groups.entrySet()) {
-            sorted.put(e.getKey(), e.getValue().sortByColumns(columns));
+            sorted.put(e.getKey(), e.getValue().sortByColumns(columns, ascending));
         }
 
         return new GroupBy(ungroupedColumns, sorted);

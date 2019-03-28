@@ -39,7 +39,7 @@ public class DataFrame_Sort_Test extends BaseDataFrameTest {
                 2, 2,
                 0, 2);
 
-        DataFrame dfab = dfi.sortByColumns("a", "b");
+        DataFrame dfab = dfi.sortByColumns(new String[]{"a", "b"}, new boolean[]{true, true});
         assertNotSame(dfi, dfab);
 
         new DFAsserts(dfab, "a", "b")
@@ -48,7 +48,7 @@ public class DataFrame_Sort_Test extends BaseDataFrameTest {
                 .expectRow(1, 0, 4)
                 .expectRow(2, 2, 2);
 
-        DataFrame dfba = dfi.sortByColumns("b", "a");
+        DataFrame dfba = dfi.sortByColumns(new String[]{"b", "a"}, new boolean[]{true, true});
         assertNotSame(dfi, dfba);
 
         new DFAsserts(dfba, "a", "b")
@@ -67,7 +67,7 @@ public class DataFrame_Sort_Test extends BaseDataFrameTest {
                 2, 2,
                 0, 2);
 
-        DataFrame dfab = dfi.sortByColumns(0, 1);
+        DataFrame dfab = dfi.sortByColumns(new int[]{0, 1}, new boolean[]{true, true});
         assertNotSame(dfi, dfab);
 
         new DFAsserts(dfab, "a", "b")
@@ -76,7 +76,7 @@ public class DataFrame_Sort_Test extends BaseDataFrameTest {
                 .expectRow(1, 0, 4)
                 .expectRow(2, 2, 2);
 
-        DataFrame dfba = dfi.sortByColumns(1, 0);
+        DataFrame dfba = dfi.sortByColumns(new int[]{1, 0}, new boolean[]{true, true});
         assertNotSame(dfi, dfba);
 
         new DFAsserts(dfba, "a", "b")
@@ -85,5 +85,32 @@ public class DataFrame_Sort_Test extends BaseDataFrameTest {
                 .expectRow(1, 2, 2)
                 .expectRow(2, 0, 4);
 
+    }
+
+    @Test
+    public void testSortByColumn_Position_Direction() {
+        Index i = Index.withNames("a", "b");
+        DataFrame dfi = createDf(i,
+                0, 3,
+                2, 4,
+                0, 2);
+
+        DataFrame dfab = dfi.sortByColumn(1, false);
+        assertNotSame(dfi, dfab);
+
+        new DFAsserts(dfab, "a", "b")
+                .expectHeight(3)
+                .expectRow(0, 2, 4)
+                .expectRow(1, 0, 3)
+                .expectRow(2, 0, 2);
+
+        DataFrame dfba = dfi.sortByColumn(1, true);
+        assertNotSame(dfi, dfba);
+
+        new DFAsserts(dfba, "a", "b")
+                .expectHeight(3)
+                .expectRow(0, 0, 2)
+                .expectRow(1, 0, 3)
+                .expectRow(2, 2, 4);
     }
 }

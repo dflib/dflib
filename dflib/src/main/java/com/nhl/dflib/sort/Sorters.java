@@ -13,7 +13,19 @@ public interface Sorters {
         return Comparator.comparing(sortKeyExtractor::map);
     }
 
-    static Comparator<RowProxy> sorter(Index columns, String... sortColumns) {
+    static Comparator<RowProxy> sorter(Index columns, String sortColumn, boolean ascending) {
+        IndexPosition pos = columns.position(sortColumn);
+        Comparator<RowProxy> ci = Comparator.comparing(o -> (Comparable) o.get(pos.ordinal()));
+        return ascending ? ci : ci.reversed();
+    }
+
+    static Comparator<RowProxy> sorter(Index columns, int sortColumn, boolean ascending) {
+        IndexPosition pos = columns.getPositions()[sortColumn];
+        Comparator<RowProxy> ci = Comparator.comparing(o -> (Comparable) o.get(pos.ordinal()));
+        return ascending ? ci : ci.reversed();
+    }
+
+    static Comparator<RowProxy> sorter(Index columns, String[] sortColumns, boolean[] ascending) {
 
         if (sortColumns.length == 0) {
             throw new IllegalArgumentException("No sort columns");
@@ -21,15 +33,14 @@ public interface Sorters {
 
         Comparator<RowProxy> c = null;
         for (int i = 0; i < sortColumns.length; i++) {
-            IndexPosition pos = columns.position(sortColumns[i]);
-            Comparator<RowProxy> ci = Comparator.comparing(o -> (Comparable) o.get(pos.ordinal()));
+            Comparator<RowProxy> ci = sorter(columns, sortColumns[i], ascending[i]);
             c = c == null ? ci : c.thenComparing(ci);
         }
 
         return c;
     }
 
-    static Comparator<RowProxy> sorter(Index columns, int... sortColumns) {
+    static Comparator<RowProxy> sorter(Index columns, int[] sortColumns, boolean[] ascending) {
 
         if (sortColumns.length == 0) {
             throw new IllegalArgumentException("No sort columns");
@@ -37,8 +48,7 @@ public interface Sorters {
 
         Comparator<RowProxy> c = null;
         for (int i = 0; i < sortColumns.length; i++) {
-            IndexPosition pos = columns.getPositions()[sortColumns[i]];
-            Comparator<RowProxy> ci = Comparator.comparing(o -> (Comparable) o.get(pos.ordinal()));
+            Comparator<RowProxy> ci = sorter(columns, sortColumns[i], ascending[i]);
             c = c == null ? ci : c.thenComparing(ci);
         }
 

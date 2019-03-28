@@ -321,13 +321,23 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public <V extends Comparable<? super V>> DataFrame sortByColumns(String... columns) {
-        return sort(Sorters.sorter(getColumns(), columns));
+    public DataFrame sortByColumns(String[] columns, boolean[] ascending) {
+        return sort(Sorters.sorter(columnsIndex, columns, ascending));
     }
 
     @Override
-    public <V extends Comparable<? super V>> DataFrame sortByColumns(int... columns) {
-        return sort(Sorters.sorter(getColumns(), columns));
+    public DataFrame sortByColumns(int[] columns, boolean[] ascending) {
+        return sort(Sorters.sorter(columnsIndex, columns, ascending));
+    }
+
+    @Override
+    public DataFrame sortByColumn(int column, boolean ascending) {
+        return sort(Sorters.sorter(columnsIndex, column, ascending));
+    }
+
+    @Override
+    public DataFrame sortByColumn(String column, boolean ascending) {
+        return sort(Sorters.sorter(columnsIndex, column, ascending));
     }
 
     private DataFrame sort(Comparator<RowProxy> comparator) {
