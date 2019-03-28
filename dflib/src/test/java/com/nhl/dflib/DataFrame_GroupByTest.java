@@ -10,7 +10,7 @@ import java.util.HashSet;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 
-public class DataFrameGroupByTest extends BaseDataFrameTest {
+public class DataFrame_GroupByTest extends BaseDataFrameTest {
 
     @Test
     public void testGroupBy() {

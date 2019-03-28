@@ -5,7 +5,7 @@ import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.Hasher;
 import org.junit.Test;
 
-public class DataFrameJoinsTest extends BaseDataFrameTest {
+public class DataFrame_JoinsTest extends BaseDataFrameTest {
 
     @Test
     public void testInnerJoin() {
