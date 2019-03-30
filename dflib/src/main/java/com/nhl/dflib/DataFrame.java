@@ -127,7 +127,12 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param <VR>       output column value
      * @return a new DataFrame
      */
-    <V, VR> DataFrame convertColumn(String columnName, ValueMapper<V, VR> converter);
+    default <V, VR> DataFrame convertColumn(String columnName, ValueMapper<V, VR> converter) {
+        int pos = getColumnsIndex().position(columnName);
+        return convertColumn(pos, converter);
+    }
+
+    <V, VR> DataFrame convertColumn(int columnPos, ValueMapper<V, VR> converter);
 
     default DataFrame addRowIndexColumn(String name) {
         int[] counter = new int[1];
@@ -334,6 +339,26 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new GroupBy instance that contains row groupings
      */
     GroupBy group(Hasher by);
+
+    DataFrame fillNulls(Object value);
+
+    DataFrame fillNulls(int columnPos, Object value);
+
+    default DataFrame fillNulls(String columnName, Object value) {
+        return fillNulls(getColumnsIndex().position(columnName), value);
+    }
+
+    DataFrame backFillNulls(int columnPos);
+
+    default DataFrame backFillNulls(String columnName) {
+        return backFillNulls(getColumnsIndex().position(columnName));
+    }
+
+    DataFrame forwardFillNulls(int columnPos);
+
+    default DataFrame forwardFillNulls(String columnName) {
+        return forwardFillNulls(getColumnsIndex().position(columnName));
+    }
 
     @Override
     Iterator<RowProxy> iterator();

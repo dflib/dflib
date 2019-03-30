@@ -258,16 +258,8 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public <V, VR> DataFrame convertColumn(String columnName, ValueMapper<V, VR> converter) {
-
-        int width = width();
-
-        Series[] newData = new Series[width];
-        System.arraycopy(dataColumns, 0, newData, 0, width);
-
-        int pos = columnsIndex.position(columnName);
-        newData[pos] = new ColumnMappedSeries(dataColumns[pos], converter);
-        return new ColumnDataFrame(columnsIndex, newData);
+    public <V, VR> DataFrame convertColumn(int columnPos, ValueMapper<V, VR> converter) {
+        return replaceColumn(columnPos, new ColumnMappedSeries(dataColumns[columnPos], converter));
     }
 
     @Override
@@ -307,6 +299,34 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
+    public DataFrame fillNulls(Object value) {
+
+        int w = width();
+        Series[] newColumns = new Series[w];
+
+        for (int i = 0; i < w; i++) {
+            newColumns[i] = dataColumns[i].fillNulls(value);
+        }
+
+        return new ColumnDataFrame(columnsIndex, newColumns);
+    }
+
+    @Override
+    public DataFrame fillNulls(int columnPos, Object value) {
+        return replaceColumn(columnPos, dataColumns[columnPos].fillNulls(value));
+    }
+
+    @Override
+    public DataFrame backFillNulls(int columnPos) {
+        return replaceColumn(columnPos, dataColumns[columnPos].backFillNulls());
+    }
+
+    @Override
+    public DataFrame forwardFillNulls(int columnPos) {
+        return replaceColumn(columnPos, dataColumns[columnPos].forwardFillNulls());
+    }
+
+    @Override
     public Iterator<RowProxy> iterator() {
         return new Iterator<RowProxy>() {
 
@@ -326,6 +346,20 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public String toString() {
-        return Printers.inline.append(this, new StringBuilder("ColumnarDataFrame [")).append("]").toString();
+        return Printers.inline.append(this, new StringBuilder("ColumnDataFrame [")).append("]").toString();
+    }
+
+    protected DataFrame replaceColumn(int pos, Series<?> newColumn) {
+        if (newColumn == dataColumns[pos]) {
+            return this;
+        }
+
+        int w = width();
+        Series[] newColumns = new Series[w];
+        for (int i = 0; i < w; i++) {
+            newColumns[i] = i == pos ? newColumn : dataColumns[i];
+        }
+
+        return new ColumnDataFrame(columnsIndex, newColumns);
     }
 }
