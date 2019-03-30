@@ -5,9 +5,9 @@ import com.nhl.dflib.series.ArrayIterator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,16 +33,16 @@ public class Index implements Iterable<String> {
     public static <E extends Enum<E>> Index withLabels(Class<E> columns) {
 
         E[] enumValues = columns.getEnumConstants();
-        String[] names = new String[enumValues.length];
+        String[] labels = new String[enumValues.length];
         for (int i = 0; i < enumValues.length; i++) {
-            names[i] = enumValues[i].name();
+            labels[i] = enumValues[i].name();
         }
 
-        return withLabels(names);
+        return withLabels(labels);
     }
 
     public static Index withLabels(String... labels) {
-        // TODO: dedupe labels like "selectNames" does?
+        // TODO: dedupe labels like "selectLabels" does?
         return new Index(labels);
     }
 
@@ -51,57 +51,57 @@ public class Index implements Iterable<String> {
         return new ArrayIterator<>(labels);
     }
 
-    public Index rename(Map<String, String> oldToNewNames) {
+    public Index rename(Map<String, String> oldToNewLabels) {
 
         int len = size();
 
-        String[] newPositions = new String[len];
+        String[] newLabels = new String[len];
         for (int i = 0; i < len; i++) {
-            String oldName = labels[i];
-            String newName = oldToNewNames.get(oldName);
-            newPositions[i] = newName != null ? newName : oldName;
+            String oldLabel = labels[i];
+            String newLabel= oldToNewLabels.get(oldLabel);
+            newLabels[i] = newLabel != null ? newLabel : oldLabel;
         }
 
-        return new Index(newPositions);
+        return new Index(newLabels);
     }
 
-    public Index rename(String... newNames) {
+    public Index rename(String... newLabels) {
 
-        if (newNames.length != size()) {
+        if (newLabels.length != size()) {
             throw new IllegalArgumentException("New columns length does not match existing index size: "
-                    + newNames.length + " vs " + size());
+                    + newLabels.length + " vs " + size());
         }
 
-        Map<String, String> nameMap = new HashMap<>((int) (newNames.length / 0.75));
-        for (int i = 0; i < newNames.length; i++) {
-            nameMap.put(labels[i], newNames[i]);
+        Map<String, String> map = new HashMap<>((int) (newLabels.length / 0.75));
+        for (int i = 0; i < newLabels.length; i++) {
+            map.put(labels[i], newLabels[i]);
         }
 
-        return rename(nameMap);
+        return rename(map);
     }
 
-    public Index addNames(String... extraNames) {
-        return HConcat.zipIndex(this, withLabels(extraNames));
+    public Index addLabels(String... extraLabels) {
+        return HConcat.zipIndex(this, withLabels(extraLabels));
     }
 
     public Index selectLabels(String... labels) {
 
         int len = labels.length;
         String[] selectedLabels = new String[len];
-        Set<String> uniqueNames = new LinkedHashSet<>((int) (len / 0.75));
+        Set<String> uniqueLabels = new HashSet<>((int) (len / 0.75));
 
         for (int i = 0; i < len; i++) {
 
             // this will throw on invalid label
             position(labels[i]);
 
-            String name = labels[i];
+            String label = labels[i];
 
-            while (!uniqueNames.add(name)) {
-                name = name + "_";
+            while (!uniqueLabels.add(label)) {
+                label = label + "_";
             }
 
-            selectedLabels[i] = name;
+            selectedLabels[i] = label;
         }
 
         return Index.withLabels(selectedLabels);
@@ -176,7 +176,7 @@ public class Index implements Iterable<String> {
         for (int i = 0; i < labels.length; i++) {
             Integer previous = index.put(labels[i], i);
             if (previous != null) {
-                throw new IllegalStateException("Duplicate position name '"
+                throw new IllegalStateException("Duplicate label '"
                         + labels[i]
                         + "'. Found at " + previous + " and " + i);
             }

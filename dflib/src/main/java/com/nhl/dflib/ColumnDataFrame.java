@@ -403,7 +403,7 @@ public class ColumnDataFrame implements DataFrame {
 
         int width = width();
         int extraWidth = columnNames.length;
-        Index expandedIndex = columnsIndex.addNames(columnNames);
+        Index expandedIndex = columnsIndex.addLabels(columnNames);
 
         Series[] newData = new Series[width + extraWidth];
         System.arraycopy(dataColumns, 0, newData, 0, width);
@@ -425,7 +425,7 @@ public class ColumnDataFrame implements DataFrame {
             throw new IllegalArgumentException("The new column height (" + ch + ") is different from the DataFrame height (" + h + ")");
         }
 
-        Index newIndex = columnsIndex.addNames(columnName);
+        Index newIndex = columnsIndex.addLabels(columnName);
 
         int w = dataColumns.length;
         Series<?>[] newDataColumns = new Series[w + 1];
