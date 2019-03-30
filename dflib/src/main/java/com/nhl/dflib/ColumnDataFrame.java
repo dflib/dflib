@@ -230,13 +230,23 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public Index getColumns() {
+    public Index getColumnsIndex() {
         return columnsIndex;
     }
 
     @Override
-    public Iterable<Series<?>> getDataColumns() {
+    public Iterable<Series<?>> getColumns() {
         return () -> new ArrayIterator(dataColumns);
+    }
+
+    @Override
+    public <T> Series<T> getColumn(int pos) {
+        return dataColumns[pos];
+    }
+
+    @Override
+    public <T> Series<T> getColumn(String name) {
+        return dataColumns[columnsIndex.position(name)];
     }
 
     @Override
@@ -279,13 +289,13 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public DataFrame renameColumns(String... newColumnNames) {
-        Index renamed = getColumns().rename(newColumnNames);
+        Index renamed = getColumnsIndex().rename(newColumnNames);
         return new ColumnDataFrame(renamed, dataColumns);
     }
 
     @Override
     public DataFrame renameColumns(Map<String, String> oldToNewNames) {
-        Index renamed = getColumns().rename(oldToNewNames);
+        Index renamed = getColumnsIndex().rename(oldToNewNames);
         return new ColumnDataFrame(renamed, dataColumns);
     }
 
@@ -362,7 +372,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public DataFrame hConcat(JoinType how, DataFrame df) {
-        Index zipIndex = HConcat.zipIndex(getColumns(), df.getColumns());
+        Index zipIndex = HConcat.zipIndex(getColumnsIndex(), df.getColumnsIndex());
         return new HConcat(how).concat(zipIndex, this, df);
     }
 
@@ -388,14 +398,14 @@ public class ColumnDataFrame implements DataFrame {
     public DataFrame join(DataFrame df, JoinPredicate p, JoinType how) {
         NestedLoopJoiner joiner = new NestedLoopJoiner(p, how);
         JoinMerger merger = joiner.joinMerger(this, df);
-        return merger.join(joiner.joinIndex(this.getColumns(), df.getColumns()), this, df);
+        return merger.join(joiner.joinIndex(this.getColumnsIndex(), df.getColumnsIndex()), this, df);
     }
 
     @Override
     public DataFrame join(DataFrame df, Hasher leftHasher, Hasher rightHasher, JoinType how) {
         HashJoiner joiner = new HashJoiner(leftHasher, rightHasher, how);
         JoinMerger merger = joiner.joinMerger(this, df);
-        return merger.join(joiner.joinIndex(this.getColumns(), df.getColumns()), this, df);
+        return merger.join(joiner.joinIndex(this.getColumnsIndex(), df.getColumnsIndex()), this, df);
     }
 
     @Override

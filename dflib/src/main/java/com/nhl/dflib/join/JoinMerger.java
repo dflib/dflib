@@ -36,12 +36,12 @@ public class JoinMerger {
 
         Series[] data = new Series[w];
 
-        Iterator<Series<?>> ls = left.getDataColumns().iterator();
+        Iterator<Series<?>> ls = left.getColumns().iterator();
         for (int i = 0; i < wl; i++) {
             data[i] = new IndexedSeries(ls.next(), leftIndex);
         }
 
-        Iterator<Series<?>> rs = right.getDataColumns().iterator();
+        Iterator<Series<?>> rs = right.getColumns().iterator();
         for (int i = wl; i < w; i++) {
             data[i] = new IndexedSeries(rs.next(), rightIndex);
         }

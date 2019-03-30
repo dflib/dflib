@@ -72,7 +72,7 @@ public class TableSaver {
                 .append(" (");
 
         // append columns
-        String[] labels = df.getColumns().getLabels();
+        String[] labels = df.getColumnsIndex().getLabels();
         int len = labels.length;
 
         for (int i = 0; i < labels.length; i++) {

@@ -112,7 +112,7 @@ public class VConcat {
     public DataFrame concat(DataFrame... dfs) {
         Index[] indices = new Index[dfs.length];
         for (int i = 0; i < indices.length; i++) {
-            indices[i] = dfs[i].getColumns();
+            indices[i] = dfs[i].getColumnsIndex();
         }
 
 
@@ -129,10 +129,10 @@ public class VConcat {
 
         for (int i = 0; i < dfs.length; i++) {
 
-            Index dfc = dfs[i].getColumns();
+            Index dfc = dfs[i].getColumnsIndex();
             int dfw = dfc.size();
 
-            Iterator<Series<?>> it = dfs[i].getDataColumns().iterator();
+            Iterator<Series<?>> it = dfs[i].getColumns().iterator();
 
             for (int j = 0; j < dfw; j++) {
 

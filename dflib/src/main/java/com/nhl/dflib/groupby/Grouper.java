@@ -30,7 +30,7 @@ public class Grouper {
         // Intentionally using generics-free map to be able to reset the internal object and avoid copying the map
         Map groups = new LinkedHashMap();
 
-        Index columns = df.getColumns();
+        Index columns = df.getColumnsIndex();
 
         int i = 0;
         for (RowProxy r : df) {
@@ -46,7 +46,7 @@ public class Grouper {
             Series<Integer> index = new ListSeries<>((List<Integer>) e.getValue());
             Series[] data = new Series[w];
 
-            Iterator<Series<?>> ls = df.getDataColumns().iterator();
+            Iterator<Series<?>> ls = df.getColumns().iterator();
             for (int j = 0; j < w; j++) {
                 data[j] = new IndexedSeries(ls.next(), index);
             }

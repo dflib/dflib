@@ -16,7 +16,7 @@ class TabularPrinterWorker extends BasePrinterWorker {
 
     StringBuilder print(DataFrame df) {
 
-        Index columns = df.getColumns();
+        Index columns = df.getColumnsIndex();
         Iterator<RowProxy> values = df.iterator();
 
         int w = columns.size();

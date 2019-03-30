@@ -88,11 +88,11 @@ public class HConcat {
         Series<?>[] newData = new Series[w];
         int i = 0;
 
-        for (Series<?> s : lf.getDataColumns()) {
+        for (Series<?> s : lf.getColumns()) {
             newData[i++] = lt.apply(s);
         }
 
-        for (Series<?> s : rf.getDataColumns()) {
+        for (Series<?> s : rf.getColumns()) {
             newData[i++] = rt.apply(s);
         }
 

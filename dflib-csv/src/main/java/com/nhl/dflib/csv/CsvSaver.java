@@ -54,7 +54,7 @@ public class CsvSaver {
 
         try {
             CSVPrinter printer = new CSVPrinter(out, format);
-            printHeader(printer, df.getColumns());
+            printHeader(printer, df.getColumnsIndex());
 
             int len = df.width();
             for (RowProxy r : df) {

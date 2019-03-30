@@ -15,7 +15,7 @@ public class InlinePrinterWorker extends BasePrinterWorker {
     @Override
     StringBuilder print(DataFrame df) {
 
-        Index columns = df.getColumns();
+        Index columns = df.getColumnsIndex();
         Iterator<RowProxy> values = df.iterator();
 
         int width = columns.size();

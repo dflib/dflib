@@ -21,12 +21,12 @@ public class DFAsserts {
     public DFAsserts(DataFrame df, String... expectedColumns) {
 
         assertNotNull("DataFrame is null", df);
-        assertArrayEquals("DataFrame columns differ from expected", expectedColumns, df.getColumns().getLabels());
+        assertArrayEquals("DataFrame columns differ from expected", expectedColumns, df.getColumnsIndex().getLabels());
 
         this.expectedColumns = expectedColumns;
         this.rows = new ArrayList<>();
 
-        ArrayRowBuilder rowBuilder = new ArrayRowBuilder(df.getColumns());
+        ArrayRowBuilder rowBuilder = new ArrayRowBuilder(df.getColumnsIndex());
         df.forEach(r -> {
             r.copy(rowBuilder, 0);
             rows.add(rowBuilder.reset());

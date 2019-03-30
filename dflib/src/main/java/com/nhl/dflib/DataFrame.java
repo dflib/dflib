@@ -77,14 +77,18 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @return DataFrame column index
      */
-    Index getColumns();
+    Index getColumnsIndex();
 
     /**
      * Returns a read-only iterator over DataFrame columnar data.
      *
      * @return a read-only iterator over DataFrame columnar data
      */
-    Iterable<Series<?>> getDataColumns();
+    Iterable<Series<?>> getColumns();
+
+    <T> Series<T> getColumn(String name);
+
+    <T> Series<T> getColumn(int pos);
 
     /**
      * Returns the number of rows in this DataFrame. Aka the DataFrame "height". Note that depending on the type of
@@ -96,7 +100,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     int height();
 
     default int width() {
-        return getColumns().size();
+        return getColumnsIndex().size();
     }
 
     DataFrame head(int len);
@@ -115,7 +119,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     <V, VR> DataFrame mapColumnValue(String columnName, ValueMapper<V, VR> m);
 
     default <V> DataFrame mapColumn(String columnName, RowToValueMapper<V> m) {
-        Index index = getColumns();
+        Index index = getColumnsIndex();
         int pos = index.position(columnName);
         return map(index, RowMapper.mapColumn(pos, m));
     }
@@ -148,7 +152,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     DataFrame filter(RowPredicate p);
 
     default <V> DataFrame filterByColumn(String columnName, ValuePredicate<V> p) {
-        int pos = getColumns().position(columnName);
+        int pos = getColumnsIndex().position(columnName);
         return filterByColumn(pos, p);
     }
 

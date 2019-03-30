@@ -152,4 +152,28 @@ public class ColumnDataFrameTest {
                 .expectRow(0, 1, "x", 10)
                 .expectRow(1, 2, "y", 20);
     }
+
+    @Test
+    public void testGetColumn_byLabel() {
+        Index i1 = Index.withLabels("a", "b");
+        DataFrame df = ColumnDataFrame.fromSequenceFoldByRow(i1,
+                1, "x",
+                2, "y");
+
+        Series<String> cb = df.getColumn("b");
+
+        new SeriesAsserts(cb).expectData("x", "y");
+    }
+
+    @Test
+    public void testGetColumn_byPosition() {
+        Index i1 = Index.withLabels("a", "b");
+        DataFrame df = ColumnDataFrame.fromSequenceFoldByRow(i1,
+                1, "x",
+                2, "y");
+
+        Series<String> cb = df.getColumn(0);
+
+        new SeriesAsserts(cb).expectData(1, 2);
+    }
 }
