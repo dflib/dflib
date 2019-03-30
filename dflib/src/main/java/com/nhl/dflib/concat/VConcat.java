@@ -132,12 +132,10 @@ public class VConcat {
             Index dfc = dfs[i].getColumnsIndex();
             int dfw = dfc.size();
 
-            Iterator<Series<?>> it = dfs[i].getColumns().iterator();
-
             for (int j = 0; j < dfw; j++) {
 
                 // need to rewind the iterator even if we exclude the series from copy
-                Series<?> next = it.next();
+                Series<?> next = dfs[i].getColumn(j);
                 int pos = mapSeriesPosition(concatColumns, dfc.getLabel(j));
 
                 if (pos >= 0) {

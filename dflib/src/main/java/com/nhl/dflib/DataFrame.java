@@ -79,13 +79,6 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     Index getColumnsIndex();
 
-    /**
-     * Returns a read-only iterator over DataFrame columnar data.
-     *
-     * @return a read-only iterator over DataFrame columnar data
-     */
-    Iterable<Series<?>> getColumns();
-
     <T> Series<T> getColumn(String name);
 
     <T> Series<T> getColumn(int pos);

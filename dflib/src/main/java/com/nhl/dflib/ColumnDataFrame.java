@@ -52,11 +52,6 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public Iterable<Series<?>> getColumns() {
-        return () -> new ArrayIterator<>(dataColumns);
-    }
-
-    @Override
     public <T> Series<T> getColumn(int pos) {
         return dataColumns[pos];
     }

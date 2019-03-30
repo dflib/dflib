@@ -1,12 +1,10 @@
 package com.nhl.dflib.join;
 
+import com.nhl.dflib.ColumnDataFrame;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.ColumnDataFrame;
 import com.nhl.dflib.series.IndexedSeries;
-
-import java.util.Iterator;
 
 public class JoinMerger {
 
@@ -36,14 +34,12 @@ public class JoinMerger {
 
         Series[] data = new Series[w];
 
-        Iterator<Series<?>> ls = left.getColumns().iterator();
         for (int i = 0; i < wl; i++) {
-            data[i] = new IndexedSeries(ls.next(), leftIndex);
+            data[i] = new IndexedSeries(left.getColumn(i), leftIndex);
         }
 
-        Iterator<Series<?>> rs = right.getColumns().iterator();
         for (int i = wl; i < w; i++) {
-            data[i] = new IndexedSeries(rs.next(), rightIndex);
+            data[i] = new IndexedSeries(right.getColumn(i - wl), rightIndex);
         }
 
         return new ColumnDataFrame(joinedColumns, data);

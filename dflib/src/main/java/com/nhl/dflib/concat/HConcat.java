@@ -88,12 +88,12 @@ public class HConcat {
         Series<?>[] newData = new Series[w];
         int i = 0;
 
-        for (Series<?> s : lf.getColumns()) {
-            newData[i++] = lt.apply(s);
+        for (String s : lf.getColumnsIndex()) {
+            newData[i++] = lt.apply(lf.getColumn(s));
         }
 
-        for (Series<?> s : rf.getColumns()) {
-            newData[i++] = rt.apply(s);
+        for (String s : rf.getColumnsIndex()) {
+            newData[i++] = rt.apply(rf.getColumn(s));
         }
 
         return new ColumnDataFrame(joinedColumns, newData);

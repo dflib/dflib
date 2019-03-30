@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
@@ -182,4 +183,31 @@ public class Index implements Iterable<String> {
         }
         return index;
     }
+
+    static class ArrayIterator<T> implements Iterator<T> {
+
+        private final int len;
+        private final T[] data;
+        private int counter;
+
+        public ArrayIterator(T[] data) {
+            this.data = data;
+            this.len = data.length;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return counter < len;
+        }
+
+        @Override
+        public T next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException("Past the end of the iterator");
+            }
+
+            return data[counter++];
+        }
+    }
+
 }
