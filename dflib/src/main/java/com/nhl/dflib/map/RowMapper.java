@@ -13,48 +13,6 @@ public interface RowMapper {
         return (s, t) -> s.copy(t, 0);
     }
 
-    static RowMapper mapColumn(String column, RowToValueMapper<?> m) {
-        return (s, t) -> {
-            s.copy(t, 0);
-            t.set(column, m.map(s));
-        };
-    }
-
-    static RowMapper mapColumn(int column, RowToValueMapper<?> m) {
-        return (s, t) -> {
-            s.copy(t, 0);
-            t.set(column, m.map(s));
-        };
-    }
-
-    static <V> RowMapper mapColumnValue(String column, ValueMapper<V, ?> m) {
-        return (s, t) -> {
-            s.copy(t, 0);
-            t.set(column, m.map((V) s.get(column)));
-        };
-    }
-
-    static <V> RowMapper mapColumnValue(int column, ValueMapper<V, ?> m) {
-        return (s, t) -> {
-            s.copy(t, 0);
-            t.set(column, m.map((V) s.get(column)));
-        };
-    }
-
-    static <V> RowMapper addColumns(RowToValueMapper<?>... valueProducers) {
-        return (s, t) -> {
-
-            s.copy(t, 0);
-
-            int oldWidth = s.getIndex().size();
-            int expansionWidth = valueProducers.length;
-
-            for (int i = 0; i < expansionWidth; i++) {
-                t.set(oldWidth + i, valueProducers[i].map(s));
-            }
-        };
-    }
-
     void map(RowProxy from, RowBuilder to);
 
     default RowMapper and(RowMapper m) {

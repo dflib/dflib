@@ -119,18 +119,22 @@ public interface DataFrame extends Iterable<RowProxy> {
      * result DataFrame will be the same height as this, but can have a different with and set of columns.
      *
      * @param mappedColumns column index of the new DataFrame
-     * @param rowMapper a function applied to each row of this DataFrame
+     * @param rowMapper     a function applied to each row of this DataFrame
      * @return a new DataFrame
      */
     DataFrame map(Index mappedColumns, RowMapper rowMapper);
 
-    <V, VR> DataFrame mapColumnValue(String columnName, ValueMapper<V, VR> m);
-
-    default <V> DataFrame mapColumn(String columnName, RowToValueMapper<V> m) {
-        Index index = getColumnsIndex();
-        int pos = index.position(columnName);
-        return map(index, RowMapper.mapColumn(pos, m));
-    }
+    /**
+     * Creates a new DataFrame which is the exact copy of this DataFrame, only with a single column values transformed
+     * using the provided converter function.
+     *
+     * @param columnName a column to convert
+     * @param converter  a function to apply to column values
+     * @param <V>        expected input column value
+     * @param <VR>       output column value
+     * @return a new DataFrame
+     */
+    <V, VR> DataFrame convertColumn(String columnName, ValueMapper<V, VR> converter);
 
     default DataFrame addRowIndexColumn(String name) {
         int[] counter = new int[1];

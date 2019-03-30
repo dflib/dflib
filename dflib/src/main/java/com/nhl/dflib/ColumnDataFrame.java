@@ -263,7 +263,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public <V, VR> DataFrame mapColumnValue(String columnName, ValueMapper<V, VR> m) {
+    public <V, VR> DataFrame convertColumn(String columnName, ValueMapper<V, VR> converter) {
 
         int width = width();
 
@@ -271,7 +271,7 @@ public class ColumnDataFrame implements DataFrame {
         System.arraycopy(dataColumns, 0, newData, 0, width);
 
         int pos = columnsIndex.position(columnName);
-        newData[pos] = new ColumnMappedSeries(dataColumns[pos], m);
+        newData[pos] = new ColumnMappedSeries(dataColumns[pos], converter);
         return new ColumnDataFrame(columnsIndex, newData);
     }
 

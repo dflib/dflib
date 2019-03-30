@@ -53,10 +53,10 @@ public class DataFrameMap {
 
     @Benchmark
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public Object mapColumn() {
+    public Object convertColumn() {
         return df
                 // using cheap "map" function to test benchmark DF overhead
-                .mapColumnValue("c2", (Integer i) -> 1)
+                .convertColumn("c2", (Integer i) -> 1)
                 .materialize()
                 .iterator();
     }

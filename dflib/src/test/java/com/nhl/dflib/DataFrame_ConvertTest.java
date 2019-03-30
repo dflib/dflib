@@ -2,22 +2,21 @@ package com.nhl.dflib;
 
 import org.junit.Test;
 
-public class DataFrame_MapTest extends BaseDataFrameTest {
+public class DataFrame_ConvertTest extends BaseDataFrameTest {
 
     @Test
-    public void testMap() {
+    public void testConvertColumn() {
         Index i1 = Index.forLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
-                .map(i1, (f, t) -> {
-                    t.set(0, ((Integer) f.get(0)) * 10);
-                    t.set(1, f.get(1));
-                });
+                .convertColumn("a", v -> ((int) v) * 10);
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, 10, "x")
                 .expectRow(1, 20, "y");
     }
+
 }
+
