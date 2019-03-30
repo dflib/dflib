@@ -158,4 +158,18 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
                 .expectRow(0, 1, "x")
                 .expectRow(1, 2, "y");
     }
+
+    @Test
+    public void testAddRowNumber() {
+        Index i1 = Index.forLabels("a", "b");
+        DataFrame df = createDf(i1,
+                1, "x",
+                2, "y")
+                .addRowNumber("rn");
+
+        new DFAsserts(df, "a", "b", "rn")
+                .expectHeight(2)
+                .expectRow(0, 1, "x", 0)
+                .expectRow(1, 2, "y", 1);
+    }
 }

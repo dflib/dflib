@@ -134,9 +134,15 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     <V, VR> DataFrame convertColumn(int columnPos, ValueMapper<V, VR> converter);
 
-    default DataFrame addRowIndexColumn(String name) {
+    /**
+     * Adds row number column to the DataFrame
+     *
+     * @param columnName the name of the row number column
+     * @return a new DataFrame with an extra row number column
+     */
+    default DataFrame addRowNumber(String columnName) {
         int[] counter = new int[1];
-        return addColumn(name, r -> counter[0]++);
+        return addColumn(columnName, r -> counter[0]++);
     }
 
     default <V> DataFrame addColumn(String columnName, RowToValueMapper<V> columnValueProducer) {

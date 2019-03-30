@@ -60,7 +60,7 @@ public class HashJoiner {
         List<Integer> li = new ArrayList<>();
         List<Integer> ri = new ArrayList<>();
 
-        DataFrame rfi = rf.addRowIndexColumn(ROW_INDEX_COLUMN);
+        DataFrame rfi = rf.addRowNumber(ROW_INDEX_COLUMN);
         int rfip = rfi.getColumnsIndex().position(ROW_INDEX_COLUMN);
 
         GroupBy rightIndex = rfi.group(rightHasher);
@@ -88,7 +88,7 @@ public class HashJoiner {
         List<Integer> li = new ArrayList<>();
         List<Integer> ri = new ArrayList<>();
 
-        DataFrame rfi = rf.addRowIndexColumn(ROW_INDEX_COLUMN);
+        DataFrame rfi = rf.addRowNumber(ROW_INDEX_COLUMN);
         int rfip = rfi.getColumnsIndex().position(ROW_INDEX_COLUMN);
 
         GroupBy rightIndex = rfi.group(rightHasher);
@@ -120,7 +120,7 @@ public class HashJoiner {
         List<Integer> li = new ArrayList<>();
         List<Integer> ri = new ArrayList<>();
 
-        DataFrame lfi = lf.addRowIndexColumn(ROW_INDEX_COLUMN);
+        DataFrame lfi = lf.addRowNumber(ROW_INDEX_COLUMN);
         int lfip = lfi.getColumnsIndex().position(ROW_INDEX_COLUMN);
 
         GroupBy leftIndex = lfi.group(leftHasher);
@@ -152,7 +152,7 @@ public class HashJoiner {
         List<Integer> li = new ArrayList<>();
         List<Integer> ri = new ArrayList<>();
 
-        DataFrame rfi = rf.addRowIndexColumn(ROW_INDEX_COLUMN);
+        DataFrame rfi = rf.addRowNumber(ROW_INDEX_COLUMN);
         int rfip = rfi.getColumnsIndex().position(ROW_INDEX_COLUMN);
 
         GroupBy rightIndex = rfi.group(rightHasher);
