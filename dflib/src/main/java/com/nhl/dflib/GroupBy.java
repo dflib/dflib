@@ -50,7 +50,7 @@ public class GroupBy {
         Map<Object, DataFrame> sorted = new LinkedHashMap<>((int) (groups.size() / 0.75));
 
         for (Map.Entry<Object, DataFrame> e : groups.entrySet()) {
-            sorted.put(e.getKey(), e.getValue().sortByColumns(columns, ascending));
+            sorted.put(e.getKey(), e.getValue().sort(columns, ascending));
         }
 
         return new GroupBy(ungroupedColumns, sorted);
@@ -64,7 +64,7 @@ public class GroupBy {
         Map<Object, DataFrame> sorted = new LinkedHashMap<>((int) (groups.size() / 0.75));
 
         for (Map.Entry<Object, DataFrame> e : groups.entrySet()) {
-            sorted.put(e.getKey(), e.getValue().sortByColumns(columns, ascending));
+            sorted.put(e.getKey(), e.getValue().sort(columns, ascending));
         }
 
         return new GroupBy(ungroupedColumns, sorted);

@@ -15,7 +15,7 @@ public class ValuePredicateTest {
         Index i1 = Index.forLabels("a");
         DataFrame df = DataFrame
                 .forSequenceFoldByRow(i1, 10, 20, 30, 40)
-                .filterByColumn("a", ValuePredicate.isIn(20, 40));
+                .filter("a", ValuePredicate.isIn(20, 40));
 
         new DFAsserts(df, "a")
                 .expectHeight(2)
@@ -29,7 +29,7 @@ public class ValuePredicateTest {
         Index i1 = Index.forLabels("a");
         DataFrame df = DataFrame
                 .forSequenceFoldByRow(i1, 10, 20, 30, 40)
-                .filterByColumn("a", ValuePredicate.isIn(asList(20, 40)));
+                .filter("a", ValuePredicate.isIn(asList(20, 40)));
 
         new DFAsserts(df, "a")
                 .expectHeight(2)
@@ -45,7 +45,7 @@ public class ValuePredicateTest {
         Index i1 = Index.forLabels("a");
         DataFrame df = DataFrame
                 .forSequenceFoldByRow(i1, 10, 20, 30, 40)
-                .filterByColumn("a", p);
+                .filter("a", p);
 
         new DFAsserts(df, "a")
                 .expectHeight(1)
@@ -60,7 +60,7 @@ public class ValuePredicateTest {
         Index i1 = Index.forLabels("a");
         DataFrame df = DataFrame
                 .forSequenceFoldByRow(i1, 10, 20, 30, 40)
-                .filterByColumn("a", p);
+                .filter("a", p);
 
         new DFAsserts(df, "a")
                 .expectHeight(3)
@@ -77,7 +77,7 @@ public class ValuePredicateTest {
         Index i1 = Index.forLabels("a");
         DataFrame df = DataFrame
                 .forSequenceFoldByRow(i1, 10, 20, 30, 40)
-                .filterByColumn("a", p);
+                .filter("a", p);
 
         new DFAsserts(df, "a")
                 .expectHeight(2)

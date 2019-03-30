@@ -123,7 +123,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public <V> DataFrame filterByColumn(int columnPos, ValuePredicate<V> p) {
+    public <V> DataFrame filter(int columnPos, ValuePredicate<V> p) {
         Series<Integer> filteredIndex = FilterIndexer.filteredIndex(dataColumns[columnPos], p);
         return filterWithIndex(filteredIndex);
     }
@@ -148,22 +148,22 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public DataFrame sortByColumns(String[] columns, boolean[] ascending) {
+    public DataFrame sort(String[] columns, boolean[] ascending) {
         return sort(Sorters.sorter(columnsIndex, columns, ascending));
     }
 
     @Override
-    public DataFrame sortByColumns(int[] columns, boolean[] ascending) {
+    public DataFrame sort(int[] columns, boolean[] ascending) {
         return sort(Sorters.sorter(columnsIndex, columns, ascending));
     }
 
     @Override
-    public DataFrame sortByColumn(int column, boolean ascending) {
+    public DataFrame sort(int column, boolean ascending) {
         return sort(Sorters.sorter(columnsIndex, column, ascending));
     }
 
     @Override
-    public DataFrame sortByColumn(String column, boolean ascending) {
+    public DataFrame sort(String column, boolean ascending) {
         return sort(Sorters.sorter(columnsIndex, column, ascending));
     }
 

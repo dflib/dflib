@@ -163,22 +163,22 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     DataFrame filter(RowPredicate p);
 
-    default <V> DataFrame filterByColumn(String columnName, ValuePredicate<V> p) {
+    default <V> DataFrame filter(String columnName, ValuePredicate<V> p) {
         int pos = getColumnsIndex().position(columnName);
-        return filterByColumn(pos, p);
+        return filter(pos, p);
     }
 
-    <V> DataFrame filterByColumn(int columnPos, ValuePredicate<V> p);
+    <V> DataFrame filter(int columnPos, ValuePredicate<V> p);
 
     <V extends Comparable<? super V>> DataFrame sort(RowToValueMapper<V> sortKeyExtractor);
 
-    DataFrame sortByColumn(String column, boolean ascending);
+    DataFrame sort(String column, boolean ascending);
 
-    DataFrame sortByColumn(int column, boolean ascending);
+    DataFrame sort(int column, boolean ascending);
 
-    DataFrame sortByColumns(String[] columns, boolean[] ascending);
+    DataFrame sort(String[] columns, boolean[] ascending);
 
-    DataFrame sortByColumns(int[] columns, boolean[] ascending);
+    DataFrame sort(int[] columns, boolean[] ascending);
 
     /**
      * Horizontally concatenates a DataFrame with another DataFrame, producing a "wider" DataFrame. If the heights of
