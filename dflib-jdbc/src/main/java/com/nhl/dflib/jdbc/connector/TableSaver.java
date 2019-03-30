@@ -1,7 +1,6 @@
 package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.IndexPosition;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.row.RowProxy;
 import org.slf4j.Logger;
@@ -73,15 +72,15 @@ public class TableSaver {
                 .append(" (");
 
         // append columns
-        IndexPosition[] positions = df.getColumns().getPositions();
-        int len = positions.length;
+        String[] labels = df.getColumns().getLabels();
+        int len = labels.length;
 
-        for (int i = 0; i < positions.length; i++) {
+        for (int i = 0; i < labels.length; i++) {
             if (i > 0) {
                 sql.append(", ");
             }
 
-            sql.append(connector.quoteIdentifier(c, positions[i].name()));
+            sql.append(connector.quoteIdentifier(c, labels[i]));
         }
 
         // append value placeholders

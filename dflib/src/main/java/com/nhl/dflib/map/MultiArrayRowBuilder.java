@@ -34,7 +34,7 @@ public class MultiArrayRowBuilder implements RowBuilder {
 
     @Override
     public void set(String columnName, Object value) {
-        data[index.position(columnName).ordinal()][row] = value;
+        data[index.position(columnName)][row] = value;
     }
 
     @Override
@@ -45,11 +45,11 @@ public class MultiArrayRowBuilder implements RowBuilder {
     @Override
     public void setRange(Object[] values, int fromOffset, int toOffset, int len) {
 
-        if (len + toOffset > index.span()) {
+        if (len + toOffset > index.size()) {
             throw new IllegalArgumentException("Provided values won't fit in the row: "
                     + (len + toOffset)
                     + " > "
-                    + index.span());
+                    + index.size());
         }
 
         for (int i = 0; i < len; i++) {

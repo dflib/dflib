@@ -108,7 +108,7 @@ public class SqlLoader {
             names[i] = rsmd.getColumnLabel(i + 1);
         }
 
-        return Index.withNames(names);
+        return Index.withLabels(names);
     }
 
     protected RowReader createRowReader(ResultSet resultSet) throws SQLException {

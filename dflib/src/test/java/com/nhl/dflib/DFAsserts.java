@@ -7,11 +7,11 @@ import static org.junit.Assert.*;
 
 public class DFAsserts {
 
-    private IndexPosition[] expectedColumns;
+    private String[] expectedColumns;
     private List<Object[]> rows;
 
     public DFAsserts(DataFrame df, Index expectedColumns) {
-        this(df, expectedColumns.getPositions());
+        this(df, expectedColumns.getLabels());
     }
 
     public DFAsserts(DataFrame df, List<String> expectedColumns) {
@@ -19,13 +19,9 @@ public class DFAsserts {
     }
 
     public DFAsserts(DataFrame df, String... expectedColumns) {
-        this(df, Index.continuousPositions(expectedColumns));
-    }
-
-    public DFAsserts(DataFrame df, IndexPosition... expectedColumns) {
 
         assertNotNull("DataFrame is null", df);
-        assertArrayEquals("DataFrame columns differ from expected", expectedColumns, df.getColumns().getPositions());
+        assertArrayEquals("DataFrame columns differ from expected", expectedColumns, df.getColumns().getLabels());
 
         this.expectedColumns = expectedColumns;
         this.rows = new ArrayList<>();
@@ -48,8 +44,8 @@ public class DFAsserts {
 
         for (int i = 0; i < expectedColumns.length; i++) {
 
-            IndexPosition c = expectedColumns[i];
-            Object a = c.get(row);
+            String c = expectedColumns[i];
+            Object a = row[i];
             Object e = expectedValues[i];
 
             if (e == null) {
@@ -65,7 +61,7 @@ public class DFAsserts {
         return this;
     }
 
-    private void expectArrayRow(IndexPosition column, Object expected, Object actual) {
+    private void expectArrayRow(String column, Object expected, Object actual) {
 
         String eArrayClass = expected.getClass().getSimpleName();
         String aArrayClass = actual.getClass().getSimpleName();

@@ -6,7 +6,7 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testAddColumn() {
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
@@ -20,7 +20,7 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testAddColumn_Sparse() {
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
@@ -38,7 +38,7 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
 
         Series<String> column = Series.from("m", "n");
 
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y").addColumn("c", column);
@@ -55,7 +55,7 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
 
         Series<String> column = Series.from("m");
 
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         createDf(i1,
                 1, "x",
                 2, "y").addColumn("c", column);
@@ -66,7 +66,7 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
 
         Series<String> column = Series.from("m", "n", "o");
 
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         createDf(i1,
                 1, "x",
                 2, "y").addColumn("c", column);
@@ -75,15 +75,13 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testSelectColumns() {
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
                 .selectColumns("b");
 
-        IndexPosition expectedPos = new IndexPosition(0, 0, "b");
-
-        new DFAsserts(df, expectedPos)
+        new DFAsserts(df, "b")
                 .expectHeight(2)
                 .expectRow(0, "x")
                 .expectRow(1, "y");
@@ -91,17 +89,13 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testSelectColumns_DuplicateColumn() {
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
                 .selectColumns("b", "b", "b");
 
-        IndexPosition pos0 = new IndexPosition(0, 0, "b");
-        IndexPosition pos1 = new IndexPosition(1, 1, "b_");
-        IndexPosition pos2 = new IndexPosition(2, 2, "b__");
-
-        new DFAsserts(df, pos0, pos1, pos2)
+        new DFAsserts(df, "b", "b_", "b__")
                 .expectHeight(2)
                 .expectRow(0, "x", "x", "x")
                 .expectRow(1, "y", "y", "y");
@@ -109,15 +103,13 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testDropColumns1() {
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
                 .dropColumns("a");
 
-        IndexPosition expectedPos = new IndexPosition(0, 0, "b");
-
-        new DFAsserts(df, expectedPos)
+        new DFAsserts(df, "b")
                 .expectHeight(2)
                 .expectRow(0, "x")
                 .expectRow(1, "y");
@@ -125,13 +117,13 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testDropColumns2() {
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
                 .dropColumns("b");
 
-        new DFAsserts(df, new IndexPosition(0, 0, "a"))
+        new DFAsserts(df, "a")
                 .expectHeight(2)
                 .expectRow(0, 1)
                 .expectRow(1, 2);
@@ -139,7 +131,7 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testDropColumns3() {
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
@@ -153,7 +145,7 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testDropColumns4() {
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")

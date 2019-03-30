@@ -1,9 +1,5 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.ColumnDataFrame;
-import com.nhl.dflib.DFAsserts;
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
 import org.junit.Test;
 
 import java.util.stream.Stream;
@@ -13,7 +9,7 @@ public class ColumnDataFrameTest {
     @Test
     public void testFromRowStream0() {
 
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame df = ColumnDataFrame.fromStreamFoldByRow(i, Stream.empty());
 
         new DFAsserts(df, i).expectHeight(0);
@@ -22,7 +18,7 @@ public class ColumnDataFrameTest {
     @Test
     public void testFromRowStream1() {
 
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame df = ColumnDataFrame.fromStreamFoldByRow(i, Stream.of(1, 2));
 
         new DFAsserts(df, i)
@@ -33,7 +29,7 @@ public class ColumnDataFrameTest {
     @Test
     public void testFromRowStream2() {
 
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame df = ColumnDataFrame.fromStreamFoldByRow(i, Stream.of(1, 2, 3));
 
         new DFAsserts(df, i)
@@ -45,7 +41,7 @@ public class ColumnDataFrameTest {
     @Test
     public void testFromRowStream3() {
 
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame df = ColumnDataFrame.fromStreamFoldByRow(i, Stream.of(1, 2, 3, 4));
 
         new DFAsserts(df, i)
@@ -58,7 +54,7 @@ public class ColumnDataFrameTest {
     @Test
     public void testFromRowSequence0() {
 
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame df = ColumnDataFrame.fromSequenceFoldByRow(i);
 
         new DFAsserts(df, i).expectHeight(0);
@@ -67,7 +63,7 @@ public class ColumnDataFrameTest {
     @Test
     public void testFromRowSequence1() {
 
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame df = ColumnDataFrame.fromSequenceFoldByRow(i, 1, 2);
 
         new DFAsserts(df, i)
@@ -78,7 +74,7 @@ public class ColumnDataFrameTest {
     @Test
     public void testFromRowSequence2() {
 
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame df = ColumnDataFrame.fromSequenceFoldByRow(i, 1, 2, 3);
 
         new DFAsserts(df, i)
@@ -90,7 +86,7 @@ public class ColumnDataFrameTest {
     @Test
     public void testFromRowSequence3() {
 
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame df = ColumnDataFrame.fromSequenceFoldByRow(i, 1, 2, 3, 4);
 
         new DFAsserts(df, i)
@@ -102,7 +98,7 @@ public class ColumnDataFrameTest {
     @Test
     public void testFromColumnSequence0() {
 
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame df = ColumnDataFrame.fromSequenceFoldByColumn(i);
 
         new DFAsserts(df, i).expectHeight(0);
@@ -111,7 +107,7 @@ public class ColumnDataFrameTest {
     @Test
     public void testFromColumnSequence1() {
 
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame df = ColumnDataFrame.fromSequenceFoldByColumn(i, 1, 2);
 
         new DFAsserts(df, i)
@@ -122,7 +118,7 @@ public class ColumnDataFrameTest {
     @Test
     public void testFromColumnSequence2() {
 
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame df = ColumnDataFrame.fromSequenceFoldByColumn(i, 1, 2, 3);
 
         new DFAsserts(df, i)
@@ -134,7 +130,7 @@ public class ColumnDataFrameTest {
     @Test
     public void testFromColumnSequence3() {
 
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame df = ColumnDataFrame.fromSequenceFoldByColumn(i, 1, 2, 3, 4);
 
         new DFAsserts(df, i)
@@ -145,7 +141,7 @@ public class ColumnDataFrameTest {
 
     @Test
     public void testAddColumn() {
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df = ColumnDataFrame.fromSequenceFoldByRow(i1,
                 1, "x",
                 2, "y")

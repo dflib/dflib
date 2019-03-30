@@ -116,9 +116,8 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     default <V> DataFrame mapColumn(String columnName, RowToValueMapper<V> m) {
         Index index = getColumns();
-        Index compactIndex = index.compactIndex();
-        int pos = index.position(columnName).ordinal();
-        return map(compactIndex, RowMapper.mapColumn(pos, m));
+        int pos = index.position(columnName);
+        return map(index, RowMapper.mapColumn(pos, m));
     }
 
     default DataFrame addRowIndexColumn(String name) {
@@ -149,7 +148,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     DataFrame filter(RowPredicate p);
 
     default <V> DataFrame filterByColumn(String columnName, ValuePredicate<V> p) {
-        int pos = getColumns().position(columnName).ordinal();
+        int pos = getColumns().position(columnName);
         return filterByColumn(pos, p);
     }
 

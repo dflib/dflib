@@ -2,7 +2,6 @@ package com.nhl.dflib.print;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.IndexPosition;
 import com.nhl.dflib.row.RowProxy;
 
 import java.util.ArrayList;
@@ -25,13 +24,13 @@ class TabularPrinterWorker extends BasePrinterWorker {
             return out;
         }
 
-        IndexPosition[] positions = columns.getPositions();
+        String[] labels = columns.getLabels();
 
         int[] columnWidth = new int[w];
         List<String[]> data = new ArrayList<>();
 
         for (int i = 0; i < w; i++) {
-            columnWidth[i] = positions[i].name().length();
+            columnWidth[i] = labels[i].length();
         }
 
         for (int i = 0; i < maxDisplayRows; i++) {
@@ -60,7 +59,7 @@ class TabularPrinterWorker extends BasePrinterWorker {
             if (i > 0) {
                 append(" ");
             }
-            appendFixedWidth(positions[i].name(), columnWidth[i]);
+            appendFixedWidth(labels[i], columnWidth[i]);
         }
 
         // print header separator

@@ -1,12 +1,11 @@
 package com.nhl.dflib.concat;
 
+import com.nhl.dflib.ColumnDataFrame;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.IndexPosition;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.ColumnDataFrame;
-import com.nhl.dflib.map.MultiArrayRowBuilder;
 import com.nhl.dflib.join.JoinType;
+import com.nhl.dflib.map.MultiArrayRowBuilder;
 import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.ArraySeries;
@@ -27,30 +26,30 @@ public class HConcat {
         int llen = leftIndex.size();
         int rlen = rightIndex.size();
 
-        IndexPosition[] lPositions = leftIndex.getPositions();
-        IndexPosition[] rPositions = rightIndex.getPositions();
+        String[] lLabels = leftIndex.getLabels();
+        String[] rLabels = rightIndex.getLabels();
 
         // zipped index is continuous to match rowZipper algorithm below that rebuilds the arrays, so reset left and
         // right positions, only preserve the names...
 
-        IndexPosition[] zipped = new IndexPosition[llen + rlen];
+        String[] zipped = new String[llen + rlen];
         for (int i = 0; i < llen; i++) {
-            zipped[i] = new IndexPosition(i, i, lPositions[i].name());
+            zipped[i] = lLabels[i];
         }
 
         // resolve dupes on the right
         for (int i = 0; i < rlen; i++) {
 
-            String name = rPositions[i].name();
-            while (leftIndex.hasName(name)) {
+            String name = rLabels[i];
+            while (leftIndex.hasLabel(name)) {
                 name = name + "_";
             }
 
             int ri = i + llen;
-            zipped[ri] = new IndexPosition(ri, ri, name);
+            zipped[ri] = name;
         }
 
-        return Index.withPositions(zipped);
+        return Index.withLabels(zipped);
     }
 
     public DataFrame concat(Index joinedColumns, DataFrame lf, DataFrame rf, RowCombiner rowCombiner) {

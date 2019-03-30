@@ -1,18 +1,17 @@
 package com.nhl.dflib.map;
 
 import com.nhl.dflib.Index;
-import com.nhl.dflib.IndexPosition;
 
 @FunctionalInterface
 public interface IndexMapper {
 
     static IndexMapper mapper(int position) {
-        return i -> i.getPositions()[position];
+        return i -> i.getLabel(position);
     }
 
     static IndexMapper mapper(String name) {
-        return i -> i.position(name);
+        return i -> name;
     }
 
-    IndexPosition map(Index i);
+    String map(Index i);
 }

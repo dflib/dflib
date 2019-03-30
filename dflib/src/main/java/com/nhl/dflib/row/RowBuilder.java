@@ -19,7 +19,7 @@ public interface RowBuilder {
     void setRange(Object[] values, int fromOffset, int toOffset, int len);
 
     default void setValues(Object... values) {
-        setRange(values, 0, 0, getIndex().span());
+        setRange(values, 0, 0, getIndex().size());
     }
 }
 

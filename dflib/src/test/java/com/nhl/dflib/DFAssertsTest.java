@@ -7,7 +7,7 @@ public class DFAssertsTest {
     @Test
     public void testExpectRows_String() {
 
-        DataFrame df = DataFrame.fromSequenceFoldByRow(Index.withNames("a"), "a", "b", null);
+        DataFrame df = DataFrame.fromSequenceFoldByRow(Index.withLabels("a"), "a", "b", null);
         new DFAsserts(df, "a")
                 .expectHeight(3)
                 .expectRow(0, "a")
@@ -18,7 +18,7 @@ public class DFAssertsTest {
     @Test
     public void testExpectRows_ByteArray() {
 
-        DataFrame df = DataFrame.fromSequenceFoldByRow(Index.withNames("a"), new byte[]{3, 4, 5}, new byte[]{}, null);
+        DataFrame df = DataFrame.fromSequenceFoldByRow(Index.withLabels("a"), new byte[]{3, 4, 5}, new byte[]{}, null);
         new DFAsserts(df, "a")
                 .expectHeight(3)
                 .expectRow(0, new Object[]{new byte[]{3, 4, 5}})
@@ -29,7 +29,7 @@ public class DFAssertsTest {
     @Test(expected = AssertionError.class)
     public void testExpectRows_ArryaTypeMismatch() {
 
-        DataFrame df = DataFrame.fromSequenceFoldByRow(Index.withNames("a"), new int[]{3, 4, 5});
+        DataFrame df = DataFrame.fromSequenceFoldByRow(Index.withLabels("a"), new int[]{3, 4, 5});
         new DFAsserts(df, "a").expectRow(0, new Object[]{new long[]{3, 4, 5}});
     }
 }

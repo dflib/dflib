@@ -6,7 +6,7 @@ public class IndexTest {
 
     @Test
     public void testWithNames_Enum() {
-        Index i = Index.withNames(E1.class);
+        Index i = Index.withLabels(E1.class);
 
         // TODO: a test helper for Index
         new DFAsserts(DataFrame.fromRows(i), "a", "b", "c").expectHeight(0);

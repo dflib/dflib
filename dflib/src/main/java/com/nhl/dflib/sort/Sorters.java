@@ -1,7 +1,6 @@
 package com.nhl.dflib.sort;
 
 import com.nhl.dflib.Index;
-import com.nhl.dflib.IndexPosition;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.row.RowProxy;
 
@@ -14,14 +13,13 @@ public interface Sorters {
     }
 
     static Comparator<RowProxy> sorter(Index columns, String sortColumn, boolean ascending) {
-        IndexPosition pos = columns.position(sortColumn);
-        Comparator<RowProxy> ci = Comparator.comparing(o -> (Comparable) o.get(pos.ordinal()));
+        int pos = columns.position(sortColumn);
+        Comparator<RowProxy> ci = Comparator.comparing(o -> (Comparable) o.get(pos));
         return ascending ? ci : ci.reversed();
     }
 
     static Comparator<RowProxy> sorter(Index columns, int sortColumn, boolean ascending) {
-        IndexPosition pos = columns.getPositions()[sortColumn];
-        Comparator<RowProxy> ci = Comparator.comparing(o -> (Comparable) o.get(pos.ordinal()));
+        Comparator<RowProxy> ci = Comparator.comparing(o -> (Comparable) o.get(sortColumn));
         return ascending ? ci : ci.reversed();
     }
 

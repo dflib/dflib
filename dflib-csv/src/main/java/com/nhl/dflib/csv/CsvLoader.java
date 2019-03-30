@@ -49,7 +49,7 @@ public class CsvLoader {
      * @return this loader instance
      */
     public CsvLoader columns(String... columns) {
-        this.columns = Index.withNames(columns);
+        this.columns = Index.withLabels(columns);
         return this;
     }
 
@@ -68,7 +68,7 @@ public class CsvLoader {
     }
 
     public CsvLoader columnType(String column, ValueMapper<String, ?> typeConverter) {
-        converters.add(new Pair(i -> i.position(column).ordinal(), typeConverter));
+        converters.add(new Pair(i -> i.position(column), typeConverter));
         return this;
     }
 
@@ -130,7 +130,7 @@ public class CsvLoader {
         if (it.hasNext()) {
             return columns != null ? columns : loadColumns(it.next());
         } else {
-            return columns != null ? columns : Index.withNames();
+            return columns != null ? columns : Index.withLabels();
         }
     }
 
@@ -142,12 +142,12 @@ public class CsvLoader {
             columnNames[i] = header.get(i);
         }
 
-        return Index.withNames(columnNames);
+        return Index.withLabels(columnNames);
     }
 
     private ValueMapper<String, ?>[] createConverters(Index columns) {
 
-        ValueMapper<String, ?>[] converters = new ValueMapper[columns.span()];
+        ValueMapper<String, ?>[] converters = new ValueMapper[columns.size()];
 
         // there may be overlapping pairs... the last one wins
         for (Pair p : this.converters) {

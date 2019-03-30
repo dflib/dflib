@@ -2,7 +2,6 @@ package com.nhl.dflib.csv;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.IndexPosition;
 import com.nhl.dflib.row.RowProxy;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -68,8 +67,8 @@ public class CsvSaver {
     }
 
     private void printHeader(CSVPrinter printer, Index index) throws IOException {
-        for (IndexPosition p : index.getPositions()) {
-            printer.print(p.name());
+        for (String label : index.getLabels()) {
+            printer.print(label);
         }
         printer.println();
     }

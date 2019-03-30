@@ -5,9 +5,9 @@ import com.nhl.dflib.series.ArrayIterator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,39 +15,13 @@ import java.util.Set;
 /**
  * An "index" of the DataFrame that provides access to column (and in the future potentially row) metadata.
  */
-public abstract class Index implements Iterable<IndexPosition> {
+public class Index implements Iterable<String> {
 
-    protected IndexPosition[] positions;
-    private Map<String, IndexPosition> positionsIndex;
+    protected String[] labels;
+    protected Map<String, Integer> labelPositions;
 
-    protected Index(IndexPosition... positions) {
-        this.positions = positions;
-    }
-
-    protected static IndexPosition[] continuousPositions(String... names) {
-        IndexPosition[] positions = new IndexPosition[names.length];
-        for (int i = 0; i < names.length; i++) {
-            positions[i] = new IndexPosition(i, i, names[i]);
-        }
-
-        return positions;
-    }
-
-    protected static boolean isContinuous(IndexPosition... positions) {
-
-        // true if starts with zero and increments by one
-
-        if (positions.length > 0 && positions[0].position() > 0) {
-            return false;
-        }
-
-        for (int i = 1; i < positions.length; i++) {
-            if (positions[i].position() != positions[i - 1].position() + 1) {
-                return false;
-            }
-        }
-
-        return true;
+    protected Index(String... labels) {
+        this.labels = labels;
     }
 
     /**
@@ -56,7 +30,7 @@ public abstract class Index implements Iterable<IndexPosition> {
      * @param columns enum type that defines Index columns
      * @return a new Index with columns matching the provided Enum
      */
-    public static <E extends Enum<E>> Index withNames(Class<E> columns) {
+    public static <E extends Enum<E>> Index withLabels(Class<E> columns) {
 
         E[] enumValues = columns.getEnumConstants();
         String[] names = new String[enumValues.length];
@@ -64,26 +38,32 @@ public abstract class Index implements Iterable<IndexPosition> {
             names[i] = enumValues[i].name();
         }
 
-        return withNames(names);
+        return withLabels(names);
     }
 
-    public static Index withNames(String... names) {
-        // TODO: dedupe names like "selectNames" does?
-        return new ContinuousIndex(continuousPositions(names));
-    }
-
-    public static Index withPositions(IndexPosition... positions) {
-        return isContinuous(positions) ? new ContinuousIndex(positions) : new SparseIndex(positions);
+    public static Index withLabels(String... labels) {
+        // TODO: dedupe labels like "selectNames" does?
+        return new Index(labels);
     }
 
     @Override
-    public Iterator<IndexPosition> iterator() {
-        return new ArrayIterator(positions);
+    public Iterator<String> iterator() {
+        return new ArrayIterator<>(labels);
     }
 
-    public abstract boolean isCompact();
+    public Index rename(Map<String, String> oldToNewNames) {
 
-    public abstract Index rename(Map<String, String> oldToNewNames);
+        int len = size();
+
+        String[] newPositions = new String[len];
+        for (int i = 0; i < len; i++) {
+            String oldName = labels[i];
+            String newName = oldToNewNames.get(oldName);
+            newPositions[i] = newName != null ? newName : oldName;
+        }
+
+        return new Index(newPositions);
+    }
 
     public Index rename(String... newNames) {
 
@@ -94,70 +74,49 @@ public abstract class Index implements Iterable<IndexPosition> {
 
         Map<String, String> nameMap = new HashMap<>((int) (newNames.length / 0.75));
         for (int i = 0; i < newNames.length; i++) {
-            nameMap.put(positions[i].name(), newNames[i]);
+            nameMap.put(labels[i], newNames[i]);
         }
 
         return rename(nameMap);
     }
 
-    public abstract Index compactIndex();
-
-    public Object get(Object[] row, String columnName) {
-        return position(columnName).get(row);
-    }
-
-    public Object get(Object[] row, int columnPos) {
-        return positions[columnPos].get(row);
-    }
-
-    public void set(Object[] row, String columnName, Object value) {
-        position(columnName).set(row, value);
-    }
-
-    public void set(Object[] row, int columnPos, Object value) {
-        positions[columnPos].set(row, value);
-    }
-
     public Index addNames(String... extraNames) {
-        return HConcat.zipIndex(this, withNames(extraNames));
+        return HConcat.zipIndex(this, withLabels(extraNames));
     }
 
-    public Index selectNames(String... names) {
+    public Index selectLabels(String... labels) {
 
-        int len = names.length;
-        IndexPosition[] positions = new IndexPosition[len];
-        Set<String> dedupeNames = new HashSet<>((int) (len / 0.75));
+        int len = labels.length;
+        String[] selectedLabels = new String[len];
+        Set<String> uniqueNames = new LinkedHashSet<>((int) (len / 0.75));
 
         for (int i = 0; i < len; i++) {
-            IndexPosition p = position(names[i]);
 
-            String name = names[i];
+            // this will throw on invalid label
+            position(labels[i]);
 
-            while (!dedupeNames.add(name)) {
+            String name = labels[i];
+
+            while (!uniqueNames.add(name)) {
                 name = name + "_";
             }
 
-            positions[i] = new IndexPosition(i, p.position(), name);
+            selectedLabels[i] = name;
         }
 
-        return Index.withPositions(positions);
+        return Index.withLabels(selectedLabels);
     }
 
-    public Index dropNames(String... names) {
+    public Index dropLabels(String... labels) {
 
-        if (names.length == 0) {
+        if (labels.length == 0) {
             return this;
         }
 
-        if (positionsIndex == null) {
-            this.positionsIndex = computePositions();
-        }
-
-        List<IndexPosition> toDrop = new ArrayList<>(names.length);
-        for (String n : names) {
-            IndexPosition ip = positionsIndex.get(n);
-            if (ip != null) {
-                toDrop.add(ip);
+        List<String> toDrop = new ArrayList<>(labels.length);
+        for (String l : labels) {
+            if (hasLabel(l)) {
+                toDrop.add(l);
             }
         }
 
@@ -165,66 +124,60 @@ public abstract class Index implements Iterable<IndexPosition> {
             return this;
         }
 
-        IndexPosition[] toKeep = new IndexPosition[size() - toDrop.size()];
-        for (int i = 0, j = 0; i < positions.length; i++) {
+        String[] toKeep = new String[size() - toDrop.size()];
+        for (int i = 0, j = 0; i < this.labels.length; i++) {
 
-            IndexPosition p = positions[i];
-
-            if (!toDrop.contains(p)) {
-                toKeep[j] = new IndexPosition(j, p.position(), p.name());
+            if (!toDrop.contains(this.labels[i])) {
+                toKeep[j] = this.labels[i];
                 j++;
             }
         }
 
-        return Index.withPositions(toKeep);
+        return Index.withLabels(toKeep);
     }
 
-    public IndexPosition[] getPositions() {
-        return positions;
+    public String[] getLabels() {
+        return labels;
+    }
+
+    public String getLabel(int pos) {
+        return labels[pos];
     }
 
     public int size() {
-        return positions.length;
+        return labels.length;
     }
 
-    /**
-     * Returns min size of an array addressable by this index. This value is equal to {@link #size()} for compact indexes,
-     * but generally is equal to the max row index value among index positions.
-     *
-     * @return an int indicating the min size of an array addressable by this index
-     */
-    public abstract int span();
-
-    public IndexPosition position(String name) {
-        if (positionsIndex == null) {
-            this.positionsIndex = computePositions();
+    public int position(String label) {
+        if (labelPositions == null) {
+            this.labelPositions = computeLabelPositions();
         }
 
-        IndexPosition pos = positionsIndex.get(name);
+        Integer pos = labelPositions.get(label);
         if (pos == null) {
-            throw new IllegalArgumentException("Name '" + name + "' is not present in the Index");
+            throw new IllegalArgumentException("Label '" + label + "' is not present in the Index");
         }
 
         return pos;
     }
 
-    public boolean hasName(String names) {
-        if (positionsIndex == null) {
-            this.positionsIndex = computePositions();
+    public boolean hasLabel(String label) {
+        if (labelPositions == null) {
+            this.labelPositions = computeLabelPositions();
         }
 
-        return positionsIndex.containsKey(names);
+        return labelPositions.containsKey(label);
     }
 
-    private Map<String, IndexPosition> computePositions() {
+    private Map<String, Integer> computeLabelPositions() {
 
-        Map<String, IndexPosition> index = new LinkedHashMap<>();
+        Map<String, Integer> index = new LinkedHashMap<>();
 
-        for (int i = 0; i < positions.length; i++) {
-            IndexPosition previous = index.put(positions[i].name(), positions[i]);
+        for (int i = 0; i < labels.length; i++) {
+            Integer previous = index.put(labels[i], i);
             if (previous != null) {
                 throw new IllegalStateException("Duplicate position name '"
-                        + positions[i].name()
+                        + labels[i]
                         + "'. Found at " + previous + " and " + i);
             }
         }

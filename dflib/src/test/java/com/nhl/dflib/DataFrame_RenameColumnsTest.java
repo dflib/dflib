@@ -9,7 +9,7 @@ public class DataFrame_RenameColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testRenameColumns_All() {
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
@@ -23,7 +23,7 @@ public class DataFrame_RenameColumnsTest extends BaseDataFrameTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testRenameColumns_SizeMismatch() {
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         createDf(i1,
                 1, "x",
                 2, "y")
@@ -36,7 +36,7 @@ public class DataFrame_RenameColumnsTest extends BaseDataFrameTest {
         Map<String, String> names = new HashMap<>();
         names.put("b", "c");
 
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")

@@ -24,7 +24,7 @@ public class DataFrame_FactoryMethodsTest {
 
         List<Bean> beans = asList(new Bean(5, 4), new Bean(3, 1));
 
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame df = DataFrame.fromObjects(i, beans, b -> DataFrame.row(b.a, b.b));
 
         new DFAsserts(df, i)
@@ -36,7 +36,7 @@ public class DataFrame_FactoryMethodsTest {
     @Test
     public void testFromStream0() {
 
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame df = DataFrame.fromStreamFoldByRow(i, IntStream.range(1, 5).boxed());
 
         new DFAsserts(df, i)
@@ -48,7 +48,7 @@ public class DataFrame_FactoryMethodsTest {
     @Test
     public void testFromStream1() {
 
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame df = DataFrame.fromStreamFoldByRow(i, IntStream.range(1, 6).boxed());
 
         new DFAsserts(df, i)
@@ -61,7 +61,7 @@ public class DataFrame_FactoryMethodsTest {
     @Test
     public void testFromSequence0() {
 
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame df = DataFrame.fromSequenceFoldByRow(i);
 
         new DFAsserts(df, i).expectHeight(0);
@@ -70,7 +70,7 @@ public class DataFrame_FactoryMethodsTest {
     @Test
     public void testFromSequence1() {
 
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame df = DataFrame.fromSequenceFoldByRow(i, 1, 2);
 
         new DFAsserts(df, i)
@@ -81,7 +81,7 @@ public class DataFrame_FactoryMethodsTest {
     @Test
     public void testFromSequence2() {
 
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame df = DataFrame.fromSequenceFoldByRow(i, 1, 2, 3);
 
         new DFAsserts(df, i)
@@ -93,7 +93,7 @@ public class DataFrame_FactoryMethodsTest {
     @Test
     public void testFromSequence3() {
 
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame df = DataFrame.fromSequenceFoldByRow(i, 1, 2, 3, 4);
 
         new DFAsserts(df, i)
@@ -105,7 +105,7 @@ public class DataFrame_FactoryMethodsTest {
     @Test
     public void testFromListOfRows() {
 
-        Index i = Index.withNames("a");
+        Index i = Index.withLabels("a");
         DataFrame df = DataFrame.fromListOfRows(i, asList(
                 new Object[]{1},
                 new Object[]{2}));

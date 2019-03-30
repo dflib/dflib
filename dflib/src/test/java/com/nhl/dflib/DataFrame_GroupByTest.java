@@ -14,7 +14,7 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
 
     @Test
     public void testGroupBy() {
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame df = createDf(i,
                 1, "x",
                 2, "y",
@@ -45,7 +45,7 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
 
     @Test
     public void testGroupBy_Empty() {
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame df = createDf(i);
 
         GroupBy gb = df.groupBy(Hasher.forColumn("a"));
@@ -57,7 +57,7 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
 
     @Test
     public void testGroupBy_Agg() {
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame df1 = createDf(i,
                 1, "x",
                 2, "y",
@@ -76,7 +76,7 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
 
     @Test
     public void testGroupBy_Agg_MultipleAggregationsForKey() {
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame df1 = createDf(i,
                 1, "x",
                 2, "y",

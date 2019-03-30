@@ -44,7 +44,7 @@ public class DataGenerator extends Spliterators.AbstractSpliterator<Object> {
         }
 
         // TODO: fold by column - much faster for columnar DF
-        Index index = Index.withNames(columnNames);
+        Index index = Index.withLabels(columnNames);
         return ColumnDataFrame.fromStreamFoldByRow(index, dataStream(rows, columnValueMakers));
     }
 

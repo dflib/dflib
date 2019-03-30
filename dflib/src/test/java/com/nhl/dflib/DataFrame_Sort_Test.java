@@ -8,7 +8,7 @@ public class DataFrame_Sort_Test extends BaseDataFrameTest {
 
     @Test
     public void testSort() {
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame dfi = createDf(i,
                 0, 1,
                 2, 3,
@@ -33,7 +33,7 @@ public class DataFrame_Sort_Test extends BaseDataFrameTest {
 
     @Test
     public void testSortByColumns_Names() {
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame dfi = createDf(i,
                 0, 4,
                 2, 2,
@@ -61,7 +61,7 @@ public class DataFrame_Sort_Test extends BaseDataFrameTest {
 
     @Test
     public void testSortByColumns_Positions() {
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame dfi = createDf(i,
                 0, 4,
                 2, 2,
@@ -89,7 +89,7 @@ public class DataFrame_Sort_Test extends BaseDataFrameTest {
 
     @Test
     public void testSortByColumn_Position_Direction() {
-        Index i = Index.withNames("a", "b");
+        Index i = Index.withLabels("a", "b");
         DataFrame dfi = createDf(i,
                 0, 3,
                 2, 4,

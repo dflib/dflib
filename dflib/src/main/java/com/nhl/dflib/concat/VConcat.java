@@ -1,10 +1,9 @@
 package com.nhl.dflib.concat;
 
+import com.nhl.dflib.ColumnDataFrame;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.IndexPosition;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.ColumnDataFrame;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.series.ArraySeries;
 
@@ -52,7 +51,7 @@ public class VConcat {
 
         switch (dfs.length) {
             case 0:
-                return DataFrame.fromSequenceFoldByRow(Index.withNames());
+                return DataFrame.fromSequenceFoldByRow(Index.withLabels());
             case 1:
                 return dfs[0];
             default:
@@ -68,15 +67,15 @@ public class VConcat {
 
         Set<String> columns = new LinkedHashSet<>();
 
-        for (IndexPosition p : indices[0]) {
-            columns.add(p.name());
+        for (String label : indices[0]) {
+            columns.add(label);
         }
 
         for (int i = 1; i < indices.length; i++) {
             innerJoin(columns, indices[i]);
         }
 
-        return Index.withNames(columns.toArray(new String[columns.size()]));
+        return Index.withLabels(columns.toArray(new String[columns.size()]));
     }
 
     private static void innerJoin(Set<String> columns, Index index) {
@@ -84,7 +83,7 @@ public class VConcat {
         Iterator<String> it = columns.iterator();
         while (it.hasNext()) {
             String c = it.next();
-            if (!index.hasName(c)) {
+            if (!index.hasLabel(c)) {
                 it.remove();
             }
         }
@@ -94,12 +93,12 @@ public class VConcat {
         Set<String> columns = new LinkedHashSet<>();
 
         for (Index i : indices) {
-            for (IndexPosition p : i) {
-                columns.add(p.name());
+            for (String label : i) {
+                columns.add(label);
             }
         }
 
-        return Index.withNames(columns.toArray(new String[columns.size()]));
+        return Index.withLabels(columns.toArray(new String[columns.size()]));
     }
 
     private static Index leftJoin(Index[] indices) {
@@ -139,7 +138,7 @@ public class VConcat {
 
                 // need to rewind the iterator even if we exclude the series from copy
                 Series<?> next = it.next();
-                int pos = mapSeriesPosition(concatColumns, dfc.getPositions()[j]);
+                int pos = mapSeriesPosition(concatColumns, dfc.getLabel(j));
 
                 if (pos >= 0) {
                     next.copyTo(data[pos], 0, voffset, next.size());
@@ -162,7 +161,7 @@ public class VConcat {
         return series;
     }
 
-    private int mapSeriesPosition(Index concatColumns, IndexPosition dfPos) {
-        return concatColumns.hasName(dfPos.name()) ? concatColumns.position(dfPos.name()).ordinal() : -1;
+    private int mapSeriesPosition(Index concatColumns, String dfColumn) {
+        return concatColumns.hasLabel(dfColumn) ? concatColumns.position(dfColumn) : -1;
     }
 }

@@ -2,7 +2,6 @@ package com.nhl.dflib.print;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.IndexPosition;
 import com.nhl.dflib.row.RowProxy;
 
 import java.util.Iterator;
@@ -24,7 +23,7 @@ public class InlinePrinterWorker extends BasePrinterWorker {
             return out;
         }
 
-        IndexPosition[] positions = columns.getPositions();
+        String[] labels = columns.getLabels();
 
         for (int i = 0; i < maxDisplayRows; i++) {
             if (!values.hasNext()) {
@@ -44,7 +43,7 @@ public class InlinePrinterWorker extends BasePrinterWorker {
                     out.append(",");
                 }
 
-                appendTruncate(positions[j].name());
+                appendTruncate(labels[j]);
                 out.append(":");
                 appendTruncate(String.valueOf(dr.get(j)));
             }

@@ -10,12 +10,12 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testInnerJoin() {
 
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df1 = createDf(i1,
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.withNames("c", "d");
+        Index i2 = Index.withLabels("c", "d");
         DataFrame df2 = createDf(i2,
                 2, "a",
                 2, "b",
@@ -32,12 +32,12 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testInnerJoin_NoMatches() {
 
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df1 = createDf(i1,
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.withNames("c", "d");
+        Index i2 = Index.withLabels("c", "d");
         DataFrame df2 = createDf(i2,
                 2, "a",
                 2, "b",
@@ -52,12 +52,12 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testInnerJoin_IndexOverlap() {
 
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df1 = createDf(i1,
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.withNames("a", "b");
+        Index i2 = Index.withLabels("a", "b");
         DataFrame df2 = createDf(i2,
                 2, "a",
                 2, "b",
@@ -74,12 +74,12 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testJoin_Left() {
 
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df1 = createDf(i1,
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.withNames("c", "d");
+        Index i2 = Index.withLabels("c", "d");
         DataFrame df2 = createDf(i2,
                 2, "a",
                 2, "b",
@@ -97,12 +97,12 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testJoin_Right() {
 
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df1 = createDf(i1,
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.withNames("c", "d");
+        Index i2 = Index.withLabels("c", "d");
         DataFrame df2 = createDf(i2,
                 2, "a",
                 2, "b",
@@ -120,12 +120,12 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testJoin_Full() {
 
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df1 = createDf(i1,
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.withNames("c", "d");
+        Index i2 = Index.withLabels("c", "d");
         DataFrame df2 = createDf(i2,
                 2, "a",
                 2, "b",
@@ -144,13 +144,13 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testInnerJoin_Indexed() {
 
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df1 = createDf(i1,
                 1, "x",
                 2, "y",
                 4, "z");
 
-        Index i2 = Index.withNames("c", "d");
+        Index i2 = Index.withLabels("c", "d");
         DataFrame df2 = createDf(i2,
                 "a", 2,
                 "b", 2,
@@ -169,12 +169,12 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testInnerJoin_Indexed_IndexOverlap() {
 
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df1 = createDf(i1,
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.withNames("a", "b");
+        Index i2 = Index.withLabels("a", "b");
         DataFrame df2 = createDf(i2,
                 2, "a",
                 2, "b",
@@ -191,12 +191,12 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testJoin_LeftIndexed() {
 
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df1 = createDf(i1,
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.withNames("c", "d");
+        Index i2 = Index.withLabels("c", "d");
         DataFrame df2 = createDf(i2,
                 2, "a",
                 2, "b",
@@ -214,12 +214,12 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testJoin_RightIndexed() {
 
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df1 = createDf(i1,
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.withNames("c", "d");
+        Index i2 = Index.withLabels("c", "d");
         DataFrame df2 = createDf(i2,
                 2, "a",
                 2, "b",
@@ -237,12 +237,12 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testJoin_FullIndexed() {
 
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df1 = createDf(i1,
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.withNames("c", "d");
+        Index i2 = Index.withLabels("c", "d");
         DataFrame df2 = createDf(i2,
                 2, "a",
                 2, "b",

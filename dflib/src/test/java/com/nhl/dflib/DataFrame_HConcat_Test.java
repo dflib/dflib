@@ -9,12 +9,12 @@ public class DataFrame_HConcat_Test extends BaseDataFrameTest {
     @Test
     public void testZipRows_ImplicitInnerJoin() {
 
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df1 = createDf(i1,
                 0, 1,
                 2, 3);
 
-        Index i2 = Index.withNames("c", "d");
+        Index i2 = Index.withLabels("c", "d");
         DataFrame df2 = createDf(i2,
                 10, 20);
 
@@ -34,13 +34,13 @@ public class DataFrame_HConcat_Test extends BaseDataFrameTest {
     @Test
     public void testZipRows_SparseDF() {
 
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df1 = createDf(i1,
                 0, 1,
                 2, 3)
                 .selectColumns("b");
 
-        Index i2 = Index.withNames("c", "d");
+        Index i2 = Index.withLabels("c", "d");
         DataFrame df2 = createDf(i2,
                 10, 20,
                 30, 40)
@@ -57,20 +57,20 @@ public class DataFrame_HConcat_Test extends BaseDataFrameTest {
     @Test
     public void testZipRows_SparseDF_CustomIndex() {
 
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df1 = createDf(i1,
                 0, 1,
                 2, 3)
                 .selectColumns("b");
 
-        Index i2 = Index.withNames("c", "d");
+        Index i2 = Index.withLabels("c", "d");
         DataFrame df2 = createDf(i2,
                 10, 20,
                 30, 40)
                 .selectColumns("c");
 
 
-        DataFrame df = df1.hConcat(Index.withNames("x", "y"), JoinType.inner, df2, RowCombiner.zip(df1.width()));
+        DataFrame df = df1.hConcat(Index.withLabels("x", "y"), JoinType.inner, df2, RowCombiner.zip(df1.width()));
 
         new DFAsserts(df, "x", "y")
                 .expectHeight(2)
@@ -81,12 +81,12 @@ public class DataFrame_HConcat_Test extends BaseDataFrameTest {
     @Test
     public void testZipRows_SparseDF_ReorgColumns() {
 
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df1 = createDf(i1,
                 0, 1,
                 2, 3);
 
-        Index i2 = Index.withNames("c", "d");
+        Index i2 = Index.withLabels("c", "d");
         DataFrame df2 = createDf(i2,
                 10, 20,
                 30, 40,
@@ -103,7 +103,7 @@ public class DataFrame_HConcat_Test extends BaseDataFrameTest {
             }
         };
 
-        DataFrame df = df1.hConcat(Index.withNames("x", "y"), JoinType.right, df2, c);
+        DataFrame df = df1.hConcat(Index.withLabels("x", "y"), JoinType.right, df2, c);
 
         new DFAsserts(df, "x", "y")
                 .expectHeight(3)
@@ -115,12 +115,12 @@ public class DataFrame_HConcat_Test extends BaseDataFrameTest {
     @Test
     public void testZipRows_InnerJoin() {
 
-        Index i1 = Index.withNames("a", "b");
+        Index i1 = Index.withLabels("a", "b");
         DataFrame df1 = createDf(i1,
                 0, 1,
                 2, 3);
 
-        Index i2 = Index.withNames("c", "d");
+        Index i2 = Index.withLabels("c", "d");
         DataFrame df2 = createDf(i2,
                 10, 20);
 
@@ -140,12 +140,12 @@ public class DataFrame_HConcat_Test extends BaseDataFrameTest {
     @Test
     public void testZipRows_Left() {
 
-        Index i1 = Index.withNames("a");
+        Index i1 = Index.withLabels("a");
         DataFrame df1 = createDf(i1,
                 0,
                 1);
 
-        Index i2 = Index.withNames("b");
+        Index i2 = Index.withLabels("b");
         DataFrame df2 = createDf(i2,
                 10);
 
@@ -166,12 +166,12 @@ public class DataFrame_HConcat_Test extends BaseDataFrameTest {
     @Test
     public void testZipRows_Right() {
 
-        Index i1 = Index.withNames("a");
+        Index i1 = Index.withLabels("a");
         DataFrame df1 = createDf(i1,
                 0,
                 1);
 
-        Index i2 = Index.withNames("b");
+        Index i2 = Index.withLabels("b");
         DataFrame df2 = createDf(i2, 10);
 
         DataFrame df_l = df1.hConcat(JoinType.right, df2);
@@ -190,12 +190,12 @@ public class DataFrame_HConcat_Test extends BaseDataFrameTest {
     @Test
     public void testZipRows_Full() {
 
-        Index i1 = Index.withNames("a");
+        Index i1 = Index.withLabels("a");
         DataFrame df1 = createDf(i1,
                 0,
                 1);
 
-        Index i2 = Index.withNames("b");
+        Index i2 = Index.withLabels("b");
         DataFrame df2 = createDf(i2,
                 10);
 

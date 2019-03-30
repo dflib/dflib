@@ -8,7 +8,7 @@ public class DataFrame_ShapeTest extends BaseDataFrameTest {
 
     @Test
     public void testWidth() {
-        Index i = Index.withNames("a");
+        Index i = Index.withLabels("a");
         DataFrame df = createDf(i,
                 1,
                 2
@@ -19,7 +19,7 @@ public class DataFrame_ShapeTest extends BaseDataFrameTest {
 
     @Test
     public void testHeight() {
-        Index i = Index.withNames("a");
+        Index i = Index.withLabels("a");
         DataFrame df = createDf(i,
                 1,
                 2

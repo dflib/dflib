@@ -19,12 +19,11 @@ public class MultiColumnAggregator implements Aggregator {
         String[] names = new String[aggregators.length];
 
         for (int i = 0; i < aggregators.length; i++) {
-            names[i] = aggregators[i].getIndexMapper().map(columns).name();
+            names[i] = aggregators[i].getIndexMapper().map(columns);
         }
 
-        // * 'selectNames' does name deduplication
-        // * index compaction is needed as aggregator is expected to compact result rows
-        return columns.selectNames(names).compactIndex();
+        // * note that 'selectLabels' does name deduplication
+        return columns.selectLabels(names);
     }
 
     @Override

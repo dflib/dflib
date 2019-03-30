@@ -443,7 +443,7 @@ public class ColumnDataFrame implements DataFrame {
         Series[] newData = new Series[width];
         System.arraycopy(dataColumns, 0, newData, 0, width);
 
-        int pos = columnsIndex.position(columnName).ordinal();
+        int pos = columnsIndex.position(columnName);
         newData[pos] = new ColumnMappedSeries(dataColumns[pos], m);
         return new ColumnDataFrame(columnsIndex, newData);
     }
@@ -451,33 +451,32 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public DataFrame dropColumns(String... columnNames) {
 
-        Index newIndex = columnsIndex.dropNames(columnNames);
+        Index newIndex = columnsIndex.dropLabels(columnNames);
 
         // if no columns were dropped (e.g. the names didn't match anything
         if (newIndex.size() == columnsIndex.size()) {
             return this;
         }
 
+        String[] remainingLabels = newIndex.getLabels();
         Series[] newColumns = new Series[newIndex.size()];
         for (int i = 0; i < newColumns.length; i++) {
-            newColumns[i] = dataColumns[newIndex.getPositions()[i].position()];
+            newColumns[i] = dataColumns[columnsIndex.position(remainingLabels[i])];
         }
 
-        // note that we compact the index only after resolving series positions above
-        return new ColumnDataFrame(newIndex.compactIndex(), newColumns);
+        return new ColumnDataFrame(newIndex, newColumns);
     }
 
     @Override
     public DataFrame selectColumns(String... columnNames) {
-        Index newIndex = columnsIndex.selectNames(columnNames);
+        Index newIndex = columnsIndex.selectLabels(columnNames);
 
         Series[] newColumns = new Series[newIndex.size()];
         for (int i = 0; i < newColumns.length; i++) {
-            newColumns[i] = dataColumns[newIndex.getPositions()[i].position()];
+            newColumns[i] = dataColumns[columnsIndex.position(columnNames[i])];
         }
 
-        // note that we compact the index only after resolving series positions above
-        return new ColumnDataFrame(newIndex.compactIndex(), newColumns);
+        return new ColumnDataFrame(newIndex, newColumns);
     }
 
     @Override

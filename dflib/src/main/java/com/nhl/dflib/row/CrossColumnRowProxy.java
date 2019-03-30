@@ -29,7 +29,7 @@ public class CrossColumnRowProxy implements RowProxy {
 
     @Override
     public Object get(String columnName) {
-        return data[columns.position(columnName).ordinal()].get(rowIndex);
+        return data[columns.position(columnName)].get(rowIndex);
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.nhl.dflib.aggregate;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.IndexPosition;
 import com.nhl.dflib.map.IndexMapper;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.row.RowProxy;
@@ -53,7 +52,7 @@ public class ColumnAggregator implements Aggregator {
 
     @Override
     public Index aggregateIndex(Index columns) {
-        IndexPosition p = indexMapper.map(columns);
-        return Index.withNames(p.name());
+        String label = indexMapper.map(columns);
+        return Index.withLabels(label);
     }
 }
