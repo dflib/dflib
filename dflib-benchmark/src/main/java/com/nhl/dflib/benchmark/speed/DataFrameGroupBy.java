@@ -49,12 +49,12 @@ public class DataFrameGroupBy {
                 ValueMaker.randomIntSeq(groups),
                 ValueMaker.constStringSeq(string));
 
-        gb = df.groupBy("c2");
+        gb = df.group("c2");
     }
 
     @Benchmark
     public Object groupBy() {
-        return df.groupBy("c2");
+        return df.group("c2");
     }
 
     @Benchmark

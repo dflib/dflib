@@ -312,7 +312,14 @@ public interface DataFrame extends Iterable<RowProxy> {
         return Aggregator.forColumns(aggregators).aggregate(this);
     }
 
-    default GroupBy groupBy(String... columns) {
+    /**
+     * An operation similar to SQL "GROUP BY" that partitions this DataFrame into a number of groups based on the values
+     * of the specified columns.
+     *
+     * @param columns columns to group by
+     * @return a new GroupBy instance that contains row groupings
+     */
+    default GroupBy group(String... columns) {
 
         if (columns.length == 0) {
             throw new IllegalArgumentException("No columns for 'groupBy' specified");
@@ -323,10 +330,17 @@ public interface DataFrame extends Iterable<RowProxy> {
             mapper = mapper.and(columns[i]);
         }
 
-        return groupBy(mapper);
+        return group(mapper);
     }
 
-    GroupBy groupBy(Hasher by);
+    /**
+     * An operation similar to SQL "GROUP BY" that partitions this DataFrame into a number of groups using the specified
+     * row hash function.
+     *
+     * @param by a hash function to calculate group values
+     * @return a new GroupBy instance that contains row groupings
+     */
+    GroupBy group(Hasher by);
 
     @Override
     Iterator<RowProxy> iterator();

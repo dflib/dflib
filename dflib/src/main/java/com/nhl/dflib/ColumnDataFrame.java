@@ -307,7 +307,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public GroupBy groupBy(Hasher by) {
+    public GroupBy group(Hasher by) {
         return new Grouper(by).group(this);
     }
 

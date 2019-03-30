@@ -63,7 +63,7 @@ public class HashJoiner {
         DataFrame rfi = rf.addRowIndexColumn(ROW_INDEX_COLUMN);
         int rfip = rfi.getColumnsIndex().position(ROW_INDEX_COLUMN);
 
-        GroupBy rightIndex = rfi.groupBy(rightHasher);
+        GroupBy rightIndex = rfi.group(rightHasher);
 
         int i = 0;
         for (RowProxy lr : lf) {
@@ -91,7 +91,7 @@ public class HashJoiner {
         DataFrame rfi = rf.addRowIndexColumn(ROW_INDEX_COLUMN);
         int rfip = rfi.getColumnsIndex().position(ROW_INDEX_COLUMN);
 
-        GroupBy rightIndex = rfi.groupBy(rightHasher);
+        GroupBy rightIndex = rfi.group(rightHasher);
 
         int i = 0;
         for (RowProxy lr : lf) {
@@ -123,7 +123,7 @@ public class HashJoiner {
         DataFrame lfi = lf.addRowIndexColumn(ROW_INDEX_COLUMN);
         int lfip = lfi.getColumnsIndex().position(ROW_INDEX_COLUMN);
 
-        GroupBy leftIndex = lfi.groupBy(leftHasher);
+        GroupBy leftIndex = lfi.group(leftHasher);
 
         int i = 0;
         for (RowProxy rr : rf) {
@@ -155,7 +155,7 @@ public class HashJoiner {
         DataFrame rfi = rf.addRowIndexColumn(ROW_INDEX_COLUMN);
         int rfip = rfi.getColumnsIndex().position(ROW_INDEX_COLUMN);
 
-        GroupBy rightIndex = rfi.groupBy(rightHasher);
+        GroupBy rightIndex = rfi.group(rightHasher);
         Set<Object> seenRightKeys = new LinkedHashSet<>();
 
         int i = 0;

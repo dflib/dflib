@@ -42,7 +42,7 @@ public class GroupBy {
         return new GroupBy(ungroupedColumns, sorted);
     }
 
-    public GroupBy sortByColumns(String[] columns, boolean[] ascending) {
+    public GroupBy sort(String[] columns, boolean[] ascending) {
         if (columns.length == 0) {
             return this;
         }
@@ -56,7 +56,7 @@ public class GroupBy {
         return new GroupBy(ungroupedColumns, sorted);
     }
 
-    public GroupBy sortByColumns(int[] columns, boolean[] ascending) {
+    public GroupBy sort(int[] columns, boolean[] ascending) {
         if (columns.length == 0) {
             return this;
         }

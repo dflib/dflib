@@ -22,7 +22,7 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
                 0, "a",
                 1, "x");
 
-        GroupBy gb = df.groupBy(Hasher.forColumn("a"));
+        GroupBy gb = df.group(Hasher.forColumn("a"));
         assertNotNull(gb);
 
         assertEquals(3, gb.size());
@@ -48,7 +48,7 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
         Index i = Index.forLabels("a", "b");
         DataFrame df = createDf(i);
 
-        GroupBy gb = df.groupBy(Hasher.forColumn("a"));
+        GroupBy gb = df.group(Hasher.forColumn("a"));
         assertNotNull(gb);
 
         assertEquals(0, gb.size());
@@ -65,7 +65,7 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
                 0, "a",
                 1, "x");
 
-        DataFrame df = df1.groupBy("a").agg(Aggregator.sum("a"), Aggregator.concat("b", ";"));
+        DataFrame df = df1.group("a").agg(Aggregator.sum("a"), Aggregator.concat("b", ";"));
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(3)
@@ -84,7 +84,7 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
                 0, "a",
                 1, "x");
 
-        DataFrame df = df1.groupBy("b")
+        DataFrame df = df1.group("b")
                 .agg(Aggregator.first("b"), Aggregator.sum("a"), Aggregator.median("a"));
 
         new DFAsserts(df, "b", "a", "a_")
