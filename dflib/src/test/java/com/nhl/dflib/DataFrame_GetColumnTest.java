@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.Test;
 
 public class DataFrame_GetColumnTest {

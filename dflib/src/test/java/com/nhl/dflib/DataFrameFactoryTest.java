@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.unit.DFAsserts;
 import org.junit.Test;
 
 import java.util.stream.Stream;

@@ -2,6 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.RowCombiner;
+import com.nhl.dflib.unit.DFAsserts;
 import org.junit.Test;
 
 public class DataFrame_HConcat_Test extends BaseDataFrameTest {

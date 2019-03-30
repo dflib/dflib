@@ -1,5 +1,6 @@
-package com.nhl.dflib;
+package com.nhl.dflib.unit;
 
+import com.nhl.dflib.Index;
 import com.nhl.dflib.row.RowBuilder;
 
 class ArrayRowBuilder implements RowBuilder {

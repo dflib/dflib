@@ -1,4 +1,7 @@
-package com.nhl.dflib;
+package com.nhl.dflib.unit;
+
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Index;
 
 import java.util.ArrayList;
 import java.util.List;

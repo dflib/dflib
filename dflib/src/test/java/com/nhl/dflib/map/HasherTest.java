@@ -1,6 +1,6 @@
 package com.nhl.dflib.map;
 
-import com.nhl.dflib.DFAsserts;
+import com.nhl.dflib.unit.DFAsserts;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import org.junit.Test;

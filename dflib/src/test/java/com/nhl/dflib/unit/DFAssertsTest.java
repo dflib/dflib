@@ -1,5 +1,7 @@
-package com.nhl.dflib;
+package com.nhl.dflib.unit;
 
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Index;
 import org.junit.Test;
 
 public class DFAssertsTest {

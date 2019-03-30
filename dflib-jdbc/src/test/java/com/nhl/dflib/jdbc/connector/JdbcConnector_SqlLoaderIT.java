@@ -1,6 +1,6 @@
 package com.nhl.dflib.jdbc.connector;
 
-import com.nhl.dflib.DFAsserts;
+import com.nhl.dflib.unit.DFAsserts;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;

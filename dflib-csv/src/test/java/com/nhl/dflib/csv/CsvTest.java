@@ -1,6 +1,6 @@
 package com.nhl.dflib.csv;
 
-import com.nhl.dflib.DFAsserts;
+import com.nhl.dflib.unit.DFAsserts;
 import com.nhl.dflib.DataFrame;
 import org.junit.Test;
 
