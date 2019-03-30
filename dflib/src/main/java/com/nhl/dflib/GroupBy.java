@@ -67,12 +67,8 @@ public class GroupBy {
 
         int i = 0;
         for (Series<Integer> s : groupsIndex.values()) {
-
-            Series<?>[] indexes = new Series[2];
-            indexes[0] = s;
-            indexes[1] = new ArraySeries<>(Sequences.numberSequence(s.size()));
-
-            numberedIndex[i] = new ColumnDataFrame(TWO_COLUMN_INDEX, indexes);
+            Series<Integer> numbersWithGroup  = new ArraySeries<>(Sequences.numberSequence(s.size()));
+            numberedIndex[i] = new ColumnDataFrame(TWO_COLUMN_INDEX, s, numbersWithGroup);
             i++;
         }
 

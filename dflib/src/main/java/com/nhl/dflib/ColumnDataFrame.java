@@ -37,7 +37,7 @@ public class ColumnDataFrame implements DataFrame {
     private Index columnsIndex;
     private Series[] dataColumns;
 
-    public ColumnDataFrame(Index columnsIndex, Series[] dataColumns) {
+    public ColumnDataFrame(Index columnsIndex, Series... dataColumns) {
         this.columnsIndex = Objects.requireNonNull(columnsIndex);
         this.dataColumns = Objects.requireNonNull(dataColumns);
     }
