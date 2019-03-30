@@ -51,7 +51,7 @@ public class VConcat {
 
         switch (dfs.length) {
             case 0:
-                return DataFrame.fromSequenceFoldByRow(Index.withLabels());
+                return DataFrame.forSequenceFoldByRow(Index.forLabels());
             case 1:
                 return dfs[0];
             default:
@@ -75,7 +75,7 @@ public class VConcat {
             innerJoin(columns, indices[i]);
         }
 
-        return Index.withLabels(columns.toArray(new String[columns.size()]));
+        return Index.forLabels(columns.toArray(new String[columns.size()]));
     }
 
     private static void innerJoin(Set<String> columns, Index index) {
@@ -98,7 +98,7 @@ public class VConcat {
             }
         }
 
-        return Index.withLabels(columns.toArray(new String[columns.size()]));
+        return Index.forLabels(columns.toArray(new String[columns.size()]));
     }
 
     private static Index leftJoin(Index[] indices) {

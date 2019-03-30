@@ -49,7 +49,7 @@ public class HConcat {
             zipped[ri] = name;
         }
 
-        return Index.withLabels(zipped);
+        return Index.forLabels(zipped);
     }
 
     public DataFrame concat(Index joinedColumns, DataFrame lf, DataFrame rf, RowCombiner rowCombiner) {

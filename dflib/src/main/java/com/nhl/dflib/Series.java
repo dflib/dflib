@@ -6,7 +6,7 @@ import com.nhl.dflib.series.RangeSeries;
 
 public interface Series<T> {
 
-    static <T> Series<T> from(T... data) {
+    static <T> Series<T> forData(T... data) {
         return new ArraySeries<>(data);
     }
 

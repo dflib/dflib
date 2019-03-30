@@ -95,6 +95,6 @@ public class GroupBy {
             result.add(aggregator.aggregate(df));
         }
 
-        return DataFrame.fromListOfRows(index, result);
+        return DataFrame.forListOfRows(index, result);
     }
 }

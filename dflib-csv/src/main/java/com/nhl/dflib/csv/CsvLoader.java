@@ -49,7 +49,7 @@ public class CsvLoader {
      * @return this loader instance
      */
     public CsvLoader columns(String... columns) {
-        this.columns = Index.withLabels(columns);
+        this.columns = Index.forLabels(columns);
         return this;
     }
 
@@ -109,7 +109,7 @@ public class CsvLoader {
             Index columns = createColumns(it);
 
             if (!it.hasNext()) {
-                return DataFrame.fromListOfRows(columns, Collections.emptyList());
+                return DataFrame.forListOfRows(columns, Collections.emptyList());
             }
 
             ValueMapper<String, ?>[] converters = createConverters(columns);
@@ -130,7 +130,7 @@ public class CsvLoader {
         if (it.hasNext()) {
             return columns != null ? columns : loadColumns(it.next());
         } else {
-            return columns != null ? columns : Index.withLabels();
+            return columns != null ? columns : Index.forLabels();
         }
     }
 
@@ -142,7 +142,7 @@ public class CsvLoader {
             columnNames[i] = header.get(i);
         }
 
-        return Index.withLabels(columnNames);
+        return Index.forLabels(columnNames);
     }
 
     private ValueMapper<String, ?>[] createConverters(Index columns) {

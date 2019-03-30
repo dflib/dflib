@@ -12,13 +12,13 @@ public class HasherTest {
     @Test
     public void testKeyColumn_ColumnName() {
 
-        Index i1 = Index.withLabels("a", "b");
-        DataFrame df1 = DataFrame.fromListOfRows(i1, asList(
+        Index i1 = Index.forLabels("a", "b");
+        DataFrame df1 = DataFrame.forListOfRows(i1, asList(
                 DataFrame.row(1, "x"),
                 DataFrame.row(2, "y")));
 
-        Index i2 = Index.withLabels("a", "b");
-        DataFrame df2 = DataFrame.fromListOfRows(i2, asList(
+        Index i2 = Index.forLabels("a", "b");
+        DataFrame df2 = DataFrame.forListOfRows(i2, asList(
                 DataFrame.row(2, "a"),
                 DataFrame.row(2, "b"),
                 DataFrame.row(3, "c")));
@@ -34,13 +34,13 @@ public class HasherTest {
     @Test
     public void testKeyColumn_ColumnIndex() {
 
-        Index i1 = Index.withLabels("a", "b");
-        DataFrame df1 = DataFrame.fromListOfRows(i1, asList(
+        Index i1 = Index.forLabels("a", "b");
+        DataFrame df1 = DataFrame.forListOfRows(i1, asList(
                 DataFrame.row(1, "x"),
                 DataFrame.row(2, "y")));
 
-        Index i2 = Index.withLabels("a", "b");
-        DataFrame df2 = DataFrame.fromListOfRows(i2, asList(
+        Index i2 = Index.forLabels("a", "b");
+        DataFrame df2 = DataFrame.forListOfRows(i2, asList(
                 DataFrame.row(2, "a"),
                 DataFrame.row(2, "b"),
                 DataFrame.row(3, "c")));
@@ -56,13 +56,13 @@ public class HasherTest {
     @Test
     public void testAnd_ColumnName() {
 
-        Index i1 = Index.withLabels("a", "b", "c");
-        DataFrame df1 = DataFrame.fromListOfRows(i1, asList(
+        Index i1 = Index.forLabels("a", "b", "c");
+        DataFrame df1 = DataFrame.forListOfRows(i1, asList(
                 DataFrame.row(1, "x", 5L),
                 DataFrame.row(2, "y", 4L)));
 
-        Index i2 = Index.withLabels("x", "y", "z");
-        DataFrame df2 = DataFrame.fromListOfRows(i2, asList(
+        Index i2 = Index.forLabels("x", "y", "z");
+        DataFrame df2 = DataFrame.forListOfRows(i2, asList(
                 DataFrame.row(2, "a", 6L),
                 DataFrame.row(2, "y", 4L),
                 DataFrame.row(3, "c", 5L)));
@@ -79,13 +79,13 @@ public class HasherTest {
     @Test
     public void testAnd_ColumnIndex() {
 
-        Index i1 = Index.withLabels("a", "b", "c");
-        DataFrame df1 = DataFrame.fromListOfRows(i1, asList(
+        Index i1 = Index.forLabels("a", "b", "c");
+        DataFrame df1 = DataFrame.forListOfRows(i1, asList(
                 DataFrame.row(1, "x", 5L),
                 DataFrame.row(2, "y", 4L)));
 
-        Index i2 = Index.withLabels("x", "y", "z");
-        DataFrame df2 = DataFrame.fromListOfRows(i2, asList(
+        Index i2 = Index.forLabels("x", "y", "z");
+        DataFrame df2 = DataFrame.forListOfRows(i2, asList(
                 DataFrame.row(2, "a", 6L),
                 DataFrame.row(2, "y", 4L),
                 DataFrame.row(3, "c", 5L)));

@@ -53,6 +53,6 @@ public class ColumnAggregator implements Aggregator {
     @Override
     public Index aggregateIndex(Index columns) {
         String label = indexMapper.map(columns);
-        return Index.withLabels(label);
+        return Index.forLabels(label);
     }
 }

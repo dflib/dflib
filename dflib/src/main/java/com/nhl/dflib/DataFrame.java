@@ -31,35 +31,35 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * Creates a DataFrame by folding the provided stream of objects into rows and columns row by row.
      */
-    static <T> DataFrame fromStreamFoldByRow(Index columns, Stream<T> stream) {
-        return ColumnDataFrame.fromStreamFoldByRow(columns, stream);
+    static <T> DataFrame forStreamFoldByRow(Index columns, Stream<T> stream) {
+        return DataFrameFactory.forStreamFoldByRow(columns, stream);
     }
 
     /**
      * Creates a DataFrame by folding the provided array of objects into rows and columns row by row.
      */
-    static DataFrame fromSequenceFoldByRow(Index columns, Object... sequence) {
-        return ColumnDataFrame.fromSequenceFoldByRow(columns, sequence);
+    static DataFrame forSequenceFoldByRow(Index columns, Object... sequence) {
+        return DataFrameFactory.forSequenceFoldByRow(columns, sequence);
     }
 
-    static DataFrame fromRows(Index columns, Object[]... rows) {
-        return ColumnDataFrame.fromRows(columns, rows);
+    static DataFrame forRows(Index columns, Object[]... rows) {
+        return DataFrameFactory.forRows(columns, rows);
     }
 
-    static DataFrame fromListOfRows(Index columns, List<Object[]> sources) {
-        return ColumnDataFrame.fromListOfRows(columns, sources);
+    static DataFrame forListOfRows(Index columns, List<Object[]> sources) {
+        return DataFrameFactory.forListOfRows(columns, sources);
     }
 
-    static DataFrame fromRows(Index columns, Iterable<Object[]> source) {
-        return ColumnDataFrame.fromRows(columns, source);
+    static DataFrame forRows(Index columns, Iterable<Object[]> source) {
+        return DataFrameFactory.forRows(columns, source);
     }
 
     /**
      * Creates a DataFrame from an iterable over arbitrary objects. Each object will be converted to a row by applying
      * a function passed as the last argument.
      */
-    static <T> DataFrame fromObjects(Index columns, Iterable<T> rows, Function<T, Object[]> rowMapper) {
-        return ColumnDataFrame.fromObjects(columns, rows, rowMapper);
+    static <T> DataFrame forObjects(Index columns, Iterable<T> rows, Function<T, Object[]> rowMapper) {
+        return DataFrameFactory.forObjects(columns, rows, rowMapper);
     }
 
     /**

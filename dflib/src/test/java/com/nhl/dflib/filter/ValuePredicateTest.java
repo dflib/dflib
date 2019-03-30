@@ -12,9 +12,9 @@ public class ValuePredicateTest {
     @Test
     public void testIsIn_Array() {
 
-        Index i1 = Index.withLabels("a");
+        Index i1 = Index.forLabels("a");
         DataFrame df = DataFrame
-                .fromSequenceFoldByRow(i1, 10, 20, 30, 40)
+                .forSequenceFoldByRow(i1, 10, 20, 30, 40)
                 .filterByColumn("a", ValuePredicate.isIn(20, 40));
 
         new DFAsserts(df, "a")
@@ -26,9 +26,9 @@ public class ValuePredicateTest {
     @Test
     public void testIsIn_Iterable() {
 
-        Index i1 = Index.withLabels("a");
+        Index i1 = Index.forLabels("a");
         DataFrame df = DataFrame
-                .fromSequenceFoldByRow(i1, 10, 20, 30, 40)
+                .forSequenceFoldByRow(i1, 10, 20, 30, 40)
                 .filterByColumn("a", ValuePredicate.isIn(asList(20, 40)));
 
         new DFAsserts(df, "a")
@@ -42,9 +42,9 @@ public class ValuePredicateTest {
 
         ValuePredicate<Integer> p = ValuePredicate.isIn(20, 40).and(ValuePredicate.isIn(10, 20));
 
-        Index i1 = Index.withLabels("a");
+        Index i1 = Index.forLabels("a");
         DataFrame df = DataFrame
-                .fromSequenceFoldByRow(i1, 10, 20, 30, 40)
+                .forSequenceFoldByRow(i1, 10, 20, 30, 40)
                 .filterByColumn("a", p);
 
         new DFAsserts(df, "a")
@@ -57,9 +57,9 @@ public class ValuePredicateTest {
 
         ValuePredicate<Integer> p = ValuePredicate.isIn(20, 40).or(ValuePredicate.isIn(10, 20));
 
-        Index i1 = Index.withLabels("a");
+        Index i1 = Index.forLabels("a");
         DataFrame df = DataFrame
-                .fromSequenceFoldByRow(i1, 10, 20, 30, 40)
+                .forSequenceFoldByRow(i1, 10, 20, 30, 40)
                 .filterByColumn("a", p);
 
         new DFAsserts(df, "a")
@@ -74,9 +74,9 @@ public class ValuePredicateTest {
 
         ValuePredicate<Integer> p = ValuePredicate.isIn(20, 40).negate();
 
-        Index i1 = Index.withLabels("a");
+        Index i1 = Index.forLabels("a");
         DataFrame df = DataFrame
-                .fromSequenceFoldByRow(i1, 10, 20, 30, 40)
+                .forSequenceFoldByRow(i1, 10, 20, 30, 40)
                 .filterByColumn("a", p);
 
         new DFAsserts(df, "a")

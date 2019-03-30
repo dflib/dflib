@@ -16,8 +16,8 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
     @Test
     public void test() {
 
-        DataFrame df = DataFrame.fromSequenceFoldByRow(
-                Index.withLabels("id", "name", "salary"),
+        DataFrame df = DataFrame.forSequenceFoldByRow(
+                Index.forLabels("id", "name", "salary"),
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
@@ -38,7 +38,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
     @Test
     public void testEmpty() {
 
-        DataFrame df = DataFrame.fromSequenceFoldByRow(Index.withLabels("id", "name", "salary"));
+        DataFrame df = DataFrame.forSequenceFoldByRow(Index.forLabels("id", "name", "salary"));
 
         createConnector()
                 .tableSaver("t1")
@@ -54,13 +54,13 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
     @Test
     public void testAppend() {
 
-        DataFrame df1 = DataFrame.fromSequenceFoldByRow(
-                Index.withLabels("id", "name", "salary"),
+        DataFrame df1 = DataFrame.forSequenceFoldByRow(
+                Index.forLabels("id", "name", "salary"),
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
-        DataFrame df2 = DataFrame.fromSequenceFoldByRow(
-                Index.withLabels("id", "name", "salary"),
+        DataFrame df2 = DataFrame.forSequenceFoldByRow(
+                Index.forLabels("id", "name", "salary"),
                 3L, "n3", 60_000.01,
                 4L, "n4", 20_000.);
 
@@ -84,13 +84,13 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
     @Test
     public void testDeleteTableData() {
 
-        DataFrame df1 = DataFrame.fromSequenceFoldByRow(
-                Index.withLabels("id", "name", "salary"),
+        DataFrame df1 = DataFrame.forSequenceFoldByRow(
+                Index.forLabels("id", "name", "salary"),
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
-        DataFrame df2 = DataFrame.fromSequenceFoldByRow(
-                Index.withLabels("id", "name", "salary"),
+        DataFrame df2 = DataFrame.forSequenceFoldByRow(
+                Index.forLabels("id", "name", "salary"),
                 3L, "n3", 60_000.01,
                 4L, "n4", 20_000.);
 
@@ -114,8 +114,8 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
     @Test
     public void testStoreRowNumber() {
 
-        DataFrame df = DataFrame.fromSequenceFoldByRow(
-                Index.withLabels("name", "salary"),
+        DataFrame df = DataFrame.forSequenceFoldByRow(
+                Index.forLabels("name", "salary"),
                 "n1", 50_000.01,
                 "n2", 120_000.);
 

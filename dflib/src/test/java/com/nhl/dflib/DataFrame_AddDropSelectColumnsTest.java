@@ -4,9 +4,10 @@ import org.junit.Test;
 
 public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
 
+
     @Test
     public void testAddColumn() {
-        Index i1 = Index.withLabels("a", "b");
+        Index i1 = Index.forLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
@@ -20,7 +21,7 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testAddColumn_Sparse() {
-        Index i1 = Index.withLabels("a", "b");
+        Index i1 = Index.forLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
@@ -36,9 +37,9 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
     @Test
     public void testAddColumn_Series() {
 
-        Series<String> column = Series.from("m", "n");
+        Series<String> column = Series.forData("m", "n");
 
-        Index i1 = Index.withLabels("a", "b");
+        Index i1 = Index.forLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y").addColumn("c", column);
@@ -53,9 +54,9 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
     @Test(expected = IllegalArgumentException.class)
     public void testAddColumn_Series_Shorter() {
 
-        Series<String> column = Series.from("m");
+        Series<String> column = Series.forData("m");
 
-        Index i1 = Index.withLabels("a", "b");
+        Index i1 = Index.forLabels("a", "b");
         createDf(i1,
                 1, "x",
                 2, "y").addColumn("c", column);
@@ -64,9 +65,9 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
     @Test(expected = IllegalArgumentException.class)
     public void testAddColumn_Series_Longer() {
 
-        Series<String> column = Series.from("m", "n", "o");
+        Series<String> column = Series.forData("m", "n", "o");
 
-        Index i1 = Index.withLabels("a", "b");
+        Index i1 = Index.forLabels("a", "b");
         createDf(i1,
                 1, "x",
                 2, "y").addColumn("c", column);
@@ -75,7 +76,7 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testSelectColumns() {
-        Index i1 = Index.withLabels("a", "b");
+        Index i1 = Index.forLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
@@ -89,7 +90,7 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testSelectColumns_DuplicateColumn() {
-        Index i1 = Index.withLabels("a", "b");
+        Index i1 = Index.forLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
@@ -103,7 +104,7 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testDropColumns1() {
-        Index i1 = Index.withLabels("a", "b");
+        Index i1 = Index.forLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
@@ -117,7 +118,7 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testDropColumns2() {
-        Index i1 = Index.withLabels("a", "b");
+        Index i1 = Index.forLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
@@ -131,7 +132,7 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testDropColumns3() {
-        Index i1 = Index.withLabels("a", "b");
+        Index i1 = Index.forLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
@@ -145,7 +146,7 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testDropColumns4() {
-        Index i1 = Index.withLabels("a", "b");
+        Index i1 = Index.forLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")

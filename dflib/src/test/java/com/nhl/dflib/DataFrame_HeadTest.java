@@ -6,7 +6,7 @@ public class DataFrame_HeadTest extends BaseDataFrameTest {
 
     @Test
     public void testHead() {
-        Index i1 = Index.withLabels("a", "b");
+        Index i1 = Index.forLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y",
@@ -21,7 +21,7 @@ public class DataFrame_HeadTest extends BaseDataFrameTest {
 
     @Test
     public void testHead_Zero() {
-        Index i1 = Index.withLabels("a", "b");
+        Index i1 = Index.forLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y",
@@ -34,7 +34,7 @@ public class DataFrame_HeadTest extends BaseDataFrameTest {
 
     @Test
     public void testHead_OutOfBounds() {
-        Index i1 = Index.withLabels("a", "b");
+        Index i1 = Index.forLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y",

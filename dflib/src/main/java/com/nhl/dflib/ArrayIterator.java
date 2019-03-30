@@ -1,9 +1,9 @@
-package com.nhl.dflib.series;
+package com.nhl.dflib;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class ArrayIterator<T> implements Iterator<T> {
+class ArrayIterator<T> implements Iterator<T> {
 
     private final int len;
     private final T[] data;

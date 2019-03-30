@@ -8,7 +8,7 @@ public class DataFrame_VConcat_Test extends BaseDataFrameTest {
     @Test
     public void testVConcat_Default() {
 
-        Index i = Index.withLabels("a");
+        Index i = Index.forLabels("a");
         DataFrame df1 = createDf(i, 1, 2);
         DataFrame df2 = createDf(i, 10, 20);
 
@@ -26,7 +26,7 @@ public class DataFrame_VConcat_Test extends BaseDataFrameTest {
     @Test
     public void testVConcat_Default_Multiple() {
 
-        Index i = Index.withLabels("a");
+        Index i = Index.forLabels("a");
         DataFrame df1 = createDf(i, 1, 2);
         DataFrame df2 = createDf(i, 10);
         DataFrame df3 = createDf(i, 20);
@@ -44,12 +44,12 @@ public class DataFrame_VConcat_Test extends BaseDataFrameTest {
     @Test
     public void testVConcat_Default_Left() {
 
-        Index i1 = Index.withLabels("a", "b");
+        Index i1 = Index.forLabels("a", "b");
         DataFrame df1 = createDf(i1,
                 1, 2,
                 3, 4);
 
-        Index i2 = Index.withLabels("c", "b");
+        Index i2 = Index.forLabels("c", "b");
         DataFrame df2 = createDf(i2,
                 10, 20,
                 30, 40);
@@ -67,12 +67,12 @@ public class DataFrame_VConcat_Test extends BaseDataFrameTest {
     @Test
     public void testVConcat_Left() {
 
-        Index i1 = Index.withLabels("a", "b");
+        Index i1 = Index.forLabels("a", "b");
         DataFrame df1 = createDf(i1,
                 1, 2,
                 3, 4);
 
-        Index i2 = Index.withLabels("c", "b");
+        Index i2 = Index.forLabels("c", "b");
         DataFrame df2 = createDf(i2,
                 10, 20,
                 30, 40);
@@ -90,12 +90,12 @@ public class DataFrame_VConcat_Test extends BaseDataFrameTest {
     @Test
     public void testVConcat_Right() {
 
-        Index i1 = Index.withLabels("a", "b");
+        Index i1 = Index.forLabels("a", "b");
         DataFrame df1 = createDf(i1,
                 1, 2,
                 3, 4);
 
-        Index i2 = Index.withLabels("c", "b");
+        Index i2 = Index.forLabels("c", "b");
         DataFrame df2 = createDf(i2,
                 10, 20,
                 30, 40);
@@ -113,17 +113,17 @@ public class DataFrame_VConcat_Test extends BaseDataFrameTest {
     @Test
     public void testVConcat_Inner_Multiple() {
 
-        Index i1 = Index.withLabels("a", "b");
+        Index i1 = Index.forLabels("a", "b");
         DataFrame df1 = createDf(i1,
                 1, 2,
                 3, 4);
 
-        Index i2 = Index.withLabels("c", "b");
+        Index i2 = Index.forLabels("c", "b");
         DataFrame df2 = createDf(i2,
                 10, 20,
                 30, 40);
 
-        Index i3 = Index.withLabels("b", "d");
+        Index i3 = Index.forLabels("b", "d");
         DataFrame df3 = createDf(i3,
                 100, 200,
                 300, 400);
@@ -143,12 +143,12 @@ public class DataFrame_VConcat_Test extends BaseDataFrameTest {
     @Test
     public void testVConcat_Full() {
 
-        Index i1 = Index.withLabels("a", "b");
+        Index i1 = Index.forLabels("a", "b");
         DataFrame df1 = createDf(i1,
                 1, 2,
                 3, 4);
 
-        Index i2 = Index.withLabels("c", "b");
+        Index i2 = Index.forLabels("c", "b");
         DataFrame df2 = createDf(i2,
                 10, 20,
                 30, 40);

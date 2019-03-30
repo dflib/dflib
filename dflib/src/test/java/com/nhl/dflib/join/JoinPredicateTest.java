@@ -12,13 +12,13 @@ public class JoinPredicateTest {
     @Test
     public void testOn_ColumnNames() {
 
-        Index i1 = Index.withLabels("a", "b");
-        DataFrame df1 = DataFrame.fromListOfRows(i1, asList(
+        Index i1 = Index.forLabels("a", "b");
+        DataFrame df1 = DataFrame.forListOfRows(i1, asList(
                 DataFrame.row(1, "x"),
                 DataFrame.row(2, "y")));
 
-        Index i2 = Index.withLabels("c", "d");
-        DataFrame df2 = DataFrame.fromListOfRows(i2, asList(
+        Index i2 = Index.forLabels("c", "d");
+        DataFrame df2 = DataFrame.forListOfRows(i2, asList(
                 DataFrame.row(2, "a"),
                 DataFrame.row(2, "b"),
                 DataFrame.row(3, "c")));
@@ -34,13 +34,13 @@ public class JoinPredicateTest {
     @Test
     public void testOn_ColumnIndexes() {
 
-        Index i1 = Index.withLabels("a", "b");
-        DataFrame df1 = DataFrame.fromListOfRows(i1, asList(
+        Index i1 = Index.forLabels("a", "b");
+        DataFrame df1 = DataFrame.forListOfRows(i1, asList(
                 DataFrame.row(1, "x"),
                 DataFrame.row(2, "y")));
 
-        Index i2 = Index.withLabels("c", "d");
-        DataFrame df2 = DataFrame.fromListOfRows(i2, asList(
+        Index i2 = Index.forLabels("c", "d");
+        DataFrame df2 = DataFrame.forListOfRows(i2, asList(
                 DataFrame.row(2, "a"),
                 DataFrame.row(2, "b"),
                 DataFrame.row(3, "c")));
@@ -56,13 +56,13 @@ public class JoinPredicateTest {
     @Test
     public void testAnd_ColumnNames() {
 
-        Index i1 = Index.withLabels("a", "b");
-        DataFrame df1 = DataFrame.fromListOfRows(i1, asList(
+        Index i1 = Index.forLabels("a", "b");
+        DataFrame df1 = DataFrame.forListOfRows(i1, asList(
                 DataFrame.row(1, "x"),
                 DataFrame.row(2, "y")));
 
-        Index i2 = Index.withLabels("c", "d");
-        DataFrame df2 = DataFrame.fromListOfRows(i2, asList(
+        Index i2 = Index.forLabels("c", "d");
+        DataFrame df2 = DataFrame.forListOfRows(i2, asList(
                 DataFrame.row(2, "a"),
                 DataFrame.row(2, "y"),
                 DataFrame.row(3, "c")));
@@ -77,13 +77,13 @@ public class JoinPredicateTest {
     @Test
     public void testAnd_ColumnIndexes() {
 
-        Index i1 = Index.withLabels("a", "b");
-        DataFrame df1 = DataFrame.fromListOfRows(i1, asList(
+        Index i1 = Index.forLabels("a", "b");
+        DataFrame df1 = DataFrame.forListOfRows(i1, asList(
                 DataFrame.row(1, "x"),
                 DataFrame.row(2, "y")));
 
-        Index i2 = Index.withLabels("c", "d");
-        DataFrame df2 = DataFrame.fromListOfRows(i2, asList(
+        Index i2 = Index.forLabels("c", "d");
+        DataFrame df2 = DataFrame.forListOfRows(i2, asList(
                 DataFrame.row(2, "a"),
                 DataFrame.row(2, "y"),
                 DataFrame.row(3, "c")));

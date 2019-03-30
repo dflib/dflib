@@ -2,7 +2,6 @@ package com.nhl.dflib.benchmark;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.ColumnDataFrame;
 
 import java.util.Spliterators;
 import java.util.function.Consumer;
@@ -44,8 +43,8 @@ public class DataGenerator extends Spliterators.AbstractSpliterator<Object> {
         }
 
         // TODO: fold by column - much faster for columnar DF
-        Index index = Index.withLabels(columnNames);
-        return ColumnDataFrame.fromStreamFoldByRow(index, dataStream(rows, columnValueMakers));
+        Index index = Index.forLabels(columnNames);
+        return DataFrame.forStreamFoldByRow(index, dataStream(rows, columnValueMakers));
     }
 
     private static Stream<Object> dataStream(int rows, ValueMaker<?>... columnValueMakers) {

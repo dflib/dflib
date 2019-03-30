@@ -57,7 +57,7 @@ public class SqlLoader {
 
                     Index columns = createIndex(rs);
                     List<Object[]> data = loadData(rs);
-                    return DataFrame.fromListOfRows(columns, data);
+                    return DataFrame.forListOfRows(columns, data);
                 }
             }
         } catch (SQLException e) {
@@ -108,7 +108,7 @@ public class SqlLoader {
             names[i] = rsmd.getColumnLabel(i + 1);
         }
 
-        return Index.withLabels(names);
+        return Index.forLabels(names);
     }
 
     protected RowReader createRowReader(ResultSet resultSet) throws SQLException {

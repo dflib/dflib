@@ -7,7 +7,7 @@ public class DataFrame_MapTest extends BaseDataFrameTest {
 
     @Test
     public void testMap() {
-        Index i1 = Index.withLabels("a", "b");
+        Index i1 = Index.forLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
@@ -21,7 +21,7 @@ public class DataFrame_MapTest extends BaseDataFrameTest {
 
     @Test
     public void testMapColumn_FromRow() {
-        Index i1 = Index.withLabels("a", "b");
+        Index i1 = Index.forLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
@@ -35,7 +35,7 @@ public class DataFrame_MapTest extends BaseDataFrameTest {
 
     @Test
     public void testMapColumn_FromRow_Sparse() {
-        Index i1 = Index.withLabels("a", "b");
+        Index i1 = Index.forLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")
@@ -50,7 +50,7 @@ public class DataFrame_MapTest extends BaseDataFrameTest {
 
     @Test
     public void testMapColumn_FromValue() {
-        Index i1 = Index.withLabels("a", "b");
+        Index i1 = Index.forLabels("a", "b");
         DataFrame df = createDf(i1,
                 1, "x",
                 2, "y")

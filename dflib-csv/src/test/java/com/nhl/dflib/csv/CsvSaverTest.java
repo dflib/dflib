@@ -16,7 +16,7 @@ public class CsvSaverTest extends BaseCsvTest {
     @Test
     public void testToWriter() {
 
-        DataFrame df = DataFrame.fromSequenceFoldByRow(Index.withLabels("A", "B"),
+        DataFrame df = DataFrame.forSequenceFoldByRow(Index.forLabels("A", "B"),
                 1, 2,
                 3, 4);
 
@@ -30,7 +30,7 @@ public class CsvSaverTest extends BaseCsvTest {
     @Test
     public void testToWriter_Format() {
 
-        DataFrame df = DataFrame.fromSequenceFoldByRow(Index.withLabels("A", "B"),
+        DataFrame df = DataFrame.forSequenceFoldByRow(Index.forLabels("A", "B"),
                 1, 2,
                 3, 4);
 
@@ -47,7 +47,7 @@ public class CsvSaverTest extends BaseCsvTest {
 
         File file = new File(outPath("testToFile.csv"));
 
-        DataFrame df = DataFrame.fromSequenceFoldByRow(Index.withLabels("A", "B"),
+        DataFrame df = DataFrame.forSequenceFoldByRow(Index.forLabels("A", "B"),
                 1, 2,
                 3, 4);
 
@@ -62,7 +62,7 @@ public class CsvSaverTest extends BaseCsvTest {
 
         String filePath = outPath("testToFilePath.csv");
 
-        DataFrame df = DataFrame.fromSequenceFoldByRow(Index.withLabels("A", "B"),
+        DataFrame df = DataFrame.forSequenceFoldByRow(Index.forLabels("A", "B"),
                 1, 2,
                 3, 4);
 

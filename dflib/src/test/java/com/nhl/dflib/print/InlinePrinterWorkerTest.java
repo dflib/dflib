@@ -13,8 +13,8 @@ public class InlinePrinterWorkerTest {
 
     @Before
     public void initDataFrameParts() {
-        Index columns = Index.withLabels("col1", "column2");
-        this.df = DataFrame.fromRows(columns,
+        Index columns = Index.forLabels("col1", "column2");
+        this.df = DataFrame.forRows(columns,
                 DataFrame.row("one", 1),
                 DataFrame.row("two", 2),
                 DataFrame.row("three", 3),

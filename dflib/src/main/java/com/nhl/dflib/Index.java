@@ -1,7 +1,6 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.concat.HConcat;
-import com.nhl.dflib.series.ArrayIterator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +29,7 @@ public class Index implements Iterable<String> {
      * @param columns enum type that defines Index columns
      * @return a new Index with columns matching the provided Enum
      */
-    public static <E extends Enum<E>> Index withLabels(Class<E> columns) {
+    public static <E extends Enum<E>> Index forLabels(Class<E> columns) {
 
         E[] enumValues = columns.getEnumConstants();
         String[] labels = new String[enumValues.length];
@@ -38,10 +37,10 @@ public class Index implements Iterable<String> {
             labels[i] = enumValues[i].name();
         }
 
-        return withLabels(labels);
+        return forLabels(labels);
     }
 
-    public static Index withLabels(String... labels) {
+    public static Index forLabels(String... labels) {
         // TODO: dedupe labels like "selectLabels" does?
         return new Index(labels);
     }
@@ -81,7 +80,7 @@ public class Index implements Iterable<String> {
     }
 
     public Index addLabels(String... extraLabels) {
-        return HConcat.zipIndex(this, withLabels(extraLabels));
+        return HConcat.zipIndex(this, forLabels(extraLabels));
     }
 
     public Index selectLabels(String... labels) {
@@ -104,7 +103,7 @@ public class Index implements Iterable<String> {
             selectedLabels[i] = label;
         }
 
-        return Index.withLabels(selectedLabels);
+        return Index.forLabels(selectedLabels);
     }
 
     public Index dropLabels(String... labels) {
@@ -133,7 +132,7 @@ public class Index implements Iterable<String> {
             }
         }
 
-        return Index.withLabels(toKeep);
+        return Index.forLabels(toKeep);
     }
 
     public String[] getLabels() {
