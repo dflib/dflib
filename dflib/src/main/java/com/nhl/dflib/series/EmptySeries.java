@@ -25,4 +25,19 @@ public class EmptySeries<T> implements Series<T> {
     public Series<T> materialize() {
         return this;
     }
+
+    @Override
+    public Series<T> fillNulls(T value) {
+        return this;
+    }
+
+    @Override
+    public Series<T> backFillNulls() {
+        return this;
+    }
+
+    @Override
+    public Series<T> forwardFillNulls() {
+        return this;
+    }
 }

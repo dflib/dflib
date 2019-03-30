@@ -63,4 +63,19 @@ public class IndexedSeries<T> implements Series<T> {
 
         return new ArraySeries(data);
     }
+
+    @Override
+    public Series<T> fillNulls(T value) {
+        return materialize().fillNulls(value);
+    }
+
+    @Override
+    public Series<T> backFillNulls() {
+        return materialize().backFillNulls();
+    }
+
+    @Override
+    public Series<T> forwardFillNulls() {
+        return materialize().forwardFillNulls();
+    }
 }

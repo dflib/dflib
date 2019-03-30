@@ -2,6 +2,7 @@ package com.nhl.dflib.series;
 
 import com.nhl.dflib.Series;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class ListSeries<T> implements Series<T> {
@@ -33,5 +34,74 @@ public class ListSeries<T> implements Series<T> {
     public Series<T> materialize() {
         Object[] copy = new Object[data.size()];
         return new ArraySeries<>((T[]) data.toArray(copy));
+    }
+
+    @Override
+    public Series<T> fillNulls(T value) {
+
+        int len = data.size();
+        T[] copy = null;
+
+        for (int i = 0; i < len; i++) {
+            if (data.get(i) == null) {
+
+                if (copy == null) {
+                    copy = data.toArray((T[]) new Object[len]);
+                }
+
+                copy[i] = value;
+            }
+        }
+
+        return copy != null ? new ArraySeries<>(copy) : this;
+    }
+
+    @Override
+    public Series<T> backFillNulls() {
+        int len = data.size();
+        T[] copy = null;
+        int fillFrom = -1;
+
+        for (int i = 0; i < len; i++) {
+            if (data.get(i) == null) {
+
+                if (copy == null) {
+                    copy = data.toArray((T[]) new Object[len]);
+                }
+
+                if (fillFrom < 0) {
+                    fillFrom = i;
+                }
+            } else if (fillFrom >= 0) {
+                Arrays.fill(copy, fillFrom, i, data.get(i));
+                fillFrom = -1;
+            }
+        }
+
+        return copy != null ? new ArraySeries<>(copy) : this;
+    }
+
+    @Override
+    public Series<T> forwardFillNulls() {
+        int len = data.size();
+        T[] copy = null;
+
+        for (int i = 0; i < len; i++) {
+            if (data.get(i) == null) {
+
+                // leading nulls are fine
+                if (i == 0) {
+                    continue;
+                }
+
+                if (copy == null) {
+                    copy = data.toArray((T[]) new Object[len]);
+                }
+
+                copy[i] = copy[i - 1];
+            }
+        }
+
+        return copy != null ? new ArraySeries<>(copy) : this;
     }
 }

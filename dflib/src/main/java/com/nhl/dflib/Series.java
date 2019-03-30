@@ -36,4 +36,10 @@ public interface Series<T> {
     }
 
     Series<T> materialize();
+
+    Series<T> fillNulls(T value);
+
+    Series<T> backFillNulls();
+
+    Series<T> forwardFillNulls();
 }

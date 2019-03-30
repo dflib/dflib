@@ -46,4 +46,22 @@ public class HeadSeries<T> implements Series<T> {
         source.copyTo(head, 0, 0, len);
         return new ArraySeries<>((T[]) head);
     }
+
+    @Override
+    public Series<T> fillNulls(T value) {
+        // TODO: optimize data copy - do materialize and null checking over the same array
+        return materialize().fillNulls(value);
+    }
+
+    @Override
+    public Series<T> backFillNulls() {
+        // TODO: optimize data copy - do materialize and null checking over the same array
+        return materialize().backFillNulls();
+    }
+
+    @Override
+    public Series<T> forwardFillNulls() {
+        // TODO: optimize data copy - do materialize and null checking over the same array
+        return materialize().forwardFillNulls();
+    }
 }

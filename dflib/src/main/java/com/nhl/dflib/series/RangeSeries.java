@@ -57,4 +57,22 @@ public class RangeSeries<T> implements Series<T> {
         delegate.copyTo(range, this.from, 0, size);
         return new ArraySeries<>((T[]) range);
     }
+
+    @Override
+    public Series<T> fillNulls(T value) {
+        // TODO: optimize data copy - do materialize and null checking over the same array
+        return materialize().fillNulls(value);
+    }
+
+    @Override
+    public Series<T> backFillNulls() {
+        // TODO: optimize data copy - do materialize and null checking over the same array
+        return materialize().backFillNulls();
+    }
+
+    @Override
+    public Series<T> forwardFillNulls() {
+        // TODO: optimize data copy - do materialize and null checking over the same array
+        return materialize().forwardFillNulls();
+    }
 }
