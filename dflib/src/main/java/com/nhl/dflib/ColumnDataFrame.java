@@ -317,13 +317,13 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public DataFrame backFillNulls(int columnPos) {
-        return replaceColumn(columnPos, dataColumns[columnPos].backFillNulls());
+    public DataFrame fillNullsBackwards(int columnPos) {
+        return replaceColumn(columnPos, dataColumns[columnPos].fillNullsBackwards());
     }
 
     @Override
-    public DataFrame forwardFillNulls(int columnPos) {
-        return replaceColumn(columnPos, dataColumns[columnPos].forwardFillNulls());
+    public DataFrame fillNullsForward(int columnPos) {
+        return replaceColumn(columnPos, dataColumns[columnPos].fillNullsForward());
     }
 
     @Override

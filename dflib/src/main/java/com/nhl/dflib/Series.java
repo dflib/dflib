@@ -39,7 +39,7 @@ public interface Series<T> {
 
     Series<T> fillNulls(T value);
 
-    Series<T> backFillNulls();
+    Series<T> fillNullsBackwards();
 
-    Series<T> forwardFillNulls();
+    Series<T> fillNullsForward();
 }

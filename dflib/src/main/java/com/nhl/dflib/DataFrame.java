@@ -348,16 +348,16 @@ public interface DataFrame extends Iterable<RowProxy> {
         return fillNulls(getColumnsIndex().position(columnName), value);
     }
 
-    DataFrame backFillNulls(int columnPos);
+    DataFrame fillNullsBackwards(int columnPos);
 
-    default DataFrame backFillNulls(String columnName) {
-        return backFillNulls(getColumnsIndex().position(columnName));
+    default DataFrame fillNullsBackwards(String columnName) {
+        return fillNullsBackwards(getColumnsIndex().position(columnName));
     }
 
-    DataFrame forwardFillNulls(int columnPos);
+    DataFrame fillNullsForward(int columnPos);
 
-    default DataFrame forwardFillNulls(String columnName) {
-        return forwardFillNulls(getColumnsIndex().position(columnName));
+    default DataFrame fillNullsForward(String columnName) {
+        return fillNullsForward(getColumnsIndex().position(columnName));
     }
 
     @Override

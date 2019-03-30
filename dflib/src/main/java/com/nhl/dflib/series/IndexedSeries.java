@@ -70,12 +70,12 @@ public class IndexedSeries<T> implements Series<T> {
     }
 
     @Override
-    public Series<T> backFillNulls() {
-        return materialize().backFillNulls();
+    public Series<T> fillNullsBackwards() {
+        return materialize().fillNullsBackwards();
     }
 
     @Override
-    public Series<T> forwardFillNulls() {
-        return materialize().forwardFillNulls();
+    public Series<T> fillNullsForward() {
+        return materialize().fillNullsForward();
     }
 }

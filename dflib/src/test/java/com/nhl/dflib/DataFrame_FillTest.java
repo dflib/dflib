@@ -42,7 +42,7 @@ public class DataFrame_FillTest extends BaseDataFrameTest {
     }
 
     @Test
-    public void testBackFillNulls() {
+    public void testFillNullsBackwards() {
         Index i1 = Index.forLabels("a", "b");
 
         DataFrame df = createDf(i1,
@@ -50,7 +50,7 @@ public class DataFrame_FillTest extends BaseDataFrameTest {
                 null, 5,
                 "b", null,
                 "c", 8,
-                null, null).backFillNulls("b");
+                null, null).fillNullsBackwards("b");
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(5)
@@ -62,7 +62,7 @@ public class DataFrame_FillTest extends BaseDataFrameTest {
     }
 
     @Test
-    public void testForwardFillNulls() {
+    public void testFillNullsForward() {
         Index i1 = Index.forLabels("a", "b");
 
         DataFrame df = createDf(i1,
@@ -70,7 +70,7 @@ public class DataFrame_FillTest extends BaseDataFrameTest {
                 null, 5,
                 "b", null,
                 "c", 8,
-                null, null).forwardFillNulls("b");
+                null, null).fillNullsForward("b");
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(5)

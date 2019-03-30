@@ -26,14 +26,14 @@ public class Series_FillTest extends BaseSeriesTest {
     }
 
     @Test
-    public void testBackFillNulls() {
-        Series<Integer> s = createSeries(null, 1, null, 5, 8, null).backFillNulls();
+    public void testFillNullsBackwards() {
+        Series<Integer> s = createSeries(null, 1, null, 5, 8, null).fillNullsBackwards();
         new SeriesAsserts(s).expectData(1, 1, 5, 5, 8, null);
     }
 
     @Test
-    public void testForwardFillNulls() {
-        Series<Integer> s = createSeries(null, 1, null, 5, 8, null).forwardFillNulls();
+    public void testFillNullsForward() {
+        Series<Integer> s = createSeries(null, 1, null, 5, 8, null).fillNullsForward();
         new SeriesAsserts(s).expectData(null, 1, 1, 5, 8, 8);
     }
 }

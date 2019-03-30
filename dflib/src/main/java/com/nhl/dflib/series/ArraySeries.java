@@ -54,7 +54,7 @@ public class ArraySeries<T> implements Series<T> {
     }
 
     @Override
-    public Series<T> backFillNulls() {
+    public Series<T> fillNullsBackwards() {
         int len = data.length;
         T[] copy = null;
         int fillFrom = -1;
@@ -80,7 +80,7 @@ public class ArraySeries<T> implements Series<T> {
     }
 
     @Override
-    public Series<T> forwardFillNulls() {
+    public Series<T> fillNullsForward() {
         int len = data.length;
         T[] copy = null;
 

@@ -32,12 +32,12 @@ public class EmptySeries<T> implements Series<T> {
     }
 
     @Override
-    public Series<T> backFillNulls() {
+    public Series<T> fillNullsBackwards() {
         return this;
     }
 
     @Override
-    public Series<T> forwardFillNulls() {
+    public Series<T> fillNullsForward() {
         return this;
     }
 }

@@ -54,14 +54,14 @@ public class HeadSeries<T> implements Series<T> {
     }
 
     @Override
-    public Series<T> backFillNulls() {
+    public Series<T> fillNullsBackwards() {
         // TODO: optimize data copy - do materialize and null checking over the same array
-        return materialize().backFillNulls();
+        return materialize().fillNullsBackwards();
     }
 
     @Override
-    public Series<T> forwardFillNulls() {
+    public Series<T> fillNullsForward() {
         // TODO: optimize data copy - do materialize and null checking over the same array
-        return materialize().forwardFillNulls();
+        return materialize().fillNullsForward();
     }
 }

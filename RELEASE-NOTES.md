@@ -13,3 +13,4 @@
 * #13 Column-oriented DataFrame
 * #14 Scalar: helper accessor to DataFrame values
 * #15 DataFrame.addColumn(Series)
+* #17 Series.fillNulls / DataFrame.fillNulls
