@@ -19,6 +19,7 @@ import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.row.CrossColumnRowProxy;
 import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.seq.Sequences;
 import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.ColumnMappedSeries;
 import com.nhl.dflib.series.HeadSeries;
@@ -39,15 +40,6 @@ public class ColumnDataFrame implements DataFrame {
     public ColumnDataFrame(Index columnsIndex, Series[] dataColumns) {
         this.columnsIndex = Objects.requireNonNull(columnsIndex);
         this.dataColumns = Objects.requireNonNull(dataColumns);
-    }
-
-    protected static Integer[] rowNumberSequence(int h) {
-        Integer[] rn = new Integer[h];
-        for (int i = 0; i < h; i++) {
-            rn[i] = i;
-        }
-
-        return rn;
     }
 
     @Override
@@ -72,7 +64,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public DataFrame addRowNumber(String columnName) {
-        return addColumn(columnName, new ArraySeries<>(rowNumberSequence(height())));
+        return addColumn(columnName, new ArraySeries<>(Sequences.numberSequence(height())));
     }
 
     @Override

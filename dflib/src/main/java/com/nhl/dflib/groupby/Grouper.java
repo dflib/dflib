@@ -2,7 +2,6 @@ package com.nhl.dflib.groupby;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.GroupBy;
-import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.row.RowProxy;
@@ -26,8 +25,6 @@ public class Grouper {
 
         // Intentionally using generics-free map to be able to reset the internal object and avoid copying the map
         Map groups = new LinkedHashMap();
-
-        Index columns = df.getColumnsIndex();
 
         int i = 0;
         for (RowProxy r : df) {

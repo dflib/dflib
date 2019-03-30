@@ -5,6 +5,8 @@ import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.EmptySeries;
 import com.nhl.dflib.series.RangeSeries;
 
+import static java.util.Arrays.asList;
+
 public interface Series<T> {
 
     static <T> Series<T> forData(T... data) {
@@ -49,10 +51,10 @@ public interface Series<T> {
             return this;
         }
 
-        Series<? extends T>[] combined = new Series[other.length + 1];
+        Series<T>[] combined = new Series[other.length + 1];
         combined[0] = this;
         System.arraycopy(other, 0, combined, 1, other.length);
 
-        return SeriesConcat.concat(combined);
+        return SeriesConcat.concat(asList(combined));
     }
 }

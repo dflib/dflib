@@ -1,0 +1,49 @@
+package com.nhl.dflib;
+
+import com.nhl.dflib.unit.SeriesAsserts;
+import org.junit.Test;
+
+public class DataFrame_GroupBy_WindowFuncsTest extends BaseDataFrameTest {
+
+    @Test
+    public void testGroupBy_RowNumbers0() {
+        Index i = Index.forLabels("a", "b", "c");
+        DataFrame df = createDf(i,
+                1, "x", "m",
+                2, "y", "n",
+                1, "z", "k",
+                0, "a", "f",
+                1, "x", "s");
+
+        Series<Integer> rn = df.group("a").rowNumbers();
+        new SeriesAsserts(rn).expectData(0, 0, 1, 0, 2);
+    }
+
+    @Test
+    public void testGroupBy_RowNumbers1() {
+        Index i = Index.forLabels("a", "b", "c");
+        DataFrame df = createDf(i,
+                3, "x", "m",
+                2, "y", "n",
+                1, "z", "k",
+                0, "a", "f",
+                -1, "x", "s");
+
+        Series<Integer> rn = df.group("a").rowNumbers();
+        new SeriesAsserts(rn).expectData(0, 0, 0, 0, 0);
+    }
+
+    @Test
+    public void testGroupBy_RowNumbers2() {
+        Index i = Index.forLabels("a", "b", "c");
+        DataFrame df = createDf(i,
+                3, "x", "m",
+                0, "y", "n",
+                3, "z", "k",
+                3, "a", "f",
+                1, "x", "s");
+
+        Series<Integer> rn = df.group("a").rowNumbers();
+        new SeriesAsserts(rn).expectData(0, 0, 1, 2, 0);
+    }
+}

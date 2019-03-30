@@ -2,8 +2,12 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.Aggregator;
 import com.nhl.dflib.aggregate.ColumnAggregator;
+import com.nhl.dflib.concat.VConcat;
+import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.seq.Sequences;
+import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.IndexedSeries;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
@@ -17,6 +21,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GroupBy {
+
+    private static final Index TWO_COLUMN_INDEX = Index.forLabels("0", "1");
 
     private DataFrame ungrouped;
     private Map<Object, Series<Integer>> groupsIndex;
@@ -45,6 +51,32 @@ public class GroupBy {
         }
 
         return resolvedGroups.computeIfAbsent(key, this::resolveGroup);
+    }
+
+    /**
+     * A "window" function that converts this grouping into a Series that provides row numbers of each row within their
+     * group. The order of row numbers corresponds to the order of rows in the original DataFrame that was used to
+     * build the grouping. So the Series can be added back to the original DataFrame.
+     *
+     * @return a new Series object with row numbers of each row within their group. The overall order matches the order
+     * of the original DataFrame that was used to build the grouping.
+     */
+    public Series<Integer> rowNumbers() {
+
+        DataFrame[] numberedIndex = new DataFrame[groupsIndex.size()];
+
+        int i = 0;
+        for (Series<Integer> s : groupsIndex.values()) {
+
+            Series<?>[] indexes = new Series[2];
+            indexes[0] = s;
+            indexes[1] = new ArraySeries<>(Sequences.numberSequence(s.size()));
+
+            numberedIndex[i] = new ColumnDataFrame(TWO_COLUMN_INDEX, indexes);
+            i++;
+        }
+
+        return VConcat.concat(JoinType.inner, numberedIndex).sort(0, true).getColumn(1);
     }
 
     public <V extends Comparable<? super V>> GroupBy sort(RowToValueMapper<V> sortKeyExtractor) {
