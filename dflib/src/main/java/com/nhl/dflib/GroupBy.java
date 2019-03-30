@@ -92,6 +92,31 @@ public class GroupBy {
         return new GroupBy(ungrouped, sorted);
     }
 
+    public GroupBy sort(String column, boolean ascending) {
+
+        Comparator<RowProxy> comparator = Sorters.sorter(ungrouped.getColumnsIndex(), column, ascending);
+        Map<Object, Series<Integer>> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
+
+        for (Map.Entry<Object, Series<Integer>> e : groupsIndex.entrySet()) {
+            Series<Integer> sortedGroup = new IndexSorter(ungrouped, e.getValue()).sortIndex(comparator);
+            sorted.put(e.getKey(), sortedGroup);
+        }
+
+        return new GroupBy(ungrouped, sorted);
+    }
+
+    public GroupBy sort(int column, boolean ascending) {
+        Comparator<RowProxy> comparator = Sorters.sorter(ungrouped.getColumnsIndex(), column, ascending);
+        Map<Object, Series<Integer>> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
+
+        for (Map.Entry<Object, Series<Integer>> e : groupsIndex.entrySet()) {
+            Series<Integer> sortedGroup = new IndexSorter(ungrouped, e.getValue()).sortIndex(comparator);
+            sorted.put(e.getKey(), sortedGroup);
+        }
+
+        return new GroupBy(ungrouped, sorted);
+    }
+
     public GroupBy sort(String[] columns, boolean[] ascending) {
         if (columns.length == 0) {
             return this;
