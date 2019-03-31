@@ -99,6 +99,8 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     DataFrame head(int len);
 
+    DataFrame tail(int len);
+
     /**
      * Resolves this DataFrame to an implementation that evaluates internal mapping/concat/filter functions no more
      * than once, reusing the first evaluation result for subsequent iterations. Certain operations in DataFrame, such as

@@ -26,6 +26,7 @@ import com.nhl.dflib.series.HeadSeries;
 import com.nhl.dflib.series.IndexedSeries;
 import com.nhl.dflib.series.ListSeries;
 import com.nhl.dflib.series.RowMappedSeries;
+import com.nhl.dflib.series.TailSeries;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
 
@@ -87,6 +88,29 @@ public class ColumnDataFrame implements DataFrame {
             // not using HeadSeries.forSeries(..) as we no longer need range checking here, as it is done once above for
             // the entire DataFrame
             newColumnsData[i] = new HeadSeries<>(dataColumns[i], len);
+        }
+
+        return new ColumnDataFrame(columnsIndex, newColumnsData);
+    }
+
+    @Override
+    public DataFrame tail(int len) {
+
+        if (len < 0) {
+            throw new IllegalArgumentException("Length must be non-negative: " + len);
+        }
+
+        int maxLen = height();
+        if (maxLen <= len) {
+            return this;
+        }
+
+        int width = width();
+        Series<?>[] newColumnsData = new Series[width];
+        for (int i = 0; i < width; i++) {
+            // not using TailSeries.forSeries(..) as we no longer need range checking here, as it is done once above for
+            // the entire DataFrame
+            newColumnsData[i] = new TailSeries<>(dataColumns[i], len);
         }
 
         return new ColumnDataFrame(columnsIndex, newColumnsData);
