@@ -17,3 +17,5 @@
 * #17 Series.fillNulls / DataFrame.fillNulls
 * #18 "DataFrame.select" operation for selecting rows
 * #19 GroupBy.head(int) and GroupBy.toDataFrame() functions
+* #20 DataFrame.tail(i), GroupBy.tail(i)
+

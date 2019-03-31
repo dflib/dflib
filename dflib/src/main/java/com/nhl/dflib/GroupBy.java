@@ -11,6 +11,7 @@ import com.nhl.dflib.seq.Sequences;
 import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.HeadSeries;
 import com.nhl.dflib.series.IndexedSeries;
+import com.nhl.dflib.series.TailSeries;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
 
@@ -99,6 +100,22 @@ public class GroupBy {
 
         for (Map.Entry<Object, Series<Integer>> e : groupsIndex.entrySet()) {
             Series<Integer> maybeTrimmedGroup = HeadSeries.forSeries(e.getValue(), len);
+            trimmed.put(e.getKey(), maybeTrimmedGroup);
+        }
+
+        return new GroupBy(ungrouped, trimmed);
+    }
+
+    public GroupBy tail(int len) {
+
+        if (len < 0) {
+            throw new IllegalArgumentException("Length must be non-negative: " + len);
+        }
+
+        Map<Object, Series<Integer>> trimmed = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
+
+        for (Map.Entry<Object, Series<Integer>> e : groupsIndex.entrySet()) {
+            Series<Integer> maybeTrimmedGroup = TailSeries.forSeries(e.getValue(), len);
             trimmed.put(e.getKey(), maybeTrimmedGroup);
         }
 

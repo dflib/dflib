@@ -171,4 +171,36 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
                 .expectRow(2, 2, "y")
                 .expectRow(3, 0, "a");
     }
+
+    @Test
+    public void testGroup_Tail_toDataFrame() {
+        Index i = Index.forLabels("a", "b");
+        DataFrame df1 = createDf(i,
+                1, "x",
+                2, "y",
+                1, "y",
+                0, "a",
+                1, "z");
+
+        DataFrame df2 = df1.group("a")
+                .tail(2)
+                .toDataFrame();
+
+        new DFAsserts(df2, "a", "b")
+                .expectHeight(4)
+                .expectRow(0, 1, "y")
+                .expectRow(1, 1, "z")
+                .expectRow(2, 2, "y")
+                .expectRow(3, 0, "a");
+
+        DataFrame df3 = df1.group("a")
+                .tail(1)
+                .toDataFrame();
+
+        new DFAsserts(df3, "a", "b")
+                .expectHeight(3)
+                .expectRow(0, 1, "z")
+                .expectRow(1, 2, "y")
+                .expectRow(2, 0, "a");
+    }
 }
