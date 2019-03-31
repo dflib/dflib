@@ -1,12 +1,12 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.Aggregator;
+import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.Test;
 
 import java.util.HashSet;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
 
 public class DataFrame_AggTest extends BaseDataFrameTest {
 
@@ -18,13 +18,12 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
                 2, "y", "a", 2.5,
                 0, "a", "z", 0.001);
 
-        Object[] aggregated = df.agg(
+        Series<?> s = df.agg(
                 Aggregator.sum("a"),
                 Aggregator.count(2),
                 Aggregator.sumDouble("d"));
 
-        assertNotNull(aggregated);
-        assertArrayEquals(new Object[]{3L, 3L, 3.501}, aggregated);
+        new SeriesAsserts(s).expectData(3L, 3L, 3.501);
     }
 
     @Test
@@ -34,12 +33,11 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
                 1, "x",
                 0, "a");
 
-        Object[] aggregated = df.agg(
+        Series<?> s = df.agg(
                 Aggregator.count("a"),
                 Aggregator.count(1));
 
-        assertNotNull(aggregated);
-        assertArrayEquals(new Object[]{2L, 2L}, aggregated);
+        new SeriesAsserts(s).expectData(2L, 2L);
     }
 
     @Test
@@ -49,12 +47,11 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
                 1, "x",
                 0, "a");
 
-        Object[] aggregated = df.agg(
+        Series<?> s = df.agg(
                 Aggregator.concat("a", "_"),
                 Aggregator.concat(1, " ", "[", "]"));
 
-        assertNotNull(aggregated);
-        assertArrayEquals(new Object[]{"1_0", "[x a]"}, aggregated);
+        new SeriesAsserts(s).expectData("1_0", "[x a]");
     }
 
     @Test
@@ -65,9 +62,8 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
                 2, "x",
                 1, "a");
 
-        Object[] aggregated = df.agg(Aggregator.set("a"), Aggregator.set(1));
-        assertNotNull(aggregated);
-        assertArrayEquals(new Object[]{new HashSet<>(asList(1, 2)), new HashSet<>(asList("x", "a"))}, aggregated);
+        Series<?> s = df.agg(Aggregator.set("a"), Aggregator.set(1));
+        new SeriesAsserts(s).expectData(new HashSet<>(asList(1, 2)), new HashSet<>(asList("x", "a")));
     }
 
     @Test
@@ -78,9 +74,8 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
                 2, "x",
                 1, "a");
 
-        Object[] aggregated = df.agg(Aggregator.list("a"), Aggregator.list(1));
-        assertNotNull(aggregated);
-        assertArrayEquals(new Object[]{asList(1, 2, 1), asList("x", "x", "a")}, aggregated);
+        Series<?> s = df.agg(Aggregator.list("a"), Aggregator.list(1));
+        new SeriesAsserts(s).expectData(asList(1, 2, 1), asList("x", "x", "a"));
     }
 
     @Test
@@ -90,12 +85,11 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
                 1, 4L,
                 0, 55.5);
 
-        Object[] aggregated = df.agg(
+        Series<?> s = df.agg(
                 Aggregator.average("a"),
                 Aggregator.average(1));
 
-        assertNotNull(aggregated);
-        assertArrayEquals(new Object[]{0.5, 29.75}, aggregated);
+        new SeriesAsserts(s).expectData(0.5, 29.75);
     }
 
     @Test
@@ -106,12 +100,11 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
                 0, 55.5,
                 4, 0);
 
-        Object[] aggregated = df.agg(
+        Series<?> s = df.agg(
                 Aggregator.median("a"),
                 Aggregator.median(1));
 
-        assertNotNull(aggregated);
-        assertArrayEquals(new Object[]{1., 55.5}, aggregated);
+        new SeriesAsserts(s).expectData(1., 55.5);
     }
 
     @Test
@@ -123,12 +116,11 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
                 4, 0,
                 3, 5);
 
-        Object[] aggregated = df.agg(
+        Series<?> s = df.agg(
                 Aggregator.median("a"),
                 Aggregator.median(1));
 
-        assertNotNull(aggregated);
-        assertArrayEquals(new Object[]{2., 30.25}, aggregated);
+        new SeriesAsserts(s).expectData(2., 30.25);
     }
 
     @Test
@@ -136,12 +128,11 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
         Index i = Index.forLabels("a", "b");
         DataFrame df = createDf(i);
 
-        Object[] aggregated = df.agg(
+        Series<?> s = df.agg(
                 Aggregator.median("a"),
                 Aggregator.median(1));
 
-        assertNotNull(aggregated);
-        assertArrayEquals(new Object[]{0., 0.}, aggregated);
+        new SeriesAsserts(s).expectData(0., 0.);
     }
 
     @Test
@@ -149,12 +140,11 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
         Index i = Index.forLabels("a", "b");
         DataFrame df = createDf(i, 1, 100);
 
-        Object[] aggregated = df.agg(
+        Series<?> s = df.agg(
                 Aggregator.median("a"),
                 Aggregator.median(1));
 
-        assertNotNull(aggregated);
-        assertArrayEquals(new Object[]{1., 100.}, aggregated);
+        new SeriesAsserts(s).expectData(1., 100.);
     }
 
     @Test
@@ -166,12 +156,11 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
                 4, 0,
                 null, 5);
 
-        Object[] aggregated = df.agg(
+        Series<?> s = df.agg(
                 Aggregator.median("a"),
                 Aggregator.median(1));
 
-        assertNotNull(aggregated);
-        assertArrayEquals(new Object[]{1., 5.}, aggregated);
+        new SeriesAsserts(s).expectData(1., 5.);
     }
 
     @Test
@@ -181,12 +170,11 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
                 1, 100,
                 2, 5);
 
-        Object[] aggregated = df.agg(
+        Series<?> s = df.agg(
                 Aggregator.first("a"),
                 Aggregator.first(1));
 
-        assertNotNull(aggregated);
-        assertArrayEquals(new Object[]{1, 100}, aggregated);
+        new SeriesAsserts(s).expectData(1, 100);
     }
 
     @Test
@@ -194,12 +182,11 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
         Index i = Index.forLabels("a", "b");
         DataFrame df = createDf(i);
 
-        Object[] aggregated = df.agg(
+        Series<?> s = df.agg(
                 Aggregator.first("a"),
                 Aggregator.first(1));
 
-        assertNotNull(aggregated);
-        assertArrayEquals(new Object[]{null, null}, aggregated);
+        new SeriesAsserts(s).expectData(null, null);
     }
 
     @Test
@@ -209,11 +196,10 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
                 1, null,
                 null, 5);
 
-        Object[] aggregated = df.agg(
+        Series<?> s = df.agg(
                 Aggregator.first("a"),
                 Aggregator.first(1));
 
-        assertNotNull(aggregated);
-        assertArrayEquals(new Object[]{1, 5}, aggregated);
+        new SeriesAsserts(s).expectData(1, 5);
     }
 }

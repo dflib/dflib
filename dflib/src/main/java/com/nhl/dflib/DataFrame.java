@@ -12,6 +12,7 @@ import com.nhl.dflib.map.RowMapper;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.series.ArraySeries;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -322,8 +323,8 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param aggregator an aggregator function
      * @return an Object[] with aggregated results
      */
-    default Object[] agg(Aggregator aggregator) {
-        return aggregator.aggregate(this);
+    default Series<?> agg(Aggregator aggregator) {
+        return new ArraySeries<>(aggregator.aggregate(this));
     }
 
     /**
@@ -333,8 +334,8 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param aggregators an array of aggregators corresponding to the aggregated result columns
      * @return an Object[] with aggregated results
      */
-    default Object[] agg(ColumnAggregator... aggregators) {
-        return Aggregator.forColumns(aggregators).aggregate(this);
+    default Series<?> agg(ColumnAggregator... aggregators) {
+        return new ArraySeries<>(Aggregator.forColumns(aggregators).aggregate(this));
     }
 
     /**

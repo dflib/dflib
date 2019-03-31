@@ -8,7 +8,7 @@ public class ArraySeries<T> implements Series<T> {
 
     private T[] data;
 
-    public ArraySeries(T[] data) {
+    public ArraySeries(T... data) {
         this.data = data;
     }
 
