@@ -140,10 +140,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param columnName the name of the row number column
      * @return a new DataFrame with an extra row number column
      */
-    default DataFrame addRowNumber(String columnName) {
-        int[] counter = new int[1];
-        return addColumn(columnName, r -> counter[0]++);
-    }
+    DataFrame addRowNumber(String columnName);
 
     default <V> DataFrame addColumn(String columnName, RowToValueMapper<V> columnValueProducer) {
         return addColumns(new String[]{columnName}, columnValueProducer);

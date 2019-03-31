@@ -19,14 +19,14 @@ import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.row.CrossColumnRowProxy;
 import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.ColumnMappedSeries;
 import com.nhl.dflib.series.HeadSeries;
 import com.nhl.dflib.series.IndexedSeries;
 import com.nhl.dflib.series.RowMappedSeries;
-import com.nhl.dflib.sort.SortIndexer;
+import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
 
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -39,6 +39,15 @@ public class ColumnDataFrame implements DataFrame {
     public ColumnDataFrame(Index columnsIndex, Series[] dataColumns) {
         this.columnsIndex = Objects.requireNonNull(columnsIndex);
         this.dataColumns = Objects.requireNonNull(dataColumns);
+    }
+
+    protected static Integer[] rowNumberSequence(int h) {
+        Integer[] rn = new Integer[h];
+        for (int i = 0; i < h; i++) {
+            rn[i] = i;
+        }
+
+        return rn;
     }
 
     @Override
@@ -59,6 +68,11 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public <T> Series<T> getColumn(String name) {
         return dataColumns[columnsIndex.position(name)];
+    }
+
+    @Override
+    public DataFrame addRowNumber(String columnName) {
+        return addColumn(columnName, new ArraySeries<>(rowNumberSequence(height())));
     }
 
     @Override
@@ -139,47 +153,27 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public <V extends Comparable<? super V>> DataFrame sort(RowToValueMapper<V> sortKeyExtractor) {
-        return sort(Sorters.sorter(sortKeyExtractor));
+        return new IndexSorter(this).sort(Sorters.sorter(sortKeyExtractor));
     }
 
     @Override
     public DataFrame sort(String[] columns, boolean[] ascending) {
-        return sort(Sorters.sorter(columnsIndex, columns, ascending));
+        return new IndexSorter(this).sort(Sorters.sorter(columnsIndex, columns, ascending));
     }
 
     @Override
     public DataFrame sort(int[] columns, boolean[] ascending) {
-        return sort(Sorters.sorter(columnsIndex, columns, ascending));
+        return new IndexSorter(this).sort(Sorters.sorter(columnsIndex, columns, ascending));
     }
 
     @Override
     public DataFrame sort(int column, boolean ascending) {
-        return sort(Sorters.sorter(columnsIndex, column, ascending));
+        return new IndexSorter(this).sort(Sorters.sorter(columnsIndex, column, ascending));
     }
 
     @Override
     public DataFrame sort(String column, boolean ascending) {
-        return sort(Sorters.sorter(columnsIndex, column, ascending));
-    }
-
-    private DataFrame sort(Comparator<RowProxy> comparator) {
-        Comparator<Integer> rowComparator = toIntComparator(comparator);
-        Series<Integer> sortedIndex = SortIndexer.sortedIndex(this, rowComparator);
-
-        int width = width();
-        Series<?>[] newColumnsData = new Series[width];
-        for (int i = 0; i < width; i++) {
-            newColumnsData[i] = new IndexedSeries<>(dataColumns[i], sortedIndex);
-        }
-
-        return new ColumnDataFrame(columnsIndex, newColumnsData);
-    }
-
-    private Comparator<Integer> toIntComparator(Comparator<RowProxy> rowComparator) {
-        int h = height();
-        CrossColumnRowProxy p1 = new CrossColumnRowProxy(columnsIndex, dataColumns, h);
-        CrossColumnRowProxy p2 = new CrossColumnRowProxy(columnsIndex, dataColumns, h);
-        return (i1, i2) -> rowComparator.compare(p1.rewind(i1), p2.rewind(i2));
+        return new IndexSorter(this).sort(Sorters.sorter(columnsIndex, column, ascending));
     }
 
     @Override
