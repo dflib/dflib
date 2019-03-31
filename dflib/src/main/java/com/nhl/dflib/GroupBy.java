@@ -3,43 +3,61 @@ package com.nhl.dflib;
 import com.nhl.dflib.aggregate.Aggregator;
 import com.nhl.dflib.aggregate.ColumnAggregator;
 import com.nhl.dflib.map.RowToValueMapper;
+import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.series.IndexedSeries;
+import com.nhl.dflib.sort.IndexSorter;
+import com.nhl.dflib.sort.Sorters;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GroupBy {
 
-    private Index ungroupedColumns;
-    private Map<Object, DataFrame> groups;
+    private DataFrame ungrouped;
+    private Map<Object, Series<Integer>> groupsIndex;
+    private Map<Object, DataFrame> resolvedGroups;
 
-    public GroupBy(Index ungroupedColumns, Map<Object, DataFrame> groups) {
-        this.ungroupedColumns = ungroupedColumns;
-        this.groups = groups;
+    public GroupBy(DataFrame ungrouped, Map<Object, Series<Integer>> groupsIndex) {
+        this.ungrouped = ungrouped;
+        this.groupsIndex = groupsIndex;
     }
 
     public int size() {
-        return groups.size();
+        return groupsIndex.size();
     }
 
     public Collection<Object> getGroups() {
-        return groups.keySet();
+        return groupsIndex.keySet();
+    }
+
+    public boolean hasGroup(Object key) {
+        return groupsIndex.containsKey(key);
     }
 
     public DataFrame getGroup(Object key) {
-        return groups.get(key);
+        if (resolvedGroups == null) {
+            resolvedGroups = new ConcurrentHashMap<>();
+        }
+
+        return resolvedGroups.computeIfAbsent(key, this::resolveGroup);
     }
 
     public <V extends Comparable<? super V>> GroupBy sort(RowToValueMapper<V> sortKeyExtractor) {
-        Map<Object, DataFrame> sorted = new LinkedHashMap<>((int) (groups.size() / 0.75));
 
-        for (Map.Entry<Object, DataFrame> e : groups.entrySet()) {
-            sorted.put(e.getKey(), e.getValue().sort(sortKeyExtractor));
+        Comparator<RowProxy> comparator = Sorters.sorter(sortKeyExtractor);
+        Map<Object, Series<Integer>> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
+
+        for (Map.Entry<Object, Series<Integer>> e : groupsIndex.entrySet()) {
+            Series<Integer> sortedGroup = new IndexSorter(ungrouped, e.getValue()).sortIndex(comparator);
+            sorted.put(e.getKey(), sortedGroup);
         }
 
-        return new GroupBy(ungroupedColumns, sorted);
+        return new GroupBy(ungrouped, sorted);
     }
 
     public GroupBy sort(String[] columns, boolean[] ascending) {
@@ -47,13 +65,15 @@ public class GroupBy {
             return this;
         }
 
-        Map<Object, DataFrame> sorted = new LinkedHashMap<>((int) (groups.size() / 0.75));
+        Comparator<RowProxy> comparator = Sorters.sorter(ungrouped.getColumnsIndex(), columns, ascending);
+        Map<Object, Series<Integer>> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
-        for (Map.Entry<Object, DataFrame> e : groups.entrySet()) {
-            sorted.put(e.getKey(), e.getValue().sort(columns, ascending));
+        for (Map.Entry<Object, Series<Integer>> e : groupsIndex.entrySet()) {
+            Series<Integer> sortedGroup = new IndexSorter(ungrouped, e.getValue()).sortIndex(comparator);
+            sorted.put(e.getKey(), sortedGroup);
         }
 
-        return new GroupBy(ungroupedColumns, sorted);
+        return new GroupBy(ungrouped, sorted);
     }
 
     public GroupBy sort(int[] columns, boolean[] ascending) {
@@ -61,13 +81,15 @@ public class GroupBy {
             return this;
         }
 
-        Map<Object, DataFrame> sorted = new LinkedHashMap<>((int) (groups.size() / 0.75));
+        Comparator<RowProxy> comparator = Sorters.sorter(ungrouped.getColumnsIndex(), columns, ascending);
+        Map<Object, Series<Integer>> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
-        for (Map.Entry<Object, DataFrame> e : groups.entrySet()) {
-            sorted.put(e.getKey(), e.getValue().sort(columns, ascending));
+        for (Map.Entry<Object, Series<Integer>> e : groupsIndex.entrySet()) {
+            Series<Integer> sortedGroup = new IndexSorter(ungrouped, e.getValue()).sortIndex(comparator);
+            sorted.put(e.getKey(), sortedGroup);
         }
 
-        return new GroupBy(ungroupedColumns, sorted);
+        return new GroupBy(ungrouped, sorted);
     }
 
     public DataFrame agg(ColumnAggregator... aggregators) {
@@ -85,16 +107,33 @@ public class GroupBy {
     }
 
     public DataFrame agg(Aggregator aggregator) {
-        return agg(aggregator.aggregateIndex(ungroupedColumns), aggregator);
+        return agg(aggregator.aggregateIndex(ungrouped.getColumnsIndex()), aggregator);
     }
 
     public DataFrame agg(Index index, Aggregator aggregator) {
 
-        List<Object[]> result = new ArrayList<>(groups.size());
-        for (DataFrame df : groups.values()) {
-            result.add(aggregator.aggregate(df));
+        List<Object[]> result = new ArrayList<>(size());
+        for (Object key : getGroups()) {
+            result.add(aggregator.aggregate(getGroup(key)));
         }
 
         return DataFrame.forListOfRows(index, result);
+    }
+
+    protected DataFrame resolveGroup(Object key) {
+
+        Series<Integer> index = groupsIndex.get(key);
+        if (index == null) {
+            throw new IllegalArgumentException("Group '" + key + "' is not present in GroupBy");
+        }
+
+        int w = ungrouped.width();
+        Series[] data = new Series[w];
+
+        for (int j = 0; j < w; j++) {
+            data[j] = new IndexedSeries(ungrouped.getColumn(j), index);
+        }
+
+        return new ColumnDataFrame(ungrouped.getColumnsIndex(), data);
     }
 }

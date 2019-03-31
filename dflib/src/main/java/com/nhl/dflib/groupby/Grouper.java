@@ -1,13 +1,11 @@
 package com.nhl.dflib.groupby;
 
-import com.nhl.dflib.ColumnDataFrame;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.row.RowProxy;
-import com.nhl.dflib.series.IndexedSeries;
 import com.nhl.dflib.series.ListSeries;
 
 import java.util.ArrayList;
@@ -38,20 +36,11 @@ public class Grouper {
             i++;
         }
 
-        int w = columns.size();
         for (Object o : groups.entrySet()) {
             Map.Entry<?, Object> e = (Map.Entry) o;
-
-            Series<Integer> index = new ListSeries<>((List<Integer>) e.getValue());
-            Series[] data = new Series[w];
-
-            for (int j = 0; j < w; j++) {
-                data[j] = new IndexedSeries(df.getColumn(j), index);
-            }
-
-            e.setValue(new ColumnDataFrame(columns, data));
+            e.setValue(new ListSeries<>((List<Integer>) e.getValue()));
         }
 
-        return new GroupBy(columns, (Map<Object, DataFrame>) groups);
+        return new GroupBy(df, (Map<Object, Series<Integer>>) groups);
     }
 }

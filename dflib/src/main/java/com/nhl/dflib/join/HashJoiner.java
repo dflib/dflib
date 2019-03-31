@@ -69,9 +69,8 @@ public class HashJoiner {
         for (RowProxy lr : lf) {
 
             Object lKey = leftHasher.map(lr);
-            DataFrame rightMatches = rightIndex.getGroup(lKey);
-            if (rightMatches != null) {
-                for (RowProxy rr : rightMatches) {
+            if (rightIndex.hasGroup(lKey)) {
+                for (RowProxy rr : rightIndex.getGroup(lKey)) {
                     li.add(i);
                     ri.add((Integer) rr.get(rfip));
                 }
@@ -97,10 +96,9 @@ public class HashJoiner {
         for (RowProxy lr : lf) {
 
             Object lKey = leftHasher.map(lr);
-            DataFrame rightMatches = rightIndex.getGroup(lKey);
 
-            if (rightMatches != null) {
-                for (RowProxy rr : rightMatches) {
+            if (rightIndex.hasGroup(lKey)) {
+                for (RowProxy rr : rightIndex.getGroup(lKey)) {
                     li.add(i);
                     ri.add((Integer) rr.get(rfip));
                 }
@@ -129,10 +127,9 @@ public class HashJoiner {
         for (RowProxy rr : rf) {
 
             Object rKey = rightHasher.map(rr);
-            DataFrame leftMatches = leftIndex.getGroup(rKey);
 
-            if (leftMatches != null) {
-                for (RowProxy lr : leftMatches) {
+            if (leftIndex.hasGroup(rKey)) {
+                for (RowProxy lr : leftIndex.getGroup(rKey)) {
                     li.add((Integer) lr.get(lfip));
                     ri.add(i);
                 }
@@ -162,11 +159,10 @@ public class HashJoiner {
         for (RowProxy lr : lf) {
 
             Object lKey = leftHasher.map(lr);
-            DataFrame rightMatches = rightIndex.getGroup(lKey);
 
-            if (rightMatches != null) {
+            if (rightIndex.hasGroup(lKey)) {
                 seenRightKeys.add(lKey);
-                for (RowProxy rr : rightMatches) {
+                for (RowProxy rr : rightIndex.getGroup(lKey)) {
                     li.add(i);
                     ri.add((Integer) rr.get(rfip));
                 }

@@ -10,7 +10,6 @@ import com.nhl.dflib.series.IndexedSeries;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 import java.util.function.Supplier;
 
 public class IndexSorter {
@@ -23,10 +22,16 @@ public class IndexSorter {
         this.indexBuilder = () -> rowNumberSequence(dataFrame.height());
     }
 
-    public IndexSorter(DataFrame dataFrame, List<Integer> rangeToSort) {
+    public IndexSorter(DataFrame dataFrame, Series<Integer> rangeToSort) {
         this.dataFrame = dataFrame;
+
         // copy range to avoid modification of the source list
-        this.indexBuilder = () -> rangeToSort.toArray(new Integer[rangeToSort.size()]);
+        this.indexBuilder = () -> {
+            int len = rangeToSort.size();
+            Integer[] data = new Integer[len];
+            rangeToSort.copyTo(data, 0, 0, len);
+            return data;
+        };
     }
 
     protected static Integer[] rowNumberSequence(int h) {
@@ -38,8 +43,7 @@ public class IndexSorter {
         return rn;
     }
 
-    public DataFrame sort(Comparator<RowProxy> comparator) {
-
+    public Series<Integer> sortIndex(Comparator<RowProxy> comparator) {
         // make sure 'mutableIndex' is not visible outside this method as we are going to modify it,
         // so obtain it via the supplier right on the spot
         Integer[] mutableIndex = indexBuilder.get();
@@ -48,7 +52,11 @@ public class IndexSorter {
 
         // note - mutating passed index
         Arrays.sort(mutableIndex, rowComparator);
-        Series<Integer> sortedIndex = new ArraySeries<>(mutableIndex);
+        return new ArraySeries<>(mutableIndex);
+    }
+
+    public DataFrame sort(Comparator<RowProxy> comparator) {
+        Series<Integer> sortedIndex = sortIndex(comparator);
 
         int width = dataFrame.width();
         Series<?>[] newColumnsData = new Series[width];
