@@ -15,3 +15,4 @@
 * #15 DataFrame.addColumn(Series)
 * #16 GroupBy.rowNumbers()
 * #17 Series.fillNulls / DataFrame.fillNulls
+* #18 "DataFrame.select" operation for selecting rows

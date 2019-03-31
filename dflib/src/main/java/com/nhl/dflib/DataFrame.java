@@ -121,14 +121,14 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Creates a new DataFrame which is the exact copy of this DataFrame, only with a single column values transformed
      * using the provided converter function.
      *
-     * @param columnName a column to convert
-     * @param converter  a function to apply to column values
-     * @param <V>        expected input column value
-     * @param <VR>       output column value
+     * @param columnLabel a column to convert
+     * @param converter   a function to apply to column values
+     * @param <V>         expected input column value
+     * @param <VR>        output column value
      * @return a new DataFrame
      */
-    default <V, VR> DataFrame convertColumn(String columnName, ValueMapper<V, VR> converter) {
-        int pos = getColumnsIndex().position(columnName);
+    default <V, VR> DataFrame convertColumn(String columnLabel, ValueMapper<V, VR> converter) {
+        int pos = getColumnsIndex().position(columnLabel);
         return convertColumn(pos, converter);
     }
 
@@ -142,25 +142,49 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     DataFrame addRowNumber(String columnName);
 
-    default <V> DataFrame addColumn(String columnName, RowToValueMapper<V> columnValueProducer) {
-        return addColumns(new String[]{columnName}, columnValueProducer);
+    default <V> DataFrame addColumn(String columnLabel, RowToValueMapper<V> columnValueProducer) {
+        return addColumns(new String[]{columnLabel}, columnValueProducer);
     }
 
-    <V> DataFrame addColumns(String[] columnNames, RowToValueMapper<V>... columnValueProducers);
+    <V> DataFrame addColumns(String[] columnLabels, RowToValueMapper<V>... columnValueProducers);
 
-    <V> DataFrame addColumn(String columnName, Series<V> column);
+    <V> DataFrame addColumn(String columnLabel, Series<V> column);
 
-    DataFrame renameColumns(String... columnNames);
+    DataFrame renameColumns(String... columnLabels);
 
-    default DataFrame renameColumn(String oldName, String newName) {
-        return renameColumns(Collections.singletonMap(oldName, newName));
+    default DataFrame renameColumn(String oldLabel, String newLabel) {
+        return renameColumns(Collections.singletonMap(oldLabel, newLabel));
     }
 
-    DataFrame renameColumns(Map<String, String> oldToNewNames);
+    DataFrame renameColumns(Map<String, String> oldToNewLabels);
 
-    DataFrame selectColumns(String... columnNames);
+    DataFrame selectColumns(String... columnLabels);
 
-    DataFrame dropColumns(String... columnNames);
+    DataFrame dropColumns(String... columnLabels);
+
+    /**
+     * Selects DataFrame rows based on provided row index. This allows to reorder, filter, duplicate rows of this
+     * DataFrame.
+     *
+     * @return a new DataFrame that matches the selection criteria
+     */
+    DataFrame select(Integer... rowPositions);
+
+    /**
+     * Selects DataFrame rows based on provided row index. This allows to reorder, filter, duplicate rows of this
+     * DataFrame.
+     *
+     * @return a new DataFrame that matches the selection criteria
+     */
+    DataFrame select(List<Integer> rowPositions);
+
+    /**
+     * Selects DataFrame rows based on provided row index. This allows to reorder, filter, duplicate rows of this
+     * DataFrame.
+     *
+     * @return a new DataFrame that matches the selection criteria
+     */
+    DataFrame select(Series<Integer> rowPositions);
 
     DataFrame filter(RowPredicate p);
 

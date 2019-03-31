@@ -3,8 +3,7 @@ package com.nhl.dflib;
 import com.nhl.dflib.unit.DFAsserts;
 import org.junit.Test;
 
-public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
-
+public class DataFrame_AddDropColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testAddColumn() {
@@ -73,34 +72,6 @@ public class DataFrame_AddDropSelectColumnsTest extends BaseDataFrameTest {
                 1, "x",
                 2, "y").addColumn("c", column);
 
-    }
-
-    @Test
-    public void testSelectColumns() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
-                1, "x",
-                2, "y")
-                .selectColumns("b");
-
-        new DFAsserts(df, "b")
-                .expectHeight(2)
-                .expectRow(0, "x")
-                .expectRow(1, "y");
-    }
-
-    @Test
-    public void testSelectColumns_DuplicateColumn() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
-                1, "x",
-                2, "y")
-                .selectColumns("b", "b", "b");
-
-        new DFAsserts(df, "b", "b_", "b__")
-                .expectHeight(2)
-                .expectRow(0, "x", "x", "x")
-                .expectRow(1, "y", "y", "y");
     }
 
     @Test

@@ -24,11 +24,13 @@ import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.ColumnMappedSeries;
 import com.nhl.dflib.series.HeadSeries;
 import com.nhl.dflib.series.IndexedSeries;
+import com.nhl.dflib.series.ListSeries;
 import com.nhl.dflib.series.RowMappedSeries;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -118,29 +120,49 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public DataFrame filter(RowPredicate p) {
-        Series<Integer> filteredIndex = FilterIndexer.filteredIndex(this, p);
-        return filterWithIndex(filteredIndex);
+    public DataFrame select(Integer... rowPositions) {
+        return select(new ArraySeries<>(rowPositions));
     }
 
     @Override
-    public <V> DataFrame filter(int columnPos, ValuePredicate<V> p) {
-        Series<Integer> filteredIndex = FilterIndexer.filteredIndex(dataColumns[columnPos], p);
-        return filterWithIndex(filteredIndex);
+    public DataFrame select(List<Integer> rowPositions) {
+        return select(new ListSeries<>(rowPositions));
     }
 
-    private DataFrame filterWithIndex(Series<Integer> filteredIndex) {
-        if (filteredIndex.size() == height()) {
-            return this;
-        }
+    @Override
+    public DataFrame select(Series<Integer> rowPositions) {
 
         int width = width();
         Series<?>[] newColumnsData = new Series[width];
         for (int i = 0; i < width; i++) {
-            newColumnsData[i] = new IndexedSeries<>(dataColumns[i], filteredIndex);
+            newColumnsData[i] = new IndexedSeries<>(dataColumns[i], rowPositions);
         }
 
         return new ColumnDataFrame(columnsIndex, newColumnsData);
+    }
+
+    @Override
+    public DataFrame filter(RowPredicate p) {
+        Series<Integer> rowPositions = FilterIndexer.filteredIndex(this, p);
+
+        // there's no reordering or index duplication during "filter", so we can compare size to detect changes
+        if (rowPositions.size() == height()) {
+            return this;
+        }
+
+        return select(rowPositions);
+    }
+
+    @Override
+    public <V> DataFrame filter(int columnPos, ValuePredicate<V> p) {
+        Series<Integer> rowPositions = FilterIndexer.filteredIndex(dataColumns[columnPos], p);
+
+        // there's no reordering or index duplication during "filter", so we can compare size to detect changes
+        if (rowPositions.size() == height()) {
+            return this;
+        }
+
+        return select(rowPositions);
     }
 
     @Override
