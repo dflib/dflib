@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 public class DataFrame_GroupByTest extends BaseDataFrameTest {
 
     @Test
-    public void testGroupBy() {
+    public void testGroup() {
         Index i = Index.forLabels("a", "b");
         DataFrame df = createDf(i,
                 1, "x",
@@ -45,7 +45,7 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
     }
 
     @Test
-    public void testGroupBy_Empty() {
+    public void testGroup_Empty() {
         Index i = Index.forLabels("a", "b");
         DataFrame df = createDf(i);
 
@@ -57,7 +57,7 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
     }
 
     @Test
-    public void testGroupBy_Agg() {
+    public void testGroup_Agg() {
         Index i = Index.forLabels("a", "b");
         DataFrame df1 = createDf(i,
                 1, "x",
@@ -76,7 +76,7 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
     }
 
     @Test
-    public void testGroupBy_Agg_MultipleAggregationsForKey() {
+    public void testGroup_Agg_MultipleAggregationsForKey() {
         Index i = Index.forLabels("a", "b");
         DataFrame df1 = createDf(i,
                 1, "x",
@@ -93,5 +93,27 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
                 .expectRow(0, "x", 2L, 1.)
                 .expectRow(1, "y", 3L, 1.5)
                 .expectRow(2, "a", 0L, 0.);
+    }
+
+    @Test
+    public void testGroup_toDataFrame() {
+        Index i = Index.forLabels("a", "b");
+        DataFrame df1 = createDf(i,
+                1, "x",
+                2, "y",
+                1, "y",
+                0, "a",
+                1, "x");
+
+        DataFrame df = df1.group("a").toDataFrame();
+
+        // must be sorted by groups in the order they are encountered
+        new DFAsserts(df, "a", "b")
+                .expectHeight(5)
+                .expectRow(0, 1, "x")
+                .expectRow(1, 1, "y")
+                .expectRow(2, 1, "x")
+                .expectRow(3, 2, "y")
+                .expectRow(4, 0, "a");
     }
 }

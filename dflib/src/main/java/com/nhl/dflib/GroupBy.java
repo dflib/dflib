@@ -2,6 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.Aggregator;
 import com.nhl.dflib.aggregate.ColumnAggregator;
+import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.RowToValueMapper;
@@ -37,6 +38,17 @@ public class GroupBy {
         return groupsIndex.size();
     }
 
+    /**
+     * Recombines groups back to a DataFrame, preserving the effects of the initial grouping, and per-group sorting,
+     * truncation and other operations.
+     *
+     * @return a new DataFrame made from recombined groups.
+     */
+    public DataFrame toDataFrame() {
+        Series<Integer> index = SeriesConcat.concat(groupsIndex.values());
+        return ungrouped.select(index);
+    }
+
     public Collection<Object> getGroups() {
         return groupsIndex.keySet();
     }
@@ -56,7 +68,8 @@ public class GroupBy {
     /**
      * A "window" function that converts this grouping into a Series that provides row numbers of each row within their
      * group. The order of row numbers corresponds to the order of rows in the original DataFrame that was used to
-     * build the grouping. So the Series can be added back to the original DataFrame.
+     * build the grouping. This Series can be added back to the original DataFrame, providing it with a per-group
+     * ranking column.
      *
      * @return a new Series object with row numbers of each row within their group. The overall order matches the order
      * of the original DataFrame that was used to build the grouping.
@@ -67,7 +80,7 @@ public class GroupBy {
 
         int i = 0;
         for (Series<Integer> s : groupsIndex.values()) {
-            Series<Integer> numbersWithGroup  = new ArraySeries<>(Sequences.numberSequence(s.size()));
+            Series<Integer> numbersWithGroup = new ArraySeries<>(Sequences.numberSequence(s.size()));
             numberedIndex[i] = new ColumnDataFrame(TWO_COLUMN_INDEX, s, numbersWithGroup);
             i++;
         }
