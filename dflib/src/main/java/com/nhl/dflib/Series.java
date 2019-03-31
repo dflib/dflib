@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.EmptySeries;
 import com.nhl.dflib.series.RangeSeries;
@@ -42,4 +43,16 @@ public interface Series<T> {
     Series<T> fillNullsBackwards();
 
     Series<T> fillNullsForward();
+
+    default Series<T> concat(Series<? extends T>... other) {
+        if (other.length == 0) {
+            return this;
+        }
+
+        Series<? extends T>[] combined = new Series[other.length + 1];
+        combined[0] = this;
+        System.arraycopy(other, 0, combined, 1, other.length);
+
+        return SeriesConcat.concat(combined);
+    }
 }
