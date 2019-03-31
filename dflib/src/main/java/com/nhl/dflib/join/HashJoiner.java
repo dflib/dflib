@@ -3,6 +3,7 @@ package com.nhl.dflib.join;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.row.RowProxy;
@@ -19,8 +20,6 @@ import java.util.Set;
  * equality can be used as a join condition. Should theoretically have O(N + M) performance.
  */
 public class HashJoiner {
-
-    private static final String ROW_INDEX_COLUMN = "$row_index_" + System.currentTimeMillis();
 
     private Hasher leftHasher;
     private Hasher rightHasher;
@@ -60,19 +59,19 @@ public class HashJoiner {
         List<Integer> li = new ArrayList<>();
         List<Integer> ri = new ArrayList<>();
 
-        DataFrame rfi = rf.addRowNumber(ROW_INDEX_COLUMN);
-        int rfip = rfi.getColumnsIndex().position(ROW_INDEX_COLUMN);
-
-        GroupBy rightIndex = rfi.group(rightHasher);
+        GroupBy rightIndex = rf.group(rightHasher);
 
         int i = 0;
         for (RowProxy lr : lf) {
 
             Object lKey = leftHasher.map(lr);
-            if (rightIndex.hasGroup(lKey)) {
-                for (RowProxy rr : rightIndex.getGroup(lKey)) {
+            Series<Integer> rgi = rightIndex.getGroupIndex(lKey);
+
+            if (rgi != null) {
+                int js = rgi.size();
+                for (int j = 0; j < js; j++) {
                     li.add(i);
-                    ri.add((Integer) rr.get(rfip));
+                    ri.add(rgi.get(j));
                 }
             }
 
@@ -87,20 +86,19 @@ public class HashJoiner {
         List<Integer> li = new ArrayList<>();
         List<Integer> ri = new ArrayList<>();
 
-        DataFrame rfi = rf.addRowNumber(ROW_INDEX_COLUMN);
-        int rfip = rfi.getColumnsIndex().position(ROW_INDEX_COLUMN);
-
-        GroupBy rightIndex = rfi.group(rightHasher);
+        GroupBy rightIndex = rf.group(rightHasher);
 
         int i = 0;
         for (RowProxy lr : lf) {
 
             Object lKey = leftHasher.map(lr);
+            Series<Integer> rgi = rightIndex.getGroupIndex(lKey);
 
-            if (rightIndex.hasGroup(lKey)) {
-                for (RowProxy rr : rightIndex.getGroup(lKey)) {
+            if (rgi != null) {
+                int js = rgi.size();
+                for (int j = 0; j < js; j++) {
                     li.add(i);
-                    ri.add((Integer) rr.get(rfip));
+                    ri.add(rgi.get(j));
                 }
             } else {
                 li.add(i);
@@ -118,19 +116,18 @@ public class HashJoiner {
         List<Integer> li = new ArrayList<>();
         List<Integer> ri = new ArrayList<>();
 
-        DataFrame lfi = lf.addRowNumber(ROW_INDEX_COLUMN);
-        int lfip = lfi.getColumnsIndex().position(ROW_INDEX_COLUMN);
-
-        GroupBy leftIndex = lfi.group(leftHasher);
+        GroupBy leftIndex = lf.group(leftHasher);
 
         int i = 0;
         for (RowProxy rr : rf) {
 
             Object rKey = rightHasher.map(rr);
+            Series<Integer> lgi = leftIndex.getGroupIndex(rKey);
 
-            if (leftIndex.hasGroup(rKey)) {
-                for (RowProxy lr : leftIndex.getGroup(rKey)) {
-                    li.add((Integer) lr.get(lfip));
+            if (lgi != null) {
+                int js = lgi.size();
+                for (int j = 0; j < js; j++) {
+                    li.add(lgi.get(j));
                     ri.add(i);
                 }
             } else {
@@ -149,10 +146,7 @@ public class HashJoiner {
         List<Integer> li = new ArrayList<>();
         List<Integer> ri = new ArrayList<>();
 
-        DataFrame rfi = rf.addRowNumber(ROW_INDEX_COLUMN);
-        int rfip = rfi.getColumnsIndex().position(ROW_INDEX_COLUMN);
-
-        GroupBy rightIndex = rfi.group(rightHasher);
+        GroupBy rightIndex = rf.group(rightHasher);
         Set<Object> seenRightKeys = new LinkedHashSet<>();
 
         int i = 0;
@@ -160,11 +154,13 @@ public class HashJoiner {
 
             Object lKey = leftHasher.map(lr);
 
-            if (rightIndex.hasGroup(lKey)) {
+            Series<Integer> rgi = rightIndex.getGroupIndex(lKey);
+            if (rgi != null) {
                 seenRightKeys.add(lKey);
-                for (RowProxy rr : rightIndex.getGroup(lKey)) {
+                int js = rgi.size();
+                for (int j = 0; j < js; j++) {
                     li.add(i);
-                    ri.add((Integer) rr.get(rfip));
+                    ri.add(rgi.get(j));
                 }
             } else {
                 li.add(i);
@@ -177,9 +173,12 @@ public class HashJoiner {
         // add missing right rows
         for (Object key : rightIndex.getGroups()) {
             if (!seenRightKeys.contains(key)) {
-                for (RowProxy rr : rightIndex.getGroup(key)) {
+                Series<Integer> rgi = rightIndex.getGroupIndex(key);
+
+                int js = rgi.size();
+                for (int j = 0; j < js; j++) {
                     li.add(-1);
-                    ri.add((Integer) rr.get(rfip));
+                    ri.add(rgi.get(j));
                 }
             }
         }

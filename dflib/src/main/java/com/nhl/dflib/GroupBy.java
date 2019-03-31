@@ -59,6 +59,10 @@ public class GroupBy {
         return groupsIndex.containsKey(key);
     }
 
+    public Series<Integer> getGroupIndex(Object key) {
+        return groupsIndex.get(key);
+    }
+
     public DataFrame getGroup(Object key) {
         if (resolvedGroups == null) {
             resolvedGroups = new ConcurrentHashMap<>();
@@ -224,7 +228,7 @@ public class GroupBy {
 
         Series<Integer> index = groupsIndex.get(key);
         if (index == null) {
-            throw new IllegalArgumentException("Group '" + key + "' is not present in GroupBy");
+            return null;
         }
 
         int w = ungrouped.width();
