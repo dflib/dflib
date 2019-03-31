@@ -9,6 +9,7 @@ import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.seq.Sequences;
 import com.nhl.dflib.series.ArraySeries;
+import com.nhl.dflib.series.HeadSeries;
 import com.nhl.dflib.series.IndexedSeries;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
@@ -86,6 +87,22 @@ public class GroupBy {
         }
 
         return VConcat.concat(JoinType.inner, numberedIndex).sort(0, true).getColumn(1);
+    }
+
+    public GroupBy head(int len) {
+
+        if (len < 0) {
+            throw new IllegalArgumentException("Length must be non-negative: " + len);
+        }
+
+        Map<Object, Series<Integer>> trimmed = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
+
+        for (Map.Entry<Object, Series<Integer>> e : groupsIndex.entrySet()) {
+            Series<Integer> maybeTrimmedGroup = HeadSeries.forSeries(e.getValue(), len);
+            trimmed.put(e.getKey(), maybeTrimmedGroup);
+        }
+
+        return new GroupBy(ungrouped, trimmed);
     }
 
     public <V extends Comparable<? super V>> GroupBy sort(RowToValueMapper<V> sortKeyExtractor) {

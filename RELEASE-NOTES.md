@@ -16,3 +16,4 @@
 * #16 GroupBy.rowNumbers()
 * #17 Series.fillNulls / DataFrame.fillNulls
 * #18 "DataFrame.select" operation for selecting rows
+* #19 GroupBy.head(int) and GroupBy.toDataFrame() functions

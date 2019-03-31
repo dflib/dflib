@@ -10,10 +10,19 @@ public class HeadSeries<T> implements Series<T> {
     private int len;
 
     public HeadSeries(Series<T> source, int len) {
-        this.source = Objects.requireNonNull(source);
 
-        int maxLen = source.size();
-        this.len = len > maxLen ? maxLen : len;
+        // callers should use factory method if they expect the length to be out of bounds.
+        if (len > source.size()) {
+            throw new IllegalArgumentException("Head length (" + len + ") exceeds source size (" + source.size() + ")");
+        }
+
+        this.source = source;
+        this.len = len;
+    }
+
+    public static <T> Series<T> forSeries(Series<T> source, int len) {
+        Objects.requireNonNull(source);
+        return len >= source.size() ? source : new HeadSeries<>(source, len);
     }
 
     @Override

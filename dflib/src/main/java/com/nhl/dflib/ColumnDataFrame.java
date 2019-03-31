@@ -84,6 +84,8 @@ public class ColumnDataFrame implements DataFrame {
         int width = width();
         Series<?>[] newColumnsData = new Series[width];
         for (int i = 0; i < width; i++) {
+            // not using HeadSeries.forSeries(..) as we no longer need range checking here, as it is done once above for
+            // the entire DataFrame
             newColumnsData[i] = new HeadSeries<>(dataColumns[i], len);
         }
 
