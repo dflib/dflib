@@ -6,9 +6,9 @@ import com.nhl.dflib.row.RowProxy;
 
 import java.util.Iterator;
 
-public class InlinePrinterWorker extends BasePrinterWorker {
+public class DataFrameInlinePrintWorker extends DataFramePrintWorker {
 
-    public InlinePrinterWorker(StringBuilder out, int maxDisplayRows, int maxDisplayColumnWith) {
+    public DataFrameInlinePrintWorker(StringBuilder out, int maxDisplayRows, int maxDisplayColumnWith) {
         super(out, maxDisplayRows, maxDisplayColumnWith);
     }
 
@@ -59,6 +59,6 @@ public class InlinePrinterWorker extends BasePrinterWorker {
     }
 
     StringBuilder appendTruncate(String value) {
-        return out.append(truncate(value, maxDisplayColumnWith));
+        return out.append(truncate(value, maxDisplayColumnWidth));
     }
 }

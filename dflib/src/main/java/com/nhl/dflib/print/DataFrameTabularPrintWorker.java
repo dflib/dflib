@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-class TabularPrinterWorker extends BasePrinterWorker {
+class DataFrameTabularPrintWorker extends DataFramePrintWorker {
 
-    TabularPrinterWorker(StringBuilder out, int maxDisplayRows, int maxDisplayColumnWith) {
+    DataFrameTabularPrintWorker(StringBuilder out, int maxDisplayRows, int maxDisplayColumnWith) {
         super(out, maxDisplayRows, maxDisplayColumnWith);
     }
 
@@ -51,7 +51,7 @@ class TabularPrinterWorker extends BasePrinterWorker {
 
         // constrain column width
         for (int i = 0; i < w; i++) {
-            columnWidth[i] = Math.min(columnWidth[i], maxDisplayColumnWith);
+            columnWidth[i] = Math.min(columnWidth[i], maxDisplayColumnWidth);
         }
 
         // print header

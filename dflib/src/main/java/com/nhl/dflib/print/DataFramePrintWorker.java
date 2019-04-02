@@ -2,15 +2,15 @@ package com.nhl.dflib.print;
 
 import com.nhl.dflib.DataFrame;
 
-public abstract class BasePrinterWorker {
+public abstract class DataFramePrintWorker {
 
     protected StringBuilder out;
-    protected int maxDisplayColumnWith;
+    protected int maxDisplayColumnWidth;
     protected int maxDisplayRows;
 
-    BasePrinterWorker(StringBuilder out, int maxDisplayRows, int maxDisplayColumnWith) {
+    public DataFramePrintWorker(StringBuilder out, int maxDisplayRows, int maxDisplayColumnWidth) {
         this.out = out;
-        this.maxDisplayColumnWith = maxDisplayColumnWith;
+        this.maxDisplayColumnWidth = maxDisplayColumnWidth;
         this.maxDisplayRows = maxDisplayRows;
     }
 

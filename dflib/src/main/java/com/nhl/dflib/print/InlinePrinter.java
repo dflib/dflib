@@ -13,7 +13,12 @@ public class InlinePrinter extends BasePrinter {
     }
 
     @Override
-    protected BasePrinterWorker newWorker(StringBuilder out) {
-        return new InlinePrinterWorker(out, maxDisplayRows, maxDisplayColumnWith);
+    protected DataFramePrintWorker newDataFrameWorker(StringBuilder out) {
+        return new DataFrameInlinePrintWorker(out, maxDisplayRows, maxDisplayColumnWidth);
+    }
+
+    @Override
+    protected SeriesPrintWorker newSeriesWorker(StringBuilder out) {
+        return new SeriesInlinePrintWorker(out, maxDisplayRows, maxDisplayColumnWidth);
     }
 }

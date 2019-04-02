@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class TabularPrinterWorkerTest {
+public class DataFrameTabularPrintWorkerTest {
 
     private DataFrame df;
 
@@ -24,15 +24,15 @@ public class TabularPrinterWorkerTest {
 
     @Test
     public void testAppendFixedWidth() {
-        assertEquals("a  ", new TabularPrinterWorker(new StringBuilder(), 3, 20).appendFixedWidth("a", 3).toString());
-        assertEquals("a ", new TabularPrinterWorker(new StringBuilder(), 3, 20).appendFixedWidth("a", 2).toString());
-        assertEquals("a", new TabularPrinterWorker(new StringBuilder(), 3, 20).appendFixedWidth("a", 1).toString());
-        assertEquals("..", new TabularPrinterWorker(new StringBuilder(), 3, 20).appendFixedWidth("abc", 2).toString());
+        assertEquals("a  ", new DataFrameTabularPrintWorker(new StringBuilder(), 3, 20).appendFixedWidth("a", 3).toString());
+        assertEquals("a ", new DataFrameTabularPrintWorker(new StringBuilder(), 3, 20).appendFixedWidth("a", 2).toString());
+        assertEquals("a", new DataFrameTabularPrintWorker(new StringBuilder(), 3, 20).appendFixedWidth("a", 1).toString());
+        assertEquals("..", new DataFrameTabularPrintWorker(new StringBuilder(), 3, 20).appendFixedWidth("abc", 2).toString());
     }
 
     @Test
     public void testPrint_Full() {
-        TabularPrinterWorker w = new TabularPrinterWorker(new StringBuilder(), 5, 10);
+        DataFrameTabularPrintWorker w = new DataFrameTabularPrintWorker(new StringBuilder(), 5, 10);
 
         assertEquals("" +
                 "col1  column2" + System.lineSeparator() +
@@ -46,7 +46,7 @@ public class TabularPrinterWorkerTest {
 
     @Test
     public void testPrint_TruncateRows() {
-        TabularPrinterWorker w = new TabularPrinterWorker(new StringBuilder(), 2, 10);
+        DataFrameTabularPrintWorker w = new DataFrameTabularPrintWorker(new StringBuilder(), 2, 10);
 
         assertEquals("" +
                 "col1 column2" + System.lineSeparator() +
@@ -59,7 +59,7 @@ public class TabularPrinterWorkerTest {
 
     @Test
     public void testPrint_TruncateColumns() {
-        TabularPrinterWorker w = new TabularPrinterWorker(new StringBuilder(), 5, 4);
+        DataFrameTabularPrintWorker w = new DataFrameTabularPrintWorker(new StringBuilder(), 5, 4);
 
         assertEquals("" +
                 "col1 c..2" + System.lineSeparator() +

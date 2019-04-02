@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class InlinePrinterWorkerTest {
+public class DataFrameInlinePrintWorkerTest {
 
     private DataFrame df;
 
@@ -23,7 +23,7 @@ public class InlinePrinterWorkerTest {
 
     @Test
     public void testPrint_Full() {
-        InlinePrinterWorker w = new InlinePrinterWorker(new StringBuilder(), 5, 10);
+        DataFrameInlinePrintWorker w = new DataFrameInlinePrintWorker(new StringBuilder(), 5, 10);
 
         assertEquals("{col1:one,column2:1},{col1:two,column2:2},{col1:three,column2:3},{col1:four,column2:4}",
                 w.print(df).toString());
@@ -31,13 +31,13 @@ public class InlinePrinterWorkerTest {
 
     @Test
     public void testPrint_TruncateRows() {
-        InlinePrinterWorker w = new InlinePrinterWorker(new StringBuilder(), 2, 10);
+        DataFrameInlinePrintWorker w = new DataFrameInlinePrintWorker(new StringBuilder(), 2, 10);
         assertEquals("{col1:one,column2:1},{col1:two,column2:2},...", w.print(df).toString());
     }
 
     @Test
     public void testPrint_TruncateColumns() {
-        InlinePrinterWorker w = new InlinePrinterWorker(new StringBuilder(), 5, 4);
+        DataFrameInlinePrintWorker w = new DataFrameInlinePrintWorker(new StringBuilder(), 5, 4);
         assertEquals("{col1:one,c..2:1},{col1:two,c..2:2},{col1:t..e,c..2:3},{col1:four,c..2:4}",
                 w.print(df).toString());
     }
