@@ -1,5 +1,8 @@
 package com.nhl.dflib.print;
 
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Series;
+
 /**
  * A utility class for outputting DataFrames and DataRows on a single line.
  */
@@ -13,12 +16,12 @@ public class InlinePrinter extends BasePrinter {
     }
 
     @Override
-    protected DataFramePrintWorker newDataFrameWorker(StringBuilder out) {
-        return new DataFrameInlinePrintWorker(out, maxDisplayRows, maxDisplayColumnWidth);
+    public StringBuilder print(StringBuilder out, Series<?> s) {
+        return new SeriesInlinePrintWorker(out, maxDisplayRows, maxDisplayColumnWidth).print(s);
     }
 
     @Override
-    protected SeriesPrintWorker newSeriesWorker(StringBuilder out) {
-        return new SeriesInlinePrintWorker(out, maxDisplayRows, maxDisplayColumnWidth);
+    public StringBuilder print(StringBuilder out, DataFrame df) {
+        return new DataFrameInlinePrintWorker(out, maxDisplayRows, maxDisplayColumnWidth).print(df);
     }
 }

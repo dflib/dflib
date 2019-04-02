@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class TabularPrinterTest {
+public class TabularPrinter_DataFrameTest {
 
     private DataFrame df;
 
@@ -22,7 +22,7 @@ public class TabularPrinterTest {
     }
 
     @Test
-    public void testPrint_Full() {
+    public void testToString() {
         TabularPrinter p = new TabularPrinter(5, 10);
 
         assertEquals("" +
@@ -36,7 +36,7 @@ public class TabularPrinterTest {
     }
 
     @Test
-    public void testPrint_TruncateRows() {
+    public void testToString_TruncateRows() {
         TabularPrinter p = new TabularPrinter(2, 10);
 
         assertEquals("" +
@@ -49,7 +49,7 @@ public class TabularPrinterTest {
     }
 
     @Test
-    public void testPrint_TruncateColumns() {
+    public void testToString_TruncateColumns() {
         TabularPrinter p = new TabularPrinter(5, 4);
 
         assertEquals("" +

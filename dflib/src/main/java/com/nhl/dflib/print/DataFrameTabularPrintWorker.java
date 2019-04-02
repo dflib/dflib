@@ -8,13 +8,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-class DataFrameTabularPrintWorker extends DataFramePrintWorker {
+public class DataFrameTabularPrintWorker extends BasePrintWorker {
 
-    DataFrameTabularPrintWorker(StringBuilder out, int maxDisplayRows, int maxDisplayColumnWith) {
+    public DataFrameTabularPrintWorker(StringBuilder out, int maxDisplayRows, int maxDisplayColumnWith) {
         super(out, maxDisplayRows, maxDisplayColumnWith);
     }
 
-    StringBuilder print(DataFrame df) {
+    public StringBuilder print(DataFrame df) {
 
         Index columns = df.getColumnsIndex();
         Iterator<RowProxy> values = df.iterator();
@@ -100,18 +100,5 @@ class DataFrameTabularPrintWorker extends DataFramePrintWorker {
 
     StringBuilder append(String string) {
         return out.append(string);
-    }
-
-    StringBuilder appendFixedWidth(String value, int width) {
-
-        if (value.length() <= width) {
-            return out.append(String.format("%1$-" + width + "s", value));
-        } else {
-            return out.append(truncate(value, width));
-        }
-    }
-
-    private StringBuilder appendNewLine() {
-        return out.append(System.lineSeparator());
     }
 }

@@ -1,14 +1,12 @@
 package com.nhl.dflib.print;
 
-import com.nhl.dflib.DataFrame;
-
-public abstract class DataFramePrintWorker {
+public abstract class BasePrintWorker {
 
     protected StringBuilder out;
     protected int maxDisplayColumnWidth;
     protected int maxDisplayRows;
 
-    public DataFramePrintWorker(StringBuilder out, int maxDisplayRows, int maxDisplayColumnWidth) {
+    public BasePrintWorker(StringBuilder out, int maxDisplayRows, int maxDisplayColumnWidth) {
         this.out = out;
         this.maxDisplayColumnWidth = maxDisplayColumnWidth;
         this.maxDisplayRows = maxDisplayRows;
@@ -32,5 +30,20 @@ public abstract class DataFramePrintWorker {
         return string.substring(0, startOffset) + ".." + string.substring(endOffset);
     }
 
-    abstract StringBuilder print(DataFrame df);
+    protected StringBuilder appendFixedWidth(String value, int width) {
+
+        if (value.length() <= width) {
+            return out.append(String.format("%1$-" + width + "s", value));
+        } else {
+            return out.append(truncate(value, width));
+        }
+    }
+
+    protected StringBuilder appendNewLine() {
+        return out.append(System.lineSeparator());
+    }
+
+    protected StringBuilder appendTruncate(String value) {
+        return out.append(truncate(value, maxDisplayColumnWidth));
+    }
 }

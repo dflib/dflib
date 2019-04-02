@@ -1,5 +1,8 @@
 package com.nhl.dflib.print;
 
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Series;
+
 /**
  * A utility class for outputting DataFrames and DataRows as constrained tables.
  */
@@ -8,17 +11,17 @@ public class TabularPrinter extends BasePrinter {
     public TabularPrinter() {
     }
 
-    public TabularPrinter(int maxDisplayRows, int maxDisplayColumnWith) {
-        super(maxDisplayRows, maxDisplayColumnWith);
+    public TabularPrinter(int maxDisplayRows, int maxDisplayColumnWidth) {
+        super(maxDisplayRows, maxDisplayColumnWidth);
     }
 
     @Override
-    protected DataFramePrintWorker newDataFrameWorker(StringBuilder out) {
-        return new DataFrameTabularPrintWorker(out, maxDisplayRows, maxDisplayColumnWidth);
+    public StringBuilder print(StringBuilder out, DataFrame df) {
+        return new DataFrameTabularPrintWorker(out, maxDisplayRows, maxDisplayColumnWidth).print(df);
     }
 
     @Override
-    protected SeriesPrintWorker newSeriesWorker(StringBuilder out) {
-        return new SeriesTabularPrintWorker(out, maxDisplayRows, maxDisplayColumnWidth);
+    public StringBuilder print(StringBuilder out, Series<?> s) {
+        return new SeriesTabularPrintWorker(out, maxDisplayRows, maxDisplayColumnWidth).print(s);
     }
 }

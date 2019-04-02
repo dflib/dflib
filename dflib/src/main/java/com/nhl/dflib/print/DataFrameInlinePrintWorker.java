@@ -6,24 +6,37 @@ import com.nhl.dflib.row.RowProxy;
 
 import java.util.Iterator;
 
-public class DataFrameInlinePrintWorker extends DataFramePrintWorker {
+public class DataFrameInlinePrintWorker extends BasePrintWorker {
 
     public DataFrameInlinePrintWorker(StringBuilder out, int maxDisplayRows, int maxDisplayColumnWith) {
         super(out, maxDisplayRows, maxDisplayColumnWith);
     }
 
-    @Override
-    StringBuilder print(DataFrame df) {
+    public StringBuilder print(DataFrame df) {
 
         Index columns = df.getColumnsIndex();
         Iterator<RowProxy> values = df.iterator();
 
         int width = columns.size();
-        if (width == 0) {
-            return out;
-        }
+        out.append("{");
 
         String[] labels = columns.getLabels();
+
+        // if no data, print column labels once
+        if (!values.hasNext()) {
+            for (int j = 0; j < width; j++) {
+
+                if (j > 0) {
+                    out.append(",");
+                }
+
+                appendTruncate(labels[j]);
+                out.append(":");
+            }
+
+            out.append("}");
+            return out;
+        }
 
         for (int i = 0; i < maxDisplayRows; i++) {
             if (!values.hasNext()) {
@@ -55,10 +68,9 @@ public class DataFrameInlinePrintWorker extends DataFramePrintWorker {
             out.append(",...");
         }
 
+        out.append("}");
+
         return out;
     }
 
-    StringBuilder appendTruncate(String value) {
-        return out.append(truncate(value, maxDisplayColumnWidth));
-    }
 }
