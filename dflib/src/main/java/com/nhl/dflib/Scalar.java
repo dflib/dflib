@@ -69,4 +69,8 @@ public class Scalar<T> {
     public <O> JoinPredicate join(Scalar<O> other) {
         return JoinPredicate.on(position, other.position);
     }
+
+    public int getPosition() {
+        return position;
+    }
 }
