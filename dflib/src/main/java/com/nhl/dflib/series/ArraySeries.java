@@ -1,5 +1,6 @@
 package com.nhl.dflib.series;
 
+import com.nhl.dflib.Printers;
 import com.nhl.dflib.Series;
 
 import java.util.Arrays;
@@ -102,5 +103,10 @@ public class ArraySeries<T> implements Series<T> {
         }
 
         return copy != null ? new ArraySeries<>(copy) : this;
+    }
+
+    @Override
+    public String toString() {
+        return Printers.inline.print(new StringBuilder("ArraySeries ["), this).append("]").toString();
     }
 }

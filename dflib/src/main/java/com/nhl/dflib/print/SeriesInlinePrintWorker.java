@@ -11,8 +11,6 @@ public class SeriesInlinePrintWorker extends BasePrintWorker {
     public StringBuilder print(Series<?> s) {
 
         int w = s.size();
-        out.append("{");
-
         int wp = Math.min(w, maxDisplayRows);
 
         for (int i = 0; i < wp; i++) {
@@ -27,8 +25,6 @@ public class SeriesInlinePrintWorker extends BasePrintWorker {
         if (w > wp) {
             out.append(",...");
         }
-
-        out.append("}");
 
         return out;
     }

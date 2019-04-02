@@ -18,7 +18,6 @@ public class DataFrameInlinePrintWorker extends BasePrintWorker {
         Iterator<RowProxy> values = df.iterator();
 
         int width = columns.size();
-        out.append("{");
 
         String[] labels = columns.getLabels();
 
@@ -34,7 +33,6 @@ public class DataFrameInlinePrintWorker extends BasePrintWorker {
                 out.append(":");
             }
 
-            out.append("}");
             return out;
         }
 
@@ -67,8 +65,6 @@ public class DataFrameInlinePrintWorker extends BasePrintWorker {
         if (values.hasNext()) {
             out.append(",...");
         }
-
-        out.append("}");
 
         return out;
     }

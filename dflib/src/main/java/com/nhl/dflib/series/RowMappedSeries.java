@@ -1,6 +1,7 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Printers;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.row.RowProxy;
@@ -72,5 +73,10 @@ public class RowMappedSeries<T> implements Series<T> {
     @Override
     public Series<T> fillNullsForward() {
         return materialize().fillNullsForward();
+    }
+
+    @Override
+    public String toString() {
+        return Printers.inline.print(new StringBuilder("RowMappedSeries ["), this).append("]").toString();
     }
 }

@@ -1,5 +1,6 @@
 package com.nhl.dflib.series;
 
+import com.nhl.dflib.Printers;
 import com.nhl.dflib.Series;
 
 import java.util.Objects;
@@ -72,5 +73,10 @@ public class HeadSeries<T> implements Series<T> {
     public Series<T> fillNullsForward() {
         // TODO: optimize data copy - do materialize and null checking over the same array
         return materialize().fillNullsForward();
+    }
+
+    @Override
+    public String toString() {
+        return Printers.inline.print(new StringBuilder("HeadSeries ["), this).append("]").toString();
     }
 }
