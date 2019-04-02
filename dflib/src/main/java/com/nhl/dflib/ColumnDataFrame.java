@@ -380,7 +380,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public String toString() {
-        return Printers.inline.append(this, new StringBuilder("ColumnDataFrame [")).append("]").toString();
+        return Printers.inline.print(new StringBuilder("ColumnDataFrame ["), this).append("]").toString();
     }
 
     protected DataFrame replaceColumn(int pos, Series<?> newColumn) {

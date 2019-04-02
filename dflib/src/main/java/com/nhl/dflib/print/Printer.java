@@ -5,8 +5,8 @@ import com.nhl.dflib.DataFrame;
 public interface Printer {
 
     default String toString(DataFrame df) {
-        return append(df, new StringBuilder()).toString();
+        return print(new StringBuilder(), df).toString();
     }
 
-    StringBuilder append(DataFrame df, StringBuilder out);
+    StringBuilder print(StringBuilder out, DataFrame df);
 }

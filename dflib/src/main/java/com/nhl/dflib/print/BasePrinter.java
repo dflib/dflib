@@ -20,7 +20,7 @@ public abstract class BasePrinter implements Printer {
     }
 
     @Override
-    public StringBuilder append(DataFrame df, StringBuilder out) {
+    public StringBuilder print(StringBuilder out, DataFrame df) {
         return newWorker(out).print(df);
     }
 
