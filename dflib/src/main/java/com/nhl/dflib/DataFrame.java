@@ -161,7 +161,9 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     DataFrame renameColumns(Map<String, String> oldToNewLabels);
 
-    DataFrame selectColumns(String... columnLabels);
+    DataFrame selectColumns(String label0, String... otherLabels);
+
+    DataFrame selectColumns(Integer pos0, Integer... otherPositions);
 
     DataFrame dropColumns(String... columnLabels);
 

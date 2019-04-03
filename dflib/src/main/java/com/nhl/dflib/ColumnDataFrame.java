@@ -316,12 +316,35 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public DataFrame selectColumns(String... columnNames) {
-        Index newIndex = columnsIndex.selectLabels(columnNames);
+    public DataFrame selectColumns(String label0, String... otherLabels) {
+
+        String[] labels = new String[otherLabels.length + 1];
+        labels[0] = label0;
+        System.arraycopy(otherLabels, 0, labels, 1, otherLabels.length);
+
+        Index newIndex = columnsIndex.selectLabels(labels);
 
         Series[] newColumns = new Series[newIndex.size()];
         for (int i = 0; i < newColumns.length; i++) {
-            newColumns[i] = dataColumns[columnsIndex.position(columnNames[i])];
+            newColumns[i] = dataColumns[columnsIndex.position(labels[i])];
+        }
+
+        return new ColumnDataFrame(newIndex, newColumns);
+    }
+
+
+    @Override
+    public DataFrame selectColumns(Integer pos0, Integer... otherPositions) {
+
+        Integer[] positions = new Integer[otherPositions.length + 1];
+        positions[0] = pos0;
+        System.arraycopy(otherPositions, 0, positions, 1, otherPositions.length);
+
+        Index newIndex = columnsIndex.selectPositions(positions);
+
+        Series[] newColumns = new Series[newIndex.size()];
+        for (int i = 0; i < newColumns.length; i++) {
+            newColumns[i] = dataColumns[positions[i]];
         }
 
         return new ColumnDataFrame(newIndex, newColumns);

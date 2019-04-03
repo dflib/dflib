@@ -58,7 +58,7 @@ public class Index implements Iterable<String> {
         String[] newLabels = new String[len];
         for (int i = 0; i < len; i++) {
             String oldLabel = labels[i];
-            String newLabel= oldToNewLabels.get(oldLabel);
+            String newLabel = oldToNewLabels.get(oldLabel);
             newLabels[i] = newLabel != null ? newLabel : oldLabel;
         }
 
@@ -82,6 +82,25 @@ public class Index implements Iterable<String> {
 
     public Index addLabels(String... extraLabels) {
         return HConcat.zipIndex(this, forLabels(extraLabels));
+    }
+
+    public Index selectPositions(Integer... otherPos) {
+        int len = otherPos.length;
+        String[] selectedLabels = new String[len];
+        Set<String> uniqueLabels = new HashSet<>((int) (len / 0.75));
+
+        for (int i = 0; i < len; i++) {
+
+            String label = labels[otherPos[i]];
+
+            while (!uniqueLabels.add(label)) {
+                label = label + "_";
+            }
+
+            selectedLabels[i] = label;
+        }
+
+        return Index.forLabels(selectedLabels);
     }
 
     public Index selectLabels(String... labels) {
