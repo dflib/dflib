@@ -3,7 +3,7 @@
 
 # DFLib
 
-DFLib ("DataFrame Library") is a simple Java implementation of a common
+DFLib ("DataFrame Library") is a lightweight pure Java implementation of a common
 DataFrame data structure. With DFLib you get essentially the same data 
 manipulation tools you may be used to in SQL (such as queries and joins), 
 only you can use them in-memory and over dynamically defined data structures.
@@ -32,7 +32,7 @@ DFLib is easy to convert to and from other tabular formats, such as
 RDBMS tables, CSV. It can also be mapped to hierarchical formats like
 JSON and XML.
 
-## Usage Examples
+## Getting Started
 
 Include DFLib in a project. Start by declaring a "BOM" to have a common version
 for multiple DFLib modules:
