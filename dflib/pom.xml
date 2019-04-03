@@ -10,6 +10,7 @@
 
     <artifactId>dflib</artifactId>
     <name>dflib: DataFrame library</name>
+    <description>dflib: DataFrame library</description>
     <packaging>jar</packaging>
 
     <dependencies>

@@ -5,7 +5,8 @@
     <groupId>com.nhl.dflib</groupId>
     <artifactId>dflib-parent</artifactId>
     <version>0.6-SNAPSHOT</version>
-    <name>dflib-parent: Parent of the dflib library</name>
+    <name>dflib-parent: Parent of the DFLib library</name>
+    <description>Parent POM of the DFLib library</description>
     <packaging>pom</packaging>
 
     <modules>
@@ -24,6 +25,16 @@
         </license>
     </licenses>
 
+    <developers>
+        <developer>
+            <id>andrus</id>
+            <name>Andrus Adamchik</name>
+            <email>andrus@objectstyle.com</email>
+            <organization>ObjectStyle</organization>
+            <timezone>America/New_York</timezone>
+        </developer>
+    </developers>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -33,6 +44,8 @@
         <slf4j.version>1.7.25</slf4j.version>
         <bootique.version>1.0.RC1</bootique.version>
     </properties>
+
+    <url>https://github.com/nhl/dflib</url>
 
     <scm>
         <connection>scm:git:https://github.com/nhl/dflib</connection>
