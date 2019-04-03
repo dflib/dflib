@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.nhl.dflib</groupId>
+        <artifactId>dflib-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>dflib-bom</artifactId>
+    <packaging>pom</packaging>
+    <name>dflib-bom: Bill of Materials (BOM) for DFLib modules.</name>
+    <description>
+        Bill of Materials (BOM) for DFLib modules that allows end users to capture the version of multiple DFLib modules
+        at once.
+    </description>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.nhl.dflib</groupId>
+                <artifactId>dflib</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nhl.dflib</groupId>
+                <artifactId>dflib-csv</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nhl.dflib</groupId>
+                <artifactId>dflib-jdbc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>
