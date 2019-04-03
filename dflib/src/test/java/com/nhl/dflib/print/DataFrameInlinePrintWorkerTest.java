@@ -14,11 +14,11 @@ public class DataFrameInlinePrintWorkerTest {
     @Before
     public void initDataFrameParts() {
         Index columns = Index.forLabels("col1", "column2");
-        this.df = DataFrame.forRows(columns,
-                DataFrame.row("one", 1),
-                DataFrame.row("two", 2),
-                DataFrame.row("three", 3),
-                DataFrame.row("four", 4));
+        this.df = DataFrame.forSequenceFoldByRow(columns,
+                "one", 1,
+                "two", 2,
+                "three", 3,
+                "four", 4);
     }
 
     @Test
