@@ -43,6 +43,10 @@ public interface DataFrame extends Iterable<RowProxy> {
         return DataFrameFactory.forSequenceFoldByRow(columns, sequence);
     }
 
+    static DataFrame forSequenceFoldByColumn(Index columns, Object... sequence) {
+        return DataFrameFactory.forSequenceFoldByColumn(columns, sequence);
+    }
+
     static DataFrame forRows(Index columns, Object[]... rows) {
         return DataFrameFactory.forRows(columns, rows);
     }
