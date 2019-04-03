@@ -49,7 +49,7 @@ for multiple DFLib modules:
   </dependencies>
 </dependencyManagement>
 ```
-Next include the dependency oin DFLib core:
+Next include DFLib core as a dependency:
 ```xml
 ...
 <dependency>
