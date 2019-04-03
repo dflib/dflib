@@ -34,21 +34,34 @@ JSON and XML.
 
 ## Usage Examples
 
-Include DFLib in a project:
-
+Include DFLib in a project. Start by declaring a "BOM" to have a common version
+for multiple DFLib modules:
 ```xml
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>com.nhl.dflib</groupId>
+      <artifactId>dflib-bom</artifactId>
+      <version>0.5</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+```
+Next include the dependency oin DFLib core:
+```xml
+...
 <dependency>
     <groupId>com.nhl.dflib</groupId>
     <artifactId>dflib</artifactId>
-    <version>1.0-SNAPSHOT</version>
 </dependency>
 ```
 
-Create a DataFrame and do some common operations:
-
+Create a DataFrame and run varios data transformations:
 ```java
 // creation
-Index columns = Index.withNames("a", "b", "c");
+Index columns = Index.withLabels("a", "b", "c");
 DataFrame df1 = DataFrame.forStreamFoldByRow(columns, IntStream.range(1, 10000).boxed())
 
 // filtering, mapping
@@ -63,19 +76,35 @@ DataFrame df3 = DataFrame.forSequenceFoldByRow(columns, 2, "a", "b", 4, "c", "d"
    .innerJoin(df2, Hasher.forColumn("a"), Hasher.forColumn("a"));
 ```
 
+Print DFLib state to console
+```java
+// TODO
+```
+
+Store DFLib in a CSV file:
+```java
+// TODO
+```
+Store DFLib in a DB table:
+```java
+// TODO
+```
+
+
 ## Difference with Pandas
 
 * DFLib is implemented in Java (instead of Python).
 
 * DFLib has nowhere near the amount of features that pandas has. The goal
-is to add any currently missing functionality as it is requested by the users.
+is to gradually works towards feature parity.
 
 * DFLib DataFrames are immutable (this is important for your sanity!)
 So each transformation creates a new copy (of course cloning the internal
 data matrix is avoided whenever possible).
 
-* There is no "row index" (yet?) in DFLib. Only the "column index".
+* There is no explicit "row index" (yet?) in DFLib. Only the "column index".
+Though a concept of an "indexed" DataFrame is used a lot internally.
 
-* While there's a big conceptual overlap, DFLib makes no attempt to follow
-Pandas API naming. So e.g. DFLib `join` is closer to pandas `merge`,
-not `join` (DFLib `join` is also closer to SQL `join`).
+* DFLib makes no attempt to follow Pandas API naming. So e.g. DFLib 
+`join` is closer to pandas `merge`, not `join` (DFLib `join` is also 
+closer to SQL `join`).
