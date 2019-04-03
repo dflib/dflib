@@ -221,7 +221,7 @@ public class GroupBy {
             result.add(aggregator.aggregate(getGroup(key)));
         }
 
-        return DataFrame.forListOfRows(index, result);
+        return DataFrame.forRows(index, result);
     }
 
     protected DataFrame resolveGroup(Object key) {

@@ -44,10 +44,6 @@ class DataFrameFactory {
         return new ColumnDataFrame(columns, columnsData);
     }
 
-    public static DataFrame forListOfRows(Index columns, List<Object[]> sources) {
-        return forRows(columns, sources);
-    }
-
     public static DataFrame forRows(Index columns, Iterable<Object[]> sources) {
 
         int width = columns.size();

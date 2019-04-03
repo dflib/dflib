@@ -109,7 +109,7 @@ public class CsvLoader {
             Index columns = createColumns(it);
 
             if (!it.hasNext()) {
-                return DataFrame.forListOfRows(columns, Collections.emptyList());
+                return DataFrame.forRows(columns, Collections.emptyList());
             }
 
             ValueMapper<String, ?>[] converters = createConverters(columns);

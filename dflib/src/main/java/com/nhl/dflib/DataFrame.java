@@ -47,10 +47,6 @@ public interface DataFrame extends Iterable<RowProxy> {
         return DataFrameFactory.forRows(columns, rows);
     }
 
-    static DataFrame forListOfRows(Index columns, List<Object[]> sources) {
-        return DataFrameFactory.forListOfRows(columns, sources);
-    }
-
     static DataFrame forRows(Index columns, Iterable<Object[]> source) {
         return DataFrameFactory.forRows(columns, source);
     }

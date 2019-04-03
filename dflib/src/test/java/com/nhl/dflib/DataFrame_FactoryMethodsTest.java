@@ -11,7 +11,7 @@ import static java.util.Arrays.asList;
 public class DataFrame_FactoryMethodsTest {
 
     @Test
-    public void testFromObjects() {
+    public void testForObjects() {
 
         class Bean {
             int a;
@@ -35,7 +35,7 @@ public class DataFrame_FactoryMethodsTest {
     }
 
     @Test
-    public void testFromStream0() {
+    public void testForStream0() {
 
         Index i = Index.forLabels("a", "b");
         DataFrame df = DataFrame.forStreamFoldByRow(i, IntStream.range(1, 5).boxed());
@@ -47,7 +47,7 @@ public class DataFrame_FactoryMethodsTest {
     }
 
     @Test
-    public void testFromStream1() {
+    public void testForStream1() {
 
         Index i = Index.forLabels("a", "b");
         DataFrame df = DataFrame.forStreamFoldByRow(i, IntStream.range(1, 6).boxed());
@@ -60,7 +60,7 @@ public class DataFrame_FactoryMethodsTest {
     }
 
     @Test
-    public void testFromSequence0() {
+    public void testForSequence0() {
 
         Index i = Index.forLabels("a", "b");
         DataFrame df = DataFrame.forSequenceFoldByRow(i);
@@ -69,7 +69,7 @@ public class DataFrame_FactoryMethodsTest {
     }
 
     @Test
-    public void testFromSequence1() {
+    public void testForequence1() {
 
         Index i = Index.forLabels("a", "b");
         DataFrame df = DataFrame.forSequenceFoldByRow(i, 1, 2);
@@ -80,7 +80,7 @@ public class DataFrame_FactoryMethodsTest {
     }
 
     @Test
-    public void testFromSequence2() {
+    public void testForSequence2() {
 
         Index i = Index.forLabels("a", "b");
         DataFrame df = DataFrame.forSequenceFoldByRow(i, 1, 2, 3);
@@ -92,7 +92,7 @@ public class DataFrame_FactoryMethodsTest {
     }
 
     @Test
-    public void testFromSequence3() {
+    public void testForSequence3() {
 
         Index i = Index.forLabels("a", "b");
         DataFrame df = DataFrame.forSequenceFoldByRow(i, 1, 2, 3, 4);
@@ -104,10 +104,10 @@ public class DataFrame_FactoryMethodsTest {
     }
 
     @Test
-    public void testFromListOfRows() {
+    public void testForRows() {
 
         Index i = Index.forLabels("a");
-        DataFrame df = DataFrame.forListOfRows(i, asList(
+        DataFrame df = DataFrame.forRows(i, asList(
                 new Object[]{1},
                 new Object[]{2}));
 
