@@ -1,4 +1,4 @@
-## Release 1.0
+## Release 0.5
 
 * A bunch of basic DataFrame ops
 *  #1 Support for 'groupBy'
