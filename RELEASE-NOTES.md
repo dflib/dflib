@@ -1,3 +1,7 @@
+## Release 0.6
+
+* #21 Add LocalDate and LocalDateTime converters 
+
 ## Release 0.5
 
 * A bunch of basic DataFrame ops

@@ -1,7 +1,12 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.unit.DFAsserts;
 import org.junit.Test;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class DataFrame_ConvertTest extends BaseDataFrameTest {
 
@@ -17,6 +22,54 @@ public class DataFrame_ConvertTest extends BaseDataFrameTest {
                 .expectHeight(2)
                 .expectRow(0, 10, "x")
                 .expectRow(1, 20, "y");
+    }
+
+    @Test
+    public void testConvertColumn_ValueMapperToDate() {
+        Index i1 = Index.forLabels("a");
+        DataFrame df = createDf(i1,
+                "2018-01-05",
+                "2019-02-28",
+                null)
+                .convertColumn("a", ValueMapper.stringToDate());
+
+        new DFAsserts(df, "a")
+                .expectHeight(3)
+                .expectRow(0, LocalDate.of(2018, 1, 5))
+                .expectRow(1, LocalDate.of(2019, 2, 28))
+                .expectRow(2, new Object[]{null});
+    }
+
+    @Test
+    public void testConvertColumn_ValueMapperToDate_Formatter() {
+        Index i1 = Index.forLabels("a");
+        DataFrame df = createDf(i1,
+                "2018 01 05",
+                "2019 02 28",
+                null)
+                .convertColumn("a", ValueMapper.stringToDate(DateTimeFormatter.ofPattern("yyyy MM dd")));
+
+        new DFAsserts(df, "a")
+                .expectHeight(3)
+                .expectRow(0, LocalDate.of(2018, 1, 5))
+                .expectRow(1, LocalDate.of(2019, 2, 28))
+                .expectRow(2, new Object[]{null});
+    }
+
+    @Test
+    public void testConvertColumn_ValueMapperToDateTime() {
+        Index i1 = Index.forLabels("a");
+        DataFrame df = createDf(i1,
+                "2018-01-05T00:01:15",
+                "2019-02-28T13:11:12",
+                null)
+                .convertColumn("a", ValueMapper.stringToDateTime());
+
+        new DFAsserts(df, "a")
+                .expectHeight(3)
+                .expectRow(0, LocalDateTime.of(2018, 1, 5, 0, 1, 15))
+                .expectRow(1, LocalDateTime.of(2019, 2, 28, 13, 11, 12))
+                .expectRow(2, new Object[]{null});
     }
 
 }
