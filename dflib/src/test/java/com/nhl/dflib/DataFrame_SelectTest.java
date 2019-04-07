@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.series.IntSeries;
 import com.nhl.dflib.unit.DFAsserts;
 import org.junit.Test;
 
@@ -76,6 +77,7 @@ public class DataFrame_SelectTest extends BaseDataFrameTest {
                 .expectRow(1, 1, "z");
     }
 
+    @Deprecated
     @Test
     public void testSelect_Series() {
         Index i1 = Index.forLabels("a", "b");
@@ -84,6 +86,21 @@ public class DataFrame_SelectTest extends BaseDataFrameTest {
                 9, "y",
                 1, "z")
                 .select(Series.forData(0, 2));
+
+        new DFAsserts(df, "a", "b")
+                .expectHeight(2)
+                .expectRow(0, 5, "x")
+                .expectRow(1, 1, "z");
+    }
+
+    @Test
+    public void testSelect_IntSeries() {
+        Index i1 = Index.forLabels("a", "b");
+        DataFrame df = createDf(i1,
+                5, "x",
+                9, "y",
+                1, "z")
+                .select(new IntSeries(0, 2));
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(2)

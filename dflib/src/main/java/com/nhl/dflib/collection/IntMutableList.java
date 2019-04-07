@@ -12,8 +12,12 @@ public class IntMutableList {
     private int size;
 
     public IntMutableList() {
+        this(10);
+    }
+
+    public IntMutableList(int capacity) {
         this.size = 0;
-        this.data = new int[10];
+        this.data = new int[capacity];
     }
 
     public void add(int value) {
@@ -28,7 +32,7 @@ public class IntMutableList {
     public IntSeries toSeries() {
         int[] data = this.data;
 
-        // making sure no one can change the series via the Mutable List
+        // making sure no one can change the series via the Mutable List anymore
         this.data = null;
 
         return new IntSeries(data, size);

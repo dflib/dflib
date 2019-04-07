@@ -23,15 +23,14 @@ import com.nhl.dflib.seq.Sequences;
 import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.ColumnMappedSeries;
 import com.nhl.dflib.series.HeadSeries;
-import com.nhl.dflib.series.IndexedSeries;
-import com.nhl.dflib.series.ListSeries;
+import com.nhl.dflib.series.IntIndexedSeries;
+import com.nhl.dflib.series.IntSeries;
 import com.nhl.dflib.series.RowMappedSeries;
 import com.nhl.dflib.series.TailSeries;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -146,22 +145,17 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public DataFrame select(Integer... rowPositions) {
-        return select(new ArraySeries<>(rowPositions));
+    public DataFrame select(int... rowPositions) {
+        return select(new IntSeries(rowPositions));
     }
 
     @Override
-    public DataFrame select(List<Integer> rowPositions) {
-        return select(new ListSeries<>(rowPositions));
-    }
-
-    @Override
-    public DataFrame select(Series<Integer> rowPositions) {
+    public DataFrame select(IntSeries rowPositions) {
 
         int width = width();
         Series<?>[] newColumnsData = new Series[width];
         for (int i = 0; i < width; i++) {
-            newColumnsData[i] = new IndexedSeries<>(dataColumns[i], rowPositions);
+            newColumnsData[i] = new IntIndexedSeries<>(dataColumns[i], rowPositions);
         }
 
         return new ColumnDataFrame(columnsIndex, newColumnsData);
@@ -169,7 +163,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public DataFrame filter(RowPredicate p) {
-        Series<Integer> rowPositions = FilterIndexer.filteredIndex(this, p);
+        IntSeries rowPositions = FilterIndexer.filteredIndex(this, p);
 
         // there's no reordering or index duplication during "filter", so we can compare size to detect changes
         if (rowPositions.size() == height()) {
@@ -181,7 +175,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public <V> DataFrame filter(int columnPos, ValuePredicate<V> p) {
-        Series<Integer> rowPositions = FilterIndexer.filteredIndex(dataColumns[columnPos], p);
+        IntSeries rowPositions = FilterIndexer.filteredIndex(dataColumns[columnPos], p);
 
         // there's no reordering or index duplication during "filter", so we can compare size to detect changes
         if (rowPositions.size() == height()) {

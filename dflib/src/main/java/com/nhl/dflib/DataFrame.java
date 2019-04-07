@@ -2,6 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.Aggregator;
 import com.nhl.dflib.aggregate.ColumnAggregator;
+import com.nhl.dflib.collection.IntMutableList;
 import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.join.JoinPredicate;
@@ -13,6 +14,7 @@ import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.ArraySeries;
+import com.nhl.dflib.series.IntSeries;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -173,7 +175,25 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @return a new DataFrame that matches the selection criteria
      */
-    DataFrame select(Integer... rowPositions);
+    DataFrame select(int... rowPositions);
+
+    /**
+     * Selects DataFrame rows based on provided row index. This allows to reorder, filter, duplicate rows of this
+     * DataFrame.
+     *
+     * @return a new DataFrame that matches the selection criteria
+     * @deprecated since 0.6 in favor of primitive int indexing, e.g. {@link #select(int...)}.
+     */
+    default DataFrame select(List<Integer> rowPositions) {
+        int len = rowPositions.size();
+        IntMutableList ml = new IntMutableList(len);
+
+        for (Integer i : rowPositions) {
+            ml.add(i);
+        }
+
+        return select(ml.toSeries());
+    }
 
     /**
      * Selects DataFrame rows based on provided row index. This allows to reorder, filter, duplicate rows of this
@@ -181,15 +201,24 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @return a new DataFrame that matches the selection criteria
      */
-    DataFrame select(List<Integer> rowPositions);
+    DataFrame select(IntSeries rowPositions);
 
     /**
-     * Selects DataFrame rows based on provided row index. This allows to reorder, filter, duplicate rows of this
-     * DataFrame.
-     *
-     * @return a new DataFrame that matches the selection criteria
+     * @param rowPositions
+     * @return
+     * @deprecated since 0.6 in favor of {@link #select(IntSeries)}.
      */
-    DataFrame select(Series<Integer> rowPositions);
+    @Deprecated
+    default DataFrame select(Series<Integer> rowPositions) {
+        int len = rowPositions.size();
+        IntMutableList ml = new IntMutableList(len);
+
+        for (int i = 0; i < len; i++) {
+            ml.add(rowPositions.get(i));
+        }
+
+        return select(ml.toSeries());
+    }
 
     DataFrame filter(RowPredicate p);
 
@@ -369,7 +398,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new GroupBy instance that contains row groupings
      */
     default GroupBy group(int column0, int... columns) {
-        
+
         Hasher mapper = Hasher.forColumn(column0);
         for (int i = 0; i < columns.length; i++) {
             mapper = mapper.and(columns[i]);

@@ -2,16 +2,14 @@ package com.nhl.dflib.filter;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.series.ListSeries;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.nhl.dflib.collection.IntMutableList;
+import com.nhl.dflib.series.IntSeries;
 
 public class FilterIndexer {
 
-    public static Series<Integer> filteredIndex(DataFrame source, RowPredicate p) {
+    public static IntSeries filteredIndex(DataFrame source, RowPredicate p) {
 
-        List<Integer> index = new ArrayList<>();
+        IntMutableList index = new IntMutableList();
         int[] i = new int[1];
         source.forEach(rp -> {
             if (p.test(rp)) {
@@ -21,11 +19,11 @@ public class FilterIndexer {
             i[0]++;
         });
 
-        return new ListSeries<>(index);
+        return index.toSeries();
     }
 
-    public static <T> Series<Integer> filteredIndex(Series<T> source, ValuePredicate<T> p) {
-        List<Integer> index = new ArrayList<>();
+    public static <T> IntSeries filteredIndex(Series<T> source, ValuePredicate<T> p) {
+        IntMutableList index = new IntMutableList();
 
         int len = source.size();
 
@@ -35,6 +33,6 @@ public class FilterIndexer {
             }
         }
 
-        return new ListSeries<>(index);
+        return index.toSeries();
     }
 }
