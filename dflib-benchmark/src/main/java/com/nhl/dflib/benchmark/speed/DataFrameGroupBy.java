@@ -70,4 +70,11 @@ public class DataFrameGroupBy {
                 .materialize()
                 .iterator();
     }
+
+    @Benchmark
+    public Object aggregateFirst() {
+        return gb.agg(Aggregator.first(0))
+                .materialize()
+                .iterator();
+    }
 }
