@@ -1,5 +1,7 @@
 package com.nhl.dflib.map;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -21,6 +23,27 @@ public interface ValueMapper<V, VR> {
 
     static ValueMapper<String, Double> stringToDouble() {
         return s -> s != null ? Double.valueOf(s) : null;
+    }
+
+    /**
+     * @since 0.6
+     */
+    static ValueMapper<String, Float> stringToFloat() {
+        return s -> s != null ? Float.valueOf(s) : null;
+    }
+
+    /**
+     * @since 0.6
+     */
+    static ValueMapper<String, BigDecimal> stringToBigDecimal() {
+        return s -> s != null ? new BigDecimal(s) : null;
+    }
+
+    /**
+     * @since 0.6
+     */
+    static ValueMapper<String, BigInteger> stringToBigInteger() {
+        return s -> s != null ? new BigInteger(s) : null;
     }
 
     static ValueMapper<String, LocalDate> stringToDate() {

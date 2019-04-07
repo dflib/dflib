@@ -10,6 +10,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -73,6 +76,105 @@ public class CsvLoader {
     }
 
     /**
+     * @since 0.6
+     */
+    public CsvLoader numColumn(int column, Class<? extends Number> type) {
+        return columnType(column, numMapper(type));
+    }
+
+    /**
+     * @since 0.6
+     */
+    public CsvLoader numColumn(String column, Class<? extends Number> type) {
+        return columnType(column, numMapper(type));
+    }
+
+    private ValueMapper<String, ?> numMapper(Class<? extends Number> type) {
+
+        if (Integer.class.equals(type)) {
+            return ValueMapper.stringToInt();
+        }
+
+        if (Long.class.equals(type)) {
+            return ValueMapper.stringToLong();
+        }
+
+        if (Double.class.equals(type)) {
+            return ValueMapper.stringToDouble();
+        }
+
+        if (Float.class.equals(type)) {
+            return ValueMapper.stringToFloat();
+        }
+
+        if (BigDecimal.class.equals(type)) {
+            return ValueMapper.stringToBigDecimal();
+        }
+
+        if (BigInteger.class.equals(type)) {
+            return ValueMapper.stringToBigInteger();
+        }
+
+        throw new IllegalArgumentException("Can't map numeric type to a string converter: " + type);
+    }
+
+    /**
+     * @since 0.6
+     */
+    public CsvLoader dateColumn(int column) {
+        return columnType(column, ValueMapper.stringToDate());
+    }
+
+    /**
+     * @since 0.6
+     */
+    public CsvLoader dateColumn(String column) {
+        return columnType(column, ValueMapper.stringToDate());
+    }
+
+    /**
+     * @since 0.6
+     */
+    public CsvLoader dateTimeColumn(int column) {
+        return columnType(column, ValueMapper.stringToDateTime());
+    }
+
+    /**
+     * @since 0.6
+     */
+    public CsvLoader dateTimeColumn(String column) {
+        return columnType(column, ValueMapper.stringToDateTime());
+    }
+
+    /**
+     * @since 0.6
+     */
+    public CsvLoader dateColumn(int column, DateTimeFormatter formatter) {
+        return columnType(column, ValueMapper.stringToDate(formatter));
+    }
+
+    /**
+     * @since 0.6
+     */
+    public CsvLoader dateColumn(String column, DateTimeFormatter formatter) {
+        return columnType(column, ValueMapper.stringToDate(formatter));
+    }
+
+    /**
+     * @since 0.6
+     */
+    public CsvLoader dateTimeColumn(int column, DateTimeFormatter formatter) {
+        return columnType(column, ValueMapper.stringToDateTime(formatter));
+    }
+
+    /**
+     * @since 0.6
+     */
+    public CsvLoader dateTimeColumn(String column, DateTimeFormatter formatter) {
+        return columnType(column, ValueMapper.stringToDateTime(formatter));
+    }
+
+    /**
      * Optionally sets the style or format of the imported CSV. CSVFormat comes from "commons-csv" library and
      * contains a number of predefined formats, such as CSVFormat.MYSQL, etc. It also allows to customize the format
      * further, by defining custom delimiters, line separators, etc.
@@ -102,7 +204,7 @@ public class CsvLoader {
     }
 
     public DataFrame load(Reader reader) {
-        try  {
+        try {
             Iterator<CSVRecord> it = format.parse(reader).iterator();
 
             rewind(it);

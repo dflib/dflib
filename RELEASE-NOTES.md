@@ -1,6 +1,7 @@
 ## Release 0.6
 
 * #21 Add LocalDate and LocalDateTime converters 
+* #25 CsvLoader to provide shortcuts for datetime and number conversions
 
 ## Release 0.5
 
