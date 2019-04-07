@@ -1,5 +1,7 @@
 package com.nhl.dflib.series;
 
+import com.nhl.dflib.Series;
+
 public class IntSeries {
 
     // data.length can be >= size
@@ -56,5 +58,13 @@ public class IntSeries {
         }
 
         return new IntSeries(data);
+    }
+
+    public Series<Integer> toSeries() {
+        Integer[] data = new Integer[size];
+        for(int i = 0; i < size; i++) {
+            data[i] = this.data[i];
+        }
+        return new ArraySeries<>(data);
     }
 }

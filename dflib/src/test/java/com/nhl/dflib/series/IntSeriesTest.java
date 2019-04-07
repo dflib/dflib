@@ -1,6 +1,8 @@
 package com.nhl.dflib.series;
 
+import com.nhl.dflib.Series;
 import com.nhl.dflib.unit.IntSeriesAsserts;
+import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -29,5 +31,11 @@ public class IntSeriesTest {
 
         IntSeries c = s1.concat(s2, s3);
         new IntSeriesAsserts(c).expectData(34, 23, 1, 2, -1, -6);
+    }
+
+    @Test
+    public void testToSeries() {
+        Series<Integer> s = new IntSeries(34, 23).toSeries();
+        new SeriesAsserts(s).expectData(34, 23);
     }
 }
