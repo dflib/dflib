@@ -4,14 +4,12 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.collection.IntMutableList;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.row.RowProxy;
-import com.nhl.dflib.series.ListSeries;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -56,8 +54,8 @@ public class HashJoiner {
 
     private JoinMerger innerJoin(DataFrame lf, DataFrame rf) {
 
-        List<Integer> li = new ArrayList<>();
-        List<Integer> ri = new ArrayList<>();
+        IntMutableList li = new IntMutableList();
+        IntMutableList ri = new IntMutableList();
 
         GroupBy rightIndex = rf.group(rightHasher);
 
@@ -78,13 +76,13 @@ public class HashJoiner {
             i++;
         }
 
-        return new JoinMerger(new ListSeries<>(li), new ListSeries<>(ri));
+        return new JoinMerger(li.toSeries(), ri.toSeries());
     }
 
     private JoinMerger leftJoin(DataFrame lf, DataFrame rf) {
 
-        List<Integer> li = new ArrayList<>();
-        List<Integer> ri = new ArrayList<>();
+        IntMutableList li = new IntMutableList();
+        IntMutableList ri = new IntMutableList();
 
         GroupBy rightIndex = rf.group(rightHasher);
 
@@ -108,13 +106,13 @@ public class HashJoiner {
             i++;
         }
 
-        return new JoinMerger(new ListSeries<>(li), new ListSeries<>(ri));
+        return new JoinMerger(li.toSeries(), ri.toSeries());
     }
 
     private JoinMerger rightJoin(DataFrame lf, DataFrame rf) {
 
-        List<Integer> li = new ArrayList<>();
-        List<Integer> ri = new ArrayList<>();
+        IntMutableList li = new IntMutableList();
+        IntMutableList ri = new IntMutableList();
 
         GroupBy leftIndex = lf.group(leftHasher);
 
@@ -138,13 +136,13 @@ public class HashJoiner {
             i++;
         }
 
-        return new JoinMerger(new ListSeries<>(li), new ListSeries<>(ri));
+        return new JoinMerger(li.toSeries(), ri.toSeries());
     }
 
     private JoinMerger fullJoin(DataFrame lf, DataFrame rf) {
 
-        List<Integer> li = new ArrayList<>();
-        List<Integer> ri = new ArrayList<>();
+        IntMutableList li = new IntMutableList();
+        IntMutableList ri = new IntMutableList();
 
         GroupBy rightIndex = rf.group(rightHasher);
         Set<Object> seenRightKeys = new LinkedHashSet<>();
@@ -183,6 +181,6 @@ public class HashJoiner {
             }
         }
 
-        return new JoinMerger(new ListSeries<>(li), new ListSeries<>(ri));
+        return new JoinMerger(li.toSeries(), ri.toSeries());
     }
 }

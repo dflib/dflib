@@ -2,13 +2,11 @@ package com.nhl.dflib.join;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.collection.IntMutableList;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.row.RowProxy;
-import com.nhl.dflib.series.ListSeries;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -47,8 +45,8 @@ public class NestedLoopJoiner {
 
     private JoinMerger innerJoin(DataFrame lf, DataFrame rf) {
 
-        List<Integer> li = new ArrayList<>();
-        List<Integer> ri = new ArrayList<>();
+        IntMutableList li = new IntMutableList();
+        IntMutableList ri = new IntMutableList();
 
         // make sure we don't recalculate this frame inside the inner loop
         // TODO: "materialize" is useless in column frames
@@ -70,13 +68,13 @@ public class NestedLoopJoiner {
             i++;
         }
 
-        return new JoinMerger(new ListSeries<>(li), new ListSeries<>(ri));
+        return new JoinMerger(li.toSeries(), ri.toSeries());
     }
 
     private JoinMerger leftJoin(DataFrame lf, DataFrame rf) {
 
-        List<Integer> li = new ArrayList<>();
-        List<Integer> ri = new ArrayList<>();
+        IntMutableList li = new IntMutableList();
+        IntMutableList ri = new IntMutableList();
 
         // make sure we don't recalculate this frame inside the inner loop
         DataFrame rfm = rf.materialize();
@@ -104,13 +102,13 @@ public class NestedLoopJoiner {
             i++;
         }
 
-        return new JoinMerger(new ListSeries<>(li), new ListSeries<>(ri));
+        return new JoinMerger(li.toSeries(), ri.toSeries());
     }
 
     private JoinMerger rightJoin(DataFrame lf, DataFrame rf) {
 
-        List<Integer> li = new ArrayList<>();
-        List<Integer> ri = new ArrayList<>();
+        IntMutableList li = new IntMutableList();
+        IntMutableList ri = new IntMutableList();
 
         // make sure we don't recalculate this frame inside the inner loop
         DataFrame lfm = lf.materialize();
@@ -138,13 +136,13 @@ public class NestedLoopJoiner {
             i++;
         }
 
-        return new JoinMerger(new ListSeries<>(li), new ListSeries<>(ri));
+        return new JoinMerger(li.toSeries(), ri.toSeries());
     }
 
     private JoinMerger fullJoin(DataFrame lf, DataFrame rf) {
 
-        List<Integer> li = new ArrayList<>();
-        List<Integer> ri = new ArrayList<>();
+        IntMutableList li = new IntMutableList();
+        IntMutableList ri = new IntMutableList();
 
         // make sure we don't recalculate this frame inside the inner loop
         DataFrame rfm = rf.materialize();
@@ -185,6 +183,6 @@ public class NestedLoopJoiner {
             }
         }
 
-        return new JoinMerger(new ListSeries<>(li), new ListSeries<>(ri));
+        return new JoinMerger(li.toSeries(), ri.toSeries());
     }
 }

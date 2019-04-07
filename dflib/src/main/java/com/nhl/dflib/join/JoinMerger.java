@@ -4,15 +4,16 @@ import com.nhl.dflib.ColumnDataFrame;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.series.IndexedSeries;
+import com.nhl.dflib.series.IntSeries;
+import com.nhl.dflib.series.IntIndexedSeries;
 
 public class JoinMerger {
 
     private int height;
-    private Series<Integer> leftIndex;
-    private Series<Integer> rightIndex;
+    private IntSeries leftIndex;
+    private IntSeries rightIndex;
 
-    public JoinMerger(Series<Integer> leftIndex, Series<Integer> rightIndex) {
+    public JoinMerger(IntSeries leftIndex, IntSeries rightIndex) {
 
         this.height = leftIndex.size();
 
@@ -35,11 +36,11 @@ public class JoinMerger {
         Series[] data = new Series[w];
 
         for (int i = 0; i < wl; i++) {
-            data[i] = new IndexedSeries(left.getColumn(i), leftIndex);
+            data[i] = new IntIndexedSeries(left.getColumn(i), leftIndex);
         }
 
         for (int i = wl; i < w; i++) {
-            data[i] = new IndexedSeries(right.getColumn(i - wl), rightIndex);
+            data[i] = new IntIndexedSeries(right.getColumn(i - wl), rightIndex);
         }
 
         return new ColumnDataFrame(joinedColumns, data);
