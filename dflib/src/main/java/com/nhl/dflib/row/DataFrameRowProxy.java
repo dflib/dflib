@@ -11,7 +11,7 @@ public class DataFrameRowProxy implements RowProxy {
 
     public DataFrameRowProxy(DataFrame dataFrame) {
         this.dataFrame = dataFrame;
-        this.height = height;
+        this.height = dataFrame.height();
         this.rowIndex = -1;
     }
 
