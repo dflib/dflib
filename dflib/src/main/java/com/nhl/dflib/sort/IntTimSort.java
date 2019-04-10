@@ -1,4 +1,4 @@
-package com.nhl.dflib.collection;
+package com.nhl.dflib.sort;
 
 
 import java.util.Arrays;

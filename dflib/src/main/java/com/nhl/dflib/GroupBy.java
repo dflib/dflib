@@ -9,9 +9,8 @@ import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.seq.Sequences;
 import com.nhl.dflib.series.ArraySeries;
-import com.nhl.dflib.series.HeadSeries;
-import com.nhl.dflib.series.IndexedSeries;
-import com.nhl.dflib.series.TailSeries;
+import com.nhl.dflib.series.IntIndexedSeries;
+import com.nhl.dflib.series.IntSeries;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
 
@@ -28,10 +27,10 @@ public class GroupBy {
     private static final Index TWO_COLUMN_INDEX = Index.forLabels("0", "1");
 
     private DataFrame ungrouped;
-    private Map<Object, Series<Integer>> groupsIndex;
+    private Map<Object, IntSeries> groupsIndex;
     private Map<Object, DataFrame> resolvedGroups;
 
-    public GroupBy(DataFrame ungrouped, Map<Object, Series<Integer>> groupsIndex) {
+    public GroupBy(DataFrame ungrouped, Map<Object, IntSeries> groupsIndex) {
         this.ungrouped = ungrouped;
         this.groupsIndex = groupsIndex;
     }
@@ -47,7 +46,7 @@ public class GroupBy {
      * @return a new DataFrame made from recombined groups.
      */
     public DataFrame toDataFrame() {
-        Series<Integer> index = SeriesConcat.concat(groupsIndex.values());
+        IntSeries index = SeriesConcat.intConcat(groupsIndex.values());
         return ungrouped.select(index);
     }
 
@@ -59,7 +58,7 @@ public class GroupBy {
         return groupsIndex.containsKey(key);
     }
 
-    public Series<Integer> getGroupIndex(Object key) {
+    public IntSeries getGroupIndex(Object key) {
         return groupsIndex.get(key);
     }
 
@@ -85,9 +84,12 @@ public class GroupBy {
         DataFrame[] numberedIndex = new DataFrame[groupsIndex.size()];
 
         int i = 0;
-        for (Series<Integer> s : groupsIndex.values()) {
+        for (IntSeries s : groupsIndex.values()) {
             Series<Integer> numbersWithGroup = new ArraySeries<>(Sequences.numberSequence(s.size()));
-            numberedIndex[i] = new ColumnDataFrame(TWO_COLUMN_INDEX, s, numbersWithGroup);
+
+            // TODO: inefficiency - converting IntSeries to Series<Integer> .. A few lines below sorting Series<Integer>
+            //  which in turn creates IntSeries
+            numberedIndex[i] = new ColumnDataFrame(TWO_COLUMN_INDEX, s.toSeries(), numbersWithGroup);
             i++;
         }
 
@@ -97,14 +99,14 @@ public class GroupBy {
     public GroupBy head(int len) {
 
         if (len < 0) {
+            // TODO: treat negative len as counting from the other end
             throw new IllegalArgumentException("Length must be non-negative: " + len);
         }
 
-        Map<Object, Series<Integer>> trimmed = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
+        Map<Object, IntSeries> trimmed = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
-        for (Map.Entry<Object, Series<Integer>> e : groupsIndex.entrySet()) {
-            Series<Integer> maybeTrimmedGroup = HeadSeries.forSeries(e.getValue(), len);
-            trimmed.put(e.getKey(), maybeTrimmedGroup);
+        for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
+            trimmed.put(e.getKey(), e.getValue().head(len));
         }
 
         return new GroupBy(ungrouped, trimmed);
@@ -113,14 +115,14 @@ public class GroupBy {
     public GroupBy tail(int len) {
 
         if (len < 0) {
+            // TODO: treat negative len as counting from the other end
             throw new IllegalArgumentException("Length must be non-negative: " + len);
         }
 
-        Map<Object, Series<Integer>> trimmed = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
+        Map<Object, IntSeries> trimmed = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
-        for (Map.Entry<Object, Series<Integer>> e : groupsIndex.entrySet()) {
-            Series<Integer> maybeTrimmedGroup = TailSeries.forSeries(e.getValue(), len);
-            trimmed.put(e.getKey(), maybeTrimmedGroup);
+        for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
+            trimmed.put(e.getKey(), e.getValue().tail(len));
         }
 
         return new GroupBy(ungrouped, trimmed);
@@ -129,10 +131,10 @@ public class GroupBy {
     public <V extends Comparable<? super V>> GroupBy sort(RowToValueMapper<V> sortKeyExtractor) {
 
         Comparator<RowProxy> comparator = Sorters.sorter(sortKeyExtractor);
-        Map<Object, Series<Integer>> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
+        Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
-        for (Map.Entry<Object, Series<Integer>> e : groupsIndex.entrySet()) {
-            Series<Integer> sortedGroup = new IndexSorter(ungrouped, e.getValue()).sortIndex(comparator);
+        for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
+            IntSeries sortedGroup = new IndexSorter(ungrouped, e.getValue()).sortIndex(comparator);
             sorted.put(e.getKey(), sortedGroup);
         }
 
@@ -142,10 +144,10 @@ public class GroupBy {
     public GroupBy sort(String column, boolean ascending) {
 
         Comparator<RowProxy> comparator = Sorters.sorter(ungrouped.getColumnsIndex(), column, ascending);
-        Map<Object, Series<Integer>> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
+        Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
-        for (Map.Entry<Object, Series<Integer>> e : groupsIndex.entrySet()) {
-            Series<Integer> sortedGroup = new IndexSorter(ungrouped, e.getValue()).sortIndex(comparator);
+        for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
+            IntSeries sortedGroup = new IndexSorter(ungrouped, e.getValue()).sortIndex(comparator);
             sorted.put(e.getKey(), sortedGroup);
         }
 
@@ -154,10 +156,10 @@ public class GroupBy {
 
     public GroupBy sort(int column, boolean ascending) {
         Comparator<RowProxy> comparator = Sorters.sorter(ungrouped.getColumnsIndex(), column, ascending);
-        Map<Object, Series<Integer>> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
+        Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
-        for (Map.Entry<Object, Series<Integer>> e : groupsIndex.entrySet()) {
-            Series<Integer> sortedGroup = new IndexSorter(ungrouped, e.getValue()).sortIndex(comparator);
+        for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
+            IntSeries sortedGroup = new IndexSorter(ungrouped, e.getValue()).sortIndex(comparator);
             sorted.put(e.getKey(), sortedGroup);
         }
 
@@ -170,10 +172,10 @@ public class GroupBy {
         }
 
         Comparator<RowProxy> comparator = Sorters.sorter(ungrouped.getColumnsIndex(), columns, ascending);
-        Map<Object, Series<Integer>> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
+        Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
-        for (Map.Entry<Object, Series<Integer>> e : groupsIndex.entrySet()) {
-            Series<Integer> sortedGroup = new IndexSorter(ungrouped, e.getValue()).sortIndex(comparator);
+        for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
+            IntSeries sortedGroup = new IndexSorter(ungrouped, e.getValue()).sortIndex(comparator);
             sorted.put(e.getKey(), sortedGroup);
         }
 
@@ -186,10 +188,10 @@ public class GroupBy {
         }
 
         Comparator<RowProxy> comparator = Sorters.sorter(ungrouped.getColumnsIndex(), columns, ascending);
-        Map<Object, Series<Integer>> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
+        Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
-        for (Map.Entry<Object, Series<Integer>> e : groupsIndex.entrySet()) {
-            Series<Integer> sortedGroup = new IndexSorter(ungrouped, e.getValue()).sortIndex(comparator);
+        for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
+            IntSeries sortedGroup = new IndexSorter(ungrouped, e.getValue()).sortIndex(comparator);
             sorted.put(e.getKey(), sortedGroup);
         }
 
@@ -226,7 +228,7 @@ public class GroupBy {
 
     protected DataFrame resolveGroup(Object key) {
 
-        Series<Integer> index = groupsIndex.get(key);
+        IntSeries index = groupsIndex.get(key);
         if (index == null) {
             return null;
         }
@@ -235,7 +237,7 @@ public class GroupBy {
         Series[] data = new Series[w];
 
         for (int j = 0; j < w; j++) {
-            data[j] = new IndexedSeries(ungrouped.getColumn(j), index);
+            data[j] = new IntIndexedSeries(ungrouped.getColumn(j), index);
         }
 
         return new ColumnDataFrame(ungrouped.getColumnsIndex(), data);

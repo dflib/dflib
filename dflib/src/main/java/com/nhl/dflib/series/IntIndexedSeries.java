@@ -5,7 +5,11 @@ import com.nhl.dflib.Series;
 
 import java.util.Objects;
 
-public class IntIndexedSeries <T> implements Series<T> {
+/**
+ * @param <T> type of series value
+ * @since 0.6
+ */
+public class IntIndexedSeries<T> implements Series<T> {
 
     private Series<T> source;
     private IntSeries includePositions;

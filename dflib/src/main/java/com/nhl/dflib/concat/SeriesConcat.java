@@ -2,6 +2,7 @@ package com.nhl.dflib.concat;
 
 import com.nhl.dflib.Series;
 import com.nhl.dflib.series.ArraySeries;
+import com.nhl.dflib.series.IntSeries;
 
 public class SeriesConcat {
 
@@ -20,5 +21,22 @@ public class SeriesConcat {
         }
 
         return new ArraySeries<>(data);
+    }
+
+    public static IntSeries intConcat(Iterable<IntSeries> concat) {
+        int h = 0;
+        for (IntSeries s : concat) {
+            h += s.size();
+        }
+
+        int[] data = new int[h];
+        int offset = 0;
+        for (IntSeries s : concat) {
+            int len = s.size();
+            s.copyTo(data, 0, offset, len);
+            offset += len;
+        }
+
+        return new IntSeries(data);
     }
 }
