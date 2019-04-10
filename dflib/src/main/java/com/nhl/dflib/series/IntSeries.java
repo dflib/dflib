@@ -60,6 +60,21 @@ public class IntSeries {
         return new IntSeries(data);
     }
 
+    public IntSeries head(int len) {
+        return len < size ? new IntSeries(data, len) : this;
+    }
+
+    public IntSeries tail(int len) {
+
+        // TODO: a "tail" wrapper to avoid immediate data copy
+        if(len < size) {
+            int[] tail = new int[len];
+            System.arraycopy(data, size - len, tail, 0, len);
+            return new IntSeries(tail);
+        }
+        return this;
+    }
+
     public Series<Integer> toSeries() {
         Integer[] data = new Integer[size];
         for(int i = 0; i < size; i++) {

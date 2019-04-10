@@ -2,14 +2,12 @@ package com.nhl.dflib.groupby;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.GroupBy;
-import com.nhl.dflib.Series;
+import com.nhl.dflib.collection.IntMutableList;
 import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.row.RowProxy;
-import com.nhl.dflib.series.ListSeries;
+import com.nhl.dflib.series.IntSeries;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Grouper {
@@ -29,15 +27,15 @@ public class Grouper {
         int i = 0;
         for (RowProxy r : df) {
             Object key = hasher.map(r);
-            ((List<Integer>) groups.computeIfAbsent(key, k -> new ArrayList<>())).add(Integer.valueOf(i));
+            ((IntMutableList) groups.computeIfAbsent(key, k -> new IntMutableList())).add(i);
             i++;
         }
 
         for (Object o : groups.entrySet()) {
             Map.Entry<?, Object> e = (Map.Entry) o;
-            e.setValue(new ListSeries<>((List<Integer>) e.getValue()));
+            e.setValue(((IntMutableList) e.getValue()).toSeries());
         }
 
-        return new GroupBy(df, (Map<Object, Series<Integer>>) groups);
+        return new GroupBy(df, (Map<Object, IntSeries>) groups);
     }
 }

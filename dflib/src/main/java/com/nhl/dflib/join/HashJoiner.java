@@ -3,11 +3,11 @@ package com.nhl.dflib.join;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.Series;
 import com.nhl.dflib.collection.IntMutableList;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.series.IntSeries;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -63,7 +63,7 @@ public class HashJoiner {
         for (RowProxy lr : lf) {
 
             Object lKey = leftHasher.map(lr);
-            Series<Integer> rgi = rightIndex.getGroupIndex(lKey);
+            IntSeries rgi = rightIndex.getGroupIndex(lKey);
 
             if (rgi != null) {
                 int js = rgi.size();
@@ -90,7 +90,7 @@ public class HashJoiner {
         for (RowProxy lr : lf) {
 
             Object lKey = leftHasher.map(lr);
-            Series<Integer> rgi = rightIndex.getGroupIndex(lKey);
+            IntSeries rgi = rightIndex.getGroupIndex(lKey);
 
             if (rgi != null) {
                 int js = rgi.size();
@@ -120,7 +120,7 @@ public class HashJoiner {
         for (RowProxy rr : rf) {
 
             Object rKey = rightHasher.map(rr);
-            Series<Integer> lgi = leftIndex.getGroupIndex(rKey);
+            IntSeries lgi = leftIndex.getGroupIndex(rKey);
 
             if (lgi != null) {
                 int js = lgi.size();
@@ -152,7 +152,7 @@ public class HashJoiner {
 
             Object lKey = leftHasher.map(lr);
 
-            Series<Integer> rgi = rightIndex.getGroupIndex(lKey);
+            IntSeries rgi = rightIndex.getGroupIndex(lKey);
             if (rgi != null) {
                 seenRightKeys.add(lKey);
                 int js = rgi.size();
@@ -171,7 +171,7 @@ public class HashJoiner {
         // add missing right rows
         for (Object key : rightIndex.getGroups()) {
             if (!seenRightKeys.contains(key)) {
-                Series<Integer> rgi = rightIndex.getGroupIndex(key);
+                IntSeries rgi = rightIndex.getGroupIndex(key);
 
                 int js = rgi.size();
                 for (int j = 0; j < js; j++) {
