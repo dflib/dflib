@@ -1,7 +1,7 @@
 package com.nhl.dflib.sort;
 
 
-import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * A stable, adaptive, iterative mergesort that requires far fewer than n lg(n) comparisons when running on partially
@@ -46,10 +46,7 @@ class IntTimSort {
     }
 
     static void sort(int[] a, int lo, int hi, IntComparator c) {
-        if (c == null) {
-            Arrays.sort(a, lo, hi);
-            return;
-        }
+        Objects.requireNonNull(c);
 
         int nRemaining = hi - lo;
         if (nRemaining < 2)
@@ -311,8 +308,7 @@ class IntTimSort {
      * @param c    the comparator used to order the range, and to search
      * @return the int k,  0 <= k <= n such that a[b + k - 1] <= key < a[b + k]
      */
-    private static int gallopRight(int key, int[] a, int base, int len,
-                                       int hint, IntComparator c) {
+    private static int gallopRight(int key, int[] a, int base, int len, int hint, IntComparator c) {
         int ofs = 1;
         int lastOfs = 0;
         if (c.compare(key, a[base + hint]) < 0) {
