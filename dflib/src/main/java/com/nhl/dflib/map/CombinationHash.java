@@ -4,7 +4,7 @@ import java.util.Objects;
 
 /**
  * An opaque object used as a comparision key for multi-column row comparisons. The key is made out of two components
- * that are compared positionally with another CombinationKey.
+ * that are compared positionally with another {@link CombinationHash}.
  */
 public class CombinationHash {
 
