@@ -6,14 +6,16 @@ public class IntSeries {
 
     // data.length can be >= size
     private int[] data;
+    private int offset;
     private int size;
 
     public IntSeries(int... data) {
-        this(data, data.length);
+        this(data, 0, data.length);
     }
 
-    public IntSeries(int[] data, int size) {
+    public IntSeries(int[] data, int offset, int size) {
         this.data = data;
+        this.offset = offset;
         this.size = size;
     }
 
@@ -22,11 +24,11 @@ public class IntSeries {
     }
 
     public int getInt(int index) {
-        if (index >= size) {
+        if (offset + index >= size) {
             throw new ArrayIndexOutOfBoundsException(index);
         }
 
-        return data[index];
+        return data[offset + index];
     }
 
     public void copyToInt(int[] to, int fromOffset, int toOffset, int len) {
@@ -34,7 +36,7 @@ public class IntSeries {
             throw new ArrayIndexOutOfBoundsException(fromOffset + len);
         }
 
-        System.arraycopy(data, fromOffset, to, toOffset, len);
+        System.arraycopy(data, offset + fromOffset, to, toOffset, len);
     }
 
     public IntSeries concat(IntSeries... other) {
@@ -61,23 +63,16 @@ public class IntSeries {
     }
 
     public IntSeries head(int len) {
-        return len < size ? new IntSeries(data, len) : this;
+        return len < size ? new IntSeries(data, offset, len) : this;
     }
 
     public IntSeries tail(int len) {
-
-        // TODO: a "tail" wrapper to avoid immediate data copy
-        if(len < size) {
-            int[] tail = new int[len];
-            System.arraycopy(data, size - len, tail, 0, len);
-            return new IntSeries(tail);
-        }
-        return this;
+        return len < size ? new IntSeries(data, offset + size - len, len) : this;
     }
 
     public Series<Integer> toSeries() {
         Integer[] data = new Integer[size];
-        for(int i = 0; i < size; i++) {
+        for(int i = offset; i < size; i++) {
             data[i] = this.data[i];
         }
         return new ArraySeries<>(data);

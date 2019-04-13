@@ -35,7 +35,7 @@ public class IntMutableList {
         // making sure no one can change the series via the Mutable List anymore
         this.data = null;
 
-        return new IntSeries(data, size);
+        return new IntSeries(data, 0, size);
     }
 
     private void expand() {
