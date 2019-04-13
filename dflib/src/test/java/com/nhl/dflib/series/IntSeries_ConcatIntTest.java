@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class IntSeries_IntConcatTest {
+public class IntSeries_ConcatIntTest {
 
     @Test
     public void testConcatInt_None() {
@@ -25,7 +25,7 @@ public class IntSeries_IntConcatTest {
         IntSeries s1 = new IntSeries(34, 23);
         IntSeries s2 = new IntSeries(1, 2);
         IntSeries s3 = new IntSeries(-1, -6);
-        
+
         IntSeries c = s1.concatInt(s2, s3);
         new IntSeriesAsserts(c).expectData(34, 23, 1, 2, -1, -6);
     }

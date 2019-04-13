@@ -2,7 +2,6 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.ColumnMappedSeries;
-import com.nhl.dflib.series.HeadSeries;
 import com.nhl.dflib.series.ListSeries;
 import com.nhl.dflib.series.RangeSeries;
 
@@ -20,7 +19,6 @@ public abstract class BaseObjectSeriesTest {
             new Object[][]{
                     {SeriesTypes.ARRAY},
                     {SeriesTypes.COLUMN_MAPPED},
-                    {SeriesTypes.HEAD},
                     {SeriesTypes.LIST},
                     {SeriesTypes.RANGE}}
     );
@@ -39,8 +37,6 @@ public abstract class BaseObjectSeriesTest {
                 return new ArraySeries<>(data);
             case COLUMN_MAPPED:
                 return new ColumnMappedSeries<>(new ArraySeries<>(data), v -> v);
-            case HEAD:
-                return new HeadSeries<>(new ArraySeries<>(data), data.length);
             case LIST:
                 return new ListSeries<>(asList(data));
             case RANGE:
@@ -51,6 +47,6 @@ public abstract class BaseObjectSeriesTest {
     }
 
     protected enum SeriesTypes {
-        ARRAY, COLUMN_MAPPED, HEAD, LIST, RANGE
+        ARRAY, COLUMN_MAPPED, LIST, RANGE
     }
 }

@@ -22,11 +22,9 @@ import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.seq.Sequences;
 import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.ColumnMappedSeries;
-import com.nhl.dflib.series.HeadSeries;
 import com.nhl.dflib.series.IndexedSeries;
 import com.nhl.dflib.series.IntSeries;
 import com.nhl.dflib.series.RowMappedSeries;
-import com.nhl.dflib.series.TailSeries;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
 
@@ -84,9 +82,7 @@ public class ColumnDataFrame implements DataFrame {
         int width = width();
         Series<?>[] newColumnsData = new Series[width];
         for (int i = 0; i < width; i++) {
-            // not using HeadSeries.forSeries(..) as we no longer need range checking here, as it is done once above for
-            // the entire DataFrame
-            newColumnsData[i] = new HeadSeries<>(dataColumns[i], len);
+            newColumnsData[i] = dataColumns[i].head(len);
         }
 
         return new ColumnDataFrame(columnsIndex, newColumnsData);
@@ -107,9 +103,7 @@ public class ColumnDataFrame implements DataFrame {
         int width = width();
         Series<?>[] newColumnsData = new Series[width];
         for (int i = 0; i < width; i++) {
-            // not using TailSeries.forSeries(..) as we no longer need range checking here, as it is done once above for
-            // the entire DataFrame
-            newColumnsData[i] = new TailSeries<>(dataColumns[i], len);
+            newColumnsData[i] = dataColumns[i].tail(len);
         }
 
         return new ColumnDataFrame(columnsIndex, newColumnsData);

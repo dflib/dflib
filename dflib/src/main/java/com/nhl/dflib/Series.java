@@ -47,4 +47,8 @@ public interface Series<T> {
     Series<T> fillNullsForward();
 
     Series<T> concat(Series<? extends T>... other);
+
+    Series<T> head(int len);
+
+    Series<T> tail(int len);
 }

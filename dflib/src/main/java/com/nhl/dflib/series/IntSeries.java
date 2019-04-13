@@ -66,11 +66,11 @@ public class IntSeries implements Series<Integer> {
         return new IntSeries(data);
     }
 
-    public IntSeries head(int len) {
+    public IntSeries headInt(int len) {
         return len < size ? new IntSeries(data, offset, len) : this;
     }
 
-    public IntSeries tail(int len) {
+    public IntSeries tailInt(int len) {
         return len < size ? new IntSeries(data, offset + size - len, len) : this;
     }
 
@@ -134,5 +134,15 @@ public class IntSeries implements Series<Integer> {
         System.arraycopy(other, 0, combined, 1, other.length);
 
         return SeriesConcat.concat(asList(combined));
+    }
+
+    @Override
+    public Series<Integer> head(int len) {
+        return headInt(len);
+    }
+
+    @Override
+    public Series<Integer> tail(int len) {
+        return tailInt(len);
     }
 }

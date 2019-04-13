@@ -32,4 +32,15 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
         return SeriesConcat.concat(asList(combined));
     }
+
+    @Override
+    public Series<T> head(int len) {
+        return len >= size() ? this : rangeOpenClosed(0, len);
+    }
+
+    @Override
+    public Series<T> tail(int len) {
+        int size = size();
+        return len >= size ? this : rangeOpenClosed(size - len, size);
+    }
 }
