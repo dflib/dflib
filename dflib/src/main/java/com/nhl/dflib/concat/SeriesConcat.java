@@ -33,7 +33,7 @@ public class SeriesConcat {
         int offset = 0;
         for (IntSeries s : concat) {
             int len = s.size();
-            s.copyTo(data, 0, offset, len);
+            s.copyToInt(data, 0, offset, len);
             offset += len;
         }
 

@@ -56,7 +56,7 @@ public class IntIndexedSeries<T> implements Series<T> {
         Object[] data = new Object[h];
 
         for (int i = 0; i < h; i++) {
-            int index = includePositions.get(i);
+            int index = includePositions.getInt(i);
 
             // skipped positions (index < 0) are found in joins
             data[i] = index < 0 ? null : source.get(index);

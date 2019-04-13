@@ -21,7 +21,7 @@ public class IntSeries {
         return size;
     }
 
-    public int get(int index) {
+    public int getInt(int index) {
         if (index >= size) {
             throw new ArrayIndexOutOfBoundsException(index);
         }
@@ -29,7 +29,7 @@ public class IntSeries {
         return data[index];
     }
 
-    public void copyTo(int[] to, int fromOffset, int toOffset, int len) {
+    public void copyToInt(int[] to, int fromOffset, int toOffset, int len) {
         if (fromOffset + len > size) {
             throw new ArrayIndexOutOfBoundsException(fromOffset + len);
         }
@@ -48,12 +48,12 @@ public class IntSeries {
         }
 
         int[] data = new int[h];
-        copyTo(data, 0, 0, size);
+        copyToInt(data, 0, 0, size);
 
         int offset = size;
         for (IntSeries s : other) {
             int len = s.size();
-            s.copyTo(data, 0, offset, len);
+            s.copyToInt(data, 0, offset, len);
             offset += len;
         }
 

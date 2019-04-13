@@ -11,7 +11,7 @@ public class IntSeriesAsserts {
         assertNotNull("Series is null", series);
 
         this.data = new int[series.size()];
-        series.copyTo(data, 0, 0, series.size());
+        series.copyToInt(data, 0, 0, series.size());
     }
 
     public IntSeriesAsserts expectData(int... expectedValues) {

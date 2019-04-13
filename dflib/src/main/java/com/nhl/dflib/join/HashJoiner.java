@@ -69,7 +69,7 @@ public class HashJoiner {
                 int js = rgi.size();
                 for (int j = 0; j < js; j++) {
                     li.add(i);
-                    ri.add(rgi.get(j));
+                    ri.add(rgi.getInt(j));
                 }
             }
 
@@ -96,7 +96,7 @@ public class HashJoiner {
                 int js = rgi.size();
                 for (int j = 0; j < js; j++) {
                     li.add(i);
-                    ri.add(rgi.get(j));
+                    ri.add(rgi.getInt(j));
                 }
             } else {
                 li.add(i);
@@ -125,7 +125,7 @@ public class HashJoiner {
             if (lgi != null) {
                 int js = lgi.size();
                 for (int j = 0; j < js; j++) {
-                    li.add(lgi.get(j));
+                    li.add(lgi.getInt(j));
                     ri.add(i);
                 }
             } else {
@@ -158,7 +158,7 @@ public class HashJoiner {
                 int js = rgi.size();
                 for (int j = 0; j < js; j++) {
                     li.add(i);
-                    ri.add(rgi.get(j));
+                    ri.add(rgi.getInt(j));
                 }
             } else {
                 li.add(i);
@@ -176,7 +176,7 @@ public class HashJoiner {
                 int js = rgi.size();
                 for (int j = 0; j < js; j++) {
                     li.add(-1);
-                    ri.add(rgi.get(j));
+                    ri.add(rgi.getInt(j));
                 }
             }
         }

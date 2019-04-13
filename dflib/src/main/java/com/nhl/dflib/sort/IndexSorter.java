@@ -28,7 +28,7 @@ public class IndexSorter {
         this.indexBuilder = () -> {
             int len = rangeToSort.size();
             int[] data = new int[len];
-            rangeToSort.copyTo(data, 0, 0, len);
+            rangeToSort.copyToInt(data, 0, 0, len);
             return data;
         };
     }
