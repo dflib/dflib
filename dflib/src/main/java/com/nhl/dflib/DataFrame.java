@@ -192,7 +192,7 @@ public interface DataFrame extends Iterable<RowProxy> {
             ml.add(i);
         }
 
-        return select(ml.toSeries());
+        return select(ml.toIntSeries());
     }
 
     /**
@@ -217,7 +217,7 @@ public interface DataFrame extends Iterable<RowProxy> {
             ml.add(rowPositions.get(i));
         }
 
-        return select(ml.toSeries());
+        return select(ml.toIntSeries());
     }
 
     DataFrame filter(RowPredicate p);

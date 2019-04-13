@@ -29,7 +29,7 @@ public class IntMutableList {
         data[size++] = value;
     }
 
-    public IntSeries toSeries() {
+    public IntSeries toIntSeries() {
         int[] data = this.data;
 
         // making sure no one can change the series via the Mutable List anymore

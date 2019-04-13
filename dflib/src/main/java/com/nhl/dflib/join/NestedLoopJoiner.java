@@ -68,7 +68,7 @@ public class NestedLoopJoiner {
             i++;
         }
 
-        return new JoinMerger(li.toSeries(), ri.toSeries());
+        return new JoinMerger(li.toIntSeries(), ri.toIntSeries());
     }
 
     private JoinMerger leftJoin(DataFrame lf, DataFrame rf) {
@@ -102,7 +102,7 @@ public class NestedLoopJoiner {
             i++;
         }
 
-        return new JoinMerger(li.toSeries(), ri.toSeries());
+        return new JoinMerger(li.toIntSeries(), ri.toIntSeries());
     }
 
     private JoinMerger rightJoin(DataFrame lf, DataFrame rf) {
@@ -136,7 +136,7 @@ public class NestedLoopJoiner {
             i++;
         }
 
-        return new JoinMerger(li.toSeries(), ri.toSeries());
+        return new JoinMerger(li.toIntSeries(), ri.toIntSeries());
     }
 
     private JoinMerger fullJoin(DataFrame lf, DataFrame rf) {
@@ -183,6 +183,6 @@ public class NestedLoopJoiner {
             }
         }
 
-        return new JoinMerger(li.toSeries(), ri.toSeries());
+        return new JoinMerger(li.toIntSeries(), ri.toIntSeries());
     }
 }

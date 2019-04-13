@@ -19,7 +19,7 @@ public class FilterIndexer {
             i[0]++;
         });
 
-        return index.toSeries();
+        return index.toIntSeries();
     }
 
     public static <T> IntSeries filteredIndex(Series<T> source, ValuePredicate<T> p) {
@@ -33,6 +33,6 @@ public class FilterIndexer {
             }
         }
 
-        return index.toSeries();
+        return index.toIntSeries();
     }
 }

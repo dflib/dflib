@@ -33,7 +33,7 @@ public class Grouper {
 
         for (Object o : groups.entrySet()) {
             Map.Entry<?, Object> e = (Map.Entry) o;
-            e.setValue(((IntMutableList) e.getValue()).toSeries());
+            e.setValue(((IntMutableList) e.getValue()).toIntSeries());
         }
 
         return new GroupBy(df, (Map<Object, IntSeries>) groups);
