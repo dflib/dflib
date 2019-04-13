@@ -25,8 +25,9 @@ public interface Series<T> {
      * @param fromInclusive a left boundary index of the returned range (included in the returned range)
      * @param toExclusive   a right boundary index (excluded in the returned range)
      * @return a Series that contains a sub-range of data from this Series.
+     * @since 0.6
      */
-    default Series<T> openClosedRange(int fromInclusive, int toExclusive) {
+    default Series<T> rangeOpenClosed(int fromInclusive, int toExclusive) {
 
         if (fromInclusive == toExclusive) {
             return new EmptySeries<>();
@@ -36,6 +37,17 @@ public interface Series<T> {
                 ? this
                 // RangeSeries does range checking
                 : new RangeSeries<>(this, fromInclusive, toExclusive - fromInclusive);
+    }
+
+    /**
+     * @param fromInclusive a left boundary index of the returned range (included in the returned range)
+     * @param toExclusive   a right boundary index (excluded in the returned range)
+     * @return a Series that contains a sub-range of data from this Series.
+     * @deprecated since 0.6 in favor for {@link #rangeOpenClosed(int, int)} for consistency.
+     */
+    @Deprecated
+    default Series<T> openClosedRange(int fromInclusive, int toExclusive) {
+        return rangeOpenClosed(fromInclusive, toExclusive);
     }
 
     Series<T> materialize();
