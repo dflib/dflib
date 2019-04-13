@@ -5,7 +5,7 @@ import com.nhl.dflib.Series;
 
 import java.util.Arrays;
 
-public class ArraySeries<T> implements Series<T> {
+public class ArraySeries<T> extends ObjectSeries<T> {
 
     private T[] data;
 

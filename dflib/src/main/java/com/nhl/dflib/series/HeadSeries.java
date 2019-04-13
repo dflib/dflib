@@ -5,7 +5,7 @@ import com.nhl.dflib.Series;
 
 import java.util.Objects;
 
-public class HeadSeries<T> implements Series<T> {
+public class HeadSeries<T> extends ObjectSeries<T> {
 
     private Series<T> source;
     private int len;

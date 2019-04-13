@@ -7,16 +7,15 @@ import java.util.Objects;
 
 /**
  * @param <T> type of series value
- * @since 0.6
  */
-public class IntIndexedSeries<T> implements Series<T> {
+public class IndexedSeries<T> extends ObjectSeries<T> {
 
     private Series<T> source;
     private IntSeries includePositions;
 
     private Series<T> materialized;
 
-    public IntIndexedSeries(Series<T> source, IntSeries includePositions) {
+    public IndexedSeries(Series<T> source, IntSeries includePositions) {
         this.source = Objects.requireNonNull(source);
         this.includePositions = Objects.requireNonNull(includePositions);
     }

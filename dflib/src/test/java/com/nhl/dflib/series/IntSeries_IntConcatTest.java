@@ -1,41 +1,32 @@
 package com.nhl.dflib.series;
 
-import com.nhl.dflib.Series;
 import com.nhl.dflib.unit.IntSeriesAsserts;
-import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class IntSeriesTest {
+public class IntSeries_IntConcatTest {
 
     @Test
-    public void testConcat_None() {
+    public void testConcatInt_None() {
         IntSeries s = new IntSeries(1, 2);
-        assertSame(s, s.concat());
+        assertSame(s, s.concatInt());
     }
 
     @Test
-    public void testConcat_Self() {
+    public void testConcatInt_Self() {
         IntSeries s = new IntSeries(1, 2);
-        IntSeries c = s.concat(s);
+        IntSeries c = s.concatInt(s);
         new IntSeriesAsserts(c).expectData(1, 2, 1, 2);
     }
 
     @Test
-    public void testConcat() {
+    public void testConcatInt() {
         IntSeries s1 = new IntSeries(34, 23);
         IntSeries s2 = new IntSeries(1, 2);
         IntSeries s3 = new IntSeries(-1, -6);
-
-
-        IntSeries c = s1.concat(s2, s3);
+        
+        IntSeries c = s1.concatInt(s2, s3);
         new IntSeriesAsserts(c).expectData(34, 23, 1, 2, -1, -6);
-    }
-
-    @Test
-    public void testToSeries() {
-        Series<Integer> s = new IntSeries(34, 23).toSeries();
-        new SeriesAsserts(s).expectData(34, 23);
     }
 }

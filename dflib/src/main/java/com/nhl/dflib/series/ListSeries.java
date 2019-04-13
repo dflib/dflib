@@ -6,7 +6,7 @@ import com.nhl.dflib.Series;
 import java.util.Arrays;
 import java.util.List;
 
-public class ListSeries<T> implements Series<T> {
+public class ListSeries<T> extends ObjectSeries<T> {
 
     private List<T> data;
 

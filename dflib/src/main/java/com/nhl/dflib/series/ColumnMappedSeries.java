@@ -4,7 +4,7 @@ import com.nhl.dflib.Printers;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.map.ValueMapper;
 
-public class ColumnMappedSeries<S, T> implements Series<T> {
+public class ColumnMappedSeries<S, T> extends ObjectSeries<T> {
 
     private Series<S> source;
     private ValueMapper<S, T> mapper;

@@ -9,7 +9,7 @@ import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.seq.Sequences;
 import com.nhl.dflib.series.ArraySeries;
-import com.nhl.dflib.series.IntIndexedSeries;
+import com.nhl.dflib.series.IndexedSeries;
 import com.nhl.dflib.series.IntSeries;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
@@ -86,10 +86,7 @@ public class GroupBy {
         int i = 0;
         for (IntSeries s : groupsIndex.values()) {
             Series<Integer> numbersWithGroup = new ArraySeries<>(Sequences.numberSequence(s.size()));
-
-            // TODO: inefficiency - converting IntSeries to Series<Integer> .. A few lines below sorting Series<Integer>
-            //  which in turn creates IntSeries
-            numberedIndex[i] = new ColumnDataFrame(TWO_COLUMN_INDEX, s.toSeries(), numbersWithGroup);
+            numberedIndex[i] = new ColumnDataFrame(TWO_COLUMN_INDEX, s, numbersWithGroup);
             i++;
         }
 
@@ -237,7 +234,7 @@ public class GroupBy {
         Series[] data = new Series[w];
 
         for (int j = 0; j < w; j++) {
-            data[j] = new IntIndexedSeries(ungrouped.getColumn(j), index);
+            data[j] = new IndexedSeries(ungrouped.getColumn(j), index);
         }
 
         return new ColumnDataFrame(ungrouped.getColumnsIndex(), data);

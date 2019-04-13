@@ -5,7 +5,7 @@ import com.nhl.dflib.Series;
 
 import java.util.Objects;
 
-public class TailSeries<T> implements Series<T> {
+public class TailSeries<T> extends ObjectSeries<T> {
     private Series<T> source;
     private int offset;
     private int len;

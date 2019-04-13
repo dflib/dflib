@@ -1,8 +1,11 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.Series;
+import com.nhl.dflib.concat.SeriesConcat;
 
-public class IntSeries {
+import static java.util.Arrays.asList;
+
+public class IntSeries implements Series<Integer> {
 
     // data.length can be >= size
     private int[] data;
@@ -19,6 +22,7 @@ public class IntSeries {
         this.size = size;
     }
 
+    @Override
     public int size() {
         return size;
     }
@@ -39,7 +43,7 @@ public class IntSeries {
         System.arraycopy(data, offset + fromOffset, to, toOffset, len);
     }
 
-    public IntSeries concat(IntSeries... other) {
+    public IntSeries concatInt(IntSeries... other) {
         if (other.length == 0) {
             return this;
         }
@@ -70,11 +74,65 @@ public class IntSeries {
         return len < size ? new IntSeries(data, offset + size - len, len) : this;
     }
 
-    public Series<Integer> toSeries() {
-        Integer[] data = new Integer[size];
-        for(int i = offset; i < size; i++) {
-            data[i] = this.data[i];
+    @Override
+    public Integer get(int index) {
+        return getInt(index);
+    }
+
+    @Override
+    public void copyTo(Object[] to, int fromOffset, int toOffset, int len) {
+        for (int i = offset + fromOffset; i < len; i++) {
+            to[toOffset + i] = this.data[i];
         }
-        return new ArraySeries<>(data);
+    }
+
+    @Override
+    public Series<Integer> materialize() {
+        if (offset > 0 || size + offset < this.data.length) {
+            int[] data = new int[size];
+            copyToInt(data, 0, 0, size);
+            return new IntSeries(data);
+        }
+
+        return this;
+    }
+
+    @Override
+    public Series<Integer> fillNulls(Integer value) {
+        // TODO: should we replace zeros?
+        return this;
+    }
+
+    @Override
+    public Series<Integer> fillNullsBackwards() {
+        // TODO: should we replace zeros?
+        return this;
+    }
+
+    @Override
+    public Series<Integer> fillNullsForward() {
+        // TODO: should we replace zeros?
+        return this;
+    }
+
+    @Override
+    public Series<Integer> rangeOpenClosed(int fromInclusive, int toExclusive) {
+        return fromInclusive == 0 && toExclusive == size()
+                ? this
+                : new IntSeries(data, offset + fromInclusive, toExclusive - fromInclusive);
+    }
+
+    @Override
+    public Series<Integer> concat(Series<? extends Integer>... other) {
+        // concatenating as Integer... to concat as IntSeries, "concatInt" should be used
+        if (other.length == 0) {
+            return this;
+        }
+
+        Series<Integer>[] combined = new Series[other.length + 1];
+        combined[0] = this;
+        System.arraycopy(other, 0, combined, 1, other.length);
+
+        return SeriesConcat.concat(asList(combined));
     }
 }

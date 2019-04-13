@@ -8,7 +8,7 @@ import org.junit.runners.Parameterized;
 import java.util.Collection;
 
 @RunWith(Parameterized.class)
-public class Series_FillTest extends BaseSeriesTest {
+public class Series_FillTest extends BaseObjectSeriesTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {

@@ -10,7 +10,7 @@ import java.util.Collection;
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
-public class Series_ConcatTest extends BaseSeriesTest {
+public class Series_ConcatTest extends BaseObjectSeriesTest {
 
     public Series_ConcatTest(SeriesTypes seriesType) {
         super(seriesType);

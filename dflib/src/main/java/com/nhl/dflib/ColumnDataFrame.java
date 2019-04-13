@@ -23,7 +23,7 @@ import com.nhl.dflib.seq.Sequences;
 import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.ColumnMappedSeries;
 import com.nhl.dflib.series.HeadSeries;
-import com.nhl.dflib.series.IntIndexedSeries;
+import com.nhl.dflib.series.IndexedSeries;
 import com.nhl.dflib.series.IntSeries;
 import com.nhl.dflib.series.RowMappedSeries;
 import com.nhl.dflib.series.TailSeries;
@@ -155,7 +155,7 @@ public class ColumnDataFrame implements DataFrame {
         int width = width();
         Series<?>[] newColumnsData = new Series[width];
         for (int i = 0; i < width; i++) {
-            newColumnsData[i] = new IntIndexedSeries<>(dataColumns[i], rowPositions);
+            newColumnsData[i] = new IndexedSeries<>(dataColumns[i], rowPositions);
         }
 
         return new ColumnDataFrame(columnsIndex, newColumnsData);

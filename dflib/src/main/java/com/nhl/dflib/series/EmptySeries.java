@@ -3,7 +3,7 @@ package com.nhl.dflib.series;
 import com.nhl.dflib.Printers;
 import com.nhl.dflib.Series;
 
-public class EmptySeries<T> implements Series<T> {
+public class EmptySeries<T> extends ObjectSeries<T> {
 
     @Override
     public int size() {

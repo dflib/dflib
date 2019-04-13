@@ -3,7 +3,7 @@ package com.nhl.dflib.series;
 import com.nhl.dflib.Printers;
 import com.nhl.dflib.Series;
 
-public class RangeSeries<T> implements Series<T> {
+public class RangeSeries<T> extends ObjectSeries<T> {
 
     private Series<T> delegate;
     private int from;

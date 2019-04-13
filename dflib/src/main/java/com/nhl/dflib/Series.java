@@ -1,11 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.series.ArraySeries;
-import com.nhl.dflib.series.EmptySeries;
-import com.nhl.dflib.series.RangeSeries;
-
-import static java.util.Arrays.asList;
 
 public interface Series<T> {
 
@@ -27,17 +22,7 @@ public interface Series<T> {
      * @return a Series that contains a sub-range of data from this Series.
      * @since 0.6
      */
-    default Series<T> rangeOpenClosed(int fromInclusive, int toExclusive) {
-
-        if (fromInclusive == toExclusive) {
-            return new EmptySeries<>();
-        }
-
-        return fromInclusive == 0 && toExclusive == size()
-                ? this
-                // RangeSeries does range checking
-                : new RangeSeries<>(this, fromInclusive, toExclusive - fromInclusive);
-    }
+    Series<T> rangeOpenClosed(int fromInclusive, int toExclusive);
 
     /**
      * @param fromInclusive a left boundary index of the returned range (included in the returned range)
@@ -50,6 +35,9 @@ public interface Series<T> {
         return rangeOpenClosed(fromInclusive, toExclusive);
     }
 
+    // TODO: alternative names instead of "materialize" :
+    //  * "compact" - as we often trim unused data
+    //  * "optimize" - which may be anything, depending on the Series structure.. Ambiguos - optimize for storage or access?
     Series<T> materialize();
 
     Series<T> fillNulls(T value);
@@ -58,15 +46,5 @@ public interface Series<T> {
 
     Series<T> fillNullsForward();
 
-    default Series<T> concat(Series<? extends T>... other) {
-        if (other.length == 0) {
-            return this;
-        }
-
-        Series<T>[] combined = new Series[other.length + 1];
-        combined[0] = this;
-        System.arraycopy(other, 0, combined, 1, other.length);
-
-        return SeriesConcat.concat(asList(combined));
-    }
+    Series<T> concat(Series<? extends T>... other);
 }

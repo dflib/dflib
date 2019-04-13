@@ -5,7 +5,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.series.IntSeries;
-import com.nhl.dflib.series.IntIndexedSeries;
+import com.nhl.dflib.series.IndexedSeries;
 
 public class JoinMerger {
 
@@ -36,11 +36,11 @@ public class JoinMerger {
         Series[] data = new Series[w];
 
         for (int i = 0; i < wl; i++) {
-            data[i] = new IntIndexedSeries(left.getColumn(i), leftIndex);
+            data[i] = new IndexedSeries(left.getColumn(i), leftIndex);
         }
 
         for (int i = wl; i < w; i++) {
-            data[i] = new IntIndexedSeries(right.getColumn(i - wl), rightIndex);
+            data[i] = new IndexedSeries(right.getColumn(i - wl), rightIndex);
         }
 
         return new ColumnDataFrame(joinedColumns, data);

@@ -5,7 +5,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.row.DataFrameRowProxy;
 import com.nhl.dflib.row.RowProxy;
-import com.nhl.dflib.series.IntIndexedSeries;
+import com.nhl.dflib.series.IndexedSeries;
 import com.nhl.dflib.series.IntSeries;
 
 import java.util.Comparator;
@@ -60,7 +60,7 @@ public class IndexSorter {
         int width = dataFrame.width();
         Series<?>[] newColumnsData = new Series[width];
         for (int i = 0; i < width; i++) {
-            newColumnsData[i] = new IntIndexedSeries<>(dataFrame.getColumn(i), sortedIndex);
+            newColumnsData[i] = new IndexedSeries<>(dataFrame.getColumn(i), sortedIndex);
         }
 
         return new ColumnDataFrame(dataFrame.getColumnsIndex(), newColumnsData);

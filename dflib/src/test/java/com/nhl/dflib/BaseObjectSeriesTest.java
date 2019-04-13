@@ -11,7 +11,10 @@ import java.util.Objects;
 
 import static java.util.Arrays.asList;
 
-public abstract class BaseSeriesTest {
+/**
+ * A parameterized test superclass for Series that are subclasses of {@link com.nhl.dflib.series.ObjectSeries}.
+ */
+public abstract class BaseObjectSeriesTest {
 
     protected static Collection<Object[]> ALL_SERIES_TYPES = asList(
             new Object[][]{
@@ -24,7 +27,7 @@ public abstract class BaseSeriesTest {
 
     protected SeriesTypes seriesType;
 
-    public BaseSeriesTest(SeriesTypes seriesType) {
+    public BaseObjectSeriesTest(SeriesTypes seriesType) {
         this.seriesType = Objects.requireNonNull(seriesType);
     }
 

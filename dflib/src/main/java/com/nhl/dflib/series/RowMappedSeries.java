@@ -6,7 +6,7 @@ import com.nhl.dflib.Series;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.row.RowProxy;
 
-public class RowMappedSeries<T> implements Series<T> {
+public class RowMappedSeries<T> extends ObjectSeries<T> {
 
     private DataFrame source;
     private RowToValueMapper<T> mapper;
