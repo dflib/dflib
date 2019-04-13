@@ -8,7 +8,7 @@ import org.junit.Test;
 public class HasherTest {
 
     @Test
-    public void testKeyColumn_ColumnName() {
+    public void testForColumn_ByName() {
 
         Index i1 = Index.forLabels("a", "b");
         DataFrame df1 = DataFrame.forSequenceFoldByRow(i1,
@@ -30,7 +30,7 @@ public class HasherTest {
     }
 
     @Test
-    public void testKeyColumn_ColumnIndex() {
+    public void testForColumn_ByPos() {
 
         Index i1 = Index.forLabels("a", "b");
         DataFrame df1 = DataFrame.forSequenceFoldByRow(i1,
@@ -52,7 +52,7 @@ public class HasherTest {
     }
 
     @Test
-    public void testAnd_ColumnName() {
+    public void testForColumn_MultiColumn_ByName() {
 
         Index i1 = Index.forLabels("a", "b", "c");
         DataFrame df1 = DataFrame.forSequenceFoldByRow(i1,
@@ -75,7 +75,7 @@ public class HasherTest {
     }
 
     @Test
-    public void testAnd_ColumnIndex() {
+    public void testForColumn_MultiColumn_ByPos() {
 
         Index i1 = Index.forLabels("a", "b", "c");
         DataFrame df1 = DataFrame.forSequenceFoldByRow(i1,
