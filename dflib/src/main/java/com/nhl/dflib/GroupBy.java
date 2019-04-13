@@ -10,7 +10,7 @@ import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.seq.Sequences;
 import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.IndexedSeries;
-import com.nhl.dflib.series.IntSeries;
+import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
 

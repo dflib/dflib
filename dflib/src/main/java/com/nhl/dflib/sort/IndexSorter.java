@@ -2,11 +2,12 @@ package com.nhl.dflib.sort;
 
 import com.nhl.dflib.ColumnDataFrame;
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.row.DataFrameRowProxy;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.IndexedSeries;
-import com.nhl.dflib.series.IntSeries;
+import com.nhl.dflib.series.IntArraySeries;
 
 import java.util.Comparator;
 import java.util.function.Supplier;
@@ -51,7 +52,7 @@ public class IndexSorter {
 
         // note - mutating passed index
         IntTimSort.sort(mutableIndex, rowComparator);
-        return new IntSeries(mutableIndex);
+        return new IntArraySeries(mutableIndex);
     }
 
     public DataFrame sort(Comparator<RowProxy> comparator) {

@@ -2,10 +2,10 @@ package com.nhl.dflib.groupby;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.GroupBy;
+import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.collection.IntMutableList;
 import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.row.RowProxy;
-import com.nhl.dflib.series.IntSeries;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

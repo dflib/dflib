@@ -1,8 +1,9 @@
 package com.nhl.dflib.concat;
 
+import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.series.ArraySeries;
-import com.nhl.dflib.series.IntSeries;
+import com.nhl.dflib.series.IntArraySeries;
 
 public class SeriesConcat {
 
@@ -37,6 +38,6 @@ public class SeriesConcat {
             offset += len;
         }
 
-        return new IntSeries(data);
+        return new IntArraySeries(data);
     }
 }

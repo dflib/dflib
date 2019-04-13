@@ -3,8 +3,8 @@ package com.nhl.dflib.join;
 import com.nhl.dflib.ColumnDataFrame;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.series.IntSeries;
 import com.nhl.dflib.series.IndexedSeries;
 
 public class JoinMerger {

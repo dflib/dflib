@@ -1,22 +1,27 @@
 package com.nhl.dflib.series;
 
+import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.concat.SeriesConcat;
 
 import static java.util.Arrays.asList;
 
-public class IntSeries implements Series<Integer> {
+/**
+ * @since 0.6
+ */
+// TODO: should we split that into a fast IntArraySeries that matches exactly data[], and a slower IntArrayRangeSeries,
+//  that has offset and size? Need to measure the performance gain of not having to calculate offset
+public class IntArraySeries implements IntSeries {
 
-    // data.length can be >= size
     private int[] data;
     private int offset;
     private int size;
 
-    public IntSeries(int... data) {
+    public IntArraySeries(int... data) {
         this(data, 0, data.length);
     }
 
-    public IntSeries(int[] data, int offset, int size) {
+    public IntArraySeries(int[] data, int offset, int size) {
         this.data = data;
         this.offset = offset;
         this.size = size;
@@ -27,6 +32,7 @@ public class IntSeries implements Series<Integer> {
         return size;
     }
 
+    @Override
     public int getInt(int index) {
         if (offset + index >= size) {
             throw new ArrayIndexOutOfBoundsException(index);
@@ -35,6 +41,7 @@ public class IntSeries implements Series<Integer> {
         return data[offset + index];
     }
 
+    @Override
     public void copyToInt(int[] to, int fromOffset, int toOffset, int len) {
         if (fromOffset + len > size) {
             throw new ArrayIndexOutOfBoundsException(fromOffset + len);
@@ -43,6 +50,7 @@ public class IntSeries implements Series<Integer> {
         System.arraycopy(data, offset + fromOffset, to, toOffset, len);
     }
 
+    @Override
     public IntSeries concatInt(IntSeries... other) {
         if (other.length == 0) {
             return this;
@@ -50,7 +58,7 @@ public class IntSeries implements Series<Integer> {
 
         int h = size;
         for (IntSeries s : other) {
-            h += s.size;
+            h += s.size();
         }
 
         int[] data = new int[h];
@@ -63,15 +71,24 @@ public class IntSeries implements Series<Integer> {
             offset += len;
         }
 
-        return new IntSeries(data);
+        return new IntArraySeries(data);
     }
 
+    @Override
     public IntSeries headInt(int len) {
-        return len < size ? new IntSeries(data, offset, len) : this;
+        return len < size ? new IntArraySeries(data, offset, len) : this;
     }
 
+    @Override
     public IntSeries tailInt(int len) {
-        return len < size ? new IntSeries(data, offset + size - len, len) : this;
+        return len < size ? new IntArraySeries(data, offset + size - len, len) : this;
+    }
+
+    @Override
+    public IntSeries rangeOpenClosedInt(int fromInclusive, int toExclusive) {
+        return fromInclusive == 0 && toExclusive == size()
+                ? this
+                : new IntArraySeries(data, offset + fromInclusive, toExclusive - fromInclusive);
     }
 
     @Override
@@ -91,7 +108,7 @@ public class IntSeries implements Series<Integer> {
         if (offset > 0 || size + offset < this.data.length) {
             int[] data = new int[size];
             copyToInt(data, 0, 0, size);
-            return new IntSeries(data);
+            return new IntArraySeries(data);
         }
 
         return this;
@@ -117,9 +134,7 @@ public class IntSeries implements Series<Integer> {
 
     @Override
     public Series<Integer> rangeOpenClosed(int fromInclusive, int toExclusive) {
-        return fromInclusive == 0 && toExclusive == size()
-                ? this
-                : new IntSeries(data, offset + fromInclusive, toExclusive - fromInclusive);
+        return rangeOpenClosedInt(fromInclusive, toExclusive);
     }
 
     @Override

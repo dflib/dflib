@@ -1,6 +1,7 @@
 package com.nhl.dflib.collection;
 
-import com.nhl.dflib.series.IntSeries;
+import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.series.IntArraySeries;
 
 /**
  * An expandable list of primitive int values that has minimal overhead and can be converted to compact and efficient
@@ -35,7 +36,7 @@ public class IntMutableList {
         // making sure no one can change the series via the Mutable List anymore
         this.data = null;
 
-        return new IntSeries(data, 0, size);
+        return new IntArraySeries(data, 0, size);
     }
 
     private void expand() {

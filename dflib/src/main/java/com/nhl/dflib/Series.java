@@ -2,6 +2,11 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.series.ArraySeries;
 
+/**
+ * A wrapper around an array of values of a certain type.
+ *
+ * @param <T>
+ */
 public interface Series<T> {
 
     static <T> Series<T> forData(T... data) {

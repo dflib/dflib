@@ -1,5 +1,6 @@
 package com.nhl.dflib.series;
 
+import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Printers;
 import com.nhl.dflib.Series;
 

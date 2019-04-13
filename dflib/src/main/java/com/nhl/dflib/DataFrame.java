@@ -14,7 +14,6 @@ import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.ArraySeries;
-import com.nhl.dflib.series.IntSeries;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -200,6 +199,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * DataFrame.
      *
      * @return a new DataFrame that matches the selection criteria
+     * @param rowPositions
      */
     DataFrame select(IntSeries rowPositions);
 

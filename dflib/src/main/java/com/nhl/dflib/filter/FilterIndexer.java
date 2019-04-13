@@ -1,9 +1,9 @@
 package com.nhl.dflib.filter;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.collection.IntMutableList;
-import com.nhl.dflib.series.IntSeries;
 
 public class FilterIndexer {
 

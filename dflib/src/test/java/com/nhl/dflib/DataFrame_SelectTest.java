@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.series.IntSeries;
+import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.unit.DFAsserts;
 import org.junit.Test;
 
@@ -100,7 +100,7 @@ public class DataFrame_SelectTest extends BaseDataFrameTest {
                 5, "x",
                 9, "y",
                 1, "z")
-                .select(new IntSeries(0, 2));
+                .select(new IntArraySeries(0, 2));
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(2)

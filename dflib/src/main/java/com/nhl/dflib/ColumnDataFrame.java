@@ -23,7 +23,7 @@ import com.nhl.dflib.seq.Sequences;
 import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.ColumnMappedSeries;
 import com.nhl.dflib.series.IndexedSeries;
-import com.nhl.dflib.series.IntSeries;
+import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.series.RowMappedSeries;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
@@ -140,7 +140,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public DataFrame select(int... rowPositions) {
-        return select(new IntSeries(rowPositions));
+        return select(new IntArraySeries(rowPositions));
     }
 
     @Override

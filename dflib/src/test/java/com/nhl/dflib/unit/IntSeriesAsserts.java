@@ -1,6 +1,6 @@
 package com.nhl.dflib.unit;
 
-import com.nhl.dflib.series.IntSeries;
+import com.nhl.dflib.IntSeries;
 
 import static org.junit.Assert.*;
 
