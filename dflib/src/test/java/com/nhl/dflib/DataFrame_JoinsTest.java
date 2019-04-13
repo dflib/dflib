@@ -143,7 +143,7 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     }
 
     @Test
-    public void testInnerJoin_Indexed() {
+    public void testInnerJoin_Hash() {
 
         Index i1 = Index.forLabels("a", "b");
         DataFrame df1 = createDf(i1,
@@ -168,7 +168,7 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     }
 
     @Test
-    public void testInnerJoin_Indexed_IndexOverlap() {
+    public void testInnerJoin_Indexed_HashOverlap() {
 
         Index i1 = Index.forLabels("a", "b");
         DataFrame df1 = createDf(i1,
@@ -190,7 +190,7 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     }
 
     @Test
-    public void testJoin_LeftIndexed() {
+    public void testJoin_LeftHash() {
 
         Index i1 = Index.forLabels("a", "b");
         DataFrame df1 = createDf(i1,
@@ -213,7 +213,7 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     }
 
     @Test
-    public void testJoin_RightIndexed() {
+    public void testJoin_RightHash() {
 
         Index i1 = Index.forLabels("a", "b");
         DataFrame df1 = createDf(i1,
@@ -236,7 +236,76 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     }
 
     @Test
-    public void testJoin_FullIndexed() {
+    public void testJoin_RightHash_ByPos() {
+
+        Index i1 = Index.forLabels("a", "b");
+        DataFrame df1 = createDf(i1,
+                1, "x",
+                2, "y");
+
+        Index i2 = Index.forLabels("c", "d");
+        DataFrame df2 = createDf(i2,
+                2, "a",
+                2, "b",
+                3, "c");
+
+        DataFrame df = df2.join(df1, 0, 0, JoinType.right);
+
+        new DFAsserts(df, "c", "d", "a", "b")
+                .expectHeight(3)
+                .expectRow(0, null, null, 1, "x")
+                .expectRow(1, 2, "a", 2, "y")
+                .expectRow(2, 2, "b", 2, "y");
+    }
+
+    @Test
+    public void testJoin_RightHash_ByName() {
+
+        Index i1 = Index.forLabels("a", "b");
+        DataFrame df1 = createDf(i1,
+                1, "x",
+                2, "y");
+
+        Index i2 = Index.forLabels("c", "d");
+        DataFrame df2 = createDf(i2,
+                2, "a",
+                2, "b",
+                3, "c");
+
+        DataFrame df = df2.join(df1, "c", "a", JoinType.right);
+
+        new DFAsserts(df, "c", "d", "a", "b")
+                .expectHeight(3)
+                .expectRow(0, null, null, 1, "x")
+                .expectRow(1, 2, "a", 2, "y")
+                .expectRow(2, 2, "b", 2, "y");
+    }
+
+    @Test
+    public void testJoin_RightHash_ByMatchingName() {
+
+        Index i1 = Index.forLabels("a", "b");
+        DataFrame df1 = createDf(i1,
+                1, "x",
+                2, "y");
+
+        Index i2 = Index.forLabels("a", "d");
+        DataFrame df2 = createDf(i2,
+                2, "a",
+                2, "b",
+                3, "c");
+
+        DataFrame df = df2.join(df1, "a", JoinType.right);
+
+        new DFAsserts(df, "a", "d", "a_", "b")
+                .expectHeight(3)
+                .expectRow(0, null, null, 1, "x")
+                .expectRow(1, 2, "a", 2, "y")
+                .expectRow(2, 2, "b", 2, "y");
+    }
+
+    @Test
+    public void testJoin_FullHash() {
 
         Index i1 = Index.forLabels("a", "b");
         DataFrame df1 = createDf(i1,

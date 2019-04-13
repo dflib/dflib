@@ -326,14 +326,42 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param df          a DataFrame to join with this one
      * @param leftHasher  a hash function for the left-side rows
      * @param rightHasher a hash function for the right-side rows
-     * @param <K>
      * @return a DataFrame that is a result of this join
      */
-    default <K> DataFrame innerJoin(
-            DataFrame df,
-            Hasher leftHasher,
-            Hasher rightHasher) {
+    default DataFrame innerJoin(DataFrame df, Hasher leftHasher, Hasher rightHasher) {
         return join(df, leftHasher, rightHasher, JoinType.inner);
+    }
+
+    /**
+     * @param df          the DataFrame to join with this one
+     * @param leftColumn  the name of the join column for left-side DataFrame
+     * @param rightColumn the name of the join column for right-side DataFrame
+     * @return a DataFrame that is a result of this join
+     * @since 0.6
+     */
+    default DataFrame innerJoin(DataFrame df, String leftColumn, String rightColumn) {
+        return join(df, leftColumn, rightColumn, JoinType.inner);
+    }
+
+    /**
+     * @param df     the DataFrame to join with this one
+     * @param column the name of the join column for both left and right side DataFrames
+     * @return a DataFrame that is a result of this join
+     * @since 0.6
+     */
+    default DataFrame innerJoin(DataFrame df, String column) {
+        return join(df, column, JoinType.inner);
+    }
+
+    /**
+     * @param df          the DataFrame to join with this one
+     * @param leftColumn  the position of the join column for left-side DataFrame
+     * @param rightColumn the position of the join column for right-side DataFrame
+     * @return a DataFrame that is a result of this join
+     * @since 0.6
+     */
+    default DataFrame innerJoin(DataFrame df, int leftColumn, int rightColumn) {
+        return join(df, leftColumn, rightColumn, JoinType.inner);
     }
 
     /**
@@ -349,6 +377,42 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a DataFrame that is a result of this join
      */
     DataFrame join(DataFrame df, Hasher leftHasher, Hasher rightHasher, JoinType how);
+
+    /**
+     * @param df          the DataFrame to join with this one
+     * @param leftColumn  the name of the join column for left-side DataFrame
+     * @param rightColumn the name of the join column for right-side DataFrame
+     * @param how         join semantics
+     * @return a DataFrame that is a result of this join
+     * @since 0.6
+     */
+    default DataFrame join(DataFrame df, String leftColumn, String rightColumn, JoinType how) {
+        return join(df, Hasher.forColumn(leftColumn), Hasher.forColumn(rightColumn), how);
+    }
+
+    /**
+     * @param df     the DataFrame to join with this one
+     * @param column the name of the join column for both left and right side DataFrames
+     * @param how    join semantics
+     * @return a DataFrame that is a result of this join
+     * @since 0.6
+     */
+    default DataFrame join(DataFrame df, String column, JoinType how) {
+        Hasher hasher = Hasher.forColumn(column);
+        return join(df, hasher, hasher, how);
+    }
+
+    /**
+     * @param df          the DataFrame to join with this one
+     * @param leftColumn  the position of the join column for left-side DataFrame
+     * @param rightColumn the position of the join column for right-side DataFrame
+     * @param how         join semantics
+     * @return a DataFrame that is a result of this join
+     * @since 0.6
+     */
+    default DataFrame join(DataFrame df, int leftColumn, int rightColumn, JoinType how) {
+        return join(df, Hasher.forColumn(leftColumn), Hasher.forColumn(rightColumn), how);
+    }
 
     /**
      * Aggregates DataFrame contents into an Object[] of values, using provided aggregator.

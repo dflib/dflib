@@ -1,6 +1,7 @@
 ## Release 0.6
 
 * #21 Add LocalDate and LocalDateTime converters 
+* #23 Simplifying join API
 * #25 CsvLoader to provide shortcuts for datetime and number conversions
 * #26 IntSeries / IntMutableList for joins and filters
 * #27 IntSeries / IntMutableList for sort and group
