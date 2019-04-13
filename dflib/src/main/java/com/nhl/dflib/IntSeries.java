@@ -1,5 +1,7 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.series.IntArraySeries;
+
 /**
  * A series that is optimized to store primitive int values.
  *
@@ -7,9 +9,12 @@ package com.nhl.dflib;
  */
 public interface IntSeries extends Series<Integer> {
 
+
     int getInt(int index);
 
     void copyToInt(int[] to, int fromOffset, int toOffset, int len);
+
+    IntSeries materializeInt();
 
     IntSeries concatInt(IntSeries... other);
 
@@ -18,4 +23,10 @@ public interface IntSeries extends Series<Integer> {
     IntSeries headInt(int len);
 
     IntSeries tailInt(int len);
+
+    default IntSeries selectInt(int... positions) {
+        return selectInt(new IntArraySeries(positions));
+    }
+
+    IntSeries selectInt(IntSeries positions);
 }
