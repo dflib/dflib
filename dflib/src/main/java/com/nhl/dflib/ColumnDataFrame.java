@@ -22,7 +22,6 @@ import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.seq.Sequences;
 import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.ColumnMappedSeries;
-import com.nhl.dflib.series.IndexedSeries;
 import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.series.RowMappedSeries;
 import com.nhl.dflib.sort.IndexSorter;
@@ -149,7 +148,7 @@ public class ColumnDataFrame implements DataFrame {
         int width = width();
         Series<?>[] newColumnsData = new Series[width];
         for (int i = 0; i < width; i++) {
-            newColumnsData[i] = new IndexedSeries<>(dataColumns[i], rowPositions);
+            newColumnsData[i] = dataColumns[i].select(rowPositions);
         }
 
         return new ColumnDataFrame(columnsIndex, newColumnsData);

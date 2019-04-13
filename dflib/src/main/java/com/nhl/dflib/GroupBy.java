@@ -9,8 +9,6 @@ import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.seq.Sequences;
 import com.nhl.dflib.series.ArraySeries;
-import com.nhl.dflib.series.IndexedSeries;
-import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
 
@@ -234,7 +232,7 @@ public class GroupBy {
         Series[] data = new Series[w];
 
         for (int j = 0; j < w; j++) {
-            data[j] = new IndexedSeries(ungrouped.getColumn(j), index);
+            data[j] = ungrouped.getColumn(j).select(index);
         }
 
         return new ColumnDataFrame(ungrouped.getColumnsIndex(), data);

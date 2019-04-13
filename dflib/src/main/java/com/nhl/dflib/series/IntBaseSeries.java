@@ -101,4 +101,9 @@ public abstract class IntBaseSeries implements IntSeries {
             to[toOffset + i] = getInt(i);
         }
     }
+
+    @Override
+    public Series<Integer> select(IntSeries positions) {
+        return selectInt(positions);
+    }
 }

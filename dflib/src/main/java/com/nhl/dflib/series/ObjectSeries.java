@@ -1,5 +1,6 @@
 package com.nhl.dflib.series;
 
+import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.concat.SeriesConcat;
 
@@ -42,5 +43,10 @@ public abstract class ObjectSeries<T> implements Series<T> {
     public Series<T> tail(int len) {
         int size = size();
         return len >= size ? this : rangeOpenClosed(size - len, size);
+    }
+
+    @Override
+    public Series<T> select(IntSeries positions) {
+        return new IndexedSeries<>(this, positions);
     }
 }

@@ -1,6 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.series.ArraySeries;
+import com.nhl.dflib.series.IntArraySeries;
 
 /**
  * A wrapper around an array of values of a certain type.
@@ -56,4 +57,10 @@ public interface Series<T> {
     Series<T> head(int len);
 
     Series<T> tail(int len);
+
+    default Series<T> select(int... positions) {
+        return select(new IntArraySeries(positions));
+    }
+
+    Series<T> select(IntSeries positions);
 }
