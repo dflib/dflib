@@ -53,7 +53,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
     }
 
     @Override
-    public IntSeries filter(ValuePredicate<T> predicate) {
+    public IntSeries index(ValuePredicate<T> predicate) {
         IntMutableList index = new IntMutableList();
 
         int len = size();

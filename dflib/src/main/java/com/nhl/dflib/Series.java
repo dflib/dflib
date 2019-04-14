@@ -65,5 +65,12 @@ public interface Series<T> {
 
     Series<T> select(IntSeries positions);
 
-    IntSeries filter(ValuePredicate<T> predicate);
+    /**
+     * Returns an IntSeries that represents positions in the Series that match the predicate. The returned value can be
+     * used to "select" data from this Series or from DataFrame containing this Series.
+     *
+     * @param predicate match condition
+     * @return an IntSeries that represents positions in the Series that match the predicate.
+     */
+    IntSeries index(ValuePredicate<T> predicate);
 }

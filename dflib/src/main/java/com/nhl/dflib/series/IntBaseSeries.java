@@ -116,7 +116,7 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public IntSeries filterInt(IntPredicate predicate) {
+    public IntSeries indexInt(IntPredicate predicate) {
         IntMutableList filtered = new IntMutableList();
 
         int len = size();
@@ -131,7 +131,7 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public IntSeries filter(ValuePredicate<Integer> predicate) {
+    public IntSeries index(ValuePredicate<Integer> predicate) {
         IntMutableList index = new IntMutableList();
 
         int len = size();
