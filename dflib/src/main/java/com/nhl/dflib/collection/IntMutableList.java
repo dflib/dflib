@@ -6,6 +6,8 @@ import com.nhl.dflib.series.IntArraySeries;
 /**
  * An expandable list of primitive int values that has minimal overhead and can be converted to compact and efficient
  * immutable {@link IntSeries}.
+ *
+ * @since 0.6
  */
 public class IntMutableList {
 

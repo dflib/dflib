@@ -26,11 +26,11 @@ public class CsvLoader {
     private CSVFormat format;
 
     // storing converters as list to ensure predictable resolution order when the user supplies overlapping converters
-    private List<Pair> converters;
+    private List<Pair> builders;
 
     public CsvLoader() {
         this.format = CSVFormat.DEFAULT;
-        this.converters = new ArrayList<>();
+        this.builders = new ArrayList<>();
     }
 
     /**
@@ -56,63 +56,80 @@ public class CsvLoader {
         return this;
     }
 
+    /**
+     * @param typeConverters
+     * @return this loader
+     * @deprecated since 0.6 as it does not allow to pass primitive values converters. Use per-column type specifiers.
+     */
+    @Deprecated
     public CsvLoader columnTypes(ValueMapper<String, ?>... typeConverters) {
         for (int i = 0; i < typeConverters.length; i++) {
             int captureI = i;
-            converters.add(new Pair(ind -> captureI, typeConverters[i]));
+            builders.add(new Pair(
+                    ind -> captureI,
+                    new TransformingSeriesBuilder<>(typeConverters[i])));
         }
         return this;
     }
 
 
     public CsvLoader columnType(int column, ValueMapper<String, ?> typeConverter) {
-        converters.add(new Pair(i -> column, typeConverter));
-        return this;
+        return columnType(column, new TransformingSeriesBuilder<>(typeConverter));
     }
 
     public CsvLoader columnType(String column, ValueMapper<String, ?> typeConverter) {
-        converters.add(new Pair(i -> i.position(column), typeConverter));
-        return this;
+        return columnType(column, new TransformingSeriesBuilder<>(typeConverter));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader numColumn(int column, Class<? extends Number> type) {
-        return columnType(column, numMapper(type));
+        return columnType(column, numBuilder(type));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader numColumn(String column, Class<? extends Number> type) {
-        return columnType(column, numMapper(type));
+        return columnType(column, numBuilder(type));
     }
 
-    private ValueMapper<String, ?> numMapper(Class<? extends Number> type) {
+    private CsvLoader columnType(int column, SeriesBuilder<?> columnBuilder) {
+        builders.add(new Pair(i -> column, columnBuilder));
+        return this;
+    }
+
+    private CsvLoader columnType(String column, SeriesBuilder<?> columnBuilder) {
+        builders.add(new Pair(i -> i.position(column), columnBuilder));
+        return this;
+    }
+
+    private SeriesBuilder<?> numBuilder(Class<? extends Number> type) {
 
         if (Integer.class.equals(type)) {
-            return ValueMapper.stringToInt();
+            return new IntSeriesBuilder();
         }
 
+        // TODO: handle other primitive types as such
         if (Long.class.equals(type)) {
-            return ValueMapper.stringToLong();
+            return new TransformingSeriesBuilder<>(ValueMapper.stringToLong());
         }
 
         if (Double.class.equals(type)) {
-            return ValueMapper.stringToDouble();
+            return new TransformingSeriesBuilder<>(ValueMapper.stringToDouble());
         }
 
         if (Float.class.equals(type)) {
-            return ValueMapper.stringToFloat();
+            return new TransformingSeriesBuilder<>(ValueMapper.stringToFloat());
         }
 
         if (BigDecimal.class.equals(type)) {
-            return ValueMapper.stringToBigDecimal();
+            return new TransformingSeriesBuilder<>(ValueMapper.stringToBigDecimal());
         }
 
         if (BigInteger.class.equals(type)) {
-            return ValueMapper.stringToBigInteger();
+            return new TransformingSeriesBuilder<>(ValueMapper.stringToBigInteger());
         }
 
         throw new IllegalArgumentException("Can't map numeric type to a string converter: " + type);
@@ -214,9 +231,9 @@ public class CsvLoader {
                 return DataFrame.forRows(columns, Collections.emptyList());
             }
 
-            ValueMapper<String, ?>[] converters = createConverters(columns);
+            SeriesBuilder<?>[] builders = createSeriesBuilders(columns);
+            return new CsvLoaderWorker(columns, builders).load(it);
 
-            return new CsvLoaderWorker(columns, converters).load(it);
         } catch (IOException e) {
             throw new RuntimeException("Error reading CSV", e);
         }
@@ -247,25 +264,33 @@ public class CsvLoader {
         return Index.forLabels(columnNames);
     }
 
-    private ValueMapper<String, ?>[] createConverters(Index columns) {
+    private SeriesBuilder<?>[] createSeriesBuilders(Index columns) {
 
-        ValueMapper<String, ?>[] converters = new ValueMapper[columns.size()];
+        int w = columns.size();
+        SeriesBuilder<?>[] builders = new SeriesBuilder[w];
 
         // there may be overlapping pairs... the last one wins
-        for (Pair p : this.converters) {
-            converters[p.positionResolver.apply(columns)] = p.converter;
+        for (Pair p : this.builders) {
+            builders[p.positionResolver.apply(columns)] = p.builder;
         }
 
-        return converters;
+        // fill missing builders with no-transform builders
+        for (int i = 0; i < w; i++) {
+            if (builders[i] == null) {
+                builders[i] = new NoTransformSeriesBuilder();
+            }
+        }
+
+        return builders;
     }
 
     private class Pair {
         Function<Index, Integer> positionResolver;
-        ValueMapper<String, ?> converter;
+        SeriesBuilder<?> builder;
 
-        Pair(Function<Index, Integer> positionResolver, ValueMapper<String, ?> converter) {
+        Pair(Function<Index, Integer> positionResolver, SeriesBuilder<?> builder) {
             this.positionResolver = positionResolver;
-            this.converter = converter;
+            this.builder = builder;
         }
     }
 }

@@ -110,6 +110,7 @@ public class CsvLoaderTest extends BaseCsvTest {
 
         new DFAsserts(df, "A", "b", "C")
                 .expectHeight(2)
+                .expectIntColumn(0)
                 .expectRow(0, 1, 2L, 3.)
                 .expectRow(1, 4, 5L, 6.);
     }
@@ -151,6 +152,7 @@ public class CsvLoaderTest extends BaseCsvTest {
                         LocalDateTime.of(2016, 3, 31, 12, 0, 25));
     }
 
+    @Deprecated
     @Test
     public void testFromFile_ColumnTypes() {
         DataFrame df = new CsvLoader()

@@ -2,6 +2,7 @@ package com.nhl.dflib.unit;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.IntSeries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ import static org.junit.Assert.*;
 public class DFAsserts {
 
     private String[] expectedColumns;
+    private DataFrame df;
     private List<Object[]> rows;
 
     public DFAsserts(DataFrame df, Index expectedColumns) {
@@ -28,6 +30,7 @@ public class DFAsserts {
 
         this.expectedColumns = expectedColumns;
         this.rows = new ArrayList<>();
+        this.df = df;
 
         ArrayRowBuilder rowBuilder = new ArrayRowBuilder(df.getColumnsIndex());
         df.forEach(r -> {
@@ -38,6 +41,18 @@ public class DFAsserts {
 
     public DFAsserts expectHeight(int expectedHeight) {
         assertEquals("Unexpected DataFrame height", expectedHeight, rows.size());
+        return this;
+    }
+
+    public DFAsserts expectIntColumn(int pos) {
+        // the assertion is superfluous ... "getColumnAsInt" throws if the column is not an IntSeries
+        assertTrue(df.getColumnAsInt(pos) instanceof IntSeries);
+        return this;
+    }
+
+    public DFAsserts expectIntColumn(String label) {
+        // the assertion is superfluous ... "getColumnAsInt" throws if the column is not an IntSeries
+        assertTrue(df.getColumnAsInt(label) instanceof IntSeries);
         return this;
     }
 

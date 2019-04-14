@@ -2,45 +2,41 @@ package com.nhl.dflib.csv;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.map.ValueMapper;
+import com.nhl.dflib.Series;
 import org.apache.commons.csv.CSVRecord;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 class CsvLoaderWorker {
 
     private Index columns;
-    private ValueMapper<String, ?>[] converters;
+    private SeriesBuilder[] accumulators;
 
-    public CsvLoaderWorker(Index columns, ValueMapper<String, ?>[] converters) {
+    public CsvLoaderWorker(Index columns, SeriesBuilder[] accumulators) {
         this.columns = columns;
-        this.converters = converters;
+        this.accumulators = accumulators;
     }
 
     DataFrame load(Iterator<CSVRecord> it) {
 
-        List<Object[]> rows = new ArrayList<>();
-
-        while (it.hasNext()) {
-            rows.add(loadRow(columns, it.next()));
-        }
-
-        return DataFrame.forRows(columns, rows);
-    }
-
-    private Object[] loadRow(Index columns, CSVRecord record) {
         int width = columns.size();
 
-        Object[] row = new Object[width];
-
-        for (int i = 0; i < width; i++) {
-            String v = record.get(i);
-            row[i] = (converters[i] != null) ? converters[i].map(v) : v;
+        while (it.hasNext()) {
+            loadRow(width, it.next());
         }
 
-        return row;
+        Series<?>[] series = new Series[width];
+        for (int i = 0; i < width; i++) {
+            series[i] = accumulators[i].toSeries();
+        }
+
+        return DataFrame.forColumns(columns, series);
+    }
+
+    private void loadRow(int width, CSVRecord record) {
+        for (int i = 0; i < width; i++) {
+            accumulators[i].append(record.get(i));
+        }
     }
 
 }
