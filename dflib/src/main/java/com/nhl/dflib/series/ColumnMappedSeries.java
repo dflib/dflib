@@ -17,7 +17,7 @@ public class ColumnMappedSeries<S, T> extends ObjectSeries<T> {
 
     @Override
     public int size() {
-        return source != null ? source.size() : materialize().size();
+        return source != null ? source.size() : materialized.size();
     }
 
     @Override
