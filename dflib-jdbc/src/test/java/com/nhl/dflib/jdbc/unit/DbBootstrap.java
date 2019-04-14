@@ -49,4 +49,13 @@ public class DbBootstrap {
                 .initColumnTypesFromDBMetadata()
                 .build();
     }
+
+    public Table getT3() {
+        return runtime.getInstance(DatabaseChannelFactory.class)
+                .getChannel()
+                .newTable("t3")
+                .columnNames("int")
+                .initColumnTypesFromDBMetadata()
+                .build();
+    }
 }

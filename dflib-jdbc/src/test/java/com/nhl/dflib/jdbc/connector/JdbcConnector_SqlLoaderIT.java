@@ -94,4 +94,19 @@ public class JdbcConnector_SqlLoaderIT extends BaseDbTest {
                 .expectHeight(1)
                 .expectRow(0, l1, 67, 7.8, true, "s1", ldt, ld, lt, bytes);
     }
+
+    @Test
+    public void testPrimitives() {
+
+        T3.insert(-15);
+
+        DataFrame df = createConnector()
+                .sqlLoader("SELECT * from \"t3\"")
+                .load();
+
+        new DFAsserts(df, "int")
+                .expectHeight(1)
+                .expectIntColumn(0)
+                .expectRow(0, -15);
+    }
 }

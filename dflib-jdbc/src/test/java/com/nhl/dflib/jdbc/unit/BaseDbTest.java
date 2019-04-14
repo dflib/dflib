@@ -20,6 +20,7 @@ public abstract class BaseDbTest {
 
     protected static Table T1;
     protected static Table T2;
+    protected static Table T3;
     private static DataSource DATA_SOURCE;
 
     @Rule
@@ -31,6 +32,7 @@ public abstract class BaseDbTest {
         DATA_SOURCE = bootstrap.getDataSource();
         T1 = bootstrap.getT1();
         T2 = bootstrap.getT2();
+        T3 = bootstrap.getT3();
     }
 
     protected DataSource getDataSource() {

@@ -1,5 +1,7 @@
 package com.nhl.dflib.jdbc.connector;
 
+import com.nhl.dflib.builder.SeriesBuilder;
+
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ParameterMetaData;
@@ -19,8 +21,9 @@ public class JdbcConnector {
     private DataSource dataSource;
     private IdentifierQuoter quoter;
 
-    private ValueReaderFactory defaultValueReaderFactory;
-    private Map<Integer, ValueReaderFactory> valueReaderFactories;
+    private SeriesBuilderFactory defaultSeriesBuilderFactory;
+    private Map<Integer, SeriesBuilderFactory> mandatorySeriesBuilderFactories;
+    private Map<Integer, SeriesBuilderFactory> seriesBuilderFactories;
 
     private StatementBinderFactory defaultStatementBinderFactory;
     private Map<Integer, StatementBinderFactory> statementBinderFactories;
@@ -30,11 +33,16 @@ public class JdbcConnector {
     public JdbcConnector(DataSource dataSource) {
         this.dataSource = dataSource;
 
-        this.defaultValueReaderFactory = ValueReaderFactory::objectReader;
-        this.valueReaderFactories = new HashMap<>();
-        this.valueReaderFactories.put(Types.DATE, ValueReaderFactory::dateReader);
-        this.valueReaderFactories.put(Types.TIME, ValueReaderFactory::timeReader);
-        this.valueReaderFactories.put(Types.TIMESTAMP, ValueReaderFactory::timestampReader);
+        this.defaultSeriesBuilderFactory = SeriesBuilderFactory::objectAccum;
+
+        // use primitive converters if the column has no nulls
+        this.mandatorySeriesBuilderFactories = new HashMap<>();
+        this.mandatorySeriesBuilderFactories.put(Types.INTEGER, SeriesBuilderFactory::intAccum);
+
+        this.seriesBuilderFactories = new HashMap<>();
+        this.seriesBuilderFactories.put(Types.DATE, SeriesBuilderFactory::dateAccum);
+        this.seriesBuilderFactories.put(Types.TIME, SeriesBuilderFactory::timeAccum);
+        this.seriesBuilderFactories.put(Types.TIMESTAMP, SeriesBuilderFactory::timestampAccum);
 
         this.defaultStatementBinderFactory = StatementBinderFactory::objectBinder;
         this.statementBinderFactories = new HashMap<>();
@@ -65,8 +73,20 @@ public class JdbcConnector {
         return new SqlLoader(this, sql);
     }
 
-    protected JdbcFunction<ResultSet, Object> getValueReader(int type, int pos) {
-        return valueReaderFactories.getOrDefault(type, defaultValueReaderFactory).reader(pos);
+    protected SeriesBuilder<ResultSet, ?> createColumnAccum(int pos, int type, boolean mandatory) {
+
+        SeriesBuilderFactory sbf = null;
+
+        // use primitive converters if the column has no nulls
+        if (mandatory) {
+            sbf = mandatorySeriesBuilderFactories.get(type);
+        }
+
+        if (sbf == null) {
+            sbf = seriesBuilderFactories.getOrDefault(type, defaultSeriesBuilderFactory);
+        }
+
+        return sbf.createAccum(pos);
     }
 
     protected StatementBinder createBinder(PreparedStatement statement) throws SQLException {

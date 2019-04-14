@@ -10,3 +10,6 @@ CREATE TABLE "t2" (
     "date" date,
     "time" time,
     "bytes" VARCHAR(100) FOR BIT DATA );
+
+/* Mandatory primitive */
+CREATE TABLE "t3" ("int" int not null);

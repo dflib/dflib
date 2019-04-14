@@ -2,6 +2,8 @@ package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.Series;
+import com.nhl.dflib.builder.SeriesBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,8 +12,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SqlLoader {
 
@@ -56,8 +56,8 @@ public class SqlLoader {
                 try (ResultSet rs = ps.executeQuery()) {
 
                     Index columns = createIndex(rs);
-                    List<Object[]> data = loadData(rs);
-                    return DataFrame.forRows(columns, data);
+                    Series<?>[] data = loadData(rs);
+                    return DataFrame.forColumns(columns, data);
                 }
             }
         } catch (SQLException e) {
@@ -111,27 +111,40 @@ public class SqlLoader {
         return Index.forLabels(names);
     }
 
-    protected RowReader createRowReader(ResultSet resultSet) throws SQLException {
-        ResultSetMetaData rsmd = resultSet.getMetaData();
-        int width = rsmd.getColumnCount();
-        JdbcFunction<ResultSet, Object>[] readers = new JdbcFunction[width];
+    protected Series<?>[] loadData(ResultSet rs) throws SQLException {
 
-        for (int i = 0; i < width; i++) {
-            int jdbcPos = i + 1;
-            readers[i] = connector.getValueReader(rsmd.getColumnType(jdbcPos), jdbcPos);
+        SeriesBuilder<ResultSet, ?>[] accums = createAccums(rs);
+
+        int w = accums.length;
+        int size = 0;
+
+        while (rs.next() && size++ < maxRows) {
+            for (int i = 0; i < w; i++) {
+                accums[i].append(rs);
+            }
         }
 
-        return new RowReader(readers);
+        Series<?>[] series = new Series[w];
+        for (int i = 0; i < w; i++) {
+            series[i] = accums[i].toSeries();
+        }
+
+        return series;
     }
 
-    private List<Object[]> loadData(ResultSet rs) throws SQLException {
+    protected SeriesBuilder<ResultSet, ?>[] createAccums(ResultSet resultSet) throws SQLException {
+        ResultSetMetaData rsmd = resultSet.getMetaData();
+        int w = rsmd.getColumnCount();
+        SeriesBuilder<ResultSet, ?>[] accums = new SeriesBuilder[w];
 
-        RowReader reader = createRowReader(rs);
-        List<Object[]> results = new ArrayList<>();
-        while (rs.next() && results.size() < maxRows) {
-            results.add(reader.readRow(rs));
+        for (int i = 0; i < w; i++) {
+            int jdbcPos = i + 1;
+            accums[i] = connector.createColumnAccum(
+                    jdbcPos,
+                    rsmd.getColumnType(jdbcPos),
+                    rsmd.isNullable(jdbcPos) == ResultSetMetaData.columnNoNulls);
         }
 
-        return results;
+        return accums;
     }
 }
