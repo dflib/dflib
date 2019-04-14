@@ -2,6 +2,8 @@ package com.nhl.dflib.benchmark;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.collection.IntMutableList;
 
 import java.util.Spliterators;
 import java.util.function.Consumer;
@@ -33,6 +35,17 @@ public class DataGenerator extends Spliterators.AbstractSpliterator<Object> {
                 ValueMaker.stringSeq(),
                 ValueMaker.randomIntSeq(rows / 2),
                 ValueMaker.constStringSeq(string));
+    }
+
+    public static IntSeries intSeries(int size, ValueMaker<Integer> maker) {
+
+        IntMutableList ints = new IntMutableList(size);
+
+        for (int i = 0; i < size; i++) {
+            ints.add(maker.get());
+        }
+
+        return ints.toIntSeries();
     }
 
     public static DataFrame columnarDF(int rows, ValueMaker<?>... columnValueMakers) {

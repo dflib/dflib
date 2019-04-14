@@ -2,7 +2,9 @@ package com.nhl.dflib.series;
 
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.collection.IntMutableList;
 import com.nhl.dflib.concat.SeriesConcat;
+import com.nhl.dflib.filter.ValuePredicate;
 
 import static java.util.Arrays.asList;
 
@@ -48,5 +50,20 @@ public abstract class ObjectSeries<T> implements Series<T> {
     @Override
     public Series<T> select(IntSeries positions) {
         return new IndexedSeries<>(this, positions);
+    }
+
+    @Override
+    public IntSeries filter(ValuePredicate<T> predicate) {
+        IntMutableList index = new IntMutableList();
+
+        int len = size();
+
+        for (int i = 0; i < len; i++) {
+            if (predicate.test(get(i))) {
+                index.add(i);
+            }
+        }
+
+        return index.toIntSeries();
     }
 }

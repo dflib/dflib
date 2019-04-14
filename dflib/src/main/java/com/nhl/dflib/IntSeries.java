@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.filter.IntPredicate;
 import com.nhl.dflib.series.IntArraySeries;
 
 /**
@@ -27,6 +28,8 @@ public interface IntSeries extends Series<Integer> {
     IntSeries headInt(int len);
 
     IntSeries tailInt(int len);
+
+    IntSeries filterInt(IntPredicate predicate);
 
     default IntSeries selectInt(int... positions) {
         return selectInt(new IntArraySeries(positions));

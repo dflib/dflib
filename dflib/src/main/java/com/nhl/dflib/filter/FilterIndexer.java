@@ -2,7 +2,6 @@ package com.nhl.dflib.filter;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntSeries;
-import com.nhl.dflib.Series;
 import com.nhl.dflib.collection.IntMutableList;
 
 public class FilterIndexer {
@@ -18,20 +17,6 @@ public class FilterIndexer {
 
             i[0]++;
         });
-
-        return index.toIntSeries();
-    }
-
-    public static <T> IntSeries filteredIndex(Series<T> source, ValuePredicate<T> p) {
-        IntMutableList index = new IntMutableList();
-
-        int len = source.size();
-
-        for (int i = 0; i < len; i++) {
-            if (p.test(source.get(i))) {
-                index.add(i);
-            }
-        }
 
         return index.toIntSeries();
     }

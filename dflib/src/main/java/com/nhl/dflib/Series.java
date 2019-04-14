@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.IntArraySeries;
 
@@ -63,4 +64,6 @@ public interface Series<T> {
     }
 
     Series<T> select(IntSeries positions);
+
+    IntSeries filter(ValuePredicate<T> predicate);
 }

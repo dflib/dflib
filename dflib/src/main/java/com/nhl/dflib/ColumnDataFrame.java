@@ -189,7 +189,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public <V> DataFrame filter(int columnPos, ValuePredicate<V> p) {
-        IntSeries rowPositions = FilterIndexer.filteredIndex(dataColumns[columnPos], p);
+        IntSeries rowPositions = dataColumns[columnPos].filter(p);
 
         // there's no reordering or index duplication during "filter", so we can compare size to detect changes
         if (rowPositions.size() == height()) {
