@@ -110,7 +110,6 @@ public class CsvLoaderTest extends BaseCsvTest {
 
         new DFAsserts(df, "A", "b", "C")
                 .expectHeight(2)
-                .expectIntColumn(0)
                 .expectRow(0, 1, 2L, 3.)
                 .expectRow(1, 4, 5L, 6.);
     }
@@ -127,6 +126,36 @@ public class CsvLoaderTest extends BaseCsvTest {
                 .expectHeight(2)
                 .expectRow(0, 1.f, new BigDecimal(2), new BigInteger("3"))
                 .expectRow(1, 4.f, new BigDecimal(5), new BigInteger("6"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testFromFile_IntColumn_Nulls() {
+        new CsvLoader()
+                .intColumn(0)
+                .intColumn(1)
+                .load(inPath("numbers_w_nulls.csv"));
+    }
+
+    @Test
+    public void testFromFile_IntColumn_Nulls_Default() {
+        DataFrame df = new CsvLoader()
+                .intColumn(0, -100)
+                .intColumn(1, -200)
+                .load(inPath("numbers_w_nulls.csv"));
+
+        new DFAsserts(df, "One", "Two")
+                .expectHeight(2)
+                .expectIntColumns(0, 1)
+                .expectRow(0, -100, 3)
+                .expectRow(1, 5, -200);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testFromFile_IntColumn_Nulls_Throw() {
+        new CsvLoader()
+                .intColumn(0)
+                .intColumn(1)
+                .load(inPath("numbers_w_nulls.csv"));
     }
 
     @Test

@@ -89,6 +89,38 @@ public class CsvLoader {
     /**
      * @since 0.6
      */
+    public CsvLoader intColumn(int column) {
+        return columnType(column, new IntSeriesBuilder(IntValueMapper.stringToInt()));
+    }
+
+    /**
+     * @since 0.6
+     */
+    public CsvLoader intColumn(String column) {
+        return columnType(column, new IntSeriesBuilder(IntValueMapper.stringToInt()));
+    }
+
+    /**
+     * @since 0.6
+     */
+    public CsvLoader intColumn(int column, int forNull) {
+        return columnType(column, new IntSeriesBuilder(IntValueMapper.stringToInt(forNull)));
+    }
+
+    /**
+     * @since 0.6
+     */
+    public CsvLoader intColumn(String column, int forNull) {
+        return columnType(column, new IntSeriesBuilder(IntValueMapper.stringToInt(forNull)));
+    }
+
+    /**
+     * Instructs the loader to convert values in the specified column to numbers of the specified type. This method will
+     * result in "object" columns (and hence can store nulls). If you want a column with primitive numbers, use methods
+     * like {@link #intColumn(int)}, etc. instead.
+     *
+     * @since 0.6
+     */
     public CsvLoader numColumn(int column, Class<? extends Number> type) {
         return columnType(column, numBuilder(type));
     }
@@ -113,10 +145,9 @@ public class CsvLoader {
     private SeriesBuilder<String, ?> numBuilder(Class<? extends Number> type) {
 
         if (Integer.class.equals(type)) {
-            return new IntSeriesBuilder(IntValueMapper.stringToInt());
+            return new MappedSeriesBuilder<>(ValueMapper.stringToInt());
         }
 
-        // TODO: handle other primitive types as such
         if (Long.class.equals(type)) {
             return new MappedSeriesBuilder<>(ValueMapper.stringToLong());
         }

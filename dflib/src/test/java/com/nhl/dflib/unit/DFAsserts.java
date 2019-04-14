@@ -44,15 +44,21 @@ public class DFAsserts {
         return this;
     }
 
-    public DFAsserts expectIntColumn(int pos) {
-        // the assertion is superfluous ... "getColumnAsInt" throws if the column is not an IntSeries
-        assertTrue(df.getColumnAsInt(pos) instanceof IntSeries);
+    public DFAsserts expectIntColumns(int... positions) {
+
+        for(int i = 0; i < positions.length; i++) {
+            // the assertion is superfluous ... "getColumnAsInt" throws if the column is not an IntSeries
+            assertTrue(df.getColumnAsInt(positions[i]) instanceof IntSeries);
+        }
         return this;
     }
 
-    public DFAsserts expectIntColumn(String label) {
-        // the assertion is superfluous ... "getColumnAsInt" throws if the column is not an IntSeries
-        assertTrue(df.getColumnAsInt(label) instanceof IntSeries);
+    public DFAsserts expectIntColumns(String... labels) {
+        for(int i = 0; i < labels.length; i++) {
+
+            // the assertion is superfluous ... "getColumnAsInt" throws if the column is not an IntSeries
+            assertTrue(df.getColumnAsInt(labels[i]) instanceof IntSeries);
+        }
         return this;
     }
 

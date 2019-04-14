@@ -8,7 +8,17 @@ package com.nhl.dflib.map;
 public interface IntValueMapper<V> {
 
     static IntValueMapper<String> stringToInt() {
-        return s -> s != null ? Integer.parseInt(s) : 0;
+        return s -> {
+            if (s == null || s.length() == 0) {
+                throw new IllegalArgumentException("Can't convert a null to a primitive int");
+            }
+
+            return Integer.parseInt(s);
+        };
+    }
+
+    static IntValueMapper<String> stringToInt(int forNull) {
+        return s -> s != null && s.length() > 0 ? Integer.parseInt(s) : forNull;
     }
 
     static IntValueMapper<? extends Number> numToInt() {

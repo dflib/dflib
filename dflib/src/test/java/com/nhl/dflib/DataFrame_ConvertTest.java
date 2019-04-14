@@ -78,7 +78,7 @@ public class DataFrame_ConvertTest extends BaseDataFrameTest {
         Index i1 = Index.forLabels("a", "b");
         DataFrame df = createDf(i1,
                 "1", "x",
-                null, "z",
+                "5", "z",
                 "2", "y")
                 .convertColumnToInt("a", IntValueMapper.stringToInt());
 
@@ -86,7 +86,7 @@ public class DataFrame_ConvertTest extends BaseDataFrameTest {
         new DFAsserts(df, "a", "b")
                 .expectHeight(3)
                 .expectRow(0, 1, "x")
-                .expectRow(1, 0, "z")
+                .expectRow(1, 5, "z")
                 .expectRow(2, 2, "y");
     }
 
@@ -95,7 +95,7 @@ public class DataFrame_ConvertTest extends BaseDataFrameTest {
         Index i1 = Index.forLabels("a", "b");
         DataFrame df = createDf(i1,
                 "1", "x",
-                null, "z",
+                "5", "z",
                 "2", "y")
                 .convertColumnToInt(0, IntValueMapper.stringToInt());
 
@@ -103,7 +103,33 @@ public class DataFrame_ConvertTest extends BaseDataFrameTest {
         new DFAsserts(df, "a", "b")
                 .expectHeight(3)
                 .expectRow(0, 1, "x")
-                .expectRow(1, 0, "z")
+                .expectRow(1, 5, "z")
+                .expectRow(2, 2, "y");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testConvertColumnToInt_Nulls() {
+        Index i1 = Index.forLabels("a", "b");
+        DataFrame df = createDf(i1,
+                "1", "x",
+                null, "z",
+                "2", "y")
+                .convertColumnToInt(0, IntValueMapper.stringToInt());
+    }
+
+    @Test
+    public void testConvertColumnToInt_NullsDefault() {
+        Index i1 = Index.forLabels("a", "b");
+        DataFrame df = createDf(i1,
+                "1", "x",
+                null, "z",
+                "2", "y")
+                .convertColumnToInt(0, IntValueMapper.stringToInt(-100));
+
+        new DFAsserts(df, "a", "b")
+                .expectHeight(3)
+                .expectRow(0, 1, "x")
+                .expectRow(1, -100, "z")
                 .expectRow(2, 2, "y");
     }
 }

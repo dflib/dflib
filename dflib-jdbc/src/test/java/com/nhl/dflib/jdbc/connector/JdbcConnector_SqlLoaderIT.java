@@ -106,7 +106,7 @@ public class JdbcConnector_SqlLoaderIT extends BaseDbTest {
 
         new DFAsserts(df, "int")
                 .expectHeight(1)
-                .expectIntColumn(0)
+                .expectIntColumns(0)
                 .expectRow(0, -15);
     }
 }
