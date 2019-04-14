@@ -31,6 +31,15 @@ import java.util.stream.Stream;
 public interface DataFrame extends Iterable<RowProxy> {
 
     /**
+     * Creates a DataFrame from a column index and an array of {@link Series} representing columns.
+     *
+     * @since 0.6
+     */
+    static DataFrame forColumns(Index columnIndex, Series<?>... dataColumns) {
+        return new ColumnDataFrame(columnIndex, dataColumns);
+    }
+
+    /**
      * Creates a DataFrame by folding the provided stream of objects into rows and columns row by row.
      */
     static <T> DataFrame forStreamFoldByRow(Index columns, Stream<T> stream) {
@@ -81,9 +90,29 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     Index getColumnsIndex();
 
-    <T> Series<T> getColumn(String name);
+    <T> Series<T> getColumn(String name) throws IllegalArgumentException;
 
-    <T> Series<T> getColumn(int pos);
+    <T> Series<T> getColumn(int pos) throws IllegalArgumentException;
+
+    /**
+     * Returns a named DataFrame column as IntSeries. If the column is not in the DataFrame or is not an
+     * {@link IntSeries}, an exception is thrown.
+     *
+     * @param name column label
+     * @return a named DataFrame column as IntSeries.
+     * @since 0.6
+     */
+    IntSeries getColumnAsInt(String name) throws IllegalArgumentException;
+
+    /**
+     * Returns a DataFrame column at the specified position as IntSeries. If the column is not in the DataFrame or is
+     * not an {@link IntSeries}, an exception is thrown.
+     *
+     * @param pos column position in the DataFrame
+     * @return a named DataFrame column as IntSeries.
+     * @since 0.6
+     */
+    IntSeries getColumnAsInt(int pos) throws IllegalArgumentException;
 
     /**
      * Returns the number of rows in this DataFrame. Aka the DataFrame "height". Note that depending on the type of
@@ -198,8 +227,8 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Selects DataFrame rows based on provided row index. This allows to reorder, filter, duplicate rows of this
      * DataFrame.
      *
-     * @return a new DataFrame that matches the selection criteria
      * @param rowPositions
+     * @return a new DataFrame that matches the selection criteria
      */
     DataFrame select(IntSeries rowPositions);
 

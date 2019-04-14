@@ -36,7 +36,7 @@ public class ColumnDataFrame implements DataFrame {
     private Index columnsIndex;
     private Series[] dataColumns;
 
-    public ColumnDataFrame(Index columnsIndex, Series... dataColumns) {
+    public ColumnDataFrame(Index columnsIndex, Series<?>... dataColumns) {
         this.columnsIndex = Objects.requireNonNull(columnsIndex);
         this.dataColumns = Objects.requireNonNull(dataColumns);
     }
@@ -59,6 +59,26 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public <T> Series<T> getColumn(String name) {
         return dataColumns[columnsIndex.position(name)];
+    }
+
+    @Override
+    public IntSeries getColumnAsInt(int pos) {
+        Series<?> s = getColumn(pos);
+        if (s instanceof IntSeries) {
+            return (IntSeries) s;
+        }
+
+        throw new IllegalArgumentException("Column at " + pos + " is not an IntSeries: " + s.getClass().getSimpleName());
+    }
+
+    @Override
+    public IntSeries getColumnAsInt(String name) throws IllegalArgumentException {
+        Series<?> s = getColumn(name);
+        if (s instanceof IntSeries) {
+            return (IntSeries) s;
+        }
+
+        throw new IllegalArgumentException("Column '" + name + "' is not an IntSeries: " + s.getClass().getSimpleName());
     }
 
     @Override
