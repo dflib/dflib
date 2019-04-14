@@ -6,6 +6,11 @@ import com.nhl.dflib.concat.SeriesConcat;
 
 import static java.util.Arrays.asList;
 
+/**
+ * A base implementation of various boilerplate methods for {@link IntSeries}.
+ *
+ * @since 0.6
+ */
 public abstract class IntBaseSeries implements IntSeries {
 
     @Override

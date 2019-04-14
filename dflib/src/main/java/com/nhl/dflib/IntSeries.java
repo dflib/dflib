@@ -3,12 +3,16 @@ package com.nhl.dflib;
 import com.nhl.dflib.series.IntArraySeries;
 
 /**
- * A series that is optimized to store primitive int values.
+ * A Series optimized to store and access primitive int values without <code>java.lang.Integer</code> wrapper. Can also
+ * pose as "Series&lt;Integer>", although this is not the most efficient way of using these Series.
  *
  * @since 0.6
  */
 public interface IntSeries extends Series<Integer> {
 
+    static IntSeries forInts(int... ints) {
+        return new IntArraySeries(ints);
+    }
 
     int getInt(int index);
 
