@@ -4,6 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.benchmark.DataGenerator;
 import com.nhl.dflib.benchmark.ValueMaker;
 import com.nhl.dflib.benchmark.memory.benchmark.MemoryTest;
+import com.nhl.dflib.map.IntValueMapper;
 
 public class ColumnarDataFrameMemory extends MemoryTest {
 
@@ -16,6 +17,7 @@ public class ColumnarDataFrameMemory extends MemoryTest {
         ColumnarDataFrameMemory test = new ColumnarDataFrameMemory();
         test.run("nullCells", test::nullCells, cells);
         test.run("intCells", test::intCells, cells);
+        test.run("primitiveIntCells", test::primitiveIntCells, cells);
         test.run("longCells", test::longCells, cells);
         test.run("boolCells", test::boolCells, cells);
         test.run("repeatingStringCells", test::repeatingStringCells, cells);
@@ -34,6 +36,14 @@ public class ColumnarDataFrameMemory extends MemoryTest {
         DataFrame df = DataGenerator.columnarDF(ROWS,
                 ValueMaker.intSeq(),
                 ValueMaker.intSeq());
+        df.materialize().iterator();
+        return df;
+    }
+
+    public DataFrame primitiveIntCells() {
+        DataFrame df = DataGenerator.columnarDF(ROWS, ValueMaker.intSeq(), ValueMaker.intSeq())
+                .convertColumnToInt(0, IntValueMapper.numToInt())
+                .convertColumnToInt(1, IntValueMapper.numToInt());
         df.materialize().iterator();
         return df;
     }
