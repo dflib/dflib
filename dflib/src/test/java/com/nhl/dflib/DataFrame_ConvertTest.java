@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.map.IntValueMapper;
 import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.unit.DFAsserts;
 import org.junit.Test;
@@ -72,5 +73,38 @@ public class DataFrame_ConvertTest extends BaseDataFrameTest {
                 .expectRow(2, new Object[]{null});
     }
 
+    @Test
+    public void testConvertColumnToInt_ByLabel() {
+        Index i1 = Index.forLabels("a", "b");
+        DataFrame df = createDf(i1,
+                "1", "x",
+                null, "z",
+                "2", "y")
+                .convertColumnToInt("a", IntValueMapper.stringToInt());
+
+
+        new DFAsserts(df, "a", "b")
+                .expectHeight(3)
+                .expectRow(0, 1, "x")
+                .expectRow(1, 0, "z")
+                .expectRow(2, 2, "y");
+    }
+
+    @Test
+    public void testConvertColumnToInt_ByPos() {
+        Index i1 = Index.forLabels("a", "b");
+        DataFrame df = createDf(i1,
+                "1", "x",
+                null, "z",
+                "2", "y")
+                .convertColumnToInt(0, IntValueMapper.stringToInt());
+
+
+        new DFAsserts(df, "a", "b")
+                .expectHeight(3)
+                .expectRow(0, 1, "x")
+                .expectRow(1, 0, "z")
+                .expectRow(2, 2, "y");
+    }
 }
 

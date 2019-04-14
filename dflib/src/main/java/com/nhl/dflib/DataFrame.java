@@ -8,6 +8,7 @@ import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.Hasher;
+import com.nhl.dflib.map.IntValueMapper;
 import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.map.RowMapper;
 import com.nhl.dflib.map.RowToValueMapper;
@@ -165,7 +166,28 @@ public interface DataFrame extends Iterable<RowProxy> {
         return convertColumn(pos, converter);
     }
 
-    <V, VR> DataFrame convertColumn(int columnPos, ValueMapper<V, VR> converter);
+    <V, VR> DataFrame convertColumn(int pos, ValueMapper<V, VR> converter);
+
+    /**
+     * @param columnLabel name of a column to convert
+     * @param converter   a function to apply to column values to covert them to ints
+     * @param <V>         expected input column value
+     * @return a new DataFrame
+     * @since 0.6
+     */
+    default <V> DataFrame convertColumnToInt(String columnLabel, IntValueMapper<V> converter) {
+        int pos = getColumnsIndex().position(columnLabel);
+        return convertColumnToInt(pos, converter);
+    }
+
+    /**
+     * @param pos       position of a column to convert
+     * @param converter a function to apply to column values to covert them to ints
+     * @param <V>       expected input column value
+     * @return a new DataFrame
+     * @since 0.6
+     */
+    <V> DataFrame convertColumnToInt(int pos, IntValueMapper<V> converter);
 
     /**
      * Adds row number column to the DataFrame

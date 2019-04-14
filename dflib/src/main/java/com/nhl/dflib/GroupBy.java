@@ -7,8 +7,7 @@ import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.row.RowProxy;
-import com.nhl.dflib.seq.Sequences;
-import com.nhl.dflib.series.ArraySeries;
+import com.nhl.dflib.series.IntSequenceSeries;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
 
@@ -83,7 +82,7 @@ public class GroupBy {
 
         int i = 0;
         for (IntSeries s : groupsIndex.values()) {
-            Series<Integer> numbersWithGroup = new ArraySeries<>(Sequences.numberSequence(s.size()));
+            IntSeries numbersWithGroup = new IntSequenceSeries(0, s.size());
             numberedIndex[i] = new ColumnDataFrame(TWO_COLUMN_INDEX, s, numbersWithGroup);
             i++;
         }

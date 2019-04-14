@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.collection.IntMutableList;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.filter.FilterIndexer;
@@ -12,6 +13,7 @@ import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.join.NestedLoopJoiner;
 import com.nhl.dflib.map.Hasher;
+import com.nhl.dflib.map.IntValueMapper;
 import com.nhl.dflib.map.Mapper;
 import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.map.RowMapper;
@@ -19,10 +21,9 @@ import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.row.CrossColumnRowProxy;
 import com.nhl.dflib.row.RowProxy;
-import com.nhl.dflib.seq.Sequences;
-import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.ColumnMappedSeries;
 import com.nhl.dflib.series.IntArraySeries;
+import com.nhl.dflib.series.IntSequenceSeries;
 import com.nhl.dflib.series.RowMappedSeries;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
@@ -83,7 +84,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public DataFrame addRowNumber(String columnName) {
-        return addColumn(columnName, new ArraySeries<>(Sequences.numberSequence(height())));
+        return addColumn(columnName, new IntSequenceSeries(0, height()));
     }
 
     @Override
@@ -299,8 +300,20 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public <V, VR> DataFrame convertColumn(int columnPos, ValueMapper<V, VR> converter) {
-        return replaceColumn(columnPos, new ColumnMappedSeries(dataColumns[columnPos], converter));
+    public <V, VR> DataFrame convertColumn(int pos, ValueMapper<V, VR> converter) {
+        return replaceColumn(pos, new ColumnMappedSeries(dataColumns[pos], converter));
+    }
+
+    @Override
+    public <V> DataFrame convertColumnToInt(int pos, IntValueMapper<V> converter) {
+        Series<?> c = dataColumns[pos];
+        int len = c.size();
+        IntMutableList ints = new IntMutableList(len);
+        for (int i = 0; i < len; i++) {
+            ints.add(converter.map((V) c.get(i)));
+        }
+
+        return replaceColumn(pos, ints.toIntSeries());
     }
 
     @Override
