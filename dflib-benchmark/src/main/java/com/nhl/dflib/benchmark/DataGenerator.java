@@ -3,27 +3,11 @@ package com.nhl.dflib.benchmark;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.collection.IntMutableList;
+import com.nhl.dflib.collection.MutableList;
 
-import java.util.Spliterators;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
-public class DataGenerator extends Spliterators.AbstractSpliterator<Object> {
-
-    private int width;
-    private int height;
-    private ValueMaker<?>[] columnValueMakers;
-
-    private int index;
-
-    protected DataGenerator(ValueMaker<?>[] columnValueMakers, int height) {
-        super(height, 0);
-        this.columnValueMakers = columnValueMakers;
-        this.height = height;
-        this.width = columnValueMakers.length;
-    }
+public class DataGenerator {
 
     public static DataFrame columnarDFWithMixedData(int rows) {
 
@@ -50,28 +34,26 @@ public class DataGenerator extends Spliterators.AbstractSpliterator<Object> {
 
     public static DataFrame columnarDF(int rows, ValueMaker<?>... columnValueMakers) {
 
-        String[] columnNames = new String[columnValueMakers.length];
-        for (int i = 0; i < columnValueMakers.length; i++) {
+        int w = columnValueMakers.length;
+        String[] columnNames = new String[w];
+        for (int i = 0; i < w; i++) {
             columnNames[i] = "c" + i;
         }
 
-        // TODO: fold by column - much faster for columnar DF
         Index index = Index.forLabels(columnNames);
-        return DataFrame.forStreamFoldByRow(index, dataStream(rows, columnValueMakers));
-    }
 
-    private static Stream<Object> dataStream(int rows, ValueMaker<?>... columnValueMakers) {
-        return StreamSupport.stream(new DataGenerator(columnValueMakers, rows), false);
-    }
+        Series<?>[] data = new Series[w];
+        for (int i = 0; i < w; i++) {
+            MutableList ml = new MutableList<>(rows);
+            ValueMaker<?> vm = columnValueMakers[i];
 
-    @Override
-    public boolean tryAdvance(Consumer<? super Object> action) {
-        return index / width < height ? advance(action) : false;
-    }
+            for (int j = 0; j < rows; j++) {
+                ml.add(vm.get());
+            }
 
-    private boolean advance(Consumer<? super Object> action) {
-        action.accept(columnValueMakers[index % width].get());
-        index++;
-        return true;
+            data[i] = ml.toSeries().materialize();
+        }
+
+        return DataFrame.forColumns(index, data);
     }
 }
