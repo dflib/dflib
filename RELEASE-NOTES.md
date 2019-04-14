@@ -5,6 +5,7 @@
 * #25 CsvLoader to provide shortcuts for datetime and number conversions
 * #26 IntSeries / IntMutableList for joins and filters
 * #27 IntSeries / IntMutableList for sort and group
+* #28 Make IntSeries compatible with Series<Integer>
 
 ## Release 0.5
 
