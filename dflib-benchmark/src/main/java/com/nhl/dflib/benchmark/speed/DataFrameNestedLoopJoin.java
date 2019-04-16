@@ -3,7 +3,6 @@ package com.nhl.dflib.benchmark.speed;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.benchmark.DataGenerator;
 import com.nhl.dflib.benchmark.ValueMaker;
-import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -17,6 +16,7 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Warmup(iterations = 2, time = 1)
@@ -56,28 +56,28 @@ public class DataFrameNestedLoopJoin {
     @Benchmark
     public Object leftJoin() {
         return df1
-                .join(df2, JoinPredicate.on("c0", "c2"), JoinType.left)
+                .join(df2, (lr, rr) -> Objects.equals(lr.get("c0"), rr.get("c2")), JoinType.left)
                 .materialize().iterator();
     }
 
     @Benchmark
     public Object rightJoin() {
         return df1
-                .join(df2, JoinPredicate.on("c0", "c2"), JoinType.right)
+                .join(df2, (lr, rr) -> Objects.equals(lr.get("c0"), rr.get("c2")), JoinType.right)
                 .materialize().iterator();
     }
 
     @Benchmark
     public Object innerJoin() {
         return df1
-                .join(df2, JoinPredicate.on("c0", "c2"), JoinType.inner)
+                .join(df2, (lr, rr) -> Objects.equals(lr.get("c0"), rr.get("c2")), JoinType.inner)
                 .materialize().iterator();
     }
 
     @Benchmark
     public Object fullJoin() {
         return df1
-                .join(df2, JoinPredicate.on("c0", "c2"), JoinType.inner)
+                .join(df2, (lr, rr) -> Objects.equals(lr.get("c0"), rr.get("c2")), JoinType.inner)
                 .materialize().iterator();
     }
 
