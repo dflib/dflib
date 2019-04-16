@@ -50,7 +50,7 @@ public class IntIndexedSeries extends IntBaseSeries {
     public IntSeries tailInt(int len) {
         return includePositions != null
                 ? new IntIndexedSeries(source, includePositions.tailInt(len))
-                : materialized.headInt(len);
+                : materialized.tailInt(len);
     }
 
     @Override

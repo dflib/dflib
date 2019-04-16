@@ -4,7 +4,7 @@ package com.nhl.dflib.filter;
  * @since 0.6
  */
 @FunctionalInterface
-public interface IntPredicate {
+public interface DoublePredicate {
 
-    boolean test(int value);
+    boolean test(double value);
 }

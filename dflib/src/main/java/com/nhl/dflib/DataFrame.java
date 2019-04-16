@@ -7,6 +7,7 @@ import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
+import com.nhl.dflib.map.DoubleValueMapper;
 import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.map.IntValueMapper;
 import com.nhl.dflib.map.RowCombiner;
@@ -116,6 +117,26 @@ public interface DataFrame extends Iterable<RowProxy> {
     IntSeries getColumnAsInt(int pos) throws IllegalArgumentException;
 
     /**
+     * Returns a named DataFrame column as DoubleSeries. If the column is not in the DataFrame or is not an
+     * {@link DoubleSeries}, an exception is thrown.
+     *
+     * @param name column label
+     * @return a named DataFrame column as DoubleSeries.
+     * @since 0.6
+     */
+    DoubleSeries getColumnAsDouble(String name) throws IllegalArgumentException;
+
+    /**
+     * Returns a DataFrame column at the specified position as DoubleSeries. If the column is not in the DataFrame or is
+     * not an {@link DoubleSeries}, an exception is thrown.
+     *
+     * @param pos column position in the DataFrame
+     * @return a named DataFrame column as DoubleSeries.
+     * @since 0.6
+     */
+    DoubleSeries getColumnAsDouble(int pos) throws IllegalArgumentException;
+
+    /**
      * Returns the number of rows in this DataFrame. Aka the DataFrame "height". Note that depending on the type of
      * the DataFrame this operation may or may not be constant speed. In the worst case it would require a full scan
      * through all rows.
@@ -188,6 +209,28 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.6
      */
     <V> DataFrame convertColumnToInt(int pos, IntValueMapper<V> converter);
+
+    /**
+     * @param columnLabel name of a column to convert
+     * @param converter   a function to apply to column values to covert them to doubles
+     * @param <V>         expected input column value
+     * @return a new DataFrame
+     * @since 0.6
+     */
+    default <V> DataFrame convertColumnToDouble(String columnLabel, DoubleValueMapper<V> converter) {
+        int pos = getColumnsIndex().position(columnLabel);
+        return convertColumnToDouble(pos, converter);
+    }
+
+    /**
+     * @param pos       position of a column to convert
+     * @param converter a function to apply to column values to covert them to ints
+     * @param <V>       expected input column value
+     * @return a new DataFrame
+     * @since 0.6
+     */
+    <V> DataFrame convertColumnToDouble(int pos, DoubleValueMapper<V> converter);
+
 
     /**
      * Adds row number column to the DataFrame

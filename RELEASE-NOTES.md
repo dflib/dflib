@@ -6,6 +6,7 @@
 * #26 IntSeries / IntMutableList for joins and filters
 * #27 IntSeries / IntMutableList for sort and group
 * #28 Make IntSeries compatible with Series<Integer>
+* #29 DoubleSeries
 
 ## Release 0.5
 

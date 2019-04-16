@@ -6,7 +6,7 @@ import com.nhl.dflib.series.IntArraySeries;
 
 /**
  * A Series optimized to store and access primitive int values without <code>java.lang.Integer</code> wrapper. Can also
- * pose as "Series&lt;Integer>", although this is not the most efficient way of using these Series.
+ * pose as "Series&lt;Integer>", although this is not the most efficient way of using it.
  *
  * @since 0.6
  */

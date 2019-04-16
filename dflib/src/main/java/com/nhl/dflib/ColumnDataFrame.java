@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.collection.DoubleMutableList;
 import com.nhl.dflib.collection.IntMutableList;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.VConcat;
@@ -12,6 +13,7 @@ import com.nhl.dflib.join.JoinMerger;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.join.NestedLoopJoiner;
+import com.nhl.dflib.map.DoubleValueMapper;
 import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.map.IntValueMapper;
 import com.nhl.dflib.map.Mapper;
@@ -80,6 +82,26 @@ public class ColumnDataFrame implements DataFrame {
         }
 
         throw new IllegalArgumentException("Column '" + name + "' is not an IntSeries: " + s.getClass().getSimpleName());
+    }
+
+    @Override
+    public DoubleSeries getColumnAsDouble(int pos) throws IllegalArgumentException {
+        Series<?> s = getColumn(pos);
+        if (s instanceof DoubleSeries) {
+            return (DoubleSeries) s;
+        }
+
+        throw new IllegalArgumentException("Column at " + pos + " is not a DoubleSeries: " + s.getClass().getSimpleName());
+    }
+
+    @Override
+    public DoubleSeries getColumnAsDouble(String name) throws IllegalArgumentException {
+        Series<?> s = getColumn(name);
+        if (s instanceof DoubleSeries) {
+            return (DoubleSeries) s;
+        }
+
+        throw new IllegalArgumentException("Column '" + name + "' is not a DoubleSeries: " + s.getClass().getSimpleName());
     }
 
     @Override
@@ -314,6 +336,18 @@ public class ColumnDataFrame implements DataFrame {
         }
 
         return replaceColumn(pos, ints.toIntSeries());
+    }
+
+    @Override
+    public <V> DataFrame convertColumnToDouble(int pos, DoubleValueMapper<V> converter) {
+        Series<?> c = dataColumns[pos];
+        int len = c.size();
+        DoubleMutableList doubles = new DoubleMutableList(len);
+        for (int i = 0; i < len; i++) {
+            doubles.add(converter.map((V) c.get(i)));
+        }
+
+        return replaceColumn(pos, doubles.toDoubleSeries());
     }
 
     @Override

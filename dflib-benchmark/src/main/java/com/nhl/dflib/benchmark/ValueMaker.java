@@ -14,6 +14,12 @@ public interface ValueMaker<T> {
         return () -> val[0]++;
     }
 
+    static ValueMaker<Double> doubleSeq() {
+        double[] val = new double[1];
+        val[0] = 0.01;
+        return () -> val[0]++;
+    }
+
     static ValueMaker<Long> longSeq() {
         long[] val = new long[1];
         return () -> val[0]++;
