@@ -32,6 +32,10 @@ DFLib is easy to convert to and from other tabular formats, such as
 RDBMS tables, CSV. It can also be mapped to hierarchical formats like
 JSON and XML.
 
+Here is a 20 min DFLib presentation video (ca. v.0.5):
+
+[![DFLib at WODay Frankfurt](http://img.youtube.com/vi/WSqvEdRZsuE/0.jpg)](http://www.youtube.com/watch?v=WSqvEdRZsuE)
+
 ## Getting Started
 
 Include DFLib in a project. Start by declaring a "BOM" to have a common version
