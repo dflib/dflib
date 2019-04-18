@@ -159,6 +159,20 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
+    public void testFromFile_DoubleColumn_Nulls_Default() {
+        DataFrame df = new CsvLoader()
+                .doubleColumn(0, -1.1)
+                .doubleColumn(1, -3.14)
+                .load(inPath("doubles_w_nulls.csv"));
+
+        new DFAsserts(df, "One", "Two")
+                .expectHeight(2)
+                .expectDoubleColumns(0, 1)
+                .expectRow(0, -1.1, 3.1)
+                .expectRow(1, 5.2002, -3.14);
+    }
+
+    @Test
     public void testFromFile_DateTimeColumns() {
         DataFrame df = new CsvLoader()
                 .dateColumn(0)

@@ -1,6 +1,7 @@
 package com.nhl.dflib.unit;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.DoubleSeries;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
 
@@ -46,7 +47,7 @@ public class DFAsserts {
 
     public DFAsserts expectIntColumns(int... positions) {
 
-        for(int i = 0; i < positions.length; i++) {
+        for (int i = 0; i < positions.length; i++) {
             // the assertion is superfluous ... "getColumnAsInt" throws if the column is not an IntSeries
             assertTrue(df.getColumnAsInt(positions[i]) instanceof IntSeries);
         }
@@ -54,10 +55,28 @@ public class DFAsserts {
     }
 
     public DFAsserts expectIntColumns(String... labels) {
-        for(int i = 0; i < labels.length; i++) {
+        for (int i = 0; i < labels.length; i++) {
 
             // the assertion is superfluous ... "getColumnAsInt" throws if the column is not an IntSeries
             assertTrue(df.getColumnAsInt(labels[i]) instanceof IntSeries);
+        }
+        return this;
+    }
+
+    public DFAsserts expectDoubleColumns(int... positions) {
+
+        for (int i = 0; i < positions.length; i++) {
+            // the assertion is superfluous ... "getColumnAsDouble" throws if the column is not an DoubleSeries
+            assertTrue(df.getColumnAsDouble(positions[i]) instanceof DoubleSeries);
+        }
+        return this;
+    }
+
+    public DFAsserts expectDoubleColumns(String... labels) {
+        for (int i = 0; i < labels.length; i++) {
+
+            // the assertion is superfluous ... "getColumnAsInt" throws if the column is not an IntSeries
+            assertTrue(df.getColumnAsDouble(labels[i]) instanceof DoubleSeries);
         }
         return this;
     }

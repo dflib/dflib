@@ -38,6 +38,9 @@ public class JdbcConnector {
         // use primitive converters if the column has no nulls
         this.mandatorySeriesBuilderFactories = new HashMap<>();
         this.mandatorySeriesBuilderFactories.put(Types.INTEGER, SeriesBuilderFactory::intAccum);
+        this.mandatorySeriesBuilderFactories.put(Types.DOUBLE, SeriesBuilderFactory::doubleAccum);
+        this.mandatorySeriesBuilderFactories.put(Types.FLOAT, SeriesBuilderFactory::doubleAccum);
+        // Types.DECIMAL should presumably be mapped to BigDecimal, so not attempting to map to a primitive double
 
         this.seriesBuilderFactories = new HashMap<>();
         this.seriesBuilderFactories.put(Types.DATE, SeriesBuilderFactory::dateAccum);

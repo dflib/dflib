@@ -2,10 +2,12 @@ package com.nhl.dflib.csv;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.builder.DoubleSeriesBuilder;
 import com.nhl.dflib.builder.IntSeriesBuilder;
 import com.nhl.dflib.builder.MappedSeriesBuilder;
 import com.nhl.dflib.builder.ObjectSeriesBuilder;
 import com.nhl.dflib.builder.SeriesBuilder;
+import com.nhl.dflib.map.DoubleValueMapper;
 import com.nhl.dflib.map.IntValueMapper;
 import com.nhl.dflib.map.ValueMapper;
 import org.apache.commons.csv.CSVFormat;
@@ -112,6 +114,34 @@ public class CsvLoader {
      */
     public CsvLoader intColumn(String column, int forNull) {
         return columnType(column, new IntSeriesBuilder(IntValueMapper.stringToInt(forNull)));
+    }
+
+    /**
+     * @since 0.6
+     */
+    public CsvLoader doubleColumn(int column) {
+        return columnType(column, new DoubleSeriesBuilder(DoubleValueMapper.stringToDouble()));
+    }
+
+    /**
+     * @since 0.6
+     */
+    public CsvLoader doubleColumn(String column) {
+        return columnType(column, new DoubleSeriesBuilder(DoubleValueMapper.stringToDouble()));
+    }
+
+    /**
+     * @since 0.6
+     */
+    public CsvLoader doubleColumn(int column, double forNull) {
+        return columnType(column, new DoubleSeriesBuilder(DoubleValueMapper.stringToDouble(forNull)));
+    }
+
+    /**
+     * @since 0.6
+     */
+    public CsvLoader doubleColumn(String column, double forNull) {
+        return columnType(column, new DoubleSeriesBuilder(DoubleValueMapper.stringToDouble(forNull)));
     }
 
     /**

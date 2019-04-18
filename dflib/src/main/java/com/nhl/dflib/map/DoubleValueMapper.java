@@ -16,7 +16,7 @@ public interface DoubleValueMapper<V> {
         };
     }
 
-    static DoubleValueMapper<String> stringToDouble(int forNull) {
+    static DoubleValueMapper<String> stringToDouble(double forNull) {
         return s -> s != null && s.length() > 0 ? Double.parseDouble(s) : forNull;
     }
 

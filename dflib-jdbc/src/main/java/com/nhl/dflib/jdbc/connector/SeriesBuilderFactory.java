@@ -1,5 +1,6 @@
 package com.nhl.dflib.jdbc.connector;
 
+import com.nhl.dflib.builder.DoubleSeriesBuilder;
 import com.nhl.dflib.builder.IntSeriesBuilder;
 import com.nhl.dflib.builder.MappedSeriesBuilder;
 import com.nhl.dflib.builder.SeriesBuilder;
@@ -13,6 +14,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+/**
+ * @since 0.6
+ * @param <T>
+ */
 @FunctionalInterface
 public interface SeriesBuilderFactory<T> {
 
@@ -20,6 +25,16 @@ public interface SeriesBuilderFactory<T> {
         return new IntSeriesBuilder<>(rs -> {
             try {
                 return rs.getInt(pos);
+            } catch (SQLException e) {
+                throw new RuntimeException("Error performing SQL operation", e);
+            }
+        });
+    }
+
+    static SeriesBuilder<ResultSet, Double> doubleAccum(int pos) {
+        return new DoubleSeriesBuilder<>(rs -> {
+            try {
+                return rs.getDouble(pos);
             } catch (SQLException e) {
                 throw new RuntimeException("Error performing SQL operation", e);
             }
