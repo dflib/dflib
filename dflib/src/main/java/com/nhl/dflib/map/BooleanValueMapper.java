@@ -5,18 +5,23 @@ package com.nhl.dflib.map;
  */
 public interface BooleanValueMapper<V> {
 
-    static BooleanValueMapper<String> fromString() {
-        return s -> {
-            if (s == null || s.length() == 0) {
-                throw new IllegalArgumentException("Can't convert a null to a primitive int");
+    static BooleanValueMapper<Object> fromObject() {
+        return o -> {
+
+            if (o instanceof Boolean) {
+                return ((Boolean) o).booleanValue();
             }
 
+            String s = o != null ? o.toString() : null;
+
+            // null-safe... "parseBoolean" returns false for null
             return Boolean.parseBoolean(s);
         };
     }
 
-    static BooleanValueMapper<String> fromString(boolean forNull) {
-        return s -> s != null && s.length() > 0 ? Boolean.parseBoolean(s) : forNull;
+    static BooleanValueMapper<String> fromString() {
+        // null-safe... "parseBoolean" returns false for null
+        return s -> Boolean.parseBoolean(s);
     }
 
     boolean map(V v);

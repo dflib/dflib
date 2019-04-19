@@ -21,6 +21,7 @@ public class ColumnarDataFrameMemory extends MemoryTest {
         test.run("primitiveDoubleCells", test::primitiveDoubleCells, cells);
         test.run("longCells", test::longCells, cells);
         test.run("boolCells", test::boolCells, cells);
+        test.run("primitiveBoolCells", test::primitiveBoolCells, cells);
         test.run("repeatingStringCells", test::repeatingStringCells, cells);
         test.run("randStringCells", test::randStringCells, cells);
     }
@@ -50,9 +51,7 @@ public class ColumnarDataFrameMemory extends MemoryTest {
     }
 
     public DataFrame intCells() {
-        DataFrame df = DataGenerator.columnarDF(ROWS,
-                ValueMaker.intSeq(),
-                ValueMaker.intSeq());
+        DataFrame df = DataGenerator.columnarDF(ROWS, ValueMaker.intSeq(), ValueMaker.intSeq());
         df.materialize().iterator();
         return df;
     }
@@ -66,17 +65,21 @@ public class ColumnarDataFrameMemory extends MemoryTest {
     }
 
     public DataFrame longCells() {
-        DataFrame df = DataGenerator.columnarDF(ROWS,
-                ValueMaker.longSeq(),
-                ValueMaker.longSeq());
+        DataFrame df = DataGenerator.columnarDF(ROWS, ValueMaker.longSeq(), ValueMaker.longSeq());
         df.materialize().iterator();
         return df;
     }
 
     public DataFrame boolCells() {
-        DataFrame df = DataGenerator.columnarDF(ROWS,
-                ValueMaker.booleanSeq(),
-                ValueMaker.booleanSeq());
+        DataFrame df = DataGenerator.columnarDF(ROWS, ValueMaker.booleanSeq(), ValueMaker.booleanSeq());
+        df.materialize().iterator();
+        return df;
+    }
+
+    public DataFrame primitiveBoolCells() {
+        DataFrame df = DataGenerator.columnarDF(ROWS, ValueMaker.booleanSeq(), ValueMaker.booleanSeq())
+                .convertColumnToBoolean(0)
+                .convertColumnToBoolean(1);
         df.materialize().iterator();
         return df;
     }

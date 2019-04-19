@@ -7,6 +7,7 @@
 * #27 IntSeries / IntMutableList for sort and group
 * #28 Make IntSeries compatible with Series<Integer>
 * #29 DoubleSeries
+* #30 BooleanSeries 
 
 ## Release 0.5
 

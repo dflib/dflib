@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.collection.BooleanMutableList;
 import com.nhl.dflib.collection.DoubleMutableList;
 import com.nhl.dflib.collection.IntMutableList;
 import com.nhl.dflib.concat.HConcat;
@@ -13,6 +14,7 @@ import com.nhl.dflib.join.JoinMerger;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.join.NestedLoopJoiner;
+import com.nhl.dflib.map.BooleanValueMapper;
 import com.nhl.dflib.map.DoubleValueMapper;
 import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.map.IntValueMapper;
@@ -102,6 +104,26 @@ public class ColumnDataFrame implements DataFrame {
         }
 
         throw new IllegalArgumentException("Column '" + name + "' is not a DoubleSeries: " + s.getClass().getSimpleName());
+    }
+
+    @Override
+    public BooleanSeries getColumnAsBoolean(int pos) throws IllegalArgumentException {
+        Series<?> s = getColumn(pos);
+        if (s instanceof BooleanSeries) {
+            return (BooleanSeries) s;
+        }
+
+        throw new IllegalArgumentException("Column at " + pos + " is not a BooleanSeries: " + s.getClass().getSimpleName());
+    }
+
+    @Override
+    public BooleanSeries getColumnAsBoolean(String name) throws IllegalArgumentException {
+        Series<?> s = getColumn(name);
+        if (s instanceof BooleanSeries) {
+            return (BooleanSeries) s;
+        }
+
+        throw new IllegalArgumentException("Column at " + name + " is not a BooleanSeries: " + s.getClass().getSimpleName());
     }
 
     @Override
@@ -348,6 +370,18 @@ public class ColumnDataFrame implements DataFrame {
         }
 
         return replaceColumn(pos, doubles.toDoubleSeries());
+    }
+
+    @Override
+    public <V> DataFrame convertColumnToBoolean(int pos, BooleanValueMapper<V> converter) {
+        Series<?> c = dataColumns[pos];
+        int len = c.size();
+        BooleanMutableList bools = new BooleanMutableList(len);
+        for (int i = 0; i < len; i++) {
+            bools.add(converter.map((V) c.get(i)));
+        }
+
+        return replaceColumn(pos, bools.toBooleanSeries());
     }
 
     @Override

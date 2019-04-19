@@ -138,6 +138,26 @@ public interface DataFrame extends Iterable<RowProxy> {
     DoubleSeries getColumnAsDouble(int pos) throws IllegalArgumentException;
 
     /**
+     * Returns a named DataFrame column as BooleanSeries. If the column is not in the DataFrame or is not an
+     * {@link BooleanSeries}, an exception is thrown.
+     *
+     * @param name column label
+     * @return a named DataFrame column as BooleanSeries.
+     * @since 0.6
+     */
+    BooleanSeries getColumnAsBoolean(String name) throws IllegalArgumentException;
+
+    /**
+     * Returns a DataFrame column at the specified position as BooleanSeries. If the column is not in the DataFrame or is
+     * not an {@link BooleanSeries}, an exception is thrown.
+     *
+     * @param pos column position in the DataFrame
+     * @return a named DataFrame column as BooleanSeries.
+     * @since 0.6
+     */
+    BooleanSeries getColumnAsBoolean(int pos) throws IllegalArgumentException;
+
+    /**
      * Returns the number of rows in this DataFrame. Aka the DataFrame "height". Note that depending on the type of
      * the DataFrame this operation may or may not be constant speed. In the worst case it would require a full scan
      * through all rows.
@@ -298,6 +318,27 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.6
      */
     <V> DataFrame convertColumnToBoolean(int pos, BooleanValueMapper<V> converter);
+
+    /**
+     * @param columnLabel name of a column to convert
+     * @param <V>         expected input column value
+     * @return a new DataFrame
+     * @since 0.6
+     */
+    default <V> DataFrame convertColumnToBoolean(String columnLabel) {
+        int pos = getColumnsIndex().position(columnLabel);
+        return convertColumnToBoolean(pos);
+    }
+
+    /**
+     * @param pos position of a column to convert
+     * @param <V> expected input column value
+     * @return a new DataFrame
+     * @since 0.6
+     */
+    default <V> DataFrame convertColumnToBoolean(int pos) {
+        return convertColumnToBoolean(pos, BooleanValueMapper.fromObject());
+    }
 
     /**
      * Adds row number column to the DataFrame
