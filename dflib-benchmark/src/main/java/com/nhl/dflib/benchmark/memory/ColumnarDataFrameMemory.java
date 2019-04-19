@@ -45,8 +45,8 @@ public class ColumnarDataFrameMemory extends MemoryTest {
 
     public DataFrame primitiveDoubleCells() {
         DataFrame df = DataGenerator.columnarDF(ROWS, ValueMaker.doubleSeq(), ValueMaker.doubleSeq())
-                .convertColumnToDouble(0, DoubleValueMapper.numToDouble())
-                .convertColumnToDouble(1, DoubleValueMapper.numToDouble());
+                .convertColumnToDouble(0, DoubleValueMapper.fromNumber())
+                .convertColumnToDouble(1, DoubleValueMapper.fromNumber());
         df.materialize().iterator();
         return df;
     }

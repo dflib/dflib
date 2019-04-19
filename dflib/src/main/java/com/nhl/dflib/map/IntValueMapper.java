@@ -7,7 +7,7 @@ package com.nhl.dflib.map;
 @FunctionalInterface
 public interface IntValueMapper<V> {
 
-    static IntValueMapper<String> stringToInt() {
+    static IntValueMapper<String> fromString() {
         return s -> {
             if (s == null || s.length() == 0) {
                 throw new IllegalArgumentException("Can't convert a null to a primitive int");
@@ -17,7 +17,7 @@ public interface IntValueMapper<V> {
         };
     }
 
-    static IntValueMapper<String> stringToInt(int forNull) {
+    static IntValueMapper<String> fromString(int forNull) {
         return s -> s != null && s.length() > 0 ? Integer.parseInt(s) : forNull;
     }
 

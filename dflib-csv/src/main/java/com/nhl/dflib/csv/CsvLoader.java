@@ -92,56 +92,56 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader intColumn(int column) {
-        return columnType(column, new IntSeriesBuilder(IntValueMapper.stringToInt()));
+        return columnType(column, new IntSeriesBuilder(IntValueMapper.fromString()));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader intColumn(String column) {
-        return columnType(column, new IntSeriesBuilder(IntValueMapper.stringToInt()));
+        return columnType(column, new IntSeriesBuilder(IntValueMapper.fromString()));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader intColumn(int column, int forNull) {
-        return columnType(column, new IntSeriesBuilder(IntValueMapper.stringToInt(forNull)));
+        return columnType(column, new IntSeriesBuilder(IntValueMapper.fromString(forNull)));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader intColumn(String column, int forNull) {
-        return columnType(column, new IntSeriesBuilder(IntValueMapper.stringToInt(forNull)));
+        return columnType(column, new IntSeriesBuilder(IntValueMapper.fromString(forNull)));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader doubleColumn(int column) {
-        return columnType(column, new DoubleSeriesBuilder(DoubleValueMapper.stringToDouble()));
+        return columnType(column, new DoubleSeriesBuilder(DoubleValueMapper.fromString()));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader doubleColumn(String column) {
-        return columnType(column, new DoubleSeriesBuilder(DoubleValueMapper.stringToDouble()));
+        return columnType(column, new DoubleSeriesBuilder(DoubleValueMapper.fromString()));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader doubleColumn(int column, double forNull) {
-        return columnType(column, new DoubleSeriesBuilder(DoubleValueMapper.stringToDouble(forNull)));
+        return columnType(column, new DoubleSeriesBuilder(DoubleValueMapper.fromString(forNull)));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader doubleColumn(String column, double forNull) {
-        return columnType(column, new DoubleSeriesBuilder(DoubleValueMapper.stringToDouble(forNull)));
+        return columnType(column, new DoubleSeriesBuilder(DoubleValueMapper.fromString(forNull)));
     }
 
     /**

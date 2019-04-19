@@ -6,7 +6,7 @@ package com.nhl.dflib.map;
 @FunctionalInterface
 public interface DoubleValueMapper<V> {
 
-    static DoubleValueMapper<String> stringToDouble() {
+    static DoubleValueMapper<String> fromString() {
         return s -> {
             if (s == null || s.length() == 0) {
                 throw new IllegalArgumentException("Can't convert a null to a primitive double");
@@ -16,11 +16,11 @@ public interface DoubleValueMapper<V> {
         };
     }
 
-    static DoubleValueMapper<String> stringToDouble(double forNull) {
+    static DoubleValueMapper<String> fromString(double forNull) {
         return s -> s != null && s.length() > 0 ? Double.parseDouble(s) : forNull;
     }
 
-    static DoubleValueMapper<? extends Number> numToDouble() {
+    static DoubleValueMapper<? extends Number> fromNumber() {
         return n -> n != null ? n.doubleValue() : 0;
     }
 
