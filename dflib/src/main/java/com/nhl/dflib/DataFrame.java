@@ -211,15 +211,17 @@ public interface DataFrame extends Iterable<RowProxy> {
     <V, VR> DataFrame convertColumn(int pos, ValueMapper<V, VR> converter);
 
     /**
+     * Performs column conversion to a compact IntC
+     *
      * @param columnLabel name of a column to convert
      * @param converter   a function to apply to column values to covert them to ints
      * @param <V>         expected input column value
      * @return a new DataFrame
      * @since 0.6
      */
-    default <V> DataFrame convertColumnToInt(String columnLabel, IntValueMapper<V> converter) {
+    default <V> DataFrame toIntColumn(String columnLabel, IntValueMapper<V> converter) {
         int pos = getColumnsIndex().position(columnLabel);
-        return convertColumnToInt(pos, converter);
+        return toIntColumn(pos, converter);
     }
 
     /**
@@ -229,7 +231,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new DataFrame
      * @since 0.6
      */
-    <V> DataFrame convertColumnToInt(int pos, IntValueMapper<V> converter);
+    <V> DataFrame toIntColumn(int pos, IntValueMapper<V> converter);
 
     /**
      * @param columnLabel name of a column to convert
@@ -238,9 +240,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new DataFrame
      * @since 0.6
      */
-    default <V> DataFrame convertColumnToInt(String columnLabel, int forNull) {
+    default <V> DataFrame toIntColumn(String columnLabel, int forNull) {
         int pos = getColumnsIndex().position(columnLabel);
-        return convertColumnToInt(pos, forNull);
+        return toIntColumn(pos, forNull);
     }
 
     /**
@@ -250,8 +252,8 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new DataFrame
      * @since 0.6
      */
-    default <V> DataFrame convertColumnToInt(int pos, int forNull) {
-        return convertColumnToInt(pos, IntValueMapper.fromObject(forNull));
+    default <V> DataFrame toIntColumn(int pos, int forNull) {
+        return toIntColumn(pos, IntValueMapper.fromObject(forNull));
     }
 
     /**
@@ -261,9 +263,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new DataFrame
      * @since 0.6
      */
-    default <V> DataFrame convertColumnToDouble(String columnLabel, DoubleValueMapper<V> converter) {
+    default <V> DataFrame toDoubleColumn(String columnLabel, DoubleValueMapper<V> converter) {
         int pos = getColumnsIndex().position(columnLabel);
-        return convertColumnToDouble(pos, converter);
+        return toDoubleColumn(pos, converter);
     }
 
     /**
@@ -273,7 +275,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new DataFrame
      * @since 0.6
      */
-    <V> DataFrame convertColumnToDouble(int pos, DoubleValueMapper<V> converter);
+    <V> DataFrame toDoubleColumn(int pos, DoubleValueMapper<V> converter);
 
     /**
      * @param columnLabel name of a column to convert
@@ -282,9 +284,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new DataFrame
      * @since 0.6
      */
-    default <V> DataFrame convertColumnToDouble(String columnLabel, double forNull) {
+    default <V> DataFrame toDoubleColumn(String columnLabel, double forNull) {
         int pos = getColumnsIndex().position(columnLabel);
-        return convertColumnToDouble(pos, forNull);
+        return toDoubleColumn(pos, forNull);
     }
 
     /**
@@ -294,8 +296,8 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new DataFrame
      * @since 0.6
      */
-    default <V> DataFrame convertColumnToDouble(int pos, double forNull) {
-        return convertColumnToDouble(pos, DoubleValueMapper.fromObject(forNull));
+    default <V> DataFrame toDoubleColumn(int pos, double forNull) {
+        return toDoubleColumn(pos, DoubleValueMapper.fromObject(forNull));
     }
 
     /**
@@ -305,9 +307,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new DataFrame
      * @since 0.6
      */
-    default <V> DataFrame convertColumnToBoolean(String columnLabel, BooleanValueMapper<V> converter) {
+    default <V> DataFrame toBooleanColumn(String columnLabel, BooleanValueMapper<V> converter) {
         int pos = getColumnsIndex().position(columnLabel);
-        return convertColumnToBoolean(pos, converter);
+        return toBooleanColumn(pos, converter);
     }
 
     /**
@@ -317,7 +319,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new DataFrame
      * @since 0.6
      */
-    <V> DataFrame convertColumnToBoolean(int pos, BooleanValueMapper<V> converter);
+    <V> DataFrame toBooleanColumn(int pos, BooleanValueMapper<V> converter);
 
     /**
      * @param columnLabel name of a column to convert
@@ -325,9 +327,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new DataFrame
      * @since 0.6
      */
-    default <V> DataFrame convertColumnToBoolean(String columnLabel) {
+    default <V> DataFrame toBooleanColumn(String columnLabel) {
         int pos = getColumnsIndex().position(columnLabel);
-        return convertColumnToBoolean(pos);
+        return toBooleanColumn(pos);
     }
 
     /**
@@ -336,8 +338,8 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new DataFrame
      * @since 0.6
      */
-    default <V> DataFrame convertColumnToBoolean(int pos) {
-        return convertColumnToBoolean(pos, BooleanValueMapper.fromObject());
+    default <V> DataFrame toBooleanColumn(int pos) {
+        return toBooleanColumn(pos, BooleanValueMapper.fromObject());
     }
 
     /**

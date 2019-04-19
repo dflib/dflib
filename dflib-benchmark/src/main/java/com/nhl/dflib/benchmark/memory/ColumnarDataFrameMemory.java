@@ -44,8 +44,8 @@ public class ColumnarDataFrameMemory extends MemoryTest {
 
     public DataFrame primitiveDoubleCells() {
         DataFrame df = DataGenerator.columnarDF(ROWS, ValueMaker.doubleSeq(), ValueMaker.doubleSeq())
-                .convertColumnToDouble(0, -1.)
-                .convertColumnToDouble(1, -1.);
+                .toDoubleColumn(0, -1.)
+                .toDoubleColumn(1, -1.);
         df.materialize().iterator();
         return df;
     }
@@ -58,8 +58,8 @@ public class ColumnarDataFrameMemory extends MemoryTest {
 
     public DataFrame primitiveIntCells() {
         DataFrame df = DataGenerator.columnarDF(ROWS, ValueMaker.intSeq(), ValueMaker.intSeq())
-                .convertColumnToInt(0, -1)
-                .convertColumnToInt(1, -1);
+                .toIntColumn(0, -1)
+                .toIntColumn(1, -1);
         df.materialize().iterator();
         return df;
     }
@@ -78,8 +78,8 @@ public class ColumnarDataFrameMemory extends MemoryTest {
 
     public DataFrame primitiveBoolCells() {
         DataFrame df = DataGenerator.columnarDF(ROWS, ValueMaker.booleanSeq(), ValueMaker.booleanSeq())
-                .convertColumnToBoolean(0)
-                .convertColumnToBoolean(1);
+                .toBooleanColumn(0)
+                .toBooleanColumn(1);
         df.materialize().iterator();
         return df;
     }

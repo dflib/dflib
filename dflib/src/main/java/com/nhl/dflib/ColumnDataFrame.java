@@ -349,7 +349,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public <V> DataFrame convertColumnToInt(int pos, IntValueMapper<V> converter) {
+    public <V> DataFrame toIntColumn(int pos, IntValueMapper<V> converter) {
         Series<?> c = dataColumns[pos];
         int len = c.size();
         IntMutableList ints = new IntMutableList(len);
@@ -361,7 +361,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public <V> DataFrame convertColumnToDouble(int pos, DoubleValueMapper<V> converter) {
+    public <V> DataFrame toDoubleColumn(int pos, DoubleValueMapper<V> converter) {
         Series<?> c = dataColumns[pos];
         int len = c.size();
         DoubleMutableList doubles = new DoubleMutableList(len);
@@ -373,7 +373,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public <V> DataFrame convertColumnToBoolean(int pos, BooleanValueMapper<V> converter) {
+    public <V> DataFrame toBooleanColumn(int pos, BooleanValueMapper<V> converter) {
         Series<?> c = dataColumns[pos];
         int len = c.size();
         BooleanMutableList bools = new BooleanMutableList(len);

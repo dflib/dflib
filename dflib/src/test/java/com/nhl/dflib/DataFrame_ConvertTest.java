@@ -80,7 +80,7 @@ public class DataFrame_ConvertTest extends BaseDataFrameTest {
                 "1", "x",
                 "5", "z",
                 "2", "y")
-                .convertColumnToInt("a", IntValueMapper.fromString());
+                .toIntColumn("a", IntValueMapper.fromString());
 
 
         new DFAsserts(df, "a", "b")
@@ -97,7 +97,7 @@ public class DataFrame_ConvertTest extends BaseDataFrameTest {
                 "1", "x",
                 "5", "z",
                 "2", "y")
-                .convertColumnToInt(0, -1);
+                .toIntColumn(0, -1);
 
 
         new DFAsserts(df, "a", "b")
@@ -114,7 +114,7 @@ public class DataFrame_ConvertTest extends BaseDataFrameTest {
                 "1", "x",
                 null, "z",
                 "2", "y")
-                .convertColumnToInt(0, IntValueMapper.fromString());
+                .toIntColumn(0, IntValueMapper.fromString());
     }
 
     @Test
@@ -124,7 +124,7 @@ public class DataFrame_ConvertTest extends BaseDataFrameTest {
                 "1", "x",
                 null, "z",
                 "2", "y")
-                .convertColumnToInt(0, -100);
+                .toIntColumn(0, -100);
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(3)
