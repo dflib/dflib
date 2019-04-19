@@ -213,6 +213,29 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * @param columnLabel name of a column to convert
+     * @param forNull     a value to use in place of nulls
+     * @param <V>         expected input column value
+     * @return a new DataFrame
+     * @since 0.6
+     */
+    default <V> DataFrame convertColumnToInt(String columnLabel, int forNull) {
+        int pos = getColumnsIndex().position(columnLabel);
+        return convertColumnToInt(pos, forNull);
+    }
+
+    /**
+     * @param pos     position of a column to convert
+     * @param forNull a value to use in place of nulls
+     * @param <V>     expected input column value
+     * @return a new DataFrame
+     * @since 0.6
+     */
+    default <V> DataFrame convertColumnToInt(int pos, int forNull) {
+        return convertColumnToInt(pos, IntValueMapper.fromObject(forNull));
+    }
+
+    /**
+     * @param columnLabel name of a column to convert
      * @param converter   a function to apply to column values to covert them to doubles
      * @param <V>         expected input column value
      * @return a new DataFrame
@@ -231,6 +254,29 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.6
      */
     <V> DataFrame convertColumnToDouble(int pos, DoubleValueMapper<V> converter);
+
+    /**
+     * @param columnLabel name of a column to convert
+     * @param forNull     a value to use in place of nulls
+     * @param <V>         expected input column value
+     * @return a new DataFrame
+     * @since 0.6
+     */
+    default <V> DataFrame convertColumnToDouble(String columnLabel, double forNull) {
+        int pos = getColumnsIndex().position(columnLabel);
+        return convertColumnToDouble(pos, forNull);
+    }
+
+    /**
+     * @param pos     position of a column to convert
+     * @param forNull a value to use in place of nulls
+     * @param <V>     expected input column value
+     * @return a new DataFrame
+     * @since 0.6
+     */
+    default <V> DataFrame convertColumnToDouble(int pos, double forNull) {
+        return convertColumnToDouble(pos, DoubleValueMapper.fromObject(forNull));
+    }
 
     /**
      * @param columnLabel name of a column to convert

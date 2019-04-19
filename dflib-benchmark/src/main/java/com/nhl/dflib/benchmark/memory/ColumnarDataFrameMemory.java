@@ -4,8 +4,6 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.benchmark.DataGenerator;
 import com.nhl.dflib.benchmark.ValueMaker;
 import com.nhl.dflib.benchmark.memory.benchmark.MemoryTest;
-import com.nhl.dflib.map.DoubleValueMapper;
-import com.nhl.dflib.map.IntValueMapper;
 
 public class ColumnarDataFrameMemory extends MemoryTest {
 
@@ -45,8 +43,8 @@ public class ColumnarDataFrameMemory extends MemoryTest {
 
     public DataFrame primitiveDoubleCells() {
         DataFrame df = DataGenerator.columnarDF(ROWS, ValueMaker.doubleSeq(), ValueMaker.doubleSeq())
-                .convertColumnToDouble(0, DoubleValueMapper.fromNumber())
-                .convertColumnToDouble(1, DoubleValueMapper.fromNumber());
+                .convertColumnToDouble(0, -1.)
+                .convertColumnToDouble(1, -1.);
         df.materialize().iterator();
         return df;
     }
@@ -61,8 +59,8 @@ public class ColumnarDataFrameMemory extends MemoryTest {
 
     public DataFrame primitiveIntCells() {
         DataFrame df = DataGenerator.columnarDF(ROWS, ValueMaker.intSeq(), ValueMaker.intSeq())
-                .convertColumnToInt(0, IntValueMapper.numToInt())
-                .convertColumnToInt(1, IntValueMapper.numToInt());
+                .convertColumnToInt(0, -1)
+                .convertColumnToInt(1, -1);
         df.materialize().iterator();
         return df;
     }
