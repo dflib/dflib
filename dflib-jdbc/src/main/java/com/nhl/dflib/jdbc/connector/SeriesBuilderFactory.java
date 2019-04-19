@@ -1,5 +1,6 @@
 package com.nhl.dflib.jdbc.connector;
 
+import com.nhl.dflib.builder.BooleanSeriesBuilder;
 import com.nhl.dflib.builder.DoubleSeriesBuilder;
 import com.nhl.dflib.builder.IntSeriesBuilder;
 import com.nhl.dflib.builder.MappedSeriesBuilder;
@@ -15,11 +16,21 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
- * @since 0.6
  * @param <T>
+ * @since 0.6
  */
 @FunctionalInterface
 public interface SeriesBuilderFactory<T> {
+
+    static SeriesBuilder<ResultSet, Boolean> booleanAccum(int pos) {
+        return new BooleanSeriesBuilder<>(rs -> {
+            try {
+                return rs.getBoolean(pos);
+            } catch (SQLException e) {
+                throw new RuntimeException("Error performing SQL operation", e);
+            }
+        });
+    }
 
     static SeriesBuilder<ResultSet, Integer> intAccum(int pos) {
         return new IntSeriesBuilder<>(rs -> {

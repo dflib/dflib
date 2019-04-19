@@ -2,11 +2,13 @@ package com.nhl.dflib.csv;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.builder.BooleanSeriesBuilder;
 import com.nhl.dflib.builder.DoubleSeriesBuilder;
 import com.nhl.dflib.builder.IntSeriesBuilder;
 import com.nhl.dflib.builder.MappedSeriesBuilder;
 import com.nhl.dflib.builder.ObjectSeriesBuilder;
 import com.nhl.dflib.builder.SeriesBuilder;
+import com.nhl.dflib.map.BooleanValueMapper;
 import com.nhl.dflib.map.DoubleValueMapper;
 import com.nhl.dflib.map.IntValueMapper;
 import com.nhl.dflib.map.ValueMapper;
@@ -142,6 +144,20 @@ public class CsvLoader {
      */
     public CsvLoader doubleColumn(String column, double forNull) {
         return columnType(column, new DoubleSeriesBuilder(DoubleValueMapper.fromString(forNull)));
+    }
+
+    /**
+     * @since 0.6
+     */
+    public CsvLoader booleanColumn(int column) {
+        return columnType(column, new BooleanSeriesBuilder<>(BooleanValueMapper.fromString()));
+    }
+
+    /**
+     * @since 0.6
+     */
+    public CsvLoader booleanColumn(String column) {
+        return columnType(column, new BooleanSeriesBuilder<>(BooleanValueMapper.fromString()));
     }
 
     /**

@@ -37,6 +37,7 @@ public class JdbcConnector {
 
         // use primitive converters if the column has no nulls
         this.mandatorySeriesBuilderFactories = new HashMap<>();
+        this.mandatorySeriesBuilderFactories.put(Types.BOOLEAN, SeriesBuilderFactory::booleanAccum);
         this.mandatorySeriesBuilderFactories.put(Types.INTEGER, SeriesBuilderFactory::intAccum);
         this.mandatorySeriesBuilderFactories.put(Types.DOUBLE, SeriesBuilderFactory::doubleAccum);
         this.mandatorySeriesBuilderFactories.put(Types.FLOAT, SeriesBuilderFactory::doubleAccum);
@@ -80,7 +81,7 @@ public class JdbcConnector {
 
         SeriesBuilderFactory sbf = null;
 
-        // use primitive converters if the column has no nulls
+        // try to use primitive converters if the column has no nulls
         if (mandatory) {
             sbf = mandatorySeriesBuilderFactories.get(type);
         }
