@@ -7,6 +7,7 @@ import com.nhl.dflib.filter.RowPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.JoinType;
+import com.nhl.dflib.map.BooleanValueMapper;
 import com.nhl.dflib.map.DoubleValueMapper;
 import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.map.IntValueMapper;
@@ -231,6 +232,26 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     <V> DataFrame convertColumnToDouble(int pos, DoubleValueMapper<V> converter);
 
+    /**
+     * @param columnLabel name of a column to convert
+     * @param converter   a function to apply to column values to covert them to booleans
+     * @param <V>         expected input column value
+     * @return a new DataFrame
+     * @since 0.6
+     */
+    default <V> DataFrame convertColumnToBoolean(String columnLabel, BooleanValueMapper<V> converter) {
+        int pos = getColumnsIndex().position(columnLabel);
+        return convertColumnToBoolean(pos, converter);
+    }
+
+    /**
+     * @param pos       position of a column to convert
+     * @param converter a function to apply to column values to covert them to booleans
+     * @param <V>       expected input column value
+     * @return a new DataFrame
+     * @since 0.6
+     */
+    <V> DataFrame convertColumnToBoolean(int pos, BooleanValueMapper<V> converter);
 
     /**
      * Adds row number column to the DataFrame
