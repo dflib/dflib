@@ -84,7 +84,7 @@ public class Index implements Iterable<String> {
         return HConcat.zipIndex(this, forLabels(extraLabels));
     }
 
-    public Index selectPositions(Integer... otherPos) {
+    public Index selectPositions(int... otherPos) {
         int len = otherPos.length;
         String[] selectedLabels = new String[len];
         Set<String> uniqueLabels = new HashSet<>((int) (len / 0.75));

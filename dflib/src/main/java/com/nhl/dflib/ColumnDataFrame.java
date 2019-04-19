@@ -422,9 +422,9 @@ public class ColumnDataFrame implements DataFrame {
 
 
     @Override
-    public DataFrame selectColumns(Integer pos0, Integer... otherPositions) {
+    public DataFrame selectColumns(int pos0, int... otherPositions) {
 
-        Integer[] positions = new Integer[otherPositions.length + 1];
+        int[] positions = new int[otherPositions.length + 1];
         positions[0] = pos0;
         System.arraycopy(otherPositions, 0, positions, 1, otherPositions.length);
 

@@ -368,7 +368,7 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     DataFrame selectColumns(String label0, String... otherLabels);
 
-    DataFrame selectColumns(Integer pos0, Integer... otherPositions);
+    DataFrame selectColumns(int pos0, int... otherPositions);
 
     DataFrame dropColumns(String... columnLabels);
 
@@ -377,6 +377,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * DataFrame.
      *
      * @return a new DataFrame that matches the selection criteria
+     * @since 0.6
      */
     DataFrame select(int... rowPositions);
 
@@ -404,6 +405,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @param rowPositions
      * @return a new DataFrame that matches the selection criteria
+     * @since 0.6
      */
     DataFrame select(IntSeries rowPositions);
 
