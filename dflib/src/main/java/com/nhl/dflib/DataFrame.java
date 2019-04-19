@@ -379,25 +379,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new DataFrame that matches the selection criteria
      * @since 0.6
      */
-    DataFrame select(int... rowPositions);
-
-    /**
-     * Selects DataFrame rows based on provided row index. This allows to reorder, filter, duplicate rows of this
-     * DataFrame.
-     *
-     * @return a new DataFrame that matches the selection criteria
-     * @deprecated since 0.6 in favor of primitive int indexing, e.g. {@link #select(int...)}.
-     */
-    default DataFrame select(List<Integer> rowPositions) {
-        int len = rowPositions.size();
-        IntMutableList ml = new IntMutableList(len);
-
-        for (Integer i : rowPositions) {
-            ml.add(i);
-        }
-
-        return select(ml.toIntSeries());
-    }
+    DataFrame selectRows(int... rowPositions);
 
     /**
      * Selects DataFrame rows based on provided row index. This allows to reorder, filter, duplicate rows of this
@@ -407,12 +389,30 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new DataFrame that matches the selection criteria
      * @since 0.6
      */
-    DataFrame select(IntSeries rowPositions);
+    DataFrame selectRows(IntSeries rowPositions);
 
+    /**
+     * Selects DataFrame rows based on provided row index. This allows to reorder, filter, duplicate rows of this
+     * DataFrame.
+     *
+     * @return a new DataFrame that matches the selection criteria
+     * @deprecated since 0.6 in favor of primitive int indexing, e.g. {@link #selectRows(int...)}.
+     */
+    default DataFrame select(List<Integer> rowPositions) {
+        int len = rowPositions.size();
+        IntMutableList ml = new IntMutableList(len);
+
+        for (Integer i : rowPositions) {
+            ml.add(i);
+        }
+
+        return selectRows(ml.toIntSeries());
+    }
+    
     /**
      * @param rowPositions
      * @return
-     * @deprecated since 0.6 in favor of {@link #select(IntSeries)}.
+     * @deprecated since 0.6 in favor of {@link #selectRows(IntSeries)}.
      */
     @Deprecated
     default DataFrame select(Series<Integer> rowPositions) {
@@ -423,7 +423,7 @@ public interface DataFrame extends Iterable<RowProxy> {
             ml.add(rowPositions.get(i));
         }
 
-        return select(ml.toIntSeries());
+        return selectRows(ml.toIntSeries());
     }
 
     DataFrame filter(RowPredicate p);

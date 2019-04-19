@@ -43,7 +43,7 @@ public class DataFrame_SelectTest extends BaseDataFrameTest {
                 5, "x",
                 9, "y",
                 1, "z")
-                .select(0, 2);
+                .selectRows(0, 2);
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(2)
@@ -58,7 +58,7 @@ public class DataFrame_SelectTest extends BaseDataFrameTest {
                 5, "x",
                 9, "y",
                 1, "z")
-                .select(0, 3)
+                .selectRows(0, 3)
                 .materialize();
     }
 
@@ -100,7 +100,7 @@ public class DataFrame_SelectTest extends BaseDataFrameTest {
                 5, "x",
                 9, "y",
                 1, "z")
-                .select(new IntArraySeries(0, 2));
+                .selectRows(new IntArraySeries(0, 2));
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(2)
@@ -115,7 +115,7 @@ public class DataFrame_SelectTest extends BaseDataFrameTest {
                 5, "x",
                 9, "y",
                 1, "z")
-                .select(2, 1);
+                .selectRows(2, 1);
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(2)
@@ -130,7 +130,7 @@ public class DataFrame_SelectTest extends BaseDataFrameTest {
                 5, "x",
                 9, "y",
                 1, "z")
-                .select(2, 1, 1, 2);
+                .selectRows(2, 1, 1, 2);
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(4)

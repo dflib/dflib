@@ -42,7 +42,7 @@ public class DataFrameIntOperation {
     @Benchmark
     public Object filter() {
         // filtering by "int" column is a two-step op - index, then select...
-        return df.select(df.getColumnAsInt("c0").indexInt(i -> i % 2 == 0))
+        return df.selectRows(df.getColumnAsInt("c0").indexInt(i -> i % 2 == 0))
                 .materialize()
                 .iterator();
     }

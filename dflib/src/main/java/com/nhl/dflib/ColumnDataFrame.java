@@ -203,12 +203,12 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public DataFrame select(int... rowPositions) {
-        return select(new IntArraySeries(rowPositions));
+    public DataFrame selectRows(int... rowPositions) {
+        return selectRows(new IntArraySeries(rowPositions));
     }
 
     @Override
-    public DataFrame select(IntSeries rowPositions) {
+    public DataFrame selectRows(IntSeries rowPositions) {
 
         int width = width();
         Series<?>[] newColumnsData = new Series[width];
@@ -228,7 +228,7 @@ public class ColumnDataFrame implements DataFrame {
             return this;
         }
 
-        return select(rowPositions);
+        return selectRows(rowPositions);
     }
 
     @Override
@@ -240,7 +240,7 @@ public class ColumnDataFrame implements DataFrame {
             return this;
         }
 
-        return select(rowPositions);
+        return selectRows(rowPositions);
     }
 
     @Override

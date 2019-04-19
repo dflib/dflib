@@ -44,7 +44,7 @@ public class GroupBy {
      */
     public DataFrame toDataFrame() {
         IntSeries index = SeriesConcat.intConcat(groupsIndex.values());
-        return ungrouped.select(index);
+        return ungrouped.selectRows(index);
     }
 
     public Collection<Object> getGroups() {
