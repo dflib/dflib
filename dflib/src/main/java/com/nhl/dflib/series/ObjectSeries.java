@@ -11,8 +11,6 @@ import com.nhl.dflib.filter.ValuePredicate;
 
 import java.util.Objects;
 
-import static java.util.Arrays.asList;
-
 public abstract class ObjectSeries<T> implements Series<T> {
 
     @Override
@@ -38,7 +36,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
         combined[0] = this;
         System.arraycopy(other, 0, combined, 1, other.length);
 
-        return SeriesConcat.concat(asList(combined));
+        return SeriesConcat.concat(combined);
     }
 
     @Override

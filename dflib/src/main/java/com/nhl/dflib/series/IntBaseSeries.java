@@ -12,8 +12,6 @@ import com.nhl.dflib.filter.ValuePredicate;
 
 import java.util.Objects;
 
-import static java.util.Arrays.asList;
-
 /**
  * A base implementation of various boilerplate methods for {@link IntSeries}.
  *
@@ -33,10 +31,12 @@ public abstract class IntBaseSeries implements IntSeries {
 
     @Override
     public IntSeries concatInt(IntSeries... other) {
+
         if (other.length == 0) {
             return this;
         }
 
+        // TODO: use SeriesConcat
         int size = size();
         int h = size;
         for (IntSeries s : other) {
@@ -91,11 +91,13 @@ public abstract class IntBaseSeries implements IntSeries {
             return this;
         }
 
+        // TODO: use SeriesConcat
+
         Series<Integer>[] combined = new Series[other.length + 1];
         combined[0] = this;
         System.arraycopy(other, 0, combined, 1, other.length);
 
-        return SeriesConcat.concat(asList(combined));
+        return SeriesConcat.concat(combined);
     }
 
     @Override

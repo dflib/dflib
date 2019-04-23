@@ -11,8 +11,6 @@ import com.nhl.dflib.filter.ValuePredicate;
 
 import java.util.Objects;
 
-import static java.util.Arrays.asList;
-
 /**
  * @since 0.6
  */
@@ -33,6 +31,8 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         if (other.length == 0) {
             return this;
         }
+
+        // TODO: use SeriesConcat
 
         int size = size();
         int h = size;
@@ -80,16 +80,17 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
     @Override
     public Series<Boolean> concat(Series<? extends Boolean>... other) {
-        // concatenating as Integer... to concat as IntSeries, "concatInt" should be used
         if (other.length == 0) {
             return this;
         }
+
+        // TODO: use SeriesConcat
 
         Series<Boolean>[] combined = new Series[other.length + 1];
         combined[0] = this;
         System.arraycopy(other, 0, combined, 1, other.length);
 
-        return SeriesConcat.concat(asList(combined));
+        return SeriesConcat.concat(combined);
     }
 
     @Override

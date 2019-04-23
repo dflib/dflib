@@ -32,6 +32,7 @@ import com.nhl.dflib.series.RowMappedSeries;
 import com.nhl.dflib.series.SingleValueSeries;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
+import com.nhl.dflib.stack.Stacker;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -562,6 +563,16 @@ public class ColumnDataFrame implements DataFrame {
         if (h != ah) {
             throw new IllegalArgumentException("Another DataFrame height " + ah + " is not the same as this hight " + h);
         }
+    }
+
+    @Override
+    public DataFrame stack() {
+        return Stacker.stackExcludeNulls(this);
+    }
+
+    @Override
+    public DataFrame stackIncludeNulls() {
+        return Stacker.stackIncludeNulls(this);
     }
 
     @Override

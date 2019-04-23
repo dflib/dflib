@@ -10,6 +10,7 @@
 * #30 BooleanSeries 
 * #31 Series.replace, Series.replaceNoMatch, DataFrame.nullify, DataFrame.nullifyNoMatch #31
 * #32 Series/DataFrame element-wise equality operations 
+* #33 DataFrame.stack operation
 
 ## Release 0.5
 

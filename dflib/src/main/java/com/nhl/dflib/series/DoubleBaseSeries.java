@@ -14,8 +14,6 @@ import com.nhl.dflib.filter.ValuePredicate;
 
 import java.util.Objects;
 
-import static java.util.Arrays.asList;
-
 /**
  * @since 0.6
  */
@@ -36,6 +34,8 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         if (other.length == 0) {
             return this;
         }
+
+        // TODO: use SeriesConcat
 
         int size = size();
         int h = size;
@@ -86,16 +86,18 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
 
     @Override
     public Series<Double> concat(Series<? extends Double>... other) {
-        // concatenating as Integer... to concat as IntSeries, "concatInt" should be used
+        // concatenating as Double... to concat as DoubleServies, "concatDouble" should be used
         if (other.length == 0) {
             return this;
         }
+
+        // TODO: use SeriesConcat
 
         Series<Double>[] combined = new Series[other.length + 1];
         combined[0] = this;
         System.arraycopy(other, 0, combined, 1, other.length);
 
-        return SeriesConcat.concat(asList(combined));
+        return SeriesConcat.concat(combined);
     }
 
     @Override
