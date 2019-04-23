@@ -1,8 +1,10 @@
 package com.nhl.dflib.series;
 
+import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.collection.IntMutableList;
+import com.nhl.dflib.collection.MutableList;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.filter.ValuePredicate;
 
@@ -65,5 +67,40 @@ public abstract class ObjectSeries<T> implements Series<T> {
         }
 
         return index.toIntSeries();
+    }
+
+    @Override
+    public Series<T> replace(BooleanSeries condition, T with) {
+        int s = size();
+        int r = Math.min(s, condition.size());
+        MutableList vals = new MutableList(s);
+
+        for (int i = 0; i < r; i++) {
+            vals.add(condition.getBoolean(i) ? with : get(i));
+        }
+
+        for (int i = r; i < s; i++) {
+            vals.add(get(i));
+        }
+
+        return vals.toSeries();
+    }
+
+    @Override
+    public Series<T> replaceNoMatch(BooleanSeries condition, T with) {
+
+        int s = size();
+        int r = Math.min(s, condition.size());
+        MutableList vals = new MutableList(s);
+
+        for (int i = 0; i < r; i++) {
+            vals.add(condition.getBoolean(i) ? get(i) : with);
+        }
+
+        if (s > r) {
+            vals.fill(r, s, with);
+        }
+
+        return vals.toSeries();
     }
 }

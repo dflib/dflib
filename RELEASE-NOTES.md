@@ -8,6 +8,7 @@
 * #28 Make IntSeries compatible with Series<Integer>
 * #29 DoubleSeries
 * #30 BooleanSeries 
+* #31 Series.replace, Series.replaceNoMatch, DataFrame.nullify, DataFrame.nullifyNoMatch #31
 
 ## Release 0.5
 

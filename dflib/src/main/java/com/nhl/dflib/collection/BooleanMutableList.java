@@ -3,6 +3,8 @@ package com.nhl.dflib.collection;
 import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.series.BooleanArraySeries;
 
+import java.util.Arrays;
+
 /**
  * @since 0.6
  */
@@ -21,10 +23,24 @@ public class BooleanMutableList {
         this.data = new boolean[capacity];
     }
 
+    public void fill(int from, int to, boolean value) {
+
+        if (to - from < 1) {
+            return;
+        }
+
+        if (data.length <= to) {
+            expand(to);
+        }
+
+        Arrays.fill(data, from, to, value);
+        size += to - from;
+    }
+
     public void add(boolean value) {
 
         if (size == data.length) {
-            expand();
+            expand(data.length * 2);
         }
 
         data[size++] = value;
@@ -39,9 +55,8 @@ public class BooleanMutableList {
         return new BooleanArraySeries(data, 0, size);
     }
 
-    private void expand() {
+    private void expand(int newCapacity) {
 
-        int newCapacity = data.length * 2;
         boolean[] newData = new boolean[newCapacity];
         System.arraycopy(data, 0, newData, 0, size);
 

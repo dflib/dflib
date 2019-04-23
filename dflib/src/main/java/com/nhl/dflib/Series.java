@@ -73,4 +73,8 @@ public interface Series<T> {
      * @return an IntSeries that represents positions in the Series that match the predicate.
      */
     IntSeries index(ValuePredicate<T> predicate);
+
+    Series<T> replace(BooleanSeries condition, T with);
+
+    Series<T> replaceNoMatch(BooleanSeries condition, T with);
 }

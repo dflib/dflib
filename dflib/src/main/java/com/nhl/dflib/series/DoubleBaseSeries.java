@@ -1,9 +1,12 @@
 package com.nhl.dflib.series;
 
+import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.DoubleSeries;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.collection.DoubleMutableList;
 import com.nhl.dflib.collection.IntMutableList;
+import com.nhl.dflib.collection.MutableList;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.filter.DoublePredicate;
 import com.nhl.dflib.filter.ValuePredicate;
@@ -142,5 +145,86 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         }
 
         return index.toIntSeries();
+    }
+
+    @Override
+    public Series<Double> replace(BooleanSeries condition, Double with) {
+        return with != null
+                ? replaceDouble(condition, with)
+                : nullify(condition);
+    }
+
+    @Override
+    public Series<Double> replaceNoMatch(BooleanSeries condition, Double with) {
+        return with != null
+                ? replaceNoMatchDouble(condition, with)
+                : nullifyNoMatch(condition);
+    }
+
+    // TODO: make double versions of replace public?
+
+    private DoubleSeries replaceDouble(BooleanSeries condition, double with) {
+        int s = size();
+        int r = Math.min(s, condition.size());
+        DoubleMutableList doubles = new DoubleMutableList(s);
+
+        for (int i = 0; i < r; i++) {
+            doubles.add(condition.getBoolean(i) ? with : getDouble(i));
+        }
+
+        for (int i = r; i < s; i++) {
+            doubles.add(getDouble(i));
+        }
+
+        return doubles.toDoubleSeries();
+    }
+
+    private DoubleSeries replaceNoMatchDouble(BooleanSeries condition, double with) {
+
+        int s = size();
+        int r = Math.min(s, condition.size());
+        DoubleMutableList doubles = new DoubleMutableList(s);
+
+        for (int i = 0; i < r; i++) {
+            doubles.add(condition.getBoolean(i) ? getDouble(i) : with);
+        }
+
+        if (s > r) {
+            doubles.fill(r, s, with);
+        }
+
+        return doubles.toDoubleSeries();
+    }
+
+    private Series<Double> nullify(BooleanSeries condition) {
+        int s = size();
+        int r = Math.min(s, condition.size());
+        MutableList<Double> vals = new MutableList<>(s);
+
+        for (int i = 0; i < r; i++) {
+            vals.add(condition.getBoolean(i) ? null : getDouble(i));
+        }
+
+        for (int i = r; i < s; i++) {
+            vals.add(getDouble(i));
+        }
+
+        return vals.toSeries();
+    }
+
+    private Series<Double> nullifyNoMatch(BooleanSeries condition) {
+        int s = size();
+        int r = Math.min(s, condition.size());
+        MutableList<Double> vals = new MutableList<>(s);
+
+        for (int i = 0; i < r; i++) {
+            vals.add(condition.getBoolean(i) ? getDouble(i) : null);
+        }
+
+        if (s > r) {
+            vals.fill(r, s, null);
+        }
+
+        return vals.toSeries();
     }
 }

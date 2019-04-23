@@ -1,12 +1,12 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.BooleanSeries;
-import com.nhl.dflib.DoubleSeries;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.collection.BooleanMutableList;
 import com.nhl.dflib.collection.IntMutableList;
+import com.nhl.dflib.collection.MutableList;
 import com.nhl.dflib.concat.SeriesConcat;
-import com.nhl.dflib.filter.DoublePredicate;
 import com.nhl.dflib.filter.ValuePredicate;
 
 import static java.util.Arrays.asList;
@@ -155,5 +155,86 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         }
 
         return index.toIntSeries();
+    }
+
+    @Override
+    public Series<Boolean> replace(BooleanSeries condition, Boolean with) {
+        return with != null
+                ? replaceBoolean(condition, with)
+                : nullify(condition);
+    }
+
+    @Override
+    public Series<Boolean> replaceNoMatch(BooleanSeries condition, Boolean with) {
+        return with != null
+                ? replaceNoMatchBoolean(condition, with)
+                : nullifyNoMatch(condition);
+    }
+
+    // TODO: make bool versions of replace public?
+
+    private BooleanSeries replaceBoolean(BooleanSeries condition, boolean with) {
+        int s = size();
+        int r = Math.min(s, condition.size());
+        BooleanMutableList bools = new BooleanMutableList(s);
+
+        for (int i = 0; i < r; i++) {
+            bools.add(condition.getBoolean(i) ? with : getBoolean(i));
+        }
+
+        for (int i = r; i < s; i++) {
+            bools.add(getBoolean(i));
+        }
+
+        return bools.toBooleanSeries();
+    }
+
+    private BooleanSeries replaceNoMatchBoolean(BooleanSeries condition, boolean with) {
+
+        int s = size();
+        int r = Math.min(s, condition.size());
+        BooleanMutableList bools = new BooleanMutableList(s);
+
+        for (int i = 0; i < r; i++) {
+            bools.add(condition.getBoolean(i) ? getBoolean(i) : with);
+        }
+
+        if (s > r) {
+            bools.fill(r, s, with);
+        }
+
+        return bools.toBooleanSeries();
+    }
+
+    private Series<Boolean> nullify(BooleanSeries condition) {
+        int s = size();
+        int r = Math.min(s, condition.size());
+        MutableList vals = new MutableList(s);
+
+        for (int i = 0; i < r; i++) {
+            vals.add(condition.getBoolean(i) ? null : getBoolean(i));
+        }
+
+        for (int i = r; i < s; i++) {
+            vals.add(getBoolean(i));
+        }
+
+        return vals.toSeries();
+    }
+
+    private Series<Boolean> nullifyNoMatch(BooleanSeries condition) {
+        int s = size();
+        int r = Math.min(s, condition.size());
+        MutableList vals = new MutableList(s);
+
+        for (int i = 0; i < r; i++) {
+            vals.add(condition.getBoolean(i) ? getBoolean(i) : null);
+        }
+
+        if (s > r) {
+            vals.fill(r, s, null);
+        }
+
+        return vals.toSeries();
     }
 }

@@ -1,6 +1,9 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.BooleanSeries;
+import com.nhl.dflib.Series;
+import com.nhl.dflib.collection.BooleanMutableList;
+import com.nhl.dflib.collection.MutableList;
 
 /**
  * @since 0.6

@@ -408,7 +408,7 @@ public interface DataFrame extends Iterable<RowProxy> {
 
         return selectRows(ml.toIntSeries());
     }
-    
+
     /**
      * @param rowPositions
      * @return
@@ -706,6 +706,28 @@ public interface DataFrame extends Iterable<RowProxy> {
     default DataFrame fillNullsForward(String columnName) {
         return fillNullsForward(getColumnsIndex().position(columnName));
     }
+
+    /**
+     * Overlays this DataFrame with a boolean condition DataFrame, returning a new DataFrame that has the same
+     * dimensions as this, but with positions matching those of "true" values in the condition replaced with nulls.
+     *
+     * @param condition a DataFrame that contains only boolean values. It doesn't have to match the shape of this
+     *                  DataFrame. Mask operation matches the columns by name and rows by number.
+     * @return a new DataFrame of the same shape as this
+     * @since 0.6
+     */
+    DataFrame nullify(DataFrame condition);
+
+    /**
+     * The opposite of {@link #nullify(DataFrame)}, doing the replacement of cells not matching the condition. I.e.
+     * matching the condition "false" values or those outside the condition shape.
+     *
+     * @param condition a DataFrame that contains only boolean values. It doesn't have to match the shape of this
+     *                  DataFrame. Mask operation matches the columns by name and rows by number.
+     * @return a new DataFrame of the same shape as this
+     * @since 0.6
+     */
+    DataFrame nullifyNoMatch(DataFrame condition);
 
     @Override
     Iterator<RowProxy> iterator();

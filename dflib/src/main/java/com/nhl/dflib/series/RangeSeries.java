@@ -13,18 +13,21 @@ public class RangeSeries<T> extends ObjectSeries<T> {
         this.delegate = delegate;
         this.from = from;
         this.size = size;
+        checkRanges(from, size, delegate.size());
+    }
 
+    static void checkRanges(int from, int size, int delegateSize) {
         // TODO: allow negative ranges to reference range from the tail?
         if (from < 0) {
             throw new IllegalArgumentException("Negative 'from' index: " + from);
         }
 
-        if (from > delegate.size()) {
-            throw new IllegalArgumentException("From is out of range: " + from + " (" + delegate.size() + ")");
+        if (from > delegateSize) {
+            throw new IllegalArgumentException("From is out of range: " + from + " (" + delegateSize + ")");
         }
 
-        if (from + size > delegate.size()) {
-            throw new IllegalArgumentException("Size is out of range: " + (from + size) + " > " + delegate.size() + ")");
+        if (from + size > delegateSize) {
+            throw new IllegalArgumentException("Size is out of range: " + (from + size) + " > " + delegateSize + ")");
         }
     }
 

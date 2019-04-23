@@ -29,6 +29,7 @@ import com.nhl.dflib.series.ColumnMappedSeries;
 import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.series.IntSequenceSeries;
 import com.nhl.dflib.series.RowMappedSeries;
+import com.nhl.dflib.series.SingleValueSeries;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
 
@@ -469,6 +470,47 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public DataFrame fillNullsForward(int columnPos) {
         return replaceColumn(columnPos, dataColumns[columnPos].fillNullsForward());
+    }
+
+    @Override
+    public DataFrame nullify(DataFrame condition) {
+        int w = width();
+        Series<?>[] newColumns = new Series[w];
+
+        for (int i = 0; i < w; i++) {
+
+            String label = columnsIndex.getLabel(i);
+
+            if (condition.getColumnsIndex().hasLabel(label)) {
+                BooleanSeries cc = condition.getColumnAsBoolean(label);
+                newColumns[i] = dataColumns[i].replace(cc, null);
+            } else {
+                newColumns[i] = dataColumns[i];
+            }
+        }
+
+        return new ColumnDataFrame(columnsIndex, newColumns);
+    }
+
+    @Override
+    public DataFrame nullifyNoMatch(DataFrame condition) {
+        int w = width();
+        int h = height();
+        Series<?>[] newColumns = new Series[w];
+
+        for (int i = 0; i < w; i++) {
+
+            String label = columnsIndex.getLabel(i);
+
+            if (condition.getColumnsIndex().hasLabel(label)) {
+                BooleanSeries cc = condition.getColumnAsBoolean(label);
+                newColumns[i] = dataColumns[i].replaceNoMatch(cc, null);
+            } else {
+                newColumns[i] = new SingleValueSeries<>(null, h);
+            }
+        }
+
+        return new ColumnDataFrame(columnsIndex, newColumns);
     }
 
     @Override

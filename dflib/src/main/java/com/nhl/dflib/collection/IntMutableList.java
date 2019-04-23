@@ -3,6 +3,8 @@ package com.nhl.dflib.collection;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.series.IntArraySeries;
 
+import java.util.Arrays;
+
 /**
  * An expandable list of primitive int values that has minimal overhead and can be converted to compact and efficient
  * immutable {@link IntSeries}.
@@ -23,10 +25,23 @@ public class IntMutableList {
         this.data = new int[capacity];
     }
 
+    public void fill(int from, int to, int value) {
+        if (to - from < 1) {
+            return;
+        }
+
+        if (data.length <= to) {
+            expand(to);
+        }
+
+        Arrays.fill(data, from, to, value);
+        size += to - from;
+    }
+
     public void add(int value) {
 
         if (size == data.length) {
-            expand();
+            expand(data.length * 2);
         }
 
         data[size++] = value;
@@ -41,9 +56,7 @@ public class IntMutableList {
         return new IntArraySeries(data, 0, size);
     }
 
-    private void expand() {
-
-        int newCapacity = data.length * 2;
+    private void expand(int newCapacity) {
         int[] newData = new int[newCapacity];
         System.arraycopy(data, 0, newData, 0, size);
 

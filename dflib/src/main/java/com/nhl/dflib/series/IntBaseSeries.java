@@ -1,8 +1,10 @@
 package com.nhl.dflib.series;
 
+import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.collection.IntMutableList;
+import com.nhl.dflib.collection.MutableList;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.filter.IntPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
@@ -143,5 +145,86 @@ public abstract class IntBaseSeries implements IntSeries {
         }
 
         return index.toIntSeries();
+    }
+
+    @Override
+    public Series<Integer> replace(BooleanSeries condition, Integer with) {
+        return with != null
+                ? replaceInt(condition, with)
+                : nullify(condition);
+    }
+
+    @Override
+    public Series<Integer> replaceNoMatch(BooleanSeries condition, Integer with) {
+        return with != null
+                ? replaceNoMatchInt(condition, with)
+                : nullifyNoMatch(condition);
+    }
+
+    // TODO: make int versions of replace public?
+
+    private IntSeries replaceInt(BooleanSeries condition, int with) {
+        int s = size();
+        int r = Math.min(s, condition.size());
+        IntMutableList ints = new IntMutableList(s);
+
+        for (int i = 0; i < r; i++) {
+            ints.add(condition.getBoolean(i) ? with : getInt(i));
+        }
+
+        for (int i = r; i < s; i++) {
+            ints.add(getInt(i));
+        }
+
+        return ints.toIntSeries();
+    }
+
+    private IntSeries replaceNoMatchInt(BooleanSeries condition, int with) {
+
+        int s = size();
+        int r = Math.min(s, condition.size());
+        IntMutableList ints = new IntMutableList(s);
+
+        for (int i = 0; i < r; i++) {
+            ints.add(condition.getBoolean(i) ? getInt(i) : with);
+        }
+
+        if (s > r) {
+            ints.fill(r, s, with);
+        }
+
+        return ints.toIntSeries();
+    }
+
+    private Series<Integer> nullify(BooleanSeries condition) {
+        int s = size();
+        int r = Math.min(s, condition.size());
+        MutableList vals = new MutableList(s);
+
+        for (int i = 0; i < r; i++) {
+            vals.add(condition.getBoolean(i) ? null : getInt(i));
+        }
+
+        for (int i = r; i < s; i++) {
+            vals.add(getInt(i));
+        }
+
+        return vals.toSeries();
+    }
+
+    private Series<Integer> nullifyNoMatch(BooleanSeries condition) {
+        int s = size();
+        int r = Math.min(s, condition.size());
+        MutableList vals = new MutableList(s);
+
+        for (int i = 0; i < r; i++) {
+            vals.add(condition.getBoolean(i) ? getInt(i) : null);
+        }
+
+        if (s > r) {
+            vals.fill(r, s, null);
+        }
+
+        return vals.toSeries();
     }
 }

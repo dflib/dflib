@@ -3,6 +3,8 @@ package com.nhl.dflib.collection;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.series.ArraySeries;
 
+import java.util.Arrays;
+
 /**
  * @since 0.6
  */
@@ -20,10 +22,23 @@ public class MutableList<T> {
         this.data = (T[]) new Object[capacity];
     }
 
+    public void fill(int from, int to, T value) {
+        if (to - from < 1) {
+            return;
+        }
+
+        if (data.length <= to) {
+            expand(to);
+        }
+
+        Arrays.fill(data, from, to, value);
+        size += to - from;
+    }
+
     public void add(T value) {
 
         if (size == data.length) {
-            expand();
+            expand(data.length * 2);
         }
 
         data[size++] = value;
@@ -39,9 +54,7 @@ public class MutableList<T> {
         return new ArraySeries<>(data).head(size);
     }
 
-    private void expand() {
-
-        int newCapacity = data.length * 2;
+    private void expand(int newCapacity) {
         Object[] newData = new Object[newCapacity];
         System.arraycopy(data, 0, newData, 0, size);
 

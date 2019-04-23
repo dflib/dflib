@@ -3,6 +3,8 @@ package com.nhl.dflib.collection;
 import com.nhl.dflib.DoubleSeries;
 import com.nhl.dflib.series.DoubleArraySeries;
 
+import java.util.Arrays;
+
 /**
  * An expandable list of primitive int values that has minimal overhead and can be converted to compact and efficient
  * immutable {@link com.nhl.dflib.DoubleSeries}.
@@ -22,10 +24,24 @@ public class DoubleMutableList {
         this.data = new double[capacity];
     }
 
+    public void fill(int from, int to, double value) {
+
+        if (to - from < 1) {
+            return;
+        }
+
+        if (data.length <= to) {
+            expand(to);
+        }
+
+        Arrays.fill(data, from, to, value);
+        size += to - from;
+    }
+
     public void add(double value) {
 
         if (size == data.length) {
-            expand();
+            expand(data.length * 2);
         }
 
         data[size++] = value;
@@ -40,9 +56,8 @@ public class DoubleMutableList {
         return new DoubleArraySeries(data, 0, size);
     }
 
-    private void expand() {
+    private void expand(int newCapacity) {
 
-        int newCapacity = data.length * 2;
         double[] newData = new double[newCapacity];
         System.arraycopy(data, 0, newData, 0, size);
 
