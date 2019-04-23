@@ -3,6 +3,7 @@ package com.nhl.dflib;
 import com.nhl.dflib.concat.HConcat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -186,6 +187,21 @@ public class Index implements Iterable<String> {
         }
 
         return labelPositions.containsKey(label);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+
+        if (obj instanceof Index) {
+            Index otherIndex = (Index) obj;
+            return Arrays.equals(labels, otherIndex.labels);
+        }
+
+        return false;
     }
 
     private Map<String, Integer> computeLabelPositions() {

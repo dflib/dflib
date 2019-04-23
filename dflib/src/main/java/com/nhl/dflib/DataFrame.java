@@ -729,6 +729,22 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     DataFrame nullifyNoMatch(DataFrame condition);
 
+    /**
+     * @param another a DataFrame to compare with.
+     * @return a DataFrame with true/false values corresponding to the result of comparision of this DataFrame with
+     * another.
+     * @since 0.6
+     */
+    DataFrame eq(DataFrame another);
+
+    /**
+     * @param another a DataFrame to compare with.
+     * @return a DataFrame with true/false values corresponding to the result of comparision of this DataFrame with
+     * another.
+     * @since 0.6
+     */
+    DataFrame ne(DataFrame another);
+
     @Override
     Iterator<RowProxy> iterator();
 }

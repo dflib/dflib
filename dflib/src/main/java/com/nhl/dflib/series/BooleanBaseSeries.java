@@ -9,6 +9,8 @@ import com.nhl.dflib.collection.MutableList;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.filter.ValuePredicate;
 
+import java.util.Objects;
+
 import static java.util.Arrays.asList;
 
 /**
@@ -236,5 +238,88 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         }
 
         return vals.toSeries();
+    }
+
+
+    @Override
+    public BooleanSeries eq(Series<Boolean> another) {
+        int s = size();
+        int as = another.size();
+
+        if (s != as) {
+            throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
+        }
+
+        BooleanMutableList bools = new BooleanMutableList(s);
+
+        if (another instanceof BooleanSeries) {
+            BooleanSeries anotherBool = (BooleanSeries) another;
+
+            for (int i = 0; i < s; i++) {
+                bools.add(getBoolean(i) == anotherBool.getBoolean(i));
+            }
+        } else {
+            for (int i = 0; i < s; i++) {
+                bools.add(Objects.equals(get(i), another.get(i)));
+            }
+        }
+
+        return bools.toBooleanSeries();
+    }
+
+    @Override
+    public BooleanSeries ne(Series<Boolean> another) {
+        int s = size();
+        int as = another.size();
+
+        if (s != as) {
+            throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
+        }
+
+        BooleanMutableList bools = new BooleanMutableList(s);
+        if (another instanceof BooleanSeries) {
+            BooleanSeries anotherBool = (BooleanSeries) another;
+
+            for (int i = 0; i < s; i++) {
+                bools.add(getBoolean(i) != anotherBool.getBoolean(i));
+            }
+        } else {
+            for (int i = 0; i < s; i++) {
+                bools.add(!Objects.equals(get(i), another.get(i)));
+            }
+        }
+
+        return bools.toBooleanSeries();
+    }
+
+    @Override
+    public boolean isTrue() {
+        int s = size();
+
+        for (int i = 0; i < s; i++) {
+            if (!getBoolean(i)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean isFalse() {
+        int s = size();
+
+        // empty series is considered true
+        if (s == 0) {
+            return false;
+        }
+
+        for (int i = 0; i < s; i++) {
+            if (getBoolean(i)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

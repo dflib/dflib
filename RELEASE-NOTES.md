@@ -9,6 +9,7 @@
 * #29 DoubleSeries
 * #30 BooleanSeries 
 * #31 Series.replace, Series.replaceNoMatch, DataFrame.nullify, DataFrame.nullifyNoMatch #31
+* #32 Series/DataFrame element-wise equality operations 
 
 ## Release 0.5
 

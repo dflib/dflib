@@ -4,6 +4,9 @@ import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.series.BooleanArraySeries;
 import com.nhl.dflib.series.IntArraySeries;
 
+/**
+ * @since 0.6
+ */
 public interface BooleanSeries extends Series<Boolean> {
 
     static BooleanSeries forBooleans(boolean... bools) {
@@ -47,4 +50,14 @@ public interface BooleanSeries extends Series<Boolean> {
      * @return an IntSeries that represents positions in the Series that contain "false" values
      */
     IntSeries indexFalse();
+
+    /**
+     * @return true if all the elements in the series are "true"
+     */
+    boolean isTrue();
+
+    /**
+     * @return true if all the elements in the series are "false"
+     */
+    boolean isFalse();
 }

@@ -74,7 +74,35 @@ public interface Series<T> {
      */
     IntSeries index(ValuePredicate<T> predicate);
 
+    /**
+     * @param another a Series to compare with.
+     * @return a BooleanSeries with true/false elements corresponding to the result of comparision of this Series with
+     * another.
+     * @since 0.6
+     */
+    BooleanSeries eq(Series<T> another);
+
+    /**
+     * @param another a Series to compare with.
+     * @return a BooleanSeries with true/false elements corresponding to the result of comparision of this Series with
+     * another.
+     * @since 0.6
+     */
+    BooleanSeries ne(Series<T> another);
+
+    /**
+     * @param condition a BooleanSeries that determines which cells need to be replaced.
+     * @param with      a value to replace matching cells with
+     * @return a new series with replaced values
+     * @since 0.6
+     */
     Series<T> replace(BooleanSeries condition, T with);
 
+    /**
+     * @param condition a BooleanSeries that determines which cells need not be replaced.
+     * @param with      a value to replace non-matching cells with
+     * @return a new series with replaced values
+     * @since 0.6
+     */
     Series<T> replaceNoMatch(BooleanSeries condition, T with);
 }

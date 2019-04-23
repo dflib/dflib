@@ -513,6 +513,57 @@ public class ColumnDataFrame implements DataFrame {
         return new ColumnDataFrame(columnsIndex, newColumns);
     }
 
+
+    @Override
+    public DataFrame eq(DataFrame another) {
+
+        // after this comparision passes, we can compare columns by position
+        checkShapeMatches(another);
+
+        int w = width();
+        BooleanSeries[] resultColumns = new BooleanSeries[w];
+        for (int i = 0; i < w; i++) {
+            resultColumns[i] = dataColumns[i].eq(another.getColumn(i));
+        }
+
+        return new ColumnDataFrame(columnsIndex, resultColumns);
+    }
+
+    @Override
+    public DataFrame ne(DataFrame another) {
+
+        // after this comparision passes, we can compare columns by position
+        checkShapeMatches(another);
+
+        int w = width();
+        BooleanSeries[] resultColumns = new BooleanSeries[w];
+        for (int i = 0; i < w; i++) {
+            resultColumns[i] = dataColumns[i].ne(another.getColumn(i));
+        }
+
+        return new ColumnDataFrame(columnsIndex, resultColumns);
+    }
+
+    private void checkShapeMatches(DataFrame another) {
+
+        if (!columnsIndex.equals(another.getColumnsIndex())) {
+            // either sizes are different, or labels do not match
+            int w = width();
+            int aw = another.width();
+            if (w != aw) {
+                throw new IllegalArgumentException("Another DataFrame width " + aw + " is not the same as this width " + w);
+            } else {
+                throw new IllegalArgumentException("Another DataFrame columnsIndex is not equals to this columnsIndex");
+            }
+        }
+
+        int h = height();
+        int ah = another.height();
+        if (h != ah) {
+            throw new IllegalArgumentException("Another DataFrame height " + ah + " is not the same as this hight " + h);
+        }
+    }
+
     @Override
     public Iterator<RowProxy> iterator() {
         return new Iterator<RowProxy>() {

@@ -3,10 +3,13 @@ package com.nhl.dflib.series;
 import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.collection.BooleanMutableList;
 import com.nhl.dflib.collection.IntMutableList;
 import com.nhl.dflib.collection.MutableList;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.filter.ValuePredicate;
+
+import java.util.Objects;
 
 import static java.util.Arrays.asList;
 
@@ -102,5 +105,39 @@ public abstract class ObjectSeries<T> implements Series<T> {
         }
 
         return vals.toSeries();
+    }
+
+    @Override
+    public BooleanSeries eq(Series<T> another) {
+        int s = size();
+        int as = another.size();
+
+        if (s != as) {
+            throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
+        }
+
+        BooleanMutableList bools = new BooleanMutableList(s);
+        for (int i = 0; i < s; i++) {
+            bools.add(Objects.equals(get(i), another.get(i)));
+        }
+
+        return bools.toBooleanSeries();
+    }
+
+    @Override
+    public BooleanSeries ne(Series<T> another) {
+        int s = size();
+        int as = another.size();
+
+        if (s != as) {
+            throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
+        }
+
+        BooleanMutableList bools = new BooleanMutableList(s);
+        for (int i = 0; i < s; i++) {
+            bools.add(!Objects.equals(get(i), another.get(i)));
+        }
+
+        return bools.toBooleanSeries();
     }
 }
