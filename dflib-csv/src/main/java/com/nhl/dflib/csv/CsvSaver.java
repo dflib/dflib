@@ -9,7 +9,7 @@ import org.apache.commons.csv.CSVPrinter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
+import java.io.StringWriter;
 
 public class CsvSaver {
 
@@ -50,7 +50,7 @@ public class CsvSaver {
         }
     }
 
-    public void save(DataFrame df, Writer out) {
+    public void save(DataFrame df, Appendable out) {
 
         try {
             CSVPrinter printer = new CSVPrinter(out, format);
@@ -64,6 +64,13 @@ public class CsvSaver {
         } catch (IOException e) {
             throw new RuntimeException("Error writing CSV", e);
         }
+    }
+
+    public String saveToString(DataFrame df) {
+
+        StringWriter out = new StringWriter();
+        save(df, out);
+        return out.toString();
     }
 
     private void printHeader(CSVPrinter printer, Index index) throws IOException {

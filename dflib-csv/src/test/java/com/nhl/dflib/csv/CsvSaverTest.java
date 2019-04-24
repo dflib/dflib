@@ -14,7 +14,19 @@ import static org.junit.Assert.*;
 public class CsvSaverTest extends BaseCsvTest {
 
     @Test
-    public void testToWriter() {
+    public void testSaveToString() {
+
+        DataFrame df = DataFrame.forSequenceFoldByRow(Index.forLabels("A", "B"),
+                1, 2,
+                3, 4);
+
+        assertEquals("A,B\r\n" +
+                "1,2\r\n" +
+                "3,4\r\n", Csv.saver().saveToString(df));
+    }
+
+    @Test
+    public void testSave_ToWriter() {
 
         DataFrame df = DataFrame.forSequenceFoldByRow(Index.forLabels("A", "B"),
                 1, 2,
@@ -28,7 +40,7 @@ public class CsvSaverTest extends BaseCsvTest {
     }
 
     @Test
-    public void testToWriter_Format() {
+    public void testSave_ToWriter_Format() {
 
         DataFrame df = DataFrame.forSequenceFoldByRow(Index.forLabels("A", "B"),
                 1, 2,
@@ -43,7 +55,7 @@ public class CsvSaverTest extends BaseCsvTest {
     }
 
     @Test
-    public void testToFile() throws IOException {
+    public void testSave_ToFile() throws IOException {
 
         File file = new File(outPath("testToFile.csv"));
 
@@ -58,7 +70,7 @@ public class CsvSaverTest extends BaseCsvTest {
     }
 
     @Test
-    public void testToFilePath() throws IOException {
+    public void testSave_ToFilePath() throws IOException {
 
         String filePath = outPath("testToFilePath.csv");
 
