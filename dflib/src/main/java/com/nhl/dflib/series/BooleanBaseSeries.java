@@ -323,4 +323,9 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
         return true;
     }
+
+    @Override
+    public String toString() {
+        return ToString.toString(this);
+    }
 }

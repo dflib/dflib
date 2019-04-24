@@ -138,4 +138,9 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
         return bools.toBooleanSeries();
     }
+
+    @Override
+    public String toString() {
+        return ToString.toString(this);
+    }
 }

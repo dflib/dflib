@@ -1,6 +1,5 @@
 package com.nhl.dflib.series;
 
-import com.nhl.dflib.Printers;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.map.ValueMapper;
 
@@ -70,10 +69,5 @@ public class ColumnMappedSeries<S, T> extends ObjectSeries<T> {
     @Override
     public Series<T> fillNullsForward() {
         return materialize().fillNullsForward();
-    }
-
-    @Override
-    public String toString() {
-        return Printers.inline.print(new StringBuilder("ColumnMappedSeries ["), this).append("]").toString();
     }
 }

@@ -1,7 +1,6 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.IntSeries;
-import com.nhl.dflib.Printers;
 import com.nhl.dflib.Series;
 
 import java.util.Objects;
@@ -82,10 +81,5 @@ public class IndexedSeries<T> extends ObjectSeries<T> {
     @Override
     public Series<T> fillNullsForward() {
         return materialize().fillNullsForward();
-    }
-
-    @Override
-    public String toString() {
-        return Printers.inline.print(new StringBuilder("IndexedSeries ["), this).append("]").toString();
     }
 }

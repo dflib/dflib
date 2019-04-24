@@ -1,6 +1,5 @@
 package com.nhl.dflib.series;
 
-import com.nhl.dflib.Printers;
 import com.nhl.dflib.Series;
 
 public class EmptySeries<T> extends ObjectSeries<T> {
@@ -40,10 +39,5 @@ public class EmptySeries<T> extends ObjectSeries<T> {
     @Override
     public Series<T> fillNullsForward() {
         return this;
-    }
-
-    @Override
-    public String toString() {
-        return Printers.inline.print(new StringBuilder("EmptySeries ["), this).append("]").toString();
     }
 }

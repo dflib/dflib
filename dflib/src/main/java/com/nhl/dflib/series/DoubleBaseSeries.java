@@ -283,4 +283,9 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
 
         return bools.toBooleanSeries();
     }
+
+    @Override
+    public String toString() {
+        return ToString.toString(this);
+    }
 }

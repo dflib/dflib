@@ -283,4 +283,9 @@ public abstract class IntBaseSeries implements IntSeries {
 
         return bools.toBooleanSeries();
     }
+
+    @Override
+    public String toString() {
+        return ToString.toString(this);
+    }
 }
