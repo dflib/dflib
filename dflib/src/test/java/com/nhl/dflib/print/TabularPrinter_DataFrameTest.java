@@ -25,7 +25,7 @@ public class TabularPrinter_DataFrameTest {
     public void testToString() {
         TabularPrinter p = new TabularPrinter(5, 10);
 
-        assertEquals("" +
+        assertEquals(System.lineSeparator() +
                 "col1  column2" + System.lineSeparator() +
                 "----- -------" + System.lineSeparator() +
                 "one   1      " + System.lineSeparator() +
@@ -39,7 +39,7 @@ public class TabularPrinter_DataFrameTest {
     public void testToString_TruncateRows() {
         TabularPrinter p = new TabularPrinter(2, 10);
 
-        assertEquals("" +
+        assertEquals(System.lineSeparator() +
                 "col1 column2" + System.lineSeparator() +
                 "---- -------" + System.lineSeparator() +
                 "one  1      " + System.lineSeparator() +
@@ -52,7 +52,7 @@ public class TabularPrinter_DataFrameTest {
     public void testToString_TruncateColumns() {
         TabularPrinter p = new TabularPrinter(5, 4);
 
-        assertEquals("" +
+        assertEquals(System.lineSeparator() +
                 "col1 c..2" + System.lineSeparator() +
                 "---- ----" + System.lineSeparator() +
                 "one  1   " + System.lineSeparator() +

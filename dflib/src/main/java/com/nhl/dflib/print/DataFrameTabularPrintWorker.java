@@ -49,6 +49,10 @@ public class DataFrameTabularPrintWorker extends BasePrintWorker {
             data.add(drValue);
         }
 
+        // since tabular printer is multiline, start with a line break to ensure logger-induced prefixes don't break
+        // table alignment
+        appendNewLine();
+
         // constrain column width
         for (int i = 0; i < w; i++) {
             columnWidth[i] = Math.min(columnWidth[i], maxDisplayColumnWidth);

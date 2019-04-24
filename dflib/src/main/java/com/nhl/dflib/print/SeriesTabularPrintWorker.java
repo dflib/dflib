@@ -29,6 +29,10 @@ public class SeriesTabularPrintWorker extends BasePrintWorker {
             columnWidth[i] = Math.min(columnWidth[i], maxDisplayColumnWidth);
         }
 
+        // since tabular printer is multiline, start with a line break to ensure logger-induced prefixes don't break
+        // table alignment
+        appendNewLine();
+
         // print data
         for (int i = 0; i < pw; i++) {
             if (i > 0) {

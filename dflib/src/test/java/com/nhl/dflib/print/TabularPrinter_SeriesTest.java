@@ -19,7 +19,7 @@ public class TabularPrinter_SeriesTest {
     public void testToString() {
         TabularPrinter p = new TabularPrinter(5, 10);
 
-        assertEquals("" +
+        assertEquals(System.lineSeparator() +
                 "one" + System.lineSeparator() +
                 "two" + System.lineSeparator() +
                 "three" + System.lineSeparator() +
@@ -32,7 +32,7 @@ public class TabularPrinter_SeriesTest {
 
         TabularPrinter p = new TabularPrinter(2, 10);
 
-        assertEquals("" +
+        assertEquals(System.lineSeparator() +
                 "one" + System.lineSeparator() +
                 "two" + System.lineSeparator() +
                 "..." + System.lineSeparator() +
@@ -43,7 +43,7 @@ public class TabularPrinter_SeriesTest {
     public void testToString_TruncateColumns() {
         TabularPrinter p = new TabularPrinter(5, 4);
 
-        assertEquals("" +
+        assertEquals(System.lineSeparator() +
                 "one" + System.lineSeparator() +
                 "two" + System.lineSeparator() +
                 "t..e" + System.lineSeparator() +

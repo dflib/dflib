@@ -34,7 +34,7 @@ public class DataFrameTabularPrintWorkerTest {
     public void testPrint_Full() {
         DataFrameTabularPrintWorker w = new DataFrameTabularPrintWorker(new StringBuilder(), 5, 10);
 
-        assertEquals("" +
+        assertEquals(System.lineSeparator() +
                 "col1  column2" + System.lineSeparator() +
                 "----- -------" + System.lineSeparator() +
                 "one   1      " + System.lineSeparator() +
@@ -48,7 +48,7 @@ public class DataFrameTabularPrintWorkerTest {
     public void testPrint_TruncateRows() {
         DataFrameTabularPrintWorker w = new DataFrameTabularPrintWorker(new StringBuilder(), 2, 10);
 
-        assertEquals("" +
+        assertEquals(System.lineSeparator() +
                 "col1 column2" + System.lineSeparator() +
                 "---- -------" + System.lineSeparator() +
                 "one  1      " + System.lineSeparator() +
@@ -61,7 +61,7 @@ public class DataFrameTabularPrintWorkerTest {
     public void testPrint_TruncateColumns() {
         DataFrameTabularPrintWorker w = new DataFrameTabularPrintWorker(new StringBuilder(), 5, 4);
 
-        assertEquals("" +
+        assertEquals(System.lineSeparator() +
                 "col1 c..2" + System.lineSeparator() +
                 "---- ----" + System.lineSeparator() +
                 "one  1   " + System.lineSeparator() +
