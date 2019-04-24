@@ -45,13 +45,19 @@ public class MutableList<T> {
     }
 
     public Series<T> toSeries() {
-        T[] data = this.data;
+        T[] data = compactData();
 
         // making sure no one can change the series via the Mutable List anymore
         this.data = null;
 
         // TODO: difference from IntMutableList in that IntArraySeries supports ranged... Reconcile ArraySeries?
-        return new ArraySeries<>(data).head(size);
+        return new ArraySeries<>(data);
+    }
+
+    private T[] compactData() {
+        Object[] newData = new Object[size];
+        System.arraycopy(data, 0, newData, 0, size);
+        return (T[]) newData;
     }
 
     private void expand(int newCapacity) {

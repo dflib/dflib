@@ -47,12 +47,18 @@ public class BooleanMutableList {
     }
 
     public BooleanSeries toBooleanSeries() {
-        boolean[] data = this.data;
+        boolean[] data = compactData();
 
         // making sure no one can change the series via the Mutable List anymore
         this.data = null;
 
         return new BooleanArraySeries(data, 0, size);
+    }
+
+    private boolean[] compactData() {
+        boolean[] newData = new boolean[size];
+        System.arraycopy(data, 0, newData, 0, size);
+        return newData;
     }
 
     private void expand(int newCapacity) {

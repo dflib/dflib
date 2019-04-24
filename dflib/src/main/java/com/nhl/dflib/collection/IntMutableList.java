@@ -48,12 +48,18 @@ public class IntMutableList {
     }
 
     public IntSeries toIntSeries() {
-        int[] data = this.data;
+        int[] data = compactData();
 
         // making sure no one can change the series via the Mutable List anymore
         this.data = null;
 
         return new IntArraySeries(data, 0, size);
+    }
+
+    private int[] compactData() {
+        int[] newData = new int[size];
+        System.arraycopy(data, 0, newData, 0, size);
+        return newData;
     }
 
     private void expand(int newCapacity) {

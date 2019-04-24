@@ -48,12 +48,18 @@ public class DoubleMutableList {
     }
 
     public DoubleSeries toDoubleSeries() {
-        double[] data = this.data;
+        double[] data = compactData();
 
         // making sure no one can change the series via the Mutable List anymore
         this.data = null;
 
         return new DoubleArraySeries(data, 0, size);
+    }
+
+    private double[] compactData() {
+        double[] newData = new double[size];
+        System.arraycopy(data, 0, newData, 0, size);
+        return newData;
     }
 
     private void expand(int newCapacity) {
