@@ -57,6 +57,10 @@ public class IntMutableList {
     }
 
     private int[] compactData() {
+        if (data.length == size) {
+            return data;
+        }
+
         int[] newData = new int[size];
         System.arraycopy(data, 0, newData, 0, size);
         return newData;

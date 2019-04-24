@@ -56,6 +56,10 @@ public class BooleanMutableList {
     }
 
     private boolean[] compactData() {
+        if (data.length == size) {
+            return data;
+        }
+        
         boolean[] newData = new boolean[size];
         System.arraycopy(data, 0, newData, 0, size);
         return newData;

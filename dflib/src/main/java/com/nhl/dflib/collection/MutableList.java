@@ -55,6 +55,10 @@ public class MutableList<T> {
     }
 
     private T[] compactData() {
+        if (data.length == size) {
+            return data;
+        }
+
         Object[] newData = new Object[size];
         System.arraycopy(data, 0, newData, 0, size);
         return (T[]) newData;
