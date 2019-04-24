@@ -370,6 +370,13 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     DataFrame selectColumns(int pos0, int... otherPositions);
 
+    /**
+     * @param columnsIndex an index that defines a subset of columns and their ordering in the returned DataFrame.
+     * @return a new DataFrame.
+     * @since 0.6
+     */
+    DataFrame selectColumns(Index columnsIndex);
+
     DataFrame dropColumns(String... columnLabels);
 
     /**

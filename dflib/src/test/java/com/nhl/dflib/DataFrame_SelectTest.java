@@ -62,6 +62,7 @@ public class DataFrame_SelectTest extends BaseDataFrameTest {
                 .materialize();
     }
 
+    @Deprecated
     @Test
     public void testSelect_List() {
         Index i1 = Index.forLabels("a", "b");
@@ -138,5 +139,21 @@ public class DataFrame_SelectTest extends BaseDataFrameTest {
                 .expectRow(1, 9, "y")
                 .expectRow(1, 9, "y")
                 .expectRow(0, 1, "z");
+    }
+
+    @Test
+    public void testSelectColumnsByIndex() {
+        Index i1 = Index.forLabels("a", "b", "c");
+        Index i2 = Index.forLabels("b", "a");
+
+        DataFrame df = createDf(i1,
+                1, "x", "m",
+                2, "y", "n")
+                .selectColumns(i2);
+
+        new DFAsserts(df, "b", "a")
+                .expectHeight(2)
+                .expectRow(0, "x", 1)
+                .expectRow(1, "y", 2);
     }
 }

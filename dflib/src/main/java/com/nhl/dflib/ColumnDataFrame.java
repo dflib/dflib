@@ -441,6 +441,16 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
+    public DataFrame selectColumns(Index columnsIndex) {
+        Series[] newColumns = new Series[columnsIndex.size()];
+        for (int i = 0; i < newColumns.length; i++) {
+            newColumns[i] = dataColumns[this.columnsIndex.position(columnsIndex.getLabel(i))];
+        }
+
+        return new ColumnDataFrame(columnsIndex, newColumns);
+    }
+
+    @Override
     public GroupBy group(Hasher by) {
         return new Grouper(by).group(this);
     }
