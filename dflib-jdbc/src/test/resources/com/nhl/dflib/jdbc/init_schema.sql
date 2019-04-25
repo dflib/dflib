@@ -12,4 +12,9 @@ CREATE TABLE "t2" (
     "bytes" VARCHAR(100) FOR BIT DATA );
 
 /* Mandatory primitive */
-CREATE TABLE "t3" ("int" int not null);
+CREATE TABLE "t3" (
+    "int" int not null,
+    "long" bigint not null,
+    "double" double not null,
+    "boolean" boolean not null
+);

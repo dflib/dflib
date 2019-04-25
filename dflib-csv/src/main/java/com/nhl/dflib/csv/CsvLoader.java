@@ -5,12 +5,14 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.builder.BooleanSeriesBuilder;
 import com.nhl.dflib.builder.DoubleSeriesBuilder;
 import com.nhl.dflib.builder.IntSeriesBuilder;
+import com.nhl.dflib.builder.LongSeriesBuilder;
 import com.nhl.dflib.builder.MappedSeriesBuilder;
 import com.nhl.dflib.builder.ObjectSeriesBuilder;
 import com.nhl.dflib.builder.SeriesBuilder;
 import com.nhl.dflib.map.BooleanValueMapper;
 import com.nhl.dflib.map.DoubleValueMapper;
 import com.nhl.dflib.map.IntValueMapper;
+import com.nhl.dflib.map.LongValueMapper;
 import com.nhl.dflib.map.ValueMapper;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -94,28 +96,57 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader intColumn(int column) {
-        return columnType(column, new IntSeriesBuilder(IntValueMapper.fromString()));
+        return columnType(column, new IntSeriesBuilder<>(IntValueMapper.fromString()));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader intColumn(String column) {
-        return columnType(column, new IntSeriesBuilder(IntValueMapper.fromString()));
+        return columnType(column, new IntSeriesBuilder<>(IntValueMapper.fromString()));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader intColumn(int column, int forNull) {
-        return columnType(column, new IntSeriesBuilder(IntValueMapper.fromString(forNull)));
+        return columnType(column, new IntSeriesBuilder<>(IntValueMapper.fromString(forNull)));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader intColumn(String column, int forNull) {
-        return columnType(column, new IntSeriesBuilder(IntValueMapper.fromString(forNull)));
+        return columnType(column, new IntSeriesBuilder<>(IntValueMapper.fromString(forNull)));
+    }
+
+
+    /**
+     * @since 0.6
+     */
+    public CsvLoader longColumn(int column) {
+        return columnType(column, new LongSeriesBuilder<>(LongValueMapper.fromString()));
+    }
+
+    /**
+     * @since 0.6
+     */
+    public CsvLoader longColumn(String column) {
+        return columnType(column, new LongSeriesBuilder(LongValueMapper.fromString()));
+    }
+
+    /**
+     * @since 0.6
+     */
+    public CsvLoader longColumn(int column, long forNull) {
+        return columnType(column, new LongSeriesBuilder(LongValueMapper.fromString(forNull)));
+    }
+
+    /**
+     * @since 0.6
+     */
+    public CsvLoader longColumn(String column, long forNull) {
+        return columnType(column, new LongSeriesBuilder(LongValueMapper.fromString(forNull)));
     }
 
     /**

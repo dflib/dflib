@@ -2,6 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.unit.DoubleSeriesAsserts;
 import com.nhl.dflib.unit.IntSeriesAsserts;
+import com.nhl.dflib.unit.LongSeriesAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.Test;
 
@@ -99,4 +100,29 @@ public class DataFrame_GetColumnTest {
 
         df.getColumnAsDouble("a");
     }
+
+    @Test
+    public void testGetColumnAsLong_byLabel() {
+        Index i1 = Index.forLabels("a", "b");
+        DataFrame df = DataFrame.forColumns(i1,
+                Series.forData("a", "b"),
+                LongSeries.forLongs(3, 6, -1));
+
+        LongSeries cb = df.getColumnAsLong("b");
+
+        new LongSeriesAsserts(cb).expectData(3, 6, -1);
+    }
+
+    @Test
+    public void testGetColumnAsLong_byPosition() {
+        Index i1 = Index.forLabels("a", "b");
+        DataFrame df = DataFrame.forColumns(i1,
+                Series.forData("a", "b"),
+                LongSeries.forLongs(3, 6, -1));
+
+        LongSeries cb = df.getColumnAsLong(1);
+
+        new LongSeriesAsserts(cb).expectData(3, 6, -1);
+    }
+
 }

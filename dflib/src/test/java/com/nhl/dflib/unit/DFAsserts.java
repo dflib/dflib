@@ -1,9 +1,11 @@
 package com.nhl.dflib.unit;
 
+import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DoubleSeries;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.LongSeries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +65,24 @@ public class DFAsserts {
         return this;
     }
 
+    public DFAsserts expectLongColumns(int... positions) {
+
+        for (int i = 0; i < positions.length; i++) {
+            // the assertion is superfluous ... "getColumnAsLong" throws if the column is not an LongSeries
+            assertTrue(df.getColumnAsLong(positions[i]) instanceof LongSeries);
+        }
+        return this;
+    }
+
+    public DFAsserts expectLongColumns(String... labels) {
+        for (int i = 0; i < labels.length; i++) {
+
+            // the assertion is superfluous ... "getColumnAsLong" throws if the column is not an LongSeries
+            assertTrue(df.getColumnAsLong(labels[i]) instanceof LongSeries);
+        }
+        return this;
+    }
+
     public DFAsserts expectDoubleColumns(int... positions) {
 
         for (int i = 0; i < positions.length; i++) {
@@ -77,6 +97,24 @@ public class DFAsserts {
 
             // the assertion is superfluous ... "getColumnAsInt" throws if the column is not an IntSeries
             assertTrue(df.getColumnAsDouble(labels[i]) instanceof DoubleSeries);
+        }
+        return this;
+    }
+
+    public DFAsserts expectBooleanColumns(int... positions) {
+
+        for (int i = 0; i < positions.length; i++) {
+            // the assertion is superfluous ... "getColumnAsBoolean" throws if the column is not an BooleanSeries
+            assertTrue(df.getColumnAsBoolean(positions[i]) instanceof BooleanSeries);
+        }
+        return this;
+    }
+
+    public DFAsserts expectBooleanColumns(String... labels) {
+        for (int i = 0; i < labels.length; i++) {
+
+            // the assertion is superfluous ... "getColumnAsBoolean" throws if the column is not an BooleanSeries
+            assertTrue(df.getColumnAsBoolean(labels[i]) instanceof BooleanSeries);
         }
         return this;
     }

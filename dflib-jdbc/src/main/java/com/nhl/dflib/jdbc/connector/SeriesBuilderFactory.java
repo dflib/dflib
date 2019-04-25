@@ -3,6 +3,7 @@ package com.nhl.dflib.jdbc.connector;
 import com.nhl.dflib.builder.BooleanSeriesBuilder;
 import com.nhl.dflib.builder.DoubleSeriesBuilder;
 import com.nhl.dflib.builder.IntSeriesBuilder;
+import com.nhl.dflib.builder.LongSeriesBuilder;
 import com.nhl.dflib.builder.MappedSeriesBuilder;
 import com.nhl.dflib.builder.SeriesBuilder;
 
@@ -36,6 +37,16 @@ public interface SeriesBuilderFactory<T> {
         return new IntSeriesBuilder<>(rs -> {
             try {
                 return rs.getInt(pos);
+            } catch (SQLException e) {
+                throw new RuntimeException("Error performing SQL operation", e);
+            }
+        });
+    }
+
+    static SeriesBuilder<ResultSet, Long> longAccum(int pos) {
+        return new LongSeriesBuilder<>(rs -> {
+            try {
+                return rs.getLong(pos);
             } catch (SQLException e) {
                 throw new RuntimeException("Error performing SQL operation", e);
             }

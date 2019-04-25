@@ -11,6 +11,7 @@ import com.nhl.dflib.map.BooleanValueMapper;
 import com.nhl.dflib.map.DoubleValueMapper;
 import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.map.IntValueMapper;
+import com.nhl.dflib.map.LongValueMapper;
 import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.map.RowMapper;
 import com.nhl.dflib.map.RowToValueMapper;
@@ -156,6 +157,26 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.6
      */
     BooleanSeries getColumnAsBoolean(int pos) throws IllegalArgumentException;
+
+    /**
+     * Returns a named DataFrame column as BooleanSeries. If the column is not in the DataFrame or is not an
+     * {@link LongSeries}, an exception is thrown.
+     *
+     * @param name column label
+     * @return a named DataFrame column as LongSeries.
+     * @since 0.6
+     */
+    LongSeries getColumnAsLong(String name) throws IllegalArgumentException;
+
+    /**
+     * Returns a DataFrame column at the specified position as LongSeries. If the column is not in the DataFrame or is
+     * not an {@link LongSeries}, an exception is thrown.
+     *
+     * @param pos column position in the DataFrame
+     * @return a named DataFrame column as LongSeries.
+     * @since 0.6
+     */
+    LongSeries getColumnAsLong(int pos) throws IllegalArgumentException;
 
     /**
      * Returns the number of rows in this DataFrame. Aka the DataFrame "height". Note that depending on the type of
@@ -340,6 +361,48 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     default <V> DataFrame toBooleanColumn(int pos) {
         return toBooleanColumn(pos, BooleanValueMapper.fromObject());
+    }
+
+    /**
+     * @param columnLabel name of a column to convert
+     * @param converter   a function to apply to column values to covert them to longs
+     * @param <V>         expected input column value
+     * @return a new DataFrame
+     * @since 0.6
+     */
+    default <V> DataFrame toLongColumn(String columnLabel, LongValueMapper<V> converter) {
+        int pos = getColumnsIndex().position(columnLabel);
+        return toLongColumn(pos, converter);
+    }
+
+    /**
+     * @param pos       position of a column to convert
+     * @param converter a function to apply to column values to covert them to longs
+     * @param <V>       expected input column value
+     * @return a new DataFrame
+     * @since 0.6
+     */
+    <V> DataFrame toLongColumn(int pos, LongValueMapper<V> converter);
+
+    /**
+     * @param columnLabel name of a column to convert
+     * @param <V>         expected input column value
+     * @return a new DataFrame
+     * @since 0.6
+     */
+    default <V> DataFrame toLongColumn(String columnLabel) {
+        int pos = getColumnsIndex().position(columnLabel);
+        return toLongColumn(pos);
+    }
+
+    /**
+     * @param pos position of a column to convert
+     * @param <V> expected input column value
+     * @return a new DataFrame
+     * @since 0.6
+     */
+    default <V> DataFrame toLongColumn(int pos) {
+        return toLongColumn(pos, LongValueMapper.fromObject());
     }
 
     /**

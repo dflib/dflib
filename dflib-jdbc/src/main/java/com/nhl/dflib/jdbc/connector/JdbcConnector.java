@@ -41,6 +41,8 @@ public class JdbcConnector {
         this.mandatorySeriesBuilderFactories.put(Types.INTEGER, SeriesBuilderFactory::intAccum);
         this.mandatorySeriesBuilderFactories.put(Types.DOUBLE, SeriesBuilderFactory::doubleAccum);
         this.mandatorySeriesBuilderFactories.put(Types.FLOAT, SeriesBuilderFactory::doubleAccum);
+        this.mandatorySeriesBuilderFactories.put(Types.BIGINT, SeriesBuilderFactory::longAccum);
+
         // Types.DECIMAL should presumably be mapped to BigDecimal, so not attempting to map to a primitive double
 
         this.seriesBuilderFactories = new HashMap<>();

@@ -98,15 +98,18 @@ public class JdbcConnector_SqlLoaderIT extends BaseDbTest {
     @Test
     public void testPrimitives() {
 
-        T3.insert(-15);
+        T3.insert(-15, Long.MAX_VALUE - 1, 0.505, true);
 
         DataFrame df = createConnector()
                 .sqlLoader("SELECT * from \"t3\"")
                 .load();
 
-        new DFAsserts(df, "int")
+        new DFAsserts(df, "int", "long", "double", "boolean")
                 .expectHeight(1)
                 .expectIntColumns(0)
-                .expectRow(0, -15);
+                .expectLongColumns(1)
+                .expectDoubleColumns(2)
+                .expectBooleanColumns(3)
+                .expectRow(0, -15, Long.MAX_VALUE - 1, 0.505, true);
     }
 }

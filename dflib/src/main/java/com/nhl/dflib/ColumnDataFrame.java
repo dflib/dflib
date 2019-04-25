@@ -3,6 +3,7 @@ package com.nhl.dflib;
 import com.nhl.dflib.collection.BooleanMutableList;
 import com.nhl.dflib.collection.DoubleMutableList;
 import com.nhl.dflib.collection.IntMutableList;
+import com.nhl.dflib.collection.LongMutableList;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.filter.FilterIndexer;
@@ -18,6 +19,7 @@ import com.nhl.dflib.map.BooleanValueMapper;
 import com.nhl.dflib.map.DoubleValueMapper;
 import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.map.IntValueMapper;
+import com.nhl.dflib.map.LongValueMapper;
 import com.nhl.dflib.map.Mapper;
 import com.nhl.dflib.map.RowCombiner;
 import com.nhl.dflib.map.RowMapper;
@@ -126,6 +128,26 @@ public class ColumnDataFrame implements DataFrame {
         }
 
         throw new IllegalArgumentException("Column at " + name + " is not a BooleanSeries: " + s.getClass().getSimpleName());
+    }
+
+    @Override
+    public LongSeries getColumnAsLong(int pos) throws IllegalArgumentException {
+        Series<?> s = getColumn(pos);
+        if (s instanceof LongSeries) {
+            return (LongSeries) s;
+        }
+
+        throw new IllegalArgumentException("Column at " + pos + " is not a LongSeries: " + s.getClass().getSimpleName());
+    }
+
+    @Override
+    public LongSeries getColumnAsLong(String name) throws IllegalArgumentException {
+        Series<?> s = getColumn(name);
+        if (s instanceof LongSeries) {
+            return (LongSeries) s;
+        }
+
+        throw new IllegalArgumentException("Column at " + name + " is not a LongSeries: " + s.getClass().getSimpleName());
     }
 
     @Override
@@ -384,6 +406,18 @@ public class ColumnDataFrame implements DataFrame {
         }
 
         return replaceColumn(pos, bools.toBooleanSeries());
+    }
+
+    @Override
+    public <V> DataFrame toLongColumn(int pos, LongValueMapper<V> converter) {
+        Series<?> c = dataColumns[pos];
+        int len = c.size();
+        LongMutableList longs = new LongMutableList(len);
+        for (int i = 0; i < len; i++) {
+            longs.add(converter.map((V) c.get(i)));
+        }
+
+        return replaceColumn(pos, longs.toLongSeries());
     }
 
     @Override

@@ -54,7 +54,7 @@ public class DbBootstrap {
         return runtime.getInstance(DatabaseChannelFactory.class)
                 .getChannel()
                 .newTable("t3")
-                .columnNames("int")
+                .columnNames("int", "long", "double", "boolean")
                 .initColumnTypesFromDBMetadata()
                 .build();
     }

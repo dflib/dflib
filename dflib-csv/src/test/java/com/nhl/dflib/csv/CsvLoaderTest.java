@@ -158,6 +158,37 @@ public class CsvLoaderTest extends BaseCsvTest {
                 .load(inPath("numbers_w_nulls.csv"));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testFromFile_LongColumn_Nulls() {
+        new CsvLoader()
+                .longColumn(0)
+                .longColumn(1)
+                .load(inPath("numbers_w_nulls.csv"));
+    }
+
+    @Test
+    public void testFromFile_LongColumn_Nulls_Default() {
+        DataFrame df = new CsvLoader()
+                .longColumn(0, -100L)
+                .longColumn(1, -200L)
+                .load(inPath("numbers_w_nulls.csv"));
+
+        new DFAsserts(df, "One", "Two")
+                .expectHeight(2)
+                .expectLongColumns(0, 1)
+                .expectRow(0, -100L, 3L)
+                .expectRow(1, 5L, -200L);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testFromFile_LongColumn_Nulls_Throw() {
+        new CsvLoader()
+                .longColumn(0)
+                .longColumn(1)
+                .load(inPath("numbers_w_nulls.csv"));
+    }
+
+
     @Test
     public void testFromFile_DoubleColumn_Nulls_Default() {
         DataFrame df = new CsvLoader()
