@@ -562,7 +562,7 @@ public class ColumnDataFrame implements DataFrame {
             int w = width();
             int aw = another.width();
             if (w != aw) {
-                throw new IllegalArgumentException("Another DataFrame width " + aw + " is not the same as this width " + w);
+                throw new IllegalArgumentException("Another DataFrame width is not the same as this width (" + aw + " vs " + w + ")");
             } else {
                 throw new IllegalArgumentException("Another DataFrame columnsIndex is not equals to this columnsIndex");
             }
@@ -571,7 +571,7 @@ public class ColumnDataFrame implements DataFrame {
         int h = height();
         int ah = another.height();
         if (h != ah) {
-            throw new IllegalArgumentException("Another DataFrame height " + ah + " is not the same as this hight " + h);
+            throw new IllegalArgumentException("Another DataFrame height is not the same as this height (" + ah + " vs " + h + ")");
         }
     }
 
