@@ -28,7 +28,7 @@ public class LongArraySeries extends LongBaseSeries {
 
     @Override
     public long getLong(int index) {
-        if (offset + index >= size) {
+        if (index >= size) {
             throw new ArrayIndexOutOfBoundsException(index);
         }
 

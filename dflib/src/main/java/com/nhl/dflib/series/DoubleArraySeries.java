@@ -30,7 +30,7 @@ public class DoubleArraySeries extends DoubleBaseSeries {
 
     @Override
     public double getDouble(int index) {
-        if (offset + index >= size) {
+        if (index >= size) {
             throw new ArrayIndexOutOfBoundsException(index);
         }
 

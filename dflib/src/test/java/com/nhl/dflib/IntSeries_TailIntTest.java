@@ -7,9 +7,15 @@ import org.junit.Test;
 public class IntSeries_TailIntTest {
 
     @Test
-    public void test() {
+    public void test0() {
         IntSeries s = new IntArraySeries(3, 4, 2).tailInt(2);
         new IntSeriesAsserts(s).expectData(4, 2);
+    }
+
+    @Test
+    public void test1() {
+        IntSeries s = new IntArraySeries(3, 4, 2).tailInt(1);
+        new IntSeriesAsserts(s).expectData(2);
     }
 
     @Test

@@ -30,7 +30,7 @@ public class IntArraySeries extends IntBaseSeries {
 
     @Override
     public int getInt(int index) {
-        if (offset + index >= size) {
+        if (index >= size) {
             throw new ArrayIndexOutOfBoundsException(index);
         }
 
