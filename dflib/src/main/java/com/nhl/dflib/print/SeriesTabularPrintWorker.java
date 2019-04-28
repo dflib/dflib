@@ -15,19 +15,19 @@ public class SeriesTabularPrintWorker extends BasePrintWorker {
             return out;
         }
 
-        int[] columnWidth = new int[w];
+        int columnWidth = 0;
+        String columnFormat;
         String[] values = new String[w];
         int pw = Math.min(w, maxDisplayRows);
 
         for (int i = 0; i < pw; i++) {
             values[i] = String.valueOf(s.get(i));
-            columnWidth[i] = Math.max(columnWidth[i], values[i].length());
+            columnWidth = Math.max(columnWidth, values[i].length());
         }
 
         // constrain column width
-        for (int i = 0; i < pw; i++) {
-            columnWidth[i] = Math.min(columnWidth[i], maxDisplayColumnWidth);
-        }
+        columnWidth = Math.min(columnWidth, maxDisplayColumnWidth);
+        columnFormat = columnFormat(columnWidth, s.getType());
 
         // since tabular printer is multiline, start with a line break to ensure logger-induced prefixes don't break
         // table alignment
@@ -38,7 +38,7 @@ public class SeriesTabularPrintWorker extends BasePrintWorker {
             if (i > 0) {
                 appendNewLine();
             }
-            appendFixedWidth(values[i], columnWidth[i]);
+            appendFixedWidth(values[i], columnWidth, columnFormat);
         }
 
         if (pw < w) {

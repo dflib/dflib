@@ -27,6 +27,8 @@ public class DataFrameTabularPrintWorker extends BasePrintWorker {
         String[] labels = columns.getLabels();
 
         int[] columnWidth = new int[w];
+        String[] columnFormat = new String[w];
+
         List<String[]> data = new ArrayList<>();
 
         for (int i = 0; i < w; i++) {
@@ -38,24 +40,25 @@ public class DataFrameTabularPrintWorker extends BasePrintWorker {
                 break;
             }
 
-            RowProxy dr = values.next();
-            String[] drValue = new String[w];
+            RowProxy r = values.next();
+            String[] rValue = new String[w];
 
             for (int j = 0; j < w; j++) {
-                drValue[j] = String.valueOf(dr.get(j));
-                columnWidth[j] = Math.max(columnWidth[j], drValue[j].length());
+                rValue[j] = String.valueOf(r.get(j));
+                columnWidth[j] = Math.max(columnWidth[j], rValue[j].length());
             }
 
-            data.add(drValue);
+            data.add(rValue);
         }
 
         // since tabular printer is multiline, start with a line break to ensure logger-induced prefixes don't break
         // table alignment
         appendNewLine();
 
-        // constrain column width
+        // constrain column width and calculate formatters
         for (int i = 0; i < w; i++) {
             columnWidth[i] = Math.min(columnWidth[i], maxDisplayColumnWidth);
+            columnFormat[i] = columnFormat(columnWidth[i], df.getColumn(i).getType());
         }
 
         // print header
@@ -63,7 +66,7 @@ public class DataFrameTabularPrintWorker extends BasePrintWorker {
             if (i > 0) {
                 append(" ");
             }
-            appendFixedWidth(labels[i], columnWidth[i]);
+            appendFixedWidth(labels[i], columnWidth[i], columnFormat[i]);
         }
 
         // print header separator
@@ -85,7 +88,7 @@ public class DataFrameTabularPrintWorker extends BasePrintWorker {
                 if (i > 0) {
                     append(" ");
                 }
-                appendFixedWidth(row[i], columnWidth[i]);
+                appendFixedWidth(row[i], columnWidth[i], columnFormat[i]);
             }
         }
 

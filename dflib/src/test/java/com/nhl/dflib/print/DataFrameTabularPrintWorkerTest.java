@@ -2,6 +2,8 @@ package com.nhl.dflib.print;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.Series;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,19 +17,17 @@ public class DataFrameTabularPrintWorkerTest {
     public void initDataFrameParts() {
 
         Index columns = Index.forLabels("col1", "column2");
-        this.df = DataFrame.forSequenceFoldByRow(columns,
-                "one", 1,
-                "two", 2,
-                "three", 3,
-                "four", 4);
+        this.df = DataFrame.forColumns(columns,
+                Series.forData("one", "two", "three", "four"),
+                IntSeries.forInts(1, 2, 3, 4));
     }
 
     @Test
     public void testAppendFixedWidth() {
-        assertEquals("a  ", new DataFrameTabularPrintWorker(new StringBuilder(), 3, 20).appendFixedWidth("a", 3).toString());
-        assertEquals("a ", new DataFrameTabularPrintWorker(new StringBuilder(), 3, 20).appendFixedWidth("a", 2).toString());
-        assertEquals("a", new DataFrameTabularPrintWorker(new StringBuilder(), 3, 20).appendFixedWidth("a", 1).toString());
-        assertEquals("..", new DataFrameTabularPrintWorker(new StringBuilder(), 3, 20).appendFixedWidth("abc", 2).toString());
+        assertEquals("a  ", new DataFrameTabularPrintWorker(new StringBuilder(), 3, 20).appendFixedWidth("a", 3, "%1$-3s").toString());
+        assertEquals("a ", new DataFrameTabularPrintWorker(new StringBuilder(), 3, 20).appendFixedWidth("a", 2, "%1$-2s").toString());
+        assertEquals("a", new DataFrameTabularPrintWorker(new StringBuilder(), 3, 20).appendFixedWidth("a", 1, "%1$-1s").toString());
+        assertEquals("..", new DataFrameTabularPrintWorker(new StringBuilder(), 3, 20).appendFixedWidth("abc", 2, "%1$-2s").toString());
     }
 
     @Test
@@ -37,10 +37,10 @@ public class DataFrameTabularPrintWorkerTest {
         assertEquals(System.lineSeparator() +
                 "col1  column2" + System.lineSeparator() +
                 "----- -------" + System.lineSeparator() +
-                "one   1      " + System.lineSeparator() +
-                "two   2      " + System.lineSeparator() +
-                "three 3      " + System.lineSeparator() +
-                "four  4      " + System.lineSeparator() +
+                "one         1" + System.lineSeparator() +
+                "two         2" + System.lineSeparator() +
+                "three       3" + System.lineSeparator() +
+                "four        4" + System.lineSeparator() +
                 "4 rows x 2 columns", w.print(df).toString());
     }
 
@@ -51,8 +51,8 @@ public class DataFrameTabularPrintWorkerTest {
         assertEquals(System.lineSeparator() +
                 "col1 column2" + System.lineSeparator() +
                 "---- -------" + System.lineSeparator() +
-                "one  1      " + System.lineSeparator() +
-                "two  2      " + System.lineSeparator() +
+                "one        1" + System.lineSeparator() +
+                "two        2" + System.lineSeparator() +
                 "..." + System.lineSeparator() +
                 "4 rows x 2 columns", w.print(df).toString());
     }
@@ -64,10 +64,10 @@ public class DataFrameTabularPrintWorkerTest {
         assertEquals(System.lineSeparator() +
                 "col1 c..2" + System.lineSeparator() +
                 "---- ----" + System.lineSeparator() +
-                "one  1   " + System.lineSeparator() +
-                "two  2   " + System.lineSeparator() +
-                "t..e 3   " + System.lineSeparator() +
-                "four 4   " + System.lineSeparator() +
+                "one     1" + System.lineSeparator() +
+                "two     2" + System.lineSeparator() +
+                "t..e    3" + System.lineSeparator() +
+                "four    4" + System.lineSeparator() +
                 "4 rows x 2 columns", w.print(df).toString());
     }
 }

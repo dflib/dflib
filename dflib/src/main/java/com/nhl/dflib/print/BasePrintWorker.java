@@ -30,10 +30,20 @@ public abstract class BasePrintWorker {
         return string.substring(0, startOffset) + ".." + string.substring(endOffset);
     }
 
-    protected StringBuilder appendFixedWidth(String value, int width) {
+    protected String columnFormat(int width, Class<?> valueType) {
+        return valueType.isPrimitive()
+                || Number.class.isAssignableFrom(valueType)
+                || Boolean.class.isAssignableFrom(valueType)
+                // numbers are right-aligned
+                ? "%1$" + width + "s"
+                // the rest are left-aligned
+                : "%1$-" + width + "s";
+    }
+
+    protected StringBuilder appendFixedWidth(String value, int width, String columnFormat) {
 
         if (value.length() <= width) {
-            return out.append(String.format("%1$-" + width + "s", value));
+            return out.append(String.format(columnFormat, value));
         } else {
             return out.append(truncate(value, width));
         }
