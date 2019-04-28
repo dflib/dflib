@@ -17,6 +17,11 @@ public interface LongSeries extends Series<Long> {
         return new LongArraySeries(longs);
     }
 
+    @Override
+    default Class<Long> getType() {
+        return Long.TYPE;
+    }
+
     long getLong(int index);
 
     void copyToLong(long[] to, int fromOffset, int toOffset, int len);

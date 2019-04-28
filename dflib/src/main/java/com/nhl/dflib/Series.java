@@ -15,6 +15,14 @@ public interface Series<T> {
         return new ArraySeries<>(data);
     }
 
+    /**
+     * @return the type of values in the series.
+     * @since 0.6
+     */
+    // TODO: change type from ? to a specific T, but estimate the impact of carrying an explicit type around with every
+    //  series object that is a subclass of ObjectSeries
+    Class<?> getType();
+
     int size();
 
     T get(int index);

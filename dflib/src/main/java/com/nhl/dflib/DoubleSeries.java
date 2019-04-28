@@ -17,6 +17,11 @@ public interface DoubleSeries extends Series<Double> {
         return new DoubleArraySeries(doubles);
     }
 
+    @Override
+    default Class<Double> getType() {
+        return Double.TYPE;
+    }
+
     double getDouble(int index);
 
     void copyToDouble(double[] to, int fromOffset, int toOffset, int len);

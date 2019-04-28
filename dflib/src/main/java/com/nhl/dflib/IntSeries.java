@@ -16,6 +16,11 @@ public interface IntSeries extends Series<Integer> {
         return new IntArraySeries(ints);
     }
 
+    @Override
+    default Class<Integer> getType() {
+        return Integer.TYPE;
+    }
+
     int getInt(int index);
 
     void copyToInt(int[] to, int fromOffset, int toOffset, int len);

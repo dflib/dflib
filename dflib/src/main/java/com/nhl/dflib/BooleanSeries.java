@@ -13,6 +13,11 @@ public interface BooleanSeries extends Series<Boolean> {
         return new BooleanArraySeries(bools);
     }
 
+    @Override
+    default Class<Boolean> getType() {
+        return Boolean.TYPE;
+    }
+
     boolean getBoolean(int index);
 
     void copyToBoolean(boolean[] to, int fromOffset, int toOffset, int len);

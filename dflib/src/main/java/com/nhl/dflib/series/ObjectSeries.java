@@ -14,6 +14,11 @@ import java.util.Objects;
 public abstract class ObjectSeries<T> implements Series<T> {
 
     @Override
+    public Class<?> getType() {
+        return Object.class;
+    }
+
+    @Override
     public Series<T> rangeOpenClosed(int fromInclusive, int toExclusive) {
 
         if (fromInclusive == toExclusive) {
