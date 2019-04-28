@@ -12,6 +12,7 @@
 * #31 Series.replace, Series.replaceNoMatch, DataFrame.nullify, DataFrame.nullifyNoMatch #31
 * #32 Series/DataFrame element-wise equality operations 
 * #33 DataFrame.stack operation
+* #34 Tabular and Inline printers should show head and tail
 * #35 LongSeries
 
 ## Release 0.5
