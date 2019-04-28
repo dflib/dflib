@@ -11,8 +11,8 @@ public class InlinePrinter extends BasePrinter {
     public InlinePrinter() {
     }
 
-    public InlinePrinter(int maxDisplayRows, int maxDisplayColumnWith) {
-        super(maxDisplayRows, maxDisplayColumnWith);
+    public InlinePrinter(int maxDisplayRows, int maxDisplayColumnWidth) {
+        super(maxDisplayRows, maxDisplayColumnWidth);
     }
 
     @Override

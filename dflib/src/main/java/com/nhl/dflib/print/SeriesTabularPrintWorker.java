@@ -10,19 +10,38 @@ public class SeriesTabularPrintWorker extends BasePrintWorker {
 
     public StringBuilder print(Series<?> s) {
 
-        int w = s.size();
-        if (w == 0) {
+        int h = s.size();
+        if (h == 0) {
             return out;
         }
 
         int columnWidth = 0;
         String columnFormat;
-        String[] values = new String[w];
-        int pw = Math.min(w, maxDisplayRows);
 
-        for (int i = 0; i < pw; i++) {
-            values[i] = String.valueOf(s.get(i));
+        SeriesTruncator truncator = SeriesTruncator.create(s, maxDisplayRows);
+
+        // need to accumulate all values to calculate column width
+        String[] values = new String[truncator.size()];
+
+        Series<?> head = truncator.head();
+        int hs = head.size();
+
+        for (int i = 0; i < hs; i++) {
+            values[i] = String.valueOf(head.get(i));
             columnWidth = Math.max(columnWidth, values[i].length());
+        }
+
+        if (truncator.isTruncated()) {
+            values[hs] = "...";
+
+            Series<?> tail = truncator.tail();
+            int ts = tail.size();
+
+            for (int i = 0; i < ts; i++) {
+                String val = String.valueOf(tail.get(i));
+                values[hs + 1 + i] = val;
+                columnWidth = Math.max(columnWidth, val.length());
+            }
         }
 
         // constrain column width
@@ -34,19 +53,15 @@ public class SeriesTabularPrintWorker extends BasePrintWorker {
         appendNewLine();
 
         // print data
-        for (int i = 0; i < pw; i++) {
+        for (int i = 0; i < values.length; i++) {
             if (i > 0) {
                 appendNewLine();
             }
             appendFixedWidth(values[i], columnWidth, columnFormat);
         }
 
-        if (pw < w) {
-            appendNewLine().append("...");
-        }
-
-        String rowsLabel = w == 1 ? " row" : " rows";
-        appendNewLine().append(w).append(rowsLabel);
+        String rowsLabel = h == 1 ? " row" : " rows";
+        appendNewLine().append(h).append(rowsLabel);
 
         return out;
     }

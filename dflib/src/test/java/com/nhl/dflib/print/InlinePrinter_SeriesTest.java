@@ -25,7 +25,7 @@ public class InlinePrinter_SeriesTest {
     @Test
     public void testToString_TruncateRows() {
         InlinePrinter p = new InlinePrinter(2, 10);
-        assertEquals("one,two,...", p.toString(s1));
+        assertEquals("one,...,four", p.toString(s1));
     }
 
     @Test

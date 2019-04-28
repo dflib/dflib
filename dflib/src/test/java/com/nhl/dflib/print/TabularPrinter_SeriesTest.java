@@ -70,9 +70,9 @@ public class TabularPrinter_SeriesTest {
         TabularPrinter p = new TabularPrinter(2, 10);
 
         assertEquals(System.lineSeparator() +
-                "one" + System.lineSeparator() +
-                "two" + System.lineSeparator() +
-                "..." + System.lineSeparator() +
+                "one " + System.lineSeparator() +
+                "... " + System.lineSeparator() +
+                "four" + System.lineSeparator() +
                 "4 rows", p.toString(s1));
     }
 

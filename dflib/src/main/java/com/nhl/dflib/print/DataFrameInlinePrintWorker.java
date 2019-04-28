@@ -4,8 +4,6 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.row.RowProxy;
 
-import java.util.Iterator;
-
 public class DataFrameInlinePrintWorker extends BasePrintWorker {
 
     public DataFrameInlinePrintWorker(StringBuilder out, int maxDisplayRows, int maxDisplayColumnWith) {
@@ -14,15 +12,16 @@ public class DataFrameInlinePrintWorker extends BasePrintWorker {
 
     public StringBuilder print(DataFrame df) {
 
-        Index columns = df.getColumnsIndex();
-        Iterator<RowProxy> values = df.iterator();
+        DataFrameTruncator truncator = DataFrameTruncator.create(df, maxDisplayRows);
 
+        Index columns = df.getColumnsIndex();
         int width = columns.size();
+        int h = truncator.height();
 
         String[] labels = columns.getLabels();
 
         // if no data, print column labels once
-        if (!values.hasNext()) {
+        if (h == 0) {
             for (int j = 0; j < width; j++) {
 
                 if (j > 0) {
@@ -36,16 +35,14 @@ public class DataFrameInlinePrintWorker extends BasePrintWorker {
             return out;
         }
 
-        for (int i = 0; i < maxDisplayRows; i++) {
-            if (!values.hasNext()) {
-                break;
-            }
+        boolean comma = false;
+        for (RowProxy p : truncator.head()) {
 
-            if (i > 0) {
+            if (comma) {
                 out.append(",");
             }
 
-            RowProxy dr = values.next();
+            comma = true;
 
             out.append("{");
             for (int j = 0; j < width; j++) {
@@ -56,14 +53,34 @@ public class DataFrameInlinePrintWorker extends BasePrintWorker {
 
                 appendTruncate(labels[j]);
                 out.append(":");
-                appendTruncate(String.valueOf(dr.get(j)));
+                appendTruncate(String.valueOf(p.get(j)));
             }
 
             out.append("}");
         }
 
-        if (values.hasNext()) {
-            out.append(",...");
+        if (truncator.isTruncated()) {
+            if (comma) {
+                out.append(",");
+            }
+
+            out.append("...");
+
+            for (RowProxy p : truncator.tail()) {
+                out.append(",{");
+                for (int j = 0; j < width; j++) {
+
+                    if (j > 0) {
+                        out.append(",");
+                    }
+
+                    appendTruncate(labels[j]);
+                    out.append(":");
+                    appendTruncate(String.valueOf(p.get(j)));
+                }
+
+                out.append("}");
+            }
         }
 
         return out;

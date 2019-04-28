@@ -52,8 +52,8 @@ public class DataFrameTabularPrintWorkerTest {
                 "col1 column2" + System.lineSeparator() +
                 "---- -------" + System.lineSeparator() +
                 "one        1" + System.lineSeparator() +
-                "two        2" + System.lineSeparator() +
                 "..." + System.lineSeparator() +
+                "four       4" + System.lineSeparator() +
                 "4 rows x 2 columns", w.print(df).toString());
     }
 

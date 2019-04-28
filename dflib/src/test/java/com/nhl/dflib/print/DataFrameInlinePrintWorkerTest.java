@@ -38,7 +38,7 @@ public class DataFrameInlinePrintWorkerTest {
     @Test
     public void testToString_TruncateRows() {
         DataFrameInlinePrintWorker w = new DataFrameInlinePrintWorker(new StringBuilder(), 2, 10);
-        assertEquals("{col1:one,column2:1},{col1:two,column2:2},...", w.print(df).toString());
+        assertEquals("{col1:one,column2:1},...,{col1:four,column2:4}", w.print(df).toString());
     }
 
     @Test

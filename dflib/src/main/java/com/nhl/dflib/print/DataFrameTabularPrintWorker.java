@@ -5,7 +5,6 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.row.RowProxy;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class DataFrameTabularPrintWorker extends BasePrintWorker {
@@ -16,8 +15,8 @@ public class DataFrameTabularPrintWorker extends BasePrintWorker {
 
     public StringBuilder print(DataFrame df) {
 
+
         Index columns = df.getColumnsIndex();
-        Iterator<RowProxy> values = df.iterator();
 
         int w = columns.size();
         if (w == 0) {
@@ -25,30 +24,45 @@ public class DataFrameTabularPrintWorker extends BasePrintWorker {
         }
 
         String[] labels = columns.getLabels();
-
         int[] columnWidth = new int[w];
         String[] columnFormat = new String[w];
 
-        List<String[]> data = new ArrayList<>();
+        DataFrameTruncator truncator = DataFrameTruncator.create(df, maxDisplayRows);
 
         for (int i = 0; i < w; i++) {
             columnWidth[i] = labels[i].length();
         }
 
-        for (int i = 0; i < maxDisplayRows; i++) {
-            if (!values.hasNext()) {
-                break;
-            }
+        DataFrame head = truncator.head();
+        List<String[]> headData = new ArrayList<>(head.height());
+        for (RowProxy p : head) {
 
-            RowProxy r = values.next();
             String[] rValue = new String[w];
 
-            for (int j = 0; j < w; j++) {
-                rValue[j] = String.valueOf(r.get(j));
-                columnWidth[j] = Math.max(columnWidth[j], rValue[j].length());
+            for (int i = 0; i < w; i++) {
+                rValue[i] = String.valueOf(p.get(i));
+                columnWidth[i] = Math.max(columnWidth[i], rValue[i].length());
             }
 
-            data.add(rValue);
+            headData.add(rValue);
+        }
+
+        List<String[]> tailData = null;
+        if (truncator.isTruncated()) {
+
+            DataFrame tail = truncator.tail();
+            tailData = new ArrayList<>(tail.height());
+            for (RowProxy p : tail) {
+
+                String[] rValue = new String[w];
+
+                for (int i = 0; i < w; i++) {
+                    rValue[i] = String.valueOf(p.get(i));
+                    columnWidth[i] = Math.max(columnWidth[i], rValue[i].length());
+                }
+
+                tailData.add(rValue);
+            }
         }
 
         // since tabular printer is multiline, start with a line break to ensure logger-induced prefixes don't break
@@ -82,7 +96,7 @@ public class DataFrameTabularPrintWorker extends BasePrintWorker {
         }
 
         // print data
-        for (String[] row : data) {
+        for (String[] row : headData) {
             appendNewLine();
             for (int i = 0; i < w; i++) {
                 if (i > 0) {
@@ -92,8 +106,18 @@ public class DataFrameTabularPrintWorker extends BasePrintWorker {
             }
         }
 
-        if (values.hasNext()) {
+        if (truncator.isTruncated()) {
             appendNewLine().append("...");
+
+            for (String[] row : tailData) {
+                appendNewLine();
+                for (int i = 0; i < w; i++) {
+                    if (i > 0) {
+                        append(" ");
+                    }
+                    appendFixedWidth(row[i], columnWidth[i], columnFormat[i]);
+                }
+            }
         }
 
         int h = df.height();
