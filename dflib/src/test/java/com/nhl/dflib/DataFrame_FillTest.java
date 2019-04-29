@@ -42,6 +42,24 @@ public class DataFrame_FillTest extends BaseDataFrameTest {
     }
 
     @Test
+    public void testFillNullsFromSeries() {
+        Index i1 = Index.forLabels("a", "b");
+
+        DataFrame df = createDf(i1,
+                "a", 1,
+                null, 5,
+                "b", null,
+                null, null).fillNullsFromSeries("b", Series.forData("Q", "R", "S", "T"));
+
+        new DFAsserts(df, "a", "b")
+                .expectHeight(4)
+                .expectRow(0, "a", 1)
+                .expectRow(1, null, 5)
+                .expectRow(2, "b", "S")
+                .expectRow(3, null, "T");
+    }
+
+    @Test
     public void testFillNullsBackwards() {
         Index i1 = Index.forLabels("a", "b");
 

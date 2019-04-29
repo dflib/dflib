@@ -32,6 +32,11 @@ public class EmptySeries<T> extends ObjectSeries<T> {
     }
 
     @Override
+    public Series<T> fillNullsFromSeries(Series<? extends T> values) {
+        return this;
+    }
+
+    @Override
     public Series<T> fillNullsBackwards() {
         return this;
     }

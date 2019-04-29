@@ -65,6 +65,11 @@ public class RowMappedSeries<T> extends ObjectSeries<T> {
     }
 
     @Override
+    public Series<T> fillNullsFromSeries(Series<? extends T> values) {
+        return materialize().fillNullsFromSeries(values);
+    }
+
+    @Override
     public Series<T> fillNullsBackwards() {
         return materialize().fillNullsBackwards();
     }

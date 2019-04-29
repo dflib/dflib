@@ -25,7 +25,7 @@ public class ListSeries<T> extends ObjectSeries<T> {
 
     @Override
     public void copyTo(Object[] to, int fromOffset, int toOffset, int len) {
-        for(int i = 0; i < len ; i++) {
+        for (int i = 0; i < len; i++) {
             to[toOffset + i] = data.get(fromOffset + i);
         }
     }
@@ -50,6 +50,25 @@ public class ListSeries<T> extends ObjectSeries<T> {
                 }
 
                 copy[i] = value;
+            }
+        }
+
+        return copy != null ? new ArraySeries<>(copy) : this;
+    }
+
+    @Override
+    public Series<T> fillNullsFromSeries(Series<? extends T> values) {
+        int len = data.size();
+        T[] copy = null;
+
+        for (int i = 0; i < len; i++) {
+            if (data.get(i) == null) {
+
+                if (copy == null) {
+                    copy = data.toArray((T[]) new Object[len]);
+                }
+
+                copy[i] = values.get(i);
             }
         }
 

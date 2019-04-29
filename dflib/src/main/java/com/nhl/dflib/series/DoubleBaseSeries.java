@@ -58,19 +58,25 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
 
     @Override
     public Series<Double> fillNulls(Double value) {
-        // TODO: should we replace zeros?
+        // primitive series has no nulls
+        return this;
+    }
+
+    @Override
+    public Series<Double> fillNullsFromSeries(Series<? extends Double> values) {
+        // primitive series has no nulls
         return this;
     }
 
     @Override
     public Series<Double> fillNullsBackwards() {
-        // TODO: should we replace zeros?
+        // primitive series has no nulls
         return this;
     }
 
     @Override
     public Series<Double> fillNullsForward() {
-        // TODO: should we replace zeros?
+        // primitive series has no nulls
         return this;
     }
 

@@ -55,6 +55,12 @@ public class RangeSeries<T> extends ObjectSeries<T> {
     }
 
     @Override
+    public Series<T> fillNullsFromSeries(Series<? extends T> values) {
+        // TODO: optimize data copy - do materialize and null checking over the same array
+        return materialize().fillNullsFromSeries(values);
+    }
+
+    @Override
     public Series<T> fillNullsBackwards() {
         // TODO: optimize data copy - do materialize and null checking over the same array
         return materialize().fillNullsBackwards();

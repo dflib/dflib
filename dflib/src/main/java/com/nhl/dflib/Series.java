@@ -57,6 +57,13 @@ public interface Series<T> {
 
     Series<T> fillNulls(T value);
 
+    /**
+     * @param values a Series to take null replacement values from
+     * @return a new Series with nulls replaced with values from another Series with matching positions
+     * @since 0.6
+     */
+    Series<T> fillNullsFromSeries(Series<? extends T> values);
+
     Series<T> fillNullsBackwards();
 
     Series<T> fillNullsForward();

@@ -765,6 +765,28 @@ public interface DataFrame extends Iterable<RowProxy> {
         return fillNulls(getColumnsIndex().position(columnName), value);
     }
 
+    /**
+     * Fills nulls in the specified column with values taken from a Series at a given index.
+     *
+     * @param columnPos a name of the column whose nulls need to be filled
+     * @param values    a Series to take null replacement values from
+     * @return a new DataFrame
+     * @since 0.6
+     */
+    DataFrame fillNullsFromSeries(int columnPos, Series<?> values);
+
+    /**
+     * Fills nulls in the specified column with values taken from a Series at a given index.
+     *
+     * @param columnName a name of the column whose nulls need to be filled.
+     * @param values     a Series to take null replacement values from
+     * @return a new DataFrame
+     * @since 0.6
+     */
+    default DataFrame fillNullsFromSeries(String columnName, Series<?> values) {
+        return fillNullsFromSeries(getColumnsIndex().position(columnName), values);
+    }
+
     DataFrame fillNullsBackwards(int columnPos);
 
     default DataFrame fillNullsBackwards(String columnName) {

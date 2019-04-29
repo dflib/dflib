@@ -508,6 +508,11 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
+    public DataFrame fillNullsFromSeries(int columnPos, Series<?> values) {
+        return replaceColumn(columnPos, dataColumns[columnPos].fillNullsFromSeries(values));
+    }
+
+    @Override
     public DataFrame fillNullsBackwards(int columnPos) {
         return replaceColumn(columnPos, dataColumns[columnPos].fillNullsBackwards());
     }

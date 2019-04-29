@@ -1,12 +1,10 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.BooleanSeries;
-import com.nhl.dflib.DoubleSeries;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.LongSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.collection.BooleanMutableList;
-import com.nhl.dflib.collection.DoubleMutableList;
 import com.nhl.dflib.collection.IntMutableList;
 import com.nhl.dflib.collection.LongMutableList;
 import com.nhl.dflib.collection.MutableList;
@@ -60,19 +58,25 @@ public abstract class LongBaseSeries implements LongSeries {
 
     @Override
     public Series<Long> fillNulls(Long value) {
-        // TODO: should we replace zeros?
+        // primitive series has no nulls
+        return this;
+    }
+
+    @Override
+    public Series<Long> fillNullsFromSeries(Series<? extends Long> values) {
+        // primitive series has no nulls
         return this;
     }
 
     @Override
     public Series<Long> fillNullsBackwards() {
-        // TODO: should we replace zeros?
+        // primitive series has no nulls
         return this;
     }
 
     @Override
     public Series<Long> fillNullsForward() {
-        // TODO: should we replace zeros?
+        // primitive series has no nulls
         return this;
     }
 

@@ -58,19 +58,25 @@ public abstract class IntBaseSeries implements IntSeries {
 
     @Override
     public Series<Integer> fillNulls(Integer value) {
-        // TODO: should we replace zeros?
+        // primitive series has no nulls
+        return this;
+    }
+
+    @Override
+    public Series<Integer> fillNullsFromSeries(Series<? extends Integer> values) {
+        // primitive series has no nulls
         return this;
     }
 
     @Override
     public Series<Integer> fillNullsBackwards() {
-        // TODO: should we replace zeros?
+        // primitive series has no nulls
         return this;
     }
 
     @Override
     public Series<Integer> fillNullsForward() {
-        // TODO: should we replace zeros?
+        // primitive series has no nulls
         return this;
     }
 

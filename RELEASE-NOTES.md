@@ -14,6 +14,7 @@
 * #33 DataFrame.stack operation
 * #34 Tabular and Inline printers should show head and tail
 * #35 LongSeries
+* #37 DataFrame.fillNullsFromSeries(..) / Series.fillNullsFromSeries(..)
 
 ## Release 0.5
 

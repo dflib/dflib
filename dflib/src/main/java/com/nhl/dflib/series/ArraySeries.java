@@ -54,6 +54,26 @@ public class ArraySeries<T> extends ObjectSeries<T> {
     }
 
     @Override
+    public Series<T> fillNullsFromSeries(Series<? extends T> values) {
+        int len = data.length;
+        T[] copy = null;
+
+        for (int i = 0; i < len; i++) {
+            if (data[i] == null) {
+
+                if (copy == null) {
+                    copy = (T[]) new Object[len];
+                    System.arraycopy(data, 0, copy, 0, len);
+                }
+
+                copy[i] = values.get(i);
+            }
+        }
+
+        return copy != null ? new ArraySeries<>(copy) : this;
+    }
+
+    @Override
     public Series<T> fillNullsBackwards() {
         int len = data.length;
         T[] copy = null;

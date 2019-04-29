@@ -54,7 +54,14 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
+    public Series<Boolean> fillNullsFromSeries(Series<? extends Boolean> values) {
+        // primitive series has no nulls
+        return this;
+    }
+
+    @Override
     public Series<Boolean> fillNulls(Boolean value) {
+        // primitive series has no nulls
         return this;
     }
 

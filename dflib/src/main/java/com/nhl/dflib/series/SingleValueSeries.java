@@ -64,6 +64,11 @@ public class SingleValueSeries<T> extends ObjectSeries<T> {
     }
 
     @Override
+    public Series<T> fillNullsFromSeries(Series<? extends T> values) {
+        return this.value == null ? alignAndReplace(values) : this;
+    }
+
+    @Override
     public Series<T> fillNullsBackwards() {
         return this;
     }
@@ -71,5 +76,17 @@ public class SingleValueSeries<T> extends ObjectSeries<T> {
     @Override
     public Series<T> fillNullsForward() {
         return this;
+    }
+
+    private Series<T> alignAndReplace(Series<? extends T> another) {
+
+        int as = another.size();
+        if (size == as) {
+            return (Series<T>) another;
+        } else if (size < as) {
+            return (Series<T>) another.head(size);
+        } else {
+            throw new IllegalArgumentException("Another Series is smaller than this size: " + as + " < " + size);
+        }
     }
 }
