@@ -2,7 +2,6 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.filter.LongPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
-import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.series.LongArraySeries;
 
 /**
@@ -35,12 +34,6 @@ public interface LongSeries extends Series<Long> {
     LongSeries headLong(int len);
 
     LongSeries tailLong(int len);
-
-    default LongSeries selectLong(int... positions) {
-        return selectLong(new IntArraySeries(positions));
-    }
-
-    LongSeries selectLong(IntSeries positions);
 
     /**
      * Returns an IntSeries that represents positions in the Series that match the predicate. The returned value can be

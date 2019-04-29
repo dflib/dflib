@@ -1,6 +1,7 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.Series;
 
 /**
  * @since 0.6

@@ -22,8 +22,39 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
-    public BooleanSeries selectBoolean(IntSeries positions) {
-        return new BooleanIndexedSeries(this, positions);
+    public Series<Boolean> select(IntSeries positions) {
+
+        int h = positions.size();
+
+        boolean[] data = new boolean[h];
+
+        for (int i = 0; i < h; i++) {
+            int index = positions.getInt(i);
+
+            // "index < 0" (often found in outer joins) indicate nulls.
+            // If a null is encountered, we can no longer maintain IntSeries and have to change to Series<Boolean>...
+            if (index < 0) {
+                // TODO: implement NullableBooleanSeries as a Series of short[], where null, true, false are encoded as 0, 1, -1
+                return selectAsObjectSeries(positions);
+            }
+
+            data[i] = getBoolean(index);
+        }
+
+        return new BooleanArraySeries(data);
+    }
+
+    private Series<Boolean> selectAsObjectSeries(IntSeries positions) {
+
+        int h = positions.size();
+        Boolean[] data = new Boolean[h];
+
+        for (int i = 0; i < h; i++) {
+            int index = positions.getInt(i);
+            data[i] = index < 0 ? null : getBoolean(index);
+        }
+
+        return new ArraySeries<>(data);
     }
 
     @Override
@@ -115,11 +146,6 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         for (int i = 0; i < len; i++) {
             to[toOffset + i] = getBoolean(i);
         }
-    }
-
-    @Override
-    public Series<Boolean> select(IntSeries positions) {
-        return selectBoolean(positions);
     }
 
     @Override

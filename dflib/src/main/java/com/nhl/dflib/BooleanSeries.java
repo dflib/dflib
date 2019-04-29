@@ -2,7 +2,6 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.series.BooleanArraySeries;
-import com.nhl.dflib.series.IntArraySeries;
 
 /**
  * @since 0.6
@@ -31,12 +30,6 @@ public interface BooleanSeries extends Series<Boolean> {
     BooleanSeries headBoolean(int len);
 
     BooleanSeries tailBoolean(int len);
-
-    default BooleanSeries selectBoolean(int... positions) {
-        return selectBoolean(new IntArraySeries(positions));
-    }
-
-    BooleanSeries selectBoolean(IntSeries positions);
 
     /**
      * Returns an IntSeries that represents positions in the Series that contain true values. The returned value can be

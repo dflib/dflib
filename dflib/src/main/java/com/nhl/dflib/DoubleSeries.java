@@ -3,7 +3,6 @@ package com.nhl.dflib;
 import com.nhl.dflib.filter.DoublePredicate;
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.series.DoubleArraySeries;
-import com.nhl.dflib.series.IntArraySeries;
 
 /**
  * A Series optimized to store and access primitive double values without <code>java.lang.Double</code> wrapper. Can also
@@ -35,12 +34,6 @@ public interface DoubleSeries extends Series<Double> {
     DoubleSeries headDouble(int len);
 
     DoubleSeries tailDouble(int len);
-
-    default DoubleSeries selectDouble(int... positions) {
-        return selectDouble(new IntArraySeries(positions));
-    }
-
-    DoubleSeries selectDouble(IntSeries positions);
 
     /**
      * Returns an IntSeries that represents positions in the Series that match the predicate. The returned value can be

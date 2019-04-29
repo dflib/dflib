@@ -25,8 +25,38 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
-    public DoubleSeries selectDouble(IntSeries positions) {
-        return new DoubleIndexedSeries(this, positions);
+    public Series<Double> select(IntSeries positions) {
+
+        int h = positions.size();
+
+        double[] data = new double[h];
+
+        for (int i = 0; i < h; i++) {
+            int index = positions.getInt(i);
+
+            // "index < 0" (often found in outer joins) indicate nulls.
+            // If a null is encountered, we can no longer maintain primitive and have to change to Series<Double>...
+            if (index < 0) {
+                return selectAsObjectSeries(positions);
+            }
+
+            data[i] = getDouble(index);
+        }
+
+        return new DoubleArraySeries(data);
+    }
+
+    private Series<Double> selectAsObjectSeries(IntSeries positions) {
+
+        int h = positions.size();
+        Double[] data = new Double[h];
+
+        for (int i = 0; i < h; i++) {
+            int index = positions.getInt(i);
+            data[i] = index < 0 ? null : getDouble(index);
+        }
+
+        return new ArraySeries<>(data);
     }
 
     @Override
@@ -121,11 +151,6 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         for (int i = 0; i < len; i++) {
             to[toOffset + i] = getDouble(i);
         }
-    }
-
-    @Override
-    public Series<Double> select(IntSeries positions) {
-        return selectDouble(positions);
     }
 
     @Override

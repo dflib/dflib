@@ -25,8 +25,39 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public IntSeries selectInt(IntSeries positions) {
-        return new IntIndexedSeries(this, positions);
+    public Series<Integer> select(IntSeries positions) {
+
+        int h = positions.size();
+
+        int[] data = new int[h];
+
+        for (int i = 0; i < h; i++) {
+            int index = positions.getInt(i);
+
+            // "index < 0" (often found in outer joins) indicate nulls.
+            // If a null is encountered, we can no longer maintain IntSeries and have to change to Series<Integer>...
+            if (index < 0) {
+                // TODO: implement NullableIntSeries as a Series of long[], where NULLs are encoded as Integer.MAX_VALUE + 1
+                return selectAsObjectSeries(positions);
+            }
+
+            data[i] = getInt(index);
+        }
+
+        return new IntArraySeries(data);
+    }
+
+    private Series<Integer> selectAsObjectSeries(IntSeries positions) {
+
+        int h = positions.size();
+        Integer[] data = new Integer[h];
+
+        for (int i = 0; i < h; i++) {
+            int index = positions.getInt(i);
+            data[i] = index < 0 ? null : getInt(index);
+        }
+
+        return new ArraySeries<>(data);
     }
 
     @Override
@@ -121,11 +152,6 @@ public abstract class IntBaseSeries implements IntSeries {
         for (int i = 0; i < len; i++) {
             to[toOffset + i] = getInt(i);
         }
-    }
-
-    @Override
-    public Series<Integer> select(IntSeries positions) {
-        return selectInt(positions);
     }
 
     @Override

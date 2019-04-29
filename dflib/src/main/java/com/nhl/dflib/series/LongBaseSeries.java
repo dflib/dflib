@@ -25,8 +25,38 @@ public abstract class LongBaseSeries implements LongSeries {
     }
 
     @Override
-    public LongSeries selectLong(IntSeries positions) {
-        return new LongIndexedSeries(this, positions);
+    public Series<Long> select(IntSeries positions) {
+
+        int h = positions.size();
+
+        long[] data = new long[h];
+
+        for (int i = 0; i < h; i++) {
+            int index = positions.getInt(i);
+
+            // "index < 0" (often found in outer joins) indicate nulls.
+            // If a null is encountered, we can no longer maintain primitive and have to change to Series<Long>...
+            if (index < 0) {
+                return selectAsObjectSeries(positions);
+            }
+
+            data[i] = getLong(index);
+        }
+
+        return new LongArraySeries(data);
+    }
+
+    private Series<Long> selectAsObjectSeries(IntSeries positions) {
+
+        int h = positions.size();
+        Long[] data = new Long[h];
+
+        for (int i = 0; i < h; i++) {
+            int index = positions.getInt(i);
+            data[i] = index < 0 ? null : getLong(index);
+        }
+
+        return new ArraySeries<>(data);
     }
 
     @Override
@@ -121,11 +151,6 @@ public abstract class LongBaseSeries implements LongSeries {
         for (int i = 0; i < len; i++) {
             to[toOffset + i] = getLong(i);
         }
-    }
-
-    @Override
-    public Series<Long> select(IntSeries positions) {
-        return selectLong(positions);
     }
 
     @Override

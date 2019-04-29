@@ -143,6 +143,31 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     }
 
     @Test
+    public void testHashJoin_Full_IntColumn() {
+
+        Index i1 = Index.forLabels("a", "b");
+        DataFrame df1 = createDf(i1,
+                1, "x",
+                2, "y")
+                .toIntColumn(0, 0);
+
+        Index i2 = Index.forLabels("c", "d");
+        DataFrame df2 = createDf(i2,
+                2, "a",
+                2, "b",
+                3, "c").toIntColumn(0, 0);
+
+        DataFrame df = df1.join(df2, 0, 0, JoinType.full);
+
+        new DFAsserts(df, "a", "b", "c", "d")
+                .expectHeight(4)
+                .expectRow(0, 1, "x", null, null)
+                .expectRow(1, 2, "y", 2, "a")
+                .expectRow(2, 2, "y", 2, "b")
+                .expectRow(3, null, null, 3, "c");
+    }
+
+    @Test
     public void testInnerJoin_Hash() {
 
         Index i1 = Index.forLabels("a", "b");
