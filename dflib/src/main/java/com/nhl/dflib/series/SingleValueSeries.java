@@ -1,6 +1,7 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.Series;
+import com.nhl.dflib.range.Range;
 
 import java.util.Arrays;
 
@@ -53,7 +54,7 @@ public class SingleValueSeries<T> extends ObjectSeries<T> {
             return this;
         }
 
-        RangeSeries.checkRanges(fromInclusive, toExclusive - fromInclusive, size);
+        Range.checkRange(fromInclusive, toExclusive - fromInclusive, size);
         return new SingleValueSeries<>(this.value, toExclusive - fromInclusive);
     }
 

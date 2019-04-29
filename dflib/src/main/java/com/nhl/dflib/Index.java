@@ -1,6 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.concat.HConcat;
+import com.nhl.dflib.range.Range;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,6 +103,24 @@ public class Index implements Iterable<String> {
         }
 
         return Index.forLabels(selectedLabels);
+    }
+
+    /**
+     * @param fromInclusive position of the first label from this Index to include in the new Index.
+     * @param toExclusive   position of the label from this Index following the last included position.
+     * @return a new index with labels from this index in the range specified
+     * @since 0.6
+     */
+    // TODO: align naming with "select*" methods. Perhaps a Range object is required
+    public Index rangeOpenClosed(int fromInclusive, int toExclusive) {
+
+        int len = toExclusive - fromInclusive;
+        Range.checkRange(fromInclusive, len, labels.length);
+
+        String[] newLabels = new String[len];
+        System.arraycopy(labels, fromInclusive, newLabels, 0, len);
+
+        return Index.forLabels(newLabels);
     }
 
     public Index selectLabels(String... labels) {
