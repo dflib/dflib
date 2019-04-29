@@ -25,7 +25,7 @@ public class IndexTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testRangeOpenClosed_OutOfRange() {
-        Index i = Index.forLabels("a", "b", "c", "d").rangeOpenClosed(0, 5);
+        Index.forLabels("a", "b", "c", "d").rangeOpenClosed(0, 5);
     }
 
     enum E1 {
