@@ -10,6 +10,11 @@ public class SeriesTabularPrintWorker extends BasePrintWorker {
 
     public StringBuilder print(Series<?> s) {
 
+        if (s == null) {
+            out.append("null");
+            return out;
+        }
+        
         int h = s.size();
         if (h == 0) {
             return out;

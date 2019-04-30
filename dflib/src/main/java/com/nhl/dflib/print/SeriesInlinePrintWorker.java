@@ -10,6 +10,11 @@ public class SeriesInlinePrintWorker extends BasePrintWorker {
 
     public StringBuilder print(Series<?> s) {
 
+        if (s == null) {
+            out.append("null");
+            return out;
+        }
+
         SeriesTruncator truncator = SeriesTruncator.create(s, maxDisplayRows);
         Series<?> head = truncator.head();
         int hs = head.size();

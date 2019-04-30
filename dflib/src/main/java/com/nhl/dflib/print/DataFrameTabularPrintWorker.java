@@ -15,6 +15,10 @@ public class DataFrameTabularPrintWorker extends BasePrintWorker {
 
     public StringBuilder print(DataFrame df) {
 
+        if (df == null) {
+            out.append("null");
+            return out;
+        }
 
         Index columns = df.getColumnsIndex();
 
