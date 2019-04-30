@@ -215,6 +215,11 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
+    public <T> Series<T> mapColumn(RowToValueMapper<T> rowMapper) {
+        return new RowMappedSeries<>(this, rowMapper);
+    }
+
+    @Override
     public DataFrame renameColumns(String... newColumnNames) {
         Index renamed = getColumnsIndex().rename(newColumnNames);
         return new ColumnDataFrame(renamed, dataColumns);
@@ -341,7 +346,7 @@ public class ColumnDataFrame implements DataFrame {
         System.arraycopy(dataColumns, 0, newData, 0, width);
 
         for (int i = 0; i < extraWidth; i++) {
-            newData[width + i] = new RowMappedSeries(this, columnValueProducers[i]);
+            newData[width + i] = mapColumn(columnValueProducers[i]);
         }
 
         return new ColumnDataFrame(expandedIndex, newData);

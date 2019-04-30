@@ -16,6 +16,7 @@
 * #35 LongSeries
 * #37 DataFrame.fillNullsFromSeries(..) / Series.fillNullsFromSeries(..)
 * #38 Primitive Series "select" methods must account for nulls 
+* #39 DataFrame.mapColumn
 
 ## Release 0.5
 

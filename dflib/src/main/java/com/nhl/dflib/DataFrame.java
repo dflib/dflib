@@ -215,6 +215,17 @@ public interface DataFrame extends Iterable<RowProxy> {
     DataFrame map(Index mappedColumns, RowMapper rowMapper);
 
     /**
+     * Creates a new Series with values mapped by apply row mapper function to the DataFrame. The returned Series
+     * size is the same this DataFrame height.
+     *
+     * @param rowMapper a function applied to each row of this DataFrame
+     * @param <T>
+     * @return a new Series.
+     * @since 0.6
+     */
+    <T> Series<T> mapColumn(RowToValueMapper<T> rowMapper);
+
+    /**
      * Creates a new DataFrame which is the exact copy of this DataFrame, only with a single column values transformed
      * using the provided converter function.
      *
@@ -414,7 +425,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     DataFrame addRowNumber(String columnName);
 
     default <V> DataFrame addColumn(String columnLabel, RowToValueMapper<V> columnValueProducer) {
-        return addColumns(new String[]{columnLabel}, columnValueProducer);
+        return addColumn(columnLabel, mapColumn(columnValueProducer));
     }
 
     <V> DataFrame addColumns(String[] columnLabels, RowToValueMapper<V>... columnValueProducers);

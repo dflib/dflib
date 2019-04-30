@@ -1,9 +1,9 @@
 package com.nhl.dflib.map;
 
+import com.nhl.dflib.ColumnDataFrame;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.ColumnDataFrame;
 
 public class Mapper {
 
@@ -22,4 +22,5 @@ public class Mapper {
 
         return rowBuilder.getData();
     }
+
 }

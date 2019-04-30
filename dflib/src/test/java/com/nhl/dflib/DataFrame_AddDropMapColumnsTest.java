@@ -1,9 +1,21 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.Test;
 
-public class DataFrame_AddDropColumnsTest extends BaseDataFrameTest {
+public class DataFrame_AddDropMapColumnsTest extends BaseDataFrameTest {
+
+    @Test
+    public void testMapColumn() {
+        Index i1 = Index.forLabels("a", "b");
+        Series<Integer> mapped = createDf(i1,
+                1, "x",
+                2, "y")
+                .mapColumn(r -> ((int) r.get(0)) * 10);
+
+        new SeriesAsserts(mapped).expectData(10, 20);
+    }
 
     @Test
     public void testAddColumn() {
@@ -62,6 +74,7 @@ public class DataFrame_AddDropColumnsTest extends BaseDataFrameTest {
                 2, "y").addColumn("c", column);
 
     }
+
     @Test(expected = IllegalArgumentException.class)
     public void testAddColumn_Series_Longer() {
 
