@@ -28,6 +28,7 @@ import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.row.CrossColumnRowProxy;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.ColumnMappedSeries;
+import com.nhl.dflib.series.EmptySeries;
 import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.series.IntSequenceSeries;
 import com.nhl.dflib.series.RowMappedSeries;
@@ -36,6 +37,7 @@ import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
 import com.nhl.dflib.stack.Stacker;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -48,6 +50,19 @@ public class ColumnDataFrame implements DataFrame {
     public ColumnDataFrame(Index columnsIndex, Series<?>... dataColumns) {
         this.columnsIndex = Objects.requireNonNull(columnsIndex);
         this.dataColumns = Objects.requireNonNull(dataColumns);
+
+        // allow no-data constructor, but other than that check for index / columns mismatch
+        int iw = columnsIndex.size();
+        int sw = dataColumns.length;
+        if (iw != sw) {
+
+            if (sw == 0) {
+                this.dataColumns = new Series[iw];
+                Arrays.fill(this.dataColumns, new EmptySeries());
+            } else {
+                throw new IllegalArgumentException("Index size is not the same as data columns size: " + iw + " != " + sw);
+            }
+        }
     }
 
     @Override

@@ -14,7 +14,7 @@ public class SeriesTabularPrintWorker extends BasePrintWorker {
             out.append("null");
             return out;
         }
-        
+
         int h = s.size();
         if (h == 0) {
             return out;
