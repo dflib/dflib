@@ -53,7 +53,7 @@ public class TableSaver {
             createInsertStatement(c, toSave).update(c);
             c.commit();
         } catch (SQLException e) {
-            throw new RuntimeException("Error loading data from DB", e);
+            throw new RuntimeException("Error storing data in DB", e);
         }
 
         return this;
