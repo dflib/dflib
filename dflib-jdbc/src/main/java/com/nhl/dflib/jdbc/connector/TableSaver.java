@@ -40,17 +40,29 @@ public class TableSaver {
     }
 
     public TableSaver save(DataFrame df) {
+
+        if (df.height() == 0 && !deleteTableData) {
+            LOGGER.info("Empty DataFrame and no delete requested. Save does nothing.");
+            return this;
+        }
+
         try (Connection c = connector.getConnection()) {
 
             if (deleteTableData) {
                 createDeleteStatement(c).update(c);
             }
 
-            DataFrame toSave = rowNumberColumn != null
-                    ? df.addColumn(rowNumberColumn, rowIndexer())
-                    : df;
+            if (df.height() > 0) {
 
-            createInsertStatement(c, toSave).update(c);
+                DataFrame toSave = rowNumberColumn != null
+                        ? df.addColumn(rowNumberColumn, rowIndexer())
+                        : df;
+
+                createInsertStatement(c, toSave).update(c);
+            } else {
+                LOGGER.info("Empty DataFrame. Skipping insert.");
+            }
+
             c.commit();
         } catch (SQLException e) {
             throw new RuntimeException("Error storing data in DB", e);
