@@ -63,7 +63,7 @@
         </repository>
         <snapshotRepository>
             <id>dflib-snapshots</id>
-            <url>http://maven.objectstyle.org/nexus/content/repositories/linkrest-snapshots</url>
+            <url>https://maven.objectstyle.org/nexus/content/repositories/linkrest-snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
