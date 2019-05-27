@@ -8,6 +8,7 @@ import com.nhl.dflib.collection.BooleanMutableList;
 import com.nhl.dflib.collection.IntMutableList;
 import com.nhl.dflib.collection.LongMutableList;
 import com.nhl.dflib.collection.MutableList;
+import com.nhl.dflib.collection.UniqueLongMutableList;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.filter.LongPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
@@ -313,6 +314,26 @@ public abstract class LongBaseSeries implements LongSeries {
         }
 
         return bools.toBooleanSeries();
+    }
+
+    @Override
+    public Series<Long> unique() {
+        return uniqueLong();
+    }
+
+    @Override
+    public LongSeries uniqueLong() {
+        int size = size();
+        if (size < 2) {
+            return this;
+        }
+
+        LongMutableList unique = new UniqueLongMutableList();
+        for (int i = 0; i < size; i++) {
+            unique.add(get(i));
+        }
+
+        return unique.size() < size() ? unique.toLongSeries() : this;
     }
 
     @Override

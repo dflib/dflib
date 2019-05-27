@@ -17,6 +17,7 @@
 * #37 DataFrame.fillNullsFromSeries(..) / Series.fillNullsFromSeries(..)
 * #38 Primitive Series "select" methods must account for nulls 
 * #39 DataFrame.mapColumn
+* #40 "Series.unique" - a method to produce Series with non-repeating values
 
 ## Release 0.5
 

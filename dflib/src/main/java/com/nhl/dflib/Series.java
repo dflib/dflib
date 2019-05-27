@@ -120,4 +120,10 @@ public interface Series<T> {
      * @since 0.6
      */
     Series<T> replaceNoMatch(BooleanSeries condition, T with);
+
+    /**
+     * @return a Series that contains non-repeating values from this Series.
+     * @since 0.6
+     */
+    Series<T> unique();
 }

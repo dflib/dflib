@@ -58,4 +58,10 @@ public interface BooleanSeries extends Series<Boolean> {
      * @return true if all the elements in the series are "false"
      */
     boolean isFalse();
+
+    /**
+     * @return a BooleanSeries that contains non-repeating values from this Series.
+     * @since 0.6
+     */
+    BooleanSeries uniqueBoolean();
 }

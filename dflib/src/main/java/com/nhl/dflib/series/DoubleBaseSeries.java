@@ -8,6 +8,7 @@ import com.nhl.dflib.collection.BooleanMutableList;
 import com.nhl.dflib.collection.DoubleMutableList;
 import com.nhl.dflib.collection.IntMutableList;
 import com.nhl.dflib.collection.MutableList;
+import com.nhl.dflib.collection.UniqueDoubleMutableList;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.filter.DoublePredicate;
 import com.nhl.dflib.filter.ValuePredicate;
@@ -313,6 +314,26 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         }
 
         return bools.toBooleanSeries();
+    }
+
+    @Override
+    public Series<Double> unique() {
+       return uniqueDouble();
+    }
+
+    @Override
+    public DoubleSeries uniqueDouble() {
+        int size = size();
+        if (size < 2) {
+            return this;
+        }
+
+        DoubleMutableList unique = new UniqueDoubleMutableList();
+        for (int i = 0; i < size; i++) {
+            unique.add(get(i));
+        }
+
+        return unique.size() < size() ? unique.toDoubleSeries() : this;
     }
 
     @Override

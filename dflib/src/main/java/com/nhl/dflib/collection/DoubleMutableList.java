@@ -56,6 +56,10 @@ public class DoubleMutableList {
         return new DoubleArraySeries(data, 0, size);
     }
 
+    public int size() {
+        return size;
+    }
+
     private double[] compactData() {
         if (data.length == size) {
             return data;

@@ -6,6 +6,7 @@ import com.nhl.dflib.Series;
 import com.nhl.dflib.collection.BooleanMutableList;
 import com.nhl.dflib.collection.IntMutableList;
 import com.nhl.dflib.collection.MutableList;
+import com.nhl.dflib.collection.UniqueIntMutableList;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.filter.IntPredicate;
 import com.nhl.dflib.filter.ValuePredicate;
@@ -314,6 +315,26 @@ public abstract class IntBaseSeries implements IntSeries {
         }
 
         return bools.toBooleanSeries();
+    }
+
+    @Override
+    public Series<Integer> unique() {
+        return uniqueInt();
+    }
+
+    @Override
+    public IntSeries uniqueInt() {
+        int size = size();
+        if (size < 2) {
+            return this;
+        }
+
+        IntMutableList unique = new UniqueIntMutableList();
+        for (int i = 0; i < size; i++) {
+            unique.add(get(i));
+        }
+
+        return unique.size() < size() ? unique.toIntSeries() : this;
     }
 
     @Override

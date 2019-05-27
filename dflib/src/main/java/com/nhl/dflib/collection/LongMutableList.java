@@ -56,6 +56,10 @@ public class LongMutableList {
         return new LongArraySeries(data, 0, size);
     }
 
+    public int size() {
+        return size;
+    }
+
     private long[] compactData() {
         if (data.length == size) {
             return data;

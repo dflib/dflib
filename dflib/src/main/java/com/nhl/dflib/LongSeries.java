@@ -44,4 +44,10 @@ public interface LongSeries extends Series<Long> {
      * @return an IntSeries that represents positions in the Series that match the predicate.
      */
     IntSeries indexLong(LongPredicate predicate);
+
+    /**
+     * @return a LongSeries that contains non-repeating values from this Series.
+     * @since 0.6
+     */
+    LongSeries uniqueLong();
 }

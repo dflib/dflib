@@ -55,6 +55,10 @@ public class BooleanMutableList {
         return new BooleanArraySeries(data, 0, size);
     }
 
+    public int size() {
+        return size;
+    }
+
     private boolean[] compactData() {
         if (data.length == size) {
             return data;

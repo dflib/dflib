@@ -9,7 +9,9 @@ import com.nhl.dflib.collection.MutableList;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.filter.ValuePredicate;
 
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public abstract class ObjectSeries<T> implements Series<T> {
 
@@ -142,6 +144,22 @@ public abstract class ObjectSeries<T> implements Series<T> {
         }
 
         return bools.toBooleanSeries();
+    }
+
+    @Override
+    public Series<T> unique() {
+
+        int size = size();
+        if (size < 2) {
+            return this;
+        }
+
+        Set<Object> unique = new LinkedHashSet<>();
+        for (int i = 0; i < size; i++) {
+            unique.add(get(i));
+        }
+
+        return unique.size() < size() ? new ArraySeries<>(unique.toArray((T[]) new Object[unique.size()])) : this;
     }
 
     @Override

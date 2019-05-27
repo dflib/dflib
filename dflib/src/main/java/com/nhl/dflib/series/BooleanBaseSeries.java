@@ -358,6 +358,39 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
+    public Series<Boolean> unique() {
+        return uniqueBoolean();
+    }
+
+    @Override
+    public BooleanSeries uniqueBoolean() {
+        // unlike other primitive series, Boolean is categorical data, and there can be at most 2 values in the final
+        // array... we can optimize around that
+
+        int size = size();
+        if (size < 2) {
+            return this;
+        }
+
+        int iTrue = -1;
+        int iFalse = -1;
+
+        for (int i = 0; i < size && (iTrue < 0 || iFalse < 0); i++) {
+            if (get(i)) {
+                iTrue = i;
+            } else {
+                iFalse = i;
+            }
+        }
+
+        if (iTrue < 0) {
+            return new BooleanArraySeries(iFalse < 0 ? new boolean[0] : new boolean[]{false});
+        } else {
+            return new BooleanArraySeries(iFalse < 0 ? new boolean[]{true} : iTrue < iFalse ? new boolean[]{true, false} : new boolean[]{false, true});
+        }
+    }
+
+    @Override
     public String toString() {
         return ToString.toString(this);
     }

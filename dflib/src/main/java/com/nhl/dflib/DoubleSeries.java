@@ -44,4 +44,10 @@ public interface DoubleSeries extends Series<Double> {
      * @return an IntSeries that represents positions in the Series that match the predicate.
      */
     IntSeries indexDouble(DoublePredicate predicate);
+
+    /**
+     * @return a DoubleSeries that contains non-repeating values from this Series.
+     * @since 0.6
+     */
+    DoubleSeries uniqueDouble();
 }

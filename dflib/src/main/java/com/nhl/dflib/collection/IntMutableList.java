@@ -56,6 +56,10 @@ public class IntMutableList {
         return new IntArraySeries(data, 0, size);
     }
 
+    public int size() {
+        return size;
+    }
+
     private int[] compactData() {
         if (data.length == size) {
             return data;

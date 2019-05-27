@@ -17,6 +17,8 @@ public class DoubleSeriesAsserts {
 
     public DoubleSeriesAsserts expectData(double... expectedValues) {
 
+        assertEquals("Unexpected Series length", expectedValues.length, data.length);
+
         for (int i = 0; i < expectedValues.length; i++) {
 
             double a = data[i];
