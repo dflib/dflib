@@ -1,10 +1,7 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.collection.IntMutableList;
 import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.series.ArraySeries;
-import com.nhl.dflib.series.EmptySeries;
-import com.nhl.dflib.series.EnumOverIntSeries;
 import com.nhl.dflib.series.IntArraySeries;
 
 /**
@@ -15,32 +12,7 @@ import com.nhl.dflib.series.IntArraySeries;
 public interface Series<T> {
 
     static <T> Series<T> forData(T... data) {
-
-        if (data.length == 0) {
-            return new EmptySeries<>();
-        }
-
-        // TODO: route to "forEnums" is the data is of enum type?
         return new ArraySeries<>(data);
-    }
-
-    /**
-     * Creates a Series for an array of non-null enum values. Internally enum series are implemented as IntSeries and
-     * hence are more memory efficient compared to object series, so should be used for categorical data whenever
-     * possible.
-     */
-    static <T extends Enum<T>> Series<T> forEnums(T... enums) {
-
-        if (enums.length == 0) {
-            return new EmptySeries<>();
-        }
-
-        IntMutableList ints = new IntMutableList(enums.length);
-        for (int i = 0; i < enums.length; i++) {
-            ints.add(enums[i].ordinal());
-        }
-
-        return new EnumOverIntSeries(enums[0].getClass(), ints.toIntSeries());
     }
 
     /**
