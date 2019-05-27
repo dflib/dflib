@@ -9,7 +9,7 @@ import static java.util.Arrays.asList;
 
 public class SeriesConcat {
 
-    public static <T> Series<T> concat(Series[] concat) {
+    public static <T> Series<T> concat(Series... concat) {
         int h = 0;
         for (Series<? extends T> s : concat) {
             h += s.size();
@@ -26,7 +26,7 @@ public class SeriesConcat {
         return new ArraySeries<>(data);
     }
 
-    public static IntSeries intConcat(IntSeries[] concat) {
+    public static IntSeries intConcat(IntSeries... concat) {
         return intConcat(asList(concat));
     }
 
