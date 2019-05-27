@@ -235,6 +235,8 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     private Series<Integer> nullify(BooleanSeries condition) {
+        // TODO: return "this" if condition is all false
+
         int s = size();
         int r = Math.min(s, condition.size());
         MutableList vals = new MutableList(s);
@@ -251,6 +253,8 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     private Series<Integer> nullifyNoMatch(BooleanSeries condition) {
+        // TODO: return "this" if condition is all true
+
         int s = size();
         int r = Math.min(s, condition.size());
         MutableList vals = new MutableList(s);
