@@ -41,6 +41,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.UnaryOperator;
 
 public class ColumnDataFrame implements DataFrame {
 
@@ -232,6 +233,13 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public <T> Series<T> mapColumn(RowToValueMapper<T> rowMapper) {
         return new RowMappedSeries<>(this, rowMapper);
+    }
+
+
+    @Override
+    public DataFrame renameColumns(UnaryOperator<String> renameFunction) {
+        Index renamed = getColumnsIndex().rename(renameFunction);
+        return new ColumnDataFrame(renamed, dataColumns);
     }
 
     @Override

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.function.UnaryOperator;
 
 /**
  * An "index" of the DataFrame that provides access to column (and in the future potentially row) metadata.
@@ -51,6 +52,26 @@ public class Index implements Iterable<String> {
     @Override
     public Iterator<String> iterator() {
         return new ArrayIterator<>(labels);
+    }
+
+    /**
+     * Renames index labels by applying the provided function to each label. Useful for name conversions like
+     * lowercasing, etc.
+     *
+     * @param renameFunction a function that is passed each label in turn
+     * @return a new Index with renamed labels
+     * @since 0.6
+     */
+    public Index rename(UnaryOperator<String> renameFunction) {
+
+        int len = size();
+
+        String[] newLabels = new String[len];
+        for (int i = 0; i < len; i++) {
+            newLabels[i] = renameFunction.apply(labels[i]);
+        }
+
+        return new Index(newLabels);
     }
 
     public Index rename(Map<String, String> oldToNewLabels) {

@@ -19,6 +19,7 @@
 * #39 DataFrame.mapColumn
 * #40 "Series.unique" - a method to produce Series with non-repeating values
 * #43 Column converter to enums for categorical data 
+* #45 DataFrame.renameColumns(UnaryOperator<String>) to upper/lower case column names
 
 ## Release 0.5
 

@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 /**
@@ -472,6 +473,16 @@ public interface DataFrame extends Iterable<RowProxy> {
     default DataFrame renameColumn(String oldLabel, String newLabel) {
         return renameColumns(Collections.singletonMap(oldLabel, newLabel));
     }
+
+    /**
+     * Renames column index labels by applying the provided function to each label. Useful for name conversions like
+     * lowercasing, etc.
+     *
+     * @param renameFunction a function that is passed each label in turn
+     * @return a new DataFrame with renamed columns
+     * @since 0.6
+     */
+    DataFrame renameColumns(UnaryOperator<String> renameFunction);
 
     DataFrame renameColumns(Map<String, String> oldToNewLabels);
 

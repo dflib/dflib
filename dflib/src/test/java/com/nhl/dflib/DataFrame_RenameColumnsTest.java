@@ -48,4 +48,18 @@ public class DataFrame_RenameColumnsTest extends BaseDataFrameTest {
                 .expectRow(0, 1, "x")
                 .expectRow(1, 2, "y");
     }
+
+    @Test
+    public void testRenameColumns_WithFunction() {
+        Index i1 = Index.forLabels("a", "b");
+        DataFrame df = createDf(i1,
+                1, "x",
+                2, "y")
+                .renameColumns(s -> s.toUpperCase());
+
+        new DFAsserts(df, "A", "B")
+                .expectHeight(2)
+                .expectRow(0, 1, "x")
+                .expectRow(1, 2, "y");
+    }
 }
