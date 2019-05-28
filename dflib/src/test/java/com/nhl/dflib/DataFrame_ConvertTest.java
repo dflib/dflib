@@ -132,5 +132,39 @@ public class DataFrame_ConvertTest extends BaseDataFrameTest {
                 .expectRow(1, -100, "z")
                 .expectRow(2, 2, "y");
     }
+
+    @Test
+    public void testToEnumFromNumColumn() {
+        Index i1 = Index.forLabels("a", "b");
+        DataFrame df = createDf(i1,
+                1, "x",
+                null, "z",
+                0, "y")
+                .toEnumFromNumColumn(0, X.class);
+
+        new DFAsserts(df, "a", "b")
+                .expectHeight(3)
+                .expectRow(0, X.b, "x")
+                .expectRow(1, null, "z")
+                .expectRow(2, X.a, "y");
+    }
+
+    @Test
+    public void testToEnumFromStringColumn() {
+        Index i1 = Index.forLabels("a", "b");
+        DataFrame df = createDf(i1,
+                "b", "x",
+                null, "z",
+                "a", "y")
+                .toEnumFromStringColumn(0, X.class);
+
+        new DFAsserts(df, "a", "b")
+                .expectHeight(3)
+                .expectRow(0, X.b, "x")
+                .expectRow(1, null, "z")
+                .expectRow(2, X.a, "y");
+    }
+
+    enum X {a, b, c, d, e}
 }
 

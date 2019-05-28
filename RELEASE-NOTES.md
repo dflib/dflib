@@ -18,6 +18,7 @@
 * #38 Primitive Series "select" methods must account for nulls 
 * #39 DataFrame.mapColumn
 * #40 "Series.unique" - a method to produce Series with non-repeating values
+* #43 Column converter to enums for categorical data 
 
 ## Release 0.5
 

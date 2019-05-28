@@ -416,6 +416,49 @@ public interface DataFrame extends Iterable<RowProxy> {
         return toLongColumn(pos, LongValueMapper.fromObject());
     }
 
+
+    /**
+     * @param columnLabel name of a column to convert
+     * @param <E>         converted column enum type
+     * @return a new DataFrame
+     * @since 0.6
+     */
+    default <E extends Enum<E>> DataFrame toEnumFromStringColumn(String columnLabel, Class<E> enumType) {
+        int pos = getColumnsIndex().position(columnLabel);
+        return toEnumFromStringColumn(pos, enumType);
+    }
+
+    /**
+     * @param pos position of a column to convert
+     * @param <E> converted column enum type
+     * @return a new DataFrame
+     * @since 0.6
+     */
+    default <E extends Enum<E>> DataFrame toEnumFromStringColumn(int pos, Class<E> enumType) {
+        return convertColumn(pos, ValueMapper.stringToEnum(enumType));
+    }
+
+    /**
+     * @param columnLabel name of a column to convert
+     * @param <E>         converted column enum type
+     * @return a new DataFrame
+     * @since 0.6
+     */
+    default <E extends Enum<E>> DataFrame toEnumFromNumColumn(String columnLabel, Class<E> enumType) {
+        int pos = getColumnsIndex().position(columnLabel);
+        return toEnumFromNumColumn(pos, enumType);
+    }
+
+    /**
+     * @param pos position of a column to convert
+     * @param <E> converted column enum type
+     * @return a new DataFrame
+     * @since 0.6
+     */
+    default <E extends Enum<E>> DataFrame toEnumFromNumColumn(int pos, Class<E> enumType) {
+        return convertColumn(pos, ValueMapper.numToEnum(enumType));
+    }
+
     /**
      * Adds row number column to the DataFrame
      *

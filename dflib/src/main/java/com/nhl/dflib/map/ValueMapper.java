@@ -62,5 +62,21 @@ public interface ValueMapper<V, VR> {
         return s -> s != null && s.length() > 0 ? LocalDateTime.parse(s, formatter) : null;
     }
 
+    /**
+     * @since 0.6
+     */
+    static <E extends Enum<E>> ValueMapper<String, E> stringToEnum(Class<E> type) {
+        return s -> s != null && s.length() > 0 ? Enum.valueOf(type, s) : null;
+    }
+
+    /**
+     * @since 0.6
+     */
+    static <E extends Enum<E>> ValueMapper<? extends Number, E> numToEnum(Class<E> type) {
+        E[] allValues = type.getEnumConstants();
+        return n -> n != null ? allValues[n.intValue()] : null;
+    }
+
+
     VR map(V v);
 }
