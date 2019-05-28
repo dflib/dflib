@@ -268,11 +268,10 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @param columnLabel name of a column to convert
      * @param forNull     a value to use in place of nulls
-     * @param <V>         expected input column value
      * @return a new DataFrame
      * @since 0.6
      */
-    default <V> DataFrame toIntColumn(String columnLabel, int forNull) {
+    default DataFrame toIntColumn(String columnLabel, int forNull) {
         int pos = getColumnsIndex().position(columnLabel);
         return toIntColumn(pos, forNull);
     }
@@ -280,11 +279,10 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @param pos     position of a column to convert
      * @param forNull a value to use in place of nulls
-     * @param <V>     expected input column value
      * @return a new DataFrame
      * @since 0.6
      */
-    default <V> DataFrame toIntColumn(int pos, int forNull) {
+    default DataFrame toIntColumn(int pos, int forNull) {
         return toIntColumn(pos, IntValueMapper.fromObject(forNull));
     }
 
@@ -312,11 +310,10 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @param columnLabel name of a column to convert
      * @param forNull     a value to use in place of nulls
-     * @param <V>         expected input column value
      * @return a new DataFrame
      * @since 0.6
      */
-    default <V> DataFrame toDoubleColumn(String columnLabel, double forNull) {
+    default DataFrame toDoubleColumn(String columnLabel, double forNull) {
         int pos = getColumnsIndex().position(columnLabel);
         return toDoubleColumn(pos, forNull);
     }
@@ -324,11 +321,10 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @param pos     position of a column to convert
      * @param forNull a value to use in place of nulls
-     * @param <V>     expected input column value
      * @return a new DataFrame
      * @since 0.6
      */
-    default <V> DataFrame toDoubleColumn(int pos, double forNull) {
+    default DataFrame toDoubleColumn(int pos, double forNull) {
         return toDoubleColumn(pos, DoubleValueMapper.fromObject(forNull));
     }
 
@@ -355,22 +351,20 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * @param columnLabel name of a column to convert
-     * @param <V>         expected input column value
      * @return a new DataFrame
      * @since 0.6
      */
-    default <V> DataFrame toBooleanColumn(String columnLabel) {
+    default DataFrame toBooleanColumn(String columnLabel) {
         int pos = getColumnsIndex().position(columnLabel);
         return toBooleanColumn(pos);
     }
 
     /**
      * @param pos position of a column to convert
-     * @param <V> expected input column value
      * @return a new DataFrame
      * @since 0.6
      */
-    default <V> DataFrame toBooleanColumn(int pos) {
+    default DataFrame toBooleanColumn(int pos) {
         return toBooleanColumn(pos, BooleanValueMapper.fromObject());
     }
 
@@ -397,22 +391,20 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * @param columnLabel name of a column to convert
-     * @param <V>         expected input column value
      * @return a new DataFrame
      * @since 0.6
      */
-    default <V> DataFrame toLongColumn(String columnLabel) {
+    default DataFrame toLongColumn(String columnLabel) {
         int pos = getColumnsIndex().position(columnLabel);
         return toLongColumn(pos);
     }
 
     /**
      * @param pos position of a column to convert
-     * @param <V> expected input column value
      * @return a new DataFrame
      * @since 0.6
      */
-    default <V> DataFrame toLongColumn(int pos) {
+    default DataFrame toLongColumn(int pos) {
         return toLongColumn(pos, LongValueMapper.fromObject());
     }
 
