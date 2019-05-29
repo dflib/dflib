@@ -1,9 +1,6 @@
-package com.nhl.dflib.filter;
+package com.nhl.dflib;
 
-import com.nhl.dflib.ValuePredicate;
 import com.nhl.dflib.unit.DFAsserts;
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
 import org.junit.Test;
 
 import static java.util.Arrays.asList;

@@ -1,7 +1,6 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.AggregatorFunctions;
-import com.nhl.dflib.aggregate.ColumnAggregator;
 import com.nhl.dflib.aggregate.MultiColumnAggregator;
 import com.nhl.dflib.map.IndexMapper;
 

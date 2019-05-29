@@ -1,6 +1,7 @@
 package com.nhl.dflib.aggregate;
 
 import com.nhl.dflib.Aggregator;
+import com.nhl.dflib.ColumnAggregator;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.row.RowProxy;

@@ -1,6 +1,5 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.aggregate.ColumnAggregator;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.row.RowProxy;

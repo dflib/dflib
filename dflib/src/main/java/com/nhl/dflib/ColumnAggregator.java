@@ -1,17 +1,13 @@
-package com.nhl.dflib.aggregate;
+package com.nhl.dflib;
 
-import com.nhl.dflib.Aggregator;
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
 import com.nhl.dflib.map.IndexMapper;
-import com.nhl.dflib.RowToValueMapper;
 import com.nhl.dflib.row.RowProxy;
 
 import java.util.function.BiConsumer;
 import java.util.stream.Collector;
 
 /**
- * @see Aggregator for convenience factory methods.
+ * @see Aggregator for convenience factory methods of creating common ColumnAggregators.
  */
 public class ColumnAggregator implements Aggregator {
 
