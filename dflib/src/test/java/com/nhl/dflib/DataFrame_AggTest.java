@@ -1,6 +1,5 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.aggregate.Aggregator;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.Test;
 

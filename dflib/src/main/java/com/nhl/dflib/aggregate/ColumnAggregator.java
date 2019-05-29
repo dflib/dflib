@@ -1,9 +1,10 @@
 package com.nhl.dflib.aggregate;
 
+import com.nhl.dflib.Aggregator;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.map.IndexMapper;
-import com.nhl.dflib.map.RowToValueMapper;
+import com.nhl.dflib.RowToValueMapper;
 import com.nhl.dflib.row.RowProxy;
 
 import java.util.function.BiConsumer;

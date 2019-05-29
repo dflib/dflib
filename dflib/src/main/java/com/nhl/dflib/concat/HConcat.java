@@ -4,9 +4,9 @@ import com.nhl.dflib.ColumnDataFrame;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.join.JoinType;
+import com.nhl.dflib.JoinType;
 import com.nhl.dflib.map.MultiArrayRowBuilder;
-import com.nhl.dflib.map.RowCombiner;
+import com.nhl.dflib.RowCombiner;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.ArraySeries;
 

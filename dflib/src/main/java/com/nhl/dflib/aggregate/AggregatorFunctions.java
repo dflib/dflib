@@ -1,6 +1,6 @@
 package com.nhl.dflib.aggregate;
 
-import com.nhl.dflib.map.RowToValueMapper;
+import com.nhl.dflib.RowToValueMapper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,19 +8,19 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collector;
 
-class AggregatorFunctions {
+public class AggregatorFunctions {
 
-    static RowToValueMapper<String> toString(String column) {
+    public static RowToValueMapper<String> toString(String column) {
         RowToValueMapper<?> reader = RowToValueMapper.columnReader(column);
         return r -> String.valueOf(reader.map(r));
     }
 
-    static RowToValueMapper<String> toString(int column) {
+    public static RowToValueMapper<String> toString(int column) {
         RowToValueMapper<?> reader = RowToValueMapper.columnReader(column);
         return r -> String.valueOf(reader.map(r));
     }
 
-    static Collector<Number, List<Double>, Double> medianCollector() {
+    public static Collector<Number, List<Double>, Double> medianCollector() {
         return new AggregationCollector<>(
                 ArrayList::new,
                 (list, d) -> {

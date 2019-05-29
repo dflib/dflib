@@ -1,7 +1,7 @@
 package com.nhl.dflib.sort;
 
 import com.nhl.dflib.Index;
-import com.nhl.dflib.map.RowToValueMapper;
+import com.nhl.dflib.RowToValueMapper;
 import com.nhl.dflib.row.RowProxy;
 
 import java.util.Comparator;

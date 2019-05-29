@@ -1,7 +1,7 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.Series;
-import com.nhl.dflib.map.ValueMapper;
+import com.nhl.dflib.ValueMapper;
 
 public class ColumnMappedSeries<S, T> extends ObjectSeries<T> {
 

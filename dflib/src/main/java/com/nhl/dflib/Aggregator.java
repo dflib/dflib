@@ -1,9 +1,9 @@
-package com.nhl.dflib.aggregate;
+package com.nhl.dflib;
 
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
+import com.nhl.dflib.aggregate.AggregatorFunctions;
+import com.nhl.dflib.aggregate.ColumnAggregator;
+import com.nhl.dflib.aggregate.MultiColumnAggregator;
 import com.nhl.dflib.map.IndexMapper;
-import com.nhl.dflib.map.RowToValueMapper;
 
 import java.util.stream.Collector;
 import java.util.stream.Collectors;

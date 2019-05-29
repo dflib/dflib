@@ -2,6 +2,7 @@ package com.nhl.dflib.filter;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.RowPredicate;
 import com.nhl.dflib.collection.IntMutableList;
 
 public class FilterIndexer {

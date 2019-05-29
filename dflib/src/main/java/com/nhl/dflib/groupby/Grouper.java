@@ -4,7 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.collection.IntMutableList;
-import com.nhl.dflib.map.Hasher;
+import com.nhl.dflib.Hasher;
 import com.nhl.dflib.row.RowProxy;
 
 import java.util.LinkedHashMap;

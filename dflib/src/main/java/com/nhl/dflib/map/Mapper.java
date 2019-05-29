@@ -3,6 +3,7 @@ package com.nhl.dflib.map;
 import com.nhl.dflib.ColumnDataFrame;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.RowMapper;
 import com.nhl.dflib.Series;
 
 public class Mapper {

@@ -2,7 +2,7 @@ package com.nhl.dflib.series;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.map.RowToValueMapper;
+import com.nhl.dflib.RowToValueMapper;
 import com.nhl.dflib.row.RowProxy;
 
 public class RowMappedSeries<T> extends ObjectSeries<T> {

@@ -2,7 +2,7 @@ package com.nhl.dflib.csv;
 
 import com.nhl.dflib.unit.DFAsserts;
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.map.ValueMapper;
+import com.nhl.dflib.ValueMapper;
 import org.apache.commons.csv.CSVFormat;
 import org.junit.Test;
 

@@ -2,7 +2,7 @@ package com.nhl.dflib.benchmark.speed;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.benchmark.DataGenerator;
-import com.nhl.dflib.map.RowMapper;
+import com.nhl.dflib.RowMapper;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;

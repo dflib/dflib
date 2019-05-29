@@ -3,7 +3,7 @@ package com.nhl.dflib.benchmark.speed;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.benchmark.DataGenerator;
 import com.nhl.dflib.benchmark.ValueMaker;
-import com.nhl.dflib.join.JoinType;
+import com.nhl.dflib.JoinType;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;

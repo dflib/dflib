@@ -1,9 +1,7 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.aggregate.Aggregator;
 import com.nhl.dflib.aggregate.ColumnAggregator;
 import com.nhl.dflib.join.JoinPredicate;
-import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.row.RowBuilder;
 import com.nhl.dflib.row.RowProxy;
 

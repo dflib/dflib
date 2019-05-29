@@ -1,8 +1,6 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.join.JoinPredicate;
-import com.nhl.dflib.join.JoinType;
-import com.nhl.dflib.map.Hasher;
 import com.nhl.dflib.unit.DFAsserts;
 import org.junit.Test;
 

@@ -1,6 +1,7 @@
 package com.nhl.dflib.map;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Hasher;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.unit.DFAsserts;
 import org.junit.Test;

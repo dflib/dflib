@@ -1,6 +1,5 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.filter.ValuePredicate;
 import com.nhl.dflib.series.BooleanArraySeries;
 
 /**

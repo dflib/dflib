@@ -10,8 +10,8 @@ import com.nhl.dflib.collection.IntMutableList;
 import com.nhl.dflib.collection.MutableList;
 import com.nhl.dflib.collection.UniqueDoubleMutableList;
 import com.nhl.dflib.concat.SeriesConcat;
-import com.nhl.dflib.filter.DoublePredicate;
-import com.nhl.dflib.filter.ValuePredicate;
+import com.nhl.dflib.DoublePredicate;
+import com.nhl.dflib.ValuePredicate;
 
 import java.util.Objects;
 

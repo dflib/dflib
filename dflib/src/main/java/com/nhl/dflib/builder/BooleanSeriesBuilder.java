@@ -2,7 +2,7 @@ package com.nhl.dflib.builder;
 
 import com.nhl.dflib.Series;
 import com.nhl.dflib.collection.BooleanMutableList;
-import com.nhl.dflib.map.BooleanValueMapper;
+import com.nhl.dflib.BooleanValueMapper;
 
 /**
  * @param <I>

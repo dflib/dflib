@@ -1,4 +1,4 @@
-package com.nhl.dflib.join;
+package com.nhl.dflib;
 
 /**
  * Defines semantics of a data joins and index joins.

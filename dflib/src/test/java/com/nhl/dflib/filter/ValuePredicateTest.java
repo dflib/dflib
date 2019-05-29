@@ -1,5 +1,6 @@
 package com.nhl.dflib.filter;
 
+import com.nhl.dflib.ValuePredicate;
 import com.nhl.dflib.unit.DFAsserts;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;

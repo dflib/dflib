@@ -1,7 +1,7 @@
 package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.map.RowToValueMapper;
+import com.nhl.dflib.RowToValueMapper;
 import com.nhl.dflib.row.RowProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

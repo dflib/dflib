@@ -10,8 +10,8 @@ import com.nhl.dflib.collection.LongMutableList;
 import com.nhl.dflib.collection.MutableList;
 import com.nhl.dflib.collection.UniqueLongMutableList;
 import com.nhl.dflib.concat.SeriesConcat;
-import com.nhl.dflib.filter.LongPredicate;
-import com.nhl.dflib.filter.ValuePredicate;
+import com.nhl.dflib.LongPredicate;
+import com.nhl.dflib.ValuePredicate;
 
 import java.util.Objects;
 

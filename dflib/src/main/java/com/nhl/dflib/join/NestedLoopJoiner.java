@@ -2,6 +2,7 @@ package com.nhl.dflib.join;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.JoinType;
 import com.nhl.dflib.collection.IntMutableList;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.row.RowProxy;

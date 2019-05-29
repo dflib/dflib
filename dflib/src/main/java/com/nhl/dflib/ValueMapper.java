@@ -1,4 +1,4 @@
-package com.nhl.dflib.map;
+package com.nhl.dflib;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

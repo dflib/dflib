@@ -1,11 +1,8 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.aggregate.Aggregator;
 import com.nhl.dflib.aggregate.ColumnAggregator;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.concat.VConcat;
-import com.nhl.dflib.join.JoinType;
-import com.nhl.dflib.map.RowToValueMapper;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.IntSequenceSeries;
 import com.nhl.dflib.sort.IndexSorter;

@@ -1,5 +1,6 @@
-package com.nhl.dflib.map;
+package com.nhl.dflib;
 
+import com.nhl.dflib.map.CombinationHash;
 import com.nhl.dflib.row.RowProxy;
 
 /**

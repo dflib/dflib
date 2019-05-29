@@ -2,7 +2,7 @@ package com.nhl.dflib.builder;
 
 import com.nhl.dflib.Series;
 import com.nhl.dflib.collection.DoubleMutableList;
-import com.nhl.dflib.map.DoubleValueMapper;
+import com.nhl.dflib.DoubleValueMapper;
 
 /**
  * @param <I>

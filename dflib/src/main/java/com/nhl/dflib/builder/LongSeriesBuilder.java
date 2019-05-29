@@ -2,7 +2,7 @@ package com.nhl.dflib.builder;
 
 import com.nhl.dflib.Series;
 import com.nhl.dflib.collection.LongMutableList;
-import com.nhl.dflib.map.LongValueMapper;
+import com.nhl.dflib.LongValueMapper;
 
 /**
  * @param <I>

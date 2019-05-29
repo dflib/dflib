@@ -1,4 +1,4 @@
-package com.nhl.dflib.map;
+package com.nhl.dflib;
 
 /**
  * @since 0.6

@@ -1,6 +1,6 @@
 package com.nhl.dflib.join;
 
-import com.nhl.dflib.map.Hasher;
+import com.nhl.dflib.Hasher;
 import com.nhl.dflib.row.RowProxy;
 
 import java.util.Objects;

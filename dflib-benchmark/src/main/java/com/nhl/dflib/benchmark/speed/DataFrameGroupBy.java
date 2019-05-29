@@ -2,7 +2,7 @@ package com.nhl.dflib.benchmark.speed;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.GroupBy;
-import com.nhl.dflib.aggregate.Aggregator;
+import com.nhl.dflib.Aggregator;
 import com.nhl.dflib.benchmark.DataGenerator;
 import com.nhl.dflib.benchmark.ValueMaker;
 import org.openjdk.jmh.annotations.Benchmark;

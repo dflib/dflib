@@ -1,7 +1,5 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.map.IntValueMapper;
-import com.nhl.dflib.map.ValueMapper;
 import com.nhl.dflib.unit.DFAsserts;
 import org.junit.Test;
 

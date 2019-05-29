@@ -1,4 +1,4 @@
-package com.nhl.dflib.filter;
+package com.nhl.dflib;
 
 import com.nhl.dflib.row.RowProxy;
 

@@ -4,7 +4,7 @@ import com.nhl.dflib.ColumnDataFrame;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.join.JoinType;
+import com.nhl.dflib.JoinType;
 import com.nhl.dflib.series.ArraySeries;
 
 import java.util.EnumMap;

@@ -1,6 +1,5 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.join.JoinType;
 import com.nhl.dflib.unit.DFAsserts;
 import org.junit.Test;
 

@@ -9,11 +9,11 @@ import com.nhl.dflib.builder.LongSeriesBuilder;
 import com.nhl.dflib.builder.MappedSeriesBuilder;
 import com.nhl.dflib.builder.ObjectSeriesBuilder;
 import com.nhl.dflib.builder.SeriesBuilder;
-import com.nhl.dflib.map.BooleanValueMapper;
-import com.nhl.dflib.map.DoubleValueMapper;
-import com.nhl.dflib.map.IntValueMapper;
-import com.nhl.dflib.map.LongValueMapper;
-import com.nhl.dflib.map.ValueMapper;
+import com.nhl.dflib.BooleanValueMapper;
+import com.nhl.dflib.DoubleValueMapper;
+import com.nhl.dflib.IntValueMapper;
+import com.nhl.dflib.LongValueMapper;
+import com.nhl.dflib.ValueMapper;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
