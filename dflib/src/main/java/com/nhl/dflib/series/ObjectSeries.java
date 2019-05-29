@@ -3,6 +3,7 @@ package com.nhl.dflib.series;
 import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.ValueMapper;
 import com.nhl.dflib.collection.BooleanMutableList;
 import com.nhl.dflib.collection.IntMutableList;
 import com.nhl.dflib.collection.MutableList;
@@ -18,6 +19,11 @@ public abstract class ObjectSeries<T> implements Series<T> {
     @Override
     public Class<?> getType() {
         return Object.class;
+    }
+
+    @Override
+    public <V> Series<V> map(ValueMapper<T, V> mapper) {
+        return new ColumnMappedSeries<>(this, mapper);
     }
 
     @Override

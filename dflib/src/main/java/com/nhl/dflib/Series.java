@@ -29,6 +29,14 @@ public interface Series<T> {
     void copyTo(Object[] to, int fromOffset, int toOffset, int len);
 
     /**
+     * @param mapper
+     * @param <V>
+     * @return a Series produced by applying a mapper to this Series
+     * @since 0.6
+     */
+    <V> Series<V> map(ValueMapper<T, V> mapper);
+
+    /**
      * Returns a {@link Series} that contains a range of data from this series. If the "toExclusive" parameter
      *
      * @param fromInclusive a left boundary index of the returned range (included in the returned range)

@@ -15,7 +15,6 @@ import com.nhl.dflib.join.NestedLoopJoiner;
 import com.nhl.dflib.map.Mapper;
 import com.nhl.dflib.row.CrossColumnRowProxy;
 import com.nhl.dflib.row.RowProxy;
-import com.nhl.dflib.series.ColumnMappedSeries;
 import com.nhl.dflib.series.EmptySeries;
 import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.series.IntSequenceSeries;
@@ -385,7 +384,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public <V, VR> DataFrame convertColumn(int pos, ValueMapper<V, VR> converter) {
-        return replaceColumn(pos, new ColumnMappedSeries(dataColumns[pos], converter));
+        return replaceColumn(pos, dataColumns[pos].map(converter));
     }
 
     @Override

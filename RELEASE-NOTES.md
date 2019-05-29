@@ -21,6 +21,7 @@
 * #43 Column converter to enums for categorical data 
 * #45 DataFrame.renameColumns(UnaryOperator<String>) to upper/lower case column names
 * #46 Move interfaces with public static methods for creating lambdas to the root package
+* #47 Series.map 
 
 ## Release 0.5
 

@@ -3,6 +3,7 @@ package com.nhl.dflib.series;
 import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.ValueMapper;
 import com.nhl.dflib.collection.BooleanMutableList;
 import com.nhl.dflib.collection.IntMutableList;
 import com.nhl.dflib.collection.MutableList;
@@ -23,6 +24,11 @@ public abstract class IntBaseSeries implements IntSeries {
     @Override
     public Series<Integer> rangeOpenClosed(int fromInclusive, int toExclusive) {
         return rangeOpenClosedInt(fromInclusive, toExclusive);
+    }
+
+    @Override
+    public <V> Series<V> map(ValueMapper<Integer, V> mapper) {
+        return new ColumnMappedSeries<>(this, mapper);
     }
 
     @Override

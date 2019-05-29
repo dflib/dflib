@@ -3,11 +3,12 @@ package com.nhl.dflib.series;
 import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.ValueMapper;
+import com.nhl.dflib.ValuePredicate;
 import com.nhl.dflib.collection.BooleanMutableList;
 import com.nhl.dflib.collection.IntMutableList;
 import com.nhl.dflib.collection.MutableList;
 import com.nhl.dflib.concat.SeriesConcat;
-import com.nhl.dflib.ValuePredicate;
 
 import java.util.Objects;
 
@@ -15,6 +16,11 @@ import java.util.Objects;
  * @since 0.6
  */
 public abstract class BooleanBaseSeries implements BooleanSeries {
+
+    @Override
+    public <V> Series<V> map(ValueMapper<Boolean, V> mapper) {
+        return new ColumnMappedSeries<>(this, mapper);
+    }
 
     @Override
     public Series<Boolean> rangeOpenClosed(int fromInclusive, int toExclusive) {

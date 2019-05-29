@@ -2,16 +2,17 @@ package com.nhl.dflib.series;
 
 import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.LongPredicate;
 import com.nhl.dflib.LongSeries;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.ValueMapper;
+import com.nhl.dflib.ValuePredicate;
 import com.nhl.dflib.collection.BooleanMutableList;
 import com.nhl.dflib.collection.IntMutableList;
 import com.nhl.dflib.collection.LongMutableList;
 import com.nhl.dflib.collection.MutableList;
 import com.nhl.dflib.collection.UniqueLongMutableList;
 import com.nhl.dflib.concat.SeriesConcat;
-import com.nhl.dflib.LongPredicate;
-import com.nhl.dflib.ValuePredicate;
 
 import java.util.Objects;
 
@@ -19,6 +20,11 @@ import java.util.Objects;
  * @since 0.6
  */
 public abstract class LongBaseSeries implements LongSeries {
+
+    @Override
+    public <V> Series<V> map(ValueMapper<Long, V> mapper) {
+        return new ColumnMappedSeries<>(this, mapper);
+    }
 
     @Override
     public Series<Long> rangeOpenClosed(int fromInclusive, int toExclusive) {

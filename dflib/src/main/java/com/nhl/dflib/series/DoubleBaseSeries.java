@@ -1,17 +1,18 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.BooleanSeries;
+import com.nhl.dflib.DoublePredicate;
 import com.nhl.dflib.DoubleSeries;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.ValueMapper;
+import com.nhl.dflib.ValuePredicate;
 import com.nhl.dflib.collection.BooleanMutableList;
 import com.nhl.dflib.collection.DoubleMutableList;
 import com.nhl.dflib.collection.IntMutableList;
 import com.nhl.dflib.collection.MutableList;
 import com.nhl.dflib.collection.UniqueDoubleMutableList;
 import com.nhl.dflib.concat.SeriesConcat;
-import com.nhl.dflib.DoublePredicate;
-import com.nhl.dflib.ValuePredicate;
 
 import java.util.Objects;
 
@@ -19,6 +20,11 @@ import java.util.Objects;
  * @since 0.6
  */
 public abstract class DoubleBaseSeries implements DoubleSeries {
+
+    @Override
+    public <V> Series<V> map(ValueMapper<Double, V> mapper) {
+        return new ColumnMappedSeries<>(this, mapper);
+    }
 
     @Override
     public Series<Double> rangeOpenClosed(int fromInclusive, int toExclusive) {
