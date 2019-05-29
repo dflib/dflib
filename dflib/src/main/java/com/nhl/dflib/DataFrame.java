@@ -684,6 +684,53 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
+     * Calculates a left join using <a href="https://en.wikipedia.org/wiki/Hash_join">"hash join"</a> algorithm. It requires
+     * two custom "hash" functions for the rows on the left and the right sides of the join, each producing
+     * values, whose equality can be used as a join condition. This is the fastest known way to join two data sets.
+     * See the {@link Hasher} class for common hashers, such as those comparing column values.
+     *
+     * @param df          a DataFrame to join with this one
+     * @param leftHasher  a hash function for the left-side rows
+     * @param rightHasher a hash function for the right-side rows
+     * @return a DataFrame that is a result of this join
+     */
+    default DataFrame leftJoin(DataFrame df, Hasher leftHasher, Hasher rightHasher) {
+        return join(df, leftHasher, rightHasher, JoinType.left);
+    }
+
+    /**
+     * @param df          the DataFrame to join with this one
+     * @param leftColumn  the name of the join column for left-side DataFrame
+     * @param rightColumn the name of the join column for right-side DataFrame
+     * @return a DataFrame that is a result of this join
+     * @since 0.6
+     */
+    default DataFrame leftJoin(DataFrame df, String leftColumn, String rightColumn) {
+        return join(df, leftColumn, rightColumn, JoinType.left);
+    }
+
+    /**
+     * @param df     the DataFrame to join with this one
+     * @param column the name of the join column for both left and right side DataFrames
+     * @return a DataFrame that is a result of this join
+     * @since 0.6
+     */
+    default DataFrame leftJoin(DataFrame df, String column) {
+        return join(df, column, JoinType.left);
+    }
+
+    /**
+     * @param df          the DataFrame to join with this one
+     * @param leftColumn  the position of the join column for left-side DataFrame
+     * @param rightColumn the position of the join column for right-side DataFrame
+     * @return a DataFrame that is a result of this join
+     * @since 0.6
+     */
+    default DataFrame leftJoin(DataFrame df, int leftColumn, int rightColumn) {
+        return join(df, leftColumn, rightColumn, JoinType.left);
+    }
+
+    /**
      * Calculates a join using <a href="https://en.wikipedia.org/wiki/Hash_join">hash join</a> algorithm. It requires
      * two custom "hash" functions for the rows on the left and the right sides of the join, each producing
      * values, whose equality can be used as a join condition. This is the fastest known way to join two data sets.
