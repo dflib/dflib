@@ -1,11 +1,18 @@
 package com.nhl.dflib.jdbc.connector;
 
-import com.nhl.dflib.unit.DFAsserts;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
+import com.nhl.dflib.unit.DFAsserts;
 import org.junit.Test;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.Year;
 
 public class JdbcConnector_TableSaverIT extends BaseDbTest {
 
@@ -134,4 +141,78 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 .expectRow(1, 2L, "n2", 120_000.);
     }
 
+    @Test
+    public void testDataTypes() {
+
+        LocalDate ld = LocalDate.of(1977, 02, 05);
+        LocalDateTime ldt = LocalDateTime.of(2019, 02, 03, 1, 2, 5);
+        LocalTime lt = LocalTime.of(5, 6, 8);
+
+        byte[] bytes = new byte[]{3, 5, 11};
+        long l1 = Integer.MAX_VALUE + 1L;
+
+        DataFrame df = DataFrame.forSequenceFoldByRow(
+                Index.forLabels("bigint", "int", "timestamp", "time", "date", "bytes"),
+                l1, 1, ldt, lt, ld, bytes);
+
+        JdbcConnector connector = createConnector();
+        connector.tableSaver("t2").save(df);
+
+        DataFrame df2 = connector
+                .tableLoader("t2")
+                .includeColumns("bigint", "int", "timestamp", "time", "date", "bytes")
+                .load();
+
+        new DFAsserts(df2, df.getColumnsIndex())
+                .expectHeight(1)
+                .expectRow(0, l1, 1, ldt, lt, ld, bytes);
+    }
+
+    @Test
+    public void testDataTypes_DatePartsAsInts() {
+
+        DataFrame df = DataFrame.forSequenceFoldByRow(
+                Index.forLabels("bigint", "int"),
+                1L, Month.DECEMBER,
+                2L, Year.of(1973),
+                3L, DayOfWeek.TUESDAY);
+
+        JdbcConnector connector = createConnector();
+        connector.tableSaver("t2").save(df);
+
+        DataFrame df2 = connector
+                .tableLoader("t2")
+                .includeColumns("bigint", "int")
+                .load();
+
+        new DFAsserts(df2, df.getColumnsIndex())
+                .expectHeight(3)
+                .expectRow(0, 1L, 12)
+                .expectRow(1, 2L, 1973)
+                .expectRow(2, 3L, 2);
+    }
+
+    @Test
+    public void testDataTypes_Enums() {
+
+        DataFrame df = DataFrame.forSequenceFoldByRow(
+                Index.forLabels("bigint", "int", "string"),
+                1L, X.a, X.a,
+                2L, X.b, X.b);
+
+        JdbcConnector connector = createConnector();
+        connector.tableSaver("t2").save(df);
+
+        DataFrame df2 = connector
+                .tableLoader("t2")
+                .includeColumns("bigint", "int", "string")
+                .load();
+
+        new DFAsserts(df2, df.getColumnsIndex())
+                .expectHeight(2)
+                .expectRow(0, 1L, 0, "a")
+                .expectRow(1, 2L, 1, "b");
+    }
+
+    enum X {a, b}
 }

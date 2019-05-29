@@ -55,6 +55,8 @@ public class JdbcConnector {
         this.statementBinderFactories.put(Types.DATE, StatementBinderFactory::dateBinder);
         this.statementBinderFactories.put(Types.TIME, StatementBinderFactory::timeBinder);
         this.statementBinderFactories.put(Types.TIMESTAMP, StatementBinderFactory::timestampBinder);
+        this.statementBinderFactories.put(Types.INTEGER, StatementBinderFactory::intBinder);
+        this.statementBinderFactories.put(Types.VARCHAR, StatementBinderFactory::stringBinder);
 
         this.bindingDebugConverter = new BindingDebugConverter();
     }
