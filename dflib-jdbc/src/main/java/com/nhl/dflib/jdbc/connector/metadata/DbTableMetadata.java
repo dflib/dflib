@@ -16,7 +16,7 @@ public class DbTableMetadata {
         this.name = name;
         this.columns = columns;
         this.columnsByName = new HashMap<>();
-        
+
         for (DbColumnMetadata column : columns) {
 
             DbColumnMetadata existing = columnsByName.put(column.getName(), column);
