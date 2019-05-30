@@ -9,28 +9,29 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.Year;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
 
-public class StatementPositionConverters {
+/**
+ * @since 0.6
+ */
+public interface ValueConverter {
 
-    public static Function<Object, Object> defaultConverter() {
-        return UnaryOperator.identity();
+    static ValueConverter defaultConverter() {
+        return o -> o;
     }
 
-    public static Function<Object, Object> dateConverter() {
+    static ValueConverter dateConverter() {
         return o -> o instanceof LocalDate ? Date.valueOf((LocalDate) o) : o;
     }
 
-    public static Function<Object, Object> timestampConverter() {
+    static ValueConverter timestampConverter() {
         return o -> o instanceof LocalDateTime ? Timestamp.valueOf((LocalDateTime) o) : o;
     }
 
-    public static Function<Object, Object> timeConverter() {
+    static ValueConverter timeConverter() {
         return o -> o instanceof LocalTime ? Time.valueOf((LocalTime) o) : o;
     }
 
-    public static Function<Object, Object> intConverter() {
+    static ValueConverter intConverter() {
         return o -> {
 
             // TODO: inefficient - checking type of every object for the same binding... need to be able to precompile
@@ -57,7 +58,7 @@ public class StatementPositionConverters {
         };
     }
 
-    public static Function<Object, Object> stringConverter() {
+    static ValueConverter stringConverter() {
         return o -> {
 
             // TODO: inefficient - checking type of every object for the same binding... need to be able to precompile
@@ -74,4 +75,6 @@ public class StatementPositionConverters {
             }
         };
     }
+
+    Object convert(Object o);
 }

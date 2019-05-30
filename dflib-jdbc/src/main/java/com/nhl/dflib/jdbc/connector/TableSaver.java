@@ -5,11 +5,6 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.RowToValueMapper;
 import com.nhl.dflib.jdbc.connector.metadata.DbColumnMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.DbTableMetadata;
-import com.nhl.dflib.jdbc.connector.statement.StatementBinderFactory;
-import com.nhl.dflib.jdbc.connector.statement.UpdateStatement;
-import com.nhl.dflib.jdbc.connector.statement.UpdateStatementBatch;
-import com.nhl.dflib.jdbc.connector.statement.UpdateStatementNoBatch;
-import com.nhl.dflib.jdbc.connector.statement.UpdateStatementNoParams;
 import com.nhl.dflib.row.RowProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +52,7 @@ public class TableSaver {
         try (Connection c = connector.getConnection()) {
 
             if (deleteTableData) {
-                createDeleteStatement().update(c);
+                connector.createStatementBuilder(createDeleteStatement()).update(c);
             }
 
             if (df.height() > 0) {
@@ -66,7 +61,15 @@ public class TableSaver {
                         ? df.addColumn(rowNumberColumn, rowIndexer())
                         : df;
 
-                createInsertStatement(toSave).update(c);
+                connector.createStatementBuilder(createInsertStatement(toSave))
+
+                        // use param descriptors from metadata, as (1) we can and (b) some DBs don't support real
+                        // metadata in PreparedStatements. See e.g. https://github.com/nhl/dflib/issues/49
+
+                        .paramDescriptors(fixedParams(toSave.getColumnsIndex()))
+                        .bindBatch(toSave)
+                        .update(c);
+
             } else {
                 LOGGER.info("Empty DataFrame. Skipping insert.");
             }
@@ -79,13 +82,13 @@ public class TableSaver {
         return this;
     }
 
-    protected UpdateStatement createDeleteStatement() {
+    protected String createDeleteStatement() {
         String sql = "delete from " + connector.quoteIdentifier(tableName);
         logSql(sql);
-        return new UpdateStatementNoParams(sql);
+        return sql;
     }
 
-    protected UpdateStatement createInsertStatement(DataFrame df) {
+    protected String createInsertStatement(DataFrame df) {
 
         StringBuilder sql = new StringBuilder("insert into ")
                 .append(connector.quoteIdentifier(tableName))
@@ -117,16 +120,8 @@ public class TableSaver {
         sql.append(")");
 
         String sqlString = sql.toString();
-
         logSql(sqlString);
-
-        StatementBinderFactory binderFactory = connector.getMetadata().supportsParamsMetadata()
-                ? connector.getBinderFactory()
-                : connector.getBinderFactory().withFixedParams(fixedParams(df.getColumnsIndex()));
-
-        return connector.getMetadata().supportsBatchUpdates()
-                ? new UpdateStatementBatch(sqlString, df, binderFactory)
-                : new UpdateStatementNoBatch(sqlString, df, binderFactory);
+        return sqlString;
     }
 
     protected DbColumnMetadata[] fixedParams(Index index) {

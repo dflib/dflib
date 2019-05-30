@@ -4,13 +4,9 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.builder.SeriesBuilder;
-import com.nhl.dflib.jdbc.connector.statement.SelectStatement;
-import com.nhl.dflib.jdbc.connector.statement.SelectStatementNoParams;
-import com.nhl.dflib.jdbc.connector.statement.SelectStatementWithParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -42,29 +38,21 @@ public class SqlLoader {
 
     public DataFrame load() {
 
+        logSql(sql);
+
         // TODO: should maxRows be translated into the SQL LIMIT clause?
         //  Some DBs have crazy limit syntax, so this may be hard to generalize..
 
-        SelectStatement statement = createStatement();
-
-        try (Connection c = connector.getConnection()) {
-            return statement.select(c, this::loadDataFrame);
-        } catch (SQLException e) {
-            throw new RuntimeException("Error loading data from DB", e);
-        }
+        return connector
+                .createStatementBuilder(sql)
+                .bind(params)
+                .select(this::loadDataFrame);
     }
 
     protected DataFrame loadDataFrame(ResultSet rs) throws SQLException {
         Index columns = createIndex(rs);
         Series<?>[] data = loadData(rs);
         return DataFrame.forColumns(columns, data);
-    }
-
-    protected SelectStatement createStatement() {
-        logSql(sql);
-        return (params == null || params.length == 0)
-                ? new SelectStatementNoParams(sql)
-                : new SelectStatementWithParams(sql, params, connector.getBinderFactory());
     }
 
     protected void logSql(String sql) {

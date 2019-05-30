@@ -1,9 +1,18 @@
-package com.nhl.dflib.jdbc.connector.statement;
+package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.jdbc.connector.JdbcConnector;
-import com.nhl.dflib.jdbc.connector.JdbcFunction;
 import com.nhl.dflib.jdbc.connector.metadata.DbColumnMetadata;
+import com.nhl.dflib.jdbc.connector.statement.CompiledFromStatementBinderFactory;
+import com.nhl.dflib.jdbc.connector.statement.FixedParamsBinderFactory;
+import com.nhl.dflib.jdbc.connector.statement.SelectStatement;
+import com.nhl.dflib.jdbc.connector.statement.SelectStatementNoParams;
+import com.nhl.dflib.jdbc.connector.statement.SelectStatementWithParams;
+import com.nhl.dflib.jdbc.connector.statement.StatementBinderFactory;
+import com.nhl.dflib.jdbc.connector.statement.UpdateStatement;
+import com.nhl.dflib.jdbc.connector.statement.UpdateStatementBatch;
+import com.nhl.dflib.jdbc.connector.statement.UpdateStatementNoBatch;
+import com.nhl.dflib.jdbc.connector.statement.UpdateStatementNoParams;
+import com.nhl.dflib.jdbc.connector.statement.UpdateStatementParamsRow;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -15,15 +24,14 @@ import java.sql.SQLException;
 public class StatementBuilder {
 
     private JdbcConnector connector;
-
-    public StatementBuilder(JdbcConnector connector) {
-        this.connector = connector;
-    }
-
     private String sql;
     private DbColumnMetadata[] paramDescriptors;
     private Object[] params;
     private DataFrame batchParams;
+
+    public StatementBuilder(JdbcConnector connector) {
+        this.connector = connector;
+    }
 
     public StatementBuilder sql(String sql) {
         this.sql = sql;
@@ -45,6 +53,14 @@ public class StatementBuilder {
         this.params = params;
         this.batchParams = null;
         return this;
+    }
+
+    public <T> T select(JdbcFunction<ResultSet, T> resultReader) {
+        try (Connection c = connector.getConnection()) {
+            return select(c, resultReader);
+        } catch (SQLException e) {
+            throw new RuntimeException("Error opening connection", e);
+        }
     }
 
     public <T> T select(Connection connection, JdbcFunction<ResultSet, T> resultReader) {
@@ -75,7 +91,7 @@ public class StatementBuilder {
 
     protected UpdateStatement createUpdateStatement() {
         if (params != null) {
-            return new UpdateStatementParamsRow(sql, params, connector.getBinderFactory());
+            return new UpdateStatementParamsRow(sql, params, createBinderFactory());
         } else if (batchParams != null) {
 
             return connector.getMetadata().supportsBatchUpdates()
@@ -89,7 +105,7 @@ public class StatementBuilder {
 
     protected StatementBinderFactory createBinderFactory() {
         return paramDescriptors != null
-                ? connector.getBinderFactory()
-                : connector.getBinderFactory().withFixedParams(paramDescriptors);
+                ? new FixedParamsBinderFactory(connector.getPreBindConverterFactory(), paramDescriptors)
+                : new CompiledFromStatementBinderFactory(connector.getPreBindConverterFactory());
     }
 }

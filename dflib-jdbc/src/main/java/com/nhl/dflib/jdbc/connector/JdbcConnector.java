@@ -2,8 +2,8 @@ package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.builder.SeriesBuilder;
 import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
-import com.nhl.dflib.jdbc.connector.statement.StatementBinderFactory;
-import com.nhl.dflib.jdbc.connector.statement.StatementPositionConverters;
+import com.nhl.dflib.jdbc.connector.statement.ValueConverter;
+import com.nhl.dflib.jdbc.connector.statement.ValueConverterFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -12,11 +12,9 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 /**
- * A thin abstraction on top of the JDBC DataSource intended to smoothen DB-specific syntax issues, value types to JDBC
- * types conversion, etc.
+ * An abstraction on top of JDBC DataSource that smoothens a variety of cross-DB portability issues.
  */
 public class JdbcConnector {
 
@@ -28,7 +26,9 @@ public class JdbcConnector {
     private Map<Integer, SeriesBuilderFactory> mandatorySeriesBuilderFactories;
     private Map<Integer, SeriesBuilderFactory> seriesBuilderFactories;
 
-    private StatementBinderFactory binderFactory;
+    private ValueConverterFactory preBindConverterFactory;
+    private Map<Integer, ValueConverter> statementValueConverters;
+
     private BindingDebugConverter bindingDebugConverter;
 
     public JdbcConnector(DataSource dataSource, DbMetadata metadata) {
@@ -52,21 +52,21 @@ public class JdbcConnector {
         this.seriesBuilderFactories.put(Types.TIME, SeriesBuilderFactory::timeAccum);
         this.seriesBuilderFactories.put(Types.TIMESTAMP, SeriesBuilderFactory::timestampAccum);
 
-        this.binderFactory = createBinderFactory();
+        this.preBindConverterFactory = createPreBindConverterFactory();
         this.bindingDebugConverter = new BindingDebugConverter();
 
         this.quoter = createQuoter();
     }
 
-    protected StatementBinderFactory createBinderFactory() {
-        Map<Integer, Function<Object, Object>> preBindConverters = new HashMap<>();
-        preBindConverters.put(Types.DATE, StatementPositionConverters.dateConverter());
-        preBindConverters.put(Types.TIME, StatementPositionConverters.timeConverter());
-        preBindConverters.put(Types.TIMESTAMP, StatementPositionConverters.timestampConverter());
-        preBindConverters.put(Types.INTEGER, StatementPositionConverters.intConverter());
-        preBindConverters.put(Types.VARCHAR, StatementPositionConverters.stringConverter());
+    protected ValueConverterFactory createPreBindConverterFactory() {
+        Map<Integer, ValueConverter> converters = new HashMap<>();
+        converters.put(Types.DATE, ValueConverter.dateConverter());
+        converters.put(Types.TIME, ValueConverter.timeConverter());
+        converters.put(Types.TIMESTAMP, ValueConverter.timestampConverter());
+        converters.put(Types.INTEGER, ValueConverter.intConverter());
+        converters.put(Types.VARCHAR, ValueConverter.stringConverter());
 
-        return new DefaultStatementBinderFactory(StatementPositionConverters.defaultConverter(), preBindConverters);
+        return new ValueConverterFactory(ValueConverter.defaultConverter(), converters);
     }
 
     public TableSaver tableSaver(String tableName) {
@@ -105,21 +105,20 @@ public class JdbcConnector {
         return sbf.createAccum(pos);
     }
 
-    /**
-     * @since 0.6
-     */
-    public StatementBinderFactory getBinderFactory() {
-        return binderFactory;
+    protected StatementBuilder createStatementBuilder(String sql) {
+        return new StatementBuilder(this).sql(sql);
+    }
+
+
+    protected ValueConverterFactory getPreBindConverterFactory() {
+        return preBindConverterFactory;
     }
 
     protected BindingDebugConverter getBindingDebugConverter() {
         return bindingDebugConverter;
     }
 
-    /**
-     * @since 0.6
-     */
-    public DbMetadata getMetadata() {
+    protected DbMetadata getMetadata() {
         return metadata;
     }
 
