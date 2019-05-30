@@ -1,6 +1,8 @@
-package com.nhl.dflib.jdbc.connector;
+package com.nhl.dflib.jdbc.connector.statement;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.jdbc.connector.JdbcConnector;
+import com.nhl.dflib.jdbc.connector.JdbcFunction;
 import com.nhl.dflib.jdbc.connector.metadata.DbColumnMetadata;
 
 import java.sql.Connection;
@@ -13,6 +15,10 @@ import java.sql.SQLException;
 public class StatementBuilder {
 
     private JdbcConnector connector;
+
+    public StatementBuilder(JdbcConnector connector) {
+        this.connector = connector;
+    }
 
     private String sql;
     private DbColumnMetadata[] paramDescriptors;

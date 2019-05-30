@@ -1,4 +1,4 @@
-package com.nhl.dflib.jdbc.connector;
+package com.nhl.dflib.jdbc.connector.statement;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.row.RowProxy;
@@ -7,13 +7,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class UpdateStatementNoBatch implements UpdateStatement {
+public class UpdateStatementBatch implements UpdateStatement {
 
     private String sql;
     private DataFrame df;
     private StatementBinderFactory binderFactory;
 
-    public UpdateStatementNoBatch(
+    public UpdateStatementBatch(
             String sql,
             DataFrame df,
             StatementBinderFactory binderFactory) {
@@ -25,15 +25,16 @@ public class UpdateStatementNoBatch implements UpdateStatement {
 
     @Override
     public void update(Connection c) throws SQLException {
-
         try (PreparedStatement st = c.prepareStatement(sql)) {
 
             StatementBinder binder = binderFactory.createBinder(st);
 
             for (RowProxy row : df) {
                 binder.bind(row);
-                st.executeUpdate();
+                st.addBatch();
             }
+
+            st.executeBatch();
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.nhl.dflib.jdbc.connector;
+package com.nhl.dflib.jdbc.connector.statement;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -12,25 +12,25 @@ import java.time.Year;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-class StatementPositionConverters {
+public class StatementPositionConverters {
 
-    static Function<Object, Object> defaultConverter() {
+    public static Function<Object, Object> defaultConverter() {
         return UnaryOperator.identity();
     }
 
-    static Function<Object, Object> dateConverter() {
+    public static Function<Object, Object> dateConverter() {
         return o -> o instanceof LocalDate ? Date.valueOf((LocalDate) o) : o;
     }
 
-    static Function<Object, Object> timestampConverter() {
+    public static Function<Object, Object> timestampConverter() {
         return o -> o instanceof LocalDateTime ? Timestamp.valueOf((LocalDateTime) o) : o;
     }
 
-    static Function<Object, Object> timeConverter() {
+    public static Function<Object, Object> timeConverter() {
         return o -> o instanceof LocalTime ? Time.valueOf((LocalTime) o) : o;
     }
 
-    static Function<Object, Object> intConverter() {
+    public static Function<Object, Object> intConverter() {
         return o -> {
 
             // TODO: inefficient - checking type of every object for the same binding... need to be able to precompile
@@ -57,7 +57,7 @@ class StatementPositionConverters {
         };
     }
 
-    static Function<Object, Object> stringConverter() {
+    public static Function<Object, Object> stringConverter() {
         return o -> {
 
             // TODO: inefficient - checking type of every object for the same binding... need to be able to precompile

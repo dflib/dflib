@@ -1,6 +1,9 @@
 package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.jdbc.connector.metadata.DbColumnMetadata;
+import com.nhl.dflib.jdbc.connector.statement.StatementBinder;
+import com.nhl.dflib.jdbc.connector.statement.StatementBinderFactory;
+import com.nhl.dflib.jdbc.connector.statement.StatementPosition;
 
 import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;

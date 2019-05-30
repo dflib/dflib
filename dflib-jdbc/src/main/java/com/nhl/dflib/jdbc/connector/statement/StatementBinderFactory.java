@@ -1,4 +1,4 @@
-package com.nhl.dflib.jdbc.connector;
+package com.nhl.dflib.jdbc.connector.statement;
 
 import com.nhl.dflib.jdbc.connector.metadata.DbColumnMetadata;
 

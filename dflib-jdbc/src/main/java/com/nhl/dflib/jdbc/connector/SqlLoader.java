@@ -4,6 +4,9 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.builder.SeriesBuilder;
+import com.nhl.dflib.jdbc.connector.statement.SelectStatement;
+import com.nhl.dflib.jdbc.connector.statement.SelectStatementNoParams;
+import com.nhl.dflib.jdbc.connector.statement.SelectStatementWithParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

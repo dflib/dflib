@@ -2,6 +2,8 @@ package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.builder.SeriesBuilder;
 import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
+import com.nhl.dflib.jdbc.connector.statement.StatementBinderFactory;
+import com.nhl.dflib.jdbc.connector.statement.StatementPositionConverters;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -103,7 +105,10 @@ public class JdbcConnector {
         return sbf.createAccum(pos);
     }
 
-    protected StatementBinderFactory getBinderFactory() {
+    /**
+     * @since 0.6
+     */
+    public StatementBinderFactory getBinderFactory() {
         return binderFactory;
     }
 
@@ -111,7 +116,10 @@ public class JdbcConnector {
         return bindingDebugConverter;
     }
 
-    protected DbMetadata getMetadata() {
+    /**
+     * @since 0.6
+     */
+    public DbMetadata getMetadata() {
         return metadata;
     }
 
