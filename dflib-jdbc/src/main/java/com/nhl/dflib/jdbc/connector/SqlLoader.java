@@ -70,7 +70,7 @@ public class SqlLoader {
         logSql(sql);
         return (params == null || params.length == 0)
                 ? new SelectStatementNoParams(sql)
-                : new SelectStatementWithParams(sql, params, connector::createBinder);
+                : new SelectStatementWithParams(sql, params, connector.getBinderFactory());
     }
 
     protected void logSql(String sql) {

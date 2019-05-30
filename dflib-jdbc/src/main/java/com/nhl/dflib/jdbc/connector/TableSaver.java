@@ -113,8 +113,8 @@ public class TableSaver {
         logSql(sqlString);
 
         return c.getMetaData().supportsBatchUpdates()
-                ? new UpdateStatementBatch(sqlString, df, connector::createBinder)
-                : new UpdateStatementNoBatch(sqlString, df, connector::createBinder);
+                ? new UpdateStatementBatch(sqlString, df, connector.getBinderFactory())
+                : new UpdateStatementNoBatch(sqlString, df, connector.getBinderFactory());
     }
 
     protected void logSql(String sql) {

@@ -4,8 +4,6 @@ import com.nhl.dflib.builder.SeriesBuilder;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.ParameterMetaData;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -25,9 +23,7 @@ public class JdbcConnector {
     private Map<Integer, SeriesBuilderFactory> mandatorySeriesBuilderFactories;
     private Map<Integer, SeriesBuilderFactory> seriesBuilderFactories;
 
-    private StatementBinderFactory defaultStatementBinderFactory;
-    private Map<Integer, StatementBinderFactory> statementBinderFactories;
-
+    private StatementBinderFactory binderFactory;
     private BindingDebugConverter bindingDebugConverter;
 
     public JdbcConnector(DataSource dataSource) {
@@ -50,14 +46,7 @@ public class JdbcConnector {
         this.seriesBuilderFactories.put(Types.TIME, SeriesBuilderFactory::timeAccum);
         this.seriesBuilderFactories.put(Types.TIMESTAMP, SeriesBuilderFactory::timestampAccum);
 
-        this.defaultStatementBinderFactory = StatementBinderFactory::objectBinder;
-        this.statementBinderFactories = new HashMap<>();
-        this.statementBinderFactories.put(Types.DATE, StatementBinderFactory::dateBinder);
-        this.statementBinderFactories.put(Types.TIME, StatementBinderFactory::timeBinder);
-        this.statementBinderFactories.put(Types.TIMESTAMP, StatementBinderFactory::timestampBinder);
-        this.statementBinderFactories.put(Types.INTEGER, StatementBinderFactory::intBinder);
-        this.statementBinderFactories.put(Types.VARCHAR, StatementBinderFactory::stringBinder);
-
+        this.binderFactory = new StatementBinderFactory();
         this.bindingDebugConverter = new BindingDebugConverter();
     }
 
@@ -97,19 +86,8 @@ public class JdbcConnector {
         return sbf.createAccum(pos);
     }
 
-    protected StatementBinder createBinder(PreparedStatement statement) throws SQLException {
-
-        ParameterMetaData pmd = statement.getParameterMetaData();
-        int len = pmd.getParameterCount();
-        JdbcConsumer<Object>[] bindings = new JdbcConsumer[len];
-
-        for (int i = 0; i < len; i++) {
-            int jdbcPos = i + 1;
-            int jdbcType = pmd.getParameterType(jdbcPos);
-            bindings[i] = getStatementBinder(statement, jdbcType, jdbcPos);
-        }
-
-        return new StatementBinder(bindings);
+    protected StatementBinderFactory getBinderFactory() {
+        return binderFactory;
     }
 
     protected BindingDebugConverter getBindingDebugConverter() {
@@ -163,9 +141,5 @@ public class JdbcConnector {
                 : IdentifierQuoter.forQuoteSymbol(identifierQuote);
     }
 
-    private JdbcConsumer<Object> getStatementBinder(PreparedStatement statement, int type, int pos) {
-        return statementBinderFactories
-                .getOrDefault(type, defaultStatementBinderFactory)
-                .binder(new StatementPosition(statement, type, pos));
-    }
+
 }

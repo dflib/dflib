@@ -8,12 +8,12 @@ public class SelectStatementWithParams implements SelectStatement {
 
     private String sql;
     private Object[] params;
-    private JdbcFunction<PreparedStatement, StatementBinder> binderFactory;
+    private StatementBinderFactory binderFactory;
 
     public SelectStatementWithParams(
             String sql,
             Object[] params,
-            JdbcFunction<PreparedStatement, StatementBinder> binderFactory) {
+            StatementBinderFactory binderFactory) {
 
         this.sql = sql;
         this.params = params;
@@ -41,7 +41,7 @@ public class SelectStatementWithParams implements SelectStatement {
 
     private void bind(PreparedStatement statement) throws SQLException {
         if (params.length > 0) {
-            binderFactory.apply(statement).bind(params);
+            binderFactory.createBinder(statement).bind(params);
         }
     }
 }

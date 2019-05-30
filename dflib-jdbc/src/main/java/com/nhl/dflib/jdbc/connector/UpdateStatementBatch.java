@@ -11,12 +11,12 @@ public class UpdateStatementBatch implements UpdateStatement {
 
     private String sql;
     private DataFrame df;
-    private JdbcFunction<PreparedStatement, StatementBinder> binderFactory;
+    private StatementBinderFactory binderFactory;
 
     public UpdateStatementBatch(
             String sql,
             DataFrame df,
-            JdbcFunction<PreparedStatement, StatementBinder> binderFactory) {
+            StatementBinderFactory binderFactory) {
 
         this.sql = sql;
         this.df = df;
@@ -27,7 +27,7 @@ public class UpdateStatementBatch implements UpdateStatement {
     public void update(Connection c) throws SQLException {
         try (PreparedStatement st = c.prepareStatement(sql)) {
 
-            StatementBinder binder = binderFactory.apply(st);
+            StatementBinder binder = binderFactory.createBinder(st);
 
             for (RowProxy row : df) {
                 binder.bind(row);

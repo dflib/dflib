@@ -6,9 +6,9 @@ import java.sql.SQLException;
 
 public class StatementBinder {
 
-    private JdbcConsumer<Object>[] binders;
+    private StatementPositionBinder[] binders;
 
-    public StatementBinder(JdbcConsumer<Object>[] binders) {
+    public StatementBinder(StatementPositionBinder[] binders) {
         this.binders = binders;
     }
 
@@ -24,7 +24,7 @@ public class StatementBinder {
         if (len1 > 0) {
 
             for (int i = 0; i < len1; i++) {
-                binders[i].accept(values[i]);
+                binders[i].bind(values[i]);
             }
         }
     }
@@ -34,7 +34,7 @@ public class StatementBinder {
         // unlike "bind(Object[]), will skip bounds checking on RowProxy to avoid extra work when iterating over a DataFrame
         int len = this.binders != null ? this.binders.length : 0;
         for (int i = 0; i < len; i++) {
-            binders[i].accept(values.get(i));
+            binders[i].bind(values.get(i));
         }
     }
 }

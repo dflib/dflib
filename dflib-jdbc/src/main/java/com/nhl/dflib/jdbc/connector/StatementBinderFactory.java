@@ -1,84 +1,48 @@
 package com.nhl.dflib.jdbc.connector;
 
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Month;
-import java.time.Year;
+import java.sql.ParameterMetaData;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.HashMap;
+import java.util.Map;
 
-public interface StatementBinderFactory<T> {
+/**
+ * @since 0.6
+ */
+public class StatementBinderFactory {
 
-    static JdbcConsumer<Object> objectBinder(StatementPosition p) {
-        return p::bind;
+    private StatementPositionBinderFactory defaultPositionBinderFactory;
+    private Map<Integer, StatementPositionBinderFactory> positionBinderFactories;
+
+    public StatementBinderFactory() {
+        this.defaultPositionBinderFactory = StatementPositionBinderFactory::objectBinder;
+        this.positionBinderFactories = new HashMap<>();
+        this.positionBinderFactories.put(Types.DATE, StatementPositionBinderFactory::dateBinder);
+        this.positionBinderFactories.put(Types.TIME, StatementPositionBinderFactory::timeBinder);
+        this.positionBinderFactories.put(Types.TIMESTAMP, StatementPositionBinderFactory::timestampBinder);
+        this.positionBinderFactories.put(Types.INTEGER, StatementPositionBinderFactory::intBinder);
+        this.positionBinderFactories.put(Types.VARCHAR, StatementPositionBinderFactory::stringBinder);
     }
 
-    static JdbcConsumer<Object> dateBinder(StatementPosition p) {
-        StatementPosition converted = p.withConverter(o -> o instanceof LocalDate ? Date.valueOf((LocalDate) o) : o);
-        return objectBinder(converted);
+    public StatementBinder createBinder(PreparedStatement statement) throws SQLException {
+
+        ParameterMetaData pmd = statement.getParameterMetaData();
+        int len = pmd.getParameterCount();
+        StatementPositionBinder[] binders = new StatementPositionBinder[len];
+
+        for (int i = 0; i < len; i++) {
+            int jdbcPos = i + 1;
+            int jdbcType = pmd.getParameterType(jdbcPos);
+            binders[i] = positionBinder(statement, jdbcType, jdbcPos);
+        }
+
+        return new StatementBinder(binders);
     }
 
-    static JdbcConsumer<Object> timestampBinder(StatementPosition p) {
-        StatementPosition converted = p.withConverter(o -> o instanceof LocalDateTime ? Timestamp.valueOf((LocalDateTime) o) : o);
-        return objectBinder(converted);
+    private StatementPositionBinder positionBinder(PreparedStatement statement, int type, int pos) {
+        return positionBinderFactories
+                .getOrDefault(type, defaultPositionBinderFactory)
+                .binder(new StatementPosition(statement, type, pos));
     }
-
-    static JdbcConsumer<Object> timeBinder(StatementPosition p) {
-        StatementPosition converted = p.withConverter(o -> o instanceof LocalTime ? Time.valueOf((LocalTime) o) : o);
-        return objectBinder(converted);
-    }
-
-    static JdbcConsumer<Object> intBinder(StatementPosition p) {
-        StatementPosition converted = p.withConverter(o -> {
-
-            // TODO: inefficient - checking type of every object for the same binding... need to be able to precompile
-            //  for the entire column. Should be possible for primitive columns whose type is well-defined.
-
-            // at least check for Number first, that is more likely to match here
-            if (o instanceof Number) {
-                return o;
-            }
-            // Month is an enum, must go prior to generic enums to return proper value
-            else if (o instanceof Month) {
-                return ((Month) o).getValue();
-            }
-            // DayOfWeek is an enum, must go prior to generic enums to return proper value
-            else if (o instanceof DayOfWeek) {
-                return ((DayOfWeek) o).getValue();
-            } else if (o instanceof Enum) {
-                return ((Enum) o).ordinal();
-            } else if (o instanceof Year) {
-                return ((Year) o).getValue();
-            } else {
-                return o;
-            }
-        });
-
-        return objectBinder(converted);
-    }
-
-    static JdbcConsumer<Object> stringBinder(StatementPosition p) {
-        StatementPosition converted = p.withConverter(o -> {
-
-            // TODO: inefficient - checking type of every object for the same binding... need to be able to precompile
-            //  for the entire column. Should be possible for primitive columns whose type is well-defined.
-
-            // at least check for String first, that is more likely to match here
-            if (o instanceof String) {
-                return o;
-            } else if (o instanceof Enum) {
-                return ((Enum) o).name();
-            } else {
-                // TODO: call 'toString' ?
-                return o;
-            }
-        });
-
-        return objectBinder(converted);
-    }
-
-    JdbcConsumer<Object> binder(StatementPosition p);
 }

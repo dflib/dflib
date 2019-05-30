@@ -1,7 +1,6 @@
 package com.nhl.dflib.jdbc.connector;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
@@ -33,12 +32,19 @@ public class StatementPosition {
         return new StatementPosition(statement, type, position, combined);
     }
 
-    public void bind(Object value) throws SQLException {
-        if (value == null) {
-            statement.setNull(position, type);
-        } else {
-            Object converted = valueConverter.apply(value);
-            statement.setObject(position, converted, type);
-        }
+    public int getPosition() {
+        return position;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public Object boundableValue(Object object) {
+        return object != null ? valueConverter.apply(object) : null;
+    }
+
+    public PreparedStatement getStatement() {
+        return statement;
     }
 }
