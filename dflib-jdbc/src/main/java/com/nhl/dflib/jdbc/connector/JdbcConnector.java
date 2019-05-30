@@ -1,6 +1,7 @@
 package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.builder.SeriesBuilder;
+import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -9,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * A thin abstraction on top of the JDBC DataSource intended to smoothen DB-specific syntax issues, value types to JDBC
@@ -17,6 +19,7 @@ import java.util.Map;
 public class JdbcConnector {
 
     private DataSource dataSource;
+    private DbMetadata metadata;
     private IdentifierQuoter quoter;
 
     private SeriesBuilderFactory defaultSeriesBuilderFactory;
@@ -26,8 +29,9 @@ public class JdbcConnector {
     private StatementBinderFactory binderFactory;
     private BindingDebugConverter bindingDebugConverter;
 
-    public JdbcConnector(DataSource dataSource) {
+    public JdbcConnector(DataSource dataSource, DbMetadata metadata) {
         this.dataSource = dataSource;
+        this.metadata = metadata;
 
         this.defaultSeriesBuilderFactory = SeriesBuilderFactory::objectAccum;
 
@@ -46,8 +50,19 @@ public class JdbcConnector {
         this.seriesBuilderFactories.put(Types.TIME, SeriesBuilderFactory::timeAccum);
         this.seriesBuilderFactories.put(Types.TIMESTAMP, SeriesBuilderFactory::timestampAccum);
 
-        this.binderFactory = new StatementBinderFactory();
+        this.binderFactory = createBinderFactory();
         this.bindingDebugConverter = new BindingDebugConverter();
+    }
+
+    protected StatementBinderFactory createBinderFactory() {
+        Map<Integer, Function<Object, Object>> preBindConverters = new HashMap<>();
+        preBindConverters.put(Types.DATE, StatementPositionConverters.dateConverter());
+        preBindConverters.put(Types.TIME, StatementPositionConverters.timeConverter());
+        preBindConverters.put(Types.TIMESTAMP, StatementPositionConverters.timestampConverter());
+        preBindConverters.put(Types.INTEGER, StatementPositionConverters.intConverter());
+        preBindConverters.put(Types.VARCHAR, StatementPositionConverters.stringConverter());
+
+        return new DefaultStatementBinderFactory(StatementPositionConverters.defaultConverter(), preBindConverters);
     }
 
     public TableSaver tableSaver(String tableName) {
@@ -92,6 +107,10 @@ public class JdbcConnector {
 
     protected BindingDebugConverter getBindingDebugConverter() {
         return bindingDebugConverter;
+    }
+
+    protected DbMetadata getMetadata() {
+        return metadata;
     }
 
     protected Connection getConnection() throws SQLException {

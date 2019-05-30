@@ -1,5 +1,6 @@
 package com.nhl.dflib.jdbc.connector;
 
+import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.datasource.SimpleDataSource;
 
 import javax.sql.DataSource;
@@ -32,7 +33,7 @@ public class JdbcConnectorBuilder {
     }
 
     public JdbcConnector build() {
-        return new JdbcConnector(buildDataSource());
+        return Jdbc.connector(buildDataSource());
     }
 
     private DataSource buildDataSource() {

@@ -1,7 +1,10 @@
 package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Index;
 import com.nhl.dflib.RowToValueMapper;
+import com.nhl.dflib.jdbc.connector.metadata.DbColumnMetadata;
+import com.nhl.dflib.jdbc.connector.metadata.DbTableMetadata;
 import com.nhl.dflib.row.RowProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,9 +115,24 @@ public class TableSaver {
 
         logSql(sqlString);
 
+        StatementBinderFactory binderFactory = connector.getMetadata().supportsParamsMetadata()
+                ? connector.getBinderFactory()
+                : connector.getBinderFactory().withFixedParams(fixedParams(df.getColumnsIndex()));
+
         return c.getMetaData().supportsBatchUpdates()
-                ? new UpdateStatementBatch(sqlString, df, connector.getBinderFactory())
-                : new UpdateStatementNoBatch(sqlString, df, connector.getBinderFactory());
+                ? new UpdateStatementBatch(sqlString, df, binderFactory)
+                : new UpdateStatementNoBatch(sqlString, df, binderFactory);
+    }
+
+    protected DbColumnMetadata[] fixedParams(Index index) {
+        DbTableMetadata tableMetadata = connector.getMetadata().getTable(tableName);
+
+        DbColumnMetadata[] params = new DbColumnMetadata[index.size()];
+        for (int i = 0; i < index.size(); i++) {
+            params[i] = tableMetadata.getColumn(index.getLabel(i));
+        }
+
+        return params;
     }
 
     protected void logSql(String sql) {
