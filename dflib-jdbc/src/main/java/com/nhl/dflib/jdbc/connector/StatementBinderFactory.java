@@ -6,43 +6,44 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * @since 0.6
  */
 public class StatementBinderFactory {
 
-    private StatementPositionBinderFactory defaultPositionBinderFactory;
-    private Map<Integer, StatementPositionBinderFactory> positionBinderFactories;
+    private Function<Object, Object> defaultPreBindConverter;
+    private Map<Integer, Function<Object, Object>> preBindConverters;
 
     public StatementBinderFactory() {
-        this.defaultPositionBinderFactory = StatementPositionBinderFactory::objectBinder;
-        this.positionBinderFactories = new HashMap<>();
-        this.positionBinderFactories.put(Types.DATE, StatementPositionBinderFactory::dateBinder);
-        this.positionBinderFactories.put(Types.TIME, StatementPositionBinderFactory::timeBinder);
-        this.positionBinderFactories.put(Types.TIMESTAMP, StatementPositionBinderFactory::timestampBinder);
-        this.positionBinderFactories.put(Types.INTEGER, StatementPositionBinderFactory::intBinder);
-        this.positionBinderFactories.put(Types.VARCHAR, StatementPositionBinderFactory::stringBinder);
+        this.defaultPreBindConverter = StatementPositionConverters.defaultConverter();
+        this.preBindConverters = new HashMap<>();
+        this.preBindConverters.put(Types.DATE, StatementPositionConverters.dateConverter());
+        this.preBindConverters.put(Types.TIME, StatementPositionConverters.timeConverter());
+        this.preBindConverters.put(Types.TIMESTAMP, StatementPositionConverters.timestampConverter());
+        this.preBindConverters.put(Types.INTEGER, StatementPositionConverters.intConverter());
+        this.preBindConverters.put(Types.VARCHAR, StatementPositionConverters.stringConverter());
     }
 
     public StatementBinder createBinder(PreparedStatement statement) throws SQLException {
 
         ParameterMetaData pmd = statement.getParameterMetaData();
         int len = pmd.getParameterCount();
-        StatementPositionBinder[] binders = new StatementPositionBinder[len];
+        StatementPosition[] positions = new StatementPosition[len];
 
         for (int i = 0; i < len; i++) {
             int jdbcPos = i + 1;
             int jdbcType = pmd.getParameterType(jdbcPos);
-            binders[i] = positionBinder(statement, jdbcType, jdbcPos);
+
+            // TODO: are missing on opportunity to do specialized bindings like "st.setInt()", etc.?
+            positions[i] = new StatementPosition(statement, jdbcPos, jdbcType, findConverter(jdbcType));
         }
 
-        return new StatementBinder(binders);
+        return new StatementBinder(positions);
     }
 
-    private StatementPositionBinder positionBinder(PreparedStatement statement, int type, int pos) {
-        return positionBinderFactories
-                .getOrDefault(type, defaultPositionBinderFactory)
-                .binder(new StatementPosition(statement, type, pos));
+    private Function<Object, Object> findConverter(int jdbcType) {
+        return preBindConverters.getOrDefault(jdbcType, defaultPreBindConverter);
     }
 }

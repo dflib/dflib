@@ -9,41 +9,29 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.Year;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
-/**
- * @since 0.6
- */
-public interface StatementPositionBinderFactory {
+class StatementPositionConverters {
 
-    static StatementPositionBinder objectBinder(StatementPosition p) {
-        return  v -> {
-
-            Object bv = p.boundableValue(v);
-            if (bv == null) {
-                p.getStatement().setNull(p.getPosition(), p.getType());
-            } else {
-                p.getStatement().setObject(p.getPosition(), bv, p.getType());
-            }
-        };
+    static Function<Object, Object> defaultConverter() {
+        return UnaryOperator.identity();
     }
 
-    static StatementPositionBinder dateBinder(StatementPosition p) {
-        StatementPosition converted = p.withConverter(o -> o instanceof LocalDate ? Date.valueOf((LocalDate) o) : o);
-        return objectBinder(converted);
+    static Function<Object, Object> dateConverter() {
+        return o -> o instanceof LocalDate ? Date.valueOf((LocalDate) o) : o;
     }
 
-    static StatementPositionBinder timestampBinder(StatementPosition p) {
-        StatementPosition converted = p.withConverter(o -> o instanceof LocalDateTime ? Timestamp.valueOf((LocalDateTime) o) : o);
-        return objectBinder(converted);
+    static Function<Object, Object> timestampConverter() {
+        return o -> o instanceof LocalDateTime ? Timestamp.valueOf((LocalDateTime) o) : o;
     }
 
-    static StatementPositionBinder timeBinder(StatementPosition p) {
-        StatementPosition converted = p.withConverter(o -> o instanceof LocalTime ? Time.valueOf((LocalTime) o) : o);
-        return objectBinder(converted);
+    static Function<Object, Object> timeConverter() {
+        return o -> o instanceof LocalTime ? Time.valueOf((LocalTime) o) : o;
     }
 
-    static StatementPositionBinder intBinder(StatementPosition p) {
-        StatementPosition converted = p.withConverter(o -> {
+    static Function<Object, Object> intConverter() {
+        return o -> {
 
             // TODO: inefficient - checking type of every object for the same binding... need to be able to precompile
             //  for the entire column. Should be possible for primitive columns whose type is well-defined.
@@ -66,13 +54,11 @@ public interface StatementPositionBinderFactory {
             } else {
                 return o;
             }
-        });
-
-        return objectBinder(converted);
+        };
     }
 
-    static StatementPositionBinder stringBinder(StatementPosition p) {
-        StatementPosition converted = p.withConverter(o -> {
+    static Function<Object, Object> stringConverter() {
+        return o -> {
 
             // TODO: inefficient - checking type of every object for the same binding... need to be able to precompile
             //  for the entire column. Should be possible for primitive columns whose type is well-defined.
@@ -86,10 +72,6 @@ public interface StatementPositionBinderFactory {
                 // TODO: call 'toString' ?
                 return o;
             }
-        });
-
-        return objectBinder(converted);
+        };
     }
-
-    StatementPositionBinder binder(StatementPosition p);
 }
