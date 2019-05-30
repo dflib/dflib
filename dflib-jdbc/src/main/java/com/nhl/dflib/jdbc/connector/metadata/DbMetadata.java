@@ -20,7 +20,9 @@ public class DbMetadata {
     private boolean supportsCatalogs;
     private boolean supportsSchemas;
     private boolean supportsParamsMetadata;
+    private boolean supportsBatchUpdates;
     private Map<String, DbTableMetadata> tables;
+    private String identifierQuote;
 
     protected DbMetadata(DbFlavor flavor, DatabaseMetaData jdbcMetadata) {
 
@@ -56,14 +58,29 @@ public class DbMetadata {
                 supportsCatalogs = false;
                 supportsSchemas = false;
         }
+
+        try {
+            identifierQuote = jdbcMetadata.getIdentifierQuoteString();
+            supportsBatchUpdates = jdbcMetadata.supportsBatchUpdates();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error reading DB metadata", e);
+        }
     }
 
     public DbFlavor getFlavor() {
         return flavor;
     }
 
+    public String getIdentifierQuote() {
+        return identifierQuote;
+    }
+
     public boolean supportsParamsMetadata() {
         return supportsParamsMetadata;
+    }
+
+    public boolean supportsBatchUpdates() {
+        return supportsBatchUpdates;
     }
 
     public boolean supportsCatalogs() {
@@ -118,10 +135,9 @@ public class DbMetadata {
                     return new String[]{null, null, tableName};
                 }
             case 3:
-                if(supportsCatalogs && supportsSchemas) {
+                if (supportsCatalogs && supportsSchemas) {
                     return new String[]{parts[0], parts[1], parts[2]};
-                }
-                else {
+                } else {
                     return new String[]{null, null, tableName};
                 }
 

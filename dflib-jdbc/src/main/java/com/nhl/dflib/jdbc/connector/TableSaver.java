@@ -52,7 +52,7 @@ public class TableSaver {
         try (Connection c = connector.getConnection()) {
 
             if (deleteTableData) {
-                createDeleteStatement(c).update(c);
+                createDeleteStatement().update(c);
             }
 
             if (df.height() > 0) {
@@ -61,7 +61,7 @@ public class TableSaver {
                         ? df.addColumn(rowNumberColumn, rowIndexer())
                         : df;
 
-                createInsertStatement(c, toSave).update(c);
+                createInsertStatement(toSave).update(c);
             } else {
                 LOGGER.info("Empty DataFrame. Skipping insert.");
             }
@@ -74,16 +74,16 @@ public class TableSaver {
         return this;
     }
 
-    protected UpdateStatement createDeleteStatement(Connection c) {
-        String sql = "delete from " + connector.quoteIdentifier(c, tableName);
+    protected UpdateStatement createDeleteStatement() {
+        String sql = "delete from " + connector.quoteIdentifier(tableName);
         logSql(sql);
         return new UpdateStatementNoParams(sql);
     }
 
-    protected UpdateStatement createInsertStatement(Connection c, DataFrame df) throws SQLException {
+    protected UpdateStatement createInsertStatement(DataFrame df) {
 
         StringBuilder sql = new StringBuilder("insert into ")
-                .append(connector.quoteIdentifier(c, tableName))
+                .append(connector.quoteIdentifier(tableName))
                 .append(" (");
 
         // append columns
@@ -95,7 +95,7 @@ public class TableSaver {
                 sql.append(", ");
             }
 
-            sql.append(connector.quoteIdentifier(c, labels[i]));
+            sql.append(connector.quoteIdentifier(labels[i]));
         }
 
         // append value placeholders
@@ -119,7 +119,7 @@ public class TableSaver {
                 ? connector.getBinderFactory()
                 : connector.getBinderFactory().withFixedParams(fixedParams(df.getColumnsIndex()));
 
-        return c.getMetaData().supportsBatchUpdates()
+        return connector.getMetadata().supportsBatchUpdates()
                 ? new UpdateStatementBatch(sqlString, df, binderFactory)
                 : new UpdateStatementNoBatch(sqlString, df, binderFactory);
     }

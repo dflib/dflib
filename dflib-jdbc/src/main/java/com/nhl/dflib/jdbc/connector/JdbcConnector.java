@@ -52,6 +52,8 @@ public class JdbcConnector {
 
         this.binderFactory = createBinderFactory();
         this.bindingDebugConverter = new BindingDebugConverter();
+
+        this.quoter = createQuoter();
     }
 
     protected StatementBinderFactory createBinderFactory() {
@@ -132,26 +134,13 @@ public class JdbcConnector {
         return connection;
     }
 
-    protected String quoteIdentifier(Connection connection, String bareIdentifier) {
-        return getOrCreateQuoter(connection).quoted(bareIdentifier);
+    protected String quoteIdentifier(String bareIdentifier) {
+        return quoter.quoted(bareIdentifier);
     }
 
-    private IdentifierQuoter getOrCreateQuoter(Connection connection) {
+    protected IdentifierQuoter createQuoter() {
 
-        if (quoter == null) {
-            quoter = createQuoter(connection);
-        }
-
-        return quoter;
-    }
-
-    private IdentifierQuoter createQuoter(Connection connection) {
-        String identifierQuote;
-        try {
-            identifierQuote = connection.getMetaData().getIdentifierQuoteString();
-        } catch (SQLException e) {
-            throw new RuntimeException("Error reading test DB metadata");
-        }
+        String identifierQuote = getMetadata().getIdentifierQuote();
 
         // if no quotations are supported, per JDBC spec the returned value is space
 

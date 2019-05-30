@@ -2,8 +2,6 @@ package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
 
-import java.sql.Connection;
-
 public class TableLoader {
 
     protected JdbcConnector connector;
@@ -29,22 +27,22 @@ public class TableLoader {
     }
 
     public DataFrame load() {
-        return new SqlLoader(connector, this::buildSql)
+        return new SqlLoader(connector, buildSql())
                 .maxRows(maxRows)
                 .load();
     }
 
-    protected String buildSql(Connection connection) {
+    protected String buildSql() {
 
         // TODO: should maxRows be translated into the SQL LIMIT clause?
         //  Some DBs have crazy limit syntax, so this may be hard to generalize..
 
-        String columns = buildColumnsSql(connection);
-        String name = connector.quoteIdentifier(connection, tableName);
+        String columns = buildColumnsSql();
+        String name = connector.quoteIdentifier(tableName);
         return "select " + columns + " from " + name;
     }
 
-    protected String buildColumnsSql(Connection connection) {
+    protected String buildColumnsSql() {
 
         if (this.columns == null || columns.length == 0) {
             return "*";
@@ -57,7 +55,7 @@ public class TableLoader {
                 buf.append(", ");
             }
 
-            buf.append(connector.quoteIdentifier(connection, columns[i]));
+            buf.append(connector.quoteIdentifier(columns[i]));
         }
 
         return buf.toString();

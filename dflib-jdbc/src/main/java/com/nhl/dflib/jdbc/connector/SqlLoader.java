@@ -19,17 +19,13 @@ public class SqlLoader {
 
     protected JdbcConnector connector;
     protected int maxRows;
-    private JdbcFunction<Connection, String> sqlProducer;
+    private String sql;
     private Object[] params;
 
     public SqlLoader(JdbcConnector connector, String sql) {
-        this(connector, c -> sql);
-    }
-
-    public SqlLoader(JdbcConnector connector, JdbcFunction<Connection, String> sqlProducer) {
         this.connector = connector;
         this.maxRows = Integer.MAX_VALUE;
-        this.sqlProducer = sqlProducer;
+        this.sql = sql;
     }
 
     public SqlLoader params(Object... params) {
@@ -47,9 +43,9 @@ public class SqlLoader {
         // TODO: should maxRows be translated into the SQL LIMIT clause?
         //  Some DBs have crazy limit syntax, so this may be hard to generalize..
 
-        try (Connection c = connector.getConnection()) {
+        SelectStatement statement = createStatement();
 
-            SelectStatement statement = createStatement(c);
+        try (Connection c = connector.getConnection()) {
 
             try (PreparedStatement ps = statement.toJdbcStatement(c)) {
 
@@ -65,8 +61,7 @@ public class SqlLoader {
         }
     }
 
-    protected SelectStatement createStatement(Connection connection) throws SQLException {
-        String sql = sqlProducer.apply(connection);
+    protected SelectStatement createStatement() {
         logSql(sql);
         return (params == null || params.length == 0)
                 ? new SelectStatementNoParams(sql)
