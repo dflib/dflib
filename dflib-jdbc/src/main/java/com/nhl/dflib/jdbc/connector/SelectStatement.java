@@ -1,11 +1,11 @@
 package com.nhl.dflib.jdbc.connector;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public interface SelectStatement {
 
-    PreparedStatement toJdbcStatement(Connection connection) throws SQLException;
+    <T> T select(Connection connection, JdbcFunction<ResultSet, T> resultReader) throws SQLException;
 
 }

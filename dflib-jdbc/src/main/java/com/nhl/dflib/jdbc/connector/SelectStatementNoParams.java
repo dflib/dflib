@@ -2,6 +2,7 @@ package com.nhl.dflib.jdbc.connector;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class SelectStatementNoParams implements SelectStatement {
@@ -13,7 +14,13 @@ public class SelectStatementNoParams implements SelectStatement {
     }
 
     @Override
-    public PreparedStatement toJdbcStatement(Connection connection) throws SQLException {
-        return connection.prepareStatement(sql);
+    public <T> T select(Connection connection, JdbcFunction<ResultSet, T> resultReader) throws SQLException {
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            try (ResultSet rs = ps.executeQuery()) {
+
+                return resultReader.apply(rs);
+            }
+        }
     }
 }
