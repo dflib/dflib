@@ -8,6 +8,7 @@ public class TableLoader {
     protected int maxRows;
     private String tableName;
     private String[] columns;
+    private DataFrame matchValues;
 
     public TableLoader(JdbcConnector connector, String tableName) {
         this.connector = connector;
@@ -17,6 +18,20 @@ public class TableLoader {
 
     public TableLoader includeColumns(String... columns) {
         this.columns = columns;
+        return this;
+    }
+
+    /**
+     * Configures TableLoader to retrieve data that matches values in the provided DataFrame. Such DataFrame may
+     * contain unique key columns of the table.
+     *
+     * @param matchValues a DataFrame with columns matching one or more table columns, and values that comprise
+     *                    table load criteria.
+     * @return
+     * @since 0.6
+     */
+    public TableLoader matching(DataFrame matchValues) {
+        this.matchValues = matchValues;
         return this;
     }
 
