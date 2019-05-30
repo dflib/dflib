@@ -1,6 +1,7 @@
 package com.nhl.dflib.jdbc.connector.metadata;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,19 +16,22 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DbMetadata {
 
+    private DataSource dataSource;
     private DbFlavor flavor;
-    private DatabaseMetaData jdbcMetadata;
     private boolean supportsCatalogs;
     private boolean supportsSchemas;
     private boolean supportsParamsMetadata;
     private boolean supportsBatchUpdates;
-    private Map<String, DbTableMetadata> tables;
     private String identifierQuote;
+    private Map<String, DbTableMetadata> tables;
 
-    protected DbMetadata(DbFlavor flavor, DatabaseMetaData jdbcMetadata) {
+    protected DbMetadata(DataSource dataSource, DbFlavor flavor, DatabaseMetaData jdbcMetadata) {
 
+        // note that we can't cache DatabaseMetaData, as it stops working once the underlying connection is closed,
+        // so keeping the DataSource around to get it back whenever we need to compile table info, etc.
+
+        this.dataSource = dataSource;
         this.flavor = Objects.requireNonNull(flavor);
-        this.jdbcMetadata = Objects.requireNonNull(jdbcMetadata);
 
         // TODO: will grow indefinitely, so a potential memory leak... would be great to have a concurrent LRU Map in Java...
         this.tables = new ConcurrentHashMap<>();
@@ -102,14 +106,16 @@ public class DbMetadata {
 
         String[] matchParts = toCatalogSchemaName(tableName);
         List<DbColumnMetadata> columns = new ArrayList<>();
-        try (ResultSet columnsRs = jdbcMetadata.getColumns(matchParts[0], matchParts[1], matchParts[2], null)) {
+        try (Connection c = dataSource.getConnection()) {
+            try (ResultSet columnsRs = c.getMetaData().getColumns(matchParts[0], matchParts[1], matchParts[2], null)) {
 
-            while (columnsRs.next()) {
-                String name = columnsRs.getString("COLUMN_NAME");
-                int type = columnsRs.getInt("DATA_TYPE");
-                columns.add(new DbColumnMetadata(name, type));
+                while (columnsRs.next()) {
+                    String name = columnsRs.getString("COLUMN_NAME");
+                    int type = columnsRs.getInt("DATA_TYPE");
+                    columns.add(new DbColumnMetadata(name, type));
+                }
+
             }
-
         } catch (SQLException e) {
             throw new RuntimeException("Error getting info about table '" + tableName + "'", e);
         }

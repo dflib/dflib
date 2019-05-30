@@ -12,7 +12,7 @@ class DbMetadataFactory {
 
             DatabaseMetaData jdbcMd = c.getMetaData();
             String dbName = jdbcMd.getDatabaseProductName();
-            return new DbMetadata(inferType(dbName), jdbcMd);
+            return new DbMetadata(dataSource, inferType(dbName), jdbcMd);
 
         } catch (SQLException e) {
             throw new RuntimeException("Error connecting to DB or retrieving DB metadata");
