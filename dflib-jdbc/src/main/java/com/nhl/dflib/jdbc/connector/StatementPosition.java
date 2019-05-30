@@ -22,12 +22,7 @@ public class StatementPosition {
         this.position = position;
         this.valueConverter = valueConverter;
     }
-
-    public StatementPosition withConverter(Function<Object, Object> valueConverter) {
-        Function<Object, Object> combined = this.valueConverter.andThen(valueConverter);
-        return new StatementPosition(statement, position, type, combined);
-    }
-
+    
     public void bind(Object o) throws SQLException {
         Object boundable = o != null ? valueConverter.apply(o) : null;
 
