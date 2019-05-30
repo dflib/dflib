@@ -19,9 +19,9 @@ class DbMetadataFactory {
         }
     }
 
-    private static DbType inferType(String dbName) {
+    private static DbFlavor inferType(String dbName) {
         if (dbName == null) {
-            return DbType.OTHER;
+            return DbFlavor.OTHER;
         }
 
         // more string matches are available inside Apache Cayenne DB sniffers
@@ -29,13 +29,13 @@ class DbMetadataFactory {
         String dbNameUpper = dbName.toUpperCase();
 
         if (dbNameUpper.contains("MYSQL")) {
-            return DbType.MYSQL;
+            return DbFlavor.MYSQL;
         } else if (dbNameUpper.contains("MARIADB")) {
-            return DbType.MARIA_DB;
+            return DbFlavor.MARIA_DB;
         } else if (dbNameUpper.contains("APACHE DERBY")) {
-            return DbType.DERBY;
+            return DbFlavor.DERBY;
         }
 
-        return DbType.OTHER;
+        return DbFlavor.OTHER;
     }
 }

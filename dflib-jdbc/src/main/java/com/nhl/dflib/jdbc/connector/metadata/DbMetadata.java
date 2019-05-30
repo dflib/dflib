@@ -15,30 +15,30 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DbMetadata {
 
-    private DbType type;
+    private DbFlavor flavor;
     private DatabaseMetaData jdbcMetadata;
     private boolean supportsCatalogs;
     private boolean supportsSchemas;
     private boolean supportsParamsMetadata;
     private Map<String, DbTableMetadata> tables;
 
-    protected DbMetadata(DbType type, DatabaseMetaData jdbcMetadata) {
+    protected DbMetadata(DbFlavor flavor, DatabaseMetaData jdbcMetadata) {
 
-        this.type = Objects.requireNonNull(type);
+        this.flavor = Objects.requireNonNull(flavor);
         this.jdbcMetadata = Objects.requireNonNull(jdbcMetadata);
 
         // TODO: will grow indefinitely, so a potential memory leak... would be great to have a concurrent LRU Map in Java...
         this.tables = new ConcurrentHashMap<>();
 
-        setFlags(type, jdbcMetadata);
+        initFlags(flavor, jdbcMetadata);
     }
 
     public static DbMetadata create(DataSource dataSource) {
         return DbMetadataFactory.create(dataSource);
     }
 
-    protected void setFlags(DbType type, DatabaseMetaData jdbcMetadata) {
-        switch (type) {
+    protected void initFlags(DbFlavor flavor, DatabaseMetaData jdbcMetadata) {
+        switch (flavor) {
             case MYSQL:
             case MARIA_DB:
                 // MySQL doesn't support params metadata; but we actually don't know about
@@ -58,8 +58,8 @@ public class DbMetadata {
         }
     }
 
-    public DbType getType() {
-        return type;
+    public DbFlavor getFlavor() {
+        return flavor;
     }
 
     public boolean supportsParamsMetadata() {

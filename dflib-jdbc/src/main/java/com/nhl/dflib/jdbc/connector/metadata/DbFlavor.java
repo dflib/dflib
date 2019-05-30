@@ -3,7 +3,7 @@ package com.nhl.dflib.jdbc.connector.metadata;
 /**
  * @since 0.6
  */
-public enum DbType {
+public enum DbFlavor {
 
     // TODO: other DBs
 

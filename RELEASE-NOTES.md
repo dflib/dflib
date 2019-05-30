@@ -23,6 +23,7 @@
 * #46 Move interfaces with public static methods for creating lambdas to the root package
 * #47 Series.map 
 * #48 dflib-jdbc: saver must support Month, Year, enums, etc
+* #49 dflib-jdbc: alternative way for TableSaver to find the types of PreparedStatement parameters
 
 ## Release 0.5
 
