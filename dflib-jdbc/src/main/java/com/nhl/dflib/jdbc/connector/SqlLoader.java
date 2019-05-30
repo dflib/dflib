@@ -18,7 +18,7 @@ public class SqlLoader {
     protected JdbcConnector connector;
     protected int maxRows;
     private String sql;
-    private Object[] params;
+    private Series<?> params;
 
     public SqlLoader(JdbcConnector connector, String sql) {
         this.connector = connector;
@@ -27,6 +27,10 @@ public class SqlLoader {
     }
 
     public SqlLoader params(Object... params) {
+        return params(Series.forData(params));
+    }
+
+    public SqlLoader params(Series<?> params) {
         this.params = params;
         return this;
     }
@@ -60,17 +64,17 @@ public class SqlLoader {
 
             StringBuilder log = new StringBuilder("Loading DataFrame... ").append(sql);
 
-            if (params != null && params.length > 0) {
+            if (params != null && params.size() > 0) {
 
                 BindingDebugConverter paramConverter = connector.getBindingDebugConverter();
 
                 log.append(" [");
-                for (int i = 0; i < params.length; i++) {
+                for (int i = 0; i < params.size(); i++) {
                     if (i > 0) {
                         log.append(", ");
                     }
 
-                    log.append(paramConverter.convert(params[i]));
+                    log.append(paramConverter.convert(params.get(i)));
                 }
 
                 log.append("]");

@@ -1,5 +1,7 @@
 package com.nhl.dflib.jdbc.connector.statement;
 
+import com.nhl.dflib.Series;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -10,12 +12,12 @@ import java.sql.SQLException;
 public class UpdateStatementParamsRow implements UpdateStatement {
 
     private String sql;
-    private Object[] params;
+    private Series<?> params;
     private StatementBinderFactory binderFactory;
 
     public UpdateStatementParamsRow(
             String sql,
-            Object[] params,
+            Series<?> params,
             StatementBinderFactory binderFactory) {
 
         this.sql = sql;

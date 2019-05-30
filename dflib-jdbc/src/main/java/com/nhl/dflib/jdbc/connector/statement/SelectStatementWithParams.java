@@ -1,5 +1,6 @@
 package com.nhl.dflib.jdbc.connector.statement;
 
+import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.connector.JdbcFunction;
 
 import java.sql.Connection;
@@ -10,12 +11,12 @@ import java.sql.SQLException;
 public class SelectStatementWithParams implements SelectStatement {
 
     private String sql;
-    private Object[] params;
+    private Series<?> params;
     private StatementBinderFactory binderFactory;
 
     public SelectStatementWithParams(
             String sql,
-            Object[] params,
+            Series<?> params,
             StatementBinderFactory binderFactory) {
 
         this.sql = sql;
@@ -36,7 +37,7 @@ public class SelectStatementWithParams implements SelectStatement {
     }
 
     private void bind(PreparedStatement statement) throws SQLException {
-        if (params.length > 0) {
+        if (params.size() > 0) {
             binderFactory.createBinder(statement).bind(params);
         }
     }

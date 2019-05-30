@@ -1,6 +1,7 @@
 package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.connector.metadata.DbColumnMetadata;
 import com.nhl.dflib.jdbc.connector.statement.CompiledFromStatementBinderFactory;
 import com.nhl.dflib.jdbc.connector.statement.FixedParamsBinderFactory;
@@ -26,7 +27,7 @@ public class StatementBuilder {
     private JdbcConnector connector;
     private String sql;
     private DbColumnMetadata[] paramDescriptors;
-    private Object[] params;
+    private Series<?> params;
     private DataFrame batchParams;
 
     public StatementBuilder(JdbcConnector connector) {
@@ -49,10 +50,14 @@ public class StatementBuilder {
         return this;
     }
 
-    public StatementBuilder bind(Object[] params) {
+    public StatementBuilder bind(Series<?> params) {
         this.params = params;
         this.batchParams = null;
         return this;
+    }
+
+    public StatementBuilder bind(Object[] params) {
+        return bind(Series.forData(params));
     }
 
     public <T> T select(JdbcFunction<ResultSet, T> resultReader) {
@@ -84,7 +89,7 @@ public class StatementBuilder {
             throw new IllegalStateException("Can't use batch params for 'select'");
         }
 
-        return (params == null || params.length == 0)
+        return (params == null || params.size() == 0)
                 ? new SelectStatementNoParams(sql)
                 : new SelectStatementWithParams(sql, params, createBinderFactory());
     }

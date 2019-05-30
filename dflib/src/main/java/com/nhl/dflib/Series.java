@@ -1,6 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.series.ArraySeries;
+import com.nhl.dflib.series.EmptySeries;
 import com.nhl.dflib.series.IntArraySeries;
 
 /**
@@ -11,7 +12,7 @@ import com.nhl.dflib.series.IntArraySeries;
 public interface Series<T> {
 
     static <T> Series<T> forData(T... data) {
-        return new ArraySeries<>(data);
+        return data != null && data.length > 0 ? new ArraySeries<>(data) : new EmptySeries<>();
     }
 
     /**
