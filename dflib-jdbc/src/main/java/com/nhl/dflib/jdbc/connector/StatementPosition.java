@@ -22,7 +22,7 @@ public class StatementPosition {
         this.position = position;
         this.valueConverter = valueConverter;
     }
-    
+
     public void bind(Object o) throws SQLException {
         Object boundable = o != null ? valueConverter.apply(o) : null;
 
