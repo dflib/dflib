@@ -20,7 +20,7 @@ public class DbTableMetadata {
         for (DbColumnMetadata column : columns) {
 
             DbColumnMetadata existing = columnsByName.put(column.getName(), column);
-            if(existing != null && existing != column) {
+            if (existing != null && existing != column) {
                 throw new IllegalArgumentException("Duplicate column name: " + column.getName());
             }
         }
@@ -32,6 +32,10 @@ public class DbTableMetadata {
 
     public DbColumnMetadata[] getColumns() {
         return columns;
+    }
+
+    public DbColumnMetadata[] getPkColumns() {
+        throw new UnsupportedOperationException("TODO");
     }
 
     public DbColumnMetadata getColumn(String name) {

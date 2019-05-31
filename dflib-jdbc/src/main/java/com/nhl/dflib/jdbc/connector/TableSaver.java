@@ -1,20 +1,18 @@
 package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
 import com.nhl.dflib.RowToValueMapper;
 import com.nhl.dflib.jdbc.connector.metadata.DbColumnMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.DbTableMetadata;
+import com.nhl.dflib.jdbc.connector.saver.SaveViaDeleteThenInsert;
+import com.nhl.dflib.jdbc.connector.saver.SaveViaInsert;
+import com.nhl.dflib.jdbc.connector.saver.SaveViaUpsert;
+import com.nhl.dflib.jdbc.connector.saver.TableSaveStrategy;
 import com.nhl.dflib.row.RowProxy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.util.Objects;
 
 public class TableSaver {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(TableSaver.class);
 
     protected JdbcConnector connector;
     private String tableName;
@@ -24,12 +22,6 @@ public class TableSaver {
     private boolean deleteTableData;
     private boolean mergeByPk;
     private String[] mergeByColumns;
-
-
-    // TODO: use cases:
-    //  + Append to an existing table
-    //  + Store DataFrame row number in a column (may work as PK generator)
-    //  * Create new table (with fixed name | with generated name)
 
     public TableSaver(JdbcConnector connector, String tableName) {
         this.connector = connector;
@@ -72,7 +64,12 @@ public class TableSaver {
      */
     public TableSaver mergeByColumns(String... columns) {
         this.mergeByPk = false;
-        this.mergeByColumns = columns;
+        this.mergeByColumns = Objects.requireNonNull(columns);
+
+        if (columns.length == 0) {
+            throw new IllegalArgumentException("Empty 'mergeBy' columns");
+        }
+
         return this;
     }
 
@@ -86,102 +83,63 @@ public class TableSaver {
     }
 
     public void save(DataFrame df) {
-        if (df.height() == 0 && !deleteTableData) {
-            LOGGER.info("Empty DataFrame and no delete requested. Save does nothing.");
-            return;
-        }
 
-        try (Connection c = connector.getConnection()) {
+        // deprecated - conditionally add row numbers columns
+        DataFrame toSave = rowNumberColumn != null
+                ? df.addColumn(rowNumberColumn, rowIndexer())
+                : df;
 
-            if (deleteTableData) {
-                connector.createStatementBuilder(createDeleteStatement()).update(c);
-            }
-
-            if (df.height() > 0) {
-
-                DataFrame toSave = rowNumberColumn != null
-                        ? df.addColumn(rowNumberColumn, rowIndexer())
-                        : df;
-
-                connector.createStatementBuilder(createInsertStatement(toSave))
-
-                        // use param descriptors from metadata, as (1) we can and (b) some DBs don't support real
-                        // metadata in PreparedStatements. See e.g. https://github.com/nhl/dflib/issues/49
-
-                        .paramDescriptors(fixedParams(toSave.getColumnsIndex()))
-                        .bindBatch(toSave)
-                        .update(c);
-
-            } else {
-                LOGGER.info("Empty DataFrame. Skipping insert.");
-            }
-
-            c.commit();
-        } catch (SQLException e) {
-            throw new RuntimeException("Error storing data in DB", e);
-        }
+        createSaveStrategy().save(toSave);
     }
 
-    protected String createDeleteStatement() {
-        String sql = "delete from " + connector.quoteIdentifier(tableName);
-        logSql(sql);
-        return sql;
-    }
-
-    protected String createInsertStatement(DataFrame df) {
-
-        StringBuilder sql = new StringBuilder("insert into ")
-                .append(connector.quoteIdentifier(tableName))
-                .append(" (");
-
-        // append columns
-        String[] labels = df.getColumnsIndex().getLabels();
-        int len = labels.length;
-
-        for (int i = 0; i < labels.length; i++) {
-            if (i > 0) {
-                sql.append(", ");
-            }
-
-            sql.append(connector.quoteIdentifier(labels[i]));
+    protected TableSaveStrategy createSaveStrategy() {
+        // if delete is in effect, we don't need the UPDATE part of "UPSERT"
+        if (deleteTableData) {
+            return new SaveViaDeleteThenInsert(connector, tableName);
         }
 
-        // append value placeholders
-        sql.append(") values (");
+        if (!mergeByPk && mergeByColumns == null) {
+            return new SaveViaInsert(connector, tableName);
+        }
+
+        return new SaveViaUpsert(
+                connector,
+                tableName,
+                mergeByPk ? getPkColumns() : mergeByColumns);
+    }
+
+    protected String[] getPkColumns() {
+
+        DbColumnMetadata[] pk = connector.getMetadata().getTable(tableName).getPkColumns();
+
+        int len = pk.length;
+        if (len == 0) {
+            throw new IllegalStateException("Table '" + tableName + "' does not define a PK");
+        }
+
+        String[] pkNames = new String[len];
 
         for (int i = 0; i < len; i++) {
-            if (i > 0) {
-                sql.append(", ");
-            }
-
-            sql.append("?");
+            pkNames[i] = pk[i].getName();
         }
 
-        sql.append(")");
-
-        String sqlString = sql.toString();
-        logSql(sqlString);
-        return sqlString;
+        return pkNames;
     }
 
-    protected DbColumnMetadata[] fixedParams(Index index) {
-        DbTableMetadata tableMetadata = connector.getMetadata().getTable(tableName);
+    protected DbColumnMetadata[] getMergeByColumns() {
 
-        DbColumnMetadata[] params = new DbColumnMetadata[index.size()];
-        for (int i = 0; i < index.size(); i++) {
-            params[i] = tableMetadata.getColumn(index.getLabel(i));
+        int len = mergeByColumns.length;
+        DbColumnMetadata[] pk = new DbColumnMetadata[len];
+        DbTableMetadata table = connector.getMetadata().getTable(tableName);
+
+        for (int i = 0; i < len; i++) {
+            pk[i] = table.getColumn(mergeByColumns[i]);
         }
 
-        return params;
+        return pk;
     }
 
-    protected void logSql(String sql) {
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Storing DataFrame... {}", sql);
-            // do not log SQL parameters (i.e. DataFrame)
-        }
-    }
-
+    @Deprecated
     protected RowToValueMapper<Integer> rowIndexer() {
         return new RowToValueMapper<Integer>() {
 

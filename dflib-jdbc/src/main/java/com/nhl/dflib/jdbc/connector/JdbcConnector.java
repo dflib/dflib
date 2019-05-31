@@ -105,10 +105,12 @@ public class JdbcConnector {
         return sbf.createAccum(pos);
     }
 
-    protected StatementBuilder createStatementBuilder(String sql) {
+    /**
+     * @since 0.6
+     */
+    public StatementBuilder createStatementBuilder(String sql) {
         return new StatementBuilder(this).sql(sql);
     }
-
 
     protected ValueConverterFactory getPreBindConverterFactory() {
         return preBindConverterFactory;
@@ -118,11 +120,17 @@ public class JdbcConnector {
         return bindingDebugConverter;
     }
 
-    protected DbMetadata getMetadata() {
+    /**
+     * @since 0.6
+     */
+    public DbMetadata getMetadata() {
         return metadata;
     }
 
-    protected Connection getConnection() throws SQLException {
+    /**
+     * @since 0.6
+     */
+    public Connection getConnection() throws SQLException {
 
         Connection connection = dataSource.getConnection();
 
@@ -141,7 +149,10 @@ public class JdbcConnector {
         return connection;
     }
 
-    protected String quoteIdentifier(String bareIdentifier) {
+    /**
+     * @since 0.6
+     */
+    public String quoteIdentifier(String bareIdentifier) {
         return quoter.quoted(bareIdentifier);
     }
 
