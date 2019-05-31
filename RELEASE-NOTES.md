@@ -24,6 +24,7 @@
 * #47 Series.map 
 * #48 dflib-jdbc: saver must support Month, Year, enums, etc
 * #49 dflib-jdbc: alternative way for TableSaver to find the types of PreparedStatement parameters
+* #50 Hash Join builder 
 
 ## Release 0.5
 
