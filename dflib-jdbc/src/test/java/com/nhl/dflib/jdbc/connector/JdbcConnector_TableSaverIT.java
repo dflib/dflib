@@ -5,6 +5,7 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
 import com.nhl.dflib.unit.DFAsserts;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.time.DayOfWeek;
@@ -16,8 +17,11 @@ import java.time.Year;
 
 public class JdbcConnector_TableSaverIT extends BaseDbTest {
 
-    private JdbcConnector createConnector() {
-        return Jdbc.connector(getDataSource());
+    private JdbcConnector connector;
+
+    @Before
+    public void createConnector() {
+        this.connector = Jdbc.connector(getDataSource());
     }
 
     @Test
@@ -28,11 +32,11 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
-        createConnector()
+        connector
                 .tableSaver("t1")
                 .save(df);
 
-        DataFrame df2 = createConnector()
+        DataFrame df2 = connector
                 .tableLoader("t1")
                 .load();
 
@@ -47,11 +51,9 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
 
         DataFrame df = DataFrame.forSequenceFoldByRow(Index.forLabels("id", "name", "salary"));
 
-        createConnector()
-                .tableSaver("t1")
-                .save(df);
+        connector.tableSaver("t1").save(df);
 
-        DataFrame df2 = createConnector()
+        DataFrame df2 = connector
                 .tableLoader("t1")
                 .load();
 
@@ -59,7 +61,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testAppend() {
+    public void testSave_Append() {
 
         DataFrame df1 = DataFrame.forSequenceFoldByRow(
                 Index.forLabels("id", "name", "salary"),
@@ -71,14 +73,11 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 3L, "n3", 60_000.01,
                 4L, "n4", 20_000.);
 
-        createConnector()
-                .tableSaver("t1")
-                .save(df1)
-                .save(df2);
+        TableSaver saver = connector.tableSaver("t1");
+        saver.save(df1);
+        saver.save(df2);
 
-        DataFrame df3 = createConnector()
-                .tableLoader("t1")
-                .load();
+        DataFrame df3 = connector.tableLoader("t1").load();
 
         new DFAsserts(df3, columnNames(T1))
                 .expectHeight(4)
@@ -89,7 +88,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testDeleteTableData() {
+    public void testSave_DeleteTableData() {
 
         DataFrame df1 = DataFrame.forSequenceFoldByRow(
                 Index.forLabels("id", "name", "salary"),
@@ -102,13 +101,13 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 4L, "n4", 20_000.);
 
 
-        createConnector()
+        TableSaver saver = connector
                 .tableSaver("t1")
-                .deleteTableData()
-                .save(df1)
-                .save(df2);
+                .deleteTableData();
+        saver.save(df1);
+        saver.save(df2);
 
-        DataFrame df3 = createConnector()
+        DataFrame df3 = connector
                 .tableLoader("t1")
                 .load();
 
@@ -118,20 +117,21 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 .expectRow(1, 4L, "n4", 20_000.);
     }
 
+    @Deprecated
     @Test
-    public void testStoreRowNumber() {
+    public void testSave_StoreRowNumber() {
 
         DataFrame df = DataFrame.forSequenceFoldByRow(
                 Index.forLabels("name", "salary"),
                 "n1", 50_000.01,
                 "n2", 120_000.);
 
-        createConnector()
+        connector
                 .tableSaver("t1")
                 .storeRowNumber("id")
                 .save(df);
 
-        DataFrame df2 = createConnector()
+        DataFrame df2 = connector
                 .tableLoader("t1")
                 .load();
 
@@ -139,6 +139,68 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 .expectHeight(2)
                 .expectRow(0, 1L, "n1", 50_000.01)
                 .expectRow(1, 2L, "n2", 120_000.);
+    }
+
+    @Test
+    public void testSave_MergeByPk() {
+
+        T1.insertColumns("id", "name", "salary")
+                .values(1L, "n1", 50_000.01)
+                .values(2L, "n2", 120_000.)
+                .exec();
+
+        DataFrame df = DataFrame.forSequenceFoldByRow(
+                Index.forLabels("id", "name", "salary"),
+                1L, "n1_x", 50_000.02,
+                3L, "n3", 60_000.01,
+                4L, "n4", 20_000.);
+
+        connector
+                .tableSaver("t1")
+                .mergeByPk()
+                .save(df);
+
+        DataFrame df3 = connector
+                .tableLoader("t1")
+                .load();
+
+        new DFAsserts(df3, columnNames(T1))
+                .expectHeight(4)
+                .expectRow(0, 1L, "n1_x", 50_000.02)
+                .expectRow(1, 2L, "n2", 120_000.)
+                .expectRow(2, 3L, "n3", 60_000.01)
+                .expectRow(3, 4L, "n4", 20_000.);
+    }
+
+    @Test
+    public void testSave_MergeByColumns() {
+
+        T1.insertColumns("id", "name", "salary")
+                .values(1L, "n1", 50_000.01)
+                .values(2L, "n2", 120_000.)
+                .exec();
+
+        DataFrame df = DataFrame.forSequenceFoldByRow(
+                Index.forLabels("id", "name", "salary"),
+                1L, "n1", 50_000.02,
+                3L, "n3", 60_000.01,
+                4L, "n4", 20_000.);
+
+        connector
+                .tableSaver("t1")
+                .mergeByColumns("name", "id")
+                .save(df);
+
+        DataFrame df3 = connector
+                .tableLoader("t1")
+                .load();
+
+        new DFAsserts(df3, columnNames(T1))
+                .expectHeight(4)
+                .expectRow(0, 1L, "n1", 50_000.02)
+                .expectRow(1, 2L, "n2", 120_000.)
+                .expectRow(2, 3L, "n3", 60_000.01)
+                .expectRow(3, 4L, "n4", 20_000.);
     }
 
     @Test
@@ -155,7 +217,6 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 Index.forLabels("bigint", "int", "timestamp", "time", "date", "bytes"),
                 l1, 1, ldt, lt, ld, bytes);
 
-        JdbcConnector connector = createConnector();
         connector.tableSaver("t2").save(df);
 
         DataFrame df2 = connector
@@ -177,7 +238,6 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 2L, Year.of(1973),
                 3L, DayOfWeek.TUESDAY);
 
-        JdbcConnector connector = createConnector();
         connector.tableSaver("t2").save(df);
 
         DataFrame df2 = connector
@@ -200,7 +260,6 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 1L, X.a, X.a,
                 2L, X.b, X.b);
 
-        JdbcConnector connector = createConnector();
         connector.tableSaver("t2").save(df);
 
         DataFrame df2 = connector

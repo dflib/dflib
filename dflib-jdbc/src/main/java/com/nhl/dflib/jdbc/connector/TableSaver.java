@@ -18,12 +18,16 @@ public class TableSaver {
 
     protected JdbcConnector connector;
     private String tableName;
-    private boolean deleteTableData;
     private String rowNumberColumn;
+
+    // save strategy-defining vars
+    private boolean deleteTableData;
+    private boolean mergeByPk;
+    private String[] mergeByColumns;
+
 
     // TODO: use cases:
     //  + Append to an existing table
-    //  + Override an existing table (delete from / insert)
     //  + Store DataFrame row number in a column (may work as PK generator)
     //  * Create new table (with fixed name | with generated name)
 
@@ -32,21 +36,59 @@ public class TableSaver {
         this.tableName = tableName;
     }
 
+    /**
+     * Configures saver to delete all table rows before performing insert operation.
+     *
+     * @return this saver instance
+     */
     public TableSaver deleteTableData() {
         this.deleteTableData = true;
         return this;
     }
 
+    /**
+     * Configures saver to perform save as "merge" (aka "upsert") instead of "insert" done by default. TableSaver would
+     * identify PK column(s) in the table, and will match them against the DataFrame to be saved. For matching rows an
+     * UPDATE will be run, and for all others INSERT will be run. If {@link #deleteTableData} was also specified, this
+     * setting has no effect, and a full INSERT is performed.
+     *
+     * @return this saver instance
+     * @since 0.6
+     */
+    public TableSaver mergeByPk() {
+        this.mergeByPk = true;
+        this.mergeByColumns = null;
+        return this;
+    }
+
+    /**
+     * Configures saver to perform save as "merge" (aka "upsert") instead of "insert" done by default. TableSaver would
+     * use provided column names to match DB values against the DataFrame to be saved. For matching rows an UPDATE will be
+     * run, and for all others INSERT will be run. If {@link #deleteTableData} was also specified, this setting has no
+     * effect, and a full INSERT is performed.
+     *
+     * @return this saver instance
+     * @since 0.6
+     */
+    public TableSaver mergeByColumns(String... columns) {
+        this.mergeByPk = false;
+        this.mergeByColumns = columns;
+        return this;
+    }
+
+    /**
+     * @deprecated since 0.6. THis functionality can be emulated simply by adding a row number column to the saved DataFrame.
+     */
+    @Deprecated
     public TableSaver storeRowNumber(String rowNumberColumn) {
         this.rowNumberColumn = rowNumberColumn;
         return this;
     }
 
-    public TableSaver save(DataFrame df) {
-
+    public void save(DataFrame df) {
         if (df.height() == 0 && !deleteTableData) {
             LOGGER.info("Empty DataFrame and no delete requested. Save does nothing.");
-            return this;
+            return;
         }
 
         try (Connection c = connector.getConnection()) {
@@ -78,8 +120,6 @@ public class TableSaver {
         } catch (SQLException e) {
             throw new RuntimeException("Error storing data in DB", e);
         }
-
-        return this;
     }
 
     protected String createDeleteStatement() {
