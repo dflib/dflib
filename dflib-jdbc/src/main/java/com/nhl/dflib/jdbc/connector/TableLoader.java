@@ -3,6 +3,7 @@ package com.nhl.dflib.jdbc.connector;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.series.ByRowSeries;
 
 public class TableLoader {
 
@@ -63,9 +64,7 @@ public class TableLoader {
             case 1:
                 return matchValues.getColumn(0);
             default:
-                // need to build a Series that is concatentaion of DataFrame rows (not columns)
-                // Perhaps a specialized Series<Object> "w X h" proxy for a DataFrame?
-                throw new UnsupportedOperationException("TODO");
+                return new ByRowSeries<>(matchValues);
         }
     }
 
@@ -143,7 +142,7 @@ public class TableLoader {
             buffer.append(" or ").append(part);
         }
 
-        return buffer.append(")");
+        return buffer;
     }
 
     private String singleMultiColumnCondition(Index columnsIndex) {
