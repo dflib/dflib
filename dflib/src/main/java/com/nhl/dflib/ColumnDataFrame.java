@@ -8,7 +8,7 @@ import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.filter.FilterIndexer;
 import com.nhl.dflib.groupby.Grouper;
-import com.nhl.dflib.join.HashJoiner;
+import com.nhl.dflib.join.HashJoinBuilder;
 import com.nhl.dflib.join.JoinMerger;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.join.NestedLoopJoiner;
@@ -340,9 +340,10 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public DataFrame join(DataFrame df, Hasher leftHasher, Hasher rightHasher, JoinType how) {
-        HashJoiner joiner = new HashJoiner(leftHasher, rightHasher, how);
-        JoinMerger merger = joiner.joinMerger(this, df);
-        return merger.join(joiner.joinIndex(this.getColumnsIndex(), df.getColumnsIndex()), this, df);
+        return new HashJoinBuilder(this)
+                .type(how)
+                .on(leftHasher, rightHasher)
+                .with(df);
     }
 
     @Override

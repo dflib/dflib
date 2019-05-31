@@ -27,5 +27,9 @@ public interface Hasher {
         return r -> new CombinationHash(map(r), and.map(r));
     }
 
+    default Hasher and(Hasher hasher) {
+        return r -> new CombinationHash(map(r), hasher.map(r));
+    }
+
     Object map(RowProxy row);
 }
