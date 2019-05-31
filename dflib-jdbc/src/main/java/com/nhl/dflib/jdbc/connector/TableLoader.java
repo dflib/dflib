@@ -30,7 +30,7 @@ public class TableLoader {
      * or otherwise unique columns.
      *
      * @param condition a DataFrame with data that defines load criteria.
-     * @return
+     * @return this TableLoader
      * @since 0.6
      */
     public TableLoader eq(DataFrame condition) {
