@@ -3,7 +3,9 @@ package com.nhl.dflib.join;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Hasher;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.JoinType;
+import com.nhl.dflib.Series;
 
 import java.util.Objects;
 
@@ -13,17 +15,18 @@ import java.util.Objects;
 public class HashJoinBuilder {
 
     private DataFrame leftFrame;
-    private JoinType type;
+    private JoinType semantics;
     private Hasher leftHasher;
     private Hasher rightHasher;
+    private String indicatorColumn;
 
     public HashJoinBuilder(DataFrame leftFrame) {
         this.leftFrame = Objects.requireNonNull(leftFrame);
-        this.type = JoinType.inner;
+        this.semantics = JoinType.inner;
     }
 
     public HashJoinBuilder type(JoinType type) {
-        this.type = Objects.requireNonNull(type);
+        this.semantics = Objects.requireNonNull(type);
         return this;
     }
 
@@ -59,14 +62,28 @@ public class HashJoinBuilder {
         return possiblyNull != null ? possiblyNull.and(mustBeNotNull) : mustBeNotNull;
     }
 
+    public HashJoinBuilder indicatorColumn(String name) {
+        this.indicatorColumn = name;
+        return this;
+    }
+
     public DataFrame with(DataFrame rightFrame) {
 
         Objects.requireNonNull(leftHasher);
         Objects.requireNonNull(rightHasher);
 
-        HashJoiner joiner = new HashJoiner(leftHasher, rightHasher, type);
-        JoinMerger merger = joiner.joinMerger(leftFrame, rightFrame);
+        HashJoiner joiner = new HashJoiner(leftHasher, rightHasher, semantics);
+        IntSeries[] indexPair = joiner.joinLeftRightIndices(leftFrame, rightFrame);
         Index index = joiner.joinIndex(leftFrame.getColumnsIndex(), rightFrame.getColumnsIndex());
-        return merger.join(index, leftFrame, rightFrame);
+
+        DataFrame joined = new JoinMerger(indexPair[0], indexPair[1]).join(index, leftFrame, rightFrame);
+
+        return indicatorColumn != null
+                ? joined.addColumn(indicatorColumn, buildIndicator(indexPair[0], indexPair[1]))
+                : joined;
+    }
+
+    private Series<JoinIndicator> buildIndicator(IntSeries leftIndex, IntSeries rightIndex) {
+
     }
 }

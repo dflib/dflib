@@ -38,7 +38,7 @@ public class HashJoiner {
         return HConcat.zipIndex(li, ri);
     }
 
-    public JoinMerger joinMerger(DataFrame lf, DataFrame rf) {
+    public IntSeries[] joinLeftRightIndices(DataFrame lf, DataFrame rf) {
         switch (semantics) {
             case inner:
                 return innerJoin(lf, rf);
@@ -53,7 +53,7 @@ public class HashJoiner {
         }
     }
 
-    private JoinMerger innerJoin(DataFrame lf, DataFrame rf) {
+    private IntSeries[] innerJoin(DataFrame lf, DataFrame rf) {
 
         IntMutableList li = new IntMutableList();
         IntMutableList ri = new IntMutableList();
@@ -77,10 +77,10 @@ public class HashJoiner {
             i++;
         }
 
-        return new JoinMerger(li.toIntSeries(), ri.toIntSeries());
+        return new IntSeries[]{li.toIntSeries(), ri.toIntSeries()};
     }
 
-    private JoinMerger leftJoin(DataFrame lf, DataFrame rf) {
+    private IntSeries[] leftJoin(DataFrame lf, DataFrame rf) {
 
         IntMutableList li = new IntMutableList();
         IntMutableList ri = new IntMutableList();
@@ -107,10 +107,10 @@ public class HashJoiner {
             i++;
         }
 
-        return new JoinMerger(li.toIntSeries(), ri.toIntSeries());
+        return new IntSeries[]{li.toIntSeries(), ri.toIntSeries()};
     }
 
-    private JoinMerger rightJoin(DataFrame lf, DataFrame rf) {
+    private IntSeries[] rightJoin(DataFrame lf, DataFrame rf) {
 
         IntMutableList li = new IntMutableList();
         IntMutableList ri = new IntMutableList();
@@ -137,10 +137,10 @@ public class HashJoiner {
             i++;
         }
 
-        return new JoinMerger(li.toIntSeries(), ri.toIntSeries());
+        return new IntSeries[]{li.toIntSeries(), ri.toIntSeries()};
     }
 
-    private JoinMerger fullJoin(DataFrame lf, DataFrame rf) {
+    private IntSeries[] fullJoin(DataFrame lf, DataFrame rf) {
 
         IntMutableList li = new IntMutableList();
         IntMutableList ri = new IntMutableList();
@@ -182,6 +182,6 @@ public class HashJoiner {
             }
         }
 
-        return new JoinMerger(li.toIntSeries(), ri.toIntSeries());
+        return new IntSeries[]{li.toIntSeries(), ri.toIntSeries()};
     }
 }

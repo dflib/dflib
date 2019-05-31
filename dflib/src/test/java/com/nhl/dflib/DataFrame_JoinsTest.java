@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.join.JoinIndicator;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.unit.DFAsserts;
 import org.junit.Test;
@@ -382,5 +383,32 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
         new DFAsserts(df, "c", "d", "a", "b")
                 .expectHeight(1)
                 .expectRow(0, 2, "a", 2, "a");
+    }
+
+    @Test
+    public void testHash_Indicator() {
+
+        Index i1 = Index.forLabels("a", "b");
+        DataFrame df1 = createDf(i1,
+                1, "x",
+                2, "y");
+
+        Index i2 = Index.forLabels("c", "d");
+        DataFrame df2 = createDf(i2,
+                2, "a",
+                2, "b",
+                3, "c");
+
+        DataFrame df = df1.fullJoin()
+                .on(0)
+                .indicatorColumn("ind")
+                .with(df2);
+
+        new DFAsserts(df, "a", "b", "c", "d", "ind")
+                .expectHeight(4)
+                .expectRow(0, 1, "x", null, null, JoinIndicator.left_only)
+                .expectRow(1, 2, "y", 2, "a", JoinIndicator.both)
+                .expectRow(2, 2, "y", 2, "b", JoinIndicator.both)
+                .expectRow(3, null, null, 3, "c", JoinIndicator.right_only);
     }
 }
