@@ -1,6 +1,7 @@
 package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 
 public class TableLoader {
@@ -115,7 +116,7 @@ public class TableLoader {
                         matchValues.getColumnsIndex().getLabel(0),
                         criteriaHeight);
             default:
-                return appendWhereSql_MultipleColumns(buffer, criteriaWidth, criteriaHeight);
+                return appendWhereSql_MultiColumns(buffer, matchValues.getColumnsIndex(), criteriaHeight);
         }
     }
 
@@ -132,7 +133,38 @@ public class TableLoader {
         return buffer.append(")");
     }
 
-    protected StringBuilder appendWhereSql_MultipleColumns(StringBuilder buffer, int criteriaWidth, int criteriaHeight) {
-        throw new UnsupportedOperationException("TODO");
+    protected StringBuilder appendWhereSql_MultiColumns(StringBuilder buffer, Index columnsIndex, int criteriaHeight) {
+
+        String part = singleMultiColumnCondition(columnsIndex);
+
+        buffer.append(" where ").append(part);
+
+        for (int i = 1; i < criteriaHeight; i++) {
+            buffer.append(" or ").append(part);
+        }
+
+        return buffer.append(")");
+    }
+
+    private String singleMultiColumnCondition(Index columnsIndex) {
+        int w = columnsIndex.size();
+        String[] columns = new String[w];
+        for (int i = 0; i < w; i++) {
+            columns[i] = connector.quoteIdentifier(columnsIndex.getLabel(i));
+        }
+
+        StringBuilder buffer = new StringBuilder();
+
+        buffer.append("(");
+        for (int i = 0; i < w; i++) {
+            if (i > 0) {
+                buffer.append(" and ");
+            }
+            buffer.append(columns[i]).append(" = ?");
+        }
+
+        buffer.append(")");
+
+        return buffer.toString();
     }
 }

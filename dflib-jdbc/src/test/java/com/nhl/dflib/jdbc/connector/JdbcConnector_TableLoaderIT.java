@@ -111,4 +111,26 @@ public class JdbcConnector_TableLoaderIT extends BaseDbTest {
                 .expectRow(0, "n1", 50_000.01)
                 .expectRow(1, "n3", 11_000.);
     }
+
+    @Test
+    public void testMatching_MultiColumn() {
+
+        T1.insert(1L, "n1", 50_000.01)
+                .insert(2L, "n2", 120_000.)
+                .insert(3L, "n3", 11_000.);
+
+        DataFrame matcher = DataFrame.forSequenceFoldByRow(Index.forLabels("id", "name"),
+                1L, "n5",
+                3L, "n3");
+
+        DataFrame df = createConnector()
+                .tableLoader("t1")
+                .matching(matcher)
+                .includeColumns("name", "salary")
+                .load();
+
+        new DFAsserts(df, "name", "salary")
+                .expectHeight(1)
+                .expectRow(0, "n3", 11_000.);
+    }
 }
