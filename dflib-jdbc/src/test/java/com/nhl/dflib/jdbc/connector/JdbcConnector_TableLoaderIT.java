@@ -92,7 +92,7 @@ public class JdbcConnector_TableLoaderIT extends BaseDbTest {
     }
 
     @Test
-    public void testMatching_SingleColumn() {
+    public void testEq_SingleColumn() {
 
         T1.insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.)
@@ -102,7 +102,7 @@ public class JdbcConnector_TableLoaderIT extends BaseDbTest {
 
         DataFrame df = createConnector()
                 .tableLoader("t1")
-                .matching(matcher)
+                .eq(matcher)
                 .includeColumns("name", "salary")
                 .load();
 
@@ -113,7 +113,7 @@ public class JdbcConnector_TableLoaderIT extends BaseDbTest {
     }
 
     @Test
-    public void testMatching_MultiColumn() {
+    public void testEq_MultiColumn() {
 
         T1.insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.)
@@ -125,7 +125,7 @@ public class JdbcConnector_TableLoaderIT extends BaseDbTest {
 
         DataFrame df = createConnector()
                 .tableLoader("t1")
-                .matching(matcher)
+                .eq(matcher)
                 .includeColumns("name", "salary")
                 .load();
 

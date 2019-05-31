@@ -11,7 +11,7 @@ public class TableLoader {
     protected int maxRows;
     private String tableName;
     private String[] columns;
-    private DataFrame matchValues;
+    private DataFrame condition;
 
     public TableLoader(JdbcConnector connector, String tableName) {
         this.connector = connector;
@@ -25,16 +25,16 @@ public class TableLoader {
     }
 
     /**
-     * Configures TableLoader to retrieve data that matches values in the provided DataFrame. Such DataFrame may
-     * contain unique key columns of the table.
+     * Configures TableLoader to retrieve rows that match rows in the provided "condition" DataFrame. Condition
+     * DataFrame must contain columns with names that are present in the DB table. Often it would contain PK columns
+     * or otherwise unique columns.
      *
-     * @param matchValues a DataFrame with columns matching one or more table columns, and values that comprise
-     *                    table load criteria.
+     * @param condition a DataFrame with data that defines load criteria.
      * @return
      * @since 0.6
      */
-    public TableLoader matching(DataFrame matchValues) {
-        this.matchValues = matchValues;
+    public TableLoader eq(DataFrame condition) {
+        this.condition = condition;
         return this;
     }
 
@@ -52,19 +52,19 @@ public class TableLoader {
     }
 
     protected Series<?> collectBindingParams() {
-        int criteriaHeight = matchValues != null ? matchValues.height() : 0;
+        int criteriaHeight = condition != null ? condition.height() : 0;
         if (criteriaHeight == 0) {
             return Series.forData();
         }
 
-        int criteriaWidth = matchValues != null ? matchValues.width() : 0;
+        int criteriaWidth = condition != null ? condition.width() : 0;
         switch (criteriaWidth) {
             case 0:
                 return Series.forData();
             case 1:
-                return matchValues.getColumn(0);
+                return condition.getColumn(0);
             default:
-                return new ByRowSeries<>(matchValues);
+                return new ByRowSeries<>(condition);
         }
     }
 
@@ -100,22 +100,22 @@ public class TableLoader {
 
     protected StringBuilder appendWhereSql(StringBuilder buffer) {
 
-        int criteriaHeight = matchValues != null ? matchValues.height() : 0;
+        int criteriaHeight = condition != null ? condition.height() : 0;
         if (criteriaHeight == 0) {
             return buffer;
         }
 
-        int criteriaWidth = matchValues != null ? matchValues.width() : 0;
+        int criteriaWidth = condition != null ? condition.width() : 0;
         switch (criteriaWidth) {
             case 0:
                 return buffer;
             case 1:
                 return appendWhereSql_SingleColumn(
                         buffer,
-                        matchValues.getColumnsIndex().getLabel(0),
+                        condition.getColumnsIndex().getLabel(0),
                         criteriaHeight);
             default:
-                return appendWhereSql_MultiColumns(buffer, matchValues.getColumnsIndex(), criteriaHeight);
+                return appendWhereSql_MultiColumns(buffer, condition.getColumnsIndex(), criteriaHeight);
         }
     }
 

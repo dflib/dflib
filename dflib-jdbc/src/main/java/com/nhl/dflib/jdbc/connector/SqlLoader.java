@@ -30,6 +30,9 @@ public class SqlLoader {
         return params(Series.forData(params));
     }
 
+    /**
+     * @since 0.6
+     */
     public SqlLoader params(Series<?> params) {
         this.params = params;
         return this;
