@@ -6,6 +6,7 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.JoinType;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.collection.MutableList;
 
 import java.util.Objects;
 
@@ -85,5 +86,17 @@ public class HashJoinBuilder {
 
     private Series<JoinIndicator> buildIndicator(IntSeries leftIndex, IntSeries rightIndex) {
 
+        int h = leftIndex.size();
+        MutableList<JoinIndicator> appender = new MutableList<>(h);
+
+        for (int i = 0; i < h; i++) {
+            appender.add(
+                    leftIndex.getInt(i) < 0
+                            ? JoinIndicator.right_only
+                            : rightIndex.getInt(i) < 0 ? JoinIndicator.left_only : JoinIndicator.both
+            );
+        }
+
+        return appender.toSeries();
     }
 }
