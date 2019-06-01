@@ -7,10 +7,12 @@ public class DbColumnMetadata {
 
     private String name;
     private int type;
+    private boolean pk;
 
-    public DbColumnMetadata(String name, int type) {
+    public DbColumnMetadata(String name, int type, boolean pk) {
         this.name = name;
         this.type = type;
+        this.pk = pk;
     }
 
     public String getName() {
@@ -19,5 +21,9 @@ public class DbColumnMetadata {
 
     public int getType() {
         return type;
+    }
+
+    public boolean isPk() {
+        return pk;
     }
 }

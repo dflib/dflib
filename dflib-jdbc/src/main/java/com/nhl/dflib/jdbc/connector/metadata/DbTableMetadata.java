@@ -1,6 +1,8 @@
 package com.nhl.dflib.jdbc.connector.metadata;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -10,7 +12,9 @@ public class DbTableMetadata {
 
     private String name;
     private DbColumnMetadata[] columns;
+
     private Map<String, DbColumnMetadata> columnsByName;
+    private DbColumnMetadata[] pk;
 
     public DbTableMetadata(String name, DbColumnMetadata[] columns) {
         this.name = name;
@@ -35,7 +39,12 @@ public class DbTableMetadata {
     }
 
     public DbColumnMetadata[] getPkColumns() {
-        throw new UnsupportedOperationException("TODO");
+
+        if (pk == null) {
+            this.pk = findPk();
+        }
+
+        return pk;
     }
 
     public DbColumnMetadata getColumn(String name) {
@@ -46,5 +55,16 @@ public class DbTableMetadata {
         }
 
         return column;
+    }
+
+    private DbColumnMetadata[] findPk() {
+        List<DbColumnMetadata> pk = new ArrayList<>();
+        for (DbColumnMetadata c : columns) {
+            if (c.isPk()) {
+                pk.add(c);
+            }
+        }
+
+        return pk.toArray(new DbColumnMetadata[0]);
     }
 }

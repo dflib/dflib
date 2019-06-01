@@ -5,10 +5,11 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -105,14 +106,26 @@ public class DbMetadata {
     private DbTableMetadata loadTableMetadata(String tableName) {
 
         String[] matchParts = toCatalogSchemaName(tableName);
-        List<DbColumnMetadata> columns = new ArrayList<>();
+        Map<String, Integer> columnsAndTypes = new LinkedHashMap<>();
+        Set<String> pks = new HashSet<>();
+
         try (Connection c = dataSource.getConnection()) {
-            try (ResultSet columnsRs = c.getMetaData().getColumns(matchParts[0], matchParts[1], matchParts[2], null)) {
+
+            DatabaseMetaData md = c.getMetaData();
+
+            try (ResultSet columnsRs = md.getColumns(matchParts[0], matchParts[1], matchParts[2], null)) {
 
                 while (columnsRs.next()) {
                     String name = columnsRs.getString("COLUMN_NAME");
                     int type = columnsRs.getInt("DATA_TYPE");
-                    columns.add(new DbColumnMetadata(name, type));
+                    columnsAndTypes.put(name, type);
+                }
+            }
+
+            try (ResultSet pkRs = md.getPrimaryKeys(matchParts[0], matchParts[1], matchParts[2])) {
+
+                while (pkRs.next()) {
+                    pks.add(pkRs.getString("COLUMN_NAME"));
                 }
 
             }
@@ -120,8 +133,16 @@ public class DbMetadata {
             throw new RuntimeException("Error getting info about table '" + tableName + "'", e);
         }
 
-        // TODO: for now ignoring catalog and schema parts... Using user-provided name
-        return new DbTableMetadata(tableName, columns.toArray(new DbColumnMetadata[0]));
+
+        int len = columnsAndTypes.size();
+        DbColumnMetadata[] columns = new DbColumnMetadata[len];
+        int i = 0;
+        for (Map.Entry<String, Integer> e : columnsAndTypes.entrySet()) {
+            columns[i++] = new DbColumnMetadata(e.getKey(), e.getValue(), pks.contains(e.getKey()));
+        }
+
+        // TODO: ignoring catalog and schema parts... Using user-provided name
+        return new DbTableMetadata(tableName, columns);
     }
 
     String[] toCatalogSchemaName(String tableName) {

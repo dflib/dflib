@@ -10,8 +10,8 @@ public class DbTableMetadataTest {
 
     @Test
     public void testGetColumn() {
-        DbColumnMetadata c1 = new DbColumnMetadata("c1", Types.INTEGER);
-        DbColumnMetadata c2 = new DbColumnMetadata("c2", Types.VARCHAR);
+        DbColumnMetadata c1 = new DbColumnMetadata("c1", Types.INTEGER, false);
+        DbColumnMetadata c2 = new DbColumnMetadata("c2", Types.VARCHAR, false);
 
         DbTableMetadata md = new DbTableMetadata("x", new DbColumnMetadata[]{c1, c2});
         assertSame(c1, md.getColumn("c1"));
@@ -20,7 +20,7 @@ public class DbTableMetadataTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testGetColumn_Unknown() {
-        DbColumnMetadata c1 = new DbColumnMetadata("c1", Types.INTEGER);
+        DbColumnMetadata c1 = new DbColumnMetadata("c1", Types.INTEGER, false);
 
         DbTableMetadata md = new DbTableMetadata("x", new DbColumnMetadata[]{c1});
         md.getColumn("no_such_column");
