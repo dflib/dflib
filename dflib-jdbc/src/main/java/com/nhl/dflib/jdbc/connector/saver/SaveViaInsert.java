@@ -70,9 +70,7 @@ public class SaveViaInsert extends TableSaveStrategy {
 
         sql.append(")");
 
-        String sqlString = sql.toString();
-        logSql(sqlString);
-        return sqlString;
+        return sql.toString();
     }
 
     protected DbColumnMetadata[] fixedParams(Index index) {

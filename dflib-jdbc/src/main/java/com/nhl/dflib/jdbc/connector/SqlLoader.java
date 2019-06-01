@@ -45,7 +45,8 @@ public class SqlLoader {
 
     public DataFrame load() {
 
-        logSql(sql);
+        LOGGER.info("Loading DataFrame...");
+
 
         // TODO: should maxRows be translated into the SQL LIMIT clause?
         //  Some DBs have crazy limit syntax, so this may be hard to generalize..
@@ -60,31 +61,6 @@ public class SqlLoader {
         Index columns = createIndex(rs);
         Series<?>[] data = loadData(rs);
         return DataFrame.forColumns(columns, data);
-    }
-
-    protected void logSql(String sql) {
-        if (LOGGER.isInfoEnabled()) {
-
-            StringBuilder log = new StringBuilder("Loading DataFrame... ").append(sql);
-
-            if (params != null && params.size() > 0) {
-
-                BindingDebugConverter paramConverter = connector.getBindingDebugConverter();
-
-                log.append(" [");
-                for (int i = 0; i < params.size(); i++) {
-                    if (i > 0) {
-                        log.append(", ");
-                    }
-
-                    log.append(paramConverter.convert(params.get(i)));
-                }
-
-                log.append("]");
-            }
-
-            LOGGER.info(log.toString());
-        }
     }
 
     protected Index createIndex(ResultSet rs) throws SQLException {

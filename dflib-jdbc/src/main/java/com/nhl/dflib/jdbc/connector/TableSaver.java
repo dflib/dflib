@@ -9,10 +9,14 @@ import com.nhl.dflib.jdbc.connector.saver.SaveViaInsert;
 import com.nhl.dflib.jdbc.connector.saver.SaveViaUpsert;
 import com.nhl.dflib.jdbc.connector.saver.TableSaveStrategy;
 import com.nhl.dflib.row.RowProxy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
 public class TableSaver {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TableSaver.class);
 
     protected JdbcConnector connector;
     private String tableName;
@@ -83,6 +87,7 @@ public class TableSaver {
     }
 
     public void save(DataFrame df) {
+        LOGGER.info("Saving DataFrame...");
 
         // deprecated - conditionally add row numbers columns
         DataFrame toSave = rowNumberColumn != null

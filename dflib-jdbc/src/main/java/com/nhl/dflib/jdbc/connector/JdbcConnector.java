@@ -1,5 +1,6 @@
 package com.nhl.dflib.jdbc.connector;
 
+import com.nhl.dflib.Printers;
 import com.nhl.dflib.builder.SeriesBuilder;
 import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
 import com.nhl.dflib.jdbc.connector.statement.ValueConverter;
@@ -27,9 +28,7 @@ public class JdbcConnector {
     private Map<Integer, SeriesBuilderFactory> seriesBuilderFactories;
 
     private ValueConverterFactory preBindConverterFactory;
-    private Map<Integer, ValueConverter> statementValueConverters;
-
-    private BindingDebugConverter bindingDebugConverter;
+    private SqlLogger sqlLogger;
 
     public JdbcConnector(DataSource dataSource, DbMetadata metadata) {
         this.dataSource = dataSource;
@@ -53,9 +52,9 @@ public class JdbcConnector {
         this.seriesBuilderFactories.put(Types.TIMESTAMP, SeriesBuilderFactory::timestampAccum);
 
         this.preBindConverterFactory = createPreBindConverterFactory();
-        this.bindingDebugConverter = new BindingDebugConverter();
 
         this.quoter = createQuoter();
+        this.sqlLogger = createSqlLogger();
     }
 
     protected ValueConverterFactory createPreBindConverterFactory() {
@@ -67,6 +66,10 @@ public class JdbcConnector {
         converters.put(Types.VARCHAR, ValueConverter.stringConverter());
 
         return new ValueConverterFactory(ValueConverter.defaultConverter(), converters);
+    }
+
+    protected SqlLogger createSqlLogger() {
+        return new SqlLogger(Printers.inline);
     }
 
     public TableSaver tableSaver(String tableName) {
@@ -116,15 +119,15 @@ public class JdbcConnector {
         return preBindConverterFactory;
     }
 
-    protected BindingDebugConverter getBindingDebugConverter() {
-        return bindingDebugConverter;
-    }
-
     /**
      * @since 0.6
      */
     public DbMetadata getMetadata() {
         return metadata;
+    }
+
+    protected SqlLogger getSqlLogger() {
+        return sqlLogger;
     }
 
     /**

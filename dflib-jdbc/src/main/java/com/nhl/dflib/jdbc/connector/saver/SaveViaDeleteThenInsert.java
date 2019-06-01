@@ -31,8 +31,6 @@ public class SaveViaDeleteThenInsert extends SaveViaInsert {
     }
 
     protected String createDeleteStatement() {
-        String sql = "delete from " + connector.quoteIdentifier(tableName);
-        logSql(sql);
-        return sql;
+        return  "delete from " + connector.quoteIdentifier(tableName);
     }
 }

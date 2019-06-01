@@ -125,9 +125,7 @@ public class SaveViaUpsert extends SaveViaInsert {
             sql.append(" and ").append(connector.quoteIdentifier(conditionColumns[i])).append(" = ?");
         }
 
-        String sqlString = sql.toString();
-        logSql(sqlString);
-        return sqlString;
+        return sql.toString();
     }
 
 }

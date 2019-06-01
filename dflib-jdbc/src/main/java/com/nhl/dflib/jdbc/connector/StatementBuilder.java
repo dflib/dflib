@@ -90,21 +90,21 @@ public class StatementBuilder {
         }
 
         return (params == null || params.size() == 0)
-                ? new SelectStatementNoParams(sql)
-                : new SelectStatementWithParams(sql, params, createBinderFactory());
+                ? new SelectStatementNoParams(sql, connector.getSqlLogger())
+                : new SelectStatementWithParams(sql, params, createBinderFactory(), connector.getSqlLogger());
     }
 
     protected UpdateStatement createUpdateStatement() {
         if (params != null) {
-            return new UpdateStatementParamsRow(sql, params, createBinderFactory());
+            return new UpdateStatementParamsRow(sql, params, createBinderFactory(), connector.getSqlLogger());
         } else if (batchParams != null) {
 
             return connector.getMetadata().supportsBatchUpdates()
-                    ? new UpdateStatementBatch(sql, batchParams, createBinderFactory())
-                    : new UpdateStatementNoBatch(sql, batchParams, createBinderFactory());
+                    ? new UpdateStatementBatch(sql, batchParams, createBinderFactory(), connector.getSqlLogger())
+                    : new UpdateStatementNoBatch(sql, batchParams, createBinderFactory(), connector.getSqlLogger());
 
         } else {
-            return new UpdateStatementNoParams(sql);
+            return new UpdateStatementNoParams(sql, connector.getSqlLogger());
         }
     }
 
@@ -113,4 +113,6 @@ public class StatementBuilder {
                 ? new FixedParamsBinderFactory(connector.getPreBindConverterFactory(), paramDescriptors)
                 : new CompiledFromStatementBinderFactory(connector.getPreBindConverterFactory());
     }
+
+
 }

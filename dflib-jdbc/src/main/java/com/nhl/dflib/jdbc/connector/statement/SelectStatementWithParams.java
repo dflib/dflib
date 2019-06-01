@@ -2,6 +2,7 @@ package com.nhl.dflib.jdbc.connector.statement;
 
 import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.connector.JdbcFunction;
+import com.nhl.dflib.jdbc.connector.SqlLogger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,19 +14,25 @@ public class SelectStatementWithParams implements SelectStatement {
     private String sql;
     private Series<?> params;
     private StatementBinderFactory binderFactory;
+    private SqlLogger logger;
 
     public SelectStatementWithParams(
             String sql,
             Series<?> params,
-            StatementBinderFactory binderFactory) {
+            StatementBinderFactory binderFactory,
+            SqlLogger logger) {
 
         this.sql = sql;
         this.params = params;
         this.binderFactory = binderFactory;
+        this.logger = logger;
     }
 
     @Override
     public <T> T select(Connection connection, JdbcFunction<ResultSet, T> resultReader) throws SQLException {
+
+        logger.log(sql, params);
+
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
             bind(ps);

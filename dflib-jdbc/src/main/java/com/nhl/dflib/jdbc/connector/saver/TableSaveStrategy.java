@@ -41,12 +41,6 @@ public abstract class TableSaveStrategy {
 
     protected abstract void doSave(Connection connection, DataFrame df);
 
-    protected void logSql(String sql) {
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Storing DataFrame... {}", sql);
-            // do not log SQL parameters (i.e. DataFrame)
-        }
-    }
 
     protected void log(String line, String... messageParams) {
         if (LOGGER.isInfoEnabled()) {
