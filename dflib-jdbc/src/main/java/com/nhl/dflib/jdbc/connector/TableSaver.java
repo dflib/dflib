@@ -87,7 +87,7 @@ public class TableSaver {
     }
 
     public void save(DataFrame df) {
-        LOGGER.info("Saving DataFrame...");
+        LOGGER.info("saving DataFrame...");
 
         // deprecated - conditionally add row numbers columns
         DataFrame toSave = rowNumberColumn != null
