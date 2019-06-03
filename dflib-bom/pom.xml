@@ -33,6 +33,11 @@
                 <artifactId>dflib-jdbc</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.nhl.dflib</groupId>
+                <artifactId>dflib-jupyter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

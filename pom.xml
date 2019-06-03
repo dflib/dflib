@@ -13,6 +13,7 @@
         <module>dflib</module>
         <module>dflib-csv</module>
         <module>dflib-jdbc</module>
+        <module>dflib-jupyter</module>
         <module>dflib-benchmark</module>
         <module>dflib-bom</module>
     </modules>
