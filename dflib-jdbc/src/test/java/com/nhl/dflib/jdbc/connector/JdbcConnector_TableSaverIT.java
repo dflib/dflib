@@ -247,11 +247,11 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
     public void testSave_SkipUpdatingUnchagedColumns() {
 
         T1.insertColumns("id", "name", "salary")
+                .values(4L, "n4", 8.)
                 .values(1L, "n1", 5.)
                 .values(2L, "n2", 6.)
-                .values(3L, "n3", 7.)
-                .values(4L, "n4", 8.)
                 .values(5L, "n5", 9.)
+                .values(3L, "n3", 7.)
                 .exec();
 
         DataFrame df = DataFrame.forSequenceFoldByRow(
@@ -276,7 +276,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
 
         DataFrame df3 = connector
                 .tableLoader("t1")
-                .load();
+                .load().sort("id", true);
 
         new DFAsserts(df3, columnNames(T1))
                 .expectHeight(5)

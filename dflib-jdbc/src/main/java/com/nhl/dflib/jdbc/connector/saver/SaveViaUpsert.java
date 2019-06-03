@@ -76,7 +76,18 @@ public class SaveViaUpsert extends SaveViaInsert {
         }
 
         if (updateIndex.size() > 0) {
-            update(connection, df.selectRows(updateIndex), previouslySaved);
+
+            // we can't use "previouslySaved" DF for calculating update deltas, as it is not in the same order as "df".
+            // So instead recreate ordered version of "previouslySaved" by getting data from the join df "insertAndUpdate"
+
+            Index mainColumns = df.getColumnsIndex();
+            Index joinedIndex = insertAndUpdate.getColumnsIndex().rangeOpenClosed(mainColumns.size(), mainColumns.size() * 2);
+            
+            DataFrame previouslySavedOrdered = insertAndUpdate
+                    .selectColumns(joinedIndex)
+                    .renameColumns(mainColumns.getLabels());
+
+            update(connection, df.selectRows(updateIndex), previouslySavedOrdered.selectRows(updateIndex));
         }
     }
 
@@ -96,6 +107,8 @@ public class SaveViaUpsert extends SaveViaInsert {
         // a batch UPDATE for each parameter pattern
 
         // TODO: speed up equality test by excluding "keyColumns" from both sides
+
+        // note that "toSave" and "previouslySaved" must be ordered by key for "eq" to be meaningful
         DataFrame eqMatrix = toSave.eq(previouslySaved);
         GroupBy byUpdatePattern = toSave
                 .addColumn(DIFF_COLUMN, eqMatrix.mapColumn(this::booleansAsBitSet))
@@ -113,8 +126,8 @@ public class SaveViaUpsert extends SaveViaInsert {
 
             DataFrame toUpdate = byUpdatePattern.getGroup(bits);
             String[] updateColumns = new String[w - cardinality];
-            for(int i = 0, j = 0; i < w; i++) {
-                if(!bits.get(i)) {
+            for (int i = 0, j = 0; i < w; i++) {
+                if (!bits.get(i)) {
                     updateColumns[j++] = toUpdate.getColumnsIndex().getLabel(i);
                 }
             }
