@@ -95,8 +95,8 @@ public class SaveViaUpsert extends SaveViaInsert {
         Index valueIndex = toSave.getColumnsIndex().dropLabels(keyColumns);
         String[] valueColumns = valueIndex.getLabels();
 
-        // TODO: don't UPDATE full rows. Do targeted updates only for updated values.. We already have a matrix above that
-        //  denotes cells with changes ("toSave.eq(previouslySaved)")
+        // TODO: don't UPDATE full rows. Do targeted updates only for updated values.. We already have a "eqMatrix" above
+        //  that denotes cells with changes
 
         // valueAndKeyIndex index is different from "df.getColumnsIndex()", as it has the order of columns matching
         // PreparedStatement parameters order
