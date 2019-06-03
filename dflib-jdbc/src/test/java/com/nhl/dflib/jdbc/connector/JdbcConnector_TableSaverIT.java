@@ -208,7 +208,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testSave_SkipUnchagedUpdate() {
+    public void testSave_SkipUpdatingUnchagedRows() {
 
         T1.insertColumns("id", "name", "salary")
                 .values(1L, "n1", 50_000.01)
@@ -241,6 +241,50 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 .expectRow(1, 2L, "n2", 120_000.)
                 .expectRow(2, 3L, "n3", 60_000.01)
                 .expectRow(3, 4L, "n4", 20_000.);
+    }
+
+    @Test
+    public void testSave_SkipUpdatingUnchagedColumns() {
+
+        T1.insertColumns("id", "name", "salary")
+                .values(1L, "n1", 5.)
+                .values(2L, "n2", 6.)
+                .values(3L, "n3", 7.)
+                .values(4L, "n4", 8.)
+                .values(5L, "n5", 9.)
+                .exec();
+
+        DataFrame df = DataFrame.forSequenceFoldByRow(
+                Index.forLabels("id", "name", "salary"),
+                1L, "n1_x", 5.,
+                2L, "n2", 6.01,
+                3L, "n3", 7.01,
+                4L, "n4", 8.,
+                5L, "n5_x", 9.01);
+
+        T1_AUDIT.deleteAll();
+        connector
+                .tableSaver("t1")
+                .mergeByPk()
+                .save(df);
+
+        T1_AUDIT.matcher().eq("op", "INSERT").assertMatches(0);
+
+        // counting updated rows, not update statements
+        // TODO: how do we test how the update was partitioned into statements?
+        T1_AUDIT.matcher().eq("op", "UPDATE").assertMatches(4);
+
+        DataFrame df3 = connector
+                .tableLoader("t1")
+                .load();
+
+        new DFAsserts(df3, columnNames(T1))
+                .expectHeight(5)
+                .expectRow(0, 1L, "n1_x", 5.)
+                .expectRow(1, 2L, "n2", 6.01)
+                .expectRow(2, 3L, "n3", 7.01)
+                .expectRow(3, 4L, "n4", 8.)
+                .expectRow(4, 5L, "n5_x", 9.01);
     }
 
     @Test

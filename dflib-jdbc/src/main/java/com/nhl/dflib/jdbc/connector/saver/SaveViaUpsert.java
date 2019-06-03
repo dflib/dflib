@@ -1,7 +1,7 @@
 package com.nhl.dflib.jdbc.connector.saver;
 
-import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.Hasher;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
@@ -13,6 +13,7 @@ import com.nhl.dflib.row.RowProxy;
 
 import java.sql.Connection;
 import java.util.Arrays;
+import java.util.BitSet;
 
 /**
  * @since 0.6
@@ -21,6 +22,8 @@ public class SaveViaUpsert extends SaveViaInsert {
 
     // used as a column for join indicator. Semi-random to avoid conflicts with real column names
     private static final String INDICATOR_COLUMN = "dflib_ind_%$#86AcD3";
+    private static final String DIFF_COLUMN = "dflib_dif_%4$#96Ac3";
+
 
     private String[] keyColumns;
 
@@ -68,8 +71,13 @@ public class SaveViaUpsert extends SaveViaInsert {
             throw new IllegalStateException();
         }
 
-        insert(connection, df.selectRows(insertIndex));
-        update(connection, df.selectRows(updateIndex), previouslySaved);
+        if (insertIndex.size() > 0) {
+            insert(connection, df.selectRows(insertIndex));
+        }
+
+        if (updateIndex.size() > 0) {
+            update(connection, df.selectRows(updateIndex), previouslySaved);
+        }
     }
 
     protected void insert(Connection connection, DataFrame toSave) {
@@ -78,51 +86,64 @@ public class SaveViaUpsert extends SaveViaInsert {
 
     protected void update(Connection connection, DataFrame toSave, DataFrame previouslySaved) {
 
-        if (toSave.width() == keyColumns.length) {
+        int w = toSave.width();
+        if (w == keyColumns.length) {
             log("All DataFrame columns are key columns. Skipping update.");
             return;
         }
 
-        // skip unchanged rows...
+        // partition data to save by updated value positions (using a BitSet), then skip unchanged rows, and generate
+        // a batch UPDATE for each parameter pattern
 
-        // TODO: we should be able to do logical column ops with BooleanSeries without having to resort to row
-        //  operations like "someFalse". E.g. bs1.and(bs2).and(bs3); Op.and(bs1, bs2, bs3)
-
+        // TODO: speed up equality test by excluding "keyColumns" from both sides
         DataFrame eqMatrix = toSave.eq(previouslySaved);
-        BooleanSeries alteredRowsIndex = eqMatrix.mapColumnAsBoolean(this::someFalse);
-        DataFrame toSaveWithChanges = toSave.selectRows(alteredRowsIndex);
+        GroupBy byUpdatePattern = toSave
+                .addColumn(DIFF_COLUMN, eqMatrix.mapColumn(this::booleansAsBitSet))
+                .group(DIFF_COLUMN);
 
-        Index valueIndex = toSave.getColumnsIndex().dropLabels(keyColumns);
-        String[] valueColumns = valueIndex.getLabels();
+        for (Object o : byUpdatePattern.getGroups()) {
+            BitSet bits = (BitSet) o;
 
-        // TODO: don't UPDATE full rows. Do targeted updates only for updated values.. We already have a "eqMatrix" above
-        //  that denotes cells with changes
+            int cardinality = bits.cardinality();
 
-        // valueAndKeyIndex index is different from "df.getColumnsIndex()", as it has the order of columns matching
-        // PreparedStatement parameters order
-        Index valueAndKeyIndex = valueIndex.addLabels(keyColumns);
-        DataFrame params = toSaveWithChanges.selectColumns(valueAndKeyIndex);
+            // no changes, skip group
+            if (cardinality == w) {
+                continue;
+            }
 
-        connector.createStatementBuilder(createUpdateStatement(keyColumns, valueColumns))
+            DataFrame toUpdate = byUpdatePattern.getGroup(bits);
+            String[] updateColumns = new String[w - cardinality];
+            for(int i = 0, j = 0; i < w; i++) {
+                if(!bits.get(i)) {
+                    updateColumns[j++] = toUpdate.getColumnsIndex().getLabel(i);
+                }
+            }
 
-                // use param descriptors from metadata, as (1) we can and (b) some DBs don't support real
-                // metadata in PreparedStatements. See e.g. https://github.com/nhl/dflib/issues/49
+            // reorder columns to start with updated values and end with keys to match PreparedStatement parameter ordering
+            Index valueIndex = Index.forLabels(updateColumns).dropLabels(keyColumns);
+            Index valueAndKeyIndex = valueIndex.addLabels(keyColumns);
 
-                .paramDescriptors(fixedParams(valueAndKeyIndex))
-                .bindBatch(params)
-                .update(connection);
+            connector.createStatementBuilder(createUpdateStatement(keyColumns, valueIndex.getLabels()))
+
+                    // use param descriptors from metadata, as (1) we can and (b) some DBs don't support real
+                    // metadata in PreparedStatements. See e.g. https://github.com/nhl/dflib/issues/49
+
+                    .paramDescriptors(fixedParams(valueAndKeyIndex))
+                    .bindBatch(toUpdate.selectColumns(valueAndKeyIndex))
+                    .update(connection);
+        }
     }
 
-    protected boolean someFalse(RowProxy booleanRow) {
+    protected BitSet booleansAsBitSet(RowProxy booleanRow) {
+        int w = booleanRow.getIndex().size();
+        BitSet s = new BitSet(w);
 
-        int len = booleanRow.getIndex().size();
-        for (int i = 0; i < len; i++) {
-            if (!(boolean) booleanRow.get(i)) {
-                return true;
+        for (int i = 0; i < w; i++) {
+            if ((boolean) booleanRow.get(i)) {
+                s.set(i);
             }
         }
-
-        return false;
+        return s;
     }
 
     protected Hasher keyHasher() {
