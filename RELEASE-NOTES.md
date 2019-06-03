@@ -1,5 +1,6 @@
 ## Release 0.6
 
+* #12 dflib-jdbc: TableSaver to merge data by key 
 * #21 Add LocalDate and LocalDateTime converters 
 * #23 Simplifying join API
 * #24 Tabular printer should right-align numbers and booleans
