@@ -85,8 +85,8 @@ public class SaveViaUpsert extends SaveViaInsert {
 
         // skip unchanged rows...
 
-        // TODO: we should be able to do logical ops with BooleanSeries without having to resort to row operations. E.g.
-        //  bs1.and(bs2).and(bs3); Op.and(bs1, bs2, bs3)
+        // TODO: we should be able to do logical column ops with BooleanSeries without having to resort to row
+        //  operations like "someFalse". E.g. bs1.and(bs2).and(bs3); Op.and(bs1, bs2, bs3)
 
         DataFrame eqMatrix = toSave.eq(previouslySaved);
         BooleanSeries alteredRowsIndex = eqMatrix.mapColumnAsBoolean(this::someFalse);
