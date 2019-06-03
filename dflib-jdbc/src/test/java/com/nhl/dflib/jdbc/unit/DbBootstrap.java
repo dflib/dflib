@@ -41,6 +41,15 @@ public class DbBootstrap {
                 .build();
     }
 
+    public Table getT1Audit() {
+        return runtime.getInstance(DatabaseChannelFactory.class)
+                .getChannel()
+                .newTable("t1_audit")
+                .columnNames("id", "op", "op_id")
+                .initColumnTypesFromDBMetadata()
+                .build();
+    }
+
     public Table getT2() {
         return runtime.getInstance(DatabaseChannelFactory.class)
                 .getChannel()

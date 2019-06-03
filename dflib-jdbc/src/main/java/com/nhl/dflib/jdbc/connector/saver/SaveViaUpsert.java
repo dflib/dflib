@@ -8,8 +8,10 @@ import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
 import com.nhl.dflib.jdbc.connector.TableLoader;
 import com.nhl.dflib.join.JoinIndicator;
+import com.nhl.dflib.row.RowProxy;
 
 import java.sql.Connection;
+import java.util.Arrays;
 
 /**
  * @since 0.6
@@ -31,13 +33,12 @@ public class SaveViaUpsert extends SaveViaInsert {
 
         DataFrame keyDf = df.selectColumns(Index.forLabels(keyColumns));
 
-        DataFrame toUpdate = new TableLoader(connector, tableName)
-                // TODO: include all columns from "df" if we want to track changes before doing update
-                .includeColumns(keyColumns)
+        DataFrame previouslySaved = new TableLoader(connector, tableName)
+                .includeColumns(df.getColumnsIndex().getLabels())
                 .eq(keyDf)
                 .load();
 
-        if (toUpdate.height() == 0) {
+        if (previouslySaved.height() == 0) {
             insert(connection, df);
             return;
         }
@@ -45,46 +46,62 @@ public class SaveViaUpsert extends SaveViaInsert {
         DataFrame insertAndUpdate = df.leftJoin()
                 .on(keyHasher())
                 .indicatorColumn(INDICATOR_COLUMN)
-                .with(toUpdate);
+                .with(previouslySaved);
 
         Series<JoinIndicator> index = insertAndUpdate.getColumn(INDICATOR_COLUMN);
         IntSeries insertIndex = index.index(i -> i == JoinIndicator.left_only);
         IntSeries updateIndex = index.index(i -> i == JoinIndicator.both);
 
-        // if unique key
-        if (insertAndUpdate.height() == df.height()) {
-            insert(connection, df.selectRows(insertIndex));
-            update(connection, df.selectRows(updateIndex));
+        int heightDelta = insertAndUpdate.height() - df.height();
+        if (heightDelta > 0) {
+            String message = String.format("Duplicate rows in the database table %s using key columns %s. Specify key columns that produce unique DB rows.",
+                    tableName,
+                    Arrays.toString(keyColumns));
+
+            throw new IllegalStateException(message);
+
         }
-        // hmm.. the key was not unique. TODO: complain?
-        else {
-            DataFrame normalInsertAndUpdate = insertAndUpdate.selectColumns(df.getColumnsIndex());
-            insert(connection, normalInsertAndUpdate.selectRows(insertIndex));
-            update(connection, normalInsertAndUpdate.selectRows(updateIndex));
+        // this should be impossible as insertAndUpdate is a left join, so its size is at least the same as the left side DF...
+        // Still keeping the check for sanity...
+        else if (heightDelta < 0) {
+            throw new IllegalStateException();
         }
+
+        insert(connection, df.selectRows(insertIndex));
+        update(connection, df.selectRows(updateIndex), previouslySaved);
     }
 
-    protected void insert(Connection connection, DataFrame df) {
-        super.doSave(connection, df);
+    protected void insert(Connection connection, DataFrame toSave) {
+        super.doSave(connection, toSave);
     }
 
-    protected void update(Connection connection, DataFrame df) {
+    protected void update(Connection connection, DataFrame toSave, DataFrame previouslySaved) {
 
-        if (df.width() == keyColumns.length) {
+        if (toSave.width() == keyColumns.length) {
             log("All DataFrame columns are key columns. Skipping update.");
             return;
         }
 
-        // TODO: Minimize DB load - (1) don't update rows that haven't changed (2) for the rest update only the columns
-        //  with changed values
+        // skip unchanged rows...
 
-        Index valueIndex = df.getColumnsIndex().dropLabels(keyColumns);
+        // TODO: we should be able to do logical ops with BooleanSeries without having to resort to row operations. E.g.
+        //  bs1.and(bs2).and(bs3); Op.and(bs1, bs2, bs3)
+
+        // TODO: we should be able to select rows by BooleanSeries
+
+        IntSeries changedIndex = toSave.eq(previouslySaved).mapColumn(this::someFalse).index(b -> b);
+        DataFrame toSaveWithChanges = toSave.selectRows(changedIndex);
+
+        Index valueIndex = toSave.getColumnsIndex().dropLabels(keyColumns);
         String[] valueColumns = valueIndex.getLabels();
 
-        // this one is different from "df.getColumnsIndex()", as it has the order of columns matching PreparedStatement
-        // parameters order
+        // TODO: don't UPDATE full rows. Do targeted updates only for updated values.. We already have a matrix above that
+        //  denotes cells with changes ("toSave.eq(previouslySaved)")
+
+        // valueAndKeyIndex index is different from "df.getColumnsIndex()", as it has the order of columns matching
+        // PreparedStatement parameters order
         Index valueAndKeyIndex = valueIndex.addLabels(keyColumns);
-        DataFrame params = df.selectColumns(valueAndKeyIndex);
+        DataFrame params = toSaveWithChanges.selectColumns(valueAndKeyIndex);
 
         connector.createStatementBuilder(createUpdateStatement(keyColumns, valueColumns))
 
@@ -94,6 +111,18 @@ public class SaveViaUpsert extends SaveViaInsert {
                 .paramDescriptors(fixedParams(valueAndKeyIndex))
                 .bindBatch(params)
                 .update(connection);
+    }
+
+    protected boolean someFalse(RowProxy booleanRow) {
+
+        int len = booleanRow.getIndex().size();
+        for (int i = 0; i < len; i++) {
+            if (!(boolean) booleanRow.get(i)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected Hasher keyHasher() {

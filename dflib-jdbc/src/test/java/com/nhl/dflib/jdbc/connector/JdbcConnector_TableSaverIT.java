@@ -186,10 +186,14 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 3L, "n3", 60_000.01,
                 4L, "n4", 20_000.);
 
+        T1_AUDIT.deleteAll();
         connector
                 .tableSaver("t1")
                 .mergeByColumns("name", "id")
                 .save(df);
+
+        T1_AUDIT.matcher().eq("op", "INSERT").assertMatches(2);
+        T1_AUDIT.matcher().eq("op", "UPDATE").assertMatches(1);
 
         DataFrame df3 = connector
                 .tableLoader("t1")
@@ -198,6 +202,42 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
         new DFAsserts(df3, columnNames(T1))
                 .expectHeight(4)
                 .expectRow(0, 1L, "n1", 50_000.02)
+                .expectRow(1, 2L, "n2", 120_000.)
+                .expectRow(2, 3L, "n3", 60_000.01)
+                .expectRow(3, 4L, "n4", 20_000.);
+    }
+
+    @Test
+    public void testSave_SkipUnchagedUpdate() {
+
+        T1.insertColumns("id", "name", "salary")
+                .values(1L, "n1", 50_000.01)
+                .values(2L, "n2", 120_000.)
+                .exec();
+
+        DataFrame df = DataFrame.forSequenceFoldByRow(
+                Index.forLabels("id", "name", "salary"),
+                1L, "n1_x", 50_000.02,
+                2L, "n2", 120_000.,
+                3L, "n3", 60_000.01,
+                4L, "n4", 20_000.);
+
+        T1_AUDIT.deleteAll();
+        connector
+                .tableSaver("t1")
+                .mergeByPk()
+                .save(df);
+
+        T1_AUDIT.matcher().eq("op", "INSERT").assertMatches(2);
+        T1_AUDIT.matcher().eq("op", "UPDATE").assertMatches(1);
+
+        DataFrame df3 = connector
+                .tableLoader("t1")
+                .load();
+
+        new DFAsserts(df3, columnNames(T1))
+                .expectHeight(4)
+                .expectRow(0, 1L, "n1_x", 50_000.02)
                 .expectRow(1, 2L, "n2", 120_000.)
                 .expectRow(2, 3L, "n3", 60_000.01)
                 .expectRow(3, 4L, "n4", 20_000.);
