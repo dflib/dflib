@@ -29,10 +29,14 @@ public class SqlLogger {
     public void log(String sql, Series<?> params) {
         if (LOGGER.isInfoEnabled()) {
 
+            int plen = params.size();
+            String label = plen == 1 ? "1 param [" : plen + " params [";
+
             StringBuilder log = new StringBuilder(sql)
-                    .append(" bind: [")
+                    .append(" | bind ")
+                    .append(label)
                     .append(paramPrinter.toString(params))
-                    .append("]");
+                    .append("] ");
 
             LOGGER.info(log.toString());
         }
@@ -41,8 +45,18 @@ public class SqlLogger {
     public void log(String sql, DataFrame paramsBatch) {
         if (LOGGER.isInfoEnabled()) {
 
+            int ph = paramsBatch.height();
+            String slabel = ph == 1 ? "1 set of " : ph + " sets of ";
+
+            int pw = paramsBatch.width();
+            String plabel = pw == 1 ? "1 param [" : pw + " params [";
+
+
+
             StringBuilder log = new StringBuilder(sql)
-                    .append(" bind: [")
+                    .append(" | bind ")
+                    .append(slabel)
+                    .append(plabel)
                     .append(paramPrinter.toString(paramsBatch))
                     .append("]");
 

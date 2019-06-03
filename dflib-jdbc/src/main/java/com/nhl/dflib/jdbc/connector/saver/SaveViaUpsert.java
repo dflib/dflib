@@ -82,7 +82,7 @@ public class SaveViaUpsert extends SaveViaInsert {
 
             Index mainColumns = df.getColumnsIndex();
             Index joinedIndex = insertAndUpdate.getColumnsIndex().rangeOpenClosed(mainColumns.size(), mainColumns.size() * 2);
-            
+
             DataFrame previouslySavedOrdered = insertAndUpdate
                     .selectColumns(joinedIndex)
                     .renameColumns(mainColumns.getLabels());
