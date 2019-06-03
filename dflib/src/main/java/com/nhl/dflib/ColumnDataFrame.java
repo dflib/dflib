@@ -222,6 +222,17 @@ public class ColumnDataFrame implements DataFrame {
         return new RowMappedSeries<>(this, rowMapper);
     }
 
+    @Override
+    public BooleanSeries mapColumnAsBoolean(RowToBooleanValueMapper rowMapper) {
+        // don't bother to make it lazy... boolean columns are very compact compared to the rest of the data set
+        BooleanMutableList data = new BooleanMutableList(height());
+
+        for (RowProxy row : this) {
+            data.add(rowMapper.map(row));
+        }
+
+        return data.toBooleanSeries();
+    }
 
     @Override
     public DataFrame renameColumns(UnaryOperator<String> renameFunction) {
@@ -253,6 +264,17 @@ public class ColumnDataFrame implements DataFrame {
         Series<?>[] newColumnsData = new Series[width];
         for (int i = 0; i < width; i++) {
             newColumnsData[i] = dataColumns[i].select(rowPositions);
+        }
+
+        return new ColumnDataFrame(columnsIndex, newColumnsData);
+    }
+
+    @Override
+    public DataFrame selectRows(BooleanSeries condition) {
+        int width = width();
+        Series<?>[] newColumnsData = new Series[width];
+        for (int i = 0; i < width; i++) {
+            newColumnsData[i] = dataColumns[i].select(condition);
         }
 
         return new ColumnDataFrame(columnsIndex, newColumnsData);

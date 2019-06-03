@@ -53,6 +53,32 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         return new DoubleArraySeries(data);
     }
 
+
+    @Override
+    public DoubleSeries selectDouble(BooleanSeries positions) {
+        int s = size();
+        int ps = positions.size();
+
+        if (s != ps) {
+            throw new IllegalArgumentException("Positions size " + ps + " is not the same as this size " + s);
+        }
+
+        DoubleMutableList data = new DoubleMutableList();
+
+        for (int i = 0; i < size(); i++) {
+            if (positions.getBoolean(i)) {
+                data.add(getDouble(i));
+            }
+        }
+
+        return data.toDoubleSeries();
+    }
+
+    @Override
+    public Series<Double> select(BooleanSeries positions) {
+        return selectDouble(positions);
+    }
+
     private Series<Double> selectAsObjectSeries(IntSeries positions) {
 
         int h = positions.size();

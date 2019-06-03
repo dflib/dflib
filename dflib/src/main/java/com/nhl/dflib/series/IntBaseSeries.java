@@ -54,6 +54,31 @@ public abstract class IntBaseSeries implements IntSeries {
         return new IntArraySeries(data);
     }
 
+    @Override
+    public IntSeries selectInt(BooleanSeries positions) {
+        int s = size();
+        int ps = positions.size();
+
+        if (s != ps) {
+            throw new IllegalArgumentException("Positions size " + ps + " is not the same as this size " + s);
+        }
+
+        IntMutableList data = new IntMutableList();
+
+        for (int i = 0; i < size(); i++) {
+            if (positions.getBoolean(i)) {
+                data.add(getInt(i));
+            }
+        }
+
+        return data.toIntSeries();
+    }
+
+    @Override
+    public Series<Integer> select(BooleanSeries positions) {
+        return selectInt(positions);
+    }
+
     private Series<Integer> selectAsObjectSeries(IntSeries positions) {
 
         int h = positions.size();

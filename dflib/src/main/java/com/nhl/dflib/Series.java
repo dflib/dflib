@@ -89,6 +89,13 @@ public interface Series<T> {
     Series<T> select(IntSeries positions);
 
     /**
+     * @since 0.6
+     */
+    Series<T> select(BooleanSeries positions);
+
+    // TODO: can't have "select(boolean...)" as it conflicts with "select(int...)". Should we change to "select(int, int...)" ?
+
+    /**
      * Returns an IntSeries that represents positions in the Series that match the predicate. The returned value can be
      * used to "select" data from this Series or from DataFrame containing this Series.
      *

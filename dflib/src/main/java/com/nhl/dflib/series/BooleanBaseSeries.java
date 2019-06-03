@@ -50,6 +50,31 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         return new BooleanArraySeries(data);
     }
 
+    @Override
+    public BooleanSeries selectBoolean(BooleanSeries positions) {
+        int s = size();
+        int ps = positions.size();
+
+        if (s != ps) {
+            throw new IllegalArgumentException("Positions size " + ps + " is not the same as this size " + s);
+        }
+
+        BooleanMutableList data = new BooleanMutableList();
+
+        for (int i = 0; i < size(); i++) {
+            if (positions.getBoolean(i)) {
+                data.add(getBoolean(i));
+            }
+        }
+
+        return data.toBooleanSeries();
+    }
+
+    @Override
+    public Series<Boolean> select(BooleanSeries positions) {
+        return selectBoolean(positions);
+    }
+
     private Series<Boolean> selectAsObjectSeries(IntSeries positions) {
 
         int h = positions.size();

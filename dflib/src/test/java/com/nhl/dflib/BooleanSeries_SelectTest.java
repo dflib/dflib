@@ -8,28 +8,36 @@ import static org.junit.Assert.*;
 public class BooleanSeries_SelectTest {
 
     @Test
-    public void test() {
+    public void testPositional() {
         Series<Boolean> s = BooleanSeries.forBooleans(true, false, true).select(2, 1);
         new SeriesAsserts(s).expectData(true, false);
         assertTrue(s instanceof BooleanSeries);
     }
 
     @Test
-    public void test_Empty() {
+    public void testPositional_Empty() {
         Series<Boolean> s = BooleanSeries.forBooleans(true, false, true).select();
         new SeriesAsserts(s).expectData();
         assertTrue(s instanceof BooleanSeries);
     }
 
     @Test(expected = ArrayIndexOutOfBoundsException.class)
-    public void test_OutOfBounds() {
+    public void testPosition_OutOfBounds() {
         BooleanSeries.forBooleans(true, false, true).select(0, 3);
     }
 
     @Test
-    public void testNulls() {
+    public void testPositional_Nulls() {
         Series<Boolean> s = BooleanSeries.forBooleans(true, false, true).select(2, 1, -1);
         new SeriesAsserts(s).expectData(true, false, null);
         assertFalse(s instanceof BooleanSeries);
+    }
+
+    @Test
+    public void testBoolean() {
+        BooleanSeries condition = BooleanSeries.forBooleans(false, true, true);
+        Series<Boolean> s = BooleanSeries.forBooleans(true, false, true).select(condition);
+        new SeriesAsserts(s).expectData(false, true);
+        assertTrue(s instanceof BooleanSeries);
     }
 }

@@ -69,6 +69,27 @@ public abstract class ObjectSeries<T> implements Series<T> {
     }
 
     @Override
+    public Series<T> select(BooleanSeries positions) {
+
+        int s = size();
+        int ps = positions.size();
+
+        if (s != ps) {
+            throw new IllegalArgumentException("Positions size " + ps + " is not the same as this size " + s);
+        }
+
+        MutableList<T> data = new MutableList<>();
+
+        for (int i = 0; i < size(); i++) {
+            if (positions.getBoolean(i)) {
+                data.add(get(i));
+            }
+        }
+
+        return data.toSeries();
+    }
+
+    @Override
     public IntSeries index(ValuePredicate<T> predicate) {
         IntMutableList index = new IntMutableList();
 

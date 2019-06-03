@@ -26,6 +26,7 @@
 * #49 dflib-jdbc: alternative way for TableSaver to find the types of PreparedStatement parameters
 * #50 Hash Join builder 
 * #51 "indicator" column for joins
+* #52 Allow selection by BooleanSeries
 
 ## Release 0.5
 

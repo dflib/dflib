@@ -53,6 +53,31 @@ public abstract class LongBaseSeries implements LongSeries {
         return new LongArraySeries(data);
     }
 
+    @Override
+    public LongSeries selectLong(BooleanSeries positions) {
+        int s = size();
+        int ps = positions.size();
+
+        if (s != ps) {
+            throw new IllegalArgumentException("Positions size " + ps + " is not the same as this size " + s);
+        }
+
+        LongMutableList data = new LongMutableList();
+
+        for (int i = 0; i < size(); i++) {
+            if (positions.getBoolean(i)) {
+                data.add(getLong(i));
+            }
+        }
+
+        return data.toLongSeries();
+    }
+
+    @Override
+    public Series<Long> select(BooleanSeries positions) {
+        return selectLong(positions);
+    }
+
     private Series<Long> selectAsObjectSeries(IntSeries positions) {
 
         int h = positions.size();

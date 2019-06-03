@@ -33,6 +33,8 @@ public interface LongSeries extends Series<Long> {
 
     LongSeries tailLong(int len);
 
+    LongSeries selectLong(BooleanSeries positions);
+
     /**
      * Returns an IntSeries that represents positions in the Series that match the predicate. The returned value can be
      * used to "select" data from this Series or from DataFrame containing this Series. Same as {@link #index(ValuePredicate)},

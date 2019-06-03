@@ -1,5 +1,6 @@
 package com.nhl.dflib.jdbc.connector.saver;
 
+import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Hasher;
 import com.nhl.dflib.Index;
@@ -87,10 +88,9 @@ public class SaveViaUpsert extends SaveViaInsert {
         // TODO: we should be able to do logical ops with BooleanSeries without having to resort to row operations. E.g.
         //  bs1.and(bs2).and(bs3); Op.and(bs1, bs2, bs3)
 
-        // TODO: we should be able to select rows by BooleanSeries
-
-        IntSeries changedIndex = toSave.eq(previouslySaved).mapColumn(this::someFalse).index(b -> b);
-        DataFrame toSaveWithChanges = toSave.selectRows(changedIndex);
+        DataFrame eqMatrix = toSave.eq(previouslySaved);
+        BooleanSeries alteredRowsIndex = eqMatrix.mapColumnAsBoolean(this::someFalse);
+        DataFrame toSaveWithChanges = toSave.selectRows(alteredRowsIndex);
 
         Index valueIndex = toSave.getColumnsIndex().dropLabels(keyColumns);
         String[] valueColumns = valueIndex.getLabels();

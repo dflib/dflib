@@ -33,6 +33,8 @@ public interface DoubleSeries extends Series<Double> {
 
     DoubleSeries tailDouble(int len);
 
+    DoubleSeries selectDouble(BooleanSeries positions);
+
     /**
      * Returns an IntSeries that represents positions in the Series that match the predicate. The returned value can be
      * used to "select" data from this Series or from DataFrame containing this Series. Same as {@link #index(ValuePredicate)},
