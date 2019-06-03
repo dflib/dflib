@@ -392,9 +392,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new DataFrame
      * @since 0.6
      */
-    default DataFrame toLongColumn(String columnLabel) {
+    default DataFrame toLongColumn(String columnLabel, long forNull) {
         int pos = getColumnsIndex().position(columnLabel);
-        return toLongColumn(pos);
+        return toLongColumn(pos, forNull);
     }
 
     /**
@@ -402,8 +402,8 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new DataFrame
      * @since 0.6
      */
-    default DataFrame toLongColumn(int pos) {
-        return toLongColumn(pos, LongValueMapper.fromObject());
+    default DataFrame toLongColumn(int pos, long forNull) {
+        return toLongColumn(pos, LongValueMapper.fromObject(forNull));
     }
 
 

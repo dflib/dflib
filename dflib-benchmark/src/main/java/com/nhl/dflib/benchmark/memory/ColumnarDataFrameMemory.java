@@ -5,6 +5,8 @@ import com.nhl.dflib.benchmark.DataGenerator;
 import com.nhl.dflib.benchmark.ValueMaker;
 import com.nhl.dflib.benchmark.memory.benchmark.MemoryTest;
 
+import java.util.BitSet;
+
 public class ColumnarDataFrameMemory extends MemoryTest {
 
     private static final int ROWS = 1_000_000;
@@ -20,10 +22,12 @@ public class ColumnarDataFrameMemory extends MemoryTest {
         test.run("doubleCells", test::doubleCells, cells);
         test.run("primitiveDoubleCells", test::primitiveDoubleCells, cells);
         test.run("longCells", test::longCells, cells);
+        test.run("primitiveLongCells", test::primitiveLongCells, cells);
         test.run("boolCells", test::boolCells, cells);
         test.run("primitiveBoolCells", test::primitiveBoolCells, cells);
         test.run("repeatingStringCells", test::repeatingStringCells, cells);
         test.run("randStringCells", test::randStringCells, cells);
+        test.run("bitSetCells", test::bitSetCells, cells);
     }
 
     public DataFrame nullCells() {
@@ -70,6 +74,15 @@ public class ColumnarDataFrameMemory extends MemoryTest {
         return df;
     }
 
+    public DataFrame primitiveLongCells() {
+        DataFrame df = DataGenerator.columnarDF(ROWS, ValueMaker.longSeq(), ValueMaker.longSeq())
+                .toLongColumn(0, -1L)
+                .toLongColumn(1, -1L);
+        df.materialize().iterator();
+        return df;
+    }
+
+
     public DataFrame boolCells() {
         DataFrame df = DataGenerator.columnarDF(ROWS, ValueMaker.booleanSeq(), ValueMaker.booleanSeq());
         df.materialize().iterator();
@@ -96,6 +109,22 @@ public class ColumnarDataFrameMemory extends MemoryTest {
         DataFrame df = DataGenerator.columnarDF(ROWS,
                 ValueMaker.semiRandomStringSeq("abc", ROWS),
                 ValueMaker.semiRandomStringSeq("xyz", ROWS));
+        df.materialize().iterator();
+        return df;
+    }
+
+    public DataFrame bitSetCells() {
+        ValueMaker<Integer> intMaker = ValueMaker.intSeq(0, 1024);
+        ValueMaker<BitSet> bitsMaker = () -> {
+            BitSet s = new BitSet();
+            s.set(intMaker.get());
+            return s;
+
+        };
+
+        DataFrame df = DataGenerator.columnarDF(ROWS,
+                bitsMaker,
+                bitsMaker);
         df.materialize().iterator();
         return df;
     }
