@@ -20,6 +20,7 @@
 * #39 DataFrame.mapColumn
 * #40 "Series.unique" - a method to produce Series with non-repeating values
 * #43 Column converter to enums for categorical data 
+* #44 "dflib-jupyter" - integration into Jupyter notebook
 * #45 DataFrame.renameColumns(UnaryOperator<String>) to upper/lower case column names
 * #46 Move interfaces with public static methods for creating lambdas to the root package
 * #47 Series.map 
