@@ -4,8 +4,8 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.seriesbuilder.IntAccumulator;
-import com.nhl.dflib.seriesbuilder.ObjectAccumulator;
+import com.nhl.dflib.series.builder.IntAccumulator;
+import com.nhl.dflib.series.builder.ObjectAccumulator;
 
 public class DataGenerator {
 

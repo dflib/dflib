@@ -7,11 +7,11 @@ import com.nhl.dflib.LongSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.ValueMapper;
 import com.nhl.dflib.ValuePredicate;
-import com.nhl.dflib.seriesbuilder.BooleanAccumulator;
-import com.nhl.dflib.seriesbuilder.IntAccumulator;
-import com.nhl.dflib.seriesbuilder.LongAccumulator;
-import com.nhl.dflib.seriesbuilder.ObjectAccumulator;
-import com.nhl.dflib.seriesbuilder.UniqueLongAccumulator;
+import com.nhl.dflib.series.builder.BooleanAccumulator;
+import com.nhl.dflib.series.builder.IntAccumulator;
+import com.nhl.dflib.series.builder.LongAccumulator;
+import com.nhl.dflib.series.builder.ObjectAccumulator;
+import com.nhl.dflib.series.builder.UniqueLongAccumulator;
 import com.nhl.dflib.concat.SeriesConcat;
 
 import java.util.Objects;

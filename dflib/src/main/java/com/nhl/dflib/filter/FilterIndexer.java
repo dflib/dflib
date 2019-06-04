@@ -3,7 +3,7 @@ package com.nhl.dflib.filter;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.RowPredicate;
-import com.nhl.dflib.seriesbuilder.IntAccumulator;
+import com.nhl.dflib.series.builder.IntAccumulator;
 
 public class FilterIndexer {
 

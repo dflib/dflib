@@ -1,4 +1,4 @@
-package com.nhl.dflib.seriesbuilder;
+package com.nhl.dflib.series.builder;
 
 import java.util.HashSet;
 import java.util.Set;

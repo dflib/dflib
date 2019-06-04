@@ -3,7 +3,7 @@ package com.nhl.dflib.csv;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.seriesbuilder.SeriesBuilder;
+import com.nhl.dflib.series.builder.SeriesBuilder;
 import org.apache.commons.csv.CSVRecord;
 
 import java.util.Iterator;

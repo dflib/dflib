@@ -1,31 +1,30 @@
-package com.nhl.dflib.seriesbuilder;
+package com.nhl.dflib.series.builder;
 
-import com.nhl.dflib.LongSeries;
-import com.nhl.dflib.series.LongArraySeries;
+import com.nhl.dflib.BooleanSeries;
+import com.nhl.dflib.series.BooleanArraySeries;
 
 import java.util.Arrays;
 
 /**
- * An expandable list of primitive long values that has minimal overhead and can be converted to compact and efficient
- * immutable {@link com.nhl.dflib.LongSeries}.
- *
  * @since 0.6
  */
-public class LongAccumulator {
+public class BooleanAccumulator {
 
-    private long[] data;
+    // TODO: bitmap?
+    private boolean[] data;
     private int size;
 
-    public LongAccumulator() {
+    public BooleanAccumulator() {
         this(10);
     }
 
-    public LongAccumulator(int capacity) {
+    public BooleanAccumulator(int capacity) {
         this.size = 0;
-        this.data = new long[capacity];
+        this.data = new boolean[capacity];
     }
 
-    public void fill(int from, int to, long value) {
+    public void fill(int from, int to, boolean value) {
+
         if (to - from < 1) {
             return;
         }
@@ -38,7 +37,7 @@ public class LongAccumulator {
         size += to - from;
     }
 
-    public void add(long value) {
+    public void add(boolean value) {
 
         if (size == data.length) {
             expand(data.length * 2);
@@ -47,31 +46,32 @@ public class LongAccumulator {
         data[size++] = value;
     }
 
-    public LongSeries toLongSeries() {
-        long[] data = compactData();
+    public BooleanSeries toBooleanSeries() {
+        boolean[] data = compactData();
 
         // making sure no one can change the series via the Mutable List anymore
         this.data = null;
 
-        return new LongArraySeries(data, 0, size);
+        return new BooleanArraySeries(data, 0, size);
     }
 
     public int size() {
         return size;
     }
 
-    private long[] compactData() {
+    private boolean[] compactData() {
         if (data.length == size) {
             return data;
         }
 
-        long[] newData = new long[size];
+        boolean[] newData = new boolean[size];
         System.arraycopy(data, 0, newData, 0, size);
         return newData;
     }
 
     private void expand(int newCapacity) {
-        long[] newData = new long[newCapacity];
+
+        boolean[] newData = new boolean[newCapacity];
         System.arraycopy(data, 0, newData, 0, size);
 
         this.data = newData;

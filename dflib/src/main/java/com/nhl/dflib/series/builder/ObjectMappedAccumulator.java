@@ -1,9 +1,7 @@
-package com.nhl.dflib.seriesbuilder;
+package com.nhl.dflib.series.builder;
 
 import com.nhl.dflib.Series;
-import com.nhl.dflib.seriesbuilder.ObjectAccumulator;
 import com.nhl.dflib.ValueMapper;
-import com.nhl.dflib.seriesbuilder.SeriesBuilder;
 
 /**
  * @param <I>

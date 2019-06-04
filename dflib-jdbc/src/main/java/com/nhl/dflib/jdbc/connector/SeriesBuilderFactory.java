@@ -1,11 +1,11 @@
 package com.nhl.dflib.jdbc.connector;
 
-import com.nhl.dflib.seriesbuilder.BooleanMappedAccumulator;
-import com.nhl.dflib.seriesbuilder.DoubleMappedAccumulator;
-import com.nhl.dflib.seriesbuilder.IntMappedAccumulator;
-import com.nhl.dflib.seriesbuilder.LongMappedAccumulator;
-import com.nhl.dflib.seriesbuilder.ObjectMappedAccumulator;
-import com.nhl.dflib.seriesbuilder.SeriesBuilder;
+import com.nhl.dflib.series.builder.BooleanMappedAccumulator;
+import com.nhl.dflib.series.builder.DoubleMappedAccumulator;
+import com.nhl.dflib.series.builder.IntMappedAccumulator;
+import com.nhl.dflib.series.builder.LongMappedAccumulator;
+import com.nhl.dflib.series.builder.ObjectMappedAccumulator;
+import com.nhl.dflib.series.builder.SeriesBuilder;
 
 import java.sql.Date;
 import java.sql.ResultSet;

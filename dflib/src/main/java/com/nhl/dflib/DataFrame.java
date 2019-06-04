@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.seriesbuilder.IntAccumulator;
+import com.nhl.dflib.series.builder.IntAccumulator;
 import com.nhl.dflib.join.JoinBuilder;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.row.RowProxy;

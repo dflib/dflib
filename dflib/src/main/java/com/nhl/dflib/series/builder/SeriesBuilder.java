@@ -1,4 +1,4 @@
-package com.nhl.dflib.seriesbuilder;
+package com.nhl.dflib.series.builder;
 
 import com.nhl.dflib.Series;
 

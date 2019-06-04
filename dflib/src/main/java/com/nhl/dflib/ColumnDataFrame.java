@@ -1,9 +1,9 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.seriesbuilder.BooleanAccumulator;
-import com.nhl.dflib.seriesbuilder.DoubleAccumulator;
-import com.nhl.dflib.seriesbuilder.IntAccumulator;
-import com.nhl.dflib.seriesbuilder.LongAccumulator;
+import com.nhl.dflib.series.builder.BooleanAccumulator;
+import com.nhl.dflib.series.builder.DoubleAccumulator;
+import com.nhl.dflib.series.builder.IntAccumulator;
+import com.nhl.dflib.series.builder.LongAccumulator;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.filter.FilterIndexer;
