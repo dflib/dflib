@@ -1,7 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.collection.IntMutableList;
-import com.nhl.dflib.join.HashJoinBuilder;
+import com.nhl.dflib.join.JoinBuilder;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.ArraySeries;
@@ -628,65 +628,51 @@ public interface DataFrame extends Iterable<RowProxy> {
     DataFrame vConcat(JoinType how, DataFrame... dfs);
 
     /**
-     * Joins this DataFrame with another DataFrame based on a row predicate and specified join semantics. Uses
-     * <a href="https://en.wikipedia.org/wiki/Nested_loop_join">"nested loop join"</a> algorithm, which is rather slow,
-     * exhibiting O(N*M) performance. Most of the time you should consider using faster "hash" joins instead, e.g.
-     * {@link #innerJoin(DataFrame, Hasher, Hasher)}. Use this type of join only when a predicate can not be reduced
-     * to a simple equality of hashes.
-     *
-     * @param df a DataFrame to join with this one
-     * @param p  join condition of a pair of rows
-     * @return a DataFrame that is a result of this join
-     */
-    default DataFrame innerJoin(DataFrame df, JoinPredicate p) {
-        return join(df, p, JoinType.inner);
-    }
-
-    /**
-     * Joins this DataFrame with another DataFrame based on a row predicate and specified join semantics. Uses
-     * <a href="https://en.wikipedia.org/wiki/Nested_loop_join">"nested loop join"</a> algorithm, which is rather slow,
-     * exhibiting O(N*M) performance. Most of the time you should consider using faster "hash" joins instead, e.g.
-     * {@link #join(DataFrame, Hasher, Hasher, JoinType)}. Use this type of join only when a predicate can not be reduced
-     * to a simple equality of hashes.
-     *
-     * @param df  a DataFrame to join with this one
-     * @param p   join condition of a pair of rows
-     * @param how join semantics (inner, left, right, full)
-     * @return a DataFrame that is a result of this join
-     */
-    DataFrame join(DataFrame df, JoinPredicate p, JoinType how);
-
-    /**
      * @return an inner join "hash" join builder
      * @since 0.6
      */
-    default HashJoinBuilder innerJoin() {
-        return new HashJoinBuilder(this).type(JoinType.inner);
+    default JoinBuilder innerJoin() {
+        return new JoinBuilder(this).type(JoinType.inner);
     }
 
     /**
      * @return a left join "hash" join builder
      * @since 0.6
      */
-    default HashJoinBuilder leftJoin() {
-        return new HashJoinBuilder(this).type(JoinType.left);
+    default JoinBuilder leftJoin() {
+        return new JoinBuilder(this).type(JoinType.left);
     }
 
     /**
      * @return a right join "hash" join builder
      * @since 0.6
      */
-    default HashJoinBuilder rightJoin() {
-        return new HashJoinBuilder(this).type(JoinType.right);
+    default JoinBuilder rightJoin() {
+        return new JoinBuilder(this).type(JoinType.right);
     }
 
     /**
      * @return a full join "hash" join builder
      * @since 0.6
      */
-    default HashJoinBuilder fullJoin() {
-        return new HashJoinBuilder(this).type(JoinType.full);
+    default JoinBuilder fullJoin() {
+        return new JoinBuilder(this).type(JoinType.full);
     }
+
+
+    /**
+     * @deprecated since 0.6 in favor of join builder returned via {@link #innerJoin()}.
+     */
+    @Deprecated
+    default DataFrame innerJoin(DataFrame df, JoinPredicate p) {
+        return join(df, p, JoinType.inner);
+    }
+
+    /**
+     * @deprecated since 0.6 in favor of one of the join builders, e.g. {@link #leftJoin()}, etc.
+     */
+    @Deprecated
+    DataFrame join(DataFrame df, JoinPredicate p, JoinType how);
 
     /**
      * Calculates a join using <a href="https://en.wikipedia.org/wiki/Hash_join">"hash join"</a> algorithm. It requires
@@ -698,7 +684,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param leftHasher  a hash function for the left-side rows
      * @param rightHasher a hash function for the right-side rows
      * @return a DataFrame that is a result of this join
+     * @deprecated since 0.6 in favor of join builder returned via {@link #innerJoin()}.
      */
+    @Deprecated
     default DataFrame innerJoin(DataFrame df, Hasher leftHasher, Hasher rightHasher) {
         return join(df, leftHasher, rightHasher, JoinType.inner);
     }
@@ -714,7 +702,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param rightHasher a hash function for the right-side rows
      * @param how         join semantics
      * @return a DataFrame that is a result of this join
+     * @deprecated since 0.6 in favor of one of the join builders, e.g. {@link #leftJoin()}, etc.
      */
+    @Deprecated
     DataFrame join(DataFrame df, Hasher leftHasher, Hasher rightHasher, JoinType how);
 
     /**

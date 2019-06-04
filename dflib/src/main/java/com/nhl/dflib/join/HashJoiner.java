@@ -2,12 +2,10 @@ package com.nhl.dflib.join;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.GroupBy;
-import com.nhl.dflib.Index;
+import com.nhl.dflib.Hasher;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.JoinType;
 import com.nhl.dflib.collection.IntMutableList;
-import com.nhl.dflib.concat.HConcat;
-import com.nhl.dflib.Hasher;
 import com.nhl.dflib.row.RowProxy;
 
 import java.util.LinkedHashSet;
@@ -18,42 +16,24 @@ import java.util.Set;
  * two custom "hash" functions for the rows on the left and the right sides of the join, each producing values, whose
  * equality can be used as a join condition. Should theoretically have O(N + M) performance.
  */
-public class HashJoiner {
+public class HashJoiner extends BaseJoiner {
 
     private Hasher leftHasher;
     private Hasher rightHasher;
-    private JoinType semantics;
 
     public HashJoiner(
             Hasher leftHasher,
             Hasher rightHasher,
-            JoinType semantics) {
+            JoinType semantics,
+            String indicatorColumn) {
 
+        super(semantics, indicatorColumn);
         this.leftHasher = leftHasher;
         this.rightHasher = rightHasher;
-        this.semantics = semantics;
     }
 
-    public Index joinIndex(Index li, Index ri) {
-        return HConcat.zipIndex(li, ri);
-    }
-
-    public IntSeries[] joinLeftRightIndices(DataFrame lf, DataFrame rf) {
-        switch (semantics) {
-            case inner:
-                return innerJoin(lf, rf);
-            case left:
-                return leftJoin(lf, rf);
-            case right:
-                return rightJoin(lf, rf);
-            case full:
-                return fullJoin(lf, rf);
-            default:
-                throw new IllegalStateException("Unsupported join semantics: " + semantics);
-        }
-    }
-
-    private IntSeries[] innerJoin(DataFrame lf, DataFrame rf) {
+    @Override
+    protected IntSeries[] innerJoin(DataFrame lf, DataFrame rf) {
 
         IntMutableList li = new IntMutableList();
         IntMutableList ri = new IntMutableList();
@@ -80,7 +60,8 @@ public class HashJoiner {
         return new IntSeries[]{li.toIntSeries(), ri.toIntSeries()};
     }
 
-    private IntSeries[] leftJoin(DataFrame lf, DataFrame rf) {
+    @Override
+    protected IntSeries[] leftJoin(DataFrame lf, DataFrame rf) {
 
         IntMutableList li = new IntMutableList();
         IntMutableList ri = new IntMutableList();
@@ -110,7 +91,8 @@ public class HashJoiner {
         return new IntSeries[]{li.toIntSeries(), ri.toIntSeries()};
     }
 
-    private IntSeries[] rightJoin(DataFrame lf, DataFrame rf) {
+    @Override
+    protected IntSeries[] rightJoin(DataFrame lf, DataFrame rf) {
 
         IntMutableList li = new IntMutableList();
         IntMutableList ri = new IntMutableList();
@@ -140,7 +122,8 @@ public class HashJoiner {
         return new IntSeries[]{li.toIntSeries(), ri.toIntSeries()};
     }
 
-    private IntSeries[] fullJoin(DataFrame lf, DataFrame rf) {
+    @Override
+    protected IntSeries[] fullJoin(DataFrame lf, DataFrame rf) {
 
         IntMutableList li = new IntMutableList();
         IntMutableList ri = new IntMutableList();

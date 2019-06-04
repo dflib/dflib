@@ -1,10 +1,9 @@
 package com.nhl.dflib.join;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
+import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.JoinType;
 import com.nhl.dflib.collection.IntMutableList;
-import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.row.RowProxy;
 
 import java.util.LinkedHashSet;
@@ -14,37 +13,17 @@ import java.util.Set;
 /**
  * A DataFrame joiner based on rows comparing predicate. Should theoretically have O(N * M) performance.
  */
-public class NestedLoopJoiner {
+public class NestedLoopJoiner extends BaseJoiner {
 
     private JoinPredicate joinPredicate;
-    private JoinType semantics;
 
-    public NestedLoopJoiner(JoinPredicate joinPredicate, JoinType semantics) {
+    public NestedLoopJoiner(JoinPredicate joinPredicate, JoinType semantics, String indicatorColumn) {
+        super(semantics, indicatorColumn);
         this.joinPredicate = Objects.requireNonNull(joinPredicate);
-        this.semantics = Objects.requireNonNull(semantics);
     }
 
-    public Index joinIndex(Index li, Index ri) {
-        return HConcat.zipIndex(li, ri);
-    }
-
-    public JoinMerger joinMerger(DataFrame lf, DataFrame rf) {
-
-        switch (semantics) {
-            case inner:
-                return innerJoin(lf, rf);
-            case left:
-                return leftJoin(lf, rf);
-            case right:
-                return rightJoin(lf, rf);
-            case full:
-                return fullJoin(lf, rf);
-            default:
-                throw new IllegalStateException("Unsupported join semantics: " + semantics);
-        }
-    }
-
-    private JoinMerger innerJoin(DataFrame lf, DataFrame rf) {
+    @Override
+    protected IntSeries[] innerJoin(DataFrame lf, DataFrame rf) {
 
         IntMutableList li = new IntMutableList();
         IntMutableList ri = new IntMutableList();
@@ -69,10 +48,11 @@ public class NestedLoopJoiner {
             i++;
         }
 
-        return new JoinMerger(li.toIntSeries(), ri.toIntSeries());
+        return new IntSeries[]{li.toIntSeries(), ri.toIntSeries()};
     }
 
-    private JoinMerger leftJoin(DataFrame lf, DataFrame rf) {
+    @Override
+    protected IntSeries[] leftJoin(DataFrame lf, DataFrame rf) {
 
         IntMutableList li = new IntMutableList();
         IntMutableList ri = new IntMutableList();
@@ -103,10 +83,11 @@ public class NestedLoopJoiner {
             i++;
         }
 
-        return new JoinMerger(li.toIntSeries(), ri.toIntSeries());
+        return new IntSeries[]{li.toIntSeries(), ri.toIntSeries()};
     }
 
-    private JoinMerger rightJoin(DataFrame lf, DataFrame rf) {
+    @Override
+    protected IntSeries[] rightJoin(DataFrame lf, DataFrame rf) {
 
         IntMutableList li = new IntMutableList();
         IntMutableList ri = new IntMutableList();
@@ -137,10 +118,11 @@ public class NestedLoopJoiner {
             i++;
         }
 
-        return new JoinMerger(li.toIntSeries(), ri.toIntSeries());
+        return new IntSeries[]{li.toIntSeries(), ri.toIntSeries()};
     }
 
-    private JoinMerger fullJoin(DataFrame lf, DataFrame rf) {
+    @Override
+    protected IntSeries[] fullJoin(DataFrame lf, DataFrame rf) {
 
         IntMutableList li = new IntMutableList();
         IntMutableList ri = new IntMutableList();
@@ -184,6 +166,6 @@ public class NestedLoopJoiner {
             }
         }
 
-        return new JoinMerger(li.toIntSeries(), ri.toIntSeries());
+        return new IntSeries[]{li.toIntSeries(), ri.toIntSeries()};
     }
 }

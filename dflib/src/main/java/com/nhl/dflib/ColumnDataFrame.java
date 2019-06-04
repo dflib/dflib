@@ -8,10 +8,8 @@ import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.filter.FilterIndexer;
 import com.nhl.dflib.groupby.Grouper;
-import com.nhl.dflib.join.HashJoinBuilder;
-import com.nhl.dflib.join.JoinMerger;
+import com.nhl.dflib.join.JoinBuilder;
 import com.nhl.dflib.join.JoinPredicate;
-import com.nhl.dflib.join.NestedLoopJoiner;
 import com.nhl.dflib.map.Mapper;
 import com.nhl.dflib.row.CrossColumnRowProxy;
 import com.nhl.dflib.row.RowProxy;
@@ -353,16 +351,19 @@ public class ColumnDataFrame implements DataFrame {
         return VConcat.concat(how, combined);
     }
 
+    @Deprecated
     @Override
     public DataFrame join(DataFrame df, JoinPredicate p, JoinType how) {
-        NestedLoopJoiner joiner = new NestedLoopJoiner(p, how);
-        JoinMerger merger = joiner.joinMerger(this, df);
-        return merger.join(joiner.joinIndex(this.getColumnsIndex(), df.getColumnsIndex()), this, df);
+        return new JoinBuilder(this)
+                .type(how)
+                .predicatedBy(p)
+                .with(df);
     }
 
+    @Deprecated
     @Override
     public DataFrame join(DataFrame df, Hasher leftHasher, Hasher rightHasher, JoinType how) {
-        return new HashJoinBuilder(this)
+        return new JoinBuilder(this)
                 .type(how)
                 .on(leftHasher, rightHasher)
                 .with(df);
