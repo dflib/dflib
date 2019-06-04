@@ -42,7 +42,7 @@ public abstract class TableSaveStrategy {
     protected abstract void doSave(Connection connection, DataFrame df);
 
 
-    protected void log(String line, String... messageParams) {
+    protected void log(String line, Object... messageParams) {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info(line, messageParams);
         }
