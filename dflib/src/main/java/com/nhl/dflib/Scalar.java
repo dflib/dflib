@@ -1,6 +1,5 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.row.RowBuilder;
 import com.nhl.dflib.row.RowProxy;
 
@@ -61,10 +60,6 @@ public class Scalar<T> {
 
     public ColumnAggregator sum() {
         return Aggregator.sum(position);
-    }
-
-    public <O> JoinPredicate join(Scalar<O> other) {
-        return JoinPredicate.on(position, other.position);
     }
 
     public int getPosition() {
