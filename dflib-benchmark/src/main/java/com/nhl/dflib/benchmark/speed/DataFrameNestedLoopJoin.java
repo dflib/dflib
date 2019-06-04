@@ -3,7 +3,6 @@ package com.nhl.dflib.benchmark.speed;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.benchmark.DataGenerator;
 import com.nhl.dflib.benchmark.ValueMaker;
-import com.nhl.dflib.JoinType;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -56,29 +55,36 @@ public class DataFrameNestedLoopJoin {
     @Benchmark
     public Object leftJoin() {
         return df1
-                .join(df2, (lr, rr) -> Objects.equals(lr.get("c0"), rr.get("c2")), JoinType.left)
+                .leftJoin()
+                .predicatedBy((lr, rr) -> Objects.equals(lr.get("c0"), rr.get("c2")))
+                .with(df2)
                 .materialize().iterator();
     }
 
     @Benchmark
     public Object rightJoin() {
         return df1
-                .join(df2, (lr, rr) -> Objects.equals(lr.get("c0"), rr.get("c2")), JoinType.right)
+                .rightJoin()
+                .predicatedBy((lr, rr) -> Objects.equals(lr.get("c0"), rr.get("c2")))
+                .with(df2)
                 .materialize().iterator();
     }
 
     @Benchmark
     public Object innerJoin() {
         return df1
-                .join(df2, (lr, rr) -> Objects.equals(lr.get("c0"), rr.get("c2")), JoinType.inner)
+                .innerJoin()
+                .predicatedBy((lr, rr) -> Objects.equals(lr.get("c0"), rr.get("c2")))
+                .with(df2)
                 .materialize().iterator();
     }
 
     @Benchmark
     public Object fullJoin() {
         return df1
-                .join(df2, (lr, rr) -> Objects.equals(lr.get("c0"), rr.get("c2")), JoinType.inner)
+                .fullJoin()
+                .predicatedBy((lr, rr) -> Objects.equals(lr.get("c0"), rr.get("c2")))
+                .with(df2)
                 .materialize().iterator();
     }
-
 }

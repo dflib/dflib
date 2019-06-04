@@ -19,7 +19,9 @@ public class HasherTest {
                 2, "b",
                 3, "c");
 
-        DataFrame df = df1.innerJoin(df2, Hasher.forColumn("a"), Hasher.forColumn("a"));
+        DataFrame df = df1.innerJoin()
+                .on(Hasher.forColumn("a"), Hasher.forColumn("a"))
+                .with(df2);
 
         new DFAsserts(df, "a", "b", "a_", "b_")
                 .expectHeight(2)
@@ -41,7 +43,9 @@ public class HasherTest {
                 2, "b",
                 3, "c");
 
-        DataFrame df = df1.innerJoin(df2, Hasher.forColumn(0), Hasher.forColumn(0));
+        DataFrame df = df1.innerJoin()
+                .on(Hasher.forColumn(0), Hasher.forColumn(0))
+                .with(df2);
 
         new DFAsserts(df, "a", "b", "a_", "b_")
                 .expectHeight(2)
@@ -63,9 +67,9 @@ public class HasherTest {
                 2, "y", 4L,
                 3, "c", 5L);
 
-        DataFrame df = df1.innerJoin(df2,
-                Hasher.forColumn("a").and("b").and("c"),
-                Hasher.forColumn("x").and("y").and("z"));
+        DataFrame df = df1.innerJoin()
+                .on(Hasher.forColumn("a").and("b").and("c"), Hasher.forColumn("x").and("y").and("z"))
+                .with(df2);
 
         new DFAsserts(df, "a", "b", "c", "x", "y", "z")
                 .expectHeight(1)
@@ -86,9 +90,9 @@ public class HasherTest {
                 2, "y", 4L,
                 3, "c", 5L);
 
-        DataFrame df = df1.innerJoin(df2,
-                Hasher.forColumn(0).and(1).and(2),
-                Hasher.forColumn(0).and(1).and(2));
+        DataFrame df = df1.innerJoin()
+                .on(Hasher.forColumn(0).and(1).and(2), Hasher.forColumn(0).and(1).and(2))
+                .with(df2);
 
         new DFAsserts(df, "a", "b", "c", "x", "y", "z")
                 .expectHeight(1)

@@ -3,8 +3,6 @@ package com.nhl.dflib.benchmark.speed;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.benchmark.DataGenerator;
 import com.nhl.dflib.benchmark.ValueMaker;
-import com.nhl.dflib.JoinType;
-import com.nhl.dflib.Hasher;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -56,7 +54,9 @@ public class DataFrameHashJoin {
     @Benchmark
     public Object leftJoin() {
         return df1
-                .join(df2, Hasher.forColumn("c0"), Hasher.forColumn("c2"), JoinType.left)
+                .leftJoin()
+                .on("c0", "c2")
+                .with(df2)
                 .materialize()
                 .iterator();
     }
@@ -64,16 +64,19 @@ public class DataFrameHashJoin {
     @Benchmark
     public Object leftJoin_ByPosition() {
         return df1
-                .join(df2, Hasher.forColumn(0), Hasher.forColumn(2), JoinType.left)
+                .leftJoin()
+                .on(0, 2)
+                .with(df2)
                 .materialize()
                 .iterator();
     }
 
-
     @Benchmark
     public Object rightJoin() {
         return df1
-                .join(df2, Hasher.forColumn("c0"), Hasher.forColumn("c2"), JoinType.right)
+                .rightJoin()
+                .on("c0", "c2")
+                .with(df2)
                 .materialize()
                 .iterator();
     }
@@ -81,7 +84,9 @@ public class DataFrameHashJoin {
     @Benchmark
     public Object innerJoin() {
         return df1
-                .join(df2, Hasher.forColumn("c0"), Hasher.forColumn("c2"), JoinType.inner)
+                .innerJoin()
+                .on("c0", "c2")
+                .with(df2)
                 .materialize()
                 .iterator();
     }
@@ -89,7 +94,9 @@ public class DataFrameHashJoin {
     @Benchmark
     public Object fullJoin() {
         return df1
-                .join(df2, Hasher.forColumn("c0"), Hasher.forColumn("c2"), JoinType.full)
+                .fullJoin()
+                .on("c0", "c2")
+                .with(df2)
                 .materialize()
                 .iterator();
     }
