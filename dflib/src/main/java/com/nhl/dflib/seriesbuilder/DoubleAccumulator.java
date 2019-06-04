@@ -1,31 +1,31 @@
-package com.nhl.dflib.collection;
+package com.nhl.dflib.seriesbuilder;
 
-import com.nhl.dflib.LongSeries;
-import com.nhl.dflib.series.LongArraySeries;
+import com.nhl.dflib.DoubleSeries;
+import com.nhl.dflib.series.DoubleArraySeries;
 
 import java.util.Arrays;
 
 /**
- * An expandable list of primitive long values that has minimal overhead and can be converted to compact and efficient
- * immutable {@link com.nhl.dflib.LongSeries}.
+ * An expandable list of primitive int values that has minimal overhead and can be converted to compact and efficient
+ * immutable {@link com.nhl.dflib.DoubleSeries}.
  *
  * @since 0.6
  */
-public class LongMutableList {
-
-    private long[] data;
+public class DoubleAccumulator {
+    private double[] data;
     private int size;
 
-    public LongMutableList() {
+    public DoubleAccumulator() {
         this(10);
     }
 
-    public LongMutableList(int capacity) {
+    public DoubleAccumulator(int capacity) {
         this.size = 0;
-        this.data = new long[capacity];
+        this.data = new double[capacity];
     }
 
-    public void fill(int from, int to, long value) {
+    public void fill(int from, int to, double value) {
+
         if (to - from < 1) {
             return;
         }
@@ -38,7 +38,7 @@ public class LongMutableList {
         size += to - from;
     }
 
-    public void add(long value) {
+    public void add(double value) {
 
         if (size == data.length) {
             expand(data.length * 2);
@@ -47,31 +47,32 @@ public class LongMutableList {
         data[size++] = value;
     }
 
-    public LongSeries toLongSeries() {
-        long[] data = compactData();
+    public DoubleSeries toDoubleSeries() {
+        double[] data = compactData();
 
         // making sure no one can change the series via the Mutable List anymore
         this.data = null;
 
-        return new LongArraySeries(data, 0, size);
+        return new DoubleArraySeries(data, 0, size);
     }
 
     public int size() {
         return size;
     }
 
-    private long[] compactData() {
+    private double[] compactData() {
         if (data.length == size) {
             return data;
         }
 
-        long[] newData = new long[size];
+        double[] newData = new double[size];
         System.arraycopy(data, 0, newData, 0, size);
         return newData;
     }
 
     private void expand(int newCapacity) {
-        long[] newData = new long[newCapacity];
+
+        double[] newData = new double[newCapacity];
         System.arraycopy(data, 0, newData, 0, size);
 
         this.data = newData;

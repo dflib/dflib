@@ -7,11 +7,11 @@ import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.ValueMapper;
 import com.nhl.dflib.ValuePredicate;
-import com.nhl.dflib.collection.BooleanMutableList;
-import com.nhl.dflib.collection.DoubleMutableList;
-import com.nhl.dflib.collection.IntMutableList;
-import com.nhl.dflib.collection.MutableList;
-import com.nhl.dflib.collection.UniqueDoubleMutableList;
+import com.nhl.dflib.seriesbuilder.BooleanAccumulator;
+import com.nhl.dflib.seriesbuilder.DoubleAccumulator;
+import com.nhl.dflib.seriesbuilder.IntAccumulator;
+import com.nhl.dflib.seriesbuilder.ObjectAccumulator;
+import com.nhl.dflib.seriesbuilder.UniqueDoubleAccumulator;
 import com.nhl.dflib.concat.SeriesConcat;
 
 import java.util.Objects;
@@ -63,7 +63,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
             throw new IllegalArgumentException("Positions size " + ps + " is not the same as this size " + s);
         }
 
-        DoubleMutableList data = new DoubleMutableList();
+        DoubleAccumulator data = new DoubleAccumulator();
 
         for (int i = 0; i < size(); i++) {
             if (positions.getBoolean(i)) {
@@ -188,7 +188,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
 
     @Override
     public IntSeries indexDouble(DoublePredicate predicate) {
-        IntMutableList filtered = new IntMutableList();
+        IntAccumulator filtered = new IntAccumulator();
 
         int len = size();
 
@@ -203,7 +203,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
 
     @Override
     public IntSeries index(ValuePredicate<Double> predicate) {
-        IntMutableList index = new IntMutableList();
+        IntAccumulator index = new IntAccumulator();
 
         int len = size();
 
@@ -235,7 +235,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     private DoubleSeries replaceDouble(BooleanSeries condition, double with) {
         int s = size();
         int r = Math.min(s, condition.size());
-        DoubleMutableList doubles = new DoubleMutableList(s);
+        DoubleAccumulator doubles = new DoubleAccumulator(s);
 
         for (int i = 0; i < r; i++) {
             doubles.add(condition.getBoolean(i) ? with : getDouble(i));
@@ -252,7 +252,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
 
         int s = size();
         int r = Math.min(s, condition.size());
-        DoubleMutableList doubles = new DoubleMutableList(s);
+        DoubleAccumulator doubles = new DoubleAccumulator(s);
 
         for (int i = 0; i < r; i++) {
             doubles.add(condition.getBoolean(i) ? getDouble(i) : with);
@@ -268,7 +268,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     private Series<Double> nullify(BooleanSeries condition) {
         int s = size();
         int r = Math.min(s, condition.size());
-        MutableList<Double> vals = new MutableList<>(s);
+        ObjectAccumulator<Double> vals = new ObjectAccumulator<>(s);
 
         for (int i = 0; i < r; i++) {
             vals.add(condition.getBoolean(i) ? null : getDouble(i));
@@ -284,7 +284,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     private Series<Double> nullifyNoMatch(BooleanSeries condition) {
         int s = size();
         int r = Math.min(s, condition.size());
-        MutableList<Double> vals = new MutableList<>(s);
+        ObjectAccumulator<Double> vals = new ObjectAccumulator<>(s);
 
         for (int i = 0; i < r; i++) {
             vals.add(condition.getBoolean(i) ? getDouble(i) : null);
@@ -306,7 +306,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanMutableList bools = new BooleanMutableList(s);
+        BooleanAccumulator bools = new BooleanAccumulator(s);
 
         if (another instanceof DoubleSeries) {
             DoubleSeries anotherDouble = (DoubleSeries) another;
@@ -332,7 +332,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanMutableList bools = new BooleanMutableList(s);
+        BooleanAccumulator bools = new BooleanAccumulator(s);
         if (another instanceof DoubleSeries) {
             DoubleSeries anotherDouble = (DoubleSeries) another;
 
@@ -360,7 +360,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
             return this;
         }
 
-        DoubleMutableList unique = new UniqueDoubleMutableList();
+        DoubleAccumulator unique = new UniqueDoubleAccumulator();
         for (int i = 0; i < size; i++) {
             unique.add(get(i));
         }

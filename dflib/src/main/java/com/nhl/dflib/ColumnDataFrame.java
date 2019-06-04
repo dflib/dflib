@@ -1,9 +1,9 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.collection.BooleanMutableList;
-import com.nhl.dflib.collection.DoubleMutableList;
-import com.nhl.dflib.collection.IntMutableList;
-import com.nhl.dflib.collection.LongMutableList;
+import com.nhl.dflib.seriesbuilder.BooleanAccumulator;
+import com.nhl.dflib.seriesbuilder.DoubleAccumulator;
+import com.nhl.dflib.seriesbuilder.IntAccumulator;
+import com.nhl.dflib.seriesbuilder.LongAccumulator;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.filter.FilterIndexer;
@@ -223,7 +223,7 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public BooleanSeries mapColumnAsBoolean(RowToBooleanValueMapper rowMapper) {
         // don't bother to make it lazy... boolean columns are very compact compared to the rest of the data set
-        BooleanMutableList data = new BooleanMutableList(height());
+        BooleanAccumulator data = new BooleanAccumulator(height());
 
         for (RowProxy row : this) {
             data.add(rowMapper.map(row));
@@ -415,7 +415,7 @@ public class ColumnDataFrame implements DataFrame {
     public <V> DataFrame toIntColumn(int pos, IntValueMapper<V> converter) {
         Series<?> c = dataColumns[pos];
         int len = c.size();
-        IntMutableList ints = new IntMutableList(len);
+        IntAccumulator ints = new IntAccumulator(len);
         for (int i = 0; i < len; i++) {
             ints.add(converter.map((V) c.get(i)));
         }
@@ -427,7 +427,7 @@ public class ColumnDataFrame implements DataFrame {
     public <V> DataFrame toDoubleColumn(int pos, DoubleValueMapper<V> converter) {
         Series<?> c = dataColumns[pos];
         int len = c.size();
-        DoubleMutableList doubles = new DoubleMutableList(len);
+        DoubleAccumulator doubles = new DoubleAccumulator(len);
         for (int i = 0; i < len; i++) {
             doubles.add(converter.map((V) c.get(i)));
         }
@@ -439,7 +439,7 @@ public class ColumnDataFrame implements DataFrame {
     public <V> DataFrame toBooleanColumn(int pos, BooleanValueMapper<V> converter) {
         Series<?> c = dataColumns[pos];
         int len = c.size();
-        BooleanMutableList bools = new BooleanMutableList(len);
+        BooleanAccumulator bools = new BooleanAccumulator(len);
         for (int i = 0; i < len; i++) {
             bools.add(converter.map((V) c.get(i)));
         }
@@ -451,7 +451,7 @@ public class ColumnDataFrame implements DataFrame {
     public <V> DataFrame toLongColumn(int pos, LongValueMapper<V> converter) {
         Series<?> c = dataColumns[pos];
         int len = c.size();
-        LongMutableList longs = new LongMutableList(len);
+        LongAccumulator longs = new LongAccumulator(len);
         for (int i = 0; i < len; i++) {
             longs.add(converter.map((V) c.get(i)));
         }

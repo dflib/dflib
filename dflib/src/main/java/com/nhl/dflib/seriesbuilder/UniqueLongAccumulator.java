@@ -1,4 +1,4 @@
-package com.nhl.dflib.collection;
+package com.nhl.dflib.seriesbuilder;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -6,15 +6,15 @@ import java.util.Set;
 /**
  * @since 0.6
  */
-public class UniqueLongMutableList extends LongMutableList {
+public class UniqueLongAccumulator extends LongAccumulator {
 
     private Set<Long> seen;
 
-    public UniqueLongMutableList() {
+    public UniqueLongAccumulator() {
         this(10);
     }
 
-    public UniqueLongMutableList(int capacity) {
+    public UniqueLongAccumulator(int capacity) {
         super(capacity);
         this.seen = new HashSet<>(capacity);
     }

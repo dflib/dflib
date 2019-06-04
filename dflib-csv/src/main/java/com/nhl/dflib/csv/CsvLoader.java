@@ -1,19 +1,19 @@
 package com.nhl.dflib.csv;
 
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
-import com.nhl.dflib.builder.BooleanSeriesBuilder;
-import com.nhl.dflib.builder.DoubleSeriesBuilder;
-import com.nhl.dflib.builder.IntSeriesBuilder;
-import com.nhl.dflib.builder.LongSeriesBuilder;
-import com.nhl.dflib.builder.MappedSeriesBuilder;
-import com.nhl.dflib.builder.ObjectSeriesBuilder;
-import com.nhl.dflib.builder.SeriesBuilder;
 import com.nhl.dflib.BooleanValueMapper;
+import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DoubleValueMapper;
+import com.nhl.dflib.Index;
 import com.nhl.dflib.IntValueMapper;
 import com.nhl.dflib.LongValueMapper;
 import com.nhl.dflib.ValueMapper;
+import com.nhl.dflib.seriesbuilder.BooleanMappedAccumulator;
+import com.nhl.dflib.seriesbuilder.DoubleMappedAccumulator;
+import com.nhl.dflib.seriesbuilder.IntMappedAccumulator;
+import com.nhl.dflib.seriesbuilder.LongMappedAccumulator;
+import com.nhl.dflib.seriesbuilder.ObjectAccumulator;
+import com.nhl.dflib.seriesbuilder.ObjectMappedAccumulator;
+import com.nhl.dflib.seriesbuilder.SeriesBuilder;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
@@ -78,46 +78,46 @@ public class CsvLoader {
             int captureI = i;
             builders.add(new Pair(
                     ind -> captureI,
-                    new MappedSeriesBuilder<>(typeConverters[i])));
+                    new ObjectMappedAccumulator<>(typeConverters[i])));
         }
         return this;
     }
 
 
     public CsvLoader columnType(int column, ValueMapper<String, ?> typeConverter) {
-        return columnType(column, new MappedSeriesBuilder<>(typeConverter));
+        return columnType(column, new ObjectMappedAccumulator<>(typeConverter));
     }
 
     public CsvLoader columnType(String column, ValueMapper<String, ?> typeConverter) {
-        return columnType(column, new MappedSeriesBuilder<>(typeConverter));
+        return columnType(column, new ObjectMappedAccumulator<>(typeConverter));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader intColumn(int column) {
-        return columnType(column, new IntSeriesBuilder<>(IntValueMapper.fromString()));
+        return columnType(column, new IntMappedAccumulator<>(IntValueMapper.fromString()));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader intColumn(String column) {
-        return columnType(column, new IntSeriesBuilder<>(IntValueMapper.fromString()));
+        return columnType(column, new IntMappedAccumulator<>(IntValueMapper.fromString()));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader intColumn(int column, int forNull) {
-        return columnType(column, new IntSeriesBuilder<>(IntValueMapper.fromString(forNull)));
+        return columnType(column, new IntMappedAccumulator<>(IntValueMapper.fromString(forNull)));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader intColumn(String column, int forNull) {
-        return columnType(column, new IntSeriesBuilder<>(IntValueMapper.fromString(forNull)));
+        return columnType(column, new IntMappedAccumulator<>(IntValueMapper.fromString(forNull)));
     }
 
 
@@ -125,70 +125,70 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader longColumn(int column) {
-        return columnType(column, new LongSeriesBuilder<>(LongValueMapper.fromString()));
+        return columnType(column, new LongMappedAccumulator<>(LongValueMapper.fromString()));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader longColumn(String column) {
-        return columnType(column, new LongSeriesBuilder(LongValueMapper.fromString()));
+        return columnType(column, new LongMappedAccumulator(LongValueMapper.fromString()));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader longColumn(int column, long forNull) {
-        return columnType(column, new LongSeriesBuilder(LongValueMapper.fromString(forNull)));
+        return columnType(column, new LongMappedAccumulator(LongValueMapper.fromString(forNull)));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader longColumn(String column, long forNull) {
-        return columnType(column, new LongSeriesBuilder(LongValueMapper.fromString(forNull)));
+        return columnType(column, new LongMappedAccumulator(LongValueMapper.fromString(forNull)));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader doubleColumn(int column) {
-        return columnType(column, new DoubleSeriesBuilder(DoubleValueMapper.fromString()));
+        return columnType(column, new DoubleMappedAccumulator(DoubleValueMapper.fromString()));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader doubleColumn(String column) {
-        return columnType(column, new DoubleSeriesBuilder(DoubleValueMapper.fromString()));
+        return columnType(column, new DoubleMappedAccumulator(DoubleValueMapper.fromString()));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader doubleColumn(int column, double forNull) {
-        return columnType(column, new DoubleSeriesBuilder(DoubleValueMapper.fromString(forNull)));
+        return columnType(column, new DoubleMappedAccumulator(DoubleValueMapper.fromString(forNull)));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader doubleColumn(String column, double forNull) {
-        return columnType(column, new DoubleSeriesBuilder(DoubleValueMapper.fromString(forNull)));
+        return columnType(column, new DoubleMappedAccumulator(DoubleValueMapper.fromString(forNull)));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader booleanColumn(int column) {
-        return columnType(column, new BooleanSeriesBuilder<>(BooleanValueMapper.fromString()));
+        return columnType(column, new BooleanMappedAccumulator<>(BooleanValueMapper.fromString()));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader booleanColumn(String column) {
-        return columnType(column, new BooleanSeriesBuilder<>(BooleanValueMapper.fromString()));
+        return columnType(column, new BooleanMappedAccumulator<>(BooleanValueMapper.fromString()));
     }
 
     /**
@@ -222,27 +222,27 @@ public class CsvLoader {
     private SeriesBuilder<String, ?> numBuilder(Class<? extends Number> type) {
 
         if (Integer.class.equals(type)) {
-            return new MappedSeriesBuilder<>(ValueMapper.stringToInt());
+            return new ObjectMappedAccumulator<>(ValueMapper.stringToInt());
         }
 
         if (Long.class.equals(type)) {
-            return new MappedSeriesBuilder<>(ValueMapper.stringToLong());
+            return new ObjectMappedAccumulator<>(ValueMapper.stringToLong());
         }
 
         if (Double.class.equals(type)) {
-            return new MappedSeriesBuilder<>(ValueMapper.stringToDouble());
+            return new ObjectMappedAccumulator<>(ValueMapper.stringToDouble());
         }
 
         if (Float.class.equals(type)) {
-            return new MappedSeriesBuilder<>(ValueMapper.stringToFloat());
+            return new ObjectMappedAccumulator<>(ValueMapper.stringToFloat());
         }
 
         if (BigDecimal.class.equals(type)) {
-            return new MappedSeriesBuilder<>(ValueMapper.stringToBigDecimal());
+            return new ObjectMappedAccumulator<>(ValueMapper.stringToBigDecimal());
         }
 
         if (BigInteger.class.equals(type)) {
-            return new MappedSeriesBuilder<>(ValueMapper.stringToBigInteger());
+            return new ObjectMappedAccumulator<>(ValueMapper.stringToBigInteger());
         }
 
         throw new IllegalArgumentException("Can't map numeric type to a string converter: " + type);
@@ -390,7 +390,7 @@ public class CsvLoader {
         // fill missing builders with no-transform builders
         for (int i = 0; i < w; i++) {
             if (builders[i] == null) {
-                builders[i] = new ObjectSeriesBuilder<>();
+                builders[i] = new ObjectAccumulator<>();
             }
         }
 

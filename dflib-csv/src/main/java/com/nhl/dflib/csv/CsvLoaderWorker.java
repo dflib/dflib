@@ -3,7 +3,7 @@ package com.nhl.dflib.csv;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.builder.SeriesBuilder;
+import com.nhl.dflib.seriesbuilder.SeriesBuilder;
 import org.apache.commons.csv.CSVRecord;
 
 import java.util.Iterator;
@@ -36,7 +36,7 @@ class CsvLoaderWorker {
 
     private void loadRow(int width, CSVRecord record) {
         for (int i = 0; i < width; i++) {
-            accumulators[i].append(record.get(i));
+            accumulators[i].add(record.get(i));
         }
     }
 

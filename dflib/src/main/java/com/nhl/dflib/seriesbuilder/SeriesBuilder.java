@@ -1,4 +1,4 @@
-package com.nhl.dflib.builder;
+package com.nhl.dflib.seriesbuilder;
 
 import com.nhl.dflib.Series;
 
@@ -9,7 +9,7 @@ import com.nhl.dflib.Series;
  */
 public interface SeriesBuilder<I, O> {
 
-    void append(I v);
+    void add(I v);
 
     Series<O> toSeries();
 }

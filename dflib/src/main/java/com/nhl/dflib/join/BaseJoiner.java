@@ -6,7 +6,7 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.JoinType;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.collection.MutableList;
+import com.nhl.dflib.seriesbuilder.ObjectAccumulator;
 import com.nhl.dflib.concat.HConcat;
 
 import java.util.Objects;
@@ -52,7 +52,7 @@ public abstract class BaseJoiner {
     protected Series<JoinIndicator> buildIndicator(IntSeries leftIndex, IntSeries rightIndex) {
 
         int h = leftIndex.size();
-        MutableList<JoinIndicator> appender = new MutableList<>(h);
+        ObjectAccumulator<JoinIndicator> appender = new ObjectAccumulator<>(h);
 
         for (int i = 0; i < h; i++) {
             appender.add(

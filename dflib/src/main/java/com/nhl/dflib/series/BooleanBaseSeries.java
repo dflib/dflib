@@ -5,9 +5,9 @@ import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.ValueMapper;
 import com.nhl.dflib.ValuePredicate;
-import com.nhl.dflib.collection.BooleanMutableList;
-import com.nhl.dflib.collection.IntMutableList;
-import com.nhl.dflib.collection.MutableList;
+import com.nhl.dflib.seriesbuilder.BooleanAccumulator;
+import com.nhl.dflib.seriesbuilder.IntAccumulator;
+import com.nhl.dflib.seriesbuilder.ObjectAccumulator;
 import com.nhl.dflib.concat.SeriesConcat;
 
 import java.util.Objects;
@@ -59,7 +59,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
             throw new IllegalArgumentException("Positions size " + ps + " is not the same as this size " + s);
         }
 
-        BooleanMutableList data = new BooleanMutableList();
+        BooleanAccumulator data = new BooleanAccumulator();
 
         for (int i = 0; i < size(); i++) {
             if (positions.getBoolean(i)) {
@@ -181,7 +181,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
     @Override
     public IntSeries indexTrue() {
-        IntMutableList filtered = new IntMutableList();
+        IntAccumulator filtered = new IntAccumulator();
 
         int len = size();
 
@@ -196,7 +196,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
     @Override
     public IntSeries indexFalse() {
-        IntMutableList filtered = new IntMutableList();
+        IntAccumulator filtered = new IntAccumulator();
 
         int len = size();
 
@@ -211,7 +211,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
     @Override
     public IntSeries index(ValuePredicate<Boolean> predicate) {
-        IntMutableList index = new IntMutableList();
+        IntAccumulator index = new IntAccumulator();
 
         int len = size();
 
@@ -243,7 +243,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     private BooleanSeries replaceBoolean(BooleanSeries condition, boolean with) {
         int s = size();
         int r = Math.min(s, condition.size());
-        BooleanMutableList bools = new BooleanMutableList(s);
+        BooleanAccumulator bools = new BooleanAccumulator(s);
 
         for (int i = 0; i < r; i++) {
             bools.add(condition.getBoolean(i) ? with : getBoolean(i));
@@ -260,7 +260,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
         int s = size();
         int r = Math.min(s, condition.size());
-        BooleanMutableList bools = new BooleanMutableList(s);
+        BooleanAccumulator bools = new BooleanAccumulator(s);
 
         for (int i = 0; i < r; i++) {
             bools.add(condition.getBoolean(i) ? getBoolean(i) : with);
@@ -276,7 +276,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     private Series<Boolean> nullify(BooleanSeries condition) {
         int s = size();
         int r = Math.min(s, condition.size());
-        MutableList vals = new MutableList(s);
+        ObjectAccumulator vals = new ObjectAccumulator(s);
 
         for (int i = 0; i < r; i++) {
             vals.add(condition.getBoolean(i) ? null : getBoolean(i));
@@ -292,7 +292,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     private Series<Boolean> nullifyNoMatch(BooleanSeries condition) {
         int s = size();
         int r = Math.min(s, condition.size());
-        MutableList vals = new MutableList(s);
+        ObjectAccumulator vals = new ObjectAccumulator(s);
 
         for (int i = 0; i < r; i++) {
             vals.add(condition.getBoolean(i) ? getBoolean(i) : null);
@@ -315,7 +315,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanMutableList bools = new BooleanMutableList(s);
+        BooleanAccumulator bools = new BooleanAccumulator(s);
 
         if (another instanceof BooleanSeries) {
             BooleanSeries anotherBool = (BooleanSeries) another;
@@ -341,7 +341,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanMutableList bools = new BooleanMutableList(s);
+        BooleanAccumulator bools = new BooleanAccumulator(s);
         if (another instanceof BooleanSeries) {
             BooleanSeries anotherBool = (BooleanSeries) another;
 

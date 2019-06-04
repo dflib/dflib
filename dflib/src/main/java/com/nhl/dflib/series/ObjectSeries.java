@@ -4,9 +4,9 @@ import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.ValueMapper;
-import com.nhl.dflib.collection.BooleanMutableList;
-import com.nhl.dflib.collection.IntMutableList;
-import com.nhl.dflib.collection.MutableList;
+import com.nhl.dflib.seriesbuilder.BooleanAccumulator;
+import com.nhl.dflib.seriesbuilder.IntAccumulator;
+import com.nhl.dflib.seriesbuilder.ObjectAccumulator;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.ValuePredicate;
 
@@ -78,7 +78,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
             throw new IllegalArgumentException("Positions size " + ps + " is not the same as this size " + s);
         }
 
-        MutableList<T> data = new MutableList<>();
+        ObjectAccumulator<T> data = new ObjectAccumulator<>();
 
         for (int i = 0; i < size(); i++) {
             if (positions.getBoolean(i)) {
@@ -91,7 +91,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
     @Override
     public IntSeries index(ValuePredicate<T> predicate) {
-        IntMutableList index = new IntMutableList();
+        IntAccumulator index = new IntAccumulator();
 
         int len = size();
 
@@ -108,7 +108,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
     public Series<T> replace(BooleanSeries condition, T with) {
         int s = size();
         int r = Math.min(s, condition.size());
-        MutableList vals = new MutableList(s);
+        ObjectAccumulator vals = new ObjectAccumulator(s);
 
         for (int i = 0; i < r; i++) {
             vals.add(condition.getBoolean(i) ? with : get(i));
@@ -126,7 +126,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
         int s = size();
         int r = Math.min(s, condition.size());
-        MutableList vals = new MutableList(s);
+        ObjectAccumulator vals = new ObjectAccumulator(s);
 
         for (int i = 0; i < r; i++) {
             vals.add(condition.getBoolean(i) ? get(i) : with);
@@ -148,7 +148,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanMutableList bools = new BooleanMutableList(s);
+        BooleanAccumulator bools = new BooleanAccumulator(s);
         for (int i = 0; i < s; i++) {
             bools.add(Objects.equals(get(i), another.get(i)));
         }
@@ -165,7 +165,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanMutableList bools = new BooleanMutableList(s);
+        BooleanAccumulator bools = new BooleanAccumulator(s);
         for (int i = 0; i < s; i++) {
             bools.add(!Objects.equals(get(i), another.get(i)));
         }

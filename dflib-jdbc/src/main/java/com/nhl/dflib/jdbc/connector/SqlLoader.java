@@ -3,7 +3,7 @@ package com.nhl.dflib.jdbc.connector;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.builder.SeriesBuilder;
+import com.nhl.dflib.seriesbuilder.SeriesBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,7 +85,7 @@ public class SqlLoader {
 
         while (rs.next() && size++ < maxRows) {
             for (int i = 0; i < w; i++) {
-                accums[i].append(rs);
+                accums[i].add(rs);
             }
         }
 

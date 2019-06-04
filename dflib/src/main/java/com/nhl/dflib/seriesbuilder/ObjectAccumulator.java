@@ -1,4 +1,4 @@
-package com.nhl.dflib.collection;
+package com.nhl.dflib.seriesbuilder;
 
 import com.nhl.dflib.Series;
 import com.nhl.dflib.series.ArraySeries;
@@ -8,16 +8,16 @@ import java.util.Arrays;
 /**
  * @since 0.6
  */
-public class MutableList<T> {
+public class ObjectAccumulator<T> implements SeriesBuilder<T, T> {
 
     private T[] data;
     private int size;
 
-    public MutableList() {
+    public ObjectAccumulator() {
         this(10);
     }
 
-    public MutableList(int capacity) {
+    public ObjectAccumulator(int capacity) {
         this.size = 0;
         this.data = (T[]) new Object[capacity];
     }
@@ -35,6 +35,7 @@ public class MutableList<T> {
         size += to - from;
     }
 
+    @Override
     public void add(T value) {
 
         if (size == data.length) {
@@ -44,6 +45,7 @@ public class MutableList<T> {
         data[size++] = value;
     }
 
+    @Override
     public Series<T> toSeries() {
         T[] data = compactData();
 

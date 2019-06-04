@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.collection.IntMutableList;
+import com.nhl.dflib.seriesbuilder.IntAccumulator;
 import com.nhl.dflib.join.JoinBuilder;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.row.RowProxy;
@@ -533,7 +533,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     default DataFrame select(List<Integer> rowPositions) {
         int len = rowPositions.size();
-        IntMutableList ml = new IntMutableList(len);
+        IntAccumulator ml = new IntAccumulator(len);
 
         for (Integer i : rowPositions) {
             ml.add(i);
@@ -550,7 +550,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     @Deprecated
     default DataFrame select(Series<Integer> rowPositions) {
         int len = rowPositions.size();
-        IntMutableList ml = new IntMutableList(len);
+        IntAccumulator ml = new IntAccumulator(len);
 
         for (int i = 0; i < len; i++) {
             ml.add(rowPositions.get(i));

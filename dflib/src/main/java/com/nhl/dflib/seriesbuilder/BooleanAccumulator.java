@@ -1,4 +1,4 @@
-package com.nhl.dflib.collection;
+package com.nhl.dflib.seriesbuilder;
 
 import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.series.BooleanArraySeries;
@@ -8,17 +8,17 @@ import java.util.Arrays;
 /**
  * @since 0.6
  */
-public class BooleanMutableList {
+public class BooleanAccumulator {
 
     // TODO: bitmap?
     private boolean[] data;
     private int size;
 
-    public BooleanMutableList() {
+    public BooleanAccumulator() {
         this(10);
     }
 
-    public BooleanMutableList(int capacity) {
+    public BooleanAccumulator(int capacity) {
         this.size = 0;
         this.data = new boolean[capacity];
     }

@@ -4,10 +4,10 @@ import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.ValueMapper;
-import com.nhl.dflib.collection.BooleanMutableList;
-import com.nhl.dflib.collection.IntMutableList;
-import com.nhl.dflib.collection.MutableList;
-import com.nhl.dflib.collection.UniqueIntMutableList;
+import com.nhl.dflib.seriesbuilder.BooleanAccumulator;
+import com.nhl.dflib.seriesbuilder.IntAccumulator;
+import com.nhl.dflib.seriesbuilder.ObjectAccumulator;
+import com.nhl.dflib.seriesbuilder.UniqueIntAccumulator;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.IntPredicate;
 import com.nhl.dflib.ValuePredicate;
@@ -63,7 +63,7 @@ public abstract class IntBaseSeries implements IntSeries {
             throw new IllegalArgumentException("Positions size " + ps + " is not the same as this size " + s);
         }
 
-        IntMutableList data = new IntMutableList();
+        IntAccumulator data = new IntAccumulator();
 
         for (int i = 0; i < size(); i++) {
             if (positions.getBoolean(i)) {
@@ -188,7 +188,7 @@ public abstract class IntBaseSeries implements IntSeries {
 
     @Override
     public IntSeries indexInt(IntPredicate predicate) {
-        IntMutableList filtered = new IntMutableList();
+        IntAccumulator filtered = new IntAccumulator();
 
         int len = size();
 
@@ -203,7 +203,7 @@ public abstract class IntBaseSeries implements IntSeries {
 
     @Override
     public IntSeries index(ValuePredicate<Integer> predicate) {
-        IntMutableList index = new IntMutableList();
+        IntAccumulator index = new IntAccumulator();
 
         int len = size();
 
@@ -235,7 +235,7 @@ public abstract class IntBaseSeries implements IntSeries {
     private IntSeries replaceInt(BooleanSeries condition, int with) {
         int s = size();
         int r = Math.min(s, condition.size());
-        IntMutableList ints = new IntMutableList(s);
+        IntAccumulator ints = new IntAccumulator(s);
 
         for (int i = 0; i < r; i++) {
             ints.add(condition.getBoolean(i) ? with : getInt(i));
@@ -252,7 +252,7 @@ public abstract class IntBaseSeries implements IntSeries {
 
         int s = size();
         int r = Math.min(s, condition.size());
-        IntMutableList ints = new IntMutableList(s);
+        IntAccumulator ints = new IntAccumulator(s);
 
         for (int i = 0; i < r; i++) {
             ints.add(condition.getBoolean(i) ? getInt(i) : with);
@@ -268,7 +268,7 @@ public abstract class IntBaseSeries implements IntSeries {
     private Series<Integer> nullify(BooleanSeries condition) {
         int s = size();
         int r = Math.min(s, condition.size());
-        MutableList vals = new MutableList(s);
+        ObjectAccumulator vals = new ObjectAccumulator(s);
 
         for (int i = 0; i < r; i++) {
             vals.add(condition.getBoolean(i) ? null : getInt(i));
@@ -284,7 +284,7 @@ public abstract class IntBaseSeries implements IntSeries {
     private Series<Integer> nullifyNoMatch(BooleanSeries condition) {
         int s = size();
         int r = Math.min(s, condition.size());
-        MutableList vals = new MutableList(s);
+        ObjectAccumulator vals = new ObjectAccumulator(s);
 
         for (int i = 0; i < r; i++) {
             vals.add(condition.getBoolean(i) ? getInt(i) : null);
@@ -306,7 +306,7 @@ public abstract class IntBaseSeries implements IntSeries {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanMutableList bools = new BooleanMutableList(s);
+        BooleanAccumulator bools = new BooleanAccumulator(s);
 
         if (another instanceof IntSeries) {
             IntSeries anotherInt = (IntSeries) another;
@@ -332,7 +332,7 @@ public abstract class IntBaseSeries implements IntSeries {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanMutableList bools = new BooleanMutableList(s);
+        BooleanAccumulator bools = new BooleanAccumulator(s);
         if (another instanceof IntSeries) {
             IntSeries anotherInt = (IntSeries) another;
 
@@ -360,7 +360,7 @@ public abstract class IntBaseSeries implements IntSeries {
             return this;
         }
 
-        IntMutableList unique = new UniqueIntMutableList();
+        IntAccumulator unique = new UniqueIntAccumulator();
         for (int i = 0; i < size; i++) {
             unique.add(get(i));
         }

@@ -5,7 +5,7 @@ import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.Hasher;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.JoinType;
-import com.nhl.dflib.collection.IntMutableList;
+import com.nhl.dflib.seriesbuilder.IntAccumulator;
 import com.nhl.dflib.row.RowProxy;
 
 import java.util.LinkedHashSet;
@@ -35,8 +35,8 @@ public class HashJoiner extends BaseJoiner {
     @Override
     protected IntSeries[] innerJoin(DataFrame lf, DataFrame rf) {
 
-        IntMutableList li = new IntMutableList();
-        IntMutableList ri = new IntMutableList();
+        IntAccumulator li = new IntAccumulator();
+        IntAccumulator ri = new IntAccumulator();
 
         GroupBy rightIndex = rf.group(rightHasher);
 
@@ -63,8 +63,8 @@ public class HashJoiner extends BaseJoiner {
     @Override
     protected IntSeries[] leftJoin(DataFrame lf, DataFrame rf) {
 
-        IntMutableList li = new IntMutableList();
-        IntMutableList ri = new IntMutableList();
+        IntAccumulator li = new IntAccumulator();
+        IntAccumulator ri = new IntAccumulator();
 
         GroupBy rightIndex = rf.group(rightHasher);
 
@@ -94,8 +94,8 @@ public class HashJoiner extends BaseJoiner {
     @Override
     protected IntSeries[] rightJoin(DataFrame lf, DataFrame rf) {
 
-        IntMutableList li = new IntMutableList();
-        IntMutableList ri = new IntMutableList();
+        IntAccumulator li = new IntAccumulator();
+        IntAccumulator ri = new IntAccumulator();
 
         GroupBy leftIndex = lf.group(leftHasher);
 
@@ -125,8 +125,8 @@ public class HashJoiner extends BaseJoiner {
     @Override
     protected IntSeries[] fullJoin(DataFrame lf, DataFrame rf) {
 
-        IntMutableList li = new IntMutableList();
-        IntMutableList ri = new IntMutableList();
+        IntAccumulator li = new IntAccumulator();
+        IntAccumulator ri = new IntAccumulator();
 
         GroupBy rightIndex = rf.group(rightHasher);
         Set<Object> seenRightKeys = new LinkedHashSet<>();

@@ -1,7 +1,7 @@
 package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.Printers;
-import com.nhl.dflib.builder.SeriesBuilder;
+import com.nhl.dflib.seriesbuilder.SeriesBuilder;
 import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
 import com.nhl.dflib.jdbc.connector.statement.ValueConverter;
 import com.nhl.dflib.jdbc.connector.statement.ValueConverterFactory;

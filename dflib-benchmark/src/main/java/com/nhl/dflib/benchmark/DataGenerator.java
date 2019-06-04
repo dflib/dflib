@@ -4,8 +4,8 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.collection.IntMutableList;
-import com.nhl.dflib.collection.MutableList;
+import com.nhl.dflib.seriesbuilder.IntAccumulator;
+import com.nhl.dflib.seriesbuilder.ObjectAccumulator;
 
 public class DataGenerator {
 
@@ -23,7 +23,7 @@ public class DataGenerator {
 
     public static IntSeries intSeries(int size, ValueMaker<Integer> maker) {
 
-        IntMutableList ints = new IntMutableList(size);
+        IntAccumulator ints = new IntAccumulator(size);
 
         for (int i = 0; i < size; i++) {
             ints.add(maker.get());
@@ -44,7 +44,7 @@ public class DataGenerator {
 
         Series<?>[] data = new Series[w];
         for (int i = 0; i < w; i++) {
-            MutableList ml = new MutableList<>(rows);
+            ObjectAccumulator ml = new ObjectAccumulator<>(rows);
             ValueMaker<?> vm = columnValueMakers[i];
 
             for (int j = 0; j < rows; j++) {
