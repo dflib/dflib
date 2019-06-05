@@ -43,4 +43,9 @@ public class ColumnAggregator<S, T> implements Aggregator<T> {
     public String aggregateLabel(Index columnIndex) {
         return targetColumnNamer.apply(columnIndex);
     }
+
+    @Override
+    public Aggregator<T> named(String newAggregateLabel) {
+        return new ColumnAggregator<>(aggregator, sourceColumnLocator, i -> newAggregateLabel);
+    }
 }

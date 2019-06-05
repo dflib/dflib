@@ -270,4 +270,10 @@ public interface Aggregator<T> {
     T aggregate(DataFrame df);
 
     String aggregateLabel(Index columnIndex);
+
+    /**
+     * Ensures that the aggregated column in a DataFrame will be named using the provided label. Only applicable for
+     * aggregating GroupBy.
+     */
+    Aggregator<T> named(String newAggregateLabel);
 }

@@ -201,4 +201,26 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
                 .expectRow(1, 2, "y")
                 .expectRow(2, 0, "a");
     }
+
+    @Test
+    public void testGroup_Agg_Named() {
+        Index i = Index.forLabels("a", "b");
+        DataFrame df1 = createDf(i,
+                1, "x",
+                2, "y",
+                1, "y",
+                0, "a",
+                1, "x");
+
+        DataFrame df = df1.group("b").agg(
+                Aggregator.first("b"),
+                Aggregator.sumLong("a").named("a_sum"),
+                Aggregator.medianDouble("a").named("a_median"));
+
+        new DFAsserts(df, "b", "a_sum", "a_median")
+                .expectHeight(3)
+                .expectRow(0, "x", 2L, 1.)
+                .expectRow(1, "y", 3L, 1.5)
+                .expectRow(2, "a", 0L, 0.);
+    }
 }
