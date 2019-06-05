@@ -2,6 +2,7 @@ package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.RowToValueMapper;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.connector.metadata.DbColumnMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.DbTableMetadata;
 import com.nhl.dflib.jdbc.connector.saver.SaveViaDeleteThenInsert;
@@ -84,6 +85,17 @@ public class TableSaver {
     public TableSaver storeRowNumber(String rowNumberColumn) {
         this.rowNumberColumn = rowNumberColumn;
         return this;
+    }
+
+    public Series<SaveOp> saveWithInfo(DataFrame df) {
+        LOGGER.info("saving DataFrame...");
+
+        // deprecated - conditionally add row numbers columns
+        DataFrame toSave = rowNumberColumn != null
+                ? df.addColumn(rowNumberColumn, rowIndexer())
+                : df;
+
+        return createSaveStrategy().saveWithInfo(toSave);
     }
 
     public void save(DataFrame df) {

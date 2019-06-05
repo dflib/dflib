@@ -2,9 +2,11 @@ package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
 import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -355,6 +357,81 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 .expectHeight(2)
                 .expectRow(0, 1L, 0, "a")
                 .expectRow(1, 2L, 1, "b");
+    }
+
+    @Test
+    public void testSaveWithInfo_Insert() {
+
+        DataFrame df = DataFrame.forSequenceFoldByRow(
+                Index.forLabels("id", "name", "salary"),
+                1L, "n1", 50_000.01,
+                2L, "n2", 120_000.);
+
+        Series<SaveOp> info = connector
+                .tableSaver("t1")
+                .saveWithInfo(df);
+
+        new SeriesAsserts(info).expectData(SaveOp.insert, SaveOp.insert);
+
+        DataFrame dfSaved = connector.tableLoader("t1").load();
+        new DFAsserts(dfSaved, columnNames(T1))
+                .expectHeight(2)
+                .expectRow(0, 1L, "n1", 50_000.01)
+                .expectRow(1, 2L, "n2", 120_000.);
+    }
+
+    @Test
+    public void testSaveWithInfo_DeleteInsert() {
+
+        T1.insertColumns("id", "name", "salary")
+                .values(1L, "n1", 50_000.01)
+                .values(2L, "n2", 120_000.)
+                .exec();
+
+        DataFrame df = DataFrame.forSequenceFoldByRow(
+                Index.forLabels("id", "name", "salary"),
+                1L, "n1", 50_000.01,
+                2L, "n2", 120_000.);
+
+        Series<SaveOp> info = connector
+                .tableSaver("t1")
+                .deleteTableData()
+                .saveWithInfo(df);
+        new SeriesAsserts(info).expectData(SaveOp.insert, SaveOp.insert);
+
+        DataFrame dfSaved = connector.tableLoader("t1").load();
+        new DFAsserts(dfSaved, columnNames(T1))
+                .expectHeight(2)
+                .expectRow(0, 1L, "n1", 50_000.01)
+                .expectRow(1, 2L, "n2", 120_000.);
+    }
+
+    @Test
+    public void testSaveWithInfo_Merge() {
+
+        T1.insertColumns("id", "name", "salary")
+                .values(1L, "n1", 50_000.01)
+                .values(2L, "n2", 120_000.)
+                .exec();
+
+        DataFrame df = DataFrame.forSequenceFoldByRow(
+                Index.forLabels("id", "name", "salary"),
+                1L, "n1", 50_000.01,
+                2L, "n2_u", 120_000.,
+                3L, "n3", 320_000.);
+
+        Series<SaveOp> info = connector
+                .tableSaver("t1")
+                .mergeByPk()
+                .saveWithInfo(df);
+        new SeriesAsserts(info).expectData(SaveOp.skip, SaveOp.update, SaveOp.insert);
+
+        DataFrame dfSaved = connector.tableLoader("t1").load();
+        new DFAsserts(dfSaved, columnNames(T1))
+                .expectHeight(3)
+                .expectRow(0, 1L, "n1", 50_000.01)
+                .expectRow(1, 2L, "n2_u", 120_000.)
+                .expectRow(2, 3L, "n3", 320_000.);
     }
 
     enum X {a, b}

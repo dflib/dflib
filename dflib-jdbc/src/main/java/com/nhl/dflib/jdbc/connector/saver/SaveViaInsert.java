@@ -2,9 +2,12 @@ package com.nhl.dflib.jdbc.connector.saver;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
+import com.nhl.dflib.jdbc.connector.SaveOp;
 import com.nhl.dflib.jdbc.connector.metadata.DbColumnMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.DbTableMetadata;
+import com.nhl.dflib.series.SingleValueSeries;
 
 import java.sql.Connection;
 
@@ -27,6 +30,12 @@ public class SaveViaInsert extends TableSaveStrategy {
                 .paramDescriptors(fixedParams(df.getColumnsIndex()))
                 .bindBatch(df)
                 .update(connection);
+    }
+
+    @Override
+    protected Series<SaveOp> doSaveWithInfo(Connection connection, DataFrame df) {
+        doSave(connection, df);
+        return new SingleValueSeries<>(SaveOp.insert, df.height());
     }
 
     @Override

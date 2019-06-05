@@ -1,7 +1,10 @@
 package com.nhl.dflib.jdbc.connector.saver;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
+import com.nhl.dflib.jdbc.connector.SaveOp;
+import com.nhl.dflib.series.SingleValueSeries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +26,21 @@ public abstract class TableSaveStrategy {
         this.tableName = tableName;
     }
 
+    public Series<SaveOp> saveWithInfo(DataFrame df) {
+
+        if (!shouldSave(df)) {
+            return new SingleValueSeries<>(SaveOp.skip, df.height());
+        }
+
+        try (Connection c = connector.getConnection()) {
+            Series<SaveOp> info = doSaveWithInfo(c, df);
+            c.commit();
+            return info;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error storing data in DB", e);
+        }
+    }
+
     public void save(DataFrame df) {
 
         if (!shouldSave(df)) {
@@ -41,6 +59,7 @@ public abstract class TableSaveStrategy {
 
     protected abstract void doSave(Connection connection, DataFrame df);
 
+    protected abstract Series<SaveOp> doSaveWithInfo(Connection connection, DataFrame df);
 
     protected void log(String line, Object... messageParams) {
         if (LOGGER.isInfoEnabled()) {
