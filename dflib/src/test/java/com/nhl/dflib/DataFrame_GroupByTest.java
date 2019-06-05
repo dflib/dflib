@@ -64,7 +64,7 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
                 0, "a",
                 1, "x");
 
-        DataFrame df = df1.group("a").agg(Aggregator.sum("a"), Aggregator.concat("b", ";"));
+        DataFrame df = df1.group("a").agg(Aggregator.sumLong("a"), Aggregator.concat("b", ";"));
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(3)
@@ -84,7 +84,7 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
                 1, "x");
 
         DataFrame df = df1.group("b")
-                .agg(Aggregator.first("b"), Aggregator.sum("a"), Aggregator.median("a"));
+                .agg(Aggregator.first("b"), Aggregator.sumLong("a"), Aggregator.medianDouble("a"));
 
         new DFAsserts(df, "b", "a", "a_")
                 .expectHeight(3)

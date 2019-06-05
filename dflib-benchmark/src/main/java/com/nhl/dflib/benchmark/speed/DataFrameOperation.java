@@ -37,7 +37,7 @@ public class DataFrameOperation {
 
     @Benchmark
     public Object median() {
-        return df.agg(Aggregator.median("c0"));
+        return df.agg(Aggregator.medianDouble("c0"));
     }
 
     @Benchmark
@@ -52,7 +52,7 @@ public class DataFrameOperation {
     public Object medianWithFilter() {
         return df
                 .filter("c0", (Integer i) -> i % 2 == 0)
-                .agg(Aggregator.median(0));
+                .agg(Aggregator.medianDouble(0));
     }
 
     @Benchmark

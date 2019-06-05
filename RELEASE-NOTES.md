@@ -29,6 +29,7 @@
 * #50 Hash Join builder 
 * #51 "indicator" column for joins
 * #52 Allow selection by BooleanSeries
+* #54 Series-oriented aggregators 
 
 ## Release 0.5
 

@@ -1,12 +1,8 @@
 package com.nhl.dflib.aggregate;
 
 import com.nhl.dflib.Aggregator;
-import com.nhl.dflib.ColumnAggregator;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.row.RowProxy;
-
-import java.util.function.BiConsumer;
 
 public class MultiColumnAggregator implements Aggregator {
 
@@ -21,10 +17,12 @@ public class MultiColumnAggregator implements Aggregator {
         String[] names = new String[aggregators.length];
 
         for (int i = 0; i < aggregators.length; i++) {
-            names[i] = aggregators[i].getIndexMapper().map(columns);
+            names[i] = aggregators[i].getLabel(columns);
         }
 
-        // * note that 'selectLabels' does name deduplication
+        // note that 'selectLabels' does name de-duplication
+        // TODO: this will blow up with ColumnAggregator.getLabel(..) generates its own label instead of grabbing
+        //  the original label from source
         return columns.selectLabels(names);
     }
 
@@ -34,27 +32,9 @@ public class MultiColumnAggregator implements Aggregator {
         final int len = aggregators.length;
 
         Object[] result = new Object[len];
-        Object[] accumResults = new Object[len];
-
-        // cache accumulators invoked in the inner loop
-        BiConsumer[] accums = new BiConsumer[len];
 
         for (int i = 0; i < len; i++) {
-            accums[i] = aggregators[i].getCollector().accumulator();
-        }
-
-        for (int i = 0; i < len; i++) {
-            accumResults[i] = aggregators[i].getCollector().supplier().get();
-        }
-
-        for(RowProxy r : df) {
-            for (int i = 0; i < len; i++) {
-                accums[i].accept(accumResults[i], aggregators[i].getReader().map(r));
-            }
-        }
-
-        for (int i = 0; i < len; i++) {
-            result[i] = aggregators[i].getCollector().finisher().apply(accumResults[i]);
+            result[i] = aggregators[i].aggregate(df);
         }
 
         return result;

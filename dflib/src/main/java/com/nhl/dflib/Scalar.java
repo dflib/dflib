@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.aggregate.ColumnAggregator;
 import com.nhl.dflib.row.RowBuilder;
 import com.nhl.dflib.row.RowProxy;
 
@@ -46,20 +47,72 @@ public class Scalar<T> {
         return Aggregator.first(position);
     }
 
+    /**
+     * @deprecated since 0.6 in favor of {@link #countLong()}
+     */
+    @Deprecated
     public ColumnAggregator count() {
-        return Aggregator.count(position);
+        return countLong();
     }
 
+    /**
+     * @return a new column aggregator for this position
+     * @since 0.6
+     */
+    public ColumnAggregator countLong() {
+        return Aggregator.countLong(position);
+    }
+
+    /**
+     * @deprecated since 0.6 in favor of {@link #averageDouble()}
+     */
+    @Deprecated
     public ColumnAggregator average() {
-        return Aggregator.average(position);
+        return averageDouble();
     }
 
+    /**
+     * @since 0.6
+     */
+    public ColumnAggregator averageDouble() {
+        return Aggregator.averageDouble(position);
+    }
+
+    /**
+     * @deprecated since 0.6 in favor of {@link #medianDouble()}
+     */
+    @Deprecated
     public ColumnAggregator median() {
-        return Aggregator.median(position);
+        return medianDouble();
     }
 
+    /**
+     * @since 0.6
+     */
+    public ColumnAggregator medianDouble() {
+        return Aggregator.medianDouble(position);
+    }
+
+    /**
+     * @deprecated since 0.6 in favor of {@link #sumLong()}
+     */
+    @Deprecated
     public ColumnAggregator sum() {
-        return Aggregator.sum(position);
+        return sumLong();
+    }
+
+    /**
+     * @since 0.6
+     */
+    public ColumnAggregator sumLong() {
+        return Aggregator.sumLong(position);
+    }
+
+    /**
+     * @since 0.6
+     */
+    public ColumnAggregator sumDouble() {
+        return Aggregator.sumDouble(position);
     }
 
     public int getPosition() {

@@ -18,8 +18,8 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
                 0, "a", "z", 0.001);
 
         Series<?> s = df.agg(
-                Aggregator.sum("a"),
-                Aggregator.count(2),
+                Aggregator.sumLong("a"),
+                Aggregator.countLong(2),
                 Aggregator.sumDouble("d"));
 
         new SeriesAsserts(s).expectData(3L, 3L, 3.501);
@@ -33,8 +33,8 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
                 0, "a");
 
         Series<?> s = df.agg(
-                Aggregator.count("a"),
-                Aggregator.count(1));
+                Aggregator.countLong("a"),
+                Aggregator.countLong(1));
 
         new SeriesAsserts(s).expectData(2L, 2L);
     }
@@ -85,8 +85,8 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
                 0, 55.5);
 
         Series<?> s = df.agg(
-                Aggregator.average("a"),
-                Aggregator.average(1));
+                Aggregator.averageDouble("a"),
+                Aggregator.averageDouble(1));
 
         new SeriesAsserts(s).expectData(0.5, 29.75);
     }
@@ -100,8 +100,8 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
                 4, 0);
 
         Series<?> s = df.agg(
-                Aggregator.median("a"),
-                Aggregator.median(1));
+                Aggregator.medianDouble("a"),
+                Aggregator.medianDouble(1));
 
         new SeriesAsserts(s).expectData(1., 55.5);
     }
@@ -116,8 +116,8 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
                 3, 5);
 
         Series<?> s = df.agg(
-                Aggregator.median("a"),
-                Aggregator.median(1));
+                Aggregator.medianDouble("a"),
+                Aggregator.medianDouble(1));
 
         new SeriesAsserts(s).expectData(2., 30.25);
     }
@@ -128,8 +128,8 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
         DataFrame df = createDf(i);
 
         Series<?> s = df.agg(
-                Aggregator.median("a"),
-                Aggregator.median(1));
+                Aggregator.medianDouble("a"),
+                Aggregator.medianDouble(1));
 
         new SeriesAsserts(s).expectData(0., 0.);
     }
@@ -140,8 +140,8 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
         DataFrame df = createDf(i, 1, 100);
 
         Series<?> s = df.agg(
-                Aggregator.median("a"),
-                Aggregator.median(1));
+                Aggregator.medianDouble("a"),
+                Aggregator.medianDouble(1));
 
         new SeriesAsserts(s).expectData(1., 100.);
     }
@@ -156,8 +156,8 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
                 null, 5);
 
         Series<?> s = df.agg(
-                Aggregator.median("a"),
-                Aggregator.median(1));
+                Aggregator.medianDouble("a"),
+                Aggregator.medianDouble(1));
 
         new SeriesAsserts(s).expectData(1., 5.);
     }
@@ -199,6 +199,6 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
                 Aggregator.first("a"),
                 Aggregator.first(1));
 
-        new SeriesAsserts(s).expectData(1, 5);
+        new SeriesAsserts(s).expectData(1, null);
     }
 }

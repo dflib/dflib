@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.aggregate.ColumnAggregator;
 import com.nhl.dflib.series.builder.IntAccumulator;
 import com.nhl.dflib.join.JoinBuilder;
 import com.nhl.dflib.join.JoinPredicate;
@@ -718,11 +719,11 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * Aggregates DataFrame columns into an Object[] using provided per-column aggregators. Note that aggregator
+     * Aggregates DataFrame columns into a Series, using provided per-column aggregators. Note that aggregator
      * positions correspond to resulting array positions and do not necessarily match column positions in the DataFrame.
      *
      * @param aggregators an array of aggregators corresponding to the aggregated result columns
-     * @return an Object[] with aggregated results
+     * @return an {@link Series} with aggregated results
      */
     default Series<?> agg(ColumnAggregator... aggregators) {
         return new ArraySeries<>(Aggregator.forColumns(aggregators).aggregate(this));
