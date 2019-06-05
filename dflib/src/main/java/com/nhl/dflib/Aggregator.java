@@ -1,6 +1,8 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.ColumnAggregator;
+import com.nhl.dflib.aggregate.IntCountAggregator;
+import com.nhl.dflib.aggregate.LongCountAggregator;
 
 import java.util.List;
 import java.util.Set;
@@ -38,19 +40,12 @@ public interface Aggregator<T> {
     }
 
     /**
-     * @deprecated since 0.6 in favor of {@link #countLong(String)}
+     * Creates an aggregator to count Series
+     *
+     * @since 0.6
      */
-    @Deprecated
-    static Aggregator count(String column) {
-        return countLong(column);
-    }
-
-    /**
-     * @deprecated since 0.6 in favor of {@link #countLong(int)}
-     */
-    @Deprecated
-    static Aggregator count(int column) {
-        return countLong(column);
+    static Aggregator<Long> countLong() {
+        return new LongCountAggregator("_long_count");
     }
 
     /**
@@ -58,23 +53,8 @@ public interface Aggregator<T> {
      *
      * @since 0.6
      */
-    static Aggregator<Long> countLong(String column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.countLong(), index -> index.position(column),
-                index -> column
-        );
-    }
-
-    /**
-     * Creates an aggregator to calculate a sum of the specified column.
-     *
-     * @since 0.6
-     */
-    static Aggregator<Long> countLong(int column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.countLong(), index -> column,
-                index -> index.getLabel(column)
-        );
+    static Aggregator<Integer> countInt() {
+        return new IntCountAggregator("_int_count");
     }
 
     /**
@@ -179,6 +159,26 @@ public interface Aggregator<T> {
     static Aggregator<Long> sumLong(int column) {
         return new ColumnAggregator<>(
                 SeriesAggregator.sumLong(), index -> column,
+                index -> index.getLabel(column)
+        );
+    }
+
+    /**
+     * @since 0.6
+     */
+    static Aggregator<Integer> sumInt(String column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.sumInt(), index -> index.position(column),
+                index -> column
+        );
+    }
+
+    /**
+     * @since 0.6
+     */
+    static Aggregator<Integer> sumInt(int column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.sumInt(), index -> column,
                 index -> index.getLabel(column)
         );
     }

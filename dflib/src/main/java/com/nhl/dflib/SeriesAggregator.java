@@ -83,5 +83,5 @@ public interface SeriesAggregator<S, T> {
         return new CollectorSeriesAggregator<>(aggregator);
     }
 
-    T aggregate(Series<S> s);
+    T aggregate(Series<? extends S> s);
 }

@@ -19,24 +19,38 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
 
         Series<?> s = df.agg(
                 Aggregator.sumLong("a"),
-                Aggregator.countLong(2),
+                Aggregator.countLong(),
                 Aggregator.sumDouble("d"));
 
         new SeriesAsserts(s).expectData(3L, 3L, 3.501);
     }
 
     @Test
-    public void testAgg_Count() {
+    public void testAgg_CountInt_CountLong() {
         Index i = Index.forLabels("a", "b");
         DataFrame df = createDf(i,
                 1, "x",
                 0, "a");
 
         Series<?> s = df.agg(
-                Aggregator.countLong("a"),
-                Aggregator.countLong(1));
+                Aggregator.countLong(),
+                Aggregator.countInt());
 
-        new SeriesAsserts(s).expectData(2L, 2L);
+        new SeriesAsserts(s).expectData(2L, 2);
+    }
+
+    @Test
+    public void testAgg_SumInt_SumLong() {
+        Index i = Index.forLabels("a", "b");
+        DataFrame df = createDf(i,
+                1, 1,
+                -1, 5L);
+
+        Series<?> s = df.agg(
+                Aggregator.sumInt("a"),
+                Aggregator.sumLong(1));
+
+        new SeriesAsserts(s).expectData(0, 6L);
     }
 
     @Test

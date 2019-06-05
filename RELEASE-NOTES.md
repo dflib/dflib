@@ -30,6 +30,7 @@
 * #51 "indicator" column for joins
 * #52 Allow selection by BooleanSeries
 * #54 Column-oriented aggregators, control aggregated column names
+* #55 Aggregator "count" and "sum" functions improvements
 
 ## Release 0.5
 

@@ -58,7 +58,14 @@ public class Scalar<T> {
      * @since 0.6
      */
     public Aggregator<Long> countLong() {
-        return Aggregator.countLong(position);
+        return Aggregator.countLong();
+    }
+
+    /**
+     * @since 0.6
+     */
+    public Aggregator<Integer> countInt() {
+        return Aggregator.countInt();
     }
 
     /**

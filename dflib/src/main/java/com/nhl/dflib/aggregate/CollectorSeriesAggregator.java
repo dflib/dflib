@@ -22,7 +22,7 @@ public class CollectorSeriesAggregator<S, A, T> implements SeriesAggregator<S, T
     }
 
     @Override
-    public T aggregate(Series<S> s) {
+    public T aggregate(Series<? extends S> s) {
 
         BiConsumer accumulator = collector.accumulator();
         A accumResult = collector.supplier().get();
