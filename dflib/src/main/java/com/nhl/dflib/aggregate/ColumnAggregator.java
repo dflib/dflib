@@ -10,9 +10,10 @@ import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
 /**
- * @see Aggregator for convenience factory methods of creating common ColumnAggregators.
+ * An aggregator whose source is a column in a DataFrame. The actual aggregation operation is defined as a
+ * {@link SeriesAggregator} internally.
  */
-public class ColumnAggregator<S, T> {
+public class ColumnAggregator<S, T> implements Aggregator<T> {
 
     private SeriesAggregator<S, T> aggregator;
     private ToIntFunction<Index> sourceColumnLocator;
@@ -32,12 +33,14 @@ public class ColumnAggregator<S, T> {
         return aggregator.aggregate(s);
     }
 
+    @Override
     public T aggregate(DataFrame df) {
         int pos = sourceColumnLocator.applyAsInt(df.getColumnsIndex());
         return aggregate(df.getColumn(pos));
     }
 
-    public String getLabel(Index columnIndex) {
+    @Override
+    public String aggregateLabel(Index columnIndex) {
         return targetColumnNamer.apply(columnIndex);
     }
 }

@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.aggregate.ColumnAggregator;
+import com.nhl.dflib.aggregate.Aggregation;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.row.RowProxy;
@@ -8,11 +8,9 @@ import com.nhl.dflib.series.IntSequenceSeries;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -31,6 +29,13 @@ public class GroupBy {
 
     public int size() {
         return groupsIndex.size();
+    }
+
+    /**
+     * @since 0.6
+     */
+    public Index getUngroupedColumnIndex() {
+        return ungrouped.getColumnsIndex();
     }
 
     /**
@@ -189,32 +194,23 @@ public class GroupBy {
         return new GroupBy(ungrouped, sorted);
     }
 
-    public DataFrame agg(ColumnAggregator<?, ?>... aggregators) {
-        return agg(Aggregator.forColumns(aggregators));
+    public DataFrame agg(Aggregator<?>... aggregators) {
+        return Aggregation.aggGroupBy(this, aggregators);
     }
 
-    public DataFrame agg(Index index, ColumnAggregator<?, ?>... aggregators) {
+    /**
+     * @deprecated since 0.6, as Aggregators already define aggregated column names, and in any event renaming
+     * DataFrame columns is trivial.
+     */
+    @Deprecated
+    public DataFrame agg(Index index, Aggregator<?>... aggregators) {
 
         if (index.size() != aggregators.length) {
             throw new IllegalArgumentException("Index width does not match the number of aggregators. "
                     + index.size() + " vs. " + aggregators.length);
         }
 
-        return agg(index, Aggregator.forColumns(aggregators));
-    }
-
-    public DataFrame agg(Aggregator aggregator) {
-        return agg(aggregator.aggregateIndex(ungrouped.getColumnsIndex()), aggregator);
-    }
-
-    public DataFrame agg(Index index, Aggregator aggregator) {
-
-        List<Object[]> result = new ArrayList<>(size());
-        for (Object key : getGroups()) {
-            result.add(aggregator.aggregate(getGroup(key)));
-        }
-
-        return DataFrame.forRows(index, result);
+        return agg(aggregators).selectColumns(index);
     }
 
     protected DataFrame resolveGroup(Object key) {

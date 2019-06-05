@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.aggregate.Aggregation;
 import com.nhl.dflib.series.builder.BooleanAccumulator;
 import com.nhl.dflib.series.builder.DoubleAccumulator;
 import com.nhl.dflib.series.builder.IntAccumulator;
@@ -661,6 +662,11 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public DataFrame stackIncludeNulls() {
         return Stacker.stackIncludeNulls(this);
+    }
+
+    @Override
+    public Series<?> agg(Aggregator<?>... aggregators) {
+        return Aggregation.aggDataFrame(this, aggregators);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.aggregate.ColumnAggregator;
 import com.nhl.dflib.row.RowBuilder;
 import com.nhl.dflib.row.RowProxy;
 
@@ -43,7 +42,7 @@ public class Scalar<T> {
         return Hasher.forColumn(position);
     }
 
-    public ColumnAggregator first() {
+    public Aggregator<T> first() {
         return Aggregator.first(position);
     }
 
@@ -51,15 +50,14 @@ public class Scalar<T> {
      * @deprecated since 0.6 in favor of {@link #countLong()}
      */
     @Deprecated
-    public ColumnAggregator count() {
+    public Aggregator count() {
         return countLong();
     }
 
     /**
-     * @return a new column aggregator for this position
      * @since 0.6
      */
-    public ColumnAggregator countLong() {
+    public Aggregator<Long> countLong() {
         return Aggregator.countLong(position);
     }
 
@@ -67,14 +65,14 @@ public class Scalar<T> {
      * @deprecated since 0.6 in favor of {@link #averageDouble()}
      */
     @Deprecated
-    public ColumnAggregator average() {
+    public Aggregator average() {
         return averageDouble();
     }
 
     /**
      * @since 0.6
      */
-    public ColumnAggregator averageDouble() {
+    public Aggregator<Double> averageDouble() {
         return Aggregator.averageDouble(position);
     }
 
@@ -82,14 +80,14 @@ public class Scalar<T> {
      * @deprecated since 0.6 in favor of {@link #medianDouble()}
      */
     @Deprecated
-    public ColumnAggregator median() {
+    public Aggregator median() {
         return medianDouble();
     }
 
     /**
      * @since 0.6
      */
-    public ColumnAggregator medianDouble() {
+    public Aggregator<Double> medianDouble() {
         return Aggregator.medianDouble(position);
     }
 
@@ -97,21 +95,21 @@ public class Scalar<T> {
      * @deprecated since 0.6 in favor of {@link #sumLong()}
      */
     @Deprecated
-    public ColumnAggregator sum() {
+    public Aggregator sum() {
         return sumLong();
     }
 
     /**
      * @since 0.6
      */
-    public ColumnAggregator sumLong() {
+    public Aggregator<Long> sumLong() {
         return Aggregator.sumLong(position);
     }
 
     /**
      * @since 0.6
      */
-    public ColumnAggregator sumDouble() {
+    public Aggregator<Double> sumDouble() {
         return Aggregator.sumDouble(position);
     }
 

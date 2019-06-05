@@ -1,11 +1,9 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.aggregate.ColumnAggregator;
-import com.nhl.dflib.series.builder.IntAccumulator;
 import com.nhl.dflib.join.JoinBuilder;
 import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.row.RowProxy;
-import com.nhl.dflib.series.ArraySeries;
+import com.nhl.dflib.series.builder.IntAccumulator;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -709,25 +707,15 @@ public interface DataFrame extends Iterable<RowProxy> {
     DataFrame join(DataFrame df, Hasher leftHasher, Hasher rightHasher, JoinType how);
 
     /**
-     * Aggregates DataFrame contents into an Object[] of values, using provided aggregator.
-     *
-     * @param aggregator an aggregator function
-     * @return an Object[] with aggregated results
-     */
-    default Series<?> agg(Aggregator aggregator) {
-        return new ArraySeries<>(aggregator.aggregate(this));
-    }
-
-    /**
      * Aggregates DataFrame columns into a Series, using provided per-column aggregators. Note that aggregator
-     * positions correspond to resulting array positions and do not necessarily match column positions in the DataFrame.
+     * positions correspond to returned Series value indexes and do not generally match column positions in this
+     * DataFrame.
      *
      * @param aggregators an array of aggregators corresponding to the aggregated result columns
      * @return an {@link Series} with aggregated results
+     * @see Aggregator for static factory methods of column aggregators
      */
-    default Series<?> agg(ColumnAggregator<?, ?>... aggregators) {
-        return new ArraySeries<>(Aggregator.forColumns(aggregators).aggregate(this));
-    }
+    Series<?> agg(Aggregator<?>... aggregators);
 
     /**
      * An operation similar to SQL "GROUP BY" that partitions this DataFrame into a number of groups based on the values

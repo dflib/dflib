@@ -45,8 +45,32 @@ public class Index implements Iterable<String> {
     }
 
     public static Index forLabels(String... labels) {
-        // TODO: dedupe labels like "selectLabels" does?
         return new Index(labels);
+    }
+
+    /**
+     * Creates an index from an array of labels. Duplicate labels will be renamed by appending one or more underscore
+     * symbols.
+     *
+     * @since 0.6
+     */
+    public static Index forLabelsDeduplicate(String... labels) {
+        int len = labels.length;
+        String[] selectedLabels = new String[len];
+        Set<String> uniqueLabels = new HashSet<>((int) (len / 0.75));
+
+        for (int i = 0; i < len; i++) {
+
+            String label = labels[i];
+
+            while (!uniqueLabels.add(label)) {
+                label = label + "_";
+            }
+
+            selectedLabels[i] = label;
+        }
+
+        return new Index(selectedLabels);
     }
 
     @Override
@@ -146,25 +170,13 @@ public class Index implements Iterable<String> {
 
     public Index selectLabels(String... labels) {
 
+        // check whether the labels are valid.. "position" call on an invalid label would throw
         int len = labels.length;
-        String[] selectedLabels = new String[len];
-        Set<String> uniqueLabels = new HashSet<>((int) (len / 0.75));
-
         for (int i = 0; i < len; i++) {
-
-            // this will throw on invalid label
             position(labels[i]);
-
-            String label = labels[i];
-
-            while (!uniqueLabels.add(label)) {
-                label = label + "_";
-            }
-
-            selectedLabels[i] = label;
         }
 
-        return Index.forLabels(selectedLabels);
+        return Index.forLabelsDeduplicate(labels);
     }
 
     public Index dropLabels(String... labels) {
