@@ -5,7 +5,9 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.SeriesAggregator;
-import com.nhl.dflib.map.ColumnLocator;
+
+import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 /**
  * @see Aggregator for convenience factory methods of creating common ColumnAggregators.
@@ -13,11 +15,17 @@ import com.nhl.dflib.map.ColumnLocator;
 public class ColumnAggregator<S, T> {
 
     private SeriesAggregator<S, T> aggregator;
-    private ColumnLocator columnLocator;
+    private ToIntFunction<Index> sourceColumnLocator;
+    private Function<Index, String> targetColumnNamer;
 
-    public ColumnAggregator(ColumnLocator columnLocator, SeriesAggregator<S, T> aggregator) {
-        this.columnLocator = columnLocator;
+    public ColumnAggregator(
+            SeriesAggregator<S, T> aggregator,
+            ToIntFunction<Index> sourceColumnLocator,
+            Function<Index, String> targetColumnNamer) {
+
+        this.sourceColumnLocator = sourceColumnLocator;
         this.aggregator = aggregator;
+        this.targetColumnNamer = targetColumnNamer;
     }
 
     protected T aggregate(Series<S> s) {
@@ -25,12 +33,11 @@ public class ColumnAggregator<S, T> {
     }
 
     public T aggregate(DataFrame df) {
-        int pos = columnLocator.position(df.getColumnsIndex());
+        int pos = sourceColumnLocator.applyAsInt(df.getColumnsIndex());
         return aggregate(df.getColumn(pos));
     }
 
     public String getLabel(Index columnIndex) {
-        int pos = columnLocator.position(columnIndex);
-        return columnIndex.getLabel(pos);
+        return targetColumnNamer.apply(columnIndex);
     }
 }

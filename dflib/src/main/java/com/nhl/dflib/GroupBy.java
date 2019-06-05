@@ -189,11 +189,11 @@ public class GroupBy {
         return new GroupBy(ungrouped, sorted);
     }
 
-    public DataFrame agg(ColumnAggregator... aggregators) {
+    public DataFrame agg(ColumnAggregator<?, ?>... aggregators) {
         return agg(Aggregator.forColumns(aggregators));
     }
 
-    public DataFrame agg(Index index, ColumnAggregator... aggregators) {
+    public DataFrame agg(Index index, ColumnAggregator<?, ?>... aggregators) {
 
         if (index.size() != aggregators.length) {
             throw new IllegalArgumentException("Index width does not match the number of aggregators. "

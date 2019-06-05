@@ -725,7 +725,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param aggregators an array of aggregators corresponding to the aggregated result columns
      * @return an {@link Series} with aggregated results
      */
-    default Series<?> agg(ColumnAggregator... aggregators) {
+    default Series<?> agg(ColumnAggregator<?, ?>... aggregators) {
         return new ArraySeries<>(Aggregator.forColumns(aggregators).aggregate(this));
     }
 

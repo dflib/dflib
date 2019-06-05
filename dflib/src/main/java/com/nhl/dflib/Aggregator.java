@@ -3,8 +3,9 @@ package com.nhl.dflib;
 import com.nhl.dflib.aggregate.ColumnAggregator;
 import com.nhl.dflib.aggregate.MultiColumnAggregator;
 import com.nhl.dflib.aggregate.SingleColumnAggregator;
-import com.nhl.dflib.map.ColumnLocator;
 
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collector;
 
 /**
@@ -26,10 +27,10 @@ public interface Aggregator {
      * @param column
      * @return a new ColumnAggregator
      */
-    static ColumnAggregator first(String column) {
-        return new ColumnAggregator(
-                ColumnLocator.forName(column),
-                SeriesAggregator.first()
+    static ColumnAggregator<?, ?> first(String column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.first(), index -> index.position(column),
+                index -> column
         );
     }
 
@@ -40,10 +41,10 @@ public interface Aggregator {
      * @param column
      * @return a new ColumnAggregator
      */
-    static ColumnAggregator first(int column) {
-        return new ColumnAggregator(
-                ColumnLocator.forPosition(column),
-                SeriesAggregator.first()
+    static <S> ColumnAggregator<S, S> first(int column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.first(), index -> column,
+                index -> index.getLabel(column)
         );
     }
 
@@ -62,10 +63,10 @@ public interface Aggregator {
      * @return a new ColumnAggregator
      * @since 0.6
      */
-    static ColumnAggregator countLong(String column) {
-        return new ColumnAggregator(
-                ColumnLocator.forName(column),
-                SeriesAggregator.countLong()
+    static <S> ColumnAggregator<S, Long> countLong(String column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.countLong(), index -> index.position(column),
+                index -> column
         );
     }
 
@@ -84,10 +85,10 @@ public interface Aggregator {
      * @return a new ColumnAggregator
      * @since 0.6
      */
-    static ColumnAggregator countLong(int column) {
-        return new ColumnAggregator(
-                ColumnLocator.forPosition(column),
-                SeriesAggregator.countLong()
+    static <S> ColumnAggregator<S, Long> countLong(int column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.countLong(), index -> column,
+                index -> index.getLabel(column)
         );
     }
 
@@ -110,20 +111,20 @@ public interface Aggregator {
     /**
      * @since 0.6
      */
-    static ColumnAggregator averageDouble(String column) {
-        return new ColumnAggregator(
-                ColumnLocator.forName(column),
-                SeriesAggregator.averageDouble()
+    static <S extends Number> ColumnAggregator<S, Double> averageDouble(String column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.averageDouble(), index -> index.position(column),
+                index -> column
         );
     }
 
     /**
      * @since 0.6
      */
-    static ColumnAggregator averageDouble(int column) {
-        return new ColumnAggregator(
-                ColumnLocator.forPosition(column),
-                SeriesAggregator.averageDouble()
+    static <S extends Number> ColumnAggregator<S, Double> averageDouble(int column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.averageDouble(), index -> column,
+                index -> index.getLabel(column)
         );
     }
 
@@ -146,20 +147,20 @@ public interface Aggregator {
     /**
      * @since 0.6
      */
-    static ColumnAggregator medianDouble(String column) {
-        return new ColumnAggregator(
-                ColumnLocator.forName(column),
-                SeriesAggregator.medianDouble()
+    static <S extends Number> ColumnAggregator<S, Double> medianDouble(String column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.medianDouble(), index -> index.position(column),
+                index -> column
         );
     }
 
     /**
      * @since 0.6
      */
-    static ColumnAggregator medianDouble(int column) {
-        return new ColumnAggregator(
-                ColumnLocator.forPosition(column),
-                SeriesAggregator.medianDouble()
+    static <S extends Number> ColumnAggregator<S, Double> medianDouble(int column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.medianDouble(), index -> column,
+                index -> index.getLabel(column)
         );
     }
 
@@ -180,104 +181,104 @@ public interface Aggregator {
     /**
      * @since 0.6
      */
-    static ColumnAggregator sumLong(String column) {
-        return new ColumnAggregator(
-                ColumnLocator.forName(column),
-                SeriesAggregator.sumLong()
+    static <S extends Number> ColumnAggregator<S, Long> sumLong(String column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.sumLong(), index -> index.position(column),
+                index -> column
         );
     }
 
     /**
      * @since 0.6
      */
-    static ColumnAggregator sumLong(int column) {
-        return new ColumnAggregator(
-                ColumnLocator.forPosition(column),
-                SeriesAggregator.sumLong()
+    static <S extends Number> ColumnAggregator<S, Long> sumLong(int column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.sumLong(), index -> column,
+                index -> index.getLabel(column)
         );
     }
 
-    static ColumnAggregator sumDouble(String column) {
-        return new ColumnAggregator(
-                ColumnLocator.forName(column),
-                SeriesAggregator.sumDouble()
+    static <S extends Number> ColumnAggregator<S, Double> sumDouble(String column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.sumDouble(), index -> index.position(column),
+                index -> column
         );
     }
 
-    static ColumnAggregator sumDouble(int column) {
-        return new ColumnAggregator(
-                ColumnLocator.forPosition(column),
-                SeriesAggregator.sumDouble()
+    static <S extends Number> ColumnAggregator<S, Double> sumDouble(int column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.sumDouble(), index -> column,
+                index -> index.getLabel(column)
         );
     }
 
-    static ColumnAggregator concat(String column, String delimiter) {
-        return new ColumnAggregator(
-                ColumnLocator.forName(column),
-                SeriesAggregator.concat(delimiter)
+    static <S> ColumnAggregator<S, String> concat(String column, String delimiter) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.concat(delimiter), index -> index.position(column),
+                index -> column
         );
     }
 
-    static ColumnAggregator concat(int column, String delimiter) {
-        return new ColumnAggregator(
-                ColumnLocator.forPosition(column),
-                SeriesAggregator.concat(delimiter)
+    static <S> ColumnAggregator<S, String> concat(int column, String delimiter) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.concat(delimiter), index -> column,
+                index -> index.getLabel(column)
         );
     }
 
-    static ColumnAggregator concat(String column, String delimiter, String prefix, String suffix) {
-        return new ColumnAggregator(
-                ColumnLocator.forName(column),
-                SeriesAggregator.concat(delimiter, prefix, suffix)
+    static <S> ColumnAggregator<S, String> concat(String column, String delimiter, String prefix, String suffix) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.concat(delimiter, prefix, suffix), index -> index.position(column),
+                index -> column
         );
     }
 
-    static ColumnAggregator concat(int column, String delimiter, String prefix, String suffix) {
-        return new ColumnAggregator(
-                ColumnLocator.forPosition(column),
-                SeriesAggregator.concat(delimiter, prefix, suffix)
+    static <S> ColumnAggregator<S, String> concat(int column, String delimiter, String prefix, String suffix) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.concat(delimiter, prefix, suffix), index -> column,
+                index -> index.getLabel(column)
         );
     }
 
-    static ColumnAggregator list(String column) {
-        return new ColumnAggregator(
-                ColumnLocator.forName(column),
-                SeriesAggregator.list()
+    static <S> ColumnAggregator<S, List<S>> list(String column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.list(), index -> index.position(column),
+                index -> column
         );
     }
 
-    static ColumnAggregator list(int column) {
-        return new ColumnAggregator(
-                ColumnLocator.forPosition(column),
-                SeriesAggregator.list()
+    static <S> ColumnAggregator<S, List<S>> list(int column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.list(), index -> column,
+                index -> index.getLabel(column)
         );
     }
 
-    static ColumnAggregator set(String column) {
-        return new ColumnAggregator(
-                ColumnLocator.forName(column),
-                SeriesAggregator.set()
+    static <S> ColumnAggregator<S, Set<S>> set(String column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.set(), index -> index.position(column),
+                index -> column
         );
     }
 
-    static ColumnAggregator set(int column) {
-        return new ColumnAggregator(
-                ColumnLocator.forPosition(column),
-                SeriesAggregator.set()
+    static <S> ColumnAggregator<S, Set<S>> set(int column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.set(), index -> column,
+                index -> index.getLabel(column)
         );
     }
 
-    static ColumnAggregator of(String column, Collector<?, ?, ?> aggregator) {
-        return new ColumnAggregator(
-                ColumnLocator.forName(column),
-                SeriesAggregator.of(aggregator)
+    static <S, T> ColumnAggregator<S, T> of(String column, Collector<S, ?, T> aggregator) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.of(aggregator), index -> index.position(column),
+                index -> column
         );
     }
 
-    static ColumnAggregator of(int column, Collector<?, ?, ?> aggregator) {
-        return new ColumnAggregator(
-                ColumnLocator.forPosition(column),
-                SeriesAggregator.of(aggregator)
+    static <S, T> ColumnAggregator<S, T> of(int column, Collector<S, ?, T> aggregator) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.of(aggregator), index -> column,
+                index -> index.getLabel(column)
         );
     }
 
