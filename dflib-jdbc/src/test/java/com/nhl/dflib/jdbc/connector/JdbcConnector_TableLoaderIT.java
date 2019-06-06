@@ -133,4 +133,39 @@ public class JdbcConnector_TableLoaderIT extends BaseDbTest {
                 .expectHeight(1)
                 .expectRow(0, "n3", 11_000.);
     }
+
+    @Test
+    public void testEq_EmptyCondition() {
+
+        T1.insert(1L, "n1", 50_000.01)
+                .insert(2L, "n2", 120_000.)
+                .insert(3L, "n3", 11_000.);
+
+        DataFrame empty = DataFrame.forColumns(Index.forLabels("id", "name"));
+
+        DataFrame df = createConnector()
+                .tableLoader("t1")
+                .eq(empty)
+                .load();
+
+        new DFAsserts(df, "id", "name", "salary").expectHeight(0);
+    }
+
+    @Test
+    public void testEq_EmptyCondition_CustomColumns() {
+
+        T1.insert(1L, "n1", 50_000.01)
+                .insert(2L, "n2", 120_000.)
+                .insert(3L, "n3", 11_000.);
+
+        DataFrame empty = DataFrame.forColumns(Index.forLabels("id", "name"));
+
+        DataFrame df = createConnector()
+                .tableLoader("t1")
+                .includeColumns("name", "salary")
+                .eq(empty)
+                .load();
+
+        new DFAsserts(df, "name", "salary").expectHeight(0);
+    }
 }

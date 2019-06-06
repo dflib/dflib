@@ -45,6 +45,21 @@ public class TableLoader {
     }
 
     public DataFrame load() {
+        // "no condition" means return all rows; "empty condition" means return no rows
+        return condition == null || condition.height() > 0
+                ? fetchDataFrame()
+                : createEmptyDataFrame();
+    }
+
+    protected DataFrame createEmptyDataFrame() {
+        String[] columns = useStandardColumns()
+                ? connector.getMetadata().getTable(tableName).getColumnNames()
+                : this.columns;
+
+        return DataFrame.forColumns(Index.forLabels(columns));
+    }
+
+    protected DataFrame fetchDataFrame() {
         return new SqlLoader(connector, buildSql())
                 .maxRows(maxRows)
                 .params(collectBindingParams())
@@ -83,7 +98,7 @@ public class TableLoader {
 
     protected StringBuilder appendColumnsSql(StringBuilder buffer) {
 
-        if (this.columns == null || columns.length == 0) {
+        if (useStandardColumns()) {
             return buffer.append("*");
         }
 
@@ -96,6 +111,10 @@ public class TableLoader {
         }
 
         return buffer;
+    }
+
+    protected boolean useStandardColumns() {
+        return this.columns == null || columns.length == 0;
     }
 
     protected StringBuilder appendWhereSql(StringBuilder buffer) {

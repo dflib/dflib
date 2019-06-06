@@ -38,6 +38,14 @@ public class DbTableMetadata {
         return columns;
     }
 
+    public String[] getColumnNames() {
+        String[] names = new String[columns.length];
+        for (int i = 0; i < columns.length; i++) {
+            names[i] = columns[i].getName();
+        }
+        return names;
+    }
+
     public DbColumnMetadata[] getPkColumns() {
 
         if (pk == null) {
