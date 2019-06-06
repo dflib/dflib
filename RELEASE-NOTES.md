@@ -31,7 +31,7 @@
 * #52 Allow selection by BooleanSeries
 * #54 Column-oriented aggregators, control aggregated column names
 * #55 Aggregator "count" and "sum" functions improvements
-* #56 "TableSaver.saveWithInfo()" : a method to return per-row breakdown of database operations
+* #56 "TableSaver.save()" should optionally return per-row breakdown of database operations 
 
 ## Release 0.5
 
