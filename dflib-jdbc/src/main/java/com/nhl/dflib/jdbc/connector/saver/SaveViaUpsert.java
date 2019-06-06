@@ -120,7 +120,7 @@ public class SaveViaUpsert extends SaveViaInsert {
         DataFrame toSaveClassified = toSave
                 .addColumn(DIFF_COLUMN, eqMatrix.mapColumn(this::booleansAsBitSet));
 
-        infoTracker.updatesClassified(toSaveClassified.getColumn(DIFF_COLUMN));
+        infoTracker.updatesCardinality(toSaveClassified.getColumn(DIFF_COLUMN));
 
         GroupBy byUpdatePattern = toSaveClassified.group(DIFF_COLUMN);
         for (Object o : byUpdatePattern.getGroups()) {

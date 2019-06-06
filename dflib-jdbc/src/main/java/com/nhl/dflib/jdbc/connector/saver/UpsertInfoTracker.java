@@ -68,7 +68,7 @@ class UpsertInfoTracker {
         this.newOldJoin = newOldJoin;
     }
 
-    public void updatesClassified(Series<BitSet> updatePositions) {
+    public void updatesCardinality(Series<BitSet> updatePositions) {
         this.updatePositions = updatePositions;
     }
 }
