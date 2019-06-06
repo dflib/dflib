@@ -32,6 +32,7 @@
 * #54 Column-oriented aggregators, control aggregated column names
 * #55 Aggregator "count" and "sum" functions improvements
 * #56 "TableSaver.save()" should optionally return per-row breakdown of database operations 
+* #57 CsvSaver.createMissingDirs() to save CSVs in arbitrray locations
 
 ## Release 0.5
 

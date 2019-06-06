@@ -14,6 +14,7 @@ import java.io.StringWriter;
 public class CsvSaver {
 
     private CSVFormat format;
+    private boolean createMissingDirs;
 
     public CsvSaver() {
         this.format = CSVFormat.DEFAULT;
@@ -32,22 +33,35 @@ public class CsvSaver {
         return this;
     }
 
+    /**
+     * Instructs the saver to create any missing directories in the file path.
+     *
+     * @return this loader instance
+     * @since 0.6
+     */
+    public CsvSaver createMissingDirs() {
+        this.createMissingDirs = true;
+        return this;
+    }
+
     public void save(DataFrame df, File file) {
+
+        if (createMissingDirs) {
+            File dir = file.getParentFile();
+            if (dir != null) {
+                dir.mkdirs();
+            }
+        }
 
         try (FileWriter out = new FileWriter(file)) {
             save(df, out);
         } catch (IOException e) {
-            throw new RuntimeException("Error writing CSV to " + file, e);
+            throw new RuntimeException("Error writing CSV to " + file + ": " + e.getMessage(), e);
         }
     }
 
     public void save(DataFrame df, String fileName) {
-
-        try (FileWriter out = new FileWriter(fileName)) {
-            save(df, out);
-        } catch (IOException e) {
-            throw new RuntimeException("Error writing CSV to " + fileName, e);
-        }
+        save(df, new File(fileName));
     }
 
     public void save(DataFrame df, Appendable out) {
@@ -62,7 +76,7 @@ public class CsvSaver {
             }
 
         } catch (IOException e) {
-            throw new RuntimeException("Error writing CSV", e);
+            throw new RuntimeException("Error writing CSV: " + e.getMessage(), e);
         }
     }
 

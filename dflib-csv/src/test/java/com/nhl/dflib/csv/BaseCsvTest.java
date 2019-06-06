@@ -16,7 +16,7 @@ public class BaseCsvTest {
 
     @BeforeClass
     public static void setupCsvDirs() throws URISyntaxException {
-        URI csvUri = CsvTest.class.getResource("f1.csv").toURI();
+        URI csvUri = BaseCsvTest.class.getResource("f1.csv").toURI();
         IN_BASE = new File(csvUri).getAbsoluteFile().getParentFile();
         File root = IN_BASE
                 .getParentFile()

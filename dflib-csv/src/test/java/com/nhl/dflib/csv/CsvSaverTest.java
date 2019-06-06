@@ -83,4 +83,33 @@ public class CsvSaverTest extends BaseCsvTest {
                 "1,2\r\n" +
                 "3,4\r\n", readFile(filePath));
     }
+
+    @Test
+    public void testSave_Mkdirs() throws IOException {
+
+        String path = outPath("Mkdirs" + File.separator + "f2" + File.separator + "testToFile.csv");
+        File file = new File(path);
+
+        DataFrame df = DataFrame.forSequenceFoldByRow(Index.forLabels("A", "B"),
+                1, 2,
+                3, 4);
+
+        Csv.saver().createMissingDirs().save(df, file);
+        assertEquals("A,B\r\n" +
+                "1,2\r\n" +
+                "3,4\r\n", readFile(file.getAbsolutePath()));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testSave_NoMkdirs() {
+
+        String path = outPath("NoMkdirs" + File.separator + "f4" + File.separator + "testToFile.csv");
+        File file = new File(path);
+
+        DataFrame df = DataFrame.forSequenceFoldByRow(Index.forLabels("A", "B"),
+                1, 2,
+                3, 4);
+
+        Csv.saver().save(df, file);
+    }
 }
