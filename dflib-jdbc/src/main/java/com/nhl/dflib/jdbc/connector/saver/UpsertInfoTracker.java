@@ -1,7 +1,7 @@
 package com.nhl.dflib.jdbc.connector.saver;
 
 import com.nhl.dflib.Series;
-import com.nhl.dflib.jdbc.connector.SaveOp;
+import com.nhl.dflib.jdbc.SaveOp;
 import com.nhl.dflib.join.JoinIndicator;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
 

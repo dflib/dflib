@@ -7,7 +7,7 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
-import com.nhl.dflib.jdbc.connector.SaveOp;
+import com.nhl.dflib.jdbc.SaveOp;
 import com.nhl.dflib.jdbc.connector.TableLoader;
 import com.nhl.dflib.join.JoinIndicator;
 import com.nhl.dflib.row.RowProxy;

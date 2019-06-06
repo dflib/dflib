@@ -3,7 +3,7 @@ package com.nhl.dflib.jdbc.connector.saver;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
-import com.nhl.dflib.jdbc.connector.SaveOp;
+import com.nhl.dflib.jdbc.SaveOp;
 import com.nhl.dflib.series.EmptySeries;
 
 import java.sql.Connection;
