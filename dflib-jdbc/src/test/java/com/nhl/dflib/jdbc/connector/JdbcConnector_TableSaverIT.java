@@ -369,7 +369,8 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
 
         Series<SaveOp> info = connector
                 .tableSaver("t1")
-                .saveWithInfo(df);
+                .save(df)
+                .get();
 
         new SeriesAsserts(info).expectData(SaveOp.insert, SaveOp.insert);
 
@@ -396,7 +397,8 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
         Series<SaveOp> info = connector
                 .tableSaver("t1")
                 .deleteTableData()
-                .saveWithInfo(df);
+                .save(df)
+                .get();
         new SeriesAsserts(info).expectData(SaveOp.insert, SaveOp.insert);
 
         DataFrame dfSaved = connector.tableLoader("t1").load();
@@ -412,26 +414,33 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
         T1.insertColumns("id", "name", "salary")
                 .values(1L, "n1", 50_000.01)
                 .values(2L, "n2", 120_000.)
+                .values(4L, "n4", 4.)
+                .values(5L, "n5", 5.)
                 .exec();
 
         DataFrame df = DataFrame.forSequenceFoldByRow(
                 Index.forLabels("id", "name", "salary"),
                 1L, "n1", 50_000.01,
                 2L, "n2_u", 120_000.,
-                3L, "n3", 320_000.);
+                3L, "n3", 320_000.,
+                4L, "n4_u", 4.,
+                5L, "n5", 5.);
 
         Series<SaveOp> info = connector
                 .tableSaver("t1")
                 .mergeByPk()
-                .saveWithInfo(df);
-        new SeriesAsserts(info).expectData(SaveOp.skip, SaveOp.update, SaveOp.insert);
+                .save(df)
+                .get();
+        new SeriesAsserts(info).expectData(SaveOp.skip, SaveOp.update, SaveOp.insert, SaveOp.update, SaveOp.skip);
 
-        DataFrame dfSaved = connector.tableLoader("t1").load();
+        DataFrame dfSaved = connector.tableLoader("t1").load().sort("id", true);
         new DFAsserts(dfSaved, columnNames(T1))
-                .expectHeight(3)
+                .expectHeight(5)
                 .expectRow(0, 1L, "n1", 50_000.01)
                 .expectRow(1, 2L, "n2_u", 120_000.)
-                .expectRow(2, 3L, "n3", 320_000.);
+                .expectRow(2, 3L, "n3", 320_000.)
+                .expectRow(3, 4L, "n4_u", 4.)
+                .expectRow(4, 5L, "n5", 5.);
     }
 
     enum X {a, b}

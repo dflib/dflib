@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.function.Supplier;
 
 /**
  * @since 0.6
@@ -26,14 +27,14 @@ public abstract class TableSaveStrategy {
         this.tableName = tableName;
     }
 
-    public Series<SaveOp> saveWithInfo(DataFrame df) {
+    public Supplier<Series<SaveOp>> save(DataFrame df) {
 
         if (!shouldSave(df)) {
-            return new SingleValueSeries<>(SaveOp.skip, df.height());
+            return () -> new SingleValueSeries<>(SaveOp.skip, df.height());
         }
 
         try (Connection c = connector.getConnection()) {
-            Series<SaveOp> info = doSaveWithInfo(c, df);
+            Supplier<Series<SaveOp>> info = doSave(c, df);
             c.commit();
             return info;
         } catch (SQLException e) {
@@ -41,25 +42,9 @@ public abstract class TableSaveStrategy {
         }
     }
 
-    public void save(DataFrame df) {
-
-        if (!shouldSave(df)) {
-            return;
-        }
-
-        try (Connection c = connector.getConnection()) {
-            doSave(c, df);
-            c.commit();
-        } catch (SQLException e) {
-            throw new RuntimeException("Error storing data in DB", e);
-        }
-    }
-
     protected abstract boolean shouldSave(DataFrame df);
 
-    protected abstract void doSave(Connection connection, DataFrame df);
-
-    protected abstract Series<SaveOp> doSaveWithInfo(Connection connection, DataFrame df);
+    protected abstract Supplier<Series<SaveOp>> doSave(Connection connection, DataFrame df);
 
     protected void log(String line, Object... messageParams) {
         if (LOGGER.isInfoEnabled()) {

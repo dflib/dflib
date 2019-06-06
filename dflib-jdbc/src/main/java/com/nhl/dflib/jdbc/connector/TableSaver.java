@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 
 public class TableSaver {
 
@@ -87,7 +88,7 @@ public class TableSaver {
         return this;
     }
 
-    public Series<SaveOp> saveWithInfo(DataFrame df) {
+    public Supplier<Series<SaveOp>> save(DataFrame df) {
         LOGGER.info("saving DataFrame...");
 
         // deprecated - conditionally add row numbers columns
@@ -95,18 +96,7 @@ public class TableSaver {
                 ? df.addColumn(rowNumberColumn, rowIndexer())
                 : df;
 
-        return createSaveStrategy().saveWithInfo(toSave);
-    }
-
-    public void save(DataFrame df) {
-        LOGGER.info("saving DataFrame...");
-
-        // deprecated - conditionally add row numbers columns
-        DataFrame toSave = rowNumberColumn != null
-                ? df.addColumn(rowNumberColumn, rowIndexer())
-                : df;
-
-        createSaveStrategy().save(toSave);
+        return createSaveStrategy().save(toSave);
     }
 
     protected TableSaveStrategy createSaveStrategy() {

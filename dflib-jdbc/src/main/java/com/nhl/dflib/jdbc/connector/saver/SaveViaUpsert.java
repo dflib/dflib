@@ -7,13 +7,16 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
+import com.nhl.dflib.jdbc.connector.SaveOp;
 import com.nhl.dflib.jdbc.connector.TableLoader;
 import com.nhl.dflib.join.JoinIndicator;
 import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.series.SingleValueSeries;
 
 import java.sql.Connection;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.function.Supplier;
 
 /**
  * @since 0.6
@@ -33,7 +36,7 @@ public class SaveViaUpsert extends SaveViaInsert {
     }
 
     @Override
-    protected void doSave(Connection connection, DataFrame df) {
+    protected Supplier<Series<SaveOp>> doSave(Connection connection, DataFrame df) {
 
         DataFrame keyDf = df.selectColumns(Index.forLabels(keyColumns));
 
@@ -44,7 +47,7 @@ public class SaveViaUpsert extends SaveViaInsert {
 
         if (previouslySaved.height() == 0) {
             insert(connection, df);
-            return;
+            return () -> new SingleValueSeries<>(SaveOp.insert, df.height());
         }
 
         DataFrame insertAndUpdate = df.leftJoin()
@@ -63,13 +66,15 @@ public class SaveViaUpsert extends SaveViaInsert {
                     Arrays.toString(keyColumns));
 
             throw new IllegalStateException(message);
-
         }
         // this should be impossible as insertAndUpdate is a left join, so its size is at least the same as the left side DF...
         // Still keeping the check for sanity...
         else if (heightDelta < 0) {
             throw new IllegalStateException();
         }
+
+        UpsertInfoTracker infoTracker = new UpsertInfoTracker(df.width(), df.height());
+        infoTracker.insertAndUpdate(index);
 
         if (insertIndex.size() > 0) {
             insert(connection, df.selectRows(insertIndex));
@@ -87,15 +92,17 @@ public class SaveViaUpsert extends SaveViaInsert {
                     .selectColumns(joinedIndex)
                     .renameColumns(mainColumns.getLabels());
 
-            update(connection, df.selectRows(updateIndex), previouslySavedOrdered.selectRows(updateIndex));
+            update(connection, df.selectRows(updateIndex), previouslySavedOrdered.selectRows(updateIndex), infoTracker);
         }
+
+        return infoTracker::getInfo;
     }
 
     protected void insert(Connection connection, DataFrame toSave) {
         super.doSave(connection, toSave);
     }
 
-    protected void update(Connection connection, DataFrame toSave, DataFrame previouslySaved) {
+    protected void update(Connection connection, DataFrame toSave, DataFrame previouslySaved, UpsertInfoTracker infoTracker) {
 
         int w = toSave.width();
         if (w == keyColumns.length) {
@@ -110,10 +117,12 @@ public class SaveViaUpsert extends SaveViaInsert {
 
         // note that "toSave" and "previouslySaved" must be ordered by key for "eq" to be meaningful
         DataFrame eqMatrix = toSave.eq(previouslySaved);
-        GroupBy byUpdatePattern = toSave
-                .addColumn(DIFF_COLUMN, eqMatrix.mapColumn(this::booleansAsBitSet))
-                .group(DIFF_COLUMN);
+        DataFrame toSaveClassified = toSave
+                .addColumn(DIFF_COLUMN, eqMatrix.mapColumn(this::booleansAsBitSet));
 
+        infoTracker.updatesClassified(toSaveClassified.getColumn(DIFF_COLUMN));
+
+        GroupBy byUpdatePattern = toSaveClassified.group(DIFF_COLUMN);
         for (Object o : byUpdatePattern.getGroups()) {
             BitSet bits = (BitSet) o;
 

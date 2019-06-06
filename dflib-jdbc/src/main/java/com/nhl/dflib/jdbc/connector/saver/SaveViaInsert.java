@@ -10,6 +10,7 @@ import com.nhl.dflib.jdbc.connector.metadata.DbTableMetadata;
 import com.nhl.dflib.series.SingleValueSeries;
 
 import java.sql.Connection;
+import java.util.function.Supplier;
 
 /**
  * @since 0.6
@@ -21,7 +22,7 @@ public class SaveViaInsert extends TableSaveStrategy {
     }
 
     @Override
-    protected void doSave(Connection connection, DataFrame df) {
+    protected Supplier<Series<SaveOp>> doSave(Connection connection, DataFrame df) {
         connector.createStatementBuilder(createInsertStatement(df))
 
                 // use param descriptors from metadata, as (1) we can and (b) some DBs don't support real
@@ -30,12 +31,8 @@ public class SaveViaInsert extends TableSaveStrategy {
                 .paramDescriptors(fixedParams(df.getColumnsIndex()))
                 .bindBatch(df)
                 .update(connection);
-    }
 
-    @Override
-    protected Series<SaveOp> doSaveWithInfo(Connection connection, DataFrame df) {
-        doSave(connection, df);
-        return new SingleValueSeries<>(SaveOp.insert, df.height());
+        return () -> new SingleValueSeries<>(SaveOp.insert, df.height());
     }
 
     @Override
