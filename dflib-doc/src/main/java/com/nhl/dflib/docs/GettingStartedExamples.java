@@ -5,7 +5,7 @@ import com.nhl.dflib.Printers;
 
 import java.util.stream.IntStream;
 
-public class Examples {
+public class GettingStartedExamples {
 
     public static void main(String[] args) {
         gettingStarted();
