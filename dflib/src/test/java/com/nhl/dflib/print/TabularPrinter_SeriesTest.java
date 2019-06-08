@@ -27,7 +27,7 @@ public class TabularPrinter_SeriesTest {
                 "    -1.01" + System.lineSeparator() +
                 " -10000.5" + System.lineSeparator() +
                 "3965001.2" + System.lineSeparator() +
-                "4 rows", p.toString(DoubleSeries.forDoubles(1.0, -1.01, -10_000.5, 3_965_001.2)));
+                "4 elements", p.toString(DoubleSeries.forDoubles(1.0, -1.01, -10_000.5, 3_965_001.2)));
     }
 
     @Test
@@ -39,7 +39,7 @@ public class TabularPrinter_SeriesTest {
                 "     -1" + System.lineSeparator() +
                 " -10000" + System.lineSeparator() +
                 "3965001" + System.lineSeparator() +
-                "4 rows", p.toString(IntSeries.forInts(1, -1, -10_000, 3_965_001)));
+                "4 elements", p.toString(IntSeries.forInts(1, -1, -10_000, 3_965_001)));
     }
 
     @Test
@@ -49,7 +49,7 @@ public class TabularPrinter_SeriesTest {
         assertEquals(System.lineSeparator() +
                 " true" + System.lineSeparator() +
                 "false" + System.lineSeparator() +
-                "2 rows", p.toString(BooleanSeries.forBooleans(true, false)));
+                "2 elements", p.toString(BooleanSeries.forBooleans(true, false)));
     }
 
     @Test
@@ -61,7 +61,7 @@ public class TabularPrinter_SeriesTest {
                 "two  " + System.lineSeparator() +
                 "three" + System.lineSeparator() +
                 "four " + System.lineSeparator() +
-                "4 rows", p.toString(s1));
+                "4 elements", p.toString(s1));
     }
 
     @Test
@@ -73,7 +73,7 @@ public class TabularPrinter_SeriesTest {
                 "one " + System.lineSeparator() +
                 "... " + System.lineSeparator() +
                 "four" + System.lineSeparator() +
-                "4 rows", p.toString(s1));
+                "4 elements", p.toString(s1));
     }
 
     @Test
@@ -85,6 +85,6 @@ public class TabularPrinter_SeriesTest {
                 "two " + System.lineSeparator() +
                 "t..e" + System.lineSeparator() +
                 "four" + System.lineSeparator() +
-                "4 rows", p.toString(s1));
+                "4 elements", p.toString(s1));
     }
 }
