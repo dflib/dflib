@@ -233,7 +233,7 @@ public class DataFrameBuilder {
         return new ColumnDataFrame(columnsIndex, series);
     }
 
-    public DataFrame foldIntStreamByRow(int forNull, IntStream stream) {
+    public DataFrame foldIntStreamByRow(int missingFiller, IntStream stream) {
 
         int width = columnsIndex.size();
         if (width == 0) {
@@ -257,7 +257,7 @@ public class DataFrameBuilder {
         int pl = p % width;
         if (pl > 0) {
             for (; pl < width; pl++) {
-                columnBuilders[pl].add(forNull);
+                columnBuilders[pl].add(missingFiller);
             }
         }
 
@@ -269,9 +269,9 @@ public class DataFrameBuilder {
         return new ColumnDataFrame(columnsIndex, columnsData);
     }
 
-    public DataFrame foldIntStreamByColumn(int forNull, IntStream stream) {
+    public DataFrame foldIntStreamByColumn(int missingFiller, IntStream stream) {
         // since we can't guess the height from the Stream, convert it to array and fold the array by column
-        return foldIntByColumn(forNull, stream.toArray());
+        return foldIntByColumn(missingFiller, stream.toArray());
     }
 
     public DataFrame foldLongByColumn(long forNull, long... data) {
@@ -312,7 +312,7 @@ public class DataFrameBuilder {
         return new ColumnDataFrame(columnsIndex, series);
     }
 
-    public DataFrame foldLongStreamByRow(long forNull, LongStream stream) {
+    public DataFrame foldLongStreamByRow(long missingFiller, LongStream stream) {
 
         int width = columnsIndex.size();
         if (width == 0) {
@@ -336,7 +336,7 @@ public class DataFrameBuilder {
         int pl = p % width;
         if (pl > 0) {
             for (; pl < width; pl++) {
-                columnBuilders[pl].add(forNull);
+                columnBuilders[pl].add(missingFiller);
             }
         }
 
@@ -348,12 +348,12 @@ public class DataFrameBuilder {
         return new ColumnDataFrame(columnsIndex, columnsData);
     }
 
-    public DataFrame foldLongStreamByColumn(long forNull, LongStream stream) {
+    public DataFrame foldLongStreamByColumn(long padWith, LongStream stream) {
         // since we can't guess the height from the Stream, convert it to array and fold the array by column
-        return foldLongByColumn(forNull, stream.toArray());
+        return foldLongByColumn(padWith, stream.toArray());
     }
 
-    public DataFrame foldDoubleByColumn(double forNull, double... data) {
+    public DataFrame foldDoubleByColumn(double padWith, double... data) {
 
         int w = columnsIndex.size();
         if (w == 0) {
@@ -379,7 +379,7 @@ public class DataFrameBuilder {
         if (partialLastColumn) {
             int fillerStart = h - missingInLastColumn;
             System.arraycopy(data, fullColumnsW * h, columnarData[fullColumnsW], 0, fillerStart);
-            Arrays.fill(columnarData[fullColumnsW], fillerStart, h, forNull);
+            Arrays.fill(columnarData[fullColumnsW], fillerStart, h, padWith);
         }
 
         Series[] series = new Series[w];
@@ -391,7 +391,7 @@ public class DataFrameBuilder {
         return new ColumnDataFrame(columnsIndex, series);
     }
 
-    public DataFrame foldDoubleStreamByRow(double forNull, DoubleStream stream) {
+    public DataFrame foldDoubleStreamByRow(double padWith, DoubleStream stream) {
 
         int width = columnsIndex.size();
         if (width == 0) {
@@ -415,7 +415,7 @@ public class DataFrameBuilder {
         int pl = p % width;
         if (pl > 0) {
             for (; pl < width; pl++) {
-                columnBuilders[pl].add(forNull);
+                columnBuilders[pl].add(padWith);
             }
         }
 
@@ -427,9 +427,9 @@ public class DataFrameBuilder {
         return new ColumnDataFrame(columnsIndex, columnsData);
     }
 
-    public DataFrame foldDoubleStreamByColumn(double forNull, DoubleStream stream) {
+    public DataFrame foldDoubleStreamByColumn(double padWith, DoubleStream stream) {
         // since we can't guess the height from the Stream, convert it to array and fold the array by column
-        return foldDoubleByColumn(forNull, stream.toArray());
+        return foldDoubleByColumn(padWith, stream.toArray());
     }
 
     private <T> Collection<T> toCollection(Iterable<T> iterable) {
