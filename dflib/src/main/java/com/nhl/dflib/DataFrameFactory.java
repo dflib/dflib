@@ -111,8 +111,8 @@ class DataFrameFactory {
     public static DataFrame forSequenceFoldByColumn(Index columns, Object... sequence) {
 
         int w = columns.size();
-        int lastColumnH = sequence.length % w;
-        boolean partialLastColumn = lastColumnH > 0;
+        int missingInLastColumn = sequence.length % w;
+        boolean partialLastColumn = missingInLastColumn > 0;
         int fullColumnsW = partialLastColumn
                 ? w - 1
                 : w;
@@ -128,7 +128,7 @@ class DataFrameFactory {
         }
 
         if (partialLastColumn) {
-            System.arraycopy(sequence, fullColumnsW * h, data[fullColumnsW], 0, lastColumnH);
+            System.arraycopy(sequence, fullColumnsW * h, data[fullColumnsW], 0, h - missingInLastColumn);
         }
 
         Series[] series = columnarDataToSeries(data);

@@ -69,7 +69,7 @@ public class DataFrame_FactoryMethodsTest {
     }
 
     @Test
-    public void testForequence1() {
+    public void testForSequence1() {
 
         Index i = Index.forLabels("a", "b");
         DataFrame df = DataFrame.forSequenceFoldByRow(i, 1, 2);
@@ -101,6 +101,31 @@ public class DataFrame_FactoryMethodsTest {
                 .expectHeight(2)
                 .expectRow(0, 1, 2)
                 .expectRow(1, 3, 4);
+    }
+
+    @Test
+    public void testForSequenceFoldByColumn() {
+
+        Index i = Index.forLabels("a", "b");
+        DataFrame df = DataFrame.forSequenceFoldByColumn(i, 1, 2, 3, 4);
+
+        new DFAsserts(df, i)
+                .expectHeight(2)
+                .expectRow(0, 1, 3)
+                .expectRow(1, 2, 4);
+    }
+
+    @Test
+    public void testForSequenceFoldByColumn_Partial() {
+
+        Index i = Index.forLabels("a", "b");
+        DataFrame df = DataFrame.forSequenceFoldByColumn(i, 1, 2, 3, 4, 5);
+
+        new DFAsserts(df, i)
+                .expectHeight(3)
+                .expectRow(0, 1, 4)
+                .expectRow(1, 2, 5)
+                .expectRow(2, 3, null);
     }
 
     @Test
