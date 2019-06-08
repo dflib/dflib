@@ -3,6 +3,7 @@ package com.nhl.dflib;
 import com.nhl.dflib.unit.DFAsserts;
 import org.junit.Test;
 
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
@@ -221,5 +222,86 @@ public class DataFrameBuilderTest {
                 .expectRow(0, "a", 1)
                 .expectRow(1, "bc", 2)
                 .expectRow(2, "def", 3);
+    }
+
+    @Test
+    public void testIntFoldByColumn() {
+        DataFrame df = DataFrameBuilder
+                .builder("a", "b")
+                .foldIntByColumn(-9999, 0, 1, 2, 3, 4, 5);
+
+        new DFAsserts(df, "a", "b").expectHeight(3)
+                .expectIntColumns(0, 1)
+                .expectRow(0, 0, 3)
+                .expectRow(1, 1, 4)
+                .expectRow(2, 2, 5);
+    }
+
+    @Test
+    public void testFoldIntByColumn_Partial() {
+        DataFrame df = DataFrameBuilder
+                .builder("a", "b")
+                .foldIntByColumn(-9999, 0, 1, 2, 3, 4);
+
+        new DFAsserts(df, "a", "b").expectHeight(3)
+                .expectIntColumns(0, 1)
+                .expectRow(0, 0, 3)
+                .expectRow(1, 1, 4)
+                .expectRow(2, 2, -9999);
+    }
+
+
+    @Test
+    public void testFoldIntStreamByRow() {
+        DataFrame df = DataFrameBuilder
+                .builder("a", "b")
+                .foldIntStreamByRow(-9999, IntStream.of(-1, 1, 0, 2, 5, 3));
+
+        new DFAsserts(df, "a", "b").expectHeight(3)
+                .expectRow(0, -1, 1)
+                .expectRow(1, 0, 2)
+                .expectRow(2, 5, 3)
+                .expectIntColumns(0, 1);
+    }
+
+    @Test
+    public void testFoldIntStreamByRow_Partial() {
+        DataFrame df = DataFrameBuilder
+                .builder("a", "b")
+                .foldIntStreamByRow(-9999, IntStream.of(-1, 1, 0, 2, 5));
+
+        new DFAsserts(df, "a", "b").expectHeight(3)
+                .expectRow(0, -1, 1)
+                .expectRow(1, 0, 2)
+                .expectRow(2, 5, -9999)
+                .expectIntColumns(0, 1);
+
+    }
+
+    @Test
+    public void testFoldIntStreamByColumn() {
+        DataFrame df = DataFrameBuilder
+                .builder("a", "b")
+                .foldIntStreamByColumn(-9999, IntStream.of(-1, 1, 0, 2, 5, 3));
+
+        new DFAsserts(df, "a", "b").expectHeight(3)
+                .expectIntColumns(0, 1)
+                .expectRow(0, -1, 2)
+                .expectRow(1, 1, 5)
+                .expectRow(2, 0, 3);
+    }
+
+    @Test
+    public void testFoldIntStreamByColumn_Partial() {
+        DataFrame df = DataFrameBuilder
+                .builder("a", "b")
+                .foldIntStreamByColumn(-9999, IntStream.of(-1, 1, 0, 2, 5));
+
+        new DFAsserts(df, "a", "b").expectHeight(3)
+                .expectIntColumns(0, 1)
+                .expectRow(0, -1, 2)
+                .expectRow(1, 1, 5)
+                .expectRow(2, 0, -9999);
+
     }
 }

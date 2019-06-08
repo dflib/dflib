@@ -1,15 +1,19 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.series.ArraySeries;
+import com.nhl.dflib.series.IntArraySeries;
+import com.nhl.dflib.series.builder.IntAccumulator;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
 import com.nhl.dflib.series.builder.SeriesBuilder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.PrimitiveIterator;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -128,39 +132,11 @@ public class DataFrameBuilder {
     }
 
     public <T> DataFrame foldStreamByRow(Stream<T> stream) {
-
-        int width = columnsIndex.size();
-        if (width == 0) {
-            throw new IllegalArgumentException("Empty columns");
-        }
-
-        List<Object>[] data = new List[width];
-        for (int i = 0; i < width; i++) {
-            data[i] = new ArrayList<>();
-        }
-
-        Iterator<T> it = stream.iterator();
-
-        int p = 0;
-        while (it.hasNext()) {
-            data[p % width].add(it.next());
-            p++;
-        }
-
-        // 'height' is max height; some columns may be smaller
-        int height = data[0].size();
-        Series[] columnsData = new Series[width];
-        for (int i = 0; i < width; i++) {
-            Object[] columnData = new Object[height];
-            data[i].toArray(columnData);
-            columnsData[i] = new ArraySeries(columnData);
-        }
-
-        return new ColumnDataFrame(columnsIndex, columnsData);
+        return foldIterableByRow(() -> stream.iterator());
     }
 
     public <T> DataFrame foldStreamByColumn(Stream<T> stream) {
-        // since we can't guess the height from the Stream, convert it to array and fold that by column
+        // since we can't guess the height from the Stream, convert it to array and fold the array by column
         return foldByColumn(stream.toArray());
     }
 
@@ -207,6 +183,92 @@ public class DataFrameBuilder {
         return foldByColumn(toCollection(iterable).toArray());
     }
 
+    public DataFrame foldIntByColumn(int forNull, int... data) {
+
+        int w = columnsIndex.size();
+        if (w == 0) {
+            throw new IllegalArgumentException("Empty columns");
+        }
+
+        int missingInLastColumn = data.length % w;
+        boolean partialLastColumn = missingInLastColumn > 0;
+        int fullColumnsW = partialLastColumn
+                ? w - 1
+                : w;
+
+        int h = partialLastColumn
+                ? 1 + data.length / w
+                : data.length / w;
+
+        int[][] columnarData = new int[w][h];
+
+        for (int i = 0; i < fullColumnsW; i++) {
+            System.arraycopy(data, i * h, columnarData[i], 0, h);
+        }
+
+        if (partialLastColumn) {
+            int fillerStart = h - missingInLastColumn;
+            System.arraycopy(data, fullColumnsW * h, columnarData[fullColumnsW], 0, fillerStart);
+            Arrays.fill(columnarData[fullColumnsW], fillerStart, h, forNull);
+        }
+
+        Series[] series = new Series[w];
+
+        for (int i = 0; i < w; i++) {
+            series[i] = new IntArraySeries(columnarData[i]);
+        }
+
+        return new ColumnDataFrame(columnsIndex, series);
+    }
+
+    public <T> DataFrame foldIntStreamByRow(int forNull, IntStream stream) {
+
+        int width = columnsIndex.size();
+        if (width == 0) {
+            throw new IllegalArgumentException("Empty columns");
+        }
+
+        IntAccumulator[] columnBuilders = new IntAccumulator[width];
+        for (int i = 0; i < width; i++) {
+            columnBuilders[i] = new IntAccumulator();
+        }
+
+        PrimitiveIterator.OfInt it = stream.iterator();
+
+        int p = 0;
+        while (it.hasNext()) {
+            columnBuilders[p % width].add(it.nextInt());
+            p++;
+        }
+
+        // fill the last row to the end
+        int pl = p % width;
+        if (pl > 0) {
+            for (; pl < width; pl++) {
+                columnBuilders[pl].add(forNull);
+            }
+        }
+
+        Series[] columnsData = new Series[width];
+        for (int i = 0; i < width; i++) {
+            columnsData[i] = columnBuilders[i].toIntSeries();
+        }
+
+        return new ColumnDataFrame(columnsIndex, columnsData);
+    }
+
+    public <T> DataFrame foldIntStreamByColumn(int forNull, IntStream stream) {
+        // since we can't guess the height from the Stream, convert it to array and fold the array by column
+        return foldIntByColumn(forNull, stream.toArray());
+    }
+
+
+    public <T> DataFrame objectsToRows(Iterable<T> objects, Function<T, Object[]> rowMapper) {
+        DataFrameByRowBuilder byRowBuilder = new DataFrameByRowBuilder(columnsIndex);
+        objects.forEach(o -> byRowBuilder.addRow(rowMapper.apply(o)));
+        return byRowBuilder.create();
+    }
+
     private <T> Collection<T> toCollection(Iterable<T> iterable) {
 
         if (iterable instanceof Collection) {
@@ -216,12 +278,6 @@ public class DataFrameBuilder {
         List<T> values = new ArrayList<>();
         iterable.forEach(values::add);
         return values;
-    }
-
-    public <T> DataFrame objectsToRows(Iterable<T> objects, Function<T, Object[]> rowMapper) {
-        DataFrameByRowBuilder byRowBuilder = new DataFrameByRowBuilder(columnsIndex);
-        objects.forEach(o -> byRowBuilder.addRow(rowMapper.apply(o)));
-        return byRowBuilder.create();
     }
 
     protected DataFrame fromColumnarData(Object[][] columnarData) {
