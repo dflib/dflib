@@ -69,13 +69,14 @@ When you run this code, console output will look like this:
 1666 rows x 3 columns
 ----
 
-
 == Working with Jupyter Notebook
 
+_If you are not in a mood for setting up Python and Jupyter, you can skip this section all together, and run through
+the next chapters using your Java IDE. Just keep in mind that Jupyter is a very powerful data exploration and modeling
+tool, and DFLib allows you to use it with Java. In any event you can come back to it later._
+
 While DFLib is a library that runs inside regular Java applications, it also works perfectly in a Jupyter notebook,
-which is a very common environment among data scientists, and is usually associated with Python or Scala. You can skip
-this section all together, and run through the next chapters using your Java IDE. But you'd be missing a very powerful
-data exploration and modeling tool. Jupyter Notebook is very visual and allows you to debug each step of your a data
+which is a very common environment among data scientists, and is usually associated with Python or Scala. Jupyter Notebook is very visual and allows you to debug each step of your a data
 load and transformation pipeline individually without a need to rerun the whole thing. The code developed in notebook
 can be later copied and pasted into your application.
 
