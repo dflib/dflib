@@ -6,12 +6,11 @@ import org.junit.Test;
 
 import static java.util.Arrays.asList;
 
-public class DataFrame_SelectTest extends BaseDataFrameTest {
+public class DataFrame_SelectTest {
 
     @Test
     public void testSelectColumns() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y")
                 .selectColumns("b");
@@ -24,8 +23,7 @@ public class DataFrame_SelectTest extends BaseDataFrameTest {
 
     @Test
     public void testSelectColumns_DuplicateColumn() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y")
                 .selectColumns("b", "b", "b");
@@ -38,8 +36,7 @@ public class DataFrame_SelectTest extends BaseDataFrameTest {
 
     @Test
     public void testSelect_ints() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.builder("a", "b").foldByRow(
                 5, "x",
                 9, "y",
                 1, "z")
@@ -53,8 +50,7 @@ public class DataFrame_SelectTest extends BaseDataFrameTest {
 
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void testSelect_ints_out_of_range() {
-        Index i1 = Index.forLabels("a", "b");
-        createDf(i1,
+        DataFrame.builder("a", "b").foldByRow(
                 5, "x",
                 9, "y",
                 1, "z")
@@ -65,8 +61,7 @@ public class DataFrame_SelectTest extends BaseDataFrameTest {
     @Deprecated
     @Test
     public void testSelect_List() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.builder("a", "b").foldByRow(
                 5, "x",
                 9, "y",
                 1, "z")
@@ -81,8 +76,7 @@ public class DataFrame_SelectTest extends BaseDataFrameTest {
     @Deprecated
     @Test
     public void testSelect_Series() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.builder("a", "b").foldByRow(
                 5, "x",
                 9, "y",
                 1, "z")
@@ -96,8 +90,7 @@ public class DataFrame_SelectTest extends BaseDataFrameTest {
 
     @Test
     public void testSelect_IntSeries() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.builder("a", "b").foldByRow(
                 5, "x",
                 9, "y",
                 1, "z")
@@ -111,8 +104,7 @@ public class DataFrame_SelectTest extends BaseDataFrameTest {
 
     @Test
     public void testSelect_reorder() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.builder("a", "b").foldByRow(
                 5, "x",
                 9, "y",
                 1, "z")
@@ -126,8 +118,7 @@ public class DataFrame_SelectTest extends BaseDataFrameTest {
 
     @Test
     public void testSelect_duplicate() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.builder("a", "b").foldByRow(
                 5, "x",
                 9, "y",
                 1, "z")
@@ -143,13 +134,11 @@ public class DataFrame_SelectTest extends BaseDataFrameTest {
 
     @Test
     public void testSelectColumnsByIndex() {
-        Index i1 = Index.forLabels("a", "b", "c");
-        Index i2 = Index.forLabels("b", "a");
 
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.builder("a", "b", "c").foldByRow(
                 1, "x", "m",
                 2, "y", "n")
-                .selectColumns(i2);
+                .selectColumns(Index.forLabels("b", "a"));
 
         new DFAsserts(df, "b", "a")
                 .expectHeight(2)

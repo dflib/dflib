@@ -3,19 +3,19 @@ package com.nhl.dflib;
 import com.nhl.dflib.unit.DFAsserts;
 import org.junit.Test;
 
-public class DataFrame_NullifyTest extends BaseDataFrameTest {
+public class DataFrame_NullifyTest {
 
     @Test
     public void testNullify() {
-        Index i1 = Index.forLabels("a", "b");
+        DataFrame cond = DataFrame
+                .builder("a", "b")
+                .columns(BooleanSeries.forBooleans(true, false), BooleanSeries.forBooleans(true, false));
 
-        DataFrame cond = DataFrame.forColumns(i1,
-                BooleanSeries.forBooleans(true, false),
-                BooleanSeries.forBooleans(true, false));
-
-        DataFrame df = createDf(i1,
-                1, "x",
-                2, "y").nullify(cond);
+        DataFrame df = DataFrame.builder("a", "b")
+                .foldByRow(
+                        1, "x",
+                        2, "y")
+                .nullify(cond);
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(2)
@@ -25,15 +25,14 @@ public class DataFrame_NullifyTest extends BaseDataFrameTest {
 
     @Test
     public void testNullifyNoMatch() {
-        Index i1 = Index.forLabels("a", "b");
+        DataFrame cond = DataFrame
+                .builder("a", "b")
+                .columns(BooleanSeries.forBooleans(true, false), BooleanSeries.forBooleans(true, false));
 
-        DataFrame cond = DataFrame.forColumns(i1,
-                BooleanSeries.forBooleans(true, false),
-                BooleanSeries.forBooleans(true, false));
-
-        DataFrame df = createDf(i1,
-                1, "x",
-                2, "y").nullifyNoMatch(cond);
+        DataFrame df = DataFrame.builder("a", "b")
+                .foldByRow(
+                        1, "x",
+                        2, "y").nullifyNoMatch(cond);
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(2)
@@ -43,22 +42,21 @@ public class DataFrame_NullifyTest extends BaseDataFrameTest {
 
     @Test
     public void testNullifyByColumn() {
-        Index i0 = Index.forLabels("c", "b");
-        Index i1 = Index.forLabels("a", "b");
 
-        DataFrame cond = DataFrame.forColumns(i0,
-                BooleanSeries.forBooleans(true, false),
-                BooleanSeries.forBooleans(true, false));
+        DataFrame cond = DataFrame
+                .builder("c", "b")
+                .columns(BooleanSeries.forBooleans(true, false), BooleanSeries.forBooleans(true, false));
 
-        DataFrame df = createDf(i1,
-                1, "x",
-                2, "y").nullify(cond);
+        DataFrame df = DataFrame
+                .builder("a", "b")
+                .foldByRow(
+                        1, "x",
+                        2, "y")
+                .nullify(cond);
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, 1, null)
                 .expectRow(1, 2, "y");
     }
-
-
 }

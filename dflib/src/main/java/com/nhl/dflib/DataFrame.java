@@ -22,46 +22,78 @@ import java.util.stream.Stream;
 public interface DataFrame extends Iterable<RowProxy> {
 
     /**
-     * Creates a DataFrame from a column index and an array of {@link Series} representing columns.
+     * Creates a DataFrame builder with provided column labels. Callers can supply in-memory data in various forms to
+     * the returned builder to get a DataFrame.
      *
      * @since 0.6
      */
-    static DataFrame forColumns(Index columnIndex, Series<?>... dataColumns) {
-        return new ColumnDataFrame(columnIndex, dataColumns);
+    static DataFrameBuilder builder(String... columnLabels) {
+        return DataFrameBuilder.builder(columnLabels);
+    }
+
+    /**
+     * Creates a DataFrame builder with provided column index. Callers can supply in-memory data in various forms to
+     * the returned builder to get a DataFrame.
+     *
+     * @since 0.6
+     */
+    static DataFrameBuilder builder(Index columnIndex) {
+        return DataFrameBuilder.builder(columnIndex);
     }
 
     /**
      * Creates a DataFrame by folding the provided stream of objects into rows and columns row by row.
+     *
+     * @deprecated since 0.6 in favor of the builder approach. See {@link #builder(Index)} and {@link #builder(String...)}.
      */
+    @Deprecated
     static <T> DataFrame forStreamFoldByRow(Index columns, Stream<T> stream) {
-        return DataFrameFactory.forStreamFoldByRow(columns, stream);
+        return builder(columns).foldStreamByRow(stream);
     }
 
     /**
      * Creates a DataFrame by folding the provided array of objects into rows and columns row by row.
+     *
+     * @deprecated since 0.6 in favor of the builder approach. See {@link #builder(Index)} and {@link #builder(String...)}.
      */
+    @Deprecated
     static DataFrame forSequenceFoldByRow(Index columns, Object... sequence) {
-        return DataFrameFactory.forSequenceFoldByRow(columns, sequence);
+        return builder(columns).foldByRow(sequence);
     }
 
+    /**
+     * @deprecated since 0.6 in favor of the builder approach. See {@link #builder(Index)} and {@link #builder(String...)}.
+     */
+    @Deprecated
     static DataFrame forSequenceFoldByColumn(Index columns, Object... sequence) {
-        return DataFrameFactory.forSequenceFoldByColumn(columns, sequence);
+        return builder(columns).foldByColumn(sequence);
     }
 
+    /**
+     * @deprecated since 0.6 in favor of the builder approach. See {@link #builder(Index)} and {@link #builder(String...)}.
+     */
+    @Deprecated
     static DataFrame forRows(Index columns, Object[]... rows) {
-        return DataFrameFactory.forRows(columns, rows);
+        return builder(columns).rows(rows);
     }
 
+    /**
+     * @deprecated since 0.6 in favor of the builder approach. See {@link #builder(Index)} and {@link #builder(String...)}.
+     */
+    @Deprecated
     static DataFrame forRows(Index columns, Iterable<Object[]> source) {
-        return DataFrameFactory.forRows(columns, source);
+        return builder(columns).objectsToRows(source, Function.identity());
     }
 
     /**
      * Creates a DataFrame from an iterable over arbitrary objects. Each object will be converted to a row by applying
      * a function passed as the last argument.
+     *
+     * @deprecated since 0.6 in favor of the builder approach. See {@link #builder(Index)} and {@link #builder(String...)}.
      */
+    @Deprecated
     static <T> DataFrame forObjects(Index columns, Iterable<T> rows, Function<T, Object[]> rowMapper) {
-        return DataFrameFactory.forObjects(columns, rows, rowMapper);
+        return builder(columns).objectsToRows(rows, rowMapper);
     }
 
     /**
@@ -69,7 +101,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @param values a varargs array of values
      * @return "values" vararg unchanged
+     * @deprecated since 0.6 with no replacement. This doesn't belong in DFLib
      */
+    @Deprecated
     static Object[] row(Object... values) {
         return values;
     }

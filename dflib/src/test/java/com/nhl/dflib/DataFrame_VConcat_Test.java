@@ -3,15 +3,13 @@ package com.nhl.dflib;
 import com.nhl.dflib.unit.DFAsserts;
 import org.junit.Test;
 
-public class DataFrame_VConcat_Test extends BaseDataFrameTest {
+public class DataFrame_VConcat_Test {
 
     @Test
     public void testVConcat_Default() {
 
-        Index i = Index.forLabels("a");
-        DataFrame df1 = createDf(i, 1, 2);
-        DataFrame df2 = createDf(i, 10, 20);
-
+        DataFrame df1 = DataFrame.builder("a").foldByRow(1, 2);
+        DataFrame df2 = DataFrame.builder("a").foldByRow(10, 20);
 
         DataFrame df = df1.vConcat(df2);
 
@@ -26,10 +24,9 @@ public class DataFrame_VConcat_Test extends BaseDataFrameTest {
     @Test
     public void testVConcat_Default_Multiple() {
 
-        Index i = Index.forLabels("a");
-        DataFrame df1 = createDf(i, 1, 2);
-        DataFrame df2 = createDf(i, 10);
-        DataFrame df3 = createDf(i, 20);
+        DataFrame df1 = DataFrame.builder("a").foldByRow(1, 2);
+        DataFrame df2 = DataFrame.builder("a").foldByRow(10);
+        DataFrame df3 = DataFrame.builder("a").foldByRow(20);
 
         DataFrame df = df1.vConcat(df2, df3);
 
@@ -44,13 +41,11 @@ public class DataFrame_VConcat_Test extends BaseDataFrameTest {
     @Test
     public void testVConcat_Default_Left() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, 2,
                 3, 4);
 
-        Index i2 = Index.forLabels("c", "b");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("c", "b").foldByRow(
                 10, 20,
                 30, 40);
 
@@ -67,13 +62,11 @@ public class DataFrame_VConcat_Test extends BaseDataFrameTest {
     @Test
     public void testVConcat_Left() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, 2,
                 3, 4);
 
-        Index i2 = Index.forLabels("c", "b");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("c", "b").foldByRow(
                 10, 20,
                 30, 40);
 
@@ -90,13 +83,11 @@ public class DataFrame_VConcat_Test extends BaseDataFrameTest {
     @Test
     public void testVConcat_Right() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, 2,
                 3, 4);
 
-        Index i2 = Index.forLabels("c", "b");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("c", "b").foldByRow(
                 10, 20,
                 30, 40);
 
@@ -113,18 +104,15 @@ public class DataFrame_VConcat_Test extends BaseDataFrameTest {
     @Test
     public void testVConcat_Inner_Multiple() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, 2,
                 3, 4);
 
-        Index i2 = Index.forLabels("c", "b");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("c", "b").foldByRow(
                 10, 20,
                 30, 40);
 
-        Index i3 = Index.forLabels("b", "d");
-        DataFrame df3 = createDf(i3,
+        DataFrame df3 = DataFrame.builder("b", "d").foldByRow(
                 100, 200,
                 300, 400);
 
@@ -143,13 +131,11 @@ public class DataFrame_VConcat_Test extends BaseDataFrameTest {
     @Test
     public void testVConcat_Full() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, 2,
                 3, 4);
 
-        Index i2 = Index.forLabels("c", "b");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("c", "b").foldByRow(
                 10, 20,
                 30, 40);
 

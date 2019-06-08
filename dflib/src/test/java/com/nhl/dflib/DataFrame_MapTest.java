@@ -3,14 +3,16 @@ package com.nhl.dflib;
 import com.nhl.dflib.unit.DFAsserts;
 import org.junit.Test;
 
-public class DataFrame_MapTest extends BaseDataFrameTest {
+public class DataFrame_MapTest {
 
     @Test
     public void testMap() {
         Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
-                1, "x",
-                2, "y")
+        DataFrame df = DataFrame
+                .builder("a", "b")
+                .foldByRow(
+                        1, "x",
+                        2, "y")
                 .map(i1, (f, t) -> {
                     t.set(0, ((Integer) f.get(0)) * 10);
                     t.set(1, f.get(1));

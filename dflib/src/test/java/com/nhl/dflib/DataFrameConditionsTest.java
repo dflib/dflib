@@ -3,19 +3,16 @@ package com.nhl.dflib;
 import com.nhl.dflib.unit.DFAsserts;
 import org.junit.Test;
 
-public class DataFrameConditionsTest extends BaseDataFrameTest {
+public class DataFrameConditionsTest {
 
     @Test
     public void testEq1() {
 
-        Index i1 = Index.forLabels("a", "b");
-        Index i2 = Index.forLabels("a", "b");
-
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
@@ -30,14 +27,11 @@ public class DataFrameConditionsTest extends BaseDataFrameTest {
     @Test
     public void testEq2() {
 
-        Index i1 = Index.forLabels("a", "b");
-        Index i2 = Index.forLabels("a", "b");
-
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("a", "b").foldByRow(
                 1, "X",
                 2, "y");
 
@@ -52,14 +46,11 @@ public class DataFrameConditionsTest extends BaseDataFrameTest {
     @Test
     public void testNe1() {
 
-        Index i1 = Index.forLabels("a", "b");
-        Index i2 = Index.forLabels("a", "b");
-
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
@@ -74,14 +65,11 @@ public class DataFrameConditionsTest extends BaseDataFrameTest {
     @Test
     public void testNe2() {
 
-        Index i1 = Index.forLabels("a", "b");
-        Index i2 = Index.forLabels("a", "b");
-
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "Y");
 
@@ -96,14 +84,11 @@ public class DataFrameConditionsTest extends BaseDataFrameTest {
     @Test(expected = IllegalArgumentException.class)
     public void testEq_ColMismatch() {
 
-        Index i1 = Index.forLabels("a", "b");
-        Index i2 = Index.forLabels("a", "B");
-
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("a", "B").foldByRow(
                 1, "x",
                 2, "Y");
 
@@ -113,14 +98,11 @@ public class DataFrameConditionsTest extends BaseDataFrameTest {
     @Test(expected = IllegalArgumentException.class)
     public void testEq_RowsMismatch() {
 
-        Index i1 = Index.forLabels("a", "b");
-        Index i2 = Index.forLabels("a", "b");
-
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("a", "b").foldByRow(
                 2, "Y");
 
         df1.ne(df2);

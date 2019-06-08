@@ -7,19 +7,17 @@ import org.junit.Test;
 
 import java.util.Objects;
 
-public class DataFrame_JoinsTest extends BaseDataFrameTest {
+public class DataFrame_JoinsTest {
 
     @Deprecated
     @Test
     public void testNestedLoop_Inner_Legacy() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.forLabels("c", "d");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -35,13 +33,11 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testNestedLoop_Inner() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.forLabels("c", "d");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -59,13 +55,11 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testNestedLoop_Inner_NoMatches() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.forLabels("c", "d");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -81,13 +75,11 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testNestedLoop_Inner_IndexOverlap() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.forLabels("a", "b");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("a", "b").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -105,13 +97,11 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testNestedLoop_Left() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.forLabels("c", "d");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -131,13 +121,11 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testNestedLoop_Right() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.forLabels("c", "d");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -157,13 +145,11 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testNestedLoop_Full() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.forLabels("c", "d");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -184,13 +170,11 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testNestedLoop_Indicator() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.forLabels("c", "d");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -211,14 +195,12 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testHash_Inner() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y",
                 4, "z");
 
-        Index i2 = Index.forLabels("c", "d");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
                 "a", 2,
                 "b", 2,
                 "x", 4,
@@ -238,14 +220,12 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testHash_Full_IntColumn() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y")
                 .toIntColumn(0, 0);
 
-        Index i2 = Index.forLabels("c", "d");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c").toIntColumn(0, 0);
@@ -266,13 +246,11 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testHash_Inner_Indexed_HashOverlap() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.forLabels("a", "b");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("a", "b").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -290,13 +268,11 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testHash_Left() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.forLabels("c", "d");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -315,13 +291,11 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testHash_Right_ByPos() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.forLabels("c", "d");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -340,13 +314,11 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testHash_Right_ByName() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.forLabels("c", "d");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -365,13 +337,11 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testHash_Right_ByMatchingName() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.forLabels("a", "d");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("a", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -390,13 +360,11 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testHash_Full() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.forLabels("c", "d");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -416,14 +384,12 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testHash_MultiColumnHash() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "a",
                 2, "y");
 
-        Index i2 = Index.forLabels("c", "d");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -441,13 +407,11 @@ public class DataFrame_JoinsTest extends BaseDataFrameTest {
     @Test
     public void testHash_Indicator() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.forLabels("c", "d");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");

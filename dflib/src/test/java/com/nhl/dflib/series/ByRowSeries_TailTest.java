@@ -1,7 +1,6 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.Test;
@@ -9,7 +8,7 @@ import org.junit.Test;
 public class ByRowSeries_TailTest {
 
     private <T> ByRowSeries<T> createSeries(T... data) {
-        return new ByRowSeries<>(DataFrame.forSequenceFoldByRow(Index.forLabels("a", "b"), data));
+        return new ByRowSeries<>(DataFrame.builder("a", "b").foldByRow(data));
     }
 
     @Test

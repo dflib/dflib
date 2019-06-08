@@ -8,13 +8,11 @@ public class HasherTest {
     @Test
     public void testForColumn_ByName() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = DataFrame.forSequenceFoldByRow(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.forLabels("a", "b");
-        DataFrame df2 = DataFrame.forSequenceFoldByRow(i2,
+        DataFrame df2 = DataFrame.builder("a", "b").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -32,13 +30,11 @@ public class HasherTest {
     @Test
     public void testForColumn_ByPos() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = DataFrame.forSequenceFoldByRow(i1,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        Index i2 = Index.forLabels("a", "b");
-        DataFrame df2 = DataFrame.forSequenceFoldByRow(i2,
+        DataFrame df2 = DataFrame.builder("a", "b").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -57,12 +53,12 @@ public class HasherTest {
     public void testForColumn_MultiColumn_ByName() {
 
         Index i1 = Index.forLabels("a", "b", "c");
-        DataFrame df1 = DataFrame.forSequenceFoldByRow(i1,
+        DataFrame df1 = DataFrame.builder("a", "b", "c").foldByRow(
                 1, "x", 5L,
                 2, "y", 4L);
 
         Index i2 = Index.forLabels("x", "y", "z");
-        DataFrame df2 = DataFrame.forSequenceFoldByRow(i2,
+        DataFrame df2 = DataFrame.builder("x", "y", "z").foldByRow(
                 2, "a", 6L,
                 2, "y", 4L,
                 3, "c", 5L);
@@ -80,12 +76,11 @@ public class HasherTest {
     public void testForColumn_MultiColumn_ByPos() {
 
         Index i1 = Index.forLabels("a", "b", "c");
-        DataFrame df1 = DataFrame.forSequenceFoldByRow(i1,
+        DataFrame df1 = DataFrame.builder("a", "b", "c").foldByRow(
                 1, "x", 5L,
                 2, "y", 4L);
 
-        Index i2 = Index.forLabels("x", "y", "z");
-        DataFrame df2 = DataFrame.forSequenceFoldByRow(i2,
+        DataFrame df2 = DataFrame.builder("x", "y", "z").foldByRow(
                 2, "a", 6L,
                 2, "y", 4L,
                 3, "c", 5L);

@@ -1,7 +1,6 @@
 package com.nhl.dflib.benchmark.speed;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
 import com.nhl.dflib.benchmark.DataGenerator;
 import com.nhl.dflib.benchmark.ValueMaker;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -33,8 +32,7 @@ public class DataFrameIntOperation {
 
     @Setup
     public void setUp() {
-        Index columns = Index.forLabels("c0", "c1");
-        df = DataFrame.forColumns(columns,
+        df = DataFrame.builder("c0", "c1").columns(
                 DataGenerator.intSeries(rows, ValueMaker.intSeq()),
                 DataGenerator.intSeries(rows, ValueMaker.randomIntSeq(rows / 2)));
     }

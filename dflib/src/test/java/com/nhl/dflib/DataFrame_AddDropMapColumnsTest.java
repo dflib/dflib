@@ -4,12 +4,11 @@ import com.nhl.dflib.unit.DFAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.Test;
 
-public class DataFrame_AddDropMapColumnsTest extends BaseDataFrameTest {
+public class DataFrame_AddDropMapColumnsTest {
 
     @Test
     public void testMapColumn() {
-        Index i1 = Index.forLabels("a", "b");
-        Series<Integer> mapped = createDf(i1,
+        Series<Integer> mapped = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y")
                 .mapColumn(r -> ((int) r.get(0)) * 10);
@@ -19,8 +18,7 @@ public class DataFrame_AddDropMapColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testAddColumn() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y")
                 .addColumn("c", r -> ((int) r.get(0)) * 10);
@@ -33,8 +31,7 @@ public class DataFrame_AddDropMapColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testAddColumn_Sparse() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y")
                 .selectColumns("a")
@@ -51,8 +48,7 @@ public class DataFrame_AddDropMapColumnsTest extends BaseDataFrameTest {
 
         Series<String> column = Series.forData("m", "n");
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y").addColumn("c", column);
 
@@ -67,9 +63,7 @@ public class DataFrame_AddDropMapColumnsTest extends BaseDataFrameTest {
     public void testAddColumn_Series_Shorter() {
 
         Series<String> column = Series.forData("m");
-
-        Index i1 = Index.forLabels("a", "b");
-        createDf(i1,
+        DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y").addColumn("c", column);
 
@@ -80,8 +74,7 @@ public class DataFrame_AddDropMapColumnsTest extends BaseDataFrameTest {
 
         Series<String> column = Series.forData("m", "n", "o");
 
-        Index i1 = Index.forLabels("a", "b");
-        createDf(i1,
+        DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y").addColumn("c", column);
 
@@ -89,8 +82,7 @@ public class DataFrame_AddDropMapColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testDropColumns1() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y")
                 .dropColumns("a");
@@ -103,8 +95,7 @@ public class DataFrame_AddDropMapColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testDropColumns2() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y")
                 .dropColumns("b");
@@ -117,8 +108,7 @@ public class DataFrame_AddDropMapColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testDropColumns3() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y")
                 .dropColumns();
@@ -131,8 +121,7 @@ public class DataFrame_AddDropMapColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testDropColumns4() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y")
                 .dropColumns("no_such_column");
@@ -145,8 +134,7 @@ public class DataFrame_AddDropMapColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testAddRowNumber() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y")
                 .addRowNumber("rn");

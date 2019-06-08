@@ -3,12 +3,11 @@ package com.nhl.dflib;
 import com.nhl.dflib.unit.DFAsserts;
 import org.junit.Test;
 
-public class DataFrame_StackTest extends BaseDataFrameTest {
+public class DataFrame_StackTest {
 
     @Test
     public void testStack() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 null, null,
                 2, "y").stack();
@@ -23,8 +22,7 @@ public class DataFrame_StackTest extends BaseDataFrameTest {
 
     @Test
     public void testStack_NoNulls() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 5, "z",
                 2, "y").stack();
@@ -41,8 +39,7 @@ public class DataFrame_StackTest extends BaseDataFrameTest {
 
     @Test
     public void testStackIncludeNulls() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 null, null,
                 2, "y").stackIncludeNulls();

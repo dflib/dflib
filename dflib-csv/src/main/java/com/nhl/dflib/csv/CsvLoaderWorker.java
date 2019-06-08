@@ -31,7 +31,7 @@ class CsvLoaderWorker {
             series[i] = accumulators[i].toSeries();
         }
 
-        return DataFrame.forColumns(columns, series);
+        return DataFrame.builder(columns).columns(series);
     }
 
     private void loadRow(int width, CSVRecord record) {

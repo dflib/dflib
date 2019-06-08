@@ -9,12 +9,11 @@ import java.util.HashSet;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 
-public class DataFrame_GroupByTest extends BaseDataFrameTest {
+public class DataFrame_GroupByTest {
 
     @Test
     public void testGroup() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame df = createDf(i,
+        DataFrame df = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y",
                 1, "z",
@@ -44,8 +43,7 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
 
     @Test
     public void testGroup_Empty() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame df = createDf(i);
+        DataFrame df = DataFrame.builder("a", "b").empty();
 
         GroupBy gb = df.group(Hasher.forColumn("a"));
         assertNotNull(gb);
@@ -56,8 +54,7 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
 
     @Test
     public void testGroup_Agg() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y",
                 1, "z",
@@ -75,15 +72,15 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
 
     @Test
     public void testGroup_Agg_MultipleAggregationsForKey() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y",
                 1, "y",
                 0, "a",
                 1, "x");
 
-        DataFrame df = df1.group("b")
+        DataFrame df = df1
+                .group("b")
                 .agg(Aggregator.first("b"), Aggregator.sumLong("a"), Aggregator.medianDouble("a"));
 
         new DFAsserts(df, "b", "a", "a_")
@@ -95,8 +92,7 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
 
     @Test
     public void testGroup_toDataFrame() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y",
                 1, "y",
@@ -117,8 +113,7 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
 
     @Test
     public void testGroup_Head_toDataFrame() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y",
                 1, "y",
@@ -149,8 +144,7 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
 
     @Test
     public void testGroup_Head_Sort_toDataFrame() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y",
                 1, "y",
@@ -172,8 +166,7 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
 
     @Test
     public void testGroup_Tail_toDataFrame() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y",
                 1, "y",
@@ -204,8 +197,7 @@ public class DataFrame_GroupByTest extends BaseDataFrameTest {
 
     @Test
     public void testGroup_Agg_Named() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i,
+        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
                 1, "x",
                 2, "y",
                 1, "y",

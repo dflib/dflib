@@ -11,6 +11,17 @@ import static java.util.Arrays.asList;
 public class DataFrame_FactoryMethodsTest {
 
     @Test
+    public void testBuilder_Strings() {
+
+        DataFrame df = DataFrame.builder("a", "b").foldByRow(1, 2);
+
+        new DFAsserts(df, "a", "b")
+                .expectHeight(1)
+                .expectRow(0, 1, 2);
+    }
+
+    @Deprecated
+    @Test
     public void testForObjects() {
 
         class Bean {
@@ -26,7 +37,7 @@ public class DataFrame_FactoryMethodsTest {
         List<Bean> beans = asList(new Bean(5, 4), new Bean(3, 1));
 
         Index i = Index.forLabels("a", "b");
-        DataFrame df = DataFrame.forObjects(i, beans, b -> DataFrame.row(b.a, b.b));
+        DataFrame df = DataFrame.forObjects(i, beans, b -> new Object[]{b.a, b.b});
 
         new DFAsserts(df, i)
                 .expectHeight(2)
@@ -34,6 +45,7 @@ public class DataFrame_FactoryMethodsTest {
                 .expectRow(1, 3, 1);
     }
 
+    @Deprecated
     @Test
     public void testForStream0() {
 
@@ -46,6 +58,7 @@ public class DataFrame_FactoryMethodsTest {
                 .expectRow(1, 3, 4);
     }
 
+    @Deprecated
     @Test
     public void testForStream1() {
 
@@ -59,6 +72,7 @@ public class DataFrame_FactoryMethodsTest {
                 .expectRow(2, 5, null);
     }
 
+    @Deprecated
     @Test
     public void testForSequence0() {
 
@@ -68,6 +82,7 @@ public class DataFrame_FactoryMethodsTest {
         new DFAsserts(df, i).expectHeight(0);
     }
 
+    @Deprecated
     @Test
     public void testForSequence1() {
 
@@ -79,6 +94,7 @@ public class DataFrame_FactoryMethodsTest {
                 .expectRow(0, 1, 2);
     }
 
+    @Deprecated
     @Test
     public void testForSequence2() {
 
@@ -91,6 +107,7 @@ public class DataFrame_FactoryMethodsTest {
                 .expectRow(1, 3, null);
     }
 
+    @Deprecated
     @Test
     public void testForSequence3() {
 
@@ -103,6 +120,7 @@ public class DataFrame_FactoryMethodsTest {
                 .expectRow(1, 3, 4);
     }
 
+    @Deprecated
     @Test
     public void testForSequenceFoldByColumn() {
 
@@ -115,6 +133,7 @@ public class DataFrame_FactoryMethodsTest {
                 .expectRow(1, 2, 4);
     }
 
+    @Deprecated
     @Test
     public void testForSequenceFoldByColumn_Partial() {
 
@@ -128,6 +147,7 @@ public class DataFrame_FactoryMethodsTest {
                 .expectRow(2, 3, null);
     }
 
+    @Deprecated
     @Test
     public void testForRows() {
 
