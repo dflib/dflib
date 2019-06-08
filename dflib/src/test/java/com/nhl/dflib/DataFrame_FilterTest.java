@@ -8,7 +8,7 @@ public class DataFrame_FilterTest {
     @Test
     public void testFilterByColumn_Name() {
 
-        DataFrame df = DataFrame.builder("a").foldByRow(10, 20)
+        DataFrame df = DataFrame.newFrame("a").foldByRow(10, 20)
                 .filter("a", (Integer v) -> v > 15);
 
         new DFAsserts(df, "a")
@@ -19,7 +19,7 @@ public class DataFrame_FilterTest {
     @Test
     public void testFilterByColumn_Pos() {
 
-        DataFrame df = DataFrame.builder("a").foldByRow(10, 20)
+        DataFrame df = DataFrame.newFrame("a").foldByRow(10, 20)
                 .filter(0, (Integer v) -> v > 15);
 
         new DFAsserts(df, "a")

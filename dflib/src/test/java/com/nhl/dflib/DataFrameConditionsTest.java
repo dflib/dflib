@@ -8,11 +8,11 @@ public class DataFrameConditionsTest {
     @Test
     public void testEq1() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
@@ -27,11 +27,11 @@ public class DataFrameConditionsTest {
     @Test
     public void testEq2() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "X",
                 2, "y");
 
@@ -46,11 +46,11 @@ public class DataFrameConditionsTest {
     @Test
     public void testNe1() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
@@ -65,11 +65,11 @@ public class DataFrameConditionsTest {
     @Test
     public void testNe2() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "Y");
 
@@ -84,11 +84,11 @@ public class DataFrameConditionsTest {
     @Test(expected = IllegalArgumentException.class)
     public void testEq_ColMismatch() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.builder("a", "B").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("a", "B").foldByRow(
                 1, "x",
                 2, "Y");
 
@@ -98,11 +98,11 @@ public class DataFrameConditionsTest {
     @Test(expected = IllegalArgumentException.class)
     public void testEq_RowsMismatch() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("a", "b").foldByRow(
                 2, "Y");
 
         df1.ne(df2);

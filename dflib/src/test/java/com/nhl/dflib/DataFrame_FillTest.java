@@ -8,7 +8,7 @@ public class DataFrame_FillTest {
     @Test
     public void testFillNulls() {
 
-        DataFrame df = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 "a", 1,
                 null, 5,
                 "b", null,
@@ -25,7 +25,7 @@ public class DataFrame_FillTest {
     @Test
     public void testFillNulls_Column() {
 
-        DataFrame df = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 "a", 1,
                 null, 5,
                 "b", null,
@@ -42,7 +42,7 @@ public class DataFrame_FillTest {
     @Test
     public void testFillNullsFromSeries() {
 
-        DataFrame df = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 "a", 1,
                 null, 5,
                 "b", null,
@@ -59,7 +59,7 @@ public class DataFrame_FillTest {
     @Test
     public void testFillNullsBackwards() {
 
-        DataFrame df = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 "a", null,
                 null, 5,
                 "b", null,
@@ -78,7 +78,7 @@ public class DataFrame_FillTest {
     @Test
     public void testFillNullsForward() {
 
-        DataFrame df = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 "a", null,
                 null, 5,
                 "b", null,

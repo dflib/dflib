@@ -8,7 +8,7 @@ import org.junit.Test;
 public class ByRowSeries_TailTest {
 
     private <T> ByRowSeries<T> createSeries(T... data) {
-        return new ByRowSeries<>(DataFrame.builder("a", "b").foldByRow(data));
+        return new ByRowSeries<>(DataFrame.newFrame("a", "b").foldByRow(data));
     }
 
     @Test

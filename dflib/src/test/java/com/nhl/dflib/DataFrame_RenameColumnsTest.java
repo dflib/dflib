@@ -10,7 +10,7 @@ public class DataFrame_RenameColumnsTest {
 
     @Test
     public void testRenameColumns_All() {
-        DataFrame df = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y")
                 .renameColumns("c", "d");
@@ -23,7 +23,7 @@ public class DataFrame_RenameColumnsTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testRenameColumns_SizeMismatch() {
-        DataFrame.builder("a", "b").foldByRow(
+        DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y")
                 .renameColumns("c");
@@ -35,7 +35,7 @@ public class DataFrame_RenameColumnsTest {
         Map<String, String> names = new HashMap<>();
         names.put("b", "c");
 
-        DataFrame df = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y")
                 .renameColumns(names);
@@ -48,7 +48,7 @@ public class DataFrame_RenameColumnsTest {
 
     @Test
     public void testRenameColumns_WithFunction() {
-        DataFrame df = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y")
                 .renameColumns(String::toUpperCase);

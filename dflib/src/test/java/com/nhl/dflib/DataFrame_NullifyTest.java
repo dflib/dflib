@@ -8,10 +8,10 @@ public class DataFrame_NullifyTest {
     @Test
     public void testNullify() {
         DataFrame cond = DataFrame
-                .builder("a", "b")
+                .newFrame("a", "b")
                 .columns(BooleanSeries.forBooleans(true, false), BooleanSeries.forBooleans(true, false));
 
-        DataFrame df = DataFrame.builder("a", "b")
+        DataFrame df = DataFrame.newFrame("a", "b")
                 .foldByRow(
                         1, "x",
                         2, "y")
@@ -26,10 +26,10 @@ public class DataFrame_NullifyTest {
     @Test
     public void testNullifyNoMatch() {
         DataFrame cond = DataFrame
-                .builder("a", "b")
+                .newFrame("a", "b")
                 .columns(BooleanSeries.forBooleans(true, false), BooleanSeries.forBooleans(true, false));
 
-        DataFrame df = DataFrame.builder("a", "b")
+        DataFrame df = DataFrame.newFrame("a", "b")
                 .foldByRow(
                         1, "x",
                         2, "y").nullifyNoMatch(cond);
@@ -44,11 +44,11 @@ public class DataFrame_NullifyTest {
     public void testNullifyByColumn() {
 
         DataFrame cond = DataFrame
-                .builder("c", "b")
+                .newFrame("c", "b")
                 .columns(BooleanSeries.forBooleans(true, false), BooleanSeries.forBooleans(true, false));
 
         DataFrame df = DataFrame
-                .builder("a", "b")
+                .newFrame("a", "b")
                 .foldByRow(
                         1, "x",
                         2, "y")

@@ -13,7 +13,7 @@ public class DataFrame_GroupByTest {
 
     @Test
     public void testGroup() {
-        DataFrame df = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
                 1, "z",
@@ -43,7 +43,7 @@ public class DataFrame_GroupByTest {
 
     @Test
     public void testGroup_Empty() {
-        DataFrame df = DataFrame.builder("a", "b").empty();
+        DataFrame df = DataFrame.newFrame("a", "b").empty();
 
         GroupBy gb = df.group(Hasher.forColumn("a"));
         assertNotNull(gb);
@@ -54,7 +54,7 @@ public class DataFrame_GroupByTest {
 
     @Test
     public void testGroup_Agg() {
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
                 1, "z",
@@ -72,7 +72,7 @@ public class DataFrame_GroupByTest {
 
     @Test
     public void testGroup_Agg_MultipleAggregationsForKey() {
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
                 1, "y",
@@ -92,7 +92,7 @@ public class DataFrame_GroupByTest {
 
     @Test
     public void testGroup_toDataFrame() {
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
                 1, "y",
@@ -113,7 +113,7 @@ public class DataFrame_GroupByTest {
 
     @Test
     public void testGroup_Head_toDataFrame() {
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
                 1, "y",
@@ -144,7 +144,7 @@ public class DataFrame_GroupByTest {
 
     @Test
     public void testGroup_Head_Sort_toDataFrame() {
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
                 1, "y",
@@ -166,7 +166,7 @@ public class DataFrame_GroupByTest {
 
     @Test
     public void testGroup_Tail_toDataFrame() {
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
                 1, "y",
@@ -197,7 +197,7 @@ public class DataFrame_GroupByTest {
 
     @Test
     public void testGroup_Agg_Named() {
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
                 1, "y",

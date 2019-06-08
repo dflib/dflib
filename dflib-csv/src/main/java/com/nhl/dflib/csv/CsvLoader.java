@@ -340,7 +340,7 @@ public class CsvLoader {
             Index columns = createColumns(it);
 
             if (!it.hasNext()) {
-                return DataFrame.builder(columns).empty();
+                return DataFrame.newFrame(columns).empty();
             }
 
             SeriesBuilder<String, ?>[] builders = createSeriesBuilders(columns);

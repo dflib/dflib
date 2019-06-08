@@ -10,7 +10,7 @@ public class DataFrame_SelectTest {
 
     @Test
     public void testSelectColumns() {
-        DataFrame df = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y")
                 .selectColumns("b");
@@ -23,7 +23,7 @@ public class DataFrame_SelectTest {
 
     @Test
     public void testSelectColumns_DuplicateColumn() {
-        DataFrame df = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y")
                 .selectColumns("b", "b", "b");
@@ -36,7 +36,7 @@ public class DataFrame_SelectTest {
 
     @Test
     public void testSelect_ints() {
-        DataFrame df = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 5, "x",
                 9, "y",
                 1, "z")
@@ -50,7 +50,7 @@ public class DataFrame_SelectTest {
 
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void testSelect_ints_out_of_range() {
-        DataFrame.builder("a", "b").foldByRow(
+        DataFrame.newFrame("a", "b").foldByRow(
                 5, "x",
                 9, "y",
                 1, "z")
@@ -61,7 +61,7 @@ public class DataFrame_SelectTest {
     @Deprecated
     @Test
     public void testSelect_List() {
-        DataFrame df = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 5, "x",
                 9, "y",
                 1, "z")
@@ -76,7 +76,7 @@ public class DataFrame_SelectTest {
     @Deprecated
     @Test
     public void testSelect_Series() {
-        DataFrame df = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 5, "x",
                 9, "y",
                 1, "z")
@@ -90,7 +90,7 @@ public class DataFrame_SelectTest {
 
     @Test
     public void testSelect_IntSeries() {
-        DataFrame df = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 5, "x",
                 9, "y",
                 1, "z")
@@ -104,7 +104,7 @@ public class DataFrame_SelectTest {
 
     @Test
     public void testSelect_reorder() {
-        DataFrame df = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 5, "x",
                 9, "y",
                 1, "z")
@@ -118,7 +118,7 @@ public class DataFrame_SelectTest {
 
     @Test
     public void testSelect_duplicate() {
-        DataFrame df = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 5, "x",
                 9, "y",
                 1, "z")
@@ -135,7 +135,7 @@ public class DataFrame_SelectTest {
     @Test
     public void testSelectColumnsByIndex() {
 
-        DataFrame df = DataFrame.builder("a", "b", "c").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
                 1, "x", "m",
                 2, "y", "n")
                 .selectColumns(Index.forLabels("b", "a"));

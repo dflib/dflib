@@ -11,9 +11,9 @@ import static java.util.Arrays.asList;
 public class DataFrame_FactoryMethodsTest {
 
     @Test
-    public void testBuilder_Strings() {
+    public void testNewFrame_Strings() {
 
-        DataFrame df = DataFrame.builder("a", "b").foldByRow(1, 2);
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(1, 2);
 
         new DFAsserts(df, "a", "b")
                 .expectHeight(1)

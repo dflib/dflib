@@ -22,78 +22,78 @@ import java.util.stream.Stream;
 public interface DataFrame extends Iterable<RowProxy> {
 
     /**
-     * Creates a DataFrame builder with provided column labels. Callers can supply in-memory data in various forms to
-     * the returned builder to get a DataFrame.
+     * Creates a DataFrame builder with provided column labels. Callers can then pass in-memory data in various forms
+     * to the returned builder to create a DataFrame.
      *
      * @since 0.6
      */
-    static DataFrameBuilder builder(String... columnLabels) {
+    static DataFrameBuilder newFrame(String... columnLabels) {
         return DataFrameBuilder.builder(columnLabels);
     }
 
     /**
-     * Creates a DataFrame builder with provided column index. Callers can supply in-memory data in various forms to
-     * the returned builder to get a DataFrame.
+     * Creates a DataFrame builder with provided column index. Callers can then pass in-memory data in various forms
+     * to the returned builder to create a DataFrame.
      *
      * @since 0.6
      */
-    static DataFrameBuilder builder(Index columnIndex) {
+    static DataFrameBuilder newFrame(Index columnIndex) {
         return DataFrameBuilder.builder(columnIndex);
     }
 
     /**
      * Creates a DataFrame by folding the provided stream of objects into rows and columns row by row.
      *
-     * @deprecated since 0.6 in favor of the builder approach. See {@link #builder(Index)} and {@link #builder(String...)}.
+     * @deprecated since 0.6 in favor of the builder approach. See {@link #newFrame(Index)} and {@link #newFrame(String...)}.
      */
     @Deprecated
     static <T> DataFrame forStreamFoldByRow(Index columns, Stream<T> stream) {
-        return builder(columns).foldStreamByRow(stream);
+        return newFrame(columns).foldStreamByRow(stream);
     }
 
     /**
      * Creates a DataFrame by folding the provided array of objects into rows and columns row by row.
      *
-     * @deprecated since 0.6 in favor of the builder approach. See {@link #builder(Index)} and {@link #builder(String...)}.
+     * @deprecated since 0.6 in favor of the builder approach. See {@link #newFrame(Index)} and {@link #newFrame(String...)}.
      */
     @Deprecated
     static DataFrame forSequenceFoldByRow(Index columns, Object... sequence) {
-        return builder(columns).foldByRow(sequence);
+        return newFrame(columns).foldByRow(sequence);
     }
 
     /**
-     * @deprecated since 0.6 in favor of the builder approach. See {@link #builder(Index)} and {@link #builder(String...)}.
+     * @deprecated since 0.6 in favor of the builder approach. See {@link #newFrame(Index)} and {@link #newFrame(String...)}.
      */
     @Deprecated
     static DataFrame forSequenceFoldByColumn(Index columns, Object... sequence) {
-        return builder(columns).foldByColumn(sequence);
+        return newFrame(columns).foldByColumn(sequence);
     }
 
     /**
-     * @deprecated since 0.6 in favor of the builder approach. See {@link #builder(Index)} and {@link #builder(String...)}.
+     * @deprecated since 0.6 in favor of the builder approach. See {@link #newFrame(Index)} and {@link #newFrame(String...)}.
      */
     @Deprecated
     static DataFrame forRows(Index columns, Object[]... rows) {
-        return builder(columns).rows(rows);
+        return newFrame(columns).rows(rows);
     }
 
     /**
-     * @deprecated since 0.6 in favor of the builder approach. See {@link #builder(Index)} and {@link #builder(String...)}.
+     * @deprecated since 0.6 in favor of the builder approach. See {@link #newFrame(Index)} and {@link #newFrame(String...)}.
      */
     @Deprecated
     static DataFrame forRows(Index columns, Iterable<Object[]> source) {
-        return builder(columns).objectsToRows(source, Function.identity());
+        return newFrame(columns).objectsToRows(source, Function.identity());
     }
 
     /**
      * Creates a DataFrame from an iterable over arbitrary objects. Each object will be converted to a row by applying
      * a function passed as the last argument.
      *
-     * @deprecated since 0.6 in favor of the builder approach. See {@link #builder(Index)} and {@link #builder(String...)}.
+     * @deprecated since 0.6 in favor of the builder approach. See {@link #newFrame(Index)} and {@link #newFrame(String...)}.
      */
     @Deprecated
     static <T> DataFrame forObjects(Index columns, Iterable<T> rows, Function<T, Object[]> rowMapper) {
-        return builder(columns).objectsToRows(rows, rowMapper);
+        return newFrame(columns).objectsToRows(rows, rowMapper);
     }
 
     /**

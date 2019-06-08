@@ -32,7 +32,7 @@ public class DataFrameIntOperation {
 
     @Setup
     public void setUp() {
-        df = DataFrame.builder("c0", "c1").columns(
+        df = DataFrame.newFrame("c0", "c1").columns(
                 DataGenerator.intSeries(rows, ValueMaker.intSeq()),
                 DataGenerator.intSeries(rows, ValueMaker.randomIntSeq(rows / 2)));
     }

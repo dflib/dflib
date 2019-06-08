@@ -8,8 +8,8 @@ public class DataFrame_VConcat_Test {
     @Test
     public void testVConcat_Default() {
 
-        DataFrame df1 = DataFrame.builder("a").foldByRow(1, 2);
-        DataFrame df2 = DataFrame.builder("a").foldByRow(10, 20);
+        DataFrame df1 = DataFrame.newFrame("a").foldByRow(1, 2);
+        DataFrame df2 = DataFrame.newFrame("a").foldByRow(10, 20);
 
         DataFrame df = df1.vConcat(df2);
 
@@ -24,9 +24,9 @@ public class DataFrame_VConcat_Test {
     @Test
     public void testVConcat_Default_Multiple() {
 
-        DataFrame df1 = DataFrame.builder("a").foldByRow(1, 2);
-        DataFrame df2 = DataFrame.builder("a").foldByRow(10);
-        DataFrame df3 = DataFrame.builder("a").foldByRow(20);
+        DataFrame df1 = DataFrame.newFrame("a").foldByRow(1, 2);
+        DataFrame df2 = DataFrame.newFrame("a").foldByRow(10);
+        DataFrame df3 = DataFrame.newFrame("a").foldByRow(20);
 
         DataFrame df = df1.vConcat(df2, df3);
 
@@ -41,11 +41,11 @@ public class DataFrame_VConcat_Test {
     @Test
     public void testVConcat_Default_Left() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, 2,
                 3, 4);
 
-        DataFrame df2 = DataFrame.builder("c", "b").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "b").foldByRow(
                 10, 20,
                 30, 40);
 
@@ -62,11 +62,11 @@ public class DataFrame_VConcat_Test {
     @Test
     public void testVConcat_Left() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, 2,
                 3, 4);
 
-        DataFrame df2 = DataFrame.builder("c", "b").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "b").foldByRow(
                 10, 20,
                 30, 40);
 
@@ -83,11 +83,11 @@ public class DataFrame_VConcat_Test {
     @Test
     public void testVConcat_Right() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, 2,
                 3, 4);
 
-        DataFrame df2 = DataFrame.builder("c", "b").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "b").foldByRow(
                 10, 20,
                 30, 40);
 
@@ -104,15 +104,15 @@ public class DataFrame_VConcat_Test {
     @Test
     public void testVConcat_Inner_Multiple() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, 2,
                 3, 4);
 
-        DataFrame df2 = DataFrame.builder("c", "b").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "b").foldByRow(
                 10, 20,
                 30, 40);
 
-        DataFrame df3 = DataFrame.builder("b", "d").foldByRow(
+        DataFrame df3 = DataFrame.newFrame("b", "d").foldByRow(
                 100, 200,
                 300, 400);
 
@@ -131,11 +131,11 @@ public class DataFrame_VConcat_Test {
     @Test
     public void testVConcat_Full() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, 2,
                 3, 4);
 
-        DataFrame df2 = DataFrame.builder("c", "b").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "b").foldByRow(
                 10, 20,
                 30, 40);
 

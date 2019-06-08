@@ -9,7 +9,7 @@ public class DataFrame_MapTest {
     public void testMap() {
         Index i1 = Index.forLabels("a", "b");
         DataFrame df = DataFrame
-                .builder("a", "b")
+                .newFrame("a", "b")
                 .foldByRow(
                         1, "x",
                         2, "y")

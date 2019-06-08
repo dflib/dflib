@@ -7,7 +7,7 @@ public class DataFrame_HeadTest {
 
     @Test
     public void testHead() {
-        DataFrame df = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
                 3, "z")
@@ -21,7 +21,7 @@ public class DataFrame_HeadTest {
 
     @Test
     public void testHead_Zero() {
-        DataFrame df = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
                 3, "z")
@@ -33,7 +33,7 @@ public class DataFrame_HeadTest {
 
     @Test
     public void testHead_OutOfBounds() {
-        DataFrame df = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
                 3, "z")

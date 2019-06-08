@@ -9,7 +9,7 @@ public class DataFrame_Sort_Test {
 
     @Test
     public void testSort() {
-        DataFrame dfi = DataFrame.builder("a", "b").foldByRow(
+        DataFrame dfi = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
                 2, 3,
                 -1, 2);
@@ -33,7 +33,7 @@ public class DataFrame_Sort_Test {
 
     @Test
     public void testSortByColumns_Names() {
-        DataFrame dfi = DataFrame.builder("a", "b").foldByRow(
+        DataFrame dfi = DataFrame.newFrame("a", "b").foldByRow(
                 0, 4,
                 2, 2,
                 0, 2);
@@ -60,7 +60,7 @@ public class DataFrame_Sort_Test {
 
     @Test
     public void testSortByColumns_Positions() {
-        DataFrame dfi = DataFrame.builder("a", "b").foldByRow(
+        DataFrame dfi = DataFrame.newFrame("a", "b").foldByRow(
                 0, 4,
                 2, 2,
                 0, 2);
@@ -87,7 +87,7 @@ public class DataFrame_Sort_Test {
 
     @Test
     public void testSortByColumn_Position_Direction() {
-        DataFrame dfi = DataFrame.builder("a", "b").foldByRow(
+        DataFrame dfi = DataFrame.newFrame("a", "b").foldByRow(
                 0, 3,
                 2, 4,
                 0, 2);

@@ -141,7 +141,7 @@ public class JdbcConnector_TableLoaderIT extends BaseDbTest {
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 11_000.);
 
-        DataFrame empty = DataFrame.builder("id", "name").empty();
+        DataFrame empty = DataFrame.newFrame("id", "name").empty();
 
         DataFrame df = createConnector()
                 .tableLoader("t1")
@@ -158,7 +158,7 @@ public class JdbcConnector_TableLoaderIT extends BaseDbTest {
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 11_000.);
 
-        DataFrame empty = DataFrame.builder("id", "name").empty();
+        DataFrame empty = DataFrame.newFrame("id", "name").empty();
 
         DataFrame df = createConnector()
                 .tableLoader("t1")

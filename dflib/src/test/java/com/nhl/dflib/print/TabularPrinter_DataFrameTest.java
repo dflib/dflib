@@ -15,7 +15,7 @@ public class TabularPrinter_DataFrameTest {
     @Before
     public void initDataFrame() {
         this.df = DataFrame
-                .builder("col1", "column2")
+                .newFrame("col1", "column2")
                 .columns(Series.forData("one", "two", "three", "four"), IntSeries.forInts(1, 2, 3, 44));
     }
 

@@ -8,11 +8,11 @@ public class DataFrame_HConcat_Test {
     @Test
     public void testZipRows_ImplicitInnerJoin() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
                 2, 3);
 
-        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 10, 20);
 
         DataFrame df_l = df1.hConcat(df2);
@@ -31,12 +31,12 @@ public class DataFrame_HConcat_Test {
     @Test
     public void testZipRows_SparseDF() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
                 2, 3)
                 .selectColumns("b");
 
-        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 10, 20,
                 30, 40)
                 .selectColumns("c");
@@ -52,12 +52,12 @@ public class DataFrame_HConcat_Test {
     @Test
     public void testZipRows_SparseDF_CustomIndex() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
                 2, 3)
                 .selectColumns("b");
 
-        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 10, 20,
                 30, 40)
                 .selectColumns("c");
@@ -74,11 +74,11 @@ public class DataFrame_HConcat_Test {
     @Test
     public void testZipRows_SparseDF_ReorgColumns() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
                 2, 3);
 
-        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 10, 20,
                 30, 40,
                 50, 60);
@@ -106,11 +106,11 @@ public class DataFrame_HConcat_Test {
     @Test
     public void testZipRows_InnerJoin() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
                 2, 3);
 
-        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(10, 20);
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(10, 20);
 
         DataFrame df_l = df1.hConcat(JoinType.inner, df2);
 
@@ -128,11 +128,11 @@ public class DataFrame_HConcat_Test {
     @Test
     public void testZipRows_Left() {
 
-        DataFrame df1 = DataFrame.builder("a").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a").foldByRow(
                 0,
                 1);
 
-        DataFrame df2 = DataFrame.builder("b").foldByRow(10);
+        DataFrame df2 = DataFrame.newFrame("b").foldByRow(10);
 
         DataFrame df_l = df1.hConcat(JoinType.left, df2);
 
@@ -151,11 +151,11 @@ public class DataFrame_HConcat_Test {
     @Test
     public void testZipRows_Right() {
 
-        DataFrame df1 = DataFrame.builder("a").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a").foldByRow(
                 0,
                 1);
 
-        DataFrame df2 = DataFrame.builder("b").foldByRow(10);
+        DataFrame df2 = DataFrame.newFrame("b").foldByRow(10);
 
         DataFrame df_l = df1.hConcat(JoinType.right, df2);
         new DFAsserts(df_l, "a", "b")
@@ -173,11 +173,11 @@ public class DataFrame_HConcat_Test {
     @Test
     public void testZipRows_Full() {
 
-        DataFrame df1 = DataFrame.builder("a").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a").foldByRow(
                 0,
                 1);
 
-        DataFrame df2 = DataFrame.builder("b").foldByRow(10);
+        DataFrame df2 = DataFrame.newFrame("b").foldByRow(10);
 
         DataFrame df_l = df1.hConcat(JoinType.full, df2);
         new DFAsserts(df_l, "a", "b")

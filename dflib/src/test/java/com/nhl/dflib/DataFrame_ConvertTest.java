@@ -12,7 +12,7 @@ public class DataFrame_ConvertTest {
     @Test
     public void testConvertColumn() {
         DataFrame df = DataFrame
-                .builder("a", "b")
+                .newFrame("a", "b")
                 .foldByRow(1, "x", 2, "y")
                 .convertColumn("a", v -> ((int) v) * 10);
 
@@ -25,7 +25,7 @@ public class DataFrame_ConvertTest {
     @Test
     public void testConvertColumn_ValueMapperToDate() {
         DataFrame df = DataFrame
-                .builder("a")
+                .newFrame("a")
                 .foldByRow(
                         "2018-01-05",
                         "2019-02-28",
@@ -42,7 +42,7 @@ public class DataFrame_ConvertTest {
     @Test
     public void testConvertColumn_ValueMapperToDate_Formatter() {
         DataFrame df = DataFrame
-                .builder("a")
+                .newFrame("a")
                 .foldByRow(
                         "2018 01 05",
                         "2019 02 28",
@@ -59,7 +59,7 @@ public class DataFrame_ConvertTest {
     @Test
     public void testConvertColumn_ValueMapperToDateTime() {
         DataFrame df = DataFrame
-                .builder("a")
+                .newFrame("a")
                 .foldByRow(
                         "2018-01-05T00:01:15",
                         "2019-02-28T13:11:12",
@@ -76,7 +76,7 @@ public class DataFrame_ConvertTest {
     @Test
     public void testConvertColumnToInt_ByLabel() {
         DataFrame df = DataFrame
-                .builder("a", "b")
+                .newFrame("a", "b")
                 .foldByRow(
                         "1", "x",
                         "5", "z",
@@ -94,7 +94,7 @@ public class DataFrame_ConvertTest {
     @Test
     public void testConvertColumnToInt_ByPos() {
         DataFrame df = DataFrame
-                .builder("a", "b")
+                .newFrame("a", "b")
                 .foldByRow(
                         "1", "x",
                         "5", "z",
@@ -111,7 +111,7 @@ public class DataFrame_ConvertTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConvertColumnToInt_Nulls() {
-        DataFrame.builder("a", "b").foldByRow(
+        DataFrame.newFrame("a", "b").foldByRow(
                 "1", "x",
                 null, "z",
                 "2", "y")
@@ -121,7 +121,7 @@ public class DataFrame_ConvertTest {
     @Test
     public void testConvertColumnToInt_NullsDefault() {
         DataFrame df = DataFrame
-                .builder("a", "b")
+                .newFrame("a", "b")
                 .foldByRow(
                         "1", "x",
                         null, "z",
@@ -139,7 +139,7 @@ public class DataFrame_ConvertTest {
     public void testToEnumFromNumColumn() {
         Index i1 = Index.forLabels("a", "b");
         DataFrame df = DataFrame
-                .builder("a", "b")
+                .newFrame("a", "b")
                 .foldByRow(
                         1, "x",
                         null, "z",
@@ -157,7 +157,7 @@ public class DataFrame_ConvertTest {
     public void testToEnumFromStringColumn() {
         Index i1 = Index.forLabels("a", "b");
         DataFrame df = DataFrame
-                .builder("a", "b")
+                .newFrame("a", "b")
                 .foldByRow(
                         "b", "x",
                         null, "z",

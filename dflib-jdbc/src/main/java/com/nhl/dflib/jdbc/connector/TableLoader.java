@@ -56,7 +56,7 @@ public class TableLoader {
                 ? connector.getMetadata().getTable(tableName).getColumnNames()
                 : this.columns;
 
-        return DataFrame.builder(columns).empty();
+        return DataFrame.newFrame(columns).empty();
     }
 
     protected DataFrame fetchDataFrame() {

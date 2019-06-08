@@ -13,11 +13,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void testNestedLoop_Inner_Legacy() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -33,11 +33,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void testNestedLoop_Inner() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -55,11 +55,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void testNestedLoop_Inner_NoMatches() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -75,11 +75,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void testNestedLoop_Inner_IndexOverlap() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("a", "b").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -97,11 +97,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void testNestedLoop_Left() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -121,11 +121,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void testNestedLoop_Right() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -145,11 +145,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void testNestedLoop_Full() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -170,11 +170,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void testNestedLoop_Indicator() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -195,12 +195,12 @@ public class DataFrame_JoinsTest {
     @Test
     public void testHash_Inner() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
                 4, "z");
 
-        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 "a", 2,
                 "b", 2,
                 "x", 4,
@@ -220,12 +220,12 @@ public class DataFrame_JoinsTest {
     @Test
     public void testHash_Full_IntColumn() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y")
                 .toIntColumn(0, 0);
 
-        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c").toIntColumn(0, 0);
@@ -246,11 +246,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void testHash_Inner_Indexed_HashOverlap() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("a", "b").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -268,11 +268,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void testHash_Left() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -291,11 +291,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void testHash_Right_ByPos() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -314,11 +314,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void testHash_Right_ByName() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -337,11 +337,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void testHash_Right_ByMatchingName() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.builder("a", "d").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("a", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -360,11 +360,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void testHash_Full() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -384,12 +384,12 @@ public class DataFrame_JoinsTest {
     @Test
     public void testHash_MultiColumnHash() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "a",
                 2, "y");
 
-        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -407,11 +407,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void testHash_Indicator() {
 
-        DataFrame df1 = DataFrame.builder("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.builder("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 2, "a",
                 2, "b",
                 3, "c");
