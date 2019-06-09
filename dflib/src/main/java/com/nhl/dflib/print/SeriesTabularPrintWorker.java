@@ -17,6 +17,7 @@ public class SeriesTabularPrintWorker extends BasePrintWorker {
 
         int h = s.size();
         if (h == 0) {
+            appendNewLine().append("0 elements");
             return out;
         }
 
@@ -65,7 +66,7 @@ public class SeriesTabularPrintWorker extends BasePrintWorker {
             appendFixedWidth(values[i], columnWidth, columnFormat);
         }
 
-        String rowsLabel = h == 1 ? " row" : " rows";
+        String rowsLabel = h == 1 ? " element" : " elements";
         appendNewLine().append(h).append(rowsLabel);
 
         return out;

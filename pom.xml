@@ -16,6 +16,7 @@
         <module>dflib-jupyter</module>
         <module>dflib-benchmark</module>
         <module>dflib-bom</module>
+        <module>dflib-doc</module>
     </modules>
 
     <licenses>
