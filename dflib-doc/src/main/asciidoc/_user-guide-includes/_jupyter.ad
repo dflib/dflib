@@ -1,18 +1,19 @@
 [#jupyter]
 == Working in Jupyter Notebook
 
-While DFLib is a library that runs inside regular Java applications, it also works perfectly in a Jupyter notebook,
-which is a very common environment among data scientists, and is usually associated with Python or Scala. Jupyter
-Notebook is very visual and allows you to debug each step of your a data
-load and transformation pipeline individually without a need to rerun the whole thing. The code developed in notebook
-can be later copied and pasted into your application.
+While DFLib runs inside regular Java applications, it also works perfectly in a Jupyter notebook,
+which is a very common environment among data scientists, and is usually associated with Python / pandas. Jupyter
+Notebook is very visual and allows you to debug each step of your a data load and transformation pipeline individually
+without a need to rerun the whole thing.
 
-Java developers should consider using Jupyter as a part of their data project workflow, and DFLib design (and its Jupyter
-integration features) makes it rather easy, as described below.
+Combining DFLib with Jupyter provides a pandas-like notebook experience, only in pure Java. The code developed in
+notebook can be later copied and pasted into your application. Java developers should consider using Jupyter as a part
+of their data project workflow, and DFLib design (and its Jupyter integration features described here) makes it rather
+easy.
 
 === Installing Jupyter with Java Extensions
 
-* Java version. You will need at least Java 9 for Jupyter, as it requires +jshell+. Java 11 or later is recommended.
+* You will need at least Java 9 run Java in Jupyter, as it requires `jshell`. Java 11 or later is recommended.
 * Install Jupyter. Follow Jupyter installation instructions. It requires Python. Out of the variety of installation
 options, the authors of this document are using Mac OS, +pyenv+, Python 3.7, and +pip+.
 * Install +iJava+ Jupyter "kernel"
