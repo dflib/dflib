@@ -53,6 +53,32 @@ public class DataFrame_GroupByTest {
     }
 
     @Test
+    public void testGroup_NullKeysIgnored() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1, "x",
+                2, "y",
+                1, "z",
+                null, "a",
+                1, "x");
+
+        GroupBy gb = df.group(Hasher.forColumn("a"));
+        assertNotNull(gb);
+
+        assertEquals(2, gb.size());
+        assertEquals(new HashSet<>(asList(1, 2)), new HashSet<>(gb.getGroups()));
+
+        new DFAsserts(gb.getGroup(1), "a", "b")
+                .expectHeight(3)
+                .expectRow(0, 1, "x")
+                .expectRow(1, 1, "z")
+                .expectRow(2, 1, "x");
+
+        new DFAsserts(gb.getGroup(2), "a", "b")
+                .expectHeight(1)
+                .expectRow(0, 2, "y");
+    }
+
+    @Test
     public void testGroup_Agg() {
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",

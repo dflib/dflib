@@ -1,18 +1,19 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.BooleanSeries;
+import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.LongPredicate;
 import com.nhl.dflib.LongSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.ValueMapper;
 import com.nhl.dflib.ValuePredicate;
+import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.series.builder.BooleanAccumulator;
 import com.nhl.dflib.series.builder.IntAccumulator;
 import com.nhl.dflib.series.builder.LongAccumulator;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
 import com.nhl.dflib.series.builder.UniqueLongAccumulator;
-import com.nhl.dflib.concat.SeriesConcat;
 
 import java.util.Objects;
 
@@ -365,6 +366,11 @@ public abstract class LongBaseSeries implements LongSeries {
         }
 
         return unique.size() < size() ? unique.toLongSeries() : this;
+    }
+
+    @Override
+    public DataFrame valueCounts() {
+        return ValueCounts.valueCountsNoNulls(this);
     }
 
     @Override

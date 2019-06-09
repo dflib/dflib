@@ -27,7 +27,14 @@ public class Grouper {
         int i = 0;
         for (RowProxy r : df) {
             Object key = hasher.map(r);
-            ((IntAccumulator) groups.computeIfAbsent(key, k -> new IntAccumulator())).add(i);
+
+            // skipping null keys kinda like pandas... The problem with nulls in DFLib is that Java Map.computeIfAbsent
+            // would allow to store a null key, but would blow up when trying to "get" it, so we kind of go with the flow
+            // here
+            if(key != null) {
+                ((IntAccumulator) groups.computeIfAbsent(key, k -> new IntAccumulator())).add(i);
+            }
+
             i++;
         }
 

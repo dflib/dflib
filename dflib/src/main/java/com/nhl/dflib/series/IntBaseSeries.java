@@ -1,16 +1,17 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.BooleanSeries;
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.IntPredicate;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.ValueMapper;
+import com.nhl.dflib.ValuePredicate;
+import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.series.builder.BooleanAccumulator;
 import com.nhl.dflib.series.builder.IntAccumulator;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
 import com.nhl.dflib.series.builder.UniqueIntAccumulator;
-import com.nhl.dflib.concat.SeriesConcat;
-import com.nhl.dflib.IntPredicate;
-import com.nhl.dflib.ValuePredicate;
 
 import java.util.Objects;
 
@@ -368,6 +369,11 @@ public abstract class IntBaseSeries implements IntSeries {
         return unique.size() < size() ? unique.toIntSeries() : this;
     }
 
+    @Override
+    public DataFrame valueCounts() {
+        return ValueCounts.valueCountsNoNulls(this);
+    }
+    
     @Override
     public String toString() {
         return ToString.toString(this);

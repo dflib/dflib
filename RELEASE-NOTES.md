@@ -34,6 +34,7 @@
 * #56 "TableSaver.save()" should optionally return per-row breakdown of database operations 
 * #57 CsvSaver.createMissingDirs() to save CSVs in arbitrray locations
 * #58 Builder for DataFrame creation
+* #59 Series.valueCount() - utility method for data exploration
 
 ## Release 0.5
 

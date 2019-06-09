@@ -1,18 +1,19 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.BooleanSeries;
+import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DoublePredicate;
 import com.nhl.dflib.DoubleSeries;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.ValueMapper;
 import com.nhl.dflib.ValuePredicate;
+import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.series.builder.BooleanAccumulator;
 import com.nhl.dflib.series.builder.DoubleAccumulator;
 import com.nhl.dflib.series.builder.IntAccumulator;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
 import com.nhl.dflib.series.builder.UniqueDoubleAccumulator;
-import com.nhl.dflib.concat.SeriesConcat;
 
 import java.util.Objects;
 
@@ -366,6 +367,11 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         }
 
         return unique.size() < size() ? unique.toDoubleSeries() : this;
+    }
+
+    @Override
+    public DataFrame valueCounts() {
+        return ValueCounts.valueCountsNoNulls(this);
     }
 
     @Override

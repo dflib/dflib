@@ -141,4 +141,12 @@ public interface Series<T> {
      * @since 0.6
      */
     Series<T> unique();
+
+    /**
+     * Returns a 2-column DataFrame that provides counts of distinct values present in the Series. Null values are
+     * not included in the counts.
+     *
+     * @since 0.6
+     */
+    DataFrame valueCounts();
 }
