@@ -12,13 +12,15 @@ public class GettingStartedExamples {
     }
 
     private static void gettingStarted() {
+// tag::gettingStarted[]
         DataFrame df1 = DataFrame
                 .newFrame("a", "b", "c")
-                .foldIntStreamByRow(0, IntStream.range(1, 10000));
+                .foldIntStreamByRow(IntStream.range(1, 10000));
 
         DataFrame df2 = df1.selectRows(
                 df1.getColumnAsInt(0).indexInt(i -> i % 2 == 0));
 
         System.out.println(Printers.tabular.toString(df2));
+// end::gettingStarted[]
     }
 }

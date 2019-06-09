@@ -40,21 +40,9 @@ Next include DFLib core as a dependency:
 ----
 
 Create a DataFrame, do some manipulations with it, print the result:
-[source, java]
+[source,java,indent=0]
 ----
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Printers;
-
-import java.util.stream.IntStream;
-
-DataFrame df1 = DataFrame
-    .newFrame("a", "b", "c")
-    .foldIntStreamByRow(0, IntStream.range(1, 10000));
-
-DataFrame df2 = df1.selectRows(
-    df1.getColumnAsInt(0).indexInt(i -> i % 2 == 0));
-
-System.out.println(Printers.tabular.toString(df2));
+include::../java/com/nhl/dflib/docs/GettingStartedExamples.java[tags=gettingStarted]
 ----
 
 When you run this code, console output will look like this:
@@ -150,9 +138,9 @@ sequences of data (e.g. timestamps in a time series), etc.
 
 `Series` can be created using static `forData` method on the `Series` interface:
 
-[source,java]
+[source,java,indent=0]
 ----
-Series<String> s = Series.forData("a", "bcd", "ef", "g");
+include::../java/com/nhl/dflib/docs/SeriesExamples.java[tags=create]
 ----
 
 ----
@@ -165,9 +153,9 @@ g
 There is a whole category of "primitive" Series that are optimized for memory use and arithmetic operations performance.
 There are Series for `int`, `double`, `long` and `boolean` values. E.g.:
 
-[source,java]
+[source,java,indent=0]
 ----
-IntSeries is = IntSeries.forInts(0, 1, -300, Integer.MAX_VALUE);
+include::../java/com/nhl/dflib/docs/SeriesExamples.java[tags=createInt]
 ----
 
 While all of them can pose as "object" Series (e.g. `IntSeries` implements `Series<Integer>`), for efficiency you should
