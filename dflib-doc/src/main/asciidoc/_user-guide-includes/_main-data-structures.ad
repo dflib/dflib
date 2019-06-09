@@ -95,3 +95,6 @@ an array of Series:
 ----
 include::../../java/com/nhl/dflib/docs/DataFrameExamples.java[tags=createFromSeries]
 ----
+
+Now that we've discussed how to create Series and DataFrames, next we'll talk about <<printers,printing their contents>>,
+and then will continue to the chapters that describe data operations.

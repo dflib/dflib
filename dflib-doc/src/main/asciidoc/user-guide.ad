@@ -17,8 +17,7 @@ include::_user-guide-includes/_get-started.ad[]
 
 include::_user-guide-includes/_main-data-structures.ad[]
 
-== Printers
-
+include::_user-guide-includes/_printers.ad[]
 
 == Shaping DataFrame, Selecting Rows and Columns
 
