@@ -1,114 +1,21 @@
 = DFLib Documentation
 
-DFLib stands for "DataFrame Library". It is a lightweight pure Java implementation of a common DataFrame data structure.
-With DFLib you get essentially the same data manipulation tools you may be used to in SQL (such as queries and joins),
-only you can use them in-memory and over dynamically defined data structures.
+"DFLib" stands for "DataFrame Library". It is a lightweight pure Java implementation of a common data structure called
+DataFrame. DFLib provides data operations like search, filtering, joins, aggregations, that are similar to those in
+SQL, except you can use them in any Java app, in memory and over dynamically-defined data structures.
 
-DataFrame is ubiquitous in data transformation, analysis and ML fields. There are implementations in Python
-(https://pandas.pydata.org/[pandas]), R,
+`DataFrame` representation of data is ubiquitous in the fields of data transformation, analysis and ML. There are
+implementations in Python (https://pandas.pydata.org/[pandas]), R,
 https://spark.apache.org/docs/latest/sql-programming-guide.html#datasets-and-dataframes[Apache Spark], etc.
-DFLib project's goal is to provide DataFrame structure for regular Java applications. It is a simple library that
-works in any Java application and requires no special infrastructure.
+DFLib project's goal is to provide DataFrame functionality for regular Java applications. It is a simple library that
+works in any Java application and requires no special infrastructure. DFLib core is dependency-free.
 
-Examples in the documentation can be run in any Java IDE, as well as (and this is pretty cool!) in a Jupyter notebook,
+The code in this documentation can be run in any Java IDE, as well as (and this is pretty cool!) in a Jupyter notebook,
 as <<jupyter,described>> in the Jupyter chapter.
 
-== Getting Started with DFLib
+include::_user-guide-includes/_get-started.ad[]
 
-Include DFLib in a project. Assuming you are using Maven, start by declaring a "BOM" to have a common version for
-multiple DFLib modules:
-
-[source,xml]
-----
-<dependencyManagement>
-  <dependencies>
-    <dependency>
-      <groupId>com.nhl.dflib</groupId>
-      <artifactId>dflib-bom</artifactId>
-      <version>0.6</version>
-      <type>pom</type>
-      <scope>import</scope>
-    </dependency>
-  </dependencies>
-</dependencyManagement>
-----
-
-Next include DFLib core as a dependency:
-[source,xml]
-----
-<dependency>
-    <groupId>com.nhl.dflib</groupId>
-    <artifactId>dflib</artifactId>
-</dependency>
-----
-
-Create a DataFrame, do some manipulations with it, print the result:
-[source,java,indent=0]
-----
-include::../java/com/nhl/dflib/docs/GettingStartedExamples.java[tags=gettingStarted]
-----
-
-When you run this code, console output will look like this:
-
-----
-   a    b    c
----- ---- ----
-   4    5    6
-  10   11   12
-...
-9994 9995 9996
-1666 rows x 3 columns
-----
-
-In the following chapters we'll omit the print statement in the code, and will just show the output for a particular
-data structure.
-
-== Main Data Structures
-
-Two main DFLib concepts are `Series` and `DataFrame`. `Series` is 1-dimensional array-like structure, and `DataFrame`
-is a 2-dimensional table-like structure. Columns in a DataFrame are stored as Series.
-
-Both DataFrame and Series are
-_immutable_, so all the operations on them create a new instance. Behind the scenes DFLib is optimized to avoid bulk
-data copy as much as possible, so copying these objects does not cause any performance degradation, and in turn makes
-DFLib fully thread-safe, with concurrent operations possible on the same data structure.
-
-=== Series
-
-You can think of `Series` as a wrapper around an array of values. Series object is parameterized for the type of data
-it is intended to hold. So there can be `Series<String>` or a `Series<LocalDate>`, etc. You can use `Series` to model
-sequences of data (e.g. timestamps in a time series), etc.
-
-`Series` can be created using static `forData` method on the `Series` interface:
-
-[source,java,indent=0]
-----
-include::../java/com/nhl/dflib/docs/SeriesExamples.java[tags=create]
-----
-
-----
-a
-bcd
-...
-g
-4 elements
-----
-There is a whole category of "primitive" Series that are optimized for memory use and arithmetic operations performance.
-There are Series for `int`, `double`, `long` and `boolean` values. E.g.:
-
-[source,java,indent=0]
-----
-include::../java/com/nhl/dflib/docs/SeriesExamples.java[tags=createInt]
-----
-
-While all of them can pose as "object" Series (e.g. `IntSeries` implements `Series<Integer>`), for efficiency you should
-use the primitive version of each operation whenever possible. E.g. `concatInt` instead of just `concat`.
-
-`Series` object defines a number of useful data manipulation and transformation operations, that will be covered in the
-following chapters.
-
-=== DataFrame
-
+include::_user-guide-includes/_main-data-structures.ad[]
 
 == Creating Series and DataFrames
 

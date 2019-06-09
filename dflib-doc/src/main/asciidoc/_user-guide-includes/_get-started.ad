@@ -1,0 +1,49 @@
+== Getting Started with DFLib
+
+Include DFLib in a project. Assuming you are using Maven, start by declaring a "BOM" to have a common version for
+multiple DFLib modules:
+
+[source,xml]
+----
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>com.nhl.dflib</groupId>
+      <artifactId>dflib-bom</artifactId>
+      <version>0.6</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+----
+
+Next include DFLib core as a dependency:
+[source,xml]
+----
+<dependency>
+    <groupId>com.nhl.dflib</groupId>
+    <artifactId>dflib</artifactId>
+</dependency>
+----
+
+Create a DataFrame, do some manipulations with it, print the result:
+[source,java,indent=0]
+----
+include::../../java/com/nhl/dflib/docs/GettingStartedExamples.java[tags=gettingStarted]
+----
+
+When you run this code, console output will look like this:
+
+----
+   a    b    c
+---- ---- ----
+   4    5    6
+  10   11   12
+...
+9994 9995 9996
+1666 rows x 3 columns
+----
+
+In the following chapters we'll omit the print statement in the code, and will just show the output for a particular
+object.
