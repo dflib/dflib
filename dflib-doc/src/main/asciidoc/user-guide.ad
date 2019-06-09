@@ -17,9 +17,6 @@ include::_user-guide-includes/_get-started.ad[]
 
 include::_user-guide-includes/_main-data-structures.ad[]
 
-== Creating Series and DataFrames
-
-
 == Printers
 
 

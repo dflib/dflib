@@ -44,3 +44,54 @@ use primitive versions of each operation whenever possible. E.g. `concatInt` ins
 following chapters. Also it is very important as a building block of DataFrame.
 
 === DataFrame
+
+`DataFrame` is an in-memory table with rows and columns. Each column has a name, and is represented as a `Series` object.
+DataFrame can contain columns of different kinds and is not parameterized for a single type. There is a special "builder"
+API to create DataFrames from arrays, Streams, Collections, etc.
+
+[source,java,indent=0]
+----
+include::../../java/com/nhl/dflib/docs/DataFrameExamples.java[tags=createFoldByRow]
+----
+<1> The builder starts by passing column names
+<2> Passing a varargs array of values, that is folded to match the specified number of columns, row by row.
+
+The resulting DataFrame looks like this:
+----
+name   age
+------ ---
+Joe    18
+Andrus 45
+Joan   32
+3 rows x 2 columns
+----
+
+Instead of folding by rows, builder can fold the array column by column:
+[source,java,indent=0]
+----
+include::../../java/com/nhl/dflib/docs/DataFrameExamples.java[tags=createFoldByColumn]
+----
+You can also create DataFrames from Collections and Streams (folded either by row or by column). Here is an example
+of how to use Streams of primitive ints, creating a DataFrame made of memory-efficient `IntSeries` columns:
+[source,java,indent=0]
+----
+include::../../java/com/nhl/dflib/docs/DataFrameExamples.java[tags=createFromIntStream]
+----
+
+----
+col1 col2
+---- ----
+   0 5000
+   1 5001
+...
+4999 9999
+5000 rows x 2 columns
+----
+
+As we've mentioned, DataFrame columns are stored as Series, so another way to create a DataFrame is to pass
+an array of Series:
+
+[source,java,indent=0]
+----
+include::../../java/com/nhl/dflib/docs/DataFrameExamples.java[tags=createFromSeries]
+----
