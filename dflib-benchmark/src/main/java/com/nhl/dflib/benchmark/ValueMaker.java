@@ -60,5 +60,18 @@ public interface ValueMaker<T> {
         return () -> prefix + random.nextInt(max);
     }
 
+    static <T extends Enum<T>> ValueMaker<T> enumSeq(Class<T> type) {
+        ValueMaker<Integer> intSeq = intSeq();
+        T[] allValues = type.getEnumConstants();
+        int len = allValues.length;
+        return () -> allValues[intSeq.get() % len];
+    }
+
+    static <T extends Enum<T>> ValueMaker<Integer> enumOrdinalsSeq(Class<T> type) {
+        ValueMaker<Integer> intSeq = intSeq();
+        int len = type.getEnumConstants().length;
+        return () -> intSeq.get() % len;
+    }
+
     T get();
 }

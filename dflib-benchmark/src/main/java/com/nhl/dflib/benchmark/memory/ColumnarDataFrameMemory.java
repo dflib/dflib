@@ -28,6 +28,7 @@ public class ColumnarDataFrameMemory extends MemoryTest {
         test.run("repeatingStringCells", test::repeatingStringCells, cells);
         test.run("randStringCells", test::randStringCells, cells);
         test.run("bitSetCells", test::bitSetCells, cells);
+        test.run("enumCells", test::enumCells, cells);
     }
 
     public DataFrame nullCells() {
@@ -127,5 +128,15 @@ public class ColumnarDataFrameMemory extends MemoryTest {
                 bitsMaker);
         df.materialize().iterator();
         return df;
+    }
+
+    public DataFrame enumCells() {
+        DataFrame df = DataGenerator.columnarDF(ROWS, ValueMaker.enumSeq(X.class), ValueMaker.enumSeq(X.class));
+        df.materialize().iterator();
+        return df;
+    }
+
+    enum X {
+        a, b, c, d, e, f, g
     }
 }
