@@ -54,6 +54,6 @@ public class DataGenerator {
             data[i] = ml.toSeries().materialize();
         }
 
-        return DataFrame.forColumns(index, data);
+        return DataFrame.newFrame(index).columns(data);
     }
 }

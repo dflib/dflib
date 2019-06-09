@@ -7,12 +7,11 @@ import java.util.HashSet;
 
 import static java.util.Arrays.asList;
 
-public class DataFrame_AggTest extends BaseDataFrameTest {
+public class DataFrame_AggTest {
 
     @Test
     public void testAgg() {
-        Index i = Index.forLabels("a", "b", "c", "d");
-        DataFrame df = createDf(i,
+        DataFrame df = DataFrame.newFrame("a", "b", "c", "d").foldByRow(
                 1, "x", "n", 1.0,
                 2, "y", "a", 2.5,
                 0, "a", "z", 0.001);
@@ -27,8 +26,7 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
 
     @Test
     public void testAgg_CountInt_CountLong() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame df = createDf(i,
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 0, "a");
 
@@ -41,8 +39,7 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
 
     @Test
     public void testAgg_SumInt_SumLong() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame df = createDf(i,
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, 1,
                 -1, 5L);
 
@@ -55,8 +52,7 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
 
     @Test
     public void testAgg_Concat() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame df = createDf(i,
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 0, "a");
 
@@ -69,8 +65,7 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
 
     @Test
     public void testAgg_Set() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame df = createDf(i,
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "x",
                 1, "a");
@@ -81,8 +76,7 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
 
     @Test
     public void testAgg_list() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame df = createDf(i,
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "x",
                 1, "a");
@@ -93,8 +87,7 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
 
     @Test
     public void testAgg_average() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame df = createDf(i,
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, 4L,
                 0, 55.5);
 
@@ -107,8 +100,7 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
 
     @Test
     public void testAgg_median_odd() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame df = createDf(i,
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, 100,
                 0, 55.5,
                 4, 0);
@@ -122,8 +114,7 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
 
     @Test
     public void testAgg_median_even() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame df = createDf(i,
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, 100,
                 0, 55.5,
                 4, 0,
@@ -138,8 +129,7 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
 
     @Test
     public void testAgg_median_zero() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame df = createDf(i);
+        DataFrame df = DataFrame.newFrame("a", "b").empty();
 
         Series<?> s = df.agg(
                 Aggregator.medianDouble("a"),
@@ -150,8 +140,7 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
 
     @Test
     public void testAgg_median_one() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame df = createDf(i, 1, 100);
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(1, 100);
 
         Series<?> s = df.agg(
                 Aggregator.medianDouble("a"),
@@ -162,8 +151,7 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
 
     @Test
     public void testAgg_median_nulls() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame df = createDf(i,
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, null,
                 0, 55.5,
                 4, 0,
@@ -178,8 +166,7 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
 
     @Test
     public void testAgg_First() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame df = createDf(i,
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, 100,
                 2, 5);
 
@@ -192,8 +179,7 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
 
     @Test
     public void testAgg_First_Empty() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame df = createDf(i);
+        DataFrame df = DataFrame.newFrame("a", "b").empty();
 
         Series<?> s = df.agg(
                 Aggregator.first("a"),
@@ -204,8 +190,7 @@ public class DataFrame_AggTest extends BaseDataFrameTest {
 
     @Test
     public void testAgg_First_Nulls() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame df = createDf(i,
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, null,
                 null, 5);
 

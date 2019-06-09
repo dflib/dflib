@@ -60,7 +60,7 @@ public class SqlLoader {
     protected DataFrame loadDataFrame(ResultSet rs) throws SQLException {
         Index columns = createIndex(rs);
         Series<?>[] data = loadData(rs);
-        return DataFrame.forColumns(columns, data);
+        return DataFrame.newFrame(columns).columns(data);
     }
 
     protected Index createIndex(ResultSet rs) throws SQLException {

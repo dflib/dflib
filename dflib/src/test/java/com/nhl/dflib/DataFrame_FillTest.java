@@ -3,13 +3,12 @@ package com.nhl.dflib;
 import com.nhl.dflib.unit.DFAsserts;
 import org.junit.Test;
 
-public class DataFrame_FillTest extends BaseDataFrameTest {
+public class DataFrame_FillTest {
 
     @Test
     public void testFillNulls() {
-        Index i1 = Index.forLabels("a", "b");
 
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 "a", 1,
                 null, 5,
                 "b", null,
@@ -25,9 +24,8 @@ public class DataFrame_FillTest extends BaseDataFrameTest {
 
     @Test
     public void testFillNulls_Column() {
-        Index i1 = Index.forLabels("a", "b");
 
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 "a", 1,
                 null, 5,
                 "b", null,
@@ -43,9 +41,8 @@ public class DataFrame_FillTest extends BaseDataFrameTest {
 
     @Test
     public void testFillNullsFromSeries() {
-        Index i1 = Index.forLabels("a", "b");
 
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 "a", 1,
                 null, 5,
                 "b", null,
@@ -61,9 +58,8 @@ public class DataFrame_FillTest extends BaseDataFrameTest {
 
     @Test
     public void testFillNullsBackwards() {
-        Index i1 = Index.forLabels("a", "b");
 
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 "a", null,
                 null, 5,
                 "b", null,
@@ -81,9 +77,8 @@ public class DataFrame_FillTest extends BaseDataFrameTest {
 
     @Test
     public void testFillNullsForward() {
-        Index i1 = Index.forLabels("a", "b");
 
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 "a", null,
                 null, 5,
                 "b", null,

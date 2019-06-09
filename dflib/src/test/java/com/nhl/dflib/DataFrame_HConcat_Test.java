@@ -3,18 +3,16 @@ package com.nhl.dflib;
 import com.nhl.dflib.unit.DFAsserts;
 import org.junit.Test;
 
-public class DataFrame_HConcat_Test extends BaseDataFrameTest {
+public class DataFrame_HConcat_Test {
 
     @Test
     public void testZipRows_ImplicitInnerJoin() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
                 2, 3);
 
-        Index i2 = Index.forLabels("c", "d");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 10, 20);
 
         DataFrame df_l = df1.hConcat(df2);
@@ -33,14 +31,12 @@ public class DataFrame_HConcat_Test extends BaseDataFrameTest {
     @Test
     public void testZipRows_SparseDF() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
                 2, 3)
                 .selectColumns("b");
 
-        Index i2 = Index.forLabels("c", "d");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 10, 20,
                 30, 40)
                 .selectColumns("c");
@@ -56,14 +52,12 @@ public class DataFrame_HConcat_Test extends BaseDataFrameTest {
     @Test
     public void testZipRows_SparseDF_CustomIndex() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
                 2, 3)
                 .selectColumns("b");
 
-        Index i2 = Index.forLabels("c", "d");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 10, 20,
                 30, 40)
                 .selectColumns("c");
@@ -80,13 +74,11 @@ public class DataFrame_HConcat_Test extends BaseDataFrameTest {
     @Test
     public void testZipRows_SparseDF_ReorgColumns() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
                 2, 3);
 
-        Index i2 = Index.forLabels("c", "d");
-        DataFrame df2 = createDf(i2,
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 10, 20,
                 30, 40,
                 50, 60);
@@ -114,14 +106,11 @@ public class DataFrame_HConcat_Test extends BaseDataFrameTest {
     @Test
     public void testZipRows_InnerJoin() {
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
                 2, 3);
 
-        Index i2 = Index.forLabels("c", "d");
-        DataFrame df2 = createDf(i2,
-                10, 20);
+        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(10, 20);
 
         DataFrame df_l = df1.hConcat(JoinType.inner, df2);
 
@@ -139,14 +128,11 @@ public class DataFrame_HConcat_Test extends BaseDataFrameTest {
     @Test
     public void testZipRows_Left() {
 
-        Index i1 = Index.forLabels("a");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.newFrame("a").foldByRow(
                 0,
                 1);
 
-        Index i2 = Index.forLabels("b");
-        DataFrame df2 = createDf(i2,
-                10);
+        DataFrame df2 = DataFrame.newFrame("b").foldByRow(10);
 
         DataFrame df_l = df1.hConcat(JoinType.left, df2);
 
@@ -165,13 +151,11 @@ public class DataFrame_HConcat_Test extends BaseDataFrameTest {
     @Test
     public void testZipRows_Right() {
 
-        Index i1 = Index.forLabels("a");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.newFrame("a").foldByRow(
                 0,
                 1);
 
-        Index i2 = Index.forLabels("b");
-        DataFrame df2 = createDf(i2, 10);
+        DataFrame df2 = DataFrame.newFrame("b").foldByRow(10);
 
         DataFrame df_l = df1.hConcat(JoinType.right, df2);
         new DFAsserts(df_l, "a", "b")
@@ -189,14 +173,11 @@ public class DataFrame_HConcat_Test extends BaseDataFrameTest {
     @Test
     public void testZipRows_Full() {
 
-        Index i1 = Index.forLabels("a");
-        DataFrame df1 = createDf(i1,
+        DataFrame df1 = DataFrame.newFrame("a").foldByRow(
                 0,
                 1);
 
-        Index i2 = Index.forLabels("b");
-        DataFrame df2 = createDf(i2,
-                10);
+        DataFrame df2 = DataFrame.newFrame("b").foldByRow(10);
 
         DataFrame df_l = df1.hConcat(JoinType.full, df2);
         new DFAsserts(df_l, "a", "b")

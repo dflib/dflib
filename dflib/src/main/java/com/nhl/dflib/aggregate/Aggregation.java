@@ -54,6 +54,6 @@ public class Aggregation {
             aggLabels[i] = agg.aggregateLabel(sourceIndex);
         }
 
-        return DataFrame.forColumns(Index.forLabelsDeduplicate(aggLabels), aggColumns);
+        return DataFrame.newFrame(Index.forLabelsDeduplicate(aggLabels)).columns(aggColumns);
     }
 }

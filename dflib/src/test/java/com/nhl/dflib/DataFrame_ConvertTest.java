@@ -7,14 +7,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class DataFrame_ConvertTest extends BaseDataFrameTest {
+public class DataFrame_ConvertTest {
 
     @Test
     public void testConvertColumn() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
-                1, "x",
-                2, "y")
+        DataFrame df = DataFrame
+                .newFrame("a", "b")
+                .foldByRow(1, "x", 2, "y")
                 .convertColumn("a", v -> ((int) v) * 10);
 
         new DFAsserts(df, "a", "b")
@@ -25,11 +24,12 @@ public class DataFrame_ConvertTest extends BaseDataFrameTest {
 
     @Test
     public void testConvertColumn_ValueMapperToDate() {
-        Index i1 = Index.forLabels("a");
-        DataFrame df = createDf(i1,
-                "2018-01-05",
-                "2019-02-28",
-                null)
+        DataFrame df = DataFrame
+                .newFrame("a")
+                .foldByRow(
+                        "2018-01-05",
+                        "2019-02-28",
+                        null)
                 .convertColumn("a", ValueMapper.stringToDate());
 
         new DFAsserts(df, "a")
@@ -41,11 +41,12 @@ public class DataFrame_ConvertTest extends BaseDataFrameTest {
 
     @Test
     public void testConvertColumn_ValueMapperToDate_Formatter() {
-        Index i1 = Index.forLabels("a");
-        DataFrame df = createDf(i1,
-                "2018 01 05",
-                "2019 02 28",
-                null)
+        DataFrame df = DataFrame
+                .newFrame("a")
+                .foldByRow(
+                        "2018 01 05",
+                        "2019 02 28",
+                        null)
                 .convertColumn("a", ValueMapper.stringToDate(DateTimeFormatter.ofPattern("yyyy MM dd")));
 
         new DFAsserts(df, "a")
@@ -57,11 +58,12 @@ public class DataFrame_ConvertTest extends BaseDataFrameTest {
 
     @Test
     public void testConvertColumn_ValueMapperToDateTime() {
-        Index i1 = Index.forLabels("a");
-        DataFrame df = createDf(i1,
-                "2018-01-05T00:01:15",
-                "2019-02-28T13:11:12",
-                null)
+        DataFrame df = DataFrame
+                .newFrame("a")
+                .foldByRow(
+                        "2018-01-05T00:01:15",
+                        "2019-02-28T13:11:12",
+                        null)
                 .convertColumn("a", ValueMapper.stringToDateTime());
 
         new DFAsserts(df, "a")
@@ -73,11 +75,12 @@ public class DataFrame_ConvertTest extends BaseDataFrameTest {
 
     @Test
     public void testConvertColumnToInt_ByLabel() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
-                "1", "x",
-                "5", "z",
-                "2", "y")
+        DataFrame df = DataFrame
+                .newFrame("a", "b")
+                .foldByRow(
+                        "1", "x",
+                        "5", "z",
+                        "2", "y")
                 .toIntColumn("a", IntValueMapper.fromString());
 
 
@@ -90,11 +93,12 @@ public class DataFrame_ConvertTest extends BaseDataFrameTest {
 
     @Test
     public void testConvertColumnToInt_ByPos() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
-                "1", "x",
-                "5", "z",
-                "2", "y")
+        DataFrame df = DataFrame
+                .newFrame("a", "b")
+                .foldByRow(
+                        "1", "x",
+                        "5", "z",
+                        "2", "y")
                 .toIntColumn(0, -1);
 
 
@@ -107,8 +111,7 @@ public class DataFrame_ConvertTest extends BaseDataFrameTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConvertColumnToInt_Nulls() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
+        DataFrame.newFrame("a", "b").foldByRow(
                 "1", "x",
                 null, "z",
                 "2", "y")
@@ -117,11 +120,12 @@ public class DataFrame_ConvertTest extends BaseDataFrameTest {
 
     @Test
     public void testConvertColumnToInt_NullsDefault() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
-                "1", "x",
-                null, "z",
-                "2", "y")
+        DataFrame df = DataFrame
+                .newFrame("a", "b")
+                .foldByRow(
+                        "1", "x",
+                        null, "z",
+                        "2", "y")
                 .toIntColumn(0, -100);
 
         new DFAsserts(df, "a", "b")
@@ -134,10 +138,12 @@ public class DataFrame_ConvertTest extends BaseDataFrameTest {
     @Test
     public void testToEnumFromNumColumn() {
         Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
-                1, "x",
-                null, "z",
-                0, "y")
+        DataFrame df = DataFrame
+                .newFrame("a", "b")
+                .foldByRow(
+                        1, "x",
+                        null, "z",
+                        0, "y")
                 .toEnumFromNumColumn(0, X.class);
 
         new DFAsserts(df, "a", "b")
@@ -150,10 +156,12 @@ public class DataFrame_ConvertTest extends BaseDataFrameTest {
     @Test
     public void testToEnumFromStringColumn() {
         Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
-                "b", "x",
-                null, "z",
-                "a", "y")
+        DataFrame df = DataFrame
+                .newFrame("a", "b")
+                .foldByRow(
+                        "b", "x",
+                        null, "z",
+                        "a", "y")
                 .toEnumFromStringColumn(0, X.class);
 
         new DFAsserts(df, "a", "b")

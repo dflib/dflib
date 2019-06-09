@@ -5,12 +5,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class DataFrame_Sort_Test extends BaseDataFrameTest {
+public class DataFrame_Sort_Test {
 
     @Test
     public void testSort() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame dfi = createDf(i,
+        DataFrame dfi = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
                 2, 3,
                 -1, 2);
@@ -34,8 +33,7 @@ public class DataFrame_Sort_Test extends BaseDataFrameTest {
 
     @Test
     public void testSortByColumns_Names() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame dfi = createDf(i,
+        DataFrame dfi = DataFrame.newFrame("a", "b").foldByRow(
                 0, 4,
                 2, 2,
                 0, 2);
@@ -62,8 +60,7 @@ public class DataFrame_Sort_Test extends BaseDataFrameTest {
 
     @Test
     public void testSortByColumns_Positions() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame dfi = createDf(i,
+        DataFrame dfi = DataFrame.newFrame("a", "b").foldByRow(
                 0, 4,
                 2, 2,
                 0, 2);
@@ -90,8 +87,7 @@ public class DataFrame_Sort_Test extends BaseDataFrameTest {
 
     @Test
     public void testSortByColumn_Position_Direction() {
-        Index i = Index.forLabels("a", "b");
-        DataFrame dfi = createDf(i,
+        DataFrame dfi = DataFrame.newFrame("a", "b").foldByRow(
                 0, 3,
                 2, 4,
                 0, 2);

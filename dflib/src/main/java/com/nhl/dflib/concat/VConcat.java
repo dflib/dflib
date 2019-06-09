@@ -51,7 +51,7 @@ public class VConcat {
 
         switch (dfs.length) {
             case 0:
-                return DataFrame.forSequenceFoldByRow(Index.forLabels());
+                return DataFrame.newFrame().empty();
             case 1:
                 return dfs[0];
             default:

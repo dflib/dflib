@@ -10,8 +10,7 @@ public class DataFrame_GetColumnTest {
 
     @Test
     public void testGetColumn_byLabel() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = DataFrame.forSequenceFoldByRow(i1,
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
@@ -22,8 +21,7 @@ public class DataFrame_GetColumnTest {
 
     @Test
     public void testGetColumn_byPosition() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = DataFrame.forSequenceFoldByRow(i1,
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y");
 
@@ -34,10 +32,9 @@ public class DataFrame_GetColumnTest {
 
     @Test
     public void testGetColumnAsInt_byLabel() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = DataFrame.forColumns(i1,
-                Series.forData("a", "b"),
-                IntSeries.forInts(3, 6, -1));
+        DataFrame df = DataFrame
+                .newFrame("a", "b")
+                .columns(Series.forData("a", "b", "x"), IntSeries.forInts(3, 6, -1));
 
         IntSeries cb = df.getColumnAsInt("b");
 
@@ -46,10 +43,9 @@ public class DataFrame_GetColumnTest {
 
     @Test
     public void testGetColumnAsInt_byPosition() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = DataFrame.forColumns(i1,
-                Series.forData("a", "b"),
-                IntSeries.forInts(3, 6, -1));
+        DataFrame df = DataFrame
+                .newFrame("a", "b")
+                .columns(Series.forData("a", "b", "x"), IntSeries.forInts(3, 6, -1));
 
         IntSeries cb = df.getColumnAsInt(1);
 
@@ -58,10 +54,9 @@ public class DataFrame_GetColumnTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testGetColumnAsInt_NotIntLabel() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = DataFrame.forColumns(i1,
-                Series.forData("a", "b"),
-                IntSeries.forInts(3, 6, -1));
+        DataFrame df = DataFrame
+                .newFrame("a", "b")
+                .columns(Series.forData("a", "b", "x"), IntSeries.forInts(3, 6, -1));
 
         df.getColumnAsInt("a");
     }
@@ -69,10 +64,9 @@ public class DataFrame_GetColumnTest {
 
     @Test
     public void testGetColumnAsDouble_byLabel() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = DataFrame.forColumns(i1,
-                Series.forData("a", "b"),
-                DoubleSeries.forDoubles(3., 6.3, -1.01));
+        DataFrame df = DataFrame
+                .newFrame("a", "b")
+                .columns(Series.forData("a", "b", "x"), DoubleSeries.forDoubles(3., 6.3, -1.01));
 
         DoubleSeries cb = df.getColumnAsDouble("b");
 
@@ -81,10 +75,9 @@ public class DataFrame_GetColumnTest {
 
     @Test
     public void testGetColumnAsDouble_byPosition() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = DataFrame.forColumns(i1,
-                Series.forData("a", "b"),
-                DoubleSeries.forDoubles(3., 6.3, -1.01));
+        DataFrame df = DataFrame
+                .newFrame("a", "b")
+                .columns(Series.forData("a", "b", "x"), DoubleSeries.forDoubles(3., 6.3, -1.01));
 
         DoubleSeries cb = df.getColumnAsDouble(1);
 
@@ -93,20 +86,18 @@ public class DataFrame_GetColumnTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testGetColumnAsDouble_NotDoubleLabel() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = DataFrame.forColumns(i1,
-                Series.forData("a", "b"),
-                DoubleSeries.forDoubles(3., 6.3, -1.01));
+        DataFrame df = DataFrame
+                .newFrame("a", "b")
+                .columns(Series.forData("a", "b", "x"), DoubleSeries.forDoubles(3., 6.3, -1.01));
 
         df.getColumnAsDouble("a");
     }
 
     @Test
     public void testGetColumnAsLong_byLabel() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = DataFrame.forColumns(i1,
-                Series.forData("a", "b"),
-                LongSeries.forLongs(3, 6, -1));
+        DataFrame df = DataFrame
+                .newFrame("a", "b")
+                .columns(Series.forData("a", "b", "x"), LongSeries.forLongs(3, 6, -1));
 
         LongSeries cb = df.getColumnAsLong("b");
 
@@ -115,10 +106,9 @@ public class DataFrame_GetColumnTest {
 
     @Test
     public void testGetColumnAsLong_byPosition() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = DataFrame.forColumns(i1,
-                Series.forData("a", "b"),
-                LongSeries.forLongs(3, 6, -1));
+        DataFrame df = DataFrame
+                .newFrame("a", "b")
+                .columns(Series.forData("a", "b", "x"), LongSeries.forLongs(3, 6, -1));
 
         LongSeries cb = df.getColumnAsLong(1);
 

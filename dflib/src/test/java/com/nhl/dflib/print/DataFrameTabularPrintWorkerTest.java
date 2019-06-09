@@ -1,7 +1,6 @@
 package com.nhl.dflib.print;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import org.junit.Before;
@@ -15,11 +14,9 @@ public class DataFrameTabularPrintWorkerTest {
 
     @Before
     public void initDataFrameParts() {
-
-        Index columns = Index.forLabels("col1", "column2");
-        this.df = DataFrame.forColumns(columns,
-                Series.forData("one", "two", "three", "four"),
-                IntSeries.forInts(1, 2, 3, 4));
+        this.df = DataFrame
+                .newFrame("col1", "column2")
+                .columns(Series.forData("one", "two", "three", "four"), IntSeries.forInts(1, 2, 3, 4));
     }
 
     @Test

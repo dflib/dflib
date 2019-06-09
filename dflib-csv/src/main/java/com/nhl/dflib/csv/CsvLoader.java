@@ -25,7 +25,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
@@ -341,7 +340,7 @@ public class CsvLoader {
             Index columns = createColumns(it);
 
             if (!it.hasNext()) {
-                return DataFrame.forRows(columns, Collections.emptyList());
+                return DataFrame.newFrame(columns).empty();
             }
 
             SeriesBuilder<String, ?>[] builders = createSeriesBuilders(columns);

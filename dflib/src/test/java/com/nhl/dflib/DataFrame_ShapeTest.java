@@ -4,12 +4,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class DataFrame_ShapeTest extends BaseDataFrameTest {
+public class DataFrame_ShapeTest {
 
     @Test
     public void testWidth() {
-        Index i = Index.forLabels("a");
-        DataFrame df = createDf(i,
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
                 1,
                 2
         );
@@ -19,8 +18,7 @@ public class DataFrame_ShapeTest extends BaseDataFrameTest {
 
     @Test
     public void testHeight() {
-        Index i = Index.forLabels("a");
-        DataFrame df = createDf(i,
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
                 1,
                 2
         );

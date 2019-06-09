@@ -40,7 +40,7 @@ public class DataFrameTruncator {
     }
 
     public DataFrame tail() {
-        return truncated ? dataFrame.tail(tail) : DataFrame.forRows(dataFrame.getColumnsIndex());
+        return truncated ? dataFrame.tail(tail) : DataFrame.newFrame(dataFrame.getColumnsIndex()).empty();
     }
 
     public boolean isTruncated() {

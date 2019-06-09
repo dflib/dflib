@@ -6,12 +6,11 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DataFrame_RenameColumnsTest extends BaseDataFrameTest {
+public class DataFrame_RenameColumnsTest {
 
     @Test
     public void testRenameColumns_All() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y")
                 .renameColumns("c", "d");
@@ -24,8 +23,7 @@ public class DataFrame_RenameColumnsTest extends BaseDataFrameTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testRenameColumns_SizeMismatch() {
-        Index i1 = Index.forLabels("a", "b");
-        createDf(i1,
+        DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y")
                 .renameColumns("c");
@@ -37,8 +35,7 @@ public class DataFrame_RenameColumnsTest extends BaseDataFrameTest {
         Map<String, String> names = new HashMap<>();
         names.put("b", "c");
 
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y")
                 .renameColumns(names);
@@ -51,11 +48,10 @@ public class DataFrame_RenameColumnsTest extends BaseDataFrameTest {
 
     @Test
     public void testRenameColumns_WithFunction() {
-        Index i1 = Index.forLabels("a", "b");
-        DataFrame df = createDf(i1,
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y")
-                .renameColumns(s -> s.toUpperCase());
+                .renameColumns(String::toUpperCase);
 
         new DFAsserts(df, "A", "B")
                 .expectHeight(2)
