@@ -61,7 +61,7 @@ When you run this code, console output will look like this:
 
 ----
    a    b    c
-\---- ---- ----
+---- ---- ----
    4    5    6
   10   11   12
 ...
@@ -72,7 +72,7 @@ When you run this code, console output will look like this:
 In the following chapters we'll omit the print statement in the code, and will just show the output for a particular
 data structure.
 
-== Working with Jupyter Notebook
+== Working in Jupyter Notebook
 
 _If you are not in a mood for setting up Python and Jupyter, you can skip this section all together, and move on to
 the next chapters using your Java IDE. But keep in mind that Jupyter is a very powerful data exploration and modeling
