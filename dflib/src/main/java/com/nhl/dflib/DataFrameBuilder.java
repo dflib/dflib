@@ -195,7 +195,7 @@ public class DataFrameBuilder {
         return byRowBuilder.create();
     }
 
-    public DataFrame foldIntByColumn(int forNull, int... data) {
+    public DataFrame foldIntByColumn(int padWith, int... data) {
 
         int w = columnsIndex.size();
         if (w == 0) {
@@ -221,7 +221,10 @@ public class DataFrameBuilder {
         if (partialLastColumn) {
             int fillerStart = h - missingInLastColumn;
             System.arraycopy(data, fullColumnsW * h, columnarData[fullColumnsW], 0, fillerStart);
-            Arrays.fill(columnarData[fullColumnsW], fillerStart, h, forNull);
+
+            if (padWith != 0) {
+                Arrays.fill(columnarData[fullColumnsW], fillerStart, h, padWith);
+            }
         }
 
         Series[] series = new Series[w];
@@ -233,7 +236,11 @@ public class DataFrameBuilder {
         return new ColumnDataFrame(columnsIndex, series);
     }
 
-    public DataFrame foldIntStreamByRow(int missingFiller, IntStream stream) {
+    public DataFrame foldIntStreamByRow(IntStream stream) {
+        return foldIntStreamByRow(0, stream);
+    }
+
+    public DataFrame foldIntStreamByRow(int padWith, IntStream stream) {
 
         int width = columnsIndex.size();
         if (width == 0) {
@@ -257,7 +264,7 @@ public class DataFrameBuilder {
         int pl = p % width;
         if (pl > 0) {
             for (; pl < width; pl++) {
-                columnBuilders[pl].add(missingFiller);
+                columnBuilders[pl].add(padWith);
             }
         }
 
@@ -269,12 +276,16 @@ public class DataFrameBuilder {
         return new ColumnDataFrame(columnsIndex, columnsData);
     }
 
-    public DataFrame foldIntStreamByColumn(int missingFiller, IntStream stream) {
-        // since we can't guess the height from the Stream, convert it to array and fold the array by column
-        return foldIntByColumn(missingFiller, stream.toArray());
+    public DataFrame foldIntStreamByColumn(IntStream stream) {
+        return foldIntStreamByColumn(0, stream);
     }
 
-    public DataFrame foldLongByColumn(long forNull, long... data) {
+    public DataFrame foldIntStreamByColumn(int padWith, IntStream stream) {
+        // since we can't guess the height from the Stream, convert it to array and fold the array by column
+        return foldIntByColumn(padWith, stream.toArray());
+    }
+
+    public DataFrame foldLongByColumn(long padWith, long... data) {
 
         int w = columnsIndex.size();
         if (w == 0) {
@@ -300,7 +311,10 @@ public class DataFrameBuilder {
         if (partialLastColumn) {
             int fillerStart = h - missingInLastColumn;
             System.arraycopy(data, fullColumnsW * h, columnarData[fullColumnsW], 0, fillerStart);
-            Arrays.fill(columnarData[fullColumnsW], fillerStart, h, forNull);
+
+            if (padWith != 0L) {
+                Arrays.fill(columnarData[fullColumnsW], fillerStart, h, padWith);
+            }
         }
 
         Series[] series = new Series[w];
@@ -312,7 +326,11 @@ public class DataFrameBuilder {
         return new ColumnDataFrame(columnsIndex, series);
     }
 
-    public DataFrame foldLongStreamByRow(long missingFiller, LongStream stream) {
+    public DataFrame foldLongStreamByRow(LongStream stream) {
+        return foldLongStreamByRow(0L, stream);
+    }
+
+    public DataFrame foldLongStreamByRow(long padWith, LongStream stream) {
 
         int width = columnsIndex.size();
         if (width == 0) {
@@ -336,7 +354,7 @@ public class DataFrameBuilder {
         int pl = p % width;
         if (pl > 0) {
             for (; pl < width; pl++) {
-                columnBuilders[pl].add(missingFiller);
+                columnBuilders[pl].add(padWith);
             }
         }
 
@@ -346,6 +364,10 @@ public class DataFrameBuilder {
         }
 
         return new ColumnDataFrame(columnsIndex, columnsData);
+    }
+
+    public DataFrame foldLongStreamByColumn(LongStream stream) {
+        return foldLongStreamByColumn(0L, stream);
     }
 
     public DataFrame foldLongStreamByColumn(long padWith, LongStream stream) {
@@ -379,7 +401,10 @@ public class DataFrameBuilder {
         if (partialLastColumn) {
             int fillerStart = h - missingInLastColumn;
             System.arraycopy(data, fullColumnsW * h, columnarData[fullColumnsW], 0, fillerStart);
-            Arrays.fill(columnarData[fullColumnsW], fillerStart, h, padWith);
+
+            if (padWith != 0.) {
+                Arrays.fill(columnarData[fullColumnsW], fillerStart, h, padWith);
+            }
         }
 
         Series[] series = new Series[w];
@@ -389,6 +414,10 @@ public class DataFrameBuilder {
         }
 
         return new ColumnDataFrame(columnsIndex, series);
+    }
+
+    public DataFrame foldDoubleStreamByRow(DoubleStream stream) {
+        return foldDoubleStreamByRow(0., stream);
     }
 
     public DataFrame foldDoubleStreamByRow(double padWith, DoubleStream stream) {
@@ -425,6 +454,10 @@ public class DataFrameBuilder {
         }
 
         return new ColumnDataFrame(columnsIndex, columnsData);
+    }
+
+    public DataFrame foldDoubleStreamByColumn(DoubleStream stream) {
+        return foldDoubleStreamByColumn(0., stream);
     }
 
     public DataFrame foldDoubleStreamByColumn(double padWith, DoubleStream stream) {

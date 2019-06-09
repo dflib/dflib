@@ -445,6 +445,20 @@ public class DataFrameBuilderTest {
     }
 
     @Test
+    public void testFoldDoubleStreamByRow_Partial_DefaultPadding() {
+        DataFrame df = DataFrameBuilder
+                .builder("a", "b")
+                .foldDoubleStreamByRow(DoubleStream.of(-1, 1.1, 0, 2, 5));
+
+        new DFAsserts(df, "a", "b")
+                .expectHeight(3)
+                .expectDoubleColumns(0, 1)
+                .expectRow(0, -1., 1.1)
+                .expectRow(1, 0., 2.)
+                .expectRow(2, 5., 0.);
+    }
+
+    @Test
     public void testFoldDoubleStreamByColumn() {
         DataFrame df = DataFrameBuilder
                 .builder("a", "b")
