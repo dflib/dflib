@@ -104,7 +104,7 @@ public class SqlLoader {
 
         for (int i = 0; i < w; i++) {
             int jdbcPos = i + 1;
-            accums[i] = connector.createColumnAccum(
+            accums[i] = connector.createColumnReader(
                     jdbcPos,
                     rsmd.getColumnType(jdbcPos),
                     rsmd.isNullable(jdbcPos) == ResultSetMetaData.columnNoNulls);

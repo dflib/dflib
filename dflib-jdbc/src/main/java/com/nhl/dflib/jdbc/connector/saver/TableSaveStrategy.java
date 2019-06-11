@@ -2,8 +2,8 @@ package com.nhl.dflib.jdbc.connector.saver;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.jdbc.connector.JdbcConnector;
 import com.nhl.dflib.jdbc.SaveOp;
+import com.nhl.dflib.jdbc.connector.JdbcConnector;
 import com.nhl.dflib.series.SingleValueSeries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

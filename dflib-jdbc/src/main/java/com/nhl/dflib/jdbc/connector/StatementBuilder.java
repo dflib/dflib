@@ -63,7 +63,7 @@ public class StatementBuilder {
     public <T> T select(JdbcFunction<ResultSet, T> resultReader) {
         try (Connection c = connector.getConnection()) {
             return select(c, resultReader);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Error opening connection", e);
         }
     }
@@ -110,8 +110,8 @@ public class StatementBuilder {
 
     protected StatementBinderFactory createBinderFactory() {
         return paramDescriptors != null
-                ? new FixedParamsBinderFactory(connector.getPreBindConverterFactory(), paramDescriptors)
-                : new CompiledFromStatementBinderFactory(connector.getPreBindConverterFactory());
+                ? new FixedParamsBinderFactory(connector.getBindConverterFactory(), paramDescriptors)
+                : new CompiledFromStatementBinderFactory(connector.getBindConverterFactory());
     }
 
 
