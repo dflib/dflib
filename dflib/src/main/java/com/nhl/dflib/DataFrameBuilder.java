@@ -109,30 +109,16 @@ public class DataFrameBuilder {
 
     public DataFrame foldByColumn(Object... data) {
 
-        int w = columnsIndex.size();
-        if (w == 0) {
-            throw new IllegalArgumentException("Empty columns");
+        FoldByColumnGeometry g = byColumnGeometry(data.length);
+
+        Object[][] columnarData = new Object[g.width][g.height];
+
+        for (int i = 0; i < g.fullColumns; i++) {
+            System.arraycopy(data, i * g.height, columnarData[i], 0, g.height);
         }
 
-        // check whether it is partial or not against the width; but calculate missing offset later against the height
-        boolean partialLastColumn = data.length % w > 0;
-        int fullColumnsW = partialLastColumn
-                ? w - 1
-                : w;
-
-        int h = partialLastColumn
-                ? 1 + data.length / w
-                : data.length / w;
-
-        Object[][] columnarData = new Object[w][h];
-
-        for (int i = 0; i < fullColumnsW; i++) {
-            System.arraycopy(data, i * h, columnarData[i], 0, h);
-        }
-
-        if (partialLastColumn) {
-            int fillerStart = data.length % h;
-            System.arraycopy(data, fullColumnsW * h, columnarData[fullColumnsW], 0, fillerStart);
+        if (g.lastColumnIsPartial()) {
+            System.arraycopy(data, g.cellsInFullColumns(), columnarData[g.fullColumns], 0, g.partialColumnOffset);
         }
 
         return fromColumnarData(columnarData);
@@ -198,39 +184,25 @@ public class DataFrameBuilder {
 
     public DataFrame foldIntByColumn(int padWith, int... data) {
 
-        int w = columnsIndex.size();
-        if (w == 0) {
-            throw new IllegalArgumentException("Empty columns");
+        FoldByColumnGeometry g = byColumnGeometry(data.length);
+
+        int[][] columnarData = new int[g.width][g.height];
+
+        for (int i = 0; i < g.fullColumns; i++) {
+            System.arraycopy(data, i * g.height, columnarData[i], 0, g.height);
         }
 
-        // check whether it is partial or not against the width; but calculate missing offset later against the height
-        boolean partialLastColumn = data.length % w > 0;
-        int fullColumnsW = partialLastColumn
-                ? w - 1
-                : w;
-
-        int h = partialLastColumn
-                ? 1 + data.length / w
-                : data.length / w;
-
-        int[][] columnarData = new int[w][h];
-
-        for (int i = 0; i < fullColumnsW; i++) {
-            System.arraycopy(data, i * h, columnarData[i], 0, h);
-        }
-
-        if (partialLastColumn) {
-            int fillerStart = data.length % h;
-            System.arraycopy(data, fullColumnsW * h, columnarData[fullColumnsW], 0, fillerStart);
+        if (g.lastColumnIsPartial()) {
+            System.arraycopy(data, g.cellsInFullColumns(), columnarData[g.fullColumns], 0, g.partialColumnOffset);
 
             if (padWith != 0) {
-                Arrays.fill(columnarData[fullColumnsW], fillerStart, h, padWith);
+                Arrays.fill(columnarData[g.fullColumns], g.partialColumnOffset, g.height, padWith);
             }
         }
 
-        Series[] series = new Series[w];
+        Series[] series = new Series[g.width];
 
-        for (int i = 0; i < w; i++) {
+        for (int i = 0; i < g.width; i++) {
             series[i] = new IntArraySeries(columnarData[i]);
         }
 
@@ -288,39 +260,25 @@ public class DataFrameBuilder {
 
     public DataFrame foldLongByColumn(long padWith, long... data) {
 
-        int w = columnsIndex.size();
-        if (w == 0) {
-            throw new IllegalArgumentException("Empty columns");
+        FoldByColumnGeometry g = byColumnGeometry(data.length);
+
+        long[][] columnarData = new long[g.width][g.height];
+
+        for (int i = 0; i < g.fullColumns; i++) {
+            System.arraycopy(data, i * g.height, columnarData[i], 0, g.height);
         }
 
-        // check whether it is partial or not against the width; but calculate missing offset later against the height
-        boolean partialLastColumn =  data.length % w > 0;
-        int fullColumnsW = partialLastColumn
-                ? w - 1
-                : w;
-
-        int h = partialLastColumn
-                ? 1 + data.length / w
-                : data.length / w;
-
-        long[][] columnarData = new long[w][h];
-
-        for (int i = 0; i < fullColumnsW; i++) {
-            System.arraycopy(data, i * h, columnarData[i], 0, h);
-        }
-
-        if (partialLastColumn) {
-            int fillerStart = data.length % h;
-            System.arraycopy(data, fullColumnsW * h, columnarData[fullColumnsW], 0, fillerStart);
+        if (g.lastColumnIsPartial()) {
+            System.arraycopy(data, g.cellsInFullColumns(), columnarData[g.fullColumns], 0, g.partialColumnOffset);
 
             if (padWith != 0L) {
-                Arrays.fill(columnarData[fullColumnsW], fillerStart, h, padWith);
+                Arrays.fill(columnarData[g.fullColumns], g.partialColumnOffset, g.height, padWith);
             }
         }
 
-        Series[] series = new Series[w];
+        Series[] series = new Series[g.width];
 
-        for (int i = 0; i < w; i++) {
+        for (int i = 0; i < g.width; i++) {
             series[i] = new LongArraySeries(columnarData[i]);
         }
 
@@ -378,39 +336,25 @@ public class DataFrameBuilder {
 
     public DataFrame foldDoubleByColumn(double padWith, double... data) {
 
-        int w = columnsIndex.size();
-        if (w == 0) {
-            throw new IllegalArgumentException("Empty columns");
+        FoldByColumnGeometry g = byColumnGeometry(data.length);
+
+        double[][] columnarData = new double[g.width][g.height];
+
+        for (int i = 0; i < g.fullColumns; i++) {
+            System.arraycopy(data, i * g.height, columnarData[i], 0, g.height);
         }
 
-        // check whether it is partial or not against the width; but calculate missing offset later against the height
-        boolean partialLastColumn = data.length % w > 0;
-        int fullColumnsW = partialLastColumn
-                ? w - 1
-                : w;
-
-        int h = partialLastColumn
-                ? 1 + data.length / w
-                : data.length / w;
-
-        double[][] columnarData = new double[w][h];
-
-        for (int i = 0; i < fullColumnsW; i++) {
-            System.arraycopy(data, i * h, columnarData[i], 0, h);
-        }
-
-        if (partialLastColumn) {
-            int fillerStart = data.length % h;
-            System.arraycopy(data, fullColumnsW * h, columnarData[fullColumnsW], 0, fillerStart);
+        if (g.lastColumnIsPartial()) {
+            System.arraycopy(data, g.cellsInFullColumns(), columnarData[g.fullColumns], 0, g.partialColumnOffset);
 
             if (padWith != 0.) {
-                Arrays.fill(columnarData[fullColumnsW], fillerStart, h, padWith);
+                Arrays.fill(columnarData[g.fullColumns], g.partialColumnOffset, g.height, padWith);
             }
         }
 
-        Series[] series = new Series[w];
+        Series[] series = new Series[g.width];
 
-        for (int i = 0; i < w; i++) {
+        for (int i = 0; i < g.width; i++) {
             series[i] = new DoubleArraySeries(columnarData[i]);
         }
 
@@ -489,4 +433,49 @@ public class DataFrameBuilder {
         return new ColumnDataFrame(columnsIndex, series);
     }
 
+    FoldByColumnGeometry byColumnGeometry(int dataLength) {
+        int w = columnsIndex.size();
+        if (w == 0) {
+            throw new IllegalArgumentException("Empty columns");
+        }
+
+        // check whether "dataLength" is partial or not against the width,
+        // but calculate the las column offset against the height
+
+        boolean partialLastColumn = dataLength % w > 0;
+        int fullColumnsW = partialLastColumn
+                ? w - 1
+                : w;
+
+        int h = partialLastColumn
+                ? 1 + dataLength / w
+                : dataLength / w;
+
+        int partialColumnOffset = partialLastColumn ? dataLength % h : 0;
+
+        return new FoldByColumnGeometry(w, h, partialColumnOffset, fullColumnsW);
+    }
+
+    private final class FoldByColumnGeometry {
+
+        int width;
+        int height;
+        int fullColumns;
+        int partialColumnOffset;
+
+        FoldByColumnGeometry(int width, int height, int partialColumnOffset, int fullColumns) {
+            this.width = width;
+            this.height = height;
+            this.fullColumns = fullColumns;
+            this.partialColumnOffset = partialColumnOffset;
+        }
+
+        boolean lastColumnIsPartial() {
+            return partialColumnOffset > 0;
+        }
+
+        int cellsInFullColumns() {
+            return fullColumns * height;
+        }
+    }
 }
