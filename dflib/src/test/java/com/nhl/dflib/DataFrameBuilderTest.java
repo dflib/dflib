@@ -294,7 +294,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldIntStreamByColumn_Partial() {
+    public void testFoldIntStreamByColumn_Partial1() {
         DataFrame df = DataFrameBuilder
                 .builder("a", "b")
                 .foldIntStreamByColumn(-9999, IntStream.of(-1, 1, 0, 2, 5));
@@ -304,7 +304,21 @@ public class DataFrameBuilderTest {
                 .expectRow(0, -1, 2)
                 .expectRow(1, 1, 5)
                 .expectRow(2, 0, -9999);
+    }
 
+    @Test
+    public void testFoldIntStreamByColumn_Partial2() {
+        DataFrame df = DataFrameBuilder
+                .builder("a", "b", "c")
+                .foldIntStreamByColumn(IntStream.range(0, 10));
+
+        new DFAsserts(df, "a", "b", "c")
+                .expectHeight(4)
+                .expectIntColumns(0, 1, 2)
+                .expectRow(0, 0, 4, 8)
+                .expectRow(1, 1, 5, 9)
+                .expectRow(2, 2, 6, 0)
+                .expectRow(3, 3, 7, 0);
     }
 
     @Test
@@ -313,7 +327,8 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldLongByColumn(-9999, 0, 1, 2, 3, 4, 5);
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DFAsserts(df, "a", "b")
+                .expectHeight(3)
                 .expectLongColumns(0, 1)
                 .expectRow(0, 0L, 3L)
                 .expectRow(1, 1L, 4L)
@@ -321,7 +336,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldLongByColumn_Partial() {
+    public void testFoldLongByColumn_Partial1() {
         DataFrame df = DataFrameBuilder
                 .builder("a", "b")
                 .foldLongByColumn(-9999, 0, 1, 2, 3, 4);
@@ -333,6 +348,20 @@ public class DataFrameBuilderTest {
                 .expectRow(2, 2L, -9999L);
     }
 
+    @Test
+    public void testFoldLongStreamByColumn_Partial2() {
+        DataFrame df = DataFrameBuilder
+                .builder("a", "b", "c")
+                .foldLongStreamByColumn(LongStream.range(0, 10));
+
+        new DFAsserts(df, "a", "b", "c")
+                .expectHeight(4)
+                .expectLongColumns(0, 1, 2)
+                .expectRow(0, 0L, 4L, 8L)
+                .expectRow(1, 1L, 5L, 9L)
+                .expectRow(2, 2L, 6L, 0L)
+                .expectRow(3, 3L, 7L, 0L);
+    }
 
     @Test
     public void testFoldLongStreamByRow() {
