@@ -2,7 +2,7 @@ package com.nhl.dflib.print;
 
 public abstract class BasePrinter implements Printer {
 
-    private static final int MAX_DISPLAY_ROWS = 3;
+    private static final int MAX_DISPLAY_ROWS = 6;
     private static final int MAX_DISPLAY_COLUMN_WIDTH = 30;
 
     protected int maxDisplayRows;
