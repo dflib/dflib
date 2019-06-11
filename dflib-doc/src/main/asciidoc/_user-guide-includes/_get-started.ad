@@ -40,7 +40,10 @@ When you run this code, console output will look like this:
 ---- ---- ----
    4    5    6
   10   11   12
+  16   17   18
 ...
+9982 9983 9984
+9988 9989 9990
 9994 9995 9996
 1666 rows x 3 columns
 ----

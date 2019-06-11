@@ -13,14 +13,17 @@ printer:
 ----
 include::../../java/com/nhl/dflib/docs/PrintersExamples.java[tags=printDataFrame_Tabular]
 ----
-It prints the data as follows, truncating the rows above 3, and the values longer than 30 chars (since we have
-fairly short values, value truncation is not shown here).
+It prints the data as follows, displaying at most 6 rows and truncating the rest. Same goes for cell values. Values
+longer than 30 chars are also truncated (since they are pretty short in our example, value truncation is not obvious here).
 ----
 col1 col2 col3
 ---- ---- ----
    0 3334 6668
    1 3335 6669
+   2 3336 6670
 ...
+3331 6665 9999
+3332 6666    0
 3333 6667    0
 3334 rows x 3 columns
 ----
@@ -31,22 +34,15 @@ You can change the truncation parameters by creating your own printer:
 include::../../java/com/nhl/dflib/docs/PrintersExamples.java[tags=printDataFrame_Tabular_Custom]
 ----
 
-<1> Create a printer that displays at most 10 rows and allows up to 50 characters in each cell.
+<1> Create a printer that displays at most 3 rows and up to 3 characters in each cell.
 
 ----
-col1 col2 col3
----- ---- ----
-   0 3334 6668
-   1 3335 6669
-   2 3336 6670
-   3 3337 6671
-   4 3338 6672
+c.. c.. c..
+--- --- ---
+  0 3.. 6..
+  1 3.. 6..
 ...
-3329 6663 9997
-3330 6664 9998
-3331 6665 9999
-3332 6666    0
-3333 6667    0
+3.. 6..   0
 3334 rows x 3 columns
 ----
 

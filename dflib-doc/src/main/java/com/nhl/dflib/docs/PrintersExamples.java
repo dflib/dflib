@@ -31,7 +31,7 @@ public class PrintersExamples {
                 .foldIntStreamByColumn(IntStream.range(0, 10000));
 
 // tag::printDataFrame_Tabular_Custom[]
-        Printer printer = new TabularPrinter(10, 50); // <1>
+        Printer printer = new TabularPrinter(3, 3); // <1>
         String table = printer.toString(df);
         System.out.println(table);
 // end::printDataFrame_Tabular_Custom[]
