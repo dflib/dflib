@@ -114,8 +114,8 @@ public class DataFrameBuilder {
             throw new IllegalArgumentException("Empty columns");
         }
 
-        int missingInLastColumn = data.length % w;
-        boolean partialLastColumn = missingInLastColumn > 0;
+        // check whether it is partial or not against the width; but calculate missing offset later against the height
+        boolean partialLastColumn = data.length % w > 0;
         int fullColumnsW = partialLastColumn
                 ? w - 1
                 : w;
@@ -131,7 +131,8 @@ public class DataFrameBuilder {
         }
 
         if (partialLastColumn) {
-            System.arraycopy(data, fullColumnsW * h, columnarData[fullColumnsW], 0, h - missingInLastColumn);
+            int fillerStart = data.length % h;
+            System.arraycopy(data, fullColumnsW * h, columnarData[fullColumnsW], 0, fillerStart);
         }
 
         return fromColumnarData(columnarData);
@@ -382,8 +383,8 @@ public class DataFrameBuilder {
             throw new IllegalArgumentException("Empty columns");
         }
 
-        int missingInLastColumn = data.length % w;
-        boolean partialLastColumn = missingInLastColumn > 0;
+        // check whether it is partial or not against the width; but calculate missing offset later against the height
+        boolean partialLastColumn = data.length % w > 0;
         int fullColumnsW = partialLastColumn
                 ? w - 1
                 : w;
@@ -399,7 +400,7 @@ public class DataFrameBuilder {
         }
 
         if (partialLastColumn) {
-            int fillerStart = h - missingInLastColumn;
+            int fillerStart = data.length % h;
             System.arraycopy(data, fullColumnsW * h, columnarData[fullColumnsW], 0, fillerStart);
 
             if (padWith != 0.) {

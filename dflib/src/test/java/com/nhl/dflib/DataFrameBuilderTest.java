@@ -107,7 +107,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldByColumn_Partial() {
+    public void testFoldByColumn_Partial1() {
         DataFrame df = DataFrameBuilder
                 .builder("a", "b")
                 .foldByColumn("a", 1, "b", 2, "c");
@@ -117,6 +117,21 @@ public class DataFrameBuilderTest {
                 .expectRow(1, 1, "c")
                 .expectRow(2, "b", null);
     }
+
+    @Test
+    public void testFoldByColumn_Partial2() {
+        DataFrame df = DataFrameBuilder
+                .builder("a", "b", "c")
+                .foldByColumn("a", "b", "c", "d", "e", "f", "g", "h", "i", "j");
+
+        new DFAsserts(df, "a", "b", "c")
+                .expectHeight(4)
+                .expectRow(0, "a", "e", "i")
+                .expectRow(1, "b", "f", "j")
+                .expectRow(2, "c", "g", null)
+                .expectRow(3, "d", "h", null);
+    }
+
 
     @Test
     public void testFoldStreamByRow() {
@@ -336,7 +351,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldLongByColumn_Partial1() {
+    public void testFoldLongByColumn_Partial() {
         DataFrame df = DataFrameBuilder
                 .builder("a", "b")
                 .foldLongByColumn(-9999, 0, 1, 2, 3, 4);
@@ -346,21 +361,6 @@ public class DataFrameBuilderTest {
                 .expectRow(0, 0L, 3L)
                 .expectRow(1, 1L, 4L)
                 .expectRow(2, 2L, -9999L);
-    }
-
-    @Test
-    public void testFoldLongStreamByColumn_Partial2() {
-        DataFrame df = DataFrameBuilder
-                .builder("a", "b", "c")
-                .foldLongStreamByColumn(LongStream.range(0, 10));
-
-        new DFAsserts(df, "a", "b", "c")
-                .expectHeight(4)
-                .expectLongColumns(0, 1, 2)
-                .expectRow(0, 0L, 4L, 8L)
-                .expectRow(1, 1L, 5L, 9L)
-                .expectRow(2, 2L, 6L, 0L)
-                .expectRow(3, 3L, 7L, 0L);
     }
 
     @Test
@@ -404,7 +404,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldLongStreamByColumn_Partial() {
+    public void testFoldLongStreamByColumn_Partial1() {
         DataFrame df = DataFrameBuilder
                 .builder("a", "b")
                 .foldLongStreamByColumn(-9999, LongStream.of(-1, 1, 0, 2, 5));
@@ -414,7 +414,21 @@ public class DataFrameBuilderTest {
                 .expectRow(0, -1L, 2L)
                 .expectRow(1, 1L, 5L)
                 .expectRow(2, 0L, -9999L);
+    }
 
+    @Test
+    public void testFoldLongStreamByColumn_Partial2() {
+        DataFrame df = DataFrameBuilder
+                .builder("a", "b", "c")
+                .foldLongStreamByColumn(LongStream.range(0, 10));
+
+        new DFAsserts(df, "a", "b", "c")
+                .expectHeight(4)
+                .expectLongColumns(0, 1, 2)
+                .expectRow(0, 0L, 4L, 8L)
+                .expectRow(1, 1L, 5L, 9L)
+                .expectRow(2, 2L, 6L, 0L)
+                .expectRow(3, 3L, 7L, 0L);
     }
 
     @Test
@@ -443,7 +457,6 @@ public class DataFrameBuilderTest {
                 .expectRow(1, 1.1, 4.)
                 .expectRow(2, 2., -9999.9);
     }
-
 
     @Test
     public void testFoldDoubleStreamByRow() {
@@ -502,7 +515,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldDoubleStreamByColumn_Partial() {
+    public void testFoldDoubleStreamByColumn_Partial1() {
         DataFrame df = DataFrameBuilder
                 .builder("a", "b")
                 .foldDoubleStreamByColumn(-9999.9, DoubleStream.of(-1, 1.1, 0, 2, 5));
@@ -513,7 +526,21 @@ public class DataFrameBuilderTest {
                 .expectRow(0, -1., 2.)
                 .expectRow(1, 1.1, 5.)
                 .expectRow(2, 0., -9999.9);
+    }
 
+    @Test
+    public void testFoldDoubleStreamByColumn_Partial2() {
+        DataFrame df = DataFrameBuilder
+                .builder("a", "b", "c")
+                .foldDoubleStreamByColumn(DoubleStream.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));
+
+        new DFAsserts(df, "a", "b", "c")
+                .expectHeight(4)
+                .expectDoubleColumns(0, 1, 2)
+                .expectRow(0, 0., 4., 8.)
+                .expectRow(1, 1., 5., 9.)
+                .expectRow(2, 2., 6., 0.)
+                .expectRow(3, 3., 7., 0.);
     }
 
 }
