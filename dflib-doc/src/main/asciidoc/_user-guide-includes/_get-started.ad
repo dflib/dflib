@@ -45,5 +45,5 @@ When you run this code, console output will look like this:
 1666 rows x 3 columns
 ----
 
-In the following chapters we'll omit the print statement in the code, and will just show the output for a particular
-object.
+NOTE: We'll omit the print statements in the further examples, and will just show the output for a particular
+      object. Printing is discussed in more detail in the in <<print, the following chapters>>.
