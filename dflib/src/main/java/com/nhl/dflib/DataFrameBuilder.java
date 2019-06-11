@@ -443,7 +443,7 @@ public class DataFrameBuilder {
         // but calculate the las column offset against the height
 
         boolean partialLastColumn = dataLength % w > 0;
-        int fullColumnsW = partialLastColumn
+        int fullColumns = partialLastColumn
                 ? w - 1
                 : w;
 
@@ -453,7 +453,7 @@ public class DataFrameBuilder {
 
         int partialColumnOffset = partialLastColumn ? dataLength % h : 0;
 
-        return new FoldByColumnGeometry(w, h, partialColumnOffset, fullColumnsW);
+        return new FoldByColumnGeometry(w, h, partialColumnOffset, fullColumns);
     }
 
     private final class FoldByColumnGeometry {
