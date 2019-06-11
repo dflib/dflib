@@ -49,3 +49,6 @@ col1 col2 col3
 3333 6667    0
 3334 rows x 3 columns
 ----
+
+NOTE: If you are using <<jupyter, Jupyter Notebook>>, all the printers are already setup for you. So if the last
+statement in a Jupyter cell is a `DataFrame` or a `Series`, it will be printed as a table in the notebook.

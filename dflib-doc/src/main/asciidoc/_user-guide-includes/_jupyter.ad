@@ -37,7 +37,6 @@ import com.nhl.dflib.jupyter.*;
 import com.nhl.dflib.*;
 
 DFLibJupyter.init(getKernelInstance());
-DFLibJupyter.setMaxDisplayRows(10);
 ----
 
 Click "Shift + Return" to execute the cell. If the are no errors, you can start using DFLib API in the following cells.
@@ -51,7 +50,14 @@ DataFrame df = DataFrame.newFrame("a", "b", "c").foldIntByColumn(-1, 1, 2, 3, 4,
 df
 ----
 
-=== Change Display Pa
+=== Change Display Parameters
+
+To control truncation behavior, you can use static methods on `DFLibJupyter`:
+
+[source,java,indent=0]
+----
+include::../../java/com/nhl/dflib/docs/JupyterExamples.java[tags=setDisplayParams]
+----
 
 === Keep Notebooks under Version Control
 
