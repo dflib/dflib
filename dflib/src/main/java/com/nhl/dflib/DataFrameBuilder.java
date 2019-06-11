@@ -117,8 +117,8 @@ public class DataFrameBuilder {
             System.arraycopy(data, i * g.height, columnarData[i], 0, g.height);
         }
 
-        if (g.lastColumnIsPartial()) {
-            System.arraycopy(data, g.cellsInFullColumns(), columnarData[g.fullColumns], 0, g.partialColumnOffset);
+        if (g.isLastColumnPartial()) {
+            System.arraycopy(data, g.cellsInFullColumns(), columnarData[g.fullColumns], 0, g.partialColumnHeight);
         }
 
         return fromColumnarData(columnarData);
@@ -192,11 +192,11 @@ public class DataFrameBuilder {
             System.arraycopy(data, i * g.height, columnarData[i], 0, g.height);
         }
 
-        if (g.lastColumnIsPartial()) {
-            System.arraycopy(data, g.cellsInFullColumns(), columnarData[g.fullColumns], 0, g.partialColumnOffset);
+        if (g.isLastColumnPartial()) {
+            System.arraycopy(data, g.cellsInFullColumns(), columnarData[g.fullColumns], 0, g.partialColumnHeight);
 
             if (padWith != 0) {
-                Arrays.fill(columnarData[g.fullColumns], g.partialColumnOffset, g.height, padWith);
+                Arrays.fill(columnarData[g.fullColumns], g.partialColumnHeight, g.height, padWith);
             }
         }
 
@@ -268,11 +268,11 @@ public class DataFrameBuilder {
             System.arraycopy(data, i * g.height, columnarData[i], 0, g.height);
         }
 
-        if (g.lastColumnIsPartial()) {
-            System.arraycopy(data, g.cellsInFullColumns(), columnarData[g.fullColumns], 0, g.partialColumnOffset);
+        if (g.isLastColumnPartial()) {
+            System.arraycopy(data, g.cellsInFullColumns(), columnarData[g.fullColumns], 0, g.partialColumnHeight);
 
             if (padWith != 0L) {
-                Arrays.fill(columnarData[g.fullColumns], g.partialColumnOffset, g.height, padWith);
+                Arrays.fill(columnarData[g.fullColumns], g.partialColumnHeight, g.height, padWith);
             }
         }
 
@@ -344,11 +344,11 @@ public class DataFrameBuilder {
             System.arraycopy(data, i * g.height, columnarData[i], 0, g.height);
         }
 
-        if (g.lastColumnIsPartial()) {
-            System.arraycopy(data, g.cellsInFullColumns(), columnarData[g.fullColumns], 0, g.partialColumnOffset);
+        if (g.isLastColumnPartial()) {
+            System.arraycopy(data, g.cellsInFullColumns(), columnarData[g.fullColumns], 0, g.partialColumnHeight);
 
             if (padWith != 0.) {
-                Arrays.fill(columnarData[g.fullColumns], g.partialColumnOffset, g.height, padWith);
+                Arrays.fill(columnarData[g.fullColumns], g.partialColumnHeight, g.height, padWith);
             }
         }
 
@@ -451,9 +451,9 @@ public class DataFrameBuilder {
                 ? 1 + dataLength / w
                 : dataLength / w;
 
-        int partialColumnOffset = partialLastColumn ? dataLength % h : 0;
-
-        return new FoldByColumnGeometry(w, h, partialColumnOffset, fullColumns);
+        int partialColumnHeight = partialLastColumn ? dataLength % h : 0;
+        
+        return new FoldByColumnGeometry(w, h, partialColumnHeight, fullColumns);
     }
 
     private final class FoldByColumnGeometry {
@@ -461,17 +461,17 @@ public class DataFrameBuilder {
         int width;
         int height;
         int fullColumns;
-        int partialColumnOffset;
+        int partialColumnHeight;
 
-        FoldByColumnGeometry(int width, int height, int partialColumnOffset, int fullColumns) {
+        FoldByColumnGeometry(int width, int height, int partialColumnHeight, int fullColumns) {
             this.width = width;
             this.height = height;
             this.fullColumns = fullColumns;
-            this.partialColumnOffset = partialColumnOffset;
+            this.partialColumnHeight = partialColumnHeight;
         }
 
-        boolean lastColumnIsPartial() {
-            return partialColumnOffset > 0;
+        boolean isLastColumnPartial() {
+            return partialColumnHeight > 0;
         }
 
         int cellsInFullColumns() {
