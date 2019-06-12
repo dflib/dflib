@@ -23,7 +23,7 @@ public class TxIT extends BaseDbTest {
     }
 
     @Test
-    public void test() {
+    public void testRun() {
 
         DataFrame df1 = DataFrame.newFrame("id", "name", "salary")
                 .foldByRow(
@@ -36,7 +36,7 @@ public class TxIT extends BaseDbTest {
                         4L, "n4", 1_000.);
 
         Tx.newTransaction(connector)
-                .perform(c -> {
+                .run(c -> {
                             c.tableSaver("t1").save(df1);
                             c.tableSaver("t1").save(df2);
                         }
@@ -56,10 +56,10 @@ public class TxIT extends BaseDbTest {
     }
 
     @Test
-    public void testIsolation() {
+    public void testRun_Isolation() {
 
         Tx.newTransaction(connector)
-                .isolation(TxIsolation.read_committed).perform(txConnector -> {
+                .isolation(TxIsolation.read_committed).run(txConnector -> {
                     int il;
                     try {
                         il = txConnector.getConnection().getTransactionIsolation();
@@ -71,7 +71,7 @@ public class TxIT extends BaseDbTest {
         );
 
         Tx.newTransaction(connector)
-                .isolation(TxIsolation.serializable).perform(txConnector -> {
+                .isolation(TxIsolation.serializable).run(txConnector -> {
                     int il;
                     try {
                         il = txConnector.getConnection().getTransactionIsolation();
@@ -81,5 +81,39 @@ public class TxIT extends BaseDbTest {
                     assertEquals(Connection.TRANSACTION_SERIALIZABLE, il);
                 }
         );
+    }
+
+    @Test
+    public void testRun_Rollback() {
+
+        DataFrame df1 = DataFrame.newFrame("id", "name", "salary")
+                .foldByRow(
+                        1L, "n1", 50_000.01,
+                        2L, "n2", 120_000.);
+
+        DataFrame df2 = DataFrame.newFrame("id", "name", "salary")
+                .foldByRow(
+                        3L, "n3", 60_000.01,
+                        4L, "n4", 1_000.);
+
+        try {
+            Tx.newTransaction(connector)
+                    .run(c -> {
+                                c.tableSaver("t1").save(df1);
+                                c.tableSaver("no_such_table").save(df2);
+                            }
+                    );
+            fail("Exception expected");
+
+        } catch (RuntimeException e) {
+            // expected
+        }
+
+        DataFrame df_12 = connector
+                .tableLoader("t1")
+                .load();
+
+        // the transaction must have been rolled back and no data saved
+        new DFAsserts(df_12, "id", "name", "salary").expectHeight(0);
     }
 }

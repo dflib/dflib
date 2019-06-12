@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * A builder of a single DB transaction that allows to configure transaction parameters and run multiple operations
@@ -31,7 +32,14 @@ public class Tx {
         return this;
     }
 
-    public void perform(Consumer<JdbcConnector> op) {
+    public void run(Consumer<JdbcConnector> op) {
+        call(c -> {
+            op.accept(c);
+            return null;
+        });
+    }
+
+    public <T> T call(Function<JdbcConnector, T> op) {
 
         try (Connection connection = connector.getConnection()) {
 
@@ -42,10 +50,12 @@ public class Tx {
             TxConnectionWrapper connectionWrapper = new TxConnectionWrapper(connection);
 
             try {
-                op.accept(new TxJdbcConnector(connector, connectionWrapper));
+                T result = op.apply(new TxJdbcConnector(connector, connectionWrapper));
                 connection.commit();
+                return result;
             } catch (SQLException e) {
                 connection.rollback();
+                throw new RuntimeException(e);
             }
 
         } catch (SQLException e) {
