@@ -1,7 +1,10 @@
 package com.nhl.dflib.jupyter;
 
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.ConsoleAppender;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.jupyter.render.DataFrameRenderer;
@@ -37,8 +40,7 @@ public class DFLibJupyter {
     }
 
     public static void init(BaseKernel kernel) {
-
-        DFLibJupyter.setLogLevelToWarn();
+        DFLibJupyter.initLogging();
 
         MutableTabularPrinter printer = new MutableTabularPrinter(10, 50);
         DFLibJupyter.instance = new DFLibJupyter(printer);
@@ -54,24 +56,41 @@ public class DFLibJupyter {
     }
 
     public static void setLogLevelToDebug() {
-        setLogLevel(Level.DEBUG);
+        getRootLogger().setLevel(Level.DEBUG);
     }
 
     public static void setLogLevelToInfo() {
-        setLogLevel(Level.INFO);
+        getRootLogger().setLevel(Level.INFO);
     }
 
     public static void setLogLevelToWarn() {
-        setLogLevel(Level.WARN);
+        getRootLogger().setLevel(Level.WARN);
     }
 
     public static void setLogLevelToError() {
-        setLogLevel(Level.ERROR);
+        getRootLogger().setLevel(Level.ERROR);
     }
 
-    private static void setLogLevel(Level level) {
+    private static void initLogging() {
+
+        Logger rootLogger = getRootLogger();
+        rootLogger.setLevel(Level.WARN);
+
+        // redirect console appender to STDERR
+        ConsoleAppender<ILoggingEvent> appender = (ConsoleAppender<ILoggingEvent>) rootLogger.getAppender("console");
+        if (appender != null) {
+            appender.setTarget("System.err");
+
+            if (appender.isStarted()) {
+                appender.stop();
+                appender.start();
+            }
+        }
+    }
+
+    private static Logger getRootLogger() {
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-        context.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).setLevel(level);
+        return context.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
     }
 
     private void doInit(BaseKernel kernel) {
