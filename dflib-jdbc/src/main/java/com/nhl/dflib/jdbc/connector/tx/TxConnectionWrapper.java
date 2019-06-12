@@ -1,4 +1,4 @@
-package com.nhl.dflib.jdbc.connector;
+package com.nhl.dflib.jdbc.connector.tx;
 
 import java.sql.Array;
 import java.sql.Blob;
