@@ -1,5 +1,7 @@
 package com.nhl.dflib.jupyter;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.jupyter.render.DataFrameRenderer;
@@ -9,6 +11,7 @@ import io.github.spencerpark.jupyter.kernel.BaseKernel;
 import io.github.spencerpark.jupyter.kernel.display.RenderFunction;
 import io.github.spencerpark.jupyter.kernel.display.Renderer;
 import io.github.spencerpark.jupyter.kernel.display.mime.MIMEType;
+import org.slf4j.LoggerFactory;
 
 /**
  * The main class of the DFLib Jupyter plugin that bootstraps DFLib renderers into a Jupyter notebook under
@@ -21,6 +24,7 @@ import io.github.spencerpark.jupyter.kernel.display.mime.MIMEType;
  * </pre>
  *
  * @see "https://github.com/SpencerPark/jupyter-jvm-basekernel"
+ * @since 0.6
  */
 public class DFLibJupyter {
 
@@ -33,6 +37,9 @@ public class DFLibJupyter {
     }
 
     public static void init(BaseKernel kernel) {
+
+        DFLibJupyter.setLogLevelToWarn();
+
         MutableTabularPrinter printer = new MutableTabularPrinter(10, 50);
         DFLibJupyter.instance = new DFLibJupyter(printer);
         DFLibJupyter.instance.doInit(kernel);
@@ -44,6 +51,27 @@ public class DFLibJupyter {
 
     public static void setMaxDisplayColumnWidth(int w) {
         instance.printer.setMaxDisplayColumnWidth(w);
+    }
+
+    public static void setLogLevelToDebug() {
+        setLogLevel(Level.DEBUG);
+    }
+
+    public static void setLogLevelToInfo() {
+        setLogLevel(Level.INFO);
+    }
+
+    public static void setLogLevelToWarn() {
+        setLogLevel(Level.WARN);
+    }
+
+    public static void setLogLevelToError() {
+        setLogLevel(Level.ERROR);
+    }
+
+    private static void setLogLevel(Level level) {
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        context.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).setLevel(level);
     }
 
     private void doInit(BaseKernel kernel) {
