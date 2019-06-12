@@ -35,6 +35,7 @@
 * #57 CsvSaver.createMissingDirs() to save CSVs in arbitrray locations
 * #58 Builder for DataFrame creation
 * #59 Series.valueCount() - utility method for data exploration
+* #60 dflib-jdbc: JdbcConnector to support external transaction management
 
 ## Release 0.5
 

@@ -66,7 +66,7 @@ public class TxConnectionWrapper implements Connection {
 
     @Override
     public void commit() throws SQLException {
-        throw new SQLException("Not allowed to commit a transactional connection");
+        // do nothing ... commit must be managed by the external TX manager
     }
 
     @Override

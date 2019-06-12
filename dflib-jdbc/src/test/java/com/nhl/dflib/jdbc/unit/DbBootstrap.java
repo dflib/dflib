@@ -1,6 +1,5 @@
 package com.nhl.dflib.jdbc.unit;
 
-import io.bootique.BQCoreModule;
 import io.bootique.BQRuntime;
 import io.bootique.jdbc.DataSourceFactory;
 import io.bootique.jdbc.JdbcModule;
@@ -19,9 +18,8 @@ public class DbBootstrap {
     }
 
     public static DbBootstrap create(BQTestFactory testFactory, String initFile) {
-        BQRuntime runtime = testFactory.app()
+        BQRuntime runtime = testFactory.app("-c", "classpath:com/nhl/dflib/jdbc/jdbc.yml")
                 .autoLoadModules()
-                .module(b -> BQCoreModule.extend(b).setProperty("bq.jdbc.ds.jdbcUrl", "jdbc:derby:target/derby/testdb0;create=true"))
                 .module(b -> JdbcModule.extend(b).addDataSourceListener(new DbInitializer(initFile)))
                 .createRuntime();
 
