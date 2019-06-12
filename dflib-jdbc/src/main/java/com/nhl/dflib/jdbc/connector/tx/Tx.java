@@ -9,8 +9,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * A builder of a single DB transaction that allows to configure transaction parameters and run multiple operations
- * within the transaction.
+ * Provides API to build a DB transaction wrapper around a set of JDBC operations.
  *
  * @since 0.6
  */

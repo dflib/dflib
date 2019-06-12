@@ -3,6 +3,8 @@ package com.nhl.dflib.jdbc.connector.tx;
 import java.sql.Connection;
 
 /**
+ * Defines transaction isolation levels.
+ *
  * @since 0.6
  */
 public enum TxIsolation {
@@ -18,7 +20,7 @@ public enum TxIsolation {
     none(Connection.TRANSACTION_NONE);
 
     /**
-     * Stores an int value for transaction isolation compatible with the values defined in the {@link Connection} class.
+     * Stores an int value for transaction isolation, compatible with the values defined in the {@link Connection} class.
      */
     public final int value;
 
