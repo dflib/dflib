@@ -32,6 +32,12 @@ public class Tx {
         return this;
     }
 
+    /**
+     * Executes operation that returns no result. The operation is wrapped in transaction. So all database operations
+     * will be committed or rolled back together.
+     *
+     * @param op an operation to run in transaction
+     */
     public void run(Consumer<JdbcConnector> op) {
         call(c -> {
             op.accept(c);
@@ -39,6 +45,13 @@ public class Tx {
         });
     }
 
+    /**
+     * Executes operation that returns a result. The operation is wrapped in transaction. So all database operations
+     * will be committed or rolled back together.
+     *
+     * @param op an operation to run in transaction
+     * @return the result of "op" if transaction is successfully committed. Throws an exception otherwise.
+     */
     public <T> T call(Function<JdbcConnector, T> op) {
 
         try (Connection connection = connector.getConnection()) {
