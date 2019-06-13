@@ -19,8 +19,7 @@ include::_user-guide-includes/_main-data-structures.ad[]
 
 include::_user-guide-includes/_printers.ad[]
 
-== Shaping DataFrame, Selecting Rows and Columns
-
+include::_user-guide-includes/_shaping.ad[]
 
 == Sorting Data
 
