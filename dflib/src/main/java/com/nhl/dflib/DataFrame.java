@@ -555,7 +555,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return
      * @since 0.6
      */
-    DataFrame selectRows(BooleanSeries condition);
+    DataFrame filter(BooleanSeries condition);
 
     /**
      * Selects DataFrame rows based on provided row index. This allows to reorder, filter, duplicate rows of this

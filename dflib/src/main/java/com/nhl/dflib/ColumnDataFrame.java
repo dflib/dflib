@@ -269,7 +269,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public DataFrame selectRows(BooleanSeries condition) {
+    public DataFrame filter(BooleanSeries condition) {
         int width = width();
         Series<?>[] newColumnsData = new Series[width];
         for (int i = 0; i < width; i++) {
