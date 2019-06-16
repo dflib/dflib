@@ -91,7 +91,12 @@ public interface Series<T> {
     /**
      * @since 0.6
      */
-    Series<T> select(BooleanSeries positions);
+    Series<T> filter(ValuePredicate<T> p);
+
+    /**
+     * @since 0.6
+     */
+    Series<T> filter(BooleanSeries positions);
 
     // TODO: can't have "select(boolean...)" as it conflicts with "select(int...)". Should we change to "select(int, int...)" ?
 

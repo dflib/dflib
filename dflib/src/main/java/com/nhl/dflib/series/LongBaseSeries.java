@@ -55,7 +55,28 @@ public abstract class LongBaseSeries implements LongSeries {
     }
 
     @Override
-    public LongSeries selectLong(BooleanSeries positions) {
+    public Series<Long> filter(ValuePredicate<Long> p) {
+        return filterLong(l -> p.test(l));
+    }
+
+    @Override
+    public LongSeries filterLong(LongPredicate p) {
+        LongAccumulator filtered = new LongAccumulator();
+
+        int len = size();
+
+        for (int i = 0; i < len; i++) {
+            long v = getLong(i);
+            if (p.test(v)) {
+                filtered.add(v);
+            }
+        }
+
+        return filtered.toLongSeries();
+    }
+
+    @Override
+    public LongSeries filterLong(BooleanSeries positions) {
         int s = size();
         int ps = positions.size();
 
@@ -75,8 +96,8 @@ public abstract class LongBaseSeries implements LongSeries {
     }
 
     @Override
-    public Series<Long> select(BooleanSeries positions) {
-        return selectLong(positions);
+    public Series<Long> filter(BooleanSeries positions) {
+        return filterLong(positions);
     }
 
     private Series<Long> selectAsObjectSeries(IntSeries positions) {

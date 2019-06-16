@@ -33,7 +33,9 @@ public interface IntSeries extends Series<Integer> {
 
     IntSeries tailInt(int len);
 
-    IntSeries selectInt(BooleanSeries positions);
+    IntSeries filterInt(IntPredicate p);
+
+    IntSeries filterInt(BooleanSeries positions);
 
     /**
      * Returns an IntSeries that represents positions in the Series that match the predicate. The returned value can be

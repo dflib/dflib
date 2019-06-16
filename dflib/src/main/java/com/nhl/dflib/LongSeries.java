@@ -33,7 +33,9 @@ public interface LongSeries extends Series<Long> {
 
     LongSeries tailLong(int len);
 
-    LongSeries selectLong(BooleanSeries positions);
+    LongSeries filterLong(LongPredicate p);
+
+    LongSeries filterLong(BooleanSeries positions);
 
     /**
      * Returns an IntSeries that represents positions in the Series that match the predicate. The returned value can be

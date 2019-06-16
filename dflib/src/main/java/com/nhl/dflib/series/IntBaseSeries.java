@@ -56,7 +56,28 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public IntSeries selectInt(BooleanSeries positions) {
+    public Series<Integer> filter(ValuePredicate<Integer> p) {
+        return filterInt(i -> p.test(i));
+    }
+
+    @Override
+    public IntSeries filterInt(IntPredicate p) {
+        IntAccumulator filtered = new IntAccumulator();
+
+        int len = size();
+
+        for (int i = 0; i < len; i++) {
+            int v = getInt(i);
+            if (p.test(v)) {
+                filtered.add(v);
+            }
+        }
+
+        return filtered.toIntSeries();
+    }
+
+    @Override
+    public IntSeries filterInt(BooleanSeries positions) {
         int s = size();
         int ps = positions.size();
 
@@ -76,8 +97,8 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public Series<Integer> select(BooleanSeries positions) {
-        return selectInt(positions);
+    public Series<Integer> filter(BooleanSeries positions) {
+        return filterInt(positions);
     }
 
     private Series<Integer> selectAsObjectSeries(IntSeries positions) {
@@ -373,7 +394,7 @@ public abstract class IntBaseSeries implements IntSeries {
     public DataFrame valueCounts() {
         return ValueCounts.valueCountsNoNulls(this);
     }
-    
+
     @Override
     public String toString() {
         return ToString.toString(this);

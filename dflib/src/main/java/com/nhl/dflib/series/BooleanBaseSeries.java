@@ -51,8 +51,14 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         return new BooleanArraySeries(data);
     }
 
+    // TODO: should we have "filterBoolean" ?
     @Override
-    public BooleanSeries selectBoolean(BooleanSeries positions) {
+    public Series<Boolean> filter(ValuePredicate<Boolean> p) {
+        return select(index(p));
+    }
+
+    @Override
+    public BooleanSeries filterBoolean(BooleanSeries positions) {
         int s = size();
         int ps = positions.size();
 
@@ -72,8 +78,8 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
-    public Series<Boolean> select(BooleanSeries positions) {
-        return selectBoolean(positions);
+    public Series<Boolean> filter(BooleanSeries positions) {
+        return filterBoolean(positions);
     }
 
     private Series<Boolean> selectAsObjectSeries(IntSeries positions) {

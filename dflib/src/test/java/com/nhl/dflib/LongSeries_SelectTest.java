@@ -36,7 +36,7 @@ public class LongSeries_SelectTest {
     @Test
     public void testBoolean() {
         BooleanSeries condition = BooleanSeries.forBooleans(false, true, true);
-        Series<Long> s = LongSeries.forLongs(3, 4, 2).select(condition);
+        Series<Long> s = LongSeries.forLongs(3, 4, 2).filter(condition);
         new SeriesAsserts(s).expectData(4L, 2L);
         assertTrue(s instanceof LongSeries);
     }

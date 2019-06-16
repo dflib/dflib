@@ -273,7 +273,7 @@ public class ColumnDataFrame implements DataFrame {
         int width = width();
         Series<?>[] newColumnsData = new Series[width];
         for (int i = 0; i < width; i++) {
-            newColumnsData[i] = dataColumns[i].select(condition);
+            newColumnsData[i] = dataColumns[i].filter(condition);
         }
 
         return new ColumnDataFrame(columnsIndex, newColumnsData);

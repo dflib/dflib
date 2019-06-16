@@ -33,7 +33,9 @@ public interface DoubleSeries extends Series<Double> {
 
     DoubleSeries tailDouble(int len);
 
-    DoubleSeries selectDouble(BooleanSeries positions);
+    DoubleSeries filterDouble(DoublePredicate p);
+
+    DoubleSeries filterDouble(BooleanSeries positions);
 
     /**
      * Returns an IntSeries that represents positions in the Series that match the predicate. The returned value can be

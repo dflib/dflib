@@ -36,7 +36,7 @@ public class BooleanSeries_SelectTest {
     @Test
     public void testBoolean() {
         BooleanSeries condition = BooleanSeries.forBooleans(false, true, true);
-        Series<Boolean> s = BooleanSeries.forBooleans(true, false, true).select(condition);
+        Series<Boolean> s = BooleanSeries.forBooleans(true, false, true).filter(condition);
         new SeriesAsserts(s).expectData(false, true);
         assertTrue(s instanceof BooleanSeries);
     }

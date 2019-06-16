@@ -30,7 +30,7 @@ public interface BooleanSeries extends Series<Boolean> {
 
     BooleanSeries tailBoolean(int len);
 
-    BooleanSeries selectBoolean(BooleanSeries positions);
+    BooleanSeries filterBoolean(BooleanSeries positions);
 
     /**
      * Returns an IntSeries that represents positions in the Series that contain true values. The returned value can be

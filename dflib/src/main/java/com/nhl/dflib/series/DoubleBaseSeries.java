@@ -54,9 +54,29 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         return new DoubleArraySeries(data);
     }
 
+    @Override
+    public Series<Double> filter(ValuePredicate<Double> p) {
+        return filterDouble(d -> p.test(d));
+    }
 
     @Override
-    public DoubleSeries selectDouble(BooleanSeries positions) {
+    public DoubleSeries filterDouble(DoublePredicate p) {
+        DoubleAccumulator filtered = new DoubleAccumulator();
+
+        int len = size();
+
+        for (int i = 0; i < len; i++) {
+            double v = getDouble(i);
+            if (p.test(v)) {
+                filtered.add(v);
+            }
+        }
+
+        return filtered.toDoubleSeries();
+    }
+
+    @Override
+    public DoubleSeries filterDouble(BooleanSeries positions) {
         int s = size();
         int ps = positions.size();
 
@@ -76,8 +96,8 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
-    public Series<Double> select(BooleanSeries positions) {
-        return selectDouble(positions);
+    public Series<Double> filter(BooleanSeries positions) {
+        return filterDouble(positions);
     }
 
     private Series<Double> selectAsObjectSeries(IntSeries positions) {
@@ -351,7 +371,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
 
     @Override
     public Series<Double> unique() {
-       return uniqueDouble();
+        return uniqueDouble();
     }
 
     @Override

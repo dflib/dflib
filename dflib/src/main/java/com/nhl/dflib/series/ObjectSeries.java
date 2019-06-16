@@ -70,7 +70,24 @@ public abstract class ObjectSeries<T> implements Series<T> {
     }
 
     @Override
-    public Series<T> select(BooleanSeries positions) {
+    public Series<T> filter(ValuePredicate<T> p) {
+
+        ObjectAccumulator<T> filtered = new ObjectAccumulator<>();
+
+        int len = size();
+
+        for (int i = 0; i < len; i++) {
+            T value = get(i);
+            if (p.test(value)) {
+                filtered.add(value);
+            }
+        }
+
+        return filtered.toSeries();
+    }
+
+    @Override
+    public Series<T> filter(BooleanSeries positions) {
 
         int s = size();
         int ps = positions.size();
