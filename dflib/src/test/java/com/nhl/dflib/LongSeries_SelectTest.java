@@ -32,12 +32,4 @@ public class LongSeries_SelectTest {
         new SeriesAsserts(s).expectData(2L, 4L, null);
         assertFalse(s instanceof LongSeries);
     }
-
-    @Test
-    public void testBoolean() {
-        BooleanSeries condition = BooleanSeries.forBooleans(false, true, true);
-        Series<Long> s = LongSeries.forLongs(3, 4, 2).filter(condition);
-        new SeriesAsserts(s).expectData(4L, 2L);
-        assertTrue(s instanceof LongSeries);
-    }
 }

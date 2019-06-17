@@ -32,12 +32,4 @@ public class IntSeries_SelectTest {
         new SeriesAsserts(s).expectData(2, 4, null);
         assertFalse(s instanceof IntSeries);
     }
-
-    @Test
-    public void testBoolean() {
-        BooleanSeries condition = BooleanSeries.forBooleans(false, true, true);
-        Series<Integer> s = IntSeries.forInts(3, 4, 2).filter(condition);
-        new SeriesAsserts(s).expectData(4, 2);
-        assertTrue(s instanceof IntSeries);
-    }
 }

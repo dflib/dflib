@@ -36,6 +36,7 @@
 * #58 Builder for DataFrame creation
 * #59 Series.valueCount() - utility method for data exploration
 * #60 dflib-jdbc: JdbcConnector to support external transaction management
+* #62 Series.filter(ValuePredicate), Series.filter(BooleanSeries) 
 
 ## Release 0.5
 
