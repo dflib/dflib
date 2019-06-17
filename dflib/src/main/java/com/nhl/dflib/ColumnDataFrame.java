@@ -269,7 +269,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public DataFrame filter(BooleanSeries condition) {
+    public DataFrame filterRows(BooleanSeries condition) {
         int width = width();
         Series<?>[] newColumnsData = new Series[width];
         for (int i = 0; i < width; i++) {
@@ -280,7 +280,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public DataFrame filter(RowPredicate p) {
+    public DataFrame filterRows(RowPredicate p) {
         IntSeries rowPositions = FilterIndexer.filteredIndex(this, p);
 
         // there's no reordering or index duplication during "filter", so we can compare size to detect changes
@@ -292,7 +292,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public <V> DataFrame filter(int columnPos, ValuePredicate<V> p) {
+    public <V> DataFrame filterRows(int columnPos, ValuePredicate<V> p) {
         IntSeries rowPositions = dataColumns[columnPos].index(p);
 
         // there's no reordering or index duplication during "filter", so we can compare size to detect changes

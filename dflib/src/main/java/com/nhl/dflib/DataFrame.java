@@ -549,15 +549,6 @@ public interface DataFrame extends Iterable<RowProxy> {
     DataFrame selectRows(IntSeries rowPositions);
 
     /**
-     * Returns a DataFrame with subset of rows matching condition.
-     *
-     * @param condition a {@link BooleanSeries} whose "true" values indicate which
-     * @return
-     * @since 0.6
-     */
-    DataFrame filter(BooleanSeries condition);
-
-    /**
      * Selects DataFrame rows based on provided row index. This allows to reorder, filter, duplicate rows of this
      * DataFrame.
      *
@@ -592,14 +583,47 @@ public interface DataFrame extends Iterable<RowProxy> {
         return selectRows(ml.toIntSeries());
     }
 
-    DataFrame filter(RowPredicate p);
-
-    default <V> DataFrame filter(String columnName, ValuePredicate<V> p) {
-        int pos = getColumnsIndex().position(columnName);
-        return filter(pos, p);
+    /**
+     * @deprecated since 0.6 in favor of {@link #filterRows(RowPredicate)}
+     */
+    @Deprecated
+    default DataFrame filter(RowPredicate p) {
+        return filterRows(p);
     }
 
-    <V> DataFrame filter(int columnPos, ValuePredicate<V> p);
+    DataFrame filterRows(RowPredicate p);
+
+    /**
+     * @deprecated since 0.6 in favor of {@link #filterRows(String, ValuePredicate)}
+     */
+    @Deprecated
+    default <V> DataFrame filter(String columnName, ValuePredicate<V> p) {
+        return filterRows(columnName, p);
+    }
+
+    default <V> DataFrame filterRows(String columnName, ValuePredicate<V> p) {
+        int pos = getColumnsIndex().position(columnName);
+        return filterRows(pos, p);
+    }
+
+    /**
+     * @deprecated since 0.6 in favor of {@link #filterRows(int, ValuePredicate)}
+     */
+    @Deprecated
+    default <V> DataFrame filter(int columnPos, ValuePredicate<V> p) {
+        return filterRows(columnPos, p);
+    }
+
+    <V> DataFrame filterRows(int columnPos, ValuePredicate<V> p);
+
+    /**
+     * Returns a DataFrame with subset of rows matching condition.
+     *
+     * @param condition a {@link BooleanSeries} whose "true" values indicate which
+     * @return
+     * @since 0.6
+     */
+    DataFrame filterRows(BooleanSeries condition);
 
     <V extends Comparable<? super V>> DataFrame sort(RowToValueMapper<V> sortKeyExtractor);
 

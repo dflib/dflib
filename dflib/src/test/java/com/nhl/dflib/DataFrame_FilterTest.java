@@ -9,7 +9,7 @@ public class DataFrame_FilterTest {
     public void testFilterByColumn_Name() {
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(10, 20)
-                .filter("a", (Integer v) -> v > 15);
+                .filterRows("a", (Integer v) -> v > 15);
 
         new DFAsserts(df, "a")
                 .expectHeight(1)
@@ -20,7 +20,7 @@ public class DataFrame_FilterTest {
     public void testFilterByColumn_Pos() {
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(10, 20)
-                .filter(0, (Integer v) -> v > 15);
+                .filterRows(0, (Integer v) -> v > 15);
 
         new DFAsserts(df, "a")
                 .expectHeight(1)

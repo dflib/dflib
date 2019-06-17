@@ -43,7 +43,7 @@ public class DataFrameOperation {
     @Benchmark
     public Object filter() {
         return df
-                .filter("c0", (Integer i) -> i % 2 == 0)
+                .filterRows("c0", (Integer i) -> i % 2 == 0)
                 .materialize()
                 .iterator();
     }
@@ -51,7 +51,7 @@ public class DataFrameOperation {
     @Benchmark
     public Object medianWithFilter() {
         return df
-                .filter("c0", (Integer i) -> i % 2 == 0)
+                .filterRows("c0", (Integer i) -> i % 2 == 0)
                 .agg(Aggregator.medianDouble(0));
     }
 
