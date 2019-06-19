@@ -66,6 +66,7 @@ public class GroupBy {
             resolvedGroups = new ConcurrentHashMap<>();
         }
 
+        // TODO: nulls will blow up on read... check for nulls and do something right here..
         return resolvedGroups.computeIfAbsent(key, this::resolveGroup);
     }
 

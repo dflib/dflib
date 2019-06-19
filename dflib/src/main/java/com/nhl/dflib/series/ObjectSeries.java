@@ -4,9 +4,11 @@ import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.SeriesGroupBy;
 import com.nhl.dflib.ValueMapper;
 import com.nhl.dflib.ValuePredicate;
 import com.nhl.dflib.concat.SeriesConcat;
+import com.nhl.dflib.groupby.SeriesGrouper;
 import com.nhl.dflib.series.builder.BooleanAccumulator;
 import com.nhl.dflib.series.builder.IntAccumulator;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
@@ -210,6 +212,16 @@ public abstract class ObjectSeries<T> implements Series<T> {
     @Override
     public DataFrame valueCounts() {
         return ValueCounts.valueCountsMaybeNulls(this);
+    }
+
+    @Override
+    public SeriesGroupBy<T> group() {
+        return group(t -> t);
+    }
+
+    @Override
+    public SeriesGroupBy<T> group(ValueMapper<T, ?> by) {
+        return new SeriesGrouper<>(by).group(this);
     }
 
     @Override

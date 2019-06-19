@@ -6,9 +6,11 @@ import com.nhl.dflib.DoublePredicate;
 import com.nhl.dflib.DoubleSeries;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.SeriesGroupBy;
 import com.nhl.dflib.ValueMapper;
 import com.nhl.dflib.ValuePredicate;
 import com.nhl.dflib.concat.SeriesConcat;
+import com.nhl.dflib.groupby.SeriesGrouper;
 import com.nhl.dflib.series.builder.BooleanAccumulator;
 import com.nhl.dflib.series.builder.DoubleAccumulator;
 import com.nhl.dflib.series.builder.IntAccumulator;
@@ -392,6 +394,19 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     @Override
     public DataFrame valueCounts() {
         return ValueCounts.valueCountsNoNulls(this);
+    }
+
+
+    // TODO: some optimized version of "primitive" group by ...
+
+    @Override
+    public SeriesGroupBy<Double> group() {
+        return group(d -> d);
+    }
+
+    @Override
+    public SeriesGroupBy<Double> group(ValueMapper<Double, ?> by) {
+        return new SeriesGrouper<>(by).group(this);
     }
 
     @Override

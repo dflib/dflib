@@ -154,4 +154,18 @@ public interface Series<T> {
      * @since 0.6
      */
     DataFrame valueCounts();
+
+    /**
+     * Groups Series by its values.
+     *
+     * @since 0.6
+     */
+    SeriesGroupBy<T> group();
+
+    /**
+     * Groups Series, using the provided function to calculate grouping key.
+     *
+     * @since 0.6
+     */
+    SeriesGroupBy<T> group(ValueMapper<T, ?> by);
 }

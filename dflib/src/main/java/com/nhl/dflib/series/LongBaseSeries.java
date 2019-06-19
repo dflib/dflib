@@ -6,9 +6,11 @@ import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.LongPredicate;
 import com.nhl.dflib.LongSeries;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.SeriesGroupBy;
 import com.nhl.dflib.ValueMapper;
 import com.nhl.dflib.ValuePredicate;
 import com.nhl.dflib.concat.SeriesConcat;
+import com.nhl.dflib.groupby.SeriesGrouper;
 import com.nhl.dflib.series.builder.BooleanAccumulator;
 import com.nhl.dflib.series.builder.IntAccumulator;
 import com.nhl.dflib.series.builder.LongAccumulator;
@@ -392,6 +394,18 @@ public abstract class LongBaseSeries implements LongSeries {
     @Override
     public DataFrame valueCounts() {
         return ValueCounts.valueCountsNoNulls(this);
+    }
+
+    // TODO: some optimized version of "primitive" group by ...
+
+    @Override
+    public SeriesGroupBy<Long> group() {
+        return group(l -> l);
+    }
+
+    @Override
+    public SeriesGroupBy<Long> group(ValueMapper<Long, ?> by) {
+        return new SeriesGrouper<>(by).group(this);
     }
 
     @Override

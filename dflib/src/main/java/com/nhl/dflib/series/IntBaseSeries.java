@@ -5,9 +5,11 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntPredicate;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.SeriesGroupBy;
 import com.nhl.dflib.ValueMapper;
 import com.nhl.dflib.ValuePredicate;
 import com.nhl.dflib.concat.SeriesConcat;
+import com.nhl.dflib.groupby.SeriesGrouper;
 import com.nhl.dflib.series.builder.BooleanAccumulator;
 import com.nhl.dflib.series.builder.IntAccumulator;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
@@ -393,6 +395,18 @@ public abstract class IntBaseSeries implements IntSeries {
     @Override
     public DataFrame valueCounts() {
         return ValueCounts.valueCountsNoNulls(this);
+    }
+
+    // TODO: some optimized version of "primitive" group by ...
+
+    @Override
+    public SeriesGroupBy<Integer> group() {
+        return group(i -> i);
+    }
+
+    @Override
+    public SeriesGroupBy<Integer> group(ValueMapper<Integer, ?> by) {
+        return new SeriesGrouper<>(by).group(this);
     }
 
     @Override

@@ -16,7 +16,7 @@ public class LongSeriesAsserts {
 
     public LongSeriesAsserts expectData(long... expectedValues) {
 
-        assertEquals("Unexpected Series length", expectedValues.length, data.length);
+        assertEquals("Unexpected LongSeries length", expectedValues.length, data.length);
 
         for (int i = 0; i < expectedValues.length; i++) {
 

@@ -16,7 +16,7 @@ public class IntSeriesAsserts {
 
     public IntSeriesAsserts expectData(int... expectedValues) {
 
-        assertEquals("Unexpected Series length", expectedValues.length, data.length);
+        assertEquals("Unexpected IntSeries length", expectedValues.length, data.length);
 
         for (int i = 0; i < expectedValues.length; i++) {
 
