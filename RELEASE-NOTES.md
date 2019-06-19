@@ -38,7 +38,7 @@
 * #60 dflib-jdbc: JdbcConnector to support external transaction management
 * #62 Series.filter(ValuePredicate), Series.filter(BooleanSeries) 
 * #63 Basic `Series.groupBy(..)` 
-* #64 SeriesGroupBy aggregation functionality 
+* #64 Series / SeriesGroupBy aggregation functionality 
 
 ## Release 0.5
 
