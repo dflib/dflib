@@ -3,6 +3,7 @@ package com.nhl.dflib;
 import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.EmptySeries;
 import com.nhl.dflib.series.IntArraySeries;
+import com.nhl.dflib.series.builder.ObjectAccumulator;
 
 /**
  * A wrapper around an array of values of a certain type.
@@ -168,4 +169,31 @@ public interface Series<T> {
      * @since 0.6
      */
     SeriesGroupBy<T> group(ValueMapper<T, ?> by);
+
+    /**
+     * Returns a scalar value that is a result of applying provided aggregator to Series.
+     *
+     * @since 0.6
+     */
+    default <R> R agg(SeriesAggregator<? super T, R> aggregator) {
+        return aggregator.aggregate(this);
+    }
+
+    /**
+     * Returns a Series, with each value corresponding to the result of aggregation with each aggregator out of the
+     * provided array of aggregators.
+     *
+     * @since 0.6
+     */
+    default Series<?> aggMultiple(SeriesAggregator<? super T, ?>... aggregators) {
+
+        int len = aggregators.length;
+        ObjectAccumulator<Object> accum = new ObjectAccumulator<>(len);
+
+        for (int i = 0; i < len; i++) {
+            accum.add(aggregators[i].aggregate(this));
+        }
+
+        return accum.toSeries();
+    }
 }

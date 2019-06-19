@@ -1,57 +1,53 @@
 package com.nhl.dflib.aggregate;
 
-import com.nhl.dflib.Aggregator;
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.series.ArraySeries;
+import com.nhl.dflib.SeriesAggregator;
+import com.nhl.dflib.SeriesGroupBy;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
 import com.nhl.dflib.series.builder.SeriesBuilder;
 
 /**
- * Defines aggregation operations over DataFrame's and GroupBy's
- *
  * @since 0.6
  */
-public class Aggregation {
+public class SeriesAggregation {
 
-    public static Series<?> aggDataFrame(DataFrame dataFrame, Aggregator<?>... aggregators) {
+    public static <T, R> Series<R> aggGroupBy(SeriesGroupBy<T> groupBy, SeriesAggregator<? super T, R> aggregator) {
 
-        int aggW = aggregators.length;
-        Object[] aggValues = new Object[aggW];
+        // TODO: let Aggregator generate and fill SeriesBuilder, as it can use primitive collections
+        ObjectAccumulator<R> columnBuilder = new ObjectAccumulator<>(groupBy.size());
 
-        for (int i = 0; i < aggW; i++) {
-            aggValues[i] = aggregators[i].aggregate(dataFrame);
+        for (Object key : groupBy.getGroups()) {
+            Series<T> group = groupBy.getGroup(key);
+            columnBuilder.add(aggregator.aggregate(group));
         }
 
-        return new ArraySeries<>(aggValues);
+        return columnBuilder.toSeries();
     }
 
-    public static DataFrame aggGroupBy(GroupBy groupBy, Aggregator<?>... aggregators) {
+    public static <T> DataFrame aggGroupMultiple(SeriesGroupBy<T> groupBy, SeriesAggregator<? super T, ?>... aggregators) {
 
         int aggW = aggregators.length;
         int aggH = groupBy.size();
-
-        Index sourceIndex = groupBy.getUngroupedColumnIndex();
 
         Series[] aggColumns = new Series[aggW];
         String[] aggLabels = new String[aggW];
 
         for (int i = 0; i < aggW; i++) {
 
-            Aggregator agg = aggregators[i];
+            SeriesAggregator agg = aggregators[i];
 
             // TODO: let Aggregator generate and fill SeriesBuilder, as it can use primitive collections
             SeriesBuilder columnBuilder = new ObjectAccumulator(aggH);
 
             for (Object key : groupBy.getGroups()) {
-                DataFrame group = groupBy.getGroup(key);
+                Series<T> group = groupBy.getGroup(key);
                 columnBuilder.add(agg.aggregate(group));
             }
 
             aggColumns[i] = columnBuilder.toSeries();
-            aggLabels[i] = agg.aggregateLabel(sourceIndex);
+            aggLabels[i] = agg.aggregateLabel();
         }
 
         return DataFrame.newFrame(Index.forLabelsDeduplicate(aggLabels)).columns(aggColumns);

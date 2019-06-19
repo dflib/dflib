@@ -255,14 +255,14 @@ public interface Aggregator<T> {
 
     static <T> Aggregator<T> of(String column, Collector<?, ?, T> aggregator) {
         return new ColumnAggregator<>(
-                SeriesAggregator.of(aggregator), index -> index.position(column),
+                SeriesAggregator.of("of", aggregator), index -> index.position(column),
                 index -> column
         );
     }
 
     static <T> Aggregator<T> of(int column, Collector<?, ?, T> aggregator) {
         return new ColumnAggregator<>(
-                SeriesAggregator.of(aggregator), index -> column,
+                SeriesAggregator.of("of", aggregator), index -> column,
                 index -> index.getLabel(column)
         );
     }

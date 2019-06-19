@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.aggregate.Aggregation;
+import com.nhl.dflib.aggregate.DataFrameAggregation;
 import com.nhl.dflib.series.builder.BooleanAccumulator;
 import com.nhl.dflib.series.builder.DoubleAccumulator;
 import com.nhl.dflib.series.builder.IntAccumulator;
@@ -666,7 +666,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public Series<?> agg(Aggregator<?>... aggregators) {
-        return Aggregation.aggDataFrame(this, aggregators);
+        return DataFrameAggregation.aggDataFrame(this, aggregators);
     }
 
     @Override

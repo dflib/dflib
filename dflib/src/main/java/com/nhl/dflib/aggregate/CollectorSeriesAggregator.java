@@ -15,9 +15,11 @@ import java.util.stream.Collector;
  */
 public class CollectorSeriesAggregator<S, A, T> implements SeriesAggregator<S, T> {
 
+    private String aggregateLabel;
     private Collector<S, A, T> collector;
 
-    public CollectorSeriesAggregator(Collector<S, A, T> collector) {
+    public CollectorSeriesAggregator(String aggregateLabel, Collector<S, A, T> collector) {
+        this.aggregateLabel = aggregateLabel;
         this.collector = collector;
     }
 
@@ -33,5 +35,15 @@ public class CollectorSeriesAggregator<S, A, T> implements SeriesAggregator<S, T
         }
 
         return collector.finisher().apply(accumResult);
+    }
+
+    @Override
+    public String aggregateLabel() {
+        return aggregateLabel;
+    }
+
+    @Override
+    public SeriesAggregator<S, T> named(String newAggregateLabel) {
+        return new CollectorSeriesAggregator<>(newAggregateLabel, collector);
     }
 }

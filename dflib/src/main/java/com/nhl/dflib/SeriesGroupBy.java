@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.aggregate.SeriesAggregation;
 import com.nhl.dflib.concat.SeriesConcat;
 
 import java.util.Collection;
@@ -9,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @since 0.6
  */
+// TODO: common inheritance hierarchy between GroupBy and SeriesGroupBy (will likely need a DataFrameGroupBy)
 public class SeriesGroupBy<T> {
 
     private Series<T> ungrouped;
@@ -56,6 +58,21 @@ public class SeriesGroupBy<T> {
 
         // this should hopefully preserve the nature of any primitive-based Series
         return ungrouped.select(index);
+    }
+
+    /**
+     * Returns a Series, with each value corresponding to the result of a single group aggregation.
+     */
+    public <R> Series<R> agg(SeriesAggregator<? super T, R> aggregator) {
+        return SeriesAggregation.aggGroupBy(this, aggregator);
+    }
+
+    /**
+     * Returns a DataFrame, with each row corresponding to the result of a single group aggregation with multiple
+     * provided aggregators.
+     */
+    public DataFrame aggMultiple(SeriesAggregator<? super T, ?>... aggregators) {
+        return SeriesAggregation.aggGroupMultiple(this, aggregators);
     }
 
     protected Series<T> resolveGroup(Object key) {

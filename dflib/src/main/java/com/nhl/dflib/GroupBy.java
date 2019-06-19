@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.aggregate.Aggregation;
+import com.nhl.dflib.aggregate.DataFrameAggregation;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.row.RowProxy;
@@ -196,7 +196,7 @@ public class GroupBy {
     }
 
     public DataFrame agg(Aggregator<?>... aggregators) {
-        return Aggregation.aggGroupBy(this, aggregators);
+        return DataFrameAggregation.aggGroupBy(this, aggregators);
     }
 
     /**
