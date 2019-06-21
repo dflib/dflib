@@ -113,12 +113,14 @@ public class DataFrameAsserts {
         return this;
     }
 
-    public void expectColumn(int pos, Object... expectedValues) {
+    public DataFrameAsserts expectColumn(int pos, Object... expectedValues) {
         new SeriesAsserts(df.getColumn(pos)).expectData(expectedValues);
+        return this;
     }
 
-    public void expectColumn(String column, Object... expectedValues) {
+    public DataFrameAsserts expectColumn(String column, Object... expectedValues) {
         new SeriesAsserts(df.getColumn(column)).expectData(expectedValues);
+        return this;
     }
 
     public DataFrameAsserts expectRow(int pos, Object... expectedValues) {
