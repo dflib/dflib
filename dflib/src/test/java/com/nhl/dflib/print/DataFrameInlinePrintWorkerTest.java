@@ -1,7 +1,6 @@
 package com.nhl.dflib.print;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,8 +12,7 @@ public class DataFrameInlinePrintWorkerTest {
 
     @Before
     public void initDataFrameParts() {
-        Index columns = Index.forLabels("col1", "column2");
-        this.df = DataFrame.forSequenceFoldByRow(columns,
+        this.df = DataFrame.newFrame("col1", "column2").foldByRow(
                 "one", 1,
                 "two", 2,
                 "three", 3,
@@ -24,7 +22,7 @@ public class DataFrameInlinePrintWorkerTest {
     @Test
     public void testToString_NoRows() {
         DataFrameInlinePrintWorker w = new DataFrameInlinePrintWorker(new StringBuilder(), 5, 10);
-        assertEquals("a:,b:", w.print(DataFrame.forRows(Index.forLabels("a", "b"))).toString());
+        assertEquals("a:,b:", w.print(DataFrame.newFrame("a", "b").empty()).toString());
     }
 
     @Test

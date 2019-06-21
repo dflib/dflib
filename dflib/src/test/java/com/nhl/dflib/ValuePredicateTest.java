@@ -10,9 +10,8 @@ public class ValuePredicateTest {
     @Test
     public void testIsIn_Array() {
 
-        Index i1 = Index.forLabels("a");
-        DataFrame df = DataFrame
-                .forSequenceFoldByRow(i1, 10, 20, 30, 40)
+        DataFrame df = DataFrame.newFrame("a")
+                .foldByRow(10, 20, 30, 40)
                 .filterRows("a", ValuePredicate.isIn(20, 40));
 
         new DataFrameAsserts(df, "a")
@@ -24,9 +23,8 @@ public class ValuePredicateTest {
     @Test
     public void testIsIn_Iterable() {
 
-        Index i1 = Index.forLabels("a");
-        DataFrame df = DataFrame
-                .forSequenceFoldByRow(i1, 10, 20, 30, 40)
+        DataFrame df = DataFrame.newFrame("a")
+                .foldByRow(10, 20, 30, 40)
                 .filterRows("a", ValuePredicate.isIn(asList(20, 40)));
 
         new DataFrameAsserts(df, "a")
@@ -40,9 +38,8 @@ public class ValuePredicateTest {
 
         ValuePredicate<Integer> p = ValuePredicate.isIn(20, 40).and(ValuePredicate.isIn(10, 20));
 
-        Index i1 = Index.forLabels("a");
-        DataFrame df = DataFrame
-                .forSequenceFoldByRow(i1, 10, 20, 30, 40)
+        DataFrame df = DataFrame.newFrame("a")
+                .foldByRow( 10, 20, 30, 40)
                 .filterRows("a", p);
 
         new DataFrameAsserts(df, "a")
@@ -55,9 +52,8 @@ public class ValuePredicateTest {
 
         ValuePredicate<Integer> p = ValuePredicate.isIn(20, 40).or(ValuePredicate.isIn(10, 20));
 
-        Index i1 = Index.forLabels("a");
-        DataFrame df = DataFrame
-                .forSequenceFoldByRow(i1, 10, 20, 30, 40)
+        DataFrame df = DataFrame.newFrame("a")
+                .foldByRow(10, 20, 30, 40)
                 .filterRows("a", p);
 
         new DataFrameAsserts(df, "a")
@@ -72,9 +68,8 @@ public class ValuePredicateTest {
 
         ValuePredicate<Integer> p = ValuePredicate.isIn(20, 40).negate();
 
-        Index i1 = Index.forLabels("a");
-        DataFrame df = DataFrame
-                .forSequenceFoldByRow(i1, 10, 20, 30, 40)
+        DataFrame df = DataFrame.newFrame("a")
+                .foldByRow(10, 20, 30, 40)
                 .filterRows("a", p);
 
         new DataFrameAsserts(df, "a")

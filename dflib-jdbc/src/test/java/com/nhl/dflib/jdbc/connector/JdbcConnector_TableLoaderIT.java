@@ -1,10 +1,9 @@
 package com.nhl.dflib.jdbc.connector;
 
-import com.nhl.dflib.Index;
-import com.nhl.dflib.unit.DataFrameAsserts;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
 import java.time.LocalDate;
@@ -98,7 +97,7 @@ public class JdbcConnector_TableLoaderIT extends BaseDbTest {
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 11_000.);
 
-        DataFrame matcher = DataFrame.forSequenceFoldByRow(Index.forLabels("id"), 1L, 3L);
+        DataFrame matcher = DataFrame.newFrame("id").foldByRow(1L, 3L);
 
         DataFrame df = createConnector()
                 .tableLoader("t1")
@@ -119,7 +118,7 @@ public class JdbcConnector_TableLoaderIT extends BaseDbTest {
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 11_000.);
 
-        DataFrame matcher = DataFrame.forSequenceFoldByRow(Index.forLabels("id", "name"),
+        DataFrame matcher = DataFrame.newFrame("id", "name").foldByRow(
                 1L, "n5",
                 3L, "n3");
 

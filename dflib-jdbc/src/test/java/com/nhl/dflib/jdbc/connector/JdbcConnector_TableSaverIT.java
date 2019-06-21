@@ -1,7 +1,6 @@
 package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.SaveOp;
@@ -30,8 +29,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
     @Test
     public void test() {
 
-        DataFrame df = DataFrame.forSequenceFoldByRow(
-                Index.forLabels("id", "name", "salary"),
+        DataFrame df = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
@@ -52,7 +50,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
     @Test
     public void testEmpty() {
 
-        DataFrame df = DataFrame.forSequenceFoldByRow(Index.forLabels("id", "name", "salary"));
+        DataFrame df = DataFrame.newFrame("id", "name", "salary").empty();
 
         connector.tableSaver("t1").save(df);
 
@@ -66,13 +64,11 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
     @Test
     public void testSave_Append() {
 
-        DataFrame df1 = DataFrame.forSequenceFoldByRow(
-                Index.forLabels("id", "name", "salary"),
+        DataFrame df1 = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
-        DataFrame df2 = DataFrame.forSequenceFoldByRow(
-                Index.forLabels("id", "name", "salary"),
+        DataFrame df2 = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 3L, "n3", 60_000.01,
                 4L, "n4", 20_000.);
 
@@ -93,13 +89,11 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
     @Test
     public void testSave_DeleteTableData() {
 
-        DataFrame df1 = DataFrame.forSequenceFoldByRow(
-                Index.forLabels("id", "name", "salary"),
+        DataFrame df1 = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
-        DataFrame df2 = DataFrame.forSequenceFoldByRow(
-                Index.forLabels("id", "name", "salary"),
+        DataFrame df2 = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 3L, "n3", 60_000.01,
                 4L, "n4", 20_000.);
 
@@ -124,8 +118,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
     @Test
     public void testSave_StoreRowNumber() {
 
-        DataFrame df = DataFrame.forSequenceFoldByRow(
-                Index.forLabels("name", "salary"),
+        DataFrame df = DataFrame.newFrame("name", "salary").foldByRow(
                 "n1", 50_000.01,
                 "n2", 120_000.);
 
@@ -152,8 +145,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 .values(2L, "n2", 120_000.)
                 .exec();
 
-        DataFrame df = DataFrame.forSequenceFoldByRow(
-                Index.forLabels("id", "name", "salary"),
+        DataFrame df = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1_x", 50_000.02,
                 3L, "n3", 60_000.01,
                 4L, "n4", 20_000.);
@@ -183,8 +175,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 .values(2L, "n2", 120_000.)
                 .exec();
 
-        DataFrame df = DataFrame.forSequenceFoldByRow(
-                Index.forLabels("id", "name", "salary"),
+        DataFrame df = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.02,
                 3L, "n3", 60_000.01,
                 4L, "n4", 20_000.);
@@ -218,8 +209,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 .values(2L, "n2", 120_000.)
                 .exec();
 
-        DataFrame df = DataFrame.forSequenceFoldByRow(
-                Index.forLabels("id", "name", "salary"),
+        DataFrame df = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1_x", 50_000.02,
                 2L, "n2", 120_000.,
                 3L, "n3", 60_000.01,
@@ -257,8 +247,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 .values(3L, "n3", 7.)
                 .exec();
 
-        DataFrame df = DataFrame.forSequenceFoldByRow(
-                Index.forLabels("id", "name", "salary"),
+        DataFrame df = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1_x", 5.,
                 2L, "n2", 6.01,
                 3L, "n3", 7.01,
@@ -293,16 +282,15 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
     @Test
     public void testDataTypes() {
 
-        LocalDate ld = LocalDate.of(1977, 02, 05);
-        LocalDateTime ldt = LocalDateTime.of(2019, 02, 03, 1, 2, 5);
+        LocalDate ld = LocalDate.of(1977, 2, 5);
+        LocalDateTime ldt = LocalDateTime.of(2019, 2, 3, 1, 2, 5);
         LocalTime lt = LocalTime.of(5, 6, 8);
 
         byte[] bytes = new byte[]{3, 5, 11};
         long l1 = Integer.MAX_VALUE + 1L;
 
-        DataFrame df = DataFrame.forSequenceFoldByRow(
-                Index.forLabels("bigint", "int", "timestamp", "time", "date", "bytes"),
-                l1, 1, ldt, lt, ld, bytes);
+        DataFrame df = DataFrame.newFrame("bigint", "int", "timestamp", "time", "date", "bytes")
+                .foldByRow(l1, 1, ldt, lt, ld, bytes);
 
         connector.tableSaver("t2").save(df);
 
@@ -319,8 +307,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
     @Test
     public void testDataTypes_DatePartsAsInts() {
 
-        DataFrame df = DataFrame.forSequenceFoldByRow(
-                Index.forLabels("bigint", "int"),
+        DataFrame df = DataFrame.newFrame("bigint", "int").foldByRow(
                 1L, Month.DECEMBER,
                 2L, Year.of(1973),
                 3L, DayOfWeek.TUESDAY);
@@ -342,8 +329,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
     @Test
     public void testDataTypes_Enums() {
 
-        DataFrame df = DataFrame.forSequenceFoldByRow(
-                Index.forLabels("bigint", "int", "string"),
+        DataFrame df = DataFrame.newFrame("bigint", "int", "string").foldByRow(
                 1L, X.a, X.a,
                 2L, X.b, X.b);
 
@@ -363,8 +349,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
     @Test
     public void testSaveWithInfo_Insert() {
 
-        DataFrame df = DataFrame.forSequenceFoldByRow(
-                Index.forLabels("id", "name", "salary"),
+        DataFrame df = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
@@ -390,8 +375,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 .values(2L, "n2", 120_000.)
                 .exec();
 
-        DataFrame df = DataFrame.forSequenceFoldByRow(
-                Index.forLabels("id", "name", "salary"),
+        DataFrame df = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
@@ -419,8 +403,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 .values(5L, "n5", 5.)
                 .exec();
 
-        DataFrame df = DataFrame.forSequenceFoldByRow(
-                Index.forLabels("id", "name", "salary"),
+        DataFrame df = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.01,
                 2L, "n2_u", 120_000.,
                 3L, "n3", 320_000.,

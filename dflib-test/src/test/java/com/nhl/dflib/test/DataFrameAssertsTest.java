@@ -29,13 +29,13 @@ public class DataFrameAssertsTest {
     }
 
     @Test
-    public void testExpectRows_Nulls_SingleColumn() {
+    public void testExpectRows_NullVararg() {
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(null, null);
         new DataFrameAsserts(df, "a")
                 .expectHeight(2)
-                .expectRow(0, null)
-                .expectRow(1, null);
+                .expectRow(0, (Object[]) null)
+                .expectRow(1, (Object[]) null);
     }
 
     @Test
@@ -48,7 +48,7 @@ public class DataFrameAssertsTest {
                 .expectHeight(3)
                 .expectRow(0, new Object[]{new byte[]{3, 4, 5}})
                 .expectRow(1, new Object[]{new byte[]{}})
-                .expectRow(2, null);
+                .expectRow(2, (Object) null);
     }
 
     @Test(expected = AssertionError.class)

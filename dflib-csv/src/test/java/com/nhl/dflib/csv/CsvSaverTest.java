@@ -1,7 +1,6 @@
 package com.nhl.dflib.csv;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
 import org.apache.commons.csv.CSVFormat;
 import org.junit.Test;
 
@@ -16,7 +15,7 @@ public class CsvSaverTest extends BaseCsvTest {
     @Test
     public void testSaveToString() {
 
-        DataFrame df = DataFrame.forSequenceFoldByRow(Index.forLabels("A", "B"),
+        DataFrame df = DataFrame.newFrame("A", "B").foldByRow(
                 1, 2,
                 3, 4);
 
@@ -28,7 +27,7 @@ public class CsvSaverTest extends BaseCsvTest {
     @Test
     public void testSave_ToWriter() {
 
-        DataFrame df = DataFrame.forSequenceFoldByRow(Index.forLabels("A", "B"),
+        DataFrame df = DataFrame.newFrame("A", "B").foldByRow(
                 1, 2,
                 3, 4);
 
@@ -42,7 +41,7 @@ public class CsvSaverTest extends BaseCsvTest {
     @Test
     public void testSave_ToWriter_Format() {
 
-        DataFrame df = DataFrame.forSequenceFoldByRow(Index.forLabels("A", "B"),
+        DataFrame df = DataFrame.newFrame("A", "B").foldByRow(
                 1, 2,
                 3, 4);
 
@@ -59,7 +58,7 @@ public class CsvSaverTest extends BaseCsvTest {
 
         File file = new File(outPath("testToFile.csv"));
 
-        DataFrame df = DataFrame.forSequenceFoldByRow(Index.forLabels("A", "B"),
+        DataFrame df = DataFrame.newFrame("A", "B").foldByRow(
                 1, 2,
                 3, 4);
 
@@ -74,7 +73,7 @@ public class CsvSaverTest extends BaseCsvTest {
 
         String filePath = outPath("testToFilePath.csv");
 
-        DataFrame df = DataFrame.forSequenceFoldByRow(Index.forLabels("A", "B"),
+        DataFrame df = DataFrame.newFrame("A", "B").foldByRow(
                 1, 2,
                 3, 4);
 
@@ -90,7 +89,7 @@ public class CsvSaverTest extends BaseCsvTest {
         String path = outPath("Mkdirs" + File.separator + "f2" + File.separator + "testToFile.csv");
         File file = new File(path);
 
-        DataFrame df = DataFrame.forSequenceFoldByRow(Index.forLabels("A", "B"),
+        DataFrame df = DataFrame.newFrame("A", "B").foldByRow(
                 1, 2,
                 3, 4);
 
@@ -106,7 +105,7 @@ public class CsvSaverTest extends BaseCsvTest {
         String path = outPath("NoMkdirs" + File.separator + "f4" + File.separator + "testToFile.csv");
         File file = new File(path);
 
-        DataFrame df = DataFrame.forSequenceFoldByRow(Index.forLabels("A", "B"),
+        DataFrame df = DataFrame.newFrame("A", "B").foldByRow(
                 1, 2,
                 3, 4);
 

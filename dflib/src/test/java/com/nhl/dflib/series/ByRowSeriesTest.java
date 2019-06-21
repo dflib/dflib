@@ -1,7 +1,6 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.Test;
 
@@ -11,7 +10,7 @@ public class ByRowSeriesTest {
 
     @Test
     public void testStructure() {
-        DataFrame df = DataFrame.forSequenceFoldByRow(Index.forLabels("a", "b"),
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 "a1", "b1",
                 "a2", "b2");
 
@@ -21,7 +20,7 @@ public class ByRowSeriesTest {
 
     @Test
     public void testGet() {
-        DataFrame df = DataFrame.forSequenceFoldByRow(Index.forLabels("a", "b"),
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 "a1", "b1",
                 "a2", "b2");
 

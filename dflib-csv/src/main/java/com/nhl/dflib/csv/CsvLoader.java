@@ -72,7 +72,8 @@ public class CsvLoader {
      * @deprecated since 0.6 as it does not allow to pass primitive values converters. Use per-column type specifiers.
      */
     @Deprecated
-    public CsvLoader columnTypes(ValueMapper<String, ?>... typeConverters) {
+    @SafeVarargs
+    public final CsvLoader columnTypes(ValueMapper<String, ?>... typeConverters) {
         for (int i = 0; i < typeConverters.length; i++) {
             int captureI = i;
             builders.add(new Pair(

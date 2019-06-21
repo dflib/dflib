@@ -1,7 +1,6 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.Test;
@@ -11,7 +10,7 @@ import static org.junit.Assert.*;
 public class ByRowSeries_ConcatTest {
 
     private <T> ByRowSeries<T> createSeries(T... data) {
-        return new ByRowSeries<>(DataFrame.forSequenceFoldByRow(Index.forLabels("a", "b"), data));
+        return new ByRowSeries<>(DataFrame.newFrame("a", "b").foldByRow(data));
     }
 
     @Test
