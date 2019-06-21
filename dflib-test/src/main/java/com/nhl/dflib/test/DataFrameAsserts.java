@@ -113,6 +113,14 @@ public class DataFrameAsserts {
         return this;
     }
 
+    public void expectColumn(int pos, Object... expectedValues) {
+        new SeriesAsserts(df.getColumn(pos)).expectData(expectedValues);
+    }
+
+    public void expectColumn(String column, Object... expectedValues) {
+        new SeriesAsserts(df.getColumn(column)).expectData(expectedValues);
+    }
+
     public DataFrameAsserts expectRow(int pos, Object... expectedValues) {
 
         // handling nulls in "vararg" specifics... caller passing a "null" results in null array instead of a single
