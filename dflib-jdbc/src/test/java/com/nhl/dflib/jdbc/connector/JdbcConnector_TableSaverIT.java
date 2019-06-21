@@ -1,7 +1,6 @@
 package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.SaveOp;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
@@ -353,12 +352,11 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
-        Series<SaveOp> info = connector
+        SaveStats info = connector
                 .tableSaver("t1")
-                .save(df)
-                .get();
+                .save(df);
 
-        new SeriesAsserts(info).expectData(SaveOp.insert, SaveOp.insert);
+        new SeriesAsserts(info.getRowSaveStatuses()).expectData(SaveOp.insert, SaveOp.insert);
 
         DataFrame dfSaved = connector.tableLoader("t1").load();
         new DataFrameAsserts(dfSaved, columnNames(T1))
@@ -379,12 +377,12 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
-        Series<SaveOp> info = connector
+        SaveStats info = connector
                 .tableSaver("t1")
                 .deleteTableData()
-                .save(df)
-                .get();
-        new SeriesAsserts(info).expectData(SaveOp.insert, SaveOp.insert);
+                .save(df);
+
+        new SeriesAsserts(info.getRowSaveStatuses()).expectData(SaveOp.insert, SaveOp.insert);
 
         DataFrame dfSaved = connector.tableLoader("t1").load();
         new DataFrameAsserts(dfSaved, columnNames(T1))
@@ -410,12 +408,12 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 4L, "n4_u", 4.,
                 5L, "n5", 5.);
 
-        Series<SaveOp> info = connector
+        SaveStats info = connector
                 .tableSaver("t1")
                 .mergeByPk()
-                .save(df)
-                .get();
-        new SeriesAsserts(info).expectData(SaveOp.skip, SaveOp.update, SaveOp.insert, SaveOp.update, SaveOp.skip);
+                .save(df);
+
+        new SeriesAsserts(info.getRowSaveStatuses()).expectData(SaveOp.skip, SaveOp.update, SaveOp.insert, SaveOp.update, SaveOp.skip);
 
         DataFrame dfSaved = connector.tableLoader("t1").load().sort("id", true);
         new DataFrameAsserts(dfSaved, columnNames(T1))

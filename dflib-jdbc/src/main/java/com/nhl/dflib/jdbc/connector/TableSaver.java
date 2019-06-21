@@ -2,8 +2,6 @@ package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.RowToValueMapper;
-import com.nhl.dflib.Series;
-import com.nhl.dflib.jdbc.SaveOp;
 import com.nhl.dflib.jdbc.connector.metadata.DbColumnMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.DbTableMetadata;
 import com.nhl.dflib.jdbc.connector.saver.SaveViaDeleteThenInsert;
@@ -15,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
-import java.util.function.Supplier;
 
 public class TableSaver {
 
@@ -81,7 +78,7 @@ public class TableSaver {
     }
 
     /**
-     * @deprecated since 0.6. THis functionality can be emulated simply by adding a row number column to the saved DataFrame.
+     * @deprecated since 0.6. This functionality can be emulated simply by adding a row number column to the saved DataFrame.
      */
     @Deprecated
     public TableSaver storeRowNumber(String rowNumberColumn) {
@@ -89,7 +86,7 @@ public class TableSaver {
         return this;
     }
 
-    public Supplier<Series<SaveOp>> save(DataFrame df) {
+    public SaveStats save(DataFrame df) {
         LOGGER.info("saving DataFrame...");
 
         // deprecated - conditionally add row numbers columns
@@ -97,7 +94,7 @@ public class TableSaver {
                 ? df.addColumn(rowNumberColumn, rowIndexer())
                 : df;
 
-        return createSaveStrategy().save(toSave);
+        return new SaveStats(createSaveStrategy().save(toSave));
     }
 
     protected TableSaveStrategy createSaveStrategy() {
