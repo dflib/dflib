@@ -25,7 +25,8 @@ public interface Aggregator<T> {
      */
     static <T> Aggregator<T> first(String column) {
         return new ColumnAggregator<>(
-                SeriesAggregator.first(), index -> index.position(column),
+                SeriesAggregator.first(),
+                index -> index.position(column),
                 index -> column
         );
     }
@@ -36,7 +37,8 @@ public interface Aggregator<T> {
      */
     static <T> Aggregator<T> first(int column) {
         return new ColumnAggregator<>(
-                SeriesAggregator.first(), index -> column,
+                SeriesAggregator.first(),
+                index -> column,
                 index -> index.getLabel(column)
         );
     }
@@ -80,7 +82,8 @@ public interface Aggregator<T> {
      */
     static Aggregator<Double> averageDouble(String column) {
         return new ColumnAggregator<>(
-                SeriesAggregator.averageDouble(), index -> index.position(column),
+                SeriesAggregator.averageDouble(),
+                index -> index.position(column),
                 index -> column
         );
     }
@@ -90,7 +93,8 @@ public interface Aggregator<T> {
      */
     static Aggregator<Double> averageDouble(int column) {
         return new ColumnAggregator<>(
-                SeriesAggregator.averageDouble(), index -> column,
+                SeriesAggregator.averageDouble(),
+                index -> column,
                 index -> index.getLabel(column)
         );
     }
@@ -116,7 +120,8 @@ public interface Aggregator<T> {
      */
     static Aggregator<Double> medianDouble(String column) {
         return new ColumnAggregator<>(
-                SeriesAggregator.medianDouble(), index -> index.position(column),
+                SeriesAggregator.medianDouble(),
+                index -> index.position(column),
                 index -> column
         );
     }
@@ -126,7 +131,8 @@ public interface Aggregator<T> {
      */
     static Aggregator<Double> medianDouble(int column) {
         return new ColumnAggregator<>(
-                SeriesAggregator.medianDouble(), index -> column,
+                SeriesAggregator.medianDouble(),
+                index -> column,
                 index -> index.getLabel(column)
         );
     }
@@ -150,7 +156,8 @@ public interface Aggregator<T> {
      */
     static Aggregator<Long> sumLong(String column) {
         return new ColumnAggregator<>(
-                SeriesAggregator.sumLong(), index -> index.position(column),
+                SeriesAggregator.sumLong(),
+                index -> index.position(column),
                 index -> column
         );
     }
@@ -160,7 +167,8 @@ public interface Aggregator<T> {
      */
     static Aggregator<Long> sumLong(int column) {
         return new ColumnAggregator<>(
-                SeriesAggregator.sumLong(), index -> column,
+                SeriesAggregator.sumLong(),
+                index -> column,
                 index -> index.getLabel(column)
         );
     }
@@ -170,7 +178,8 @@ public interface Aggregator<T> {
      */
     static Aggregator<Integer> sumInt(String column) {
         return new ColumnAggregator<>(
-                SeriesAggregator.sumInt(), index -> index.position(column),
+                SeriesAggregator.sumInt(),
+                index -> index.position(column),
                 index -> column
         );
     }
@@ -180,91 +189,104 @@ public interface Aggregator<T> {
      */
     static Aggregator<Integer> sumInt(int column) {
         return new ColumnAggregator<>(
-                SeriesAggregator.sumInt(), index -> column,
+                SeriesAggregator.sumInt(),
+                index -> column,
                 index -> index.getLabel(column)
         );
     }
 
     static Aggregator<Double> sumDouble(String column) {
         return new ColumnAggregator<>(
-                SeriesAggregator.sumDouble(), index -> index.position(column),
+                SeriesAggregator.sumDouble(),
+                index -> index.position(column),
                 index -> column
         );
     }
 
     static Aggregator<Double> sumDouble(int column) {
         return new ColumnAggregator<>(
-                SeriesAggregator.sumDouble(), index -> column,
+                SeriesAggregator.sumDouble(),
+                index -> column,
                 index -> index.getLabel(column)
         );
     }
 
     static Aggregator<String> concat(String column, String delimiter) {
         return new ColumnAggregator<>(
-                SeriesAggregator.concat(delimiter), index -> index.position(column),
+                SeriesAggregator.concat(delimiter),
+                index -> index.position(column),
                 index -> column
         );
     }
 
     static Aggregator<String> concat(int column, String delimiter) {
         return new ColumnAggregator<>(
-                SeriesAggregator.concat(delimiter), index -> column,
+                SeriesAggregator.concat(delimiter),
+                index -> column,
                 index -> index.getLabel(column)
         );
     }
 
     static Aggregator<String> concat(String column, String delimiter, String prefix, String suffix) {
         return new ColumnAggregator<>(
-                SeriesAggregator.concat(delimiter, prefix, suffix), index -> index.position(column),
+                SeriesAggregator.concat(delimiter, prefix, suffix),
+                index -> index.position(column),
                 index -> column
         );
     }
 
     static Aggregator<String> concat(int column, String delimiter, String prefix, String suffix) {
         return new ColumnAggregator<>(
-                SeriesAggregator.concat(delimiter, prefix, suffix), index -> column,
+                SeriesAggregator.concat(delimiter, prefix, suffix),
+                index -> column,
                 index -> index.getLabel(column)
         );
     }
 
     static <S> Aggregator<List<S>> list(String column) {
         return new ColumnAggregator<>(
-                SeriesAggregator.list(), index -> index.position(column),
+                SeriesAggregator.list(),
+                index -> index.position(column),
                 index -> column
         );
     }
 
     static <S> Aggregator<List<S>> list(int column) {
         return new ColumnAggregator<>(
-                SeriesAggregator.list(), index -> column,
+                SeriesAggregator.list(),
+                index -> column,
                 index -> index.getLabel(column)
         );
     }
 
     static <S> Aggregator<Set<S>> set(String column) {
         return new ColumnAggregator<>(
-                SeriesAggregator.set(), index -> index.position(column),
+                SeriesAggregator.set(),
+                index -> index.position(column),
                 index -> column
         );
     }
 
     static <S> Aggregator<Set<S>> set(int column) {
         return new ColumnAggregator<>(
-                SeriesAggregator.set(), index -> column,
+                SeriesAggregator.set(),
+                index -> column,
                 index -> index.getLabel(column)
         );
     }
 
     static <T> Aggregator<T> of(String column, Collector<?, ?, T> aggregator) {
         return new ColumnAggregator<>(
-                SeriesAggregator.of("of", aggregator), index -> index.position(column),
+                SeriesAggregator.of("of", aggregator),
+                index -> index.position(column),
                 index -> column
         );
     }
 
     static <T> Aggregator<T> of(int column, Collector<?, ?, T> aggregator) {
         return new ColumnAggregator<>(
-                SeriesAggregator.of("of", aggregator), index -> column,
+                SeriesAggregator.of("of", aggregator),
+                index -> column,
                 index -> index.getLabel(column)
         );
     }
