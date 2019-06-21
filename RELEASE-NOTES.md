@@ -39,6 +39,7 @@
 * #62 Series.filter(ValuePredicate), Series.filter(BooleanSeries) 
 * #63 Basic `Series.groupBy(..)` 
 * #64 Series / SeriesGroupBy aggregation functionality 
+* #65 API for DataFrame-based value aggregator function 
 
 ## Release 0.5
 

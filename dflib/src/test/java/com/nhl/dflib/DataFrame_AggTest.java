@@ -200,4 +200,15 @@ public class DataFrame_AggTest {
 
         new SeriesAsserts(s).expectData(1, null);
     }
+
+    @Test
+    public void testAgg_Custom() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1, 100,
+                2, 5);
+
+        Series<?> s = df.agg(Aggregator.of(adf -> adf.height()));
+
+        new SeriesAsserts(s).expectData(2);
+    }
 }

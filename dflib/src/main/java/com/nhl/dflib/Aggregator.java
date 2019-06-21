@@ -1,11 +1,13 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.ColumnAggregator;
+import com.nhl.dflib.aggregate.DataFrameAggregator;
 import com.nhl.dflib.aggregate.IntCountAggregator;
 import com.nhl.dflib.aggregate.LongCountAggregator;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collector;
 
 /**
@@ -264,6 +266,18 @@ public interface Aggregator<T> {
         return new ColumnAggregator<>(
                 SeriesAggregator.of("of", aggregator), index -> column,
                 index -> index.getLabel(column)
+        );
+    }
+
+    /**
+     * Creates an Aggregator based on a custom function that takes the entire DataFrame.
+     *
+     * @since 0.6
+     */
+    static <T> Aggregator<T> of(Function<DataFrame, T> aggregator) {
+        return new DataFrameAggregator<>(
+                aggregator,
+                index -> "of"
         );
     }
 
