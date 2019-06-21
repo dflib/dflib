@@ -1,4 +1,4 @@
-package com.nhl.dflib.unit;
+package com.nhl.dflib.test;
 
 import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.DataFrame;
@@ -11,20 +11,23 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class DFAsserts {
+/**
+ * @since 0.6
+ */
+public class DataFrameAsserts {
 
     private String[] expectedColumns;
     private DataFrame df;
 
-    public DFAsserts(DataFrame df, Index expectedColumns) {
+    public DataFrameAsserts(DataFrame df, Index expectedColumns) {
         this(df, expectedColumns.getLabels());
     }
 
-    public DFAsserts(DataFrame df, List<String> expectedColumns) {
+    public DataFrameAsserts(DataFrame df, List<String> expectedColumns) {
         this(df, expectedColumns.toArray(new String[expectedColumns.size()]));
     }
 
-    public DFAsserts(DataFrame df, String... expectedColumns) {
+    public DataFrameAsserts(DataFrame df, String... expectedColumns) {
 
         assertNotNull("DataFrame is null", df);
         assertArrayEquals("DataFrame columns differ from expected", expectedColumns, df.getColumnsIndex().getLabels());
@@ -33,12 +36,12 @@ public class DFAsserts {
         this.df = df;
     }
 
-    public DFAsserts expectHeight(int expectedHeight) {
+    public DataFrameAsserts expectHeight(int expectedHeight) {
         assertEquals("Unexpected DataFrame height", expectedHeight, df.height());
         return this;
     }
 
-    public DFAsserts expectIntColumns(int... positions) {
+    public DataFrameAsserts expectIntColumns(int... positions) {
 
         for (int i = 0; i < positions.length; i++) {
             // the assertion is superfluous ... "getColumnAsInt" throws if the column is not an IntSeries
@@ -47,7 +50,7 @@ public class DFAsserts {
         return this;
     }
 
-    public DFAsserts expectIntColumns(String... labels) {
+    public DataFrameAsserts expectIntColumns(String... labels) {
         for (int i = 0; i < labels.length; i++) {
 
             // the assertion is superfluous ... "getColumnAsInt" throws if the column is not an IntSeries
@@ -56,7 +59,7 @@ public class DFAsserts {
         return this;
     }
 
-    public DFAsserts expectLongColumns(int... positions) {
+    public DataFrameAsserts expectLongColumns(int... positions) {
 
         for (int i = 0; i < positions.length; i++) {
             // the assertion is superfluous ... "getColumnAsLong" throws if the column is not an LongSeries
@@ -65,7 +68,7 @@ public class DFAsserts {
         return this;
     }
 
-    public DFAsserts expectLongColumns(String... labels) {
+    public DataFrameAsserts expectLongColumns(String... labels) {
         for (int i = 0; i < labels.length; i++) {
 
             // the assertion is superfluous ... "getColumnAsLong" throws if the column is not an LongSeries
@@ -74,7 +77,7 @@ public class DFAsserts {
         return this;
     }
 
-    public DFAsserts expectDoubleColumns(int... positions) {
+    public DataFrameAsserts expectDoubleColumns(int... positions) {
 
         for (int i = 0; i < positions.length; i++) {
             // the assertion is superfluous ... "getColumnAsDouble" throws if the column is not an DoubleSeries
@@ -83,16 +86,16 @@ public class DFAsserts {
         return this;
     }
 
-    public DFAsserts expectDoubleColumns(String... labels) {
+    public DataFrameAsserts expectDoubleColumns(String... labels) {
         for (int i = 0; i < labels.length; i++) {
 
-            // the assertion is superfluous ... "getColumnAsInt" throws if the column is not an IntSeries
+            // the assertion is superfluous ... "getColumnAsInt" throws if the column is not an DoubleSeries
             assertTrue(df.getColumnAsDouble(labels[i]) instanceof DoubleSeries);
         }
         return this;
     }
 
-    public DFAsserts expectBooleanColumns(int... positions) {
+    public DataFrameAsserts expectBooleanColumns(int... positions) {
 
         for (int i = 0; i < positions.length; i++) {
             // the assertion is superfluous ... "getColumnAsBoolean" throws if the column is not an BooleanSeries
@@ -101,7 +104,7 @@ public class DFAsserts {
         return this;
     }
 
-    public DFAsserts expectBooleanColumns(String... labels) {
+    public DataFrameAsserts expectBooleanColumns(String... labels) {
         for (int i = 0; i < labels.length; i++) {
 
             // the assertion is superfluous ... "getColumnAsBoolean" throws if the column is not an BooleanSeries
@@ -110,7 +113,7 @@ public class DFAsserts {
         return this;
     }
 
-    public DFAsserts expectRow(int pos, Object... expectedValues) {
+    public DataFrameAsserts expectRow(int pos, Object... expectedValues) {
 
         // handling nulls in "vararg" specifics... caller passing a "null" results in null array instead of a single
         // element array with null... need to fix that
@@ -118,17 +121,17 @@ public class DFAsserts {
 
         for (int i = 0; i < expectedColumns.length; i++) {
 
-            String c = expectedColumns[i];
-            Object a = df.getColumn(i).get(pos);
-            Object e = expectedNormal[i];
+            String column = expectedColumns[i];
+            Object expected = expectedNormal[i];
+            Object actual = df.getColumn(i).get(pos);
 
-            if (e == null) {
-                assertNull("Unexpected value in '" + c + "'", a);
-            } else if (e.getClass().isArray()) {
-                assertTrue("Was expecting array in '" + c + "'", a.getClass().isArray());
-                expectArrayRow(c, e, a);
+            if (expected == null) {
+                assertNull("Unexpected value in '" + column + "'", actual);
+            } else if (expected.getClass().isArray()) {
+                assertTrue("Was expecting array in '" + column + "'", actual.getClass().isArray());
+                expectArrayRow(column, expected, actual);
             } else {
-                assertEquals("Unexpected value in '" + c + "'", e, a);
+                assertEquals("Unexpected value in '" + column + "'", expected, actual);
             }
         }
 

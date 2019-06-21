@@ -14,7 +14,7 @@ public class DFAssertsTest {
                 .expectHeight(3)
                 .expectRow(0, "a")
                 .expectRow(1, "b")
-                .expectRow(2, new Object[]{null});
+                .expectRow(2, null);
     }
 
     @Test
@@ -25,7 +25,7 @@ public class DFAssertsTest {
                 .expectHeight(3)
                 .expectRow(0, new Object[]{new byte[]{3, 4, 5}})
                 .expectRow(1, new Object[]{new byte[]{}})
-                .expectRow(2, new Object[]{null});
+                .expectRow(2, null);
     }
 
     @Test(expected = AssertionError.class)

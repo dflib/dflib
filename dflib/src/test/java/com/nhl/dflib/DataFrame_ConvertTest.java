@@ -36,7 +36,7 @@ public class DataFrame_ConvertTest {
                 .expectHeight(3)
                 .expectRow(0, LocalDate.of(2018, 1, 5))
                 .expectRow(1, LocalDate.of(2019, 2, 28))
-                .expectRow(2, new Object[]{null});
+                .expectRow(2, null);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class DataFrame_ConvertTest {
                 .expectHeight(3)
                 .expectRow(0, LocalDate.of(2018, 1, 5))
                 .expectRow(1, LocalDate.of(2019, 2, 28))
-                .expectRow(2, new Object[]{null});
+                .expectRow(2, null);
     }
 
     @Test
@@ -70,7 +70,7 @@ public class DataFrame_ConvertTest {
                 .expectHeight(3)
                 .expectRow(0, LocalDateTime.of(2018, 1, 5, 0, 1, 15))
                 .expectRow(1, LocalDateTime.of(2019, 2, 28, 13, 11, 12))
-                .expectRow(2, new Object[]{null});
+                .expectRow(2, null);
     }
 
     @Test
