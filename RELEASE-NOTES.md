@@ -40,6 +40,7 @@
 * #63 Basic `Series.groupBy(..)` 
 * #64 Series / SeriesGroupBy aggregation functionality 
 * #65 API for DataFrame-based value aggregator function 
+* #66 "dflib-test" a module for unit testing of Series and DataFrames 
 
 ## Release 0.5
 
