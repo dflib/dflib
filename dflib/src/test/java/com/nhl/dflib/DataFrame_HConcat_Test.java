@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
 public class DataFrame_HConcat_Test {
@@ -17,13 +17,13 @@ public class DataFrame_HConcat_Test {
 
         DataFrame df_l = df1.hConcat(df2);
 
-        new DFAsserts(df_l, "a", "b", "c", "d")
+        new DataFrameAsserts(df_l, "a", "b", "c", "d")
                 .expectHeight(1)
                 .expectRow(0, 0, 1, 10, 20);
 
         DataFrame df_r = df2.hConcat(df1);
 
-        new DFAsserts(df_r, "c", "d", "a", "b")
+        new DataFrameAsserts(df_r, "c", "d", "a", "b")
                 .expectHeight(1)
                 .expectRow(0, 10, 20, 0, 1);
     }
@@ -43,7 +43,7 @@ public class DataFrame_HConcat_Test {
 
         DataFrame df = df1.hConcat(df2);
 
-        new DFAsserts(df, "b", "c")
+        new DataFrameAsserts(df, "b", "c")
                 .expectHeight(2)
                 .expectRow(0, 1, 10)
                 .expectRow(1, 3, 30);
@@ -65,7 +65,7 @@ public class DataFrame_HConcat_Test {
 
         DataFrame df = df1.hConcat(Index.forLabels("x", "y"), JoinType.inner, df2, RowCombiner.zip(df1.width()));
 
-        new DFAsserts(df, "x", "y")
+        new DataFrameAsserts(df, "x", "y")
                 .expectHeight(2)
                 .expectRow(0, 1, 10)
                 .expectRow(1, 3, 30);
@@ -96,7 +96,7 @@ public class DataFrame_HConcat_Test {
 
         DataFrame df = df1.hConcat(Index.forLabels("x", "y"), JoinType.right, df2, c);
 
-        new DFAsserts(df, "x", "y")
+        new DataFrameAsserts(df, "x", "y")
                 .expectHeight(3)
                 .expectRow(0, 20, 0)
                 .expectRow(1, 40, 2)
@@ -114,13 +114,13 @@ public class DataFrame_HConcat_Test {
 
         DataFrame df_l = df1.hConcat(JoinType.inner, df2);
 
-        new DFAsserts(df_l, "a", "b", "c", "d")
+        new DataFrameAsserts(df_l, "a", "b", "c", "d")
                 .expectHeight(1)
                 .expectRow(0, 0, 1, 10, 20);
 
         DataFrame df_r = df2.hConcat(df1);
 
-        new DFAsserts(df_r, "c", "d", "a", "b")
+        new DataFrameAsserts(df_r, "c", "d", "a", "b")
                 .expectHeight(1)
                 .expectRow(0, 10, 20, 0, 1);
     }
@@ -136,14 +136,14 @@ public class DataFrame_HConcat_Test {
 
         DataFrame df_l = df1.hConcat(JoinType.left, df2);
 
-        new DFAsserts(df_l, "a", "b")
+        new DataFrameAsserts(df_l, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, 0, 10)
                 .expectRow(1, 1, null);
 
         DataFrame df_r = df2.hConcat(JoinType.left, df1);
 
-        new DFAsserts(df_r, "b", "a")
+        new DataFrameAsserts(df_r, "b", "a")
                 .expectHeight(1)
                 .expectRow(0, 10, 0);
     }
@@ -158,13 +158,13 @@ public class DataFrame_HConcat_Test {
         DataFrame df2 = DataFrame.newFrame("b").foldByRow(10);
 
         DataFrame df_l = df1.hConcat(JoinType.right, df2);
-        new DFAsserts(df_l, "a", "b")
+        new DataFrameAsserts(df_l, "a", "b")
                 .expectHeight(1)
                 .expectRow(0, 0, 10);
 
 
         DataFrame df_r = df2.hConcat(JoinType.right, df1);
-        new DFAsserts(df_r, "b", "a")
+        new DataFrameAsserts(df_r, "b", "a")
                 .expectHeight(2)
                 .expectRow(0, 10, 0)
                 .expectRow(1, null, 1);
@@ -180,14 +180,14 @@ public class DataFrame_HConcat_Test {
         DataFrame df2 = DataFrame.newFrame("b").foldByRow(10);
 
         DataFrame df_l = df1.hConcat(JoinType.full, df2);
-        new DFAsserts(df_l, "a", "b")
+        new DataFrameAsserts(df_l, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, 0, 10)
                 .expectRow(1, 1, null);
 
 
         DataFrame df_r = df2.hConcat(JoinType.full, df1);
-        new DFAsserts(df_r, "b", "a")
+        new DataFrameAsserts(df_r, "b", "a")
                 .expectHeight(2)
                 .expectRow(0, 10, 0)
                 .expectRow(1, null, 1);

@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
 public class HasherTest {
@@ -21,7 +21,7 @@ public class HasherTest {
                 .on(Hasher.forColumn("a"), Hasher.forColumn("a"))
                 .with(df2);
 
-        new DFAsserts(df, "a", "b", "a_", "b_")
+        new DataFrameAsserts(df, "a", "b", "a_", "b_")
                 .expectHeight(2)
                 .expectRow(0, 2, "y", 2, "a")
                 .expectRow(1, 2, "y", 2, "b");
@@ -43,7 +43,7 @@ public class HasherTest {
                 .on(Hasher.forColumn(0), Hasher.forColumn(0))
                 .with(df2);
 
-        new DFAsserts(df, "a", "b", "a_", "b_")
+        new DataFrameAsserts(df, "a", "b", "a_", "b_")
                 .expectHeight(2)
                 .expectRow(0, 2, "y", 2, "a")
                 .expectRow(1, 2, "y", 2, "b");
@@ -67,7 +67,7 @@ public class HasherTest {
                 .on(Hasher.forColumn("a").and("b").and("c"), Hasher.forColumn("x").and("y").and("z"))
                 .with(df2);
 
-        new DFAsserts(df, "a", "b", "c", "x", "y", "z")
+        new DataFrameAsserts(df, "a", "b", "c", "x", "y", "z")
                 .expectHeight(1)
                 .expectRow(0, 2, "y", 4L, 2, "y", 4L);
     }
@@ -89,7 +89,7 @@ public class HasherTest {
                 .on(Hasher.forColumn(0).and(1).and(2), Hasher.forColumn(0).and(1).and(2))
                 .with(df2);
 
-        new DFAsserts(df, "a", "b", "c", "x", "y", "z")
+        new DataFrameAsserts(df, "a", "b", "c", "x", "y", "z")
                 .expectHeight(1)
                 .expectRow(0, 2, "y", 4L, 2, "y", 4L);
     }

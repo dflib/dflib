@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
 public class ColumnDataFrameTest {
@@ -12,7 +12,7 @@ public class ColumnDataFrameTest {
                 IntSeries.forInts(1, 2),
                 IntSeries.forInts(3, 4));
 
-        new DFAsserts(df, i).expectHeight(2);
+        new DataFrameAsserts(df, i).expectHeight(2);
     }
 
     @Test
@@ -20,6 +20,6 @@ public class ColumnDataFrameTest {
         Index i = Index.forLabels("a", "b");
         ColumnDataFrame df = new ColumnDataFrame(i);
 
-        new DFAsserts(df, i).expectHeight(0);
+        new DataFrameAsserts(df, i).expectHeight(0);
     }
 }

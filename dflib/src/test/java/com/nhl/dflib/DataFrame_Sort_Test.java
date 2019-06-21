@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -17,13 +17,13 @@ public class DataFrame_Sort_Test {
         DataFrame df = dfi.sort(r -> (Integer) r.get("a"));
         assertNotSame(dfi, df);
 
-        new DFAsserts(dfi, "a", "b")
+        new DataFrameAsserts(dfi, "a", "b")
                 .expectHeight(3)
                 .expectRow(0, 0, 1)
                 .expectRow(1, 2, 3)
                 .expectRow(2, -1, 2);
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(3)
                 .expectRow(0, -1, 2)
                 .expectRow(1, 0, 1)
@@ -41,7 +41,7 @@ public class DataFrame_Sort_Test {
         DataFrame dfab = dfi.sort(new String[]{"a", "b"}, new boolean[]{true, true});
         assertNotSame(dfi, dfab);
 
-        new DFAsserts(dfab, "a", "b")
+        new DataFrameAsserts(dfab, "a", "b")
                 .expectHeight(3)
                 .expectRow(0, 0, 2)
                 .expectRow(1, 0, 4)
@@ -50,7 +50,7 @@ public class DataFrame_Sort_Test {
         DataFrame dfba = dfi.sort(new String[]{"b", "a"}, new boolean[]{true, true});
         assertNotSame(dfi, dfba);
 
-        new DFAsserts(dfba, "a", "b")
+        new DataFrameAsserts(dfba, "a", "b")
                 .expectHeight(3)
                 .expectRow(0, 0, 2)
                 .expectRow(1, 2, 2)
@@ -68,7 +68,7 @@ public class DataFrame_Sort_Test {
         DataFrame dfab = dfi.sort(new int[]{0, 1}, new boolean[]{true, true});
         assertNotSame(dfi, dfab);
 
-        new DFAsserts(dfab, "a", "b")
+        new DataFrameAsserts(dfab, "a", "b")
                 .expectHeight(3)
                 .expectRow(0, 0, 2)
                 .expectRow(1, 0, 4)
@@ -77,7 +77,7 @@ public class DataFrame_Sort_Test {
         DataFrame dfba = dfi.sort(new int[]{1, 0}, new boolean[]{true, true});
         assertNotSame(dfi, dfba);
 
-        new DFAsserts(dfba, "a", "b")
+        new DataFrameAsserts(dfba, "a", "b")
                 .expectHeight(3)
                 .expectRow(0, 0, 2)
                 .expectRow(1, 2, 2)
@@ -95,7 +95,7 @@ public class DataFrame_Sort_Test {
         DataFrame dfab = dfi.sort(1, false);
         assertNotSame(dfi, dfab);
 
-        new DFAsserts(dfab, "a", "b")
+        new DataFrameAsserts(dfab, "a", "b")
                 .expectHeight(3)
                 .expectRow(0, 2, 4)
                 .expectRow(1, 0, 3)
@@ -104,7 +104,7 @@ public class DataFrame_Sort_Test {
         DataFrame dfba = dfi.sort(1, true);
         assertNotSame(dfi, dfba);
 
-        new DFAsserts(dfba, "a", "b")
+        new DataFrameAsserts(dfba, "a", "b")
                 .expectHeight(3)
                 .expectRow(0, 0, 2)
                 .expectRow(1, 0, 3)

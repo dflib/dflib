@@ -1,7 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.series.IntArraySeries;
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
 import static java.util.Arrays.asList;
@@ -15,7 +15,7 @@ public class DataFrame_SelectTest {
                 2, "y")
                 .selectColumns("b");
 
-        new DFAsserts(df, "b")
+        new DataFrameAsserts(df, "b")
                 .expectHeight(2)
                 .expectRow(0, "x")
                 .expectRow(1, "y");
@@ -28,7 +28,7 @@ public class DataFrame_SelectTest {
                 2, "y")
                 .selectColumns("b", "b", "b");
 
-        new DFAsserts(df, "b", "b_", "b__")
+        new DataFrameAsserts(df, "b", "b_", "b__")
                 .expectHeight(2)
                 .expectRow(0, "x", "x", "x")
                 .expectRow(1, "y", "y", "y");
@@ -42,7 +42,7 @@ public class DataFrame_SelectTest {
                 1, "z")
                 .selectRows(0, 2);
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, 5, "x")
                 .expectRow(1, 1, "z");
@@ -67,7 +67,7 @@ public class DataFrame_SelectTest {
                 1, "z")
                 .select(asList(0, 2));
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, 5, "x")
                 .expectRow(1, 1, "z");
@@ -82,7 +82,7 @@ public class DataFrame_SelectTest {
                 1, "z")
                 .select(Series.forData(0, 2));
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, 5, "x")
                 .expectRow(1, 1, "z");
@@ -96,7 +96,7 @@ public class DataFrame_SelectTest {
                 1, "z")
                 .selectRows(new IntArraySeries(0, 2));
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, 5, "x")
                 .expectRow(1, 1, "z");
@@ -110,7 +110,7 @@ public class DataFrame_SelectTest {
                 1, "z")
                 .selectRows(2, 1);
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, 1, "z")
                 .expectRow(1, 9, "y");
@@ -124,7 +124,7 @@ public class DataFrame_SelectTest {
                 1, "z")
                 .selectRows(2, 1, 1, 2);
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(4)
                 .expectRow(0, 1, "z")
                 .expectRow(1, 9, "y")
@@ -140,7 +140,7 @@ public class DataFrame_SelectTest {
                 2, "y", "n")
                 .selectColumns(Index.forLabels("b", "a"));
 
-        new DFAsserts(df, "b", "a")
+        new DataFrameAsserts(df, "b", "a")
                 .expectHeight(2)
                 .expectRow(0, "x", 1)
                 .expectRow(1, "y", 2);

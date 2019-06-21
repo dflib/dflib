@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -15,7 +15,7 @@ public class DataFrame_RenameColumnsTest {
                 2, "y")
                 .renameColumns("c", "d");
 
-        new DFAsserts(df, "c", "d")
+        new DataFrameAsserts(df, "c", "d")
                 .expectHeight(2)
                 .expectRow(0, 1, "x")
                 .expectRow(1, 2, "y");
@@ -40,7 +40,7 @@ public class DataFrame_RenameColumnsTest {
                 2, "y")
                 .renameColumns(names);
 
-        new DFAsserts(df, "a", "c")
+        new DataFrameAsserts(df, "a", "c")
                 .expectHeight(2)
                 .expectRow(0, 1, "x")
                 .expectRow(1, 2, "y");
@@ -53,7 +53,7 @@ public class DataFrame_RenameColumnsTest {
                 2, "y")
                 .renameColumns(String::toUpperCase);
 
-        new DFAsserts(df, "A", "B")
+        new DataFrameAsserts(df, "A", "B")
                 .expectHeight(2)
                 .expectRow(0, 1, "x")
                 .expectRow(1, 2, "y");

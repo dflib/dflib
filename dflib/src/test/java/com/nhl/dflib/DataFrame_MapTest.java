@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
 public class DataFrame_MapTest {
@@ -18,7 +18,7 @@ public class DataFrame_MapTest {
                     t.set(1, f.get(1));
                 });
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, 10, "x")
                 .expectRow(1, 20, "y");

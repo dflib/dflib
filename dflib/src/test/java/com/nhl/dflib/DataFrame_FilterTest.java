@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
 public class DataFrame_FilterTest {
@@ -11,7 +11,7 @@ public class DataFrame_FilterTest {
         DataFrame df = DataFrame.newFrame("a").foldByRow(10, 20)
                 .filterRows("a", (Integer v) -> v > 15);
 
-        new DFAsserts(df, "a")
+        new DataFrameAsserts(df, "a")
                 .expectHeight(1)
                 .expectRow(0, 20);
     }
@@ -22,7 +22,7 @@ public class DataFrame_FilterTest {
         DataFrame df = DataFrame.newFrame("a").foldByRow(10, 20)
                 .filterRows(0, (Integer v) -> v > 15);
 
-        new DFAsserts(df, "a")
+        new DataFrameAsserts(df, "a")
                 .expectHeight(1)
                 .expectRow(0, 20);
     }

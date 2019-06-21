@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
 public class DataFrameConditionsTest {
@@ -18,7 +18,7 @@ public class DataFrameConditionsTest {
 
         DataFrame eq = df1.eq(df2);
 
-        new DFAsserts(eq, "a", "b")
+        new DataFrameAsserts(eq, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, true, true)
                 .expectRow(1, true, true);
@@ -37,7 +37,7 @@ public class DataFrameConditionsTest {
 
         DataFrame eq = df1.eq(df2);
 
-        new DFAsserts(eq, "a", "b")
+        new DataFrameAsserts(eq, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, true, false)
                 .expectRow(1, true, true);
@@ -56,7 +56,7 @@ public class DataFrameConditionsTest {
 
         DataFrame eq = df1.ne(df2);
 
-        new DFAsserts(eq, "a", "b")
+        new DataFrameAsserts(eq, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, false, false)
                 .expectRow(1, false, false);
@@ -75,7 +75,7 @@ public class DataFrameConditionsTest {
 
         DataFrame eq = df1.ne(df2);
 
-        new DFAsserts(eq, "a", "b")
+        new DataFrameAsserts(eq, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, false, false)
                 .expectRow(1, false, true);

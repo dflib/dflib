@@ -2,7 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.join.JoinIndicator;
 import com.nhl.dflib.join.JoinPredicate;
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
 import java.util.Objects;
@@ -24,7 +24,7 @@ public class DataFrame_JoinsTest {
 
         DataFrame df = df1.innerJoin(df2, JoinPredicate.on(0, 0));
 
-        new DFAsserts(df, "a", "b", "c", "d")
+        new DataFrameAsserts(df, "a", "b", "c", "d")
                 .expectHeight(2)
                 .expectRow(0, 2, "y", 2, "a")
                 .expectRow(1, 2, "y", 2, "b");
@@ -46,7 +46,7 @@ public class DataFrame_JoinsTest {
                 .predicatedBy((lr, rr) -> Objects.equals(lr.get(0), rr.get(0)))
                 .with(df2);
 
-        new DFAsserts(df, "a", "b", "c", "d")
+        new DataFrameAsserts(df, "a", "b", "c", "d")
                 .expectHeight(2)
                 .expectRow(0, 2, "y", 2, "a")
                 .expectRow(1, 2, "y", 2, "b");
@@ -68,7 +68,7 @@ public class DataFrame_JoinsTest {
                 .predicatedBy((lr, rr) -> false)
                 .with(df2);
 
-        new DFAsserts(df, "a", "b", "c", "d")
+        new DataFrameAsserts(df, "a", "b", "c", "d")
                 .expectHeight(0);
     }
 
@@ -88,7 +88,7 @@ public class DataFrame_JoinsTest {
                 .predicatedBy((lr, rr) -> Objects.equals(lr.get(0), rr.get(0)))
                 .with(df2);
 
-        new DFAsserts(df, "a", "b", "a_", "b_")
+        new DataFrameAsserts(df, "a", "b", "a_", "b_")
                 .expectHeight(2)
                 .expectRow(0, 2, "y", 2, "a")
                 .expectRow(1, 2, "y", 2, "b");
@@ -111,7 +111,7 @@ public class DataFrame_JoinsTest {
                 .predicatedBy((lr, rr) -> Objects.equals(lr.get(0), rr.get(0)))
                 .with(df2);
 
-        new DFAsserts(df, "a", "b", "c", "d")
+        new DataFrameAsserts(df, "a", "b", "c", "d")
                 .expectHeight(3)
                 .expectRow(0, 1, "x", null, null)
                 .expectRow(1, 2, "y", 2, "a")
@@ -135,7 +135,7 @@ public class DataFrame_JoinsTest {
                 .predicatedBy((lr, rr) -> Objects.equals(lr.get(0), rr.get(0)))
                 .with(df1);
 
-        new DFAsserts(df, "c", "d", "a", "b")
+        new DataFrameAsserts(df, "c", "d", "a", "b")
                 .expectHeight(3)
                 .expectRow(0, null, null, 1, "x")
                 .expectRow(1, 2, "a", 2, "y")
@@ -159,7 +159,7 @@ public class DataFrame_JoinsTest {
                 .predicatedBy((lr, rr) -> Objects.equals(lr.get(0), rr.get(0)))
                 .with(df2);
 
-        new DFAsserts(df, "a", "b", "c", "d")
+        new DataFrameAsserts(df, "a", "b", "c", "d")
                 .expectHeight(4)
                 .expectRow(0, 1, "x", null, null)
                 .expectRow(1, 2, "y", 2, "a")
@@ -184,7 +184,7 @@ public class DataFrame_JoinsTest {
                 .indicatorColumn("ind")
                 .with(df2);
 
-        new DFAsserts(df, "a", "b", "c", "d", "ind")
+        new DataFrameAsserts(df, "a", "b", "c", "d", "ind")
                 .expectHeight(4)
                 .expectRow(0, 1, "x", null, null, JoinIndicator.left_only)
                 .expectRow(1, 2, "y", 2, "a", JoinIndicator.both)
@@ -210,7 +210,7 @@ public class DataFrame_JoinsTest {
                 .on(Hasher.forColumn(0), Hasher.forColumn(1))
                 .with(df2);
 
-        new DFAsserts(df, "a", "b", "c", "d")
+        new DataFrameAsserts(df, "a", "b", "c", "d")
                 .expectHeight(3)
                 .expectRow(0, 2, "y", "a", 2)
                 .expectRow(1, 2, "y", "b", 2)
@@ -234,7 +234,7 @@ public class DataFrame_JoinsTest {
                 .on(0)
                 .with(df2);
 
-        new DFAsserts(df, "a", "b", "c", "d")
+        new DataFrameAsserts(df, "a", "b", "c", "d")
                 .expectHeight(4)
                 .expectRow(0, 1, "x", null, null)
                 .expectRow(1, 2, "y", 2, "a")
@@ -259,7 +259,7 @@ public class DataFrame_JoinsTest {
                 .on(0)
                 .with(df2);
 
-        new DFAsserts(df, "a", "b", "a_", "b_")
+        new DataFrameAsserts(df, "a", "b", "a_", "b_")
                 .expectHeight(2)
                 .expectRow(0, 2, "y", 2, "a")
                 .expectRow(1, 2, "y", 2, "b");
@@ -281,7 +281,7 @@ public class DataFrame_JoinsTest {
                 .on(0)
                 .with(df2);
 
-        new DFAsserts(df, "a", "b", "c", "d")
+        new DataFrameAsserts(df, "a", "b", "c", "d")
                 .expectHeight(3)
                 .expectRow(0, 1, "x", null, null)
                 .expectRow(1, 2, "y", 2, "a")
@@ -304,7 +304,7 @@ public class DataFrame_JoinsTest {
                 .on(0)
                 .with(df1);
 
-        new DFAsserts(df, "c", "d", "a", "b")
+        new DataFrameAsserts(df, "c", "d", "a", "b")
                 .expectHeight(3)
                 .expectRow(0, null, null, 1, "x")
                 .expectRow(1, 2, "a", 2, "y")
@@ -327,7 +327,7 @@ public class DataFrame_JoinsTest {
                 .on("c", "a")
                 .with(df1);
 
-        new DFAsserts(df, "c", "d", "a", "b")
+        new DataFrameAsserts(df, "c", "d", "a", "b")
                 .expectHeight(3)
                 .expectRow(0, null, null, 1, "x")
                 .expectRow(1, 2, "a", 2, "y")
@@ -350,7 +350,7 @@ public class DataFrame_JoinsTest {
                 .on("a")
                 .with(df1);
 
-        new DFAsserts(df, "a", "d", "a_", "b")
+        new DataFrameAsserts(df, "a", "d", "a_", "b")
                 .expectHeight(3)
                 .expectRow(0, null, null, 1, "x")
                 .expectRow(1, 2, "a", 2, "y")
@@ -373,7 +373,7 @@ public class DataFrame_JoinsTest {
                 .on(0)
                 .with(df2);
 
-        new DFAsserts(df, "a", "b", "c", "d")
+        new DataFrameAsserts(df, "a", "b", "c", "d")
                 .expectHeight(4)
                 .expectRow(0, 1, "x", null, null)
                 .expectRow(1, 2, "y", 2, "a")
@@ -399,7 +399,7 @@ public class DataFrame_JoinsTest {
                 .on("d", "b")
                 .with(df1);
 
-        new DFAsserts(df, "c", "d", "a", "b")
+        new DataFrameAsserts(df, "c", "d", "a", "b")
                 .expectHeight(1)
                 .expectRow(0, 2, "a", 2, "a");
     }
@@ -421,7 +421,7 @@ public class DataFrame_JoinsTest {
                 .indicatorColumn("ind")
                 .with(df2);
 
-        new DFAsserts(df, "a", "b", "c", "d", "ind")
+        new DataFrameAsserts(df, "a", "b", "c", "d", "ind")
                 .expectHeight(4)
                 .expectRow(0, 1, "x", null, null, JoinIndicator.left_only)
                 .expectRow(1, 2, "y", 2, "a", JoinIndicator.both)

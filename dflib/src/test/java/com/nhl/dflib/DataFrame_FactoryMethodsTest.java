@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public class DataFrame_FactoryMethodsTest {
 
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(1, 2);
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(1)
                 .expectRow(0, 1, 2);
     }
@@ -39,7 +39,7 @@ public class DataFrame_FactoryMethodsTest {
         Index i = Index.forLabels("a", "b");
         DataFrame df = DataFrame.forObjects(i, beans, b -> new Object[]{b.a, b.b});
 
-        new DFAsserts(df, i)
+        new DataFrameAsserts(df, i)
                 .expectHeight(2)
                 .expectRow(0, 5, 4)
                 .expectRow(1, 3, 1);
@@ -52,7 +52,7 @@ public class DataFrame_FactoryMethodsTest {
         Index i = Index.forLabels("a", "b");
         DataFrame df = DataFrame.forStreamFoldByRow(i, IntStream.range(1, 5).boxed());
 
-        new DFAsserts(df, i)
+        new DataFrameAsserts(df, i)
                 .expectHeight(2)
                 .expectRow(0, 1, 2)
                 .expectRow(1, 3, 4);
@@ -65,7 +65,7 @@ public class DataFrame_FactoryMethodsTest {
         Index i = Index.forLabels("a", "b");
         DataFrame df = DataFrame.forStreamFoldByRow(i, IntStream.range(1, 6).boxed());
 
-        new DFAsserts(df, i)
+        new DataFrameAsserts(df, i)
                 .expectHeight(3)
                 .expectRow(0, 1, 2)
                 .expectRow(1, 3, 4)
@@ -79,7 +79,7 @@ public class DataFrame_FactoryMethodsTest {
         Index i = Index.forLabels("a", "b");
         DataFrame df = DataFrame.forSequenceFoldByRow(i);
 
-        new DFAsserts(df, i).expectHeight(0);
+        new DataFrameAsserts(df, i).expectHeight(0);
     }
 
     @Deprecated
@@ -89,7 +89,7 @@ public class DataFrame_FactoryMethodsTest {
         Index i = Index.forLabels("a", "b");
         DataFrame df = DataFrame.forSequenceFoldByRow(i, 1, 2);
 
-        new DFAsserts(df, i)
+        new DataFrameAsserts(df, i)
                 .expectHeight(1)
                 .expectRow(0, 1, 2);
     }
@@ -101,7 +101,7 @@ public class DataFrame_FactoryMethodsTest {
         Index i = Index.forLabels("a", "b");
         DataFrame df = DataFrame.forSequenceFoldByRow(i, 1, 2, 3);
 
-        new DFAsserts(df, i)
+        new DataFrameAsserts(df, i)
                 .expectHeight(2)
                 .expectRow(0, 1, 2)
                 .expectRow(1, 3, null);
@@ -114,7 +114,7 @@ public class DataFrame_FactoryMethodsTest {
         Index i = Index.forLabels("a", "b");
         DataFrame df = DataFrame.forSequenceFoldByRow(i, 1, 2, 3, 4);
 
-        new DFAsserts(df, i)
+        new DataFrameAsserts(df, i)
                 .expectHeight(2)
                 .expectRow(0, 1, 2)
                 .expectRow(1, 3, 4);
@@ -127,7 +127,7 @@ public class DataFrame_FactoryMethodsTest {
         Index i = Index.forLabels("a", "b");
         DataFrame df = DataFrame.forSequenceFoldByColumn(i, 1, 2, 3, 4);
 
-        new DFAsserts(df, i)
+        new DataFrameAsserts(df, i)
                 .expectHeight(2)
                 .expectRow(0, 1, 3)
                 .expectRow(1, 2, 4);
@@ -140,7 +140,7 @@ public class DataFrame_FactoryMethodsTest {
         Index i = Index.forLabels("a", "b");
         DataFrame df = DataFrame.forSequenceFoldByColumn(i, 1, 2, 3, 4, 5);
 
-        new DFAsserts(df, i)
+        new DataFrameAsserts(df, i)
                 .expectHeight(3)
                 .expectRow(0, 1, 4)
                 .expectRow(1, 2, 5)
@@ -156,7 +156,7 @@ public class DataFrame_FactoryMethodsTest {
                 new Object[]{1},
                 new Object[]{2}));
 
-        new DFAsserts(df, i)
+        new DataFrameAsserts(df, i)
                 .expectHeight(2)
                 .expectRow(0, 1)
                 .expectRow(1, 2);

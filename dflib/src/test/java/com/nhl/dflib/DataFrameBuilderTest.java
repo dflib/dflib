@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
 import java.util.stream.DoubleStream;
@@ -18,7 +18,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .empty();
 
-        new DFAsserts(df, "a", "b").expectHeight(0);
+        new DataFrameAsserts(df, "a", "b").expectHeight(0);
     }
 
     @Test
@@ -30,7 +30,7 @@ public class DataFrameBuilderTest {
                         IntSeries.forInts(1, 2, 3)
                 );
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, "a", 1)
                 .expectRow(1, "b", 2)
                 .expectRow(2, "c", 3);
@@ -45,7 +45,7 @@ public class DataFrameBuilderTest {
                 .addRow("c", 3)
                 .create();
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, "a", 1)
                 .expectRow(1, "b", 2)
                 .expectRow(2, "c", 3);
@@ -64,7 +64,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .rows(rows);
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, "a", 1)
                 .expectRow(1, "b", 2)
                 .expectRow(2, "c", 3);
@@ -76,7 +76,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldByRow("a", 1, "b", 2, "c", 3);
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, "a", 1)
                 .expectRow(1, "b", 2)
                 .expectRow(2, "c", 3);
@@ -88,7 +88,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldByRow("a", 1, "b", 2, "c");
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, "a", 1)
                 .expectRow(1, "b", 2)
                 .expectRow(2, "c", null);
@@ -100,7 +100,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldByColumn("a", 1, "b", 2, "c", 3);
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, "a", 2)
                 .expectRow(1, 1, "c")
                 .expectRow(2, "b", 3);
@@ -112,7 +112,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldByColumn("a", 1, "b", 2, "c");
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, "a", 2)
                 .expectRow(1, 1, "c")
                 .expectRow(2, "b", null);
@@ -124,7 +124,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b", "c")
                 .foldByColumn("a", "b", "c", "d", "e", "f", "g", "h", "i", "j");
 
-        new DFAsserts(df, "a", "b", "c")
+        new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(4)
                 .expectRow(0, "a", "e", "i")
                 .expectRow(1, "b", "f", "j")
@@ -139,7 +139,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldStreamByRow(Stream.of("a", 1, "b", 2, "c", 3));
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, "a", 1)
                 .expectRow(1, "b", 2)
                 .expectRow(2, "c", 3);
@@ -151,7 +151,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldStreamByRow(Stream.of("a", 1, "b", 2, "c"));
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, "a", 1)
                 .expectRow(1, "b", 2)
                 .expectRow(2, "c", null);
@@ -163,7 +163,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldStreamByColumn(Stream.of("a", 1, "b", 2, "c", 3));
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, "a", 2)
                 .expectRow(1, 1, "c")
                 .expectRow(2, "b", 3);
@@ -175,7 +175,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldStreamByColumn(Stream.of("a", 1, "b", 2, "c"));
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, "a", 2)
                 .expectRow(1, 1, "c")
                 .expectRow(2, "b", null);
@@ -187,7 +187,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldIterableByRow(asList("a", 1, "b", 2, "c", 3));
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, "a", 1)
                 .expectRow(1, "b", 2)
                 .expectRow(2, "c", 3);
@@ -199,7 +199,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldIterableByRow(asList("a", 1, "b", 2, "c"));
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, "a", 1)
                 .expectRow(1, "b", 2)
                 .expectRow(2, "c", null);
@@ -211,7 +211,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldIterableByColumn(asList("a", 1, "b", 2, "c", 3));
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, "a", 2)
                 .expectRow(1, 1, "c")
                 .expectRow(2, "b", 3);
@@ -223,7 +223,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldIterableByColumn(asList("a", 1, "b", 2, "c"));
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, "a", 2)
                 .expectRow(1, 1, "c")
                 .expectRow(2, "b", null);
@@ -235,7 +235,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .objectsToRows(asList("a", "bc", "def"), s -> new Object[]{s, s.length()});
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, "a", 1)
                 .expectRow(1, "bc", 2)
                 .expectRow(2, "def", 3);
@@ -247,7 +247,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldIntByColumn(-9999, 0, 1, 2, 3, 4, 5);
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectIntColumns(0, 1)
                 .expectRow(0, 0, 3)
                 .expectRow(1, 1, 4)
@@ -260,7 +260,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldIntByColumn(-9999, 0, 1, 2, 3, 4);
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectIntColumns(0, 1)
                 .expectRow(0, 0, 3)
                 .expectRow(1, 1, 4)
@@ -274,7 +274,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldIntStreamByRow(-9999, IntStream.of(-1, 1, 0, 2, 5, 3));
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, -1, 1)
                 .expectRow(1, 0, 2)
                 .expectRow(2, 5, 3)
@@ -287,7 +287,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldIntStreamByRow(-9999, IntStream.of(-1, 1, 0, 2, 5));
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, -1, 1)
                 .expectRow(1, 0, 2)
                 .expectRow(2, 5, -9999)
@@ -301,7 +301,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldIntStreamByColumn(-9999, IntStream.of(-1, 1, 0, 2, 5, 3));
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectIntColumns(0, 1)
                 .expectRow(0, -1, 2)
                 .expectRow(1, 1, 5)
@@ -314,7 +314,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldIntStreamByColumn(-9999, IntStream.of(-1, 1, 0, 2, 5));
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectIntColumns(0, 1)
                 .expectRow(0, -1, 2)
                 .expectRow(1, 1, 5)
@@ -327,7 +327,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b", "c")
                 .foldIntStreamByColumn(IntStream.range(0, 10));
 
-        new DFAsserts(df, "a", "b", "c")
+        new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(4)
                 .expectIntColumns(0, 1, 2)
                 .expectRow(0, 0, 4, 8)
@@ -342,7 +342,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldLongByColumn(-9999, 0, 1, 2, 3, 4, 5);
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(3)
                 .expectLongColumns(0, 1)
                 .expectRow(0, 0L, 3L)
@@ -356,7 +356,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldLongByColumn(-9999, 0, 1, 2, 3, 4);
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectLongColumns(0, 1)
                 .expectRow(0, 0L, 3L)
                 .expectRow(1, 1L, 4L)
@@ -369,7 +369,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldLongStreamByRow(-9999L, LongStream.of(-1, 1, 0, 2, 5, 3));
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectLongColumns(0, 1)
                 .expectRow(0, -1L, 1L)
                 .expectRow(1, 0L, 2L)
@@ -382,7 +382,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldLongStreamByRow(-9999L, LongStream.of(-1, 1, 0, 2, 5));
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectLongColumns(0, 1)
                 .expectRow(0, -1L, 1L)
                 .expectRow(1, 0L, 2L)
@@ -396,7 +396,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldLongStreamByColumn(-9999, LongStream.of(-1, 1, 0, 2, 5, 3));
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectLongColumns(0, 1)
                 .expectRow(0, -1L, 2L)
                 .expectRow(1, 1L, 5L)
@@ -409,7 +409,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldLongStreamByColumn(-9999, LongStream.of(-1, 1, 0, 2, 5));
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectLongColumns(0, 1)
                 .expectRow(0, -1L, 2L)
                 .expectRow(1, 1L, 5L)
@@ -422,7 +422,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b", "c")
                 .foldLongStreamByColumn(LongStream.range(0, 10));
 
-        new DFAsserts(df, "a", "b", "c")
+        new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(4)
                 .expectLongColumns(0, 1, 2)
                 .expectRow(0, 0L, 4L, 8L)
@@ -437,7 +437,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldDoubleByColumn(-9999.9, 0, 1.1, 2, 3, 4, 5);
 
-        new DFAsserts(df, "a", "b").expectHeight(3)
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectDoubleColumns(0, 1)
                 .expectRow(0, 0., 3.)
                 .expectRow(1, 1.1, 4.)
@@ -450,7 +450,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldDoubleByColumn(-9999.9, 0, 1.1, 2, 3, 4);
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(3)
                 .expectDoubleColumns(0, 1)
                 .expectRow(0, 0., 3.)
@@ -464,7 +464,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldDoubleStreamByRow(-9999.9, DoubleStream.of(-1, 1.1, 0, 2, 5, 3));
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(3)
                 .expectDoubleColumns(0, 1)
                 .expectRow(0, -1., 1.1)
@@ -478,7 +478,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldDoubleStreamByRow(-9999.9, DoubleStream.of(-1, 1.1, 0, 2, 5));
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(3)
                 .expectDoubleColumns(0, 1)
                 .expectRow(0, -1., 1.1)
@@ -492,7 +492,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldDoubleStreamByRow(DoubleStream.of(-1, 1.1, 0, 2, 5));
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(3)
                 .expectDoubleColumns(0, 1)
                 .expectRow(0, -1., 1.1)
@@ -506,7 +506,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldDoubleStreamByColumn(-9999.9, DoubleStream.of(-1, 1.1, 0, 2, 5, 3));
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(3)
                 .expectDoubleColumns(0, 1)
                 .expectRow(0, -1., 2.)
@@ -520,7 +520,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b")
                 .foldDoubleStreamByColumn(-9999.9, DoubleStream.of(-1, 1.1, 0, 2, 5));
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(3)
                 .expectDoubleColumns(0, 1)
                 .expectRow(0, -1., 2.)
@@ -534,7 +534,7 @@ public class DataFrameBuilderTest {
                 .builder("a", "b", "c")
                 .foldDoubleStreamByColumn(DoubleStream.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));
 
-        new DFAsserts(df, "a", "b", "c")
+        new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(4)
                 .expectDoubleColumns(0, 1, 2)
                 .expectRow(0, 0., 4., 8.)

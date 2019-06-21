@@ -1,7 +1,10 @@
 package com.nhl.dflib.test;
 
 import com.nhl.dflib.DataFrame;
+import org.junit.ComparisonFailure;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class DataFrameAssertsTest {
 
@@ -38,7 +41,9 @@ public class DataFrameAssertsTest {
     @Test
     public void testExpectRows_ByteArray() {
 
-        DataFrame df = DataFrame.newFrame("a").foldByRow(new byte[]{3, 4, 5}, new byte[]{}, null);
+        DataFrame df = DataFrame.newFrame("a")
+                .foldByRow(new byte[]{3, 4, 5}, new byte[]{}, null);
+
         new DataFrameAsserts(df, "a")
                 .expectHeight(3)
                 .expectRow(0, new Object[]{new byte[]{3, 4, 5}})
@@ -50,5 +55,35 @@ public class DataFrameAssertsTest {
     public void testExpectRows_ArryaTypeMismatch() {
         DataFrame df = DataFrame.newFrame("a").foldByRow(new int[]{3, 4, 5});
         new DataFrameAsserts(df, "a").expectRow(0, new Object[]{new long[]{3, 4, 5}});
+    }
+
+    @Test
+    public void testExpectRows_Mismatch() {
+
+        DataFrame df = DataFrame.newFrame("a").foldByRow("a", "b");
+
+        try {
+            new DataFrameAsserts(df, "a")
+                    .expectRow(0, "a")
+                    .expectRow(1, "c");
+
+            throw new RuntimeException("Must have failed comparision");
+        } catch (ComparisonFailure f) {
+            assertEquals("c", f.getExpected());
+            assertEquals("b", f.getActual());
+        }
+    }
+
+    @Test
+    public void testExpectHeight_Mismatch() {
+
+        DataFrame df = DataFrame.newFrame("a").foldByRow("a", "b");
+
+        try {
+            new DataFrameAsserts(df, "a").expectHeight(3);
+            throw new RuntimeException("Must have failed comparision");
+        } catch (AssertionError f) {
+            assertEquals("Unexpected DataFrame height expected:<3> but was:<2>", f.getMessage());
+        }
     }
 }

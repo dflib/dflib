@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
 import static java.util.Arrays.asList;
@@ -15,7 +15,7 @@ public class ValuePredicateTest {
                 .forSequenceFoldByRow(i1, 10, 20, 30, 40)
                 .filterRows("a", ValuePredicate.isIn(20, 40));
 
-        new DFAsserts(df, "a")
+        new DataFrameAsserts(df, "a")
                 .expectHeight(2)
                 .expectRow(0, 20)
                 .expectRow(1, 40);
@@ -29,7 +29,7 @@ public class ValuePredicateTest {
                 .forSequenceFoldByRow(i1, 10, 20, 30, 40)
                 .filterRows("a", ValuePredicate.isIn(asList(20, 40)));
 
-        new DFAsserts(df, "a")
+        new DataFrameAsserts(df, "a")
                 .expectHeight(2)
                 .expectRow(0, 20)
                 .expectRow(1, 40);
@@ -45,7 +45,7 @@ public class ValuePredicateTest {
                 .forSequenceFoldByRow(i1, 10, 20, 30, 40)
                 .filterRows("a", p);
 
-        new DFAsserts(df, "a")
+        new DataFrameAsserts(df, "a")
                 .expectHeight(1)
                 .expectRow(0, 20);
     }
@@ -60,7 +60,7 @@ public class ValuePredicateTest {
                 .forSequenceFoldByRow(i1, 10, 20, 30, 40)
                 .filterRows("a", p);
 
-        new DFAsserts(df, "a")
+        new DataFrameAsserts(df, "a")
                 .expectHeight(3)
                 .expectRow(0, 10)
                 .expectRow(1, 20)
@@ -77,7 +77,7 @@ public class ValuePredicateTest {
                 .forSequenceFoldByRow(i1, 10, 20, 30, 40)
                 .filterRows("a", p);
 
-        new DFAsserts(df, "a")
+        new DataFrameAsserts(df, "a")
                 .expectHeight(2)
                 .expectRow(0, 10)
                 .expectRow(1, 30);

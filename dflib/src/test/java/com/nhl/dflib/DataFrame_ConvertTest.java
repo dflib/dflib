@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
 import java.time.LocalDate;
@@ -16,7 +16,7 @@ public class DataFrame_ConvertTest {
                 .foldByRow(1, "x", 2, "y")
                 .convertColumn("a", v -> ((int) v) * 10);
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, 10, "x")
                 .expectRow(1, 20, "y");
@@ -32,7 +32,7 @@ public class DataFrame_ConvertTest {
                         null)
                 .convertColumn("a", ValueMapper.stringToDate());
 
-        new DFAsserts(df, "a")
+        new DataFrameAsserts(df, "a")
                 .expectHeight(3)
                 .expectRow(0, LocalDate.of(2018, 1, 5))
                 .expectRow(1, LocalDate.of(2019, 2, 28))
@@ -49,7 +49,7 @@ public class DataFrame_ConvertTest {
                         null)
                 .convertColumn("a", ValueMapper.stringToDate(DateTimeFormatter.ofPattern("yyyy MM dd")));
 
-        new DFAsserts(df, "a")
+        new DataFrameAsserts(df, "a")
                 .expectHeight(3)
                 .expectRow(0, LocalDate.of(2018, 1, 5))
                 .expectRow(1, LocalDate.of(2019, 2, 28))
@@ -66,7 +66,7 @@ public class DataFrame_ConvertTest {
                         null)
                 .convertColumn("a", ValueMapper.stringToDateTime());
 
-        new DFAsserts(df, "a")
+        new DataFrameAsserts(df, "a")
                 .expectHeight(3)
                 .expectRow(0, LocalDateTime.of(2018, 1, 5, 0, 1, 15))
                 .expectRow(1, LocalDateTime.of(2019, 2, 28, 13, 11, 12))
@@ -84,7 +84,7 @@ public class DataFrame_ConvertTest {
                 .toIntColumn("a", IntValueMapper.fromString());
 
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(3)
                 .expectRow(0, 1, "x")
                 .expectRow(1, 5, "z")
@@ -102,7 +102,7 @@ public class DataFrame_ConvertTest {
                 .toIntColumn(0, -1);
 
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(3)
                 .expectRow(0, 1, "x")
                 .expectRow(1, 5, "z")
@@ -128,7 +128,7 @@ public class DataFrame_ConvertTest {
                         "2", "y")
                 .toIntColumn(0, -100);
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(3)
                 .expectRow(0, 1, "x")
                 .expectRow(1, -100, "z")
@@ -146,7 +146,7 @@ public class DataFrame_ConvertTest {
                         0, "y")
                 .toEnumFromNumColumn(0, X.class);
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(3)
                 .expectRow(0, X.b, "x")
                 .expectRow(1, null, "z")
@@ -164,7 +164,7 @@ public class DataFrame_ConvertTest {
                         "a", "y")
                 .toEnumFromStringColumn(0, X.class);
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(3)
                 .expectRow(0, X.b, "x")
                 .expectRow(1, null, "z")

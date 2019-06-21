@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.Test;
 
@@ -23,7 +23,7 @@ public class DataFrame_AddDropMapColumnsTest {
                 2, "y")
                 .addColumn("c", r -> ((int) r.get(0)) * 10);
 
-        new DFAsserts(df, "a", "b", "c")
+        new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(2)
                 .expectRow(0, 1, "x", 10)
                 .expectRow(1, 2, "y", 20);
@@ -37,7 +37,7 @@ public class DataFrame_AddDropMapColumnsTest {
                 .selectColumns("a")
                 .addColumn("c", r -> ((int) r.get(0)) * 10);
 
-        new DFAsserts(df, "a", "c")
+        new DataFrameAsserts(df, "a", "c")
                 .expectHeight(2)
                 .expectRow(0, 1, 10)
                 .expectRow(1, 2, 20);
@@ -53,7 +53,7 @@ public class DataFrame_AddDropMapColumnsTest {
                 2, "y").addColumn("c", column);
 
 
-        new DFAsserts(df, "a", "b", "c")
+        new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(2)
                 .expectRow(0, 1, "x", "m")
                 .expectRow(1, 2, "y", "n");
@@ -87,7 +87,7 @@ public class DataFrame_AddDropMapColumnsTest {
                 2, "y")
                 .dropColumns("a");
 
-        new DFAsserts(df, "b")
+        new DataFrameAsserts(df, "b")
                 .expectHeight(2)
                 .expectRow(0, "x")
                 .expectRow(1, "y");
@@ -100,7 +100,7 @@ public class DataFrame_AddDropMapColumnsTest {
                 2, "y")
                 .dropColumns("b");
 
-        new DFAsserts(df, "a")
+        new DataFrameAsserts(df, "a")
                 .expectHeight(2)
                 .expectRow(0, 1)
                 .expectRow(1, 2);
@@ -113,7 +113,7 @@ public class DataFrame_AddDropMapColumnsTest {
                 2, "y")
                 .dropColumns();
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, 1, "x")
                 .expectRow(1, 2, "y");
@@ -126,7 +126,7 @@ public class DataFrame_AddDropMapColumnsTest {
                 2, "y")
                 .dropColumns("no_such_column");
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, 1, "x")
                 .expectRow(1, 2, "y");
@@ -139,7 +139,7 @@ public class DataFrame_AddDropMapColumnsTest {
                 2, "y")
                 .addRowNumber("rn");
 
-        new DFAsserts(df, "a", "b", "rn")
+        new DataFrameAsserts(df, "a", "b", "rn")
                 .expectHeight(2)
                 .expectRow(0, 1, "x", 0)
                 .expectRow(1, 2, "y", 1);

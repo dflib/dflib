@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -26,17 +26,17 @@ public class DataFrame_GroupByTest {
         assertEquals(3, gb.size());
         assertEquals(new HashSet<>(asList(0, 1, 2)), new HashSet<>(gb.getGroups()));
 
-        new DFAsserts(gb.getGroup(0), "a", "b")
+        new DataFrameAsserts(gb.getGroup(0), "a", "b")
                 .expectHeight(1)
                 .expectRow(0, 0, "a");
 
-        new DFAsserts(gb.getGroup(1), "a", "b")
+        new DataFrameAsserts(gb.getGroup(1), "a", "b")
                 .expectHeight(3)
                 .expectRow(0, 1, "x")
                 .expectRow(1, 1, "z")
                 .expectRow(2, 1, "x");
 
-        new DFAsserts(gb.getGroup(2), "a", "b")
+        new DataFrameAsserts(gb.getGroup(2), "a", "b")
                 .expectHeight(1)
                 .expectRow(0, 2, "y");
     }
@@ -67,13 +67,13 @@ public class DataFrame_GroupByTest {
         assertEquals(2, gb.size());
         assertEquals(new HashSet<>(asList(1, 2)), new HashSet<>(gb.getGroups()));
 
-        new DFAsserts(gb.getGroup(1), "a", "b")
+        new DataFrameAsserts(gb.getGroup(1), "a", "b")
                 .expectHeight(3)
                 .expectRow(0, 1, "x")
                 .expectRow(1, 1, "z")
                 .expectRow(2, 1, "x");
 
-        new DFAsserts(gb.getGroup(2), "a", "b")
+        new DataFrameAsserts(gb.getGroup(2), "a", "b")
                 .expectHeight(1)
                 .expectRow(0, 2, "y");
     }
@@ -89,7 +89,7 @@ public class DataFrame_GroupByTest {
 
         DataFrame df = df1.group("a").agg(Aggregator.sumLong("a"), Aggregator.concat("b", ";"));
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(3)
                 .expectRow(0, 3L, "x;z;x")
                 .expectRow(1, 2L, "y")
@@ -109,7 +109,7 @@ public class DataFrame_GroupByTest {
                 .group("b")
                 .agg(Aggregator.first("b"), Aggregator.sumLong("a"), Aggregator.medianDouble("a"));
 
-        new DFAsserts(df, "b", "a", "a_")
+        new DataFrameAsserts(df, "b", "a", "a_")
                 .expectHeight(3)
                 .expectRow(0, "x", 2L, 1.)
                 .expectRow(1, "y", 3L, 1.5)
@@ -128,7 +128,7 @@ public class DataFrame_GroupByTest {
         DataFrame df = df1.group("a").toDataFrame();
 
         // must be sorted by groups in the order they are encountered
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(5)
                 .expectRow(0, 1, "x")
                 .expectRow(1, 1, "y")
@@ -150,7 +150,7 @@ public class DataFrame_GroupByTest {
                 .head(2)
                 .toDataFrame();
 
-        new DFAsserts(df2, "a", "b")
+        new DataFrameAsserts(df2, "a", "b")
                 .expectHeight(4)
                 .expectRow(0, 1, "x")
                 .expectRow(1, 1, "y")
@@ -161,7 +161,7 @@ public class DataFrame_GroupByTest {
                 .head(1)
                 .toDataFrame();
 
-        new DFAsserts(df3, "a", "b")
+        new DataFrameAsserts(df3, "a", "b")
                 .expectHeight(3)
                 .expectRow(0, 1, "x")
                 .expectRow(1, 2, "y")
@@ -182,7 +182,7 @@ public class DataFrame_GroupByTest {
                 .head(2)
                 .toDataFrame();
 
-        new DFAsserts(df2, "a", "b")
+        new DataFrameAsserts(df2, "a", "b")
                 .expectHeight(4)
                 .expectRow(0, 1, "y")
                 .expectRow(1, 1, "x")
@@ -203,7 +203,7 @@ public class DataFrame_GroupByTest {
                 .tail(2)
                 .toDataFrame();
 
-        new DFAsserts(df2, "a", "b")
+        new DataFrameAsserts(df2, "a", "b")
                 .expectHeight(4)
                 .expectRow(0, 1, "y")
                 .expectRow(1, 1, "z")
@@ -214,7 +214,7 @@ public class DataFrame_GroupByTest {
                 .tail(1)
                 .toDataFrame();
 
-        new DFAsserts(df3, "a", "b")
+        new DataFrameAsserts(df3, "a", "b")
                 .expectHeight(3)
                 .expectRow(0, 1, "z")
                 .expectRow(1, 2, "y")
@@ -235,7 +235,7 @@ public class DataFrame_GroupByTest {
                 Aggregator.sumLong("a").named("a_sum"),
                 Aggregator.medianDouble("a").named("a_median"));
 
-        new DFAsserts(df, "b", "a_sum", "a_median")
+        new DataFrameAsserts(df, "b", "a_sum", "a_median")
                 .expectHeight(3)
                 .expectRow(0, "x", 2L, 1.)
                 .expectRow(1, "y", 3L, 1.5)

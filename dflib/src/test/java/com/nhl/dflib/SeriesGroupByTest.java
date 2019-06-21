@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.Test;
 
@@ -34,7 +34,7 @@ public class SeriesGroupByTest {
                         SeriesAggregator.concat("|"),
                         SeriesAggregator.concat("_"));
 
-        new DFAsserts(aggregated, "first", "concat", "concat_")
+        new DataFrameAsserts(aggregated, "first", "concat", "concat_")
                 .expectHeight(2)
                 .expectRow(0, "a", "a|b|e", "a_b_e")
                 .expectRow(1, "cd", "cd|fg", "cd_fg");
@@ -50,7 +50,7 @@ public class SeriesGroupByTest {
                         SeriesAggregator.concat("|").named("c1"),
                         SeriesAggregator.concat("_").named("c2"));
 
-        new DFAsserts(aggregated, "f", "c1", "c2")
+        new DataFrameAsserts(aggregated, "f", "c1", "c2")
                 .expectHeight(2)
                 .expectRow(0, "a", "a|b|e", "a_b_e")
                 .expectRow(1, "cd", "cd|fg", "cd_fg");

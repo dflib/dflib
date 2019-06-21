@@ -1,6 +1,6 @@
 package com.nhl.dflib.jdbc.connector;
 
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
@@ -27,7 +27,7 @@ public class JdbcConnector_SqlLoaderIT extends BaseDbTest {
                 .sqlLoader("SELECT \"id\", \"salary\" from \"t1\" WHERE \"id\" > 1")
                 .load();
 
-        new DFAsserts(df, "id", "salary")
+        new DataFrameAsserts(df, "id", "salary")
                 .expectHeight(2)
                 .expectRow(0, 2L, 120_000.)
                 .expectRow(1, 3L, 1_000.);
@@ -42,7 +42,7 @@ public class JdbcConnector_SqlLoaderIT extends BaseDbTest {
                 .sqlLoader("SELECT \"id\", \"salary\" from \"t1\" WHERE \"id\" > 1")
                 .load();
 
-        new DFAsserts(df, "id", "salary").expectHeight(0);
+        new DataFrameAsserts(df, "id", "salary").expectHeight(0);
     }
 
     @Test
@@ -57,7 +57,7 @@ public class JdbcConnector_SqlLoaderIT extends BaseDbTest {
                 .maxRows(2)
                 .load();
 
-        new DFAsserts(df, columnNames(T1))
+        new DataFrameAsserts(df, columnNames(T1))
                 .expectHeight(2)
                 .expectRow(0, 1L, "n1", 50_000.01)
                 .expectRow(1, 2L, "n2", 120_000.);
@@ -90,7 +90,7 @@ public class JdbcConnector_SqlLoaderIT extends BaseDbTest {
                 .params(l1, 67, 7.8, true, "s1", ldt, ld, lt, bytes)
                 .load();
 
-        new DFAsserts(df, columnNames(T2))
+        new DataFrameAsserts(df, columnNames(T2))
                 .expectHeight(1)
                 .expectRow(0, l1, 67, 7.8, true, "s1", ldt, ld, lt, bytes);
     }
@@ -104,7 +104,7 @@ public class JdbcConnector_SqlLoaderIT extends BaseDbTest {
                 .sqlLoader("SELECT * from \"t3\"")
                 .load();
 
-        new DFAsserts(df, "int", "long", "double", "boolean")
+        new DataFrameAsserts(df, "int", "long", "double", "boolean")
                 .expectHeight(1)
                 .expectIntColumns(0)
                 .expectLongColumns(1)

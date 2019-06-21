@@ -6,7 +6,7 @@ import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.SaveOp;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +43,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 .tableLoader("t1")
                 .load();
 
-        new DFAsserts(df2, columnNames(T1))
+        new DataFrameAsserts(df2, columnNames(T1))
                 .expectHeight(2)
                 .expectRow(0, 1L, "n1", 50_000.01)
                 .expectRow(1, 2L, "n2", 120_000.);
@@ -60,7 +60,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 .tableLoader("t1")
                 .load();
 
-        new DFAsserts(df2, columnNames(T1)).expectHeight(0);
+        new DataFrameAsserts(df2, columnNames(T1)).expectHeight(0);
     }
 
     @Test
@@ -82,7 +82,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
 
         DataFrame df3 = connector.tableLoader("t1").load();
 
-        new DFAsserts(df3, columnNames(T1))
+        new DataFrameAsserts(df3, columnNames(T1))
                 .expectHeight(4)
                 .expectRow(0, 1L, "n1", 50_000.01)
                 .expectRow(1, 2L, "n2", 120_000.)
@@ -114,7 +114,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 .tableLoader("t1")
                 .load();
 
-        new DFAsserts(df3, columnNames(T1))
+        new DataFrameAsserts(df3, columnNames(T1))
                 .expectHeight(2)
                 .expectRow(0, 3L, "n3", 60_000.01)
                 .expectRow(1, 4L, "n4", 20_000.);
@@ -138,7 +138,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 .tableLoader("t1")
                 .load();
 
-        new DFAsserts(df2, columnNames(T1))
+        new DataFrameAsserts(df2, columnNames(T1))
                 .expectHeight(2)
                 .expectRow(0, 1L, "n1", 50_000.01)
                 .expectRow(1, 2L, "n2", 120_000.);
@@ -167,7 +167,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 .tableLoader("t1")
                 .load();
 
-        new DFAsserts(df3, columnNames(T1))
+        new DataFrameAsserts(df3, columnNames(T1))
                 .expectHeight(4)
                 .expectRow(0, 1L, "n1_x", 50_000.02)
                 .expectRow(1, 2L, "n2", 120_000.)
@@ -202,7 +202,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 .tableLoader("t1")
                 .load();
 
-        new DFAsserts(df3, columnNames(T1))
+        new DataFrameAsserts(df3, columnNames(T1))
                 .expectHeight(4)
                 .expectRow(0, 1L, "n1", 50_000.02)
                 .expectRow(1, 2L, "n2", 120_000.)
@@ -238,7 +238,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 .tableLoader("t1")
                 .load();
 
-        new DFAsserts(df3, columnNames(T1))
+        new DataFrameAsserts(df3, columnNames(T1))
                 .expectHeight(4)
                 .expectRow(0, 1L, "n1_x", 50_000.02)
                 .expectRow(1, 2L, "n2", 120_000.)
@@ -281,7 +281,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 .tableLoader("t1")
                 .load().sort("id", true);
 
-        new DFAsserts(df3, columnNames(T1))
+        new DataFrameAsserts(df3, columnNames(T1))
                 .expectHeight(5)
                 .expectRow(0, 1L, "n1_x", 5.)
                 .expectRow(1, 2L, "n2", 6.01)
@@ -311,7 +311,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 .includeColumns("bigint", "int", "timestamp", "time", "date", "bytes")
                 .load();
 
-        new DFAsserts(df2, df.getColumnsIndex())
+        new DataFrameAsserts(df2, df.getColumnsIndex())
                 .expectHeight(1)
                 .expectRow(0, l1, 1, ldt, lt, ld, bytes);
     }
@@ -332,7 +332,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 .includeColumns("bigint", "int")
                 .load();
 
-        new DFAsserts(df2, df.getColumnsIndex())
+        new DataFrameAsserts(df2, df.getColumnsIndex())
                 .expectHeight(3)
                 .expectRow(0, 1L, 12)
                 .expectRow(1, 2L, 1973)
@@ -354,7 +354,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 .includeColumns("bigint", "int", "string")
                 .load();
 
-        new DFAsserts(df2, df.getColumnsIndex())
+        new DataFrameAsserts(df2, df.getColumnsIndex())
                 .expectHeight(2)
                 .expectRow(0, 1L, 0, "a")
                 .expectRow(1, 2L, 1, "b");
@@ -376,7 +376,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
         new SeriesAsserts(info).expectData(SaveOp.insert, SaveOp.insert);
 
         DataFrame dfSaved = connector.tableLoader("t1").load();
-        new DFAsserts(dfSaved, columnNames(T1))
+        new DataFrameAsserts(dfSaved, columnNames(T1))
                 .expectHeight(2)
                 .expectRow(0, 1L, "n1", 50_000.01)
                 .expectRow(1, 2L, "n2", 120_000.);
@@ -403,7 +403,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
         new SeriesAsserts(info).expectData(SaveOp.insert, SaveOp.insert);
 
         DataFrame dfSaved = connector.tableLoader("t1").load();
-        new DFAsserts(dfSaved, columnNames(T1))
+        new DataFrameAsserts(dfSaved, columnNames(T1))
                 .expectHeight(2)
                 .expectRow(0, 1L, "n1", 50_000.01)
                 .expectRow(1, 2L, "n2", 120_000.);
@@ -435,7 +435,7 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
         new SeriesAsserts(info).expectData(SaveOp.skip, SaveOp.update, SaveOp.insert, SaveOp.update, SaveOp.skip);
 
         DataFrame dfSaved = connector.tableLoader("t1").load().sort("id", true);
-        new DFAsserts(dfSaved, columnNames(T1))
+        new DataFrameAsserts(dfSaved, columnNames(T1))
                 .expectHeight(5)
                 .expectRow(0, 1L, "n1", 50_000.01)
                 .expectRow(1, 2L, "n2_u", 120_000.)

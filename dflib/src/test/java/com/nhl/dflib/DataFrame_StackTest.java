@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
 public class DataFrame_StackTest {
@@ -12,7 +12,7 @@ public class DataFrame_StackTest {
                 null, null,
                 2, "y").stack();
 
-        new DFAsserts(df, "row", "column", "value")
+        new DataFrameAsserts(df, "row", "column", "value")
                 .expectHeight(4)
                 .expectRow(0, 0, "a", 1)
                 .expectRow(1, 2, "a", 2)
@@ -27,7 +27,7 @@ public class DataFrame_StackTest {
                 5, "z",
                 2, "y").stack();
 
-        new DFAsserts(df, "row", "column", "value")
+        new DataFrameAsserts(df, "row", "column", "value")
                 .expectHeight(6)
                 .expectRow(0, 0, "a", 1)
                 .expectRow(1, 1, "a", 5)
@@ -44,7 +44,7 @@ public class DataFrame_StackTest {
                 null, null,
                 2, "y").stackIncludeNulls();
 
-        new DFAsserts(df, "row", "column", "value")
+        new DataFrameAsserts(df, "row", "column", "value")
                 .expectHeight(6)
                 .expectRow(0, 0, "a", 1)
                 .expectRow(1, 1, "a", null)

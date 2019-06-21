@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -23,7 +23,7 @@ public class Series_ValueCountsTest extends BaseObjectSeriesTest {
     public void testValueCounts() {
         DataFrame counts = createSeries("a", "b", "a", "a", "c").valueCounts();
 
-        new DFAsserts(counts, "value", "count")
+        new DataFrameAsserts(counts, "value", "count")
                 .expectHeight(3)
                 .expectRow(0, "a", 3)
                 .expectRow(1, "b", 1)
@@ -34,7 +34,7 @@ public class Series_ValueCountsTest extends BaseObjectSeriesTest {
     public void testValueCounts_Nulls() {
         DataFrame counts = createSeries("a", "b", "a", "a", null, "c").valueCounts();
 
-        new DFAsserts(counts, "value", "count")
+        new DataFrameAsserts(counts, "value", "count")
                 .expectHeight(3)
                 .expectRow(0, "a", 3)
                 .expectRow(1, "b", 1)

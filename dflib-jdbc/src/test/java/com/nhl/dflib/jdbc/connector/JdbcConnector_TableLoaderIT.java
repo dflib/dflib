@@ -1,7 +1,7 @@
 package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.Index;
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
@@ -27,7 +27,7 @@ public class JdbcConnector_TableLoaderIT extends BaseDbTest {
                 .tableLoader("t1")
                 .load();
 
-        new DFAsserts(df, columnNames(T1))
+        new DataFrameAsserts(df, columnNames(T1))
                 .expectHeight(2)
                 .expectRow(0, 1L, "n1", 50_000.01)
                 .expectRow(1, 2L, "n2", 120_000.);
@@ -44,7 +44,7 @@ public class JdbcConnector_TableLoaderIT extends BaseDbTest {
                 .includeColumns("id", "salary")
                 .load();
 
-        new DFAsserts(df, "id", "salary")
+        new DataFrameAsserts(df, "id", "salary")
                 .expectHeight(2)
                 .expectRow(0, 1L, 50_000.01)
                 .expectRow(1, 2L, 120_000.);
@@ -67,7 +67,7 @@ public class JdbcConnector_TableLoaderIT extends BaseDbTest {
                 .tableLoader("t2")
                 .load();
 
-        new DFAsserts(df, columnNames(T2))
+        new DataFrameAsserts(df, columnNames(T2))
                 .expectHeight(2)
                 .expectRow(0, l1, 67, 7.8, true, "s1", ldt, ld, lt, bytes)
                 .expectRow(1, null, null, null, false, null, null, null, null, null);
@@ -85,7 +85,7 @@ public class JdbcConnector_TableLoaderIT extends BaseDbTest {
                 .maxRows(2)
                 .load();
 
-        new DFAsserts(df, columnNames(T1))
+        new DataFrameAsserts(df, columnNames(T1))
                 .expectHeight(2)
                 .expectRow(0, 1L, "n1", 50_000.01)
                 .expectRow(1, 2L, "n2", 120_000.);
@@ -106,7 +106,7 @@ public class JdbcConnector_TableLoaderIT extends BaseDbTest {
                 .includeColumns("name", "salary")
                 .load();
 
-        new DFAsserts(df, "name", "salary")
+        new DataFrameAsserts(df, "name", "salary")
                 .expectHeight(2)
                 .expectRow(0, "n1", 50_000.01)
                 .expectRow(1, "n3", 11_000.);
@@ -129,7 +129,7 @@ public class JdbcConnector_TableLoaderIT extends BaseDbTest {
                 .includeColumns("name", "salary")
                 .load();
 
-        new DFAsserts(df, "name", "salary")
+        new DataFrameAsserts(df, "name", "salary")
                 .expectHeight(1)
                 .expectRow(0, "n3", 11_000.);
     }
@@ -148,7 +148,7 @@ public class JdbcConnector_TableLoaderIT extends BaseDbTest {
                 .eq(empty)
                 .load();
 
-        new DFAsserts(df, "id", "name", "salary").expectHeight(0);
+        new DataFrameAsserts(df, "id", "name", "salary").expectHeight(0);
     }
 
     @Test
@@ -166,6 +166,6 @@ public class JdbcConnector_TableLoaderIT extends BaseDbTest {
                 .eq(empty)
                 .load();
 
-        new DFAsserts(df, "name", "salary").expectHeight(0);
+        new DataFrameAsserts(df, "name", "salary").expectHeight(0);
     }
 }

@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
 public class DataFrame_HeadTest {
@@ -13,7 +13,7 @@ public class DataFrame_HeadTest {
                 3, "z")
                 .head(2);
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, 1, "x")
                 .expectRow(1, 2, "y");
@@ -27,7 +27,7 @@ public class DataFrame_HeadTest {
                 3, "z")
                 .head(0);
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(0);
     }
 
@@ -39,7 +39,7 @@ public class DataFrame_HeadTest {
                 3, "z")
                 .head(4);
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(3)
                 .expectRow(0, 1, "x")
                 .expectRow(1, 2, "y")

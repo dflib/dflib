@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
 public class DataFrame_VConcat_Test {
@@ -13,7 +13,7 @@ public class DataFrame_VConcat_Test {
 
         DataFrame df = df1.vConcat(df2);
 
-        new DFAsserts(df, "a")
+        new DataFrameAsserts(df, "a")
                 .expectHeight(4)
                 .expectRow(0, 1)
                 .expectRow(1, 2)
@@ -30,7 +30,7 @@ public class DataFrame_VConcat_Test {
 
         DataFrame df = df1.vConcat(df2, df3);
 
-        new DFAsserts(df, "a")
+        new DataFrameAsserts(df, "a")
                 .expectHeight(4)
                 .expectRow(0, 1)
                 .expectRow(1, 2)
@@ -51,7 +51,7 @@ public class DataFrame_VConcat_Test {
 
         DataFrame df = df1.vConcat(df2);
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(4)
                 .expectRow(0, 1, 2)
                 .expectRow(1, 3, 4)
@@ -72,7 +72,7 @@ public class DataFrame_VConcat_Test {
 
         DataFrame df = df1.vConcat(JoinType.left, df2);
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(4)
                 .expectRow(0, 1, 2)
                 .expectRow(1, 3, 4)
@@ -93,7 +93,7 @@ public class DataFrame_VConcat_Test {
 
         DataFrame df = df1.vConcat(JoinType.right, df2);
 
-        new DFAsserts(df, "c", "b")
+        new DataFrameAsserts(df, "c", "b")
                 .expectHeight(4)
                 .expectRow(0, null, 2)
                 .expectRow(1, null, 4)
@@ -118,7 +118,7 @@ public class DataFrame_VConcat_Test {
 
         DataFrame df = df1.vConcat(JoinType.inner, df2, df3);
 
-        new DFAsserts(df, "b")
+        new DataFrameAsserts(df, "b")
                 .expectHeight(6)
                 .expectRow(0, 2)
                 .expectRow(1, 4)
@@ -141,7 +141,7 @@ public class DataFrame_VConcat_Test {
 
         DataFrame df = df1.vConcat(JoinType.full, df2);
 
-        new DFAsserts(df, "a", "b", "c")
+        new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(4)
                 .expectRow(0, 1, 2, null)
                 .expectRow(1, 3, 4, null)

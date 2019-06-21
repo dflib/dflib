@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
 public class DataFrame_NullifyTest {
@@ -17,7 +17,7 @@ public class DataFrame_NullifyTest {
                         2, "y")
                 .nullify(cond);
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, null, null)
                 .expectRow(1, 2, "y");
@@ -34,7 +34,7 @@ public class DataFrame_NullifyTest {
                         1, "x",
                         2, "y").nullifyNoMatch(cond);
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, 1, "x")
                 .expectRow(1, null, null);
@@ -54,7 +54,7 @@ public class DataFrame_NullifyTest {
                         2, "y")
                 .nullify(cond);
 
-        new DFAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, 1, null)
                 .expectRow(1, 2, "y");

@@ -4,7 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
-import com.nhl.dflib.unit.DFAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,7 +47,7 @@ public class TxIT extends BaseDbTest {
                 .load()
                 .sort("id", true);
 
-        new DFAsserts(df_12, "id", "name", "salary")
+        new DataFrameAsserts(df_12, "id", "name", "salary")
                 .expectHeight(4)
                 .expectRow(0, 1L, "n1", 50_000.01)
                 .expectRow(1, 2L, "n2", 120_000.)
@@ -114,6 +114,6 @@ public class TxIT extends BaseDbTest {
                 .load();
 
         // the transaction must have been rolled back and no data saved
-        new DFAsserts(df_12, "id", "name", "salary").expectHeight(0);
+        new DataFrameAsserts(df_12, "id", "name", "salary").expectHeight(0);
     }
 }
