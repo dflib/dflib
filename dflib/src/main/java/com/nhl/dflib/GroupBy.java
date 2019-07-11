@@ -81,6 +81,10 @@ public class GroupBy {
      */
     public Series<Integer> rowNumbers() {
 
+        if(groupsIndex.size() == 0) {
+            return IntSeries.forInts();
+        }
+
         DataFrame[] numberedIndex = new DataFrame[groupsIndex.size()];
 
         int i = 0;

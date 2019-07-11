@@ -6,6 +6,13 @@ import org.junit.Test;
 public class DataFrame_GroupBy_WindowFuncsTest {
 
     @Test
+    public void testGroupBy_RowNumbers_Emtpy() {
+        DataFrame df = DataFrame.newFrame("a", "b", "c").empty();
+        Series<Integer> rn = df.group("a").rowNumbers();
+        new SeriesAsserts(rn).expectData();
+    }
+
+    @Test
     public void testGroupBy_RowNumbers0() {
         DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
                 1, "x", "m",
