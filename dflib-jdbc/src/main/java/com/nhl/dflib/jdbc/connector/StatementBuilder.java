@@ -64,7 +64,7 @@ public class StatementBuilder {
         try (Connection c = connector.getConnection()) {
             return select(c, resultReader);
         } catch (SQLException e) {
-            throw new RuntimeException("Error opening connection", e);
+            throw new RuntimeException("Error opening connection: " + e.getMessage(), e);
         }
     }
 
@@ -72,7 +72,7 @@ public class StatementBuilder {
         try {
             return createSelectStatement().select(connection, resultReader);
         } catch (SQLException e) {
-            throw new RuntimeException("Error loading data from DB", e);
+            throw new RuntimeException("Error loading data from DB: " + e.getMessage(), e);
         }
     }
 
@@ -80,7 +80,7 @@ public class StatementBuilder {
         try {
             createUpdateStatement().update(connection);
         } catch (SQLException e) {
-            throw new RuntimeException("Error updating data in DB", e);
+            throw new RuntimeException("Error updating data in DB: " + e.getMessage(), e);
         }
     }
 
