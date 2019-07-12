@@ -63,7 +63,7 @@ public class StatementBuilder {
     public <T> T select(JdbcFunction<ResultSet, T> resultReader) {
         try (Connection c = connector.getConnection()) {
             return select(c, resultReader);
-        } catch (Exception e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Error opening connection", e);
         }
     }
