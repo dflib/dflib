@@ -13,6 +13,8 @@ import com.nhl.dflib.series.builder.BooleanAccumulator;
 import com.nhl.dflib.series.builder.IntAccumulator;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -107,6 +109,15 @@ public abstract class ObjectSeries<T> implements Series<T> {
         }
 
         return data.toSeries();
+    }
+
+    @Override
+    public Series<T> sort(Comparator<? super T> comparator) {
+        int size = size();
+        T[] sorted = (T[]) new Object[size];
+        copyTo(sorted, 0, 0, size);
+        Arrays.sort(sorted, comparator);
+        return new ArraySeries<>(sorted);
     }
 
     @Override

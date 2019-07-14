@@ -13,6 +13,8 @@ import com.nhl.dflib.series.builder.BooleanAccumulator;
 import com.nhl.dflib.series.builder.IntAccumulator;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Objects;
 
 /**
@@ -82,6 +84,15 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     @Override
     public Series<Boolean> filter(BooleanSeries positions) {
         return filterBoolean(positions);
+    }
+
+    @Override
+    public Series<Boolean> sort(Comparator<? super Boolean> comparator) {
+        int size = size();
+        Boolean[] sorted = new Boolean[size];
+        copyTo(sorted, 0, 0, size);
+        Arrays.sort(sorted, comparator);
+        return new ArraySeries<>(sorted);
     }
 
     private Series<Boolean> selectAsObjectSeries(IntSeries positions) {

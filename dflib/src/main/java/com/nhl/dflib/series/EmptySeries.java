@@ -1,6 +1,10 @@
 package com.nhl.dflib.series;
 
+import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.ValuePredicate;
+
+import java.util.Comparator;
 
 public class EmptySeries<T> extends ObjectSeries<T> {
 
@@ -19,6 +23,21 @@ public class EmptySeries<T> extends ObjectSeries<T> {
         if (fromOffset + len > 0) {
             throw new ArrayIndexOutOfBoundsException(fromOffset + len);
         }
+    }
+
+    @Override
+    public Series<T> filter(ValuePredicate<T> p) {
+        return this;
+    }
+
+    @Override
+    public Series<T> filter(BooleanSeries positions) {
+        return this;
+    }
+
+    @Override
+    public Series<T> sort(Comparator<? super T> comparator) {
+        return this;
     }
 
     @Override

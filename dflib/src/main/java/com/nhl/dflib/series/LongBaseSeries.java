@@ -17,6 +17,8 @@ import com.nhl.dflib.series.builder.LongAccumulator;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
 import com.nhl.dflib.series.builder.UniqueLongAccumulator;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Objects;
 
 /**
@@ -100,6 +102,29 @@ public abstract class LongBaseSeries implements LongSeries {
     @Override
     public Series<Long> filter(BooleanSeries positions) {
         return filterLong(positions);
+    }
+
+    @Override
+    public LongSeries sortLong() {
+        int size = size();
+        long[] sorted = new long[size];
+        copyToLong(sorted, 0, 0, size);
+
+        // TODO: use "parallelSort" ?
+        Arrays.sort(sorted);
+
+        return new LongArraySeries(sorted);
+    }
+
+    // TODO: implement 'sortLong(LongComparator)' similar to how IntBaseSeries does "sortInt(IntComparator)"
+    //   Reimplement this method to delegate to 'sortLong'
+    @Override
+    public Series<Long> sort(Comparator<? super Long> comparator) {
+        int size = size();
+        Long[] sorted = new Long[size];
+        copyTo(sorted, 0, 0, size);
+        Arrays.sort(sorted, comparator);
+        return new ArraySeries<>(sorted);
     }
 
     private Series<Long> selectAsObjectSeries(IntSeries positions) {

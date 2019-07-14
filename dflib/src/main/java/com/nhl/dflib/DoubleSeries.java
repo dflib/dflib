@@ -37,6 +37,10 @@ public interface DoubleSeries extends Series<Double> {
 
     DoubleSeries filterDouble(BooleanSeries positions);
 
+    DoubleSeries sortDouble();
+
+    // TODO: implement 'sortDouble(DoubleComparator)' similar to how IntBaseSeries does "sortInt(IntComparator)"
+
     /**
      * Returns an IntSeries that represents positions in the Series that match the predicate. The returned value can be
      * used to "select" data from this Series or from DataFrame containing this Series. Same as {@link #index(ValuePredicate)},

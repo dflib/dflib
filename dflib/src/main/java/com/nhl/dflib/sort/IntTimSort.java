@@ -10,7 +10,7 @@ import java.util.Objects;
  * @see <a href="http://svn.python.org/projects/python/trunk/Objects/listsort.txt">Tim Peters's list sort for Python</a>
  */
 
-class IntTimSort {
+public class IntTimSort {
 
     private static final int MIN_MERGE = 32;
     private static final int MIN_GALLOP = 7;
@@ -41,11 +41,11 @@ class IntTimSort {
         runLen = new int[stackLen];
     }
 
-    static void sort(int[] a, IntComparator c) {
+    public static void sort(int[] a, IntComparator c) {
         sort(a, 0, a.length, c);
     }
 
-    static void sort(int[] a, int lo, int hi, IntComparator c) {
+    public static void sort(int[] a, int lo, int hi, IntComparator c) {
         Objects.requireNonNull(c);
 
         int nRemaining = hi - lo;

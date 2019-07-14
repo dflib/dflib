@@ -1,6 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.series.IntArraySeries;
+import com.nhl.dflib.sort.IntComparator;
 
 /**
  * A Series optimized to store and access primitive int values without <code>java.lang.Integer</code> wrapper. Can also
@@ -36,6 +37,10 @@ public interface IntSeries extends Series<Integer> {
     IntSeries filterInt(IntPredicate p);
 
     IntSeries filterInt(BooleanSeries positions);
+
+    IntSeries sortInt();
+
+    IntSeries sortInt(IntComparator comparator);
 
     /**
      * Returns an IntSeries that represents positions in the Series that match the predicate. The returned value can be

@@ -17,6 +17,8 @@ import com.nhl.dflib.series.builder.IntAccumulator;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
 import com.nhl.dflib.series.builder.UniqueDoubleAccumulator;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Objects;
 
 /**
@@ -100,6 +102,29 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     @Override
     public Series<Double> filter(BooleanSeries positions) {
         return filterDouble(positions);
+    }
+
+    @Override
+    public DoubleSeries sortDouble() {
+        int size = size();
+        double[] sorted = new double[size];
+        copyToDouble(sorted, 0, 0, size);
+
+        // TODO: use "parallelSort" ?
+        Arrays.sort(sorted);
+
+        return new DoubleArraySeries(sorted);
+    }
+
+    // TODO: implement 'sortDouble(DoubleComparator)' similar to how IntBaseSeries does "sortInt(IntComparator)"
+    //   Reimplement this method to delegate to 'sortDouble'
+    @Override
+    public Series<Double> sort(Comparator<? super Double> comparator) {
+        int size = size();
+        Double[] sorted = new Double[size];
+        copyTo(sorted, 0, 0, size);
+        Arrays.sort(sorted, comparator);
+        return new ArraySeries<>(sorted);
     }
 
     private Series<Double> selectAsObjectSeries(IntSeries positions) {

@@ -5,6 +5,8 @@ import com.nhl.dflib.series.EmptySeries;
 import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
 
+import java.util.Comparator;
+
 /**
  * A wrapper around an array of values of a certain type.
  *
@@ -109,6 +111,14 @@ public interface Series<T> {
      * @return an IntSeries that represents positions in the Series that match the predicate.
      */
     IntSeries index(ValuePredicate<T> predicate);
+
+    /**
+     * Returns a sorted copy of this Series using provided Comparator.
+     *
+     * @return sorted copy of this series.
+     * @since 0.6
+     */
+    Series<T> sort(Comparator<? super T> comparator);
 
     /**
      * @param another a Series to compare with.
