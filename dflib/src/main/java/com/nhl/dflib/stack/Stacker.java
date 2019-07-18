@@ -22,7 +22,7 @@ public class Stacker {
 
         IntSeries[] rows = new IntSeries[w];
         Series<String>[] columns = new Series[w];
-        Series<?>[] values = new Series[w];
+        Series<Object>[] values = new Series[w];
 
         for (int i = 0; i < w; i++) {
             rows[i] = df.getColumn(i).index(v -> v != null);
@@ -45,7 +45,7 @@ public class Stacker {
 
         IntSeries[] rows = new IntSeries[w];
         Series<String>[] columns = new Series[w];
-        Series<?>[] values = new Series[w];
+        Series<Object>[] values = new Series[w];
 
         for (int i = 0; i < w; i++) {
             rows[i] = sequence;
