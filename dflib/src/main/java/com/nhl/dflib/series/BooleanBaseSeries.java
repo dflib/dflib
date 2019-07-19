@@ -443,32 +443,12 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
     @Override
     public BooleanSeries and(BooleanSeries another) {
-        int size = size();
-        if (size != another.size()) {
-            throw new IllegalArgumentException("Can't 'and' Series with different sizes: " + size + " vs " + another.size());
-        }
-
-        boolean[] and = new boolean[size];
-        for (int i = 0; i < size; i++) {
-            and[i] = getBoolean(i) && another.getBoolean(i);
-        }
-
-        return new BooleanArraySeries(and);
+        return BooleanSeries.andAll(this, another);
     }
 
     @Override
     public BooleanSeries or(BooleanSeries another) {
-        int size = size();
-        if (size != another.size()) {
-            throw new IllegalArgumentException("Can't 'or' Series with different sizes: " + size + " vs " + another.size());
-        }
-
-        boolean[] or = new boolean[size];
-        for (int i = 0; i < size; i++) {
-            or[i] = getBoolean(i) || another.getBoolean(i);
-        }
-
-        return new BooleanArraySeries(or);
+        return BooleanSeries.orAll(this, another);
     }
 
     @Override
