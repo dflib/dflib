@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.op.BooleanSeriesOps;
 import com.nhl.dflib.series.BooleanArraySeries;
 
 /**
@@ -10,6 +11,15 @@ public interface BooleanSeries extends Series<Boolean> {
     static BooleanSeries forBooleans(boolean... bools) {
         return new BooleanArraySeries(bools);
     }
+
+    static BooleanSeries andAll(BooleanSeries... series) {
+        return BooleanSeriesOps.andAll(series);
+    }
+
+    static BooleanSeries orAll(BooleanSeries... series) {
+        return BooleanSeriesOps.orAll(series);
+    }
+
 
     @Override
     default Class<Boolean> getType() {
