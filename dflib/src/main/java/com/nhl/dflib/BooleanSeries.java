@@ -62,7 +62,12 @@ public interface BooleanSeries extends Series<Boolean> {
 
     /**
      * @return a BooleanSeries that contains non-repeating values from this Series.
-     * @since 0.6
      */
     BooleanSeries uniqueBoolean();
+
+    BooleanSeries and(BooleanSeries another);
+
+    BooleanSeries or(BooleanSeries another);
+
+    BooleanSeries not();
 }

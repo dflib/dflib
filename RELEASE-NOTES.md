@@ -42,6 +42,7 @@
 * #65 API for DataFrame-based value aggregator function 
 * #66 "dflib-test" a module for unit testing of Series and DataFrames 
 * #67 Series.sort
+* #68 BooleanSeries: and, or, not operations
 
 ## Release 0.5
 

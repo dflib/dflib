@@ -442,6 +442,51 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
+    public BooleanSeries and(BooleanSeries another) {
+        int size = size();
+        if (size != another.size()) {
+            throw new IllegalArgumentException("Can't 'and' Series with different sizes: " + size + " vs " + another.size());
+        }
+
+        boolean[] and = new boolean[size];
+        for (int i = 0; i < size; i++) {
+            and[i] = getBoolean(i) && another.getBoolean(i);
+        }
+
+        return new BooleanArraySeries(and);
+    }
+
+    @Override
+    public BooleanSeries or(BooleanSeries another) {
+        int size = size();
+        if (size != another.size()) {
+            throw new IllegalArgumentException("Can't 'or' Series with different sizes: " + size + " vs " + another.size());
+        }
+
+        boolean[] or = new boolean[size];
+        for (int i = 0; i < size; i++) {
+            or[i] = getBoolean(i) || another.getBoolean(i);
+        }
+
+        return new BooleanArraySeries(or);
+    }
+
+    @Override
+    public BooleanSeries not() {
+        int size = size();
+        if (size == 0) {
+            return this;
+        }
+
+        boolean[] not = new boolean[size];
+        for (int i = 0; i < size; i++) {
+            not[i] = !getBoolean(i);
+        }
+
+        return new BooleanArraySeries(not);
+    }
+
+    @Override
     public DataFrame valueCounts() {
         return ValueCounts.valueCountsNoNulls(this);
     }
