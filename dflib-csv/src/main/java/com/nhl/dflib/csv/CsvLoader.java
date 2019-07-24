@@ -317,6 +317,14 @@ public class CsvLoader {
         return this;
     }
 
+    /**
+     * @since 0.6
+     */
+    public CsvLoader emptyStringIsNull() {
+        this.format = format.withNullString("");
+        return this;
+    }
+
     public DataFrame load(File file) {
         try (Reader r = new FileReader(file)) {
             return load(r);

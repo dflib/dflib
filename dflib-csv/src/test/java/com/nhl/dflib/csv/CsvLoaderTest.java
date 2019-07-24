@@ -226,6 +226,30 @@ public class CsvLoaderTest extends BaseCsvTest {
                         LocalDateTime.of(2016, 3, 31, 12, 0, 25));
     }
 
+    @Test
+    public void testFromFile_EmptyStringColumn() {
+        DataFrame df = new CsvLoader()
+                .load(inPath("strings_w_nulls.csv"));
+
+        new DataFrameAsserts(df, "One", "Two")
+                .expectHeight(2)
+                .expectRow(0, "", "three")
+                .expectRow(1, "five", "");
+    }
+
+    @Test
+    public void testFromFile_EmptyStringColumn_emptyStringIsNull() {
+        DataFrame df = new CsvLoader()
+                .emptyStringIsNull()
+                .load(inPath("strings_w_nulls.csv"));
+
+        new DataFrameAsserts(df, "One", "Two")
+                .expectHeight(2)
+                .expectRow(0, null, "three")
+                .expectRow(1, "five", null);
+    }
+
+
     @Deprecated
     @Test
     public void testFromFile_ColumnTypes() {
