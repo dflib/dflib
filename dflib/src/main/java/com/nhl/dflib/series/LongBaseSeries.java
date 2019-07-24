@@ -236,32 +236,40 @@ public abstract class LongBaseSeries implements LongSeries {
 
     @Override
     public IntSeries indexLong(LongPredicate predicate) {
-        IntAccumulator filtered = new IntAccumulator();
-
-        int len = size();
-
-        for (int i = 0; i < len; i++) {
-            if (predicate.test(getLong(i))) {
-                filtered.add(i);
-            }
-        }
-
-        return filtered.toIntSeries();
-    }
-
-    @Override
-    public IntSeries index(ValuePredicate<Long> predicate) {
         IntAccumulator index = new IntAccumulator();
 
         int len = size();
 
         for (int i = 0; i < len; i++) {
-            if (predicate.test(get(i))) {
+            if (predicate.test(getLong(i))) {
                 index.add(i);
             }
         }
 
         return index.toIntSeries();
+    }
+
+    @Override
+    public IntSeries index(ValuePredicate<Long> predicate) {
+        return indexLong(predicate::test);
+    }
+
+    @Override
+    public BooleanSeries locateLong(LongPredicate predicate) {
+        int len = size();
+
+        BooleanAccumulator matches = new BooleanAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            matches.add(predicate.test(getLong(i)));
+        }
+
+        return matches.toBooleanSeries();
+    }
+
+    @Override
+    public BooleanSeries locate(ValuePredicate<Long> predicate) {
+        return locateLong(predicate::test);
     }
 
     @Override

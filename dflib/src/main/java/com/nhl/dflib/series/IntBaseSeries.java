@@ -242,32 +242,40 @@ public abstract class IntBaseSeries implements IntSeries {
 
     @Override
     public IntSeries indexInt(IntPredicate predicate) {
-        IntAccumulator filtered = new IntAccumulator();
-
-        int len = size();
-
-        for (int i = 0; i < len; i++) {
-            if (predicate.test(getInt(i))) {
-                filtered.add(i);
-            }
-        }
-
-        return filtered.toIntSeries();
-    }
-
-    @Override
-    public IntSeries index(ValuePredicate<Integer> predicate) {
         IntAccumulator index = new IntAccumulator();
 
         int len = size();
 
         for (int i = 0; i < len; i++) {
-            if (predicate.test(get(i))) {
+            if (predicate.test(getInt(i))) {
                 index.add(i);
             }
         }
 
         return index.toIntSeries();
+    }
+
+    @Override
+    public IntSeries index(ValuePredicate<Integer> predicate) {
+        return indexInt(predicate::test);
+    }
+
+    @Override
+    public BooleanSeries locateInt(IntPredicate predicate) {
+        int len = size();
+
+        BooleanAccumulator matches = new BooleanAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            matches.add(predicate.test(getInt(i)));
+        }
+
+        return matches.toBooleanSeries();
+    }
+
+    @Override
+    public BooleanSeries locate(ValuePredicate<Integer> predicate) {
+        return locateInt(predicate::test);
     }
 
     @Override

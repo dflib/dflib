@@ -15,6 +15,7 @@
 * #33 DataFrame.stack operation
 * #34 Tabular and Inline printers should show head and tail
 * #35 LongSeries
+* #36 Series.locate(ValuePredicate) 
 * #37 DataFrame.fillNullsFromSeries(..) / Series.fillNullsFromSeries(..)
 * #38 Primitive Series "select" methods must account for nulls 
 * #39 DataFrame.mapColumn

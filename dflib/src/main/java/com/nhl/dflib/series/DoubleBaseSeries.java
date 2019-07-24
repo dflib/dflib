@@ -236,32 +236,40 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
 
     @Override
     public IntSeries indexDouble(DoublePredicate predicate) {
-        IntAccumulator filtered = new IntAccumulator();
-
-        int len = size();
-
-        for (int i = 0; i < len; i++) {
-            if (predicate.test(getDouble(i))) {
-                filtered.add(i);
-            }
-        }
-
-        return filtered.toIntSeries();
-    }
-
-    @Override
-    public IntSeries index(ValuePredicate<Double> predicate) {
         IntAccumulator index = new IntAccumulator();
 
         int len = size();
 
         for (int i = 0; i < len; i++) {
-            if (predicate.test(get(i))) {
+            if (predicate.test(getDouble(i))) {
                 index.add(i);
             }
         }
 
         return index.toIntSeries();
+    }
+
+    @Override
+    public IntSeries index(ValuePredicate<Double> predicate) {
+        return indexDouble(predicate::test);
+    }
+
+    @Override
+    public BooleanSeries locateDouble(DoublePredicate predicate) {
+        int len = size();
+
+        BooleanAccumulator matches = new BooleanAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            matches.add(predicate.test(getDouble(i)));
+        }
+
+        return matches.toBooleanSeries();
+    }
+
+    @Override
+    public BooleanSeries locate(ValuePredicate<Double> predicate) {
+        return locateDouble(predicate::test);
     }
 
     @Override

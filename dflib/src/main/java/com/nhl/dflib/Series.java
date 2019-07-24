@@ -137,6 +137,16 @@ public interface Series<T> {
     BooleanSeries ne(Series<T> another);
 
     /**
+     * Returns a boolean series indicating whether each original Series position matched the predicate
+     *
+     * @param predicate match condition
+     * @return a BooleanSeries with true/false elements corresponding whether a given position in "this" Series matched
+     * the predicate.
+     * @since 0.6
+     */
+    BooleanSeries locate(ValuePredicate<T> predicate);
+
+    /**
      * @param condition a BooleanSeries that determines which cells need to be replaced.
      * @param with      a value to replace matching cells with
      * @return a new series with replaced values

@@ -245,6 +245,19 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
+    public BooleanSeries locate(ValuePredicate<Boolean> predicate) {
+        int len = size();
+
+        BooleanAccumulator matches = new BooleanAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            matches.add(predicate.test(get(i)));
+        }
+
+        return matches.toBooleanSeries();
+    }
+
+    @Override
     public Series<Boolean> replace(BooleanSeries condition, Boolean with) {
         return with != null
                 ? replaceBoolean(condition, with)

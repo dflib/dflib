@@ -136,6 +136,19 @@ public abstract class ObjectSeries<T> implements Series<T> {
     }
 
     @Override
+    public BooleanSeries locate(ValuePredicate<T> predicate) {
+        int len = size();
+
+        BooleanAccumulator matches = new BooleanAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            matches.add(predicate.test(get(i)));
+        }
+
+        return matches.toBooleanSeries();
+    }
+
+    @Override
     public Series<T> replace(BooleanSeries condition, T with) {
         int s = size();
         int r = Math.min(s, condition.size());

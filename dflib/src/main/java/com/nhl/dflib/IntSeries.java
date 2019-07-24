@@ -53,10 +53,10 @@ public interface IntSeries extends Series<Integer> {
      */
     IntSeries indexInt(IntPredicate predicate);
 
+    BooleanSeries locateInt(IntPredicate predicate);
 
     /**
      * @return a IntSeries that contains non-repeating values from this Series.
-     * @since 0.6
      */
     IntSeries uniqueInt();
 }

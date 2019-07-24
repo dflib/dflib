@@ -51,9 +51,10 @@ public interface DoubleSeries extends Series<Double> {
      */
     IntSeries indexDouble(DoublePredicate predicate);
 
+    BooleanSeries locateDouble(DoublePredicate predicate);
+
     /**
      * @return a DoubleSeries that contains non-repeating values from this Series.
-     * @since 0.6
      */
     DoubleSeries uniqueDouble();
 }

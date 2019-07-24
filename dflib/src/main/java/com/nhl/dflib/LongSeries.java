@@ -51,9 +51,10 @@ public interface LongSeries extends Series<Long> {
      */
     IntSeries indexLong(LongPredicate predicate);
 
+    BooleanSeries locateLong(LongPredicate predicate);
+
     /**
      * @return a LongSeries that contains non-repeating values from this Series.
-     * @since 0.6
      */
     LongSeries uniqueLong();
 }
