@@ -318,6 +318,8 @@ public class CsvLoader {
     }
 
     /**
+     * If called, the loader will convert missing values to nulls instead of empty strings.
+     *
      * @since 0.6
      */
     public CsvLoader emptyStringIsNull() {
