@@ -13,6 +13,9 @@ only you can use them in-memory and over dynamically defined data structures.
 * [Getting Started](https://nhl.github.io/dflib-docs/#_getting_started_with_dflib)
 * [Documentation](https://nhl.github.io/dflib-docs/)
 
-Here is a 20 min DFLib presentation video of an early version of DFLib (ca. v.0.5):
+
+### Older Stuff
+
+* a 20 min DFLib presentation video of an early version of DFLib. Demonstrates the idea of the project...
 
 [![DFLib at WODay Frankfurt](http://img.youtube.com/vi/WSqvEdRZsuE/0.jpg)](http://www.youtube.com/watch?v=WSqvEdRZsuE)
