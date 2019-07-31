@@ -9,8 +9,8 @@ manipulation tools you may be used to in SQL (such as queries and joins),
 only you can use them in-memory and over dynamically defined data structures.
 
 
-It is somewhat close to Python [pandas](https://pandas.pydata.org/), except it is intended for
-the use with Java and other JVM languages.
+It is somewhat close to Python [pandas](https://pandas.pydata.org/), except it is intended to be used 
+with Java and other JVM languages.
 
 ## Project Links
 
