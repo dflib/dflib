@@ -16,6 +16,6 @@ only you can use them in-memory and over dynamically defined data structures.
 
 ### Older Stuff
 
-* a 20 min DFLib presentation video of an early version of DFLib. Demonstrates the idea of the project...
+* a 20 min presentation of an early version of DFLib. Demonstrates the idea of the project...
 
 [![DFLib at WODay Frankfurt](http://img.youtube.com/vi/WSqvEdRZsuE/0.jpg)](http://www.youtube.com/watch?v=WSqvEdRZsuE)
