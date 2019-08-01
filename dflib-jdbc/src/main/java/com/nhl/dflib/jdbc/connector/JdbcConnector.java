@@ -1,6 +1,7 @@
 package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
+import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.jdbc.connector.statement.ValueConverterFactory;
 import com.nhl.dflib.series.builder.SeriesBuilder;
 
@@ -15,7 +16,17 @@ public interface JdbcConnector {
 
     TableSaver tableSaver(String tableName);
 
+    /**
+     * @since 0.7
+     */
+    TableSaver tableSaver(TableFQName tableName);
+
     TableLoader tableLoader(String tableName);
+
+    /**
+     * @since 0.7
+     */
+    TableLoader tableLoader(TableFQName tableName);
 
     /**
      * Creates a new {@link SqlLoader} to load DataFrame from a custom SQL query.
@@ -34,6 +45,13 @@ public interface JdbcConnector {
     Connection getConnection() throws SQLException;
 
     String quoteIdentifier(String bareIdentifier);
+
+    /**
+     * Quotes all parts of the fully qualified table name.
+     *
+     * @since 0.7
+     */
+    String quoteTableName(TableFQName tableName);
 
     /**
      * Creates a reader / value accumulator for a column of the {@link ResultSet} at a given position.

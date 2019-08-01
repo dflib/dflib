@@ -3,17 +3,18 @@ package com.nhl.dflib.jdbc.connector;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.series.ByRowSeries;
 
 public class TableLoader {
 
     protected JdbcConnector connector;
     protected int maxRows;
-    private String tableName;
+    private TableFQName tableName;
     private String[] columns;
     private DataFrame condition;
 
-    public TableLoader(JdbcConnector connector, String tableName) {
+    public TableLoader(JdbcConnector connector, TableFQName tableName) {
         this.connector = connector;
         this.maxRows = Integer.MAX_VALUE;
         this.tableName = tableName;
@@ -90,7 +91,7 @@ public class TableLoader {
 
         StringBuilder sql = new StringBuilder("select ");
         appendColumnsSql(sql);
-        sql.append(" from ").append(connector.quoteIdentifier(tableName));
+        sql.append(" from ").append(connector.quoteTableName(tableName));
         appendWhereSql(sql);
 
         return sql.toString();

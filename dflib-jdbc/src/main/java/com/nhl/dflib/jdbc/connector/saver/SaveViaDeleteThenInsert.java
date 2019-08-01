@@ -4,6 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.SaveOp;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
+import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.series.EmptySeries;
 
 import java.sql.Connection;
@@ -14,7 +15,7 @@ import java.util.function.Supplier;
  */
 public class SaveViaDeleteThenInsert extends SaveViaInsert {
 
-    public SaveViaDeleteThenInsert(JdbcConnector connector, String tableName) {
+    public SaveViaDeleteThenInsert(JdbcConnector connector, TableFQName tableName) {
         super(connector, tableName);
     }
 
@@ -36,6 +37,6 @@ public class SaveViaDeleteThenInsert extends SaveViaInsert {
     }
 
     protected String createDeleteStatement() {
-        return "delete from " + connector.quoteIdentifier(tableName);
+        return "delete from " + connector.quoteTableName(tableName);
     }
 }

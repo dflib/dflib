@@ -1,6 +1,7 @@
 package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.Printers;
+import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.series.builder.SeriesBuilder;
 import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
 import com.nhl.dflib.jdbc.connector.statement.ValueConverter;
@@ -74,11 +75,27 @@ public class DefaultJdbcConnector implements JdbcConnector {
 
     @Override
     public TableSaver tableSaver(String tableName) {
+        return tableSaver(getMetadata().parseTableName(tableName));
+    }
+
+    /**
+     * @since 0.7
+     */
+    @Override
+    public TableSaver tableSaver(TableFQName tableName) {
         return new TableSaver(this, tableName);
     }
 
     @Override
     public TableLoader tableLoader(String tableName) {
+        return tableLoader(getMetadata().parseTableName(tableName));
+    }
+
+    /**
+     * @since 0.7
+     */
+    @Override
+    public TableLoader tableLoader(TableFQName tableName) {
         return new TableLoader(this, tableName);
     }
 
@@ -173,6 +190,29 @@ public class DefaultJdbcConnector implements JdbcConnector {
     @Override
     public String quoteIdentifier(String bareIdentifier) {
         return quoter.quoted(bareIdentifier);
+    }
+
+    /**
+     * @since 0.7
+     */
+    @Override
+    public String quoteTableName(TableFQName tableName) {
+
+        String qtn = quoter.quoted(tableName.getTable());
+        if (!tableName.hasCatalog() && !tableName.hasSchema()) {
+            return qtn;
+        }
+
+        StringBuilder buffer = new StringBuilder();
+        if (tableName.hasCatalog()) {
+            buffer.append(quoter.quoted(tableName.getCatalog())).append(".");
+        }
+
+        if (tableName.hasSchema()) {
+            buffer.append(quoter.quoted(tableName.getSchema())).append(".");
+        }
+
+        return buffer.append(qtn).toString();
     }
 
     protected IdentifierQuoter createQuoter() {

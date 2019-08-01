@@ -7,6 +7,7 @@ import com.nhl.dflib.jdbc.SaveOp;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
 import com.nhl.dflib.jdbc.connector.metadata.DbColumnMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.DbTableMetadata;
+import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.series.SingleValueSeries;
 
 import java.sql.Connection;
@@ -17,7 +18,7 @@ import java.util.function.Supplier;
  */
 public class SaveViaInsert extends TableSaveStrategy {
 
-    public SaveViaInsert(JdbcConnector connector, String tableName) {
+    public SaveViaInsert(JdbcConnector connector, TableFQName tableName) {
         super(connector, tableName);
     }
 
@@ -48,7 +49,7 @@ public class SaveViaInsert extends TableSaveStrategy {
     protected String createInsertStatement(DataFrame df) {
 
         StringBuilder sql = new StringBuilder("insert into ")
-                .append(connector.quoteIdentifier(tableName))
+                .append(connector.quoteTableName(tableName))
                 .append(" (");
 
         // append columns

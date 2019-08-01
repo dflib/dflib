@@ -4,6 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.SaveOp;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
+import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.series.SingleValueSeries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +21,9 @@ public abstract class TableSaveStrategy {
     private static final Logger LOGGER = LoggerFactory.getLogger(TableSaveStrategy.class);
 
     protected JdbcConnector connector;
-    protected String tableName;
+    protected TableFQName tableName;
 
-    public TableSaveStrategy(JdbcConnector connector, String tableName) {
+    public TableSaveStrategy(JdbcConnector connector, TableFQName tableName) {
         this.connector = connector;
         this.tableName = tableName;
     }

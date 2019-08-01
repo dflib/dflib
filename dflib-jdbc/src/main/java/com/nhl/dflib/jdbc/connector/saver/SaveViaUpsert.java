@@ -9,6 +9,7 @@ import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.SaveOp;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
 import com.nhl.dflib.jdbc.connector.TableLoader;
+import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.join.JoinIndicator;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.SingleValueSeries;
@@ -30,7 +31,7 @@ public class SaveViaUpsert extends SaveViaInsert {
 
     private String[] keyColumns;
 
-    public SaveViaUpsert(JdbcConnector connector, String tableName, String[] keyColumns) {
+    public SaveViaUpsert(JdbcConnector connector, TableFQName tableName, String[] keyColumns) {
         super(connector, tableName);
         this.keyColumns = keyColumns;
     }
@@ -180,7 +181,7 @@ public class SaveViaUpsert extends SaveViaInsert {
     protected String createUpdateStatement(String[] conditionColumns, String[] valueColumns) {
 
         StringBuilder sql = new StringBuilder("update ")
-                .append(connector.quoteIdentifier(tableName))
+                .append(connector.quoteTableName(tableName))
                 .append(" set ")
                 .append(connector.quoteIdentifier(valueColumns[0]))
                 .append(" = ?");

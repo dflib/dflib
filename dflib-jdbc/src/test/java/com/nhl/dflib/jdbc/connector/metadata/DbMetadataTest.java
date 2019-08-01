@@ -11,11 +11,12 @@ import static org.mockito.Mockito.mock;
 public class DbMetadataTest {
 
     @Test
-    public void testToCatalogSchemaName_CatalogNoSchema() {
+    public void testParseTableName_CatalogNoSchema() {
 
         DbMetadata md = new DbMetadata(mock(DataSource.class), DbFlavor.MYSQL, mock(DatabaseMetaData.class));
-        assertArrayEquals(new String[]{"cat", null, "tab"}, md.toCatalogSchemaName("cat.tab"));
-        assertArrayEquals(new String[]{null, null, "tab"}, md.toCatalogSchemaName("tab"));
-        assertArrayEquals(new String[]{null, null, "cat.schema.tab"}, md.toCatalogSchemaName("cat.schema.tab"));
+
+        assertEquals(TableFQName.forCatalogAndName("cat", "tab"), md.parseTableName("cat.tab"));
+        assertEquals(TableFQName.forName("tab"), md.parseTableName("tab"));
+        assertEquals(TableFQName.forName("cat.schema.tab"), md.parseTableName("cat.schema.tab"));
     }
 }

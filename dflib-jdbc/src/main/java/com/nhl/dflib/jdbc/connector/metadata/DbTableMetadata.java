@@ -10,13 +10,13 @@ import java.util.Map;
  */
 public class DbTableMetadata {
 
-    private String name;
+    private TableFQName name;
     private DbColumnMetadata[] columns;
 
     private Map<String, DbColumnMetadata> columnsByName;
     private DbColumnMetadata[] pk;
 
-    public DbTableMetadata(String name, DbColumnMetadata[] columns) {
+    public DbTableMetadata(TableFQName name, DbColumnMetadata[] columns) {
         this.name = name;
         this.columns = columns;
         this.columnsByName = new HashMap<>();
@@ -30,7 +30,10 @@ public class DbTableMetadata {
         }
     }
 
-    public String getName() {
+    /**
+     * @since 0.7
+     */
+    public TableFQName getName() {
         return name;
     }
 

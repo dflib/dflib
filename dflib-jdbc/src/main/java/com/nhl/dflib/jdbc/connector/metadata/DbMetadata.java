@@ -24,7 +24,7 @@ public class DbMetadata {
     private boolean supportsParamsMetadata;
     private boolean supportsBatchUpdates;
     private String identifierQuote;
-    private Map<String, DbTableMetadata> tables;
+    private Map<TableFQName, DbTableMetadata> tables;
 
     protected DbMetadata(DataSource dataSource, DbFlavor flavor, DatabaseMetaData jdbcMetadata) {
 
@@ -97,15 +97,66 @@ public class DbMetadata {
     }
 
     public DbTableMetadata getTable(String name) {
-        // the name can contain catalogs and schemas... still using the full name as a key, without trying to resolve
-        // invariants on the assumption that this is how the caller would like to refer to this table throughout the
-        // app... Worst case we'd get some duplicates
-        return tables.computeIfAbsent(name, this::loadTableMetadata);
+        TableFQName fqName = parseTableName(name);
+        return tables.computeIfAbsent(fqName, this::loadTableMetadata);
     }
 
-    private DbTableMetadata loadTableMetadata(String tableName) {
+    /**
+     * @since 0.7
+     */
+    public DbTableMetadata getTable(TableFQName tableName) {
 
-        String[] matchParts = toCatalogSchemaName(tableName);
+        // the name can be full or partial (i.e. catalogs and schemas may or may not be there). Not trying to resolve
+        // invariants on the assumption that this is how the caller would like to refer to this table throughout the
+        // app... Worst case we'd get some duplicates
+
+        return tables.computeIfAbsent(tableName, this::loadTableMetadata);
+    }
+
+    /**
+     * Parses a table name String into a fully-qualified name object that provides information about table schema,
+     * catalog and name. The incoming
+     *
+     * @param tableName a String identifying either fully-qualified or partial table name
+     * @return a {@link TableFQName} object corresponding to the table.
+     * @since 0.7
+     */
+    // TODO: currently two related issues with this method
+    //   1. will not work for DBs like Hana that are using dots as separators of their internal namespace that is
+    //   otherwise the part of the table name.
+    //   2. If table name components are passed in already quoted, this parser will not strip the quotes and hence
+    //   will produce an incorrect FQN. (e.g. "c"."n")
+    public TableFQName parseTableName(String tableName) {
+
+
+        String[] parts = tableName.split("\\.", 3);
+        switch (parts.length) {
+            case 1:
+                return new TableFQName(null, null, parts[0]);
+            case 2:
+                // the first part can be either a catalog or a schema
+                if (supportsSchemas) {
+                    return new TableFQName(null, parts[0], parts[1]);
+                } else if (supportsCatalogs) {
+                    return new TableFQName(parts[0], null, parts[1]);
+
+                } else {
+                    return new TableFQName(null, null, tableName);
+                }
+            case 3:
+                if (supportsCatalogs && supportsSchemas) {
+                    return new TableFQName(parts[0], parts[1], parts[2]);
+                } else {
+                    return new TableFQName(null, null, tableName);
+                }
+
+            default:
+                return new TableFQName(null, null, tableName);
+        }
+    }
+
+    private DbTableMetadata loadTableMetadata(TableFQName tableName) {
+
         Map<String, Integer> columnsAndTypes = new LinkedHashMap<>();
         Set<String> pks = new HashSet<>();
 
@@ -113,7 +164,8 @@ public class DbMetadata {
 
             DatabaseMetaData md = c.getMetaData();
 
-            try (ResultSet columnsRs = md.getColumns(matchParts[0], matchParts[1], matchParts[2], null)) {
+            try (ResultSet columnsRs = md.getColumns(
+                    tableName.getCatalog(), tableName.getSchema(), tableName.getTable(), null)) {
 
                 while (columnsRs.next()) {
                     String name = columnsRs.getString("COLUMN_NAME");
@@ -122,7 +174,8 @@ public class DbMetadata {
                 }
             }
 
-            try (ResultSet pkRs = md.getPrimaryKeys(matchParts[0], matchParts[1], matchParts[2])) {
+            try (ResultSet pkRs = md.getPrimaryKeys(
+                    tableName.getCatalog(), tableName.getSchema(), tableName.getTable())) {
 
                 while (pkRs.next()) {
                     pks.add(pkRs.getString("COLUMN_NAME"));
@@ -141,35 +194,6 @@ public class DbMetadata {
             columns[i++] = new DbColumnMetadata(e.getKey(), e.getValue(), pks.contains(e.getKey()));
         }
 
-        // TODO: ignoring catalog and schema parts... Using user-provided name
         return new DbTableMetadata(tableName, columns);
-    }
-
-    String[] toCatalogSchemaName(String tableName) {
-
-        String[] parts = tableName.split("\\.", 3);
-        switch (parts.length) {
-            case 1:
-                return new String[]{null, null, parts[0]};
-            case 2:
-                // the first part can be either a catalog or a schema
-                if (supportsSchemas) {
-                    return new String[]{null, parts[0], parts[1]};
-                } else if (supportsCatalogs) {
-                    return new String[]{parts[0], null, parts[1]};
-
-                } else {
-                    return new String[]{null, null, tableName};
-                }
-            case 3:
-                if (supportsCatalogs && supportsSchemas) {
-                    return new String[]{parts[0], parts[1], parts[2]};
-                } else {
-                    return new String[]{null, null, tableName};
-                }
-
-            default:
-                return new String[]{null, null, tableName};
-        }
     }
 }

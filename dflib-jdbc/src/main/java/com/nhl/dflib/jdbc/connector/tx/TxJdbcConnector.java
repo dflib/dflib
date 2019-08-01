@@ -7,6 +7,7 @@ import com.nhl.dflib.jdbc.connector.StatementBuilder;
 import com.nhl.dflib.jdbc.connector.TableLoader;
 import com.nhl.dflib.jdbc.connector.TableSaver;
 import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
+import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.jdbc.connector.statement.ValueConverterFactory;
 import com.nhl.dflib.series.builder.SeriesBuilder;
 
@@ -28,12 +29,28 @@ public class TxJdbcConnector implements JdbcConnector {
 
     @Override
     public TableSaver tableSaver(String tableName) {
+        return tableSaver(getMetadata().parseTableName(tableName));
+    }
+
+    /**
+     * @since 0.7
+     */
+    @Override
+    public TableSaver tableSaver(TableFQName tableName) {
         return new TableSaver(this, tableName);
     }
 
     @Override
     public TableLoader tableLoader(String tableName) {
-        return new TableLoader(this, tableName);
+        return new TableLoader(this, getMetadata().parseTableName(tableName));
+    }
+
+    /**
+     * @since 0.7
+     */
+    @Override
+    public TableLoader tableLoader(TableFQName tableName) {
+        return null;
     }
 
     @Override
@@ -59,6 +76,14 @@ public class TxJdbcConnector implements JdbcConnector {
     @Override
     public String quoteIdentifier(String bareIdentifier) {
         return delegate.quoteIdentifier(bareIdentifier);
+    }
+
+    /**
+     * @since 0.7
+     */
+    @Override
+    public String quoteTableName(TableFQName tableName) {
+        return delegate.quoteTableName(tableName);
     }
 
     @Override

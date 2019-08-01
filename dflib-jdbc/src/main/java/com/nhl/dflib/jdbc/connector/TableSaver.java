@@ -4,6 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.RowToValueMapper;
 import com.nhl.dflib.jdbc.connector.metadata.DbColumnMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.DbTableMetadata;
+import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.jdbc.connector.saver.SaveViaDeleteThenInsert;
 import com.nhl.dflib.jdbc.connector.saver.SaveViaInsert;
 import com.nhl.dflib.jdbc.connector.saver.SaveViaUpsert;
@@ -19,7 +20,7 @@ public class TableSaver {
     private static final Logger LOGGER = LoggerFactory.getLogger(TableSaver.class);
 
     protected JdbcConnector connector;
-    private String tableName;
+    private TableFQName tableName;
     private String rowNumberColumn;
 
     // save strategy-defining vars
@@ -27,7 +28,7 @@ public class TableSaver {
     private boolean mergeByPk;
     private String[] mergeByColumns;
 
-    public TableSaver(JdbcConnector connector, String tableName) {
+    public TableSaver(JdbcConnector connector, TableFQName tableName) {
         this.connector = connector;
         this.tableName = tableName;
     }

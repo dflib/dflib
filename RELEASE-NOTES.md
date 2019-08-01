@@ -1,3 +1,7 @@
+## Release 0.7
+
+* #69 TableSaver: apply quotes to schema/catalog/table name separately
+
 ## Release 0.6
 
 * #12 dflib-jdbc: TableSaver to merge data by key 

@@ -13,7 +13,7 @@ public class DbTableMetadataTest {
         DbColumnMetadata c1 = new DbColumnMetadata("c1", Types.INTEGER, false);
         DbColumnMetadata c2 = new DbColumnMetadata("c2", Types.VARCHAR, false);
 
-        DbTableMetadata md = new DbTableMetadata("x", new DbColumnMetadata[]{c1, c2});
+        DbTableMetadata md = new DbTableMetadata(TableFQName.forName("x"), new DbColumnMetadata[]{c1, c2});
         assertSame(c1, md.getColumn("c1"));
         assertSame(c2, md.getColumn("c2"));
     }
@@ -22,7 +22,7 @@ public class DbTableMetadataTest {
     public void testGetColumn_Unknown() {
         DbColumnMetadata c1 = new DbColumnMetadata("c1", Types.INTEGER, false);
 
-        DbTableMetadata md = new DbTableMetadata("x", new DbColumnMetadata[]{c1});
+        DbTableMetadata md = new DbTableMetadata(TableFQName.forName("x"), new DbColumnMetadata[]{c1});
         md.getColumn("no_such_column");
     }
 }
