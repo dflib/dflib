@@ -3,7 +3,6 @@ package com.nhl.dflib.jdbc.connector;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.RowToValueMapper;
 import com.nhl.dflib.jdbc.connector.metadata.DbColumnMetadata;
-import com.nhl.dflib.jdbc.connector.metadata.DbTableMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.jdbc.connector.saver.SaveViaDeleteThenInsert;
 import com.nhl.dflib.jdbc.connector.saver.SaveViaInsert;
@@ -115,20 +114,7 @@ public class TableSaver {
 
         return pkNames;
     }
-
-    protected DbColumnMetadata[] getMergeByColumns() {
-
-        int len = mergeByColumns.length;
-        DbColumnMetadata[] pk = new DbColumnMetadata[len];
-        DbTableMetadata table = connector.getMetadata().getTable(tableName);
-
-        for (int i = 0; i < len; i++) {
-            pk[i] = table.getColumn(mergeByColumns[i]);
-        }
-
-        return pk;
-    }
-
+    
     @Deprecated
     protected RowToValueMapper<Integer> rowIndexer() {
         return new RowToValueMapper<Integer>() {
