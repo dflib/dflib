@@ -14,7 +14,6 @@ public class Series_LocateTest extends BaseObjectSeriesTest {
         super(seriesType);
     }
 
-
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return ALL_SERIES_TYPES;

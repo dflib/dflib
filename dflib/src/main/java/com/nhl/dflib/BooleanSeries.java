@@ -3,6 +3,8 @@ package com.nhl.dflib;
 import com.nhl.dflib.op.BooleanSeriesOps;
 import com.nhl.dflib.series.BooleanArraySeries;
 
+import java.util.Random;
+
 /**
  * @since 0.6
  */
@@ -80,4 +82,16 @@ public interface BooleanSeries extends Series<Boolean> {
     BooleanSeries or(BooleanSeries another);
 
     BooleanSeries not();
+
+    /**
+     * @since 0.7
+     */
+    @Override
+    BooleanSeries sample(int size);
+
+    /**
+     * @since 0.7
+     */
+    @Override
+    BooleanSeries sample(int size, Random random);
 }

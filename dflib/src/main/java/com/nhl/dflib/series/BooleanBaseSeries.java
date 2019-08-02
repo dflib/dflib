@@ -9,6 +9,7 @@ import com.nhl.dflib.ValueMapper;
 import com.nhl.dflib.ValuePredicate;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
+import com.nhl.dflib.sample.Sampler;
 import com.nhl.dflib.series.builder.BooleanAccumulator;
 import com.nhl.dflib.series.builder.IntAccumulator;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
@@ -16,6 +17,7 @@ import com.nhl.dflib.series.builder.ObjectAccumulator;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.Random;
 
 /**
  * @since 0.6
@@ -93,6 +95,22 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         copyTo(sorted, 0, 0, size);
         Arrays.sort(sorted, comparator);
         return new ArraySeries<>(sorted);
+    }
+
+    private BooleanSeries selectAsBooleanSeries(IntSeries positions) {
+
+        int h = positions.size();
+
+        boolean[] data = new boolean[h];
+
+        for (int i = 0; i < h; i++) {
+            // unlike SelectSeries, we do not expect negative ints in the index.
+            // So if it happens, let it fall through to "getLong()" and fail there
+            int index = positions.getInt(i);
+            data[i] = getBoolean(index);
+        }
+
+        return new BooleanArraySeries(data);
     }
 
     private Series<Boolean> selectAsObjectSeries(IntSeries positions) {
@@ -494,6 +512,22 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     @Override
     public SeriesGroupBy<Boolean> group(ValueMapper<Boolean, ?> by) {
         return new SeriesGrouper<>(by).group(this);
+    }
+
+    /**
+     * @since 0.7
+     */
+    @Override
+    public BooleanSeries sample(int size) {
+        return selectAsBooleanSeries(Sampler.sampleIndex(size, size()));
+    }
+
+    /**
+     * @since 0.7
+     */
+    @Override
+    public BooleanSeries sample(int size, Random random) {
+        return selectAsBooleanSeries(Sampler.sampleIndex(size, size(), random));
     }
 
     @Override
