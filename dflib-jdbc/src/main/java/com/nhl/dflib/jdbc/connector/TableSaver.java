@@ -21,7 +21,6 @@ public class TableSaver {
 
     protected JdbcConnector connector;
     private TableFQName tableName;
-    private String rowNumberColumn;
 
     // save strategy-defining vars
     private boolean deleteTableData;
@@ -78,24 +77,9 @@ public class TableSaver {
         return this;
     }
 
-    /**
-     * @deprecated since 0.6. This functionality can be emulated simply by adding a row number column to the saved DataFrame.
-     */
-    @Deprecated
-    public TableSaver storeRowNumber(String rowNumberColumn) {
-        this.rowNumberColumn = rowNumberColumn;
-        return this;
-    }
-
     public SaveStats save(DataFrame df) {
         LOGGER.info("saving DataFrame...");
-
-        // deprecated - conditionally add row numbers columns
-        DataFrame toSave = rowNumberColumn != null
-                ? df.addColumn(rowNumberColumn, rowIndexer())
-                : df;
-
-        return new SaveStats(createSaveStrategy().save(toSave));
+        return new SaveStats(createSaveStrategy().save(df));
     }
 
     protected TableSaveStrategy createSaveStrategy() {

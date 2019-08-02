@@ -248,17 +248,4 @@ public class CsvLoaderTest extends BaseCsvTest {
                 .expectRow(0, null, "three")
                 .expectRow(1, "five", null);
     }
-
-
-    @Deprecated
-    @Test
-    public void testFromFile_ColumnTypes() {
-        DataFrame df = new CsvLoader()
-                .columnTypes(ValueMapper.stringToInt(), ValueMapper.stringToString(), ValueMapper.stringToDouble())
-                .load(inPath("f1.csv"));
-        new DataFrameAsserts(df, "A", "b", "C")
-                .expectHeight(2)
-                .expectRow(0, 1, "2", 3.)
-                .expectRow(1, 4, "5", 6.);
-    }
 }

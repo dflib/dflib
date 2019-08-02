@@ -65,25 +65,7 @@ public class CsvLoader {
         this.columns = Index.forLabels(columns);
         return this;
     }
-
-    /**
-     * @param typeConverters
-     * @return this loader
-     * @deprecated since 0.6 as it does not allow to pass primitive values converters. Use per-column type specifiers.
-     */
-    @Deprecated
-    @SafeVarargs
-    public final CsvLoader columnTypes(ValueMapper<String, ?>... typeConverters) {
-        for (int i = 0; i < typeConverters.length; i++) {
-            int captureI = i;
-            builders.add(new Pair(
-                    ind -> captureI,
-                    new ObjectMappedAccumulator<>(typeConverters[i])));
-        }
-        return this;
-    }
-
-
+    
     public CsvLoader columnType(int column, ValueMapper<String, ?> typeConverter) {
         return columnType(column, new ObjectMappedAccumulator<>(typeConverter));
     }

@@ -113,29 +113,6 @@ public class JdbcConnector_TableSaverIT extends BaseDbTest {
                 .expectRow(1, 4L, "n4", 20_000.);
     }
 
-    @Deprecated
-    @Test
-    public void testSave_StoreRowNumber() {
-
-        DataFrame df = DataFrame.newFrame("name", "salary").foldByRow(
-                "n1", 50_000.01,
-                "n2", 120_000.);
-
-        connector
-                .tableSaver("t1")
-                .storeRowNumber("id")
-                .save(df);
-
-        DataFrame df2 = connector
-                .tableLoader("t1")
-                .load();
-
-        new DataFrameAsserts(df2, columnNames(T1))
-                .expectHeight(2)
-                .expectRow(0, 1L, "n1", 50_000.01)
-                .expectRow(1, 2L, "n2", 120_000.);
-    }
-
     @Test
     public void testSave_MergeByPk() {
 
