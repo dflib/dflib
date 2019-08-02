@@ -6,6 +6,7 @@ import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
 
 import java.util.Comparator;
+import java.util.Random;
 
 /**
  * A wrapper around an array of values of a certain type.
@@ -205,4 +206,23 @@ public interface Series<T> {
 
         return accum.toSeries();
     }
+
+    /**
+     * Returns a Series object that is the sample of values from this object, with the specified sample size.
+     *
+     * @param size the size of the sample. Can't be bigger than the size of this Series.
+     * @return a Series object that is the sample of values from this object
+     * @since 0.7
+     */
+    Series<T> sample(int size);
+
+    /**
+     * Returns a Series object that is the sample of values from this object, with the specified sample size.
+     *
+     * @param size the size of the sample. Can't be bigger than the size of this Series.
+     * @param random a custom random number generator
+     * @return a Series object that is the sample of values from this object
+     * @since 0.7
+     */
+    Series<T> sample(int size, Random random);
 }

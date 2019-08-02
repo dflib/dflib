@@ -2,6 +2,8 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.series.DoubleArraySeries;
 
+import java.util.Random;
+
 /**
  * A Series optimized to store and access primitive double values without <code>java.lang.Double</code> wrapper. Can also
  * pose as "Series&lt;Double>", although this is not the most efficient way of using it.
@@ -57,4 +59,16 @@ public interface DoubleSeries extends Series<Double> {
      * @return a DoubleSeries that contains non-repeating values from this Series.
      */
     DoubleSeries uniqueDouble();
+
+    /**
+     * @since 0.7
+     */
+    @Override
+    DoubleSeries sample(int size);
+
+    /**
+     * @since 0.7
+     */
+    @Override
+    DoubleSeries sample(int size, Random random);
 }

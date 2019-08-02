@@ -10,6 +10,7 @@ import com.nhl.dflib.ValueMapper;
 import com.nhl.dflib.ValuePredicate;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
+import com.nhl.dflib.sample.Sampler;
 import com.nhl.dflib.series.builder.BooleanAccumulator;
 import com.nhl.dflib.series.builder.IntAccumulator;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
@@ -20,6 +21,7 @@ import com.nhl.dflib.sort.IntTimSort;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.Random;
 
 /**
  * A base implementation of various boilerplate methods for {@link IntSeries}.
@@ -131,6 +133,22 @@ public abstract class IntBaseSeries implements IntSeries {
     @Override
     public Series<Integer> filter(BooleanSeries positions) {
         return filterInt(positions);
+    }
+
+    private IntSeries selectAsIntSeries(IntSeries positions) {
+
+        int h = positions.size();
+
+        int[] data = new int[h];
+
+        for (int i = 0; i < h; i++) {
+            // unlike SelectSeries, we do not expect negative ints in the index.
+            // So if it happens, let it fall through to "getInt()" and fail there
+            int index = positions.getInt(i);
+            data[i] = getInt(index);
+        }
+
+        return new IntArraySeries(data);
     }
 
     private Series<Integer> selectAsObjectSeries(IntSeries positions) {
@@ -445,6 +463,22 @@ public abstract class IntBaseSeries implements IntSeries {
     @Override
     public SeriesGroupBy<Integer> group(ValueMapper<Integer, ?> by) {
         return new SeriesGrouper<>(by).group(this);
+    }
+
+    /**
+     * @since 0.7
+     */
+    @Override
+    public IntSeries sample(int size) {
+        return selectAsIntSeries(Sampler.sampleIndex(size, size()));
+    }
+
+    /**
+     * @since 0.7
+     */
+    @Override
+    public IntSeries sample(int size, Random random) {
+        return selectAsIntSeries(Sampler.sampleIndex(size, size(), random));
     }
 
     @Override

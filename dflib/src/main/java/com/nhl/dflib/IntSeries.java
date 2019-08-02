@@ -3,6 +3,8 @@ package com.nhl.dflib;
 import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.sort.IntComparator;
 
+import java.util.Random;
+
 /**
  * A Series optimized to store and access primitive int values without <code>java.lang.Integer</code> wrapper. Can also
  * pose as "Series&lt;Integer>", although this is not the most efficient way of using it.
@@ -59,4 +61,16 @@ public interface IntSeries extends Series<Integer> {
      * @return a IntSeries that contains non-repeating values from this Series.
      */
     IntSeries uniqueInt();
+
+    /**
+     * @since 0.7
+     */
+    @Override
+    IntSeries sample(int size);
+
+    /**
+     * @since 0.7
+     */
+    @Override
+    IntSeries sample(int size, Random random);
 }

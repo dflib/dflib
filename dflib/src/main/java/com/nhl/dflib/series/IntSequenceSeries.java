@@ -3,7 +3,7 @@ package com.nhl.dflib.series;
 import com.nhl.dflib.IntSeries;
 
 /**
- * A {@link com.nhl.dflib.IntSeries} that represents a range of sequential integers.
+ * An {@link com.nhl.dflib.IntSeries} that represents a range of sequential integers.
  *
  * @since 0.6
  */

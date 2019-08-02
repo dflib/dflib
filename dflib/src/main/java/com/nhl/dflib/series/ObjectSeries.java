@@ -9,6 +9,7 @@ import com.nhl.dflib.ValueMapper;
 import com.nhl.dflib.ValuePredicate;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
+import com.nhl.dflib.sample.Sampler;
 import com.nhl.dflib.series.builder.BooleanAccumulator;
 import com.nhl.dflib.series.builder.IntAccumulator;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
@@ -17,6 +18,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Set;
 
 public abstract class ObjectSeries<T> implements Series<T> {
@@ -246,6 +248,16 @@ public abstract class ObjectSeries<T> implements Series<T> {
     @Override
     public SeriesGroupBy<T> group(ValueMapper<T, ?> by) {
         return new SeriesGrouper<>(by).group(this);
+    }
+
+    @Override
+    public Series<T> sample(int size) {
+        return select(Sampler.sampleIndex(size, size()));
+    }
+    
+    @Override
+    public Series<T> sample(int size, Random random) {
+        return select(Sampler.sampleIndex(size, size(), random));
     }
 
     @Override
