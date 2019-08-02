@@ -21,37 +21,23 @@ public class Sampler {
     }
 
     public static IntSeries sampleIndex(int sampleSize, int originalSize, Random random) {
-        int[] sample = sampleInts(sampleSize, originalSize, random);
-        return IntSeries.forInts(sample);
-    }
-
-    private static int[] sampleInts(int sampleSize, int originalSize, Random random) {
 
         if (sampleSize > originalSize) {
             throw new IllegalArgumentException("Sample size must not be higher than the original size");
         }
 
-        // Not using Reservoir Sampling (https://en.wikipedia.org/wiki/Reservoir_sampling),
-        // as it preserves the order of items, and shuffling it post factum will require more calls to Random..
-        // TODO: is there an O(N) algorithm that would produce K non-repeating randomly ordered numbers out of N with
-        //  a buffer of size K and no extra copying?
+        int[] data = intSequence(originalSize);
+        shuffle(data, random);
+        return IntSeries.forInts(data).headInt(sampleSize);
+    }
 
-        // fill with sequential numbers
-        int[] data = new int[originalSize];
-        for (int i = 0; i < originalSize; i++) {
+    private static int[] intSequence(int size) {
+        int[] data = new int[size];
+        for (int i = 0; i < size; i++) {
             data[i] = i;
         }
 
-        shuffle(data, random);
-
-        // truncate random numbers to sampleSize if needed
-        if (sampleSize == originalSize) {
-            return data;
-        }
-
-        int[] newData = new int[sampleSize];
-        System.arraycopy(data, 0, newData, 0, sampleSize);
-        return newData;
+        return data;
     }
 
     // approximately the same as Collections.shuffle()
