@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 /**
@@ -445,8 +446,12 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     DataFrame renameColumns(Map<String, String> oldToNewLabels);
 
+    // TODO: breaking vararg into arg and vararg is a nasty pattern that does not allow to pass whole data structures
+    //  built dynamically.. redo this
     DataFrame selectColumns(String label0, String... otherLabels);
 
+    // TODO: breaking vararg into arg and vararg is a nasty pattern that does not allow to pass whole data structures
+    //  built dynamically.. redo this
     DataFrame selectColumns(int pos0, int... otherPositions);
 
     /**
@@ -455,6 +460,16 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.6
      */
     DataFrame selectColumns(Index columnsIndex);
+
+    /**
+     * Returns a DataFrame with columns filtered from this DataFrame using the specified condition.
+     *
+     * @param includeCondition a condition evaluated against column names t determine whether they should be included
+     *                         in the resulting DataFrame
+     * @return a new DataFrame
+     * @since 0.7
+     */
+    DataFrame selectColumns(Predicate<String> includeCondition);
 
     DataFrame dropColumns(String... columnLabels);
 

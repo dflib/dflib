@@ -7,6 +7,19 @@ import org.junit.Test;
 public class DataFrame_SelectTest {
 
     @Test
+    public void testSelectColumns_ByCondition() {
+        DataFrame df = DataFrame.newFrame("x1", "b", "x2").foldByRow(
+                1, "x", "z",
+                2, "y", "a")
+                .selectColumns(c -> c.startsWith("x"));
+
+        new DataFrameAsserts(df, "x1", "x2")
+                .expectHeight(2)
+                .expectRow(0, 1, "z")
+                .expectRow(1, 2, "a");
+    }
+
+    @Test
     public void testSelectColumns() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",

@@ -3,6 +3,7 @@
 * #69 TableSaver: apply quotes to schema/catalog/table name separately
 * #70 Remove API deprecated in 0.6 
 * #71 Series, DataFrame "sample"
+* #72 DataFrame.selectColumns(Predicate<String>)
 
 ## Release 0.6
 

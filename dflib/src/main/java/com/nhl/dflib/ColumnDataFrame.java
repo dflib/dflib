@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 public class ColumnDataFrame implements DataFrame {
@@ -504,6 +505,15 @@ public class ColumnDataFrame implements DataFrame {
         }
 
         return new ColumnDataFrame(columnsIndex, newColumns);
+    }
+
+    /**
+     * @since 0.7
+     */
+    @Override
+    public DataFrame selectColumns(Predicate<String> includeCondition) {
+        Index newIndex = columnsIndex.selectLabels(includeCondition);
+        return newIndex != columnsIndex ? selectColumns(newIndex) : this;
     }
 
     @Override

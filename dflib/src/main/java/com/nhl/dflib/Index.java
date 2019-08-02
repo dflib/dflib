@@ -10,11 +10,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 /**
@@ -201,6 +203,23 @@ public class Index implements Iterable<String> {
         }
 
         return Index.forLabelsDeduplicate(labels);
+    }
+
+    /**
+     * @since 0.7
+     */
+    public Index selectLabels(Predicate<String> includeCondition) {
+        // must preserve label order
+        Set<String> selected = new LinkedHashSet<>();
+
+        int len = labels.length;
+        for (int i = 0; i < len; i++) {
+            if(includeCondition.test(labels[i])) {
+                selected.add(labels[i]);
+            }
+        }
+
+        return selected.size() == size() ? this : Index.forLabels(selected.toArray(new String[selected.size()]));
     }
 
     public Index dropLabels(String... labels) {
