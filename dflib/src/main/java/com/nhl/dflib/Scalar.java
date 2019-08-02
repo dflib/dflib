@@ -47,14 +47,6 @@ public class Scalar<T> {
     }
 
     /**
-     * @deprecated since 0.6 in favor of {@link #countLong()}
-     */
-    @Deprecated
-    public Aggregator count() {
-        return countLong();
-    }
-
-    /**
      * @since 0.6
      */
     public Aggregator<Long> countLong() {
@@ -69,14 +61,6 @@ public class Scalar<T> {
     }
 
     /**
-     * @deprecated since 0.6 in favor of {@link #averageDouble()}
-     */
-    @Deprecated
-    public Aggregator average() {
-        return averageDouble();
-    }
-
-    /**
      * @since 0.6
      */
     public Aggregator<Double> averageDouble() {
@@ -84,26 +68,10 @@ public class Scalar<T> {
     }
 
     /**
-     * @deprecated since 0.6 in favor of {@link #medianDouble()}
-     */
-    @Deprecated
-    public Aggregator median() {
-        return medianDouble();
-    }
-
-    /**
      * @since 0.6
      */
     public Aggregator<Double> medianDouble() {
         return Aggregator.medianDouble(position);
-    }
-
-    /**
-     * @deprecated since 0.6 in favor of {@link #sumLong()}
-     */
-    @Deprecated
-    public Aggregator sum() {
-        return sumLong();
     }
 
     /**

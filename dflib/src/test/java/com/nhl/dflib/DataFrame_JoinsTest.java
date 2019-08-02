@@ -1,34 +1,12 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.join.JoinIndicator;
-import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
 import java.util.Objects;
 
 public class DataFrame_JoinsTest {
-
-    @Deprecated
-    @Test
-    public void testNestedLoop_Inner_Legacy() {
-
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
-                1, "x",
-                2, "y");
-
-        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
-                2, "a",
-                2, "b",
-                3, "c");
-
-        DataFrame df = df1.innerJoin(df2, JoinPredicate.on(0, 0));
-
-        new DataFrameAsserts(df, "a", "b", "c", "d")
-                .expectHeight(2)
-                .expectRow(0, 2, "y", 2, "a")
-                .expectRow(1, 2, "y", 2, "b");
-    }
 
     @Test
     public void testNestedLoop_Inner() {

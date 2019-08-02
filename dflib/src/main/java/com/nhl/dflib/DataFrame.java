@@ -1,17 +1,12 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.join.JoinBuilder;
-import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.row.RowProxy;
-import com.nhl.dflib.series.builder.IntAccumulator;
 
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.UnaryOperator;
-import java.util.stream.Stream;
 
 /**
  * An immutable 2D data container with support for a variety of data transformations, queries, joins, etc. Every such
@@ -39,73 +34,6 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     static DataFrameBuilder newFrame(Index columnIndex) {
         return DataFrameBuilder.builder(columnIndex);
-    }
-
-    /**
-     * Creates a DataFrame by folding the provided stream of objects into rows and columns row by row.
-     *
-     * @deprecated since 0.6 in favor of the builder approach. See {@link #newFrame(Index)} and {@link #newFrame(String...)}.
-     */
-    @Deprecated
-    static <T> DataFrame forStreamFoldByRow(Index columns, Stream<T> stream) {
-        return newFrame(columns).foldStreamByRow(stream);
-    }
-
-    /**
-     * Creates a DataFrame by folding the provided array of objects into rows and columns row by row.
-     *
-     * @deprecated since 0.6 in favor of the builder approach. See {@link #newFrame(Index)} and {@link #newFrame(String...)}.
-     */
-    @Deprecated
-    static DataFrame forSequenceFoldByRow(Index columns, Object... sequence) {
-        return newFrame(columns).foldByRow(sequence);
-    }
-
-    /**
-     * @deprecated since 0.6 in favor of the builder approach. See {@link #newFrame(Index)} and {@link #newFrame(String...)}.
-     */
-    @Deprecated
-    static DataFrame forSequenceFoldByColumn(Index columns, Object... sequence) {
-        return newFrame(columns).foldByColumn(sequence);
-    }
-
-    /**
-     * @deprecated since 0.6 in favor of the builder approach. See {@link #newFrame(Index)} and {@link #newFrame(String...)}.
-     */
-    @Deprecated
-    static DataFrame forRows(Index columns, Object[]... rows) {
-        return newFrame(columns).rows(rows);
-    }
-
-    /**
-     * @deprecated since 0.6 in favor of the builder approach. See {@link #newFrame(Index)} and {@link #newFrame(String...)}.
-     */
-    @Deprecated
-    static DataFrame forRows(Index columns, Iterable<Object[]> source) {
-        return newFrame(columns).objectsToRows(source, Function.identity());
-    }
-
-    /**
-     * Creates a DataFrame from an iterable over arbitrary objects. Each object will be converted to a row by applying
-     * a function passed as the last argument.
-     *
-     * @deprecated since 0.6 in favor of the builder approach. See {@link #newFrame(Index)} and {@link #newFrame(String...)}.
-     */
-    @Deprecated
-    static <T> DataFrame forObjects(Index columns, Iterable<T> rows, Function<T, Object[]> rowMapper) {
-        return newFrame(columns).objectsToRows(rows, rowMapper);
-    }
-
-    /**
-     * Syntactic sugar for DataFrame row (aka simple Object[]) construction. Equivalent to "new Object[] {x, y, z}".
-     *
-     * @param values a varargs array of values
-     * @return "values" vararg unchanged
-     * @deprecated since 0.6 with no replacement. This doesn't belong in DFLib
-     */
-    @Deprecated
-    static Object[] row(Object... values) {
-        return values;
     }
 
     /**
@@ -548,70 +476,11 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     DataFrame selectRows(IntSeries rowPositions);
 
-    /**
-     * Selects DataFrame rows based on provided row index. This allows to reorder, filter, duplicate rows of this
-     * DataFrame.
-     *
-     * @return a new DataFrame that matches the selection criteria
-     * @deprecated since 0.6 in favor of primitive int indexing, e.g. {@link #selectRows(int...)}.
-     */
-    default DataFrame select(List<Integer> rowPositions) {
-        int len = rowPositions.size();
-        IntAccumulator ml = new IntAccumulator(len);
-
-        for (Integer i : rowPositions) {
-            ml.add(i);
-        }
-
-        return selectRows(ml.toIntSeries());
-    }
-
-    /**
-     * @param rowPositions
-     * @return
-     * @deprecated since 0.6 in favor of {@link #selectRows(IntSeries)}.
-     */
-    @Deprecated
-    default DataFrame select(Series<Integer> rowPositions) {
-        int len = rowPositions.size();
-        IntAccumulator ml = new IntAccumulator(len);
-
-        for (int i = 0; i < len; i++) {
-            ml.add(rowPositions.get(i));
-        }
-
-        return selectRows(ml.toIntSeries());
-    }
-
-    /**
-     * @deprecated since 0.6 in favor of {@link #filterRows(RowPredicate)}
-     */
-    @Deprecated
-    default DataFrame filter(RowPredicate p) {
-        return filterRows(p);
-    }
-
     DataFrame filterRows(RowPredicate p);
-
-    /**
-     * @deprecated since 0.6 in favor of {@link #filterRows(String, ValuePredicate)}
-     */
-    @Deprecated
-    default <V> DataFrame filter(String columnName, ValuePredicate<V> p) {
-        return filterRows(columnName, p);
-    }
 
     default <V> DataFrame filterRows(String columnName, ValuePredicate<V> p) {
         int pos = getColumnsIndex().position(columnName);
         return filterRows(pos, p);
-    }
-
-    /**
-     * @deprecated since 0.6 in favor of {@link #filterRows(int, ValuePredicate)}
-     */
-    @Deprecated
-    default <V> DataFrame filter(int columnPos, ValuePredicate<V> p) {
-        return filterRows(columnPos, p);
     }
 
     <V> DataFrame filterRows(int columnPos, ValuePredicate<V> p);
@@ -715,54 +584,6 @@ public interface DataFrame extends Iterable<RowProxy> {
     default JoinBuilder fullJoin() {
         return new JoinBuilder(this).type(JoinType.full);
     }
-
-
-    /**
-     * @deprecated since 0.6 in favor of join builder returned via {@link #innerJoin()}.
-     */
-    @Deprecated
-    default DataFrame innerJoin(DataFrame df, JoinPredicate p) {
-        return join(df, p, JoinType.inner);
-    }
-
-    /**
-     * @deprecated since 0.6 in favor of one of the join builders, e.g. {@link #leftJoin()}, etc.
-     */
-    @Deprecated
-    DataFrame join(DataFrame df, JoinPredicate p, JoinType how);
-
-    /**
-     * Calculates a join using <a href="https://en.wikipedia.org/wiki/Hash_join">"hash join"</a> algorithm. It requires
-     * two custom "hash" functions for the rows on the left and the right sides of the join, each producing
-     * values, whose equality can be used as a join condition. This is the fastest known way to join two data sets.
-     * See the {@link Hasher} class for common hashers, such as those comparing column values.
-     *
-     * @param df          a DataFrame to join with this one
-     * @param leftHasher  a hash function for the left-side rows
-     * @param rightHasher a hash function for the right-side rows
-     * @return a DataFrame that is a result of this join
-     * @deprecated since 0.6 in favor of join builder returned via {@link #innerJoin()}.
-     */
-    @Deprecated
-    default DataFrame innerJoin(DataFrame df, Hasher leftHasher, Hasher rightHasher) {
-        return join(df, leftHasher, rightHasher, JoinType.inner);
-    }
-
-    /**
-     * Calculates a join using <a href="https://en.wikipedia.org/wiki/Hash_join">hash join</a> algorithm. It requires
-     * two custom "hash" functions for the rows on the left and the right sides of the join, each producing
-     * values, whose equality can be used as a join condition. This is the fastest known way to join two data sets.
-     * See the {@link Hasher} class for common hashers, such as those comparing column values.
-     *
-     * @param df          a DataFrame to join with this one
-     * @param leftHasher  a hash function for the left-side rows
-     * @param rightHasher a hash function for the right-side rows
-     * @param how         join semantics
-     * @return a DataFrame that is a result of this join
-     * @deprecated since 0.6 in favor of one of the join builders, e.g. {@link #leftJoin()}, etc.
-     */
-    @Deprecated
-    DataFrame join(DataFrame df, Hasher leftHasher, Hasher rightHasher, JoinType how);
 
     /**
      * Aggregates DataFrame columns into a Series, using provided per-column aggregators. Note that aggregator

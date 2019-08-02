@@ -62,22 +62,6 @@ public interface Aggregator<T> {
     }
 
     /**
-     * @deprecated since 0.6 in favor of {@link #averageDouble(String)}
-     */
-    @Deprecated
-    static Aggregator average(String column) {
-        return averageDouble(column);
-    }
-
-    /**
-     * @deprecated since 0.6 in favor of {@link #averageDouble(int)}
-     */
-    @Deprecated
-    static Aggregator average(int column) {
-        return averageDouble(column);
-    }
-
-    /**
      * @since 0.6
      */
     static Aggregator<Double> averageDouble(String column) {
@@ -100,22 +84,6 @@ public interface Aggregator<T> {
     }
 
     /**
-     * @deprecated since 0.6 in favor of {@link #medianDouble(String)}
-     */
-    @Deprecated
-    static Aggregator median(String column) {
-        return medianDouble(column);
-    }
-
-    /**
-     * @deprecated since 0.6 in favor of {@link #medianDouble(int)}
-     */
-    @Deprecated
-    static Aggregator median(int column) {
-        return medianDouble(column);
-    }
-
-    /**
      * @since 0.6
      */
     static Aggregator<Double> medianDouble(String column) {
@@ -135,20 +103,6 @@ public interface Aggregator<T> {
                 index -> column,
                 index -> index.getLabel(column)
         );
-    }
-
-    /**
-     * @deprecated since 0.6 in favor of {@link #sumLong(String)}
-     */
-    static Aggregator sum(String column) {
-        return sumLong(column);
-    }
-
-    /**
-     * @deprecated since 0.6 in favor of {@link #sumLong(int)}
-     */
-    static Aggregator sum(int column) {
-        return sumLong(column);
     }
 
     /**

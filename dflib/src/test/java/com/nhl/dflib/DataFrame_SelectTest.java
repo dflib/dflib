@@ -4,8 +4,6 @@ import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
-import static java.util.Arrays.asList;
-
 public class DataFrame_SelectTest {
 
     @Test
@@ -56,36 +54,6 @@ public class DataFrame_SelectTest {
                 1, "z")
                 .selectRows(0, 3)
                 .materialize();
-    }
-
-    @Deprecated
-    @Test
-    public void testSelect_List() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
-                5, "x",
-                9, "y",
-                1, "z")
-                .select(asList(0, 2));
-
-        new DataFrameAsserts(df, "a", "b")
-                .expectHeight(2)
-                .expectRow(0, 5, "x")
-                .expectRow(1, 1, "z");
-    }
-
-    @Deprecated
-    @Test
-    public void testSelect_Series() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
-                5, "x",
-                9, "y",
-                1, "z")
-                .select(Series.forData(0, 2));
-
-        new DataFrameAsserts(df, "a", "b")
-                .expectHeight(2)
-                .expectRow(0, 5, "x")
-                .expectRow(1, 1, "z");
     }
 
     @Test

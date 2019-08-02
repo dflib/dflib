@@ -1,6 +1,7 @@
 ## Release 0.7
 
 * #69 TableSaver: apply quotes to schema/catalog/table name separately
+* #70 Remove API deprecated in 0.6 
 
 ## Release 0.6
 

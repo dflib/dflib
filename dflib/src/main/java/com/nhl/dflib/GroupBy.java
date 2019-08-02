@@ -203,21 +203,6 @@ public class GroupBy {
         return DataFrameAggregation.aggGroupBy(this, aggregators);
     }
 
-    /**
-     * @deprecated since 0.6, as Aggregators already define aggregated column names, and in any event renaming
-     * DataFrame columns is trivial.
-     */
-    @Deprecated
-    public DataFrame agg(Index index, Aggregator<?>... aggregators) {
-
-        if (index.size() != aggregators.length) {
-            throw new IllegalArgumentException("Index width does not match the number of aggregators. "
-                    + index.size() + " vs. " + aggregators.length);
-        }
-
-        return agg(aggregators).selectColumns(index);
-    }
-
     protected DataFrame resolveGroup(Object key) {
 
         IntSeries index = groupsIndex.get(key);

@@ -50,17 +50,6 @@ public interface Series<T> {
      */
     Series<T> rangeOpenClosed(int fromInclusive, int toExclusive);
 
-    /**
-     * @param fromInclusive a left boundary index of the returned range (included in the returned range)
-     * @param toExclusive   a right boundary index (excluded in the returned range)
-     * @return a Series that contains a sub-range of data from this Series.
-     * @deprecated since 0.6 in favor for {@link #rangeOpenClosed(int, int)} for consistency.
-     */
-    @Deprecated
-    default Series<T> openClosedRange(int fromInclusive, int toExclusive) {
-        return rangeOpenClosed(fromInclusive, toExclusive);
-    }
-
     // TODO: alternative names instead of "materialize" :
     //  * "compact" - as we often trim unused data
     //  * "optimize" - which may be anything, depending on the Series structure.. Ambiguos - optimize for storage or access?

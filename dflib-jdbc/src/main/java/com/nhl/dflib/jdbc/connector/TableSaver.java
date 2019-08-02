@@ -1,14 +1,12 @@
 package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.RowToValueMapper;
 import com.nhl.dflib.jdbc.connector.metadata.DbColumnMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.jdbc.connector.saver.SaveViaDeleteThenInsert;
 import com.nhl.dflib.jdbc.connector.saver.SaveViaInsert;
 import com.nhl.dflib.jdbc.connector.saver.SaveViaUpsert;
 import com.nhl.dflib.jdbc.connector.saver.TableSaveStrategy;
-import com.nhl.dflib.row.RowProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,18 +111,5 @@ public class TableSaver {
         }
 
         return pkNames;
-    }
-    
-    @Deprecated
-    protected RowToValueMapper<Integer> rowIndexer() {
-        return new RowToValueMapper<Integer>() {
-
-            int i = 1;
-
-            @Override
-            public Integer map(RowProxy row) {
-                return i++;
-            }
-        };
     }
 }

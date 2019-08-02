@@ -1,16 +1,10 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.DataFrameAggregation;
-import com.nhl.dflib.series.builder.BooleanAccumulator;
-import com.nhl.dflib.series.builder.DoubleAccumulator;
-import com.nhl.dflib.series.builder.IntAccumulator;
-import com.nhl.dflib.series.builder.LongAccumulator;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.filter.FilterIndexer;
 import com.nhl.dflib.groupby.Grouper;
-import com.nhl.dflib.join.JoinBuilder;
-import com.nhl.dflib.join.JoinPredicate;
 import com.nhl.dflib.map.Mapper;
 import com.nhl.dflib.row.CrossColumnRowProxy;
 import com.nhl.dflib.row.RowProxy;
@@ -19,6 +13,10 @@ import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.series.IntSequenceSeries;
 import com.nhl.dflib.series.RowMappedSeries;
 import com.nhl.dflib.series.SingleValueSeries;
+import com.nhl.dflib.series.builder.BooleanAccumulator;
+import com.nhl.dflib.series.builder.DoubleAccumulator;
+import com.nhl.dflib.series.builder.IntAccumulator;
+import com.nhl.dflib.series.builder.LongAccumulator;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
 import com.nhl.dflib.stack.Stacker;
@@ -350,24 +348,6 @@ public class ColumnDataFrame implements DataFrame {
         System.arraycopy(dfs, 0, combined, 1, dfs.length);
 
         return VConcat.concat(how, combined);
-    }
-
-    @Deprecated
-    @Override
-    public DataFrame join(DataFrame df, JoinPredicate p, JoinType how) {
-        return new JoinBuilder(this)
-                .type(how)
-                .predicatedBy(p)
-                .with(df);
-    }
-
-    @Deprecated
-    @Override
-    public DataFrame join(DataFrame df, Hasher leftHasher, Hasher rightHasher, JoinType how) {
-        return new JoinBuilder(this)
-                .type(how)
-                .on(leftHasher, rightHasher)
-                .with(df);
     }
 
     @Override
