@@ -208,20 +208,22 @@ public interface Series<T> {
     }
 
     /**
-     * Returns a Series object that is the sample of values from this object, with the specified sample size.
+     * Returns a Series object that is a random sample of values from this object, with the specified sample size. If you are
+     * doing sampling in a high concurrency application, consider using {@link #sample(int, Random)}, as this method
+     * is using a shared {@link Random} instance with synchronization.
      *
      * @param size the size of the sample. Can't be bigger than the size of this Series.
-     * @return a Series object that is the sample of values from this object
+     * @return a Series object that is a sample of values from this object
      * @since 0.7
      */
     Series<T> sample(int size);
 
     /**
-     * Returns a Series object that is the sample of values from this object, with the specified sample size.
+     * Returns a Series object that is a random sample of values from this object, with the specified sample size.
      *
-     * @param size the size of the sample. Can't be bigger than the size of this Series.
+     * @param size   the size of the sample. Can't be bigger than the size of this Series.
      * @param random a custom random number generator
-     * @return a Series object that is the sample of values from this object
+     * @return a Series object that is a sample of values from this object
      * @since 0.7
      */
     Series<T> sample(int size, Random random);

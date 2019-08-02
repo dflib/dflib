@@ -2,6 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.range.Range;
+import com.nhl.dflib.sample.Sampler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Random;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 
@@ -131,14 +133,36 @@ public class Index implements Iterable<String> {
         return HConcat.zipIndex(this, forLabels(extraLabels));
     }
 
-    public Index selectPositions(int... otherPos) {
-        int len = otherPos.length;
+    /**
+     * @since 0.7
+     */
+    public Index selectPositions(IntSeries positions) {
+        int len = positions.size();
         String[] selectedLabels = new String[len];
         Set<String> uniqueLabels = new HashSet<>((int) (len / 0.75));
 
         for (int i = 0; i < len; i++) {
 
-            String label = labels[otherPos[i]];
+            String label = labels[positions.getInt(i)];
+
+            while (!uniqueLabels.add(label)) {
+                label = label + "_";
+            }
+
+            selectedLabels[i] = label;
+        }
+
+        return Index.forLabels(selectedLabels);
+    }
+
+    public Index selectPositions(int... positions) {
+        int len = positions.length;
+        String[] selectedLabels = new String[len];
+        Set<String> uniqueLabels = new HashSet<>((int) (len / 0.75));
+
+        for (int i = 0; i < len; i++) {
+
+            String label = labels[positions[i]];
 
             while (!uniqueLabels.add(label)) {
                 label = label + "_";
@@ -254,6 +278,21 @@ public class Index implements Iterable<String> {
         }
 
         return false;
+    }
+
+
+    /**
+     * @since 0.7
+     */
+    public Index sample(int size) {
+        return selectPositions(Sampler.sampleIndex(size, size()));
+    }
+
+    /**
+     * @since 0.7
+     */
+    public Index sample(int size, Random random) {
+        return selectPositions(Sampler.sampleIndex(size, size(), random));
     }
 
     private Map<String, Integer> computeLabelPositions() {

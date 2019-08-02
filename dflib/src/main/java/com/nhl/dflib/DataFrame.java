@@ -6,6 +6,7 @@ import com.nhl.dflib.row.RowProxy;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.UnaryOperator;
 
 /**
@@ -739,6 +740,48 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.6
      */
     DataFrame stackIncludeNulls();
+
+    /**
+     * Returns a DataFrame object that is a random sample of rows from this object, with the specified sample size.
+     * If you are doing sampling in a high concurrency application, consider using {@link #sampleRows(int, Random)}, as
+     * this method is using a shared {@link Random} instance with synchronization.
+     *
+     * @param size the size of the sample. Can't be bigger than the height of this DataFrame.
+     * @return a DataFrame object that is a sample of rows from this object
+     * @since 0.7
+     */
+    DataFrame sampleRows(int size);
+
+    /**
+     * Returns a DataFrame object that is a random sample of rows from this object, with the specified sample size.
+     *
+     * @param size   the size of the sample. Can't be bigger than the height of this DataFrame.
+     * @param random a custom random number generator
+     * @return a DataFrame object that is a sample of rows from this object
+     * @since 0.7
+     */
+    DataFrame sampleRows(int size, Random random);
+
+    /**
+     * Returns a DataFrame object that is a random sample of columns from this object, with the specified sample size.
+     * If you are doing sampling in a high concurrency application, consider using {@link #sampleRows(int, Random)}, as
+     * this method is using a shared {@link Random} instance with synchronization.
+     *
+     * @param size the size of the sample. Can't be bigger than the height of this DataFrame.
+     * @return a DataFrame object that is a sample of columns from this object
+     * @since 0.7
+     */
+    DataFrame sampleColumns(int size);
+
+    /**
+     * Returns a DataFrame object that is a random sample of columns from this object, with the specified sample size.
+     *
+     * @param size   the size of the sample. Can't be bigger than the height of this DataFrame.
+     * @param random a custom random number generator
+     * @return a DataFrame object that is a sample of columns from this object
+     * @since 0.7
+     */
+    DataFrame sampleColumns(int size, Random random);
 
     @Override
     Iterator<RowProxy> iterator();

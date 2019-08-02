@@ -8,6 +8,7 @@ import com.nhl.dflib.groupby.Grouper;
 import com.nhl.dflib.map.Mapper;
 import com.nhl.dflib.row.CrossColumnRowProxy;
 import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.sample.Sampler;
 import com.nhl.dflib.series.EmptySeries;
 import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.series.IntSequenceSeries;
@@ -25,6 +26,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import java.util.function.UnaryOperator;
 
 public class ColumnDataFrame implements DataFrame {
@@ -665,6 +667,32 @@ public class ColumnDataFrame implements DataFrame {
                 return rowProxy.rewind();
             }
         };
+    }
+
+    /**
+     * @since 0.7
+     */
+    @Override
+    public DataFrame sampleRows(int size) {
+        return selectRows(Sampler.sampleIndex(size, height()));
+    }
+
+    /**
+     * @since 0.7
+     */
+    @Override
+    public DataFrame sampleRows(int size, Random random) {
+        return selectRows(Sampler.sampleIndex(size, height(), random));
+    }
+
+    @Override
+    public DataFrame sampleColumns(int size) {
+        return selectColumns(columnsIndex.sample(size));
+    }
+
+    @Override
+    public DataFrame sampleColumns(int size, Random random) {
+        return selectColumns(columnsIndex.sample(size, random));
     }
 
     @Override
