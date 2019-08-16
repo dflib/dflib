@@ -37,8 +37,8 @@ public class CsvLoader_SamplingTest {
 
         new DataFrameAsserts(df2, "A", "B")
                 .expectHeight(2)
-                .expectRow(0, "5", "6")
-                .expectRow(1, "3", "4");
+                .expectRow(0, "3", "4")
+                .expectRow(1, "5", "6");
 
         // and one more test
         DataFrame df3 = new CsvLoader()
@@ -47,8 +47,8 @@ public class CsvLoader_SamplingTest {
 
         new DataFrameAsserts(df3, "A", "B")
                 .expectHeight(3)
-                .expectRow(0, "11", "12")
-                .expectRow(1, "3", "4")
-                .expectRow(2, "7", "8");
+                .expectRow(0, "3", "4")
+                .expectRow(1, "7", "8")
+                .expectRow(2, "11", "12");
     }
 }
