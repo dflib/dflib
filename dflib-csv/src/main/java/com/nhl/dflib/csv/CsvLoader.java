@@ -7,6 +7,7 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.IntValueMapper;
 import com.nhl.dflib.LongValueMapper;
 import com.nhl.dflib.ValueMapper;
+import com.nhl.dflib.sample.Sampler;
 import com.nhl.dflib.series.builder.BooleanMappedAccumulator;
 import com.nhl.dflib.series.builder.DoubleMappedAccumulator;
 import com.nhl.dflib.series.builder.IntMappedAccumulator;
@@ -27,6 +28,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 import java.util.function.Function;
 
 public class CsvLoader {
@@ -34,6 +37,9 @@ public class CsvLoader {
     private int skipRows;
     private Index columns;
     private CSVFormat format;
+
+    private int rowSampleSize;
+    private Random rowsSampleRandom;
 
     // storing converters as list to ensure predictable resolution order when the user supplies overlapping converters
     private List<Pair> builders;
@@ -56,6 +62,36 @@ public class CsvLoader {
     }
 
     /**
+     * Configures CSV loader to select a sample of the rows of a CSV. Unlike {@link DataFrame#sampleRows(int, Random)},
+     * this method will prevent the full CSV from loading in memory, and hence can be used on potentially very large
+     * CSVs. If you are doing sampling in a high concurrency application, consider using {@link #sampleRows(int, Random)},
+     * as this method is using a shared {@link Random} instance with synchronization.
+     *
+     * @param size the size of the sample. Can be bigger than the CSV size (as the CSV size is not known upfront).
+     * @return this loader instance
+     * @since 0.7
+     */
+    public CsvLoader sampleRows(int size) {
+        return sampleRows(size, Sampler.getDefaultRandom());
+    }
+
+    /**
+     * Configures CSV loader to select a sample of the rows of a CSV. Unlike {@link DataFrame#sampleRows(int, Random)},
+     * this method will prevent the full CSV from loading in memory, and hence can be used on potentially very large
+     * CSVs.
+     *
+     * @param size   the size of the sample. Can be bigger than the CSV size (as the CSV size is not known upfront).
+     * @param random a custom random number generator
+     * @return this loader instance
+     * @since 0.7
+     */
+    public CsvLoader sampleRows(int size, Random random) {
+        this.rowSampleSize = size;
+        this.rowsSampleRandom = Objects.requireNonNull(random);
+        return this;
+    }
+
+    /**
      * Provides an alternative header to the returned DataFrame.
      *
      * @param columns user-defined DataFrame columns
@@ -65,7 +101,7 @@ public class CsvLoader {
         this.columns = Index.forLabels(columns);
         return this;
     }
-    
+
     public CsvLoader columnType(int column, ValueMapper<String, ?> typeConverter) {
         return columnType(column, new ObjectMappedAccumulator<>(typeConverter));
     }
@@ -337,7 +373,12 @@ public class CsvLoader {
             }
 
             SeriesBuilder<String, ?>[] builders = createSeriesBuilders(columns);
-            return new CsvLoaderWorker(columns, builders).load(it);
+
+            CsvLoaderWorker worker = rowSampleSize > 0
+                    ? new SamplingCsvLoaderWorker(columns, builders, rowSampleSize, rowsSampleRandom)
+                    : new CsvLoaderWorker(columns, builders);
+
+            return worker.load(it);
 
         } catch (IOException e) {
             throw new RuntimeException("Error reading CSV", e);

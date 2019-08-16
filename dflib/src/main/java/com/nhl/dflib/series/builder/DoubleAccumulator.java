@@ -47,6 +47,15 @@ public class DoubleAccumulator {
         data[size++] = value;
     }
 
+    public void set(int pos, double value) {
+
+        if (pos >= size) {
+            throw new IndexOutOfBoundsException(pos + " is out of bounds for " + size);
+        }
+
+        data[pos] = value;
+    }
+
     public DoubleSeries toDoubleSeries() {
         double[] data = compactData();
 

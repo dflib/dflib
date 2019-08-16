@@ -23,6 +23,11 @@ public class LongMappedAccumulator<I> implements SeriesBuilder<I, Long> {
     }
 
     @Override
+    public void set(int i, I v) {
+        accumulator.set(i, mapper.map(v));
+    }
+
+    @Override
     public Series<Long> toSeries() {
         return accumulator.toLongSeries();
     }

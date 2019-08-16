@@ -26,4 +26,9 @@ public class UniqueIntAccumulator extends IntAccumulator {
             super.add(value);
         }
     }
+
+    @Override
+    public void set(int pos, int value) {
+        throw new UnsupportedOperationException("'set' operation is undefined for unique accumulator");
+    }
 }

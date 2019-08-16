@@ -46,6 +46,15 @@ public class ObjectAccumulator<T> implements SeriesBuilder<T, T> {
     }
 
     @Override
+    public void set(int pos, T v) {
+        if (pos >= size) {
+            throw new IndexOutOfBoundsException(pos + " is out of bounds for " + size);
+        }
+
+        data[pos] = v;
+    }
+
+    @Override
     public Series<T> toSeries() {
         T[] data = compactData();
 

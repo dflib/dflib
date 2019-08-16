@@ -23,6 +23,11 @@ public class BooleanMappedAccumulator<I> implements SeriesBuilder<I, Boolean> {
     }
 
     @Override
+    public void set(int i, I v) {
+        accumulator.set(i, mapper.map(v));
+    }
+
+    @Override
     public Series<Boolean> toSeries() {
         return accumulator.toBooleanSeries();
     }

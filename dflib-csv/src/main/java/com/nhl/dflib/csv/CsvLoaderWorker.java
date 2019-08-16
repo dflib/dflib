@@ -11,7 +11,7 @@ import java.util.Iterator;
 class CsvLoaderWorker {
 
     private Index columns;
-    private SeriesBuilder<String, ?>[] accumulators;
+    protected SeriesBuilder<String, ?>[] accumulators;
 
     public CsvLoaderWorker(Index columns, SeriesBuilder<String, ?>[] accumulators) {
         this.columns = columns;
@@ -22,9 +22,7 @@ class CsvLoaderWorker {
 
         int width = columns.size();
 
-        while (it.hasNext()) {
-            loadRow(width, it.next());
-        }
+        addRows(it, width);
 
         Series<?>[] series = new Series[width];
         for (int i = 0; i < width; i++) {
@@ -34,7 +32,13 @@ class CsvLoaderWorker {
         return DataFrame.newFrame(columns).columns(series);
     }
 
-    private void loadRow(int width, CSVRecord record) {
+    protected void addRows(Iterator<CSVRecord> it, int width) {
+        while (it.hasNext()) {
+            addRow(width, it.next());
+        }
+    }
+
+    protected void addRow(int width, CSVRecord record) {
         for (int i = 0; i < width; i++) {
             accumulators[i].add(record.get(i));
         }

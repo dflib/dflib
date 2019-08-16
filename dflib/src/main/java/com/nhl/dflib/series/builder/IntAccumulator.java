@@ -47,6 +47,15 @@ public class IntAccumulator {
         data[size++] = value;
     }
 
+    public void set(int pos, int value) {
+
+        if (pos >= size) {
+            throw new IndexOutOfBoundsException(pos + " is out of bounds for " + size);
+        }
+
+        data[pos] = value;
+    }
+
     public IntSeries toIntSeries() {
         int[] data = compactData();
 

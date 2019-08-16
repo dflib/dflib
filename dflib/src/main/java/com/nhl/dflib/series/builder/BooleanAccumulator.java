@@ -46,6 +46,15 @@ public class BooleanAccumulator {
         data[size++] = value;
     }
 
+    public void set(int pos, boolean value) {
+
+        if (pos >= size) {
+            throw new IndexOutOfBoundsException(pos + " is out of bounds for " + size);
+        }
+
+        data[pos] = value;
+    }
+
     public BooleanSeries toBooleanSeries() {
         boolean[] data = compactData();
 

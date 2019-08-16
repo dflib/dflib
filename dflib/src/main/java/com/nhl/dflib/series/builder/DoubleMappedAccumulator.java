@@ -23,6 +23,11 @@ public class DoubleMappedAccumulator<I> implements SeriesBuilder<I, Double> {
     }
 
     @Override
+    public void set(int i, I v) {
+        accumulator.set(i, mapper.map(v));
+    }
+
+    @Override
     public Series<Double> toSeries() {
         return accumulator.toDoubleSeries();
     }

@@ -11,5 +11,7 @@ public interface SeriesBuilder<I, O> {
 
     void add(I v);
 
+    void set(int pos, I v);
+
     Series<O> toSeries();
 }

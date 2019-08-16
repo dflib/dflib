@@ -16,6 +16,10 @@ public class Sampler {
 
     private static Random defaultRandom = new SecureRandom();
 
+    public static Random getDefaultRandom() {
+        return defaultRandom;
+    }
+
     public static IntSeries sampleIndex(int sampleSize, int originalSize) {
         return sampleIndex(sampleSize, originalSize, defaultRandom);
     }

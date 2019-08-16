@@ -11,20 +11,25 @@ import com.nhl.dflib.ValueMapper;
 public class ObjectMappedAccumulator<I, O> implements SeriesBuilder<I, O> {
 
     private ValueMapper<I, O> mapper;
-    private ObjectAccumulator<O> accummulator;
+    private ObjectAccumulator<O> accumulator;
 
     public ObjectMappedAccumulator(ValueMapper<I, O> mapper) {
         this.mapper = mapper;
-        this.accummulator = new ObjectAccumulator<>();
+        this.accumulator = new ObjectAccumulator<>();
     }
 
     @Override
     public void add(I v) {
-        accummulator.add(mapper.map(v));
+        accumulator.add(mapper.map(v));
+    }
+
+    @Override
+    public void set(int pos, I v) {
+        accumulator.set(pos, mapper.map(v));
     }
 
     @Override
     public Series<O> toSeries() {
-        return accummulator.toSeries();
+        return accumulator.toSeries();
     }
 }

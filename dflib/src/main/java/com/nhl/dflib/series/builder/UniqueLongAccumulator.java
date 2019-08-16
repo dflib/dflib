@@ -26,4 +26,9 @@ public class UniqueLongAccumulator extends LongAccumulator {
             super.add(value);
         }
     }
+
+    @Override
+    public void set(int pos, long value) {
+        throw new UnsupportedOperationException("'set' operation is undefined for unique accumulator");
+    }
 }

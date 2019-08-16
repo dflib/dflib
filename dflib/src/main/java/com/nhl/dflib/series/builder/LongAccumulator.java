@@ -47,6 +47,15 @@ public class LongAccumulator {
         data[size++] = value;
     }
 
+    public void set(int pos, long value) {
+
+        if (pos >= size) {
+            throw new IndexOutOfBoundsException(pos + " is out of bounds for " + size);
+        }
+
+        data[pos] = value;
+    }
+
     public LongSeries toLongSeries() {
         long[] data = compactData();
 
