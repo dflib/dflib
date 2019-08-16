@@ -13,7 +13,7 @@ class CsvLoaderWorker {
     protected SeriesBuilder<String, ?>[] accumulators;
     protected Index columns;
 
-    public CsvLoaderWorker(Index columns, SeriesBuilder<String, ?>[] accumulators) {
+    CsvLoaderWorker(Index columns, SeriesBuilder<String, ?>[] accumulators) {
         this.columns = columns;
         this.accumulators = accumulators;
     }
