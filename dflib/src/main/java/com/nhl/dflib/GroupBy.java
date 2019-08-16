@@ -156,7 +156,7 @@ public class GroupBy {
     }
 
     public GroupBy sort(int column, boolean ascending) {
-        Comparator<RowProxy> comparator = Sorters.sorter(ungrouped.getColumnsIndex(), column, ascending);
+        Comparator<RowProxy> comparator = Sorters.sorter(column, ascending);
         Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
         for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
@@ -188,7 +188,7 @@ public class GroupBy {
             return this;
         }
 
-        Comparator<RowProxy> comparator = Sorters.sorter(ungrouped.getColumnsIndex(), columns, ascending);
+        Comparator<RowProxy> comparator = Sorters.sorter(columns, ascending);
         Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
         for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {

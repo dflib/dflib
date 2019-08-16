@@ -316,12 +316,12 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public DataFrame sort(int[] columns, boolean[] ascending) {
-        return new IndexSorter(this).sort(Sorters.sorter(columnsIndex, columns, ascending));
+        return new IndexSorter(this).sort(Sorters.sorter(columns, ascending));
     }
 
     @Override
     public DataFrame sort(int column, boolean ascending) {
-        return new IndexSorter(this).sort(Sorters.sorter(columnsIndex, column, ascending));
+        return new IndexSorter(this).sort(Sorters.sorter(column, ascending));
     }
 
     @Override

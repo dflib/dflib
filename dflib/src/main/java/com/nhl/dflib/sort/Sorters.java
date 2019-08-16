@@ -14,11 +14,10 @@ public interface Sorters {
 
     static Comparator<RowProxy> sorter(Index columns, String sortColumn, boolean ascending) {
         int pos = columns.position(sortColumn);
-        Comparator<RowProxy> ci = Comparator.comparing(o -> (Comparable) o.get(pos));
-        return ascending ? ci : ci.reversed();
+        return sorter(pos, ascending);
     }
 
-    static Comparator<RowProxy> sorter(Index columns, int sortColumn, boolean ascending) {
+    static Comparator<RowProxy> sorter(int sortColumn, boolean ascending) {
         Comparator<RowProxy> ci = Comparator.comparing(o -> (Comparable) o.get(sortColumn));
         return ascending ? ci : ci.reversed();
     }
@@ -38,7 +37,7 @@ public interface Sorters {
         return c;
     }
 
-    static Comparator<RowProxy> sorter(Index columns, int[] sortColumns, boolean[] ascending) {
+    static Comparator<RowProxy> sorter(int[] sortColumns, boolean[] ascending) {
 
         if (sortColumns.length == 0) {
             throw new IllegalArgumentException("No sort columns");
@@ -46,7 +45,7 @@ public interface Sorters {
 
         Comparator<RowProxy> c = null;
         for (int i = 0; i < sortColumns.length; i++) {
-            Comparator<RowProxy> ci = sorter(columns, sortColumns[i], ascending[i]);
+            Comparator<RowProxy> ci = sorter(sortColumns[i], ascending[i]);
             c = c == null ? ci : c.thenComparing(ci);
         }
 
