@@ -251,6 +251,23 @@ public class Index implements Iterable<String> {
         return Index.forLabels(toKeep);
     }
 
+    /**
+     * @since 0.7
+     */
+    public Index dropLabels(Predicate<String> labelCondition) {
+        // must preserve label order
+        Set<String> selected = new LinkedHashSet<>();
+
+        int len = labels.length;
+        for (int i = 0; i < len; i++) {
+            if(!labelCondition.test(labels[i])) {
+                selected.add(labels[i]);
+            }
+        }
+
+        return selected.size() == size() ? this : Index.forLabels(selected.toArray(new String[selected.size()]));
+    }
+
     public String[] getLabels() {
         return labels;
     }

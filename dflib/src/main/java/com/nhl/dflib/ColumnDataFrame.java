@@ -445,21 +445,14 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public DataFrame dropColumns(String... columnNames) {
-
         Index newIndex = columnsIndex.dropLabels(columnNames);
+        return newIndex == columnsIndex ? this : selectColumns(newIndex);
+    }
 
-        // if no columns were dropped (e.g. the names didn't match anything
-        if (newIndex.size() == columnsIndex.size()) {
-            return this;
-        }
-
-        String[] remainingLabels = newIndex.getLabels();
-        Series[] newColumns = new Series[newIndex.size()];
-        for (int i = 0; i < newColumns.length; i++) {
-            newColumns[i] = dataColumns[columnsIndex.position(remainingLabels[i])];
-        }
-
-        return new ColumnDataFrame(newIndex, newColumns);
+    @Override
+    public DataFrame dropColumns(Predicate<String> labelCondition) {
+        Index newIndex = columnsIndex.dropLabels(labelCondition);
+        return newIndex == columnsIndex ? this : selectColumns(newIndex);
     }
 
     @Override

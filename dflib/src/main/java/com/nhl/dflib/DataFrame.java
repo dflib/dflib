@@ -462,16 +462,27 @@ public interface DataFrame extends Iterable<RowProxy> {
     DataFrame selectColumns(Index columnsIndex);
 
     /**
-     * Returns a DataFrame with columns filtered from this DataFrame using the specified condition.
+     * Returns a DataFrame with only columns from this DataFrame whose labels match the specified condition.
      *
-     * @param includeCondition a condition evaluated against column names t determine whether they should be included
-     *                         in the resulting DataFrame
+     * @param labelCondition a condition evaluated against column labels to determine whether they should be included
+     *                       in the resulting DataFrame
      * @return a new DataFrame
      * @since 0.7
      */
-    DataFrame selectColumns(Predicate<String> includeCondition);
+    DataFrame selectColumns(Predicate<String> labelCondition);
 
     DataFrame dropColumns(String... columnLabels);
+
+    /**
+     * Returns a DataFrame with columns from this DataFrame, except those columns whose labels match the specified
+     * condition.
+     *
+     * @param labelCondition a condition evaluated against column labels to determine whether they should be removed
+     *                       from the resulting DataFrame
+     * @return a new DataFrame
+     * @since 0.7
+     */
+    DataFrame dropColumns(Predicate<String> labelCondition);
 
     /**
      * Selects DataFrame rows based on provided row index. This allows to reorder, filter, duplicate rows of this
