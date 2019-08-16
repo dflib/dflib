@@ -9,6 +9,9 @@ import org.apache.commons.csv.CSVRecord;
 import java.util.Iterator;
 import java.util.Random;
 
+/**
+ * Loads a row sample from a potentially large CSV row iterator, with the specified sample size.
+ */
 class SamplingCsvLoaderWorker extends CsvLoaderWorker {
 
     private int rowSampleSize;
@@ -23,10 +26,11 @@ class SamplingCsvLoaderWorker extends CsvLoaderWorker {
     }
 
     @Override
-    DataFrame load(Iterator<CSVRecord> it) {
+    protected DataFrame toDataFrame() {
+        return sortSampled(super.toDataFrame());
+    }
 
-        DataFrame sampledUnsorted = super.load(it);
-
+    protected DataFrame sortSampled(DataFrame sampledUnsorted) {
         DataFrame index = DataFrame
                 .newFrame("a")
                 .columns(sampledRows.toIntSeries())
@@ -37,32 +41,36 @@ class SamplingCsvLoaderWorker extends CsvLoaderWorker {
     }
 
     @Override
-    protected void addRows(Iterator<CSVRecord> it, int width) {
+    protected void consumeCSV(Iterator<CSVRecord> it) {
+        int width = columns.size();
         int i = 0;
         while (it.hasNext()) {
-            addRow(i++, width, it.next());
+            sampleRow(i++, width, it.next());
         }
     }
 
-    protected void addRow(int rowNumber, int width, CSVRecord record) {
+    protected void sampleRow(int rowNumber, int width, CSVRecord row) {
 
-        // Reservoir sampling per https://en.wikipedia.org/wiki/Reservoir_sampling
+        // Reservoir sampling algorithm per https://en.wikipedia.org/wiki/Reservoir_sampling
 
+        // fill "reservoir" first
         if (rowNumber < rowSampleSize) {
-            addRow(width, record);
+            addRow(width, row);
             sampledRows.add(rowNumber);
-        } else {
+        }
+        // replace previously filled values based on random sampling with decaying probability
+        else {
             int pos = rowsSampleRandom.nextInt(rowNumber + 1);
             if (pos < rowSampleSize) {
-                replaceRow(pos, rowNumber, width, record);
+                replaceRow(pos, width, row);
+                sampledRows.set(pos, rowNumber);
             }
         }
     }
 
-    protected void replaceRow(int pos, int rowNumber, int width, CSVRecord record) {
+    protected void replaceRow(int pos, int width, CSVRecord record) {
         for (int i = 0; i < width; i++) {
             accumulators[i].set(pos, record.get(i));
-            sampledRows.set(pos, rowNumber);
         }
     }
 }

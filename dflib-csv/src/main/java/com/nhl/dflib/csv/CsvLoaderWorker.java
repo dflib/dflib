@@ -10,8 +10,8 @@ import java.util.Iterator;
 
 class CsvLoaderWorker {
 
-    private Index columns;
     protected SeriesBuilder<String, ?>[] accumulators;
+    protected Index columns;
 
     public CsvLoaderWorker(Index columns, SeriesBuilder<String, ?>[] accumulators) {
         this.columns = columns;
@@ -19,11 +19,19 @@ class CsvLoaderWorker {
     }
 
     DataFrame load(Iterator<CSVRecord> it) {
+        consumeCSV(it);
+        return toDataFrame();
+    }
 
+    protected void consumeCSV(Iterator<CSVRecord> it) {
         int width = columns.size();
+        while (it.hasNext()) {
+            addRow(width, it.next());
+        }
+    }
 
-        addRows(it, width);
-
+    protected DataFrame toDataFrame() {
+        int width = columns.size();
         Series<?>[] series = new Series[width];
         for (int i = 0; i < width; i++) {
             series[i] = accumulators[i].toSeries();
@@ -32,16 +40,9 @@ class CsvLoaderWorker {
         return DataFrame.newFrame(columns).columns(series);
     }
 
-    protected void addRows(Iterator<CSVRecord> it, int width) {
-        while (it.hasNext()) {
-            addRow(width, it.next());
-        }
-    }
-
-    protected void addRow(int width, CSVRecord record) {
+    protected void addRow(int width, CSVRecord row) {
         for (int i = 0; i < width; i++) {
-            accumulators[i].add(record.get(i));
+            accumulators[i].add(row.get(i));
         }
     }
-
 }

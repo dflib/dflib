@@ -51,4 +51,40 @@ public class CsvLoader_SamplingTest {
                 .expectRow(1, "7", "8")
                 .expectRow(2, "11", "12");
     }
+
+    @Test
+    public void testSampleRows_SampleLargerThanCSV() {
+
+        String csv = "A,B" + System.lineSeparator()
+                + "1,2" + System.lineSeparator()
+                + "3,4" + System.lineSeparator();
+
+        // using fixed Random seed to get reproducible result
+        DataFrame df = new CsvLoader()
+                .sampleRows(5, new Random(8))
+                .load(new StringReader(csv));
+
+        new DataFrameAsserts(df, "A", "B")
+                .expectHeight(2)
+                .expectRow(0, "1", "2")
+                .expectRow(1, "3", "4");
+    }
+
+    @Test
+    public void testSampleRows_SampleSameAsCSV() {
+
+        String csv = "A,B" + System.lineSeparator()
+                + "1,2" + System.lineSeparator()
+                + "3,4" + System.lineSeparator();
+
+        // using fixed Random seed to get reproducible result
+        DataFrame df = new CsvLoader()
+                .sampleRows(2, new Random(8))
+                .load(new StringReader(csv));
+
+        new DataFrameAsserts(df, "A", "B")
+                .expectHeight(2)
+                .expectRow(0, "1", "2")
+                .expectRow(1, "3", "4");
+    }
 }
