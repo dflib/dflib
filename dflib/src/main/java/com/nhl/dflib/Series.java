@@ -3,9 +3,12 @@ package com.nhl.dflib;
 import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.EmptySeries;
 import com.nhl.dflib.series.IntArraySeries;
+import com.nhl.dflib.series.ListSeries;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -17,6 +20,21 @@ public interface Series<T> {
 
     static <T> Series<T> forData(T... data) {
         return data != null && data.length > 0 ? new ArraySeries<>(data) : new EmptySeries<>();
+    }
+
+    /**
+     * @since 0.7
+     */
+    static <T> Series<T> forData(Iterable<T> data) {
+        if(data instanceof List) {
+            return new ListSeries<>((List<T>) data);
+        }
+
+        List<T> list = new ArrayList<>();
+        for(T t : data) {
+            list.add(t);
+        }
+        return list.size() > 0 ? new ListSeries<>(list) : new EmptySeries<>();
     }
 
     /**

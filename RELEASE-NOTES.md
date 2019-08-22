@@ -6,6 +6,7 @@
 * #72 DataFrame.selectColumns(Predicate<String>)
 * #74 CSV sampling
 * #75 DataFrame.dropColumns(Predicate<String>)
+* #76 Series.forData(Iterable<T>) 
 
 ## Release 0.6
 
