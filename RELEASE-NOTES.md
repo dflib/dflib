@@ -4,6 +4,7 @@
 * #70 Remove API deprecated in 0.6 
 * #71 Series, DataFrame "sample"
 * #72 DataFrame.selectColumns(Predicate<String>)
+* #73 JDBC sampling 
 * #74 CSV sampling
 * #75 DataFrame.dropColumns(Predicate<String>)
 * #76 Series.forData(Iterable<T>) 

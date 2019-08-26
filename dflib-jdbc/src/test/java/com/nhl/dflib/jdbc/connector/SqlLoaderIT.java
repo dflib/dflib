@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class JdbcConnector_SqlLoaderIT extends BaseDbTest {
+public class SqlLoaderIT extends BaseDbTest {
 
     private JdbcConnector createConnector() {
         return Jdbc.connector(getDataSource());

@@ -64,7 +64,7 @@ public class CsvLoader {
     /**
      * Configures CSV loader to select a sample of the rows of a CSV. Unlike {@link DataFrame#sampleRows(int, Random)},
      * this method will prevent the full CSV from loading in memory, and hence can be used on potentially very large
-     * CSVs. If you are doing sampling in a high concurrency application, consider using {@link #sampleRows(int, Random)},
+     * CSVs. If you are executing multiple sampling runs in parallel, consider using {@link #sampleRows(int, Random)},
      * as this method is using a shared {@link Random} instance with synchronization.
      *
      * @param size the size of the sample. Can be bigger than the CSV size (as the CSV size is not known upfront).
@@ -372,11 +372,11 @@ public class CsvLoader {
                 return DataFrame.newFrame(columns).empty();
             }
 
-            SeriesBuilder<String, ?>[] builders = createSeriesBuilders(columns);
+            SeriesBuilder<String, ?>[] accumulators = createAccummulators(columns);
 
             CsvLoaderWorker worker = rowSampleSize > 0
-                    ? new SamplingCsvLoaderWorker(columns, builders, rowSampleSize, rowsSampleRandom)
-                    : new CsvLoaderWorker(columns, builders);
+                    ? new SamplingCsvLoaderWorker(columns, accumulators, rowSampleSize, rowsSampleRandom)
+                    : new CsvLoaderWorker(columns, accumulators);
 
             return worker.load(it);
 
@@ -410,7 +410,7 @@ public class CsvLoader {
         return Index.forLabels(columnNames);
     }
 
-    private SeriesBuilder<String, ?>[] createSeriesBuilders(Index columns) {
+    private SeriesBuilder<String, ?>[] createAccummulators(Index columns) {
 
         int w = columns.size();
         SeriesBuilder<String, ?>[] builders = new SeriesBuilder[w];

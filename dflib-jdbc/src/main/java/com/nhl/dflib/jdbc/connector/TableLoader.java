@@ -4,7 +4,11 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
+import com.nhl.dflib.sample.Sampler;
 import com.nhl.dflib.series.ByRowSeries;
+
+import java.util.Objects;
+import java.util.Random;
 
 public class TableLoader {
 
@@ -13,6 +17,8 @@ public class TableLoader {
     private TableFQName tableName;
     private String[] columns;
     private DataFrame condition;
+    private int rowSampleSize;
+    private Random rowsSampleRandom;
 
     public TableLoader(JdbcConnector connector, TableFQName tableName) {
         this.connector = connector;
@@ -45,6 +51,35 @@ public class TableLoader {
         return this;
     }
 
+    /**
+     * Configures the loader to select a sample of the rows from the ResultSet. Unlike
+     * {@link DataFrame#sampleRows(int, Random)}, this method can be used on potentially very large
+     * result sets. If you are executing multiple sampling runs in parallel, consider using {@link #sampleRows(int, Random)},
+     * as this method is using a shared {@link Random} instance with synchronization.
+     *
+     * @param size the size of the sample. Can be bigger than the result set size (as the result set size is not known upfront).
+     * @return this loader instance
+     * @since 0.7
+     */
+    public TableLoader sampleRows(int size) {
+        return sampleRows(size, Sampler.getDefaultRandom());
+    }
+
+    /**
+     * Configures the loader to select a sample of the rows from the ResultSet. Unlike
+     * {@link DataFrame#sampleRows(int, Random)}, this method can be used on potentially very large result sets.
+     *
+     * @param size   the size of the sample. Can be bigger than the result set size (as the result set size is not known upfront).
+     * @param random a custom random number generator
+     * @return this loader instance
+     * @since 0.7
+     */
+    public TableLoader sampleRows(int size, Random random) {
+        this.rowSampleSize = size;
+        this.rowsSampleRandom = Objects.requireNonNull(random);
+        return this;
+    }
+
     public DataFrame load() {
         // "no condition" means return all rows; "empty condition" means return no rows
         return condition == null || condition.height() > 0
@@ -63,6 +98,7 @@ public class TableLoader {
     protected DataFrame fetchDataFrame() {
         return new SqlLoader(connector, buildSql())
                 .maxRows(maxRows)
+                .sampleRows(rowSampleSize, rowsSampleRandom)
                 .params(collectBindingParams())
                 .load();
     }

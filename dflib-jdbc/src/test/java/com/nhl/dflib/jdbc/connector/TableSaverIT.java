@@ -16,7 +16,7 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.time.Year;
 
-public class JdbcConnector_TableSaverIT extends BaseDbTest {
+public class TableSaverIT extends BaseDbTest {
 
     private JdbcConnector connector;
 

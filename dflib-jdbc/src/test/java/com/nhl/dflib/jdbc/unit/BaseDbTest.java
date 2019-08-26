@@ -26,7 +26,7 @@ public abstract class BaseDbTest {
     private static DataSource DATA_SOURCE;
 
     @Rule
-    public final TestDataManager dataManager = new TestDataManager(true, T1, T2);
+    public final TestDataManager dataManager = new TestDataManager(true, T1, T2, T3, T1_AUDIT);
 
     @BeforeClass
     public static void initDataSource() {
