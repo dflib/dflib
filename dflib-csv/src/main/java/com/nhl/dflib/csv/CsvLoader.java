@@ -92,7 +92,7 @@ public class CsvLoader {
     }
 
     /**
-     * Provides an alternative header to the returned DataFrame.
+     * Provides an alternative header to the returned DataFrame. Columns number and positions must match the CSV structure.
      *
      * @param columns user-defined DataFrame columns
      * @return this loader instance
