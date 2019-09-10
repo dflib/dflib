@@ -77,4 +77,20 @@ public class TableFQName {
     public int hashCode() {
         return Objects.hash(catalog, schema, table);
     }
+
+    @Override
+    public String toString() {
+
+        StringBuilder buffer = new StringBuilder();
+        if(catalog != null) {
+            buffer.append(catalog).append(".");
+        }
+
+        if(schema != null) {
+            buffer.append(schema).append(".");
+        }
+
+        buffer.append(table);
+        return buffer.toString();
+    }
 }
