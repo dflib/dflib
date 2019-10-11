@@ -35,14 +35,19 @@ import java.util.function.Function;
 public class CsvLoader {
 
     private int skipRows;
-    private Index columns;
+    private Index header;
+
+    private String[] includeColumns;
+    private int[] includeColumnPositions;
+    private String[] dropColumns;
+
     private CSVFormat format;
 
     private int rowSampleSize;
     private Random rowsSampleRandom;
 
     // storing converters as list to ensure predictable resolution order when the user supplies overlapping converters
-    private List<Pair> builders;
+    private List<AccumPair> builders;
 
     public CsvLoader() {
         this.format = CSVFormat.DEFAULT;
@@ -92,13 +97,53 @@ public class CsvLoader {
     }
 
     /**
-     * Provides an alternative header to the returned DataFrame. Columns number and positions must match the CSV structure.
+     * @deprecated since 0.7 in favor of {@link #header(String...)}
+     */
+    @Deprecated
+    public CsvLoader columns(String... columns) {
+        return header(columns);
+    }
+
+    /**
+     * Provides an alternative header to the returned DataFrame. If set, the first row of CSV is treated as data, not
+     * as header. Column names are assigned to CSV columns positionally from left to right. Header provided here must
+     * have a size less or equal to the number of columns in the CSV.
      *
      * @param columns user-defined DataFrame columns
      * @return this loader instance
+     * @since 0.7
      */
-    public CsvLoader columns(String... columns) {
-        this.columns = Index.forLabels(columns);
+    public CsvLoader header(String... columns) {
+        this.header = Index.forLabels(columns);
+        return this;
+    }
+
+    /**
+     * @return this loader instance
+     * @since 0.7
+     */
+    public CsvLoader selectColumns(String... columns) {
+        this.includeColumnPositions = null;
+        this.includeColumns = columns;
+        return this;
+    }
+
+    /**
+     * @return this loader instance
+     * @since 0.7
+     */
+    public CsvLoader selectColumns(int... columns) {
+        this.includeColumnPositions = columns;
+        this.includeColumns = null;
+        return this;
+    }
+
+    /**
+     * @return this loader instance
+     * @since 0.7
+     */
+    public CsvLoader dropColumns(String... columns) {
+        this.dropColumns = columns;
         return this;
     }
 
@@ -137,7 +182,6 @@ public class CsvLoader {
     public CsvLoader intColumn(String column, int forNull) {
         return columnType(column, new IntMappedAccumulator<>(IntValueMapper.fromString(forNull)));
     }
-
 
     /**
      * @since 0.6
@@ -228,12 +272,12 @@ public class CsvLoader {
     }
 
     private CsvLoader columnType(int column, SeriesBuilder<String, ?> columnBuilder) {
-        builders.add(new Pair(i -> column, columnBuilder));
+        builders.add(new AccumPair(i -> column, columnBuilder));
         return this;
     }
 
     private CsvLoader columnType(String column, SeriesBuilder<String, ?> columnBuilder) {
-        builders.add(new Pair(i -> i.position(column), columnBuilder));
+        builders.add(new AccumPair(i -> i.position(column), columnBuilder));
         return this;
     }
 
@@ -366,17 +410,17 @@ public class CsvLoader {
             Iterator<CSVRecord> it = format.parse(reader).iterator();
 
             rewind(it);
-            Index columns = createColumns(it);
+            Index unfilteredHeader = unfilteredHeader(it);
+            ColumnFilterPair pair = filterHeader(unfilteredHeader);
 
             if (!it.hasNext()) {
-                return DataFrame.newFrame(columns).empty();
+                return DataFrame.newFrame(pair.header).empty();
             }
 
-            SeriesBuilder<String, ?>[] accumulators = createAccummulators(columns);
-
+            SeriesBuilder<String, ?>[] accumulators = createAccumulators(pair.header);
             CsvLoaderWorker worker = rowSampleSize > 0
-                    ? new SamplingCsvLoaderWorker(columns, accumulators, rowSampleSize, rowsSampleRandom)
-                    : new CsvLoaderWorker(columns, accumulators);
+                    ? new SamplingCsvLoaderWorker(pair.header, pair.csvPositions, accumulators, rowSampleSize, rowsSampleRandom)
+                    : new CsvLoaderWorker(pair.header, pair.csvPositions, accumulators);
 
             return worker.load(it);
 
@@ -391,15 +435,72 @@ public class CsvLoader {
         }
     }
 
-    private Index createColumns(Iterator<CSVRecord> it) {
+    private Index unfilteredHeader(Iterator<CSVRecord> it) {
         if (it.hasNext()) {
-            return columns != null ? columns : loadColumns(it.next());
+            return header != null ? header : loadHeader(it.next());
         } else {
-            return columns != null ? columns : Index.forLabels();
+            return header != null ? header : Index.forLabels();
         }
     }
 
-    private Index loadColumns(CSVRecord header) {
+    private ColumnFilterPair filterHeader(Index unfilteredHeader) {
+
+        int uw = unfilteredHeader.size();
+
+        if (includeColumns == null && includeColumnPositions == null && dropColumns == null) {
+            int[] positions = new int[uw];
+            for (int i = 0; i < positions.length; i++) {
+                positions[i] = i;
+            }
+
+            return new ColumnFilterPair(unfilteredHeader, positions);
+        }
+
+        List<String> columns = new ArrayList<>(uw);
+        List<Integer> positions = new ArrayList<>(uw);
+
+        if (includeColumns != null) {
+            for (int i = 0; i < includeColumns.length; i++) {
+                columns.add(includeColumns[i]);
+                // this will throw if the label is invalid, which is exactly what we want
+                positions.add(unfilteredHeader.position(includeColumns[i]));
+            }
+
+        } else if (includeColumnPositions != null) {
+
+            for (int i = 0; i < includeColumnPositions.length; i++) {
+                columns.add(unfilteredHeader.getLabel(includeColumnPositions[i]));
+                positions.add(includeColumnPositions[i]);
+            }
+
+        } else {
+            for (int i = 0; i < uw; i++) {
+                columns.add(unfilteredHeader.getLabel(i));
+                positions.add(i);
+            }
+        }
+
+        if (dropColumns != null) {
+            for (String toDrop : dropColumns) {
+                int i = columns.indexOf(toDrop);
+                if (i >= 0) {
+                    columns.remove(i);
+                    positions.remove(i);
+                }
+            }
+        }
+
+        Index header = Index.forLabels(columns.toArray(new String[0]));
+
+        int[] positionsArray = new int[positions.size()];
+        for (int i = 0; i < positionsArray.length; i++) {
+            positionsArray[i] = positions.get(i);
+        }
+
+        return new ColumnFilterPair(header, positionsArray);
+    }
+
+    private Index loadHeader(CSVRecord header) {
 
         int width = header.size();
         String[] columnNames = new String[width];
@@ -410,13 +511,13 @@ public class CsvLoader {
         return Index.forLabels(columnNames);
     }
 
-    private SeriesBuilder<String, ?>[] createAccummulators(Index columns) {
+    private SeriesBuilder<String, ?>[] createAccumulators(Index columns) {
 
         int w = columns.size();
         SeriesBuilder<String, ?>[] builders = new SeriesBuilder[w];
 
         // there may be overlapping pairs... the last one wins
-        for (Pair p : this.builders) {
+        for (AccumPair p : this.builders) {
             builders[p.positionResolver.apply(columns)] = p.builder;
         }
 
@@ -430,13 +531,23 @@ public class CsvLoader {
         return builders;
     }
 
-    private class Pair {
+    private class AccumPair {
         Function<Index, Integer> positionResolver;
         SeriesBuilder<String, ?> builder;
 
-        Pair(Function<Index, Integer> positionResolver, SeriesBuilder<String, ?> builder) {
+        AccumPair(Function<Index, Integer> positionResolver, SeriesBuilder<String, ?> builder) {
             this.positionResolver = positionResolver;
             this.builder = builder;
+        }
+    }
+
+    private class ColumnFilterPair {
+        Index header;
+        int[] csvPositions;
+
+        ColumnFilterPair(Index header, int[] csvPositions) {
+            this.header = header;
+            this.csvPositions = csvPositions;
         }
     }
 }

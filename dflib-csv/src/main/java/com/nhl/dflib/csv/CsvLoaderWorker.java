@@ -12,9 +12,11 @@ class CsvLoaderWorker {
 
     protected SeriesBuilder<String, ?>[] accumulators;
     protected Index columns;
+    protected int[] csvPositions;
 
-    CsvLoaderWorker(Index columns, SeriesBuilder<String, ?>[] accumulators) {
+    CsvLoaderWorker(Index columns, int[] csvPositions, SeriesBuilder<String, ?>[] accumulators) {
         this.columns = columns;
+        this.csvPositions = csvPositions;
         this.accumulators = accumulators;
     }
 
@@ -42,7 +44,7 @@ class CsvLoaderWorker {
 
     protected void addRow(int width, CSVRecord row) {
         for (int i = 0; i < width; i++) {
-            accumulators[i].add(row.get(i));
+            accumulators[i].add(row.get(csvPositions[i]));
         }
     }
 }

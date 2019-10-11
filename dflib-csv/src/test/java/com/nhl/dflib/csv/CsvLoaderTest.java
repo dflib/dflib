@@ -59,13 +59,50 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void testFromFile_Columns() {
-        DataFrame df = new CsvLoader().columns("X", "Y", "Z").load(inPath("f1.csv"));
+    public void testFromFile_Header() {
+        DataFrame df = new CsvLoader().header("X", "Y", "Z").load(inPath("f1.csv"));
         new DataFrameAsserts(df, "X", "Y", "Z")
                 .expectHeight(3)
                 .expectRow(0, "A", "b", "C")
                 .expectRow(1, "1", "2", "3")
                 .expectRow(2, "4", "5", "6");
+    }
+
+    @Test
+    public void testFromFile_SelectColumns_ByName() {
+        DataFrame df = new CsvLoader().selectColumns("b", "A").load(inPath("f1.csv"));
+        new DataFrameAsserts(df, "b", "A")
+                .expectHeight(2)
+                .expectRow(0, "2", "1")
+                .expectRow(1, "5", "4");
+    }
+
+    @Test
+    public void testFromFile_SelectColumns_ByPosition() {
+        DataFrame df = new CsvLoader().selectColumns(1, 0).load(inPath("f1.csv"));
+        new DataFrameAsserts(df, "b", "A")
+                .expectHeight(2)
+                .expectRow(0, "2", "1")
+                .expectRow(1, "5", "4");
+    }
+
+    @Test
+    public void testFromFile_SelectColumns_ByName_CustomHeader() {
+        DataFrame df = new CsvLoader().header("X", "Y", "Z").selectColumns("Y", "X").load(inPath("f1.csv"));
+        new DataFrameAsserts(df, "Y", "X")
+                .expectHeight(3)
+                .expectRow(0, "b", "A")
+                .expectRow(1, "2", "1")
+                .expectRow(2, "5", "4");
+    }
+
+    @Test
+    public void testFromFile_DropColumns() {
+        DataFrame df = new CsvLoader().dropColumns("b").load(inPath("f1.csv"));
+        new DataFrameAsserts(df, "A", "C")
+                .expectHeight(2)
+                .expectRow(0, "1", "3")
+                .expectRow(1, "4", "6");
     }
 
     @Test

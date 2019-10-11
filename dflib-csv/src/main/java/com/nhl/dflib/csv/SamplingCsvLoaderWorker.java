@@ -18,8 +18,8 @@ class SamplingCsvLoaderWorker extends CsvLoaderWorker {
     private Random rowsSampleRandom;
     private IntAccumulator sampledRows;
 
-    SamplingCsvLoaderWorker(Index columns, SeriesBuilder<String, ?>[] accumulators, int rowSampleSize, Random rowsSampleRandom) {
-        super(columns, accumulators);
+    SamplingCsvLoaderWorker(Index columns, int[] csvPositions, SeriesBuilder<String, ?>[] accumulators, int rowSampleSize, Random rowsSampleRandom) {
+        super(columns, csvPositions, accumulators);
         this.rowSampleSize = rowSampleSize;
         this.rowsSampleRandom = rowsSampleRandom;
         this.sampledRows = new IntAccumulator();
@@ -70,7 +70,7 @@ class SamplingCsvLoaderWorker extends CsvLoaderWorker {
 
     protected void replaceRow(int pos, int width, CSVRecord record) {
         for (int i = 0; i < width; i++) {
-            accumulators[i].set(pos, record.get(i));
+            accumulators[i].set(pos, record.get(csvPositions[i]));
         }
     }
 }

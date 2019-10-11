@@ -8,6 +8,7 @@
 * #74 CSV sampling
 * #75 DataFrame.dropColumns(Predicate<String>)
 * #76 Series.forData(Iterable<T>) 
+* #80 CsvLoader - better way to include/exclude columns
 
 ## Release 0.6
 
