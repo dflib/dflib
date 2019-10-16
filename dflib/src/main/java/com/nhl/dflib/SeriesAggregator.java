@@ -2,6 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.AggregatorFunctions;
 import com.nhl.dflib.aggregate.CollectorSeriesAggregator;
+import com.nhl.dflib.aggregate.SeriesMinMax;
 import com.nhl.dflib.aggregate.SimpleSeriesAggregator;
 
 import java.util.List;
@@ -55,6 +56,54 @@ public interface SeriesAggregator<S, T> {
     // TODO: special handling of primitive series to avoid boxing/unboxing
     static <S extends Number> SeriesAggregator<S, Double> sumDouble() {
         return of("sumDouble", Collectors.summingDouble(v -> v.doubleValue()));
+    }
+
+    /**
+     * @since 0.7
+     */
+    // TODO: special handling of primitive series to avoid boxing/unboxing
+    static <S extends Number> SeriesAggregator<S, Integer> maxInt() {
+        return new SimpleSeriesAggregator<S, Integer>("maxInt", SeriesMinMax::maxInt);
+    }
+
+    /**
+     * @since 0.7
+     */
+    // TODO: special handling of primitive series to avoid boxing/unboxing
+    static <S extends Number> SeriesAggregator<S, Long> maxLong() {
+        return new SimpleSeriesAggregator<S, Long>("maxLong", SeriesMinMax::maxLong);
+    }
+
+    /**
+     * @since 0.7
+     */
+    // TODO: special handling of primitive series to avoid boxing/unboxing
+    static <S extends Number> SeriesAggregator<S, Double> maxDouble() {
+        return new SimpleSeriesAggregator<S, Double>("maxDouble", SeriesMinMax::maxDouble);
+    }
+
+    /**
+     * @since 0.7
+     */
+    // TODO: special handling of primitive series to avoid boxing/unboxing
+    static <S extends Number> SeriesAggregator<S, Integer> minInt() {
+        return new SimpleSeriesAggregator<S, Integer>("minInt", SeriesMinMax::minInt);
+    }
+
+    /**
+     * @since 0.7
+     */
+    // TODO: special handling of primitive series to avoid boxing/unboxing
+    static <S extends Number> SeriesAggregator<S, Long> minLong() {
+        return new SimpleSeriesAggregator<S, Long>("minLong", SeriesMinMax::minLong);
+    }
+
+    /**
+     * @since 0.7
+     */
+    // TODO: special handling of primitive series to avoid boxing/unboxing
+    static <S extends Number> SeriesAggregator<S, Double> minDouble() {
+        return new SimpleSeriesAggregator<S, Double>("minDouble", SeriesMinMax::minDouble);
     }
 
     static <S> SeriesAggregator<S, String> concat(String delimiter) {

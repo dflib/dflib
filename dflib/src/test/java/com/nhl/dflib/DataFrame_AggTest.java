@@ -51,6 +51,24 @@ public class DataFrame_AggTest {
     }
 
     @Test
+    public void testAgg_MinMax() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1, 1,
+                -1, 1,
+                8, 1);
+
+        Series<?> s = df.agg(
+                Aggregator.minDouble("a"),
+                Aggregator.minLong("a"),
+                Aggregator.minInt("a"),
+                Aggregator.maxDouble("a"),
+                Aggregator.maxLong("a"),
+                Aggregator.maxInt("a"));
+
+        new SeriesAsserts(s).expectData(-1., -1L, -1, 8., 8L, 8);
+    }
+
+    @Test
     public void testAgg_Concat() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",

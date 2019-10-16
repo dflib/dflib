@@ -9,6 +9,7 @@
 * #75 DataFrame.dropColumns(Predicate<String>)
 * #76 Series.forData(Iterable<T>) 
 * #80 CsvLoader - better way to include/exclude columns
+* #81 Implement min/max aggregation operations 
 
 ## Release 0.6
 

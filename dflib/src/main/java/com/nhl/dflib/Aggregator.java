@@ -165,6 +165,139 @@ public interface Aggregator<T> {
         );
     }
 
+
+    /**
+     * @since 0.7
+     */
+    static Aggregator<Long> maxLong(String column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.maxLong(),
+                index -> index.position(column),
+                index -> column
+        );
+    }
+
+    /**
+     * @since 0.7
+     */
+    static Aggregator<Long> maxLong(int column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.maxLong(),
+                index -> column,
+                index -> index.getLabel(column)
+        );
+    }
+
+    /**
+     * @since 0.7
+     */
+    static Aggregator<Long> minLong(String column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.minLong(),
+                index -> index.position(column),
+                index -> column
+        );
+    }
+
+    /**
+     * @since 0.7
+     */
+    static Aggregator<Long> minLong(int column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.minLong(),
+                index -> column,
+                index -> index.getLabel(column)
+        );
+    }
+
+    /**
+     * @since 0.7
+     */
+    static Aggregator<Integer> maxInt(String column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.maxInt(),
+                index -> index.position(column),
+                index -> column
+        );
+    }
+
+    /**
+     * @since 0.7
+     */
+    static Aggregator<Integer> maxInt(int column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.maxInt(),
+                index -> column,
+                index -> index.getLabel(column)
+        );
+    }
+
+    /**
+     * @since 0.7
+     */
+    static Aggregator<Integer> minInt(String column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.minInt(),
+                index -> index.position(column),
+                index -> column
+        );
+    }
+
+    /**
+     * @since 0.7
+     */
+    static Aggregator<Integer> minInt(int column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.minInt(),
+                index -> column,
+                index -> index.getLabel(column)
+        );
+    }
+
+    /**
+     * @since 0.7
+     */
+    static Aggregator<Double> maxDouble(String column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.maxDouble(),
+                index -> index.position(column),
+                index -> column
+        );
+    }
+
+    /**
+     * @since 0.7
+     */
+    static Aggregator<Double> maxDouble(int column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.maxDouble(),
+                index -> column,
+                index -> index.getLabel(column)
+        );
+    }
+
+    /**
+     * @since 0.7
+     */
+    static Aggregator<Double> minDouble(String column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.minDouble(),
+                index -> index.position(column),
+                index -> column
+        );
+    }
+
+    /**
+     * @since 0.7
+     */
+    static Aggregator<Double> minDouble(int column) {
+        return new ColumnAggregator<>(
+                SeriesAggregator.minDouble(),
+                index -> column,
+                index -> index.getLabel(column)
+        );
+    }
+
     static Aggregator<String> concat(String column, String delimiter) {
         return new ColumnAggregator<>(
                 SeriesAggregator.concat(delimiter),

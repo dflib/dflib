@@ -36,4 +36,40 @@ public class IntSeries_AggTest {
         IntSeries s = new IntArraySeries(1, 2);
         assertEquals(Long.valueOf(2), SeriesAggregator.countLong().aggregate(s));
     }
+
+    @Test
+    public void testMaxInt() {
+        IntSeries s = new IntArraySeries(1, -2, 3, 56, 8);
+        assertEquals(Integer.valueOf(56), SeriesAggregator.maxInt().aggregate(s));
+    }
+
+    @Test
+    public void testMaxLong() {
+        IntSeries s = new IntArraySeries(1, -2, 3, 56, 8);
+        assertEquals(Long.valueOf(56), SeriesAggregator.maxLong().aggregate(s));
+    }
+
+    @Test
+    public void testMaxDouble() {
+        IntSeries s = new IntArraySeries(1, -2, 3, 56, 8);
+        assertEquals(Double.valueOf(56.), SeriesAggregator.maxDouble().aggregate(s));
+    }
+
+    @Test
+    public void testMinInt() {
+        IntSeries s = new IntArraySeries(1, -2, 3, 56, 8);
+        assertEquals(Integer.valueOf(-2), SeriesAggregator.minInt().aggregate(s));
+    }
+
+    @Test
+    public void testMinLong() {
+        IntSeries s = new IntArraySeries(1, -2, 3, 56, 8);
+        assertEquals(Long.valueOf(-2), SeriesAggregator.minLong().aggregate(s));
+    }
+
+    @Test
+    public void testMinDouble() {
+        IntSeries s = new IntArraySeries(1, -2, 3, 56, 8);
+        assertEquals(Double.valueOf(-2.), SeriesAggregator.minDouble().aggregate(s));
+    }
 }
