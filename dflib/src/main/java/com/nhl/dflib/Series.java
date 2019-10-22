@@ -8,7 +8,9 @@ import com.nhl.dflib.series.builder.ObjectAccumulator;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 /**
@@ -16,7 +18,7 @@ import java.util.Random;
  *
  * @param <T>
  */
-public interface Series<T> {
+public interface Series<T> extends Iterable<T> {
 
     static <T> Series<T> forData(T... data) {
         return data != null && data.length > 0 ? new ArraySeries<>(data) : new EmptySeries<>();
@@ -26,12 +28,12 @@ public interface Series<T> {
      * @since 0.7
      */
     static <T> Series<T> forData(Iterable<T> data) {
-        if(data instanceof List) {
+        if (data instanceof List) {
             return new ListSeries<>((List<T>) data);
         }
 
         List<T> list = new ArrayList<>();
-        for(T t : data) {
+        for (T t : data) {
             list.add(t);
         }
         return list.size() > 0 ? new ListSeries<>(list) : new EmptySeries<>();
@@ -245,4 +247,32 @@ public interface Series<T> {
      * @since 0.7
      */
     Series<T> sample(int size, Random random);
+
+    /**
+     * @since 0.7
+     */
+    @Override
+    default Iterator<T> iterator() {
+
+        return new Iterator<T>() {
+
+            final int len = Series.this.size();
+            int i;
+
+            @Override
+            public boolean hasNext() {
+                return i < len;
+            }
+
+            @Override
+            public T next() {
+
+                if (!hasNext()) {
+                    throw new NoSuchElementException("Past the end of the iterator: " + i);
+                }
+
+                return Series.this.get(i++);
+            }
+        };
+    }
 }
