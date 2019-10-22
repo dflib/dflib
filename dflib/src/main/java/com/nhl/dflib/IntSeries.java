@@ -73,4 +73,14 @@ public interface IntSeries extends Series<Integer> {
      */
     @Override
     IntSeries sample(int size, Random random);
+
+    /**
+     * @since 0.7
+     */
+    default int[] toIntArray() {
+        int len = size();
+        int[] copy = new int[len];
+        copyToInt(copy, 0, 0, len);
+        return copy;
+    }
 }

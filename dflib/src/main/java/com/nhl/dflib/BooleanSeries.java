@@ -94,4 +94,14 @@ public interface BooleanSeries extends Series<Boolean> {
      */
     @Override
     BooleanSeries sample(int size, Random random);
+
+    /**
+     * @since 0.7
+     */
+    default boolean[] toBooleanArray() {
+        int len = size();
+        boolean[] copy = new boolean[len];
+        copyToBoolean(copy, 0, 0, len);
+        return copy;
+    }
 }

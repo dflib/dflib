@@ -6,12 +6,17 @@ import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.series.ListSeries;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Random;
+import java.util.Set;
+
+import static java.util.Arrays.asList;
 
 /**
  * A wrapper around an array of values of a certain type.
@@ -274,5 +279,60 @@ public interface Series<T> extends Iterable<T> {
                 return Series.this.get(i++);
             }
         };
+    }
+
+    /**
+     * Returns a List with this Series values. Returned list is mutable and contains a copy of this Series data, so
+     * modifying it will not affect the underlying Series.
+     *
+     * @return a new List with data from this Series
+     * @since 0.7
+     */
+    default List<T> toList() {
+        int len = size();
+        Object[] copy = new Object[len];
+        copyTo(copy, 0, 0, len);
+        return asList((T[]) copy);
+    }
+
+    /**
+     * Returns a Set with this Series values. Returned set is mutable and contains a copy of this Series data, so
+     * modifying it will not affect the underlying Series.
+     *
+     * @return a new Set with data from this Series
+     * @since 0.7
+     */
+    default Set<T> toSet() {
+        int len = size();
+
+        Set<T> set = new HashSet<>();
+        for (int i = 0; i < len; i++) {
+            set.add(get(i));
+        }
+
+        return set;
+    }
+
+    /**
+     * Returns an array with this Series values. Returned array contains a copy of this Series data, so modifying it
+     * will not affect the underlying Series.
+     *
+     * @param a the array into which the elements of this collection are to be stored, if it is big enough; otherwise,
+     *          a new array of the same  runtime type is allocated for this purpose. This is similar to
+     *          {@link java.util.Collection#toArray(Object[])} behavior.
+     * @return a new array with data from this Series
+     * @since 0.7
+     */
+    default T[] toArray(T[] a) {
+        int len = size();
+
+        // TODO: wish we could use Series.getType(), but its default implementation returns Object.class, and is useless
+        //  here, so we need to rely on the passed array prototype
+        T[] copy = a.length < len
+                ? (T[]) Array.newInstance(a.getClass().getComponentType(), len)
+                : a;
+
+        copyTo(copy, 0, 0, len);
+        return copy;
     }
 }

@@ -71,4 +71,14 @@ public interface LongSeries extends Series<Long> {
      */
     @Override
     LongSeries sample(int size, Random random);
+
+    /**
+     * @since 0.7
+     */
+    default long[] toLongArray() {
+        int len = size();
+        long[] copy = new long[len];
+        copyToLong(copy, 0, 0, len);
+        return copy;
+    }
 }

@@ -11,6 +11,7 @@
 * #80 CsvLoader - better way to include/exclude columns
 * #81 Implement min/max aggregation operations 
 * #82 Make Series iterable
+* #83 Convert Series to List, Set, array
 
 ## Release 0.6
 

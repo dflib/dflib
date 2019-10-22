@@ -71,4 +71,14 @@ public interface DoubleSeries extends Series<Double> {
      */
     @Override
     DoubleSeries sample(int size, Random random);
+
+    /**
+     * @since 0.7
+     */
+    default double[] toDoubleArray() {
+        int len = size();
+        double[] copy = new double[len];
+        copyToDouble(copy, 0, 0, len);
+        return copy;
+    }
 }
