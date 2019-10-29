@@ -69,7 +69,7 @@ public class AggregatorFunctions {
                 case 1:
                     return list.get(0);
                 default:
-                    // side effect - resorting the list; sicne the list is not exposed outside of "medianCollector", this should
+                    // side effect - resorting the list; since the list is not exposed outside of "medianCollector", this should
                     // not cause any issues
                     Collections.sort(list);
 

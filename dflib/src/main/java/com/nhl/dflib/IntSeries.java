@@ -83,4 +83,29 @@ public interface IntSeries extends Series<Integer> {
         copyToInt(copy, 0, 0, len);
         return copy;
     }
+
+    /**
+     * @since 0.7
+     */
+    int max();
+
+    /**
+     * @since 0.7
+     */
+    int min();
+
+    /**
+     * @since 0.7
+     */
+    long sum();
+
+    /**
+     * @since 0.7
+     */
+    double average();
+
+    /**
+     * @since 0.7
+     */
+    double median();
 }

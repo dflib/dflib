@@ -1,6 +1,10 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.aggregate.PrimitiveSeriesAverage;
+import com.nhl.dflib.aggregate.PrimitiveSeriesMedian;
+import com.nhl.dflib.aggregate.PrimitiveSeriesMinMax;
+import com.nhl.dflib.aggregate.PrimitiveSeriesSum;
 
 /**
  * An {@link com.nhl.dflib.IntSeries} that represents a range of sequential integers.
@@ -63,5 +67,30 @@ public class IntSequenceSeries extends IntBaseSeries {
     @Override
     public int size() {
         return lastExclusive - first;
+    }
+
+    @Override
+    public int max() {
+        return PrimitiveSeriesMinMax.maxOfRange(lastExclusive);
+    }
+
+    @Override
+    public int min() {
+        return PrimitiveSeriesMinMax.minOfRange(first);
+    }
+
+    @Override
+    public long sum() {
+        return PrimitiveSeriesSum.sumOfRange(first, lastExclusive);
+    }
+
+    @Override
+    public double average() {
+        return PrimitiveSeriesAverage.averageOfRange(first, lastExclusive);
+    }
+
+    @Override
+    public double median() {
+        return PrimitiveSeriesMedian.medianOfRange(first, lastExclusive);
     }
 }
