@@ -42,8 +42,11 @@ public class Series_AggTest extends BaseObjectSeriesTest {
 
     @Test
     public void testFirst() {
-        String first = createSeries("a", "b", "cd", "e", "fg").first();
-        assertEquals("a", first);
+        String f1 = createSeries("a", "b", "cd", "e", "fg").first();
+        assertEquals("a", f1);
+
+        Object f2 = createSeries().first();
+        assertNull(f2);
     }
 
     @Test

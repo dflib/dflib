@@ -9,6 +9,15 @@ import static org.junit.Assert.*;
 public class IntArraySeries_AggTest {
 
     @Test
+    public void testFirst() {
+        IntArraySeries s1 = new IntArraySeries(1, 2);
+        assertEquals(Integer.valueOf(1), s1.first());
+
+        IntArraySeries s2 = new IntArraySeries();
+        assertEquals(null, s2.first());
+    }
+
+    @Test
     public void testAgg_SumInt() {
         IntArraySeries s = new IntArraySeries(1, 2);
         Assert.assertEquals(Integer.valueOf(3), s.agg(SeriesAggregator.sumInt()));
