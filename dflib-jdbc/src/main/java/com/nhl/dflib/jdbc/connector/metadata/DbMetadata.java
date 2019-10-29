@@ -159,6 +159,7 @@ public class DbMetadata {
 
         Map<String, Integer> columnsAndTypes = new LinkedHashMap<>();
         Set<String> pks = new HashSet<>();
+        Set<String> nullable = new HashSet<>();
 
         try (Connection c = dataSource.getConnection()) {
 
@@ -171,6 +172,10 @@ public class DbMetadata {
                     String name = columnsRs.getString("COLUMN_NAME");
                     int type = columnsRs.getInt("DATA_TYPE");
                     columnsAndTypes.put(name, type);
+
+                    if ("YES".equals(columnsRs.getString("IS_NULLABLE"))) {
+                        nullable.add(name);
+                    }
                 }
             }
 
@@ -191,7 +196,12 @@ public class DbMetadata {
         DbColumnMetadata[] columns = new DbColumnMetadata[len];
         int i = 0;
         for (Map.Entry<String, Integer> e : columnsAndTypes.entrySet()) {
-            columns[i++] = new DbColumnMetadata(e.getKey(), e.getValue(), pks.contains(e.getKey()));
+            String name = e.getKey();
+            columns[i++] = new DbColumnMetadata(
+                    name,
+                    e.getValue(),
+                    pks.contains(name),
+                    nullable.contains(name));
         }
 
         return new DbTableMetadata(tableName, columns);
