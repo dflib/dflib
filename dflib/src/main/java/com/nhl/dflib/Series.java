@@ -233,6 +233,27 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
+     * @since 0.7
+     */
+    default T first() {
+        return agg(SeriesAggregator.first());
+    }
+
+    /**
+     * @since 0.7
+     */
+    default String concat(String delimiter) {
+        return agg(SeriesAggregator.concat(delimiter));
+    }
+
+    /**
+     * @since 0.7
+     */
+    default String concat(String delimiter, String prefix, String suffix) {
+        return agg(SeriesAggregator.concat(delimiter, prefix, suffix));
+    }
+
+    /**
      * Returns a Series object that is a random sample of values from this object, with the specified sample size. If you are
      * doing sampling in a high concurrency application, consider using {@link #sample(int, Random)}, as this method
      * is using a shared {@link Random} instance with synchronization.

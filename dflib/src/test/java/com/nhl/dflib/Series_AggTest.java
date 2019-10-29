@@ -23,9 +23,7 @@ public class Series_AggTest extends BaseObjectSeriesTest {
 
     @Test
     public void testAgg() {
-
         String aggregated = createSeries("a", "b", "cd", "e", "fg").agg(SeriesAggregator.concat("_"));
-
         assertEquals("a_b_cd_e_fg", aggregated);
     }
 
