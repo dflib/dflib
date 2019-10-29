@@ -58,4 +58,25 @@ public class DataFrame_RenameColumnsTest {
                 .expectRow(0, 1, "x")
                 .expectRow(1, 2, "y");
     }
+
+    @Test
+    public void testRenameColumn() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1, "x",
+                2, "y")
+                .renameColumn("b", "d");
+
+        new DataFrameAsserts(df, "a", "d")
+                .expectHeight(2)
+                .expectRow(0, 1, "x")
+                .expectRow(1, 2, "y");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRenameColumn_Duplicate() {
+        DataFrame.newFrame("a", "b").foldByRow(
+                1, "x",
+                2, "y")
+                .renameColumn("b", "a");
+    }
 }

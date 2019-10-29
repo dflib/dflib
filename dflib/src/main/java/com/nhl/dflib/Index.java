@@ -106,14 +106,18 @@ public class Index implements Iterable<String> {
 
         int len = size();
 
-        String[] newLabels = new String[len];
+        Set<String> unique = new LinkedHashSet<>();
+
         for (int i = 0; i < len; i++) {
             String oldLabel = labels[i];
             String newLabel = oldToNewLabels.get(oldLabel);
-            newLabels[i] = newLabel != null ? newLabel : oldLabel;
+            String label = newLabel != null ? newLabel : oldLabel;
+            if (!unique.add(label)) {
+                throw new IllegalArgumentException("Duplicate column name: " + label);
+            }
         }
 
-        return new Index(newLabels);
+        return new Index(unique.toArray(new String[0]));
     }
 
     public Index rename(String... newLabels) {
@@ -214,7 +218,7 @@ public class Index implements Iterable<String> {
 
         int len = labels.length;
         for (int i = 0; i < len; i++) {
-            if(includeCondition.test(labels[i])) {
+            if (includeCondition.test(labels[i])) {
                 selected.add(labels[i]);
             }
         }
@@ -260,7 +264,7 @@ public class Index implements Iterable<String> {
 
         int len = labels.length;
         for (int i = 0; i < len; i++) {
-            if(!labelCondition.test(labels[i])) {
+            if (!labelCondition.test(labels[i])) {
                 selected.add(labels[i]);
             }
         }
