@@ -81,4 +81,30 @@ public interface DoubleSeries extends Series<Double> {
         copyToDouble(copy, 0, 0, len);
         return copy;
     }
+
+    /**
+     * @since 0.7
+     */
+    double max();
+
+    /**
+     * @since 0.7
+     */
+    double min();
+
+    /**
+     * @since 0.7
+     */
+    // TODO: deal with overflow?
+    double sum();
+
+    /**
+     * @since 0.7
+     */
+    double average();
+
+    /**
+     * @since 0.7
+     */
+    double median();
 }

@@ -31,4 +31,17 @@ public class PrimitiveSeriesSum {
 
         return s;
     }
+
+    public static double sumOfArray(double[] doubles, int start, int len) {
+
+        // TODO: deal with rounding errors... convert to BigDecimal?
+        //   Is this method any worse than Collectors.summingDouble() as far as rounding?
+
+        double s = 0;
+        for (int i = 0; i < len; i++) {
+            s += doubles[i + start];
+        }
+
+        return s;
+    }
 }

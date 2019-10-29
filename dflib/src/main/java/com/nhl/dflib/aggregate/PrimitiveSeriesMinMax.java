@@ -88,4 +88,42 @@ public class PrimitiveSeriesMinMax {
 
         return max;
     }
+
+    public static double minOfArray(double[] doubles, int start, int len) {
+
+        if (len == 0) {
+            return 0; // is this reasonable?
+        }
+
+        double max = Double.MAX_VALUE;
+
+        for (int i = 0; i < len; i++) {
+
+            double in = doubles[start + i];
+            if (in < max) {
+                max = in;
+            }
+        }
+
+        return max;
+    }
+
+    public static double maxOfArray(double[] doubles, int start, int len) {
+
+        if (len == 0) {
+            return 0L; // is this reasonable?
+        }
+
+        double max = Double.MIN_VALUE;
+
+        for (int i = 0; i < len; i++) {
+
+            double in = doubles[start + i];
+            if (in > max) {
+                max = in;
+            }
+        }
+
+        return max;
+    }
 }
