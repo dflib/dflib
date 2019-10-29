@@ -120,14 +120,12 @@ public interface SeriesAggregator<S, T> {
         );
     }
 
-    // TODO: perhaps there's a more efficient way to extract a List from Series than CollectorSeriesAggregator?
     static <S> SeriesAggregator<S, List<S>> list() {
-        return of("list", Collectors.toList());
+        return new SimpleSeriesAggregator<>("list", s -> (List<S>) s.toList());
     }
 
-    // TODO: perhaps there's a more efficient way to extract a Set from Series than CollectorSeriesAggregator?
     static <S> SeriesAggregator<S, Set<S>> set() {
-        return of("set", Collectors.toSet());
+        return new SimpleSeriesAggregator<>("set", s -> (Set<S>) s.toSet());
     }
 
     static <S, T> SeriesAggregator<S, T> of(String aggregateLabel, Collector<S, ?, T> aggregator) {

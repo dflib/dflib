@@ -34,8 +34,9 @@ public class Series_AggTest extends BaseObjectSeriesTest {
                 .aggMultiple(
                         SeriesAggregator.first(),
                         SeriesAggregator.concat("|"),
-                        SeriesAggregator.concat("_"));
+                        SeriesAggregator.concat("_", "[", "]"),
+                        SeriesAggregator.countInt());
 
-        new SeriesAsserts(aggregated).expectData("a", "a|b|cd|e|fg", "a_b_cd_e_fg");
+        new SeriesAsserts(aggregated).expectData("a", "a|b|cd|e|fg", "[a_b_cd_e_fg]", 5);
     }
 }
