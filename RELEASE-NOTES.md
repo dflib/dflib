@@ -12,6 +12,7 @@
 * #81 Implement min/max aggregation operations 
 * #82 Make Series iterable
 * #83 Convert Series to List, Set, array
+* #84 Shortcuts for Series aggregations 
 
 ## Release 0.6
 
