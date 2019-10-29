@@ -21,4 +21,14 @@ public class PrimitiveSeriesSum {
 
         return s;
     }
+
+    public static long sumOfArray(long[] longs, int start, int len) {
+
+        long s = 0;
+        for (int i = 0; i < len; i++) {
+            s += longs[i + start];
+        }
+
+        return s;
+    }
 }

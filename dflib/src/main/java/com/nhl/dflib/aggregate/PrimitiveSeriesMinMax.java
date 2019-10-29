@@ -50,4 +50,42 @@ public class PrimitiveSeriesMinMax {
 
         return max;
     }
+
+    public static long minOfArray(long[] longs, int start, int len) {
+
+        if (len == 0) {
+            return 0; // is this reasonable?
+        }
+
+        long max = Long.MAX_VALUE;
+
+        for (int i = 0; i < len; i++) {
+
+            long in = longs[start + i];
+            if (in < max) {
+                max = in;
+            }
+        }
+
+        return max;
+    }
+
+    public static long maxOfArray(long[] longs, int start, int len) {
+
+        if (len == 0) {
+            return 0L; // is this reasonable?
+        }
+
+        long max = Long.MIN_VALUE;
+
+        for (int i = 0; i < len; i++) {
+
+            long in = longs[start + i];
+            if (in > max) {
+                max = in;
+            }
+        }
+
+        return max;
+    }
 }

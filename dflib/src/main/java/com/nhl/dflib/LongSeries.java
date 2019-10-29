@@ -81,4 +81,30 @@ public interface LongSeries extends Series<Long> {
         copyToLong(copy, 0, 0, len);
         return copy;
     }
+
+    /**
+     * @since 0.7
+     */
+    long max();
+
+    /**
+     * @since 0.7
+     */
+    long min();
+
+    /**
+     * @since 0.7
+     */
+    // TODO: deal with overflow?
+    long sum();
+
+    /**
+     * @since 0.7
+     */
+    double average();
+
+    /**
+     * @since 0.7
+     */
+    double median();
 }

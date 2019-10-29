@@ -1,6 +1,10 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.LongSeries;
+import com.nhl.dflib.aggregate.PrimitiveSeriesAverage;
+import com.nhl.dflib.aggregate.PrimitiveSeriesMedian;
+import com.nhl.dflib.aggregate.PrimitiveSeriesMinMax;
+import com.nhl.dflib.aggregate.PrimitiveSeriesSum;
 
 /**
  * @since 0.6
@@ -70,5 +74,31 @@ public class LongArraySeries extends LongBaseSeries {
         }
 
         return this;
+    }
+
+
+    @Override
+    public long max() {
+        return PrimitiveSeriesMinMax.maxOfArray(data, offset, size);
+    }
+
+    @Override
+    public long min() {
+        return PrimitiveSeriesMinMax.minOfArray(data, offset, size);
+    }
+
+    @Override
+    public long sum() {
+        return PrimitiveSeriesSum.sumOfArray(data, offset, size);
+    }
+
+    @Override
+    public double average() {
+        return PrimitiveSeriesAverage.averageOfArray(data, offset, size);
+    }
+
+    @Override
+    public double median() {
+        return PrimitiveSeriesMedian.medianOfArray(data, offset, size);
     }
 }
