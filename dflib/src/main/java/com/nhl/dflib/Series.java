@@ -243,6 +243,7 @@ public interface Series<T> extends Iterable<T> {
      * @since 0.7
      */
     default String concat(String delimiter) {
+        // TODO: implement concat directly instead of going through aggregator
         return agg(SeriesAggregator.concat(delimiter));
     }
 
@@ -250,6 +251,7 @@ public interface Series<T> extends Iterable<T> {
      * @since 0.7
      */
     default String concat(String delimiter, String prefix, String suffix) {
+        // TODO: implement concat directly instead of going through aggregator
         return agg(SeriesAggregator.concat(delimiter, prefix, suffix));
     }
 

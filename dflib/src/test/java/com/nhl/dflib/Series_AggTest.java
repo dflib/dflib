@@ -39,4 +39,22 @@ public class Series_AggTest extends BaseObjectSeriesTest {
 
         new SeriesAsserts(aggregated).expectData("a", "a|b|cd|e|fg", "[a_b_cd_e_fg]", 5);
     }
+
+    @Test
+    public void testFirst() {
+        String first = createSeries("a", "b", "cd", "e", "fg").first();
+        assertEquals("a", first);
+    }
+
+    @Test
+    public void testConcat() {
+        String concat = createSeries("a", "b", "cd", "e", "fg").concat("_");
+        assertEquals("a_b_cd_e_fg", concat);
+    }
+
+    @Test
+    public void testConcat_PrefixSuffix() {
+        String concat = createSeries("a", "b", "cd", "e", "fg").concat("_", "[", "]");
+        assertEquals("[a_b_cd_e_fg]", concat);
+    }
 }
