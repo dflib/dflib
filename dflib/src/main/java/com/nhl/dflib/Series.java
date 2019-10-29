@@ -67,6 +67,15 @@ public interface Series<T> extends Iterable<T> {
     <V> Series<V> map(ValueMapper<T, V> mapper);
 
     /**
+     * A map function over the Series that generates a DataFrame of the same height as the length of the Series,
+     * which each row produced by applying the map function to each Series value.
+     *
+     * @return a new DataFrame built from Series values.
+     * @since 0.7
+     */
+    DataFrame map(Index resultColumns, ValueToRowMapper<T> mapper);
+
+    /**
      * Returns a {@link Series} that contains a range of data from this series. If the "toExclusive" parameter
      *
      * @param fromInclusive a left boundary index of the returned range (included in the returned range)

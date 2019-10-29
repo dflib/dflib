@@ -4,13 +4,16 @@ import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DoublePredicate;
 import com.nhl.dflib.DoubleSeries;
+import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.SeriesGroupBy;
 import com.nhl.dflib.ValueMapper;
 import com.nhl.dflib.ValuePredicate;
+import com.nhl.dflib.ValueToRowMapper;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
+import com.nhl.dflib.map.Mapper;
 import com.nhl.dflib.sample.Sampler;
 import com.nhl.dflib.series.builder.BooleanAccumulator;
 import com.nhl.dflib.series.builder.DoubleAccumulator;
@@ -31,6 +34,11 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     @Override
     public <V> Series<V> map(ValueMapper<Double, V> mapper) {
         return new ColumnMappedSeries<>(this, mapper);
+    }
+
+    @Override
+    public DataFrame map(Index resultColumns, ValueToRowMapper<Double> mapper) {
+        return Mapper.map(this, resultColumns, mapper);
     }
 
     @Override

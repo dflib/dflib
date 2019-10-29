@@ -159,11 +159,11 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Produces a new DataFrame from this DataFrame, applying {@link RowMapper} to each row of this DataFrame. The
      * result DataFrame will be the same height as this, but can have a different with and set of columns.
      *
-     * @param mappedColumns column index of the new DataFrame
+     * @param resultColumns column index of the new DataFrame
      * @param rowMapper     a function applied to each row of this DataFrame
      * @return a new DataFrame
      */
-    DataFrame map(Index mappedColumns, RowMapper rowMapper);
+    DataFrame map(Index resultColumns, RowMapper rowMapper);
 
     /**
      * Creates a new Series with values mapped by applying row mapper function to the DataFrame. The returned Series

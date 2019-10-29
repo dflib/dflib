@@ -13,6 +13,7 @@
 * #82 Make Series iterable
 * #83 Convert Series to List, Set, array
 * #84 Shortcuts for Series aggregations 
+* #85 Series.map flavor that returns a DataFrame
 
 ## Release 0.6
 

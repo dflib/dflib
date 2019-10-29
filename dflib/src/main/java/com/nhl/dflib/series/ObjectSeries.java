@@ -2,13 +2,16 @@ package com.nhl.dflib.series;
 
 import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.SeriesGroupBy;
 import com.nhl.dflib.ValueMapper;
 import com.nhl.dflib.ValuePredicate;
+import com.nhl.dflib.ValueToRowMapper;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
+import com.nhl.dflib.map.Mapper;
 import com.nhl.dflib.sample.Sampler;
 import com.nhl.dflib.series.builder.BooleanAccumulator;
 import com.nhl.dflib.series.builder.IntAccumulator;
@@ -31,6 +34,11 @@ public abstract class ObjectSeries<T> implements Series<T> {
     @Override
     public <V> Series<V> map(ValueMapper<T, V> mapper) {
         return new ColumnMappedSeries<>(this, mapper);
+    }
+
+    @Override
+    public DataFrame map(Index resultColumns, ValueToRowMapper<T> mapper) {
+        return Mapper.map(this, resultColumns, mapper);
     }
 
     @Override
