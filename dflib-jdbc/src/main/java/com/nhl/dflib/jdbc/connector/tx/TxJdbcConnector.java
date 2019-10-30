@@ -9,8 +9,10 @@ import com.nhl.dflib.jdbc.connector.TableSaver;
 import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.jdbc.connector.statement.ValueConverterFactory;
+import com.nhl.dflib.jdbc.datasource.TxDataSource;
 import com.nhl.dflib.series.builder.SeriesBuilder;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 
@@ -66,6 +68,11 @@ public class TxJdbcConnector implements JdbcConnector {
     @Override
     public DbMetadata getMetadata() {
         return delegate.getMetadata();
+    }
+
+    @Override
+    public DataSource getDataSource() {
+        return new TxDataSource(connection, delegate.getDataSource());
     }
 
     @Override

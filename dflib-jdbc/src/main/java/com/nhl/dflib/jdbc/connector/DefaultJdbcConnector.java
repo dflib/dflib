@@ -162,6 +162,14 @@ public class DefaultJdbcConnector implements JdbcConnector {
     }
 
     /**
+     * @since 0.7
+     */
+    @Override
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
+    /**
      * @since 0.6
      */
     @Override

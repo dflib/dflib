@@ -5,6 +5,7 @@ import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.jdbc.connector.statement.ValueConverterFactory;
 import com.nhl.dflib.series.builder.SeriesBuilder;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,6 +42,14 @@ public interface JdbcConnector {
     StatementBuilder createStatementBuilder(String sql);
 
     DbMetadata getMetadata();
+
+    /**
+     * Returns Connector's internal DataSource
+     *
+     * @return Connector's internal DataSource
+     * @since 0.7
+     */
+    DataSource getDataSource();
 
     Connection getConnection() throws SQLException;
 
