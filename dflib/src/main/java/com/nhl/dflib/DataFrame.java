@@ -420,11 +420,22 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     DataFrame addRowNumber(String columnName);
 
-    default <V> DataFrame addColumn(String columnLabel, RowToValueMapper<V> columnValueProducer) {
+    default DataFrame addColumn(String columnLabel, RowToValueMapper<?> columnValueProducer) {
         return addColumn(columnLabel, mapColumn(columnValueProducer));
     }
 
-    <V> DataFrame addColumns(String[] columnLabels, RowToValueMapper<V>... columnValueProducers);
+    DataFrame addColumns(String[] columnLabels, RowToValueMapper<?>... columnValueProducers);
+
+    /**
+     * Add one more columns to the DataFrame.
+     *
+     * @param columnLabels the names of the added columns
+     * @param rowMapper    a mapper with the "read" part based on this DataFrame index, and "write" part matching the
+     *                     newly added columns
+     * @return a new DataFrame with extra columns added
+     * @since 0.7
+     */
+    <V> DataFrame addColumns(String[] columnLabels, RowMapper rowMapper);
 
     <V> DataFrame addColumn(String columnLabel, Series<V> column);
 

@@ -15,6 +15,7 @@
 * #84 Shortcuts for Series aggregations 
 * #85 Series.map flavor that returns a DataFrame
 * #86 Expose JdbcConnector DataSource for ease of integration
+* #87 DataFrame.addColumns with RowMapper
 
 ## Release 0.6
 

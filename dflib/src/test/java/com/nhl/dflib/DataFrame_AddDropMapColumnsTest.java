@@ -81,6 +81,49 @@ public class DataFrame_AddDropMapColumnsTest {
     }
 
     @Test
+    public void testAddColumns() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1, "x",
+                2, "y")
+                .addColumns(new String[]{"c", "d"},
+                        r -> ((int) r.get(0)) * 10,
+                        r -> ((int) r.get(0)) * 2);
+
+        new DataFrameAsserts(df, "a", "b", "c", "d")
+                .expectHeight(2)
+                .expectRow(0, 1, "x", 10, 2)
+                .expectRow(1, 2, "y", 20, 4);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddColumns_SizeMismatch() {
+        DataFrame.newFrame("a", "b").foldByRow(
+                1, "x",
+                2, "y")
+                .addColumns(new String[]{"c", "d", "e"},
+                        r -> ((int) r.get(0)) * 10,
+                        r -> ((int) r.get(0)) * 2);
+    }
+
+    @Test
+    public void testAddColumns_RowMapper() {
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                1,
+                2)
+                .addColumns(new String[]{"c", "d"},
+                        (from, to) -> {
+                            int i = (int) from.get(0);
+                            to.set(0, i + 1);
+                            to.set(1, i + 2);
+                        });
+
+        new DataFrameAsserts(df, "a", "c", "d")
+                .expectHeight(2)
+                .expectRow(0, 1, 2, 3)
+                .expectRow(1, 2, 3, 4);
+    }
+
+    @Test
     public void testDropColumns1() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",

@@ -354,11 +354,17 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public <V> DataFrame addColumns(String[] columnNames, RowToValueMapper<V>... columnValueProducers) {
+    public DataFrame addColumns(String[] columnLabels, RowToValueMapper<?>... columnValueProducers) {
 
         int width = width();
-        int extraWidth = columnNames.length;
-        Index expandedIndex = columnsIndex.addLabels(columnNames);
+        int extraWidth = columnLabels.length;
+
+        if (extraWidth != columnValueProducers.length) {
+            throw new IllegalArgumentException("Number of new column labels [" + extraWidth +
+                    "] doesn't match the number of supplied producers [" + columnValueProducers.length + "]");
+        }
+
+        Index expandedIndex = columnsIndex.addLabels(columnLabels);
 
         Series[] newData = new Series[width + extraWidth];
         System.arraycopy(dataColumns, 0, newData, 0, width);
@@ -368,6 +374,11 @@ public class ColumnDataFrame implements DataFrame {
         }
 
         return new ColumnDataFrame(expandedIndex, newData);
+    }
+
+    @Override
+    public DataFrame addColumns(String[] columnLabels, RowMapper rowMapper) {
+        return hConcat(map(Index.forLabels(columnLabels), rowMapper));
     }
 
     @Override
