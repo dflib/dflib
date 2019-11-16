@@ -53,6 +53,13 @@ public class Index implements Iterable<String> {
     }
 
     /**
+     * @since 0.7
+     */
+    public static Index forLabels(Series<String> labels) {
+        return new Index(labels.toArray(new String[0]));
+    }
+
+    /**
      * Creates an index from an array of labels. Duplicate labels will be renamed by appending one or more underscore
      * symbols.
      *
