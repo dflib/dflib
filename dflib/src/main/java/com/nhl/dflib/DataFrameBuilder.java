@@ -73,6 +73,14 @@ public class DataFrameBuilder {
         return fromColumnarData(columnarData);
     }
 
+    /**
+     * @since 0.7
+     * @return a builder that allows to append rows to the DataFrame one by one instead of copying from a collection.
+     */
+    public DataFrameByRowBuilder byRow() {
+        return new DataFrameByRowBuilder(columnsIndex);
+    }
+
     public DataFrameByRowBuilder addRow(Object... row) {
         return new DataFrameByRowBuilder(columnsIndex).addRow(row);
     }

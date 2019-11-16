@@ -37,6 +37,22 @@ public class DataFrameBuilderTest {
     }
 
     @Test
+    public void testByRow() {
+        DataFrame df = DataFrameBuilder
+                .builder("a", "b")
+                .byRow()
+                .addRow("a", 1)
+                .addRow("b", 2)
+                .addRow("c", 3)
+                .create();
+
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
+                .expectRow(0, "a", 1)
+                .expectRow(1, "b", 2)
+                .expectRow(2, "c", 3);
+    }
+
+    @Test
     public void testAddRow() {
         DataFrame df = DataFrameBuilder
                 .builder("a", "b")
