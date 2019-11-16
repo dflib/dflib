@@ -1,6 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.unit.IndexAsserts;
+import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.Test;
 
 public class IndexTest {
@@ -26,6 +27,12 @@ public class IndexTest {
     @Test(expected = IllegalArgumentException.class)
     public void testRangeOpenClosed_OutOfRange() {
         Index.forLabels("a", "b", "c", "d").rangeOpenClosed(0, 5);
+    }
+
+    @Test
+    public void testToSeries() {
+        Series<String> s = Index.forLabels("a", "b", "c", "d").toSeries();
+        new SeriesAsserts(s).expectData("a", "b", "c", "d");
     }
 
     enum E1 {

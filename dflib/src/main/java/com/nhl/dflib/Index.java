@@ -320,7 +320,6 @@ public class Index implements Iterable<String> {
         return false;
     }
 
-
     /**
      * @since 0.7
      */
@@ -333,6 +332,19 @@ public class Index implements Iterable<String> {
      */
     public Index sample(int size, Random random) {
         return selectPositions(Sampler.sampleIndex(size, size(), random));
+    }
+
+    /**
+     * @since 0.7
+     * @return a new Series object with Index labels as elements.
+     */
+    public Series<String> toSeries() {
+        return Series.forData(labels);
+    }
+
+    @Override
+    public String toString() {
+        return toSeries().toString();
     }
 
     private Map<String, Integer> computeLabelPositions() {
