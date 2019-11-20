@@ -17,6 +17,7 @@
 * #86 Expose JdbcConnector DataSource for ease of integration
 * #87 DataFrame.addColumns with RowMapper
 * #88 Index.toSeries() 
+* #89 Filter condition in aggregators (partial) 
 
 ## Release 0.6
 

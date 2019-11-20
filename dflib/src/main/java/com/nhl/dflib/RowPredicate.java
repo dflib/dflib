@@ -11,6 +11,13 @@ public interface RowPredicate {
 
     boolean test(RowProxy r);
 
+    /**
+     * @since 0.7
+     */
+    default <V> RowPredicate and(RowPredicate another) {
+        return r -> this.test(r) && another.test(r);
+    }
+
     default <V> RowPredicate and(int pos, ValuePredicate<V> another) {
         return r -> this.test(r) && another.test((V) r.get(pos));
     }

@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.aggregate.AggregatorBuilder;
 import com.nhl.dflib.aggregate.ColumnAggregator;
 import com.nhl.dflib.aggregate.DataFrameAggregator;
 import com.nhl.dflib.aggregate.IntCountAggregator;
@@ -44,7 +45,7 @@ public interface Aggregator<T> {
     }
 
     /**
-     * Creates an aggregator to count Series
+     * Creates an aggregator to count DataFrame rows.
      *
      * @since 0.6
      */
@@ -53,7 +54,7 @@ public interface Aggregator<T> {
     }
 
     /**
-     * Creates an aggregator to calculate a sum of the specified column.
+     * Creates an aggregator to count DataFrame rows.
      *
      * @since 0.6
      */
@@ -360,6 +361,33 @@ public interface Aggregator<T> {
                 index -> column,
                 index -> index.getLabel(column)
         );
+    }
+
+    /**
+     * Starts a builder of an aggregator that will prefilter DataFrame rows before applying an aggregation function.
+     *
+     * @since 0.7
+     */
+    static AggregatorBuilder filterRows(RowPredicate rowPredicate) {
+        return new AggregatorBuilder().filterRows(rowPredicate);
+    }
+
+    /**
+     * Starts a builder of an aggregator that will prefilter DataFrame rows before applying an aggregation function.
+     *
+     * @since 0.7
+     */
+    static <V> AggregatorBuilder filterRows(String columnLabel, ValuePredicate<V> filter) {
+        return new AggregatorBuilder().filterRows(columnLabel, filter);
+    }
+
+    /**
+     * Starts a builder of an aggregator that will prefilter DataFrame rows before applying an aggregation function.
+     *
+     * @since 0.7
+     */
+    static <V> AggregatorBuilder filterRows(int columnPos, ValuePredicate<V> filter) {
+        return new AggregatorBuilder().filterRows(columnPos, filter);
     }
 
     static <T> Aggregator<T> of(String column, Collector<?, ?, T> aggregator) {
