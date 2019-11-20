@@ -98,6 +98,16 @@ public interface BooleanSeries extends Series<Boolean> {
     /**
      * @since 0.7
      */
+    int countTrue();
+
+    /**
+     * @since 0.7
+     */
+    int countFalse();
+
+    /**
+     * @since 0.7
+     */
     default boolean[] toBooleanArray() {
         int len = size();
         boolean[] copy = new boolean[len];

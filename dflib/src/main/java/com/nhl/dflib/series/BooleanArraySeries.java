@@ -1,6 +1,7 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.BooleanSeries;
+import com.nhl.dflib.aggregate.PrimitiveSeriesCount;
 
 /**
  * @since 0.6
@@ -71,5 +72,15 @@ public class BooleanArraySeries extends BooleanBaseSeries {
         }
 
         return this;
+    }
+
+    @Override
+    public int countTrue() {
+        return PrimitiveSeriesCount.countTrueInArray(data, offset, size);
+    }
+
+    @Override
+    public int countFalse() {
+        return PrimitiveSeriesCount.countFalseInArray(data, offset, size);
     }
 }
