@@ -109,6 +109,24 @@ public class DataFrame_ConvertTest {
                 .expectRow(2, 2, "y");
     }
 
+    @Test
+    public void testConvertColumnToInt_FromBoolean() {
+        DataFrame df = DataFrame
+                .newFrame("a", "b")
+                .foldByRow(
+                        true, "x",
+                        false, "z",
+                        true, "y")
+                .toIntColumn("a", IntValueMapper.fromObject());
+
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(3)
+                .expectRow(0, 1, "x")
+                .expectRow(1, 0, "z")
+                .expectRow(2, 1, "y");
+    }
+
+
     @Test(expected = IllegalArgumentException.class)
     public void testConvertColumnToInt_Nulls() {
         DataFrame.newFrame("a", "b").foldByRow(

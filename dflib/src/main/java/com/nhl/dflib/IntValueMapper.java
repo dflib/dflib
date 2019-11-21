@@ -10,11 +10,19 @@ public interface IntValueMapper<V> {
     static IntValueMapper<Object> fromObject() {
         return o -> {
 
+            if (o == null) {
+                throw new IllegalArgumentException("Can't convert a null to a primitive int");
+            }
+
             if (o instanceof Number) {
                 return ((Number) o).intValue();
             }
 
-            String s = o != null ? o.toString() : null;
+            if (o instanceof Boolean) {
+                return ((Boolean) o) ? 1 : 0;
+            }
+
+            String s = o.toString();
             if (s == null || s.length() == 0) {
                 throw new IllegalArgumentException("Can't convert a null to a primitive int");
             }
@@ -28,6 +36,10 @@ public interface IntValueMapper<V> {
 
             if (o instanceof Number) {
                 return ((Number) o).intValue();
+            }
+
+            if (o instanceof Boolean) {
+                return ((Boolean) o) ? 1 : 0;
             }
 
             String s = o != null ? o.toString() : null;
