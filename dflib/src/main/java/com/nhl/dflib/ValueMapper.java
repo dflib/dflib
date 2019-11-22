@@ -13,6 +13,20 @@ public interface ValueMapper<V, VR> {
         return s -> s != null && s.length() > 0 ? Integer.valueOf(s) : null;
     }
 
+    /**
+     * @since 0.7
+     */
+    static ValueMapper<String, String> stringTrim() {
+        return s -> {
+            if (s == null) {
+                return s;
+            }
+
+            s = s.trim();
+            return s.isEmpty() ? null : s;
+        };
+    }
+
     static ValueMapper<String, String> stringToString() {
         return s -> s;
     }
@@ -77,6 +91,12 @@ public interface ValueMapper<V, VR> {
         return n -> n != null ? allValues[n.intValue()] : null;
     }
 
+    /**
+     * @since 0.7
+     */
+    default <VR1> ValueMapper<V, VR1> and(ValueMapper<VR, VR1> after) {
+        return v -> after.map(this.map(v));
+    }
 
     VR map(V v);
 }
