@@ -155,7 +155,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public DataFrame addRowNumber(String columnName, int startValue) {
-        return addColumn(columnName, new IntSequenceSeries(startValue, height()));
+        return addColumn(columnName, new IntSequenceSeries(startValue, height() + startValue));
     }
 
     @Override

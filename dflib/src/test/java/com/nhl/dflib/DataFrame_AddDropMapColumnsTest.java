@@ -200,4 +200,17 @@ public class DataFrame_AddDropMapColumnsTest {
                 .expectRow(0, 1, "x", 0)
                 .expectRow(1, 2, "y", 1);
     }
+
+    @Test
+    public void testAddRowNumber_StartValue() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1, "x",
+                2, "y")
+                .addRowNumber("rn", 2);
+
+        new DataFrameAsserts(df, "a", "b", "rn")
+                .expectHeight(2)
+                .expectRow(0, 1, "x", 2)
+                .expectRow(1, 2, "y", 3);
+    }
 }
