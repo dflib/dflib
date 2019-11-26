@@ -85,7 +85,25 @@ public class DataFrame_AggFilteredTest {
     }
 
     @Test
-    public void test_MinMax() {
+    public void test_MinMaxLong() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1L, 1L,
+                2L, 4L,
+                -1L, 5L,
+                8L, 2L);
+
+        Series<?> s = df.agg(
+                Aggregator.filterRows(0, (Long i) -> i % 2 == 0).max(1),
+                Aggregator.filterRows(0, (Long i) -> i % 2 == 0).min(1),
+                Aggregator.filterRows("b", (Long i) -> i % 2 == 1).max("a"),
+                Aggregator.filterRows("b", (Long i) -> i % 2 == 1).min("a")
+        );
+
+        new SeriesAsserts(s).expectData(4L, 2L, 1L, -1L);
+    }
+
+    @Test
+    public void test_MinMaxInt() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, 1,
                 2, 4,
@@ -102,43 +120,6 @@ public class DataFrame_AggFilteredTest {
         new SeriesAsserts(s).expectData(4, 2, 1, -1);
     }
 
-
-    @Test
-    public void test_MinMaxLong() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
-                1L, 1L,
-                2L, 4L,
-                -1L, 5L,
-                8L, 2L);
-
-        Series<?> s = df.agg(
-                Aggregator.filterRows(0, (Long i) -> i % 2 == 0).maxLong(1),
-                Aggregator.filterRows(0, (Long i) -> i % 2 == 0).minLong(1),
-                Aggregator.filterRows("b", (Long i) -> i % 2 == 1).maxLong("a"),
-                Aggregator.filterRows("b", (Long i) -> i % 2 == 1).minLong("a")
-        );
-
-        new SeriesAsserts(s).expectData(4L, 2L, 1L, -1L);
-    }
-
-    @Test
-    public void test_MinMaxInt() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
-                1, 1,
-                2, 4,
-                -1, 5,
-                8, 2);
-
-        Series<?> s = df.agg(
-                Aggregator.filterRows(0, (Integer i) -> i % 2 == 0).maxInt(1),
-                Aggregator.filterRows(0, (Integer i) -> i % 2 == 0).minInt(1),
-                Aggregator.filterRows("b", (Integer i) -> i % 2 == 1).maxInt("a"),
-                Aggregator.filterRows("b", (Integer i) -> i % 2 == 1).minInt("a")
-        );
-
-        new SeriesAsserts(s).expectData(4, 2, 1, -1);
-    }
-
     @Test
     public void test_MinMaxDouble() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
@@ -148,10 +129,10 @@ public class DataFrame_AggFilteredTest {
                 8., 2.);
 
         Series<?> s = df.agg(
-                Aggregator.filterRows(0, (Double d) -> d > 5).maxDouble(1),
-                Aggregator.filterRows(0, (Double d) -> d > 5).minDouble(1),
-                Aggregator.filterRows("b", (Double d) -> d > 5).maxDouble("a"),
-                Aggregator.filterRows("b", (Double d) -> d > 5).minDouble("a")
+                Aggregator.filterRows(0, (Double d) -> d > 5).max(1),
+                Aggregator.filterRows(0, (Double d) -> d > 5).min(1),
+                Aggregator.filterRows("b", (Double d) -> d > 5).max("a"),
+                Aggregator.filterRows("b", (Double d) -> d > 5).min("a")
         );
 
         new SeriesAsserts(s).expectData(15.7, 2.0, 6.5, -1.2);

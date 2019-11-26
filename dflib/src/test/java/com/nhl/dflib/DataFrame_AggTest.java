@@ -58,14 +58,10 @@ public class DataFrame_AggTest {
                 8, 1);
 
         Series<?> s = df.agg(
-                Aggregator.minDouble("a"),
-                Aggregator.minLong("a"),
-                Aggregator.minInt("a"),
-                Aggregator.maxDouble("a"),
-                Aggregator.maxLong("a"),
-                Aggregator.maxInt("a"));
+                Aggregator.min("a"),
+                Aggregator.max("a"));
 
-        new SeriesAsserts(s).expectData(-1., -1L, -1, 8., 8L, 8);
+        new SeriesAsserts(s).expectData(-1, 8);
     }
 
     @Test
