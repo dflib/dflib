@@ -103,4 +103,22 @@ public class DataFrame_AggFilteredTest {
         new SeriesAsserts(s).expectData(4, 2, 1, -1);
     }
 
+    @Test
+    public void test_MinMaxDouble() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1., 1.01,
+                6.5, 15.7,
+                -1.2, 5.1,
+                8., 2.);
+
+        Series<?> s = df.agg(
+                Aggregator.filterRows(0, (Double d) -> d > 5).maxDouble(1),
+                Aggregator.filterRows(0, (Double d) -> d > 5).minDouble(1),
+                Aggregator.filterRows("b", (Double d) -> d > 5).maxDouble("a"),
+                Aggregator.filterRows("b", (Double d) -> d > 5).minDouble("a")
+        );
+
+        new SeriesAsserts(s).expectData(15.7, 2.0, 6.5, -1.2);
+    }
+
 }

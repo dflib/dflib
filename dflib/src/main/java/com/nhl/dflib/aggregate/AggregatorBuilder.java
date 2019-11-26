@@ -118,7 +118,6 @@ public class AggregatorBuilder {
                 : Aggregator.minLong(column);
     }
 
-
     public Aggregator<Integer> maxInt(String column) {
         return rowFilter != null
                 ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.maxInt(column))
@@ -131,7 +130,6 @@ public class AggregatorBuilder {
                 : Aggregator.maxInt(column);
     }
 
-
     public Aggregator<Integer> minInt(String column) {
         return rowFilter != null
                 ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.minInt(column))
@@ -142,6 +140,30 @@ public class AggregatorBuilder {
         return rowFilter != null
                 ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.minInt(column))
                 : Aggregator.minInt(column);
+    }
+
+    public Aggregator<Double> maxDouble(String column) {
+        return rowFilter != null
+                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.maxDouble(column))
+                : Aggregator.maxDouble(column);
+    }
+
+    public Aggregator<Double> maxDouble(int column) {
+        return rowFilter != null
+                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.maxDouble(column))
+                : Aggregator.maxDouble(column);
+    }
+
+    public Aggregator<Double> minDouble(String column) {
+        return rowFilter != null
+                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.minDouble(column))
+                : Aggregator.minDouble(column);
+    }
+
+    public Aggregator<Double> minDouble(int column) {
+        return rowFilter != null
+                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.minDouble(column))
+                : Aggregator.minDouble(column);
     }
 
     protected void appendRowFilter(RowPredicate filter) {
