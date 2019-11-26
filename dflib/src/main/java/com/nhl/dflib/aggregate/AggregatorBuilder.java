@@ -105,6 +105,18 @@ public class AggregatorBuilder {
                 : Aggregator.sumInt(column);
     }
 
+    public Aggregator<Double> sumDouble(String column) {
+        return rowFilter != null
+                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.sumDouble(column))
+                : Aggregator.sumDouble(column);
+    }
+
+    public Aggregator<Double> sumDouble(int column) {
+        return rowFilter != null
+                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.sumDouble(column))
+                : Aggregator.sumDouble(column);
+    }
+
     public Aggregator<Long> maxLong(String column) {
         return rowFilter != null
                 ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.maxLong(column))

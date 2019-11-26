@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.unit.DoubleSeriesAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.Test;
 
@@ -37,6 +38,22 @@ public class DataFrame_AggFilteredTest {
                 Aggregator.filterRows("b", (Integer i) -> i % 2 == 1).sumLong("a"));
 
         new SeriesAsserts(s).expectData(11L, -4L);
+    }
+
+    @Test
+    public void testSumDouble() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1.1, 1.8,
+                -1., 5.8,
+                2.35, 6.5,
+                4.6, 5.1);
+
+        Series<?> s = df.agg(
+                Aggregator.filterRows(0, (Double i) -> i < 4).sumDouble(1),
+                Aggregator.filterRows("b", (Double i) -> i > 5).sumDouble("a"));
+
+        DoubleSeries ds = DoubleSeries.forSeries(s, DoubleValueMapper.fromObject(0.));
+        new DoubleSeriesAsserts(ds).expectData(14.1, 5.95);
     }
 
     @Test

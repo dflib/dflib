@@ -1,6 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.series.DoubleArraySeries;
+import com.nhl.dflib.series.builder.DoubleAccumulator;
 
 import java.util.Random;
 
@@ -14,6 +15,19 @@ public interface DoubleSeries extends Series<Double> {
 
     static DoubleSeries forDoubles(double... doubles) {
         return new DoubleArraySeries(doubles);
+    }
+
+    /**
+     * @since 0.7
+     */
+    static <V> DoubleSeries forSeries(Series<V> series, DoubleValueMapper<? super V> converter) {
+        int len = series.size();
+        DoubleAccumulator doubles = new DoubleAccumulator(len);
+        for (int i = 0; i < len; i++) {
+            doubles.add(converter.map(series.get(i)));
+        }
+
+        return doubles.toDoubleSeries();
     }
 
     @Override

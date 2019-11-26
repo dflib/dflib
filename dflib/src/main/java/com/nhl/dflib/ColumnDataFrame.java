@@ -15,7 +15,6 @@ import com.nhl.dflib.series.IntSequenceSeries;
 import com.nhl.dflib.series.RowMappedSeries;
 import com.nhl.dflib.series.SingleValueSeries;
 import com.nhl.dflib.series.builder.BooleanAccumulator;
-import com.nhl.dflib.series.builder.DoubleAccumulator;
 import com.nhl.dflib.series.builder.IntAccumulator;
 import com.nhl.dflib.series.builder.LongAccumulator;
 import com.nhl.dflib.sort.IndexSorter;
@@ -420,14 +419,8 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public <V> DataFrame toDoubleColumn(int pos, DoubleValueMapper<V> converter) {
-        Series<?> c = dataColumns[pos];
-        int len = c.size();
-        DoubleAccumulator doubles = new DoubleAccumulator(len);
-        for (int i = 0; i < len; i++) {
-            doubles.add(converter.map((V) c.get(i)));
-        }
-
-        return replaceColumn(pos, doubles.toDoubleSeries());
+        Series<V> c = dataColumns[pos];
+        return replaceColumn(pos, DoubleSeries.forSeries(c, converter));
     }
 
     @Override
