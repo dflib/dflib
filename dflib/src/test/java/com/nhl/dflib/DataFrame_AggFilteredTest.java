@@ -85,4 +85,22 @@ public class DataFrame_AggFilteredTest {
         new SeriesAsserts(s).expectData(4L, 2L, 1L, -1L);
     }
 
+    @Test
+    public void test_MinMaxInt() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1, 1,
+                2, 4,
+                -1, 5,
+                8, 2);
+
+        Series<?> s = df.agg(
+                Aggregator.filterRows(0, (Integer i) -> i % 2 == 0).maxInt(1),
+                Aggregator.filterRows(0, (Integer i) -> i % 2 == 0).minInt(1),
+                Aggregator.filterRows("b", (Integer i) -> i % 2 == 1).maxInt("a"),
+                Aggregator.filterRows("b", (Integer i) -> i % 2 == 1).minInt("a")
+        );
+
+        new SeriesAsserts(s).expectData(4, 2, 1, -1);
+    }
+
 }

@@ -119,6 +119,31 @@ public class AggregatorBuilder {
     }
 
 
+    public Aggregator<Integer> maxInt(String column) {
+        return rowFilter != null
+                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.maxInt(column))
+                : Aggregator.maxInt(column);
+    }
+
+    public Aggregator<Integer> maxInt(int column) {
+        return rowFilter != null
+                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.maxInt(column))
+                : Aggregator.maxInt(column);
+    }
+
+
+    public Aggregator<Integer> minInt(String column) {
+        return rowFilter != null
+                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.minInt(column))
+                : Aggregator.minInt(column);
+    }
+
+    public Aggregator<Integer> minInt(int column) {
+        return rowFilter != null
+                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.minInt(column))
+                : Aggregator.minInt(column);
+    }
+
     protected void appendRowFilter(RowPredicate filter) {
         this.rowFilter = this.rowFilter != null ? this.rowFilter.and(filter) : filter;
     }
