@@ -121,4 +121,18 @@ public class DataFrame_AggFilteredTest {
         new SeriesAsserts(s).expectData(15.7, 2.0, 6.5, -1.2);
     }
 
+    @Test
+    public void test_AverageDouble() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1, 4L,
+                5, 8L,
+                0, 55.5);
+
+        Series<?> s = df.agg(
+                Aggregator.filterRows(0, (Integer i) -> i != 5).averageDouble("a"),
+                Aggregator.filterRows(0, (Integer i) -> i != 5).averageDouble(1));
+
+        new SeriesAsserts(s).expectData(0.5, 29.75);
+    }
+
 }

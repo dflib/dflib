@@ -69,6 +69,18 @@ public class AggregatorBuilder {
                 : Aggregator.countInt();
     }
 
+    public Aggregator<Double> averageDouble(String column) {
+        return rowFilter != null
+                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.averageDouble(column))
+                : Aggregator.averageDouble(column);
+    }
+
+    public Aggregator<Double> averageDouble(int column) {
+        return rowFilter != null
+                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.averageDouble(column))
+                : Aggregator.averageDouble(column);
+    }
+
     public Aggregator<Long> sumLong(String column) {
         return rowFilter != null
                 ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.sumLong(column))
