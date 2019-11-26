@@ -67,4 +67,22 @@ public class DataFrame_AggFilteredTest {
         new SeriesAsserts(s).expectData(1, 3L);
     }
 
+    @Test
+    public void test_MinMaxLong() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1L, 1L,
+                2L, 4L,
+                -1L, 5L,
+                8L, 2L);
+
+        Series<?> s = df.agg(
+                Aggregator.filterRows(0, (Long i) -> i % 2 == 0).maxLong(1),
+                Aggregator.filterRows(0, (Long i) -> i % 2 == 0).minLong(1),
+                Aggregator.filterRows("b", (Long i) -> i % 2 == 1).maxLong("a"),
+                Aggregator.filterRows("b", (Long i) -> i % 2 == 1).minLong("a")
+        );
+
+        new SeriesAsserts(s).expectData(4L, 2L, 1L, -1L);
+    }
+
 }

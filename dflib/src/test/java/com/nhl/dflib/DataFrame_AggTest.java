@@ -10,7 +10,7 @@ import static java.util.Arrays.asList;
 public class DataFrame_AggTest {
 
     @Test
-    public void testAgg() {
+    public void testMix() {
         DataFrame df = DataFrame.newFrame("a", "b", "c", "d").foldByRow(
                 1, "x", "n", 1.0,
                 2, "y", "a", 2.5,
@@ -25,7 +25,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void testAgg_CountInt_CountLong() {
+    public void test_CountInt_CountLong() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 0, "a");
@@ -38,7 +38,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void testAgg_SumInt_SumLong() {
+    public void test_SumInt_SumLong() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, 1,
                 -1, 5L);
@@ -51,7 +51,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void testAgg_MinMax() {
+    public void test_MinMax() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, 1,
                 -1, 1,
@@ -69,7 +69,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void testAgg_Concat() {
+    public void test_Concat() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 0, "a");
@@ -82,7 +82,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void testAgg_Set() {
+    public void test_Set() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "x",
@@ -93,7 +93,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void testAgg_list() {
+    public void test_list() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "x",
@@ -104,7 +104,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void testAgg_average() {
+    public void test_average() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, 4L,
                 0, 55.5);
@@ -117,7 +117,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void testAgg_median_odd() {
+    public void test_median_odd() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, 100,
                 0, 55.5,
@@ -131,7 +131,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void testAgg_median_even() {
+    public void test_median_even() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, 100,
                 0, 55.5,
@@ -146,7 +146,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void testAgg_median_zero() {
+    public void test_median_zero() {
         DataFrame df = DataFrame.newFrame("a", "b").empty();
 
         Series<?> s = df.agg(
@@ -157,7 +157,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void testAgg_median_one() {
+    public void test_median_one() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(1, 100);
 
         Series<?> s = df.agg(
@@ -168,7 +168,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void testAgg_median_nulls() {
+    public void test_median_nulls() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, null,
                 0, 55.5,
@@ -183,7 +183,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void testAgg_First() {
+    public void test_First() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, 100,
                 2, 5);
@@ -196,7 +196,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void testAgg_First_Empty() {
+    public void test_First_Empty() {
         DataFrame df = DataFrame.newFrame("a", "b").empty();
 
         Series<?> s = df.agg(
@@ -207,7 +207,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void testAgg_First_Nulls() {
+    public void test_First_Nulls() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, null,
                 null, 5);
@@ -220,7 +220,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void testAgg_Custom() {
+    public void test_Custom() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, 100,
                 2, 5);

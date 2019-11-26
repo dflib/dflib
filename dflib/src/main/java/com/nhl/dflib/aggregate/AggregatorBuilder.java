@@ -97,6 +97,31 @@ public class AggregatorBuilder {
                 : Aggregator.sumInt(column);
     }
 
+    public Aggregator<Long> maxLong(String column) {
+        return rowFilter != null
+                ? new CollectorFilteredAggregator<>(rowFilter, maxLongCollector(column), index -> column)
+                : Aggregator.maxLong(column);
+    }
+
+    public Aggregator<Long> maxLong(int column) {
+        return rowFilter != null
+                ? new CollectorFilteredAggregator<>(rowFilter, maxLongCollector(column), index -> index.getLabel(column))
+                : Aggregator.maxLong(column);
+    }
+
+
+    public Aggregator<Long> minLong(String column) {
+        return rowFilter != null
+                ? new CollectorFilteredAggregator<>(rowFilter, minLongCollector(column), index -> column)
+                : Aggregator.minLong(column);
+    }
+
+    public Aggregator<Long> minLong(int column) {
+        return rowFilter != null
+                ? new CollectorFilteredAggregator<>(rowFilter, minLongCollector(column), index -> index.getLabel(column))
+                : Aggregator.minLong(column);
+    }
+
     protected Collector<RowProxy, ?, Long> sumLongCollector(int columnPos) {
         return Collectors.summingLong(r -> ((Number) r.get(columnPos)).longValue());
     }
@@ -119,5 +144,73 @@ public class AggregatorBuilder {
 
     protected Collector<RowProxy, ?, Long> countLongCollector() {
         return Collectors.reducing(0L, e -> 1L, Long::sum);
+    }
+
+    protected Collector<RowProxy, ?, Long> maxLongCollector(String columnLabel) {
+        return new AggregationCollector<>(
+                () -> new long[]{Long.MIN_VALUE},
+                (ls, r) -> {
+
+                    Number n = (Number) r.get(columnLabel);
+                    if (n != null) {
+                        long l = n.longValue();
+                        if (ls[0] < l) {
+                            ls[0] = l;
+                        }
+                    }
+                },
+                ls -> ls[0]
+        );
+    }
+
+    protected Collector<RowProxy, ?, Long> maxLongCollector(int columnPos) {
+        return new AggregationCollector<>(
+                () -> new long[]{Long.MIN_VALUE},
+                (ls, r) -> {
+
+                    Number n = (Number) r.get(columnPos);
+                    if (n != null) {
+                        long l = n.longValue();
+                        if (ls[0] < l) {
+                            ls[0] = l;
+                        }
+                    }
+                },
+                ls -> ls[0]
+        );
+    }
+
+    protected Collector<RowProxy, ?, Long> minLongCollector(String columnLabel) {
+        return new AggregationCollector<>(
+                () -> new long[]{Long.MAX_VALUE},
+                (ls, r) -> {
+
+                    Number n = (Number) r.get(columnLabel);
+                    if (n != null) {
+                        long l = n.longValue();
+                        if (ls[0] > l) {
+                            ls[0] = l;
+                        }
+                    }
+                },
+                ls -> ls[0]
+        );
+    }
+
+    protected Collector<RowProxy, ?, Long> minLongCollector(int columnPos) {
+        return new AggregationCollector<>(
+                () -> new long[]{Long.MAX_VALUE},
+                (ls, r) -> {
+
+                    Number n = (Number) r.get(columnPos);
+                    if (n != null) {
+                        long l = n.longValue();
+                        if (ls[0] > l) {
+                            ls[0] = l;
+                        }
+                    }
+                },
+                ls -> ls[0]
+        );
     }
 }
