@@ -1,6 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.series.IntArraySeries;
+import com.nhl.dflib.series.builder.IntAccumulator;
 import com.nhl.dflib.sort.IntComparator;
 
 import java.util.Random;
@@ -15,6 +16,19 @@ public interface IntSeries extends Series<Integer> {
 
     static IntSeries forInts(int... ints) {
         return new IntArraySeries(ints);
+    }
+
+    /**
+     * @since 0.7
+     */
+    static <V> IntSeries forSeries(Series<V> series, IntValueMapper<? super V> converter) {
+        int len = series.size();
+        IntAccumulator a = new IntAccumulator(len);
+        for (int i = 0; i < len; i++) {
+            a.add(converter.map(series.get(i)));
+        }
+
+        return a.toIntSeries();
     }
 
     @Override

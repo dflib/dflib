@@ -2,6 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.op.BooleanSeriesOps;
 import com.nhl.dflib.series.BooleanArraySeries;
+import com.nhl.dflib.series.builder.BooleanAccumulator;
 
 import java.util.Random;
 
@@ -12,6 +13,20 @@ public interface BooleanSeries extends Series<Boolean> {
 
     static BooleanSeries forBooleans(boolean... bools) {
         return new BooleanArraySeries(bools);
+    }
+
+    /**
+     * @since 0.7
+     */
+    static <V> BooleanSeries forSeries(Series<V> series, BooleanValueMapper<? super V> converter) {
+        int len = series.size();
+        BooleanAccumulator a = new BooleanAccumulator(len);
+        for (int i = 0; i < len; i++) {
+            a.add(converter.map(series.get(i)));
+        }
+
+
+        return a.toBooleanSeries();
     }
 
     static BooleanSeries andAll(BooleanSeries... series) {

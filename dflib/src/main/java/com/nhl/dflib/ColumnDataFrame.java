@@ -15,8 +15,6 @@ import com.nhl.dflib.series.IntSequenceSeries;
 import com.nhl.dflib.series.RowMappedSeries;
 import com.nhl.dflib.series.SingleValueSeries;
 import com.nhl.dflib.series.builder.BooleanAccumulator;
-import com.nhl.dflib.series.builder.IntAccumulator;
-import com.nhl.dflib.series.builder.LongAccumulator;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
 import com.nhl.dflib.stack.Stacker;
@@ -407,14 +405,8 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public <V> DataFrame toIntColumn(int pos, IntValueMapper<V> converter) {
-        Series<?> c = dataColumns[pos];
-        int len = c.size();
-        IntAccumulator ints = new IntAccumulator(len);
-        for (int i = 0; i < len; i++) {
-            ints.add(converter.map((V) c.get(i)));
-        }
-
-        return replaceColumn(pos, ints.toIntSeries());
+        Series<V> c = dataColumns[pos];
+        return replaceColumn(pos, IntSeries.forSeries(c, converter));
     }
 
     @Override
@@ -425,26 +417,14 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public <V> DataFrame toBooleanColumn(int pos, BooleanValueMapper<V> converter) {
-        Series<?> c = dataColumns[pos];
-        int len = c.size();
-        BooleanAccumulator bools = new BooleanAccumulator(len);
-        for (int i = 0; i < len; i++) {
-            bools.add(converter.map((V) c.get(i)));
-        }
-
-        return replaceColumn(pos, bools.toBooleanSeries());
+        Series<V> c = dataColumns[pos];
+        return replaceColumn(pos, BooleanSeries.forSeries(c, converter));
     }
 
     @Override
     public <V> DataFrame toLongColumn(int pos, LongValueMapper<V> converter) {
-        Series<?> c = dataColumns[pos];
-        int len = c.size();
-        LongAccumulator longs = new LongAccumulator(len);
-        for (int i = 0; i < len; i++) {
-            longs.add(converter.map((V) c.get(i)));
-        }
-
-        return replaceColumn(pos, longs.toLongSeries());
+        Series<V> c = dataColumns[pos];
+        return replaceColumn(pos, LongSeries.forSeries(c, converter));
     }
 
     @Override

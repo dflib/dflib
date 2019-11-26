@@ -1,6 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.series.LongArraySeries;
+import com.nhl.dflib.series.builder.LongAccumulator;
 
 import java.util.Random;
 
@@ -14,6 +15,19 @@ public interface LongSeries extends Series<Long> {
 
     static LongSeries forLongs(long... longs) {
         return new LongArraySeries(longs);
+    }
+
+    /**
+     * @since 0.7
+     */
+    static <V> LongSeries forSeries(Series<V> series, LongValueMapper<? super V> converter) {
+        int len = series.size();
+        LongAccumulator a = new LongAccumulator(len);
+        for (int i = 0; i < len; i++) {
+            a.add(converter.map(series.get(i)));
+        }
+
+        return a.toLongSeries();
     }
 
     @Override

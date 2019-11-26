@@ -22,12 +22,12 @@ public interface DoubleSeries extends Series<Double> {
      */
     static <V> DoubleSeries forSeries(Series<V> series, DoubleValueMapper<? super V> converter) {
         int len = series.size();
-        DoubleAccumulator doubles = new DoubleAccumulator(len);
+        DoubleAccumulator a = new DoubleAccumulator(len);
         for (int i = 0; i < len; i++) {
-            doubles.add(converter.map(series.get(i)));
+            a.add(converter.map(series.get(i)));
         }
 
-        return doubles.toDoubleSeries();
+        return a.toDoubleSeries();
     }
 
     @Override
