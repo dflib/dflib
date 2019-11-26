@@ -117,6 +117,30 @@ public class AggregatorBuilder {
                 : Aggregator.sumDouble(column);
     }
 
+    public <T extends Comparable<T>> Aggregator<T> max(String column) {
+        return rowFilter != null
+                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.<T>max(column))
+                : Aggregator.max(column);
+    }
+
+    public <T extends Comparable<T>> Aggregator<T> max(int column) {
+        return rowFilter != null
+                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.<T>max(column))
+                : Aggregator.max(column);
+    }
+
+    public <T extends Comparable<T>> Aggregator<T> min(String column) {
+        return rowFilter != null
+                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.<T>min(column))
+                : Aggregator.max(column);
+    }
+
+    public <T extends Comparable<T>> Aggregator<T> min(int column) {
+        return rowFilter != null
+                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.<T>min(column))
+                : Aggregator.max(column);
+    }
+
     public Aggregator<Long> maxLong(String column) {
         return rowFilter != null
                 ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.maxLong(column))
@@ -128,7 +152,6 @@ public class AggregatorBuilder {
                 ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.maxLong(column))
                 : Aggregator.maxLong(column);
     }
-
 
     public Aggregator<Long> minLong(String column) {
         return rowFilter != null

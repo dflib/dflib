@@ -166,6 +166,52 @@ public interface Aggregator<T> {
         );
     }
 
+    /**
+     * @since 0.7
+     */
+    static <T extends Comparable<T>> Aggregator<T> max(String column) {
+        return new ColumnAggregator<>(
+                (SeriesAggregator<T, T>) SeriesAggregator.max(),
+                index -> index.position(column),
+                index -> column
+        );
+    }
+
+    /**
+     * @since 0.7
+     */
+    static <T extends Comparable<T>> Aggregator<T> max(int column) {
+        return new ColumnAggregator<>(
+                (SeriesAggregator<T, T>) SeriesAggregator.max(),
+                index -> column,
+                index -> index.getLabel(column)
+        );
+    }
+
+    /**
+     * @since 0.7
+     */
+    static <T extends Comparable<T>> Aggregator<T> min(int column) {
+        return new ColumnAggregator<>(
+                (SeriesAggregator<T, T>) SeriesAggregator.min(),
+                index -> column,
+                index -> index.getLabel(column)
+        );
+    }
+
+    /**
+     * @since 0.7
+     */
+    static <T extends Comparable<T>> Aggregator<T> min(String column) {
+        return new ColumnAggregator<>(
+                (SeriesAggregator<T, T>) SeriesAggregator.min(),
+                index -> index.position(column),
+                index -> column
+        );
+    }
+
+    // TODO: is there any performance benefit to minInt, maxLong, etc. compared to their generic Comparable versions?
+    //  if not, we can cut down on the number of methods
 
     /**
      * @since 0.7

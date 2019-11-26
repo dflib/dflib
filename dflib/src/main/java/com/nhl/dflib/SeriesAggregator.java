@@ -61,6 +61,20 @@ public interface SeriesAggregator<S, T> {
     /**
      * @since 0.7
      */
+    static <S extends Comparable<S>> SeriesAggregator<S, S> max() {
+        return new SimpleSeriesAggregator<>("max", SeriesMinMax::max);
+    }
+
+    /**
+     * @since 0.7
+     */
+    static <S extends Comparable<S>> SeriesAggregator<S, S> min() {
+        return new SimpleSeriesAggregator<>("min", SeriesMinMax::min);
+    }
+
+    /**
+     * @since 0.7
+     */
     // TODO: special handling of primitive series to avoid boxing/unboxing
     static <S extends Number> SeriesAggregator<S, Integer> maxInt() {
         return new SimpleSeriesAggregator<S, Integer>("maxInt", SeriesMinMax::maxInt);

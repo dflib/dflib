@@ -18,6 +18,7 @@
 * #87 DataFrame.addColumns with RowMapper
 * #88 Index.toSeries() 
 * #89 Filter condition in aggregators (partial) 
+* #90 Comparable min/max aggregators 
 
 ## Release 0.6
 

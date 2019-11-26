@@ -8,7 +8,7 @@ import com.nhl.dflib.RowPredicate;
 /**
  * @since 0.7
  */
-public class CollectorFilteredAggregator<S, A, T> implements Aggregator<T> {
+public class CollectorFilteredAggregator<T> implements Aggregator<T> {
 
     private RowPredicate rowFilter;
     private Aggregator<T> aggregator;

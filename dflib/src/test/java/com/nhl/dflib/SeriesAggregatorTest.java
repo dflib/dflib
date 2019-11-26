@@ -35,6 +35,18 @@ public class SeriesAggregatorTest {
     }
 
     @Test
+    public void testAggregate_Max() {
+        Series<Integer> s = Series.forData(4, 5, -9);
+        assertEquals(Integer.valueOf(5), SeriesAggregator.<Integer>max().aggregate(s));
+    }
+
+    @Test
+    public void testAggregate_Min() {
+        Series<Integer> s = Series.forData(4, 5, -9);
+        assertEquals(Integer.valueOf(-9), SeriesAggregator.<Integer>min().aggregate(s));
+    }
+
+    @Test
     public void testAggregate_MaxDouble() {
         Series<Double> s = Series.forData(1.4, 5.3, -9.4);
         assertEquals(5.3, SeriesAggregator.maxDouble().aggregate(s).doubleValue(), 0.0000001);
