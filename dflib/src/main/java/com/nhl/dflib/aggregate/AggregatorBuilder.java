@@ -34,9 +34,9 @@ public class AggregatorBuilder {
      */
     public <T> Aggregator<T> first(String column) {
         return rowFilter != null
-                // TODO: once the performance TODO in CollectorFilteredAggregator is resolved, perhaps we won't need
-                //  a dedicated FirstFilteredAggregator
-                ? new FirstFilteredAggregator<>(rowFilter, index -> index.position(column), index -> column)
+                // TODO: once the performance TODO in FilteredAggregator is resolved, perhaps we won't need
+                //  a dedicated FilteredFirstAggregator
+                ? new FilteredFirstAggregator<>(rowFilter, index -> index.position(column), index -> column)
                 : Aggregator.first(column);
     }
 
@@ -45,9 +45,9 @@ public class AggregatorBuilder {
      */
     public <T> Aggregator<T> first(int column) {
         return rowFilter != null
-                // TODO: once the performance TODO in CollectorFilteredAggregator is resolved, perhaps we won't need
-                //  a dedicated FirstFilteredAggregator
-                ? new FirstFilteredAggregator<>(rowFilter, index -> column, index -> index.getLabel(column))
+                // TODO: once the performance TODO in FilteredAggregator is resolved, perhaps we won't need
+                //  a dedicated FilteredFirstAggregator
+                ? new FilteredFirstAggregator<>(rowFilter, index -> column, index -> index.getLabel(column))
                 : Aggregator.first(column);
     }
 
@@ -56,7 +56,7 @@ public class AggregatorBuilder {
      */
     public Aggregator<Long> countLong() {
         return rowFilter != null
-                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.countLong())
+                ? new FilteredAggregator<>(rowFilter, Aggregator.countLong())
                 : Aggregator.countLong();
     }
 
@@ -65,79 +65,79 @@ public class AggregatorBuilder {
      */
     public Aggregator<Integer> countInt() {
         return rowFilter != null
-                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.countInt())
+                ? new FilteredAggregator<>(rowFilter, Aggregator.countInt())
                 : Aggregator.countInt();
     }
 
     public Aggregator<Double> averageDouble(String column) {
         return rowFilter != null
-                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.averageDouble(column))
+                ? new FilteredAggregator<>(rowFilter, Aggregator.averageDouble(column))
                 : Aggregator.averageDouble(column);
     }
 
     public Aggregator<Double> averageDouble(int column) {
         return rowFilter != null
-                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.averageDouble(column))
+                ? new FilteredAggregator<>(rowFilter, Aggregator.averageDouble(column))
                 : Aggregator.averageDouble(column);
     }
 
     public Aggregator<Long> sumLong(String column) {
         return rowFilter != null
-                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.sumLong(column))
+                ? new FilteredAggregator<>(rowFilter, Aggregator.sumLong(column))
                 : Aggregator.sumLong(column);
     }
 
     public Aggregator<Long> sumLong(int column) {
         return rowFilter != null
-                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.sumLong(column))
+                ? new FilteredAggregator<>(rowFilter, Aggregator.sumLong(column))
                 : Aggregator.sumLong(column);
     }
 
     public Aggregator<Integer> sumInt(String column) {
         return rowFilter != null
-                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.sumInt(column))
+                ? new FilteredAggregator<>(rowFilter, Aggregator.sumInt(column))
                 : Aggregator.sumInt(column);
     }
 
     public Aggregator<Integer> sumInt(int column) {
         return rowFilter != null
-                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.sumInt(column))
+                ? new FilteredAggregator<>(rowFilter, Aggregator.sumInt(column))
                 : Aggregator.sumInt(column);
     }
 
     public Aggregator<Double> sumDouble(String column) {
         return rowFilter != null
-                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.sumDouble(column))
+                ? new FilteredAggregator<>(rowFilter, Aggregator.sumDouble(column))
                 : Aggregator.sumDouble(column);
     }
 
     public Aggregator<Double> sumDouble(int column) {
         return rowFilter != null
-                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.sumDouble(column))
+                ? new FilteredAggregator<>(rowFilter, Aggregator.sumDouble(column))
                 : Aggregator.sumDouble(column);
     }
 
     public <T extends Comparable<T>> Aggregator<T> max(String column) {
         return rowFilter != null
-                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.<T>max(column))
+                ? new FilteredAggregator<>(rowFilter, Aggregator.<T>max(column))
                 : Aggregator.max(column);
     }
 
     public <T extends Comparable<T>> Aggregator<T> max(int column) {
         return rowFilter != null
-                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.<T>max(column))
+                ? new FilteredAggregator<>(rowFilter, Aggregator.<T>max(column))
                 : Aggregator.max(column);
     }
 
     public <T extends Comparable<T>> Aggregator<T> min(String column) {
         return rowFilter != null
-                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.<T>min(column))
+                ? new FilteredAggregator<>(rowFilter, Aggregator.<T>min(column))
                 : Aggregator.max(column);
     }
 
     public <T extends Comparable<T>> Aggregator<T> min(int column) {
         return rowFilter != null
-                ? new CollectorFilteredAggregator<>(rowFilter, Aggregator.<T>min(column))
+                ? new FilteredAggregator<>(rowFilter, Aggregator.<T>min(column))
                 : Aggregator.max(column);
     }
 

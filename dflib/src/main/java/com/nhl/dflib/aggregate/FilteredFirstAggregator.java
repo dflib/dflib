@@ -12,13 +12,13 @@ import java.util.function.ToIntFunction;
 /**
  * @since 0.7
  */
-public class FirstFilteredAggregator<T> implements Aggregator<T> {
+public class FilteredFirstAggregator<T> implements Aggregator<T> {
 
     private RowPredicate rowFilter;
     private ToIntFunction<Index> sourceColumnLocator;
     private Function<Index, String> targetColumnNamer;
 
-    public FirstFilteredAggregator(
+    public FilteredFirstAggregator(
             RowPredicate rowFilter,
             ToIntFunction<Index> sourceColumnLocator,
             Function<Index, String> targetColumnNamer) {
@@ -47,6 +47,6 @@ public class FirstFilteredAggregator<T> implements Aggregator<T> {
 
     @Override
     public Aggregator named(String newAggregateLabel) {
-        return new FirstFilteredAggregator<>(rowFilter, sourceColumnLocator, i -> newAggregateLabel);
+        return new FilteredFirstAggregator<>(rowFilter, sourceColumnLocator, i -> newAggregateLabel);
     }
 }

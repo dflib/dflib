@@ -8,12 +8,12 @@ import com.nhl.dflib.RowPredicate;
 /**
  * @since 0.7
  */
-public class CollectorFilteredAggregator<T> implements Aggregator<T> {
+public class FilteredAggregator<T> implements Aggregator<T> {
 
     private RowPredicate rowFilter;
     private Aggregator<T> aggregator;
 
-    public CollectorFilteredAggregator(RowPredicate rowFilter, Aggregator<T> aggregator) {
+    public FilteredAggregator(RowPredicate rowFilter, Aggregator<T> aggregator) {
         this.rowFilter = rowFilter;
         this.aggregator = aggregator;
     }
@@ -35,6 +35,6 @@ public class CollectorFilteredAggregator<T> implements Aggregator<T> {
 
     @Override
     public Aggregator named(String newAggregateLabel) {
-        return new CollectorFilteredAggregator<>(rowFilter, aggregator.named(newAggregateLabel));
+        return new FilteredAggregator<>(rowFilter, aggregator.named(newAggregateLabel));
     }
 }
