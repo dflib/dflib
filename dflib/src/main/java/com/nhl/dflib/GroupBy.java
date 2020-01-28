@@ -78,7 +78,7 @@ public class GroupBy {
      * @return a new Series object with row numbers of each row within their group. The overall order matches the order
      * of the original DataFrame that was used to build the grouping.
      */
-    public Series<Integer> rowNumbers() {
+    public IntSeries rowNumbers() {
 
         if (groupsIndex.size() == 0) {
             return IntSeries.forInts();
@@ -94,7 +94,9 @@ public class GroupBy {
 
         IntSeries groupsIndexGlued = SeriesConcat.intConcat(groupsIndex.values());
         IntSeries rowNumbersGlued = SeriesConcat.intConcat(rowNumbers);
-        return rowNumbersGlued.select(groupsIndexGlued.sortIndexInt());
+
+        // since we control select indices, and don't expect negative values, we can safely cast to IntSeries
+        return (IntSeries) rowNumbersGlued.select(groupsIndexGlued.sortIndexInt());
     }
 
     public GroupBy head(int len) {
