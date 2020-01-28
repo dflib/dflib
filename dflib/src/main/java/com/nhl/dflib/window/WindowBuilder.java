@@ -1,0 +1,114 @@
+package com.nhl.dflib.window;
+
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.GroupBy;
+import com.nhl.dflib.Hasher;
+import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.RowToValueMapper;
+import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.series.IntSequenceSeries;
+import com.nhl.dflib.sort.IndexSorter;
+import com.nhl.dflib.sort.Sorters;
+
+import java.util.Comparator;
+import java.util.Objects;
+
+/**
+ * A mutable builder of a window function. Returned by {@link DataFrame#over()} method.
+ *
+ * @since 0.8
+ */
+public class WindowBuilder {
+
+    private DataFrame dataFrame;
+    private Hasher partitioner;
+    private Comparator<RowProxy> sorter;
+
+    public WindowBuilder(DataFrame dataFrame) {
+        this.dataFrame = Objects.requireNonNull(dataFrame);
+    }
+
+    public WindowBuilder partitioned(Hasher partitioner) {
+        this.partitioner = Objects.requireNonNull(partitioner);
+        return this;
+    }
+
+    public WindowBuilder partitioned(String... columns) {
+
+        int len = columns.length;
+        if (len == 0) {
+            throw new IllegalArgumentException("No partitioning columns specified");
+        }
+
+        Hasher partitioner = Hasher.forColumn(columns[0]);
+        for (int i = 1; i < columns.length; i++) {
+            partitioner = partitioner.and(columns[i]);
+        }
+
+        this.partitioner = partitioner;
+        return this;
+    }
+
+    public WindowBuilder partitioned(int... columns) {
+        int len = columns.length;
+        if (len == 0) {
+            throw new IllegalArgumentException("No partitioning columns specified");
+        }
+
+        Hasher partitioner = Hasher.forColumn(columns[0]);
+        for (int i = 1; i < columns.length; i++) {
+            partitioner = partitioner.and(columns[i]);
+        }
+
+        this.partitioner = partitioner;
+        return this;
+    }
+
+    public <V extends Comparable<? super V>> WindowBuilder sorted(RowToValueMapper<V> sortKeyExtractor) {
+        this.sorter = Sorters.sorter(sortKeyExtractor);
+        return this;
+    }
+
+    public WindowBuilder sorted(String column, boolean ascending) {
+        this.sorter = Sorters.sorter(dataFrame.getColumnsIndex(), column, ascending);
+        return this;
+    }
+
+    public WindowBuilder sorted(int column, boolean ascending) {
+        this.sorter = Sorters.sorter(column, ascending);
+        return this;
+    }
+
+    public WindowBuilder sorted(String[] columns, boolean[] ascending) {
+        this.sorter = Sorters.sorter(dataFrame.getColumnsIndex(), columns, ascending);
+        return this;
+    }
+
+    public WindowBuilder sorted(int[] columns, boolean[] ascending) {
+        this.sorter = Sorters.sorter(columns, ascending);
+        return this;
+    }
+
+    public IntSeries rowNumbers() {
+        return rowNumbers(0);
+    }
+
+    public IntSeries rowNumbers(int startValue) {
+        return partitioner != null ? rowNumbersPartitioned(startValue) : rowNumbersUnpartitioned(startValue);
+    }
+
+    private IntSeries rowNumbersPartitioned(int startValue) {
+        GroupBy gb = dataFrame.group(partitioner);
+        return sorter != null
+                ? gb.sort(sorter).rowNumbers(startValue)
+                : gb.rowNumbers(startValue);
+    }
+
+    private IntSeries rowNumbersUnpartitioned(int startValue) {
+        IntSeries numbers = new IntSequenceSeries(startValue, dataFrame.height() + startValue);
+        return sorter != null
+                // safe to cast - don't expect invalid indices
+                ? (IntSeries) numbers.select(new IndexSorter(dataFrame).sortIndex(sorter))
+                : numbers;
+    }
+}

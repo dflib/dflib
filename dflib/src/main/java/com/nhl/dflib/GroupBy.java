@@ -79,6 +79,21 @@ public class GroupBy {
      * of the original DataFrame that was used to build the grouping.
      */
     public IntSeries rowNumbers() {
+        return rowNumbers(0);
+    }
+
+    /**
+     * A "window" function that converts this grouping into a Series that provides row numbers of each row within their
+     * group. The order of row numbers corresponds to the order of rows in the original DataFrame that was used to
+     * build the grouping. This Series can be added back to the original DataFrame, providing it with a per-group
+     * ranking column.
+     *
+     * @param startValue
+     * @return a new Series object with row numbers of each row within their group. The overall order matches the order
+     * of the original DataFrame that was used to build the grouping.
+     * @since 0.8
+     */
+    public IntSeries rowNumbers(int startValue) {
 
         if (groupsIndex.size() == 0) {
             return IntSeries.forInts();
@@ -88,7 +103,7 @@ public class GroupBy {
 
         int i = 0;
         for (IntSeries s : groupsIndex.values()) {
-            rowNumbers[i] = new IntSequenceSeries(0, s.size());
+            rowNumbers[i] = new IntSequenceSeries(startValue, s.size());
             i++;
         }
 
@@ -132,8 +147,14 @@ public class GroupBy {
     }
 
     public <V extends Comparable<? super V>> GroupBy sort(RowToValueMapper<V> sortKeyExtractor) {
+        return sort(Sorters.sorter(sortKeyExtractor));
+    }
 
-        Comparator<RowProxy> comparator = Sorters.sorter(sortKeyExtractor);
+    /**
+     * @since 0.8
+     */
+    public <V extends Comparable<? super V>> GroupBy sort(Comparator<RowProxy> comparator) {
+
         Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
         for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {

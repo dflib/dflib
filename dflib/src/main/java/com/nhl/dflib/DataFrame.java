@@ -2,6 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.join.JoinBuilder;
 import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.window.WindowBuilder;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -832,6 +833,15 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.7
      */
     DataFrame sampleColumns(int size, Random random);
+
+    /**
+     * Returns a new {@link WindowBuilder} that allows to assemble a window function over this DataFrame.
+     *
+     * @return a new {@link WindowBuilder}
+     */
+    default WindowBuilder over() {
+        return new WindowBuilder(this);
+    }
 
     @Override
     Iterator<RowProxy> iterator();
