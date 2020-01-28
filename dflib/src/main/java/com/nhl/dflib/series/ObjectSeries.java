@@ -262,7 +262,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
     public Series<T> sample(int size) {
         return select(Sampler.sampleIndex(size, size()));
     }
-    
+
     @Override
     public Series<T> sample(int size, Random random) {
         return select(Sampler.sampleIndex(size, size(), random));

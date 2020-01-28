@@ -5,6 +5,7 @@ import com.nhl.dflib.series.EmptySeries;
 import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.series.ListSeries;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
+import com.nhl.dflib.sort.IndexSorter;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -143,6 +144,19 @@ public interface Series<T> extends Iterable<T> {
      * @since 0.6
      */
     Series<T> sort(Comparator<? super T> comparator);
+
+    /**
+     * Calculates and returns an IntSeries representing element indices from the original Series in the order dictated
+     * by the comparator. This operation is useful when we want to sort another Series based on the ordering of this
+     * Series.
+     *
+     * @param comparator
+     * @return an IntSeries representing element indices from the original Series
+     * @since 0.8
+     */
+    default IntSeries sortIndex(Comparator<? super T> comparator) {
+        return IndexSorter.sortIndex(this, comparator);
+    }
 
     /**
      * @param another a Series to compare with.

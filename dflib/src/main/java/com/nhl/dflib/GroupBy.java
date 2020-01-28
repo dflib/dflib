@@ -2,7 +2,6 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.DataFrameAggregation;
 import com.nhl.dflib.concat.SeriesConcat;
-import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.IntSequenceSeries;
 import com.nhl.dflib.sort.IndexSorter;
@@ -81,20 +80,21 @@ public class GroupBy {
      */
     public Series<Integer> rowNumbers() {
 
-        if(groupsIndex.size() == 0) {
+        if (groupsIndex.size() == 0) {
             return IntSeries.forInts();
         }
 
-        DataFrame[] numberedIndex = new DataFrame[groupsIndex.size()];
+        IntSeries[] rowNumbers = new IntSeries[groupsIndex.size()];
 
         int i = 0;
         for (IntSeries s : groupsIndex.values()) {
-            IntSeries numbersWithGroup = new IntSequenceSeries(0, s.size());
-            numberedIndex[i] = new ColumnDataFrame(TWO_COLUMN_INDEX, s, numbersWithGroup);
+            rowNumbers[i] = new IntSequenceSeries(0, s.size());
             i++;
         }
 
-        return VConcat.concat(JoinType.inner, numberedIndex).sort(0, true).getColumn(1);
+        IntSeries groupsIndexGlued = SeriesConcat.intConcat(groupsIndex.values());
+        IntSeries rowNumbersGlued = SeriesConcat.intConcat(rowNumbers);
+        return rowNumbersGlued.select(groupsIndexGlued.sortIndexInt());
     }
 
     public GroupBy head(int len) {

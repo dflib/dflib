@@ -1,3 +1,7 @@
+## Release 0.8
+
+* #92 Series.sortIndex()
+
 ## Release 0.7
 
 * #69 TableSaver: apply quotes to schema/catalog/table name separately

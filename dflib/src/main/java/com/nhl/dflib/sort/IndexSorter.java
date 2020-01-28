@@ -16,6 +16,13 @@ public class IndexSorter {
     private DataFrame dataFrame;
     private Supplier<int[]> indexBuilder;
 
+    public static <T> IntSeries sortIndex(Series<T> s, Comparator<? super T> comparator) {
+        int[] mutableIndex = IndexSorter.rowNumberSequence(s.size());
+        IntComparator intComparator =  (i1, i2) -> comparator.compare(s.get(i1), s.get(i2));
+        IntTimSort.sort(mutableIndex, intComparator);
+        return new IntArraySeries(mutableIndex);
+    }
+
     public IndexSorter(DataFrame dataFrame) {
         this.dataFrame = dataFrame;
         this.indexBuilder = () -> rowNumberSequence(dataFrame.height());
@@ -33,7 +40,7 @@ public class IndexSorter {
         };
     }
 
-    protected static int[] rowNumberSequence(int h) {
+    public static int[] rowNumberSequence(int h) {
         int[] rn = new int[h];
         for (int i = 0; i < h; i++) {
             rn[i] = i;

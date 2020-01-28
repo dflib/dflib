@@ -16,6 +16,9 @@ import com.nhl.dflib.sample.Sampler;
 import com.nhl.dflib.series.builder.BooleanAccumulator;
 import com.nhl.dflib.series.builder.IntAccumulator;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
+import com.nhl.dflib.sort.IndexSorter;
+import com.nhl.dflib.sort.IntComparator;
+import com.nhl.dflib.sort.IntTimSort;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -103,6 +106,14 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         copyTo(sorted, 0, 0, size);
         Arrays.sort(sorted, comparator);
         return new ArraySeries<>(sorted);
+    }
+
+    @Override
+    public IntSeries sortIndex(Comparator<? super Boolean> comparator) {
+        int[] mutableIndex = IndexSorter.rowNumberSequence(size());
+        IntComparator intComparator =  (i1, i2) -> comparator.compare(get(i1), get(i2));
+        IntTimSort.sort(mutableIndex, intComparator);
+        return new IntArraySeries(mutableIndex);
     }
 
     private BooleanSeries selectAsBooleanSeries(IntSeries positions) {

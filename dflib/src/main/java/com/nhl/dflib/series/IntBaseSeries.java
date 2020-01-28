@@ -18,6 +18,7 @@ import com.nhl.dflib.series.builder.BooleanAccumulator;
 import com.nhl.dflib.series.builder.IntAccumulator;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
 import com.nhl.dflib.series.builder.UniqueIntAccumulator;
+import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.IntComparator;
 import com.nhl.dflib.sort.IntTimSort;
 
@@ -136,6 +137,27 @@ public abstract class IntBaseSeries implements IntSeries {
         copyToInt(sorted, 0, 0, size);
         IntTimSort.sort(sorted, comparator);
         return new IntArraySeries(sorted);
+    }
+
+    @Override
+    public IntSeries sortIndex(Comparator<? super Integer> comparator) {
+        return sortIndexInt((i1, i2) -> comparator.compare(i1, i2));
+    }
+
+    @Override
+    public IntSeries sortIndexInt() {
+        return doSortIndexInt((i1, i2) -> getInt(i1) - getInt(i2));
+    }
+
+    @Override
+    public IntSeries sortIndexInt(IntComparator comparator) {
+        return doSortIndexInt((i1, i2) -> comparator.compare(getInt(i1), getInt(i2)));
+    }
+
+    private IntSeries doSortIndexInt(IntComparator comparator) {
+        int[] mutableIndex = IndexSorter.rowNumberSequence(size());
+        IntTimSort.sort(mutableIndex, comparator);
+        return new IntArraySeries(mutableIndex);
     }
 
     @Override
