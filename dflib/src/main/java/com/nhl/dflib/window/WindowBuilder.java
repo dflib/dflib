@@ -125,25 +125,25 @@ public class WindowBuilder {
     private IntSeries rankPartitioned() {
         return sorter != null
                 ? dataFrame.group(partitioner).sort(sorter).rank()
-                : Ranker.rankUnsorted(dataFrame.height());
+                : Ranker.sameRank(dataFrame.height());
     }
 
     private IntSeries rankUnpartitioned() {
         return sorter != null
                 ? new Ranker(sorter).rank(dataFrame)
-                : Ranker.rankUnsorted(dataFrame.height());
+                : Ranker.sameRank(dataFrame.height());
     }
 
     private IntSeries denseRankPartitioned() {
         return sorter != null
                 ? dataFrame.group(partitioner).sort(sorter).denseRank()
-                : Ranker.rankUnsorted(dataFrame.height());
+                : Ranker.sameRank(dataFrame.height());
     }
 
     private IntSeries denseRankUnpartitioned() {
         return sorter != null
-                ? new Ranker(sorter).denseRank(dataFrame)
-                : Ranker.rankUnsorted(dataFrame.height());
+                ? new DenseRanker(sorter).rank(dataFrame)
+                : Ranker.sameRank(dataFrame.height());
     }
 
     private IntSeries rowNumberPartitioned() {
@@ -156,6 +156,6 @@ public class WindowBuilder {
     private IntSeries rowNumberUnpartitioned() {
         return sorter != null
                 ? new RowNumberer(sorter).rowNumber(dataFrame)
-                : RowNumberer.rowNumbers(dataFrame.height());
+                : RowNumberer.sequence(dataFrame.height());
     }
 }

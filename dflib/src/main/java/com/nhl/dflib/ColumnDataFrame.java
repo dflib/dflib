@@ -153,7 +153,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public DataFrame addRowNumberColumn(String columnName) {
-        return addColumn(columnName, RowNumberer.rowNumbers(height()));
+        return addColumn(columnName, RowNumberer.sequence(height()));
     }
 
     @Deprecated

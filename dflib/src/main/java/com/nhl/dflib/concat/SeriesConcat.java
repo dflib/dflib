@@ -52,8 +52,14 @@ public class SeriesConcat {
 
     public static IntSeries intConcat(Iterable<IntSeries> concat) {
         int h = 0;
+        int total = 0;
         for (IntSeries s : concat) {
             h += s.size();
+            total++;
+        }
+
+        if (total == 1) {
+            return concat.iterator().next();
         }
 
         int[] data = new int[h];

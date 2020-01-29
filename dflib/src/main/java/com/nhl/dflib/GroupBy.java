@@ -2,11 +2,11 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.DataFrameAggregation;
 import com.nhl.dflib.concat.SeriesConcat;
-import com.nhl.dflib.row.DataFrameRowProxy;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.IntSequenceSeries;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
+import com.nhl.dflib.window.DenseRanker;
 import com.nhl.dflib.window.Ranker;
 import com.nhl.dflib.window.RowNumberer;
 
@@ -124,7 +124,7 @@ public class GroupBy {
         int offset = 0;
         for (IntSeries s : groupsIndex.values()) {
             int len = s.size();
-            RowNumberer.fillRowNumbers(groupRowNumbers, offset, len);
+            RowNumberer.fillSequence(groupRowNumbers, offset, len);
             offset += len;
         }
 
@@ -154,33 +154,10 @@ public class GroupBy {
         }
 
         if (sorter == null) {
-            return Ranker.rankUnsorted(ungrouped.height());
+            return Ranker.sameRank(ungrouped.height());
         }
 
-        DataFrameRowProxy pproxy = new DataFrameRowProxy(ungrouped);
-        DataFrameRowProxy rproxy = new DataFrameRowProxy(ungrouped);
-
-        int[] groupRanks = new int[ungrouped.height()];
-        for (IntSeries s : groupsIndex.values()) {
-
-            int len = s.size();
-            for (int i = 0; i < len; i++) {
-
-                int row = s.getInt(i);
-
-                if (i == 0) {
-                    groupRanks[row] = 1;
-                } else {
-                    int prow = s.getInt(i - 1);
-                    groupRanks[row] = sorter.compare(rproxy.rewind(row), pproxy.rewind(prow)) == 0 ? groupRanks[prow] : i + 1;
-                }
-            }
-        }
-
-        IntSeries groupsIndexGlued = SeriesConcat.intConcat(groupsIndex.values());
-
-        // since we control select indices, and don't expect negative values, we can safely cast to IntSeries
-        return (IntSeries) IntSeries.forInts(groupRanks).select(groupsIndexGlued.sortIndexInt());
+        return new Ranker(sorter).rank(ungrouped, groupsIndex.values());
     }
 
     /**
@@ -199,33 +176,10 @@ public class GroupBy {
         }
 
         if (sorter == null) {
-            return Ranker.rankUnsorted(ungrouped.height());
+            return Ranker.sameRank(ungrouped.height());
         }
 
-        DataFrameRowProxy pproxy = new DataFrameRowProxy(ungrouped);
-        DataFrameRowProxy rproxy = new DataFrameRowProxy(ungrouped);
-
-        int[] rank = new int[ungrouped.height()];
-        for (IntSeries s : groupsIndex.values()) {
-
-            int len = s.size();
-            for (int i = 0; i < len; i++) {
-
-                int row = s.getInt(i);
-
-                if (i == 0) {
-                    rank[row] = 1;
-                } else {
-                    int prow = s.getInt(i - 1);
-                    rank[row] = sorter.compare(rproxy.rewind(row), pproxy.rewind(prow)) == 0 ? rank[prow] : rank[prow] + 1;
-                }
-            }
-        }
-
-        IntSeries groupsIndexGlued = SeriesConcat.intConcat(groupsIndex.values());
-
-        // since we control select indices, and don't expect negative values, we can safely cast to IntSeries
-        return (IntSeries) IntSeries.forInts(rank).select(groupsIndexGlued.sortIndexInt());
+        return new DenseRanker(sorter).rank(ungrouped, groupsIndex.values());
     }
 
     public GroupBy head(int len) {

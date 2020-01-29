@@ -22,11 +22,11 @@ public class RowNumberer {
         this.sorter = Objects.requireNonNull(sorter);
     }
 
-    public static IntSeries rowNumbers(int size) {
+    public static IntSeries sequence(int size) {
         return new IntSequenceSeries(START_NUMBER, START_NUMBER + size);
     }
 
-    public static void fillRowNumbers(int[] buffer, int offset, int size) {
+    public static void fillSequence(int[] buffer, int offset, int size) {
         for(int i = 0; i < size; i++) {
             buffer[i + offset] = START_NUMBER + i;
         }
@@ -46,6 +46,6 @@ public class RowNumberer {
         IntSeries rowPositions = new IndexSorter(dataFrame).sortIndex(sorter).sortIndexInt();
 
         // since we control select indices, and don't expect negative values, we can safely cast to IntSeries
-        return (IntSeries) RowNumberer.rowNumbers(dataFrame.height()).select(rowPositions);
+        return (IntSeries) RowNumberer.sequence(dataFrame.height()).select(rowPositions);
     }
 }

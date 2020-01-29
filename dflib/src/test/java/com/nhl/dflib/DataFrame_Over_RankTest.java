@@ -69,8 +69,10 @@ public class DataFrame_Over_RankTest {
                 0, "a",
                 1, "x");
 
-        IntSeries rn = df.over().partitioned("a").sorted("b", true).rank();
-        new IntSeriesAsserts(rn).expectData(1, 1, 3, 1, 1);
-    }
+        IntSeries rn1 = df.over().partitioned("a").sorted("b", true).rank();
+        new IntSeriesAsserts(rn1).expectData(1, 1, 3, 1, 1);
 
+        IntSeries rn2 = df.over().partitioned("b").sorted("a", true).rank();
+        new IntSeriesAsserts(rn2).expectData(1, 1, 1, 1, 1);
+    }
 }
