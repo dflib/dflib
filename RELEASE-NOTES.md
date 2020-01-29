@@ -1,5 +1,6 @@
 ## Release 0.8
 
+* #91 DataFrame.over() - window functions
 * #92 Series.sortIndex()
 
 ## Release 0.7
