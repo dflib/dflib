@@ -155,7 +155,7 @@ public class WindowBuilder {
 
     private IntSeries rowNumberUnpartitioned() {
         return sorter != null
-                ? new RowNumberer(sorter).rowNumber(dataFrame)
+                ? RowNumberer.rowNumber(dataFrame, sorter)
                 : RowNumberer.sequence(dataFrame.height());
     }
 }

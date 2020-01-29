@@ -2,12 +2,13 @@ package com.nhl.dflib.window;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.IntSequenceSeries;
 import com.nhl.dflib.sort.IndexSorter;
 
+import java.util.Collection;
 import java.util.Comparator;
-import java.util.Objects;
 
 /**
  * @since 0.8
@@ -16,23 +17,17 @@ public class RowNumberer {
 
     static final int START_NUMBER = 1;
 
-    private Comparator<RowProxy> sorter;
-
-    public RowNumberer(Comparator<RowProxy> sorter) {
-        this.sorter = Objects.requireNonNull(sorter);
-    }
-
     public static IntSeries sequence(int size) {
         return new IntSequenceSeries(START_NUMBER, START_NUMBER + size);
     }
 
     public static void fillSequence(int[] buffer, int offset, int size) {
-        for(int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             buffer[i + offset] = START_NUMBER + i;
         }
     }
 
-    public IntSeries rowNumber(DataFrame dataFrame) {
+    public static IntSeries rowNumber(DataFrame dataFrame, Comparator<RowProxy> sorter) {
 
         // note how we are calling "sortIndex(sortIndex(..))"
         // 1. the first call produces a Series where Series positions correspond to the new positions of the old rows
@@ -47,5 +42,22 @@ public class RowNumberer {
 
         // since we control select indices, and don't expect negative values, we can safely cast to IntSeries
         return (IntSeries) RowNumberer.sequence(dataFrame.height()).select(rowPositions);
+    }
+
+    public static IntSeries rowNumber(DataFrame dataFrame, Collection<IntSeries> partitionsIndex) {
+
+        int[] rowNumbers = new int[dataFrame.height()];
+
+        int offset = 0;
+        for (IntSeries s : partitionsIndex) {
+            int len = s.size();
+            RowNumberer.fillSequence(rowNumbers, offset, len);
+            offset += len;
+        }
+
+        IntSeries groupsIndexGlued = SeriesConcat.intConcat(partitionsIndex);
+
+        // since we control select indices, and don't expect negative values, we can safely cast to IntSeries
+        return (IntSeries) IntSeries.forInts(rowNumbers).select(groupsIndexGlued.sortIndexInt());
     }
 }

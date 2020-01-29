@@ -119,19 +119,7 @@ public class GroupBy {
             return IntSeries.forInts();
         }
 
-        int[] groupRowNumbers = new int[ungrouped.height()];
-
-        int offset = 0;
-        for (IntSeries s : groupsIndex.values()) {
-            int len = s.size();
-            RowNumberer.fillSequence(groupRowNumbers, offset, len);
-            offset += len;
-        }
-
-        IntSeries groupsIndexGlued = SeriesConcat.intConcat(groupsIndex.values());
-
-        // since we control select indices, and don't expect negative values, we can safely cast to IntSeries
-        return (IntSeries) IntSeries.forInts(groupRowNumbers).select(groupsIndexGlued.sortIndexInt());
+        return RowNumberer.rowNumber(ungrouped, groupsIndex.values());
     }
 
     /**
