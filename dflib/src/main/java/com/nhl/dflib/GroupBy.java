@@ -6,6 +6,7 @@ import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.IntSequenceSeries;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
+import com.nhl.dflib.window.RowNumber;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -77,9 +78,27 @@ public class GroupBy {
      *
      * @return a new Series object with row numbers of each row within their group. The overall order matches the order
      * of the original DataFrame that was used to build the grouping.
+     * @deprecated since 0.8 in favor of {@link #rowNumber()}. The difference is that this method numbers rows starting
+     * with "0", with {@link #rowNumber()} starts with "1", as all other implementations of window functions do
      */
-    public IntSeries rowNumbers() {
-        return rowNumbers(0);
+    @Deprecated
+    public Series<Integer> rowNumbers() {
+        if (groupsIndex.size() == 0) {
+            return IntSeries.forInts();
+        }
+
+        IntSeries[] rowNumbers = new IntSeries[groupsIndex.size()];
+
+        int i = 0;
+        for (IntSeries s : groupsIndex.values()) {
+            rowNumbers[i] = new IntSequenceSeries(0, s.size());
+            i++;
+        }
+
+        IntSeries groupsIndexGlued = SeriesConcat.intConcat(groupsIndex.values());
+        IntSeries rowNumbersGlued = SeriesConcat.intConcat(rowNumbers);
+
+        return rowNumbersGlued.select(groupsIndexGlued.sortIndexInt());
     }
 
     /**
@@ -88,12 +107,11 @@ public class GroupBy {
      * build the grouping. This Series can be added back to the original DataFrame, providing it with a per-group
      * ranking column.
      *
-     * @param startValue
      * @return a new Series object with row numbers of each row within their group. The overall order matches the order
      * of the original DataFrame that was used to build the grouping.
      * @since 0.8
      */
-    public IntSeries rowNumbers(int startValue) {
+    public IntSeries rowNumber() {
 
         if (groupsIndex.size() == 0) {
             return IntSeries.forInts();
@@ -103,7 +121,7 @@ public class GroupBy {
 
         int i = 0;
         for (IntSeries s : groupsIndex.values()) {
-            rowNumbers[i] = new IntSequenceSeries(startValue, s.size());
+            rowNumbers[i] = RowNumber.getNumbers(s.size());
             i++;
         }
 

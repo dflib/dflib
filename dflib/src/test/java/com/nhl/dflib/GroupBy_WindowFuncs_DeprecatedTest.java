@@ -3,7 +3,11 @@ package com.nhl.dflib;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.Test;
 
-public class DataFrame_GroupBy_WindowFuncsTest {
+/**
+ * @deprecated Zero-based "GroupBy.rowNumbers" is deprecated
+ */
+@Deprecated
+public class GroupBy_WindowFuncs_DeprecatedTest {
 
     @Test
     public void testGroupBy_RowNumbers_Emtpy() {

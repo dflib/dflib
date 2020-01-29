@@ -6,7 +6,6 @@ import com.nhl.dflib.Hasher;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.RowToValueMapper;
 import com.nhl.dflib.row.RowProxy;
-import com.nhl.dflib.series.IntSequenceSeries;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
 
@@ -89,23 +88,19 @@ public class WindowBuilder {
         return this;
     }
 
-    public IntSeries rowNumbers() {
-        return rowNumbers(0);
+    public IntSeries rowNumber() {
+        return partitioner != null ? rowNumberPartitioned() : rowNumberUnpartitioned();
     }
 
-    public IntSeries rowNumbers(int startValue) {
-        return partitioner != null ? rowNumbersPartitioned(startValue) : rowNumbersUnpartitioned(startValue);
-    }
-
-    private IntSeries rowNumbersPartitioned(int startValue) {
+    private IntSeries rowNumberPartitioned() {
         GroupBy gb = dataFrame.group(partitioner);
         return sorter != null
-                ? gb.sort(sorter).rowNumbers(startValue)
-                : gb.rowNumbers(startValue);
+                ? gb.sort(sorter).rowNumber()
+                : gb.rowNumber();
     }
 
-    private IntSeries rowNumbersUnpartitioned(int startValue) {
-        IntSeries numbers = new IntSequenceSeries(startValue, dataFrame.height() + startValue);
+    private IntSeries rowNumberUnpartitioned() {
+        IntSeries numbers = RowNumber.getNumbers(dataFrame.height());
         return sorter != null
                 // safe to cast - don't expect invalid indices
                 ? (IntSeries) numbers.select(new IndexSorter(dataFrame).sortIndex(sorter))
