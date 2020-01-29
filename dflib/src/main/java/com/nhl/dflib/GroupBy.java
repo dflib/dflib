@@ -102,13 +102,13 @@ public class GroupBy {
     }
 
     /**
-     * A "window" function that converts this grouping into a Series that provides row numbers of each row within their
-     * group. The order of row numbers corresponds to the order of rows in the original DataFrame that was used to
-     * build the grouping. This Series can be added back to the original DataFrame, providing it with a per-group
-     * ranking column.
+     * A window function that provides an IntSeries for this grouping that contains a row number of each row within its
+     * group. The order of row numbers corresponds to the order of rows in the original DataFrame used to
+     * build the grouping. So the returned Series can be added back to the original DataFrame, providing it with a
+     * per-group ranking column.
      *
-     * @return a new Series object with row numbers of each row within their group. The overall order matches the order
-     * of the original DataFrame that was used to build the grouping.
+     * @return a new Series object with ranking numbers of each row within their group. The overall order matches the
+     * order of the original DataFrame that was used to build the grouping.
      * @since 0.8
      */
     public IntSeries rowNumber() {
