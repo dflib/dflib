@@ -43,6 +43,6 @@ public class Grouper {
             e.setValue(((IntAccumulator) e.getValue()).toIntSeries());
         }
 
-        return new GroupBy(df, (Map<Object, IntSeries>) groups);
+        return new GroupBy(df, (Map<Object, IntSeries>) groups, null);
     }
 }

@@ -18,7 +18,7 @@ import com.nhl.dflib.series.builder.BooleanAccumulator;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
 import com.nhl.dflib.stack.Stacker;
-import com.nhl.dflib.window.RowNumber;
+import com.nhl.dflib.window.RowNumberer;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -153,7 +153,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public DataFrame addRowNumberColumn(String columnName) {
-        return addColumn(columnName, RowNumber.getNumbers(height()));
+        return addColumn(columnName, RowNumberer.rowNumbers(height()));
     }
 
     @Deprecated
