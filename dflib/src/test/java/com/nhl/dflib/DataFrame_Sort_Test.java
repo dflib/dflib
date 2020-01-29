@@ -74,13 +74,12 @@ public class DataFrame_Sort_Test {
                 .expectRow(1, 0, 1)
                 .expectRow(2, null, 3);
 
-        // nulls must be last regardless of ascending or descending order...
         DataFrame dfd = dfi.sort("a", false);
         new DataFrameAsserts(dfd, "a", "b")
                 .expectHeight(3)
-                .expectRow(0, 0, 1)
-                .expectRow(1, -1, 2)
-                .expectRow(2, null, 3);
+                .expectRow(0, null, 3)
+                .expectRow(1, 0, 1)
+                .expectRow(2, -1, 2);
     }
 
     @Test

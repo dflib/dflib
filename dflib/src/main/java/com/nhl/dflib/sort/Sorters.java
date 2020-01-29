@@ -20,8 +20,7 @@ public interface Sorters {
     static Comparator<RowProxy> sorter(int sortColumn, boolean ascending) {
         return ascending
                 ? (c1, c2) -> Comparators.nullsLastCompare((Comparable) c1.get(sortColumn), (Comparable) c2.get(sortColumn))
-                // using "nullsFirstCompare" for descending order, so that nulls come out last in both asc and desc direction
-                : (c1, c2) -> Comparators.nullsFirstCompare((Comparable) c2.get(sortColumn), (Comparable) c1.get(sortColumn));
+                : (c1, c2) -> Comparators.nullsLastCompare((Comparable) c2.get(sortColumn), (Comparable) c1.get(sortColumn));
     }
 
     static Comparator<RowProxy> sorter(Index columns, String[] sortColumns, boolean[] ascending) {
