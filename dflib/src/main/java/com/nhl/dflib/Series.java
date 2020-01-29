@@ -149,6 +149,7 @@ public interface Series<T> extends Iterable<T> {
      * Calculates and returns an IntSeries representing element indices from the original Series in the order dictated
      * by the comparator. This operation is useful when we want to sort another Series based on the ordering of this
      * Series.
+     * <p>Note that calling "sortIndexInt" on the result of this method produces a Series of sort-aware row numbers.</p>
      *
      * @param comparator
      * @return an IntSeries representing element indices from the original Series

@@ -87,4 +87,16 @@ public class IntTimSortTest {
             assertTrue("Failed at " + i + ": " + ints[i - 1] + " vs " + ints[i], ints[i - 1] >= ints[i]);
         }
     }
+
+    @Test
+    public void testSort_WithRefComparator() {
+
+        String[] strings = {"x", "y", "z", "a", "x"};
+        IntComparator comparator = (i1, i2) -> strings[i1 - 1].compareTo(strings[i2 - 1]);
+
+        int[] ints = {1, 2, 3, 4, 5};
+        IntTimSort.sort(ints, comparator);
+        assertArrayEquals(new int[]{4, 1, 5, 2, 3}, ints);
+    }
+
 }
