@@ -46,18 +46,21 @@ public class DataFrame_Over_DenseRankTest {
 
     @Test
     public void testNoPartition_Sort() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
-                1, "x",
-                2, "y",
-                1, "z",
-                0, "a",
-                1, "x");
+        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+                1, "x", "m",
+                2, "y", "v",
+                1, "z", null,
+                0, "a", null,
+                1, "x", "m");
 
         IntSeries rn1 = df.over().sorted("a", true).denseRank();
         new IntSeriesAsserts(rn1).expectData(2, 3, 2, 1, 2);
 
         IntSeries rn2 = df.over().sorted("b", true).denseRank();
         new IntSeriesAsserts(rn2).expectData(2, 3, 4, 1, 2);
+
+        IntSeries rn3 = df.over().sorted("c", true).denseRank();
+        new IntSeriesAsserts(rn3).expectData(1, 2, 3, 3, 1);
     }
 
     @Test

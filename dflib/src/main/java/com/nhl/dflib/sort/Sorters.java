@@ -9,7 +9,7 @@ import java.util.Comparator;
 public interface Sorters {
 
     static <V extends Comparable<? super V>> Comparator<RowProxy> sorter(RowToValueMapper<V> sortKeyExtractor) {
-        return Comparator.comparing(sortKeyExtractor::map);
+        return (c1, c2) -> Comparators.nullsLastCompare(sortKeyExtractor.map(c1), sortKeyExtractor.map(c2));
     }
 
     static Comparator<RowProxy> sorter(Index columns, String sortColumn, boolean ascending) {
@@ -18,8 +18,9 @@ public interface Sorters {
     }
 
     static Comparator<RowProxy> sorter(int sortColumn, boolean ascending) {
-        Comparator<RowProxy> ci = Comparator.comparing(o -> (Comparable) o.get(sortColumn));
-        return ascending ? ci : ci.reversed();
+        return ascending
+                ? (c1, c2) -> Comparators.nullsLastCompare((Comparable) c1.get(sortColumn), (Comparable) c2.get(sortColumn))
+                : (c1, c2) -> Comparators.nullsLastCompare((Comparable) c2.get(sortColumn), (Comparable) c1.get(sortColumn));
     }
 
     static Comparator<RowProxy> sorter(Index columns, String[] sortColumns, boolean[] ascending) {

@@ -2,6 +2,7 @@
 
 * #91 DataFrame.over() - window functions
 * #92 Series.sortIndex()
+* #93 Null-safe "nulls last" Sorters
 
 ## Release 0.7
 
