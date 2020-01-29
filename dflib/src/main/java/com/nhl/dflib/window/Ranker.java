@@ -50,4 +50,28 @@ public class Ranker {
 
         return IntSeries.forInts(rank);
     }
+
+    public IntSeries denseRank(DataFrame dataFrame) {
+
+        IntSeries sortIndex = new IndexSorter(dataFrame).sortIndex(sorter);
+        DataFrameRowProxy pproxy = new DataFrameRowProxy(dataFrame);
+        DataFrameRowProxy rproxy = new DataFrameRowProxy(dataFrame);
+        int len = dataFrame.height();
+
+        int[] rank = new int[len];
+
+        for (int i = 0; i < len; i++) {
+
+            int row = sortIndex.getInt(i);
+
+            if (i == 0) {
+                rank[row] = 1;
+            } else {
+                int prow = sortIndex.getInt(i - 1);
+                rank[row] = sorter.compare(rproxy.rewind(row), pproxy.rewind(prow)) == 0 ? rank[prow] : rank[prow] + 1;
+            }
+        }
+
+        return IntSeries.forInts(rank);
+    }
 }

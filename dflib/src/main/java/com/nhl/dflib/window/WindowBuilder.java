@@ -99,6 +99,18 @@ public class WindowBuilder {
         }
     }
 
+    public IntSeries denseRank() {
+
+        switch (dataFrame.height()) {
+            case 0:
+                return IntSeries.forInts();
+            case 1:
+                return IntSeries.forInts(1);
+            default:
+                return partitioner != null ? denseRankPartitioned() : denseRankUnpartitioned();
+        }
+    }
+
     public IntSeries rowNumber() {
         switch (dataFrame.height()) {
             case 0:
@@ -119,6 +131,18 @@ public class WindowBuilder {
     private IntSeries rankUnpartitioned() {
         return sorter != null
                 ? new Ranker(sorter).rank(dataFrame)
+                : Ranker.rankUnsorted(dataFrame.height());
+    }
+
+    private IntSeries denseRankPartitioned() {
+        return sorter != null
+                ? dataFrame.group(partitioner).sort(sorter).denseRank()
+                : Ranker.rankUnsorted(dataFrame.height());
+    }
+
+    private IntSeries denseRankUnpartitioned() {
+        return sorter != null
+                ? new Ranker(sorter).denseRank(dataFrame)
                 : Ranker.rankUnsorted(dataFrame.height());
     }
 

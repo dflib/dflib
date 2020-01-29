@@ -153,7 +153,7 @@ public class GroupBy {
             return IntSeries.forInts();
         }
 
-        if(sorter == null) {
+        if (sorter == null) {
             return Ranker.rankUnsorted(ungrouped.height());
         }
 
@@ -181,6 +181,51 @@ public class GroupBy {
 
         // since we control select indices, and don't expect negative values, we can safely cast to IntSeries
         return (IntSeries) IntSeries.forInts(groupRanks).select(groupsIndexGlued.sortIndexInt());
+    }
+
+    /**
+     * A window function that returns an IntSeries for this grouping that contains a "dense rank" of each row within its
+     * group. This operation is similar to {@link #rank()}, except it leaves no gaps in the ranking sequence due to
+     * duplicate entries.
+     *
+     * @return a new Series object with rankings of each row within its group. The order matches the order of the
+     * original DataFrame that was used to build the grouping.
+     * @since 0.8
+     */
+    public IntSeries denseRank() {
+
+        if (groupsIndex.size() == 0) {
+            return IntSeries.forInts();
+        }
+
+        if (sorter == null) {
+            return Ranker.rankUnsorted(ungrouped.height());
+        }
+
+        DataFrameRowProxy pproxy = new DataFrameRowProxy(ungrouped);
+        DataFrameRowProxy rproxy = new DataFrameRowProxy(ungrouped);
+
+        int[] rank = new int[ungrouped.height()];
+        for (IntSeries s : groupsIndex.values()) {
+
+            int len = s.size();
+            for (int i = 0; i < len; i++) {
+
+                int row = s.getInt(i);
+
+                if (i == 0) {
+                    rank[row] = 1;
+                } else {
+                    int prow = s.getInt(i - 1);
+                    rank[row] = sorter.compare(rproxy.rewind(row), pproxy.rewind(prow)) == 0 ? rank[prow] : rank[prow] + 1;
+                }
+            }
+        }
+
+        IntSeries groupsIndexGlued = SeriesConcat.intConcat(groupsIndex.values());
+
+        // since we control select indices, and don't expect negative values, we can safely cast to IntSeries
+        return (IntSeries) IntSeries.forInts(rank).select(groupsIndexGlued.sortIndexInt());
     }
 
     public GroupBy head(int len) {
