@@ -189,6 +189,21 @@ public class DataFrame_AddDropMapColumnsTest {
     }
 
     @Test
+    public void testAddRowNumberColumn() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1, "x",
+                2, "y")
+                .addRowNumberColumn("rn");
+
+        new DataFrameAsserts(df, "a", "b", "rn")
+                .expectHeight(2)
+                .expectRow(0, 1, "x", 1)
+                .expectRow(1, 2, "y", 2);
+    }
+
+
+    @Test
+    @Deprecated
     public void testAddRowNumber() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -202,6 +217,7 @@ public class DataFrame_AddDropMapColumnsTest {
     }
 
     @Test
+    @Deprecated
     public void testAddRowNumber_StartValue() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",

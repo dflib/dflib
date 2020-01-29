@@ -414,11 +414,24 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
+     * Adds a column with the specified name to the DataFrame that contains incrementing numbers, starting with "1".
+     *
+     * @param columnName the name of the row number column
+     * @return a new DataFrame with an extra row number column
+     * @since 0.8
+     */
+    DataFrame addRowNumberColumn(String columnName);
+
+    /**
      * Adds a column with the specified name to the DataFrame that contains incrementing numbers, starting with zero.
      *
      * @param columnName the name of the row number column
      * @return a new DataFrame with an extra row number column
+     * @deprecated since 0.8 in favor of {@link #addRowNumberColumn(String)}. The difference is that this method numbers
+     * rows starting with "0", while {@link #addRowNumberColumn(String)} starts with "1", as all other implementations
+     * of window functions do.
      */
+    @Deprecated
     default DataFrame addRowNumber(String columnName) {
         return addRowNumber(columnName, 0);
     }
@@ -431,7 +444,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param startValue the value to start counting from when assigning row numbers
      * @return a new DataFrame with an extra row number column
      * @since 0.7
+     * @deprecated in favor of 1-based row number method {@link #addRowNumberColumn(String)}
      */
+    @Deprecated
     DataFrame addRowNumber(String columnName, int startValue);
 
     default DataFrame addColumn(String columnLabel, RowToValueMapper<?> columnValueProducer) {

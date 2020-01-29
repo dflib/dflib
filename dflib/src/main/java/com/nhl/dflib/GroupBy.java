@@ -79,7 +79,7 @@ public class GroupBy {
      * @return a new Series object with row numbers of each row within their group. The overall order matches the order
      * of the original DataFrame that was used to build the grouping.
      * @deprecated since 0.8 in favor of {@link #rowNumber()}. The difference is that this method numbers rows starting
-     * with "0", with {@link #rowNumber()} starts with "1", as all other implementations of window functions do
+     * with "0", while {@link #rowNumber()} starts with "1", as all other implementations of window functions do.
      */
     @Deprecated
     public Series<Integer> rowNumbers() {

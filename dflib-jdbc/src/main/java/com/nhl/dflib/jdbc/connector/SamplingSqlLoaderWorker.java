@@ -2,6 +2,7 @@ package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.series.builder.IntAccumulator;
 import com.nhl.dflib.series.builder.SeriesBuilder;
 
@@ -35,13 +36,8 @@ class SamplingSqlLoaderWorker extends SqlLoaderWorker {
     }
 
     protected DataFrame sortSampled(DataFrame sampledUnsorted) {
-        DataFrame index = DataFrame
-                .newFrame("a")
-                .columns(sampledRows.toIntSeries())
-                .addRowNumber("b")
-                .sort(0, true);
-
-        return sampledUnsorted.selectRows(index.getColumnAsInt(1));
+        IntSeries sortIndex = sampledRows.toIntSeries().sortIndexInt();
+        return sampledUnsorted.selectRows(sortIndex);
     }
 
     @Override

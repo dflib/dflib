@@ -18,6 +18,7 @@ import com.nhl.dflib.series.builder.BooleanAccumulator;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
 import com.nhl.dflib.stack.Stacker;
+import com.nhl.dflib.window.RowNumber;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -150,6 +151,12 @@ public class ColumnDataFrame implements DataFrame {
         throw new IllegalArgumentException("Column at " + name + " is not a LongSeries: " + s.getClass().getSimpleName());
     }
 
+    @Override
+    public DataFrame addRowNumberColumn(String columnName) {
+        return addColumn(columnName, RowNumber.getNumbers(height()));
+    }
+
+    @Deprecated
     @Override
     public DataFrame addRowNumber(String columnName, int startValue) {
         return addColumn(columnName, new IntSequenceSeries(startValue, height() + startValue));
