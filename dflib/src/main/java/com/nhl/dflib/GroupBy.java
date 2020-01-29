@@ -117,16 +117,16 @@ public class GroupBy {
             return IntSeries.forInts();
         }
 
-        IntSeries[] rowNumbers = new IntSeries[groupsIndex.size()];
+        IntSeries[] perGroupRowNumbers = new IntSeries[groupsIndex.size()];
 
         int i = 0;
         for (IntSeries s : groupsIndex.values()) {
-            rowNumbers[i] = RowNumber.getNumbers(s.size());
+            perGroupRowNumbers[i] = RowNumber.getNumbers(s.size());
             i++;
         }
 
         IntSeries groupsIndexGlued = SeriesConcat.intConcat(groupsIndex.values());
-        IntSeries rowNumbersGlued = SeriesConcat.intConcat(rowNumbers);
+        IntSeries rowNumbersGlued = SeriesConcat.intConcat(perGroupRowNumbers);
 
         // since we control select indices, and don't expect negative values, we can safely cast to IntSeries
         return (IntSeries) rowNumbersGlued.select(groupsIndexGlued.sortIndexInt());
