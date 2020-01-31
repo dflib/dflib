@@ -46,6 +46,24 @@ public class SqlLoaderIT extends BaseDbTest {
     }
 
     @Test
+    public void testColumnFunctions() {
+
+        T1.insert(1L, "n1", 50_000.01)
+                .insert(2L, "n2", 120_000.)
+                .insert(3L, "n3", 1_000.);
+
+        DataFrame df = createConnector()
+                .sqlLoader("SELECT SUBSTR(\"name\", 2) as \"name\" from \"t1\" WHERE \"id\" > 1")
+                .load();
+
+        new DataFrameAsserts(df, "name")
+                .expectHeight(2)
+                .expectRow(0, "2")
+                .expectRow(1, "3");
+    }
+
+
+    @Test
     public void testMaxRows() {
 
         T1.insert(1L, "n1", 50_000.01)
