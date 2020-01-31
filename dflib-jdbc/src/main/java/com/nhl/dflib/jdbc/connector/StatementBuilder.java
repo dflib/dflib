@@ -20,6 +20,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
+ * Low-level JDBC PreparedStatement builder. Relied upon by higher-level load/save API.
+ *
  * @since 0.6
  */
 public class StatementBuilder {
