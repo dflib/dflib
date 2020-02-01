@@ -34,6 +34,26 @@ public class SqlLoaderIT extends BaseDbTest {
     }
 
     @Test
+    public void testReuse() {
+
+        T1.insert(1L, "n1", 50_000.01)
+                .insert(2L, "n2", 120_000.)
+                .insert(3L, "n3", 1_000.);
+
+        SqlLoader loader = createConnector().sqlLoader("SELECT \"id\", \"salary\" from \"t1\" WHERE \"id\" = ?");
+
+        DataFrame df1 = loader.load(2L);
+        new DataFrameAsserts(df1, "id", "salary")
+                .expectHeight(1)
+                .expectRow(0, 2L, 120_000.);
+
+        DataFrame df2 = loader.load(1L);
+        new DataFrameAsserts(df2, "id", "salary")
+                .expectHeight(1)
+                .expectRow(0, 1L, 50_000.01);
+    }
+
+    @Test
     public void testEmpty() {
 
         T1.insert(1L, "n1", 50_000.01);
