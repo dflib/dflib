@@ -23,18 +23,32 @@ public class SqlSaver {
         this.sql = sql;
     }
 
-    public void save(DataFrame batchParams) {
+    /**
+     * Saves DataFrame contents using the underlying SQL. The SQL is translated into a JDBC PreparedStatement, and
+     * the DataFrame data is passed to the statement row by row, row values used as statement bindings.
+     */
+    public void save(DataFrame data) {
         LOGGER.debug("saving DataFrame data...");
-        connector.createStatementBuilder(sql).bindBatch(batchParams).update();
+        connector.createStatementBuilder(sql).bindBatch(data).update();
     }
 
-    public void save(Series<?> params) {
+    /**
+     * Saves Series contents using the underlying SQL. The SQL is translated into a JDBC PreparedStatement, and
+     * the Series values are bound as statement parameters.
+     */
+    public void save(Series<?> data) {
         LOGGER.debug("saving Series data...");
-        connector.createStatementBuilder(sql).bind(params).update();
+        connector.createStatementBuilder(sql).bind(data).update();
     }
 
-    public void save(Object... params) {
+    /**
+     * Saves array contents using the underlying SQL. The SQL is translated into a JDBC PreparedStatement, and
+     * the Series values are bound as statement parameters.
+     *
+     * @param data an array of data. Can be empty if the underlying SQL has no parameters.
+     */
+    public void save(Object... data) {
         LOGGER.debug("saving array data...");
-        connector.createStatementBuilder(sql).bind(params).update();
+        connector.createStatementBuilder(sql).bind(data).update();
     }
 }
