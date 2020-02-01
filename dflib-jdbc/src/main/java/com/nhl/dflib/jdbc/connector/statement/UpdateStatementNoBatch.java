@@ -28,18 +28,24 @@ public class UpdateStatementNoBatch implements UpdateStatement {
     }
 
     @Override
-    public void update(Connection c) throws SQLException {
+    public int[] update(Connection c) throws SQLException {
 
         logger.log(sql, paramsBatch);
+
+        int len = paramsBatch.height();
+        int[] updateCounts = new int[len];
 
         try (PreparedStatement st = c.prepareStatement(sql)) {
 
             StatementBinder binder = binderFactory.createBinder(st);
+            int i = 0;
 
             for (RowProxy row : paramsBatch) {
                 binder.bind(row);
-                st.executeUpdate();
+                updateCounts[i++] = st.executeUpdate();
             }
         }
+
+        return updateCounts;
     }
 }

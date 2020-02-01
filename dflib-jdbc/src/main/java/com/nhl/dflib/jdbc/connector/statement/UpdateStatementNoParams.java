@@ -17,12 +17,15 @@ public class UpdateStatementNoParams implements UpdateStatement {
     }
 
     @Override
-    public void update(Connection c) throws SQLException {
+    public int[] update(Connection c) throws SQLException {
 
         logger.log(sql);
 
+        int[] updateCounts = new int[1];
         try (PreparedStatement st = c.prepareStatement(sql)) {
-            st.executeUpdate();
+            updateCounts[0] = st.executeUpdate();
         }
+
+        return updateCounts;
     }
 }

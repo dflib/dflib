@@ -5,5 +5,5 @@ import java.sql.SQLException;
 
 public interface UpdateStatement {
 
-    void update(Connection c) throws SQLException;
+    int[] update(Connection c) throws SQLException;
 }

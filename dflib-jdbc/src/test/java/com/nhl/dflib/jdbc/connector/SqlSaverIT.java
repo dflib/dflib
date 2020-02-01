@@ -11,6 +11,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import static org.junit.Assert.*;
+
 public class SqlSaverIT extends BaseDbTest {
 
     private JdbcConnector createConnector() {
@@ -20,8 +22,9 @@ public class SqlSaverIT extends BaseDbTest {
     @Test
     public void testSave() {
         JdbcConnector connector = createConnector();
-        connector.sqlSaver("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (1, 'x', 777.7)")
+        int c = connector.sqlSaver("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (1, 'x', 777.7)")
                 .save();
+        assertEquals(1, c);
 
         DataFrame saved = connector.tableLoader("t1").load();
         new DataFrameAsserts(saved, "id", "name", "salary")
@@ -33,8 +36,9 @@ public class SqlSaverIT extends BaseDbTest {
     public void testSave_Array() {
 
         JdbcConnector connector = createConnector();
-        connector.sqlSaver("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)")
+        int c = connector.sqlSaver("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)")
                 .save(1L, "n1", 50_000.01);
+        assertEquals(1, c);
 
         DataFrame saved = connector.tableLoader("t1").load();
         new DataFrameAsserts(saved, "id", "name", "salary")
@@ -50,8 +54,9 @@ public class SqlSaverIT extends BaseDbTest {
                 2L, "n2", 120_000.);
 
         JdbcConnector connector = createConnector();
-        connector.sqlSaver("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)")
+        int[] cs = connector.sqlSaver("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)")
                 .save(data);
+        assertArrayEquals(new int[]{1, 1}, cs);
 
         DataFrame saved = connector.tableLoader("t1").load();
         new DataFrameAsserts(saved, "id", "name", "salary")
@@ -68,8 +73,9 @@ public class SqlSaverIT extends BaseDbTest {
                 2L, "na2", 120_000.);
 
         JdbcConnector connector = createConnector();
-        connector.sqlSaver("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, SUBSTR(?, 2), ?)")
+        int[] cs = connector.sqlSaver("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, SUBSTR(?, 2), ?)")
                 .save(data);
+        assertArrayEquals(new int[]{1, 1}, cs);
 
         DataFrame saved = connector.tableLoader("t1").load();
         new DataFrameAsserts(saved, "id", "name", "salary")
@@ -91,8 +97,11 @@ public class SqlSaverIT extends BaseDbTest {
 
         JdbcConnector connector = createConnector();
         SqlSaver saver = connector.sqlSaver("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)");
-        saver.save(data1);
-        saver.save(data2);
+        int[] cs1 = saver.save(data1);
+        int[] cs2 = saver.save(data2);
+
+        assertArrayEquals(new int[]{1, 1}, cs1);
+        assertArrayEquals(new int[]{1, 1}, cs2);
 
         DataFrame saved = connector.tableLoader("t1").load();
         new DataFrameAsserts(saved, columnNames(T1))
@@ -129,5 +138,28 @@ public class SqlSaverIT extends BaseDbTest {
                 .expectHeight(2)
                 .expectRow(0, l1, 67, 7.8, true, "s1", ldt, ld, lt, bytes)
                 .expectRow(1, null, null, null, false, null, null, null, null, null);
+    }
+
+    @Test
+    public void testSave_Update() {
+
+        DataFrame data = DataFrame.newFrame("id", "name", "salary").foldByRow(
+                1L, "n1", 50_000.01,
+                2L, "n2", 120_000.);
+
+        JdbcConnector connector = createConnector();
+        connector.sqlSaver("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)").save(data);
+
+        DataFrame updateData = DataFrame.newFrame("name", "id").foldByRow(
+                "nx", 0,
+                "ny", 1);
+        int[] cs = connector.sqlSaver("update \"t1\" set \"name\" = ? where \"id\" > ?").save(updateData);
+        assertArrayEquals(new int[]{2, 1}, cs);
+
+        DataFrame saved = connector.tableLoader("t1").load();
+        new DataFrameAsserts(saved, "id", "name", "salary")
+                .expectHeight(2)
+                .expectRow(0, 1L, "nx", 50_000.01)
+                .expectRow(1, 2L, "ny", 120_000.);
     }
 }

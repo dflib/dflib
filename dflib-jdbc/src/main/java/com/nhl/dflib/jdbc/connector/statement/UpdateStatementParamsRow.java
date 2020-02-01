@@ -30,13 +30,16 @@ public class UpdateStatementParamsRow implements UpdateStatement {
     }
 
     @Override
-    public void update(Connection c) throws SQLException {
+    public int[] update(Connection c) throws SQLException {
 
         logger.log(sql, params);
+        int[] updateCounts = new int[1];
 
         try (PreparedStatement st = c.prepareStatement(sql)) {
             binderFactory.createBinder(st).bind(params);
-            st.executeUpdate();
+            updateCounts[0] = st.executeUpdate();
         }
+
+        return updateCounts;
     }
 }

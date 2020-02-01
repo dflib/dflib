@@ -81,18 +81,22 @@ public class StatementBuilder {
     /**
      * @since 0.8
      */
-    public void update() {
+    public int[] update() {
+        int[] updateCounts;
+
         try (Connection c = connector.getConnection()) {
-            update(c);
+            updateCounts = update(c);
             c.commit();
         } catch (SQLException e) {
             throw new RuntimeException("Error opening connection: " + e.getMessage(), e);
         }
+
+        return updateCounts;
     }
 
-    public void update(Connection connection) {
+    public int[] update(Connection connection) {
         try {
-            createUpdateStatement().update(connection);
+            return createUpdateStatement().update(connection);
         } catch (SQLException e) {
             throw new RuntimeException("Error updating data in DB: " + e.getMessage(), e);
         }

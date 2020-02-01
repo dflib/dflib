@@ -28,7 +28,7 @@ public class UpdateStatementBatch implements UpdateStatement {
     }
 
     @Override
-    public void update(Connection c) throws SQLException {
+    public int[] update(Connection c) throws SQLException {
 
         logger.log(sql, paramsBatch);
 
@@ -41,7 +41,7 @@ public class UpdateStatementBatch implements UpdateStatement {
                 st.addBatch();
             }
 
-            st.executeBatch();
+            return st.executeBatch();
         }
     }
 }

@@ -26,19 +26,24 @@ public class SqlSaver {
     /**
      * Saves DataFrame contents using the underlying SQL. The SQL is translated into a JDBC PreparedStatement, and
      * the DataFrame data is passed to the statement row by row, row values used as statement bindings.
+     *
+     * @return an array of update counts returned from DB, corresponding to rows in the passed DataFrame
      */
-    public void save(DataFrame data) {
+    public int[] save(DataFrame data) {
         LOGGER.debug("saving DataFrame data...");
-        connector.createStatementBuilder(sql).bindBatch(data).update();
+        return connector.createStatementBuilder(sql).bindBatch(data).update();
     }
 
     /**
      * Saves Series contents using the underlying SQL. The SQL is translated into a JDBC PreparedStatement, and
      * the Series values are bound as statement parameters.
+     *
+     * @return an update count returned from DB
      */
-    public void save(Series<?> data) {
+    public int save(Series<?> data) {
         LOGGER.debug("saving Series data...");
-        connector.createStatementBuilder(sql).bind(data).update();
+        int[] updateCounts = connector.createStatementBuilder(sql).bind(data).update();
+        return updateCounts[0];
     }
 
     /**
@@ -46,9 +51,11 @@ public class SqlSaver {
      * the Series values are bound as statement parameters.
      *
      * @param data an array of data. Can be empty if the underlying SQL has no parameters.
+     * @return an update count returned from DB
      */
-    public void save(Object... data) {
+    public int save(Object... data) {
         LOGGER.debug("saving array data...");
-        connector.createStatementBuilder(sql).bind(data).update();
+        int[] updateCounts = connector.createStatementBuilder(sql).bind(data).update();
+        return updateCounts[0];
     }
 }
