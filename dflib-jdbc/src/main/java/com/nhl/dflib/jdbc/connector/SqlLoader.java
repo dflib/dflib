@@ -79,8 +79,7 @@ public class SqlLoader {
 
     public DataFrame load() {
 
-        LOGGER.info("loading DataFrame...");
-
+        LOGGER.debug("loading DataFrame...");
 
         // TODO: should maxRows be translated into the SQL LIMIT clause?
         //  Some DBs have crazy limit syntax, so this may be hard to generalize..

@@ -75,7 +75,7 @@ public class TableSaver {
     }
 
     public SaveStats save(DataFrame df) {
-        LOGGER.info("saving DataFrame...");
+        LOGGER.debug("saving DataFrame...");
         return new SaveStats(createSaveStrategy().save(df));
     }
 
