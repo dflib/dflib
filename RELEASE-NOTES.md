@@ -4,6 +4,7 @@
 * #92 Series.sortIndex()
 * #93 Null-safe Sorters with implicit NULL ordering policy
 * #94 dflib-jdbc: SqlSaver to allow wrapping DataFrame updates in custom functions
+* #95 Reusable SqlLoader - allow different parameters for the same loader instance
 
 ## Release 0.7
 

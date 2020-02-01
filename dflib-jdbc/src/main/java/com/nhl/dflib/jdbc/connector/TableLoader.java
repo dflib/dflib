@@ -99,8 +99,7 @@ public class TableLoader {
         return new SqlLoader(connector, buildSql())
                 .maxRows(maxRows)
                 .sampleRows(rowSampleSize, rowsSampleRandom)
-                .params(collectBindingParams())
-                .load();
+                .load(collectBindingParams());
     }
 
     protected Series<?> collectBindingParams() {

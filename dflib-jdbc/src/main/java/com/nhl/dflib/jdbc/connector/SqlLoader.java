@@ -13,6 +13,10 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Random;
 
+/**
+ * Loads DB data from DB as a DataFrame via custom SQL. Instances of this class can be reused for different sets of
+ * parameters. This is a more customizable alternative to {@link TableLoader}.
+ */
 public class SqlLoader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SqlLoader.class);
@@ -20,8 +24,6 @@ public class SqlLoader {
     protected JdbcConnector connector;
     protected int maxRows;
     private String sql;
-    private Series<?> params;
-
     private int rowSampleSize;
     private Random rowsSampleRandom;
 
@@ -31,21 +33,22 @@ public class SqlLoader {
         this.sql = sql;
     }
 
-    public SqlLoader params(Object... params) {
-        return params(Series.forData(params));
-    }
-
-    /**
-     * @since 0.6
-     */
-    public SqlLoader params(Series<?> params) {
-        this.params = params;
-        return this;
+    protected SqlLoader copy() {
+        SqlLoader copy = new SqlLoader(connector, sql);
+        copy.maxRows = this.maxRows;
+        copy.rowSampleSize = this.rowSampleSize;
+        copy.rowsSampleRandom = this.rowsSampleRandom;
+        return copy;
     }
 
     public SqlLoader maxRows(int maxRows) {
-        this.maxRows = maxRows;
-        return this;
+        if (this.maxRows == maxRows) {
+            return this;
+        }
+
+        SqlLoader copy = copy();
+        copy.maxRows = maxRows;
+        return copy;
     }
 
     /**
@@ -72,12 +75,28 @@ public class SqlLoader {
      * @since 0.7
      */
     public SqlLoader sampleRows(int size, Random random) {
-        this.rowSampleSize = size;
-        this.rowsSampleRandom = random;
-        return this;
+
+        if (this.rowSampleSize == size && this.rowsSampleRandom == random) {
+            return this;
+        }
+
+        SqlLoader copy = copy();
+        copy.rowSampleSize = size;
+        copy.rowsSampleRandom = random;
+        return copy;
     }
 
-    public DataFrame load() {
+    /**
+     * @since 0.8
+     */
+    public DataFrame load(Object... params) {
+        return load(Series.forData(params));
+    }
+
+    /**
+     * @since 0.8
+     */
+    public DataFrame load(Series<?> params) {
 
         LOGGER.debug("loading DataFrame...");
 

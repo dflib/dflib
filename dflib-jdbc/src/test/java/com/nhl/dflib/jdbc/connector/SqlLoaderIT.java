@@ -105,8 +105,7 @@ public class SqlLoaderIT extends BaseDbTest {
                         " AND \"date\" = ?" +
                         " AND \"time\" = ?" +
                         " AND \"bytes\" = ?")
-                .params(l1, 67, 7.8, true, "s1", ldt, ld, lt, bytes)
-                .load();
+                .load(l1, 67, 7.8, true, "s1", ldt, ld, lt, bytes);
 
         new DataFrameAsserts(df, columnNames(T2))
                 .expectHeight(1)
