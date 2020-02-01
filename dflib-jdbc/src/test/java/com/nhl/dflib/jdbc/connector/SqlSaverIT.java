@@ -1,10 +1,15 @@
 package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
 import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class SqlSaverIT extends BaseDbTest {
 
@@ -96,5 +101,33 @@ public class SqlSaverIT extends BaseDbTest {
                 .expectRow(1, 2L, "n2", 120_000.)
                 .expectRow(2, 3L, "n3", 60_000.01)
                 .expectRow(3, 4L, "n4", 20_000.);
+    }
+
+    @Test
+    public void testDataTypeConversions() {
+
+        LocalDate ld = LocalDate.of(1977, 02, 05);
+        LocalDateTime ldt = LocalDateTime.of(2019, 02, 03, 1, 2, 5);
+        LocalTime lt = LocalTime.of(5, 6, 8);
+
+        byte[] bytes = new byte[]{3, 5, 11};
+        long l1 = Integer.MAX_VALUE + 1L;
+
+        Series<Object> data = Series.forData(l1, 67, 7.8, true, "s1", ldt, ld, lt, bytes);
+        Series<Object> dataNulls = Series.forData(null, null, null, false, null, null, null, null, null);
+
+        JdbcConnector connector = createConnector();
+        SqlSaver saver = connector.sqlSaver("insert into \"t2\" " +
+                "(\"bigint\", \"int\", \"double\", \"boolean\", \"string\", \"timestamp\", \"date\", \"time\", \"bytes\") " +
+                "values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+        saver.save(data);
+        saver.save(dataNulls);
+
+        DataFrame saved = connector.tableLoader("t2").load();
+        new DataFrameAsserts(saved, columnNames(T2))
+                .expectHeight(2)
+                .expectRow(0, l1, 67, 7.8, true, "s1", ldt, ld, lt, bytes)
+                .expectRow(1, null, null, null, false, null, null, null, null, null);
     }
 }
