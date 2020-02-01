@@ -11,30 +11,30 @@ import org.slf4j.LoggerFactory;
  *
  * @since 0.8
  */
-public class SqlUpdater {
+public class SqlSaver {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SqlUpdater.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SqlSaver.class);
 
     protected JdbcConnector connector;
     private String sql;
 
-    public SqlUpdater(JdbcConnector connector, String sql) {
+    public SqlSaver(JdbcConnector connector, String sql) {
         this.connector = connector;
         this.sql = sql;
     }
 
-    public void update(DataFrame batchParams) {
-        LOGGER.debug("storing DataFrame data...");
+    public void save(DataFrame batchParams) {
+        LOGGER.debug("saving DataFrame data...");
         connector.createStatementBuilder(sql).bindBatch(batchParams).update();
     }
 
-    public void update(Series<?> params) {
-        LOGGER.debug("storing Series data...");
+    public void save(Series<?> params) {
+        LOGGER.debug("saving Series data...");
         connector.createStatementBuilder(sql).bind(params).update();
     }
 
-    public void update(Object... params) {
-        LOGGER.debug("storing array data...");
+    public void save(Object... params) {
+        LOGGER.debug("saving array data...");
         connector.createStatementBuilder(sql).bind(params).update();
     }
 }

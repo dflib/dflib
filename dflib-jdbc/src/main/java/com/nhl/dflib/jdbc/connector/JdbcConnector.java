@@ -40,14 +40,14 @@ public interface JdbcConnector {
     SqlLoader sqlLoader(String sql);
 
     /**
-     * Creates a new {@link SqlUpdater} to insert/update DataFrame data vai custom SQL.
+     * Creates a new {@link SqlSaver} to insert/update DataFrame or Series data with custom SQL.
      *
      * @param sql a parameterized SQL statement. Format of the SQL String should correspond to the JDBC
      *            {@link java.sql.PreparedStatement}. So it may contain "?" placeholders for bound parameters.
-     * @return a new {@link SqlUpdater}
+     * @return a new {@link SqlSaver}
      * @since 0.8
      */
-    SqlUpdater sqlUpdater(String sql);
+    SqlSaver sqlSaver(String sql);
 
     StatementBuilder createStatementBuilder(String sql);
 

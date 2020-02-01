@@ -6,17 +6,17 @@ import com.nhl.dflib.jdbc.unit.BaseDbTest;
 import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
-public class SqlUpdaterIT extends BaseDbTest {
+public class SqlSaverIT extends BaseDbTest {
 
     private JdbcConnector createConnector() {
         return Jdbc.connector(getDataSource());
     }
 
     @Test
-    public void testUpdate() {
+    public void testSave() {
         JdbcConnector connector = createConnector();
-        connector.sqlUpdater("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (1, 'x', 777.7)")
-                .update();
+        connector.sqlSaver("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (1, 'x', 777.7)")
+                .save();
 
         DataFrame saved = connector.tableLoader("t1").load();
         new DataFrameAsserts(saved, "id", "name", "salary")
@@ -25,11 +25,11 @@ public class SqlUpdaterIT extends BaseDbTest {
     }
 
     @Test
-    public void testUpdate_Array() {
+    public void testSave_Array() {
 
         JdbcConnector connector = createConnector();
-        connector.sqlUpdater("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)")
-                .update(1L, "n1", 50_000.01);
+        connector.sqlSaver("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)")
+                .save(1L, "n1", 50_000.01);
 
         DataFrame saved = connector.tableLoader("t1").load();
         new DataFrameAsserts(saved, "id", "name", "salary")
@@ -38,15 +38,15 @@ public class SqlUpdaterIT extends BaseDbTest {
     }
 
     @Test
-    public void testUpdate_DataFrame() {
+    public void testSave_DataFrame() {
 
         DataFrame data = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
         JdbcConnector connector = createConnector();
-        connector.sqlUpdater("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)")
-                .update(data);
+        connector.sqlSaver("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)")
+                .save(data);
 
         DataFrame saved = connector.tableLoader("t1").load();
         new DataFrameAsserts(saved, "id", "name", "salary")
@@ -56,15 +56,15 @@ public class SqlUpdaterIT extends BaseDbTest {
     }
 
     @Test
-    public void testUpdate_ParamWithFunction() {
+    public void testSave_ParamWithFunction() {
 
         DataFrame data = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "na1", 50_000.01,
                 2L, "na2", 120_000.);
 
         JdbcConnector connector = createConnector();
-        connector.sqlUpdater("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, SUBSTR(?, 2), ?)")
-                .update(data);
+        connector.sqlSaver("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, SUBSTR(?, 2), ?)")
+                .save(data);
 
         DataFrame saved = connector.tableLoader("t1").load();
         new DataFrameAsserts(saved, "id", "name", "salary")
@@ -74,7 +74,7 @@ public class SqlUpdaterIT extends BaseDbTest {
     }
 
     @Test
-    public void testSave_Append() {
+    public void testSave_ReuseUpdater() {
 
         DataFrame data1 = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.01,
@@ -85,11 +85,9 @@ public class SqlUpdaterIT extends BaseDbTest {
                 4L, "n4", 20_000.);
 
         JdbcConnector connector = createConnector();
-        connector.sqlUpdater("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)")
-                .update(data1);
-
-        connector.sqlUpdater("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)")
-                .update(data2);
+        SqlSaver saver = connector.sqlSaver("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)");
+        saver.save(data1);
+        saver.save(data2);
 
         DataFrame saved = connector.tableLoader("t1").load();
         new DataFrameAsserts(saved, columnNames(T1))

@@ -113,8 +113,8 @@ public class DefaultJdbcConnector implements JdbcConnector {
     }
 
     @Override
-    public SqlUpdater sqlUpdater(String sql) {
-        return new SqlUpdater(this, sql);
+    public SqlSaver sqlSaver(String sql) {
+        return new SqlSaver(this, sql);
     }
 
     @Override

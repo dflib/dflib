@@ -3,7 +3,7 @@ package com.nhl.dflib.jdbc.connector.tx;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
 import com.nhl.dflib.jdbc.connector.SqlLoader;
 import com.nhl.dflib.jdbc.connector.SqlLogger;
-import com.nhl.dflib.jdbc.connector.SqlUpdater;
+import com.nhl.dflib.jdbc.connector.SqlSaver;
 import com.nhl.dflib.jdbc.connector.StatementBuilder;
 import com.nhl.dflib.jdbc.connector.TableLoader;
 import com.nhl.dflib.jdbc.connector.TableSaver;
@@ -62,8 +62,8 @@ public class TxJdbcConnector implements JdbcConnector {
     }
 
     @Override
-    public SqlUpdater sqlUpdater(String sql) {
-        return new SqlUpdater(this, sql);
+    public SqlSaver sqlSaver(String sql) {
+        return new SqlSaver(this, sql);
     }
 
     @Override
