@@ -1,20 +1,33 @@
 package com.nhl.dflib.jdbc.connector;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Series;
 
 /**
- * A raw SQL API for handling DB updates with DataFrames and Series.
+ * An object to load DataFrame or Series data to DB using custom SQL. Instances of this class can be reused for
+ * different sets of data.
  *
  * @since 0.8
  */
 public class SqlUpdater {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SqlUpdater.class);
-
     protected JdbcConnector connector;
+    private String sql;
 
-    public SqlUpdater(JdbcConnector connector) {
+    public SqlUpdater(JdbcConnector connector, String sql) {
         this.connector = connector;
+        this.sql = sql;
+    }
+
+    public void update(DataFrame batchParams) {
+        connector.createStatementBuilder(sql).bindBatch(batchParams).update();
+    }
+
+    public void update(Series<?> params) {
+        connector.createStatementBuilder(sql).bind(params).update();
+    }
+
+    public void update(Object... params) {
+        connector.createStatementBuilder(sql).bind(params).update();
     }
 }

@@ -78,6 +78,18 @@ public class StatementBuilder {
         }
     }
 
+    /**
+     * @since 0.8
+     */
+    public void update() {
+        try (Connection c = connector.getConnection()) {
+            update(c);
+            c.commit();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error opening connection: " + e.getMessage(), e);
+        }
+    }
+
     public void update(Connection connection) {
         try {
             createUpdateStatement().update(connection);

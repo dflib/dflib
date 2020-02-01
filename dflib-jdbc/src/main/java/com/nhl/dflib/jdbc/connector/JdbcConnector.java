@@ -34,10 +34,20 @@ public interface JdbcConnector {
      *
      * @param sql a parameterized SQL statement that should be run to get the DataFrame data. Format of the SQL String
      *            corresponds to the JDBC {@link java.sql.PreparedStatement}. So e.g. it may contain "?" placeholders
-     *            for bound parameters. Bound parameters are then passed via {@link SqlLoader#params(Object...)}.
+     *            for bound parameters. Bound parameter values are then passed via {@link SqlLoader#params(Object...)}.
      * @return a new SqlLoader
      */
     SqlLoader sqlLoader(String sql);
+
+    /**
+     * Creates a new {@link SqlUpdater} to insert/update DataFrame data vai custom SQL.
+     *
+     * @param sql a parameterized SQL statement. Format of the SQL String should correspond to the JDBC
+     *            {@link java.sql.PreparedStatement}. So it may contain "?" placeholders for bound parameters.
+     * @return a new {@link SqlUpdater}
+     * @since 0.8
+     */
+    SqlUpdater sqlUpdater(String sql);
 
     StatementBuilder createStatementBuilder(String sql);
 

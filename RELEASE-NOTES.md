@@ -3,6 +3,7 @@
 * #91 DataFrame.over() - window functions
 * #92 Series.sortIndex()
 * #93 Null-safe Sorters with implicit NULL ordering policy
+* #94 dflib-jdbc: SqlUpdater to allow wrapping DataFrame updates in custom function
 
 ## Release 0.7
 

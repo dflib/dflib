@@ -113,6 +113,11 @@ public class DefaultJdbcConnector implements JdbcConnector {
     }
 
     @Override
+    public SqlUpdater sqlUpdater(String sql) {
+        return new SqlUpdater(this, sql);
+    }
+
+    @Override
     public SeriesBuilder<ResultSet, ?> createColumnReader(int pos, int type, boolean mandatory) {
 
         SeriesBuilderFactory sbf = null;
