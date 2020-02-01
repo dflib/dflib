@@ -1,5 +1,12 @@
 # UPGRADE INSTRUCTIONS
 
+## 0.8
+
+* [dflib #95](https://github.com/bootique/bootique-agrest/issues/95):
+
+`SqlLoader` was made immutable and reusable. This resulted in API changes. If you were using `SqlLoader.params(..)`, 
+remove this method call, and pass the same parameters Series (or array) to the `load` method instead.
+
 ## 0.6
 
 * [dflib #54](https://github.com/bootique/bootique-agrest/issues/37): 
