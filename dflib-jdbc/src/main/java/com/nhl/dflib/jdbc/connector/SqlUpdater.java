@@ -6,8 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An object to load DataFrame or Series data to DB using custom SQL. Instances of this class can be reused for
- * different sets of data.
+ * Stores DataFrame or Series data in DB via custom SQL. Instances of this class can be reused for different sets of
+ * data. This is a more customizable alternative to {@link TableSaver}.
  *
  * @since 0.8
  */
