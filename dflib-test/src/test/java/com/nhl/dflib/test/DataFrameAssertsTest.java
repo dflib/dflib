@@ -75,6 +75,37 @@ public class DataFrameAssertsTest {
     }
 
     @Test
+    public void testExpectRows_Assert() {
+        DataFrame df = DataFrame.newFrame("c1").foldByRow("a", "b");
+        new DataFrameAsserts(df, "c1")
+                .expectHeight(2)
+                .expectRow(0, (v) -> assertEquals("a", v))
+                .expectRow(1, (v) -> assertEquals("b", v));
+    }
+
+    @Test
+    public void testExpectRows_nullColumnAssert() {
+        DataFrame df = DataFrame.newFrame("c1", "c2").foldByRow("a", "b", "c", "d");
+        new DataFrameAsserts(df, "c1", "c2")
+                .expectHeight(2)
+                .expectRow(0, (v) -> assertEquals("a", v), null)
+                .expectRow(1, null, (v) -> assertEquals("d", v));
+    }
+
+    @Test
+    public void testExpectRows_nullRowAssert() {
+        DataFrame df = DataFrame.newFrame("c1", "c2").foldByRow("a", "b", "c", "d");
+        try {
+        new DataFrameAsserts(df, "c1", "c2")
+                .expectHeight(2)
+                .expectRow(0, null);
+            throw new RuntimeException("Non null parameter is required");
+        } catch (NullPointerException e) {
+            //Do nothing
+        }
+    }
+
+    @Test
     public void testExpectHeight_Mismatch() {
 
         DataFrame df = DataFrame.newFrame("a").foldByRow("a", "b");

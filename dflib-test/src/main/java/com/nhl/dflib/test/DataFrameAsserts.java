@@ -8,6 +8,8 @@ import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.LongSeries;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 import static org.junit.Assert.*;
 
@@ -142,6 +144,25 @@ public class DataFrameAsserts {
                 expectArrayRow(column, expected, actual);
             } else {
                 assertEquals("Unexpected value in '" + column + "'", expected, actual);
+            }
+        }
+
+        return this;
+    }
+
+    @SafeVarargs
+    public final DataFrameAsserts expectRow(int pos, Consumer<Object>... valueAsserts) {
+        Objects.requireNonNull(valueAsserts);
+
+        for (int i = 0; i < expectedColumns.length; i++) {
+            if (i >= valueAsserts.length) {
+                break;
+            }
+            Consumer<Object> anAssert = valueAsserts[i];
+
+            if (anAssert != null) {
+                Object actual = df.getColumn(i).get(pos);
+                anAssert.accept(actual);
             }
         }
 
