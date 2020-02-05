@@ -151,19 +151,19 @@ public class DataFrameAsserts {
     }
 
     @SafeVarargs
-    public final DataFrameAsserts expectRow(int pos, Consumer<Object>... valueAsserts) {
+    public final DataFrameAsserts assertRow(int pos, Consumer<Object>... valueAsserts) {
         Objects.requireNonNull(valueAsserts);
 
+        assertEquals("Unexpected amount of assert arguments. Must be equal to amount of columns",
+                expectedColumns.length, valueAsserts.length);
+
         for (int i = 0; i < expectedColumns.length; i++) {
-            if (i >= valueAsserts.length) {
-                break;
-            }
             Consumer<Object> anAssert = valueAsserts[i];
 
-            if (anAssert != null) {
-                Object actual = df.getColumn(i).get(pos);
-                anAssert.accept(actual);
-            }
+            Objects.requireNonNull(anAssert);
+
+            Object actual = df.getColumn(i).get(pos);
+            anAssert.accept(actual);
         }
 
         return this;

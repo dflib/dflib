@@ -75,30 +75,50 @@ public class DataFrameAssertsTest {
     }
 
     @Test
-    public void testExpectRows_Assert() {
+    public void testAssertRows() {
         DataFrame df = DataFrame.newFrame("c1").foldByRow("a", "b");
         new DataFrameAsserts(df, "c1")
                 .expectHeight(2)
-                .expectRow(0, (v) -> assertEquals("a", v))
-                .expectRow(1, (v) -> assertEquals("b", v));
+                .assertRow(0, (v) -> assertEquals("a", v))
+                .assertRow(1, (v) -> assertEquals("b", v));
     }
 
     @Test
-    public void testExpectRows_nullColumnAssert() {
-        DataFrame df = DataFrame.newFrame("c1", "c2").foldByRow("a", "b", "c", "d");
-        new DataFrameAsserts(df, "c1", "c2")
-                .expectHeight(2)
-                .expectRow(0, (v) -> assertEquals("a", v), null)
-                .expectRow(1, null, (v) -> assertEquals("d", v));
-    }
-
-    @Test
-    public void testExpectRows_nullRowAssert() {
+    public void testAssertRows_MissedColumnAssert() {
         DataFrame df = DataFrame.newFrame("c1", "c2").foldByRow("a", "b", "c", "d");
         try {
-        new DataFrameAsserts(df, "c1", "c2")
+            new DataFrameAsserts(df, "c1", "c2")
+                    .expectHeight(2)
+                    .assertRow(0, (v) -> assertEquals("a", v));
+            throw new RuntimeException("Must be failure due to missed column assertion");
+        } catch (AssertionError e) {
+            assertEquals("Unexpected amount of assert arguments. Must be equal to amount of columns expected:<2> but was:<1>",
+                    e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAssertRows_nullColumnAssert() {
+        DataFrame df = DataFrame.newFrame("c1", "c2").foldByRow("a", "b", "c", "d");
+        try {
+
+            new DataFrameAsserts(df, "c1", "c2")
                 .expectHeight(2)
-                .expectRow(0, null);
+                .assertRow(0, (v) -> assertEquals("a", v), null)
+                .assertRow(1, null, (v) -> assertEquals("d", v));
+            throw new RuntimeException("Must be failure due to null column assertion");
+        } catch (NullPointerException e) {
+            //Do nothing
+        }
+    }
+
+    @Test
+    public void testAssertRows_nullRowAssert() {
+        DataFrame df = DataFrame.newFrame("c1", "c2").foldByRow("a", "b", "c", "d");
+        try {
+            new DataFrameAsserts(df, "c1", "c2")
+                    .expectHeight(2)
+                    .assertRow(0, null);
             throw new RuntimeException("Non null parameter is required");
         } catch (NullPointerException e) {
             //Do nothing
