@@ -92,37 +92,30 @@ public class DataFrameAssertsTest {
                     .assertRow(0, (v) -> assertEquals("a", v));
             throw new RuntimeException("Must be failure due to missed column assertion");
         } catch (AssertionError e) {
-            assertEquals("Unexpected amount of assert arguments. Must be equal to amount of columns expected:<2> but was:<1>",
+            assertEquals("The number of assert arguments must be equal to the number of DataFrame columns. expected:<2> but was:<1>",
                     e.getMessage());
         }
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testAssertRows_nullColumnAssert() {
         DataFrame df = DataFrame.newFrame("c1", "c2").foldByRow("a", "b", "c", "d");
-        try {
 
-            new DataFrameAsserts(df, "c1", "c2")
+        new DataFrameAsserts(df, "c1", "c2")
                 .expectHeight(2)
                 .assertRow(0, (v) -> assertEquals("a", v), null)
                 .assertRow(1, null, (v) -> assertEquals("d", v));
-            throw new RuntimeException("Must be failure due to null column assertion");
-        } catch (NullPointerException e) {
-            //Do nothing
-        }
+        throw new RuntimeException("Must be failure due to null column assertion");
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testAssertRows_nullRowAssert() {
         DataFrame df = DataFrame.newFrame("c1", "c2").foldByRow("a", "b", "c", "d");
-        try {
-            new DataFrameAsserts(df, "c1", "c2")
-                    .expectHeight(2)
-                    .assertRow(0, null);
-            throw new RuntimeException("Non null parameter is required");
-        } catch (NullPointerException e) {
-            //Do nothing
-        }
+
+        new DataFrameAsserts(df, "c1", "c2")
+                .expectHeight(2)
+                .assertRow(0, null);
+        throw new RuntimeException("Non null parameter is required");
     }
 
     @Test
