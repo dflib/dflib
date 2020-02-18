@@ -138,7 +138,7 @@ public class StatementBuilder {
     protected StatementBinderFactory createBinderFactory() {
         return paramDescriptors != null
                 ? new FixedParamsBinderFactory(connector.getBindConverterFactory(), paramDescriptors)
-                : new CompiledFromStatementBinderFactory(connector.getBindConverterFactory());
+                : new CompiledFromStatementBinderFactory(connector.getMetadata().getFlavor(), connector.getBindConverterFactory());
     }
 
 

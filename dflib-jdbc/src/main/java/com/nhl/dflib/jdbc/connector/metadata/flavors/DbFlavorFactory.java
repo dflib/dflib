@@ -1,41 +1,43 @@
-package com.nhl.dflib.jdbc.connector.metadata;
+package com.nhl.dflib.jdbc.connector.metadata.flavors;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
-class DbMetadataFactory {
+/**
+ * @since 0.8
+ */
+public class DbFlavorFactory {
 
-    static DbMetadata create(DataSource dataSource) {
+    public static DbFlavor create(DataSource dataSource) {
         try (Connection c = dataSource.getConnection()) {
 
             DatabaseMetaData jdbcMd = c.getMetaData();
-            String dbName = jdbcMd.getDatabaseProductName();
-            return new DbMetadata(dataSource, inferType(dbName), jdbcMd);
+            return createFlavor(jdbcMd);
 
         } catch (SQLException e) {
             throw new RuntimeException("Error connecting to DB or retrieving DB metadata");
         }
     }
 
-    private static DbFlavor inferType(String dbName) {
+    private static DbFlavor createFlavor(DatabaseMetaData metaData) throws SQLException {
+
+        String dbName = metaData.getDatabaseProductName();
         if (dbName == null) {
-            return DbFlavor.OTHER;
+            return GenericFlavor.create(metaData);
         }
 
         // more string matches are available inside Apache Cayenne DB sniffers
-
         String dbNameUpper = dbName.toUpperCase();
-
         if (dbNameUpper.contains("MYSQL")) {
-            return DbFlavor.MYSQL;
+            return MySQLFlavor.create(metaData);
         } else if (dbNameUpper.contains("MARIADB")) {
-            return DbFlavor.MARIA_DB;
+            return MySQLFlavor.create(metaData);
         } else if (dbNameUpper.contains("APACHE DERBY")) {
-            return DbFlavor.DERBY;
+            return DerbyFlavor.create(metaData);
         }
 
-        return DbFlavor.OTHER;
+        return GenericFlavor.create(metaData);
     }
 }

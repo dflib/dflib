@@ -1,5 +1,8 @@
 package com.nhl.dflib.jdbc.connector.metadata;
 
+import com.nhl.dflib.jdbc.connector.metadata.flavors.DbFlavor;
+import com.nhl.dflib.jdbc.connector.metadata.flavors.DbFlavorFactory;
+
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -19,14 +22,9 @@ public class DbMetadata {
 
     private DataSource dataSource;
     private DbFlavor flavor;
-    private boolean supportsCatalogs;
-    private boolean supportsSchemas;
-    private boolean supportsParamsMetadata;
-    private boolean supportsBatchUpdates;
-    private String identifierQuote;
     private Map<TableFQName, DbTableMetadata> tables;
 
-    protected DbMetadata(DataSource dataSource, DbFlavor flavor, DatabaseMetaData jdbcMetadata) {
+    protected DbMetadata(DataSource dataSource, DbFlavor flavor) {
 
         // note that we can't cache DatabaseMetaData, as it stops working once the underlying connection is closed,
         // so keeping the DataSource around to get it back whenever we need to compile table info, etc.
@@ -36,40 +34,11 @@ public class DbMetadata {
 
         // TODO: will grow indefinitely, so a potential memory leak... would be great to have a concurrent LRU Map in Java...
         this.tables = new ConcurrentHashMap<>();
-
-        initFlags(flavor, jdbcMetadata);
     }
 
     public static DbMetadata create(DataSource dataSource) {
-        return DbMetadataFactory.create(dataSource);
-    }
-
-    protected void initFlags(DbFlavor flavor, DatabaseMetaData jdbcMetadata) {
-        switch (flavor) {
-            case MYSQL:
-            case MARIA_DB:
-                // MySQL doesn't support params metadata; but we actually don't know about
-                supportsParamsMetadata = false;
-                supportsCatalogs = true;
-                supportsSchemas = false;
-                break;
-            case DERBY:
-                supportsParamsMetadata = true;
-                supportsCatalogs = false;
-                supportsSchemas = true;
-                break;
-            default:
-                supportsParamsMetadata = true;
-                supportsCatalogs = false;
-                supportsSchemas = false;
-        }
-
-        try {
-            identifierQuote = jdbcMetadata.getIdentifierQuoteString();
-            supportsBatchUpdates = jdbcMetadata.supportsBatchUpdates();
-        } catch (SQLException e) {
-            throw new RuntimeException("Error reading DB metadata", e);
-        }
+        DbFlavor flavor = DbFlavorFactory.create(dataSource);
+        return new DbMetadata(dataSource, flavor);
     }
 
     public DbFlavor getFlavor() {
@@ -77,23 +46,23 @@ public class DbMetadata {
     }
 
     public String getIdentifierQuote() {
-        return identifierQuote;
+        return flavor.getIdentifierQuote();
     }
 
     public boolean supportsParamsMetadata() {
-        return supportsParamsMetadata;
+        return flavor.supportsParamsMetadata();
     }
 
     public boolean supportsBatchUpdates() {
-        return supportsBatchUpdates;
+        return flavor.supportsBatchUpdates();
     }
 
     public boolean supportsCatalogs() {
-        return supportsCatalogs;
+        return flavor.supportsCatalogs();
     }
 
     public boolean supportsSchemas() {
-        return supportsSchemas;
+        return flavor.supportsSchemas();
     }
 
     public DbTableMetadata getTable(String name) {
@@ -135,16 +104,16 @@ public class DbMetadata {
                 return new TableFQName(null, null, parts[0]);
             case 2:
                 // the first part can be either a catalog or a schema
-                if (supportsSchemas) {
+                if (supportsSchemas()) {
                     return new TableFQName(null, parts[0], parts[1]);
-                } else if (supportsCatalogs) {
+                } else if (supportsCatalogs()) {
                     return new TableFQName(parts[0], null, parts[1]);
 
                 } else {
                     return new TableFQName(null, null, tableName);
                 }
             case 3:
-                if (supportsCatalogs && supportsSchemas) {
+                if (supportsCatalogs() && supportsSchemas()) {
                     return new TableFQName(parts[0], parts[1], parts[2]);
                 } else {
                     return new TableFQName(null, null, tableName);
@@ -170,7 +139,7 @@ public class DbMetadata {
 
                 while (columnsRs.next()) {
                     String name = columnsRs.getString("COLUMN_NAME");
-                    int type = columnsRs.getInt("DATA_TYPE");
+                    int type = flavor.columnType(columnsRs.getInt("DATA_TYPE"), columnsRs.getString("TYPE_NAME"));
                     columnsAndTypes.put(name, type);
 
                     if ("YES".equals(columnsRs.getString("IS_NULLABLE"))) {
