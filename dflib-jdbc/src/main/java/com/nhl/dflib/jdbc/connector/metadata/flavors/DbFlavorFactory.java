@@ -21,23 +21,25 @@ public class DbFlavorFactory {
         }
     }
 
-    private static DbFlavor createFlavor(DatabaseMetaData metaData) throws SQLException {
+    private static DbFlavor createFlavor(DatabaseMetaData metadata) throws SQLException {
 
-        String dbName = metaData.getDatabaseProductName();
+        String dbName = metadata.getDatabaseProductName();
         if (dbName == null) {
-            return GenericFlavor.create(metaData);
+            return GenericFlavor.create(metadata);
         }
 
         // more string matches are available inside Apache Cayenne DB sniffers
         String dbNameUpper = dbName.toUpperCase();
         if (dbNameUpper.contains("MYSQL")) {
-            return MySQLFlavor.create(metaData);
+            return MySQLFlavor.create(metadata);
         } else if (dbNameUpper.contains("MARIADB")) {
-            return MySQLFlavor.create(metaData);
+            return MySQLFlavor.create(metadata);
         } else if (dbNameUpper.contains("APACHE DERBY")) {
-            return DerbyFlavor.create(metaData);
+            return DerbyFlavor.create(metadata);
+        } else if (dbNameUpper.contains("POSTGRESQL")) {
+            return PostgresFlavor.create(metadata);
         }
 
-        return GenericFlavor.create(metaData);
+        return GenericFlavor.create(metadata);
     }
 }
