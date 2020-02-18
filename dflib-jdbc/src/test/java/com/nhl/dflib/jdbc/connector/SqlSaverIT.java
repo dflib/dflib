@@ -66,6 +66,20 @@ public class SqlSaverIT extends BaseDbTest {
     }
 
     @Test
+    public void testSave_EmptyDataFrame() {
+
+        DataFrame data = DataFrame.newFrame("id", "name", "salary").empty();
+
+        JdbcConnector connector = createConnector();
+        int[] cs = connector.sqlSaver("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)")
+                .save(data);
+        assertArrayEquals(new int[0], cs);
+
+        DataFrame saved = connector.tableLoader("t1").load();
+        new DataFrameAsserts(saved, "id", "name", "salary").expectHeight(0);
+    }
+
+    @Test
     public void testSave_ParamWithFunction() {
 
         DataFrame data = DataFrame.newFrame("id", "name", "salary").foldByRow(

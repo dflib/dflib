@@ -82,6 +82,15 @@ public class StatementBuilder {
      * @since 0.8
      */
     public int[] update() {
+
+        // bail early if we were passed an empty batch of parameters (as opposed to an empty array of params, which means
+        // that there are no parameters in the PreparedStatement). This allows to skip condition checking on the caller
+        // end, and run updates opportunistically.
+
+        if (params == null && batchParams != null && batchParams.height() == 0) {
+            return new int[0];
+        }
+
         int[] updateCounts;
 
         try (Connection c = connector.getConnection()) {
