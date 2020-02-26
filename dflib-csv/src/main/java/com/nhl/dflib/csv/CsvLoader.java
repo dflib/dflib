@@ -453,7 +453,7 @@ public class CsvLoader {
             Predicate<SeriesBuilder<String, ?>[]> rowFilter = createRowFilter(unfilteredHeader);
 
             CsvLoaderWorker worker = rowSampleSize > 0
-                    ? new SamplingCsvLoaderWorker(pair.header, pair.csvPositions, accumulators, rowFilter, rowSampleSize, rowsSampleRandom)
+                    ? new SamplingCsvLoaderWorker(pair.header, pair.csvPositions, accumulators, createAccumulators(pair.header), rowFilter, rowSampleSize, rowsSampleRandom)
                     : new CsvLoaderWorker(pair.header, pair.csvPositions, accumulators, rowFilter);
 
             return worker.load(it);

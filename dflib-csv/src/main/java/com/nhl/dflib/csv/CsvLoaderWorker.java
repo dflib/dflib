@@ -37,12 +37,18 @@ class CsvLoaderWorker {
         int width = columns.size();
         while (it.hasNext()) {
             addRow(width, it.next());
-
-            // perform filtering after the row is added to accumulators with proper value conversions
-            if (!rowFilter.test(accumulators)) {
-                popRow(width);
-            }
+            filterRow(width);
         }
+    }
+
+    protected boolean filterRow(int width) {
+        // perform filtering after the row is added to accumulators with proper value conversions
+        if (!rowFilter.test(accumulators)) {
+            popRow(width);
+            return false;
+        }
+
+        return true;
     }
 
     protected DataFrame toDataFrame() {

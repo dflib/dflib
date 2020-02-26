@@ -19,18 +19,23 @@ class SamplingCsvLoaderWorker extends CsvLoaderWorker {
     private int rowSampleSize;
     private Random rowsSampleRandom;
     private IntAccumulator sampledRows;
+    private SeriesBuilder<String, ?>[] presampleAccummulators;
 
     SamplingCsvLoaderWorker(
             Index columns,
             int[] csvPositions,
             SeriesBuilder<String, ?>[] accumulators,
+            SeriesBuilder<String, ?>[] presampleAccummulators,
             Predicate<SeriesBuilder<String, ?>[]> rowFilter,
             int rowSampleSize,
             Random rowsSampleRandom) {
+
         super(columns, csvPositions, accumulators, rowFilter);
+
         this.rowSampleSize = rowSampleSize;
         this.rowsSampleRandom = rowsSampleRandom;
         this.sampledRows = new IntAccumulator();
+        this.presampleAccummulators = presampleAccummulators;
     }
 
     @Override
@@ -48,7 +53,21 @@ class SamplingCsvLoaderWorker extends CsvLoaderWorker {
         int width = columns.size();
         int i = 0;
         while (it.hasNext()) {
-            sampleRow(i++, width, it.next());
+            CSVRecord row = it.next();
+
+            // perform filtering before sampling and use a separate buffer .. the main inefficiency here is creation
+            // double data conversion for every sampled row
+            for (int j = 0; j < width; j++) {
+                presampleAccummulators[j].add(row.get(csvPositions[j]));
+            }
+
+            if (rowFilter.test(presampleAccummulators)) {
+                sampleRow(i++, width, row);
+            }
+
+            for (int j = 0; j < width; j++) {
+                presampleAccummulators[j].pop();
+            }
         }
     }
 

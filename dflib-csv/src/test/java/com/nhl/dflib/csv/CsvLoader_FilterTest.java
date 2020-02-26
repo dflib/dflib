@@ -5,6 +5,7 @@ import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Test;
 
 import java.io.StringReader;
+import java.util.Random;
 
 public class CsvLoader_FilterTest {
 
@@ -63,4 +64,36 @@ public class CsvLoader_FilterTest {
                 .expectHeight(1)
                 .expectRow(0, 6, 12);
     }
+
+    @Test
+    public void testFilterRows_WithSampling() {
+
+        DataFrame df = new CsvLoader()
+                .intColumn(0)
+                .filterRows("A", (Integer i) -> i > 1)
+                .sampleRows(2, new Random(9))
+                .load(new StringReader(csv()));
+
+        new DataFrameAsserts(df, "A", "B")
+                .expectHeight(2)
+                .expectRow(0, 2, "8")
+                .expectRow(1, 5, "11");
+    }
+
+    @Test
+    public void testFilterRows_WithSampling_SmallerThanSampleSize() {
+
+        DataFrame df = new CsvLoader()
+                .intColumn(0)
+                .filterRows("A", (Integer i) -> i % 2 == 0)
+                .sampleRows(4, new Random(8))
+                .load(new StringReader(csv()));
+
+        new DataFrameAsserts(df, "A", "B")
+                .expectHeight(3)
+                .expectRow(0, 2, "8")
+                .expectRow(1, 4, "10")
+                .expectRow(2, 6, "12");
+    }
+
 }
