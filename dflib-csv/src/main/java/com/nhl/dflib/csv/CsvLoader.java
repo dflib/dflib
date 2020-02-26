@@ -468,8 +468,8 @@ public class CsvLoader {
 
     private CsvLoaderWorker samplingWorker(ColumnFilterPair pair, Index unfilteredHeader) {
         return rowFilters.isEmpty()
-                ?  new SamplingCsvLoaderWorker(pair.header, pair.csvPositions, createAccumulators(pair.header), rowSampleSize, rowsSampleRandom)
-                :  new FilteringSamplingCsvLoaderWorker(pair.header, pair.csvPositions, createAccumulators(pair.header), createAccumulators(pair.header), createRowFilter(unfilteredHeader), rowSampleSize, rowsSampleRandom);
+                ? new SamplingCsvLoaderWorker(pair.header, pair.csvPositions, createAccumulators(pair.header), rowSampleSize, rowsSampleRandom)
+                : new FilteringSamplingCsvLoaderWorker(pair.header, pair.csvPositions, createAccumulators(pair.header), createAccumulators(pair.header), createRowFilter(unfilteredHeader), rowSampleSize, rowsSampleRandom);
     }
 
     private void rewind(Iterator<CSVRecord> it) {
@@ -577,7 +577,7 @@ public class CsvLoader {
     private Predicate<SeriesBuilder<String, ?>[]> createRowFilter(Index columns) {
 
         if (rowFilters.isEmpty()) {
-            return null;
+            return builders -> true;
         }
 
         Predicate<SeriesBuilder<String, ?>[]> p = rowFilters.get(0).toPredicate(columns);
