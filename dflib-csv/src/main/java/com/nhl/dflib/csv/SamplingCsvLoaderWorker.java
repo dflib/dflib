@@ -9,6 +9,7 @@ import org.apache.commons.csv.CSVRecord;
 
 import java.util.Iterator;
 import java.util.Random;
+import java.util.function.Predicate;
 
 /**
  * Loads a row sample from a potentially large CSV row iterator, with the specified sample size.
@@ -19,8 +20,14 @@ class SamplingCsvLoaderWorker extends CsvLoaderWorker {
     private Random rowsSampleRandom;
     private IntAccumulator sampledRows;
 
-    SamplingCsvLoaderWorker(Index columns, int[] csvPositions, SeriesBuilder<String, ?>[] accumulators, int rowSampleSize, Random rowsSampleRandom) {
-        super(columns, csvPositions, accumulators);
+    SamplingCsvLoaderWorker(
+            Index columns,
+            int[] csvPositions,
+            SeriesBuilder<String, ?>[] accumulators,
+            Predicate<SeriesBuilder<String, ?>[]> rowFilter,
+            int rowSampleSize,
+            Random rowsSampleRandom) {
+        super(columns, csvPositions, accumulators, rowFilter);
         this.rowSampleSize = rowSampleSize;
         this.rowsSampleRandom = rowsSampleRandom;
         this.sampledRows = new IntAccumulator();

@@ -7,6 +7,7 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.IntValueMapper;
 import com.nhl.dflib.LongValueMapper;
 import com.nhl.dflib.ValueMapper;
+import com.nhl.dflib.ValuePredicate;
 import com.nhl.dflib.sample.Sampler;
 import com.nhl.dflib.series.builder.BooleanMappedAccumulator;
 import com.nhl.dflib.series.builder.DoubleMappedAccumulator;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class CsvLoader {
 
@@ -48,10 +50,12 @@ public class CsvLoader {
 
     // storing converters as list to ensure predictable resolution order when the user supplies overlapping converters
     private List<AccumPair> builders;
+    private List<RowFilterPair> rowFilters;
 
     public CsvLoader() {
         this.format = CSVFormat.DEFAULT;
         this.builders = new ArrayList<>();
+        this.rowFilters = new ArrayList<>();
     }
 
     /**
@@ -93,6 +97,34 @@ public class CsvLoader {
     public CsvLoader sampleRows(int size, Random random) {
         this.rowSampleSize = size;
         this.rowsSampleRandom = Objects.requireNonNull(random);
+        return this;
+    }
+
+    /**
+     * Configures CSV loader to only include rows that are matching the provided criterion. Applying the condition
+     * during load would allow to extract relevant data from very large CSVs.
+     *
+     * @param columnName the name of the column the condition applies to
+     * @param condition  column value condition that needs to be fulfilled for the row to be included in the resulting DataFrame.
+     * @return this loader instance
+     * @since 0.8
+     */
+    public <V> CsvLoader filterRows(String columnName, ValuePredicate<V> condition) {
+        rowFilters.add(new RowFilterPair<>(i -> i.position(columnName), condition));
+        return this;
+    }
+
+    /**
+     * Configures CSV loader to only include rows that are matching the provided criterion. Applying the condition
+     * during load would allow to extract relevant data from very large CSVs.
+     *
+     * @param columnPos position of the column the condition applies to
+     * @param condition column value condition that needs to be fulfilled for the row to be included in the resulting DataFrame.
+     * @return this loader instance
+     * @since 0.8
+     */
+    public <V> CsvLoader filterRows(int columnPos, ValuePredicate<V> condition) {
+        rowFilters.add(new RowFilterPair<>(i -> columnPos, condition));
         return this;
     }
 
@@ -418,9 +450,11 @@ public class CsvLoader {
             }
 
             SeriesBuilder<String, ?>[] accumulators = createAccumulators(pair.header);
+            Predicate<SeriesBuilder<String, ?>[]> rowFilter = createRowFilter(unfilteredHeader);
+
             CsvLoaderWorker worker = rowSampleSize > 0
-                    ? new SamplingCsvLoaderWorker(pair.header, pair.csvPositions, accumulators, rowSampleSize, rowsSampleRandom)
-                    : new CsvLoaderWorker(pair.header, pair.csvPositions, accumulators);
+                    ? new SamplingCsvLoaderWorker(pair.header, pair.csvPositions, accumulators, rowFilter, rowSampleSize, rowsSampleRandom)
+                    : new CsvLoaderWorker(pair.header, pair.csvPositions, accumulators, rowFilter);
 
             return worker.load(it);
 
@@ -531,6 +565,21 @@ public class CsvLoader {
         return builders;
     }
 
+    private Predicate<SeriesBuilder<String, ?>[]> createRowFilter(Index columns) {
+
+        if (rowFilters.isEmpty()) {
+            return b -> true;
+        }
+
+        Predicate<SeriesBuilder<String, ?>[]> p = rowFilters.get(0).toPredicate(columns);
+
+        for (int i = 1; i < rowFilters.size(); i++) {
+            p = p.and(rowFilters.get(i).toPredicate(columns));
+        }
+
+        return p;
+    }
+
     private class AccumPair {
         Function<Index, Integer> positionResolver;
         SeriesBuilder<String, ?> builder;
@@ -548,6 +597,22 @@ public class CsvLoader {
         ColumnFilterPair(Index header, int[] csvPositions) {
             this.header = header;
             this.csvPositions = csvPositions;
+        }
+    }
+
+    private class RowFilterPair<V> {
+        Function<Index, Integer> positionResolver;
+        ValuePredicate<V> condition;
+
+        RowFilterPair(Function<Index, Integer> positionResolver, ValuePredicate<V> condition) {
+            this.positionResolver = positionResolver;
+            this.condition = condition;
+        }
+
+        Predicate<SeriesBuilder<String, ?>[]> toPredicate(Index columns) {
+
+            int pos = positionResolver.apply(columns);
+            return builders -> condition.test((V) builders[pos].peek());
         }
     }
 }

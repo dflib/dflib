@@ -28,6 +28,16 @@ public class LongMappedAccumulator<I> implements SeriesBuilder<I, Long> {
     }
 
     @Override
+    public Long peek() {
+        return accumulator.peek();
+    }
+
+    @Override
+    public void pop() {
+        accumulator.pop();
+    }
+
+    @Override
     public Series<Long> toSeries() {
         return accumulator.toLongSeries();
     }

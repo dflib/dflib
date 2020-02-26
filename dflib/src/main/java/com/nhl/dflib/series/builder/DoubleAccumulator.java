@@ -56,6 +56,28 @@ public class DoubleAccumulator {
         data[pos] = value;
     }
 
+    /**
+     * @since 0.8
+     */
+    public double peek() {
+        if (size == 0) {
+            throw new IndexOutOfBoundsException("Empty accumulator");
+        }
+
+        return data[size - 1];
+    }
+
+    /**
+     * @since 0.8
+     */
+    public void pop() {
+        if (size == 0) {
+            throw new IndexOutOfBoundsException("Empty accumulator");
+        }
+
+        size--;
+    }
+
     public DoubleSeries toDoubleSeries() {
         double[] data = compactData();
 

@@ -28,6 +28,16 @@ public class BooleanMappedAccumulator<I> implements SeriesBuilder<I, Boolean> {
     }
 
     @Override
+    public Boolean peek() {
+        return accumulator.peek();
+    }
+
+    @Override
+    public void pop() {
+        accumulator.pop();
+    }
+
+    @Override
     public Series<Boolean> toSeries() {
         return accumulator.toBooleanSeries();
     }

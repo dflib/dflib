@@ -29,6 +29,16 @@ public class ObjectMappedAccumulator<I, O> implements SeriesBuilder<I, O> {
     }
 
     @Override
+    public O peek() {
+        return accumulator.peek();
+    }
+
+    @Override
+    public void pop() {
+        accumulator.pop();
+    }
+
+    @Override
     public Series<O> toSeries() {
         return accumulator.toSeries();
     }

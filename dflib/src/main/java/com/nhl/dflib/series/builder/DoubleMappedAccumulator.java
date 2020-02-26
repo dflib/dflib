@@ -28,6 +28,16 @@ public class DoubleMappedAccumulator<I> implements SeriesBuilder<I, Double> {
     }
 
     @Override
+    public Double peek() {
+        return accumulator.peek();
+    }
+
+    @Override
+    public void pop() {
+        accumulator.pop();
+    }
+
+    @Override
     public Series<Double> toSeries() {
         return accumulator.toDoubleSeries();
     }

@@ -13,5 +13,18 @@ public interface SeriesBuilder<I, O> {
 
     void set(int pos, I v);
 
+    /**
+     * @return the latest appended value.
+     * @since 0.8
+     */
+    O peek();
+
+    /**
+     * Resets builder, removing the latest appended value.
+     *
+     * @since 0.8
+     */
+    void pop();
+
     Series<O> toSeries();
 }
