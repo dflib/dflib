@@ -1,5 +1,6 @@
 ## Release 0.8
 
+* #79 Support filter condition in CsvLoader
 * #91  DataFrame.over() - window functions
 * #92  Series.sortIndex()
 * #93  Null-safe Sorters with implicit NULL ordering policy
