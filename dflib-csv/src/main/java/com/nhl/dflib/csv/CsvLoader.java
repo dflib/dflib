@@ -449,18 +449,27 @@ public class CsvLoader {
                 return DataFrame.newFrame(pair.header).empty();
             }
 
-            SeriesBuilder<String, ?>[] accumulators = createAccumulators(pair.header);
-            Predicate<SeriesBuilder<String, ?>[]> rowFilter = createRowFilter(unfilteredHeader);
-
             CsvLoaderWorker worker = rowSampleSize > 0
-                    ? new SamplingCsvLoaderWorker(pair.header, pair.csvPositions, accumulators, createAccumulators(pair.header), rowFilter, rowSampleSize, rowsSampleRandom)
-                    : new CsvLoaderWorker(pair.header, pair.csvPositions, accumulators, rowFilter);
+                    ? samplingWorker(pair, unfilteredHeader)
+                    : noSamplingWorker(pair, unfilteredHeader);
 
             return worker.load(it);
 
         } catch (IOException e) {
             throw new RuntimeException("Error reading CSV", e);
         }
+    }
+
+    private CsvLoaderWorker noSamplingWorker(ColumnFilterPair pair, Index unfilteredHeader) {
+        return rowFilters.isEmpty()
+                ? new BaseCsvLoaderWorker(pair.header, pair.csvPositions, createAccumulators(pair.header))
+                : new FilteringCsvLoaderWorker(pair.header, pair.csvPositions, createAccumulators(pair.header), createRowFilter(unfilteredHeader));
+    }
+
+    private CsvLoaderWorker samplingWorker(ColumnFilterPair pair, Index unfilteredHeader) {
+        return rowFilters.isEmpty()
+                ?  new SamplingCsvLoaderWorker(pair.header, pair.csvPositions, createAccumulators(pair.header), rowSampleSize, rowsSampleRandom)
+                :  new FilteringSamplingCsvLoaderWorker(pair.header, pair.csvPositions, createAccumulators(pair.header), createAccumulators(pair.header), createRowFilter(unfilteredHeader), rowSampleSize, rowsSampleRandom);
     }
 
     private void rewind(Iterator<CSVRecord> it) {
@@ -568,7 +577,7 @@ public class CsvLoader {
     private Predicate<SeriesBuilder<String, ?>[]> createRowFilter(Index columns) {
 
         if (rowFilters.isEmpty()) {
-            return b -> true;
+            return null;
         }
 
         Predicate<SeriesBuilder<String, ?>[]> p = rowFilters.get(0).toPredicate(columns);
