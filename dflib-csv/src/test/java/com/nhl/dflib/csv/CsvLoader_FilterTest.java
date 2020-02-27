@@ -96,4 +96,21 @@ public class CsvLoader_FilterTest {
                 .expectRow(2, 6, "12");
     }
 
+    @Test
+    public void testFilterRows_SelectColumns() {
+
+        DataFrame df = new CsvLoader()
+                .intColumn("A")
+                .intColumn("B")
+                .filterRows("A", (Integer i) -> i % 2 == 0)
+                .selectColumns("B")
+                .load(new StringReader(csv()));
+
+        new DataFrameAsserts(df, "B")
+                .expectHeight(3)
+                .expectRow(0, "8")
+                .expectRow(1,"10")
+                .expectRow(2, "12");
+    }
+
 }
