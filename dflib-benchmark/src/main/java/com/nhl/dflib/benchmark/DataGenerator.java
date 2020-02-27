@@ -29,7 +29,7 @@ public class DataGenerator {
             ints.add(maker.get());
         }
 
-        return ints.toIntSeries();
+        return ints.toSeries();
     }
 
     public static DataFrame columnarDF(int rows, ValueMaker<?>... columnValueMakers) {

@@ -13,12 +13,12 @@ public class FilterIndexer {
         int[] i = new int[1];
         source.forEach(rp -> {
             if (p.test(rp)) {
-                index.add(i[0]);
+                index.addInt(i[0]);
             }
 
             i[0]++;
         });
 
-        return index.toIntSeries();
+        return index.toSeries();
     }
 }

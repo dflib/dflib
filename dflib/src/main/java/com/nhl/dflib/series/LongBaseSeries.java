@@ -82,11 +82,11 @@ public abstract class LongBaseSeries implements LongSeries {
         for (int i = 0; i < len; i++) {
             long v = getLong(i);
             if (p.test(v)) {
-                filtered.add(v);
+                filtered.addLong(v);
             }
         }
 
-        return filtered.toLongSeries();
+        return filtered.toSeries();
     }
 
     @Override
@@ -102,11 +102,11 @@ public abstract class LongBaseSeries implements LongSeries {
 
         for (int i = 0; i < size(); i++) {
             if (positions.getBoolean(i)) {
-                data.add(getLong(i));
+                data.addLong(getLong(i));
             }
         }
 
-        return data.toLongSeries();
+        return data.toSeries();
     }
 
     @Override
@@ -268,11 +268,11 @@ public abstract class LongBaseSeries implements LongSeries {
 
         for (int i = 0; i < len; i++) {
             if (predicate.test(getLong(i))) {
-                index.add(i);
+                index.addInt(i);
             }
         }
 
-        return index.toIntSeries();
+        return index.toSeries();
     }
 
     @Override
@@ -287,10 +287,10 @@ public abstract class LongBaseSeries implements LongSeries {
         BooleanAccumulator matches = new BooleanAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            matches.add(predicate.test(getLong(i)));
+            matches.addBoolean(predicate.test(getLong(i)));
         }
 
-        return matches.toBooleanSeries();
+        return matches.toSeries();
     }
 
     @Override
@@ -320,14 +320,14 @@ public abstract class LongBaseSeries implements LongSeries {
         LongAccumulator longs = new LongAccumulator(s);
 
         for (int i = 0; i < r; i++) {
-            longs.add(condition.getBoolean(i) ? with : getLong(i));
+            longs.addLong(condition.getBoolean(i) ? with : getLong(i));
         }
 
         for (int i = r; i < s; i++) {
-            longs.add(getLong(i));
+            longs.addLong(getLong(i));
         }
 
-        return longs.toLongSeries();
+        return longs.toSeries();
     }
 
     private LongSeries replaceNoMatchLong(BooleanSeries condition, long with) {
@@ -337,14 +337,14 @@ public abstract class LongBaseSeries implements LongSeries {
         LongAccumulator longs = new LongAccumulator(s);
 
         for (int i = 0; i < r; i++) {
-            longs.add(condition.getBoolean(i) ? getLong(i) : with);
+            longs.addLong(condition.getBoolean(i) ? getLong(i) : with);
         }
 
         if (s > r) {
             longs.fill(r, s, with);
         }
 
-        return longs.toLongSeries();
+        return longs.toSeries();
     }
 
     private Series<Long> nullify(BooleanSeries condition) {
@@ -394,15 +394,15 @@ public abstract class LongBaseSeries implements LongSeries {
             LongSeries anotherLong = (LongSeries) another;
 
             for (int i = 0; i < s; i++) {
-                bools.add(getLong(i) == anotherLong.getLong(i));
+                bools.addBoolean(getLong(i) == anotherLong.getLong(i));
             }
         } else {
             for (int i = 0; i < s; i++) {
-                bools.add(Objects.equals(get(i), another.get(i)));
+                bools.addBoolean(Objects.equals(get(i), another.get(i)));
             }
         }
 
-        return bools.toBooleanSeries();
+        return bools.toSeries();
     }
 
     @Override
@@ -419,15 +419,15 @@ public abstract class LongBaseSeries implements LongSeries {
             LongSeries anotherLong = (LongSeries) another;
 
             for (int i = 0; i < s; i++) {
-                bools.add(getLong(i) != anotherLong.getLong(i));
+                bools.addBoolean(getLong(i) != anotherLong.getLong(i));
             }
         } else {
             for (int i = 0; i < s; i++) {
-                bools.add(!Objects.equals(get(i), another.get(i)));
+                bools.addBoolean(!Objects.equals(get(i), another.get(i)));
             }
         }
 
-        return bools.toBooleanSeries();
+        return bools.toSeries();
     }
 
     @Override
@@ -447,7 +447,7 @@ public abstract class LongBaseSeries implements LongSeries {
             unique.add(get(i));
         }
 
-        return unique.size() < size() ? unique.toLongSeries() : this;
+        return unique.size() < size() ? unique.toSeries() : this;
     }
 
     @Override

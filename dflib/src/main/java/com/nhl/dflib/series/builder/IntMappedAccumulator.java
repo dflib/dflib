@@ -19,7 +19,7 @@ public class IntMappedAccumulator<I> implements SeriesBuilder<I, Integer> {
 
     @Override
     public void add(I v) {
-        accumulator.add(mapper.map(v));
+        accumulator.addInt(mapper.map(v));
     }
 
     @Override
@@ -39,6 +39,6 @@ public class IntMappedAccumulator<I> implements SeriesBuilder<I, Integer> {
 
     @Override
     public Series<Integer> toSeries() {
-        return accumulator.toIntSeries();
+        return accumulator.toSeries();
     }
 }

@@ -232,10 +232,10 @@ public class ColumnDataFrame implements DataFrame {
         BooleanAccumulator data = new BooleanAccumulator(height());
 
         for (RowProxy row : this) {
-            data.add(rowMapper.map(row));
+            data.addBoolean(rowMapper.map(row));
         }
 
-        return data.toBooleanSeries();
+        return data.toSeries();
     }
 
     @Override

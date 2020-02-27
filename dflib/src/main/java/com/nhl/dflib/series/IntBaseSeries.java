@@ -86,11 +86,11 @@ public abstract class IntBaseSeries implements IntSeries {
         for (int i = 0; i < len; i++) {
             int v = getInt(i);
             if (p.test(v)) {
-                filtered.add(v);
+                filtered.addInt(v);
             }
         }
 
-        return filtered.toIntSeries();
+        return filtered.toSeries();
     }
 
     @Override
@@ -106,11 +106,11 @@ public abstract class IntBaseSeries implements IntSeries {
 
         for (int i = 0; i < size(); i++) {
             if (positions.getBoolean(i)) {
-                data.add(getInt(i));
+                data.addInt(getInt(i));
             }
         }
 
-        return data.toIntSeries();
+        return data.toSeries();
     }
 
     @Override
@@ -296,11 +296,11 @@ public abstract class IntBaseSeries implements IntSeries {
 
         for (int i = 0; i < len; i++) {
             if (predicate.test(getInt(i))) {
-                index.add(i);
+                index.addInt(i);
             }
         }
 
-        return index.toIntSeries();
+        return index.toSeries();
     }
 
     @Override
@@ -315,10 +315,10 @@ public abstract class IntBaseSeries implements IntSeries {
         BooleanAccumulator matches = new BooleanAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            matches.add(predicate.test(getInt(i)));
+            matches.addBoolean(predicate.test(getInt(i)));
         }
 
-        return matches.toBooleanSeries();
+        return matches.toSeries();
     }
 
     @Override
@@ -348,14 +348,14 @@ public abstract class IntBaseSeries implements IntSeries {
         IntAccumulator ints = new IntAccumulator(s);
 
         for (int i = 0; i < r; i++) {
-            ints.add(condition.getBoolean(i) ? with : getInt(i));
+            ints.addInt(condition.getBoolean(i) ? with : getInt(i));
         }
 
         for (int i = r; i < s; i++) {
-            ints.add(getInt(i));
+            ints.addInt(getInt(i));
         }
 
-        return ints.toIntSeries();
+        return ints.toSeries();
     }
 
     private IntSeries replaceNoMatchInt(BooleanSeries condition, int with) {
@@ -365,14 +365,14 @@ public abstract class IntBaseSeries implements IntSeries {
         IntAccumulator ints = new IntAccumulator(s);
 
         for (int i = 0; i < r; i++) {
-            ints.add(condition.getBoolean(i) ? getInt(i) : with);
+            ints.addInt(condition.getBoolean(i) ? getInt(i) : with);
         }
 
         if (s > r) {
             ints.fill(r, s, with);
         }
 
-        return ints.toIntSeries();
+        return ints.toSeries();
     }
 
     private Series<Integer> nullify(BooleanSeries condition) {
@@ -422,15 +422,15 @@ public abstract class IntBaseSeries implements IntSeries {
             IntSeries anotherInt = (IntSeries) another;
 
             for (int i = 0; i < s; i++) {
-                bools.add(getInt(i) == anotherInt.getInt(i));
+                bools.addBoolean(getInt(i) == anotherInt.getInt(i));
             }
         } else {
             for (int i = 0; i < s; i++) {
-                bools.add(Objects.equals(get(i), another.get(i)));
+                bools.addBoolean(Objects.equals(get(i), another.get(i)));
             }
         }
 
-        return bools.toBooleanSeries();
+        return bools.toSeries();
     }
 
     @Override
@@ -447,15 +447,15 @@ public abstract class IntBaseSeries implements IntSeries {
             IntSeries anotherInt = (IntSeries) another;
 
             for (int i = 0; i < s; i++) {
-                bools.add(getInt(i) != anotherInt.getInt(i));
+                bools.addBoolean(getInt(i) != anotherInt.getInt(i));
             }
         } else {
             for (int i = 0; i < s; i++) {
-                bools.add(!Objects.equals(get(i), another.get(i)));
+                bools.addBoolean(!Objects.equals(get(i), another.get(i)));
             }
         }
 
-        return bools.toBooleanSeries();
+        return bools.toSeries();
     }
 
     @Override
@@ -475,7 +475,7 @@ public abstract class IntBaseSeries implements IntSeries {
             unique.add(get(i));
         }
 
-        return unique.size() < size() ? unique.toIntSeries() : this;
+        return unique.size() < size() ? unique.toSeries() : this;
     }
 
     @Override

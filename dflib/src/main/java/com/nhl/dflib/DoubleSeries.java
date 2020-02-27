@@ -24,10 +24,10 @@ public interface DoubleSeries extends Series<Double> {
         int len = series.size();
         DoubleAccumulator a = new DoubleAccumulator(len);
         for (int i = 0; i < len; i++) {
-            a.add(converter.map(series.get(i)));
+            a.addDouble(converter.map(series.get(i)));
         }
 
-        return a.toDoubleSeries();
+        return a.toSeries();
     }
 
     @Override

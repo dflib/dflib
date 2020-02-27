@@ -82,11 +82,11 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         for (int i = 0; i < len; i++) {
             double v = getDouble(i);
             if (p.test(v)) {
-                filtered.add(v);
+                filtered.addDouble(v);
             }
         }
 
-        return filtered.toDoubleSeries();
+        return filtered.toSeries();
     }
 
     @Override
@@ -102,11 +102,11 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
 
         for (int i = 0; i < size(); i++) {
             if (positions.getBoolean(i)) {
-                data.add(getDouble(i));
+                data.addDouble(getDouble(i));
             }
         }
 
-        return data.toDoubleSeries();
+        return data.toSeries();
     }
 
     @Override
@@ -268,11 +268,11 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
 
         for (int i = 0; i < len; i++) {
             if (predicate.test(getDouble(i))) {
-                index.add(i);
+                index.addInt(i);
             }
         }
 
-        return index.toIntSeries();
+        return index.toSeries();
     }
 
     @Override
@@ -287,10 +287,10 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         BooleanAccumulator matches = new BooleanAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            matches.add(predicate.test(getDouble(i)));
+            matches.addBoolean(predicate.test(getDouble(i)));
         }
 
-        return matches.toBooleanSeries();
+        return matches.toSeries();
     }
 
     @Override
@@ -320,14 +320,14 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         DoubleAccumulator doubles = new DoubleAccumulator(s);
 
         for (int i = 0; i < r; i++) {
-            doubles.add(condition.getBoolean(i) ? with : getDouble(i));
+            doubles.addDouble(condition.getBoolean(i) ? with : getDouble(i));
         }
 
         for (int i = r; i < s; i++) {
-            doubles.add(getDouble(i));
+            doubles.addDouble(getDouble(i));
         }
 
-        return doubles.toDoubleSeries();
+        return doubles.toSeries();
     }
 
     private DoubleSeries replaceNoMatchDouble(BooleanSeries condition, double with) {
@@ -337,14 +337,14 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         DoubleAccumulator doubles = new DoubleAccumulator(s);
 
         for (int i = 0; i < r; i++) {
-            doubles.add(condition.getBoolean(i) ? getDouble(i) : with);
+            doubles.addDouble(condition.getBoolean(i) ? getDouble(i) : with);
         }
 
         if (s > r) {
             doubles.fill(r, s, with);
         }
 
-        return doubles.toDoubleSeries();
+        return doubles.toSeries();
     }
 
     private Series<Double> nullify(BooleanSeries condition) {
@@ -394,15 +394,15 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
             DoubleSeries anotherDouble = (DoubleSeries) another;
 
             for (int i = 0; i < s; i++) {
-                bools.add(getDouble(i) == anotherDouble.getDouble(i));
+                bools.addBoolean(getDouble(i) == anotherDouble.getDouble(i));
             }
         } else {
             for (int i = 0; i < s; i++) {
-                bools.add(Objects.equals(get(i), another.get(i)));
+                bools.addBoolean(Objects.equals(get(i), another.get(i)));
             }
         }
 
-        return bools.toBooleanSeries();
+        return bools.toSeries();
     }
 
     @Override
@@ -419,15 +419,15 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
             DoubleSeries anotherDouble = (DoubleSeries) another;
 
             for (int i = 0; i < s; i++) {
-                bools.add(getDouble(i) != anotherDouble.getDouble(i));
+                bools.addBoolean(getDouble(i) != anotherDouble.getDouble(i));
             }
         } else {
             for (int i = 0; i < s; i++) {
-                bools.add(!Objects.equals(get(i), another.get(i)));
+                bools.addBoolean(!Objects.equals(get(i), another.get(i)));
             }
         }
 
-        return bools.toBooleanSeries();
+        return bools.toSeries();
     }
 
     @Override
@@ -447,7 +447,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
             unique.add(get(i));
         }
 
-        return unique.size() < size() ? unique.toDoubleSeries() : this;
+        return unique.size() < size() ? unique.toSeries() : this;
     }
 
     @Override

@@ -32,7 +32,7 @@ public class Grouper {
             // would allow to store a null key, but would blow up when trying to "get" it, so we kind of go with the flow
             // here
             if(key != null) {
-                ((IntAccumulator) groups.computeIfAbsent(key, k -> new IntAccumulator())).add(i);
+                ((IntAccumulator) groups.computeIfAbsent(key, k -> new IntAccumulator())).addInt(i);
             }
 
             i++;
@@ -40,7 +40,7 @@ public class Grouper {
 
         for (Object o : groups.entrySet()) {
             Map.Entry<?, Object> e = (Map.Entry) o;
-            e.setValue(((IntAccumulator) e.getValue()).toIntSeries());
+            e.setValue(((IntAccumulator) e.getValue()).toSeries());
         }
 
         return new GroupBy(df, (Map<Object, IntSeries>) groups, null);

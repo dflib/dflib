@@ -20,10 +20,10 @@ public class UniqueIntAccumulator extends IntAccumulator {
     }
 
     @Override
-    public void add(int value) {
+    public void addInt(int value) {
 
         if (seen.add(value)) {
-            super.add(value);
+            super.addInt(value);
         }
     }
 

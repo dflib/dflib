@@ -138,11 +138,11 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
         for (int i = 0; i < len; i++) {
             if (predicate.test(get(i))) {
-                index.add(i);
+                index.addInt(i);
             }
         }
 
-        return index.toIntSeries();
+        return index.toSeries();
     }
 
     @Override
@@ -152,10 +152,10 @@ public abstract class ObjectSeries<T> implements Series<T> {
         BooleanAccumulator matches = new BooleanAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            matches.add(predicate.test(get(i)));
+            matches.addBoolean(predicate.test(get(i)));
         }
 
-        return matches.toBooleanSeries();
+        return matches.toSeries();
     }
 
     @Override
@@ -204,10 +204,10 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
         BooleanAccumulator bools = new BooleanAccumulator(s);
         for (int i = 0; i < s; i++) {
-            bools.add(Objects.equals(get(i), another.get(i)));
+            bools.addBoolean(Objects.equals(get(i), another.get(i)));
         }
 
-        return bools.toBooleanSeries();
+        return bools.toSeries();
     }
 
     @Override
@@ -221,10 +221,10 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
         BooleanAccumulator bools = new BooleanAccumulator(s);
         for (int i = 0; i < s; i++) {
-            bools.add(!Objects.equals(get(i), another.get(i)));
+            bools.addBoolean(!Objects.equals(get(i), another.get(i)));
         }
 
-        return bools.toBooleanSeries();
+        return bools.toSeries();
     }
 
     @Override

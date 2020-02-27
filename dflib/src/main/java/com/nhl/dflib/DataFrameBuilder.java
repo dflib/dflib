@@ -237,7 +237,7 @@ public class DataFrameBuilder {
 
         int p = 0;
         while (it.hasNext()) {
-            columnBuilders[p % width].add(it.nextInt());
+            columnBuilders[p % width].addInt(it.nextInt());
             p++;
         }
 
@@ -245,13 +245,13 @@ public class DataFrameBuilder {
         int pl = p % width;
         if (pl > 0) {
             for (; pl < width; pl++) {
-                columnBuilders[pl].add(padWith);
+                columnBuilders[pl].addInt(padWith);
             }
         }
 
         Series[] columnsData = new Series[width];
         for (int i = 0; i < width; i++) {
-            columnsData[i] = columnBuilders[i].toIntSeries();
+            columnsData[i] = columnBuilders[i].toSeries();
         }
 
         return new ColumnDataFrame(columnsIndex, columnsData);
@@ -313,7 +313,7 @@ public class DataFrameBuilder {
 
         int p = 0;
         while (it.hasNext()) {
-            columnBuilders[p % width].add(it.nextLong());
+            columnBuilders[p % width].addLong(it.nextLong());
             p++;
         }
 
@@ -321,13 +321,13 @@ public class DataFrameBuilder {
         int pl = p % width;
         if (pl > 0) {
             for (; pl < width; pl++) {
-                columnBuilders[pl].add(padWith);
+                columnBuilders[pl].addLong(padWith);
             }
         }
 
         Series[] columnsData = new Series[width];
         for (int i = 0; i < width; i++) {
-            columnsData[i] = columnBuilders[i].toLongSeries();
+            columnsData[i] = columnBuilders[i].toSeries();
         }
 
         return new ColumnDataFrame(columnsIndex, columnsData);
@@ -389,7 +389,7 @@ public class DataFrameBuilder {
 
         int p = 0;
         while (it.hasNext()) {
-            columnBuilders[p % width].add(it.nextDouble());
+            columnBuilders[p % width].addDouble(it.nextDouble());
             p++;
         }
 
@@ -397,13 +397,13 @@ public class DataFrameBuilder {
         int pl = p % width;
         if (pl > 0) {
             for (; pl < width; pl++) {
-                columnBuilders[pl].add(padWith);
+                columnBuilders[pl].addDouble(padWith);
             }
         }
 
         Series[] columnsData = new Series[width];
         for (int i = 0; i < width; i++) {
-            columnsData[i] = columnBuilders[i].toDoubleSeries();
+            columnsData[i] = columnBuilders[i].toSeries();
         }
 
         return new ColumnDataFrame(columnsIndex, columnsData);

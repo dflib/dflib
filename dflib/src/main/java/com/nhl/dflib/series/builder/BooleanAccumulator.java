@@ -8,7 +8,7 @@ import java.util.Arrays;
 /**
  * @since 0.6
  */
-public class BooleanAccumulator {
+public class BooleanAccumulator implements Accumulator<Boolean> {
 
     // TODO: bitmap?
     private boolean[] data;
@@ -22,6 +22,7 @@ public class BooleanAccumulator {
         this.size = 0;
         this.data = new boolean[capacity];
     }
+
 
     public void fill(int from, int to, boolean value) {
 
@@ -37,7 +38,27 @@ public class BooleanAccumulator {
         size += to - from;
     }
 
-    public void add(boolean value) {
+    /**
+     * @since 0.8
+     */
+    @Override
+    public void add(ValueHolder<Boolean> valueHolder) {
+        addBoolean(valueHolder.getBoolean());
+    }
+
+    /**
+     * @since 0.8
+     */
+    @Override
+    public void add(Boolean v) {
+        addBoolean(v != null ? v : false);
+    }
+
+    /**
+     * @since 0.8
+     */
+    @Override
+    public void addBoolean(boolean value) {
 
         if (size == data.length) {
             expand(data.length * 2);
@@ -77,7 +98,8 @@ public class BooleanAccumulator {
         size--;
     }
 
-    public BooleanSeries toBooleanSeries() {
+    @Override
+    public BooleanSeries toSeries() {
         boolean[] data = compactData();
 
         // making sure no one can change the series via the Mutable List anymore

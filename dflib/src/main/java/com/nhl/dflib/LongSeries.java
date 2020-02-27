@@ -24,10 +24,10 @@ public interface LongSeries extends Series<Long> {
         int len = series.size();
         LongAccumulator a = new LongAccumulator(len);
         for (int i = 0; i < len; i++) {
-            a.add(converter.map(series.get(i)));
+            a.addLong(converter.map(series.get(i)));
         }
 
-        return a.toLongSeries();
+        return a.toSeries();
     }
 
     @Override

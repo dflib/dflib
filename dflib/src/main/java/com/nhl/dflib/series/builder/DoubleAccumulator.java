@@ -11,7 +11,8 @@ import java.util.Arrays;
  *
  * @since 0.6
  */
-public class DoubleAccumulator {
+public class DoubleAccumulator implements Accumulator<Double> {
+
     private double[] data;
     private int size;
 
@@ -38,7 +39,27 @@ public class DoubleAccumulator {
         size += to - from;
     }
 
-    public void add(double value) {
+    /**
+     * @since 0.8
+     */
+    @Override
+    public void add(ValueHolder<Double> valueHolder) {
+        addDouble(valueHolder.getDouble());
+    }
+
+    /**
+     * @since 0.8
+     */
+    @Override
+    public void add(Double v) {
+        addDouble(v != null ? v : 0.);
+    }
+
+    /**
+     * @since 0.8
+     */
+    @Override
+    public void addDouble(double value) {
 
         if (size == data.length) {
             expand(data.length * 2);
@@ -78,7 +99,8 @@ public class DoubleAccumulator {
         size--;
     }
 
-    public DoubleSeries toDoubleSeries() {
+    @Override
+    public DoubleSeries toSeries() {
         double[] data = compactData();
 
         // making sure no one can change the series via the Mutable List anymore

@@ -35,13 +35,13 @@ public class SeriesGrouper<T> {
             // here
 
             if (key != null) {
-                ((IntAccumulator) groups.computeIfAbsent(key, k -> new IntAccumulator())).add(i);
+                ((IntAccumulator) groups.computeIfAbsent(key, k -> new IntAccumulator())).addInt(i);
             }
         }
 
         for (Object o : groups.entrySet()) {
             Map.Entry<?, Object> e = (Map.Entry) o;
-            e.setValue(((IntAccumulator) e.getValue()).toIntSeries());
+            e.setValue(((IntAccumulator) e.getValue()).toSeries());
         }
 
         return new SeriesGroupBy<>(s, (Map<Object, IntSeries>) groups);

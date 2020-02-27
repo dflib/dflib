@@ -8,7 +8,7 @@ import java.util.Arrays;
 /**
  * @since 0.6
  */
-public class ObjectAccumulator<T> implements SeriesBuilder<T, T> {
+public class ObjectAccumulator<T> implements Accumulator<T>, SeriesBuilder<T, T> {
 
     private T[] data;
     private int size;
@@ -20,6 +20,11 @@ public class ObjectAccumulator<T> implements SeriesBuilder<T, T> {
     public ObjectAccumulator(int capacity) {
         this.size = 0;
         this.data = (T[]) new Object[capacity];
+    }
+
+    @Override
+    public void add(ValueHolder<T> valueHolder) {
+        add(valueHolder.get());
     }
 
     public void fill(int from, int to, T value) {

@@ -22,11 +22,11 @@ public interface BooleanSeries extends Series<Boolean> {
         int len = series.size();
         BooleanAccumulator a = new BooleanAccumulator(len);
         for (int i = 0; i < len; i++) {
-            a.add(converter.map(series.get(i)));
+            a.addBoolean(converter.map(series.get(i)));
         }
 
 
-        return a.toBooleanSeries();
+        return a.toSeries();
     }
 
     static BooleanSeries andAll(BooleanSeries... series) {

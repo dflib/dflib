@@ -38,8 +38,8 @@ public class NestedLoopJoiner extends BaseJoiner {
             int j = 0;
             for (RowProxy rr : rfm) {
                 if (joinPredicate.test(lr, rr)) {
-                    li.add(i);
-                    ri.add(j);
+                    li.addInt(i);
+                    ri.addInt(j);
                 }
 
                 j++;
@@ -48,7 +48,7 @@ public class NestedLoopJoiner extends BaseJoiner {
             i++;
         }
 
-        return new IntSeries[]{li.toIntSeries(), ri.toIntSeries()};
+        return new IntSeries[]{li.toSeries(), ri.toSeries()};
     }
 
     @Override
@@ -67,8 +67,8 @@ public class NestedLoopJoiner extends BaseJoiner {
             boolean hadMatches = false;
             for (RowProxy rr : rfm) {
                 if (joinPredicate.test(lr, rr)) {
-                    li.add(i);
-                    ri.add(j);
+                    li.addInt(i);
+                    ri.addInt(j);
                     hadMatches = true;
                 }
 
@@ -76,14 +76,14 @@ public class NestedLoopJoiner extends BaseJoiner {
             }
 
             if (!hadMatches) {
-                li.add(i);
-                ri.add(-1);
+                li.addInt(i);
+                ri.addInt(-1);
             }
 
             i++;
         }
 
-        return new IntSeries[]{li.toIntSeries(), ri.toIntSeries()};
+        return new IntSeries[]{li.toSeries(), ri.toSeries()};
     }
 
     @Override
@@ -102,8 +102,8 @@ public class NestedLoopJoiner extends BaseJoiner {
             boolean hadMatches = false;
             for (RowProxy lr : lfm) {
                 if (joinPredicate.test(lr, rr)) {
-                    li.add(j);
-                    ri.add(i);
+                    li.addInt(j);
+                    ri.addInt(i);
                     hadMatches = true;
                 }
 
@@ -111,14 +111,14 @@ public class NestedLoopJoiner extends BaseJoiner {
             }
 
             if (!hadMatches) {
-                li.add(-1);
-                ri.add(i);
+                li.addInt(-1);
+                ri.addInt(i);
             }
 
             i++;
         }
 
-        return new IntSeries[]{li.toIntSeries(), ri.toIntSeries()};
+        return new IntSeries[]{li.toSeries(), ri.toSeries()};
     }
 
     @Override
@@ -140,8 +140,8 @@ public class NestedLoopJoiner extends BaseJoiner {
             int j = 0;
             for (RowProxy rr : rfm) {
                 if (joinPredicate.test(lr, rr)) {
-                    li.add(i);
-                    ri.add(j);
+                    li.addInt(i);
+                    ri.addInt(j);
                     seenRights.add(j);
                     hadMatches = true;
                 }
@@ -150,8 +150,8 @@ public class NestedLoopJoiner extends BaseJoiner {
             }
 
             if (!hadMatches) {
-                li.add(i);
-                ri.add(-1);
+                li.addInt(i);
+                ri.addInt(-1);
             }
 
             i++;
@@ -161,11 +161,11 @@ public class NestedLoopJoiner extends BaseJoiner {
         int rh = rfm.height();
         for (int j = 0; j < rh; j++) {
             if (!seenRights.contains(j)) {
-                li.add(-1);
-                ri.add(j);
+                li.addInt(-1);
+                ri.addInt(j);
             }
         }
 
-        return new IntSeries[]{li.toIntSeries(), ri.toIntSeries()};
+        return new IntSeries[]{li.toSeries(), ri.toSeries()};
     }
 }

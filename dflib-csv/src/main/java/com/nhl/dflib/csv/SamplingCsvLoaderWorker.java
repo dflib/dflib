@@ -60,7 +60,7 @@ class SamplingCsvLoaderWorker implements CsvLoaderWorker {
     }
 
     protected DataFrame sortSampled(DataFrame sampledUnsorted) {
-        IntSeries sortIndex = sampledRows.toIntSeries().sortIndexInt();
+        IntSeries sortIndex = sampledRows.toSeries().sortIndexInt();
         return sampledUnsorted.selectRows(sortIndex);
     }
 
@@ -80,7 +80,7 @@ class SamplingCsvLoaderWorker implements CsvLoaderWorker {
         // fill "reservoir" first
         if (rowNumber < rowSampleSize) {
             addRow(width, row);
-            sampledRows.add(rowNumber);
+            sampledRows.addInt(rowNumber);
         }
         // replace previously filled values based on random sampling with decaying probability
         else {

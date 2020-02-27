@@ -19,7 +19,7 @@ public class LongMappedAccumulator<I> implements SeriesBuilder<I, Long> {
 
     @Override
     public void add(I v) {
-        accumulator.add(mapper.map(v));
+        accumulator.addLong(mapper.map(v));
     }
 
     @Override
@@ -39,6 +39,6 @@ public class LongMappedAccumulator<I> implements SeriesBuilder<I, Long> {
 
     @Override
     public Series<Long> toSeries() {
-        return accumulator.toLongSeries();
+        return accumulator.toSeries();
     }
 }

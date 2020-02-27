@@ -11,7 +11,7 @@ import java.util.Arrays;
  *
  * @since 0.6
  */
-public class LongAccumulator {
+public class LongAccumulator implements Accumulator<Long> {
 
     private long[] data;
     private int size;
@@ -38,7 +38,21 @@ public class LongAccumulator {
         size += to - from;
     }
 
-    public void add(long value) {
+    /**
+     * @since 0.8
+     */
+    @Override
+    public void add(ValueHolder<Long> valueHolder) {
+        addLong(valueHolder.getLong());
+    }
+
+    @Override
+    public void add(Long v) {
+        addLong(v != null ? v : 0L);
+    }
+
+    @Override
+    public void addLong(long value) {
 
         if (size == data.length) {
             expand(data.length * 2);
@@ -78,7 +92,8 @@ public class LongAccumulator {
         size--;
     }
 
-    public LongSeries toLongSeries() {
+    @Override
+    public LongSeries toSeries() {
         long[] data = compactData();
 
         // making sure no one can change the series via the Mutable List anymore

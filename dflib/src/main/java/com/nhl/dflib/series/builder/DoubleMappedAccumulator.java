@@ -19,7 +19,7 @@ public class DoubleMappedAccumulator<I> implements SeriesBuilder<I, Double> {
 
     @Override
     public void add(I v) {
-        accumulator.add(mapper.map(v));
+        accumulator.addDouble(mapper.map(v));
     }
 
     @Override
@@ -39,6 +39,6 @@ public class DoubleMappedAccumulator<I> implements SeriesBuilder<I, Double> {
 
     @Override
     public Series<Double> toSeries() {
-        return accumulator.toDoubleSeries();
+        return accumulator.toSeries();
     }
 }

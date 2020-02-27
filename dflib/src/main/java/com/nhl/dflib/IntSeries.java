@@ -25,10 +25,10 @@ public interface IntSeries extends Series<Integer> {
         int len = series.size();
         IntAccumulator a = new IntAccumulator(len);
         for (int i = 0; i < len; i++) {
-            a.add(converter.map(series.get(i)));
+            a.addInt(converter.map(series.get(i)));
         }
 
-        return a.toIntSeries();
+        return a.toSeries();
     }
 
     @Override

@@ -20,10 +20,10 @@ public class UniqueDoubleAccumulator extends DoubleAccumulator {
     }
 
     @Override
-    public void add(double value) {
+    public void addDouble(double value) {
 
         if (seen.add(value)) {
-            super.add(value);
+            super.addDouble(value);
         }
     }
 

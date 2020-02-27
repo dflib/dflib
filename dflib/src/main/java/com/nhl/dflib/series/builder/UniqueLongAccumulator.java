@@ -20,10 +20,10 @@ public class UniqueLongAccumulator extends LongAccumulator {
     }
 
     @Override
-    public void add(long value) {
+    public void addLong(long value) {
 
         if (seen.add(value)) {
-            super.add(value);
+            super.addLong(value);
         }
     }
 

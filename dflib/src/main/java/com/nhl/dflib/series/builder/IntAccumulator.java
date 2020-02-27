@@ -11,7 +11,7 @@ import java.util.Arrays;
  *
  * @since 0.6
  */
-public class IntAccumulator {
+public class IntAccumulator implements Accumulator<Integer> {
 
     private int[] data;
     private int size;
@@ -38,7 +38,27 @@ public class IntAccumulator {
         size += to - from;
     }
 
-    public void add(int value) {
+    /**
+     * @since 0.8
+     */
+    @Override
+    public void add(ValueHolder<Integer> valueHolder) {
+        addInt(valueHolder.getInt());
+    }
+
+    /**
+     * @since 0.8
+     */
+    @Override
+    public void add(Integer v) {
+        addInt(v != null ? v : 0);
+    }
+
+    /**
+     * @since 0.8
+     */
+    @Override
+    public void addInt(int value) {
 
         if (size == data.length) {
             expand(data.length * 2);
@@ -78,7 +98,8 @@ public class IntAccumulator {
         size--;
     }
 
-    public IntSeries toIntSeries() {
+    @Override
+    public IntSeries toSeries() {
         int[] data = compactData();
 
         // making sure no one can change the series via the Mutable List anymore

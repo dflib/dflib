@@ -19,7 +19,7 @@ public class BooleanMappedAccumulator<I> implements SeriesBuilder<I, Boolean> {
 
     @Override
     public void add(I v) {
-        accumulator.add(mapper.map(v));
+        accumulator.addBoolean(mapper.map(v));
     }
 
     @Override
@@ -39,6 +39,6 @@ public class BooleanMappedAccumulator<I> implements SeriesBuilder<I, Boolean> {
 
     @Override
     public Series<Boolean> toSeries() {
-        return accumulator.toBooleanSeries();
+        return accumulator.toSeries();
     }
 }

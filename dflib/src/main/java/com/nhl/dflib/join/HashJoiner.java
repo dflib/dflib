@@ -49,15 +49,15 @@ public class HashJoiner extends BaseJoiner {
             if (rgi != null) {
                 int js = rgi.size();
                 for (int j = 0; j < js; j++) {
-                    li.add(i);
-                    ri.add(rgi.getInt(j));
+                    li.addInt(i);
+                    ri.addInt(rgi.getInt(j));
                 }
             }
 
             i++;
         }
 
-        return new IntSeries[]{li.toIntSeries(), ri.toIntSeries()};
+        return new IntSeries[]{li.toSeries(), ri.toSeries()};
     }
 
     @Override
@@ -77,18 +77,18 @@ public class HashJoiner extends BaseJoiner {
             if (rgi != null) {
                 int js = rgi.size();
                 for (int j = 0; j < js; j++) {
-                    li.add(i);
-                    ri.add(rgi.getInt(j));
+                    li.addInt(i);
+                    ri.addInt(rgi.getInt(j));
                 }
             } else {
-                li.add(i);
-                ri.add(-1);
+                li.addInt(i);
+                ri.addInt(-1);
             }
 
             i++;
         }
 
-        return new IntSeries[]{li.toIntSeries(), ri.toIntSeries()};
+        return new IntSeries[]{li.toSeries(), ri.toSeries()};
     }
 
     @Override
@@ -108,18 +108,18 @@ public class HashJoiner extends BaseJoiner {
             if (lgi != null) {
                 int js = lgi.size();
                 for (int j = 0; j < js; j++) {
-                    li.add(lgi.getInt(j));
-                    ri.add(i);
+                    li.addInt(lgi.getInt(j));
+                    ri.addInt(i);
                 }
             } else {
-                li.add(-1);
-                ri.add(i);
+                li.addInt(-1);
+                ri.addInt(i);
             }
 
             i++;
         }
 
-        return new IntSeries[]{li.toIntSeries(), ri.toIntSeries()};
+        return new IntSeries[]{li.toSeries(), ri.toSeries()};
     }
 
     @Override
@@ -141,12 +141,12 @@ public class HashJoiner extends BaseJoiner {
                 seenRightKeys.add(lKey);
                 int js = rgi.size();
                 for (int j = 0; j < js; j++) {
-                    li.add(i);
-                    ri.add(rgi.getInt(j));
+                    li.addInt(i);
+                    ri.addInt(rgi.getInt(j));
                 }
             } else {
-                li.add(i);
-                ri.add(-1);
+                li.addInt(i);
+                ri.addInt(-1);
             }
 
             i++;
@@ -159,12 +159,12 @@ public class HashJoiner extends BaseJoiner {
 
                 int js = rgi.size();
                 for (int j = 0; j < js; j++) {
-                    li.add(-1);
-                    ri.add(rgi.getInt(j));
+                    li.addInt(-1);
+                    ri.addInt(rgi.getInt(j));
                 }
             }
         }
 
-        return new IntSeries[]{li.toIntSeries(), ri.toIntSeries()};
+        return new IntSeries[]{li.toSeries(), ri.toSeries()};
     }
 }
