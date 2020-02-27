@@ -1,30 +1,46 @@
 package com.nhl.dflib.csv;
 
 import com.nhl.dflib.Index;
-import com.nhl.dflib.series.builder.SeriesBuilder;
+import com.nhl.dflib.csv.loader.CsvAccumulatorColumn;
+import com.nhl.dflib.csv.loader.CsvValueHolderColumn;
 import org.apache.commons.csv.CSVRecord;
 
 import java.util.function.Predicate;
 
 class FilteringCsvLoaderWorker extends BaseCsvLoaderWorker {
 
-    private Predicate<SeriesBuilder<String, ?>[]> rowFilter;
+    private CsvValueHolderColumn<?>[] csvColumns;
+    private Predicate<CsvValueHolderColumn<?>[]> rowFilter;
 
-    FilteringCsvLoaderWorker(Index columns, int[] csvPositions, SeriesBuilder<String, ?>[] accumulators, Predicate<SeriesBuilder<String, ?>[]> rowFilter) {
-        super(columns, csvPositions, accumulators);
+    public FilteringCsvLoaderWorker(
+            Index columnIndex,
+            CsvAccumulatorColumn<?>[] columns,
+            CsvValueHolderColumn<?>[] csvColumns,
+            Predicate<CsvValueHolderColumn<?>[]> rowFilter) {
+
+        super(columnIndex, columns);
+
+        this.csvColumns = csvColumns;
         this.rowFilter = rowFilter;
-    }
-
-    private void filterRow(int width) {
-        // perform filtering after the row is added to accumulators with proper value conversions
-        if (!rowFilter.test(accumulators)) {
-            popRow(width);
-        }
     }
 
     @Override
     protected void addRow(int width, CSVRecord row) {
-        super.addRow(width, row);
-        filterRow(width);
+
+        // 1. fill the buffer for condition evaluation. The values will be converted to the right data types
+        int csvWidth = csvColumns.length;
+        for (int i = 0; i < csvWidth; i++) {
+            csvColumns[i].set(row);
+        }
+
+        // 2. eval filters
+        if (rowFilter.test(csvColumns)) {
+
+            // 3. add row since the condition is satisfied
+            for (int i = 0; i < width; i++) {
+                columns[i].add(csvColumns);
+            }
+
+        }
     }
 }
