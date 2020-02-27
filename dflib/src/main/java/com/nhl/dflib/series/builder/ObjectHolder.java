@@ -16,4 +16,9 @@ public class ObjectHolder<T> implements ValueHolder<T> {
     public void set(T v) {
         this.v = v;
     }
+
+    @Override
+    public void store(Accumulator<T> accumulator) {
+        accumulator.add(v);
+    }
 }

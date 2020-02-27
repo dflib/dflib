@@ -18,6 +18,11 @@ public class DoubleHolder implements ValueHolder<Double> {
     }
 
     @Override
+    public void store(Accumulator<Double> accumulator) {
+        accumulator.addDouble(v);
+    }
+
+    @Override
     public double getDouble() {
         return v;
     }

@@ -42,5 +42,7 @@ public interface ValueHolder<T> {
         throw new UnsupportedOperationException("This ValueHolder does not support 'boolean'");
     }
 
+    void store(Accumulator<T> accumulator);
+
     void set(T v);
 }

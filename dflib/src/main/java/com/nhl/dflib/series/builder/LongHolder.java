@@ -18,6 +18,11 @@ public class LongHolder implements ValueHolder<Long> {
     }
 
     @Override
+    public void store(Accumulator<Long> accumulator) {
+        accumulator.addLong(v);
+    }
+
+    @Override
     public long getLong() {
         return v;
     }

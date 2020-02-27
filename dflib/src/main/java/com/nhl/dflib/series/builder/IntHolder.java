@@ -18,6 +18,11 @@ public class IntHolder implements ValueHolder<Integer> {
     }
 
     @Override
+    public void store(Accumulator<Integer> accumulator) {
+        accumulator.addInt(v);
+    }
+
+    @Override
     public int getInt() {
         return v;
     }

@@ -18,6 +18,11 @@ public class BooleanHolder implements ValueHolder<Boolean> {
     }
 
     @Override
+    public void store(Accumulator<Boolean> accumulator) {
+        accumulator.addBoolean(v);
+    }
+
+    @Override
     public boolean getBoolean() {
         return v;
     }
