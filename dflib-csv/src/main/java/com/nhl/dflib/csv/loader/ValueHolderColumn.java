@@ -8,13 +8,13 @@ import org.apache.commons.csv.CSVRecord;
 /**
  * @since 0.8
  */
-public class CsvValueHolderColumn<T> {
+public class ValueHolderColumn<T> {
 
     private ValueConverter<String, T> converter;
     private ValueHolder<T> holder;
     private int csvColumnPosition;
 
-    public CsvValueHolderColumn(ValueConverter<String, T> converter, ValueHolder<T> holder, int csvColumnPosition) {
+    public ValueHolderColumn(ValueConverter<String, T> converter, ValueHolder<T> holder, int csvColumnPosition) {
         this.converter = converter;
         this.holder = holder;
         this.csvColumnPosition = csvColumnPosition;

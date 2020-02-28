@@ -1,22 +1,22 @@
 package com.nhl.dflib.csv;
 
 import com.nhl.dflib.Index;
-import com.nhl.dflib.csv.loader.CsvAccumulatorColumn;
-import com.nhl.dflib.csv.loader.CsvValueHolderColumn;
+import com.nhl.dflib.csv.loader.AccumulatorColumn;
+import com.nhl.dflib.csv.loader.ValueHolderColumn;
 import org.apache.commons.csv.CSVRecord;
 
 import java.util.function.Predicate;
 
 class FilteringCsvLoaderWorker extends BaseCsvLoaderWorker {
 
-    private CsvValueHolderColumn<?>[] csvColumns;
-    private Predicate<CsvValueHolderColumn<?>[]> rowFilter;
+    private ValueHolderColumn<?>[] csvColumns;
+    private Predicate<ValueHolderColumn<?>[]> rowFilter;
 
     public FilteringCsvLoaderWorker(
             Index columnIndex,
-            CsvAccumulatorColumn<?>[] columns,
-            CsvValueHolderColumn<?>[] csvColumns,
-            Predicate<CsvValueHolderColumn<?>[]> rowFilter) {
+            AccumulatorColumn<?>[] columns,
+            ValueHolderColumn<?>[] csvColumns,
+            Predicate<ValueHolderColumn<?>[]> rowFilter) {
 
         super(columnIndex, columns);
 

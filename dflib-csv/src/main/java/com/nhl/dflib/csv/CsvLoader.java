@@ -1,6 +1,5 @@
 package com.nhl.dflib.csv;
 
-import com.nhl.dflib.BooleanValueMapper;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DoubleValueMapper;
 import com.nhl.dflib.Index;
@@ -8,13 +7,10 @@ import com.nhl.dflib.IntValueMapper;
 import com.nhl.dflib.LongValueMapper;
 import com.nhl.dflib.ValueMapper;
 import com.nhl.dflib.ValuePredicate;
+import com.nhl.dflib.csv.loader.ColumnConfig;
+import com.nhl.dflib.csv.loader.AccumulatorColumn;
 import com.nhl.dflib.sample.Sampler;
-import com.nhl.dflib.series.builder.BooleanMappedAccumulator;
-import com.nhl.dflib.series.builder.DoubleMappedAccumulator;
-import com.nhl.dflib.series.builder.IntMappedAccumulator;
-import com.nhl.dflib.series.builder.LongMappedAccumulator;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
-import com.nhl.dflib.series.builder.ObjectMappedAccumulator;
 import com.nhl.dflib.series.builder.SeriesBuilder;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -49,12 +45,12 @@ public class CsvLoader {
     private Random rowsSampleRandom;
 
     // storing converters as list to ensure predictable resolution order when the user supplies overlapping converters
-    private List<AccumPair> builders;
+    private List<ColumnConfig> columns;
     private List<RowFilterPair> rowFilters;
 
     public CsvLoader() {
         this.format = CSVFormat.DEFAULT;
-        this.builders = new ArrayList<>();
+        this.columns = new ArrayList<>();
         this.rowFilters = new ArrayList<>();
     }
 
@@ -179,110 +175,126 @@ public class CsvLoader {
         return this;
     }
 
-    public CsvLoader columnType(int column, ValueMapper<String, ?> typeConverter) {
-        return columnType(column, new ObjectMappedAccumulator<>(typeConverter));
+    public CsvLoader columnType(int column, ValueMapper<String, ?> mapper) {
+        columns.add(ColumnConfig.objectColumn(column, mapper));
+        return this;
     }
 
-    public CsvLoader columnType(String column, ValueMapper<String, ?> typeConverter) {
-        return columnType(column, new ObjectMappedAccumulator<>(typeConverter));
+    public CsvLoader columnType(String column, ValueMapper<String, ?> mapper) {
+        columns.add(ColumnConfig.objectColumn(column, mapper));
+        return this;
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader intColumn(int column) {
-        return columnType(column, new IntMappedAccumulator<>(IntValueMapper.fromString()));
+        columns.add(ColumnConfig.intColumn(column));
+        return this;
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader intColumn(String column) {
-        return columnType(column, new IntMappedAccumulator<>(IntValueMapper.fromString()));
+        columns.add(ColumnConfig.intColumn(column));
+        return this;
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader intColumn(int column, int forNull) {
-        return columnType(column, new IntMappedAccumulator<>(IntValueMapper.fromString(forNull)));
+        columns.add(ColumnConfig.intColumn(column, IntValueMapper.fromString(forNull)));
+        return this;
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader intColumn(String column, int forNull) {
-        return columnType(column, new IntMappedAccumulator<>(IntValueMapper.fromString(forNull)));
+        columns.add(ColumnConfig.intColumn(column, IntValueMapper.fromString(forNull)));
+        return this;
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader longColumn(int column) {
-        return columnType(column, new LongMappedAccumulator<>(LongValueMapper.fromString()));
+        columns.add(ColumnConfig.longColumn(column));
+        return this;
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader longColumn(String column) {
-        return columnType(column, new LongMappedAccumulator(LongValueMapper.fromString()));
+        columns.add(ColumnConfig.longColumn(column));
+        return this;
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader longColumn(int column, long forNull) {
-        return columnType(column, new LongMappedAccumulator(LongValueMapper.fromString(forNull)));
+        columns.add(ColumnConfig.longColumn(column, LongValueMapper.fromString(forNull)));
+        return this;
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader longColumn(String column, long forNull) {
-        return columnType(column, new LongMappedAccumulator(LongValueMapper.fromString(forNull)));
+        columns.add(ColumnConfig.longColumn(column, LongValueMapper.fromString(forNull)));
+        return this;
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader doubleColumn(int column) {
-        return columnType(column, new DoubleMappedAccumulator(DoubleValueMapper.fromString()));
+        columns.add(ColumnConfig.doubleColumn(column));
+        return this;
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader doubleColumn(String column) {
-        return columnType(column, new DoubleMappedAccumulator(DoubleValueMapper.fromString()));
+        columns.add(ColumnConfig.doubleColumn(column));
+        return this;
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader doubleColumn(int column, double forNull) {
-        return columnType(column, new DoubleMappedAccumulator(DoubleValueMapper.fromString(forNull)));
+        columns.add(ColumnConfig.doubleColumn(column, DoubleValueMapper.fromString(forNull)));
+        return this;
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader doubleColumn(String column, double forNull) {
-        return columnType(column, new DoubleMappedAccumulator(DoubleValueMapper.fromString(forNull)));
+        columns.add(ColumnConfig.doubleColumn(column, DoubleValueMapper.fromString(forNull)));
+        return this;
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader booleanColumn(int column) {
-        return columnType(column, new BooleanMappedAccumulator<>(BooleanValueMapper.fromString()));
+        columns.add(ColumnConfig.booleanColumn(column));
+        return this;
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader booleanColumn(String column) {
-        return columnType(column, new BooleanMappedAccumulator<>(BooleanValueMapper.fromString()));
+        columns.add(ColumnConfig.booleanColumn(column));
+        return this;
     }
 
     /**
@@ -293,50 +305,40 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader numColumn(int column, Class<? extends Number> type) {
-        return columnType(column, numBuilder(type));
+        return columnType(column, numericMapper(type));
     }
 
     /**
      * @since 0.6
      */
     public CsvLoader numColumn(String column, Class<? extends Number> type) {
-        return columnType(column, numBuilder(type));
+        return columnType(column, numericMapper(type));
     }
 
-    private CsvLoader columnType(int column, SeriesBuilder<String, ?> columnBuilder) {
-        builders.add(new AccumPair(i -> column, columnBuilder));
-        return this;
-    }
-
-    private CsvLoader columnType(String column, SeriesBuilder<String, ?> columnBuilder) {
-        builders.add(new AccumPair(i -> i.position(column), columnBuilder));
-        return this;
-    }
-
-    private SeriesBuilder<String, ?> numBuilder(Class<? extends Number> type) {
+    private ValueMapper<String, ?> numericMapper(Class<? extends Number> type) {
 
         if (Integer.class.equals(type)) {
-            return new ObjectMappedAccumulator<>(ValueMapper.stringToInt());
+            return ValueMapper.stringToInt();
         }
 
         if (Long.class.equals(type)) {
-            return new ObjectMappedAccumulator<>(ValueMapper.stringToLong());
+            return ValueMapper.stringToLong();
         }
 
         if (Double.class.equals(type)) {
-            return new ObjectMappedAccumulator<>(ValueMapper.stringToDouble());
+            return ValueMapper.stringToDouble();
         }
 
         if (Float.class.equals(type)) {
-            return new ObjectMappedAccumulator<>(ValueMapper.stringToFloat());
+            return ValueMapper.stringToFloat();
         }
 
         if (BigDecimal.class.equals(type)) {
-            return new ObjectMappedAccumulator<>(ValueMapper.stringToBigDecimal());
+            return ValueMapper.stringToBigDecimal();
         }
 
         if (BigInteger.class.equals(type)) {
-            return new ObjectMappedAccumulator<>(ValueMapper.stringToBigInteger());
+            return ValueMapper.stringToBigInteger();
         }
 
         throw new IllegalArgumentException("Can't map numeric type to a string converter: " + type);
@@ -554,24 +556,24 @@ public class CsvLoader {
         return Index.forLabels(columnNames);
     }
 
-    private SeriesBuilder<String, ?>[] createAccumulators(Index columns) {
+    private AccumulatorColumn<?>[] createAccumulators(Index columns) {
 
         int w = columns.size();
-        SeriesBuilder<String, ?>[] builders = new SeriesBuilder[w];
+        AccumulatorColumn<?>[] accums = new AccumulatorColumn[w];
 
         // there may be overlapping pairs... the last one wins
-        for (AccumPair p : this.builders) {
-            builders[p.positionResolver.apply(columns)] = p.builder;
+        for (ColumnConfig p : this.columns) {
+            accums[p.positionResolver.apply(columns)] = p.builder;
         }
 
         // fill missing builders with no-transform builders
         for (int i = 0; i < w; i++) {
-            if (builders[i] == null) {
-                builders[i] = new ObjectAccumulator<>();
+            if (this.columns[i] == null) {
+                this.columns[i] = new ObjectAccumulator<>();
             }
         }
 
-        return builders;
+        return accums;
     }
 
     private Predicate<SeriesBuilder<String, ?>[]> createRowFilter(Index columns) {
@@ -589,17 +591,7 @@ public class CsvLoader {
         return p;
     }
 
-    private class AccumPair {
-        Function<Index, Integer> positionResolver;
-        SeriesBuilder<String, ?> builder;
-
-        AccumPair(Function<Index, Integer> positionResolver, SeriesBuilder<String, ?> builder) {
-            this.positionResolver = positionResolver;
-            this.builder = builder;
-        }
-    }
-
-    private class ColumnFilterPair {
+    private static class ColumnFilterPair {
         Index header;
         int[] csvPositions;
 
@@ -609,7 +601,7 @@ public class CsvLoader {
         }
     }
 
-    private class RowFilterPair<V> {
+    private static class RowFilterPair<V> {
         Function<Index, Integer> positionResolver;
         ValuePredicate<V> condition;
 
