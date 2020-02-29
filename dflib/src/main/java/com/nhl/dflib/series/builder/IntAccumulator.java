@@ -67,7 +67,13 @@ public class IntAccumulator implements Accumulator<Integer> {
         data[size++] = value;
     }
 
-    public void set(int pos, int value) {
+    @Override
+    public void set(int pos, Integer v) {
+        setInt(pos, v != null ? v : 0);
+    }
+
+    @Override
+    public void setInt(int pos, int value) {
 
         if (pos >= size) {
             throw new IndexOutOfBoundsException(pos + " is out of bounds for " + size);

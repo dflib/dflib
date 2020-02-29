@@ -24,7 +24,7 @@ public class BooleanMappedAccumulator<I> implements SeriesBuilder<I, Boolean> {
 
     @Override
     public void set(int i, I v) {
-        accumulator.set(i, mapper.map(v));
+        accumulator.setBoolean(i, mapper.map(v));
     }
 
     @Override

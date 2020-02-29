@@ -28,7 +28,7 @@ public class UniqueDoubleAccumulator extends DoubleAccumulator {
     }
 
     @Override
-    public void set(int pos, double value) {
+    public void setDouble(int pos, double value) {
         throw new UnsupportedOperationException("'set' operation is undefined for unique accumulator");
     }
 }

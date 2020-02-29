@@ -14,12 +14,17 @@ public class LongConverter<F> implements ValueConverter<F, Long> {
     }
 
     @Override
-    public void convertAndStore(F from, ValueHolder<Long> holder) {
-        holder.setLong(converter.map(from));
+    public void convertAndStore(F v, ValueHolder<Long> holder) {
+        holder.setLong(converter.map(v));
     }
 
     @Override
-    public void convertAndStore(F from, Accumulator<Long> accumulator) {
-        accumulator.addLong(converter.map(from));
+    public void convertAndStore(F v, Accumulator<Long> accumulator) {
+        accumulator.addLong(converter.map(v));
+    }
+
+    @Override
+    public void convertAndStore(int pos, F v, Accumulator<Long> accumulator) {
+        accumulator.setLong(pos, converter.map(v));
     }
 }

@@ -14,12 +14,17 @@ public class IntConverter<F> implements ValueConverter<F, Integer> {
     }
 
     @Override
-    public void convertAndStore(F from, ValueHolder<Integer> holder) {
-        holder.setInt(converter.map(from));
+    public void convertAndStore(F v, ValueHolder<Integer> holder) {
+        holder.setInt(converter.map(v));
     }
 
     @Override
-    public void convertAndStore(F from, Accumulator<Integer> accumulator) {
-        accumulator.addInt(converter.map(from));
+    public void convertAndStore(F v, Accumulator<Integer> accumulator) {
+        accumulator.addInt(converter.map(v));
+    }
+
+    @Override
+    public void convertAndStore(int pos, F v, Accumulator<Integer> accumulator) {
+        accumulator.setInt(pos, converter.map(v));
     }
 }

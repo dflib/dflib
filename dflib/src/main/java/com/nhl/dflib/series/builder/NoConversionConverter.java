@@ -12,13 +12,18 @@ public class NoConversionConverter<T> implements ValueConverter<T, T> {
     }
 
     @Override
-    public void convertAndStore(T from, ValueHolder<T> holder) {
-        holder.set(from);
+    public void convertAndStore(T v, ValueHolder<T> holder) {
+        holder.set(v);
     }
 
     @Override
-    public void convertAndStore(T from, Accumulator<T> accumulator) {
-        accumulator.add(from);
+    public void convertAndStore(T v, Accumulator<T> accumulator) {
+        accumulator.add(v);
+    }
+
+    @Override
+    public void convertAndStore(int pos, T v, Accumulator<T> accumulator) {
+        accumulator.set(pos, v);
     }
 }
 

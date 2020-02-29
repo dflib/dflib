@@ -24,7 +24,7 @@ public class IntMappedAccumulator<I> implements SeriesBuilder<I, Integer> {
 
     @Override
     public void set(int i, I v) {
-        accumulator.set(i, mapper.map(v));
+        accumulator.setInt(i, mapper.map(v));
     }
 
     @Override

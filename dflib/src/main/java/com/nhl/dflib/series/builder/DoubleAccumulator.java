@@ -68,7 +68,13 @@ public class DoubleAccumulator implements Accumulator<Double> {
         data[size++] = value;
     }
 
-    public void set(int pos, double value) {
+    @Override
+    public void set(int pos, Double v) {
+        setDouble(pos, v != null ? v : 0.);
+    }
+
+    @Override
+    public void setDouble(int pos, double value) {
 
         if (pos >= size) {
             throw new IndexOutOfBoundsException(pos + " is out of bounds for " + size);

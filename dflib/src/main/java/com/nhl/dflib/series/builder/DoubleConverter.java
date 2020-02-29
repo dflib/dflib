@@ -14,12 +14,17 @@ public class DoubleConverter<F> implements ValueConverter<F, Double> {
     }
 
     @Override
-    public void convertAndStore(F from, ValueHolder<Double> holder) {
-        holder.setDouble(converter.map(from));
+    public void convertAndStore(F v, ValueHolder<Double> holder) {
+        holder.setDouble(converter.map(v));
     }
 
     @Override
-    public void convertAndStore(F from, Accumulator<Double> accumulator) {
-        accumulator.addDouble(converter.map(from));
+    public void convertAndStore(F v, Accumulator<Double> accumulator) {
+        accumulator.addDouble(converter.map(v));
+    }
+
+    @Override
+    public void convertAndStore(int pos, F v, Accumulator<Double> accumulator) {
+        accumulator.setDouble(pos, converter.map(v));
     }
 }

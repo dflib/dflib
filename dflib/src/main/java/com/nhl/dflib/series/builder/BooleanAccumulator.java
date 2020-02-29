@@ -67,7 +67,13 @@ public class BooleanAccumulator implements Accumulator<Boolean> {
         data[size++] = value;
     }
 
-    public void set(int pos, boolean value) {
+    @Override
+    public void set(int pos, Boolean v) {
+        setBoolean(pos, v != null ? v : false);
+    }
+
+    @Override
+    public void setBoolean(int pos, boolean value) {
 
         if (pos >= size) {
             throw new IndexOutOfBoundsException(pos + " is out of bounds for " + size);
