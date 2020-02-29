@@ -8,7 +8,7 @@ import java.util.Arrays;
 /**
  * @since 0.6
  */
-public class ObjectAccumulator<T> implements Accumulator<T>, SeriesBuilder<T, T> {
+public class ObjectAccumulator<T> implements Accumulator<T> {
 
     private T[] data;
     private int size;
@@ -57,30 +57,6 @@ public class ObjectAccumulator<T> implements Accumulator<T>, SeriesBuilder<T, T>
         }
 
         data[pos] = v;
-    }
-
-    /**
-     * @since 0.8
-     */
-    @Override
-    public T peek() {
-        if (size == 0) {
-            throw new IndexOutOfBoundsException("Empty accumulator");
-        }
-
-        return data[size - 1];
-    }
-
-    /**
-     * @since 0.8
-     */
-    @Override
-    public void pop() {
-        if (size == 0) {
-            throw new IndexOutOfBoundsException("Empty accumulator");
-        }
-
-        size--;
     }
 
     @Override

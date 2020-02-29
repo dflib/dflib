@@ -4,11 +4,11 @@ import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.DoubleArraySeries;
 import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.series.LongArraySeries;
+import com.nhl.dflib.series.builder.Accumulator;
 import com.nhl.dflib.series.builder.DoubleAccumulator;
 import com.nhl.dflib.series.builder.IntAccumulator;
 import com.nhl.dflib.series.builder.LongAccumulator;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
-import com.nhl.dflib.series.builder.SeriesBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -150,7 +150,7 @@ public class DataFrameBuilder {
 
         int heightEstimate = (iterable instanceof Collection) ? ((Collection) iterable).size() : 10;
 
-        SeriesBuilder<Object, Object>[] columnBuilders = new ObjectAccumulator[width];
+        Accumulator<Object>[] columnBuilders = new Accumulator[width];
         for (int i = 0; i < width; i++) {
             columnBuilders[i] = new ObjectAccumulator<>(heightEstimate);
         }

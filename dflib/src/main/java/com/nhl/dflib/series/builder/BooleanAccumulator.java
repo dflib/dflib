@@ -82,28 +82,6 @@ public class BooleanAccumulator implements Accumulator<Boolean> {
         data[pos] = value;
     }
 
-    /**
-     * @since 0.8
-     */
-    public boolean peek() {
-        if (size == 0) {
-            throw new IndexOutOfBoundsException("Empty accumulator");
-        }
-
-        return data[size - 1];
-    }
-
-    /**
-     * @since 0.8
-     */
-    public void pop() {
-        if (size == 0) {
-            throw new IndexOutOfBoundsException("Empty accumulator");
-        }
-
-        size--;
-    }
-
     @Override
     public BooleanSeries toSeries() {
         boolean[] data = compactData();

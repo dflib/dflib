@@ -1,7 +1,7 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.series.builder.Accumulator;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
-import com.nhl.dflib.series.builder.SeriesBuilder;
 
 /**
  * Assembles a DataFrame row by row. Created indirectly inside {@link DataFrameBuilder#addRow(Object...)}.
@@ -11,13 +11,13 @@ import com.nhl.dflib.series.builder.SeriesBuilder;
 public class DataFrameByRowBuilder {
 
     private Index columnsIndex;
-    private SeriesBuilder<Object, Object>[] columnBuilders;
+    private Accumulator<Object>[] columnBuilders;
 
     protected DataFrameByRowBuilder(Index columnsIndex) {
         this.columnsIndex = columnsIndex;
 
         int w = columnsIndex.size();
-        this.columnBuilders = new SeriesBuilder[w];
+        this.columnBuilders = new Accumulator[w];
         for (int i = 0; i < w; i++) {
             columnBuilders[i] = new ObjectAccumulator<>();
         }

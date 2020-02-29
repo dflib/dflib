@@ -82,28 +82,6 @@ public class IntAccumulator implements Accumulator<Integer> {
         data[pos] = value;
     }
 
-    /**
-     * @since 0.8
-     */
-    public int peek() {
-        if (size == 0) {
-            throw new IndexOutOfBoundsException("Empty accumulator");
-        }
-
-        return data[size - 1];
-    }
-
-    /**
-     * @since 0.8
-     */
-    public void pop() {
-        if (size == 0) {
-            throw new IndexOutOfBoundsException("Empty accumulator");
-        }
-
-        size--;
-    }
-
     @Override
     public IntSeries toSeries() {
         int[] data = compactData();

@@ -5,8 +5,8 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.SeriesAggregator;
 import com.nhl.dflib.SeriesGroupBy;
+import com.nhl.dflib.series.builder.Accumulator;
 import com.nhl.dflib.series.builder.ObjectAccumulator;
-import com.nhl.dflib.series.builder.SeriesBuilder;
 
 /**
  * @since 0.6
@@ -38,8 +38,8 @@ public class SeriesAggregation {
 
             SeriesAggregator agg = aggregators[i];
 
-            // TODO: let Aggregator generate and fill SeriesBuilder, as it can use primitive collections
-            SeriesBuilder columnBuilder = new ObjectAccumulator(aggH);
+            // TODO: let Aggregator fill Accumulator, as it can use primitive collections
+            Accumulator columnBuilder = new ObjectAccumulator(aggH);
 
             for (Object key : groupBy.getGroups()) {
                 Series<T> group = groupBy.getGroup(key);

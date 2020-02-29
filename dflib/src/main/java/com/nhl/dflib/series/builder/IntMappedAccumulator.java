@@ -28,16 +28,6 @@ public class IntMappedAccumulator<I> implements SeriesBuilder<I, Integer> {
     }
 
     @Override
-    public Integer peek() {
-        return accumulator.peek();
-    }
-
-    @Override
-    public void pop() {
-        accumulator.pop();
-    }
-
-    @Override
     public Series<Integer> toSeries() {
         return accumulator.toSeries();
     }

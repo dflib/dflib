@@ -76,28 +76,6 @@ public class LongAccumulator implements Accumulator<Long> {
         data[pos] = value;
     }
 
-    /**
-     * @since 0.8
-     */
-    public long peek() {
-        if (size == 0) {
-            throw new IndexOutOfBoundsException("Empty accumulator");
-        }
-
-        return data[size - 1];
-    }
-
-    /**
-     * @since 0.8
-     */
-    public void pop() {
-        if (size == 0) {
-            throw new IndexOutOfBoundsException("Empty accumulator");
-        }
-
-        size--;
-    }
-
     @Override
     public LongSeries toSeries() {
         long[] data = compactData();

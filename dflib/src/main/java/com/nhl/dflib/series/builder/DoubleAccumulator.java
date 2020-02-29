@@ -83,28 +83,6 @@ public class DoubleAccumulator implements Accumulator<Double> {
         data[pos] = value;
     }
 
-    /**
-     * @since 0.8
-     */
-    public double peek() {
-        if (size == 0) {
-            throw new IndexOutOfBoundsException("Empty accumulator");
-        }
-
-        return data[size - 1];
-    }
-
-    /**
-     * @since 0.8
-     */
-    public void pop() {
-        if (size == 0) {
-            throw new IndexOutOfBoundsException("Empty accumulator");
-        }
-
-        size--;
-    }
-
     @Override
     public DoubleSeries toSeries() {
         double[] data = compactData();
