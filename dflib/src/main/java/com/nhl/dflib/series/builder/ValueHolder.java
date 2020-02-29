@@ -44,5 +44,7 @@ public interface ValueHolder<T> {
 
     void store(Accumulator<T> accumulator);
 
+    void store(int pos, Accumulator<T> accumulator);
+
     void set(T v);
 }

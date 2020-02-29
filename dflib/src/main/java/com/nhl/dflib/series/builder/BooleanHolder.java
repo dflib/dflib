@@ -23,6 +23,11 @@ public class BooleanHolder implements ValueHolder<Boolean> {
     }
 
     @Override
+    public void store(int pos, Accumulator<Boolean> accumulator) {
+        accumulator.setBoolean(pos, v);
+    }
+
+    @Override
     public boolean getBoolean() {
         return v;
     }
