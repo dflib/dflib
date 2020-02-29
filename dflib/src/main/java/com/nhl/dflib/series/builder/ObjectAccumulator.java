@@ -22,11 +22,6 @@ public class ObjectAccumulator<T> implements Accumulator<T> {
         this.data = (T[]) new Object[capacity];
     }
 
-    @Override
-    public void add(ValueHolder<T> valueHolder) {
-        add(valueHolder.get());
-    }
-
     public void fill(int from, int to, T value) {
         if (to - from < 1) {
             return;

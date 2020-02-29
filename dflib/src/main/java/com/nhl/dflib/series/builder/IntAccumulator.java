@@ -42,14 +42,6 @@ public class IntAccumulator implements Accumulator<Integer> {
      * @since 0.8
      */
     @Override
-    public void add(ValueHolder<Integer> valueHolder) {
-        addInt(valueHolder.getInt());
-    }
-
-    /**
-     * @since 0.8
-     */
-    @Override
     public void add(Integer v) {
         addInt(v != null ? v : 0);
     }

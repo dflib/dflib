@@ -43,14 +43,6 @@ public class DoubleAccumulator implements Accumulator<Double> {
      * @since 0.8
      */
     @Override
-    public void add(ValueHolder<Double> valueHolder) {
-        addDouble(valueHolder.getDouble());
-    }
-
-    /**
-     * @since 0.8
-     */
-    @Override
     public void add(Double v) {
         addDouble(v != null ? v : 0.);
     }

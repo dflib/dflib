@@ -38,14 +38,6 @@ public class LongAccumulator implements Accumulator<Long> {
         size += to - from;
     }
 
-    /**
-     * @since 0.8
-     */
-    @Override
-    public void add(ValueHolder<Long> valueHolder) {
-        addLong(valueHolder.getLong());
-    }
-
     @Override
     public void add(Long v) {
         addLong(v != null ? v : 0L);

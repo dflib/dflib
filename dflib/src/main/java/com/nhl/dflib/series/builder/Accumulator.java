@@ -9,8 +9,6 @@ import com.nhl.dflib.Series;
  */
 public interface Accumulator<T> {
 
-    void add(ValueHolder<T> valueHolder);
-
     void add(T v);
 
     void set(int pos, T v);

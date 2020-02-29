@@ -42,14 +42,6 @@ public class BooleanAccumulator implements Accumulator<Boolean> {
      * @since 0.8
      */
     @Override
-    public void add(ValueHolder<Boolean> valueHolder) {
-        addBoolean(valueHolder.getBoolean());
-    }
-
-    /**
-     * @since 0.8
-     */
-    @Override
     public void add(Boolean v) {
         addBoolean(v != null ? v : false);
     }
