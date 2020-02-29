@@ -20,14 +20,6 @@ public class AccumulatorColumn<T> {
         this.csvColumnPosition = csvColumnPosition;
     }
 
-    public Series<T> toSeries() {
-        return accumulator.toSeries();
-    }
-
-    public void set(int pos, CSVRecord record) {
-        converter.convertAndStore(pos, record.get(csvColumnPosition), accumulator);
-    }
-
     public void add(CSVRecord record) {
         converter.convertAndStore(record.get(csvColumnPosition), accumulator);
     }
@@ -36,5 +28,19 @@ public class AccumulatorColumn<T> {
         // values are already converted, so bypassing the converter
         ValueHolderColumn vhColumn = values[csvColumnPosition];
         vhColumn.store(accumulator);
+    }
+
+    public void set(int pos, CSVRecord record) {
+        converter.convertAndStore(pos, record.get(csvColumnPosition), accumulator);
+    }
+
+    public void set(int pos, ValueHolderColumn<?>[] values) {
+        // values are already converted, so bypassing the converter
+        ValueHolderColumn vhColumn = values[csvColumnPosition];
+        vhColumn.store(pos, accumulator);
+    }
+
+    public Series<T> toSeries() {
+        return accumulator.toSeries();
     }
 }

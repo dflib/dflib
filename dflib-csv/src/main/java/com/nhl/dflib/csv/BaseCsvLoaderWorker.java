@@ -10,12 +10,12 @@ import java.util.Iterator;
 
 class BaseCsvLoaderWorker implements CsvLoaderWorker {
 
-    protected AccumulatorColumn<?>[] columns;
+    protected AccumulatorColumn<?>[] columnAccumulators;
     protected Index columnIndex;
 
-    BaseCsvLoaderWorker(Index columnIndex, AccumulatorColumn<?>[] columns) {
+    BaseCsvLoaderWorker(Index columnIndex, AccumulatorColumn<?>[] columnAccumulators) {
         this.columnIndex = columnIndex;
-        this.columns = columns;
+        this.columnAccumulators = columnAccumulators;
     }
 
     @Override
@@ -35,7 +35,7 @@ class BaseCsvLoaderWorker implements CsvLoaderWorker {
         int width = columnIndex.size();
         Series<?>[] series = new Series[width];
         for (int i = 0; i < width; i++) {
-            series[i] = columns[i].toSeries();
+            series[i] = columnAccumulators[i].toSeries();
         }
 
         return DataFrame.newFrame(columnIndex).columns(series);
@@ -43,7 +43,7 @@ class BaseCsvLoaderWorker implements CsvLoaderWorker {
 
     protected void addRow(int width, CSVRecord row) {
         for (int i = 0; i < width; i++) {
-            columns[i].add(row);
+            columnAccumulators[i].add(row);
         }
     }
 }

@@ -2,7 +2,7 @@ package com.nhl.dflib.csv;
 
 import com.nhl.dflib.Index;
 import com.nhl.dflib.csv.loader.AccumulatorColumn;
-import com.nhl.dflib.series.builder.SeriesBuilder;
+import com.nhl.dflib.csv.loader.ValueHolderColumn;
 import org.apache.commons.csv.CSVRecord;
 
 import java.util.Iterator;
@@ -11,47 +11,76 @@ import java.util.function.Predicate;
 
 class FilteringSamplingCsvLoaderWorker extends SamplingCsvLoaderWorker {
 
-    private SeriesBuilder<String, ?>[] presampleAccummulators;
-    private Predicate<SeriesBuilder<String, ?>[]> rowFilter;
+    private ValueHolderColumn<?>[] csvRowHolder;
+    private Predicate<ValueHolderColumn<?>[]> csvRowFilter;
 
     public FilteringSamplingCsvLoaderWorker(
             Index columnIndex,
             AccumulatorColumn<?>[] columns,
-            SeriesBuilder<String, ?>[] presampleAccummulators,
-            Predicate<SeriesBuilder<String, ?>[]> rowFilter,
+            ValueHolderColumn<?>[] csvRowHolder,
+            Predicate<ValueHolderColumn<?>[]> csvRowFilter,
             int rowSampleSize,
             Random rowsSampleRandom) {
 
         super(columnIndex, columns, rowSampleSize, rowsSampleRandom);
-
-        this.presampleAccummulators = presampleAccummulators;
-        this.rowFilter = rowFilter;
+        this.csvRowHolder = csvRowHolder;
+        this.csvRowFilter = csvRowFilter;
     }
 
+    @Override
     protected void consumeCSV(Iterator<CSVRecord> it) {
         int width = columnIndex.size();
 
         int i = 0;
         while (it.hasNext()) {
 
-            // TODO
-//            CSVRecord row = it.next();
-//
-//            // perform filtering before sampling and use a separate buffer ..
-//            // TODO: the inefficiency here is double data conversion for every sampled row:
-//            //  once in pre-sample, second time - during sampling, as conversion happens inside accumulator
-//
-//            for (int j = 0; j < width; j++) {
-//                presampleAccummulators[j].add(row.get(csvPositions[j]));
-//            }
-//
-//            if (rowFilter.test(presampleAccummulators)) {
-//                sampleRow(i++, width, row);
-//            }
-//
-//            for (int j = 0; j < width; j++) {
-//                presampleAccummulators[j].pop();
-//            }
+            CSVRecord row = it.next();
+
+            // perform filtering in a separate buffer before sampling....
+
+            // 1. fill the buffer for condition evaluation. All values will be converted to the right data types
+            int csvWidth = csvRowHolder.length;
+            for (int j = 0; j < csvWidth; j++) {
+                csvRowHolder[j].set(row);
+            }
+
+            // 2. eval filters
+            if (csvRowFilter.test(csvRowHolder)) {
+
+                // 3. sample row since the condition is satisfied
+                sampleBufferedRow(i++, width);
+            }
+        }
+    }
+
+    protected void sampleBufferedRow(int rowNumber, int width) {
+
+        // Reservoir sampling algorithm per https://en.wikipedia.org/wiki/Reservoir_sampling
+
+        // fill "reservoir" first
+        if (rowNumber < rowSampleSize) {
+            addBufferedRow(width);
+            sampledRows.addInt(rowNumber);
+        }
+        // replace previously filled values based on random sampling with decaying probability
+        else {
+            int pos = rowsSampleRandom.nextInt(rowNumber + 1);
+            if (pos < rowSampleSize) {
+                replaceBufferedRow(pos, width);
+                sampledRows.setInt(pos, rowNumber);
+            }
+        }
+    }
+
+    protected void addBufferedRow(int width) {
+        for (int i = 0; i < width; i++) {
+            columnAccumulators[i].add(csvRowHolder);
+        }
+    }
+
+    protected void replaceBufferedRow(int pos, int width) {
+        for (int i = 0; i < width; i++) {
+            columnAccumulators[i].set(pos, csvRowHolder);
         }
     }
 }

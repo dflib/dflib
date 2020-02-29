@@ -28,6 +28,10 @@ public class ValueHolderColumn<T> {
         holder.store(accumulator);
     }
 
+    public void store(int pos, Accumulator<T> accumulator) {
+        holder.store(pos, accumulator);
+    }
+
     public T get() {
         return holder.get();
     }

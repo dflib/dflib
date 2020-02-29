@@ -9,36 +9,36 @@ import java.util.function.Predicate;
 
 class FilteringCsvLoaderWorker extends BaseCsvLoaderWorker {
 
-    private ValueHolderColumn<?>[] csvColumns;
-    private Predicate<ValueHolderColumn<?>[]> rowFilter;
+    private ValueHolderColumn<?>[] csvRowHolder;
+    private Predicate<ValueHolderColumn<?>[]> csvRowFilter;
 
     public FilteringCsvLoaderWorker(
             Index columnIndex,
             AccumulatorColumn<?>[] columns,
-            ValueHolderColumn<?>[] csvColumns,
-            Predicate<ValueHolderColumn<?>[]> rowFilter) {
+            ValueHolderColumn<?>[] csvRowHolder,
+            Predicate<ValueHolderColumn<?>[]> csvRowFilter) {
 
         super(columnIndex, columns);
 
-        this.csvColumns = csvColumns;
-        this.rowFilter = rowFilter;
+        this.csvRowHolder = csvRowHolder;
+        this.csvRowFilter = csvRowFilter;
     }
 
     @Override
     protected void addRow(int width, CSVRecord row) {
 
-        // 1. fill the buffer for condition evaluation. The values will be converted to the right data types
-        int csvWidth = csvColumns.length;
+        // 1. fill the buffer for condition evaluation. All values will be converted to the right data types
+        int csvWidth = csvRowHolder.length;
         for (int i = 0; i < csvWidth; i++) {
-            csvColumns[i].set(row);
+            csvRowHolder[i].set(row);
         }
 
         // 2. eval filters
-        if (rowFilter.test(csvColumns)) {
+        if (csvRowFilter.test(csvRowHolder)) {
 
             // 3. add row since the condition is satisfied
             for (int i = 0; i < width; i++) {
-                columns[i].add(csvColumns);
+                columnAccumulators[i].add(csvRowHolder);
             }
 
         }

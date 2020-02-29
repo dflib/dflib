@@ -469,8 +469,7 @@ public class CsvLoader {
     private CsvLoaderWorker samplingWorker(ColumnMap columnMap, ColumnConfig[] csvColumns) {
         return rowFilters.isEmpty()
                 ? new SamplingCsvLoaderWorker(columnMap.dfHeader, columnMap.createAccumulators(csvColumns), rowSampleSize, rowsSampleRandom)
-                : null; // TODO
-               // : new FilteringSamplingCsvLoaderWorker(pair.header, pair.csvPositions, createAccumulators(pair.header), createAccumulators(pair.header), createRowFilter(unfilteredHeader), rowSampleSize, rowsSampleRandom);
+                : new FilteringSamplingCsvLoaderWorker(columnMap.dfHeader, columnMap.createAccumulators(csvColumns), columnMap.createValueHolders(csvColumns), createRowFilter(columnMap.csvHeader), rowSampleSize, rowsSampleRandom);
     }
 
     private Iterator<CSVRecord> createRecordIterator(Reader reader) throws IOException {
