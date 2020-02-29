@@ -1,11 +1,11 @@
 package com.nhl.dflib.jdbc.connector;
 
-import com.nhl.dflib.series.builder.BooleanMappedAccumulator;
-import com.nhl.dflib.series.builder.DoubleMappedAccumulator;
-import com.nhl.dflib.series.builder.IntMappedAccumulator;
-import com.nhl.dflib.series.builder.LongMappedAccumulator;
-import com.nhl.dflib.series.builder.ObjectMappedAccumulator;
-import com.nhl.dflib.series.builder.SeriesBuilder;
+import com.nhl.dflib.jdbc.connector.loader.BooleanSeriesBuilder;
+import com.nhl.dflib.jdbc.connector.loader.DoubleSeriesBuilder;
+import com.nhl.dflib.jdbc.connector.loader.IntSeriesBuilder;
+import com.nhl.dflib.jdbc.connector.loader.LongSeriesBuilder;
+import com.nhl.dflib.jdbc.connector.loader.ObjectSeriesBuilder;
+import com.nhl.dflib.jdbc.connector.loader.SeriesBuilder;
 
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -24,7 +24,7 @@ import java.time.LocalTime;
 public interface SeriesBuilderFactory<T> {
 
     static SeriesBuilder<ResultSet, Boolean> booleanAccum(int pos) {
-        return new BooleanMappedAccumulator<>(rs -> {
+        return new BooleanSeriesBuilder<>(rs -> {
             try {
                 return rs.getBoolean(pos);
             } catch (SQLException e) {
@@ -34,7 +34,7 @@ public interface SeriesBuilderFactory<T> {
     }
 
     static SeriesBuilder<ResultSet, Integer> intAccum(int pos) {
-        return new IntMappedAccumulator<>(rs -> {
+        return new IntSeriesBuilder<>(rs -> {
             try {
                 return rs.getInt(pos);
             } catch (SQLException e) {
@@ -44,7 +44,7 @@ public interface SeriesBuilderFactory<T> {
     }
 
     static SeriesBuilder<ResultSet, Long> longAccum(int pos) {
-        return new LongMappedAccumulator<>(rs -> {
+        return new LongSeriesBuilder<>(rs -> {
             try {
                 return rs.getLong(pos);
             } catch (SQLException e) {
@@ -54,7 +54,7 @@ public interface SeriesBuilderFactory<T> {
     }
 
     static SeriesBuilder<ResultSet, Double> doubleAccum(int pos) {
-        return new DoubleMappedAccumulator<>(rs -> {
+        return new DoubleSeriesBuilder<>(rs -> {
             try {
                 return rs.getDouble(pos);
             } catch (SQLException e) {
@@ -89,7 +89,7 @@ public interface SeriesBuilderFactory<T> {
     }
 
     static <T> SeriesBuilder<ResultSet, T> fromJdbcFunction(JdbcFunction<ResultSet, T> f) {
-        return new ObjectMappedAccumulator<>(rs -> {
+        return new ObjectSeriesBuilder<>(rs -> {
             try {
                 return f.apply(rs);
             } catch (SQLException e) {

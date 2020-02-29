@@ -3,7 +3,7 @@ package com.nhl.dflib.jdbc.connector;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.series.builder.SeriesBuilder;
+import com.nhl.dflib.jdbc.connector.loader.SeriesBuilder;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

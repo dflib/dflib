@@ -3,6 +3,8 @@ package com.nhl.dflib.series.builder;
 import com.nhl.dflib.Series;
 
 /**
+ * A mutable Series builder to create primitive and Object Series.
+ *
  * @since 0.8
  */
 public interface Accumulator<T> {

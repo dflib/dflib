@@ -11,7 +11,7 @@ import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.jdbc.connector.statement.ValueConverterFactory;
 import com.nhl.dflib.jdbc.datasource.TxDataSource;
-import com.nhl.dflib.series.builder.SeriesBuilder;
+import com.nhl.dflib.jdbc.connector.loader.SeriesBuilder;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

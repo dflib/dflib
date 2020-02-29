@@ -1,18 +1,19 @@
-package com.nhl.dflib.series.builder;
+package com.nhl.dflib.jdbc.connector.loader;
 
 import com.nhl.dflib.Series;
 import com.nhl.dflib.IntValueMapper;
+import com.nhl.dflib.series.builder.IntAccumulator;
 
 /**
  * @param <I>
- * @since 0.6
+ * @since 0.8
  */
-public class IntMappedAccumulator<I> implements SeriesBuilder<I, Integer> {
+public class IntSeriesBuilder<I> implements SeriesBuilder<I, Integer> {
 
     private IntAccumulator accumulator;
     private IntValueMapper<I> mapper;
 
-    public IntMappedAccumulator(IntValueMapper<I> mapper) {
+    public IntSeriesBuilder(IntValueMapper<I> mapper) {
         this.accumulator = new IntAccumulator();
         this.mapper = mapper;
     }

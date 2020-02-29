@@ -1,11 +1,11 @@
-package com.nhl.dflib.series.builder;
+package com.nhl.dflib.jdbc.connector.loader;
 
 import com.nhl.dflib.Series;
 
 /**
  * @param <I>
  * @param <O>
- * @since 0.6
+ * @since 0.8
  */
 public interface SeriesBuilder<I, O> {
 

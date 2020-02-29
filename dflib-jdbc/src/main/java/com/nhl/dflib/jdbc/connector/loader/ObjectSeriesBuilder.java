@@ -1,19 +1,20 @@
-package com.nhl.dflib.series.builder;
+package com.nhl.dflib.jdbc.connector.loader;
 
 import com.nhl.dflib.Series;
 import com.nhl.dflib.ValueMapper;
+import com.nhl.dflib.series.builder.ObjectAccumulator;
 
 /**
  * @param <I>
  * @param <O>
- * @since 0.6
+ * @since 0.8
  */
-public class ObjectMappedAccumulator<I, O> implements SeriesBuilder<I, O> {
+public class ObjectSeriesBuilder<I, O> implements SeriesBuilder<I, O> {
 
     private ValueMapper<I, O> mapper;
     private ObjectAccumulator<O> accumulator;
 
-    public ObjectMappedAccumulator(ValueMapper<I, O> mapper) {
+    public ObjectSeriesBuilder(ValueMapper<I, O> mapper) {
         this.mapper = mapper;
         this.accumulator = new ObjectAccumulator<>();
     }

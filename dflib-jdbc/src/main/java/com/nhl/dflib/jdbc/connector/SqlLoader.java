@@ -4,7 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.sample.Sampler;
-import com.nhl.dflib.series.builder.SeriesBuilder;
+import com.nhl.dflib.jdbc.connector.loader.SeriesBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

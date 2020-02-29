@@ -1,18 +1,19 @@
-package com.nhl.dflib.series.builder;
+package com.nhl.dflib.jdbc.connector.loader;
 
 import com.nhl.dflib.BooleanValueMapper;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.series.builder.BooleanAccumulator;
 
 /**
  * @param <I>
- * @since 0.6
+ * @since 0.8
  */
-public class BooleanMappedAccumulator<I> implements SeriesBuilder<I, Boolean> {
+public class BooleanSeriesBuilder<I> implements SeriesBuilder<I, Boolean> {
 
     private BooleanAccumulator accumulator;
     private BooleanValueMapper<I> mapper;
 
-    public BooleanMappedAccumulator(BooleanValueMapper<I> mapper) {
+    public BooleanSeriesBuilder(BooleanValueMapper<I> mapper) {
         this.accumulator = new BooleanAccumulator();
         this.mapper = mapper;
     }

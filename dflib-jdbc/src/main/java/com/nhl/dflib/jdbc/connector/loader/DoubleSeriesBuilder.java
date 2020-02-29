@@ -1,18 +1,19 @@
-package com.nhl.dflib.series.builder;
+package com.nhl.dflib.jdbc.connector.loader;
 
 import com.nhl.dflib.DoubleValueMapper;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.series.builder.DoubleAccumulator;
 
 /**
  * @param <I>
- * @since 0.6
+ * @since 0.8
  */
-public class DoubleMappedAccumulator<I> implements SeriesBuilder<I, Double> {
+public class DoubleSeriesBuilder<I> implements SeriesBuilder<I, Double> {
 
     private DoubleAccumulator accumulator;
     private DoubleValueMapper<I> mapper;
 
-    public DoubleMappedAccumulator(DoubleValueMapper<I> mapper) {
+    public DoubleSeriesBuilder(DoubleValueMapper<I> mapper) {
         this.accumulator = new DoubleAccumulator();
         this.mapper = mapper;
     }
