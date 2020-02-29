@@ -4,7 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.sample.Sampler;
-import com.nhl.dflib.jdbc.connector.loader.SeriesBuilder;
+import com.nhl.dflib.jdbc.connector.loader.ColumnBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,7 +112,7 @@ public class SqlLoader {
     protected DataFrame loadDataFrame(ResultSet rs) throws SQLException {
         Index columns = createIndex(rs);
 
-        SeriesBuilder<ResultSet, ?>[] accumulators = createAccummulators(rs);
+        ColumnBuilder<?>[] accumulators = createAccummulators(rs);
 
         SqlLoaderWorker worker = rowSampleSize > 0
                 ? new SamplingSqlLoaderWorker(columns, accumulators, maxRows, rowSampleSize, rowsSampleRandom)
@@ -134,10 +134,10 @@ public class SqlLoader {
         return Index.forLabels(names);
     }
 
-    protected SeriesBuilder<ResultSet, ?>[] createAccummulators(ResultSet resultSet) throws SQLException {
+    protected ColumnBuilder<?>[] createAccummulators(ResultSet resultSet) throws SQLException {
         ResultSetMetaData rsmd = resultSet.getMetaData();
         int w = rsmd.getColumnCount();
-        SeriesBuilder<ResultSet, ?>[] accums = new SeriesBuilder[w];
+        ColumnBuilder<?>[] accums = new ColumnBuilder[w];
 
         for (int i = 0; i < w; i++) {
             int jdbcPos = i + 1;

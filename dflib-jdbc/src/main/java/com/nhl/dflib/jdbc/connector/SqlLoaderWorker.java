@@ -3,7 +3,7 @@ package com.nhl.dflib.jdbc.connector;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.jdbc.connector.loader.SeriesBuilder;
+import com.nhl.dflib.jdbc.connector.loader.ColumnBuilder;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,10 +11,10 @@ import java.sql.SQLException;
 class SqlLoaderWorker {
 
     private Index columns;
-    protected SeriesBuilder<ResultSet, ?>[] accumulators;
+    protected ColumnBuilder<?>[] accumulators;
     protected int maxRows;
 
-    public SqlLoaderWorker(Index columns, SeriesBuilder<ResultSet, ?>[] accumulators, int maxRows) {
+    public SqlLoaderWorker(Index columns, ColumnBuilder<?>[] accumulators, int maxRows) {
         this.columns = columns;
         this.maxRows = maxRows;
         this.accumulators = accumulators;
@@ -39,7 +39,7 @@ class SqlLoaderWorker {
         int width = columns.size();
         Series<?>[] series = new Series[width];
         for (int i = 0; i < width; i++) {
-            series[i] = accumulators[i].toSeries();
+            series[i] = accumulators[i].toColumn();
         }
 
         return DataFrame.newFrame(columns).columns(series);

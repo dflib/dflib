@@ -3,7 +3,7 @@ package com.nhl.dflib.jdbc.connector;
 import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.jdbc.connector.statement.ValueConverterFactory;
-import com.nhl.dflib.jdbc.connector.loader.SeriesBuilder;
+import com.nhl.dflib.jdbc.connector.loader.ColumnBuilder;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -78,10 +78,10 @@ public interface JdbcConnector {
      * @param resultSetPosition 1-based position of the column in the ResultSet.
      * @param type              JDBC type of the value per {@link java.sql.Types}
      * @param mandatory         whether the value is mandatory. This information helps to optimize produced columns,
-     *                          using primitive Series for mandatory numberic / boolean columns.
+     *                          using primitive Series for mandatory numeric / boolean columns.
      * @return a new instance of SeriesBuilder
      */
-    SeriesBuilder<ResultSet, ?> createColumnReader(int resultSetPosition, int type, boolean mandatory);
+    ColumnBuilder<?> createColumnReader(int resultSetPosition, int type, boolean mandatory);
 
     SqlLogger getSqlLogger();
 

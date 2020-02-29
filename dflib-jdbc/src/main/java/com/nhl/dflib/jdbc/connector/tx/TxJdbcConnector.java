@@ -7,15 +7,14 @@ import com.nhl.dflib.jdbc.connector.SqlSaver;
 import com.nhl.dflib.jdbc.connector.StatementBuilder;
 import com.nhl.dflib.jdbc.connector.TableLoader;
 import com.nhl.dflib.jdbc.connector.TableSaver;
+import com.nhl.dflib.jdbc.connector.loader.ColumnBuilder;
 import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.jdbc.connector.statement.ValueConverterFactory;
 import com.nhl.dflib.jdbc.datasource.TxDataSource;
-import com.nhl.dflib.jdbc.connector.loader.SeriesBuilder;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.ResultSet;
 
 /**
  * @since 0.6
@@ -100,7 +99,7 @@ public class TxJdbcConnector implements JdbcConnector {
     }
 
     @Override
-    public SeriesBuilder<ResultSet, ?> createColumnReader(int pos, int type, boolean mandatory) {
+    public ColumnBuilder<?> createColumnReader(int pos, int type, boolean mandatory) {
         return delegate.createColumnReader(pos, type, mandatory);
     }
 

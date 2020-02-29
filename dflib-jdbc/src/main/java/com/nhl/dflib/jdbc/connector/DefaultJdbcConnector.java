@@ -1,15 +1,15 @@
 package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.Printers;
-import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
-import com.nhl.dflib.jdbc.connector.loader.SeriesBuilder;
+import com.nhl.dflib.jdbc.connector.loader.ColumnBuilder;
+import com.nhl.dflib.jdbc.connector.loader.ColumnBuilderFactory;
 import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
+import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.jdbc.connector.statement.ValueConverter;
 import com.nhl.dflib.jdbc.connector.statement.ValueConverterFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.HashMap;
@@ -24,9 +24,9 @@ public class DefaultJdbcConnector implements JdbcConnector {
     private DbMetadata metadata;
     private IdentifierQuoter quoter;
 
-    private SeriesBuilderFactory defaultSeriesBuilderFactory;
-    private Map<Integer, SeriesBuilderFactory> mandatorySeriesBuilderFactories;
-    private Map<Integer, SeriesBuilderFactory> seriesBuilderFactories;
+    private ColumnBuilderFactory defaultColumnBuilderFactory;
+    private Map<Integer, ColumnBuilderFactory> mandatorySeriesBuilderFactories;
+    private Map<Integer, ColumnBuilderFactory> seriesBuilderFactories;
 
     private ValueConverterFactory preBindConverterFactory;
     private SqlLogger sqlLogger;
@@ -35,22 +35,22 @@ public class DefaultJdbcConnector implements JdbcConnector {
         this.dataSource = dataSource;
         this.metadata = metadata;
 
-        this.defaultSeriesBuilderFactory = SeriesBuilderFactory::objectAccum;
+        this.defaultColumnBuilderFactory = ColumnBuilderFactory::objectAccum;
 
         // use primitive converters if the column has no nulls
         this.mandatorySeriesBuilderFactories = new HashMap<>();
-        this.mandatorySeriesBuilderFactories.put(Types.BOOLEAN, SeriesBuilderFactory::booleanAccum);
-        this.mandatorySeriesBuilderFactories.put(Types.INTEGER, SeriesBuilderFactory::intAccum);
-        this.mandatorySeriesBuilderFactories.put(Types.DOUBLE, SeriesBuilderFactory::doubleAccum);
-        this.mandatorySeriesBuilderFactories.put(Types.FLOAT, SeriesBuilderFactory::doubleAccum);
-        this.mandatorySeriesBuilderFactories.put(Types.BIGINT, SeriesBuilderFactory::longAccum);
+        this.mandatorySeriesBuilderFactories.put(Types.BOOLEAN, ColumnBuilderFactory::booleanAccum);
+        this.mandatorySeriesBuilderFactories.put(Types.INTEGER, ColumnBuilderFactory::intAccum);
+        this.mandatorySeriesBuilderFactories.put(Types.DOUBLE, ColumnBuilderFactory::doubleAccum);
+        this.mandatorySeriesBuilderFactories.put(Types.FLOAT, ColumnBuilderFactory::doubleAccum);
+        this.mandatorySeriesBuilderFactories.put(Types.BIGINT, ColumnBuilderFactory::longAccum);
 
         // Types.DECIMAL should presumably be mapped to BigDecimal, so not attempting to map to a primitive double
 
         this.seriesBuilderFactories = new HashMap<>();
-        this.seriesBuilderFactories.put(Types.DATE, SeriesBuilderFactory::dateAccum);
-        this.seriesBuilderFactories.put(Types.TIME, SeriesBuilderFactory::timeAccum);
-        this.seriesBuilderFactories.put(Types.TIMESTAMP, SeriesBuilderFactory::timestampAccum);
+        this.seriesBuilderFactories.put(Types.DATE, ColumnBuilderFactory::dateAccum);
+        this.seriesBuilderFactories.put(Types.TIME, ColumnBuilderFactory::timeAccum);
+        this.seriesBuilderFactories.put(Types.TIMESTAMP, ColumnBuilderFactory::timestampAccum);
 
         this.preBindConverterFactory = createPreBindConverterFactory();
 
@@ -104,7 +104,7 @@ public class DefaultJdbcConnector implements JdbcConnector {
      *
      * @param sql a parameterized SQL statement that should be run to get the DataFrame data. Format of the SQL String
      *            corresponds to the JDBC {@link java.sql.PreparedStatement}. So e.g. it may contain "?" placeholders
-     *            for bound parameters. Bound parameters are then passed via {@link SqlLoader#params(Object...)}.
+     *            for bound parameters. Bound parameters are then passed via {@link SqlLoader#load(Object...)}, etc..
      * @return a new SqlLoader
      */
     @Override
@@ -118,9 +118,9 @@ public class DefaultJdbcConnector implements JdbcConnector {
     }
 
     @Override
-    public SeriesBuilder<ResultSet, ?> createColumnReader(int pos, int type, boolean mandatory) {
+    public ColumnBuilder<?> createColumnReader(int pos, int type, boolean mandatory) {
 
-        SeriesBuilderFactory sbf = null;
+        ColumnBuilderFactory sbf = null;
 
         // try to use primitive converters if the column has no nulls
         if (mandatory) {
@@ -128,7 +128,7 @@ public class DefaultJdbcConnector implements JdbcConnector {
         }
 
         if (sbf == null) {
-            sbf = seriesBuilderFactories.getOrDefault(type, defaultSeriesBuilderFactory);
+            sbf = seriesBuilderFactories.getOrDefault(type, defaultColumnBuilderFactory);
         }
 
         return sbf.createAccum(pos);
