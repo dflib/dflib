@@ -1,8 +1,8 @@
 package com.nhl.dflib.csv;
 
 import com.nhl.dflib.Index;
-import com.nhl.dflib.csv.loader.AccumulatorColumn;
-import com.nhl.dflib.csv.loader.ValueHolderColumn;
+import com.nhl.dflib.csv.loader.ColumnBuilder;
+import com.nhl.dflib.csv.loader.CsvCell;
 import org.apache.commons.csv.CSVRecord;
 
 import java.util.Iterator;
@@ -11,19 +11,19 @@ import java.util.function.Predicate;
 
 class FilteringSamplingCsvLoaderWorker extends SamplingCsvLoaderWorker {
 
-    private ValueHolderColumn<?>[] csvRowHolder;
-    private Predicate<ValueHolderColumn<?>[]> csvRowFilter;
+    private CsvCell<?>[] csvRow;
+    private Predicate<CsvCell<?>[]> csvRowFilter;
 
     public FilteringSamplingCsvLoaderWorker(
             Index columnIndex,
-            AccumulatorColumn<?>[] columns,
-            ValueHolderColumn<?>[] csvRowHolder,
-            Predicate<ValueHolderColumn<?>[]> csvRowFilter,
+            ColumnBuilder<?>[] columns,
+            CsvCell<?>[] csvRow,
+            Predicate<CsvCell<?>[]> csvRowFilter,
             int rowSampleSize,
             Random rowsSampleRandom) {
 
         super(columnIndex, columns, rowSampleSize, rowsSampleRandom);
-        this.csvRowHolder = csvRowHolder;
+        this.csvRow = csvRow;
         this.csvRowFilter = csvRowFilter;
     }
 
@@ -39,13 +39,13 @@ class FilteringSamplingCsvLoaderWorker extends SamplingCsvLoaderWorker {
             // perform filtering in a separate buffer before sampling....
 
             // 1. fill the buffer for condition evaluation. All values will be converted to the right data types
-            int csvWidth = csvRowHolder.length;
+            int csvWidth = csvRow.length;
             for (int j = 0; j < csvWidth; j++) {
-                csvRowHolder[j].set(row);
+                csvRow[j].set(row);
             }
 
             // 2. eval filters
-            if (csvRowFilter.test(csvRowHolder)) {
+            if (csvRowFilter.test(csvRow)) {
 
                 // 3. sample row since the condition is satisfied
                 sampleBufferedRow(i++, width);
@@ -74,13 +74,13 @@ class FilteringSamplingCsvLoaderWorker extends SamplingCsvLoaderWorker {
 
     protected void addBufferedRow(int width) {
         for (int i = 0; i < width; i++) {
-            columnAccumulators[i].add(csvRowHolder);
+            columnAccumulators[i].add(csvRow);
         }
     }
 
     protected void replaceBufferedRow(int pos, int width) {
         for (int i = 0; i < width; i++) {
-            columnAccumulators[i].set(pos, csvRowHolder);
+            columnAccumulators[i].set(pos, csvRow);
         }
     }
 }

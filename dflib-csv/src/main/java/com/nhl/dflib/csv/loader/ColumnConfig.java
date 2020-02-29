@@ -169,41 +169,41 @@ public class ColumnConfig {
         return config;
     }
 
-    public AccumulatorColumn<?> createAccumulatorColumn(int columnPosition) {
+    public ColumnBuilder<?> createAccumulatorColumn(int columnPosition) {
 
         // using externally passed "columnPosition", as "this.columnPosition" may not be initialized (when column name
         // was in use)
 
         switch (type) {
             case intPrimitive:
-                return new AccumulatorColumn<>(intConverter, new IntAccumulator(), columnPosition);
+                return new ColumnBuilder<>(intConverter, new IntAccumulator(), columnPosition);
             case longPrimitive:
-                return new AccumulatorColumn<>(longConverter, new LongAccumulator(), columnPosition);
+                return new ColumnBuilder<>(longConverter, new LongAccumulator(), columnPosition);
             case doublePrimitive:
-                return new AccumulatorColumn<>(doubleConverter, new DoubleAccumulator(), columnPosition);
+                return new ColumnBuilder<>(doubleConverter, new DoubleAccumulator(), columnPosition);
             case booleanPrimitive:
-                return new AccumulatorColumn<>(booleanConverter, new BooleanAccumulator(), columnPosition);
+                return new ColumnBuilder<>(booleanConverter, new BooleanAccumulator(), columnPosition);
             default:
-                return new AccumulatorColumn(objectConverter, new ObjectAccumulator<>(), columnPosition);
+                return new ColumnBuilder(objectConverter, new ObjectAccumulator<>(), columnPosition);
         }
     }
 
-    public ValueHolderColumn<?> createValueHolderColumn(int columnPosition) {
+    public CsvCell<?> createValueHolderColumn(int columnPosition) {
 
         // using externally passed "columnPosition", as "this.columnPosition" may not be initialized (when column name
         // was in use)
 
         switch (type) {
             case intPrimitive:
-                return new ValueHolderColumn<>(intConverter, new IntHolder(), columnPosition);
+                return new CsvCell<>(intConverter, new IntHolder(), columnPosition);
             case longPrimitive:
-                return new ValueHolderColumn<>(longConverter, new LongHolder(), columnPosition);
+                return new CsvCell<>(longConverter, new LongHolder(), columnPosition);
             case doublePrimitive:
-                return new ValueHolderColumn<>(doubleConverter, new DoubleHolder(), columnPosition);
+                return new CsvCell<>(doubleConverter, new DoubleHolder(), columnPosition);
             case booleanPrimitive:
-                return new ValueHolderColumn<>(booleanConverter, new BooleanHolder(), columnPosition);
+                return new CsvCell<>(booleanConverter, new BooleanHolder(), columnPosition);
             default:
-                return new ValueHolderColumn(objectConverter, new ObjectHolder(), columnPosition);
+                return new CsvCell(objectConverter, new ObjectHolder(), columnPosition);
         }
     }
 

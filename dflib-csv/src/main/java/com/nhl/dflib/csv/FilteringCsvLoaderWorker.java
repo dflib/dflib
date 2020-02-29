@@ -1,26 +1,26 @@
 package com.nhl.dflib.csv;
 
 import com.nhl.dflib.Index;
-import com.nhl.dflib.csv.loader.AccumulatorColumn;
-import com.nhl.dflib.csv.loader.ValueHolderColumn;
+import com.nhl.dflib.csv.loader.ColumnBuilder;
+import com.nhl.dflib.csv.loader.CsvCell;
 import org.apache.commons.csv.CSVRecord;
 
 import java.util.function.Predicate;
 
 class FilteringCsvLoaderWorker extends BaseCsvLoaderWorker {
 
-    private ValueHolderColumn<?>[] csvRowHolder;
-    private Predicate<ValueHolderColumn<?>[]> csvRowFilter;
+    private CsvCell<?>[] csvRow;
+    private Predicate<CsvCell<?>[]> csvRowFilter;
 
     public FilteringCsvLoaderWorker(
             Index columnIndex,
-            AccumulatorColumn<?>[] columns,
-            ValueHolderColumn<?>[] csvRowHolder,
-            Predicate<ValueHolderColumn<?>[]> csvRowFilter) {
+            ColumnBuilder<?>[] columns,
+            CsvCell<?>[] csvRow,
+            Predicate<CsvCell<?>[]> csvRowFilter) {
 
         super(columnIndex, columns);
 
-        this.csvRowHolder = csvRowHolder;
+        this.csvRow = csvRow;
         this.csvRowFilter = csvRowFilter;
     }
 
@@ -28,17 +28,17 @@ class FilteringCsvLoaderWorker extends BaseCsvLoaderWorker {
     protected void addRow(int width, CSVRecord row) {
 
         // 1. fill the buffer for condition evaluation. All values will be converted to the right data types
-        int csvWidth = csvRowHolder.length;
+        int csvWidth = csvRow.length;
         for (int i = 0; i < csvWidth; i++) {
-            csvRowHolder[i].set(row);
+            csvRow[i].set(row);
         }
 
         // 2. eval filters
-        if (csvRowFilter.test(csvRowHolder)) {
+        if (csvRowFilter.test(csvRow)) {
 
             // 3. add row since the condition is satisfied
             for (int i = 0; i < width; i++) {
-                columnAccumulators[i].add(csvRowHolder);
+                columnAccumulators[i].add(csvRow);
             }
 
         }

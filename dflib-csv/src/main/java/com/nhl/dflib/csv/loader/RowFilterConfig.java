@@ -29,7 +29,7 @@ public class RowFilterConfig<V> {
         return c;
     }
 
-    public Predicate<ValueHolderColumn<?>[]> toPredicate(Index columns) {
+    public Predicate<CsvCell<?>[]> toPredicate(Index columns) {
         int pos = columnPosition >= 0 ? columnPosition : columns.position(columnName);
         return vhcs -> condition.test((V) vhcs[pos].get());
     }

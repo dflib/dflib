@@ -6,15 +6,17 @@ import com.nhl.dflib.series.builder.ValueConverter;
 import org.apache.commons.csv.CSVRecord;
 
 /**
+ * A mutable accumulator of column values for the DataFrame built from CSV.
+ *
  * @since 0.8
  */
-public class AccumulatorColumn<T> {
+public class ColumnBuilder<T> {
 
     private ValueConverter<String, T> converter;
     private Accumulator<T> accumulator;
     private int csvColumnPosition;
 
-    public AccumulatorColumn(ValueConverter<String, T> converter, Accumulator<T> accumulator, int csvColumnPosition) {
+    public ColumnBuilder(ValueConverter<String, T> converter, Accumulator<T> accumulator, int csvColumnPosition) {
         this.converter = converter;
         this.accumulator = accumulator;
         this.csvColumnPosition = csvColumnPosition;
@@ -24,9 +26,9 @@ public class AccumulatorColumn<T> {
         converter.convertAndStore(record.get(csvColumnPosition), accumulator);
     }
 
-    public void add(ValueHolderColumn<?>[] values) {
+    public void add(CsvCell<?>[] values) {
         // values are already converted, so bypassing the converter
-        ValueHolderColumn vhColumn = values[csvColumnPosition];
+        CsvCell vhColumn = values[csvColumnPosition];
         vhColumn.store(accumulator);
     }
 
@@ -34,13 +36,13 @@ public class AccumulatorColumn<T> {
         converter.convertAndStore(pos, record.get(csvColumnPosition), accumulator);
     }
 
-    public void set(int pos, ValueHolderColumn<?>[] values) {
+    public void set(int pos, CsvCell<?>[] values) {
         // values are already converted, so bypassing the converter
-        ValueHolderColumn vhColumn = values[csvColumnPosition];
+        CsvCell vhColumn = values[csvColumnPosition];
         vhColumn.store(pos, accumulator);
     }
 
-    public Series<T> toSeries() {
+    public Series<T> toColumn() {
         return accumulator.toSeries();
     }
 }

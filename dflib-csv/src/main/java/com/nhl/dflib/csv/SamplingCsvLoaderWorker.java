@@ -4,7 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.csv.loader.AccumulatorColumn;
+import com.nhl.dflib.csv.loader.ColumnBuilder;
 import com.nhl.dflib.series.builder.IntAccumulator;
 import org.apache.commons.csv.CSVRecord;
 
@@ -16,7 +16,7 @@ import java.util.Random;
  */
 class SamplingCsvLoaderWorker implements CsvLoaderWorker {
 
-    protected AccumulatorColumn<?>[] columnAccumulators;
+    protected ColumnBuilder<?>[] columnAccumulators;
     protected Index columnIndex;
 
     protected int rowSampleSize;
@@ -25,7 +25,7 @@ class SamplingCsvLoaderWorker implements CsvLoaderWorker {
 
     SamplingCsvLoaderWorker(
             Index columnIndex,
-            AccumulatorColumn<?>[] columnAccumulators,
+            ColumnBuilder<?>[] columnAccumulators,
             int rowSampleSize,
             Random rowsSampleRandom) {
 
@@ -49,12 +49,12 @@ class SamplingCsvLoaderWorker implements CsvLoaderWorker {
 
     protected DataFrame toUnsortedDataFrame() {
         int width = columnIndex.size();
-        Series<?>[] series = new Series[width];
+        Series<?>[] columns = new Series[width];
         for (int i = 0; i < width; i++) {
-            series[i] = columnAccumulators[i].toSeries();
+            columns[i] = columnAccumulators[i].toColumn();
         }
 
-        return DataFrame.newFrame(columnIndex).columns(series);
+        return DataFrame.newFrame(columnIndex).columns(columns);
     }
 
     protected DataFrame sortSampled(DataFrame sampledUnsorted) {

@@ -8,9 +8,9 @@ import com.nhl.dflib.LongValueMapper;
 import com.nhl.dflib.ValueMapper;
 import com.nhl.dflib.ValuePredicate;
 import com.nhl.dflib.csv.loader.ColumnConfig;
-import com.nhl.dflib.csv.loader.AccumulatorColumn;
+import com.nhl.dflib.csv.loader.ColumnBuilder;
 import com.nhl.dflib.csv.loader.RowFilterConfig;
-import com.nhl.dflib.csv.loader.ValueHolderColumn;
+import com.nhl.dflib.csv.loader.CsvCell;
 import com.nhl.dflib.sample.Sampler;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -562,13 +562,13 @@ public class CsvLoader {
         return Index.forLabels(columnNames);
     }
 
-    private Predicate<ValueHolderColumn<?>[]> createRowFilter(Index columns) {
+    private Predicate<CsvCell<?>[]> createRowFilter(Index columns) {
 
         if (rowFilters.isEmpty()) {
             return c -> true;
         }
 
-        Predicate<ValueHolderColumn<?>[]> p = rowFilters.get(0).toPredicate(columns);
+        Predicate<CsvCell<?>[]> p = rowFilters.get(0).toPredicate(columns);
 
         for (int i = 1; i < rowFilters.size(); i++) {
             p = p.and(rowFilters.get(i).toPredicate(columns));
@@ -589,10 +589,10 @@ public class CsvLoader {
             this.csvPositions = csvPositions;
         }
 
-        AccumulatorColumn[] createAccumulators(ColumnConfig[] csvColumns) {
+        ColumnBuilder[] createAccumulators(ColumnConfig[] csvColumns) {
 
             int w = dfHeader.size();
-            AccumulatorColumn<?>[] accums = new AccumulatorColumn[w];
+            ColumnBuilder<?>[] accums = new ColumnBuilder[w];
 
             for (int i = 0; i < w; i++) {
                 accums[i] = csvColumns[csvPositions[i]].createAccumulatorColumn(csvPositions[i]);
@@ -601,10 +601,10 @@ public class CsvLoader {
             return accums;
         }
 
-        ValueHolderColumn[] createValueHolders(ColumnConfig[] csvColumns) {
+        CsvCell[] createValueHolders(ColumnConfig[] csvColumns) {
 
             int w = csvHeader.size();
-            ValueHolderColumn<?>[] holders = new ValueHolderColumn[w];
+            CsvCell<?>[] holders = new CsvCell[w];
 
             for (int i = 0; i < w; i++) {
                 holders[i] = csvColumns[i].createValueHolderColumn(i);

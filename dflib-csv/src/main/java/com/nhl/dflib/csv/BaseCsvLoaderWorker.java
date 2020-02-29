@@ -3,17 +3,17 @@ package com.nhl.dflib.csv;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.csv.loader.AccumulatorColumn;
+import com.nhl.dflib.csv.loader.ColumnBuilder;
 import org.apache.commons.csv.CSVRecord;
 
 import java.util.Iterator;
 
 class BaseCsvLoaderWorker implements CsvLoaderWorker {
 
-    protected AccumulatorColumn<?>[] columnAccumulators;
+    protected ColumnBuilder<?>[] columnAccumulators;
     protected Index columnIndex;
 
-    BaseCsvLoaderWorker(Index columnIndex, AccumulatorColumn<?>[] columnAccumulators) {
+    BaseCsvLoaderWorker(Index columnIndex, ColumnBuilder<?>[] columnAccumulators) {
         this.columnIndex = columnIndex;
         this.columnAccumulators = columnAccumulators;
     }
@@ -33,12 +33,12 @@ class BaseCsvLoaderWorker implements CsvLoaderWorker {
 
     protected DataFrame toDataFrame() {
         int width = columnIndex.size();
-        Series<?>[] series = new Series[width];
+        Series<?>[] columns = new Series[width];
         for (int i = 0; i < width; i++) {
-            series[i] = columnAccumulators[i].toSeries();
+            columns[i] = columnAccumulators[i].toColumn();
         }
 
-        return DataFrame.newFrame(columnIndex).columns(series);
+        return DataFrame.newFrame(columnIndex).columns(columns);
     }
 
     protected void addRow(int width, CSVRecord row) {
