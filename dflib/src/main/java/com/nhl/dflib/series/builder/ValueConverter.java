@@ -1,7 +1,8 @@
 package com.nhl.dflib.series.builder;
 
 /**
- * An interface that allows to convert and store values with support for primitives that does not require boxing/unboxing.
+ * Performs type conversion and passes the converted result to a special holder. This allows to do conversions
+ * without "unboxing" the result, and thus can be used for either objects or primitives in a uniform way.
  *
  * @since 0.8
  */
