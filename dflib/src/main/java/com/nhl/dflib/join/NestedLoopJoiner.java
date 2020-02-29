@@ -3,7 +3,7 @@ package com.nhl.dflib.join;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.JoinType;
-import com.nhl.dflib.series.builder.IntAccumulator;
+import com.nhl.dflib.accumulator.IntAccumulator;
 import com.nhl.dflib.row.RowProxy;
 
 import java.util.LinkedHashSet;

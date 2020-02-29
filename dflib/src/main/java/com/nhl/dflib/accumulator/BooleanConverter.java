@@ -1,4 +1,4 @@
-package com.nhl.dflib.series.builder;
+package com.nhl.dflib.accumulator;
 
 import com.nhl.dflib.BooleanValueMapper;
 

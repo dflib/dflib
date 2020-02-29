@@ -1,9 +1,9 @@
-package com.nhl.dflib.series.builder;
+package com.nhl.dflib.accumulator;
 
 import com.nhl.dflib.Series;
 
 /**
- * A mutable Series builder to create primitive and Object Series.
+ * A mutable Series builder with API to create primitive and Object Series.
  *
  * @since 0.8
  */

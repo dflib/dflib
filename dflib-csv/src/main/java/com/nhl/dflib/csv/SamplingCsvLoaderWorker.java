@@ -5,7 +5,7 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.csv.loader.ColumnBuilder;
-import com.nhl.dflib.series.builder.IntAccumulator;
+import com.nhl.dflib.accumulator.IntAccumulator;
 import org.apache.commons.csv.CSVRecord;
 
 import java.util.Iterator;

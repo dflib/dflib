@@ -6,8 +6,8 @@ import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.series.ArraySeries;
-import com.nhl.dflib.series.builder.Accumulator;
-import com.nhl.dflib.series.builder.ObjectAccumulator;
+import com.nhl.dflib.accumulator.Accumulator;
+import com.nhl.dflib.accumulator.ObjectAccumulator;
 
 /**
  * Defines aggregation operations over DataFrame's and GroupBy's

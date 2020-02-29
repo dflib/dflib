@@ -2,7 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.op.BooleanSeriesOps;
 import com.nhl.dflib.series.BooleanArraySeries;
-import com.nhl.dflib.series.builder.BooleanAccumulator;
+import com.nhl.dflib.accumulator.BooleanAccumulator;
 
 import java.util.Random;
 

@@ -1,7 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.series.LongArraySeries;
-import com.nhl.dflib.series.builder.LongAccumulator;
+import com.nhl.dflib.accumulator.LongAccumulator;
 
 import java.util.Random;
 

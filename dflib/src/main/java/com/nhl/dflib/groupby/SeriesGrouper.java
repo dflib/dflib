@@ -4,7 +4,7 @@ import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.SeriesGroupBy;
 import com.nhl.dflib.ValueMapper;
-import com.nhl.dflib.series.builder.IntAccumulator;
+import com.nhl.dflib.accumulator.IntAccumulator;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

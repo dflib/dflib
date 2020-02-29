@@ -1,7 +1,7 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.series.builder.Accumulator;
-import com.nhl.dflib.series.builder.ObjectAccumulator;
+import com.nhl.dflib.accumulator.Accumulator;
+import com.nhl.dflib.accumulator.ObjectAccumulator;
 
 /**
  * Assembles a DataFrame row by row. Created indirectly inside {@link DataFrameBuilder#addRow(Object...)}.

@@ -1,4 +1,4 @@
-package com.nhl.dflib.series.builder;
+package com.nhl.dflib.accumulator;
 
 /**
  * Performs type conversion and passes the converted result to a special holder. This allows to do conversions

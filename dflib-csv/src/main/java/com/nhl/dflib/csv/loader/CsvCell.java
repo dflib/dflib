@@ -1,8 +1,8 @@
 package com.nhl.dflib.csv.loader;
 
-import com.nhl.dflib.series.builder.Accumulator;
-import com.nhl.dflib.series.builder.ValueConverter;
-import com.nhl.dflib.series.builder.ValueHolder;
+import com.nhl.dflib.accumulator.Accumulator;
+import com.nhl.dflib.accumulator.ValueConverter;
+import com.nhl.dflib.accumulator.ValueHolder;
 import org.apache.commons.csv.CSVRecord;
 
 /**

@@ -1,31 +1,32 @@
-package com.nhl.dflib.series.builder;
+package com.nhl.dflib.accumulator;
 
-import com.nhl.dflib.IntSeries;
-import com.nhl.dflib.series.IntArraySeries;
+import com.nhl.dflib.DoubleSeries;
+import com.nhl.dflib.series.DoubleArraySeries;
 
 import java.util.Arrays;
 
 /**
  * An expandable list of primitive int values that has minimal overhead and can be converted to compact and efficient
- * immutable {@link IntSeries}.
+ * immutable {@link com.nhl.dflib.DoubleSeries}.
  *
  * @since 0.6
  */
-public class IntAccumulator implements Accumulator<Integer> {
+public class DoubleAccumulator implements Accumulator<Double> {
 
-    private int[] data;
+    private double[] data;
     private int size;
 
-    public IntAccumulator() {
+    public DoubleAccumulator() {
         this(10);
     }
 
-    public IntAccumulator(int capacity) {
+    public DoubleAccumulator(int capacity) {
         this.size = 0;
-        this.data = new int[capacity];
+        this.data = new double[capacity];
     }
 
-    public void fill(int from, int to, int value) {
+    public void fill(int from, int to, double value) {
+
         if (to - from < 1) {
             return;
         }
@@ -42,15 +43,15 @@ public class IntAccumulator implements Accumulator<Integer> {
      * @since 0.8
      */
     @Override
-    public void add(Integer v) {
-        addInt(v != null ? v : 0);
+    public void add(Double v) {
+        addDouble(v != null ? v : 0.);
     }
 
     /**
      * @since 0.8
      */
     @Override
-    public void addInt(int value) {
+    public void addDouble(double value) {
 
         if (size == data.length) {
             expand(data.length * 2);
@@ -60,12 +61,12 @@ public class IntAccumulator implements Accumulator<Integer> {
     }
 
     @Override
-    public void set(int pos, Integer v) {
-        setInt(pos, v != null ? v : 0);
+    public void set(int pos, Double v) {
+        setDouble(pos, v != null ? v : 0.);
     }
 
     @Override
-    public void setInt(int pos, int value) {
+    public void setDouble(int pos, double value) {
 
         if (pos >= size) {
             throw new IndexOutOfBoundsException(pos + " is out of bounds for " + size);
@@ -75,31 +76,32 @@ public class IntAccumulator implements Accumulator<Integer> {
     }
 
     @Override
-    public IntSeries toSeries() {
-        int[] data = compactData();
+    public DoubleSeries toSeries() {
+        double[] data = compactData();
 
         // making sure no one can change the series via the Mutable List anymore
         this.data = null;
 
-        return new IntArraySeries(data, 0, size);
+        return new DoubleArraySeries(data, 0, size);
     }
 
     public int size() {
         return size;
     }
 
-    private int[] compactData() {
+    private double[] compactData() {
         if (data.length == size) {
             return data;
         }
 
-        int[] newData = new int[size];
+        double[] newData = new double[size];
         System.arraycopy(data, 0, newData, 0, size);
         return newData;
     }
 
     private void expand(int newCapacity) {
-        int[] newData = new int[newCapacity];
+
+        double[] newData = new double[newCapacity];
         System.arraycopy(data, 0, newData, 0, size);
 
         this.data = newData;

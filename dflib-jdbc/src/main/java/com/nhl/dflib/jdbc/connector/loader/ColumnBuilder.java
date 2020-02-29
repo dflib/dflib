@@ -1,8 +1,8 @@
 package com.nhl.dflib.jdbc.connector.loader;
 
 import com.nhl.dflib.Series;
-import com.nhl.dflib.series.builder.Accumulator;
-import com.nhl.dflib.series.builder.ValueConverter;
+import com.nhl.dflib.accumulator.Accumulator;
+import com.nhl.dflib.accumulator.ValueConverter;
 
 import java.sql.ResultSet;
 

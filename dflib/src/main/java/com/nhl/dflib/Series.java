@@ -4,7 +4,7 @@ import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.EmptySeries;
 import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.series.ListSeries;
-import com.nhl.dflib.series.builder.ObjectAccumulator;
+import com.nhl.dflib.accumulator.ObjectAccumulator;
 import com.nhl.dflib.sort.IndexSorter;
 
 import java.lang.reflect.Array;

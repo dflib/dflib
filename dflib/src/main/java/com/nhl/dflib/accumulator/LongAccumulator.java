@@ -1,31 +1,31 @@
-package com.nhl.dflib.series.builder;
+package com.nhl.dflib.accumulator;
 
-import com.nhl.dflib.BooleanSeries;
-import com.nhl.dflib.series.BooleanArraySeries;
+import com.nhl.dflib.LongSeries;
+import com.nhl.dflib.series.LongArraySeries;
 
 import java.util.Arrays;
 
 /**
+ * An expandable list of primitive long values that has minimal overhead and can be converted to compact and efficient
+ * immutable {@link com.nhl.dflib.LongSeries}.
+ *
  * @since 0.6
  */
-public class BooleanAccumulator implements Accumulator<Boolean> {
+public class LongAccumulator implements Accumulator<Long> {
 
-    // TODO: bitmap?
-    private boolean[] data;
+    private long[] data;
     private int size;
 
-    public BooleanAccumulator() {
+    public LongAccumulator() {
         this(10);
     }
 
-    public BooleanAccumulator(int capacity) {
+    public LongAccumulator(int capacity) {
         this.size = 0;
-        this.data = new boolean[capacity];
+        this.data = new long[capacity];
     }
 
-
-    public void fill(int from, int to, boolean value) {
-
+    public void fill(int from, int to, long value) {
         if (to - from < 1) {
             return;
         }
@@ -38,19 +38,13 @@ public class BooleanAccumulator implements Accumulator<Boolean> {
         size += to - from;
     }
 
-    /**
-     * @since 0.8
-     */
     @Override
-    public void add(Boolean v) {
-        addBoolean(v != null ? v : false);
+    public void add(Long v) {
+        addLong(v != null ? v : 0L);
     }
 
-    /**
-     * @since 0.8
-     */
     @Override
-    public void addBoolean(boolean value) {
+    public void addLong(long value) {
 
         if (size == data.length) {
             expand(data.length * 2);
@@ -60,12 +54,12 @@ public class BooleanAccumulator implements Accumulator<Boolean> {
     }
 
     @Override
-    public void set(int pos, Boolean v) {
-        setBoolean(pos, v != null ? v : false);
+    public void set(int pos, Long v) {
+        setLong(pos, v != null ? v : 0L);
     }
 
     @Override
-    public void setBoolean(int pos, boolean value) {
+    public void setLong(int pos, long value) {
 
         if (pos >= size) {
             throw new IndexOutOfBoundsException(pos + " is out of bounds for " + size);
@@ -75,32 +69,31 @@ public class BooleanAccumulator implements Accumulator<Boolean> {
     }
 
     @Override
-    public BooleanSeries toSeries() {
-        boolean[] data = compactData();
+    public LongSeries toSeries() {
+        long[] data = compactData();
 
         // making sure no one can change the series via the Mutable List anymore
         this.data = null;
 
-        return new BooleanArraySeries(data, 0, size);
+        return new LongArraySeries(data, 0, size);
     }
 
     public int size() {
         return size;
     }
 
-    private boolean[] compactData() {
+    private long[] compactData() {
         if (data.length == size) {
             return data;
         }
 
-        boolean[] newData = new boolean[size];
+        long[] newData = new long[size];
         System.arraycopy(data, 0, newData, 0, size);
         return newData;
     }
 
     private void expand(int newCapacity) {
-
-        boolean[] newData = new boolean[newCapacity];
+        long[] newData = new long[newCapacity];
         System.arraycopy(data, 0, newData, 0, size);
 
         this.data = newData;

@@ -5,8 +5,8 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.SeriesAggregator;
 import com.nhl.dflib.SeriesGroupBy;
-import com.nhl.dflib.series.builder.Accumulator;
-import com.nhl.dflib.series.builder.ObjectAccumulator;
+import com.nhl.dflib.accumulator.Accumulator;
+import com.nhl.dflib.accumulator.ObjectAccumulator;
 
 /**
  * @since 0.6

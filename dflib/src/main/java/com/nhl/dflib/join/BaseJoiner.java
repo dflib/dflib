@@ -6,7 +6,7 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.JoinType;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.series.builder.ObjectAccumulator;
+import com.nhl.dflib.accumulator.ObjectAccumulator;
 import com.nhl.dflib.concat.HConcat;
 
 import java.util.Objects;

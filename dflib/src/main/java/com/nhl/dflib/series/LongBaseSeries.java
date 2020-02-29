@@ -15,11 +15,11 @@ import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
 import com.nhl.dflib.map.Mapper;
 import com.nhl.dflib.sample.Sampler;
-import com.nhl.dflib.series.builder.BooleanAccumulator;
-import com.nhl.dflib.series.builder.IntAccumulator;
-import com.nhl.dflib.series.builder.LongAccumulator;
-import com.nhl.dflib.series.builder.ObjectAccumulator;
-import com.nhl.dflib.series.builder.UniqueLongAccumulator;
+import com.nhl.dflib.accumulator.BooleanAccumulator;
+import com.nhl.dflib.accumulator.IntAccumulator;
+import com.nhl.dflib.accumulator.LongAccumulator;
+import com.nhl.dflib.accumulator.ObjectAccumulator;
+import com.nhl.dflib.accumulator.UniqueLongAccumulator;
 
 import java.util.Arrays;
 import java.util.Comparator;

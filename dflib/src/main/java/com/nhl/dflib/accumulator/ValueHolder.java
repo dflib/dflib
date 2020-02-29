@@ -1,7 +1,7 @@
-package com.nhl.dflib.series.builder;
+package com.nhl.dflib.accumulator;
 
 /**
- * A holder of an object or a primitive value. Use as a flyweight to provides value access API that does not require
+ * A holder of an object or a primitive value. Used as a flyweight to provides value access API that does not require
  * boxing/unboxing of primitives.
  *
  * @since 0.8

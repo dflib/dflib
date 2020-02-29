@@ -4,11 +4,11 @@ import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.DoubleArraySeries;
 import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.series.LongArraySeries;
-import com.nhl.dflib.series.builder.Accumulator;
-import com.nhl.dflib.series.builder.DoubleAccumulator;
-import com.nhl.dflib.series.builder.IntAccumulator;
-import com.nhl.dflib.series.builder.LongAccumulator;
-import com.nhl.dflib.series.builder.ObjectAccumulator;
+import com.nhl.dflib.accumulator.Accumulator;
+import com.nhl.dflib.accumulator.DoubleAccumulator;
+import com.nhl.dflib.accumulator.IntAccumulator;
+import com.nhl.dflib.accumulator.LongAccumulator;
+import com.nhl.dflib.accumulator.ObjectAccumulator;
 
 import java.util.ArrayList;
 import java.util.Arrays;

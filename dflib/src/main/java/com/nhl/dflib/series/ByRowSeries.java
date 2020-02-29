@@ -2,7 +2,7 @@ package com.nhl.dflib.series;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.series.builder.ObjectAccumulator;
+import com.nhl.dflib.accumulator.ObjectAccumulator;
 import com.nhl.dflib.row.RowProxy;
 
 /**

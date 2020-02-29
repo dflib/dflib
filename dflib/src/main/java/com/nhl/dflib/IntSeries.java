@@ -1,7 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.series.IntArraySeries;
-import com.nhl.dflib.series.builder.IntAccumulator;
+import com.nhl.dflib.accumulator.IntAccumulator;
 import com.nhl.dflib.sort.IntComparator;
 
 import java.util.Random;

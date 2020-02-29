@@ -1,31 +1,31 @@
-package com.nhl.dflib.series.builder;
+package com.nhl.dflib.accumulator;
 
-import com.nhl.dflib.LongSeries;
-import com.nhl.dflib.series.LongArraySeries;
+import com.nhl.dflib.BooleanSeries;
+import com.nhl.dflib.series.BooleanArraySeries;
 
 import java.util.Arrays;
 
 /**
- * An expandable list of primitive long values that has minimal overhead and can be converted to compact and efficient
- * immutable {@link com.nhl.dflib.LongSeries}.
- *
  * @since 0.6
  */
-public class LongAccumulator implements Accumulator<Long> {
+public class BooleanAccumulator implements Accumulator<Boolean> {
 
-    private long[] data;
+    // TODO: bitmap?
+    private boolean[] data;
     private int size;
 
-    public LongAccumulator() {
+    public BooleanAccumulator() {
         this(10);
     }
 
-    public LongAccumulator(int capacity) {
+    public BooleanAccumulator(int capacity) {
         this.size = 0;
-        this.data = new long[capacity];
+        this.data = new boolean[capacity];
     }
 
-    public void fill(int from, int to, long value) {
+
+    public void fill(int from, int to, boolean value) {
+
         if (to - from < 1) {
             return;
         }
@@ -38,13 +38,19 @@ public class LongAccumulator implements Accumulator<Long> {
         size += to - from;
     }
 
+    /**
+     * @since 0.8
+     */
     @Override
-    public void add(Long v) {
-        addLong(v != null ? v : 0L);
+    public void add(Boolean v) {
+        addBoolean(v != null ? v : false);
     }
 
+    /**
+     * @since 0.8
+     */
     @Override
-    public void addLong(long value) {
+    public void addBoolean(boolean value) {
 
         if (size == data.length) {
             expand(data.length * 2);
@@ -54,12 +60,12 @@ public class LongAccumulator implements Accumulator<Long> {
     }
 
     @Override
-    public void set(int pos, Long v) {
-        setLong(pos, v != null ? v : 0L);
+    public void set(int pos, Boolean v) {
+        setBoolean(pos, v != null ? v : false);
     }
 
     @Override
-    public void setLong(int pos, long value) {
+    public void setBoolean(int pos, boolean value) {
 
         if (pos >= size) {
             throw new IndexOutOfBoundsException(pos + " is out of bounds for " + size);
@@ -69,31 +75,32 @@ public class LongAccumulator implements Accumulator<Long> {
     }
 
     @Override
-    public LongSeries toSeries() {
-        long[] data = compactData();
+    public BooleanSeries toSeries() {
+        boolean[] data = compactData();
 
         // making sure no one can change the series via the Mutable List anymore
         this.data = null;
 
-        return new LongArraySeries(data, 0, size);
+        return new BooleanArraySeries(data, 0, size);
     }
 
     public int size() {
         return size;
     }
 
-    private long[] compactData() {
+    private boolean[] compactData() {
         if (data.length == size) {
             return data;
         }
 
-        long[] newData = new long[size];
+        boolean[] newData = new boolean[size];
         System.arraycopy(data, 0, newData, 0, size);
         return newData;
     }
 
     private void expand(int newCapacity) {
-        long[] newData = new long[newCapacity];
+
+        boolean[] newData = new boolean[newCapacity];
         System.arraycopy(data, 0, newData, 0, size);
 
         this.data = newData;

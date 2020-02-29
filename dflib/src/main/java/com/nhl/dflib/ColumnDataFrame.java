@@ -14,7 +14,7 @@ import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.series.IntSequenceSeries;
 import com.nhl.dflib.series.RowMappedSeries;
 import com.nhl.dflib.series.SingleValueSeries;
-import com.nhl.dflib.series.builder.BooleanAccumulator;
+import com.nhl.dflib.accumulator.BooleanAccumulator;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
 import com.nhl.dflib.stack.Stacker;
