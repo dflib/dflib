@@ -1,6 +1,7 @@
 package com.nhl.dflib.csv;
 
 import com.nhl.dflib.Index;
+import com.nhl.dflib.csv.loader.AccumulatorColumn;
 import com.nhl.dflib.series.builder.SeriesBuilder;
 import org.apache.commons.csv.CSVRecord;
 
@@ -14,43 +15,43 @@ class FilteringSamplingCsvLoaderWorker extends SamplingCsvLoaderWorker {
     private Predicate<SeriesBuilder<String, ?>[]> rowFilter;
 
     public FilteringSamplingCsvLoaderWorker(
-            Index columns,
-            int[] csvPositions,
-            SeriesBuilder<String, ?>[] accumulators,
+            Index columnIndex,
+            AccumulatorColumn<?>[] columns,
             SeriesBuilder<String, ?>[] presampleAccummulators,
             Predicate<SeriesBuilder<String, ?>[]> rowFilter,
             int rowSampleSize,
             Random rowsSampleRandom) {
 
-        super(columns, csvPositions, accumulators, rowSampleSize, rowsSampleRandom);
+        super(columnIndex, columns, rowSampleSize, rowsSampleRandom);
 
         this.presampleAccummulators = presampleAccummulators;
         this.rowFilter = rowFilter;
     }
 
     protected void consumeCSV(Iterator<CSVRecord> it) {
-        int width = columns.size();
+        int width = columnIndex.size();
 
         int i = 0;
         while (it.hasNext()) {
 
-            CSVRecord row = it.next();
-
-            // perform filtering before sampling and use a separate buffer ..
-            // TODO: the inefficiency here is double data conversion for every sampled row:
-            //  once in pre-sample, second time - during sampling, as conversion happens inside accumulator
-
-            for (int j = 0; j < width; j++) {
-                presampleAccummulators[j].add(row.get(csvPositions[j]));
-            }
-
-            if (rowFilter.test(presampleAccummulators)) {
-                sampleRow(i++, width, row);
-            }
-
-            for (int j = 0; j < width; j++) {
-                presampleAccummulators[j].pop();
-            }
+            // TODO
+//            CSVRecord row = it.next();
+//
+//            // perform filtering before sampling and use a separate buffer ..
+//            // TODO: the inefficiency here is double data conversion for every sampled row:
+//            //  once in pre-sample, second time - during sampling, as conversion happens inside accumulator
+//
+//            for (int j = 0; j < width; j++) {
+//                presampleAccummulators[j].add(row.get(csvPositions[j]));
+//            }
+//
+//            if (rowFilter.test(presampleAccummulators)) {
+//                sampleRow(i++, width, row);
+//            }
+//
+//            for (int j = 0; j < width; j++) {
+//                presampleAccummulators[j].pop();
+//            }
         }
     }
 }

@@ -4,36 +4,34 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.csv.loader.AccumulatorColumn;
 import com.nhl.dflib.series.builder.IntAccumulator;
-import com.nhl.dflib.series.builder.SeriesBuilder;
 import org.apache.commons.csv.CSVRecord;
 
 import java.util.Iterator;
 import java.util.Random;
 
 /**
- * Loads a row sample from a potentially large CSV row iterator, with the specified sample size.
+ * Loads a row sample from a potentially large CSV row iterator with the specified sample size.
  */
 class SamplingCsvLoaderWorker implements CsvLoaderWorker {
 
-    protected SeriesBuilder<String, ?>[] accumulators;
-    protected Index columns;
-    protected int[] csvPositions;
+    protected AccumulatorColumn<?>[] columns;
+    protected Index columnIndex;
+
     private int rowSampleSize;
     private Random rowsSampleRandom;
     private IntAccumulator sampledRows;
 
-
     SamplingCsvLoaderWorker(
-            Index columns,
-            int[] csvPositions,
-            SeriesBuilder<String, ?>[] accumulators,
+            Index columnIndex,
+            AccumulatorColumn<?>[] columns,
             int rowSampleSize,
             Random rowsSampleRandom) {
 
+        this.columnIndex = columnIndex;
         this.columns = columns;
-        this.csvPositions = csvPositions;
-        this.accumulators = accumulators;
+
         this.rowSampleSize = rowSampleSize;
         this.rowsSampleRandom = rowsSampleRandom;
         this.sampledRows = new IntAccumulator();
@@ -50,13 +48,13 @@ class SamplingCsvLoaderWorker implements CsvLoaderWorker {
     }
 
     protected DataFrame toUnsortedDataFrame() {
-        int width = columns.size();
+        int width = columnIndex.size();
         Series<?>[] series = new Series[width];
         for (int i = 0; i < width; i++) {
-            series[i] = accumulators[i].toSeries();
+            series[i] = columns[i].toSeries();
         }
 
-        return DataFrame.newFrame(columns).columns(series);
+        return DataFrame.newFrame(columnIndex).columns(series);
     }
 
     protected DataFrame sortSampled(DataFrame sampledUnsorted) {
@@ -65,7 +63,7 @@ class SamplingCsvLoaderWorker implements CsvLoaderWorker {
     }
 
     protected void consumeCSV(Iterator<CSVRecord> it) {
-        int width = columns.size();
+        int width = columnIndex.size();
         int i = 0;
         while (it.hasNext()) {
             CSVRecord row = it.next();
@@ -87,20 +85,20 @@ class SamplingCsvLoaderWorker implements CsvLoaderWorker {
             int pos = rowsSampleRandom.nextInt(rowNumber + 1);
             if (pos < rowSampleSize) {
                 replaceRow(pos, width, row);
-                sampledRows.set(pos, rowNumber);
+                sampledRows.setInt(pos, rowNumber);
             }
         }
     }
 
-    protected void addRow(int width, CSVRecord row) {
+    protected void addRow(int width, CSVRecord record) {
         for (int i = 0; i < width; i++) {
-            accumulators[i].add(row.get(csvPositions[i]));
+            columns[i].add(record);
         }
     }
 
     protected void replaceRow(int pos, int width, CSVRecord record) {
         for (int i = 0; i < width; i++) {
-            accumulators[i].set(pos, record.get(csvPositions[i]));
+            columns[i].set(pos, record);
         }
     }
 }

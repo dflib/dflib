@@ -467,10 +467,10 @@ public class CsvLoader {
     }
 
     private CsvLoaderWorker samplingWorker(ColumnMap columnMap, ColumnConfig[] csvColumns) {
-        throw new UnsupportedOperationException("TODO");
-//        return rowFilters.isEmpty()
-//                ? new SamplingCsvLoaderWorker(pair.header, pair.csvPositions, createAccumulators(pair.header), rowSampleSize, rowsSampleRandom)
-//                : new FilteringSamplingCsvLoaderWorker(pair.header, pair.csvPositions, createAccumulators(pair.header), createAccumulators(pair.header), createRowFilter(unfilteredHeader), rowSampleSize, rowsSampleRandom);
+        return rowFilters.isEmpty()
+                ? new SamplingCsvLoaderWorker(columnMap.dfHeader, columnMap.createAccumulators(csvColumns), rowSampleSize, rowsSampleRandom)
+                : null; // TODO
+               // : new FilteringSamplingCsvLoaderWorker(pair.header, pair.csvPositions, createAccumulators(pair.header), createAccumulators(pair.header), createRowFilter(unfilteredHeader), rowSampleSize, rowsSampleRandom);
     }
 
     private Iterator<CSVRecord> createRecordIterator(Reader reader) throws IOException {

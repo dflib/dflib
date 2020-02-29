@@ -65,7 +65,7 @@ class SamplingSqlLoaderWorker extends SqlLoaderWorker {
             int pos = rowsSampleRandom.nextInt(rowNumber + 1);
             if (pos < rowSampleSize) {
                 replaceRow(pos, width, rs);
-                sampledRows.set(pos, rowNumber);
+                sampledRows.setInt(pos, rowNumber);
             }
         }
     }

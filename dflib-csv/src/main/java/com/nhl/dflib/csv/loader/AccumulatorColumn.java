@@ -24,6 +24,10 @@ public class AccumulatorColumn<T> {
         return accumulator.toSeries();
     }
 
+    public void set(int pos, CSVRecord record) {
+        converter.convertAndStore(pos, record.get(csvColumnPosition), accumulator);
+    }
+
     public void add(CSVRecord record) {
         converter.convertAndStore(record.get(csvColumnPosition), accumulator);
     }
