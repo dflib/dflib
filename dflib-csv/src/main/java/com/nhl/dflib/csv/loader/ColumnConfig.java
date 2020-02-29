@@ -6,6 +6,21 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.IntValueMapper;
 import com.nhl.dflib.LongValueMapper;
 import com.nhl.dflib.ValueMapper;
+import com.nhl.dflib.series.builder.BooleanAccumulator;
+import com.nhl.dflib.series.builder.BooleanConverter;
+import com.nhl.dflib.series.builder.BooleanHolder;
+import com.nhl.dflib.series.builder.DoubleAccumulator;
+import com.nhl.dflib.series.builder.DoubleConverter;
+import com.nhl.dflib.series.builder.DoubleHolder;
+import com.nhl.dflib.series.builder.IntAccumulator;
+import com.nhl.dflib.series.builder.IntConverter;
+import com.nhl.dflib.series.builder.IntHolder;
+import com.nhl.dflib.series.builder.LongAccumulator;
+import com.nhl.dflib.series.builder.LongConverter;
+import com.nhl.dflib.series.builder.LongHolder;
+import com.nhl.dflib.series.builder.ObjectAccumulator;
+import com.nhl.dflib.series.builder.ObjectConverter;
+import com.nhl.dflib.series.builder.ObjectHolder;
 
 import java.util.List;
 
@@ -20,11 +35,11 @@ public class ColumnConfig {
     private String columnName;
     private ColumnType type;
 
-    private ValueMapper<String, ?> objectMapper;
-    private IntValueMapper<String> intMapper;
-    private LongValueMapper<String> longMapper;
-    private DoubleValueMapper<String> doubleMapper;
-    private BooleanValueMapper<String> booleanMapper;
+    private ObjectConverter<String, ?> objectConverter;
+    private IntConverter<String> intConverter;
+    private LongConverter<String> longConverter;
+    private DoubleConverter<String> doubleConverter;
+    private BooleanConverter<String> booleanConverter;
 
     private ColumnConfig() {
         columnPosition = -1;
@@ -54,7 +69,7 @@ public class ColumnConfig {
         ColumnConfig config = new ColumnConfig();
         config.type = ColumnType.object;
         config.columnPosition = pos;
-        config.objectMapper = mapper;
+        config.objectConverter = new ObjectConverter<>(mapper);
         return config;
     }
 
@@ -62,7 +77,7 @@ public class ColumnConfig {
         ColumnConfig config = new ColumnConfig();
         config.type = ColumnType.object;
         config.columnName = name;
-        config.objectMapper = mapper;
+        config.objectConverter = new ObjectConverter<>(mapper);
         return config;
     }
 
@@ -78,7 +93,7 @@ public class ColumnConfig {
         ColumnConfig config = new ColumnConfig();
         config.type = ColumnType.intPrimitive;
         config.columnPosition = pos;
-        config.intMapper = mapper;
+        config.intConverter = new IntConverter<>(mapper);
         return config;
     }
 
@@ -86,7 +101,7 @@ public class ColumnConfig {
         ColumnConfig config = new ColumnConfig();
         config.type = ColumnType.intPrimitive;
         config.columnName = name;
-        config.intMapper = mapper;
+        config.intConverter = new IntConverter<>(mapper);
         return config;
     }
 
@@ -102,7 +117,7 @@ public class ColumnConfig {
         ColumnConfig config = new ColumnConfig();
         config.type = ColumnType.longPrimitive;
         config.columnPosition = pos;
-        config.longMapper = mapper;
+        config.longConverter = new LongConverter<>(mapper);
         return config;
     }
 
@@ -110,7 +125,7 @@ public class ColumnConfig {
         ColumnConfig config = new ColumnConfig();
         config.type = ColumnType.longPrimitive;
         config.columnName = name;
-        config.longMapper = mapper;
+        config.longConverter = new LongConverter<>(mapper);
         return config;
     }
 
@@ -126,7 +141,7 @@ public class ColumnConfig {
         ColumnConfig config = new ColumnConfig();
         config.type = ColumnType.doublePrimitive;
         config.columnPosition = pos;
-        config.doubleMapper = mapper;
+        config.doubleConverter = new DoubleConverter<>(mapper);
         return config;
     }
 
@@ -134,7 +149,7 @@ public class ColumnConfig {
         ColumnConfig config = new ColumnConfig();
         config.type = ColumnType.doublePrimitive;
         config.columnName = name;
-        config.doubleMapper = mapper;
+        config.doubleConverter = new DoubleConverter<>(mapper);
         return config;
     }
 
@@ -142,7 +157,7 @@ public class ColumnConfig {
         ColumnConfig config = new ColumnConfig();
         config.type = ColumnType.booleanPrimitive;
         config.columnPosition = pos;
-        config.booleanMapper = BooleanValueMapper.fromString();
+        config.booleanConverter = new BooleanConverter<>(BooleanValueMapper.fromString());
         return config;
     }
 
@@ -150,8 +165,46 @@ public class ColumnConfig {
         ColumnConfig config = new ColumnConfig();
         config.type = ColumnType.booleanPrimitive;
         config.columnName = name;
-        config.booleanMapper = BooleanValueMapper.fromString();
+        config.booleanConverter = new BooleanConverter<>(BooleanValueMapper.fromString());
         return config;
+    }
+
+    public AccumulatorColumn<?> createAccumulatorColumn(int columnPosition) {
+
+        // using externally passed "columnPosition", as "this.columnPosition" may not be initialized (when column name
+        // was in use)
+
+        switch (type) {
+            case intPrimitive:
+                return new AccumulatorColumn<>(intConverter, new IntAccumulator(), columnPosition);
+            case longPrimitive:
+                return new AccumulatorColumn<>(longConverter, new LongAccumulator(), columnPosition);
+            case doublePrimitive:
+                return new AccumulatorColumn<>(doubleConverter, new DoubleAccumulator(), columnPosition);
+            case booleanPrimitive:
+                return new AccumulatorColumn<>(booleanConverter, new BooleanAccumulator(), columnPosition);
+            default:
+                return new AccumulatorColumn(objectConverter, new ObjectAccumulator<>(), columnPosition);
+        }
+    }
+
+    public ValueHolderColumn<?> createValueHolderColumn(int columnPosition) {
+
+        // using externally passed "columnPosition", as "this.columnPosition" may not be initialized (when column name
+        // was in use)
+
+        switch (type) {
+            case intPrimitive:
+                return new ValueHolderColumn<>(intConverter, new IntHolder(), columnPosition);
+            case longPrimitive:
+                return new ValueHolderColumn<>(longConverter, new LongHolder(), columnPosition);
+            case doublePrimitive:
+                return new ValueHolderColumn<>(doubleConverter, new DoubleHolder(), columnPosition);
+            case booleanPrimitive:
+                return new ValueHolderColumn<>(booleanConverter, new BooleanHolder(), columnPosition);
+            default:
+                return new ValueHolderColumn(objectConverter, new ObjectHolder(), columnPosition);
+        }
     }
 
     enum ColumnType {

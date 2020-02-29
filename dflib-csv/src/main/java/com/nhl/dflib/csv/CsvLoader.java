@@ -9,9 +9,9 @@ import com.nhl.dflib.ValueMapper;
 import com.nhl.dflib.ValuePredicate;
 import com.nhl.dflib.csv.loader.ColumnConfig;
 import com.nhl.dflib.csv.loader.AccumulatorColumn;
+import com.nhl.dflib.csv.loader.RowFilterConfig;
+import com.nhl.dflib.csv.loader.ValueHolderColumn;
 import com.nhl.dflib.sample.Sampler;
-import com.nhl.dflib.series.builder.ObjectAccumulator;
-import com.nhl.dflib.series.builder.SeriesBuilder;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
@@ -27,7 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class CsvLoader {
@@ -44,9 +43,8 @@ public class CsvLoader {
     private int rowSampleSize;
     private Random rowsSampleRandom;
 
-    // storing converters as list to ensure predictable resolution order when the user supplies overlapping converters
     private List<ColumnConfig> columns;
-    private List<RowFilter> rowFilters;
+    private List<RowFilterConfig> rowFilters;
 
     public CsvLoader() {
         this.format = CSVFormat.DEFAULT;
@@ -106,7 +104,7 @@ public class CsvLoader {
      * @since 0.8
      */
     public <V> CsvLoader filterRows(String columnName, ValuePredicate<V> condition) {
-        rowFilters.add(new RowFilter<>(i -> i.position(columnName), condition));
+        rowFilters.add(RowFilterConfig.create(columnName, condition));
         return this;
     }
 
@@ -120,7 +118,7 @@ public class CsvLoader {
      * @since 0.8
      */
     public <V> CsvLoader filterRows(int columnPos, ValuePredicate<V> condition) {
-        rowFilters.add(new RowFilter<>(i -> columnPos, condition));
+        rowFilters.add(RowFilterConfig.create(columnPos, condition));
         return this;
     }
 
@@ -441,21 +439,19 @@ public class CsvLoader {
 
     public DataFrame load(Reader reader) {
         try {
-            Iterator<CSVRecord> it = format.parse(reader).iterator();
 
-            rewind(it);
-            Index csvHeader = csvHeader(it);
-            ColumnFilter columnFilter = createColumnFilter(csvHeader);
+            Iterator<CSVRecord> it = createRecordIterator(reader);
+            ColumnMap columnMap = createColumnMap(it);
 
             if (!it.hasNext()) {
-                return DataFrame.newFrame(columnFilter.header).empty();
+                return DataFrame.newFrame(columnMap.dfHeader).empty();
             }
 
-            ColumnConfig[] unfilteredColumns = ColumnConfig.normalize(csvHeader, this.columns);
+            ColumnConfig[] unfilteredColumns = ColumnConfig.normalize(columnMap.csvHeader, this.columns);
 
             CsvLoaderWorker worker = rowSampleSize > 0
-                    ? samplingWorker(columnFilter, csvHeader)
-                    : noSamplingWorker(csvHeader, columnFilter.header, columnFilter.csvPositions);
+                    ? samplingWorker(columnMap, unfilteredColumns)
+                    : noSamplingWorker(columnMap, unfilteredColumns);
 
             return worker.load(it);
 
@@ -464,33 +460,34 @@ public class CsvLoader {
         }
     }
 
-    private CsvLoaderWorker noSamplingWorker(Index unfilteredHeader, Index filteredHeader, ColumnConfig[] csvColumns, int[] csvPositions) {
+    private CsvLoaderWorker noSamplingWorker(ColumnMap columnMap, ColumnConfig[] csvColumns) {
         return rowFilters.isEmpty()
-                ? new BaseCsvLoaderWorker(filteredHeader, pair.csvPositions, createAccumulators(pair.header))
-                : new FilteringCsvLoaderWorker(filteredHeader, pair.csvPositions, createAccumulators(pair.header), createRowFilter(unfilteredHeader));
+                ? new BaseCsvLoaderWorker(columnMap.dfHeader, columnMap.createAccumulators(csvColumns))
+                : new FilteringCsvLoaderWorker(columnMap.dfHeader, columnMap.createAccumulators(csvColumns), columnMap.createValueHolders(csvColumns), createRowFilter(columnMap.csvHeader));
     }
 
-    private CsvLoaderWorker samplingWorker(ColumnFilter pair, Index unfilteredHeader) {
-        return rowFilters.isEmpty()
-                ? new SamplingCsvLoaderWorker(pair.header, pair.csvPositions, createAccumulators(pair.header), rowSampleSize, rowsSampleRandom)
-                : new FilteringSamplingCsvLoaderWorker(pair.header, pair.csvPositions, createAccumulators(pair.header), createAccumulators(pair.header), createRowFilter(unfilteredHeader), rowSampleSize, rowsSampleRandom);
+    private CsvLoaderWorker samplingWorker(ColumnMap columnMap, ColumnConfig[] csvColumns) {
+        throw new UnsupportedOperationException("TODO");
+//        return rowFilters.isEmpty()
+//                ? new SamplingCsvLoaderWorker(pair.header, pair.csvPositions, createAccumulators(pair.header), rowSampleSize, rowsSampleRandom)
+//                : new FilteringSamplingCsvLoaderWorker(pair.header, pair.csvPositions, createAccumulators(pair.header), createAccumulators(pair.header), createRowFilter(unfilteredHeader), rowSampleSize, rowsSampleRandom);
     }
 
-    private void rewind(Iterator<CSVRecord> it) {
+    private Iterator<CSVRecord> createRecordIterator(Reader reader) throws IOException {
+
+        Iterator<CSVRecord> it = format.parse(reader).iterator();
         for (int i = 0; i < skipRows && it.hasNext(); i++) {
             it.next();
         }
+
+        return it;
     }
 
-    private Index csvHeader(Iterator<CSVRecord> it) {
-        if (it.hasNext()) {
-            return header != null ? header : loadHeader(it.next());
-        } else {
-            return header != null ? header : Index.forLabels();
-        }
+    private ColumnMap createColumnMap(Iterator<CSVRecord> it) {
+        return createColumnMap(createCsvHeader(it));
     }
 
-    private ColumnFilter createColumnFilter(Index csvHeader) {
+    private ColumnMap createColumnMap(Index csvHeader) {
 
         int uw = csvHeader.size();
 
@@ -500,7 +497,7 @@ public class CsvLoader {
                 positions[i] = i;
             }
 
-            return new ColumnFilter(csvHeader, csvHeader, positions);
+            return new ColumnMap(csvHeader, csvHeader, positions);
         }
 
         List<String> columns = new ArrayList<>(uw);
@@ -544,10 +541,18 @@ public class CsvLoader {
             csvPositions[i] = positions.get(i);
         }
 
-        return new ColumnFilter(csvHeader, dfHeader, csvPositions);
+        return new ColumnMap(csvHeader, dfHeader, csvPositions);
     }
 
-    private Index loadHeader(CSVRecord header) {
+    private Index createCsvHeader(Iterator<CSVRecord> it) {
+        if (it.hasNext()) {
+            return header != null ? header : loadCsvHeader(it.next());
+        } else {
+            return header != null ? header : Index.forLabels();
+        }
+    }
+
+    private Index loadCsvHeader(CSVRecord header) {
 
         int width = header.size();
         String[] columnNames = new String[width];
@@ -558,33 +563,13 @@ public class CsvLoader {
         return Index.forLabels(columnNames);
     }
 
-    private AccumulatorColumn<?>[] createAccumulators(Index columns) {
-
-        int w = columns.size();
-        AccumulatorColumn<?>[] accums = new AccumulatorColumn[w];
-
-        // there may be overlapping pairs... the last one wins
-        for (ColumnConfig p : this.columns) {
-            accums[p.positionResolver.apply(columns)] = p.builder;
-        }
-
-        // fill missing builders with no-transform builders
-        for (int i = 0; i < w; i++) {
-            if (this.columns[i] == null) {
-                this.columns[i] = new ObjectAccumulator<>();
-            }
-        }
-
-        return accums;
-    }
-
-    private Predicate<SeriesBuilder<String, ?>[]> createRowFilter(Index columns) {
+    private Predicate<ValueHolderColumn<?>[]> createRowFilter(Index columns) {
 
         if (rowFilters.isEmpty()) {
-            return builders -> true;
+            return c -> true;
         }
 
-        Predicate<SeriesBuilder<String, ?>[]> p = rowFilters.get(0).toPredicate(columns);
+        Predicate<ValueHolderColumn<?>[]> p = rowFilters.get(0).toPredicate(columns);
 
         for (int i = 1; i < rowFilters.size(); i++) {
             p = p.and(rowFilters.get(i).toPredicate(columns));
@@ -593,32 +578,41 @@ public class CsvLoader {
         return p;
     }
 
-    private static class ColumnFilter {
+    private static class ColumnMap {
 
         Index csvHeader;
         Index dfHeader;
         int[] csvPositions;
 
-        ColumnFilter(Index csvHeader, Index dfHeader, int[] csvPositions) {
+        ColumnMap(Index csvHeader, Index dfHeader, int[] csvPositions) {
             this.csvHeader = csvHeader;
             this.dfHeader = dfHeader;
             this.csvPositions = csvPositions;
         }
-    }
 
-    private static class RowFilter<V> {
-        Function<Index, Integer> positionResolver;
-        ValuePredicate<V> condition;
+        AccumulatorColumn[] createAccumulators(ColumnConfig[] csvColumns) {
 
-        RowFilter(Function<Index, Integer> positionResolver, ValuePredicate<V> condition) {
-            this.positionResolver = positionResolver;
-            this.condition = condition;
+            int w = dfHeader.size();
+            AccumulatorColumn<?>[] accums = new AccumulatorColumn[w];
+
+            for (int i = 0; i < w; i++) {
+                accums[i] = csvColumns[csvPositions[i]].createAccumulatorColumn(csvPositions[i]);
+            }
+
+            return accums;
         }
 
-        Predicate<SeriesBuilder<String, ?>[]> toPredicate(Index columns) {
+        ValueHolderColumn[] createValueHolders(ColumnConfig[] csvColumns) {
 
-            int pos = positionResolver.apply(columns);
-            return builders -> condition.test((V) builders[pos].peek());
+            int w = csvHeader.size();
+            ValueHolderColumn<?>[] holders = new ValueHolderColumn[w];
+
+            for (int i = 0; i < w; i++) {
+                holders[i] = csvColumns[i].createValueHolderColumn(i);
+            }
+
+            return holders;
         }
     }
+
 }

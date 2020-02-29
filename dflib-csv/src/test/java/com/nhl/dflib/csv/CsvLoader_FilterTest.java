@@ -108,9 +108,9 @@ public class CsvLoader_FilterTest {
 
         new DataFrameAsserts(df, "B")
                 .expectHeight(3)
-                .expectRow(0, "8")
-                .expectRow(1,"10")
-                .expectRow(2, "12");
+                .expectRow(0, 8)
+                .expectRow(1, 10)
+                .expectRow(2, 12);
     }
 
 }

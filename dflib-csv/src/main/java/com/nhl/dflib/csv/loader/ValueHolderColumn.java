@@ -28,4 +28,7 @@ public class ValueHolderColumn<T> {
         holder.store(accumulator);
     }
 
+    public T get() {
+        return holder.get();
+    }
 }
