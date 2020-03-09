@@ -44,6 +44,19 @@ public class DataFrame_AddDropMapColumnsTest {
     }
 
     @Test
+    public void testAddSingleValueColumn() {
+
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1, "x",
+                2, "y").addSingleValueColumn("c", 5);
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(2)
+                .expectRow(0, 1, "x", 5)
+                .expectRow(1, 2, "y", 5);
+    }
+
+    @Test
     public void testAddColumn_Series() {
 
         Series<String> column = Series.forData("m", "n");

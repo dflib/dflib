@@ -2,6 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.join.JoinBuilder;
 import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.series.SingleValueSeries;
 import com.nhl.dflib.window.WindowBuilder;
 
 import java.util.Collections;
@@ -467,6 +468,14 @@ public interface DataFrame extends Iterable<RowProxy> {
     <V> DataFrame addColumns(String[] columnLabels, RowMapper rowMapper);
 
     <V> DataFrame addColumn(String columnLabel, Series<V> column);
+
+    /**
+     * @return a new DataFrame with extra columns added
+     * @since 0.8
+     */
+    default DataFrame addSingleValueColumn(String columnLabel, Object value) {
+        return addColumn(columnLabel, new SingleValueSeries<>(value, height()));
+    }
 
     DataFrame renameColumns(String... columnLabels);
 

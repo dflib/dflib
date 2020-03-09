@@ -9,6 +9,7 @@
 * #98  DbFlavor as an object with state and behavior
 * #99  DbFlavor for PostgreSQL
 * #100 Adding missing load/save methods to CSV
+* #101 Shortcut to add single-value columns
 
 ## Release 0.7
 
