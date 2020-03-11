@@ -20,23 +20,25 @@ public class DbInitializer implements DataSourceListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DbInitializer.class);
 
-    private String sqlFile;
+    private String sqlSchemaPath;
+    private String delimiter;
 
-    public DbInitializer(String sqlFile) {
-        this.sqlFile = sqlFile;
+    public DbInitializer(String sqlSchemaPath, String delimiter) {
+        this.sqlSchemaPath = sqlSchemaPath;
+        this.delimiter = delimiter;
     }
 
     @Override
     public void afterStartup(String name, String jdbcUrl, DataSource dataSource) {
 
-        URL sqlFileUrl = new ResourceFactory(sqlFile).getUrl();
-        LOGGER.info("Updating database from {}", sqlFile);
+        URL sqlFileUrl = new ResourceFactory(sqlSchemaPath).getUrl();
+        LOGGER.info("Updating database from {}", sqlSchemaPath);
 
         executeSQL(dataSource, loadSqlStatements(sqlFileUrl));
     }
 
     private Collection<String> loadSqlStatements(URL sqlFileUrl) {
-        try (Scanner scanner = new Scanner(sqlFileUrl.openStream()).useDelimiter(";")) {
+        try (Scanner scanner = new Scanner(sqlFileUrl.openStream()).useDelimiter(delimiter)) {
             return loadSqlStatements(scanner);
         } catch (IOException e) {
             throw new RuntimeException("Error reading SQL file", e);

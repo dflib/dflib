@@ -18,13 +18,14 @@ public class SqlLoaderIT extends BaseDbTest {
 
     @Test
     public void test() {
-
         T1.insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 1_000.);
 
+        String sql = dbAdapter.processSQL("SELECT \"id\", \"salary\" from \"t1\" WHERE \"id\" > 1");
+
         DataFrame df = createConnector()
-                .sqlLoader("SELECT \"id\", \"salary\" from \"t1\" WHERE \"id\" > 1")
+                .sqlLoader(sql)
                 .load();
 
         new DataFrameAsserts(df, "id", "salary")
@@ -35,12 +36,13 @@ public class SqlLoaderIT extends BaseDbTest {
 
     @Test
     public void testReuse() {
-
         T1.insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 1_000.);
 
-        SqlLoader loader = createConnector().sqlLoader("SELECT \"id\", \"salary\" from \"t1\" WHERE \"id\" = ?");
+        String sql = dbAdapter.processSQL("SELECT \"id\", \"salary\" from \"t1\" WHERE \"id\" = ?");
+
+        SqlLoader loader = createConnector().sqlLoader(sql);
 
         DataFrame df1 = loader.load(2L);
         new DataFrameAsserts(df1, "id", "salary")
@@ -55,11 +57,12 @@ public class SqlLoaderIT extends BaseDbTest {
 
     @Test
     public void testEmpty() {
-
         T1.insert(1L, "n1", 50_000.01);
 
+        String sql = dbAdapter.processSQL("SELECT \"id\", \"salary\" from \"t1\" WHERE \"id\" > 1");
+
         DataFrame df = createConnector()
-                .sqlLoader("SELECT \"id\", \"salary\" from \"t1\" WHERE \"id\" > 1")
+                .sqlLoader(sql)
                 .load();
 
         new DataFrameAsserts(df, "id", "salary").expectHeight(0);
@@ -67,13 +70,14 @@ public class SqlLoaderIT extends BaseDbTest {
 
     @Test
     public void testColumnFunctions() {
-
         T1.insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 1_000.);
 
+        String sql = dbAdapter.processSQL("SELECT SUBSTR(\"name\", 2) as \"name\" from \"t1\" WHERE \"id\" > 1");
+
         DataFrame df = createConnector()
-                .sqlLoader("SELECT SUBSTR(\"name\", 2) as \"name\" from \"t1\" WHERE \"id\" > 1")
+                .sqlLoader(sql)
                 .load();
 
         new DataFrameAsserts(df, "name")
@@ -85,13 +89,14 @@ public class SqlLoaderIT extends BaseDbTest {
 
     @Test
     public void testMaxRows() {
-
         T1.insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 20_000.);
 
+        String sql = dbAdapter.processSQL("SELECT * from \"t1\"");
+
         DataFrame df = createConnector()
-                .sqlLoader("SELECT * from \"t1\"")
+                .sqlLoader(sql)
                 .maxRows(2)
                 .load();
 
@@ -103,7 +108,6 @@ public class SqlLoaderIT extends BaseDbTest {
 
     @Test
     public void testParams() {
-
         LocalDate ld = LocalDate.of(1977, 02, 05);
         LocalDateTime ldt = LocalDateTime.of(2019, 02, 03, 1, 2, 5);
         LocalTime lt = LocalTime.of(5, 6, 8);
@@ -114,18 +118,20 @@ public class SqlLoaderIT extends BaseDbTest {
         T2.insert(l1, 67, 7.8, true, "s1", ldt, ld, lt, bytes)
                 .insert(null, null, null, false, null, null, null, null, null);
 
+        String sql = dbAdapter.processSQL("SELECT * from \"t2\"" +
+                " WHERE \"bigint\" = ?" +
+                " AND \"int\" = ?" +
+                " AND \"double\" = ?" +
+                " AND \"boolean\" = ?" +
+                " AND \"string\" = ?" +
+                " AND \"timestamp\" = ?" +
+                " AND \"date\" = ?" +
+                " AND \"time\" = ?" +
+                " AND \"bytes\" = ?");
+
         DataFrame df = createConnector()
-                .sqlLoader("SELECT * from \"t2\"" +
-                        " WHERE \"bigint\" = ?" +
-                        " AND \"int\" = ?" +
-                        " AND \"double\" = ?" +
-                        " AND \"boolean\" = ?" +
-                        " AND \"string\" = ?" +
-                        " AND \"timestamp\" = ?" +
-                        " AND \"date\" = ?" +
-                        " AND \"time\" = ?" +
-                        " AND \"bytes\" = ?")
-                .load(l1, 67, 7.8, true, "s1", ldt, ld, lt, bytes);
+                .sqlLoader(sql)
+                .load(l1, 67, 7.8, 1, "s1", ldt, ld, lt, bytes);
 
         new DataFrameAsserts(df, columnNames(T2))
                 .expectHeight(1)
@@ -134,11 +140,12 @@ public class SqlLoaderIT extends BaseDbTest {
 
     @Test
     public void testPrimitives() {
-
         T3.insert(-15, Long.MAX_VALUE - 1, 0.505, true);
 
+        String sql = dbAdapter.processSQL("SELECT * from \"t3\"");
+
         DataFrame df = createConnector()
-                .sqlLoader("SELECT * from \"t3\"")
+                .sqlLoader(sql)
                 .load();
 
         new DataFrameAsserts(df, "int", "long", "double", "boolean")
@@ -146,7 +153,7 @@ public class SqlLoaderIT extends BaseDbTest {
                 .expectIntColumns(0)
                 .expectLongColumns(1)
                 .expectDoubleColumns(2)
-                .expectBooleanColumns(3)
+                .expectBooleanColumns("boolean")
                 .expectRow(0, -15, Long.MAX_VALUE - 1, 0.505, true);
     }
 }

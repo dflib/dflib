@@ -22,7 +22,10 @@ public class SqlSaverIT extends BaseDbTest {
     @Test
     public void testSave() {
         JdbcConnector connector = createConnector();
-        int c = connector.sqlSaver("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (1, 'x', 777.7)")
+
+        String sql = dbAdapter.processSQL("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (1, 'x', 777.7)");
+
+        int c = connector.sqlSaver(sql)
                 .save();
         assertEquals(1, c);
 
@@ -34,9 +37,11 @@ public class SqlSaverIT extends BaseDbTest {
 
     @Test
     public void testSave_Array() {
-
         JdbcConnector connector = createConnector();
-        int c = connector.sqlSaver("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)")
+
+        String sql = dbAdapter.processSQL("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)");
+
+        int c = connector.sqlSaver(sql)
                 .save(1L, "n1", 50_000.01);
         assertEquals(1, c);
 
@@ -48,13 +53,14 @@ public class SqlSaverIT extends BaseDbTest {
 
     @Test
     public void testSave_DataFrame() {
-
         DataFrame data = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
+        String sql = dbAdapter.processSQL("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)");
+
         JdbcConnector connector = createConnector();
-        int[] cs = connector.sqlSaver("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)")
+        int[] cs = connector.sqlSaver(sql)
                 .save(data);
         assertArrayEquals(new int[]{1, 1}, cs);
 
@@ -67,11 +73,12 @@ public class SqlSaverIT extends BaseDbTest {
 
     @Test
     public void testSave_EmptyDataFrame() {
-
         DataFrame data = DataFrame.newFrame("id", "name", "salary").empty();
 
+        String sql = dbAdapter.processSQL("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)");
+
         JdbcConnector connector = createConnector();
-        int[] cs = connector.sqlSaver("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)")
+        int[] cs = connector.sqlSaver(sql)
                 .save(data);
         assertArrayEquals(new int[0], cs);
 
@@ -81,13 +88,14 @@ public class SqlSaverIT extends BaseDbTest {
 
     @Test
     public void testSave_ParamWithFunction() {
-
         DataFrame data = DataFrame.newFrame("id", "name", "salary").foldByRow(
-                1L, "na1", 50_000.01,
+                1, "na1", 50_000.01,
                 2L, "na2", 120_000.);
 
+        String sql = dbAdapter.processSQL("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, SUBSTR(?, 2), ?)");
+
         JdbcConnector connector = createConnector();
-        int[] cs = connector.sqlSaver("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, SUBSTR(?, 2), ?)")
+        int[] cs = connector.sqlSaver(sql)
                 .save(data);
         assertArrayEquals(new int[]{1, 1}, cs);
 
@@ -100,7 +108,6 @@ public class SqlSaverIT extends BaseDbTest {
 
     @Test
     public void testSave_ReuseUpdater() {
-
         DataFrame data1 = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
@@ -109,8 +116,10 @@ public class SqlSaverIT extends BaseDbTest {
                 3L, "n3", 60_000.01,
                 4L, "n4", 20_000.);
 
+        String sql = dbAdapter.processSQL("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)");
+
         JdbcConnector connector = createConnector();
-        SqlSaver saver = connector.sqlSaver("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)");
+        SqlSaver saver = connector.sqlSaver(sql);
         int[] cs1 = saver.save(data1);
         int[] cs2 = saver.save(data2);
 
@@ -128,7 +137,6 @@ public class SqlSaverIT extends BaseDbTest {
 
     @Test
     public void testDataTypeConversions() {
-
         LocalDate ld = LocalDate.of(1977, 02, 05);
         LocalDateTime ldt = LocalDateTime.of(2019, 02, 03, 1, 2, 5);
         LocalTime lt = LocalTime.of(5, 6, 8);
@@ -136,14 +144,15 @@ public class SqlSaverIT extends BaseDbTest {
         byte[] bytes = new byte[]{3, 5, 11};
         long l1 = Integer.MAX_VALUE + 1L;
 
-        Series<Object> data = Series.forData(l1, 67, 7.8, true, "s1", ldt, ld, lt, bytes);
-        Series<Object> dataNulls = Series.forData(null, null, null, false, null, null, null, null, null);
+        Series<Object> data = Series.forData(l1, 67, 7.8, 1, "s1", ldt, ld, lt, bytes);
+        Series<Object> dataNulls = Series.forData(null, null, null, 0, null, null, null, null, null);
 
-        JdbcConnector connector = createConnector();
-        SqlSaver saver = connector.sqlSaver("insert into \"t2\" " +
-                "(\"bigint\", \"int\", \"double\", \"boolean\", \"string\", \"timestamp\", \"date\", \"time\", \"bytes\") " +
+        String sql = dbAdapter.processSQL("insert into \"t2\" (\"bigint\", \"int\", \"double\", \"boolean\", \"string\", \"timestamp\", \"date\", \"time\", \"bytes\") " +
                 "values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
+        JdbcConnector connector = createConnector();
+
+        SqlSaver saver = connector.sqlSaver(sql);
         saver.save(data);
         saver.save(dataNulls);
 
@@ -156,18 +165,23 @@ public class SqlSaverIT extends BaseDbTest {
 
     @Test
     public void testSave_Update() {
-
         DataFrame data = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
         JdbcConnector connector = createConnector();
-        connector.sqlSaver("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)").save(data);
+
+        String sql = dbAdapter.processSQL("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)");
+
+        connector.sqlSaver(sql).save(data);
 
         DataFrame updateData = DataFrame.newFrame("name", "id").foldByRow(
                 "nx", 0,
                 "ny", 1);
-        int[] cs = connector.sqlSaver("update \"t1\" set \"name\" = ? where \"id\" > ?").save(updateData);
+
+        sql = dbAdapter.processSQL("update \"t1\" set \"name\" = ? where \"id\" > ?");
+
+        int[] cs = connector.sqlSaver(sql).save(updateData);
         assertArrayEquals(new int[]{2, 1}, cs);
 
         DataFrame saved = connector.tableLoader("t1").load();

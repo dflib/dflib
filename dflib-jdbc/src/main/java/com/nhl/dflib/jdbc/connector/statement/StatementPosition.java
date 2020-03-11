@@ -27,6 +27,8 @@ public class StatementPosition {
 
         if (boundable == null) {
             statement.setNull(position, type);
+        } else if (boundable instanceof byte[]) {
+            statement.setBytes(position, (byte[]) boundable);
         } else {
             statement.setObject(position, boundable, type);
         }

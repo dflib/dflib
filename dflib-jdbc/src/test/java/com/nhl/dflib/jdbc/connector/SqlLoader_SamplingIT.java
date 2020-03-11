@@ -16,9 +16,9 @@ public class SqlLoader_SamplingIT extends BaseDbTest {
 
     @Test
     public void test() {
-
         JdbcConnector connector = createConnector();
-        String sql = "SELECT \"id\", \"name\" from \"t1\" WHERE \"id\" > 1 ORDER BY \"id\"";
+
+        String sql = dbAdapter.processSQL("SELECT \"id\", \"name\" from \"t1\" WHERE \"id\" > 1 ORDER BY \"id\"");
 
         T1.insertColumns("id", "name")
                 .values(1L, "n1")
@@ -31,7 +31,6 @@ public class SqlLoader_SamplingIT extends BaseDbTest {
                 .exec();
 
         // using fixed Random seed to get reproducible result
-
         DataFrame df = connector
                 .sqlLoader(sql)
                 .sampleRows(2, new Random(8))
@@ -68,9 +67,9 @@ public class SqlLoader_SamplingIT extends BaseDbTest {
 
     @Test
     public void testSampleRows_SampleLargerThanResultSet() {
-
         JdbcConnector connector = createConnector();
-        String sql = "SELECT \"id\", \"name\" from \"t1\" ORDER BY \"id\"";
+
+        String sql = dbAdapter.processSQL("SELECT \"id\", \"name\" from \"t1\" ORDER BY \"id\"");
 
         T1.insertColumns("id", "name")
                 .values(1L, "n1")
@@ -91,9 +90,9 @@ public class SqlLoader_SamplingIT extends BaseDbTest {
 
     @Test
     public void testSampleRows_SampleSameAsCSV() {
-
         JdbcConnector connector = createConnector();
-        String sql = "SELECT \"id\", \"name\" from \"t1\" ORDER BY \"id\"";
+
+        String sql = dbAdapter.processSQL("SELECT \"id\", \"name\" from \"t1\" ORDER BY \"id\"");
 
         T1.insertColumns("id", "name")
                 .values(1L, "n1")
