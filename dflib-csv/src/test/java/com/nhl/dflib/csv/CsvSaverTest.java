@@ -111,4 +111,16 @@ public class CsvSaverTest extends BaseCsvTest {
 
         Csv.saver().save(df, file);
     }
+
+
+    @Test
+    public void testSave_withoutHeader() {
+        DataFrame df = DataFrame.newFrame("A", "B").foldByRow(
+                1, 2,
+                3, 4);
+
+        assertEquals(
+                "1,2\r\n" +
+                        "3,4\r\n", Csv.saver().withoutHeader().saveToString(df));
+    }
 }

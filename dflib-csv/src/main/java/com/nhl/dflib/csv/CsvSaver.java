@@ -15,9 +15,11 @@ public class CsvSaver {
 
     private CSVFormat format;
     private boolean createMissingDirs;
+    private boolean printHeader;
 
     public CsvSaver() {
         this.format = CSVFormat.DEFAULT;
+        this.printHeader = true;
     }
 
     /**
@@ -41,6 +43,18 @@ public class CsvSaver {
      */
     public CsvSaver createMissingDirs() {
         this.createMissingDirs = true;
+        return this;
+    }
+
+    /**
+     * Instructs the saver to omit saving the Index of a DataFrame.
+     * By default the Index will be saved as a first row in a file.
+     *
+     * @return this saver instance
+     * @since 0.8
+     */
+    public CsvSaver withoutHeader() {
+        this.printHeader = false;
         return this;
     }
 
@@ -68,7 +82,9 @@ public class CsvSaver {
 
         try {
             CSVPrinter printer = new CSVPrinter(out, format);
-            printHeader(printer, df.getColumnsIndex());
+            if (printHeader) {
+                printHeader(printer, df.getColumnsIndex());
+            }
 
             int len = df.width();
             for (RowProxy r : df) {
