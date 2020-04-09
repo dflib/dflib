@@ -10,6 +10,7 @@
 * #99  DbFlavor for PostgreSQL
 * #100 Adding missing load/save methods to CSV
 * #101 Shortcut to add single-value columns
+* #103 Added option to save a DataFrame without Index/header
 
 ## Release 0.7
 
