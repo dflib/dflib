@@ -53,7 +53,7 @@ public class CsvSaver {
      * @return this saver instance
      * @since 0.8
      */
-    public CsvSaver withoutHeader() {
+    public CsvSaver noHeader() {
         this.printHeader = false;
         return this;
     }
