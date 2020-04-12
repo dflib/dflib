@@ -1,6 +1,6 @@
 package com.nhl.dflib.jdbc.unit;
 
-import com.nhl.dflib.jdbc.unit.db.TestDbAdapter;
+import com.nhl.dflib.jdbc.unit.dbadapter.TestDbAdapter;
 import io.bootique.jdbc.test.Column;
 import io.bootique.jdbc.test.Table;
 import io.bootique.jdbc.test.TestDataManager;
@@ -16,7 +16,6 @@ import static java.util.stream.Collectors.toList;
 
 public abstract class BaseDbTest {
 
-
     @ClassRule
     public static BQTestFactory TEST_FACTORY = new BQTestFactory();
 
@@ -24,8 +23,8 @@ public abstract class BaseDbTest {
     protected static Table T2;
     protected static Table T3;
     protected static Table T1_AUDIT;
-    protected static TestDbAdapter dbAdapter;
 
+    private static TestDbAdapter DB_ADAPTER;
     private static DataSource DATA_SOURCE;
 
     @Rule
@@ -42,7 +41,7 @@ public abstract class BaseDbTest {
         T3 = bootstrap.getT3();
         T1_AUDIT = bootstrap.getT1Audit();
 
-        dbAdapter = bootstrap.getDbAdapter();
+        DB_ADAPTER = bootstrap.getDbAdapter();
     }
 
     protected static List<String> columnNames(Table table) {
@@ -51,5 +50,9 @@ public abstract class BaseDbTest {
 
     protected DataSource getDataSource() {
         return DATA_SOURCE;
+    }
+
+    protected String toNativeSql(String derbySql) {
+        return DB_ADAPTER.toNativeSql(derbySql);
     }
 }

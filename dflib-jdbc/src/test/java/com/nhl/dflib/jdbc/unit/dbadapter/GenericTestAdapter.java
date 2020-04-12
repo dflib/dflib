@@ -1,6 +1,6 @@
-package com.nhl.dflib.jdbc.unit.db;
+package com.nhl.dflib.jdbc.unit.dbadapter;
 
-class DerbyAdapter implements TestDbAdapter {
+class GenericTestAdapter implements TestDbAdapter {
 
     @Override
     public String toNativeSql(String command) {

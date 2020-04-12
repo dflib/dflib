@@ -23,7 +23,7 @@ public class SqlSaverIT extends BaseDbTest {
     public void testSave() {
         JdbcConnector connector = createConnector();
 
-        String sql = dbAdapter.toNativeSql("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (1, 'x', 777.7)");
+        String sql = toNativeSql("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (1, 'x', 777.7)");
 
         int c = connector.sqlSaver(sql)
                 .save();
@@ -39,7 +39,7 @@ public class SqlSaverIT extends BaseDbTest {
     public void testSave_Array() {
         JdbcConnector connector = createConnector();
 
-        String sql = dbAdapter.toNativeSql("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)");
+        String sql = toNativeSql("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)");
 
         int c = connector.sqlSaver(sql)
                 .save(1L, "n1", 50_000.01);
@@ -57,7 +57,7 @@ public class SqlSaverIT extends BaseDbTest {
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
-        String sql = dbAdapter.toNativeSql("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)");
+        String sql = toNativeSql("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)");
 
         JdbcConnector connector = createConnector();
         int[] cs = connector.sqlSaver(sql)
@@ -75,7 +75,7 @@ public class SqlSaverIT extends BaseDbTest {
     public void testSave_EmptyDataFrame() {
         DataFrame data = DataFrame.newFrame("id", "name", "salary").empty();
 
-        String sql = dbAdapter.toNativeSql("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)");
+        String sql = toNativeSql("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)");
 
         JdbcConnector connector = createConnector();
         int[] cs = connector.sqlSaver(sql)
@@ -92,7 +92,7 @@ public class SqlSaverIT extends BaseDbTest {
                 1, "na1", 50_000.01,
                 2L, "na2", 120_000.);
 
-        String sql = dbAdapter.toNativeSql("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, SUBSTR(?, 2), ?)");
+        String sql = toNativeSql("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, SUBSTR(?, 2), ?)");
 
         JdbcConnector connector = createConnector();
         int[] cs = connector.sqlSaver(sql)
@@ -116,7 +116,7 @@ public class SqlSaverIT extends BaseDbTest {
                 3L, "n3", 60_000.01,
                 4L, "n4", 20_000.);
 
-        String sql = dbAdapter.toNativeSql("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)");
+        String sql = toNativeSql("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)");
 
         JdbcConnector connector = createConnector();
         SqlSaver saver = connector.sqlSaver(sql);
@@ -147,7 +147,7 @@ public class SqlSaverIT extends BaseDbTest {
         Series<Object> data = Series.forData(l1, 67, 7.8, 1, "s1", ldt, ld, lt, bytes);
         Series<Object> dataNulls = Series.forData(null, null, null, 0, null, null, null, null, null);
 
-        String sql = dbAdapter.toNativeSql("insert into \"t2\" (\"bigint\", \"int\", \"double\", \"boolean\", \"string\", \"timestamp\", \"date\", \"time\", \"bytes\") " +
+        String sql = toNativeSql("insert into \"t2\" (\"bigint\", \"int\", \"double\", \"boolean\", \"string\", \"timestamp\", \"date\", \"time\", \"bytes\") " +
                 "values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         JdbcConnector connector = createConnector();
@@ -171,7 +171,7 @@ public class SqlSaverIT extends BaseDbTest {
 
         JdbcConnector connector = createConnector();
 
-        String sql = dbAdapter.toNativeSql("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)");
+        String sql = toNativeSql("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)");
 
         connector.sqlSaver(sql).save(data);
 
@@ -179,7 +179,7 @@ public class SqlSaverIT extends BaseDbTest {
                 "nx", 0,
                 "ny", 1);
 
-        sql = dbAdapter.toNativeSql("update \"t1\" set \"name\" = ? where \"id\" > ?");
+        sql = toNativeSql("update \"t1\" set \"name\" = ? where \"id\" > ?");
 
         int[] cs = connector.sqlSaver(sql).save(updateData);
         assertArrayEquals(new int[]{2, 1}, cs);

@@ -1,6 +1,6 @@
 package com.nhl.dflib.jdbc.unit;
 
-import com.nhl.dflib.jdbc.unit.db.TestDbAdapter;
+import com.nhl.dflib.jdbc.unit.dbadapter.TestDbAdapter;
 import io.bootique.BQRuntime;
 import io.bootique.jdbc.DataSourceFactory;
 import io.bootique.jdbc.JdbcModule;
@@ -26,14 +26,12 @@ public class DbBootstrap {
 
         String configFile = "classpath:com/nhl/dflib/jdbc/" + dbType + ".yml";
         String initSchemaFile = "classpath:com/nhl/dflib/jdbc/init_schema_" + dbType + ".sql";
-
-        TestDbAdapter adapter = TestDbAdapter.createAdapter(dbType);
-
+        
         BQRuntime runtime = testFactory.app("-c", configFile)
                 .autoLoadModules()
                 .module(b -> JdbcModule.extend(b).addDataSourceListener(new DbInitializer(initSchemaFile)))
                 .createRuntime();
-        return new DbBootstrap(runtime, adapter, dbType);
+        return new DbBootstrap(runtime, TestDbAdapter.createAdapter(dbType), dbType);
     }
 
     public TestDbAdapter getDbAdapter() {

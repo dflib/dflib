@@ -22,9 +22,7 @@ public class JdbcConnectorBuilder_IT extends BaseDbTest {
 
         JdbcConnector connector = createConnector();
 
-        String sql = "create table \"x\" (\"id\" int)";
-
-        sql = dbAdapter.toNativeSql(sql);
+        String sql = toNativeSql("create table \"x\" (\"id\" int)");
 
         try (Connection c1 = connector.getConnection()) {
             try (PreparedStatement st = c1.prepareStatement(sql)) {
@@ -34,7 +32,7 @@ public class JdbcConnectorBuilder_IT extends BaseDbTest {
             c1.commit();
         }
 
-        sql = dbAdapter.toNativeSql("insert into \"x\" values (356)");
+        sql = toNativeSql("insert into \"x\" values (356)");
 
         try (Connection c2 = connector.getConnection()) {
             try (PreparedStatement st = c2.prepareStatement(sql)) {
@@ -44,7 +42,7 @@ public class JdbcConnectorBuilder_IT extends BaseDbTest {
             c2.commit();
         }
 
-        sql = dbAdapter.toNativeSql("select * from \"x\"");
+        sql = toNativeSql("select * from \"x\"");
 
         try (Connection c3 = connector.getConnection()) {
             try (PreparedStatement st = c3.prepareStatement(sql)) {

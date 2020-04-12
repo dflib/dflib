@@ -1,6 +1,6 @@
-package com.nhl.dflib.jdbc.unit.db;
+package com.nhl.dflib.jdbc.unit.dbadapter;
 
-class MySQLAdapter implements TestDbAdapter {
+class MySQLTestAdapter implements TestDbAdapter {
 
     private static final String QUOTE = "`";
 

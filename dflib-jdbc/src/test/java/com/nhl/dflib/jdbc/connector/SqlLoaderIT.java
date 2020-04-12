@@ -22,7 +22,7 @@ public class SqlLoaderIT extends BaseDbTest {
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 1_000.);
 
-        String sql = dbAdapter.toNativeSql("SELECT \"id\", \"salary\" from \"t1\" WHERE \"id\" > 1");
+        String sql = toNativeSql("SELECT \"id\", \"salary\" from \"t1\" WHERE \"id\" > 1");
 
         DataFrame df = createConnector()
                 .sqlLoader(sql)
@@ -40,7 +40,7 @@ public class SqlLoaderIT extends BaseDbTest {
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 1_000.);
 
-        String sql = dbAdapter.toNativeSql("SELECT \"id\", \"salary\" from \"t1\" WHERE \"id\" = ?");
+        String sql = toNativeSql("SELECT \"id\", \"salary\" from \"t1\" WHERE \"id\" = ?");
 
         SqlLoader loader = createConnector().sqlLoader(sql);
 
@@ -59,7 +59,7 @@ public class SqlLoaderIT extends BaseDbTest {
     public void testEmpty() {
         T1.insert(1L, "n1", 50_000.01);
 
-        String sql = dbAdapter.toNativeSql("SELECT \"id\", \"salary\" from \"t1\" WHERE \"id\" > 1");
+        String sql = toNativeSql("SELECT \"id\", \"salary\" from \"t1\" WHERE \"id\" > 1");
 
         DataFrame df = createConnector()
                 .sqlLoader(sql)
@@ -74,7 +74,7 @@ public class SqlLoaderIT extends BaseDbTest {
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 1_000.);
 
-        String sql = dbAdapter.toNativeSql("SELECT SUBSTR(\"name\", 2) as \"name\" from \"t1\" WHERE \"id\" > 1");
+        String sql = toNativeSql("SELECT SUBSTR(\"name\", 2) as \"name\" from \"t1\" WHERE \"id\" > 1");
 
         DataFrame df = createConnector()
                 .sqlLoader(sql)
@@ -93,7 +93,7 @@ public class SqlLoaderIT extends BaseDbTest {
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 20_000.);
 
-        String sql = dbAdapter.toNativeSql("SELECT * from \"t1\"");
+        String sql = toNativeSql("SELECT * from \"t1\"");
 
         DataFrame df = createConnector()
                 .sqlLoader(sql)
@@ -118,7 +118,7 @@ public class SqlLoaderIT extends BaseDbTest {
         T2.insert(l1, 67, 7.8, true, "s1", ldt, ld, lt, bytes)
                 .insert(null, null, null, false, null, null, null, null, null);
 
-        String sql = dbAdapter.toNativeSql("SELECT * from \"t2\"" +
+        String sql = toNativeSql("SELECT * from \"t2\"" +
                 " WHERE \"bigint\" = ?" +
                 " AND \"int\" = ?" +
                 " AND \"double\" = ?" +
@@ -142,7 +142,7 @@ public class SqlLoaderIT extends BaseDbTest {
     public void testPrimitives() {
         T3.insert(-15, Long.MAX_VALUE - 1, 0.505, true);
 
-        String sql = dbAdapter.toNativeSql("SELECT * from \"t3\"");
+        String sql = toNativeSql("SELECT * from \"t3\"");
 
         DataFrame df = createConnector()
                 .sqlLoader(sql)
