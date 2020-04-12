@@ -6,7 +6,7 @@ import io.bootique.jdbc.DataSourceFactory;
 import io.bootique.jdbc.JdbcModule;
 import io.bootique.jdbc.test.Table;
 import io.bootique.jdbc.test.runtime.DatabaseChannelFactory;
-import io.bootique.test.junit.BQTestFactory;
+import io.bootique.test.junit5.BQTestClassFactory;
 
 import javax.sql.DataSource;
 
@@ -22,7 +22,7 @@ public class DbBootstrap {
         this.dbAdapter = dbAdapter;
     }
 
-    public static DbBootstrap create(BQTestFactory testFactory, String dbType) {
+    public static DbBootstrap create(BQTestClassFactory testFactory, String dbType) {
 
         String configFile = "classpath:com/nhl/dflib/jdbc/" + dbType + ".yml";
         String initSchemaFile = "classpath:com/nhl/dflib/jdbc/init_schema_" + dbType + ".sql";

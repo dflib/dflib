@@ -3,11 +3,10 @@ package com.nhl.dflib.jdbc.unit;
 import com.nhl.dflib.jdbc.unit.dbadapter.TestDbAdapter;
 import io.bootique.jdbc.test.Column;
 import io.bootique.jdbc.test.Table;
-import io.bootique.jdbc.test.TestDataManager;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
+import io.bootique.jdbc.test.junit5.TestDataManager;
+import io.bootique.test.junit5.BQTestClassFactory;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -16,8 +15,8 @@ import static java.util.stream.Collectors.toList;
 
 public abstract class BaseDbTest {
 
-    @ClassRule
-    public static BQTestFactory TEST_FACTORY = new BQTestFactory();
+    @RegisterExtension
+    public static BQTestClassFactory TEST_FACTORY = new BQTestClassFactory();
 
     protected static Table T1;
     protected static Table T2;
@@ -27,10 +26,10 @@ public abstract class BaseDbTest {
     private static TestDbAdapter DB_ADAPTER;
     private static DataSource DATA_SOURCE;
 
-    @Rule
+    @RegisterExtension
     public final TestDataManager dataManager = new TestDataManager(true, T1, T2, T3, T1_AUDIT);
 
-    @BeforeClass
+    @BeforeAll
     public static void initDB() {
         String dbType = System.getProperty("test.db", "derby");
         DbBootstrap bootstrap = DbBootstrap.create(TEST_FACTORY, dbType);

@@ -18,11 +18,11 @@ public class DbTableMetadataTest {
         assertSame(c2, md.getColumn("c2"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetColumn_Unknown() {
         DbColumnMetadata c1 = new DbColumnMetadata("c1", Types.INTEGER, false, false);
 
         DbTableMetadata md = new DbTableMetadata(TableFQName.forName("x"), new DbColumnMetadata[]{c1});
-        md.getColumn("no_such_column");
+        assertThrows(IllegalArgumentException.class, () -> md.getColumn("no_such_column"));
     }
 }

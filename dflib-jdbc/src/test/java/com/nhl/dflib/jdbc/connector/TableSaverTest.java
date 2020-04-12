@@ -32,9 +32,8 @@ public class TableSaverTest {
                 .deleteTableData()
                 .mergeByPk();
 
-        assertEquals("If DELETE is in effect, UPSERT should be replaced by INSERT",
-                SaveViaDeleteThenInsert.class,
-                saver.createSaveStrategy().getClass());
+        assertEquals(SaveViaDeleteThenInsert.class, saver.createSaveStrategy().getClass(),
+                "If DELETE is in effect, UPSERT should be replaced by INSERT");
     }
 
     @Test
