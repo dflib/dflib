@@ -8,8 +8,14 @@ jdk:
   - openjdk8
 
 script:
-   - 'if [ "$TRAVIS_SECURE_ENV_VARS" = "true" ]; then mvn clean source:jar deploy --settings travis_settings.xml; fi'
-   - 'if [ "$TRAVIS_SECURE_ENV_VARS" = "false" ]; then mvn verify; fi'
+  - travis_wait mvn verify -P$DB_PROFILE
+
+jobs:
+  include:
+    - stage: deploy
+      jdk: openjdk8
+      script: mvn clean source:jar javadoc:javadoc deploy -DskipTests --settings travis_settings.xml
+      if: branch IN (master) AND type IN (push) AND repo = nhl/dflib
 
 # travis encrypt -r nhl/dflib "CI_DEPLOY_USERNAME='name'"
 # travis encrypt -r nhl/dflib "CI_DEPLOY_PASSWORD='password'"
@@ -17,3 +23,7 @@ env:
   global:
     - secure: "pfUDVoF2sgfh/QeRAZWOJs3njCmEM0+HF6t2e/fUILXB18OMluZHo/NFJ0ysypcjcoT6GRe1C2hQ6NhZJxz5CcnjUoIS6myAfeWmw4ANEpq1qhbWzIJ0WP63oF62P8ei9KlwTiKaRSOhPakHsuXt/+iA4unMoRF+TqpC98999XKeLG/jr87vWroiM4E/ikJUTP9kGUuGOKgpiMP0u7ifPIi5NsqYie1VcHzMhREsqGvGrwlK5ozXhmhlok7qmn9t8P75dMdKVwvEgYoao+26PW40KYqKSOdbEOKkeownpJ8WjN5xji59IqRAYElqgYprxZpwc9/QMr2MQWIzfbi6hArcvtnKXCQGcSxZYMDGq9iTxYyEGHzhuw8Gfdm0R05jZ/muplKtBpP2L0oX5P5Dpymkzx8OjciBtbMi1sAFNa/+y+UEPiL2eUEl262uSMqLSB4/sgZIipFCJsKJF5CBjqSfwKbwaCtXObmy5H321hVGvSAYTkMP6C8GX0QtS/athiPNaens7sfk+gDS5mn2lcY9c9y9iJprMlrQKVFt/MDM3IBjgzd1uNSnsU76dTKyxpjCUbOFBYcKLZ46GPKPODCslOyDEBIOZOfy3Bf+osO+z1FJ97mpb5lN6FM8+DDsJxN/1zj8k0TyrhmLPZ2hnAvSHhMDwAAo0iA+UazDnb0="
     - secure: "XlCviqNsNF7H43T6Z7zixNgaZy7Bm4oVtKMV55vjL7tSHsVG9vypMrTeHYRGDAW4MJHaReeEFW0+02m/2eMytYIGvHopPS8B2icySTuzCxUHRAoCP6WRq5azM9Ipy9KRftVI3pR5pWTzsi3ju14mc3rvtsDpTY16IP/YVibZgRAiedEIkI1kyNklH9aptXi0vbnilRer0Jw43MHfLEWJZ/x+yfTR70UZiIXS1U9hvwmnYqO84jUR+sHGOttNyC9vgO7ZHIlfYykqIRZKCfU00019ua2hxfHox8h7I4y6vwX3U2odHgg/fs6ln1k/fBvaTE13QzE4uozEKJ5gRCk0aqXgfPbPSWliAj/iGsvdnfch6+Hkuh4Ip979kDM6sG2M0SJ5g8To5wuoGhXmx32icgoFGRZsmv5FlMxDNBZIRwKunjUc7X1UDBHZ6eBw9NMfHs3APY0lguxB3KtlwwJCiIQ/rH2TLfi08iMtt4k/XViMSI7vtSq1eH6hfwNoqTlX/1VX45dGOXUeww6H5Hbqn5Fv5f5x5nX09enMsNz58W5+LohCN4qCvKSJQrTqY2iMBTGU5J/MVvN7nRtto3jVyj0TEPL5/SofnIQJWcAxsGZd4HLtoOWbdnuR7u+gDZAUYgm3Xn+2qrA+DX8R6S9cljVV+D/BGun/Dcau2bi3bvY="
+  jobs:
+    - DB_PROFILE=derby
+    - DB_PROFILE=mysql
+    - DB_PROFILE=postgresql
