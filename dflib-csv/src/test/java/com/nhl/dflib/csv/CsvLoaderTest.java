@@ -13,6 +13,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public class CsvLoaderTest extends BaseCsvTest {
 
     @Test
@@ -165,12 +167,13 @@ public class CsvLoaderTest extends BaseCsvTest {
                 .expectRow(1, 4.f, new BigDecimal(5), new BigInteger("6"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testFromFile_IntColumn_Nulls() {
-        new CsvLoader()
+        CsvLoader loader = new CsvLoader()
                 .intColumn(0)
-                .intColumn(1)
-                .load(inPath("numbers_w_nulls.csv"));
+                .intColumn(1);
+
+        assertThrows(IllegalArgumentException.class, () -> loader.load(inPath("numbers_w_nulls.csv")));
     }
 
     @Test
@@ -187,20 +190,23 @@ public class CsvLoaderTest extends BaseCsvTest {
                 .expectRow(1, 5, -200);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testFromFile_IntColumn_Nulls_Throw() {
-        new CsvLoader()
+        CsvLoader loader = new CsvLoader()
                 .intColumn(0)
-                .intColumn(1)
-                .load(inPath("numbers_w_nulls.csv"));
+                .intColumn(1);
+
+        assertThrows(IllegalArgumentException.class, () -> loader.load(inPath("numbers_w_nulls.csv")));
+
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testFromFile_LongColumn_Nulls() {
-        new CsvLoader()
+        CsvLoader loader = new CsvLoader()
                 .longColumn(0)
-                .longColumn(1)
-                .load(inPath("numbers_w_nulls.csv"));
+                .longColumn(1);
+
+        assertThrows(IllegalArgumentException.class, () -> loader.load(inPath("numbers_w_nulls.csv")));
     }
 
     @Test
@@ -217,12 +223,13 @@ public class CsvLoaderTest extends BaseCsvTest {
                 .expectRow(1, 5L, -200L);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testFromFile_LongColumn_Nulls_Throw() {
-        new CsvLoader()
+        CsvLoader loader = new CsvLoader()
                 .longColumn(0)
-                .longColumn(1)
-                .load(inPath("numbers_w_nulls.csv"));
+                .longColumn(1);
+
+        assertThrows(IllegalArgumentException.class, () -> loader.load(inPath("numbers_w_nulls.csv")));
     }
 
 

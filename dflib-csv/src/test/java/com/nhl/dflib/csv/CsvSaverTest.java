@@ -99,7 +99,7 @@ public class CsvSaverTest extends BaseCsvTest {
                 "3,4\r\n", readFile(file.getAbsolutePath()));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testSave_NoMkdirs() {
 
         String path = outPath("NoMkdirs" + File.separator + "f4" + File.separator + "testToFile.csv");
@@ -109,7 +109,7 @@ public class CsvSaverTest extends BaseCsvTest {
                 1, 2,
                 3, 4);
 
-        Csv.saver().save(df, file);
+        assertThrows(RuntimeException.class, () -> Csv.saver().save(df, file));
     }
 
 

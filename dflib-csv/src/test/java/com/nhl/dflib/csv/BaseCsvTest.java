@@ -1,6 +1,6 @@
 package com.nhl.dflib.csv;
 
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 
 import java.io.File;
 import java.io.FileReader;
@@ -14,7 +14,7 @@ public class BaseCsvTest {
     private static File OUT_BASE;
 
 
-    @BeforeClass
+    @BeforeAll
     public static void setupCsvDirs() throws URISyntaxException {
         URI csvUri = BaseCsvTest.class.getResource("f1.csv").toURI();
         IN_BASE = new File(csvUri).getAbsoluteFile().getParentFile();
