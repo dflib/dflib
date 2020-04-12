@@ -1,6 +1,6 @@
 jdbc:
   mysql:
-    jdbcUrl: "jdbc:tc:mysql://localhost/test?generateSimpleParameterMetadata=true"
+    jdbcUrl: "jdbc:tc:mysql:5.7://localhost/test?generateSimpleParameterMetadata=true"
     username: "test"
     password: "test"
     maximumPoolSize: 3

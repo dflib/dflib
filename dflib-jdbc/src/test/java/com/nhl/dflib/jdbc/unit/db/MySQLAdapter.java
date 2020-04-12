@@ -19,8 +19,6 @@ class MySQLAdapter implements TestDbAdapter {
 
     @Override
     public DbInitializer getInitializer(String initSchemaFile) {
-        // TODO: system-wide side effect...
-        System.setProperty("user.timezone", "UTC");
         return new DbInitializer(initSchemaFile, DELIMITER);
     }
 }
