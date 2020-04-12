@@ -1,6 +1,6 @@
 package com.nhl.dflib.jdbc.unit;
 
-import com.nhl.dflib.jdbc.unit.db.DBAdapter;
+import com.nhl.dflib.jdbc.unit.db.TestDbAdapter;
 import io.bootique.BQRuntime;
 import io.bootique.jdbc.DataSourceFactory;
 import io.bootique.jdbc.JdbcModule;
@@ -13,20 +13,31 @@ import javax.sql.DataSource;
 public class DbBootstrap {
 
     private BQRuntime runtime;
-
     private String dataSourceName;
+    private TestDbAdapter dbAdapter;
 
-    public DbBootstrap(BQRuntime runtime, String dataSourceName) {
+    public DbBootstrap(BQRuntime runtime, TestDbAdapter dbAdapter, String dataSourceName) {
         this.runtime = runtime;
-        this.dataSourceName = dataSourceName.toLowerCase();
+        this.dataSourceName = dataSourceName;
+        this.dbAdapter = dbAdapter;
     }
 
-    public static DbBootstrap create(BQTestFactory testFactory, DBAdapter dbAdapter) {
-        BQRuntime runtime = testFactory.app("-c", "classpath:com/nhl/dflib/jdbc/jdbc.yml")
+    public static DbBootstrap create(BQTestFactory testFactory, String dbType) {
+
+        String configFile = "classpath:com/nhl/dflib/jdbc/" + dbType + ".yml";
+        String initSchemaFile = "classpath:com/nhl/dflib/jdbc/init_schema_" + dbType + ".sql";
+
+        TestDbAdapter adapter = TestDbAdapter.createAdapter(dbType);
+
+        BQRuntime runtime = testFactory.app("-c", configFile)
                 .autoLoadModules()
-                .module(b -> JdbcModule.extend(b).addDataSourceListener(dbAdapter.getInitializer()))
+                .module(b -> JdbcModule.extend(b).addDataSourceListener(adapter.getInitializer(initSchemaFile)))
                 .createRuntime();
-        return new DbBootstrap(runtime, dbAdapter.getDBType());
+        return new DbBootstrap(runtime, adapter, dbType);
+    }
+
+    public TestDbAdapter getDbAdapter() {
+        return dbAdapter;
     }
 
     public DataSource getDataSource() {

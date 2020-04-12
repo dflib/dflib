@@ -2,15 +2,13 @@ package com.nhl.dflib.jdbc.unit.db;
 
 import com.nhl.dflib.jdbc.unit.DbInitializer;
 
-class MySQLAdapter implements DBAdapter {
+class MySQLAdapter implements TestDbAdapter {
 
     private static final String QUOTE = "`";
     private static final String DELIMITER = ";";
-    private static final String SQL_SCHEMA_PATH = "classpath:com/nhl/dflib/jdbc/init_schema_mysql.sql";
-    private static final String DB_TYPE = "mysql";
 
     @Override
-    public String processSQL(String command) {
+    public String toNativeSql(String command) {
         if (command.contains("SUBSTR")) {
             return command
                     .replaceAll("\"", QUOTE)
@@ -20,13 +18,9 @@ class MySQLAdapter implements DBAdapter {
     }
 
     @Override
-    public DbInitializer getInitializer() {
+    public DbInitializer getInitializer(String initSchemaFile) {
+        // TODO: system-wide side effect...
         System.setProperty("user.timezone", "UTC");
-        return new DbInitializer(SQL_SCHEMA_PATH, DELIMITER);
-    }
-
-    @Override
-    public String getDBType() {
-        return DB_TYPE;
+        return new DbInitializer(initSchemaFile, DELIMITER);
     }
 }
