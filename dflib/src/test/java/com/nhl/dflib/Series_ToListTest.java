@@ -1,37 +1,27 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.unit.SeriesAsserts;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
-import java.util.Collection;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(Parameterized.class)
-public class Series_ToListTest extends BaseObjectSeriesTest {
+public class Series_ToListTest {
 
-    public Series_ToListTest(SeriesTypes seriesType) {
-        super(seriesType);
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return ALL_SERIES_TYPES;
-    }
-
-    @Test
-    public void testContents() {
-        List<String> l = createSeries("a", "b", "c", "d", "e").toList();
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testContents(SeriesType type) {
+        List<String> l = type.createSeries("a", "b", "c", "d", "e").toList();
         assertEquals(asList("a", "b", "c", "d", "e"), l);
     }
 
-    @Test
-    public void testMutability() {
-        Series<String> s = createSeries("a", "b");
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testMutability(SeriesType type) {
+        Series<String> s = type.createSeries("a", "b");
         List<String> l = s.toList();
         l.set(0, "c");
 

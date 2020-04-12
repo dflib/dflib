@@ -1,7 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.unit.DoubleSeriesAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DoubleSeries_UniqueTest {
 

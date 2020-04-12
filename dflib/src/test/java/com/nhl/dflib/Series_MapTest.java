@@ -2,33 +2,22 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.unit.DataFrameAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
-import java.util.Collection;
+public class Series_MapTest {
 
-@RunWith(Parameterized.class)
-public class Series_MapTest extends BaseObjectSeriesTest {
-
-    public Series_MapTest(SeriesTypes seriesType) {
-        super(seriesType);
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return ALL_SERIES_TYPES;
-    }
-
-    @Test
-    public void testMap_Value() {
-        Series<String> s = createSeries("a", "b", "c").map(String::toUpperCase);
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testMap_Value(SeriesType type) {
+        Series<String> s = type.createSeries("a", "b", "c").map(String::toUpperCase);
         new SeriesAsserts(s).expectData("A", "B", "C");
     }
 
-    @Test
-    public void testMap_DataFrame() {
-        DataFrame df = createSeries("a", "b", "c").map(Index.forLabels("upper", "is_c"), (v, r) -> {
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testMap_DataFrame(SeriesType type) {
+        DataFrame df = type.createSeries("a", "b", "c").map(Index.forLabels("upper", "is_c"), (v, r) -> {
             r.set(0, v.toUpperCase());
             r.set(1, v.equals("c"));
         });

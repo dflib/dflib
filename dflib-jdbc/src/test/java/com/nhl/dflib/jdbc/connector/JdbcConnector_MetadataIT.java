@@ -4,11 +4,11 @@ import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.connector.metadata.DbColumnMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.DbTableMetadata;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Types;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class JdbcConnector_MetadataIT extends BaseDbTest {
 

@@ -2,7 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.join.JoinIndicator;
 import com.nhl.dflib.unit.DataFrameAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
 

@@ -45,8 +45,10 @@
         <maven.compiler.target>1.8</maven.compiler.target>
 
         <slf4j.version>1.7.25</slf4j.version>
-        <bootique.version>1.1</bootique.version>
+        <bootique.version>2.0-SNAPSHOT</bootique.version>
         <testcontainers.version>1.13.0</testcontainers.version>
+        <junit4.version>4.13</junit4.version>
+        <junit5.version>5.6.1</junit5.version>
     </properties>
 
     <url>https://github.com/nhl/dflib</url>
@@ -71,12 +73,48 @@
         </snapshotRepository>
     </distributionManagement>
 
+    <repositories>
+        <repository>
+            <id>bootique-snapshots</id>
+            <url>https://maven.objectstyle.org/nexus/content/repositories/bootique-snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+
+        <!-- Main artifact repo -->
+        <repository>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${junit5.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-params</artifactId>
+                <version>${junit5.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.11</version>
+                <version>${junit4.version}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>

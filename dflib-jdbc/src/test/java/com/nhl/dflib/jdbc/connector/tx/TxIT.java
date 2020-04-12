@@ -6,12 +6,12 @@ import com.nhl.dflib.jdbc.connector.JdbcConnector;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
 import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TxIT extends BaseDbTest {
 

@@ -1,27 +1,15 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.unit.SeriesGroupByAsserts;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
-import java.util.Collection;
+public class Series_GroupTest {
 
-@RunWith(Parameterized.class)
-public class Series_GroupTest extends BaseObjectSeriesTest {
-
-    public Series_GroupTest(SeriesTypes seriesType) {
-        super(seriesType);
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return ALL_SERIES_TYPES;
-    }
-
-    @Test
-    public void testGroup() {
-        SeriesGroupBy<Integer> g = createSeries(1, 5, 5, 8, 5).group();
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testGroup(SeriesType type) {
+        SeriesGroupBy<Integer> g = type.createSeries(1, 5, 5, 8, 5).group();
         new SeriesGroupByAsserts(g)
                 .expectGroups(1, 5, 8)
                 .expectGroupData(1, 1)
@@ -29,18 +17,20 @@ public class Series_GroupTest extends BaseObjectSeriesTest {
                 .expectGroupData(8, 8);
     }
 
-    @Test
-    public void testGroup_SkipNulls() {
-        SeriesGroupBy<Integer> g = createSeries(8, null, 5, 8, 5, null).group();
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testGroup_SkipNulls(SeriesType type) {
+        SeriesGroupBy<Integer> g = type.createSeries(8, null, 5, 8, 5, null).group();
         new SeriesGroupByAsserts(g)
                 .expectGroups(8, 5)
                 .expectGroupData(5, 5, 5)
                 .expectGroupData(8, 8, 8);
     }
 
-    @Test
-    public void testGroup_WithHash() {
-        SeriesGroupBy<Integer> g = createSeries(1, 16, 5, 8, 7).group((Integer i) -> i % 2);
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testGroup_WithHash(SeriesType type) {
+        SeriesGroupBy<Integer> g = type.createSeries(1, 16, 5, 8, 7).group((Integer i) -> i % 2);
         new SeriesGroupByAsserts(g)
                 .expectGroups(0, 1)
                 .expectGroupData(0, 16, 8)

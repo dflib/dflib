@@ -1,9 +1,9 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.unit.SeriesAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class IntSeries_SelectTest {
 
@@ -21,9 +21,10 @@ public class IntSeries_SelectTest {
         assertTrue(s instanceof IntSeries);
     }
 
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test
     public void testPositional_OutOfBounds() {
-        IntSeries.forInts(3, 4, 2).select(0, 3);
+        IntSeries s = IntSeries.forInts(3, 4, 2);
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> s.select(0, 3));
     }
 
     @Test

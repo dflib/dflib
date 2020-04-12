@@ -51,11 +51,6 @@
         </dependency>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <scope>test</scope>
@@ -74,7 +69,7 @@
         </dependency>
         <dependency>
             <groupId>io.bootique.jdbc</groupId>
-            <artifactId>bootique-jdbc-test</artifactId>
+            <artifactId>bootique-jdbc-test-junit5</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

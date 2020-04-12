@@ -2,7 +2,7 @@ package com.nhl.dflib.csv;
 
 import com.nhl.dflib.unit.DataFrameAsserts;
 import com.nhl.dflib.DataFrame;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CsvTest extends BaseCsvTest {
 

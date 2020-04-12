@@ -2,13 +2,14 @@ package com.nhl.dflib.unit;
 
 import com.nhl.dflib.LongSeries;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class LongSeriesAsserts {
     private long[] data;
 
     public LongSeriesAsserts(LongSeries series) {
-        assertNotNull("Series is null", series);
+        assertNotNull(series, "Series is null");
 
         this.data = new long[series.size()];
         series.copyToLong(data, 0, 0, series.size());
@@ -16,13 +17,13 @@ public class LongSeriesAsserts {
 
     public LongSeriesAsserts expectData(long... expectedValues) {
 
-        assertEquals("Unexpected LongSeries length", expectedValues.length, data.length);
+        assertEquals(expectedValues.length, data.length, "Unexpected LongSeries length");
 
         for (int i = 0; i < expectedValues.length; i++) {
 
             long a = data[i];
             long e = expectedValues[i];
-            assertEquals("Unexpected value at " + i, e, a);
+            assertEquals(e, a, "Unexpected value at " + i);
         }
 
         return this;

@@ -9,7 +9,11 @@ import com.nhl.dflib.LongSeries;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DataFrameAsserts {
 
@@ -26,15 +30,15 @@ public class DataFrameAsserts {
 
     public DataFrameAsserts(DataFrame df, String... expectedColumns) {
 
-        assertNotNull("DataFrame is null", df);
-        assertArrayEquals("DataFrame columns differ from expected", expectedColumns, df.getColumnsIndex().getLabels());
+        assertNotNull(df, "DataFrame is null");
+        assertArrayEquals(expectedColumns, df.getColumnsIndex().getLabels(), "DataFrame columns differ from expected");
 
         this.expectedColumns = expectedColumns;
         this.df = df;
     }
 
     public DataFrameAsserts expectHeight(int expectedHeight) {
-        assertEquals("Unexpected DataFrame height", expectedHeight, df.height());
+        assertEquals(expectedHeight, df.height(), "Unexpected DataFrame height");
         return this;
     }
 
@@ -124,12 +128,12 @@ public class DataFrameAsserts {
             Object e = expectedNormal[i];
 
             if (e == null) {
-                assertNull("Unexpected value in '" + c + "'", a);
+                assertNull(a, "Unexpected value in '" + c + "'");
             } else if (e.getClass().isArray()) {
-                assertTrue("Was expecting array in '" + c + "'", a.getClass().isArray());
+                assertTrue(a.getClass().isArray(), "Was expecting array in '" + c + "'");
                 expectArrayRow(c, e, a);
             } else {
-                assertEquals("Unexpected value in '" + c + "'", e, a);
+                assertEquals(e, a, "Unexpected value in '" + c + "'");
             }
         }
 
@@ -146,25 +150,25 @@ public class DataFrameAsserts {
         String type = eArrayClass.substring(0, eArrayClass.length() - 2);
         switch (type) {
             case "char":
-                assertArrayEquals("Unexpected value at " + column, (char[]) expected, (char[]) actual);
+                assertArrayEquals((char[]) expected, (char[]) actual, "Unexpected value at " + column);
                 break;
             case "long":
-                assertArrayEquals("Unexpected value at " + column, (long[]) expected, (long[]) actual);
+                assertArrayEquals((long[]) expected, (long[]) actual, "Unexpected value at " + column);
                 break;
             case "int":
-                assertArrayEquals("Unexpected value at " + column, (int[]) expected, (int[]) actual);
+                assertArrayEquals((int[]) expected, (int[]) actual, "Unexpected value at " + column);
                 break;
             case "byte":
-                assertArrayEquals("Unexpected value at " + column, (byte[]) expected, (byte[]) actual);
+                assertArrayEquals((byte[]) expected, (byte[]) actual, "Unexpected value at " + column);
                 break;
             case "double":
-                assertArrayEquals("Unexpected value at " + column, (double[]) expected, (double[]) actual, 0.00001);
+                assertArrayEquals((double[]) expected, (double[]) actual, 0.00001, "Unexpected value at " + column);
                 break;
             case "float":
-                assertArrayEquals("Unexpected value at " + column, (float[]) expected, (float[]) actual, 0.00001f);
+                assertArrayEquals((float[]) expected, (float[]) actual, 0.00001f, "Unexpected value at " + column);
                 break;
             default:
-                assertArrayEquals("Unexpected value at " + column, (Object[]) expected, (Object[]) actual);
+                assertArrayEquals((Object[]) expected, (Object[]) actual, "Unexpected value at " + column);
         }
     }
 }

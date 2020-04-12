@@ -1,7 +1,9 @@
 package com.nhl.dflib.unit;
 
 import com.nhl.dflib.DataFrame;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DataFrameAssertsTest {
 
@@ -27,10 +29,9 @@ public class DataFrameAssertsTest {
                 .expectRow(2, (Object) null);
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testExpectRows_ArrayTypeMismatch() {
-
         DataFrame df = DataFrame.newFrame("a").foldByRow(new int[]{3, 4, 5});
-        new DataFrameAsserts(df, "a").expectRow(0, new Object[]{new long[]{3, 4, 5}});
+        assertThrows(AssertionError.class, () ->  new DataFrameAsserts(df, "a").expectRow(0, new Object[]{new long[]{3, 4, 5}}));
     }
 }

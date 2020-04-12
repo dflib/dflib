@@ -1,7 +1,9 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.unit.DataFrameAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DataFrameConditionsTest {
 
@@ -81,8 +83,8 @@ public class DataFrameConditionsTest {
                 .expectRow(1, false, true);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testEq_ColMismatch() {
+    @Test
+    public void testNe_ColMismatch() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -92,11 +94,11 @@ public class DataFrameConditionsTest {
                 1, "x",
                 2, "Y");
 
-        df1.ne(df2);
+        assertThrows(IllegalArgumentException.class, () -> df1.ne(df2));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testEq_RowsMismatch() {
+    @Test
+    public void testNe_RowsMismatch() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -105,6 +107,6 @@ public class DataFrameConditionsTest {
         DataFrame df2 = DataFrame.newFrame("a", "b").foldByRow(
                 2, "Y");
 
-        df1.ne(df2);
+        assertThrows(IllegalArgumentException.class, () -> df1.ne(df2));
     }
 }

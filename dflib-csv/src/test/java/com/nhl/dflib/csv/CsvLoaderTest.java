@@ -4,7 +4,7 @@ import com.nhl.dflib.unit.DataFrameAsserts;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.ValueMapper;
 import org.apache.commons.csv.CSVFormat;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 import java.math.BigDecimal;

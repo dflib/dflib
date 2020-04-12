@@ -2,7 +2,7 @@ package com.nhl.dflib.concat;
 
 import com.nhl.dflib.Series;
 import com.nhl.dflib.unit.SeriesAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 

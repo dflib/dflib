@@ -1,27 +1,15 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.unit.DataFrameAsserts;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
-import java.util.Collection;
+public class Series_ValueCountsTest {
 
-@RunWith(Parameterized.class)
-public class Series_ValueCountsTest extends BaseObjectSeriesTest {
-
-    public Series_ValueCountsTest(SeriesTypes seriesType) {
-        super(seriesType);
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return ALL_SERIES_TYPES;
-    }
-
-    @Test
-    public void testValueCounts() {
-        DataFrame counts = createSeries("a", "b", "a", "a", "c").valueCounts();
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testValueCounts(SeriesType type) {
+        DataFrame counts = type.createSeries("a", "b", "a", "a", "c").valueCounts();
 
         new DataFrameAsserts(counts, "value", "count")
                 .expectHeight(3)
@@ -30,9 +18,10 @@ public class Series_ValueCountsTest extends BaseObjectSeriesTest {
                 .expectRow(2, "c", 1);
     }
 
-    @Test
-    public void testValueCounts_Nulls() {
-        DataFrame counts = createSeries("a", "b", "a", "a", null, "c").valueCounts();
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testValueCounts_Nulls(SeriesType type) {
+        DataFrame counts = type.createSeries("a", "b", "a", "a", null, "c").valueCounts();
 
         new DataFrameAsserts(counts, "value", "count")
                 .expectHeight(3)

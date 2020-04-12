@@ -2,14 +2,18 @@ package com.nhl.dflib.unit;
 
 import com.nhl.dflib.Series;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SeriesAsserts {
 
     private Object[] data;
 
     public SeriesAsserts(Series<?> series) {
-        assertNotNull("Series is null", series);
+        assertNotNull(series, "Series is null");
 
         this.data = new Object[series.size()];
         series.copyTo(data, 0, 0, series.size());
@@ -17,7 +21,7 @@ public class SeriesAsserts {
 
     public SeriesAsserts expectData(Object... expectedValues) {
 
-        assertEquals("Unexpected Series length", expectedValues.length, data.length);
+        assertEquals(expectedValues.length, data.length, "Unexpected Series length");
 
         for (int i = 0; i < expectedValues.length; i++) {
 
@@ -25,12 +29,12 @@ public class SeriesAsserts {
             Object e = expectedValues[i];
 
             if (e == null) {
-                assertNull("Unexpected value at " + i, a);
+                assertNull(a, "Unexpected value at " + i);
             } else if (e.getClass().isArray()) {
-                assertTrue("Was expecting array at " + i, a.getClass().isArray());
+                assertTrue( a.getClass().isArray(), "Was expecting array at " + i);
                 expectArrayRow(i, e, a);
             } else {
-                assertEquals("Unexpected value at " + i, e, a);
+                assertEquals( e, a, "Unexpected value at " + i);
             }
         }
 
@@ -47,25 +51,25 @@ public class SeriesAsserts {
         String type = eArrayClass.substring(0, eArrayClass.length() - 2);
         switch (type) {
             case "char":
-                assertArrayEquals("Unexpected value at " + i, (char[]) expected, (char[]) actual);
+                assertArrayEquals((char[]) expected, (char[]) actual, "Unexpected value at " + i);
                 break;
             case "long":
-                assertArrayEquals("Unexpected value at " + i, (long[]) expected, (long[]) actual);
+                assertArrayEquals((long[]) expected, (long[]) actual, "Unexpected value at " + i);
                 break;
             case "int":
-                assertArrayEquals("Unexpected value at " + i, (int[]) expected, (int[]) actual);
+                assertArrayEquals((int[]) expected, (int[]) actual, "Unexpected value at " + i);
                 break;
             case "byte":
-                assertArrayEquals("Unexpected value at " + i, (byte[]) expected, (byte[]) actual);
+                assertArrayEquals((byte[]) expected, (byte[]) actual, "Unexpected value at " + i);
                 break;
             case "double":
-                assertArrayEquals("Unexpected value at " + i, (double[]) expected, (double[]) actual, 0.00001);
+                assertArrayEquals((double[]) expected, (double[]) actual, 0.00001, "Unexpected value at " + i);
                 break;
             case "float":
-                assertArrayEquals("Unexpected value at " + i, (float[]) expected, (float[]) actual, 0.00001f);
+                assertArrayEquals((float[]) expected, (float[]) actual, 0.00001f, "Unexpected value at " + i);
                 break;
             default:
-                assertArrayEquals("Unexpected value at " + i, (Object[]) expected, (Object[]) actual);
+                assertArrayEquals((Object[]) expected, (Object[]) actual, "Unexpected value at " + i);
         }
     }
 }

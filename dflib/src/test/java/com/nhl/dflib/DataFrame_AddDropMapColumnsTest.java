@@ -2,7 +2,9 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.unit.DataFrameAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DataFrame_AddDropMapColumnsTest {
 
@@ -72,25 +74,26 @@ public class DataFrame_AddDropMapColumnsTest {
                 .expectRow(1, 2, "y", "n");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAddColumn_Series_Shorter() {
 
         Series<String> column = Series.forData("m");
-        DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
-                2, "y").addColumn("c", column);
+                2, "y");
 
+        assertThrows(IllegalArgumentException.class, () -> df.addColumn("c", column));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAddColumn_Series_Longer() {
 
         Series<String> column = Series.forData("m", "n", "o");
-
-        DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
-                2, "y").addColumn("c", column);
+                2, "y");
 
+        assertThrows(IllegalArgumentException.class, () -> df.addColumn("c", column));
     }
 
     @Test
@@ -108,14 +111,16 @@ public class DataFrame_AddDropMapColumnsTest {
                 .expectRow(1, 2, "y", 20, 4);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAddColumns_SizeMismatch() {
-        DataFrame.newFrame("a", "b").foldByRow(
+
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
-                2, "y")
-                .addColumns(new String[]{"c", "d", "e"},
-                        r -> ((int) r.get(0)) * 10,
-                        r -> ((int) r.get(0)) * 2);
+                2, "y");
+
+        assertThrows(IllegalArgumentException.class, () -> df.addColumns(new String[]{"c", "d", "e"},
+                r -> ((int) r.get(0)) * 10,
+                r -> ((int) r.get(0)) * 2));
     }
 
     @Test

@@ -2,7 +2,7 @@ package com.nhl.dflib.csv;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.unit.DataFrameAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 import java.util.Random;

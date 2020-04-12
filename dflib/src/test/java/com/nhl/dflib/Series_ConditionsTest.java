@@ -1,8 +1,8 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.unit.BooleanSeriesAsserts;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 public class Series_ConditionsTest {
 
     @Test
@@ -25,13 +25,12 @@ public class Series_ConditionsTest {
         new BooleanSeriesAsserts(cond).expectData(false, true, false, true);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testEq_SizeMismatch() {
-
         Series<String> s1 = Series.forData("a", "b", "n", "c");
         Series<String> s2 = Series.forData("a", "b", "n");
 
-        s1.eq(s2);
+        assertThrows(IllegalArgumentException.class, () -> s1.eq(s2));
     }
 
     @Test

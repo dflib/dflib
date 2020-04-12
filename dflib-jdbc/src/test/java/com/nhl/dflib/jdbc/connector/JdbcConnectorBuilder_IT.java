@@ -2,14 +2,14 @@ package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class JdbcConnectorBuilder_IT extends BaseDbTest {
 

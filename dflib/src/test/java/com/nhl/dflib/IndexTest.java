@@ -2,7 +2,9 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.unit.IndexAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class IndexTest {
 
@@ -24,9 +26,9 @@ public class IndexTest {
         IndexAsserts.expect(i, "a", "b", "c", "d");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRangeOpenClosed_OutOfRange() {
-        Index.forLabels("a", "b", "c", "d").rangeOpenClosed(0, 5);
+        assertThrows(IllegalArgumentException.class, () -> Index.forLabels("a", "b", "c", "d").rangeOpenClosed(0, 5));
     }
 
     @Test

@@ -1,16 +1,16 @@
 package com.nhl.dflib.print;
 
 import com.nhl.dflib.DataFrame;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DataFrameInlinePrintWorkerTest {
 
     private DataFrame df;
 
-    @Before
+    @BeforeEach
     public void initDataFrameParts() {
         this.df = DataFrame.newFrame("col1", "column2").foldByRow(
                 "one", 1,

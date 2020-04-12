@@ -2,7 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.series.BooleanArraySeries;
 import com.nhl.dflib.unit.BooleanSeriesAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class BooleanSeries_HeadBooleanTest {
 

@@ -2,13 +2,13 @@ package com.nhl.dflib.csv;
 
 import com.nhl.dflib.DataFrame;
 import org.apache.commons.csv.CSVFormat;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CsvSaverTest extends BaseCsvTest {
 

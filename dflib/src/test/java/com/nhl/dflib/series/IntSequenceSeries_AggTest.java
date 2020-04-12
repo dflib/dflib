@@ -1,17 +1,16 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.SeriesAggregator;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class IntSequenceSeries_AggTest {
 
     @Test
     public void testAgg_SumInt() {
         IntSequenceSeries s = new IntSequenceSeries(1, 3);
-        Assert.assertEquals(Integer.valueOf(3), s.agg(SeriesAggregator.sumInt()));
+        assertEquals(Integer.valueOf(3), s.agg(SeriesAggregator.sumInt()));
     }
 
     @Test

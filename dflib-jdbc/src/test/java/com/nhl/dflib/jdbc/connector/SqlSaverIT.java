@@ -5,13 +5,13 @@ import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
 import com.nhl.dflib.unit.DataFrameAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SqlSaverIT extends BaseDbTest {
 

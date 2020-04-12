@@ -7,7 +7,7 @@ import com.nhl.dflib.jdbc.unit.BaseDbTest;
 import com.nhl.dflib.unit.DataFrameAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;

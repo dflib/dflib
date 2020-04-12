@@ -4,7 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
 import com.nhl.dflib.unit.DataFrameAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 

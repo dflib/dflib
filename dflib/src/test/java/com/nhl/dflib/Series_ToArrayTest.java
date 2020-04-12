@@ -1,35 +1,24 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.unit.SeriesAsserts;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
-import java.util.Collection;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import static org.junit.Assert.*;
+public class Series_ToArrayTest {
 
-@RunWith(Parameterized.class)
-public class Series_ToArrayTest extends BaseObjectSeriesTest {
-
-    public Series_ToArrayTest(SeriesTypes seriesType) {
-        super(seriesType);
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return ALL_SERIES_TYPES;
-    }
-
-    @Test
-    public void testContents() {
-        String[] a = createSeries("a", "b", "c", "d", "e").toArray(new String[0]);
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testContents(SeriesType type) {
+        String[] a = type.createSeries("a", "b", "c", "d", "e").toArray(new String[0]);
         assertArrayEquals(new Object[]{"a", "b", "c", "d", "e"}, a);
     }
 
-    @Test
-    public void testMutability() {
-        Series<String> s = createSeries("a", "b");
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testMutability(SeriesType type) {
+        Series<String> s = type.createSeries("a", "b");
         String[] a = s.toArray(new String[0]);
         a[0] = "c";
 

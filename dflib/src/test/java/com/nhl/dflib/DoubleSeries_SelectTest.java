@@ -1,9 +1,9 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.unit.SeriesAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DoubleSeries_SelectTest {
 
@@ -21,9 +21,10 @@ public class DoubleSeries_SelectTest {
         assertTrue(s instanceof DoubleSeries);
     }
 
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test
     public void test_OutOfBounds() {
-        DoubleSeries.forDoubles(3, 4, 2).select(0, 3);
+        DoubleSeries s =  DoubleSeries.forDoubles(3, 4, 2);
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> s.select(0, 3));
     }
 
     @Test

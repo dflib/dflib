@@ -3,7 +3,7 @@ package com.nhl.dflib.sort;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.unit.IntSeriesAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IndexSorterTest {
 

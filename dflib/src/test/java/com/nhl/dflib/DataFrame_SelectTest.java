@@ -2,7 +2,9 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.unit.DataFrameAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DataFrame_SelectTest {
 
@@ -59,14 +61,14 @@ public class DataFrame_SelectTest {
                 .expectRow(1, 1, "z");
     }
 
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test
     public void testSelect_ints_out_of_range() {
-        DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 5, "x",
                 9, "y",
-                1, "z")
-                .selectRows(0, 3)
-                .materialize();
+                1, "z");
+
+       assertThrows(ArrayIndexOutOfBoundsException.class, () -> df.selectRows(0, 3).materialize());
     }
 
     @Test

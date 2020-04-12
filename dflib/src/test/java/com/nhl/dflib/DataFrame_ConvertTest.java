@@ -1,11 +1,13 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.unit.DataFrameAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DataFrame_ConvertTest {
 
@@ -127,13 +129,14 @@ public class DataFrame_ConvertTest {
     }
 
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testConvertColumnToInt_Nulls() {
-        DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 "1", "x",
                 null, "z",
-                "2", "y")
-                .toIntColumn(0, IntValueMapper.fromString());
+                "2", "y");
+
+        assertThrows(IllegalArgumentException.class, () -> df.toIntColumn(0, IntValueMapper.fromString()));
     }
 
     @Test

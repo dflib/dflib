@@ -1,39 +1,29 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.unit.SeriesAsserts;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
-import java.util.Collection;
+public class Series_FillTest {
 
-@RunWith(Parameterized.class)
-public class Series_FillTest extends BaseObjectSeriesTest {
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return ALL_SERIES_TYPES;
-    }
-
-    public Series_FillTest(SeriesTypes seriesType) {
-        super(seriesType);
-    }
-
-    @Test
-    public void testFillNulls() {
-        Series<Integer> s = createSeries(1, null, 5, 8, null).fillNulls(-1);
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testFillNulls(SeriesType type) {
+        Series<Integer> s = type.createSeries(1, null, 5, 8, null).fillNulls(-1);
         new SeriesAsserts(s).expectData(1, -1, 5, 8, -1);
     }
 
-    @Test
-    public void testFillNullsBackwards() {
-        Series<Integer> s = createSeries(null, 1, null, 5, 8, null).fillNullsBackwards();
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testFillNullsBackwards(SeriesType type) {
+        Series<Integer> s = type.createSeries(null, 1, null, 5, 8, null).fillNullsBackwards();
         new SeriesAsserts(s).expectData(1, 1, 5, 5, 8, null);
     }
 
-    @Test
-    public void testFillNullsForward() {
-        Series<Integer> s = createSeries(null, 1, null, 5, 8, null).fillNullsForward();
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testFillNullsForward(SeriesType type) {
+        Series<Integer> s = type.createSeries(null, 1, null, 5, 8, null).fillNullsForward();
         new SeriesAsserts(s).expectData(null, 1, 1, 5, 8, 8);
     }
 }

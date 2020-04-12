@@ -1,27 +1,15 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.unit.BooleanSeriesAsserts;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
-import java.util.Collection;
+public class Series_LocateTest {
 
-@RunWith(Parameterized.class)
-public class Series_LocateTest extends BaseObjectSeriesTest {
-
-    public Series_LocateTest(SeriesTypes seriesType) {
-        super(seriesType);
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return ALL_SERIES_TYPES;
-    }
-
-    @Test
-    public void testLocate() {
-        BooleanSeries evens = createSeries(3, 4, 2).locate(i -> i % 2 == 0);
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testLocate(SeriesType type) {
+        BooleanSeries evens = type.createSeries(3, 4, 2).locate(i -> i % 2 == 0);
         new BooleanSeriesAsserts(evens).expectData(false, true, true);
     }
 }

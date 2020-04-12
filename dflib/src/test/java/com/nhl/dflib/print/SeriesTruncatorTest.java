@@ -2,9 +2,9 @@ package com.nhl.dflib.print;
 
 import com.nhl.dflib.Series;
 import com.nhl.dflib.series.IntSequenceSeries;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SeriesTruncatorTest {
 

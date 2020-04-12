@@ -1,10 +1,10 @@
 package com.nhl.dflib.sort;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class IntTimSortTest {
 
@@ -73,7 +73,7 @@ public class IntTimSortTest {
         IntTimSort.sort(ints, reverseSort);
 
         for (int i = 1; i < ints.length; i++) {
-            assertTrue("Failed at " + i + ": " + ints[i - 1] + " vs " + ints[i], ints[i - 1] >= ints[i]);
+            assertTrue(ints[i - 1] >= ints[i], "Failed at " + i + ": " + ints[i - 1] + " vs " + ints[i]);
         }
     }
 
@@ -84,7 +84,7 @@ public class IntTimSortTest {
         IntTimSort.sort(ints, reverseSort);
 
         for (int i = 1; i < ints.length; i++) {
-            assertTrue("Failed at " + i + ": " + ints[i - 1] + " vs " + ints[i], ints[i - 1] >= ints[i]);
+            assertTrue(ints[i - 1] >= ints[i], "Failed at " + i + ": " + ints[i - 1] + " vs " + ints[i]);
         }
     }
 

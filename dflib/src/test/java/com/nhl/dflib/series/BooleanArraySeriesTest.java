@@ -1,8 +1,8 @@
 package com.nhl.dflib.series;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BooleanArraySeriesTest {
 
@@ -20,9 +20,9 @@ public class BooleanArraySeriesTest {
         assertEquals(true, s.getBoolean(1));
     }
 
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test
     public void testGetBoolean_Offset_OutOfBounds() {
         BooleanArraySeries s = new BooleanArraySeries(new boolean[]{true, false, true, false}, 1, 2);
-        s.getBoolean(2);
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> s.getBoolean(2));
     }
 }

@@ -2,9 +2,9 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.series.DoubleArraySeries;
 import com.nhl.dflib.unit.DoubleSeriesAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DoubleSeries_ConcatDoubleTest {
 

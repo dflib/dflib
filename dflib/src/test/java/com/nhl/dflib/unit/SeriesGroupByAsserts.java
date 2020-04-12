@@ -5,31 +5,32 @@ import com.nhl.dflib.SeriesGroupBy;
 import java.util.HashSet;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SeriesGroupByAsserts {
 
     private SeriesGroupBy<?> groupBy;
 
     public SeriesGroupByAsserts(SeriesGroupBy<?> groupBy) {
-        assertNotNull("SeriesGroupBy is null", groupBy);
+        assertNotNull(groupBy, "SeriesGroupBy is null");
         this.groupBy = groupBy;
     }
 
     public SeriesGroupByAsserts expectGroups(Object... expectedGroups) {
-        assertEquals("Unexpected groups length", expectedGroups.length, groupBy.getGroups().size());
+        assertEquals(expectedGroups.length, groupBy.getGroups().size(), "Unexpected groups length");
 
         HashSet<?> expectedSet = new HashSet<>(asList(expectedGroups));
         HashSet<?> actualSet = new HashSet<>(groupBy.getGroups());
-        assertEquals("Groups are different", expectedSet, actualSet);
+        assertEquals(expectedSet, actualSet, "Groups are different");
 
         return this;
     }
 
     public SeriesGroupByAsserts expectGroupData(Object groupKey, Object... expectedValues) {
-        assertTrue("Group key is not present: " + groupKey, groupBy.hasGroup(groupKey));
-        new SeriesAsserts(groupBy.getGroup(groupKey))
-                .expectData(expectedValues);
+        assertTrue(groupBy.hasGroup(groupKey), "Group key is not present: " + groupKey);
+        new SeriesAsserts(groupBy.getGroup(groupKey)).expectData(expectedValues);
 
         return this;
     }

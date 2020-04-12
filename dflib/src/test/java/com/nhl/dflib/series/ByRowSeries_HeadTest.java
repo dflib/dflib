@@ -3,7 +3,7 @@ package com.nhl.dflib.series;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.unit.SeriesAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ByRowSeries_HeadTest {
 

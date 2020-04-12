@@ -1,8 +1,8 @@
 package com.nhl.dflib.series;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class IntArraySeriesTest {
 
@@ -20,9 +20,9 @@ public class IntArraySeriesTest {
         assertEquals(3, s.getInt(1));
     }
 
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test
     public void testGetInt_Offset_OutOfBounds() {
         IntArraySeries s = new IntArraySeries(new int[]{1, 2, 3, 4}, 1, 2);
-        s.getInt(2);
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> s.getInt(2));
     }
 }

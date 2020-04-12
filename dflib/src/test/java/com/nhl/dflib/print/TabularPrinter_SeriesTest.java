@@ -4,16 +4,16 @@ import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.DoubleSeries;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TabularPrinter_SeriesTest {
 
     private Series<String> s1;
 
-    @Before
+    @BeforeEach
     public void initSeries() {
         this.s1 = Series.forData("one", "two", "three", "four");
     }

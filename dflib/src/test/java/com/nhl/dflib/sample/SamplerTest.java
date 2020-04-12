@@ -2,20 +2,20 @@ package com.nhl.dflib.sample;
 
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.unit.IntSeriesAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.security.SecureRandom;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SamplerTest {
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSampleIndex_SizeTooLarge() {
-        IntSeries sample = Sampler.sampleIndex(6, 5, new Random(5));
+        assertThrows(IllegalArgumentException.class, () -> Sampler.sampleIndex(6, 5, new Random(5)));
     }
 
     @Test
@@ -39,7 +39,7 @@ public class SamplerTest {
 
         for (int i = 0; i < sample.size(); i++) {
             boolean repeated = !seen.add(i);
-            assertFalse(i + " is present at least twice", repeated);
+            assertFalse(repeated, i + " is present at least twice");
         }
     }
 

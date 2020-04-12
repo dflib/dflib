@@ -4,9 +4,9 @@ import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.jdbc.connector.saver.SaveViaDeleteThenInsert;
 import com.nhl.dflib.jdbc.connector.saver.SaveViaInsert;
 import com.nhl.dflib.jdbc.connector.saver.SaveViaUpsert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 public class TableSaverTest {

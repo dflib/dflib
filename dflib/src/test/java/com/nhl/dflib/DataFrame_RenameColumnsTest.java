@@ -1,10 +1,12 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.unit.DataFrameAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DataFrame_RenameColumnsTest {
 
@@ -21,12 +23,13 @@ public class DataFrame_RenameColumnsTest {
                 .expectRow(1, 2, "y");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRenameColumns_SizeMismatch() {
-        DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
-                2, "y")
-                .renameColumns("c");
+                2, "y");
+
+        assertThrows(IllegalArgumentException.class, () -> df.renameColumns("c"));
     }
 
     @Test
@@ -72,11 +75,12 @@ public class DataFrame_RenameColumnsTest {
                 .expectRow(1, 2, "y");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRenameColumn_Duplicate() {
-        DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
-                2, "y")
-                .renameColumn("b", "a");
+                2, "y");
+
+        assertThrows(IllegalArgumentException.class, () -> df.renameColumn("b", "a"));
     }
 }

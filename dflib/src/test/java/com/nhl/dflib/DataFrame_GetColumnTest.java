@@ -4,7 +4,9 @@ import com.nhl.dflib.unit.DoubleSeriesAsserts;
 import com.nhl.dflib.unit.IntSeriesAsserts;
 import com.nhl.dflib.unit.LongSeriesAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DataFrame_GetColumnTest {
 
@@ -52,13 +54,13 @@ public class DataFrame_GetColumnTest {
         new IntSeriesAsserts(cb).expectData(3, 6, -1);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetColumnAsInt_NotIntLabel() {
         DataFrame df = DataFrame
                 .newFrame("a", "b")
                 .columns(Series.forData("a", "b", "x"), IntSeries.forInts(3, 6, -1));
 
-        df.getColumnAsInt("a");
+        assertThrows(IllegalArgumentException.class, () -> df.getColumnAsInt("a"));
     }
 
 
@@ -84,13 +86,13 @@ public class DataFrame_GetColumnTest {
         new DoubleSeriesAsserts(cb).expectData(3., 6.3, -1.01);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetColumnAsDouble_NotDoubleLabel() {
         DataFrame df = DataFrame
                 .newFrame("a", "b")
                 .columns(Series.forData("a", "b", "x"), DoubleSeries.forDoubles(3., 6.3, -1.01));
 
-        df.getColumnAsDouble("a");
+        assertThrows(IllegalArgumentException.class, () -> df.getColumnAsDouble("a"));
     }
 
     @Test

@@ -1,9 +1,11 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.unit.SeriesAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BooleanSeries_ReplaceTest {
 
@@ -47,7 +49,7 @@ public class BooleanSeries_ReplaceTest {
         BooleanSeries cond = BooleanSeries.forBooleans(true, true, false, false);
 
         Series<Boolean> s1 = BooleanSeries.forBooleans(true, false, true, true).replaceNoMatch(cond, false);
-        assertTrue(s1 instanceof BooleanSeries);
+        Assertions.assertTrue(s1 instanceof BooleanSeries);
         new SeriesAsserts(s1).expectData(true, false, false, false);
 
         Series<Boolean> s2 = BooleanSeries.forBooleans(true, false, true, true).replaceNoMatch(cond, true);
@@ -89,6 +91,4 @@ public class BooleanSeries_ReplaceTest {
         assertTrue(s2 instanceof BooleanSeries);
         new SeriesAsserts(s2).expectData(true, false, true, true);
     }
-
-
 }

@@ -3,9 +3,9 @@ package com.nhl.dflib;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.unit.SeriesAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 // mirrors Series_ConcatTest
 public class IntSeries_ConcatTest {

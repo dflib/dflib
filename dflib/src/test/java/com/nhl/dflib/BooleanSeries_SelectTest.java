@@ -1,9 +1,11 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.unit.SeriesAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BooleanSeries_SelectTest {
 
@@ -21,9 +23,9 @@ public class BooleanSeries_SelectTest {
         assertTrue(s instanceof BooleanSeries);
     }
 
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test
     public void testPosition_OutOfBounds() {
-        BooleanSeries.forBooleans(true, false, true).select(0, 3);
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> BooleanSeries.forBooleans(true, false, true).select(0, 3));
     }
 
     @Test

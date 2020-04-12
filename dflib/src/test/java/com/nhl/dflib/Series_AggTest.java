@@ -1,36 +1,26 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.unit.SeriesAsserts;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
-import java.util.Collection;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import static org.junit.Assert.*;
+public class Series_AggTest {
 
-@RunWith(Parameterized.class)
-public class Series_AggTest extends BaseObjectSeriesTest {
-
-    public Series_AggTest(BaseObjectSeriesTest.SeriesTypes seriesType) {
-        super(seriesType);
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return ALL_SERIES_TYPES;
-    }
-
-    @Test
-    public void testAgg() {
-        String aggregated = createSeries("a", "b", "cd", "e", "fg").agg(SeriesAggregator.concat("_"));
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testAgg(SeriesType type) {
+        String aggregated = type.createSeries("a", "b", "cd", "e", "fg").agg(SeriesAggregator.concat("_"));
         assertEquals("a_b_cd_e_fg", aggregated);
     }
 
-    @Test
-    public void testAggMultiple() {
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testAggMultiple(SeriesType type) {
 
-        Series<?> aggregated = createSeries("a", "b", "cd", "e", "fg")
+        Series<?> aggregated = type.createSeries("a", "b", "cd", "e", "fg")
                 .aggMultiple(
                         SeriesAggregator.first(),
                         SeriesAggregator.concat("|"),
@@ -40,24 +30,27 @@ public class Series_AggTest extends BaseObjectSeriesTest {
         new SeriesAsserts(aggregated).expectData("a", "a|b|cd|e|fg", "[a_b_cd_e_fg]", 5);
     }
 
-    @Test
-    public void testFirst() {
-        String f1 = createSeries("a", "b", "cd", "e", "fg").first();
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testFirst(SeriesType type) {
+        String f1 = type.createSeries("a", "b", "cd", "e", "fg").first();
         assertEquals("a", f1);
 
-        Object f2 = createSeries().first();
+        Object f2 = type.createSeries().first();
         assertNull(f2);
     }
 
-    @Test
-    public void testConcat() {
-        String concat = createSeries("a", "b", "cd", "e", "fg").concat("_");
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testConcat(SeriesType type) {
+        String concat = type.createSeries("a", "b", "cd", "e", "fg").concat("_");
         assertEquals("a_b_cd_e_fg", concat);
     }
 
-    @Test
-    public void testConcat_PrefixSuffix() {
-        String concat = createSeries("a", "b", "cd", "e", "fg").concat("_", "[", "]");
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testConcat_PrefixSuffix(SeriesType type) {
+        String concat = type.createSeries("a", "b", "cd", "e", "fg").concat("_", "[", "]");
         assertEquals("[a_b_cd_e_fg]", concat);
     }
 }

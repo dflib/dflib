@@ -2,7 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.unit.IntSeriesAsserts;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IntSeries_MatchingPositionsIntTest {
 

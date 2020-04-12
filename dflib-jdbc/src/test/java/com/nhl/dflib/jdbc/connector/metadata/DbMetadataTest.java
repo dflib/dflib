@@ -1,13 +1,13 @@
 package com.nhl.dflib.jdbc.connector.metadata;
 
 import com.nhl.dflib.jdbc.connector.metadata.flavors.MySQLFlavor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 public class DbMetadataTest {

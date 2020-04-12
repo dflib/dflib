@@ -4,7 +4,8 @@ import com.nhl.dflib.Index;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class IndexAsserts {
 
@@ -17,7 +18,7 @@ public class IndexAsserts {
     }
 
     public static void expect(Index index, String... expectedLabels) {
-        assertNotNull("Index is null", index);
-        assertArrayEquals("Index differs from expected", expectedLabels, index.getLabels());
+        assertNotNull(index, "Index is null");
+        assertArrayEquals(expectedLabels, index.getLabels(), "Index differs from expected");
     }
 }

@@ -1,10 +1,9 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.SeriesAggregator;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LongArraySeries_AggTest {
 
@@ -17,7 +16,7 @@ public class LongArraySeries_AggTest {
     @Test
     public void testAgg_SumInt() {
         LongArraySeries s = new LongArraySeries(1, 2);
-        Assert.assertEquals(Integer.valueOf(3), s.agg(SeriesAggregator.sumInt()));
+        assertEquals(Integer.valueOf(3), s.agg(SeriesAggregator.sumInt()));
     }
 
     @Test
