@@ -1,13 +1,14 @@
-package com.nhl.dflib.unit;
+package com.nhl.dflib.test.junit5;
 
 import com.nhl.dflib.Series;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.function.Supplier;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * @since 0.6
+ */
 public class SeriesAsserts {
 
     private Object[] data;
@@ -31,10 +32,10 @@ public class SeriesAsserts {
             if (e == null) {
                 assertNull(a, "Unexpected value at " + i);
             } else if (e.getClass().isArray()) {
-                assertTrue( a.getClass().isArray(), "Was expecting array at " + i);
+                assertTrue(a.getClass().isArray(), "Was expecting array at " + i);
                 expectArrayRow(i, e, a);
             } else {
-                assertEquals( e, a, "Unexpected value at " + i);
+                assertEquals(e, a, "Unexpected value at " + i);
             }
         }
 
@@ -49,27 +50,28 @@ public class SeriesAsserts {
 
         // remove []
         String type = eArrayClass.substring(0, eArrayClass.length() - 2);
+        Supplier<String> messageSupplier = () -> "Unexpected value at " + i;
         switch (type) {
             case "char":
-                assertArrayEquals((char[]) expected, (char[]) actual, "Unexpected value at " + i);
+                assertArrayEquals((char[]) expected, (char[]) actual, messageSupplier);
                 break;
             case "long":
-                assertArrayEquals((long[]) expected, (long[]) actual, "Unexpected value at " + i);
+                assertArrayEquals((long[]) expected, (long[]) actual, messageSupplier);
                 break;
             case "int":
-                assertArrayEquals((int[]) expected, (int[]) actual, "Unexpected value at " + i);
+                assertArrayEquals((int[]) expected, (int[]) actual, messageSupplier);
                 break;
             case "byte":
-                assertArrayEquals((byte[]) expected, (byte[]) actual, "Unexpected value at " + i);
+                assertArrayEquals((byte[]) expected, (byte[]) actual, messageSupplier);
                 break;
             case "double":
-                assertArrayEquals((double[]) expected, (double[]) actual, 0.00001, "Unexpected value at " + i);
+                assertArrayEquals((double[]) expected, (double[]) actual, 0.00001, messageSupplier);
                 break;
             case "float":
-                assertArrayEquals((float[]) expected, (float[]) actual, 0.00001f, "Unexpected value at " + i);
+                assertArrayEquals((float[]) expected, (float[]) actual, 0.00001f, messageSupplier);
                 break;
             default:
-                assertArrayEquals((Object[]) expected, (Object[]) actual, "Unexpected value at " + i);
+                assertArrayEquals((Object[]) expected, (Object[]) actual, messageSupplier);
         }
     }
 }

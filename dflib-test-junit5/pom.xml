@@ -9,8 +9,8 @@
         <version>0.8-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dflib-test</artifactId>
-    <name>dflib-test: Unit test API for DFLib</name>
+    <artifactId>dflib-test-junit5</artifactId>
+    <name>dflib-test-junit5: Unit test API for DFLib</name>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -25,8 +25,8 @@
 
         <!-- Provided dependencies -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
             <scope>provided</scope>
         </dependency>
 

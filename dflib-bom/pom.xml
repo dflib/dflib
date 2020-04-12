@@ -40,6 +40,11 @@
             </dependency>
             <dependency>
                 <groupId>com.nhl.dflib</groupId>
+                <artifactId>dflib-test-junit5</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nhl.dflib</groupId>
                 <artifactId>dflib-jupyter</artifactId>
                 <version>${project.version}</version>
             </dependency>
