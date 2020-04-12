@@ -2,7 +2,9 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.unit.BooleanSeriesAsserts;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public class Series_ConditionsTest {
 
     @Test
