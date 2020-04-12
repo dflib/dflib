@@ -8,7 +8,7 @@ jdk:
   - openjdk8
 
 script:
-  - travis_wait mvn verify -P$DB_PROFILE
+  - mvn verify -P$DB_PROFILE
 
 jobs:
   include:
