@@ -44,6 +44,8 @@ public class DefaultJdbcConnector implements JdbcConnector {
         this.mandatorySeriesBuilderFactories.put(Types.DOUBLE, ColumnBuilderFactory::doubleAccum);
         this.mandatorySeriesBuilderFactories.put(Types.FLOAT, ColumnBuilderFactory::doubleAccum);
         this.mandatorySeriesBuilderFactories.put(Types.BIGINT, ColumnBuilderFactory::longAccum);
+        //mysql return bit with code -7 instead boolean -16 type
+        this.mandatorySeriesBuilderFactories.put(Types.BIT, ColumnBuilderFactory::booleanAccum);
 
         // Types.DECIMAL should presumably be mapped to BigDecimal, so not attempting to map to a primitive double
 

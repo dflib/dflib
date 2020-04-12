@@ -133,7 +133,8 @@ public class TableSaverIT extends BaseDbTest {
 
         DataFrame df3 = connector
                 .tableLoader("t1")
-                .load();
+                .load()
+                .sort(0, true);
 
         new DataFrameAsserts(df3, columnNames(T1))
                 .expectHeight(4)
@@ -167,7 +168,8 @@ public class TableSaverIT extends BaseDbTest {
 
         DataFrame df3 = connector
                 .tableLoader("t1")
-                .load();
+                .load()
+                .sort(0, true);
 
         new DataFrameAsserts(df3, columnNames(T1))
                 .expectHeight(4)
@@ -202,7 +204,8 @@ public class TableSaverIT extends BaseDbTest {
 
         DataFrame df3 = connector
                 .tableLoader("t1")
-                .load();
+                .load()
+                .sort(0, true);
 
         new DataFrameAsserts(df3, columnNames(T1))
                 .expectHeight(4)
