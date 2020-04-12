@@ -7,8 +7,11 @@ branches:
 jdk:
   - openjdk8
 
+# This prevents Travis from running "mvn install" on its own before running our script
+install: /bin/true
+
 script:
-  - mvn verify -P$DB_PROFILE
+  - mvn clean verify -P$DB_PROFILE
 
 jobs:
   include:
