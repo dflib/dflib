@@ -6,7 +6,7 @@ import com.nhl.dflib.jdbc.SaveOp;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
 import com.nhl.dflib.unit.DataFrameAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.DayOfWeek;
@@ -20,7 +20,7 @@ public class TableSaverIT extends BaseDbTest {
 
     private JdbcConnector connector;
 
-    @Before
+    @BeforeEach
     public void createConnector() {
         this.connector = Jdbc.connector(getDataSource());
     }

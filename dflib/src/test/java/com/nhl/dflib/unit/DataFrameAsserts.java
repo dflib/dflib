@@ -144,7 +144,7 @@ public class DataFrameAsserts {
 
         String eArrayClass = expected.getClass().getSimpleName();
         String aArrayClass = actual.getClass().getSimpleName();
-        assertEquals("Unexpected array type at '" + column, eArrayClass, aArrayClass);
+        assertEquals(eArrayClass, aArrayClass, "Unexpected array type at '" + column);
 
         // remove []
         String type = eArrayClass.substring(0, eArrayClass.length() - 2);
