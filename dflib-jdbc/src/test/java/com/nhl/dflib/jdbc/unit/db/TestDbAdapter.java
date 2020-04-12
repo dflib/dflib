@@ -1,7 +1,5 @@
 package com.nhl.dflib.jdbc.unit.db;
 
-import com.nhl.dflib.jdbc.unit.DbInitializer;
-
 public interface TestDbAdapter {
 
     static TestDbAdapter createAdapter(String dbType) {
@@ -17,7 +15,4 @@ public interface TestDbAdapter {
         }
     }
 
-    String toNativeSql(String derbySql);
-
-    DbInitializer getInitializer(String initSchemaFile);
-}
+    String toNativeSql(String derbySql);}

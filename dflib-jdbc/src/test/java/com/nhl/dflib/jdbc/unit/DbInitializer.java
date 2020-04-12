@@ -21,11 +21,9 @@ public class DbInitializer implements DataSourceListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(DbInitializer.class);
 
     private String sqlFile;
-    private String delimiter;
 
-    public DbInitializer(String sqlFile, String delimiter) {
+    public DbInitializer(String sqlFile) {
         this.sqlFile = sqlFile;
-        this.delimiter = delimiter;
     }
 
     @Override
@@ -38,7 +36,7 @@ public class DbInitializer implements DataSourceListener {
     }
 
     private Collection<String> loadSqlStatements(URL sqlFileUrl) {
-        try (Scanner scanner = new Scanner(sqlFileUrl.openStream()).useDelimiter(delimiter)) {
+        try (Scanner scanner = new Scanner(sqlFileUrl.openStream()).useDelimiter("--")) {
             return loadSqlStatements(scanner);
         } catch (IOException e) {
             throw new RuntimeException("Error reading SQL file", e);

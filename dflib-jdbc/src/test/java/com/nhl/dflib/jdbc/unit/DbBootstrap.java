@@ -31,7 +31,7 @@ public class DbBootstrap {
 
         BQRuntime runtime = testFactory.app("-c", configFile)
                 .autoLoadModules()
-                .module(b -> JdbcModule.extend(b).addDataSourceListener(adapter.getInitializer(initSchemaFile)))
+                .module(b -> JdbcModule.extend(b).addDataSourceListener(new DbInitializer(initSchemaFile)))
                 .createRuntime();
         return new DbBootstrap(runtime, adapter, dbType);
     }
