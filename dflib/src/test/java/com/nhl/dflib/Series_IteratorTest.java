@@ -46,8 +46,8 @@ public class Series_IteratorTest {
         Iterator<String> it = type.createSeries("a", "b").iterator();
 
         while (it.hasNext()) {
-            it.remove();
-            assertThrows(UnsupportedOperationException.class, () -> it.next(), "Allowed to remove from immutable iterator");
+            it.next();
+            assertThrows(UnsupportedOperationException.class, () -> it.remove(), "Allowed to remove from immutable iterator");
         }
     }
 }
