@@ -7,7 +7,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * @since 0.6
+ * @since 0.8
  */
 public class IndexAsserts {
 

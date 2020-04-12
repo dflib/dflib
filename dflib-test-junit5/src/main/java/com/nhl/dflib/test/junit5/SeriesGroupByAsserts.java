@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * @since 0.6
+ * @since 0.8
  */
 public class SeriesGroupByAsserts {
 
