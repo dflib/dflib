@@ -51,6 +51,7 @@
         <testcontainers.version>1.13.0</testcontainers.version>
         <junit4.version>4.13</junit4.version>
         <junit5.version>5.6.2</junit5.version>
+        <jackson.version>2.10.3</jackson.version>
     </properties>
 
     <url>https://github.com/nhl/dflib</url>
@@ -78,7 +79,7 @@
     <repositories>
         <repository>
             <id>bootique-snapshots</id>
-            <url>https://maven.objectstyle.org/nexus/content/repositories/bootique-snapshots</url>
+            <url>https://oss.jfrog.org/artifactory/oss-snapshot-local/</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
@@ -169,6 +170,16 @@
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>42.2.10</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
