@@ -82,7 +82,7 @@ public class DataFrameAssertsTest {
         new DataFrameAsserts(df, "c1")
                 .expectHeight(2)
                 .assertRow(0, (v) -> assertEquals("a", v))
-                .assertRow(1, (v) -> assertEquals("b", v));
+                .assertRow(1, (String v) -> assertEquals("b", v));
     }
 
     @Test

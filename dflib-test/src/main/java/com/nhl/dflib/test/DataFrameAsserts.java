@@ -154,14 +154,14 @@ public class DataFrameAsserts {
      * @since 0.8
      */
     @SafeVarargs
-    public final DataFrameAsserts assertRow(int pos, Consumer<Object>... valueAsserts) {
+    public final DataFrameAsserts assertRow(int pos, Consumer<?>... valueAsserts) {
         Objects.requireNonNull(valueAsserts);
 
         assertEquals("The number of assert arguments must be equal to the number of DataFrame columns.",
                 expectedColumns.length, valueAsserts.length);
 
         for (int i = 0; i < expectedColumns.length; i++) {
-            Consumer<Object> anAssert = valueAsserts[i];
+            Consumer anAssert = valueAsserts[i];
 
             Objects.requireNonNull(anAssert);
 
