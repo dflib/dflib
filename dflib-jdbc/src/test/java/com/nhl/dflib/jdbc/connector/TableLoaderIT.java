@@ -1,10 +1,11 @@
 package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
+import com.nhl.dflib.jdbc.unit.dbadapter.TestDbAdapter;
 import com.nhl.dflib.unit.DataFrameAsserts;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,33 +13,33 @@ import java.time.LocalTime;
 
 public class TableLoaderIT extends BaseDbTest {
 
-    private JdbcConnector createConnector() {
-        return Jdbc.connector(getDataSource());
-    }
-
-    @Test
-    public void test() {
-
-        T1.insert(1L, "n1", 50_000.01)
+    @ParameterizedTest
+    @MethodSource(DB_ADAPTERS_METHOD)
+    public void test(TestDbAdapter adapter) {
+        deleteTestData(adapter);
+        adapter.getTable("t1")
+                .insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.);
 
-        DataFrame df = createConnector()
+        DataFrame df = adapter.createConnector()
                 .tableLoader("t1")
                 .load();
 
-        new DataFrameAsserts(df, columnNames(T1))
+        new DataFrameAsserts(df, adapter.getColumnNames("t1"))
                 .expectHeight(2)
                 .expectRow(0, 1L, "n1", 50_000.01)
                 .expectRow(1, 2L, "n2", 120_000.);
     }
 
-    @Test
-    public void testIncludeColumns() {
-
-        T1.insert(1L, "n1", 50_000.01)
+    @ParameterizedTest
+    @MethodSource(DB_ADAPTERS_METHOD)
+    public void testIncludeColumns(TestDbAdapter adapter) {
+        deleteTestData(adapter);
+        adapter.getTable("t1")
+                .insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.);
 
-        DataFrame df = createConnector()
+        DataFrame df = adapter.createConnector()
                 .tableLoader("t1")
                 .includeColumns("id", "salary")
                 .load();
@@ -49,9 +50,10 @@ public class TableLoaderIT extends BaseDbTest {
                 .expectRow(1, 2L, 120_000.);
     }
 
-    @Test
-    public void testDataTypeConversions() {
-
+    @ParameterizedTest
+    @MethodSource(DB_ADAPTERS_METHOD)
+    public void testDataTypeConversions(TestDbAdapter adapter) {
+        deleteTestData(adapter);
         LocalDate ld = LocalDate.of(1977, 02, 05);
         LocalDateTime ldt = LocalDateTime.of(2019, 02, 03, 1, 2, 5);
         LocalTime lt = LocalTime.of(5, 6, 8);
@@ -59,47 +61,52 @@ public class TableLoaderIT extends BaseDbTest {
         byte[] bytes = new byte[]{3, 5, 11};
         long l1 = Integer.MAX_VALUE + 1L;
 
-        T2.insert(l1, 67, 7.8, true, "s1", ldt, ld, lt, bytes)
+        adapter.getTable("t2")
+                .insert(l1, 67, 7.8, true, "s1", ldt, ld, lt, bytes)
                 .insert(null, null, null, false, null, null, null, null, null);
 
-        DataFrame df = createConnector()
+        DataFrame df = adapter.createConnector()
                 .tableLoader("t2")
                 .load();
 
-        new DataFrameAsserts(df, columnNames(T2))
+        new DataFrameAsserts(df, adapter.getColumnNames("t2"))
                 .expectHeight(2)
                 .expectRow(0, l1, 67, 7.8, true, "s1", ldt, ld, lt, bytes)
                 .expectRow(1, null, null, null, false, null, null, null, null, null);
     }
 
-    @Test
-    public void testMaxRows() {
-
-        T1.insert(1L, "n1", 50_000.01)
+    @ParameterizedTest
+    @MethodSource(DB_ADAPTERS_METHOD)
+    public void testMaxRows(TestDbAdapter adapter) {
+        deleteTestData(adapter);
+        adapter.getTable("t1")
+                .insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 20_000.);
 
-        DataFrame df = createConnector()
+        DataFrame df = adapter.createConnector()
                 .tableLoader("t1")
                 .maxRows(2)
                 .load();
 
-        new DataFrameAsserts(df, columnNames(T1))
+        new DataFrameAsserts(df, adapter.getColumnNames("t1"))
                 .expectHeight(2)
                 .expectRow(0, 1L, "n1", 50_000.01)
                 .expectRow(1, 2L, "n2", 120_000.);
     }
 
-    @Test
-    public void testEq_SingleColumn() {
-
-        T1.insert(1L, "n1", 50_000.01)
+    @ParameterizedTest
+    @MethodSource(DB_ADAPTERS_METHOD)
+    public void testEq_SingleColumn(TestDbAdapter adapter) {
+        deleteTestData(adapter);
+        adapter.getTable("t1")
+                .insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 11_000.);
 
         DataFrame matcher = DataFrame.newFrame("id").foldByRow(1L, 3L);
 
-        DataFrame df = createConnector()
+        DataFrame df = adapter.createConnector()
                 .tableLoader("t1")
                 .eq(matcher)
                 .includeColumns("name", "salary")
@@ -111,10 +118,12 @@ public class TableLoaderIT extends BaseDbTest {
                 .expectRow(1, "n3", 11_000.);
     }
 
-    @Test
-    public void testEq_MultiColumn() {
-
-        T1.insert(1L, "n1", 50_000.01)
+    @ParameterizedTest
+    @MethodSource(DB_ADAPTERS_METHOD)
+    public void testEq_MultiColumn(TestDbAdapter adapter) {
+        deleteTestData(adapter);
+        adapter.getTable("t1")
+                .insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 11_000.);
 
@@ -122,7 +131,7 @@ public class TableLoaderIT extends BaseDbTest {
                 1L, "n5",
                 3L, "n3");
 
-        DataFrame df = createConnector()
+        DataFrame df = adapter.createConnector()
                 .tableLoader("t1")
                 .eq(matcher)
                 .includeColumns("name", "salary")
@@ -133,16 +142,17 @@ public class TableLoaderIT extends BaseDbTest {
                 .expectRow(0, "n3", 11_000.);
     }
 
-    @Test
-    public void testEq_EmptyCondition() {
-
-        T1.insert(1L, "n1", 50_000.01)
+    @ParameterizedTest
+    @MethodSource(DB_ADAPTERS_METHOD)
+    public void testEq_EmptyCondition(TestDbAdapter adapter) {
+        deleteTestData(adapter);
+        adapter.getTable("t1").insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 11_000.);
 
         DataFrame empty = DataFrame.newFrame("id", "name").empty();
 
-        DataFrame df = createConnector()
+        DataFrame df = adapter.createConnector()
                 .tableLoader("t1")
                 .eq(empty)
                 .load();
@@ -150,16 +160,18 @@ public class TableLoaderIT extends BaseDbTest {
         new DataFrameAsserts(df, "id", "name", "salary").expectHeight(0);
     }
 
-    @Test
-    public void testEq_EmptyCondition_CustomColumns() {
-
-        T1.insert(1L, "n1", 50_000.01)
+    @ParameterizedTest
+    @MethodSource(DB_ADAPTERS_METHOD)
+    public void testEq_EmptyCondition_CustomColumns(TestDbAdapter adapter) {
+        deleteTestData(adapter);
+        adapter.getTable("t1")
+                .insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 11_000.);
 
         DataFrame empty = DataFrame.newFrame("id", "name").empty();
 
-        DataFrame df = createConnector()
+        DataFrame df = adapter.createConnector()
                 .tableLoader("t1")
                 .includeColumns("name", "salary")
                 .eq(empty)

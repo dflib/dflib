@@ -1,12 +1,12 @@
 package com.nhl.dflib.jdbc.connector.tx;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
+import com.nhl.dflib.jdbc.unit.dbadapter.TestDbAdapter;
 import com.nhl.dflib.unit.DataFrameAsserts;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -16,16 +16,13 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public class TxIT extends BaseDbTest {
 
-    private JdbcConnector connector;
+    @ParameterizedTest
+    @MethodSource(DB_ADAPTERS_METHOD)
+    public void testRun(TestDbAdapter adapter) {
 
-    @BeforeEach
-    public void createConnector() {
-        this.connector = Jdbc.connector(getDataSource());
-    }
+        adapter.delete("t1");
 
-    @Test
-    public void testRun() {
-
+        JdbcConnector connector = adapter.createConnector();
         DataFrame df1 = DataFrame.newFrame("id", "name", "salary")
                 .foldByRow(
                         1L, "n1", 50_000.01,
@@ -56,9 +53,11 @@ public class TxIT extends BaseDbTest {
                 .expectRow(3, 4L, "n4", 1_000.);
     }
 
-    @Test
-    public void testRun_Isolation() {
+    @ParameterizedTest
+    @MethodSource(DB_ADAPTERS_METHOD)
+    public void testRun_Isolation(TestDbAdapter adapter) {
 
+        JdbcConnector connector = adapter.createConnector();
         Tx.newTransaction(connector)
                 .isolation(TxIsolation.read_committed).run(txConnector -> {
                     int il;
@@ -84,9 +83,11 @@ public class TxIT extends BaseDbTest {
         );
     }
 
-    @Test
-    public void testRun_Rollback() {
-
+    @ParameterizedTest
+    @MethodSource(DB_ADAPTERS_METHOD)
+    public void testRun_Rollback(TestDbAdapter adapter) {
+        adapter.delete("t1");
+        JdbcConnector connector = adapter.createConnector();
         DataFrame df1 = DataFrame.newFrame("id", "name", "salary")
                 .foldByRow(
                         1L, "n1", 50_000.01,
@@ -110,9 +111,7 @@ public class TxIT extends BaseDbTest {
             // expected
         }
 
-        DataFrame df_12 = connector
-                .tableLoader("t1")
-                .load();
+        DataFrame df_12 = connector.tableLoader("t1").load();
 
         // the transaction must have been rolled back and no data saved
         new DataFrameAsserts(df_12, "id", "name", "salary").expectHeight(0);

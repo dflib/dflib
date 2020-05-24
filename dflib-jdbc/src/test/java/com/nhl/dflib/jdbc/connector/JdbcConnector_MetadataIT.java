@@ -1,10 +1,11 @@
 package com.nhl.dflib.jdbc.connector;
 
-import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.connector.metadata.DbColumnMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.DbTableMetadata;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
-import org.junit.jupiter.api.Test;
+import com.nhl.dflib.jdbc.unit.dbadapter.TestDbAdapter;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.sql.Types;
 
@@ -12,14 +13,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class JdbcConnector_MetadataIT extends BaseDbTest {
 
-    private JdbcConnector createConnector() {
-        return Jdbc.connector(getDataSource());
-    }
+    @ParameterizedTest
+    @MethodSource(DB_ADAPTERS_METHOD)
+    public void testGetMetadata(TestDbAdapter adapter) {
 
-    @Test
-    public void testGetMetadata() {
-
-        DbTableMetadata t1 = createConnector().getMetadata().getTable("t1");
+        DbTableMetadata t1 = adapter.createConnector().getMetadata().getTable("t1");
         assertNotNull(t1);
 
         assertEquals(3, t1.getColumns().length);

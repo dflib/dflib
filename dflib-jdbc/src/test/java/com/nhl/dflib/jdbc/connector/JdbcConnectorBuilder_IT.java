@@ -1,8 +1,9 @@
 package com.nhl.dflib.jdbc.connector;
 
-import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
-import org.junit.jupiter.api.Test;
+import com.nhl.dflib.jdbc.unit.dbadapter.TestDbAdapter;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,16 +14,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class JdbcConnectorBuilder_IT extends BaseDbTest {
 
-    private JdbcConnector createConnector() {
-        return Jdbc.connector(getDataSource());
-    }
+    @ParameterizedTest
+    @MethodSource(DB_ADAPTERS_METHOD)
+    public void testBuild(TestDbAdapter adapter) throws SQLException {
 
-    @Test
-    public void testBuild() throws SQLException {
+        JdbcConnector connector = adapter.createConnector();
 
-        JdbcConnector connector = createConnector();
-
-        String sql = toNativeSql("create table \"x\" (\"id\" int)");
+        String sql = adapter.toNativeSql("create table \"JdbcConnectorBuilder_IT\" (\"id\" int)");
 
         try (Connection c1 = connector.getConnection()) {
             try (PreparedStatement st = c1.prepareStatement(sql)) {
@@ -32,7 +30,7 @@ public class JdbcConnectorBuilder_IT extends BaseDbTest {
             c1.commit();
         }
 
-        sql = toNativeSql("insert into \"x\" values (356)");
+        sql = adapter.toNativeSql("insert into \"JdbcConnectorBuilder_IT\" values (356)");
 
         try (Connection c2 = connector.getConnection()) {
             try (PreparedStatement st = c2.prepareStatement(sql)) {
@@ -42,7 +40,7 @@ public class JdbcConnectorBuilder_IT extends BaseDbTest {
             c2.commit();
         }
 
-        sql = toNativeSql("select * from \"x\"");
+        sql = adapter.toNativeSql("select * from \"JdbcConnectorBuilder_IT\"");
 
         try (Connection c3 = connector.getConnection()) {
             try (PreparedStatement st = c3.prepareStatement(sql)) {

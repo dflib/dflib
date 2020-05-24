@@ -1,26 +1,27 @@
 package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
+import com.nhl.dflib.jdbc.unit.dbadapter.TestDbAdapter;
 import com.nhl.dflib.unit.DataFrameAsserts;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Random;
 
 public class SqlLoader_SamplingIT extends BaseDbTest {
 
-    private JdbcConnector createConnector() {
-        return Jdbc.connector(getDataSource());
-    }
+    @ParameterizedTest
+    @MethodSource(DB_ADAPTERS_METHOD)
+    public void test(TestDbAdapter adapter) {
 
-    @Test
-    public void test() {
-        JdbcConnector connector = createConnector();
+        adapter.delete("t1");
+        JdbcConnector connector = adapter.createConnector();
 
-        String sql = toNativeSql("SELECT \"id\", \"name\" from \"t1\" WHERE \"id\" > 1 ORDER BY \"id\"");
+        String sql = adapter.toNativeSql("SELECT \"id\", \"name\" from \"t1\" WHERE \"id\" > 1 ORDER BY \"id\"");
 
-        T1.insertColumns("id", "name")
+        adapter.getTable("t1")
+                .insertColumns("id", "name")
                 .values(1L, "n1")
                 .values(2L, "n2")
                 .values(3L, "n3")
@@ -65,13 +66,16 @@ public class SqlLoader_SamplingIT extends BaseDbTest {
                 .expectRow(2, 7L, "n7");
     }
 
-    @Test
-    public void testSampleRows_SampleLargerThanResultSet() {
-        JdbcConnector connector = createConnector();
+    @ParameterizedTest
+    @MethodSource(DB_ADAPTERS_METHOD)
+    public void testSampleRows_SampleLargerThanResultSet(TestDbAdapter adapter) {
 
-        String sql = toNativeSql("SELECT \"id\", \"name\" from \"t1\" ORDER BY \"id\"");
+        adapter.delete("t1");
+        JdbcConnector connector = adapter.createConnector();
 
-        T1.insertColumns("id", "name")
+        String sql = adapter.toNativeSql("SELECT \"id\", \"name\" from \"t1\" ORDER BY \"id\"");
+
+        adapter.getTable("t1").insertColumns("id", "name")
                 .values(1L, "n1")
                 .values(2L, "n2")
                 .exec();
@@ -88,13 +92,16 @@ public class SqlLoader_SamplingIT extends BaseDbTest {
                 .expectRow(1, 2L, "n2");
     }
 
-    @Test
-    public void testSampleRows_SampleSameAsCSV() {
-        JdbcConnector connector = createConnector();
+    @ParameterizedTest
+    @MethodSource(DB_ADAPTERS_METHOD)
+    public void testSampleRows_SampleSameAsCSV(TestDbAdapter adapter) {
 
-        String sql = toNativeSql("SELECT \"id\", \"name\" from \"t1\" ORDER BY \"id\"");
+        adapter.delete("t1");
+        JdbcConnector connector = adapter.createConnector();
 
-        T1.insertColumns("id", "name")
+        String sql = adapter.toNativeSql("SELECT \"id\", \"name\" from \"t1\" ORDER BY \"id\"");
+        adapter.getTable("t1")
+                .insertColumns("id", "name")
                 .values(1L, "n1")
                 .values(2L, "n2")
                 .exec();

@@ -1,4 +1,0 @@
-jdbc:
-  derby:
-    jdbcUrl: "jdbc:derby:target/derby/testdb0;create=true"
-    maximumPoolSize: 3

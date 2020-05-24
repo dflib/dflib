@@ -1,6 +1,0 @@
-jdbc:
-  postgresql:
-    jdbcUrl: "jdbc:tc:postgresql://localhost/test"
-    username: "test"
-    password: "test"
-    maximumPoolSize: 3

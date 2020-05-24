@@ -1,57 +1,52 @@
 package com.nhl.dflib.jdbc.unit;
 
+import com.nhl.dflib.jdbc.unit.dbadapter.GenericTestAdapter;
+import com.nhl.dflib.jdbc.unit.dbadapter.MySQLTestAdapter;
 import com.nhl.dflib.jdbc.unit.dbadapter.TestDbAdapter;
-import io.bootique.jdbc.test.Column;
-import io.bootique.jdbc.test.Table;
-import io.bootique.jdbc.test.junit5.TestDataManager;
-import io.bootique.test.junit5.BQTestClassFactory;
-import org.junit.jupiter.api.BeforeAll;
+import io.bootique.jdbc.junit5.DbTester;
+import io.bootique.junit5.BQTest;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import javax.sql.DataSource;
 import java.util.List;
+import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.Arrays.asList;
 
+@BQTest
 public abstract class BaseDbTest {
 
-    @RegisterExtension
-    public static BQTestClassFactory TEST_FACTORY = new BQTestClassFactory();
+    protected static final String DB_ADAPTERS_METHOD = "dbAdapters";
 
-    protected static Table T1;
-    protected static Table T2;
-    protected static Table T3;
-    protected static Table T1_AUDIT;
-
-    private static TestDbAdapter DB_ADAPTER;
-    private static DataSource DATA_SOURCE;
+    // Don't delete data in DbTester, as different testers are invoked for different test parameters.
+    // Tests will manage deletion by calling "deleteTestData"
 
     @RegisterExtension
-    public final TestDataManager dataManager = new TestDataManager(true, T1, T2, T3, T1_AUDIT);
+    protected static final DbTester derbyDb = DbTester
+            .derbyDb()
+            .initDB("classpath:com/nhl/dflib/jdbc/init_schema_derby.sql", "--");
 
-    @BeforeAll
-    public static void initDB() {
-        String dbType = System.getProperty("test.db", "derby");
-        DbBootstrap bootstrap = DbBootstrap.create(TEST_FACTORY, dbType);
+    @RegisterExtension
+    protected static final DbTester postgresDb = DbTester
+            .testcontainersDb("jdbc:tc:postgresql:11://localhost/test")
+            .initDB("classpath:com/nhl/dflib/jdbc/init_schema_postgresql.sql", "--");
 
-        DATA_SOURCE = bootstrap.getDataSource();
-        T1 = bootstrap.getT1();
-        T2 = bootstrap.getT2();
-        T3 = bootstrap.getT3();
-        T1_AUDIT = bootstrap.getT1Audit();
+    @RegisterExtension
+    protected static final DbTester mysqlDb = DbTester
+            .testcontainersDb("jdbc:tc:mysql:5.7://localhost/test?generateSimpleParameterMetadata=true")
+            .initDB("classpath:com/nhl/dflib/jdbc/init_schema_mysql.sql", "--");
 
-        DB_ADAPTER = bootstrap.getDbAdapter();
+    // used in parameterized tests
+    protected static List<TestDbAdapter> dbAdapters = asList(
+            new GenericTestAdapter(derbyDb),
+            new GenericTestAdapter(postgresDb),
+            new MySQLTestAdapter(mysqlDb)
+    );
+
+    protected static Stream<TestDbAdapter> dbAdapters() {
+        return dbAdapters.stream();
     }
 
-    protected static List<String> columnNames(Table table) {
-        return table.getColumns().stream().map(Column::getName).collect(toList());
-    }
-
-    protected DataSource getDataSource() {
-        return DATA_SOURCE;
-    }
-
-    protected String toNativeSql(String derbySql) {
-        return DB_ADAPTER.toNativeSql(derbySql);
+    protected void deleteTestData(TestDbAdapter adapter) {
+        adapter.delete("t1", "t2", "t3", "t1_audit");
     }
 }
