@@ -1,4 +1,4 @@
-package com.nhl.dflib.test.junit5;
+package com.nhl.dflib.junit5;
 
 import com.nhl.dflib.IntSeries;
 

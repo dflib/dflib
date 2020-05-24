@@ -9,8 +9,8 @@
         <version>0.8-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dflib-test-junit5</artifactId>
-    <name>dflib-test-junit5: Unit test API for DFLib</name>
+    <artifactId>dflib-junit5</artifactId>
+    <name>dflib-junit5: JUnit 5 test API for DFLib</name>
     <packaging>jar</packaging>
 
     <dependencies>

@@ -12,7 +12,7 @@
 * #101 Shortcut to add single-value columns
 * #102 add testcontainers in integration tests
 * #103 Added option to save a DataFrame without Index/header
-* #104 "dflib-test-junit5" - a test module that supports JUnit5
+* #104 "dflib-junit5" - a test module that supports JUnit5
 * #105 "dflib-json" and JsonLoader - the initial version of DFLib JSON "connector"
 
 ## Release 0.7

@@ -1,6 +1,7 @@
-package com.nhl.dflib.test.junit5;
+package com.nhl.dflib.junit5;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
