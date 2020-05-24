@@ -7,10 +7,7 @@ import io.bootique.jdbc.junit5.DbTester;
 import io.bootique.junit5.BQTest;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import java.util.List;
 import java.util.stream.Stream;
-
-import static java.util.Arrays.asList;
 
 @BQTest
 public abstract class BaseDbTest {
@@ -36,14 +33,12 @@ public abstract class BaseDbTest {
             .initDB("classpath:com/nhl/dflib/jdbc/init_schema_mysql.sql", "--");
 
     // used in parameterized tests
-    protected static List<TestDbAdapter> dbAdapters = asList(
-            new GenericTestAdapter(derbyDb),
-            new GenericTestAdapter(postgresDb),
-            new MySQLTestAdapter(mysqlDb)
-    );
+    protected static TestDbAdapter derbyAdapter = new GenericTestAdapter(derbyDb);
+    protected static TestDbAdapter postgresAdapter = new GenericTestAdapter(postgresDb);
+    protected static TestDbAdapter mysqlAdapter = new MySQLTestAdapter(mysqlDb);
 
     protected static Stream<TestDbAdapter> dbAdapters() {
-        return dbAdapters.stream();
+        return Stream.of(derbyAdapter, postgresAdapter, mysqlAdapter);
     }
 
     protected void deleteTestData(TestDbAdapter adapter) {
