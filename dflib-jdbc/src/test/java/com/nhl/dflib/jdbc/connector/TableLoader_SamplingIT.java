@@ -2,18 +2,15 @@ package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
-import com.nhl.dflib.jdbc.unit.dbadapter.TestDbAdapter;
 import com.nhl.dflib.unit.DataFrameAsserts;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
 public class TableLoader_SamplingIT extends BaseDbTest {
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void test(TestDbAdapter adapter) {
+    @Test
+    public void test() {
         adapter.delete("t1");
         JdbcConnector connector = adapter.createConnector();
 
@@ -66,9 +63,8 @@ public class TableLoader_SamplingIT extends BaseDbTest {
                 .expectRow(2, 7L, "n7");
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testSampleRows_SampleLargerThanResultSet(TestDbAdapter adapter) {
+    @Test
+    public void testSampleRows_SampleLargerThanResultSet() {
         adapter.delete("t1");
         JdbcConnector connector = adapter.createConnector();
 
@@ -91,9 +87,8 @@ public class TableLoader_SamplingIT extends BaseDbTest {
                 .expectRow(1, 2L, "n2");
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testSampleRows_SampleSameAsCSV(TestDbAdapter adapter) {
+    @Test
+    public void testSampleRows_SampleSameAsCSV() {
         adapter.delete("t1");
         JdbcConnector connector = adapter.createConnector();
 

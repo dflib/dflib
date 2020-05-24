@@ -2,10 +2,8 @@ package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
-import com.nhl.dflib.jdbc.unit.dbadapter.TestDbAdapter;
 import com.nhl.dflib.unit.DataFrameAsserts;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,10 +11,9 @@ import java.time.LocalTime;
 
 public class TableLoaderIT extends BaseDbTest {
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void test(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void test() {
+
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.);
@@ -31,10 +28,9 @@ public class TableLoaderIT extends BaseDbTest {
                 .expectRow(1, 2L, "n2", 120_000.);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testIncludeColumns(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testIncludeColumns() {
+
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.);
@@ -50,10 +46,9 @@ public class TableLoaderIT extends BaseDbTest {
                 .expectRow(1, 2L, 120_000.);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testDataTypeConversions(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testDataTypeConversions() {
+
         LocalDate ld = LocalDate.of(1977, 02, 05);
         LocalDateTime ldt = LocalDateTime.of(2019, 02, 03, 1, 2, 5);
         LocalTime lt = LocalTime.of(5, 6, 8);
@@ -75,10 +70,9 @@ public class TableLoaderIT extends BaseDbTest {
                 .expectRow(1, null, null, null, false, null, null, null, null, null);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testMaxRows(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testMaxRows() {
+
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.)
@@ -95,10 +89,9 @@ public class TableLoaderIT extends BaseDbTest {
                 .expectRow(1, 2L, "n2", 120_000.);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testEq_SingleColumn(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testEq_SingleColumn() {
+
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.)
@@ -118,10 +111,9 @@ public class TableLoaderIT extends BaseDbTest {
                 .expectRow(1, "n3", 11_000.);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testEq_MultiColumn(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testEq_MultiColumn() {
+
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.)
@@ -142,10 +134,9 @@ public class TableLoaderIT extends BaseDbTest {
                 .expectRow(0, "n3", 11_000.);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testEq_EmptyCondition(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testEq_EmptyCondition() {
+
         adapter.getTable("t1").insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 11_000.);
@@ -160,10 +151,9 @@ public class TableLoaderIT extends BaseDbTest {
         new DataFrameAsserts(df, "id", "name", "salary").expectHeight(0);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testEq_EmptyCondition_CustomColumns(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testEq_EmptyCondition_CustomColumns() {
+
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.)

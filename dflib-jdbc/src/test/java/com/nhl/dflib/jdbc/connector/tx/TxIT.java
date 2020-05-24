@@ -3,23 +3,21 @@ package com.nhl.dflib.jdbc.connector.tx;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
-import com.nhl.dflib.jdbc.unit.dbadapter.TestDbAdapter;
 import com.nhl.dflib.unit.DataFrameAsserts;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperties;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TxIT extends BaseDbTest {
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testRun(TestDbAdapter adapter) {
+    @Test
+    public void testRun() {
 
         adapter.delete("t1");
 
@@ -54,9 +52,8 @@ public class TxIT extends BaseDbTest {
                 .expectRow(3, 4L, "n4", 1_000.);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testRun_Isolation(TestDbAdapter adapter) {
+    @Test
+    public void testRun_Isolation() {
 
         JdbcConnector connector = adapter.createConnector();
         Tx.newTransaction(connector)
@@ -84,10 +81,12 @@ public class TxIT extends BaseDbTest {
         );
     }
 
-    @ParameterizedTest
+    @Test
     // TODO: issues with Derby rollback leaving a lock around
-    @MethodSource("dbAdaptersSansDerby")
-    public void testRun_Rollback(TestDbAdapter adapter) {
+    @EnabledIfSystemProperties({
+            @EnabledIfSystemProperty(named = TEST_DB_PROPERTY, matches = "mysql"),
+            @EnabledIfSystemProperty(named = TEST_DB_PROPERTY, matches = "postgresql")})
+    public void testRun_Rollback() {
         adapter.delete("t1");
         JdbcConnector connector = adapter.createConnector();
         DataFrame df1 = DataFrame.newFrame("id", "name", "salary")
@@ -113,10 +112,4 @@ public class TxIT extends BaseDbTest {
         // the transaction must have been rolled back and no data saved
         new DataFrameAsserts(df_12, "id", "name", "salary").expectHeight(0);
     }
-
-    protected static Stream<TestDbAdapter> dbAdaptersSansDerby() {
-        return Stream.of(postgresAdapter, mysqlAdapter);
-
-    }
-
 }

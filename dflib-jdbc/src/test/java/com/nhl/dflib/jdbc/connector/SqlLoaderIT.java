@@ -1,11 +1,9 @@
 package com.nhl.dflib.jdbc.connector;
 
-import com.nhl.dflib.jdbc.unit.dbadapter.TestDbAdapter;
-import com.nhl.dflib.unit.DataFrameAsserts;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import com.nhl.dflib.unit.DataFrameAsserts;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,11 +11,10 @@ import java.time.LocalTime;
 
 public class SqlLoaderIT extends BaseDbTest {
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void test(TestDbAdapter adapter) {
+    @Test
+    public void test() {
 
-        deleteTestData(adapter);
+
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.)
@@ -35,10 +32,9 @@ public class SqlLoaderIT extends BaseDbTest {
                 .expectRow(1, 3L, 1_000.);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testReuse(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testReuse() {
+
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.)
@@ -59,11 +55,10 @@ public class SqlLoaderIT extends BaseDbTest {
                 .expectRow(0, 1L, 50_000.01);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testEmpty(TestDbAdapter adapter) {
+    @Test
+    public void testEmpty() {
 
-        deleteTestData(adapter);
+
         adapter.getTable("t1").insert(1L, "n1", 50_000.01);
 
         String sql = adapter.toNativeSql("SELECT \"id\", \"salary\" from \"t1\" WHERE \"id\" > 1");
@@ -76,11 +71,10 @@ public class SqlLoaderIT extends BaseDbTest {
         new DataFrameAsserts(df, "id", "salary").expectHeight(0);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testColumnFunctions(TestDbAdapter adapter) {
+    @Test
+    public void testColumnFunctions() {
 
-        deleteTestData(adapter);
+
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.)
@@ -99,11 +93,10 @@ public class SqlLoaderIT extends BaseDbTest {
     }
 
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testMaxRows(TestDbAdapter adapter) {
+    @Test
+    public void testMaxRows() {
 
-        deleteTestData(adapter);
+
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.)
@@ -122,11 +115,10 @@ public class SqlLoaderIT extends BaseDbTest {
                 .expectRow(1, 2L, "n2", 120_000.);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testParams(TestDbAdapter adapter) {
+    @Test
+    public void testParams() {
 
-        deleteTestData(adapter);
+
 
         LocalDate ld = LocalDate.of(1977, 02, 05);
         LocalDateTime ldt = LocalDateTime.of(2019, 02, 03, 1, 2, 5);
@@ -158,11 +150,10 @@ public class SqlLoaderIT extends BaseDbTest {
                 .expectRow(0, l1, 67, 7.8, true, "s1", ldt, ld, lt, bytes);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testPrimitives(TestDbAdapter adapter) {
+    @Test
+    public void testPrimitives() {
 
-        deleteTestData(adapter);
+
         adapter.getTable("t3").insert(-15, Long.MAX_VALUE - 1, 0.505, true);
 
         String sql = adapter.toNativeSql("SELECT * from \"t3\"");

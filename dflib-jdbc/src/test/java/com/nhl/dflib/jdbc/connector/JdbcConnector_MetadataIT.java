@@ -3,9 +3,7 @@ package com.nhl.dflib.jdbc.connector;
 import com.nhl.dflib.jdbc.connector.metadata.DbColumnMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.DbTableMetadata;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
-import com.nhl.dflib.jdbc.unit.dbadapter.TestDbAdapter;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Types;
 
@@ -13,9 +11,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class JdbcConnector_MetadataIT extends BaseDbTest {
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testGetMetadata(TestDbAdapter adapter) {
+    @Test
+    public void testGetMetadata() {
 
         DbTableMetadata t1 = adapter.createConnector().getMetadata().getTable("t1");
         assertNotNull(t1);

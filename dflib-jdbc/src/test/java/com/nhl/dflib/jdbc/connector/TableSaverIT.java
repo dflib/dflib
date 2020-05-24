@@ -3,26 +3,17 @@ package com.nhl.dflib.jdbc.connector;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.jdbc.SaveOp;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
-import com.nhl.dflib.jdbc.unit.dbadapter.TestDbAdapter;
 import com.nhl.dflib.unit.DataFrameAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Test;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Month;
-import java.time.Year;
+import java.time.*;
 
 public class TableSaverIT extends BaseDbTest {
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void test(TestDbAdapter adapter) {
+    @Test
+    public void test() {
 
-        deleteTestData(adapter);
         DataFrame df = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
@@ -37,10 +28,9 @@ public class TableSaverIT extends BaseDbTest {
                 .expectRow(1, 2L, "n2", 120_000.);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testEmpty(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testEmpty() {
+
         DataFrame df = DataFrame.newFrame("id", "name", "salary").empty();
 
         JdbcConnector connector = adapter.createConnector();
@@ -52,10 +42,9 @@ public class TableSaverIT extends BaseDbTest {
         new DataFrameAsserts(df2, adapter.getColumnNames("t1")).expectHeight(0);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testSave_Append(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testSave_Append() {
+
         DataFrame df1 = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
@@ -79,10 +68,9 @@ public class TableSaverIT extends BaseDbTest {
                 .expectRow(3, 4L, "n4", 20_000.);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testSave_DeleteTableData(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testSave_DeleteTableData() {
+
         DataFrame df1 = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
@@ -108,10 +96,8 @@ public class TableSaverIT extends BaseDbTest {
                 .expectRow(1, 4L, "n4", 20_000.);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testSave_MergeByPk(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testSave_MergeByPk() {
 
         adapter.getTable("t1").insertColumns("id", "name", "salary")
                 .values(1L, "n1", 50_000.01)
@@ -142,10 +128,9 @@ public class TableSaverIT extends BaseDbTest {
                 .expectRow(3, 4L, "n4", 20_000.);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testSave_MergeByColumns(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testSave_MergeByColumns() {
+
         adapter.getTable("t1").insertColumns("id", "name", "salary")
                 .values(1L, "n1", 50_000.01)
                 .values(2L, "n2", 120_000.)
@@ -180,10 +165,9 @@ public class TableSaverIT extends BaseDbTest {
                 .expectRow(3, 4L, "n4", 20_000.);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testSave_SkipUpdatingUnchagedRows(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testSave_SkipUpdatingUnchagedRows() {
+
         adapter.getTable("t1").insertColumns("id", "name", "salary")
                 .values(1L, "n1", 50_000.01)
                 .values(2L, "n2", 120_000.)
@@ -219,10 +203,9 @@ public class TableSaverIT extends BaseDbTest {
                 .expectRow(3, 4L, "n4", 20_000.);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testSave_SkipUpdatingUnchagedColumns(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testSave_SkipUpdatingUnchagedColumns() {
+
         adapter.getTable("t1").insertColumns("id", "name", "salary")
                 .values(4L, "n4", 8.)
                 .values(1L, "n1", 5.)
@@ -261,10 +244,9 @@ public class TableSaverIT extends BaseDbTest {
                 .expectRow(4, 5L, "n5_x", 9.01);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testDataTypes(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testDataTypes() {
+
         LocalDate ld = LocalDate.of(1977, 2, 5);
         LocalDateTime ldt = LocalDateTime.of(2019, 2, 3, 1, 2, 5);
         LocalTime lt = LocalTime.of(5, 6, 8);
@@ -288,10 +270,9 @@ public class TableSaverIT extends BaseDbTest {
                 .expectRow(0, l1, 1, ldt, lt, ld, bytes);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testDataTypes_DatePartsAsInts(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testDataTypes_DatePartsAsInts() {
+
         DataFrame df = DataFrame.newFrame("bigint", "int").foldByRow(
                 1L, Month.DECEMBER,
                 2L, Year.of(1973),
@@ -312,10 +293,9 @@ public class TableSaverIT extends BaseDbTest {
                 .expectRow(2, 3L, 2);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testDataTypes_Enums(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testDataTypes_Enums() {
+
         DataFrame df = DataFrame.newFrame("bigint", "int", "string").foldByRow(
                 1L, X.a, X.a,
                 2L, X.b, X.b);
@@ -334,10 +314,9 @@ public class TableSaverIT extends BaseDbTest {
                 .expectRow(1, 2L, 1, "b");
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testSaveWithInfo_Insert(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testSaveWithInfo_Insert() {
+
         DataFrame df = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
@@ -356,10 +335,9 @@ public class TableSaverIT extends BaseDbTest {
                 .expectRow(1, 2L, "n2", 120_000.);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testSaveWithInfo_DeleteInsert(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testSaveWithInfo_DeleteInsert() {
+
         adapter.getTable("t1").insertColumns("id", "name", "salary")
                 .values(1L, "n1", 50_000.01)
                 .values(2L, "n2", 120_000.)
@@ -384,10 +362,9 @@ public class TableSaverIT extends BaseDbTest {
                 .expectRow(1, 2L, "n2", 120_000.);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testSaveWithInfo_Merge(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testSaveWithInfo_Merge() {
+
         adapter.getTable("t1").insertColumns("id", "name", "salary")
                 .values(1L, "n1", 50_000.01)
                 .values(2L, "n2", 120_000.)

@@ -3,10 +3,8 @@ package com.nhl.dflib.jdbc.connector;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
-import com.nhl.dflib.jdbc.unit.dbadapter.TestDbAdapter;
 import com.nhl.dflib.unit.DataFrameAsserts;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,10 +15,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SqlSaverIT extends BaseDbTest {
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testSave(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testSave() {
+
         JdbcConnector connector = adapter.createConnector();
 
         String sql = adapter.toNativeSql("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (1, 'x', 777.7)");
@@ -35,11 +32,10 @@ public class SqlSaverIT extends BaseDbTest {
                 .expectRow(0, 1L, "x", 777.7);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testSave_Array(TestDbAdapter adapter) {
+    @Test
+    public void testSave_Array() {
 
-        deleteTestData(adapter);
+
         JdbcConnector connector = adapter.createConnector();
 
         String sql = adapter.toNativeSql("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)");
@@ -54,11 +50,10 @@ public class SqlSaverIT extends BaseDbTest {
                 .expectRow(0, 1L, "n1", 50_000.01);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testSave_DataFrame(TestDbAdapter adapter) {
+    @Test
+    public void testSave_DataFrame() {
 
-        deleteTestData(adapter);
+
         DataFrame data = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
@@ -77,10 +72,9 @@ public class SqlSaverIT extends BaseDbTest {
                 .expectRow(1, 2L, "n2", 120_000.);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testSave_EmptyDataFrame(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testSave_EmptyDataFrame() {
+
         DataFrame data = DataFrame.newFrame("id", "name", "salary").empty();
 
         String sql = adapter.toNativeSql("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)");
@@ -94,10 +88,9 @@ public class SqlSaverIT extends BaseDbTest {
         new DataFrameAsserts(saved, "id", "name", "salary").expectHeight(0);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testSave_ParamWithFunction(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testSave_ParamWithFunction() {
+
         DataFrame data = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1, "na1", 50_000.01,
                 2L, "na2", 120_000.);
@@ -116,10 +109,9 @@ public class SqlSaverIT extends BaseDbTest {
                 .expectRow(1, 2L, "a2", 120_000.);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testSave_ReuseUpdater(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testSave_ReuseUpdater() {
+
         DataFrame data1 = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
@@ -147,10 +139,9 @@ public class SqlSaverIT extends BaseDbTest {
                 .expectRow(3, 4L, "n4", 20_000.);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testDataTypeConversions(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testDataTypeConversions() {
+
         LocalDate ld = LocalDate.of(1977, 02, 05);
         LocalDateTime ldt = LocalDateTime.of(2019, 02, 03, 1, 2, 5);
         LocalTime lt = LocalTime.of(5, 6, 8);
@@ -177,10 +168,9 @@ public class SqlSaverIT extends BaseDbTest {
                 .expectRow(1, null, null, null, false, null, null, null, null, null);
     }
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testSave_Update(TestDbAdapter adapter) {
-        deleteTestData(adapter);
+    @Test
+    public void testSave_Update() {
+
         DataFrame data = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);

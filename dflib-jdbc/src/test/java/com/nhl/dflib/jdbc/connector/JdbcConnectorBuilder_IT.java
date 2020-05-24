@@ -1,9 +1,7 @@
 package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
-import com.nhl.dflib.jdbc.unit.dbadapter.TestDbAdapter;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,9 +12,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class JdbcConnectorBuilder_IT extends BaseDbTest {
 
-    @ParameterizedTest
-    @MethodSource(DB_ADAPTERS_METHOD)
-    public void testBuild(TestDbAdapter adapter) throws SQLException {
+    @Test
+    public void testBuild() throws SQLException {
 
         JdbcConnector connector = adapter.createConnector();
 
