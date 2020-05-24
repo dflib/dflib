@@ -148,6 +148,17 @@ public class DbMetadata {
                 }
             }
 
+            // sanity check ... table with no columns is possible, but suspect
+            if (columnsAndTypes.isEmpty()) {
+
+                try (ResultSet tablesRs = md.getTables(
+                        tableName.getCatalog(), tableName.getSchema(), tableName.getTable(), null)) {
+                    if (!tablesRs.next()) {
+                        throw new RuntimeException("Non-existent table '" + tableName + "'");
+                    }
+                }
+            }
+
             try (ResultSet pkRs = md.getPrimaryKeys(
                     tableName.getCatalog(), tableName.getSchema(), tableName.getTable())) {
 
