@@ -58,6 +58,13 @@ public class DbTableMetadata {
         return pk;
     }
 
+    /**
+     * @since 0.8
+     */
+    public boolean hasColumn(String name) {
+        return columnsByName.containsKey(name);
+    }
+
     public DbColumnMetadata getColumn(String name) {
 
         DbColumnMetadata column = columnsByName.get(name);
