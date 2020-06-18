@@ -363,6 +363,34 @@ public class TableSaverIT extends BaseDbTest {
     }
 
     @Test
+    public void testSave_MergeByPk_DeleteUnmatchedRows() {
+
+        adapter.getTable("t1").insertColumns("id", "name", "salary")
+                .values(1L, "n1", 50_000.01)
+                .values(2L, "n2", 120_000.)
+                .exec();
+
+        DataFrame df = DataFrame.newFrame("id", "name", "salary").foldByRow(
+                2L, "n2", 120_001.,
+                3L, "n3", 11_000.);
+
+        JdbcConnector connector = adapter.createConnector();
+        SaveStats info = connector
+                .tableSaver("t1")
+                .mergeByPk()
+                .deleteUnmatchedRows()
+                .save(df);
+
+        new SeriesAsserts(info.getRowSaveStatuses()).expectData(SaveOp.update, SaveOp.insert);
+
+        DataFrame dfSaved = connector.tableLoader("t1").load();
+        new DataFrameAsserts(dfSaved, adapter.getColumnNames("t1"))
+                .expectHeight(2)
+                .expectRow(0, 2L, "n2", 120_001.)
+                .expectRow(1, 3L, "n3", 11_000.);
+    }
+
+    @Test
     public void testSaveWithInfo_Merge() {
 
         adapter.getTable("t1").insertColumns("id", "name", "salary")

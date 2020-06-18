@@ -3,10 +3,7 @@ package com.nhl.dflib.jdbc.connector;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.jdbc.connector.metadata.DbColumnMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
-import com.nhl.dflib.jdbc.connector.saver.SaveViaDeleteThenInsert;
-import com.nhl.dflib.jdbc.connector.saver.SaveViaInsert;
-import com.nhl.dflib.jdbc.connector.saver.SaveViaUpsert;
-import com.nhl.dflib.jdbc.connector.saver.TableSaveStrategy;
+import com.nhl.dflib.jdbc.connector.saver.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +18,7 @@ public class TableSaver {
 
     // save strategy-defining vars
     private boolean deleteTableData;
+    private boolean deleteUnmatchedRows;
     private boolean mergeByPk;
     private String[] mergeByColumns;
 
@@ -36,6 +34,18 @@ public class TableSaver {
      */
     public TableSaver deleteTableData() {
         this.deleteTableData = true;
+        return this;
+    }
+
+    /**
+     * Configures saver to delete table rows that did not match any rows in the saved DataFrame. If
+     * {@link #deleteTableData()} was specified, this setting has no effect, as all rows will be deleted prior to
+     * saving the data anyways. If no merge strategy (by PK or by columns) was specified, this setting also has no effect.
+     *
+     * @return this saver instance
+     */
+    public TableSaver deleteUnmatchedRows() {
+        this.deleteUnmatchedRows = true;
         return this;
     }
 
@@ -80,6 +90,7 @@ public class TableSaver {
     }
 
     protected TableSaveStrategy createSaveStrategy() {
+        
         // if delete is in effect, we don't need the UPDATE part of "UPSERT"
         if (deleteTableData) {
             return new SaveViaDeleteThenInsert(connector, tableName);
@@ -89,10 +100,10 @@ public class TableSaver {
             return new SaveViaInsert(connector, tableName);
         }
 
-        return new SaveViaUpsert(
-                connector,
-                tableName,
-                mergeByPk ? getPkColumns() : mergeByColumns);
+        String[] keyColumns = mergeByPk ? getPkColumns() : mergeByColumns;
+        return deleteUnmatchedRows
+                ? new FullSync(connector, tableName, keyColumns)
+                : new SaveViaUpsert(connector, tableName, keyColumns);
     }
 
     protected String[] getPkColumns() {

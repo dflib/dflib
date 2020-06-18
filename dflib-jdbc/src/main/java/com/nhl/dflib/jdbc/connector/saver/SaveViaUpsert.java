@@ -25,8 +25,7 @@ public class SaveViaUpsert extends SaveViaInsert {
     private static final String INDICATOR_COLUMN = "dflib_ind_%$#86AcD3";
     private static final String DIFF_COLUMN = "dflib_dif_%4$#96Ac3";
 
-
-    private String[] keyColumns;
+    protected String[] keyColumns;
 
     public SaveViaUpsert(JdbcConnector connector, TableFQName tableName, String[] keyColumns) {
         super(connector, tableName);
