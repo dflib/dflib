@@ -102,6 +102,22 @@ public class DefaultJdbcConnector implements JdbcConnector {
     }
 
     /**
+     * @since 0.8
+     */
+    @Override
+    public TableDeleter tableDeleter(TableFQName tableName) {
+        return new TableDeleter(this, tableName);
+    }
+
+    /**
+     * @since 0.8
+     */
+    @Override
+    public TableDeleter tableDeleter(String tableName) {
+        return tableDeleter(getMetadata().parseTableName(tableName));
+    }
+
+    /**
      * Creates a new {@link SqlLoader} to load DataFrame from a custom SQL query.
      *
      * @param sql a parameterized SQL statement that should be run to get the DataFrame data. Format of the SQL String

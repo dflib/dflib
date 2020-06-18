@@ -30,6 +30,16 @@ public interface JdbcConnector {
     TableLoader tableLoader(TableFQName tableName);
 
     /**
+     * @since 0.8
+     */
+    TableDeleter tableDeleter(String tableName);
+
+    /**
+     * @since 0.8
+     */
+    TableDeleter tableDeleter(TableFQName tableName);
+
+    /**
      * Creates a new {@link SqlLoader} to load DataFrame from a custom SQL query.
      *
      * @param sql a parameterized SQL statement that should be run to get the DataFrame data. Format of the SQL String

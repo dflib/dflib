@@ -6,7 +6,7 @@ import com.nhl.dflib.accumulator.ObjectAccumulator;
 import com.nhl.dflib.row.RowProxy;
 
 /**
- * A Series that is a concatention of rows in a DataFrame.
+ * A Series that is a concatenation of rows in a DataFrame.
  *
  * @since 0.6
  */

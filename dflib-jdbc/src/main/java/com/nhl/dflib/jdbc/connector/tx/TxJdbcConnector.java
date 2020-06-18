@@ -1,12 +1,6 @@
 package com.nhl.dflib.jdbc.connector.tx;
 
-import com.nhl.dflib.jdbc.connector.JdbcConnector;
-import com.nhl.dflib.jdbc.connector.SqlLoader;
-import com.nhl.dflib.jdbc.connector.SqlLogger;
-import com.nhl.dflib.jdbc.connector.SqlSaver;
-import com.nhl.dflib.jdbc.connector.StatementBuilder;
-import com.nhl.dflib.jdbc.connector.TableLoader;
-import com.nhl.dflib.jdbc.connector.TableSaver;
+import com.nhl.dflib.jdbc.connector.*;
 import com.nhl.dflib.jdbc.connector.loader.ColumnBuilder;
 import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
@@ -44,7 +38,7 @@ public class TxJdbcConnector implements JdbcConnector {
 
     @Override
     public TableLoader tableLoader(String tableName) {
-        return new TableLoader(this, getMetadata().parseTableName(tableName));
+        return tableLoader(getMetadata().parseTableName(tableName));
     }
 
     /**
@@ -52,7 +46,17 @@ public class TxJdbcConnector implements JdbcConnector {
      */
     @Override
     public TableLoader tableLoader(TableFQName tableName) {
-        return null;
+        return new TableLoader(this, tableName);
+    }
+
+    @Override
+    public TableDeleter tableDeleter(String tableName) {
+        return tableDeleter(getMetadata().parseTableName(tableName));
+    }
+
+    @Override
+    public TableDeleter tableDeleter(TableFQName tableName) {
+        return new TableDeleter(this, tableName);
     }
 
     @Override
