@@ -32,11 +32,13 @@ public class SqlLogger {
             int plen = params.size();
             String label = plen == 1 ? "1 param [" : plen + " params [";
 
-            StringBuilder log = new StringBuilder(sql)
-                    .append(" | bind ")
-                    .append(label)
-                    .append(paramPrinter.toString(params))
-                    .append("] ");
+            StringBuilder log = new StringBuilder(sql);
+            if (plen > 0) {
+                log.append(" | bind ")
+                        .append(label)
+                        .append(paramPrinter.toString(params))
+                        .append("] ");
+            }
 
             LOGGER.info(log.toString());
         }
@@ -46,19 +48,19 @@ public class SqlLogger {
         if (LOGGER.isInfoEnabled()) {
 
             int ph = paramsBatch.height();
-            String slabel = ph == 1 ? "1 set of " : ph + " sets of ";
-
             int pw = paramsBatch.width();
-            String plabel = pw == 1 ? "1 param [" : pw + " params [";
 
+            StringBuilder log = new StringBuilder(sql);
+            if (pw > 0) {
+                String slabel = ph == 1 ? "1 set of " : ph + " sets of ";
+                String plabel = pw == 1 ? "1 param [" : pw + " params [";
 
-
-            StringBuilder log = new StringBuilder(sql)
-                    .append(" | bind ")
-                    .append(slabel)
-                    .append(plabel)
-                    .append(paramPrinter.toString(paramsBatch))
-                    .append("]");
+                log.append(" | bind ")
+                        .append(slabel)
+                        .append(plabel)
+                        .append(paramPrinter.toString(paramsBatch))
+                        .append("]");
+            }
 
             LOGGER.info(log.toString());
         }
