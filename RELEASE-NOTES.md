@@ -14,6 +14,7 @@
 * #103 Added option to save a DataFrame without Index/header
 * #104 "dflib-junit5" - a test module that supports JUnit5
 * #105 "dflib-json" and JsonLoader - the initial version of DFLib JSON "connector"
+* #106 TableLoader.neq condition
 
 ## Release 0.7
 

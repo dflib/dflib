@@ -169,4 +169,49 @@ public class TableLoaderIT extends BaseDbTest {
 
         new DataFrameAsserts(df, "name", "salary").expectHeight(0);
     }
+
+    @Test
+    public void testNeq_SingleColumn() {
+
+        adapter.getTable("t1")
+                .insert(1L, "n1", 50_000.01)
+                .insert(2L, "n2", 120_000.)
+                .insert(3L, "n3", 11_000.);
+
+        DataFrame matcher = DataFrame.newFrame("id").foldByRow(1L, 3L);
+
+        DataFrame df = adapter.createConnector()
+                .tableLoader("t1")
+                .neq(matcher)
+                .includeColumns("name", "salary")
+                .load();
+
+        new DataFrameAsserts(df, "name", "salary")
+                .expectHeight(1)
+                .expectRow(0, "n2", 120_000.);
+    }
+
+    @Test
+    public void testNeq_MultiColumn() {
+
+        adapter.getTable("t1")
+                .insert(1L, "n1", 50_000.01)
+                .insert(2L, "n2", 120_000.)
+                .insert(3L, "n3", 11_000.);
+
+        DataFrame matcher = DataFrame.newFrame("id", "name").foldByRow(
+                1L, "n5",
+                3L, "n3");
+
+        DataFrame df = adapter.createConnector()
+                .tableLoader("t1")
+                .neq(matcher)
+                .includeColumns("name", "salary")
+                .load();
+
+        new DataFrameAsserts(df, "name", "salary")
+                .expectHeight(2)
+                .expectRow(0, "n1", 50_000.01)
+                .expectRow(1, "n2", 120_000.);
+    }
 }

@@ -17,6 +17,7 @@ public class TableLoader {
     private TableFQName tableName;
     private String[] columns;
     private DataFrame condition;
+    private boolean negateCondition;
     private int rowSampleSize;
     private Random rowsSampleRandom;
 
@@ -42,6 +43,22 @@ public class TableLoader {
      */
     public TableLoader eq(DataFrame condition) {
         this.condition = condition;
+        this.negateCondition = false;
+        return this;
+    }
+
+    /**
+     * Configures TableLoader to retrieve rows that do not match the rows in the provided "condition" DataFrame.
+     * Condition DataFrame must contain columns with names that are present in the DB table. Often it would contain
+     * PK columns or otherwise unique columns.
+     *
+     * @param condition a DataFrame with data that defines negated load criteria.
+     * @return this TableLoader
+     * @since 0.8
+     */
+    public TableLoader neq(DataFrame condition) {
+        this.condition = condition;
+        this.negateCondition = true;
         return this;
     }
 
@@ -178,7 +195,8 @@ public class TableLoader {
 
         buffer.append(" where ")
                 .append(connector.quoteIdentifier(columnName))
-                .append(" in (?");
+                .append(negateCondition ? " not in" : " in")
+                .append(" (?");
 
         for (int i = 1; i < criteriaHeight; i++) {
             buffer.append(", ?");
@@ -191,12 +209,15 @@ public class TableLoader {
 
         String part = singleMultiColumnCondition(columnsIndex);
 
-        buffer.append(" where ").append(part);
+        buffer.append(" where")
+                .append(negateCondition ? " not (" : "")
+                .append(part);
 
         for (int i = 1; i < criteriaHeight; i++) {
             buffer.append(" or ").append(part);
         }
 
+        buffer.append(negateCondition ? ")" : "");
         return buffer;
     }
 
