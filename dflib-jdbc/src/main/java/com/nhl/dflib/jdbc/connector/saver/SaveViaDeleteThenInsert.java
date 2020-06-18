@@ -6,6 +6,7 @@ import com.nhl.dflib.jdbc.SaveOp;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
 import com.nhl.dflib.jdbc.connector.TableDeleter;
 import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
+import com.nhl.dflib.jdbc.connector.tx.TxConnectionWrapper;
 import com.nhl.dflib.jdbc.connector.tx.TxJdbcConnector;
 import com.nhl.dflib.series.EmptySeries;
 
@@ -29,7 +30,8 @@ public class SaveViaDeleteThenInsert extends SaveViaInsert {
     @Override
     protected Supplier<Series<SaveOp>> doSave(Connection connection, DataFrame df) {
 
-        new TableDeleter(new TxJdbcConnector(connector, connection), tableName).delete();
+        // place delete in the same transaction as save
+        new TableDeleter(txConnector(connection), tableName).delete();
 
         if (df.height() > 0) {
             return super.doSave(connection, df);
@@ -39,5 +41,11 @@ public class SaveViaDeleteThenInsert extends SaveViaInsert {
         }
     }
 
+    protected JdbcConnector txConnector(Connection connection) {
+        TxConnectionWrapper txConnection = (connection instanceof TxConnectionWrapper)
+                ? (TxConnectionWrapper) connection
+                : new TxConnectionWrapper(connection);
+        return new TxJdbcConnector(connector, txConnection);
+    }
 
 }
