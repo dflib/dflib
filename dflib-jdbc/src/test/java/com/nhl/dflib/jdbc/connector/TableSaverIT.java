@@ -20,9 +20,8 @@ public class TableSaverIT extends BaseDbTest {
 
         JdbcConnector connector = adapter.createConnector();
         connector.tableSaver("t1").save(df);
-        DataFrame df2 = connector.tableLoader("t1").load();
 
-        new DataFrameAsserts(df2, adapter.getColumnNames("t1"))
+        assertT1Contents()
                 .expectHeight(2)
                 .expectRow(0, 1L, "n1", 50_000.01)
                 .expectRow(1, 2L, "n2", 120_000.);
@@ -35,11 +34,8 @@ public class TableSaverIT extends BaseDbTest {
 
         JdbcConnector connector = adapter.createConnector();
         connector.tableSaver("t1").save(df);
-        DataFrame df2 = connector
-                .tableLoader("t1")
-                .load();
 
-        new DataFrameAsserts(df2, adapter.getColumnNames("t1")).expectHeight(0);
+        assertT1Contents().expectHeight(0);
     }
 
     @Test
@@ -58,9 +54,7 @@ public class TableSaverIT extends BaseDbTest {
         saver.save(df1);
         saver.save(df2);
 
-        DataFrame df3 = connector.tableLoader("t1").load();
-
-        new DataFrameAsserts(df3, adapter.getColumnNames("t1"))
+        assertT1Contents()
                 .expectHeight(4)
                 .expectRow(0, 1L, "n1", 50_000.01)
                 .expectRow(1, 2L, "n2", 120_000.)
@@ -86,11 +80,7 @@ public class TableSaverIT extends BaseDbTest {
         saver.save(df1);
         saver.save(df2);
 
-        DataFrame df3 = connector
-                .tableLoader("t1")
-                .load();
-
-        new DataFrameAsserts(df3, adapter.getColumnNames("t1"))
+        assertT1Contents()
                 .expectHeight(2)
                 .expectRow(0, 3L, "n3", 60_000.01)
                 .expectRow(1, 4L, "n4", 20_000.);
@@ -115,12 +105,7 @@ public class TableSaverIT extends BaseDbTest {
                 .mergeByPk()
                 .save(df);
 
-        DataFrame df3 = connector
-                .tableLoader("t1")
-                .load()
-                .sort(0, true);
-
-        new DataFrameAsserts(df3, adapter.getColumnNames("t1"))
+        assertT1Contents()
                 .expectHeight(4)
                 .expectRow(0, 1L, "n1_x", 50_000.02)
                 .expectRow(1, 2L, "n2", 120_000.)
@@ -152,12 +137,7 @@ public class TableSaverIT extends BaseDbTest {
         adapter.getTable("t1_audit").matcher().eq("op", "INSERT").assertMatches(2);
         adapter.getTable("t1_audit").matcher().eq("op", "UPDATE").assertMatches(1);
 
-        DataFrame df3 = connector
-                .tableLoader("t1")
-                .load()
-                .sort(0, true);
-
-        new DataFrameAsserts(df3, adapter.getColumnNames("t1"))
+        assertT1Contents()
                 .expectHeight(4)
                 .expectRow(0, 1L, "n1", 50_000.02)
                 .expectRow(1, 2L, "n2", 120_000.)
@@ -191,12 +171,7 @@ public class TableSaverIT extends BaseDbTest {
         adapter.getTable("t1_audit").matcher().eq("op", "UPDATE").assertMatches(1);
         adapter.getTable("t1_audit").matcher().eq("op", "DELETE").assertMatches(1);
 
-        DataFrame df3 = connector
-                .tableLoader("t1")
-                .load()
-                .sort(0, true);
-
-        new DataFrameAsserts(df3, adapter.getColumnNames("t1"))
+        assertT1Contents()
                 .expectHeight(3)
                 .expectRow(0, 1L, "n1", 50_000.02)
                 .expectRow(1, 3L, "n3", 60_000.01)
@@ -228,12 +203,7 @@ public class TableSaverIT extends BaseDbTest {
         adapter.getTable("t1_audit").matcher().eq("op", "INSERT").assertMatches(2);
         adapter.getTable("t1_audit").matcher().eq("op", "UPDATE").assertMatches(1);
 
-        DataFrame df3 = connector
-                .tableLoader("t1")
-                .load()
-                .sort(0, true);
-
-        new DataFrameAsserts(df3, adapter.getColumnNames("t1"))
+        assertT1Contents()
                 .expectHeight(4)
                 .expectRow(0, 1L, "n1_x", 50_000.02)
                 .expectRow(1, 2L, "n2", 120_000.)
@@ -269,11 +239,7 @@ public class TableSaverIT extends BaseDbTest {
         // TODO: how do we test how the update was partitioned into statements?
         adapter.getTable("t1_audit").matcher().eq("op", "UPDATE").assertMatches(4);
 
-        DataFrame df3 = connector
-                .tableLoader("t1")
-                .load().sort("id", true);
-
-        new DataFrameAsserts(df3, adapter.getColumnNames("t1"))
+        assertT1Contents()
                 .expectHeight(5)
                 .expectRow(0, 1L, "n1_x", 5.)
                 .expectRow(1, 2L, "n2", 6.01)
@@ -301,7 +267,8 @@ public class TableSaverIT extends BaseDbTest {
         DataFrame df2 = connector
                 .tableLoader("t2")
                 .includeColumns("bigint", "int", "timestamp", "time", "date", "bytes")
-                .load();
+                .load()
+                .sort("bigint", true);
 
         new DataFrameAsserts(df2, df.getColumnsIndex())
                 .expectHeight(1)
@@ -322,7 +289,8 @@ public class TableSaverIT extends BaseDbTest {
         DataFrame df2 = connector
                 .tableLoader("t2")
                 .includeColumns("bigint", "int")
-                .load();
+                .load()
+                .sort("bigint", true);
 
         new DataFrameAsserts(df2, df.getColumnsIndex())
                 .expectHeight(3)
@@ -344,7 +312,8 @@ public class TableSaverIT extends BaseDbTest {
         DataFrame df2 = connector
                 .tableLoader("t2")
                 .includeColumns("bigint", "int", "string")
-                .load();
+                .load()
+                .sort("bigint", true);
 
         new DataFrameAsserts(df2, df.getColumnsIndex())
                 .expectHeight(2)
@@ -366,8 +335,7 @@ public class TableSaverIT extends BaseDbTest {
 
         new SeriesAsserts(info.getRowSaveStatuses()).expectData(SaveOp.insert, SaveOp.insert);
 
-        DataFrame dfSaved = connector.tableLoader("t1").load();
-        new DataFrameAsserts(dfSaved, adapter.getColumnNames("t1"))
+        assertT1Contents()
                 .expectHeight(2)
                 .expectRow(0, 1L, "n1", 50_000.01)
                 .expectRow(1, 2L, "n2", 120_000.);
@@ -393,8 +361,7 @@ public class TableSaverIT extends BaseDbTest {
 
         new SeriesAsserts(info.getRowSaveStatuses()).expectData(SaveOp.insert, SaveOp.insert);
 
-        DataFrame dfSaved = connector.tableLoader("t1").load();
-        new DataFrameAsserts(dfSaved, adapter.getColumnNames("t1"))
+        assertT1Contents()
                 .expectHeight(2)
                 .expectRow(0, 1L, "n1", 50_000.01)
                 .expectRow(1, 2L, "n2", 120_000.);
@@ -421,8 +388,7 @@ public class TableSaverIT extends BaseDbTest {
 
         new SeriesAsserts(info.getRowSaveStatuses()).expectData(SaveOp.update, SaveOp.insert);
 
-        DataFrame dfSaved = connector.tableLoader("t1").load();
-        new DataFrameAsserts(dfSaved, adapter.getColumnNames("t1"))
+        assertT1Contents()
                 .expectHeight(2)
                 .expectRow(0, 2L, "n2", 120_001.)
                 .expectRow(1, 3L, "n3", 11_000.);
@@ -453,14 +419,18 @@ public class TableSaverIT extends BaseDbTest {
 
         new SeriesAsserts(info.getRowSaveStatuses()).expectData(SaveOp.skip, SaveOp.update, SaveOp.insert, SaveOp.update, SaveOp.skip);
 
-        DataFrame dfSaved = connector.tableLoader("t1").load().sort("id", true);
-        new DataFrameAsserts(dfSaved, adapter.getColumnNames("t1"))
+        assertT1Contents()
                 .expectHeight(5)
                 .expectRow(0, 1L, "n1", 50_000.01)
                 .expectRow(1, 2L, "n2_u", 120_000.)
                 .expectRow(2, 3L, "n3", 320_000.)
                 .expectRow(3, 4L, "n4_u", 4.)
                 .expectRow(4, 5L, "n5", 5.);
+    }
+
+    private DataFrameAsserts assertT1Contents() {
+        DataFrame df = adapter.createConnector().tableLoader("t1").load().sort("id", true);
+        return new DataFrameAsserts(df, adapter.getColumnNames("t1"));
     }
 
     enum X {a, b}
