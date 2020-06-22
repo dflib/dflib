@@ -127,6 +127,8 @@ public class DataFrameAsserts {
 
     public DataFrameAsserts expectRow(int pos, Object... expectedValues) {
 
+        assertTrue("Row position " + pos + " is outside the DataFrame range of 0.." + (df.height() - 1), pos < df.height());
+
         // handling nulls in "vararg" specifics... caller passing a "null" results in null array instead of a single
         // element array with null... need to fix that
         Object[] expectedNormal = expectedValues != null ? expectedValues : new Object[]{null};
