@@ -15,6 +15,7 @@
 * #104 "dflib-junit5" - a test module that supports JUnit5
 * #105 "dflib-json" and JsonLoader - the initial version of DFLib JSON "connector"
 * #106 TableLoader.neq condition
+* #107 TableSaver.deleteUnmatchedRows - full sync mode 
 * #108 TableDeleter
 
 ## Release 0.7
