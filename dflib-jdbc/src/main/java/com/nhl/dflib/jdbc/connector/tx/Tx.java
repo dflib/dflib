@@ -2,8 +2,6 @@ package com.nhl.dflib.jdbc.connector.tx;
 
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -53,27 +51,17 @@ public class Tx {
      */
     public <T> T call(Function<JdbcConnector, T> op) {
 
-        try (Connection connection = connector.getConnection()) {
-
-            if (isolation != null) {
-                connection.setTransactionIsolation(isolation.value);
-            }
-
-            TxConnectionWrapper connectionWrapper = new TxConnectionWrapper(connection);
-
+        try (TxJdbcConnector txConnector = new TxJdbcConnector(connector, isolation)) {
             try {
-                T result = op.apply(new TxJdbcConnector(connector, connectionWrapper));
-                connection.commit();
+                T result = op.apply(txConnector);
+                txConnector.commit();
                 return result;
             }
-            // catching Exception, not SQLException, to ensure we rollback no matter what happens in the processor
+            // catching Exception, not SQLException, to ensure we rollback even if the error is not originating in the DB
             catch (Exception e) {
-                connection.rollback();
+                txConnector.rollback();
                 throw new RuntimeException(e);
             }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 }

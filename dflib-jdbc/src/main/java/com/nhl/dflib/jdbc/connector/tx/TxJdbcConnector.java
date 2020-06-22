@@ -9,17 +9,21 @@ import com.nhl.dflib.jdbc.datasource.TxDataSource;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
+ * A connector that provides the same connection to all consumers, opening it lazily when first requested.
+ *
  * @since 0.6
  */
-public class TxJdbcConnector implements JdbcConnector {
+public class TxJdbcConnector implements JdbcConnector, AutoCloseable {
 
-    private Connection connection;
     private JdbcConnector delegate;
+    private TxIsolation isolation;
+    private volatile TxConnectionWrapper connection;
 
-    public TxJdbcConnector(JdbcConnector delegate, Connection connection) {
-        this.connection = connection;
+    public TxJdbcConnector(JdbcConnector delegate, TxIsolation isolation) {
+        this.isolation = isolation;
         this.delegate = delegate;
     }
 
@@ -86,6 +90,14 @@ public class TxJdbcConnector implements JdbcConnector {
 
     @Override
     public Connection getConnection() {
+        if (connection == null) {
+            synchronized (this) {
+                if (connection == null) {
+                    connection = createAndInitConnection();
+                }
+            }
+        }
+
         return connection;
     }
 
@@ -115,5 +127,51 @@ public class TxJdbcConnector implements JdbcConnector {
     @Override
     public ValueConverterFactory getBindConverterFactory() {
         return delegate.getBindConverterFactory();
+    }
+
+    protected TxConnectionWrapper createAndInitConnection() {
+
+        Connection connection = delegate.getConnection();
+
+        if (isolation != null) {
+            try {
+                connection.setTransactionIsolation(isolation.value);
+            } catch (SQLException e) {
+                throw new RuntimeException("Error setting isoltaiton level", e);
+            }
+        }
+
+        return new TxConnectionWrapper(connection);
+    }
+
+    protected void commit() {
+        connectionOp(Connection::commit);
+    }
+
+    protected void rollback() {
+        connectionOp(Connection::rollback);
+    }
+
+    @Override
+    public void close() {
+        connectionOp(Connection::close);
+        this.connection = null;
+    }
+
+    protected void connectionOp(JdbcConsumer op) {
+        Connection connection = this.connection;
+        if (connection != null) {
+            try {
+                // connector-level commit or rollback must be performed on the underlying real connection, not the Tx wrapper
+                Connection realConnection = connection.unwrap(Connection.class);
+                op.consume(realConnection);
+            } catch (SQLException e) {
+                throw new RuntimeException("Error processing connection", e);
+            }
+        }
+    }
+
+    interface JdbcConsumer {
+        void consume(Connection c) throws SQLException;
     }
 }
