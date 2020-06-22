@@ -5,12 +5,14 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.SaveOp;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
+import com.nhl.dflib.jdbc.connector.StatementBuilder;
 import com.nhl.dflib.jdbc.connector.metadata.DbColumnMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.DbTableMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.series.SingleValueSeries;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.function.Supplier;
 
 /**
@@ -23,15 +25,21 @@ public class SaveViaInsert extends TableSaveStrategy {
     }
 
     @Override
-    protected Supplier<Series<SaveOp>> doSave(Connection connection, DataFrame df) {
-        connector.createStatementBuilder(createInsertStatement(df))
+    protected Supplier<Series<SaveOp>> doSave(JdbcConnector connector, DataFrame df) {
+
+        StatementBuilder builder = connector.createStatementBuilder(createInsertStatement(df))
 
                 // use param descriptors from metadata, as (1) we can and (b) some DBs don't support real
                 // metadata in PreparedStatements. See e.g. https://github.com/nhl/dflib/issues/49
 
                 .paramDescriptors(fixedParams(df.getColumnsIndex()))
-                .bindBatch(df)
-                .update(connection);
+                .bindBatch(df);
+
+        try (Connection c = connector.getConnection()) {
+            builder.update(c);
+        } catch (SQLException e) {
+            throw new RuntimeException("Error closing DB connection", e);
+        }
 
         return () -> new SingleValueSeries<>(SaveOp.insert, df.height());
     }

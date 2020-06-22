@@ -1,13 +1,9 @@
 package com.nhl.dflib.jdbc.connector.saver;
 
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.GroupBy;
-import com.nhl.dflib.Hasher;
-import com.nhl.dflib.Index;
-import com.nhl.dflib.IntSeries;
-import com.nhl.dflib.Series;
+import com.nhl.dflib.*;
 import com.nhl.dflib.jdbc.SaveOp;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
+import com.nhl.dflib.jdbc.connector.StatementBuilder;
 import com.nhl.dflib.jdbc.connector.TableLoader;
 import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.join.JoinIndicator;
@@ -15,6 +11,7 @@ import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.SingleValueSeries;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.function.Supplier;
@@ -37,7 +34,7 @@ public class SaveViaUpsert extends SaveViaInsert {
     }
 
     @Override
-    protected Supplier<Series<SaveOp>> doSave(Connection connection, DataFrame df) {
+    protected Supplier<Series<SaveOp>> doSave(JdbcConnector connector, DataFrame df) {
 
         DataFrame keyDf = df.selectColumns(Index.forLabels(keyColumns));
 
@@ -47,7 +44,7 @@ public class SaveViaUpsert extends SaveViaInsert {
                 .load();
 
         if (previouslySaved.height() == 0) {
-            insert(connection, df);
+            insert(connector, df);
             return () -> new SingleValueSeries<>(SaveOp.insert, df.height());
         }
 
@@ -78,7 +75,7 @@ public class SaveViaUpsert extends SaveViaInsert {
         infoTracker.insertAndUpdate(index);
 
         if (insertIndex.size() > 0) {
-            insert(connection, df.selectRows(insertIndex));
+            insert(connector, df.selectRows(insertIndex));
         }
 
         if (updateIndex.size() > 0) {
@@ -93,17 +90,17 @@ public class SaveViaUpsert extends SaveViaInsert {
                     .selectColumns(joinedIndex)
                     .renameColumns(mainColumns.getLabels());
 
-            update(connection, df.selectRows(updateIndex), previouslySavedOrdered.selectRows(updateIndex), infoTracker);
+            update(connector, df.selectRows(updateIndex), previouslySavedOrdered.selectRows(updateIndex), infoTracker);
         }
 
         return infoTracker::getInfo;
     }
 
-    protected void insert(Connection connection, DataFrame toSave) {
-        super.doSave(connection, toSave);
+    protected void insert(JdbcConnector connector, DataFrame toSave) {
+        super.doSave(connector, toSave);
     }
 
-    protected void update(Connection connection, DataFrame toSave, DataFrame previouslySaved, UpsertInfoTracker infoTracker) {
+    protected void update(JdbcConnector connector, DataFrame toSave, DataFrame previouslySaved, UpsertInfoTracker infoTracker) {
 
         int w = toSave.width();
         if (w == keyColumns.length) {
@@ -146,14 +143,19 @@ public class SaveViaUpsert extends SaveViaInsert {
             Index valueIndex = Index.forLabels(updateColumns).dropLabels(keyColumns);
             Index valueAndKeyIndex = valueIndex.addLabels(keyColumns);
 
-            connector.createStatementBuilder(createUpdateStatement(keyColumns, valueIndex.getLabels()))
+            StatementBuilder builder = connector.createStatementBuilder(createUpdateStatement(keyColumns, valueIndex.getLabels()))
 
                     // use param descriptors from metadata, as (1) we can and (b) some DBs don't support real
                     // metadata in PreparedStatements. See e.g. https://github.com/nhl/dflib/issues/49
 
                     .paramDescriptors(fixedParams(valueAndKeyIndex))
-                    .bindBatch(toUpdate.selectColumns(valueAndKeyIndex))
-                    .update(connection);
+                    .bindBatch(toUpdate.selectColumns(valueAndKeyIndex));
+
+            try (Connection c = connector.getConnection()) {
+                builder.update(c);
+            } catch (SQLException e) {
+                throw new RuntimeException("Error closing DB connection", e);
+            }
         }
     }
 

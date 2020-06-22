@@ -5,12 +5,11 @@ import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.SaveOp;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
 import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
+import com.nhl.dflib.jdbc.connector.tx.Tx;
 import com.nhl.dflib.series.SingleValueSeries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.function.Supplier;
 
 /**
@@ -34,18 +33,12 @@ public abstract class TableSaveStrategy {
             return () -> new SingleValueSeries<>(SaveOp.skip, df.height());
         }
 
-        try (Connection c = connector.getConnection()) {
-            Supplier<Series<SaveOp>> info = doSave(c, df);
-            c.commit();
-            return info;
-        } catch (SQLException e) {
-            throw new RuntimeException("Error storing data in DB", e);
-        }
+        return Tx.newTransaction(connector).call(c -> doSave(c, df));
     }
 
     protected abstract boolean shouldSave(DataFrame df);
 
-    protected abstract Supplier<Series<SaveOp>> doSave(Connection connection, DataFrame df);
+    protected abstract Supplier<Series<SaveOp>> doSave(JdbcConnector connector, DataFrame df);
 
     protected void log(String line, Object... messageParams) {
         if (LOGGER.isInfoEnabled()) {

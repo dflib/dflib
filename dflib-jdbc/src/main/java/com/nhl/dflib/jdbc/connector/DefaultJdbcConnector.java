@@ -196,9 +196,14 @@ public class DefaultJdbcConnector implements JdbcConnector {
      * @since 0.6
      */
     @Override
-    public Connection getConnection() throws SQLException {
+    public Connection getConnection() {
 
-        Connection connection = dataSource.getConnection();
+        Connection connection;
+        try {
+            connection = dataSource.getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error opening connection", e);
+        }
 
         try {
             connection.setAutoCommit(false);
@@ -209,7 +214,7 @@ public class DefaultJdbcConnector implements JdbcConnector {
             } catch (SQLException ignored) {
             }
 
-            throw e;
+            throw new RuntimeException("Error setting connection auto commit to 'false'", e);
         }
 
         return connection;

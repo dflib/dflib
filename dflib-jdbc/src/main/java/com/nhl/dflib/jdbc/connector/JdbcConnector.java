@@ -1,14 +1,13 @@
 package com.nhl.dflib.jdbc.connector;
 
+import com.nhl.dflib.jdbc.connector.loader.ColumnBuilder;
 import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.jdbc.connector.statement.ValueConverterFactory;
-import com.nhl.dflib.jdbc.connector.loader.ColumnBuilder;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  * @since 0.6
@@ -71,7 +70,7 @@ public interface JdbcConnector {
      */
     DataSource getDataSource();
 
-    Connection getConnection() throws SQLException;
+    Connection getConnection();
 
     String quoteIdentifier(String bareIdentifier);
 
