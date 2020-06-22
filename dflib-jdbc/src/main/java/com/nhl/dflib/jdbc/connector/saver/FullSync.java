@@ -27,9 +27,10 @@ public class FullSync extends SaveViaUpsert {
     @Override
     protected Supplier<Series<SaveOp>> doSave(JdbcConnector connector, DataFrame df) {
 
-        new TableDeleter(connector, tableName).neq(df).delete();
+        DataFrame keyDf = keyValues(df);
+        new TableDeleter(connector, tableName).neq(keyDf).delete();
 
         // TODO: how do we report "delete" statuses?
-        return super.doSave(connector, df);
+        return super.doSave(connector, df, keyDf);
     }
 }

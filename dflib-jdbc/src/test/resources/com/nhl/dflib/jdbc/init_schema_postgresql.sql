@@ -57,3 +57,17 @@ CREATE TRIGGER t1_update_trigger
  AFTER UPDATE ON t1
  for each row
   execute procedure update_procedure();
+--
+CREATE OR REPLACE FUNCTION delete_procedure() RETURNS trigger
+AS $$
+begin
+    INSERT INTO t1_audit (op_id, op) values (OLD.id, 'DELETE');
+    return OLD;
+    end;
+$$
+LANGUAGE PLPGSQL
+--
+CREATE TRIGGER t1_delete_trigger
+ AFTER DELETE ON t1
+ for each row
+  execute procedure delete_procedure();

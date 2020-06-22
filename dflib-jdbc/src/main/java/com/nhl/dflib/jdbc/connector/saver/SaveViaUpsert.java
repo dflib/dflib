@@ -34,8 +34,14 @@ public class SaveViaUpsert extends SaveViaInsert {
 
     @Override
     protected Supplier<Series<SaveOp>> doSave(JdbcConnector connector, DataFrame df) {
+        return doSave(connector, df, keyValues(df));
+    }
 
-        DataFrame keyDf = df.selectColumns(Index.forLabels(keyColumns));
+    protected DataFrame keyValues(DataFrame df) {
+        return df.selectColumns(Index.forLabels(keyColumns));
+    }
+
+    protected Supplier<Series<SaveOp>> doSave(JdbcConnector connector, DataFrame df, DataFrame keyDf) {
 
         DataFrame previouslySaved = new TableLoader(connector, tableName)
                 .includeColumns(df.getColumnsIndex().getLabels())

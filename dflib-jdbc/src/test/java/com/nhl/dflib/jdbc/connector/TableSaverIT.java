@@ -166,6 +166,44 @@ public class TableSaverIT extends BaseDbTest {
     }
 
     @Test
+    public void testSave_MergeByColumns_DeleteUnmatchedRows() {
+
+        adapter.getTable("t1").insertColumns("id", "name", "salary")
+                .values(1L, "n1", 50_000.01)
+                .values(2L, "n2", 120_000.)
+                .exec();
+
+        DataFrame df = DataFrame.newFrame("id", "name", "salary").foldByRow(
+                1L, "n1", 50_000.02,
+                3L, "n3", 60_000.01,
+                4L, "n4", 20_000.);
+
+        adapter.getTable("t1_audit").deleteAll();
+
+        JdbcConnector connector = adapter.createConnector();
+        connector
+                .tableSaver("t1")
+                .mergeByColumns("name", "id")
+                .deleteUnmatchedRows()
+                .save(df);
+
+        adapter.getTable("t1_audit").matcher().eq("op", "INSERT").assertMatches(2);
+        adapter.getTable("t1_audit").matcher().eq("op", "UPDATE").assertMatches(1);
+        adapter.getTable("t1_audit").matcher().eq("op", "DELETE").assertMatches(1);
+
+        DataFrame df3 = connector
+                .tableLoader("t1")
+                .load()
+                .sort(0, true);
+
+        new DataFrameAsserts(df3, adapter.getColumnNames("t1"))
+                .expectHeight(3)
+                .expectRow(0, 1L, "n1", 50_000.02)
+                .expectRow(1, 3L, "n3", 60_000.01)
+                .expectRow(2, 4L, "n4", 20_000.);
+    }
+
+    @Test
     public void testSave_SkipUpdatingUnchagedRows() {
 
         adapter.getTable("t1").insertColumns("id", "name", "salary")

@@ -36,3 +36,9 @@ UPDATE ON "t1"
 referencing new as updated
 for each row
 INSERT INTO "t1_audit" ("op_id", "op") values (updated."id", 'UPDATE')
+--
+CREATE TRIGGER "t1_delete_trigger" AFTER
+DELETE ON "t1"
+REFERENCING OLD AS deleted
+for each row
+INSERT INTO "t1_audit" ("op_id", "op") values (deleted."id", 'DELETE')

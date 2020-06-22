@@ -36,3 +36,7 @@ INSERT INTO t1_audit (op_id, op) values (NEW.id, 'INSERT')
 CREATE TRIGGER t1_update_trigger AFTER UPDATE ON t1
 for each row
 INSERT INTO t1_audit (op_id, op) values (NEW.id, 'UPDATE')
+--
+CREATE TRIGGER t1_delete_trigger AFTER DELETE ON t1
+for each row
+INSERT INTO t1_audit (op_id, op) values (OLD.id, 'DELETE')
