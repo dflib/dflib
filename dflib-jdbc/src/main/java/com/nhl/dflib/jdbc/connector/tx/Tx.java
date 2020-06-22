@@ -65,7 +65,9 @@ public class Tx {
                 T result = op.apply(new TxJdbcConnector(connector, connectionWrapper));
                 connection.commit();
                 return result;
-            } catch (SQLException e) {
+            }
+            // catching Exception, not SQLException, to ensure we rollback no matter what happens in the processor
+            catch (Exception e) {
                 connection.rollback();
                 throw new RuntimeException(e);
             }

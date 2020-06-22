@@ -5,8 +5,6 @@ import com.nhl.dflib.jdbc.connector.JdbcConnector;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
 import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperties;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -82,10 +80,6 @@ public class TxIT extends BaseDbTest {
     }
 
     @Test
-    // TODO: issues with Derby rollback leaving a lock around
-    @EnabledIfSystemProperties({
-            @EnabledIfSystemProperty(named = TEST_DB_PROPERTY, matches = "mysql"),
-            @EnabledIfSystemProperty(named = TEST_DB_PROPERTY, matches = "postgresql")})
     public void testRun_Rollback() {
         adapter.delete("t1");
         JdbcConnector connector = adapter.createConnector();
