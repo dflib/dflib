@@ -9,6 +9,27 @@ public class Series_InferredTypeTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
+    public void testEmptys(SeriesType type) {
+        Series<?> s = type.createSeries();
+        assertSame(Object.class, s.getInferredType());
+    }
+
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testAllNulls(SeriesType type) {
+        Series<?> s = type.createSeries(null, null);
+        assertSame(Object.class, s.getInferredType());
+    }
+
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testSomeNulls(SeriesType type) {
+        Series<?> s = type.createSeries(null, 5);
+        assertSame(Integer.class, s.getInferredType());
+    }
+
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
     public void testSameType(SeriesType type) {
         Series<String> s = type.createSeries("a", "b");
         assertSame(String.class, s.getInferredType());

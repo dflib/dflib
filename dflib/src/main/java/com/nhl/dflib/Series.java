@@ -55,7 +55,7 @@ public interface Series<T> extends Iterable<T> {
 
     /**
      * Returns a "nominal" type of elements this Series object. Since most Series do not carry the type around, this
-     * may be Class of type Object in most cases except for primitive Series. Use a more expensive
+     * may be the "Object.class" in all cases except for primitive Series. Use a more expensive
      * {@link #getInferredType()} to check the real type of series values.
      *
      * @return the nominal type of values in the series
