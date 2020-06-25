@@ -31,7 +31,12 @@ public interface DoubleSeries extends Series<Double> {
     }
 
     @Override
-    default Class<Double> getType() {
+    default Class<Double> getNominalType() {
+        return Double.TYPE;
+    }
+
+    @Override
+    default Class<?> getInferredType() {
         return Double.TYPE;
     }
 

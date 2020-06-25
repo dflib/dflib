@@ -10,16 +10,18 @@ import com.nhl.dflib.row.RowProxy;
  *
  * @since 0.6
  */
-public class ByRowSeries<T> extends ObjectSeries<T> {
+public class ByRowSeries extends ObjectSeries<Object> {
 
     private DataFrame source;
     private int width;
     private int height;
     private int size;
 
-    private Series<T> materialized;
+    private Series<Object> materialized;
 
     public ByRowSeries(DataFrame source) {
+        // since we are concatenating multiple columns, the common type is Object.class
+        super(Object.class);
         this.source = source;
 
         this.width = source.width();
@@ -33,14 +35,14 @@ public class ByRowSeries<T> extends ObjectSeries<T> {
     }
 
     @Override
-    public T get(int index) {
+    public Object get(int index) {
 
         // make a copy of "source" to avoid race conditions
         DataFrame source = this.source;
         if (source != null) {
             int row = index / width;
             int column = index % width;
-            return (T) source.getColumn(column).get(row);
+            return source.getColumn(column).get(row);
         }
 
         return materialize().get(index);
@@ -52,7 +54,7 @@ public class ByRowSeries<T> extends ObjectSeries<T> {
     }
 
     @Override
-    public Series<T> materialize() {
+    public Series<Object> materialize() {
         if (materialized == null) {
             synchronized (this) {
                 if (materialized == null) {
@@ -64,7 +66,7 @@ public class ByRowSeries<T> extends ObjectSeries<T> {
         return materialized;
     }
 
-    protected Series<T> doMaterialize() {
+    protected Series<Object> doMaterialize() {
         ObjectAccumulator data = new ObjectAccumulator(size);
 
         for (RowProxy r : source) {
@@ -80,22 +82,22 @@ public class ByRowSeries<T> extends ObjectSeries<T> {
     }
 
     @Override
-    public Series<T> fillNulls(T value) {
+    public Series<Object> fillNulls(Object value) {
         return materialize().fillNulls(value);
     }
 
     @Override
-    public Series<T> fillNullsFromSeries(Series<? extends T> values) {
+    public Series<Object> fillNullsFromSeries(Series<? extends Object> values) {
         return materialize().fillNullsFromSeries(values);
     }
 
     @Override
-    public Series<T> fillNullsBackwards() {
+    public Series<Object> fillNullsBackwards() {
         return materialize().fillNullsBackwards();
     }
 
     @Override
-    public Series<T> fillNullsForward() {
+    public Series<Object> fillNullsForward() {
         return materialize().fillNullsForward();
     }
 }

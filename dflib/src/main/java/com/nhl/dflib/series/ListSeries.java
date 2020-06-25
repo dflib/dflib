@@ -10,6 +10,7 @@ public class ListSeries<T> extends ObjectSeries<T> {
     private List<T> data;
 
     public ListSeries(List<T> data) {
+        super(Object.class);
         this.data = data;
     }
 

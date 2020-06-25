@@ -32,7 +32,12 @@ public interface IntSeries extends Series<Integer> {
     }
 
     @Override
-    default Class<Integer> getType() {
+    default Class<Integer> getNominalType() {
+        return Integer.TYPE;
+    }
+
+    @Override
+    default Class<?> getInferredType() {
         return Integer.TYPE;
     }
 

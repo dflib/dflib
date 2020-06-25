@@ -26,8 +26,60 @@ import java.util.Set;
 
 public abstract class ObjectSeries<T> implements Series<T> {
 
+    protected Class<?> nominalType;
+    protected Class<?> inferredType;
+
+    protected ObjectSeries(Class<?> nominalType) {
+        this.nominalType = Objects.requireNonNull(nominalType);
+    }
+
     @Override
-    public Class<?> getType() {
+    public Class<?> getNominalType() {
+        return nominalType;
+    }
+
+    @Override
+    public Class<?> getInferredType() {
+        return inferredType != null ? inferredType : (inferredType = inferType());
+    }
+
+    protected Class<?> inferType() {
+
+        // Check value types and use the most specific common superclass...
+        Class<?> type = null;
+        Class<?> terminal = Object.class;
+        int size = size();
+
+        for (int i = 0; i < size && type != terminal; i++) {
+            Object v = get(i);
+            if (v != null) {
+                type = type != null
+                        ? findMostSpecificCommonSuperclass(type, v.getClass())
+                        : v.getClass();
+            }
+        }
+
+        return type != null ? type : Object.class;
+    }
+
+    private Class<?> findMostSpecificCommonSuperclass(Class<?> t1, Class<?> t2) {
+
+        if (t1 == t2) {
+            return t1;
+        }
+
+        // randomly assume t1 is more likely to be higher in the hierarchy
+        // (so the caller should pass assumed superclass as the first arg to take advantage of this)
+        if (t1.isAssignableFrom(t2)) {
+            return t1;
+        }
+
+        while((t1 = t1.getSuperclass()) != null) {
+            if (t1.isAssignableFrom(t2)) {
+                return t1;
+            }
+        }
+
         return Object.class;
     }
 

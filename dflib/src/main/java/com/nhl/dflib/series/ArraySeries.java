@@ -9,6 +9,7 @@ public class ArraySeries<T> extends ObjectSeries<T> {
     private T[] data;
 
     public ArraySeries(T... data) {
+        super(Object.class);
         this.data = data;
     }
 

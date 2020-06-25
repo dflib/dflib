@@ -39,7 +39,12 @@ public interface BooleanSeries extends Series<Boolean> {
 
 
     @Override
-    default Class<Boolean> getType() {
+    default Class<Boolean> getNominalType() {
+        return Boolean.TYPE;
+    }
+
+    @Override
+    default Class<?> getInferredType() {
         return Boolean.TYPE;
     }
 

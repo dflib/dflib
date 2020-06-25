@@ -46,12 +46,32 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
-     * @return the type of values in the series.
+     * @deprecated since 0.8 in favor of {@link #getNominalType()}.
+     */
+    @Deprecated
+    default Class<?> getType() {
+        return getNominalType();
+    }
+
+    /**
+     * Returns a "nominal" type of elements this Series object. Since most Series do not carry the type around, this
+     * may be Class of type Object in most cases except for primitive Series. Use a more expensive
+     * {@link #getInferredType()} to check the real type of series values.
+     *
+     * @return the nominal type of values in the series
      * @since 0.6
      */
-    // TODO: change type from ? to a specific T, but estimate the impact of carrying an explicit type around with every
-    //  series object that is a subclass of ObjectSeries
-    Class<?> getType();
+    Class<?> getNominalType();
+
+    /**
+     * Returns the most specific common superclass of the values in this Series object. If all values are null, returns
+     * Object.class. First invocation of this method may be quite slow in many cases, as it entails a full scan of the
+     * Series values.
+     *
+     * @return the most specific common superclass of the values in this Series object.
+     * @since 0.8
+     */
+    Class<?> getInferredType();
 
     int size();
 

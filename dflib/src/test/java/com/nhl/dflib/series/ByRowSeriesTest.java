@@ -14,7 +14,7 @@ public class ByRowSeriesTest {
                 "a1", "b1",
                 "a2", "b2");
 
-        ByRowSeries<String> s = new ByRowSeries<>(df);
+        ByRowSeries s = new ByRowSeries(df);
         new SeriesAsserts(s).expectData("a1", "b1", "a2", "b2");
     }
 
@@ -24,7 +24,7 @@ public class ByRowSeriesTest {
                 "a1", "b1",
                 "a2", "b2");
 
-        ByRowSeries<String> s = new ByRowSeries<>(df);
+        ByRowSeries s = new ByRowSeries(df);
         assertEquals("a1", s.get(0));
         assertEquals("b1", s.get(1));
         assertEquals("a2", s.get(2));

@@ -12,6 +12,7 @@ public class RowMappedSeries<T> extends ObjectSeries<T> {
     private Series<T> materialized;
 
     public RowMappedSeries(DataFrame source, RowToValueMapper<T> mapper) {
+        super(Object.class);
         this.source = source;
         this.mapper = mapper;
     }

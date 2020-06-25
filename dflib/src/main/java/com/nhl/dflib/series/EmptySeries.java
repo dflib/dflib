@@ -8,6 +8,14 @@ import java.util.Comparator;
 
 public class EmptySeries<T> extends ObjectSeries<T> {
 
+    public EmptySeries() {
+        this(Object.class);
+    }
+
+    public EmptySeries(Class<?> nominalType) {
+        super(nominalType);
+    }
+
     @Override
     public int size() {
         return 0;

@@ -76,7 +76,7 @@ public class DataFrameTabularPrintWorker extends BasePrintWorker {
         // constrain column width and calculate formatters
         for (int i = 0; i < w; i++) {
             columnWidth[i] = Math.min(columnWidth[i], maxDisplayColumnWidth);
-            columnFormat[i] = columnFormat(columnWidth[i], df.getColumn(i).getType());
+            columnFormat[i] = columnFormat(columnWidth[i], df.getColumn(i).getInferredType());
         }
 
         // print header

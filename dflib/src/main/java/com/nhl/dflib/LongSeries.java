@@ -31,7 +31,12 @@ public interface LongSeries extends Series<Long> {
     }
 
     @Override
-    default Class<Long> getType() {
+    default Class<Long> getNominalType() {
+        return Long.TYPE;
+    }
+
+    @Override
+    default Class<?> getInferredType() {
         return Long.TYPE;
     }
 

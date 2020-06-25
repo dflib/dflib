@@ -52,7 +52,7 @@ public class SeriesTabularPrintWorker extends BasePrintWorker {
 
         // constrain column width
         columnWidth = Math.min(columnWidth, maxDisplayColumnWidth);
-        columnFormat = columnFormat(columnWidth, s.getType());
+        columnFormat = columnFormat(columnWidth, s.getInferredType());
 
         // since tabular printer is multiline, start with a line break to ensure logger-induced prefixes don't break
         // table alignment

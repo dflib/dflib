@@ -16,6 +16,7 @@ public class IndexedSeries<T> extends ObjectSeries<T> {
     private Series<T> materialized;
 
     public IndexedSeries(Series<T> source, IntSeries includePositions) {
+        super(source.getNominalType());
         this.source = Objects.requireNonNull(source);
         this.includePositions = Objects.requireNonNull(includePositions);
     }

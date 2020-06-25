@@ -10,6 +10,7 @@ public class ColumnMappedSeries<S, T> extends ObjectSeries<T> {
     private Series<T> materialized;
 
     public ColumnMappedSeries(Series<S> source, ValueMapper<S, T> mapper) {
+        super(Object.class);
         this.source = source;
         this.mapper = mapper;
     }

@@ -10,12 +10,12 @@ public class RangeSeries<T> extends ObjectSeries<T> {
     private int size;
 
     public RangeSeries(Series<T> delegate, int from, int size) {
+        super(delegate.getNominalType());
         this.delegate = delegate;
         this.from = from;
         this.size = size;
         Range.checkRange(from, size, delegate.size());
     }
-
 
     @Override
     public int size() {

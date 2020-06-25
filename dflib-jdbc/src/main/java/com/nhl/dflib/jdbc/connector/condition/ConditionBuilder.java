@@ -72,7 +72,7 @@ public class ConditionBuilder {
             case 1:
                 return condition.getColumn(0);
             default:
-                return new ByRowSeries<>(condition);
+                return new ByRowSeries(condition);
         }
     }
 
