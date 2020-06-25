@@ -18,7 +18,7 @@
 * #107 TableSaver.deleteUnmatchedRows - full sync mode 
 * #108 TableDeleter
 * #109 JdbcConnector: Support for custom data converters
-* #110 Support inferring Series type
+* #110 Inferring Series type from data
 
 ## Release 0.7
 
