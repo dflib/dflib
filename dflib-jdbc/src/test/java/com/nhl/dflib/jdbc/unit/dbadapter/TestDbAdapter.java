@@ -15,7 +15,7 @@ public interface TestDbAdapter {
 
     DbTester getDb();
 
-    String toNativeSql(String derbySql);
+    String toNativeSql(String derbySql, String... params);
 
     default JdbcConnector createConnector() {
         return Jdbc.connector(getDb().getDataSource());

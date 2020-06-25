@@ -17,6 +17,7 @@
 * #106 TableLoader.neq condition
 * #107 TableSaver.deleteUnmatchedRows - full sync mode 
 * #108 TableDeleter
+* #109 JdbcConnector: Support for custom data converters
 
 ## Release 0.7
 

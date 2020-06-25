@@ -16,7 +16,7 @@ public class GenericTestAdapter implements TestDbAdapter {
     }
 
     @Override
-    public String toNativeSql(String command) {
-        return command;
+    public String toNativeSql(String derbySql, String... params) {
+        return String.format(derbySql, params);
     }
 }

@@ -15,9 +15,6 @@ import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * An abstraction on top of JDBC DataSource that smoothens a variety of cross-DB portability issues.
- */
 public class DefaultJdbcConnector implements JdbcConnector {
 
     private DataSource dataSource;
@@ -25,35 +22,35 @@ public class DefaultJdbcConnector implements JdbcConnector {
     private IdentifierQuoter quoter;
 
     private ColumnBuilderFactory defaultColumnBuilderFactory;
-    private Map<Integer, ColumnBuilderFactory> mandatorySeriesBuilderFactories;
-    private Map<Integer, ColumnBuilderFactory> seriesBuilderFactories;
+    private Map<Integer, ColumnBuilderFactory> primitiveColumnBuilderFactories;
+    private Map<Integer, ColumnBuilderFactory> columnBuilderFactories;
 
     private ValueConverterFactory preBindConverterFactory;
     private SqlLogger sqlLogger;
 
-    public DefaultJdbcConnector(DataSource dataSource, DbMetadata metadata) {
+    public DefaultJdbcConnector(
+            DataSource dataSource,
+            DbMetadata metadata,
+            Map<Integer, ColumnBuilderFactory> columnBuilderFactories) {
+
         this.dataSource = dataSource;
         this.metadata = metadata;
 
         this.defaultColumnBuilderFactory = ColumnBuilderFactory::objectAccum;
 
         // use primitive converters if the column has no nulls
-        this.mandatorySeriesBuilderFactories = new HashMap<>();
-        this.mandatorySeriesBuilderFactories.put(Types.BOOLEAN, ColumnBuilderFactory::booleanAccum);
-        this.mandatorySeriesBuilderFactories.put(Types.INTEGER, ColumnBuilderFactory::intAccum);
-        this.mandatorySeriesBuilderFactories.put(Types.DOUBLE, ColumnBuilderFactory::doubleAccum);
-        this.mandatorySeriesBuilderFactories.put(Types.FLOAT, ColumnBuilderFactory::doubleAccum);
-        this.mandatorySeriesBuilderFactories.put(Types.BIGINT, ColumnBuilderFactory::longAccum);
+        this.primitiveColumnBuilderFactories = new HashMap<>();
+        this.primitiveColumnBuilderFactories.put(Types.BOOLEAN, ColumnBuilderFactory::booleanAccum);
+        this.primitiveColumnBuilderFactories.put(Types.INTEGER, ColumnBuilderFactory::intAccum);
+        this.primitiveColumnBuilderFactories.put(Types.DOUBLE, ColumnBuilderFactory::doubleAccum);
+        this.primitiveColumnBuilderFactories.put(Types.FLOAT, ColumnBuilderFactory::doubleAccum);
+        this.primitiveColumnBuilderFactories.put(Types.BIGINT, ColumnBuilderFactory::longAccum);
         //mysql return bit with code -7 instead boolean -16 type
-        this.mandatorySeriesBuilderFactories.put(Types.BIT, ColumnBuilderFactory::booleanAccum);
+        this.primitiveColumnBuilderFactories.put(Types.BIT, ColumnBuilderFactory::booleanAccum);
 
         // Types.DECIMAL should presumably be mapped to BigDecimal, so not attempting to map to a primitive double
 
-        this.seriesBuilderFactories = new HashMap<>();
-        this.seriesBuilderFactories.put(Types.DATE, ColumnBuilderFactory::dateAccum);
-        this.seriesBuilderFactories.put(Types.TIME, ColumnBuilderFactory::timeAccum);
-        this.seriesBuilderFactories.put(Types.TIMESTAMP, ColumnBuilderFactory::timestampAccum);
-
+        this.columnBuilderFactories = columnBuilderFactories;
         this.preBindConverterFactory = createPreBindConverterFactory();
 
         this.quoter = createQuoter();
@@ -142,11 +139,11 @@ public class DefaultJdbcConnector implements JdbcConnector {
 
         // try to use primitive converters if the column has no nulls
         if (mandatory) {
-            sbf = mandatorySeriesBuilderFactories.get(type);
+            sbf = primitiveColumnBuilderFactories.get(type);
         }
 
         if (sbf == null) {
-            sbf = seriesBuilderFactories.getOrDefault(type, defaultColumnBuilderFactory);
+            sbf = columnBuilderFactories.getOrDefault(type, defaultColumnBuilderFactory);
         }
 
         return sbf.createAccum(pos);

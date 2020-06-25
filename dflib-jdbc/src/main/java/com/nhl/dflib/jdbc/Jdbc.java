@@ -1,9 +1,7 @@
 package com.nhl.dflib.jdbc;
 
-import com.nhl.dflib.jdbc.connector.DefaultJdbcConnector;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
 import com.nhl.dflib.jdbc.connector.JdbcConnectorBuilder;
-import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
 
 import javax.sql.DataSource;
 
@@ -13,11 +11,19 @@ import javax.sql.DataSource;
  */
 public class Jdbc {
 
+    /**
+     * @return a new JdbcConnectorBuilder
+     * @since 0.8
+     */
+    public static JdbcConnectorBuilder connector() {
+        return new JdbcConnectorBuilder();
+    }
+
     public static JdbcConnectorBuilder connector(String dbUrl) {
-        return new JdbcConnectorBuilder(dbUrl);
+        return new JdbcConnectorBuilder().url(dbUrl);
     }
 
     public static JdbcConnector connector(DataSource ds) {
-        return new DefaultJdbcConnector(ds, DbMetadata.create(ds));
+        return connector().dataSource(ds).build();
     }
 }

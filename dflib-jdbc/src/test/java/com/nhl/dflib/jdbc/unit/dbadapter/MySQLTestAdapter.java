@@ -18,12 +18,14 @@ public class MySQLTestAdapter implements TestDbAdapter {
     }
 
     @Override
-    public String toNativeSql(String command) {
-        if (command.contains("SUBSTR")) {
-            return command
+    public String toNativeSql(String derbySql, String... params) {
+
+        String withParams = String.format(derbySql, params);
+        if (withParams.contains("SUBSTR")) {
+            return withParams
                     .replaceAll("\"", QUOTE)
                     .replaceAll("SUBSTR", "SUBSTRING");
         }
-        return command.replaceAll("\"", QUOTE);
+        return withParams.replaceAll("\"", QUOTE);
     }
 }

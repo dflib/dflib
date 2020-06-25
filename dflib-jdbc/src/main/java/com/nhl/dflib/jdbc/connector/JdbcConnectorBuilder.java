@@ -1,10 +1,15 @@
 package com.nhl.dflib.jdbc.connector;
 
-import com.nhl.dflib.jdbc.Jdbc;
+import com.nhl.dflib.jdbc.connector.loader.ColumnBuilderFactory;
+import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
 import com.nhl.dflib.jdbc.datasource.SimpleDataSource;
 
 import javax.sql.DataSource;
 import java.sql.Driver;
+import java.sql.Types;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class JdbcConnectorBuilder {
 
@@ -12,31 +17,82 @@ public class JdbcConnectorBuilder {
     private String password;
     private String driver;
     private String url;
+    private DataSource dataSource;
+    private Map<Integer, ColumnBuilderFactory> columnBuilderFactories;
 
-    public JdbcConnectorBuilder(String url) {
+    public JdbcConnectorBuilder url(String url) {
         this.url = url;
+        return this;
     }
 
     public JdbcConnectorBuilder userName(String userName) {
+        this.dataSource = null;
         this.userName = userName;
         return this;
     }
 
     public JdbcConnectorBuilder password(String password) {
+        this.dataSource = null;
         this.password = password;
         return this;
     }
 
     public JdbcConnectorBuilder driver(String driverClassName) {
+        this.dataSource = null;
         this.driver = driverClassName;
         return this;
     }
 
-    public JdbcConnector build() {
-        return Jdbc.connector(buildDataSource());
+    /**
+     * @since 0.8
+     */
+    public JdbcConnectorBuilder dataSource(DataSource dataSource) {
+        this.dataSource = Objects.requireNonNull(dataSource);
+        this.userName = null;
+        this.password = null;
+        this.driver = null;
+        this.url = null;
+        return this;
     }
 
-    private DataSource buildDataSource() {
+    /**
+     * Adds a custom {@link ColumnBuilderFactory} to handle reading data columns of a given JDBC type.
+     *
+     * @param columnJdbcType a type of column defined in {@link Types}.
+     * @param factory        a factory for column builders that should be associated with the provided type
+     * @see ColumnBuilderFactory for a collection of commonly-used factories.
+     * @since 0.8
+     */
+    public JdbcConnectorBuilder addColumnBuilderFactory(int columnJdbcType, ColumnBuilderFactory<?> factory) {
+        if (this.columnBuilderFactories == null) {
+            this.columnBuilderFactories = new HashMap<>();
+        }
+
+        this.columnBuilderFactories.put(columnJdbcType, factory);
+        return this;
+    }
+
+    public JdbcConnector build() {
+        DataSource dataSource = this.dataSource != null ? this.dataSource : createDataSource();
+        return new DefaultJdbcConnector(dataSource, DbMetadata.create(dataSource), createColumnBuilderFactories());
+    }
+
+    private Map<Integer, ColumnBuilderFactory> createColumnBuilderFactories() {
+        // add standard factories unless already defined by the user
+        Map<Integer, ColumnBuilderFactory> factories = new HashMap<>();
+
+        factories.put(Types.DATE, ColumnBuilderFactory::dateAccum);
+        factories.put(Types.TIME, ColumnBuilderFactory::timeAccum);
+        factories.put(Types.TIMESTAMP, ColumnBuilderFactory::timestampAccum);
+
+        if (this.columnBuilderFactories != null) {
+            factories.putAll(columnBuilderFactories);
+        }
+
+        return factories;
+    }
+
+    private DataSource createDataSource() {
         Driver driver = createDriver();
         return new SimpleDataSource(url, userName, password, driver);
     }

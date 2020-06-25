@@ -10,6 +10,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 
 /**
+ * An abstraction on top of JDBC DataSource that smoothens a variety of cross-DB portability issues. All DB-aware
+ * operations in DFLib use JdbcConnector for access.
+ *
  * @since 0.6
  */
 public interface JdbcConnector {
