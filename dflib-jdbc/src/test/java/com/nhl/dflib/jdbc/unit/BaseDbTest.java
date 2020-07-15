@@ -5,7 +5,8 @@ import com.nhl.dflib.jdbc.unit.dbadapter.MySQLTestAdapter;
 import com.nhl.dflib.jdbc.unit.dbadapter.TestDbAdapter;
 import io.bootique.jdbc.junit5.DbTester;
 import io.bootique.junit5.BQTest;
-import org.junit.jupiter.api.extension.RegisterExtension;
+import io.bootique.junit5.BQTestScope;
+import io.bootique.junit5.BQTestTool;
 
 @BQTest
 public abstract class BaseDbTest {
@@ -31,6 +32,10 @@ public abstract class BaseDbTest {
         }
     }
 
+    private static String dbType() {
+        return System.getProperty(TEST_DB_PROPERTY, "derby");
+    }
+
     private static TestDbAdapter createDbAdapter(String dbType, DbTester db) {
         switch (dbType) {
             case "mysql":
@@ -40,10 +45,9 @@ public abstract class BaseDbTest {
         }
     }
 
-    @RegisterExtension
-    protected static final DbTester db =
-            createDbTester(System.getProperty(TEST_DB_PROPERTY, "derby"))
-                    .deleteBeforeEachTest("t1", "t2", "t3", "t1_audit");
+    @BQTestTool(BQTestScope.GLOBAL)
+    protected static final DbTester db = createDbTester(dbType())
+            .deleteBeforeEachTest("t1", "t2", "t3", "t1_audit");
 
-    protected static TestDbAdapter adapter = createDbAdapter(System.getProperty(TEST_DB_PROPERTY, "derby"), db);
+    protected static final TestDbAdapter adapter = createDbAdapter(dbType(), db);
 }
