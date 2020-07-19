@@ -153,6 +153,8 @@
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
+                <!-- TODO: upgrading this to MySQL 8 causes test failures due to forced TZ offset on -->
+                <!-- reading timestamps (writes seem to work fine) -->
                 <version>5.1.48</version>
             </dependency>
             <dependency>
