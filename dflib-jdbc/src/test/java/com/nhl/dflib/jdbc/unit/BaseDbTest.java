@@ -4,6 +4,8 @@ import com.nhl.dflib.jdbc.unit.dbadapter.GenericTestAdapter;
 import com.nhl.dflib.jdbc.unit.dbadapter.MySQLTestAdapter;
 import com.nhl.dflib.jdbc.unit.dbadapter.TestDbAdapter;
 import io.bootique.jdbc.junit5.DbTester;
+import io.bootique.jdbc.junit5.derby.DerbyTester;
+import io.bootique.jdbc.junit5.tc.TcTester;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestScope;
 import io.bootique.junit5.BQTestTool;
@@ -16,16 +18,16 @@ public abstract class BaseDbTest {
     private static DbTester createDbTester(String dbType) {
         switch (dbType) {
             case "mysql":
-                return DbTester
-                        .testcontainersDb("jdbc:tc:mysql:5.7://localhost/test?generateSimpleParameterMetadata=true")
+                return TcTester
+                        .db("jdbc:tc:mysql:5.7://localhost/test?generateSimpleParameterMetadata=true")
                         .initDB("classpath:com/nhl/dflib/jdbc/init_schema_mysql.sql", "--");
             case "postgresql":
-                return DbTester
-                        .testcontainersDb("jdbc:tc:postgresql:11://localhost/test")
+                return TcTester
+                        .db("jdbc:tc:postgresql:11://localhost/test")
                         .initDB("classpath:com/nhl/dflib/jdbc/init_schema_postgresql.sql", "--");
             case "derby":
-                return DbTester
-                        .derbyDb()
+                return DerbyTester
+                        .db()
                         .initDB("classpath:com/nhl/dflib/jdbc/init_schema_derby.sql", "--");
             default:
                 throw new IllegalArgumentException("Unsupported DB type: " + dbType);

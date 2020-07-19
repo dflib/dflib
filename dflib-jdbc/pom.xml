@@ -47,7 +47,12 @@
         </dependency>
         <dependency>
             <groupId>io.bootique.jdbc</groupId>
-            <artifactId>bootique-jdbc-junit5</artifactId>
+            <artifactId>bootique-jdbc-junit5-derby</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.bootique.jdbc</groupId>
+            <artifactId>bootique-jdbc-junit5-testcontainers</artifactId>
             <scope>test</scope>
         </dependency>
         <!-- Adding Vintage JUnit 5 for Testcontainers sake-->
