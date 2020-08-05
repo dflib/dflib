@@ -2,7 +2,7 @@ package com.nhl.dflib.jdbc.unit;
 
 import io.bootique.jdbc.junit5.DbTester;
 import io.bootique.jdbc.junit5.derby.DerbyTester;
-import io.bootique.jdbc.junit5.tc.TcTester;
+import io.bootique.jdbc.junit5.tc.TcDbTester;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.MySQLContainer;
 
@@ -40,12 +40,12 @@ public class JdbcContainerTool {
     public DbTester createDbTester() {
         switch (dbType) {
             case "mysql":
-                return TcTester
+                return TcDbTester
                         // password is the same for "root", as the one for non-root user above
                         .db(maybeContainer, "root", MYSQL_PASSWORD)
                         .initDB("classpath:com/nhl/dflib/jdbc/init_schema_mysql.sql", "--");
             case "postgresql":
-                return TcTester
+                return TcDbTester
                         .db("jdbc:tc:postgresql:11://localhost/test")
                         .initDB("classpath:com/nhl/dflib/jdbc/init_schema_postgresql.sql", "--");
             case "derby":
