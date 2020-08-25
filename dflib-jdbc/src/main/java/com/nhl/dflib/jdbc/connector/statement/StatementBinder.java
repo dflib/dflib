@@ -7,9 +7,9 @@ import java.sql.SQLException;
 
 public class StatementBinder {
 
-    private StatementPosition[] positions;
+    private ColumnBinder[] positions;
 
-    public StatementBinder(StatementPosition[] positions) {
+    public StatementBinder(ColumnBinder[] positions) {
         this.positions = positions;
     }
 

@@ -3,14 +3,14 @@ package com.nhl.dflib.jdbc.connector.statement;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class StatementPosition {
+public class DefaultColumnBinder implements ColumnBinder {
 
     private PreparedStatement statement;
     private int type;
     private int position;
     private ValueConverter valueConverter;
 
-    public StatementPosition(
+    public DefaultColumnBinder(
             PreparedStatement statement,
             int position,
             int type,
@@ -27,8 +27,6 @@ public class StatementPosition {
 
         if (boundable == null) {
             statement.setNull(position, type);
-        } else if (boundable instanceof byte[]) {
-            statement.setBytes(position, (byte[]) boundable);
         } else {
             statement.setObject(position, boundable, type);
         }

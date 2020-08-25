@@ -24,15 +24,22 @@ public class CompiledFromStatementBinderFactory implements StatementBinderFactor
 
         ParameterMetaData pmd = statement.getParameterMetaData();
         int len = pmd.getParameterCount();
-        StatementPosition[] positions = new StatementPosition[len];
+        ColumnBinder[] columnBinders = new ColumnBinder[len];
 
         for (int i = 0; i < len; i++) {
+
             int jdbcPos = i + 1;
-            int jdbcType = flavor.columnType(pmd.getParameterType(jdbcPos), pmd.getParameterTypeName(jdbcPos));
-            ValueConverter converter = converterFactory.findConverter(jdbcType);
-            positions[i] = new StatementPosition(statement, jdbcPos, jdbcType, converter);
+
+            if (flavor.supportsParamsMetadata()) {
+                int jdbcType = flavor.columnType(pmd.getParameterType(jdbcPos), pmd.getParameterTypeName(jdbcPos));
+                ValueConverter converter = converterFactory.findConverter(jdbcType);
+                columnBinders[i] = new DefaultColumnBinder(statement, jdbcPos, jdbcType, converter);
+            } else {
+                // this is an iffy strategy, though seems to match MySQL expectations specifically
+                columnBinders[i] = new ByJavaTypeColumnBinder(statement, jdbcPos);
+            }
         }
 
-        return new StatementBinder(positions);
+        return new StatementBinder(columnBinders);
     }
 }

@@ -18,9 +18,7 @@ public class JdbcContainerTool {
 
             // MySQL is special ... We need a "root" user to setup schema, and that requires an explicit container object
             case "mysql":
-                JdbcDatabaseContainer container = new MySQLContainer("mysql:8.0.20")
-                        .withPassword(MYSQL_PASSWORD)
-                        .withUrlParam("generateSimpleParameterMetadata", "true");
+                JdbcDatabaseContainer container = new MySQLContainer("mysql:8.0.20").withPassword(MYSQL_PASSWORD);
 
                 // we are working in a GLOBAL scope, so just start the DB as early as we can, and don't worry about
                 // shutdown...
