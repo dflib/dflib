@@ -1,7 +1,7 @@
 package com.nhl.dflib.jdbc.connector.statement;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.Calendar;
 
 public class DefaultColumnBinder implements ColumnBinder {
 
@@ -27,6 +27,12 @@ public class DefaultColumnBinder implements ColumnBinder {
 
         if (boundable == null) {
             statement.setNull(position, type);
+        } else if (boundable instanceof byte[]) {
+            statement.setBytes(position, (byte[]) boundable);
+        } else if (boundable instanceof Timestamp && type == Types.TIMESTAMP) {
+            statement.setTimestamp(position, (Timestamp) boundable, Calendar.getInstance());
+        } else if (boundable instanceof Time && type == Types.TIME) {
+            statement.setTime(position, (Time) boundable, Calendar.getInstance());
         } else {
             statement.setObject(position, boundable, type);
         }

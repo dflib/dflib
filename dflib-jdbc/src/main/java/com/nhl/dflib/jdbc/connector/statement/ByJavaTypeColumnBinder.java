@@ -34,9 +34,15 @@ public class ByJavaTypeColumnBinder implements ColumnBinder {
             statement.setNull(position, FAKE_JDBC_TYPE);
         } else if (boundable instanceof byte[]) {
             statement.setBytes(position, (byte[]) boundable);
-        } else if (boundable instanceof Timestamp) {
+        }
+        // MySQL 8 requires a Calendar instance to save local time without undesired TZ conversion.
+        // Other DBs work fine with or without the calendar
+        else if (boundable instanceof Timestamp) {
             statement.setTimestamp(position, (Timestamp) boundable, Calendar.getInstance());
-        } else if (boundable instanceof Time) {
+        }
+        // MySQL 8 requires a Calendar instance to save local time without undesired TZ conversion.
+        // Other DBs work fine with or without the calendar
+        else if (boundable instanceof Time) {
             statement.setTime(position, (Time) boundable, Calendar.getInstance());
         } else {
             statement.setObject(position, boundable, FAKE_JDBC_TYPE);

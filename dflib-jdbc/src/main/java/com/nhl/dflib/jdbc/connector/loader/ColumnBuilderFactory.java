@@ -1,30 +1,14 @@
 package com.nhl.dflib.jdbc.connector.loader;
 
-import com.nhl.dflib.BooleanValueMapper;
-import com.nhl.dflib.DoubleValueMapper;
-import com.nhl.dflib.IntValueMapper;
-import com.nhl.dflib.LongValueMapper;
-import com.nhl.dflib.ValueMapper;
+import com.nhl.dflib.*;
+import com.nhl.dflib.accumulator.*;
 import com.nhl.dflib.jdbc.connector.JdbcFunction;
-import com.nhl.dflib.accumulator.BooleanAccumulator;
-import com.nhl.dflib.accumulator.BooleanConverter;
-import com.nhl.dflib.accumulator.DoubleAccumulator;
-import com.nhl.dflib.accumulator.DoubleConverter;
-import com.nhl.dflib.accumulator.IntAccumulator;
-import com.nhl.dflib.accumulator.IntConverter;
-import com.nhl.dflib.accumulator.LongAccumulator;
-import com.nhl.dflib.accumulator.LongConverter;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
-import com.nhl.dflib.accumulator.ObjectConverter;
 
-import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Calendar;
 
 /**
  * @param <T>
@@ -94,14 +78,14 @@ public interface ColumnBuilderFactory<T> {
 
     static ColumnBuilder<LocalTime> timeAccum(int pos) {
         return fromJdbcFunction(rs -> {
-            Time time = rs.getTime(pos);
+            Time time = rs.getTime(pos, Calendar.getInstance());
             return time != null ? time.toLocalTime() : null;
         });
     }
 
     static ColumnBuilder<LocalDateTime> timestampAccum(int pos) {
         return fromJdbcFunction(rs -> {
-            Timestamp timestamp = rs.getTimestamp(pos);
+            Timestamp timestamp = rs.getTimestamp(pos, Calendar.getInstance());
             return timestamp != null ? timestamp.toLocalDateTime() : null;
         });
     }

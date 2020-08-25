@@ -2,6 +2,7 @@ package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.jdbc.Jdbc;
+import com.nhl.dflib.jdbc.connector.loader.ColumnBuilder;
 import com.nhl.dflib.jdbc.connector.loader.ColumnBuilderFactory;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
 import com.nhl.dflib.unit.DataFrameAsserts;
@@ -12,6 +13,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Calendar;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -79,16 +81,16 @@ public class JdbcConnectorBuilder_IT extends BaseDbTest {
 
         DataFrame customTypes = Jdbc.connector()
                 .dataSource(adapter.getDb().getDataSource())
-                .addColumnBuilderFactory(Types.DATE, ColumnBuilderFactory::objectAccum)
-                .addColumnBuilderFactory(Types.TIME, ColumnBuilderFactory::objectAccum)
-                .addColumnBuilderFactory(Types.TIMESTAMP, ColumnBuilderFactory::objectAccum)
+                .addColumnBuilderFactory(Types.DATE, JdbcConnectorBuilder_IT::dateAccum)
+                .addColumnBuilderFactory(Types.TIME, JdbcConnectorBuilder_IT::timeAccum)
+                .addColumnBuilderFactory(Types.TIMESTAMP, JdbcConnectorBuilder_IT::timestampAccum)
                 .build()
                 .tableLoader(table)
                 .load();
 
         new DataFrameAsserts(customTypes, "id", "d", "t", "ts")
                 .expectHeight(1)
-                .expectRow(0, 1L, Date.valueOf(d), Time.valueOf(t), Timestamp.valueOf(ts));
+                .expectRow(0, 1L, d.toString(), t.toString(), ts.toString());
 
         DataFrame standardTypes = Jdbc.connector()
                 .dataSource(adapter.getDb().getDataSource())
@@ -101,5 +103,25 @@ public class JdbcConnectorBuilder_IT extends BaseDbTest {
                 .expectRow(0, 1L, d, t, ts);
     }
 
+    static ColumnBuilder<String> dateAccum(int pos) {
+        return ColumnBuilderFactory.fromJdbcFunction(rs -> {
+            Date date = rs.getDate(pos);
+            return date != null ? date.toLocalDate().toString() : null;
+        });
+    }
+
+    static ColumnBuilder<String> timeAccum(int pos) {
+        return ColumnBuilderFactory.fromJdbcFunction(rs -> {
+            Time time = rs.getTime(pos, Calendar.getInstance());
+            return time != null ? time.toLocalTime().toString() : null;
+        });
+    }
+
+    static ColumnBuilder<String> timestampAccum(int pos) {
+        return ColumnBuilderFactory.fromJdbcFunction(rs -> {
+            Timestamp timestamp = rs.getTimestamp(pos, Calendar.getInstance());
+            return timestamp != null ? timestamp.toLocalDateTime().toString() : null;
+        });
+    }
 
 }

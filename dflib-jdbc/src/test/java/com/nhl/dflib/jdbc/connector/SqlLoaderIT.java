@@ -14,7 +14,6 @@ public class SqlLoaderIT extends BaseDbTest {
     @Test
     public void test() {
 
-
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.)
@@ -58,7 +57,6 @@ public class SqlLoaderIT extends BaseDbTest {
     @Test
     public void testEmpty() {
 
-
         adapter.getTable("t1").insert(1L, "n1", 50_000.01);
 
         String sql = adapter.toNativeSql("SELECT \"id\", \"salary\" from \"t1\" WHERE \"id\" > 1");
@@ -73,7 +71,6 @@ public class SqlLoaderIT extends BaseDbTest {
 
     @Test
     public void testColumnFunctions() {
-
 
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
@@ -92,10 +89,8 @@ public class SqlLoaderIT extends BaseDbTest {
                 .expectRow(1, "3");
     }
 
-
     @Test
     public void testMaxRows() {
-
 
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
@@ -117,8 +112,6 @@ public class SqlLoaderIT extends BaseDbTest {
 
     @Test
     public void testParams() {
-
-
 
         LocalDate ld = LocalDate.of(1977, 02, 05);
         LocalDateTime ldt = LocalDateTime.of(2019, 02, 03, 1, 2, 5);

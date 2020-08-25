@@ -63,7 +63,7 @@ public class JdbcConnectorBuilder {
      * @see ColumnBuilderFactory for a collection of commonly-used factories.
      * @since 0.8
      */
-    public JdbcConnectorBuilder addColumnBuilderFactory(int columnJdbcType, ColumnBuilderFactory<?> factory) {
+    public <T> JdbcConnectorBuilder addColumnBuilderFactory(int columnJdbcType, ColumnBuilderFactory<T> factory) {
         if (this.columnBuilderFactories == null) {
             this.columnBuilderFactories = new HashMap<>();
         }
