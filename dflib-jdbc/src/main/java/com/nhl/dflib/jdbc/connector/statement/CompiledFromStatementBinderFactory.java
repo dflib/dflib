@@ -29,7 +29,8 @@ public class CompiledFromStatementBinderFactory implements StatementBinderFactor
         for (int i = 0; i < len; i++) {
             int jdbcPos = i + 1;
             int jdbcType = flavor.columnType(pmd.getParameterType(jdbcPos), pmd.getParameterTypeName(jdbcPos));
-            positions[i] = new StatementPosition(statement, jdbcPos, jdbcType, converterFactory.findConverter(jdbcType));
+            ValueConverter converter = converterFactory.findConverter(jdbcType);
+            positions[i] = new StatementPosition(statement, jdbcPos, jdbcType, converter);
         }
 
         return new StatementBinder(positions);
