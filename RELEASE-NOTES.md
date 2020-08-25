@@ -1,3 +1,7 @@
+## Release 0.9
+
+* #113 MySQL 8 requires special treatment of local time
+
 ## Release 0.8
 
 * #79 Support filter condition in CsvLoader
