@@ -15,8 +15,11 @@ public class MySQLFlavor extends GenericFlavor {
         MySQLFlavor flavor = new MySQLFlavor();
         flavor.supportsCatalogs = true;
         flavor.supportsSchemas = false;
-        // MySQL kinda supports params metadata, but that requires a special URL parameter in the driver
+
+        // with "generateSimpleParameterMetadata=true" we are getting back parameters, but they are all VARCHAR,
+        // so rather useless
         flavor.supportsParamsMetadata = false;
+
         flavor.supportsBatchUpdates = metaData.supportsBatchUpdates();
         flavor.identifierQuote = metaData.getIdentifierQuoteString();
         return flavor;
