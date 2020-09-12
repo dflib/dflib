@@ -24,7 +24,7 @@ public class RangeSeries<T> extends ObjectSeries<T> {
 
     @Override
     public T get(int index) {
-        if (index > size) {
+        if (index >= size) {
             throw new ArrayIndexOutOfBoundsException(index);
         }
 

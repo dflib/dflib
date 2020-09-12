@@ -321,6 +321,18 @@ public interface Series<T> extends Iterable<T> {
     Series<T> sample(int size, Random random);
 
     /**
+     * @since 0.9
+     */
+    default Series<T> shift(int offset) {
+        return shift(offset, null);
+    }
+
+    /**
+     * @since 0.9
+     */
+    Series<T> shift(int offset, T filler);
+
+    /**
      * @since 0.7
      */
     @Override

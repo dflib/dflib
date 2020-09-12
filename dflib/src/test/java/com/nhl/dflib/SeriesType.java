@@ -1,9 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.series.ArraySeries;
-import com.nhl.dflib.series.ColumnMappedSeries;
-import com.nhl.dflib.series.ListSeries;
-import com.nhl.dflib.series.RangeSeries;
+import com.nhl.dflib.series.*;
 
 import static java.util.Arrays.asList;
 

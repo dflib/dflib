@@ -74,7 +74,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
             return t1;
         }
 
-        while((t1 = t1.getSuperclass()) != null) {
+        while ((t1 = t1.getSuperclass()) != null) {
             if (t1.isAssignableFrom(t2)) {
                 return t1;
             }
@@ -318,6 +318,17 @@ public abstract class ObjectSeries<T> implements Series<T> {
     @Override
     public Series<T> sample(int size, Random random) {
         return select(Sampler.sampleIndex(size, size(), random));
+    }
+
+    @Override
+    public Series<T> shift(int offset, T filler) {
+        if (offset > 0) {
+            return new OffsetForwardSeries<>(this, offset, filler);
+        } else if (offset < 0) {
+            return new OffsetBackSeries<>(this, offset, filler);
+        } else {
+            return this;
+        }
     }
 
     @Override
