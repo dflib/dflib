@@ -322,6 +322,9 @@ public interface Series<T> extends Iterable<T> {
     Series<T> sample(int size, Random random);
 
     /**
+     * Produces a Series with the same size as this Series, with values shifted forward or backwards depending on the
+     * sign of the offset parameter. Head or tail gaps produced by the shift are filled with nulls.
+     *
      * @since 0.9
      */
     default Series<T> shift(int offset) {
@@ -329,6 +332,9 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
+     * Produces a Series with the same size as this Series, with values shifted forward or backwards depending on the
+     * sign of the offset parameter. Head or tail gaps produced by the shift are filled with the provided filler value.
+     *
      * @since 0.9
      */
     Series<T> shift(int offset, T filler);

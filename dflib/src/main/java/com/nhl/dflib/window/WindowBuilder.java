@@ -1,10 +1,6 @@
 package com.nhl.dflib.window;
 
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.GroupBy;
-import com.nhl.dflib.Hasher;
-import com.nhl.dflib.IntSeries;
-import com.nhl.dflib.RowToValueMapper;
+import com.nhl.dflib.*;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.sort.Sorters;
 
@@ -95,7 +91,7 @@ public class WindowBuilder {
             case 1:
                 return IntSeries.forInts(1);
             default:
-                return partitioner != null ? rankPartitioned() : rankUnpartitioned();
+                return partitioner != null ? rankPartitioned() : rankUnPartitioned();
         }
     }
 
@@ -122,13 +118,53 @@ public class WindowBuilder {
         }
     }
 
+    /**
+     * @since 0.9
+     */
+    public <T> Series<T> shift(String column, int offset) {
+        return shift(column, offset, null);
+    }
+
+    /**
+     * @since 0.9
+     */
+    public <T> Series<T> shift(String column, int offset, T filler) {
+        int pos = dataFrame.getColumnsIndex().position(column);
+        return shift(pos, offset, filler);
+    }
+
+    /**
+     * @since 0.9
+     */
+    public <T> Series<T> shift(int column, int offset) {
+        return shift(column, offset, null);
+    }
+
+    /**
+     * @since 0.9
+     */
+    public <T> Series<T> shift(int column, int offset, T filler) {
+        switch (dataFrame.height()) {
+            case 0:
+                return Series.forData();
+            case 1:
+                return Series.forData(filler);
+            default:
+                // use a "single group" partitioner if not set
+                // TODO: this likely creates performance overhead for such a simple case
+                Hasher partitioner = this.partitioner != null ? this.partitioner : r -> "k";
+                GroupBy gb = dataFrame.group(partitioner);
+                return sorter != null ? gb.sort(sorter).shift(column, offset, filler) : gb.shift(column, offset, filler);
+        }
+    }
+
     private IntSeries rankPartitioned() {
         return sorter != null
                 ? dataFrame.group(partitioner).sort(sorter).rank()
                 : Ranker.sameRank(dataFrame.height());
     }
 
-    private IntSeries rankUnpartitioned() {
+    private IntSeries rankUnPartitioned() {
         return sorter != null
                 ? new Ranker(sorter).rank(dataFrame)
                 : Ranker.sameRank(dataFrame.height());

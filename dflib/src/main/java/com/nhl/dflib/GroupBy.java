@@ -3,6 +3,7 @@ package com.nhl.dflib;
 import com.nhl.dflib.aggregate.DataFrameAggregation;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.series.EmptySeries;
 import com.nhl.dflib.series.IntSequenceSeries;
 import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
@@ -10,10 +11,7 @@ import com.nhl.dflib.window.DenseRanker;
 import com.nhl.dflib.window.Ranker;
 import com.nhl.dflib.window.RowNumberer;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GroupBy {
@@ -170,6 +168,46 @@ public class GroupBy {
         return new DenseRanker(sorter).rank(ungrouped, groupsIndex.values());
     }
 
+    /**
+     * A window function that does a {@link Series#shift(int, Object)} operation on the named column in each group.
+     * Produces a Series with the same size as the original DataFrame height, with values shifted forward or backwards
+     * within each group depending on the sign of the offset parameter. Gaps produced by the shift are filled with the
+     * provided filler value.
+     *
+     * @since 0.9
+     */
+    public <T> Series<T> shift(String column, int offset, T filler) {
+        int pos = ungrouped.getColumnsIndex().position(column);
+        return shift(pos, offset, filler);
+    }
+
+    /**
+     * A window function that does a {@link Series#shift(int, Object)} operation in each group on the column with the
+     * specified number. Produces a Series with the same size as the original DataFrame height, with values shifted
+     * forward or backwards within each group depending on the sign of the offset parameter. Gaps produced by the shift
+     * are filled with the provided filler value.
+     *
+     * @since 0.9
+     */
+    public <T> Series<T> shift(int column, int offset, T filler) {
+        if (groupsIndex.size() == 0) {
+            return new EmptySeries<>();
+        }
+
+        Series[] shifted = new Series[groupsIndex.size()];
+
+        int i = 0;
+        for (Object key : getGroups()) {
+            DataFrame group = getGroup(key);
+            shifted[i++] = group.getColumn(column).shift(offset, filler);
+        }
+
+        IntSeries groupsIndexAll = SeriesConcat.intConcat(groupsIndex.values());
+        Series<T> shiftedAll = SeriesConcat.concat(shifted);
+
+        return shiftedAll.select(groupsIndexAll.sortIndexInt());
+    }
+
     public GroupBy head(int len) {
 
         if (len < 0) {
@@ -210,6 +248,8 @@ public class GroupBy {
      * @since 0.8
      */
     public <V extends Comparable<? super V>> GroupBy sort(Comparator<RowProxy> sorter) {
+
+        Objects.requireNonNull(sorter, "Null 'sorter'");
 
         Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 

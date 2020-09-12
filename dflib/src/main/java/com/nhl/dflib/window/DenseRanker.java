@@ -6,6 +6,9 @@ import com.nhl.dflib.row.RowProxy;
 
 import java.util.Comparator;
 
+/**
+ * @since 0.8
+ */
 public class DenseRanker extends Ranker {
 
     public DenseRanker(Comparator<RowProxy> sorter) {

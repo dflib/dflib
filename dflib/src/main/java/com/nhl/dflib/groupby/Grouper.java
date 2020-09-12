@@ -9,13 +9,14 @@ import com.nhl.dflib.row.RowProxy;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Grouper {
 
     private Hasher hasher;
 
     public Grouper(Hasher hasher) {
-        this.hasher = hasher;
+        this.hasher = Objects.requireNonNull(hasher, "Null 'hasher'");
     }
 
     @SuppressWarnings("unchecked")
