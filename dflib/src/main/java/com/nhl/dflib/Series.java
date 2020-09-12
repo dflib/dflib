@@ -26,6 +26,7 @@ import static java.util.Arrays.asList;
  */
 public interface Series<T> extends Iterable<T> {
 
+    @SafeVarargs
     static <T> Series<T> forData(T... data) {
         return data != null && data.length > 0 ? new ArraySeries<>(data) : new EmptySeries<>();
     }
@@ -80,8 +81,8 @@ public interface Series<T> extends Iterable<T> {
     void copyTo(Object[] to, int fromOffset, int toOffset, int len);
 
     /**
-     * @param mapper
-     * @param <V>
+     * @param mapper a function that maps each Series value to some other value
+     * @param <V>    value type produced by the mapper
      * @return a Series produced by applying a mapper to this Series
      * @since 0.6
      */
@@ -108,7 +109,7 @@ public interface Series<T> extends Iterable<T> {
 
     // TODO: alternative names instead of "materialize" :
     //  * "compact" - as we often trim unused data
-    //  * "optimize" - which may be anything, depending on the Series structure.. Ambiguos - optimize for storage or access?
+    //  * "optimize" - which may be anything, depending on the Series structure.. Ambiguous - optimize for storage or access?
     Series<T> materialize();
 
     Series<T> fillNulls(T value);
@@ -171,7 +172,7 @@ public interface Series<T> extends Iterable<T> {
      * Series.
      * <p>Note that calling "sortIndexInt" on the result of this method produces a Series of sort-aware row numbers.</p>
      *
-     * @param comparator
+     * @param comparator value comparator for sorting¬
      * @return an IntSeries representing element indices from the original Series
      * @since 0.8
      */
@@ -181,7 +182,7 @@ public interface Series<T> extends Iterable<T> {
 
     /**
      * @param another a Series to compare with.
-     * @return a BooleanSeries with true/false elements corresponding to the result of comparision of this Series with
+     * @return a BooleanSeries with true/false elements corresponding to the result of comparison of this Series with
      * another.
      * @since 0.6
      */
@@ -189,7 +190,7 @@ public interface Series<T> extends Iterable<T> {
 
     /**
      * @param another a Series to compare with.
-     * @return a BooleanSeries with true/false elements corresponding to the result of comparision of this Series with
+     * @return a BooleanSeries with true/false elements corresponding to the result of comparison of this Series with
      * another.
      * @since 0.6
      */
@@ -269,8 +270,8 @@ public interface Series<T> extends Iterable<T> {
         int len = aggregators.length;
         ObjectAccumulator<Object> accum = new ObjectAccumulator<>(len);
 
-        for (int i = 0; i < len; i++) {
-            accum.add(aggregators[i].aggregate(this));
+        for (SeriesAggregator<? super T, ?> aggregator : aggregators) {
+            accum.add(aggregator.aggregate(this));
         }
 
         return accum.toSeries();
