@@ -2,6 +2,8 @@ package com.nhl.dflib.window;
 
 import com.nhl.dflib.*;
 import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.series.IntSequenceSeries;
+import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.Sorters;
 
 import java.util.Comparator;
@@ -103,7 +105,7 @@ public class WindowBuilder {
             case 1:
                 return IntSeries.forInts(1);
             default:
-                return partitioner != null ? denseRankPartitioned() : denseRankUnpartitioned();
+                return partitioner != null ? denseRankPartitioned() : denseRankUnPartitioned();
         }
     }
 
@@ -114,7 +116,7 @@ public class WindowBuilder {
             case 1:
                 return IntSeries.forInts(1);
             default:
-                return partitioner != null ? rowNumberPartitioned() : rowNumberUnpartitioned();
+                return partitioner != null ? rowNumberPartitioned() : rowNumberUnPartitioned();
         }
     }
 
@@ -144,17 +146,37 @@ public class WindowBuilder {
      * @since 0.9
      */
     public <T> Series<T> shift(int column, int offset, T filler) {
+
+        if (offset == 0) {
+            return dataFrame.getColumn(column);
+        }
+
         switch (dataFrame.height()) {
             case 0:
                 return Series.forData();
             case 1:
                 return Series.forData(filler);
             default:
-                // use a "single group" partitioner if not set
-                // TODO: this likely creates performance overhead for such a simple case
-                Hasher partitioner = this.partitioner != null ? this.partitioner : r -> "k";
-                GroupBy gb = dataFrame.group(partitioner);
-                return sorter != null ? gb.sort(sorter).shift(column, offset, filler) : gb.shift(column, offset, filler);
+                return partitioner != null
+                        ? shiftPartitioned(column, offset, filler)
+                        : shiftUnPartitioned(column, offset, filler);
+        }
+    }
+
+    private <T> Series<T> shiftPartitioned(int column, int offset, T filler) {
+        GroupBy gb = dataFrame.group(partitioner);
+        return sorter != null ? gb.sort(sorter).shift(column, offset, filler) : gb.shift(column, offset, filler);
+    }
+
+    private <T> Series<T> shiftUnPartitioned(int column, int offset, T filler) {
+        if (sorter != null) {
+            IntSeries index = new IntSequenceSeries(0, dataFrame.height());
+            IntSeries sortedIndex = new IndexSorter(dataFrame, index).sortIndex(sorter);
+            Series<T> s = dataFrame.getColumn(column);
+            return s.select(sortedIndex).shift(offset, filler).select(sortedIndex.sortIndexInt());
+        } else {
+            Series<T> s = dataFrame.getColumn(column);
+            return s.shift(offset, filler);
         }
     }
 
@@ -176,7 +198,7 @@ public class WindowBuilder {
                 : Ranker.sameRank(dataFrame.height());
     }
 
-    private IntSeries denseRankUnpartitioned() {
+    private IntSeries denseRankUnPartitioned() {
         return sorter != null
                 ? new DenseRanker(sorter).rank(dataFrame)
                 : Ranker.sameRank(dataFrame.height());
@@ -189,7 +211,7 @@ public class WindowBuilder {
                 : gb.rowNumber();
     }
 
-    private IntSeries rowNumberUnpartitioned() {
+    private IntSeries rowNumberUnPartitioned() {
         return sorter != null
                 ? RowNumberer.rowNumber(dataFrame, sorter)
                 : RowNumberer.sequence(dataFrame.height());

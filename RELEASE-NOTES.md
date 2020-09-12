@@ -1,6 +1,7 @@
 ## Release 0.9
 
 * #113 MySQL 8 requires special treatment of local time
+* #114 "shift" operation
 
 ## Release 0.8
 

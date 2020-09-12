@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class DataFrame_Over_ShiftTest {
 
     @Test
-    public void testNoPartition_NoSort_Emtpy() {
+    public void testNoPartition_NoSort_Empty() {
         DataFrame df = DataFrame.newFrame("a", "b", "c").empty();
         Series<Object> r = df.over().shift("b", -1);
         new SeriesAsserts(r).expectData();
@@ -24,6 +24,9 @@ public class DataFrame_Over_ShiftTest {
 
         Series<Integer> s3 = df.over().shift("b", 2);
         new SeriesAsserts(s3).expectData(new Object[]{null});
+
+        Series<Integer> s4 = df.over().shift("b", 0);
+        new SeriesAsserts(s4).expectData("x");
     }
 
     @Test
