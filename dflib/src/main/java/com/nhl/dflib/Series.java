@@ -1,21 +1,11 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.series.ArraySeries;
-import com.nhl.dflib.series.EmptySeries;
-import com.nhl.dflib.series.IntArraySeries;
-import com.nhl.dflib.series.ListSeries;
 import com.nhl.dflib.accumulator.ObjectAccumulator;
+import com.nhl.dflib.series.*;
 import com.nhl.dflib.sort.IndexSorter;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 
@@ -337,7 +327,15 @@ public interface Series<T> extends Iterable<T> {
      *
      * @since 0.9
      */
-    Series<T> shift(int offset, T filler);
+    default Series<T> shift(int offset, T filler) {
+        if (offset > 0) {
+            return new OffsetLeadSeries<>(this, offset, filler);
+        } else if (offset < 0) {
+            return new OffsetLagSeries<>(this, offset, filler);
+        } else {
+            return this;
+        }
+    }
 
     /**
      * @since 0.7

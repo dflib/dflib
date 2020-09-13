@@ -483,21 +483,6 @@ public abstract class LongBaseSeries implements LongSeries {
         return selectAsLongSeries(Sampler.sampleIndex(size, size(), random));
     }
 
-    /**
-     * @since 0.9
-     */
-    @Override
-    public Series<Long> shift(int offset, Long filler) {
-        // TODO: if filler != null use primitive series shift
-        if (offset > 0) {
-            return new OffsetForwardSeries<>(this, offset, filler);
-        } else if (offset < 0) {
-            return new OffsetBackSeries<>(this, offset, filler);
-        } else {
-            return this;
-        }
-    }
-
     @Override
     public String toString() {
         return ToString.toString(this);

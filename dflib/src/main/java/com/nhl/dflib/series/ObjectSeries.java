@@ -321,17 +321,6 @@ public abstract class ObjectSeries<T> implements Series<T> {
     }
 
     @Override
-    public Series<T> shift(int offset, T filler) {
-        if (offset > 0) {
-            return new OffsetForwardSeries<>(this, offset, filler);
-        } else if (offset < 0) {
-            return new OffsetBackSeries<>(this, offset, filler);
-        } else {
-            return this;
-        }
-    }
-
-    @Override
     public String toString() {
         return ToString.toString(this);
     }

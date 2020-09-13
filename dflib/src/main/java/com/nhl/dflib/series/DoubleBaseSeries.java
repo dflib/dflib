@@ -484,21 +484,6 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         return selectAsDoubleSeries(Sampler.sampleIndex(size, size(), random));
     }
 
-    /**
-     * @since 0.9
-     */
-    @Override
-    public Series<Double> shift(int offset, Double filler) {
-        // TODO: if filler != null use primitive series shift
-        if (offset > 0) {
-            return new OffsetForwardSeries<>(this, offset, filler);
-        } else if (offset < 0) {
-            return new OffsetBackSeries<>(this, offset, filler);
-        } else {
-            return this;
-        }
-    }
-
     @Override
     public String toString() {
         return ToString.toString(this);

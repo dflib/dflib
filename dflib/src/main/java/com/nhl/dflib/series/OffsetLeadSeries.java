@@ -3,24 +3,33 @@ package com.nhl.dflib.series;
 import com.nhl.dflib.Series;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * @since 0.9
  */
 // While this can be expressed as a concatenation of a RangeSeries and SingleValueSeries, a dedicated
 // offset series would yield better performance
-public class OffsetBackSeries<T> extends OffsetSeries<T> {
+public class OffsetLeadSeries<T> extends OffsetSeries<T> {
 
     private int offset;
 
-    public OffsetBackSeries(Series<T> delegate, int offset, T filler) {
+    public OffsetLeadSeries(Series<T> delegate, int offset, T filler) {
         super(delegate, filler);
 
-        if (offset >= 0) {
-            throw new IllegalArgumentException("Expected negative offset: " + offset);
+        if (offset <= 0) {
+            throw new IllegalArgumentException("Expected positive offset: " + offset);
         }
 
         this.offset = offset;
+    }
+
+    @Override
+    public Series<T> shift(int offset, T filler) {
+        // optimize shift by unwrapping the delegate where possible
+        return (offset > 0 && Objects.equals(filler, this.filler))
+                ? new OffsetLeadSeries<>(delegate, this.offset + offset, filler)
+                : super.shift(offset, filler);
     }
 
     @Override
@@ -31,7 +40,7 @@ public class OffsetBackSeries<T> extends OffsetSeries<T> {
             throw new ArrayIndexOutOfBoundsException(index);
         }
 
-        return index < size + offset ? delegate.get(index - offset) : filler;
+        return index < offset ? filler : delegate.get(index - offset);
     }
 
     @Override
@@ -42,16 +51,16 @@ public class OffsetBackSeries<T> extends OffsetSeries<T> {
             throw new ArrayIndexOutOfBoundsException(fromOffset + len);
         }
 
-        int len1 = Math.min(size + offset - fromOffset, len);
+        int len1 = Math.max(0, Math.min(offset - fromOffset, len));
         int len2 = len - len1;
-        int off1 = fromOffset - offset;
+        int off2 = fromOffset < offset ? 0 : fromOffset - offset;
 
         if (len1 > 0) {
-            delegate.copyTo(to, off1, toOffset, len1);
+            Arrays.fill(to, toOffset, toOffset + len1, filler);
         }
 
         if (len2 > 0) {
-            Arrays.fill(to, toOffset + len1, toOffset + len, filler);
+            delegate.copyTo(to, off2, toOffset + len1, len2);
         }
     }
 
@@ -59,14 +68,13 @@ public class OffsetBackSeries<T> extends OffsetSeries<T> {
     public Series<T> materialize() {
 
         int size = size();
-        int splitPoint = size + offset;
         Object[] buffer = new Object[size];
 
-        delegate.copyTo(buffer, -offset, 0, splitPoint);
-
         if (filler != null) {
-            Arrays.fill(buffer, splitPoint, size, filler);
+            Arrays.fill(buffer, 0, offset, filler);
         }
+
+        delegate.copyTo(buffer, 0, offset, size - offset);
 
         return new ArraySeries<>((T[]) buffer);
     }

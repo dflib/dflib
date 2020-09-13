@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class OffsetForwardSeriesTest {
+public class OffsetLeadSeriesTest {
 
     @Test
     public void testGet() {
 
-        Series<String> s = new OffsetForwardSeries<>(Series.forData("a", "b", "c", "d"), 1, "X");
+        Series<String> s = new OffsetLeadSeries<>(Series.forData("a", "b", "c", "d"), 1, "X");
 
         assertThrows(ArrayIndexOutOfBoundsException.class, () -> s.get(-1));
         assertEquals("X", s.get(0));
@@ -23,7 +23,7 @@ public class OffsetForwardSeriesTest {
 
     @Test
     public void testMaterialize() {
-        Series<String> s = new OffsetForwardSeries<>(Series.forData("a", "b", "c", "d"), 1, "X").materialize();
+        Series<String> s = new OffsetLeadSeries<>(Series.forData("a", "b", "c", "d"), 1, "X").materialize();
         assertTrue(s instanceof ArraySeries);
         new SeriesAsserts(s).expectData("X", "a", "b", "c");
     }
@@ -31,7 +31,7 @@ public class OffsetForwardSeriesTest {
     @Test
     public void testCopyTo() {
 
-        Series<String> s = new OffsetForwardSeries<>(Series.forData("a", "b", "c", "d"), 1, "X");
+        Series<String> s = new OffsetLeadSeries<>(Series.forData("a", "b", "c", "d"), 1, "X");
 
         Object[] b1 = new Object[5];
         s.copyTo(b1, 0, 1, 4);
@@ -48,5 +48,18 @@ public class OffsetForwardSeriesTest {
         Object[] b4 = new Object[5];
         s.copyTo(b4, 0, 1, 1);
         assertArrayEquals(new Object[]{null, "X", null, null, null}, b4);
+    }
+
+    @Test
+    public void testShift() {
+
+        Series<String> s = new OffsetLeadSeries<>(Series.forData("a", "b", "c", "d"), 1, "X");
+
+        new SeriesAsserts(s.shift(-1)).expectData("a", "b", "c", null);
+        new SeriesAsserts(s.shift(-1, "X")).expectData("a", "b", "c", "X");
+        new SeriesAsserts(s.shift(-1, "Y")).expectData("a", "b", "c", "Y");
+        new SeriesAsserts(s.shift(1, "X")).expectData("X", "X", "a", "b");
+        new SeriesAsserts(s.shift(1, "Y")).expectData("Y", "X", "a", "b");
+        new SeriesAsserts(s.shift(0, "Y")).expectData("X", "a", "b", "c");
     }
 }
