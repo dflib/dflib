@@ -6,8 +6,9 @@ import java.util.Arrays;
 
 public class ArraySeries<T> extends ObjectSeries<T> {
 
-    private T[] data;
+    private final T[] data;
 
+    @SafeVarargs
     public ArraySeries(T... data) {
         super(Object.class);
         this.data = data;

@@ -13,9 +13,8 @@ import com.nhl.dflib.row.RowProxy;
 public class ByRowSeries extends ObjectSeries<Object> {
 
     private DataFrame source;
-    private int width;
-    private int height;
-    private int size;
+    private final int width;
+    private final int size;
 
     private Series<Object> materialized;
 
@@ -25,8 +24,7 @@ public class ByRowSeries extends ObjectSeries<Object> {
         this.source = source;
 
         this.width = source.width();
-        this.height = source.height();
-        this.size = width * height;
+        this.size = width * source.height();
     }
 
     @Override
@@ -67,7 +65,7 @@ public class ByRowSeries extends ObjectSeries<Object> {
     }
 
     protected Series<Object> doMaterialize() {
-        ObjectAccumulator data = new ObjectAccumulator(size);
+        ObjectAccumulator<Object> data = new ObjectAccumulator<>(size);
 
         for (RowProxy r : source) {
             for (int i = 0; i < width; i++) {
@@ -87,7 +85,7 @@ public class ByRowSeries extends ObjectSeries<Object> {
     }
 
     @Override
-    public Series<Object> fillNullsFromSeries(Series<? extends Object> values) {
+    public Series<Object> fillNullsFromSeries(Series<?> values) {
         return materialize().fillNullsFromSeries(values);
     }
 
