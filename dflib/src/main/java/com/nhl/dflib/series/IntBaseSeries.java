@@ -74,7 +74,7 @@ public abstract class IntBaseSeries implements IntSeries {
 
     @Override
     public Series<Integer> filter(ValuePredicate<Integer> p) {
-        return filterInt(i -> p.test(i));
+        return filterInt(p::test);
     }
 
     @Override
@@ -115,7 +115,7 @@ public abstract class IntBaseSeries implements IntSeries {
 
     @Override
     public Series<Integer> sort(Comparator<? super Integer> comparator) {
-        return sortInt((i1, i2) -> comparator.compare(i1, i2));
+        return sortInt(comparator::compare);
     }
 
     @Override
@@ -141,7 +141,7 @@ public abstract class IntBaseSeries implements IntSeries {
 
     @Override
     public IntSeries sortIndex(Comparator<? super Integer> comparator) {
-        return sortIndexInt((i1, i2) -> comparator.compare(i1, i2));
+        return sortIndexInt(comparator::compare);
     }
 
     @Override
@@ -255,8 +255,9 @@ public abstract class IntBaseSeries implements IntSeries {
         return tailInt(len);
     }
 
+    @SafeVarargs
     @Override
-    public Series<Integer> concat(Series<? extends Integer>... other) {
+    public final Series<Integer> concat(Series<? extends Integer>... other) {
         // concatenating as Integer... to concat as IntSeries, "concatInt" should be used
         if (other.length == 0) {
             return this;
@@ -378,33 +379,33 @@ public abstract class IntBaseSeries implements IntSeries {
     private Series<Integer> nullify(BooleanSeries condition) {
         int s = size();
         int r = Math.min(s, condition.size());
-        ObjectAccumulator vals = new ObjectAccumulator(s);
+        ObjectAccumulator<Integer> values = new ObjectAccumulator<>(s);
 
         for (int i = 0; i < r; i++) {
-            vals.add(condition.getBoolean(i) ? null : getInt(i));
+            values.add(condition.getBoolean(i) ? null : getInt(i));
         }
 
         for (int i = r; i < s; i++) {
-            vals.add(getInt(i));
+            values.add(getInt(i));
         }
 
-        return vals.toSeries();
+        return values.toSeries();
     }
 
     private Series<Integer> nullifyNoMatch(BooleanSeries condition) {
         int s = size();
         int r = Math.min(s, condition.size());
-        ObjectAccumulator vals = new ObjectAccumulator(s);
+        ObjectAccumulator<Integer> values = new ObjectAccumulator<>(s);
 
         for (int i = 0; i < r; i++) {
-            vals.add(condition.getBoolean(i) ? getInt(i) : null);
+            values.add(condition.getBoolean(i) ? getInt(i) : null);
         }
 
         if (s > r) {
-            vals.fill(r, s, null);
+            values.fill(r, s, null);
         }
 
-        return vals.toSeries();
+        return values.toSeries();
     }
 
     @Override

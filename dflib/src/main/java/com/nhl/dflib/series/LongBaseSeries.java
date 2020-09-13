@@ -70,7 +70,7 @@ public abstract class LongBaseSeries implements LongSeries {
 
     @Override
     public Series<Long> filter(ValuePredicate<Long> p) {
-        return filterLong(l -> p.test(l));
+        return filterLong(p::test);
     }
 
     @Override
@@ -227,9 +227,10 @@ public abstract class LongBaseSeries implements LongSeries {
         return tailLong(len);
     }
 
+    @SafeVarargs
     @Override
-    public Series<Long> concat(Series<? extends Long>... other) {
-        // concatenating as Double... to concat as DoubleServies, "concatDouble" should be used
+    public final Series<Long> concat(Series<? extends Long>... other) {
+        // concatenating as Double... to concat as DoubleSeries, "concatDouble" should be used
         if (other.length == 0) {
             return this;
         }
@@ -350,33 +351,33 @@ public abstract class LongBaseSeries implements LongSeries {
     private Series<Long> nullify(BooleanSeries condition) {
         int s = size();
         int r = Math.min(s, condition.size());
-        ObjectAccumulator<Long> vals = new ObjectAccumulator<>(s);
+        ObjectAccumulator<Long> values = new ObjectAccumulator<>(s);
 
         for (int i = 0; i < r; i++) {
-            vals.add(condition.getBoolean(i) ? null : getLong(i));
+            values.add(condition.getBoolean(i) ? null : getLong(i));
         }
 
         for (int i = r; i < s; i++) {
-            vals.add(getLong(i));
+            values.add(getLong(i));
         }
 
-        return vals.toSeries();
+        return values.toSeries();
     }
 
     private Series<Long> nullifyNoMatch(BooleanSeries condition) {
         int s = size();
         int r = Math.min(s, condition.size());
-        ObjectAccumulator<Long> vals = new ObjectAccumulator<>(s);
+        ObjectAccumulator<Long> values = new ObjectAccumulator<>(s);
 
         for (int i = 0; i < r; i++) {
-            vals.add(condition.getBoolean(i) ? getLong(i) : null);
+            values.add(condition.getBoolean(i) ? getLong(i) : null);
         }
 
         if (s > r) {
-            vals.fill(r, s, null);
+            values.fill(r, s, null);
         }
 
-        return vals.toSeries();
+        return values.toSeries();
     }
 
     @Override

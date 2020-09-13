@@ -12,7 +12,7 @@ import java.util.Objects;
 // offset series would yield better performance
 public class OffsetLeadSeries<T> extends OffsetSeries<T> {
 
-    private int offset;
+    private final int offset;
 
     public OffsetLeadSeries(Series<T> delegate, int offset, T filler) {
         super(delegate, filler);
