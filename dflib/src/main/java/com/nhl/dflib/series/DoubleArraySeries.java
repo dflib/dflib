@@ -13,9 +13,9 @@ import com.nhl.dflib.aggregate.PrimitiveSeriesSum;
 //  that has offset and size? Need to measure the performance gain of not having to calculate offset
 public class DoubleArraySeries extends DoubleBaseSeries {
 
-    private double[] data;
-    private int offset;
-    private int size;
+    private final double[] data;
+    private final int offset;
+    private final int size;
 
     public DoubleArraySeries(double... data) {
         this(data, 0, data.length);

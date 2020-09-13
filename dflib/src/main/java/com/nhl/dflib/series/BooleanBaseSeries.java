@@ -204,8 +204,9 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         return tailBoolean(len);
     }
 
+    @SafeVarargs
     @Override
-    public Series<Boolean> concat(Series<? extends Boolean>... other) {
+    public final Series<Boolean> concat(Series<? extends Boolean>... other) {
         if (other.length == 0) {
             return this;
         }
@@ -346,33 +347,33 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     private Series<Boolean> nullify(BooleanSeries condition) {
         int s = size();
         int r = Math.min(s, condition.size());
-        ObjectAccumulator vals = new ObjectAccumulator(s);
+        ObjectAccumulator<Boolean> values = new ObjectAccumulator<>(s);
 
         for (int i = 0; i < r; i++) {
-            vals.add(condition.getBoolean(i) ? null : getBoolean(i));
+            values.add(condition.getBoolean(i) ? null : getBoolean(i));
         }
 
         for (int i = r; i < s; i++) {
-            vals.add(getBoolean(i));
+            values.add(getBoolean(i));
         }
 
-        return vals.toSeries();
+        return values.toSeries();
     }
 
     private Series<Boolean> nullifyNoMatch(BooleanSeries condition) {
         int s = size();
         int r = Math.min(s, condition.size());
-        ObjectAccumulator vals = new ObjectAccumulator(s);
+        ObjectAccumulator<Boolean> values = new ObjectAccumulator<>(s);
 
         for (int i = 0; i < r; i++) {
-            vals.add(condition.getBoolean(i) ? getBoolean(i) : null);
+            values.add(condition.getBoolean(i) ? getBoolean(i) : null);
         }
 
         if (s > r) {
-            vals.fill(r, s, null);
+            values.fill(r, s, null);
         }
 
-        return vals.toSeries();
+        return values.toSeries();
     }
 
 

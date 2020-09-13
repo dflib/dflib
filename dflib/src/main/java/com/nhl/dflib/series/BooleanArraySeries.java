@@ -9,9 +9,9 @@ import com.nhl.dflib.aggregate.PrimitiveSeriesCount;
 public class BooleanArraySeries extends BooleanBaseSeries {
 
     // TODO should we use a bitset instead of boolean[] for memory and access efficiency?
-    private boolean[] data;
-    private int offset;
-    private int size;
+    private final boolean[] data;
+    private final int offset;
+    private final int size;
 
     public BooleanArraySeries(boolean... data) {
         this(data, 0, data.length);

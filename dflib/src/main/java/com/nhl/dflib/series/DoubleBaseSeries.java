@@ -70,7 +70,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
 
     @Override
     public Series<Double> filter(ValuePredicate<Double> p) {
-        return filterDouble(d -> p.test(d));
+        return filterDouble(p::test);
     }
 
     @Override
@@ -227,9 +227,10 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         return tailDouble(len);
     }
 
+    @SafeVarargs
     @Override
-    public Series<Double> concat(Series<? extends Double>... other) {
-        // concatenating as Double... to concat as DoubleServies, "concatDouble" should be used
+    public final Series<Double> concat(Series<? extends Double>... other) {
+        // concatenating as Double... to concat as DoubleSeries, "concatDouble" should be used
         if (other.length == 0) {
             return this;
         }
@@ -350,33 +351,33 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     private Series<Double> nullify(BooleanSeries condition) {
         int s = size();
         int r = Math.min(s, condition.size());
-        ObjectAccumulator<Double> vals = new ObjectAccumulator<>(s);
+        ObjectAccumulator<Double> values = new ObjectAccumulator<>(s);
 
         for (int i = 0; i < r; i++) {
-            vals.add(condition.getBoolean(i) ? null : getDouble(i));
+            values.add(condition.getBoolean(i) ? null : getDouble(i));
         }
 
         for (int i = r; i < s; i++) {
-            vals.add(getDouble(i));
+            values.add(getDouble(i));
         }
 
-        return vals.toSeries();
+        return values.toSeries();
     }
 
     private Series<Double> nullifyNoMatch(BooleanSeries condition) {
         int s = size();
         int r = Math.min(s, condition.size());
-        ObjectAccumulator<Double> vals = new ObjectAccumulator<>(s);
+        ObjectAccumulator<Double> values = new ObjectAccumulator<>(s);
 
         for (int i = 0; i < r; i++) {
-            vals.add(condition.getBoolean(i) ? getDouble(i) : null);
+            values.add(condition.getBoolean(i) ? getDouble(i) : null);
         }
 
         if (s > r) {
-            vals.fill(r, s, null);
+            values.fill(r, s, null);
         }
 
-        return vals.toSeries();
+        return values.toSeries();
     }
 
     @Override
