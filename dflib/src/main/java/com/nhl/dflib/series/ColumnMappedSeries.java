@@ -43,7 +43,7 @@ public class ColumnMappedSeries<S, T> extends ObjectSeries<T> {
         return materialized;
     }
 
-    protected ArraySeries doMaterialize() {
+    protected ArraySeries<T> doMaterialize() {
         Object[] data = new Object[size()];
 
         for(int i = 0; i < data.length; i++) {
@@ -54,7 +54,7 @@ public class ColumnMappedSeries<S, T> extends ObjectSeries<T> {
         source = null;
         mapper = null;
 
-        return new ArraySeries(data);
+        return new ArraySeries<>((T[]) data);
     }
 
     @Override
