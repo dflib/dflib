@@ -106,8 +106,9 @@ public abstract class ObjectSeries<T> implements Series<T> {
                 : new RangeSeries<>(this, fromInclusive, toExclusive - fromInclusive);
     }
 
+    @SafeVarargs
     @Override
-    public Series<T> concat(Series<? extends T>... other) {
+    public final Series<T> concat(Series<? extends T>... other) {
         if (other.length == 0) {
             return this;
         }
@@ -214,17 +215,17 @@ public abstract class ObjectSeries<T> implements Series<T> {
     public Series<T> replace(BooleanSeries condition, T with) {
         int s = size();
         int r = Math.min(s, condition.size());
-        ObjectAccumulator vals = new ObjectAccumulator(s);
+        ObjectAccumulator<T> values = new ObjectAccumulator<>(s);
 
         for (int i = 0; i < r; i++) {
-            vals.add(condition.getBoolean(i) ? with : get(i));
+            values.add(condition.getBoolean(i) ? with : get(i));
         }
 
         for (int i = r; i < s; i++) {
-            vals.add(get(i));
+            values.add(get(i));
         }
 
-        return vals.toSeries();
+        return values.toSeries();
     }
 
     @Override
@@ -232,17 +233,17 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
         int s = size();
         int r = Math.min(s, condition.size());
-        ObjectAccumulator vals = new ObjectAccumulator(s);
+        ObjectAccumulator<T> values = new ObjectAccumulator<>(s);
 
         for (int i = 0; i < r; i++) {
-            vals.add(condition.getBoolean(i) ? get(i) : with);
+            values.add(condition.getBoolean(i) ? get(i) : with);
         }
 
         if (s > r) {
-            vals.fill(r, s, with);
+            values.fill(r, s, with);
         }
 
-        return vals.toSeries();
+        return values.toSeries();
     }
 
     @Override
