@@ -1,3 +1,7 @@
+## Release 0.10
+
+* "Clean" BOM that does not leak unrelated dependency versions
+
 ## Release 0.9
 
 * #113 MySQL 8 requires special treatment of local time
