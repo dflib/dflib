@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.nhl.dflib</groupId>
         <artifactId>dflib-parent</artifactId>
-        <version>0.11-SNAPSHOT</version>
+        <version>0.10-SNAPSHOT</version>
     </parent>
 
     <artifactId>dflib-json</artifactId>
