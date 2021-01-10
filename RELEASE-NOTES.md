@@ -1,3 +1,7 @@
+## Release 0.11
+
+* #116 Map operation over the entire DataFrame
+
 ## Release 0.10
 
 * "Clean" BOM that does not leak unrelated dependency versions

@@ -158,6 +158,16 @@ public interface DataFrame extends Iterable<RowProxy> {
     DataFrame materialize();
 
     /**
+     * Applies an operation to the entire DataFrame. This is a convenience shortcut that allows to chain multiple
+     * transformation methods for a given DataFrame.
+     *
+     * @since 0.11
+     */
+    default DataFrame map(UnaryOperator<DataFrame> op) {
+        return op.apply(this);
+    }
+
+    /**
      * Produces a new DataFrame from this DataFrame, applying {@link RowMapper} to each row of this DataFrame. The
      * result DataFrame will be the same height as this, but can have a different with and set of columns.
      *
