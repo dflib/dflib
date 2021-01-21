@@ -1,6 +1,7 @@
 package com.nhl.dflib.csv;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.FileReader;
@@ -10,22 +11,15 @@ import java.net.URISyntaxException;
 
 public class BaseCsvTest {
 
-    private static File IN_BASE;
-    private static File OUT_BASE;
+    static File IN_BASE;
 
-
+    @TempDir
+    static File OUT_BASE;
+    
     @BeforeAll
     public static void setupCsvDirs() throws URISyntaxException {
         URI csvUri = BaseCsvTest.class.getResource("f1.csv").toURI();
         IN_BASE = new File(csvUri).getAbsoluteFile().getParentFile();
-        File root = IN_BASE
-                .getParentFile()
-                .getParentFile()
-                .getParentFile()
-                .getParentFile()
-                .getParentFile();
-        OUT_BASE = new File(root, "BaseCsvTest");
-        OUT_BASE.mkdirs();
     }
 
     protected static String inPath(String name) {

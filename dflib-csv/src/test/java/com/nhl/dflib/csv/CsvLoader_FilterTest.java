@@ -1,7 +1,7 @@
 package com.nhl.dflib.csv;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.unit.DataFrameAsserts;
+import com.nhl.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;

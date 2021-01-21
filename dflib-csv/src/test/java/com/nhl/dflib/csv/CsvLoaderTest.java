@@ -1,8 +1,8 @@
 package com.nhl.dflib.csv;
 
-import com.nhl.dflib.unit.DataFrameAsserts;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.ValueMapper;
+import com.nhl.dflib.junit5.DataFrameAsserts;
 import org.apache.commons.csv.CSVFormat;
 import org.junit.jupiter.api.Test;
 
