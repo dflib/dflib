@@ -7,8 +7,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AvroTest {
 
@@ -29,9 +28,23 @@ public class AvroTest {
                     Series.forData("s1", "s2", null)
             );
 
+    static final DataFrame empty = DataFrame.newFrame(df.getColumnsIndex()).empty();
+
+    @Test
+    public void test_File_withSchema_Empty() {
+        File file = new File(destination, "test_File_withSchema_Empty.avro");
+        Avro.save(empty, file);
+        assertTrue(file.exists());
+        assertTrue(file.length() > 0);
+
+        DataFrame loaded = Avro.load(file);
+        assertNotNull(loaded);
+        new DataFrameAsserts(loaded, empty.getColumnsIndex()).expectHeight(0);
+    }
+
     @Test
     public void test_File_withSchema() {
-        File file = new File(destination, "testSave_toFile.avro");
+        File file = new File(destination, "test_File_withSchema.avro");
         Avro.save(df, file);
         assertTrue(file.exists());
         assertTrue(file.length() > 0);
@@ -59,5 +72,13 @@ public class AvroTest {
         assertTrue(file.length() > 0);
 
         // TODO: API to load using externally saved schema
+    }
+
+    @Test
+    public void testSave_toFile_excludeSchema_Empty() {
+        File file = new File(destination, "testSave_toFile_excludeSchema_Empty.avro");
+        new AvroSaver().excludeSchema().save(empty, file);
+        assertTrue(file.exists());
+        assertEquals(0, file.length());
     }
 }
