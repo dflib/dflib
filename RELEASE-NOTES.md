@@ -1,6 +1,7 @@
 ## Release 0.11
 
 * #116 Map operation over the entire DataFrame
+* #119 Primitive (custom) accummulators for DataFrameBuilder.byRow(..)
 
 ## Release 0.10
 

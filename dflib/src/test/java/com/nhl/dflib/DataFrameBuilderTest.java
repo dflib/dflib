@@ -1,5 +1,7 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.accumulator.IntAccumulator;
+import com.nhl.dflib.accumulator.ObjectAccumulator;
 import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -47,6 +49,23 @@ public class DataFrameBuilderTest {
                 .create();
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
+                .expectRow(0, "a", 1)
+                .expectRow(1, "b", 2)
+                .expectRow(2, "c", 3);
+    }
+
+    @Test
+    public void testByRow_CustomAccums() {
+        DataFrame df = DataFrameBuilder
+                .builder("a", "b")
+                .byRow(new ObjectAccumulator<>(3), new IntAccumulator(3))
+                .addRow("a", 1)
+                .addRow("b", 2)
+                .addRow("c", 3)
+                .create();
+
+        new DataFrameAsserts(df, "a", "b").expectHeight(3)
+                .expectIntColumns(1)
                 .expectRow(0, "a", 1)
                 .expectRow(1, "b", 2)
                 .expectRow(2, "c", 3);

@@ -74,15 +74,31 @@ public class DataFrameBuilder {
     }
 
     /**
-     * @since 0.7
-     * @return a builder that allows to append rows to the DataFrame one by one instead of copying from a collection.
+     * Switches to a builder that allows to append rows to the DataFrame one by one instead of copying from a collection.
+     * Can take an optional list of accumulators to control how the columns are created (e.g. primitive vs object).
+     * If nothing is passed to theis method, a list of ObjectAccumulators is created implicitly.
+     *
+     * @since 0.11
      */
-    public DataFrameByRowBuilder byRow() {
-        return new DataFrameByRowBuilder(columnsIndex);
+    public DataFrameByRowBuilder byRow(Accumulator<?>... rowAccumulators) {
+
+        // use default ObjectAccumulators if not set
+        if (rowAccumulators == null || rowAccumulators.length == 0) {
+            int w = columnsIndex.size();
+            rowAccumulators = new Accumulator[w];
+            for (int i = 0; i < w; i++) {
+                rowAccumulators[i] = new ObjectAccumulator<>();
+            }
+        } else if (rowAccumulators.length != columnsIndex.size()) {
+            throw new IllegalArgumentException("Mismatch between the number of accumulators and index width - "
+                    + rowAccumulators.length + " vs " + columnsIndex.size());
+        }
+
+        return new DataFrameByRowBuilder(columnsIndex, rowAccumulators);
     }
 
     public DataFrameByRowBuilder addRow(Object... row) {
-        return new DataFrameByRowBuilder(columnsIndex).addRow(row);
+        return byRow().addRow(row);
     }
 
     public DataFrame foldByRow(Object... data) {
@@ -185,7 +201,7 @@ public class DataFrameBuilder {
     }
 
     public <T> DataFrame objectsToRows(Iterable<T> objects, Function<T, Object[]> rowMapper) {
-        DataFrameByRowBuilder byRowBuilder = new DataFrameByRowBuilder(columnsIndex);
+        DataFrameByRowBuilder byRowBuilder = byRow();
         objects.forEach(o -> byRowBuilder.addRow(rowMapper.apply(o)));
         return byRowBuilder.create();
     }
@@ -460,7 +476,7 @@ public class DataFrameBuilder {
                 : dataLength / w;
 
         int partialColumnHeight = partialLastColumn ? dataLength % h : 0;
-        
+
         return new FoldByColumnGeometry(w, h, partialColumnHeight, fullColumns);
     }
 
