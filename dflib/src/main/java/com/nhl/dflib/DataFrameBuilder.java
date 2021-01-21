@@ -30,7 +30,7 @@ import java.util.stream.Stream;
  */
 public class DataFrameBuilder {
 
-    private Index columnsIndex;
+    private final Index columnsIndex;
 
     protected DataFrameBuilder(Index columnsIndex) {
         this.columnsIndex = Objects.requireNonNull(columnsIndex);
@@ -149,7 +149,7 @@ public class DataFrameBuilder {
     }
 
     public <T> DataFrame foldStreamByRow(Stream<T> stream) {
-        return foldIterableByRow(() -> stream.iterator());
+        return foldIterableByRow(stream::iterator);
     }
 
     public <T> DataFrame foldStreamByColumn(Stream<T> stream) {
@@ -480,7 +480,7 @@ public class DataFrameBuilder {
         return new FoldByColumnGeometry(w, h, partialColumnHeight, fullColumns);
     }
 
-    private final class FoldByColumnGeometry {
+    private static final class FoldByColumnGeometry {
 
         int width;
         int height;
