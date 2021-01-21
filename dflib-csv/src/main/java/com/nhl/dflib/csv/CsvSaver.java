@@ -28,7 +28,7 @@ public class CsvSaver {
      * further, by defining custom delimiters, line separators, etc.
      *
      * @param format a format object defined in commons-csv library
-     * @return this loader instance
+     * @return this saver instance
      */
     public CsvSaver format(CSVFormat format) {
         this.format = format;
@@ -38,7 +38,7 @@ public class CsvSaver {
     /**
      * Instructs the saver to create any missing directories in the file path.
      *
-     * @return this loader instance
+     * @return this saver instance
      * @since 0.6
      */
     public CsvSaver createMissingDirs() {
