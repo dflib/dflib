@@ -50,7 +50,7 @@
         </dependency>
         <dependency>
             <groupId>com.nhl.dflib</groupId>
-            <artifactId>dflib-test</artifactId>
+            <artifactId>dflib-junit5</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>

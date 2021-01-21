@@ -9,7 +9,9 @@ import org.apache.avro.file.SyncableFileOutputStream;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.DatumWriter;
+import org.apache.avro.io.EncoderFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +25,7 @@ public class AvroSaver {
     private boolean createMissingDirs;
     private String namespace;
     private String name;
+    private boolean excludeSchema;
 
     /**
      * Instructs the saver to create any missing directories in the file path.
@@ -33,7 +36,6 @@ public class AvroSaver {
         this.createMissingDirs = true;
         return this;
     }
-
 
     /**
      * Sets the schema name of the generated Avro file. Optional. The default will be "DataFrame".
@@ -51,12 +53,25 @@ public class AvroSaver {
         return this;
     }
 
+    /**
+     * Instructs saver to exclude schema from the saved file. It makes it more compact, but would require a
+     * schema to be available externally on load.
+     */
+    public AvroSaver excludeSchema() {
+        this.excludeSchema = true;
+        return this;
+    }
+
     public void save(DataFrame df, OutputStream out) {
 
         Schema schema = createSchema(df);
 
         try {
-            save(df, schema, out);
+            if (excludeSchema) {
+                saveNoSchema(df, schema, out);
+            } else {
+                saveWithSchema(df, schema, out);
+            }
         } catch (IOException e) {
             throw new RuntimeException("Error writing records as Avro: " + e.getMessage(), e);
         }
@@ -83,15 +98,29 @@ public class AvroSaver {
         save(df, new File(fileName));
     }
 
-    protected void save(DataFrame df, Schema schema, OutputStream out) throws IOException {
-        DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>(schema);
-        try (DataFileWriter<GenericRecord> writer = new DataFileWriter<>(datumWriter)) {
-            writer.create(schema, out);
+    protected void saveWithSchema(DataFrame df, Schema schema, OutputStream out) throws IOException {
+        DatumWriter<GenericRecord> writer = new GenericDatumWriter<>(schema);
 
+        // DataFileWriter includes Schema in the output
+        try (DataFileWriter<GenericRecord> outWriter = new DataFileWriter<>(writer)) {
+            outWriter.create(schema, out);
             for (RowProxy r : df) {
-                writer.append(map(schema, r));
+                outWriter.append(rowToRecord(schema, r));
             }
         }
+    }
+
+    protected void saveNoSchema(DataFrame df, Schema schema, OutputStream out) throws IOException {
+
+        BinaryEncoder encoder = EncoderFactory.get().binaryEncoder(out, null);
+
+        // DatumWriter does not include Schema in the output
+        DatumWriter<GenericRecord> writer = new GenericDatumWriter<>(schema);
+        for (RowProxy r : df) {
+            writer.write(rowToRecord(schema, r), encoder);
+        }
+
+        encoder.flush();
     }
 
     protected Schema createSchema(DataFrame df) {
@@ -112,11 +141,11 @@ public class AvroSaver {
         return fields.endRecord();
     }
 
-    protected GenericRecord map(Schema schema, RowProxy r) {
+    protected GenericRecord rowToRecord(Schema schema, RowProxy r) {
 
         GenericRecord ar = new GenericData.Record(schema);
 
-        // TODO: Avoid copying data. GenericRecord is simple, so just create a simple wrapper around RowProxy.
+        // TODO: Avoid copying data. GenericRecord is simple, so just create a GenericData wrapper around RowProxy.
         for (Schema.Field f : schema.getFields()) {
             ar.put(f.name(), r.get(f.name()));
         }
@@ -125,10 +154,10 @@ public class AvroSaver {
     }
 
     protected void createSchemaField(SchemaBuilder.FieldAssembler<Schema> builder, String column, Class<?> type) {
-        builder.name(column).type(avroType(type)).noDefault();
+        builder.name(column).type(createColumnSchema(type)).noDefault();
     }
 
-    protected Schema avroType(Class<?> type) {
+    protected Schema createColumnSchema(Class<?> type) {
         switch (type.getName()) {
 
             case "int":
@@ -156,10 +185,10 @@ public class AvroSaver {
             case "java.lang.Boolean":
                 return Schema.createUnion(Schema.create(Schema.Type.BOOLEAN), Schema.create(Schema.Type.NULL));
 
-            // TODO: byte[], java.time, BigDecimal, BigInteger, etc.
+            // TODO: enum, byte[], java.time, BigDecimal, BigInteger, etc.
 
             default:
-                return Schema.create(Schema.Type.STRING);
+                return Schema.createUnion(Schema.create(Schema.Type.STRING), Schema.create(Schema.Type.NULL));
         }
     }
 
