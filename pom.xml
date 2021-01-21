@@ -11,6 +11,7 @@
 
     <modules>
         <module>dflib</module>
+        <module>dflib-avro</module>
         <module>dflib-csv</module>
         <module>dflib-jdbc</module>
         <module>dflib-json</module>
@@ -51,6 +52,7 @@
         <junit4.version>4.13.1</junit4.version>
         <junit5.version>5.6.2</junit5.version>
         <jsonpath.version>2.4.0</jsonpath.version>
+        <avro.version>1.10.1</avro.version>
     </properties>
 
     <url>https://github.com/nhl/dflib</url>
@@ -166,6 +168,11 @@
                 <groupId>com.jayway.jsonpath</groupId>
                 <artifactId>json-path</artifactId>
                 <version>${jsonpath.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro</artifactId>
+                <version>${avro.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
