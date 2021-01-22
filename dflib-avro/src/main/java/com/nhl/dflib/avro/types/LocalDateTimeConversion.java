@@ -26,9 +26,8 @@ public class LocalDateTimeConversion extends Conversion<LocalDateTime> {
     @Override
     public LocalDateTime fromBytes(ByteBuffer value, Schema schema, LogicalType type) {
 
-        ByteBuffer reset = value.duplicate();
-        long sec = reset.getLong();
-        int nano = reset.getInt();
+        long sec = value.getLong();
+        int nano = value.getInt();
 
         return LocalDateTime.ofEpochSecond(sec, nano, ZoneOffset.UTC);
     }
