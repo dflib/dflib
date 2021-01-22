@@ -40,7 +40,7 @@ public class AvroSchemaBuilderTest {
                 "{\"name\":\"Double\",\"type\":[\"double\",\"null\"]}," +
                 "{\"name\":\"bool\",\"type\":\"boolean\"}," +
                 "{\"name\":\"Bool\",\"type\":[\"boolean\",\"null\"]}," +
-                "{\"name\":\"String\",\"type\":[\"string\",\"null\"]}]}", schema.toString());
+                "{\"name\":\"String\",\"type\":[{\"type\":\"string\",\"logicalType\":\"dflib-string\"},\"null\"]}]}", schema.toString());
     }
 
     @Test

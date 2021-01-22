@@ -1,8 +1,6 @@
 package com.nhl.dflib.avro;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.avro.saver.DataFrameSaveNormalizer;
-import com.nhl.dflib.avro.saver.RowToAvroRecordAdapter;
 import com.nhl.dflib.row.RowProxy;
 import org.apache.avro.Schema;
 import org.apache.avro.file.CodecFactory;
@@ -85,8 +83,7 @@ public class AvroDataSaver extends BaseSaver<AvroDataSaver> {
 
             // using flyweight wrapper around DFLib RowProxy
             RowToAvroRecordAdapter record = new RowToAvroRecordAdapter(schema);
-            DataFrame avroReadyDf = DataFrameSaveNormalizer.normalize(df);
-            for (RowProxy r : avroReadyDf) {
+            for (RowProxy r : df) {
                 outWriter.append(record.resetRow(r));
             }
         }

@@ -4,9 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DataFrameByRowBuilder;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.accumulator.*;
-import com.nhl.dflib.avro.loader.Accumulators;
-import com.nhl.dflib.avro.loader.LogicalTypeNames;
-import org.apache.avro.LogicalType;
+import com.nhl.dflib.avro.types.AvroTypeExtensions;
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileReader;
 import org.apache.avro.file.SeekableByteArrayInput;
@@ -20,6 +18,10 @@ import java.io.IOException;
 import java.util.List;
 
 public class AvroLoader {
+
+    static {
+        AvroTypeExtensions.init();
+    }
 
     private Schema schema;
 
@@ -106,7 +108,7 @@ public class AvroLoader {
             // Raw numeric and boolean types can be loaded as primitives,
             // as numeric nullable types are declared as unions and will fall under the "default" case
             case INT:
-                return accumulatorForInt(columnSchema.getLogicalType(), false);
+                return new IntAccumulator();
             case DOUBLE:
                 return new DoubleAccumulator();
             case LONG:
@@ -114,9 +116,8 @@ public class AvroLoader {
             case BOOLEAN:
                 return new BooleanAccumulator();
             case STRING:
-                return Accumulators.forUtf8();
             case BYTES:
-                return Accumulators.forByteBuffer();
+                return new ObjectAccumulator<>();
             case UNION:
                 return mapUnionColumn(columnSchema.getTypes());
             default:
@@ -141,33 +142,16 @@ public class AvroLoader {
         // don't allow primitives
         switch (otherThanNull[0].getType()) {
             case INT:
-                return accumulatorForInt(otherThanNull[0].getLogicalType(), true);
             case DOUBLE:
             case LONG:
             case BOOLEAN:
-                return new ObjectAccumulator<>();
             case STRING:
-                return Accumulators.forUtf8();
             case BYTES:
-                return Accumulators.forByteBuffer();
+                return new ObjectAccumulator<>();
             case UNION:
                 return mapUnionColumn(otherThanNull[0].getTypes());
             default:
                 throw new UnsupportedOperationException("(Yet) unsupported Avro schema type: " + otherThanNull[0].getType());
-        }
-    }
-
-    private Accumulator<?> accumulatorForInt(LogicalType lt, boolean allowNulls) {
-
-        if (lt == null) {
-            return allowNulls ? new ObjectAccumulator<>() : new IntAccumulator();
-        }
-
-        switch (lt.getName()) {
-            case LogicalTypeNames.DATE:
-                return Accumulators.forLocalDate();
-            default:
-                return allowNulls ? new ObjectAccumulator<>() : new IntAccumulator();
         }
     }
 }

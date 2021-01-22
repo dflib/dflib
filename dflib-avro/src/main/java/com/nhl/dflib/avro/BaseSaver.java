@@ -1,11 +1,17 @@
 package com.nhl.dflib.avro;
 
+import com.nhl.dflib.avro.types.AvroTypeExtensions;
+
 import java.io.File;
 
 /**
  * @since 0.11
  */
 public abstract class BaseSaver<SELF extends BaseSaver<SELF>> {
+
+    static {
+        AvroTypeExtensions.init();
+    }
 
     private boolean createMissingDirs;
     protected final AvroSchemaBuilder schemaBuilder;

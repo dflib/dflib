@@ -89,14 +89,14 @@ public class AvroTest {
                 "{\"name\":\"Double\",\"type\":[\"double\",\"null\"]}," +
                 "{\"name\":\"bool\",\"type\":\"boolean\"}," +
                 "{\"name\":\"Bool\",\"type\":[\"boolean\",\"null\"]}," +
-                "{\"name\":\"String\",\"type\":[\"string\",\"null\"]}," +
-                "{\"name\":\"byte_array\",\"type\":[\"bytes\",\"null\"]}," +
-                "{\"name\":\"LocalDate\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]}]}",
+                "{\"name\":\"String\",\"type\":[{\"type\":\"string\",\"logicalType\":\"dflib-string\"},\"null\"]}," +
+                "{\"name\":\"byte_array\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"dflib-byte-array\"},\"null\"]}," +
+                "{\"name\":\"LocalDate\",\"type\":[{\"type\":\"int\",\"logicalType\":\"dflib-local-date\"},\"null\"]}]}",
                 out.toString(StandardCharsets.UTF_8.name()));
     }
 
     @Test
-    public void testSaveSchema_ExolicitSchema() throws UnsupportedEncodingException {
+    public void testSaveSchema_ExplicitSchema() throws UnsupportedEncodingException {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 

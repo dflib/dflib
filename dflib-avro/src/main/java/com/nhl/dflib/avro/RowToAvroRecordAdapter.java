@@ -1,4 +1,4 @@
-package com.nhl.dflib.avro.saver;
+package com.nhl.dflib.avro;
 
 import com.nhl.dflib.row.RowProxy;
 import org.apache.avro.Schema;
