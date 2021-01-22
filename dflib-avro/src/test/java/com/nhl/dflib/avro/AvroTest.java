@@ -12,6 +12,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,7 +22,7 @@ public class AvroTest {
     static File destination;
 
     static final DataFrame df = DataFrame.newFrame(
-            "int", "Integer", "long", "Long", "double", "Double", "bool", "Bool", "String", "byte_array")
+            "int", "Integer", "long", "Long", "double", "Double", "bool", "Bool", "String", "byte_array", "LocalDate")
             .columns(
                     IntSeries.forInts(1, 2, 3),
                     Series.forData(11, 12, null),
@@ -32,7 +33,8 @@ public class AvroTest {
                     BooleanSeries.forBooleans(true, false, true),
                     Series.forData(Boolean.TRUE, Boolean.FALSE, null),
                     Series.forData("s1", "s2", null),
-                    Series.forData(new byte[] {1,2,3}, new byte[0], null)
+                    Series.forData(new byte[]{1, 2, 3}, new byte[0], null),
+                    Series.forData(LocalDate.of(2020, 1, 5), LocalDate.of(2019, 6, 8), null)
             );
 
     static final DataFrame empty = DataFrame.newFrame(df.getColumnsIndex()).empty();
@@ -66,9 +68,9 @@ public class AvroTest {
                 .expectDoubleColumns(4)
                 .expectBooleanColumns(6)
 
-                .expectRow(0, 1, 11, Long.MAX_VALUE - 1L, 21L, 20.12, 30.1, true, true, "s1", new byte[] {1,2,3})
-                .expectRow(1, 2, 12, Long.MIN_VALUE + 1L, 22L, 20.123, 31.45, false, false, "s2", new byte[0])
-                .expectRow(2, 3, null, 5L, null, 20.1235, null, true, null, null, null);
+                .expectRow(0, 1, 11, Long.MAX_VALUE - 1L, 21L, 20.12, 30.1, true, true, "s1", new byte[]{1, 2, 3}, LocalDate.of(2020, 1, 5))
+                .expectRow(1, 2, 12, Long.MIN_VALUE + 1L, 22L, 20.123, 31.45, false, false, "s2", new byte[0], LocalDate.of(2019, 6, 8))
+                .expectRow(2, 3, null, 5L, null, 20.1235, null, true, null, null, null, null);
     }
 
     @Test
@@ -88,7 +90,9 @@ public class AvroTest {
                 "{\"name\":\"bool\",\"type\":\"boolean\"}," +
                 "{\"name\":\"Bool\",\"type\":[\"boolean\",\"null\"]}," +
                 "{\"name\":\"String\",\"type\":[\"string\",\"null\"]}," +
-                "{\"name\":\"byte_array\",\"type\":[\"bytes\",\"null\"]}]}", out.toString(StandardCharsets.UTF_8.name()));
+                "{\"name\":\"byte_array\",\"type\":[\"bytes\",\"null\"]}," +
+                "{\"name\":\"LocalDate\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]}]}",
+                out.toString(StandardCharsets.UTF_8.name()));
     }
 
     @Test

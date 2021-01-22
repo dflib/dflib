@@ -1,6 +1,7 @@
 package com.nhl.dflib.avro;
 
 import com.nhl.dflib.DataFrame;
+import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 
@@ -90,6 +91,11 @@ public class AvroSchemaBuilder {
             case "byte[]":
             case "java.nio.ByteBuffer":
                 return Schema.createUnion(Schema.create(Schema.Type.BYTES), Schema.create(Schema.Type.NULL));
+
+            case "java.time.LocalDate":
+                return Schema.createUnion(
+                        LogicalTypes.date().addToSchema(Schema.create(Schema.Type.INT)),
+                        Schema.create(Schema.Type.NULL));
 
             // TODO: enum, java.time, BigDecimal, BigInteger, etc.
 

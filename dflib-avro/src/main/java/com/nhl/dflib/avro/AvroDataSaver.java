@@ -83,7 +83,7 @@ public class AvroDataSaver extends BaseSaver<AvroDataSaver> {
 
             // using flyweight wrapper around DFLib RowProxy
             RowToAvroRecordAdapter record = new RowToAvroRecordAdapter(schema);
-            DataFrame avroReadyDf = AvroDataFrameNormalizer.normalizeColumns(df);
+            DataFrame avroReadyDf = DataFrameSaveNormalizer.normalize(df);
             for (RowProxy r : avroReadyDf) {
                 outWriter.append(record.resetRow(r));
             }
