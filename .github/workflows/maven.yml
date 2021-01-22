@@ -23,12 +23,14 @@ jobs:
           java-version: 1.8
 
       - name: Retrieve mvn repo cache...
+        id: 'mvn-cache'
         uses: actions/cache@v2
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+        run: echo ${{ steps.mvn-cache.outputs.cache-hit }}
 
       # How do we make it a parameterized build?
       - name: Build and test...
