@@ -1,4 +1,4 @@
-package com.nhl.dflib.avro;
+package com.nhl.dflib.avro.saver;
 
 import com.nhl.dflib.row.RowProxy;
 import org.apache.avro.Schema;
@@ -10,7 +10,7 @@ import org.apache.avro.generic.GenericRecord;
  *
  * @since 0.11
  */
-class RowToAvroRecordAdapter implements GenericRecord {
+public class RowToAvroRecordAdapter implements GenericRecord {
 
     private final Schema schema;
     private RowProxy proxy;

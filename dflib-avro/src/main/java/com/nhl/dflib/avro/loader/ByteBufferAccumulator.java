@@ -1,4 +1,4 @@
-package com.nhl.dflib.avro;
+package com.nhl.dflib.avro.loader;
 
 import com.nhl.dflib.Series;
 import com.nhl.dflib.accumulator.Accumulator;
@@ -7,11 +7,13 @@ import com.nhl.dflib.accumulator.ObjectAccumulator;
 import java.nio.ByteBuffer;
 
 /**
- * Handles {@link java.nio.ByteBuffer} conversion preferred by Avro to a byte[] during DataFrame build.
+ * Handles {@link ByteBuffer} conversion preferred by Avro to a byte[] during DataFrame build.
+ *
+ * @since 0.11
  */
 // TODO: ugly generics switchover from ByteBuffer for input to byte[] for output
 //  We either need something like CSV ColumnBuilder, or make Accumulator<I, O> instead of <T>
-class ByteBufferAccumulator implements Accumulator<Object> {
+public class ByteBufferAccumulator implements Accumulator<Object> {
 
     private final Accumulator delegate;
 

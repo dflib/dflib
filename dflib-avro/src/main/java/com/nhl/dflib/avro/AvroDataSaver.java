@@ -1,6 +1,8 @@
 package com.nhl.dflib.avro;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.avro.saver.DataFrameSaveNormalizer;
+import com.nhl.dflib.avro.saver.RowToAvroRecordAdapter;
 import com.nhl.dflib.row.RowProxy;
 import org.apache.avro.Schema;
 import org.apache.avro.file.CodecFactory;

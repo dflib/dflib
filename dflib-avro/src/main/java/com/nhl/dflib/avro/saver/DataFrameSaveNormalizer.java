@@ -1,4 +1,4 @@
-package com.nhl.dflib.avro;
+package com.nhl.dflib.avro.saver;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
@@ -8,10 +8,12 @@ import java.time.LocalDate;
 
 /**
  * "Normalizes" DataFrame columns to be able to save with Avro.
+ *
+ * @since 0.11
  */
-class DataFrameSaveNormalizer {
+public class DataFrameSaveNormalizer {
 
-    static DataFrame normalize(DataFrame df) {
+    public static DataFrame normalize(DataFrame df) {
 
         int w = df.width();
         for (int i = 0; i < w; i++) {

@@ -4,6 +4,8 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DataFrameByRowBuilder;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.accumulator.*;
+import com.nhl.dflib.avro.loader.ByteBufferAccumulator;
+import com.nhl.dflib.avro.loader.Utf8Accumulator;
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileReader;
 import org.apache.avro.file.SeekableByteArrayInput;
