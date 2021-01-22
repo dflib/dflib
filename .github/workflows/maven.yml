@@ -32,7 +32,7 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Build and test...
-        run: mvn clean verify -U -P ${{ matrix.db }}
+        run: env && mvn clean verify -U -P ${{ matrix.db }}
 
   deploy:
 
