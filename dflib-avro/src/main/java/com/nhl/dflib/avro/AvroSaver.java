@@ -3,7 +3,6 @@ package com.nhl.dflib.avro;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.row.RowProxy;
 import org.apache.avro.Schema;
-import org.apache.avro.SchemaBuilder;
 import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.file.SyncableFileOutputStream;
 import org.apache.avro.generic.GenericData;
@@ -23,9 +22,12 @@ import java.io.OutputStream;
 public class AvroSaver {
 
     private boolean createMissingDirs;
-    private String namespace;
-    private String name;
     private boolean excludeSchema;
+    private final AvroSchemaBuilder schemaBuilder;
+
+    public AvroSaver() {
+        this.schemaBuilder = new AvroSchemaBuilder();
+    }
 
     /**
      * Instructs the saver to create any missing directories in the file path.
@@ -41,7 +43,7 @@ public class AvroSaver {
      * Sets the schema name of the generated Avro file. Optional. The default will be "DataFrame".
      */
     public AvroSaver name(String name) {
-        this.name = name;
+        this.schemaBuilder.name(name);
         return this;
     }
 
@@ -49,7 +51,7 @@ public class AvroSaver {
      * Sets the schema namespace of the generated Avro file. Optional. The default will be "com.nhl.dflib".
      */
     public AvroSaver namespace(String namespace) {
-        this.namespace = namespace;
+        this.schemaBuilder.namespace(namespace);
         return this;
     }
 
@@ -64,7 +66,7 @@ public class AvroSaver {
 
     public void save(DataFrame df, OutputStream out) {
 
-        Schema schema = createSchema(df);
+        Schema schema = schemaBuilder.createSchema(df);
 
         try {
             if (excludeSchema) {
@@ -87,7 +89,7 @@ public class AvroSaver {
         }
 
         // using SyncableFileOutputStream just like Avro does (though it should work with a regula FOS)
-        try (SyncableFileOutputStream out = new SyncableFileOutputStream(file);) {
+        try (SyncableFileOutputStream out = new SyncableFileOutputStream(file)) {
             save(df, out);
         } catch (IOException e) {
             throw new RuntimeException("Error writing Avro file '" + file + "': " + e.getMessage(), e);
@@ -123,24 +125,6 @@ public class AvroSaver {
         encoder.flush();
     }
 
-    protected Schema createSchema(DataFrame df) {
-
-        String name = this.name != null ? this.name : "DataFrame";
-        String namespace = this.namespace != null ? this.namespace : "com.nhl.dflib";
-
-        SchemaBuilder.FieldAssembler<Schema> fields = SchemaBuilder
-                .record(name)
-                .namespace(namespace)
-                .fields();
-
-        for (String column : df.getColumnsIndex()) {
-            Class<?> type = df.getColumn(column).getInferredType();
-            createSchemaField(fields, column, type);
-        }
-
-        return fields.endRecord();
-    }
-
     protected GenericRecord rowToRecord(Schema schema, RowProxy r) {
 
         GenericRecord ar = new GenericData.Record(schema);
@@ -152,45 +136,4 @@ public class AvroSaver {
 
         return ar;
     }
-
-    protected void createSchemaField(SchemaBuilder.FieldAssembler<Schema> builder, String column, Class<?> type) {
-        builder.name(column).type(createColumnSchema(type)).noDefault();
-    }
-
-    protected Schema createColumnSchema(Class<?> type) {
-        switch (type.getName()) {
-
-            case "int":
-                return Schema.create(Schema.Type.INT);
-            case "java.lang.Integer":
-                return Schema.createUnion(Schema.create(Schema.Type.INT), Schema.create(Schema.Type.NULL));
-
-            case "long":
-                return Schema.create(Schema.Type.LONG);
-            case "java.lang.Long":
-                return Schema.createUnion(Schema.create(Schema.Type.LONG), Schema.create(Schema.Type.NULL));
-
-            case "float":
-                return Schema.create(Schema.Type.FLOAT);
-            case "java.lang.Float":
-                return Schema.createUnion(Schema.create(Schema.Type.FLOAT), Schema.create(Schema.Type.NULL));
-
-            case "double":
-                return Schema.create(Schema.Type.DOUBLE);
-            case "java.lang.Double":
-                return Schema.createUnion(Schema.create(Schema.Type.DOUBLE), Schema.create(Schema.Type.NULL));
-
-            case "boolean":
-                return Schema.create(Schema.Type.BOOLEAN);
-            case "java.lang.Boolean":
-                return Schema.createUnion(Schema.create(Schema.Type.BOOLEAN), Schema.create(Schema.Type.NULL));
-
-            // TODO: enum, byte[], java.time, BigDecimal, BigInteger, etc.
-
-            default:
-                return Schema.createUnion(Schema.create(Schema.Type.STRING), Schema.create(Schema.Type.NULL));
-        }
-    }
-
-
 }
