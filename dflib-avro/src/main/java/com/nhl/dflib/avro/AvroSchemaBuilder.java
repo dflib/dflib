@@ -104,6 +104,11 @@ public class AvroSchemaBuilder {
                         AvroTypeExtensions.LOCAL_DATE_TYPE.addToSchema(Schema.create(Schema.Type.INT)),
                         Schema.create(Schema.Type.NULL));
 
+            case "java.time.LocalDateTime":
+                return Schema.createUnion(
+                        AvroTypeExtensions.LOCAL_DATE_TIME_TYPE.addToSchema(Schema.create(Schema.Type.LONG)),
+                        Schema.create(Schema.Type.NULL));
+
             // TODO: enum, java.time, BigDecimal, BigInteger, etc.
 
             default:

@@ -5,6 +5,7 @@ import com.nhl.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class AvroSerializationTest extends BaseAvroSerializationTest {
 
@@ -19,9 +20,8 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
         new DataFrameAsserts(loaded, "c1", "c2")
                 .expectHeight(3)
                 .expectIntColumns(0)
-                .expectRow(0, 1, 11)
-                .expectRow(1, 2, 12)
-                .expectRow(2, 3, null);
+                .expectColumn("c1", 1, 2, 3)
+                .expectColumn("c2", 11, 12, null);
     }
 
     @Test
@@ -35,9 +35,8 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
         new DataFrameAsserts(loaded, "c1", "c2")
                 .expectHeight(3)
                 .expectLongColumns(0)
-                .expectRow(0, Long.MAX_VALUE, 21L)
-                .expectRow(1, Long.MIN_VALUE + 1L, 22L)
-                .expectRow(2, 5L, null);
+                .expectColumn("c1", Long.MAX_VALUE, Long.MIN_VALUE + 1L, 5L)
+                .expectColumn("c2", 21L, 22L, null);
     }
 
     @Test
@@ -51,9 +50,8 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
         new DataFrameAsserts(loaded, "c1", "c2")
                 .expectHeight(3)
                 .expectDoubleColumns(0)
-                .expectRow(0, 20.12, 30.1)
-                .expectRow(1, 20.123, 31.45)
-                .expectRow(2, 20.1235, null);
+                .expectColumn("c1", 20.12, 20.123, 20.1235)
+                .expectColumn("c2", 30.1, 31.45, null);
     }
 
     @Test
@@ -67,9 +65,8 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
         new DataFrameAsserts(loaded, "c1", "c2")
                 .expectHeight(3)
                 .expectBooleanColumns(0)
-                .expectRow(0, true, true)
-                .expectRow(1, false, false)
-                .expectRow(2, true, null);
+                .expectColumn("c1", true, false, true)
+                .expectColumn("c2", Boolean.TRUE, Boolean.FALSE, null);
     }
 
     @Test
@@ -81,9 +78,7 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
         DataFrame loaded = saveAndLoad(df);
         new DataFrameAsserts(loaded, "c1")
                 .expectHeight(3)
-                .expectRow(0, "s1")
-                .expectRow(1, "s2")
-                .expectRow(2, (Object) null);
+                .expectColumn("c1", "s1", "s2", null);
     }
 
     @Test
@@ -95,22 +90,20 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
         DataFrame loaded = saveAndLoad(df);
         new DataFrameAsserts(loaded, "c1")
                 .expectHeight(3)
-                .expectRow(0, new byte[]{1, 2, 3})
-                .expectRow(1, new byte[0])
-                .expectRow(2, (Object) null);
+                .expectColumn("c1", new byte[]{1, 2, 3}, new byte[0], null);
     }
 
     @Test
     public void testDateTime() {
-        DataFrame df = DataFrame.newFrame("c1").columns(
-                Series.forData(LocalDate.of(2020, 1, 5), LocalDate.of(2019, 6, 8), null)
+        DataFrame df = DataFrame.newFrame("LocalDate", "LocalDateTime").columns(
+                Series.forData(LocalDate.of(2020, 1, 5), LocalDate.of(2019, 6, 8), null),
+                Series.forData(LocalDateTime.of(2020, 1, 5, 1, 2, 15, 9), LocalDateTime.of(2019, 6, 8, 6, 7, 8), null)
         );
 
         DataFrame loaded = saveAndLoad(df);
-        new DataFrameAsserts(loaded, "c1")
+        new DataFrameAsserts(loaded, "LocalDate", "LocalDateTime")
                 .expectHeight(3)
-                .expectRow(0, LocalDate.of(2020, 1, 5))
-                .expectRow(1, LocalDate.of(2019, 6, 8))
-                .expectRow(2, (Object) null);
+                .expectColumn("LocalDate", LocalDate.of(2020, 1, 5), LocalDate.of(2019, 6, 8), null)
+                .expectColumn("LocalDateTime", LocalDateTime.of(2020, 1, 5, 1, 2, 15, 9), LocalDateTime.of(2019, 6, 8, 6, 7, 8), null);
     }
 }

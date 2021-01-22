@@ -11,17 +11,20 @@ public class AvroTypeExtensions {
     public static final ByteArrayType BYTE_ARRAY_TYPE = new ByteArrayType();
     public static final StringType STRING_TYPE = new StringType();
     public static final LocalDateType LOCAL_DATE_TYPE = new LocalDateType();
+    public static final LocalDateTimeType LOCAL_DATE_TIME_TYPE = new LocalDateTimeType();
 
     static {
         // static logical types
         LogicalTypes.register(ByteArrayType.NAME, new InstanceLogicalTypeFactory(BYTE_ARRAY_TYPE));
         LogicalTypes.register(StringType.NAME, new InstanceLogicalTypeFactory(STRING_TYPE));
         LogicalTypes.register(LocalDateType.NAME, new InstanceLogicalTypeFactory(LOCAL_DATE_TYPE));
+        LogicalTypes.register(LocalDateTimeType.NAME, new InstanceLogicalTypeFactory(LOCAL_DATE_TIME_TYPE));
 
         // static conversions
         GenericData.get().addLogicalTypeConversion(new ByteArrayConversion());
         GenericData.get().addLogicalTypeConversion(new StringConversion());
         GenericData.get().addLogicalTypeConversion(new LocalDateConversion());
+        GenericData.get().addLogicalTypeConversion(new LocalDateTimeConversion());
     }
 
     public static void init() {

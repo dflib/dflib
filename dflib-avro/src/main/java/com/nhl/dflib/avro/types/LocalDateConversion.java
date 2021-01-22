@@ -20,11 +20,11 @@ public class LocalDateConversion extends Conversion<LocalDate> {
 
     @Override
     public LocalDate fromInt(Integer value, Schema schema, LogicalType type) {
-        return value != null ? LocalDate.ofEpochDay(value) : null;
+        return LocalDate.ofEpochDay(value);
     }
 
     @Override
     public Integer toInt(LocalDate value, Schema schema, LogicalType type) {
-        return value != null ? (int) value.toEpochDay() : null;
+        return (int) value.toEpochDay();
     }
 }

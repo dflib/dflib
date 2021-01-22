@@ -21,7 +21,7 @@ public class StringConversion extends Conversion<String> {
 
     @Override
     public String fromCharSequence(CharSequence value, Schema schema, LogicalType type) {
-        return value != null ? value.toString() : null;
+        return value.toString();
     }
 
     @Override
