@@ -52,6 +52,7 @@ public class AvroSchemaBuilder {
     }
 
     protected void createSchemaField(SchemaBuilder.FieldAssembler<Schema> builder, String column, Class<?> type) {
+        validateColumnName(column);
         builder.name(column).type(createColumnSchema(type)).noDefault();
     }
 
@@ -88,5 +89,28 @@ public class AvroSchemaBuilder {
             default:
                 return Schema.createUnion(Schema.create(Schema.Type.STRING), Schema.create(Schema.Type.NULL));
         }
+    }
+
+    // Making sure the name corresponds to the Avro spec restrictions. Doing it here (instead of deferring to Avro)
+    // to provide a user-friendly message. See https://avro.apache.org/docs/current/spec.html#names
+    protected void validateColumnName(String name) {
+
+        int length = name.length();
+        if (length == 0) {
+            throw new RuntimeException("Empty column name");
+        }
+
+        char first = name.charAt(0);
+        if (!(Character.isLetter(first) || first == '_')) {
+            throw new RuntimeException("Column name can not be used as an Avro field name. Name: '" + name + "', invalid first char: " + first);
+        }
+
+        for (int i = 1; i < length; i++) {
+            char c = name.charAt(i);
+            if (!(Character.isLetterOrDigit(c) || c == '_')) {
+                throw new RuntimeException("Column name can not be used as an Avro field name. Name: '" + name + "', invalid char: " + c);
+            }
+        }
+
     }
 }
