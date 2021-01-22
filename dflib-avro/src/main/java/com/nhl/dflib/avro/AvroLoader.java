@@ -4,8 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DataFrameByRowBuilder;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.accumulator.*;
-import com.nhl.dflib.avro.loader.ByteBufferAccumulator;
-import com.nhl.dflib.avro.loader.Utf8Accumulator;
+import com.nhl.dflib.avro.loader.Accumulators;
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileReader;
 import org.apache.avro.file.SeekableByteArrayInput;
@@ -113,11 +112,9 @@ public class AvroLoader {
             case BOOLEAN:
                 return new BooleanAccumulator();
             case STRING:
-                // Strings are served as flyweight Utf8 objects and must be converted
-                return new Utf8Accumulator();
+                return Accumulators.forUtf8();
             case BYTES:
-                // byte[]'s are served as flyweight ByteBuffer objects and must be converted
-                return new ByteBufferAccumulator();
+                return Accumulators.forByteBuffer();
             case UNION:
                 return mapUnionColumn(columnSchema.getTypes());
             default:
@@ -147,11 +144,9 @@ public class AvroLoader {
             case BOOLEAN:
                 return new ObjectAccumulator<>();
             case STRING:
-                // Strings are served as flyweight Utf8 objects and must be converted
-                return new Utf8Accumulator();
+                return Accumulators.forUtf8();
             case BYTES:
-                // byte[]'s are served as flyweight ByteBuffer objects and must be converted
-                return new ByteBufferAccumulator();
+                return Accumulators.forByteBuffer();
             case UNION:
                 return mapUnionColumn(otherThanNull[0].getTypes());
             default:
