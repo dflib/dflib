@@ -5,6 +5,8 @@ import com.nhl.dflib.DataFrameByRowBuilder;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.accumulator.*;
 import com.nhl.dflib.avro.loader.Accumulators;
+import com.nhl.dflib.avro.loader.LogicalTypeNames;
+import org.apache.avro.LogicalType;
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileReader;
 import org.apache.avro.file.SeekableByteArrayInput;
@@ -104,7 +106,7 @@ public class AvroLoader {
             // Raw numeric and boolean types can be loaded as primitives,
             // as numeric nullable types are declared as unions and will fall under the "default" case
             case INT:
-                return new IntAccumulator();
+                return accumulatorForInt(columnSchema.getLogicalType(), false);
             case DOUBLE:
                 return new DoubleAccumulator();
             case LONG:
@@ -139,6 +141,7 @@ public class AvroLoader {
         // don't allow primitives
         switch (otherThanNull[0].getType()) {
             case INT:
+                return accumulatorForInt(otherThanNull[0].getLogicalType(), true);
             case DOUBLE:
             case LONG:
             case BOOLEAN:
@@ -151,6 +154,20 @@ public class AvroLoader {
                 return mapUnionColumn(otherThanNull[0].getTypes());
             default:
                 throw new UnsupportedOperationException("(Yet) unsupported Avro schema type: " + otherThanNull[0].getType());
+        }
+    }
+
+    private Accumulator<?> accumulatorForInt(LogicalType lt, boolean allowNulls) {
+
+        if (lt == null) {
+            return allowNulls ? new ObjectAccumulator<>() : new IntAccumulator();
+        }
+
+        switch (lt.getName()) {
+            case LogicalTypeNames.DATE:
+                return Accumulators.forLocalDate();
+            default:
+                return allowNulls ? new ObjectAccumulator<>() : new IntAccumulator();
         }
     }
 }

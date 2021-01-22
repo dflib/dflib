@@ -3,6 +3,7 @@ package com.nhl.dflib.avro.loader;
 import com.nhl.dflib.accumulator.Accumulator;
 
 import java.nio.ByteBuffer;
+import java.time.LocalDate;
 
 /**
  * @since 0.11
@@ -19,6 +20,12 @@ public class Accumulators {
         return new ConvertingAccumulator<Object>(Accumulators::fromByteBufferToByteArray);
     }
 
+
+    public static Accumulator<Object> forLocalDate() {
+        // LocalDates are served as ints
+        return new ConvertingAccumulator<Object>(Accumulators::fromIntToLocalDate);
+    }
+
     private static String fromUtf8ToString(Object v) {
         return v.toString();
     }
@@ -32,5 +39,9 @@ public class Accumulators {
         buffer.get(bytes);
 
         return bytes;
+    }
+
+    private static LocalDate fromIntToLocalDate(Object v) {
+        return LocalDate.ofEpochDay((Integer) v);
     }
 }

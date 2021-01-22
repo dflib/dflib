@@ -44,6 +44,6 @@ public class DataFrameSaveNormalizer {
         // per https://avro.apache.org/docs/current/spec.html#Date
         // "int stores the number of days from the unix epoch, 1 January 1970 (ISO calendar)"
 
-        return date != null ? (int) date.toEpochDay() : -1;
+        return date != null ? (int) date.toEpochDay() : null;
     }
 }
