@@ -4,6 +4,7 @@ import org.apache.avro.Conversion;
 import org.apache.avro.LogicalType;
 import org.apache.avro.Schema;
 
+import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
@@ -23,21 +24,29 @@ public class LocalDateTimeConversion extends Conversion<LocalDateTime> {
     }
 
     @Override
-    public LocalDateTime fromLong(Long value, Schema schema, LogicalType type) {
+    public LocalDateTime fromBytes(ByteBuffer value, Schema schema, LogicalType type) {
 
-        long lvalue = value;
-        long sec = lvalue / 1_000_000_000;
-        long nano = lvalue % 1_000_000_000;
+        ByteBuffer reset = value.duplicate();
+        long sec = reset.getLong();
+        int nano = reset.getInt();
 
-        return LocalDateTime.ofEpochSecond(sec, (int) nano, ZoneOffset.UTC);
+        return LocalDateTime.ofEpochSecond(sec, nano, ZoneOffset.UTC);
     }
 
     @Override
-    public Long toLong(LocalDateTime value, Schema schema, LogicalType type) {
+    public ByteBuffer toBytes(LocalDateTime value, Schema schema, LogicalType type) {
+
+        ByteBuffer buffer = ByteBuffer.allocate(12);
 
         long secs = value.toEpochSecond(ZoneOffset.UTC);
+        int nanos = value.getNano();
 
-        // TODO: a date way in the future may overflow MAX_LONG
-        return secs * 1_000_000_000 + value.getNano();
+        buffer.putLong(secs);
+        buffer.putInt(nanos);
+
+        // must flip so that Avro can read the data we just put in
+        buffer.flip();
+
+        return buffer;
     }
 }
