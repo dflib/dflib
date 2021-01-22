@@ -6,7 +6,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -34,7 +33,6 @@ jobs:
         run: mvn clean verify -U -P ${{ matrix.db }}
 
   deploy:
-
     needs: build
     runs-on: ubuntu-latest
 
