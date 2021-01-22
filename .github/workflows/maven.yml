@@ -32,7 +32,7 @@ jobs:
 
       # How do we make it a parameterized build?
       - name: Build and test...
-        run: ls -l ~/.m2/repository/io/bootique && mvn clean verify -U -P ${{ matrix.db }}
+        run: ls -l ~/.m2/repository && mvn clean verify -U -P ${{ matrix.db }}
 
   deploy:
 
