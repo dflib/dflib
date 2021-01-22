@@ -2,7 +2,7 @@
 
 * #116 Map operation over the entire DataFrame
 * #118 Read/write DataFrames from/to Avro files
-* #119 Primitive (custom) accummulators for DataFrameBuilder.byRow(..)
+* #119 Primitive (custom) accumulators for DataFrameBuilder.byRow(..)
 
 ## Release 0.10
 

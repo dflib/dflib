@@ -4,6 +4,7 @@ import com.nhl.dflib.DataFrame;
 import org.apache.avro.Schema;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
@@ -27,6 +28,24 @@ public class Avro {
         return new AvroLoader();
     }
 
+
+    public static Schema loadSchema(File file) {
+        return schemaLoader().load(file);
+    }
+
+    public static Schema loadSchema(String filePath) {
+        return schemaLoader().load(filePath);
+    }
+
+    public static Schema loadSchema(InputStream in) {
+        return schemaLoader().load(in);
+    }
+
+    public static AvroSchemaLoader schemaLoader() {
+        return new AvroSchemaLoader();
+    }
+
+
     public static void saveData(DataFrame df, String filePath) {
         dataSaver().save(df, filePath);
     }
@@ -38,6 +57,11 @@ public class Avro {
     public static void saveData(DataFrame df, OutputStream out) {
         dataSaver().save(df, out);
     }
+
+    public static AvroDataSaver dataSaver() {
+        return new AvroDataSaver();
+    }
+
 
     public static void saveSchema(DataFrame df, String filePath) {
         schemaSaver().save(df, filePath);
@@ -61,10 +85,6 @@ public class Avro {
 
     public static void saveSchema(Schema schema, OutputStream out) {
         schemaSaver().save(schema, out);
-    }
-
-    public static AvroDataSaver dataSaver() {
-        return new AvroDataSaver();
     }
 
     public static AvroSchemaSaver schemaSaver() {

@@ -7,6 +7,7 @@ import org.apache.avro.SchemaBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -103,5 +104,23 @@ public class AvroTest {
 
         assertEquals("{\"type\":\"record\",\"name\":\"x\",\"namespace\":\"com.foo\",\"fields\":[" +
                 "{\"name\":\"c\",\"type\":\"bytes\"}]}", out.toString(StandardCharsets.UTF_8.name()));
+    }
+
+    @Test
+    public void testLoadSchema() {
+
+        String schemaJson = "{\"type\":\"record\",\"name\":\"x\",\"namespace\":\"com.foo\",\"fields\":[" +
+                "{\"name\":\"c\",\"type\":\"bytes\"}]}";
+
+        ByteArrayInputStream in = new ByteArrayInputStream(schemaJson.getBytes(StandardCharsets.UTF_8));
+        Schema loaded = Avro.loadSchema(in);
+
+        Schema ref = SchemaBuilder
+                .record("x")
+                .namespace("com.foo")
+                .fields().name("c").type(Schema.create(Schema.Type.BYTES)).noDefault()
+                .endRecord();
+
+        assertEquals(ref, loaded);
     }
 }

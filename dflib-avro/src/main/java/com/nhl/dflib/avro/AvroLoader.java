@@ -11,13 +11,24 @@ import org.apache.avro.file.SeekableFileInput;
 import org.apache.avro.file.SeekableInput;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.io.DatumReader;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 public class AvroLoader {
+
+    private Schema schema;
+
+    /**
+     * Sets an explicit "reader" schema. If not set, embedded "writer" schema of the file will be used. Of course
+     * the reader and the writer schema may differ, but should match each other per set of rules described in the
+     * <a href="https://avro.apache.org/docs/current/spec.html#Schema+Resolution">Avro specification</a>.
+     */
+    public AvroLoader schema(Schema schema) {
+        this.schema = schema;
+        return this;
+    }
 
     public DataFrame load(File file) {
         try (SeekableFileInput in = new SeekableFileInput(file)) {
@@ -41,9 +52,13 @@ public class AvroLoader {
 
     protected DataFrame load(SeekableInput in) throws IOException {
 
-        DatumReader<GenericRecord> reader = new GenericDatumReader<>(null);
+        // Passing "reader" schema to GenericDatumReader. It is allowed to be null.
+        // If not null, Avro will try to convert the file "writer" schema to the reader's expected format
+        // See: https://avro.apache.org/docs/current/spec.html#Schema+Resolution
+
+        GenericDatumReader<GenericRecord> reader = new GenericDatumReader<>(schema);
         DataFileReader<GenericRecord> inReader = new DataFileReader<>(in, reader);
-        Schema schema = inReader.getSchema();
+        Schema schema = reader.getExpected();
 
         Index index = createIndex(schema);
         DataFrameByRowBuilder dfb = DataFrame.newFrame(index).byRow(mapColumns(schema));
