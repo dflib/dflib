@@ -23,7 +23,6 @@ jobs:
           java-version: 1.8
 
       - name: Retrieve mvn repo cache...
-        id: 'mvn-cache'
         uses: actions/cache@v2
         with:
           path: ~/.m2/repository
@@ -31,12 +30,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Got cache?
-        run: echo ${{ steps.mvn-cache.outputs.cache-hit }}
-
       # How do we make it a parameterized build?
       - name: Build and test...
-        run: mvn clean verify -U -P ${{ matrix.db }}
+        run: ls -l ~/.m2/repository/io/bootique && mvn clean verify -U -P ${{ matrix.db }}
 
   deploy:
 
