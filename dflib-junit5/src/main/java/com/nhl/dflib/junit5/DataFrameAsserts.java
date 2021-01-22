@@ -146,7 +146,7 @@ public class DataFrameAsserts {
             if (expected == null) {
                 assertNull(actual, "Unexpected value in '" + column + "'");
             } else if (expected.getClass().isArray()) {
-                assertTrue(actual.getClass().isArray(), "Was expecting array in '" + column + "'");
+                assertTrue(actual.getClass().isArray(), () -> "Was expecting array in '" + column + "': " + actual.getClass().getName());
                 expectArrayRow(column, expected, actual);
             } else {
                 assertEquals(expected, actual, "Unexpected value in '" + column + "'");

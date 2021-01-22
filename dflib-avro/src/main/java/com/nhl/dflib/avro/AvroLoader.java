@@ -113,6 +113,9 @@ public class AvroLoader {
             case STRING:
                 // Strings are served as flyweight Utf8 objects and must be converted
                 return new Utf8Accumulator();
+            case BYTES:
+                // byte[]'s are served as flyweight ByteBuffer objects and must be converted
+                return new ByteBufferAccumulator();
             case UNION:
                 return mapUnionColumn(columnSchema.getTypes());
             default:
@@ -144,6 +147,9 @@ public class AvroLoader {
             case STRING:
                 // Strings are served as flyweight Utf8 objects and must be converted
                 return new Utf8Accumulator();
+            case BYTES:
+                // byte[]'s are served as flyweight ByteBuffer objects and must be converted
+                return new ByteBufferAccumulator();
             case UNION:
                 return mapUnionColumn(otherThanNull[0].getTypes());
             default:

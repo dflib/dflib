@@ -6,7 +6,6 @@ import org.apache.avro.Schema;
 import org.apache.avro.file.CodecFactory;
 import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.file.SyncableFileOutputStream;
-import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.DatumWriter;
@@ -81,21 +80,15 @@ public class AvroDataSaver extends BaseSaver<AvroDataSaver> {
             }
 
             outWriter.create(schema, out);
-            for (RowProxy r : df) {
-                outWriter.append(rowToRecord(schema, r));
+
+            // using flyweight wrapper around DFLib RowProxy
+            RowToAvroRecordAdapter record = new RowToAvroRecordAdapter(schema);
+            DataFrame avroReadyDf = AvroDataFrameNormalizer.normalizeColumns(df);
+            for (RowProxy r : avroReadyDf) {
+                outWriter.append(record.resetRow(r));
             }
         }
     }
 
-    protected GenericRecord rowToRecord(Schema schema, RowProxy r) {
 
-        GenericRecord ar = new GenericData.Record(schema);
-
-        // TODO: Avoid copying data. GenericRecord is simple, so just create a GenericData wrapper around RowProxy.
-        for (Schema.Field f : schema.getFields()) {
-            ar.put(f.name(), r.get(f.name()));
-        }
-
-        return ar;
-    }
 }

@@ -57,7 +57,10 @@ public class AvroSchemaBuilder {
     }
 
     protected Schema createColumnSchema(Class<?> type) {
-        switch (type.getName()) {
+
+        String name = type.isArray() ? type.getComponentType().getName() + "[]" : type.getName();
+
+        switch (name) {
 
             case "int":
                 return Schema.create(Schema.Type.INT);
@@ -84,7 +87,11 @@ public class AvroSchemaBuilder {
             case "java.lang.Boolean":
                 return Schema.createUnion(Schema.create(Schema.Type.BOOLEAN), Schema.create(Schema.Type.NULL));
 
-            // TODO: enum, byte[], java.time, BigDecimal, BigInteger, etc.
+            case "byte[]":
+            case "java.nio.ByteBuffer":
+                return Schema.createUnion(Schema.create(Schema.Type.BYTES), Schema.create(Schema.Type.NULL));
+
+            // TODO: enum, java.time, BigDecimal, BigInteger, etc.
 
             default:
                 return Schema.createUnion(Schema.create(Schema.Type.STRING), Schema.create(Schema.Type.NULL));

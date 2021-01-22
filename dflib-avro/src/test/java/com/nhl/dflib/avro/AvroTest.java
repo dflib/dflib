@@ -21,7 +21,7 @@ public class AvroTest {
     static File destination;
 
     static final DataFrame df = DataFrame.newFrame(
-            "int", "Integer", "long", "Long", "double", "Double", "bool", "Bool", "String")
+            "int", "Integer", "long", "Long", "double", "Double", "bool", "Bool", "String", "byte_array")
             .columns(
                     IntSeries.forInts(1, 2, 3),
                     Series.forData(11, 12, null),
@@ -31,7 +31,8 @@ public class AvroTest {
                     Series.forData(30.1, 31.45, null),
                     BooleanSeries.forBooleans(true, false, true),
                     Series.forData(Boolean.TRUE, Boolean.FALSE, null),
-                    Series.forData("s1", "s2", null)
+                    Series.forData("s1", "s2", null),
+                    Series.forData(new byte[] {1,2,3}, new byte[0], null)
             );
 
     static final DataFrame empty = DataFrame.newFrame(df.getColumnsIndex()).empty();
@@ -65,9 +66,9 @@ public class AvroTest {
                 .expectDoubleColumns(4)
                 .expectBooleanColumns(6)
 
-                .expectRow(0, 1, 11, Long.MAX_VALUE - 1L, 21L, 20.12, 30.1, true, true, "s1")
-                .expectRow(1, 2, 12, Long.MIN_VALUE + 1L, 22L, 20.123, 31.45, false, false, "s2")
-                .expectRow(2, 3, null, 5L, null, 20.1235, null, true, null, null);
+                .expectRow(0, 1, 11, Long.MAX_VALUE - 1L, 21L, 20.12, 30.1, true, true, "s1", new byte[] {1,2,3})
+                .expectRow(1, 2, 12, Long.MIN_VALUE + 1L, 22L, 20.123, 31.45, false, false, "s2", new byte[0])
+                .expectRow(2, 3, null, 5L, null, 20.1235, null, true, null, null, null);
     }
 
     @Test
@@ -86,11 +87,12 @@ public class AvroTest {
                 "{\"name\":\"Double\",\"type\":[\"double\",\"null\"]}," +
                 "{\"name\":\"bool\",\"type\":\"boolean\"}," +
                 "{\"name\":\"Bool\",\"type\":[\"boolean\",\"null\"]}," +
-                "{\"name\":\"String\",\"type\":[\"string\",\"null\"]}]}", out.toString(StandardCharsets.UTF_8.name()));
+                "{\"name\":\"String\",\"type\":[\"string\",\"null\"]}," +
+                "{\"name\":\"byte_array\",\"type\":[\"bytes\",\"null\"]}]}", out.toString(StandardCharsets.UTF_8.name()));
     }
 
     @Test
-    public void testSaveSchema_Schema() throws UnsupportedEncodingException {
+    public void testSaveSchema_ExolicitSchema() throws UnsupportedEncodingException {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
