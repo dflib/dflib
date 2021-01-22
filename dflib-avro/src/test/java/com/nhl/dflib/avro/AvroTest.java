@@ -2,10 +2,15 @@ package com.nhl.dflib.avro;
 
 import com.nhl.dflib.*;
 import com.nhl.dflib.junit5.DataFrameAsserts;
+import org.apache.avro.Schema;
+import org.apache.avro.SchemaBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,11 +23,11 @@ public class AvroTest {
             "int", "Integer", "long", "Long", "double", "Double", "bool", "Bool", "String")
             .columns(
                     IntSeries.forInts(1, 2, 3),
-                    Series.forData(Integer.valueOf(11), Integer.valueOf(12), null),
+                    Series.forData(11, 12, null),
                     LongSeries.forLongs(Long.MAX_VALUE - 1L, Long.MIN_VALUE + 1L, 5L),
-                    Series.forData(Long.valueOf(21L), Long.valueOf(22L), null),
+                    Series.forData(21L, 22L, null),
                     DoubleSeries.forDoubles(20.12, 20.123, 20.1235),
-                    Series.forData(Double.valueOf(30.1), Double.valueOf(31.45), null),
+                    Series.forData(30.1, 31.45, null),
                     BooleanSeries.forBooleans(true, false, true),
                     Series.forData(Boolean.TRUE, Boolean.FALSE, null),
                     Series.forData("s1", "s2", null)
@@ -31,9 +36,9 @@ public class AvroTest {
     static final DataFrame empty = DataFrame.newFrame(df.getColumnsIndex()).empty();
 
     @Test
-    public void test_File_withSchema_Empty() {
-        File file = new File(destination, "test_File_withSchema_Empty.avro");
-        Avro.save(empty, file);
+    public void testSaveData_File_Empty() {
+        File file = new File(destination, "testSaveData_File_Empty.avro");
+        Avro.saveData(empty, file);
         assertTrue(file.exists());
         assertTrue(file.length() > 0);
 
@@ -43,9 +48,9 @@ public class AvroTest {
     }
 
     @Test
-    public void test_File_withSchema() {
-        File file = new File(destination, "test_File_withSchema.avro");
-        Avro.save(df, file);
+    public void testSaveData_File() {
+        File file = new File(destination, "testSaveData_File.avro");
+        Avro.saveData(df, file);
         assertTrue(file.exists());
         assertTrue(file.length() > 0);
 
@@ -65,20 +70,38 @@ public class AvroTest {
     }
 
     @Test
-    public void testSave_toFile_excludeSchema() {
-        File file = new File(destination, "testSave_toFile_excludeSchema.avro");
-        new AvroSaver().excludeSchema().save(df, file);
-        assertTrue(file.exists());
-        assertTrue(file.length() > 0);
+    public void testSaveSchema_DataFrame() throws UnsupportedEncodingException {
 
-        // TODO: API to load using externally saved schema
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Avro.saveSchema(df, out);
+
+        assertEquals("{\"type\":\"record\",\"name\":\"DataFrame\",\"namespace\":\"com.nhl.dflib\",\"fields\":[" +
+                "{\"name\":\"int\",\"type\":\"int\"}," +
+                "{\"name\":\"Integer\",\"type\":[\"int\",\"null\"]}," +
+                "{\"name\":\"long\",\"type\":\"long\"}," +
+                "{\"name\":\"Long\",\"type\":[\"long\",\"null\"]}," +
+                "{\"name\":\"double\",\"type\":\"double\"}," +
+                "{\"name\":\"Double\",\"type\":[\"double\",\"null\"]}," +
+                "{\"name\":\"bool\",\"type\":\"boolean\"}," +
+                "{\"name\":\"Bool\",\"type\":[\"boolean\",\"null\"]}," +
+                "{\"name\":\"String\",\"type\":[\"string\",\"null\"]}]}", out.toString(StandardCharsets.UTF_8.name()));
     }
 
     @Test
-    public void testSave_toFile_excludeSchema_Empty() {
-        File file = new File(destination, "testSave_toFile_excludeSchema_Empty.avro");
-        new AvroSaver().excludeSchema().save(empty, file);
-        assertTrue(file.exists());
-        assertEquals(0, file.length());
+    public void testSaveSchema_Schema() throws UnsupportedEncodingException {
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Schema schema = SchemaBuilder
+                .record("x")
+                .namespace("com.foo")
+                .fields().name("c").type(Schema.create(Schema.Type.BYTES)).noDefault()
+                .endRecord();
+
+        Avro.saveSchema(schema, out);
+
+        assertEquals("{\"type\":\"record\",\"name\":\"x\",\"namespace\":\"com.foo\",\"fields\":[" +
+                "{\"name\":\"c\",\"type\":\"bytes\"}]}", out.toString(StandardCharsets.UTF_8.name()));
     }
 }

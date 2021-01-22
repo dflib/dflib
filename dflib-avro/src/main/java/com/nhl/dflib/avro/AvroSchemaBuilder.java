@@ -4,6 +4,11 @@ import com.nhl.dflib.DataFrame;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 
+/**
+ * Creates Avro Schema from the DataFrame structure.
+ *
+ * @since 0.11
+ */
 public class AvroSchemaBuilder {
 
     private static final String DEFAULT_NAME = "DataFrame";
@@ -28,7 +33,7 @@ public class AvroSchemaBuilder {
         return this;
     }
 
-    public Schema createSchema(DataFrame df) {
+    public Schema compileSchema(DataFrame df) {
 
         String name = this.name != null ? this.name : DEFAULT_NAME;
         String namespace = this.namespace != null ? this.namespace : DEFAULT_NAMESPACE;
