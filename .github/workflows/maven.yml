@@ -30,6 +30,8 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+
+      - name: Got cache?
         run: echo ${{ steps.mvn-cache.outputs.cache-hit }}
 
       # How do we make it a parameterized build?
