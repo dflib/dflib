@@ -22,6 +22,7 @@ jobs:
         with:
           java-version: 1.8
 
+      # TODO: something is off with the cache.. It is successfully retrieved, but doing "ls ~/.m2/repository" in the following step fails.
       - name: Retrieve mvn repo cache...
         uses: actions/cache@v2
         with:
@@ -30,9 +31,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # How do we make it a parameterized build?
       - name: Build and test...
-        run: ls -l ~/.m2/repository && mvn clean verify -U -P ${{ matrix.db }}
+        run: mvn clean verify -U -P ${{ matrix.db }}
 
   deploy:
 
