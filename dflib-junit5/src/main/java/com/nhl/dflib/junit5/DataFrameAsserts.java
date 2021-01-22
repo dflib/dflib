@@ -137,6 +137,8 @@ public class DataFrameAsserts {
         // element array with null... need to fix that
         Object[] expectedNormal = expectedValues != null ? expectedValues : new Object[]{null};
 
+        assertEquals(expectedNormal.length, expectedColumns.length, () -> "Width mismatch between the expected and actual rows");
+
         for (int i = 0; i < expectedColumns.length; i++) {
 
             String column = expectedColumns[i];
