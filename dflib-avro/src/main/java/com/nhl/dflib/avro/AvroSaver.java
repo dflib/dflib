@@ -3,6 +3,7 @@ package com.nhl.dflib.avro;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.row.RowProxy;
 import org.apache.avro.Schema;
+import org.apache.avro.file.CodecFactory;
 import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.file.SyncableFileOutputStream;
 import org.apache.avro.generic.GenericData;
@@ -24,6 +25,7 @@ public class AvroSaver {
     private boolean createMissingDirs;
     private boolean excludeSchema;
     private final AvroSchemaBuilder schemaBuilder;
+    private CodecFactory codec;
 
     public AvroSaver() {
         this.schemaBuilder = new AvroSchemaBuilder();
@@ -52,6 +54,11 @@ public class AvroSaver {
      */
     public AvroSaver namespace(String namespace) {
         this.schemaBuilder.namespace(namespace);
+        return this;
+    }
+
+    public AvroSaver codec(CodecFactory codec) {
+        this.codec = codec;
         return this;
     }
 
@@ -105,6 +112,11 @@ public class AvroSaver {
 
         // DataFileWriter includes Schema in the output
         try (DataFileWriter<GenericRecord> outWriter = new DataFileWriter<>(writer)) {
+
+            if (codec != null) {
+                outWriter.setCodec(codec);
+            }
+            
             outWriter.create(schema, out);
             for (RowProxy r : df) {
                 outWriter.append(rowToRecord(schema, r));
