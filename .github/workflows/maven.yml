@@ -2,7 +2,7 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   build:
@@ -27,11 +27,11 @@ jobs:
           ${{ runner.os }}-maven-
 
     # How do we make it a parameterized build?
-#    - name: Build...
-#      strategy:
-#        matrix:
-#          db: ['derby', 'mysql', 'postgresql']
-#      run: mvn clean verify -P ${{ matrix.db }}
+    - name: Build...
+      strategy:
+        matrix:
+          db: ['derby', 'mysql', 'postgresql']
+      run: mvn clean verify -P ${{ matrix.db }}
 
 #    - name: Deploy...
 #      run: mvn clean source:jar javadoc:javadoc deploy -DskipTests --settings .github/workflows/maven_settings.xml
