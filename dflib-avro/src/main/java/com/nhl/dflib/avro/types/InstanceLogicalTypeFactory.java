@@ -4,6 +4,9 @@ import org.apache.avro.LogicalType;
 import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
 
+/**
+ * @since 0.11
+ */
 public class InstanceLogicalTypeFactory implements LogicalTypes.LogicalTypeFactory {
 
     private final LogicalType type;

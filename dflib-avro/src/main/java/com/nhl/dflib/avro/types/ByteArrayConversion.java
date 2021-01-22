@@ -6,6 +6,9 @@ import org.apache.avro.Schema;
 
 import java.nio.ByteBuffer;
 
+/**
+ * @since 0.11
+ */
 public class ByteArrayConversion extends Conversion<byte[]> {
 
     @Override

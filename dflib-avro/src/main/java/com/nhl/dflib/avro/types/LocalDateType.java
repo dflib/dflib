@@ -3,6 +3,9 @@ package com.nhl.dflib.avro.types;
 import org.apache.avro.LogicalType;
 import org.apache.avro.Schema;
 
+/**
+ * @since 0.11
+ */
 public class LocalDateType extends LogicalType {
 
     static final String NAME = "dflib-local-date";

@@ -7,6 +7,9 @@ import org.apache.avro.Schema;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+/**
+ * @since 0.11
+ */
 public class LocalDateTimeConversion extends Conversion<LocalDateTime> {
 
     @Override

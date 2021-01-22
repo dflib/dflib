@@ -6,6 +6,9 @@ import org.apache.avro.Schema;
 
 import java.time.LocalDate;
 
+/**
+ * @since 0.11
+ */
 public class LocalDateConversion extends Conversion<LocalDate> {
 
     @Override
