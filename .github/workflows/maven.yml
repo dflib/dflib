@@ -9,30 +9,51 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        db: [ 'derby', 'mysql', 'postgresql' ]
+
     steps:
-    - name: Checkout...
-      uses: actions/checkout@v2
+      - name: Checkout...
+        uses: actions/checkout@v2
 
-    - name: Set up JDK...
-      uses: actions/setup-java@v1
-      with:
-        java-version: 1.8
+      - name: Set up JDK...
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
 
-    - name: Retrieve mvn repo cache...
-      uses: actions/cache@v2
-      with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-maven-
+      - name: Retrieve mvn repo cache...
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
 
-    # How do we make it a parameterized build?
-#    - name: Build...
-#      strategy:
-#        matrix:
-#          db: ['derby', 'mysql', 'postgresql']
-#      run: mvn clean verify -P ${{ matrix.db }}
+      # How do we make it a parameterized build?
+      - name: Build and test...
+        run: mvn clean verify -P ${{ matrix.db }}
 
+#  deploy:
+#
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#    - name: Checkout...
+#      uses: actions/checkout@v2
+#
+#    - name: Set up JDK...
+#      uses: actions/setup-java@v1
+#      with:
+#        java-version: 1.8
+#
+#    - name: Retrieve mvn repo cache...
+#      uses: actions/cache@v2
+#      with:
+#        path: ~/.m2/repository
+#        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+#        restore-keys: |
+#          ${{ runner.os }}-maven-
 #    - name: Deploy...
 #      run: mvn clean source:jar javadoc:javadoc deploy -DskipTests --settings .github/workflows/maven_settings.xml
 #      env:
