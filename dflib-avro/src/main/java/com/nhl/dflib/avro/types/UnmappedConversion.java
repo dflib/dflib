@@ -9,34 +9,24 @@ import org.apache.avro.Schema;
  *
  * @since 0.11
  */
-public class UnmappedConversion extends SingleSchemaConversion<Object> {
+public class UnmappedConversion extends SingleSchemaConversion<String> {
 
-    private static final String NAME = "dflib-unmapped";
-
-    // stripping off the type generics, as this class intentionally doesn't follow the Avro contract
-    // of serializing the same type as it deserializes.
-    @SuppressWarnings("all")
-    private final Class convertedType;
-
-    public UnmappedConversion(Class<?> convertedType) {
-        super(new SingleSchemaLogicalType(NAME, Schema.Type.STRING));
-        this.convertedType = convertedType;
+    public UnmappedConversion(SingleSchemaLogicalType type) {
+        super(type);
     }
 
     @Override
-    @SuppressWarnings("all")
-    public Class<Object> getConvertedType() {
-        return convertedType;
+    public Class<String> getConvertedType() {
+        return String.class;
     }
 
     @Override
-    public Object fromCharSequence(CharSequence value, Schema schema, LogicalType type) {
-        // we don't know how to deserialize the actual type, so just send back a String.
+    public String fromCharSequence(CharSequence value, Schema schema, LogicalType type) {
         return value.toString();
     }
 
     @Override
-    public CharSequence toCharSequence(Object value, Schema schema, LogicalType type) {
-        return value.toString();
+    public CharSequence toCharSequence(String value, Schema schema, LogicalType type) {
+        return value;
     }
 }

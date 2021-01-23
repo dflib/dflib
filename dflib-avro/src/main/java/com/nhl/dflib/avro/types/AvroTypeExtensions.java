@@ -1,27 +1,22 @@
 package com.nhl.dflib.avro.types;
 
 import com.nhl.dflib.avro.Avro;
+import org.apache.avro.Schema;
 
 /**
  * @since 0.11
  */
 public class AvroTypeExtensions {
 
-    // exposing this catch-all conversion, as we'll need to do some dirty state reset tricks in the AvroLoader
-    public static final UnmappedConversion UNMAPPED_CONVERSION = new UnmappedConversion(Object.class);
+    public static final SingleSchemaLogicalType UNMAPPED_TYPE = new SingleSchemaLogicalType("dflib-unmapped", Schema.Type.STRING);
 
     static {
-        init();
-    }
-
-    public static void init() {
-
         // TODO: enum, java.time, BigDecimal, BigInteger, etc.
         Avro.registerCustomType(new ByteArrayConversion());
         Avro.registerCustomType(new LocalDateConversion());
         Avro.registerCustomType(new LocalDateTimeConversion());
         Avro.registerCustomType(new LocalTimeConversion());
-        Avro.registerCustomType(UNMAPPED_CONVERSION);
+        Avro.registerCustomType(new UnmappedConversion(UNMAPPED_TYPE));
     }
 
     /**

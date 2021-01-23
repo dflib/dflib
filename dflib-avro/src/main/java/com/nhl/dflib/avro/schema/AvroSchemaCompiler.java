@@ -1,8 +1,7 @@
 package com.nhl.dflib.avro.schema;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.avro.Avro;
-import com.nhl.dflib.avro.types.UnmappedConversion;
+import com.nhl.dflib.avro.types.AvroTypeExtensions;
 import org.apache.avro.Conversion;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
@@ -122,16 +121,8 @@ public class AvroSchemaCompiler {
     }
 
     protected Schema unmappedValueSchema(Class<?> type) {
-
-        LOGGER.warn("Unmapped schema type {}. Will use toString conversion and will deserialize as String",
-                type.getName());
-
-        // Create and register unmapped String conversion wrapper.
-        // Kind of a CSV approach - convert everything unknown to String.
-        UnmappedConversion conversion = new UnmappedConversion(type);
-        Avro.registerCustomType(conversion);
-
-        return conversion.getRecommendedSchema();
+        LOGGER.warn("Unmapped schema type {}. Will use toString conversion and will deserialize as String", type.getName());
+        return AvroTypeExtensions.UNMAPPED_TYPE.getRecommendedSchema();
     }
 
     protected Schema makeNullable(Schema schema) {

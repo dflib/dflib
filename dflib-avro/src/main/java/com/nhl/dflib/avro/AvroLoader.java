@@ -10,7 +10,6 @@ import org.apache.avro.file.DataFileReader;
 import org.apache.avro.file.SeekableByteArrayInput;
 import org.apache.avro.file.SeekableFileInput;
 import org.apache.avro.file.SeekableInput;
-import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericRecord;
 
@@ -57,11 +56,6 @@ public class AvroLoader {
     }
 
     protected DataFrame load(SeekableInput in) throws IOException {
-
-        // TODO: Dirty - registering a generic UnmappedConversion before load.
-        //  If it is already registered in the static singleton, then this operation is idempotent.
-
-        GenericData.get().addLogicalTypeConversion(AvroTypeExtensions.UNMAPPED_CONVERSION);
 
         // Passing "reader" schema to GenericDatumReader. It is allowed to be null.
         // If not null, Avro will try to convert the file "writer" schema to the reader's expected format
