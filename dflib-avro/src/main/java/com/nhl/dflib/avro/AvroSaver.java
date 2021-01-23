@@ -1,7 +1,9 @@
 package com.nhl.dflib.avro;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.avro.types.AvroTypeExtensions;
 import com.nhl.dflib.row.RowProxy;
+import org.apache.avro.LogicalType;
 import org.apache.avro.Schema;
 import org.apache.avro.file.CodecFactory;
 import org.apache.avro.file.DataFileWriter;
@@ -41,7 +43,6 @@ public class AvroSaver extends BaseSaver<AvroSaver> {
     public void save(DataFrame df, OutputStream out) {
 
         Schema schema = getOrCreateSchema(df);
-
         try {
             doSave(df, schema, out);
         } catch (IOException e) {
@@ -70,6 +71,9 @@ public class AvroSaver extends BaseSaver<AvroSaver> {
     }
 
     protected void doSave(DataFrame df, Schema schema, OutputStream out) throws IOException {
+
+        DataFrame avroReadyDf = convertUnmappedTypes(df, schema);
+
         DatumWriter<GenericRecord> writer = new GenericDatumWriter<>(schema);
 
         // DataFileWriter includes Schema in the output
@@ -83,11 +87,44 @@ public class AvroSaver extends BaseSaver<AvroSaver> {
 
             // using flyweight wrapper around DFLib RowProxy
             RowToAvroRecordAdapter record = new RowToAvroRecordAdapter(schema);
-            for (RowProxy r : df) {
+            for (RowProxy r : avroReadyDf) {
                 outWriter.append(record.resetRow(r));
             }
         }
     }
 
+    protected DataFrame convertUnmappedTypes(DataFrame df, Schema schema) {
 
+        // convert unmapped types to Strings so that they can be (de)serialized natively by Avro
+
+        for (Schema.Field f : schema.getFields()) {
+            Schema fSchema = f.schema().isUnion() ? unpackUnion(f.schema()) : f.schema();
+            if (isUnmappedType(fSchema)) {
+                df = df.convertColumn(f.name(), v -> v != null ? v.toString() : v);
+            }
+        }
+
+        return df;
+    }
+
+    protected Schema unpackUnion(Schema union) {
+
+        for (Schema child : union.getTypes()) {
+            if (!child.isNullable()) {
+                return child;
+            }
+        }
+
+        return null;
+    }
+
+    protected boolean isUnmappedType(Schema schema) {
+
+        if (schema == null) {
+            return false;
+        }
+
+        LogicalType t = schema.getLogicalType();
+        return t != null && t.getName().equals(AvroTypeExtensions.UNMAPPED_TYPE.getName());
+    }
 }

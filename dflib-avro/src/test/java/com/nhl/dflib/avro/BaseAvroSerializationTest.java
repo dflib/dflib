@@ -26,6 +26,4 @@ public abstract class BaseAvroSerializationTest {
     protected DataFrame saveAndLoad(DataFrame df) {
         return load(save(df));
     }
-
-
 }
