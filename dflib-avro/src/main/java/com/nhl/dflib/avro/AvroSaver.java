@@ -103,7 +103,7 @@ public class AvroSaver extends BaseSaver<AvroSaver> {
             if (AvroSchemaUtils.isEnumType(fSchema)) {
                 df = df.convertColumn(f.name(), v -> AvroSchemaUtils.convertToEnumSymbol(v, fSchema));
             } else if (AvroSchemaUtils.isUnmappedType(fSchema)) {
-                df = df.convertColumn(f.name(), v -> v != null ? v.toString() : v);
+                df = df.convertColumn(f.name(), v -> v != null ? v.toString() : null);
             }
         }
 

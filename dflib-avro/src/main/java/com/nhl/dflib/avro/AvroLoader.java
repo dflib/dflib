@@ -162,14 +162,13 @@ public class AvroLoader {
 
     protected DataFrame fromAvroTypes(DataFrame df, Schema schema) {
 
-        // 1. enum values must be converted to GenericEnumSymbol
-        // 2. unmapped types must be converted to Strings
+        // 1. GenericEnumSymbols must be converted to enums
 
         for (Schema.Field f : schema.getFields()) {
             Schema fSchema = f.schema().isUnion() ? AvroSchemaUtils.unpackUnion(f.schema()) : f.schema();
 
             if (AvroSchemaUtils.isEnumType(fSchema)) {
-                df = df.convertColumn(f.name(), (GenericEnumSymbol v) -> AvroSchemaUtils.convertToEnum(v));
+                df = df.convertColumn(f.name(), (GenericEnumSymbol<?> v) -> AvroSchemaUtils.convertToEnum(v));
             }
         }
 
