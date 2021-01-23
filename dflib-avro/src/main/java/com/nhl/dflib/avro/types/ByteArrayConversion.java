@@ -22,11 +22,6 @@ public class ByteArrayConversion extends SingleSchemaConversion<byte[]> {
     }
 
     @Override
-    public String getLogicalTypeName() {
-        return NAME;
-    }
-
-    @Override
     public byte[] fromBytes(ByteBuffer value, Schema schema, LogicalType type) {
 
         int pos = value.position();

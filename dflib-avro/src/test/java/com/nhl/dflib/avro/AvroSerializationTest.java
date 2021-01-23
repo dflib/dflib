@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class AvroSerializationTest extends BaseAvroSerializationTest {
 
@@ -95,15 +96,17 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
 
     @Test
     public void testDateTime() {
-        DataFrame df = DataFrame.newFrame("LocalDate", "LocalDateTime").columns(
+        DataFrame df = DataFrame.newFrame("LocalDate", "LocalTime", "LocalDateTime").columns(
                 Series.forData(LocalDate.of(2020, 1, 5), LocalDate.of(2019, 6, 8), null),
+                Series.forData(LocalTime.of(4, 0, 1, 11), LocalTime.of(23, 59, 59), null),
                 Series.forData(LocalDateTime.of(2200, 11, 5, 1, 2, 15, 9), LocalDateTime.of(1776, 6, 8, 6, 7, 8), null)
         );
 
         DataFrame loaded = saveAndLoad(df);
-        new DataFrameAsserts(loaded, "LocalDate", "LocalDateTime")
+        new DataFrameAsserts(loaded, "LocalDate", "LocalTime", "LocalDateTime")
                 .expectHeight(3)
                 .expectColumn("LocalDate", LocalDate.of(2020, 1, 5), LocalDate.of(2019, 6, 8), null)
+                .expectColumn("LocalTime", LocalTime.of(4, 0, 1, 11), LocalTime.of(23, 59, 59), null)
                 .expectColumn("LocalDateTime", LocalDateTime.of(2200, 11, 5, 1, 2, 15, 9), LocalDateTime.of(1776, 6, 8, 6, 7, 8), null);
     }
 }

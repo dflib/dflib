@@ -66,7 +66,7 @@ public class Avro_SchemaSerializationTest {
                         "{\"name\":\"Bool\",\"type\":[\"boolean\",\"null\"]}," +
                         "{\"name\":\"String\",\"type\":[{\"type\":\"string\",\"logicalType\":\"dflib-string\"},\"null\"]}," +
                         "{\"name\":\"byte_array\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"dflib-byte-array\"},\"null\"]}," +
-                        "{\"name\":\"LocalDate\",\"type\":[{\"type\":\"int\",\"logicalType\":\"dflib-local-date\"},\"null\"]}]}",
+                        "{\"name\":\"LocalDate\",\"type\":[{\"type\":\"long\",\"logicalType\":\"dflib-local-date\"},\"null\"]}]}",
                 out.toString(StandardCharsets.UTF_8.name()));
     }
 

@@ -1,9 +1,11 @@
 package com.nhl.dflib.avro;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.avro.types.AvroTypeExtensions;
 import com.nhl.dflib.avro.types.SingleSchemaConversion;
+import com.nhl.dflib.avro.types.SingletonLogicalTypeFactory;
+import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 
 import java.io.File;
 import java.io.InputStream;
@@ -22,7 +24,9 @@ public class Avro {
      * @param conversion a custom subclass of {@link SingleSchemaConversion} implementing custom type read/write logic.
      */
     public static void registerCustomType(SingleSchemaConversion<?> conversion) {
-        AvroTypeExtensions.registerCustomType(conversion);
+        LogicalTypes.LogicalTypeFactory typeFactory = new SingletonLogicalTypeFactory(conversion.getLogicalType());
+        LogicalTypes.register(conversion.getLogicalTypeName(), typeFactory);
+        GenericData.get().addLogicalTypeConversion(conversion);
     }
 
     public static DataFrame load(File file) {

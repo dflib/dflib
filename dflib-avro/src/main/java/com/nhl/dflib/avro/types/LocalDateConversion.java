@@ -13,7 +13,7 @@ public class LocalDateConversion extends SingleSchemaConversion<LocalDate> {
     static final String NAME = "dflib-local-date";
 
     public LocalDateConversion() {
-        super(NAME, Schema.Type.INT);
+        super(NAME, Schema.Type.LONG);
     }
 
     @Override
@@ -22,12 +22,12 @@ public class LocalDateConversion extends SingleSchemaConversion<LocalDate> {
     }
 
     @Override
-    public LocalDate fromInt(Integer value, Schema schema, LogicalType type) {
+    public LocalDate fromLong(Long value, Schema schema, LogicalType type) {
         return LocalDate.ofEpochDay(value);
     }
 
     @Override
-    public Integer toInt(LocalDate value, Schema schema, LogicalType type) {
-        return (int) value.toEpochDay();
+    public Long toLong(LocalDate value, Schema schema, LogicalType type) {
+        return value.toEpochDay();
     }
 }
