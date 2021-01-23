@@ -68,22 +68,21 @@ public class Avro {
     }
 
 
-    public static void saveData(DataFrame df, String filePath) {
-        dataSaver().save(df, filePath);
+    public static void save(DataFrame df, String filePath) {
+        saver().save(df, filePath);
     }
 
-    public static void saveData(DataFrame df, File file) {
-        dataSaver().save(df, file);
+    public static void save(DataFrame df, File file) {
+        saver().save(df, file);
     }
 
-    public static void saveData(DataFrame df, OutputStream out) {
-        dataSaver().save(df, out);
+    public static void save(DataFrame df, OutputStream out) {
+        saver().save(df, out);
     }
 
-    public static AvroDataSaver dataSaver() {
-        return new AvroDataSaver();
+    public static AvroSaver saver() {
+        return new AvroSaver();
     }
-
 
     public static void saveSchema(DataFrame df, String filePath) {
         schemaSaver().save(df, filePath);

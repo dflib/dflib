@@ -19,7 +19,7 @@ public class AvroTest_File {
     public void testSaveLoad_File_Empty() {
         File file = new File(destination, "testSaveLoad_File_Empty.avro");
         DataFrame empty = DataFrame.newFrame("a", "b").empty();
-        Avro.saveData(empty, file);
+        Avro.save(empty, file);
         assertTrue(file.exists());
         assertTrue(file.length() > 0);
 
@@ -37,7 +37,7 @@ public class AvroTest_File {
                 .addRow(3, 4)
                 .create();
 
-        Avro.saveData(df, file);
+        Avro.save(df, file);
         assertTrue(file.exists());
         assertTrue(file.length() > 0);
 

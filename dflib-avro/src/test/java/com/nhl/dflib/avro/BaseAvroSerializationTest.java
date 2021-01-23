@@ -11,7 +11,7 @@ public abstract class BaseAvroSerializationTest {
 
     protected byte[] save(DataFrame df) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Avro.saveData(df, out);
+        Avro.save(df, out);
         byte[] bytes = out.toByteArray();
         assertTrue(bytes.length > 0, "No bytes generated");
         return bytes;

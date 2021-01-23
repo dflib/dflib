@@ -19,12 +19,12 @@ import java.io.OutputStream;
  *
  * @since 0.11
  */
-public class AvroDataSaver extends BaseSaver<AvroDataSaver> {
+public class AvroSaver extends BaseSaver<AvroSaver> {
 
     private CodecFactory codec;
     private Schema schema;
 
-    public AvroDataSaver codec(CodecFactory codec) {
+    public AvroSaver codec(CodecFactory codec) {
         this.codec = codec;
         return this;
     }
@@ -33,7 +33,7 @@ public class AvroDataSaver extends BaseSaver<AvroDataSaver> {
      * Save data with the explicit Schema. If not set, a Schema will be generated automatically based on the
      * DataFrame contents.
      */
-    public AvroDataSaver schema(Schema schema) {
+    public AvroSaver schema(Schema schema) {
         this.schema = schema;
         return this;
     }
