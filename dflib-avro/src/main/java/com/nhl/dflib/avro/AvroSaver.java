@@ -1,9 +1,8 @@
 package com.nhl.dflib.avro;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.avro.types.AvroTypeExtensions;
+import com.nhl.dflib.avro.schema.AvroSchemaUtils;
 import com.nhl.dflib.row.RowProxy;
-import org.apache.avro.LogicalType;
 import org.apache.avro.Schema;
 import org.apache.avro.file.CodecFactory;
 import org.apache.avro.file.DataFileWriter;
@@ -72,7 +71,7 @@ public class AvroSaver extends BaseSaver<AvroSaver> {
 
     protected void doSave(DataFrame df, Schema schema, OutputStream out) throws IOException {
 
-        DataFrame avroReadyDf = convertUnmappedTypes(df, schema);
+        DataFrame avroReadyDf = makeAvroReady(df, schema);
 
         DatumWriter<GenericRecord> writer = new GenericDatumWriter<>(schema);
 
@@ -93,13 +92,17 @@ public class AvroSaver extends BaseSaver<AvroSaver> {
         }
     }
 
-    protected DataFrame convertUnmappedTypes(DataFrame df, Schema schema) {
+    protected DataFrame makeAvroReady(DataFrame df, Schema schema) {
 
-        // convert unmapped types to Strings so that they can be (de)serialized natively by Avro
+        // 1. enum values must be converted to GenericEnumSymbol
+        // 2. unmapped types must be converted to Strings
 
         for (Schema.Field f : schema.getFields()) {
-            Schema fSchema = f.schema().isUnion() ? unpackUnion(f.schema()) : f.schema();
-            if (isUnmappedType(fSchema)) {
+            Schema fSchema = f.schema().isUnion() ? AvroSchemaUtils.unpackUnion(f.schema()) : f.schema();
+
+            if (AvroSchemaUtils.isEnumType(fSchema)) {
+                df = df.convertColumn(f.name(), v -> AvroSchemaUtils.convertToEnumSymbol(v, fSchema));
+            } else if (AvroSchemaUtils.isUnmappedType(fSchema)) {
                 df = df.convertColumn(f.name(), v -> v != null ? v.toString() : v);
             }
         }
@@ -107,24 +110,5 @@ public class AvroSaver extends BaseSaver<AvroSaver> {
         return df;
     }
 
-    protected Schema unpackUnion(Schema union) {
 
-        for (Schema child : union.getTypes()) {
-            if (!child.isNullable()) {
-                return child;
-            }
-        }
-
-        return null;
-    }
-
-    protected boolean isUnmappedType(Schema schema) {
-
-        if (schema == null) {
-            return false;
-        }
-
-        LogicalType t = schema.getLogicalType();
-        return t != null && t.getName().equals(AvroTypeExtensions.UNMAPPED_TYPE.getName());
-    }
 }

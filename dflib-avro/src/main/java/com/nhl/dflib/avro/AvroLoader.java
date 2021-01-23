@@ -4,6 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DataFrameByRowBuilder;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.accumulator.*;
+import com.nhl.dflib.avro.schema.AvroSchemaUtils;
 import com.nhl.dflib.avro.types.AvroTypeExtensions;
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileReader;
@@ -11,6 +12,7 @@ import org.apache.avro.file.SeekableByteArrayInput;
 import org.apache.avro.file.SeekableFileInput;
 import org.apache.avro.file.SeekableInput;
 import org.apache.avro.generic.GenericDatumReader;
+import org.apache.avro.generic.GenericEnumSymbol;
 import org.apache.avro.generic.GenericRecord;
 
 import java.io.File;
@@ -77,7 +79,8 @@ public class AvroLoader {
             dfb.addRow(recordToRow(record, rowHolder));
         }
 
-        return dfb.create();
+        DataFrame df = dfb.create();
+        return fromAvroTypes(df, schema);
     }
 
     protected Object[] recordToRow(GenericRecord record, Object[] rowHolder) {
@@ -117,6 +120,7 @@ public class AvroLoader {
                 return new BooleanAccumulator();
             case STRING:
             case BYTES:
+            case ENUM:
                 return new ObjectAccumulator<>();
             case UNION:
                 return mapUnionColumn(columnSchema.getTypes());
@@ -147,11 +151,28 @@ public class AvroLoader {
             case BOOLEAN:
             case STRING:
             case BYTES:
+            case ENUM:
                 return new ObjectAccumulator<>();
             case UNION:
                 return mapUnionColumn(otherThanNull[0].getTypes());
             default:
                 throw new UnsupportedOperationException("(Yet) unsupported Avro schema type: " + otherThanNull[0].getType());
         }
+    }
+
+    protected DataFrame fromAvroTypes(DataFrame df, Schema schema) {
+
+        // 1. enum values must be converted to GenericEnumSymbol
+        // 2. unmapped types must be converted to Strings
+
+        for (Schema.Field f : schema.getFields()) {
+            Schema fSchema = f.schema().isUnion() ? AvroSchemaUtils.unpackUnion(f.schema()) : f.schema();
+
+            if (AvroSchemaUtils.isEnumType(fSchema)) {
+                df = df.convertColumn(f.name(), (GenericEnumSymbol v) -> AvroSchemaUtils.convertToEnum(v));
+            }
+        }
+
+        return df;
     }
 }

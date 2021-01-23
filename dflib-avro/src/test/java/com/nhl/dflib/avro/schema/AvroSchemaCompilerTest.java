@@ -69,4 +69,22 @@ public class AvroSchemaCompilerTest {
         assertEquals("{\"type\":\"record\",\"name\":\"DataFrame\",\"namespace\":\"com.nhl.dflib\",\"fields\":[" +
                 "{\"name\":\"A\",\"type\":[{\"type\":\"string\",\"logicalType\":\"dflib-unmapped\"},\"null\"]}]}", schema.toString());
     }
+
+    @Test
+    public void testEnumSchema() {
+
+        Schema schema = new AvroSchemaCompiler().enumSchema(_TestEnum.class);
+
+        Assertions.assertNotNull(schema);
+        assertEquals("{\"type\":\"enum\"," +
+                        "\"name\":\"_TestEnum\"," +
+                        "\"doc\":\"com.nhl.dflib.avro.schema\"," +
+                        "\"symbols\":[\"m\",\"_x\",\"V\"]," +
+                        "\"dflib.enum.type\":\"com.nhl.dflib.avro.schema.AvroSchemaCompilerTest$_TestEnum\"}",
+                schema.toString());
+    }
+
+    public enum _TestEnum {
+        m, _x, V
+    }
 }

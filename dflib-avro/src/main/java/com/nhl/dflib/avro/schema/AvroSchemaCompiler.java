@@ -9,12 +9,18 @@ import org.apache.avro.generic.GenericData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Creates Avro Schema from DataFrame structure.
  *
  * @since 0.11
  */
 public class AvroSchemaCompiler {
+
+    public static final String PROPERTY_DFLIB_ENUM_TYPE = "dflib.enum.type";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AvroSchemaCompiler.class);
 
@@ -65,6 +71,10 @@ public class AvroSchemaCompiler {
 
     protected Schema createColumnSchema(Class<?> type) {
 
+        if (type.isEnum()) {
+            return makeNullable(enumSchema(type));
+        }
+
         String name = type.isArray() ? type.getComponentType().getName() + "[]" : type.getName();
 
         switch (name) {
@@ -107,6 +117,21 @@ public class AvroSchemaCompiler {
                 Schema schema = logicalTypeSchema(type);
                 return makeNullable(schema != null ? schema : unmappedValueSchema(type));
         }
+    }
+
+    protected Schema enumSchema(Class<?> enumType) {
+
+        String name = enumType.getSimpleName();
+        String namespace = enumType.getPackage() != null ? enumType.getPackage().getName() : null;
+        String typeName = enumType.getName();
+
+        List<String> values = Arrays.stream(enumType.getEnumConstants())
+                .map(Object::toString)
+                .collect(Collectors.toList());
+
+        Schema schema = Schema.createEnum(name, namespace, null, values);
+        schema.addProp(PROPERTY_DFLIB_ENUM_TYPE, typeName);
+        return schema;
     }
 
     protected Schema stringSchema() {

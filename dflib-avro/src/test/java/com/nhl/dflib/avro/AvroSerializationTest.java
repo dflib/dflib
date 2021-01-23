@@ -161,6 +161,20 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
     }
 
     @Test
+    public void testEnums() {
+        DataFrame df = DataFrame.newFrame("c1", "c2").columns(
+                Series.forData(TestEnum1.ab, TestEnum1.m, null),
+                Series.forData(TestEnum2.ab, TestEnum2.x, null)
+        );
+
+        DataFrame loaded = saveAndLoad(df);
+        new DataFrameAsserts(loaded, "c1", "c2")
+                .expectHeight(3)
+                .expectColumn("c1", TestEnum1.ab, TestEnum1.m, null)
+                .expectColumn("c2", TestEnum2.ab, TestEnum2.x, null);
+    }
+
+    @Test
     public void testUnmapped() {
         DataFrame df = DataFrame.newFrame("c1", "c2").columns(
                 Series.forData(new TestUnmapped1("x"), new TestUnmapped1("y"), null),
@@ -172,6 +186,14 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
                 .expectHeight(3)
                 .expectColumn("c1", "x", "y", null)
                 .expectColumn("c2", "a", "b", null);
+    }
+
+    public enum TestEnum1 {
+        m, z, ab
+    }
+
+    public enum TestEnum2 {
+        a, x, ab
     }
 
     static final class TestUnmapped1 {
