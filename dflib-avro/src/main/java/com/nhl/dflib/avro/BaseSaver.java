@@ -11,7 +11,7 @@ import java.io.File;
 public abstract class BaseSaver<SELF extends BaseSaver<SELF>> {
 
     static {
-        AvroTypeExtensions.init();
+        AvroTypeExtensions.initIfNeeded();
     }
 
     private boolean createMissingDirs;

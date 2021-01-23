@@ -3,6 +3,7 @@ package com.nhl.dflib.avro;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.avro.types.SingleSchemaConversion;
 import com.nhl.dflib.avro.types.SingletonLogicalTypeFactory;
+import org.apache.avro.LogicalType;
 import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -24,9 +25,13 @@ public class Avro {
      * @param conversion a custom subclass of {@link SingleSchemaConversion} implementing custom type read/write logic.
      */
     public static void registerCustomType(SingleSchemaConversion<?> conversion) {
-        LogicalTypes.LogicalTypeFactory typeFactory = new SingletonLogicalTypeFactory(conversion.getLogicalType());
-        LogicalTypes.register(conversion.getLogicalTypeName(), typeFactory);
+        registerCustomLogicalType(conversion.getLogicalType());
         GenericData.get().addLogicalTypeConversion(conversion);
+    }
+
+    public static void registerCustomLogicalType(LogicalType logicalType) {
+        LogicalTypes.LogicalTypeFactory typeFactory = new SingletonLogicalTypeFactory(logicalType);
+        LogicalTypes.register(logicalType.getName(), typeFactory);
     }
 
     public static DataFrame load(File file) {

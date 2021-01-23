@@ -124,6 +124,25 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
                 .expectColumn("c2", "a", "b", null);
     }
 
+    @Test
+    public void testUnmapped_DeserializeUnknown() {
+        DataFrame df = DataFrame.newFrame("c1").columns(
+                Series.forData(new TestUnmapped1("x"), new TestUnmapped1("y"), null)
+        );
+
+        byte[] bytes = save(df);
+
+        // before loading make sure we have no cached converters,
+        // and "dflib-unmapped" is not associated with a Java class anymore
+        clearTypeStatics();
+
+        DataFrame loaded = load(bytes);
+
+        new DataFrameAsserts(loaded, "c1")
+                .expectHeight(3)
+                .expectColumn("c1", "x", "y", null);
+    }
+
     static final class TestUnmapped1 {
 
         private final String value;
