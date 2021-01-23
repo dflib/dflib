@@ -10,7 +10,7 @@ import java.time.LocalTime;
  */
 public class LocalTimeConversion extends SingleSchemaConversion<LocalTime> {
 
-    static final String NAME = "dflib-local-time";
+    static final String NAME = "dflib-localtime";
 
     public LocalTimeConversion() {
         super(NAME, Schema.Type.LONG);

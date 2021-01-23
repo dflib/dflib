@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
  */
 public class ByteArrayConversion extends SingleSchemaConversion<byte[]> {
 
-    static final String NAME = "dflib-byte-array";
+    static final String NAME = "dflib-bytearray";
 
     public ByteArrayConversion() {
         super(NAME, Schema.Type.BYTES);

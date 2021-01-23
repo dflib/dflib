@@ -19,6 +19,9 @@ public class AvroTypeExtensions {
         Avro.registerCustomType(new LocalDateTimeConversion());
         Avro.registerCustomType(new LocalTimeConversion());
         Avro.registerCustomType(new PeriodConversion());
+        Avro.registerCustomType(new YearMonthConversion());
+        Avro.registerCustomType(new YearConversion());
+
         Avro.registerCustomType(new UnmappedConversion(UNMAPPED_TYPE));
     }
 

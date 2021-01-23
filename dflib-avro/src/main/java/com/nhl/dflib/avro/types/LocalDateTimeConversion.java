@@ -12,7 +12,7 @@ import java.time.ZoneOffset;
  */
 public class LocalDateTimeConversion extends SingleSchemaConversion<LocalDateTime> {
 
-    static final String NAME = "dflib-local-date-time";
+    static final String NAME = "dflib-localdatetime";
 
     public LocalDateTimeConversion() {
         super(NAME, Schema.Type.BYTES);

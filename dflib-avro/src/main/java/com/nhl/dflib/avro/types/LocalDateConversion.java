@@ -10,7 +10,7 @@ import java.time.LocalDate;
  */
 public class LocalDateConversion extends SingleSchemaConversion<LocalDate> {
 
-    static final String NAME = "dflib-local-date";
+    static final String NAME = "dflib-localdate";
 
     public LocalDateConversion() {
         super(NAME, Schema.Type.LONG);
