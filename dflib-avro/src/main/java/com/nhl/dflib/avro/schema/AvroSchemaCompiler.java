@@ -121,7 +121,7 @@ public class AvroSchemaCompiler {
     }
 
     protected Schema unmappedValueSchema(Class<?> type) {
-        LOGGER.warn("Unmapped schema type {}. Will use toString conversion and will deserialize as String", type.getName());
+        LOGGER.warn("Unmapped schema type {}. Will use 'toString()' conversion and will deserialize as String", type.getName());
         return AvroTypeExtensions.UNMAPPED_TYPE.getRecommendedSchema();
     }
 
