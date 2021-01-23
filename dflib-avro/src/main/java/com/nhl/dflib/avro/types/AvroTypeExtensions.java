@@ -11,7 +11,8 @@ public class AvroTypeExtensions {
     public static final SingleSchemaLogicalType UNMAPPED_TYPE = new SingleSchemaLogicalType("dflib-unmapped", Schema.Type.STRING);
 
     static {
-        // TODO: enum, java.time, BigDecimal, BigInteger, etc.
+        Avro.registerCustomType(new BigDecimalConversion());
+        Avro.registerCustomType(new BigIntegerConversion());
         Avro.registerCustomType(new ByteArrayConversion());
         Avro.registerCustomType(new LocalDateConversion());
         Avro.registerCustomType(new LocalDateTimeConversion());

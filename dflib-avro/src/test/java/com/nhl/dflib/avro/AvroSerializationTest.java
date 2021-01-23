@@ -4,6 +4,8 @@ import com.nhl.dflib.*;
 import com.nhl.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -108,6 +110,38 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
                 .expectColumn("LocalDate", LocalDate.of(2020, 1, 5), LocalDate.of(2019, 6, 8), null)
                 .expectColumn("LocalTime", LocalTime.of(4, 0, 1, 11), LocalTime.of(23, 59, 59), null)
                 .expectColumn("LocalDateTime", LocalDateTime.of(2200, 11, 5, 1, 2, 15, 9), LocalDateTime.of(1776, 6, 8, 6, 7, 8), null);
+    }
+
+    @Test
+    public void testBigInteger() {
+        DataFrame df = DataFrame.newFrame("c1").columns(
+                Series.forData(new BigInteger("987654321"), new BigInteger("-11111"), null)
+        );
+
+        DataFrame loaded = saveAndLoad(df);
+        new DataFrameAsserts(loaded, "c1")
+                .expectHeight(3)
+                .expectColumn("c1", new BigInteger("987654321"), new BigInteger("-11111"), null);
+    }
+
+    @Test
+    public void testBigDecimal() {
+        DataFrame df = DataFrame.newFrame("c1").columns(
+                Series.forData(
+                        new BigDecimal("9876543.211234567890123455"),
+                        new BigDecimal(new BigInteger("-11111"), 2),
+                        new BigDecimal(0),
+                        null)
+        );
+
+        DataFrame loaded = saveAndLoad(df);
+        new DataFrameAsserts(loaded, "c1")
+                .expectHeight(4)
+                .expectColumn("c1",
+                        new BigDecimal("9876543.211234567890123455"),
+                        new BigDecimal("-111.11"),
+                        new BigDecimal(0),
+                        null);
     }
 
     @Test
