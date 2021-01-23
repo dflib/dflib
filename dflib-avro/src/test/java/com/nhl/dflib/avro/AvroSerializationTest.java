@@ -109,4 +109,46 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
                 .expectColumn("LocalTime", LocalTime.of(4, 0, 1, 11), LocalTime.of(23, 59, 59), null)
                 .expectColumn("LocalDateTime", LocalDateTime.of(2200, 11, 5, 1, 2, 15, 9), LocalDateTime.of(1776, 6, 8, 6, 7, 8), null);
     }
+
+    @Test
+    public void testUnmapped() {
+        DataFrame df = DataFrame.newFrame("c1", "c2").columns(
+                Series.forData(new TestUnmapped1("x"), new TestUnmapped1("y"), null),
+                Series.forData(new TestUnmapped2("a"), new TestUnmapped2("b"), null)
+        );
+
+        DataFrame loaded = saveAndLoad(df);
+        new DataFrameAsserts(loaded, "c1", "c2")
+                .expectHeight(3)
+                .expectColumn("c1", "x", "y", null)
+                .expectColumn("c2", "a", "b", null);
+    }
+
+    static final class TestUnmapped1 {
+
+        private final String value;
+
+        public TestUnmapped1(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+
+    static final class TestUnmapped2 {
+
+        private final String value;
+
+        public TestUnmapped2(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
 }

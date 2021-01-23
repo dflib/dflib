@@ -1,10 +1,14 @@
 package com.nhl.dflib.avro.schema;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.avro.Avro;
+import com.nhl.dflib.avro.types.UnmappedConversion;
 import org.apache.avro.Conversion;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
 import org.apache.avro.generic.GenericData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creates Avro Schema from DataFrame structure.
@@ -12,6 +16,8 @@ import org.apache.avro.generic.GenericData;
  * @since 0.11
  */
 public class AvroSchemaCompiler {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AvroSchemaCompiler.class);
 
     private static final String DEFAULT_NAME = "DataFrame";
     private static final String DEFAULT_NAMESPACE = "com.nhl.dflib";
@@ -70,60 +76,65 @@ public class AvroSchemaCompiler {
             case "int":
                 return Schema.create(Schema.Type.INT);
             case "java.lang.Integer":
-                return nullableSchema(Schema.create(Schema.Type.INT));
+                return makeNullable(Schema.create(Schema.Type.INT));
 
             case "long":
                 return Schema.create(Schema.Type.LONG);
             case "java.lang.Long":
-                return nullableSchema(Schema.create(Schema.Type.LONG));
+                return makeNullable(Schema.create(Schema.Type.LONG));
 
             case "float":
                 return Schema.create(Schema.Type.FLOAT);
             case "java.lang.Float":
-                return nullableSchema(Schema.create(Schema.Type.FLOAT));
+                return makeNullable(Schema.create(Schema.Type.FLOAT));
 
             case "double":
                 return Schema.create(Schema.Type.DOUBLE);
             case "java.lang.Double":
-                return nullableSchema(Schema.create(Schema.Type.DOUBLE));
+                return makeNullable(Schema.create(Schema.Type.DOUBLE));
 
             case "boolean":
                 return Schema.create(Schema.Type.BOOLEAN);
             case "java.lang.Boolean":
-                return nullableSchema(Schema.create(Schema.Type.BOOLEAN));
+                return makeNullable(Schema.create(Schema.Type.BOOLEAN));
 
             // 2. String is special. It requires no conversion, but does require a special schema property to be handled
             // as String and not org.apache.avro.util.Utf8
             case "java.lang.String":
-                return nullableSchema(createStringSchema());
+                return makeNullable(stringSchema());
 
             // 3. Try to find a conversion to a "logical type"
             default:
-                Schema schema = convertibleLogicalTypeSchema(type);
-                return nullableSchema(schema != null ? schema : defaultValueSchema(type));
+                Schema schema = logicalTypeSchema(type);
+                return makeNullable(schema != null ? schema : unmappedValueSchema(type));
         }
     }
 
-    protected Schema createStringSchema() {
+    protected Schema stringSchema() {
         Schema schema = Schema.create(Schema.Type.STRING);
         GenericData.setStringType(schema, GenericData.StringType.String);
         return schema;
     }
 
-    protected Schema convertibleLogicalTypeSchema(Class<?> type) {
+    protected Schema logicalTypeSchema(Class<?> type) {
         Conversion<?> c = GenericData.get().getConversionByClass(type);
-        return c != null
-                ? c.getRecommendedSchema()
-                // TODO: doesn't look like a good default... Should we throw instead? Or use BINARY and convert to byte[] ?
-                : Schema.create(Schema.Type.STRING);
+        return c != null ? c.getRecommendedSchema() : null;
     }
 
-    protected Schema defaultValueSchema(Class<?> type) {
-        // TODO: doesn't look like a good default... Should we throw instead? Or use BINARY and convert to byte[] ?
-        return Schema.create(Schema.Type.STRING);
+    protected Schema unmappedValueSchema(Class<?> type) {
+
+        LOGGER.warn("Unmapped schema type {}. Will use toString conversion and will deserialize as String",
+                type.getName());
+
+        // Create and register unmapped String conversion wrapper.
+        // Kind of a CSV approach - convert everything unknown to String.
+        UnmappedConversion conversion = new UnmappedConversion(type);
+        Avro.registerCustomType(conversion);
+
+        return conversion.getRecommendedSchema();
     }
 
-    protected Schema nullableSchema(Schema schema) {
+    protected Schema makeNullable(Schema schema) {
         return Schema.createUnion(schema, Schema.create(Schema.Type.NULL));
     }
 

@@ -55,8 +55,8 @@ public class AvroSchemaCompilerTest {
 
         Assertions.assertNotNull(schema);
         assertEquals("{\"type\":\"record\",\"name\":\"s\",\"namespace\":\"com.foo\",\"fields\":[" +
-                "{\"name\":\"A\",\"type\":[\"string\",\"null\"]}," +
-                "{\"name\":\"B\",\"type\":[\"string\",\"null\"]}]}", schema.toString());
+                "{\"name\":\"A\",\"type\":[{\"type\":\"string\",\"logicalType\":\"dflib-unmapped\"},\"null\"]}," +
+                "{\"name\":\"B\",\"type\":[{\"type\":\"string\",\"logicalType\":\"dflib-unmapped\"},\"null\"]}]}", schema.toString());
     }
 
     @Test
@@ -67,6 +67,6 @@ public class AvroSchemaCompilerTest {
 
         Assertions.assertNotNull(schema);
         assertEquals("{\"type\":\"record\",\"name\":\"DataFrame\",\"namespace\":\"com.nhl.dflib\",\"fields\":[" +
-                "{\"name\":\"A\",\"type\":[\"string\",\"null\"]}]}", schema.toString());
+                "{\"name\":\"A\",\"type\":[{\"type\":\"string\",\"logicalType\":\"dflib-unmapped\"},\"null\"]}]}", schema.toString());
     }
 }
