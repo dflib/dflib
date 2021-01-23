@@ -1,4 +1,4 @@
-package com.nhl.dflib.avro;
+package com.nhl.dflib.avro.schema;
 
 import com.nhl.dflib.*;
 import org.apache.avro.Schema;
@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AvroSchemaBuilderTest {
+public class AvroSchemaCompilerTest {
 
     static final DataFrame df = DataFrame.newFrame(
             "int", "Integer", "long", "Long", "double", "Double", "bool", "Bool", "String")
@@ -25,7 +25,7 @@ public class AvroSchemaBuilderTest {
 
     @Test
     public void testCompileSchema() {
-        Schema schema = new AvroSchemaBuilder()
+        Schema schema = new AvroSchemaCompiler()
                 .name("s")
                 .namespace("com.foo")
                 .compileSchema(df);
@@ -48,7 +48,7 @@ public class AvroSchemaBuilderTest {
 
         DataFrame empty = DataFrame.newFrame("A", "B").empty();
 
-        Schema schema = new AvroSchemaBuilder()
+        Schema schema = new AvroSchemaCompiler()
                 .name("s")
                 .namespace("com.foo")
                 .compileSchema(empty);
@@ -63,7 +63,7 @@ public class AvroSchemaBuilderTest {
     public void testCompileSchema_DefaultNames() {
 
         DataFrame empty = DataFrame.newFrame("A").empty();
-        Schema schema = new AvroSchemaBuilder().compileSchema(empty);
+        Schema schema = new AvroSchemaCompiler().compileSchema(empty);
 
         Assertions.assertNotNull(schema);
         assertEquals("{\"type\":\"record\",\"name\":\"DataFrame\",\"namespace\":\"com.nhl.dflib\",\"fields\":[" +

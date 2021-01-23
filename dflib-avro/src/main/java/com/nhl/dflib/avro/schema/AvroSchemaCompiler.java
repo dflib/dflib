@@ -1,4 +1,4 @@
-package com.nhl.dflib.avro;
+package com.nhl.dflib.avro.schema;
 
 import com.nhl.dflib.DataFrame;
 import org.apache.avro.Conversion;
@@ -11,7 +11,7 @@ import org.apache.avro.generic.GenericData;
  *
  * @since 0.11
  */
-public class AvroSchemaBuilder {
+public class AvroSchemaCompiler {
 
     private static final String DEFAULT_NAME = "DataFrame";
     private static final String DEFAULT_NAMESPACE = "com.nhl.dflib";
@@ -22,7 +22,7 @@ public class AvroSchemaBuilder {
     /**
      * Sets the schema name of the generated Avro file. Optional. The default will be "DataFrame".
      */
-    public AvroSchemaBuilder name(String name) {
+    public AvroSchemaCompiler name(String name) {
         this.name = name;
         return this;
     }
@@ -30,7 +30,7 @@ public class AvroSchemaBuilder {
     /**
      * Sets the schema namespace of the generated Avro file. Optional. The default will be "com.nhl.dflib".
      */
-    public AvroSchemaBuilder namespace(String namespace) {
+    public AvroSchemaCompiler namespace(String namespace) {
         this.namespace = namespace;
         return this;
     }

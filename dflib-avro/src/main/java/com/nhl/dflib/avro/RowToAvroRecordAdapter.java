@@ -10,16 +10,16 @@ import org.apache.avro.generic.GenericRecord;
  *
  * @since 0.11
  */
-public class RowToAvroRecordAdapter implements GenericRecord {
+class RowToAvroRecordAdapter implements GenericRecord {
 
     private final Schema schema;
     private RowProxy proxy;
 
-    public RowToAvroRecordAdapter(Schema schema) {
+    RowToAvroRecordAdapter(Schema schema) {
         this.schema = schema;
     }
 
-    public RowToAvroRecordAdapter resetRow(RowProxy proxy) {
+    RowToAvroRecordAdapter resetRow(RowProxy proxy) {
         this.proxy = proxy;
         return this;
     }

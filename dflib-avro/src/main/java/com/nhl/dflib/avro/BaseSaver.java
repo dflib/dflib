@@ -1,5 +1,6 @@
 package com.nhl.dflib.avro;
 
+import com.nhl.dflib.avro.schema.AvroSchemaCompiler;
 import com.nhl.dflib.avro.types.AvroTypeExtensions;
 
 import java.io.File;
@@ -14,10 +15,10 @@ public abstract class BaseSaver<SELF extends BaseSaver<SELF>> {
     }
 
     private boolean createMissingDirs;
-    protected final AvroSchemaBuilder schemaBuilder;
+    protected final AvroSchemaCompiler schemaBuilder;
 
     protected BaseSaver() {
-        this.schemaBuilder = new AvroSchemaBuilder();
+        this.schemaBuilder = new AvroSchemaCompiler();
     }
 
     /**
