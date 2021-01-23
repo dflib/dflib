@@ -6,9 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 
 public class AvroSerializationTest extends BaseAvroSerializationTest {
 
@@ -142,6 +140,20 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
                         new BigDecimal("-111.11"),
                         new BigDecimal(0),
                         null);
+    }
+
+    @Test
+    public void testDurations() {
+        DataFrame df = DataFrame.newFrame("c1", "c2").columns(
+                Series.forData(Duration.ofDays(350000), Duration.ofSeconds(15, 101), Duration.ZERO, null),
+                Series.forData(Period.ofWeeks(15), Period.ofYears(5), Period.ZERO, null)
+        );
+
+        DataFrame loaded = saveAndLoad(df);
+        new DataFrameAsserts(loaded, "c1", "c2")
+                .expectHeight(4)
+                .expectColumn("c1", Duration.ofDays(350000), Duration.ofSeconds(15, 101), Duration.ZERO, null)
+                .expectColumn("c2", Period.ofWeeks(15), Period.ofYears(5), Period.ZERO, null);
     }
 
     @Test

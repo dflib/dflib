@@ -14,9 +14,11 @@ public class AvroTypeExtensions {
         Avro.registerCustomType(new BigDecimalConversion());
         Avro.registerCustomType(new BigIntegerConversion());
         Avro.registerCustomType(new ByteArrayConversion());
+        Avro.registerCustomType(new DurationConversion());
         Avro.registerCustomType(new LocalDateConversion());
         Avro.registerCustomType(new LocalDateTimeConversion());
         Avro.registerCustomType(new LocalTimeConversion());
+        Avro.registerCustomType(new PeriodConversion());
         Avro.registerCustomType(new UnmappedConversion(UNMAPPED_TYPE));
     }
 
