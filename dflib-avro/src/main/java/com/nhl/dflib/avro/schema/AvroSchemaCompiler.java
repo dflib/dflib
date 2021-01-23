@@ -70,41 +70,61 @@ public class AvroSchemaCompiler {
             case "int":
                 return Schema.create(Schema.Type.INT);
             case "java.lang.Integer":
-                return Schema.createUnion(Schema.create(Schema.Type.INT), Schema.create(Schema.Type.NULL));
+                return nullableSchema(Schema.create(Schema.Type.INT));
 
             case "long":
                 return Schema.create(Schema.Type.LONG);
             case "java.lang.Long":
-                return Schema.createUnion(Schema.create(Schema.Type.LONG), Schema.create(Schema.Type.NULL));
+                return nullableSchema(Schema.create(Schema.Type.LONG));
 
             case "float":
                 return Schema.create(Schema.Type.FLOAT);
             case "java.lang.Float":
-                return Schema.createUnion(Schema.create(Schema.Type.FLOAT), Schema.create(Schema.Type.NULL));
+                return nullableSchema(Schema.create(Schema.Type.FLOAT));
 
             case "double":
                 return Schema.create(Schema.Type.DOUBLE);
             case "java.lang.Double":
-                return Schema.createUnion(Schema.create(Schema.Type.DOUBLE), Schema.create(Schema.Type.NULL));
+                return nullableSchema(Schema.create(Schema.Type.DOUBLE));
 
             case "boolean":
                 return Schema.create(Schema.Type.BOOLEAN);
             case "java.lang.Boolean":
-                return Schema.createUnion(Schema.create(Schema.Type.BOOLEAN), Schema.create(Schema.Type.NULL));
+                return nullableSchema(Schema.create(Schema.Type.BOOLEAN));
 
-            // 2. Try to find a conversion to a "logical type"
+            // 2. String is special. It requires no conversion, but does require a special schema property to be handled
+            // as String and not org.apache.avro.util.Utf8
+            case "java.lang.String":
+                return nullableSchema(createStringSchema());
+
+            // 3. Try to find a conversion to a "logical type"
             default:
-                Schema schema = convertibleLogicalTypeSchemaOrDefault(type);
-                return Schema.createUnion(schema, Schema.create(Schema.Type.NULL));
+                Schema schema = convertibleLogicalTypeSchema(type);
+                return nullableSchema(schema != null ? schema : defaultValueSchema(type));
         }
     }
 
-    protected Schema convertibleLogicalTypeSchemaOrDefault(Class<?> type) {
+    protected Schema createStringSchema() {
+        Schema schema = Schema.create(Schema.Type.STRING);
+        GenericData.setStringType(schema, GenericData.StringType.String);
+        return schema;
+    }
+
+    protected Schema convertibleLogicalTypeSchema(Class<?> type) {
         Conversion<?> c = GenericData.get().getConversionByClass(type);
         return c != null
                 ? c.getRecommendedSchema()
                 // TODO: doesn't look like a good default... Should we throw instead? Or use BINARY and convert to byte[] ?
                 : Schema.create(Schema.Type.STRING);
+    }
+
+    protected Schema defaultValueSchema(Class<?> type) {
+        // TODO: doesn't look like a good default... Should we throw instead? Or use BINARY and convert to byte[] ?
+        return Schema.create(Schema.Type.STRING);
+    }
+
+    protected Schema nullableSchema(Schema schema) {
+        return Schema.createUnion(schema, Schema.create(Schema.Type.NULL));
     }
 
     // Making sure the name corresponds to the Avro spec restrictions. Doing it here (instead of deferring to Avro)

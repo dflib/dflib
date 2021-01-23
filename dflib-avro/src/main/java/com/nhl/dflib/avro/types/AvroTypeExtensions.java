@@ -8,13 +8,13 @@ import com.nhl.dflib.avro.Avro;
 public class AvroTypeExtensions {
 
     static {
+
         // TODO: enum, java.time, BigDecimal, BigInteger, etc.
 
         Avro.registerCustomType(new ByteArrayConversion());
         Avro.registerCustomType(new LocalDateConversion());
         Avro.registerCustomType(new LocalDateTimeConversion());
         Avro.registerCustomType(new LocalTimeConversion());
-        Avro.registerCustomType(new StringConversion());
     }
 
     /**
