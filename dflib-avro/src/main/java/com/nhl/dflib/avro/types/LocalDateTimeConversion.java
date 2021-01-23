@@ -1,6 +1,5 @@
 package com.nhl.dflib.avro.types;
 
-import org.apache.avro.Conversion;
 import org.apache.avro.LogicalType;
 import org.apache.avro.Schema;
 
@@ -11,16 +10,17 @@ import java.time.ZoneOffset;
 /**
  * @since 0.11
  */
-public class LocalDateTimeConversion extends Conversion<LocalDateTime> {
+public class LocalDateTimeConversion extends SingleSchemaConversion<LocalDateTime> {
+
+    static final String NAME = "dflib-local-date-time";
+
+    public LocalDateTimeConversion() {
+        super(NAME, Schema.Type.BYTES);
+    }
 
     @Override
     public Class<LocalDateTime> getConvertedType() {
         return LocalDateTime.class;
-    }
-
-    @Override
-    public String getLogicalTypeName() {
-        return LocalDateTimeType.NAME;
     }
 
     @Override

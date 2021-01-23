@@ -1,6 +1,8 @@
 package com.nhl.dflib.avro;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.avro.types.AvroTypeExtensions;
+import com.nhl.dflib.avro.types.SingleSchemaConversion;
 import org.apache.avro.Schema;
 
 import java.io.File;
@@ -11,6 +13,17 @@ import java.io.OutputStream;
  * @since 0.11
  */
 public class Avro {
+
+    /**
+     * An extension point to register a conversion for a custom type mapped to an underlying Avro simple type.
+     * DFLib already provides a collection of type extensions to map various common value types to Avro. This
+     * method allows to cover the types that are not (yet) included in DFLib.
+     *
+     * @param conversion a custom subclass of {@link SingleSchemaConversion} implementing custom type read/write logic.
+     */
+    public static void registerCustomType(SingleSchemaConversion<?> conversion) {
+        AvroTypeExtensions.registerCustomType(conversion);
+    }
 
     public static DataFrame load(File file) {
         return loader().load(file);

@@ -7,11 +7,11 @@ import org.apache.avro.Schema;
 /**
  * @since 0.11
  */
-public class InstanceLogicalTypeFactory implements LogicalTypes.LogicalTypeFactory {
+public class SingletonLogicalTypeFactory implements LogicalTypes.LogicalTypeFactory {
 
     private final LogicalType type;
 
-    public InstanceLogicalTypeFactory(LogicalType type) {
+    public SingletonLogicalTypeFactory(LogicalType type) {
         this.type = type;
     }
 
@@ -24,4 +24,5 @@ public class InstanceLogicalTypeFactory implements LogicalTypes.LogicalTypeFacto
     public String getTypeName() {
         return type.getName();
     }
+
 }

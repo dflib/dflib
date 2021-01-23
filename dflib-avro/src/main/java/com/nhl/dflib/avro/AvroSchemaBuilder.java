@@ -1,12 +1,13 @@
 package com.nhl.dflib.avro;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.avro.types.AvroTypeExtensions;
+import org.apache.avro.Conversion;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaBuilder;
+import org.apache.avro.generic.GenericData;
 
 /**
- * Creates Avro Schema from the DataFrame structure.
+ * Creates Avro Schema from DataFrame structure.
  *
  * @since 0.11
  */
@@ -63,6 +64,9 @@ public class AvroSchemaBuilder {
 
         switch (name) {
 
+            // 1. Match Avro types that require no conversion. Distinguish between primitive
+            // (guaranteed non-nullable) types and object wrappers
+
             case "int":
                 return Schema.create(Schema.Type.INT);
             case "java.lang.Integer":
@@ -88,32 +92,19 @@ public class AvroSchemaBuilder {
             case "java.lang.Boolean":
                 return Schema.createUnion(Schema.create(Schema.Type.BOOLEAN), Schema.create(Schema.Type.NULL));
 
-            case "byte[]":
-            case "java.nio.ByteBuffer":
-                return Schema.createUnion(
-                        AvroTypeExtensions.BYTE_ARRAY_TYPE.addToSchema(Schema.create(Schema.Type.BYTES)),
-                        Schema.create(Schema.Type.NULL));
-
-            case "java.lang.String":
-                return Schema.createUnion(
-                        AvroTypeExtensions.STRING_TYPE.addToSchema(Schema.create(Schema.Type.STRING)),
-                        Schema.create(Schema.Type.NULL));
-
-            case "java.time.LocalDate":
-                return Schema.createUnion(
-                        AvroTypeExtensions.LOCAL_DATE_TYPE.addToSchema(Schema.create(Schema.Type.INT)),
-                        Schema.create(Schema.Type.NULL));
-
-            case "java.time.LocalDateTime":
-                return Schema.createUnion(
-                        AvroTypeExtensions.LOCAL_DATE_TIME_TYPE.addToSchema(Schema.create(Schema.Type.BYTES)),
-                        Schema.create(Schema.Type.NULL));
-
-            // TODO: enum, java.time, BigDecimal, BigInteger, etc.
-
+            // 2. Try to find a conversion to a "logical type"
             default:
-                return Schema.createUnion(Schema.create(Schema.Type.STRING), Schema.create(Schema.Type.NULL));
+                Schema schema = convertibleLogicalTypeSchemaOrDefault(type);
+                return Schema.createUnion(schema, Schema.create(Schema.Type.NULL));
         }
+    }
+
+    protected Schema convertibleLogicalTypeSchemaOrDefault(Class<?> type) {
+        Conversion<?> c = GenericData.get().getConversionByClass(type);
+        return c != null
+                ? c.getRecommendedSchema()
+                // TODO: doesn't look like a good default... Should we throw instead? Or use BINARY and convert to byte[] ?
+                : Schema.create(Schema.Type.STRING);
     }
 
     // Making sure the name corresponds to the Avro spec restrictions. Doing it here (instead of deferring to Avro)
@@ -136,6 +127,5 @@ public class AvroSchemaBuilder {
                 throw new RuntimeException("Column name can not be used as an Avro field name. Name: '" + name + "', invalid char: " + c);
             }
         }
-
     }
 }

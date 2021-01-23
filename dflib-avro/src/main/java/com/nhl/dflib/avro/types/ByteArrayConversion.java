@@ -1,6 +1,5 @@
 package com.nhl.dflib.avro.types;
 
-import org.apache.avro.Conversion;
 import org.apache.avro.LogicalType;
 import org.apache.avro.Schema;
 
@@ -9,7 +8,13 @@ import java.nio.ByteBuffer;
 /**
  * @since 0.11
  */
-public class ByteArrayConversion extends Conversion<byte[]> {
+public class ByteArrayConversion extends SingleSchemaConversion<byte[]> {
+
+    static final String NAME = "dflib-byte-array";
+
+    public ByteArrayConversion() {
+        super(NAME, Schema.Type.BYTES);
+    }
 
     @Override
     public Class<byte[]> getConvertedType() {
@@ -18,7 +23,7 @@ public class ByteArrayConversion extends Conversion<byte[]> {
 
     @Override
     public String getLogicalTypeName() {
-        return ByteArrayType.NAME;
+        return NAME;
     }
 
     @Override

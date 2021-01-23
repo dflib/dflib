@@ -8,29 +8,30 @@ import org.apache.avro.generic.GenericData;
  */
 public class AvroTypeExtensions {
 
-    public static final ByteArrayType BYTE_ARRAY_TYPE = new ByteArrayType();
-    public static final StringType STRING_TYPE = new StringType();
-    public static final LocalDateType LOCAL_DATE_TYPE = new LocalDateType();
-    public static final LocalDateTimeType LOCAL_DATE_TIME_TYPE = new LocalDateTimeType();
-
     static {
-        // static logical types
-        LogicalTypes.register(ByteArrayType.NAME, new InstanceLogicalTypeFactory(BYTE_ARRAY_TYPE));
-        LogicalTypes.register(StringType.NAME, new InstanceLogicalTypeFactory(STRING_TYPE));
-        LogicalTypes.register(LocalDateType.NAME, new InstanceLogicalTypeFactory(LOCAL_DATE_TYPE));
-        LogicalTypes.register(LocalDateTimeType.NAME, new InstanceLogicalTypeFactory(LOCAL_DATE_TIME_TYPE));
+        // TODO: enum, java.time, BigDecimal, BigInteger, etc.
 
-        // static conversions
-        GenericData.get().addLogicalTypeConversion(new ByteArrayConversion());
-        GenericData.get().addLogicalTypeConversion(new StringConversion());
-        GenericData.get().addLogicalTypeConversion(new LocalDateConversion());
-        GenericData.get().addLogicalTypeConversion(new LocalDateTimeConversion());
+        registerCustomType(new ByteArrayConversion());
+        registerCustomType(new LocalDateConversion());
+        registerCustomType(new LocalDateTimeConversion());
+        registerCustomType(new StringConversion());
     }
 
+    /**
+     * Invoked from loaders and savers to ensure that DFLib Avro types extensions are loaded in the environment.
+     * This method can be safely called multiple times.
+     */
     public static void init() {
-        // Noop.
+        // Noop with a side effect... By calling this method the caller could trigger class loading,
+        // which would execute the above "static" section exactly once.
+    }
 
-        // The point of this method is that the caller could trigger class loading,
-        // which would execute the above "static" section exactly once
+    /**
+     * Registers a custom conversion that works over a give standard Avro type.
+     */
+    public static void registerCustomType(SingleSchemaConversion<?> conversion) {
+        LogicalTypes.LogicalTypeFactory typeFactory = new SingletonLogicalTypeFactory(conversion.getLogicalType());
+        LogicalTypes.register(conversion.getLogicalTypeName(), typeFactory);
+        GenericData.get().addLogicalTypeConversion(conversion);
     }
 }
