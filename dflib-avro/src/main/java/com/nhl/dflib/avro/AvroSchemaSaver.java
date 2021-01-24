@@ -49,6 +49,10 @@ public class AvroSchemaSaver extends BaseSaver<AvroSchemaSaver> {
         save(schema, out);
     }
 
+    public void save(Schema schema, Path filePath) {
+        save(schema, filePath.toFile());
+    }
+
     public void save(Schema schema, String fileName) {
         save(schema, new File(fileName));
     }

@@ -65,6 +65,10 @@ public class Avro {
     }
 
 
+    public static Schema loadSchema(Path path) {
+        return schemaLoader().load(path);
+    }
+
     public static Schema loadSchema(File file) {
         return schemaLoader().load(file);
     }
@@ -81,7 +85,7 @@ public class Avro {
         return new AvroSchemaLoader();
     }
 
-    
+
     /**
      * Compiles a schema for the DataFrame and stores schema and data in the provided Avro file.
      */
@@ -131,6 +135,11 @@ public class Avro {
     }
 
     public static void saveSchema(Schema schema, String filePath) {
+        schemaSaver().save(schema, filePath);
+    }
+
+
+    public static void saveSchema(Schema schema, Path filePath) {
         schemaSaver().save(schema, filePath);
     }
 
