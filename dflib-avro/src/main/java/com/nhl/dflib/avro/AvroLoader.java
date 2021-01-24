@@ -172,8 +172,8 @@ public class AvroLoader {
         for (Schema.Field f : schema.getFields()) {
             Schema fSchema = f.schema().isUnion() ? AvroSchemaUtils.unpackUnion(f.schema()) : f.schema();
 
-            if (AvroSchemaUtils.isEnumType(fSchema)) {
-                df = df.convertColumn(f.name(), (GenericEnumSymbol<?> v) -> AvroSchemaUtils.convertToEnum(v));
+            if (AvroSchemaUtils.isEnum(fSchema)) {
+                df = df.convertColumn(f.name(), (GenericEnumSymbol<?> v) -> AvroSchemaUtils.toEnum(v));
             }
         }
 

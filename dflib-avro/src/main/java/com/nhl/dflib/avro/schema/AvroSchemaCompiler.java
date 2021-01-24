@@ -20,6 +20,10 @@ import java.util.stream.Collectors;
  */
 public class AvroSchemaCompiler {
 
+    static {
+        AvroTypeExtensions.initIfNeeded();
+    }
+
     public static final String PROPERTY_DFLIB_ENUM_TYPE = "dflib.enum.type";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AvroSchemaCompiler.class);

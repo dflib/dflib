@@ -22,11 +22,11 @@ public class AvroSchemaUtils {
         return null;
     }
 
-    public static boolean isEnumType(Schema schema) {
+    public static boolean isEnum(Schema schema) {
         return schema != null && schema.getType() == Schema.Type.ENUM;
     }
 
-    public static boolean isUnmappedType(Schema schema) {
+    public static boolean isUnmapped(Schema schema) {
 
         if (schema == null) {
             return false;
@@ -36,11 +36,11 @@ public class AvroSchemaUtils {
         return t != null && t.getName().equals(AvroTypeExtensions.UNMAPPED_TYPE.getName());
     }
 
-    public static GenericEnumSymbol<?> convertToEnumSymbol(Object value, Schema schema) {
+    public static GenericEnumSymbol<?> toEnumSymbol(Object value, Schema schema) {
         return value != null ? new GenericData.EnumSymbol(schema, value) : null;
     }
 
-    public static <T extends Enum<T>> T convertToEnum(GenericEnumSymbol<?> symbol) {
+    public static <T extends Enum<T>> T toEnum(GenericEnumSymbol<?> symbol) {
         if (symbol == null) {
             return null;
         }
