@@ -14,6 +14,7 @@ import org.apache.avro.io.DatumWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Path;
 
 /**
  * Saves DataFrames to binary ".avro" files with an embedded schema and optional compression.
@@ -60,6 +61,11 @@ public class AvroSaver extends BaseSaver<AvroSaver> {
             throw new RuntimeException("Error writing Avro file '" + file + "': " + e.getMessage(), e);
         }
     }
+
+    public void save(DataFrame df, Path filePath) {
+        save(df, filePath.toFile());
+    }
+
 
     public void save(DataFrame df, String fileName) {
         save(df, new File(fileName));

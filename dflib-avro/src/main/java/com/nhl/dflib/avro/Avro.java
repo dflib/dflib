@@ -1,6 +1,7 @@
 package com.nhl.dflib.avro;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.avro.schema.AvroSchemaCompiler;
 import com.nhl.dflib.avro.types.SingleSchemaConversion;
 import com.nhl.dflib.avro.types.SingletonLogicalTypeFactory;
 import org.apache.avro.LogicalType;
@@ -11,6 +12,7 @@ import org.apache.avro.generic.GenericData;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Path;
 
 /**
  * @since 0.11
@@ -34,8 +36,20 @@ public class Avro {
         LogicalTypes.register(logicalType.getName(), typeFactory);
     }
 
+    public static Schema compileSchema(DataFrame data, String namespace, String name) {
+        return schemaCompiler().namespace(namespace).name(name).compileSchema(data);
+    }
+
+    public static AvroSchemaCompiler schemaCompiler() {
+        return new AvroSchemaCompiler();
+    }
+
     public static DataFrame load(File file) {
         return loader().load(file);
+    }
+
+    public static DataFrame load(Path filePath) {
+        return loader().load(filePath);
     }
 
     public static DataFrame load(String filePath) {
@@ -67,21 +81,41 @@ public class Avro {
         return new AvroSchemaLoader();
     }
 
+    
+    /**
+     * Compiles a schema for the DataFrame and stores schema and data in the provided Avro file.
+     */
+    public static void save(DataFrame df, Path filePath) {
+        saver().save(df, filePath);
+    }
 
+    /**
+     * Compiles a schema for the DataFrame and stores schema and data in the provided Avro file.
+     */
     public static void save(DataFrame df, String filePath) {
         saver().save(df, filePath);
     }
 
+    /**
+     * Compiles a schema for the DataFrame and stores schema and data in the provided Avro file.
+     */
     public static void save(DataFrame df, File file) {
         saver().save(df, file);
     }
 
+    /**
+     * Compiles a schema for the DataFrame and stores schema and data in the provided stream in Avro format.
+     */
     public static void save(DataFrame df, OutputStream out) {
         saver().save(df, out);
     }
 
     public static AvroSaver saver() {
         return new AvroSaver();
+    }
+
+    public static void saveSchema(DataFrame df, Path filePath) {
+        schemaSaver().save(df, filePath);
     }
 
     public static void saveSchema(DataFrame df, String filePath) {

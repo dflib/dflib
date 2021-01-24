@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 
 /**
  * Saves DataFrame schemas in JSON format.
@@ -15,6 +16,14 @@ import java.nio.charset.StandardCharsets;
  * @since 0.11
  */
 public class AvroSchemaSaver extends BaseSaver<AvroSchemaSaver> {
+
+    /**
+     * Compiles a schema for the DataFrame and stores it in the provided file.
+     */
+    public void save(DataFrame df, Path filePath) {
+        Schema schema = schemaBuilder.compileSchema(df);
+        save(schema, filePath.toFile());
+    }
 
     /**
      * Compiles a schema for the DataFrame and stores it in the provided file.

@@ -17,6 +17,7 @@ import org.apache.avro.generic.GenericRecord;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 public class AvroLoader {
@@ -43,6 +44,10 @@ public class AvroLoader {
         } catch (IOException e) {
             throw new RuntimeException("Error reading Avro file: " + file, e);
         }
+    }
+
+    public DataFrame load(Path filePath) {
+        return load(filePath.toFile());
     }
 
     public DataFrame load(String filePath) {

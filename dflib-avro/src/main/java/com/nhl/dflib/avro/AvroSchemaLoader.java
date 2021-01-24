@@ -6,11 +6,16 @@ import org.apache.avro.file.SeekableFileInput;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 
 /**
  * @since 0.11
  */
 public class AvroSchemaLoader {
+
+    public Schema load(Path filePath) {
+        return load(filePath.toFile());
+    }
 
     public Schema load(String filePath) {
         return load(new File(filePath));
