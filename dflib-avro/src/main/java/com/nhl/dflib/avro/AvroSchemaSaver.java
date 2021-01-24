@@ -1,7 +1,6 @@
 package com.nhl.dflib.avro;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.avro.types.AvroTypeExtensions;
 import org.apache.avro.Schema;
 
 import java.io.File;
@@ -17,10 +16,6 @@ import java.nio.file.Path;
  * @since 0.11
  */
 public class AvroSchemaSaver extends BaseSaver<AvroSchemaSaver> {
-
-    static {
-        AvroTypeExtensions.initIfNeeded();
-    }
 
     /**
      * Compiles a schema for the DataFrame and stores it in the provided file.
