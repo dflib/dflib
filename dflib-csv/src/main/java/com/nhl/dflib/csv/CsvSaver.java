@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Path;
 
 public class CsvSaver {
 
@@ -72,6 +73,13 @@ public class CsvSaver {
         } catch (IOException e) {
             throw new RuntimeException("Error writing CSV to " + file + ": " + e.getMessage(), e);
         }
+    }
+
+    /**
+     * @since 0.11
+     */
+    public void save(DataFrame df, Path filePath) {
+        save(df, filePath.toFile());
     }
 
     public void save(DataFrame df, String fileName) {

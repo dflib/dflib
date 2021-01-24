@@ -1,16 +1,10 @@
 package com.nhl.dflib.csv;
 
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.DoubleValueMapper;
-import com.nhl.dflib.Index;
-import com.nhl.dflib.IntValueMapper;
-import com.nhl.dflib.LongValueMapper;
-import com.nhl.dflib.ValueMapper;
-import com.nhl.dflib.ValuePredicate;
-import com.nhl.dflib.csv.loader.ColumnConfig;
+import com.nhl.dflib.*;
 import com.nhl.dflib.csv.loader.ColumnBuilder;
-import com.nhl.dflib.csv.loader.RowFilterConfig;
+import com.nhl.dflib.csv.loader.ColumnConfig;
 import com.nhl.dflib.csv.loader.CsvCell;
+import com.nhl.dflib.csv.loader.RowFilterConfig;
 import com.nhl.dflib.sample.Sampler;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -21,12 +15,9 @@ import java.io.IOException;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class CsvLoader {
@@ -419,6 +410,13 @@ public class CsvLoader {
     public CsvLoader emptyStringIsNull() {
         this.format = format.withNullString("");
         return this;
+    }
+
+    /**
+     * @since 0.11
+     */
+    public DataFrame load(Path filePath) {
+        return load(filePath.toFile());
     }
 
     public DataFrame load(File file) {
