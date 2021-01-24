@@ -1,5 +1,6 @@
 package com.nhl.dflib.avro;
 
+import com.nhl.dflib.avro.types.AvroTypeExtensions;
 import org.apache.avro.Schema;
 import org.apache.avro.file.SeekableFileInput;
 
@@ -12,6 +13,10 @@ import java.nio.file.Path;
  * @since 0.11
  */
 public class AvroSchemaLoader {
+
+    static {
+        AvroTypeExtensions.initIfNeeded();
+    }
 
     public Schema load(Path filePath) {
         return load(filePath.toFile());
