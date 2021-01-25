@@ -31,7 +31,7 @@ public class Avro {
         GenericData.get().addLogicalTypeConversion(conversion);
     }
 
-    public static void registerCustomLogicalType(LogicalType logicalType) {
+    protected static void registerCustomLogicalType(LogicalType logicalType) {
         LogicalTypes.LogicalTypeFactory typeFactory = new SingletonLogicalTypeFactory(logicalType);
         LogicalTypes.register(logicalType.getName(), typeFactory);
     }
