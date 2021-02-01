@@ -126,6 +126,7 @@ public class AvroLoader {
             case STRING:
             case BYTES:
             case ENUM:
+            case NULL:
                 return new ObjectAccumulator<>();
             case UNION:
                 return mapUnionColumn(columnSchema.getTypes());

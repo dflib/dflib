@@ -188,6 +188,20 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
                 .expectColumn("c2", "a", "b", null);
     }
 
+    @Test
+    public void testNull() {
+        DataFrame df = DataFrame.newFrame("c1", "c2").columns(
+                Series.forData(null, null),
+                Series.forData(null, null)
+        );
+
+        DataFrame loaded = saveAndLoad(df);
+        new DataFrameAsserts(loaded, "c1", "c2")
+                .expectHeight(2)
+                .expectColumn("c1", null, null)
+                .expectColumn("c2", null, null);
+    }
+
     public enum TestEnum1 {
         m, z, ab
     }
