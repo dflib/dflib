@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class AvroSchemaCompilerTest {
 
     static final DataFrame df = DataFrame.newFrame(
-            "int", "Integer", "long", "Long", "double", "Double", "bool", "Bool", "String")
+            "int", "Integer", "long", "Long", "double", "Double", "bool", "Bool", "String", "Nulls")
             .columns(
                     IntSeries.forInts(1, 3),
                     Series.forData(11, null),
@@ -20,7 +20,8 @@ public class AvroSchemaCompilerTest {
                     Series.forData(30.1, null),
                     BooleanSeries.forBooleans(true, false),
                     Series.forData(Boolean.TRUE, null),
-                    Series.forData("s1", null)
+                    Series.forData("s1", null),
+                    Series.forData(null, null)
             );
 
     @Test
@@ -40,7 +41,8 @@ public class AvroSchemaCompilerTest {
                 "{\"name\":\"Double\",\"type\":[\"double\",\"null\"]}," +
                 "{\"name\":\"bool\",\"type\":\"boolean\"}," +
                 "{\"name\":\"Bool\",\"type\":[\"boolean\",\"null\"]}," +
-                "{\"name\":\"String\",\"type\":[{\"type\":\"string\",\"avro.java.string\":\"String\"},\"null\"]}]}", schema.toString());
+                "{\"name\":\"String\",\"type\":[{\"type\":\"string\",\"avro.java.string\":\"String\"},\"null\"]}," +
+                "{\"name\":\"Nulls\",\"type\":\"null\"}]}", schema.toString());
     }
 
     @Test

@@ -1,6 +1,7 @@
 package com.nhl.dflib.avro.schema;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.avro.types.AvroTypeExtensions;
 import org.apache.avro.Conversion;
 import org.apache.avro.Schema;
@@ -61,19 +62,20 @@ public class AvroSchemaCompiler {
                 .fields();
 
         for (String column : df.getColumnsIndex()) {
-            Class<?> type = df.getColumn(column).getInferredType();
-            createSchemaField(fields, column, type);
+            createSchemaField(fields, column, df.getColumn(column));
         }
 
         return fields.endRecord();
     }
 
-    protected void createSchemaField(SchemaBuilder.FieldAssembler<Schema> builder, String column, Class<?> type) {
-        validateColumnName(column);
-        builder.name(column).type(createColumnSchema(type)).noDefault();
+    protected void createSchemaField(SchemaBuilder.FieldAssembler<Schema> builder, String columnName, Series<?> column) {
+        validateColumnName(columnName);
+        builder.name(columnName).type(createColumnSchema(column)).noDefault();
     }
 
-    protected Schema createColumnSchema(Class<?> type) {
+    protected Schema createColumnSchema(Series<?> column) {
+
+        Class<?> type = column.getInferredType();
 
         if (type.isEnum()) {
             return makeNullable(enumSchema(type));
@@ -118,8 +120,17 @@ public class AvroSchemaCompiler {
 
             // 3. Try to find a conversion to a "logical type"
             default:
-                Schema schema = logicalTypeSchema(type);
-                return makeNullable(schema != null ? schema : unmappedValueSchema(type));
+                Schema logicalTypeSchema = logicalTypeSchema(type);
+                if (logicalTypeSchema != null) {
+                    return makeNullable(logicalTypeSchema);
+                }
+
+                Schema nullsOnlySchema = nullsOnlySchema(column);
+                if (nullsOnlySchema != null) {
+                    return nullsOnlySchema;
+                }
+
+                return makeNullable(unmappedValueSchema(type));
         }
     }
 
@@ -149,13 +160,30 @@ public class AvroSchemaCompiler {
         return c != null ? c.getRecommendedSchema() : null;
     }
 
+    protected Schema nullsOnlySchema(Series<?> column) {
+
+        // suppose no-data columns should be presented as "unknown", not as "null"
+        if (column.size() == 0) {
+            return null;
+        }
+
+        for (Object o : column) {
+            if (o != null) {
+                return null;
+            }
+        }
+        return Schema.create(Schema.Type.NULL);
+    }
+
     protected Schema unmappedValueSchema(Class<?> type) {
         LOGGER.warn("Unmapped schema type '{}'. Will use 'toString()' conversion and will deserialize as String", type.getName());
         return AvroTypeExtensions.UNMAPPED_TYPE.getRecommendedSchema();
     }
 
     protected Schema makeNullable(Schema schema) {
-        return Schema.createUnion(schema, Schema.create(Schema.Type.NULL));
+        return schema.getType() == Schema.Type.NULL
+                ? schema
+                : Schema.createUnion(schema, Schema.create(Schema.Type.NULL));
     }
 
     // Making sure the name corresponds to the Avro spec restrictions. Doing it here (instead of deferring to Avro)
