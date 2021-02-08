@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 public class AvroLoader {
 
@@ -168,13 +169,19 @@ public class AvroLoader {
 
     protected DataFrame fromAvroTypes(DataFrame df, Schema schema) {
 
-        // 1. GenericEnumSymbols must be converted to enums
+        // GenericEnumSymbols are converted to enums if possible, or to Strings if not
+        // (when the class is not known in the deserialization env)
 
         for (Schema.Field f : schema.getFields()) {
             Schema fSchema = f.schema().isUnion() ? AvroSchemaUtils.unpackUnion(f.schema()) : f.schema();
 
             if (AvroSchemaUtils.isEnum(fSchema)) {
-                df = df.convertColumn(f.name(), (GenericEnumSymbol<?> v) -> AvroSchemaUtils.toEnum(v));
+                Optional<Class<?>> enumType = AvroSchemaUtils.knownEnumType(fSchema);
+                if (enumType.isPresent()) {
+                    df = df.convertColumn(f.name(), (GenericEnumSymbol<?> v) -> AvroSchemaUtils.toEnum(v, enumType.get()));
+                } else {
+                    df = df.convertColumn(f.name(), (GenericEnumSymbol<?> v) -> v.toString());
+                }
             }
         }
 

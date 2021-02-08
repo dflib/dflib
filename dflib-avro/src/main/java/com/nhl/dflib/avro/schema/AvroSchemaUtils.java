@@ -6,6 +6,8 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericEnumSymbol;
 
+import java.util.Optional;
+
 /**
  * @since 0.11
  */
@@ -26,6 +28,19 @@ public class AvroSchemaUtils {
         return schema != null && schema.getType() == Schema.Type.ENUM;
     }
 
+    public static Optional<Class<?>> knownEnumType(Schema schema) {
+        if (!isEnum(schema)) {
+            return Optional.empty();
+        }
+
+        String type = schema.getProp(AvroSchemaCompiler.PROPERTY_DFLIB_ENUM_TYPE);
+        if (type == null) {
+            return Optional.empty();
+        }
+
+        return classForName(type);
+    }
+
     public static boolean isUnmapped(Schema schema) {
 
         if (schema == null) {
@@ -40,33 +55,24 @@ public class AvroSchemaUtils {
         return value != null ? new GenericData.EnumSymbol(schema, value) : null;
     }
 
-    public static <T extends Enum<T>> T toEnum(GenericEnumSymbol<?> symbol) {
+    public static <T extends Enum<T>> T toEnum(GenericEnumSymbol<?> symbol, Class<?> enumType) {
         if (symbol == null) {
             return null;
         }
 
         String name = symbol.toString();
-        String type = symbol.getSchema().getProp(AvroSchemaCompiler.PROPERTY_DFLIB_ENUM_TYPE);
-
-        if (type == null) {
-            throw new IllegalArgumentException("GenericEnumSymbol doesn't have '"
-                    + AvroSchemaCompiler.PROPERTY_DFLIB_ENUM_TYPE
-                    + "' schema property and can't be converted to Java enum: " + name);
+        if (!enumType.isEnum()) {
+            throw new IllegalArgumentException("'" + enumType + "' is not an enum class");
         }
 
-        Class<?> typeClass = classForName(type);
-        if (!typeClass.isEnum()) {
-            throw new IllegalArgumentException("'" + type + "' is not an enum class");
-        }
-
-        return Enum.valueOf((Class<T>) typeClass, name);
+        return Enum.valueOf((Class<T>) enumType, name);
     }
 
-    private static Class<?> classForName(String name) {
+    private static Optional<Class<?>> classForName(String name) {
         try {
-            return Class.forName(name);
+            return Optional.of(Class.forName(name));
         } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Invalid to unknown class name: " + name, e);
+            return Optional.empty();
         }
     }
 }
