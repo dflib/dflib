@@ -59,6 +59,22 @@ public class DataFrame_AddDropMapColumnsTest {
     }
 
     @Test
+    public void testAddColumn_Series_DupeName() {
+
+        Series<String> column = Series.forData("m", "n");
+
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1, "x",
+                2, "y").addColumn("a", column);
+
+
+        new DataFrameAsserts(df, "a", "b", "a_")
+                .expectHeight(2)
+                .expectRow(0, 1, "x", "m")
+                .expectRow(1, 2, "y", "n");
+    }
+
+    @Test
     public void testAddColumn_Series() {
 
         Series<String> column = Series.forData("m", "n");
