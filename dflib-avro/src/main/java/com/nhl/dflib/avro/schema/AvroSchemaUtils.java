@@ -68,6 +68,10 @@ public class AvroSchemaUtils {
         return Enum.valueOf((Class<T>) enumType, name);
     }
 
+    public static String toEnumName(GenericEnumSymbol<?> symbol) {
+        return symbol != null ? symbol.toString() : null;
+    }
+
     private static Optional<Class<?>> classForName(String name) {
         try {
             return Optional.of(Class.forName(name));

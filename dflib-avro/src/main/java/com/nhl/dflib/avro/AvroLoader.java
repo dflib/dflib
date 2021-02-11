@@ -180,7 +180,7 @@ public class AvroLoader {
                 if (enumType.isPresent()) {
                     df = df.convertColumn(f.name(), (GenericEnumSymbol<?> v) -> AvroSchemaUtils.toEnum(v, enumType.get()));
                 } else {
-                    df = df.convertColumn(f.name(), (GenericEnumSymbol<?> v) -> v.toString());
+                    df = df.convertColumn(f.name(), (GenericEnumSymbol<?> v) -> AvroSchemaUtils.toEnumName(v));
                 }
             }
         }
