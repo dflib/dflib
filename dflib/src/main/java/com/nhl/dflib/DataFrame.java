@@ -1,6 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.join.JoinBuilder;
+import com.nhl.dflib.pivot.PivotBuilder;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.SingleValueSeries;
 import com.nhl.dflib.window.WindowBuilder;
@@ -825,6 +826,15 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.6
      */
     DataFrame stackIncludeNulls();
+
+    /**
+     * Returns a mutable builder of a "pivot" transformation.
+     *
+     * @since 0.11
+     */
+    default PivotBuilder pivot() {
+        return new PivotBuilder(this);
+    }
 
     /**
      * Returns a DataFrame object that is a random sample of rows from this object, with the specified sample size.
