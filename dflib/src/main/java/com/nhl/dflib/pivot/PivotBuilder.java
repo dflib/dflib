@@ -57,6 +57,27 @@ public class PivotBuilder {
     }
 
     /**
+     * Executes pivot transform, using values from the provided column name to populate the resulting DataFame.
+     * There must be no more than one value for each pivot row and column combination, or an exception will be thrown.
+     * For datasets where multiple values are present, use a flavor with value aggregator -
+     * {@link #values(String, SeriesAggregator)}.
+     */
+    public DataFrame values(String columnName) {
+        int pos = validateColumn(columnName);
+        return values(pos);
+    }
+
+    /**
+     * Executes pivot transform, using values from the provided column name to populate the resulting DataFame.
+     * There must be no more than one value for each pivot row and column combination, or an exception will be thrown.
+     * For datasets where multiple values are present, use a flavor with value aggregator -
+     * {@link #values(int, SeriesAggregator)}.
+     */
+    public DataFrame values(int columnPos) {
+        return values(columnPos, null);
+    }
+
+    /**
      * Executes pivot transform, using values from the provided column name to populate the resulting DataFame. Values
      * with matching pivot row and column are aggregated with the provided aggregator.
      */
@@ -98,8 +119,27 @@ public class PivotBuilder {
             chunks.add(pivotChunk);
         }
 
-        // TODO
-        throw new UnsupportedOperationException("TODO - HConcat");
+        switch (chunks.size()) {
+            case 0:
+                return DataFrame.newFrame(rowColumnName).empty();
+            case 1:
+                return chunks.get(0);
+            default:
+                return chunks.stream()
+                        .reduce(this::joinChunks)
+                        .orElseGet(() -> empty(rowColumnName));
+        }
+    }
+
+    private DataFrame joinChunks(DataFrame left, DataFrame right) {
+        int rightRowPos = 2;
+        return left.fullJoin().on(0).with(right)
+                .map(df -> df.fillNullsFromSeries(0, df.getColumn(rightRowPos)))
+                .map(df -> df.dropColumns(df.getColumnsIndex().getLabel(rightRowPos)));
+    }
+
+    private DataFrame empty(String rowColumnName) {
+        return DataFrame.newFrame(rowColumnName).empty();
     }
 
     private DataFrame aggregateChunk(DataFrame chunk, SeriesAggregator<?, ?> valuesAggregator) {
@@ -112,7 +152,7 @@ public class PivotBuilder {
         String rowColumnName = chunk.getColumnsIndex().getLabel(0);
         String valueColumnName = chunk.getColumnsIndex().getLabel(1);
 
-        return dataFrame.group(rowColumnName).agg(
+        return chunk.group(rowColumnName).agg(
                 Aggregator.first(rowColumnName),
                 new ColumnAggregator(valuesAggregator, i -> 1, i -> valueColumnName)
         );
