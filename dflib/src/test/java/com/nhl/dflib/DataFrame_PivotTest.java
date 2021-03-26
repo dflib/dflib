@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class DataFrame_PivotTest {
 
     @Test
-    public void testWithAggregation() {
+    public void testWithAggregation_2by2() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
                 1, "x", 15.0,
@@ -26,6 +26,33 @@ public class DataFrame_PivotTest {
                 .expectHeight(2)
                 .expectRow(0, 1, 15.0, 20.0)
                 .expectRow(1, 2, null, 37.0);
+    }
+
+    @Test
+    public void testWithAggregation_4_4() {
+
+        DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
+                1, "x", 1,
+                3, "y", 2,
+                2, "y", 3,
+                4, "y", 4,
+                2, "z", 5,
+                2, "t", 6,
+                2, "y", 7,
+                1, "t", 8,
+                4, "x", 9,
+                1, "y", 10);
+
+
+        DataFrame df = df1.pivot().columns("b").rows("a").values("c", SeriesAggregator.sumInt())
+                .sort("a", true);
+
+        new DataFrameAsserts(df, "a", "x", "y", "z", "t")
+                .expectHeight(4)
+                .expectRow(0, 1, 1, 10, null, 8)
+                .expectRow(1, 2, null, 10, 5, 6)
+                .expectRow(2, 3, null, 2, null, null)
+                .expectRow(3, 4, 9, 4, null, null);
     }
 
     @Test

@@ -138,7 +138,7 @@ public class PivotBuilder {
     }
 
     private DataFrame joinChunks(DataFrame left, DataFrame right) {
-        int rightRowPos = 2;
+        int rightRowPos = left.width();
         return left.fullJoin().on(0).with(right)
                 .map(df -> df.fillNullsFromSeries(0, df.getColumn(rightRowPos)))
                 .map(df -> df.dropColumns(df.getColumnsIndex().getLabel(rightRowPos)));
@@ -149,12 +149,6 @@ public class PivotBuilder {
     }
 
     private DataFrame aggregateChunk(DataFrame chunk, SeriesAggregator<?, ?> valuesAggregator) {
-
-        if (valuesAggregator == null) {
-            // throw on duplicate values in the rows column .. they must be aggregated, otherwise they make no sense
-            int uniqueSize = chunk.getColumn(0).unique().size();
-            return chunk;
-        }
 
         String rowColumnName = chunk.getColumnsIndex().getLabel(0);
         String valueColumnName = chunk.getColumnsIndex().getLabel(1);
