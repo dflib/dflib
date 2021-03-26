@@ -1,9 +1,12 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.pivot.PivotBuilder;
 import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DataFrame_PivotTest {
 
@@ -79,6 +82,19 @@ public class DataFrame_PivotTest {
         new DataFrameAsserts(df, "a", "x", "y")
                 .expectHeight(2)
                 .expectRow(0, 1, 15.0, 20.0)
-                .expectRow(1, 2, null, 19);
+                .expectRow(1, 2, null, 19.0);
+    }
+
+    @Test
+    public void testNoAggregation_Dupes() {
+
+        DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
+                1, "x", 15.0,
+                2, "y", 19.0,
+                2, "y", 21.0,
+                1, "y", 20.0);
+
+        PivotBuilder pb = df1.pivot().columns("b").rows("a");
+        assertThrows(IllegalArgumentException.class, () -> pb.values("c"));
     }
 }

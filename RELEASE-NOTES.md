@@ -3,6 +3,7 @@
 * #116 Map operation over the entire DataFrame
 * #118 Read/write DataFrames from/to Avro files
 * #119 Primitive (custom) accumulators for DataFrameBuilder.byRow(..)
+* #120 DataFrame.pivot(..)
 
 ## Release 0.10
 

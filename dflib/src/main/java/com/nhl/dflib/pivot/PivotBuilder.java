@@ -8,6 +8,7 @@ import com.nhl.dflib.aggregate.ColumnAggregator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @since 0.11
@@ -64,7 +65,7 @@ public class PivotBuilder {
      */
     public DataFrame values(String columnName) {
         int pos = validateColumn(columnName);
-        return values(pos);
+        return doPivot(pos, new OneValueAggregator<>());
     }
 
     /**
@@ -74,7 +75,7 @@ public class PivotBuilder {
      * {@link #values(int, SeriesAggregator)}.
      */
     public DataFrame values(int columnPos) {
-        return values(columnPos, null);
+        return doPivot(columnPos, new OneValueAggregator<>());
     }
 
     /**
@@ -83,7 +84,7 @@ public class PivotBuilder {
      */
     public DataFrame values(String columnName, SeriesAggregator<?, ?> valuesAggregator) {
         int pos = validateColumn(columnName);
-        return values(pos, valuesAggregator);
+        return doPivot(pos, valuesAggregator);
     }
 
     /**
@@ -91,6 +92,11 @@ public class PivotBuilder {
      * with matching pivot row and column are aggregated with the provided aggregator.
      */
     public DataFrame values(int columnPos, SeriesAggregator<?, ?> valuesAggregator) {
+        return doPivot(columnPos, valuesAggregator);
+    }
+
+    protected DataFrame doPivot(int columnPos, SeriesAggregator<?, ?> valuesAggregator) {
+        Objects.requireNonNull(valuesAggregator, "Null 'valuesAggregator'");
         int columnForValues = validateColumn(columnPos);
 
         if (columnForColumns < 0) {
@@ -145,7 +151,8 @@ public class PivotBuilder {
     private DataFrame aggregateChunk(DataFrame chunk, SeriesAggregator<?, ?> valuesAggregator) {
 
         if (valuesAggregator == null) {
-            // TODO: need to handle no-aggregator validation.. dupes must result in an exception
+            // throw on duplicate values in the rows column .. they must be aggregated, otherwise they make no sense
+            int uniqueSize = chunk.getColumn(0).unique().size();
             return chunk;
         }
 
