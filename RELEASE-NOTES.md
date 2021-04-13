@@ -4,6 +4,7 @@
 * #118 Read/write DataFrames from/to Avro files
 * #119 Primitive (custom) accumulators for DataFrameBuilder.byRow(..)
 * #120 DataFrame.pivot(..)
+* #121 BigDecimal aggregators with controlled scale
 
 ## Release 0.10
 

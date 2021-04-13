@@ -1,10 +1,9 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.aggregate.AggregatorFunctions;
-import com.nhl.dflib.aggregate.CollectorSeriesAggregator;
-import com.nhl.dflib.aggregate.SeriesMinMax;
-import com.nhl.dflib.aggregate.SimpleSeriesAggregator;
+import com.nhl.dflib.aggregate.*;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collector;
@@ -56,6 +55,20 @@ public interface SeriesAggregator<S, T> {
     // TODO: special handling of primitive series to avoid boxing/unboxing
     static <S extends Number> SeriesAggregator<S, Double> sumDouble() {
         return of("sumDouble", Collectors.summingDouble(v -> v.doubleValue()));
+    }
+
+    /**
+     * @since 0.11
+     */
+    static SeriesAggregator<BigDecimal, BigDecimal> sumBigDecimal() {
+        return new SimpleSeriesAggregator<>("sumBigDecimal", BigDecimalSeriesSum::sum);
+    }
+
+    /**
+     * @since 0.11
+     */
+    static SeriesAggregator<BigDecimal, BigDecimal> sumBigDecimal(int resultScale, RoundingMode resultRoundingMode) {
+        return new SimpleSeriesAggregator<>("sumBigDecimal", s -> BigDecimalSeriesSum.sum(s, resultScale, resultRoundingMode));
     }
 
     /**

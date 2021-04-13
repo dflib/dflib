@@ -2,6 +2,8 @@ package com.nhl.dflib;
 
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashSet;
 
 import static java.util.Arrays.asList;
@@ -74,6 +76,28 @@ public class SeriesAggregatorTest {
     public void testAggregate_SumDouble() {
         Series<Double> s = Series.forData(1.4, 5.3, -9.4);
         assertEquals(-2.7, SeriesAggregator.sumDouble().aggregate(s).doubleValue(), 0.0000001);
+    }
+
+    @Test
+    public void testAggregate_SumBigDecimal() {
+        Series<BigDecimal> s = Series.forData(
+                new BigDecimal(1.4).setScale(2, RoundingMode.HALF_UP),
+                new BigDecimal(5.3).setScale(4, RoundingMode.HALF_UP),
+                new BigDecimal(-9.4).setScale(2, RoundingMode.HALF_UP));
+
+        assertEquals(new BigDecimal(-2.7000).setScale(4, RoundingMode.HALF_UP),
+                SeriesAggregator.sumBigDecimal().aggregate(s));
+    }
+
+    @Test
+    public void testAggregate_SumBigDecimal_Scale() {
+        Series<BigDecimal> s = Series.forData(
+                new BigDecimal(1.4).setScale(2, RoundingMode.HALF_UP),
+                new BigDecimal(5.3).setScale(4, RoundingMode.HALF_UP),
+                new BigDecimal(-9.4).setScale(2, RoundingMode.HALF_UP));
+
+        assertEquals(new BigDecimal(-2.7).setScale(2, RoundingMode.HALF_UP),
+                SeriesAggregator.sumBigDecimal(2, RoundingMode.HALF_UP).aggregate(s));
     }
 
     @Test
