@@ -9,6 +9,13 @@ import java.time.format.DateTimeFormatter;
 @FunctionalInterface
 public interface ValueMapper<V, VR> {
 
+    /**
+     * @since 0.11
+     */
+    static ValueMapper<String, Boolean> stringToBoolean() {
+        return s -> s != null ? Boolean.parseBoolean(s) : null;
+    }
+
     static ValueMapper<String, Integer> stringToInt() {
         return s -> s != null && s.length() > 0 ? Integer.valueOf(s) : null;
     }
