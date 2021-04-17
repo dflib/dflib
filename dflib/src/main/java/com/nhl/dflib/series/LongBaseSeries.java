@@ -381,7 +381,7 @@ public abstract class LongBaseSeries implements LongSeries {
     }
 
     @Override
-    public BooleanSeries eq(Series<Long> another) {
+    public BooleanSeries eq(Series<?> another) {
         int s = size();
         int as = another.size();
 
@@ -407,7 +407,7 @@ public abstract class LongBaseSeries implements LongSeries {
     }
 
     @Override
-    public BooleanSeries ne(Series<Long> another) {
+    public BooleanSeries ne(Series<?> another) {
         int s = size();
         int as = another.size();
 

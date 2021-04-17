@@ -176,7 +176,7 @@ public interface Series<T> extends Iterable<T> {
      * another.
      * @since 0.6
      */
-    BooleanSeries eq(Series<T> another);
+    BooleanSeries eq(Series<?> another);
 
     /**
      * @param another a Series to compare with.
@@ -184,7 +184,7 @@ public interface Series<T> extends Iterable<T> {
      * another.
      * @since 0.6
      */
-    BooleanSeries ne(Series<T> another);
+    BooleanSeries ne(Series<?> another);
 
     /**
      * Returns a boolean series indicating whether each original Series position matched the predicate

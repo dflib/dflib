@@ -247,7 +247,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
     }
 
     @Override
-    public BooleanSeries eq(Series<T> another) {
+    public BooleanSeries eq(Series<?> another) {
         int s = size();
         int as = another.size();
 
@@ -264,7 +264,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
     }
 
     @Override
-    public BooleanSeries ne(Series<T> another) {
+    public BooleanSeries ne(Series<?> another) {
         int s = size();
         int as = another.size();
 

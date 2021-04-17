@@ -409,7 +409,7 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public BooleanSeries eq(Series<Integer> another) {
+    public BooleanSeries eq(Series<?> another) {
         int s = size();
         int as = another.size();
 
@@ -435,7 +435,7 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public BooleanSeries ne(Series<Integer> another) {
+    public BooleanSeries ne(Series<?> another) {
         int s = size();
         int as = another.size();
 

@@ -1,7 +1,8 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.series.LongArraySeries;
+import com.nhl.dflib.accumulator.BooleanAccumulator;
 import com.nhl.dflib.accumulator.LongAccumulator;
+import com.nhl.dflib.series.LongArraySeries;
 
 import java.util.Random;
 
@@ -126,4 +127,116 @@ public interface LongSeries extends Series<Long> {
      * @since 0.7
      */
     double median();
+
+    /**
+     * @since 0.11
+     */
+    default LongSeries plus(LongSeries s) {
+        int len = size();
+        LongAccumulator accumulator = new LongAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            accumulator.addLong(this.getLong(i) + s.getLong(i));
+        }
+
+        return accumulator.toSeries();
+    }
+
+    /**
+     * @since 0.11
+     */
+    default LongSeries minus(LongSeries s) {
+        int len = size();
+        LongAccumulator accumulator = new LongAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            accumulator.addLong(this.getLong(i) - s.getLong(i));
+        }
+
+        return accumulator.toSeries();
+    }
+
+    /**
+     * @since 0.11
+     */
+    default LongSeries multiply(LongSeries s) {
+        int len = size();
+        LongAccumulator accumulator = new LongAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            accumulator.addLong(this.getLong(i) * s.getLong(i));
+        }
+
+        return accumulator.toSeries();
+    }
+
+    /**
+     * @since 0.11
+     */
+    default LongSeries divide(LongSeries s) {
+        int len = size();
+        LongAccumulator accumulator = new LongAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            accumulator.addLong(this.getLong(i) / s.getLong(i));
+        }
+
+        return accumulator.toSeries();
+    }
+
+    /**
+     * @since 0.11
+     */
+    default BooleanSeries lt(LongSeries s) {
+        int len = size();
+        BooleanAccumulator accumulator = new BooleanAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            accumulator.addBoolean(this.getLong(i) < s.getLong(i));
+        }
+
+        return accumulator.toSeries();
+    }
+
+    /**
+     * @since 0.11
+     */
+    default BooleanSeries le(LongSeries s) {
+        int len = size();
+        BooleanAccumulator accumulator = new BooleanAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            accumulator.addBoolean(this.getLong(i) <= s.getLong(i));
+        }
+
+        return accumulator.toSeries();
+    }
+
+    /**
+     * @since 0.11
+     */
+    default BooleanSeries gt(LongSeries s) {
+        int len = size();
+        BooleanAccumulator accumulator = new BooleanAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            accumulator.addBoolean(this.getLong(i) > s.getLong(i));
+        }
+
+        return accumulator.toSeries();
+    }
+
+    /**
+     * @since 0.11
+     */
+    default BooleanSeries ge(LongSeries s) {
+        int len = size();
+        BooleanAccumulator accumulator = new BooleanAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            accumulator.addBoolean(this.getLong(i) >= s.getLong(i));
+        }
+
+        return accumulator.toSeries();
+    }
 }

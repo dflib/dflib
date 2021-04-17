@@ -381,7 +381,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
-    public BooleanSeries eq(Series<Double> another) {
+    public BooleanSeries eq(Series<?> another) {
         int s = size();
         int as = another.size();
 
@@ -407,7 +407,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
-    public BooleanSeries ne(Series<Double> another) {
+    public BooleanSeries ne(Series<?> another) {
         int s = size();
         int as = another.size();
 

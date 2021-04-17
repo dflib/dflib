@@ -1,7 +1,8 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.series.DoubleArraySeries;
+import com.nhl.dflib.accumulator.BooleanAccumulator;
 import com.nhl.dflib.accumulator.DoubleAccumulator;
+import com.nhl.dflib.series.DoubleArraySeries;
 
 import java.util.Random;
 
@@ -126,4 +127,116 @@ public interface DoubleSeries extends Series<Double> {
      * @since 0.7
      */
     double median();
+
+    /**
+     * @since 0.11
+     */
+    default DoubleSeries plus(DoubleSeries s) {
+        int len = size();
+        DoubleAccumulator accumulator = new DoubleAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            accumulator.addDouble(this.getDouble(i) + s.getDouble(i));
+        }
+
+        return accumulator.toSeries();
+    }
+
+    /**
+     * @since 0.11
+     */
+    default DoubleSeries minus(DoubleSeries s) {
+        int len = size();
+        DoubleAccumulator accumulator = new DoubleAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            accumulator.addDouble(this.getDouble(i) - s.getDouble(i));
+        }
+
+        return accumulator.toSeries();
+    }
+
+    /**
+     * @since 0.11
+     */
+    default DoubleSeries multiply(DoubleSeries s) {
+        int len = size();
+        DoubleAccumulator accumulator = new DoubleAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            accumulator.addDouble(this.getDouble(i) * s.getDouble(i));
+        }
+
+        return accumulator.toSeries();
+    }
+
+    /**
+     * @since 0.11
+     */
+    default DoubleSeries divide(DoubleSeries s) {
+        int len = size();
+        DoubleAccumulator accumulator = new DoubleAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            accumulator.addDouble(this.getDouble(i) / s.getDouble(i));
+        }
+
+        return accumulator.toSeries();
+    }
+
+    /**
+     * @since 0.11
+     */
+    default BooleanSeries lt(DoubleSeries s) {
+        int len = size();
+        BooleanAccumulator accumulator = new BooleanAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            accumulator.addBoolean(this.getDouble(i) < s.getDouble(i));
+        }
+
+        return accumulator.toSeries();
+    }
+
+    /**
+     * @since 0.11
+     */
+    default BooleanSeries le(DoubleSeries s) {
+        int len = size();
+        BooleanAccumulator accumulator = new BooleanAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            accumulator.addBoolean(this.getDouble(i) <= s.getDouble(i));
+        }
+
+        return accumulator.toSeries();
+    }
+
+    /**
+     * @since 0.11
+     */
+    default BooleanSeries gt(DoubleSeries s) {
+        int len = size();
+        BooleanAccumulator accumulator = new BooleanAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            accumulator.addBoolean(this.getDouble(i) > s.getDouble(i));
+        }
+
+        return accumulator.toSeries();
+    }
+
+    /**
+     * @since 0.11
+     */
+    default BooleanSeries ge(DoubleSeries s) {
+        int len = size();
+        BooleanAccumulator accumulator = new BooleanAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            accumulator.addBoolean(this.getDouble(i) >= s.getDouble(i));
+        }
+
+        return accumulator.toSeries();
+    }
 }
