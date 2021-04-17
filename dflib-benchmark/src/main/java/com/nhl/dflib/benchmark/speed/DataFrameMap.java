@@ -32,7 +32,7 @@ public class DataFrameMap {
 
     @Setup
     public void setUp() {
-        df = DataGenerator.columnarDFWithMixedData(rows);
+        df = DataGenerator.dfWithMixedData(rows);
     }
 
     @Benchmark

@@ -32,8 +32,8 @@ public class DataFrameConcat {
 
     @Setup
     public void setUp() {
-        df1 = DataGenerator.columnarDFWithMixedData(rows + 5);
-        df2 = DataGenerator.columnarDFWithMixedData(rows - 5);
+        df1 = DataGenerator.dfWithMixedData(rows + 5);
+        df2 = DataGenerator.dfWithMixedData(rows - 5);
     }
 
     @Benchmark

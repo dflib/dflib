@@ -32,7 +32,7 @@ public class ColumnarDataFrameMemory extends MemoryTest {
     }
 
     public DataFrame nullCells() {
-        DataFrame df = DataGenerator.columnarDF(ROWS,
+        DataFrame df = DataGenerator.df(ROWS,
                 ValueMaker.nullSeq(),
                 ValueMaker.nullSeq());
         df.materialize().iterator();
@@ -40,7 +40,7 @@ public class ColumnarDataFrameMemory extends MemoryTest {
     }
 
     public DataFrame doubleCells() {
-        DataFrame df = DataGenerator.columnarDF(ROWS,
+        DataFrame df = DataGenerator.df(ROWS,
                 ValueMaker.doubleSeq(),
                 ValueMaker.doubleSeq());
         df.materialize().iterator();
@@ -48,7 +48,7 @@ public class ColumnarDataFrameMemory extends MemoryTest {
     }
 
     public DataFrame primitiveDoubleCells() {
-        DataFrame df = DataGenerator.columnarDF(ROWS, ValueMaker.doubleSeq(), ValueMaker.doubleSeq())
+        DataFrame df = DataGenerator.df(ROWS, ValueMaker.doubleSeq(), ValueMaker.doubleSeq())
                 .toDoubleColumn(0, -1.)
                 .toDoubleColumn(1, -1.);
         df.materialize().iterator();
@@ -56,13 +56,13 @@ public class ColumnarDataFrameMemory extends MemoryTest {
     }
 
     public DataFrame intCells() {
-        DataFrame df = DataGenerator.columnarDF(ROWS, ValueMaker.intSeq(), ValueMaker.intSeq());
+        DataFrame df = DataGenerator.df(ROWS, ValueMaker.intSeq(), ValueMaker.intSeq());
         df.materialize().iterator();
         return df;
     }
 
     public DataFrame primitiveIntCells() {
-        DataFrame df = DataGenerator.columnarDF(ROWS, ValueMaker.intSeq(), ValueMaker.intSeq())
+        DataFrame df = DataGenerator.df(ROWS, ValueMaker.intSeq(), ValueMaker.intSeq())
                 .toIntColumn(0, -1)
                 .toIntColumn(1, -1);
         df.materialize().iterator();
@@ -70,13 +70,13 @@ public class ColumnarDataFrameMemory extends MemoryTest {
     }
 
     public DataFrame longCells() {
-        DataFrame df = DataGenerator.columnarDF(ROWS, ValueMaker.longSeq(), ValueMaker.longSeq());
+        DataFrame df = DataGenerator.df(ROWS, ValueMaker.longSeq(), ValueMaker.longSeq());
         df.materialize().iterator();
         return df;
     }
 
     public DataFrame primitiveLongCells() {
-        DataFrame df = DataGenerator.columnarDF(ROWS, ValueMaker.longSeq(), ValueMaker.longSeq())
+        DataFrame df = DataGenerator.df(ROWS, ValueMaker.longSeq(), ValueMaker.longSeq())
                 .toLongColumn(0, -1L)
                 .toLongColumn(1, -1L);
         df.materialize().iterator();
@@ -85,13 +85,13 @@ public class ColumnarDataFrameMemory extends MemoryTest {
 
 
     public DataFrame boolCells() {
-        DataFrame df = DataGenerator.columnarDF(ROWS, ValueMaker.booleanSeq(), ValueMaker.booleanSeq());
+        DataFrame df = DataGenerator.df(ROWS, ValueMaker.booleanSeq(), ValueMaker.booleanSeq());
         df.materialize().iterator();
         return df;
     }
 
     public DataFrame primitiveBoolCells() {
-        DataFrame df = DataGenerator.columnarDF(ROWS, ValueMaker.booleanSeq(), ValueMaker.booleanSeq())
+        DataFrame df = DataGenerator.df(ROWS, ValueMaker.booleanSeq(), ValueMaker.booleanSeq())
                 .toBooleanColumn(0)
                 .toBooleanColumn(1);
         df.materialize().iterator();
@@ -99,7 +99,7 @@ public class ColumnarDataFrameMemory extends MemoryTest {
     }
 
     public DataFrame repeatingStringCells() {
-        DataFrame df = DataGenerator.columnarDF(ROWS,
+        DataFrame df = DataGenerator.df(ROWS,
                 ValueMaker.constStringSeq("abc"),
                 ValueMaker.constStringSeq("xyz"));
         df.materialize().iterator();
@@ -107,7 +107,7 @@ public class ColumnarDataFrameMemory extends MemoryTest {
     }
 
     public DataFrame randStringCells() {
-        DataFrame df = DataGenerator.columnarDF(ROWS,
+        DataFrame df = DataGenerator.df(ROWS,
                 ValueMaker.semiRandomStringSeq("abc", ROWS),
                 ValueMaker.semiRandomStringSeq("xyz", ROWS));
         df.materialize().iterator();
@@ -123,7 +123,7 @@ public class ColumnarDataFrameMemory extends MemoryTest {
 
         };
 
-        DataFrame df = DataGenerator.columnarDF(ROWS,
+        DataFrame df = DataGenerator.df(ROWS,
                 bitsMaker,
                 bitsMaker);
         df.materialize().iterator();
@@ -131,7 +131,7 @@ public class ColumnarDataFrameMemory extends MemoryTest {
     }
 
     public DataFrame enumCells() {
-        DataFrame df = DataGenerator.columnarDF(ROWS, ValueMaker.enumSeq(X.class), ValueMaker.enumSeq(X.class));
+        DataFrame df = DataGenerator.df(ROWS, ValueMaker.enumSeq(X.class), ValueMaker.enumSeq(X.class));
         df.materialize().iterator();
         return df;
     }

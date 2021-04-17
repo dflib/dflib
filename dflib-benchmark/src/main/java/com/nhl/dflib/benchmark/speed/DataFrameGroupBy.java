@@ -42,7 +42,7 @@ public class DataFrameGroupBy {
         String string =
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate sollicitudin ligula sit amet ornare.";
 
-        df = DataGenerator.columnarDF(rows,
+        df = DataGenerator.df(rows,
                 ValueMaker.intSeq(),
                 ValueMaker.stringSeq(),
                 // keep the number of categories relatively low

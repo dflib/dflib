@@ -32,7 +32,7 @@ public class DataFrameOperation {
 
     @Setup
     public void setUp() {
-        df = DataGenerator.columnarDFWithMixedData(rows);
+        df = DataGenerator.dfWithMixedData(rows);
     }
 
     @Benchmark

@@ -1,6 +1,10 @@
 package com.nhl.dflib.benchmark;
 
+import com.nhl.dflib.DoubleSeries;
+import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.accumulator.DoubleAccumulator;
+import com.nhl.dflib.accumulator.IntAccumulator;
 import com.nhl.dflib.accumulator.ObjectAccumulator;
 
 import java.util.Random;
@@ -91,5 +95,27 @@ public interface ValueMaker<T> {
         }
 
         return ml.toSeries().materialize();
+    }
+
+    default IntSeries intSeries(int len) {
+
+        IntAccumulator ints = new IntAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            ints.add((Integer) get());
+        }
+
+        return ints.toSeries();
+    }
+
+    default DoubleSeries doubleSeries(int len) {
+
+        DoubleAccumulator ds = new DoubleAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            ds.add((Double) get());
+        }
+
+        return ds.toSeries();
     }
 }

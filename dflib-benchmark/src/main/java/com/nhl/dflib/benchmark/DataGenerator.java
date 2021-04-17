@@ -1,46 +1,26 @@
 package com.nhl.dflib.benchmark;
 
-import com.nhl.dflib.*;
-import com.nhl.dflib.accumulator.DoubleAccumulator;
-import com.nhl.dflib.accumulator.IntAccumulator;
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Index;
+import com.nhl.dflib.Series;
 
 public class DataGenerator {
 
-    public static DataFrame columnarDFWithMixedData(int rows) {
+    public static DataFrame dfWithMixedData(int rows) {
 
         String string =
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate sollicitudin ligula sit amet ornare.";
 
-        return columnarDF(rows,
+        return df(rows,
                 ValueMaker.intSeq(),
                 ValueMaker.stringSeq(),
                 ValueMaker.randomIntSeq(rows / 2),
                 ValueMaker.constStringSeq(string));
     }
 
-    public static IntSeries intSeries(int size, ValueMaker<Integer> maker) {
 
-        IntAccumulator ints = new IntAccumulator(size);
 
-        for (int i = 0; i < size; i++) {
-            ints.add(maker.get());
-        }
-
-        return ints.toSeries();
-    }
-
-    public static DoubleSeries doubleSeries(int size, ValueMaker<Double> maker) {
-
-        DoubleAccumulator ds = new DoubleAccumulator(size);
-
-        for (int i = 0; i < size; i++) {
-            ds.add(maker.get());
-        }
-
-        return ds.toSeries();
-    }
-
-    public static DataFrame columnarDF(int rows, ValueMaker<?>... columnValueMakers) {
+    public static DataFrame df(int rows, ValueMaker<?>... columnValueMakers) {
 
         int w = columnValueMakers.length;
         String[] columnNames = new String[w];

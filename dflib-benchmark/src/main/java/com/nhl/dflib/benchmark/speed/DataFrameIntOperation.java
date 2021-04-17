@@ -1,19 +1,8 @@
 package com.nhl.dflib.benchmark.speed;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.benchmark.DataGenerator;
 import com.nhl.dflib.benchmark.ValueMaker;
-import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Fork;
-import org.openjdk.jmh.annotations.Measurement;
-import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.annotations.OutputTimeUnit;
-import org.openjdk.jmh.annotations.Param;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.Setup;
-import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.TimeUnit;
 
@@ -32,9 +21,9 @@ public class DataFrameIntOperation {
 
     @Setup
     public void setUp() {
-        df = DataFrame.newFrame("c0", "c1").columns(
-                DataGenerator.intSeries(rows, ValueMaker.intSeq()),
-                DataGenerator.intSeries(rows, ValueMaker.randomIntSeq(rows / 2)));
+        this.df = DataFrame.newFrame("c0", "c1").columns(
+                ValueMaker.intSeq().intSeries(rows),
+                ValueMaker.randomIntSeq(rows / 2).intSeries(rows));
     }
 
     @Benchmark

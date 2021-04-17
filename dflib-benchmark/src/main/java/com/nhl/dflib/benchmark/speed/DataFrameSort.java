@@ -33,7 +33,7 @@ public class DataFrameSort {
 
     @Setup
     public void setUp() {
-        df = DataGenerator.columnarDFWithMixedData(rows);
+        df = DataGenerator.dfWithMixedData(rows);
     }
 
     @Benchmark
