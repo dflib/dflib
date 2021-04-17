@@ -1,11 +1,8 @@
 package com.nhl.dflib.benchmark;
 
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
-import com.nhl.dflib.IntSeries;
-import com.nhl.dflib.Series;
+import com.nhl.dflib.*;
+import com.nhl.dflib.accumulator.DoubleAccumulator;
 import com.nhl.dflib.accumulator.IntAccumulator;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
 
 public class DataGenerator {
 
@@ -32,6 +29,17 @@ public class DataGenerator {
         return ints.toSeries();
     }
 
+    public static DoubleSeries doubleSeries(int size, ValueMaker<Double> maker) {
+
+        DoubleAccumulator ds = new DoubleAccumulator(size);
+
+        for (int i = 0; i < size; i++) {
+            ds.add(maker.get());
+        }
+
+        return ds.toSeries();
+    }
+
     public static DataFrame columnarDF(int rows, ValueMaker<?>... columnValueMakers) {
 
         int w = columnValueMakers.length;
@@ -44,14 +52,8 @@ public class DataGenerator {
 
         Series<?>[] data = new Series[w];
         for (int i = 0; i < w; i++) {
-            ObjectAccumulator ml = new ObjectAccumulator<>(rows);
             ValueMaker<?> vm = columnValueMakers[i];
-
-            for (int j = 0; j < rows; j++) {
-                ml.add(vm.get());
-            }
-
-            data[i] = ml.toSeries().materialize();
+            data[i] = vm.series(rows);
         }
 
         return DataFrame.newFrame(index).columns(data);
