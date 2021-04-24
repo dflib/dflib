@@ -1,24 +1,16 @@
 package com.nhl.dflib.series;
 
-import com.nhl.dflib.BooleanSeries;
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
-import com.nhl.dflib.IntSeries;
-import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesGroupBy;
-import com.nhl.dflib.ValueMapper;
-import com.nhl.dflib.ValuePredicate;
-import com.nhl.dflib.ValueToRowMapper;
+import com.nhl.dflib.*;
+import com.nhl.dflib.accumulator.BooleanAccumulator;
+import com.nhl.dflib.accumulator.IntAccumulator;
+import com.nhl.dflib.accumulator.ObjectAccumulator;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
 import com.nhl.dflib.map.Mapper;
 import com.nhl.dflib.sample.Sampler;
-import com.nhl.dflib.accumulator.BooleanAccumulator;
-import com.nhl.dflib.accumulator.IntAccumulator;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
-import com.nhl.dflib.sort.IndexSorter;
 import com.nhl.dflib.sort.IntComparator;
 import com.nhl.dflib.sort.IntTimSort;
+import com.nhl.dflib.sort.SeriesSorter;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -110,7 +102,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
     @Override
     public IntSeries sortIndex(Comparator<? super Boolean> comparator) {
-        int[] mutableIndex = IndexSorter.rowNumberSequence(size());
+        int[] mutableIndex = SeriesSorter.rowNumberSequence(size());
         IntComparator intComparator =  (i1, i2) -> comparator.compare(get(i1), get(i2));
         IntTimSort.sort(mutableIndex, intComparator);
         return new IntArraySeries(mutableIndex);

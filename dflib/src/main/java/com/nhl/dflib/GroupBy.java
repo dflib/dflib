@@ -5,8 +5,8 @@ import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.series.EmptySeries;
 import com.nhl.dflib.series.IntSequenceSeries;
 import com.nhl.dflib.sort.IntComparator;
-import com.nhl.dflib.sort.PerColumnComparators;
-import com.nhl.dflib.sort.PerColumnSorter;
+import com.nhl.dflib.sort.Comparators;
+import com.nhl.dflib.sort.DataFrameSorter;
 import com.nhl.dflib.window.DenseRanker;
 import com.nhl.dflib.window.Ranker;
 import com.nhl.dflib.window.RowNumberer;
@@ -244,7 +244,7 @@ public class GroupBy {
     }
 
     public <V extends Comparable<? super V>> GroupBy sort(RowToValueMapper<V> sortKeyExtractor) {
-        return sort(PerColumnComparators.of(ungrouped, sortKeyExtractor));
+        return sort(Comparators.of(ungrouped, sortKeyExtractor));
     }
 
     /**
@@ -257,7 +257,7 @@ public class GroupBy {
         Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
         for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
-            IntSeries sortedGroup = new PerColumnSorter(ungrouped, e.getValue()).sortedPositions(sorter);
+            IntSeries sortedGroup = new DataFrameSorter(ungrouped, e.getValue()).sortedPositions(sorter);
             sorted.put(e.getKey(), sortedGroup);
         }
 
@@ -266,11 +266,11 @@ public class GroupBy {
 
     public GroupBy sort(String column, boolean ascending) {
 
-        IntComparator sorter = PerColumnComparators.of(ungrouped.getColumn(column), ascending);
+        IntComparator sorter = Comparators.of(ungrouped.getColumn(column), ascending);
         Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
         for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
-            IntSeries sortedGroup = new PerColumnSorter(ungrouped, e.getValue()).sortedPositions(sorter);
+            IntSeries sortedGroup = new DataFrameSorter(ungrouped, e.getValue()).sortedPositions(sorter);
             sorted.put(e.getKey(), sortedGroup);
         }
 
@@ -278,11 +278,11 @@ public class GroupBy {
     }
 
     public GroupBy sort(int column, boolean ascending) {
-        IntComparator sorter = PerColumnComparators.of(ungrouped.getColumn(column), ascending);
+        IntComparator sorter = Comparators.of(ungrouped.getColumn(column), ascending);
         Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
         for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
-            IntSeries sortedGroup = new PerColumnSorter(ungrouped, e.getValue()).sortedPositions(sorter);
+            IntSeries sortedGroup = new DataFrameSorter(ungrouped, e.getValue()).sortedPositions(sorter);
             sorted.put(e.getKey(), sortedGroup);
         }
 
@@ -294,11 +294,11 @@ public class GroupBy {
             return this;
         }
 
-        IntComparator sorter = PerColumnComparators.of(ungrouped, columns, ascending);
+        IntComparator sorter = Comparators.of(ungrouped, columns, ascending);
         Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
         for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
-            IntSeries sortedGroup = new PerColumnSorter(ungrouped, e.getValue()).sortedPositions(sorter);
+            IntSeries sortedGroup = new DataFrameSorter(ungrouped, e.getValue()).sortedPositions(sorter);
             sorted.put(e.getKey(), sortedGroup);
         }
 
@@ -310,11 +310,11 @@ public class GroupBy {
             return this;
         }
 
-        IntComparator sorter = PerColumnComparators.of(ungrouped, columns, ascending);
+        IntComparator sorter = Comparators.of(ungrouped, columns, ascending);
         Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
         for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
-            IntSeries sortedGroup = new PerColumnSorter(ungrouped, e.getValue()).sortedPositions(sorter);
+            IntSeries sortedGroup = new DataFrameSorter(ungrouped, e.getValue()).sortedPositions(sorter);
             sorted.put(e.getKey(), sortedGroup);
         }
 

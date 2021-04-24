@@ -303,27 +303,27 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public <V extends Comparable<? super V>> DataFrame sort(RowToValueMapper<V> sortKeyExtractor) {
-        return new PerColumnSorter(this).sort(sortKeyExtractor);
+        return new DataFrameSorter(this).sort(sortKeyExtractor);
     }
 
     @Override
     public DataFrame sort(String[] columns, boolean[] ascending) {
-        return new PerColumnSorter(this).sort(columns, ascending);
+        return new DataFrameSorter(this).sort(columns, ascending);
     }
 
     @Override
     public DataFrame sort(int[] columns, boolean[] ascending) {
-        return new PerColumnSorter(this).sort(columns, ascending);
+        return new DataFrameSorter(this).sort(columns, ascending);
     }
 
     @Override
     public DataFrame sort(int column, boolean ascending) {
-        return new PerColumnSorter(this).sort(column, ascending);
+        return new DataFrameSorter(this).sort(column, ascending);
     }
 
     @Override
     public DataFrame sort(String column, boolean ascending) {
-        return new PerColumnSorter(this).sort(column, ascending);
+        return new DataFrameSorter(this).sort(column, ascending);
     }
 
     @Override

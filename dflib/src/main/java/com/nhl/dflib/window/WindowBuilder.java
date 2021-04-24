@@ -1,11 +1,9 @@
 package com.nhl.dflib.window;
 
 import com.nhl.dflib.*;
-import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.IntSequenceSeries;
 import com.nhl.dflib.sort.*;
 
-import java.util.Comparator;
 import java.util.Objects;
 
 /**
@@ -60,27 +58,27 @@ public class WindowBuilder {
     }
 
     public <V extends Comparable<? super V>> WindowBuilder sorted(RowToValueMapper<V> sortKeyExtractor) {
-        this.sorter = PerColumnComparators.of(dataFrame, sortKeyExtractor);
+        this.sorter = Comparators.of(dataFrame, sortKeyExtractor);
         return this;
     }
 
     public WindowBuilder sorted(String column, boolean ascending) {
-        this.sorter = PerColumnComparators.of(dataFrame.getColumn(column), ascending);
+        this.sorter = Comparators.of(dataFrame.getColumn(column), ascending);
         return this;
     }
 
     public WindowBuilder sorted(int column, boolean ascending) {
-        this.sorter = PerColumnComparators.of(dataFrame.getColumn(column), ascending);
+        this.sorter = Comparators.of(dataFrame.getColumn(column), ascending);
         return this;
     }
 
     public WindowBuilder sorted(String[] columns, boolean[] ascending) {
-        this.sorter = PerColumnComparators.of(dataFrame, columns, ascending);
+        this.sorter = Comparators.of(dataFrame, columns, ascending);
         return this;
     }
 
     public WindowBuilder sorted(int[] columns, boolean[] ascending) {
-        this.sorter = PerColumnComparators.of(dataFrame, columns, ascending);
+        this.sorter = Comparators.of(dataFrame, columns, ascending);
         return this;
     }
 
@@ -170,7 +168,7 @@ public class WindowBuilder {
     private <T> Series<T> shiftUnPartitioned(int column, int offset, T filler) {
         if (sorter != null) {
             IntSeries index = new IntSequenceSeries(0, dataFrame.height());
-            IntSeries sortedPositions = new PerColumnSorter(dataFrame, index).sortedPositions(sorter);
+            IntSeries sortedPositions = new DataFrameSorter(dataFrame, index).sortedPositions(sorter);
             Series<T> s = dataFrame.getColumn(column);
             return s.select(sortedPositions).shift(offset, filler).select(sortedPositions.sortIndexInt());
         } else {

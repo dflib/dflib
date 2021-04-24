@@ -1,27 +1,29 @@
 package com.nhl.dflib.sort;
 
-import com.nhl.dflib.*;
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.RowToValueMapper;
 import com.nhl.dflib.series.IntArraySeries;
 
 import java.util.function.Supplier;
 
 /**
- * Sorting processor for DataFrames based on comparators whose inputs are row position indices.
+ * Sorting processor for DataFrames.
  *
- * @see PerColumnComparators
+ * @see Comparators
  * @since 0.11
  */
-public class PerColumnSorter {
+public class DataFrameSorter {
 
     private final DataFrame dataFrame;
     private final Supplier<int[]> indexBuilder;
 
-    public PerColumnSorter(DataFrame dataFrame) {
+    public DataFrameSorter(DataFrame dataFrame) {
         this.dataFrame = dataFrame;
-        this.indexBuilder = () -> IndexSorter.rowNumberSequence(dataFrame.height());
+        this.indexBuilder = () -> SeriesSorter.rowNumberSequence(dataFrame.height());
     }
 
-    public PerColumnSorter(DataFrame dataFrame, IntSeries rangeToSort) {
+    public DataFrameSorter(DataFrame dataFrame, IntSeries rangeToSort) {
         this.dataFrame = dataFrame;
 
         // copy range to avoid modification of the source list
@@ -34,36 +36,28 @@ public class PerColumnSorter {
     }
 
     public DataFrame sort(String column, boolean ascending) {
-        return sort(PerColumnComparators.of(dataFrame.getColumn(column), ascending));
+        return sort(Comparators.of(dataFrame.getColumn(column), ascending));
     }
 
     public DataFrame sort(int column, boolean ascending) {
-        return sort(PerColumnComparators.of(dataFrame.getColumn(column), ascending));
+        return sort(Comparators.of(dataFrame.getColumn(column), ascending));
     }
 
     public DataFrame sort(String[] columns, boolean[] ascending) {
-        return sort(PerColumnComparators.of(dataFrame, columns, ascending));
+        return sort(Comparators.of(dataFrame, columns, ascending));
     }
 
     public DataFrame sort(int[] columns, boolean[] ascending) {
-        return sort(PerColumnComparators.of(dataFrame, columns, ascending));
+        return sort(Comparators.of(dataFrame, columns, ascending));
     }
 
     public DataFrame sort(IntComparator comparator) {
-
         IntSeries sortedPositions = sortedPositions(comparator);
-
-        int width = dataFrame.width();
-        Series<?>[] newColumnsData = new Series[width];
-        for (int i = 0; i < width; i++) {
-            newColumnsData[i] = dataFrame.getColumn(i).select(sortedPositions);
-        }
-
-        return new ColumnDataFrame(dataFrame.getColumnsIndex(), newColumnsData);
+        return dataFrame.selectRows(sortedPositions);
     }
 
     public <V extends Comparable<? super V>> DataFrame sort(RowToValueMapper<V> sortKeyExtractor) {
-        return sort(PerColumnComparators.of(dataFrame, sortKeyExtractor));
+        return sort(Comparators.of(dataFrame, sortKeyExtractor));
     }
 
     public IntSeries sortedPositions(IntComparator comparator) {
@@ -71,5 +65,4 @@ public class PerColumnSorter {
         IntTimSort.sort(mutableIndex, comparator);
         return new IntArraySeries(mutableIndex);
     }
-
 }

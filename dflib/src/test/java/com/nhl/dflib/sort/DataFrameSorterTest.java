@@ -5,7 +5,7 @@ import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.unit.IntSeriesAsserts;
 import org.junit.jupiter.api.Test;
 
-public class IndexSorterTest {
+public class DataFrameSorterTest {
 
     @Test
     public void testSortIndex() {
@@ -16,7 +16,7 @@ public class IndexSorterTest {
                 0, "a",
                 1, "x");
 
-        IntSeries sortIndex = new IndexSorter(df).sortIndex(Sorters.sorter(1, true));
+        IntSeries sortIndex = new DataFrameSorter(df).sortedPositions(Comparators.of(df.getColumn(1), true));
         new IntSeriesAsserts(sortIndex).expectData(3, 0, 4, 1, 2);
     }
 }

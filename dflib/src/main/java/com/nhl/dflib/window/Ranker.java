@@ -3,7 +3,7 @@ package com.nhl.dflib.window;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.sort.IntComparator;
-import com.nhl.dflib.sort.PerColumnSorter;
+import com.nhl.dflib.sort.DataFrameSorter;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,7 +29,7 @@ public class Ranker {
     }
 
     public IntSeries rank(DataFrame dataFrame) {
-        IntSeries sortIndex = new PerColumnSorter(dataFrame).sortedPositions(sorter);
+        IntSeries sortIndex = new DataFrameSorter(dataFrame).sortedPositions(sorter);
         return rank(dataFrame, Collections.singletonList(sortIndex));
     }
 

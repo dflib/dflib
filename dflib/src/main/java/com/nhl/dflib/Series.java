@@ -2,7 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.accumulator.ObjectAccumulator;
 import com.nhl.dflib.series.*;
-import com.nhl.dflib.sort.IndexSorter;
+import com.nhl.dflib.sort.SeriesSorter;
 
 import java.lang.reflect.Array;
 import java.util.*;
@@ -167,7 +167,7 @@ public interface Series<T> extends Iterable<T> {
      * @since 0.8
      */
     default IntSeries sortIndex(Comparator<? super T> comparator) {
-        return IndexSorter.sortIndex(this, comparator);
+        return SeriesSorter.sortedPositions(this, comparator);
     }
 
     /**
