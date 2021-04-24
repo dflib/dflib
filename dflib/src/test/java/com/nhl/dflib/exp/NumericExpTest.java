@@ -220,6 +220,28 @@ public class NumericExpTest {
                 4.5);
 
         Series<? extends Number> s = $double("a").castAsDecimal(2).eval(df);
-        new SeriesAsserts(s).expectData(2.01, 4.5);
+        new SeriesAsserts(s).expectData(new BigDecimal("2.01"), new BigDecimal("4.50"));
+    }
+
+    @Test
+    public void testIntCastAsDecimal() {
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                2,
+                355,
+                -3);
+
+        Series<? extends Number> s = $int("a").castAsDecimal(2).eval(df);
+        new SeriesAsserts(s).expectData(new BigDecimal("2.00"), new BigDecimal("355.00"), new BigDecimal("-3.00"));
+    }
+
+    @Test
+    public void testLongCastAsDecimal() {
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                2L,
+                355L,
+                -3L);
+
+        Series<? extends Number> s = $long("a").castAsDecimal(2).eval(df);
+        new SeriesAsserts(s).expectData(new BigDecimal("2.00"), new BigDecimal("355.00"), new BigDecimal("-3.00"));
     }
 }

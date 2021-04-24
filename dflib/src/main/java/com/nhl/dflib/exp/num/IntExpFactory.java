@@ -8,6 +8,9 @@ import com.nhl.dflib.exp.NumericExp;
 import com.nhl.dflib.exp.UnaryExp;
 import com.nhl.dflib.exp.condition.BinaryCondition;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class IntExpFactory extends NumericExpFactory {
 
     protected static Exp<Integer> cast(Exp<?> exp) {
@@ -70,7 +73,7 @@ public class IntExpFactory extends NumericExpFactory {
 
     @Override
     public NumericExp<?> castAsDecimal(NumericExp<?> exp, int scale) {
-        return exp;
+        return new DecimalUnaryExp<>(cast(exp), UnaryExp.toSeriesOp(i -> BigDecimal.valueOf((long) i).setScale(scale, RoundingMode.HALF_UP)));
     }
 
     @Override

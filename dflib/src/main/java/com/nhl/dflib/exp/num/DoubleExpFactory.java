@@ -73,8 +73,7 @@ public class DoubleExpFactory extends NumericExpFactory {
 
     @Override
     public NumericExp<?> castAsDecimal(NumericExp<?> exp, int scale) {
-        return new DoubleUnaryExp<>(cast(exp), UnaryExp.toSeriesOp(d ->
-                BigDecimal.valueOf(d).setScale(scale, RoundingMode.HALF_UP).doubleValue()));
+        return new DecimalUnaryExp<>(cast(exp), UnaryExp.toSeriesOp(d -> BigDecimal.valueOf(d).setScale(scale, RoundingMode.HALF_UP)));
     }
 
     @Override

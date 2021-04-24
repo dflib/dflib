@@ -3,9 +3,13 @@ package com.nhl.dflib.exp.num;
 import com.nhl.dflib.Condition;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.LongSeries;
-import com.nhl.dflib.exp.*;
-import com.nhl.dflib.exp.condition.BinaryCondition;
+import com.nhl.dflib.exp.BinaryExp;
+import com.nhl.dflib.exp.NumericExp;
 import com.nhl.dflib.exp.UnaryExp;
+import com.nhl.dflib.exp.condition.BinaryCondition;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class LongExpFactory extends NumericExpFactory {
 
@@ -69,7 +73,7 @@ public class LongExpFactory extends NumericExpFactory {
 
     @Override
     public NumericExp<?> castAsDecimal(NumericExp<?> exp, int scale) {
-        return exp;
+        return new DecimalUnaryExp<>(cast(exp), UnaryExp.toSeriesOp(l -> BigDecimal.valueOf(l).setScale(scale, RoundingMode.HALF_UP)));
     }
 
     @Override
