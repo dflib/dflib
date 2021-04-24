@@ -361,6 +361,33 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
+    public DataFrame addColumns(Exp<?>... exps) {
+
+        int extraWidth = exps.length;
+        if (extraWidth == 0) {
+            return this;
+        }
+
+        String[] extraNames = new String[extraWidth];
+        for(int i = 0; i < extraWidth; i++) {
+            extraNames[i] = exps[i].getName();
+        }
+
+        int width = width();
+
+        Index expandedIndex = columnsIndex.addLabels(extraNames);
+
+        Series[] newData = new Series[width + extraWidth];
+        System.arraycopy(dataColumns, 0, newData, 0, width);
+
+        for (int i = 0; i < extraWidth; i++) {
+            newData[width + i] = exps[i].eval(this);
+        }
+
+        return new ColumnDataFrame(expandedIndex, newData);
+    }
+
+    @Override
     public DataFrame addColumns(String[] columnLabels, RowToValueMapper<?>... columnValueProducers) {
 
         int width = width();

@@ -491,8 +491,16 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.11
      */
     default DataFrame addColumn(Exp<?> exp) {
-        return addColumn(exp.getName(), exp.eval(this));
+        return addColumns(exp);
     }
+
+    /**
+     * Adds multiple columns with values derived from this DataFrame by applying provided expressions. Column names will
+     * be taken from {@link Exp} names.
+     *
+     * @since 0.11
+     */
+    DataFrame addColumns(Exp<?>... exps);
 
     /**
      * @return a new DataFrame with extra columns added
