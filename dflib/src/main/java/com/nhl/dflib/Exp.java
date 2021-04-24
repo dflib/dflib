@@ -121,9 +121,9 @@ public interface Exp<V> {
     }
 
     /**
-     * Creates a new expression by renaming the current expression.
+     * Creates a copy of this expression with assigned name.
      */
-    default Exp<V> named(String name) {
+    default Exp<V> as(String name) {
         Objects.requireNonNull(name, "Null 'name'");
         return name.equals(getName()) ? this : new RenamedExp<>(name, this);
     }

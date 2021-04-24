@@ -25,7 +25,7 @@ public class StrExpTest {
     public void testNamed() {
         Exp<String> e = $str("b");
         assertEquals("b", e.getName());
-        assertEquals("c", e.named("c").getName());
+        assertEquals("c", e.as("c").getName());
     }
 
     @Test

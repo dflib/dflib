@@ -164,9 +164,9 @@ public class DataFrame_AddDropMapColumnsTest {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y")
-                .addColumn($int("a").named("a_copy"))
-                .addColumn($col("b").named("b_copy"))
-                .addColumn($val("!").named("x"));
+                .addColumn($int("a").as("a_copy"))
+                .addColumn($col("b").as("b_copy"))
+                .addColumn($val("!").as("x"));
 
 
         new DataFrameAsserts(df, "a", "b", "a_copy", "b_copy", "x")
