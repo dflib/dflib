@@ -3,12 +3,11 @@ package com.nhl.dflib.window;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.concat.SeriesConcat;
-import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.IntSequenceSeries;
-import com.nhl.dflib.sort.IndexSorter;
+import com.nhl.dflib.sort.IntComparator;
+import com.nhl.dflib.sort.PerColumnSorter;
 
 import java.util.Collection;
-import java.util.Comparator;
 
 /**
  * @since 0.8
@@ -27,7 +26,10 @@ public class RowNumberer {
         }
     }
 
-    public static IntSeries rowNumber(DataFrame dataFrame, Comparator<RowProxy> sorter) {
+    /**
+     * @since 0.11
+     */
+    public static IntSeries rowNumber(DataFrame dataFrame, IntComparator sorter) {
 
         // note how we are calling "sortIndex(sortIndex(..))"
         // 1. the first call produces a Series where Series positions correspond to the new positions of the old rows
@@ -38,7 +40,7 @@ public class RowNumberer {
         // (1) is good for producing a sorted Series or DataFrame, (2) is good for producing row numbers that follow
         // the sorting.. We have case (2) here.
 
-        IntSeries rowPositions = new IndexSorter(dataFrame).sortIndex(sorter).sortIndexInt();
+        IntSeries rowPositions = new PerColumnSorter(dataFrame).sortedPositions(sorter).sortIndexInt();
 
         // since we control select indices, and don't expect negative values, we can safely cast to IntSeries
         return (IntSeries) RowNumberer.sequence(dataFrame.height()).select(rowPositions);

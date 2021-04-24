@@ -2,26 +2,29 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.DataFrameAggregation;
 import com.nhl.dflib.concat.SeriesConcat;
-import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.EmptySeries;
 import com.nhl.dflib.series.IntSequenceSeries;
-import com.nhl.dflib.sort.IndexSorter;
-import com.nhl.dflib.sort.Sorters;
+import com.nhl.dflib.sort.IntComparator;
+import com.nhl.dflib.sort.PerColumnComparators;
+import com.nhl.dflib.sort.PerColumnSorter;
 import com.nhl.dflib.window.DenseRanker;
 import com.nhl.dflib.window.Ranker;
 import com.nhl.dflib.window.RowNumberer;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GroupBy {
 
-    private DataFrame ungrouped;
-    private Map<Object, IntSeries> groupsIndex;
+    private final DataFrame ungrouped;
+    private final Map<Object, IntSeries> groupsIndex;
     private Map<Object, DataFrame> resolvedGroups;
-    private Comparator<RowProxy> sorter;
+    private final IntComparator sorter;
 
-    public GroupBy(DataFrame ungrouped, Map<Object, IntSeries> groupsIndex, Comparator<RowProxy> sorter) {
+    public GroupBy(DataFrame ungrouped, Map<Object, IntSeries> groupsIndex, IntComparator sorter) {
         this.ungrouped = ungrouped;
         this.groupsIndex = groupsIndex;
         this.sorter = sorter;
@@ -241,20 +244,20 @@ public class GroupBy {
     }
 
     public <V extends Comparable<? super V>> GroupBy sort(RowToValueMapper<V> sortKeyExtractor) {
-        return sort(Sorters.sorter(sortKeyExtractor));
+        return sort(PerColumnComparators.of(ungrouped, sortKeyExtractor));
     }
 
     /**
-     * @since 0.8
+     * @since 0.11
      */
-    public GroupBy sort(Comparator<RowProxy> sorter) {
+    public GroupBy sort(IntComparator sorter) {
 
         Objects.requireNonNull(sorter, "Null 'sorter'");
 
         Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
         for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
-            IntSeries sortedGroup = new IndexSorter(ungrouped, e.getValue()).sortIndex(sorter);
+            IntSeries sortedGroup = new PerColumnSorter(ungrouped, e.getValue()).sortedPositions(sorter);
             sorted.put(e.getKey(), sortedGroup);
         }
 
@@ -263,11 +266,11 @@ public class GroupBy {
 
     public GroupBy sort(String column, boolean ascending) {
 
-        Comparator<RowProxy> sorter = Sorters.sorter(ungrouped.getColumnsIndex(), column, ascending);
+        IntComparator sorter = PerColumnComparators.of(ungrouped.getColumn(column), ascending);
         Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
         for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
-            IntSeries sortedGroup = new IndexSorter(ungrouped, e.getValue()).sortIndex(sorter);
+            IntSeries sortedGroup = new PerColumnSorter(ungrouped, e.getValue()).sortedPositions(sorter);
             sorted.put(e.getKey(), sortedGroup);
         }
 
@@ -275,11 +278,11 @@ public class GroupBy {
     }
 
     public GroupBy sort(int column, boolean ascending) {
-        Comparator<RowProxy> sorter = Sorters.sorter(column, ascending);
+        IntComparator sorter = PerColumnComparators.of(ungrouped.getColumn(column), ascending);
         Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
         for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
-            IntSeries sortedGroup = new IndexSorter(ungrouped, e.getValue()).sortIndex(sorter);
+            IntSeries sortedGroup = new PerColumnSorter(ungrouped, e.getValue()).sortedPositions(sorter);
             sorted.put(e.getKey(), sortedGroup);
         }
 
@@ -291,11 +294,11 @@ public class GroupBy {
             return this;
         }
 
-        Comparator<RowProxy> sorter = Sorters.sorter(ungrouped.getColumnsIndex(), columns, ascending);
+        IntComparator sorter = PerColumnComparators.of(ungrouped, columns, ascending);
         Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
         for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
-            IntSeries sortedGroup = new IndexSorter(ungrouped, e.getValue()).sortIndex(sorter);
+            IntSeries sortedGroup = new PerColumnSorter(ungrouped, e.getValue()).sortedPositions(sorter);
             sorted.put(e.getKey(), sortedGroup);
         }
 
@@ -307,11 +310,11 @@ public class GroupBy {
             return this;
         }
 
-        Comparator<RowProxy> sorter = Sorters.sorter(columns, ascending);
+        IntComparator sorter = PerColumnComparators.of(ungrouped, columns, ascending);
         Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
         for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
-            IntSeries sortedGroup = new IndexSorter(ungrouped, e.getValue()).sortIndex(sorter);
+            IntSeries sortedGroup = new PerColumnSorter(ungrouped, e.getValue()).sortedPositions(sorter);
             sorted.put(e.getKey(), sortedGroup);
         }
 

@@ -3,8 +3,7 @@ package com.nhl.dflib.window;
 import com.nhl.dflib.*;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.IntSequenceSeries;
-import com.nhl.dflib.sort.IndexSorter;
-import com.nhl.dflib.sort.Sorters;
+import com.nhl.dflib.sort.*;
 
 import java.util.Comparator;
 import java.util.Objects;
@@ -18,7 +17,7 @@ public class WindowBuilder {
 
     private DataFrame dataFrame;
     private Hasher partitioner;
-    private Comparator<RowProxy> sorter;
+    private IntComparator sorter;
 
     public WindowBuilder(DataFrame dataFrame) {
         this.dataFrame = Objects.requireNonNull(dataFrame);
@@ -61,27 +60,27 @@ public class WindowBuilder {
     }
 
     public <V extends Comparable<? super V>> WindowBuilder sorted(RowToValueMapper<V> sortKeyExtractor) {
-        this.sorter = Sorters.sorter(sortKeyExtractor);
+        this.sorter = PerColumnComparators.of(dataFrame, sortKeyExtractor);
         return this;
     }
 
     public WindowBuilder sorted(String column, boolean ascending) {
-        this.sorter = Sorters.sorter(dataFrame.getColumnsIndex(), column, ascending);
+        this.sorter = PerColumnComparators.of(dataFrame.getColumn(column), ascending);
         return this;
     }
 
     public WindowBuilder sorted(int column, boolean ascending) {
-        this.sorter = Sorters.sorter(column, ascending);
+        this.sorter = PerColumnComparators.of(dataFrame.getColumn(column), ascending);
         return this;
     }
 
     public WindowBuilder sorted(String[] columns, boolean[] ascending) {
-        this.sorter = Sorters.sorter(dataFrame.getColumnsIndex(), columns, ascending);
+        this.sorter = PerColumnComparators.of(dataFrame, columns, ascending);
         return this;
     }
 
     public WindowBuilder sorted(int[] columns, boolean[] ascending) {
-        this.sorter = Sorters.sorter(columns, ascending);
+        this.sorter = PerColumnComparators.of(dataFrame, columns, ascending);
         return this;
     }
 
@@ -171,9 +170,9 @@ public class WindowBuilder {
     private <T> Series<T> shiftUnPartitioned(int column, int offset, T filler) {
         if (sorter != null) {
             IntSeries index = new IntSequenceSeries(0, dataFrame.height());
-            IntSeries sortedIndex = new IndexSorter(dataFrame, index).sortIndex(sorter);
+            IntSeries sortedPositions = new PerColumnSorter(dataFrame, index).sortedPositions(sorter);
             Series<T> s = dataFrame.getColumn(column);
-            return s.select(sortedIndex).shift(offset, filler).select(sortedIndex.sortIndexInt());
+            return s.select(sortedPositions).shift(offset, filler).select(sortedPositions.sortIndexInt());
         } else {
             Series<T> s = dataFrame.getColumn(column);
             return s.shift(offset, filler);

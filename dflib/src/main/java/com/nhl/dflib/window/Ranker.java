@@ -2,14 +2,12 @@ package com.nhl.dflib.window;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntSeries;
-import com.nhl.dflib.row.DataFrameRowProxy;
-import com.nhl.dflib.row.RowProxy;
-import com.nhl.dflib.sort.IndexSorter;
+import com.nhl.dflib.sort.IntComparator;
+import com.nhl.dflib.sort.PerColumnSorter;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Objects;
 
 /**
@@ -17,9 +15,9 @@ import java.util.Objects;
  */
 public class Ranker {
 
-    protected Comparator<RowProxy> sorter;
+    protected IntComparator sorter;
 
-    public Ranker(Comparator<RowProxy> sorter) {
+    public Ranker(IntComparator sorter) {
         this.sorter = Objects.requireNonNull(sorter);
     }
 
@@ -31,7 +29,7 @@ public class Ranker {
     }
 
     public IntSeries rank(DataFrame dataFrame) {
-        IntSeries sortIndex = new IndexSorter(dataFrame).sortIndex(sorter);
+        IntSeries sortIndex = new PerColumnSorter(dataFrame).sortedPositions(sorter);
         return rank(dataFrame, Collections.singletonList(sortIndex));
     }
 
@@ -60,10 +58,6 @@ public class Ranker {
     }
 
     protected RankResolver createRankResolver(DataFrame dataFrame, int[] rank) {
-
-        DataFrameRowProxy pproxy = new DataFrameRowProxy(dataFrame);
-        DataFrameRowProxy rproxy = new DataFrameRowProxy(dataFrame);
-
-        return (i, row, prow) -> sorter.compare(rproxy.rewind(row), pproxy.rewind(prow)) == 0 ? rank[prow] : i + 1;
+        return (i, row, prow) -> sorter.compare(row, prow) == 0 ? rank[prow] : i + 1;
     }
 }
