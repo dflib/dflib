@@ -1,13 +1,15 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.unit.DataFrameAsserts;
+import com.nhl.dflib.unit.IntSeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.HashSet;
 
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class GroupByTest {
 
@@ -240,5 +242,109 @@ public class GroupByTest {
                 .expectRow(0, "x", 2L, 1.)
                 .expectRow(1, "y", 3L, 1.5)
                 .expectRow(2, "a", 0L, 0.);
+    }
+
+    @Test
+    public void testGroup_Sort_Pos() {
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+                1, "x",
+                2, "b",
+                2, "a",
+                1, "z",
+                0, "n",
+                1, "y");
+
+        DataFrame df2 = df1.group("a")
+                .sort(1, true)
+                .toDataFrame();
+
+        new DataFrameAsserts(df2, "a", "b")
+                .expectHeight(6)
+                .expectRow(0, 1, "x")
+                .expectRow(1, 1, "y")
+                .expectRow(2, 1, "z")
+                .expectRow(3, 2, "a")
+                .expectRow(4, 2, "b")
+                .expectRow(5, 0, "n");
+    }
+
+    @Test
+    public void testGroup_Sort_Name() {
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+                1, "x",
+                2, "b",
+                2, "a",
+                1, "z",
+                0, "n",
+                1, "y");
+
+        DataFrame df2 = df1.group("a")
+                .sort("b", true)
+                .toDataFrame();
+
+        new DataFrameAsserts(df2, "a", "b")
+                .expectHeight(6)
+                .expectRow(0, 1, "x")
+                .expectRow(1, 1, "y")
+                .expectRow(2, 1, "z")
+                .expectRow(3, 2, "a")
+                .expectRow(4, 2, "b")
+                .expectRow(5, 0, "n");
+    }
+
+    @Test
+    public void testGroup_Sort_Names() {
+        DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
+                1, "x", 2,
+                2, "b", 1,
+                2, "a", 2,
+                1, "z", -1,
+                0, "n", 5,
+                1, "x", 1);
+
+        DataFrame df2 = df1.group("a")
+                .sort(new String[]{"b", "c"}, new boolean[]{true, true})
+                .toDataFrame();
+
+        new DataFrameAsserts(df2, "a", "b", "c")
+                .expectHeight(6)
+                .expectRow(0, 1, "x", 1)
+                .expectRow(1, 1, "x", 2)
+                .expectRow(2, 1, "z", -1)
+                .expectRow(3, 2, "a", 2)
+                .expectRow(4, 2, "b", 1)
+                .expectRow(5, 0, "n", 5);
+    }
+
+    @Test
+    public void testRank_NoSort() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1, "x",
+                2, "y",
+                1, "z",
+                0, "a",
+                1, "x");
+
+        IntSeries rn1 = df.group("a").rank();
+        new IntSeriesAsserts(rn1).expectData(1, 1, 1, 1, 1);
+
+        IntSeries rn2 = df.group("b").rank();
+        new IntSeriesAsserts(rn2).expectData(1, 1, 1, 1, 1);
+    }
+
+    @Test
+    public void testSort_Rank() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1, "x",
+                2, "y",
+                1, "z",
+                0, "a",
+                1, "x");
+
+        IntSeries rn1 = df.group("a").sort("b", true).rank();
+        new IntSeriesAsserts(rn1).expectData(1, 1, 3, 1, 1);
+
+        IntSeries rn2 = df.group("b").sort("a", true).rank();
+        new IntSeriesAsserts(rn2).expectData(1, 1, 1, 1, 1);
     }
 }
