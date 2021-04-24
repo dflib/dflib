@@ -5,6 +5,7 @@ import com.nhl.dflib.Exp;
 import com.nhl.dflib.LongSeries;
 import com.nhl.dflib.exp.*;
 import com.nhl.dflib.exp.condition.BinaryCondition;
+import com.nhl.dflib.exp.func.MapFunction;
 
 public class LongExpFactory extends NumericExpFactory {
 
@@ -19,12 +20,12 @@ public class LongExpFactory extends NumericExpFactory {
 
         if (Number.class.isAssignableFrom(t)) {
             Exp<Number> nExp = (Exp<Number>) exp;
-            return new UnaryExp<>(nExp, Long.class, (Number n) -> n != null ? n.longValue() : null);
+            return new MapFunction<>(nExp, Long.class, (Number n) -> n != null ? n.longValue() : null);
         }
 
         if (t.equals(String.class)) {
             Exp<String> sExp = (Exp<String>) exp;
-            return new UnaryExp<>(sExp, Long.class, (String s) -> s != null ? Long.parseLong(s) : null);
+            return new MapFunction<>(sExp, Long.class, (String s) -> s != null ? Long.parseLong(s) : null);
         }
 
         throw new IllegalArgumentException("Expression type '" + t.getName() + "' can't be converted to Long");

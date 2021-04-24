@@ -5,6 +5,7 @@ import com.nhl.dflib.Exp;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.exp.*;
 import com.nhl.dflib.exp.condition.BinaryCondition;
+import com.nhl.dflib.exp.func.MapFunction;
 
 public class IntExpFactory extends NumericExpFactory {
 
@@ -19,12 +20,12 @@ public class IntExpFactory extends NumericExpFactory {
 
         if (Number.class.isAssignableFrom(t)) {
             Exp<Number> nExp = (Exp<Number>) exp;
-            return new UnaryExp<>(nExp, Integer.class, (Number n) -> n != null ? n.intValue() : null);
+            return new MapFunction<>(nExp, Integer.class, (Number n) -> n != null ? n.intValue() : null);
         }
 
         if (t.equals(String.class)) {
             Exp<String> sExp = (Exp<String>) exp;
-            return new UnaryExp<>(sExp, Integer.class, (String s) -> s != null ? Integer.parseInt(s) : null);
+            return new MapFunction<>(sExp, Integer.class, (String s) -> s != null ? Integer.parseInt(s) : null);
         }
 
         throw new IllegalArgumentException("Expression type '" + t.getName() + "' can't be converted to Integer");

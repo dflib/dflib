@@ -4,7 +4,7 @@ import com.nhl.dflib.Condition;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.exp.BinaryExp;
 import com.nhl.dflib.exp.NumericExp;
-import com.nhl.dflib.exp.UnaryExp;
+import com.nhl.dflib.exp.func.MapFunction;
 import com.nhl.dflib.exp.condition.BinaryCondition;
 
 import java.math.BigDecimal;
@@ -23,17 +23,17 @@ public class DecimalExpFactory extends NumericExpFactory {
 
         if (t.equals(BigInteger.class)) {
             Exp<BigInteger> biExp = (Exp<BigInteger>) exp;
-            return new UnaryExp<>(biExp, BigDecimal.class, (BigInteger n) -> n != null ? new BigDecimal(n) : null);
+            return new MapFunction<>(biExp, BigDecimal.class, (BigInteger n) -> n != null ? new BigDecimal(n) : null);
         }
 
         if (Number.class.isAssignableFrom(t)) {
             Exp<Number> nExp = (Exp<Number>) exp;
-            return new UnaryExp<>(nExp, BigDecimal.class, (Number n) -> n != null ? new BigDecimal(n.doubleValue()) : null);
+            return new MapFunction<>(nExp, BigDecimal.class, (Number n) -> n != null ? new BigDecimal(n.doubleValue()) : null);
         }
 
         if (t.equals(String.class)) {
             Exp<String> sExp = (Exp<String>) exp;
-            return new UnaryExp<>(sExp, BigDecimal.class, (String s) -> s != null ? new BigDecimal(s) : null);
+            return new MapFunction<>(sExp, BigDecimal.class, (String s) -> s != null ? new BigDecimal(s) : null);
         }
 
         throw new IllegalArgumentException("Expression type '" + t.getName() + "' can't be converted to Double");

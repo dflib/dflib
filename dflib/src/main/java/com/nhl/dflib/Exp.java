@@ -4,11 +4,11 @@ import com.nhl.dflib.exp.*;
 import com.nhl.dflib.exp.condition.AndCondition;
 import com.nhl.dflib.exp.condition.BooleanColumn;
 import com.nhl.dflib.exp.condition.OrCondition;
+import com.nhl.dflib.exp.func.IfNullFunction;
 import com.nhl.dflib.exp.num.DecimalColumn;
 import com.nhl.dflib.exp.num.DoubleColumn;
 import com.nhl.dflib.exp.num.IntColumn;
 import com.nhl.dflib.exp.num.LongColumn;
-import com.nhl.dflib.exp.ExpSorter;
 import com.nhl.dflib.exp.str.StringColumn;
 
 import java.math.BigDecimal;
@@ -90,14 +90,21 @@ public interface Exp<V> {
         return new BooleanColumn(name);
     }
 
-    static Condition $or(Condition... conditions) {
+    static Condition or(Condition... conditions) {
         return conditions.length == 1
                 ? conditions[0] : new OrCondition(conditions);
     }
 
-    static Condition $and(Condition... conditions) {
+    static Condition and(Condition... conditions) {
         return conditions.length == 1
                 ? conditions[0] : new AndCondition(conditions);
+    }
+
+    /**
+     * A function that evaluates "exp", replacing any null values by calling "ifNullExp".
+     */
+    static <V> Exp<V> ifNull(Exp<V> exp, Exp<V> ifNullExp) {
+        return new IfNullFunction(exp, ifNullExp);
     }
 
     String getName();

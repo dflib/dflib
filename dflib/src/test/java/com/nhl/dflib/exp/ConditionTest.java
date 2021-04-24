@@ -64,7 +64,7 @@ public class ConditionTest {
                 true, true, true,
                 true, false, false);
 
-        BooleanSeries s = $or($bool("a"), $bool("b"), $bool("c")).eval(df);
+        BooleanSeries s = or($bool("a"), $bool("b"), $bool("c")).eval(df);
         new BooleanSeriesAsserts(s).expectData(false, true, true);
     }
 

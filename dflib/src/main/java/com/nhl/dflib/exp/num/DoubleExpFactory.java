@@ -5,6 +5,7 @@ import com.nhl.dflib.DoubleSeries;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.exp.*;
 import com.nhl.dflib.exp.condition.BinaryCondition;
+import com.nhl.dflib.exp.func.MapFunction;
 
 public class DoubleExpFactory extends NumericExpFactory {
 
@@ -19,12 +20,12 @@ public class DoubleExpFactory extends NumericExpFactory {
 
         if (Number.class.isAssignableFrom(t)) {
             Exp<Number> nExp = (Exp<Number>) exp;
-            return new UnaryExp<>(nExp, Double.class, (Number n) -> n != null ? n.doubleValue() : null);
+            return new MapFunction<>(nExp, Double.class, (Number n) -> n != null ? n.doubleValue() : null);
         }
 
         if (t.equals(String.class)) {
             Exp<String> sExp = (Exp<String>) exp;
-            return new UnaryExp<>(sExp, Double.class, (String s) -> s != null ? Double.parseDouble(s) : null);
+            return new MapFunction<>(sExp, Double.class, (String s) -> s != null ? Double.parseDouble(s) : null);
         }
 
         throw new IllegalArgumentException("Expression type '" + t.getName() + "' can't be converted to Double");
