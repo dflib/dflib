@@ -13,12 +13,12 @@ import java.util.function.Supplier;
 
 public class IndexSorter {
 
-    private DataFrame dataFrame;
-    private Supplier<int[]> indexBuilder;
+    private final DataFrame dataFrame;
+    private final Supplier<int[]> indexBuilder;
 
     public static <T> IntSeries sortIndex(Series<T> s, Comparator<? super T> comparator) {
         int[] mutableIndex = IndexSorter.rowNumberSequence(s.size());
-        IntComparator intComparator =  (i1, i2) -> comparator.compare(s.get(i1), s.get(i2));
+        IntComparator intComparator = (i1, i2) -> comparator.compare(s.get(i1), s.get(i2));
         IntTimSort.sort(mutableIndex, intComparator);
         return new IntArraySeries(mutableIndex);
     }

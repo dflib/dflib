@@ -247,7 +247,7 @@ public class GroupBy {
     /**
      * @since 0.8
      */
-    public <V extends Comparable<? super V>> GroupBy sort(Comparator<RowProxy> sorter) {
+    public GroupBy sort(Comparator<RowProxy> sorter) {
 
         Objects.requireNonNull(sorter, "Null 'sorter'");
 
