@@ -3,9 +3,13 @@ package com.nhl.dflib.exp.num;
 import com.nhl.dflib.Condition;
 import com.nhl.dflib.DoubleSeries;
 import com.nhl.dflib.Exp;
-import com.nhl.dflib.exp.*;
+import com.nhl.dflib.exp.BinaryExp;
+import com.nhl.dflib.exp.NumericExp;
+import com.nhl.dflib.exp.UnaryExp;
 import com.nhl.dflib.exp.condition.BinaryCondition;
-import com.nhl.dflib.exp.func.MapFunction;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class DoubleExpFactory extends NumericExpFactory {
 
@@ -20,12 +24,12 @@ public class DoubleExpFactory extends NumericExpFactory {
 
         if (Number.class.isAssignableFrom(t)) {
             Exp<Number> nExp = (Exp<Number>) exp;
-            return new MapFunction<>(nExp, Double.class, (Number n) -> n != null ? n.doubleValue() : null);
+            return new DoubleUnaryExp<>(nExp, UnaryExp.toSeriesOp(Number::doubleValue));
         }
 
         if (t.equals(String.class)) {
             Exp<String> sExp = (Exp<String>) exp;
-            return new MapFunction<>(sExp, Double.class, (String s) -> s != null ? Double.parseDouble(s) : null);
+            return new DoubleUnaryExp<>(sExp, UnaryExp.toSeriesOp(Double::parseDouble));
         }
 
         throw new IllegalArgumentException("Expression type '" + t.getName() + "' can't be converted to Double");
@@ -65,6 +69,12 @@ public class DoubleExpFactory extends NumericExpFactory {
                 cast(right),
                 BinaryExp.toSeriesOp((Double n1, Double n2) -> n1 / n2),
                 DoubleSeries::divide);
+    }
+
+    @Override
+    public NumericExp<?> castAsDecimal(NumericExp<?> exp, int scale) {
+        return new DoubleUnaryExp<>(cast(exp), UnaryExp.toSeriesOp(d ->
+                BigDecimal.valueOf(d).setScale(scale, RoundingMode.HALF_UP).doubleValue()));
     }
 
     @Override

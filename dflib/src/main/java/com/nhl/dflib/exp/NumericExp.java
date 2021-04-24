@@ -45,6 +45,10 @@ public interface NumericExp<N extends Number> extends ValueExp<N> {
         return NumericExpFactory.factory(this, ve).divide(this, ve);
     }
 
+    default NumericExp<?> castAsDecimal(int scale) {
+        return NumericExpFactory.factory(this).castAsDecimal(this, scale);
+    }
+
     default Condition lt(Exp<? extends Number> exp) {
         return NumericExpFactory.factory(this, exp).lt(this, exp);
     }

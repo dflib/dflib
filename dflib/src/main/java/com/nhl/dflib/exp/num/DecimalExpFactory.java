@@ -4,11 +4,12 @@ import com.nhl.dflib.Condition;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.exp.BinaryExp;
 import com.nhl.dflib.exp.NumericExp;
-import com.nhl.dflib.exp.func.MapFunction;
+import com.nhl.dflib.exp.UnaryExp;
 import com.nhl.dflib.exp.condition.BinaryCondition;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 
 public class DecimalExpFactory extends NumericExpFactory {
 
@@ -23,17 +24,17 @@ public class DecimalExpFactory extends NumericExpFactory {
 
         if (t.equals(BigInteger.class)) {
             Exp<BigInteger> biExp = (Exp<BigInteger>) exp;
-            return new MapFunction<>(biExp, BigDecimal.class, (BigInteger n) -> n != null ? new BigDecimal(n) : null);
+            return new DecimalUnaryExp<>(biExp, UnaryExp.toSeriesOp(BigDecimal::new));
         }
 
         if (Number.class.isAssignableFrom(t)) {
             Exp<Number> nExp = (Exp<Number>) exp;
-            return new MapFunction<>(nExp, BigDecimal.class, (Number n) -> n != null ? new BigDecimal(n.doubleValue()) : null);
+            return new DecimalUnaryExp<>(nExp, UnaryExp.toSeriesOp(n -> new BigDecimal(n.doubleValue())));
         }
 
         if (t.equals(String.class)) {
             Exp<String> sExp = (Exp<String>) exp;
-            return new MapFunction<>(sExp, BigDecimal.class, (String s) -> s != null ? new BigDecimal(s) : null);
+            return new DecimalUnaryExp<>(sExp, UnaryExp.toSeriesOp(BigDecimal::new));
         }
 
         throw new IllegalArgumentException("Expression type '" + t.getName() + "' can't be converted to Double");
@@ -69,6 +70,11 @@ public class DecimalExpFactory extends NumericExpFactory {
                 cast(left),
                 cast(right),
                 BinaryExp.toSeriesOp((BigDecimal n1, BigDecimal n2) -> n1.divide(n2)));
+    }
+
+    @Override
+    public NumericExp<?> castAsDecimal(NumericExp<?> exp, int scale) {
+        return new DecimalUnaryExp<>(cast(exp), UnaryExp.toSeriesOp(bd -> bd.setScale(scale, RoundingMode.HALF_UP)));
     }
 
     @Override

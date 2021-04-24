@@ -59,6 +59,8 @@ public abstract class NumericExpFactory {
 
     public abstract NumericExp<?> divide(Exp<? extends Number> left, Exp<? extends Number> right);
 
+    public abstract NumericExp<?> castAsDecimal(NumericExp<?> exp, int scale);
+
     public abstract Condition lt(Exp<? extends Number> left, Exp<? extends Number> right);
 
     public abstract Condition le(Exp<? extends Number> left, Exp<? extends Number> right);
@@ -66,6 +68,20 @@ public abstract class NumericExpFactory {
     public abstract Condition gt(Exp<? extends Number> left, Exp<? extends Number> right);
 
     public abstract Condition ge(Exp<? extends Number> left, Exp<? extends Number> right);
+
+    public static NumericExpFactory factory(Exp<? extends Number> exp) {
+        return factory(exp.getType());
+    }
+
+    public static NumericExpFactory factory(Class<? extends Number> type) {
+
+        NumericExpFactory factory = factories.get(type);
+        if (factory == null) {
+            throw new IllegalArgumentException("Unsupported arithmetic type: " + type);
+        }
+
+        return factory;
+    }
 
     public static NumericExpFactory factory(Exp<? extends Number> left, Exp<? extends Number> right) {
         return factory(left.getType(), right.getType());

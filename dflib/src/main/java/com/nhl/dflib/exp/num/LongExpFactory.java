@@ -5,7 +5,7 @@ import com.nhl.dflib.Exp;
 import com.nhl.dflib.LongSeries;
 import com.nhl.dflib.exp.*;
 import com.nhl.dflib.exp.condition.BinaryCondition;
-import com.nhl.dflib.exp.func.MapFunction;
+import com.nhl.dflib.exp.UnaryExp;
 
 public class LongExpFactory extends NumericExpFactory {
 
@@ -20,12 +20,12 @@ public class LongExpFactory extends NumericExpFactory {
 
         if (Number.class.isAssignableFrom(t)) {
             Exp<Number> nExp = (Exp<Number>) exp;
-            return new MapFunction<>(nExp, Long.class, (Number n) -> n != null ? n.longValue() : null);
+            return new LongUnaryExp<>(nExp, UnaryExp.toSeriesOp(Number::longValue));
         }
 
         if (t.equals(String.class)) {
             Exp<String> sExp = (Exp<String>) exp;
-            return new MapFunction<>(sExp, Long.class, (String s) -> s != null ? Long.parseLong(s) : null);
+            return new LongUnaryExp<>(sExp, UnaryExp.toSeriesOp(Long::parseLong));
         }
 
         throw new IllegalArgumentException("Expression type '" + t.getName() + "' can't be converted to Long");
@@ -65,6 +65,11 @@ public class LongExpFactory extends NumericExpFactory {
                 cast(right),
                 BinaryExp.toSeriesOp((Long n1, Long n2) -> n1 / n2),
                 LongSeries::divide);
+    }
+
+    @Override
+    public NumericExp<?> castAsDecimal(NumericExp<?> exp, int scale) {
+        return exp;
     }
 
     @Override

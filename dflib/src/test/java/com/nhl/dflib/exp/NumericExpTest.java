@@ -202,4 +202,24 @@ public class NumericExpTest {
         Series<? extends Number> s = $int("b").multiply($decimal("a")).eval(df);
         new SeriesAsserts(s).expectData(new BigDecimal("70.2"), new BigDecimal("9.9"));
     }
+
+    @Test
+    public void testDecimalCastAsDecimal() {
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                new BigDecimal("2.0100287"),
+                new BigDecimal("4.5"));
+
+        Series<? extends Number> s = $decimal("a").castAsDecimal(2).eval(df);
+        new SeriesAsserts(s).expectData(new BigDecimal("2.01"), new BigDecimal("4.50"));
+    }
+
+    @Test
+    public void testDoubleCastAsDecimal() {
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                2.0100287,
+                4.5);
+
+        Series<? extends Number> s = $double("a").castAsDecimal(2).eval(df);
+        new SeriesAsserts(s).expectData(2.01, 4.5);
+    }
 }

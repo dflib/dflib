@@ -3,9 +3,10 @@ package com.nhl.dflib.exp.num;
 import com.nhl.dflib.Condition;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.IntSeries;
-import com.nhl.dflib.exp.*;
+import com.nhl.dflib.exp.BinaryExp;
+import com.nhl.dflib.exp.NumericExp;
+import com.nhl.dflib.exp.UnaryExp;
 import com.nhl.dflib.exp.condition.BinaryCondition;
-import com.nhl.dflib.exp.func.MapFunction;
 
 public class IntExpFactory extends NumericExpFactory {
 
@@ -20,12 +21,12 @@ public class IntExpFactory extends NumericExpFactory {
 
         if (Number.class.isAssignableFrom(t)) {
             Exp<Number> nExp = (Exp<Number>) exp;
-            return new MapFunction<>(nExp, Integer.class, (Number n) -> n != null ? n.intValue() : null);
+            return new IntUnaryExp<>(nExp, UnaryExp.toSeriesOp(Number::intValue));
         }
 
         if (t.equals(String.class)) {
             Exp<String> sExp = (Exp<String>) exp;
-            return new MapFunction<>(sExp, Integer.class, (String s) -> s != null ? Integer.parseInt(s) : null);
+            return new IntUnaryExp<>(sExp, UnaryExp.toSeriesOp(Integer::parseInt));
         }
 
         throw new IllegalArgumentException("Expression type '" + t.getName() + "' can't be converted to Integer");
@@ -65,6 +66,11 @@ public class IntExpFactory extends NumericExpFactory {
                 cast(right),
                 BinaryExp.toSeriesOp((Integer n1, Integer n2) -> n1 / n2),
                 IntSeries::divide);
+    }
+
+    @Override
+    public NumericExp<?> castAsDecimal(NumericExp<?> exp, int scale) {
+        return exp;
     }
 
     @Override
