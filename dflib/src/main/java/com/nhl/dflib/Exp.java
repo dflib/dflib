@@ -107,6 +107,13 @@ public interface Exp<V> {
         return new IfNullFunction(exp, ifNullExp);
     }
 
+    /**
+     * A function that evaluates "exp", replacing any null values with "ifNull" value.
+     */
+    static <V> Exp<V> ifNull(Exp<V> exp, V ifNull) {
+        return new IfNullFunction(exp, $val(ifNull));
+    }
+
     String getName();
 
     Class<V> getType();
