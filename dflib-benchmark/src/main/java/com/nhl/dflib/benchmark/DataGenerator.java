@@ -18,8 +18,6 @@ public class DataGenerator {
                 ValueMaker.constStringSeq(string));
     }
 
-
-
     public static DataFrame df(int rows, ValueMaker<?>... columnValueMakers) {
 
         int w = columnValueMakers.length;

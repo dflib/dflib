@@ -1,19 +1,10 @@
 package com.nhl.dflib.benchmark.speed;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.benchmark.DataGenerator;
 import com.nhl.dflib.RowToValueMapper;
-import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Fork;
-import org.openjdk.jmh.annotations.Measurement;
-import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.annotations.OutputTimeUnit;
-import org.openjdk.jmh.annotations.Param;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.Setup;
-import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.Warmup;
+import com.nhl.dflib.benchmark.DataGenerator;
+import com.nhl.dflib.benchmark.ValueMaker;
+import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.TimeUnit;
 
@@ -33,13 +24,38 @@ public class DataFrameSort {
 
     @Setup
     public void setUp() {
-        df = DataGenerator.dfWithMixedData(rows);
+
+        this.df = DataGenerator.df(rows,
+                ValueMaker.randomIntSeq(rows / 2),
+                ValueMaker.semiRandomStringSeq("x", rows / 2),
+                ValueMaker.intSeq(),
+                ValueMaker.stringSeq());
     }
 
     @Benchmark
-    public Object sort() {
-        return df
-                .sort(RowToValueMapper.columnReader(2))
+    public Object sortIntByRowValueMapper() {
+        return df.sort(RowToValueMapper.columnReader(0))
+                .materialize()
+                .iterator();
+    }
+
+    @Benchmark
+    public Object sortIntByColumn() {
+        return df.sort(0, true)
+                .materialize()
+                .iterator();
+    }
+
+    @Benchmark
+    public Object sortStringByRowValueMapper() {
+        return df.sort(RowToValueMapper.columnReader(1))
+                .materialize()
+                .iterator();
+    }
+
+    @Benchmark
+    public Object sortStringByColumn() {
+        return df.sort(1, true)
                 .materialize()
                 .iterator();
     }

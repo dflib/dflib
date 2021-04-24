@@ -15,8 +15,7 @@ import com.nhl.dflib.series.IntSequenceSeries;
 import com.nhl.dflib.series.RowMappedSeries;
 import com.nhl.dflib.series.SingleValueSeries;
 import com.nhl.dflib.accumulator.BooleanAccumulator;
-import com.nhl.dflib.sort.IndexSorter;
-import com.nhl.dflib.sort.Sorters;
+import com.nhl.dflib.sort.*;
 import com.nhl.dflib.stack.Stacker;
 import com.nhl.dflib.window.RowNumberer;
 
@@ -304,27 +303,27 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public <V extends Comparable<? super V>> DataFrame sort(RowToValueMapper<V> sortKeyExtractor) {
-        return new IndexSorter(this).sort(Sorters.sorter(sortKeyExtractor));
+        return new PerColumnSorter(this).sort(sortKeyExtractor);
     }
 
     @Override
     public DataFrame sort(String[] columns, boolean[] ascending) {
-        return new IndexSorter(this).sort(Sorters.sorter(columnsIndex, columns, ascending));
+        return new PerColumnSorter(this).sort(columns, ascending);
     }
 
     @Override
     public DataFrame sort(int[] columns, boolean[] ascending) {
-        return new IndexSorter(this).sort(Sorters.sorter(columns, ascending));
+        return new PerColumnSorter(this).sort(columns, ascending);
     }
 
     @Override
     public DataFrame sort(int column, boolean ascending) {
-        return new IndexSorter(this).sort(Sorters.sorter(column, ascending));
+        return new PerColumnSorter(this).sort(column, ascending);
     }
 
     @Override
     public DataFrame sort(String column, boolean ascending) {
-        return new IndexSorter(this).sort(Sorters.sorter(columnsIndex, column, ascending));
+        return new PerColumnSorter(this).sort(column, ascending);
     }
 
     @Override
