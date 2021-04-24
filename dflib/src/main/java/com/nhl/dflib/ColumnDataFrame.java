@@ -369,7 +369,7 @@ public class ColumnDataFrame implements DataFrame {
         }
 
         String[] extraNames = new String[extraWidth];
-        for(int i = 0; i < extraWidth; i++) {
+        for (int i = 0; i < extraWidth; i++) {
             extraNames[i] = exps[i].getName();
         }
 
@@ -444,10 +444,17 @@ public class ColumnDataFrame implements DataFrame {
      * @since 0.11
      */
     @Override
-    public DataFrame convertColumn(Exp<?> exp) {
-        // this will throw if the exp name matches no existing columns
-        int pos = getColumnsIndex().position(exp.getName());
+    public DataFrame convertColumn(String name, Exp<?> exp) {
+        int pos = getColumnsIndex().position(name);
         return replaceColumn(pos, exp.eval(this));
+    }
+
+    /**
+     * @since 0.11
+     */
+    @Override
+    public DataFrame convertColumn(int position, Exp<?> exp) {
+        return replaceColumn(position, exp.eval(this));
     }
 
     @Override

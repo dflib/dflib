@@ -17,7 +17,7 @@ public class DataFrame_ConvertTest {
         DataFrame df = DataFrame
                 .newFrame("a", "b")
                 .foldByRow(1, "x", 2, "y")
-                .convertColumn($int("a").multiply(10).as("a"));
+                .convertColumn("a", $int("a").multiply(10));
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)
@@ -30,7 +30,7 @@ public class DataFrame_ConvertTest {
         DataFrame df = DataFrame
                 .newFrame("a", "b")
                 .foldByRow(1, "x", 2, "y")
-                .convertColumn($int(0).multiply(10).as("a"));
+                .convertColumn("a", $int(0).multiply(10));
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)
@@ -185,7 +185,6 @@ public class DataFrame_ConvertTest {
 
     @Test
     public void testToEnumFromNumColumn() {
-        Index i1 = Index.forLabels("a", "b");
         DataFrame df = DataFrame
                 .newFrame("a", "b")
                 .foldByRow(
@@ -203,7 +202,6 @@ public class DataFrame_ConvertTest {
 
     @Test
     public void testToEnumFromStringColumn() {
-        Index i1 = Index.forLabels("a", "b");
         DataFrame df = DataFrame
                 .newFrame("a", "b")
                 .foldByRow(
