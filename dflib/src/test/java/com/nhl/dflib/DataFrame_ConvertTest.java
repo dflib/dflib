@@ -26,6 +26,19 @@ public class DataFrame_ConvertTest {
     }
 
     @Test
+    public void testConvertColumn_Exp_Position() {
+        DataFrame df = DataFrame
+                .newFrame("a", "b")
+                .foldByRow(1, "x", 2, "y")
+                .convertColumn($int(0).multiply(10).as("a"));
+
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(2)
+                .expectRow(0, 10, "x")
+                .expectRow(1, 20, "y");
+    }
+
+    @Test
     public void testConvertColumn() {
         DataFrame df = DataFrame
                 .newFrame("a", "b")

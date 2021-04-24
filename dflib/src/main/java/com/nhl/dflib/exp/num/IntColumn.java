@@ -11,4 +11,8 @@ public class IntColumn extends ColumnExp<Integer> implements NumericExp<Integer>
     public IntColumn(String name) {
         super(name, Integer.class);
     }
+
+    public IntColumn(int position) {
+        super(position, Integer.class);
+    }
 }

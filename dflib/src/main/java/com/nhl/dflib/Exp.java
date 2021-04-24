@@ -49,38 +49,80 @@ public interface Exp<V> {
     }
 
     /**
-     * Returns an expression that evaluates to a Series of Strings for a named DataFrame column.
+     * Returns an expression that evaluates to a DataFrame column at a given position
+     */
+    static ValueExp<?> $col(int position) {
+        return new ColumnExp(position, Object.class);
+    }
+
+    /**
+     * Returns an expression that evaluates to a named DataFrame String column.
      */
     static StringColumn $str(String name) {
         return new StringColumn(name);
     }
 
     /**
-     * Returns an expression that evaluates to a Series of Integers for a named DataFrame column.
+     * Returns an expression that evaluates to a DataFrame String column at a given position.
+     */
+    static StringColumn $str(int position) {
+        return new StringColumn(position);
+    }
+
+    /**
+     * Returns an expression that evaluates to a named DataFrame Integer column.
      */
     static NumericExp<Integer> $int(String name) {
         return new IntColumn(name);
     }
 
     /**
-     * Returns an expression that evaluates to a Series of Longs for a named DataFrame column.
+     * Returns an expression that evaluates to a DataFrame Integer column at a given position.
+     */
+    static NumericExp<Integer> $int(int position) {
+        return new IntColumn(position);
+    }
+
+    /**
+     * Returns an expression that evaluates to a named DataFrame Long column.
      */
     static NumericExp<Long> $long(String name) {
         return new LongColumn(name);
     }
 
     /**
-     * Returns an expression that evaluates to a Series of Doubles for a named DataFrame column.
+     * Returns an expression that evaluates to a DataFrame Long column at a given position.
+     */
+    static NumericExp<Long> $long(int position) {
+        return new LongColumn(position);
+    }
+
+    /**
+     * Returns an expression that evaluates to a named DataFrame Double column.
      */
     static NumericExp<Double> $double(String name) {
         return new DoubleColumn(name);
     }
 
     /**
-     * Returns an expression that evaluates to a Series of BigDecimals for a named DataFrame column.
+     * Returns an expression that evaluates to a DataFrame Double column at a given position.
+     */
+    static NumericExp<Double> $double(int position) {
+        return new DoubleColumn(position);
+    }
+
+    /**
+     * Returns an expression that evaluates to a named DataFrame BigDecimal column.
      */
     static NumericExp<BigDecimal> $decimal(String name) {
         return new DecimalColumn(name);
+    }
+
+    /**
+     * Returns an expression that evaluates to a DataFrame BigDecimal column at a given position.
+     */
+    static NumericExp<BigDecimal> $decimal(int position) {
+        return new DecimalColumn(position);
     }
 
     // TODO: inconsistency - unlike numeric columns that support nulls, BooleanColumn is a "Condition",
@@ -88,6 +130,10 @@ public interface Exp<V> {
     //  Perhaps we need a distinction between a "condition" and a "boolean value expression"?
     static Condition $bool(String name) {
         return new BooleanColumn(name);
+    }
+
+    static Condition $bool(int position) {
+        return new BooleanColumn(position);
     }
 
     static Condition or(Condition... conditions) {

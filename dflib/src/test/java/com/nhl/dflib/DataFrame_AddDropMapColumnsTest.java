@@ -176,6 +176,23 @@ public class DataFrame_AddDropMapColumnsTest {
     }
 
     @Test
+    public void testAddColumn_Exp_Pos() {
+
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1, "x",
+                2, "y")
+                .addColumn($int(0).as("a_copy"))
+                .addColumn($col(1).as("b_copy"))
+                .addColumn($val("!").as("x"));
+
+
+        new DataFrameAsserts(df, "a", "b", "a_copy", "b_copy", "x")
+                .expectHeight(2)
+                .expectRow(0, 1, "x", 1, "x", "!")
+                .expectRow(1, 2, "y", 2, "y", "!");
+    }
+
+    @Test
     public void testDropColumns1() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",

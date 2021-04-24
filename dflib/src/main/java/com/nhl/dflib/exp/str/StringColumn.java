@@ -13,6 +13,10 @@ public class StringColumn extends ColumnExp<String> {
         super(name, String.class);
     }
 
+    public StringColumn(int position) {
+        super(position, String.class);
+    }
+
     public Exp<String> concat(Exp<String> c) {
         return new BinaryExp<>(
                 getName() + "+" + c.getName(),

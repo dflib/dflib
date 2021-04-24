@@ -16,9 +16,13 @@ public class BooleanColumn extends ColumnExp<Boolean> implements Condition {
         super(name, Boolean.class);
     }
 
+    public BooleanColumn(int position) {
+        super(position, Boolean.class);
+    }
+
     @Override
     public BooleanSeries eval(DataFrame df) {
-        Series<?> c = df.getColumn(getName());
+        Series<?> c = super.eval(df);
         return c instanceof BooleanSeries
                 ? (BooleanSeries) c
                 : BooleanSeries.forSeries(c, BooleanValueMapper.fromObject());

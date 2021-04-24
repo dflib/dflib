@@ -3,6 +3,8 @@ package com.nhl.dflib.exp;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
 
+import java.util.Objects;
+
 /**
  * An expression that returns an unchanged named column from a DataFrame.
  *
@@ -10,11 +12,19 @@ import com.nhl.dflib.Series;
  */
 public class ColumnExp<V> implements ValueExp<V> {
 
+    private final int position;
     private final String name;
     private final Class<V> type;
 
     public ColumnExp(String name, Class<V> type) {
-        this.name = name;
+        this.name = Objects.requireNonNull(name);
+        this.position = -1;
+        this.type = type;
+    }
+
+    public ColumnExp(int position, Class<V> type) {
+        this.name = String.valueOf(position);
+        this.position = position;
         this.type = type;
     }
 
@@ -30,6 +40,6 @@ public class ColumnExp<V> implements ValueExp<V> {
 
     @Override
     public Series<V> eval(DataFrame df) {
-        return df.getColumn(name);
+        return position >= 0 ? df.getColumn(position) : df.getColumn(name);
     }
 }

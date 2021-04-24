@@ -13,4 +13,8 @@ public class DecimalColumn extends ColumnExp<BigDecimal> implements NumericExp<B
     public DecimalColumn(String name) {
         super(name, BigDecimal.class);
     }
+
+    public DecimalColumn(int position) {
+        super(position, BigDecimal.class);
+    }
 }

@@ -11,4 +11,8 @@ public class LongColumn extends ColumnExp<Long> implements NumericExp<Long> {
     public LongColumn(String name) {
         super(name, Long.class);
     }
+
+    public LongColumn(int position) {
+        super(position, Long.class);
+    }
 }
