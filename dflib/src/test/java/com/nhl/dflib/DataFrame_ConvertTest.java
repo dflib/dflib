@@ -7,9 +7,23 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import static com.nhl.dflib.Exp.$int;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DataFrame_ConvertTest {
+
+    @Test
+    public void testConvertColumn_Exp() {
+        DataFrame df = DataFrame
+                .newFrame("a", "b")
+                .foldByRow(1, "x", 2, "y")
+                .convertColumn($int("a").multiply(10).named("a"));
+
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(2)
+                .expectRow(0, 10, "x")
+                .expectRow(1, 20, "y");
+    }
 
     @Test
     public void testConvertColumn() {

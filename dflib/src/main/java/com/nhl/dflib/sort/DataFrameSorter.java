@@ -3,6 +3,7 @@ package com.nhl.dflib.sort;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.RowToValueMapper;
+import com.nhl.dflib.Sorter;
 import com.nhl.dflib.series.IntArraySeries;
 
 import java.util.function.Supplier;
@@ -58,6 +59,10 @@ public class DataFrameSorter {
 
     public <V extends Comparable<? super V>> DataFrame sort(RowToValueMapper<V> sortKeyExtractor) {
         return sort(Comparators.of(dataFrame, sortKeyExtractor));
+    }
+
+    public <V extends Comparable<? super V>> DataFrame sort(Sorter... sorters) {
+        return sort(Comparators.of(dataFrame, sorters));
     }
 
     public IntSeries sortedPositions(IntComparator comparator) {

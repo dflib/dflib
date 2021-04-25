@@ -4,6 +4,7 @@ import com.nhl.dflib.unit.DataFrameAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
+import static com.nhl.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DataFrame_AddDropMapColumnsTest {
@@ -155,6 +156,23 @@ public class DataFrame_AddDropMapColumnsTest {
                 .expectHeight(2)
                 .expectRow(0, 1, 2, 3)
                 .expectRow(1, 2, 3, 4);
+    }
+
+    @Test
+    public void testAddColumn_Exp() {
+
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1, "x",
+                2, "y")
+                .addColumn($int("a").named("a_copy"))
+                .addColumn($col("b").named("b_copy"))
+                .addColumn($val("!").named("x"));
+
+
+        new DataFrameAsserts(df, "a", "b", "a_copy", "b_copy", "x")
+                .expectHeight(2)
+                .expectRow(0, 1, "x", 1, "x", "!")
+                .expectRow(1, 2, "y", 2, "y", "!");
     }
 
     @Test

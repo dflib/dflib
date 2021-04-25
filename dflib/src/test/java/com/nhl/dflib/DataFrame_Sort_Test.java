@@ -3,6 +3,7 @@ package com.nhl.dflib;
 import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
+import static com.nhl.dflib.Exp.$int;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DataFrame_Sort_Test {
@@ -169,5 +170,52 @@ public class DataFrame_Sort_Test {
                 .expectRow(0, 0, 2)
                 .expectRow(1, 0, 3)
                 .expectRow(2, 2, 4);
+    }
+
+    @Test
+    public void testSort_WithSorter_Asc() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                0, 1,
+                2, 3,
+                -1, 2)
+                .sort($int("a").asc());
+
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(3)
+                .expectRow(0, -1, 2)
+                .expectRow(1, 0, 1)
+                .expectRow(2, 2, 3);
+    }
+
+    @Test
+    public void testSort_WithSorter_Desc() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                0, 1,
+                2, 3,
+                -1, 2)
+                .sort($int("a").desc());
+
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(3)
+                .expectRow(0, 2, 3)
+                .expectRow(1, 0, 1)
+                .expectRow(2, -1, 2);
+    }
+
+    @Test
+    public void testSort_WithSorter_Multiple() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                0, 1,
+                2, 3,
+                2, 2,
+                -1, 2)
+                .sort($int("a").asc(), $int("b").asc());
+
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(4)
+                .expectRow(0, -1, 2)
+                .expectRow(1, 0, 1)
+                .expectRow(2, 2, 2)
+                .expectRow(3, 2, 3);
     }
 }

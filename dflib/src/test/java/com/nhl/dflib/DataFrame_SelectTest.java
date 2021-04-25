@@ -4,6 +4,7 @@ import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
+import static com.nhl.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DataFrame_SelectTest {
@@ -32,6 +33,19 @@ public class DataFrame_SelectTest {
                 .expectHeight(2)
                 .expectRow(0, "x")
                 .expectRow(1, "y");
+    }
+
+    @Test
+    public void testSelectColumns_Exp() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1, "x",
+                2, "y")
+                .selectColumns($col("b"), $int("a").multiply($int("a")));
+
+        new DataFrameAsserts(df, "b", "a*a")
+                .expectHeight(2)
+                .expectRow(0, "x", 1)
+                .expectRow(1, "y", 4);
     }
 
     @Test
