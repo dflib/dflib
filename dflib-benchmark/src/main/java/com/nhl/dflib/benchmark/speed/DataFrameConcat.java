@@ -1,18 +1,9 @@
 package com.nhl.dflib.benchmark.speed;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.benchmark.DataGenerator;
-import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Fork;
-import org.openjdk.jmh.annotations.Measurement;
-import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.annotations.OutputTimeUnit;
-import org.openjdk.jmh.annotations.Param;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.Setup;
-import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.Warmup;
+import com.nhl.dflib.Series;
+import com.nhl.dflib.benchmark.ValueMaker;
+import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.TimeUnit;
 
@@ -32,8 +23,24 @@ public class DataFrameConcat {
 
     @Setup
     public void setUp() {
-        df1 = DataGenerator.dfWithMixedData(rows + 5);
-        df2 = DataGenerator.dfWithMixedData(rows - 5);
+        String string =
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate sollicitudin ligula sit amet ornare.";
+
+        Series<Integer> c10 = ValueMaker.intSeq().series(rows + 5);
+        Series<String> c11 = ValueMaker.stringSeq().series(rows + 5);
+        Series<Integer> c12 = ValueMaker.randomIntSeq((rows + 5) / 2).series(rows + 5);
+        Series<String> c13 = ValueMaker.constStringSeq(string).series(rows + 5);
+
+        df1 = DataFrame.newFrame("c0", "c1", "c2", "c3")
+                .columns(c10, c11, c12, c13);
+
+        Series<Integer> c20 = ValueMaker.intSeq().series(rows - 5);
+        Series<String> c21 = ValueMaker.stringSeq().series(rows - 5);
+        Series<Integer> c22 = ValueMaker.randomIntSeq((rows - 5) / 2).series(rows - 5);
+        Series<String> c23 = ValueMaker.constStringSeq(string).series(rows - 5);
+
+        df2 = DataFrame.newFrame("c0", "c1", "c2", "c3")
+                .columns(c20, c21, c22, c23);
     }
 
     @Benchmark

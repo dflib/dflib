@@ -2,7 +2,7 @@ package com.nhl.dflib.benchmark.speed;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.RowToValueMapper;
-import com.nhl.dflib.benchmark.DataGenerator;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.benchmark.ValueMaker;
 import org.openjdk.jmh.annotations.*;
 
@@ -25,11 +25,13 @@ public class DataFrameSort {
     @Setup
     public void setUp() {
 
-        this.df = DataGenerator.df(rows,
-                ValueMaker.randomIntSeq(rows / 2),
-                ValueMaker.semiRandomStringSeq("x", rows / 2),
-                ValueMaker.intSeq(),
-                ValueMaker.stringSeq());
+        Series<Integer> c0 = ValueMaker.randomIntSeq(rows / 2).series(rows);
+        Series<String> c1 = ValueMaker.semiRandomStringSeq("x", rows / 2).series(rows);
+        Series<Integer> c2 = ValueMaker.intSeq().series(rows);
+        Series<String> c3 = ValueMaker.stringSeq().series(rows);
+
+        this.df = DataFrame.newFrame("c0", "c1", "c2", "c3")
+                .columns(c0, c1, c2, c3);
     }
 
     @Benchmark

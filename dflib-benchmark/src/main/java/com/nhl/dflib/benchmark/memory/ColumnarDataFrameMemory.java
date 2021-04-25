@@ -1,7 +1,6 @@
 package com.nhl.dflib.benchmark.memory;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.benchmark.DataGenerator;
 import com.nhl.dflib.benchmark.ValueMaker;
 import com.nhl.dflib.benchmark.memory.benchmark.MemoryTest;
 
@@ -16,102 +15,85 @@ public class ColumnarDataFrameMemory extends MemoryTest {
         int cells = ROWS * 2;
 
         ColumnarDataFrameMemory test = new ColumnarDataFrameMemory();
-        test.run("nullCells", test::nullCells, cells);
-        test.run("intCells", test::intCells, cells);
-        test.run("primitiveIntCells", test::primitiveIntCells, cells);
-        test.run("doubleCells", test::doubleCells, cells);
-        test.run("primitiveDoubleCells", test::primitiveDoubleCells, cells);
-        test.run("longCells", test::longCells, cells);
-        test.run("primitiveLongCells", test::primitiveLongCells, cells);
-        test.run("boolCells", test::boolCells, cells);
-        test.run("primitiveBoolCells", test::primitiveBoolCells, cells);
-        test.run("repeatingStringCells", test::repeatingStringCells, cells);
-        test.run("randStringCells", test::randStringCells, cells);
-        test.run("bitSetCells", test::bitSetCells, cells);
-        test.run("enumCells", test::enumCells, cells);
+        test.run("null", test::nullCells, cells);
+        test.run("int (object)", test::intCells, cells);
+        test.run("int (primitive)", test::primitiveIntCells, cells);
+        test.run("double (object)", test::doubleCells, cells);
+        test.run("double (primitive)", test::primitiveDoubleCells, cells);
+        test.run("long (object)", test::longCells, cells);
+        test.run("long (primitive)", test::primitiveLongCells, cells);
+        test.run("boolean (object)", test::boolCells, cells);
+        test.run("boolean (primitive)", test::primitiveBoolCells, cells);
+        test.run("string (repeating)", test::repeatingStringCells, cells);
+        test.run("string (random)", test::randStringCells, cells);
+        test.run("bitSet", test::bitSetCells, cells);
+        test.run("enum", test::enumCells, cells);
     }
 
     public DataFrame nullCells() {
-        DataFrame df = DataGenerator.df(ROWS,
-                ValueMaker.nullSeq(),
-                ValueMaker.nullSeq());
-        df.materialize().iterator();
-        return df;
+        return DataFrame.newFrame("c0", "c1").columns(
+                ValueMaker.nullSeq().series(ROWS),
+                ValueMaker.nullSeq().series(ROWS)).materialize();
     }
 
     public DataFrame doubleCells() {
-        DataFrame df = DataGenerator.df(ROWS,
-                ValueMaker.doubleSeq(),
-                ValueMaker.doubleSeq());
-        df.materialize().iterator();
-        return df;
+        return DataFrame.newFrame("c0", "c1").columns(
+                ValueMaker.doubleSeq().series(ROWS),
+                ValueMaker.doubleSeq().series(ROWS)).materialize();
     }
 
     public DataFrame primitiveDoubleCells() {
-        DataFrame df = DataGenerator.df(ROWS, ValueMaker.doubleSeq(), ValueMaker.doubleSeq())
-                .toDoubleColumn(0, -1.)
-                .toDoubleColumn(1, -1.);
-        df.materialize().iterator();
-        return df;
+        return DataFrame.newFrame("c0", "c1").columns(
+                ValueMaker.doubleSeq().doubleSeries(ROWS),
+                ValueMaker.doubleSeq().doubleSeries(ROWS)).materialize();
     }
 
     public DataFrame intCells() {
-        DataFrame df = DataGenerator.df(ROWS, ValueMaker.intSeq(), ValueMaker.intSeq());
-        df.materialize().iterator();
-        return df;
+        return DataFrame.newFrame("c0", "c1").columns(
+                ValueMaker.intSeq().series(ROWS),
+                ValueMaker.intSeq().series(ROWS)).materialize();
     }
 
     public DataFrame primitiveIntCells() {
-        DataFrame df = DataGenerator.df(ROWS, ValueMaker.intSeq(), ValueMaker.intSeq())
-                .toIntColumn(0, -1)
-                .toIntColumn(1, -1);
-        df.materialize().iterator();
-        return df;
+        return DataFrame.newFrame("c0", "c1").columns(
+                ValueMaker.intSeq().intSeries(ROWS),
+                ValueMaker.intSeq().intSeries(ROWS)).materialize();
     }
 
     public DataFrame longCells() {
-        DataFrame df = DataGenerator.df(ROWS, ValueMaker.longSeq(), ValueMaker.longSeq());
-        df.materialize().iterator();
-        return df;
+        return DataFrame.newFrame("c0", "c1").columns(
+                ValueMaker.longSeq().series(ROWS),
+                ValueMaker.longSeq().series(ROWS)).materialize();
     }
 
     public DataFrame primitiveLongCells() {
-        DataFrame df = DataGenerator.df(ROWS, ValueMaker.longSeq(), ValueMaker.longSeq())
-                .toLongColumn(0, -1L)
-                .toLongColumn(1, -1L);
-        df.materialize().iterator();
-        return df;
+        return DataFrame.newFrame("c0", "c1").columns(
+                ValueMaker.longSeq().longSeries(ROWS),
+                ValueMaker.longSeq().longSeries(ROWS)).materialize();
     }
 
-
     public DataFrame boolCells() {
-        DataFrame df = DataGenerator.df(ROWS, ValueMaker.booleanSeq(), ValueMaker.booleanSeq());
-        df.materialize().iterator();
-        return df;
+        return DataFrame.newFrame("c0", "c1").columns(
+                ValueMaker.booleanSeq().series(ROWS),
+                ValueMaker.booleanSeq().series(ROWS)).materialize();
     }
 
     public DataFrame primitiveBoolCells() {
-        DataFrame df = DataGenerator.df(ROWS, ValueMaker.booleanSeq(), ValueMaker.booleanSeq())
-                .toBooleanColumn(0)
-                .toBooleanColumn(1);
-        df.materialize().iterator();
-        return df;
+        return DataFrame.newFrame("c0", "c1").columns(
+                ValueMaker.booleanSeq().booleanSeries(ROWS),
+                ValueMaker.booleanSeq().booleanSeries(ROWS)).materialize();
     }
 
     public DataFrame repeatingStringCells() {
-        DataFrame df = DataGenerator.df(ROWS,
-                ValueMaker.constStringSeq("abc"),
-                ValueMaker.constStringSeq("xyz"));
-        df.materialize().iterator();
-        return df;
+        return DataFrame.newFrame("c0", "c1").columns(
+                ValueMaker.constStringSeq("abc").series(ROWS),
+                ValueMaker.constStringSeq("xyz").series(ROWS)).materialize();
     }
 
     public DataFrame randStringCells() {
-        DataFrame df = DataGenerator.df(ROWS,
-                ValueMaker.semiRandomStringSeq("abc", ROWS),
-                ValueMaker.semiRandomStringSeq("xyz", ROWS));
-        df.materialize().iterator();
-        return df;
+        return DataFrame.newFrame("c0", "c1").columns(
+                ValueMaker.semiRandomStringSeq("abc", ROWS).series(ROWS),
+                ValueMaker.semiRandomStringSeq("xyz", ROWS).series(ROWS)).materialize();
     }
 
     public DataFrame bitSetCells() {
@@ -123,17 +105,15 @@ public class ColumnarDataFrameMemory extends MemoryTest {
 
         };
 
-        DataFrame df = DataGenerator.df(ROWS,
-                bitsMaker,
-                bitsMaker);
-        df.materialize().iterator();
-        return df;
+        return DataFrame.newFrame("c0", "c1").columns(
+                bitsMaker.series(ROWS),
+                bitsMaker.series(ROWS)).materialize();
     }
 
     public DataFrame enumCells() {
-        DataFrame df = DataGenerator.df(ROWS, ValueMaker.enumSeq(X.class), ValueMaker.enumSeq(X.class));
-        df.materialize().iterator();
-        return df;
+        return DataFrame.newFrame("c0", "c1").columns(
+                ValueMaker.enumSeq(X.class).series(ROWS),
+                ValueMaker.enumSeq(X.class).series(ROWS)).materialize();
     }
 
     enum X {

@@ -1,21 +1,11 @@
 package com.nhl.dflib.benchmark.speed;
 
+import com.nhl.dflib.Aggregator;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.GroupBy;
-import com.nhl.dflib.Aggregator;
-import com.nhl.dflib.benchmark.DataGenerator;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.benchmark.ValueMaker;
-import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Fork;
-import org.openjdk.jmh.annotations.Measurement;
-import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.annotations.OutputTimeUnit;
-import org.openjdk.jmh.annotations.Param;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.Setup;
-import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.TimeUnit;
 
@@ -42,12 +32,14 @@ public class DataFrameGroupBy {
         String string =
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate sollicitudin ligula sit amet ornare.";
 
-        df = DataGenerator.df(rows,
-                ValueMaker.intSeq(),
-                ValueMaker.stringSeq(),
-                // keep the number of categories relatively low
-                ValueMaker.randomIntSeq(groups),
-                ValueMaker.constStringSeq(string));
+        Series<Integer> c0 = ValueMaker.intSeq().series(rows);
+        Series<String> c1 = ValueMaker.stringSeq().series(rows);
+        // keep the number of categories relatively low
+        Series<Integer> c2 = ValueMaker.randomIntSeq(groups).series(rows);
+        Series<String> c3 = ValueMaker.constStringSeq(string).series(rows);
+
+        df = DataFrame.newFrame("c0", "c1", "c2", "c3")
+                .columns(c0, c1, c2, c3);
 
         gb = df.group("c2");
     }

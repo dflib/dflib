@@ -1,14 +1,15 @@
 package com.nhl.dflib.benchmark;
 
-import com.nhl.dflib.DoubleSeries;
-import com.nhl.dflib.IntSeries;
-import com.nhl.dflib.Series;
-import com.nhl.dflib.accumulator.DoubleAccumulator;
-import com.nhl.dflib.accumulator.IntAccumulator;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
+import com.nhl.dflib.*;
+import com.nhl.dflib.accumulator.*;
 
 import java.util.Random;
 
+/**
+ * Series data generator for DFLib benchmarks.
+ *
+ * @param <T>
+ */
 @FunctionalInterface
 public interface ValueMaker<T> {
 
@@ -97,6 +98,17 @@ public interface ValueMaker<T> {
         return ml.toSeries().materialize();
     }
 
+    default BooleanSeries booleanSeries(int len) {
+
+        BooleanAccumulator vals = new BooleanAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            vals.add((Boolean) get());
+        }
+
+        return vals.toSeries();
+    }
+
     default IntSeries intSeries(int len) {
 
         IntAccumulator ints = new IntAccumulator(len);
@@ -106,6 +118,17 @@ public interface ValueMaker<T> {
         }
 
         return ints.toSeries();
+    }
+
+    default LongSeries longSeries(int len) {
+
+        LongAccumulator vals = new LongAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            vals.add((Long) get());
+        }
+
+        return vals.toSeries();
     }
 
     default DoubleSeries doubleSeries(int len) {
