@@ -4,12 +4,14 @@ import com.nhl.dflib.exp.*;
 import com.nhl.dflib.exp.condition.AndCondition;
 import com.nhl.dflib.exp.condition.BooleanColumn;
 import com.nhl.dflib.exp.condition.OrCondition;
+import com.nhl.dflib.exp.num.DecimalColumn;
 import com.nhl.dflib.exp.num.DoubleColumn;
 import com.nhl.dflib.exp.num.IntColumn;
 import com.nhl.dflib.exp.num.LongColumn;
 import com.nhl.dflib.exp.ExpSorter;
 import com.nhl.dflib.exp.str.StringColumn;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
@@ -72,6 +74,13 @@ public interface Exp<V> {
      */
     static NumericExp<Double> $double(String name) {
         return new DoubleColumn(name);
+    }
+
+    /**
+     * Returns an expression that evaluates to a Series of BigDecimals representing a named DataFrame column.
+     */
+    static NumericExp<BigDecimal> $decimal(String name) {
+        return new DecimalColumn(name);
     }
 
     // TODO: inconsistency - unlike numeric columns that support nulls, BooleanColumn is a "Condition",

@@ -4,6 +4,7 @@ import com.nhl.dflib.*;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -170,5 +171,35 @@ public class NumericExpTest {
 
         Series<? extends Number> s = $int("b").divide($double("a")).eval(df);
         new SeriesAsserts(s).expectData(1.5, 3.);
+    }
+
+    @Test
+    public void testDecimalPlusDecimal() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                new BigDecimal("1.01"), new BigDecimal("2."),
+                new BigDecimal("3."), new BigDecimal("4.5"));
+
+        Series<? extends Number> s = $decimal("b").plus($decimal("a")).eval(df);
+        new SeriesAsserts(s).expectData(new BigDecimal("3.01"), new BigDecimal("7.5"));
+    }
+
+    @Test
+    public void testDecimalDivideInt() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                new BigDecimal("35"), 2,
+                new BigDecimal("3.3"), 3);
+
+        Series<? extends Number> s = $decimal("a").divide($int("b")).eval(df);
+        new SeriesAsserts(s).expectData(new BigDecimal("17.5"), new BigDecimal("1.1"));
+    }
+
+    @Test
+    public void testIntMultiplyDecimal() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                new BigDecimal("35.1"), 2,
+                new BigDecimal("3.3"), 3);
+
+        Series<? extends Number> s = $int("b").multiply($decimal("a")).eval(df);
+        new SeriesAsserts(s).expectData(new BigDecimal("70.2"), new BigDecimal("9.9"));
     }
 }

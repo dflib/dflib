@@ -4,6 +4,7 @@ import com.nhl.dflib.Condition;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.exp.NumericExp;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +18,9 @@ public abstract class NumericExpFactory {
 
     static {
         typeConversionRank = new HashMap<>();
+
+        typeConversionRank.put(BigDecimal.class, 0);
+
         typeConversionRank.put(Double.class, 1);
         typeConversionRank.put(Double.TYPE, 1);
 
@@ -34,6 +38,9 @@ public abstract class NumericExpFactory {
         // typeConversionRank.put(Byte.class, 6);
 
         factories = new HashMap<>();
+
+        factories.put(BigDecimal.class, new DecimalExpFactory());
+
         factories.put(Double.class, new DoubleExpFactory());
         factories.put(Double.TYPE, factories.get(Double.class));
 

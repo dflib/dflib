@@ -18,7 +18,12 @@ public class BinaryExp<L, R, V> implements Exp<V> {
     private final Exp<R> right;
     private final BiFunction<Series<L>, Series<R>, Series<V>> op;
 
-    public BinaryExp(String name, Class<V> type, Exp<L> left, Exp<R> right, BiFunction<Series<L>, Series<R>, Series<V>> op) {
+    public BinaryExp(
+            String name,
+            Class<V> type,
+            Exp<L> left,
+            Exp<R> right,
+            BiFunction<Series<L>, Series<R>, Series<V>> op) {
         this.name = name;
         this.type = type;
         this.left = left;

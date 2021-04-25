@@ -7,6 +7,7 @@ import com.nhl.dflib.Series;
 import com.nhl.dflib.unit.BooleanSeriesAsserts;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.stream.LongStream;
 
 import static com.nhl.dflib.Exp.*;
@@ -134,5 +135,16 @@ public class ConditionTest {
 
         BooleanSeries s = $int("b").multiply($int("c")).lt($double("a").divide($int("d"))).eval(df);
         new BooleanSeriesAsserts(s).expectData(true, false);
+    }
+
+    @Test
+    public void testDecimalGtDecimal() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                new BigDecimal("1.1"), new BigDecimal("1.0001"),
+                new BigDecimal("3"), new BigDecimal("3"),
+                new BigDecimal("1.1"), new BigDecimal("1.2"));
+
+        BooleanSeries s = $decimal("a").gt($decimal("b")).eval(df);
+        new BooleanSeriesAsserts(s).expectData(true, false, false);
     }
 }
