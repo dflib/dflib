@@ -42,42 +42,42 @@ public interface Exp<V> {
     }
 
     /**
-     * Returns an expression that evaluates to a Series representing a named DataFrame column.
+     * Returns an expression that evaluates to a named DataFrame column.
      */
     static ValueExp<?> $col(String name) {
         return new ColumnExp(name, Object.class);
     }
 
     /**
-     * Returns an expression that evaluates to a Series of Strings representing a named DataFrame column.
+     * Returns an expression that evaluates to a Series of Strings for a named DataFrame column.
      */
     static StringColumn $str(String name) {
         return new StringColumn(name);
     }
 
     /**
-     * Returns an expression that evaluates to a Series of Integers representing a named DataFrame column.
+     * Returns an expression that evaluates to a Series of Integers for a named DataFrame column.
      */
     static NumericExp<Integer> $int(String name) {
         return new IntColumn(name);
     }
 
     /**
-     * Returns an expression that evaluates to a Series of Longs representing a named DataFrame column.
+     * Returns an expression that evaluates to a Series of Longs for a named DataFrame column.
      */
     static NumericExp<Long> $long(String name) {
         return new LongColumn(name);
     }
 
     /**
-     * Returns an expression that evaluates to a Series of Doubles representing a named DataFrame column.
+     * Returns an expression that evaluates to a Series of Doubles for a named DataFrame column.
      */
     static NumericExp<Double> $double(String name) {
         return new DoubleColumn(name);
     }
 
     /**
-     * Returns an expression that evaluates to a Series of BigDecimals representing a named DataFrame column.
+     * Returns an expression that evaluates to a Series of BigDecimals for a named DataFrame column.
      */
     static NumericExp<BigDecimal> $decimal(String name) {
         return new DecimalColumn(name);
