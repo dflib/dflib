@@ -61,7 +61,7 @@ public class DataFrameSorter {
         return sort(Comparators.of(dataFrame, sortKeyExtractor));
     }
 
-    public <V extends Comparable<? super V>> DataFrame sort(Sorter... sorters) {
+    public DataFrame sort(Sorter... sorters) {
         return sort(Comparators.of(dataFrame, sorters));
     }
 
