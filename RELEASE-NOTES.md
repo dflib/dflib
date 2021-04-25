@@ -5,6 +5,7 @@
 * #119 Primitive (custom) accumulators for DataFrameBuilder.byRow(..)
 * #120 DataFrame.pivot(..)
 * #121 BigDecimal aggregators with controlled scale
+* #122 Expression API
 * #123 Improve performance of "DF.filterRows(BooleanSeries)" 
 * #125 Column-based sort algorithm for better performance and expressions support
 
