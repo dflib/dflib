@@ -3,6 +3,9 @@ package com.nhl.dflib;
 import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+
+import static com.nhl.dflib.Exp.$decimal;
 import static com.nhl.dflib.Exp.$int;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -217,5 +220,20 @@ public class DataFrame_Sort_Test {
                 .expectRow(1, 0, 1)
                 .expectRow(2, 2, 2)
                 .expectRow(3, 2, 3);
+    }
+
+    @Test
+    public void testSort_WithSorter_BigDecimal() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                0, new BigDecimal("2"),
+                2, new BigDecimal("1.0"),
+                -1, new BigDecimal("-12.05"))
+                .sort($decimal("b").asc());
+
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(3)
+                .expectRow(0, -1, new BigDecimal("-12.05"))
+                .expectRow(1, 2, new BigDecimal("1.0"))
+                .expectRow(2, 0, new BigDecimal("2"));
     }
 }
