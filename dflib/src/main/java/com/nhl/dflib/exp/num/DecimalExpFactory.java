@@ -41,7 +41,7 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumericExp<?> plus(Exp<? extends Number> left, Exp<? extends Number> right) {
+    public NumericExp<?> add(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DecimalBinaryExp(left.getName() + "+" + right.getName(),
                 cast(left),
                 cast(right),
@@ -49,7 +49,7 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumericExp<?> minus(Exp<? extends Number> left, Exp<? extends Number> right) {
+    public NumericExp<?> subtract(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DecimalBinaryExp(left.getName() + "-" + right.getName(),
                 cast(left),
                 cast(right),

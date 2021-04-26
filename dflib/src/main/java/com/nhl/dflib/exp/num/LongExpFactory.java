@@ -36,21 +36,21 @@ public class LongExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumericExp<?> plus(Exp<? extends Number> left, Exp<? extends Number> right) {
+    public NumericExp<?> add(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new LongBinaryExp(left.getName() + "+" + right.getName(),
                 cast(left),
                 cast(right),
                 BinaryExp.toSeriesOp((Long n1, Long n2) -> n1 + n2),
-                LongSeries::plus);
+                LongSeries::add);
     }
 
     @Override
-    public NumericExp<?> minus(Exp<? extends Number> left, Exp<? extends Number> right) {
+    public NumericExp<?> subtract(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new LongBinaryExp(left.getName() + "-" + right.getName(),
                 cast(left),
                 cast(right),
                 BinaryExp.toSeriesOp((Long n1, Long n2) -> n1 - n2),
-                LongSeries::minus);
+                LongSeries::subtract);
     }
 
     @Override

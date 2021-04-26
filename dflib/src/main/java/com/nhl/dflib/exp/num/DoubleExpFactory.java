@@ -36,21 +36,21 @@ public class DoubleExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumericExp<?> plus(Exp<? extends Number> left, Exp<? extends Number> right) {
+    public NumericExp<?> add(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DoubleBinaryExp(left.getName() + "+" + right.getName(),
                 cast(left),
                 cast(right),
                 BinaryExp.toSeriesOp((Double n1, Double n2) -> n1 + n2),
-                DoubleSeries::plus);
+                DoubleSeries::add);
     }
 
     @Override
-    public NumericExp<?> minus(Exp<? extends Number> left, Exp<? extends Number> right) {
+    public NumericExp<?> subtract(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DoubleBinaryExp(left.getName() + "-" + right.getName(),
                 cast(left),
                 cast(right),
                 BinaryExp.toSeriesOp((Double n1, Double n2) -> n1 - n2),
-                DoubleSeries::minus);
+                DoubleSeries::subtract);
     }
 
     @Override

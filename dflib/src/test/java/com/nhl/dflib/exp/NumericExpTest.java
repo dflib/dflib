@@ -15,18 +15,18 @@ import static org.junit.jupiter.api.Assertions.*;
 public class NumericExpTest {
 
     @Test
-    public void testIntPlusInt() {
+    public void testIntAddInt() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, 2,
                 3, 4);
 
-        Series<? extends Number> s = $int("b").plus($int("a")).eval(df);
+        Series<? extends Number> s = $int("b").add($int("a")).eval(df);
         assertFalse(s instanceof IntSeries);
         new SeriesAsserts(s).expectData(3, 7);
     }
 
     @Test
-    public void testIntPlusInt_Primitive() {
+    public void testIntAddInt_Primitive() {
         DataFrame df = DataFrame.newFrame("a", "b").foldIntStreamByRow(IntStream.of(1, 2, 3, 4));
 
         // sanity check of the test DataFrame
@@ -37,24 +37,24 @@ public class NumericExpTest {
         assertTrue(b instanceof IntSeries);
 
         // run and verify the calculation
-        Series<? extends Number> s = $int("b").plus($int("a")).eval(df);
+        Series<? extends Number> s = $int("b").add($int("a")).eval(df);
         assertTrue(s instanceof IntSeries);
         new SeriesAsserts(s).expectData(3, 7);
     }
 
     @Test
-    public void testDoublePlusDouble() {
+    public void testDoubleAddDouble() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1.01, 2.,
                 3., 4.5);
 
-        Series<? extends Number> s = $double("b").plus($double("a")).eval(df);
+        Series<? extends Number> s = $double("b").add($double("a")).eval(df);
         assertFalse(s instanceof DoubleSeries);
         new SeriesAsserts(s).expectData(3.01, 7.5);
     }
 
     @Test
-    public void testDoublePlusDouble_Primitive() {
+    public void testDoubleAddDouble_Primitive() {
         DataFrame df = DataFrame.newFrame("a", "b").foldDoubleStreamByRow(DoubleStream.of(1.01, 2., 3., 4.5));
 
         // sanity check of the test DataFrame
@@ -65,78 +65,78 @@ public class NumericExpTest {
         assertTrue(b instanceof DoubleSeries);
 
         // run and verify the calculation
-        Series<? extends Number> s = $double("b").plus($double("a")).eval(df);
+        Series<? extends Number> s = $double("b").add($double("a")).eval(df);
         assertTrue(s instanceof DoubleSeries);
         new SeriesAsserts(s).expectData(3.01, 7.5);
     }
 
     @Test
-    public void testIntPlusDouble() {
+    public void testIntAddDouble() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1.01, 2,
                 3., 4);
 
-        Series<? extends Number> s = $int("b").plus($double("a")).eval(df);
+        Series<? extends Number> s = $int("b").add($double("a")).eval(df);
         assertFalse(s instanceof DoubleSeries);
         new SeriesAsserts(s).expectData(3.01, 7.);
     }
 
     @Test
-    public void testIntPlusLong() {
+    public void testIntAddLong() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1L, 2,
                 3L, 4);
 
-        Series<? extends Number> s = $int("b").plus($long("a")).eval(df);
+        Series<? extends Number> s = $int("b").add($long("a")).eval(df);
         new SeriesAsserts(s).expectData(3L, 7L);
     }
 
     @Test
-    public void testDoublePlusInt() {
+    public void testDoubleAddInt() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1.01, 2,
                 3., 4);
 
-        Series<? extends Number> s = $double("a").plus($int("b")).eval(df);
+        Series<? extends Number> s = $double("a").add($int("b")).eval(df);
         assertFalse(s instanceof DoubleSeries);
         new SeriesAsserts(s).expectData(3.01, 7.);
     }
 
     @Test
-    public void testIntMinusInt() {
+    public void testIntSubtractInt() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, 2,
                 3, 4);
 
-        Series<? extends Number> s = $int("b").minus($int("a")).eval(df);
+        Series<? extends Number> s = $int("b").subtract($int("a")).eval(df);
         assertFalse(s instanceof IntSeries);
         new SeriesAsserts(s).expectData(1, 1);
     }
 
     @Test
-    public void testDoubleMinusDouble() {
+    public void testDoubleSubtractDouble() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1.01, 2.,
                 3., 4.5);
 
-        Series<? extends Number> s = $double("b").minus($double("a")).eval(df);
+        Series<? extends Number> s = $double("b").subtract($double("a")).eval(df);
         assertFalse(s instanceof DoubleSeries);
         new SeriesAsserts(s).expectData(0.99, 1.5);
     }
 
     @Test
-    public void testLongPlusLong() {
+    public void testLongAddLong() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1L, 2000_000_000_001L,
                 3L, 4L);
 
-        Series<? extends Number> s = $long("b").plus($long("a")).eval(df);
+        Series<? extends Number> s = $long("b").add($long("a")).eval(df);
         assertFalse(s instanceof LongSeries);
         new SeriesAsserts(s).expectData(2000_000_000_002L, 7L);
     }
 
     @Test
-    public void testLongPlusLong_Primitive() {
+    public void testLongAddLong_Primitive() {
         DataFrame df = DataFrame.newFrame("a", "b").foldLongStreamByRow(LongStream.of(1L, 2000_000_000_001L, 3L, 4L));
 
         // sanity check of the test DataFrame
@@ -147,7 +147,7 @@ public class NumericExpTest {
         assertTrue(b instanceof LongSeries);
 
         // run and verify the calculation
-        Series<? extends Number> s = $long("b").plus($long("a")).eval(df);
+        Series<? extends Number> s = $long("b").add($long("a")).eval(df);
         assertTrue(s instanceof LongSeries);
         new SeriesAsserts(s).expectData(2000_000_000_002L, 7L);
     }
@@ -174,12 +174,12 @@ public class NumericExpTest {
     }
 
     @Test
-    public void testDecimalPlusDecimal() {
+    public void testDecimalAddDecimal() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 new BigDecimal("1.01"), new BigDecimal("2."),
                 new BigDecimal("3."), new BigDecimal("4.5"));
 
-        Series<? extends Number> s = $decimal("b").plus($decimal("a")).eval(df);
+        Series<? extends Number> s = $decimal("b").add($decimal("a")).eval(df);
         new SeriesAsserts(s).expectData(new BigDecimal("3.01"), new BigDecimal("7.5"));
     }
 

@@ -142,7 +142,7 @@ public interface IntSeries extends Series<Integer> {
     /**
      * @since 0.11
      */
-    default IntSeries plus(IntSeries s) {
+    default IntSeries add(IntSeries s) {
         int len = size();
         IntAccumulator accumulator = new IntAccumulator(len);
 
@@ -156,7 +156,7 @@ public interface IntSeries extends Series<Integer> {
     /**
      * @since 0.11
      */
-    default IntSeries minus(IntSeries s) {
+    default IntSeries subtract(IntSeries s) {
         int len = size();
         IntAccumulator accumulator = new IntAccumulator(len);
 

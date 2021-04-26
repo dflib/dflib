@@ -9,22 +9,22 @@ import com.nhl.dflib.exp.num.NumericExpFactory;
  */
 public interface NumericExp<N extends Number> extends ValueExp<N> {
 
-    default NumericExp<?> plus(Exp<? extends Number> exp) {
-        return NumericExpFactory.factory(this, exp).plus(this, exp);
+    default NumericExp<?> add(Exp<? extends Number> exp) {
+        return NumericExpFactory.factory(this, exp).add(this, exp);
     }
 
-    default NumericExp<?> plus(Number val) {
+    default NumericExp<?> add(Number val) {
         Exp<? extends Number> ve = Exp.$val(val);
-        return NumericExpFactory.factory(this, ve).plus(this, ve);
+        return NumericExpFactory.factory(this, ve).add(this, ve);
     }
 
-    default NumericExp<?> minus(Exp<? extends Number> exp) {
-        return NumericExpFactory.factory(this, exp).minus(this, exp);
+    default NumericExp<?> subtract(Exp<? extends Number> exp) {
+        return NumericExpFactory.factory(this, exp).subtract(this, exp);
     }
 
-    default NumericExp<?> minus(Number val) {
+    default NumericExp<?> subtract(Number val) {
         Exp<? extends Number> ve = Exp.$val(val);
-        return NumericExpFactory.factory(this, ve).minus(this, ve);
+        return NumericExpFactory.factory(this, ve).subtract(this, ve);
     }
 
     default NumericExp<?> multiply(Exp<? extends Number> exp) {

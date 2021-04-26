@@ -131,7 +131,7 @@ public interface DoubleSeries extends Series<Double> {
     /**
      * @since 0.11
      */
-    default DoubleSeries plus(DoubleSeries s) {
+    default DoubleSeries add(DoubleSeries s) {
         int len = size();
         DoubleAccumulator accumulator = new DoubleAccumulator(len);
 
@@ -145,7 +145,7 @@ public interface DoubleSeries extends Series<Double> {
     /**
      * @since 0.11
      */
-    default DoubleSeries minus(DoubleSeries s) {
+    default DoubleSeries subtract(DoubleSeries s) {
         int len = size();
         DoubleAccumulator accumulator = new DoubleAccumulator(len);
 

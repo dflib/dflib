@@ -131,7 +131,7 @@ public interface LongSeries extends Series<Long> {
     /**
      * @since 0.11
      */
-    default LongSeries plus(LongSeries s) {
+    default LongSeries add(LongSeries s) {
         int len = size();
         LongAccumulator accumulator = new LongAccumulator(len);
 
@@ -145,7 +145,7 @@ public interface LongSeries extends Series<Long> {
     /**
      * @since 0.11
      */
-    default LongSeries minus(LongSeries s) {
+    default LongSeries subtract(LongSeries s) {
         int len = size();
         LongAccumulator accumulator = new LongAccumulator(len);
 

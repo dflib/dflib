@@ -51,9 +51,9 @@ public abstract class NumericExpFactory {
         factories.put(Long.TYPE, factories.get(Long.class));
     }
 
-    public abstract NumericExp<?> plus(Exp<? extends Number> left, Exp<? extends Number> right);
+    public abstract NumericExp<?> add(Exp<? extends Number> left, Exp<? extends Number> right);
 
-    public abstract NumericExp<?> minus(Exp<? extends Number> left, Exp<? extends Number> right);
+    public abstract NumericExp<?> subtract(Exp<? extends Number> left, Exp<? extends Number> right);
 
     public abstract NumericExp<?> multiply(Exp<? extends Number> left, Exp<? extends Number> right);
 
