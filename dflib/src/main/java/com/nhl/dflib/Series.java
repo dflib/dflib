@@ -187,6 +187,16 @@ public interface Series<T> extends Iterable<T> {
     BooleanSeries ne(Series<?> another);
 
     /**
+     * @since 0.11
+     */
+    BooleanSeries isNull();
+
+    /**
+     * @since 0.11
+     */
+    BooleanSeries isNotNull();
+
+    /**
      * Returns a boolean series indicating whether each original Series position matched the predicate
      *
      * @param predicate match condition

@@ -421,6 +421,16 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
+    public BooleanSeries isNull() {
+        return new FalseSeries(size());
+    }
+
+    @Override
+    public BooleanSeries isNotNull() {
+        return new TrueSeries(size());
+    }
+
+    @Override
     public boolean isTrue() {
         int s = size();
 

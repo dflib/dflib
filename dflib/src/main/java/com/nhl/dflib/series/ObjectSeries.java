@@ -281,6 +281,30 @@ public abstract class ObjectSeries<T> implements Series<T> {
     }
 
     @Override
+    public BooleanSeries isNull() {
+        int s = size();
+
+        BooleanAccumulator bools = new BooleanAccumulator(s);
+        for (int i = 0; i < s; i++) {
+            bools.addBoolean(get(i) == null);
+        }
+
+        return bools.toSeries();
+    }
+
+    @Override
+    public BooleanSeries isNotNull() {
+        int s = size();
+
+        BooleanAccumulator bools = new BooleanAccumulator(s);
+        for (int i = 0; i < s; i++) {
+            bools.addBoolean(get(i) != null);
+        }
+
+        return bools.toSeries();
+    }
+
+    @Override
     public Series<T> unique() {
 
         int size = size();

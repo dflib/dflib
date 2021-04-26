@@ -400,6 +400,16 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
+    public BooleanSeries isNull() {
+        return new FalseSeries(size());
+    }
+
+    @Override
+    public BooleanSeries isNotNull() {
+        return new TrueSeries(size());
+    }
+
+    @Override
     public BooleanSeries eq(Series<?> another) {
         int s = size();
         int as = another.size();

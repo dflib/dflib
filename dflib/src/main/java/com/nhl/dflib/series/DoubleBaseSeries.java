@@ -432,6 +432,16 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
+    public BooleanSeries isNull() {
+        return new FalseSeries(size());
+    }
+
+    @Override
+    public BooleanSeries isNotNull() {
+        return new TrueSeries(size());
+    }
+
+    @Override
     public Series<Double> unique() {
         return uniqueDouble();
     }

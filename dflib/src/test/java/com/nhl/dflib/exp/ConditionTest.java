@@ -16,6 +16,30 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ConditionTest {
 
     @Test
+    public void testIsNull() {
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                "1",
+                "4",
+                null,
+                "5");
+
+        BooleanSeries s = $str("a").isNull().eval(df);
+        new BooleanSeriesAsserts(s).expectData(false, false, true, false);
+    }
+
+    @Test
+    public void testIsNotNull() {
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                "1",
+                "4",
+                null,
+                "5");
+
+        BooleanSeries s = $str("a").isNotNull().eval(df);
+        new BooleanSeriesAsserts(s).expectData(true, true, false, true);
+    }
+
+    @Test
     public void testEq() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 "1", "1",
