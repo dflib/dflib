@@ -6,7 +6,7 @@ import com.nhl.dflib.Series;
 import java.util.Objects;
 
 /**
- * An expression that returns an unchanged named column from a DataFrame.
+ * An expression that evaluates to a column from a DataFrame identified either by name or position.
  *
  * @since 0.11
  */
