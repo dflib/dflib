@@ -19,6 +19,18 @@ public interface ValueExp<V> extends Exp<V> {
         return new BinaryCondition<>("ne", this, exp, Series::ne);
     }
 
+    default Condition eq(Object value) {
+        return value != null
+                ? new BinaryCondition<>("eq", this, Exp.$val(value), Series::eq)
+                : isNull();
+    }
+
+    default Condition ne(Object value) {
+        return value != null
+                ? new BinaryCondition<>("ne", this, Exp.$val(value), Series::ne)
+                : isNotNull();
+    }
+
     default Condition isNull() {
         return new UnaryCondition<>("isNull", this, Series::isNull);
     }
