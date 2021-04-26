@@ -217,21 +217,20 @@ public interface DataFrame extends Iterable<RowProxy> {
     <V, VR> DataFrame convertColumn(int pos, ValueMapper<V, VR> converter);
 
     /**
-     * Converts column contents using the expression. Ignores the name of the Exp, using the "name" argument to identify
-     * the column.
+     * Converts column contents using the expression. Unlike {@link #addColumn(Exp)} ignores the name of the Exp,
+     * and uses the "name" argument to identify the column.
      *
      * @since 0.11
      */
     DataFrame convertColumn(String name, Exp<?> exp);
 
     /**
-     * Converts column contents using the expression. Ignores the name of the Exp, preserving the existing name at
-     * the specified DataFrame position.
+     * Converts column contents using the expression. Unlike {@link #addColumn(Exp)} ignores the name of the Exp,
+     * preserving the existing name at the specified DataFrame position.
      *
      * @since 0.11
      */
     DataFrame convertColumn(int position, Exp<?> exp);
-
 
     /**
      * Performs column conversion to a compact IntC

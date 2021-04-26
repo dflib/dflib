@@ -29,25 +29,33 @@ import java.util.function.UnaryOperator;
 
 public class ColumnDataFrame implements DataFrame {
 
-    private Index columnsIndex;
-    private Series[] dataColumns;
+    private final Index columnsIndex;
+    private final Series[] dataColumns;
+
+    private static Series[] alignColumns(int w, Series<?>... columns) {
+
+        Objects.requireNonNull(columns, "Null 'columns'");
+
+        int sw = columns.length;
+        if (w == sw) {
+            return columns;
+        }
+
+        if (sw > 0) {
+            throw new IllegalArgumentException("Index size is not the same as data columns size: " + w + " != " + sw);
+        }
+
+        // no data columns means empty DataFrame with non-empty index
+
+        Series[] finalColumns = new Series[w];
+        EmptySeries es = new EmptySeries();
+        Arrays.fill(finalColumns, es);
+        return finalColumns;
+    }
 
     public ColumnDataFrame(Index columnsIndex, Series<?>... dataColumns) {
         this.columnsIndex = Objects.requireNonNull(columnsIndex);
-        this.dataColumns = Objects.requireNonNull(dataColumns);
-
-        // allow no-data constructor, but other than that check for index / columns mismatch
-        int iw = columnsIndex.size();
-        int sw = dataColumns.length;
-        if (iw != sw) {
-
-            if (sw == 0) {
-                this.dataColumns = new Series[iw];
-                Arrays.fill(this.dataColumns, new EmptySeries());
-            } else {
-                throw new IllegalArgumentException("Index size is not the same as data columns size: " + iw + " != " + sw);
-            }
-        }
+        this.dataColumns = alignColumns(columnsIndex.size(), dataColumns);
     }
 
     @Override
