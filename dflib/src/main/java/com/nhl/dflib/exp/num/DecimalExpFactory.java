@@ -69,7 +69,11 @@ public class DecimalExpFactory extends NumericExpFactory {
         return new DecimalBinaryExp(left.getName() + "/" + right.getName(),
                 cast(left),
                 cast(right),
-                BinaryExp.toSeriesOp((BigDecimal n1, BigDecimal n2) -> n1.divide(n2)));
+                BinaryExp.toSeriesOp((BigDecimal n1, BigDecimal n2) ->
+                        // TODO: would be nice to be able to specify the result scale explicitly instead of first
+                        //  inflating the scale, then trimming trailing zeros. It will not be as slow, and will not
+                        //  overflow
+                        n1.divide(n2, Math.max(15, 1 + Math.max(n1.scale(), n2.scale())), RoundingMode.HALF_UP).stripTrailingZeros()));
     }
 
     @Override

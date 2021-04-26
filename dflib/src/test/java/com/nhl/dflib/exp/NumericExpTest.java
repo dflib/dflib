@@ -194,6 +194,16 @@ public class NumericExpTest {
     }
 
     @Test
+    public void testDecimalDivideDouble() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                new BigDecimal("5.0"), 2.5,
+                new BigDecimal("3.3"), 3.33);
+
+        Series<? extends Number> s = $decimal("a").divide($double("b")).eval(df);
+        new SeriesAsserts(s).expectData(new BigDecimal("2"), new BigDecimal("0.99099099099099096984560210653599037467692134485397"));
+    }
+
+    @Test
     public void testIntMultiplyDecimal() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 new BigDecimal("35.1"), 2,
