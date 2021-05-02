@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.accumulator.BooleanAccumulator;
 import com.nhl.dflib.aggregate.DataFrameAggregation;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.VConcat;
@@ -9,21 +10,12 @@ import com.nhl.dflib.map.Mapper;
 import com.nhl.dflib.row.CrossColumnRowProxy;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.sample.Sampler;
-import com.nhl.dflib.series.EmptySeries;
-import com.nhl.dflib.series.IntArraySeries;
-import com.nhl.dflib.series.IntSequenceSeries;
-import com.nhl.dflib.series.RowMappedSeries;
-import com.nhl.dflib.series.SingleValueSeries;
-import com.nhl.dflib.accumulator.BooleanAccumulator;
-import com.nhl.dflib.sort.*;
+import com.nhl.dflib.series.*;
+import com.nhl.dflib.sort.DataFrameSorter;
 import com.nhl.dflib.stack.Stacker;
 import com.nhl.dflib.window.RowNumberer;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
@@ -310,7 +302,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public DataFrame filterRows(Condition condition) {
+    public DataFrame filterRows(SeriesCondition condition) {
         return selectRows(condition.eval(this).indexTrue());
     }
 
@@ -369,7 +361,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public DataFrame addColumns(Exp<?>... exps) {
+    public DataFrame addColumns(SeriesExp<?>... exps) {
 
         int extraWidth = exps.length;
         if (extraWidth == 0) {
@@ -452,7 +444,7 @@ public class ColumnDataFrame implements DataFrame {
      * @since 0.11
      */
     @Override
-    public DataFrame convertColumn(String name, Exp<?> exp) {
+    public DataFrame convertColumn(String name, SeriesExp<?> exp) {
         int pos = getColumnsIndex().position(name);
         return replaceColumn(pos, exp.eval(this));
     }
@@ -461,7 +453,7 @@ public class ColumnDataFrame implements DataFrame {
      * @since 0.11
      */
     @Override
-    public DataFrame convertColumn(int position, Exp<?> exp) {
+    public DataFrame convertColumn(int position, SeriesExp<?> exp) {
         return replaceColumn(position, exp.eval(this));
     }
 
@@ -559,7 +551,7 @@ public class ColumnDataFrame implements DataFrame {
      * @since 0.11
      */
     @Override
-    public DataFrame selectColumns(Exp<?> exp0, Exp<?>... otherExps) {
+    public DataFrame selectColumns(SeriesExp<?> exp0, SeriesExp<?>... otherExps) {
         int w = otherExps.length + 1;
         String[] labels = new String[w];
         labels[0] = exp0.getName();

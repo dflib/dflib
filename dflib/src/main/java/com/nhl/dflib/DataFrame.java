@@ -222,7 +222,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @since 0.11
      */
-    DataFrame convertColumn(String name, Exp<?> exp);
+    DataFrame convertColumn(String name, SeriesExp<?> exp);
 
     /**
      * Converts column contents using the expression. Unlike {@link #addColumn(Exp)} ignores the name of the Exp,
@@ -230,7 +230,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @since 0.11
      */
-    DataFrame convertColumn(int position, Exp<?> exp);
+    DataFrame convertColumn(int position, SeriesExp<?> exp);
 
     /**
      * Performs column conversion to a compact IntC
@@ -501,17 +501,17 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @since 0.11
      */
-    default DataFrame addColumn(Exp<?> exp) {
+    default DataFrame addColumn(SeriesExp<?> exp) {
         return addColumns(exp);
     }
 
     /**
      * Adds multiple columns with values derived from this DataFrame by applying provided expressions. Column names will
-     * be taken from {@link Exp} names.
+     * be taken from {@link SeriesExp} names.
      *
      * @since 0.11
      */
-    DataFrame addColumns(Exp<?>... exps);
+    DataFrame addColumns(SeriesExp<?>... exps);
 
     /**
      * @return a new DataFrame with extra columns added
@@ -552,7 +552,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     // TODO: breaking vararg into arg and vararg is a nasty pattern that does not allow to pass whole data structures
     //  built dynamically.. redo this
-    DataFrame selectColumns(Exp<?> exp0, Exp<?>... otherExps);
+    DataFrame selectColumns(SeriesExp<?> exp0, SeriesExp<?>... otherExps);
 
     /**
      * @param columnsIndex an index that defines a subset of columns and their ordering in the returned DataFrame.
@@ -624,7 +624,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @since 0.11
      */
-    DataFrame filterRows(Condition condition);
+    DataFrame filterRows(SeriesCondition condition);
 
     /**
      * @since 0.11
