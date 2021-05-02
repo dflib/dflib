@@ -8,7 +8,7 @@ import com.nhl.dflib.seriesexp.num.IntColumn;
 import com.nhl.dflib.seriesexp.num.LongColumn;
 import com.nhl.dflib.seriesexp.str.StringColumn;
 import com.nhl.dflib.seriesexp.ColumnExp;
-import com.nhl.dflib.seriesexp.SingleValueExp;
+import com.nhl.dflib.seriesexp.SingleValueSeriesExp;
 
 import java.math.BigDecimal;
 
@@ -32,7 +32,7 @@ public interface Exp {
         // TODO: explore possible performance improvement by not converting scalars to Series at all, and providing a
         //   separate evaluation path instead.
 
-        return new SingleValueExp(
+        return new SingleValueSeriesExp(
                 value,
                 // TODO: in case the is called as "$val((T) null)", the type of the expression will not be the one the
                 //  caller expects

@@ -4,7 +4,8 @@ import com.nhl.dflib.seriesexp.condition.AndSeriesCondition;
 import com.nhl.dflib.seriesexp.condition.OrSeriesCondition;
 
 /**
- * A boolean expression.
+ * A {@link SeriesExp} that evaluates to a BooleanSeries indicating whether the condition is true for any given
+ * row of the source DataFrame.
  *
  * @since 0.11
  */

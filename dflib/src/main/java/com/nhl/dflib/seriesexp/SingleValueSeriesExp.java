@@ -10,12 +10,12 @@ import java.util.Objects;
 /**
  * @since 0.11
  */
-public class SingleValueExp<V> implements SeriesExp<V> {
+public class SingleValueSeriesExp<V> implements SeriesExp<V> {
 
     private final Class<V> type;
     private final V value;
 
-    public SingleValueExp(V value, Class<V> type) {
+    public SingleValueSeriesExp(V value, Class<V> type) {
         this.value = value;
         this.type = Objects.requireNonNull(type);
     }
