@@ -59,7 +59,7 @@ public abstract class NumericExpFactory {
 
     public abstract NumericExp<?> divide(Exp<? extends Number> left, Exp<? extends Number> right);
 
-    public abstract NumericExp<?> castAsDecimal(NumericExp<?> exp, int scale);
+    public abstract NumericExp<BigDecimal> castAsDecimal(NumericExp<?> exp, int scale);
 
     public abstract Condition lt(Exp<? extends Number> left, Exp<? extends Number> right);
 

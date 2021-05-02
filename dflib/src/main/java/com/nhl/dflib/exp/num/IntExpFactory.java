@@ -72,7 +72,7 @@ public class IntExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumericExp<?> castAsDecimal(NumericExp<?> exp, int scale) {
+    public NumericExp<BigDecimal> castAsDecimal(NumericExp<?> exp, int scale) {
         return new DecimalUnaryExp<>(cast(exp), UnaryExp.toSeriesOp(i -> BigDecimal.valueOf((long) i).setScale(scale, RoundingMode.HALF_UP)));
     }
 
