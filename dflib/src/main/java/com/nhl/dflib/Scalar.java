@@ -5,7 +5,10 @@ import com.nhl.dflib.row.RowProxy;
 
 /**
  * A helper class that allows to define type-safe DataFrame value accessors
+ *
+ * @deprecated since 0.11 not relevant, as we are moving to the {@link Exp} based expressions.
  */
+@Deprecated
 public class Scalar<T> {
 
     private int position;
