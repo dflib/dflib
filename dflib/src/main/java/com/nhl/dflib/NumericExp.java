@@ -1,7 +1,5 @@
-package com.nhl.dflib.exp;
+package com.nhl.dflib;
 
-import com.nhl.dflib.Condition;
-import com.nhl.dflib.Exp;
 import com.nhl.dflib.exp.num.NumericExpFactory;
 
 /**

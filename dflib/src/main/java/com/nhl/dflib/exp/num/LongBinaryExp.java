@@ -4,7 +4,7 @@ import com.nhl.dflib.LongSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.exp.BinaryExp;
 import com.nhl.dflib.Exp;
-import com.nhl.dflib.exp.NumericExp;
+import com.nhl.dflib.NumericExp;
 
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;

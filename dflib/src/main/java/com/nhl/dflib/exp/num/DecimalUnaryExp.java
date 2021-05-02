@@ -2,7 +2,7 @@ package com.nhl.dflib.exp.num;
 
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.exp.NumericExp;
+import com.nhl.dflib.NumericExp;
 import com.nhl.dflib.exp.UnaryExp;
 
 import java.math.BigDecimal;

@@ -4,7 +4,7 @@ import com.nhl.dflib.Condition;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.exp.BinaryExp;
-import com.nhl.dflib.exp.NumericExp;
+import com.nhl.dflib.NumericExp;
 import com.nhl.dflib.exp.UnaryExp;
 import com.nhl.dflib.exp.condition.BinaryCondition;
 

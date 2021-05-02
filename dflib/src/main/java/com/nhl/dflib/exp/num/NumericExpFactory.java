@@ -2,7 +2,7 @@ package com.nhl.dflib.exp.num;
 
 import com.nhl.dflib.Condition;
 import com.nhl.dflib.Exp;
-import com.nhl.dflib.exp.NumericExp;
+import com.nhl.dflib.NumericExp;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
