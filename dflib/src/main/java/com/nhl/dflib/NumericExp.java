@@ -2,6 +2,8 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.exp.num.NumericExpFactory;
 
+import java.math.BigDecimal;
+
 /**
  * @since 0.11
  */
@@ -43,7 +45,7 @@ public interface NumericExp<N extends Number> extends Exp<N> {
         return NumericExpFactory.factory(this, ve).divide(this, ve);
     }
 
-    default NumericExp<?> castAsDecimal(int scale) {
+    default NumericExp<BigDecimal> castAsDecimal(int scale) {
         return NumericExpFactory.factory(this).castAsDecimal(this, scale);
     }
 

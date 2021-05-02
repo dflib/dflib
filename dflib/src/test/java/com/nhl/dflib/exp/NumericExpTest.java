@@ -219,7 +219,7 @@ public class NumericExpTest {
                 new BigDecimal("2.0100287"),
                 new BigDecimal("4.5"));
 
-        Series<? extends Number> s = $decimal("a").castAsDecimal(2).eval(df);
+        Series<BigDecimal> s = $decimal("a").castAsDecimal(2).eval(df);
         new SeriesAsserts(s).expectData(new BigDecimal("2.01"), new BigDecimal("4.50"));
     }
 
@@ -229,7 +229,7 @@ public class NumericExpTest {
                 2.0100287,
                 4.5);
 
-        Series<? extends Number> s = $double("a").castAsDecimal(2).eval(df);
+        Series<BigDecimal> s = $double("a").castAsDecimal(2).eval(df);
         new SeriesAsserts(s).expectData(new BigDecimal("2.01"), new BigDecimal("4.50"));
     }
 
@@ -240,7 +240,7 @@ public class NumericExpTest {
                 355,
                 -3);
 
-        Series<? extends Number> s = $int("a").castAsDecimal(2).eval(df);
+        Series<BigDecimal> s = $int("a").castAsDecimal(2).eval(df);
         new SeriesAsserts(s).expectData(new BigDecimal("2.00"), new BigDecimal("355.00"), new BigDecimal("-3.00"));
     }
 
@@ -251,7 +251,7 @@ public class NumericExpTest {
                 355L,
                 -3L);
 
-        Series<? extends Number> s = $long("a").castAsDecimal(2).eval(df);
+        Series<BigDecimal> s = $long("a").castAsDecimal(2).eval(df);
         new SeriesAsserts(s).expectData(new BigDecimal("2.00"), new BigDecimal("355.00"), new BigDecimal("-3.00"));
     }
 }
