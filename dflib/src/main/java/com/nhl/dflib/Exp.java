@@ -1,9 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.exp.*;
-import com.nhl.dflib.exp.condition.AndCondition;
-import com.nhl.dflib.exp.condition.BooleanColumn;
-import com.nhl.dflib.exp.condition.OrCondition;
+import com.nhl.dflib.exp.condition.*;
 import com.nhl.dflib.exp.func.IfNullFunction;
 import com.nhl.dflib.exp.num.DecimalColumn;
 import com.nhl.dflib.exp.num.DoubleColumn;
@@ -25,7 +23,7 @@ public interface Exp<V> {
     /**
      * Returns an expression that evaluates to a Series containing a single value.
      */
-    static <V> ValueExp<V> $val(V value) {
+    static <V> Exp<V> $val(V value) {
 
         // note that wrapping the value in primitive-optimized series has only very small effects on performance
         // (slightly improves comparisons with primitive series, and slows down comparisons with object-wrapped numbers).
@@ -44,14 +42,14 @@ public interface Exp<V> {
     /**
      * Returns an expression that evaluates to a named DataFrame column.
      */
-    static ValueExp<?> $col(String name) {
+    static Exp<?> $col(String name) {
         return new ColumnExp(name, Object.class);
     }
 
     /**
      * Returns an expression that evaluates to a DataFrame column at a given position
      */
-    static ValueExp<?> $col(int position) {
+    static Exp<?> $col(int position) {
         return new ColumnExp(position, Object.class);
     }
 
@@ -186,5 +184,33 @@ public interface Exp<V> {
     default Exp<V> as(String name) {
         Objects.requireNonNull(name, "Null 'name'");
         return name.equals(getName()) ? this : new RenamedExp<>(name, this);
+    }
+
+    default Condition eq(Exp<?> exp) {
+        return new BinaryCondition<>("eq", this, exp, Series::eq);
+    }
+
+    default Condition ne(Exp<?> exp) {
+        return new BinaryCondition<>("ne", this, exp, Series::ne);
+    }
+
+    default Condition eq(Object value) {
+        return value != null
+                ? new BinaryCondition<>("eq", this, Exp.$val(value), Series::eq)
+                : isNull();
+    }
+
+    default Condition ne(Object value) {
+        return value != null
+                ? new BinaryCondition<>("ne", this, Exp.$val(value), Series::ne)
+                : isNotNull();
+    }
+
+    default Condition isNull() {
+        return new UnaryCondition<>("isNull", this, Series::isNull);
+    }
+
+    default Condition isNotNull() {
+        return new UnaryCondition<>("isNotNull", this, Series::isNotNull);
     }
 }

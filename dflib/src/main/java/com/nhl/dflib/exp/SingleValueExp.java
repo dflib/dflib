@@ -1,6 +1,7 @@
 package com.nhl.dflib.exp;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Exp;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.series.SingleValueSeries;
 
@@ -9,7 +10,7 @@ import java.util.Objects;
 /**
  * @since 0.11
  */
-public class SingleValueExp<V> implements ValueExp<V> {
+public class SingleValueExp<V> implements Exp<V> {
 
     private final Class<V> type;
     private final V value;

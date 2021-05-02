@@ -1,6 +1,7 @@
 package com.nhl.dflib.exp;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Exp;
 import com.nhl.dflib.Series;
 
 import java.util.Objects;
@@ -10,7 +11,7 @@ import java.util.Objects;
  *
  * @since 0.11
  */
-public class ColumnExp<V> implements ValueExp<V> {
+public class ColumnExp<V> implements Exp<V> {
 
     private final int position;
     private final String name;

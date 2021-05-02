@@ -7,7 +7,7 @@ import com.nhl.dflib.exp.num.NumericExpFactory;
 /**
  * @since 0.11
  */
-public interface NumericExp<N extends Number> extends ValueExp<N> {
+public interface NumericExp<N extends Number> extends Exp<N> {
 
     default NumericExp<?> add(Exp<? extends Number> exp) {
         return NumericExpFactory.factory(this, exp).add(this, exp);
