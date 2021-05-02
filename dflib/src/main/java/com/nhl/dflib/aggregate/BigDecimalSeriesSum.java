@@ -16,7 +16,7 @@ public class BigDecimalSeriesSum {
 
         int size = s.size();
         if (size == 0) {
-            return null;
+            return BigDecimal.ZERO;
         }
 
         BigDecimal sum = s.get(0);
