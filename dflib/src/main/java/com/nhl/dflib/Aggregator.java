@@ -167,9 +167,9 @@ public interface Aggregator<T> {
     /**
      * @since 0.11
      */
-    static Aggregator<BigDecimal> sumBigDecimal(String column) {
+    static Aggregator<BigDecimal> sumDecimal(String column) {
         return new ColumnAggregator<>(
-                SeriesAggregator.sumBigDecimal(),
+                SeriesAggregator.sumDecimal(),
                 index -> index.position(column),
                 index -> column
         );
@@ -178,9 +178,9 @@ public interface Aggregator<T> {
     /**
      * @since 0.11
      */
-    static Aggregator<BigDecimal> sumBigDecimal(int column) {
+    static Aggregator<BigDecimal> sumDecimal(int column) {
         return new ColumnAggregator<>(
-                SeriesAggregator.sumBigDecimal(),
+                SeriesAggregator.sumDecimal(),
                 index -> column,
                 index -> index.getLabel(column)
         );
@@ -189,9 +189,9 @@ public interface Aggregator<T> {
     /**
      * @since 0.11
      */
-    static Aggregator<BigDecimal> sumBigDecimal(String column, int resultScale, RoundingMode resultRoundingMode) {
+    static Aggregator<BigDecimal> sumDecimal(String column, int resultScale, RoundingMode resultRoundingMode) {
         return new ColumnAggregator<>(
-                SeriesAggregator.sumBigDecimal(resultScale, resultRoundingMode),
+                SeriesAggregator.sumDecimal(resultScale, resultRoundingMode),
                 index -> index.position(column),
                 index -> column
         );
@@ -200,9 +200,9 @@ public interface Aggregator<T> {
     /**
      * @since 0.11
      */
-    static Aggregator<BigDecimal> sumBigDecimal(int column, int resultScale, RoundingMode resultRoundingMode) {
+    static Aggregator<BigDecimal> sumDecimal(int column, int resultScale, RoundingMode resultRoundingMode) {
         return new ColumnAggregator<>(
-                SeriesAggregator.sumBigDecimal(resultScale, resultRoundingMode),
+                SeriesAggregator.sumDecimal(resultScale, resultRoundingMode),
                 index -> column,
                 index -> index.getLabel(column)
         );

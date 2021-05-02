@@ -86,7 +86,7 @@ public class SeriesAggregatorTest {
                 new BigDecimal(-9.4).setScale(2, RoundingMode.HALF_UP));
 
         assertEquals(new BigDecimal(-2.7000).setScale(4, RoundingMode.HALF_UP),
-                SeriesAggregator.sumBigDecimal().aggregate(s));
+                SeriesAggregator.sumDecimal().aggregate(s));
     }
 
     @Test
@@ -97,7 +97,7 @@ public class SeriesAggregatorTest {
                 new BigDecimal(-9.4).setScale(2, RoundingMode.HALF_UP));
 
         assertEquals(new BigDecimal(-2.7).setScale(2, RoundingMode.HALF_UP),
-                SeriesAggregator.sumBigDecimal(2, RoundingMode.HALF_UP).aggregate(s));
+                SeriesAggregator.sumDecimal(2, RoundingMode.HALF_UP).aggregate(s));
     }
 
     @Test

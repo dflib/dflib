@@ -60,15 +60,15 @@ public interface SeriesAggregator<S, T> {
     /**
      * @since 0.11
      */
-    static SeriesAggregator<BigDecimal, BigDecimal> sumBigDecimal() {
-        return new SimpleSeriesAggregator<>("sumBigDecimal", BigDecimalSeriesSum::sum);
+    static SeriesAggregator<BigDecimal, BigDecimal> sumDecimal() {
+        return new SimpleSeriesAggregator<>("sumDecimal", BigDecimalSeriesSum::sum);
     }
 
     /**
      * @since 0.11
      */
-    static SeriesAggregator<BigDecimal, BigDecimal> sumBigDecimal(int resultScale, RoundingMode resultRoundingMode) {
-        return new SimpleSeriesAggregator<>("sumBigDecimal", s -> BigDecimalSeriesSum.sum(s, resultScale, resultRoundingMode));
+    static SeriesAggregator<BigDecimal, BigDecimal> sumDecimal(int resultScale, RoundingMode resultRoundingMode) {
+        return new SimpleSeriesAggregator<>("sumDecimal", s -> BigDecimalSeriesSum.sum(s, resultScale, resultRoundingMode));
     }
 
     /**
