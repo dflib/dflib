@@ -43,14 +43,14 @@ public interface Exp<V> {
      * Returns an expression that evaluates to a named DataFrame column.
      */
     static Exp<?> $col(String name) {
-        return new ColumnExp(name, Object.class);
+        return new ColumnExp<>(name, Object.class);
     }
 
     /**
      * Returns an expression that evaluates to a DataFrame column at a given position
      */
     static Exp<?> $col(int position) {
-        return new ColumnExp(position, Object.class);
+        return new ColumnExp<>(position, Object.class);
     }
 
     /**
@@ -148,14 +148,14 @@ public interface Exp<V> {
      * A function that evaluates "exp", replacing any null values by calling "ifNullExp".
      */
     static <V> Exp<V> ifNull(Exp<V> exp, Exp<V> ifNullExp) {
-        return new IfNullFunction(exp, ifNullExp);
+        return new IfNullFunction<>(exp, ifNullExp);
     }
 
     /**
      * A function that evaluates "exp", replacing any null values with "ifNull" value.
      */
     static <V> Exp<V> ifNull(Exp<V> exp, V ifNull) {
-        return new IfNullFunction(exp, $val(ifNull));
+        return new IfNullFunction<>(exp, $val(ifNull));
     }
 
     String getName();
