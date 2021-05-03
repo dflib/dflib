@@ -10,12 +10,12 @@ import java.util.Objects;
 /**
  * @since 0.11
  */
-public class SingleValueSeriesExp<V> implements SeriesExp<V> {
+public class SingleValueSeriesExp<T> implements SeriesExp<T> {
 
-    private final Class<V> type;
-    private final V value;
+    private final Class<T> type;
+    private final T value;
 
-    public SingleValueSeriesExp(V value, Class<V> type) {
+    public SingleValueSeriesExp(T value, Class<T> type) {
         this.value = value;
         this.type = Objects.requireNonNull(type);
     }
@@ -26,12 +26,12 @@ public class SingleValueSeriesExp<V> implements SeriesExp<V> {
     }
 
     @Override
-    public Class<V> getType() {
+    public Class<T> getType() {
         return type;
     }
 
     @Override
-    public Series<V> eval(DataFrame df) {
+    public Series<T> eval(DataFrame df) {
         return new SingleValueSeries<>(value, df.height());
     }
 }

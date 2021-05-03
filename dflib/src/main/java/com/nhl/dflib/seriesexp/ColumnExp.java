@@ -11,19 +11,19 @@ import java.util.Objects;
  *
  * @since 0.11
  */
-public class ColumnExp<V> implements SeriesExp<V> {
+public class ColumnExp<T> implements SeriesExp<T> {
 
     private final int position;
     private final String name;
-    private final Class<V> type;
+    private final Class<T> type;
 
-    public ColumnExp(String name, Class<V> type) {
+    public ColumnExp(String name, Class<T> type) {
         this.name = Objects.requireNonNull(name);
         this.position = -1;
         this.type = type;
     }
 
-    public ColumnExp(int position, Class<V> type) {
+    public ColumnExp(int position, Class<T> type) {
         this.name = String.valueOf(position);
         this.position = position;
         this.type = type;
@@ -35,12 +35,12 @@ public class ColumnExp<V> implements SeriesExp<V> {
     }
 
     @Override
-    public Class<V> getType() {
+    public Class<T> getType() {
         return type;
     }
 
     @Override
-    public Series<V> eval(DataFrame df) {
+    public Series<T> eval(DataFrame df) {
         return position >= 0 ? df.getColumn(position) : df.getColumn(name);
     }
 }

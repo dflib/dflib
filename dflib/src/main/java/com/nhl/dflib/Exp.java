@@ -23,7 +23,7 @@ public interface Exp {
     /**
      * Returns an expression that evaluates to a Series containing a single value.
      */
-    static <V> SeriesExp<V> $val(V value) {
+    static <T> SeriesExp<T> $val(T value) {
 
         // note that wrapping the value in primitive-optimized series has only very small effects on performance
         // (slightly improves comparisons with primitive series, and slows down comparisons with object-wrapped numbers).
@@ -147,14 +147,14 @@ public interface Exp {
     /**
      * A function that evaluates "exp", replacing any null values by calling "ifNullExp".
      */
-    static <V> SeriesExp<V> ifNull(SeriesExp<V> exp, SeriesExp<V> ifNullExp) {
+    static <T> SeriesExp<T> ifNull(SeriesExp<T> exp, SeriesExp<T> ifNullExp) {
         return new IfNullFunction<>(exp, ifNullExp);
     }
 
     /**
      * A function that evaluates "exp", replacing any null values with "ifNull" value.
      */
-    static <V> SeriesExp<V> ifNull(SeriesExp<V> exp, V ifNull) {
+    static <T> SeriesExp<T> ifNull(SeriesExp<T> exp, T ifNull) {
         return new IfNullFunction<>(exp, $val(ifNull));
     }
 }

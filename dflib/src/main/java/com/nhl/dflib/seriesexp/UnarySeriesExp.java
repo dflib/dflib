@@ -9,13 +9,13 @@ import java.util.function.Function;
 /**
  * @since 0.11
  */
-public class UnarySeriesExp<F, V> implements SeriesExp<V> {
+public class UnarySeriesExp<F, T> implements SeriesExp<T> {
 
-    private final Function<Series<F>, Series<V>> op;
+    private final Function<Series<F>, Series<T>> op;
     private final SeriesExp<F> exp;
-    private final Class<V> type;
+    private final Class<T> type;
 
-    public UnarySeriesExp(SeriesExp<F> exp, Class<V> type, Function<Series<F>, Series<V>> op) {
+    public UnarySeriesExp(SeriesExp<F> exp, Class<T> type, Function<Series<F>, Series<T>> op) {
         this.exp = exp;
         this.type = type;
         this.op = op;
@@ -27,12 +27,12 @@ public class UnarySeriesExp<F, V> implements SeriesExp<V> {
     }
 
     @Override
-    public Class<V> getType() {
+    public Class<T> getType() {
         return type;
     }
 
     @Override
-    public Series<V> eval(DataFrame df) {
+    public Series<T> eval(DataFrame df) {
         return op.apply(exp.eval(df));
     }
 
@@ -40,7 +40,7 @@ public class UnarySeriesExp<F, V> implements SeriesExp<V> {
      * Utility method that converts a Function operating on individual values to a Function operating on object
      * Series. If F is null, the result is assumed to be null, and the "op" function is not invoked.
      */
-    public static <F, V> Function<Series<F>, Series<V>> toSeriesOp(Function<F, V> op) {
+    public static <F, T> Function<Series<F>, Series<T>> toSeriesOp(Function<F, T> op) {
         return s -> s.map(v -> v != null ? op.apply(v) : null);
     }
 }

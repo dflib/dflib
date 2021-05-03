@@ -8,12 +8,12 @@ import com.nhl.dflib.SeriesExp;
 /**
  * @since 0.11
  */
-public class IfNullFunction<V> implements SeriesExp<V> {
+public class IfNullFunction<T> implements SeriesExp<T> {
 
-    private final SeriesExp<V> exp;
-    private final SeriesExp<V> ifNullExp;
+    private final SeriesExp<T> exp;
+    private final SeriesExp<T> ifNullExp;
 
-    public IfNullFunction(SeriesExp<V> exp, SeriesExp<V> ifNullExp) {
+    public IfNullFunction(SeriesExp<T> exp, SeriesExp<T> ifNullExp) {
         this.exp = exp;
         this.ifNullExp = ifNullExp;
     }
@@ -24,13 +24,13 @@ public class IfNullFunction<V> implements SeriesExp<V> {
     }
 
     @Override
-    public Class<V> getType() {
+    public Class<T> getType() {
         return exp.getType();
     }
 
     @Override
-    public Series<V> eval(DataFrame df) {
-        Series<V> s = exp.eval(df);
+    public Series<T> eval(DataFrame df) {
+        Series<T> s = exp.eval(df);
         IntSeries nulls = s.index(v -> v == null);
 
         int nullsLen = nulls.size();
@@ -38,7 +38,7 @@ public class IfNullFunction<V> implements SeriesExp<V> {
             return s;
         }
 
-        Series<V> nullReplacements = ifNullExp.eval(df.selectRows(nulls));
+        Series<T> nullReplacements = ifNullExp.eval(df.selectRows(nulls));
 
         // TODO: "s" is not a primitive Series by definition, but replacing nulls may produce a primitive-compatible
         //  Series. See if we can exploit this fact for performance optimization
@@ -50,6 +50,6 @@ public class IfNullFunction<V> implements SeriesExp<V> {
             vals[nulls.getInt(i)] = nullReplacements.get(i);
         }
 
-        return (Series<V>) Series.forData(vals);
+        return (Series<T>) Series.forData(vals);
     }
 }

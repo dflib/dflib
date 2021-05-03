@@ -7,12 +7,12 @@ import com.nhl.dflib.SeriesExp;
 /**
  * @since 0.11
  */
-public class RenamedExp<V> implements SeriesExp<V> {
+public class RenamedExp<T> implements SeriesExp<T> {
 
     private final String name;
-    private final SeriesExp<V> delegate;
+    private final SeriesExp<T> delegate;
 
-    public RenamedExp(String name, SeriesExp<V> delegate) {
+    public RenamedExp(String name, SeriesExp<T> delegate) {
         this.name = name;
         this.delegate = delegate;
     }
@@ -23,12 +23,12 @@ public class RenamedExp<V> implements SeriesExp<V> {
     }
 
     @Override
-    public Class<V> getType() {
+    public Class<T> getType() {
         return delegate.getType();
     }
 
     @Override
-    public Series<V> eval(DataFrame df) {
+    public Series<T> eval(DataFrame df) {
         return delegate.eval(df);
     }
 }

@@ -10,20 +10,20 @@ import java.util.function.BiFunction;
 /**
  * @since 0.11
  */
-public class BinarySeriesExp<L, R, V> implements SeriesExp<V> {
+public class BinarySeriesExp<L, R, T> implements SeriesExp<T> {
 
     private final String name;
-    private final Class<V> type;
+    private final Class<T> type;
     private final SeriesExp<L> left;
     private final SeriesExp<R> right;
-    private final BiFunction<Series<L>, Series<R>, Series<V>> op;
+    private final BiFunction<Series<L>, Series<R>, Series<T>> op;
 
     public BinarySeriesExp(
             String name,
-            Class<V> type,
+            Class<T> type,
             SeriesExp<L> left,
             SeriesExp<R> right,
-            BiFunction<Series<L>, Series<R>, Series<V>> op) {
+            BiFunction<Series<L>, Series<R>, Series<T>> op) {
         this.name = name;
         this.type = type;
         this.left = left;
@@ -37,16 +37,16 @@ public class BinarySeriesExp<L, R, V> implements SeriesExp<V> {
     }
 
     @Override
-    public Class<V> getType() {
+    public Class<T> getType() {
         return type;
     }
 
     @Override
-    public Series<V> eval(DataFrame df) {
+    public Series<T> eval(DataFrame df) {
         return eval(left.eval(df), right.eval(df));
     }
 
-    protected Series<V> eval(Series<L> ls, Series<R> rs) {
+    protected Series<T> eval(Series<L> ls, Series<R> rs) {
         return op.apply(ls, rs);
     }
 

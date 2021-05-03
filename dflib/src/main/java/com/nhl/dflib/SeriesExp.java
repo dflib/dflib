@@ -14,13 +14,13 @@ import java.util.Objects;
  * @see Exp
  * @since 0.11
  */
-public interface SeriesExp<V> {
+public interface SeriesExp<T> {
 
     String getName();
 
-    Class<V> getType();
+    Class<T> getType();
 
-    Series<V> eval(DataFrame df);
+    Series<T> eval(DataFrame df);
 
     /**
      * Returns a sorter that will use this expression for an ascending sort.
@@ -39,7 +39,7 @@ public interface SeriesExp<V> {
     /**
      * Creates a copy of this expression with assigned name.
      */
-    default SeriesExp<V> as(String name) {
+    default SeriesExp<T> as(String name) {
         Objects.requireNonNull(name, "Null 'name'");
         return name.equals(getName()) ? this : new RenamedExp<>(name, this);
     }
