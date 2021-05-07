@@ -1,23 +1,23 @@
-package com.nhl.dflib.aggregate;
+package com.nhl.dflib.seriesexp.agg;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesAggregator;
 import com.nhl.dflib.SeriesExp;
 import com.nhl.dflib.series.SingleValueSeries;
 
 import java.util.function.Function;
 
 /**
- * An aggregator whose source is a column in a DataFrame. The actual aggregation operation is defined as a
- * {@link SeriesAggregator} internally.
+ * Evaluates {@link SeriesExp} and then aggregates the result into a single-value series.
+ *
+ * @since 0.11
  */
-public class ColumnAggregator<S, T> implements SeriesExp<T> {
+public class SeriesExpAggregator<S, T> implements SeriesExp<T> {
 
     private final SeriesExp<S> exp;
     private final Function<Series<S>, T> aggregator;
 
-    public ColumnAggregator(SeriesExp<S> exp, Function<Series<S>, T> aggregator) {
+    public SeriesExpAggregator(SeriesExp<S> exp, Function<Series<S>, T> aggregator) {
         this.exp = exp;
         this.aggregator = aggregator;
     }

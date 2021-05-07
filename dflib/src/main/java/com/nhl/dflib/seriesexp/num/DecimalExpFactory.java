@@ -1,10 +1,12 @@
 package com.nhl.dflib.seriesexp.num;
 
-import com.nhl.dflib.SeriesCondition;
 import com.nhl.dflib.NumericSeriesExp;
+import com.nhl.dflib.SeriesCondition;
 import com.nhl.dflib.SeriesExp;
 import com.nhl.dflib.seriesexp.BinarySeriesExp;
 import com.nhl.dflib.seriesexp.UnarySeriesExp;
+import com.nhl.dflib.seriesexp.agg.AggregatorFunctions;
+import com.nhl.dflib.seriesexp.agg.DecimalExpAggregator;
 import com.nhl.dflib.seriesexp.condition.BinarySeriesCondition;
 
 import java.math.BigDecimal;
@@ -99,6 +101,31 @@ public class DecimalExpFactory extends NumericExpFactory {
     @Override
     public NumericSeriesExp<BigDecimal> castAsDecimal(NumericSeriesExp<?> exp, int scale) {
         return new DecimalUnarySeriesExp<>(cast(exp), UnarySeriesExp.toSeriesOp(bd -> bd.setScale(scale, RoundingMode.HALF_UP)));
+    }
+
+    @Override
+    public NumericSeriesExp<BigDecimal> sum(SeriesExp<? extends Number> exp) {
+        return new DecimalExpAggregator(cast(exp), AggregatorFunctions.sumDecimal());
+    }
+
+    @Override
+    public NumericSeriesExp<?> min(SeriesExp<? extends Number> exp) {
+        return new DecimalExpAggregator(cast(exp), AggregatorFunctions.min());
+    }
+
+    @Override
+    public NumericSeriesExp<?> max(SeriesExp<? extends Number> exp) {
+        return new DecimalExpAggregator(cast(exp), AggregatorFunctions.max());
+    }
+
+    @Override
+    public NumericSeriesExp<?> avg(SeriesExp<? extends Number> exp) {
+        throw new UnsupportedOperationException("TODO: support for BigDecimal.avg");
+    }
+
+    @Override
+    public NumericSeriesExp<?> median(SeriesExp<? extends Number> exp) {
+        throw new UnsupportedOperationException("TODO: support for BigDecimal.median");
     }
 
     @Override

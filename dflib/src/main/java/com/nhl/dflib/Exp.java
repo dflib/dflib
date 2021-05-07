@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.seriesexp.agg.CountExp;
 import com.nhl.dflib.seriesexp.condition.*;
 import com.nhl.dflib.seriesexp.func.IfNullFunction;
 import com.nhl.dflib.seriesexp.num.DecimalColumn;
@@ -156,5 +157,9 @@ public interface Exp {
      */
     static <T> SeriesExp<T> ifNull(SeriesExp<T> exp, T ifNull) {
         return new IfNullFunction<>(exp, $val(ifNull));
+    }
+
+    static SeriesExp<Integer> count() {
+        return CountExp.getInstance();
     }
 }

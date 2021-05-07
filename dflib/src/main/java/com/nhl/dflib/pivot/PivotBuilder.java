@@ -1,6 +1,7 @@
 package com.nhl.dflib.pivot;
 
 import com.nhl.dflib.*;
+import com.nhl.dflib.seriesexp.agg.AggregatorFunctions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,7 @@ public class PivotBuilder {
      * Executes pivot transform, using values from the provided column name to populate the resulting DataFame. Values
      * with matching pivot row and column are aggregated with the provided aggregator.
      *
-     * @see com.nhl.dflib.aggregate.AggregatorFunctions
+     * @see AggregatorFunctions
      */
     public <S, T> DataFrame values(String columnName, Function<Series<S>, T> valuesAggregator) {
         int pos = validateColumn(columnName);
@@ -90,7 +91,7 @@ public class PivotBuilder {
      * Executes pivot transform, using values from the provided column name to populate the resulting DataFame. Values
      * with matching pivot row and column are aggregated with the provided aggregator.
      *
-     * @see com.nhl.dflib.aggregate.AggregatorFunctions
+     * @see AggregatorFunctions
      */
     public <S, T> DataFrame values(int columnPos, Function<Series<S>, T> valuesAggregator) {
         return doPivot(columnPos, valuesAggregator);

@@ -61,6 +61,16 @@ public abstract class NumericExpFactory {
 
     public abstract NumericSeriesExp<?> mod(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right);
 
+    public abstract NumericSeriesExp<?> sum(SeriesExp<? extends Number> exp);
+
+    public abstract NumericSeriesExp<?> min(SeriesExp<? extends Number> exp);
+
+    public abstract NumericSeriesExp<?> max(SeriesExp<? extends Number> exp);
+
+    public abstract NumericSeriesExp<?> avg(SeriesExp<? extends Number> exp);
+
+    public abstract NumericSeriesExp<?> median(SeriesExp<? extends Number> exp);
+
     public abstract NumericSeriesExp<BigDecimal> castAsDecimal(NumericSeriesExp<?> exp, int scale);
 
     public abstract SeriesCondition lt(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right);

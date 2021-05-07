@@ -58,6 +58,26 @@ public interface NumericSeriesExp<N extends Number> extends SeriesExp<N> {
         return NumericExpFactory.factory(this).castAsDecimal(this, scale);
     }
 
+    default NumericSeriesExp<?> sum() {
+        return NumericExpFactory.factory(this).sum(this);
+    }
+
+    default NumericSeriesExp<?> min() {
+        return NumericExpFactory.factory(this).min(this);
+    }
+
+    default NumericSeriesExp<?> max() {
+        return NumericExpFactory.factory(this).max(this);
+    }
+
+    default NumericSeriesExp<?> avg() {
+        return NumericExpFactory.factory(this).avg(this);
+    }
+
+    default NumericSeriesExp<?> median() {
+        return NumericExpFactory.factory(this).median(this);
+    }
+
     default SeriesCondition lt(SeriesExp<? extends Number> exp) {
         return NumericExpFactory.factory(this, exp).lt(this, exp);
     }

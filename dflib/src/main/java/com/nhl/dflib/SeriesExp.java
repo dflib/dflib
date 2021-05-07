@@ -1,6 +1,7 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.aggregate.ColumnAggregator;
+import com.nhl.dflib.seriesexp.agg.AggregatorFunctions;
+import com.nhl.dflib.seriesexp.agg.SeriesExpAggregator;
 import com.nhl.dflib.seriesexp.ExpSorter;
 import com.nhl.dflib.seriesexp.RenamedExp;
 import com.nhl.dflib.seriesexp.condition.BinarySeriesCondition;
@@ -86,6 +87,10 @@ public interface SeriesExp<T> {
     }
 
     default <A> SeriesExp<A> agg(Function<Series<T>, A> aggregator) {
-        return new ColumnAggregator<>(this, aggregator);
+        return new SeriesExpAggregator<>(this, aggregator);
+    }
+
+    default SeriesExp<T> first() {
+        return agg(AggregatorFunctions.first());
     }
 }

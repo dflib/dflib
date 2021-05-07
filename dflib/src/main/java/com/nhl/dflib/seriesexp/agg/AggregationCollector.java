@@ -1,4 +1,4 @@
-package com.nhl.dflib.aggregate;
+package com.nhl.dflib.seriesexp.agg;
 
 import java.util.Collections;
 import java.util.Set;

@@ -7,7 +7,8 @@ import java.util.HashSet;
 
 import static java.util.Arrays.asList;
 
-public class DataFrame_AggTest {
+@Deprecated
+public class DataFrame_AggregatorLegacyTest {
 
     @Test
     public void testMix() {
@@ -17,26 +18,28 @@ public class DataFrame_AggTest {
                 0, "a", "z", 0.001);
 
         DataFrame agg = df.agg(
-                Exp.$long("a").sum(),
-                Exp.count(),
-                Exp.$double("d").sum());
+                Aggregator.sumLong("a"),
+                Aggregator.countLong(),
+                Aggregator.sumDouble("d"));
 
-        new DataFrameAsserts(agg, "a", "count", "d")
+        new DataFrameAsserts(agg, "a", "_long_count", "d")
                 .expectHeight(1)
-                .expectRow(0, 3L, 3, 3.501);
+                .expectRow(0, 3L, 3L, 3.501);
     }
 
     @Test
-    public void test_Count() {
+    public void test_CountInt_CountLong() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 0, "a");
 
-        DataFrame agg = df.agg(Exp.count());
+        DataFrame agg = df.agg(
+                Aggregator.countLong(),
+                Aggregator.countInt());
 
-        new DataFrameAsserts(agg, "count")
+        new DataFrameAsserts(agg, "_long_count", "_int_count")
                 .expectHeight(1)
-                .expectRow(0, 2);
+                .expectRow(0, 2L, 2);
     }
 
     @Test
@@ -46,8 +49,8 @@ public class DataFrame_AggTest {
                 -1, 5L);
 
         DataFrame agg = df.agg(
-                Exp.$int("a").sum(),
-                Exp.$long(1).sum());
+                Aggregator.sumInt("a"),
+                Aggregator.sumLong(1));
 
         new DataFrameAsserts(agg, "a", "b")
                 .expectHeight(1)
@@ -62,8 +65,8 @@ public class DataFrame_AggTest {
                 8, 1);
 
         DataFrame agg = df.agg(
-                Exp.$int("a").min(),
-                Exp.$int("a").max());
+                Aggregator.min("a"),
+                Aggregator.max("a"));
 
         new DataFrameAsserts(agg, "a", "a_")
                 .expectHeight(1)
@@ -120,8 +123,8 @@ public class DataFrame_AggTest {
                 0, 55.5);
 
         DataFrame agg = df.agg(
-                Exp.$int("a").avg(),
-                Exp.$double(1).avg());
+                Aggregator.averageDouble("a"),
+                Aggregator.averageDouble(1));
 
         new DataFrameAsserts(agg, "a", "b")
                 .expectHeight(1)
@@ -136,8 +139,8 @@ public class DataFrame_AggTest {
                 4, 0);
 
         DataFrame agg = df.agg(
-                Exp.$int("a").median(),
-                Exp.$double(1).median());
+                Aggregator.medianDouble("a"),
+                Aggregator.medianDouble(1));
 
         new DataFrameAsserts(agg, "a", "b")
                 .expectHeight(1)
@@ -153,8 +156,8 @@ public class DataFrame_AggTest {
                 3, 5);
 
         DataFrame agg = df.agg(
-                Exp.$int("a").median(),
-                Exp.$double(1).median());
+                Aggregator.medianDouble("a"),
+                Aggregator.medianDouble(1));
 
         new DataFrameAsserts(agg, "a", "b")
                 .expectHeight(1)
@@ -166,8 +169,8 @@ public class DataFrame_AggTest {
         DataFrame df = DataFrame.newFrame("a", "b").empty();
 
         DataFrame agg = df.agg(
-                Exp.$int("a").median(),
-                Exp.$double(1).median());
+                Aggregator.medianDouble("a"),
+                Aggregator.medianDouble(1));
 
         new DataFrameAsserts(agg, "a", "b")
                 .expectHeight(1)
@@ -179,8 +182,8 @@ public class DataFrame_AggTest {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(1, 100);
 
         DataFrame agg = df.agg(
-                Exp.$int("a").median(),
-                Exp.$int(1).median());
+                Aggregator.medianDouble("a"),
+                Aggregator.medianDouble(1));
 
         new DataFrameAsserts(agg, "a", "b")
                 .expectHeight(1)
@@ -196,8 +199,8 @@ public class DataFrame_AggTest {
                 null, 5);
 
         DataFrame agg = df.agg(
-                Exp.$int("a").median(),
-                Exp.$double(1).median());
+                Aggregator.medianDouble("a"),
+                Aggregator.medianDouble(1));
 
         new DataFrameAsserts(agg, "a", "b")
                 .expectHeight(1)
@@ -211,8 +214,8 @@ public class DataFrame_AggTest {
                 2, 5);
 
         DataFrame agg = df.agg(
-                Exp.$col("a").first(),
-                Exp.$col(1).first());
+                Aggregator.first("a"),
+                Aggregator.first(1));
 
         new DataFrameAsserts(agg, "a", "b")
                 .expectHeight(1)
@@ -224,8 +227,8 @@ public class DataFrame_AggTest {
         DataFrame df = DataFrame.newFrame("a", "b").empty();
 
         DataFrame agg = df.agg(
-                Exp.$col("a").first(),
-                Exp.$col(1).first());
+                Aggregator.first("a"),
+                Aggregator.first(1));
 
         new DataFrameAsserts(agg, "a", "b")
                 .expectHeight(1)
@@ -239,8 +242,8 @@ public class DataFrame_AggTest {
                 null, 5);
 
         DataFrame agg = df.agg(
-                Exp.$col("a").first(),
-                Exp.$col(1).first());
+                Aggregator.first("a"),
+                Aggregator.first(1));
 
         new DataFrameAsserts(agg, "a", "b")
                 .expectHeight(1)
@@ -253,10 +256,9 @@ public class DataFrame_AggTest {
                 1, 100,
                 2, 5);
 
-        DataFrame agg = df.agg(
-                Exp.$col(1).agg(Series::size));
+        DataFrame agg = df.agg(Aggregator.of(adf -> adf.height()));
 
-        new DataFrameAsserts(agg, "b")
+        new DataFrameAsserts(agg, "of")
                 .expectHeight(1)
                 .expectRow(0, 2);
     }

@@ -1,8 +1,14 @@
 package com.nhl.dflib.seriesexp.num;
 
-import com.nhl.dflib.*;
+import com.nhl.dflib.LongSeries;
+import com.nhl.dflib.NumericSeriesExp;
+import com.nhl.dflib.SeriesCondition;
+import com.nhl.dflib.SeriesExp;
 import com.nhl.dflib.seriesexp.BinarySeriesExp;
 import com.nhl.dflib.seriesexp.UnarySeriesExp;
+import com.nhl.dflib.seriesexp.agg.AggregatorFunctions;
+import com.nhl.dflib.seriesexp.agg.DoubleExpAggregator;
+import com.nhl.dflib.seriesexp.agg.LongExpAggregator;
 import com.nhl.dflib.seriesexp.condition.BinarySeriesCondition;
 
 import java.math.BigDecimal;
@@ -81,6 +87,31 @@ public class LongExpFactory extends NumericExpFactory {
     @Override
     public NumericSeriesExp<BigDecimal> castAsDecimal(NumericSeriesExp<?> exp, int scale) {
         return new DecimalUnarySeriesExp<>(cast(exp), UnarySeriesExp.toSeriesOp(l -> BigDecimal.valueOf(l).setScale(scale, RoundingMode.HALF_UP)));
+    }
+
+    @Override
+    public NumericSeriesExp<Long> sum(SeriesExp<? extends Number> exp) {
+        return new LongExpAggregator<>(exp, AggregatorFunctions.sumLong());
+    }
+
+    @Override
+    public NumericSeriesExp<?> min(SeriesExp<? extends Number> exp) {
+        return new LongExpAggregator<>(exp, AggregatorFunctions.minLong());
+    }
+
+    @Override
+    public NumericSeriesExp<?> max(SeriesExp<? extends Number> exp) {
+        return new LongExpAggregator<>(exp, AggregatorFunctions.maxLong());
+    }
+
+    @Override
+    public NumericSeriesExp<?> avg(SeriesExp<? extends Number> exp) {
+        return new DoubleExpAggregator<>(exp, AggregatorFunctions.averageDouble());
+    }
+
+    @Override
+    public NumericSeriesExp<?> median(SeriesExp<? extends Number> exp) {
+        return new DoubleExpAggregator<>(exp, AggregatorFunctions.medianDouble());
     }
 
     @Override

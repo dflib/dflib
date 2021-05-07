@@ -1,6 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.*;
+import com.nhl.dflib.seriesexp.agg.AggregatorFunctions;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -22,7 +23,7 @@ public interface Aggregator {
      * all values in the range are the same.
      */
     static <T> SeriesExp<T> first(String column) {
-        return ((SeriesExp<T>) Exp.$col(column)).agg(AggregatorFunctions.first());
+        return (SeriesExp<T>) Exp.$col(column).first();
     }
 
     /**
@@ -30,7 +31,7 @@ public interface Aggregator {
      * all values in the range are the same.
      */
     static <T> SeriesExp<T> first(int column) {
-        return ((SeriesExp<T>) Exp.$col(column)).agg(AggregatorFunctions.first());
+        return (SeriesExp<T>) Exp.$col(column).first();
     }
 
     /**
@@ -39,7 +40,7 @@ public interface Aggregator {
      * @since 0.6
      */
     static SeriesExp<Long> countLong() {
-        return new LongCountAggregator("_long_count");
+        return new LongCountAggregator().as("_long_count");
     }
 
     /**
@@ -48,7 +49,7 @@ public interface Aggregator {
      * @since 0.6
      */
     static SeriesExp<Integer> countInt() {
-        return new IntCountAggregator("_int_count");
+        return Exp.count().as("_int_count");
     }
 
     /**

@@ -5,14 +5,10 @@ import com.nhl.dflib.series.SingleValueSeries;
 
 /**
  * @since 0.6
+ * @deprecated since 0.11 as it is no longer needed
  */
+@Deprecated
 public class LongCountAggregator implements SeriesExp<Long> {
-
-    private final String name;
-
-    public LongCountAggregator(String name) {
-        this.name = name;
-    }
 
     @Override
     public Series<Long> eval(DataFrame df) {
@@ -24,7 +20,7 @@ public class LongCountAggregator implements SeriesExp<Long> {
 
     @Override
     public String getName(DataFrame df) {
-        return name;
+        return "countLong";
     }
 
     @Override
