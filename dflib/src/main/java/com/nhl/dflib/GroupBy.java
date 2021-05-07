@@ -35,6 +35,13 @@ public class GroupBy {
     }
 
     /**
+     * @since 0.11
+     */
+    public DataFrame getUngrouped() {
+        return ungrouped;
+    }
+
+    /**
      * @since 0.6
      */
     public Index getUngroupedColumnIndex() {
@@ -321,7 +328,7 @@ public class GroupBy {
         return new GroupBy(ungrouped, sorted, sorter);
     }
 
-    public DataFrame agg(Aggregator<?>... aggregators) {
+    public DataFrame agg(SeriesExp<?>... aggregators) {
         return DataFrameAggregation.aggGroupBy(this, aggregators);
     }
 

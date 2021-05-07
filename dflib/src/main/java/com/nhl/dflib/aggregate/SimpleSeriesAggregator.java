@@ -11,9 +11,9 @@ import java.util.function.Function;
 public class SimpleSeriesAggregator<S, T> implements SeriesAggregator<S, T> {
 
     private String aggregateLabel;
-    private Function<Series<? extends S>, T> aggregator;
+    private Function<Series<S>, T> aggregator;
 
-    public SimpleSeriesAggregator(String aggregateLabel, Function<Series<? extends S>, T> aggregator) {
+    public SimpleSeriesAggregator(String aggregateLabel, Function<Series<S>, T> aggregator) {
         this.aggregateLabel = aggregateLabel;
         this.aggregator = aggregator;
     }
@@ -30,6 +30,6 @@ public class SimpleSeriesAggregator<S, T> implements SeriesAggregator<S, T> {
 
     @Override
     public T aggregate(Series<? extends S> s) {
-        return aggregator.apply(s);
+        return aggregator.apply((Series<S>) s);
     }
 }

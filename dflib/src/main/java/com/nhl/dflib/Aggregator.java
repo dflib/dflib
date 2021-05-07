@@ -10,36 +10,27 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 
 /**
- * Defines an aggregation operation to produce a single value from a DataFrame. Behind the scenes often this operation
- * works on a single column of data and is a facade to {@link SeriesAggregator}.
+ * Defines an aggregation operation to produce a single value from a DataFrame.
+ *
+ * @deprecated since 0.11 in favor of aggregating {@link SeriesExp}
  */
-public interface Aggregator<T> {
+@Deprecated
+public interface Aggregator {
 
     /**
      * Returns the first value in an aggregation range. Useful in extracting key columns during group by, as presumably
      * all values in the range are the same.
-     *
-     * @param column
-     * @return a new Aggregator
      */
-    static <T> Aggregator<T> first(String column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.first(),
-                (SeriesExp<T>) Exp.$col(column),
-                index -> column
-        );
+    static <T> SeriesExp<T> first(String column) {
+        return ((SeriesExp<T>) Exp.$col(column)).agg(AggregatorFunctions.first());
     }
 
     /**
      * Returns the first value in an aggregation range. Useful in extracting key columns during group by, as presumably
      * all values in the range are the same.
      */
-    static <T> Aggregator<T> first(int column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.first(),
-                (SeriesExp<T>) Exp.$col(column),
-                index -> index.getLabel(column)
-        );
+    static <T> SeriesExp<T> first(int column) {
+        return ((SeriesExp<T>) Exp.$col(column)).agg(AggregatorFunctions.first());
     }
 
     /**
@@ -47,7 +38,7 @@ public interface Aggregator<T> {
      *
      * @since 0.6
      */
-    static Aggregator<Long> countLong() {
+    static SeriesExp<Long> countLong() {
         return new LongCountAggregator("_long_count");
     }
 
@@ -56,264 +47,160 @@ public interface Aggregator<T> {
      *
      * @since 0.6
      */
-    static Aggregator<Integer> countInt() {
+    static SeriesExp<Integer> countInt() {
         return new IntCountAggregator("_int_count");
     }
 
     /**
      * @since 0.6
      */
-    static Aggregator<Double> averageDouble(String column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.averageDouble(),
-                (SeriesExp<Number>) Exp.$col(column),
-                index -> column
-        );
+    static SeriesExp<Double> averageDouble(String column) {
+        return ((SeriesExp<Number>) Exp.$col(column)).agg(AggregatorFunctions.averageDouble());
     }
 
     /**
      * @since 0.6
      */
-    static Aggregator<Double> averageDouble(int column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.averageDouble(),
-                (SeriesExp<Number>) Exp.$col(column),
-                index -> index.getLabel(column)
-        );
+    static SeriesExp<Double> averageDouble(int column) {
+        return ((SeriesExp<Number>) Exp.$col(column)).agg(AggregatorFunctions.averageDouble());
     }
 
     /**
      * @since 0.6
      */
-    static Aggregator<Double> medianDouble(String column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.medianDouble(),
-                (SeriesExp<Number>) Exp.$col(column),
-                index -> column
-        );
+    static SeriesExp<Double> medianDouble(String column) {
+        return ((SeriesExp<Number>) Exp.$col(column)).agg(AggregatorFunctions.medianDouble());
     }
 
     /**
      * @since 0.6
      */
-    static Aggregator<Double> medianDouble(int column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.medianDouble(),
-                (SeriesExp<Number>) Exp.$col(column),
-                index -> index.getLabel(column)
-        );
+    static SeriesExp<Double> medianDouble(int column) {
+        return ((SeriesExp<Number>) Exp.$col(column)).agg(AggregatorFunctions.medianDouble());
     }
 
     /**
      * @since 0.6
      */
-    static Aggregator<Long> sumLong(String column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.sumLong(),
-                (SeriesExp<Number>) Exp.$col(column),
-                index -> column
-        );
+    static SeriesExp<Long> sumLong(String column) {
+        return ((SeriesExp<Number>) Exp.$col(column)).agg(AggregatorFunctions.sumLong());
     }
 
     /**
      * @since 0.6
      */
-    static Aggregator<Long> sumLong(int column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.sumLong(),
-                (SeriesExp<Number>) Exp.$col(column),
-                index -> index.getLabel(column)
-        );
+    static SeriesExp<Long> sumLong(int column) {
+        return ((SeriesExp<Number>) Exp.$col(column)).agg(AggregatorFunctions.sumLong());
     }
 
     /**
      * @since 0.6
      */
-    static Aggregator<Integer> sumInt(String column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.sumInt(),
-                (SeriesExp<Number>) Exp.$col(column),
-                index -> column
-        );
+    static SeriesExp<Integer> sumInt(String column) {
+        return ((SeriesExp<Number>) Exp.$col(column)).agg(AggregatorFunctions.sumInt());
     }
 
     /**
      * @since 0.6
      */
-    static Aggregator<Integer> sumInt(int column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.sumInt(),
-                (SeriesExp<Number>) Exp.$col(column),
-                index -> index.getLabel(column)
-        );
+    static SeriesExp<Integer> sumInt(int column) {
+        return ((SeriesExp<Number>) Exp.$col(column)).agg(AggregatorFunctions.sumInt());
     }
 
-    static Aggregator<Double> sumDouble(String column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.sumDouble(),
-                (SeriesExp<Number>) Exp.$col(column),
-                index -> column
-        );
+    static SeriesExp<Double> sumDouble(String column) {
+        return ((SeriesExp<Number>) Exp.$col(column)).agg(AggregatorFunctions.sumDouble());
     }
 
-    static Aggregator<Double> sumDouble(int column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.sumDouble(),
-                (SeriesExp<Number>) Exp.$col(column),
-                index -> index.getLabel(column)
-        );
+    static SeriesExp<Double> sumDouble(int column) {
+        return ((SeriesExp<Number>) Exp.$col(column)).agg(AggregatorFunctions.sumDouble());
     }
 
     /**
      * @since 0.11
      */
-    static Aggregator<BigDecimal> sumDecimal(String column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.sumDecimal(),
-                (SeriesExp<BigDecimal>) Exp.$col(column),
-                index -> column
-        );
+    static SeriesExp<BigDecimal> sumDecimal(String column) {
+        return ((SeriesExp<BigDecimal>) Exp.$col(column)).agg(AggregatorFunctions.sumDecimal());
     }
 
     /**
      * @since 0.11
      */
-    static Aggregator<BigDecimal> sumDecimal(int column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.sumDecimal(),
-                (SeriesExp<BigDecimal>) Exp.$col(column),
-                index -> index.getLabel(column)
-        );
+    static SeriesExp<BigDecimal> sumDecimal(int column) {
+        return ((SeriesExp<BigDecimal>) Exp.$col(column)).agg(AggregatorFunctions.sumDecimal());
     }
 
     /**
      * @since 0.11
      */
-    static Aggregator<BigDecimal> sumDecimal(String column, int resultScale, RoundingMode resultRoundingMode) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.sumDecimal(resultScale, resultRoundingMode),
-                (SeriesExp<BigDecimal>) Exp.$col(column),
-                index -> column
-        );
+    static SeriesExp<BigDecimal> sumDecimal(String column, int resultScale, RoundingMode resultRoundingMode) {
+        return ((SeriesExp<BigDecimal>) Exp.$col(column)).agg(AggregatorFunctions.sumDecimal(resultScale, resultRoundingMode));
     }
 
     /**
      * @since 0.11
      */
-    static Aggregator<BigDecimal> sumDecimal(int column, int resultScale, RoundingMode resultRoundingMode) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.sumDecimal(resultScale, resultRoundingMode),
-                (SeriesExp<BigDecimal>) Exp.$col(column),
-                index -> index.getLabel(column)
-        );
+    static SeriesExp<BigDecimal> sumDecimal(int column, int resultScale, RoundingMode resultRoundingMode) {
+        return ((SeriesExp<BigDecimal>) Exp.$col(column)).agg(AggregatorFunctions.sumDecimal(resultScale, resultRoundingMode));
     }
 
     /**
      * @since 0.7
      */
-    static <T extends Comparable<T>> Aggregator<T> max(String column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.max(),
-                (SeriesExp<T>) Exp.$col(column),
-                index -> column
-        );
+    static <T extends Comparable<T>> SeriesExp<T> max(String column) {
+        return ((SeriesExp<T>) Exp.$col(column)).agg(AggregatorFunctions.max());
     }
 
     /**
      * @since 0.7
      */
-    static <T extends Comparable<T>> Aggregator<T> max(int column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.max(),
-                (SeriesExp<T>) Exp.$col(column),
-                index -> index.getLabel(column)
-        );
+    static <T extends Comparable<T>> SeriesExp<T> max(int column) {
+        return ((SeriesExp<T>) Exp.$col(column)).agg(AggregatorFunctions.max());
     }
 
     /**
      * @since 0.7
      */
-    static <T extends Comparable<T>> Aggregator<T> min(int column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.min(),
-                (SeriesExp<T>) Exp.$col(column),
-                index -> index.getLabel(column)
-        );
+    static <T extends Comparable<T>> SeriesExp<T> min(int column) {
+        return ((SeriesExp<T>) Exp.$col(column)).agg(AggregatorFunctions.min());
     }
 
     /**
      * @since 0.7
      */
-    static <T extends Comparable<T>> Aggregator<T> min(String column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.min(),
-                (SeriesExp<T>) Exp.$col(column),
-                index -> column
-        );
+    static <T extends Comparable<T>> SeriesExp<T> min(String column) {
+        return ((SeriesExp<T>) Exp.$col(column)).agg(AggregatorFunctions.min());
     }
 
-    static Aggregator<String> concat(String column, String delimiter) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.concat(delimiter),
-                Exp.$col(column),
-                index -> column
-        );
+    static SeriesExp<String> concat(String column, String delimiter) {
+        return Exp.$col(column).agg(AggregatorFunctions.concat(delimiter));
     }
 
-    static Aggregator<String> concat(int column, String delimiter) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.concat(delimiter),
-                Exp.$col(column),
-                index -> index.getLabel(column)
-        );
+    static SeriesExp<String> concat(int column, String delimiter) {
+        return Exp.$col(column).agg(AggregatorFunctions.concat(delimiter));
     }
 
-    static Aggregator<String> concat(String column, String delimiter, String prefix, String suffix) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.concat(delimiter, prefix, suffix),
-                Exp.$col(column),
-                index -> column
-        );
+    static SeriesExp<String> concat(String column, String delimiter, String prefix, String suffix) {
+        return Exp.$col(column).agg(AggregatorFunctions.concat(delimiter, prefix, suffix));
     }
 
-    static Aggregator<String> concat(int column, String delimiter, String prefix, String suffix) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.concat(delimiter, prefix, suffix),
-                Exp.$col(column),
-                index -> index.getLabel(column)
-        );
+    static SeriesExp<String> concat(int column, String delimiter, String prefix, String suffix) {
+        return Exp.$col(column).agg(AggregatorFunctions.concat(delimiter, prefix, suffix));
     }
 
-    static <S> Aggregator<List<S>> list(String column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.list(),
-                (SeriesExp<S>) Exp.$col(column),
-                index -> column
-        );
+    static <S> SeriesExp<List<S>> list(String column) {
+        return Exp.$col(column).agg(s -> (List<S>) s.toList());
     }
 
-    static <S> Aggregator<List<S>> list(int column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.list(),
-                (SeriesExp<S>) Exp.$col(column),
-                index -> index.getLabel(column)
-        );
+    static <S> SeriesExp<List<S>> list(int column) {
+        return Exp.$col(column).agg(s -> (List<S>) s.toList());
     }
 
-    static <S> Aggregator<Set<S>> set(String column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.set(),
-                (SeriesExp<S>) Exp.$col(column),
-                index -> column
-        );
+    static <S> SeriesExp<Set<S>> set(String column) {
+        return Exp.$col(column).agg(s -> (Set<S>) s.toSet());
     }
 
-    static <S> Aggregator<Set<S>> set(int column) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.set(),
-                (SeriesExp<S>) Exp.$col(column),
-                index -> index.getLabel(column)
-        );
+    static <S> SeriesExp<Set<S>> set(int column) {
+        return Exp.$col(column).agg(s -> (Set<S>) s.toSet());
     }
 
     /**
@@ -343,20 +230,12 @@ public interface Aggregator<T> {
         return new AggregatorBuilder().filterRows(columnPos, filter);
     }
 
-    static <S, T> Aggregator<T> of(String column, Collector<S, ?, T> aggregator) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.of("of", aggregator),
-                (SeriesExp<S>) Exp.$col(column),
-                index -> column
-        );
+    static <S, A, T> SeriesExp<T> of(String column, Collector<S, A, T> aggregator) {
+        return ((SeriesExp<S>) Exp.$col(column)).agg(AggregatorFunctions.fromCollector(aggregator));
     }
 
-    static <S, T> Aggregator<T> of(int column, Collector<S, ?, T> aggregator) {
-        return new ColumnAggregator<>(
-                SeriesAggregator.of("of", aggregator),
-                (SeriesExp<S>) Exp.$col(column),
-                index -> index.getLabel(column)
-        );
+    static <S, T> SeriesExp<T> of(int column, Collector<S, ?, T> aggregator) {
+        return ((SeriesExp<S>) Exp.$col(column)).agg(AggregatorFunctions.fromCollector(aggregator));
     }
 
     /**
@@ -364,20 +243,10 @@ public interface Aggregator<T> {
      *
      * @since 0.6
      */
-    static <T> Aggregator<T> of(Function<DataFrame, T> aggregator) {
+    static <T> SeriesExp<T> of(Function<DataFrame, T> aggregator) {
         return new DataFrameAggregator<>(
                 aggregator,
                 index -> "of"
         );
     }
-
-    T aggregate(DataFrame df);
-
-    String aggregateLabel(Index columnIndex);
-
-    /**
-     * Ensures that the aggregated column in a DataFrame will be named using the provided label. Only applicable for
-     * aggregating GroupBy.
-     */
-    Aggregator<T> named(String newAggregateLabel);
 }

@@ -1,13 +1,12 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.aggregate.*;
+import com.nhl.dflib.aggregate.AggregatorFunctions;
+import com.nhl.dflib.aggregate.SimpleSeriesAggregator;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 /**
  * @since 0.6
@@ -21,68 +20,68 @@ public interface SeriesAggregator<S, T> {
      * @return a new SeriesAggregator
      */
     static <S> SeriesAggregator<S, S> first() {
-        return new SimpleSeriesAggregator<>("first", s -> s.size() == 0 ? null : s.get(0));
+        return new SimpleSeriesAggregator<>("first", AggregatorFunctions.first());
     }
 
     static <S> SeriesAggregator<S, Long> countLong() {
-        return new SimpleSeriesAggregator<>("countLong", s -> Long.valueOf(s.size()));
+        return new SimpleSeriesAggregator<>("countLong", s -> (long) s.size());
     }
 
     static <S> SeriesAggregator<S, Integer> countInt() {
-        return new SimpleSeriesAggregator<>("countInt", s -> s.size());
+        return new SimpleSeriesAggregator<>("countInt", Series::size);
     }
 
     // TODO: special handling of primitive series to avoid boxing/unboxing
     static <S extends Number> SeriesAggregator<S, Double> averageDouble() {
-        return of("averageDouble", Collectors.averagingDouble(v -> v.doubleValue()));
+        return new SimpleSeriesAggregator<>("averageDouble", AggregatorFunctions.averageDouble());
     }
 
     // TODO: special handling of primitive series to avoid boxing/unboxing
     static <S extends Number> SeriesAggregator<S, Double> medianDouble() {
-        return of("medianDouble", AggregatorFunctions.medianCollector());
+        return new SimpleSeriesAggregator<>("medianDouble", AggregatorFunctions.medianDouble());
     }
 
     // TODO: special handling of primitive series to avoid boxing/unboxing
     static <S extends Number> SeriesAggregator<S, Integer> sumInt() {
-        return of("sumInt", Collectors.summingInt(v -> v.intValue()));
+        return new SimpleSeriesAggregator<>("sumInt", AggregatorFunctions.sumInt());
     }
 
     // TODO: special handling of primitive series to avoid boxing/unboxing
     static <S extends Number> SeriesAggregator<S, Long> sumLong() {
-        return of("sumLong", Collectors.summingLong(v -> v.longValue()));
+        return new SimpleSeriesAggregator<>("sumLong", AggregatorFunctions.sumLong());
     }
 
     // TODO: special handling of primitive series to avoid boxing/unboxing
     static <S extends Number> SeriesAggregator<S, Double> sumDouble() {
-        return of("sumDouble", Collectors.summingDouble(v -> v.doubleValue()));
+        return new SimpleSeriesAggregator<>("sumDouble", AggregatorFunctions.sumDouble());
     }
 
     /**
      * @since 0.11
      */
     static SeriesAggregator<BigDecimal, BigDecimal> sumDecimal() {
-        return new SimpleSeriesAggregator<>("sumDecimal", BigDecimalSeriesSum::sum);
+        return new SimpleSeriesAggregator<>("sumDecimal", AggregatorFunctions.sumDecimal());
     }
 
     /**
      * @since 0.11
      */
     static SeriesAggregator<BigDecimal, BigDecimal> sumDecimal(int resultScale, RoundingMode resultRoundingMode) {
-        return new SimpleSeriesAggregator<>("sumDecimal", s -> BigDecimalSeriesSum.sum(s, resultScale, resultRoundingMode));
+        return new SimpleSeriesAggregator<>("sumDecimal", AggregatorFunctions.sumDecimal(resultScale, resultRoundingMode));
     }
 
     /**
      * @since 0.7
      */
     static <S extends Comparable<S>> SeriesAggregator<S, S> max() {
-        return new SimpleSeriesAggregator<>("max", SeriesMinMax::max);
+        return new SimpleSeriesAggregator<>("max", AggregatorFunctions.<S>max());
     }
 
     /**
      * @since 0.7
      */
     static <S extends Comparable<S>> SeriesAggregator<S, S> min() {
-        return new SimpleSeriesAggregator<>("min", SeriesMinMax::min);
+        return new SimpleSeriesAggregator<>("min", AggregatorFunctions.<S>min());
     }
 
     /**
@@ -90,7 +89,7 @@ public interface SeriesAggregator<S, T> {
      */
     // TODO: special handling of primitive series to avoid boxing/unboxing
     static <S extends Number> SeriesAggregator<S, Integer> maxInt() {
-        return new SimpleSeriesAggregator<S, Integer>("maxInt", SeriesMinMax::maxInt);
+        return new SimpleSeriesAggregator<>("maxInt", AggregatorFunctions.maxInt());
     }
 
     /**
@@ -98,7 +97,7 @@ public interface SeriesAggregator<S, T> {
      */
     // TODO: special handling of primitive series to avoid boxing/unboxing
     static <S extends Number> SeriesAggregator<S, Long> maxLong() {
-        return new SimpleSeriesAggregator<S, Long>("maxLong", SeriesMinMax::maxLong);
+        return new SimpleSeriesAggregator<>("maxLong", AggregatorFunctions.maxLong());
     }
 
     /**
@@ -106,7 +105,7 @@ public interface SeriesAggregator<S, T> {
      */
     // TODO: special handling of primitive series to avoid boxing/unboxing
     static <S extends Number> SeriesAggregator<S, Double> maxDouble() {
-        return new SimpleSeriesAggregator<S, Double>("maxDouble", SeriesMinMax::maxDouble);
+        return new SimpleSeriesAggregator<>("maxDouble", AggregatorFunctions.maxDouble());
     }
 
     /**
@@ -114,7 +113,7 @@ public interface SeriesAggregator<S, T> {
      */
     // TODO: special handling of primitive series to avoid boxing/unboxing
     static <S extends Number> SeriesAggregator<S, Integer> minInt() {
-        return new SimpleSeriesAggregator<S, Integer>("minInt", SeriesMinMax::minInt);
+        return new SimpleSeriesAggregator<>("minInt", AggregatorFunctions.minInt());
     }
 
     /**
@@ -122,7 +121,7 @@ public interface SeriesAggregator<S, T> {
      */
     // TODO: special handling of primitive series to avoid boxing/unboxing
     static <S extends Number> SeriesAggregator<S, Long> minLong() {
-        return new SimpleSeriesAggregator<S, Long>("minLong", SeriesMinMax::minLong);
+        return new SimpleSeriesAggregator<>("minLong", AggregatorFunctions.minLong());
     }
 
     /**
@@ -130,33 +129,23 @@ public interface SeriesAggregator<S, T> {
      */
     // TODO: special handling of primitive series to avoid boxing/unboxing
     static <S extends Number> SeriesAggregator<S, Double> minDouble() {
-        return new SimpleSeriesAggregator<S, Double>("minDouble", SeriesMinMax::minDouble);
+        return new SimpleSeriesAggregator<>("minDouble", AggregatorFunctions.minDouble());
     }
 
     static <S> SeriesAggregator<S, String> concat(String delimiter) {
-        return new CollectorSeriesAggregator<>(
-                "concat",
-                AggregatorFunctions.mappedCollector(Collectors.joining(delimiter), String::valueOf)
-        );
+        return new SimpleSeriesAggregator<>("concat", AggregatorFunctions.concat(delimiter));
     }
 
     static <S> SeriesAggregator<S, String> concat(String delimiter, String prefix, String suffix) {
-        return new CollectorSeriesAggregator<>(
-                "concat",
-                AggregatorFunctions.mappedCollector(Collectors.joining(delimiter, prefix, suffix), String::valueOf)
-        );
+        return new SimpleSeriesAggregator<>("concat", AggregatorFunctions.concat(delimiter, prefix, suffix));
     }
 
     static <S> SeriesAggregator<S, List<S>> list() {
-        return new SimpleSeriesAggregator<>("list", s -> (List<S>) s.toList());
+        return new SimpleSeriesAggregator<>("list", Series::toList);
     }
 
     static <S> SeriesAggregator<S, Set<S>> set() {
-        return new SimpleSeriesAggregator<>("set", s -> (Set<S>) s.toSet());
-    }
-
-    static <S, T> SeriesAggregator<S, T> of(String aggregateLabel, Collector<S, ?, T> aggregator) {
-        return new CollectorSeriesAggregator<>(aggregateLabel, aggregator);
+        return new SimpleSeriesAggregator<>("set", Series::toSet);
     }
 
     T aggregate(Series<? extends S> s);

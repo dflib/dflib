@@ -1,32 +1,34 @@
 package com.nhl.dflib.aggregate;
 
-import com.nhl.dflib.Aggregator;
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
+import com.nhl.dflib.*;
+import com.nhl.dflib.series.SingleValueSeries;
 
 /**
  * @since 0.6
  */
-public class LongCountAggregator implements Aggregator<Long> {
+public class LongCountAggregator implements SeriesExp<Long> {
 
-    private String targetColumnName;
+    private final String name;
 
-    public LongCountAggregator(String targetColumnName) {
-        this.targetColumnName = targetColumnName;
+    public LongCountAggregator(String name) {
+        this.name = name;
     }
 
     @Override
-    public Long aggregate(DataFrame df) {
-        return Long.valueOf(df.height());
+    public Series<Long> eval(DataFrame df) {
+        long val = df.height();
+
+        // TODO: LongSingleValueSeries
+        return new SingleValueSeries<>(val, 1);
     }
 
     @Override
-    public String aggregateLabel(Index columnIndex) {
-        return targetColumnName;
+    public String getName(DataFrame df) {
+        return name;
     }
 
     @Override
-    public Aggregator<Long> named(String newAggregateLabel) {
-        return new LongCountAggregator(newAggregateLabel);
+    public Class<Long> getType() {
+        return Long.class;
     }
 }

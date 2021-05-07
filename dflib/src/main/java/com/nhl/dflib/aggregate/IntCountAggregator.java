@@ -1,29 +1,36 @@
 package com.nhl.dflib.aggregate;
 
-import com.nhl.dflib.Aggregator;
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
+import com.nhl.dflib.Series;
+import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.series.SingleValueSeries;
 
-public class IntCountAggregator implements Aggregator<Integer> {
+/**
+ * @since 0.6
+ */
+public class IntCountAggregator implements SeriesExp<Integer> {
 
-    private String targetColumnName;
+    private final String name;
 
-    public IntCountAggregator(String targetColumnName) {
-        this.targetColumnName = targetColumnName;
+    public IntCountAggregator(String name) {
+        this.name = name;
     }
 
     @Override
-    public Integer aggregate(DataFrame df) {
-        return df.height();
+    public Series<Integer> eval(DataFrame df) {
+        int val = df.height();
+
+        // TODO: IntSingleValueSeries
+        return new SingleValueSeries<>(val, 1);
     }
 
     @Override
-    public String aggregateLabel(Index columnIndex) {
-        return targetColumnName;
+    public String getName(DataFrame df) {
+        return name;
     }
 
     @Override
-    public Aggregator<Integer> named(String newAggregateLabel) {
-        return new IntCountAggregator(newAggregateLabel);
+    public Class<Integer> getType() {
+        return Integer.class;
     }
 }

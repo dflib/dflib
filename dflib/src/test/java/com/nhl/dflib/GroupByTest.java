@@ -236,8 +236,8 @@ public class GroupByTest {
 
         DataFrame df = df1.group("b").agg(
                 Aggregator.first("b"),
-                Aggregator.sumLong("a").named("a_sum"),
-                Aggregator.medianDouble("a").named("a_median"));
+                Aggregator.sumLong("a").as("a_sum"),
+                Aggregator.medianDouble("a").as("a_median"));
 
         new DataFrameAsserts(df, "b", "a_sum", "a_median")
                 .expectHeight(3)

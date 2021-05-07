@@ -37,29 +37,29 @@ public class AggregatorBuilder {
     /**
      * Returns the first value in an aggregation range.
      */
-    public <T> Aggregator<T> first(String column) {
+    public <T> SeriesExp<T> first(String column) {
         return filter != null
                 // TODO: once the performance TODO in FilteredAggregator is resolved, perhaps we won't need
                 //  a dedicated FilteredFirstAggregator
-                ? new FilteredFirstAggregator<>(filter, (SeriesExp<T>) Exp.$col(column), index -> column)
+                ? new FilteredFirstAggregator<>(filter, (SeriesExp<T>) Exp.$col(column))
                 : Aggregator.first(column);
     }
 
     /**
      * Returns the first value in an aggregation range.
      */
-    public <T> Aggregator<T> first(int column) {
+    public <T> SeriesExp<T> first(int column) {
         return filter != null
                 // TODO: once the performance TODO in FilteredAggregator is resolved, perhaps we won't need
                 //  a dedicated FilteredFirstAggregator
-                ? new FilteredFirstAggregator<>(filter, (SeriesExp<T>) Exp.$col(column), index -> index.getLabel(column))
+                ? new FilteredFirstAggregator<>(filter, (SeriesExp<T>) Exp.$col(column))
                 : Aggregator.first(column);
     }
 
     /**
      * Creates an aggregator to count rows
      */
-    public Aggregator<Long> countLong() {
+    public SeriesExp<Long> countLong() {
         return filter != null
                 ? new FilteredAggregator<>(filter, Aggregator.countLong())
                 : Aggregator.countLong();
@@ -68,79 +68,79 @@ public class AggregatorBuilder {
     /**
      * Creates an aggregator to count rows.
      */
-    public Aggregator<Integer> countInt() {
+    public SeriesExp<Integer> countInt() {
         return filter != null
                 ? new FilteredAggregator<>(filter, Aggregator.countInt())
                 : Aggregator.countInt();
     }
 
-    public Aggregator<Double> averageDouble(String column) {
+    public SeriesExp<Double> averageDouble(String column) {
         return filter != null
                 ? new FilteredAggregator<>(filter, Aggregator.averageDouble(column))
                 : Aggregator.averageDouble(column);
     }
 
-    public Aggregator<Double> averageDouble(int column) {
+    public SeriesExp<Double> averageDouble(int column) {
         return filter != null
                 ? new FilteredAggregator<>(filter, Aggregator.averageDouble(column))
                 : Aggregator.averageDouble(column);
     }
 
-    public Aggregator<Long> sumLong(String column) {
+    public SeriesExp<Long> sumLong(String column) {
         return filter != null
                 ? new FilteredAggregator<>(filter, Aggregator.sumLong(column))
                 : Aggregator.sumLong(column);
     }
 
-    public Aggregator<Long> sumLong(int column) {
+    public SeriesExp<Long> sumLong(int column) {
         return filter != null
                 ? new FilteredAggregator<>(filter, Aggregator.sumLong(column))
                 : Aggregator.sumLong(column);
     }
 
-    public Aggregator<Integer> sumInt(String column) {
+    public SeriesExp<Integer> sumInt(String column) {
         return filter != null
                 ? new FilteredAggregator<>(filter, Aggregator.sumInt(column))
                 : Aggregator.sumInt(column);
     }
 
-    public Aggregator<Integer> sumInt(int column) {
+    public SeriesExp<Integer> sumInt(int column) {
         return filter != null
                 ? new FilteredAggregator<>(filter, Aggregator.sumInt(column))
                 : Aggregator.sumInt(column);
     }
 
-    public Aggregator<Double> sumDouble(String column) {
+    public SeriesExp<Double> sumDouble(String column) {
         return filter != null
                 ? new FilteredAggregator<>(filter, Aggregator.sumDouble(column))
                 : Aggregator.sumDouble(column);
     }
 
-    public Aggregator<Double> sumDouble(int column) {
+    public SeriesExp<Double> sumDouble(int column) {
         return filter != null
                 ? new FilteredAggregator<>(filter, Aggregator.sumDouble(column))
                 : Aggregator.sumDouble(column);
     }
 
-    public <T extends Comparable<T>> Aggregator<T> max(String column) {
+    public <T extends Comparable<T>> SeriesExp<T> max(String column) {
         return filter != null
                 ? new FilteredAggregator<>(filter, Aggregator.<T>max(column))
                 : Aggregator.max(column);
     }
 
-    public <T extends Comparable<T>> Aggregator<T> max(int column) {
+    public <T extends Comparable<T>> SeriesExp<T> max(int column) {
         return filter != null
                 ? new FilteredAggregator<>(filter, Aggregator.<T>max(column))
                 : Aggregator.max(column);
     }
 
-    public <T extends Comparable<T>> Aggregator<T> min(String column) {
+    public <T extends Comparable<T>> SeriesExp<T> min(String column) {
         return filter != null
                 ? new FilteredAggregator<>(filter, Aggregator.<T>min(column))
                 : Aggregator.max(column);
     }
 
-    public <T extends Comparable<T>> Aggregator<T> min(int column) {
+    public <T extends Comparable<T>> SeriesExp<T> min(int column) {
         return filter != null
                 ? new FilteredAggregator<>(filter, Aggregator.<T>min(column))
                 : Aggregator.max(column);

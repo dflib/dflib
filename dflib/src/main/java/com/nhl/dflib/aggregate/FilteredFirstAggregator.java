@@ -1,41 +1,39 @@
 package com.nhl.dflib.aggregate;
 
-import com.nhl.dflib.*;
-
-import java.util.function.Function;
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Series;
+import com.nhl.dflib.SeriesCondition;
+import com.nhl.dflib.SeriesExp;
 
 /**
  * @since 0.7
  */
-public class FilteredFirstAggregator<T> implements Aggregator<T> {
+public class FilteredFirstAggregator<T> implements SeriesExp<T> {
 
     private final SeriesCondition rowFilter;
-    private final SeriesExp<T> exp;
-    private final Function<Index, String> targetColumnNamer;
+    private final SeriesExp<T> aggregator;
 
     public FilteredFirstAggregator(
             SeriesCondition rowFilter,
-            SeriesExp<T> exp,
-            Function<Index, String> targetColumnNamer) {
+            SeriesExp<T> aggregator) {
 
         this.rowFilter = rowFilter;
-        this.exp = exp;
-        this.targetColumnNamer = targetColumnNamer;
+        this.aggregator = aggregator;
     }
 
     @Override
-    public T aggregate(DataFrame df) {
+    public Series<T> eval(DataFrame df) {
         int index = rowFilter.firstMatch(df);
-        return index < 0 ? null : exp.eval(df.selectRows(index)).get(0);
+        return index < 0 ? null : aggregator.eval(df.selectRows(index));
     }
 
     @Override
-    public String aggregateLabel(Index columnIndex) {
-        return targetColumnNamer.apply(columnIndex);
+    public String getName(DataFrame df) {
+        return aggregator.getName(df);
     }
 
     @Override
-    public Aggregator named(String newAggregateLabel) {
-        return new FilteredFirstAggregator<>(rowFilter, exp, i -> newAggregateLabel);
+    public Class<T> getType() {
+        return aggregator.getType();
     }
 }

@@ -45,49 +45,49 @@ public class Scalar<T> {
         return Hasher.forColumn(position);
     }
 
-    public Aggregator<T> first() {
+    public SeriesExp<T> first() {
         return Aggregator.first(position);
     }
 
     /**
      * @since 0.6
      */
-    public Aggregator<Long> countLong() {
+    public SeriesExp<Long> countLong() {
         return Aggregator.countLong();
     }
 
     /**
      * @since 0.6
      */
-    public Aggregator<Integer> countInt() {
+    public SeriesExp<Integer> countInt() {
         return Aggregator.countInt();
     }
 
     /**
      * @since 0.6
      */
-    public Aggregator<Double> averageDouble() {
+    public SeriesExp<Double> averageDouble() {
         return Aggregator.averageDouble(position);
     }
 
     /**
      * @since 0.6
      */
-    public Aggregator<Double> medianDouble() {
+    public SeriesExp<Double> medianDouble() {
         return Aggregator.medianDouble(position);
     }
 
     /**
      * @since 0.6
      */
-    public Aggregator<Long> sumLong() {
+    public SeriesExp<Long> sumLong() {
         return Aggregator.sumLong(position);
     }
 
     /**
      * @since 0.6
      */
-    public Aggregator<Double> sumDouble() {
+    public SeriesExp<Double> sumDouble() {
         return Aggregator.sumDouble(position);
     }
 

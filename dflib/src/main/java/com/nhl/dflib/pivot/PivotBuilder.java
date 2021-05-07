@@ -1,11 +1,11 @@
 package com.nhl.dflib.pivot;
 
 import com.nhl.dflib.*;
-import com.nhl.dflib.aggregate.ColumnAggregator;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * @since 0.11
@@ -58,28 +58,30 @@ public class PivotBuilder {
      * Executes pivot transform, using values from the provided column name to populate the resulting DataFame.
      * There must be no more than one value for each pivot row and column combination, or an exception will be thrown.
      * For datasets where multiple values are present, use a flavor with value aggregator -
-     * {@link #values(String, SeriesAggregator)}.
+     * {@link #values(String, Function)}.
      */
     public DataFrame values(String columnName) {
         int pos = validateColumn(columnName);
-        return doPivot(pos, new OneValueAggregator<>());
+        return doPivot(pos, OneValueAggregator::getValue);
     }
 
     /**
      * Executes pivot transform, using values from the provided column name to populate the resulting DataFame.
      * There must be no more than one value for each pivot row and column combination, or an exception will be thrown.
      * For datasets where multiple values are present, use a flavor with value aggregator -
-     * {@link #values(int, SeriesAggregator)}.
+     * {@link #values(int, Function)}.
      */
     public DataFrame values(int columnPos) {
-        return doPivot(columnPos, new OneValueAggregator<>());
+        return doPivot(columnPos, OneValueAggregator::getValue);
     }
 
     /**
      * Executes pivot transform, using values from the provided column name to populate the resulting DataFame. Values
      * with matching pivot row and column are aggregated with the provided aggregator.
+     *
+     * @see com.nhl.dflib.aggregate.AggregatorFunctions
      */
-    public DataFrame values(String columnName, SeriesAggregator<?, ?> valuesAggregator) {
+    public <S, T> DataFrame values(String columnName, Function<Series<S>, T> valuesAggregator) {
         int pos = validateColumn(columnName);
         return doPivot(pos, valuesAggregator);
     }
@@ -87,12 +89,14 @@ public class PivotBuilder {
     /**
      * Executes pivot transform, using values from the provided column name to populate the resulting DataFame. Values
      * with matching pivot row and column are aggregated with the provided aggregator.
+     *
+     * @see com.nhl.dflib.aggregate.AggregatorFunctions
      */
-    public DataFrame values(int columnPos, SeriesAggregator<?, ?> valuesAggregator) {
+    public <S, T> DataFrame values(int columnPos, Function<Series<S>, T> valuesAggregator) {
         return doPivot(columnPos, valuesAggregator);
     }
 
-    protected DataFrame doPivot(int columnPos, SeriesAggregator<?, ?> valuesAggregator) {
+    protected <S, T> DataFrame doPivot(int columnPos, Function<Series<S>, T> valuesAggregator) {
         Objects.requireNonNull(valuesAggregator, "Null 'valuesAggregator'");
         int columnForValues = validateColumn(columnPos);
 
@@ -145,14 +149,14 @@ public class PivotBuilder {
         return DataFrame.newFrame(rowColumnName).empty();
     }
 
-    private DataFrame aggregateChunk(DataFrame chunk, SeriesAggregator<?, ?> valuesAggregator) {
+    private <S, T> DataFrame aggregateChunk(DataFrame chunk, Function<Series<S>, T> valuesAggregator) {
 
         String rowColumnName = chunk.getColumnsIndex().getLabel(0);
         String valueColumnName = chunk.getColumnsIndex().getLabel(1);
 
         return chunk.group(rowColumnName).agg(
                 Aggregator.first(rowColumnName),
-                new ColumnAggregator(valuesAggregator, Exp.$col(1), i -> valueColumnName)
+                ((SeriesExp<S>) Exp.$col(1)).as(valueColumnName).agg(valuesAggregator)
         );
     }
 

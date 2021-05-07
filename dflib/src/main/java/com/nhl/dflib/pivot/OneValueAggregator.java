@@ -1,19 +1,12 @@
 package com.nhl.dflib.pivot;
 
 import com.nhl.dflib.Series;
-import com.nhl.dflib.aggregate.SimpleSeriesAggregator;
 
 /**
- * SeriesAggregator that throws if the aggregated Series has more than one item. This prevents invalid pivot operations
+ * Aggregator function that throws if the aggregated Series has more than one item. This prevents invalid pivot operations
  * and leads the caller to the correct API.
- *
- * @param <T>
  */
-class OneValueAggregator<T> extends SimpleSeriesAggregator<T, T> {
-
-    public OneValueAggregator() {
-        super("one_value", OneValueAggregator::getValue);
-    }
+class OneValueAggregator {
 
     static <T> T getValue(Series<? extends T> series) {
 

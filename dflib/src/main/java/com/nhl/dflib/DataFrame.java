@@ -732,7 +732,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a DataFrame with a single row
      * @see Aggregator for static factory methods of column aggregators
      */
-    default DataFrame agg(Aggregator<?>... aggregators) {
+    default DataFrame agg(SeriesExp<?>... aggregators) {
         return DataFrameAggregation.aggDataFrame(this, aggregators);
     }
 

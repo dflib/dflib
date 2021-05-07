@@ -11,44 +11,44 @@ import com.nhl.dflib.accumulator.ObjectAccumulator;
  */
 public class DataFrameAggregation {
 
-    public static DataFrame aggDataFrame(DataFrame dataFrame, Aggregator<?>... aggregators) {
+    public static DataFrame aggDataFrame(DataFrame dataFrame, SeriesExp<?>... aggregators) {
 
         int aggW = aggregators.length;
-        Object[] aggValues = new Object[aggW];
+        Series<?>[] aggColumns = new Series[aggW];
         String[] aggLabels = new String[aggW];
 
         for (int i = 0; i < aggW; i++) {
-            aggValues[i] = aggregators[i].aggregate(dataFrame);
-            aggLabels[i] = aggregators[i].aggregateLabel(dataFrame.getColumnsIndex());
+            aggColumns[i] = aggregators[i].eval(dataFrame);
+            aggLabels[i] = aggregators[i].getName(dataFrame);
         }
 
-        return DataFrame.newFrame(Index.forLabelsDeduplicate(aggLabels)).addRow(aggValues).create();
+        return DataFrame.newFrame(Index.forLabelsDeduplicate(aggLabels)).columns(aggColumns);
     }
 
-    public static DataFrame aggGroupBy(GroupBy groupBy, Aggregator<?>... aggregators) {
+    public static DataFrame aggGroupBy(GroupBy groupBy, SeriesExp<?>... aggregators) {
 
         int aggW = aggregators.length;
         int aggH = groupBy.size();
-
-        Index sourceIndex = groupBy.getUngroupedColumnIndex();
 
         Series[] aggColumns = new Series[aggW];
         String[] aggLabels = new String[aggW];
 
         for (int i = 0; i < aggW; i++) {
 
-            Aggregator agg = aggregators[i];
+            SeriesExp<?> agg = aggregators[i];
 
-            // TODO: let Aggregator fill Accumulator, as it can use primitive collections
+            // TODO: primitives support for performance
             Accumulator columnBuilder = new ObjectAccumulator(aggH);
 
             for (Object key : groupBy.getGroups()) {
                 DataFrame group = groupBy.getGroup(key);
-                columnBuilder.add(agg.aggregate(group));
+
+                // expecting 1-element Series. Unpack them and add to the accum
+                columnBuilder.add(agg.eval(group).get(0));
             }
 
             aggColumns[i] = columnBuilder.toSeries();
-            aggLabels[i] = agg.aggregateLabel(sourceIndex);
+            aggLabels[i] = agg.getName(groupBy.getUngrouped());
         }
 
         return DataFrame.newFrame(Index.forLabelsDeduplicate(aggLabels)).columns(aggColumns);

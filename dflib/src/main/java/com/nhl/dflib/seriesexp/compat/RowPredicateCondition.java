@@ -18,7 +18,7 @@ public class RowPredicateCondition implements SeriesCondition {
     }
 
     @Override
-    public String getName() {
+    public String getName(DataFrame df) {
         return "row_predicate";
     }
 

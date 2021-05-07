@@ -1,11 +1,13 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.aggregate.ColumnAggregator;
 import com.nhl.dflib.seriesexp.ExpSorter;
 import com.nhl.dflib.seriesexp.RenamedExp;
 import com.nhl.dflib.seriesexp.condition.BinarySeriesCondition;
 import com.nhl.dflib.seriesexp.condition.UnarySeriesCondition;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * An expression that produces a Series out of a DataFrame, with Series size equal to the DataFrame height.
@@ -81,5 +83,9 @@ public interface SeriesExp<T> {
 
     default SeriesCondition isNotNull() {
         return new UnarySeriesCondition<>("isNotNull", this, Series::isNotNull);
+    }
+
+    default <A> SeriesExp<A> agg(Function<Series<T>, A> aggregator) {
+        return new ColumnAggregator<>(this, aggregator);
     }
 }
