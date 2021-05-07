@@ -182,11 +182,11 @@ public class DataFrame_AddDropMapColumnsTest {
                 1, "x",
                 2, "y")
                 .addColumn($int(0).as("a_copy"))
-                .addColumn($col(1).as("b_copy"))
+                .addColumn($col(1))
                 .addColumn($val("!").as("x"));
 
 
-        new DataFrameAsserts(df, "a", "b", "a_copy", "b_copy", "x")
+        new DataFrameAsserts(df, "a", "b", "a_copy", "b_", "x")
                 .expectHeight(2)
                 .expectRow(0, 1, "x", 1, "x", "!")
                 .expectRow(1, 2, "y", 2, "y", "!");

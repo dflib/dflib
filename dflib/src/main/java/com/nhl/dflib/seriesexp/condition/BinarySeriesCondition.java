@@ -12,21 +12,21 @@ import java.util.function.BiPredicate;
  */
 public class BinarySeriesCondition<L, R> implements SeriesCondition {
 
-    private final String name;
+    private final String opName;
     protected final SeriesExp<L> left;
     protected final SeriesExp<R> right;
     private final BiFunction<Series<L>, Series<R>, BooleanSeries> op;
 
-    public BinarySeriesCondition(String name, SeriesExp<L> left, SeriesExp<R> right, BiFunction<Series<L>, Series<R>, BooleanSeries> op) {
-        this.name = name;
+    public BinarySeriesCondition(String opName, SeriesExp<L> left, SeriesExp<R> right, BiFunction<Series<L>, Series<R>, BooleanSeries> op) {
+        this.opName = opName;
         this.left = left;
         this.right = right;
         this.op = op;
     }
 
     @Override
-    public String getName() {
-        return name;
+    public String getName(DataFrame df) {
+        return left.getName(df) + opName + right.getName(df);
     }
 
     @Override

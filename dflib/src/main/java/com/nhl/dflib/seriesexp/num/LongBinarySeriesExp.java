@@ -17,13 +17,13 @@ public class LongBinarySeriesExp extends BinarySeriesExp<Long, Long, Long> imple
     private final BinaryOperator<LongSeries> primitiveOp;
 
     protected LongBinarySeriesExp(
-            String name,
+            String opName,
             SeriesExp<Long> left,
             SeriesExp<Long> right,
             BiFunction<Series<Long>, Series<Long>, Series<Long>> op,
             BinaryOperator<LongSeries> primitiveOp) {
 
-        super(name, Long.class, left, right, op);
+        super(opName, Long.class, left, right, op);
         this.primitiveOp = primitiveOp;
     }
 

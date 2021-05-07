@@ -4,7 +4,9 @@ import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.SeriesCondition;
 
+import java.util.Arrays;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * A condition that joins a number of other conditions.
@@ -20,24 +22,24 @@ public abstract class ConjunctiveSeriesCondition implements SeriesCondition {
         return combined;
     }
 
-    private final String name;
+    private final String opName;
     protected final SeriesCondition[] parts;
     private final Function<BooleanSeries[], BooleanSeries> op;
 
-    public ConjunctiveSeriesCondition(String name, SeriesCondition[] parts, Function<BooleanSeries[], BooleanSeries> op) {
+    public ConjunctiveSeriesCondition(String opName, SeriesCondition[] parts, Function<BooleanSeries[], BooleanSeries> op) {
 
         if (parts.length == 0) {
             throw new IllegalArgumentException("Empty sub-expressions arrays");
         }
 
-        this.name = name;
+        this.opName = opName;
         this.parts = parts;
         this.op = op;
     }
 
     @Override
-    public String getName() {
-        return name;
+    public String getName(DataFrame df) {
+        return Arrays.stream(parts).map(p -> p.getName(df)).collect(Collectors.joining(opName));
     }
 
     @Override

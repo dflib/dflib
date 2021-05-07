@@ -22,8 +22,8 @@ public class UnarySeriesExp<F, T> implements SeriesExp<T> {
     }
 
     @Override
-    public String getName() {
-        return exp.getName();
+    public String getName(DataFrame df) {
+        return exp.getName(df);
     }
 
     @Override

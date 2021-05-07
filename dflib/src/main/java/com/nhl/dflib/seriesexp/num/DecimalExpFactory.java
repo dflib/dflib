@@ -42,7 +42,7 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public NumericSeriesExp<?> add(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
-        return new DecimalBinarySeriesExp(left.getName() + "+" + right.getName(),
+        return new DecimalBinarySeriesExp("+",
                 cast(left),
                 cast(right),
                 BinarySeriesExp.toSeriesOp((BigDecimal n1, BigDecimal n2) -> n1.add(n2)));
@@ -50,7 +50,7 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public NumericSeriesExp<?> subtract(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
-        return new DecimalBinarySeriesExp(left.getName() + "-" + right.getName(),
+        return new DecimalBinarySeriesExp("-",
                 cast(left),
                 cast(right),
                 BinarySeriesExp.toSeriesOp((BigDecimal n1, BigDecimal n2) -> n1.subtract(n2)));
@@ -58,7 +58,7 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public NumericSeriesExp<?> multiply(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
-        return new DecimalBinarySeriesExp(left.getName() + "*" + right.getName(),
+        return new DecimalBinarySeriesExp("*",
                 cast(left),
                 cast(right),
                 BinarySeriesExp.toSeriesOp((BigDecimal n1, BigDecimal n2) -> n1.multiply(n2)));
@@ -66,7 +66,7 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public NumericSeriesExp<?> divide(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
-        return new DecimalBinarySeriesExp(left.getName() + "/" + right.getName(),
+        return new DecimalBinarySeriesExp("/",
                 cast(left),
                 cast(right),
                 BinarySeriesExp.toSeriesOp((BigDecimal n1, BigDecimal n2) ->

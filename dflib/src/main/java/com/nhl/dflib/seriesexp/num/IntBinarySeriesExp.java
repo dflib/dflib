@@ -17,13 +17,13 @@ public class IntBinarySeriesExp extends BinarySeriesExp<Integer, Integer, Intege
     private final BinaryOperator<IntSeries> primitiveOp;
 
     protected IntBinarySeriesExp(
-            String name,
+            String opName,
             SeriesExp<Integer> left,
             SeriesExp<Integer> right,
             BiFunction<Series<Integer>, Series<Integer>, Series<Integer>> op,
             BinaryOperator<IntSeries> primitiveOp) {
 
-        super(name, Integer.class, left, right, op);
+        super(opName, Integer.class, left, right, op);
         this.primitiveOp = primitiveOp;
     }
 

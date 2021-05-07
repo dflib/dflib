@@ -16,13 +16,13 @@ public class IntBinarySeriesCondition extends BinarySeriesCondition<Integer, Int
     private final BiFunction<IntSeries, IntSeries, BooleanSeries> primitiveOp;
 
     public IntBinarySeriesCondition(
-            String name,
+            String opName,
             SeriesExp<Integer> left,
             SeriesExp<Integer> right,
             BiFunction<Series<Integer>, Series<Integer>, BooleanSeries> op,
             BiFunction<IntSeries, IntSeries, BooleanSeries> primitiveOp) {
 
-        super(name, left, right, op);
+        super(opName, left, right, op);
         this.primitiveOp = primitiveOp;
     }
 

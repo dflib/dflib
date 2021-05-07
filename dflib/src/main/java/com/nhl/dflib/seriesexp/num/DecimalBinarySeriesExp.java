@@ -14,11 +14,11 @@ import java.util.function.BiFunction;
 public class DecimalBinarySeriesExp extends BinarySeriesExp<BigDecimal, BigDecimal, BigDecimal> implements NumericSeriesExp<BigDecimal> {
 
     protected DecimalBinarySeriesExp(
-            String name,
+            String opName,
             SeriesExp<BigDecimal> left,
             SeriesExp<BigDecimal> right,
             BiFunction<Series<BigDecimal>, Series<BigDecimal>, Series<BigDecimal>> op) {
 
-        super(name, BigDecimal.class, left, right, op);
+        super(opName, BigDecimal.class, left, right, op);
     }
 }

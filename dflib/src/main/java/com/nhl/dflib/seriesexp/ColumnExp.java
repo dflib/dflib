@@ -24,14 +24,18 @@ public class ColumnExp<T> implements SeriesExp<T> {
     }
 
     public ColumnExp(int position, Class<T> type) {
-        this.name = String.valueOf(position);
+        if (position < 0) {
+            throw new IllegalArgumentException("Position must nit be negative: " + position);
+        }
+
+        this.name = null;
         this.position = position;
         this.type = type;
     }
 
     @Override
-    public String getName() {
-        return name;
+    public String getName(DataFrame df) {
+        return position >= 0 ? df.getColumnsIndex().getLabel(position) : name;
     }
 
     @Override

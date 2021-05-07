@@ -19,7 +19,7 @@ public class StringColumn extends ColumnExp<String> {
 
     public SeriesExp<String> concat(SeriesExp<String> c) {
         return new BinarySeriesExp<>(
-                getName() + "+" + c.getName(),
+                "+",
                 String.class,
                 this,
                 c,

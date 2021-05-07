@@ -21,7 +21,7 @@ public class SingleValueSeriesExp<T> implements SeriesExp<T> {
     }
 
     @Override
-    public String getName() {
+    public String getName(DataFrame df) {
         return "$val";
     }
 

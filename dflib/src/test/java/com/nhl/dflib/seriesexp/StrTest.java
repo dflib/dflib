@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.nhl.dflib.Exp.$str;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 
 public class StrTest {
 
@@ -24,8 +25,8 @@ public class StrTest {
     @Test
     public void testNamed() {
         SeriesExp<String> e = $str("b");
-        assertEquals("b", e.getName());
-        assertEquals("c", e.as("c").getName());
+        assertEquals("b", e.getName(mock(DataFrame.class)));
+        assertEquals("c", e.as("c").getName(mock(DataFrame.class)));
     }
 
     @Test

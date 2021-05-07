@@ -370,7 +370,7 @@ public class ColumnDataFrame implements DataFrame {
 
         String[] extraNames = new String[extraWidth];
         for (int i = 0; i < extraWidth; i++) {
-            extraNames[i] = exps[i].getName();
+            extraNames[i] = exps[i].getName(this);
         }
 
         int width = width();
@@ -554,9 +554,9 @@ public class ColumnDataFrame implements DataFrame {
     public DataFrame selectColumns(SeriesExp<?> exp0, SeriesExp<?>... otherExps) {
         int w = otherExps.length + 1;
         String[] labels = new String[w];
-        labels[0] = exp0.getName();
+        labels[0] = exp0.getName(this);
         for (int i = 1; i < w; i++) {
-            labels[i] = otherExps[i - 1].getName();
+            labels[i] = otherExps[i - 1].getName(this);
         }
 
         Series[] data = new Series[w];

@@ -17,13 +17,13 @@ public class DoubleBinarySeriesExp extends BinarySeriesExp<Double, Double, Doubl
     private final BinaryOperator<DoubleSeries> primitiveOp;
 
     protected DoubleBinarySeriesExp(
-            String name,
+            String opName,
             SeriesExp<Double> left,
             SeriesExp<Double> right,
             BiFunction<Series<Double>, Series<Double>, Series<Double>> op,
             BinaryOperator<DoubleSeries> primitiveOp) {
 
-        super(name, Double.class, left, right, op);
+        super(opName, Double.class, left, right, op);
         this.primitiveOp = primitiveOp;
     }
 

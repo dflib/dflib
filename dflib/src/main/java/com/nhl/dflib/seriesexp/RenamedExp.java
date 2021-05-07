@@ -4,6 +4,8 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.SeriesExp;
 
+import java.util.Objects;
+
 /**
  * @since 0.11
  */
@@ -18,7 +20,7 @@ public class RenamedExp<T> implements SeriesExp<T> {
     }
 
     @Override
-    public String getName() {
+    public String getName(DataFrame df) {
         return name;
     }
 
@@ -30,5 +32,10 @@ public class RenamedExp<T> implements SeriesExp<T> {
     @Override
     public Series<T> eval(DataFrame df) {
         return delegate.eval(df);
+    }
+
+    @Override
+    public SeriesExp<T> as(String name) {
+        return Objects.equals(name, this.name) ? this : new RenamedExp<>(name, delegate);
     }
 }

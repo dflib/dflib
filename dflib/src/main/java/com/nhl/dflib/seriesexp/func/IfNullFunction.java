@@ -19,8 +19,8 @@ public class IfNullFunction<T> implements SeriesExp<T> {
     }
 
     @Override
-    public String getName() {
-        return "ifnull(" + exp.getName() + "," + ifNullExp.getName() + ")";
+    public String getName(DataFrame df) {
+        return "ifnull(" + exp.getName(df) + "," + ifNullExp.getName(df) + ")";
     }
 
     @Override

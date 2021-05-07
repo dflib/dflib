@@ -34,7 +34,7 @@ public class LongExpFactory extends NumericExpFactory {
 
     @Override
     public NumericSeriesExp<?> add(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
-        return new LongBinarySeriesExp(left.getName() + "+" + right.getName(),
+        return new LongBinarySeriesExp("+",
                 cast(left),
                 cast(right),
                 BinarySeriesExp.toSeriesOp((Long n1, Long n2) -> n1 + n2),
@@ -43,7 +43,7 @@ public class LongExpFactory extends NumericExpFactory {
 
     @Override
     public NumericSeriesExp<?> subtract(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
-        return new LongBinarySeriesExp(left.getName() + "-" + right.getName(),
+        return new LongBinarySeriesExp("-",
                 cast(left),
                 cast(right),
                 BinarySeriesExp.toSeriesOp((Long n1, Long n2) -> n1 - n2),
@@ -52,7 +52,7 @@ public class LongExpFactory extends NumericExpFactory {
 
     @Override
     public NumericSeriesExp<?> multiply(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
-        return new LongBinarySeriesExp(left.getName() + "*" + right.getName(),
+        return new LongBinarySeriesExp("*",
                 cast(left),
                 cast(right),
                 BinarySeriesExp.toSeriesOp((Long n1, Long n2) -> n1 * n2),
@@ -61,7 +61,7 @@ public class LongExpFactory extends NumericExpFactory {
 
     @Override
     public NumericSeriesExp<?> divide(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
-        return new LongBinarySeriesExp(left.getName() + "/" + right.getName(),
+        return new LongBinarySeriesExp("/",
                 cast(left),
                 cast(right),
                 BinarySeriesExp.toSeriesOp((Long n1, Long n2) -> n1 / n2),

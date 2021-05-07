@@ -12,19 +12,19 @@ import java.util.function.BiFunction;
  */
 public class BinarySeriesExp<L, R, T> implements SeriesExp<T> {
 
-    private final String name;
+    private final String opName;
     private final Class<T> type;
     private final SeriesExp<L> left;
     private final SeriesExp<R> right;
     private final BiFunction<Series<L>, Series<R>, Series<T>> op;
 
     public BinarySeriesExp(
-            String name,
+            String opName,
             Class<T> type,
             SeriesExp<L> left,
             SeriesExp<R> right,
             BiFunction<Series<L>, Series<R>, Series<T>> op) {
-        this.name = name;
+        this.opName = opName;
         this.type = type;
         this.left = left;
         this.right = right;
@@ -32,8 +32,8 @@ public class BinarySeriesExp<L, R, T> implements SeriesExp<T> {
     }
 
     @Override
-    public String getName() {
-        return name;
+    public String getName(DataFrame df) {
+        return left.getName(df) + opName + right.getName(df);
     }
 
     @Override

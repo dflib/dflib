@@ -15,19 +15,19 @@ import java.util.function.Predicate;
  */
 public class UnarySeriesCondition<V> implements SeriesCondition {
 
-    private final String name;
+    private final String opName;
     protected final SeriesExp<V> exp;
     private final Function<Series<V>, BooleanSeries> op;
 
-    public UnarySeriesCondition(String name, SeriesExp<V> exp, Function<Series<V>, BooleanSeries> op) {
-        this.name = name;
+    public UnarySeriesCondition(String opName, SeriesExp<V> exp, Function<Series<V>, BooleanSeries> op) {
+        this.opName = opName;
         this.exp = exp;
         this.op = op;
     }
 
     @Override
-    public String getName() {
-        return name;
+    public String getName(DataFrame df) {
+        return opName + exp.getName(df);
     }
 
     @Override
