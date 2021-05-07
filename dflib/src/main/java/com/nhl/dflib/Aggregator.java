@@ -25,7 +25,7 @@ public interface Aggregator<T> {
     static <T> Aggregator<T> first(String column) {
         return new ColumnAggregator<>(
                 SeriesAggregator.first(),
-                index -> index.position(column),
+                (SeriesExp<T>) Exp.$col(column),
                 index -> column
         );
     }
@@ -37,7 +37,7 @@ public interface Aggregator<T> {
     static <T> Aggregator<T> first(int column) {
         return new ColumnAggregator<>(
                 SeriesAggregator.first(),
-                index -> column,
+                (SeriesExp<T>) Exp.$col(column),
                 index -> index.getLabel(column)
         );
     }
@@ -66,7 +66,7 @@ public interface Aggregator<T> {
     static Aggregator<Double> averageDouble(String column) {
         return new ColumnAggregator<>(
                 SeriesAggregator.averageDouble(),
-                index -> index.position(column),
+                (SeriesExp<Number>) Exp.$col(column),
                 index -> column
         );
     }
@@ -77,7 +77,7 @@ public interface Aggregator<T> {
     static Aggregator<Double> averageDouble(int column) {
         return new ColumnAggregator<>(
                 SeriesAggregator.averageDouble(),
-                index -> column,
+                (SeriesExp<Number>) Exp.$col(column),
                 index -> index.getLabel(column)
         );
     }
@@ -88,7 +88,7 @@ public interface Aggregator<T> {
     static Aggregator<Double> medianDouble(String column) {
         return new ColumnAggregator<>(
                 SeriesAggregator.medianDouble(),
-                index -> index.position(column),
+                (SeriesExp<Number>) Exp.$col(column),
                 index -> column
         );
     }
@@ -99,7 +99,7 @@ public interface Aggregator<T> {
     static Aggregator<Double> medianDouble(int column) {
         return new ColumnAggregator<>(
                 SeriesAggregator.medianDouble(),
-                index -> column,
+                (SeriesExp<Number>) Exp.$col(column),
                 index -> index.getLabel(column)
         );
     }
@@ -110,7 +110,7 @@ public interface Aggregator<T> {
     static Aggregator<Long> sumLong(String column) {
         return new ColumnAggregator<>(
                 SeriesAggregator.sumLong(),
-                index -> index.position(column),
+                (SeriesExp<Number>) Exp.$col(column),
                 index -> column
         );
     }
@@ -121,7 +121,7 @@ public interface Aggregator<T> {
     static Aggregator<Long> sumLong(int column) {
         return new ColumnAggregator<>(
                 SeriesAggregator.sumLong(),
-                index -> column,
+                (SeriesExp<Number>) Exp.$col(column),
                 index -> index.getLabel(column)
         );
     }
@@ -132,7 +132,7 @@ public interface Aggregator<T> {
     static Aggregator<Integer> sumInt(String column) {
         return new ColumnAggregator<>(
                 SeriesAggregator.sumInt(),
-                index -> index.position(column),
+                (SeriesExp<Number>) Exp.$col(column),
                 index -> column
         );
     }
@@ -143,7 +143,7 @@ public interface Aggregator<T> {
     static Aggregator<Integer> sumInt(int column) {
         return new ColumnAggregator<>(
                 SeriesAggregator.sumInt(),
-                index -> column,
+                (SeriesExp<Number>) Exp.$col(column),
                 index -> index.getLabel(column)
         );
     }
@@ -151,7 +151,7 @@ public interface Aggregator<T> {
     static Aggregator<Double> sumDouble(String column) {
         return new ColumnAggregator<>(
                 SeriesAggregator.sumDouble(),
-                index -> index.position(column),
+                (SeriesExp<Number>) Exp.$col(column),
                 index -> column
         );
     }
@@ -159,7 +159,7 @@ public interface Aggregator<T> {
     static Aggregator<Double> sumDouble(int column) {
         return new ColumnAggregator<>(
                 SeriesAggregator.sumDouble(),
-                index -> column,
+                (SeriesExp<Number>) Exp.$col(column),
                 index -> index.getLabel(column)
         );
     }
@@ -170,7 +170,7 @@ public interface Aggregator<T> {
     static Aggregator<BigDecimal> sumDecimal(String column) {
         return new ColumnAggregator<>(
                 SeriesAggregator.sumDecimal(),
-                index -> index.position(column),
+                (SeriesExp<BigDecimal>) Exp.$col(column),
                 index -> column
         );
     }
@@ -181,7 +181,7 @@ public interface Aggregator<T> {
     static Aggregator<BigDecimal> sumDecimal(int column) {
         return new ColumnAggregator<>(
                 SeriesAggregator.sumDecimal(),
-                index -> column,
+                (SeriesExp<BigDecimal>) Exp.$col(column),
                 index -> index.getLabel(column)
         );
     }
@@ -192,7 +192,7 @@ public interface Aggregator<T> {
     static Aggregator<BigDecimal> sumDecimal(String column, int resultScale, RoundingMode resultRoundingMode) {
         return new ColumnAggregator<>(
                 SeriesAggregator.sumDecimal(resultScale, resultRoundingMode),
-                index -> index.position(column),
+                (SeriesExp<BigDecimal>) Exp.$col(column),
                 index -> column
         );
     }
@@ -203,7 +203,7 @@ public interface Aggregator<T> {
     static Aggregator<BigDecimal> sumDecimal(int column, int resultScale, RoundingMode resultRoundingMode) {
         return new ColumnAggregator<>(
                 SeriesAggregator.sumDecimal(resultScale, resultRoundingMode),
-                index -> column,
+                (SeriesExp<BigDecimal>) Exp.$col(column),
                 index -> index.getLabel(column)
         );
     }
@@ -213,8 +213,8 @@ public interface Aggregator<T> {
      */
     static <T extends Comparable<T>> Aggregator<T> max(String column) {
         return new ColumnAggregator<>(
-                (SeriesAggregator<T, T>) SeriesAggregator.max(),
-                index -> index.position(column),
+                SeriesAggregator.max(),
+                (SeriesExp<T>) Exp.$col(column),
                 index -> column
         );
     }
@@ -224,8 +224,8 @@ public interface Aggregator<T> {
      */
     static <T extends Comparable<T>> Aggregator<T> max(int column) {
         return new ColumnAggregator<>(
-                (SeriesAggregator<T, T>) SeriesAggregator.max(),
-                index -> column,
+                SeriesAggregator.max(),
+                (SeriesExp<T>) Exp.$col(column),
                 index -> index.getLabel(column)
         );
     }
@@ -235,8 +235,8 @@ public interface Aggregator<T> {
      */
     static <T extends Comparable<T>> Aggregator<T> min(int column) {
         return new ColumnAggregator<>(
-                SeriesAggregator.<T>min(),
-                index -> column,
+                SeriesAggregator.min(),
+                (SeriesExp<T>) Exp.$col(column),
                 index -> index.getLabel(column)
         );
     }
@@ -246,8 +246,8 @@ public interface Aggregator<T> {
      */
     static <T extends Comparable<T>> Aggregator<T> min(String column) {
         return new ColumnAggregator<>(
-                SeriesAggregator.<T>min(),
-                index -> index.position(column),
+                SeriesAggregator.min(),
+                (SeriesExp<T>) Exp.$col(column),
                 index -> column
         );
     }
@@ -255,7 +255,7 @@ public interface Aggregator<T> {
     static Aggregator<String> concat(String column, String delimiter) {
         return new ColumnAggregator<>(
                 SeriesAggregator.concat(delimiter),
-                index -> index.position(column),
+                Exp.$col(column),
                 index -> column
         );
     }
@@ -263,7 +263,7 @@ public interface Aggregator<T> {
     static Aggregator<String> concat(int column, String delimiter) {
         return new ColumnAggregator<>(
                 SeriesAggregator.concat(delimiter),
-                index -> column,
+                Exp.$col(column),
                 index -> index.getLabel(column)
         );
     }
@@ -271,7 +271,7 @@ public interface Aggregator<T> {
     static Aggregator<String> concat(String column, String delimiter, String prefix, String suffix) {
         return new ColumnAggregator<>(
                 SeriesAggregator.concat(delimiter, prefix, suffix),
-                index -> index.position(column),
+                Exp.$col(column),
                 index -> column
         );
     }
@@ -279,7 +279,7 @@ public interface Aggregator<T> {
     static Aggregator<String> concat(int column, String delimiter, String prefix, String suffix) {
         return new ColumnAggregator<>(
                 SeriesAggregator.concat(delimiter, prefix, suffix),
-                index -> column,
+                Exp.$col(column),
                 index -> index.getLabel(column)
         );
     }
@@ -287,7 +287,7 @@ public interface Aggregator<T> {
     static <S> Aggregator<List<S>> list(String column) {
         return new ColumnAggregator<>(
                 SeriesAggregator.list(),
-                index -> index.position(column),
+                (SeriesExp<S>) Exp.$col(column),
                 index -> column
         );
     }
@@ -295,7 +295,7 @@ public interface Aggregator<T> {
     static <S> Aggregator<List<S>> list(int column) {
         return new ColumnAggregator<>(
                 SeriesAggregator.list(),
-                index -> column,
+                (SeriesExp<S>) Exp.$col(column),
                 index -> index.getLabel(column)
         );
     }
@@ -303,7 +303,7 @@ public interface Aggregator<T> {
     static <S> Aggregator<Set<S>> set(String column) {
         return new ColumnAggregator<>(
                 SeriesAggregator.set(),
-                index -> index.position(column),
+                (SeriesExp<S>) Exp.$col(column),
                 index -> column
         );
     }
@@ -311,7 +311,7 @@ public interface Aggregator<T> {
     static <S> Aggregator<Set<S>> set(int column) {
         return new ColumnAggregator<>(
                 SeriesAggregator.set(),
-                index -> column,
+                (SeriesExp<S>) Exp.$col(column),
                 index -> index.getLabel(column)
         );
     }
@@ -343,18 +343,18 @@ public interface Aggregator<T> {
         return new AggregatorBuilder().filterRows(columnPos, filter);
     }
 
-    static <T> Aggregator<T> of(String column, Collector<?, ?, T> aggregator) {
+    static <S, T> Aggregator<T> of(String column, Collector<S, ?, T> aggregator) {
         return new ColumnAggregator<>(
                 SeriesAggregator.of("of", aggregator),
-                index -> index.position(column),
+                (SeriesExp<S>) Exp.$col(column),
                 index -> column
         );
     }
 
-    static <T> Aggregator<T> of(int column, Collector<?, ?, T> aggregator) {
+    static <S, T> Aggregator<T> of(int column, Collector<S, ?, T> aggregator) {
         return new ColumnAggregator<>(
                 SeriesAggregator.of("of", aggregator),
-                index -> column,
+                (SeriesExp<S>) Exp.$col(column),
                 index -> index.getLabel(column)
         );
     }

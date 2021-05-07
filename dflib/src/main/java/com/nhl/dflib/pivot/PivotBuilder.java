@@ -1,9 +1,6 @@
 package com.nhl.dflib.pivot;
 
-import com.nhl.dflib.Aggregator;
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.GroupBy;
-import com.nhl.dflib.SeriesAggregator;
+import com.nhl.dflib.*;
 import com.nhl.dflib.aggregate.ColumnAggregator;
 
 import java.util.ArrayList;
@@ -155,7 +152,7 @@ public class PivotBuilder {
 
         return chunk.group(rowColumnName).agg(
                 Aggregator.first(rowColumnName),
-                new ColumnAggregator(valuesAggregator, i -> 1, i -> valueColumnName)
+                new ColumnAggregator(valuesAggregator, Exp.$col(1), i -> valueColumnName)
         );
     }
 

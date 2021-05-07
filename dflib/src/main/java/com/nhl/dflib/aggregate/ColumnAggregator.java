@@ -1,13 +1,8 @@
 package com.nhl.dflib.aggregate;
 
-import com.nhl.dflib.Aggregator;
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
-import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesAggregator;
+import com.nhl.dflib.*;
 
 import java.util.function.Function;
-import java.util.function.ToIntFunction;
 
 /**
  * An aggregator whose source is a column in a DataFrame. The actual aggregation operation is defined as a
@@ -16,15 +11,15 @@ import java.util.function.ToIntFunction;
 public class ColumnAggregator<S, T> implements Aggregator<T> {
 
     private SeriesAggregator<S, T> aggregator;
-    private ToIntFunction<Index> sourceColumnLocator;
+    private SeriesExp<S> sourceColumnExp;
     private Function<Index, String> targetColumnNamer;
 
     public ColumnAggregator(
             SeriesAggregator<S, T> aggregator,
-            ToIntFunction<Index> sourceColumnLocator,
+            SeriesExp<S> sourceColumnExp,
             Function<Index, String> targetColumnNamer) {
 
-        this.sourceColumnLocator = sourceColumnLocator;
+        this.sourceColumnExp = sourceColumnExp;
         this.aggregator = aggregator;
         this.targetColumnNamer = targetColumnNamer;
     }
@@ -35,8 +30,7 @@ public class ColumnAggregator<S, T> implements Aggregator<T> {
 
     @Override
     public T aggregate(DataFrame df) {
-        int pos = sourceColumnLocator.applyAsInt(df.getColumnsIndex());
-        return aggregate(df.getColumn(pos));
+        return aggregate(sourceColumnExp.eval(df));
     }
 
     @Override
@@ -46,6 +40,6 @@ public class ColumnAggregator<S, T> implements Aggregator<T> {
 
     @Override
     public Aggregator<T> named(String newAggregateLabel) {
-        return new ColumnAggregator<>(aggregator, sourceColumnLocator, i -> newAggregateLabel);
+        return new ColumnAggregator<>(aggregator, sourceColumnExp, i -> newAggregateLabel);
     }
 }
