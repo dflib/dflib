@@ -19,4 +19,6 @@ public class AndSeriesCondition extends ConjunctiveSeriesCondition {
                 ? new AndSeriesCondition(combine(this.parts, ((AndSeriesCondition) exp).parts))
                 : new AndSeriesCondition(combine(this.parts, exp));
     }
+
+    // TODO: an optimized version of "firstMatch" that does partial evaluation of the parts
 }

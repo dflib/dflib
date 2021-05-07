@@ -1,6 +1,7 @@
 package com.nhl.dflib.seriesexp.condition;
 
 import com.nhl.dflib.BooleanSeries;
+import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.SeriesCondition;
 
 /**
@@ -20,5 +21,21 @@ public class OrSeriesCondition extends ConjunctiveSeriesCondition {
                 : new OrSeriesCondition(combine(this.parts, exp));
     }
 
+    @Override
+    public int firstMatch(DataFrame df) {
+        int len = parts.length;
+        int r = -1;
 
+        // since we are dealing with "or", it is enough to find the minimal first match among all columns
+        for (int i = 0; i < len; i++) {
+            int rx = parts[i].firstMatch(df);
+            r = Math.min(r, rx);
+
+            if (r == 0) {
+                return 0;
+            }
+        }
+
+        return r;
+    }
 }
