@@ -1,43 +1,32 @@
 package com.nhl.dflib.aggregate;
 
-import com.nhl.dflib.Aggregator;
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
-import com.nhl.dflib.RowPredicate;
-import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.*;
 
 import java.util.function.Function;
-import java.util.function.ToIntFunction;
 
 /**
  * @since 0.7
  */
 public class FilteredFirstAggregator<T> implements Aggregator<T> {
 
-    private RowPredicate rowFilter;
-    private ToIntFunction<Index> sourceColumnLocator;
-    private Function<Index, String> targetColumnNamer;
+    private final SeriesCondition rowFilter;
+    private final SeriesExp<T> exp;
+    private final Function<Index, String> targetColumnNamer;
 
     public FilteredFirstAggregator(
-            RowPredicate rowFilter,
-            ToIntFunction<Index> sourceColumnLocator,
+            SeriesCondition rowFilter,
+            SeriesExp<T> exp,
             Function<Index, String> targetColumnNamer) {
 
         this.rowFilter = rowFilter;
-        this.sourceColumnLocator = sourceColumnLocator;
+        this.exp = exp;
         this.targetColumnNamer = targetColumnNamer;
     }
 
     @Override
     public T aggregate(DataFrame df) {
-
-        for (RowProxy r : df) {
-            if (rowFilter.test(r)) {
-                return (T) r.get(sourceColumnLocator.applyAsInt(r.getIndex()));
-            }
-        }
-
-        return null;
+        int index = rowFilter.firstMatch(df);
+        return index < 0 ? null : exp.eval(df.selectRows(index)).get(0);
     }
 
     @Override
@@ -47,6 +36,6 @@ public class FilteredFirstAggregator<T> implements Aggregator<T> {
 
     @Override
     public Aggregator named(String newAggregateLabel) {
-        return new FilteredFirstAggregator<>(rowFilter, sourceColumnLocator, i -> newAggregateLabel);
+        return new FilteredFirstAggregator<>(rowFilter, exp, i -> newAggregateLabel);
     }
 }

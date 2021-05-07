@@ -11,15 +11,15 @@ import java.util.function.Function;
 public class ColumnAggregator<S, T> implements Aggregator<T> {
 
     private SeriesAggregator<S, T> aggregator;
-    private SeriesExp<S> sourceColumnExp;
+    private SeriesExp<S> columnExp;
     private Function<Index, String> targetColumnNamer;
 
     public ColumnAggregator(
             SeriesAggregator<S, T> aggregator,
-            SeriesExp<S> sourceColumnExp,
+            SeriesExp<S> columnExp,
             Function<Index, String> targetColumnNamer) {
 
-        this.sourceColumnExp = sourceColumnExp;
+        this.columnExp = columnExp;
         this.aggregator = aggregator;
         this.targetColumnNamer = targetColumnNamer;
     }
@@ -30,7 +30,7 @@ public class ColumnAggregator<S, T> implements Aggregator<T> {
 
     @Override
     public T aggregate(DataFrame df) {
-        return aggregate(sourceColumnExp.eval(df));
+        return aggregate(columnExp.eval(df));
     }
 
     @Override
@@ -40,6 +40,6 @@ public class ColumnAggregator<S, T> implements Aggregator<T> {
 
     @Override
     public Aggregator<T> named(String newAggregateLabel) {
-        return new ColumnAggregator<>(aggregator, sourceColumnExp, i -> newAggregateLabel);
+        return new ColumnAggregator<>(aggregator, columnExp, i -> newAggregateLabel);
     }
 }

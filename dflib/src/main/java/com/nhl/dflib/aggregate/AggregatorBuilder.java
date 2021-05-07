@@ -1,8 +1,8 @@
 package com.nhl.dflib.aggregate;
 
-import com.nhl.dflib.Aggregator;
-import com.nhl.dflib.RowPredicate;
-import com.nhl.dflib.ValuePredicate;
+import com.nhl.dflib.*;
+import com.nhl.dflib.seriesexp.compat.RowPredicateCondition;
+import com.nhl.dflib.seriesexp.compat.ValuePredicateCondition;
 
 /**
  * A builder of aggregators that can perform prefiltering and potentially other operations on the DataFrame before
@@ -12,20 +12,25 @@ import com.nhl.dflib.ValuePredicate;
  */
 public class AggregatorBuilder {
 
-    private RowPredicate rowFilter;
+    private SeriesCondition filter;
 
-    public AggregatorBuilder filterRows(RowPredicate filter) {
+    public AggregatorBuilder filterRows(SeriesCondition filter) {
         appendRowFilter(filter);
         return this;
     }
 
-    public <V> AggregatorBuilder filterRows(int columnPos, ValuePredicate<V> filter) {
-        appendRowFilter(r -> filter.test((V) r.get(columnPos)));
+    public AggregatorBuilder filterRows(RowPredicate filter) {
+        appendRowFilter(new RowPredicateCondition(filter));
         return this;
     }
 
-    public <V> AggregatorBuilder filterRows(String columnLabel, ValuePredicate<V> filter) {
-        appendRowFilter(r -> filter.test((V) r.get(columnLabel)));
+    public <V> AggregatorBuilder filterRows(int column, ValuePredicate<V> filter) {
+        appendRowFilter(new ValuePredicateCondition<>((SeriesExp<V>) Exp.$col(column), filter));
+        return this;
+    }
+
+    public <V> AggregatorBuilder filterRows(String column, ValuePredicate<V> filter) {
+        appendRowFilter(new ValuePredicateCondition<>((SeriesExp<V>) Exp.$col(column), filter));
         return this;
     }
 
@@ -33,10 +38,10 @@ public class AggregatorBuilder {
      * Returns the first value in an aggregation range.
      */
     public <T> Aggregator<T> first(String column) {
-        return rowFilter != null
+        return filter != null
                 // TODO: once the performance TODO in FilteredAggregator is resolved, perhaps we won't need
                 //  a dedicated FilteredFirstAggregator
-                ? new FilteredFirstAggregator<>(rowFilter, index -> index.position(column), index -> column)
+                ? new FilteredFirstAggregator<>(filter, (SeriesExp<T>) Exp.$col(column), index -> column)
                 : Aggregator.first(column);
     }
 
@@ -44,10 +49,10 @@ public class AggregatorBuilder {
      * Returns the first value in an aggregation range.
      */
     public <T> Aggregator<T> first(int column) {
-        return rowFilter != null
+        return filter != null
                 // TODO: once the performance TODO in FilteredAggregator is resolved, perhaps we won't need
                 //  a dedicated FilteredFirstAggregator
-                ? new FilteredFirstAggregator<>(rowFilter, index -> column, index -> index.getLabel(column))
+                ? new FilteredFirstAggregator<>(filter, (SeriesExp<T>) Exp.$col(column), index -> index.getLabel(column))
                 : Aggregator.first(column);
     }
 
@@ -55,8 +60,8 @@ public class AggregatorBuilder {
      * Creates an aggregator to count rows
      */
     public Aggregator<Long> countLong() {
-        return rowFilter != null
-                ? new FilteredAggregator<>(rowFilter, Aggregator.countLong())
+        return filter != null
+                ? new FilteredAggregator<>(filter, Aggregator.countLong())
                 : Aggregator.countLong();
     }
 
@@ -64,84 +69,84 @@ public class AggregatorBuilder {
      * Creates an aggregator to count rows.
      */
     public Aggregator<Integer> countInt() {
-        return rowFilter != null
-                ? new FilteredAggregator<>(rowFilter, Aggregator.countInt())
+        return filter != null
+                ? new FilteredAggregator<>(filter, Aggregator.countInt())
                 : Aggregator.countInt();
     }
 
     public Aggregator<Double> averageDouble(String column) {
-        return rowFilter != null
-                ? new FilteredAggregator<>(rowFilter, Aggregator.averageDouble(column))
+        return filter != null
+                ? new FilteredAggregator<>(filter, Aggregator.averageDouble(column))
                 : Aggregator.averageDouble(column);
     }
 
     public Aggregator<Double> averageDouble(int column) {
-        return rowFilter != null
-                ? new FilteredAggregator<>(rowFilter, Aggregator.averageDouble(column))
+        return filter != null
+                ? new FilteredAggregator<>(filter, Aggregator.averageDouble(column))
                 : Aggregator.averageDouble(column);
     }
 
     public Aggregator<Long> sumLong(String column) {
-        return rowFilter != null
-                ? new FilteredAggregator<>(rowFilter, Aggregator.sumLong(column))
+        return filter != null
+                ? new FilteredAggregator<>(filter, Aggregator.sumLong(column))
                 : Aggregator.sumLong(column);
     }
 
     public Aggregator<Long> sumLong(int column) {
-        return rowFilter != null
-                ? new FilteredAggregator<>(rowFilter, Aggregator.sumLong(column))
+        return filter != null
+                ? new FilteredAggregator<>(filter, Aggregator.sumLong(column))
                 : Aggregator.sumLong(column);
     }
 
     public Aggregator<Integer> sumInt(String column) {
-        return rowFilter != null
-                ? new FilteredAggregator<>(rowFilter, Aggregator.sumInt(column))
+        return filter != null
+                ? new FilteredAggregator<>(filter, Aggregator.sumInt(column))
                 : Aggregator.sumInt(column);
     }
 
     public Aggregator<Integer> sumInt(int column) {
-        return rowFilter != null
-                ? new FilteredAggregator<>(rowFilter, Aggregator.sumInt(column))
+        return filter != null
+                ? new FilteredAggregator<>(filter, Aggregator.sumInt(column))
                 : Aggregator.sumInt(column);
     }
 
     public Aggregator<Double> sumDouble(String column) {
-        return rowFilter != null
-                ? new FilteredAggregator<>(rowFilter, Aggregator.sumDouble(column))
+        return filter != null
+                ? new FilteredAggregator<>(filter, Aggregator.sumDouble(column))
                 : Aggregator.sumDouble(column);
     }
 
     public Aggregator<Double> sumDouble(int column) {
-        return rowFilter != null
-                ? new FilteredAggregator<>(rowFilter, Aggregator.sumDouble(column))
+        return filter != null
+                ? new FilteredAggregator<>(filter, Aggregator.sumDouble(column))
                 : Aggregator.sumDouble(column);
     }
 
     public <T extends Comparable<T>> Aggregator<T> max(String column) {
-        return rowFilter != null
-                ? new FilteredAggregator<>(rowFilter, Aggregator.<T>max(column))
+        return filter != null
+                ? new FilteredAggregator<>(filter, Aggregator.<T>max(column))
                 : Aggregator.max(column);
     }
 
     public <T extends Comparable<T>> Aggregator<T> max(int column) {
-        return rowFilter != null
-                ? new FilteredAggregator<>(rowFilter, Aggregator.<T>max(column))
+        return filter != null
+                ? new FilteredAggregator<>(filter, Aggregator.<T>max(column))
                 : Aggregator.max(column);
     }
 
     public <T extends Comparable<T>> Aggregator<T> min(String column) {
-        return rowFilter != null
-                ? new FilteredAggregator<>(rowFilter, Aggregator.<T>min(column))
+        return filter != null
+                ? new FilteredAggregator<>(filter, Aggregator.<T>min(column))
                 : Aggregator.max(column);
     }
 
     public <T extends Comparable<T>> Aggregator<T> min(int column) {
-        return rowFilter != null
-                ? new FilteredAggregator<>(rowFilter, Aggregator.<T>min(column))
+        return filter != null
+                ? new FilteredAggregator<>(filter, Aggregator.<T>min(column))
                 : Aggregator.max(column);
     }
 
-    protected void appendRowFilter(RowPredicate filter) {
-        this.rowFilter = this.rowFilter != null ? this.rowFilter.and(filter) : filter;
+    protected void appendRowFilter(SeriesCondition filter) {
+        this.filter = this.filter != null ? this.filter.and(filter) : filter;
     }
 }
