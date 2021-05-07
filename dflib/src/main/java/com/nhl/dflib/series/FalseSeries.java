@@ -53,6 +53,11 @@ public class FalseSeries extends BooleanBaseSeries {
     }
 
     @Override
+    public int firstTrue() {
+        return -1;
+    }
+
+    @Override
     public int countTrue() {
         return 0;
     }

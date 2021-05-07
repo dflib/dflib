@@ -14,6 +14,10 @@ public interface SeriesCondition extends SeriesExp<Boolean> {
     @Override
     BooleanSeries eval(DataFrame df);
 
+    default int firstMatch(DataFrame df) {
+        return eval(df).firstTrue();
+    }
+
     default SeriesCondition and(SeriesCondition c) {
         return new AndSeriesCondition(this, c);
     }

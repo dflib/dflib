@@ -65,6 +65,13 @@ public interface BooleanSeries extends Series<Boolean> {
     BooleanSeries filterBoolean(BooleanSeries positions);
 
     /**
+     * Returns the index of a first "true" value in the series, or -1 if all values are false.
+     *
+     * @since 0.11
+     */
+    int firstTrue();
+
+    /**
      * Returns an IntSeries that represents positions in the Series that contain true values. The returned value can be
      * used to "select" data from this Series or from DataFrame containing this Series. Same as {@link #index(ValuePredicate)},
      * only usually much faster.
