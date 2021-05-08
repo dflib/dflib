@@ -1,7 +1,6 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.accumulator.BooleanAccumulator;
-import com.nhl.dflib.aggregate.DataFrameAggregation;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.filter.FilterIndexer;
@@ -714,11 +713,6 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public DataFrame stackIncludeNulls() {
         return Stacker.stackIncludeNulls(this);
-    }
-
-    @Override
-    public Series<?> agg(Aggregator<?>... aggregators) {
-        return DataFrameAggregation.aggDataFrame(this, aggregators);
     }
 
     @Override

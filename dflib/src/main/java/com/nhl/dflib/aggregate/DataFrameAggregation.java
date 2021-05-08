@@ -1,11 +1,6 @@
 package com.nhl.dflib.aggregate;
 
-import com.nhl.dflib.Aggregator;
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.GroupBy;
-import com.nhl.dflib.Index;
-import com.nhl.dflib.Series;
-import com.nhl.dflib.series.ArraySeries;
+import com.nhl.dflib.*;
 import com.nhl.dflib.accumulator.Accumulator;
 import com.nhl.dflib.accumulator.ObjectAccumulator;
 
@@ -16,16 +11,18 @@ import com.nhl.dflib.accumulator.ObjectAccumulator;
  */
 public class DataFrameAggregation {
 
-    public static Series<?> aggDataFrame(DataFrame dataFrame, Aggregator<?>... aggregators) {
+    public static DataFrame aggDataFrame(DataFrame dataFrame, Aggregator<?>... aggregators) {
 
         int aggW = aggregators.length;
         Object[] aggValues = new Object[aggW];
+        String[] aggLabels = new String[aggW];
 
         for (int i = 0; i < aggW; i++) {
             aggValues[i] = aggregators[i].aggregate(dataFrame);
+            aggLabels[i] = aggregators[i].aggregateLabel(dataFrame.getColumnsIndex());
         }
 
-        return new ArraySeries<>(aggValues);
+        return DataFrame.newFrame(Index.forLabelsDeduplicate(aggLabels)).addRow(aggValues).create();
     }
 
     public static DataFrame aggGroupBy(GroupBy groupBy, Aggregator<?>... aggregators) {

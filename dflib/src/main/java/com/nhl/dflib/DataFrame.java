@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.aggregate.DataFrameAggregation;
 import com.nhl.dflib.join.JoinBuilder;
 import com.nhl.dflib.pivot.PivotBuilder;
 import com.nhl.dflib.row.RowProxy;
@@ -723,15 +724,17 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * Aggregates DataFrame columns into a Series, using provided per-column aggregators. Note that aggregator
-     * positions correspond to returned Series value indexes and do not generally match column positions in this
-     * DataFrame.
+     * Aggregates DataFrame columns into a single-row DataFrame, using provided per-column aggregators. Note that
+     * aggregator positions correspond to returned DataFrame columns and do not generally match column positions
+     * in this DataFrame.
      *
      * @param aggregators an array of aggregators corresponding to the aggregated result columns
-     * @return an {@link Series} with aggregated results
+     * @return a DataFrame with a single row
      * @see Aggregator for static factory methods of column aggregators
      */
-    Series<?> agg(Aggregator<?>... aggregators);
+    default DataFrame agg(Aggregator<?>... aggregators) {
+        return DataFrameAggregation.aggDataFrame(this, aggregators);
+    }
 
     /**
      * An operation similar to SQL "GROUP BY" that partitions this DataFrame into a number of groups based on the values

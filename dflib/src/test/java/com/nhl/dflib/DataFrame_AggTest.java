@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.unit.SeriesAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
@@ -16,12 +16,14 @@ public class DataFrame_AggTest {
                 2, "y", "a", 2.5,
                 0, "a", "z", 0.001);
 
-        Series<?> s = df.agg(
+        DataFrame agg = df.agg(
                 Aggregator.sumLong("a"),
                 Aggregator.countLong(),
                 Aggregator.sumDouble("d"));
 
-        new SeriesAsserts(s).expectData(3L, 3L, 3.501);
+        new DataFrameAsserts(agg, "a", "_long_count", "d")
+                .expectHeight(1)
+                .expectRow(0, 3L, 3L, 3.501);
     }
 
     @Test
@@ -30,11 +32,13 @@ public class DataFrame_AggTest {
                 1, "x",
                 0, "a");
 
-        Series<?> s = df.agg(
+        DataFrame agg = df.agg(
                 Aggregator.countLong(),
                 Aggregator.countInt());
 
-        new SeriesAsserts(s).expectData(2L, 2);
+        new DataFrameAsserts(agg, "_long_count", "_int_count")
+                .expectHeight(1)
+                .expectRow(0, 2L, 2);
     }
 
     @Test
@@ -43,11 +47,13 @@ public class DataFrame_AggTest {
                 1, 1,
                 -1, 5L);
 
-        Series<?> s = df.agg(
+        DataFrame agg = df.agg(
                 Aggregator.sumInt("a"),
                 Aggregator.sumLong(1));
 
-        new SeriesAsserts(s).expectData(0, 6L);
+        new DataFrameAsserts(agg, "a", "b")
+                .expectHeight(1)
+                .expectRow(0, 0, 6L);
     }
 
     @Test
@@ -57,11 +63,13 @@ public class DataFrame_AggTest {
                 -1, 1,
                 8, 1);
 
-        Series<?> s = df.agg(
+        DataFrame agg = df.agg(
                 Aggregator.min("a"),
                 Aggregator.max("a"));
 
-        new SeriesAsserts(s).expectData(-1, 8);
+        new DataFrameAsserts(agg, "a", "a_")
+                .expectHeight(1)
+                .expectRow(0, -1, 8);
     }
 
     @Test
@@ -70,11 +78,13 @@ public class DataFrame_AggTest {
                 1, "x",
                 0, "a");
 
-        Series<?> s = df.agg(
+        DataFrame agg = df.agg(
                 Aggregator.concat("a", "_"),
                 Aggregator.concat(1, " ", "[", "]"));
 
-        new SeriesAsserts(s).expectData("1_0", "[x a]");
+        new DataFrameAsserts(agg, "a", "b")
+                .expectHeight(1)
+                .expectRow(0, "1_0", "[x a]");
     }
 
     @Test
@@ -84,8 +94,11 @@ public class DataFrame_AggTest {
                 2, "x",
                 1, "a");
 
-        Series<?> s = df.agg(Aggregator.set("a"), Aggregator.set(1));
-        new SeriesAsserts(s).expectData(new HashSet<>(asList(1, 2)), new HashSet<>(asList("x", "a")));
+        DataFrame agg = df.agg(Aggregator.set("a"), Aggregator.set(1));
+
+        new DataFrameAsserts(agg, "a", "b")
+                .expectHeight(1)
+                .expectRow(0, new HashSet<>(asList(1, 2)), new HashSet<>(asList("x", "a")));
     }
 
     @Test
@@ -95,8 +108,11 @@ public class DataFrame_AggTest {
                 2, "x",
                 1, "a");
 
-        Series<?> s = df.agg(Aggregator.list("a"), Aggregator.list(1));
-        new SeriesAsserts(s).expectData(asList(1, 2, 1), asList("x", "x", "a"));
+        DataFrame agg = df.agg(Aggregator.list("a"), Aggregator.list(1));
+
+        new DataFrameAsserts(agg, "a", "b")
+                .expectHeight(1)
+                .expectRow(0, asList(1, 2, 1), asList("x", "x", "a"));
     }
 
     @Test
@@ -105,11 +121,13 @@ public class DataFrame_AggTest {
                 1, 4L,
                 0, 55.5);
 
-        Series<?> s = df.agg(
+        DataFrame agg = df.agg(
                 Aggregator.averageDouble("a"),
                 Aggregator.averageDouble(1));
 
-        new SeriesAsserts(s).expectData(0.5, 29.75);
+        new DataFrameAsserts(agg, "a", "b")
+                .expectHeight(1)
+                .expectRow(0, 0.5, 29.75);
     }
 
     @Test
@@ -119,11 +137,13 @@ public class DataFrame_AggTest {
                 0, 55.5,
                 4, 0);
 
-        Series<?> s = df.agg(
+        DataFrame agg = df.agg(
                 Aggregator.medianDouble("a"),
                 Aggregator.medianDouble(1));
 
-        new SeriesAsserts(s).expectData(1., 55.5);
+        new DataFrameAsserts(agg, "a", "b")
+                .expectHeight(1)
+                .expectRow(0, 1., 55.5);
     }
 
     @Test
@@ -134,33 +154,39 @@ public class DataFrame_AggTest {
                 4, 0,
                 3, 5);
 
-        Series<?> s = df.agg(
+        DataFrame agg = df.agg(
                 Aggregator.medianDouble("a"),
                 Aggregator.medianDouble(1));
 
-        new SeriesAsserts(s).expectData(2., 30.25);
+        new DataFrameAsserts(agg, "a", "b")
+                .expectHeight(1)
+                .expectRow(0, 2., 30.25);
     }
 
     @Test
     public void test_median_zero() {
         DataFrame df = DataFrame.newFrame("a", "b").empty();
 
-        Series<?> s = df.agg(
+        DataFrame agg = df.agg(
                 Aggregator.medianDouble("a"),
                 Aggregator.medianDouble(1));
 
-        new SeriesAsserts(s).expectData(0., 0.);
+        new DataFrameAsserts(agg, "a", "b")
+                .expectHeight(1)
+                .expectRow(0, 0., 0.);
     }
 
     @Test
     public void test_median_one() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(1, 100);
 
-        Series<?> s = df.agg(
+        DataFrame agg = df.agg(
                 Aggregator.medianDouble("a"),
                 Aggregator.medianDouble(1));
 
-        new SeriesAsserts(s).expectData(1., 100.);
+        new DataFrameAsserts(agg, "a", "b")
+                .expectHeight(1)
+                .expectRow(0, 1., 100.);
     }
 
     @Test
@@ -171,11 +197,13 @@ public class DataFrame_AggTest {
                 4, 0,
                 null, 5);
 
-        Series<?> s = df.agg(
+        DataFrame agg = df.agg(
                 Aggregator.medianDouble("a"),
                 Aggregator.medianDouble(1));
 
-        new SeriesAsserts(s).expectData(1., 5.);
+        new DataFrameAsserts(agg, "a", "b")
+                .expectHeight(1)
+                .expectRow(0, 1., 5.);
     }
 
     @Test
@@ -184,22 +212,26 @@ public class DataFrame_AggTest {
                 1, 100,
                 2, 5);
 
-        Series<?> s = df.agg(
+        DataFrame agg = df.agg(
                 Aggregator.first("a"),
                 Aggregator.first(1));
 
-        new SeriesAsserts(s).expectData(1, 100);
+        new DataFrameAsserts(agg, "a", "b")
+                .expectHeight(1)
+                .expectRow(0, 1, 100);
     }
 
     @Test
     public void test_First_Empty() {
         DataFrame df = DataFrame.newFrame("a", "b").empty();
 
-        Series<?> s = df.agg(
+        DataFrame agg = df.agg(
                 Aggregator.first("a"),
                 Aggregator.first(1));
 
-        new SeriesAsserts(s).expectData(null, null);
+        new DataFrameAsserts(agg, "a", "b")
+                .expectHeight(1)
+                .expectRow(0, null, null);
     }
 
     @Test
@@ -208,11 +240,13 @@ public class DataFrame_AggTest {
                 1, null,
                 null, 5);
 
-        Series<?> s = df.agg(
+        DataFrame agg = df.agg(
                 Aggregator.first("a"),
                 Aggregator.first(1));
 
-        new SeriesAsserts(s).expectData(1, null);
+        new DataFrameAsserts(agg, "a", "b")
+                .expectHeight(1)
+                .expectRow(0, 1, null);
     }
 
     @Test
@@ -221,8 +255,10 @@ public class DataFrame_AggTest {
                 1, 100,
                 2, 5);
 
-        Series<?> s = df.agg(Aggregator.of(adf -> adf.height()));
+        DataFrame agg = df.agg(Aggregator.of(adf -> adf.height()));
 
-        new SeriesAsserts(s).expectData(2);
+        new DataFrameAsserts(agg, "of")
+                .expectHeight(1)
+                .expectRow(0, 2);
     }
 }
