@@ -9,9 +9,14 @@ import com.nhl.dflib.seriesexp.condition.BinarySeriesCondition;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.math.RoundingMode;
 
 public class DecimalExpFactory extends NumericExpFactory {
+
+    private static final MathContext divisionContext(BigDecimal n1, BigDecimal n2) {
+        return new MathContext(Math.max(15, 1 + Math.max(n1.scale(), n2.scale())), RoundingMode.HALF_UP);
+    }
 
     protected static SeriesExp<BigDecimal> cast(SeriesExp<?> exp) {
 
@@ -73,7 +78,22 @@ public class DecimalExpFactory extends NumericExpFactory {
                         // TODO: would be nice to be able to specify the result scale explicitly instead of first
                         //  inflating the scale, then trimming trailing zeros. It will not be as slow, and will not
                         //  overflow
-                        n1.divide(n2, Math.max(15, 1 + Math.max(n1.scale(), n2.scale())), RoundingMode.HALF_UP).stripTrailingZeros()));
+                        n1.divide(n2, divisionContext(n1, n2)).stripTrailingZeros()));
+    }
+
+    @Override
+    public NumericSeriesExp<?> mod(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
+        return new DecimalBinarySeriesExp("%",
+                cast(left),
+                cast(right),
+                BinarySeriesExp.toSeriesOp((BigDecimal n1, BigDecimal n2) ->
+
+                        // TODO: would be nice to be able to specify the result scale explicitly instead of first
+                        //  inflating the scale, then trimming trailing zeros. It will not be as slow, and will not
+                        //  overflow
+
+                        // TODO: result sign handling in a manner compatible with "%"
+                        n1.remainder(n2, divisionContext(n1, n2)).stripTrailingZeros()));
     }
 
     @Override

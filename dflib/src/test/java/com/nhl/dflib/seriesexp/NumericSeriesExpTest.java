@@ -174,6 +174,27 @@ public class NumericSeriesExpTest {
     }
 
     @Test
+    public void testIntModInt() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                2, 3,
+                3, 9);
+
+        Series<? extends Number> s = $int("b").mod($int("a")).eval(df);
+        new SeriesAsserts(s).expectData(1, 0);
+    }
+
+    @Test
+    public void testIntModVal() {
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                5,
+                0,
+                11);
+
+        Series<? extends Number> s = $int("a").mod(5).eval(df);
+        new SeriesAsserts(s).expectData(0, 0, 1);
+    }
+
+    @Test
     public void testDecimalAddDecimal() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 new BigDecimal("1.01"), new BigDecimal("2."),

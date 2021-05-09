@@ -187,6 +187,20 @@ public interface DoubleSeries extends Series<Double> {
     /**
      * @since 0.11
      */
+    default DoubleSeries mod(DoubleSeries s) {
+        int len = size();
+        DoubleAccumulator accumulator = new DoubleAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            accumulator.addDouble(this.getDouble(i) % s.getDouble(i));
+        }
+
+        return accumulator.toSeries();
+    }
+
+    /**
+     * @since 0.11
+     */
     default BooleanSeries lt(DoubleSeries s) {
         int len = size();
         BooleanAccumulator accumulator = new BooleanAccumulator(len);

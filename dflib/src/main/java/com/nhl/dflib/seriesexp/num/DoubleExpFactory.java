@@ -69,6 +69,15 @@ public class DoubleExpFactory extends NumericExpFactory {
     }
 
     @Override
+    public NumericSeriesExp<?> mod(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
+        return new DoubleBinarySeriesExp("%",
+                cast(left),
+                cast(right),
+                BinarySeriesExp.toSeriesOp((Double n1, Double n2) -> n1 % n2),
+                DoubleSeries::mod);
+    }
+
+    @Override
     public NumericSeriesExp<BigDecimal> castAsDecimal(NumericSeriesExp<?> exp, int scale) {
         return new DecimalUnarySeriesExp<>(cast(exp), UnarySeriesExp.toSeriesOp(d -> BigDecimal.valueOf(d).setScale(scale, RoundingMode.HALF_UP)));
     }

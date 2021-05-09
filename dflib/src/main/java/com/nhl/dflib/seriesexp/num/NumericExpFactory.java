@@ -59,6 +59,8 @@ public abstract class NumericExpFactory {
 
     public abstract NumericSeriesExp<?> divide(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right);
 
+    public abstract NumericSeriesExp<?> mod(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right);
+
     public abstract NumericSeriesExp<BigDecimal> castAsDecimal(NumericSeriesExp<?> exp, int scale);
 
     public abstract SeriesCondition lt(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right);

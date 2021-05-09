@@ -45,6 +45,15 @@ public interface NumericSeriesExp<N extends Number> extends SeriesExp<N> {
         return NumericExpFactory.factory(this, ve).divide(this, ve);
     }
 
+    default NumericSeriesExp<?> mod(SeriesExp<? extends Number> exp) {
+        return NumericExpFactory.factory(this, exp).mod(this, exp);
+    }
+
+    default NumericSeriesExp<?> mod(Number val) {
+        SeriesExp<? extends Number> ve = Exp.$val(val);
+        return NumericExpFactory.factory(this, ve).mod(this, ve);
+    }
+
     default NumericSeriesExp<BigDecimal> castAsDecimal(int scale) {
         return NumericExpFactory.factory(this).castAsDecimal(this, scale);
     }

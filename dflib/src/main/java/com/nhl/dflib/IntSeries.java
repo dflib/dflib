@@ -198,6 +198,20 @@ public interface IntSeries extends Series<Integer> {
     /**
      * @since 0.11
      */
+    default IntSeries mod(IntSeries s) {
+        int len = size();
+        IntAccumulator accumulator = new IntAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            accumulator.addInt(this.getInt(i) % s.getInt(i));
+        }
+
+        return accumulator.toSeries();
+    }
+
+    /**
+     * @since 0.11
+     */
     default BooleanSeries lt(IntSeries s) {
         int len = size();
         BooleanAccumulator accumulator = new BooleanAccumulator(len);

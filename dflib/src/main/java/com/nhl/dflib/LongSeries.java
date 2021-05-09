@@ -187,6 +187,21 @@ public interface LongSeries extends Series<Long> {
     /**
      * @since 0.11
      */
+    default LongSeries mod(LongSeries s) {
+        int len = size();
+        LongAccumulator accumulator = new LongAccumulator(len);
+
+        for (int i = 0; i < len; i++) {
+            accumulator.addLong(this.getLong(i) % s.getLong(i));
+        }
+
+        return accumulator.toSeries();
+    }
+
+
+    /**
+     * @since 0.11
+     */
     default BooleanSeries lt(LongSeries s) {
         int len = size();
         BooleanAccumulator accumulator = new BooleanAccumulator(len);
