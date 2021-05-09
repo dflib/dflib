@@ -30,12 +30,21 @@ public class SeriesExpAggregator<S, T> implements SeriesExp<T> {
 
     @Override
     public Series<T> eval(DataFrame df) {
-        T val = aggregator.apply(exp.eval(df));
+        return aggregate(extract(df));
+    }
+
+    protected Series<S> extract(DataFrame df) {
+        return exp.eval(df);
+    }
+
+    protected Series<T> aggregate(Series<S> s) {
+        T val = aggregator.apply(s);
         return new SingleValueSeries<>(val, 1);
     }
 
     @Override
     public String getName(DataFrame df) {
+        // TODO: wrap in the name of the aggregator function
         return exp.getName(df);
     }
 }

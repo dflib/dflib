@@ -9,7 +9,9 @@ import com.nhl.dflib.seriesexp.compat.ValuePredicateCondition;
  * applying aggregation function.
  *
  * @since 0.7
+ * @deprecated since 0.11 in favor of expression API
  */
+@Deprecated
 public class AggregatorBuilder {
 
     private SeriesCondition filter;

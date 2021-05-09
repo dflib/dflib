@@ -5,7 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DataFrame_AggFilteredTest {
+@Deprecated
+public class DataFrame_AggFilteredLegacyTest {
 
     @Test
     public void testSumInt() {
@@ -17,9 +18,9 @@ public class DataFrame_AggFilteredTest {
 
         DataFrame agg = df.agg(
                 // filter is applied to column 0, sum is applied to column 1
-                Exp.$int(1).sum(Exp.$int(0).mod(2).eq(0)),
+                Aggregator.filterRows(0, (Integer i) -> i % 2 == 0).sumInt(1),
                 // filter is applied to column 1, sum is applied to column 0
-                Exp.$int("a").sum(Exp.$int("b").mod(2).eq(1)));
+                Aggregator.filterRows("b", (Integer i) -> i % 2 == 1).sumInt("a"));
 
         new DataFrameAsserts(agg, "b", "a")
                 .expectHeight(1)
@@ -36,9 +37,9 @@ public class DataFrame_AggFilteredTest {
 
         DataFrame agg = df.agg(
                 // filter is applied to column 0, sum is applied to column 1
-                Exp.$long(1).sum(Exp.$int(0).mod(2).eq(0)),
+                Aggregator.filterRows(0, (Integer i) -> i % 2 == 0).sumLong(1),
                 // filter is applied to column 1, sum is applied to column 0
-                Exp.$long("a").sum(Exp.$int("b").mod(2).eq(1)));
+                Aggregator.filterRows("b", (Integer i) -> i % 2 == 1).sumLong("a"));
 
         new DataFrameAsserts(agg, "b", "a")
                 .expectHeight(1)
@@ -53,12 +54,9 @@ public class DataFrame_AggFilteredTest {
                 2.35, 6.5,
                 4.6, 5.1);
 
-
         DataFrame agg = df.agg(
-                // filter is applied to column 0, sum is applied to column 1
-                Exp.$double(1).sum(Exp.$double(0).lt(4)),
-                // filter is applied to column 1, sum is applied to column 0
-                Exp.$double("a").sum(Exp.$double("b").gt(5)));
+                Aggregator.filterRows(0, (Double i) -> i < 4).sumDouble(1),
+                Aggregator.filterRows("b", (Double i) -> i > 5).sumDouble("a"));
 
         new DataFrameAsserts(agg, "b", "a").expectHeight(1);
 
@@ -74,8 +72,8 @@ public class DataFrame_AggFilteredTest {
                 -4, 5);
 
         DataFrame agg = df.agg(
-                Exp.$col(1).first(Exp.$int(0).mod(2).eq(0)),
-                Exp.$col("a").first(Exp.$int("b").mod(2).eq(1)));
+                Aggregator.filterRows(0, (Integer i) -> i % 2 == 0).first(1),
+                Aggregator.filterRows("b", (Integer i) -> i % 2 == 1).first("a"));
 
         new DataFrameAsserts(agg, "b", "a")
                 .expectHeight(1)
@@ -83,37 +81,19 @@ public class DataFrame_AggFilteredTest {
     }
 
     @Test
-    public void testCount() {
+    public void testCountInt_CountLong() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 7, 1,
                 -1, 5,
                 -4, 5);
 
         DataFrame agg = df.agg(
-                Exp.count(Exp.$int(0).mod(2).eq(0)),
-                Exp.count(Exp.$int("b").mod(2).eq(1))
-        );
+                Aggregator.filterRows(0, (Integer i) -> i % 2 == 0).countInt(),
+                Aggregator.filterRows("b", (Integer i) -> i % 2 == 1).countLong());
 
-        new DataFrameAsserts(agg, "count", "count_")
+        new DataFrameAsserts(agg, "_int_count", "_long_count")
                 .expectHeight(1)
-                .expectRow(0, 1, 3);
-    }
-
-    @Test
-    public void testVConcat() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
-                7, 1,
-                -1, 5,
-                -4, 5,
-                8, 8);
-
-        DataFrame agg = df.agg(
-                Exp.$col(1).vConcat(Exp.$int(0).mod(2).eq(0), "_"),
-                Exp.$col("a").vConcat(Exp.$int("b").mod(2).eq(1), ", ", "[", "]"));
-
-        new DataFrameAsserts(agg, "b", "a")
-                .expectHeight(1)
-                .expectRow(0, "5_8", "[7, -1, -4]");
+                .expectRow(0, 1, 3L);
     }
 
     @Test
@@ -125,10 +105,10 @@ public class DataFrame_AggFilteredTest {
                 8L, 2L);
 
         DataFrame agg = df.agg(
-                Exp.$long(1).max(Exp.$long(0).mod(2).eq(0L)),
-                Exp.$long(1).min(Exp.$long(0).mod(2).eq(0L)),
-                Exp.$long("a").max(Exp.$long("b").mod(2).eq(1L)),
-                Exp.$long("a").min(Exp.$long("b").mod(2).eq(1L))
+                Aggregator.filterRows(0, (Long i) -> i % 2 == 0).max(1),
+                Aggregator.filterRows(0, (Long i) -> i % 2 == 0).min(1),
+                Aggregator.filterRows("b", (Long i) -> i % 2 == 1).max("a"),
+                Aggregator.filterRows("b", (Long i) -> i % 2 == 1).min("a")
         );
 
         new DataFrameAsserts(agg, "b", "b_", "a", "a_")
@@ -145,10 +125,10 @@ public class DataFrame_AggFilteredTest {
                 8, 2);
 
         DataFrame agg = df.agg(
-                Exp.$int(1).max(Exp.$int(0).mod(2).eq(0)),
-                Exp.$int(1).min(Exp.$int(0).mod(2).eq(0)),
-                Exp.$int("a").max(Exp.$int("b").mod(2).eq(1)),
-                Exp.$int("a").min(Exp.$int("b").mod(2).eq(1))
+                Aggregator.filterRows(0, (Integer i) -> i % 2 == 0).max(1),
+                Aggregator.filterRows(0, (Integer i) -> i % 2 == 0).min(1),
+                Aggregator.filterRows("b", (Integer i) -> i % 2 == 1).max("a"),
+                Aggregator.filterRows("b", (Integer i) -> i % 2 == 1).min("a")
         );
 
         new DataFrameAsserts(agg, "b", "b_", "a", "a_")
@@ -165,10 +145,10 @@ public class DataFrame_AggFilteredTest {
                 8., 2.);
 
         DataFrame agg = df.agg(
-                Exp.$double(1).max(Exp.$double(0).gt(5)),
-                Exp.$double(1).min(Exp.$double(0).gt(5)),
-                Exp.$double("a").max(Exp.$double("b").gt(5)),
-                Exp.$double("a").min(Exp.$double("b").gt(5))
+                Aggregator.filterRows(0, (Double d) -> d > 5).max(1),
+                Aggregator.filterRows(0, (Double d) -> d > 5).min(1),
+                Aggregator.filterRows("b", (Double d) -> d > 5).max("a"),
+                Aggregator.filterRows("b", (Double d) -> d > 5).min("a")
         );
 
         new DataFrameAsserts(agg, "b", "b_", "a", "a_")
@@ -184,8 +164,8 @@ public class DataFrame_AggFilteredTest {
                 0, 55.5);
 
         DataFrame agg = df.agg(
-                Exp.$double("a").avg(Exp.$int(0).ne(5)),
-                Exp.$double(1).avg(Exp.$int(0).ne(5)));
+                Aggregator.filterRows(0, (Integer i) -> i != 5).averageDouble("a"),
+                Aggregator.filterRows(0, (Integer i) -> i != 5).averageDouble(1));
 
         new DataFrameAsserts(agg, "a", "b")
                 .expectHeight(1)

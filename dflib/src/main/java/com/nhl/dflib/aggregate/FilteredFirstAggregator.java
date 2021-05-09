@@ -11,29 +11,29 @@ import com.nhl.dflib.SeriesExp;
 public class FilteredFirstAggregator<T> implements SeriesExp<T> {
 
     private final SeriesCondition rowFilter;
-    private final SeriesExp<T> aggregator;
+    private final SeriesExp<T> extractor;
 
     public FilteredFirstAggregator(
             SeriesCondition rowFilter,
-            SeriesExp<T> aggregator) {
+            SeriesExp<T> extractor) {
 
         this.rowFilter = rowFilter;
-        this.aggregator = aggregator;
+        this.extractor = extractor;
     }
 
     @Override
     public Series<T> eval(DataFrame df) {
         int index = rowFilter.firstMatch(df);
-        return index < 0 ? null : aggregator.eval(df.selectRows(index));
+        return index < 0 ? null : extractor.eval(df.selectRows(index));
     }
 
     @Override
     public String getName(DataFrame df) {
-        return aggregator.getName(df);
+        return extractor.getName(df);
     }
 
     @Override
     public Class<T> getType() {
-        return aggregator.getType();
+        return extractor.getType();
     }
 }

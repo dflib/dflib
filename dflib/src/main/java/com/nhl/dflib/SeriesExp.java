@@ -3,6 +3,8 @@ package com.nhl.dflib;
 import com.nhl.dflib.seriesexp.ExpSorter;
 import com.nhl.dflib.seriesexp.RenamedExp;
 import com.nhl.dflib.seriesexp.agg.AggregatorFunctions;
+import com.nhl.dflib.seriesexp.filter.PreFilterFirstMatchSeriesExp;
+import com.nhl.dflib.seriesexp.filter.PreFilteredSeriesExp;
 import com.nhl.dflib.seriesexp.agg.SeriesExpAggregator;
 import com.nhl.dflib.seriesexp.condition.BinarySeriesCondition;
 import com.nhl.dflib.seriesexp.condition.UnarySeriesCondition;
@@ -92,8 +94,17 @@ public interface SeriesExp<T> {
         return new SeriesExpAggregator<>(this, aggregator);
     }
 
+    default <A> SeriesExp<A> agg(SeriesCondition filter, Function<Series<T>, A> aggregator) {
+        return new PreFilteredSeriesExp<>(filter, agg(aggregator));
+    }
+
     default SeriesExp<T> first() {
         return agg(AggregatorFunctions.first());
+    }
+
+    default SeriesExp<T> first(SeriesCondition filter) {
+        // special handling of "first" that avoids full condition eval
+        return new PreFilterFirstMatchSeriesExp<>(filter, first());
     }
 
     /**
@@ -104,12 +115,20 @@ public interface SeriesExp<T> {
         return agg(AggregatorFunctions.concat(delimiter));
     }
 
+    default SeriesExp<String> vConcat(SeriesCondition filter, String delimiter) {
+        return agg(filter, AggregatorFunctions.concat(delimiter));
+    }
+
     /**
      * Aggregating operation that returns a single-value Series with a String of concatenated values separated by the
      * delimiter, preceded by the prefix and followed by the suffix.
      */
     default SeriesExp<String> vConcat(String delimiter, String prefix, String suffix) {
         return agg(AggregatorFunctions.concat(delimiter, prefix, suffix));
+    }
+
+    default SeriesExp<String> vConcat(SeriesCondition filter, String delimiter, String prefix, String suffix) {
+        return agg(filter, AggregatorFunctions.concat(delimiter, prefix, suffix));
     }
 
     /**

@@ -6,6 +6,7 @@ import com.nhl.dflib.seriesexp.agg.CountExp;
 import com.nhl.dflib.seriesexp.condition.AndSeriesCondition;
 import com.nhl.dflib.seriesexp.condition.BooleanColumn;
 import com.nhl.dflib.seriesexp.condition.OrSeriesCondition;
+import com.nhl.dflib.seriesexp.filter.PreFilteredCountExp;
 import com.nhl.dflib.seriesexp.func.ConcatFunction;
 import com.nhl.dflib.seriesexp.func.IfNullFunction;
 import com.nhl.dflib.seriesexp.num.DecimalColumn;
@@ -175,5 +176,9 @@ public interface Exp {
      */
     static SeriesExp<Integer> count() {
         return CountExp.getInstance();
+    }
+
+    static SeriesExp<Integer> count(SeriesCondition filter) {
+        return new PreFilteredCountExp(filter);
     }
 }

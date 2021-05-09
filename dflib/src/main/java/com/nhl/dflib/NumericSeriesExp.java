@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.seriesexp.filter.PreFilteredNumericSeriesExp;
 import com.nhl.dflib.seriesexp.num.NumericExpFactory;
 
 import java.math.BigDecimal;
@@ -98,19 +99,39 @@ public interface NumericSeriesExp<N extends Number> extends SeriesExp<N> {
         return NumericExpFactory.factory(this).sum(this);
     }
 
+    default NumericSeriesExp<?> sum(SeriesCondition filter) {
+        return new PreFilteredNumericSeriesExp<>(filter, sum());
+    }
+
     default NumericSeriesExp<?> min() {
         return NumericExpFactory.factory(this).min(this);
+    }
+
+    default NumericSeriesExp<?> min(SeriesCondition filter) {
+        return new PreFilteredNumericSeriesExp<>(filter, min());
     }
 
     default NumericSeriesExp<?> max() {
         return NumericExpFactory.factory(this).max(this);
     }
 
+    default NumericSeriesExp<?> max(SeriesCondition filter) {
+        return new PreFilteredNumericSeriesExp<>(filter, max());
+    }
+
     default NumericSeriesExp<?> avg() {
         return NumericExpFactory.factory(this).avg(this);
     }
 
+    default NumericSeriesExp<?> avg(SeriesCondition filter) {
+        return new PreFilteredNumericSeriesExp<>(filter, avg());
+    }
+
     default NumericSeriesExp<?> median() {
         return NumericExpFactory.factory(this).median(this);
+    }
+
+    default NumericSeriesExp<?> median(SeriesCondition filter) {
+        return new PreFilteredNumericSeriesExp<>(filter, median());
     }
 }
