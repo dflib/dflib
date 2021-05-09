@@ -92,7 +92,7 @@ public class DataFrame_AggTest {
                 2, "x",
                 1, "a");
 
-        DataFrame agg = df.agg(Aggregator.set("a"), Aggregator.set(1));
+        DataFrame agg = df.agg(Exp.$col("a").set(), Exp.$col(1).set());
 
         new DataFrameAsserts(agg, "a", "b")
                 .expectHeight(1)
@@ -106,7 +106,7 @@ public class DataFrame_AggTest {
                 2, "x",
                 1, "a");
 
-        DataFrame agg = df.agg(Aggregator.list("a"), Aggregator.list(1));
+        DataFrame agg = df.agg(Exp.$col("a").list(), Exp.$col(1).list());
 
         new DataFrameAsserts(agg, "a", "b")
                 .expectHeight(1)

@@ -1,13 +1,15 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.seriesexp.agg.AggregatorFunctions;
-import com.nhl.dflib.seriesexp.agg.SeriesExpAggregator;
 import com.nhl.dflib.seriesexp.ExpSorter;
 import com.nhl.dflib.seriesexp.RenamedExp;
+import com.nhl.dflib.seriesexp.agg.AggregatorFunctions;
+import com.nhl.dflib.seriesexp.agg.SeriesExpAggregator;
 import com.nhl.dflib.seriesexp.condition.BinarySeriesCondition;
 import com.nhl.dflib.seriesexp.condition.UnarySeriesCondition;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -95,18 +97,39 @@ public interface SeriesExp<T> {
     }
 
     /**
-     * Aggregating String concatenation operation that returns a single-value Series with a String of concatenated
-     * values separated by delimiter.
+     * Aggregating operation that returns a single-value Series with a String of concatenated values separated by
+     * the delimiter.
      */
     default SeriesExp<String> vConcat(String delimiter) {
         return agg(AggregatorFunctions.concat(delimiter));
     }
 
     /**
-     * Aggregating String concatenation operation that returns a single-value Series with a String of concatenated
-     * values separated by delimiter.
+     * Aggregating operation that returns a single-value Series with a String of concatenated values separated by the
+     * delimiter, preceded by the prefix and followed by the suffix.
      */
     default SeriesExp<String> vConcat(String delimiter, String prefix, String suffix) {
         return agg(AggregatorFunctions.concat(delimiter, prefix, suffix));
+    }
+
+    /**
+     * Aggregating operation that returns a single-value Series with all the values gathered into a single Set.
+     */
+    default SeriesExp<Set<T>> set() {
+        return agg(Series::toSet);
+    }
+
+    /**
+     * Aggregating operation that returns a single-value Series with all the values gathered into a single List.
+     */
+    default SeriesExp<List<T>> list() {
+        return agg(Series::toList);
+    }
+
+    /**
+     * Aggregating operation that returns a single-value Series with all the values gathered into a single List.
+     */
+    default SeriesExp<T[]> array(T[] template) {
+        return agg(s -> s.toArray(template));
     }
 }
