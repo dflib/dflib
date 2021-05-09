@@ -23,6 +23,11 @@ public class PreFilteredNumericSeriesExp<N extends Number> implements NumericSer
     }
 
     @Override
+    public Series<N> eval(Series<?> s) {
+        return delegate.eval(s.filter(filter));
+    }
+
+    @Override
     public String getName(DataFrame df) {
         return delegate.getName(df);
     }

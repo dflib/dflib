@@ -48,7 +48,7 @@ public class OrSeriesCondition extends ConjunctiveSeriesCondition {
         // since we are dealing with "or", it is enough to find the minimal first match among all columns
         for (int i = 0; i < len; i++) {
             int rx = parts[i].firstMatch(s);
-            r = Math.min(r, rx);
+            r = r < 0 ? rx : Math.min(r, rx);
 
             if (r == 0) {
                 return 0;

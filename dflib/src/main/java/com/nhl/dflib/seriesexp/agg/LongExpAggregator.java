@@ -37,6 +37,15 @@ public class LongExpAggregator<S> implements NumericSeriesExp<Long> {
     }
 
     @Override
+    public Series<Long> eval(Series<?> s) {
+        // TODO: optimize for primitive series.
+        //  E.g. "IntSeries.average()" is faster than "AggregatorFunctions.averageDouble()"
+
+        long val = aggregator.apply(exp.eval(s));
+        return new SingleValueSeries<>(val, 1);
+    }
+
+    @Override
     public String getName(DataFrame df) {
         return exp.getName(df);
     }

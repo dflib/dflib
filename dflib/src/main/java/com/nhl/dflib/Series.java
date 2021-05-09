@@ -365,6 +365,13 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
+     * @since 0.11
+     */
+    default <V> Series<V> eval(SeriesExp<V> exp) {
+        return exp.eval(this);
+    }
+
+    /**
      * @since 0.7
      */
     @Override
