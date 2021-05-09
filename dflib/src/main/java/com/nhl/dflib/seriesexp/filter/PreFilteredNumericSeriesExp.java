@@ -24,7 +24,7 @@ public class PreFilteredNumericSeriesExp<N extends Number> implements NumericSer
 
     @Override
     public Series<N> eval(Series<?> s) {
-        return delegate.eval(s.filter(filter));
+        return delegate.eval(s.select(filter));
     }
 
     @Override

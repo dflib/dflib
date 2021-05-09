@@ -27,7 +27,7 @@ public class PreFilteredSeriesExp<T> implements SeriesExp<T> {
 
     @Override
     public Series<T> eval(Series<?> s) {
-        return delegate.eval(s.filter(filter));
+        return delegate.eval(s.select(filter));
     }
 
     @Override
