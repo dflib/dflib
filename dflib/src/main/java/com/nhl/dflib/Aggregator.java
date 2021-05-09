@@ -1,10 +1,10 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.aggregate.*;
+import com.nhl.dflib.aggregate.AggregatorBuilder;
+import com.nhl.dflib.aggregate.DataFrameAggregator;
+import com.nhl.dflib.aggregate.LongCountAggregator;
 import com.nhl.dflib.seriesexp.agg.AggregatorFunctions;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -114,34 +114,6 @@ public interface Aggregator {
 
     static SeriesExp<Double> sumDouble(int column) {
         return ((SeriesExp<Number>) Exp.$col(column)).agg(AggregatorFunctions.sumDouble());
-    }
-
-    /**
-     * @since 0.11
-     */
-    static SeriesExp<BigDecimal> sumDecimal(String column) {
-        return ((SeriesExp<BigDecimal>) Exp.$col(column)).agg(AggregatorFunctions.sumDecimal());
-    }
-
-    /**
-     * @since 0.11
-     */
-    static SeriesExp<BigDecimal> sumDecimal(int column) {
-        return ((SeriesExp<BigDecimal>) Exp.$col(column)).agg(AggregatorFunctions.sumDecimal());
-    }
-
-    /**
-     * @since 0.11
-     */
-    static SeriesExp<BigDecimal> sumDecimal(String column, int resultScale, RoundingMode resultRoundingMode) {
-        return ((SeriesExp<BigDecimal>) Exp.$col(column)).agg(AggregatorFunctions.sumDecimal(resultScale, resultRoundingMode));
-    }
-
-    /**
-     * @since 0.11
-     */
-    static SeriesExp<BigDecimal> sumDecimal(int column, int resultScale, RoundingMode resultRoundingMode) {
-        return ((SeriesExp<BigDecimal>) Exp.$col(column)).agg(AggregatorFunctions.sumDecimal(resultScale, resultRoundingMode));
     }
 
     /**
