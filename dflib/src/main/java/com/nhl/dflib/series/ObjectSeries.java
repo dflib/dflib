@@ -1,14 +1,6 @@
 package com.nhl.dflib.series;
 
-import com.nhl.dflib.BooleanSeries;
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
-import com.nhl.dflib.IntSeries;
-import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesGroupBy;
-import com.nhl.dflib.ValueMapper;
-import com.nhl.dflib.ValuePredicate;
-import com.nhl.dflib.ValueToRowMapper;
+import com.nhl.dflib.*;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
 import com.nhl.dflib.map.Mapper;
@@ -129,6 +121,11 @@ public abstract class ObjectSeries<T> implements Series<T> {
     public Series<T> tail(int len) {
         int size = size();
         return len >= size ? this : rangeOpenClosed(size - len, size);
+    }
+
+    @Override
+    public Series<T> select(SeriesCondition condition) {
+        return select(condition.eval(this));
     }
 
     @Override

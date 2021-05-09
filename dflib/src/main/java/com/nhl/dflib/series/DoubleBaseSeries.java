@@ -1,16 +1,6 @@
 package com.nhl.dflib.series;
 
-import com.nhl.dflib.BooleanSeries;
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.DoublePredicate;
-import com.nhl.dflib.DoubleSeries;
-import com.nhl.dflib.Index;
-import com.nhl.dflib.IntSeries;
-import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesGroupBy;
-import com.nhl.dflib.ValueMapper;
-import com.nhl.dflib.ValuePredicate;
-import com.nhl.dflib.ValueToRowMapper;
+import com.nhl.dflib.*;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
 import com.nhl.dflib.map.Mapper;
@@ -69,8 +59,18 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
+    public Series<Double> select(SeriesCondition condition) {
+        return selectDouble(condition);
+    }
+
+    @Override
     public Series<Double> select(ValuePredicate<Double> p) {
         return selectDouble(p::test);
+    }
+
+    @Override
+    public DoubleSeries selectDouble(SeriesCondition condition) {
+        return selectDouble(condition.eval(this));
     }
 
     @Override

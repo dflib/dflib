@@ -53,6 +53,11 @@ public interface LongSeries extends Series<Long> {
 
     LongSeries headLong(int len);
 
+    /**
+     * @since 0.11
+     */
+    LongSeries filterLong(SeriesCondition condition);
+
     LongSeries tailLong(int len);
 
     /**

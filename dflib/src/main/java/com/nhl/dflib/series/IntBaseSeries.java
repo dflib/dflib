@@ -64,8 +64,18 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
+    public Series<Integer> select(SeriesCondition condition) {
+        return selectInt(condition);
+    }
+
+    @Override
     public Series<Integer> select(ValuePredicate<Integer> p) {
         return selectInt(p::test);
+    }
+
+    @Override
+    public IntSeries selectInt(SeriesCondition condition) {
+        return selectInt(condition.eval(this));
     }
 
     @Override

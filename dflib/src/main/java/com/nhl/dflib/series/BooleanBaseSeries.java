@@ -60,9 +60,22 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         return new BooleanArraySeries(data);
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+    public Series<Boolean> filter(SeriesCondition condition) {
+        return filterBoolean(condition);
+    }
+
+>>>>>>> 1a8f60f6 ( SeriesExp to eval against Series #128)
     @Override
     public Series<Boolean> select(ValuePredicate<Boolean> p) {
         return select(index(p));
+    }
+
+    @Override
+    public BooleanSeries selectBoolean(SeriesCondition condition) {
+        return selectBoolean(condition.eval(this));
     }
 
     @Override

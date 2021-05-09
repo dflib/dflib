@@ -2,6 +2,7 @@ package com.nhl.dflib.series;
 
 import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.SeriesCondition;
 import com.nhl.dflib.ValuePredicate;
 
 import java.util.Comparator;
@@ -31,6 +32,11 @@ public class EmptySeries<T> extends ObjectSeries<T> {
         if (fromOffset + len > 0) {
             throw new ArrayIndexOutOfBoundsException(fromOffset + len);
         }
+    }
+
+    @Override
+    public Series<T> select(SeriesCondition condition) {
+        return this;
     }
 
     @Override

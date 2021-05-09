@@ -1,25 +1,11 @@
 package com.nhl.dflib.series;
 
-import com.nhl.dflib.BooleanSeries;
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
-import com.nhl.dflib.IntSeries;
-import com.nhl.dflib.LongPredicate;
-import com.nhl.dflib.LongSeries;
-import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesGroupBy;
-import com.nhl.dflib.ValueMapper;
-import com.nhl.dflib.ValuePredicate;
-import com.nhl.dflib.ValueToRowMapper;
+import com.nhl.dflib.*;
+import com.nhl.dflib.accumulator.*;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
 import com.nhl.dflib.map.Mapper;
 import com.nhl.dflib.sample.Sampler;
-import com.nhl.dflib.accumulator.BooleanAccumulator;
-import com.nhl.dflib.accumulator.IntAccumulator;
-import com.nhl.dflib.accumulator.LongAccumulator;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
-import com.nhl.dflib.accumulator.UniqueLongAccumulator;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -69,8 +55,18 @@ public abstract class LongBaseSeries implements LongSeries {
     }
 
     @Override
+    public Series<Long> select(SeriesCondition condition) {
+        return selectLong(condition);
+    }
+
+    @Override
     public Series<Long> select(ValuePredicate<Long> p) {
         return selectLong(p::test);
+    }
+
+    @Override
+    public LongSeries selectLong(SeriesCondition condition) {
+        return selectLong(condition.eval(this));
     }
 
     @Override

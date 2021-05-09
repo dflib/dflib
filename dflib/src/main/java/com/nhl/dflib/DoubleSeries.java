@@ -58,6 +58,11 @@ public interface DoubleSeries extends Series<Double> {
     /**
      * @since 0.11
      */
+    DoubleSeries selectDouble(SeriesCondition condition);
+
+    /**
+     * @since 0.11
+     */
     DoubleSeries selectDouble(DoublePredicate p);
 
     /**
