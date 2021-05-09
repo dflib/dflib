@@ -1,9 +1,6 @@
 package com.nhl.dflib.benchmark.speed;
 
-import com.nhl.dflib.Aggregator;
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.GroupBy;
-import com.nhl.dflib.Series;
+import com.nhl.dflib.*;
 import com.nhl.dflib.benchmark.ValueMaker;
 import org.openjdk.jmh.annotations.*;
 
@@ -15,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(2)
 @State(Scope.Thread)
-public class DataFrameGroupBy {
+public class GroupBy {
 
     @Param("1000000")
     public int rows;
@@ -24,7 +21,7 @@ public class DataFrameGroupBy {
     public int groups;
 
     private DataFrame df;
-    private GroupBy gb;
+    private com.nhl.dflib.GroupBy gb;
 
     @Setup
     public void setUp() {
@@ -50,22 +47,22 @@ public class DataFrameGroupBy {
     }
 
     @Benchmark
-    public Object sumLongByName() {
-        return gb.agg(Aggregator.sumLong("c0"))
+    public Object sumByName() {
+        return gb.agg(Exp.$int("c0").sum())
                 .materialize()
                 .iterator();
     }
 
     @Benchmark
-    public Object sumLongByPos() {
-        return gb.agg(Aggregator.sumLong(0))
+    public Object sumByPos() {
+        return gb.agg(Exp.$int(0).sum())
                 .materialize()
                 .iterator();
     }
 
     @Benchmark
     public Object aggregateFirst() {
-        return gb.agg(Aggregator.first(0))
+        return gb.agg(Exp.$int(0).first())
                 .materialize()
                 .iterator();
     }

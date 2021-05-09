@@ -1,6 +1,7 @@
 package com.nhl.dflib.benchmark.speed;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Exp;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.benchmark.ValueMaker;
 import org.openjdk.jmh.annotations.*;
@@ -13,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(2)
 @State(Scope.Thread)
-public class DataFrameOperation {
+public class DataFrameAgg {
 
     @Param("5000000")
     public int rows;
@@ -34,32 +35,15 @@ public class DataFrameOperation {
     }
 
     @Benchmark
-    public Object filter() {
+    public Object median() {
+        return df.agg(Exp.$int("c0").median());
+    }
+
+    @Benchmark
+    public Object medianWithFilter() {
         return df
-                .filterRows("c0", (Integer i) -> i % 2 == 0)
-                .materialize()
-                .iterator();
-    }
-
-    @Benchmark
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public Object head() {
-        return df
-                .head(100)
-                .materialize()
-                .iterator();
-    }
-
-    @Benchmark
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public long height() {
-        return df.height();
-    }
-
-    @Benchmark
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public long width() {
-        return df.width();
+                .filterRows(Exp.$int("c0").mod(2).eq(0))
+                .agg(Exp.$int(0).median());
     }
 }
 
