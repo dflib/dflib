@@ -15,6 +15,7 @@ import static com.nhl.dflib.Exp.$val;
 /**
  * @since 0.11
  */
+// TODO: generic NarySeriesExp class?
 public class ConcatFunction implements SeriesExp<String> {
 
     protected static SeriesExp<String> cast(SeriesExp<?> exp) {
@@ -64,14 +65,29 @@ public class ConcatFunction implements SeriesExp<String> {
     @Override
     public Series<String> eval(DataFrame df) {
 
-        // TODO: generic NarySeriesExp class?
-
-        int h = df.height();
         int w = args.length;
         Series<String>[] columns = new Series[w];
         for (int i = 0; i < w; i++) {
             columns[i] = args[i].eval(df);
         }
+
+        return concatColumns(df.height(), columns);
+    }
+
+    @Override
+    public Series<String> eval(Series<?> s) {
+        int w = args.length;
+        Series<String>[] columns = new Series[w];
+        for (int i = 0; i < w; i++) {
+            columns[i] = args[i].eval(s);
+        }
+
+        return concatColumns(s.size(), columns);
+    }
+
+    protected Series<String> concatColumns(int h, Series<String>[] columns) {
+
+        int w = args.length;
 
         StringBuilder row = new StringBuilder();
         ObjectAccumulator<String> accum = new ObjectAccumulator<>(h);

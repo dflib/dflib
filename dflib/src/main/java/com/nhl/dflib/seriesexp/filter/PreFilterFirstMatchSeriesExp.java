@@ -28,6 +28,13 @@ public class PreFilterFirstMatchSeriesExp<T> implements SeriesExp<T> {
     }
 
     @Override
+    public Series<T> eval(Series<?> s) {
+        // Optimization - using "firstMatch" instead of full "eval"
+        int index = filter.firstMatch(s);
+        return delegate.eval(index < 0 ? s.select() : s.select(index));
+    }
+
+    @Override
     public String getName(DataFrame df) {
         return delegate.getName(df);
     }

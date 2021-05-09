@@ -33,4 +33,12 @@ public class CountExp implements SeriesExp<Integer> {
         // TODO: IntSingleValueSeries
         return new SingleValueSeries<>(c, 1);
     }
+
+    @Override
+    public Series<Integer> eval(Series<?> s) {
+        int c = s.size();
+
+        // TODO: IntSingleValueSeries
+        return new SingleValueSeries<>(c, 1);
+    }
 }

@@ -26,6 +26,11 @@ public class PreFilteredSeriesExp<T> implements SeriesExp<T> {
     }
 
     @Override
+    public Series<T> eval(Series<?> s) {
+        return delegate.eval(s.filter(filter));
+    }
+
+    @Override
     public String getName(DataFrame df) {
         return delegate.getName(df);
     }

@@ -22,7 +22,15 @@ public class BooleanColumn extends ColumnExp<Boolean> implements SeriesCondition
 
     @Override
     public BooleanSeries eval(DataFrame df) {
-        Series<?> c = super.eval(df);
+        Series<Boolean> c = super.eval(df);
+        return c instanceof BooleanSeries
+                ? (BooleanSeries) c
+                : BooleanSeries.forSeries(c, BooleanValueMapper.fromObject());
+    }
+
+    @Override
+    public BooleanSeries eval(Series<?> s) {
+        Series<Boolean> c = super.eval(s);
         return c instanceof BooleanSeries
                 ? (BooleanSeries) c
                 : BooleanSeries.forSeries(c, BooleanValueMapper.fromObject());

@@ -36,4 +36,13 @@ public class PreFilteredCountExp implements SeriesExp<Integer> {
         // TODO: IntSingleValueSeries
         return new SingleValueSeries<>(c, 1);
     }
+
+    @Override
+    public Series<Integer> eval(Series<?> s) {
+        // optmization: not rebuilding a filtered DataFrame ... Just count filter index
+        int c = filter.eval(s).countTrue();
+
+        // TODO: IntSingleValueSeries
+        return new SingleValueSeries<>(c, 1);
+    }
 }

@@ -32,11 +32,12 @@ public class UnarySeriesCondition<V> implements SeriesCondition {
 
     @Override
     public BooleanSeries eval(DataFrame df) {
-        return eval(exp.eval(df));
+        return op.apply(exp.eval(df));
     }
 
-    protected BooleanSeries eval(Series<V> s) {
-        return op.apply(s);
+    @Override
+    public BooleanSeries eval(Series<?> s) {
+        return op.apply(exp.eval(s));
     }
 
     /**

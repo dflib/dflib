@@ -33,8 +33,17 @@ public class SeriesExpAggregator<S, T> implements SeriesExp<T> {
         return aggregate(extract(df));
     }
 
+    @Override
+    public Series<T> eval(Series<?> s) {
+        return aggregate(extract(s));
+    }
+
     protected Series<S> extract(DataFrame df) {
         return exp.eval(df);
+    }
+
+    protected Series<S> extract(Series<?> s) {
+        return exp.eval(s);
     }
 
     protected Series<T> aggregate(Series<S> s) {

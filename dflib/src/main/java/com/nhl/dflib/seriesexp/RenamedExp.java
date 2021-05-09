@@ -35,6 +35,11 @@ public class RenamedExp<T> implements SeriesExp<T> {
     }
 
     @Override
+    public Series<T> eval(Series<?> s) {
+        return delegate.eval(s);
+    }
+
+    @Override
     public SeriesExp<T> as(String name) {
         return Objects.equals(name, this.name) ? this : new RenamedExp<>(name, delegate);
     }

@@ -36,6 +36,11 @@ public class UnarySeriesExp<F, T> implements SeriesExp<T> {
         return op.apply(exp.eval(df));
     }
 
+    @Override
+    public Series<T> eval(Series<?> s) {
+        return op.apply(exp.eval(s));
+    }
+
     /**
      * Utility method that converts a Function operating on individual values to a Function operating on object
      * Series. If F is null, the result is assumed to be null, and the "op" function is not invoked.

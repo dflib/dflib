@@ -47,4 +47,9 @@ public class ColumnExp<T> implements SeriesExp<T> {
     public Series<T> eval(DataFrame df) {
         return position >= 0 ? df.getColumn(position) : df.getColumn(name);
     }
+
+    @Override
+    public Series<T> eval(Series<?> s) {
+        return (Series<T>) s;
+    }
 }

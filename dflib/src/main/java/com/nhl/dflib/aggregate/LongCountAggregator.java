@@ -19,6 +19,12 @@ public class LongCountAggregator implements SeriesExp<Long> {
     }
 
     @Override
+    public Series<Long> eval(Series<?> s) {
+        // do not expect to be called on this deprecated class
+        throw new UnsupportedOperationException("Unsupported eval with Series... The class is deprecated, consider switching to Exp API");
+    }
+
+    @Override
     public String getName(DataFrame df) {
         return "countLong";
     }

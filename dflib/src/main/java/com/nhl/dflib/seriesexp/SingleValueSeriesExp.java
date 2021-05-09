@@ -34,4 +34,9 @@ public class SingleValueSeriesExp<T> implements SeriesExp<T> {
     public Series<T> eval(DataFrame df) {
         return new SingleValueSeries<>(value, df.height());
     }
+
+    @Override
+    public Series<T> eval(Series<?> s) {
+        return new SingleValueSeries<>(value, s.size());
+    }
 }

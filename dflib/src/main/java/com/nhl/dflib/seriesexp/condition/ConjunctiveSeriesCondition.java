@@ -2,6 +2,7 @@ package com.nhl.dflib.seriesexp.condition;
 
 import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.SeriesCondition;
 
 import java.util.Arrays;
@@ -49,6 +50,18 @@ public abstract class ConjunctiveSeriesCondition implements SeriesCondition {
 
         for (int i = 0; i < len; i++) {
             values[i] = parts[i].eval(df);
+        }
+
+        return op.apply(values);
+    }
+
+    @Override
+    public BooleanSeries eval(Series<?> s) {
+        int len = parts.length;
+        BooleanSeries[] values = new BooleanSeries[len];
+
+        for (int i = 0; i < len; i++) {
+            values[i] = parts[i].eval(s);
         }
 
         return op.apply(values);

@@ -46,6 +46,11 @@ public class BinarySeriesExp<L, R, T> implements SeriesExp<T> {
         return eval(left.eval(df), right.eval(df));
     }
 
+    @Override
+    public Series<T> eval(Series<?> s) {
+        return eval(left.eval(s), right.eval(s));
+    }
+
     protected Series<T> eval(Series<L> ls, Series<R> rs) {
         return op.apply(ls, rs);
     }

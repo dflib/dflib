@@ -30,26 +30,44 @@ public class IfNullFunction<T> implements SeriesExp<T> {
 
     @Override
     public Series<T> eval(DataFrame df) {
-        Series<T> s = exp.eval(df);
-        IntSeries nulls = s.index(v -> v == null);
+        Series<T> data = exp.eval(df);
+        IntSeries nullsIndex = data.index(v -> v == null);
 
-        int nullsLen = nulls.size();
+        int nullsLen = nullsIndex.size();
         if (nullsLen == 0) {
-            return s;
+            return data;
         }
 
-        Series<T> nullReplacements = ifNullExp.eval(df.selectRows(nulls));
+        return evalMergeReplacements(data, ifNullExp.eval(df.selectRows(nullsIndex)), nullsIndex);
+    }
 
-        // TODO: "s" is not a primitive Series by definition, but replacing nulls may produce a primitive-compatible
+    @Override
+    public Series<T> eval(Series<?> s) {
+        Series<T> data = exp.eval(s);
+        IntSeries nullsIndex = data.index(v -> v == null);
+
+        if (nullsIndex.size() == 0) {
+            return data;
+        }
+
+        return evalMergeReplacements(data, ifNullExp.eval(s.select(nullsIndex)), nullsIndex);
+    }
+
+    protected Series<T> evalMergeReplacements(Series<T> data, Series<T> nullReplacements, IntSeries nullsIndex) {
+        // TODO: "data" is not a primitive Series by definition, but replacing nulls may produce a primitive-compatible
         //  Series. See if we can exploit this fact for performance optimization
 
-        Object[] vals = new Object[s.size()];
-        s.copyTo(vals, 0, 0, vals.length);
+        Object[] vals = new Object[data.size()];
+        data.copyTo(vals, 0, 0, vals.length);
+
+        int nullsLen = nullsIndex.size();
 
         for (int i = 0; i < nullsLen; i++) {
-            vals[nulls.getInt(i)] = nullReplacements.get(i);
+            vals[nullsIndex.getInt(i)] = nullReplacements.get(i);
         }
 
         return (Series<T>) Series.forData(vals);
     }
+
+
 }

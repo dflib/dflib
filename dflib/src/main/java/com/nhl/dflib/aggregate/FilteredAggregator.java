@@ -18,6 +18,16 @@ public class FilteredAggregator<T> implements SeriesExp<T> {
     }
 
     @Override
+    public String getName(DataFrame df) {
+        return aggregator.getName(df);
+    }
+
+    @Override
+    public Class<T> getType() {
+        return aggregator.getType();
+    }
+
+    @Override
     public Series<T> eval(DataFrame df) {
         // TODO: we can probably gain significant performance improvements by not creating an intermediate filtered
         //  DataFrame (as most aggregators will only work with a single column)
@@ -26,12 +36,10 @@ public class FilteredAggregator<T> implements SeriesExp<T> {
     }
 
     @Override
-    public String getName(DataFrame df) {
-        return aggregator.getName(df);
-    }
+    public Series<T> eval(Series<?> s) {
+        // TODO: we can probably gain significant performance improvements by not creating an intermediate filtered
+        //  DataFrame (as most aggregators will only work with a single column)
 
-    @Override
-    public Class<T> getType() {
-        return aggregator.getType();
+        return aggregator.eval(s.filter(rowFilter));
     }
 }

@@ -29,6 +29,11 @@ public class DataFrameAggregator<T> implements SeriesExp<T> {
         return new SingleValueSeries<>(val, 1);
     }
 
+    @Override
+    public Series<T> eval(Series<?> s) {
+        // do not expect to be called on this deprecated class
+        throw new UnsupportedOperationException("Unsupported eval with Series... The class is deprecated, consider switching to Exp API");
+    }
 
     @Override
     public String getName(DataFrame df) {

@@ -37,9 +37,14 @@ public interface SeriesExp<T> {
     Class<T> getType();
 
     /**
-     * Evaluates expression against a DataFrame argument, returning a Series.
+     * Evaluates expression against the DataFrame argument, returning a Series result.
      */
     Series<T> eval(DataFrame df);
+
+    /**
+     * Evaluates expression against the Series argument, returning a Series result.
+     */
+    Series<T> eval(Series<?> s);
 
     /**
      * Returns a sorter that will use this expression for an ascending sort.

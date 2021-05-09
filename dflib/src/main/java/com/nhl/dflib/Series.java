@@ -113,6 +113,12 @@ public interface Series<T> extends Iterable<T> {
 
     Series<T> tail(int len);
 
+    /**
+     * @since 0.11
+     */
+    Series<T> select(SeriesCondition condition);
+
+
     default Series<T> select(int... positions) {
         return select(new IntArraySeries(positions));
     }
@@ -128,6 +134,7 @@ public interface Series<T> extends Iterable<T> {
      * @since 0.11
      */
     Series<T> select(BooleanSeries positions);
+
 
     /**
      * @since 0.6
