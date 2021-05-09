@@ -173,35 +173,35 @@ public interface Aggregator {
     }
 
     static SeriesExp<String> concat(String column, String delimiter) {
-        return Exp.$col(column).agg(AggregatorFunctions.concat(delimiter));
+        return Exp.$col(column).vConcat(delimiter);
     }
 
     static SeriesExp<String> concat(int column, String delimiter) {
-        return Exp.$col(column).agg(AggregatorFunctions.concat(delimiter));
+        return Exp.$col(column).vConcat(delimiter);
     }
 
     static SeriesExp<String> concat(String column, String delimiter, String prefix, String suffix) {
-        return Exp.$col(column).agg(AggregatorFunctions.concat(delimiter, prefix, suffix));
+        return Exp.$col(column).vConcat(delimiter, prefix, suffix);
     }
 
     static SeriesExp<String> concat(int column, String delimiter, String prefix, String suffix) {
-        return Exp.$col(column).agg(AggregatorFunctions.concat(delimiter, prefix, suffix));
+        return Exp.$col(column).vConcat(delimiter, prefix, suffix);
     }
 
     static <S> SeriesExp<List<S>> list(String column) {
-        return Exp.$col(column).agg(s -> (List<S>) s.toList());
+        return ((SeriesExp<S>) Exp.$col(column)).list();
     }
 
     static <S> SeriesExp<List<S>> list(int column) {
-        return Exp.$col(column).agg(s -> (List<S>) s.toList());
+        return ((SeriesExp<S>) Exp.$col(column)).list();
     }
 
     static <S> SeriesExp<Set<S>> set(String column) {
-        return Exp.$col(column).agg(s -> (Set<S>) s.toSet());
+        return ((SeriesExp<S>) Exp.$col(column)).set();
     }
 
     static <S> SeriesExp<Set<S>> set(int column) {
-        return Exp.$col(column).agg(s -> (Set<S>) s.toSet());
+        return ((SeriesExp<S>) Exp.$col(column)).set();
     }
 
     /**
