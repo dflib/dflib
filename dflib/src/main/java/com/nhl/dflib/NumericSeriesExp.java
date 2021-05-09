@@ -64,7 +64,7 @@ public interface NumericSeriesExp<N extends Number> extends SeriesExp<N> {
 
     default SeriesCondition lt(Number val) {
         SeriesExp<? extends Number> ve = Exp.$val(val);
-        return NumericExpFactory.factory(this, ve).ge(this, ve);
+        return NumericExpFactory.factory(this, ve).lt(this, ve);
     }
 
     default SeriesCondition le(SeriesExp<? extends Number> exp) {
