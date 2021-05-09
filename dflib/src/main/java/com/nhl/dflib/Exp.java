@@ -1,15 +1,18 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.seriesexp.ColumnExp;
+import com.nhl.dflib.seriesexp.SingleValueSeriesExp;
 import com.nhl.dflib.seriesexp.agg.CountExp;
-import com.nhl.dflib.seriesexp.condition.*;
+import com.nhl.dflib.seriesexp.condition.AndSeriesCondition;
+import com.nhl.dflib.seriesexp.condition.BooleanColumn;
+import com.nhl.dflib.seriesexp.condition.OrSeriesCondition;
+import com.nhl.dflib.seriesexp.func.ConcatFunction;
 import com.nhl.dflib.seriesexp.func.IfNullFunction;
 import com.nhl.dflib.seriesexp.num.DecimalColumn;
 import com.nhl.dflib.seriesexp.num.DoubleColumn;
 import com.nhl.dflib.seriesexp.num.IntColumn;
 import com.nhl.dflib.seriesexp.num.LongColumn;
 import com.nhl.dflib.seriesexp.str.StringColumn;
-import com.nhl.dflib.seriesexp.ColumnExp;
-import com.nhl.dflib.seriesexp.SingleValueSeriesExp;
 
 import java.math.BigDecimal;
 
@@ -159,6 +162,17 @@ public interface Exp {
         return new IfNullFunction<>(exp, $val(ifNull));
     }
 
+    /**
+     * A function that does String concatenation of its arguments. Arguments can be any mix of constant values and
+     * expressions.
+     */
+    static SeriesExp<String> concat(Object... valuesOrExps) {
+        return ConcatFunction.forObjects(valuesOrExps);
+    }
+
+    /**
+     * Aggregating function that returns a single-value Series with the count of rows in the input.
+     */
     static SeriesExp<Integer> count() {
         return CountExp.getInstance();
     }

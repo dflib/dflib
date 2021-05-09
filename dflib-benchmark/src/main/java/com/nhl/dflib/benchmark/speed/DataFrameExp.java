@@ -71,7 +71,7 @@ public class DataFrameExp {
 
     @Benchmark
     public Object mapStringViaExp() {
-        SeriesExp<String> concat = $str("c3").concat($str("c4"));
+        SeriesExp<String> concat = concat($str("c3"), $str("c4"));
         return concat.eval(df).materialize().iterator();
     }
 

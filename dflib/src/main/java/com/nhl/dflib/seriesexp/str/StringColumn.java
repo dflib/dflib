@@ -5,7 +5,7 @@ import com.nhl.dflib.seriesexp.ColumnExp;
 /**
  * @since 0.11
  */
-public class StringColumn extends ColumnExp<String> implements StringSeriesExp {
+public class StringColumn extends ColumnExp<String> {
 
     public StringColumn(String name) {
         super(name, String.class);
