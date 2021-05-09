@@ -71,14 +71,14 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void test_Concat() {
+    public void test_vConcat() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 0, "a");
 
         DataFrame agg = df.agg(
-                Aggregator.concat("a", "_"),
-                Aggregator.concat(1, " ", "[", "]"));
+                Exp.$str("a").vConcat("_"),
+                Exp.$str(1).vConcat(" ", "[", "]"));
 
         new DataFrameAsserts(agg, "a", "b")
                 .expectHeight(1)
