@@ -18,13 +18,13 @@ public class StrTest {
                 "1", "2", "3",
                 "4", "5", "6");
 
-        Series<String> s = $str("b").eval(df);
+        Series<?> s = $col("b").eval(df);
         new SeriesAsserts(s).expectData("2", "5");
     }
 
     @Test
     public void testNamed() {
-        SeriesExp<String> e = $str("b");
+        SeriesExp<?> e = $col("b");
         assertEquals("b", e.getName(mock(DataFrame.class)));
         assertEquals("c", e.as("c").getName(mock(DataFrame.class)));
     }
@@ -37,10 +37,10 @@ public class StrTest {
                 7, null, null,
                 8, "", "9");
 
-        Series<String> s1 = concat($str("b"), $int("a")).eval(df);
+        Series<String> s1 = concat($col("b"), $int("a")).eval(df);
         new SeriesAsserts(s1).expectData("21", "54", null, "8");
 
-        Series<String> s2 = concat("_", $str("b"), "]").eval(df);
+        Series<String> s2 = concat("_", $col("b"), "]").eval(df);
         new SeriesAsserts(s2).expectData("_2]", "_5]", null, "_]");
     }
 }

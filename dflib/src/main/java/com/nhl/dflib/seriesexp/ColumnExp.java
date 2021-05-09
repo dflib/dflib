@@ -18,9 +18,9 @@ public class ColumnExp<T> implements SeriesExp<T> {
     private final Class<T> type;
 
     public ColumnExp(String name, Class<T> type) {
+        this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
         this.position = -1;
-        this.type = type;
     }
 
     public ColumnExp(int position, Class<T> type) {
@@ -28,9 +28,9 @@ public class ColumnExp<T> implements SeriesExp<T> {
             throw new IllegalArgumentException("Position must nit be negative: " + position);
         }
 
+        this.type = Objects.requireNonNull(type);
         this.name = null;
         this.position = position;
-        this.type = type;
     }
 
     @Override

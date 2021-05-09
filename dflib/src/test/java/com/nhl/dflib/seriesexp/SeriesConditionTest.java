@@ -23,7 +23,7 @@ public class SeriesConditionTest {
                 null,
                 "5");
 
-        BooleanSeries s = $str("a").isNull().eval(df);
+        BooleanSeries s = $col("a").isNull().eval(df);
         new BooleanSeriesAsserts(s).expectData(false, false, true, false);
     }
 
@@ -35,7 +35,7 @@ public class SeriesConditionTest {
                 null,
                 "5");
 
-        BooleanSeries s = $str("a").isNotNull().eval(df);
+        BooleanSeries s = $col("a").isNotNull().eval(df);
         new BooleanSeriesAsserts(s).expectData(true, true, false, true);
     }
 
@@ -45,7 +45,7 @@ public class SeriesConditionTest {
                 "1", "1",
                 "4", "5");
 
-        BooleanSeries s = $str("b").eq($str("a")).eval(df);
+        BooleanSeries s = $col("b").eq($col("a")).eval(df);
         new BooleanSeriesAsserts(s).expectData(true, false);
     }
 
@@ -55,7 +55,7 @@ public class SeriesConditionTest {
                 "1", "1",
                 "4", "5");
 
-        BooleanSeries s = $str("b").ne($str("a")).eval(df);
+        BooleanSeries s = $col("b").ne($col("a")).eval(df);
         new BooleanSeriesAsserts(s).expectData(false, true);
     }
 
@@ -66,7 +66,7 @@ public class SeriesConditionTest {
                 "2", "2", true,
                 "4", "5", true);
 
-        BooleanSeries s = $str("b").eq($str("a")).and($bool("c")).eval(df);
+        BooleanSeries s = $col("b").eq($col("a")).and($bool("c")).eval(df);
         new BooleanSeriesAsserts(s).expectData(false, true, false);
     }
 
@@ -77,7 +77,7 @@ public class SeriesConditionTest {
                 "2", "2", true,
                 "4", "5", false);
 
-        BooleanSeries s = $str("b").eq($str("a")).or($bool("c")).eval(df);
+        BooleanSeries s = $col("b").eq($col("a")).or($bool("c")).eval(df);
         new BooleanSeriesAsserts(s).expectData(true, true, false);
     }
 

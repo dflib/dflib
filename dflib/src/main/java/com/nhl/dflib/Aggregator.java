@@ -56,92 +56,92 @@ public interface Aggregator {
      * @since 0.6
      */
     static SeriesExp<Double> averageDouble(String column) {
-        return ((SeriesExp<Number>) Exp.$col(column)).agg(AggregatorFunctions.averageDouble());
+        return Exp.$col(column, Number.class).agg(AggregatorFunctions.averageDouble());
     }
 
     /**
      * @since 0.6
      */
     static SeriesExp<Double> averageDouble(int column) {
-        return ((SeriesExp<Number>) Exp.$col(column)).agg(AggregatorFunctions.averageDouble());
+        return Exp.$col(column, Number.class).agg(AggregatorFunctions.averageDouble());
     }
 
     /**
      * @since 0.6
      */
     static SeriesExp<Double> medianDouble(String column) {
-        return ((SeriesExp<Number>) Exp.$col(column)).agg(AggregatorFunctions.medianDouble());
+        return Exp.$col(column, Number.class).agg(AggregatorFunctions.medianDouble());
     }
 
     /**
      * @since 0.6
      */
     static SeriesExp<Double> medianDouble(int column) {
-        return ((SeriesExp<Number>) Exp.$col(column)).agg(AggregatorFunctions.medianDouble());
+        return Exp.$col(column, Number.class).agg(AggregatorFunctions.medianDouble());
     }
 
     /**
      * @since 0.6
      */
     static SeriesExp<Long> sumLong(String column) {
-        return ((SeriesExp<Number>) Exp.$col(column)).agg(AggregatorFunctions.sumLong());
+        return Exp.$col(column, Number.class).agg(AggregatorFunctions.sumLong());
     }
 
     /**
      * @since 0.6
      */
     static SeriesExp<Long> sumLong(int column) {
-        return ((SeriesExp<Number>) Exp.$col(column)).agg(AggregatorFunctions.sumLong());
+        return Exp.$col(column, Number.class).agg(AggregatorFunctions.sumLong());
     }
 
     /**
      * @since 0.6
      */
     static SeriesExp<Integer> sumInt(String column) {
-        return ((SeriesExp<Number>) Exp.$col(column)).agg(AggregatorFunctions.sumInt());
+        return Exp.$col(column, Number.class).agg(AggregatorFunctions.sumInt());
     }
 
     /**
      * @since 0.6
      */
     static SeriesExp<Integer> sumInt(int column) {
-        return ((SeriesExp<Number>) Exp.$col(column)).agg(AggregatorFunctions.sumInt());
+        return Exp.$col(column, Number.class).agg(AggregatorFunctions.sumInt());
     }
 
     static SeriesExp<Double> sumDouble(String column) {
-        return ((SeriesExp<Number>) Exp.$col(column)).agg(AggregatorFunctions.sumDouble());
+        return Exp.$col(column, Number.class).agg(AggregatorFunctions.sumDouble());
     }
 
     static SeriesExp<Double> sumDouble(int column) {
-        return ((SeriesExp<Number>) Exp.$col(column)).agg(AggregatorFunctions.sumDouble());
+        return Exp.$col(column, Number.class).agg(AggregatorFunctions.sumDouble());
     }
 
     /**
      * @since 0.7
      */
     static <T extends Comparable<T>> SeriesExp<T> max(String column) {
-        return ((SeriesExp<T>) Exp.$col(column)).agg(AggregatorFunctions.max());
+        return Exp.<T>$col(column).agg(AggregatorFunctions.max());
     }
 
     /**
      * @since 0.7
      */
     static <T extends Comparable<T>> SeriesExp<T> max(int column) {
-        return ((SeriesExp<T>) Exp.$col(column)).agg(AggregatorFunctions.max());
+        return Exp.<T>$col(column).agg(AggregatorFunctions.max());
     }
 
     /**
      * @since 0.7
      */
     static <T extends Comparable<T>> SeriesExp<T> min(int column) {
-        return ((SeriesExp<T>) Exp.$col(column)).agg(AggregatorFunctions.min());
+        return Exp.<T>$col(column).agg(AggregatorFunctions.min());
     }
 
     /**
      * @since 0.7
      */
     static <T extends Comparable<T>> SeriesExp<T> min(String column) {
-        return ((SeriesExp<T>) Exp.$col(column)).agg(AggregatorFunctions.min());
+        return Exp.<T>$col(column).agg(AggregatorFunctions.min());
     }
 
     static SeriesExp<String> concat(String column, String delimiter) {

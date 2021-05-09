@@ -13,7 +13,6 @@ import com.nhl.dflib.seriesexp.num.DecimalColumn;
 import com.nhl.dflib.seriesexp.num.DoubleColumn;
 import com.nhl.dflib.seriesexp.num.IntColumn;
 import com.nhl.dflib.seriesexp.num.LongColumn;
-import com.nhl.dflib.seriesexp.str.StringColumn;
 
 import java.math.BigDecimal;
 
@@ -47,29 +46,43 @@ public interface Exp {
     /**
      * Returns an expression that evaluates to a named DataFrame column.
      */
-    static SeriesExp<?> $col(String name) {
-        return new ColumnExp<>(name, Object.class);
+    static <T> SeriesExp<T> $col(String name) {
+        return new ColumnExp(name, Object.class);
     }
 
     /**
      * Returns an expression that evaluates to a DataFrame column at a given position
      */
-    static SeriesExp<?> $col(int position) {
-        return new ColumnExp<>(position, Object.class);
+    static <T> SeriesExp<T> $col(int position) {
+        return new ColumnExp(position, Object.class);
+    }
+
+    /**
+     * Returns an expression that evaluates to a named DataFrame column.
+     */
+    static <T> SeriesExp<T> $col(String name, Class<T> type) {
+        return new ColumnExp<>(name, type);
+    }
+
+    /**
+     * Returns an expression that evaluates to a DataFrame column at a given position
+     */
+    static <T> SeriesExp<T> $col(int position, Class<T> type) {
+        return new ColumnExp<>(position, type);
     }
 
     /**
      * Returns an expression that evaluates to a named DataFrame String column.
      */
-    static StringColumn $str(String name) {
-        return new StringColumn(name);
+    static SeriesExp<String> $str(String name) {
+        return $col(name, String.class);
     }
 
     /**
      * Returns an expression that evaluates to a DataFrame String column at a given position.
      */
-    static StringColumn $str(int position) {
-        return new StringColumn(position);
+    static SeriesExp<String> $str(int position) {
+        return $col(position, String.class);
     }
 
     /**

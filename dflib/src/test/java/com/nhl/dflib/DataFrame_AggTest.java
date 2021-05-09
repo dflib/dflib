@@ -77,8 +77,8 @@ public class DataFrame_AggTest {
                 0, "a");
 
         DataFrame agg = df.agg(
-                Exp.$str("a").vConcat("_"),
-                Exp.$str(1).vConcat(" ", "[", "]"));
+                Exp.$col("a").vConcat("_"),
+                Exp.$col(1).vConcat(" ", "[", "]"));
 
         new DataFrameAsserts(agg, "a", "b")
                 .expectHeight(1)
