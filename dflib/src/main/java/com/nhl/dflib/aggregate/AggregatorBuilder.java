@@ -1,8 +1,6 @@
 package com.nhl.dflib.aggregate;
 
 import com.nhl.dflib.*;
-import com.nhl.dflib.seriesexp.compat.RowPredicateCondition;
-import com.nhl.dflib.seriesexp.compat.ValuePredicateCondition;
 
 /**
  * A builder of aggregators that can perform prefiltering and potentially other operations on the DataFrame before

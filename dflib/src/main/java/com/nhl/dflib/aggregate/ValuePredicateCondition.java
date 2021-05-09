@@ -1,14 +1,12 @@
-package com.nhl.dflib.seriesexp.compat;
+package com.nhl.dflib.aggregate;
 
 import com.nhl.dflib.*;
 
 /**
  * An adapter from {@link ValuePredicate} to a {@link SeriesCondition}.
- *
- * @since 0.11
  */
-// TODO: hopefully this one goes away once we switch everything to the Exp API
-public class ValuePredicateCondition<T> implements SeriesCondition {
+@Deprecated
+class ValuePredicateCondition<T> implements SeriesCondition {
 
     private final SeriesExp<T> exp;
     private final ValuePredicate<T> predicate;

@@ -1,15 +1,13 @@
-package com.nhl.dflib.seriesexp.compat;
+package com.nhl.dflib.aggregate;
 
 import com.nhl.dflib.*;
 import com.nhl.dflib.accumulator.BooleanAccumulator;
 
 /**
  * An adapter from {@link RowPredicate} to a {@link SeriesCondition}.
- *
- * @since 0.11
  */
-// TODO: hopefully this one goes away once we switch everything to the Exp API
-public class RowPredicateCondition implements SeriesCondition {
+@Deprecated
+class RowPredicateCondition implements SeriesCondition {
 
     private final RowPredicate predicate;
 
