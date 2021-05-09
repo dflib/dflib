@@ -10,7 +10,9 @@ import java.util.function.Function;
 
 /**
  * @since 0.6
+ * @deprecated since 0.11 replaced by the {@link com.nhl.dflib.Exp} based aggregation API
  */
+@Deprecated
 public class DataFrameAggregator<T> implements SeriesExp<T> {
 
     private Function<DataFrame, T> aggregator;

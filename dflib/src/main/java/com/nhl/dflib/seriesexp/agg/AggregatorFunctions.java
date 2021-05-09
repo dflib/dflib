@@ -2,7 +2,6 @@ package com.nhl.dflib.seriesexp.agg;
 
 import com.nhl.dflib.Series;
 import com.nhl.dflib.ValueMapper;
-import com.nhl.dflib.aggregate.SeriesMinMax;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

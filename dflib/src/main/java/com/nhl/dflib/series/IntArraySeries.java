@@ -5,7 +5,6 @@ import com.nhl.dflib.aggregate.PrimitiveSeriesAverage;
 import com.nhl.dflib.aggregate.PrimitiveSeriesMedian;
 import com.nhl.dflib.aggregate.PrimitiveSeriesMinMax;
 import com.nhl.dflib.aggregate.PrimitiveSeriesSum;
-import com.nhl.dflib.aggregate.SeriesMinMax;
 
 /**
  * @since 0.6

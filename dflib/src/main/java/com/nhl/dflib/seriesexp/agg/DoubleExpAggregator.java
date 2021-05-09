@@ -28,6 +28,8 @@ public class DoubleExpAggregator<S> implements NumericSeriesExp<Double> {
 
     @Override
     public Series<Double> eval(DataFrame df) {
+        // TODO: optimize for primitive series.
+        //  E.g. "IntSeries.average()" is faster than "AggregatorFunctions.averageDouble()"
         double val = aggregator.apply(exp.eval(df));
         return new SingleValueSeries<>(val, 1);
     }

@@ -4,7 +4,9 @@ import com.nhl.dflib.*;
 
 /**
  * @since 0.7
+ * @deprecated since 0.11 replaced by the {@link com.nhl.dflib.Exp} based aggregation API
  */
+@Deprecated
 public class FilteredAggregator<T> implements SeriesExp<T> {
 
     private SeriesCondition rowFilter;

@@ -7,7 +7,9 @@ import com.nhl.dflib.SeriesExp;
 
 /**
  * @since 0.7
+ * @deprecated since 0.11 replaced by the {@link com.nhl.dflib.Exp} based aggregation API
  */
+@Deprecated
 public class FilteredFirstAggregator<T> implements SeriesExp<T> {
 
     private final SeriesCondition rowFilter;
