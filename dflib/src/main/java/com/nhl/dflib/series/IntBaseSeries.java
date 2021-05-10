@@ -64,12 +64,12 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public Series<Integer> filter(ValuePredicate<Integer> p) {
-        return filterInt(p::test);
+    public Series<Integer> select(ValuePredicate<Integer> p) {
+        return selectInt(p::test);
     }
 
     @Override
-    public IntSeries filterInt(IntPredicate p) {
+    public IntSeries selectInt(IntPredicate p) {
         IntAccumulator filtered = new IntAccumulator();
 
         int len = size();
@@ -85,7 +85,7 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public IntSeries filterInt(BooleanSeries positions) {
+    public IntSeries selectInt(BooleanSeries positions) {
         int s = size();
         int ps = positions.size();
 
@@ -152,7 +152,7 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public Series<Integer> filter(BooleanSeries positions) {
+    public Series<Integer> select(BooleanSeries positions) {
         return filterInt(positions);
     }
 

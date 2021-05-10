@@ -69,12 +69,12 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
-    public Series<Double> filter(ValuePredicate<Double> p) {
-        return filterDouble(p::test);
+    public Series<Double> select(ValuePredicate<Double> p) {
+        return selectDouble(p::test);
     }
 
     @Override
-    public DoubleSeries filterDouble(DoublePredicate p) {
+    public DoubleSeries selectDouble(DoublePredicate p) {
         DoubleAccumulator filtered = new DoubleAccumulator();
 
         int len = size();
@@ -90,7 +90,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
-    public DoubleSeries filterDouble(BooleanSeries positions) {
+    public DoubleSeries selectDouble(BooleanSeries positions) {
         int s = size();
         int ps = positions.size();
 
@@ -110,7 +110,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
-    public Series<Double> filter(BooleanSeries positions) {
+    public Series<Double> select(BooleanSeries positions) {
         return filterDouble(positions);
     }
 

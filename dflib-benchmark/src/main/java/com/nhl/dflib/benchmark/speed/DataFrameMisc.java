@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(2)
 @State(Scope.Thread)
-public class DataFrameOperation {
+public class DataFrameMisc {
 
     @Param("5000000")
     public int rows;
@@ -31,14 +31,6 @@ public class DataFrameOperation {
         Series<String> c3 = ValueMaker.constStringSeq(string).series(rows);
 
         df = DataFrame.newFrame("c0", "c1", "c2", "c3").columns(c0, c1, c2, c3);
-    }
-
-    @Benchmark
-    public Object filter() {
-        return df
-                .filterRows("c0", (Integer i) -> i % 2 == 0)
-                .materialize()
-                .iterator();
     }
 
     @Benchmark

@@ -22,7 +22,7 @@ public class FilteredAggregator<T> implements SeriesExp<T> {
         // TODO: we can probably gain significant performance improvements by not creating an intermediate filtered
         //  DataFrame (as most aggregators will only work with a single column)
 
-        return aggregator.eval(df.filterRows(rowFilter));
+        return aggregator.eval(df.selectRows(rowFilter));
     }
 
     @Override

@@ -62,7 +62,18 @@ public interface BooleanSeries extends Series<Boolean> {
 
     BooleanSeries tailBoolean(int len);
 
-    BooleanSeries filterBoolean(BooleanSeries positions);
+    /**
+     * @since 0.11
+     */
+    BooleanSeries selectBoolean(BooleanSeries positions);
+
+    /**
+     * @deprecated since 0.11 in favor of {@link #selectBoolean(BooleanSeries)}
+     */
+    @Deprecated
+    default BooleanSeries filterBoolean(BooleanSeries positions) {
+        return selectBoolean(positions);
+    }
 
     /**
      * Returns the index of a first "true" value in the series, or -1 if all values are false.

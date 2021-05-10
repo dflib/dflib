@@ -55,9 +55,31 @@ public interface DoubleSeries extends Series<Double> {
 
     DoubleSeries tailDouble(int len);
 
-    DoubleSeries filterDouble(DoublePredicate p);
+    /**
+     * @since 0.11
+     */
+    DoubleSeries selectDouble(DoublePredicate p);
 
-    DoubleSeries filterDouble(BooleanSeries positions);
+    /**
+     * @since 0.11
+     */
+    DoubleSeries selectDouble(BooleanSeries positions);
+
+    /**
+     * @deprecated since 0.11 in favor of {@link #selectDouble(DoublePredicate)}
+     */
+    @Deprecated
+    default DoubleSeries filterDouble(DoublePredicate p) {
+        return selectDouble(p);
+    }
+
+    /**
+     * @deprecated since 0.11 in favor of {@link #selectDouble(BooleanSeries)}
+     */
+    @Deprecated
+    default DoubleSeries filterDouble(BooleanSeries positions) {
+        return selectDouble(positions);
+    }
 
     DoubleSeries sortDouble();
 

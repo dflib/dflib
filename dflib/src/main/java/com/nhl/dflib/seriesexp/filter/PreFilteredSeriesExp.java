@@ -22,7 +22,7 @@ public class PreFilteredSeriesExp<T> implements SeriesExp<T> {
 
     @Override
     public Series<T> eval(DataFrame df) {
-        return delegate.eval(df.filterRows(filter));
+        return delegate.eval(df.selectRows(filter));
     }
 
     @Override

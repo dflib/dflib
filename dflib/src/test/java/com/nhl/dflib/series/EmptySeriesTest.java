@@ -10,9 +10,9 @@ import java.util.Comparator;
 public class EmptySeriesTest {
 
     @Test
-    public void testFilter() {
+    public void testSelect() {
         Series<Object> s = new EmptySeries<>()
-                .filter(BooleanSeries.forBooleans(true, false));
+                .select(BooleanSeries.forBooleans(true, false));
 
         new SeriesAsserts(s).expectData();
     }

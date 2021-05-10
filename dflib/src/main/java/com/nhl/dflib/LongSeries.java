@@ -55,9 +55,31 @@ public interface LongSeries extends Series<Long> {
 
     LongSeries tailLong(int len);
 
-    LongSeries filterLong(LongPredicate p);
+    /**
+     * @since 0.11
+     */
+    LongSeries selectLong(LongPredicate p);
 
-    LongSeries filterLong(BooleanSeries positions);
+    /**
+     * @since 0.11
+     */
+    LongSeries selectLong(BooleanSeries positions);
+
+    /**
+     * @deprecated since 0.11 in favor of {@link #selectLong(LongPredicate)}
+     */
+    @Deprecated
+    default LongSeries filterLong(LongPredicate p) {
+        return selectLong(p);
+    }
+
+    /**
+     * @deprecated since 0.11 in favor of {@link #selectLong(BooleanSeries)}
+     */
+    @Deprecated
+    default LongSeries filterLong(BooleanSeries positions) {
+        return selectLong(positions);
+    }
 
     LongSeries sortLong();
 

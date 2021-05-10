@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.nhl.dflib.Exp.$int;
 
+@Deprecated
 public class DataFrame_FilterTest {
 
     @Test
@@ -33,7 +34,7 @@ public class DataFrame_FilterTest {
     public void testFilterRows_Exp() {
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(10, 20, 30, 40)
-                .filterRows($int("a").ge(20));
+                .selectRows($int("a").ge(20));
 
         new DataFrameAsserts(df, "a")
                 .expectHeight(3)

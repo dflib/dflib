@@ -137,7 +137,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
     }
 
     @Override
-    public Series<T> filter(ValuePredicate<T> p) {
+    public Series<T> select(ValuePredicate<T> p) {
 
         ObjectAccumulator<T> filtered = new ObjectAccumulator<>();
 
@@ -154,7 +154,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
     }
 
     @Override
-    public Series<T> filter(BooleanSeries positions) {
+    public Series<T> select(BooleanSeries positions) {
 
         int s = size();
         int ps = positions.size();

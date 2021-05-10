@@ -19,7 +19,7 @@ public class PreFilteredNumericSeriesExp<N extends Number> implements NumericSer
 
     @Override
     public Series<N> eval(DataFrame df) {
-        return delegate.eval(df.filterRows(filter));
+        return delegate.eval(df.selectRows(filter));
     }
 
     @Override

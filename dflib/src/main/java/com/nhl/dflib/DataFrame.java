@@ -151,7 +151,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     DataFrame tail(int len);
 
     /**
-     * Resolves this DataFrame to an implementation that evaluates internal mapping/concat/filter functions no more
+     * Resolves this DataFrame to an implementation that evaluates internal mapping/concat/select functions no more
      * than once, reusing the first evaluation result for subsequent iterations. Certain operations in DataFrame, such as
      * {@link #map(Index, RowMapper)}, etc. are materialized by default.
      *
@@ -604,28 +604,73 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     DataFrame selectRows(IntSeries rowPositions);
 
-    DataFrame filterRows(RowPredicate p);
+    /**
+     * @since 0.11
+     */
+    DataFrame selectRows(SeriesCondition condition);
 
-    default <V> DataFrame filterRows(String columnName, ValuePredicate<V> p) {
+
+    /**
+     * @since 0.11
+     */
+    DataFrame selectRows(RowPredicate p);
+
+    /**
+     * @since 0.11
+     */
+    default <V> DataFrame selectRows(String columnName, ValuePredicate<V> p) {
         int pos = getColumnsIndex().position(columnName);
-        return filterRows(pos, p);
+        return selectRows(pos, p);
     }
 
-    <V> DataFrame filterRows(int columnPos, ValuePredicate<V> p);
+    /**
+     * @since 0.11
+     */
+    <V> DataFrame selectRows(int columnPos, ValuePredicate<V> p);
+
+    /**
+     * Returns a DataFrame with subset of rows matching condition.
+     *
+     * @param condition a {@link BooleanSeries} whose "true" values indicate which rows to keep in the result
+     * @since 0.11
+     */
+    DataFrame selectRows(BooleanSeries condition);
+
+    /**
+     * @deprecated since 0.11 in favor of {@link #selectRows(RowPredicate)}
+     */
+    @Deprecated
+    default DataFrame filterRows(RowPredicate p) {
+        return selectRows(p);
+    }
+
+    /**
+     * @deprecated since 0.11 in favor of {@link #selectRows(String, ValuePredicate)}
+     */
+    @Deprecated
+    default <V> DataFrame filterRows(String columnName, ValuePredicate<V> p) {
+        return selectRows(columnName, p);
+    }
+
+    /**
+     * @deprecated since 0.11 in favor of {@link #selectRows(int, ValuePredicate)}
+     */
+    @Deprecated
+    default <V> DataFrame filterRows(int columnPos, ValuePredicate<V> p) {
+        return selectRows(columnPos, p);
+    }
 
     /**
      * Returns a DataFrame with subset of rows matching condition.
      *
      * @param condition a {@link BooleanSeries} whose "true" values indicate which
-     * @return
      * @since 0.6
+     * @deprecated since 0.11 in favor of {@link #selectRows(BooleanSeries)}
      */
-    DataFrame filterRows(BooleanSeries condition);
-
-    /**
-     * @since 0.11
-     */
-    DataFrame filterRows(SeriesCondition condition);
+    @Deprecated
+    default DataFrame filterRows(BooleanSeries condition) {
+        return selectRows(condition);
+    }
 
     /**
      * @since 0.11

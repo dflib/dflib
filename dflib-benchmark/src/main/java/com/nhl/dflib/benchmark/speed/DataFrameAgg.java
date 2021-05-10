@@ -42,7 +42,7 @@ public class DataFrameAgg {
     @Benchmark
     public Object medianWithFilter() {
         return df
-                .filterRows(Exp.$int("c0").mod(2).eq(0))
+                .selectRows(Exp.$int("c0").mod(2).eq(0))
                 .agg(Exp.$int(0).median());
     }
 }

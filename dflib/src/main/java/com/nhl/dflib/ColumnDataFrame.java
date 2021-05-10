@@ -3,7 +3,7 @@ package com.nhl.dflib;
 import com.nhl.dflib.accumulator.BooleanAccumulator;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.VConcat;
-import com.nhl.dflib.filter.FilterIndexer;
+import com.nhl.dflib.select.RowIndexer;
 import com.nhl.dflib.groupby.Grouper;
 import com.nhl.dflib.map.Mapper;
 import com.nhl.dflib.row.CrossColumnRowProxy;
@@ -272,15 +272,16 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public DataFrame filterRows(BooleanSeries condition) {
+    public DataFrame selectRows(BooleanSeries condition) {
         return selectRows(condition.indexTrue());
     }
 
     @Override
-    public DataFrame filterRows(RowPredicate p) {
-        IntSeries rowPositions = FilterIndexer.filteredIndex(this, p);
+    public DataFrame selectRows(RowPredicate p) {
 
-        // there's no reordering or index duplication during "filter", so we can compare size to detect changes
+        IntSeries rowPositions = RowIndexer.index(this, p);
+
+        // there's no reordering or index duplication during "select", so we can compare size to detect changes
         if (rowPositions.size() == height()) {
             return this;
         }
@@ -289,10 +290,10 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public <V> DataFrame filterRows(int columnPos, ValuePredicate<V> p) {
+    public <V> DataFrame selectRows(int columnPos, ValuePredicate<V> p) {
         IntSeries rowPositions = dataColumns[columnPos].index(p);
 
-        // there's no reordering or index duplication during "filter", so we can compare size to detect changes
+        // there's no reordering or index duplication during "select", so we can compare size to detect changes
         if (rowPositions.size() == height()) {
             return this;
         }
@@ -301,7 +302,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public DataFrame filterRows(SeriesCondition condition) {
+    public DataFrame selectRows(SeriesCondition condition) {
         return selectRows(condition.eval(this).indexTrue());
     }
 

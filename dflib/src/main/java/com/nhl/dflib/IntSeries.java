@@ -56,9 +56,30 @@ public interface IntSeries extends Series<Integer> {
 
     IntSeries tailInt(int len);
 
-    IntSeries filterInt(IntPredicate p);
+    /**
+     * @since 0.11
+     */
+    IntSeries selectInt(IntPredicate p);
 
-    IntSeries filterInt(BooleanSeries positions);
+    /**
+     * @since 0.11
+     */
+    IntSeries selectInt(BooleanSeries positions);
+
+    /**
+     * @deprecated since 0.11 in favor of {@link #selectInt(IntPredicate)}
+     */
+    @Deprecated
+    default IntSeries filterInt(IntPredicate p) {
+        return selectInt(p);
+    }
+
+    /**
+     * @deprecated since 0.11 in favor of {@link #selectInt(BooleanSeries)}
+     */
+    default IntSeries filterInt(BooleanSeries positions) {
+        return selectInt(positions);
+    }
 
     IntSeries sortInt();
 

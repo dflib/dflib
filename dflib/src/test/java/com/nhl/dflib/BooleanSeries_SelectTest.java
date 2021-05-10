@@ -1,11 +1,10 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.unit.SeriesAsserts;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BooleanSeries_SelectTest {
 
@@ -33,5 +32,13 @@ public class BooleanSeries_SelectTest {
         Series<Boolean> s = BooleanSeries.forBooleans(true, false, true).select(2, 1, -1);
         new SeriesAsserts(s).expectData(true, false, null);
         assertFalse(s instanceof BooleanSeries);
+    }
+
+    @Test
+    public void testBooleanCondition() {
+        BooleanSeries condition = BooleanSeries.forBooleans(false, true, true);
+        Series<Boolean> s = BooleanSeries.forBooleans(true, false, true).select(condition);
+        new SeriesAsserts(s).expectData(false, true);
+        Assertions.assertTrue(s instanceof BooleanSeries);
     }
 }

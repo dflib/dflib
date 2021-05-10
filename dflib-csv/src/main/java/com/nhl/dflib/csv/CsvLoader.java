@@ -92,9 +92,9 @@ public class CsvLoader {
      * @param columnName the name of the column the condition applies to
      * @param condition  column value condition that needs to be fulfilled for the row to be included in the resulting DataFrame.
      * @return this loader instance
-     * @since 0.8
+     * @since 0.11
      */
-    public <V> CsvLoader filterRows(String columnName, ValuePredicate<V> condition) {
+    public <V> CsvLoader selectRows(String columnName, ValuePredicate<V> condition) {
         rowFilters.add(RowFilterConfig.create(columnName, condition));
         return this;
     }
@@ -106,11 +106,41 @@ public class CsvLoader {
      * @param columnPos position of the column the condition applies to
      * @param condition column value condition that needs to be fulfilled for the row to be included in the resulting DataFrame.
      * @return this loader instance
-     * @since 0.8
+     * @since 0.11
      */
-    public <V> CsvLoader filterRows(int columnPos, ValuePredicate<V> condition) {
+    public <V> CsvLoader selectRows(int columnPos, ValuePredicate<V> condition) {
         rowFilters.add(RowFilterConfig.create(columnPos, condition));
         return this;
+    }
+
+    /**
+     * Configures CSV loader to only include rows that are matching the provided criterion. Applying the condition
+     * during load would allow to extract relevant data from very large CSVs.
+     *
+     * @param columnName the name of the column the condition applies to
+     * @param condition  column value condition that needs to be fulfilled for the row to be included in the resulting DataFrame.
+     * @return this loader instance
+     * @since 0.8
+     * @deprecated since 0.11 in favor of {@link #selectRows(String, ValuePredicate)}
+     */
+    @Deprecated
+    public <V> CsvLoader filterRows(String columnName, ValuePredicate<V> condition) {
+        return selectRows(columnName, condition);
+    }
+
+    /**
+     * Configures CSV loader to only include rows that are matching the provided criterion. Applying the condition
+     * during load would allow to extract relevant data from very large CSVs.
+     *
+     * @param columnPos position of the column the condition applies to
+     * @param condition column value condition that needs to be fulfilled for the row to be included in the resulting DataFrame.
+     * @return this loader instance
+     * @since 0.8
+     * @deprecated since 0.11 in favor of {@link #selectRows(int, ValuePredicate)}
+     */
+    @Deprecated
+    public <V> CsvLoader filterRows(int columnPos, ValuePredicate<V> condition) {
+        return selectRows(columnPos, condition);
     }
 
     /**

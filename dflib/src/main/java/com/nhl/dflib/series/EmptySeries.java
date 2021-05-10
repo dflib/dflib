@@ -34,12 +34,12 @@ public class EmptySeries<T> extends ObjectSeries<T> {
     }
 
     @Override
-    public Series<T> filter(ValuePredicate<T> p) {
+    public Series<T> select(ValuePredicate<T> p) {
         return this;
     }
 
     @Override
-    public Series<T> filter(BooleanSeries positions) {
+    public Series<T> select(BooleanSeries positions) {
         return this;
     }
 

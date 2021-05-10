@@ -20,11 +20,11 @@ public class CsvLoader_FilterTest {
     }
 
     @Test
-    public void testFilterRows_Pos() {
+    public void testPos() {
 
         DataFrame df = new CsvLoader()
                 .intColumn(0)
-                .filterRows(0, (Integer i) -> i % 2 == 0)
+                .selectRows(0, (Integer i) -> i % 2 == 0)
                 .load(new StringReader(csv()));
 
         new DataFrameAsserts(df, "A", "B")
@@ -35,11 +35,11 @@ public class CsvLoader_FilterTest {
     }
 
     @Test
-    public void testFilterRows_Name() {
+    public void testName() {
 
         DataFrame df = new CsvLoader()
                 .intColumn(0)
-                .filterRows("A", (Integer i) -> i % 2 == 0)
+                .selectRows("A", (Integer i) -> i % 2 == 0)
                 .load(new StringReader(csv()));
 
         new DataFrameAsserts(df, "A", "B")
@@ -50,14 +50,14 @@ public class CsvLoader_FilterTest {
     }
 
     @Test
-    public void testFilterRows_MultipleFilters() {
+    public void testMultipleFilters() {
 
         DataFrame df = new CsvLoader()
                 .intColumn(0)
                 .intColumn(1)
-                .filterRows("A", (Integer i) -> i % 2 == 0)
-                .filterRows("A", (Integer i) -> i > 2)
-                .filterRows("B", (Integer i) -> i == 12)
+                .selectRows("A", (Integer i) -> i % 2 == 0)
+                .selectRows("A", (Integer i) -> i > 2)
+                .selectRows("B", (Integer i) -> i == 12)
                 .load(new StringReader(csv()));
 
         new DataFrameAsserts(df, "A", "B")
@@ -66,11 +66,11 @@ public class CsvLoader_FilterTest {
     }
 
     @Test
-    public void testFilterRows_WithSampling() {
+    public void testWithSampling() {
 
         DataFrame df = new CsvLoader()
                 .intColumn(0)
-                .filterRows("A", (Integer i) -> i > 1)
+                .selectRows("A", (Integer i) -> i > 1)
                 .sampleRows(2, new Random(9))
                 .load(new StringReader(csv()));
 
@@ -81,11 +81,11 @@ public class CsvLoader_FilterTest {
     }
 
     @Test
-    public void testFilterRows_WithSampling_SmallerThanSampleSize() {
+    public void testWithSampling_SmallerThanSampleSize() {
 
         DataFrame df = new CsvLoader()
                 .intColumn(0)
-                .filterRows("A", (Integer i) -> i % 2 == 0)
+                .selectRows("A", (Integer i) -> i % 2 == 0)
                 .sampleRows(4, new Random(8))
                 .load(new StringReader(csv()));
 
@@ -97,12 +97,12 @@ public class CsvLoader_FilterTest {
     }
 
     @Test
-    public void testFilterRows_SelectColumns() {
+    public void testSelectColumns() {
 
         DataFrame df = new CsvLoader()
                 .intColumn("A")
                 .intColumn("B")
-                .filterRows("A", (Integer i) -> i % 2 == 0)
+                .selectRows("A", (Integer i) -> i % 2 == 0)
                 .selectColumns("B")
                 .load(new StringReader(csv()));
 

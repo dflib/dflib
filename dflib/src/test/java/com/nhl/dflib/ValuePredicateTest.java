@@ -12,7 +12,7 @@ public class ValuePredicateTest {
 
         DataFrame df = DataFrame.newFrame("a")
                 .foldByRow(10, 20, 30, 40)
-                .filterRows("a", ValuePredicate.isIn(20, 40));
+                .selectRows("a", ValuePredicate.isIn(20, 40));
 
         new DataFrameAsserts(df, "a")
                 .expectHeight(2)
@@ -25,7 +25,7 @@ public class ValuePredicateTest {
 
         DataFrame df = DataFrame.newFrame("a")
                 .foldByRow(10, 20, 30, 40)
-                .filterRows("a", ValuePredicate.isIn(asList(20, 40)));
+                .selectRows("a", ValuePredicate.isIn(asList(20, 40)));
 
         new DataFrameAsserts(df, "a")
                 .expectHeight(2)
@@ -40,7 +40,7 @@ public class ValuePredicateTest {
 
         DataFrame df = DataFrame.newFrame("a")
                 .foldByRow( 10, 20, 30, 40)
-                .filterRows("a", p);
+                .selectRows("a", p);
 
         new DataFrameAsserts(df, "a")
                 .expectHeight(1)
@@ -54,7 +54,7 @@ public class ValuePredicateTest {
 
         DataFrame df = DataFrame.newFrame("a")
                 .foldByRow(10, 20, 30, 40)
-                .filterRows("a", p);
+                .selectRows("a", p);
 
         new DataFrameAsserts(df, "a")
                 .expectHeight(3)
@@ -70,7 +70,7 @@ public class ValuePredicateTest {
 
         DataFrame df = DataFrame.newFrame("a")
                 .foldByRow(10, 20, 30, 40)
-                .filterRows("a", p);
+                .selectRows("a", p);
 
         new DataFrameAsserts(df, "a")
                 .expectHeight(2)

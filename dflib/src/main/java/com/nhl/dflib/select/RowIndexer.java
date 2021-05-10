@@ -1,13 +1,13 @@
-package com.nhl.dflib.filter;
+package com.nhl.dflib.select;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.RowPredicate;
 import com.nhl.dflib.accumulator.IntAccumulator;
 
-public class FilterIndexer {
+public class RowIndexer {
 
-    public static IntSeries filteredIndex(DataFrame source, RowPredicate p) {
+    public static IntSeries index(DataFrame source, RowPredicate p) {
 
         IntAccumulator index = new IntAccumulator();
         int[] i = new int[1];

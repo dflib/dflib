@@ -128,14 +128,32 @@ public interface Series<T> extends Iterable<T> {
     Series<T> select(IntSeries positions);
 
     /**
-     * @since 0.6
+     * @since 0.11
      */
-    Series<T> filter(ValuePredicate<T> p);
+    Series<T> select(ValuePredicate<T> p);
+
+    /**
+     * @since 0.11
+     */
+    Series<T> select(BooleanSeries positions);
 
     /**
      * @since 0.6
+     * @deprecated since 0.11 in favor of {@link #select(ValuePredicate)}
      */
-    Series<T> filter(BooleanSeries positions);
+    @Deprecated
+    default Series<T> filter(ValuePredicate<T> p) {
+        return select(p);
+    }
+
+    /**
+     * @since 0.6
+     * @deprecated since 0.11 in favor of {@link #select(BooleanSeries)}
+     */
+    @Deprecated
+    default Series<T> filter(BooleanSeries positions) {
+        return select(positions);
+    }
 
     // TODO: can't have "select(boolean...)" as it conflicts with "select(int...)". Should we change to "select(int, int...)" ?
 

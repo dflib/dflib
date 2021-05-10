@@ -87,32 +87,4 @@ public class DataFrameExp {
         SeriesExp<?> add = $double("c5").add($double("c6"));
         return add.eval(df).materialize().iterator();
     }
-
-    @Benchmark
-    public Object filterIntConditionViaLambda() {
-        return df.filterRows("c1", v -> ((Integer) v) >= 1_125_000)
-                .materialize()
-                .iterator();
-    }
-
-    @Benchmark
-    public Object filterIntConditionViaExp() {
-        return df.filterRows($int("c1").ge(1_125_000))
-                .materialize()
-                .iterator();
-    }
-
-    @Benchmark
-    public Object filterIntegerConditionViaLambda() {
-        return df.filterRows("c2", v -> ((Integer) v) >= 1_125_000)
-                .materialize()
-                .iterator();
-    }
-
-    @Benchmark
-    public Object filterIntegerConditionViaExp() {
-        return df.filterRows($int("c2").ge(1_125_000))
-                .materialize()
-                .iterator();
-    }
 }
