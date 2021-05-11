@@ -144,14 +144,6 @@ public class CsvLoader {
     }
 
     /**
-     * @deprecated since 0.7 in favor of {@link #header(String...)}
-     */
-    @Deprecated
-    public CsvLoader columns(String... columns) {
-        return header(columns);
-    }
-
-    /**
      * Provides an alternative header to the returned DataFrame. If set, the first row of CSV is treated as data, not
      * as header. Column names are assigned to CSV columns positionally from left to right. Header provided here must
      * have a size less or equal to the number of columns in the CSV.

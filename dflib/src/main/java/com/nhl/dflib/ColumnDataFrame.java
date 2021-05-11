@@ -154,12 +154,6 @@ public class ColumnDataFrame implements DataFrame {
         return addColumn(columnName, RowNumberer.sequence(height()));
     }
 
-    @Deprecated
-    @Override
-    public DataFrame addRowNumber(String columnName, int startValue) {
-        return addColumn(columnName, new IntSequenceSeries(startValue, height() + startValue));
-    }
-
     @Override
     public DataFrame head(int len) {
 

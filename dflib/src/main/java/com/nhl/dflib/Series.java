@@ -37,14 +37,6 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
-     * @deprecated since 0.8 in favor of {@link #getNominalType()}.
-     */
-    @Deprecated
-    default Class<?> getType() {
-        return getNominalType();
-    }
-
-    /**
      * Returns a "nominal" type of elements this Series object. Since most Series do not carry the type around, this
      * may be the "Object.class" in all cases except for primitive Series. Use a more expensive
      * {@link #getInferredType()} to check the real type of series values.

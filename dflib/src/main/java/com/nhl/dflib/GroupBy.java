@@ -3,10 +3,9 @@ package com.nhl.dflib;
 import com.nhl.dflib.aggregate.DataFrameAggregation;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.series.EmptySeries;
-import com.nhl.dflib.series.IntSequenceSeries;
-import com.nhl.dflib.sort.IntComparator;
 import com.nhl.dflib.sort.Comparators;
 import com.nhl.dflib.sort.DataFrameSorter;
+import com.nhl.dflib.sort.IntComparator;
 import com.nhl.dflib.window.DenseRanker;
 import com.nhl.dflib.window.Ranker;
 import com.nhl.dflib.window.RowNumberer;
@@ -78,37 +77,6 @@ public class GroupBy {
 
         // TODO: nulls will blow up on read... check for nulls and do something right here..
         return resolvedGroups.computeIfAbsent(key, this::resolveGroup);
-    }
-
-    /**
-     * A "window" function that converts this grouping into a Series that provides row numbers of each row within their
-     * group. The order of row numbers corresponds to the order of rows in the original DataFrame that was used to
-     * build the grouping. This Series can be added back to the original DataFrame, providing it with a per-group
-     * ranking column.
-     *
-     * @return a new Series object with row numbers of each row within their group. The overall order matches the order
-     * of the original DataFrame that was used to build the grouping.
-     * @deprecated since 0.8 in favor of {@link #rowNumber()}. The difference is that this method numbers rows starting
-     * with "0", while {@link #rowNumber()} starts with "1", as all other implementations of window functions do.
-     */
-    @Deprecated
-    public Series<Integer> rowNumbers() {
-        if (groupsIndex.size() == 0) {
-            return IntSeries.forInts();
-        }
-
-        IntSeries[] rowNumbers = new IntSeries[groupsIndex.size()];
-
-        int i = 0;
-        for (IntSeries s : groupsIndex.values()) {
-            rowNumbers[i] = new IntSequenceSeries(0, s.size());
-            i++;
-        }
-
-        IntSeries groupsIndexGlued = SeriesConcat.intConcat(groupsIndex.values());
-        IntSeries rowNumbersGlued = SeriesConcat.intConcat(rowNumbers);
-
-        return rowNumbersGlued.select(groupsIndexGlued.sortIndexInt());
     }
 
     /**
