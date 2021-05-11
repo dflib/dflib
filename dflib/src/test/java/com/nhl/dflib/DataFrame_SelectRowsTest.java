@@ -4,7 +4,7 @@ import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
-import static com.nhl.dflib.Exp.$int;
+import static com.nhl.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DataFrame_SelectRowsTest {
@@ -30,7 +30,7 @@ public class DataFrame_SelectRowsTest {
                 9, "y",
                 1, "z");
 
-       assertThrows(ArrayIndexOutOfBoundsException.class, () -> df.selectRows(0, 3).materialize());
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> df.selectRows(0, 3).materialize());
     }
 
     @Test
@@ -102,20 +102,6 @@ public class DataFrame_SelectRowsTest {
     }
 
     @Test
-    public void testRows_Exp() {
-
-        DataFrame df = DataFrame.newFrame("a")
-                .foldByRow(10, 20, 30, 40)
-                .selectRows($int("a").ge(20));
-
-        new DataFrameAsserts(df, "a")
-                .expectHeight(3)
-                .expectRow(0, 20)
-                .expectRow(1, 30)
-                .expectRow(2, 40);
-    }
-
-    @Test
     public void testWithBooleanSeries() {
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(10, 20, 30)
@@ -125,5 +111,51 @@ public class DataFrame_SelectRowsTest {
                 .expectHeight(2)
                 .expectRow(0, 10)
                 .expectRow(1, 30);
+    }
+
+    @Test
+    public void testExp_Ge() {
+
+        Condition c = $int("a").ge(20);
+
+        DataFrame df = DataFrame.newFrame("a")
+                .foldByRow(10, 20, 30, 40)
+                .selectRows(c);
+
+        new DataFrameAsserts(df, "a")
+                .expectHeight(3)
+                .expectRow(0, 20)
+                .expectRow(1, 30)
+                .expectRow(2, 40);
+    }
+
+    @Test
+    public void testExp_EqOr() {
+
+        Condition c = $col("b").eq($col("a")).or($bool("c"));
+
+        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+                "1", "1", false,
+                "2", "2", true,
+                "4", "5", false).selectRows(c);
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(2)
+                .expectRow(0, "1", "1", false)
+                .expectRow(1, "2", "2", true);
+    }
+
+    @Test
+    public void testExp_Lt() {
+
+        Condition c = $int("b").multiply($int("c")).lt($double("a").divide($int("d")));
+
+        DataFrame df = DataFrame.newFrame("a", "b", "c", "d").foldByRow(
+                1.01, -1, 0, 1,
+                60., 4, 8, 2).selectRows(c);
+
+        new DataFrameAsserts(df, "a", "b", "c", "d")
+                .expectHeight(1)
+                .expectRow(0, 1.01, -1, 0, 1);
     }
 }
