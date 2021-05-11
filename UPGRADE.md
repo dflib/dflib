@@ -10,8 +10,8 @@ a similar, but distinct `Exp` based API, there are a few breaking changes:
   different data types); it was losing labels information. Returning a small single-row DataFrame looks like a more 
   logical abstraction.
 
-  * `DataFrame.agg(..)` and `GroupBy.agg(..)` methods now take `SeriesExp...` instead of `Aggregator...`. `Agregator` 
-  static methods will still work, as they now return `SeriesExp...`, and are internally implemented using the new API. 
+  * `DataFrame.agg(..)` and `GroupBy.agg(..)` methods now take `Exp...` instead of `Aggregator...`. `Agregator` 
+  static methods will still work, as they now return `Exp...`, and are internally implemented using the new API. 
   But the class itself is deprecated, so you should look into replacing it with the new expressions.
 
 

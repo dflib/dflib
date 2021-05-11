@@ -1,7 +1,7 @@
 package com.nhl.dflib.exp.func;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.Exp;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +11,7 @@ public class IfNullFunctionTest {
 
     @Test
     public void testString() {
-        SeriesExp<String> noNulls = ifNull($str("a"), $str("b"));
+        Exp<String> noNulls = ifNull($str("a"), $str("b"));
 
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 "1", "2",
@@ -24,7 +24,7 @@ public class IfNullFunctionTest {
 
     @Test
     public void testNumber() {
-        SeriesExp<?> noNulls = ifNull($int("a"), $int("b"));
+        Exp<?> noNulls = ifNull($int("a"), $int("b"));
 
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, 2,
@@ -37,7 +37,7 @@ public class IfNullFunctionTest {
 
     @Test
     public void testConst() {
-        SeriesExp<?> noNulls = ifNull($int("a"), 77);
+        Exp<?> noNulls = ifNull($int("a"), 77);
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(
                 1,

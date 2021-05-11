@@ -296,7 +296,7 @@ public class GroupBy {
         return new GroupBy(ungrouped, sorted, sorter);
     }
 
-    public DataFrame agg(SeriesExp<?>... aggregators) {
+    public DataFrame agg(Exp<?>... aggregators) {
         return DataFrameAggregation.aggGroupBy(this, aggregators);
     }
 

@@ -3,13 +3,13 @@ package com.nhl.dflib.exp.filter;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.SeriesCondition;
-import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.Exp;
 import com.nhl.dflib.series.SingleValueSeries;
 
 /**
  * @since 0.11
  */
-public class PreFilteredCountExp implements SeriesExp<Integer> {
+public class PreFilteredCountExp implements Exp<Integer> {
 
     private final SeriesCondition filter;
 

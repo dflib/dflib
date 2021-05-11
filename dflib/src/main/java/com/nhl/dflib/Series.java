@@ -272,7 +272,7 @@ public interface Series<T> extends Iterable<T> {
      *
      * @since 0.6
      */
-    default <R> Series<R> agg(SeriesExp<R> aggregator) {
+    default <R> Series<R> agg(Exp<R> aggregator) {
         return aggregator.eval(this);
     }
 
@@ -282,7 +282,7 @@ public interface Series<T> extends Iterable<T> {
      *
      * @since 0.6
      */
-    default DataFrame aggMultiple(SeriesExp<?>... aggregators) {
+    default DataFrame aggMultiple(Exp<?>... aggregators) {
         return SeriesAggregation.aggAsDataFrame(this, aggregators);
     }
 
@@ -357,7 +357,7 @@ public interface Series<T> extends Iterable<T> {
     /**
      * @since 0.11
      */
-    default <V> Series<V> eval(SeriesExp<V> exp) {
+    default <V> Series<V> eval(Exp<V> exp) {
         return exp.eval(this);
     }
 

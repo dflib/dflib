@@ -10,9 +10,9 @@ import com.nhl.dflib.*;
 public class PreFilteredNumericExp<N extends Number> implements NumericExp<N> {
 
     private final SeriesCondition filter;
-    private final SeriesExp<N> delegate;
+    private final Exp<N> delegate;
 
-    public PreFilteredNumericExp(SeriesCondition filter, SeriesExp<N> delegate) {
+    public PreFilteredNumericExp(SeriesCondition filter, Exp<N> delegate) {
         this.filter = filter;
         this.delegate = delegate;
     }

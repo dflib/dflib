@@ -2,13 +2,13 @@ package com.nhl.dflib.exp.agg;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.Exp;
 import com.nhl.dflib.series.SingleValueSeries;
 
 /**
  * @since 0.11
  */
-public class CountExp implements SeriesExp<Integer> {
+public class CountExp implements Exp<Integer> {
 
     private static final CountExp instance = new CountExp();
 

@@ -7,12 +7,12 @@ import com.nhl.dflib.*;
  * @deprecated since 0.11 replaced by the {@link com.nhl.dflib.Exp} based aggregation API
  */
 @Deprecated
-public class FilteredAggregator<T> implements SeriesExp<T> {
+public class FilteredAggregator<T> implements Exp<T> {
 
     private SeriesCondition rowFilter;
-    private SeriesExp<T> aggregator;
+    private Exp<T> aggregator;
 
-    public FilteredAggregator(SeriesCondition rowFilter, SeriesExp<T> aggregator) {
+    public FilteredAggregator(SeriesCondition rowFilter, Exp<T> aggregator) {
         this.rowFilter = rowFilter;
         this.aggregator = aggregator;
     }

@@ -8,7 +8,7 @@ import com.nhl.dflib.series.SingleValueSeries;
  * @deprecated since 0.11 as it is no longer needed
  */
 @Deprecated
-public class LongCountAggregator implements SeriesExp<Long> {
+public class LongCountAggregator implements Exp<Long> {
 
     @Override
     public Series<Long> eval(DataFrame df) {

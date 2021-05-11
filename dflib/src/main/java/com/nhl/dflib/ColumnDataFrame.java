@@ -355,7 +355,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public DataFrame addColumns(SeriesExp<?>... exps) {
+    public DataFrame addColumns(Exp<?>... exps) {
 
         int extraWidth = exps.length;
         if (extraWidth == 0) {
@@ -438,7 +438,7 @@ public class ColumnDataFrame implements DataFrame {
      * @since 0.11
      */
     @Override
-    public DataFrame convertColumn(String name, SeriesExp<?> exp) {
+    public DataFrame convertColumn(String name, Exp<?> exp) {
         int pos = getColumnsIndex().position(name);
         return replaceColumn(pos, exp.eval(this));
     }
@@ -447,7 +447,7 @@ public class ColumnDataFrame implements DataFrame {
      * @since 0.11
      */
     @Override
-    public DataFrame convertColumn(int position, SeriesExp<?> exp) {
+    public DataFrame convertColumn(int position, Exp<?> exp) {
         return replaceColumn(position, exp.eval(this));
     }
 
@@ -545,7 +545,7 @@ public class ColumnDataFrame implements DataFrame {
      * @since 0.11
      */
     @Override
-    public DataFrame selectColumns(SeriesExp<?> exp0, SeriesExp<?>... otherExps) {
+    public DataFrame selectColumns(Exp<?> exp0, Exp<?>... otherExps) {
         int w = otherExps.length + 1;
         String[] labels = new String[w];
         labels[0] = exp0.getName(this);

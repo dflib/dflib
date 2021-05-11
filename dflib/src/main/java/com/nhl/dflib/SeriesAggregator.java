@@ -9,7 +9,7 @@ import java.util.Set;
 /**
  * @see Exp
  * @since 0.6
- * @deprecated since 0.11 in favor of aggregating {@link SeriesExp}
+ * @deprecated since 0.11 in favor of aggregating {@link Exp}
  */
 @Deprecated
 public interface SeriesAggregator {
@@ -20,107 +20,107 @@ public interface SeriesAggregator {
      *
      * @return a new SeriesAggregator
      */
-    static <S> SeriesExp<S> first() {
-        return (SeriesExp<S>) Exp.$col("").first().as("first");
+    static <S> Exp<S> first() {
+        return (Exp<S>) Exp.$col("").first().as("first");
     }
 
-    static SeriesExp<Long> countLong() {
+    static Exp<Long> countLong() {
         return new LongCountAggregator().as("contLong");
     }
 
-    static SeriesExp<Integer> countInt() {
+    static Exp<Integer> countInt() {
         return Exp.count().as("countInt");
     }
 
-    static SeriesExp<Double> averageDouble() {
+    static Exp<Double> averageDouble() {
         return Exp.$col("", Number.class).agg(AggregatorFunctions.averageDouble()).as("averageDouble");
     }
 
-    static SeriesExp<Double> medianDouble() {
+    static Exp<Double> medianDouble() {
         return Exp.$col("", Number.class).agg(AggregatorFunctions.medianDouble()).as("medianDouble");
     }
 
-    static SeriesExp<Integer> sumInt() {
+    static Exp<Integer> sumInt() {
         return Exp.$col("", Number.class).agg(AggregatorFunctions.sumInt()).as("sumInt");
     }
 
-    static SeriesExp<Long> sumLong() {
+    static Exp<Long> sumLong() {
         return Exp.$col("", Number.class).agg(AggregatorFunctions.sumLong()).as("sumLong");
     }
 
-    static SeriesExp<Double> sumDouble() {
+    static Exp<Double> sumDouble() {
         return Exp.$col("", Number.class).agg(AggregatorFunctions.sumDouble()).as("sumDouble");
     }
 
     /**
      * @since 0.7
      */
-    static <S extends Comparable<S>> SeriesExp<S> max() {
+    static <S extends Comparable<S>> Exp<S> max() {
         return Exp.<S>$col("").agg(AggregatorFunctions.max()).as("max");
     }
 
     /**
      * @since 0.7
      */
-    static <S extends Comparable<S>> SeriesExp<S> min() {
+    static <S extends Comparable<S>> Exp<S> min() {
         return Exp.<S>$col("").agg(AggregatorFunctions.min()).as("min");
     }
 
     /**
      * @since 0.7
      */
-    static SeriesExp<Integer> maxInt() {
+    static Exp<Integer> maxInt() {
         return Exp.<Integer>$col("").agg(AggregatorFunctions.maxInt()).as("maxInt");
     }
 
     /**
      * @since 0.7
      */
-    static SeriesExp<Long> maxLong() {
+    static Exp<Long> maxLong() {
         return Exp.<Long>$col("").agg(AggregatorFunctions.maxLong()).as("maxLong");
     }
 
     /**
      * @since 0.7
      */
-    static SeriesExp<Double> maxDouble() {
+    static Exp<Double> maxDouble() {
         return Exp.<Double>$col("").agg(AggregatorFunctions.maxDouble()).as("maxDouble");
     }
 
     /**
      * @since 0.7
      */
-    static SeriesExp<Integer> minInt() {
+    static Exp<Integer> minInt() {
         return Exp.<Integer>$col("").agg(AggregatorFunctions.minInt()).as("minInt");
     }
 
     /**
      * @since 0.7
      */
-    static SeriesExp<Long> minLong() {
+    static Exp<Long> minLong() {
         return Exp.<Long>$col("").agg(AggregatorFunctions.minLong()).as("minLong");
     }
 
     /**
      * @since 0.7
      */
-    static SeriesExp<Double> minDouble() {
+    static Exp<Double> minDouble() {
         return Exp.<Double>$col("").agg(AggregatorFunctions.minDouble()).as("minDouble");
     }
 
-    static SeriesExp<String> concat(String delimiter) {
+    static Exp<String> concat(String delimiter) {
         return Exp.$col("").vConcat(delimiter).as("concat");
     }
 
-    static SeriesExp<String> concat(String delimiter, String prefix, String suffix) {
+    static Exp<String> concat(String delimiter, String prefix, String suffix) {
         return Exp.$col("").vConcat(delimiter, prefix, suffix).as("concat");
     }
 
-    static <S> SeriesExp<List<S>> list() {
-        return ((SeriesExp<S>) Exp.$col("")).list().as("list");
+    static <S> Exp<List<S>> list() {
+        return ((Exp<S>) Exp.$col("")).list().as("list");
     }
 
-    static <S> SeriesExp<Set<S>> set() {
-        return ((SeriesExp<S>) Exp.$col("")).set().as("set");
+    static <S> Exp<Set<S>> set() {
+        return ((Exp<S>) Exp.$col("")).set().as("set");
     }
 }

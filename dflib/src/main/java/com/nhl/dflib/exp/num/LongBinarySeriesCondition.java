@@ -3,7 +3,7 @@ package com.nhl.dflib.exp.num;
 import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.LongSeries;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.Exp;
 import com.nhl.dflib.exp.condition.BinarySeriesCondition;
 
 import java.util.function.BiFunction;
@@ -17,8 +17,8 @@ public class LongBinarySeriesCondition extends BinarySeriesCondition<Long, Long>
 
     public LongBinarySeriesCondition(
             String opName,
-            SeriesExp<Long> left,
-            SeriesExp<Long> right,
+            Exp<Long> left,
+            Exp<Long> right,
             BiFunction<Series<Long>, Series<Long>, BooleanSeries> op,
             BiFunction<LongSeries, LongSeries, BooleanSeries> primitiveOp) {
 

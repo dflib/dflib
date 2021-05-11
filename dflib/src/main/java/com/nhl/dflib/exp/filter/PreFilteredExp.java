@@ -3,19 +3,19 @@ package com.nhl.dflib.exp.filter;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.SeriesCondition;
-import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.Exp;
 
 /**
  * An expression that applies a filter to the DataFrame before delegating processing to another expression.
  *
  * @since 0.11
  */
-public class PreFilteredSeriesExp<T> implements SeriesExp<T> {
+public class PreFilteredExp<T> implements Exp<T> {
 
     private final SeriesCondition filter;
-    private final SeriesExp<T> delegate;
+    private final Exp<T> delegate;
 
-    public PreFilteredSeriesExp(SeriesCondition filter, SeriesExp<T> delegate) {
+    public PreFilteredExp(SeriesCondition filter, Exp<T> delegate) {
         this.filter = filter;
         this.delegate = delegate;
     }

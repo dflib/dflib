@@ -2,7 +2,7 @@ package com.nhl.dflib.exp;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.Exp;
 
 import java.util.Objects;
 
@@ -11,7 +11,7 @@ import java.util.Objects;
  *
  * @since 0.11
  */
-public class ColumnExp<T> implements SeriesExp<T> {
+public class ColumnExp<T> implements Exp<T> {
 
     private final int position;
     private final String name;

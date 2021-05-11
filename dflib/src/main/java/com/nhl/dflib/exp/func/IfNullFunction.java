@@ -3,17 +3,17 @@ package com.nhl.dflib.exp.func;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.Exp;
 
 /**
  * @since 0.11
  */
-public class IfNullFunction<T> implements SeriesExp<T> {
+public class IfNullFunction<T> implements Exp<T> {
 
-    private final SeriesExp<T> exp;
-    private final SeriesExp<T> ifNullExp;
+    private final Exp<T> exp;
+    private final Exp<T> ifNullExp;
 
-    public IfNullFunction(SeriesExp<T> exp, SeriesExp<T> ifNullExp) {
+    public IfNullFunction(Exp<T> exp, Exp<T> ifNullExp) {
         this.exp = exp;
         this.ifNullExp = ifNullExp;
     }

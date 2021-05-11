@@ -3,21 +3,21 @@ package com.nhl.dflib.aggregate;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.SeriesCondition;
-import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.Exp;
 
 /**
  * @since 0.7
  * @deprecated since 0.11 replaced by the {@link com.nhl.dflib.Exp} based aggregation API
  */
 @Deprecated
-public class FilteredFirstAggregator<T> implements SeriesExp<T> {
+public class FilteredFirstAggregator<T> implements Exp<T> {
 
     private final SeriesCondition rowFilter;
-    private final SeriesExp<T> extractor;
+    private final Exp<T> extractor;
 
     public FilteredFirstAggregator(
             SeriesCondition rowFilter,
-            SeriesExp<T> extractor) {
+            Exp<T> extractor) {
 
         this.rowFilter = rowFilter;
         this.extractor = extractor;

@@ -8,10 +8,10 @@ import com.nhl.dflib.*;
 @Deprecated
 class ValuePredicateCondition<T> implements SeriesCondition {
 
-    private final SeriesExp<T> exp;
+    private final Exp<T> exp;
     private final ValuePredicate<T> predicate;
 
-    public ValuePredicateCondition(SeriesExp<T> exp, ValuePredicate<T> predicate) {
+    public ValuePredicateCondition(Exp<T> exp, ValuePredicate<T> predicate) {
         this.predicate = predicate;
         this.exp = exp;
     }

@@ -3,7 +3,7 @@ package com.nhl.dflib.exp.agg;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.NumericExp;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.Exp;
 import com.nhl.dflib.series.SingleValueSeries;
 
 import java.util.function.Function;
@@ -13,10 +13,10 @@ import java.util.function.Function;
  */
 public class LongExpAggregator<S> implements NumericExp<Long> {
 
-    private final SeriesExp<S> exp;
+    private final Exp<S> exp;
     private final Function<Series<S>, Long> aggregator;
 
-    public LongExpAggregator(SeriesExp<S> exp, Function<Series<S>, Long> aggregator) {
+    public LongExpAggregator(Exp<S> exp, Function<Series<S>, Long> aggregator) {
         this.exp = exp;
         this.aggregator = aggregator;
     }

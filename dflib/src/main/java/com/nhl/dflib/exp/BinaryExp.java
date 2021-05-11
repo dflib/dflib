@@ -2,7 +2,7 @@ package com.nhl.dflib.exp;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.Exp;
 import com.nhl.dflib.accumulator.ObjectAccumulator;
 
 import java.util.function.BiFunction;
@@ -10,19 +10,19 @@ import java.util.function.BiFunction;
 /**
  * @since 0.11
  */
-public class BinarySeriesExp<L, R, T> implements SeriesExp<T> {
+public class BinaryExp<L, R, T> implements Exp<T> {
 
     private final String opName;
     private final Class<T> type;
-    private final SeriesExp<L> left;
-    private final SeriesExp<R> right;
+    private final Exp<L> left;
+    private final Exp<R> right;
     private final BiFunction<Series<L>, Series<R>, Series<T>> op;
 
-    public BinarySeriesExp(
+    public BinaryExp(
             String opName,
             Class<T> type,
-            SeriesExp<L> left,
-            SeriesExp<R> right,
+            Exp<L> left,
+            Exp<R> right,
             BiFunction<Series<L>, Series<R>, Series<T>> op) {
         this.opName = opName;
         this.type = type;

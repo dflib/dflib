@@ -2,7 +2,7 @@ package com.nhl.dflib.exp;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.Exp;
 import com.nhl.dflib.Sorter;
 import com.nhl.dflib.sort.Comparators;
 import com.nhl.dflib.sort.IntComparator;
@@ -14,10 +14,10 @@ import com.nhl.dflib.sort.IntComparator;
  */
 public class ExpSorter implements Sorter {
 
-    private final SeriesExp<?> exp;
+    private final Exp<?> exp;
     private final boolean ascending;
 
-    public ExpSorter(SeriesExp<?> exp, boolean ascending) {
+    public ExpSorter(Exp<?> exp, boolean ascending) {
         this.exp = exp;
         this.ascending = ascending;
     }

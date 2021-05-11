@@ -157,7 +157,7 @@ public class PivotBuilder {
 
         return chunk.group(rowColumnName).agg(
                 Aggregator.first(rowColumnName),
-                ((SeriesExp<S>) Exp.$col(1)).as(valueColumnName).agg(valuesAggregator)
+                ((Exp<S>) Exp.$col(1)).as(valueColumnName).agg(valuesAggregator)
         );
     }
 

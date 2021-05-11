@@ -2,7 +2,7 @@ package com.nhl.dflib.exp.condition;
 
 import com.nhl.dflib.*;
 import com.nhl.dflib.accumulator.BooleanAccumulator;
-import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.Exp;
 
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -13,11 +13,11 @@ import java.util.function.BiPredicate;
 public class BinarySeriesCondition<L, R> implements SeriesCondition {
 
     private final String opName;
-    protected final SeriesExp<L> left;
-    protected final SeriesExp<R> right;
+    protected final Exp<L> left;
+    protected final Exp<R> right;
     private final BiFunction<Series<L>, Series<R>, BooleanSeries> op;
 
-    public BinarySeriesCondition(String opName, SeriesExp<L> left, SeriesExp<R> right, BiFunction<Series<L>, Series<R>, BooleanSeries> op) {
+    public BinarySeriesCondition(String opName, Exp<L> left, Exp<R> right, BiFunction<Series<L>, Series<R>, BooleanSeries> op) {
         this.opName = opName;
         this.left = left;
         this.right = right;

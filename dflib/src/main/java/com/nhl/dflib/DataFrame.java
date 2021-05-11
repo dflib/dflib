@@ -218,20 +218,20 @@ public interface DataFrame extends Iterable<RowProxy> {
     <V, VR> DataFrame convertColumn(int pos, ValueMapper<V, VR> converter);
 
     /**
-     * Converts column contents using the expression. Unlike {@link #addColumn(SeriesExp)} ignores the name of the Exp,
+     * Converts column contents using the expression. Unlike {@link #addColumn(Exp)} ignores the name of the Exp,
      * and uses the "name" argument to identify the column.
      *
      * @since 0.11
      */
-    DataFrame convertColumn(String name, SeriesExp<?> exp);
+    DataFrame convertColumn(String name, Exp<?> exp);
 
     /**
-     * Converts column contents using the expression. Unlike {@link #addColumn(SeriesExp)} ignores the name of the Exp,
+     * Converts column contents using the expression. Unlike {@link #addColumn(Exp)} ignores the name of the Exp,
      * preserving the existing name at the specified DataFrame position.
      *
      * @since 0.11
      */
-    DataFrame convertColumn(int position, SeriesExp<?> exp);
+    DataFrame convertColumn(int position, Exp<?> exp);
 
     /**
      * Performs column conversion to a compact IntC
@@ -475,17 +475,17 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @since 0.11
      */
-    default DataFrame addColumn(SeriesExp<?> exp) {
+    default DataFrame addColumn(Exp<?> exp) {
         return addColumns(exp);
     }
 
     /**
      * Adds multiple columns with values derived from this DataFrame by applying provided expressions. Column names will
-     * be taken from {@link SeriesExp} names.
+     * be taken from {@link Exp} names.
      *
      * @since 0.11
      */
-    DataFrame addColumns(SeriesExp<?>... exps);
+    DataFrame addColumns(Exp<?>... exps);
 
     /**
      * @return a new DataFrame with extra columns added
@@ -526,7 +526,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     // TODO: breaking vararg into arg and vararg is a nasty pattern that does not allow to pass whole data structures
     //  built dynamically.. redo this
-    DataFrame selectColumns(SeriesExp<?> exp0, SeriesExp<?>... otherExps);
+    DataFrame selectColumns(Exp<?> exp0, Exp<?>... otherExps);
 
     /**
      * @param columnsIndex an index that defines a subset of columns and their ordering in the returned DataFrame.
@@ -750,7 +750,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a DataFrame with a single row
      * @see Exp for static factory methods of column aggregators
      */
-    default DataFrame agg(SeriesExp<?>... aggregators) {
+    default DataFrame agg(Exp<?>... aggregators) {
         return DataFrameAggregation.aggDataFrame(this, aggregators);
     }
 

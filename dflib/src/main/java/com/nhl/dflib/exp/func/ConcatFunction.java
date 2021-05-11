@@ -2,10 +2,10 @@ package com.nhl.dflib.exp.func;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.Exp;
 import com.nhl.dflib.accumulator.ObjectAccumulator;
-import com.nhl.dflib.exp.SingleValueSeriesExp;
-import com.nhl.dflib.exp.UnarySeriesExp;
+import com.nhl.dflib.exp.SingleValueExp;
+import com.nhl.dflib.exp.UnaryExp;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -15,40 +15,40 @@ import static com.nhl.dflib.Exp.$val;
 /**
  * @since 0.11
  */
-// TODO: generic NarySeriesExp class?
-public class ConcatFunction implements SeriesExp<String> {
+// TODO: generic NaryExp class?
+public class ConcatFunction implements Exp<String> {
 
-    protected static SeriesExp<String> cast(SeriesExp<?> exp) {
+    protected static Exp<String> cast(Exp<?> exp) {
         Class<?> t = exp.getType();
         return t.equals(String.class)
-                ? (SeriesExp<String>) exp
-                : new UnarySeriesExp<>(exp, String.class, UnarySeriesExp.toSeriesOp(String::valueOf));
+                ? (Exp<String>) exp
+                : new UnaryExp<>(exp, String.class, UnaryExp.toSeriesOp(String::valueOf));
     }
 
-    private final SeriesExp<String>[] args;
+    private final Exp<String>[] args;
 
-    public static SeriesExp<String> forObjects(Object... valuesOrExps) {
+    public static Exp<String> forObjects(Object... valuesOrExps) {
 
         int len = valuesOrExps.length;
         if (len == 0) {
             // No exps to concat means null result
-            return new SingleValueSeriesExp<>(null, String.class);
+            return new SingleValueExp<>(null, String.class);
         }
 
         for (int i = 0; i < len; i++) {
             if (valuesOrExps[i] == null) {
                 // Any null argument to concat will produce null CONCAT result regardless of other values
-                return new SingleValueSeriesExp<>(null, String.class);
+                return new SingleValueExp<>(null, String.class);
             }
         }
 
-        SeriesExp<String>[] args = Arrays.stream(valuesOrExps)
-                .map(v -> v instanceof SeriesExp ? cast((SeriesExp<?>) v) : $val(v.toString()))
-                .toArray(SeriesExp[]::new);
+        Exp<String>[] args = Arrays.stream(valuesOrExps)
+                .map(v -> v instanceof Exp ? cast((Exp<?>) v) : $val(v.toString()))
+                .toArray(Exp[]::new);
         return new ConcatFunction(args);
     }
 
-    protected ConcatFunction(SeriesExp<String>[] args) {
+    protected ConcatFunction(Exp<String>[] args) {
         this.args = args;
     }
 

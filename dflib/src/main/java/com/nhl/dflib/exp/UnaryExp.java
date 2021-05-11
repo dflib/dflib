@@ -2,20 +2,20 @@ package com.nhl.dflib.exp;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.Exp;
 
 import java.util.function.Function;
 
 /**
  * @since 0.11
  */
-public class UnarySeriesExp<F, T> implements SeriesExp<T> {
+public class UnaryExp<F, T> implements Exp<T> {
 
     private final Function<Series<F>, Series<T>> op;
-    private final SeriesExp<F> exp;
+    private final Exp<F> exp;
     private final Class<T> type;
 
-    public UnarySeriesExp(SeriesExp<F> exp, Class<T> type, Function<Series<F>, Series<T>> op) {
+    public UnaryExp(Exp<F> exp, Class<T> type, Function<Series<F>, Series<T>> op) {
         this.exp = exp;
         this.type = type;
         this.op = op;

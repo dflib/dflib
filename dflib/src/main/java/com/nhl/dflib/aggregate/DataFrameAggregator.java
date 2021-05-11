@@ -3,7 +3,7 @@ package com.nhl.dflib.aggregate;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.Exp;
 import com.nhl.dflib.series.SingleValueSeries;
 
 import java.util.function.Function;
@@ -13,7 +13,7 @@ import java.util.function.Function;
  * @deprecated since 0.11 replaced by the {@link com.nhl.dflib.Exp} based aggregation API
  */
 @Deprecated
-public class DataFrameAggregator<T> implements SeriesExp<T> {
+public class DataFrameAggregator<T> implements Exp<T> {
 
     private Function<DataFrame, T> aggregator;
     private Function<Index, String> targetColumnNamer;

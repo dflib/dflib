@@ -3,7 +3,7 @@ package com.nhl.dflib.exp.agg;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.NumericExp;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.Exp;
 import com.nhl.dflib.series.SingleValueSeries;
 
 import java.math.BigDecimal;
@@ -14,10 +14,10 @@ import java.util.function.Function;
  */
 public class DecimalExpAggregator implements NumericExp<BigDecimal> {
 
-    private final SeriesExp<BigDecimal> exp;
+    private final Exp<BigDecimal> exp;
     private final Function<Series<BigDecimal>, BigDecimal> aggregator;
 
-    public DecimalExpAggregator(SeriesExp<BigDecimal> exp, Function<Series<BigDecimal>, BigDecimal> aggregator) {
+    public DecimalExpAggregator(Exp<BigDecimal> exp, Function<Series<BigDecimal>, BigDecimal> aggregator) {
         this.exp = exp;
         this.aggregator = aggregator;
     }

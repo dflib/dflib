@@ -2,22 +2,22 @@ package com.nhl.dflib.exp.agg;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.Exp;
 import com.nhl.dflib.series.SingleValueSeries;
 
 import java.util.function.Function;
 
 /**
- * Evaluates {@link SeriesExp} and then aggregates the result into a single-value series.
+ * Evaluates {@link Exp} and then aggregates the result into a single-value series.
  *
  * @since 0.11
  */
-public class SeriesExpAggregator<S, T> implements SeriesExp<T> {
+public class ExpAggregator<S, T> implements Exp<T> {
 
-    private final SeriesExp<S> exp;
+    private final Exp<S> exp;
     private final Function<Series<S>, T> aggregator;
 
-    public SeriesExpAggregator(SeriesExp<S> exp, Function<Series<S>, T> aggregator) {
+    public ExpAggregator(Exp<S> exp, Function<Series<S>, T> aggregator) {
         this.exp = exp;
         this.aggregator = aggregator;
     }

@@ -2,7 +2,7 @@ package com.nhl.dflib.exp.num;
 
 import com.nhl.dflib.SeriesCondition;
 import com.nhl.dflib.NumericExp;
-import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.Exp;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -51,37 +51,37 @@ public abstract class NumericExpFactory {
         factories.put(Long.TYPE, factories.get(Long.class));
     }
 
-    public abstract NumericExp<?> add(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right);
+    public abstract NumericExp<?> add(Exp<? extends Number> left, Exp<? extends Number> right);
 
-    public abstract NumericExp<?> subtract(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right);
+    public abstract NumericExp<?> subtract(Exp<? extends Number> left, Exp<? extends Number> right);
 
-    public abstract NumericExp<?> multiply(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right);
+    public abstract NumericExp<?> multiply(Exp<? extends Number> left, Exp<? extends Number> right);
 
-    public abstract NumericExp<?> divide(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right);
+    public abstract NumericExp<?> divide(Exp<? extends Number> left, Exp<? extends Number> right);
 
-    public abstract NumericExp<?> mod(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right);
+    public abstract NumericExp<?> mod(Exp<? extends Number> left, Exp<? extends Number> right);
 
-    public abstract NumericExp<?> sum(SeriesExp<? extends Number> exp);
+    public abstract NumericExp<?> sum(Exp<? extends Number> exp);
 
-    public abstract NumericExp<?> min(SeriesExp<? extends Number> exp);
+    public abstract NumericExp<?> min(Exp<? extends Number> exp);
 
-    public abstract NumericExp<?> max(SeriesExp<? extends Number> exp);
+    public abstract NumericExp<?> max(Exp<? extends Number> exp);
 
-    public abstract NumericExp<?> avg(SeriesExp<? extends Number> exp);
+    public abstract NumericExp<?> avg(Exp<? extends Number> exp);
 
-    public abstract NumericExp<?> median(SeriesExp<? extends Number> exp);
+    public abstract NumericExp<?> median(Exp<? extends Number> exp);
 
     public abstract NumericExp<BigDecimal> castAsDecimal(NumericExp<?> exp, int scale);
 
-    public abstract SeriesCondition lt(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right);
+    public abstract SeriesCondition lt(Exp<? extends Number> left, Exp<? extends Number> right);
 
-    public abstract SeriesCondition le(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right);
+    public abstract SeriesCondition le(Exp<? extends Number> left, Exp<? extends Number> right);
 
-    public abstract SeriesCondition gt(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right);
+    public abstract SeriesCondition gt(Exp<? extends Number> left, Exp<? extends Number> right);
 
-    public abstract SeriesCondition ge(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right);
+    public abstract SeriesCondition ge(Exp<? extends Number> left, Exp<? extends Number> right);
 
-    public static NumericExpFactory factory(SeriesExp<? extends Number> exp) {
+    public static NumericExpFactory factory(Exp<? extends Number> exp) {
         return factory(exp.getType());
     }
 
@@ -95,7 +95,7 @@ public abstract class NumericExpFactory {
         return factory;
     }
 
-    public static NumericExpFactory factory(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
+    public static NumericExpFactory factory(Exp<? extends Number> left, Exp<? extends Number> right) {
         return factory(left.getType(), right.getType());
     }
 

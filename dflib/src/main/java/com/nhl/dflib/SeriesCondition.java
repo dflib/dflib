@@ -4,12 +4,12 @@ import com.nhl.dflib.exp.condition.AndSeriesCondition;
 import com.nhl.dflib.exp.condition.OrSeriesCondition;
 
 /**
- * A {@link SeriesExp} that evaluates to a BooleanSeries indicating whether the condition is true for any given
+ * A {@link Exp} that evaluates to a BooleanSeries indicating whether the condition is true for any given
  * row of the source DataFrame.
  *
  * @since 0.11
  */
-public interface SeriesCondition extends SeriesExp<Boolean> {
+public interface SeriesCondition extends Exp<Boolean> {
 
     @Override
     BooleanSeries eval(DataFrame df);

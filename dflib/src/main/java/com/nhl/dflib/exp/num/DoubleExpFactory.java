@@ -3,9 +3,9 @@ package com.nhl.dflib.exp.num;
 import com.nhl.dflib.DoubleSeries;
 import com.nhl.dflib.NumericExp;
 import com.nhl.dflib.SeriesCondition;
-import com.nhl.dflib.SeriesExp;
-import com.nhl.dflib.exp.BinarySeriesExp;
-import com.nhl.dflib.exp.UnarySeriesExp;
+import com.nhl.dflib.Exp;
+import com.nhl.dflib.exp.BinaryExp;
+import com.nhl.dflib.exp.UnaryExp;
 import com.nhl.dflib.exp.agg.AggregatorFunctions;
 import com.nhl.dflib.exp.agg.DoubleExpAggregator;
 import com.nhl.dflib.exp.condition.BinarySeriesCondition;
@@ -15,105 +15,105 @@ import java.math.RoundingMode;
 
 public class DoubleExpFactory extends NumericExpFactory {
 
-    protected static SeriesExp<Double> cast(SeriesExp<?> exp) {
+    protected static Exp<Double> cast(Exp<?> exp) {
 
         // TODO: a map of casting converters
 
         Class<?> t = exp.getType();
         if (t.equals(Double.class)) {
-            return (SeriesExp<Double>) exp;
+            return (Exp<Double>) exp;
         }
 
         if (Number.class.isAssignableFrom(t)) {
-            SeriesExp<Number> nExp = (SeriesExp<Number>) exp;
-            return new DoubleUnaryExp<>(nExp, UnarySeriesExp.toSeriesOp(Number::doubleValue));
+            Exp<Number> nExp = (Exp<Number>) exp;
+            return new DoubleUnaryExp<>(nExp, UnaryExp.toSeriesOp(Number::doubleValue));
         }
 
         if (t.equals(String.class)) {
-            SeriesExp<String> sExp = (SeriesExp<String>) exp;
-            return new DoubleUnaryExp<>(sExp, UnarySeriesExp.toSeriesOp(Double::parseDouble));
+            Exp<String> sExp = (Exp<String>) exp;
+            return new DoubleUnaryExp<>(sExp, UnaryExp.toSeriesOp(Double::parseDouble));
         }
 
         throw new IllegalArgumentException("Expression type '" + t.getName() + "' can't be converted to Double");
     }
 
     @Override
-    public NumericExp<?> add(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
+    public NumericExp<?> add(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DoubleBinaryExp("+",
                 cast(left),
                 cast(right),
-                BinarySeriesExp.toSeriesOp((Double n1, Double n2) -> n1 + n2),
+                BinaryExp.toSeriesOp((Double n1, Double n2) -> n1 + n2),
                 DoubleSeries::add);
     }
 
     @Override
-    public NumericExp<?> subtract(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
+    public NumericExp<?> subtract(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DoubleBinaryExp("-",
                 cast(left),
                 cast(right),
-                BinarySeriesExp.toSeriesOp((Double n1, Double n2) -> n1 - n2),
+                BinaryExp.toSeriesOp((Double n1, Double n2) -> n1 - n2),
                 DoubleSeries::subtract);
     }
 
     @Override
-    public NumericExp<?> multiply(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
+    public NumericExp<?> multiply(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DoubleBinaryExp("*",
                 cast(left),
                 cast(right),
-                BinarySeriesExp.toSeriesOp((Double n1, Double n2) -> n1 * n2),
+                BinaryExp.toSeriesOp((Double n1, Double n2) -> n1 * n2),
                 DoubleSeries::multiply);
     }
 
     @Override
-    public NumericExp<?> divide(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
+    public NumericExp<?> divide(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DoubleBinaryExp("/",
                 cast(left),
                 cast(right),
-                BinarySeriesExp.toSeriesOp((Double n1, Double n2) -> n1 / n2),
+                BinaryExp.toSeriesOp((Double n1, Double n2) -> n1 / n2),
                 DoubleSeries::divide);
     }
 
     @Override
-    public NumericExp<?> mod(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
+    public NumericExp<?> mod(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DoubleBinaryExp("%",
                 cast(left),
                 cast(right),
-                BinarySeriesExp.toSeriesOp((Double n1, Double n2) -> n1 % n2),
+                BinaryExp.toSeriesOp((Double n1, Double n2) -> n1 % n2),
                 DoubleSeries::mod);
     }
 
     @Override
     public NumericExp<BigDecimal> castAsDecimal(NumericExp<?> exp, int scale) {
-        return new DecimalUnaryExp<>(cast(exp), UnarySeriesExp.toSeriesOp(d -> BigDecimal.valueOf(d).setScale(scale, RoundingMode.HALF_UP)));
+        return new DecimalUnaryExp<>(cast(exp), UnaryExp.toSeriesOp(d -> BigDecimal.valueOf(d).setScale(scale, RoundingMode.HALF_UP)));
     }
 
     @Override
-    public NumericExp<Double> sum(SeriesExp<? extends Number> exp) {
+    public NumericExp<Double> sum(Exp<? extends Number> exp) {
         return new DoubleExpAggregator<>(exp, AggregatorFunctions.sumDouble());
     }
 
     @Override
-    public NumericExp<?> min(SeriesExp<? extends Number> exp) {
+    public NumericExp<?> min(Exp<? extends Number> exp) {
         return new DoubleExpAggregator<>(exp, AggregatorFunctions.minDouble());
     }
 
     @Override
-    public NumericExp<?> max(SeriesExp<? extends Number> exp) {
+    public NumericExp<?> max(Exp<? extends Number> exp) {
         return new DoubleExpAggregator<>(exp, AggregatorFunctions.maxDouble());
     }
 
     @Override
-    public NumericExp<?> avg(SeriesExp<? extends Number> exp) {
+    public NumericExp<?> avg(Exp<? extends Number> exp) {
         return new DoubleExpAggregator<>(exp, AggregatorFunctions.averageDouble());
     }
 
     @Override
-    public NumericExp<?> median(SeriesExp<? extends Number> exp) {
+    public NumericExp<?> median(Exp<? extends Number> exp) {
         return new DoubleExpAggregator<>(exp, AggregatorFunctions.medianDouble());
     }
 
     @Override
-    public SeriesCondition lt(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
+    public SeriesCondition lt(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DoubleBinarySeriesCondition("<",
                 cast(left),
                 cast(right),
@@ -122,7 +122,7 @@ public class DoubleExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public SeriesCondition le(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
+    public SeriesCondition le(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DoubleBinarySeriesCondition("<=",
                 cast(left),
                 cast(right),
@@ -131,7 +131,7 @@ public class DoubleExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public SeriesCondition gt(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
+    public SeriesCondition gt(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DoubleBinarySeriesCondition(">",
                 cast(left),
                 cast(right),
@@ -140,7 +140,7 @@ public class DoubleExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public SeriesCondition ge(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
+    public SeriesCondition ge(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DoubleBinarySeriesCondition(">=",
                 cast(left),
                 cast(right),

@@ -2,9 +2,9 @@ package com.nhl.dflib.exp.num;
 
 import com.nhl.dflib.NumericExp;
 import com.nhl.dflib.SeriesCondition;
-import com.nhl.dflib.SeriesExp;
-import com.nhl.dflib.exp.BinarySeriesExp;
-import com.nhl.dflib.exp.UnarySeriesExp;
+import com.nhl.dflib.Exp;
+import com.nhl.dflib.exp.BinaryExp;
+import com.nhl.dflib.exp.UnaryExp;
 import com.nhl.dflib.exp.agg.AggregatorFunctions;
 import com.nhl.dflib.exp.agg.DecimalExpAggregator;
 import com.nhl.dflib.exp.condition.BinarySeriesCondition;
@@ -20,63 +20,63 @@ public class DecimalExpFactory extends NumericExpFactory {
         return new MathContext(Math.max(15, 1 + Math.max(n1.scale(), n2.scale())), RoundingMode.HALF_UP);
     }
 
-    protected static SeriesExp<BigDecimal> cast(SeriesExp<?> exp) {
+    protected static Exp<BigDecimal> cast(Exp<?> exp) {
 
         // TODO: a map of casting converters
 
         Class<?> t = exp.getType();
         if (t.equals(BigDecimal.class)) {
-            return (SeriesExp<BigDecimal>) exp;
+            return (Exp<BigDecimal>) exp;
         }
 
         if (t.equals(BigInteger.class)) {
-            SeriesExp<BigInteger> biExp = (SeriesExp<BigInteger>) exp;
-            return new DecimalUnaryExp<>(biExp, UnarySeriesExp.toSeriesOp(BigDecimal::new));
+            Exp<BigInteger> biExp = (Exp<BigInteger>) exp;
+            return new DecimalUnaryExp<>(biExp, UnaryExp.toSeriesOp(BigDecimal::new));
         }
 
         if (Number.class.isAssignableFrom(t)) {
-            SeriesExp<Number> nExp = (SeriesExp<Number>) exp;
-            return new DecimalUnaryExp<>(nExp, UnarySeriesExp.toSeriesOp(n -> new BigDecimal(n.doubleValue())));
+            Exp<Number> nExp = (Exp<Number>) exp;
+            return new DecimalUnaryExp<>(nExp, UnaryExp.toSeriesOp(n -> new BigDecimal(n.doubleValue())));
         }
 
         if (t.equals(String.class)) {
-            SeriesExp<String> sExp = (SeriesExp<String>) exp;
-            return new DecimalUnaryExp<>(sExp, UnarySeriesExp.toSeriesOp(BigDecimal::new));
+            Exp<String> sExp = (Exp<String>) exp;
+            return new DecimalUnaryExp<>(sExp, UnaryExp.toSeriesOp(BigDecimal::new));
         }
 
         throw new IllegalArgumentException("Expression type '" + t.getName() + "' can't be converted to Double");
     }
 
     @Override
-    public NumericExp<?> add(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
+    public NumericExp<?> add(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DecimalBinaryExp("+",
                 cast(left),
                 cast(right),
-                BinarySeriesExp.toSeriesOp((BigDecimal n1, BigDecimal n2) -> n1.add(n2)));
+                BinaryExp.toSeriesOp((BigDecimal n1, BigDecimal n2) -> n1.add(n2)));
     }
 
     @Override
-    public NumericExp<?> subtract(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
+    public NumericExp<?> subtract(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DecimalBinaryExp("-",
                 cast(left),
                 cast(right),
-                BinarySeriesExp.toSeriesOp((BigDecimal n1, BigDecimal n2) -> n1.subtract(n2)));
+                BinaryExp.toSeriesOp((BigDecimal n1, BigDecimal n2) -> n1.subtract(n2)));
     }
 
     @Override
-    public NumericExp<?> multiply(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
+    public NumericExp<?> multiply(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DecimalBinaryExp("*",
                 cast(left),
                 cast(right),
-                BinarySeriesExp.toSeriesOp((BigDecimal n1, BigDecimal n2) -> n1.multiply(n2)));
+                BinaryExp.toSeriesOp((BigDecimal n1, BigDecimal n2) -> n1.multiply(n2)));
     }
 
     @Override
-    public NumericExp<?> divide(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
+    public NumericExp<?> divide(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DecimalBinaryExp("/",
                 cast(left),
                 cast(right),
-                BinarySeriesExp.toSeriesOp((BigDecimal n1, BigDecimal n2) ->
+                BinaryExp.toSeriesOp((BigDecimal n1, BigDecimal n2) ->
                         // TODO: would be nice to be able to specify the result scale explicitly instead of first
                         //  inflating the scale, then trimming trailing zeros. It will not be as slow, and will not
                         //  overflow
@@ -84,11 +84,11 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumericExp<?> mod(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
+    public NumericExp<?> mod(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DecimalBinaryExp("%",
                 cast(left),
                 cast(right),
-                BinarySeriesExp.toSeriesOp((BigDecimal n1, BigDecimal n2) ->
+                BinaryExp.toSeriesOp((BigDecimal n1, BigDecimal n2) ->
 
                         // TODO: would be nice to be able to specify the result scale explicitly instead of first
                         //  inflating the scale, then trimming trailing zeros. It will not be as slow, and will not
@@ -100,36 +100,36 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public NumericExp<BigDecimal> castAsDecimal(NumericExp<?> exp, int scale) {
-        return new DecimalUnaryExp<>(cast(exp), UnarySeriesExp.toSeriesOp(bd -> bd.setScale(scale, RoundingMode.HALF_UP)));
+        return new DecimalUnaryExp<>(cast(exp), UnaryExp.toSeriesOp(bd -> bd.setScale(scale, RoundingMode.HALF_UP)));
     }
 
     @Override
-    public NumericExp<BigDecimal> sum(SeriesExp<? extends Number> exp) {
+    public NumericExp<BigDecimal> sum(Exp<? extends Number> exp) {
         return new DecimalExpAggregator(cast(exp), AggregatorFunctions.sumDecimal());
     }
 
     @Override
-    public NumericExp<?> min(SeriesExp<? extends Number> exp) {
+    public NumericExp<?> min(Exp<? extends Number> exp) {
         return new DecimalExpAggregator(cast(exp), AggregatorFunctions.min());
     }
 
     @Override
-    public NumericExp<?> max(SeriesExp<? extends Number> exp) {
+    public NumericExp<?> max(Exp<? extends Number> exp) {
         return new DecimalExpAggregator(cast(exp), AggregatorFunctions.max());
     }
 
     @Override
-    public NumericExp<?> avg(SeriesExp<? extends Number> exp) {
+    public NumericExp<?> avg(Exp<? extends Number> exp) {
         throw new UnsupportedOperationException("TODO: support for BigDecimal.avg");
     }
 
     @Override
-    public NumericExp<?> median(SeriesExp<? extends Number> exp) {
+    public NumericExp<?> median(Exp<? extends Number> exp) {
         throw new UnsupportedOperationException("TODO: support for BigDecimal.median");
     }
 
     @Override
-    public SeriesCondition lt(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
+    public SeriesCondition lt(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new BinarySeriesCondition("<",
                 cast(left),
                 cast(right),
@@ -137,7 +137,7 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public SeriesCondition le(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
+    public SeriesCondition le(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new BinarySeriesCondition("<=",
                 cast(left),
                 cast(right),
@@ -145,7 +145,7 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public SeriesCondition gt(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
+    public SeriesCondition gt(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new BinarySeriesCondition(">",
                 cast(left),
                 cast(right),
@@ -153,7 +153,7 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public SeriesCondition ge(SeriesExp<? extends Number> left, SeriesExp<? extends Number> right) {
+    public SeriesCondition ge(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new BinarySeriesCondition(">=",
                 cast(left),
                 cast(right),

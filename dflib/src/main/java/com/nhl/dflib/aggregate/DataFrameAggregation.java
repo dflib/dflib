@@ -11,7 +11,7 @@ import com.nhl.dflib.accumulator.ObjectAccumulator;
  */
 public class DataFrameAggregation {
 
-    public static DataFrame aggDataFrame(DataFrame dataFrame, SeriesExp<?>... aggregators) {
+    public static DataFrame aggDataFrame(DataFrame dataFrame, Exp<?>... aggregators) {
 
         int aggW = aggregators.length;
         Series<?>[] aggColumns = new Series[aggW];
@@ -25,7 +25,7 @@ public class DataFrameAggregation {
         return DataFrame.newFrame(Index.forLabelsDeduplicate(aggLabels)).columns(aggColumns);
     }
 
-    public static DataFrame aggGroupBy(GroupBy groupBy, SeriesExp<?>... aggregators) {
+    public static DataFrame aggGroupBy(GroupBy groupBy, Exp<?>... aggregators) {
 
         int aggW = aggregators.length;
         int aggH = groupBy.size();
@@ -35,7 +35,7 @@ public class DataFrameAggregation {
 
         for (int i = 0; i < aggW; i++) {
 
-            SeriesExp<?> agg = aggregators[i];
+            Exp<?> agg = aggregators[i];
 
             // TODO: primitives support for performance
             Accumulator columnBuilder = new ObjectAccumulator(aggH);

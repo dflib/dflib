@@ -2,7 +2,7 @@ package com.nhl.dflib.exp;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.Exp;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +24,7 @@ public class StrTest {
 
     @Test
     public void testNamed() {
-        SeriesExp<?> e = $col("b");
+        Exp<?> e = $col("b");
         assertEquals("b", e.getName(mock(DataFrame.class)));
         assertEquals("c", e.as("c").getName(mock(DataFrame.class)));
     }

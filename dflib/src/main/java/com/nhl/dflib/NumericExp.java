@@ -8,50 +8,50 @@ import java.math.BigDecimal;
 /**
  * @since 0.11
  */
-public interface NumericExp<N extends Number> extends SeriesExp<N> {
+public interface NumericExp<N extends Number> extends Exp<N> {
 
-    default NumericExp<?> add(SeriesExp<? extends Number> exp) {
+    default NumericExp<?> add(Exp<? extends Number> exp) {
         return NumericExpFactory.factory(this, exp).add(this, exp);
     }
 
     default NumericExp<?> add(Number val) {
-        SeriesExp<? extends Number> ve = Exp.$val(val);
+        Exp<? extends Number> ve = Exp.$val(val);
         return NumericExpFactory.factory(this, ve).add(this, ve);
     }
 
-    default NumericExp<?> subtract(SeriesExp<? extends Number> exp) {
+    default NumericExp<?> subtract(Exp<? extends Number> exp) {
         return NumericExpFactory.factory(this, exp).subtract(this, exp);
     }
 
     default NumericExp<?> subtract(Number val) {
-        SeriesExp<? extends Number> ve = Exp.$val(val);
+        Exp<? extends Number> ve = Exp.$val(val);
         return NumericExpFactory.factory(this, ve).subtract(this, ve);
     }
 
-    default NumericExp<?> multiply(SeriesExp<? extends Number> exp) {
+    default NumericExp<?> multiply(Exp<? extends Number> exp) {
         return NumericExpFactory.factory(this, exp).multiply(this, exp);
     }
 
     default NumericExp<?> multiply(Number val) {
-        SeriesExp<? extends Number> ve = Exp.$val(val);
+        Exp<? extends Number> ve = Exp.$val(val);
         return NumericExpFactory.factory(this, ve).multiply(this, ve);
     }
 
-    default NumericExp<?> divide(SeriesExp<? extends Number> exp) {
+    default NumericExp<?> divide(Exp<? extends Number> exp) {
         return NumericExpFactory.factory(this, exp).divide(this, exp);
     }
 
     default NumericExp<?> divide(Number val) {
-        SeriesExp<? extends Number> ve = Exp.$val(val);
+        Exp<? extends Number> ve = Exp.$val(val);
         return NumericExpFactory.factory(this, ve).divide(this, ve);
     }
 
-    default NumericExp<?> mod(SeriesExp<? extends Number> exp) {
+    default NumericExp<?> mod(Exp<? extends Number> exp) {
         return NumericExpFactory.factory(this, exp).mod(this, exp);
     }
 
     default NumericExp<?> mod(Number val) {
-        SeriesExp<? extends Number> ve = Exp.$val(val);
+        Exp<? extends Number> ve = Exp.$val(val);
         return NumericExpFactory.factory(this, ve).mod(this, ve);
     }
 
@@ -59,39 +59,39 @@ public interface NumericExp<N extends Number> extends SeriesExp<N> {
         return NumericExpFactory.factory(this).castAsDecimal(this, scale);
     }
 
-    default SeriesCondition lt(SeriesExp<? extends Number> exp) {
+    default SeriesCondition lt(Exp<? extends Number> exp) {
         return NumericExpFactory.factory(this, exp).lt(this, exp);
     }
 
     default SeriesCondition lt(Number val) {
-        SeriesExp<? extends Number> ve = Exp.$val(val);
+        Exp<? extends Number> ve = Exp.$val(val);
         return NumericExpFactory.factory(this, ve).lt(this, ve);
     }
 
-    default SeriesCondition le(SeriesExp<? extends Number> exp) {
+    default SeriesCondition le(Exp<? extends Number> exp) {
         return NumericExpFactory.factory(this, exp).le(this, exp);
     }
 
     default SeriesCondition le(Number val) {
-        SeriesExp<? extends Number> ve = Exp.$val(val);
+        Exp<? extends Number> ve = Exp.$val(val);
         return NumericExpFactory.factory(this, ve).le(this, ve);
     }
 
-    default SeriesCondition gt(SeriesExp<? extends Number> exp) {
+    default SeriesCondition gt(Exp<? extends Number> exp) {
         return NumericExpFactory.factory(this, exp).gt(this, exp);
     }
 
     default SeriesCondition gt(Number val) {
-        SeriesExp<? extends Number> ve = Exp.$val(val);
+        Exp<? extends Number> ve = Exp.$val(val);
         return NumericExpFactory.factory(this, ve).gt(this, ve);
     }
 
-    default SeriesCondition ge(SeriesExp<? extends Number> exp) {
+    default SeriesCondition ge(Exp<? extends Number> exp) {
         return NumericExpFactory.factory(this, exp).ge(this, exp);
     }
 
     default SeriesCondition ge(Number val) {
-        SeriesExp<? extends Number> ve = Exp.$val(val);
+        Exp<? extends Number> ve = Exp.$val(val);
         return NumericExpFactory.factory(this, ve).ge(this, ve);
     }
 

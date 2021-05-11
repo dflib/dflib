@@ -2,7 +2,7 @@ package com.nhl.dflib.exp;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.Exp;
 import com.nhl.dflib.series.SingleValueSeries;
 
 import java.util.Objects;
@@ -10,12 +10,12 @@ import java.util.Objects;
 /**
  * @since 0.11
  */
-public class SingleValueSeriesExp<T> implements SeriesExp<T> {
+public class SingleValueExp<T> implements Exp<T> {
 
     private final Class<T> type;
     private final T value;
 
-    public SingleValueSeriesExp(T value, Class<T> type) {
+    public SingleValueExp(T value, Class<T> type) {
         this.value = value;
         this.type = Objects.requireNonNull(type);
     }

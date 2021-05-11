@@ -2,19 +2,19 @@ package com.nhl.dflib.exp;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.Exp;
 
 import java.util.Objects;
 
 /**
  * @since 0.11
  */
-public class RenamedExp<T> implements SeriesExp<T> {
+public class RenamedExp<T> implements Exp<T> {
 
     private final String name;
-    private final SeriesExp<T> delegate;
+    private final Exp<T> delegate;
 
-    public RenamedExp(String name, SeriesExp<T> delegate) {
+    public RenamedExp(String name, Exp<T> delegate) {
         this.name = name;
         this.delegate = delegate;
     }
@@ -45,7 +45,7 @@ public class RenamedExp<T> implements SeriesExp<T> {
     }
 
     @Override
-    public SeriesExp<T> as(String name) {
+    public Exp<T> as(String name) {
         return Objects.equals(name, this.name) ? this : new RenamedExp<>(name, delegate);
     }
 }

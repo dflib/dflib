@@ -3,8 +3,8 @@ package com.nhl.dflib.exp.num;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.NumericExp;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesExp;
-import com.nhl.dflib.exp.BinarySeriesExp;
+import com.nhl.dflib.Exp;
+import com.nhl.dflib.exp.BinaryExp;
 
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
@@ -12,14 +12,14 @@ import java.util.function.BinaryOperator;
 /**
  * @since 0.11
  */
-public class IntBinaryExp extends BinarySeriesExp<Integer, Integer, Integer> implements NumericExp<Integer> {
+public class IntBinaryExp extends BinaryExp<Integer, Integer, Integer> implements NumericExp<Integer> {
 
     private final BinaryOperator<IntSeries> primitiveOp;
 
     protected IntBinaryExp(
             String opName,
-            SeriesExp<Integer> left,
-            SeriesExp<Integer> right,
+            Exp<Integer> left,
+            Exp<Integer> right,
             BiFunction<Series<Integer>, Series<Integer>, Series<Integer>> op,
             BinaryOperator<IntSeries> primitiveOp) {
 

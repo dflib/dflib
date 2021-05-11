@@ -5,7 +5,7 @@ import com.nhl.dflib.SeriesCondition;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.accumulator.BooleanAccumulator;
-import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.Exp;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -16,10 +16,10 @@ import java.util.function.Predicate;
 public class UnarySeriesCondition<V> implements SeriesCondition {
 
     private final String opName;
-    protected final SeriesExp<V> exp;
+    protected final Exp<V> exp;
     private final Function<Series<V>, BooleanSeries> op;
 
-    public UnarySeriesCondition(String opName, SeriesExp<V> exp, Function<Series<V>, BooleanSeries> op) {
+    public UnarySeriesCondition(String opName, Exp<V> exp, Function<Series<V>, BooleanSeries> op) {
         this.opName = opName;
         this.exp = exp;
         this.op = op;

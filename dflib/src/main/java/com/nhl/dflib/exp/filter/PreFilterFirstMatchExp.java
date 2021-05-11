@@ -3,19 +3,19 @@ package com.nhl.dflib.exp.filter;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.SeriesCondition;
-import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.Exp;
 
 /**
- * An aggregator similar to {@link PreFilteredSeriesExp}, only optimized for returning the first matched item.
+ * An aggregator similar to {@link PreFilteredExp}, only optimized for returning the first matched item.
  *
  * @since 0.11
  */
-public class PreFilterFirstMatchSeriesExp<T> implements SeriesExp<T> {
+public class PreFilterFirstMatchExp<T> implements Exp<T> {
 
     private final SeriesCondition filter;
-    private final SeriesExp<T> delegate;
+    private final Exp<T> delegate;
 
-    public PreFilterFirstMatchSeriesExp(SeriesCondition filter, SeriesExp<T> delegate) {
+    public PreFilterFirstMatchExp(SeriesCondition filter, Exp<T> delegate) {
         this.filter = filter;
         this.delegate = delegate;
     }

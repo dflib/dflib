@@ -9,7 +9,7 @@ import com.nhl.dflib.accumulator.ObjectAccumulator;
  */
 public class SeriesAggregation {
 
-    public static DataFrame aggAsDataFrame(Series<?> series, SeriesExp<?>... aggregators) {
+    public static DataFrame aggAsDataFrame(Series<?> series, Exp<?>... aggregators) {
 
         int aggW = aggregators.length;
         Series<?>[] aggColumns = new Series[aggW];
@@ -23,7 +23,7 @@ public class SeriesAggregation {
         return DataFrame.newFrame(Index.forLabelsDeduplicate(aggLabels)).columns(aggColumns);
     }
 
-    public static <T, R> Series<R> aggGroupBy(SeriesGroupBy<T> groupBy, SeriesExp<R> aggregator) {
+    public static <T, R> Series<R> aggGroupBy(SeriesGroupBy<T> groupBy, Exp<R> aggregator) {
 
         // TODO: let Aggregator generate and fill SeriesBuilder, as it can use primitive collections
         ObjectAccumulator<R> columnBuilder = new ObjectAccumulator<>(groupBy.size());
@@ -36,7 +36,7 @@ public class SeriesAggregation {
         return columnBuilder.toSeries();
     }
 
-    public static <T> DataFrame aggGroupMultiple(SeriesGroupBy<T> groupBy, SeriesExp<?>... aggregators) {
+    public static <T> DataFrame aggGroupMultiple(SeriesGroupBy<T> groupBy, Exp<?>... aggregators) {
 
         int aggW = aggregators.length;
         int aggH = groupBy.size();
@@ -46,7 +46,7 @@ public class SeriesAggregation {
 
         for (int i = 0; i < aggW; i++) {
 
-            SeriesExp<?> agg = aggregators[i];
+            Exp<?> agg = aggregators[i];
 
             // TODO: let Aggregator fill Accumulator, as it can use primitive collections
             Accumulator columnBuilder = new ObjectAccumulator(aggH);
