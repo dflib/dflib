@@ -21,6 +21,21 @@ public class PreFilterFirstMatchSeriesExp<T> implements SeriesExp<T> {
     }
 
     @Override
+    public Class<T> getType() {
+        return delegate.getType();
+    }
+
+    @Override
+    public String getName() {
+        return delegate.getName();
+    }
+
+    @Override
+    public String getName(DataFrame df) {
+        return delegate.getName(df);
+    }
+
+    @Override
     public Series<T> eval(DataFrame df) {
         // Optimization - using "firstMatch" instead of full "eval"
         int index = filter.firstMatch(df);
@@ -32,15 +47,5 @@ public class PreFilterFirstMatchSeriesExp<T> implements SeriesExp<T> {
         // Optimization - using "firstMatch" instead of full "eval"
         int index = filter.firstMatch(s);
         return delegate.eval(index < 0 ? s.select() : s.select(index));
-    }
-
-    @Override
-    public String getName(DataFrame df) {
-        return delegate.getName(df);
-    }
-
-    @Override
-    public Class<T> getType() {
-        return delegate.getType();
     }
 }

@@ -1,6 +1,6 @@
 package com.nhl.dflib.series;
 
-import com.nhl.dflib.SeriesAggregator;
+import com.nhl.dflib.Exp;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,31 +16,25 @@ public class LongArraySeries_AggTest {
     @Test
     public void testAgg_SumInt() {
         LongArraySeries s = new LongArraySeries(1, 2);
-        assertEquals(Integer.valueOf(3), s.agg(SeriesAggregator.sumInt()));
+        assertEquals(3, s.agg(Exp.$int("").sum()).get(0));
     }
 
     @Test
     public void testAgg_SumLong() {
         LongArraySeries s = new LongArraySeries(1, 2);
-        assertEquals(Long.valueOf(3), s.agg(SeriesAggregator.sumLong()));
+        assertEquals(3L, s.agg(Exp.$long("").sum()).get(0));
     }
 
     @Test
     public void testAgg_SumDouble() {
         LongArraySeries s = new LongArraySeries(1, 2);
-        assertEquals(Double.valueOf(3.), s.agg(SeriesAggregator.sumDouble()));
+        assertEquals(3., s.agg(Exp.$double("").sum()).get(0));
     }
 
     @Test
-    public void testAgg_CountInt() {
+    public void testAgg_Count() {
         LongArraySeries s = new LongArraySeries(1, 2);
-        assertEquals(Integer.valueOf(2), s.agg(SeriesAggregator.countInt()));
-    }
-
-    @Test
-    public void testAgg_CountLong() {
-        LongArraySeries s = new LongArraySeries(1, 2);
-        assertEquals(Long.valueOf(2), s.agg(SeriesAggregator.countLong()));
+        assertEquals(2, s.agg(Exp.count()).get(0));
     }
 
     @Test
@@ -52,19 +46,19 @@ public class LongArraySeries_AggTest {
     @Test
     public void testAgg_MaxInt() {
         LongArraySeries s = new LongArraySeries(1, -2, 3, 56, 8);
-        assertEquals(Integer.valueOf(56), s.agg(SeriesAggregator.maxInt()));
+        assertEquals(56, s.agg(Exp.$int("").max()).get(0));
     }
 
     @Test
     public void testAgg_MaxLong() {
         LongArraySeries s = new LongArraySeries(1, -2, 3, 56, 8);
-        assertEquals(Long.valueOf(56), s.agg(SeriesAggregator.maxLong()));
+        assertEquals(56L, s.agg(Exp.$long("").max()).get(0));
     }
 
     @Test
     public void testAgg_MaxDouble() {
         LongArraySeries s = new LongArraySeries(1, -2, 3, 56, 8);
-        assertEquals(Double.valueOf(56.), s.agg(SeriesAggregator.maxDouble()));
+        assertEquals(56., s.agg(Exp.$double("").max()).get(0));
     }
 
     @Test
@@ -76,19 +70,19 @@ public class LongArraySeries_AggTest {
     @Test
     public void testAgg_MinInt() {
         LongArraySeries s = new LongArraySeries(1, -2, 3, 56, 8);
-        assertEquals(Integer.valueOf(-2), s.agg(SeriesAggregator.minInt()));
+        assertEquals(-2, s.agg(Exp.$int("").min()).get(0));
     }
 
     @Test
     public void testAgg_MinLong() {
         LongArraySeries s = new LongArraySeries(1, -2, 3, 56, 8);
-        assertEquals(Long.valueOf(-2), s.agg(SeriesAggregator.minLong()));
+        assertEquals(-2L, s.agg(Exp.$long("").min()).get(0));
     }
 
     @Test
     public void testAgg_MinDouble() {
         LongArraySeries s = new LongArraySeries(1, -2, 3, 56, 8);
-        assertEquals(Double.valueOf(-2.), s.agg(SeriesAggregator.minDouble()));
+        assertEquals(-2., s.agg(Exp.$double("").min()).get(0));
     }
 
     @Test

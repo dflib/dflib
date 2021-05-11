@@ -28,6 +28,11 @@ public class PreFilteredNumericSeriesExp<N extends Number> implements NumericSer
     }
 
     @Override
+    public String getName() {
+        return delegate.getName();
+    }
+
+    @Override
     public String getName(DataFrame df) {
         return delegate.getName(df);
     }

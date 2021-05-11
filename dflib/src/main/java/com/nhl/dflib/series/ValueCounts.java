@@ -1,8 +1,8 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Exp;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesAggregator;
 
 class ValueCounts {
 
@@ -10,8 +10,8 @@ class ValueCounts {
     public static <T> DataFrame valueCountsNoNulls(Series<T> series) {
         return series.group()
                 .aggMultiple(
-                        SeriesAggregator.first().named("value"),
-                        SeriesAggregator.countInt().named("count")
+                        Exp.$col("").first().as("value"),
+                        Exp.count().as("count")
                 )
                 .sort(1, false);
     }
@@ -20,8 +20,8 @@ class ValueCounts {
         return series.select(series.index(v -> v != null))
                 .group()
                 .aggMultiple(
-                        SeriesAggregator.first().named("value"),
-                        SeriesAggregator.countInt().named("count")
+                        Exp.$col("").first().as("value"),
+                        Exp.count().as("count")
                 )
                 .sort(1, false);
     }

@@ -27,6 +27,16 @@ public class DoubleExpAggregator<S> implements NumericSeriesExp<Double> {
     }
 
     @Override
+    public String getName() {
+        return exp.getName();
+    }
+
+    @Override
+    public String getName(DataFrame df) {
+        return exp.getName(df);
+    }
+
+    @Override
     public Series<Double> eval(DataFrame df) {
         // TODO: optimize for primitive series.
         //  E.g. "IntSeries.average()" is faster than "AggregatorFunctions.averageDouble()"
@@ -40,10 +50,5 @@ public class DoubleExpAggregator<S> implements NumericSeriesExp<Double> {
         //  E.g. "IntSeries.average()" is faster than "AggregatorFunctions.averageDouble()"
         double val = aggregator.apply(exp.eval(s));
         return new SingleValueSeries<>(val, 1);
-    }
-
-    @Override
-    public String getName(DataFrame df) {
-        return exp.getName(df);
     }
 }

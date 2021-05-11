@@ -24,6 +24,21 @@ public class FilteredFirstAggregator<T> implements SeriesExp<T> {
     }
 
     @Override
+    public Class<T> getType() {
+        return extractor.getType();
+    }
+
+    @Override
+    public String getName() {
+        return extractor.getName();
+    }
+
+    @Override
+    public String getName(DataFrame df) {
+        return extractor.getName(df);
+    }
+
+    @Override
     public Series<T> eval(DataFrame df) {
         int index = rowFilter.firstMatch(df);
         return index < 0 ? null : extractor.eval(df.selectRows(index));
@@ -33,15 +48,5 @@ public class FilteredFirstAggregator<T> implements SeriesExp<T> {
     public Series<T> eval(Series<?> s) {
         // do not expect to be called on this deprecated class
         throw new UnsupportedOperationException("Unsupported eval with Series... The class is deprecated, consider switching to Exp API");
-    }
-
-    @Override
-    public String getName(DataFrame df) {
-        return extractor.getName(df);
-    }
-
-    @Override
-    public Class<T> getType() {
-        return extractor.getType();
     }
 }

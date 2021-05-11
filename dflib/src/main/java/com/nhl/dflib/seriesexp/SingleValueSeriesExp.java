@@ -21,13 +21,18 @@ public class SingleValueSeriesExp<T> implements SeriesExp<T> {
     }
 
     @Override
-    public String getName(DataFrame df) {
+    public Class<T> getType() {
+        return type;
+    }
+
+    @Override
+    public String getName() {
         return "$val";
     }
 
     @Override
-    public Class<T> getType() {
-        return type;
+    public String getName(DataFrame df) {
+        return "$val";
     }
 
     @Override

@@ -1,11 +1,8 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.LongCountAggregator;
-import com.nhl.dflib.aggregate.SimpleSeriesAggregator;
 import com.nhl.dflib.seriesexp.agg.AggregatorFunctions;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 import java.util.Set;
 
@@ -40,7 +37,7 @@ public interface SeriesAggregator {
     }
 
     static SeriesExp<Double> medianDouble() {
-        return Exp.$col("", Number.class).agg(AggregatorFunctions.averageDouble()).as("medianDouble");
+        return Exp.$col("", Number.class).agg(AggregatorFunctions.medianDouble()).as("medianDouble");
     }
 
     static SeriesExp<Integer> sumInt() {
@@ -48,82 +45,82 @@ public interface SeriesAggregator {
     }
 
     static SeriesExp<Long> sumLong() {
-        return new SimpleSeriesAggregator<>("sumLong", AggregatorFunctions.sumLong());
+        return Exp.$col("", Number.class).agg(AggregatorFunctions.sumLong()).as("sumLong");
     }
 
     static SeriesExp<Double> sumDouble() {
-        return new SimpleSeriesAggregator<>("sumDouble", AggregatorFunctions.sumDouble());
+        return Exp.$col("", Number.class).agg(AggregatorFunctions.sumDouble()).as("sumDouble");
     }
 
     /**
      * @since 0.7
      */
     static <S extends Comparable<S>> SeriesExp<S> max() {
-        return new SimpleSeriesAggregator<>("max", AggregatorFunctions.<S>max());
+        return Exp.<S>$col("").agg(AggregatorFunctions.max()).as("max");
     }
 
     /**
      * @since 0.7
      */
     static <S extends Comparable<S>> SeriesExp<S> min() {
-        return new SimpleSeriesAggregator<>("min", AggregatorFunctions.<S>min());
+        return Exp.<S>$col("").agg(AggregatorFunctions.min()).as("min");
     }
 
     /**
      * @since 0.7
      */
     static SeriesExp<Integer> maxInt() {
-        return new SimpleSeriesAggregator<>("maxInt", AggregatorFunctions.maxInt());
+        return Exp.<Integer>$col("").agg(AggregatorFunctions.maxInt()).as("maxInt");
     }
 
     /**
      * @since 0.7
      */
     static SeriesExp<Long> maxLong() {
-        return new SimpleSeriesAggregator<>("maxLong", AggregatorFunctions.maxLong());
+        return Exp.<Long>$col("").agg(AggregatorFunctions.maxLong()).as("maxLong");
     }
 
     /**
      * @since 0.7
      */
     static SeriesExp<Double> maxDouble() {
-        return new SimpleSeriesAggregator<>("maxDouble", AggregatorFunctions.maxDouble());
+        return Exp.<Double>$col("").agg(AggregatorFunctions.maxDouble()).as("maxDouble");
     }
 
     /**
      * @since 0.7
      */
     static SeriesExp<Integer> minInt() {
-        return new SimpleSeriesAggregator<>("minInt", AggregatorFunctions.minInt());
+        return Exp.<Integer>$col("").agg(AggregatorFunctions.minInt()).as("minInt");
     }
 
     /**
      * @since 0.7
      */
     static SeriesExp<Long> minLong() {
-        return new SimpleSeriesAggregator<>("minLong", AggregatorFunctions.minLong());
+        return Exp.<Long>$col("").agg(AggregatorFunctions.minLong()).as("minLong");
     }
 
     /**
      * @since 0.7
      */
     static SeriesExp<Double> minDouble() {
-        return new SimpleSeriesAggregator<>("minDouble", AggregatorFunctions.minDouble());
+        return Exp.<Double>$col("").agg(AggregatorFunctions.minDouble()).as("minDouble");
     }
 
-    static <S> SeriesAggregator<S, String> concat(String delimiter) {
-        return new SimpleSeriesAggregator<>("concat", AggregatorFunctions.concat(delimiter));
+    static SeriesExp<String> concat(String delimiter) {
+        return Exp.$col("").vConcat(delimiter).as("concat");
     }
 
-    static <S> SeriesAggregator<S, String> concat(String delimiter, String prefix, String suffix) {
-        return new SimpleSeriesAggregator<>("concat", AggregatorFunctions.concat(delimiter, prefix, suffix));
+    static SeriesExp<String> concat(String delimiter, String prefix, String suffix) {
+        return Exp.$col("").vConcat(delimiter, prefix, suffix).as("concat");
     }
 
-    static <S> SeriesAggregator<S, List<S>> list() {
-        return new SimpleSeriesAggregator<>("list", Series::toList);
+    static <S> SeriesExp<List<S>> list() {
+        return ((SeriesExp<S>) Exp.$col("")).list().as("list");
     }
 
-    static <S> SeriesAggregator<S, Set<S>> set() {
-        return new SimpleSeriesAggregator<>("set", Series::toSet);
+    static <S> SeriesExp<Set<S>> set() {
+        return ((SeriesExp<S>) Exp.$col("")).set().as("set");
     }
 }

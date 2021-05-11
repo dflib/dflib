@@ -32,13 +32,18 @@ public class BinarySeriesExp<L, R, T> implements SeriesExp<T> {
     }
 
     @Override
-    public String getName(DataFrame df) {
-        return left.getName(df) + opName + right.getName(df);
+    public Class<T> getType() {
+        return type;
     }
 
     @Override
-    public Class<T> getType() {
-        return type;
+    public String getName() {
+        return left.getName() + opName + right.getName();
+    }
+
+    @Override
+    public String getName(DataFrame df) {
+        return left.getName(df) + opName + right.getName(df);
     }
 
     @Override

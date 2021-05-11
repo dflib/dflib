@@ -18,6 +18,11 @@ public class PreFilteredCountExp implements SeriesExp<Integer> {
     }
 
     @Override
+    public String getName() {
+        return "count";
+    }
+
+    @Override
     public String getName(DataFrame df) {
         return "count";
     }

@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.unit.SeriesAsserts;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -12,7 +12,7 @@ public class Series_AggTest {
     @ParameterizedTest
     @EnumSource(SeriesType.class)
     public void testAgg(SeriesType type) {
-        String aggregated = type.createSeries("a", "b", "cd", "e", "fg").agg(SeriesAggregator.concat("_"));
+        String aggregated = type.createSeries("a", "b", "cd", "e", "fg").agg(Exp.$col("").vConcat("_")).get(0);
         assertEquals("a_b_cd_e_fg", aggregated);
     }
 
@@ -20,14 +20,15 @@ public class Series_AggTest {
     @EnumSource(SeriesType.class)
     public void testAggMultiple(SeriesType type) {
 
-        Series<?> aggregated = type.createSeries("a", "b", "cd", "e", "fg")
+        DataFrame aggregated = type.createSeries("a", "b", "cd", "e", "fg")
                 .aggMultiple(
-                        SeriesAggregator.first(),
-                        SeriesAggregator.concat("|"),
-                        SeriesAggregator.concat("_", "[", "]"),
-                        SeriesAggregator.countInt());
+                        Exp.$col("first").first(),
+                        Exp.$col("concat").vConcat("|"),
+                        Exp.$col("concat").vConcat("_", "[", "]"),
+                        Exp.count().as("count"));
 
-        new SeriesAsserts(aggregated).expectData("a", "a|b|cd|e|fg", "[a_b_cd_e_fg]", 5);
+        new DataFrameAsserts(aggregated, "first", "concat", "concat_", "count")
+                .expectRow(0, "a", "a|b|cd|e|fg", "[a_b_cd_e_fg]", 5);
     }
 
     @ParameterizedTest

@@ -58,6 +58,11 @@ public class ConcatFunction implements SeriesExp<String> {
     }
 
     @Override
+    public String getName() {
+        return Arrays.stream(args).map(a -> a.getName()).collect(Collectors.joining(",", "concat(", ")"));
+    }
+
+    @Override
     public String getName(DataFrame df) {
         return Arrays.stream(args).map(a -> a.getName(df)).collect(Collectors.joining(",", "concat(", ")"));
     }

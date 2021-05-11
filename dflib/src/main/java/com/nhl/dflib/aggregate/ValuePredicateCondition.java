@@ -17,6 +17,11 @@ class ValuePredicateCondition<T> implements SeriesCondition {
     }
 
     @Override
+    public String getName() {
+        return exp.getName();
+    }
+
+    @Override
     public String getName(DataFrame df) {
         return exp.getName(df);
     }

@@ -16,6 +16,11 @@ class RowPredicateCondition implements SeriesCondition {
     }
 
     @Override
+    public String getName() {
+        return "row_predicate";
+    }
+
+    @Override
     public String getName(DataFrame df) {
         return "row_predicate";
     }

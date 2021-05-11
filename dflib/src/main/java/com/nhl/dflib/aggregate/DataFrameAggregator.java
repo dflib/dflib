@@ -36,6 +36,12 @@ public class DataFrameAggregator<T> implements SeriesExp<T> {
     }
 
     @Override
+    public String getName() {
+        // the class is deprecated and on the way out... this should never get called in reality
+        return "col";
+    }
+
+    @Override
     public String getName(DataFrame df) {
         return targetColumnNamer.apply(df.getColumnsIndex());
     }

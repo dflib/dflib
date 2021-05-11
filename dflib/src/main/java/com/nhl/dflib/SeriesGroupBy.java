@@ -63,7 +63,7 @@ public class SeriesGroupBy<T> {
     /**
      * Returns a Series, with each value corresponding to the result of a single group aggregation.
      */
-    public <R> Series<R> agg(SeriesAggregator<? super T, R> aggregator) {
+    public <R> Series<R> agg(SeriesExp<R> aggregator) {
         return SeriesAggregation.aggGroupBy(this, aggregator);
     }
 
@@ -71,7 +71,7 @@ public class SeriesGroupBy<T> {
      * Returns a DataFrame, with each row corresponding to the result of a single group aggregation with multiple
      * provided aggregators.
      */
-    public DataFrame aggMultiple(SeriesAggregator<? super T, ?>... aggregators) {
+    public DataFrame aggMultiple(SeriesExp<?>... aggregators) {
         return SeriesAggregation.aggGroupMultiple(this, aggregators);
     }
 

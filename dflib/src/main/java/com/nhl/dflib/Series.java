@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.accumulator.ObjectAccumulator;
+import com.nhl.dflib.aggregate.SeriesAggregation;
 import com.nhl.dflib.series.*;
 import com.nhl.dflib.sort.SeriesSorter;
 
@@ -272,8 +272,8 @@ public interface Series<T> extends Iterable<T> {
      *
      * @since 0.6
      */
-    default <R> R agg(SeriesAggregator<? super T, R> aggregator) {
-        return aggregator.aggregate(this);
+    default <R> Series<R> agg(SeriesExp<R> aggregator) {
+        return aggregator.eval(this);
     }
 
     /**
@@ -282,39 +282,29 @@ public interface Series<T> extends Iterable<T> {
      *
      * @since 0.6
      */
-    default Series<?> aggMultiple(SeriesAggregator<? super T, ?>... aggregators) {
-
-        int len = aggregators.length;
-        ObjectAccumulator<Object> accum = new ObjectAccumulator<>(len);
-
-        for (SeriesAggregator<? super T, ?> aggregator : aggregators) {
-            accum.add(aggregator.aggregate(this));
-        }
-
-        return accum.toSeries();
+    default DataFrame aggMultiple(SeriesExp<?>... aggregators) {
+        return SeriesAggregation.aggAsDataFrame(this, aggregators);
     }
 
     /**
      * @since 0.7
      */
     default T first() {
-        return agg(SeriesAggregator.first());
+        return size() > 0 ? get(0) : null;
     }
 
     /**
      * @since 0.7
      */
     default String concat(String delimiter) {
-        // TODO: implement concat directly instead of going through aggregator
-        return agg(SeriesAggregator.concat(delimiter));
+        return agg(Exp.$col("").vConcat(delimiter)).get(0);
     }
 
     /**
      * @since 0.7
      */
     default String concat(String delimiter, String prefix, String suffix) {
-        // TODO: implement concat directly instead of going through aggregator
-        return agg(SeriesAggregator.concat(delimiter, prefix, suffix));
+        return agg(Exp.$col("").vConcat(delimiter, prefix, suffix)).get(0);
     }
 
     /**

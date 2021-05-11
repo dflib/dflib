@@ -39,6 +39,11 @@ public abstract class ConjunctiveSeriesCondition implements SeriesCondition {
     }
 
     @Override
+    public String getName() {
+        return Arrays.stream(parts).map(p -> p.getName()).collect(Collectors.joining(opName));
+    }
+
+    @Override
     public String getName(DataFrame df) {
         return Arrays.stream(parts).map(p -> p.getName(df)).collect(Collectors.joining(opName));
     }

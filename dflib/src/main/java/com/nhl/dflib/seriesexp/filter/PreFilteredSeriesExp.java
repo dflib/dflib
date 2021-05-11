@@ -21,13 +21,13 @@ public class PreFilteredSeriesExp<T> implements SeriesExp<T> {
     }
 
     @Override
-    public Series<T> eval(DataFrame df) {
-        return delegate.eval(df.selectRows(filter));
+    public Class<T> getType() {
+        return delegate.getType();
     }
 
     @Override
-    public Series<T> eval(Series<?> s) {
-        return delegate.eval(s.select(filter));
+    public String getName() {
+        return delegate.getName();
     }
 
     @Override
@@ -36,7 +36,12 @@ public class PreFilteredSeriesExp<T> implements SeriesExp<T> {
     }
 
     @Override
-    public Class<T> getType() {
-        return delegate.getType();
+    public Series<T> eval(DataFrame df) {
+        return delegate.eval(df.selectRows(filter));
+    }
+
+    @Override
+    public Series<T> eval(Series<?> s) {
+        return delegate.eval(s.select(filter));
     }
 }

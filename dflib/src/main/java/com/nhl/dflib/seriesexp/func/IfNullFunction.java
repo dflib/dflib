@@ -19,13 +19,18 @@ public class IfNullFunction<T> implements SeriesExp<T> {
     }
 
     @Override
-    public String getName(DataFrame df) {
-        return "ifnull(" + exp.getName(df) + "," + ifNullExp.getName(df) + ")";
+    public Class<T> getType() {
+        return exp.getType();
     }
 
     @Override
-    public Class<T> getType() {
-        return exp.getType();
+    public String getName() {
+        return "ifnull(" + exp.getName() + "," + ifNullExp.getName() + ")";
+    }
+
+    @Override
+    public String getName(DataFrame df) {
+        return "ifnull(" + exp.getName(df) + "," + ifNullExp.getName(df) + ")";
     }
 
     @Override

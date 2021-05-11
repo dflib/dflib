@@ -18,6 +18,11 @@ public class FilteredAggregator<T> implements SeriesExp<T> {
     }
 
     @Override
+    public String getName() {
+        return aggregator.getName();
+    }
+
+    @Override
     public String getName(DataFrame df) {
         return aggregator.getName(df);
     }

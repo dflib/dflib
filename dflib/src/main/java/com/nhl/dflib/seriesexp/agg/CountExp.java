@@ -17,13 +17,18 @@ public class CountExp implements SeriesExp<Integer> {
     }
 
     @Override
-    public String getName(DataFrame df) {
+    public Class<Integer> getType() {
+        return Integer.class;
+    }
+
+    @Override
+    public String getName() {
         return "count";
     }
 
     @Override
-    public Class<Integer> getType() {
-        return Integer.class;
+    public String getName(DataFrame df) {
+        return "count";
     }
 
     @Override

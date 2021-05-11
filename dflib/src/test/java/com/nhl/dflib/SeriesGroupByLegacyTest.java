@@ -4,7 +4,8 @@ import com.nhl.dflib.unit.DataFrameAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
-public class SeriesGroupByTest {
+@Deprecated
+public class SeriesGroupByLegacyTest {
 
     @Test
     public void testToSeries() {
@@ -19,7 +20,7 @@ public class SeriesGroupByTest {
 
         Series<String> aggregated = Series.forData("a", "b", "cd", "e", "fg")
                 .group((String s) -> s.length())
-                .agg(Exp.$col("").vConcat("_"));
+                .agg(SeriesAggregator.concat("_"));
 
         new SeriesAsserts(aggregated).expectData("a_b_e", "cd_fg");
     }
@@ -30,11 +31,11 @@ public class SeriesGroupByTest {
         DataFrame aggregated = Series.forData("a", "b", "cd", "e", "fg")
                 .group((String s) -> s.length())
                 .aggMultiple(
-                        Exp.$col("first").first(),
-                        Exp.$col("pipe").vConcat("|"),
-                        Exp.$col("underscore").vConcat("_"));
+                        SeriesAggregator.first(),
+                        SeriesAggregator.concat("|"),
+                        SeriesAggregator.concat("_"));
 
-        new DataFrameAsserts(aggregated, "first", "pipe", "underscore")
+        new DataFrameAsserts(aggregated, "first", "concat", "concat_")
                 .expectHeight(2)
                 .expectRow(0, "a", "a|b|e", "a_b_e")
                 .expectRow(1, "cd", "cd|fg", "cd_fg");
@@ -46,9 +47,9 @@ public class SeriesGroupByTest {
         DataFrame aggregated = Series.forData("a", "b", "cd", "e", "fg")
                 .group((String s) -> s.length())
                 .aggMultiple(
-                        Exp.$col("").first().as("f"),
-                        Exp.$col("").vConcat("|").as("c1"),
-                        Exp.$col("").vConcat("_").as("c2"));
+                        SeriesAggregator.first().as("f"),
+                        SeriesAggregator.concat("|").as("c1"),
+                        SeriesAggregator.concat("_").as("c2"));
 
         new DataFrameAsserts(aggregated, "f", "c1", "c2")
                 .expectHeight(2)

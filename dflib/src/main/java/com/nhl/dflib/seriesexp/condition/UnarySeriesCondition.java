@@ -26,6 +26,11 @@ public class UnarySeriesCondition<V> implements SeriesCondition {
     }
 
     @Override
+    public String getName() {
+        return opName + exp.getName();
+    }
+
+    @Override
     public String getName(DataFrame df) {
         return opName + exp.getName(df);
     }

@@ -25,6 +25,11 @@ public class BinarySeriesCondition<L, R> implements SeriesCondition {
     }
 
     @Override
+    public String getName() {
+        return left.getName() + opName + right.getName();
+    }
+
+    @Override
     public String getName(DataFrame df) {
         return left.getName(df) + opName + right.getName(df);
     }

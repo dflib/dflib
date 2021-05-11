@@ -20,6 +20,11 @@ public class RenamedExp<T> implements SeriesExp<T> {
     }
 
     @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
     public String getName(DataFrame df) {
         return name;
     }

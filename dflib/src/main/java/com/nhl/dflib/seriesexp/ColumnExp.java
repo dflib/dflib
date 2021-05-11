@@ -34,13 +34,18 @@ public class ColumnExp<T> implements SeriesExp<T> {
     }
 
     @Override
-    public String getName(DataFrame df) {
-        return position >= 0 ? df.getColumnsIndex().getLabel(position) : name;
+    public Class<T> getType() {
+        return type;
     }
 
     @Override
-    public Class<T> getType() {
-        return type;
+    public String getName() {
+        return position >= 0 ? String.valueOf(position) : name;
+    }
+
+    @Override
+    public String getName(DataFrame df) {
+        return position >= 0 ? df.getColumnsIndex().getLabel(position) : name;
     }
 
     @Override

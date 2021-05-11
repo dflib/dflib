@@ -2,7 +2,6 @@ package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesAggregator;
 import com.nhl.dflib.SeriesGroupBy;
 import com.nhl.dflib.jdbc.SaveOp;
 
@@ -59,9 +58,7 @@ public class SaveStats {
             rowSaveStatusesByOp = getRowSaveStatuses().group();
         }
 
-        return rowSaveStatusesByOp.hasGroup(op)
-                ? rowSaveStatusesByOp.getGroup(op).agg(SeriesAggregator.countInt())
-                : 0;
+        return rowSaveStatusesByOp.hasGroup(op) ? rowSaveStatusesByOp.getGroup(op).size() : 0;
     }
 }
 
