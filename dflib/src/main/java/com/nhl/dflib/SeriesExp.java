@@ -15,8 +15,9 @@ import java.util.Set;
 import java.util.function.Function;
 
 /**
- * An expression that produces a Series out of a DataFrame, with Series size equal to the DataFrame height.
- * {@link SeriesExp} expressions are created using {@link Exp} static factory methods.
+ * An expression that produces a Series out of either a DataFrame or a Series. {@link SeriesExp} expressions are
+ * created using {@link Exp} static factory methods. Non-aggregating expressions produce Series that are the same size
+ * as the source data structure, aggregating - a Series with fewer elements (usually just one element).
  *
  * @see Exp
  * @since 0.11
