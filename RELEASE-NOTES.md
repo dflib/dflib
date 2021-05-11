@@ -9,6 +9,7 @@
 * #123 Improve performance of "DF.filterRows(BooleanSeries)" 
 * #125 Column-based sort algorithm for better performance and expressions support
 * #127 Make Aggregator compatible with SeriesExp
+* #128 SeriesExp to eval against Series
 * #129 Rename "filter" methods to "select"
 
 ## Release 0.10
