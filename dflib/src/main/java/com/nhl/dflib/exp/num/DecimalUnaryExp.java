@@ -1,0 +1,19 @@
+package com.nhl.dflib.exp.num;
+
+import com.nhl.dflib.NumericExp;
+import com.nhl.dflib.Series;
+import com.nhl.dflib.SeriesExp;
+import com.nhl.dflib.exp.UnarySeriesExp;
+
+import java.math.BigDecimal;
+import java.util.function.Function;
+
+/**
+ * @since 0.11
+ */
+public class DecimalUnaryExp<F> extends UnarySeriesExp<F, BigDecimal> implements NumericExp<BigDecimal> {
+
+    public DecimalUnaryExp(SeriesExp<F> exp, Function<Series<F>, Series<BigDecimal>> op) {
+        super(exp, BigDecimal.class, op);
+    }
+}

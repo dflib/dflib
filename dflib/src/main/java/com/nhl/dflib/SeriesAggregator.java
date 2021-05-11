@@ -1,7 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.LongCountAggregator;
-import com.nhl.dflib.seriesexp.agg.AggregatorFunctions;
+import com.nhl.dflib.exp.agg.AggregatorFunctions;
 
 import java.util.List;
 import java.util.Set;

@@ -1,13 +1,13 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.seriesexp.ExpSorter;
-import com.nhl.dflib.seriesexp.RenamedExp;
-import com.nhl.dflib.seriesexp.agg.AggregatorFunctions;
-import com.nhl.dflib.seriesexp.filter.PreFilterFirstMatchSeriesExp;
-import com.nhl.dflib.seriesexp.filter.PreFilteredSeriesExp;
-import com.nhl.dflib.seriesexp.agg.SeriesExpAggregator;
-import com.nhl.dflib.seriesexp.condition.BinarySeriesCondition;
-import com.nhl.dflib.seriesexp.condition.UnarySeriesCondition;
+import com.nhl.dflib.exp.ExpSorter;
+import com.nhl.dflib.exp.RenamedExp;
+import com.nhl.dflib.exp.agg.AggregatorFunctions;
+import com.nhl.dflib.exp.filter.PreFilterFirstMatchSeriesExp;
+import com.nhl.dflib.exp.filter.PreFilteredSeriesExp;
+import com.nhl.dflib.exp.agg.SeriesExpAggregator;
+import com.nhl.dflib.exp.condition.BinarySeriesCondition;
+import com.nhl.dflib.exp.condition.UnarySeriesCondition;
 
 import java.util.List;
 import java.util.Objects;

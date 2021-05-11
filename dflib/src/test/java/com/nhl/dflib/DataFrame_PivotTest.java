@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.seriesexp.agg.AggregatorFunctions;
+import com.nhl.dflib.exp.agg.AggregatorFunctions;
 import com.nhl.dflib.pivot.PivotBuilder;
 import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Disabled;

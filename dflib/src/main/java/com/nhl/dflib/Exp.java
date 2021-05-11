@@ -1,18 +1,18 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.seriesexp.ColumnExp;
-import com.nhl.dflib.seriesexp.SingleValueSeriesExp;
-import com.nhl.dflib.seriesexp.agg.CountExp;
-import com.nhl.dflib.seriesexp.condition.AndSeriesCondition;
-import com.nhl.dflib.seriesexp.condition.BooleanColumn;
-import com.nhl.dflib.seriesexp.condition.OrSeriesCondition;
-import com.nhl.dflib.seriesexp.filter.PreFilteredCountExp;
-import com.nhl.dflib.seriesexp.func.ConcatFunction;
-import com.nhl.dflib.seriesexp.func.IfNullFunction;
-import com.nhl.dflib.seriesexp.num.DecimalColumn;
-import com.nhl.dflib.seriesexp.num.DoubleColumn;
-import com.nhl.dflib.seriesexp.num.IntColumn;
-import com.nhl.dflib.seriesexp.num.LongColumn;
+import com.nhl.dflib.exp.ColumnExp;
+import com.nhl.dflib.exp.SingleValueSeriesExp;
+import com.nhl.dflib.exp.agg.CountExp;
+import com.nhl.dflib.exp.condition.AndSeriesCondition;
+import com.nhl.dflib.exp.condition.BooleanColumn;
+import com.nhl.dflib.exp.condition.OrSeriesCondition;
+import com.nhl.dflib.exp.filter.PreFilteredCountExp;
+import com.nhl.dflib.exp.func.ConcatFunction;
+import com.nhl.dflib.exp.func.IfNullFunction;
+import com.nhl.dflib.exp.num.DecimalColumn;
+import com.nhl.dflib.exp.num.DoubleColumn;
+import com.nhl.dflib.exp.num.IntColumn;
+import com.nhl.dflib.exp.num.LongColumn;
 
 import java.math.BigDecimal;
 
@@ -88,56 +88,56 @@ public interface Exp {
     /**
      * Returns an expression that evaluates to a named DataFrame Integer column.
      */
-    static NumericSeriesExp<Integer> $int(String name) {
+    static NumericExp<Integer> $int(String name) {
         return new IntColumn(name);
     }
 
     /**
      * Returns an expression that evaluates to a DataFrame Integer column at a given position.
      */
-    static NumericSeriesExp<Integer> $int(int position) {
+    static NumericExp<Integer> $int(int position) {
         return new IntColumn(position);
     }
 
     /**
      * Returns an expression that evaluates to a named DataFrame Long column.
      */
-    static NumericSeriesExp<Long> $long(String name) {
+    static NumericExp<Long> $long(String name) {
         return new LongColumn(name);
     }
 
     /**
      * Returns an expression that evaluates to a DataFrame Long column at a given position.
      */
-    static NumericSeriesExp<Long> $long(int position) {
+    static NumericExp<Long> $long(int position) {
         return new LongColumn(position);
     }
 
     /**
      * Returns an expression that evaluates to a named DataFrame Double column.
      */
-    static NumericSeriesExp<Double> $double(String name) {
+    static NumericExp<Double> $double(String name) {
         return new DoubleColumn(name);
     }
 
     /**
      * Returns an expression that evaluates to a DataFrame Double column at a given position.
      */
-    static NumericSeriesExp<Double> $double(int position) {
+    static NumericExp<Double> $double(int position) {
         return new DoubleColumn(position);
     }
 
     /**
      * Returns an expression that evaluates to a named DataFrame BigDecimal column.
      */
-    static NumericSeriesExp<BigDecimal> $decimal(String name) {
+    static NumericExp<BigDecimal> $decimal(String name) {
         return new DecimalColumn(name);
     }
 
     /**
      * Returns an expression that evaluates to a DataFrame BigDecimal column at a given position.
      */
-    static NumericSeriesExp<BigDecimal> $decimal(int position) {
+    static NumericExp<BigDecimal> $decimal(int position) {
         return new DecimalColumn(position);
     }
 

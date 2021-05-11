@@ -1,7 +1,7 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.seriesexp.condition.AndSeriesCondition;
-import com.nhl.dflib.seriesexp.condition.OrSeriesCondition;
+import com.nhl.dflib.exp.condition.AndSeriesCondition;
+import com.nhl.dflib.exp.condition.OrSeriesCondition;
 
 /**
  * A {@link SeriesExp} that evaluates to a BooleanSeries indicating whether the condition is true for any given
