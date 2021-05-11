@@ -14,6 +14,7 @@ import java.util.stream.Collector;
  * Defines an aggregation operation to produce a single value from a DataFrame.
  *
  * @deprecated since 0.11 in favor of aggregating {@link SeriesExp}
+ * @see Exp
  */
 @Deprecated
 public interface Aggregator {
