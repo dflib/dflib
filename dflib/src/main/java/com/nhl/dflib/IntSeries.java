@@ -59,7 +59,7 @@ public interface IntSeries extends Series<Integer> {
     /**
      * @since 0.11
      */
-    IntSeries selectInt(SeriesCondition condition);
+    IntSeries selectInt(Condition condition);
 
     /**
      * @since 0.11

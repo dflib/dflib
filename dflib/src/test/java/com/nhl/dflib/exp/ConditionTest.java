@@ -13,7 +13,7 @@ import java.util.stream.LongStream;
 import static com.nhl.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SeriesConditionTest {
+public class ConditionTest {
 
     @Test
     public void testIsNull() {

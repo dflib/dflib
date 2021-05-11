@@ -3,23 +3,23 @@ package com.nhl.dflib.exp.condition;
 import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesCondition;
+import com.nhl.dflib.Condition;
 
 /**
  * @since 0.11
  */
-public class OrSeriesCondition extends ConjunctiveSeriesCondition {
+public class OrCondition extends ConjunctiveCondition {
 
-    public OrSeriesCondition(SeriesCondition... parts) {
+    public OrCondition(Condition... parts) {
         super("or", parts, BooleanSeries::orAll);
     }
 
     @Override
-    public SeriesCondition or(SeriesCondition exp) {
+    public Condition or(Condition exp) {
         // flatten OR
-        return exp.getClass().equals(OrSeriesCondition.class)
-                ? new OrSeriesCondition(combine(this.parts, ((OrSeriesCondition) exp).parts))
-                : new OrSeriesCondition(combine(this.parts, exp));
+        return exp.getClass().equals(OrCondition.class)
+                ? new OrCondition(combine(this.parts, ((OrCondition) exp).parts))
+                : new OrCondition(combine(this.parts, exp));
     }
 
     @Override

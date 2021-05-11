@@ -296,7 +296,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public DataFrame selectRows(SeriesCondition condition) {
+    public DataFrame selectRows(Condition condition) {
         return selectRows(condition.eval(this).indexTrue());
     }
 

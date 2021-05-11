@@ -4,18 +4,18 @@ import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.DoubleSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.Exp;
-import com.nhl.dflib.exp.condition.BinarySeriesCondition;
+import com.nhl.dflib.exp.condition.BinaryCondition;
 
 import java.util.function.BiFunction;
 
 /**
  * @since 0.11
  */
-public class DoubleBinarySeriesCondition extends BinarySeriesCondition<Double, Double> {
+public class DoubleBinaryCondition extends BinaryCondition<Double, Double> {
 
     private final BiFunction<DoubleSeries, DoubleSeries, BooleanSeries> primitiveOp;
 
-    public DoubleBinarySeriesCondition(
+    public DoubleBinaryCondition(
             String opName,
             Exp<Double> left,
             Exp<Double> right,

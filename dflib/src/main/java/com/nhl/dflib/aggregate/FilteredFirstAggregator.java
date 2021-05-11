@@ -2,7 +2,7 @@ package com.nhl.dflib.aggregate;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesCondition;
+import com.nhl.dflib.Condition;
 import com.nhl.dflib.Exp;
 
 /**
@@ -12,11 +12,11 @@ import com.nhl.dflib.Exp;
 @Deprecated
 public class FilteredFirstAggregator<T> implements Exp<T> {
 
-    private final SeriesCondition rowFilter;
+    private final Condition rowFilter;
     private final Exp<T> extractor;
 
     public FilteredFirstAggregator(
-            SeriesCondition rowFilter,
+            Condition rowFilter,
             Exp<T> extractor) {
 
         this.rowFilter = rowFilter;

@@ -10,14 +10,14 @@ import java.util.function.BiPredicate;
 /**
  * @since 0.11
  */
-public class BinarySeriesCondition<L, R> implements SeriesCondition {
+public class BinaryCondition<L, R> implements Condition {
 
     private final String opName;
     protected final Exp<L> left;
     protected final Exp<R> right;
     private final BiFunction<Series<L>, Series<R>, BooleanSeries> op;
 
-    public BinarySeriesCondition(String opName, Exp<L> left, Exp<R> right, BiFunction<Series<L>, Series<R>, BooleanSeries> op) {
+    public BinaryCondition(String opName, Exp<L> left, Exp<R> right, BiFunction<Series<L>, Series<R>, BooleanSeries> op) {
         this.opName = opName;
         this.left = left;
         this.right = right;

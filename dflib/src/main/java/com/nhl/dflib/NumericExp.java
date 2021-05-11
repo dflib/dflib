@@ -59,38 +59,38 @@ public interface NumericExp<N extends Number> extends Exp<N> {
         return NumericExpFactory.factory(this).castAsDecimal(this, scale);
     }
 
-    default SeriesCondition lt(Exp<? extends Number> exp) {
+    default Condition lt(Exp<? extends Number> exp) {
         return NumericExpFactory.factory(this, exp).lt(this, exp);
     }
 
-    default SeriesCondition lt(Number val) {
+    default Condition lt(Number val) {
         Exp<? extends Number> ve = Exp.$val(val);
         return NumericExpFactory.factory(this, ve).lt(this, ve);
     }
 
-    default SeriesCondition le(Exp<? extends Number> exp) {
+    default Condition le(Exp<? extends Number> exp) {
         return NumericExpFactory.factory(this, exp).le(this, exp);
     }
 
-    default SeriesCondition le(Number val) {
+    default Condition le(Number val) {
         Exp<? extends Number> ve = Exp.$val(val);
         return NumericExpFactory.factory(this, ve).le(this, ve);
     }
 
-    default SeriesCondition gt(Exp<? extends Number> exp) {
+    default Condition gt(Exp<? extends Number> exp) {
         return NumericExpFactory.factory(this, exp).gt(this, exp);
     }
 
-    default SeriesCondition gt(Number val) {
+    default Condition gt(Number val) {
         Exp<? extends Number> ve = Exp.$val(val);
         return NumericExpFactory.factory(this, ve).gt(this, ve);
     }
 
-    default SeriesCondition ge(Exp<? extends Number> exp) {
+    default Condition ge(Exp<? extends Number> exp) {
         return NumericExpFactory.factory(this, exp).ge(this, exp);
     }
 
-    default SeriesCondition ge(Number val) {
+    default Condition ge(Number val) {
         Exp<? extends Number> ve = Exp.$val(val);
         return NumericExpFactory.factory(this, ve).ge(this, ve);
     }
@@ -99,7 +99,7 @@ public interface NumericExp<N extends Number> extends Exp<N> {
         return NumericExpFactory.factory(this).sum(this);
     }
 
-    default NumericExp<?> sum(SeriesCondition filter) {
+    default NumericExp<?> sum(Condition filter) {
         return new PreFilteredNumericExp<>(filter, sum());
     }
 
@@ -107,7 +107,7 @@ public interface NumericExp<N extends Number> extends Exp<N> {
         return NumericExpFactory.factory(this).min(this);
     }
 
-    default NumericExp<?> min(SeriesCondition filter) {
+    default NumericExp<?> min(Condition filter) {
         return new PreFilteredNumericExp<>(filter, min());
     }
 
@@ -115,7 +115,7 @@ public interface NumericExp<N extends Number> extends Exp<N> {
         return NumericExpFactory.factory(this).max(this);
     }
 
-    default NumericExp<?> max(SeriesCondition filter) {
+    default NumericExp<?> max(Condition filter) {
         return new PreFilteredNumericExp<>(filter, max());
     }
 
@@ -123,7 +123,7 @@ public interface NumericExp<N extends Number> extends Exp<N> {
         return NumericExpFactory.factory(this).avg(this);
     }
 
-    default NumericExp<?> avg(SeriesCondition filter) {
+    default NumericExp<?> avg(Condition filter) {
         return new PreFilteredNumericExp<>(filter, avg());
     }
 
@@ -131,7 +131,7 @@ public interface NumericExp<N extends Number> extends Exp<N> {
         return NumericExpFactory.factory(this).median(this);
     }
 
-    default NumericExp<?> median(SeriesCondition filter) {
+    default NumericExp<?> median(Condition filter) {
         return new PreFilteredNumericExp<>(filter, median());
     }
 }

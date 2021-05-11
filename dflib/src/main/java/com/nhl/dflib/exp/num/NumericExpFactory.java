@@ -1,6 +1,6 @@
 package com.nhl.dflib.exp.num;
 
-import com.nhl.dflib.SeriesCondition;
+import com.nhl.dflib.Condition;
 import com.nhl.dflib.NumericExp;
 import com.nhl.dflib.Exp;
 
@@ -73,13 +73,13 @@ public abstract class NumericExpFactory {
 
     public abstract NumericExp<BigDecimal> castAsDecimal(NumericExp<?> exp, int scale);
 
-    public abstract SeriesCondition lt(Exp<? extends Number> left, Exp<? extends Number> right);
+    public abstract Condition lt(Exp<? extends Number> left, Exp<? extends Number> right);
 
-    public abstract SeriesCondition le(Exp<? extends Number> left, Exp<? extends Number> right);
+    public abstract Condition le(Exp<? extends Number> left, Exp<? extends Number> right);
 
-    public abstract SeriesCondition gt(Exp<? extends Number> left, Exp<? extends Number> right);
+    public abstract Condition gt(Exp<? extends Number> left, Exp<? extends Number> right);
 
-    public abstract SeriesCondition ge(Exp<? extends Number> left, Exp<? extends Number> right);
+    public abstract Condition ge(Exp<? extends Number> left, Exp<? extends Number> right);
 
     public static NumericExpFactory factory(Exp<? extends Number> exp) {
         return factory(exp.getType());

@@ -3,7 +3,7 @@ package com.nhl.dflib.exp.condition;
 import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesCondition;
+import com.nhl.dflib.Condition;
 
 import java.util.Arrays;
 import java.util.function.Function;
@@ -14,20 +14,20 @@ import java.util.stream.Collectors;
  *
  * @since 0.11
  */
-public abstract class ConjunctiveSeriesCondition implements SeriesCondition {
+public abstract class ConjunctiveCondition implements Condition {
 
-    protected static SeriesCondition[] combine(SeriesCondition[] partsLeft, SeriesCondition... partsRight) {
-        SeriesCondition[] combined = new SeriesCondition[partsLeft.length + partsRight.length];
+    protected static Condition[] combine(Condition[] partsLeft, Condition... partsRight) {
+        Condition[] combined = new Condition[partsLeft.length + partsRight.length];
         System.arraycopy(partsLeft, 0, combined, 0, partsLeft.length);
         System.arraycopy(partsRight, 0, combined, partsLeft.length, partsRight.length);
         return combined;
     }
 
     private final String opName;
-    protected final SeriesCondition[] parts;
+    protected final Condition[] parts;
     private final Function<BooleanSeries[], BooleanSeries> op;
 
-    public ConjunctiveSeriesCondition(String opName, SeriesCondition[] parts, Function<BooleanSeries[], BooleanSeries> op) {
+    public ConjunctiveCondition(String opName, Condition[] parts, Function<BooleanSeries[], BooleanSeries> op) {
 
         if (parts.length == 0) {
             throw new IllegalArgumentException("Empty sub-expressions arrays");

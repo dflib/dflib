@@ -64,7 +64,7 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public Series<Integer> select(SeriesCondition condition) {
+    public Series<Integer> select(Condition condition) {
         return selectInt(condition);
     }
 
@@ -74,7 +74,7 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public IntSeries selectInt(SeriesCondition condition) {
+    public IntSeries selectInt(Condition condition) {
         return selectInt(condition.eval(this));
     }
 

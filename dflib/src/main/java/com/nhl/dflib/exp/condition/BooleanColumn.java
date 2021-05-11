@@ -5,12 +5,12 @@ import com.nhl.dflib.BooleanValueMapper;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.exp.ColumnExp;
-import com.nhl.dflib.SeriesCondition;
+import com.nhl.dflib.Condition;
 
 /**
  * @since 0.11
  */
-public class BooleanColumn extends ColumnExp<Boolean> implements SeriesCondition {
+public class BooleanColumn extends ColumnExp<Boolean> implements Condition {
 
     public BooleanColumn(String name) {
         super(name, Boolean.class);

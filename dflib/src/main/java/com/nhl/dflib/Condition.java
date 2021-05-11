@@ -1,7 +1,7 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.exp.condition.AndSeriesCondition;
-import com.nhl.dflib.exp.condition.OrSeriesCondition;
+import com.nhl.dflib.exp.condition.AndCondition;
+import com.nhl.dflib.exp.condition.OrCondition;
 
 /**
  * A {@link Exp} that evaluates to a BooleanSeries indicating whether the condition is true for any given
@@ -9,7 +9,7 @@ import com.nhl.dflib.exp.condition.OrSeriesCondition;
  *
  * @since 0.11
  */
-public interface SeriesCondition extends Exp<Boolean> {
+public interface Condition extends Exp<Boolean> {
 
     @Override
     BooleanSeries eval(DataFrame df);
@@ -25,12 +25,12 @@ public interface SeriesCondition extends Exp<Boolean> {
         return eval(s).firstTrue();
     }
 
-    default SeriesCondition and(SeriesCondition c) {
-        return new AndSeriesCondition(this, c);
+    default Condition and(Condition c) {
+        return new AndCondition(this, c);
     }
 
-    default SeriesCondition or(SeriesCondition c) {
-        return new OrSeriesCondition(this, c);
+    default Condition or(Condition c) {
+        return new OrCondition(this, c);
     }
 
     @Override

@@ -116,7 +116,7 @@ public interface Series<T> extends Iterable<T> {
     /**
      * @since 0.11
      */
-    Series<T> select(SeriesCondition condition);
+    Series<T> select(Condition condition);
 
 
     default Series<T> select(int... positions) {

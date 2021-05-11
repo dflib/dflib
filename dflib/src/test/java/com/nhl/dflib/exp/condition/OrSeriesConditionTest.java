@@ -12,7 +12,7 @@ public class OrSeriesConditionTest {
 
     @Test
     public void testFirstMatch() {
-        OrSeriesCondition c = new OrSeriesCondition(Exp.$bool(0), Exp.$bool(1));
+        OrCondition c = new OrCondition(Exp.$bool(0), Exp.$bool(1));
 
         DataFrame df0 = DataFrame.newFrame("t1", "f1")
                 .columns(BooleanSeries.forBooleans(false, false), BooleanSeries.forBooleans(false, false));
@@ -29,7 +29,7 @@ public class OrSeriesConditionTest {
 
     @Test
     public void testFirstMatch_Series() {
-        OrSeriesCondition c = new OrSeriesCondition(Exp.$bool(0), Exp.$bool(1));
+        OrCondition c = new OrCondition(Exp.$bool(0), Exp.$bool(1));
 
         Series<Boolean> s0 = BooleanSeries.forBooleans(false, false);
         assertEquals(-1, c.firstMatch(s0));

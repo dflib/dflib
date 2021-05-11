@@ -3,10 +3,10 @@ package com.nhl.dflib.aggregate;
 import com.nhl.dflib.*;
 
 /**
- * An adapter from {@link ValuePredicate} to a {@link SeriesCondition}.
+ * An adapter from {@link ValuePredicate} to a {@link Condition}.
  */
 @Deprecated
-class ValuePredicateCondition<T> implements SeriesCondition {
+class ValuePredicateCondition<T> implements Condition {
 
     private final Exp<T> exp;
     private final ValuePredicate<T> predicate;

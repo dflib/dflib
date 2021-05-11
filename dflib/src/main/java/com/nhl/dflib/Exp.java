@@ -156,22 +156,22 @@ public interface Exp<T> {
     // TODO: inconsistency - unlike numeric columns that support nulls, BooleanColumn is a "Condition",
     //  that can have no nulls, and will internally convert all nulls to "false"..
     //  Perhaps we need a distinction between a "condition" and a "boolean value expression"?
-    static SeriesCondition $bool(String name) {
+    static Condition $bool(String name) {
         return new BooleanColumn(name);
     }
 
-    static SeriesCondition $bool(int position) {
+    static Condition $bool(int position) {
         return new BooleanColumn(position);
     }
 
-    static SeriesCondition or(SeriesCondition... conditions) {
+    static Condition or(Condition... conditions) {
         return conditions.length == 1
-                ? conditions[0] : new OrSeriesCondition(conditions);
+                ? conditions[0] : new OrCondition(conditions);
     }
 
-    static SeriesCondition and(SeriesCondition... conditions) {
+    static Condition and(Condition... conditions) {
         return conditions.length == 1
-                ? conditions[0] : new AndSeriesCondition(conditions);
+                ? conditions[0] : new AndCondition(conditions);
     }
 
     /**
@@ -203,7 +203,7 @@ public interface Exp<T> {
         return CountExp.getInstance();
     }
 
-    static Exp<Integer> count(SeriesCondition filter) {
+    static Exp<Integer> count(Condition filter) {
         return new PreFilteredCountExp(filter);
     }
 
@@ -262,39 +262,39 @@ public interface Exp<T> {
         return new RenamedExp<>(name, this);
     }
 
-    default SeriesCondition eq(Exp<?> exp) {
-        return new BinarySeriesCondition<>("eq", this, exp, Series::eq);
+    default Condition eq(Exp<?> exp) {
+        return new BinaryCondition<>("eq", this, exp, Series::eq);
     }
 
-    default SeriesCondition ne(Exp<?> exp) {
-        return new BinarySeriesCondition<>("ne", this, exp, Series::ne);
+    default Condition ne(Exp<?> exp) {
+        return new BinaryCondition<>("ne", this, exp, Series::ne);
     }
 
-    default SeriesCondition eq(Object value) {
+    default Condition eq(Object value) {
         return value != null
-                ? new BinarySeriesCondition<>("eq", this, Exp.$val(value), Series::eq)
+                ? new BinaryCondition<>("eq", this, Exp.$val(value), Series::eq)
                 : isNull();
     }
 
-    default SeriesCondition ne(Object value) {
+    default Condition ne(Object value) {
         return value != null
-                ? new BinarySeriesCondition<>("ne", this, Exp.$val(value), Series::ne)
+                ? new BinaryCondition<>("ne", this, Exp.$val(value), Series::ne)
                 : isNotNull();
     }
 
-    default SeriesCondition isNull() {
-        return new UnarySeriesCondition<>("isNull", this, Series::isNull);
+    default Condition isNull() {
+        return new UnaryCondition<>("isNull", this, Series::isNull);
     }
 
-    default SeriesCondition isNotNull() {
-        return new UnarySeriesCondition<>("isNotNull", this, Series::isNotNull);
+    default Condition isNotNull() {
+        return new UnaryCondition<>("isNotNull", this, Series::isNotNull);
     }
 
     default <A> Exp<A> agg(Function<Series<T>, A> aggregator) {
         return new ExpAggregator<>(this, aggregator);
     }
 
-    default <A> Exp<A> agg(SeriesCondition filter, Function<Series<T>, A> aggregator) {
+    default <A> Exp<A> agg(Condition filter, Function<Series<T>, A> aggregator) {
         return new PreFilteredExp<>(filter, agg(aggregator));
     }
 
@@ -302,7 +302,7 @@ public interface Exp<T> {
         return agg(AggregatorFunctions.first());
     }
 
-    default Exp<T> first(SeriesCondition filter) {
+    default Exp<T> first(Condition filter) {
         // special handling of "first" that avoids full condition eval
         return new PreFilterFirstMatchExp<>(filter, first());
     }
@@ -315,7 +315,7 @@ public interface Exp<T> {
         return agg(AggregatorFunctions.concat(delimiter));
     }
 
-    default Exp<String> vConcat(SeriesCondition filter, String delimiter) {
+    default Exp<String> vConcat(Condition filter, String delimiter) {
         return agg(filter, AggregatorFunctions.concat(delimiter));
     }
 
@@ -327,7 +327,7 @@ public interface Exp<T> {
         return agg(AggregatorFunctions.concat(delimiter, prefix, suffix));
     }
 
-    default Exp<String> vConcat(SeriesCondition filter, String delimiter, String prefix, String suffix) {
+    default Exp<String> vConcat(Condition filter, String delimiter, String prefix, String suffix) {
         return agg(filter, AggregatorFunctions.concat(delimiter, prefix, suffix));
     }
 

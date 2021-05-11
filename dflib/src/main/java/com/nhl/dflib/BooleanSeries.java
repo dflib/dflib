@@ -65,7 +65,7 @@ public interface BooleanSeries extends Series<Boolean> {
     /**
      * @since 0.11
      */
-    BooleanSeries selectBoolean(SeriesCondition condition);
+    BooleanSeries selectBoolean(Condition condition);
 
     /**
      * @since 0.11

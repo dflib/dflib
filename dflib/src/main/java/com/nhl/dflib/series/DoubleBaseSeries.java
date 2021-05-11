@@ -59,7 +59,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
-    public Series<Double> select(SeriesCondition condition) {
+    public Series<Double> select(Condition condition) {
         return selectDouble(condition);
     }
 
@@ -69,7 +69,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
-    public DoubleSeries selectDouble(SeriesCondition condition) {
+    public DoubleSeries selectDouble(Condition condition) {
         return selectDouble(condition.eval(this));
     }
 

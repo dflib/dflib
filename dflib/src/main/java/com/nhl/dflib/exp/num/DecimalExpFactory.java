@@ -1,13 +1,13 @@
 package com.nhl.dflib.exp.num;
 
 import com.nhl.dflib.NumericExp;
-import com.nhl.dflib.SeriesCondition;
+import com.nhl.dflib.Condition;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.exp.BinaryExp;
 import com.nhl.dflib.exp.UnaryExp;
 import com.nhl.dflib.exp.agg.AggregatorFunctions;
 import com.nhl.dflib.exp.agg.DecimalExpAggregator;
-import com.nhl.dflib.exp.condition.BinarySeriesCondition;
+import com.nhl.dflib.exp.condition.BinaryCondition;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -129,34 +129,34 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public SeriesCondition lt(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new BinarySeriesCondition("<",
+    public Condition lt(Exp<? extends Number> left, Exp<? extends Number> right) {
+        return new BinaryCondition("<",
                 cast(left),
                 cast(right),
-                BinarySeriesCondition.toSeriesCondition((BigDecimal n1, BigDecimal n2) -> n1.compareTo(n2) < 0));
+                BinaryCondition.toSeriesCondition((BigDecimal n1, BigDecimal n2) -> n1.compareTo(n2) < 0));
     }
 
     @Override
-    public SeriesCondition le(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new BinarySeriesCondition("<=",
+    public Condition le(Exp<? extends Number> left, Exp<? extends Number> right) {
+        return new BinaryCondition("<=",
                 cast(left),
                 cast(right),
-                BinarySeriesCondition.toSeriesCondition((BigDecimal n1, BigDecimal n2) -> n1.compareTo(n2) <= 0));
+                BinaryCondition.toSeriesCondition((BigDecimal n1, BigDecimal n2) -> n1.compareTo(n2) <= 0));
     }
 
     @Override
-    public SeriesCondition gt(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new BinarySeriesCondition(">",
+    public Condition gt(Exp<? extends Number> left, Exp<? extends Number> right) {
+        return new BinaryCondition(">",
                 cast(left),
                 cast(right),
-                BinarySeriesCondition.toSeriesCondition((BigDecimal n1, BigDecimal n2) -> n1.compareTo(n2) > 0));
+                BinaryCondition.toSeriesCondition((BigDecimal n1, BigDecimal n2) -> n1.compareTo(n2) > 0));
     }
 
     @Override
-    public SeriesCondition ge(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new BinarySeriesCondition(">=",
+    public Condition ge(Exp<? extends Number> left, Exp<? extends Number> right) {
+        return new BinaryCondition(">=",
                 cast(left),
                 cast(right),
-                BinarySeriesCondition.toSeriesCondition((BigDecimal n1, BigDecimal n2) -> n1.compareTo(n2) >= 0));
+                BinaryCondition.toSeriesCondition((BigDecimal n1, BigDecimal n2) -> n1.compareTo(n2) >= 0));
     }
 }

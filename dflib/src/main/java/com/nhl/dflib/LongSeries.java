@@ -58,7 +58,7 @@ public interface LongSeries extends Series<Long> {
     /**
      * @since 0.11
      */
-    LongSeries selectLong(SeriesCondition condition);
+    LongSeries selectLong(Condition condition);
     
     /**
      * @since 0.11

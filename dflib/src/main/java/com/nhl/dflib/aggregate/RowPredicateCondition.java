@@ -4,10 +4,10 @@ import com.nhl.dflib.*;
 import com.nhl.dflib.accumulator.BooleanAccumulator;
 
 /**
- * An adapter from {@link RowPredicate} to a {@link SeriesCondition}.
+ * An adapter from {@link RowPredicate} to a {@link Condition}.
  */
 @Deprecated
-class RowPredicateCondition implements SeriesCondition {
+class RowPredicateCondition implements Condition {
 
     private final RowPredicate predicate;
 

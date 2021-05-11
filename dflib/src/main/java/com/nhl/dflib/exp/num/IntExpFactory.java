@@ -2,14 +2,14 @@ package com.nhl.dflib.exp.num;
 
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.NumericExp;
-import com.nhl.dflib.SeriesCondition;
+import com.nhl.dflib.Condition;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.exp.BinaryExp;
 import com.nhl.dflib.exp.UnaryExp;
 import com.nhl.dflib.exp.agg.AggregatorFunctions;
 import com.nhl.dflib.exp.agg.DoubleExpAggregator;
 import com.nhl.dflib.exp.agg.IntExpAggregator;
-import com.nhl.dflib.exp.condition.BinarySeriesCondition;
+import com.nhl.dflib.exp.condition.BinaryCondition;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -114,38 +114,38 @@ public class IntExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public SeriesCondition lt(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new IntBinarySeriesCondition("<",
+    public Condition lt(Exp<? extends Number> left, Exp<? extends Number> right) {
+        return new IntBinaryCondition("<",
                 cast(left),
                 cast(right),
-                BinarySeriesCondition.toSeriesCondition((Integer n1, Integer n2) -> n1 < n2),
+                BinaryCondition.toSeriesCondition((Integer n1, Integer n2) -> n1 < n2),
                 IntSeries::lt);
     }
 
     @Override
-    public SeriesCondition le(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new IntBinarySeriesCondition("<=",
+    public Condition le(Exp<? extends Number> left, Exp<? extends Number> right) {
+        return new IntBinaryCondition("<=",
                 cast(left),
                 cast(right),
-                BinarySeriesCondition.toSeriesCondition((Integer n1, Integer n2) -> n1 <= n2),
+                BinaryCondition.toSeriesCondition((Integer n1, Integer n2) -> n1 <= n2),
                 IntSeries::le);
     }
 
     @Override
-    public SeriesCondition gt(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new IntBinarySeriesCondition(">",
+    public Condition gt(Exp<? extends Number> left, Exp<? extends Number> right) {
+        return new IntBinaryCondition(">",
                 cast(left),
                 cast(right),
-                BinarySeriesCondition.toSeriesCondition((Integer n1, Integer n2) -> n1 > n2),
+                BinaryCondition.toSeriesCondition((Integer n1, Integer n2) -> n1 > n2),
                 IntSeries::gt);
     }
 
     @Override
-    public SeriesCondition ge(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new IntBinarySeriesCondition(">=",
+    public Condition ge(Exp<? extends Number> left, Exp<? extends Number> right) {
+        return new IntBinaryCondition(">=",
                 cast(left),
                 cast(right),
-                BinarySeriesCondition.toSeriesCondition((Integer n1, Integer n2) -> n1 >= n2),
+                BinaryCondition.toSeriesCondition((Integer n1, Integer n2) -> n1 >= n2),
                 IntSeries::ge);
     }
 }

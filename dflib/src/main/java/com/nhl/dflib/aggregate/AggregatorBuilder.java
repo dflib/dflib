@@ -12,9 +12,9 @@ import com.nhl.dflib.*;
 @Deprecated
 public class AggregatorBuilder {
 
-    private SeriesCondition filter;
+    private Condition filter;
 
-    public AggregatorBuilder filterRows(SeriesCondition filter) {
+    public AggregatorBuilder filterRows(Condition filter) {
         appendRowFilter(filter);
         return this;
     }
@@ -146,7 +146,7 @@ public class AggregatorBuilder {
                 : Aggregator.max(column);
     }
 
-    protected void appendRowFilter(SeriesCondition filter) {
+    protected void appendRowFilter(Condition filter) {
         this.filter = this.filter != null ? this.filter.and(filter) : filter;
     }
 }

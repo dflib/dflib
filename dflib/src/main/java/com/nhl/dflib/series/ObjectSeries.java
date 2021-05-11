@@ -124,7 +124,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
     }
 
     @Override
-    public Series<T> select(SeriesCondition condition) {
+    public Series<T> select(Condition condition) {
         return select(condition.eval(this));
     }
 

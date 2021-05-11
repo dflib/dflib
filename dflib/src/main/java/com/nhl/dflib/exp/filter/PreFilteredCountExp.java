@@ -2,7 +2,7 @@ package com.nhl.dflib.exp.filter;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesCondition;
+import com.nhl.dflib.Condition;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.series.SingleValueSeries;
 
@@ -11,9 +11,9 @@ import com.nhl.dflib.series.SingleValueSeries;
  */
 public class PreFilteredCountExp implements Exp<Integer> {
 
-    private final SeriesCondition filter;
+    private final Condition filter;
 
-    public PreFilteredCountExp(SeriesCondition filter) {
+    public PreFilteredCountExp(Condition filter) {
         this.filter = filter;
     }
 

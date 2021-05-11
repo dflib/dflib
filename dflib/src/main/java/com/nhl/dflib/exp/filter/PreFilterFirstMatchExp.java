@@ -2,7 +2,7 @@ package com.nhl.dflib.exp.filter;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.SeriesCondition;
+import com.nhl.dflib.Condition;
 import com.nhl.dflib.Exp;
 
 /**
@@ -12,10 +12,10 @@ import com.nhl.dflib.Exp;
  */
 public class PreFilterFirstMatchExp<T> implements Exp<T> {
 
-    private final SeriesCondition filter;
+    private final Condition filter;
     private final Exp<T> delegate;
 
-    public PreFilterFirstMatchExp(SeriesCondition filter, Exp<T> delegate) {
+    public PreFilterFirstMatchExp(Condition filter, Exp<T> delegate) {
         this.filter = filter;
         this.delegate = delegate;
     }

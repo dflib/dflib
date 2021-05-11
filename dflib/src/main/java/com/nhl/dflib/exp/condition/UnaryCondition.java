@@ -1,7 +1,7 @@
 package com.nhl.dflib.exp.condition;
 
 import com.nhl.dflib.BooleanSeries;
-import com.nhl.dflib.SeriesCondition;
+import com.nhl.dflib.Condition;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.accumulator.BooleanAccumulator;
@@ -13,13 +13,13 @@ import java.util.function.Predicate;
 /**
  * @since 0.11
  */
-public class UnarySeriesCondition<V> implements SeriesCondition {
+public class UnaryCondition<V> implements Condition {
 
     private final String opName;
     protected final Exp<V> exp;
     private final Function<Series<V>, BooleanSeries> op;
 
-    public UnarySeriesCondition(String opName, Exp<V> exp, Function<Series<V>, BooleanSeries> op) {
+    public UnaryCondition(String opName, Exp<V> exp, Function<Series<V>, BooleanSeries> op) {
         this.opName = opName;
         this.exp = exp;
         this.op = op;

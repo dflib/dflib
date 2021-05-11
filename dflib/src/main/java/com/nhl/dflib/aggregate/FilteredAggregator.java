@@ -9,10 +9,10 @@ import com.nhl.dflib.*;
 @Deprecated
 public class FilteredAggregator<T> implements Exp<T> {
 
-    private SeriesCondition rowFilter;
+    private Condition rowFilter;
     private Exp<T> aggregator;
 
-    public FilteredAggregator(SeriesCondition rowFilter, Exp<T> aggregator) {
+    public FilteredAggregator(Condition rowFilter, Exp<T> aggregator) {
         this.rowFilter = rowFilter;
         this.aggregator = aggregator;
     }

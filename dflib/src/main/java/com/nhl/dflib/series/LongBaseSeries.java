@@ -55,7 +55,7 @@ public abstract class LongBaseSeries implements LongSeries {
     }
 
     @Override
-    public Series<Long> select(SeriesCondition condition) {
+    public Series<Long> select(Condition condition) {
         return selectLong(condition);
     }
 
@@ -65,7 +65,7 @@ public abstract class LongBaseSeries implements LongSeries {
     }
 
     @Override
-    public LongSeries selectLong(SeriesCondition condition) {
+    public LongSeries selectLong(Condition condition) {
         return selectLong(condition.eval(this));
     }
 

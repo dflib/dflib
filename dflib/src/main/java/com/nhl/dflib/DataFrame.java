@@ -580,7 +580,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @since 0.11
      */
-    DataFrame selectRows(SeriesCondition condition);
+    DataFrame selectRows(Condition condition);
 
 
     /**

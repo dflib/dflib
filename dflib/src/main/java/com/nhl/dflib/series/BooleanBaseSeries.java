@@ -61,7 +61,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
-    public Series<Boolean> select(SeriesCondition condition) {
+    public Series<Boolean> select(Condition condition) {
         return selectBoolean(condition);
     }
 
@@ -71,7 +71,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
-    public BooleanSeries selectBoolean(SeriesCondition condition) {
+    public BooleanSeries selectBoolean(Condition condition) {
         return selectBoolean(condition.eval(this));
     }
 
