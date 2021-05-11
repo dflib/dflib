@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class OrSeriesConditionTest {
+public class OrConditionTest {
 
     @Test
-    public void testFirstMatch() {
+    public void testFirstMatch_DataFrame() {
         OrCondition c = new OrCondition(Exp.$bool(0), Exp.$bool(1));
 
         DataFrame df0 = DataFrame.newFrame("t1", "f1")
