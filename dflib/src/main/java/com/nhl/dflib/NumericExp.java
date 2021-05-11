@@ -59,6 +59,38 @@ public interface NumericExp<N extends Number> extends Exp<N> {
         return NumericExpFactory.factory(this).castAsDecimal(this, scale);
     }
 
+    @Override
+    default Condition eq(Exp<?> exp) {
+        return Number.class.isAssignableFrom(exp.getType())
+                ? NumericExpFactory.factory(this, (Exp<? extends Number>) exp).eq(this, (Exp<? extends Number>) exp)
+                // we may have returned "false" without checking, except we want to handle mis-reported types, nulls, etc.
+                : Exp.super.eq(exp);
+    }
+
+    @Override
+    default Condition eq(Object value) {
+        return value instanceof Number
+                ? eq(Exp.$val(value))
+                // TODO: return either null check or a "false" exp here?
+                : Exp.super.eq(value);
+    }
+
+    @Override
+    default Condition ne(Exp<?> exp) {
+        return Number.class.isAssignableFrom(exp.getType())
+                ? NumericExpFactory.factory(this, (Exp<? extends Number>) exp).ne(this, (Exp<? extends Number>) exp)
+                // we may have returned "false" without checking, except we want to handle mis-reported types, nulls, etc.
+                : Exp.super.ne(exp);
+    }
+
+    @Override
+    default Condition ne(Object value) {
+        return value instanceof Number
+                ? ne(Exp.$val(value))
+                // TODO: return either null check or a "false" exp here?
+                : Exp.super.eq(value);
+    }
+
     default Condition lt(Exp<? extends Number> exp) {
         return NumericExpFactory.factory(this, exp).lt(this, exp);
     }

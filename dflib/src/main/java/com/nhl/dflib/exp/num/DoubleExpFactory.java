@@ -1,9 +1,6 @@
 package com.nhl.dflib.exp.num;
 
-import com.nhl.dflib.DoubleSeries;
-import com.nhl.dflib.NumericExp;
-import com.nhl.dflib.Condition;
-import com.nhl.dflib.Exp;
+import com.nhl.dflib.*;
 import com.nhl.dflib.exp.BinaryExp;
 import com.nhl.dflib.exp.UnaryExp;
 import com.nhl.dflib.exp.agg.AggregatorFunctions;
@@ -110,6 +107,24 @@ public class DoubleExpFactory extends NumericExpFactory {
     @Override
     public NumericExp<?> median(Exp<? extends Number> exp) {
         return new DoubleExpAggregator<>(exp, AggregatorFunctions.medianDouble());
+    }
+
+    @Override
+    public Condition eq(Exp<? extends Number> left, Exp<? extends Number> right) {
+        return new DoubleBinaryCondition("=",
+                cast(left),
+                cast(right),
+                BinaryCondition.toSeriesCondition(Double::equals),
+                DoubleSeries::eq);
+    }
+
+    @Override
+    public Condition ne(Exp<? extends Number> left, Exp<? extends Number> right) {
+        return new DoubleBinaryCondition("!=",
+                cast(left),
+                cast(right),
+                BinaryCondition.toSeriesCondition((Double n1, Double n2) -> !n1.equals(n2)),
+                DoubleSeries::ne);
     }
 
     @Override

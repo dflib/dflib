@@ -1,9 +1,6 @@
 package com.nhl.dflib.exp;
 
-import com.nhl.dflib.BooleanSeries;
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.LongSeries;
-import com.nhl.dflib.Series;
+import com.nhl.dflib.*;
 import com.nhl.dflib.unit.BooleanSeriesAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -83,5 +80,70 @@ public class Numeric_ConditionTest {
 
         BooleanSeries s = $decimal("a").gt($decimal("b")).eval(df);
         new BooleanSeriesAsserts(s).expectData(true, false, false);
+    }
+
+    @Test
+    public void testEQ_IntIntVal() {
+
+        Condition c = $int("a").eq(3);
+
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1, -1,
+                3, 3,
+                3, 4);
+
+        new BooleanSeriesAsserts(c.eval(df)).expectData(false, true, true);
+    }
+
+    @Test
+    public void testEQ_IntLongVal() {
+
+        Condition c = $int("a").eq(3L);
+
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1, -1,
+                3, 3,
+                3, 4);
+
+        new BooleanSeriesAsserts(c.eval(df)).expectData(false, true, true);
+    }
+
+    @Test
+    public void testEQ_LongIntVal() {
+
+        Condition c = $long("a").eq(3);
+
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1L, -1,
+                3L, 3,
+                3L, 4);
+
+        new BooleanSeriesAsserts(c.eval(df)).expectData(false, true, true);
+    }
+
+    @Test
+    public void testNE_LongIntVal() {
+
+        Condition c = $long("a").ne(3);
+
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1L, -1,
+                3L, 3,
+                3L, 4);
+
+        new BooleanSeriesAsserts(c.eval(df)).expectData(true, false, false);
+    }
+
+    @Test
+    public void testNE_LongIntBigDecimal() {
+
+        Condition c = $long("a").ne(new BigDecimal("3"));
+
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1L, -1,
+                3L, 3,
+                3L, 4);
+
+        new BooleanSeriesAsserts(c.eval(df)).expectData(true, false, false);
     }
 }

@@ -73,6 +73,10 @@ public abstract class NumericExpFactory {
 
     public abstract NumericExp<BigDecimal> castAsDecimal(NumericExp<?> exp, int scale);
 
+    public abstract Condition eq(Exp<? extends Number> left, Exp<? extends Number> right);
+
+    public abstract Condition ne(Exp<? extends Number> left, Exp<? extends Number> right);
+
     public abstract Condition lt(Exp<? extends Number> left, Exp<? extends Number> right);
 
     public abstract Condition le(Exp<? extends Number> left, Exp<? extends Number> right);

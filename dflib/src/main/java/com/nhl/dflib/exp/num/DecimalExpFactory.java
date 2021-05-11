@@ -1,8 +1,8 @@
 package com.nhl.dflib.exp.num;
 
-import com.nhl.dflib.NumericExp;
 import com.nhl.dflib.Condition;
 import com.nhl.dflib.Exp;
+import com.nhl.dflib.NumericExp;
 import com.nhl.dflib.exp.BinaryExp;
 import com.nhl.dflib.exp.UnaryExp;
 import com.nhl.dflib.exp.agg.AggregatorFunctions;
@@ -13,10 +13,11 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.function.BiPredicate;
 
 public class DecimalExpFactory extends NumericExpFactory {
 
-    private static final MathContext divisionContext(BigDecimal n1, BigDecimal n2) {
+    private static MathContext divisionContext(BigDecimal n1, BigDecimal n2) {
         return new MathContext(Math.max(15, 1 + Math.max(n1.scale(), n2.scale())), RoundingMode.HALF_UP);
     }
 
@@ -52,7 +53,7 @@ public class DecimalExpFactory extends NumericExpFactory {
         return new DecimalBinaryExp("+",
                 cast(left),
                 cast(right),
-                BinaryExp.toSeriesOp((BigDecimal n1, BigDecimal n2) -> n1.add(n2)));
+                BinaryExp.toSeriesOp(BigDecimal::add));
     }
 
     @Override
@@ -60,7 +61,7 @@ public class DecimalExpFactory extends NumericExpFactory {
         return new DecimalBinaryExp("-",
                 cast(left),
                 cast(right),
-                BinaryExp.toSeriesOp((BigDecimal n1, BigDecimal n2) -> n1.subtract(n2)));
+                BinaryExp.toSeriesOp(BigDecimal::subtract));
     }
 
     @Override
@@ -68,7 +69,7 @@ public class DecimalExpFactory extends NumericExpFactory {
         return new DecimalBinaryExp("*",
                 cast(left),
                 cast(right),
-                BinaryExp.toSeriesOp((BigDecimal n1, BigDecimal n2) -> n1.multiply(n2)));
+                BinaryExp.toSeriesOp(BigDecimal::multiply));
     }
 
     @Override
@@ -126,6 +127,24 @@ public class DecimalExpFactory extends NumericExpFactory {
     @Override
     public NumericExp<?> median(Exp<? extends Number> exp) {
         throw new UnsupportedOperationException("TODO: support for BigDecimal.median");
+    }
+
+    @Override
+    public Condition eq(Exp<? extends Number> left, Exp<? extends Number> right) {
+        return new BinaryCondition("=",
+                cast(left),
+                cast(right),
+                // TODO: should we apply ".stripTrailingZeros()" for consistency, but at the expense of performance?
+                BinaryCondition.toSeriesCondition((BiPredicate<BigDecimal, BigDecimal>) BigDecimal::equals));
+    }
+
+    @Override
+    public Condition ne(Exp<? extends Number> left, Exp<? extends Number> right) {
+        return new BinaryCondition("!=",
+                cast(left),
+                cast(right),
+                // TODO: should we apply ".stripTrailingZeros()" for consistency, but at the expense of performance?
+                BinaryCondition.toSeriesCondition((BigDecimal n1, BigDecimal n2) -> !n1.equals(n2)));
     }
 
     @Override
