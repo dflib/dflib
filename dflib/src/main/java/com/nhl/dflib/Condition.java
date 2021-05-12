@@ -1,6 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.exp.condition.AndCondition;
+import com.nhl.dflib.exp.condition.NotCondition;
 import com.nhl.dflib.exp.condition.OrCondition;
 
 /**
@@ -31,6 +32,10 @@ public interface Condition extends Exp<Boolean> {
 
     default Condition or(Condition c) {
         return new OrCondition(this, c);
+    }
+
+    default Condition not() {
+        return new NotCondition(this);
     }
 
     @Override

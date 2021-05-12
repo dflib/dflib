@@ -174,6 +174,10 @@ public interface Exp<T> {
                 ? conditions[0] : new AndCondition(conditions);
     }
 
+    static Condition not(Condition condition) {
+        return condition.not();
+    }
+
     /**
      * A function that evaluates "exp", replacing any null values by calling "ifNullExp".
      */
