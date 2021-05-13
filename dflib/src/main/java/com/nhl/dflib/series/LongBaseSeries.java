@@ -107,7 +107,7 @@ public abstract class LongBaseSeries implements LongSeries {
 
     @Override
     public Series<Long> select(BooleanSeries positions) {
-        return filterLong(positions);
+        return selectLong(positions);
     }
 
     @Override

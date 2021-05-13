@@ -111,7 +111,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
 
     @Override
     public Series<Double> select(BooleanSeries positions) {
-        return filterDouble(positions);
+        return selectDouble(positions);
     }
 
     @Override
