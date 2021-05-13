@@ -97,7 +97,7 @@ public class IntArraySeries_AggTest {
     @Test
     public void testAverage() {
         IntArraySeries s = new IntArraySeries(1, -2, 3, 56, 8);
-        assertEquals(13.2, s.average(), 0.000001);
+        assertEquals(13.2, s.avg(), 0.000001);
     }
 
     @Test

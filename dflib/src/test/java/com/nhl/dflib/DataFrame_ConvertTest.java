@@ -17,7 +17,7 @@ public class DataFrame_ConvertTest {
         DataFrame df = DataFrame
                 .newFrame("a", "b")
                 .foldByRow(1, "x", 2, "y")
-                .convertColumn("a", $int("a").multiply(10));
+                .convertColumn("a", $int("a").mul(10));
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)
@@ -30,7 +30,7 @@ public class DataFrame_ConvertTest {
         DataFrame df = DataFrame
                 .newFrame("a", "b")
                 .foldByRow(1, "x", 2, "y")
-                .convertColumn("a", $int(0).multiply(10));
+                .convertColumn("a", $int(0).mul(10));
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)

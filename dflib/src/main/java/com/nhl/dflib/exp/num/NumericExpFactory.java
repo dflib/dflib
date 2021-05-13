@@ -53,11 +53,11 @@ public abstract class NumericExpFactory {
 
     public abstract NumericExp<?> add(Exp<? extends Number> left, Exp<? extends Number> right);
 
-    public abstract NumericExp<?> subtract(Exp<? extends Number> left, Exp<? extends Number> right);
+    public abstract NumericExp<?> sub(Exp<? extends Number> left, Exp<? extends Number> right);
 
-    public abstract NumericExp<?> multiply(Exp<? extends Number> left, Exp<? extends Number> right);
+    public abstract NumericExp<?> mul(Exp<? extends Number> left, Exp<? extends Number> right);
 
-    public abstract NumericExp<?> divide(Exp<? extends Number> left, Exp<? extends Number> right);
+    public abstract NumericExp<?> div(Exp<? extends Number> left, Exp<? extends Number> right);
 
     public abstract NumericExp<?> mod(Exp<? extends Number> left, Exp<? extends Number> right);
 

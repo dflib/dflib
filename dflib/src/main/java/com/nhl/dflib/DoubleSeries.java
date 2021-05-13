@@ -146,9 +146,17 @@ public interface DoubleSeries extends Series<Double> {
     double sum();
 
     /**
-     * @since 0.7
+     * @deprecated since 0.11 in favor of shorter {@link #avg()}
      */
-    double average();
+    @Deprecated
+    default double average() {
+        return avg();
+    }
+
+    /**
+     * @since 0.11
+     */
+    double avg();
 
     /**
      * @since 0.7
@@ -170,9 +178,11 @@ public interface DoubleSeries extends Series<Double> {
     }
 
     /**
+     * Performs subtraction operation between this and another DoubleSeries.
+     *
      * @since 0.11
      */
-    default DoubleSeries subtract(DoubleSeries s) {
+    default DoubleSeries sub(DoubleSeries s) {
         int len = size();
         DoubleAccumulator accumulator = new DoubleAccumulator(len);
 
@@ -184,9 +194,11 @@ public interface DoubleSeries extends Series<Double> {
     }
 
     /**
+     * Performs multiplication operation between this and another DoubleSeries.
+     *
      * @since 0.11
      */
-    default DoubleSeries multiply(DoubleSeries s) {
+    default DoubleSeries mul(DoubleSeries s) {
         int len = size();
         DoubleAccumulator accumulator = new DoubleAccumulator(len);
 
@@ -198,9 +210,11 @@ public interface DoubleSeries extends Series<Double> {
     }
 
     /**
+     * Performs division operation between this and another DoubleSeries.
+     *
      * @since 0.11
      */
-    default DoubleSeries divide(DoubleSeries s) {
+    default DoubleSeries div(DoubleSeries s) {
         int len = size();
         DoubleAccumulator accumulator = new DoubleAccumulator(len);
 

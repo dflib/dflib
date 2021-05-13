@@ -19,31 +19,49 @@ public interface NumericExp<N extends Number> extends Exp<N> {
         return NumericExpFactory.factory(this, ve).add(this, ve);
     }
 
-    default NumericExp<?> subtract(Exp<? extends Number> exp) {
-        return NumericExpFactory.factory(this, exp).subtract(this, exp);
+    /**
+     * Performs subtraction operation between the values in two columns.
+     */
+    default NumericExp<?> sub(Exp<? extends Number> exp) {
+        return NumericExpFactory.factory(this, exp).sub(this, exp);
     }
 
-    default NumericExp<?> subtract(Number val) {
+    /**
+     * Performs subtraction operation between a column and a scalar value.
+     */
+    default NumericExp<?> sub(Number val) {
         Exp<? extends Number> ve = Exp.$val(val);
-        return NumericExpFactory.factory(this, ve).subtract(this, ve);
+        return NumericExpFactory.factory(this, ve).sub(this, ve);
     }
 
-    default NumericExp<?> multiply(Exp<? extends Number> exp) {
-        return NumericExpFactory.factory(this, exp).multiply(this, exp);
+    /**
+     * Performs multiplication operation between the values in two columns.
+     */
+    default NumericExp<?> mul(Exp<? extends Number> exp) {
+        return NumericExpFactory.factory(this, exp).mul(this, exp);
     }
 
-    default NumericExp<?> multiply(Number val) {
+    /**
+     * Performs multiplication operation between a column and a scalar value.
+     */
+    default NumericExp<?> mul(Number val) {
         Exp<? extends Number> ve = Exp.$val(val);
-        return NumericExpFactory.factory(this, ve).multiply(this, ve);
+        return NumericExpFactory.factory(this, ve).mul(this, ve);
     }
 
-    default NumericExp<?> divide(Exp<? extends Number> exp) {
-        return NumericExpFactory.factory(this, exp).divide(this, exp);
+    /**
+     * Performs a division operation between the values in two columns.
+     */
+    default NumericExp<?> div(Exp<? extends Number> exp) {
+        return NumericExpFactory.factory(this, exp).div(this, exp);
     }
 
-    default NumericExp<?> divide(Number val) {
+    /**
+     * Performs a division operation between a column and a scalar value.
+     */
+    default NumericExp<?> div(Number val) {
         Exp<? extends Number> ve = Exp.$val(val);
-        return NumericExpFactory.factory(this, ve).divide(this, ve);
+        return NumericExpFactory.factory(this, ve).div(this, ve);
     }
 
     default NumericExp<?> mod(Exp<? extends Number> exp) {

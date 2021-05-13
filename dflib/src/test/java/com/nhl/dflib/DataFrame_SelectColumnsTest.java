@@ -39,7 +39,7 @@ public class DataFrame_SelectColumnsTest {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y")
-                .selectColumns($col("b"), $int("a").multiply($int("a")));
+                .selectColumns($col("b"), $int("a").mul($int("a")));
 
         new DataFrameAsserts(df, "b", "a*a")
                 .expectHeight(2)

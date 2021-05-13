@@ -156,9 +156,17 @@ public interface IntSeries extends Series<Integer> {
     long sum();
 
     /**
-     * @since 0.7
+     * @deprecated since 0.11 in favor of {@link #avg()}.
      */
-    double average();
+    @Deprecated
+    default double average() {
+        return avg();
+    }
+
+    /**
+     * @since 0.11
+     */
+    double avg();
 
     /**
      * @since 0.7
@@ -180,9 +188,11 @@ public interface IntSeries extends Series<Integer> {
     }
 
     /**
+     * Performs subtraction operation between this and another IntSeries.
+     *
      * @since 0.11
      */
-    default IntSeries subtract(IntSeries s) {
+    default IntSeries sub(IntSeries s) {
         int len = size();
         IntAccumulator accumulator = new IntAccumulator(len);
 
@@ -194,9 +204,11 @@ public interface IntSeries extends Series<Integer> {
     }
 
     /**
+     * Performs multiplication operation between this and another IntSeries.
+     *
      * @since 0.11
      */
-    default IntSeries multiply(IntSeries s) {
+    default IntSeries mul(IntSeries s) {
         int len = size();
         IntAccumulator accumulator = new IntAccumulator(len);
 
@@ -208,9 +220,11 @@ public interface IntSeries extends Series<Integer> {
     }
 
     /**
+     * Performs division operation between this and another IntSeries.
+     *
      * @since 0.11
      */
-    default IntSeries divide(IntSeries s) {
+    default IntSeries div(IntSeries s) {
         int len = size();
         IntAccumulator accumulator = new IntAccumulator(len);
 
@@ -222,6 +236,8 @@ public interface IntSeries extends Series<Integer> {
     }
 
     /**
+     * Performs modulo operation between this and another IntSeries.
+     *
      * @since 0.11
      */
     default IntSeries mod(IntSeries s) {

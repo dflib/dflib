@@ -44,30 +44,30 @@ public class DoubleExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumericExp<?> subtract(Exp<? extends Number> left, Exp<? extends Number> right) {
+    public NumericExp<?> sub(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DoubleBinaryExp("-",
                 cast(left),
                 cast(right),
                 BinaryExp.toSeriesOp((Double n1, Double n2) -> n1 - n2),
-                DoubleSeries::subtract);
+                DoubleSeries::sub);
     }
 
     @Override
-    public NumericExp<?> multiply(Exp<? extends Number> left, Exp<? extends Number> right) {
+    public NumericExp<?> mul(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DoubleBinaryExp("*",
                 cast(left),
                 cast(right),
                 BinaryExp.toSeriesOp((Double n1, Double n2) -> n1 * n2),
-                DoubleSeries::multiply);
+                DoubleSeries::mul);
     }
 
     @Override
-    public NumericExp<?> divide(Exp<? extends Number> left, Exp<? extends Number> right) {
+    public NumericExp<?> div(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DoubleBinaryExp("/",
                 cast(left),
                 cast(right),
                 BinaryExp.toSeriesOp((Double n1, Double n2) -> n1 / n2),
-                DoubleSeries::divide);
+                DoubleSeries::div);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class DoubleExpFactory extends NumericExpFactory {
 
     @Override
     public NumericExp<?> avg(Exp<? extends Number> exp) {
-        return new DoubleExpAggregator<>(exp, AggregatorFunctions.averageDouble());
+        return new DoubleExpAggregator<>(exp, AggregatorFunctions.avgDouble());
     }
 
     @Override

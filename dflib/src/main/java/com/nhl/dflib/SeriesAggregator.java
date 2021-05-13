@@ -33,7 +33,7 @@ public interface SeriesAggregator {
     }
 
     static Exp<Double> averageDouble() {
-        return Exp.$col("", Number.class).agg(AggregatorFunctions.averageDouble()).as("averageDouble");
+        return Exp.$col("", Number.class).agg(AggregatorFunctions.avgDouble()).as("averageDouble");
     }
 
     static Exp<Double> medianDouble() {

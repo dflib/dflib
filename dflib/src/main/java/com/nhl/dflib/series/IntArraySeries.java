@@ -1,7 +1,7 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.IntSeries;
-import com.nhl.dflib.aggregate.PrimitiveSeriesAverage;
+import com.nhl.dflib.aggregate.PrimitiveSeriesAvg;
 import com.nhl.dflib.aggregate.PrimitiveSeriesMedian;
 import com.nhl.dflib.aggregate.PrimitiveSeriesMinMax;
 import com.nhl.dflib.aggregate.PrimitiveSeriesSum;
@@ -94,8 +94,8 @@ public class IntArraySeries extends IntBaseSeries {
     }
 
     @Override
-    public double average() {
-        return PrimitiveSeriesAverage.averageOfArray(data, offset, size);
+    public double avg() {
+        return PrimitiveSeriesAvg.avgOfArray(data, offset, size);
     }
 
     @Override

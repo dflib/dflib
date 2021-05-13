@@ -57,14 +57,14 @@ public interface Aggregator {
      * @since 0.6
      */
     static Exp<Double> averageDouble(String column) {
-        return Exp.$col(column, Number.class).agg(AggregatorFunctions.averageDouble());
+        return Exp.$col(column, Number.class).agg(AggregatorFunctions.avgDouble());
     }
 
     /**
      * @since 0.6
      */
     static Exp<Double> averageDouble(int column) {
-        return Exp.$col(column, Number.class).agg(AggregatorFunctions.averageDouble());
+        return Exp.$col(column, Number.class).agg(AggregatorFunctions.avgDouble());
     }
 
     /**

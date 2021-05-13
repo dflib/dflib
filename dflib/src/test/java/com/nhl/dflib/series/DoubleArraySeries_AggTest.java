@@ -88,7 +88,7 @@ public class DoubleArraySeries_AggTest {
     @Test
     public void testAverage() {
         DoubleArraySeries s = new DoubleArraySeries(1.5, -2.1, 3.7, 56.6, 8.8);
-        assertEquals(13.7, s.average(), 0.0000001);
+        assertEquals(13.7, s.avg(), 0.0000001);
     }
 
     @Test

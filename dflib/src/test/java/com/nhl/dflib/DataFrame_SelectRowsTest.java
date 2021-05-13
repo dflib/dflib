@@ -148,7 +148,7 @@ public class DataFrame_SelectRowsTest {
     @Test
     public void testExp_Lt() {
 
-        Condition c = $int("b").multiply($int("c")).lt($double("a").divide($int("d")));
+        Condition c = $int("b").mul($int("c")).lt($double("a").div($int("d")));
 
         DataFrame df = DataFrame.newFrame("a", "b", "c", "d").foldByRow(
                 1.01, -1, 0, 1,

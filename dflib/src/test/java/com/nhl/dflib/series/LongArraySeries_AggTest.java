@@ -88,7 +88,7 @@ public class LongArraySeries_AggTest {
     @Test
     public void testAverage() {
         LongArraySeries s = new LongArraySeries(1, -2, 3, 56, 8);
-        assertEquals(13.2, s.average(), 0.000001);
+        assertEquals(13.2, s.avg(), 0.000001);
     }
 
     @Test

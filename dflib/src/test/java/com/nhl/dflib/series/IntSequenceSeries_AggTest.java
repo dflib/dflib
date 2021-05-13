@@ -88,10 +88,10 @@ public class IntSequenceSeries_AggTest {
     @Test
     public void testAverage() {
         IntSequenceSeries s1 = new IntSequenceSeries(-1, 5);
-        assertEquals(1.5, s1.average(), 0.000001);
+        assertEquals(1.5, s1.avg(), 0.000001);
 
         IntSequenceSeries s2 = new IntSequenceSeries(1, 5);
-        assertEquals(2.5, s2.average(), 0.000001);
+        assertEquals(2.5, s2.avg(), 0.000001);
     }
 
     @Test

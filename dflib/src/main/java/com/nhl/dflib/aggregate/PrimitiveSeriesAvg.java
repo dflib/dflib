@@ -1,25 +1,25 @@
 package com.nhl.dflib.aggregate;
 
 /**
- * @since 0.7
+ * @since 0.11
  */
-public class PrimitiveSeriesAverage {
+public class PrimitiveSeriesAvg {
 
-    public static double averageOfRange(int first, int lastExclusive) {
+    public static double avgOfRange(int first, int lastExclusive) {
         double len = lastExclusive - first;
         return PrimitiveSeriesSum.sumOfRange(first, lastExclusive) / len;
     }
 
-    public static double averageOfArray(int[] ints, int start, int len) {
+    public static double avgOfArray(int[] ints, int start, int len) {
         return PrimitiveSeriesSum.sumOfArray(ints, start, len) / (double) len;
     }
 
-    public static double averageOfArray(long[] longs, int start, int len) {
+    public static double avgOfArray(long[] longs, int start, int len) {
         // TODO: control for overflow !! We can calc averages without overflowing even if the sum can create an overflow
         return PrimitiveSeriesSum.sumOfArray(longs, start, len) / (double) len;
     }
 
-    public static double averageOfArray(double[] doubles, int start, int len) {
+    public static double avgOfArray(double[] doubles, int start, int len) {
         // TODO: control for overflow !! We can calc averages without overflowing even if the sum can create an overflow
         return PrimitiveSeriesSum.sumOfArray(doubles, start, len) / (double) len;
     }

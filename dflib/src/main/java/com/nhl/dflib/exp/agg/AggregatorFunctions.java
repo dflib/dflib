@@ -25,7 +25,7 @@ public class AggregatorFunctions {
         return s -> s.size() == 0 ? null : s.get(0);
     }
 
-    public static <S extends Number> Function<Series<S>, Double> averageDouble() {
+    public static <S extends Number> Function<Series<S>, Double> avgDouble() {
         return fromCollector(Collectors.averagingDouble(v -> v.doubleValue()));
     }
 

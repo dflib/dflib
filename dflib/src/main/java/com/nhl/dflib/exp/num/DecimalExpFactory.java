@@ -57,7 +57,7 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumericExp<?> subtract(Exp<? extends Number> left, Exp<? extends Number> right) {
+    public NumericExp<?> sub(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DecimalBinaryExp("-",
                 cast(left),
                 cast(right),
@@ -65,7 +65,7 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumericExp<?> multiply(Exp<? extends Number> left, Exp<? extends Number> right) {
+    public NumericExp<?> mul(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DecimalBinaryExp("*",
                 cast(left),
                 cast(right),
@@ -73,7 +73,7 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumericExp<?> divide(Exp<? extends Number> left, Exp<? extends Number> right) {
+    public NumericExp<?> div(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DecimalBinaryExp("/",
                 cast(left),
                 cast(right),

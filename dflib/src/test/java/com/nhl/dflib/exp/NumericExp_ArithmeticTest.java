@@ -147,7 +147,7 @@ public class NumericExp_ArithmeticTest {
                 1, 2,
                 3, 4);
 
-        Series<? extends Number> s = $int("b").subtract($int("a")).eval(df);
+        Series<? extends Number> s = $int("b").sub($int("a")).eval(df);
         assertFalse(s instanceof IntSeries);
         new SeriesAsserts(s).expectData(1, 1);
     }
@@ -158,7 +158,7 @@ public class NumericExp_ArithmeticTest {
                 1.01, 2.,
                 3., 4.5);
 
-        Series<? extends Number> s = $double("b").subtract($double("a")).eval(df);
+        Series<? extends Number> s = $double("b").sub($double("a")).eval(df);
         assertFalse(s instanceof DoubleSeries);
         new SeriesAsserts(s).expectData(0.99, 1.5);
     }
@@ -169,7 +169,7 @@ public class NumericExp_ArithmeticTest {
                 6, 2,
                 3, 5);
 
-        Series<? extends Number> s = $int("b").multiply($int("a")).eval(df);
+        Series<? extends Number> s = $int("b").mul($int("a")).eval(df);
         assertFalse(s instanceof IntSeries);
         new SeriesAsserts(s).expectData(12, 15);
     }
@@ -180,7 +180,7 @@ public class NumericExp_ArithmeticTest {
                 new BigDecimal("35.1"), 2,
                 new BigDecimal("3.3"), 3);
 
-        Series<? extends Number> s = $int("b").multiply($decimal("a")).eval(df);
+        Series<? extends Number> s = $int("b").mul($decimal("a")).eval(df);
         new SeriesAsserts(s).expectData(new BigDecimal("70.2"), new BigDecimal("9.9"));
     }
 
@@ -190,7 +190,7 @@ public class NumericExp_ArithmeticTest {
                 new BigDecimal("35"), 2,
                 new BigDecimal("3.3"), 3);
 
-        Series<? extends Number> s = $decimal("a").divide($int("b")).eval(df);
+        Series<? extends Number> s = $decimal("a").div($int("b")).eval(df);
         new SeriesAsserts(s).expectData(new BigDecimal("17.5"), new BigDecimal("1.1"));
     }
 
@@ -200,7 +200,7 @@ public class NumericExp_ArithmeticTest {
                 new BigDecimal("5.0"), 2.5,
                 new BigDecimal("3.3"), 3.33);
 
-        Series<? extends Number> s = $decimal("a").divide($double("b")).eval(df);
+        Series<? extends Number> s = $decimal("a").div($double("b")).eval(df);
         new SeriesAsserts(s).expectData(new BigDecimal("2"), new BigDecimal("0.99099099099099096984560210653599037467692134485397"));
     }
 
@@ -210,7 +210,7 @@ public class NumericExp_ArithmeticTest {
                 2., 3,
                 3., 9);
 
-        Series<? extends Number> s = $int("b").divide($double("a")).eval(df);
+        Series<? extends Number> s = $int("b").div($double("a")).eval(df);
         new SeriesAsserts(s).expectData(1.5, 3.);
     }
 

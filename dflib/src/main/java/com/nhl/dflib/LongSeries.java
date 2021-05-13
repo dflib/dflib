@@ -59,7 +59,7 @@ public interface LongSeries extends Series<Long> {
      * @since 0.11
      */
     LongSeries selectLong(Condition condition);
-    
+
     /**
      * @since 0.11
      */
@@ -147,8 +147,17 @@ public interface LongSeries extends Series<Long> {
 
     /**
      * @since 0.7
+     * @deprecated since 0.11 in favor of {@link #avg()}
      */
-    double average();
+    @Deprecated
+    default double average() {
+        return avg();
+    }
+
+    /**
+     * @since 0.11
+     */
+    double avg();
 
     /**
      * @since 0.7
@@ -170,9 +179,11 @@ public interface LongSeries extends Series<Long> {
     }
 
     /**
+     * Performs subtraction operation between this and another LongSeries.
+     *
      * @since 0.11
      */
-    default LongSeries subtract(LongSeries s) {
+    default LongSeries sub(LongSeries s) {
         int len = size();
         LongAccumulator accumulator = new LongAccumulator(len);
 
@@ -184,9 +195,11 @@ public interface LongSeries extends Series<Long> {
     }
 
     /**
+     * Performs multiplication operation between this and another LongSeries.
+     *
      * @since 0.11
      */
-    default LongSeries multiply(LongSeries s) {
+    default LongSeries mul(LongSeries s) {
         int len = size();
         LongAccumulator accumulator = new LongAccumulator(len);
 
@@ -198,9 +211,11 @@ public interface LongSeries extends Series<Long> {
     }
 
     /**
+     * Performs division operation between this and another LongSeries.
+     *
      * @since 0.11
      */
-    default LongSeries divide(LongSeries s) {
+    default LongSeries div(LongSeries s) {
         int len = size();
         LongAccumulator accumulator = new LongAccumulator(len);
 
@@ -212,6 +227,8 @@ public interface LongSeries extends Series<Long> {
     }
 
     /**
+     * Performs modulo operation between this and another LongSeries.
+     *
      * @since 0.11
      */
     default LongSeries mod(LongSeries s) {
