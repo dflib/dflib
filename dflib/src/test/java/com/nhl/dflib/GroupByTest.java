@@ -349,4 +349,45 @@ public class GroupByTest {
         IntSeries rn2 = df.group("b").sort("a", true).rank();
         new IntSeriesAsserts(rn2).expectData(1, 1, 1, 1, 1);
     }
+
+    @Test
+    public void testGroup_Sort_Sorters() {
+        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+                1, "x",
+                2, "b",
+                2, "a",
+                1, "z",
+                0, "n",
+                1, "y");
+
+        DataFrame df2 = df1.group("a")
+                .sort(Exp.$col(1).asc())
+                .toDataFrame();
+
+        new DataFrameAsserts(df2, "a", "b")
+                .expectHeight(6)
+                .expectRow(0, 1, "x")
+                .expectRow(1, 1, "y")
+                .expectRow(2, 1, "z")
+                .expectRow(3, 2, "a")
+                .expectRow(4, 2, "b")
+                .expectRow(5, 0, "n");
+    }
+
+    @Test
+    public void testSort_Sorter_Rank() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1, "x",
+                2, "y",
+                1, "z",
+                0, "a",
+                1, "x");
+
+        IntSeries rn1 = df.group("a").sort(Exp.$col("b").asc()).rank();
+        new IntSeriesAsserts(rn1).expectData(1, 1, 3, 1, 1);
+
+        IntSeries rn2 = df.group("b").sort(Exp.$col("a").asc()).rank();
+        new IntSeriesAsserts(rn2).expectData(1, 1, 1, 1, 1);
+    }
+
 }

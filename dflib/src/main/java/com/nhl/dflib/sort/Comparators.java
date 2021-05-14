@@ -18,10 +18,6 @@ public final class Comparators {
     public static IntComparator of(DataFrame df, Sorter[] sorters) {
         int w = sorters.length;
 
-        if (w == 0) {
-
-        }
-
         switch (w) {
             case 0:
                 throw new IllegalArgumentException("No sort columns");

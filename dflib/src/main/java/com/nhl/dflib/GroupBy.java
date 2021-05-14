@@ -223,6 +223,13 @@ public class GroupBy {
     /**
      * @since 0.11
      */
+    public GroupBy sort(Sorter... sorters) {
+        return new GroupBySorter(this).sort(sorters);
+    }
+
+    /**
+     * @since 0.11
+     */
     public GroupBy sort(IntComparator sorter) {
         return new GroupBySorter(this).sort(sorter);
     }

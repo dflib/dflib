@@ -1,9 +1,6 @@
 package com.nhl.dflib.sort;
 
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.GroupBy;
-import com.nhl.dflib.IntSeries;
-import com.nhl.dflib.RowToValueMapper;
+import com.nhl.dflib.*;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -39,23 +36,27 @@ public class GroupBySorter {
         return sort(Comparators.of(groupBy.getUngrouped(), columns, ascending));
     }
 
-    public GroupBy sort(IntComparator comparator) {
+    public <V extends Comparable<? super V>> GroupBy sort(RowToValueMapper<V> sortKeyExtractor) {
+        return sort(Comparators.of(groupBy.getUngrouped(), sortKeyExtractor));
+    }
 
-        Objects.requireNonNull(comparator, "Null 'sorter'");
+    public GroupBy sort(Sorter... sorters) {
+        return sorters.length == 0 ? groupBy : sort(Comparators.of(groupBy.getUngrouped(), sorters));
+    }
+
+    public GroupBy sort(IntComparator sorter) {
+
+        Objects.requireNonNull(sorter, "Null 'sorter'");
 
         DataFrame ungrouped = groupBy.getUngrouped();
         Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupBy.size() / 0.75));
 
         for (Object groupKey : groupBy.getGroups()) {
             IntSeries groupIndex = groupBy.getGroupIndex(groupKey);
-            IntSeries sortedGroup = new DataFrameSorter(ungrouped, groupIndex).sortedPositions(comparator);
+            IntSeries sortedGroup = new DataFrameSorter(ungrouped, groupIndex).sortedPositions(sorter);
             sorted.put(groupKey, sortedGroup);
         }
 
-        return new GroupBy(ungrouped, sorted, comparator);
-    }
-
-    public <V extends Comparable<? super V>> GroupBy sort(RowToValueMapper<V> sortKeyExtractor) {
-        return sort(Comparators.of(groupBy.getUngrouped(), sortKeyExtractor));
+        return new GroupBy(ungrouped, sorted, sorter);
     }
 }
