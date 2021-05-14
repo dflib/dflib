@@ -3,8 +3,7 @@ package com.nhl.dflib;
 import com.nhl.dflib.aggregate.DataFrameAggregation;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.series.EmptySeries;
-import com.nhl.dflib.sort.Comparators;
-import com.nhl.dflib.sort.DataFrameSorter;
+import com.nhl.dflib.sort.GroupBySorter;
 import com.nhl.dflib.sort.IntComparator;
 import com.nhl.dflib.window.DenseRanker;
 import com.nhl.dflib.window.Ranker;
@@ -13,7 +12,6 @@ import com.nhl.dflib.window.RowNumberer;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GroupBy {
@@ -219,81 +217,30 @@ public class GroupBy {
     }
 
     public <V extends Comparable<? super V>> GroupBy sort(RowToValueMapper<V> sortKeyExtractor) {
-        return sort(Comparators.of(ungrouped, sortKeyExtractor));
+        return new GroupBySorter(this).sort(sortKeyExtractor);
     }
 
     /**
      * @since 0.11
      */
     public GroupBy sort(IntComparator sorter) {
-
-        Objects.requireNonNull(sorter, "Null 'sorter'");
-
-        Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
-
-        for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
-            IntSeries sortedGroup = new DataFrameSorter(ungrouped, e.getValue()).sortedPositions(sorter);
-            sorted.put(e.getKey(), sortedGroup);
-        }
-
-        return new GroupBy(ungrouped, sorted, sorter);
+        return new GroupBySorter(this).sort(sorter);
     }
 
     public GroupBy sort(String column, boolean ascending) {
-
-        IntComparator sorter = Comparators.of(ungrouped.getColumn(column), ascending);
-        Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
-
-        for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
-            IntSeries sortedGroup = new DataFrameSorter(ungrouped, e.getValue()).sortedPositions(sorter);
-            sorted.put(e.getKey(), sortedGroup);
-        }
-
-        return new GroupBy(ungrouped, sorted, sorter);
+        return new GroupBySorter(this).sort(column, ascending);
     }
 
     public GroupBy sort(int column, boolean ascending) {
-        IntComparator sorter = Comparators.of(ungrouped.getColumn(column), ascending);
-        Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
-
-        for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
-            IntSeries sortedGroup = new DataFrameSorter(ungrouped, e.getValue()).sortedPositions(sorter);
-            sorted.put(e.getKey(), sortedGroup);
-        }
-
-        return new GroupBy(ungrouped, sorted, sorter);
+        return new GroupBySorter(this).sort(column, ascending);
     }
 
     public GroupBy sort(String[] columns, boolean[] ascending) {
-        if (columns.length == 0) {
-            return this;
-        }
-
-        IntComparator sorter = Comparators.of(ungrouped, columns, ascending);
-        Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
-
-        for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
-            IntSeries sortedGroup = new DataFrameSorter(ungrouped, e.getValue()).sortedPositions(sorter);
-            sorted.put(e.getKey(), sortedGroup);
-        }
-
-        return new GroupBy(ungrouped, sorted, sorter);
+        return new GroupBySorter(this).sort(columns, ascending);
     }
 
     public GroupBy sort(int[] columns, boolean[] ascending) {
-        if (columns.length == 0) {
-            return this;
-        }
-
-        IntComparator sorter = Comparators.of(ungrouped, columns, ascending);
-        Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
-
-        for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
-            IntSeries sortedGroup = new DataFrameSorter(ungrouped, e.getValue()).sortedPositions(sorter);
-            sorted.put(e.getKey(), sortedGroup);
-        }
-
-        return new GroupBy(ungrouped, sorted, sorter);
+        return new GroupBySorter(this).sort(columns, ascending);
     }
 
     public DataFrame agg(Exp<?>... aggregators) {
