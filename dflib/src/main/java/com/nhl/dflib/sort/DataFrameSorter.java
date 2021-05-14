@@ -53,8 +53,8 @@ public class DataFrameSorter {
     }
 
     public DataFrame sort(IntComparator comparator) {
-        IntSeries sortedPositions = sortedPositions(comparator);
-        return dataFrame.selectRows(sortedPositions);
+        IntSeries sortIndex = sortIndex(comparator);
+        return dataFrame.selectRows(sortIndex);
     }
 
     public <V extends Comparable<? super V>> DataFrame sort(RowToValueMapper<V> sortKeyExtractor) {
@@ -62,10 +62,10 @@ public class DataFrameSorter {
     }
 
     public DataFrame sort(Sorter... sorters) {
-        return sort(Comparators.of(dataFrame, sorters));
+        return sorters.length == 0 ? dataFrame : sort(Comparators.of(dataFrame, sorters));
     }
 
-    public IntSeries sortedPositions(IntComparator comparator) {
+    public IntSeries sortIndex(IntComparator comparator) {
         int[] mutableIndex = indexBuilder.get();
         IntTimSort.sort(mutableIndex, comparator);
         return new IntArraySeries(mutableIndex);

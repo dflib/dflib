@@ -115,7 +115,14 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public Series<Integer> sort(Comparator<? super Integer> comparator) {
+    public IntSeries sort(Sorter... sorters) {
+        // TODO: can't use "sortInt(IntComparator), as "Comparators.of(s, sorters)" is not compatible.
+        //   Need to analyze why.
+        return selectAsIntSeries(new SeriesSorter<>(this).sortIndex(sorters));
+    }
+
+    @Override
+    public IntSeries sort(Comparator<? super Integer> comparator) {
         return sortInt(comparator::compare);
     }
 

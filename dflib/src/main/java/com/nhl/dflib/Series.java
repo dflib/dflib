@@ -166,6 +166,11 @@ public interface Series<T> extends Iterable<T> {
     IntSeries index(ValuePredicate<T> predicate);
 
     /**
+     * @since 0.11
+     */
+    Series<T> sort(Sorter... sorters);
+
+    /**
      * Returns a sorted copy of this Series using provided Comparator.
      *
      * @return sorted copy of this series.
@@ -184,7 +189,7 @@ public interface Series<T> extends Iterable<T> {
      * @since 0.8
      */
     default IntSeries sortIndex(Comparator<? super T> comparator) {
-        return SeriesSorter.sortedPositions(this, comparator);
+        return new SeriesSorter<>(this).sortIndex(comparator);
     }
 
     /**

@@ -5,6 +5,7 @@ import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.accumulator.IntAccumulator;
 import com.nhl.dflib.sort.IntComparator;
 
+import java.util.Comparator;
 import java.util.Random;
 
 /**
@@ -85,6 +86,12 @@ public interface IntSeries extends Series<Integer> {
     default IntSeries filterInt(BooleanSeries positions) {
         return selectInt(positions);
     }
+
+    @Override
+    IntSeries sort(Sorter... sorters);
+
+    @Override
+    IntSeries sort(Comparator<? super Integer> comparator);
 
     IntSeries sortInt();
 

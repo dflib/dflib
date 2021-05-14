@@ -1,15 +1,12 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.*;
+import com.nhl.dflib.accumulator.*;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
 import com.nhl.dflib.map.Mapper;
 import com.nhl.dflib.sample.Sampler;
-import com.nhl.dflib.accumulator.BooleanAccumulator;
-import com.nhl.dflib.accumulator.DoubleAccumulator;
-import com.nhl.dflib.accumulator.IntAccumulator;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
-import com.nhl.dflib.accumulator.UniqueDoubleAccumulator;
+import com.nhl.dflib.sort.SeriesSorter;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -126,15 +123,16 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         return new DoubleArraySeries(sorted);
     }
 
+    @Override
+    public DoubleSeries sort(Sorter... sorters) {
+        return selectAsDoubleSeries(new SeriesSorter<>(this).sortIndex(sorters));
+    }
+
     // TODO: implement 'sortDouble(DoubleComparator)' similar to how IntBaseSeries does "sortInt(IntComparator)"
     //   Reimplement this method to delegate to 'sortDouble'
     @Override
-    public Series<Double> sort(Comparator<? super Double> comparator) {
-        int size = size();
-        Double[] sorted = new Double[size];
-        copyTo(sorted, 0, 0, size);
-        Arrays.sort(sorted, comparator);
-        return new ArraySeries<>(sorted);
+    public DoubleSeries sort(Comparator<? super Double> comparator) {
+        return selectAsDoubleSeries(new SeriesSorter<>(this).sortIndex(comparator));
     }
 
     private DoubleSeries selectAsDoubleSeries(IntSeries positions) {

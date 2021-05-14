@@ -4,6 +4,7 @@ import com.nhl.dflib.op.BooleanSeriesOps;
 import com.nhl.dflib.series.BooleanArraySeries;
 import com.nhl.dflib.accumulator.BooleanAccumulator;
 
+import java.util.Comparator;
 import java.util.Random;
 
 /**
@@ -79,6 +80,13 @@ public interface BooleanSeries extends Series<Boolean> {
     default BooleanSeries filterBoolean(BooleanSeries positions) {
         return selectBoolean(positions);
     }
+
+
+    @Override
+    BooleanSeries sort(Sorter... sorters);
+
+    @Override
+    BooleanSeries sort(Comparator<? super Boolean> comparator);
 
     /**
      * Returns the index of a first "true" value in the series, or -1 if all values are false.

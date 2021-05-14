@@ -4,6 +4,7 @@ import com.nhl.dflib.accumulator.BooleanAccumulator;
 import com.nhl.dflib.accumulator.DoubleAccumulator;
 import com.nhl.dflib.series.DoubleArraySeries;
 
+import java.util.Comparator;
 import java.util.Random;
 
 /**
@@ -85,6 +86,13 @@ public interface DoubleSeries extends Series<Double> {
     default DoubleSeries filterDouble(BooleanSeries positions) {
         return selectDouble(positions);
     }
+
+
+    @Override
+    DoubleSeries sort(Sorter... sorters);
+
+    @Override
+    DoubleSeries sort(Comparator<? super Double> comparator);
 
     DoubleSeries sortDouble();
 

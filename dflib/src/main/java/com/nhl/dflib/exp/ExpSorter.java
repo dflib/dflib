@@ -27,4 +27,10 @@ public class ExpSorter implements Sorter {
         Series<?> column = exp.eval(df);
         return Comparators.of(column, ascending);
     }
+
+    @Override
+    public IntComparator eval(Series<?> s) {
+        Series<?> column = exp.eval(s);
+        return Comparators.of(column, ascending);
+    }
 }

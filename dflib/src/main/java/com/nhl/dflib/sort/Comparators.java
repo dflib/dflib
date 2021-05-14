@@ -34,6 +34,25 @@ public final class Comparators {
         }
     }
 
+    public static IntComparator of(Series s, Sorter[] sorters) {
+        int w = sorters.length;
+
+        switch (w) {
+            case 0:
+                throw new IllegalArgumentException("No sort columns");
+            case 1:
+                return sorters[0].eval(s);
+            default:
+                IntComparator sorter = null;
+                for (int i = 0; i < w; i++) {
+                    IntComparator ci = sorters[i].eval(s);
+                    sorter = sorter == null ? ci : sorter.thenComparing(ci);
+                }
+
+                return sorter;
+        }
+    }
+
     public static IntComparator of(DataFrame df, String[] columns, boolean[] ascending) {
         int w = columns.length;
 
@@ -66,46 +85,50 @@ public final class Comparators {
         return sorter;
     }
 
-    public static IntComparator of(IntSeries column, boolean ascending) {
+    public static IntComparator of(IntSeries s, boolean ascending) {
         return ascending
-                ? (i1, i2) -> Integer.compare(column.getInt(i1), column.getInt(i2))
-                : (i1, i2) -> Integer.compare(column.getInt(i2), column.getInt(i1));
+                ? (i1, i2) -> Integer.compare(s.getInt(i1), s.getInt(i2))
+                : (i1, i2) -> Integer.compare(s.getInt(i2), s.getInt(i1));
     }
 
-    public static IntComparator of(LongSeries column, boolean ascending) {
+    public static IntComparator of(LongSeries s, boolean ascending) {
         return ascending
-                ? (i1, i2) -> Long.compare(column.getLong(i1), column.getLong(i2))
-                : (i1, i2) -> Long.compare(column.getLong(i2), column.getLong(i1));
+                ? (i1, i2) -> Long.compare(s.getLong(i1), s.getLong(i2))
+                : (i1, i2) -> Long.compare(s.getLong(i2), s.getLong(i1));
     }
 
-    public static IntComparator of(DoubleSeries column, boolean ascending) {
+    public static IntComparator of(DoubleSeries s, boolean ascending) {
         return ascending
-                ? (i1, i2) -> Double.compare(column.getDouble(i1), column.getDouble(i2))
-                : (i1, i2) -> Double.compare(column.getDouble(i2), column.getDouble(i1));
+                ? (i1, i2) -> Double.compare(s.getDouble(i1), s.getDouble(i2))
+                : (i1, i2) -> Double.compare(s.getDouble(i2), s.getDouble(i1));
     }
 
-    public static IntComparator of(BooleanSeries column, boolean ascending) {
+    public static IntComparator of(BooleanSeries s, boolean ascending) {
         return ascending
-                ? (i1, i2) -> Boolean.compare(column.getBoolean(i1), column.getBoolean(i2))
-                : (i1, i2) -> Boolean.compare(column.getBoolean(i2), column.getBoolean(i1));
+                ? (i1, i2) -> Boolean.compare(s.getBoolean(i1), s.getBoolean(i2))
+                : (i1, i2) -> Boolean.compare(s.getBoolean(i2), s.getBoolean(i1));
     }
 
-    public static IntComparator of(Series<?> column, boolean ascending) {
+    public static <T> IntComparator of(Series<T> s, Comparator<? super T> comparator) {
+        return (i1, i2) -> comparator.compare(s.get(i1), s.get(i2));
+    }
+
+    public static IntComparator of(Series<?> s, boolean ascending) {
 
         // TODO: create a map of strategies per series type?
-        if (column instanceof IntSeries) {
-            return of((IntSeries) column, ascending);
-        } else if (column instanceof DoubleSeries) {
-            return of((DoubleSeries) column, ascending);
-        } else if (column instanceof LongSeries) {
-            return of((LongSeries) column, ascending);
-        } else if (column instanceof BooleanSeries) {
-            return of((BooleanSeries) column, ascending);
+        if (s instanceof IntSeries) {
+            return of((IntSeries) s, ascending);
+        } else if (s instanceof DoubleSeries) {
+            return of((DoubleSeries) s, ascending);
+        } else if (s instanceof LongSeries) {
+            return of((LongSeries) s, ascending);
+        } else if (s instanceof BooleanSeries) {
+            return of((BooleanSeries) s, ascending);
         }
 
         return ascending
-                ? (i1, i2) -> nullsLastCompare((Comparable) column.get(i1), (Comparable) column.get(i2))
-                : (i1, i2) -> nullsLastCompare((Comparable) column.get(i2), (Comparable) column.get(i1));
+                ? (i1, i2) -> nullsLastCompare((Comparable) s.get(i1), (Comparable) s.get(i2))
+                : (i1, i2) -> nullsLastCompare((Comparable) s.get(i2), (Comparable) s.get(i1));
     }
 
     public static <V extends Comparable<? super V>> IntComparator of(DataFrame df, RowToValueMapper<V> sortKeyExtractor) {

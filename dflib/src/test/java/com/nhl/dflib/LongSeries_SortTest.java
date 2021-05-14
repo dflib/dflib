@@ -1,7 +1,6 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.unit.LongSeriesAsserts;
-import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 public class LongSeries_SortTest {
@@ -13,8 +12,14 @@ public class LongSeries_SortTest {
     }
 
     @Test
-    public void testSort() {
-        Series<Long> s = LongSeries.forLongs(5L, -1L, 5L, 3L, 28L, 1L).sort((l1, l2) -> (int) (l2 - l1));
-        new SeriesAsserts(s).expectData(28L, 5L, 5L, 3L, 1L, -1L);
+    public void testSort_Comparator() {
+        LongSeries s = LongSeries.forLongs(5L, -1L, 5L, 3L, 28L, 1L).sort((l1, l2) -> (int) (l2 - l1));
+        new LongSeriesAsserts(s).expectData(28L, 5L, 5L, 3L, 1L, -1L);
+    }
+
+    @Test
+    public void testSort_Sorter() {
+        LongSeries s = LongSeries.forLongs(5L, -1L, 5L, 3L, 28L, 1L).sort(Exp.$long(0).desc());
+        new LongSeriesAsserts(s).expectData(28L, 5L, 5L, 3L, 1L, -1L);
     }
 }

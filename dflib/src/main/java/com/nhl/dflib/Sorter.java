@@ -10,4 +10,6 @@ import com.nhl.dflib.sort.IntComparator;
 public interface Sorter {
 
     IntComparator eval(DataFrame df);
+
+    IntComparator eval(Series<?> s);
 }

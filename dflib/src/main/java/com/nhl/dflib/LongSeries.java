@@ -4,6 +4,7 @@ import com.nhl.dflib.accumulator.BooleanAccumulator;
 import com.nhl.dflib.accumulator.LongAccumulator;
 import com.nhl.dflib.series.LongArraySeries;
 
+import java.util.Comparator;
 import java.util.Random;
 
 /**
@@ -85,6 +86,12 @@ public interface LongSeries extends Series<Long> {
     default LongSeries filterLong(BooleanSeries positions) {
         return selectLong(positions);
     }
+
+    @Override
+    LongSeries sort(Comparator<? super Long> comparator);
+
+    @Override
+    LongSeries sort(Sorter... sorters);
 
     LongSeries sortLong();
 

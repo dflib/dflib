@@ -1,20 +1,16 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.*;
+import com.nhl.dflib.accumulator.BooleanAccumulator;
+import com.nhl.dflib.accumulator.IntAccumulator;
+import com.nhl.dflib.accumulator.ObjectAccumulator;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
 import com.nhl.dflib.map.Mapper;
 import com.nhl.dflib.sample.Sampler;
-import com.nhl.dflib.accumulator.BooleanAccumulator;
-import com.nhl.dflib.accumulator.IntAccumulator;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
+import com.nhl.dflib.sort.SeriesSorter;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public abstract class ObjectSeries<T> implements Series<T> {
 
@@ -172,12 +168,13 @@ public abstract class ObjectSeries<T> implements Series<T> {
     }
 
     @Override
+    public Series<T> sort(Sorter... sorters) {
+        return new SeriesSorter<>(this).sort(sorters);
+    }
+
+    @Override
     public Series<T> sort(Comparator<? super T> comparator) {
-        int size = size();
-        T[] sorted = (T[]) new Object[size];
-        copyTo(sorted, 0, 0, size);
-        Arrays.sort(sorted, comparator);
-        return new ArraySeries<>(sorted);
+        return new SeriesSorter<>(this).sort(comparator);
     }
 
     @Override

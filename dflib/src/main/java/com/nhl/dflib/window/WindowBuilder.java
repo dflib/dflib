@@ -168,7 +168,7 @@ public class WindowBuilder {
     private <T> Series<T> shiftUnPartitioned(int column, int offset, T filler) {
         if (sorter != null) {
             IntSeries index = new IntSequenceSeries(0, dataFrame.height());
-            IntSeries sortedPositions = new DataFrameSorter(dataFrame, index).sortedPositions(sorter);
+            IntSeries sortedPositions = new DataFrameSorter(dataFrame, index).sortIndex(sorter);
             Series<T> s = dataFrame.getColumn(column);
             return s.select(sortedPositions).shift(offset, filler).select(sortedPositions.sortIndexInt());
         } else {

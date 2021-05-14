@@ -6,6 +6,7 @@ import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
 import com.nhl.dflib.map.Mapper;
 import com.nhl.dflib.sample.Sampler;
+import com.nhl.dflib.sort.SeriesSorter;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -122,15 +123,16 @@ public abstract class LongBaseSeries implements LongSeries {
         return new LongArraySeries(sorted);
     }
 
+    @Override
+    public LongSeries sort(Sorter... sorters) {
+        return selectAsLongSeries(new SeriesSorter<>(this).sortIndex(sorters));
+    }
+
     // TODO: implement 'sortLong(LongComparator)' similar to how IntBaseSeries does "sortInt(IntComparator)"
     //   Reimplement this method to delegate to 'sortLong'
     @Override
-    public Series<Long> sort(Comparator<? super Long> comparator) {
-        int size = size();
-        Long[] sorted = new Long[size];
-        copyTo(sorted, 0, 0, size);
-        Arrays.sort(sorted, comparator);
-        return new ArraySeries<>(sorted);
+    public LongSeries sort(Comparator<? super Long> comparator) {
+        return selectAsLongSeries(new SeriesSorter<>(this).sortIndex(comparator));
     }
 
     private LongSeries selectAsLongSeries(IntSeries positions) {

@@ -1,9 +1,6 @@
 package com.nhl.dflib.series;
 
-import com.nhl.dflib.BooleanSeries;
-import com.nhl.dflib.Series;
-import com.nhl.dflib.Condition;
-import com.nhl.dflib.ValuePredicate;
+import com.nhl.dflib.*;
 
 import java.util.Comparator;
 
@@ -46,6 +43,11 @@ public class EmptySeries<T> extends ObjectSeries<T> {
 
     @Override
     public Series<T> select(BooleanSeries positions) {
+        return this;
+    }
+
+    @Override
+    public Series<T> sort(Sorter... sorters) {
         return this;
     }
 

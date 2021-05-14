@@ -16,7 +16,7 @@ public class DataFrameSorterTest {
                 0, "a",
                 1, "x");
 
-        IntSeries sortIndex = new DataFrameSorter(df).sortedPositions(Comparators.of(df.getColumn(1), true));
+        IntSeries sortIndex = new DataFrameSorter(df).sortIndex(Comparators.of(df.getColumn(1), true));
         new IntSeriesAsserts(sortIndex).expectData(3, 0, 4, 1, 2);
     }
 }

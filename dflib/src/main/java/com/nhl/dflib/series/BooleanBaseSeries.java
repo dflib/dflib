@@ -8,11 +8,8 @@ import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
 import com.nhl.dflib.map.Mapper;
 import com.nhl.dflib.sample.Sampler;
-import com.nhl.dflib.sort.IntComparator;
-import com.nhl.dflib.sort.IntTimSort;
 import com.nhl.dflib.sort.SeriesSorter;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.Random;
@@ -101,20 +98,13 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
-    public Series<Boolean> sort(Comparator<? super Boolean> comparator) {
-        int size = size();
-        Boolean[] sorted = new Boolean[size];
-        copyTo(sorted, 0, 0, size);
-        Arrays.sort(sorted, comparator);
-        return new ArraySeries<>(sorted);
+    public BooleanSeries sort(Sorter... sorters) {
+        return selectAsBooleanSeries(new SeriesSorter<>(this).sortIndex(sorters));
     }
 
     @Override
-    public IntSeries sortIndex(Comparator<? super Boolean> comparator) {
-        int[] mutableIndex = SeriesSorter.rowNumberSequence(size());
-        IntComparator intComparator =  (i1, i2) -> comparator.compare(get(i1), get(i2));
-        IntTimSort.sort(mutableIndex, intComparator);
-        return new IntArraySeries(mutableIndex);
+    public BooleanSeries sort(Comparator<? super Boolean> comparator) {
+        return selectAsBooleanSeries(new SeriesSorter<>(this).sortIndex(comparator));
     }
 
     private BooleanSeries selectAsBooleanSeries(IntSeries positions) {

@@ -1,7 +1,6 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.unit.DoubleSeriesAsserts;
-import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 public class DoubleSeries_SortTest {
@@ -13,8 +12,14 @@ public class DoubleSeries_SortTest {
     }
 
     @Test
-    public void testSort() {
-        Series<Double> s = DoubleSeries.forDoubles(5., -1., 5., 3., 28., 1.).sort((d1, d2) -> (int) Math.round(d2 - d1));
-        new SeriesAsserts(s).expectData(28., 5., 5., 3., 1., -1.);
+    public void testSort_Comparator() {
+        DoubleSeries s = DoubleSeries.forDoubles(5., -1., 5., 3., 28., 1.).sort((d1, d2) -> (int) Math.round(d2 - d1));
+        new DoubleSeriesAsserts(s).expectData(28., 5., 5., 3., 1., -1.);
+    }
+
+    @Test
+    public void testSort_Sorter() {
+        DoubleSeries s = DoubleSeries.forDoubles(5., -1., 5., 3., 28., 1.).sort(Exp.$double(0).desc());
+        new DoubleSeriesAsserts(s).expectData(28., 5., 5., 3., 1., -1.);
     }
 }

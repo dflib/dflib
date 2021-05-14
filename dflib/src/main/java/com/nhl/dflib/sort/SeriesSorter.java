@@ -2,20 +2,22 @@ package com.nhl.dflib.sort;
 
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.Sorter;
+import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.IntArraySeries;
 
+import java.util.Arrays;
 import java.util.Comparator;
 
 /**
  * @since 0.11
  */
-public class SeriesSorter {
+public class SeriesSorter<T> {
 
-    public static <T> IntSeries sortedPositions(Series<T> s, Comparator<? super T> comparator) {
-        int[] mutableIndex = rowNumberSequence(s.size());
-        IntComparator intComparator = (i1, i2) -> comparator.compare(s.get(i1), s.get(i2));
-        IntTimSort.sort(mutableIndex, intComparator);
-        return new IntArraySeries(mutableIndex);
+    private final Series<T> s;
+
+    public SeriesSorter(Series<T> s) {
+        this.s = s;
     }
 
     public static int[] rowNumberSequence(int h) {
@@ -25,5 +27,35 @@ public class SeriesSorter {
         }
 
         return rn;
+    }
+
+    public IntSeries sortIndex(IntComparator comparator) {
+        int[] mutableIndex = SeriesSorter.rowNumberSequence(s.size());
+        IntTimSort.sort(mutableIndex, comparator);
+        return new IntArraySeries(mutableIndex);
+    }
+
+    public IntSeries sortIndex(Comparator<? super T> comparator) {
+        return sortIndex(Comparators.of(s, comparator));
+    }
+
+    public IntSeries sortIndex(Sorter... sorters) {
+        return sortIndex(Comparators.of(s, sorters));
+    }
+
+    public Series<T> sort(Sorter... sorters) {
+        return sorters.length == 0 ? s : s.select(sortIndex(sorters));
+    }
+
+    public Series<T> sort(Comparator<? super T> comparator) {
+
+        // TODO: should we use "sortIndex" for consistency? It will be marginally slower
+        //  than this specialized impl (an extra int[] allocation)
+
+        int size = s.size();
+        T[] sorted = (T[]) new Object[size];
+        s.copyTo(sorted, 0, 0, size);
+        Arrays.sort(sorted, comparator);
+        return new ArraySeries<>(sorted);
     }
 }
