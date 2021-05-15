@@ -15,6 +15,7 @@ import com.nhl.dflib.exp.num.DecimalColumn;
 import com.nhl.dflib.exp.num.DoubleColumn;
 import com.nhl.dflib.exp.num.IntColumn;
 import com.nhl.dflib.exp.num.LongColumn;
+import com.nhl.dflib.exp.str.StringColumn;
 
 import java.util.List;
 import java.util.Objects;
@@ -84,15 +85,15 @@ public interface Exp<T> {
     /**
      * Returns an expression that evaluates to a named DataFrame String column.
      */
-    static Exp<String> $str(String name) {
-        return $col(name, String.class);
+    static StrExp $str(String name) {
+        return new StringColumn(name);
     }
 
     /**
      * Returns an expression that evaluates to a DataFrame String column at a given position.
      */
-    static Exp<String> $str(int position) {
-        return $col(position, String.class);
+    static StrExp $str(int position) {
+        return new StringColumn(position);
     }
 
     /**
@@ -377,11 +378,11 @@ public interface Exp<T> {
      * the delimiter.
      */
     default Exp<String> vConcat(String delimiter) {
-        return agg(StringAggregators.concat(delimiter));
+        return agg(StringAggregators.vConcat(delimiter));
     }
 
     default Exp<String> vConcat(Condition filter, String delimiter) {
-        return agg(filter, StringAggregators.concat(delimiter));
+        return agg(filter, StringAggregators.vConcat(delimiter));
     }
 
     /**
@@ -389,11 +390,11 @@ public interface Exp<T> {
      * delimiter, preceded by the prefix and followed by the suffix.
      */
     default Exp<String> vConcat(String delimiter, String prefix, String suffix) {
-        return agg(StringAggregators.concat(delimiter, prefix, suffix));
+        return agg(StringAggregators.vConcat(delimiter, prefix, suffix));
     }
 
     default Exp<String> vConcat(Condition filter, String delimiter, String prefix, String suffix) {
-        return agg(filter, StringAggregators.concat(delimiter, prefix, suffix));
+        return agg(filter, StringAggregators.vConcat(delimiter, prefix, suffix));
     }
 
     /**
