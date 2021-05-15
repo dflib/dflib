@@ -220,7 +220,13 @@ public interface Exp<T> {
 
 
     /**
-     * Returns the type of the result Series.
+     * Returns the type of the evaluation result. The type is used internally by the DBLib expression evaluation engine
+     * to compile the most optimal evaluation path.
+     *
+     * <p> A note on DFLib schema "fuzziness": Callers can not always predict the data schema upfront, and
+     * oftentimes Java generics limitations prevent DFLib from using the right type even when it is know to the
+     * caller. So many expressions will return Object.class instead of a more specific type. In this case the
+     * expression should still evaluate properly, but possibly suboptimally.
      */
     Class<T> getType();
 
