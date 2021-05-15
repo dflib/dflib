@@ -1,7 +1,5 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.exp.agg.DoubleAggregators;
-import com.nhl.dflib.exp.agg.IntAggregators;
 import com.nhl.dflib.pivot.PivotBuilder;
 import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Disabled;
@@ -22,7 +20,7 @@ public class DataFrame_PivotTest {
                 1, "y", 20.0);
 
 
-        DataFrame df = df1.pivot().columns("b").rows("a").values("c", DoubleAggregators::sum);
+        DataFrame df = df1.pivot().columns("b").rows("a").values("c", Exp.$double(0).sum());
 
         new DataFrameAsserts(df, "a", "x", "y")
                 .expectHeight(2)
@@ -47,7 +45,7 @@ public class DataFrame_PivotTest {
 
 
         DataFrame df = df1.pivot().columns("b").rows("a")
-                .values("c", IntAggregators::sum)
+                .values("c", Exp.$int(0).sum())
                 .sort("a", true);
 
         new DataFrameAsserts(df, "a", "x", "y", "z", "t")
@@ -71,7 +69,7 @@ public class DataFrame_PivotTest {
                 1, "y", 20.0);
 
 
-        DataFrame df = df1.pivot().columns("b").rows("a").values("c", DoubleAggregators::sum);
+        DataFrame df = df1.pivot().columns("b").rows("a").values("c", Exp.$double(0).sum());
 
         new DataFrameAsserts(df, "a", "x", "y")
                 .expectHeight(2)
@@ -90,7 +88,7 @@ public class DataFrame_PivotTest {
                 1, "y", 20.0);
 
 
-        DataFrame df = df1.pivot().columns("b").rows("a").values("c", DoubleAggregators::sum);
+        DataFrame df = df1.pivot().columns("b").rows("a").values("c", Exp.$double(0).sum());
 
         new DataFrameAsserts(df, "a", "y")
                 .expectHeight(2)
