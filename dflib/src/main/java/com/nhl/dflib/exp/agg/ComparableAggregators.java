@@ -3,9 +3,9 @@ package com.nhl.dflib.exp.agg;
 import com.nhl.dflib.Series;
 
 /**
- * @since 0.7
+ * @since 0.11
  */
-public class SeriesMinMax {
+public class ComparableAggregators {
 
     public static <T extends Comparable<T>> T min(Series<? extends T> s) {
 

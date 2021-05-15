@@ -121,28 +121,28 @@ public interface Aggregator {
      * @since 0.7
      */
     static <T extends Comparable<T>> Exp<T> max(String column) {
-        return Exp.<T>$col(column).agg(SeriesMinMax::max);
+        return Exp.<T>$col(column).agg(ComparableAggregators::max);
     }
 
     /**
      * @since 0.7
      */
     static <T extends Comparable<T>> Exp<T> max(int column) {
-        return Exp.<T>$col(column).agg(SeriesMinMax::max);
+        return Exp.<T>$col(column).agg(ComparableAggregators::max);
     }
 
     /**
      * @since 0.7
      */
     static <T extends Comparable<T>> Exp<T> min(int column) {
-        return Exp.<T>$col(column).agg(SeriesMinMax::min);
+        return Exp.<T>$col(column).agg(ComparableAggregators::min);
     }
 
     /**
      * @since 0.7
      */
     static <T extends Comparable<T>> Exp<T> min(String column) {
-        return Exp.<T>$col(column).agg(SeriesMinMax::min);
+        return Exp.<T>$col(column).agg(ComparableAggregators::min);
     }
 
     static Exp<String> concat(String column, String delimiter) {

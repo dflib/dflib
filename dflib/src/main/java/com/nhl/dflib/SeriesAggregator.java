@@ -56,14 +56,14 @@ public interface SeriesAggregator {
      * @since 0.7
      */
     static <S extends Comparable<S>> Exp<S> max() {
-        return Exp.<S>$col("").agg(SeriesMinMax::max).as("max");
+        return Exp.<S>$col("").agg(ComparableAggregators::max).as("max");
     }
 
     /**
      * @since 0.7
      */
     static <S extends Comparable<S>> Exp<S> min() {
-        return Exp.<S>$col("").agg(SeriesMinMax::min).as("min");
+        return Exp.<S>$col("").agg(ComparableAggregators::min).as("min");
     }
 
     /**

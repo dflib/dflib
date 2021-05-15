@@ -8,7 +8,7 @@ import com.nhl.dflib.exp.BinaryExp;
 import com.nhl.dflib.exp.UnaryExp;
 import com.nhl.dflib.exp.agg.DecimalAggregators;
 import com.nhl.dflib.exp.agg.DecimalExpAggregator;
-import com.nhl.dflib.exp.agg.SeriesMinMax;
+import com.nhl.dflib.exp.agg.ComparableAggregators;
 import com.nhl.dflib.exp.condition.BinaryCondition;
 
 import java.math.BigDecimal;
@@ -121,12 +121,12 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public DecimalExp min(Exp<? extends Number> exp) {
-        return new DecimalExpAggregator(cast(exp), SeriesMinMax::min);
+        return new DecimalExpAggregator(cast(exp), ComparableAggregators::min);
     }
 
     @Override
     public DecimalExp max(Exp<? extends Number> exp) {
-        return new DecimalExpAggregator(cast(exp), SeriesMinMax::max);
+        return new DecimalExpAggregator(cast(exp), ComparableAggregators::max);
     }
 
     @Override
