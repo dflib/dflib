@@ -12,6 +12,7 @@ import com.nhl.dflib.exp.filter.PreFilterFirstMatchExp;
 import com.nhl.dflib.exp.filter.PreFilteredCountExp;
 import com.nhl.dflib.exp.filter.PreFilteredExp;
 import com.nhl.dflib.exp.func.ConcatFunction;
+import com.nhl.dflib.exp.func.IfFunction;
 import com.nhl.dflib.exp.func.IfNullFunction;
 import com.nhl.dflib.exp.num.DecimalColumn;
 import com.nhl.dflib.exp.num.DoubleColumn;
@@ -176,6 +177,14 @@ public interface Exp<T> {
 
     static Condition not(Condition condition) {
         return condition.not();
+    }
+
+    /**
+     * A "control flow" function that evaluates condition, and executes either "ifTrue" or "ifFalse", depending
+     * on the condition value. Evaluation is done per row.
+     */
+    static <T> Exp<T> ifExp(Condition condition, Exp<T> ifTrue, Exp<T> ifFalse) {
+        return new IfFunction<>(condition, ifTrue, ifFalse);
     }
 
     /**
