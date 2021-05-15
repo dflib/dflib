@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -270,6 +271,49 @@ public interface Exp<T> {
     default Exp<T> as(String name) {
         Objects.requireNonNull(name, "Null 'name'");
         return new RenamedExp<>(name, this);
+    }
+
+    /**
+     * Creates an expression based on this Exp and a custom Series transformation function.
+     */
+    default <R> Exp<R> unary(Function<Series<T>, Series<R>> op) {
+        // TODO: Replacing R.class with Object.class is ugly and will not produce an expression that can be correctly
+        //  introspected
+        return new UnaryExp("custom", Object.class, this, op);
+    }
+
+    /**
+     * Creates an expression based on this Exp and a custom value transformation function. Note that DFLib will
+     * only pass non-null values to the "op" function. Any source "null" values automatically evaluate to "null" result.
+     * This assumption makes writing transformation functions easier (and closer to how SQL operates). If special
+     * handling of nulls is required, consider using {@link #unary(Function)} method instead.
+     */
+    default <R> Exp<R> unaryVal(Function<T, R> op) {
+        // TODO: Replacing R.class with Object.class is ugly and will not produce an expression that can be correctly
+        //  introspected
+        return new UnaryExp("custom", Object.class, this, UnaryExp.toSeriesOp(op));
+    }
+
+    /**
+     * Creates an expression based on this Exp, another Exp and a custom binary Series transformation function.
+     */
+    default <S, R> Exp<R> binary(Exp<S> other, BiFunction<Series<T>, Series<S>, Series<R>> op) {
+        // TODO: Replacing R.class with Object.class is ugly and will not produce an expression that can be correctly
+        //  introspected
+        return new BinaryExp("custom", Object.class, this, other, op);
+    }
+
+    /**
+     * Creates an expression based on this Exp, another Exp, and a custom value transformation function. Note that
+     * DFLib will  only pass non-null values to the "op" function. Any source "null" values on either side of the
+     * expression automatically evaluate to "null" result. This assumption makes writing transformation functions
+     * easier (and closer to how SQL operates). If special handling of nulls is required, consider using
+     * {@link #binary(Exp, BiFunction)} method instead.
+     */
+    default <S, R> Exp<R> binaryVal(Exp<S> other, BiFunction<T, S, R> op) {
+        // TODO: Replacing R.class with Object.class is ugly and will not produce an expression that can be correctly
+        //  introspected
+        return new BinaryExp("custom", Object.class, this, other, BinaryExp.toSeriesOp(op));
     }
 
     default Condition eq(Exp<?> exp) {

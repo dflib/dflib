@@ -13,6 +13,6 @@ import java.util.function.Function;
 public class DoubleUnaryExp<F> extends UnaryExp<F, Double> implements NumericExp<Double> {
 
     public DoubleUnaryExp(String opName, Exp<F> exp, Function<Series<F>, Series<Double>> op) {
-        super(opName, exp, Double.class, op);
+        super(opName, Double.class, exp, op);
     }
 }
