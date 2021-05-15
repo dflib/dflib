@@ -349,10 +349,16 @@ public interface Exp<T> {
         return new UnaryCondition<>("isNotNull", this, Series::isNotNull);
     }
 
+    /**
+     * Creates an aggregating expression based on this Exp and a custom aggregation function.
+     */
     default <A> Exp<A> agg(Function<Series<T>, A> aggregator) {
         return new ExpAggregator<>(this, aggregator);
     }
 
+    /**
+     * Creates an aggregating expression based on this Exp, a filter and a custom aggregation function.
+     */
     default <A> Exp<A> agg(Condition filter, Function<Series<T>, A> aggregator) {
         return new PreFilteredExp<>(filter, agg(aggregator));
     }
