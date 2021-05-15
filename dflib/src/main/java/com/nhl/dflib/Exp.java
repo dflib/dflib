@@ -232,7 +232,7 @@ public interface Exp<T> {
 
     /**
      * Returns the name of the column produced by this expression. Unlike {@link #getName(DataFrame)}, this form is
-     * "context-less" and is used for Series.
+     * "context-less" and is used for Series. The name can be changed by calling {@link #as(String)}.
      *
      * @see #as(String)
      */
@@ -240,7 +240,7 @@ public interface Exp<T> {
 
     /**
      * Returns the name of the result Series in a context of the DataFrame argument. The name can be used to add the
-     * result as a column to a DataFrame.
+     * result as a column to a DataFrame. The name can be changed by calling {@link #as(String)}.
      *
      * @param df a DataFrame to use for column name lookup. Usually the same DataFrame as the one passed to {@link #eval(DataFrame)}
      * @see #as(String)
