@@ -16,7 +16,6 @@ import com.nhl.dflib.exp.num.DoubleColumn;
 import com.nhl.dflib.exp.num.IntColumn;
 import com.nhl.dflib.exp.num.LongColumn;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -141,14 +140,14 @@ public interface Exp<T> {
     /**
      * Returns an expression that evaluates to a named DataFrame BigDecimal column.
      */
-    static NumericExp<BigDecimal> $decimal(String name) {
+    static DecimalExp $decimal(String name) {
         return new DecimalColumn(name);
     }
 
     /**
      * Returns an expression that evaluates to a DataFrame BigDecimal column at a given position.
      */
-    static NumericExp<BigDecimal> $decimal(int position) {
+    static DecimalExp $decimal(int position) {
         return new DecimalColumn(position);
     }
 
@@ -220,8 +219,8 @@ public interface Exp<T> {
 
 
     /**
-     * Returns the type of the evaluation result. The type is used internally by the DBLib expression evaluation engine
-     * to compile the most optimal evaluation path.
+     * Returns the type of the evaluation result. The type is used internally by the DBLib expression engine to compile
+     * the most optimal evaluation path.
      *
      * <p> A note on DFLib schema "fuzziness": Callers can not always predict the data schema upfront, and
      * oftentimes Java generics limitations prevent DFLib from using the right type even when it is know to the

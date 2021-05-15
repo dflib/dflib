@@ -1,14 +1,17 @@
 package com.nhl.dflib.exp.num;
 
 import com.nhl.dflib.Condition;
-import com.nhl.dflib.NumericExp;
+import com.nhl.dflib.DecimalExp;
 import com.nhl.dflib.Exp;
+import com.nhl.dflib.NumericExp;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * An abstraction over various numeric types allowing to mix and match different types in a given operation.
+ *
  * @since 0.11
  */
 public abstract class NumericExpFactory {
@@ -50,40 +53,6 @@ public abstract class NumericExpFactory {
         factories.put(Long.class, new LongExpFactory());
         factories.put(Long.TYPE, factories.get(Long.class));
     }
-
-    public abstract NumericExp<?> add(Exp<? extends Number> left, Exp<? extends Number> right);
-
-    public abstract NumericExp<?> sub(Exp<? extends Number> left, Exp<? extends Number> right);
-
-    public abstract NumericExp<?> mul(Exp<? extends Number> left, Exp<? extends Number> right);
-
-    public abstract NumericExp<?> div(Exp<? extends Number> left, Exp<? extends Number> right);
-
-    public abstract NumericExp<?> mod(Exp<? extends Number> left, Exp<? extends Number> right);
-
-    public abstract NumericExp<?> sum(Exp<? extends Number> exp);
-
-    public abstract NumericExp<?> min(Exp<? extends Number> exp);
-
-    public abstract NumericExp<?> max(Exp<? extends Number> exp);
-
-    public abstract NumericExp<?> avg(Exp<? extends Number> exp);
-
-    public abstract NumericExp<?> median(Exp<? extends Number> exp);
-
-    public abstract NumericExp<BigDecimal> castAsDecimal(NumericExp<?> exp, int scale);
-
-    public abstract Condition eq(Exp<? extends Number> left, Exp<? extends Number> right);
-
-    public abstract Condition ne(Exp<? extends Number> left, Exp<? extends Number> right);
-
-    public abstract Condition lt(Exp<? extends Number> left, Exp<? extends Number> right);
-
-    public abstract Condition le(Exp<? extends Number> left, Exp<? extends Number> right);
-
-    public abstract Condition gt(Exp<? extends Number> left, Exp<? extends Number> right);
-
-    public abstract Condition ge(Exp<? extends Number> left, Exp<? extends Number> right);
 
     public static NumericExpFactory factory(Exp<? extends Number> exp) {
         return factory(exp.getType());
@@ -130,4 +99,38 @@ public abstract class NumericExpFactory {
         // widening conversion that matches standard Java primitive arithmetics
         return lr.compareTo(rr) < 0 ? left : right;
     }
+
+    public abstract NumericExp<?> add(Exp<? extends Number> left, Exp<? extends Number> right);
+
+    public abstract NumericExp<?> sub(Exp<? extends Number> left, Exp<? extends Number> right);
+
+    public abstract NumericExp<?> mul(Exp<? extends Number> left, Exp<? extends Number> right);
+
+    public abstract NumericExp<?> div(Exp<? extends Number> left, Exp<? extends Number> right);
+
+    public abstract NumericExp<?> mod(Exp<? extends Number> left, Exp<? extends Number> right);
+
+    public abstract NumericExp<?> sum(Exp<? extends Number> exp);
+
+    public abstract NumericExp<?> min(Exp<? extends Number> exp);
+
+    public abstract NumericExp<?> max(Exp<? extends Number> exp);
+
+    public abstract NumericExp<?> avg(Exp<? extends Number> exp);
+
+    public abstract NumericExp<?> median(Exp<? extends Number> exp);
+
+    public abstract DecimalExp castAsDecimal(NumericExp<?> exp);
+
+    public abstract Condition eq(Exp<? extends Number> left, Exp<? extends Number> right);
+
+    public abstract Condition ne(Exp<? extends Number> left, Exp<? extends Number> right);
+
+    public abstract Condition lt(Exp<? extends Number> left, Exp<? extends Number> right);
+
+    public abstract Condition le(Exp<? extends Number> left, Exp<? extends Number> right);
+
+    public abstract Condition gt(Exp<? extends Number> left, Exp<? extends Number> right);
+
+    public abstract Condition ge(Exp<? extends Number> left, Exp<? extends Number> right);
 }

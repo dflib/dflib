@@ -9,8 +9,10 @@ import com.nhl.dflib.exp.agg.LongExpAggregator;
 import com.nhl.dflib.exp.condition.BinaryCondition;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
+/**
+ * @since 0.11
+ */
 public class LongExpFactory extends NumericExpFactory {
 
     protected static Exp<Long> cast(Exp<?> exp) {
@@ -82,8 +84,8 @@ public class LongExpFactory extends NumericExpFactory {
 
 
     @Override
-    public NumericExp<BigDecimal> castAsDecimal(NumericExp<?> exp, int scale) {
-        return new DecimalUnaryExp<>("castAsDecimal", cast(exp), UnaryExp.toSeriesOp(l -> BigDecimal.valueOf(l).setScale(scale, RoundingMode.HALF_UP)));
+    public DecimalExp castAsDecimal(NumericExp<?> exp) {
+        return new DecimalUnaryExp<>("castAsDecimal", cast(exp), UnaryExp.toSeriesOp(l -> BigDecimal.valueOf(l)));
     }
 
     @Override

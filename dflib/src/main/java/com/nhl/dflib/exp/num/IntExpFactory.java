@@ -1,9 +1,6 @@
 package com.nhl.dflib.exp.num;
 
-import com.nhl.dflib.IntSeries;
-import com.nhl.dflib.NumericExp;
-import com.nhl.dflib.Condition;
-import com.nhl.dflib.Exp;
+import com.nhl.dflib.*;
 import com.nhl.dflib.exp.BinaryExp;
 import com.nhl.dflib.exp.UnaryExp;
 import com.nhl.dflib.exp.agg.AggregatorFunctions;
@@ -12,8 +9,10 @@ import com.nhl.dflib.exp.agg.IntExpAggregator;
 import com.nhl.dflib.exp.condition.BinaryCondition;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
+/**
+ * @since 0.11
+ */
 public class IntExpFactory extends NumericExpFactory {
 
     protected static Exp<Integer> cast(Exp<?> exp) {
@@ -84,8 +83,8 @@ public class IntExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumericExp<BigDecimal> castAsDecimal(NumericExp<?> exp, int scale) {
-        return new DecimalUnaryExp<>("castAsDecimal", cast(exp), UnaryExp.toSeriesOp(i -> BigDecimal.valueOf((long) i).setScale(scale, RoundingMode.HALF_UP)));
+    public DecimalExp castAsDecimal(NumericExp<?> exp) {
+        return new DecimalUnaryExp<>("castAsDecimal", cast(exp), UnaryExp.toSeriesOp(i -> BigDecimal.valueOf((long) i)));
     }
 
     @Override

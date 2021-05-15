@@ -1,14 +1,14 @@
 package com.nhl.dflib.exp.num;
 
+import com.nhl.dflib.DecimalExp;
 import com.nhl.dflib.exp.ColumnExp;
-import com.nhl.dflib.NumericExp;
 
 import java.math.BigDecimal;
 
 /**
  * @since 0.11
  */
-public class DecimalColumn extends ColumnExp<BigDecimal> implements NumericExp<BigDecimal> {
+public class DecimalColumn extends ColumnExp<BigDecimal> implements DecimalExp {
 
     public DecimalColumn(String name) {
         super(name, BigDecimal.class);

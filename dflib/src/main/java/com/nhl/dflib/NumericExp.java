@@ -3,9 +3,10 @@ package com.nhl.dflib;
 import com.nhl.dflib.exp.filter.PreFilteredNumericExp;
 import com.nhl.dflib.exp.num.NumericExpFactory;
 
-import java.math.BigDecimal;
-
 /**
+ * An expression over any of the Java primitive or object numeric types. Provides various arithmetic, comparison and
+ * statistical operations. Allows to combine arguments of different numeric types in a single expression.
+ *
  * @since 0.11
  */
 public interface NumericExp<N extends Number> extends Exp<N> {
@@ -73,8 +74,8 @@ public interface NumericExp<N extends Number> extends Exp<N> {
         return NumericExpFactory.factory(this, ve).mod(this, ve);
     }
 
-    default NumericExp<BigDecimal> castAsDecimal(int scale) {
-        return NumericExpFactory.factory(this).castAsDecimal(this, scale);
+    default DecimalExp castAsDecimal() {
+        return NumericExpFactory.factory(this).castAsDecimal(this);
     }
 
     @Override

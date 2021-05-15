@@ -1,8 +1,8 @@
 package com.nhl.dflib.exp.num;
 
-import com.nhl.dflib.NumericExp;
-import com.nhl.dflib.Series;
+import com.nhl.dflib.DecimalExp;
 import com.nhl.dflib.Exp;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.exp.BinaryExp;
 
 import java.math.BigDecimal;
@@ -11,7 +11,7 @@ import java.util.function.BiFunction;
 /**
  * @since 0.11
  */
-public class DecimalBinaryExp extends BinaryExp<BigDecimal, BigDecimal, BigDecimal> implements NumericExp<BigDecimal> {
+public class DecimalBinaryExp extends BinaryExp<BigDecimal, BigDecimal, BigDecimal> implements DecimalExp {
 
     protected DecimalBinaryExp(
             String opName,

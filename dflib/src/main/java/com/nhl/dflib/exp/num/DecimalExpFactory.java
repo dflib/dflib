@@ -1,6 +1,7 @@
 package com.nhl.dflib.exp.num;
 
 import com.nhl.dflib.Condition;
+import com.nhl.dflib.DecimalExp;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.NumericExp;
 import com.nhl.dflib.exp.BinaryExp;
@@ -15,19 +16,27 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.function.BiPredicate;
 
+/**
+ * @since 0.11
+ */
 public class DecimalExpFactory extends NumericExpFactory {
 
     private static MathContext divisionContext(BigDecimal n1, BigDecimal n2) {
         return new MathContext(Math.max(15, 1 + Math.max(n1.scale(), n2.scale())), RoundingMode.HALF_UP);
     }
 
-    protected static Exp<BigDecimal> cast(Exp<?> exp) {
+    protected static DecimalExp cast(Exp<?> exp) {
+
+        if (exp instanceof DecimalExp) {
+            return (DecimalExp) exp;
+        }
 
         // TODO: a map of casting converters
 
         Class<?> t = exp.getType();
         if (t.equals(BigDecimal.class)) {
-            return (Exp<BigDecimal>) exp;
+            Exp<BigDecimal> bdExp = (Exp<BigDecimal>) exp;
+            return new DecimalUnaryExp<>("castAsDecimal", bdExp, UnaryExp.toSeriesOp(bd -> bd));
         }
 
         if (t.equals(BigInteger.class)) {
@@ -49,7 +58,7 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumericExp<?> add(Exp<? extends Number> left, Exp<? extends Number> right) {
+    public DecimalExp add(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DecimalBinaryExp("+",
                 cast(left),
                 cast(right),
@@ -57,7 +66,7 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumericExp<?> sub(Exp<? extends Number> left, Exp<? extends Number> right) {
+    public DecimalExp sub(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DecimalBinaryExp("-",
                 cast(left),
                 cast(right),
@@ -65,7 +74,7 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumericExp<?> mul(Exp<? extends Number> left, Exp<? extends Number> right) {
+    public DecimalExp mul(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DecimalBinaryExp("*",
                 cast(left),
                 cast(right),
@@ -73,7 +82,7 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumericExp<?> div(Exp<? extends Number> left, Exp<? extends Number> right) {
+    public DecimalExp div(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DecimalBinaryExp("/",
                 cast(left),
                 cast(right),
@@ -85,7 +94,7 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumericExp<?> mod(Exp<? extends Number> left, Exp<? extends Number> right) {
+    public DecimalExp mod(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new DecimalBinaryExp("%",
                 cast(left),
                 cast(right),
@@ -100,32 +109,32 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumericExp<BigDecimal> castAsDecimal(NumericExp<?> exp, int scale) {
-        return new DecimalUnaryExp<>("castAsDecimal", cast(exp), UnaryExp.toSeriesOp(bd -> bd.setScale(scale, RoundingMode.HALF_UP)));
+    public DecimalExp castAsDecimal(NumericExp<?> exp) {
+        return cast(exp);
     }
 
     @Override
-    public NumericExp<BigDecimal> sum(Exp<? extends Number> exp) {
+    public DecimalExp sum(Exp<? extends Number> exp) {
         return new DecimalExpAggregator(cast(exp), AggregatorFunctions.sumDecimal());
     }
 
     @Override
-    public NumericExp<?> min(Exp<? extends Number> exp) {
+    public DecimalExp min(Exp<? extends Number> exp) {
         return new DecimalExpAggregator(cast(exp), AggregatorFunctions.min());
     }
 
     @Override
-    public NumericExp<?> max(Exp<? extends Number> exp) {
+    public DecimalExp max(Exp<? extends Number> exp) {
         return new DecimalExpAggregator(cast(exp), AggregatorFunctions.max());
     }
 
     @Override
-    public NumericExp<?> avg(Exp<? extends Number> exp) {
+    public DecimalExp avg(Exp<? extends Number> exp) {
         throw new UnsupportedOperationException("TODO: support for BigDecimal.avg");
     }
 
     @Override
-    public NumericExp<?> median(Exp<? extends Number> exp) {
+    public DecimalExp median(Exp<? extends Number> exp) {
         throw new UnsupportedOperationException("TODO: support for BigDecimal.median");
     }
 

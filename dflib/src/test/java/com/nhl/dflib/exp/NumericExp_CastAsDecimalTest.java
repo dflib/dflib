@@ -17,7 +17,7 @@ public class NumericExp_CastAsDecimalTest {
                 new BigDecimal("2.0100287"),
                 new BigDecimal("4.5"));
 
-        Series<BigDecimal> s = $decimal("a").castAsDecimal(2).eval(df);
+        Series<BigDecimal> s = $decimal("a").castAsDecimal().scale(2).eval(df);
         new SeriesAsserts(s).expectData(new BigDecimal("2.01"), new BigDecimal("4.50"));
     }
 
@@ -27,7 +27,7 @@ public class NumericExp_CastAsDecimalTest {
                 2.0100287,
                 4.5);
 
-        Series<BigDecimal> s = $double("a").castAsDecimal(2).eval(df);
+        Series<BigDecimal> s = $double("a").castAsDecimal().scale(2).eval(df);
         new SeriesAsserts(s).expectData(new BigDecimal("2.01"), new BigDecimal("4.50"));
     }
 
@@ -38,7 +38,7 @@ public class NumericExp_CastAsDecimalTest {
                 355,
                 -3);
 
-        Series<BigDecimal> s = $int("a").castAsDecimal(2).eval(df);
+        Series<BigDecimal> s = $int("a").castAsDecimal().scale(2).eval(df);
         new SeriesAsserts(s).expectData(new BigDecimal("2.00"), new BigDecimal("355.00"), new BigDecimal("-3.00"));
     }
 
@@ -49,7 +49,7 @@ public class NumericExp_CastAsDecimalTest {
                 355L,
                 -3L);
 
-        Series<BigDecimal> s = $long("a").castAsDecimal(2).eval(df);
+        Series<BigDecimal> s = $long("a").castAsDecimal().scale(2).eval(df);
         new SeriesAsserts(s).expectData(new BigDecimal("2.00"), new BigDecimal("355.00"), new BigDecimal("-3.00"));
     }
 }
