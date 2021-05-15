@@ -98,6 +98,8 @@ public class PivotBuilder {
      * with matching pivot row and column are aggregated with the provided aggregator. Aggregator may look like this:
      * <code>$decimal(0).sum()</code>. Notice that the column name or index can be anything, as the evaluation happens
      * against individual columns, not DataFrame.
+     *
+     * @see Exp
      */
     public <S, T> DataFrame values(String columnName, Exp<T> valuesAggregator) {
         int pos = validateColumn(columnName);
@@ -109,6 +111,8 @@ public class PivotBuilder {
      * with matching pivot row and column are aggregated with the provided aggregator. Aggregator may look like this:
      * <code>$decimal(0).sum()</code>. Notice that the column name or index can be anything, as the evaluation happens
      * against individual columns, not DataFrame.
+     *
+     * @see Exp
      */
     public <T> DataFrame values(int columnPos, Exp<T> valuesAggregator) {
         return doPivot(columnPos, valuesAggregator);
