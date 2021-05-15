@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.nhl.dflib.Exp.*;
 
-public class IfFunctionTest {
+public class IfExpFunctionTest {
 
     @Test
     public void testMix() {

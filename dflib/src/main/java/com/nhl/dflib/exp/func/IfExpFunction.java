@@ -7,13 +7,13 @@ import java.util.Objects;
 /**
  * @since 0.11
  */
-public class IfFunction<T> implements Exp<T> {
+public class IfExpFunction<T> implements Exp<T> {
 
     private final Condition condition;
     private final Exp<T> ifTrueExp;
     private final Exp<T> ifFalseExp;
 
-    public IfFunction(Condition condition, Exp<T> ifTrueExp, Exp<T> ifFalseExp) {
+    public IfExpFunction(Condition condition, Exp<T> ifTrueExp, Exp<T> ifFalseExp) {
         this.condition = Objects.requireNonNull(condition);
         this.ifTrueExp = Objects.requireNonNull(ifTrueExp);
         this.ifFalseExp = Objects.requireNonNull(ifFalseExp);
