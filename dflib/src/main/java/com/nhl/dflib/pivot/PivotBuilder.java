@@ -101,7 +101,7 @@ public class PivotBuilder {
      *
      * @see Exp
      */
-    public <S, T> DataFrame values(String columnName, Exp<T> valuesAggregator) {
+    public <T> DataFrame values(String columnName, Exp<T> valuesAggregator) {
         int pos = validateColumn(columnName);
         return doPivot(pos, valuesAggregator);
     }
@@ -171,7 +171,7 @@ public class PivotBuilder {
         return DataFrame.newFrame(rowColumnName).empty();
     }
 
-    private <S, T> DataFrame aggregateChunk(DataFrame chunk, Exp<T> aggregator) {
+    private <T> DataFrame aggregateChunk(DataFrame chunk, Exp<T> aggregator) {
 
         String rowColumnName = chunk.getColumnsIndex().getLabel(0);
         String valueColumnName = chunk.getColumnsIndex().getLabel(1);
@@ -183,7 +183,7 @@ public class PivotBuilder {
                 Exp.$col(valueColumnName)
                         // and then pass the resulting Series (not DataFrame)
                         // to the column name-agnostic aggregator exp
-                        .unary(s -> aggregator.eval(s))
+                        .unary(aggregator::eval)
                         // restore the column name
                         .as(valueColumnName)
         );
