@@ -3,7 +3,7 @@ package com.nhl.dflib.exp.num;
 import com.nhl.dflib.*;
 import com.nhl.dflib.exp.BinaryExp;
 import com.nhl.dflib.exp.UnaryExp;
-import com.nhl.dflib.exp.agg.AggregatorFunctions;
+import com.nhl.dflib.exp.agg.DoubleAggregators;
 import com.nhl.dflib.exp.agg.DoubleExpAggregator;
 import com.nhl.dflib.exp.condition.BinaryCondition;
 
@@ -88,27 +88,27 @@ public class DoubleExpFactory extends NumericExpFactory {
 
     @Override
     public NumericExp<Double> sum(Exp<? extends Number> exp) {
-        return new DoubleExpAggregator<>(exp, AggregatorFunctions.sumDouble());
+        return new DoubleExpAggregator<>(exp, DoubleAggregators::sum);
     }
 
     @Override
     public NumericExp<?> min(Exp<? extends Number> exp) {
-        return new DoubleExpAggregator<>(exp, AggregatorFunctions.minDouble());
+        return new DoubleExpAggregator<>(exp, DoubleAggregators::min);
     }
 
     @Override
     public NumericExp<?> max(Exp<? extends Number> exp) {
-        return new DoubleExpAggregator<>(exp, AggregatorFunctions.maxDouble());
+        return new DoubleExpAggregator<>(exp, DoubleAggregators::max);
     }
 
     @Override
     public NumericExp<?> avg(Exp<? extends Number> exp) {
-        return new DoubleExpAggregator<>(exp, AggregatorFunctions.avgDouble());
+        return new DoubleExpAggregator<>(exp, DoubleAggregators::avg);
     }
 
     @Override
     public NumericExp<?> median(Exp<? extends Number> exp) {
-        return new DoubleExpAggregator<>(exp, AggregatorFunctions.medianDouble());
+        return new DoubleExpAggregator<>(exp, DoubleAggregators::median);
     }
 
     @Override

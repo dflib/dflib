@@ -131,9 +131,9 @@ public class DataFrame_AggTest {
     @Test
     public void test_median_odd() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
-                1, 100,
+                1, 100.,
                 0, 55.5,
-                4, 0);
+                4, 0.);
 
         DataFrame agg = df.agg(
                 Exp.$int("a").median(),
@@ -147,10 +147,10 @@ public class DataFrame_AggTest {
     @Test
     public void test_median_even() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
-                1, 100,
+                1, 100.,
                 0, 55.5,
-                4, 0,
-                3, 5);
+                4, 0.,
+                3, 5.);
 
         DataFrame agg = df.agg(
                 Exp.$int("a").median(),
@@ -192,8 +192,8 @@ public class DataFrame_AggTest {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, null,
                 0, 55.5,
-                4, 0,
-                null, 5);
+                4, 0.,
+                null, 5.);
 
         DataFrame agg = df.agg(
                 Exp.$int("a").median(),

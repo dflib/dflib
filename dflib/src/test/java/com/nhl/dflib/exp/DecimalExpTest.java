@@ -30,7 +30,7 @@ public class DecimalExpTest {
     }
 
     @Test
-    public void testAdd_Scale() {
+    public void testAdd() {
 
         DecimalExp exp = $decimal("a").add(1).scale(2);
 
@@ -42,7 +42,7 @@ public class DecimalExpTest {
     }
 
     @Test
-    public void testSum_Scale() {
+    public void testSum() {
         DecimalExp exp = $decimal("a").sum().scale(2);
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(
@@ -53,7 +53,19 @@ public class DecimalExpTest {
     }
 
     @Test
-    public void testMedian_Odd_Scale() {
+    public void testSum_Nulls() {
+        DecimalExp exp = $decimal("a").sum().scale(2);
+
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                new BigDecimal("2.0100287"),
+                null,
+                new BigDecimal("4.5"));
+
+        new SeriesAsserts(exp.eval(df)).expectData(new BigDecimal("6.51"));
+    }
+
+    @Test
+    public void testMedian_Odd() {
         DecimalExp exp = $decimal(0).median().scale(3);
 
         Series<BigDecimal> s = Series.forData(new BigDecimal("100.01"), new BigDecimal("55.5"), new BigDecimal("0."));
@@ -62,12 +74,22 @@ public class DecimalExpTest {
     }
 
     @Test
-    public void testMedian_Even_Scale() {
+    public void testMedian_Even() {
         DecimalExp exp = $decimal(0).median().scale(1);
 
         Series<BigDecimal> s = Series.forData(
                 new BigDecimal("100.01"), new BigDecimal("55.5"), new BigDecimal("0."), new BigDecimal("5."));
 
         new SeriesAsserts(exp.eval(s)).expectData(new BigDecimal("30.3"));
+    }
+
+    @Test
+    public void testMedian_Nulls() {
+        DecimalExp exp = $decimal(0).median().scale(3);
+
+        Series<BigDecimal> s = Series.forData(
+                new BigDecimal("100.01"), null, new BigDecimal("55.5"), new BigDecimal("0."));
+
+        new SeriesAsserts(exp.eval(s)).expectData(new BigDecimal("55.500"));
     }
 }

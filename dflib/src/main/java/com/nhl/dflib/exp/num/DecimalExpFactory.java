@@ -6,9 +6,9 @@ import com.nhl.dflib.Exp;
 import com.nhl.dflib.NumericExp;
 import com.nhl.dflib.exp.BinaryExp;
 import com.nhl.dflib.exp.UnaryExp;
-import com.nhl.dflib.exp.agg.AggregatorFunctions;
-import com.nhl.dflib.exp.agg.DecimalAggregatorFunctions;
+import com.nhl.dflib.exp.agg.DecimalAggregators;
 import com.nhl.dflib.exp.agg.DecimalExpAggregator;
+import com.nhl.dflib.exp.agg.SeriesMinMax;
 import com.nhl.dflib.exp.condition.BinaryCondition;
 
 import java.math.BigDecimal;
@@ -116,17 +116,17 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public DecimalExp sum(Exp<? extends Number> exp) {
-        return new DecimalExpAggregator(cast(exp), DecimalAggregatorFunctions::sum);
+        return new DecimalExpAggregator(cast(exp), DecimalAggregators::sum);
     }
 
     @Override
     public DecimalExp min(Exp<? extends Number> exp) {
-        return new DecimalExpAggregator(cast(exp), AggregatorFunctions.min());
+        return new DecimalExpAggregator(cast(exp), SeriesMinMax::min);
     }
 
     @Override
     public DecimalExp max(Exp<? extends Number> exp) {
-        return new DecimalExpAggregator(cast(exp), AggregatorFunctions.max());
+        return new DecimalExpAggregator(cast(exp), SeriesMinMax::max);
     }
 
     @Override
@@ -137,7 +137,7 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public DecimalExp median(Exp<? extends Number> exp) {
-        return new DecimalExpAggregator(cast(exp), DecimalAggregatorFunctions::median);
+        return new DecimalExpAggregator(cast(exp), DecimalAggregators::median);
     }
 
     @Override

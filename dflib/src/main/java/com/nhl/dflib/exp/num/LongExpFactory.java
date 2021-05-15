@@ -3,9 +3,7 @@ package com.nhl.dflib.exp.num;
 import com.nhl.dflib.*;
 import com.nhl.dflib.exp.BinaryExp;
 import com.nhl.dflib.exp.UnaryExp;
-import com.nhl.dflib.exp.agg.AggregatorFunctions;
-import com.nhl.dflib.exp.agg.DoubleExpAggregator;
-import com.nhl.dflib.exp.agg.LongExpAggregator;
+import com.nhl.dflib.exp.agg.*;
 import com.nhl.dflib.exp.condition.BinaryCondition;
 
 import java.math.BigDecimal;
@@ -90,27 +88,27 @@ public class LongExpFactory extends NumericExpFactory {
 
     @Override
     public NumericExp<Long> sum(Exp<? extends Number> exp) {
-        return new LongExpAggregator<>(exp, AggregatorFunctions.sumLong());
+        return new LongExpAggregator<>(exp, LongAggregators::sum);
     }
 
     @Override
     public NumericExp<?> min(Exp<? extends Number> exp) {
-        return new LongExpAggregator<>(exp, AggregatorFunctions.minLong());
+        return new LongExpAggregator<>(exp, LongAggregators::min);
     }
 
     @Override
     public NumericExp<?> max(Exp<? extends Number> exp) {
-        return new LongExpAggregator<>(exp, AggregatorFunctions.maxLong());
+        return new LongExpAggregator<>(exp, LongAggregators::max);
     }
 
     @Override
     public NumericExp<?> avg(Exp<? extends Number> exp) {
-        return new DoubleExpAggregator<>(exp, AggregatorFunctions.avgDouble());
+        return new DoubleExpAggregator<>(exp, DoubleAggregators::avg);
     }
 
     @Override
     public NumericExp<?> median(Exp<? extends Number> exp) {
-        return new DoubleExpAggregator<>(exp, AggregatorFunctions.medianDouble());
+        return new DoubleExpAggregator<>(exp, DoubleAggregators::median);
     }
 
     @Override

@@ -11,7 +11,7 @@ import java.math.RoundingMode;
 /**
  * @since 0.11
  */
-public class DecimalAggregatorFunctions {
+public class DecimalAggregators {
 
     private static final Condition notNullExp = Exp.$decimal(0).isNotNull();
     private static final Sorter asc = Exp.$decimal(0).asc();
@@ -25,7 +25,11 @@ public class DecimalAggregatorFunctions {
 
         BigDecimal sum = s.get(0);
         for (int i = 1; i < size; i++) {
-            sum = sum.add(s.get(i));
+            BigDecimal d = s.get(i);
+
+            if (d != null) {
+                sum = sum.add(d);
+            }
         }
 
         return sum;
@@ -39,14 +43,16 @@ public class DecimalAggregatorFunctions {
             case 0:
                 return BigDecimal.ZERO;
             case 1:
-                return s.get(0);
+                BigDecimal d = s.get(0);
+                return d != null ? d : BigDecimal.ZERO;
             default:
 
                 Series<BigDecimal> sorted = s.select(notNullExp).sort(asc);
 
-                int m = size / 2;
+                int nonNullSize = sorted.size();
+                int m = nonNullSize / 2;
 
-                int odd = size % 2;
+                int odd = nonNullSize % 2;
                 if (odd == 1) {
                     return sorted.get(m);
                 }

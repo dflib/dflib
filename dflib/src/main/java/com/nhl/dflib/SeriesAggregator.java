@@ -1,7 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.aggregate.LongCountAggregator;
-import com.nhl.dflib.exp.agg.AggregatorFunctions;
+import com.nhl.dflib.exp.agg.*;
 
 import java.util.List;
 import java.util.Set;
@@ -33,79 +33,79 @@ public interface SeriesAggregator {
     }
 
     static Exp<Double> averageDouble() {
-        return Exp.$col("", Number.class).agg(AggregatorFunctions.avgDouble()).as("averageDouble");
+        return Exp.$col("", Number.class).agg(DoubleAggregators::avg).as("averageDouble");
     }
 
     static Exp<Double> medianDouble() {
-        return Exp.$col("", Number.class).agg(AggregatorFunctions.medianDouble()).as("medianDouble");
+        return Exp.$col("", Number.class).agg(DoubleAggregators::median).as("medianDouble");
     }
 
     static Exp<Integer> sumInt() {
-        return Exp.$col("", Number.class).agg(AggregatorFunctions.sumInt()).as("sumInt");
+        return Exp.$col("", Number.class).agg(IntAggregators::sum).as("sumInt");
     }
 
     static Exp<Long> sumLong() {
-        return Exp.$col("", Number.class).agg(AggregatorFunctions.sumLong()).as("sumLong");
+        return Exp.$col("", Number.class).agg(LongAggregators::sum).as("sumLong");
     }
 
     static Exp<Double> sumDouble() {
-        return Exp.$col("", Number.class).agg(AggregatorFunctions.sumDouble()).as("sumDouble");
+        return Exp.$col("", Number.class).agg(DoubleAggregators::sum).as("sumDouble");
     }
 
     /**
      * @since 0.7
      */
     static <S extends Comparable<S>> Exp<S> max() {
-        return Exp.<S>$col("").agg(AggregatorFunctions.max()).as("max");
+        return Exp.<S>$col("").agg(SeriesMinMax::max).as("max");
     }
 
     /**
      * @since 0.7
      */
     static <S extends Comparable<S>> Exp<S> min() {
-        return Exp.<S>$col("").agg(AggregatorFunctions.min()).as("min");
+        return Exp.<S>$col("").agg(SeriesMinMax::min).as("min");
     }
 
     /**
      * @since 0.7
      */
     static Exp<Integer> maxInt() {
-        return Exp.<Integer>$col("").agg(AggregatorFunctions.maxInt()).as("maxInt");
+        return Exp.<Integer>$col("").agg(IntAggregators::max).as("maxInt");
     }
 
     /**
      * @since 0.7
      */
     static Exp<Long> maxLong() {
-        return Exp.<Long>$col("").agg(AggregatorFunctions.maxLong()).as("maxLong");
+        return Exp.<Long>$col("").agg(LongAggregators::max).as("maxLong");
     }
 
     /**
      * @since 0.7
      */
     static Exp<Double> maxDouble() {
-        return Exp.<Double>$col("").agg(AggregatorFunctions.maxDouble()).as("maxDouble");
+        return Exp.<Double>$col("").agg(DoubleAggregators::max).as("maxDouble");
     }
 
     /**
      * @since 0.7
      */
     static Exp<Integer> minInt() {
-        return Exp.<Integer>$col("").agg(AggregatorFunctions.minInt()).as("minInt");
+        return Exp.<Integer>$col("").agg(IntAggregators::min).as("minInt");
     }
 
     /**
      * @since 0.7
      */
     static Exp<Long> minLong() {
-        return Exp.<Long>$col("").agg(AggregatorFunctions.minLong()).as("minLong");
+        return Exp.<Long>$col("").agg(LongAggregators::min).as("minLong");
     }
 
     /**
      * @since 0.7
      */
     static Exp<Double> minDouble() {
-        return Exp.<Double>$col("").agg(AggregatorFunctions.minDouble()).as("minDouble");
+        return Exp.<Double>$col("").agg(DoubleAggregators::min).as("minDouble");
     }
 
     static Exp<String> concat(String delimiter) {

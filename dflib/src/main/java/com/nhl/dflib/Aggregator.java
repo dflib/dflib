@@ -3,7 +3,7 @@ package com.nhl.dflib;
 import com.nhl.dflib.aggregate.AggregatorBuilder;
 import com.nhl.dflib.aggregate.DataFrameAggregator;
 import com.nhl.dflib.aggregate.LongCountAggregator;
-import com.nhl.dflib.exp.agg.AggregatorFunctions;
+import com.nhl.dflib.exp.agg.*;
 
 import java.util.List;
 import java.util.Set;
@@ -57,92 +57,92 @@ public interface Aggregator {
      * @since 0.6
      */
     static Exp<Double> averageDouble(String column) {
-        return Exp.$col(column, Number.class).agg(AggregatorFunctions.avgDouble());
+        return Exp.$col(column, Number.class).agg(DoubleAggregators::avg);
     }
 
     /**
      * @since 0.6
      */
     static Exp<Double> averageDouble(int column) {
-        return Exp.$col(column, Number.class).agg(AggregatorFunctions.avgDouble());
+        return Exp.$col(column, Number.class).agg(DoubleAggregators::avg);
     }
 
     /**
      * @since 0.6
      */
     static Exp<Double> medianDouble(String column) {
-        return Exp.$col(column, Number.class).agg(AggregatorFunctions.medianDouble());
+        return Exp.$col(column, Number.class).agg(DoubleAggregators::median);
     }
 
     /**
      * @since 0.6
      */
     static Exp<Double> medianDouble(int column) {
-        return Exp.$col(column, Number.class).agg(AggregatorFunctions.medianDouble());
+        return Exp.$col(column, Number.class).agg(DoubleAggregators::median);
     }
 
     /**
      * @since 0.6
      */
     static Exp<Long> sumLong(String column) {
-        return Exp.$col(column, Number.class).agg(AggregatorFunctions.sumLong());
+        return Exp.$col(column, Number.class).agg(LongAggregators::sum);
     }
 
     /**
      * @since 0.6
      */
     static Exp<Long> sumLong(int column) {
-        return Exp.$col(column, Number.class).agg(AggregatorFunctions.sumLong());
+        return Exp.$col(column, Number.class).agg(LongAggregators::sum);
     }
 
     /**
      * @since 0.6
      */
     static Exp<Integer> sumInt(String column) {
-        return Exp.$col(column, Number.class).agg(AggregatorFunctions.sumInt());
+        return Exp.$col(column, Number.class).agg(IntAggregators::sum);
     }
 
     /**
      * @since 0.6
      */
     static Exp<Integer> sumInt(int column) {
-        return Exp.$col(column, Number.class).agg(AggregatorFunctions.sumInt());
+        return Exp.$col(column, Number.class).agg(IntAggregators::sum);
     }
 
     static Exp<Double> sumDouble(String column) {
-        return Exp.$col(column, Number.class).agg(AggregatorFunctions.sumDouble());
+        return Exp.$col(column, Number.class).agg(DoubleAggregators::sum);
     }
 
     static Exp<Double> sumDouble(int column) {
-        return Exp.$col(column, Number.class).agg(AggregatorFunctions.sumDouble());
+        return Exp.$col(column, Number.class).agg(DoubleAggregators::sum);
     }
 
     /**
      * @since 0.7
      */
     static <T extends Comparable<T>> Exp<T> max(String column) {
-        return Exp.<T>$col(column).agg(AggregatorFunctions.max());
+        return Exp.<T>$col(column).agg(SeriesMinMax::max);
     }
 
     /**
      * @since 0.7
      */
     static <T extends Comparable<T>> Exp<T> max(int column) {
-        return Exp.<T>$col(column).agg(AggregatorFunctions.max());
+        return Exp.<T>$col(column).agg(SeriesMinMax::max);
     }
 
     /**
      * @since 0.7
      */
     static <T extends Comparable<T>> Exp<T> min(int column) {
-        return Exp.<T>$col(column).agg(AggregatorFunctions.min());
+        return Exp.<T>$col(column).agg(SeriesMinMax::min);
     }
 
     /**
      * @since 0.7
      */
     static <T extends Comparable<T>> Exp<T> min(String column) {
-        return Exp.<T>$col(column).agg(AggregatorFunctions.min());
+        return Exp.<T>$col(column).agg(SeriesMinMax::min);
     }
 
     static Exp<String> concat(String column, String delimiter) {
@@ -205,11 +205,11 @@ public interface Aggregator {
     }
 
     static <S, A, T> Exp<T> of(String column, Collector<S, A, T> aggregator) {
-        return ((Exp<S>) Exp.$col(column)).agg(AggregatorFunctions.fromCollector(aggregator));
+        return ((Exp<S>) Exp.$col(column)).agg(new CollectorAggregator<>(aggregator));
     }
 
     static <S, T> Exp<T> of(int column, Collector<S, ?, T> aggregator) {
-        return ((Exp<S>) Exp.$col(column)).agg(AggregatorFunctions.fromCollector(aggregator));
+        return ((Exp<S>) Exp.$col(column)).agg(new CollectorAggregator<>(aggregator));
     }
 
     /**

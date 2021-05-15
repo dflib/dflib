@@ -1,7 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.exp.*;
-import com.nhl.dflib.exp.agg.AggregatorFunctions;
+import com.nhl.dflib.exp.agg.StringAggregators;
 import com.nhl.dflib.exp.agg.CountExp;
 import com.nhl.dflib.exp.agg.ExpAggregator;
 import com.nhl.dflib.exp.condition.*;
@@ -358,7 +358,7 @@ public interface Exp<T> {
     }
 
     default Exp<T> first() {
-        return agg(AggregatorFunctions.first());
+        return agg(Series::first);
     }
 
     default Exp<T> first(Condition filter) {
@@ -371,11 +371,11 @@ public interface Exp<T> {
      * the delimiter.
      */
     default Exp<String> vConcat(String delimiter) {
-        return agg(AggregatorFunctions.concat(delimiter));
+        return agg(StringAggregators.concat(delimiter));
     }
 
     default Exp<String> vConcat(Condition filter, String delimiter) {
-        return agg(filter, AggregatorFunctions.concat(delimiter));
+        return agg(filter, StringAggregators.concat(delimiter));
     }
 
     /**
@@ -383,11 +383,11 @@ public interface Exp<T> {
      * delimiter, preceded by the prefix and followed by the suffix.
      */
     default Exp<String> vConcat(String delimiter, String prefix, String suffix) {
-        return agg(AggregatorFunctions.concat(delimiter, prefix, suffix));
+        return agg(StringAggregators.concat(delimiter, prefix, suffix));
     }
 
     default Exp<String> vConcat(Condition filter, String delimiter, String prefix, String suffix) {
-        return agg(filter, AggregatorFunctions.concat(delimiter, prefix, suffix));
+        return agg(filter, StringAggregators.concat(delimiter, prefix, suffix));
     }
 
     /**
