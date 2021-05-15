@@ -1,4 +1,4 @@
-package com.nhl.dflib.exp.func;
+package com.nhl.dflib.exp.flow;
 
 import com.nhl.dflib.*;
 
@@ -7,13 +7,13 @@ import java.util.Objects;
 /**
  * @since 0.11
  */
-public class IfExpFunction<T> implements Exp<T> {
+public class IfExp<T> implements Exp<T> {
 
     private final Condition condition;
     private final Exp<T> ifTrueExp;
     private final Exp<T> ifFalseExp;
 
-    public IfExpFunction(Condition condition, Exp<T> ifTrueExp, Exp<T> ifFalseExp) {
+    public IfExp(Condition condition, Exp<T> ifTrueExp, Exp<T> ifFalseExp) {
         this.condition = Objects.requireNonNull(condition);
         this.ifTrueExp = Objects.requireNonNull(ifTrueExp);
         this.ifFalseExp = Objects.requireNonNull(ifFalseExp);

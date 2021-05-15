@@ -8,9 +8,9 @@ import com.nhl.dflib.exp.condition.*;
 import com.nhl.dflib.exp.filter.PreFilterFirstMatchExp;
 import com.nhl.dflib.exp.filter.PreFilteredCountExp;
 import com.nhl.dflib.exp.filter.PreFilteredExp;
-import com.nhl.dflib.exp.func.ConcatFunction;
-import com.nhl.dflib.exp.func.IfExpFunction;
-import com.nhl.dflib.exp.func.IfNullFunction;
+import com.nhl.dflib.exp.str.ConcatExp;
+import com.nhl.dflib.exp.flow.IfExp;
+import com.nhl.dflib.exp.flow.IfNullExp;
 import com.nhl.dflib.exp.num.DecimalColumn;
 import com.nhl.dflib.exp.num.DoubleColumn;
 import com.nhl.dflib.exp.num.IntColumn;
@@ -182,21 +182,21 @@ public interface Exp<T> {
      * on the condition value. Evaluation is done per row.
      */
     static <T> Exp<T> ifExp(Condition condition, Exp<T> ifTrue, Exp<T> ifFalse) {
-        return new IfExpFunction<>(condition, ifTrue, ifFalse);
+        return new IfExp<>(condition, ifTrue, ifFalse);
     }
 
     /**
      * A function that evaluates "exp", replacing any null values by calling "ifNullExp".
      */
     static <T> Exp<T> ifNull(Exp<T> exp, Exp<T> ifNullExp) {
-        return new IfNullFunction<>(exp, ifNullExp);
+        return new IfNullExp<>(exp, ifNullExp);
     }
 
     /**
      * A function that evaluates "exp", replacing any null values with "ifNull" value.
      */
     static <T> Exp<T> ifNull(Exp<T> exp, T ifNull) {
-        return new IfNullFunction<>(exp, $val(ifNull));
+        return new IfNullExp<>(exp, $val(ifNull));
     }
 
     /**
@@ -204,7 +204,7 @@ public interface Exp<T> {
      * expressions.
      */
     static Exp<String> concat(Object... valuesOrExps) {
-        return ConcatFunction.forObjects(valuesOrExps);
+        return ConcatExp.forObjects(valuesOrExps);
     }
 
     /**

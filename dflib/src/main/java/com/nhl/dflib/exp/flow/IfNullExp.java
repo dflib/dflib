@@ -1,19 +1,21 @@
-package com.nhl.dflib.exp.func;
+package com.nhl.dflib.exp.flow;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.Exp;
 
+import java.util.Objects;
+
 /**
  * @since 0.11
  */
-public class IfNullFunction<T> implements Exp<T> {
+public class IfNullExp<T> implements Exp<T> {
 
     private final Exp<T> exp;
     private final Exp<T> ifNullExp;
 
-    public IfNullFunction(Exp<T> exp, Exp<T> ifNullExp) {
+    public IfNullExp(Exp<T> exp, Exp<T> ifNullExp) {
         this.exp = exp;
         this.ifNullExp = ifNullExp;
     }
@@ -36,7 +38,7 @@ public class IfNullFunction<T> implements Exp<T> {
     @Override
     public Series<T> eval(DataFrame df) {
         Series<T> data = exp.eval(df);
-        IntSeries nullsIndex = data.index(v -> v == null);
+        IntSeries nullsIndex = data.index(Objects::isNull);
 
         int nullsLen = nullsIndex.size();
         if (nullsLen == 0) {
@@ -49,7 +51,7 @@ public class IfNullFunction<T> implements Exp<T> {
     @Override
     public Series<T> eval(Series<?> s) {
         Series<T> data = exp.eval(s);
-        IntSeries nullsIndex = data.index(v -> v == null);
+        IntSeries nullsIndex = data.index(Objects::isNull);
 
         if (nullsIndex.size() == 0) {
             return data;

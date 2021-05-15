@@ -1,4 +1,4 @@
-package com.nhl.dflib.exp.func;
+package com.nhl.dflib.exp.flow;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Exp;
@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.nhl.dflib.Exp.*;
 
-public class IfExpFunctionTest {
+public class IfExpTest {
 
     @Test
     public void testMix() {

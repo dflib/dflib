@@ -1,4 +1,4 @@
-package com.nhl.dflib.exp.func;
+package com.nhl.dflib.exp.str;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
@@ -16,7 +16,7 @@ import static com.nhl.dflib.Exp.$val;
  * @since 0.11
  */
 // TODO: generic NaryExp class?
-public class ConcatFunction implements Exp<String> {
+public class ConcatExp implements Exp<String> {
 
     protected static Exp<String> cast(Exp<?> exp) {
         Class<?> t = exp.getType();
@@ -45,10 +45,10 @@ public class ConcatFunction implements Exp<String> {
         Exp<String>[] args = Arrays.stream(valuesOrExps)
                 .map(v -> v instanceof Exp ? cast((Exp<?>) v) : $val(v.toString()))
                 .toArray(Exp[]::new);
-        return new ConcatFunction(args);
+        return new ConcatExp(args);
     }
 
-    protected ConcatFunction(Exp<String>[] args) {
+    protected ConcatExp(Exp<String>[] args) {
         this.args = args;
     }
 
