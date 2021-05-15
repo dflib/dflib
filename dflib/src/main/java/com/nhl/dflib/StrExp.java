@@ -3,7 +3,7 @@ package com.nhl.dflib;
 import com.nhl.dflib.exp.condition.UnaryCondition;
 
 /**
- * An expression over the String type, with String manipulation expressions.
+ * An expression over Strings.
  *
  * @since 0.11
  */
