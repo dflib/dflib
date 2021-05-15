@@ -3,8 +3,6 @@ package com.nhl.dflib.exp.agg;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.ValueMapper;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,31 +24,23 @@ public class AggregatorFunctions {
     }
 
     public static <S extends Number> Function<Series<S>, Double> avgDouble() {
-        return fromCollector(Collectors.averagingDouble(v -> v.doubleValue()));
+        return fromCollector(Collectors.averagingDouble(Number::doubleValue));
     }
 
     public static <S extends Number> Function<Series<S>, Double> medianDouble() {
-        return fromCollector(AggregatorFunctions.medianCollector());
+        return fromCollector(AggregatorFunctions.medianDoubleCollector());
     }
 
     public static <S extends Number> Function<Series<S>, Integer> sumInt() {
-        return fromCollector(Collectors.summingInt(v -> v.intValue()));
+        return fromCollector(Collectors.summingInt(Number::intValue));
     }
 
     public static <S extends Number> Function<Series<S>, Long> sumLong() {
-        return fromCollector(Collectors.summingLong(v -> v.longValue()));
+        return fromCollector(Collectors.summingLong(Number::longValue));
     }
 
     public static <S extends Number> Function<Series<S>, Double> sumDouble() {
-        return fromCollector(Collectors.summingDouble(v -> v.doubleValue()));
-    }
-
-    public static Function<Series<BigDecimal>, BigDecimal> sumDecimal() {
-        return s -> BigDecimalSeriesSum.sum(s);
-    }
-
-    public static Function<Series<BigDecimal>, BigDecimal> sumDecimal(int resultScale, RoundingMode resultRoundingMode) {
-        return s -> BigDecimalSeriesSum.sum(s, resultScale, resultRoundingMode);
+        return fromCollector(Collectors.summingDouble(Number::doubleValue));
     }
 
     public static <S extends Comparable<S>> Function<Series<S>, S> min() {
@@ -139,18 +129,19 @@ public class AggregatorFunctions {
         };
     }
 
-    protected static <S extends Number> Collector<S, List<Double>, Double> medianCollector() {
+    protected static <S extends Number> Collector<S, List<Double>, Double> medianDoubleCollector() {
         return new AggregationCollector<>(
                 ArrayList::new,
                 (list, d) -> {
                     if (d != null) {
+                        // TODO: keep primitives
                         list.add(d.doubleValue());
                     }
                 },
-                medianWithSideEffects());
+                medianDoubleCalc());
     }
 
-    private static Function<List<Double>, Double> medianWithSideEffects() {
+    private static Function<List<Double>, Double> medianDoubleCalc() {
         return list -> {
 
             if (list.isEmpty()) {
@@ -158,13 +149,11 @@ public class AggregatorFunctions {
             }
 
             switch (list.size()) {
-                case 0:
-                    return 0.;
                 case 1:
                     return list.get(0);
                 default:
-                    // side effect - resorting the list; since the list is not exposed outside of "medianCollector", this should
-                    // not cause any issues
+                    // side effect - resorting the list; since the list is not exposed outside of "medianCollector",
+                    // this should not cause any issues
                     Collections.sort(list);
 
                     int m = list.size() / 2;

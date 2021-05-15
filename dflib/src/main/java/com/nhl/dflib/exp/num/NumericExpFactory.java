@@ -18,8 +18,12 @@ public abstract class NumericExpFactory {
 
     protected static final Map<Class<? extends Number>, Integer> typeConversionRank;
     protected static final Map<Class<? extends Number>, NumericExpFactory> factories;
+    protected static final DecimalExpFactory decimalFactory;
 
     static {
+
+        decimalFactory = new DecimalExpFactory();
+
         typeConversionRank = new HashMap<>();
 
         typeConversionRank.put(BigDecimal.class, 0);
@@ -42,7 +46,7 @@ public abstract class NumericExpFactory {
 
         factories = new HashMap<>();
 
-        factories.put(BigDecimal.class, new DecimalExpFactory());
+        factories.put(BigDecimal.class, decimalFactory);
 
         factories.put(Double.class, new DoubleExpFactory());
         factories.put(Double.TYPE, factories.get(Double.class));
@@ -52,6 +56,14 @@ public abstract class NumericExpFactory {
 
         factories.put(Long.class, new LongExpFactory());
         factories.put(Long.TYPE, factories.get(Long.class));
+    }
+
+    /**
+     * Provides direct access to the DecimalExpFactory, that can be used to return {@link DecimalExp} instead of
+     * {@link NumericExp}.
+     */
+    public static DecimalExpFactory decimalFactory() {
+        return decimalFactory;
     }
 
     public static NumericExpFactory factory(Exp<? extends Number> exp) {

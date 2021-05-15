@@ -7,6 +7,7 @@ import com.nhl.dflib.NumericExp;
 import com.nhl.dflib.exp.BinaryExp;
 import com.nhl.dflib.exp.UnaryExp;
 import com.nhl.dflib.exp.agg.AggregatorFunctions;
+import com.nhl.dflib.exp.agg.DecimalAggregatorFunctions;
 import com.nhl.dflib.exp.agg.DecimalExpAggregator;
 import com.nhl.dflib.exp.condition.BinaryCondition;
 
@@ -115,7 +116,7 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public DecimalExp sum(Exp<? extends Number> exp) {
-        return new DecimalExpAggregator(cast(exp), AggregatorFunctions.sumDecimal());
+        return new DecimalExpAggregator(cast(exp), DecimalAggregatorFunctions::sum);
     }
 
     @Override
@@ -130,12 +131,13 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public DecimalExp avg(Exp<? extends Number> exp) {
+        // TODO
         throw new UnsupportedOperationException("TODO: support for BigDecimal.avg");
     }
 
     @Override
     public DecimalExp median(Exp<? extends Number> exp) {
-        throw new UnsupportedOperationException("TODO: support for BigDecimal.median");
+        return new DecimalExpAggregator(cast(exp), DecimalAggregatorFunctions::median);
     }
 
     @Override
