@@ -22,7 +22,7 @@ public class ConcatFunction implements Exp<String> {
         Class<?> t = exp.getType();
         return t.equals(String.class)
                 ? (Exp<String>) exp
-                : new UnaryExp<>(exp, String.class, UnaryExp.toSeriesOp(String::valueOf));
+                : new UnaryExp<>("castAsString", exp, String.class, UnaryExp.toSeriesOp(String::valueOf));
     }
 
     private final Exp<String>[] args;

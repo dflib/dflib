@@ -12,7 +12,7 @@ import java.util.function.Function;
  */
 public class IntUnaryExp<F> extends UnaryExp<F, Integer> implements NumericExp<Integer> {
 
-    public IntUnaryExp(Exp<F> exp, Function<Series<F>, Series<Integer>> op) {
-        super(exp, Integer.class, op);
+    public IntUnaryExp(String opName, Exp<F> exp, Function<Series<F>, Series<Integer>> op) {
+        super(opName, exp, Integer.class, op);
     }
 }

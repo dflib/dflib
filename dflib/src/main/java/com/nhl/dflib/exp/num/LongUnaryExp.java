@@ -12,7 +12,7 @@ import java.util.function.Function;
  */
 public class LongUnaryExp<F> extends UnaryExp<F, Long> implements NumericExp<Long> {
 
-    public LongUnaryExp(Exp<F> exp, Function<Series<F>, Series<Long>> op) {
-        super(exp, Long.class, op);
+    public LongUnaryExp(String opName, Exp<F> exp, Function<Series<F>, Series<Long>> op) {
+        super(opName, exp, Long.class, op);
     }
 }

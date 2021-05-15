@@ -24,12 +24,12 @@ public class LongExpFactory extends NumericExpFactory {
 
         if (Number.class.isAssignableFrom(t)) {
             Exp<Number> nExp = (Exp<Number>) exp;
-            return new LongUnaryExp<>(nExp, UnaryExp.toSeriesOp(Number::longValue));
+            return new LongUnaryExp<>("castAsLong", nExp, UnaryExp.toSeriesOp(Number::longValue));
         }
 
         if (t.equals(String.class)) {
             Exp<String> sExp = (Exp<String>) exp;
-            return new LongUnaryExp<>(sExp, UnaryExp.toSeriesOp(Long::parseLong));
+            return new LongUnaryExp<>("castAsLong", sExp, UnaryExp.toSeriesOp(Long::parseLong));
         }
 
         throw new IllegalArgumentException("Expression type '" + t.getName() + "' can't be converted to Long");
@@ -83,7 +83,7 @@ public class LongExpFactory extends NumericExpFactory {
 
     @Override
     public NumericExp<BigDecimal> castAsDecimal(NumericExp<?> exp, int scale) {
-        return new DecimalUnaryExp<>(cast(exp), UnaryExp.toSeriesOp(l -> BigDecimal.valueOf(l).setScale(scale, RoundingMode.HALF_UP)));
+        return new DecimalUnaryExp<>("castAsDecimal", cast(exp), UnaryExp.toSeriesOp(l -> BigDecimal.valueOf(l).setScale(scale, RoundingMode.HALF_UP)));
     }
 
     @Override

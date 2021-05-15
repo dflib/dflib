@@ -32,17 +32,17 @@ public class DecimalExpFactory extends NumericExpFactory {
 
         if (t.equals(BigInteger.class)) {
             Exp<BigInteger> biExp = (Exp<BigInteger>) exp;
-            return new DecimalUnaryExp<>(biExp, UnaryExp.toSeriesOp(BigDecimal::new));
+            return new DecimalUnaryExp<>("castAsDecimal", biExp, UnaryExp.toSeriesOp(BigDecimal::new));
         }
 
         if (Number.class.isAssignableFrom(t)) {
             Exp<Number> nExp = (Exp<Number>) exp;
-            return new DecimalUnaryExp<>(nExp, UnaryExp.toSeriesOp(n -> new BigDecimal(n.doubleValue())));
+            return new DecimalUnaryExp<>("castAsDecimal", nExp, UnaryExp.toSeriesOp(n -> new BigDecimal(n.doubleValue())));
         }
 
         if (t.equals(String.class)) {
             Exp<String> sExp = (Exp<String>) exp;
-            return new DecimalUnaryExp<>(sExp, UnaryExp.toSeriesOp(BigDecimal::new));
+            return new DecimalUnaryExp<>("castAsDecimal", sExp, UnaryExp.toSeriesOp(BigDecimal::new));
         }
 
         throw new IllegalArgumentException("Expression type '" + t.getName() + "' can't be converted to Double");
@@ -101,7 +101,7 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public NumericExp<BigDecimal> castAsDecimal(NumericExp<?> exp, int scale) {
-        return new DecimalUnaryExp<>(cast(exp), UnaryExp.toSeriesOp(bd -> bd.setScale(scale, RoundingMode.HALF_UP)));
+        return new DecimalUnaryExp<>("castAsDecimal", cast(exp), UnaryExp.toSeriesOp(bd -> bd.setScale(scale, RoundingMode.HALF_UP)));
     }
 
     @Override

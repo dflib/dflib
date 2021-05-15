@@ -23,12 +23,12 @@ public class DoubleExpFactory extends NumericExpFactory {
 
         if (Number.class.isAssignableFrom(t)) {
             Exp<Number> nExp = (Exp<Number>) exp;
-            return new DoubleUnaryExp<>(nExp, UnaryExp.toSeriesOp(Number::doubleValue));
+            return new DoubleUnaryExp<>("castAsDouble", nExp, UnaryExp.toSeriesOp(Number::doubleValue));
         }
 
         if (t.equals(String.class)) {
             Exp<String> sExp = (Exp<String>) exp;
-            return new DoubleUnaryExp<>(sExp, UnaryExp.toSeriesOp(Double::parseDouble));
+            return new DoubleUnaryExp<>("castAsDouble", sExp, UnaryExp.toSeriesOp(Double::parseDouble));
         }
 
         throw new IllegalArgumentException("Expression type '" + t.getName() + "' can't be converted to Double");
@@ -81,7 +81,7 @@ public class DoubleExpFactory extends NumericExpFactory {
 
     @Override
     public NumericExp<BigDecimal> castAsDecimal(NumericExp<?> exp, int scale) {
-        return new DecimalUnaryExp<>(cast(exp), UnaryExp.toSeriesOp(d -> BigDecimal.valueOf(d).setScale(scale, RoundingMode.HALF_UP)));
+        return new DecimalUnaryExp<>("castAsDecimal", cast(exp), UnaryExp.toSeriesOp(d -> BigDecimal.valueOf(d).setScale(scale, RoundingMode.HALF_UP)));
     }
 
     @Override

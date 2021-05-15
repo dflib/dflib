@@ -1,9 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.exp.ColumnExp;
-import com.nhl.dflib.exp.ExpSorter;
-import com.nhl.dflib.exp.RenamedExp;
-import com.nhl.dflib.exp.SingleValueExp;
+import com.nhl.dflib.exp.*;
 import com.nhl.dflib.exp.agg.AggregatorFunctions;
 import com.nhl.dflib.exp.agg.CountExp;
 import com.nhl.dflib.exp.agg.ExpAggregator;
@@ -51,7 +48,7 @@ public interface Exp<T> {
 
         return new SingleValueExp(
                 value,
-                // TODO: in case the is called as "$val((T) null)", the type of the expression will not be the one the
+                // TODO: in case this is called as "$val((T) null)", the type of the expression will not be the one the
                 //  caller expects
                 value != null ? value.getClass() : Object.class);
     }

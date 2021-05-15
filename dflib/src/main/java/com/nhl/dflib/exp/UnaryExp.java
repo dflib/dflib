@@ -11,11 +11,13 @@ import java.util.function.Function;
  */
 public class UnaryExp<F, T> implements Exp<T> {
 
+    private final String opName;
     private final Function<Series<F>, Series<T>> op;
     private final Exp<F> exp;
     private final Class<T> type;
 
-    public UnaryExp(Exp<F> exp, Class<T> type, Function<Series<F>, Series<T>> op) {
+    public UnaryExp(String opName, Exp<F> exp, Class<T> type, Function<Series<F>, Series<T>> op) {
+        this.opName = opName;
         this.exp = exp;
         this.type = type;
         this.op = op;
@@ -23,12 +25,12 @@ public class UnaryExp<F, T> implements Exp<T> {
 
     @Override
     public String getName() {
-        return exp.getName();
+        return opName + exp.getName();
     }
 
     @Override
     public String getName(DataFrame df) {
-        return exp.getName(df);
+        return opName + exp.getName(df);
     }
 
     @Override
