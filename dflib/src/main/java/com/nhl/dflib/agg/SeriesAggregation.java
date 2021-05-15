@@ -1,11 +1,11 @@
-package com.nhl.dflib.aggregate;
+package com.nhl.dflib.agg;
 
 import com.nhl.dflib.*;
 import com.nhl.dflib.accumulator.Accumulator;
 import com.nhl.dflib.accumulator.ObjectAccumulator;
 
 /**
- * @since 0.6
+ * @since 0.11
  */
 public class SeriesAggregation {
 

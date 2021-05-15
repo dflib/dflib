@@ -1,9 +1,9 @@
-package com.nhl.dflib.aggregate;
+package com.nhl.dflib.agg;
 
 import java.util.Arrays;
 
 /**
- * @since 0.7
+ * @since 0.11
  */
 public class PrimitiveSeriesMedian {
 

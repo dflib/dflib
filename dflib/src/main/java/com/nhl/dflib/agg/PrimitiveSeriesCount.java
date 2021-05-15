@@ -1,7 +1,7 @@
-package com.nhl.dflib.aggregate;
+package com.nhl.dflib.agg;
 
 /**
- * @since 0.7
+ * @since 0.11
  */
 public class PrimitiveSeriesCount {
 

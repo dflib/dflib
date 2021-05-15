@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.aggregate.DataFrameAggregation;
+import com.nhl.dflib.agg.DataFrameAggregation;
 import com.nhl.dflib.join.JoinBuilder;
 import com.nhl.dflib.pivot.PivotBuilder;
 import com.nhl.dflib.row.RowProxy;

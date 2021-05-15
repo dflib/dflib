@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.aggregate.SeriesAggregation;
+import com.nhl.dflib.agg.SeriesAggregation;
 import com.nhl.dflib.concat.SeriesConcat;
 
 import java.util.Collection;

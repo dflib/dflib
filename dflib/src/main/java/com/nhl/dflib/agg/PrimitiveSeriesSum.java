@@ -1,5 +1,8 @@
-package com.nhl.dflib.aggregate;
+package com.nhl.dflib.agg;
 
+/**
+ * @since 0.11
+ */
 public class PrimitiveSeriesSum {
 
     public static long sumOfRange(int first, int lastExclusive) {

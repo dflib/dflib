@@ -1,7 +1,7 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.BooleanSeries;
-import com.nhl.dflib.aggregate.PrimitiveSeriesCount;
+import com.nhl.dflib.agg.PrimitiveSeriesCount;
 
 /**
  * @since 0.6

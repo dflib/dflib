@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.aggregate.DataFrameAggregation;
+import com.nhl.dflib.agg.DataFrameAggregation;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.series.EmptySeries;
 import com.nhl.dflib.sort.GroupBySorter;

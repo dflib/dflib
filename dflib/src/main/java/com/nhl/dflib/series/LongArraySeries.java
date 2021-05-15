@@ -1,10 +1,10 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.LongSeries;
-import com.nhl.dflib.aggregate.PrimitiveSeriesAvg;
-import com.nhl.dflib.aggregate.PrimitiveSeriesMedian;
-import com.nhl.dflib.aggregate.PrimitiveSeriesMinMax;
-import com.nhl.dflib.aggregate.PrimitiveSeriesSum;
+import com.nhl.dflib.agg.PrimitiveSeriesAvg;
+import com.nhl.dflib.agg.PrimitiveSeriesMedian;
+import com.nhl.dflib.agg.PrimitiveSeriesMinMax;
+import com.nhl.dflib.agg.PrimitiveSeriesSum;
 
 /**
  * @since 0.6
