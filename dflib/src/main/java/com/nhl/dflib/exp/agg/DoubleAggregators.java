@@ -6,6 +6,7 @@ import com.nhl.dflib.Series;
 import com.nhl.dflib.Sorter;
 
 import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -16,9 +17,9 @@ public class DoubleAggregators {
     private static final Condition notNullExp = Exp.$col(0).isNotNull();
     private static final Sorter asc = Exp.$col(0).asc();
     private static final Function<Series<? extends Number>, Double> avg =
-            new CollectorAggregator(Collectors.averagingDouble(Number::doubleValue));
+            CollectorAggregator.create((Collector) Collectors.averagingDouble(Number::doubleValue));
     private static final Function<Series<? extends Number>, Double> sum =
-            new CollectorAggregator(Collectors.summingDouble(Number::doubleValue));
+            CollectorAggregator.create((Collector) Collectors.summingDouble(Number::doubleValue));
 
     public static double sum(Series<? extends Number> s) {
         return s.size() == 0 ? 0. : sum.apply(s);

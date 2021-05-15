@@ -3,6 +3,7 @@ package com.nhl.dflib.exp.agg;
 import com.nhl.dflib.Series;
 
 import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -11,7 +12,7 @@ import java.util.stream.Collectors;
 public class IntAggregators {
 
     private static final Function<Series<? extends Number>, Integer> sum =
-            new CollectorAggregator(Collectors.summingInt(Number::intValue));
+            CollectorAggregator.create((Collector) Collectors.summingInt(Number::intValue));
 
     public static int sum(Series<? extends Number> s) {
         return s.size() == 0 ? 0 : sum.apply(s);

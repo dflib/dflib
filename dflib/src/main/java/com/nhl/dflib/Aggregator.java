@@ -205,11 +205,11 @@ public interface Aggregator {
     }
 
     static <S, A, T> Exp<T> of(String column, Collector<S, A, T> aggregator) {
-        return ((Exp<S>) Exp.$col(column)).agg(new CollectorAggregator<>(aggregator));
+        return ((Exp<S>) Exp.$col(column)).agg(CollectorAggregator.create(aggregator));
     }
 
     static <S, T> Exp<T> of(int column, Collector<S, ?, T> aggregator) {
-        return ((Exp<S>) Exp.$col(column)).agg(new CollectorAggregator<>(aggregator));
+        return ((Exp<S>) Exp.$col(column)).agg(CollectorAggregator.create(aggregator));
     }
 
     /**
