@@ -1,10 +1,10 @@
 package com.nhl.dflib.exp.num;
 
 import com.nhl.dflib.*;
-import com.nhl.dflib.exp.BinaryExp;
-import com.nhl.dflib.exp.UnaryExp;
-import com.nhl.dflib.exp.agg.*;
-import com.nhl.dflib.exp.condition.BinaryCondition;
+import com.nhl.dflib.exp.agg.DoubleAggregators;
+import com.nhl.dflib.exp.agg.DoubleExpAggregator;
+import com.nhl.dflib.exp.agg.LongAggregators;
+import com.nhl.dflib.exp.agg.LongExpAggregator;
 
 import java.math.BigDecimal;
 
@@ -24,12 +24,12 @@ public class LongExpFactory extends NumericExpFactory {
 
         if (Number.class.isAssignableFrom(t)) {
             Exp<Number> nExp = (Exp<Number>) exp;
-            return new LongUnaryExp<>("castAsLong", nExp, UnaryExp.toSeriesOp(Number::longValue));
+            return LongExp1.mapVal("castAsLong", nExp, Number::longValue);
         }
 
         if (t.equals(String.class)) {
             Exp<String> sExp = (Exp<String>) exp;
-            return new LongUnaryExp<>("castAsLong", sExp, UnaryExp.toSeriesOp(Long::parseLong));
+            return LongExp1.mapVal("castAsLong", sExp, Long::parseLong);
         }
 
         throw new IllegalArgumentException("Expression type '" + t.getName() + "' can't be converted to Long");
@@ -37,53 +37,33 @@ public class LongExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<?> add(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new LongBinaryExp("+",
-                cast(left),
-                cast(right),
-                BinaryExp.toSeriesOp((Long n1, Long n2) -> n1 + n2),
-                LongSeries::add);
+        return LongExp2.mapVal("+", cast(left), cast(right), (n1, n2) -> n1 + n2, LongSeries::add);
     }
 
     @Override
     public NumExp<?> sub(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new LongBinaryExp("-",
-                cast(left),
-                cast(right),
-                BinaryExp.toSeriesOp((Long n1, Long n2) -> n1 - n2),
-                LongSeries::sub);
+        return LongExp2.mapVal("-", cast(left), cast(right), (n1, n2) -> n1 - n2, LongSeries::sub);
     }
 
     @Override
     public NumExp<?> mul(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new LongBinaryExp("*",
-                cast(left),
-                cast(right),
-                BinaryExp.toSeriesOp((Long n1, Long n2) -> n1 * n2),
-                LongSeries::mul);
+        return LongExp2.mapVal("*", cast(left), cast(right), (n1, n2) -> n1 * n2, LongSeries::mul);
     }
 
     @Override
     public NumExp<?> div(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new LongBinaryExp("/",
-                cast(left),
-                cast(right),
-                BinaryExp.toSeriesOp((Long n1, Long n2) -> n1 / n2),
-                LongSeries::div);
+        return LongExp2.mapVal("/", cast(left), cast(right), (n1, n2) -> n1 / n2, LongSeries::div);
     }
 
     @Override
     public NumExp<?> mod(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new LongBinaryExp("%",
-                cast(left),
-                cast(right),
-                BinaryExp.toSeriesOp((Long n1, Long n2) -> n1 % n2),
-                LongSeries::mod);
+        return LongExp2.mapVal("%", cast(left), cast(right), (n1, n2) -> n1 % n2, LongSeries::mod);
     }
 
 
     @Override
     public DecimalExp castAsDecimal(NumExp<?> exp) {
-        return new DecimalUnaryExp<>("castAsDecimal", cast(exp), UnaryExp.toSeriesOp(l -> BigDecimal.valueOf(l)));
+        return DecimalExp1.mapVal("castAsDecimal", cast(exp), BigDecimal::valueOf);
     }
 
     @Override
@@ -113,55 +93,31 @@ public class LongExpFactory extends NumericExpFactory {
 
     @Override
     public Condition eq(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new LongBinaryCondition("=",
-                cast(left),
-                cast(right),
-                BinaryCondition.toSeriesCondition(Long::equals),
-                LongSeries::eq);
+        return LongCondition2.mapVal("=", cast(left), cast(right), Long::equals, LongSeries::eq);
     }
 
     @Override
     public Condition ne(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new LongBinaryCondition("!=",
-                cast(left),
-                cast(right),
-                BinaryCondition.toSeriesCondition((Long n1, Long n2) -> !n1.equals(n2)),
-                LongSeries::ne);
+        return LongCondition2.mapVal("!=", cast(left), cast(right), (n1, n2) -> !n1.equals(n2), LongSeries::ne);
     }
 
     @Override
     public Condition lt(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new LongBinaryCondition("<",
-                cast(left),
-                cast(right),
-                BinaryCondition.toSeriesCondition((Long n1, Long n2) -> n1 < n2),
-                LongSeries::lt);
+        return LongCondition2.mapVal("<", cast(left), cast(right), (n1, n2) -> n1 < n2, LongSeries::lt);
     }
 
     @Override
     public Condition le(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new LongBinaryCondition("<=",
-                cast(left),
-                cast(right),
-                BinaryCondition.toSeriesCondition((Long n1, Long n2) -> n1 <= n2),
-                LongSeries::le);
+        return LongCondition2.mapVal("<=", cast(left), cast(right), (n1, n2) -> n1 <= n2, LongSeries::le);
     }
 
     @Override
     public Condition gt(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new LongBinaryCondition(">",
-                cast(left),
-                cast(right),
-                BinaryCondition.toSeriesCondition((Long n1, Long n2) -> n1 > n2),
-                LongSeries::gt);
+        return LongCondition2.mapVal(">", cast(left), cast(right), (n1, n2) -> n1 > n2, LongSeries::gt);
     }
 
     @Override
     public Condition ge(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new LongBinaryCondition(">=",
-                cast(left),
-                cast(right),
-                BinaryCondition.toSeriesCondition((Long n1, Long n2) -> n1 >= n2),
-                LongSeries::ge);
+        return LongCondition2.mapVal(">=", cast(left), cast(right), (n1, n2) -> n1 >= n2, LongSeries::ge);
     }
 }

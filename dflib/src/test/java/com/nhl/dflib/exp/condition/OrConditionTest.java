@@ -4,6 +4,7 @@ import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.exp.bool.OrCondition;
 import com.nhl.dflib.unit.BooleanSeriesAsserts;
 import org.junit.jupiter.api.Test;
 

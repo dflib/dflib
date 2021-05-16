@@ -40,7 +40,7 @@ public class PreFilteredCountExp implements Exp<Integer> {
     @Override
     public Series<Integer> eval(DataFrame df) {
 
-        // optmization: not rebuilding a filtered DataFrame ... Just count filter index
+        // optimization: not rebuilding a filtered DataFrame ... Just count filter index
         int c = filter.eval(df).countTrue();
 
         // TODO: IntSingleValueSeries

@@ -7,6 +7,9 @@ import java.util.Objects;
 /**
  * @since 0.11
  */
+// TODO: this exp doesn't fit our Exp templates,
+//  as it mixes condition and expressions and also does lazy eval.
+//  Is there a reasonable template for that?
 public class IfExp<T> implements Exp<T> {
 
     private final Condition condition;

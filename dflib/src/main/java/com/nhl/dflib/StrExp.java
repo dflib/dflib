@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.exp.condition.UnaryCondition;
+import com.nhl.dflib.exp.map.MapExpScalarCondition2;
 
 import java.util.regex.Pattern;
 
@@ -14,20 +14,14 @@ public interface StrExp extends Exp<String> {
     default Condition matches(String regex) {
         // precompile pattern..
         Pattern p = Pattern.compile(regex);
-        return new UnaryCondition<>("matches",
-                this,
-                UnaryCondition.toSeriesCondition(s -> p.matcher(s).matches()));
+        return MapExpScalarCondition2.mapVal("matches", this, regex, (s, r) -> p.matcher(s).matches());
     }
 
     default Condition startsWith(String prefix) {
-        return new UnaryCondition<>("startsWith",
-                this,
-                UnaryCondition.toSeriesCondition(s -> s.startsWith(prefix)));
+        return MapExpScalarCondition2.mapVal("startsWith", this, prefix, (s, p) -> s.startsWith(prefix));
     }
 
     default Condition endsWith(String suffix) {
-        return new UnaryCondition<>("endsWith",
-                this,
-                UnaryCondition.toSeriesCondition(s -> s.endsWith(suffix)));
+        return MapExpScalarCondition2.mapVal("endsWith", this, suffix, (s, p) -> s.endsWith(suffix));
     }
 }

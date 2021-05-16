@@ -11,7 +11,7 @@ public class DoubleBinaryExpTest {
 
     @Test
     public void testCreation() {
-        assertTrue($double("a").add(5) instanceof DoubleBinaryExp);
+        assertTrue($double("a").add(5) instanceof DoubleExp2);
     }
 
     @Test

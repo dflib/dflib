@@ -1,10 +1,10 @@
 package com.nhl.dflib.exp.num;
 
 import com.nhl.dflib.*;
-import com.nhl.dflib.exp.BinaryExp;
-import com.nhl.dflib.exp.UnaryExp;
-import com.nhl.dflib.exp.agg.*;
-import com.nhl.dflib.exp.condition.BinaryCondition;
+import com.nhl.dflib.exp.agg.DoubleAggregators;
+import com.nhl.dflib.exp.agg.DoubleExpAggregator;
+import com.nhl.dflib.exp.agg.IntAggregators;
+import com.nhl.dflib.exp.agg.IntExpAggregator;
 
 import java.math.BigDecimal;
 
@@ -24,12 +24,12 @@ public class IntExpFactory extends NumericExpFactory {
 
         if (Number.class.isAssignableFrom(t)) {
             Exp<Number> nExp = (Exp<Number>) exp;
-            return new IntUnaryExp<>("castAsInt", nExp, UnaryExp.toSeriesOp(Number::intValue));
+            return IntExp1.mapVal("castAsInt", nExp, Number::intValue);
         }
 
         if (t.equals(String.class)) {
             Exp<String> sExp = (Exp<String>) exp;
-            return new IntUnaryExp<>("castAsInt", sExp, UnaryExp.toSeriesOp(Integer::parseInt));
+            return IntExp1.mapVal("castAsInt", sExp, Integer::parseInt);
         }
 
         throw new IllegalArgumentException("Expression type '" + t.getName() + "' can't be converted to Integer");
@@ -37,52 +37,32 @@ public class IntExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<?> add(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new IntBinaryExp("+",
-                cast(left),
-                cast(right),
-                BinaryExp.toSeriesOp((Integer n1, Integer n2) -> n1 + n2),
-                IntSeries::add);
+        return IntExp2.mapVal("+", cast(left), cast(right), (n1, n2) -> n1 + n2, IntSeries::add);
     }
 
     @Override
     public NumExp<?> sub(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new IntBinaryExp("-",
-                cast(left),
-                cast(right),
-                BinaryExp.toSeriesOp((Integer n1, Integer n2) -> n1 - n2),
-                IntSeries::sub);
+        return IntExp2.mapVal("-", cast(left), cast(right), (n1, n2) -> n1 - n2, IntSeries::sub);
     }
 
     @Override
     public NumExp<?> mul(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new IntBinaryExp("*",
-                cast(left),
-                cast(right),
-                BinaryExp.toSeriesOp((Integer n1, Integer n2) -> n1 * n2),
-                IntSeries::mul);
+        return IntExp2.mapVal("*", cast(left), cast(right), (n1, n2) -> n1 * n2, IntSeries::mul);
     }
 
     @Override
     public NumExp<?> div(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new IntBinaryExp("/",
-                cast(left),
-                cast(right),
-                BinaryExp.toSeriesOp((Integer n1, Integer n2) -> n1 / n2),
-                IntSeries::div);
+        return IntExp2.mapVal("/", cast(left), cast(right), (n1, n2) -> n1 / n2, IntSeries::div);
     }
 
     @Override
     public NumExp<?> mod(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new IntBinaryExp("%",
-                cast(left),
-                cast(right),
-                BinaryExp.toSeriesOp((Integer n1, Integer n2) -> n1 % n2),
-                IntSeries::mod);
+        return IntExp2.mapVal("%", cast(left), cast(right), (n1, n2) -> n1 % n2, IntSeries::mod);
     }
 
     @Override
     public DecimalExp castAsDecimal(NumExp<?> exp) {
-        return new DecimalUnaryExp<>("castAsDecimal", cast(exp), UnaryExp.toSeriesOp(i -> BigDecimal.valueOf((long) i)));
+        return DecimalExp1.mapVal("castAsDecimal", cast(exp), BigDecimal::valueOf);
     }
 
     @Override
@@ -112,55 +92,31 @@ public class IntExpFactory extends NumericExpFactory {
 
     @Override
     public Condition eq(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new IntBinaryCondition("=",
-                cast(left),
-                cast(right),
-                BinaryCondition.toSeriesCondition(Integer::equals),
-                IntSeries::eq);
+        return IntCondition2.mapVal("=", cast(left), cast(right), Integer::equals, IntSeries::eq);
     }
 
     @Override
     public Condition ne(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new IntBinaryCondition("!=",
-                cast(left),
-                cast(right),
-                BinaryCondition.toSeriesCondition((Integer n1, Integer n2) -> !n1.equals(n2)),
-                IntSeries::ne);
+        return IntCondition2.mapVal("!=", cast(left), cast(right), (n1, n2) -> !n1.equals(n2), IntSeries::ne);
     }
 
     @Override
     public Condition lt(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new IntBinaryCondition("<",
-                cast(left),
-                cast(right),
-                BinaryCondition.toSeriesCondition((Integer n1, Integer n2) -> n1 < n2),
-                IntSeries::lt);
+        return IntCondition2.mapVal("<", cast(left), cast(right), (n1, n2) -> n1 < n2, IntSeries::lt);
     }
 
     @Override
     public Condition le(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new IntBinaryCondition("<=",
-                cast(left),
-                cast(right),
-                BinaryCondition.toSeriesCondition((Integer n1, Integer n2) -> n1 <= n2),
-                IntSeries::le);
+        return IntCondition2.mapVal("<=", cast(left), cast(right), (n1, n2) -> n1 <= n2, IntSeries::le);
     }
 
     @Override
     public Condition gt(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new IntBinaryCondition(">",
-                cast(left),
-                cast(right),
-                BinaryCondition.toSeriesCondition((Integer n1, Integer n2) -> n1 > n2),
-                IntSeries::gt);
+        return IntCondition2.mapVal(">", cast(left), cast(right), (n1, n2) -> n1 > n2, IntSeries::gt);
     }
 
     @Override
     public Condition ge(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return new IntBinaryCondition(">=",
-                cast(left),
-                cast(right),
-                BinaryCondition.toSeriesCondition((Integer n1, Integer n2) -> n1 >= n2),
-                IntSeries::ge);
+        return IntCondition2.mapVal(">=", cast(left), cast(right), (n1, n2) -> n1 >= n2, IntSeries::ge);
     }
 }

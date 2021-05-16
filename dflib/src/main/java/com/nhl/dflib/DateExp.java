@@ -1,7 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.exp.UnaryExp;
-import com.nhl.dflib.exp.datetime.DateUnaryExp;
+import com.nhl.dflib.exp.datetime.DateExpScalar2;
 
 import java.time.LocalDate;
 
@@ -13,18 +12,18 @@ import java.time.LocalDate;
 public interface DateExp extends Exp<LocalDate> {
 
     default DateExp plusDays(int days) {
-        return new DateUnaryExp<>("plusDays", this, UnaryExp.toSeriesOp(ld -> ld.plusDays(days)));
+        return DateExpScalar2.mapVal("plusDays", this, days, (ld, d) -> ld.plusDays(days));
     }
 
-    default DateExp plusWeeks(int days) {
-        return new DateUnaryExp<>("plusWeeks", this, UnaryExp.toSeriesOp(ld -> ld.plusWeeks(days)));
+    default DateExp plusWeeks(int weeks) {
+        return DateExpScalar2.mapVal("plusWeeks", this, weeks, (ld, w) -> ld.plusWeeks(w));
     }
 
-    default DateExp plusMonths(int days) {
-        return new DateUnaryExp<>("plusMonths", this, UnaryExp.toSeriesOp(ld -> ld.plusMonths(days)));
+    default DateExp plusMonths(int months) {
+        return DateExpScalar2.mapVal("plusMonths", this, months, (ld, m) -> ld.plusMonths(m));
     }
 
-    default DateExp plusYears(int days) {
-        return new DateUnaryExp<>("plusYears", this, UnaryExp.toSeriesOp(ld -> ld.plusYears(days)));
+    default DateExp plusYears(int years) {
+        return DateExpScalar2.mapVal("plusYears", this, years, (ld, y) -> ld.plusYears(y));
     }
 }

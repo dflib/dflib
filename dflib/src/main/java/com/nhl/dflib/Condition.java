@@ -1,8 +1,8 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.exp.condition.AndCondition;
-import com.nhl.dflib.exp.condition.NotCondition;
-import com.nhl.dflib.exp.condition.OrCondition;
+import com.nhl.dflib.exp.bool.AndCondition;
+import com.nhl.dflib.exp.bool.NotCondition;
+import com.nhl.dflib.exp.bool.OrCondition;
 
 /**
  * A {@link Exp} that evaluates to a BooleanSeries indicating whether the condition is true for any given

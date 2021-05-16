@@ -4,17 +4,24 @@ import com.nhl.dflib.exp.*;
 import com.nhl.dflib.exp.agg.CountExp;
 import com.nhl.dflib.exp.agg.ExpAggregator;
 import com.nhl.dflib.exp.agg.StringAggregators;
-import com.nhl.dflib.exp.condition.*;
+import com.nhl.dflib.exp.bool.AndCondition;
+import com.nhl.dflib.exp.bool.BoolColumn;
+import com.nhl.dflib.exp.bool.OrCondition;
 import com.nhl.dflib.exp.datetime.DateColumn;
 import com.nhl.dflib.exp.filter.PreFilterFirstMatchExp;
 import com.nhl.dflib.exp.filter.PreFilteredCountExp;
 import com.nhl.dflib.exp.filter.PreFilteredExp;
 import com.nhl.dflib.exp.flow.IfExp;
 import com.nhl.dflib.exp.flow.IfNullExp;
+import com.nhl.dflib.exp.map.MapCondition1;
+import com.nhl.dflib.exp.map.MapCondition2;
+import com.nhl.dflib.exp.map.MapExp1;
+import com.nhl.dflib.exp.map.MapExp2;
 import com.nhl.dflib.exp.num.DecimalColumn;
 import com.nhl.dflib.exp.num.DoubleColumn;
 import com.nhl.dflib.exp.num.IntColumn;
 import com.nhl.dflib.exp.num.LongColumn;
+import com.nhl.dflib.exp.sort.ExpSorter;
 import com.nhl.dflib.exp.str.ConcatExp;
 import com.nhl.dflib.exp.str.StrColumn;
 
@@ -57,10 +64,7 @@ public interface Exp<T> {
         // (slightly improves comparisons with primitive series, and slows down comparisons with object-wrapped numbers).
         // So using the same "exp" for all values.
 
-        // TODO: explore possible performance improvement by not converting scalars to Series at all, and providing a
-        //   separate evaluation path instead.
-
-        return new SingleValueExp<>(value, type);
+        return new ConstExp<>(value, type);
     }
 
     /**
@@ -306,9 +310,8 @@ public interface Exp<T> {
      * Creates an expression that takes the result of this Exp and applies the provided Series transformation function.
      */
     default <R> Exp<R> map(Function<Series<T>, Series<R>> op) {
-        // TODO: Replacing R.class with Object.class is ugly and will not produce an expression that can be correctly
-        //  introspected
-        return new UnaryExp("map", Object.class, this, op);
+        // Exp type vagueness ALERT: this is one of those expressions where we can't infer the correct return type...
+        return MapExp1.map("map", (Class<R>) Object.class, this, op);
     }
 
     /**
@@ -319,9 +322,8 @@ public interface Exp<T> {
      * {@link #map(Function)} method instead.
      */
     default <R> Exp<R> mapVal(Function<T, R> op) {
-        // TODO: Replacing R.class with Object.class is ugly and will not produce an expression that can be correctly
-        //  introspected
-        return new UnaryExp("map", Object.class, this, UnaryExp.toSeriesOp(op));
+        // Exp type vagueness ALERT: this is one of those expressions where we can't infer the correct return type...
+        return MapExp1.mapVal("map", (Class<R>) Object.class, this, op);
     }
 
     /**
@@ -329,9 +331,8 @@ public interface Exp<T> {
      * transformation BiFunction.
      */
     default <S, R> Exp<R> map(Exp<S> other, BiFunction<Series<T>, Series<S>, Series<R>> op) {
-        // TODO: Replacing R.class with Object.class is ugly and will not produce an expression that can be correctly
-        //  introspected
-        return new BinaryExp("map", Object.class, this, other, op);
+        // Exp type vagueness ALERT: this is one of those expressions where we can't infer the correct return type...
+        return MapExp2.map("map", (Class<R>) Object.class, this, other, op);
     }
 
     /**
@@ -342,37 +343,36 @@ public interface Exp<T> {
      * required, consider using {@link #map(Exp, BiFunction)} method instead.
      */
     default <S, R> Exp<R> mapVal(Exp<S> other, BiFunction<T, S, R> op) {
-        // TODO: Replacing R.class with Object.class is ugly and will not produce an expression that can be correctly
-        //  introspected
-        return new BinaryExp("map", Object.class, this, other, BinaryExp.toSeriesOp(op));
+        // Exp type vagueness ALERT: this is one of those expressions where we can't infer the correct return type...
+        return MapExp2.mapVal("map", (Class<R>) Object.class, this, other, op);
     }
 
     default Condition eq(Exp<?> exp) {
-        return new BinaryCondition<>("eq", this, exp, Series::eq);
+        return new MapCondition2<>("eq", this, exp, Series::eq);
     }
 
     default Condition ne(Exp<?> exp) {
-        return new BinaryCondition<>("ne", this, exp, Series::ne);
+        return new MapCondition2<>("ne", this, exp, Series::ne);
     }
 
     default Condition eq(Object value) {
         return value != null
-                ? new BinaryCondition<>("eq", this, Exp.$val(value), Series::eq)
+                ? new MapCondition2<>("eq", this, Exp.$val(value), Series::eq)
                 : isNull();
     }
 
     default Condition ne(Object value) {
         return value != null
-                ? new BinaryCondition<>("ne", this, Exp.$val(value), Series::ne)
+                ? new MapCondition2<>("ne", this, Exp.$val(value), Series::ne)
                 : isNotNull();
     }
 
     default Condition isNull() {
-        return new UnaryCondition<>("isNull", this, Series::isNull);
+        return new MapCondition1<>("isNull", this, Series::isNull);
     }
 
     default Condition isNotNull() {
-        return new UnaryCondition<>("isNotNull", this, Series::isNotNull);
+        return new MapCondition1<>("isNotNull", this, Series::isNotNull);
     }
 
     /**

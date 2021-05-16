@@ -1,7 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.exp.UnaryExp;
-import com.nhl.dflib.exp.num.DecimalUnaryExp;
+import com.nhl.dflib.exp.num.DecimalExpScalar2;
 import com.nhl.dflib.exp.num.NumericExpFactory;
 
 import java.math.BigDecimal;
@@ -18,10 +17,10 @@ public interface DecimalExp extends NumExp<BigDecimal> {
     }
 
     /**
-     * Created a derived expression that guarantees specific scale for the BigDecimal result.
+     * Creates an expression that guarantees specific scale for the BigDecimal result of this expression.
      */
     default DecimalExp scale(int scale) {
-        return new DecimalUnaryExp<>("scale", this, UnaryExp.toSeriesOp(bd -> bd.setScale(scale, RoundingMode.HALF_UP)));
+        return DecimalExpScalar2.mapVal("scale", this, scale, (bd, s) -> bd.setScale(s, RoundingMode.HALF_UP));
     }
 
     // override super operations that return BigDecimal to return DecimalExp. This would allow caller to invoke
