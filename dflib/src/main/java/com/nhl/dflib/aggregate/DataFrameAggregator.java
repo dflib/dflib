@@ -24,6 +24,11 @@ public class DataFrameAggregator<T> implements Exp<T> {
     }
 
     @Override
+    public String toString() {
+        return getName();
+    }
+
+    @Override
     public Series<T> eval(DataFrame df) {
         T val = aggregator.apply(df);
         return new SingleValueSeries<>(val, 1);

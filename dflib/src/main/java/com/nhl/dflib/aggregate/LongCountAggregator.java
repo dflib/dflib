@@ -11,6 +11,11 @@ import com.nhl.dflib.series.SingleValueSeries;
 public class LongCountAggregator implements Exp<Long> {
 
     @Override
+    public String toString() {
+        return getName();
+    }
+
+    @Override
     public Series<Long> eval(DataFrame df) {
         long val = df.height();
 

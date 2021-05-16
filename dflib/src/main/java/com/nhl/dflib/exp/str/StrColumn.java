@@ -6,13 +6,13 @@ import com.nhl.dflib.exp.ColumnExp;
 /**
  * @since 0.11
  */
-public class StringColumn extends ColumnExp<String> implements StrExp {
+public class StrColumn extends ColumnExp<String> implements StrExp {
 
-    public StringColumn(String name) {
+    public StrColumn(String name) {
         super(name, String.class);
     }
 
-    public StringColumn(int position) {
+    public StrColumn(int position) {
         super(position, String.class);
     }
 }

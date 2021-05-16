@@ -24,6 +24,11 @@ public class UnaryExp<F, T> implements Exp<T> {
     }
 
     @Override
+    public String toString() {
+        return getName();
+    }
+
+    @Override
     public String getName() {
         return opName + exp.getName();
     }

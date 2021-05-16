@@ -17,6 +17,11 @@ public class CountExp implements Exp<Integer> {
     }
 
     @Override
+    public String toString() {
+        return getName();
+    }
+
+    @Override
     public Class<Integer> getType() {
         return Integer.class;
     }

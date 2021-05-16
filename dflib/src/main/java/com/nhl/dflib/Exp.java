@@ -16,7 +16,7 @@ import com.nhl.dflib.exp.num.DoubleColumn;
 import com.nhl.dflib.exp.num.IntColumn;
 import com.nhl.dflib.exp.num.LongColumn;
 import com.nhl.dflib.exp.str.ConcatExp;
-import com.nhl.dflib.exp.str.StringColumn;
+import com.nhl.dflib.exp.str.StrColumn;
 
 import java.util.List;
 import java.util.Objects;
@@ -95,14 +95,14 @@ public interface Exp<T> {
      * Returns an expression that evaluates to a named DataFrame String column.
      */
     static StrExp $str(String name) {
-        return new StringColumn(name);
+        return new StrColumn(name);
     }
 
     /**
      * Returns an expression that evaluates to a DataFrame String column at a given position.
      */
     static StrExp $str(int position) {
-        return new StringColumn(position);
+        return new StrColumn(position);
     }
 
     /**

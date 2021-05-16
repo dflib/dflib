@@ -21,6 +21,12 @@ public class PreFilteredExp<T> implements Exp<T> {
     }
 
     @Override
+    public String toString() {
+        return getName();
+    }
+
+
+    @Override
     public Class<T> getType() {
         return delegate.getType();
     }

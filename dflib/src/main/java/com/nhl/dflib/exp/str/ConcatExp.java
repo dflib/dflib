@@ -53,6 +53,11 @@ public class ConcatExp implements Exp<String> {
     }
 
     @Override
+    public String toString() {
+        return getName();
+    }
+
+    @Override
     public Class<String> getType() {
         return String.class;
     }

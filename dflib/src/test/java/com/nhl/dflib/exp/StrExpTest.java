@@ -13,7 +13,14 @@ import static org.mockito.Mockito.mock;
 public class StrExpTest {
 
     @Test
-    public void testReadColumn() {
+    public void testStrColumn_Named() {
+        StrExp e = $str("b");
+        assertEquals("b", e.getName(mock(DataFrame.class)));
+        assertEquals("c", e.as("c").getName(mock(DataFrame.class)));
+    }
+
+    @Test
+    public void testStrColumn_Eval() {
         StrExp exp = $str("b");
 
         DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
@@ -21,13 +28,6 @@ public class StrExpTest {
                 "4", "5", "6");
 
         new SeriesAsserts(exp.eval(df)).expectData("2", "5");
-    }
-
-    @Test
-    public void testNamed() {
-        StrExp e = $str("b");
-        assertEquals("b", e.getName(mock(DataFrame.class)));
-        assertEquals("c", e.as("c").getName(mock(DataFrame.class)));
     }
 
     @Test

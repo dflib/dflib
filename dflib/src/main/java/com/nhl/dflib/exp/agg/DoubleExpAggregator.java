@@ -51,4 +51,9 @@ public class DoubleExpAggregator<S> implements NumExp<Double> {
         double val = aggregator.apply(exp.eval(s));
         return new SingleValueSeries<>(val, 1);
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

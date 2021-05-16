@@ -21,6 +21,11 @@ public class IfNullExp<T> implements Exp<T> {
     }
 
     @Override
+    public String toString() {
+        return getName();
+    }
+
+    @Override
     public Class<T> getType() {
         return exp.getType();
     }

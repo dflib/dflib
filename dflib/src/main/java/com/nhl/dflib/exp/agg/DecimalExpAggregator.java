@@ -20,6 +20,11 @@ public class DecimalExpAggregator implements DecimalExp {
     }
 
     @Override
+    public String toString() {
+        return getName();
+    }
+
+    @Override
     public Class<BigDecimal> getType() {
         return BigDecimal.class;
     }

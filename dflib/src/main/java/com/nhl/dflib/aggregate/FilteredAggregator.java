@@ -18,6 +18,11 @@ public class FilteredAggregator<T> implements Exp<T> {
     }
 
     @Override
+    public String toString() {
+        return getName();
+    }
+
+    @Override
     public String getName() {
         return aggregator.getName();
     }

@@ -18,6 +18,11 @@ public class PreFilteredCountExp implements Exp<Integer> {
     }
 
     @Override
+    public String toString() {
+        return getName();
+    }
+
+    @Override
     public String getName() {
         return "count";
     }

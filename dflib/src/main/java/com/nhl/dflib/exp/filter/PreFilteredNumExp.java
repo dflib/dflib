@@ -41,4 +41,9 @@ public class PreFilteredNumExp<N extends Number> implements NumExp<N> {
     public Class<N> getType() {
         return delegate.getType();
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }
