@@ -41,6 +41,18 @@ public interface Exp<T> {
      */
     static <T> Exp<T> $val(T value) {
 
+        // TODO: in case this is called as "$val((T) null)", the type of the expression will not be the one the
+        //  caller expects
+
+        Class type = value != null ? value.getClass() : Object.class;
+        return $val(value, type);
+    }
+
+    /**
+     * Returns an expression that evaluates to a Series containing a single value.
+     */
+    static <T, V extends T> Exp<T> $val(V value, Class<T> type) {
+
         // note that wrapping the value in primitive-optimized series has only very small effects on performance
         // (slightly improves comparisons with primitive series, and slows down comparisons with object-wrapped numbers).
         // So using the same "exp" for all values.
@@ -48,11 +60,7 @@ public interface Exp<T> {
         // TODO: explore possible performance improvement by not converting scalars to Series at all, and providing a
         //   separate evaluation path instead.
 
-        return new SingleValueExp(
-                value,
-                // TODO: in case this is called as "$val((T) null)", the type of the expression will not be the one the
-                //  caller expects
-                value != null ? value.getClass() : Object.class);
+        return new SingleValueExp(value, type);
     }
 
     /**
