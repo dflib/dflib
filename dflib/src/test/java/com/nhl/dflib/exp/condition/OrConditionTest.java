@@ -4,11 +4,25 @@ import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.unit.BooleanSeriesAsserts;
 import org.junit.jupiter.api.Test;
 
+import static com.nhl.dflib.Exp.$bool;
+import static com.nhl.dflib.Exp.or;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class OrConditionTest {
+
+    @Test
+    public void testOr_Multiple() {
+        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+                false, false, false,
+                true, true, true,
+                true, false, false);
+
+        BooleanSeries s = or($bool("a"), $bool("b"), $bool("c")).eval(df);
+        new BooleanSeriesAsserts(s).expectData(false, true, true);
+    }
 
     @Test
     public void testFirstMatch_DataFrame() {

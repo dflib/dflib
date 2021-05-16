@@ -67,28 +67,28 @@ public interface Exp<T> {
      * Returns an expression that evaluates to a named DataFrame column.
      */
     static <T> Exp<T> $col(String name) {
-        return new ColumnExp(name, Object.class);
+        return new GenericColumn(name, Object.class);
     }
 
     /**
      * Returns an expression that evaluates to a DataFrame column at a given position
      */
     static <T> Exp<T> $col(int position) {
-        return new ColumnExp(position, Object.class);
+        return new GenericColumn(position, Object.class);
     }
 
     /**
      * Returns an expression that evaluates to a named DataFrame column.
      */
     static <T> Exp<T> $col(String name, Class<T> type) {
-        return new ColumnExp<>(name, type);
+        return new GenericColumn<>(name, type);
     }
 
     /**
      * Returns an expression that evaluates to a DataFrame column at a given position
      */
     static <T> Exp<T> $col(int position, Class<T> type) {
-        return new ColumnExp<>(position, type);
+        return new GenericColumn<>(position, type);
     }
 
     /**
@@ -165,11 +165,11 @@ public interface Exp<T> {
     //  that can have no nulls, and will internally convert all nulls to "false"..
     //  Perhaps we need a distinction between a "condition" and a "boolean value expression"?
     static Condition $bool(String name) {
-        return new BooleanColumn(name);
+        return new BoolColumn(name);
     }
 
     static Condition $bool(int position) {
-        return new BooleanColumn(position);
+        return new BoolColumn(position);
     }
 
     /**

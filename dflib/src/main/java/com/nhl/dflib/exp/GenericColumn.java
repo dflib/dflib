@@ -11,19 +11,19 @@ import java.util.Objects;
  *
  * @since 0.11
  */
-public class ColumnExp<T> implements Exp<T> {
+public class GenericColumn<T> implements Exp<T> {
 
     protected final int position;
     protected final String name;
     private final Class<T> type;
 
-    public ColumnExp(String name, Class<T> type) {
+    public GenericColumn(String name, Class<T> type) {
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
         this.position = -1;
     }
 
-    public ColumnExp(int position, Class<T> type) {
+    public GenericColumn(int position, Class<T> type) {
         if (position < 0) {
             throw new IllegalArgumentException("Position must nit be negative: " + position);
         }

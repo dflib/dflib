@@ -1,12 +1,12 @@
 package com.nhl.dflib.exp.str;
 
 import com.nhl.dflib.StrExp;
-import com.nhl.dflib.exp.ColumnExp;
+import com.nhl.dflib.exp.GenericColumn;
 
 /**
  * @since 0.11
  */
-public class StrColumn extends ColumnExp<String> implements StrExp {
+public class StrColumn extends GenericColumn<String> implements StrExp {
 
     public StrColumn(String name) {
         super(name, String.class);

@@ -43,12 +43,12 @@ public class BinaryExp<L, R, T> implements Exp<T> {
 
     @Override
     public String getName() {
-        return left.getName() + opName + right.getName();
+        return left.getName() + " " + opName + " " + right.getName();
     }
 
     @Override
     public String getName(DataFrame df) {
-        return left.getName(df) + opName + right.getName(df);
+        return left.getName(df) + " " + opName + " " + right.getName(df);
     }
 
     @Override
