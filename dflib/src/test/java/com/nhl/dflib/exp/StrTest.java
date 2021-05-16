@@ -60,4 +60,12 @@ public class StrTest {
         new BooleanSeriesAsserts(c.eval(s)).expectData(true, false, false, true);
     }
 
+    @Test
+    public void testMatches() {
+        Condition c = $str(0).matches("^a.*[0-9]$");
+
+        Series<String> s = Series.forData("a", "a9", "abcd0", "__d");
+        new BooleanSeriesAsserts(c.eval(s)).expectData(false, true, true, false);
+    }
+
 }
