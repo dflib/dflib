@@ -13,7 +13,7 @@ import static com.nhl.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class NumericExp_ArithmeticTest {
+public class NumExp_ArithmeticTest {
 
     @Test
     public void testAdd_LongLong() {

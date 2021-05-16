@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.exp.filter.PreFilteredNumericExp;
+import com.nhl.dflib.exp.filter.PreFilteredNumExp;
 import com.nhl.dflib.exp.num.NumericExpFactory;
 
 /**
@@ -9,13 +9,13 @@ import com.nhl.dflib.exp.num.NumericExpFactory;
  *
  * @since 0.11
  */
-public interface NumericExp<N extends Number> extends Exp<N> {
+public interface NumExp<N extends Number> extends Exp<N> {
 
-    default NumericExp<?> add(Exp<? extends Number> exp) {
+    default NumExp<?> add(Exp<? extends Number> exp) {
         return NumericExpFactory.factory(this, exp).add(this, exp);
     }
 
-    default NumericExp<?> add(Number val) {
+    default NumExp<?> add(Number val) {
         Exp<? extends Number> ve = Exp.$val(val);
         return NumericExpFactory.factory(this, ve).add(this, ve);
     }
@@ -23,14 +23,14 @@ public interface NumericExp<N extends Number> extends Exp<N> {
     /**
      * Performs subtraction operation between the values in two columns.
      */
-    default NumericExp<?> sub(Exp<? extends Number> exp) {
+    default NumExp<?> sub(Exp<? extends Number> exp) {
         return NumericExpFactory.factory(this, exp).sub(this, exp);
     }
 
     /**
      * Performs subtraction operation between a column and a scalar value.
      */
-    default NumericExp<?> sub(Number val) {
+    default NumExp<?> sub(Number val) {
         Exp<? extends Number> ve = Exp.$val(val);
         return NumericExpFactory.factory(this, ve).sub(this, ve);
     }
@@ -38,14 +38,14 @@ public interface NumericExp<N extends Number> extends Exp<N> {
     /**
      * Performs multiplication operation between the values in two columns.
      */
-    default NumericExp<?> mul(Exp<? extends Number> exp) {
+    default NumExp<?> mul(Exp<? extends Number> exp) {
         return NumericExpFactory.factory(this, exp).mul(this, exp);
     }
 
     /**
      * Performs multiplication operation between a column and a scalar value.
      */
-    default NumericExp<?> mul(Number val) {
+    default NumExp<?> mul(Number val) {
         Exp<? extends Number> ve = Exp.$val(val);
         return NumericExpFactory.factory(this, ve).mul(this, ve);
     }
@@ -53,23 +53,23 @@ public interface NumericExp<N extends Number> extends Exp<N> {
     /**
      * Performs a division operation between the values in two columns.
      */
-    default NumericExp<?> div(Exp<? extends Number> exp) {
+    default NumExp<?> div(Exp<? extends Number> exp) {
         return NumericExpFactory.factory(this, exp).div(this, exp);
     }
 
     /**
      * Performs a division operation between a column and a scalar value.
      */
-    default NumericExp<?> div(Number val) {
+    default NumExp<?> div(Number val) {
         Exp<? extends Number> ve = Exp.$val(val);
         return NumericExpFactory.factory(this, ve).div(this, ve);
     }
 
-    default NumericExp<?> mod(Exp<? extends Number> exp) {
+    default NumExp<?> mod(Exp<? extends Number> exp) {
         return NumericExpFactory.factory(this, exp).mod(this, exp);
     }
 
-    default NumericExp<?> mod(Number val) {
+    default NumExp<?> mod(Number val) {
         Exp<? extends Number> ve = Exp.$val(val);
         return NumericExpFactory.factory(this, ve).mod(this, ve);
     }
@@ -146,43 +146,43 @@ public interface NumericExp<N extends Number> extends Exp<N> {
         return NumericExpFactory.factory(this, ve).ge(this, ve);
     }
 
-    default NumericExp<?> sum() {
+    default NumExp<?> sum() {
         return NumericExpFactory.factory(this).sum(this);
     }
 
-    default NumericExp<?> sum(Condition filter) {
-        return new PreFilteredNumericExp<>(filter, sum());
+    default NumExp<?> sum(Condition filter) {
+        return new PreFilteredNumExp<>(filter, sum());
     }
 
-    default NumericExp<?> min() {
+    default NumExp<?> min() {
         return NumericExpFactory.factory(this).min(this);
     }
 
-    default NumericExp<?> min(Condition filter) {
-        return new PreFilteredNumericExp<>(filter, min());
+    default NumExp<?> min(Condition filter) {
+        return new PreFilteredNumExp<>(filter, min());
     }
 
-    default NumericExp<?> max() {
+    default NumExp<?> max() {
         return NumericExpFactory.factory(this).max(this);
     }
 
-    default NumericExp<?> max(Condition filter) {
-        return new PreFilteredNumericExp<>(filter, max());
+    default NumExp<?> max(Condition filter) {
+        return new PreFilteredNumExp<>(filter, max());
     }
 
-    default NumericExp<?> avg() {
+    default NumExp<?> avg() {
         return NumericExpFactory.factory(this).avg(this);
     }
 
-    default NumericExp<?> avg(Condition filter) {
-        return new PreFilteredNumericExp<>(filter, avg());
+    default NumExp<?> avg(Condition filter) {
+        return new PreFilteredNumExp<>(filter, avg());
     }
 
-    default NumericExp<?> median() {
+    default NumExp<?> median() {
         return NumericExpFactory.factory(this).median(this);
     }
 
-    default NumericExp<?> median(Condition filter) {
-        return new PreFilteredNumericExp<>(filter, median());
+    default NumExp<?> median(Condition filter) {
+        return new PreFilteredNumExp<>(filter, median());
     }
 }

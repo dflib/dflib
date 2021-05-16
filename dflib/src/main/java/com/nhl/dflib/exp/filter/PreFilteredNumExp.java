@@ -7,12 +7,12 @@ import com.nhl.dflib.*;
  *
  * @since 0.11
  */
-public class PreFilteredNumericExp<N extends Number> implements NumericExp<N> {
+public class PreFilteredNumExp<N extends Number> implements NumExp<N> {
 
     private final Condition filter;
     private final Exp<N> delegate;
 
-    public PreFilteredNumericExp(Condition filter, Exp<N> delegate) {
+    public PreFilteredNumExp(Condition filter, Exp<N> delegate) {
         this.filter = filter;
         this.delegate = delegate;
     }

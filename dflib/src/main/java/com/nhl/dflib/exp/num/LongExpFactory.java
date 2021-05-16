@@ -36,7 +36,7 @@ public class LongExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumericExp<?> add(Exp<? extends Number> left, Exp<? extends Number> right) {
+    public NumExp<?> add(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new LongBinaryExp("+",
                 cast(left),
                 cast(right),
@@ -45,7 +45,7 @@ public class LongExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumericExp<?> sub(Exp<? extends Number> left, Exp<? extends Number> right) {
+    public NumExp<?> sub(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new LongBinaryExp("-",
                 cast(left),
                 cast(right),
@@ -54,7 +54,7 @@ public class LongExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumericExp<?> mul(Exp<? extends Number> left, Exp<? extends Number> right) {
+    public NumExp<?> mul(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new LongBinaryExp("*",
                 cast(left),
                 cast(right),
@@ -63,7 +63,7 @@ public class LongExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumericExp<?> div(Exp<? extends Number> left, Exp<? extends Number> right) {
+    public NumExp<?> div(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new LongBinaryExp("/",
                 cast(left),
                 cast(right),
@@ -72,7 +72,7 @@ public class LongExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumericExp<?> mod(Exp<? extends Number> left, Exp<? extends Number> right) {
+    public NumExp<?> mod(Exp<? extends Number> left, Exp<? extends Number> right) {
         return new LongBinaryExp("%",
                 cast(left),
                 cast(right),
@@ -82,32 +82,32 @@ public class LongExpFactory extends NumericExpFactory {
 
 
     @Override
-    public DecimalExp castAsDecimal(NumericExp<?> exp) {
+    public DecimalExp castAsDecimal(NumExp<?> exp) {
         return new DecimalUnaryExp<>("castAsDecimal", cast(exp), UnaryExp.toSeriesOp(l -> BigDecimal.valueOf(l)));
     }
 
     @Override
-    public NumericExp<Long> sum(Exp<? extends Number> exp) {
+    public NumExp<Long> sum(Exp<? extends Number> exp) {
         return new LongExpAggregator<>(exp, LongAggregators::sum);
     }
 
     @Override
-    public NumericExp<?> min(Exp<? extends Number> exp) {
+    public NumExp<?> min(Exp<? extends Number> exp) {
         return new LongExpAggregator<>(exp, LongAggregators::min);
     }
 
     @Override
-    public NumericExp<?> max(Exp<? extends Number> exp) {
+    public NumExp<?> max(Exp<? extends Number> exp) {
         return new LongExpAggregator<>(exp, LongAggregators::max);
     }
 
     @Override
-    public NumericExp<?> avg(Exp<? extends Number> exp) {
+    public NumExp<?> avg(Exp<? extends Number> exp) {
         return new DoubleExpAggregator<>(exp, DoubleAggregators::avg);
     }
 
     @Override
-    public NumericExp<?> median(Exp<? extends Number> exp) {
+    public NumExp<?> median(Exp<? extends Number> exp) {
         return new DoubleExpAggregator<>(exp, DoubleAggregators::median);
     }
 

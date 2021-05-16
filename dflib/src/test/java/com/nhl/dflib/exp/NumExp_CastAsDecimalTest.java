@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 import static com.nhl.dflib.Exp.*;
 
-public class NumericExp_CastAsDecimalTest {
+public class NumExp_CastAsDecimalTest {
 
     @Test
     public void testDecimal() {

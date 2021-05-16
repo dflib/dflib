@@ -3,7 +3,7 @@ package com.nhl.dflib.exp.num;
 import com.nhl.dflib.Condition;
 import com.nhl.dflib.DecimalExp;
 import com.nhl.dflib.Exp;
-import com.nhl.dflib.NumericExp;
+import com.nhl.dflib.NumExp;
 import com.nhl.dflib.exp.BinaryExp;
 import com.nhl.dflib.exp.UnaryExp;
 import com.nhl.dflib.exp.agg.DecimalAggregators;
@@ -110,7 +110,7 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public DecimalExp castAsDecimal(NumericExp<?> exp) {
+    public DecimalExp castAsDecimal(NumExp<?> exp) {
         return cast(exp);
     }
 

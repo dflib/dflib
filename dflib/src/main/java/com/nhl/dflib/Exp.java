@@ -99,42 +99,42 @@ public interface Exp<T> {
     /**
      * Returns an expression that evaluates to a named DataFrame Integer column.
      */
-    static NumericExp<Integer> $int(String name) {
+    static NumExp<Integer> $int(String name) {
         return new IntColumn(name);
     }
 
     /**
      * Returns an expression that evaluates to a DataFrame Integer column at a given position.
      */
-    static NumericExp<Integer> $int(int position) {
+    static NumExp<Integer> $int(int position) {
         return new IntColumn(position);
     }
 
     /**
      * Returns an expression that evaluates to a named DataFrame Long column.
      */
-    static NumericExp<Long> $long(String name) {
+    static NumExp<Long> $long(String name) {
         return new LongColumn(name);
     }
 
     /**
      * Returns an expression that evaluates to a DataFrame Long column at a given position.
      */
-    static NumericExp<Long> $long(int position) {
+    static NumExp<Long> $long(int position) {
         return new LongColumn(position);
     }
 
     /**
      * Returns an expression that evaluates to a named DataFrame Double column.
      */
-    static NumericExp<Double> $double(String name) {
+    static NumExp<Double> $double(String name) {
         return new DoubleColumn(name);
     }
 
     /**
      * Returns an expression that evaluates to a DataFrame Double column at a given position.
      */
-    static NumericExp<Double> $double(int position) {
+    static NumExp<Double> $double(int position) {
         return new DoubleColumn(position);
     }
 

@@ -3,7 +3,7 @@ package com.nhl.dflib.exp.num;
 import com.nhl.dflib.Condition;
 import com.nhl.dflib.DecimalExp;
 import com.nhl.dflib.Exp;
-import com.nhl.dflib.NumericExp;
+import com.nhl.dflib.NumExp;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -60,7 +60,7 @@ public abstract class NumericExpFactory {
 
     /**
      * Provides direct access to the DecimalExpFactory, that can be used to return {@link DecimalExp} instead of
-     * {@link NumericExp}.
+     * {@link NumExp}.
      */
     public static DecimalExpFactory decimalFactory() {
         return decimalFactory;
@@ -112,27 +112,27 @@ public abstract class NumericExpFactory {
         return lr.compareTo(rr) < 0 ? left : right;
     }
 
-    public abstract NumericExp<?> add(Exp<? extends Number> left, Exp<? extends Number> right);
+    public abstract NumExp<?> add(Exp<? extends Number> left, Exp<? extends Number> right);
 
-    public abstract NumericExp<?> sub(Exp<? extends Number> left, Exp<? extends Number> right);
+    public abstract NumExp<?> sub(Exp<? extends Number> left, Exp<? extends Number> right);
 
-    public abstract NumericExp<?> mul(Exp<? extends Number> left, Exp<? extends Number> right);
+    public abstract NumExp<?> mul(Exp<? extends Number> left, Exp<? extends Number> right);
 
-    public abstract NumericExp<?> div(Exp<? extends Number> left, Exp<? extends Number> right);
+    public abstract NumExp<?> div(Exp<? extends Number> left, Exp<? extends Number> right);
 
-    public abstract NumericExp<?> mod(Exp<? extends Number> left, Exp<? extends Number> right);
+    public abstract NumExp<?> mod(Exp<? extends Number> left, Exp<? extends Number> right);
 
-    public abstract NumericExp<?> sum(Exp<? extends Number> exp);
+    public abstract NumExp<?> sum(Exp<? extends Number> exp);
 
-    public abstract NumericExp<?> min(Exp<? extends Number> exp);
+    public abstract NumExp<?> min(Exp<? extends Number> exp);
 
-    public abstract NumericExp<?> max(Exp<? extends Number> exp);
+    public abstract NumExp<?> max(Exp<? extends Number> exp);
 
-    public abstract NumericExp<?> avg(Exp<? extends Number> exp);
+    public abstract NumExp<?> avg(Exp<? extends Number> exp);
 
-    public abstract NumericExp<?> median(Exp<? extends Number> exp);
+    public abstract NumExp<?> median(Exp<? extends Number> exp);
 
-    public abstract DecimalExp castAsDecimal(NumericExp<?> exp);
+    public abstract DecimalExp castAsDecimal(NumExp<?> exp);
 
     public abstract Condition eq(Exp<? extends Number> left, Exp<? extends Number> right);
 

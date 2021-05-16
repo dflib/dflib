@@ -1,7 +1,7 @@
 package com.nhl.dflib.exp.agg;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.NumericExp;
+import com.nhl.dflib.NumExp;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.series.SingleValueSeries;
@@ -11,7 +11,7 @@ import java.util.function.Function;
 /**
  * @since 0.11
  */
-public class DoubleExpAggregator<S> implements NumericExp<Double> {
+public class DoubleExpAggregator<S> implements NumExp<Double> {
 
     private final Exp<S> exp;
     private final Function<Series<S>, Double> aggregator;

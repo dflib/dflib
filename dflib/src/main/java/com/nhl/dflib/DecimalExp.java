@@ -10,7 +10,7 @@ import java.math.RoundingMode;
 /**
  * @since 0.11
  */
-public interface DecimalExp extends NumericExp<BigDecimal> {
+public interface DecimalExp extends NumExp<BigDecimal> {
 
     @Override
     default DecimalExp castAsDecimal() {

@@ -1,7 +1,7 @@
 package com.nhl.dflib.exp.num;
 
 import com.nhl.dflib.DoubleSeries;
-import com.nhl.dflib.NumericExp;
+import com.nhl.dflib.NumExp;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.exp.BinaryExp;
@@ -12,7 +12,7 @@ import java.util.function.BinaryOperator;
 /**
  * @since 0.11
  */
-public class DoubleBinaryExp extends BinaryExp<Double, Double, Double> implements NumericExp<Double> {
+public class DoubleBinaryExp extends BinaryExp<Double, Double, Double> implements NumExp<Double> {
 
     private final BinaryOperator<DoubleSeries> primitiveOp;
 
