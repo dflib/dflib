@@ -4,7 +4,7 @@ import com.nhl.dflib.exp.filter.PreFilteredNumExp;
 import com.nhl.dflib.exp.num.NumericExpFactory;
 
 /**
- * An expression over any of the Java primitive or object numeric types. Provides various arithmetic, comparison and
+ * An expression applied to any Java primitive or object numeric columns. Provides various arithmetic, comparison and
  * statistical operations. Allows to combine arguments of different numeric types in a single expression.
  *
  * @since 0.11

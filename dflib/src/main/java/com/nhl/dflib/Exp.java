@@ -1,20 +1,21 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.exp.*;
-import com.nhl.dflib.exp.agg.StringAggregators;
 import com.nhl.dflib.exp.agg.CountExp;
 import com.nhl.dflib.exp.agg.ExpAggregator;
+import com.nhl.dflib.exp.agg.StringAggregators;
 import com.nhl.dflib.exp.condition.*;
+import com.nhl.dflib.exp.datetime.DateColumn;
 import com.nhl.dflib.exp.filter.PreFilterFirstMatchExp;
 import com.nhl.dflib.exp.filter.PreFilteredCountExp;
 import com.nhl.dflib.exp.filter.PreFilteredExp;
-import com.nhl.dflib.exp.str.ConcatExp;
 import com.nhl.dflib.exp.flow.IfExp;
 import com.nhl.dflib.exp.flow.IfNullExp;
 import com.nhl.dflib.exp.num.DecimalColumn;
 import com.nhl.dflib.exp.num.DoubleColumn;
 import com.nhl.dflib.exp.num.IntColumn;
 import com.nhl.dflib.exp.num.LongColumn;
+import com.nhl.dflib.exp.str.ConcatExp;
 import com.nhl.dflib.exp.str.StringColumn;
 
 import java.util.List;
@@ -146,7 +147,7 @@ public interface Exp<T> {
     }
 
     /**
-     * Returns an expression that evaluates to a DataFrame BigDecimal column at a given position.
+     * Returns an expression that evaluates to a BigDecimal column at a given position.
      */
     static DecimalExp $decimal(int position) {
         return new DecimalColumn(position);
@@ -161,6 +162,20 @@ public interface Exp<T> {
 
     static Condition $bool(int position) {
         return new BooleanColumn(position);
+    }
+
+    /**
+     * Returns an expression that evaluates to a named date column.
+     */
+    static DateExp $date(String name) {
+        return new DateColumn(name);
+    }
+
+    /**
+     * Returns an expression that evaluates to a date column at a given position.
+     */
+    static DateExp $date(int position) {
+        return new DateColumn(position);
     }
 
     static Condition or(Condition... conditions) {
