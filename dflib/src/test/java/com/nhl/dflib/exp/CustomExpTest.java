@@ -13,7 +13,7 @@ public class CustomExpTest {
     @Test
     public void testUnary() {
 
-        Exp<String> exp = $int("b").unary(s -> s.map(i -> "_" + i));
+        Exp<String> exp = $int("b").map(s -> s.map(i -> "_" + i));
 
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, 2,
@@ -25,7 +25,7 @@ public class CustomExpTest {
     @Test
     public void testUnaryVal() {
 
-        Exp<String> exp = $int("b").unaryVal(i -> "_" + i);
+        Exp<String> exp = $int("b").mapVal(i -> "_" + i);
 
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, 2,
@@ -38,7 +38,7 @@ public class CustomExpTest {
     @Test
     public void testBinary() {
 
-        Exp<Boolean> exp = $int("b").binary($int("a"), Series::eq);
+        Exp<Boolean> exp = $int("b").map($int("a"), Series::eq);
 
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, 2,
@@ -50,7 +50,7 @@ public class CustomExpTest {
     @Test
     public void testBinaryVal() {
 
-        Exp<Boolean> exp = $int("b").binaryVal($int("a"), Integer::equals);
+        Exp<Boolean> exp = $int("b").mapVal($int("a"), Integer::equals);
 
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, 2,

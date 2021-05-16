@@ -183,7 +183,7 @@ public class PivotBuilder {
                 Exp.$col(valueColumnName)
                         // and then pass the resulting Series (not DataFrame)
                         // to the column name-agnostic aggregator exp
-                        .unary(aggregator::eval)
+                        .map(aggregator::eval)
                         // restore the column name
                         .as(valueColumnName)
         );

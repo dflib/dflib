@@ -295,46 +295,48 @@ public interface Exp<T> {
     }
 
     /**
-     * Creates an expression based on this Exp and a custom Series transformation function.
+     * Creates an expression that takes the result of this Exp and applies the provided Series transformation function.
      */
-    default <R> Exp<R> unary(Function<Series<T>, Series<R>> op) {
+    default <R> Exp<R> map(Function<Series<T>, Series<R>> op) {
         // TODO: Replacing R.class with Object.class is ugly and will not produce an expression that can be correctly
         //  introspected
-        return new UnaryExp("custom", Object.class, this, op);
+        return new UnaryExp("map", Object.class, this, op);
     }
 
     /**
-     * Creates an expression based on this Exp and a custom value transformation function. Note that DFLib will
-     * only pass non-null values to the "op" function. Any source "null" values automatically evaluate to "null" result.
-     * This assumption makes writing transformation functions easier (and closer to how SQL operates). If special
-     * handling of nulls is required, consider using {@link #unary(Function)} method instead.
+     * Creates an expression that takes the result of this Exp and applies the provided value transformation function
+     * to each value. Note that DFLib will only pass non-null values to the "op" function. Any source "null" values
+     * automatically evaluate to "null" result. This assumption makes writing transformation functions easier
+     * (and closer to how SQL operates). If special handling of nulls is required, consider using
+     * {@link #map(Function)} method instead.
      */
-    default <R> Exp<R> unaryVal(Function<T, R> op) {
+    default <R> Exp<R> mapVal(Function<T, R> op) {
         // TODO: Replacing R.class with Object.class is ugly and will not produce an expression that can be correctly
         //  introspected
-        return new UnaryExp("custom", Object.class, this, UnaryExp.toSeriesOp(op));
+        return new UnaryExp("map", Object.class, this, UnaryExp.toSeriesOp(op));
     }
 
     /**
-     * Creates an expression based on this Exp, another Exp and a custom binary Series transformation function.
+     * Creates an expression that takes the results of this and another Exp and applies the provided Series
+     * transformation BiFunction.
      */
-    default <S, R> Exp<R> binary(Exp<S> other, BiFunction<Series<T>, Series<S>, Series<R>> op) {
+    default <S, R> Exp<R> map(Exp<S> other, BiFunction<Series<T>, Series<S>, Series<R>> op) {
         // TODO: Replacing R.class with Object.class is ugly and will not produce an expression that can be correctly
         //  introspected
-        return new BinaryExp("custom", Object.class, this, other, op);
+        return new BinaryExp("map", Object.class, this, other, op);
     }
 
     /**
-     * Creates an expression based on this Exp, another Exp, and a custom value transformation function. Note that
-     * DFLib will  only pass non-null values to the "op" function. Any source "null" values on either side of the
-     * expression automatically evaluate to "null" result. This assumption makes writing transformation functions
-     * easier (and closer to how SQL operates). If special handling of nulls is required, consider using
-     * {@link #binary(Exp, BiFunction)} method instead.
+     * Creates an expression that takes the results of this and another Exp and applies the provided value
+     * transformation BiFunction. Note that DFLib will only pass non-null values to the "op" function. Any source
+     * "null" values on either side of the expression automatically evaluate to "null" result. This assumption makes
+     * writing transformation functions easier (and closer to how SQL operates). If special handling of nulls is
+     * required, consider using {@link #map(Exp, BiFunction)} method instead.
      */
-    default <S, R> Exp<R> binaryVal(Exp<S> other, BiFunction<T, S, R> op) {
+    default <S, R> Exp<R> mapVal(Exp<S> other, BiFunction<T, S, R> op) {
         // TODO: Replacing R.class with Object.class is ugly and will not produce an expression that can be correctly
         //  introspected
-        return new BinaryExp("custom", Object.class, this, other, BinaryExp.toSeriesOp(op));
+        return new BinaryExp("map", Object.class, this, other, BinaryExp.toSeriesOp(op));
     }
 
     default Condition eq(Exp<?> exp) {
