@@ -5,9 +5,9 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.unit.BooleanSeriesAsserts;
 import org.junit.jupiter.api.Test;
 
-import static com.nhl.dflib.Exp.*;
+import static com.nhl.dflib.Exp.$col;
 
-public class String_ConditionTest {
+public class ConditionTest {
 
     @Test
     public void testIsNull() {
@@ -31,25 +31,5 @@ public class String_ConditionTest {
 
         BooleanSeries s = $col("a").isNotNull().eval(df);
         new BooleanSeriesAsserts(s).expectData(true, true, false, true);
-    }
-
-    @Test
-    public void testEq() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
-                "1", "1",
-                "4", "5");
-
-        BooleanSeries s = $col("b").eq($col("a")).eval(df);
-        new BooleanSeriesAsserts(s).expectData(true, false);
-    }
-
-    @Test
-    public void testNe() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
-                "1", "1",
-                "4", "5");
-
-        BooleanSeries s = $col("b").ne($col("a")).eval(df);
-        new BooleanSeriesAsserts(s).expectData(false, true);
     }
 }

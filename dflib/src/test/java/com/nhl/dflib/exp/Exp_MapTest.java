@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
 
 import static com.nhl.dflib.Exp.$int;
 
-public class CustomExpTest {
+public class Exp_MapTest {
 
     @Test
-    public void testUnary() {
+    public void testMap_Unary() {
 
         Exp<String> exp = $int("b").map(s -> s.map(i -> "_" + i));
 
@@ -23,7 +23,7 @@ public class CustomExpTest {
     }
 
     @Test
-    public void testUnaryVal() {
+    public void testMapVal_Unary() {
 
         Exp<String> exp = $int("b").mapVal(i -> "_" + i);
 
@@ -36,7 +36,7 @@ public class CustomExpTest {
     }
 
     @Test
-    public void testBinary() {
+    public void testMap_Binary() {
 
         Exp<Boolean> exp = $int("b").map($int("a"), Series::eq);
 
@@ -48,7 +48,7 @@ public class CustomExpTest {
     }
 
     @Test
-    public void testBinaryVal() {
+    public void testMapVal_Binary() {
 
         Exp<Boolean> exp = $int("b").mapVal($int("a"), Integer::equals);
 

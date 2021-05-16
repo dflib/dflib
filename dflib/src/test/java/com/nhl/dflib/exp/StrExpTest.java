@@ -1,7 +1,8 @@
 package com.nhl.dflib.exp;
 
-import com.nhl.dflib.*;
-import com.nhl.dflib.unit.BooleanSeriesAsserts;
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Exp;
+import com.nhl.dflib.StrExp;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +10,7 @@ import static com.nhl.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
-public class StrTest {
+public class StrExpTest {
 
     @Test
     public void testReadColumn() {
@@ -43,29 +44,4 @@ public class StrTest {
         new SeriesAsserts(exp1.eval(df)).expectData("21", "54", null, "8");
         new SeriesAsserts(exp2.eval(df)).expectData("_2]", "_5]", null, "_]");
     }
-
-    @Test
-    public void testStartsWith() {
-        Condition c = $str(0).startsWith("_");
-
-        Series<String> s = Series.forData("a", "_b", "c", "__d");
-        new BooleanSeriesAsserts(c.eval(s)).expectData(false, true, false, true);
-    }
-
-    @Test
-    public void testEndsWith() {
-        Condition c = $str(0).endsWith("_");
-
-        Series<String> s = Series.forData("a_", "_b", "c", "__d_");
-        new BooleanSeriesAsserts(c.eval(s)).expectData(true, false, false, true);
-    }
-
-    @Test
-    public void testMatches() {
-        Condition c = $str(0).matches("^a.*[0-9]$");
-
-        Series<String> s = Series.forData("a", "a9", "abcd0", "__d");
-        new BooleanSeriesAsserts(c.eval(s)).expectData(false, true, true, false);
-    }
-
 }

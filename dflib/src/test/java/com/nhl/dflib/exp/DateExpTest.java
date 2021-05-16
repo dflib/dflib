@@ -12,7 +12,7 @@ import static com.nhl.dflib.Exp.$date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
-public class DateTest {
+public class DateExpTest {
 
     @Test
     public void testReadColumn() {
