@@ -13,8 +13,8 @@ import java.util.Objects;
  */
 public class ColumnExp<T> implements Exp<T> {
 
-    private final int position;
-    private final String name;
+    protected final int position;
+    protected final String name;
     private final Class<T> type;
 
     public ColumnExp(String name, Class<T> type) {
@@ -45,7 +45,7 @@ public class ColumnExp<T> implements Exp<T> {
 
     @Override
     public String getName() {
-        return position >= 0 ? String.valueOf(position) : name;
+        return position >= 0 ? "$col(" + position + ")" : name;
     }
 
     @Override

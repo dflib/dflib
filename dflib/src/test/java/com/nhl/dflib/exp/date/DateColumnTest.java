@@ -1,4 +1,4 @@
-package com.nhl.dflib.exp;
+package com.nhl.dflib.exp.date;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DateExp;
@@ -12,10 +12,23 @@ import static com.nhl.dflib.Exp.$date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
-public class DateExpTest {
+public class DateColumnTest {
 
     @Test
-    public void testReadColumn() {
+    public void testName() {
+        assertEquals("a", $date("a").getName());
+        assertEquals("$date(0)", $date(0).getName());
+    }
+
+    @Test
+    public void testName_DataFrame() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
+        assertEquals("b", $date("b").getName(df));
+        assertEquals("a", $date(0).getName(df));
+    }
+
+    @Test
+    public void testEval() {
         DateExp exp = $date("b");
 
         DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
@@ -26,7 +39,7 @@ public class DateExpTest {
     }
 
     @Test
-    public void testNamed() {
+    public void testAs() {
         DateExp exp = $date("b");
         assertEquals("b", exp.getName(mock(DataFrame.class)));
         assertEquals("c", exp.as("c").getName(mock(DataFrame.class)));

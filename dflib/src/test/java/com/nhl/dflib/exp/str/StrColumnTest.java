@@ -1,14 +1,49 @@
-package com.nhl.dflib.exp;
+package com.nhl.dflib.exp.str;
 
 import com.nhl.dflib.Condition;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.StrExp;
 import com.nhl.dflib.unit.BooleanSeriesAsserts;
+import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import static com.nhl.dflib.Exp.$str;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 
-public class StrExp_ConditionTest {
+public class StrColumnTest {
+
+    @Test
+    public void testName() {
+        assertEquals("a", $str("a").getName());
+        assertEquals("$str(0)", $str(0).getName());
+    }
+
+    @Test
+    public void testName_DataFrame() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
+        assertEquals("b", $str("b").getName(df));
+        assertEquals("a", $str(0).getName(df));
+    }
+
+    @Test
+    public void testAs() {
+        StrExp e = $str("b");
+        assertEquals("b", e.getName(mock(DataFrame.class)));
+        assertEquals("c", e.as("c").getName(mock(DataFrame.class)));
+    }
+
+    @Test
+    public void testEval() {
+        StrExp exp = $str("b");
+
+        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+                "1", "2", "3",
+                "4", "5", "6");
+
+        new SeriesAsserts(exp.eval(df)).expectData("2", "5");
+    }
 
     @Test
     public void testEq() {

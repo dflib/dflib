@@ -17,4 +17,9 @@ public class DateColumn extends ColumnExp<LocalDate> implements DateExp {
     public DateColumn(int position) {
         super(position, LocalDate.class);
     }
+
+    @Override
+    public String getName() {
+        return position >= 0 ? "$date(" + position + ")" : name;
+    }
 }

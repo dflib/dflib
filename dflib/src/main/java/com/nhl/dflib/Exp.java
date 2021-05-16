@@ -60,7 +60,7 @@ public interface Exp<T> {
         // TODO: explore possible performance improvement by not converting scalars to Series at all, and providing a
         //   separate evaluation path instead.
 
-        return new SingleValueExp(value, type);
+        return new SingleValueExp<>(value, type);
     }
 
     /**
@@ -226,7 +226,7 @@ public interface Exp<T> {
      * A function that does String concatenation of its arguments. Arguments can be any mix of constant values and
      * expressions.
      */
-    static Exp<String> concat(Object... valuesOrExps) {
+    static StrExp concat(Object... valuesOrExps) {
         return ConcatExp.forObjects(valuesOrExps);
     }
 

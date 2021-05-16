@@ -17,4 +17,9 @@ public class DecimalColumn extends ColumnExp<BigDecimal> implements DecimalExp {
     public DecimalColumn(int position) {
         super(position, BigDecimal.class);
     }
+
+    @Override
+    public String getName() {
+        return position >= 0 ? "$decimal(" + position + ")" : name;
+    }
 }

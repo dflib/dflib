@@ -30,12 +30,12 @@ public class UnaryExp<F, T> implements Exp<T> {
 
     @Override
     public String getName() {
-        return opName + exp.getName();
+        return opName + "(" + exp.getName() + ")";
     }
 
     @Override
     public String getName(DataFrame df) {
-        return opName + exp.getName(df);
+        return opName + "(" + exp.getName(df) + ")";
     }
 
     @Override

@@ -15,4 +15,9 @@ public class LongColumn extends ColumnExp<Long> implements NumExp<Long> {
     public LongColumn(int position) {
         super(position, Long.class);
     }
+
+    @Override
+    public String getName() {
+        return position >= 0 ? "$long(" + position + ")" : name;
+    }
 }

@@ -1,0 +1,184 @@
+package com.nhl.dflib.exp.num;
+
+import com.nhl.dflib.Condition;
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.DecimalExp;
+import com.nhl.dflib.Series;
+import com.nhl.dflib.unit.BooleanSeriesAsserts;
+import com.nhl.dflib.unit.SeriesAsserts;
+import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
+
+import static com.nhl.dflib.Exp.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.mock;
+
+public class DecimalColumnTest {
+
+    @Test
+    public void testName() {
+        assertEquals("a", $decimal("a").getName());
+        assertEquals("$decimal(0)", $decimal(0).getName());
+    }
+
+    @Test
+    public void testName_DataFrame() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
+        assertEquals("b", $decimal("b").getName(df));
+        assertEquals("a", $decimal(0).getName(df));
+    }
+
+    @Test
+    public void testEval() {
+        DecimalExp exp = $decimal("b");
+
+        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+                "1",  new BigDecimal("2.0100287"), new BigDecimal("2.010029"),
+                "4", new BigDecimal("2.01001"), new BigDecimal("2.01003"));
+
+        new SeriesAsserts(exp.eval(df)).expectData(new BigDecimal("2.0100287"), new BigDecimal("2.01001"));
+    }
+
+    @Test
+    public void testAs() {
+        DecimalExp exp = $decimal("b");
+        assertEquals("b", exp.getName(mock(DataFrame.class)));
+        assertEquals("c", exp.as("c").getName(mock(DataFrame.class)));
+    }
+
+    @Test
+    public void testScale() {
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                new BigDecimal("2.0100287"),
+                new BigDecimal("4.5"));
+
+        Series<BigDecimal> s = $decimal("a").scale(2).eval(df);
+        new SeriesAsserts(s).expectData(new BigDecimal("2.01"), new BigDecimal("4.50"));
+    }
+
+    @Test
+    public void testCastAsDecimal() {
+        DecimalExp e = $decimal("a");
+        assertSame(e, e.castAsDecimal());
+    }
+
+    @Test
+    public void testCastAsDecimal_DataFrame() {
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                new BigDecimal("2.0100287"),
+                new BigDecimal("4.5"));
+
+        Series<BigDecimal> s = $decimal("a").castAsDecimal().eval(df);
+        new SeriesAsserts(s).expectData(new BigDecimal("2.0100287"), new BigDecimal("4.5"));
+    }
+
+    @Test
+    public void testAdd_IntPrimitive() {
+
+        DecimalExp exp = $decimal("a").add(1).scale(2);
+
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                new BigDecimal("2.0100287"),
+                new BigDecimal("4.5"));
+
+        new SeriesAsserts(exp.eval(df)).expectData(new BigDecimal("3.01"), new BigDecimal("5.50"));
+    }
+
+    @Test
+    public void testSum() {
+        DecimalExp exp = $decimal("a").sum().scale(2);
+
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                new BigDecimal("2.0100287"),
+                new BigDecimal("4.5"));
+
+        new SeriesAsserts(exp.eval(df)).expectData(new BigDecimal("6.51"));
+    }
+
+    @Test
+    public void testSum_Nulls() {
+        DecimalExp exp = $decimal("a").sum().scale(2);
+
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                new BigDecimal("2.0100287"),
+                null,
+                new BigDecimal("4.5"));
+
+        new SeriesAsserts(exp.eval(df)).expectData(new BigDecimal("6.51"));
+    }
+
+    @Test
+    public void testMedian_Odd() {
+        DecimalExp exp = $decimal(0).median().scale(3);
+
+        Series<BigDecimal> s = Series.forData(new BigDecimal("100.01"), new BigDecimal("55.5"), new BigDecimal("0."));
+
+        new SeriesAsserts(exp.eval(s)).expectData(new BigDecimal("55.500"));
+    }
+
+    @Test
+    public void testMedian_Even() {
+        DecimalExp exp = $decimal(0).median().scale(1);
+
+        Series<BigDecimal> s = Series.forData(
+                new BigDecimal("100.01"), new BigDecimal("55.5"), new BigDecimal("0."), new BigDecimal("5."));
+
+        new SeriesAsserts(exp.eval(s)).expectData(new BigDecimal("30.3"));
+    }
+
+    @Test
+    public void testMedian_Nulls() {
+        DecimalExp exp = $decimal(0).median().scale(3);
+
+        Series<BigDecimal> s = Series.forData(
+                new BigDecimal("100.01"), null, new BigDecimal("55.5"), new BigDecimal("0."));
+
+        new SeriesAsserts(exp.eval(s)).expectData(new BigDecimal("55.500"));
+    }
+
+    @Test
+    public void testAdd_Decimal() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                new BigDecimal("1.01"), new BigDecimal("2."),
+                new BigDecimal("3."), new BigDecimal("4.5"));
+
+        Series<? extends Number> s = $decimal("b").add($decimal("a")).eval(df);
+        new SeriesAsserts(s).expectData(new BigDecimal("3.01"), new BigDecimal("7.5"));
+    }
+
+    @Test
+    public void testDivide_Int() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                new BigDecimal("35"), 2,
+                new BigDecimal("3.3"), 3);
+
+        Series<? extends Number> s = $decimal("a").div($int("b")).eval(df);
+        new SeriesAsserts(s).expectData(new BigDecimal("17.5"), new BigDecimal("1.1"));
+    }
+
+    @Test
+    public void testDivide_Double() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                new BigDecimal("5.0"), 2.5,
+                new BigDecimal("3.3"), 3.33);
+
+        Series<? extends Number> s = $decimal("a").div($double("b")).eval(df);
+        new SeriesAsserts(s).expectData(new BigDecimal("2"), new BigDecimal("0.99099099099099096984560210653599037467692134485397"));
+    }
+
+
+    @Test
+    public void testGT_Decimal() {
+        Condition c = $decimal("a").gt($decimal("b"));
+
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                new BigDecimal("1.1"), new BigDecimal("1.0001"),
+                new BigDecimal("3"), new BigDecimal("3"),
+                new BigDecimal("1.1"), new BigDecimal("1.2"));
+
+        new BooleanSeriesAsserts(c.eval(df)).expectData(true, false, false);
+    }
+
+}

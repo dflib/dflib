@@ -32,12 +32,14 @@ public class SingleValueExp<T> implements Exp<T> {
 
     @Override
     public String getName() {
-        return "$val";
+        boolean quotes = value != null && !(value instanceof Number);
+        String unquoted = String.valueOf(value);
+        return quotes ? "'" + unquoted + "'" : unquoted;
     }
 
     @Override
     public String getName(DataFrame df) {
-        return "$val";
+        return getName();
     }
 
     @Override

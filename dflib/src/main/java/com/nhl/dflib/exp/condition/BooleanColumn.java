@@ -21,6 +21,11 @@ public class BooleanColumn extends ColumnExp<Boolean> implements Condition {
     }
 
     @Override
+    public String getName() {
+        return position >= 0 ? "$bool(" + position + ")" : name;
+    }
+
+    @Override
     public BooleanSeries eval(DataFrame df) {
         Series<Boolean> c = super.eval(df);
         return c instanceof BooleanSeries

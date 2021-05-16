@@ -1,10 +1,10 @@
 package com.nhl.dflib.exp.str;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Series;
 import com.nhl.dflib.Exp;
+import com.nhl.dflib.Series;
+import com.nhl.dflib.StrExp;
 import com.nhl.dflib.accumulator.ObjectAccumulator;
-import com.nhl.dflib.exp.SingleValueExp;
 import com.nhl.dflib.exp.UnaryExp;
 
 import java.util.Arrays;
@@ -16,7 +16,7 @@ import static com.nhl.dflib.Exp.$val;
  * @since 0.11
  */
 // TODO: generic NaryExp class?
-public class ConcatExp implements Exp<String> {
+public class ConcatExp implements StrExp {
 
     protected static Exp<String> cast(Exp<?> exp) {
         Class<?> t = exp.getType();
@@ -27,18 +27,18 @@ public class ConcatExp implements Exp<String> {
 
     private final Exp<String>[] args;
 
-    public static Exp<String> forObjects(Object... valuesOrExps) {
+    public static StrExp forObjects(Object... valuesOrExps) {
 
         int len = valuesOrExps.length;
         if (len == 0) {
             // No exps to concat means null result
-            return new SingleValueExp<>(null, String.class);
+            return new StrSingleValueExp(null);
         }
 
         for (int i = 0; i < len; i++) {
             if (valuesOrExps[i] == null) {
                 // Any null argument to concat will produce null CONCAT result regardless of other values
-                return new SingleValueExp<>(null, String.class);
+                return new StrSingleValueExp(null);
             }
         }
 
@@ -64,12 +64,12 @@ public class ConcatExp implements Exp<String> {
 
     @Override
     public String getName() {
-        return Arrays.stream(args).map(a -> a.getName()).collect(Collectors.joining(",", "concat(", ")"));
+        return Arrays.stream(args).map(a -> a.getName()).collect(Collectors.joining(", ", "concat(", ")"));
     }
 
     @Override
     public String getName(DataFrame df) {
-        return Arrays.stream(args).map(a -> a.getName(df)).collect(Collectors.joining(",", "concat(", ")"));
+        return Arrays.stream(args).map(a -> a.getName(df)).collect(Collectors.joining(", ", "concat(", ")"));
     }
 
     @Override

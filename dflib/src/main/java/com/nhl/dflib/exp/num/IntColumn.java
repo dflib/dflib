@@ -15,4 +15,10 @@ public class IntColumn extends ColumnExp<Integer> implements NumExp<Integer> {
     public IntColumn(int position) {
         super(position, Integer.class);
     }
+
+    @Override
+    public String getName() {
+        return position >= 0 ? "$int(" + position + ")" : name;
+    }
+
 }

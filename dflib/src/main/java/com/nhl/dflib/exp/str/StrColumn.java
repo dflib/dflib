@@ -15,4 +15,9 @@ public class StrColumn extends ColumnExp<String> implements StrExp {
     public StrColumn(int position) {
         super(position, String.class);
     }
+
+    @Override
+    public String getName() {
+        return position >= 0 ? "$str(" + position + ")" : name;
+    }
 }

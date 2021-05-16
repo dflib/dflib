@@ -15,4 +15,9 @@ public class DoubleColumn extends ColumnExp<Double> implements NumExp<Double> {
     public DoubleColumn(int position) {
         super(position, Double.class);
     }
+
+    @Override
+    public String getName() {
+        return position >= 0 ? "$double(" + position + ")" : name;
+    }
 }
