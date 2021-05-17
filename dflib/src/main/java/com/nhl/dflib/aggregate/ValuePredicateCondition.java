@@ -17,13 +17,13 @@ class ValuePredicateCondition<T> implements Condition {
     }
 
     @Override
-    public String getName() {
-        return exp.getName();
+    public String toQL() {
+        return exp.toQL();
     }
 
     @Override
-    public String getName(DataFrame df) {
-        return exp.getName(df);
+    public String toQL(DataFrame df) {
+        return exp.toQL(df);
     }
 
     @Override

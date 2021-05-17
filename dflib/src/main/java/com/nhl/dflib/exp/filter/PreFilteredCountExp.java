@@ -19,16 +19,16 @@ public class PreFilteredCountExp implements Exp<Integer> {
 
     @Override
     public String toString() {
-        return getName();
+        return toQL();
     }
 
     @Override
-    public String getName() {
+    public String toQL() {
         return "count";
     }
 
     @Override
-    public String getName(DataFrame df) {
+    public String toQL(DataFrame df) {
         return "count";
     }
 

@@ -24,7 +24,7 @@ public class IfExp<T> implements Exp<T> {
 
     @Override
     public String toString() {
-        return getName();
+        return toQL();
     }
 
     @Override
@@ -33,13 +33,13 @@ public class IfExp<T> implements Exp<T> {
     }
 
     @Override
-    public String getName() {
-        return "if(" + condition.getName() + "," + ifTrueExp.getName() + "," + ifFalseExp.getName() + ")";
+    public String toQL() {
+        return "if(" + condition.toQL() + "," + ifTrueExp.toQL() + "," + ifFalseExp.toQL() + ")";
     }
 
     @Override
-    public String getName(DataFrame df) {
-        return "if(" + condition.getName(df) + "," + ifTrueExp.getName(df) + "," + ifFalseExp.getName(df) + ")";
+    public String toQL(DataFrame df) {
+        return "if(" + condition.toQL(df) + "," + ifTrueExp.toQL(df) + "," + ifFalseExp.toQL(df) + ")";
     }
 
     @Override

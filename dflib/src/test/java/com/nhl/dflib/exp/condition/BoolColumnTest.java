@@ -13,16 +13,16 @@ import static org.mockito.Mockito.mock;
 public class BoolColumnTest {
 
     @Test
-    public void testName() {
-        assertEquals("a", $bool("a").getName());
-        assertEquals("$bool(0)", $bool(0).getName());
+    public void testGetColumnName() {
+        assertEquals("a", $bool("a").getColumnName());
+        assertEquals("$bool(0)", $bool(0).getColumnName());
     }
 
     @Test
     public void testName_DataFrame() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
-        assertEquals("b", $bool("b").getName(df));
-        assertEquals("a", $bool(0).getName(df));
+        assertEquals("b", $bool("b").getColumnName(df));
+        assertEquals("a", $bool(0).getColumnName(df));
     }
 
     @Test
@@ -36,7 +36,7 @@ public class BoolColumnTest {
     @Test
     public void testAs() {
         Condition c = $bool("b");
-        assertEquals("b", c.getName(mock(DataFrame.class)));
-        assertEquals("c", c.as("c").getName(mock(DataFrame.class)));
+        assertEquals("b", c.getColumnName(mock(DataFrame.class)));
+        assertEquals("c", c.as("c").getColumnName(mock(DataFrame.class)));
     }
 }

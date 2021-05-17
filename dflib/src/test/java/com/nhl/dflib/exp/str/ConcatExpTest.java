@@ -11,9 +11,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ConcatExpTest {
 
     @Test
-    public void testName() {
+    public void testToQL() {
         StrExp exp = concat($str("a"), $val("X"), $str(0));
-        assertEquals("concat(a, 'X', $str(0))", exp.getName());
+        assertEquals("concat(a, 'X', $str(0))", exp.toQL());
     }
 
     @Test

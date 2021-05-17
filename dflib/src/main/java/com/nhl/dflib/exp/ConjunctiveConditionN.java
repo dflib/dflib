@@ -30,17 +30,17 @@ public abstract class ConjunctiveConditionN implements Condition {
 
     @Override
     public String toString() {
-        return getName();
+        return toQL();
     }
 
     @Override
-    public String getName() {
-        return Arrays.stream(args).map(p -> p.getName()).collect(Collectors.joining(opName));
+    public String toQL() {
+        return Arrays.stream(args).map(p -> p.toQL()).collect(Collectors.joining(opName));
     }
 
     @Override
-    public String getName(DataFrame df) {
-        return Arrays.stream(args).map(p -> p.getName(df)).collect(Collectors.joining(opName));
+    public String toQL(DataFrame df) {
+        return Arrays.stream(args).map(p -> p.toQL(df)).collect(Collectors.joining(opName));
     }
 
     @Override

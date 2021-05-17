@@ -20,17 +20,17 @@ public abstract class ConjunctiveCondition1 implements Condition {
 
     @Override
     public String toString() {
-        return getName();
+        return toQL();
     }
 
     @Override
-    public String getName() {
-        return opName + "(" + arg.getName() + ")";
+    public String toQL() {
+        return opName + "(" + arg.toQL() + ")";
     }
 
     @Override
-    public String getName(DataFrame df) {
-        return opName + "(" + arg.getName(df) + ")";
+    public String toQL(DataFrame df) {
+        return opName + "(" + arg.toQL(df) + ")";
     }
 
     @Override

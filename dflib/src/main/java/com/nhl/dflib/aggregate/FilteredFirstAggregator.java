@@ -25,7 +25,7 @@ public class FilteredFirstAggregator<T> implements Exp<T> {
 
     @Override
     public String toString() {
-        return getName();
+        return toQL();
     }
 
     @Override
@@ -34,13 +34,13 @@ public class FilteredFirstAggregator<T> implements Exp<T> {
     }
 
     @Override
-    public String getName() {
-        return extractor.getName();
+    public String toQL() {
+        return extractor.toQL();
     }
 
     @Override
-    public String getName(DataFrame df) {
-        return extractor.getName(df);
+    public String toQL(DataFrame df) {
+        return extractor.toQL(df);
     }
 
     @Override

@@ -17,17 +17,17 @@ public abstract class Condition1<F> implements Condition {
 
     @Override
     public String toString() {
-        return getName();
+        return toQL();
     }
 
     @Override
-    public String getName() {
-        return opName + exp.getName();
+    public String toQL() {
+        return opName + exp.toQL();
     }
 
     @Override
-    public String getName(DataFrame df) {
-        return opName + exp.getName(df);
+    public String toQL(DataFrame df) {
+        return opName + exp.toQL(df);
     }
 
     @Override

@@ -19,17 +19,17 @@ public class FilteredAggregator<T> implements Exp<T> {
 
     @Override
     public String toString() {
-        return getName();
+        return toQL();
     }
 
     @Override
-    public String getName() {
-        return aggregator.getName();
+    public String toQL() {
+        return aggregator.toQL();
     }
 
     @Override
-    public String getName(DataFrame df) {
-        return aggregator.getName(df);
+    public String toQL(DataFrame df) {
+        return aggregator.toQL(df);
     }
 
     @Override

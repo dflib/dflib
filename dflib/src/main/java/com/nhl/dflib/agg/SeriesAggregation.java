@@ -17,7 +17,7 @@ public class SeriesAggregation {
 
         for (int i = 0; i < aggW; i++) {
             aggColumns[i] = aggregators[i].eval(series);
-            aggLabels[i] = aggregators[i].getName();
+            aggLabels[i] = aggregators[i].getColumnName();
         }
 
         return DataFrame.newFrame(Index.forLabelsDeduplicate(aggLabels)).columns(aggColumns);
@@ -57,7 +57,7 @@ public class SeriesAggregation {
             }
 
             aggColumns[i] = columnBuilder.toSeries();
-            aggLabels[i] = agg.getName();
+            aggLabels[i] = agg.getColumnName();
         }
 
         return DataFrame.newFrame(Index.forLabelsDeduplicate(aggLabels)).columns(aggColumns);

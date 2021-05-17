@@ -13,7 +13,10 @@ a similar, but distinct `Exp` based API, there are a few breaking changes:
   * `DataFrame.agg(..)` and `GroupBy.agg(..)` methods now take `Exp...` instead of `Aggregator...`. `Agregator` 
   static methods will still work, as they now return `Exp...`, and are internally implemented using the new API. 
   But the class itself is deprecated, so you should look into replacing it with the new expressions.
-
+    
+  * Resulting column name defaults now include the name of the aggreation function. E.g. previously `Aggregator.sumInt("a")`
+    would produce a column named "a". Now `$int("a").sum()` would produce a column named "sum(a)". To get back the old
+    names, you would need to specify them explicitly. E.g. $int("a").sum().as("a")`
 
 * [dflib #128](https://github.com/bootique/bootique-agrest/issues/128): Similar to #127 above, but for Series. There 
   are a few breaking changes:

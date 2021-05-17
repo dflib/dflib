@@ -18,16 +18,16 @@ import static org.mockito.Mockito.mock;
 public class DecimalColumnTest {
 
     @Test
-    public void testName() {
-        assertEquals("a", $decimal("a").getName());
-        assertEquals("$decimal(0)", $decimal(0).getName());
+    public void testGetColumnName() {
+        assertEquals("a", $decimal("a").getColumnName());
+        assertEquals("$decimal(0)", $decimal(0).getColumnName());
     }
 
     @Test
-    public void testName_DataFrame() {
+    public void testGetColumnName_DataFrame() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
-        assertEquals("b", $decimal("b").getName(df));
-        assertEquals("a", $decimal(0).getName(df));
+        assertEquals("b", $decimal("b").getColumnName(df));
+        assertEquals("a", $decimal(0).getColumnName(df));
     }
 
     @Test
@@ -44,8 +44,8 @@ public class DecimalColumnTest {
     @Test
     public void testAs() {
         DecimalExp exp = $decimal("b");
-        assertEquals("b", exp.getName(mock(DataFrame.class)));
-        assertEquals("c", exp.as("c").getName(mock(DataFrame.class)));
+        assertEquals("b", exp.getColumnName(mock(DataFrame.class)));
+        assertEquals("c", exp.as("c").getColumnName(mock(DataFrame.class)));
     }
 
     @Test

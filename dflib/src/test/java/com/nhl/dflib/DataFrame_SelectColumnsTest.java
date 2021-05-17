@@ -41,7 +41,7 @@ public class DataFrame_SelectColumnsTest {
                 2, "y")
                 .selectColumns($col("b"), $int("a").mul($int("a")));
 
-        new DataFrameAsserts(df, "b", "a*a")
+        new DataFrameAsserts(df, "b", "a * a")
                 .expectHeight(2)
                 .expectRow(0, "x", 1)
                 .expectRow(1, "y", 4);

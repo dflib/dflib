@@ -24,7 +24,7 @@ public class IfNullExp<T> implements Exp<T> {
 
     @Override
     public String toString() {
-        return getName();
+        return toQL();
     }
 
     @Override
@@ -33,13 +33,13 @@ public class IfNullExp<T> implements Exp<T> {
     }
 
     @Override
-    public String getName() {
-        return "ifnull(" + exp.getName() + "," + ifNullExp.getName() + ")";
+    public String toQL() {
+        return "ifnull(" + exp.toQL() + "," + ifNullExp.toQL() + ")";
     }
 
     @Override
-    public String getName(DataFrame df) {
-        return "ifnull(" + exp.getName(df) + "," + ifNullExp.getName(df) + ")";
+    public String toQL(DataFrame df) {
+        return "ifnull(" + exp.toQL(df) + "," + ifNullExp.toQL(df) + ")";
     }
 
     @Override

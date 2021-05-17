@@ -15,16 +15,16 @@ import static org.mockito.Mockito.mock;
 public class DateColumnTest {
 
     @Test
-    public void testName() {
-        assertEquals("a", $date("a").getName());
-        assertEquals("$date(0)", $date(0).getName());
+    public void testGetColumnName() {
+        assertEquals("a", $date("a").getColumnName());
+        assertEquals("$date(0)", $date(0).getColumnName());
     }
 
     @Test
-    public void testName_DataFrame() {
+    public void testGetColumnName_DataFrame() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
-        assertEquals("b", $date("b").getName(df));
-        assertEquals("a", $date(0).getName(df));
+        assertEquals("b", $date("b").getColumnName(df));
+        assertEquals("a", $date(0).getColumnName(df));
     }
 
     @Test
@@ -41,8 +41,8 @@ public class DateColumnTest {
     @Test
     public void testAs() {
         DateExp exp = $date("b");
-        assertEquals("b", exp.getName(mock(DataFrame.class)));
-        assertEquals("c", exp.as("c").getName(mock(DataFrame.class)));
+        assertEquals("b", exp.getColumnName(mock(DataFrame.class)));
+        assertEquals("c", exp.as("c").getColumnName(mock(DataFrame.class)));
     }
 
     @Test

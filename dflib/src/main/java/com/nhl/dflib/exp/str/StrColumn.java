@@ -17,7 +17,7 @@ public class StrColumn extends GenericColumn<String> implements StrExp {
     }
 
     @Override
-    public String getName() {
+    public String toQL() {
         return position >= 0 ? "$str(" + position + ")" : name;
     }
 }

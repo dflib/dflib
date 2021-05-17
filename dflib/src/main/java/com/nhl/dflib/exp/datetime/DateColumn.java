@@ -19,7 +19,7 @@ public class DateColumn extends GenericColumn<LocalDate> implements DateExp {
     }
 
     @Override
-    public String getName() {
+    public String toQL() {
         return position >= 0 ? "$date(" + position + ")" : name;
     }
 }

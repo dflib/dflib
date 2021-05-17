@@ -25,7 +25,7 @@ public abstract class ExpScalar2<L, R, T> implements Exp<T> {
 
     @Override
     public String toString() {
-        return getName();
+        return toQL();
     }
 
     @Override
@@ -34,13 +34,13 @@ public abstract class ExpScalar2<L, R, T> implements Exp<T> {
     }
 
     @Override
-    public String getName() {
-        return left.getName() + " " + opName + " " + right;
+    public String toQL() {
+        return left.toQL() + " " + opName + " " + right;
     }
 
     @Override
-    public String getName(DataFrame df) {
-        return left.getName(df) + " " + opName + " " + right;
+    public String toQL(DataFrame df) {
+        return left.toQL(df) + " " + opName + " " + right;
     }
 
     @Override

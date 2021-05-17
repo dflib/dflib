@@ -17,7 +17,7 @@ public class DoubleColumn extends GenericColumn<Double> implements NumExp<Double
     }
 
     @Override
-    public String getName() {
+    public String toQL() {
         return position >= 0 ? "$double(" + position + ")" : name;
     }
 }

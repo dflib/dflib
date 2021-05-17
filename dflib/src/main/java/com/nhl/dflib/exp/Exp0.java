@@ -20,17 +20,17 @@ public abstract class Exp0<T> implements Exp<T> {
 
     @Override
     public String toString() {
-        return getName();
+        return toQL();
     }
 
     @Override
-    public String getName() {
+    public String toQL() {
         return opName;
     }
 
     @Override
-    public String getName(DataFrame df) {
-        return getName();
+    public String toQL(DataFrame df) {
+        return toQL();
     }
 
     @Override

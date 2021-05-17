@@ -19,16 +19,16 @@ public abstract class ExpScalarCondition2<L, R> implements Condition {
 
     @Override
     public String toString() {
-        return getName();
+        return toQL();
     }
 
-    public String getName() {
-        return left.getName() + opName + right;
+    public String toQL() {
+        return left.toQL() + opName + right;
     }
 
     @Override
-    public String getName(DataFrame df) {
-        return left.getName(df) + opName + right;
+    public String toQL(DataFrame df) {
+        return left.toQL(df) + opName + right;
     }
 
     @Override

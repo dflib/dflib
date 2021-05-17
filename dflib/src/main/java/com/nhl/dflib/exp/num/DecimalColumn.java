@@ -19,7 +19,7 @@ public class DecimalColumn extends GenericColumn<BigDecimal> implements DecimalE
     }
 
     @Override
-    public String getName() {
+    public String toQL() {
         return position >= 0 ? "$decimal(" + position + ")" : name;
     }
 }

@@ -258,21 +258,39 @@ public interface Exp<T> {
     Class<T> getType();
 
     /**
-     * Returns the name of the column produced by this expression. Unlike {@link #getName(DataFrame)}, this form is
-     * "context-less" and is used for Series. The name can be changed by calling {@link #as(String)}.
+     * Returns a String label that should be used as the DataFrame column name for columns produced by this expression.
+     * The name can be changed by calling {@link #as(String)}.
      *
      * @see #as(String)
      */
-    String getName();
+    default String getColumnName() {
+        return toQL();
+    }
 
     /**
-     * Returns the name of the result Series in a context of the DataFrame argument. The name can be used to add the
-     * result as a column to a DataFrame. The name can be changed by calling {@link #as(String)}.
+     * Returns a String label that should be used as the DataFrame column name for columns produced by this expression.
+     * The name is resolved in a context of the DataFrame argument, allowing "positional" column references to be
+     * resolved to String names. The name can be changed by calling
+     * {@link #as(String)}.
      *
-     * @param df a DataFrame to use for column name lookup. Usually the same DataFrame as the one passed to {@link #eval(DataFrame)}
+     * @param df a DataFrame to use for column name lookup. Usually the same DataFrame as the one passed to
+     *           {@link #eval(DataFrame)}
      * @see #as(String)
      */
-    String getName(DataFrame df);
+    default String getColumnName(DataFrame df) {
+        return toQL(df);
+    }
+
+    /**
+     * Returns DFLib Query Language representation of this expression.
+     */
+    String toQL();
+
+    /**
+     * Returns DFLib Query Language representation of this expression, with column names resolved in the context of
+     * the provided DataFrame.
+     */
+    String toQL(DataFrame df);
 
     /**
      * Evaluates expression against the DataFrame argument, returning a Series result.

@@ -17,7 +17,7 @@ public class IntColumn extends GenericColumn<Integer> implements NumExp<Integer>
     }
 
     @Override
-    public String getName() {
+    public String toQL() {
         return position >= 0 ? "$int(" + position + ")" : name;
     }
 

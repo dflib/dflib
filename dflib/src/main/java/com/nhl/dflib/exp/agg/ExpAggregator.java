@@ -24,7 +24,7 @@ public class ExpAggregator<S, T> implements Exp<T> {
 
     @Override
     public String toString() {
-        return getName();
+        return toQL();
     }
 
     @Override
@@ -34,15 +34,15 @@ public class ExpAggregator<S, T> implements Exp<T> {
     }
 
     @Override
-    public String getName() {
+    public String toQL() {
         // TODO: wrap in the name of the aggregator function
-        return exp.getName();
+        return exp.toQL();
     }
 
     @Override
-    public String getName(DataFrame df) {
+    public String toQL(DataFrame df) {
         // TODO: wrap in the name of the aggregator function
-        return exp.getName(df);
+        return exp.toQL(df);
     }
 
     @Override

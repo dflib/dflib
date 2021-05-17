@@ -13,23 +13,23 @@ import static org.mockito.Mockito.mock;
 public class GenericColumnTest {
 
     @Test
-    public void testName() {
-        assertEquals("a", $col("a").getName());
-        assertEquals("$col(0)", $col(0).getName());
+    public void testGetColumnName() {
+        assertEquals("a", $col("a").getColumnName());
+        assertEquals("$col(0)", $col(0).getColumnName());
     }
 
     @Test
     public void testName_DataFrame() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
-        assertEquals("b", $col("b").getName(df));
-        assertEquals("a", $col(0).getName(df));
+        assertEquals("b", $col("b").getColumnName(df));
+        assertEquals("a", $col(0).getColumnName(df));
     }
 
     @Test
     public void testAs() {
         Exp<?> e = $col("b");
-        assertEquals("b", e.getName(mock(DataFrame.class)));
-        assertEquals("c", e.as("c").getName(mock(DataFrame.class)));
+        assertEquals("b", e.getColumnName(mock(DataFrame.class)));
+        assertEquals("c", e.as("c").getColumnName(mock(DataFrame.class)));
     }
 
     @Test

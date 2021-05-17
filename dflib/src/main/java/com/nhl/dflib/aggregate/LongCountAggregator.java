@@ -12,7 +12,7 @@ public class LongCountAggregator implements Exp<Long> {
 
     @Override
     public String toString() {
-        return getName();
+        return toQL();
     }
 
     @Override
@@ -32,12 +32,12 @@ public class LongCountAggregator implements Exp<Long> {
     }
 
     @Override
-    public String getName() {
+    public String toQL() {
         return "countLong";
     }
 
     @Override
-    public String getName(DataFrame df) {
+    public String toQL(DataFrame df) {
         return "countLong";
     }
 

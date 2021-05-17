@@ -19,7 +19,7 @@ public class DataFrameAggregation {
 
         for (int i = 0; i < aggW; i++) {
             aggColumns[i] = aggregators[i].eval(dataFrame);
-            aggLabels[i] = aggregators[i].getName(dataFrame);
+            aggLabels[i] = aggregators[i].getColumnName(dataFrame);
         }
 
         return DataFrame.newFrame(Index.forLabelsDeduplicate(aggLabels)).columns(aggColumns);
@@ -48,7 +48,7 @@ public class DataFrameAggregation {
             }
 
             aggColumns[i] = columnBuilder.toSeries();
-            aggLabels[i] = agg.getName(groupBy.getUngrouped());
+            aggLabels[i] = agg.getColumnName(groupBy.getUngrouped());
         }
 
         return DataFrame.newFrame(Index.forLabelsDeduplicate(aggLabels)).columns(aggColumns);

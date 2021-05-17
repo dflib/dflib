@@ -21,7 +21,7 @@ public class BoolColumn extends GenericColumn<Boolean> implements Condition {
     }
 
     @Override
-    public String getName() {
+    public String toQL() {
         return position >= 0 ? "$bool(" + position + ")" : name;
     }
 

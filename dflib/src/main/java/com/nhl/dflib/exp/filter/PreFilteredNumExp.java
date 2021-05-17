@@ -28,13 +28,13 @@ public class PreFilteredNumExp<N extends Number> implements NumExp<N> {
     }
 
     @Override
-    public String getName() {
-        return delegate.getName();
+    public String toQL() {
+        return delegate.toQL();
     }
 
     @Override
-    public String getName(DataFrame df) {
-        return delegate.getName(df);
+    public String toQL(DataFrame df) {
+        return delegate.toQL(df);
     }
 
     @Override
@@ -44,6 +44,6 @@ public class PreFilteredNumExp<N extends Number> implements NumExp<N> {
 
     @Override
     public String toString() {
-        return getName();
+        return toQL();
     }
 }

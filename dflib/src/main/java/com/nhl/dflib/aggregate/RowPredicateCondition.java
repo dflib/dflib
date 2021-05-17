@@ -16,12 +16,12 @@ class RowPredicateCondition implements Condition {
     }
 
     @Override
-    public String getName() {
+    public String toQL() {
         return "row_predicate";
     }
 
     @Override
-    public String getName(DataFrame df) {
+    public String toQL(DataFrame df) {
         return "row_predicate";
     }
 

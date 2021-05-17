@@ -21,7 +21,7 @@ public class DataFrame_AggTest {
                 Exp.count(),
                 Exp.$double("d").sum());
 
-        new DataFrameAsserts(agg, "a", "count", "d")
+        new DataFrameAsserts(agg, "sum(a)", "count", "sum(d)")
                 .expectHeight(1)
                 .expectRow(0, 3L, 3, 3.501);
     }
@@ -49,7 +49,7 @@ public class DataFrame_AggTest {
                 Exp.$int("a").sum(),
                 Exp.$long(1).sum());
 
-        new DataFrameAsserts(agg, "a", "b")
+        new DataFrameAsserts(agg, "sum(a)", "sum(b)")
                 .expectHeight(1)
                 .expectRow(0, 0, 6L);
     }
@@ -65,7 +65,7 @@ public class DataFrame_AggTest {
                 Exp.$int("a").min(),
                 Exp.$int("a").max());
 
-        new DataFrameAsserts(agg, "a", "a_")
+        new DataFrameAsserts(agg, "min(a)", "max(a)")
                 .expectHeight(1)
                 .expectRow(0, -1, 8);
     }
@@ -123,7 +123,7 @@ public class DataFrame_AggTest {
                 Exp.$int("a").avg(),
                 Exp.$double(1).avg());
 
-        new DataFrameAsserts(agg, "a", "b")
+        new DataFrameAsserts(agg, "avg(a)", "avg(b)")
                 .expectHeight(1)
                 .expectRow(0, 0.5, 29.75);
     }
@@ -139,7 +139,7 @@ public class DataFrame_AggTest {
                 Exp.$int("a").median(),
                 Exp.$double(1).median());
 
-        new DataFrameAsserts(agg, "a", "b")
+        new DataFrameAsserts(agg, "median(a)", "median(b)")
                 .expectHeight(1)
                 .expectRow(0, 1., 55.5);
     }
@@ -156,7 +156,7 @@ public class DataFrame_AggTest {
                 Exp.$int("a").median(),
                 Exp.$double(1).median());
 
-        new DataFrameAsserts(agg, "a", "b")
+        new DataFrameAsserts(agg, "median(a)", "median(b)")
                 .expectHeight(1)
                 .expectRow(0, 2., 30.25);
     }
@@ -169,7 +169,7 @@ public class DataFrame_AggTest {
                 Exp.$int("a").median(),
                 Exp.$double(1).median());
 
-        new DataFrameAsserts(agg, "a", "b")
+        new DataFrameAsserts(agg, "median(a)", "median(b)")
                 .expectHeight(1)
                 .expectRow(0, 0., 0.);
     }
@@ -182,7 +182,7 @@ public class DataFrame_AggTest {
                 Exp.$int("a").median(),
                 Exp.$int(1).median());
 
-        new DataFrameAsserts(agg, "a", "b")
+        new DataFrameAsserts(agg, "median(a)", "median(b)")
                 .expectHeight(1)
                 .expectRow(0, 1., 100.);
     }
@@ -199,7 +199,7 @@ public class DataFrame_AggTest {
                 Exp.$int("a").median(),
                 Exp.$double(1).median());
 
-        new DataFrameAsserts(agg, "a", "b")
+        new DataFrameAsserts(agg, "median(a)", "median(b)")
                 .expectHeight(1)
                 .expectRow(0, 1., 5.);
     }

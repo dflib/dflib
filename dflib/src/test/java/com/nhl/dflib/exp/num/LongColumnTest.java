@@ -16,23 +16,23 @@ import static org.mockito.Mockito.mock;
 public class LongColumnTest {
 
     @Test
-    public void testName() {
-        assertEquals("a", $long("a").getName());
-        assertEquals("$long(0)", $long(0).getName());
+    public void testGetColumnName() {
+        assertEquals("a", $long("a").getColumnName());
+        assertEquals("$long(0)", $long(0).getColumnName());
     }
 
     @Test
-    public void testName_DataFrame() {
+    public void testGetColumnName_DataFrame() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
-        assertEquals("b", $long("b").getName(df));
-        assertEquals("a", $long(0).getName(df));
+        assertEquals("b", $long("b").getColumnName(df));
+        assertEquals("a", $long(0).getColumnName(df));
     }
 
     @Test
     public void testAs() {
         NumExp<Long> e = $long("b");
-        assertEquals("b", e.getName(mock(DataFrame.class)));
-        assertEquals("c", e.as("c").getName(mock(DataFrame.class)));
+        assertEquals("b", e.getColumnName(mock(DataFrame.class)));
+        assertEquals("c", e.as("c").getColumnName(mock(DataFrame.class)));
     }
 
     @Test

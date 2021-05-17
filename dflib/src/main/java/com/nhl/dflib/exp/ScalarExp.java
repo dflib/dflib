@@ -23,7 +23,7 @@ public abstract class ScalarExp<T> implements Exp<T> {
 
     @Override
     public String toString() {
-        return getName();
+        return toQL();
     }
 
     @Override
@@ -32,15 +32,15 @@ public abstract class ScalarExp<T> implements Exp<T> {
     }
 
     @Override
-    public String getName() {
+    public String toQL() {
         boolean quotes = value != null && !(value instanceof Number);
         String unquoted = String.valueOf(value);
         return quotes ? "'" + unquoted + "'" : unquoted;
     }
 
     @Override
-    public String getName(DataFrame df) {
-        return getName();
+    public String toQL(DataFrame df) {
+        return toQL();
     }
 
     @Override

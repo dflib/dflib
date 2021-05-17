@@ -19,16 +19,16 @@ public abstract class Condition2<L, R> implements Condition {
 
     @Override
     public String toString() {
-        return getName();
+        return toQL();
     }
 
-    public String getName() {
-        return left.getName() + opName + right.getName();
+    public String toQL() {
+        return left.toQL() + opName + right.toQL();
     }
 
     @Override
-    public String getName(DataFrame df) {
-        return left.getName(df) + opName + right.getName(df);
+    public String toQL(DataFrame df) {
+        return left.toQL(df) + opName + right.toQL(df);
     }
 
     @Override

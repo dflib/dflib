@@ -21,7 +21,7 @@ public class DataFrame_AggFilteredTest {
                 // filter is applied to column 1, sum is applied to column 0
                 Exp.$int("a").sum(Exp.$int("b").mod(2).eq(1)));
 
-        new DataFrameAsserts(agg, "b", "a")
+        new DataFrameAsserts(agg, "sum(b)", "sum(a)")
                 .expectHeight(1)
                 .expectRow(0, 11, -4);
     }
@@ -40,7 +40,7 @@ public class DataFrame_AggFilteredTest {
                 // filter is applied to column 1, sum is applied to column 0
                 Exp.$long("a").sum(Exp.$int("b").mod(2).eq(1)));
 
-        new DataFrameAsserts(agg, "b", "a")
+        new DataFrameAsserts(agg, "sum(b)", "sum(a)")
                 .expectHeight(1)
                 .expectRow(0, 11L, -4L);
     }
@@ -60,10 +60,10 @@ public class DataFrame_AggFilteredTest {
                 // filter is applied to column 1, sum is applied to column 0
                 Exp.$double("a").sum(Exp.$double("b").gt(5)));
 
-        new DataFrameAsserts(agg, "b", "a").expectHeight(1);
+        new DataFrameAsserts(agg, "sum(b)", "sum(a)").expectHeight(1);
 
-        assertEquals(14.1, (Double) agg.getColumn("b").get(0), 0.000000001);
-        assertEquals(5.95, (Double) agg.getColumn("a").get(0), 0.000000001);
+        assertEquals(14.1, (Double) agg.getColumn("sum(b)").get(0), 0.000000001);
+        assertEquals(5.95, (Double) agg.getColumn("sum(a)").get(0), 0.000000001);
     }
 
     @Test
@@ -131,7 +131,7 @@ public class DataFrame_AggFilteredTest {
                 Exp.$long("a").min(Exp.$long("b").mod(2).eq(1L))
         );
 
-        new DataFrameAsserts(agg, "b", "b_", "a", "a_")
+        new DataFrameAsserts(agg, "max(b)", "min(b)", "max(a)", "min(a)")
                 .expectHeight(1)
                 .expectRow(0, 4L, 2L, 1L, -1L);
     }
@@ -151,7 +151,7 @@ public class DataFrame_AggFilteredTest {
                 Exp.$int("a").min(Exp.$int("b").mod(2).eq(1))
         );
 
-        new DataFrameAsserts(agg, "b", "b_", "a", "a_")
+        new DataFrameAsserts(agg, "max(b)", "min(b)", "max(a)", "min(a)")
                 .expectHeight(1)
                 .expectRow(0, 4, 2, 1, -1);
     }
@@ -171,7 +171,7 @@ public class DataFrame_AggFilteredTest {
                 Exp.$double("a").min(Exp.$double("b").gt(5))
         );
 
-        new DataFrameAsserts(agg, "b", "b_", "a", "a_")
+        new DataFrameAsserts(agg, "max(b)", "min(b)", "max(a)", "min(a)")
                 .expectHeight(1)
                 .expectRow(0, 15.7, 2.0, 6.5, -1.2);
     }
@@ -187,7 +187,7 @@ public class DataFrame_AggFilteredTest {
                 Exp.$double("a").avg(Exp.$int(0).ne(5)),
                 Exp.$double(1).avg(Exp.$int(0).ne(5)));
 
-        new DataFrameAsserts(agg, "a", "b")
+        new DataFrameAsserts(agg, "avg(a)", "avg(b)")
                 .expectHeight(1)
                 .expectRow(0, 0.5, 29.75);
     }

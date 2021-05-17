@@ -17,7 +17,7 @@ public class LongColumn extends GenericColumn<Long> implements NumExp<Long> {
     }
 
     @Override
-    public String getName() {
+    public String toQL() {
         return position >= 0 ? "$long(" + position + ")" : name;
     }
 }
