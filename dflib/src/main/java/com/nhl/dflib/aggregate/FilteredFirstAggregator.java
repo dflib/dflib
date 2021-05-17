@@ -34,6 +34,16 @@ public class FilteredFirstAggregator<T> implements Exp<T> {
     }
 
     @Override
+    public String getColumnName(DataFrame df) {
+        return extractor.getColumnName(df);
+    }
+
+    @Override
+    public String getColumnName() {
+        return extractor.getColumnName();
+    }
+
+    @Override
     public String toQL() {
         return extractor.toQL();
     }

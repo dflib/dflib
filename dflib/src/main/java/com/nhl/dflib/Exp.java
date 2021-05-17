@@ -264,6 +264,8 @@ public interface Exp<T> {
      * @see #as(String)
      */
     default String getColumnName() {
+        // most expressions don't have an explicit notion of column name, so by default they would produce a QL
+        // String that can be used for naming
         return toQL();
     }
 
@@ -278,6 +280,8 @@ public interface Exp<T> {
      * @see #as(String)
      */
     default String getColumnName(DataFrame df) {
+        // most expressions don't have an explicit notion of column name, so by default they would produce a QL
+        // String that can be used for naming
         return toQL(df);
     }
 

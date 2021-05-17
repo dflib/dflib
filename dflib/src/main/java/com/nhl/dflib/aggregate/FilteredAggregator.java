@@ -23,6 +23,16 @@ public class FilteredAggregator<T> implements Exp<T> {
     }
 
     @Override
+    public String getColumnName() {
+        return aggregator.getColumnName();
+    }
+
+    @Override
+    public String getColumnName(DataFrame df) {
+        return aggregator.getColumnName(df);
+    }
+
+    @Override
     public String toQL() {
         return aggregator.toQL();
     }
