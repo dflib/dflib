@@ -68,27 +68,27 @@ public class LongExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<Long> sum(Exp<? extends Number> exp) {
-        return new LongExpAggregator<>(exp, LongAggregators::sum);
+        return new LongExpAggregator<>("sum", exp, LongAggregators::sum);
     }
 
     @Override
     public NumExp<?> min(Exp<? extends Number> exp) {
-        return new LongExpAggregator<>(exp, LongAggregators::min);
+        return new LongExpAggregator<>("min", exp, LongAggregators::min);
     }
 
     @Override
     public NumExp<?> max(Exp<? extends Number> exp) {
-        return new LongExpAggregator<>(exp, LongAggregators::max);
+        return new LongExpAggregator<>("max", exp, LongAggregators::max);
     }
 
     @Override
     public NumExp<?> avg(Exp<? extends Number> exp) {
-        return new DoubleExpAggregator<>(exp, DoubleAggregators::avg);
+        return new DoubleExpAggregator<>("avg", exp, DoubleAggregators::avg);
     }
 
     @Override
     public NumExp<?> median(Exp<? extends Number> exp) {
-        return new DoubleExpAggregator<>(exp, DoubleAggregators::median);
+        return new DoubleExpAggregator<>("median", exp, DoubleAggregators::median);
     }
 
     @Override

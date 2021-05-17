@@ -8,9 +8,9 @@ import java.util.Objects;
 /**
  * @since 0.11
  */
-public class RenamedExp<T> extends ExpScalar2<T, String, T> {
+public class AsExp<T> extends ExpScalar2<T, String, T> {
 
-    public RenamedExp(String name, Exp<T> delegate) {
+    public AsExp(String name, Exp<T> delegate) {
         super("as", delegate.getType(), delegate, name);
     }
 
@@ -21,6 +21,6 @@ public class RenamedExp<T> extends ExpScalar2<T, String, T> {
 
     @Override
     public Exp<T> as(String name) {
-        return Objects.equals(name, this.opName) ? this : new RenamedExp<>(name, left);
+        return Objects.equals(name, this.opName) ? this : new AsExp<>(name, left);
     }
 }

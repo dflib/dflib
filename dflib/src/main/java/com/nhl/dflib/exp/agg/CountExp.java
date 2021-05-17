@@ -1,14 +1,15 @@
 package com.nhl.dflib.exp.agg;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.NumExp;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.Exp;
+import com.nhl.dflib.exp.Exp0;
 import com.nhl.dflib.series.SingleValueSeries;
 
 /**
  * @since 0.11
  */
-public class CountExp implements Exp<Integer> {
+public class CountExp extends Exp0<Integer> implements NumExp<Integer> {
 
     private static final CountExp instance = new CountExp();
 
@@ -16,24 +17,8 @@ public class CountExp implements Exp<Integer> {
         return instance;
     }
 
-    @Override
-    public String toString() {
-        return getName();
-    }
-
-    @Override
-    public Class<Integer> getType() {
-        return Integer.class;
-    }
-
-    @Override
-    public String getName() {
-        return "count";
-    }
-
-    @Override
-    public String getName(DataFrame df) {
-        return "count";
+    public CountExp() {
+        super("count", Integer.class);
     }
 
     @Override

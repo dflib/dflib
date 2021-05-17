@@ -67,27 +67,27 @@ public class IntExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<Integer> sum(Exp<? extends Number> exp) {
-        return new IntExpAggregator<>(exp, IntAggregators::sum);
+        return new IntExpAggregator<>("sum", exp, IntAggregators::sum);
     }
 
     @Override
     public NumExp<?> min(Exp<? extends Number> exp) {
-        return new IntExpAggregator<>(exp, IntAggregators::min);
+        return new IntExpAggregator<>("min", exp, IntAggregators::min);
     }
 
     @Override
     public NumExp<?> max(Exp<? extends Number> exp) {
-        return new IntExpAggregator<>(exp, IntAggregators::max);
+        return new IntExpAggregator<>("max", exp, IntAggregators::max);
     }
 
     @Override
     public NumExp<?> avg(Exp<? extends Number> exp) {
-        return new DoubleExpAggregator<>(exp, DoubleAggregators::avg);
+        return new DoubleExpAggregator<>("avg", exp, DoubleAggregators::avg);
     }
 
     @Override
     public NumExp<?> median(Exp<? extends Number> exp) {
-        return new DoubleExpAggregator<>(exp, DoubleAggregators::median);
+        return new DoubleExpAggregator<>("median", exp, DoubleAggregators::median);
     }
 
     @Override

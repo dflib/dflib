@@ -303,7 +303,7 @@ public interface Exp<T> {
      */
     default Exp<T> as(String name) {
         Objects.requireNonNull(name, "Null 'name'");
-        return new RenamedExp<>(name, this);
+        return new AsExp<>(name, this);
     }
 
     /**
@@ -348,31 +348,31 @@ public interface Exp<T> {
     }
 
     default Condition eq(Exp<?> exp) {
-        return new MapCondition2<>("eq", this, exp, Series::eq);
+        return MapCondition2.map("eq", this, exp, Series::eq);
     }
 
     default Condition ne(Exp<?> exp) {
-        return new MapCondition2<>("ne", this, exp, Series::ne);
+        return MapCondition2.map("ne", this, exp, Series::ne);
     }
 
     default Condition eq(Object value) {
         return value != null
-                ? new MapCondition2<>("eq", this, Exp.$val(value), Series::eq)
+                ? eq(Exp.$val(value))
                 : isNull();
     }
 
     default Condition ne(Object value) {
         return value != null
-                ? new MapCondition2<>("ne", this, Exp.$val(value), Series::ne)
+                ? ne(Exp.$val(value))
                 : isNotNull();
     }
 
     default Condition isNull() {
-        return new MapCondition1<>("isNull", this, Series::isNull);
+        return MapCondition1.map("isNull", this, Series::isNull);
     }
 
     default Condition isNotNull() {
-        return new MapCondition1<>("isNotNull", this, Series::isNotNull);
+        return MapCondition1.map("isNotNull", this, Series::isNotNull);
     }
 
     /**

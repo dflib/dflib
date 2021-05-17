@@ -1,9 +1,9 @@
 package com.nhl.dflib.exp.agg;
 
-import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Exp;
 import com.nhl.dflib.NumExp;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.Exp;
+import com.nhl.dflib.exp.Exp1;
 import com.nhl.dflib.series.SingleValueSeries;
 
 import java.util.function.Function;
@@ -11,47 +11,22 @@ import java.util.function.Function;
 /**
  * @since 0.11
  */
-public class IntExpAggregator<S> implements NumExp<Integer> {
+public class IntExpAggregator<F> extends Exp1<F, Integer> implements NumExp<Integer> {
 
-    private final Exp<S> exp;
-    private final Function<Series<S>, Integer> aggregator;
+    private final Function<Series<F>, Integer> aggregator;
 
-    public IntExpAggregator(Exp<S> exp, Function<Series<S>, Integer> aggregator) {
-        this.exp = exp;
+    public IntExpAggregator(String opName, Exp<F> exp, Function<Series<F>, Integer> aggregator) {
+        super(opName, Integer.class, exp);
         this.aggregator = aggregator;
     }
 
     @Override
-    public Class<Integer> getType() {
-        return Integer.class;
-    }
-
-    @Override
-    public Series<Integer> eval(DataFrame df) {
+    protected Series<Integer> doEval(Series<F> s) {
 
         // TODO: optimize for primitive series.
         //  E.g. "IntSeries.average()" is faster than "AggregatorFunctions.averageDouble()"
 
-        int val = aggregator.apply(exp.eval(df));
+        int val = aggregator.apply(s);
         return new SingleValueSeries<>(val, 1);
-    }
-
-    @Override
-    public Series<Integer> eval(Series<?> s) {
-        // TODO: optimize for primitive series.
-        //  E.g. "IntSeries.average()" is faster than "AggregatorFunctions.averageDouble()"
-
-        int val = aggregator.apply(exp.eval(s));
-        return new SingleValueSeries<>(val, 1);
-    }
-
-    @Override
-    public String getName() {
-        return exp.getName();
-    }
-
-    @Override
-    public String getName(DataFrame df) {
-        return exp.getName(df);
     }
 }
