@@ -62,6 +62,14 @@ public class WindowBuilder {
         return this;
     }
 
+    /**
+     * @since 0.11
+     */
+    public WindowBuilder sorted(Sorter... sorters) {
+        this.sorter = sorters.length == 0 ? null : Comparators.of(dataFrame, sorters);
+        return this;
+    }
+
     public WindowBuilder sorted(String column, boolean ascending) {
         this.sorter = Comparators.of(dataFrame.getColumn(column), ascending);
         return this;

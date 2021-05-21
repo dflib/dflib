@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class DataFrame_Over_DenseRankTest {
 
     @Test
-    public void testNoPartition_NoSort_Emtpy() {
+    public void testNoPartition_NoSort_Empty() {
         DataFrame df = DataFrame.newFrame("a", "b", "c").empty();
         IntSeries r = df.over().denseRank();
         new IntSeriesAsserts(r).expectData();
@@ -74,6 +74,46 @@ public class DataFrame_Over_DenseRankTest {
 
         IntSeries rn = df.over().partitioned("a").sorted("b", true).denseRank();
         new IntSeriesAsserts(rn).expectData(1, 1, 2, 1, 1);
+    }
+
+    @Test
+    public void testNoPartition_Sort_Sorter() {
+        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+                1, "x", "m",
+                2, "y", "v",
+                1, "z", null,
+                0, "a", null,
+                1, "x", "m");
+
+        // a case of missing sorter - all rows are considered peers
+        IntSeries rn0 = df.over().sorted().denseRank();
+        new IntSeriesAsserts(rn0).expectData(1, 1, 1, 1, 1);
+
+        IntSeries rn1 = df.over().sorted(Exp.$col("a").asc()).denseRank();
+        new IntSeriesAsserts(rn1).expectData(2, 3, 2, 1, 2);
+
+        IntSeries rn2 = df.over().sorted(Exp.$col("b").asc()).denseRank();
+        new IntSeriesAsserts(rn2).expectData(2, 3, 4, 1, 2);
+
+        IntSeries rn3 = df.over().sorted(Exp.$col("c").asc()).denseRank();
+        new IntSeriesAsserts(rn3).expectData(1, 2, 3, 3, 1);
+    }
+
+    @Test
+    public void testPartition_Sort_Sorter() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1, "x",
+                2, "y",
+                1, "z",
+                0, "a",
+                1, "x");
+
+        // a case of missing sorter - all rows are considered peers
+        IntSeries rn0 = df.over().sorted().denseRank();
+        new IntSeriesAsserts(rn0).expectData(1, 1, 1, 1, 1);
+
+        IntSeries rn1 = df.over().partitioned("a").sorted(Exp.$col("b").asc()).denseRank();
+        new IntSeriesAsserts(rn1).expectData(1, 1, 2, 1, 1);
     }
 
 }

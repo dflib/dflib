@@ -176,6 +176,22 @@ public class DataFrame_Sort_Test {
     }
 
     @Test
+    public void testSort_NoSorter() {
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                0, 1,
+                2, 3,
+                -1, 2)
+                // a case of missing sorter
+                .sort();
+
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(3)
+                .expectRow(0, 0, 1)
+                .expectRow(1, 2, 3)
+                .expectRow(2, -1, 2);
+    }
+
+    @Test
     public void testSort_WithSorter_Asc() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,

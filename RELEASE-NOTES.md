@@ -11,6 +11,7 @@
 * #127 Make Aggregator compatible with Exp
 * #128 Exp to eval against Series
 * #129 Rename "filter" methods to "select"
+* #130 Support Sorter in window functions
 
 ## Release 0.10
 
