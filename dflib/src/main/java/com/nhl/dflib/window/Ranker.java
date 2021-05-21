@@ -25,6 +25,8 @@ public class Ranker {
         // no sort order means each row is equivalent from the ranking perspective, so return a Series of 1's
         int[] ints = new int[size];
         Arrays.fill(ints, RowNumberer.START_NUMBER);
+
+        // TODO: single value IntSeries
         return IntSeries.forInts(ints);
     }
 

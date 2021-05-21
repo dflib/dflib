@@ -109,7 +109,7 @@ public class DataFrame_Over_DenseRankTest {
                 1, "x");
 
         // a case of missing sorter - all rows are considered peers
-        IntSeries rn0 = df.over().sorted().denseRank();
+        IntSeries rn0 = df.over().partitioned("a").sorted().denseRank();
         new IntSeriesAsserts(rn0).expectData(1, 1, 1, 1, 1);
 
         IntSeries rn1 = df.over().partitioned("a").sorted(Exp.$col("b").asc()).denseRank();

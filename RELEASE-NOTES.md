@@ -12,6 +12,7 @@
 * #128 Exp to eval against Series
 * #129 Rename "filter" methods to "select"
 * #130 Support Sorter in window functions
+* #131 Support aggregation expressions as window functions 
 
 ## Release 0.10
 

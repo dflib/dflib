@@ -1,8 +1,11 @@
 package com.nhl.dflib.window;
 
 import com.nhl.dflib.*;
+import com.nhl.dflib.agg.DataFrameAggregation;
 import com.nhl.dflib.series.IntSequenceSeries;
-import com.nhl.dflib.sort.*;
+import com.nhl.dflib.sort.Comparators;
+import com.nhl.dflib.sort.DataFrameSorter;
+import com.nhl.dflib.sort.IntComparator;
 
 import java.util.Objects;
 
@@ -88,6 +91,13 @@ public class WindowBuilder {
     public WindowBuilder sorted(int[] columns, boolean[] ascending) {
         this.sorter = Comparators.of(dataFrame, columns, ascending);
         return this;
+    }
+
+    /**
+     * @since 0.11
+     */
+    public DataFrame agg(Exp<?>... aggregators) {
+        return partitioner != null ? aggPartitioned(aggregators) : aggUnPartitioned(aggregators);
     }
 
     public IntSeries rank() {
@@ -183,6 +193,23 @@ public class WindowBuilder {
             Series<T> s = dataFrame.getColumn(column);
             return s.shift(offset, filler);
         }
+    }
+
+    private DataFrame aggPartitioned(Exp<?>... aggregators) {
+        GroupBy gb = sorter != null
+                ? dataFrame.group(partitioner).sort(sorter)
+                : dataFrame.group(partitioner);
+
+        return DataFrameAggregation.aggPartitionedWindow(gb, aggregators);
+    }
+
+    private <T> DataFrame aggUnPartitioned(Exp<?>... aggregators) {
+        DataFrame df = sorter != null
+                // TODO: create a DataFrame sort method that takes IntComparator
+                ? new DataFrameSorter(dataFrame).sort(sorter)
+                : dataFrame;
+
+        return DataFrameAggregation.aggWindow(df, aggregators);
     }
 
     private IntSeries rankPartitioned() {
