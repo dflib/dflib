@@ -44,8 +44,6 @@ public class JsonSaver {
     public void save(DataFrame df, File file) {
 
         createMissingDirsIfNeeded(file);
-
-        // using SyncableFileOutputStream just like Avro does (though it should work with a regula FOS)
         try (FileWriter out = new FileWriter(file)) {
             save(df, out);
         } catch (IOException e) {
@@ -56,7 +54,6 @@ public class JsonSaver {
     public void save(DataFrame df, Path filePath) {
         save(df, filePath.toFile());
     }
-
 
     public void save(DataFrame df, String fileName) {
         save(df, new File(fileName));
