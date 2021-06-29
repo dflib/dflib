@@ -29,6 +29,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
+      - name: mvn -v
+          run: mvn -v
+
       - name: Build and test...
         run: mvn clean verify -U -P ${{ matrix.db }}
 
