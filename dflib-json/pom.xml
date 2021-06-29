@@ -45,10 +45,9 @@
         </dependency>
         <dependency>
             <groupId>com.nhl.dflib</groupId>
-            <artifactId>dflib</artifactId>
-            <version>${project.version}</version>
-            <type>test-jar</type>
+            <artifactId>dflib-junit5</artifactId>
             <scope>test</scope>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

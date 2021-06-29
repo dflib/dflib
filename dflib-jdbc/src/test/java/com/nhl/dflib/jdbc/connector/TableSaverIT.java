@@ -3,8 +3,8 @@ package com.nhl.dflib.jdbc.connector;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.jdbc.SaveOp;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
-import com.nhl.dflib.unit.DataFrameAsserts;
-import com.nhl.dflib.unit.SeriesAsserts;
+import com.nhl.dflib.junit5.DataFrameAsserts;
+import com.nhl.dflib.junit5.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import java.time.*;

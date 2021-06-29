@@ -3,7 +3,7 @@ package com.nhl.dflib.jdbc.connector.tx;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
-import com.nhl.dflib.unit.DataFrameAsserts;
+import com.nhl.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;

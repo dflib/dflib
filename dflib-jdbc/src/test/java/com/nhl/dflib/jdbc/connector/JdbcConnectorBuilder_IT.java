@@ -5,7 +5,7 @@ import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.connector.loader.ColumnBuilder;
 import com.nhl.dflib.jdbc.connector.loader.ColumnBuilderFactory;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
-import com.nhl.dflib.unit.DataFrameAsserts;
+import com.nhl.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

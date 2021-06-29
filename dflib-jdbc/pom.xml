@@ -34,16 +34,15 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.nhl.dflib</groupId>
-            <artifactId>dflib</artifactId>
-            <version>${project.version}</version>
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.nhl.dflib</groupId>
+            <artifactId>dflib-junit5</artifactId>
+            <scope>test</scope>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.bootique.jdbc</groupId>
