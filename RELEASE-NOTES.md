@@ -14,6 +14,7 @@
 * #130 Support Sorter in window functions
 * #131 Support aggregation expressions as window functions
 * #132 dflib-json is not included in the BOM
+* #133 dflib-json - implement JsonSaver
 
 ## Release 0.10
 

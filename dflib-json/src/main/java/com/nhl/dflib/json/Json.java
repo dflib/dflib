@@ -10,4 +10,11 @@ public class Json {
     public static JsonLoader loader() {
         return new JsonLoader();
     }
+
+    /**
+     * @since 0.11
+     */
+    public static JsonSaver saver() {
+        return new JsonSaver();
+    }
 }

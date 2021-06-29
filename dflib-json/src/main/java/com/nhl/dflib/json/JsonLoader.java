@@ -82,7 +82,6 @@ public class JsonLoader {
         int offset = 0;
         LinkedHashMap<String, Accumulator<Object>> columns = new LinkedHashMap<>();
         for (Object row : parsed) {
-            int localOffset = offset;
 
             if (row instanceof Map) {
                 loadRowAsMap((Map<String, Object>) row, columns, height, offset);
