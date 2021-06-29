@@ -12,7 +12,8 @@
 * #128 Exp to eval against Series
 * #129 Rename "filter" methods to "select"
 * #130 Support Sorter in window functions
-* #131 Support aggregation expressions as window functions 
+* #131 Support aggregation expressions as window functions
+* #132 dflib-json is not included in the BOM
 
 ## Release 0.10
 
