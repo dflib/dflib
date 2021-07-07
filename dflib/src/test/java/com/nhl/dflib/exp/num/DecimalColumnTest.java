@@ -181,4 +181,15 @@ public class DecimalColumnTest {
         new BooleanSeriesAsserts(c.eval(df)).expectData(true, false, false);
     }
 
+    @Test
+    public void testAbs() {
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                new BigDecimal("-5.1"),
+                BigDecimal.ZERO,
+                new BigDecimal("11.5"));
+
+        Series<? extends Number> s = $decimal("a").abs().eval(df);
+        new SeriesAsserts(s).expectData(new BigDecimal("5.1"), BigDecimal.ZERO, new BigDecimal("11.5"));
+    }
+
 }

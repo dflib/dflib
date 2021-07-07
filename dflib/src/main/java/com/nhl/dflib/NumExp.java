@@ -74,6 +74,10 @@ public interface NumExp<N extends Number> extends Exp<N> {
         return NumericExpFactory.factory(this, ve).mod(this, ve);
     }
 
+    default NumExp<N> abs() {
+        return (NumExp<N>) NumericExpFactory.factory(this).abs(this);
+    }
+
     default DecimalExp castAsDecimal() {
         return NumericExpFactory.factory(this).castAsDecimal(this);
     }

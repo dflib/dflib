@@ -122,6 +122,8 @@ public abstract class NumericExpFactory {
 
     public abstract NumExp<?> mod(Exp<? extends Number> left, Exp<? extends Number> right);
 
+    public abstract NumExp<?> abs(Exp<? extends Number> exp);
+
     public abstract NumExp<?> sum(Exp<? extends Number> exp);
 
     public abstract NumExp<?> min(Exp<? extends Number> exp);

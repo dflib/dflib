@@ -89,6 +89,17 @@ public class IntColumnTest {
     }
 
     @Test
+    public void testAbs() {
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                -5,
+                0,
+                11);
+
+        Series<? extends Number> s = $int("a").abs().eval(df);
+        new SeriesAsserts(s).expectData(5, 0, 11);
+    }
+
+    @Test
     public void testAdd_Long() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1L, 2,

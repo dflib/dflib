@@ -60,6 +60,10 @@ public class LongExpFactory extends NumericExpFactory {
         return LongExp2.mapVal("%", cast(left), cast(right), (n1, n2) -> n1 % n2, LongSeries::mod);
     }
 
+    @Override
+    public NumExp<?> abs(Exp<? extends Number> exp) {
+        return LongExp1.mapVal("abs", cast(exp), Math::abs);
+    }
 
     @Override
     public DecimalExp castAsDecimal(NumExp<?> exp) {

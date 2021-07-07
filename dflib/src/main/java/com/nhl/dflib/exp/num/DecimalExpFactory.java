@@ -108,6 +108,11 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
+    public NumExp<?> abs(Exp<? extends Number> exp) {
+        return DecimalExp1.mapVal("abs", cast(exp), BigDecimal::abs);
+    }
+
+    @Override
     public DecimalExp castAsDecimal(NumExp<?> exp) {
         return cast(exp);
     }

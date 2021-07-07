@@ -113,4 +113,15 @@ public class DoubleColumnTest {
         assertFalse(s instanceof DoubleSeries);
         new SeriesAsserts(s).expectData(0.99, 1.5);
     }
+
+    @Test
+    public void testAbs() {
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                -5.1,
+                0.0,
+                11.5);
+
+        Series<? extends Number> s = $double("a").abs().eval(df);
+        new SeriesAsserts(s).expectData(5.1, 0.0, 11.5);
+    }
 }
