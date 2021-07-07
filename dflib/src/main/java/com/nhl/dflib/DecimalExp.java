@@ -77,6 +77,11 @@ public interface DecimalExp extends NumExp<BigDecimal> {
     }
 
     @Override
+    default NumExp<BigDecimal> abs() {
+        return NumericExpFactory.decimalFactory().abs(this);
+    }
+
+    @Override
     default DecimalExp avg() {
         return NumericExpFactory.decimalFactory().avg(this);
     }
