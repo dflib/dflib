@@ -16,7 +16,7 @@ import java.util.Objects;
  */
 public class WindowBuilder {
 
-    private DataFrame dataFrame;
+    private final DataFrame dataFrame;
     private Hasher partitioner;
     private IntComparator sorter;
 
@@ -207,7 +207,7 @@ public class WindowBuilder {
         return DataFrameAggregation.aggPartitionedWindow(gb, aggregators);
     }
 
-    private <T> DataFrame aggUnPartitioned(Exp<?>... aggregators) {
+    private DataFrame aggUnPartitioned(Exp<?>... aggregators) {
         DataFrame df = sorter != null
                 // TODO: create a DataFrame sort method that takes IntComparator
                 ? new DataFrameSorter(dataFrame).sort(sorter)
