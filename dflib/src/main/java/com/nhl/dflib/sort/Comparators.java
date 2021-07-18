@@ -131,6 +131,10 @@ public final class Comparators {
                 : (i1, i2) -> nullsLastCompare((Comparable) s.get(i2), (Comparable) s.get(i1));
     }
 
+    /**
+     * @deprecated since 0.12 as sorting by RowToValueMapper is redundant, and can be expressed as a Sorter.
+     */
+    @Deprecated
     public static <V extends Comparable<? super V>> IntComparator of(DataFrame df, RowToValueMapper<V> sortKeyExtractor) {
 
         // slower row-based comparator

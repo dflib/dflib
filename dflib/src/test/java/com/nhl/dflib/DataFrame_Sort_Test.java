@@ -18,7 +18,7 @@ public class DataFrame_Sort_Test {
                 2, 3,
                 -1, 2);
 
-        DataFrame df = dfi.sort(r -> (Integer) r.get("a"));
+        DataFrame df = dfi.sort($int("a").asc());
         assertNotSame(dfi, df);
 
         new DataFrameAsserts(dfi, "a", "b")
@@ -35,6 +35,7 @@ public class DataFrame_Sort_Test {
 
     }
 
+    @Deprecated
     @Test
     public void testSort_WithKeyExtractor() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
@@ -55,7 +56,7 @@ public class DataFrame_Sort_Test {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
                 null, 3,
-                -1, 2).sort(r -> (Integer) r.get("a"));
+                -1, 2).sort($int("a").asc());
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(3)

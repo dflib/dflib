@@ -36,6 +36,10 @@ public class GroupBySorter {
         return sort(Comparators.of(groupBy.getUngrouped(), columns, ascending));
     }
 
+    /**
+     * @deprecated since 0.12 as sorting by RowToValueMapper is redundant, and can be expressed as a Sorter.
+     */
+    @Deprecated
     public <V extends Comparable<? super V>> GroupBy sort(RowToValueMapper<V> sortKeyExtractor) {
         return sort(Comparators.of(groupBy.getUngrouped(), sortKeyExtractor));
     }

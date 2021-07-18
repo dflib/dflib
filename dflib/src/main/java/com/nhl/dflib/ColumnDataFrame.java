@@ -305,6 +305,7 @@ public class ColumnDataFrame implements DataFrame {
         return new DataFrameSorter(this).sort(sorters);
     }
 
+    @Deprecated
     @Override
     public <V extends Comparable<? super V>> DataFrame sort(RowToValueMapper<V> sortKeyExtractor) {
         return new DataFrameSorter(this).sort(sortKeyExtractor);

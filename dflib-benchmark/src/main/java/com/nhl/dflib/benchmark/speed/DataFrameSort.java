@@ -2,7 +2,6 @@ package com.nhl.dflib.benchmark.speed;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntSeries;
-import com.nhl.dflib.RowToValueMapper;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.benchmark.ValueMaker;
 import org.openjdk.jmh.annotations.*;
@@ -38,22 +37,8 @@ public class DataFrameSort {
     }
 
     @Benchmark
-    public Object sortIntegerByRowValueMapper() {
-        return df.sort(RowToValueMapper.columnReader(0))
-                .materialize()
-                .iterator();
-    }
-
-    @Benchmark
     public Object sortIntegerByColumn() {
         return df.sort(0, true)
-                .materialize()
-                .iterator();
-    }
-
-    @Benchmark
-    public Object sortStringByRowValueMapper() {
-        return df.sort(RowToValueMapper.columnReader(1))
                 .materialize()
                 .iterator();
     }

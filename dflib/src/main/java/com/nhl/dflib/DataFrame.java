@@ -650,6 +650,10 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     DataFrame sort(Sorter... sorters);
 
+    /**
+     * @deprecated since 0.12 as sorting by RowToValueMapper is redundant, and can be expressed as a Sorter.
+     */
+    @Deprecated
     <V extends Comparable<? super V>> DataFrame sort(RowToValueMapper<V> sortKeyExtractor);
 
     DataFrame sort(String column, boolean ascending);

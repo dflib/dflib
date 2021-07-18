@@ -60,6 +60,10 @@ public class WindowBuilder {
         return this;
     }
 
+    /**
+     * @deprecated since 0.12 as sorting by RowToValueMapper is redundant, and can be expressed as a Sorter.
+     */
+    @Deprecated
     public <V extends Comparable<? super V>> WindowBuilder sorted(RowToValueMapper<V> sortKeyExtractor) {
         this.sorter = Comparators.of(dataFrame, sortKeyExtractor);
         return this;
