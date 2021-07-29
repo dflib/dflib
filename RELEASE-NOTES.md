@@ -1,3 +1,7 @@
+## Release 0.12
+
+* #134 Bootique and Testcontainers dependency leaks via BOM import
+
 ## Release 0.11
 
 * #116 Map operation over the entire DataFrame
