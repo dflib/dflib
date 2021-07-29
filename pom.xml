@@ -47,10 +47,10 @@
         <maven.compiler.target>1.8</maven.compiler.target>
 
         <slf4j.version>1.7.25</slf4j.version>
-        <bootique.version>2.0.M1</bootique.version>
-        <testcontainers.version>1.15.3</testcontainers.version>
+        <bootique.version>2.0.B1</bootique.version>
+        <testcontainers.version>1.16.0</testcontainers.version>
         <junit4.version>4.13.1</junit4.version>
-        <junit5.version>5.6.2</junit5.version>
+        <junit5.version>5.7.2</junit5.version>
         <jsonpath.version>2.4.0</jsonpath.version>
         <avro.version>1.10.1</avro.version>
         <jackson.version>2.12.3</jackson.version>
@@ -77,31 +77,6 @@
             <url>https://maven.objectstyle.org/nexus/content/repositories/linkrest-snapshots</url>
         </snapshotRepository>
     </distributionManagement>
-
-    <repositories>
-        <repository>
-            <id>bootique-snapshots</id>
-            <url>https://oss.jfrog.org/artifactory/oss-snapshot-local/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-
-        <!-- Main artifact repo -->
-        <repository>
-            <id>central</id>
-            <url>https://repo1.maven.org/maven2</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
     <dependencyManagement>
         <dependencies>
