@@ -48,8 +48,8 @@ public class CsvSaver {
     }   
 
     /**
-     * Instructs the saver to omit saving the Index of a DataFrame.
-     * By default the Index will be saved as a first row in a file.
+     * Instructs the saver to omit saving the Index of a DataFrame. By default, the Index will be saved as a first row
+     * in a file.
      *
      * @return this saver instance
      * @since 0.8
