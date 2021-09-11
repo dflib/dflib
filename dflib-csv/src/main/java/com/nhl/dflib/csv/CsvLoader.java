@@ -34,8 +34,8 @@ public class CsvLoader {
     private int rowSampleSize;
     private Random rowsSampleRandom;
 
-    private List<ColumnConfig> columns;
-    private List<RowFilterConfig> rowFilters;
+    private final List<ColumnConfig> columns;
+    private final List<RowFilterConfig<?>> rowFilters;
 
     public CsvLoader() {
         this.format = CSVFormat.DEFAULT;
@@ -87,7 +87,7 @@ public class CsvLoader {
 
     /**
      * Configures CSV loader to only include rows that are matching the provided criterion. Applying the condition
-     * during load would allow to extract relevant data from very large CSVs.
+     * during load would allow extracting relevant data from very large CSVs.
      *
      * @param columnName the name of the column the condition applies to
      * @param condition  column value condition that needs to be fulfilled for the row to be included in the resulting DataFrame.
@@ -101,7 +101,7 @@ public class CsvLoader {
 
     /**
      * Configures CSV loader to only include rows that are matching the provided criterion. Applying the condition
-     * during load would allow to extract relevant data from very large CSVs.
+     * during load would allow extracting relevant data from very large CSVs.
      *
      * @param columnPos position of the column the condition applies to
      * @param condition column value condition that needs to be fulfilled for the row to be included in the resulting DataFrame.
@@ -115,7 +115,7 @@ public class CsvLoader {
 
     /**
      * Configures CSV loader to only include rows that are matching the provided criterion. Applying the condition
-     * during load would allow to extract relevant data from very large CSVs.
+     * during load would allow extracting relevant data from very large CSVs.
      *
      * @param columnName the name of the column the condition applies to
      * @param condition  column value condition that needs to be fulfilled for the row to be included in the resulting DataFrame.
@@ -130,7 +130,7 @@ public class CsvLoader {
 
     /**
      * Configures CSV loader to only include rows that are matching the provided criterion. Applying the condition
-     * during load would allow to extract relevant data from very large CSVs.
+     * during load would allow extracting relevant data from very large CSVs.
      *
      * @param columnPos position of the column the condition applies to
      * @param condition column value condition that needs to be fulfilled for the row to be included in the resulting DataFrame.
@@ -523,17 +523,17 @@ public class CsvLoader {
         List<Integer> positions = new ArrayList<>(uw);
 
         if (includeColumns != null) {
-            for (int i = 0; i < includeColumns.length; i++) {
-                columns.add(includeColumns[i]);
+            for (String includeColumn : includeColumns) {
+                columns.add(includeColumn);
                 // this will throw if the label is invalid, which is exactly what we want
-                positions.add(csvHeader.position(includeColumns[i]));
+                positions.add(csvHeader.position(includeColumn));
             }
 
         } else if (includeColumnPositions != null) {
 
-            for (int i = 0; i < includeColumnPositions.length; i++) {
-                columns.add(csvHeader.getLabel(includeColumnPositions[i]));
-                positions.add(includeColumnPositions[i]);
+            for (int includeColumnPosition : includeColumnPositions) {
+                columns.add(csvHeader.getLabel(includeColumnPosition));
+                positions.add(includeColumnPosition);
             }
 
         } else {
@@ -609,7 +609,7 @@ public class CsvLoader {
             this.csvPositions = csvPositions;
         }
 
-        ColumnBuilder[] createAccumulators(ColumnConfig[] csvColumns) {
+        ColumnBuilder<?>[] createAccumulators(ColumnConfig[] csvColumns) {
 
             int w = dfHeader.size();
             ColumnBuilder<?>[] accums = new ColumnBuilder[w];
@@ -621,7 +621,7 @@ public class CsvLoader {
             return accums;
         }
 
-        CsvCell[] createValueHolders(ColumnConfig[] csvColumns) {
+        CsvCell<?>[] createValueHolders(ColumnConfig[] csvColumns) {
 
             int w = csvHeader.size();
             CsvCell<?>[] holders = new CsvCell[w];
