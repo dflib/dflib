@@ -6,9 +6,14 @@ import com.nhl.dflib.Index;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellReference;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @since 0.13
@@ -19,11 +24,43 @@ public class ExcelLoader {
     // TODO: add builder method for specifying named sheets to load
     // TODO: add builder method to use the first row values as index
 
-    public Map<String, DataFrame> load(InputStream in) {
-        return convertToDataFrames(loadWorkbook(in));
+    public Map<String, DataFrame> load(File file) {
+        // loading from file is optimized, so do not call "load(InputStream in)", and use a separate path
+        try (Workbook wb = loadWorkbook(file)) {
+            return toDataFrames(wb);
+        } catch (IOException e) {
+            throw new RuntimeException("Error closing Excel workbook loaded from " + file.getName(), e);
+        }
     }
 
-    protected Workbook loadWorkbook(InputStream in) {
+    public Map<String, DataFrame> load(InputStream in) {
+        try (Workbook wb = loadWorkbook(in)) {
+            return toDataFrames(wb);
+        } catch (IOException e) {
+            throw new RuntimeException("Error closing Excel workbook", e);
+        }
+    }
+
+    public Map<String, DataFrame> load(Path path) {
+        return load(path.toFile());
+    }
+
+    public Map<String, DataFrame> load(String filePath) {
+        return load(new File(filePath));
+    }
+
+    private Workbook loadWorkbook(File file) {
+        // loading from file is optimized, so do not call "loadWorkbook(InputStream in)", and use a separate path
+        Objects.requireNonNull(file, "Null file");
+
+        try {
+            return WorkbookFactory.create(file);
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading Excel data", e);
+        }
+    }
+
+    private Workbook loadWorkbook(InputStream in) {
         Objects.requireNonNull(in, "Null input stream");
 
         try {
@@ -33,44 +70,46 @@ public class ExcelLoader {
         }
     }
 
-    protected Map<String, DataFrame> convertToDataFrames(Workbook wb) {
+    private Map<String, DataFrame> toDataFrames(Workbook wb) {
         Map<String, DataFrame> data = new HashMap<>();
 
         for (Sheet sh : wb) {
-            data.put(sh.getSheetName(), convertToDataFrame(sh));
+            data.put(sh.getSheetName(), toDataFrame(sh));
         }
 
         return data;
     }
 
-    protected DataFrame convertToDataFrame(Sheet sh) {
+    private DataFrame toDataFrame(Sheet sh) {
 
         // should this ever happen with POI?
         if (sh.getPhysicalNumberOfRows() == 0) {
             return DataFrame.newFrame().empty();
         }
 
-        int[] minMaxColumns = minMaxColumns(sh);
-        int start = minMaxColumns[0];
-        int end = minMaxColumns[1];
+        SheetRange range = SheetRange.valuesRange(sh);
+        DataFrameByRowBuilder builder = DataFrame.newFrame(range.columns()).byRow();
 
-        Index columns = columns(start, end);
-        DataFrameByRowBuilder builder = DataFrame.newFrame(columns).byRow();
+        Object[] buffer = new Object[range.width];
 
-        Object[] buffer = new Object[columns.size()];
+        // Don't skip empty rows or columns in the middle of a range, but truncate leading empty rows and columns
+        for (int r = 0; r < range.height; r++) {
 
-        for (Row row : sh) {
+            Row row = sh.getRow(range.startRow + r);
+            if (row == null) {
+                Arrays.fill(buffer, null);
+            } else {
 
-            // navigating through all buffer positions, populating with values or nulls.
-            for (int i = 0; i < buffer.length; i++) {
-                Cell cell = row.getCell(start + i, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+                for (int c = 0; c < range.width; c++) {
+                    Cell cell = row.getCell(range.startCol + c, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
 
-                // resetting buffer value to null is important, as the buffer is reused between rows
-                buffer[i] = cell != null ? value(cell) : null;
-            }
+                    // resetting buffer value to null for missing cells is important, as the buffer is reused between rows
+                    buffer[c] = cell != null ? value(cell) : null;
+                }
 
-            for (Cell cell : row) {
-                buffer[cell.getColumnIndex() - start] = value(cell);
+                for (Cell cell : row) {
+                    buffer[cell.getColumnIndex() - range.startCol] = value(cell);
+                }
             }
 
             builder.addRow(buffer);
@@ -103,26 +142,63 @@ public class ExcelLoader {
         }
     }
 
-    private Index columns(int start, int end) {
-        int len = end - start;
-        String[] names = new String[len];
 
-        for (int i = 0; i < len; i++) {
-            names[i] = CellReference.convertNumToColString(start + i);
+    static class SheetRange {
+
+        final int startCol;
+        final int endCol;
+        final int startRow;
+        final int endRow;
+        final int width;
+        final int height;
+
+        private SheetRange(int startCol, int endCol, int startRow, int endRow) {
+            this.startCol = startCol;
+            this.endCol = endCol;
+            this.startRow = startRow;
+            this.endRow = endRow;
+            this.width = endCol - startCol;
+            this.height = endRow - startRow;
         }
 
-        return Index.forLabels(names);
-    }
+        static SheetRange valuesRange(Sheet sh) {
 
-    private int[] minMaxColumns(Sheet sh) {
-        int min = Short.MAX_VALUE + 1;
-        int max = Short.MIN_VALUE - 1;
+            int startCol = Short.MAX_VALUE + 1;
+            int endCol = Short.MIN_VALUE - 1;
+            int startRow = Integer.MAX_VALUE;
+            int endRow = Integer.MIN_VALUE;
 
-        for (Row r : sh) {
-            min = Math.min(r.getFirstCellNum(), min);
-            max = Math.max(r.getLastCellNum(), max);
+            for (Row r : sh) {
+
+                startRow = Math.min(r.getRowNum(), startRow);
+                endRow = Math.max(r.getRowNum(), endRow);
+
+                startCol = Math.min(r.getFirstCellNum(), startCol);
+                endCol = Math.max(r.getLastCellNum(), endCol);
+            }
+
+            // only non-empty Sheets are allowed here...
+            if (startCol > endCol || startRow > endRow) {
+                throw new IllegalArgumentException("Empty sheet");
+            }
+
+            return new SheetRange(
+                    startCol,
+                    // "endCol" already points past the last column
+                    endCol,
+                    startRow,
+                    // as "endRow" is an index, we must increment it to point past the last row
+                    endRow + 1);
         }
 
-        return new int[]{min, max};
+        Index columns() {
+            String[] names = new String[width];
+
+            for (int i = 0; i < width; i++) {
+                names[i] = CellReference.convertNumToColString(startCol + i);
+            }
+
+            return Index.forLabels(names);
+        }
     }
 }

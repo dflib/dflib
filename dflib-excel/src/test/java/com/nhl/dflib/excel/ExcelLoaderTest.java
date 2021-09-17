@@ -6,15 +6,71 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ExcelLoaderTest {
+
+    @ParameterizedTest
+    @ValueSource(strings = {"one-sheet.xls", "one-sheet.xlsx"})
+    public void testFromFile(String source) throws URISyntaxException {
+
+        File file = new File(getClass().getResource(source).toURI());
+
+        Map<String, DataFrame> data = new ExcelLoader().load(file);
+        assertEquals(1, data.size());
+        DataFrame df = data.get("Sheet1");
+        assertNotNull(df);
+
+        new DataFrameAsserts(df, "A", "B")
+                .expectHeight(2)
+                .expectRow(0, "One", "Two")
+                .expectRow(1, "Three", "Four");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"one-sheet.xls", "one-sheet.xlsx"})
+    public void testFromStringFilePath(String source) throws URISyntaxException {
+
+        File file = new File(getClass().getResource(source).toURI());
+
+        Map<String, DataFrame> data = new ExcelLoader().load(file.getPath());
+        assertEquals(1, data.size());
+        DataFrame df = data.get("Sheet1");
+        assertNotNull(df);
+
+        new DataFrameAsserts(df, "A", "B")
+                .expectHeight(2)
+                .expectRow(0, "One", "Two")
+                .expectRow(1, "Three", "Four");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"one-sheet.xls", "one-sheet.xlsx"})
+    public void testFromPath(String source) throws URISyntaxException {
+
+        Path path = Paths.get(getClass().getResource(source).toURI());
+
+        Map<String, DataFrame> data = new ExcelLoader().load(path);
+        assertEquals(1, data.size());
+        DataFrame df = data.get("Sheet1");
+        assertNotNull(df);
+
+        new DataFrameAsserts(df, "A", "B")
+                .expectHeight(2)
+                .expectRow(0, "One", "Two")
+                .expectRow(1, "Three", "Four");
+    }
 
     @ParameterizedTest
     @ValueSource(strings = {"one-sheet.xls", "one-sheet.xlsx"})
@@ -55,13 +111,17 @@ public class ExcelLoaderTest {
     }
 
     @Test
-    public void testLoad_AsymmetricColumns() throws IOException {
+    public void testLoad_Sparse() throws IOException {
 
-        try (InputStream in = getClass().getResourceAsStream("one-sheet-asymmetric-columns.xlsx")) {
+        try (InputStream in = getClass().getResourceAsStream("one-sheet-sparse.xlsx")) {
             DataFrame df = new ExcelLoader().load(in).get("Sheet1");
-            assertArrayEquals(
-                    new String[]{"B", "C", "D", "E", "F", "G", "H", "I", "J"},
-                    df.getColumnsIndex().getLabels());
+
+            new DataFrameAsserts(df, "B", "C", "D", "E", "F", "G")
+                    .expectHeight(4)
+                    .expectRow(0, 1d, 2d, null, null, 3d, null)
+                    .expectRow(1, null, 4d, 5d, null, null, 6d)
+                    .expectRow(2, null, null, null, null, null, null)
+                    .expectRow(3, null, 3d, 8d, null, 7d, null);
         }
     }
 }
