@@ -54,6 +54,39 @@ public class ExcelLoader {
         return loadSheet(new File(filePath), sheetName);
     }
 
+    public DataFrame loadSheet(InputStream in, int sheetNum) {
+        try (Workbook wb = loadWorkbook(in)) {
+            Sheet sheet = wb.getSheetAt(sheetNum);
+            if (sheet == null) {
+                throw new RuntimeException("No sheet " + sheetNum + " in workbook");
+            }
+            return toDataFrame(sheet);
+        } catch (IOException e) {
+            throw new RuntimeException("Error closing Excel workbook", e);
+        }
+    }
+
+    public DataFrame loadSheet(File file, int sheetNum) {
+        // loading from file is optimized, so do not call "load(InputStream in)", and use a separate path
+        try (Workbook wb = loadWorkbook(file)) {
+            Sheet sheet = wb.getSheetAt(sheetNum);
+            if (sheet == null) {
+                throw new RuntimeException("No sheet " + sheetNum + " in workbook loaded from " + file.getPath());
+            }
+            return toDataFrame(sheet);
+        } catch (IOException e) {
+            throw new RuntimeException("Error closing Excel workbook loaded from " + file.getPath(), e);
+        }
+    }
+
+    public DataFrame loadSheet(Path path, int sheetNum) {
+        return loadSheet(path.toFile(), sheetNum);
+    }
+
+    public DataFrame loadSheet(String filePath, int sheetNum) {
+        return loadSheet(new File(filePath), sheetNum);
+    }
+
     public Map<String, DataFrame> load(InputStream in) {
         try (Workbook wb = loadWorkbook(in)) {
             return toDataFrames(wb);

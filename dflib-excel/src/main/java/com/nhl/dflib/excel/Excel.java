@@ -46,6 +46,25 @@ public class Excel {
         return loader().loadSheet(path, sheetName);
     }
 
+
+    public static DataFrame loadSheet(InputStream in, int sheetNum) {
+        return loader().loadSheet(in, sheetNum);
+    }
+
+    public static DataFrame loadSheet(File file, int sheetNum) {
+        return loader().loadSheet(file, sheetNum);
+    }
+
+    public static DataFrame loadSheet(String filePath, int sheetNum) {
+        return loader().loadSheet(filePath, sheetNum);
+    }
+
+    public static DataFrame loadSheet(Path path, int sheetNum) {
+        return loader().loadSheet(path, sheetNum);
+    }
+
+
+
     public static ExcelLoader loader() {
         return new ExcelLoader();
     }

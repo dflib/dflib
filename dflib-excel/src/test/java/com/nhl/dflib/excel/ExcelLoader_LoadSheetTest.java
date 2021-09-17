@@ -58,6 +58,24 @@ public class ExcelLoader_LoadSheetTest {
                 .expectRow(0, "Five", "Six", "Seven", "Eight");
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"multi-sheet.xls", "multi-sheet.xlsx"})
+    public void testFromFile_MultiSheet_ByPosition(String source) throws URISyntaxException {
+
+        File file = new File(getClass().getResource(source).toURI());
+
+        DataFrame s1 = new ExcelLoader().loadSheet(file, 3);
+        new DataFrameAsserts(s1, "A", "B")
+                .expectHeight(2)
+                .expectRow(0, "One", "Two")
+                .expectRow(1, "Three", "Four");
+
+        DataFrame s2 = new ExcelLoader().loadSheet(file, 0);
+        new DataFrameAsserts(s2, "A", "B", "C", "D")
+                .expectHeight(1)
+                .expectRow(0, "Five", "Six", "Seven", "Eight");
+    }
+
     @Test
     public void testInvalidSheetName() throws URISyntaxException {
         File file = new File(getClass().getResource("multi-sheet.xlsx").toURI());
