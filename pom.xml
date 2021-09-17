@@ -13,6 +13,7 @@
         <module>dflib</module>
         <module>dflib-avro</module>
         <module>dflib-csv</module>
+        <module>dflib-excel</module>
         <module>dflib-jdbc</module>
         <module>dflib-json</module>
         <module>dflib-test</module>
@@ -54,6 +55,7 @@
         <jsonpath.version>2.4.0</jsonpath.version>
         <avro.version>1.10.1</avro.version>
         <jackson.version>2.12.3</jackson.version>
+        <poi.version>5.0.0</poi.version>
     </properties>
 
     <url>https://github.com/nhl/dflib</url>
@@ -166,6 +168,17 @@
                 <groupId>org.apache.avro</groupId>
                 <artifactId>avro</artifactId>
                 <version>${avro.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${poi.version}</version>
             </dependency>
 
             <dependency>
