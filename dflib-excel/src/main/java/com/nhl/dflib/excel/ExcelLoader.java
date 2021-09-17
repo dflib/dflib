@@ -10,10 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @since 0.13
@@ -104,7 +101,9 @@ public class ExcelLoader {
     }
 
     private Map<String, DataFrame> toDataFrames(Workbook wb) {
-        Map<String, DataFrame> data = new HashMap<>();
+
+        // preserve sheet ordering
+        Map<String, DataFrame> data = new LinkedHashMap<>();
 
         for (Sheet sh : wb) {
             data.put(sh.getSheetName(), toDataFrame(sh));

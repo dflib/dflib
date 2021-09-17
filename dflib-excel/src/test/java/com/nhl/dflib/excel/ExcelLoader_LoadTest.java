@@ -12,8 +12,9 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -97,7 +98,10 @@ public class ExcelLoader_LoadTest {
         try (InputStream in = getClass().getResourceAsStream(source)) {
 
             Map<String, DataFrame> data = new ExcelLoader().load(in);
-            assertEquals(new HashSet<>(asList("S1", "S2")), data.keySet());
+
+            // the ordering of keys in the map must match the order in Excel
+            List<String> keys = data.keySet().stream().collect(Collectors.toList());
+            assertEquals(asList("S2", "S0", "Some Sheet", "S1"), keys);
 
             new DataFrameAsserts(data.get("S1"), "A", "B")
                     .expectHeight(2)
