@@ -238,9 +238,17 @@ public class ExcelLoader {
                 startRow = Math.min(r.getRowNum(), startRow);
                 endRow = Math.max(r.getRowNum(), endRow);
 
-                startCol = Math.min(r.getFirstCellNum(), startCol);
-                endCol = Math.max(r.getLastCellNum(), endCol);
+                short firstCell = r.getFirstCellNum();
+
+                // -1 is returned for empty rows, remove them from consideration
+                if (firstCell >= 0) {
+                    startCol = Math.min(firstCell, startCol);
+                    endCol = Math.max(r.getLastCellNum(), endCol);
+                }
             }
+
+            // TODO: because of the "firstCell >= 0" check above we may end up with mismatched start/end even if the
+            //   Sheet was presumably non-empty. Need test cases
 
             // only non-empty Sheets are allowed here...
             if (startCol > endCol || startRow > endRow) {
