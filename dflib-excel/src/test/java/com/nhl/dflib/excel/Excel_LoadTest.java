@@ -15,7 +15,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class ExcelTest {
+public class Excel_LoadTest {
 
     @Test
     public void testFromFile() throws URISyntaxException {

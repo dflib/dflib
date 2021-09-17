@@ -19,7 +19,7 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class ExcelLoaderTest {
+public class ExcelLoader_LoadTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"one-sheet.xls", "one-sheet.xlsx"})
@@ -111,7 +111,7 @@ public class ExcelLoaderTest {
     }
 
     @Test
-    public void testLoad_Sparse() throws IOException {
+    public void testSparse() throws IOException {
 
         try (InputStream in = getClass().getResourceAsStream("one-sheet-sparse.xlsx")) {
             DataFrame df = new ExcelLoader().load(in).get("Sheet1");

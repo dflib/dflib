@@ -24,13 +24,37 @@ public class ExcelLoader {
     // TODO: add builder method for specifying named sheets to load
     // TODO: add builder method to use the first row values as index
 
-    public Map<String, DataFrame> load(File file) {
+    public DataFrame loadSheet(InputStream in, String sheetName) {
+        try (Workbook wb = loadWorkbook(in)) {
+            Sheet sheet = wb.getSheet(sheetName);
+            if (sheet == null) {
+                throw new RuntimeException("No sheet '" + sheetName + "' in workbook");
+            }
+            return toDataFrame(sheet);
+        } catch (IOException e) {
+            throw new RuntimeException("Error closing Excel workbook", e);
+        }
+    }
+
+    public DataFrame loadSheet(File file, String sheetName) {
         // loading from file is optimized, so do not call "load(InputStream in)", and use a separate path
         try (Workbook wb = loadWorkbook(file)) {
-            return toDataFrames(wb);
+            Sheet sheet = wb.getSheet(sheetName);
+            if (sheet == null) {
+                throw new RuntimeException("No sheet '" + sheetName + "' in workbook loaded from " + file.getPath());
+            }
+            return toDataFrame(sheet);
         } catch (IOException e) {
-            throw new RuntimeException("Error closing Excel workbook loaded from " + file.getName(), e);
+            throw new RuntimeException("Error closing Excel workbook loaded from " + file.getPath(), e);
         }
+    }
+
+    public DataFrame loadSheet(Path path, String sheetName) {
+        return loadSheet(path.toFile(), sheetName);
+    }
+
+    public DataFrame loadSheet(String filePath, String sheetName) {
+        return loadSheet(new File(filePath), sheetName);
     }
 
     public Map<String, DataFrame> load(InputStream in) {
@@ -38,6 +62,15 @@ public class ExcelLoader {
             return toDataFrames(wb);
         } catch (IOException e) {
             throw new RuntimeException("Error closing Excel workbook", e);
+        }
+    }
+
+    public Map<String, DataFrame> load(File file) {
+        // loading from file is optimized, so do not call "load(InputStream in)", and use a separate path
+        try (Workbook wb = loadWorkbook(file)) {
+            return toDataFrames(wb);
+        } catch (IOException e) {
+            throw new RuntimeException("Error closing Excel workbook loaded from " + file.getPath(), e);
         }
     }
 

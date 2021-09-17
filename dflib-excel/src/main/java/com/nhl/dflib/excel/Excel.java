@@ -30,6 +30,22 @@ public class Excel {
         return loader().load(path);
     }
 
+    public static DataFrame loadSheet(InputStream in, String sheetName) {
+        return loader().loadSheet(in, sheetName);
+    }
+
+    public static DataFrame loadSheet(File file, String sheetName) {
+        return loader().loadSheet(file, sheetName);
+    }
+
+    public static DataFrame loadSheet(String filePath, String sheetName) {
+        return loader().loadSheet(filePath, sheetName);
+    }
+
+    public static DataFrame loadSheet(Path path, String sheetName) {
+        return loader().loadSheet(path, sheetName);
+    }
+
     public static ExcelLoader loader() {
         return new ExcelLoader();
     }
