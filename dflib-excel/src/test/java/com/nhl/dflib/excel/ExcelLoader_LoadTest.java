@@ -2,7 +2,6 @@ package com.nhl.dflib.excel;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.junit5.DataFrameAsserts;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -111,21 +110,6 @@ public class ExcelLoader_LoadTest {
             new DataFrameAsserts(data.get("S2"), "A", "B", "C", "D")
                     .expectHeight(1)
                     .expectRow(0, "Five", "Six", "Seven", "Eight");
-        }
-    }
-
-    @Test
-    public void testSparse() throws IOException {
-
-        try (InputStream in = getClass().getResourceAsStream("one-sheet-sparse.xlsx")) {
-            DataFrame df = new ExcelLoader().load(in).get("Sheet1");
-
-            new DataFrameAsserts(df, "B", "C", "D", "E", "F", "G")
-                    .expectHeight(4)
-                    .expectRow(0, 1d, 2d, null, null, 3d, null)
-                    .expectRow(1, null, 4d, 5d, null, null, 6d)
-                    .expectRow(2, null, null, null, null, null, null)
-                    .expectRow(3, null, 3d, 8d, null, 7d, null);
         }
     }
 }

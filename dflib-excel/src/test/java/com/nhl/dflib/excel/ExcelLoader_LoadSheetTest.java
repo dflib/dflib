@@ -102,6 +102,64 @@ public class ExcelLoader_LoadSheetTest {
                 // TODO: can we tell a Date from Datetime? Parse String manually?
                 .expectRow(7, "Date", LocalDateTime.of(2020, 1, 18, 0, 0, 0))
                 .expectRow(8, "Datetime", LocalDateTime.of(2020, 1, 18, 15, 1, 55));
-
     }
+
+    @Test
+    public void testSparse() throws IOException {
+
+        try (InputStream in = getClass().getResourceAsStream("sparse.xlsx")) {
+            DataFrame df = new ExcelLoader().loadSheet(in, "Sheet1");
+
+            new DataFrameAsserts(df, "B", "C", "D", "E", "F", "G")
+                    .expectHeight(4)
+                    .expectRow(0, 1d, 2d, null, null, 3d, null)
+                    .expectRow(1, null, 4d, 5d, null, null, 6d)
+                    .expectRow(2, null, null, null, null, null, null)
+                    .expectRow(3, null, 3d, 8d, null, 7d, null);
+        }
+    }
+
+    @Test
+    public void testPhantomRowsOnly() throws URISyntaxException {
+        // "phantom-trailing-rows.xlsx" contains only phantom rows that are included by POI in the
+        // rows iterator, but need to be skipped by DFLib
+        File file = new File(getClass().getResource("phantom-rows-only.xlsx").toURI());
+
+        DataFrame df = new ExcelLoader().loadSheet(file, 0);
+
+        new DataFrameAsserts(df).expectHeight(0);
+    }
+
+    @Test
+    public void testPhantomLeadingRows() throws URISyntaxException {
+        // "phantom-leading-rows.xlsx" contains leading phantom rows that are included by POI in the
+        // rows iterator, but need to be skipped by DFLib
+        File file = new File(getClass().getResource("phantom-leading-rows.xlsx").toURI());
+
+        DataFrame df = new ExcelLoader().loadSheet(file, 0);
+
+        new DataFrameAsserts(df, "A", "B")
+                .expectHeight(4)
+                .expectRow(0, "a", null)
+                .expectRow(1, "b", "c")
+                .expectRow(2, null, null)
+                .expectRow(3, "c", "d");
+    }
+
+    @Test
+    public void testPhantomTrailingRows() throws URISyntaxException {
+        // "phantom-trailing-rows.xlsx" contains trailing phantom rows that are included by POI in the
+        // rows iterator, but need to be skipped by DFLib
+        File file = new File(getClass().getResource("phantom-trailing-rows.xlsx").toURI());
+
+        DataFrame df = new ExcelLoader().loadSheet(file, 0);
+
+        new DataFrameAsserts(df, "A", "B")
+                .expectHeight(4)
+                .expectRow(0, "a", null)
+                .expectRow(1, "b", "c")
+                .expectRow(2, null, null)
+                .expectRow(3, "c", "d");
+    }
+
 }

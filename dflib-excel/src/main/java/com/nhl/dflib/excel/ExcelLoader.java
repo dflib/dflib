@@ -2,9 +2,7 @@ package com.nhl.dflib.excel;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DataFrameByRowBuilder;
-import com.nhl.dflib.Index;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellReference;
 
 import java.io.File;
 import java.io.IOException;
@@ -147,12 +145,11 @@ public class ExcelLoader {
 
     private DataFrame toDataFrame(Sheet sh) {
 
-        // should this ever happen with POI?
-        if (sh.getPhysicalNumberOfRows() == 0) {
+        SheetRange range = SheetRange.valuesRange(sh);
+        if (range.isEmpty()) {
             return DataFrame.newFrame().empty();
         }
 
-        SheetRange range = SheetRange.valuesRange(sh);
         DataFrameByRowBuilder builder = DataFrame.newFrame(range.columns()).byRow();
 
         Object[] buffer = new Object[range.width];
@@ -204,74 +201,6 @@ public class ExcelLoader {
             case ERROR:
             default:
                 return null;
-        }
-    }
-
-
-    static class SheetRange {
-
-        final int startCol;
-        final int endCol;
-        final int startRow;
-        final int endRow;
-        final int width;
-        final int height;
-
-        private SheetRange(int startCol, int endCol, int startRow, int endRow) {
-            this.startCol = startCol;
-            this.endCol = endCol;
-            this.startRow = startRow;
-            this.endRow = endRow;
-            this.width = endCol - startCol;
-            this.height = endRow - startRow;
-        }
-
-        static SheetRange valuesRange(Sheet sh) {
-
-            int startCol = Short.MAX_VALUE + 1;
-            int endCol = Short.MIN_VALUE - 1;
-            int startRow = Integer.MAX_VALUE;
-            int endRow = Integer.MIN_VALUE;
-
-            for (Row r : sh) {
-
-                startRow = Math.min(r.getRowNum(), startRow);
-                endRow = Math.max(r.getRowNum(), endRow);
-
-                short firstCell = r.getFirstCellNum();
-
-                // -1 is returned for empty rows, remove them from consideration
-                if (firstCell >= 0) {
-                    startCol = Math.min(firstCell, startCol);
-                    endCol = Math.max(r.getLastCellNum(), endCol);
-                }
-            }
-
-            // TODO: because of the "firstCell >= 0" check above we may end up with mismatched start/end even if the
-            //   Sheet was presumably non-empty. Need test cases
-
-            // only non-empty Sheets are allowed here...
-            if (startCol > endCol || startRow > endRow) {
-                throw new IllegalArgumentException("Empty sheet");
-            }
-
-            return new SheetRange(
-                    startCol,
-                    // "endCol" already points past the last column
-                    endCol,
-                    startRow,
-                    // as "endRow" is an index, we must increment it to point past the last row
-                    endRow + 1);
-        }
-
-        Index columns() {
-            String[] names = new String[width];
-
-            for (int i = 0; i < width; i++) {
-                names[i] = CellReference.convertNumToColString(startCol + i);
-            }
-
-            return Index.forLabels(names);
         }
     }
 }
