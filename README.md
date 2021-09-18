@@ -8,9 +8,10 @@ DataFrame data structure. With DFLib you get essentially the same data
 manipulation tools you may be used to in SQL (such as queries and joins), 
 only you can use them in-memory and over dynamically defined data structures.
 
-
 It is somewhat close to Python [pandas](https://pandas.pydata.org/), except it is intended to be used 
 with Java and other JVM languages.
+
+DFLib comes with connectors for a variety of data formats: CSV, Excel, RDBMS (JDBC), Avro, JSON, etc.
 
 ## Project Links
 
