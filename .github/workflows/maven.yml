@@ -11,6 +11,7 @@ jobs:
     strategy:
       matrix:
         db: [ 'derby', 'mysql', 'postgresql' ]
+        java: [ 8, 17 ]
 
     steps:
       - name: Checkout...
@@ -19,7 +20,7 @@ jobs:
       - name: Set up JDK...
         uses: actions/setup-java@v1
         with:
-          java-version: 1.8
+          java-version: ${{ matrix.java }}
 
       - name: Retrieve mvn repo cache...
         uses: actions/cache@v2
