@@ -1,9 +1,6 @@
 package com.nhl.dflib.exp.num;
 
-import com.nhl.dflib.Condition;
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.DecimalExp;
-import com.nhl.dflib.Series;
+import com.nhl.dflib.*;
 import com.nhl.dflib.unit.BooleanSeriesAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
@@ -192,4 +189,40 @@ public class DecimalColumnTest {
         new SeriesAsserts(s).expectData(new BigDecimal("5.1"), BigDecimal.ZERO, new BigDecimal("11.5"));
     }
 
+    @Test
+    public void testNe() {
+
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                new BigDecimal("-5.1"),
+                BigDecimal.ZERO,
+                new BigDecimal("11.5"));
+
+        BooleanSeries s  = $decimal("a").ne(new BigDecimal("11.5")).eval(df);
+        new BooleanSeriesAsserts(s).expectData(true, true, false);
+    }
+
+    @Test
+    public void testEq() {
+
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                new BigDecimal("-5.1"),
+                BigDecimal.ZERO,
+                new BigDecimal("11.5"));
+
+        BooleanSeries s  = $decimal("a").eq(new BigDecimal("11.5")).eval(df);
+        new BooleanSeriesAsserts(s).expectData(false, false, true);
+    }
+
+    @Test
+    public void testEq_Zero() {
+
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                new BigDecimal("-5.1"),
+                BigDecimal.ZERO,
+                new BigDecimal("0"),
+                new BigDecimal("11.5"));
+
+        BooleanSeries s  = $decimal("a").eq(BigDecimal.ZERO).eval(df);
+        new BooleanSeriesAsserts(s).expectData(false, true, true, false);
+    }
 }
