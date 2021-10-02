@@ -225,4 +225,16 @@ public class DecimalColumnTest {
         BooleanSeries s  = $decimal("a").eq(BigDecimal.ZERO).eval(df);
         new BooleanSeriesAsserts(s).expectData(false, true, true, false);
     }
+
+    @Test
+    public void testNe_NonNumber() {
+
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                new BigDecimal("-5.1"),
+                BigDecimal.ZERO,
+                new BigDecimal("11.5"));
+
+        BooleanSeries s  = $decimal("a").ne("11.5").eval(df);
+        new BooleanSeriesAsserts(s).expectData(true, true, true);
+    }
 }

@@ -111,7 +111,7 @@ public interface NumExp<N extends Number> extends Exp<N> {
         return value instanceof Number
                 ? ne(Exp.$val(value))
                 // TODO: return either null check or a "false" exp here?
-                : Exp.super.eq(value);
+                : Exp.super.ne(value);
     }
 
     default Condition lt(Exp<? extends Number> exp) {

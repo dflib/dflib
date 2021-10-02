@@ -1,6 +1,7 @@
 ## Release 0.13
 
 * #136 Support for loading Excel files
+* #137 "ne" incorrectly compares numbers with non-numbers
 
 ## Release 0.12
 
