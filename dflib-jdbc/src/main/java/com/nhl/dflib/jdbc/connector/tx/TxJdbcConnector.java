@@ -137,7 +137,7 @@ public class TxJdbcConnector implements JdbcConnector, AutoCloseable {
             try {
                 connection.setTransactionIsolation(isolation.value);
             } catch (SQLException e) {
-                throw new RuntimeException("Error setting isoltaiton level", e);
+                throw new RuntimeException("Error setting isolation level", e);
             }
         }
 
