@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DataFrame_PivotTest {
@@ -124,5 +126,23 @@ public class DataFrame_PivotTest {
 
         PivotBuilder pb = df1.pivot().columns("b").rows("a");
         assertThrows(IllegalArgumentException.class, () -> pb.values("c"));
+    }
+
+    @Test
+    public void testWithAggregation_WithConverstion() {
+
+        DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
+                1, "x", 15.0,
+                2, "y", 18.0,
+                2, "y", 19.0,
+                1, "y", 20.0);
+
+
+        DataFrame df = df1.pivot().columns("b").rows("a").values("c", Exp.$double(0).sum().castAsDecimal().scale(2));
+
+        new DataFrameAsserts(df, "a", "x", "y")
+                .expectHeight(2)
+                .expectRow(0, 1, new BigDecimal("15.00"), new BigDecimal("20.00"))
+                .expectRow(1, 2, null, new BigDecimal("37.00"));
     }
 }
