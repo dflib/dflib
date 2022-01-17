@@ -121,7 +121,7 @@ public class TxIT extends BaseDbTest {
                         2L, "n2", 120_000.);
 
         DataFrame df2 = DataFrame.newFrame("id", "name", "salary")
-                .foldByRow(3L, "n3", "NaN");
+                .foldByRow(3L, "n3", "XXXX");
 
 
         try {
@@ -133,8 +133,7 @@ public class TxIT extends BaseDbTest {
 
             fail("Exception expected");
         } catch (RuntimeException e) {
-            assertEquals("Error updating data in DB: The resulting value is outside the range for the data type DOUBLE.",
-                    e.getMessage());
+            assertTrue(e.getMessage() != null && e.getMessage().startsWith("Error updating data in DB"), () -> e.getMessage());
         }
 
         DataFrame df_12 = connector.tableLoader("t1").load();
