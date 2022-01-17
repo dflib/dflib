@@ -1,11 +1,20 @@
 package com.nhl.dflib.jdbc.connector.tx;
 
-import com.nhl.dflib.jdbc.connector.*;
+import com.nhl.dflib.jdbc.connector.JdbcConnector;
+import com.nhl.dflib.jdbc.connector.SqlLoader;
+import com.nhl.dflib.jdbc.connector.SqlLogger;
+import com.nhl.dflib.jdbc.connector.SqlSaver;
+import com.nhl.dflib.jdbc.connector.StatementBuilder;
+import com.nhl.dflib.jdbc.connector.TableDeleter;
+import com.nhl.dflib.jdbc.connector.TableLoader;
+import com.nhl.dflib.jdbc.connector.TableSaver;
 import com.nhl.dflib.jdbc.connector.loader.ColumnBuilder;
 import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.jdbc.connector.statement.ValueConverterFactory;
 import com.nhl.dflib.jdbc.datasource.TxDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -18,13 +27,18 @@ import java.sql.SQLException;
  */
 public class TxJdbcConnector implements JdbcConnector, AutoCloseable {
 
-    private JdbcConnector delegate;
+    private static final Logger LOGGER = LoggerFactory.getLogger(TxJdbcConnector.class);
+
+    private final JdbcConnector delegate;
+    private final boolean nestedTx;
+
     private TxIsolation isolation;
     private volatile TxConnectionWrapper connection;
 
     public TxJdbcConnector(JdbcConnector delegate, TxIsolation isolation) {
         this.isolation = isolation;
         this.delegate = delegate;
+        this.nestedTx = delegate instanceof TxJdbcConnector;
     }
 
     @Override
@@ -159,6 +173,15 @@ public class TxJdbcConnector implements JdbcConnector, AutoCloseable {
     }
 
     protected void connectionOp(JdbcConsumer op) {
+
+        // TODO: both checking for nested connection and unwrapping it is a hack .. perhaps we can express the
+        //   desired behavior by properly implementing the connection wrapper?
+
+        if (nestedTx) {
+            LOGGER.debug("Nested transaction... Ignoring a request to modify the connection");
+            return;
+        }
+
         Connection connection = this.connection;
         if (connection != null) {
             try {

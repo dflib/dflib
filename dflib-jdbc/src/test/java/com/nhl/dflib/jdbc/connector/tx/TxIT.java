@@ -9,8 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TxIT extends BaseDbTest {
 
@@ -56,31 +55,31 @@ public class TxIT extends BaseDbTest {
         JdbcConnector connector = adapter.createConnector();
         Tx.newTransaction(connector)
                 .isolation(TxIsolation.read_committed).run(txConnector -> {
-                    int il;
-                    try {
-                        il = txConnector.getConnection().getTransactionIsolation();
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                    assertEquals(Connection.TRANSACTION_READ_COMMITTED, il);
-                }
-        );
+                            int il;
+                            try {
+                                il = txConnector.getConnection().getTransactionIsolation();
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                            assertEquals(Connection.TRANSACTION_READ_COMMITTED, il);
+                        }
+                );
 
         Tx.newTransaction(connector)
                 .isolation(TxIsolation.serializable).run(txConnector -> {
-                    int il;
-                    try {
-                        il = txConnector.getConnection().getTransactionIsolation();
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                    assertEquals(Connection.TRANSACTION_SERIALIZABLE, il);
-                }
-        );
+                            int il;
+                            try {
+                                il = txConnector.getConnection().getTransactionIsolation();
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                            assertEquals(Connection.TRANSACTION_SERIALIZABLE, il);
+                        }
+                );
     }
 
     @Test
-    public void testRun_Rollback() {
+    public void testRun_Rollback_ErrorInMetadata() {
         adapter.delete("t1");
         JdbcConnector connector = adapter.createConnector();
         DataFrame df1 = DataFrame.newFrame("id", "name", "salary")
@@ -93,13 +92,50 @@ public class TxIT extends BaseDbTest {
                         3L, "n3", 60_000.01,
                         4L, "n4", 1_000.);
 
-        assertThrows(RuntimeException.class, () ->
-                Tx.newTransaction(connector).run(c -> {
-                            c.tableSaver("t1").save(df1);
-                            c.tableSaver("no_such_table").save(df2);
-                        }
-                )
-        );
+        try {
+            Tx.newTransaction(connector).run(c -> {
+                        c.tableSaver("t1").save(df1);
+                        c.tableSaver("no_such_table").save(df2);
+                    }
+            );
+
+            fail("Exception expected");
+
+        } catch (RuntimeException e) {
+            assertEquals("Non-existent table 'no_such_table'", e.getMessage());
+        }
+
+        DataFrame df_12 = connector.tableLoader("t1").load();
+
+        // the transaction must have been rolled back and no data saved
+        new DataFrameAsserts(df_12, "id", "name", "salary").expectHeight(0);
+    }
+
+    @Test
+    public void testRun_Rollback_ErrorData() {
+        adapter.delete("t1");
+        JdbcConnector connector = adapter.createConnector();
+        DataFrame df1 = DataFrame.newFrame("id", "name", "salary")
+                .foldByRow(
+                        1L, "n1", 50_000.01,
+                        2L, "n2", 120_000.);
+
+        DataFrame df2 = DataFrame.newFrame("id", "name", "salary")
+                .foldByRow(3L, "n3", "NaN");
+
+
+        try {
+            Tx.newTransaction(connector).run(c -> {
+                        c.tableSaver("t1").save(df1);
+                        c.tableSaver("t1").save(df2);
+                    }
+            );
+
+            fail("Exception expected");
+        } catch (RuntimeException e) {
+            assertEquals("Error updating data in DB: The resulting value is outside the range for the data type DOUBLE.",
+                    e.getMessage());
+        }
 
         DataFrame df_12 = connector.tableLoader("t1").load();
 

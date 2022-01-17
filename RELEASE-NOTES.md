@@ -2,6 +2,7 @@
 
 * #136 Support for loading Excel files
 * #137 "ne" incorrectly compares numbers with non-numbers
+* #139 JDBC Tx "Error processing connection" on rollback of nested transactions
 
 ## Release 0.12
 

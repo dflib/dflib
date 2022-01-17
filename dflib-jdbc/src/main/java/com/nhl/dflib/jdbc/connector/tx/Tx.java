@@ -60,7 +60,7 @@ public class Tx {
             // catching Exception, not SQLException, to ensure we rollback even if the error is not originating in the DB
             catch (Exception e) {
                 txConnector.rollback();
-                throw new RuntimeException(e);
+                throw new RuntimeException(e.getMessage(), e);
             }
         }
     }
