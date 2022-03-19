@@ -74,4 +74,17 @@ public class DataFrame_SelectColumnsTest {
                 .expectRow(0, "x", 1)
                 .expectRow(1, "y", 2);
     }
+
+    @Test
+    public void testWithAsExp(){
+        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+                1, "x",
+                2, "y")
+                .selectColumns($col("b"), $int("a").mul($int("a")).as("c"));
+
+        new DataFrameAsserts(df, "b", "c")
+                .expectHeight(2)
+                .expectRow(0, "x", 1)
+                .expectRow(1, "y", 4);
+    }
 }

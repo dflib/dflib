@@ -549,9 +549,9 @@ public class ColumnDataFrame implements DataFrame {
     public DataFrame selectColumns(Exp<?> exp0, Exp<?>... otherExps) {
         int w = otherExps.length + 1;
         String[] labels = new String[w];
-        labels[0] = exp0.toQL(this);
+        labels[0] = exp0.getColumnName(this);
         for (int i = 1; i < w; i++) {
-            labels[i] = otherExps[i - 1].toQL(this);
+            labels[i] = otherExps[i - 1].getColumnName(this);
         }
 
         Series[] data = new Series[w];
