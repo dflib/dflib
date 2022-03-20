@@ -3,6 +3,7 @@
 * #136 Support for loading Excel files
 * #137 "ne" incorrectly compares numbers with non-numbers
 * #139 JDBC Tx "Error processing connection" on rollback of nested transactions
+* #142 Use Exp.getColumn instead of  Exp.toQL for method DataFrame.selectColumns
 
 ## Release 0.12
 
