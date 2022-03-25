@@ -17,7 +17,7 @@ public class IntExp2 extends MapExp2<Integer, Integer, Integer> implements NumEx
             Exp<Integer> right,
             BiFunction<Integer, Integer, Integer> op,
             BinaryOperator<IntSeries> primitiveOp) {
-        return new IntExp2(opName, left, right, valToSeries(op), primitiveOp);
+        return new IntExp2(opName, left, right, valToSeries(op,Integer.class), primitiveOp);
     }
 
     private final BinaryOperator<IntSeries> primitiveOp;

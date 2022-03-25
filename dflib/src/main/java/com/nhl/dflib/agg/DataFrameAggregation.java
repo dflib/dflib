@@ -2,7 +2,6 @@ package com.nhl.dflib.agg;
 
 import com.nhl.dflib.*;
 import com.nhl.dflib.accumulator.Accumulator;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
 import com.nhl.dflib.series.SingleValueSeries;
 
 /**
@@ -38,8 +37,7 @@ public class DataFrameAggregation {
 
             Exp<?> agg = aggregators[i];
 
-            // TODO: primitives support for performance
-            Accumulator columnBuilder = new ObjectAccumulator(aggH);
+            Accumulator columnBuilder = Accumulator.factory(agg.getType(), aggH);
 
             for (Object key : groupBy.getGroups()) {
                 DataFrame group = groupBy.getGroup(key);
