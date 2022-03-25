@@ -25,8 +25,7 @@ public class SeriesAggregation {
 
     public static <T, R> Series<R> aggGroupBy(SeriesGroupBy<T> groupBy, Exp<R> aggregator) {
 
-        // TODO: let Aggregator generate and fill SeriesBuilder, as it can use primitive collections
-        ObjectAccumulator<R> columnBuilder = new ObjectAccumulator<>(groupBy.size());
+        Accumulator columnBuilder = Accumulator.factory(aggregator.getType(),groupBy.size());
 
         for (Object key : groupBy.getGroups()) {
             Series<T> group = groupBy.getGroup(key);
@@ -48,8 +47,7 @@ public class SeriesAggregation {
 
             Exp<?> agg = aggregators[i];
 
-            // TODO: let Aggregator fill Accumulator, as it can use primitive collections
-            Accumulator columnBuilder = new ObjectAccumulator(aggH);
+            Accumulator columnBuilder = Accumulator.factory(agg.getType(),aggH);
 
             for (Object key : groupBy.getGroups()) {
                 Series<T> group = groupBy.getGroup(key);

@@ -1,11 +1,29 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.agg.SeriesAggregation;
-import com.nhl.dflib.series.*;
+import com.nhl.dflib.series.ArraySeries;
+import com.nhl.dflib.series.EmptySeries;
+import com.nhl.dflib.series.FalseSeries;
+import com.nhl.dflib.series.IntArraySeries;
+import com.nhl.dflib.series.ListSeries;
+import com.nhl.dflib.series.OffsetLagSeries;
+import com.nhl.dflib.series.OffsetLeadSeries;
+import com.nhl.dflib.series.DoubleSingleValueSeries;
+import com.nhl.dflib.series.IntSingleValueSeries;
+import com.nhl.dflib.series.LongSingleValueSeries;
+import com.nhl.dflib.series.SingleValueSeries;
+import com.nhl.dflib.series.TrueSeries;
 import com.nhl.dflib.sort.SeriesSorter;
 
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Random;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
 
@@ -447,5 +465,23 @@ public interface Series<T> extends Iterable<T> {
 
         copyTo(copy, 0, 0, len);
         return copy;
+    }
+
+    static Series<?> singleValue(Class<?> type, Object value, int height) {
+        if (Integer.class ==type) {
+            return  new IntSingleValueSeries((int) value, height);
+        } else if (Long.class == type) {
+            return  new LongSingleValueSeries((long) value, height);
+        } else if (Double.class == type) {
+            return new DoubleSingleValueSeries((double) value, height);
+        } else if (Boolean.class == type) {
+            if (value == null || !(boolean) value) {
+                return new FalseSeries(height);
+            } else {
+                return new TrueSeries(height);
+            }
+        } else {
+            return new SingleValueSeries<>(value, height);
+        }
     }
 }
