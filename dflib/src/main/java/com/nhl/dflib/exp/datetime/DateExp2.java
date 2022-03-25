@@ -14,7 +14,7 @@ import java.util.function.BiFunction;
 public class DateExp2<L, R> extends MapExp2<L, R, LocalDate> implements DateExp {
 
     public static <L, R> DateExp2<L, R> mapVal(String opName, Exp<L> left, Exp<R> right, BiFunction<L, R, LocalDate> op) {
-        return new DateExp2<>(opName, left, right, valToSeries(op));
+        return new DateExp2<>(opName, left, right, valToSeries(op,LocalDate.class));
     }
 
     public DateExp2(String opName, Exp<L> left, Exp<R> right, BiFunction<Series<L>, Series<R>, Series<LocalDate>> op) {

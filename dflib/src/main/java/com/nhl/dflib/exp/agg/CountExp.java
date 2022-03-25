@@ -4,7 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.NumExp;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.exp.Exp0;
-import com.nhl.dflib.series.SingleValueSeries;
+import com.nhl.dflib.series.IntSingleValueSeries;
 
 /**
  * @since 0.11
@@ -25,15 +25,13 @@ public class CountExp extends Exp0<Integer> implements NumExp<Integer> {
     public Series<Integer> eval(DataFrame df) {
         int c = df.height();
 
-        // TODO: IntSingleValueSeries
-        return new SingleValueSeries<>(c, 1);
+        return new IntSingleValueSeries(c, 1);
     }
 
     @Override
     public Series<Integer> eval(Series<?> s) {
         int c = s.size();
 
-        // TODO: IntSingleValueSeries
-        return new SingleValueSeries<>(c, 1);
+        return new IntSingleValueSeries(c, 1);
     }
 }

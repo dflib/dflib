@@ -20,7 +20,7 @@ public class DoubleExp2 extends MapExp2<Double, Double, Double> implements NumEx
             Exp<Double> right,
             BiFunction<Double, Double, Double> op,
             BinaryOperator<DoubleSeries> primitiveOp) {
-        return new DoubleExp2(opName, left, right, valToSeries(op), primitiveOp);
+        return new DoubleExp2(opName, left, right, valToSeries(op,Double.class), primitiveOp);
     }
 
     private final BinaryOperator<DoubleSeries> primitiveOp;

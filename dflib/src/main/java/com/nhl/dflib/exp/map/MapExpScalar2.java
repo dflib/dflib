@@ -2,7 +2,7 @@ package com.nhl.dflib.exp.map;
 
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
+import com.nhl.dflib.accumulator.Accumulator;
 import com.nhl.dflib.exp.ExpScalar2;
 import com.nhl.dflib.series.SingleValueSeries;
 
@@ -21,10 +21,10 @@ public class MapExpScalar2<L, R, T> extends ExpScalar2<L, R, T> {
     }
 
     public static <L, R, T> MapExpScalar2<L, R, T> mapVal(String opName, Class<T> type, Exp<L> left, R right, BiFunction<L, R, T> op) {
-        return new MapExpScalar2<>(opName, type, left, right, valToSeries(op));
+        return new MapExpScalar2<>(opName, type, left, right, valToSeries(op,type));
     }
 
-    protected static <L, R, T> BiFunction<Series<L>, R, Series<T>> valToSeries(BiFunction<L, R, T> op) {
+    protected static <L, R, T> BiFunction<Series<L>, R, Series<T>> valToSeries(BiFunction<L, R, T> op,Class<T> type) {
         return (left, right) -> {
 
             if (right == null) {
@@ -32,7 +32,7 @@ public class MapExpScalar2<L, R, T> extends ExpScalar2<L, R, T> {
             }
 
             int len = left.size();
-            ObjectAccumulator<T> accum = new ObjectAccumulator<>(len);
+            Accumulator accum = Accumulator.factory(type, len);
             for (int i = 0; i < len; i++) {
                 L l = left.get(i);
                 accum.add(l != null ? op.apply(l, right) : null);

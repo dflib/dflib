@@ -46,4 +46,18 @@ public interface Accumulator<T> {
     }
 
     Series<T> toSeries();
+
+    static <T> Accumulator<?> factory(Class<T> type, int capacity){
+        if (Integer.class == type || Integer.TYPE == type || int.class == type) {
+            return new IntAccumulator(capacity);
+        } else if (Long.class == type || Long.TYPE == type || long.class == type){
+            return new LongAccumulator(capacity);
+        } else if (Double.class == type || Double.TYPE == type || double.class == type) {
+            return new DoubleAccumulator(capacity);
+        } else if (Boolean.class == type || Boolean.TYPE == type || boolean.class == type) {
+            return new BooleanAccumulator(capacity);
+        } else {
+            return new ObjectAccumulator<>(capacity);
+        }
+    }
 }
