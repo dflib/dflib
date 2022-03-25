@@ -116,7 +116,7 @@ public class IntColumnTest {
                 3, 4);
 
         Series<? extends Number> s = $int("b").sub($int("a")).eval(df);
-        assertFalse(s instanceof IntSeries);
+        assertTrue(s instanceof IntSeries);
         new SeriesAsserts(s).expectData(1, 1);
     }
 
@@ -127,7 +127,7 @@ public class IntColumnTest {
                 3, 5);
 
         Series<? extends Number> s = $int("b").mul($int("a")).eval(df);
-        assertFalse(s instanceof IntSeries);
+        assertTrue(s instanceof IntSeries);
         new SeriesAsserts(s).expectData(12, 15);
     }
 
@@ -149,7 +149,7 @@ public class IntColumnTest {
                 3, 4);
 
         Series<? extends Number> s = $int("b").add($int("a")).eval(df);
-        assertFalse(s instanceof IntSeries);
+        assertTrue(s instanceof IntSeries);
         new SeriesAsserts(s).expectData(3, 7);
     }
 
@@ -177,7 +177,7 @@ public class IntColumnTest {
                 3., 4);
 
         Series<? extends Number> s = $int("b").add($double("a")).eval(df);
-        assertFalse(s instanceof DoubleSeries);
+        assertTrue(s instanceof DoubleSeries);
         new SeriesAsserts(s).expectData(3.01, 7.);
     }
 

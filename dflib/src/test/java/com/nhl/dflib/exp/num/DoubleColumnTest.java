@@ -64,7 +64,7 @@ public class DoubleColumnTest {
                 3., 4.5);
 
         Series<? extends Number> s = e.eval(df);
-        assertFalse(s instanceof DoubleSeries);
+        assertTrue(s instanceof DoubleSeries);
         new SeriesAsserts(s).expectData(3.01, 7.5);
     }
 
@@ -97,7 +97,7 @@ public class DoubleColumnTest {
                 3., 4);
 
         Series<? extends Number> s = e.eval(df);
-        assertFalse(s instanceof DoubleSeries);
+        assertTrue(s instanceof DoubleSeries);
         new SeriesAsserts(s).expectData(3.01, 7.);
     }
 
@@ -110,7 +110,7 @@ public class DoubleColumnTest {
                 3., 4.5);
 
         Series<? extends Number> s = e.eval(df);
-        assertFalse(s instanceof DoubleSeries);
+        assertTrue(s instanceof DoubleSeries);
         new SeriesAsserts(s).expectData(0.99, 1.5);
     }
 
