@@ -64,6 +64,9 @@ public class SingleDoubleValueSeries extends DoubleBaseSeries {
 
     @Override
     public double getDouble(int index) {
+        if (index >= size) {
+            throw new ArrayIndexOutOfBoundsException(index);
+        }
         return value;
     }
 
