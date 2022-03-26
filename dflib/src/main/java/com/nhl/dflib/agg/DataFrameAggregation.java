@@ -1,8 +1,12 @@
 package com.nhl.dflib.agg;
 
-import com.nhl.dflib.*;
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Exp;
+import com.nhl.dflib.GroupBy;
+import com.nhl.dflib.Index;
+import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.accumulator.Accumulator;
-import com.nhl.dflib.series.SingleValueSeries;
 
 /**
  * Defines aggregation operations over DataFrame's and GroupBy's
@@ -62,8 +66,7 @@ public class DataFrameAggregation {
         int w = oneRowDf.width();
         Series<?>[] expandedColumns = new Series[w];
         for (int i = 0; i < w; i++) {
-            // TODO: primitive series support
-            expandedColumns[i] = new SingleValueSeries<>(oneRowDf.getColumn(i).get(0), h);
+            expandedColumns[i] = Series.singleValue(aggregators[i].getType(), oneRowDf.getColumn(i).get(0), h);
         }
 
         return DataFrame.newFrame(oneRowDf.getColumnsIndex()).columns(expandedColumns);

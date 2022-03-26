@@ -22,7 +22,7 @@ public class SingleDoubleValueSeries_AggTest {
     @Test
     public void testAgg_SumLong() {
         SingleDoubleValueSeries s = new SingleDoubleValueSeries(1.1, 2);
-        assertEquals(2, s.agg(Exp.$long("").sum()).get(0));
+        assertEquals(2L, s.agg(Exp.$long("").sum()).get(0));
     }
 
     @Test
