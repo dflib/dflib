@@ -63,11 +63,14 @@ public class SingleLongValueSeries extends LongBaseSeries {
 
     private Series<Long> alignAndReplace(Series<? extends Long> another) {
 
-       return this;
+        return this;
     }
 
     @Override
     public long getLong(int index) {
+        if (index >= size) {
+            throw new ArrayIndexOutOfBoundsException(index);
+        }
         return value;
     }
 
