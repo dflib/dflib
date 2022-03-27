@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class SingleIntValueSeries_AggTest {
+public class IntSingleValueSeries_AggTest {
 
     @Test
     public void testFirst() {

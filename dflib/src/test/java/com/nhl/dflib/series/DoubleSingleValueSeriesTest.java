@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class SingleDoubleValueSeriesTest  {
+public class DoubleSingleValueSeriesTest {
     @Test
     public void testGetDouble() {
         DoubleSingleValueSeries s = new DoubleSingleValueSeries(1., 2);

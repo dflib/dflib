@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class SingleDoubleValueSeries_AggTest {
+public class DoubleSingleValueSeries_AggTest {
     @Test
     public void testSum() {
         DoubleSingleValueSeries s = new DoubleSingleValueSeries(1.1, 2);

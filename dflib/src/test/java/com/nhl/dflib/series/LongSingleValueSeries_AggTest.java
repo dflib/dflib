@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SingleLongValueSeries_AggTest {
+public class LongSingleValueSeries_AggTest {
     @Test
     public void testSum() {
         LongSingleValueSeries s = new LongSingleValueSeries(1L, 2);
