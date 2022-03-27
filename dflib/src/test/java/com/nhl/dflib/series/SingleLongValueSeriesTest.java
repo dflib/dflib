@@ -9,7 +9,7 @@ public class SingleLongValueSeriesTest {
 
     @Test
     public void testGetLong() {
-        SingleLongValueSeries s = new SingleLongValueSeries(1L, 2);
+        LongSingleValueSeries s = new LongSingleValueSeries(1L, 2);
         assertEquals(1, s.getLong(0));
         assertEquals(1, s.getLong(1));
     }
@@ -17,7 +17,7 @@ public class SingleLongValueSeriesTest {
 
     @Test
     public void testGetInt_Offset_OutOfBounds() {
-        SingleLongValueSeries s = new SingleLongValueSeries(1L, 2);
+        LongSingleValueSeries s = new LongSingleValueSeries(1L, 2);
         assertThrows(ArrayIndexOutOfBoundsException.class, () -> s.getLong(3));
     }
 }

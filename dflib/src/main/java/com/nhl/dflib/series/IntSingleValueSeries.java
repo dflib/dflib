@@ -3,12 +3,12 @@ package com.nhl.dflib.series;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 
-public class SingleIntValueSeries extends IntBaseSeries {
+public class IntSingleValueSeries extends IntBaseSeries {
 
     private final int value;
     private final int size;
 
-    public SingleIntValueSeries(int value, int size) {
+    public IntSingleValueSeries(int value, int size) {
         this.value = value;
         this.size = size;
     }
@@ -24,11 +24,6 @@ public class SingleIntValueSeries extends IntBaseSeries {
             throw new ArrayIndexOutOfBoundsException(index);
         }
         return value;
-    }
-
-    @Override
-    public void copyTo(Object[] to, int fromOffset, int toOffset, int len) {
-
     }
 
     @Override
@@ -72,7 +67,13 @@ public class SingleIntValueSeries extends IntBaseSeries {
 
     @Override
     public void copyToInt(int[] to, int fromOffset, int toOffset, int len) {
-
+        if (fromOffset + len > size) {
+            throw new ArrayIndexOutOfBoundsException(fromOffset + len);
+        }
+        int targetIdx = toOffset;
+        for (int i = fromOffset; i < len; i++) {
+            to[targetIdx++] = get(i);
+        }
     }
 
     @Override
@@ -107,7 +108,7 @@ public class SingleIntValueSeries extends IntBaseSeries {
 
     @Override
     public long sum() {
-        return value * size;
+        return (long) value * size;
     }
 
     @Override

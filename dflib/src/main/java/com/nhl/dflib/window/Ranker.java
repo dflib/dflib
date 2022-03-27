@@ -2,6 +2,7 @@ package com.nhl.dflib.window;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.series.IntSingleValueSeries;
 import com.nhl.dflib.sort.IntComparator;
 import com.nhl.dflib.sort.DataFrameSorter;
 
@@ -23,11 +24,7 @@ public class Ranker {
 
     public static IntSeries sameRank(int size) {
         // no sort order means each row is equivalent from the ranking perspective, so return a Series of 1's
-        int[] ints = new int[size];
-        Arrays.fill(ints, RowNumberer.START_NUMBER);
-
-        // TODO: single value IntSeries
-        return IntSeries.forInts(ints);
+        return new IntSingleValueSeries(RowNumberer.START_NUMBER,size);
     }
 
     public IntSeries rank(DataFrame dataFrame) {

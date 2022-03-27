@@ -8,9 +8,9 @@ import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.series.ListSeries;
 import com.nhl.dflib.series.OffsetLagSeries;
 import com.nhl.dflib.series.OffsetLeadSeries;
-import com.nhl.dflib.series.SingleDoubleValueSeries;
-import com.nhl.dflib.series.SingleIntValueSeries;
-import com.nhl.dflib.series.SingleLongValueSeries;
+import com.nhl.dflib.series.DoubleSingleValueSeries;
+import com.nhl.dflib.series.IntSingleValueSeries;
+import com.nhl.dflib.series.LongSingleValueSeries;
 import com.nhl.dflib.series.SingleValueSeries;
 import com.nhl.dflib.series.TrueSeries;
 import com.nhl.dflib.sort.SeriesSorter;
@@ -469,11 +469,11 @@ public interface Series<T> extends Iterable<T> {
 
     static Series<?> singleValue(Class<?> type, Object value, int height) {
         if (Integer.class ==type) {
-            return  new SingleIntValueSeries((int) value, height);
+            return  new IntSingleValueSeries((int) value, height);
         } else if (Long.class == type) {
-            return  new SingleLongValueSeries((long) value, height);
+            return  new LongSingleValueSeries((long) value, height);
         } else if (Double.class == type) {
-            return new SingleDoubleValueSeries((double) value, height);
+            return new DoubleSingleValueSeries((double) value, height);
         } else if (Boolean.class == type) {
             if (value == null || !(boolean) value) {
                 return new FalseSeries(height);
