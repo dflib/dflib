@@ -32,29 +32,26 @@ public class DoubleSingleValueSeries extends DoubleBaseSeries {
     }
 
     @Override
-    public Series<Double> rangeOpenClosed(int fromInclusive, int toExclusive) {
-        return fromInclusive == 0 && toExclusive == size()
-                ? this
-                : new DoubleSingleValueSeries(value, toExclusive - fromInclusive);
-    }
-
-    @Override
     public Series<Double> fillNulls(Double value) {
+        // primitive series has no nulls
         return this;
     }
 
     @Override
     public Series<Double> fillNullsFromSeries(Series<? extends Double> values) {
+        // primitive series has no nulls
         return this;
     }
 
     @Override
     public Series<Double> fillNullsBackwards() {
+        // primitive series has no nulls
         return this;
     }
 
     @Override
     public Series<Double> fillNullsForward() {
+        // primitive series has no nulls
         return this;
     }
 
@@ -85,17 +82,19 @@ public class DoubleSingleValueSeries extends DoubleBaseSeries {
 
     @Override
     public DoubleSeries rangeOpenClosedDouble(int fromInclusive, int toExclusive) {
-        return this;
+        return fromInclusive == 0 && toExclusive == size()
+                ? this
+                : new DoubleSingleValueSeries(value, toExclusive - fromInclusive);
     }
 
     @Override
     public DoubleSeries headDouble(int len) {
-        return this;
+        return len < size ? new DoubleSingleValueSeries(value, len) : this;
     }
 
     @Override
     public DoubleSeries tailDouble(int len) {
-        return this;
+        return len < size ? new DoubleSingleValueSeries(value, len) : this;
     }
 
     @Override

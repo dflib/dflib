@@ -32,32 +32,26 @@ public class LongSingleValueSeries extends LongBaseSeries {
     }
 
     @Override
-    public Series<Long> rangeOpenClosed(int fromInclusive, int toExclusive) {
-        return this;
-    }
-
-    @Override
     public Series<Long> fillNulls(Long value) {
+        // primitive series has no nulls
         return this;
     }
 
     @Override
     public Series<Long> fillNullsFromSeries(Series<? extends Long> values) {
+        // primitive series has no nulls
         return this;
     }
 
     @Override
     public Series<Long> fillNullsBackwards() {
+        // primitive series has no nulls
         return this;
     }
 
     @Override
     public Series<Long> fillNullsForward() {
-        return this;
-    }
-
-    private Series<Long> alignAndReplace(Series<? extends Long> another) {
-
+        // primitive series has no nulls
         return this;
     }
 
@@ -94,12 +88,12 @@ public class LongSingleValueSeries extends LongBaseSeries {
 
     @Override
     public LongSeries headLong(int len) {
-        return this;
+        return len < size ? new LongSingleValueSeries(value, len) : this;
     }
 
     @Override
     public LongSeries tailLong(int len) {
-        return this;
+        return len < size ? new LongSingleValueSeries(value, len) : this;
     }
 
     @Override

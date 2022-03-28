@@ -32,29 +32,26 @@ public class IntSingleValueSeries extends IntBaseSeries {
     }
 
     @Override
-    public Series<Integer> rangeOpenClosed(int fromInclusive, int toExclusive) {
-        return fromInclusive == 0 && toExclusive == size()
-                ? this
-                : new IntSingleValueSeries(value, toExclusive - fromInclusive);
-    }
-
-    @Override
     public Series<Integer> fillNulls(Integer value) {
+        // primitive series has no nulls
         return this;
     }
 
     @Override
     public Series<Integer> fillNullsFromSeries(Series<? extends Integer> values) {
+        // primitive series has no nulls
         return this;
     }
 
     @Override
     public Series<Integer> fillNullsBackwards() {
+        // primitive series has no nulls
         return this;
     }
 
     @Override
     public Series<Integer> fillNullsForward() {
+        // primitive series has no nulls
         return this;
     }
 
@@ -85,17 +82,19 @@ public class IntSingleValueSeries extends IntBaseSeries {
 
     @Override
     public IntSeries rangeOpenClosedInt(int fromInclusive, int toExclusive) {
-        return this;
+        return fromInclusive == 0 && toExclusive == size()
+                ? this
+                : new IntSingleValueSeries(value, toExclusive - fromInclusive);
     }
 
     @Override
     public IntSeries headInt(int len) {
-        return this;
+        return len < size ? new IntSingleValueSeries(value, len) : this;
     }
 
     @Override
     public IntSeries tailInt(int len) {
-        return this;
+        return len < size ? new IntSingleValueSeries(value, len) : this;
     }
 
     @Override
