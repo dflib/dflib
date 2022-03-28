@@ -68,4 +68,10 @@ public class Excel {
     public static ExcelLoader loader() {
         return new ExcelLoader();
     }
+
+    public static ExcelSaver saver() {
+        return new ExcelSaver();
+    }
+
+
 }
