@@ -33,7 +33,9 @@ public class DoubleSingleValueSeries extends DoubleBaseSeries {
 
     @Override
     public Series<Double> rangeOpenClosed(int fromInclusive, int toExclusive) {
-        return this;
+        return fromInclusive == 0 && toExclusive == size()
+                ? this
+                : new DoubleSingleValueSeries(value, toExclusive - fromInclusive);
     }
 
     @Override

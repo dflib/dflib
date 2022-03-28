@@ -33,7 +33,9 @@ public class IntSingleValueSeries extends IntBaseSeries {
 
     @Override
     public Series<Integer> rangeOpenClosed(int fromInclusive, int toExclusive) {
-       return this;
+        return fromInclusive == 0 && toExclusive == size()
+                ? this
+                : new IntSingleValueSeries(value, toExclusive - fromInclusive);
     }
 
     @Override
