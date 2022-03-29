@@ -2,22 +2,42 @@ package com.nhl.dflib.excel;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DataFrameByRowBuilder;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @since 0.13
  */
 public class ExcelLoader {
 
+    private boolean skipHeader;
+
+    /**
+     * Skips the first number of rows. E.g. if the header is  column index, you might call this method.
+     *
+     * @return this loader instance
+     */
+    public ExcelLoader skipHeader() {
+        this.skipHeader = true;
+        return this;
+    }
+
     // TODO: add builder method to capture Excel file password
     // TODO: add builder method for specifying named sheets to load
-    // TODO: add builder method to use the first row values as index
 
     public DataFrame loadSheet(InputStream in, String sheetName) {
         try (Workbook wb = loadWorkbook(in)) {
@@ -154,8 +174,9 @@ public class ExcelLoader {
 
         Object[] buffer = new Object[range.width];
 
+        int startIdx = skipHeader ? 1 : 0;
         // Don't skip empty rows or columns in the middle of a range, but truncate leading empty rows and columns
-        for (int r = 0; r < range.height; r++) {
+        for (int r = startIdx; r < range.height; r++) {
 
             Row row = sh.getRow(range.startRow + r);
             if (row == null) {

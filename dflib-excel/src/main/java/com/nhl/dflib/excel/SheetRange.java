@@ -31,6 +31,7 @@ class SheetRange {
         int startCol = Short.MAX_VALUE + 1;
         int endCol = Short.MIN_VALUE - 1;
 
+
         for (Row r : sh) {
 
             // skip "phantom" rows from range calculation. The effect of this is stripping leading and
@@ -45,6 +46,7 @@ class SheetRange {
             startCol = Math.min(r.getFirstCellNum(), startCol);
             endCol = Math.max(r.getLastCellNum(), endCol);
         }
+
 
         return new SheetRange(
                 startCol,
@@ -65,7 +67,6 @@ class SheetRange {
 
     Index columns() {
         String[] names = new String[width];
-
         for (int i = 0; i < width; i++) {
             names[i] = CellReference.convertNumToColString(startCol + i);
         }
