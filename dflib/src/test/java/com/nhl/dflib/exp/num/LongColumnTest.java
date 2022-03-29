@@ -68,7 +68,7 @@ public class LongColumnTest {
                 3L, 4L);
 
         Series<? extends Number> s = e.eval(df);
-        assertFalse(s instanceof LongSeries);
+        assertTrue(s instanceof LongSeries);
         new SeriesAsserts(s).expectData(2000_000_000_002L, 7L);
     }
 

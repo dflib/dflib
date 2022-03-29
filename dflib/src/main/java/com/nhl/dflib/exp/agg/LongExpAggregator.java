@@ -4,6 +4,7 @@ import com.nhl.dflib.Exp;
 import com.nhl.dflib.NumExp;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.exp.Exp1;
+import com.nhl.dflib.series.LongSingleValueSeries;
 import com.nhl.dflib.series.SingleValueSeries;
 
 import java.util.function.Function;
@@ -26,6 +27,6 @@ public class LongExpAggregator<F> extends Exp1<F, Long> implements NumExp<Long> 
         //  E.g. "IntSeries.average()" is faster than "AggregatorFunctions.averageDouble()"
 
         long val = aggregator.apply(s);
-        return new SingleValueSeries<>(val, 1);
+        return new LongSingleValueSeries(val, 1);
     }
 }

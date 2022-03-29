@@ -17,7 +17,7 @@ public class LongExp2 extends MapExp2<Long, Long, Long> implements NumExp<Long> 
             Exp<Long> right,
             BiFunction<Long, Long, Long> op,
             BinaryOperator<LongSeries> primitiveOp) {
-        return new LongExp2(opName, left, right, valToSeries(op), primitiveOp);
+        return new LongExp2(opName, left, right, valToSeries(op,Long.class), primitiveOp);
     }
 
     private final BinaryOperator<LongSeries> primitiveOp;

@@ -14,7 +14,7 @@ import java.util.function.BiFunction;
 public class DecimalExp2 extends MapExp2<BigDecimal, BigDecimal, BigDecimal> implements DecimalExp {
 
     public static DecimalExp2 mapVal(String opName, Exp<BigDecimal> left, Exp<BigDecimal> right, BiFunction<BigDecimal, BigDecimal, BigDecimal> op) {
-        return new DecimalExp2(opName, left, right, valToSeries(op));
+        return new DecimalExp2(opName, left, right, valToSeries(op,BigDecimal.class));
     }
 
     protected DecimalExp2(
