@@ -45,13 +45,13 @@
     <distributionManagement>
         <repository>
             <uniqueVersion>false</uniqueVersion>
-            <id>oss-sonatype-releases</id>
+            <id>deploymentRepo</id>
             <name>Deployment Repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+            <url>https://nexus.qiniu.io:13990/repository/maven-releases/</url>
         </repository>
         <snapshotRepository>
-            <id>dflib-snapshots</id>
-            <url>https://maven.objectstyle.org/nexus/content/repositories/linkrest-snapshots</url>
+            <id>snapshots</id>
+            <url>https://nexus.qiniu.io:13990/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 

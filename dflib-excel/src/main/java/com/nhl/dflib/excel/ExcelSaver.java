@@ -63,15 +63,24 @@ public class ExcelSaver {
             }
         }
 
+        try (OutputStream out = new FileOutputStream(file)) {
+            save(dataFrames,out);
+        } catch (IOException e) {
+            throw new RuntimeException("Error writing EXCEL to " + file + ": " + e.getMessage(), e);
+        }
+    }
+
+    public void save(Map<String, DataFrame> dataFrames, OutputStream out) {
+
         XSSFWorkbook workbook = new XSSFWorkbook();
         dataFrames.forEach((sheetName, dataFrame) -> {
             createSheet(workbook, sheetName, dataFrame);
         });
 
-        try (OutputStream out = new FileOutputStream(file)) {
+        try {
             workbook.write(out);
         } catch (IOException e) {
-            throw new RuntimeException("Error writing EXCEL to " + file + ": " + e.getMessage(), e);
+            throw new RuntimeException("Error writing EXCEL to Stream" + e.getMessage(), e);
         }
     }
 
