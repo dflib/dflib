@@ -19,18 +19,7 @@ public class DoubleSingleValueSeries extends DoubleBaseSeries {
     }
 
     @Override
-    public Double get(int index) {
-        if (index >= size) {
-            throw new ArrayIndexOutOfBoundsException(index);
-        }
-        return value;
-    }
-
-    @Override
     public double getDouble(int index) {
-        if (index >= size) {
-            throw new ArrayIndexOutOfBoundsException(index);
-        }
         return value;
     }
 

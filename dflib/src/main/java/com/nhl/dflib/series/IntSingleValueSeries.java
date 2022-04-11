@@ -19,14 +19,6 @@ public class IntSingleValueSeries extends IntBaseSeries {
     }
 
     @Override
-    public Integer get(int index) {
-        if (index >= size) {
-            throw new ArrayIndexOutOfBoundsException(index);
-        }
-        return value;
-    }
-
-    @Override
     public int getInt(int index) {
         if (index >= size) {
             throw new ArrayIndexOutOfBoundsException(index);

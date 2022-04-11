@@ -27,10 +27,6 @@ public class SingleValueSeries<T> extends ObjectSeries<T> {
 
     @Override
     public T get(int index) {
-        if (index >= size) {
-            throw new ArrayIndexOutOfBoundsException(index);
-        }
-
         return value;
     }
 

@@ -6,7 +6,6 @@ import com.nhl.dflib.Series;
  * @since 0.11
  */
 public class ConstExp<T> extends ScalarExp<T> {
-    private volatile Series cached;
 
     public ConstExp(T value, Class<T> type) {
         super(value, type);
@@ -14,10 +13,7 @@ public class ConstExp<T> extends ScalarExp<T> {
 
     @Override
     protected Series doEval(int height, Object value) {
-        if (cached == null) {
-            cached = Series.singleValue(getType(), value, height);
-        }
-        return cached;
+        return Series.singleValue(getType(), value, height);
     }
 
 

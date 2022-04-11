@@ -14,10 +14,4 @@ public class LongSingleValueSeriesTest {
         assertEquals(1, s.getLong(1));
     }
 
-
-    @Test
-    public void testGetInt_Offset_OutOfBounds() {
-        LongSingleValueSeries s = new LongSingleValueSeries(1L, 2);
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> s.getLong(3));
-    }
 }

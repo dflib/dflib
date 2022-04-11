@@ -13,10 +13,4 @@ public class DoubleSingleValueSeriesTest {
         assertEquals(1, s.getDouble(1));
     }
 
-
-    @Test
-    public void testGetInt_Offset_OutOfBounds() {
-        DoubleSingleValueSeries s = new DoubleSingleValueSeries(1., 2);
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> s.getDouble(3));
-    }
 }
