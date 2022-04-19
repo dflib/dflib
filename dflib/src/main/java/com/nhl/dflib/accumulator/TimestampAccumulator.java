@@ -2,27 +2,27 @@ package com.nhl.dflib.accumulator;
 
 import com.nhl.dflib.Series;
 import com.nhl.dflib.series.ArraySeries;
+import com.nhl.dflib.series.TimestampSeries;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 
-/**
- * @since 0.6
- */
-public class ObjectAccumulator<T> implements Accumulator<T> {
-
-    protected T[] data;
-    protected int size;
-
-    public ObjectAccumulator() {
+public class TimestampAccumulator implements Accumulator<Timestamp> {
+    public TimestampAccumulator() {
         this(10);
     }
 
-    public ObjectAccumulator(int capacity) {
+    public TimestampAccumulator(int capacity) {
         this.size = 0;
-        this.data = (T[]) new Object[capacity];
+        this.data = new Timestamp[capacity];
     }
 
-    public void fill(int from, int to, T value) {
+
+    protected Timestamp[] data;
+    protected int size;
+
+
+    public void fill(int from, int to, Timestamp value) {
         if (to - from < 1) {
             return;
         }
@@ -36,7 +36,7 @@ public class ObjectAccumulator<T> implements Accumulator<T> {
     }
 
     @Override
-    public void add(T value) {
+    public void add(Timestamp value) {
 
         if (size == data.length) {
             expand(data.length * 2);
@@ -46,7 +46,7 @@ public class ObjectAccumulator<T> implements Accumulator<T> {
     }
 
     @Override
-    public void set(int pos, T v) {
+    public void set(int pos, Timestamp v) {
         if (pos >= size) {
             throw new IndexOutOfBoundsException(pos + " is out of bounds for " + size);
         }
@@ -55,30 +55,30 @@ public class ObjectAccumulator<T> implements Accumulator<T> {
     }
 
     @Override
-    public Series<T> toSeries() {
-        T[] data = compactData();
+    public Series<Timestamp> toSeries() {
+        Timestamp[] data = compactData();
 
         // making sure no one can change the series via the Mutable List anymore
         this.data = null;
 
         // TODO: difference from IntMutableList in that IntArraySeries supports ranged... Reconcile ArraySeries?
-        return new ArraySeries<>(data);
+        return new TimestampSeries(data);
     }
 
-    protected T[] compactData() {
+    protected Timestamp[] compactData() {
         if (data.length == size) {
             return data;
         }
 
-        Object[] newData = new Object[size];
+        Timestamp[] newData = new Timestamp[size];
         System.arraycopy(data, 0, newData, 0, size);
-        return (T[]) newData;
+        return newData;
     }
 
     private void expand(int newCapacity) {
-        Object[] newData = new Object[newCapacity];
+        Timestamp[] newData = new Timestamp[newCapacity];
         System.arraycopy(data, 0, newData, 0, size);
 
-        this.data = (T[]) newData;
+        this.data = newData;
     }
 }

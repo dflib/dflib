@@ -16,10 +16,16 @@ public class ExpAggregator<S, T> implements Exp<T> {
 
     private final Exp<S> exp;
     private final Function<Series<S>, T> aggregator;
+    private final Class<T> type;
 
     public ExpAggregator(Exp<S> exp, Function<Series<S>, T> aggregator) {
+        this(exp,aggregator, (Class<T>) Object.class);
+    }
+
+    public ExpAggregator(Exp<S> exp, Function<Series<S>, T> aggregator,Class<T> type) {
         this.exp = exp;
         this.aggregator = aggregator;
+        this.type = type;
     }
 
     @Override
@@ -29,8 +35,7 @@ public class ExpAggregator<S, T> implements Exp<T> {
 
     @Override
     public Class<T> getType() {
-        // TODO: ....
-        return (Class<T>) Object.class;
+        return type;
     }
 
     @Override

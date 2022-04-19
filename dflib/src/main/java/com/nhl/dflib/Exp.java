@@ -1,6 +1,8 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.exp.*;
+import com.nhl.dflib.exp.AsExp;
+import com.nhl.dflib.exp.ConstExp;
+import com.nhl.dflib.exp.GenericColumn;
 import com.nhl.dflib.exp.agg.CountExp;
 import com.nhl.dflib.exp.agg.ExpAggregator;
 import com.nhl.dflib.exp.agg.StringAggregators;
@@ -8,6 +10,8 @@ import com.nhl.dflib.exp.bool.AndCondition;
 import com.nhl.dflib.exp.bool.BoolColumn;
 import com.nhl.dflib.exp.bool.OrCondition;
 import com.nhl.dflib.exp.datetime.DateColumn;
+import com.nhl.dflib.exp.datetime.TimestampColumn;
+import com.nhl.dflib.exp.datetime.TimestampExp;
 import com.nhl.dflib.exp.filter.PreFilterFirstMatchExp;
 import com.nhl.dflib.exp.filter.PreFilteredCountExp;
 import com.nhl.dflib.exp.filter.PreFilteredExp;
@@ -188,6 +192,20 @@ public interface Exp<T> {
      */
     static DateExp $date(int position) {
         return new DateColumn(position);
+    }
+
+    /**
+     * Returns an expression that evaluates to a named timestamp column.
+     */
+    static TimestampExp $timestamp(String name) {
+        return new TimestampColumn(name);
+    }
+
+    /**
+     * Returns an expression that evaluates to a timestamp column at a given position.
+     */
+    static TimestampExp $timestamp(int position) {
+        return new TimestampColumn(position);
     }
 
     static Condition or(Condition... conditions) {
@@ -412,7 +430,7 @@ public interface Exp<T> {
     }
 
     default Exp<T> first() {
-        return agg(Series::first);
+        return new ExpAggregator<>(this, Series::first, getType());
     }
 
     default Exp<T> first(Condition filter) {

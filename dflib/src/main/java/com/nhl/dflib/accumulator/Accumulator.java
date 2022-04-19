@@ -2,6 +2,8 @@ package com.nhl.dflib.accumulator;
 
 import com.nhl.dflib.Series;
 
+import java.sql.Timestamp;
+
 /**
  * A mutable Series builder with API to create primitive and Object Series.
  *
@@ -47,10 +49,14 @@ public interface Accumulator<T> {
 
     Series<T> toSeries();
 
-    static <T> Accumulator<?> factory(Class<T> type, int capacity){
-        if (Integer.class == type || Integer.TYPE == type || int.class == type) {
+    static <T> Accumulator<?> factory(Class<T> type, int capacity) {
+        if (Timestamp.class == type) {
+            return new TimestampAccumulator(capacity);
+        } else if (String.class == type) {
+            return new StringAccumulator(capacity);
+        } else if (Integer.class == type || Integer.TYPE == type || int.class == type) {
             return new IntAccumulator(capacity);
-        } else if (Long.class == type || Long.TYPE == type || long.class == type){
+        } else if (Long.class == type || Long.TYPE == type || long.class == type) {
             return new LongAccumulator(capacity);
         } else if (Double.class == type || Double.TYPE == type || double.class == type) {
             return new DoubleAccumulator(capacity);

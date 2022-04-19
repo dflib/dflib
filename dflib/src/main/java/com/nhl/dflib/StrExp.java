@@ -2,6 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.exp.map.MapExpScalarCondition2;
 
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 /**
@@ -23,5 +24,18 @@ public interface StrExp extends Exp<String> {
 
     default Condition endsWith(String suffix) {
         return MapExpScalarCondition2.mapVal("endsWith", this, suffix, (s, p) -> s.endsWith(suffix));
+    }
+
+
+    default Condition in(String[] values) {
+        return MapExpScalarCondition2.mapVal("in", this, values, (s, r) -> Arrays.asList(r).contains(s));
+    }
+
+    default Condition notIn(String[] values) {
+        return MapExpScalarCondition2.mapVal("not in", this, values, (s, r) -> Arrays.stream(r).noneMatch(it-> it.equals(s)));
+    }
+
+    default Condition contains(String value) {
+        return MapExpScalarCondition2.mapVal("contain", this, value, (s, p) -> s.contains(value));
     }
 }

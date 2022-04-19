@@ -1,28 +1,26 @@
 package com.nhl.dflib.accumulator;
 
 import com.nhl.dflib.Series;
-import com.nhl.dflib.series.ArraySeries;
+import com.nhl.dflib.series.StringSeries;
 
 import java.util.Arrays;
 
-/**
- * @since 0.6
- */
-public class ObjectAccumulator<T> implements Accumulator<T> {
+public class StringAccumulator extends ObjectAccumulator<String> {
 
-    protected T[] data;
+
+    protected String[] data;
     protected int size;
 
-    public ObjectAccumulator() {
+    public StringAccumulator() {
         this(10);
     }
 
-    public ObjectAccumulator(int capacity) {
+    public StringAccumulator(int capacity) {
         this.size = 0;
-        this.data = (T[]) new Object[capacity];
+        this.data = (String[]) new Object[capacity];
     }
 
-    public void fill(int from, int to, T value) {
+    public void fill(int from, int to, String value) {
         if (to - from < 1) {
             return;
         }
@@ -36,7 +34,7 @@ public class ObjectAccumulator<T> implements Accumulator<T> {
     }
 
     @Override
-    public void add(T value) {
+    public void add(String value) {
 
         if (size == data.length) {
             expand(data.length * 2);
@@ -46,7 +44,7 @@ public class ObjectAccumulator<T> implements Accumulator<T> {
     }
 
     @Override
-    public void set(int pos, T v) {
+    public void set(int pos, String v) {
         if (pos >= size) {
             throw new IndexOutOfBoundsException(pos + " is out of bounds for " + size);
         }
@@ -55,30 +53,32 @@ public class ObjectAccumulator<T> implements Accumulator<T> {
     }
 
     @Override
-    public Series<T> toSeries() {
-        T[] data = compactData();
+    public Series<String> toSeries() {
+        String[] data = compactData();
 
         // making sure no one can change the series via the Mutable List anymore
         this.data = null;
 
         // TODO: difference from IntMutableList in that IntArraySeries supports ranged... Reconcile ArraySeries?
-        return new ArraySeries<>(data);
+        return new StringSeries(data);
     }
 
-    protected T[] compactData() {
+    protected String[] compactData() {
         if (data.length == size) {
             return data;
         }
 
-        Object[] newData = new Object[size];
+        String[] newData = new String[size];
         System.arraycopy(data, 0, newData, 0, size);
-        return (T[]) newData;
+        return newData;
     }
 
     private void expand(int newCapacity) {
-        Object[] newData = new Object[newCapacity];
+        String[] newData = new String[newCapacity];
         System.arraycopy(data, 0, newData, 0, size);
 
-        this.data = (T[]) newData;
+        this.data = newData;
     }
+
+
 }
