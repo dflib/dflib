@@ -21,7 +21,7 @@ public class TimestampSeries extends ObjectSeries<Timestamp> {
 
     @SafeVarargs
     public TimestampSeries(Timestamp... data) {
-        super(Object.class);
+        super(Timestamp.class);
         this.data = data;
     }
 
@@ -96,7 +96,7 @@ public class TimestampSeries extends ObjectSeries<Timestamp> {
             if (data[i] == null) {
 
                 if (copy == null) {
-                    copy = (Timestamp[]) new Object[len];
+                    copy = new Timestamp[len];
                     System.arraycopy(data, 0, copy, 0, len);
                 }
 

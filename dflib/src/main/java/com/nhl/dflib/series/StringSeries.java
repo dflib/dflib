@@ -8,7 +8,7 @@ public class StringSeries extends ObjectSeries<String> {
 
     @SafeVarargs
     public StringSeries(String... data) {
-        super(Object.class);
+        super(String.class);
         this.data = data;
     }
 
@@ -96,7 +96,7 @@ public class StringSeries extends ObjectSeries<String> {
             if (data[i] == null) {
 
                 if (copy == null) {
-                    copy = (String[]) new Object[len];
+                    copy = new String[len];
                     System.arraycopy(data, 0, copy, 0, len);
                 }
 
