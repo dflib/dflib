@@ -2,15 +2,16 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.agg.SeriesAggregation;
 import com.nhl.dflib.series.ArraySeries;
+import com.nhl.dflib.series.DoubleSingleValueSeries;
 import com.nhl.dflib.series.EmptySeries;
 import com.nhl.dflib.series.FalseSeries;
+import com.nhl.dflib.series.FloatSingleValueSeries;
 import com.nhl.dflib.series.IntArraySeries;
+import com.nhl.dflib.series.IntSingleValueSeries;
 import com.nhl.dflib.series.ListSeries;
+import com.nhl.dflib.series.LongSingleValueSeries;
 import com.nhl.dflib.series.OffsetLagSeries;
 import com.nhl.dflib.series.OffsetLeadSeries;
-import com.nhl.dflib.series.DoubleSingleValueSeries;
-import com.nhl.dflib.series.IntSingleValueSeries;
-import com.nhl.dflib.series.LongSingleValueSeries;
 import com.nhl.dflib.series.SingleValueSeries;
 import com.nhl.dflib.series.TrueSeries;
 import com.nhl.dflib.sort.SeriesSorter;
@@ -468,12 +469,14 @@ public interface Series<T> extends Iterable<T> {
     }
 
     static Series<?> singleValue(Class<?> type, Object value, int height) {
-        if (Integer.class ==type) {
-            return  new IntSingleValueSeries((int) value, height);
+        if (Integer.class == type) {
+            return new IntSingleValueSeries((int) value, height);
         } else if (Long.class == type) {
-            return  new LongSingleValueSeries((long) value, height);
+            return new LongSingleValueSeries((long) value, height);
         } else if (Double.class == type) {
             return new DoubleSingleValueSeries((double) value, height);
+        } else if (Float.class == type) {
+            return new FloatSingleValueSeries((float) value, height);
         } else if (Boolean.class == type) {
             if (value == null || !(boolean) value) {
                 return new FalseSeries(height);

@@ -106,4 +106,14 @@ public class DoubleAccumulator implements Accumulator<Double> {
 
         this.data = newData;
     }
+
+    @Override
+    public void addFloat(float v) {
+        this.addDouble(v);
+    }
+
+    @Override
+    public void setFloat(int pos, float v) {
+        this.setDouble(pos, v);
+    }
 }

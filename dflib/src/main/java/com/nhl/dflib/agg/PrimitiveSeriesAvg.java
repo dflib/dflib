@@ -23,4 +23,9 @@ public class PrimitiveSeriesAvg {
         // TODO: control for overflow !! We can calc averages without overflowing even if the sum can create an overflow
         return PrimitiveSeriesSum.sumOfArray(doubles, start, len) / (double) len;
     }
+
+    public static float avgOfArray(float[] floats, int start, int len) {
+        // TODO: control for overflow !! We can calc averages without overflowing even if the sum can create an overflow
+        return PrimitiveSeriesSum.sumOfArray(floats, start, len) / (float) len;
+    }
 }

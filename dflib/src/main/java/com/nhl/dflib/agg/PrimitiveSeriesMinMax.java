@@ -108,6 +108,25 @@ public class PrimitiveSeriesMinMax {
         return max;
     }
 
+    public static float minOfArray(float[] floats, int start, int len) {
+
+        if (len == 0) {
+            return 0; // is this reasonable?
+        }
+
+        float max = Float.MAX_VALUE;
+
+        for (int i = 0; i < len; i++) {
+
+            float in = floats[start + i];
+            if (in < max) {
+                max = in;
+            }
+        }
+
+        return max;
+    }
+
     public static double maxOfArray(double[] doubles, int start, int len) {
 
         if (len == 0) {
@@ -119,6 +138,25 @@ public class PrimitiveSeriesMinMax {
         for (int i = 0; i < len; i++) {
 
             double in = doubles[start + i];
+            if (in > max) {
+                max = in;
+            }
+        }
+
+        return max;
+    }
+
+    public static float maxOfArray(float[] floats, int start, int len) {
+
+        if (len == 0) {
+            return 0L; // is this reasonable?
+        }
+
+        float max = Float.MIN_VALUE;
+
+        for (int i = 0; i < len; i++) {
+
+            float in = floats[start + i];
             if (in > max) {
                 max = in;
             }

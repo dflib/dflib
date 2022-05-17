@@ -23,6 +23,7 @@ import com.nhl.dflib.exp.map.MapExp1;
 import com.nhl.dflib.exp.map.MapExp2;
 import com.nhl.dflib.exp.num.DecimalColumn;
 import com.nhl.dflib.exp.num.DoubleColumn;
+import com.nhl.dflib.exp.num.FloatColumn;
 import com.nhl.dflib.exp.num.IntColumn;
 import com.nhl.dflib.exp.num.LongColumn;
 import com.nhl.dflib.exp.sort.ExpSorter;
@@ -153,6 +154,17 @@ public interface Exp<T> {
      */
     static NumExp<Double> $double(int position) {
         return new DoubleColumn(position);
+    }
+
+    static NumExp<Float> $float(String name) {
+        return new FloatColumn(name);
+    }
+
+    /**
+     * Returns an expression that evaluates to a DataFrame Float column at a given position.
+     */
+    static NumExp<Float> $float(int position) {
+        return new FloatColumn(position);
     }
 
     /**

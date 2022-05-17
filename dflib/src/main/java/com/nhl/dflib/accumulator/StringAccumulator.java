@@ -17,7 +17,7 @@ public class StringAccumulator extends ObjectAccumulator<String> {
 
     public StringAccumulator(int capacity) {
         this.size = 0;
-        this.data = (String[]) new Object[capacity];
+        this.data = new String[capacity];
     }
 
     public void fill(int from, int to, String value) {

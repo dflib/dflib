@@ -47,6 +47,14 @@ public interface Accumulator<T> {
         throw new UnsupportedOperationException("This Accumulator does not support 'double'");
     }
 
+    default void addFloat(float v) {
+        throw new UnsupportedOperationException("This Accumulator does not support 'float'");
+    }
+
+    default void setFloat(int pos, float v) {
+        throw new UnsupportedOperationException("This Accumulator does not support 'float'");
+    }
+
     Series<T> toSeries();
 
     static <T> Accumulator<?> factory(Class<T> type, int capacity) {
@@ -60,6 +68,8 @@ public interface Accumulator<T> {
             return new LongAccumulator(capacity);
         } else if (Double.class == type || Double.TYPE == type || double.class == type) {
             return new DoubleAccumulator(capacity);
+        } else if (Float.class == type || Float.TYPE == type || float.class == type) {
+            return new FloatAccumulator(capacity);
         } else if (Boolean.class == type || Boolean.TYPE == type || boolean.class == type) {
             return new BooleanAccumulator(capacity);
         } else {
