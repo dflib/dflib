@@ -26,6 +26,14 @@ public interface ValueHolder<T> {
         throw new UnsupportedOperationException("This ValueHolder does not support 'double'");
     }
 
+    default float getFloat() {
+        throw new UnsupportedOperationException("Value is not a 'float'");
+    }
+
+    default void setFloat(float v) {
+        throw new UnsupportedOperationException("This ValueHolder does not support 'float'");
+    }
+
     default long getLong() {
         throw new UnsupportedOperationException("Value is not a 'long'");
     }
