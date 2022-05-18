@@ -43,7 +43,7 @@ public class DefaultJdbcConnector implements JdbcConnector {
         this.primitiveColumnBuilderFactories.put(Types.BOOLEAN, ColumnBuilderFactory::booleanAccum);
         this.primitiveColumnBuilderFactories.put(Types.INTEGER, ColumnBuilderFactory::intAccum);
         this.primitiveColumnBuilderFactories.put(Types.DOUBLE, ColumnBuilderFactory::doubleAccum);
-        this.primitiveColumnBuilderFactories.put(Types.FLOAT, ColumnBuilderFactory::doubleAccum);
+        this.primitiveColumnBuilderFactories.put(Types.FLOAT, ColumnBuilderFactory::floatAccum);
         this.primitiveColumnBuilderFactories.put(Types.BIGINT, ColumnBuilderFactory::longAccum);
         //mysql return bit with code -7 instead boolean -16 type
         this.primitiveColumnBuilderFactories.put(Types.BIT, ColumnBuilderFactory::booleanAccum);

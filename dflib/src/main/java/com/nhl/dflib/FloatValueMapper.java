@@ -49,7 +49,7 @@ public interface FloatValueMapper<V> {
     }
 
     static FloatValueMapper<? extends Number> fromNumber() {
-        return n -> n != null ? n.floatValue() : 0;
+        return n -> n != null ? n.floatValue() : 0.f;
     }
 
     float map(V v);

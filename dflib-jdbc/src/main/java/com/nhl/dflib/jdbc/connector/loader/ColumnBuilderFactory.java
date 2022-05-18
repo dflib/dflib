@@ -1,10 +1,30 @@
 package com.nhl.dflib.jdbc.connector.loader;
 
-import com.nhl.dflib.*;
-import com.nhl.dflib.accumulator.*;
+import com.nhl.dflib.BooleanValueMapper;
+import com.nhl.dflib.DoubleValueMapper;
+import com.nhl.dflib.FloatValueMapper;
+import com.nhl.dflib.IntValueMapper;
+import com.nhl.dflib.LongValueMapper;
+import com.nhl.dflib.ValueMapper;
+import com.nhl.dflib.accumulator.BooleanAccumulator;
+import com.nhl.dflib.accumulator.BooleanConverter;
+import com.nhl.dflib.accumulator.DoubleAccumulator;
+import com.nhl.dflib.accumulator.DoubleConverter;
+import com.nhl.dflib.accumulator.FloatAccumulator;
+import com.nhl.dflib.accumulator.FloatConverter;
+import com.nhl.dflib.accumulator.IntAccumulator;
+import com.nhl.dflib.accumulator.IntConverter;
+import com.nhl.dflib.accumulator.LongAccumulator;
+import com.nhl.dflib.accumulator.LongConverter;
+import com.nhl.dflib.accumulator.ObjectAccumulator;
+import com.nhl.dflib.accumulator.ObjectConverter;
 import com.nhl.dflib.jdbc.connector.JdbcFunction;
 
-import java.sql.*;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -63,6 +83,18 @@ public interface ColumnBuilderFactory<T> {
         };
 
         return new ColumnBuilder<>(new DoubleConverter<>(mapper), new DoubleAccumulator());
+    }
+
+    static ColumnBuilder<Float> floatAccum(int pos) {
+        FloatValueMapper<ResultSet> mapper = rs -> {
+            try {
+                return rs.getFloat(pos);
+            } catch (SQLException e) {
+                throw new RuntimeException("Error performing SQL operation", e);
+            }
+        };
+
+        return new ColumnBuilder<>(new FloatConverter<>(mapper), new FloatAccumulator());
     }
 
     static ColumnBuilder<Object> objectAccum(int pos) {

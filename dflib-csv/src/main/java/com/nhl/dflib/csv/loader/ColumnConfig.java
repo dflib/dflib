@@ -2,6 +2,7 @@ package com.nhl.dflib.csv.loader;
 
 import com.nhl.dflib.BooleanValueMapper;
 import com.nhl.dflib.DoubleValueMapper;
+import com.nhl.dflib.FloatValueMapper;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IntValueMapper;
 import com.nhl.dflib.LongValueMapper;
@@ -12,6 +13,8 @@ import com.nhl.dflib.accumulator.BooleanHolder;
 import com.nhl.dflib.accumulator.DoubleAccumulator;
 import com.nhl.dflib.accumulator.DoubleConverter;
 import com.nhl.dflib.accumulator.DoubleHolder;
+import com.nhl.dflib.accumulator.FloatConverter;
+import com.nhl.dflib.accumulator.FloatHolder;
 import com.nhl.dflib.accumulator.IntAccumulator;
 import com.nhl.dflib.accumulator.IntConverter;
 import com.nhl.dflib.accumulator.IntHolder;
@@ -39,6 +42,7 @@ public class ColumnConfig {
     private IntConverter<String> intConverter;
     private LongConverter<String> longConverter;
     private DoubleConverter<String> doubleConverter;
+    private FloatConverter<String> floatConverter;
     private BooleanConverter<String> booleanConverter;
 
     private ColumnConfig() {
@@ -137,6 +141,14 @@ public class ColumnConfig {
         return doubleColumn(name, DoubleValueMapper.fromString());
     }
 
+    public static ColumnConfig floatColumn(int pos) {
+        return floatColumn(pos, FloatValueMapper.fromString());
+    }
+
+    public static ColumnConfig floatColumn(String name) {
+        return floatColumn(name, FloatValueMapper.fromString());
+    }
+
     public static ColumnConfig doubleColumn(int pos, DoubleValueMapper<String> mapper) {
         ColumnConfig config = new ColumnConfig();
         config.type = ColumnType.doublePrimitive;
@@ -150,6 +162,22 @@ public class ColumnConfig {
         config.type = ColumnType.doublePrimitive;
         config.columnName = name;
         config.doubleConverter = new DoubleConverter<>(mapper);
+        return config;
+    }
+
+    public static ColumnConfig floatColumn(int pos, FloatValueMapper<String> mapper) {
+        ColumnConfig config = new ColumnConfig();
+        config.type = ColumnType.floatPrimitive;
+        config.columnPosition = pos;
+        config.floatConverter = new FloatConverter<>(mapper);
+        return config;
+    }
+
+    public static ColumnConfig floatColumn(String name, FloatValueMapper<String> mapper) {
+        ColumnConfig config = new ColumnConfig();
+        config.type = ColumnType.floatPrimitive;
+        config.columnName = name;
+        config.floatConverter = new FloatConverter<>(mapper);
         return config;
     }
 
@@ -202,12 +230,14 @@ public class ColumnConfig {
                 return new CsvCell<>(doubleConverter, new DoubleHolder(), columnPosition);
             case booleanPrimitive:
                 return new CsvCell<>(booleanConverter, new BooleanHolder(), columnPosition);
+            case floatPrimitive:
+                return new CsvCell<>(floatConverter, new FloatHolder(), columnPosition);
             default:
                 return new CsvCell(objectConverter, new ObjectHolder(), columnPosition);
         }
     }
 
     enum ColumnType {
-        intPrimitive, longPrimitive, doublePrimitive, booleanPrimitive, object
+        intPrimitive, longPrimitive, doublePrimitive,floatPrimitive, booleanPrimitive, object
     }
 }
