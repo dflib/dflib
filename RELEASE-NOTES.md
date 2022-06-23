@@ -4,6 +4,7 @@
 * #137 "ne" incorrectly compares numbers with non-numbers
 * #139 JDBC Tx "Error processing connection" on rollback of nested transactions
 * #142 Use Exp.getColumn instead of  Exp.toQL for method DataFrame.selectColumns
+* #150 Upgrade jackson to 2.13.2
 
 ## Release 0.12
 

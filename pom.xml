@@ -54,7 +54,7 @@
         <junit5.version>5.7.2</junit5.version>
         <jsonpath.version>2.4.0</jsonpath.version>
         <avro.version>1.10.1</avro.version>
-        <jackson.version>2.12.3</jackson.version>
+        <jackson.version>2.13.2</jackson.version>
         <poi.version>5.0.0</poi.version>
     </properties>
 
