@@ -51,7 +51,7 @@
         </repository>
         <snapshotRepository>
             <id>dflib-snapshots</id>
-            <url>https://maven.objectstyle.org/nexus/content/repositories/linkrest-snapshots</url>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
