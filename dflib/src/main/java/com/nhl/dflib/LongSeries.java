@@ -71,22 +71,6 @@ public interface LongSeries extends Series<Long> {
      */
     LongSeries selectLong(BooleanSeries positions);
 
-    /**
-     * @deprecated since 0.11 in favor of {@link #selectLong(LongPredicate)}
-     */
-    @Deprecated
-    default LongSeries filterLong(LongPredicate p) {
-        return selectLong(p);
-    }
-
-    /**
-     * @deprecated since 0.11 in favor of {@link #selectLong(BooleanSeries)}
-     */
-    @Deprecated
-    default LongSeries filterLong(BooleanSeries positions) {
-        return selectLong(positions);
-    }
-
     @Override
     LongSeries sort(Comparator<? super Long> comparator);
 
@@ -151,15 +135,6 @@ public interface LongSeries extends Series<Long> {
      */
     // TODO: deal with overflow?
     long sum();
-
-    /**
-     * @since 0.7
-     * @deprecated since 0.11 in favor of {@link #avg()}
-     */
-    @Deprecated
-    default double average() {
-        return avg();
-    }
 
     /**
      * @since 0.11

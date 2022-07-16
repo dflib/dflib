@@ -1,3 +1,7 @@
+## Release 0.14
+
+* #154 Remove API deprecated in 0.11
+
 ## Release 0.13
 
 * #136 Support for loading Excel files

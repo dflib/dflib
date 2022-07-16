@@ -72,21 +72,6 @@ public interface IntSeries extends Series<Integer> {
      */
     IntSeries selectInt(BooleanSeries positions);
 
-    /**
-     * @deprecated since 0.11 in favor of {@link #selectInt(IntPredicate)}
-     */
-    @Deprecated
-    default IntSeries filterInt(IntPredicate p) {
-        return selectInt(p);
-    }
-
-    /**
-     * @deprecated since 0.11 in favor of {@link #selectInt(BooleanSeries)}
-     */
-    default IntSeries filterInt(BooleanSeries positions) {
-        return selectInt(positions);
-    }
-
     @Override
     IntSeries sort(Sorter... sorters);
 
@@ -161,14 +146,6 @@ public interface IntSeries extends Series<Integer> {
      * @since 0.7
      */
     long sum();
-
-    /**
-     * @deprecated since 0.11 in favor of {@link #avg()}.
-     */
-    @Deprecated
-    default double average() {
-        return avg();
-    }
 
     /**
      * @since 0.11

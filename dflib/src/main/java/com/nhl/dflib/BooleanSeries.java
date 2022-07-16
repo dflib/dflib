@@ -73,15 +73,6 @@ public interface BooleanSeries extends Series<Boolean> {
      */
     BooleanSeries selectBoolean(BooleanSeries positions);
 
-    /**
-     * @deprecated since 0.11 in favor of {@link #selectBoolean(BooleanSeries)}
-     */
-    @Deprecated
-    default BooleanSeries filterBoolean(BooleanSeries positions) {
-        return selectBoolean(positions);
-    }
-
-
     @Override
     BooleanSeries sort(Sorter... sorters);
 

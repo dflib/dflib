@@ -610,42 +610,6 @@ public interface DataFrame extends Iterable<RowProxy> {
     DataFrame selectRows(BooleanSeries condition);
 
     /**
-     * @deprecated since 0.11 in favor of {@link #selectRows(RowPredicate)}
-     */
-    @Deprecated
-    default DataFrame filterRows(RowPredicate p) {
-        return selectRows(p);
-    }
-
-    /**
-     * @deprecated since 0.11 in favor of {@link #selectRows(String, ValuePredicate)}
-     */
-    @Deprecated
-    default <V> DataFrame filterRows(String columnName, ValuePredicate<V> p) {
-        return selectRows(columnName, p);
-    }
-
-    /**
-     * @deprecated since 0.11 in favor of {@link #selectRows(int, ValuePredicate)}
-     */
-    @Deprecated
-    default <V> DataFrame filterRows(int columnPos, ValuePredicate<V> p) {
-        return selectRows(columnPos, p);
-    }
-
-    /**
-     * Returns a DataFrame with subset of rows matching condition.
-     *
-     * @param condition a {@link BooleanSeries} whose "true" values indicate which
-     * @since 0.6
-     * @deprecated since 0.11 in favor of {@link #selectRows(BooleanSeries)}
-     */
-    @Deprecated
-    default DataFrame filterRows(BooleanSeries condition) {
-        return selectRows(condition);
-    }
-
-    /**
      * @since 0.11
      */
     DataFrame sort(Sorter... sorters);

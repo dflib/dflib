@@ -71,23 +71,6 @@ public interface DoubleSeries extends Series<Double> {
      */
     DoubleSeries selectDouble(BooleanSeries positions);
 
-    /**
-     * @deprecated since 0.11 in favor of {@link #selectDouble(DoublePredicate)}
-     */
-    @Deprecated
-    default DoubleSeries filterDouble(DoublePredicate p) {
-        return selectDouble(p);
-    }
-
-    /**
-     * @deprecated since 0.11 in favor of {@link #selectDouble(BooleanSeries)}
-     */
-    @Deprecated
-    default DoubleSeries filterDouble(BooleanSeries positions) {
-        return selectDouble(positions);
-    }
-
-
     @Override
     DoubleSeries sort(Sorter... sorters);
 
@@ -152,14 +135,6 @@ public interface DoubleSeries extends Series<Double> {
      */
     // TODO: deal with overflow?
     double sum();
-
-    /**
-     * @deprecated since 0.11 in favor of shorter {@link #avg()}
-     */
-    @Deprecated
-    default double average() {
-        return avg();
-    }
 
     /**
      * @since 0.11

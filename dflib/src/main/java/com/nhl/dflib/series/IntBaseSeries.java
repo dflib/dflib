@@ -170,7 +170,7 @@ public abstract class IntBaseSeries implements IntSeries {
 
     @Override
     public Series<Integer> select(BooleanSeries positions) {
-        return filterInt(positions);
+        return selectInt(positions);
     }
 
     private IntSeries selectAsIntSeries(IntSeries positions) {

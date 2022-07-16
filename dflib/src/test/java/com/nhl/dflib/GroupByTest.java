@@ -90,10 +90,10 @@ public class GroupByTest {
                 1, "x");
 
         DataFrame df = df1.group("a").agg(
-                Aggregator.sumLong("a"),
-                Aggregator.concat(1, ";"));
+                Exp.$long("a").sum(),
+                Exp.$str(1).vConcat(";"));
 
-        new DataFrameAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "sum(a)", "b")
                 .expectHeight(3)
                 .expectRow(0, 3L, "x;z;x")
                 .expectRow(1, 2L, "y")
@@ -111,9 +111,12 @@ public class GroupByTest {
 
         DataFrame df = df1
                 .group("b")
-                .agg(Aggregator.first("b"), Aggregator.sumLong("a"), Aggregator.medianDouble("a"));
+                .agg(
+                        Exp.$col("b").first(),
+                        Exp.$long("a").sum(),
+                        Exp.$double("a").median());
 
-        new DataFrameAsserts(df, "b", "a", "a_")
+        new DataFrameAsserts(df, "b", "sum(a)", "median(a)")
                 .expectHeight(3)
                 .expectRow(0, "x", 2L, 1.)
                 .expectRow(1, "y", 3L, 1.5)
@@ -235,9 +238,10 @@ public class GroupByTest {
                 1, "x");
 
         DataFrame df = df1.group("b").agg(
-                Aggregator.first("b"),
-                Aggregator.sumLong("a").as("a_sum"),
-                Aggregator.medianDouble("a").as("a_median"));
+                Exp.$col("b").first(),
+                Exp.$long("a").sum().as("a_sum"),
+                Exp.$double("a").median().as("a_median")
+        );
 
         new DataFrameAsserts(df, "b", "a_sum", "a_median")
                 .expectHeight(3)
