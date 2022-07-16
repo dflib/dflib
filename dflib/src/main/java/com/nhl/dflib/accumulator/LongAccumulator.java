@@ -62,7 +62,11 @@ public class LongAccumulator implements Accumulator<Long> {
     public void setLong(int pos, long value) {
 
         if (pos >= size) {
-            throw new IndexOutOfBoundsException(pos + " is out of bounds for " + size);
+            size = pos + 1;
+        }
+
+        if (size >= data.length) {
+            expand(Math.max(data.length * 2, size));
         }
 
         data[pos] = value;

@@ -1,6 +1,7 @@
 ## Release 0.14
 
 * #154 Remove API deprecated in 0.11
+* #155 WindowBuilder.mapColumn(..)
 
 ## Release 0.13
 

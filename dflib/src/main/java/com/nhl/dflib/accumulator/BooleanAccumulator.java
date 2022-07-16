@@ -23,7 +23,6 @@ public class BooleanAccumulator implements Accumulator<Boolean> {
         this.data = new boolean[capacity];
     }
 
-
     public void fill(int from, int to, boolean value) {
 
         if (to - from < 1) {
@@ -68,7 +67,11 @@ public class BooleanAccumulator implements Accumulator<Boolean> {
     public void setBoolean(int pos, boolean value) {
 
         if (pos >= size) {
-            throw new IndexOutOfBoundsException(pos + " is out of bounds for " + size);
+            size = pos + 1;
+        }
+
+        if (size >= data.length) {
+            expand(Math.max(data.length * 2, size));
         }
 
         data[pos] = value;

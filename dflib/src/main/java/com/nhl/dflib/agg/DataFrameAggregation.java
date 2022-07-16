@@ -55,6 +55,65 @@ public class DataFrameAggregation {
         return DataFrame.newFrame(Index.forLabelsDeduplicate(aggLabels)).columns(aggColumns);
     }
 
+    /**
+     * @since 0.14
+     */
+    public static <T> Series<T> mapGroupBy(GroupBy groupBy, Exp<T> aggregator) {
+
+        int h = groupBy.size();
+
+        // TODO: primitives support for performance
+        Accumulator<T> data = new ObjectAccumulator(h);
+
+        for (Object key : groupBy.getGroups()) {
+            DataFrame group = groupBy.getGroup(key);
+
+            // expecting 1-element Series. Unpack and add to the accum
+            data.add(aggregator.eval(group).get(0));
+        }
+
+        return data.toSeries();
+    }
+
+    /**
+     * @since 0.14
+     */
+    public static <T> Series<T> mapWindow(DataFrame df, Exp<T> aggregator) {
+
+        Series<T> oneValSeries = aggregator.eval(df);
+
+        // expand the column to the height of the original DataFrame
+        int h = df.height();
+
+        // TODO: primitive series support
+        return new SingleValueSeries<>(oneValSeries.get(0), h);
+    }
+
+    public static <T> Series<T> mapPartitionedWindow(GroupBy windowGroupBy, Exp<T> aggregator) {
+
+        Series<T> rowPerGroup = mapGroupBy(windowGroupBy, aggregator);
+        int h = windowGroupBy.getUngrouped().height();
+
+        ObjectAccumulator<T> data = new ObjectAccumulator<>(h);
+
+        int gi = 0;
+        for (Object key : windowGroupBy.getGroups()) {
+
+            IntSeries index = windowGroupBy.getGroupIndex(key);
+            int ih = index.size();
+
+            // fill positions in the index with the singe aggregated value
+            T val = rowPerGroup.get(gi);
+            for (int j = 0; j < ih; j++) {
+                data.set(index.getInt(j), val);
+            }
+
+            gi++;
+        }
+
+        return data.toSeries();
+    }
+
     public static DataFrame aggWindow(DataFrame df, Exp<?>... aggregators) {
 
         DataFrame oneRowDf = df.agg(aggregators);
@@ -76,8 +135,6 @@ public class DataFrameAggregation {
         DataFrame rowPerGroupDf = windowGroupBy.agg(aggregators);
         int h = windowGroupBy.getUngrouped().height();
         int aggW = rowPerGroupDf.width();
-        int aggH = rowPerGroupDf.height();
-
 
         Object[][] data = new Object[aggW][h];
 

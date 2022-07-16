@@ -104,6 +104,15 @@ public class WindowBuilder {
         return partitioner != null ? aggPartitioned(aggregators) : aggUnPartitioned(aggregators);
     }
 
+    /**
+     * Applies an aggregating expression to each DataFrame row, passing it a window associated with the current row.
+     *
+     * @since 0.14
+     */
+    public <T> Series<T> mapColumn(Exp<T> windowAggregator) {
+        return partitioner != null ? mapPartitioned(windowAggregator) : mapUnPartitioned(windowAggregator);
+    }
+
     public IntSeries rank() {
 
         switch (dataFrame.height()) {
@@ -214,6 +223,23 @@ public class WindowBuilder {
                 : dataFrame;
 
         return DataFrameAggregation.aggWindow(df, aggregators);
+    }
+
+    private <T> Series<T> mapPartitioned(Exp<T> aggregator) {
+        GroupBy gb = sorter != null
+                ? dataFrame.group(partitioner).sort(sorter)
+                : dataFrame.group(partitioner);
+
+        return DataFrameAggregation.mapPartitionedWindow(gb, aggregator);
+    }
+
+    private <T> Series<T> mapUnPartitioned(Exp<T> aggregator) {
+        DataFrame df = sorter != null
+                // TODO: create a DataFrame sort method that takes IntComparator
+                ? new DataFrameSorter(dataFrame).sort(sorter)
+                : dataFrame;
+
+        return DataFrameAggregation.mapWindow(df, aggregator);
     }
 
     private IntSeries rankPartitioned() {
