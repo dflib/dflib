@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.agg.DataFrameAggregation;
+import com.nhl.dflib.agg.DataFrameAggregator;
 import com.nhl.dflib.join.JoinBuilder;
 import com.nhl.dflib.pivot.PivotBuilder;
 import com.nhl.dflib.row.RowProxy;
@@ -719,7 +719,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @see Exp for static factory methods of column aggregators
      */
     default DataFrame agg(Exp<?>... aggregators) {
-        return DataFrameAggregation.aggDataFrame(this, aggregators);
+        return DataFrameAggregator.agg(this, aggregators);
     }
 
     /**

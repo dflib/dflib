@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.agg.SeriesAggregation;
+import com.nhl.dflib.agg.SeriesAggregator;
 import com.nhl.dflib.concat.SeriesConcat;
 
 import java.util.Collection;
@@ -64,7 +64,7 @@ public class SeriesGroupBy<T> {
      * Returns a Series, with each value corresponding to the result of a single group aggregation.
      */
     public <R> Series<R> agg(Exp<R> aggregator) {
-        return SeriesAggregation.aggGroupBy(this, aggregator);
+        return SeriesAggregator.aggGroupBy(this, aggregator);
     }
 
     /**
@@ -72,7 +72,7 @@ public class SeriesGroupBy<T> {
      * provided aggregators.
      */
     public DataFrame aggMultiple(Exp<?>... aggregators) {
-        return SeriesAggregation.aggGroupMultiple(this, aggregators);
+        return SeriesAggregator.aggGroupMultiple(this, aggregators);
     }
 
     protected Series<T> resolveGroup(Object key) {

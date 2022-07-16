@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.agg.SeriesAggregation;
+import com.nhl.dflib.agg.SeriesAggregator;
 import com.nhl.dflib.series.*;
 import com.nhl.dflib.sort.SeriesSorter;
 
@@ -269,7 +269,7 @@ public interface Series<T> extends Iterable<T> {
      * @since 0.6
      */
     default DataFrame aggMultiple(Exp<?>... aggregators) {
-        return SeriesAggregation.aggAsDataFrame(this, aggregators);
+        return SeriesAggregator.aggAsDataFrame(this, aggregators);
     }
 
     /**

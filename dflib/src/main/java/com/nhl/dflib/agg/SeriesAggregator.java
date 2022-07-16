@@ -5,9 +5,9 @@ import com.nhl.dflib.accumulator.Accumulator;
 import com.nhl.dflib.accumulator.ObjectAccumulator;
 
 /**
- * @since 0.11
+ * @since 0.14
  */
-public class SeriesAggregation {
+public class SeriesAggregator {
 
     public static DataFrame aggAsDataFrame(Series<?> series, Exp<?>... aggregators) {
 

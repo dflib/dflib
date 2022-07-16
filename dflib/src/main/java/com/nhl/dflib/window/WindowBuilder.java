@@ -1,7 +1,15 @@
 package com.nhl.dflib.window;
 
-import com.nhl.dflib.*;
-import com.nhl.dflib.agg.DataFrameAggregation;
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Exp;
+import com.nhl.dflib.GroupBy;
+import com.nhl.dflib.Hasher;
+import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.RowToValueMapper;
+import com.nhl.dflib.Series;
+import com.nhl.dflib.Sorter;
+import com.nhl.dflib.agg.WindowAggregator;
+import com.nhl.dflib.agg.WindowMapper;
 import com.nhl.dflib.series.IntSequenceSeries;
 import com.nhl.dflib.sort.Comparators;
 import com.nhl.dflib.sort.DataFrameSorter;
@@ -213,7 +221,7 @@ public class WindowBuilder {
                 ? dataFrame.group(partitioner).sort(sorter)
                 : dataFrame.group(partitioner);
 
-        return DataFrameAggregation.aggPartitionedWindow(gb, aggregators);
+        return WindowAggregator.aggPartitioned(gb, aggregators);
     }
 
     private DataFrame aggUnPartitioned(Exp<?>... aggregators) {
@@ -222,7 +230,7 @@ public class WindowBuilder {
                 ? new DataFrameSorter(dataFrame).sort(sorter)
                 : dataFrame;
 
-        return DataFrameAggregation.aggWindow(df, aggregators);
+        return WindowAggregator.agg(df, aggregators);
     }
 
     private <T> Series<T> mapPartitioned(Exp<T> aggregator) {
@@ -230,7 +238,7 @@ public class WindowBuilder {
                 ? dataFrame.group(partitioner).sort(sorter)
                 : dataFrame.group(partitioner);
 
-        return DataFrameAggregation.mapPartitionedWindow(gb, aggregator);
+        return WindowMapper.mapPartitioned(gb, aggregator);
     }
 
     private <T> Series<T> mapUnPartitioned(Exp<T> aggregator) {
@@ -239,7 +247,7 @@ public class WindowBuilder {
                 ? new DataFrameSorter(dataFrame).sort(sorter)
                 : dataFrame;
 
-        return DataFrameAggregation.mapWindow(df, aggregator);
+        return WindowMapper.map(df, aggregator);
     }
 
     private IntSeries rankPartitioned() {
