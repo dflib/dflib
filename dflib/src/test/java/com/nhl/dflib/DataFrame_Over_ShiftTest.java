@@ -6,14 +6,14 @@ import org.junit.jupiter.api.Test;
 public class DataFrame_Over_ShiftTest {
 
     @Test
-    public void testNoPartition_NoSort_Empty() {
+    public void testEmpty() {
         DataFrame df = DataFrame.newFrame("a", "b", "c").empty();
         Series<Object> r = df.over().shift("b", -1);
         new SeriesAsserts(r).expectData();
     }
 
     @Test
-    public void testNoPartition_NoSort_One() {
+    public void testDefault_One() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(1, "x");
 
         Series<Integer> s1 = df.over().shift("b", 1);
@@ -30,7 +30,7 @@ public class DataFrame_Over_ShiftTest {
     }
 
     @Test
-    public void testNoPartition_NoSort() {
+    public void testDefault_Many() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -49,7 +49,7 @@ public class DataFrame_Over_ShiftTest {
     }
 
     @Test
-    public void testPartition_NoSort() {
+    public void testPartitioned() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -66,7 +66,7 @@ public class DataFrame_Over_ShiftTest {
     }
 
     @Test
-    public void testNoPartition_Sort() {
+    public void testSorted() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -82,7 +82,7 @@ public class DataFrame_Over_ShiftTest {
     }
 
     @Test
-    public void testPartition_Sort() {
+    public void testPartitioned_Sorted() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 2, "x",
                 2, "y",
