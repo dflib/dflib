@@ -132,7 +132,7 @@ public class DataFrameAggregation {
 
     public static DataFrame aggPartitionedWindow(GroupBy windowGroupBy, Exp<?>... aggregators) {
 
-        DataFrame rowPerGroupDf = windowGroupBy.agg(aggregators);
+        DataFrame rowPerGroupDf = aggGroupBy(windowGroupBy, aggregators);
         int h = windowGroupBy.getUngrouped().height();
         int aggW = rowPerGroupDf.width();
 
