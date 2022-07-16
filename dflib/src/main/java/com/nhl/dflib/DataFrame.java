@@ -4,6 +4,7 @@ import com.nhl.dflib.agg.DataFrameAggregator;
 import com.nhl.dflib.join.JoinBuilder;
 import com.nhl.dflib.pivot.PivotBuilder;
 import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.series.RangeSeries;
 import com.nhl.dflib.series.SingleValueSeries;
 import com.nhl.dflib.window.WindowBuilder;
 
@@ -608,6 +609,25 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.11
      */
     DataFrame selectRows(BooleanSeries condition);
+
+    /**
+     * Returns a DataFrame that contains a range of rows from this DataFrame.
+     *
+     * @param fromInclusive a left boundary index of the returned range (included in the returned range)
+     * @param toExclusive   a right boundary index (excluded in the returned range)
+     * @return a Series that contains a sub-range of data from this Series.
+     * @since 0.14
+     */
+    default DataFrame selectRowRangeOpenClosed(int fromInclusive, int toExclusive) {
+        int w = width();
+        Series[] rangeColumns = new Series[w];
+        for (int i = 0; i < w; i++) {
+            // RangeSeries constructor does range checking
+            rangeColumns[i] = new RangeSeries(getColumn(i), fromInclusive, toExclusive - fromInclusive);
+        }
+
+        return new ColumnDataFrame(getColumnsIndex(), rangeColumns);
+    }
 
     /**
      * @since 0.11

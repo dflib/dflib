@@ -90,7 +90,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
         return fromInclusive == 0 && toExclusive == size()
                 ? this
-                // RangeSeries does range checking
+                // RangeSeries constructor does range checking
                 : new RangeSeries<>(this, fromInclusive, toExclusive - fromInclusive);
     }
 

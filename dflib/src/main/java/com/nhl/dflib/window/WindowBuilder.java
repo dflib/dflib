@@ -27,6 +27,7 @@ public class WindowBuilder {
     private final DataFrame dataFrame;
     private Hasher partitioner;
     private IntComparator sorter;
+    private WindowRange range;
 
     public WindowBuilder(DataFrame dataFrame) {
         this.dataFrame = Objects.requireNonNull(dataFrame);
@@ -102,6 +103,18 @@ public class WindowBuilder {
 
     public WindowBuilder sorted(int[] columns, boolean[] ascending) {
         this.sorter = Comparators.of(dataFrame, columns, ascending);
+        return this;
+    }
+
+    /**
+     * Sets an explicit row range for the window. The default is {@link WindowRange#all}. Only has effect on the
+     * {@link #mapColumn(Exp)} operation.
+     *
+     * @since 0.14
+     */
+    //  TODO: which operations other than mapColumn require a range? Does is make sense for rank or shift?
+    public WindowBuilder range(WindowRange range) {
+        this.range = range;
         return this;
     }
 
@@ -238,16 +251,20 @@ public class WindowBuilder {
                 ? dataFrame.group(partitioner).sort(sorter)
                 : dataFrame.group(partitioner);
 
-        return WindowMapper.mapPartitioned(gb, aggregator);
+        return WindowMapper.mapPartitioned(gb, aggregator, resolveRange());
     }
 
     private <T> Series<T> mapUnPartitioned(Exp<T> aggregator) {
-        DataFrame df = sorter != null
+        DataFrame sorted = sorter != null
                 // TODO: create a DataFrame sort method that takes IntComparator
                 ? new DataFrameSorter(dataFrame).sort(sorter)
                 : dataFrame;
 
-        return WindowMapper.map(df, aggregator);
+        return WindowMapper.map(sorted, aggregator, resolveRange());
+    }
+
+    private WindowRange resolveRange() {
+        return range != null ? range : WindowRange.all;
     }
 
     private IntSeries rankPartitioned() {

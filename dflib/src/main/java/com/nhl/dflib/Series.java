@@ -80,13 +80,14 @@ public interface Series<T> extends Iterable<T> {
     DataFrame map(Index resultColumns, ValueToRowMapper<T> mapper);
 
     /**
-     * Returns a {@link Series} that contains a range of data from this series. If the "toExclusive" parameter
+     * Returns a {@link Series} that contains a range of data from this series.
      *
      * @param fromInclusive a left boundary index of the returned range (included in the returned range)
      * @param toExclusive   a right boundary index (excluded in the returned range)
      * @return a Series that contains a sub-range of data from this Series.
      * @since 0.6
      */
+    // TODO: call "selectRangeOpenClosed()" similar to DataFrame
     Series<T> rangeOpenClosed(int fromInclusive, int toExclusive);
 
     // TODO: alternative names instead of "materialize" :
