@@ -4,6 +4,7 @@ import com.nhl.dflib.Condition;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.Sorter;
+import com.nhl.dflib.accumulator.ObjectAccumulator;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -15,6 +16,41 @@ public class DecimalAggregators {
 
     private static final Condition notNullExp = Exp.$decimal(0).isNotNull();
     private static final Sorter asc = Exp.$decimal(0).asc();
+
+    /**
+     * @since 0.14
+     */
+    public static Series<BigDecimal> cumSum(Series<BigDecimal> s) {
+
+        int h = s.size();
+        if (h == 0) {
+            return s;
+        }
+
+        ObjectAccumulator<BigDecimal> accum = new ObjectAccumulator<>(h);
+
+        int i = 0;
+        BigDecimal runningTotal = null;
+
+        // rewind nulls,and find the first non-null total
+        for (; i < h && runningTotal == null; i++) {
+            runningTotal = s.get(i);
+            accum.add(runningTotal);
+        }
+
+        for (; i < h; i++) {
+
+            BigDecimal next = s.get(i);
+            if (next == null) {
+                accum.add(null);
+            } else {
+                runningTotal = runningTotal.add(next);
+                accum.add(runningTotal);
+            }
+        }
+
+        return accum.toSeries();
+    }
 
     public static BigDecimal sum(Series<BigDecimal> s) {
 

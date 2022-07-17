@@ -118,6 +118,11 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
+    public DecimalExp cumSum(Exp<? extends Number> exp) {
+        return DecimalExp1.map("cumSum", cast(exp), DecimalAggregators::cumSum);
+    }
+
+    @Override
     public DecimalExp sum(Exp<? extends Number> exp) {
         return new DecimalExpAggregator(cast(exp), DecimalAggregators::sum);
     }

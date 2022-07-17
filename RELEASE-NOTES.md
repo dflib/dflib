@@ -1,5 +1,6 @@
 ## Release 0.14
 
+* #152 Cumulative sum expression
 * #153 Range definitions for WindowBuilder
 * #154 Remove API deprecated in 0.11
 * #155 WindowBuilder.mapColumn(..)

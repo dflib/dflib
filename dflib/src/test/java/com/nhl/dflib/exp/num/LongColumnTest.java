@@ -160,4 +160,26 @@ public class LongColumnTest {
 
         new BooleanSeriesAsserts(c.eval(df)).expectData(true, false, false);
     }
+
+    @Test
+    public void testCumSum() {
+        NumExp<?> exp = $long("a").cumSum();
+
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                null,
+                2L,
+                5L,
+                null,
+                110000000L,
+                -12L);
+
+        new SeriesAsserts(exp.eval(df)).expectData(
+                null,
+                2L,
+                7L,
+                null,
+                110000007L,
+                109999995L
+        );
+    }
 }

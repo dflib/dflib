@@ -32,7 +32,7 @@ public class DecimalColumnTest {
         DecimalExp exp = $decimal("b");
 
         DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
-                "1",  new BigDecimal("2.0100287"), new BigDecimal("2.010029"),
+                "1", new BigDecimal("2.0100287"), new BigDecimal("2.010029"),
                 "4", new BigDecimal("2.01001"), new BigDecimal("2.01003"));
 
         new SeriesAsserts(exp.eval(df)).expectData(new BigDecimal("2.0100287"), new BigDecimal("2.01001"));
@@ -81,6 +81,28 @@ public class DecimalColumnTest {
                 new BigDecimal("4.5"));
 
         new SeriesAsserts(exp.eval(df)).expectData(new BigDecimal("3.01"), new BigDecimal("5.50"));
+    }
+
+    @Test
+    public void testCumSum() {
+        DecimalExp exp = $decimal("a").cumSum();
+
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                null,
+                new BigDecimal("2.01"),
+                new BigDecimal("4.59"),
+                null,
+                new BigDecimal("11.21"),
+                new BigDecimal("-12.16"));
+
+        new SeriesAsserts(exp.eval(df)).expectData(
+                null,
+                new BigDecimal("2.01"),
+                new BigDecimal("6.60"),
+                null,
+                new BigDecimal("17.81"),
+                new BigDecimal("5.65")
+        );
     }
 
     @Test
@@ -197,7 +219,7 @@ public class DecimalColumnTest {
                 BigDecimal.ZERO,
                 new BigDecimal("11.5"));
 
-        BooleanSeries s  = $decimal("a").ne(new BigDecimal("11.5")).eval(df);
+        BooleanSeries s = $decimal("a").ne(new BigDecimal("11.5")).eval(df);
         new BooleanSeriesAsserts(s).expectData(true, true, false);
     }
 
@@ -209,7 +231,7 @@ public class DecimalColumnTest {
                 BigDecimal.ZERO,
                 new BigDecimal("11.5"));
 
-        BooleanSeries s  = $decimal("a").eq(new BigDecimal("11.5")).eval(df);
+        BooleanSeries s = $decimal("a").eq(new BigDecimal("11.5")).eval(df);
         new BooleanSeriesAsserts(s).expectData(false, false, true);
     }
 
@@ -222,7 +244,7 @@ public class DecimalColumnTest {
                 new BigDecimal("0"),
                 new BigDecimal("11.5"));
 
-        BooleanSeries s  = $decimal("a").eq(BigDecimal.ZERO).eval(df);
+        BooleanSeries s = $decimal("a").eq(BigDecimal.ZERO).eval(df);
         new BooleanSeriesAsserts(s).expectData(false, true, true, false);
     }
 
@@ -234,7 +256,7 @@ public class DecimalColumnTest {
                 BigDecimal.ZERO,
                 new BigDecimal("11.5"));
 
-        BooleanSeries s  = $decimal("a").ne("11.5").eval(df);
+        BooleanSeries s = $decimal("a").ne("11.5").eval(df);
         new BooleanSeriesAsserts(s).expectData(true, true, true);
     }
 }

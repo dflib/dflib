@@ -1,6 +1,10 @@
 package com.nhl.dflib.exp.num;
 
-import com.nhl.dflib.*;
+import com.nhl.dflib.Condition;
+import com.nhl.dflib.DecimalExp;
+import com.nhl.dflib.Exp;
+import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.NumExp;
 import com.nhl.dflib.exp.agg.DoubleAggregators;
 import com.nhl.dflib.exp.agg.DoubleExpAggregator;
 import com.nhl.dflib.exp.agg.IntAggregators;
@@ -68,6 +72,11 @@ public class IntExpFactory extends NumericExpFactory {
     @Override
     public DecimalExp castAsDecimal(NumExp<?> exp) {
         return DecimalExp1.mapVal("castAsDecimal", cast(exp), BigDecimal::valueOf);
+    }
+
+    @Override
+    public NumExp<Integer> cumSum(Exp<? extends Number> exp) {
+        return IntExp1.map("cumSum", exp, IntAggregators::cumSum);
     }
 
     @Override

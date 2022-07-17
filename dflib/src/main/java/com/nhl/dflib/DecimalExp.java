@@ -82,6 +82,11 @@ public interface DecimalExp extends NumExp<BigDecimal> {
     }
 
     @Override
+    default DecimalExp cumSum() {
+        return NumericExpFactory.decimalFactory().cumSum(this);
+    }
+
+    @Override
     default DecimalExp avg() {
         return NumericExpFactory.decimalFactory().avg(this);
     }

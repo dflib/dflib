@@ -124,4 +124,24 @@ public class DoubleColumnTest {
         Series<? extends Number> s = $double("a").abs().eval(df);
         new SeriesAsserts(s).expectData(5.1, 0.0, 11.5);
     }
+
+    @Test
+    public void testCumSum() {
+        NumExp<?> exp = $double("a").cumSum();
+
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                null,
+                2.0,
+                5.3,
+                null,
+                11.1);
+
+        new SeriesAsserts(exp.eval(df)).expectData(
+                null,
+                2.0,
+                7.3,
+                null,
+                18.4
+        );
+    }
 }

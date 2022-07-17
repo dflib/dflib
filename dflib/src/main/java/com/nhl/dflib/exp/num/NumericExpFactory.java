@@ -124,6 +124,11 @@ public abstract class NumericExpFactory {
 
     public abstract NumExp<?> abs(Exp<? extends Number> exp);
 
+    /**
+     * @since 0.14
+     */
+    public abstract NumExp<?> cumSum(Exp<? extends Number> exp);
+
     public abstract NumExp<?> sum(Exp<? extends Number> exp);
 
     public abstract NumExp<?> min(Exp<? extends Number> exp);

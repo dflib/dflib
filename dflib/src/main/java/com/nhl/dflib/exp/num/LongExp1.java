@@ -12,6 +12,13 @@ import java.util.function.Function;
  */
 public class LongExp1<F> extends MapExp1<F, Long> implements NumExp<Long> {
 
+    /**
+     * @since 0.14
+     */
+    public static <F> LongExp1<F> map(String opName, Exp<F> exp, Function<Series<F>, Series<Long>> op) {
+        return new LongExp1<>(opName, exp, op);
+    }
+
     public static <F> LongExp1<F> mapVal(String opName, Exp<F> exp, Function<F, Long> op) {
         return new LongExp1<>(opName, exp, valToSeries(op));
     }

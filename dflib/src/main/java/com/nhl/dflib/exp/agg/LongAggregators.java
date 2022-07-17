@@ -1,6 +1,8 @@
 package com.nhl.dflib.exp.agg;
 
+import com.nhl.dflib.LongSeries;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.accumulator.ObjectAccumulator;
 
 import java.util.function.Function;
 import java.util.stream.Collector;
@@ -13,6 +15,50 @@ public class LongAggregators {
 
     private static final Function<Series<? extends Number>, Long> sum =
             CollectorAggregator.create((Collector) Collectors.summingLong(Number::longValue));
+
+    /**
+     * @since 0.14
+     */
+    public static Series<Long> cumSum(Series<? extends Number> s) {
+
+        int h = s.size();
+        if (h == 0) {
+            return LongSeries.forLongs();
+        }
+
+        // TODO: if Series<Long> is a LongSeries we can speed things up significantly by avoiding null checking and
+        //   boxing/unboxing. Implement LongSeries.cumSum()
+        ObjectAccumulator<Long> accum = new ObjectAccumulator<>(h);
+
+        int i = 0;
+        long runningTotal = 0L;
+
+        // rewind nulls,and find the first non-null total
+        for (; i < h; i++) {
+            Number next = s.get(i);
+            if (next == null) {
+                accum.add(null);
+            } else {
+                runningTotal = next.longValue();
+                accum.add(runningTotal);
+                i++;
+                break;
+            }
+        }
+
+        for (; i < h; i++) {
+
+            Number next = s.get(i);
+            if (next == null) {
+                accum.add(null);
+            } else {
+                runningTotal += next.longValue();
+                accum.add(runningTotal);
+            }
+        }
+
+        return accum.toSeries();
+    }
 
     public static long sum(Series<? extends Number> s) {
         return s.size() == 0 ? 0L : sum.apply(s);

@@ -7,6 +7,9 @@ import com.nhl.dflib.exp.Exp1;
 import java.util.function.Function;
 
 /**
+ * A unary expression that evaluates parent expression first, and passes the result to a mapping function to
+ * produce the final result.
+ *
  * @since 0.11
  */
 public class MapExp1<F, T> extends Exp1<F, T> {

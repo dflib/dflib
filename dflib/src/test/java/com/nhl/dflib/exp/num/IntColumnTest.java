@@ -295,4 +295,26 @@ public class IntColumnTest {
 
         new SeriesAsserts(exp.eval(df)).expectData(false, true, null);
     }
+
+    @Test
+    public void testCumSum() {
+        NumExp<?> exp = $int("a").cumSum();
+
+        DataFrame df = DataFrame.newFrame("a").foldByRow(
+                null,
+                2,
+                5,
+                null,
+                11,
+                -12);
+
+        new SeriesAsserts(exp.eval(df)).expectData(
+                null,
+                2,
+                7,
+                null,
+                18,
+                6
+        );
+    }
 }

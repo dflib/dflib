@@ -1,9 +1,11 @@
 package com.nhl.dflib.exp.agg;
 
 import com.nhl.dflib.Condition;
+import com.nhl.dflib.DoubleSeries;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.Sorter;
+import com.nhl.dflib.accumulator.ObjectAccumulator;
 
 import java.util.function.Function;
 import java.util.stream.Collector;
@@ -20,6 +22,50 @@ public class DoubleAggregators {
             CollectorAggregator.create((Collector) Collectors.averagingDouble(Number::doubleValue));
     private static final Function<Series<? extends Number>, Double> sum =
             CollectorAggregator.create((Collector) Collectors.summingDouble(Number::doubleValue));
+
+    /**
+     * @since 0.14
+     */
+    public static Series<Double> cumSum(Series<? extends Number> s) {
+
+        int h = s.size();
+        if (h == 0) {
+            return DoubleSeries.forDoubles();
+        }
+
+        // TODO: if Series<Double> is a DoubleSeries we can speed things up significantly by avoiding null checking and
+        //   boxing/unboxing. Implement DoubleSeries.cumSum()
+        ObjectAccumulator<Double> accum = new ObjectAccumulator<>(h);
+
+        int i = 0;
+        double runningTotal = 0.;
+
+        // rewind nulls,and find the first non-null total
+        for (; i < h; i++) {
+            Number next = s.get(i);
+            if (next == null) {
+                accum.add(null);
+            } else {
+                runningTotal = next.doubleValue();
+                accum.add(runningTotal);
+                i++;
+                break;
+            }
+        }
+
+        for (; i < h; i++) {
+
+            Number next = s.get(i);
+            if (next == null) {
+                accum.add(null);
+            } else {
+                runningTotal += next.doubleValue();
+                accum.add(runningTotal);
+            }
+        }
+
+        return accum.toSeries();
+    }
 
     public static double sum(Series<? extends Number> s) {
         return s.size() == 0 ? 0. : sum.apply(s);

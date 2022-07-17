@@ -150,6 +150,16 @@ public interface NumExp<N extends Number> extends Exp<N> {
         return NumericExpFactory.factory(this, ve).ge(this, ve);
     }
 
+    /**
+     * A "running total" function that produces a cumulative sum of each row from the beginning of the DataFrame or
+     * Series.
+     *
+     * @since 0.14
+     */
+    default NumExp<?> cumSum() {
+        return NumericExpFactory.factory(this).cumSum(this);
+    }
+
     default NumExp<?> sum() {
         return NumericExpFactory.factory(this).sum(this);
     }
