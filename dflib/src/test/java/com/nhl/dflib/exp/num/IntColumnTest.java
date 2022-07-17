@@ -317,4 +317,16 @@ public class IntColumnTest {
                 6L
         );
     }
+
+    @Test
+    public void testCumSum_getColumnName() {
+        NumExp<?> exp = $int("a").cumSum();
+        assertEquals("cumSum(a)", exp.getColumnName());
+    }
+
+    @Test
+    public void testSum_getColumnName() {
+        NumExp<?> exp = $int("a").sum();
+        assertEquals("sum(a)", exp.getColumnName());
+    }
 }

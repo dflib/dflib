@@ -124,17 +124,17 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public DecimalExp sum(Exp<? extends Number> exp) {
-        return new DecimalExpAggregator(cast(exp), DecimalAggregators::sum);
+        return new DecimalExpAggregator<>("sum", cast(exp), DecimalAggregators::sum);
     }
 
     @Override
     public DecimalExp min(Exp<? extends Number> exp) {
-        return new DecimalExpAggregator(cast(exp), ComparableAggregators::min);
+        return new DecimalExpAggregator<>("min", cast(exp), ComparableAggregators::min);
     }
 
     @Override
     public DecimalExp max(Exp<? extends Number> exp) {
-        return new DecimalExpAggregator(cast(exp), ComparableAggregators::max);
+        return new DecimalExpAggregator<>("max", cast(exp), ComparableAggregators::max);
     }
 
     @Override
@@ -145,7 +145,7 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public DecimalExp median(Exp<? extends Number> exp) {
-        return new DecimalExpAggregator(cast(exp), DecimalAggregators::median);
+        return new DecimalExpAggregator<>("median", cast(exp), DecimalAggregators::median);
     }
 
     @Override

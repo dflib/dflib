@@ -1,6 +1,10 @@
 package com.nhl.dflib.exp.num;
 
-import com.nhl.dflib.*;
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.DecimalExp;
+import com.nhl.dflib.DoubleSeries;
+import com.nhl.dflib.NumExp;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -143,5 +147,17 @@ public class DoubleColumnTest {
                 null,
                 18.4
         );
+    }
+
+    @Test
+    public void testCumSum_getColumnName() {
+        NumExp<?> exp = $double("a").cumSum();
+        assertEquals("cumSum(a)", exp.getColumnName());
+    }
+
+    @Test
+    public void testSum_getColumnName() {
+        NumExp<?> exp = $double("a").sum();
+        assertEquals("sum(a)", exp.getColumnName());
     }
 }

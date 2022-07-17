@@ -259,4 +259,16 @@ public class DecimalColumnTest {
         BooleanSeries s = $decimal("a").ne("11.5").eval(df);
         new BooleanSeriesAsserts(s).expectData(true, true, true);
     }
+
+    @Test
+    public void testCumSum_getColumnName() {
+        NumExp<?> exp = $decimal("a").cumSum();
+        assertEquals("cumSum(a)", exp.getColumnName());
+    }
+
+    @Test
+    public void testSum_getColumnName() {
+        NumExp<?> exp = $decimal("a").sum();
+        assertEquals("sum(a)", exp.getColumnName());
+    }
 }

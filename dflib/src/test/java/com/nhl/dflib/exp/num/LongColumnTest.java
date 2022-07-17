@@ -182,4 +182,16 @@ public class LongColumnTest {
                 109999995L
         );
     }
+
+    @Test
+    public void testCumSum_getColumnName() {
+        NumExp<?> exp = $long("a").cumSum();
+        assertEquals("cumSum(a)", exp.getColumnName());
+    }
+
+    @Test
+    public void testSum_getColumnName() {
+        NumExp<?> exp = $long("a").sum();
+        assertEquals("sum(a)", exp.getColumnName());
+    }
 }

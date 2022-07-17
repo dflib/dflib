@@ -1,6 +1,9 @@
 package com.nhl.dflib.exp.agg;
 
-import com.nhl.dflib.*;
+import com.nhl.dflib.DecimalExp;
+import com.nhl.dflib.Exp;
+import com.nhl.dflib.Series;
+import com.nhl.dflib.exp.Exp1;
 import com.nhl.dflib.series.SingleValueSeries;
 
 import java.math.BigDecimal;
@@ -9,45 +12,18 @@ import java.util.function.Function;
 /**
  * @since 0.11
  */
-public class DecimalExpAggregator implements DecimalExp {
+public class DecimalExpAggregator<F> extends Exp1<F, BigDecimal> implements DecimalExp {
 
-    private final Exp<BigDecimal> exp;
-    private final Function<Series<BigDecimal>, BigDecimal> aggregator;
+    private final Function<Series<F>, BigDecimal> aggregator;
 
-    public DecimalExpAggregator(Exp<BigDecimal> exp, Function<Series<BigDecimal>, BigDecimal> aggregator) {
-        this.exp = exp;
+    public DecimalExpAggregator(String opName, Exp<F> exp, Function<Series<F>, BigDecimal> aggregator) {
+        super(opName, BigDecimal.class, exp);
         this.aggregator = aggregator;
     }
 
     @Override
-    public String toString() {
-        return toQL();
-    }
-
-    @Override
-    public Class<BigDecimal> getType() {
-        return BigDecimal.class;
-    }
-
-    @Override
-    public Series<BigDecimal> eval(DataFrame df) {
-        BigDecimal val = aggregator.apply(exp.eval(df));
+    protected Series<BigDecimal> doEval(Series<F> s) {
+        BigDecimal val = aggregator.apply(s);
         return new SingleValueSeries<>(val, 1);
-    }
-
-    @Override
-    public Series<BigDecimal> eval(Series<?> s) {
-        BigDecimal val = aggregator.apply(exp.eval(s));
-        return new SingleValueSeries<>(val, 1);
-    }
-
-    @Override
-    public String toQL() {
-        return exp.toQL();
-    }
-
-    @Override
-    public String toQL(DataFrame df) {
-        return exp.toQL(df);
     }
 }

@@ -4,6 +4,7 @@
 * #153 Range definitions for WindowBuilder
 * #154 Remove API deprecated in 0.11
 * #155 WindowBuilder.mapColumn(..)
+* #156 Incorrect default name for "$decimal("a").sum()" 
 
 ## Release 0.13
 
