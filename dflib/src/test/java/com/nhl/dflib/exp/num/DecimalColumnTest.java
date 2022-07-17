@@ -271,4 +271,16 @@ public class DecimalColumnTest {
         NumExp<?> exp = $decimal("a").sum();
         assertEquals("sum(a)", exp.getColumnName());
     }
+
+    @Test
+    public void testCastAsCondition() {
+        Condition c = $decimal(0).castAsCondition();
+
+        Series<BigDecimal> s = Series.forData(
+                new BigDecimal("-5.1"),
+                BigDecimal.ZERO,
+                null,
+                new BigDecimal("11.5"));
+        new BooleanSeriesAsserts(c.eval(s)).expectData(true, false, false, true);
+    }
 }

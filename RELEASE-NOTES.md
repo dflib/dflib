@@ -5,6 +5,7 @@
 * #154 Remove API deprecated in 0.11
 * #155 WindowBuilder.mapColumn(..)
 * #156 Incorrect default name for "$decimal("a").sum()" 
+* #157 "Exp.castAsCondition()" 
 
 ## Release 0.13
 

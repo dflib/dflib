@@ -1,11 +1,14 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.exp.*;
+import com.nhl.dflib.exp.AsExp;
+import com.nhl.dflib.exp.ConstExp;
+import com.nhl.dflib.exp.GenericColumn;
 import com.nhl.dflib.exp.agg.CountExp;
 import com.nhl.dflib.exp.agg.ExpAggregator;
 import com.nhl.dflib.exp.agg.StringAggregators;
 import com.nhl.dflib.exp.bool.AndCondition;
 import com.nhl.dflib.exp.bool.BoolColumn;
+import com.nhl.dflib.exp.bool.ConditionFactory;
 import com.nhl.dflib.exp.bool.OrCondition;
 import com.nhl.dflib.exp.datetime.DateColumn;
 import com.nhl.dflib.exp.filter.PreFilterFirstMatchExp;
@@ -13,7 +16,6 @@ import com.nhl.dflib.exp.filter.PreFilteredCountExp;
 import com.nhl.dflib.exp.filter.PreFilteredExp;
 import com.nhl.dflib.exp.flow.IfExp;
 import com.nhl.dflib.exp.flow.IfNullExp;
-import com.nhl.dflib.exp.map.MapCondition1;
 import com.nhl.dflib.exp.map.MapCondition2;
 import com.nhl.dflib.exp.map.MapExp1;
 import com.nhl.dflib.exp.map.MapExp2;
@@ -390,11 +392,11 @@ public interface Exp<T> {
     }
 
     default Condition isNull() {
-        return MapCondition1.map("isNull", this, Series::isNull);
+        return ConditionFactory.isNull(this);
     }
 
     default Condition isNotNull() {
-        return MapCondition1.map("isNotNull", this, Series::isNotNull);
+        return ConditionFactory.isNotNull(this);
     }
 
     /**
@@ -463,5 +465,14 @@ public interface Exp<T> {
      */
     default Exp<T[]> array(T[] template) {
         return agg(s -> s.toArray(template));
+    }
+
+    /**
+     * Converts this expression to a {@link Condition} that can be used for row filtering, etc.
+     *
+     * @since 0.14
+     */
+    default Condition castAsCondition() {
+        return ConditionFactory.castAsCondition(this);
     }
 }

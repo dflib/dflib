@@ -90,4 +90,20 @@ public class StrColumnTest {
         Series<String> s = Series.forData("a", "a9", "abcd0", "__d");
         new BooleanSeriesAsserts(c.eval(s)).expectData(false, true, true, false);
     }
+
+    @Test
+    public void testCastAsCondition() {
+        Condition c = $str(0).castAsCondition();
+
+        Series<String> s = Series.forData("true", null, "false", "__d_");
+        new BooleanSeriesAsserts(c.eval(s)).expectData(true, false, false, false);
+    }
+
+    @Test
+    public void testCastAsCondition_MapVal() {
+        Condition isEven = $str(0).mapVal(s -> s.length() % 2 == 0).castAsCondition();
+
+        Series<String> s = Series.forData("a", "a9", "abcd0", "__d_");
+        new BooleanSeriesAsserts(isEven.eval(s)).expectData(false, true, false, true);
+    }
 }

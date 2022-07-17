@@ -42,4 +42,12 @@ public interface Condition extends Exp<Boolean> {
     default Class<Boolean> getType() {
         return Boolean.class;
     }
+
+    /**
+     * @since 0.14
+     */
+    @Override
+    default Condition castAsCondition() {
+        return this;
+    }
 }

@@ -1,5 +1,6 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.exp.bool.ConditionFactory;
 import com.nhl.dflib.exp.filter.PreFilteredNumExp;
 import com.nhl.dflib.exp.num.NumericExpFactory;
 
@@ -198,5 +199,13 @@ public interface NumExp<N extends Number> extends Exp<N> {
 
     default NumExp<?> median(Condition filter) {
         return new PreFilteredNumExp<>(filter, median());
+    }
+
+    /**
+     * @since 0.14
+     */
+    @Override
+    default Condition castAsCondition() {
+        return ConditionFactory.castAsCondition(this);
     }
 }
