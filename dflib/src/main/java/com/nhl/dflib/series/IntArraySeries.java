@@ -1,6 +1,7 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.LongSeries;
 import com.nhl.dflib.agg.PrimitiveSeriesAvg;
 import com.nhl.dflib.agg.PrimitiveSeriesMedian;
 import com.nhl.dflib.agg.PrimitiveSeriesMinMax;
@@ -13,9 +14,9 @@ import com.nhl.dflib.agg.PrimitiveSeriesSum;
 //  that has offset and size? Need to measure the performance gain of not having to calculate offset
 public class IntArraySeries extends IntBaseSeries {
 
-    private int[] data;
-    private int offset;
-    private int size;
+    private final int[] data;
+    private final int offset;
+    private final int size;
 
     public IntArraySeries(int... data) {
         this(data, 0, data.length);
@@ -101,5 +102,11 @@ public class IntArraySeries extends IntBaseSeries {
     @Override
     public double median() {
         return PrimitiveSeriesMedian.medianOfArray(data, offset, size);
+    }
+
+    @Override
+    public LongSeries cumSum() {
+        long[] cumSum = PrimitiveSeriesSum.cumSumOfArray(data, offset, size);
+        return new LongArraySeries(cumSum);
     }
 }

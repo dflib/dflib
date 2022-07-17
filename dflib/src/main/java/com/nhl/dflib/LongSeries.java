@@ -121,6 +121,11 @@ public interface LongSeries extends Series<Long> {
     }
 
     /**
+     * @since 0.14
+     */
+    LongSeries cumSum();
+
+    /**
      * @since 0.7
      */
     long max();

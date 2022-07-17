@@ -75,8 +75,8 @@ public class IntExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumExp<Integer> cumSum(Exp<? extends Number> exp) {
-        return IntExp1.map("cumSum", exp, IntAggregators::cumSum);
+    public NumExp<Long> cumSum(Exp<? extends Number> exp) {
+        return LongExp1.map("cumSum", exp, IntAggregators::cumSum);
     }
 
     @Override

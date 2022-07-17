@@ -1,6 +1,7 @@
 package com.nhl.dflib.exp.agg;
 
 import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.LongSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.accumulator.ObjectAccumulator;
 
@@ -20,19 +21,21 @@ public class IntAggregators {
     /**
      * @since 0.14
      */
-    public static Series<Integer> cumSum(Series<? extends Number> s) {
+    public static Series<Long> cumSum(Series<? extends Number> s) {
 
         int h = s.size();
         if (h == 0) {
-            return IntSeries.forInts();
+            return LongSeries.forLongs();
         }
 
-        // TODO: if Series<Integer> is a IntSeries we can speed things up significantly by avoiding null checking and
-        //   boxing/unboxing. Implement IntSeries.cumSum()
-        ObjectAccumulator<Integer> accum = new ObjectAccumulator<>(h);
+        if (s instanceof IntSeries) {
+            return ((IntSeries) s).cumSum();
+        }
+
+        ObjectAccumulator<Long> accum = new ObjectAccumulator<>(h);
 
         int i = 0;
-        int runningTotal = 0;
+        long runningTotal = 0;
 
         // rewind nulls,and find the first non-null total
         for (; i < h; i++) {

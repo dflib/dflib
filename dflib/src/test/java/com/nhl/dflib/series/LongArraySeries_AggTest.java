@@ -1,11 +1,18 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.Exp;
+import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LongArraySeries_AggTest {
+
+    @Test
+    public void testCumSum() {
+        LongArraySeries s = new LongArraySeries(1L, 2L, -5L);
+        new SeriesAsserts(s.cumSum()).expectData(1L,3L, -2L);
+    }
 
     @Test
     public void testSum() {

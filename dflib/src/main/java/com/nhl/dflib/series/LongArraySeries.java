@@ -101,4 +101,10 @@ public class LongArraySeries extends LongBaseSeries {
     public double median() {
         return PrimitiveSeriesMedian.medianOfArray(data, offset, size);
     }
+
+    @Override
+    public LongSeries cumSum() {
+        long[] cumSum = PrimitiveSeriesSum.cumSumOfArray(data, offset, size);
+        return new LongArraySeries(cumSum);
+    }
 }

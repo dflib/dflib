@@ -310,11 +310,11 @@ public class IntColumnTest {
 
         new SeriesAsserts(exp.eval(df)).expectData(
                 null,
-                2,
-                7,
+                2L,
+                7L,
                 null,
-                18,
-                6
+                18L,
+                6L
         );
     }
 }

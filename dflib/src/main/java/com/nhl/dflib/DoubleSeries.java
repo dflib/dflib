@@ -121,6 +121,11 @@ public interface DoubleSeries extends Series<Double> {
     }
 
     /**
+     * @since 0.14
+     */
+    DoubleSeries cumSum();
+
+    /**
      * @since 0.7
      */
     double max();

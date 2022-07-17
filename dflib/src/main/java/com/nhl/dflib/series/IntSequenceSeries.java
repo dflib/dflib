@@ -1,6 +1,7 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.LongSeries;
 import com.nhl.dflib.agg.PrimitiveSeriesAvg;
 import com.nhl.dflib.agg.PrimitiveSeriesMedian;
 import com.nhl.dflib.agg.PrimitiveSeriesMinMax;
@@ -92,5 +93,11 @@ public class IntSequenceSeries extends IntBaseSeries {
     @Override
     public double median() {
         return PrimitiveSeriesMedian.medianOfRange(first, lastExclusive);
+    }
+
+    @Override
+    public LongSeries cumSum() {
+        long[] cumSum = PrimitiveSeriesSum.cumSumOfRange(first, lastExclusive);
+        return new LongArraySeries(cumSum);
     }
 }

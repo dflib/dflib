@@ -133,6 +133,11 @@ public interface IntSeries extends Series<Integer> {
     }
 
     /**
+     * @since 0.14
+     */
+    LongSeries cumSum();
+
+    /**
      * @since 0.7
      */
     int max();

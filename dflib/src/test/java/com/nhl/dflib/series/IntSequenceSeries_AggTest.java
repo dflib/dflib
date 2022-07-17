@@ -1,6 +1,7 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.Exp;
+import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -101,5 +102,11 @@ public class IntSequenceSeries_AggTest {
 
         IntSequenceSeries s2 = new IntSequenceSeries(-1, 4);
         assertEquals(1, s2.median(), 0.000001);
+    }
+
+    @Test
+    public void testCumSum() {
+        IntSequenceSeries s = new IntSequenceSeries(6, 9);
+        new SeriesAsserts(s.cumSum()).expectData(6L, 13L, 21L);
     }
 }

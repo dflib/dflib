@@ -102,4 +102,10 @@ public class DoubleArraySeries extends DoubleBaseSeries {
     public double median() {
         return PrimitiveSeriesMedian.medianOfArray(data, offset, size);
     }
+
+    @Override
+    public DoubleSeries cumSum() {
+        double[] cumSum = PrimitiveSeriesSum.cumSumOfArray(data, offset, size);
+        return new DoubleArraySeries(cumSum);
+    }
 }

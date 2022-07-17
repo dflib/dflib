@@ -26,8 +26,10 @@ public class LongAggregators {
             return LongSeries.forLongs();
         }
 
-        // TODO: if Series<Long> is a LongSeries we can speed things up significantly by avoiding null checking and
-        //   boxing/unboxing. Implement LongSeries.cumSum()
+        if (s instanceof LongSeries) {
+            return ((LongSeries) s).cumSum();
+        }
+
         ObjectAccumulator<Long> accum = new ObjectAccumulator<>(h);
 
         int i = 0;

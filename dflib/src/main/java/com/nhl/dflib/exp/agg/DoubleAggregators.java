@@ -33,8 +33,10 @@ public class DoubleAggregators {
             return DoubleSeries.forDoubles();
         }
 
-        // TODO: if Series<Double> is a DoubleSeries we can speed things up significantly by avoiding null checking and
-        //   boxing/unboxing. Implement DoubleSeries.cumSum()
+        if (s instanceof DoubleSeries) {
+            return ((DoubleSeries) s).cumSum();
+        }
+
         ObjectAccumulator<Double> accum = new ObjectAccumulator<>(h);
 
         int i = 0;
