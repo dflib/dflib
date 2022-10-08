@@ -28,12 +28,14 @@ public class ExcelSaver {
 
     private boolean createMissingDirs;
     private boolean indexAsTopRow;
+    private boolean autoSizeColumns;
     private final Map<String, Integer> columnWidths;
     private final Map<String, ExcelStyleCustomizer> columnStyles;
 
     public ExcelSaver() {
         this.createMissingDirs = false;
         this.indexAsTopRow = true;
+        this.autoSizeColumns = false;
         this.columnWidths = new HashMap<>();
         this.columnStyles = new HashMap<>();
     }
@@ -55,6 +57,15 @@ public class ExcelSaver {
 
     public ExcelSaver columnStyles(Map<String, ExcelStyleCustomizer> columnStyles) {
         this.columnStyles.putAll(columnStyles);
+        return this;
+    }
+
+    /**
+     * Auto-sizes all columns for which column widths are not specified explicitly via
+     * {@link #columnWidths(Map)}
+     */
+    public ExcelSaver autoSizeColumns() {
+        this.autoSizeColumns = true;
         return this;
     }
 
@@ -223,19 +234,24 @@ public class ExcelSaver {
     }
 
     protected void adjustColumnWidth(Index index, Sheet sheet) {
-        for (Map.Entry<String, Integer> e : columnWidths.entrySet()) {
 
-            if (index.hasLabel(e.getKey())) {
-                int pos = index.position(e.getKey());
+        if (columnWidths.isEmpty() && !autoSizeColumns) {
+            return;
+        }
 
-                int width = e.getValue();
+        int w = index.size();
+        for (int i = 0; i < w; i++) {
 
-                // Non-positive number is an indicator of auto-size
-                if (width <= 0) {
-                    sheet.autoSizeColumn(pos);
-                } else {
-                    sheet.setColumnWidth(pos, width);
+            Integer width = columnWidths.get(index.getLabel(i));
+            if (width == null) {
+                if (autoSizeColumns) {
+                    sheet.autoSizeColumn(i);
                 }
+            } else if (width <= 0) {
+                // Non-positive number is an indicator of auto-size
+                sheet.autoSizeColumn(i);
+            } else {
+                sheet.setColumnWidth(i, width);
             }
         }
     }

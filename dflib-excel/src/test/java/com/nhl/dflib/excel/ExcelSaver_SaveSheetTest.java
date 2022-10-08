@@ -258,8 +258,33 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
             // Its actual width depends on the default font, and is generally platform-specific,
             // so doing a range comparison
             assertTrue(s.getColumnWidth(0) > 600 && s.getColumnWidth(0) < 700);
-            
+
             assertEquals(256 * 5, s.getColumnWidth(1));
+        }
+    }
+
+    @Test
+    public void testSaveSheet_CustomColumnWidth_AutosizeColumnWidth() throws IOException {
+
+        DataFrame df = DataFrame.newFrame("C1", "C2", "C3").foldByRow(
+                "--", "b", "--",
+                "c", "d", null);
+
+        try (Workbook wb = WorkbookFactory.create(true)) {
+
+            Sheet s = wb.createSheet("s1");
+            Excel.saver()
+                    .autoSizeColumns()
+                    .columnWidths(Map.of("C1", 0, "C2", 256 * 5))
+                    .noHeader()
+                    .saveSheet(df, s);
+
+            // this is an auto-sized column...
+            // Its actual width depends on the default font, and is generally platform-specific,
+            // so doing a range comparison
+            assertTrue(s.getColumnWidth(0) > 600 && s.getColumnWidth(0) < 700);
+            assertEquals(256 * 5, s.getColumnWidth(1));
+            assertEquals(s.getColumnWidth(0), s.getColumnWidth(2), "Auto-sizing should happen for columns not mentioned explicitly");
         }
     }
 }
