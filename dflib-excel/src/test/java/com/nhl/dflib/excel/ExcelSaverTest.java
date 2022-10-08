@@ -23,23 +23,24 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ExcelSaverTest extends BaseExcelTest {
 
     @Test
-    public void testSave_Types() {
+    public void testSaveSheet_Types() {
 
         File file = new File(outPath("testSave_Types.xlsx"));
 
-        DataFrame df = DataFrame.newFrame("bool", "int", "long", "double", "mix")
+        DataFrame df = DataFrame.newFrame("bool", "int", "long", "double", "string", "mix")
                 .columns(
                         BooleanSeries.forBooleans(true, false, false, true),
                         IntSeries.forInts(1, -20003, 23, 65),
                         LongSeries.forLongs(0, 34567890324L, -9L, 15),
                         DoubleSeries.forDoubles(-0.1, 8.45, 7.0001, 67.),
+                        Series.forData("a", "B", "", null),
                         Series.forData(new BigDecimal("0.001"), null, LocalDateTime.of(2000, 3, 4, 14, 2, 3), LocalDate.of(2003, 5, 7))
                 );
 
-        Excel.saver().save(df, file, "s1");
+        Excel.saver().saveSheet(df, file, "s1");
 
         DataFrame reload = Excel.loader().firstRowAsHeader().loadSheet(file, "s1");
-        new DataFrameAsserts(reload, "bool", "int", "long", "double", "mix")
+        new DataFrameAsserts(reload, "bool", "int", "long", "double", "string", "mix")
                 .expectHeight(4)
                 .expectColumn(0, true, false, false, true)
 
@@ -48,115 +49,117 @@ public class ExcelSaverTest extends BaseExcelTest {
                 .expectColumn(2, 0., 34567890324., -9., 15.)
                 .expectColumn(3, -0.1, 8.45, 7.0001, 67.)
 
+                .expectColumn(4, "a", "B", "", null)
+
                 // in Excel dates and date/times are loaded as DateTimes
-                .expectColumn(4, 0.001, null, LocalDateTime.of(2000, 3, 4, 14, 2, 3), LocalDateTime.of(2003, 5, 7, 0, 0, 0));
+                .expectColumn(5, 0.001, null, LocalDateTime.of(2000, 3, 4, 14, 2, 3), LocalDateTime.of(2003, 5, 7, 0, 0, 0));
     }
 
     @Test
-    public void testSave_ToStream() {
+    public void testSaveSheet_ToStream() {
 
         DataFrame df = DataFrame.newFrame("C1", "C2").foldByRow(
-                1, 2,
-                3, 4);
+                "a", "b",
+                "c", "d");
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Excel.saver().save(df, out, "s1");
+        Excel.saver().saveSheet(df, out, "s1");
 
         DataFrame reload = Excel.loader().firstRowAsHeader().loadSheet(new ByteArrayInputStream(out.toByteArray()), "s1");
         new DataFrameAsserts(reload, "C1", "C2")
                 .expectHeight(2)
-                .expectRow(0, 1., 2.)
-                .expectRow(1, 3., 4.);
+                .expectRow(0, "a", "b")
+                .expectRow(1, "c", "d");
     }
 
     @Test
-    public void testSave_ToFile() {
+    public void testSaveSheet_ToFile() {
 
         File file = new File(outPath("testSave_ToFile.xlsx"));
 
         DataFrame df = DataFrame.newFrame("C1", "C2").foldByRow(
-                1, 2,
-                3, 4);
+                "a", "b",
+                "c", "d");
 
-        Excel.saver().save(df, file, "s1");
+        Excel.saver().saveSheet(df, file, "s1");
 
         DataFrame reload = Excel.loader().firstRowAsHeader().loadSheet(file, "s1");
         new DataFrameAsserts(reload, "C1", "C2")
                 .expectHeight(2)
-                .expectRow(0, 1., 2.)
-                .expectRow(1, 3., 4.);
+                .expectRow(0, "a", "b")
+                .expectRow(1, "c", "d");
     }
 
     @Test
-    public void testSave_ToFilePath() {
+    public void testSaveSheet_ToFilePath() {
 
         String filePath = outPath("testSave_ToFilePath.xlsx");
 
         DataFrame df = DataFrame.newFrame("C1", "C2").foldByRow(
-                1, 2,
-                3, 4);
+                "a", "b",
+                "c", "d");
 
-        Excel.saver().save(df, filePath, "s1");
+        Excel.saver().saveSheet(df, filePath, "s1");
 
         DataFrame reload = Excel.loader().firstRowAsHeader().loadSheet(filePath, "s1");
         new DataFrameAsserts(reload, "C1", "C2")
                 .expectHeight(2)
-                .expectRow(0, 1., 2.)
-                .expectRow(1, 3., 4.);
+                .expectRow(0, "a", "b")
+                .expectRow(1, "c", "d");
     }
 
     @Test
-    public void testSave_Mkdirs() {
+    public void testSaveSheet_Mkdirs() {
 
         String path = outPath("Mkdirs" + File.separator + "f2" + File.separator + "testSave_Mkdirs.xlsx");
         File file = new File(path);
 
         DataFrame df = DataFrame.newFrame("C1", "C2").foldByRow(
-                1, 2,
-                3, 4);
+                "a", "b",
+                "c", "d");
 
-        Excel.saver().createMissingDirs().save(df, file, "s1");
+        Excel.saver().createMissingDirs().saveSheet(df, file, "s1");
 
         DataFrame reload = Excel.loader().firstRowAsHeader().loadSheet(file, "s1");
         new DataFrameAsserts(reload, "C1", "C2")
                 .expectHeight(2)
-                .expectRow(0, 1., 2.)
-                .expectRow(1, 3., 4.);
+                .expectRow(0, "a", "b")
+                .expectRow(1, "c", "d");
     }
 
     @Test
-    public void testSave_NoMkdirs() {
+    public void testSaveSheet_NoMkdirs() {
 
         String path = outPath("NoMkdirs" + File.separator + "f4" + File.separator + "testSave_NoMkdirs.xlsx");
         File file = new File(path);
 
         DataFrame df = DataFrame.newFrame("C1", "C2").foldByRow(
-                1, 2,
-                3, 4);
+                "a", "b",
+                "c", "d");
 
-        assertThrows(RuntimeException.class, () -> Excel.saver().save(df, file, "s1"));
+        assertThrows(RuntimeException.class, () -> Excel.saver().saveSheet(df, file, "s1"));
     }
 
     @Test
-    public void testSave_NoHeader() {
+    public void testSaveSheet_NoHeader() {
 
         File file = new File(outPath("testSave_NoHeader.xlsx"));
 
         DataFrame df = DataFrame.newFrame("C1", "C2").foldByRow(
-                1, 2,
-                3, 4);
+                "x", "y",
+                "c", "d");
 
-        Excel.saver().noHeader().save(df, file, "s1");
+        Excel.saver().noHeader().saveSheet(df, file, "s1");
 
         assertTrue(file.exists());
         DataFrame reload = Excel.loader().firstRowAsHeader().loadSheet(file, "s1");
-        new DataFrameAsserts(reload, "1.0", "2.0")
+        new DataFrameAsserts(reload, "x", "y")
                 .expectHeight(1)
-                .expectRow(0, 3., 4.);
+                .expectRow(0, "c", "d");
     }
 
     @Test
-    public void testSave_MultiSheet() {
+    public void testSaveSheet_Merge() {
 
         File file = new File(outPath("testSave_MultiSheet.xlsx"));
 
@@ -173,9 +176,9 @@ public class ExcelSaverTest extends BaseExcelTest {
                 "k", "l");
 
         // New sheets are appended to the existing Excel; existing sheets are overridden
-        Excel.saver().save(df1, file, "s1");
-        Excel.saver().save(df2, file, "s2");
-        Excel.saver().save(df3, file, "s1");
+        Excel.saver().saveSheet(df1, file, "s1");
+        Excel.saver().saveSheet(df2, file, "s2");
+        Excel.saver().saveSheet(df3, file, "s1");
 
         Map<String, DataFrame> reload = Excel.loader().firstRowAsHeader().load(file);
         assertEquals(2, reload.size());

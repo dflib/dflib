@@ -52,7 +52,11 @@ public class ExcelSaver {
         return this;
     }
 
-    public void save(DataFrame df, File file, String sheetName) {
+    /**
+     * Saves a DataFrame into an Excel file in a named sheet. If the file already exists, only the named sheet is
+     * overridden. Other sheets will remain unchanged.
+     */
+    public void saveSheet(DataFrame df, File file, String sheetName) {
 
         if (createMissingDirs) {
             File dir = file.getParentFile();
@@ -68,15 +72,15 @@ public class ExcelSaver {
         }
     }
 
-    public void save(DataFrame df, Path filePath, String sheetName) {
-        save(df, filePath.toFile(), sheetName);
+    public void saveSheet(DataFrame df, Path filePath, String sheetName) {
+        saveSheet(df, filePath.toFile(), sheetName);
     }
 
-    public void save(DataFrame df, String fileName, String sheetName) {
-        save(df, new File(fileName), sheetName);
+    public void saveSheet(DataFrame df, String fileName, String sheetName) {
+        saveSheet(df, new File(fileName), sheetName);
     }
 
-    public void save(DataFrame df, OutputStream out, String sheetName) {
+    public void saveSheet(DataFrame df, OutputStream out, String sheetName) {
         writeToOut(df, () -> out, () -> WorkbookFactory.create(true), sheetName);
     }
 

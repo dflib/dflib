@@ -72,30 +72,30 @@ public class Excel {
     /**
      * @since 0.14
      */
-    public static void save(DataFrame df, File file, String sheetName) {
-        saver().save(df, file, sheetName);
+    public static void saveSheet(DataFrame df, File file, String sheetName) {
+        saver().saveSheet(df, file, sheetName);
     }
 
     /**
      * @since 0.14
      */
-    public static void save(DataFrame df, Path filePath, String sheetName) {
-        saver().save(df, filePath, sheetName);
+    public static void saveSheet(DataFrame df, Path filePath, String sheetName) {
+        saver().saveSheet(df, filePath, sheetName);
     }
 
     /**
      * @since 0.14
      */
-    public static void save(DataFrame df, String fileName, String sheetName) {
-        saver().save(df, fileName, sheetName);
+    public static void saveSheet(DataFrame df, String fileName, String sheetName) {
+        saver().saveSheet(df, fileName, sheetName);
     }
 
 
     /**
      * @since 0.14
      */
-    public static void save(DataFrame df, OutputStream out, String sheetName) {
-        saver().save(df, out, sheetName);
+    public static void saveSheet(DataFrame df, OutputStream out, String sheetName) {
+        saver().saveSheet(df, out, sheetName);
     }
 
     /**
