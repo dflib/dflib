@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 
 /**
  * @since 0.14
@@ -29,7 +28,7 @@ public class ExcelSaver {
 
     private boolean createMissingDirs;
     private boolean indexAsTopRow;
-    private final Map<String, BiConsumer<Workbook, CellStyle>> columnStyles;
+    private final Map<String, ExcelStyleCustomizer> columnStyles;
 
     public ExcelSaver() {
         this.createMissingDirs = false;
@@ -52,7 +51,7 @@ public class ExcelSaver {
         return this;
     }
 
-    public ExcelSaver columnStyles(Map<String, BiConsumer<Workbook, CellStyle>> columnStyles) {
+    public ExcelSaver columnStyles(Map<String, ExcelStyleCustomizer> columnStyles) {
         this.columnStyles.putAll(columnStyles);
         return this;
     }
@@ -214,14 +213,8 @@ public class ExcelSaver {
         }
 
         Map<String, CellStyle> resolved = new HashMap<>();
-        columnStyles.forEach((c, sf) -> resolved.put(c, createCustomStyle(wb, sf)));
+        columnStyles.forEach((c, customizer) -> resolved.put(c, customizer.createCustomStyle(wb)));
         return resolved;
-    }
-
-    protected CellStyle createCustomStyle(Workbook wb, BiConsumer<Workbook, CellStyle> customizer) {
-        CellStyle style = wb.createCellStyle();
-        customizer.accept(wb, style);
-        return style;
     }
 
     protected interface ThrowingSupplier<T> {
