@@ -7,11 +7,17 @@ import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.LongSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.junit5.DataFrameAsserts;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -193,5 +199,44 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
                 .expectHeight(2)
                 .expectRow(0, "e", "f")
                 .expectRow(1, "g", "h");
+    }
+
+    @Test
+    public void testSaveSheet_CustomStyle() throws IOException {
+
+        DataFrame df = DataFrame.newFrame("C1", "C2").foldByRow(
+                "a", "b",
+                "c", "d");
+
+        try (Workbook wb = WorkbookFactory.create(true)) {
+
+            Sheet s = wb.createSheet("s1");
+            Excel.saver()
+                    .columnStyles(Map.of("C2", this::customizeStyle1))
+                    .noHeader()
+                    .saveSheet(df, s);
+
+            assertEquals("a", s.getRow(0).getCell(0).getStringCellValue());
+            assertEquals("b", s.getRow(0).getCell(1).getStringCellValue());
+            assertEquals("c", s.getRow(1).getCell(0).getStringCellValue());
+            assertEquals("d", s.getRow(1).getCell(1).getStringCellValue());
+
+            Font f00 = wb.getFontAt(s.getRow(0).getCell(0).getCellStyle().getFontIndex());
+            Font f01 = wb.getFontAt(s.getRow(0).getCell(1).getCellStyle().getFontIndex());
+            Font f10 = wb.getFontAt(s.getRow(1).getCell(0).getCellStyle().getFontIndex());
+            Font f11 = wb.getFontAt(s.getRow(1).getCell(1).getCellStyle().getFontIndex());
+
+            assertFalse(f00.getBold());
+            assertTrue(f01.getBold());
+
+            assertFalse(f10.getBold());
+            assertTrue(f11.getBold());
+        }
+    }
+
+    private void customizeStyle1(Workbook wb, CellStyle st) {
+        Font f = wb.createFont();
+        f.setBold(true);
+        st.setFont(f);
     }
 }

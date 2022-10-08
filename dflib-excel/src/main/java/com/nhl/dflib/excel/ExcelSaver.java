@@ -2,7 +2,6 @@ package com.nhl.dflib.excel;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.Series;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -17,12 +16,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Path;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 
 /**
  * @since 0.14
@@ -31,10 +29,12 @@ public class ExcelSaver {
 
     private boolean createMissingDirs;
     private boolean indexAsTopRow;
+    private final Map<String, BiConsumer<Workbook, CellStyle>> columnStyles;
 
     public ExcelSaver() {
         this.createMissingDirs = false;
         this.indexAsTopRow = true;
+        this.columnStyles = new HashMap<>();
     }
 
     /**
@@ -49,6 +49,11 @@ public class ExcelSaver {
 
     public ExcelSaver noHeader() {
         this.indexAsTopRow = false;
+        return this;
+    }
+
+    public ExcelSaver columnStyles(Map<String, BiConsumer<Workbook, CellStyle>> columnStyles) {
+        this.columnStyles.putAll(columnStyles);
         return this;
     }
 
@@ -179,7 +184,6 @@ public class ExcelSaver {
 
     protected void writeToSheet(DataFrame df, Sheet sheet) {
 
-        int w = df.width();
         int startDataRow = indexAsTopRow ? 1 : 0;
 
         if (indexAsTopRow) {
@@ -193,6 +197,7 @@ public class ExcelSaver {
             topRowStyle.setFont(topRowFont);
             topRowStyle.setAlignment(HorizontalAlignment.CENTER);
 
+            int w = df.width();
             for (int i = 0; i < w; i++) {
                 Cell cell = row.createCell(i);
                 cell.setCellValue(index.getLabel(i));
@@ -200,131 +205,26 @@ public class ExcelSaver {
             }
         }
 
-        // TODO: is this redundant? Can this be looked up on the Worksheet?
-        Map<Class, CellStyle> styles = new HashMap<>();
+        new ExcelSaverDataUpdater(df, sheet, startDataRow, resolveStyles(sheet.getWorkbook())).update();
+    }
 
-        for (int i = 0; i < w; i++) {
-            Series<?> column = df.getColumn(i);
-            Class<?> type = column.getNominalType();
-            if (Boolean.TYPE.equals(type)) {
-                updateBooleanColumn(sheet, i, startDataRow, (Series<Boolean>) column);
-            } else if (Integer.TYPE.equals(type)) {
-                updateIntColumn(sheet, i, startDataRow, (Series<Integer>) column);
-            } else if (Long.TYPE.equals(type)) {
-                updateLongColumn(sheet, i, startDataRow, (Series<Long>) column);
-            } else if (Double.TYPE.equals(type)) {
-                updateDoubleColumn(sheet, i, startDataRow, (Series<Double>) column);
-            } else {
-                updateColumn(sheet, i, startDataRow, column, styles);
-            }
+    protected Map<String, CellStyle> resolveStyles(Workbook wb) {
+        if (columnStyles.isEmpty()) {
+            return Collections.emptyMap();
         }
+
+        Map<String, CellStyle> resolved = new HashMap<>();
+        columnStyles.forEach((c, sf) -> resolved.put(c, createCustomStyle(wb, sf)));
+        return resolved;
     }
 
-    private void updateBooleanColumn(Sheet sheet, int col, int startRow, Series<Boolean> data) {
-        int len = data.size();
-
-        for (int i = 0; i < len; i++) {
-            Row existingRow = sheet.getRow(startRow + i);
-            Row row = existingRow != null ? existingRow : sheet.createRow(startRow + i);
-            Cell cell = row.createCell(col);
-            cell.setCellValue(data.get(i));
-        }
-    }
-
-    private void updateIntColumn(Sheet sheet, int col, int startRow, Series<Integer> data) {
-
-        int len = data.size();
-
-        for (int i = 0; i < len; i++) {
-            Row existingRow = sheet.getRow(startRow + i);
-            Row row = existingRow != null ? existingRow : sheet.createRow(startRow + i);
-            Cell cell = row.createCell(col);
-            cell.setCellValue(data.get(i));
-        }
-    }
-
-    private void updateLongColumn(Sheet sheet, int col, int startRow, Series<Long> data) {
-        int len = data.size();
-
-        for (int i = 0; i < len; i++) {
-            Row existingRow = sheet.getRow(startRow + i);
-            Row row = existingRow != null ? existingRow : sheet.createRow(startRow + i);
-            Cell cell = row.createCell(col);
-            cell.setCellValue(data.get(i));
-        }
-    }
-
-    private void updateDoubleColumn(Sheet sheet, int col, int startRow, Series<Double> data) {
-        int len = data.size();
-
-        for (int i = 0; i < len; i++) {
-            Row existingRow = sheet.getRow(startRow + i);
-            Row row = existingRow != null ? existingRow : sheet.createRow(startRow + i);
-            Cell cell = row.createCell(col);
-            cell.setCellValue(data.get(i));
-        }
-    }
-
-    private void updateColumn(Sheet sheet, int col, int startRow, Series<?> data, Map<Class, CellStyle> styleCache) {
-
-        int len = data.size();
-
-        for (int i = 0; i < len; i++) {
-            Row existingRow = sheet.getRow(startRow + i);
-            Row row = existingRow != null ? existingRow : sheet.createRow(startRow + i);
-            Cell cell = row.createCell(col);
-            setValue(cell, data.get(i), styleCache);
-        }
-    }
-
-    private void setValue(Cell cell, Object value, Map<Class, CellStyle> styleCache) {
-
-        if (value == null) {
-            cell.setBlank();
-        } else if (value instanceof Number) {
-            cell.setCellValue(((Number) value).doubleValue());
-        } else if (value instanceof LocalDateTime) {
-            cell.setCellValue((LocalDateTime) value);
-            cell.setCellStyle(createLocalDateTimeStyle(cell.getSheet(), styleCache));
-        } else if (value instanceof LocalDate) {
-            cell.setCellValue((LocalDate) value);
-            cell.setCellStyle(createLocalDateStyle(cell.getSheet(), styleCache));
-        } else if (value instanceof Date) {
-            cell.setCellValue((Date) value);
-            cell.setCellStyle(createLocalDateTimeStyle(cell.getSheet(), styleCache));
-        } else {
-            cell.setCellValue(value.toString());
-        }
-    }
-
-    private CellStyle createLocalDateStyle(Sheet sheet, Map<Class, CellStyle> styleCache) {
-        return styleCache.computeIfAbsent(LocalDate.class, t -> {
-
-            // Excel build-int formats (as defined in POI BuiltinFormats) do contain international date formats..
-            // TODO: should we introduce custom formats?
-
-            short f = sheet.getWorkbook().createDataFormat().getFormat("m/d/yy");
-            CellStyle style = sheet.getWorkbook().createCellStyle();
-            style.setDataFormat(f);
-            return style;
-        });
-    }
-
-    private CellStyle createLocalDateTimeStyle(Sheet sheet, Map<Class, CellStyle> styleCache) {
-        return styleCache.computeIfAbsent(LocalDateTime.class, t -> {
-
-            // Excel build-int formats (as defined in POI BuiltinFormats) do contain international date formats..
-            // TODO: should we introduce custom formats?
-
-            short f = sheet.getWorkbook().createDataFormat().getFormat("m/d/yy h:mm");
-            CellStyle style = sheet.getWorkbook().createCellStyle();
-            style.setDataFormat(f);
-            return style;
-        });
+    protected CellStyle createCustomStyle(Workbook wb, BiConsumer<Workbook, CellStyle> customizer) {
+        CellStyle style = wb.createCellStyle();
+        customizer.accept(wb, style);
+        return style;
     }
 
     protected interface ThrowingSupplier<T> {
         T get() throws IOException;
     }
-
 }
