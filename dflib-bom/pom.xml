@@ -89,11 +89,6 @@
             </dependency>
             <dependency>
                 <groupId>com.nhl.dflib</groupId>
-                <artifactId>dflib-test</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.nhl.dflib</groupId>
                 <artifactId>dflib-junit5</artifactId>
                 <version>${project.version}</version>
             </dependency>

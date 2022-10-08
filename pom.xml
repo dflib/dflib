@@ -16,7 +16,6 @@
         <module>dflib-excel</module>
         <module>dflib-jdbc</module>
         <module>dflib-json</module>
-        <module>dflib-test</module>
         <module>dflib-junit5</module>
         <module>dflib-jupyter</module>
         <module>dflib-benchmark</module>

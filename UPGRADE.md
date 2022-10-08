@@ -1,5 +1,12 @@
 # UPGRADE INSTRUCTIONS
 
+## 0.14
+
+* [dflib #161](https://github.com/bootique/bootique-agrest/issues/161): `dflib-test` module that provides JUnit 4 
+  integration will no longer be shipped. `dflib-junit5` is the only option offered from now on. If you still need
+  JUnit 4 and can not upgrade, you can take `dflib-test` classes from v.0.13 and maintain them in your own code. 
+  There are only a few of them, and they are fairly simple.
+
 ## 0.11
 
 * [dflib #127](https://github.com/bootique/bootique-agrest/issues/127): With DataFrame aggregation API migration to
