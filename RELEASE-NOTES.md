@@ -6,6 +6,7 @@
 * #155 WindowBuilder.mapColumn(..)
 * #156 Incorrect default name for "$decimal("a").sum()" 
 * #157 "Exp.castAsCondition()" 
+* #160 Switch to Java 11
 
 ## Release 0.13
 
