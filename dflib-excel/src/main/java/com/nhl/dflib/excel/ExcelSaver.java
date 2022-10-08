@@ -61,10 +61,10 @@ public class ExcelSaver {
             }
         }
 
-        try (FileOutputStream out = new FileOutputStream(file)) {
-            save(df, out, sheetName);
-        } catch (IOException e) {
-            throw new RuntimeException("Error writing Excel to " + file + ": " + e.getMessage(), e);
+        if (file.exists()) {
+            mergeToFile(df, file, sheetName);
+        } else {
+            writeToFile(df, file, sheetName);
         }
     }
 
@@ -77,57 +77,89 @@ public class ExcelSaver {
     }
 
     public void save(DataFrame df, OutputStream out, String sheetName) {
+        writeToOut(df, () -> out, () -> WorkbookFactory.create(true), sheetName);
+    }
+
+    protected void mergeToFile(DataFrame df, File file, String sheetName) {
+        writeToOut(df, () -> {
+
+            // Delete the underlying file. Per POIXMLDocument docs:
+            // "if the Document was opened from a File rather than an InputStream, you must write out to a different
+            // file, overwriting via an OutputStream isn't possible"...
+
+            // TODO: Is it bad for any reason?
+
+            file.delete();
+            return new FileOutputStream(file);
+
+        }, () -> WorkbookFactory.create(file), sheetName);
+    }
+
+    protected void writeToFile(DataFrame df, File file, String sheetName) {
+        writeToOut(df, () -> new FileOutputStream(file), () -> WorkbookFactory.create(true), sheetName);
+    }
+
+    protected void writeToOut(DataFrame df, ThrowingSupplier<OutputStream> out, ThrowingSupplier<Workbook> workbookSupplier, String sheetName) {
+        try (Workbook wb = workbookSupplier.get()) {
+            mergeToWorkbook(df, wb, sheetName);
+
+            try (OutputStream os = out.get()) {
+                wb.write(os);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error writing to an Excel stream: " + e.getMessage(), e);
+        }
+    }
+
+    protected void mergeToWorkbook(DataFrame df, Workbook wb, String sheetName) {
 
         Objects.requireNonNull(sheetName);
 
-        try {
-            Workbook wb = WorkbookFactory.create(true);
-            Sheet sheet = wb.createSheet(sheetName);
+        Sheet existingSheet = wb.getSheet(sheetName);
+        if (existingSheet != null) {
+            wb.removeSheetAt(wb.getSheetIndex(existingSheet));
+        }
 
-            int w = df.width();
-            int startDataRow = indexAsTopRow ? 1 : 0;
+        Sheet sheet = wb.createSheet(sheetName);
 
-            if (indexAsTopRow) {
-                Index index = df.getColumnsIndex();
-                Row row = sheet.createRow(0);
+        int w = df.width();
+        int startDataRow = indexAsTopRow ? 1 : 0;
 
-                Font topRowFont = wb.createFont();
-                topRowFont.setBold(true);
+        if (indexAsTopRow) {
+            Index index = df.getColumnsIndex();
+            Row row = sheet.createRow(0);
 
-                CellStyle topRowStyle = wb.createCellStyle();
-                topRowStyle.setFont(topRowFont);
-                topRowStyle.setAlignment(HorizontalAlignment.CENTER);
+            Font topRowFont = wb.createFont();
+            topRowFont.setBold(true);
 
-                for (int i = 0; i < w; i++) {
-                    Cell cell = row.createCell(i);
-                    cell.setCellValue(index.getLabel(i));
-                    cell.setCellStyle(topRowStyle);
-                }
-            }
-
-            // TODO: is this redundant? Can this be looked up on the Worksheet?
-            Map<Class, CellStyle> styles = new HashMap<>();
+            CellStyle topRowStyle = wb.createCellStyle();
+            topRowStyle.setFont(topRowFont);
+            topRowStyle.setAlignment(HorizontalAlignment.CENTER);
 
             for (int i = 0; i < w; i++) {
-                Series<?> column = df.getColumn(i);
-                Class<?> type = column.getNominalType();
-                if (Boolean.TYPE.equals(type)) {
-                    updateBooleanColumn(sheet, i, startDataRow, (Series<Boolean>) column);
-                } else if (Integer.TYPE.equals(type)) {
-                    updateIntColumn(sheet, i, startDataRow, (Series<Integer>) column);
-                } else if (Long.TYPE.equals(type)) {
-                    updateLongColumn(sheet, i, startDataRow, (Series<Long>) column);
-                } else if (Double.TYPE.equals(type)) {
-                    updateDoubleColumn(sheet, i, startDataRow, (Series<Double>) column);
-                } else {
-                    updateColumn(sheet, i, startDataRow, column, styles);
-                }
+                Cell cell = row.createCell(i);
+                cell.setCellValue(index.getLabel(i));
+                cell.setCellStyle(topRowStyle);
             }
+        }
 
-            wb.write(out);
+        // TODO: is this redundant? Can this be looked up on the Worksheet?
+        Map<Class, CellStyle> styles = new HashMap<>();
 
-        } catch (IOException e) {
-            throw new RuntimeException("Error writing to Excel: " + e.getMessage(), e);
+        for (int i = 0; i < w; i++) {
+            Series<?> column = df.getColumn(i);
+            Class<?> type = column.getNominalType();
+            if (Boolean.TYPE.equals(type)) {
+                updateBooleanColumn(sheet, i, startDataRow, (Series<Boolean>) column);
+            } else if (Integer.TYPE.equals(type)) {
+                updateIntColumn(sheet, i, startDataRow, (Series<Integer>) column);
+            } else if (Long.TYPE.equals(type)) {
+                updateLongColumn(sheet, i, startDataRow, (Series<Long>) column);
+            } else if (Double.TYPE.equals(type)) {
+                updateDoubleColumn(sheet, i, startDataRow, (Series<Double>) column);
+            } else {
+                updateColumn(sheet, i, startDataRow, column, styles);
+            }
         }
     }
 
@@ -232,6 +264,10 @@ public class ExcelSaver {
             style.setDataFormat(f);
             return style;
         });
+    }
+
+    protected interface ThrowingSupplier<T> {
+        T get() throws IOException;
     }
 
 }
