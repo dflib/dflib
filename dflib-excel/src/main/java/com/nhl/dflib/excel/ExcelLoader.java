@@ -2,6 +2,7 @@ package com.nhl.dflib.excel;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DataFrameByRowBuilder;
+import com.nhl.dflib.Index;
 import org.apache.poi.ss.usermodel.*;
 
 import java.io.File;
@@ -16,8 +17,16 @@ import java.util.*;
 public class ExcelLoader {
 
     // TODO: add builder method to capture Excel file password
-    // TODO: add builder method for specifying named sheets to load
-    // TODO: add builder method to use the first row values as index
+
+    private boolean firstRowAsHeader;
+
+    /**
+     * @since 0.14
+     */
+    public ExcelLoader firstRowAsHeader() {
+        this.firstRowAsHeader = true;
+        return this;
+    }
 
     public DataFrame loadSheet(InputStream in, String sheetName) {
         try (Workbook wb = loadWorkbook(in)) {
@@ -150,34 +159,57 @@ public class ExcelLoader {
             return DataFrame.newFrame().empty();
         }
 
-        DataFrameByRowBuilder builder = DataFrame.newFrame(range.columns()).byRow();
+        if (range.height == 0) {
+            return DataFrame.newFrame(range.columns()).byRow().create();
+        }
 
         Object[] buffer = new Object[range.width];
+        fillRow(buffer, sh, range, 0);
 
-        // Don't skip empty rows or columns in the middle of a range, but truncate leading empty rows and columns
-        for (int r = 0; r < range.height; r++) {
+        DataFrameByRowBuilder builder = firstRowAsHeader
+                ? DataFrame.newFrame(createIndex(buffer)).byRow()
+                : DataFrame.newFrame(range.columns()).byRow().addRow(buffer);
 
-            Row row = sh.getRow(range.startRow + r);
-            if (row == null) {
-                Arrays.fill(buffer, null);
-            } else {
-
-                for (int c = 0; c < range.width; c++) {
-                    Cell cell = row.getCell(range.startCol + c, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
-
-                    // resetting buffer value to null for missing cells is important, as the buffer is reused between rows
-                    buffer[c] = cell != null ? value(cell) : null;
-                }
-
-                for (Cell cell : row) {
-                    buffer[cell.getColumnIndex() - range.startCol] = value(cell);
-                }
-            }
-
+        for (int r = 1; r < range.height; r++) {
+            fillRow(buffer, sh, range, r);
             builder.addRow(buffer);
         }
 
         return builder.create();
+    }
+
+    private Index createIndex(Object[] row) {
+
+        int w = row.length;
+        String[] labels = new String[w];
+
+        for (int i = 0; i < w; i++) {
+            labels[i] = row[i] != null ? row[i].toString() : "";
+        }
+
+        return Index.forLabels(labels);
+    }
+
+    private void fillRow(Object[] buffer, Sheet sh, SheetRange range, int rowOffset) {
+
+        // Don't skip empty rows or columns in the middle of a range, but truncate leading empty rows and columns
+
+        Row row = sh.getRow(range.startRow + rowOffset);
+        if (row == null) {
+            Arrays.fill(buffer, null);
+        } else {
+
+            for (int c = 0; c < range.width; c++) {
+                Cell cell = row.getCell(range.startCol + c, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+
+                // resetting buffer value to null for missing cells is important, as the buffer is reused between rows
+                buffer[c] = cell != null ? value(cell) : null;
+            }
+
+            for (Cell cell : row) {
+                buffer[cell.getColumnIndex() - range.startCol] = value(cell);
+            }
+        }
     }
 
     private Object value(Cell cell) {

@@ -162,4 +162,15 @@ public class ExcelLoader_LoadSheetTest {
                 .expectRow(3, "c", "d");
     }
 
+    @Test
+    public void testFromStream_FirstRowAsHeader() throws IOException {
+
+        try (InputStream in = getClass().getResourceAsStream("one-sheet.xlsx")) {
+
+            DataFrame s1 = new ExcelLoader().firstRowAsHeader().loadSheet(in, "Sheet1");
+            new DataFrameAsserts(s1, "One", "Two")
+                    .expectHeight(1)
+                    .expectRow(0, "Three", "Four");
+        }
+    }
 }

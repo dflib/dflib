@@ -7,6 +7,7 @@
 * #156 Incorrect default name for "$decimal("a").sum()" 
 * #157 "Exp.castAsCondition()" 
 * #160 Switch to Java 11
+* #162 ExcelLoader.firstRowAsHeader()
 
 ## Release 0.13
 
