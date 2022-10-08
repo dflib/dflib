@@ -254,8 +254,11 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
                     .noHeader()
                     .saveSheet(df, s);
 
-            // "611" is an auto-sized width for our data
-            assertEquals(611, s.getColumnWidth(0));
+            // this is an auto-sized column...
+            // Its actual width depends on the default font, and is generally platform-specific,
+            // so doing a range comparison
+            assertTrue(s.getColumnWidth(0) > 600 && s.getColumnWidth(0) < 700);
+            
             assertEquals(256 * 5, s.getColumnWidth(1));
         }
     }
