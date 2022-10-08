@@ -7,7 +7,6 @@ import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.LongSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.junit5.DataFrameAsserts;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -211,8 +210,14 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
         try (Workbook wb = WorkbookFactory.create(true)) {
 
             Sheet s = wb.createSheet("s1");
+            ExcelStyleCustomizer customizer = (wbc, stc) -> {
+                Font f = wbc.createFont();
+                f.setBold(true);
+                stc.setFont(f);
+            };
+
             Excel.saver()
-                    .columnStyles(Map.of("C2", this::customizeStyle1))
+                    .columnStyles(Map.of("C2", customizer))
                     .noHeader()
                     .saveSheet(df, s);
 
@@ -234,9 +239,24 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
         }
     }
 
-    private void customizeStyle1(Workbook wb, CellStyle st) {
-        Font f = wb.createFont();
-        f.setBold(true);
-        st.setFont(f);
+    @Test
+    public void testSaveSheet_CustomColumnWidth() throws IOException {
+
+        DataFrame df = DataFrame.newFrame("C1", "C2").foldByRow(
+                "--", "b",
+                "c", "d");
+
+        try (Workbook wb = WorkbookFactory.create(true)) {
+
+            Sheet s = wb.createSheet("s1");
+            Excel.saver()
+                    .columnWidths(Map.of("C1", 0, "C2", 256 * 5))
+                    .noHeader()
+                    .saveSheet(df, s);
+
+            // "611" is an auto-sized width for our data
+            assertEquals(611, s.getColumnWidth(0));
+            assertEquals(256 * 5, s.getColumnWidth(1));
+        }
     }
 }

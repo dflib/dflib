@@ -28,11 +28,13 @@ public class ExcelSaver {
 
     private boolean createMissingDirs;
     private boolean indexAsTopRow;
+    private final Map<String, Integer> columnWidths;
     private final Map<String, ExcelStyleCustomizer> columnStyles;
 
     public ExcelSaver() {
         this.createMissingDirs = false;
         this.indexAsTopRow = true;
+        this.columnWidths = new HashMap<>();
         this.columnStyles = new HashMap<>();
     }
 
@@ -53,6 +55,16 @@ public class ExcelSaver {
 
     public ExcelSaver columnStyles(Map<String, ExcelStyleCustomizer> columnStyles) {
         this.columnStyles.putAll(columnStyles);
+        return this;
+    }
+
+    /**
+     * Append the map of column widths to any existing width declarations. The keys in the map are column names. The
+     * values are POI width units that are 1/256th of a width of a single char. To auto-size a column, add a zero or
+     * a negative number for that column name.
+     */
+    public ExcelSaver columnWidths(Map<String, Integer> columnWidths) {
+        this.columnWidths.putAll(columnWidths);
         return this;
     }
 
@@ -205,6 +217,27 @@ public class ExcelSaver {
         }
 
         new ExcelSaverDataUpdater(df, sheet, startDataRow, resolveStyles(sheet.getWorkbook())).update();
+
+        // adjust width at the end, when the data is already loader
+        adjustColumnWidth(df.getColumnsIndex(), sheet);
+    }
+
+    protected void adjustColumnWidth(Index index, Sheet sheet) {
+        for (Map.Entry<String, Integer> e : columnWidths.entrySet()) {
+
+            if (index.hasLabel(e.getKey())) {
+                int pos = index.position(e.getKey());
+
+                int width = e.getValue();
+
+                // Non-positive number is an indicator of auto-size
+                if (width <= 0) {
+                    sheet.autoSizeColumn(pos);
+                } else {
+                    sheet.setColumnWidth(pos, width);
+                }
+            }
+        }
     }
 
     protected Map<String, CellStyle> resolveStyles(Workbook wb) {
