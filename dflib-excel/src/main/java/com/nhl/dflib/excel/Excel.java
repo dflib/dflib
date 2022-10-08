@@ -4,6 +4,7 @@ import com.nhl.dflib.DataFrame;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.Map;
 
@@ -64,8 +65,22 @@ public class Excel {
     }
 
 
-
     public static ExcelLoader loader() {
         return new ExcelLoader();
+    }
+
+
+    /**
+     * @since 0.14
+     */
+    public static void save(DataFrame df, OutputStream out, String sheetName) {
+        saver().save(df, out, sheetName);
+    }
+
+    /**
+     * @since 0.14
+     */
+    public static ExcelSaver saver() {
+        return new ExcelSaver();
     }
 }

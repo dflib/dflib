@@ -1,5 +1,6 @@
 ## Release 0.14
 
+* #138 Storing DataFrame in Excel
 * #152 Cumulative sum expression
 * #153 Range definitions for WindowBuilder
 * #154 Remove API deprecated in 0.11
