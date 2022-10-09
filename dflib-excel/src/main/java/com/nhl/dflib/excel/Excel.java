@@ -72,6 +72,35 @@ public class Excel {
     /**
      * @since 0.14
      */
+    public static void save(Map<String, DataFrame> dfBySheet, File file) {
+        saver().save(dfBySheet, file);
+    }
+
+    /**
+     * @since 0.14
+     */
+    public static void save(Map<String, DataFrame> dfBySheet, Path filePath) {
+        saver().save(dfBySheet, filePath);
+    }
+
+    /**
+     * @since 0.14
+     */
+    public static void save(Map<String, DataFrame> dfBySheet, String fileName) {
+        saver().save(dfBySheet, fileName);
+    }
+
+
+    /**
+     * @since 0.14
+     */
+    public static void save(Map<String, DataFrame> dfBySheet, OutputStream out) {
+        saver().save(dfBySheet, out);
+    }
+
+    /**
+     * @since 0.14
+     */
     public static void saveSheet(DataFrame df, File file, String sheetName) {
         saver().saveSheet(df, file, sheetName);
     }

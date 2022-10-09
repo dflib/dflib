@@ -20,7 +20,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ExcelSaverTest extends BaseExcelTest {
+public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
 
     @Test
     public void testSaveSheet_Types() {

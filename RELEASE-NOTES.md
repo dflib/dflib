@@ -9,6 +9,7 @@
 * #157 "Exp.castAsCondition()" 
 * #160 Switch to Java 11
 * #162 ExcelLoader.firstRowAsHeader()
+* #163 Load/store DataFrames from Excel Workbook object
 
 ## Release 0.13
 

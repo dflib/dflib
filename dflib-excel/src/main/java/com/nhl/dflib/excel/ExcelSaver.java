@@ -52,6 +52,49 @@ public class ExcelSaver {
         return this;
     }
 
+    public void save(Map<String, DataFrame> data, Workbook wb) {
+        for (Map.Entry<String, DataFrame> e : data.entrySet()) {
+            Sheet sheet = createOrReplaceSheet(wb, e.getKey());
+            writeToSheet(e.getValue(), sheet);
+        }
+    }
+
+    public void save(Map<String, DataFrame> dfBySheet, String filePath) {
+        save(dfBySheet, new File(filePath));
+    }
+
+    public void save(Map<String, DataFrame> dfBySheet, File file) {
+
+        if (createMissingDirs) {
+            File dir = file.getParentFile();
+            if (dir != null) {
+                dir.mkdirs();
+            }
+        }
+
+        if (file.exists()) {
+            mergeToFile(dfBySheet, file);
+        } else {
+            writeToFile(dfBySheet, file);
+        }
+    }
+
+    public void save(Map<String, DataFrame> dfBySheet, Path filePath) {
+        save(dfBySheet, filePath.toFile());
+    }
+
+    public void save(Map<String, DataFrame> dfBySheet, OutputStream out) {
+        writeToOut(dfBySheet, () -> out, () -> WorkbookFactory.create(true));
+    }
+
+    /**
+     * Saves a DataFrame into an Excel file in a named sheet. If the file already exists, only the named sheet is
+     * overridden. Other sheets will remain unchanged.
+     */
+    public void saveSheet(DataFrame df, Sheet sheet) {
+        writeToSheet(df, sheet);
+    }
+
     /**
      * Saves a DataFrame into an Excel file in a named sheet. If the file already exists, only the named sheet is
      * overridden. Other sheets will remain unchanged.
@@ -66,9 +109,9 @@ public class ExcelSaver {
         }
 
         if (file.exists()) {
-            mergeToFile(df, file, sheetName);
+            mergeToFile(Map.of(sheetName, df), file);
         } else {
-            writeToFile(df, file, sheetName);
+            writeToFile(Map.of(sheetName, df), file);
         }
     }
 
@@ -81,11 +124,11 @@ public class ExcelSaver {
     }
 
     public void saveSheet(DataFrame df, OutputStream out, String sheetName) {
-        writeToOut(df, () -> out, () -> WorkbookFactory.create(true), sheetName);
+        writeToOut(Map.of(sheetName, df), () -> out, () -> WorkbookFactory.create(true));
     }
 
-    protected void mergeToFile(DataFrame df, File file, String sheetName) {
-        writeToOut(df, () -> {
+    protected void mergeToFile(Map<String, DataFrame> dfBySheet, File file) {
+        writeToOut(dfBySheet, () -> {
 
             // Delete the underlying file. Per POIXMLDocument docs:
             // "if the Document was opened from a File rather than an InputStream, you must write out to a different
@@ -96,16 +139,24 @@ public class ExcelSaver {
             file.delete();
             return new FileOutputStream(file);
 
-        }, () -> WorkbookFactory.create(file), sheetName);
+        }, () -> WorkbookFactory.create(file));
     }
 
-    protected void writeToFile(DataFrame df, File file, String sheetName) {
-        writeToOut(df, () -> new FileOutputStream(file), () -> WorkbookFactory.create(true), sheetName);
+    protected void writeToFile(Map<String, DataFrame> dfBySheet, File file) {
+        writeToOut(dfBySheet, () -> new FileOutputStream(file), () -> WorkbookFactory.create(true));
     }
 
-    protected void writeToOut(DataFrame df, ThrowingSupplier<OutputStream> out, ThrowingSupplier<Workbook> workbookSupplier, String sheetName) {
+    protected void writeToOut(
+            Map<String, DataFrame> dfBySheet,
+            ThrowingSupplier<OutputStream> out,
+            ThrowingSupplier<Workbook> workbookSupplier) {
+
         try (Workbook wb = workbookSupplier.get()) {
-            mergeToWorkbook(df, wb, sheetName);
+
+            for (Map.Entry<String, DataFrame> e : dfBySheet.entrySet()) {
+                Sheet sheet = createOrReplaceSheet(wb, e.getKey());
+                writeToSheet(e.getValue(), sheet);
+            }
 
             try (OutputStream os = out.get()) {
                 wb.write(os);
@@ -115,8 +166,7 @@ public class ExcelSaver {
         }
     }
 
-    protected void mergeToWorkbook(DataFrame df, Workbook wb, String sheetName) {
-
+    protected Sheet createOrReplaceSheet(Workbook wb, String sheetName) {
         Objects.requireNonNull(sheetName);
 
         Sheet existingSheet = wb.getSheet(sheetName);
@@ -124,7 +174,10 @@ public class ExcelSaver {
             wb.removeSheetAt(wb.getSheetIndex(existingSheet));
         }
 
-        Sheet sheet = wb.createSheet(sheetName);
+        return wb.createSheet(sheetName);
+    }
+
+    protected void writeToSheet(DataFrame df, Sheet sheet) {
 
         int w = df.width();
         int startDataRow = indexAsTopRow ? 1 : 0;
@@ -133,10 +186,10 @@ public class ExcelSaver {
             Index index = df.getColumnsIndex();
             Row row = sheet.createRow(0);
 
-            Font topRowFont = wb.createFont();
+            Font topRowFont = sheet.getWorkbook().createFont();
             topRowFont.setBold(true);
 
-            CellStyle topRowStyle = wb.createCellStyle();
+            CellStyle topRowStyle = sheet.getWorkbook().createCellStyle();
             topRowStyle.setFont(topRowFont);
             topRowStyle.setAlignment(HorizontalAlignment.CENTER);
 

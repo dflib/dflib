@@ -28,13 +28,41 @@ public class ExcelLoader {
         return this;
     }
 
+    /**
+     * @since 0.14
+     */
+    public DataFrame loadSheet(Sheet sheet) {
+        SheetRange range = SheetRange.valuesRange(sheet);
+        if (range.isEmpty()) {
+            return DataFrame.newFrame().empty();
+        }
+
+        if (range.height == 0) {
+            return DataFrame.newFrame(range.columns()).byRow().create();
+        }
+
+        Object[] buffer = new Object[range.width];
+        fillRow(buffer, sheet, range, 0);
+
+        DataFrameByRowBuilder builder = firstRowAsHeader
+                ? DataFrame.newFrame(createIndex(buffer)).byRow()
+                : DataFrame.newFrame(range.columns()).byRow().addRow(buffer);
+
+        for (int r = 1; r < range.height; r++) {
+            fillRow(buffer, sheet, range, r);
+            builder.addRow(buffer);
+        }
+
+        return builder.create();
+    }
+
     public DataFrame loadSheet(InputStream in, String sheetName) {
         try (Workbook wb = loadWorkbook(in)) {
             Sheet sheet = wb.getSheet(sheetName);
             if (sheet == null) {
                 throw new RuntimeException("No sheet '" + sheetName + "' in workbook");
             }
-            return toDataFrame(sheet);
+            return loadSheet(sheet);
         } catch (IOException e) {
             throw new RuntimeException("Error closing Excel workbook", e);
         }
@@ -47,7 +75,7 @@ public class ExcelLoader {
             if (sheet == null) {
                 throw new RuntimeException("No sheet '" + sheetName + "' in workbook loaded from " + file.getPath());
             }
-            return toDataFrame(sheet);
+            return loadSheet(sheet);
         } catch (IOException e) {
             throw new RuntimeException("Error closing Excel workbook loaded from " + file.getPath(), e);
         }
@@ -67,7 +95,7 @@ public class ExcelLoader {
             if (sheet == null) {
                 throw new RuntimeException("No sheet " + sheetNum + " in workbook");
             }
-            return toDataFrame(sheet);
+            return loadSheet(sheet);
         } catch (IOException e) {
             throw new RuntimeException("Error closing Excel workbook", e);
         }
@@ -80,7 +108,7 @@ public class ExcelLoader {
             if (sheet == null) {
                 throw new RuntimeException("No sheet " + sheetNum + " in workbook loaded from " + file.getPath());
             }
-            return toDataFrame(sheet);
+            return loadSheet(sheet);
         } catch (IOException e) {
             throw new RuntimeException("Error closing Excel workbook loaded from " + file.getPath(), e);
         }
@@ -94,9 +122,24 @@ public class ExcelLoader {
         return loadSheet(new File(filePath), sheetNum);
     }
 
+    /**
+     * @since 0.14
+     */
+    public Map<String, DataFrame> load(Workbook wb) {
+
+        // preserve sheet ordering
+        Map<String, DataFrame> data = new LinkedHashMap<>();
+
+        for (Sheet sh : wb) {
+            data.put(sh.getSheetName(), loadSheet(sh));
+        }
+
+        return data;
+    }
+
     public Map<String, DataFrame> load(InputStream in) {
         try (Workbook wb = loadWorkbook(in)) {
-            return toDataFrames(wb);
+            return load(wb);
         } catch (IOException e) {
             throw new RuntimeException("Error closing Excel workbook", e);
         }
@@ -105,7 +148,7 @@ public class ExcelLoader {
     public Map<String, DataFrame> load(File file) {
         // loading from file is optimized, so do not call "load(InputStream in)", and use a separate path
         try (Workbook wb = loadWorkbook(file)) {
-            return toDataFrames(wb);
+            return load(wb);
         } catch (IOException e) {
             throw new RuntimeException("Error closing Excel workbook loaded from " + file.getPath(), e);
         }
@@ -138,44 +181,6 @@ public class ExcelLoader {
         } catch (IOException e) {
             throw new RuntimeException("Error reading Excel data", e);
         }
-    }
-
-    private Map<String, DataFrame> toDataFrames(Workbook wb) {
-
-        // preserve sheet ordering
-        Map<String, DataFrame> data = new LinkedHashMap<>();
-
-        for (Sheet sh : wb) {
-            data.put(sh.getSheetName(), toDataFrame(sh));
-        }
-
-        return data;
-    }
-
-    private DataFrame toDataFrame(Sheet sh) {
-
-        SheetRange range = SheetRange.valuesRange(sh);
-        if (range.isEmpty()) {
-            return DataFrame.newFrame().empty();
-        }
-
-        if (range.height == 0) {
-            return DataFrame.newFrame(range.columns()).byRow().create();
-        }
-
-        Object[] buffer = new Object[range.width];
-        fillRow(buffer, sh, range, 0);
-
-        DataFrameByRowBuilder builder = firstRowAsHeader
-                ? DataFrame.newFrame(createIndex(buffer)).byRow()
-                : DataFrame.newFrame(range.columns()).byRow().addRow(buffer);
-
-        for (int r = 1; r < range.height; r++) {
-            fillRow(buffer, sh, range, r);
-            builder.addRow(buffer);
-        }
-
-        return builder.create();
     }
 
     private Index createIndex(Object[] row) {
