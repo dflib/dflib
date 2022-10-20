@@ -10,6 +10,7 @@
 * #160 Switch to Java 11
 * #162 ExcelLoader.firstRowAsHeader()
 * #163 Load/store DataFrames from Excel Workbook object
+* #165 Upgrade to Jackson 2.13.4 / 2.13.4.2
 
 ## Release 0.13
 
