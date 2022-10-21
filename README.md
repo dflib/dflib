@@ -24,3 +24,5 @@ DFLib comes with connectors for a variety of data formats: CSV, Excel, RDBMS (JD
 * a 20 min presentation of an early version of DFLib. While the DFLib API has evolved substantially since then, the video still demonstrates the idea of the project...
 
 [![DFLib at WODay Frankfurt](http://img.youtube.com/vi/WSqvEdRZsuE/0.jpg)](http://www.youtube.com/watch?v=WSqvEdRZsuE)
+
+
