@@ -3,7 +3,7 @@
     <parent>
         <artifactId>dflib-parent</artifactId>
         <groupId>com.nhl.dflib</groupId>
-        <version>0.15</version>
+        <version>0.16-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
