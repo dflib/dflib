@@ -16,6 +16,7 @@ import com.nhl.dflib.exp.filter.PreFilteredCountExp;
 import com.nhl.dflib.exp.filter.PreFilteredExp;
 import com.nhl.dflib.exp.flow.IfExp;
 import com.nhl.dflib.exp.flow.IfNullExp;
+import com.nhl.dflib.exp.map.MapCondition1;
 import com.nhl.dflib.exp.map.MapCondition2;
 import com.nhl.dflib.exp.map.MapExp1;
 import com.nhl.dflib.exp.map.MapExp2;
@@ -32,6 +33,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * A columnar expression that produces a Series out of either a DataFrame or a Series. Non-aggregating expressions
@@ -474,5 +476,19 @@ public interface Exp<T> {
      */
     default Condition castAsCondition() {
         return ConditionFactory.castAsCondition(this);
+    }
+
+    /**
+     * @since 0.15
+     */
+    default Condition mapCondition(Function<Series<T>, BooleanSeries> op) {
+        return MapCondition1.map("map", this, op);
+    }
+
+    /**
+     * @since 0.15
+     */
+    default Condition mapConditionVal(Predicate<T> op) {
+        return MapCondition1.mapVal("map", this, op);
     }
 }

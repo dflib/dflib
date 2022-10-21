@@ -1,4 +1,9 @@
+## Release 0.15
+
+* #166 Exp.mapCondition(), Exp.mapConditionVal()
+
 ## Release 0.14
+_(this release is broken - dflib-bom artifact is missing. Use 0.15 or newer)_
 
 * #138 Storing DataFrame in Excel
 * #152 Cumulative sum expression

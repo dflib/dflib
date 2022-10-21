@@ -283,4 +283,28 @@ public class DecimalColumnTest {
                 new BigDecimal("11.5"));
         new BooleanSeriesAsserts(c.eval(s)).expectData(true, false, false, true);
     }
+
+    @Test
+    public void testMapConditionVal() {
+        Condition c = $decimal(0).mapConditionVal(d -> d.doubleValue() > 0);
+
+        Series<BigDecimal> s = Series.forData(
+                new BigDecimal("-5.1"),
+                BigDecimal.ZERO,
+                null,
+                new BigDecimal("11.5"));
+        new BooleanSeriesAsserts(c.eval(s)).expectData(false, false, false, true);
+    }
+
+    @Test
+    public void testMapCondition() {
+        Condition c = $decimal(0).mapCondition(Series::isNotNull);
+
+        Series<BigDecimal> s = Series.forData(
+                new BigDecimal("-5.1"),
+                BigDecimal.ZERO,
+                null,
+                new BigDecimal("11.5"));
+        new BooleanSeriesAsserts(c.eval(s)).expectData(true, true, false, true);
+    }
 }
