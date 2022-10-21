@@ -6,7 +6,7 @@
 
     <groupId>com.nhl.dflib</groupId>
     <artifactId>dflib-bom</artifactId>
-    <version>1.0.B1-SNAPSHOT</version>
+    <version>0.14-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>dflib-bom: Bill of Materials (BOM) for DFLib modules.</name>
     <description>
