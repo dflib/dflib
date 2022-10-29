@@ -1,6 +1,7 @@
 ## Release 0.16
 
 * #158 DataFrame.explode()
+* #167 Exp.castAsDate()
 
 ## Release 0.15
 

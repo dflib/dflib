@@ -11,6 +11,11 @@ import java.time.LocalDate;
  */
 public interface DateExp extends Exp<LocalDate> {
 
+    @Override
+    default DateExp castAsDate() {
+        return this;
+    }
+
     default DateExp plusDays(int days) {
         return DateExpScalar2.mapVal("plusDays", this, days, (ld, d) -> ld.plusDays(days));
     }

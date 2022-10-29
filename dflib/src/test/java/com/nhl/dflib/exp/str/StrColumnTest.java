@@ -2,11 +2,14 @@ package com.nhl.dflib.exp.str;
 
 import com.nhl.dflib.Condition;
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.DateExp;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.StrExp;
 import com.nhl.dflib.unit.BooleanSeriesAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
+
+import java.time.LocalDate;
 
 import static com.nhl.dflib.Exp.$str;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -105,5 +108,12 @@ public class StrColumnTest {
 
         Series<String> s = Series.forData("a", "a9", "abcd0", "__d_");
         new BooleanSeriesAsserts(isEven.eval(s)).expectData(false, true, false, true);
+    }
+
+    @Test
+    public void testCastAsDate() {
+        DateExp date = $str(0).castAsDate();
+        Series<String> s = Series.forData("2021-01-02", null);
+        new SeriesAsserts(date.eval(s)).expectData(LocalDate.of(2021, 1, 2), null);
     }
 }

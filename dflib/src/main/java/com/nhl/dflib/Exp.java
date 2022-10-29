@@ -11,6 +11,7 @@ import com.nhl.dflib.exp.bool.BoolColumn;
 import com.nhl.dflib.exp.bool.ConditionFactory;
 import com.nhl.dflib.exp.bool.OrCondition;
 import com.nhl.dflib.exp.datetime.DateColumn;
+import com.nhl.dflib.exp.datetime.DateFactory;
 import com.nhl.dflib.exp.filter.PreFilterFirstMatchExp;
 import com.nhl.dflib.exp.filter.PreFilteredCountExp;
 import com.nhl.dflib.exp.filter.PreFilteredExp;
@@ -490,5 +491,12 @@ public interface Exp<T> {
      */
     default Condition mapConditionVal(Predicate<T> op) {
         return MapCondition1.mapVal("map", this, op);
+    }
+
+    /**
+     * @since 0.16
+     */
+    default DateExp castAsDate() {
+        return DateFactory.castAsDate(this);
     }
 }
