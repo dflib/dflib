@@ -1,13 +1,16 @@
 package com.nhl.dflib.exp.date;
 
+import com.nhl.dflib.Condition;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DateExp;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.unit.BooleanSeriesAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
+import static com.nhl.dflib.Exp.$col;
 import static com.nhl.dflib.Exp.$date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -43,6 +46,53 @@ public class DateColumnTest {
         DateExp exp = $date("b");
         assertEquals("b", exp.getColumnName(mock(DataFrame.class)));
         assertEquals("c", exp.as("c").getColumnName(mock(DataFrame.class)));
+    }
+
+    @Test
+    public void testEq() {
+        Condition eq = $date("b").eq($col("c"));
+
+        DataFrame df = DataFrame.newFrame("b", "c").foldByRow(
+                LocalDate.of(2007, 1, 8), LocalDate.of(2007, 1, 8),
+                LocalDate.of(2009, 2, 2), LocalDate.of(2005, 3, 5));
+
+        new BooleanSeriesAsserts(eq.eval(df)).expectData(true, false);
+    }
+
+    @Test
+    public void testNe() {
+        Condition ne = $date("b").ne($col("c"));
+
+        DataFrame df = DataFrame.newFrame("b", "c").foldByRow(
+                LocalDate.of(2007, 1, 8), LocalDate.of(2007, 1, 8),
+                LocalDate.of(2009, 2, 2), LocalDate.of(2005, 3, 5));
+
+        new BooleanSeriesAsserts(ne.eval(df)).expectData(false, true);
+    }
+
+    @Test
+    public void testLt() {
+        Condition lt = $date("b").lt($col("c"));
+
+        DataFrame df = DataFrame.newFrame("b", "c").foldByRow(
+                LocalDate.of(2007, 1, 8), LocalDate.of(2009, 1, 8),
+                LocalDate.of(2009, 2, 2), LocalDate.of(2005, 3, 5));
+
+        new BooleanSeriesAsserts(lt.eval(df)).expectData(true, false);
+    }
+
+    @Test
+    public void testLtVal() {
+        Condition lt = $date(0).lt(LocalDate.of(2008, 1, 1));
+        Series<LocalDate> s = Series.forData(LocalDate.of(2007, 1, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 1, 8));
+        new BooleanSeriesAsserts(lt.eval(s)).expectData(true, false, false);
+    }
+
+    @Test
+    public void testLeVal() {
+        Condition le = $date(0).le(LocalDate.of(2008, 1, 1));
+        Series<LocalDate> s = Series.forData(LocalDate.of(2007, 1, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 1, 8));
+        new BooleanSeriesAsserts(le.eval(s)).expectData(true, true, false);
     }
 
     @Test
