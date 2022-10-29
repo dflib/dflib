@@ -3,6 +3,7 @@ package com.nhl.dflib;
 import com.nhl.dflib.accumulator.BooleanAccumulator;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.VConcat;
+import com.nhl.dflib.explode.Exploder;
 import com.nhl.dflib.select.RowIndexer;
 import com.nhl.dflib.groupby.Grouper;
 import com.nhl.dflib.map.Mapper;
@@ -574,6 +575,11 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public GroupBy group(Hasher by) {
         return new Grouper(by).group(this);
+    }
+
+    @Override
+    public DataFrame explode(int columnPos) {
+        return Exploder.explode(this, columnPos);
     }
 
     @Override

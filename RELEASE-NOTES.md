@@ -1,3 +1,7 @@
+## Release 0.16
+
+* #158 DataFrame.explode()
+
 ## Release 0.15
 
 * #166 Exp.mapCondition(), Exp.mapConditionVal()

@@ -788,6 +788,18 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     GroupBy group(Hasher by);
 
+    /**
+     * @since 0.16
+     */
+    default DataFrame explode(String columnName) {
+        return explode(getColumnsIndex().position(columnName));
+    }
+
+    /**
+     * @since 0.16
+     */
+    DataFrame explode(int columnPos);
+
     DataFrame fillNulls(Object value);
 
     DataFrame fillNulls(int columnPos, Object value);
