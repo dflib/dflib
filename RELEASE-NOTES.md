@@ -2,6 +2,7 @@
 
 * #158 DataFrame.explode()
 * #167 Exp.castAsDate()
+* #168 Exp.castAsStr()
 
 ## Release 0.15
 

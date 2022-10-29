@@ -28,6 +28,7 @@ import com.nhl.dflib.exp.num.LongColumn;
 import com.nhl.dflib.exp.sort.ExpSorter;
 import com.nhl.dflib.exp.str.ConcatExp;
 import com.nhl.dflib.exp.str.StrColumn;
+import com.nhl.dflib.exp.str.StrFactory;
 
 import java.util.List;
 import java.util.Objects;
@@ -498,5 +499,9 @@ public interface Exp<T> {
      */
     default DateExp castAsDate() {
         return DateFactory.castAsDate(this);
+    }
+
+    default StrExp castAsStr() {
+        return StrFactory.castAsStr(this);
     }
 }

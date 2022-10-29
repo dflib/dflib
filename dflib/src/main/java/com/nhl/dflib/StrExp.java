@@ -11,6 +11,11 @@ import java.util.regex.Pattern;
  */
 public interface StrExp extends Exp<String> {
 
+    @Override
+    default StrExp castAsStr() {
+        return this;
+    }
+
     default Condition matches(String regex) {
         // precompile pattern..
         Pattern p = Pattern.compile(regex);
