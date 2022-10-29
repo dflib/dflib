@@ -3,6 +3,7 @@ package com.nhl.dflib.exp.date;
 import com.nhl.dflib.Condition;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DateExp;
+import com.nhl.dflib.NumExp;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.unit.BooleanSeriesAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
@@ -46,6 +47,27 @@ public class DateColumnTest {
         DateExp exp = $date("b");
         assertEquals("b", exp.getColumnName(mock(DataFrame.class)));
         assertEquals("c", exp.as("c").getColumnName(mock(DataFrame.class)));
+    }
+
+    @Test
+    public void testYear() {
+        NumExp<Integer> year = $date(0).year();
+        Series<LocalDate> s = Series.forData(LocalDate.of(2007, 1, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 1, 8));
+        new SeriesAsserts(year.eval(s)).expectData(2007, 2008, 2009);
+    }
+
+    @Test
+    public void testMonth() {
+        NumExp<Integer> month = $date(0).month();
+        Series<LocalDate> s = Series.forData(LocalDate.of(2007, 2, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 12, 8));
+        new SeriesAsserts(month.eval(s)).expectData(2, 1, 12);
+    }
+
+    @Test
+    public void testDay() {
+        NumExp<Integer> day = $date(0).day();
+        Series<LocalDate> s = Series.forData(LocalDate.of(2007, 1, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 1, 6));
+        new SeriesAsserts(day.eval(s)).expectData(8, 1, 6);
     }
 
     @Test

@@ -3,6 +3,8 @@
 * #158 DataFrame.explode()
 * #167 Exp.castAsDate()
 * #168 Exp.castAsStr()
+* #169 DateExp comparison expressions
+* #170 DateExp - exp to extract day, month, year
 
 ## Release 0.15
 

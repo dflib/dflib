@@ -2,6 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.exp.datetime.DateExpScalar2;
 import com.nhl.dflib.exp.datetime.DateFactory;
+import com.nhl.dflib.exp.num.IntExp1;
 
 import java.time.LocalDate;
 
@@ -11,6 +12,27 @@ import java.time.LocalDate;
  * @since 0.11
  */
 public interface DateExp extends Exp<LocalDate> {
+
+    /**
+     * @since 0.16
+     */
+    default NumExp<Integer> year() {
+        return IntExp1.mapVal("year", this, LocalDate::getYear);
+    }
+
+    /**
+     * @since 0.16
+     */
+    default NumExp<Integer> month() {
+        return IntExp1.mapVal("month", this, LocalDate::getMonthValue);
+    }
+
+    /**
+     * @since 0.16
+     */
+    default NumExp<Integer> day() {
+        return IntExp1.mapVal("year", this, LocalDate::getDayOfMonth);
+    }
 
     /**
      * @since 0.16
