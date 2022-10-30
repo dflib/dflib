@@ -7,7 +7,7 @@ import com.nhl.dflib.ValueMapper;
  */
 public class ObjectConverter<F, T> implements ValueConverter<F, T> {
 
-    private ValueMapper<F, T> converter;
+    private final ValueMapper<F, T> converter;
 
     public ObjectConverter(ValueMapper<F, T> converter) {
         this.converter = converter;

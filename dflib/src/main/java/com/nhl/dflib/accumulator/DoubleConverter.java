@@ -7,7 +7,7 @@ import com.nhl.dflib.DoubleValueMapper;
  */
 public class DoubleConverter<F> implements ValueConverter<F, Double> {
 
-    private DoubleValueMapper<F> converter;
+    private final DoubleValueMapper<F> converter;
 
     public DoubleConverter(DoubleValueMapper<F> converter) {
         this.converter = converter;

@@ -7,7 +7,7 @@ import com.nhl.dflib.BooleanValueMapper;
  */
 public class BooleanConverter <F> implements ValueConverter<F, Boolean> {
 
-    private BooleanValueMapper<F> converter;
+    private final BooleanValueMapper<F> converter;
 
     public BooleanConverter(BooleanValueMapper<F> converter) {
         this.converter = converter;

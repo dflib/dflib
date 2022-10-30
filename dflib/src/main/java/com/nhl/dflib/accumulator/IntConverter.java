@@ -7,7 +7,7 @@ import com.nhl.dflib.IntValueMapper;
  */
 public class IntConverter<F> implements ValueConverter<F, Integer> {
 
-    private IntValueMapper<F> converter;
+    private final IntValueMapper<F> converter;
 
     public IntConverter(IntValueMapper<F> converter) {
         this.converter = converter;

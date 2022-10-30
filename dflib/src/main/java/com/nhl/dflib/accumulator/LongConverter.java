@@ -7,7 +7,7 @@ import com.nhl.dflib.LongValueMapper;
  */
 public class LongConverter<F> implements ValueConverter<F, Long> {
 
-    private LongValueMapper<F> converter;
+    private final LongValueMapper<F> converter;
 
     public LongConverter(LongValueMapper<F> converter) {
         this.converter = converter;
