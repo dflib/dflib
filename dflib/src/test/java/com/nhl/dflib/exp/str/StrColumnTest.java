@@ -121,6 +121,13 @@ public class StrColumnTest {
     }
 
     @Test
+    public void testCastAsDate_Formatter() {
+        DateExp date = $str(0).castAsDate("yyyy MM dd");
+        Series<String> s = Series.forData("2021 01 02", null);
+        new SeriesAsserts(date.eval(s)).expectData(LocalDate.of(2021, 1, 2), null);
+    }
+
+    @Test
     public void testCastAsTime() {
         TimeExp time = $str(0).castAsTime();
         Series<String> s = Series.forData("23:59:58", null);

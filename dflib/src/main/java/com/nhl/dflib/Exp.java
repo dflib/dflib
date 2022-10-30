@@ -11,6 +11,7 @@ import com.nhl.dflib.exp.bool.BoolColumn;
 import com.nhl.dflib.exp.bool.ConditionFactory;
 import com.nhl.dflib.exp.bool.OrCondition;
 import com.nhl.dflib.exp.datetime.DateColumn;
+import com.nhl.dflib.exp.datetime.DateExp1;
 import com.nhl.dflib.exp.datetime.DateFactory;
 import com.nhl.dflib.exp.datetime.TimeColumn;
 import com.nhl.dflib.exp.datetime.TimeFactory;
@@ -32,6 +33,8 @@ import com.nhl.dflib.exp.str.ConcatExp;
 import com.nhl.dflib.exp.str.StrColumn;
 import com.nhl.dflib.exp.str.StrFactory;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -515,6 +518,20 @@ public interface Exp<T> {
      */
     default DateExp castAsDate() {
         return DateFactory.castAsDate(this);
+    }
+
+    /**
+     * @since 0.16
+     */
+    default DateExp castAsDate(String format) {
+        return castAsDate(DateTimeFormatter.ofPattern(format));
+    }
+
+    /**
+     * @since 0.16
+     */
+    default DateExp castAsDate(DateTimeFormatter formatter) {
+        return DateExp1.mapVal("castAsDate", this.castAsStr(), s -> LocalDate.parse(s, formatter));
     }
 
     /**

@@ -86,7 +86,9 @@ public interface ValueMapper<V, VR> {
         return s -> s != null && s.length() > 0 ? LocalDate.parse(s) : null;
     }
 
-
+    /**
+     * @see Exp#castAsDate(DateTimeFormatter)
+     */
     static ValueMapper<String, LocalDate> stringToDate(DateTimeFormatter formatter) {
         return s -> s != null && s.length() > 0 ? LocalDate.parse(s, formatter) : null;
     }

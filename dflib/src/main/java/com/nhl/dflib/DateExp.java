@@ -5,6 +5,7 @@ import com.nhl.dflib.exp.datetime.DateFactory;
 import com.nhl.dflib.exp.num.IntExp1;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * An expression applied to date columns.
@@ -95,6 +96,14 @@ public interface DateExp extends Exp<LocalDate> {
      */
     @Override
     default DateExp castAsDate() {
+        return this;
+    }
+
+    /**
+     * @since 0.16
+     */
+    @Override
+    default DateExp castAsDate(DateTimeFormatter formatter) {
         return this;
     }
 

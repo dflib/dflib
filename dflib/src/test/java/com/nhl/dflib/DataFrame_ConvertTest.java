@@ -56,8 +56,6 @@ public class DataFrame_ConvertTest {
                 .expectRow(2, (Object) null);
     }
 
-    // TODO: move the rest of the ValueMapper based tests to DataFrame_Convert_ValueMapper_Test once we implement the expression analogs
-
     @Test
     public void testConvertColumn_ValueMapperToDate_Formatter() {
         DataFrame df = DataFrame
@@ -66,7 +64,7 @@ public class DataFrame_ConvertTest {
                         "2018 01 05",
                         "2019 02 28",
                         null)
-                .convertColumn("a", ValueMapper.stringToDate(DateTimeFormatter.ofPattern("yyyy MM dd")));
+                .convertColumn("a", $str("a").castAsDate(DateTimeFormatter.ofPattern("yyyy MM dd")));
 
         new DataFrameAsserts(df, "a")
                 .expectHeight(3)
@@ -74,6 +72,8 @@ public class DataFrame_ConvertTest {
                 .expectRow(1, LocalDate.of(2019, 2, 28))
                 .expectRow(2, (Object) null);
     }
+
+    // TODO: move the rest of the deprecated ValueMapper-based tests to DataFrame_Convert_ValueMapper_Test once we implement the expression analogs
 
     @Test
     public void testConvertColumn_ValueMapperToDateTime() {
