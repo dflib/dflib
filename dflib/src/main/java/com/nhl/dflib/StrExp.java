@@ -4,7 +4,7 @@ import com.nhl.dflib.exp.map.MapCondition1;
 import com.nhl.dflib.exp.map.MapExp1;
 import com.nhl.dflib.exp.map.MapExpScalarCondition2;
 import com.nhl.dflib.exp.num.DecimalExp1;
-import com.nhl.dflib.exp.num.IntExp1;
+import com.nhl.dflib.exp.num.DoubleExp1;
 import com.nhl.dflib.exp.str.StrExp1;
 
 import java.math.BigDecimal;
@@ -39,9 +39,25 @@ public interface StrExp extends Exp<String> {
      */
     @Override
     default NumExp<Integer> castAsInt() {
-        return IntExp1.mapVal("castAsInt", this, Integer::valueOf);
+        // Need to do an extra decimal conversion, so that we can properly cast any number format.
+        // Int expressions must override this method to return "this"
+        return castAsDecimal().castAsInt();
     }
 
+    /**
+     * @since 0.16
+     */
+    @Override
+    default NumExp<Long> castAsLong() {
+        // Need to do an extra decimal conversion, so that we can properly cast any number format.
+        // Long expressions must override this method to return "this"
+        return castAsDecimal().castAsLong();
+    }
+
+    @Override
+    default NumExp<Double> castAsDouble() {
+        return DoubleExp1.mapVal("castAsDouble", this, Double::parseDouble);
+    }
 
     /**
      * @since 0.16

@@ -42,4 +42,9 @@ public class DoubleExp2 extends MapExp2<Double, Double, Double> implements NumEx
                 ? primitiveOp.apply((DoubleSeries) ls, (DoubleSeries) rs)
                 : super.doEval(ls, rs);
     }
+
+    @Override
+    public NumExp<Double> castAsDouble() {
+        return this;
+    }
 }

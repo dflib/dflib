@@ -1,6 +1,12 @@
 package com.nhl.dflib.exp.num;
 
-import com.nhl.dflib.*;
+import com.nhl.dflib.BooleanSeries;
+import com.nhl.dflib.Condition;
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.DecimalExp;
+import com.nhl.dflib.NumExp;
+import com.nhl.dflib.Series;
+import com.nhl.dflib.StrExp;
 import com.nhl.dflib.unit.BooleanSeriesAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
@@ -69,6 +75,13 @@ public class DecimalColumnTest {
 
         Series<BigDecimal> s = $decimal("a").castAsDecimal().eval(df);
         new SeriesAsserts(s).expectData(new BigDecimal("2.0100287"), new BigDecimal("4.5"));
+    }
+
+    @Test
+    public void testCastAsStr() {
+        StrExp str = $decimal(0).castAsStr();
+        Series<BigDecimal> s = Series.forData(new BigDecimal("5.01"), null);
+        new SeriesAsserts(str.eval(s)).expectData("5.01", null);
     }
 
     @Test

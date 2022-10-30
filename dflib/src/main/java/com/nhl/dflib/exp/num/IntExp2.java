@@ -39,4 +39,9 @@ public class IntExp2 extends MapExp2<Integer, Integer, Integer> implements NumEx
                 ? primitiveOp.apply((IntSeries) ls, (IntSeries) rs)
                 : super.doEval(ls, rs);
     }
+
+    @Override
+    public NumExp<Integer> castAsInt() {
+        return this;
+    }
 }

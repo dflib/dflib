@@ -39,4 +39,9 @@ public class LongExp2 extends MapExp2<Long, Long, Long> implements NumExp<Long> 
                 ? primitiveOp.apply((LongSeries) left, (LongSeries) right)
                 : super.doEval(left, right);
     }
+
+    @Override
+    public NumExp<Long> castAsLong() {
+        return this;
+    }
 }

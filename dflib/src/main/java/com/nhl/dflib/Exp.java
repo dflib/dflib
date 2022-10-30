@@ -535,7 +535,25 @@ public interface Exp<T> {
      * @since 0.16
      */
     default NumExp<Integer> castAsInt() {
-        return castAsStr().castAsInt();
+        // Need to do multiple conversions, so that we can properly cast any number format.
+        // Int expressions must override this method to return "this"
+        return castAsStr().castAsDecimal().castAsInt();
+    }
+
+    /**
+     * @since 0.16
+     */
+    default NumExp<Long> castAsLong() {
+        // Need to do multiple conversions, so that we can properly cast any number format.
+        // Long expressions must override this method to return "this"
+        return castAsStr().castAsDecimal().castAsLong();
+    }
+
+    /**
+     * @since 0.16
+     */
+    default NumExp<Double> castAsDouble() {
+        return castAsStr().castAsDouble();
     }
 
     /**

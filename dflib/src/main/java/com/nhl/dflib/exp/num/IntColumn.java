@@ -21,4 +21,8 @@ public class IntColumn extends GenericColumn<Integer> implements NumExp<Integer>
         return position >= 0 ? "$int(" + position + ")" : name;
     }
 
+    @Override
+    public NumExp<Integer> castAsInt() {
+        return this;
+    }
 }

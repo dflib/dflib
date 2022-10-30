@@ -10,17 +10,22 @@ import java.time.format.DateTimeFormatter;
 public interface ValueMapper<V, VR> {
 
     /**
+     * @see Exp#castAsCondition()
      * @since 0.11
      */
     static ValueMapper<String, Boolean> stringToBoolean() {
         return s -> s != null ? Boolean.parseBoolean(s) : null;
     }
 
+    /**
+     * @see Exp#castAsInt()
+     */
     static ValueMapper<String, Integer> stringToInt() {
         return s -> s != null && s.length() > 0 ? Integer.valueOf(s) : null;
     }
 
     /**
+     * @see StrExp#trim()
      * @since 0.7
      */
     static ValueMapper<String, String> stringTrim() {
@@ -38,6 +43,9 @@ public interface ValueMapper<V, VR> {
         return s -> s;
     }
 
+    /**
+     * @see Exp#castAsLong()
+     */
     static ValueMapper<String, Long> stringToLong() {
         return s -> s != null && s.length() > 0 ? Long.valueOf(s) : null;
     }
@@ -54,6 +62,7 @@ public interface ValueMapper<V, VR> {
     }
 
     /**
+     * @see Exp#castAsDecimal()
      * @since 0.6
      */
     static ValueMapper<String, BigDecimal> stringToBigDecimal() {
@@ -67,9 +76,13 @@ public interface ValueMapper<V, VR> {
         return s -> s != null && s.length() > 0 ? new BigInteger(s) : null;
     }
 
+    /**
+     * @see Exp#castAsDate()
+     */
     static ValueMapper<String, LocalDate> stringToDate() {
         return s -> s != null && s.length() > 0 ? LocalDate.parse(s) : null;
     }
+
 
     static ValueMapper<String, LocalDate> stringToDate(DateTimeFormatter formatter) {
         return s -> s != null && s.length() > 0 ? LocalDate.parse(s, formatter) : null;
@@ -84,6 +97,7 @@ public interface ValueMapper<V, VR> {
     }
 
     /**
+     * @see StrExp#castAsEnum(Class)
      * @since 0.6
      */
     static <E extends Enum<E>> ValueMapper<String, E> stringToEnum(Class<E> type) {
@@ -91,6 +105,7 @@ public interface ValueMapper<V, VR> {
     }
 
     /**
+     * @see NumExp#castAsEnum(Class)
      * @since 0.6
      */
     static <E extends Enum<E>> ValueMapper<? extends Number, E> numToEnum(Class<E> type) {

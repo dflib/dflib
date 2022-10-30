@@ -87,6 +87,19 @@ public interface NumExp<N extends Number> extends Exp<N> {
         return NumericExpFactory.factory(this).castAsInt(this);
     }
 
+    /**
+     * @since 0.16
+     */
+    @Override
+    default NumExp<Long> castAsLong() {
+        return NumericExpFactory.factory(this).castAsLong(this);
+    }
+
+    @Override
+    default NumExp<Double> castAsDouble() {
+        return NumericExpFactory.factory(this).castAsDouble(this);
+    }
+
     @Override
     default DecimalExp castAsDecimal() {
         return NumericExpFactory.factory(this).castAsDecimal(this);

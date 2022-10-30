@@ -20,4 +20,9 @@ public class DoubleColumn extends GenericColumn<Double> implements NumExp<Double
     public String toQL() {
         return position >= 0 ? "$double(" + position + ")" : name;
     }
+
+    @Override
+    public NumExp<Double> castAsDouble() {
+        return this;
+    }
 }

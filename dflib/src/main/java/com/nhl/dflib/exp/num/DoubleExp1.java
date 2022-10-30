@@ -26,4 +26,9 @@ public class DoubleExp1<F> extends MapExp1<F, Double> implements NumExp<Double> 
     public DoubleExp1(String opName, Exp<F> exp, Function<Series<F>, Series<Double>> op) {
         super(opName, Double.class, exp, op);
     }
+
+    @Override
+    public NumExp<Double> castAsDouble() {
+        return this;
+    }
 }

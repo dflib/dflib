@@ -26,4 +26,9 @@ public class LongExp1<F> extends MapExp1<F, Long> implements NumExp<Long> {
     public LongExp1(String opName, Exp<F> exp, Function<Series<F>, Series<Long>> op) {
         super(opName, Long.class, exp, op);
     }
+
+    @Override
+    public NumExp<Long> castAsLong() {
+        return this;
+    }
 }

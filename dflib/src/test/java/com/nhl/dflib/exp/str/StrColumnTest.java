@@ -3,6 +3,7 @@ package com.nhl.dflib.exp.str;
 import com.nhl.dflib.Condition;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DateExp;
+import com.nhl.dflib.NumExp;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.StrExp;
 import com.nhl.dflib.TimeExp;
@@ -124,5 +125,26 @@ public class StrColumnTest {
         TimeExp time = $str(0).castAsTime();
         Series<String> s = Series.forData("23:59:58", null);
         new SeriesAsserts(time.eval(s)).expectData(LocalTime.of(23, 59, 58), null);
+    }
+
+    @Test
+    public void testCastAsInt() {
+        NumExp<Integer> exp = $str(0).castAsInt();
+        Series<String> s = Series.forData("123", "34.6", null);
+        new SeriesAsserts(exp.eval(s)).expectData(123, 34, null);
+    }
+
+    @Test
+    public void testCastAsLong() {
+        NumExp<Long> exp = $str(0).castAsLong();
+        Series<String> s = Series.forData("123", "34.6", null);
+        new SeriesAsserts(exp.eval(s)).expectData(123L, 34L, null);
+    }
+
+    @Test
+    public void testCastAsDouble() {
+        NumExp<Double> exp = $str(0).castAsDouble();
+        Series<String> s = Series.forData("123", "34.6", null);
+        new SeriesAsserts(exp.eval(s)).expectData(123., 34.6, null);
     }
 }

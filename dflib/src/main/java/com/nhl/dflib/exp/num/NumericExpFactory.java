@@ -147,6 +147,20 @@ public abstract class NumericExpFactory {
         return IntExp1.mapVal("castAsInt", exp, Number::intValue);
     }
 
+    /**
+     * @since 0.16
+     */
+    public NumExp<Long> castAsLong(NumExp<?> exp) {
+        return LongExp1.mapVal("castAsLong", exp, Number::longValue);
+    }
+
+    /**
+     * @since 0.16
+     */
+    public NumExp<Double> castAsDouble(NumExp<?> exp) {
+        return DoubleExp1.mapVal("castAsDouble", exp, Number::doubleValue);
+    }
+
     public abstract DecimalExp castAsDecimal(NumExp<?> exp);
 
     /**

@@ -26,4 +26,9 @@ public class IntExp1<F> extends MapExp1<F, Integer> implements NumExp<Integer> {
     public IntExp1(String opName, Exp<F> exp, Function<Series<F>, Series<Integer>> op) {
         super(opName, Integer.class, exp, op);
     }
+
+    @Override
+    public NumExp<Integer> castAsInt() {
+        return this;
+    }
 }

@@ -20,4 +20,9 @@ public class LongColumn extends GenericColumn<Long> implements NumExp<Long> {
     public String toQL() {
         return position >= 0 ? "$long(" + position + ")" : name;
     }
+
+    @Override
+    public NumExp<Long> castAsLong() {
+        return this;
+    }
 }
