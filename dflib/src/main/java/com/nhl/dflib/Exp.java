@@ -530,4 +530,18 @@ public interface Exp<T> {
     default StrExp castAsStr() {
         return StrFactory.castAsStr(this);
     }
+
+    /**
+     * @since 0.16
+     */
+    default NumExp<Integer> castAsInt() {
+        return castAsStr().castAsInt();
+    }
+
+    /**
+     * @since 0.16
+     */
+    default DecimalExp castAsDecimal() {
+        return castAsStr().castAsDecimal();
+    }
 }

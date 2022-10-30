@@ -4,6 +4,7 @@ import com.nhl.dflib.Condition;
 import com.nhl.dflib.DecimalExp;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.NumExp;
+import com.nhl.dflib.exp.map.MapExp1;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -139,7 +140,24 @@ public abstract class NumericExpFactory {
 
     public abstract NumExp<?> median(Exp<? extends Number> exp);
 
+    /**
+     * @since 0.16
+     */
+    public NumExp<Integer> castAsInt(NumExp<?> exp) {
+        return IntExp1.mapVal("castAsInt", exp, Number::intValue);
+    }
+
     public abstract DecimalExp castAsDecimal(NumExp<?> exp);
+
+    /**
+     * @since 0.16
+     */
+    public <E extends Enum<E>> Exp<E> castAsEnum(NumExp<?> exp, Class<E> type) {
+        E[] allValues = type.getEnumConstants();
+        // TODO: ugly generics stripping. Any better way to design this?
+        NumExp noGenericExp = exp;
+        return MapExp1.mapVal("castAsEnum", type, noGenericExp, (Number i) -> allValues[i.intValue()]);
+    }
 
     public abstract Condition eq(Exp<? extends Number> left, Exp<? extends Number> right);
 

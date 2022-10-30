@@ -79,8 +79,24 @@ public interface NumExp<N extends Number> extends Exp<N> {
         return (NumExp<N>) NumericExpFactory.factory(this).abs(this);
     }
 
+    /**
+     * @since 0.16
+     */
+    @Override
+    default NumExp<Integer> castAsInt() {
+        return NumericExpFactory.factory(this).castAsInt(this);
+    }
+
+    @Override
     default DecimalExp castAsDecimal() {
         return NumericExpFactory.factory(this).castAsDecimal(this);
+    }
+
+    /**
+     * @since 0.16
+     */
+    default <E extends Enum<E>> Exp<E> castAsEnum(Class<E> type) {
+        return NumericExpFactory.factory(this).castAsEnum(this, type);
     }
 
     @Override
