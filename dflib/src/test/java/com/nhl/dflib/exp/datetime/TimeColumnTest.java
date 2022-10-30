@@ -1,14 +1,17 @@
 package com.nhl.dflib.exp.datetime;
 
+import com.nhl.dflib.Condition;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.NumExp;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.TimeExp;
+import com.nhl.dflib.unit.BooleanSeriesAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
 
+import static com.nhl.dflib.Exp.$col;
 import static com.nhl.dflib.Exp.$time;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -103,6 +106,50 @@ public class TimeColumnTest {
         TimeExp exp = $time(0).plusHours(4).plusSeconds(1);
 
         Series<LocalTime> s = Series.forData(LocalTime.of(3, 12, 11), LocalTime.of(14, 59, 59));
-        new SeriesAsserts(exp.eval(s)).expectData(LocalTime.of(7, 12, 12), LocalTime.of(19, 00, 00));
+        new SeriesAsserts(exp.eval(s)).expectData(LocalTime.of(7, 12, 12), LocalTime.of(19, 0, 0));
+    }
+
+    @Test
+    public void testEq() {
+        Condition eq = $time("b").eq($col("c"));
+
+        DataFrame df = DataFrame.newFrame("b", "c").foldByRow(
+                LocalTime.of(3, 12, 11), LocalTime.of(3, 12, 11),
+                LocalTime.of(4, 12, 11), LocalTime.of(14, 59, 59));
+
+        new BooleanSeriesAsserts(eq.eval(df)).expectData(true, false);
+    }
+
+    @Test
+    public void testNe() {
+        Condition exp = $time("b").ne($col("c"));
+
+        DataFrame df = DataFrame.newFrame("b", "c").foldByRow(
+                LocalTime.of(3, 12, 11), LocalTime.of(3, 12, 11),
+                LocalTime.of(4, 12, 11), LocalTime.of(14, 59, 59));
+
+        new BooleanSeriesAsserts(exp.eval(df)).expectData(false, true);
+    }
+
+    @Test
+    public void testLt() {
+        Condition lt = $time("b").lt($col("c"));
+
+        DataFrame df = DataFrame.newFrame("b", "c").foldByRow(
+                LocalTime.of(3, 12, 11), LocalTime.of(3, 12, 11),
+                LocalTime.of(4, 12, 11), LocalTime.of(14, 59, 59));
+
+        new BooleanSeriesAsserts(lt.eval(df)).expectData(false, true);
+    }
+
+    @Test
+    public void testLe() {
+        Condition le = $time("b").le($col("c"));
+
+        DataFrame df = DataFrame.newFrame("b", "c").foldByRow(
+                LocalTime.of(3, 12, 11), LocalTime.of(3, 12, 11),
+                LocalTime.of(4, 12, 11), LocalTime.of(14, 59, 59));
+
+        new BooleanSeriesAsserts(le.eval(df)).expectData(true, true);
     }
 }

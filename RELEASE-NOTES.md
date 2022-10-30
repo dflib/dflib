@@ -5,6 +5,7 @@
 * #168 Exp.castAsStr()
 * #169 DateExp comparison expressions
 * #170 DateExp - exp to extract day, month, year
+* #171 TimeExp
 
 ## Release 0.15
 

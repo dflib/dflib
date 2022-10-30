@@ -1,6 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.exp.datetime.TimeExpScalar2;
+import com.nhl.dflib.exp.datetime.TimeFactory;
 import com.nhl.dflib.exp.num.IntExp1;
 
 import java.time.LocalTime;
@@ -53,4 +54,37 @@ public interface TimeExp extends Exp<LocalTime> {
     default TimeExp plusNanos(int nanos) {
         return TimeExpScalar2.mapVal("plusNanos", this, nanos, (lt, n) -> lt.plusNanos(nanos));
     }
+
+    default Condition lt(Exp<LocalTime> exp) {
+        return TimeFactory.lt(this, exp);
+    }
+
+    default Condition lt(LocalTime val) {
+        return TimeFactory.lt(this, Exp.$val(val));
+    }
+
+    default Condition le(Exp<LocalTime> exp) {
+        return TimeFactory.le(this, exp);
+    }
+
+    default Condition le(LocalTime val) {
+        return TimeFactory.le(this, Exp.$val(val));
+    }
+
+    default Condition gt(Exp<LocalTime> exp) {
+        return TimeFactory.gt(this, exp);
+    }
+
+    default Condition gt(LocalTime val) {
+        return TimeFactory.gt(this, Exp.$val(val));
+    }
+
+    default Condition ge(Exp<LocalTime> exp) {
+        return TimeFactory.ge(this, exp);
+    }
+
+    default Condition ge(LocalTime val) {
+        return TimeFactory.ge(this, Exp.$val(val));
+    }
+
 }
