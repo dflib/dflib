@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static com.nhl.dflib.Exp.$int;
+import static com.nhl.dflib.Exp.$str;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DataFrame_ConvertTest {
@@ -39,27 +40,14 @@ public class DataFrame_ConvertTest {
     }
 
     @Test
-    public void testConvertColumn() {
-        DataFrame df = DataFrame
-                .newFrame("a", "b")
-                .foldByRow(1, "x", 2, "y")
-                .convertColumn("a", v -> ((int) v) * 10);
-
-        new DataFrameAsserts(df, "a", "b")
-                .expectHeight(2)
-                .expectRow(0, 10, "x")
-                .expectRow(1, 20, "y");
-    }
-
-    @Test
-    public void testConvertColumn_ValueMapperToDate() {
+    public void testConvertColumn_Exp_ToDate() {
         DataFrame df = DataFrame
                 .newFrame("a")
                 .foldByRow(
                         "2018-01-05",
                         "2019-02-28",
                         null)
-                .convertColumn("a", ValueMapper.stringToDate());
+                .convertColumn("a", $str("a").castAsDate());
 
         new DataFrameAsserts(df, "a")
                 .expectHeight(3)
@@ -67,6 +55,8 @@ public class DataFrame_ConvertTest {
                 .expectRow(1, LocalDate.of(2019, 2, 28))
                 .expectRow(2, (Object) null);
     }
+
+    // TODO: move the rest of the ValueMapper based tests to DataFrame_Convert_ValueMapper_Test once we implement the expression analogs
 
     @Test
     public void testConvertColumn_ValueMapperToDate_Formatter() {

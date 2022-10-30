@@ -1,12 +1,14 @@
 package com.nhl.dflib.avro;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Exp;
 import com.nhl.dflib.avro.schema.AvroSchemaUtils;
 import com.nhl.dflib.row.RowProxy;
 import org.apache.avro.Schema;
 import org.apache.avro.file.CodecFactory;
 import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.file.SyncableFileOutputStream;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.DatumWriter;
@@ -107,9 +109,9 @@ public class AvroSaver extends BaseSaver<AvroSaver> {
             Schema fSchema = f.schema().isUnion() ? AvroSchemaUtils.unpackUnion(f.schema()) : f.schema();
 
             if (AvroSchemaUtils.isEnum(fSchema)) {
-                df = df.convertColumn(f.name(), v -> AvroSchemaUtils.toEnumSymbol(v, fSchema));
+                df = df.convertColumn(f.name(), Exp.$col(f.name()).mapVal(v -> new GenericData.EnumSymbol(fSchema, v)));
             } else if (AvroSchemaUtils.isUnmapped(fSchema)) {
-                df = df.convertColumn(f.name(), v -> v != null ? v.toString() : null);
+                df = df.convertColumn(f.name(), Exp.$col(f.name()).castAsStr());
             }
         }
 

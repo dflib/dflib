@@ -50,6 +50,9 @@ public interface ValueMapper<V, VR> {
         return s -> s != null && s.length() > 0 ? Long.valueOf(s) : null;
     }
 
+    /**
+     * @see Exp#castAsDouble()
+     */
     static ValueMapper<String, Double> stringToDouble() {
         return s -> s != null && s.length() > 0 ? Double.valueOf(s) : null;
     }

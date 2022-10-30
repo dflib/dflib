@@ -63,6 +63,13 @@ public interface Series<T> extends Iterable<T> {
     void copyTo(Object[] to, int fromOffset, int toOffset, int len);
 
     /**
+     * @since 0.16
+     */
+    default <V> Series<V> map(Exp<V> mapper) {
+        return mapper.eval(this);
+    }
+
+    /**
      * @param mapper a function that maps each Series value to some other value
      * @param <V>    value type produced by the mapper
      * @return a Series produced by applying a mapper to this Series

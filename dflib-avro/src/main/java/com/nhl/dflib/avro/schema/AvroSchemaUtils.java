@@ -3,10 +3,6 @@ package com.nhl.dflib.avro.schema;
 import com.nhl.dflib.avro.types.AvroTypeExtensions;
 import org.apache.avro.LogicalType;
 import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericData;
-import org.apache.avro.generic.GenericEnumSymbol;
-
-import java.util.Optional;
 
 /**
  * @since 0.11
@@ -28,17 +24,17 @@ public class AvroSchemaUtils {
         return schema != null && schema.getType() == Schema.Type.ENUM;
     }
 
-    public static Optional<Class<?>> knownEnumType(Schema schema) {
+    public static <T extends Enum<T>> Class<T> knownEnumType(Schema schema) {
         if (!isEnum(schema)) {
-            return Optional.empty();
+            return null;
         }
 
         String type = schema.getProp(AvroSchemaCompiler.PROPERTY_DFLIB_ENUM_TYPE);
         if (type == null) {
-            return Optional.empty();
+            return null;
         }
 
-        return classForName(type);
+        return enumTypeForName(type);
     }
 
     public static boolean isUnmapped(Schema schema) {
@@ -51,32 +47,11 @@ public class AvroSchemaUtils {
         return t != null && t.getName().equals(AvroTypeExtensions.UNMAPPED_TYPE.getName());
     }
 
-    public static GenericEnumSymbol<?> toEnumSymbol(Object value, Schema schema) {
-        return value != null ? new GenericData.EnumSymbol(schema, value) : null;
-    }
-
-    public static <T extends Enum<T>> T toEnum(GenericEnumSymbol<?> symbol, Class<?> enumType) {
-        if (symbol == null) {
-            return null;
-        }
-
-        String name = symbol.toString();
-        if (!enumType.isEnum()) {
-            throw new IllegalArgumentException("'" + enumType + "' is not an enum class");
-        }
-
-        return Enum.valueOf((Class<T>) enumType, name);
-    }
-
-    public static String toEnumName(GenericEnumSymbol<?> symbol) {
-        return symbol != null ? symbol.toString() : null;
-    }
-
-    private static Optional<Class<?>> classForName(String name) {
+    private static <T extends Enum<T>> Class<T> enumTypeForName(String name) {
         try {
-            return Optional.of(Class.forName(name));
+            return (Class<T>) Class.forName(name);
         } catch (ClassNotFoundException e) {
-            return Optional.empty();
+            return null;
         }
     }
 }

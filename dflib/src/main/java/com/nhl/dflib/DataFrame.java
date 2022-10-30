@@ -210,11 +210,17 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param <V>         expected input column value
      * @param <VR>        output column value
      * @return a new DataFrame
+     * @deprecated in favor of {@link #convertColumn(String, Exp)}
      */
+    @Deprecated(since = "0.16")
     default <V, VR> DataFrame convertColumn(String columnLabel, ValueMapper<V, VR> converter) {
         return convertColumn(columnLabel, Exp.$col(columnLabel).mapVal(v -> converter.map((V) v)));
     }
 
+    /**
+     * @deprecated in favor of {@link #convertColumn(int, Exp)}
+     */
+    @Deprecated(since = "0.16")
     default <V, VR> DataFrame convertColumn(int pos, ValueMapper<V, VR> converter) {
         return convertColumn(pos, Exp.$col(pos).mapVal(v -> converter.map((V) v)));
     }

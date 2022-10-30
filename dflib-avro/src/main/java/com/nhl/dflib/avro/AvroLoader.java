@@ -2,8 +2,14 @@ package com.nhl.dflib.avro;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DataFrameByRowBuilder;
+import com.nhl.dflib.Exp;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.accumulator.*;
+import com.nhl.dflib.accumulator.Accumulator;
+import com.nhl.dflib.accumulator.BooleanAccumulator;
+import com.nhl.dflib.accumulator.DoubleAccumulator;
+import com.nhl.dflib.accumulator.IntAccumulator;
+import com.nhl.dflib.accumulator.LongAccumulator;
+import com.nhl.dflib.accumulator.ObjectAccumulator;
 import com.nhl.dflib.avro.schema.AvroSchemaUtils;
 import com.nhl.dflib.avro.types.AvroTypeExtensions;
 import org.apache.avro.Schema;
@@ -12,14 +18,12 @@ import org.apache.avro.file.SeekableByteArrayInput;
 import org.apache.avro.file.SeekableFileInput;
 import org.apache.avro.file.SeekableInput;
 import org.apache.avro.generic.GenericDatumReader;
-import org.apache.avro.generic.GenericEnumSymbol;
 import org.apache.avro.generic.GenericRecord;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
 
 public class AvroLoader {
 
@@ -176,11 +180,11 @@ public class AvroLoader {
             Schema fSchema = f.schema().isUnion() ? AvroSchemaUtils.unpackUnion(f.schema()) : f.schema();
 
             if (AvroSchemaUtils.isEnum(fSchema)) {
-                Optional<Class<?>> enumType = AvroSchemaUtils.knownEnumType(fSchema);
-                if (enumType.isPresent()) {
-                    df = df.convertColumn(f.name(), (GenericEnumSymbol<?> v) -> AvroSchemaUtils.toEnum(v, enumType.get()));
+                Class<Enum> enumType = AvroSchemaUtils.knownEnumType(fSchema);
+                if (enumType != null) {
+                    df = df.convertColumn(f.name(), Exp.$col(f.name()).castAsStr().castAsEnum(enumType));
                 } else {
-                    df = df.convertColumn(f.name(), (GenericEnumSymbol<?> v) -> AvroSchemaUtils.toEnumName(v));
+                    df = df.convertColumn(f.name(), Exp.$col(f.name()).castAsStr());
                 }
             }
         }

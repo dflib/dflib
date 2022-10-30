@@ -1,6 +1,7 @@
 package com.nhl.dflib.benchmark.speed;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Exp;
 import com.nhl.dflib.RowMapper;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.benchmark.ValueMaker;
@@ -54,7 +55,7 @@ public class DataFrameMap {
     public Object convertColumn() {
         return df
                 // using cheap "map" function to test benchmark DF overhead
-                .convertColumn("c2", (Integer i) -> 1)
+                .convertColumn("c2", Exp.$col("c2").mapVal(v -> 1))
                 .materialize()
                 .iterator();
     }
