@@ -5,11 +5,13 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DateExp;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.StrExp;
+import com.nhl.dflib.TimeExp;
 import com.nhl.dflib.unit.BooleanSeriesAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 import static com.nhl.dflib.Exp.$str;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -115,5 +117,12 @@ public class StrColumnTest {
         DateExp date = $str(0).castAsDate();
         Series<String> s = Series.forData("2021-01-02", null);
         new SeriesAsserts(date.eval(s)).expectData(LocalDate.of(2021, 1, 2), null);
+    }
+
+    @Test
+    public void testCastAsTime() {
+        TimeExp time = $str(0).castAsTime();
+        Series<String> s = Series.forData("23:59:58", null);
+        new SeriesAsserts(time.eval(s)).expectData(LocalTime.of(23, 59, 58), null);
     }
 }

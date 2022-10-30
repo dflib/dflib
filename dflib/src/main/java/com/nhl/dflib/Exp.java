@@ -12,6 +12,8 @@ import com.nhl.dflib.exp.bool.ConditionFactory;
 import com.nhl.dflib.exp.bool.OrCondition;
 import com.nhl.dflib.exp.datetime.DateColumn;
 import com.nhl.dflib.exp.datetime.DateFactory;
+import com.nhl.dflib.exp.datetime.TimeColumn;
+import com.nhl.dflib.exp.datetime.TimeFactory;
 import com.nhl.dflib.exp.filter.PreFilterFirstMatchExp;
 import com.nhl.dflib.exp.filter.PreFilteredCountExp;
 import com.nhl.dflib.exp.filter.PreFilteredExp;
@@ -194,6 +196,20 @@ public interface Exp<T> {
      */
     static DateExp $date(int position) {
         return new DateColumn(position);
+    }
+
+    /**
+     * Returns an expression that evaluates to a named time column.
+     */
+    static TimeExp $time(String name) {
+        return new TimeColumn(name);
+    }
+
+    /**
+     * Returns an expression that evaluates to a time column at a given position.
+     */
+    static TimeExp $time(int position) {
+        return new TimeColumn(position);
     }
 
     static Condition or(Condition... conditions) {
@@ -501,6 +517,16 @@ public interface Exp<T> {
         return DateFactory.castAsDate(this);
     }
 
+    /**
+     * @since 0.16
+     */
+    default TimeExp castAsTime() {
+        return TimeFactory.castAsTime(this);
+    }
+
+    /**
+     * @since 0.16
+     */
     default StrExp castAsStr() {
         return StrFactory.castAsStr(this);
     }

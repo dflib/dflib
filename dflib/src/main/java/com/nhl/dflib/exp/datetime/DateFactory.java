@@ -35,7 +35,10 @@ public class DateFactory {
         }
 
         Class<?> t = exp.getType();
-        if (t.equals(String.class)) {
+        if (t.equals(LocalDate.class)) {
+            Exp<LocalDate> dExp = (Exp<LocalDate>) exp;
+            return DateExp1.mapVal("castAsDate", dExp, d -> d);
+        } else if (t.equals(String.class)) {
             Exp<String> sExp = (Exp<String>) exp;
             return DateExp1.mapVal("castAsDate", sExp, LocalDate::parse);
         }

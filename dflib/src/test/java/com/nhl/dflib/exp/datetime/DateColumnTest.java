@@ -1,4 +1,4 @@
-package com.nhl.dflib.exp.date;
+package com.nhl.dflib.exp.datetime;
 
 import com.nhl.dflib.Condition;
 import com.nhl.dflib.DataFrame;
