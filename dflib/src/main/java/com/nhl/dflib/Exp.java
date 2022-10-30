@@ -273,8 +273,8 @@ public interface Exp<T> {
      * the most optimal evaluation path.
      *
      * <p> A note on DFLib schema "fuzziness": Callers can not always predict the data schema upfront, and
-     * oftentimes Java generics limitations prevent DFLib from using the right type even when it is know to the
-     * caller. So many expressions will return Object.class instead of a more specific type. In this case the
+     * oftentimes Java generics limitations prevent DFLib from using the right type even when it is known to the
+     * caller. So many expressions will return <code>Object.class</code> instead of a more specific type. In this case the
      * expression should still evaluate properly, but possibly suboptimally.
      */
     Class<T> getType();
@@ -336,7 +336,7 @@ public interface Exp<T> {
     }
 
     /**
-     * Returns a sorter that will use this expression for an descending sort.
+     * Returns a sorter that will use this expression for a descending sort.
      */
     default Sorter desc() {
         return new ExpSorter(this, false);
