@@ -28,13 +28,13 @@ public class ConcatExp extends ExpN<String> implements StrExp {
         int len = valuesOrExps.length;
         if (len == 0) {
             // No exps to concat means null result
-            return new StrScalarExp(null);
+            return new StrConstExp(null);
         }
 
         for (Object v : valuesOrExps) {
             if (v == null) {
                 // Any null argument to concat will produce null CONCAT result regardless of other values
-                return new StrScalarExp(null);
+                return new StrConstExp(null);
             }
         }
 

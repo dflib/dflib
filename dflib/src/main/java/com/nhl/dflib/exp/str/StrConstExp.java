@@ -6,9 +6,9 @@ import com.nhl.dflib.exp.ConstExp;
 /**
  * @since 0.11
  */
-public class StrScalarExp extends ConstExp<String> implements StrExp {
+public class StrConstExp extends ConstExp<String> implements StrExp {
 
-    public StrScalarExp(String value) {
+    public StrConstExp(String value) {
         super(value, String.class);
     }
 }

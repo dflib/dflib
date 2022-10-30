@@ -11,10 +11,11 @@ import com.nhl.dflib.exp.bool.BoolColumn;
 import com.nhl.dflib.exp.bool.ConditionFactory;
 import com.nhl.dflib.exp.bool.OrCondition;
 import com.nhl.dflib.exp.datetime.DateColumn;
+import com.nhl.dflib.exp.datetime.DateConstExp;
 import com.nhl.dflib.exp.datetime.DateExp1;
-import com.nhl.dflib.exp.datetime.DateFactory;
 import com.nhl.dflib.exp.datetime.TimeColumn;
-import com.nhl.dflib.exp.datetime.TimeFactory;
+import com.nhl.dflib.exp.datetime.TimeConstExp;
+import com.nhl.dflib.exp.datetime.TimeExp1;
 import com.nhl.dflib.exp.filter.PreFilterFirstMatchExp;
 import com.nhl.dflib.exp.filter.PreFilteredCountExp;
 import com.nhl.dflib.exp.filter.PreFilteredExp;
@@ -31,9 +32,10 @@ import com.nhl.dflib.exp.num.LongColumn;
 import com.nhl.dflib.exp.sort.ExpSorter;
 import com.nhl.dflib.exp.str.ConcatExp;
 import com.nhl.dflib.exp.str.StrColumn;
-import com.nhl.dflib.exp.str.StrFactory;
+import com.nhl.dflib.exp.str.StrExp1;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
@@ -64,6 +66,24 @@ public interface Exp<T> {
 
         Class type = value != null ? value.getClass() : Object.class;
         return $val(value, type);
+    }
+
+    /**
+     * Returns an expression that evaluates to a Series containing a single LocalDate value.
+     *
+     * @since 0.16
+     */
+    static DateExp $dateVal(LocalDate value) {
+        return new DateConstExp(value);
+    }
+
+    /**
+     * Returns an expression that evaluates to a Series containing a single LocalTime value.
+     *
+     * @since 0.16
+     */
+    static TimeExp $timeVal(LocalTime value) {
+        return new TimeConstExp(value);
     }
 
     /**
@@ -517,7 +537,7 @@ public interface Exp<T> {
      * @since 0.16
      */
     default DateExp castAsDate() {
-        return DateFactory.castAsDate(this);
+        return DateExp1.mapVal("castAsDate", this.castAsStr(), LocalDate::parse);
     }
 
     /**
@@ -538,14 +558,28 @@ public interface Exp<T> {
      * @since 0.16
      */
     default TimeExp castAsTime() {
-        return TimeFactory.castAsTime(this);
+        return TimeExp1.mapVal("castAsTime", this.castAsStr(), LocalTime::parse);
+    }
+
+    /**
+     * @since 0.16
+     */
+    default TimeExp castAsTime(String formatter) {
+        return castAsTime(DateTimeFormatter.ofPattern(formatter));
+    }
+
+    /**
+     * @since 0.16
+     */
+    default TimeExp castAsTime(DateTimeFormatter formatter) {
+        return TimeExp1.mapVal("castAsTime", this.castAsStr(), s -> LocalTime.parse(s, formatter));
     }
 
     /**
      * @since 0.16
      */
     default StrExp castAsStr() {
-        return StrFactory.castAsStr(this);
+        return StrExp1.mapVal("castAsStr", this, o -> o.toString());
     }
 
     /**

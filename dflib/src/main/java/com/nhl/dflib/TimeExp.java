@@ -1,10 +1,11 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.exp.datetime.TimeExpScalar2;
-import com.nhl.dflib.exp.datetime.TimeFactory;
+import com.nhl.dflib.exp.map.MapCondition2;
 import com.nhl.dflib.exp.num.IntExp1;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 
@@ -15,6 +16,16 @@ public interface TimeExp extends Exp<LocalTime> {
 
     @Override
     default TimeExp castAsTime() {
+        return this;
+    }
+
+    @Override
+    default TimeExp castAsTime(String formatter) {
+        return this;
+    }
+
+    @Override
+    default TimeExp castAsTime(DateTimeFormatter formatter) {
         return this;
     }
 
@@ -56,35 +67,35 @@ public interface TimeExp extends Exp<LocalTime> {
     }
 
     default Condition lt(Exp<LocalTime> exp) {
-        return TimeFactory.lt(this, exp);
+        return MapCondition2.mapVal("<", this, exp.castAsTime(), (d1, d2) -> d1.compareTo(d2) < 0);
     }
 
     default Condition lt(LocalTime val) {
-        return TimeFactory.lt(this, Exp.$val(val));
+        return lt(Exp.$timeVal(val));
     }
 
     default Condition le(Exp<LocalTime> exp) {
-        return TimeFactory.le(this, exp);
+        return MapCondition2.mapVal("<=", this, exp.castAsTime(), (d1, d2) -> d1.compareTo(d2) <= 0);
     }
 
     default Condition le(LocalTime val) {
-        return TimeFactory.le(this, Exp.$val(val));
+        return le(Exp.$timeVal(val));
     }
 
     default Condition gt(Exp<LocalTime> exp) {
-        return TimeFactory.gt(this, exp);
+        return MapCondition2.mapVal(">", this, exp.castAsTime(), (d1, d2) -> d1.compareTo(d2) > 0);
     }
 
     default Condition gt(LocalTime val) {
-        return TimeFactory.gt(this, Exp.$val(val));
+        return gt(Exp.$timeVal(val));
     }
 
     default Condition ge(Exp<LocalTime> exp) {
-        return TimeFactory.ge(this, exp);
+        return MapCondition2.mapVal(">=", this, exp.castAsTime(), (d1, d2) -> d1.compareTo(d2) >= 0);
     }
 
     default Condition ge(LocalTime val) {
-        return TimeFactory.ge(this, Exp.$val(val));
+        return ge(Exp.$timeVal(val));
     }
 
 }

@@ -1,7 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.exp.datetime.DateExpScalar2;
-import com.nhl.dflib.exp.datetime.DateFactory;
+import com.nhl.dflib.exp.map.MapCondition2;
 import com.nhl.dflib.exp.num.IntExp1;
 
 import java.time.LocalDate;
@@ -39,56 +39,56 @@ public interface DateExp extends Exp<LocalDate> {
      * @since 0.16
      */
     default Condition lt(Exp<LocalDate> exp) {
-        return DateFactory.lt(this, exp);
+        return MapCondition2.mapVal("<", this, exp.castAsDate(), (d1, d2) -> d1.compareTo(d2) < 0);
     }
 
     /**
      * @since 0.16
      */
     default Condition lt(LocalDate val) {
-        return DateFactory.lt(this, Exp.$val(val));
+        return lt(Exp.$dateVal(val));
     }
 
     /**
      * @since 0.16
      */
     default Condition le(Exp<LocalDate> exp) {
-        return DateFactory.le(this, exp);
+        return MapCondition2.mapVal("<=", this, exp.castAsDate(), (d1, d2) -> d1.compareTo(d2) <= 0);
     }
 
     /**
      * @since 0.16
      */
     default Condition le(LocalDate val) {
-        return DateFactory.le(this, Exp.$val(val));
+        return le(Exp.$dateVal(val));
     }
 
     /**
      * @since 0.16
      */
     default Condition gt(Exp<LocalDate> exp) {
-        return DateFactory.gt(this, exp);
+        return MapCondition2.mapVal(">", this, exp.castAsDate(), (d1, d2) -> d1.compareTo(d2) > 0);
     }
 
     /**
      * @since 0.16
      */
     default Condition gt(LocalDate val) {
-        return DateFactory.gt(this, Exp.$val(val));
+        return gt(Exp.$dateVal(val));
     }
 
     /**
      * @since 0.16
      */
     default Condition ge(Exp<LocalDate> exp) {
-        return DateFactory.ge(this, exp);
+        return MapCondition2.mapVal(">=", this, exp.castAsDate(), (d1, d2) -> d1.compareTo(d2) >= 0);
     }
 
     /**
      * @since 0.16
      */
     default Condition ge(LocalDate val) {
-        return DateFactory.ge(this, Exp.$val(val));
+        return ge(Exp.$dateVal(val));
     }
 
     /**
@@ -96,6 +96,14 @@ public interface DateExp extends Exp<LocalDate> {
      */
     @Override
     default DateExp castAsDate() {
+        return this;
+    }
+
+    /**
+     * @since 0.16
+     */
+    @Override
+    default DateExp castAsDate(String format) {
         return this;
     }
 
