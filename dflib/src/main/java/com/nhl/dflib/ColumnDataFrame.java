@@ -431,11 +431,6 @@ public class ColumnDataFrame implements DataFrame {
         return new ColumnDataFrame(newIndex, newDataColumns);
     }
 
-    @Override
-    public <V, VR> DataFrame convertColumn(int pos, ValueMapper<V, VR> converter) {
-        return replaceColumn(pos, dataColumns[pos].map(converter));
-    }
-
     /**
      * @since 0.11
      */

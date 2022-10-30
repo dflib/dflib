@@ -212,11 +212,12 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new DataFrame
      */
     default <V, VR> DataFrame convertColumn(String columnLabel, ValueMapper<V, VR> converter) {
-        int pos = getColumnsIndex().position(columnLabel);
-        return convertColumn(pos, converter);
+        return convertColumn(columnLabel, Exp.$col(columnLabel).mapVal(v -> converter.map((V) v)));
     }
 
-    <V, VR> DataFrame convertColumn(int pos, ValueMapper<V, VR> converter);
+    default <V, VR> DataFrame convertColumn(int pos, ValueMapper<V, VR> converter) {
+        return convertColumn(pos, Exp.$col(pos).mapVal(v -> converter.map((V) v)));
+    }
 
     /**
      * Converts column contents using the expression. Unlike {@link #addColumn(Exp)} ignores the name of the Exp,
@@ -419,7 +420,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.6
      */
     default <E extends Enum<E>> DataFrame toEnumFromStringColumn(int pos, Class<E> enumType) {
-        return convertColumn(pos, ValueMapper.stringToEnum(enumType));
+        return convertColumn(pos, Exp.$col(pos).castAsStr().castAsEnum(enumType));
     }
 
     /**
@@ -429,8 +430,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.6
      */
     default <E extends Enum<E>> DataFrame toEnumFromNumColumn(String columnLabel, Class<E> enumType) {
-        int pos = getColumnsIndex().position(columnLabel);
-        return toEnumFromNumColumn(pos, enumType);
+        return convertColumn(columnLabel, Exp.$col(columnLabel).castAsInt().castAsEnum(enumType));
     }
 
     /**
@@ -440,7 +440,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.6
      */
     default <E extends Enum<E>> DataFrame toEnumFromNumColumn(int pos, Class<E> enumType) {
-        return convertColumn(pos, ValueMapper.numToEnum(enumType));
+        return convertColumn(pos, Exp.$col(pos).castAsInt().castAsEnum(enumType));
     }
 
     /**
