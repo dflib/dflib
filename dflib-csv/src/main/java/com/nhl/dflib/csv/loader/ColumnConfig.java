@@ -25,7 +25,7 @@ import com.nhl.dflib.accumulator.ObjectHolder;
 import java.util.List;
 
 /**
- * A encapsulates user-provided configuration for {@link com.nhl.dflib.csv.CsvLoader}.
+ * Encapsulates user-provided configuration for {@link com.nhl.dflib.csv.CsvLoader}.
  *
  * @since 0.8
  */
