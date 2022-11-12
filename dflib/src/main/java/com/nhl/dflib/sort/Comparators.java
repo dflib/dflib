@@ -1,9 +1,12 @@
 package com.nhl.dflib.sort;
 
-import com.nhl.dflib.*;
+import com.nhl.dflib.BooleanSeries;
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.DoubleSeries;
+import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.LongSeries;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.Sorter;
-import com.nhl.dflib.row.DataFrameRowProxy;
-import com.nhl.dflib.row.RowProxy;
 
 import java.util.Comparator;
 
@@ -129,21 +132,6 @@ public final class Comparators {
         return ascending
                 ? (i1, i2) -> nullsLastCompare((Comparable) s.get(i1), (Comparable) s.get(i2))
                 : (i1, i2) -> nullsLastCompare((Comparable) s.get(i2), (Comparable) s.get(i1));
-    }
-
-    /**
-     * @deprecated since 0.12 as sorting by RowToValueMapper is redundant, and can be expressed as a Sorter.
-     */
-    @Deprecated
-    public static <V extends Comparable<? super V>> IntComparator of(DataFrame df, RowToValueMapper<V> sortKeyExtractor) {
-
-        // slower row-based comparator
-
-        Comparator<RowProxy> rowComparator = (c1, c2) -> nullsLastCompare(sortKeyExtractor.map(c1), sortKeyExtractor.map(c2));
-
-        DataFrameRowProxy p1 = new DataFrameRowProxy(df);
-        DataFrameRowProxy p2 = new DataFrameRowProxy(df);
-        return (i1, i2) -> rowComparator.compare(p1.rewind(i1), p2.rewind(i2));
     }
 
     static <V extends Comparable<? super V>> int nullsLastCompare(V a, V b) {

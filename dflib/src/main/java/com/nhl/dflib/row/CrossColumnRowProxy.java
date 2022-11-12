@@ -5,10 +5,10 @@ import com.nhl.dflib.Series;
 
 public class CrossColumnRowProxy implements RowProxy {
 
-    private Index columns;
-    private Series[] data;
+    private final Index columns;
+    private final Series[] data;
+    private final int height;
     private int rowIndex;
-    private int height;
 
     public CrossColumnRowProxy(Index columns, Series[] data, int height) {
         this.columns = columns;

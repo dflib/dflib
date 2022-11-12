@@ -2,7 +2,6 @@ package com.nhl.dflib.sort;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntSeries;
-import com.nhl.dflib.RowToValueMapper;
 import com.nhl.dflib.Sorter;
 import com.nhl.dflib.series.IntArraySeries;
 
@@ -55,14 +54,6 @@ public class DataFrameSorter {
     public DataFrame sort(IntComparator comparator) {
         IntSeries sortIndex = sortIndex(comparator);
         return dataFrame.selectRows(sortIndex);
-    }
-
-    /**
-     * @deprecated since 0.12 as sorting by RowToValueMapper is redundant, and can be expressed as a Sorter.
-     */
-    @Deprecated
-    public <V extends Comparable<? super V>> DataFrame sort(RowToValueMapper<V> sortKeyExtractor) {
-        return sort(Comparators.of(dataFrame, sortKeyExtractor));
     }
 
     public DataFrame sort(Sorter... sorters) {

@@ -35,22 +35,6 @@ public class DataFrame_Sort_Test {
 
     }
 
-    @Deprecated
-    @Test
-    public void testSort_WithKeyExtractor() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
-                0, 1,
-                2, 3,
-                -1, 2)
-                .sort(r -> (Integer) r.get("a"));
-
-        new DataFrameAsserts(df, "a", "b")
-                .expectHeight(3)
-                .expectRow(0, -1, 2)
-                .expectRow(1, 0, 1)
-                .expectRow(2, 2, 3);
-    }
-
     @Test
     public void testSort_NullsLast() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(

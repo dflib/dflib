@@ -5,7 +5,6 @@ import com.nhl.dflib.Exp;
 import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.Hasher;
 import com.nhl.dflib.IntSeries;
-import com.nhl.dflib.RowToValueMapper;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.Sorter;
 import com.nhl.dflib.agg.WindowAggregator;
@@ -66,15 +65,6 @@ public class WindowBuilder {
         }
 
         this.partitioner = partitioner;
-        return this;
-    }
-
-    /**
-     * @deprecated since 0.12 as sorting by RowToValueMapper is redundant, and can be expressed as a Sorter.
-     */
-    @Deprecated
-    public <V extends Comparable<? super V>> WindowBuilder sorted(RowToValueMapper<V> sortKeyExtractor) {
-        this.sorter = Comparators.of(dataFrame, sortKeyExtractor);
         return this;
     }
 

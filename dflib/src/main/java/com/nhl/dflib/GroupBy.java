@@ -217,14 +217,6 @@ public class GroupBy {
     }
 
     /**
-     * @deprecated since 0.12 as sorting by RowToValueMapper is redundant, and can be expressed as a Sorter.
-     */
-    @Deprecated
-    public <V extends Comparable<? super V>> GroupBy sort(RowToValueMapper<V> sortKeyExtractor) {
-        return new GroupBySorter(this).sort(sortKeyExtractor);
-    }
-
-    /**
      * @since 0.11
      */
     public GroupBy sort(Sorter... sorters) {

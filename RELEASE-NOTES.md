@@ -6,6 +6,7 @@
 * #169 DateExp comparison expressions
 * #170 DateExp - exp to extract day, month, year
 * #171 TimeExp
+* #173 Remove API deprecated since 0.12
 
 ## Release 0.15
 
