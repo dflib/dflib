@@ -4,7 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Exp;
 
 /**
- * A base class for expressions that are not composed from other expressions.
+ * A base class for expressions that are not composed of other expressions.
  *
  * @since 0.11
  */
