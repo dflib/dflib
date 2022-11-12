@@ -4,10 +4,7 @@ import com.nhl.dflib.Exp;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.StrExp;
 import com.nhl.dflib.accumulator.ObjectAccumulator;
-import com.nhl.dflib.exp.map.MapExp1;
 import com.nhl.dflib.exp.ExpN;
-
-import java.util.Arrays;
 
 import static com.nhl.dflib.Exp.$val;
 
@@ -15,13 +12,6 @@ import static com.nhl.dflib.Exp.$val;
  * @since 0.11
  */
 public class ConcatExp extends ExpN<String> implements StrExp {
-
-    protected static Exp<String> cast(Exp<?> exp) {
-        Class<?> t = exp.getType();
-        return t.equals(String.class)
-                ? (Exp<String>) exp
-                : MapExp1.mapVal("castAsString", String.class, exp, String::valueOf);
-    }
 
     public static StrExp forObjects(Object... valuesOrExps) {
 
@@ -31,20 +21,24 @@ public class ConcatExp extends ExpN<String> implements StrExp {
             return new StrConstExp(null);
         }
 
-        for (Object v : valuesOrExps) {
+        Exp<?>[] args = new Exp[len];
+        for (int i = 0; i < len; i++) {
+
+            Object v = valuesOrExps[i];
             if (v == null) {
                 // Any null argument to concat will produce null CONCAT result regardless of other values
                 return new StrConstExp(null);
+            } else if (v instanceof Exp) {
+                args[i] = (Exp<?>) v;
+            } else {
+                args[i] = $val(v.toString());
             }
         }
 
-        Exp<String>[] args = Arrays.stream(valuesOrExps)
-                .map(v -> v instanceof Exp ? cast((Exp<?>) v) : $val(v.toString()))
-                .toArray(Exp[]::new);
         return new ConcatExp(args);
     }
 
-    protected ConcatExp(Exp<String>[] args) {
+    protected ConcatExp(Exp<?>[] args) {
         super("concat", String.class, args);
     }
 

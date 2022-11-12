@@ -7,6 +7,7 @@
 * #170 DateExp - exp to extract day, month, year
 * #171 TimeExp
 * #173 Remove API deprecated since 0.12
+* #175 Optimize Exp.concat(..)
 
 ## Release 0.15
 

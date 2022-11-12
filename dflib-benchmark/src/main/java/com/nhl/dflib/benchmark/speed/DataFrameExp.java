@@ -64,7 +64,12 @@ public class DataFrameExp {
 
     @Benchmark
     public Object mapStringViaLambda() {
-        return df.mapColumn(r -> r.get("c3") + ((String) r.get("c4")))
+        return df.mapColumn(r -> {
+                    String c3 = (String) r.get("c3");
+                    String c4 = (String) r.get("c4");
+
+                    return c3 == null || c4 == null ? null : c3 + c4;
+                })
                 .materialize()
                 .iterator();
     }
