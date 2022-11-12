@@ -48,7 +48,7 @@ public class MapExpScalar2<L, R, T> extends ExpScalar2<L, R, T> {
     }
 
     @Override
-    protected Series<T> doEval(Series<L> left, R right) {
+    protected Series<T> doEval(Series<L> left) {
         return op.apply(left, right);
     }
 }

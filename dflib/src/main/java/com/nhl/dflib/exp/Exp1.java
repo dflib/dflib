@@ -12,7 +12,7 @@ import com.nhl.dflib.Series;
 public abstract class Exp1<F, T> implements Exp<T> {
 
     private final String opName;
-    private final Exp<F> exp;
+    protected final Exp<F> exp;
     private final Class<T> type;
 
     public Exp1(String opName, Class<T> type, Exp<F> exp) {

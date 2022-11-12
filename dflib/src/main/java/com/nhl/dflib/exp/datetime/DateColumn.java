@@ -1,14 +1,14 @@
 package com.nhl.dflib.exp.datetime;
 
 import com.nhl.dflib.DateExp;
-import com.nhl.dflib.exp.GenericColumn;
+import com.nhl.dflib.exp.Column;
 
 import java.time.LocalDate;
 
 /**
  * @since 0.11
  */
-public class DateColumn extends GenericColumn<LocalDate> implements DateExp {
+public class DateColumn extends Column<LocalDate> implements DateExp {
 
     public DateColumn(String name) {
         super(name, LocalDate.class);

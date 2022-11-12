@@ -17,7 +17,7 @@ import static com.nhl.dflib.Exp.$col;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
-public class GenericColumnTest {
+public class ColumnTest {
 
     @Test
     public void testCastAsStr() {

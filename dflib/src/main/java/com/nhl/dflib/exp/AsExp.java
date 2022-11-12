@@ -9,6 +9,7 @@ import java.util.Objects;
 /**
  * @since 0.11
  */
+// inheriting from ExpScalar2 (and treating "name" as the scalar argument) for the sake of proper "toQL" method
 public class AsExp<T> extends ExpScalar2<T, String, T> {
 
     public AsExp(String name, Exp<T> delegate) {
@@ -16,13 +17,13 @@ public class AsExp<T> extends ExpScalar2<T, String, T> {
     }
 
     @Override
-    protected Series<T> doEval(Series<T> left, String right) {
-        return left;
+    protected Series<T> doEval(Series<T> s) {
+        return s;
     }
 
     @Override
     public Exp<T> as(String name) {
-        return Objects.equals(name, this.opName) ? this : new AsExp<>(name, left);
+        return Objects.equals(name, this.right) ? this : new AsExp<>(name, left);
     }
 
     @Override

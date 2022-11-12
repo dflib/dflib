@@ -4,13 +4,13 @@ import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.BooleanValueMapper;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.exp.GenericColumn;
+import com.nhl.dflib.exp.Column;
 import com.nhl.dflib.Condition;
 
 /**
  * @since 0.11
  */
-public class BoolColumn extends GenericColumn<Boolean> implements Condition {
+public class BoolColumn extends Column<Boolean> implements Condition {
 
     public BoolColumn(String name) {
         super(name, Boolean.class);

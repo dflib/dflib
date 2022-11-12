@@ -6,19 +6,14 @@ import com.nhl.dflib.series.SingleValueSeries;
 /**
  * @since 0.11
  */
-public class ConstExp<T> extends ScalarExp<T> {
+public class ConstExp<T> extends ExpScalar1<T> {
 
     public ConstExp(T value, Class<T> type) {
         super(value, type);
     }
 
     @Override
-    protected Series<T> doEval(int height, T value) {
-        // TODO: cache the result in the exp?
-
-        // TODO: explore possible performance improvement by not converting scalars to Series at all, and providing a
-        //   separate evaluation path instead.
-
-        return new SingleValueSeries<>(value, height);
+    protected Series<T> doEval(int height) {
+        return new SingleValueSeries<>(this.value, height);
     }
 }

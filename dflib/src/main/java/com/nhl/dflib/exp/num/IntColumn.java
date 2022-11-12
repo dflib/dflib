@@ -1,12 +1,12 @@
 package com.nhl.dflib.exp.num;
 
-import com.nhl.dflib.exp.GenericColumn;
+import com.nhl.dflib.exp.Column;
 import com.nhl.dflib.NumExp;
 
 /**
  * @since 0.11
  */
-public class IntColumn extends GenericColumn<Integer> implements NumExp<Integer> {
+public class IntColumn extends Column<Integer> implements NumExp<Integer> {
 
     public IntColumn(String name) {
         super(name, Integer.class);

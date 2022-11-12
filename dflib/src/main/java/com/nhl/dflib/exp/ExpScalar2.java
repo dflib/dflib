@@ -5,7 +5,7 @@ import com.nhl.dflib.Exp;
 import com.nhl.dflib.Series;
 
 /**
- * A binary expression with one Exp and one scalar arguments.
+ * A binary expression with Exp on the left side and a scalar - on the right.
  *
  * @since 0.11
  */
@@ -45,13 +45,13 @@ public abstract class ExpScalar2<L, R, T> implements Exp<T> {
 
     @Override
     public Series<T> eval(DataFrame df) {
-        return doEval(left.eval(df), right);
+        return doEval(left.eval(df));
     }
 
     @Override
     public Series<T> eval(Series<?> s) {
-        return doEval(left.eval(s), right);
+        return doEval(left.eval(s));
     }
 
-    protected abstract Series<T> doEval(Series<L> left, R right);
+    protected abstract Series<T> doEval(Series<L> left);
 }

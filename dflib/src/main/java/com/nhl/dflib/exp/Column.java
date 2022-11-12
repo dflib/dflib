@@ -7,23 +7,24 @@ import com.nhl.dflib.Exp;
 import java.util.Objects;
 
 /**
- * An expression that evaluates to a column from a DataFrame identified either by name or position.
+ * An expression that evaluates to a named or a positional column from a DataFrame. In case of Series, it evaluates to
+ * the Series itself.
  *
  * @since 0.11
  */
-public class GenericColumn<T> implements Exp<T> {
+public class Column<T> implements Exp<T> {
 
     protected final int position;
     protected final String name;
     private final Class<T> type;
 
-    public GenericColumn(String name, Class<T> type) {
+    public Column(String name, Class<T> type) {
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
         this.position = -1;
     }
 
-    public GenericColumn(int position, Class<T> type) {
+    public Column(int position, Class<T> type) {
         if (position < 0) {
             throw new IllegalArgumentException("Position must nit be negative: " + position);
         }

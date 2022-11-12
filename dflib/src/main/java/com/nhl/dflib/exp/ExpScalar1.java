@@ -11,12 +11,12 @@ import java.util.Objects;
  *
  * @since 0.11
  */
-public abstract class ScalarExp<T> implements Exp<T> {
+public abstract class ExpScalar1<T> implements Exp<T> {
 
     private final Class<T> type;
-    private final T value;
+    protected final T value;
 
-    public ScalarExp(T value, Class<T> type) {
+    public ExpScalar1(T value, Class<T> type) {
         this.value = value;
         this.type = Objects.requireNonNull(type);
     }
@@ -45,13 +45,13 @@ public abstract class ScalarExp<T> implements Exp<T> {
 
     @Override
     public Series<T> eval(DataFrame df) {
-        return doEval(df.height(), value);
+        return doEval(df.height());
     }
 
     @Override
     public Series<T> eval(Series<?> s) {
-        return doEval(s.size(), value);
+        return doEval(s.size());
     }
 
-    protected abstract Series<T> doEval(int height, T value);
+    protected abstract Series<T> doEval(int height);
 }

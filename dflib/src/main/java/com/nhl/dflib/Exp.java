@@ -2,7 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.exp.AsExp;
 import com.nhl.dflib.exp.ConstExp;
-import com.nhl.dflib.exp.GenericColumn;
+import com.nhl.dflib.exp.Column;
 import com.nhl.dflib.exp.agg.CountExp;
 import com.nhl.dflib.exp.agg.ExpAggregator;
 import com.nhl.dflib.exp.agg.StringAggregators;
@@ -102,28 +102,28 @@ public interface Exp<T> {
      * Returns an expression that evaluates to a named DataFrame column.
      */
     static <T> Exp<T> $col(String name) {
-        return new GenericColumn(name, Object.class);
+        return new Column(name, Object.class);
     }
 
     /**
      * Returns an expression that evaluates to a DataFrame column at a given position
      */
     static <T> Exp<T> $col(int position) {
-        return new GenericColumn(position, Object.class);
+        return new Column(position, Object.class);
     }
 
     /**
      * Returns an expression that evaluates to a named DataFrame column.
      */
     static <T> Exp<T> $col(String name, Class<T> type) {
-        return new GenericColumn<>(name, type);
+        return new Column<>(name, type);
     }
 
     /**
      * Returns an expression that evaluates to a DataFrame column at a given position
      */
     static <T> Exp<T> $col(int position, Class<T> type) {
-        return new GenericColumn<>(position, type);
+        return new Column<>(position, type);
     }
 
     /**
