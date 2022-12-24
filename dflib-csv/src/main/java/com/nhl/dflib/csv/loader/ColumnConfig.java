@@ -169,7 +169,7 @@ public class ColumnConfig {
         return config;
     }
 
-    public ColumnBuilder<?> createAccumulatorColumn(int columnPosition) {
+    public ColumnBuilder<?> createColumnBuilder(int columnPosition) {
 
         // using externally passed "columnPosition", as "this.columnPosition" may not be initialized (when column name
         // was in use)

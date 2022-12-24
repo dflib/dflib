@@ -14,11 +14,11 @@ class FilteringCsvLoaderWorker extends BaseCsvLoaderWorker {
 
     public FilteringCsvLoaderWorker(
             Index columnIndex,
-            ColumnBuilder<?>[] columns,
+            ColumnBuilder<?>[] columnBuilders,
             CsvCell<?>[] csvRow,
             Predicate<CsvCell<?>[]> csvRowFilter) {
 
-        super(columnIndex, columns);
+        super(columnIndex, columnBuilders);
 
         this.csvRow = csvRow;
         this.csvRowFilter = csvRowFilter;
@@ -38,7 +38,7 @@ class FilteringCsvLoaderWorker extends BaseCsvLoaderWorker {
 
             // 3. add row since the condition is satisfied
             for (int i = 0; i < width; i++) {
-                columnAccumulators[i].add(csvRow);
+                columnBuilders[i].add(csvRow);
             }
 
         }

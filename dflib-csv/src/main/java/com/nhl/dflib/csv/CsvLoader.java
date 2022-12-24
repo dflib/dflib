@@ -482,14 +482,14 @@ public class CsvLoader {
 
     private CsvLoaderWorker noSamplingWorker(ColumnMap columnMap, ColumnConfig[] csvColumns) {
         return rowFilters.isEmpty()
-                ? new BaseCsvLoaderWorker(columnMap.dfHeader, columnMap.createAccumulators(csvColumns))
-                : new FilteringCsvLoaderWorker(columnMap.dfHeader, columnMap.createAccumulators(csvColumns), columnMap.createValueHolders(csvColumns), createRowFilter(columnMap.csvHeader));
+                ? new BaseCsvLoaderWorker(columnMap.dfHeader, columnMap.createColumnBuilders(csvColumns))
+                : new FilteringCsvLoaderWorker(columnMap.dfHeader, columnMap.createColumnBuilders(csvColumns), columnMap.createValueHolders(csvColumns), createRowFilter(columnMap.csvHeader));
     }
 
     private CsvLoaderWorker samplingWorker(ColumnMap columnMap, ColumnConfig[] csvColumns) {
         return rowFilters.isEmpty()
-                ? new SamplingCsvLoaderWorker(columnMap.dfHeader, columnMap.createAccumulators(csvColumns), rowSampleSize, rowsSampleRandom)
-                : new FilteringSamplingCsvLoaderWorker(columnMap.dfHeader, columnMap.createAccumulators(csvColumns), columnMap.createValueHolders(csvColumns), createRowFilter(columnMap.csvHeader), rowSampleSize, rowsSampleRandom);
+                ? new SamplingCsvLoaderWorker(columnMap.dfHeader, columnMap.createColumnBuilders(csvColumns), rowSampleSize, rowsSampleRandom)
+                : new FilteringSamplingCsvLoaderWorker(columnMap.dfHeader, columnMap.createColumnBuilders(csvColumns), columnMap.createValueHolders(csvColumns), createRowFilter(columnMap.csvHeader), rowSampleSize, rowsSampleRandom);
     }
 
     private Iterator<CSVRecord> createRecordIterator(Reader reader) throws IOException {
@@ -609,16 +609,16 @@ public class CsvLoader {
             this.csvPositions = csvPositions;
         }
 
-        ColumnBuilder<?>[] createAccumulators(ColumnConfig[] csvColumns) {
+        ColumnBuilder<?>[] createColumnBuilders(ColumnConfig[] csvColumns) {
 
             int w = dfHeader.size();
-            ColumnBuilder<?>[] accums = new ColumnBuilder[w];
+            ColumnBuilder<?>[] builders = new ColumnBuilder[w];
 
             for (int i = 0; i < w; i++) {
-                accums[i] = csvColumns[csvPositions[i]].createAccumulatorColumn(csvPositions[i]);
+                builders[i] = csvColumns[csvPositions[i]].createColumnBuilder(csvPositions[i]);
             }
 
-            return accums;
+            return builders;
         }
 
         CsvCell<?>[] createValueHolders(ColumnConfig[] csvColumns) {

@@ -16,7 +16,7 @@ import java.util.Random;
  */
 class SamplingCsvLoaderWorker implements CsvLoaderWorker {
 
-    protected ColumnBuilder<?>[] columnAccumulators;
+    protected ColumnBuilder<?>[] columnBuilders;
     protected Index columnIndex;
 
     protected int rowSampleSize;
@@ -25,12 +25,12 @@ class SamplingCsvLoaderWorker implements CsvLoaderWorker {
 
     SamplingCsvLoaderWorker(
             Index columnIndex,
-            ColumnBuilder<?>[] columnAccumulators,
+            ColumnBuilder<?>[] columnBuilders,
             int rowSampleSize,
             Random rowsSampleRandom) {
 
         this.columnIndex = columnIndex;
-        this.columnAccumulators = columnAccumulators;
+        this.columnBuilders = columnBuilders;
 
         this.rowSampleSize = rowSampleSize;
         this.rowsSampleRandom = rowsSampleRandom;
@@ -51,7 +51,7 @@ class SamplingCsvLoaderWorker implements CsvLoaderWorker {
         int width = columnIndex.size();
         Series<?>[] columns = new Series[width];
         for (int i = 0; i < width; i++) {
-            columns[i] = columnAccumulators[i].toColumn();
+            columns[i] = columnBuilders[i].toColumn();
         }
 
         return DataFrame.newFrame(columnIndex).columns(columns);
@@ -92,13 +92,13 @@ class SamplingCsvLoaderWorker implements CsvLoaderWorker {
 
     protected void addRow(int width, CSVRecord record) {
         for (int i = 0; i < width; i++) {
-            columnAccumulators[i].add(record);
+            columnBuilders[i].add(record);
         }
     }
 
     protected void replaceRow(int pos, int width, CSVRecord record) {
         for (int i = 0; i < width; i++) {
-            columnAccumulators[i].set(pos, record);
+            columnBuilders[i].set(pos, record);
         }
     }
 }

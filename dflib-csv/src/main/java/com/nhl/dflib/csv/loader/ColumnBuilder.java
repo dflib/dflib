@@ -12,9 +12,9 @@ import org.apache.commons.csv.CSVRecord;
  */
 public class ColumnBuilder<T> {
 
-    private ValueConverter<String, T> converter;
-    private Accumulator<T> accumulator;
-    private int csvColumnPosition;
+    private final ValueConverter<String, T> converter;
+    private final Accumulator<T> accumulator;
+    private final int csvColumnPosition;
 
     public ColumnBuilder(ValueConverter<String, T> converter, Accumulator<T> accumulator, int csvColumnPosition) {
         this.converter = converter;

@@ -74,13 +74,13 @@ class FilteringSamplingCsvLoaderWorker extends SamplingCsvLoaderWorker {
 
     protected void addBufferedRow(int width) {
         for (int i = 0; i < width; i++) {
-            columnAccumulators[i].add(csvRow);
+            columnBuilders[i].add(csvRow);
         }
     }
 
     protected void replaceBufferedRow(int pos, int width) {
         for (int i = 0; i < width; i++) {
-            columnAccumulators[i].set(pos, csvRow);
+            columnBuilders[i].set(pos, csvRow);
         }
     }
 }

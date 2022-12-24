@@ -13,9 +13,9 @@ import org.apache.commons.csv.CSVRecord;
  */
 public class CsvCell<T> {
 
-    private ValueConverter<String, T> converter;
-    private ValueHolder<T> holder;
-    private int csvColumnPosition;
+    private final ValueConverter<String, T> converter;
+    private final ValueHolder<T> holder;
+    private final int csvColumnPosition;
 
     public CsvCell(ValueConverter<String, T> converter, ValueHolder<T> holder, int csvColumnPosition) {
         this.converter = converter;
