@@ -21,11 +21,11 @@ public class ColumnBuilder<T> {
         this.accumulator = accumulator;
     }
 
-    public void add(ResultSet rs) {
+    public void convertAndAdd(ResultSet rs) {
         converter.convertAndStore(rs, accumulator);
     }
 
-    public void set(int pos, ResultSet rs) {
+    public void convertAndReplace(int pos, ResultSet rs) {
         converter.convertAndStore(pos, rs, accumulator);
     }
 

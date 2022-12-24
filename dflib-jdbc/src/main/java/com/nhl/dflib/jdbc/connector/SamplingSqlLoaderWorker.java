@@ -72,7 +72,7 @@ class SamplingSqlLoaderWorker extends SqlLoaderWorker {
 
     protected void replaceRow(int pos, int width, ResultSet rs) {
         for (int i = 0; i < width; i++) {
-            accumulators[i].set(pos, rs);
+            accumulators[i].convertAndReplace(pos, rs);
         }
     }
 }

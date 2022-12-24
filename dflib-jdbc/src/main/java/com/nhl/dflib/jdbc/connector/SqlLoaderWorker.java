@@ -47,7 +47,7 @@ class SqlLoaderWorker {
 
     protected void addRow(int width, ResultSet resultSet) {
         for (int i = 0; i < width; i++) {
-            accumulators[i].add(resultSet);
+            accumulators[i].convertAndAdd(resultSet);
         }
     }
 }
