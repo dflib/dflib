@@ -11,6 +11,7 @@ import com.nhl.dflib.window.WindowBuilder;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -30,7 +31,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.6
      */
     static DataFrameBuilder newFrame(String... columnLabels) {
-        return DataFrameBuilder.builder(columnLabels);
+        return new DataFrameBuilder(Index.forLabels(Objects.requireNonNull(columnLabels)));
     }
 
     /**
@@ -40,7 +41,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.6
      */
     static DataFrameBuilder newFrame(Index columnIndex) {
-        return DataFrameBuilder.builder(columnIndex);
+        return new DataFrameBuilder(columnIndex);
     }
 
     /**

@@ -36,10 +36,18 @@ public class DataFrameBuilder {
         this.columnsIndex = Objects.requireNonNull(columnsIndex);
     }
 
+    /**
+     * @deprecated use {@link DataFrame#newFrame(String...)}
+     */
+    @Deprecated(since = "0.16")
     public static DataFrameBuilder builder(String... columnLabels) {
-        return builder(Index.forLabels(Objects.requireNonNull(columnLabels)));
+        return new DataFrameBuilder(Index.forLabels(Objects.requireNonNull(columnLabels)));
     }
 
+    /**
+     * @deprecated use {@link DataFrame#newFrame(Index)}
+     */
+    @Deprecated(since = "0.16")
     public static DataFrameBuilder builder(Index columnsIndex) {
         return new DataFrameBuilder(columnsIndex);
     }
