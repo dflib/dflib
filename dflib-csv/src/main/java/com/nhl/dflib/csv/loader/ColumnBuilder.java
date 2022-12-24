@@ -22,8 +22,12 @@ public class ColumnBuilder<T> {
         this.csvColumnPosition = csvColumnPosition;
     }
 
-    public void add(CSVRecord record) {
+    public void convertAndAdd(CSVRecord record) {
         converter.convertAndStore(record.get(csvColumnPosition), accumulator);
+    }
+
+    public void convertAndReplace(int pos, CSVRecord record) {
+        converter.convertAndStore(pos, record.get(csvColumnPosition), accumulator);
     }
 
     public void add(CsvCell<?>[] values) {
@@ -32,11 +36,7 @@ public class ColumnBuilder<T> {
         vhColumn.store(accumulator);
     }
 
-    public void set(int pos, CSVRecord record) {
-        converter.convertAndStore(pos, record.get(csvColumnPosition), accumulator);
-    }
-
-    public void set(int pos, CsvCell<?>[] values) {
+    public void replace(int pos, CsvCell<?>[] values) {
         // values are already converted, so bypassing the converter
         CsvCell vhColumn = values[csvColumnPosition];
         vhColumn.store(pos, accumulator);

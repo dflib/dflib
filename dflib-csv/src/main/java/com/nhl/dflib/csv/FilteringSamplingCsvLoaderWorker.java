@@ -80,7 +80,7 @@ class FilteringSamplingCsvLoaderWorker extends SamplingCsvLoaderWorker {
 
     protected void replaceBufferedRow(int pos, int width) {
         for (int i = 0; i < width; i++) {
-            columnBuilders[i].set(pos, csvRow);
+            columnBuilders[i].replace(pos, csvRow);
         }
     }
 }
