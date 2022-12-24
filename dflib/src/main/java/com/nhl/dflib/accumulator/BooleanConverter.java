@@ -27,4 +27,9 @@ public class BooleanConverter <F> implements ValueConverter<F, Boolean> {
     public void convertAndStore(int pos, F v, Accumulator<Boolean> accumulator) {
         accumulator.setBoolean(pos, converter.map(v));
     }
+
+    @Override
+    public Accumulator<Boolean> createAccumulator(int capacity) {
+        return new BooleanAccumulator(capacity);
+    }
 }

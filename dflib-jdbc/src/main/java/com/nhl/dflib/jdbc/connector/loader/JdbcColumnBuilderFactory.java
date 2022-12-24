@@ -26,7 +26,7 @@ public interface JdbcColumnBuilderFactory<T> {
             }
         };
 
-        return new JdbcColumnBuilder<>(new BooleanConverter<>(mapper), new BooleanAccumulator());
+        return new JdbcColumnBuilder<>(new BooleanConverter<>(mapper));
     }
 
     static JdbcColumnBuilder<Integer> intCol(int pos) {
@@ -38,7 +38,7 @@ public interface JdbcColumnBuilderFactory<T> {
             }
         };
 
-        return new JdbcColumnBuilder<>(new IntConverter<>(mapper), new IntAccumulator());
+        return new JdbcColumnBuilder<>(new IntConverter<>(mapper));
     }
 
     static JdbcColumnBuilder<Long> longCol(int pos) {
@@ -50,7 +50,7 @@ public interface JdbcColumnBuilderFactory<T> {
             }
         };
 
-        return new JdbcColumnBuilder<>(new LongConverter<>(mapper), new LongAccumulator());
+        return new JdbcColumnBuilder<>(new LongConverter<>(mapper));
     }
 
     static JdbcColumnBuilder<Double> doubleCol(int pos) {
@@ -62,7 +62,7 @@ public interface JdbcColumnBuilderFactory<T> {
             }
         };
 
-        return new JdbcColumnBuilder<>(new DoubleConverter<>(mapper), new DoubleAccumulator());
+        return new JdbcColumnBuilder<>(new DoubleConverter<>(mapper));
     }
 
     static JdbcColumnBuilder<Object> objectCol(int pos) {
@@ -100,7 +100,7 @@ public interface JdbcColumnBuilderFactory<T> {
             }
         };
 
-        return new JdbcColumnBuilder<>(new ObjectConverter<>(mapper), new ObjectAccumulator<>());
+        return new JdbcColumnBuilder<>(new ObjectConverter<>(mapper));
     }
 
     JdbcColumnBuilder<T> createBuilder(int pos);

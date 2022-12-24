@@ -27,4 +27,9 @@ public class ObjectConverter<F, T> implements ValueConverter<F, T> {
     public void convertAndStore(int pos, F v, Accumulator<T> accumulator) {
         accumulator.set(pos, converter.map(v));
     }
+
+    @Override
+    public Accumulator<T> createAccumulator(int capacity) {
+        return new ObjectAccumulator<>(capacity);
+    }
 }

@@ -27,4 +27,9 @@ public class IntConverter<F> implements ValueConverter<F, Integer> {
     public void convertAndStore(int pos, F v, Accumulator<Integer> accumulator) {
         accumulator.setInt(pos, converter.map(v));
     }
+
+    @Override
+    public Accumulator<Integer> createAccumulator(int capacity) {
+        return new IntAccumulator(capacity);
+    }
 }

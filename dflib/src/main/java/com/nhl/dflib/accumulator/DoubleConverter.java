@@ -27,4 +27,9 @@ public class DoubleConverter<F> implements ValueConverter<F, Double> {
     public void convertAndStore(int pos, F v, Accumulator<Double> accumulator) {
         accumulator.setDouble(pos, converter.map(v));
     }
+
+    @Override
+    public Accumulator<Double> createAccumulator(int capacity) {
+        return new DoubleAccumulator(capacity);
+    }
 }

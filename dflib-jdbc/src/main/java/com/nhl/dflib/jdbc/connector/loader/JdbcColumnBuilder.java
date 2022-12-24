@@ -1,6 +1,5 @@
 package com.nhl.dflib.jdbc.connector.loader;
 
-import com.nhl.dflib.accumulator.Accumulator;
 import com.nhl.dflib.accumulator.ColumnBuilder;
 import com.nhl.dflib.accumulator.ValueConverter;
 
@@ -13,7 +12,7 @@ import java.sql.ResultSet;
  */
 public class JdbcColumnBuilder<T> extends ColumnBuilder<ResultSet, T> {
 
-    public JdbcColumnBuilder(ValueConverter<ResultSet, T> converter, Accumulator<T> accumulator) {
-        super(converter, accumulator);
+    public JdbcColumnBuilder(ValueConverter<ResultSet, T> converter) {
+        super(converter);
     }
 }

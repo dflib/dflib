@@ -1,6 +1,5 @@
 package com.nhl.dflib.csv.loader;
 
-import com.nhl.dflib.accumulator.Accumulator;
 import com.nhl.dflib.accumulator.ColumnBuilder;
 import com.nhl.dflib.accumulator.ValueConverter;
 import org.apache.commons.csv.CSVRecord;
@@ -12,8 +11,8 @@ public class CsvColumnBuilder<T> extends ColumnBuilder<CSVRecord, T> {
 
     private final int csvColumnPosition;
 
-    public CsvColumnBuilder(ValueConverter<CSVRecord, T> converter, Accumulator<T> accumulator, int csvColumnPosition) {
-        super(converter, accumulator);
+    public CsvColumnBuilder(ValueConverter<CSVRecord, T> converter, int csvColumnPosition) {
+        super(converter);
         this.csvColumnPosition = csvColumnPosition;
     }
 

@@ -6,19 +6,14 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.IntValueMapper;
 import com.nhl.dflib.LongValueMapper;
 import com.nhl.dflib.ValueMapper;
-import com.nhl.dflib.accumulator.BooleanAccumulator;
 import com.nhl.dflib.accumulator.BooleanConverter;
 import com.nhl.dflib.accumulator.BooleanHolder;
-import com.nhl.dflib.accumulator.DoubleAccumulator;
 import com.nhl.dflib.accumulator.DoubleConverter;
 import com.nhl.dflib.accumulator.DoubleHolder;
-import com.nhl.dflib.accumulator.IntAccumulator;
 import com.nhl.dflib.accumulator.IntConverter;
 import com.nhl.dflib.accumulator.IntHolder;
-import com.nhl.dflib.accumulator.LongAccumulator;
 import com.nhl.dflib.accumulator.LongConverter;
 import com.nhl.dflib.accumulator.LongHolder;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
 import com.nhl.dflib.accumulator.ObjectConverter;
 import com.nhl.dflib.accumulator.ObjectHolder;
 import org.apache.commons.csv.CSVRecord;
@@ -179,15 +174,15 @@ public class ColumnConfig {
 
         switch (type) {
             case intPrimitive:
-                return new CsvColumnBuilder<>(intConverter(csvPos), new IntAccumulator(), csvPos);
+                return new CsvColumnBuilder<>(intConverter(csvPos), csvPos);
             case longPrimitive:
-                return new CsvColumnBuilder<>(longConverter(csvPos), new LongAccumulator(), csvPos);
+                return new CsvColumnBuilder<>(longConverter(csvPos), csvPos);
             case doublePrimitive:
-                return new CsvColumnBuilder<>(doubleConverter(csvPos), new DoubleAccumulator(), csvPos);
+                return new CsvColumnBuilder<>(doubleConverter(csvPos), csvPos);
             case booleanPrimitive:
-                return new CsvColumnBuilder<>(boolConverter(csvPos), new BooleanAccumulator(), csvPos);
+                return new CsvColumnBuilder<>(boolConverter(csvPos), csvPos);
             default:
-                return new CsvColumnBuilder(objectConverter(csvPos), new ObjectAccumulator<>(), csvPos);
+                return new CsvColumnBuilder(objectConverter(csvPos), csvPos);
         }
     }
 

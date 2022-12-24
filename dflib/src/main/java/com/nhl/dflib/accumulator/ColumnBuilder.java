@@ -13,9 +13,9 @@ public class ColumnBuilder<R, T> {
     protected final ValueConverter<R, T> converter;
     protected final Accumulator<T> accumulator;
 
-    public ColumnBuilder(ValueConverter<R, T> converter, Accumulator<T> accumulator) {
+    public ColumnBuilder(ValueConverter<R, T> converter) {
         this.converter = converter;
-        this.accumulator = accumulator;
+        this.accumulator = converter.createAccumulator();
     }
 
     public void convertAndAdd(R row) {

@@ -27,4 +27,9 @@ public class LongConverter<F> implements ValueConverter<F, Long> {
     public void convertAndStore(int pos, F v, Accumulator<Long> accumulator) {
         accumulator.setLong(pos, converter.map(v));
     }
+
+    @Override
+    public Accumulator<Long> createAccumulator(int capacity) {
+        return new LongAccumulator(capacity);
+    }
 }
