@@ -210,10 +210,6 @@ public class ExcelLoader {
                 // resetting buffer value to null for missing cells is important, as the buffer is reused between rows
                 buffer[c] = cell != null ? value(cell) : null;
             }
-
-            for (Cell cell : row) {
-                buffer[cell.getColumnIndex() - range.startCol] = value(cell);
-            }
         }
     }
 
