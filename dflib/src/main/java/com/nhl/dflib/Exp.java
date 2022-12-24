@@ -1,8 +1,8 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.exp.AsExp;
-import com.nhl.dflib.exp.ConstExp;
 import com.nhl.dflib.exp.Column;
+import com.nhl.dflib.exp.ConstExp;
 import com.nhl.dflib.exp.agg.CountExp;
 import com.nhl.dflib.exp.agg.ExpAggregator;
 import com.nhl.dflib.exp.agg.StringAggregators;
@@ -13,6 +13,9 @@ import com.nhl.dflib.exp.bool.OrCondition;
 import com.nhl.dflib.exp.datetime.DateColumn;
 import com.nhl.dflib.exp.datetime.DateConstExp;
 import com.nhl.dflib.exp.datetime.DateExp1;
+import com.nhl.dflib.exp.datetime.DateTimeColumn;
+import com.nhl.dflib.exp.datetime.DateTimeConstExp;
+import com.nhl.dflib.exp.datetime.DateTimeExp1;
 import com.nhl.dflib.exp.datetime.TimeColumn;
 import com.nhl.dflib.exp.datetime.TimeConstExp;
 import com.nhl.dflib.exp.datetime.TimeExp1;
@@ -35,6 +38,7 @@ import com.nhl.dflib.exp.str.StrColumn;
 import com.nhl.dflib.exp.str.StrExp1;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -84,6 +88,15 @@ public interface Exp<T> {
      */
     static TimeExp $timeVal(LocalTime value) {
         return new TimeConstExp(value);
+    }
+
+    /**
+     * Returns an expression that evaluates to a Series containing a single LocalDateTime value.
+     *
+     * @since 0.16
+     */
+    static DateTimeExp $dateTimeVal(LocalDateTime value) {
+        return new DateTimeConstExp(value);
     }
 
     /**
@@ -234,6 +247,26 @@ public interface Exp<T> {
     static TimeExp $time(int position) {
         return new TimeColumn(position);
     }
+
+
+    /**
+     * Returns an expression that evaluates to a named date column.
+     *
+     * @since 0.16
+     */
+    static DateTimeExp $dateTime(String name) {
+        return new DateTimeColumn(name);
+    }
+
+    /**
+     * Returns an expression that evaluates to a date column at a given position.
+     *
+     * @since 0.16
+     */
+    static DateTimeExp $dateTime(int position) {
+        return new DateTimeColumn(position);
+    }
+
 
     static Condition or(Condition... conditions) {
         return conditions.length == 1
@@ -573,6 +606,27 @@ public interface Exp<T> {
      */
     default TimeExp castAsTime(DateTimeFormatter formatter) {
         return TimeExp1.mapVal("castAsTime", this.castAsStr(), s -> LocalTime.parse(s, formatter));
+    }
+
+    /**
+     * @since 0.16
+     */
+    default DateTimeExp castAsDateTime() {
+        return DateTimeExp1.mapVal("castAsDateTime", this.castAsStr(), LocalDateTime::parse);
+    }
+
+    /**
+     * @since 0.16
+     */
+    default DateTimeExp castAsDateTime(String format) {
+        return castAsDateTime(DateTimeFormatter.ofPattern(format));
+    }
+
+    /**
+     * @since 0.16
+     */
+    default DateTimeExp castAsDateTime(DateTimeFormatter formatter) {
+        return DateTimeExp1.mapVal("castAsDateTime", this.castAsStr(), s -> LocalDateTime.parse(s, formatter));
     }
 
     /**

@@ -8,6 +8,7 @@
 * #171 TimeExp
 * #173 Remove API deprecated since 0.12
 * #175 Optimize Exp.concat(..)
+* #179 DateTimeExp
 
 ## Release 0.15
 

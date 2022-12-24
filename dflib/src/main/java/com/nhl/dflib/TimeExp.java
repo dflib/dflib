@@ -42,7 +42,7 @@ public interface TimeExp extends Exp<LocalTime> {
     }
 
     default NumExp<Integer> millisecond() {
-        return IntExp1.mapVal("second", this, lt -> lt.get(ChronoField.MILLI_OF_SECOND));
+        return IntExp1.mapVal("millisecond", this, lt -> lt.get(ChronoField.MILLI_OF_SECOND));
     }
 
 
