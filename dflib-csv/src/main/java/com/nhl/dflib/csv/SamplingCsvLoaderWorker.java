@@ -4,7 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.csv.loader.ColumnBuilder;
+import com.nhl.dflib.csv.loader.CsvColumnBuilder;
 import com.nhl.dflib.accumulator.IntAccumulator;
 import org.apache.commons.csv.CSVRecord;
 
@@ -16,7 +16,7 @@ import java.util.Random;
  */
 class SamplingCsvLoaderWorker implements CsvLoaderWorker {
 
-    protected ColumnBuilder<?>[] columnBuilders;
+    protected CsvColumnBuilder<?>[] columnBuilders;
     protected Index columnIndex;
 
     protected int rowSampleSize;
@@ -25,7 +25,7 @@ class SamplingCsvLoaderWorker implements CsvLoaderWorker {
 
     SamplingCsvLoaderWorker(
             Index columnIndex,
-            ColumnBuilder<?>[] columnBuilders,
+            CsvColumnBuilder<?>[] columnBuilders,
             int rowSampleSize,
             Random rowsSampleRandom) {
 

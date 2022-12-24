@@ -21,6 +21,7 @@ import com.nhl.dflib.accumulator.LongHolder;
 import com.nhl.dflib.accumulator.ObjectAccumulator;
 import com.nhl.dflib.accumulator.ObjectConverter;
 import com.nhl.dflib.accumulator.ObjectHolder;
+import org.apache.commons.csv.CSVRecord;
 
 import java.util.List;
 
@@ -35,17 +36,17 @@ public class ColumnConfig {
     private String columnName;
     private ColumnType type;
 
-    private ObjectConverter<String, ?> objectConverter;
-    private IntConverter<String> intConverter;
-    private LongConverter<String> longConverter;
-    private DoubleConverter<String> doubleConverter;
-    private BooleanConverter<String> booleanConverter;
+    private ValueMapper<String, ?> objectMapper;
+    private IntValueMapper<String> intMapper;
+    private LongValueMapper<String> longMapper;
+    private DoubleValueMapper<String> doubleMapper;
+    private BooleanValueMapper<String> booleanMapper;
 
     private ColumnConfig() {
         columnPosition = -1;
     }
 
-    public static ColumnConfig[] normalize(Index columns, List<ColumnConfig> configs) {
+    public static ColumnConfig[] columnBuilders(Index columns, List<ColumnConfig> configs) {
         int w = columns.size();
         ColumnConfig[] normalized = new ColumnConfig[w];
 
@@ -66,18 +67,20 @@ public class ColumnConfig {
     }
 
     public static ColumnConfig objectColumn(int pos, ValueMapper<String, ?> mapper) {
+
         ColumnConfig config = new ColumnConfig();
         config.type = ColumnType.object;
         config.columnPosition = pos;
-        config.objectConverter = new ObjectConverter<>(mapper);
+        config.objectMapper = mapper;
         return config;
     }
 
     public static ColumnConfig objectColumn(String name, ValueMapper<String, ?> mapper) {
+
         ColumnConfig config = new ColumnConfig();
         config.type = ColumnType.object;
         config.columnName = name;
-        config.objectConverter = new ObjectConverter<>(mapper);
+        config.objectMapper = mapper;
         return config;
     }
 
@@ -93,7 +96,7 @@ public class ColumnConfig {
         ColumnConfig config = new ColumnConfig();
         config.type = ColumnType.intPrimitive;
         config.columnPosition = pos;
-        config.intConverter = new IntConverter<>(mapper);
+        config.intMapper = mapper;
         return config;
     }
 
@@ -101,7 +104,7 @@ public class ColumnConfig {
         ColumnConfig config = new ColumnConfig();
         config.type = ColumnType.intPrimitive;
         config.columnName = name;
-        config.intConverter = new IntConverter<>(mapper);
+        config.intMapper = mapper;
         return config;
     }
 
@@ -117,7 +120,7 @@ public class ColumnConfig {
         ColumnConfig config = new ColumnConfig();
         config.type = ColumnType.longPrimitive;
         config.columnPosition = pos;
-        config.longConverter = new LongConverter<>(mapper);
+        config.longMapper = mapper;
         return config;
     }
 
@@ -125,7 +128,7 @@ public class ColumnConfig {
         ColumnConfig config = new ColumnConfig();
         config.type = ColumnType.longPrimitive;
         config.columnName = name;
-        config.longConverter = new LongConverter<>(mapper);
+        config.longMapper = mapper;
         return config;
     }
 
@@ -141,7 +144,7 @@ public class ColumnConfig {
         ColumnConfig config = new ColumnConfig();
         config.type = ColumnType.doublePrimitive;
         config.columnPosition = pos;
-        config.doubleConverter = new DoubleConverter<>(mapper);
+        config.doubleMapper = mapper;
         return config;
     }
 
@@ -149,7 +152,7 @@ public class ColumnConfig {
         ColumnConfig config = new ColumnConfig();
         config.type = ColumnType.doublePrimitive;
         config.columnName = name;
-        config.doubleConverter = new DoubleConverter<>(mapper);
+        config.doubleMapper = mapper;
         return config;
     }
 
@@ -157,7 +160,7 @@ public class ColumnConfig {
         ColumnConfig config = new ColumnConfig();
         config.type = ColumnType.booleanPrimitive;
         config.columnPosition = pos;
-        config.booleanConverter = new BooleanConverter<>(BooleanValueMapper.fromString());
+        config.booleanMapper = BooleanValueMapper.fromString();
         return config;
     }
 
@@ -165,46 +168,63 @@ public class ColumnConfig {
         ColumnConfig config = new ColumnConfig();
         config.type = ColumnType.booleanPrimitive;
         config.columnName = name;
-        config.booleanConverter = new BooleanConverter<>(BooleanValueMapper.fromString());
+        config.booleanMapper = BooleanValueMapper.fromString();
         return config;
     }
 
-    public ColumnBuilder<?> createColumnBuilder(int columnPosition) {
+    public CsvColumnBuilder<?> createColumnBuilder(int csvPos) {
 
-        // using externally passed "columnPosition", as "this.columnPosition" may not be initialized (when column name
+        // using externally passed "csvPos", as "this.columnPosition" may not be initialized (when column name
         // was in use)
 
         switch (type) {
             case intPrimitive:
-                return new ColumnBuilder<>(intConverter, new IntAccumulator(), columnPosition);
+                return new CsvColumnBuilder<>(intConverter(csvPos), new IntAccumulator(), csvPos);
             case longPrimitive:
-                return new ColumnBuilder<>(longConverter, new LongAccumulator(), columnPosition);
+                return new CsvColumnBuilder<>(longConverter(csvPos), new LongAccumulator(), csvPos);
             case doublePrimitive:
-                return new ColumnBuilder<>(doubleConverter, new DoubleAccumulator(), columnPosition);
+                return new CsvColumnBuilder<>(doubleConverter(csvPos), new DoubleAccumulator(), csvPos);
             case booleanPrimitive:
-                return new ColumnBuilder<>(booleanConverter, new BooleanAccumulator(), columnPosition);
+                return new CsvColumnBuilder<>(boolConverter(csvPos), new BooleanAccumulator(), csvPos);
             default:
-                return new ColumnBuilder(objectConverter, new ObjectAccumulator<>(), columnPosition);
+                return new CsvColumnBuilder(objectConverter(csvPos), new ObjectAccumulator<>(), csvPos);
         }
     }
 
-    public CsvCell<?> createValueHolderColumn(int columnPosition) {
-
-        // using externally passed "columnPosition", as "this.columnPosition" may not be initialized (when column name
-        // was in use)
+    public CsvCell<?> createValueHolderColumn(int csvPos) {
 
         switch (type) {
             case intPrimitive:
-                return new CsvCell<>(intConverter, new IntHolder(), columnPosition);
+                return new CsvCell<>(intConverter(csvPos), new IntHolder());
             case longPrimitive:
-                return new CsvCell<>(longConverter, new LongHolder(), columnPosition);
+                return new CsvCell<>(longConverter(csvPos), new LongHolder());
             case doublePrimitive:
-                return new CsvCell<>(doubleConverter, new DoubleHolder(), columnPosition);
+                return new CsvCell<>(doubleConverter(csvPos), new DoubleHolder());
             case booleanPrimitive:
-                return new CsvCell<>(booleanConverter, new BooleanHolder(), columnPosition);
+                return new CsvCell<>(boolConverter(csvPos), new BooleanHolder());
             default:
-                return new CsvCell(objectConverter, new ObjectHolder(), columnPosition);
+                return new CsvCell<>(objectConverter(csvPos), new ObjectHolder());
         }
+    }
+
+    private IntConverter<CSVRecord> intConverter(int csvPos) {
+        return new IntConverter<>(r -> intMapper.map(r.get(csvPos)));
+    }
+
+    private LongConverter<CSVRecord> longConverter(int csvPos) {
+        return new LongConverter<>(r -> longMapper.map(r.get(csvPos)));
+    }
+
+    private DoubleConverter<CSVRecord> doubleConverter(int csvPos) {
+        return new DoubleConverter<>(r -> doubleMapper.map(r.get(csvPos)));
+    }
+
+    private BooleanConverter<CSVRecord> boolConverter(int csvPos) {
+        return new BooleanConverter<>(r -> booleanMapper.map(r.get(csvPos)));
+    }
+
+    private ObjectConverter<CSVRecord, ?> objectConverter(int csvPos) {
+        return new ObjectConverter<>(r -> objectMapper.map(r.get(csvPos)));
     }
 
     enum ColumnType {

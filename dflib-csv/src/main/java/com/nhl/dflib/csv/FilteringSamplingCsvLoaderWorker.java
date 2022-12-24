@@ -1,7 +1,7 @@
 package com.nhl.dflib.csv;
 
 import com.nhl.dflib.Index;
-import com.nhl.dflib.csv.loader.ColumnBuilder;
+import com.nhl.dflib.csv.loader.CsvColumnBuilder;
 import com.nhl.dflib.csv.loader.CsvCell;
 import org.apache.commons.csv.CSVRecord;
 
@@ -16,7 +16,7 @@ class FilteringSamplingCsvLoaderWorker extends SamplingCsvLoaderWorker {
 
     public FilteringSamplingCsvLoaderWorker(
             Index columnIndex,
-            ColumnBuilder<?>[] columns,
+            CsvColumnBuilder<?>[] columns,
             CsvCell<?>[] csvRow,
             Predicate<CsvCell<?>[]> csvRowFilter,
             int rowSampleSize,

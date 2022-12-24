@@ -10,8 +10,8 @@ import com.nhl.dflib.Series;
  */
 public class ColumnBuilder<R, T> {
 
-    private final ValueConverter<R, T> converter;
-    private final Accumulator<T> accumulator;
+    protected final ValueConverter<R, T> converter;
+    protected final Accumulator<T> accumulator;
 
     public ColumnBuilder(ValueConverter<R, T> converter, Accumulator<T> accumulator) {
         this.converter = converter;

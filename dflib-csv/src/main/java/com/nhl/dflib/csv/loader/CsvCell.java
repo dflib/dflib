@@ -13,18 +13,16 @@ import org.apache.commons.csv.CSVRecord;
  */
 public class CsvCell<T> {
 
-    private final ValueConverter<String, T> converter;
+    private final ValueConverter<CSVRecord, T> converter;
     private final ValueHolder<T> holder;
-    private final int csvColumnPosition;
 
-    public CsvCell(ValueConverter<String, T> converter, ValueHolder<T> holder, int csvColumnPosition) {
+    public CsvCell(ValueConverter<CSVRecord, T> converter, ValueHolder<T> holder) {
         this.converter = converter;
         this.holder = holder;
-        this.csvColumnPosition = csvColumnPosition;
     }
 
     public void set(CSVRecord record) {
-        converter.convertAndStore(record.get(csvColumnPosition), holder);
+        converter.convertAndStore(record, holder);
     }
 
     public void store(Accumulator<T> accumulator) {

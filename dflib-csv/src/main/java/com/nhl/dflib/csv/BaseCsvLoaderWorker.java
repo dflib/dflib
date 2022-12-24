@@ -3,17 +3,17 @@ package com.nhl.dflib.csv;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.csv.loader.ColumnBuilder;
+import com.nhl.dflib.csv.loader.CsvColumnBuilder;
 import org.apache.commons.csv.CSVRecord;
 
 import java.util.Iterator;
 
 class BaseCsvLoaderWorker implements CsvLoaderWorker {
 
-    protected final ColumnBuilder<?>[] columnBuilders;
+    protected final CsvColumnBuilder<?>[] columnBuilders;
     protected final Index columnIndex;
 
-    BaseCsvLoaderWorker(Index columnIndex, ColumnBuilder<?>[] columnBuilders) {
+    BaseCsvLoaderWorker(Index columnIndex, CsvColumnBuilder<?>[] columnBuilders) {
         this.columnIndex = columnIndex;
         this.columnBuilders = columnBuilders;
     }

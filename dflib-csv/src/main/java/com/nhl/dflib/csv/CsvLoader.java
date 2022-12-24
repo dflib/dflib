@@ -1,7 +1,7 @@
 package com.nhl.dflib.csv;
 
 import com.nhl.dflib.*;
-import com.nhl.dflib.csv.loader.ColumnBuilder;
+import com.nhl.dflib.csv.loader.CsvColumnBuilder;
 import com.nhl.dflib.csv.loader.ColumnConfig;
 import com.nhl.dflib.csv.loader.CsvCell;
 import com.nhl.dflib.csv.loader.RowFilterConfig;
@@ -467,7 +467,7 @@ public class CsvLoader {
                 return DataFrame.newFrame(columnMap.dfHeader).empty();
             }
 
-            ColumnConfig[] unfilteredColumns = ColumnConfig.normalize(columnMap.csvHeader, this.columns);
+            ColumnConfig[] unfilteredColumns = ColumnConfig.columnBuilders(columnMap.csvHeader, this.columns);
 
             CsvLoaderWorker worker = rowSampleSize > 0
                     ? samplingWorker(columnMap, unfilteredColumns)
@@ -609,10 +609,10 @@ public class CsvLoader {
             this.csvPositions = csvPositions;
         }
 
-        ColumnBuilder<?>[] createColumnBuilders(ColumnConfig[] csvColumns) {
+        CsvColumnBuilder<?>[] createColumnBuilders(ColumnConfig[] csvColumns) {
 
             int w = dfHeader.size();
-            ColumnBuilder<?>[] builders = new ColumnBuilder[w];
+            CsvColumnBuilder<?>[] builders = new CsvColumnBuilder[w];
 
             for (int i = 0; i < w; i++) {
                 builders[i] = csvColumns[csvPositions[i]].createColumnBuilder(csvPositions[i]);
