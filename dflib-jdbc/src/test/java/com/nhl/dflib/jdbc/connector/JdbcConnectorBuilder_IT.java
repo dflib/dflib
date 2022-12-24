@@ -2,7 +2,7 @@ package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.jdbc.Jdbc;
-import com.nhl.dflib.jdbc.connector.loader.JdbcColumnBuilder;
+import com.nhl.dflib.jdbc.connector.loader.JdbcSeriesBuilder;
 import com.nhl.dflib.jdbc.connector.loader.JdbcColumnBuilderFactory;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
 import com.nhl.dflib.junit5.DataFrameAsserts;
@@ -110,21 +110,21 @@ public class JdbcConnectorBuilder_IT extends BaseDbTest {
                 .expectRow(0, 1L, d, t, ts);
     }
 
-    static JdbcColumnBuilder<String> dateAccum(int pos) {
+    static JdbcSeriesBuilder<String> dateAccum(int pos) {
         return JdbcColumnBuilderFactory.fromJdbcFunction(rs -> {
             Date date = rs.getDate(pos);
             return date != null ? date.toLocalDate().toString() : null;
         });
     }
 
-    static JdbcColumnBuilder<String> timeAccum(int pos) {
+    static JdbcSeriesBuilder<String> timeAccum(int pos) {
         return JdbcColumnBuilderFactory.fromJdbcFunction(rs -> {
             Time time = rs.getTime(pos, Calendar.getInstance());
             return time != null ? time.toLocalTime().toString() : null;
         });
     }
 
-    static JdbcColumnBuilder<String> timestampAccum(int pos) {
+    static JdbcSeriesBuilder<String> timestampAccum(int pos) {
         return JdbcColumnBuilderFactory.fromJdbcFunction(rs -> {
             Timestamp timestamp = rs.getTimestamp(pos, Calendar.getInstance());
             return timestamp != null ? timestamp.toLocalDateTime().toString() : null;

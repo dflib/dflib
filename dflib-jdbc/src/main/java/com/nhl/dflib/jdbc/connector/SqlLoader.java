@@ -3,7 +3,7 @@ package com.nhl.dflib.jdbc.connector;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.jdbc.connector.loader.JdbcColumnBuilder;
+import com.nhl.dflib.jdbc.connector.loader.JdbcSeriesBuilder;
 import com.nhl.dflib.sample.Sampler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,7 +113,7 @@ public class SqlLoader {
     protected DataFrame loadDataFrame(ResultSet rs) throws SQLException {
         Index columns = createIndex(rs);
 
-        JdbcColumnBuilder<?>[] builders = createColumnBuilders(rs);
+        JdbcSeriesBuilder<?>[] builders = createColumnBuilders(rs);
 
         SqlLoaderWorker worker = rowSampleSize > 0
                 ? new SamplingSqlLoaderWorker(columns, builders, maxRows, rowSampleSize, rowsSampleRandom)
@@ -135,10 +135,10 @@ public class SqlLoader {
         return Index.forLabels(names);
     }
 
-    protected JdbcColumnBuilder<?>[] createColumnBuilders(ResultSet resultSet) throws SQLException {
+    protected JdbcSeriesBuilder<?>[] createColumnBuilders(ResultSet resultSet) throws SQLException {
         ResultSetMetaData rsmd = resultSet.getMetaData();
         int w = rsmd.getColumnCount();
-        JdbcColumnBuilder<?>[] builders = new JdbcColumnBuilder[w];
+        JdbcSeriesBuilder<?>[] builders = new JdbcSeriesBuilder[w];
 
         for (int i = 0; i < w; i++) {
             int jdbcPos = i + 1;

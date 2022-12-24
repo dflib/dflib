@@ -8,7 +8,7 @@ import java.util.Arrays;
 /**
  * @since 0.6
  */
-public class BooleanAccumulator implements Accumulator<Boolean> {
+public class BooleanAccumulator implements ValueAccum<Boolean> {
 
     // TODO: bitmap?
     private boolean[] data;
@@ -41,15 +41,15 @@ public class BooleanAccumulator implements Accumulator<Boolean> {
      * @since 0.8
      */
     @Override
-    public void add(Boolean v) {
-        addBoolean(v != null ? v : false);
+    public void push(Boolean v) {
+        pushBoolean(v != null ? v : false);
     }
 
     /**
      * @since 0.8
      */
     @Override
-    public void addBoolean(boolean value) {
+    public void pushBoolean(boolean value) {
 
         if (size == data.length) {
             expand(data.length * 2);
@@ -59,12 +59,12 @@ public class BooleanAccumulator implements Accumulator<Boolean> {
     }
 
     @Override
-    public void set(int pos, Boolean v) {
-        setBoolean(pos, v != null ? v : false);
+    public void replace(int pos, Boolean v) {
+        replaceBoolean(pos, v != null ? v : false);
     }
 
     @Override
-    public void setBoolean(int pos, boolean value) {
+    public void replaceBoolean(int pos, boolean value) {
 
         if (pos >= size) {
             size = pos + 1;

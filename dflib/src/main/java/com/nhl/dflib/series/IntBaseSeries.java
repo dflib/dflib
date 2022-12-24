@@ -87,7 +87,7 @@ public abstract class IntBaseSeries implements IntSeries {
         for (int i = 0; i < len; i++) {
             int v = getInt(i);
             if (p.test(v)) {
-                filtered.addInt(v);
+                filtered.pushInt(v);
             }
         }
 
@@ -107,7 +107,7 @@ public abstract class IntBaseSeries implements IntSeries {
 
         for (int i = 0; i < size(); i++) {
             if (positions.getBoolean(i)) {
-                data.addInt(getInt(i));
+                data.pushInt(getInt(i));
             }
         }
 
@@ -305,7 +305,7 @@ public abstract class IntBaseSeries implements IntSeries {
 
         for (int i = 0; i < len; i++) {
             if (predicate.test(getInt(i))) {
-                index.addInt(i);
+                index.pushInt(i);
             }
         }
 
@@ -324,7 +324,7 @@ public abstract class IntBaseSeries implements IntSeries {
         BooleanAccumulator matches = new BooleanAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            matches.addBoolean(predicate.test(getInt(i)));
+            matches.pushBoolean(predicate.test(getInt(i)));
         }
 
         return matches.toSeries();
@@ -357,11 +357,11 @@ public abstract class IntBaseSeries implements IntSeries {
         IntAccumulator ints = new IntAccumulator(s);
 
         for (int i = 0; i < r; i++) {
-            ints.addInt(condition.getBoolean(i) ? with : getInt(i));
+            ints.pushInt(condition.getBoolean(i) ? with : getInt(i));
         }
 
         for (int i = r; i < s; i++) {
-            ints.addInt(getInt(i));
+            ints.pushInt(getInt(i));
         }
 
         return ints.toSeries();
@@ -374,7 +374,7 @@ public abstract class IntBaseSeries implements IntSeries {
         IntAccumulator ints = new IntAccumulator(s);
 
         for (int i = 0; i < r; i++) {
-            ints.addInt(condition.getBoolean(i) ? getInt(i) : with);
+            ints.pushInt(condition.getBoolean(i) ? getInt(i) : with);
         }
 
         if (s > r) {
@@ -390,11 +390,11 @@ public abstract class IntBaseSeries implements IntSeries {
         ObjectAccumulator<Integer> values = new ObjectAccumulator<>(s);
 
         for (int i = 0; i < r; i++) {
-            values.add(condition.getBoolean(i) ? null : getInt(i));
+            values.push(condition.getBoolean(i) ? null : getInt(i));
         }
 
         for (int i = r; i < s; i++) {
-            values.add(getInt(i));
+            values.push(getInt(i));
         }
 
         return values.toSeries();
@@ -406,7 +406,7 @@ public abstract class IntBaseSeries implements IntSeries {
         ObjectAccumulator<Integer> values = new ObjectAccumulator<>(s);
 
         for (int i = 0; i < r; i++) {
-            values.add(condition.getBoolean(i) ? getInt(i) : null);
+            values.push(condition.getBoolean(i) ? getInt(i) : null);
         }
 
         if (s > r) {
@@ -441,11 +441,11 @@ public abstract class IntBaseSeries implements IntSeries {
             IntSeries anotherInt = (IntSeries) another;
 
             for (int i = 0; i < s; i++) {
-                bools.addBoolean(getInt(i) == anotherInt.getInt(i));
+                bools.pushBoolean(getInt(i) == anotherInt.getInt(i));
             }
         } else {
             for (int i = 0; i < s; i++) {
-                bools.addBoolean(Objects.equals(get(i), another.get(i)));
+                bools.pushBoolean(Objects.equals(get(i), another.get(i)));
             }
         }
 
@@ -466,11 +466,11 @@ public abstract class IntBaseSeries implements IntSeries {
             IntSeries anotherInt = (IntSeries) another;
 
             for (int i = 0; i < s; i++) {
-                bools.addBoolean(getInt(i) != anotherInt.getInt(i));
+                bools.pushBoolean(getInt(i) != anotherInt.getInt(i));
             }
         } else {
             for (int i = 0; i < s; i++) {
-                bools.addBoolean(!Objects.equals(get(i), another.get(i)));
+                bools.pushBoolean(!Objects.equals(get(i), another.get(i)));
             }
         }
 
@@ -491,7 +491,7 @@ public abstract class IntBaseSeries implements IntSeries {
 
         IntAccumulator unique = new UniqueIntAccumulator();
         for (int i = 0; i < size; i++) {
-            unique.add(get(i));
+            unique.push(get(i));
         }
 
         return unique.size() < size() ? unique.toSeries() : this;

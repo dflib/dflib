@@ -30,7 +30,7 @@ public class WindowMapper {
             ObjectAccumulator<T> data = new ObjectAccumulator<>(h);
             for (int i = 0; i < h; i++) {
                 // TODO: recreating DataFrame for every row.. A hot spot?
-                data.add(aggregator.eval(range.selectRows(df, i)).get(0));
+                data.push(aggregator.eval(range.selectRows(df, i)).get(0));
             }
 
             return data.toSeries();
@@ -53,7 +53,7 @@ public class WindowMapper {
 
             // fill positions in the index with the singe aggregated value
             for (int j = 0; j < ih; j++) {
-                data.set(index.getInt(j), groupData.get(j));
+                data.replace(index.getInt(j), groupData.get(j));
             }
         }
 

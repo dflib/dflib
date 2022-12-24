@@ -27,7 +27,7 @@ public interface IntSeries extends Series<Integer> {
         int len = series.size();
         IntAccumulator a = new IntAccumulator(len);
         for (int i = 0; i < len; i++) {
-            a.addInt(converter.map(series.get(i)));
+            a.pushInt(converter.map(series.get(i)));
         }
 
         return a.toSeries();
@@ -170,7 +170,7 @@ public interface IntSeries extends Series<Integer> {
         IntAccumulator accumulator = new IntAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addInt(this.getInt(i) + s.getInt(i));
+            accumulator.pushInt(this.getInt(i) + s.getInt(i));
         }
 
         return accumulator.toSeries();
@@ -186,7 +186,7 @@ public interface IntSeries extends Series<Integer> {
         IntAccumulator accumulator = new IntAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addInt(this.getInt(i) - s.getInt(i));
+            accumulator.pushInt(this.getInt(i) - s.getInt(i));
         }
 
         return accumulator.toSeries();
@@ -202,7 +202,7 @@ public interface IntSeries extends Series<Integer> {
         IntAccumulator accumulator = new IntAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addInt(this.getInt(i) * s.getInt(i));
+            accumulator.pushInt(this.getInt(i) * s.getInt(i));
         }
 
         return accumulator.toSeries();
@@ -218,7 +218,7 @@ public interface IntSeries extends Series<Integer> {
         IntAccumulator accumulator = new IntAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addInt(this.getInt(i) / s.getInt(i));
+            accumulator.pushInt(this.getInt(i) / s.getInt(i));
         }
 
         return accumulator.toSeries();
@@ -234,7 +234,7 @@ public interface IntSeries extends Series<Integer> {
         IntAccumulator accumulator = new IntAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addInt(this.getInt(i) % s.getInt(i));
+            accumulator.pushInt(this.getInt(i) % s.getInt(i));
         }
 
         return accumulator.toSeries();
@@ -248,7 +248,7 @@ public interface IntSeries extends Series<Integer> {
         BooleanAccumulator accumulator = new BooleanAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addBoolean(this.getInt(i) < s.getInt(i));
+            accumulator.pushBoolean(this.getInt(i) < s.getInt(i));
         }
 
         return accumulator.toSeries();
@@ -262,7 +262,7 @@ public interface IntSeries extends Series<Integer> {
         BooleanAccumulator accumulator = new BooleanAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addBoolean(this.getInt(i) <= s.getInt(i));
+            accumulator.pushBoolean(this.getInt(i) <= s.getInt(i));
         }
 
         return accumulator.toSeries();
@@ -276,7 +276,7 @@ public interface IntSeries extends Series<Integer> {
         BooleanAccumulator accumulator = new BooleanAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addBoolean(this.getInt(i) > s.getInt(i));
+            accumulator.pushBoolean(this.getInt(i) > s.getInt(i));
         }
 
         return accumulator.toSeries();
@@ -290,7 +290,7 @@ public interface IntSeries extends Series<Integer> {
         BooleanAccumulator accumulator = new BooleanAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addBoolean(this.getInt(i) >= s.getInt(i));
+            accumulator.pushBoolean(this.getInt(i) >= s.getInt(i));
         }
 
         return accumulator.toSeries();

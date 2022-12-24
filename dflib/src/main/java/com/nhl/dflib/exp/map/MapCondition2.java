@@ -31,7 +31,7 @@ public class MapCondition2<L, R> extends Condition2<L, R> {
             for (int i = 0; i < len; i++) {
                 L l = ls.get(i);
                 R r = rs.get(i);
-                accum.addBoolean(l != null && r != null ? predicate.test(l, r) : false);
+                accum.pushBoolean(l != null && r != null ? predicate.test(l, r) : false);
             }
 
             return accum.toSeries();

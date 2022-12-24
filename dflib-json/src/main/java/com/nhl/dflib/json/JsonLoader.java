@@ -8,7 +8,7 @@ import com.nhl.dflib.ColumnDataFrame;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.accumulator.Accumulator;
+import com.nhl.dflib.accumulator.ValueAccum;
 import com.nhl.dflib.accumulator.ObjectAccumulator;
 
 import java.io.Reader;
@@ -69,18 +69,18 @@ public class JsonLoader {
 
     protected DataFrame load(DocumentContext context) {
         List<Map<String, Object>> parsed = context.read(pathExpression);
-        LinkedHashMap<String, Accumulator<Object>> columns = loadColumns(parsed);
+        LinkedHashMap<String, ValueAccum<Object>> columns = loadColumns(parsed);
         return toDataFrame(columns);
     }
 
-    protected LinkedHashMap<String, Accumulator<Object>> loadColumns(List<Map<String, Object>> parsed) {
+    protected LinkedHashMap<String, ValueAccum<Object>> loadColumns(List<Map<String, Object>> parsed) {
 
         // Different maps in the list can have different sets of keys...
         // Algorithm below aligns values by row..
 
         int height = parsed.size();
         int offset = 0;
-        LinkedHashMap<String, Accumulator<Object>> columns = new LinkedHashMap<>();
+        LinkedHashMap<String, ValueAccum<Object>> columns = new LinkedHashMap<>();
         for (Object row : parsed) {
 
             if (row instanceof Map) {
@@ -95,27 +95,27 @@ public class JsonLoader {
         return columns;
     }
 
-    protected void loadRowAsScalar(Object row, LinkedHashMap<String, Accumulator<Object>> columns, int height, int offset) {
-        columns.computeIfAbsent(DEFAULT_SCALAR_COLUMN, label -> createdColumnAccumulator(height, offset)).add(row);
+    protected void loadRowAsScalar(Object row, LinkedHashMap<String, ValueAccum<Object>> columns, int height, int offset) {
+        columns.computeIfAbsent(DEFAULT_SCALAR_COLUMN, label -> createdColumnAccumulator(height, offset)).push(row);
     }
 
-    protected void loadRowAsMap(Map<String, Object> row, LinkedHashMap<String, Accumulator<Object>> columns, int height, int offset) {
+    protected void loadRowAsMap(Map<String, Object> row, LinkedHashMap<String, ValueAccum<Object>> columns, int height, int offset) {
 
         for (Map.Entry<String, Object> e : row.entrySet()) {
-            columns.computeIfAbsent(e.getKey(), label -> createdColumnAccumulator(height, offset)).add(e.getValue());
+            columns.computeIfAbsent(e.getKey(), label -> createdColumnAccumulator(height, offset)).push(e.getValue());
         }
 
         // columns not in this record must be filled with nulls
         if (columns.size() > row.size()) {
-            for (Map.Entry<String, Accumulator<Object>> e : columns.entrySet()) {
+            for (Map.Entry<String, ValueAccum<Object>> e : columns.entrySet()) {
                 if (!row.containsKey(e.getKey())) {
-                    e.getValue().add(null);
+                    e.getValue().push(null);
                 }
             }
         }
     }
 
-    protected DataFrame toDataFrame(LinkedHashMap<String, Accumulator<Object>> columnData) {
+    protected DataFrame toDataFrame(LinkedHashMap<String, ValueAccum<Object>> columnData) {
         Index columnsIndex = Index.forLabels(columnData.keySet().toArray(new String[0]));
         int w = columnData.size();
         Series[] series = new Series[w];
@@ -127,11 +127,11 @@ public class JsonLoader {
         return new ColumnDataFrame(columnsIndex, series);
     }
 
-    protected Accumulator<Object> createdColumnAccumulator(int length, int offset) {
-        Accumulator<Object> column = new ObjectAccumulator<>(length);
+    protected ValueAccum<Object> createdColumnAccumulator(int length, int offset) {
+        ValueAccum<Object> column = new ObjectAccumulator<>(length);
 
         for (int i = 0; i < offset; i++) {
-            column.add(null);
+            column.push(null);
         }
 
         return column;

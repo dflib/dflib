@@ -35,7 +35,7 @@ public class MapExpScalar2<L, R, T> extends ExpScalar2<L, R, T> {
             ObjectAccumulator<T> accum = new ObjectAccumulator<>(len);
             for (int i = 0; i < len; i++) {
                 L l = left.get(i);
-                accum.add(l != null ? op.apply(l, right) : null);
+                accum.push(l != null ? op.apply(l, right) : null);
             }
 
             return accum.toSeries();

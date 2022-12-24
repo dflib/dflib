@@ -13,27 +13,22 @@ public class LongHolder implements ValueHolder<Long> {
     }
 
     @Override
-    public void set(Long v) {
+    public void push(Long v) {
         this.v = v != null ? v : 0L;
     }
 
     @Override
-    public void store(Accumulator<Long> accumulator) {
-        accumulator.addLong(v);
+    public void store(ValueAccum<Long> to) {
+        to.pushLong(v);
     }
 
     @Override
-    public void store(int pos, Accumulator<Long> accumulator) {
-        accumulator.setLong(pos, v);
+    public void store(ValueAccum<Long> to, int pos) {
+        to.replaceLong(pos, v);
     }
 
     @Override
-    public long getLong() {
-        return v;
-    }
-
-    @Override
-    public void setLong(long v) {
+    public void pushLong(long v) {
         this.v = v;
     }
 }

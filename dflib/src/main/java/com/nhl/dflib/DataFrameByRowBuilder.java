@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.accumulator.Accumulator;
+import com.nhl.dflib.accumulator.ValueAccum;
 
 /**
  * Assembles a DataFrame row by row. Created indirectly inside {@link DataFrameBuilder#addRow(Object...)}.
@@ -10,9 +10,9 @@ import com.nhl.dflib.accumulator.Accumulator;
 public class DataFrameByRowBuilder {
 
     private final Index columnsIndex;
-    private final Accumulator[] columnBuilders;
+    private final ValueAccum[] columnBuilders;
 
-    protected DataFrameByRowBuilder(Index columnsIndex, Accumulator<?>[] columnBuilders) {
+    protected DataFrameByRowBuilder(Index columnsIndex, ValueAccum<?>[] columnBuilders) {
         this.columnsIndex = columnsIndex;
         this.columnBuilders = columnBuilders;
     }
@@ -26,7 +26,7 @@ public class DataFrameByRowBuilder {
         }
 
         for (int i = 0; i < w; i++) {
-            columnBuilders[i].add(row[i]);
+            columnBuilders[i].push(row[i]);
         }
 
         return this;

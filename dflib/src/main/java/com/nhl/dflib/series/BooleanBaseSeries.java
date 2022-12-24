@@ -85,7 +85,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
         for (int i = 0; i < size(); i++) {
             if (positions.getBoolean(i)) {
-                data.addBoolean(getBoolean(i));
+                data.pushBoolean(getBoolean(i));
             }
         }
 
@@ -236,7 +236,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
         for (int i = 0; i < len; i++) {
             if (getBoolean(i)) {
-                filtered.addInt(i);
+                filtered.pushInt(i);
             }
         }
 
@@ -251,7 +251,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
         for (int i = 0; i < len; i++) {
             if (!getBoolean(i)) {
-                filtered.addInt(i);
+                filtered.pushInt(i);
             }
         }
 
@@ -266,7 +266,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
         for (int i = 0; i < len; i++) {
             if (predicate.test(get(i))) {
-                index.addInt(i);
+                index.pushInt(i);
             }
         }
 
@@ -280,7 +280,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         BooleanAccumulator matches = new BooleanAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            matches.addBoolean(predicate.test(get(i)));
+            matches.pushBoolean(predicate.test(get(i)));
         }
 
         return matches.toSeries();
@@ -308,11 +308,11 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         BooleanAccumulator bools = new BooleanAccumulator(s);
 
         for (int i = 0; i < r; i++) {
-            bools.addBoolean(condition.getBoolean(i) ? with : getBoolean(i));
+            bools.pushBoolean(condition.getBoolean(i) ? with : getBoolean(i));
         }
 
         for (int i = r; i < s; i++) {
-            bools.addBoolean(getBoolean(i));
+            bools.pushBoolean(getBoolean(i));
         }
 
         return bools.toSeries();
@@ -325,7 +325,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         BooleanAccumulator bools = new BooleanAccumulator(s);
 
         for (int i = 0; i < r; i++) {
-            bools.addBoolean(condition.getBoolean(i) ? getBoolean(i) : with);
+            bools.pushBoolean(condition.getBoolean(i) ? getBoolean(i) : with);
         }
 
         if (s > r) {
@@ -341,11 +341,11 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         ObjectAccumulator<Boolean> values = new ObjectAccumulator<>(s);
 
         for (int i = 0; i < r; i++) {
-            values.add(condition.getBoolean(i) ? null : getBoolean(i));
+            values.push(condition.getBoolean(i) ? null : getBoolean(i));
         }
 
         for (int i = r; i < s; i++) {
-            values.add(getBoolean(i));
+            values.push(getBoolean(i));
         }
 
         return values.toSeries();
@@ -357,7 +357,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         ObjectAccumulator<Boolean> values = new ObjectAccumulator<>(s);
 
         for (int i = 0; i < r; i++) {
-            values.add(condition.getBoolean(i) ? getBoolean(i) : null);
+            values.push(condition.getBoolean(i) ? getBoolean(i) : null);
         }
 
         if (s > r) {
@@ -383,11 +383,11 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
             BooleanSeries anotherBool = (BooleanSeries) another;
 
             for (int i = 0; i < s; i++) {
-                bools.addBoolean(getBoolean(i) == anotherBool.getBoolean(i));
+                bools.pushBoolean(getBoolean(i) == anotherBool.getBoolean(i));
             }
         } else {
             for (int i = 0; i < s; i++) {
-                bools.addBoolean(Objects.equals(get(i), another.get(i)));
+                bools.pushBoolean(Objects.equals(get(i), another.get(i)));
             }
         }
 
@@ -408,11 +408,11 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
             BooleanSeries anotherBool = (BooleanSeries) another;
 
             for (int i = 0; i < s; i++) {
-                bools.addBoolean(getBoolean(i) != anotherBool.getBoolean(i));
+                bools.pushBoolean(getBoolean(i) != anotherBool.getBoolean(i));
             }
         } else {
             for (int i = 0; i < s; i++) {
-                bools.addBoolean(!Objects.equals(get(i), another.get(i)));
+                bools.pushBoolean(!Objects.equals(get(i), another.get(i)));
             }
         }
 

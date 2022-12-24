@@ -3,17 +3,17 @@ package com.nhl.dflib.csv;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.csv.loader.CsvColumnBuilder;
+import com.nhl.dflib.csv.loader.CsvSeriesBuilder;
 import org.apache.commons.csv.CSVRecord;
 
 import java.util.Iterator;
 
 class BaseCsvLoaderWorker implements CsvLoaderWorker {
 
-    protected final CsvColumnBuilder<?>[] columnBuilders;
+    protected final CsvSeriesBuilder<?>[] columnBuilders;
     protected final Index columnIndex;
 
-    BaseCsvLoaderWorker(Index columnIndex, CsvColumnBuilder<?>[] columnBuilders) {
+    BaseCsvLoaderWorker(Index columnIndex, CsvSeriesBuilder<?>[] columnBuilders) {
         this.columnIndex = columnIndex;
         this.columnBuilders = columnBuilders;
     }
@@ -35,7 +35,7 @@ class BaseCsvLoaderWorker implements CsvLoaderWorker {
         int width = columnIndex.size();
         Series<?>[] columns = new Series[width];
         for (int i = 0; i < width; i++) {
-            columns[i] = columnBuilders[i].toColumn();
+            columns[i] = columnBuilders[i].toSeries();
         }
 
         return DataFrame.newFrame(columnIndex).columns(columns);
@@ -43,7 +43,7 @@ class BaseCsvLoaderWorker implements CsvLoaderWorker {
 
     protected void addRow(int width, CSVRecord row) {
         for (int i = 0; i < width; i++) {
-            columnBuilders[i].convertAndAdd(row);
+            columnBuilders[i].extract(row);
         }
     }
 }

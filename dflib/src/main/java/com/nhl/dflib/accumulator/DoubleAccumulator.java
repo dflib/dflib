@@ -11,7 +11,7 @@ import java.util.Arrays;
  *
  * @since 0.6
  */
-public class DoubleAccumulator implements Accumulator<Double> {
+public class DoubleAccumulator implements ValueAccum<Double> {
 
     private double[] data;
     private int size;
@@ -43,15 +43,15 @@ public class DoubleAccumulator implements Accumulator<Double> {
      * @since 0.8
      */
     @Override
-    public void add(Double v) {
-        addDouble(v != null ? v : 0.);
+    public void push(Double v) {
+        pushDouble(v != null ? v : 0.);
     }
 
     /**
      * @since 0.8
      */
     @Override
-    public void addDouble(double value) {
+    public void pushDouble(double value) {
 
         if (size == data.length) {
             expand(data.length * 2);
@@ -61,12 +61,12 @@ public class DoubleAccumulator implements Accumulator<Double> {
     }
 
     @Override
-    public void set(int pos, Double v) {
-        setDouble(pos, v != null ? v : 0.);
+    public void replace(int pos, Double v) {
+        replaceDouble(pos, v != null ? v : 0.);
     }
 
     @Override
-    public void setDouble(int pos, double value) {
+    public void replaceDouble(int pos, double value) {
 
         if (pos >= size) {
             size = pos + 1;

@@ -92,7 +92,7 @@ public interface ValueMaker<T> {
         ObjectAccumulator ml = new ObjectAccumulator<>(len);
 
         for (int j = 0; j < len; j++) {
-            ml.add(get());
+            ml.push(get());
         }
 
         return ml.toSeries().materialize();
@@ -103,7 +103,7 @@ public interface ValueMaker<T> {
         BooleanAccumulator vals = new BooleanAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            vals.add((Boolean) get());
+            vals.push((Boolean) get());
         }
 
         return vals.toSeries();
@@ -114,7 +114,7 @@ public interface ValueMaker<T> {
         IntAccumulator ints = new IntAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            ints.add((Integer) get());
+            ints.push((Integer) get());
         }
 
         return ints.toSeries();
@@ -125,7 +125,7 @@ public interface ValueMaker<T> {
         LongAccumulator vals = new LongAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            vals.add((Long) get());
+            vals.push((Long) get());
         }
 
         return vals.toSeries();
@@ -136,7 +136,7 @@ public interface ValueMaker<T> {
         DoubleAccumulator ds = new DoubleAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            ds.add((Double) get());
+            ds.push((Double) get());
         }
 
         return ds.toSeries();

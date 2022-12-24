@@ -35,7 +35,7 @@ public class SeriesGrouper<T> {
             // here
 
             if (key != null) {
-                ((IntAccumulator) groups.computeIfAbsent(key, k -> new IntAccumulator())).addInt(i);
+                ((IntAccumulator) groups.computeIfAbsent(key, k -> new IntAccumulator())).pushInt(i);
             }
         }
 

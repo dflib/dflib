@@ -20,15 +20,15 @@ public class UniqueDoubleAccumulator extends DoubleAccumulator {
     }
 
     @Override
-    public void addDouble(double value) {
+    public void pushDouble(double value) {
 
         if (seen.add(value)) {
-            super.addDouble(value);
+            super.pushDouble(value);
         }
     }
 
     @Override
-    public void setDouble(int pos, double value) {
+    public void replaceDouble(int pos, double value) {
         throw new UnsupportedOperationException("'set' operation is undefined for unique accumulator");
     }
 }

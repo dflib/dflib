@@ -20,15 +20,15 @@ public class UniqueLongAccumulator extends LongAccumulator {
     }
 
     @Override
-    public void addLong(long value) {
+    public void pushLong(long value) {
 
         if (seen.add(value)) {
-            super.addLong(value);
+            super.pushLong(value);
         }
     }
 
     @Override
-    public void setLong(int pos, long value) {
+    public void replaceLong(int pos, long value) {
         throw new UnsupportedOperationException("'set' operation is undefined for unique accumulator");
     }
 }

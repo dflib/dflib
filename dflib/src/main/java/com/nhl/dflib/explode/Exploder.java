@@ -3,7 +3,7 @@ package com.nhl.dflib.explode;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.accumulator.Accumulator;
+import com.nhl.dflib.accumulator.ValueAccum;
 import com.nhl.dflib.accumulator.IntAccumulator;
 import com.nhl.dflib.accumulator.ObjectAccumulator;
 
@@ -20,7 +20,7 @@ public class Exploder {
 
     private final int columnPos;
     private final DataFrame srcDF;
-    private final Accumulator<Object> explodedAccum;
+    private final ValueAccum<Object> explodedAccum;
     private final IntAccumulator indexAccum;
 
     protected Exploder(int columnPos, DataFrame srcDF) {
@@ -55,20 +55,20 @@ public class Exploder {
 
             Object v = toExplode.get(i);
             if (v == null) {
-                explodedAccum.add(null);
-                indexAccum.add(i);
+                explodedAccum.push(null);
+                indexAccum.push(i);
             } else if (v instanceof Iterable) {
 
                 // empty iterable should generate a single null row
                 Iterator<?> it = ((Iterable) v).iterator();
 
                 if (!it.hasNext()) {
-                    explodedAccum.add(null);
-                    indexAccum.add(i);
+                    explodedAccum.push(null);
+                    indexAccum.push(i);
                 } else {
                     while (it.hasNext()) {
-                        explodedAccum.add(it.next());
-                        indexAccum.add(i);
+                        explodedAccum.push(it.next());
+                        indexAccum.push(i);
                     }
                 }
 
@@ -77,8 +77,8 @@ public class Exploder {
             }
             // scalar
             else {
-                explodedAccum.add(v);
-                indexAccum.add(i);
+                explodedAccum.push(v);
+                indexAccum.push(i);
             }
         }
     }
@@ -90,12 +90,12 @@ public class Exploder {
 
             // empty array should generate a single null row
             if (a.length == 0) {
-                explodedAccum.add(null);
-                indexAccum.add(i);
+                explodedAccum.push(null);
+                indexAccum.push(i);
             } else {
                 for (Object sv : a) {
-                    explodedAccum.add(sv);
-                    indexAccum.add(i);
+                    explodedAccum.push(sv);
+                    indexAccum.push(i);
                 }
             }
         } else if (array instanceof int[]) {
@@ -103,12 +103,12 @@ public class Exploder {
 
             // empty array should generate a single null row
             if (a.length == 0) {
-                explodedAccum.add(null);
-                indexAccum.add(i);
+                explodedAccum.push(null);
+                indexAccum.push(i);
             } else {
                 for (int sv : a) {
-                    explodedAccum.add(sv);
-                    indexAccum.add(i);
+                    explodedAccum.push(sv);
+                    indexAccum.push(i);
                 }
             }
         } else if (array instanceof double[]) {
@@ -116,12 +116,12 @@ public class Exploder {
 
             // empty array should generate a single null row
             if (a.length == 0) {
-                explodedAccum.add(null);
-                indexAccum.add(i);
+                explodedAccum.push(null);
+                indexAccum.push(i);
             } else {
                 for (double sv : a) {
-                    explodedAccum.add(sv);
-                    indexAccum.add(i);
+                    explodedAccum.push(sv);
+                    indexAccum.push(i);
                 }
             }
         } else if (array instanceof long[]) {
@@ -129,12 +129,12 @@ public class Exploder {
 
             // empty array should generate a single null row
             if (a.length == 0) {
-                explodedAccum.add(null);
-                indexAccum.add(i);
+                explodedAccum.push(null);
+                indexAccum.push(i);
             } else {
                 for (long sv : a) {
-                    explodedAccum.add(sv);
-                    indexAccum.add(i);
+                    explodedAccum.push(sv);
+                    indexAccum.push(i);
                 }
             }
         } else if (array instanceof boolean[]) {
@@ -142,12 +142,12 @@ public class Exploder {
 
             // empty array should generate a single null row
             if (a.length == 0) {
-                explodedAccum.add(null);
-                indexAccum.add(i);
+                explodedAccum.push(null);
+                indexAccum.push(i);
             } else {
                 for (boolean sv : a) {
-                    explodedAccum.add(sv);
-                    indexAccum.add(i);
+                    explodedAccum.push(sv);
+                    indexAccum.push(i);
                 }
             }
         }
@@ -156,12 +156,12 @@ public class Exploder {
 
             // empty array should generate a single null row
             if (a.length == 0) {
-                explodedAccum.add(null);
-                indexAccum.add(i);
+                explodedAccum.push(null);
+                indexAccum.push(i);
             } else {
                 for (byte sv : a) {
-                    explodedAccum.add(sv);
-                    indexAccum.add(i);
+                    explodedAccum.push(sv);
+                    indexAccum.push(i);
                 }
             }
         }

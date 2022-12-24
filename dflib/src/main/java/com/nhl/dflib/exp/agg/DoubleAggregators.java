@@ -46,10 +46,10 @@ public class DoubleAggregators {
         for (; i < h; i++) {
             Number next = s.get(i);
             if (next == null) {
-                accum.add(null);
+                accum.push(null);
             } else {
                 runningTotal = next.doubleValue();
-                accum.add(runningTotal);
+                accum.push(runningTotal);
                 i++;
                 break;
             }
@@ -59,10 +59,10 @@ public class DoubleAggregators {
 
             Number next = s.get(i);
             if (next == null) {
-                accum.add(null);
+                accum.push(null);
             } else {
                 runningTotal += next.doubleValue();
-                accum.add(runningTotal);
+                accum.push(runningTotal);
             }
         }
 

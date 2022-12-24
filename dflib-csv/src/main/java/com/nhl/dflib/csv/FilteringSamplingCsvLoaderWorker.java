@@ -1,7 +1,7 @@
 package com.nhl.dflib.csv;
 
 import com.nhl.dflib.Index;
-import com.nhl.dflib.csv.loader.CsvColumnBuilder;
+import com.nhl.dflib.csv.loader.CsvSeriesBuilder;
 import com.nhl.dflib.csv.loader.CsvCell;
 import org.apache.commons.csv.CSVRecord;
 
@@ -16,7 +16,7 @@ class FilteringSamplingCsvLoaderWorker extends SamplingCsvLoaderWorker {
 
     public FilteringSamplingCsvLoaderWorker(
             Index columnIndex,
-            CsvColumnBuilder<?>[] columns,
+            CsvSeriesBuilder<?>[] columns,
             CsvCell<?>[] csvRow,
             Predicate<CsvCell<?>[]> csvRowFilter,
             int rowSampleSize,
@@ -60,27 +60,27 @@ class FilteringSamplingCsvLoaderWorker extends SamplingCsvLoaderWorker {
         // fill "reservoir" first
         if (rowNumber < rowSampleSize) {
             addBufferedRow(width);
-            sampledRows.addInt(rowNumber);
+            sampledRows.pushInt(rowNumber);
         }
         // replace previously filled values based on random sampling with decaying probability
         else {
             int pos = rowsSampleRandom.nextInt(rowNumber + 1);
             if (pos < rowSampleSize) {
                 replaceBufferedRow(pos, width);
-                sampledRows.setInt(pos, rowNumber);
+                sampledRows.replaceInt(pos, rowNumber);
             }
         }
     }
 
     protected void addBufferedRow(int width) {
         for (int i = 0; i < width; i++) {
-            columnBuilders[i].add(csvRow);
+            columnBuilders[i].extractConverted(csvRow);
         }
     }
 
     protected void replaceBufferedRow(int pos, int width) {
         for (int i = 0; i < width; i++) {
-            columnBuilders[i].replace(pos, csvRow);
+            columnBuilders[i].extractConverted(csvRow, pos);
         }
     }
 }

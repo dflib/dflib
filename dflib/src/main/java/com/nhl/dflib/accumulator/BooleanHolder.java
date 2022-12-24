@@ -13,27 +13,22 @@ public class BooleanHolder implements ValueHolder<Boolean> {
     }
 
     @Override
-    public void set(Boolean v) {
+    public void push(Boolean v) {
         this.v = v != null ? v : false;
     }
 
     @Override
-    public void store(Accumulator<Boolean> accumulator) {
-        accumulator.addBoolean(v);
+    public void store(ValueAccum<Boolean> to) {
+        to.pushBoolean(v);
     }
 
     @Override
-    public void store(int pos, Accumulator<Boolean> accumulator) {
-        accumulator.setBoolean(pos, v);
+    public void store(ValueAccum<Boolean> to, int pos) {
+        to.replaceBoolean(pos, v);
     }
 
     @Override
-    public boolean getBoolean() {
-        return v;
-    }
-
-    @Override
-    public void setBoolean(boolean v) {
+    public void pushBoolean(boolean v) {
         this.v = v;
     }
 }

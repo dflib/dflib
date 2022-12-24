@@ -69,7 +69,7 @@ public class ByRowSeries extends ObjectSeries<Object> {
 
         for (RowProxy r : source) {
             for (int i = 0; i < width; i++) {
-                data.add(r.get(i));
+                data.push(r.get(i));
             }
         }
 

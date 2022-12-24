@@ -79,7 +79,7 @@ public abstract class LongBaseSeries implements LongSeries {
         for (int i = 0; i < len; i++) {
             long v = getLong(i);
             if (p.test(v)) {
-                filtered.addLong(v);
+                filtered.pushLong(v);
             }
         }
 
@@ -99,7 +99,7 @@ public abstract class LongBaseSeries implements LongSeries {
 
         for (int i = 0; i < size(); i++) {
             if (positions.getBoolean(i)) {
-                data.addLong(getLong(i));
+                data.pushLong(getLong(i));
             }
         }
 
@@ -267,7 +267,7 @@ public abstract class LongBaseSeries implements LongSeries {
 
         for (int i = 0; i < len; i++) {
             if (predicate.test(getLong(i))) {
-                index.addInt(i);
+                index.pushInt(i);
             }
         }
 
@@ -286,7 +286,7 @@ public abstract class LongBaseSeries implements LongSeries {
         BooleanAccumulator matches = new BooleanAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            matches.addBoolean(predicate.test(getLong(i)));
+            matches.pushBoolean(predicate.test(getLong(i)));
         }
 
         return matches.toSeries();
@@ -319,11 +319,11 @@ public abstract class LongBaseSeries implements LongSeries {
         LongAccumulator longs = new LongAccumulator(s);
 
         for (int i = 0; i < r; i++) {
-            longs.addLong(condition.getBoolean(i) ? with : getLong(i));
+            longs.pushLong(condition.getBoolean(i) ? with : getLong(i));
         }
 
         for (int i = r; i < s; i++) {
-            longs.addLong(getLong(i));
+            longs.pushLong(getLong(i));
         }
 
         return longs.toSeries();
@@ -336,7 +336,7 @@ public abstract class LongBaseSeries implements LongSeries {
         LongAccumulator longs = new LongAccumulator(s);
 
         for (int i = 0; i < r; i++) {
-            longs.addLong(condition.getBoolean(i) ? getLong(i) : with);
+            longs.pushLong(condition.getBoolean(i) ? getLong(i) : with);
         }
 
         if (s > r) {
@@ -352,11 +352,11 @@ public abstract class LongBaseSeries implements LongSeries {
         ObjectAccumulator<Long> values = new ObjectAccumulator<>(s);
 
         for (int i = 0; i < r; i++) {
-            values.add(condition.getBoolean(i) ? null : getLong(i));
+            values.push(condition.getBoolean(i) ? null : getLong(i));
         }
 
         for (int i = r; i < s; i++) {
-            values.add(getLong(i));
+            values.push(getLong(i));
         }
 
         return values.toSeries();
@@ -368,7 +368,7 @@ public abstract class LongBaseSeries implements LongSeries {
         ObjectAccumulator<Long> values = new ObjectAccumulator<>(s);
 
         for (int i = 0; i < r; i++) {
-            values.add(condition.getBoolean(i) ? getLong(i) : null);
+            values.push(condition.getBoolean(i) ? getLong(i) : null);
         }
 
         if (s > r) {
@@ -393,11 +393,11 @@ public abstract class LongBaseSeries implements LongSeries {
             LongSeries anotherLong = (LongSeries) another;
 
             for (int i = 0; i < s; i++) {
-                bools.addBoolean(getLong(i) == anotherLong.getLong(i));
+                bools.pushBoolean(getLong(i) == anotherLong.getLong(i));
             }
         } else {
             for (int i = 0; i < s; i++) {
-                bools.addBoolean(Objects.equals(get(i), another.get(i)));
+                bools.pushBoolean(Objects.equals(get(i), another.get(i)));
             }
         }
 
@@ -418,11 +418,11 @@ public abstract class LongBaseSeries implements LongSeries {
             LongSeries anotherLong = (LongSeries) another;
 
             for (int i = 0; i < s; i++) {
-                bools.addBoolean(getLong(i) != anotherLong.getLong(i));
+                bools.pushBoolean(getLong(i) != anotherLong.getLong(i));
             }
         } else {
             for (int i = 0; i < s; i++) {
-                bools.addBoolean(!Objects.equals(get(i), another.get(i)));
+                bools.pushBoolean(!Objects.equals(get(i), another.get(i)));
             }
         }
 
@@ -453,7 +453,7 @@ public abstract class LongBaseSeries implements LongSeries {
 
         LongAccumulator unique = new UniqueLongAccumulator();
         for (int i = 0; i < size; i++) {
-            unique.add(get(i));
+            unique.push(get(i));
         }
 
         return unique.size() < size() ? unique.toSeries() : this;

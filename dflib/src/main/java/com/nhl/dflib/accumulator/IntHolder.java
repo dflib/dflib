@@ -13,27 +13,22 @@ public class IntHolder implements ValueHolder<Integer> {
     }
 
     @Override
-    public void set(Integer v) {
+    public void push(Integer v) {
         this.v = v != null ? v : 0;
     }
 
     @Override
-    public void store(Accumulator<Integer> accumulator) {
-        accumulator.addInt(v);
+    public void store(ValueAccum<Integer> to) {
+        to.pushInt(v);
     }
 
     @Override
-    public void store(int pos, Accumulator<Integer> accumulator) {
-        accumulator.setInt(pos, v);
+    public void store(ValueAccum<Integer> to, int pos) {
+        to.replaceInt(pos, v);
     }
 
     @Override
-    public int getInt() {
-        return v;
-    }
-
-    @Override
-    public void setInt(int v) {
+    public void pushInt(int v) {
         this.v = v;
     }
 }

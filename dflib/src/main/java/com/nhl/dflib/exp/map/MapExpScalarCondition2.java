@@ -37,7 +37,7 @@ public class MapExpScalarCondition2<L, R> extends ExpScalarCondition2<L, R> {
             BooleanAccumulator accum = new BooleanAccumulator(len);
             for (int i = 0; i < len; i++) {
                 L l = ls.get(i);
-                accum.addBoolean(l != null ? predicate.test(l, r) : false);
+                accum.pushBoolean(l != null ? predicate.test(l, r) : false);
             }
 
             return accum.toSeries();

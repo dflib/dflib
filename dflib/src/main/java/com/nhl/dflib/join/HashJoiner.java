@@ -49,8 +49,8 @@ public class HashJoiner extends BaseJoiner {
             if (rgi != null) {
                 int js = rgi.size();
                 for (int j = 0; j < js; j++) {
-                    li.addInt(i);
-                    ri.addInt(rgi.getInt(j));
+                    li.pushInt(i);
+                    ri.pushInt(rgi.getInt(j));
                 }
             }
 
@@ -77,12 +77,12 @@ public class HashJoiner extends BaseJoiner {
             if (rgi != null) {
                 int js = rgi.size();
                 for (int j = 0; j < js; j++) {
-                    li.addInt(i);
-                    ri.addInt(rgi.getInt(j));
+                    li.pushInt(i);
+                    ri.pushInt(rgi.getInt(j));
                 }
             } else {
-                li.addInt(i);
-                ri.addInt(-1);
+                li.pushInt(i);
+                ri.pushInt(-1);
             }
 
             i++;
@@ -108,12 +108,12 @@ public class HashJoiner extends BaseJoiner {
             if (lgi != null) {
                 int js = lgi.size();
                 for (int j = 0; j < js; j++) {
-                    li.addInt(lgi.getInt(j));
-                    ri.addInt(i);
+                    li.pushInt(lgi.getInt(j));
+                    ri.pushInt(i);
                 }
             } else {
-                li.addInt(-1);
-                ri.addInt(i);
+                li.pushInt(-1);
+                ri.pushInt(i);
             }
 
             i++;
@@ -141,12 +141,12 @@ public class HashJoiner extends BaseJoiner {
                 seenRightKeys.add(lKey);
                 int js = rgi.size();
                 for (int j = 0; j < js; j++) {
-                    li.addInt(i);
-                    ri.addInt(rgi.getInt(j));
+                    li.pushInt(i);
+                    ri.pushInt(rgi.getInt(j));
                 }
             } else {
-                li.addInt(i);
-                ri.addInt(-1);
+                li.pushInt(i);
+                ri.pushInt(-1);
             }
 
             i++;
@@ -159,8 +159,8 @@ public class HashJoiner extends BaseJoiner {
 
                 int js = rgi.size();
                 for (int j = 0; j < js; j++) {
-                    li.addInt(-1);
-                    ri.addInt(rgi.getInt(j));
+                    li.pushInt(-1);
+                    ri.pushInt(rgi.getInt(j));
                 }
             }
         }

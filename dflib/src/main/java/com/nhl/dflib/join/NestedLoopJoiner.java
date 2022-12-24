@@ -38,8 +38,8 @@ public class NestedLoopJoiner extends BaseJoiner {
             int j = 0;
             for (RowProxy rr : rfm) {
                 if (joinPredicate.test(lr, rr)) {
-                    li.addInt(i);
-                    ri.addInt(j);
+                    li.pushInt(i);
+                    ri.pushInt(j);
                 }
 
                 j++;
@@ -67,8 +67,8 @@ public class NestedLoopJoiner extends BaseJoiner {
             boolean hadMatches = false;
             for (RowProxy rr : rfm) {
                 if (joinPredicate.test(lr, rr)) {
-                    li.addInt(i);
-                    ri.addInt(j);
+                    li.pushInt(i);
+                    ri.pushInt(j);
                     hadMatches = true;
                 }
 
@@ -76,8 +76,8 @@ public class NestedLoopJoiner extends BaseJoiner {
             }
 
             if (!hadMatches) {
-                li.addInt(i);
-                ri.addInt(-1);
+                li.pushInt(i);
+                ri.pushInt(-1);
             }
 
             i++;
@@ -102,8 +102,8 @@ public class NestedLoopJoiner extends BaseJoiner {
             boolean hadMatches = false;
             for (RowProxy lr : lfm) {
                 if (joinPredicate.test(lr, rr)) {
-                    li.addInt(j);
-                    ri.addInt(i);
+                    li.pushInt(j);
+                    ri.pushInt(i);
                     hadMatches = true;
                 }
 
@@ -111,8 +111,8 @@ public class NestedLoopJoiner extends BaseJoiner {
             }
 
             if (!hadMatches) {
-                li.addInt(-1);
-                ri.addInt(i);
+                li.pushInt(-1);
+                ri.pushInt(i);
             }
 
             i++;
@@ -140,8 +140,8 @@ public class NestedLoopJoiner extends BaseJoiner {
             int j = 0;
             for (RowProxy rr : rfm) {
                 if (joinPredicate.test(lr, rr)) {
-                    li.addInt(i);
-                    ri.addInt(j);
+                    li.pushInt(i);
+                    ri.pushInt(j);
                     seenRights.add(j);
                     hadMatches = true;
                 }
@@ -150,8 +150,8 @@ public class NestedLoopJoiner extends BaseJoiner {
             }
 
             if (!hadMatches) {
-                li.addInt(i);
-                ri.addInt(-1);
+                li.pushInt(i);
+                ri.pushInt(-1);
             }
 
             i++;
@@ -161,8 +161,8 @@ public class NestedLoopJoiner extends BaseJoiner {
         int rh = rfm.height();
         for (int j = 0; j < rh; j++) {
             if (!seenRights.contains(j)) {
-                li.addInt(-1);
-                ri.addInt(j);
+                li.pushInt(-1);
+                ri.pushInt(j);
             }
         }
 

@@ -20,15 +20,15 @@ public class UniqueIntAccumulator extends IntAccumulator {
     }
 
     @Override
-    public void addInt(int value) {
+    public void pushInt(int value) {
 
         if (seen.add(value)) {
-            super.addInt(value);
+            super.pushInt(value);
         }
     }
 
     @Override
-    public void setInt(int pos, int value) {
+    public void replaceInt(int pos, int value) {
         throw new UnsupportedOperationException("'set' operation is undefined for unique accumulator");
     }
 }

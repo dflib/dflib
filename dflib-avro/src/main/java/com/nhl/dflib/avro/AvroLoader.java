@@ -4,7 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DataFrameByRowBuilder;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.accumulator.Accumulator;
+import com.nhl.dflib.accumulator.ValueAccum;
 import com.nhl.dflib.accumulator.BooleanAccumulator;
 import com.nhl.dflib.accumulator.DoubleAccumulator;
 import com.nhl.dflib.accumulator.IntAccumulator;
@@ -108,15 +108,15 @@ public class AvroLoader {
         return Index.forLabels(labels);
     }
 
-    protected Accumulator<?>[] mapColumns(Schema schema) {
+    protected ValueAccum<?>[] mapColumns(Schema schema) {
 
         // all non-null numeric and boolean columns can be used as boolean
 
         // TODO: do we need to explicitly sort field by "order" to recreate save order?
-        return schema.getFields().stream().map(Schema.Field::schema).map(this::mapColumn).toArray(Accumulator[]::new);
+        return schema.getFields().stream().map(Schema.Field::schema).map(this::mapColumn).toArray(ValueAccum[]::new);
     }
 
-    protected Accumulator<?> mapColumn(Schema columnSchema) {
+    protected ValueAccum<?> mapColumn(Schema columnSchema) {
         switch (columnSchema.getType()) {
             // Raw numeric and boolean types can be loaded as primitives,
             // as numeric nullable types are declared as unions and will fall under the "default" case
@@ -140,7 +140,7 @@ public class AvroLoader {
         }
     }
 
-    protected Accumulator<?> mapUnionColumn(List<Schema> types) {
+    protected ValueAccum<?> mapUnionColumn(List<Schema> types) {
         // we only know how to handle union with NULL
 
         Schema[] otherThanNull = types.stream().filter(t -> t.getType() != Schema.Type.NULL).toArray(Schema[]::new);

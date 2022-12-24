@@ -8,7 +8,7 @@ import java.util.Arrays;
 /**
  * @since 0.6
  */
-public class ObjectAccumulator<T> implements Accumulator<T> {
+public class ObjectAccumulator<T> implements ValueAccum<T> {
 
     private T[] data;
     private int size;
@@ -36,7 +36,7 @@ public class ObjectAccumulator<T> implements Accumulator<T> {
     }
 
     @Override
-    public void add(T value) {
+    public void push(T value) {
 
         if (size == data.length) {
             expand(data.length * 2);
@@ -46,7 +46,7 @@ public class ObjectAccumulator<T> implements Accumulator<T> {
     }
 
     @Override
-    public void set(int pos, T v) {
+    public void replace(int pos, T v) {
         if (pos >= size) {
             size = pos + 1;
         }

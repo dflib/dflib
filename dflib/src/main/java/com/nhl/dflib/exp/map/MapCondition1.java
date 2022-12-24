@@ -30,7 +30,7 @@ public class MapCondition1<F> extends Condition1<F> {
             BooleanAccumulator accum = new BooleanAccumulator(len);
             for (int i = 0; i < len; i++) {
                 F v = s.get(i);
-                accum.addBoolean(v != null ? predicate.test(v) : false);
+                accum.pushBoolean(v != null ? predicate.test(v) : false);
             }
 
             return accum.toSeries();

@@ -1,7 +1,7 @@
 package com.nhl.dflib.csv;
 
 import com.nhl.dflib.Index;
-import com.nhl.dflib.csv.loader.CsvColumnBuilder;
+import com.nhl.dflib.csv.loader.CsvSeriesBuilder;
 import com.nhl.dflib.csv.loader.CsvCell;
 import org.apache.commons.csv.CSVRecord;
 
@@ -14,7 +14,7 @@ class FilteringCsvLoaderWorker extends BaseCsvLoaderWorker {
 
     public FilteringCsvLoaderWorker(
             Index columnIndex,
-            CsvColumnBuilder<?>[] columnBuilders,
+            CsvSeriesBuilder<?>[] columnBuilders,
             CsvCell<?>[] csvRow,
             Predicate<CsvCell<?>[]> csvRowFilter) {
 
@@ -38,7 +38,7 @@ class FilteringCsvLoaderWorker extends BaseCsvLoaderWorker {
 
             // 3. add row since the condition is satisfied
             for (int i = 0; i < width; i++) {
-                columnBuilders[i].add(csvRow);
+                columnBuilders[i].extractConverted(csvRow);
             }
 
         }

@@ -26,7 +26,7 @@ public interface DoubleSeries extends Series<Double> {
         int len = series.size();
         DoubleAccumulator a = new DoubleAccumulator(len);
         for (int i = 0; i < len; i++) {
-            a.addDouble(converter.map(series.get(i)));
+            a.pushDouble(converter.map(series.get(i)));
         }
 
         return a.toSeries();
@@ -159,7 +159,7 @@ public interface DoubleSeries extends Series<Double> {
         DoubleAccumulator accumulator = new DoubleAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addDouble(this.getDouble(i) + s.getDouble(i));
+            accumulator.pushDouble(this.getDouble(i) + s.getDouble(i));
         }
 
         return accumulator.toSeries();
@@ -175,7 +175,7 @@ public interface DoubleSeries extends Series<Double> {
         DoubleAccumulator accumulator = new DoubleAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addDouble(this.getDouble(i) - s.getDouble(i));
+            accumulator.pushDouble(this.getDouble(i) - s.getDouble(i));
         }
 
         return accumulator.toSeries();
@@ -191,7 +191,7 @@ public interface DoubleSeries extends Series<Double> {
         DoubleAccumulator accumulator = new DoubleAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addDouble(this.getDouble(i) * s.getDouble(i));
+            accumulator.pushDouble(this.getDouble(i) * s.getDouble(i));
         }
 
         return accumulator.toSeries();
@@ -207,7 +207,7 @@ public interface DoubleSeries extends Series<Double> {
         DoubleAccumulator accumulator = new DoubleAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addDouble(this.getDouble(i) / s.getDouble(i));
+            accumulator.pushDouble(this.getDouble(i) / s.getDouble(i));
         }
 
         return accumulator.toSeries();
@@ -221,7 +221,7 @@ public interface DoubleSeries extends Series<Double> {
         DoubleAccumulator accumulator = new DoubleAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addDouble(this.getDouble(i) % s.getDouble(i));
+            accumulator.pushDouble(this.getDouble(i) % s.getDouble(i));
         }
 
         return accumulator.toSeries();
@@ -235,7 +235,7 @@ public interface DoubleSeries extends Series<Double> {
         BooleanAccumulator accumulator = new BooleanAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addBoolean(this.getDouble(i) < s.getDouble(i));
+            accumulator.pushBoolean(this.getDouble(i) < s.getDouble(i));
         }
 
         return accumulator.toSeries();
@@ -249,7 +249,7 @@ public interface DoubleSeries extends Series<Double> {
         BooleanAccumulator accumulator = new BooleanAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addBoolean(this.getDouble(i) <= s.getDouble(i));
+            accumulator.pushBoolean(this.getDouble(i) <= s.getDouble(i));
         }
 
         return accumulator.toSeries();
@@ -263,7 +263,7 @@ public interface DoubleSeries extends Series<Double> {
         BooleanAccumulator accumulator = new BooleanAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addBoolean(this.getDouble(i) > s.getDouble(i));
+            accumulator.pushBoolean(this.getDouble(i) > s.getDouble(i));
         }
 
         return accumulator.toSeries();
@@ -277,7 +277,7 @@ public interface DoubleSeries extends Series<Double> {
         BooleanAccumulator accumulator = new BooleanAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addBoolean(this.getDouble(i) >= s.getDouble(i));
+            accumulator.pushBoolean(this.getDouble(i) >= s.getDouble(i));
         }
 
         return accumulator.toSeries();

@@ -1,6 +1,6 @@
 package com.nhl.dflib.jdbc.connector;
 
-import com.nhl.dflib.jdbc.connector.loader.JdbcColumnBuilder;
+import com.nhl.dflib.jdbc.connector.loader.JdbcSeriesBuilder;
 import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.jdbc.connector.statement.ValueConverterFactory;
@@ -93,7 +93,7 @@ public interface JdbcConnector {
      *                          using primitive Series for mandatory numeric / boolean columns.
      * @return a new instance of SeriesBuilder
      */
-    JdbcColumnBuilder<?> createColumnBuilder(int resultSetPosition, int type, boolean mandatory);
+    JdbcSeriesBuilder<?> createColumnBuilder(int resultSetPosition, int type, boolean mandatory);
 
     SqlLogger getSqlLogger();
 

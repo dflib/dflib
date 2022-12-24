@@ -139,7 +139,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
         for (int i = 0; i < len; i++) {
             T value = get(i);
             if (p.test(value)) {
-                filtered.add(value);
+                filtered.push(value);
             }
         }
 
@@ -160,7 +160,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
         for (int i = 0; i < size(); i++) {
             if (positions.getBoolean(i)) {
-                data.add(get(i));
+                data.push(get(i));
             }
         }
 
@@ -185,7 +185,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
         for (int i = 0; i < len; i++) {
             if (predicate.test(get(i))) {
-                index.addInt(i);
+                index.pushInt(i);
             }
         }
 
@@ -199,7 +199,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
         BooleanAccumulator matches = new BooleanAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            matches.addBoolean(predicate.test(get(i)));
+            matches.pushBoolean(predicate.test(get(i)));
         }
 
         return matches.toSeries();
@@ -212,11 +212,11 @@ public abstract class ObjectSeries<T> implements Series<T> {
         ObjectAccumulator<T> values = new ObjectAccumulator<>(s);
 
         for (int i = 0; i < r; i++) {
-            values.add(condition.getBoolean(i) ? with : get(i));
+            values.push(condition.getBoolean(i) ? with : get(i));
         }
 
         for (int i = r; i < s; i++) {
-            values.add(get(i));
+            values.push(get(i));
         }
 
         return values.toSeries();
@@ -230,7 +230,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
         ObjectAccumulator<T> values = new ObjectAccumulator<>(s);
 
         for (int i = 0; i < r; i++) {
-            values.add(condition.getBoolean(i) ? get(i) : with);
+            values.push(condition.getBoolean(i) ? get(i) : with);
         }
 
         if (s > r) {
@@ -251,7 +251,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
         BooleanAccumulator bools = new BooleanAccumulator(s);
         for (int i = 0; i < s; i++) {
-            bools.addBoolean(Objects.equals(get(i), another.get(i)));
+            bools.pushBoolean(Objects.equals(get(i), another.get(i)));
         }
 
         return bools.toSeries();
@@ -268,7 +268,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
         BooleanAccumulator bools = new BooleanAccumulator(s);
         for (int i = 0; i < s; i++) {
-            bools.addBoolean(!Objects.equals(get(i), another.get(i)));
+            bools.pushBoolean(!Objects.equals(get(i), another.get(i)));
         }
 
         return bools.toSeries();
@@ -280,7 +280,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
         BooleanAccumulator bools = new BooleanAccumulator(s);
         for (int i = 0; i < s; i++) {
-            bools.addBoolean(get(i) == null);
+            bools.pushBoolean(get(i) == null);
         }
 
         return bools.toSeries();
@@ -292,7 +292,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
         BooleanAccumulator bools = new BooleanAccumulator(s);
         for (int i = 0; i < s; i++) {
-            bools.addBoolean(get(i) != null);
+            bools.pushBoolean(get(i) != null);
         }
 
         return bools.toSeries();

@@ -62,7 +62,7 @@ public class ConcatExp extends ExpN<String> implements StrExp {
                 }
             }
 
-            accum.add(isNull ? null : row.toString());
+            accum.push(isNull ? null : row.toString());
         }
 
         return accum.toSeries();

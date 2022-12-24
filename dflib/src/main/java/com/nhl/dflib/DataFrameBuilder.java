@@ -4,7 +4,7 @@ import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.DoubleArraySeries;
 import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.series.LongArraySeries;
-import com.nhl.dflib.accumulator.Accumulator;
+import com.nhl.dflib.accumulator.ValueAccum;
 import com.nhl.dflib.accumulator.DoubleAccumulator;
 import com.nhl.dflib.accumulator.IntAccumulator;
 import com.nhl.dflib.accumulator.LongAccumulator;
@@ -80,12 +80,12 @@ public class DataFrameBuilder {
      *
      * @since 0.11
      */
-    public DataFrameByRowBuilder byRow(Accumulator<?>... rowAccumulators) {
+    public DataFrameByRowBuilder byRow(ValueAccum<?>... rowAccumulators) {
 
         // use default ObjectAccumulators if not set
         if (rowAccumulators == null || rowAccumulators.length == 0) {
             int w = columnsIndex.size();
-            rowAccumulators = new Accumulator[w];
+            rowAccumulators = new ValueAccum[w];
             for (int i = 0; i < w; i++) {
                 rowAccumulators[i] = new ObjectAccumulator<>();
             }
@@ -166,14 +166,14 @@ public class DataFrameBuilder {
 
         int heightEstimate = (iterable instanceof Collection) ? ((Collection) iterable).size() : 10;
 
-        Accumulator<Object>[] columnBuilders = new Accumulator[width];
+        ValueAccum<Object>[] columnBuilders = new ValueAccum[width];
         for (int i = 0; i < width; i++) {
             columnBuilders[i] = new ObjectAccumulator<>(heightEstimate);
         }
 
         int p = 0;
         for (Object o : iterable) {
-            columnBuilders[p % width].add(o);
+            columnBuilders[p % width].push(o);
             p++;
         }
 
@@ -181,7 +181,7 @@ public class DataFrameBuilder {
         int pl = p % width;
         if (pl > 0) {
             for (; pl < width; pl++) {
-                columnBuilders[pl].add(null);
+                columnBuilders[pl].push(null);
             }
         }
 
@@ -253,7 +253,7 @@ public class DataFrameBuilder {
 
         int p = 0;
         while (it.hasNext()) {
-            columnBuilders[p % width].addInt(it.nextInt());
+            columnBuilders[p % width].pushInt(it.nextInt());
             p++;
         }
 
@@ -261,7 +261,7 @@ public class DataFrameBuilder {
         int pl = p % width;
         if (pl > 0) {
             for (; pl < width; pl++) {
-                columnBuilders[pl].addInt(padWith);
+                columnBuilders[pl].pushInt(padWith);
             }
         }
 
@@ -329,7 +329,7 @@ public class DataFrameBuilder {
 
         int p = 0;
         while (it.hasNext()) {
-            columnBuilders[p % width].addLong(it.nextLong());
+            columnBuilders[p % width].pushLong(it.nextLong());
             p++;
         }
 
@@ -337,7 +337,7 @@ public class DataFrameBuilder {
         int pl = p % width;
         if (pl > 0) {
             for (; pl < width; pl++) {
-                columnBuilders[pl].addLong(padWith);
+                columnBuilders[pl].pushLong(padWith);
             }
         }
 
@@ -405,7 +405,7 @@ public class DataFrameBuilder {
 
         int p = 0;
         while (it.hasNext()) {
-            columnBuilders[p % width].addDouble(it.nextDouble());
+            columnBuilders[p % width].pushDouble(it.nextDouble());
             p++;
         }
 
@@ -413,7 +413,7 @@ public class DataFrameBuilder {
         int pl = p % width;
         if (pl > 0) {
             for (; pl < width; pl++) {
-                columnBuilders[pl].addDouble(padWith);
+                columnBuilders[pl].pushDouble(padWith);
             }
         }
 

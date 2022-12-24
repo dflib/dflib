@@ -4,7 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.csv.loader.CsvColumnBuilder;
+import com.nhl.dflib.csv.loader.CsvSeriesBuilder;
 import com.nhl.dflib.accumulator.IntAccumulator;
 import org.apache.commons.csv.CSVRecord;
 
@@ -16,7 +16,7 @@ import java.util.Random;
  */
 class SamplingCsvLoaderWorker implements CsvLoaderWorker {
 
-    protected CsvColumnBuilder<?>[] columnBuilders;
+    protected CsvSeriesBuilder<?>[] columnBuilders;
     protected Index columnIndex;
 
     protected int rowSampleSize;
@@ -25,7 +25,7 @@ class SamplingCsvLoaderWorker implements CsvLoaderWorker {
 
     SamplingCsvLoaderWorker(
             Index columnIndex,
-            CsvColumnBuilder<?>[] columnBuilders,
+            CsvSeriesBuilder<?>[] columnBuilders,
             int rowSampleSize,
             Random rowsSampleRandom) {
 
@@ -51,7 +51,7 @@ class SamplingCsvLoaderWorker implements CsvLoaderWorker {
         int width = columnIndex.size();
         Series<?>[] columns = new Series[width];
         for (int i = 0; i < width; i++) {
-            columns[i] = columnBuilders[i].toColumn();
+            columns[i] = columnBuilders[i].toSeries();
         }
 
         return DataFrame.newFrame(columnIndex).columns(columns);
@@ -78,27 +78,27 @@ class SamplingCsvLoaderWorker implements CsvLoaderWorker {
         // fill "reservoir" first
         if (rowNumber < rowSampleSize) {
             addRow(width, row);
-            sampledRows.addInt(rowNumber);
+            sampledRows.pushInt(rowNumber);
         }
         // replace previously filled values based on random sampling with decaying probability
         else {
             int pos = rowsSampleRandom.nextInt(rowNumber + 1);
             if (pos < rowSampleSize) {
                 replaceRow(pos, width, row);
-                sampledRows.setInt(pos, rowNumber);
+                sampledRows.replaceInt(pos, rowNumber);
             }
         }
     }
 
     protected void addRow(int width, CSVRecord record) {
         for (int i = 0; i < width; i++) {
-            columnBuilders[i].convertAndAdd(record);
+            columnBuilders[i].extract(record);
         }
     }
 
     protected void replaceRow(int pos, int width, CSVRecord record) {
         for (int i = 0; i < width; i++) {
-            columnBuilders[i].convertAndReplace(pos, record);
+            columnBuilders[i].extract(record, pos);
         }
     }
 }

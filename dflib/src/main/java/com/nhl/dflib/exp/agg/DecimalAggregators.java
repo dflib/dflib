@@ -35,17 +35,17 @@ public class DecimalAggregators {
         // rewind nulls,and find the first non-null total
         for (; i < h && runningTotal == null; i++) {
             runningTotal = s.get(i);
-            accum.add(runningTotal);
+            accum.push(runningTotal);
         }
 
         for (; i < h; i++) {
 
             BigDecimal next = s.get(i);
             if (next == null) {
-                accum.add(null);
+                accum.push(null);
             } else {
                 runningTotal = runningTotal.add(next);
-                accum.add(runningTotal);
+                accum.push(runningTotal);
             }
         }
 

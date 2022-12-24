@@ -6,15 +6,15 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.IntValueMapper;
 import com.nhl.dflib.LongValueMapper;
 import com.nhl.dflib.ValueMapper;
-import com.nhl.dflib.accumulator.BooleanConverter;
+import com.nhl.dflib.loader.BooleanExtractor;
 import com.nhl.dflib.accumulator.BooleanHolder;
-import com.nhl.dflib.accumulator.DoubleConverter;
+import com.nhl.dflib.loader.DoubleExtractor;
 import com.nhl.dflib.accumulator.DoubleHolder;
-import com.nhl.dflib.accumulator.IntConverter;
+import com.nhl.dflib.loader.IntExtractor;
 import com.nhl.dflib.accumulator.IntHolder;
-import com.nhl.dflib.accumulator.LongConverter;
+import com.nhl.dflib.loader.LongExtractor;
 import com.nhl.dflib.accumulator.LongHolder;
-import com.nhl.dflib.accumulator.ObjectConverter;
+import com.nhl.dflib.loader.ObjectExtractor;
 import com.nhl.dflib.accumulator.ObjectHolder;
 import org.apache.commons.csv.CSVRecord;
 
@@ -167,22 +167,22 @@ public class ColumnConfig {
         return config;
     }
 
-    public CsvColumnBuilder<?> createColumnBuilder(int csvPos) {
+    public CsvSeriesBuilder<?> createColumnBuilder(int csvPos) {
 
         // using externally passed "csvPos", as "this.columnPosition" may not be initialized (when column name
         // was in use)
 
         switch (type) {
             case intPrimitive:
-                return new CsvColumnBuilder<>(intConverter(csvPos), csvPos);
+                return new CsvSeriesBuilder<>(intConverter(csvPos), csvPos);
             case longPrimitive:
-                return new CsvColumnBuilder<>(longConverter(csvPos), csvPos);
+                return new CsvSeriesBuilder<>(longConverter(csvPos), csvPos);
             case doublePrimitive:
-                return new CsvColumnBuilder<>(doubleConverter(csvPos), csvPos);
+                return new CsvSeriesBuilder<>(doubleConverter(csvPos), csvPos);
             case booleanPrimitive:
-                return new CsvColumnBuilder<>(boolConverter(csvPos), csvPos);
+                return new CsvSeriesBuilder<>(boolConverter(csvPos), csvPos);
             default:
-                return new CsvColumnBuilder(objectConverter(csvPos), csvPos);
+                return new CsvSeriesBuilder(objectConverter(csvPos), csvPos);
         }
     }
 
@@ -202,24 +202,24 @@ public class ColumnConfig {
         }
     }
 
-    private IntConverter<CSVRecord> intConverter(int csvPos) {
-        return new IntConverter<>(r -> intMapper.map(r.get(csvPos)));
+    private IntExtractor<CSVRecord> intConverter(int csvPos) {
+        return new IntExtractor<>(r -> intMapper.map(r.get(csvPos)));
     }
 
-    private LongConverter<CSVRecord> longConverter(int csvPos) {
-        return new LongConverter<>(r -> longMapper.map(r.get(csvPos)));
+    private LongExtractor<CSVRecord> longConverter(int csvPos) {
+        return new LongExtractor<>(r -> longMapper.map(r.get(csvPos)));
     }
 
-    private DoubleConverter<CSVRecord> doubleConverter(int csvPos) {
-        return new DoubleConverter<>(r -> doubleMapper.map(r.get(csvPos)));
+    private DoubleExtractor<CSVRecord> doubleConverter(int csvPos) {
+        return new DoubleExtractor<>(r -> doubleMapper.map(r.get(csvPos)));
     }
 
-    private BooleanConverter<CSVRecord> boolConverter(int csvPos) {
-        return new BooleanConverter<>(r -> booleanMapper.map(r.get(csvPos)));
+    private BooleanExtractor<CSVRecord> boolConverter(int csvPos) {
+        return new BooleanExtractor<>(r -> booleanMapper.map(r.get(csvPos)));
     }
 
-    private ObjectConverter<CSVRecord, ?> objectConverter(int csvPos) {
-        return new ObjectConverter<>(r -> objectMapper.map(r.get(csvPos)));
+    private ObjectExtractor<CSVRecord, ?> objectConverter(int csvPos) {
+        return new ObjectExtractor<>(r -> objectMapper.map(r.get(csvPos)));
     }
 
     enum ColumnType {

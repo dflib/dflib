@@ -2,7 +2,7 @@ package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.Printers;
 import com.nhl.dflib.jdbc.connector.loader.JdbcColumnBuilderFactory;
-import com.nhl.dflib.jdbc.connector.loader.JdbcColumnBuilder;
+import com.nhl.dflib.jdbc.connector.loader.JdbcSeriesBuilder;
 import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.jdbc.connector.statement.ValueConverter;
@@ -133,7 +133,7 @@ public class DefaultJdbcConnector implements JdbcConnector {
     }
 
     @Override
-    public JdbcColumnBuilder<?> createColumnBuilder(int pos, int type, boolean mandatory) {
+    public JdbcSeriesBuilder<?> createColumnBuilder(int pos, int type, boolean mandatory) {
 
         JdbcColumnBuilderFactory sbf = null;
 

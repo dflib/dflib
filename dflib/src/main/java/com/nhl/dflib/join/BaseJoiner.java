@@ -55,7 +55,7 @@ public abstract class BaseJoiner {
         ObjectAccumulator<JoinIndicator> appender = new ObjectAccumulator<>(h);
 
         for (int i = 0; i < h; i++) {
-            appender.add(
+            appender.push(
                     leftIndex.getInt(i) < 0
                             ? JoinIndicator.right_only
                             : rightIndex.getInt(i) < 0 ? JoinIndicator.left_only : JoinIndicator.both

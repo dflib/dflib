@@ -13,27 +13,22 @@ public class DoubleHolder implements ValueHolder<Double> {
     }
 
     @Override
-    public void set(Double v) {
+    public void push(Double v) {
         this.v = v != null ? v : 0.;
     }
 
     @Override
-    public void store(Accumulator<Double> accumulator) {
-        accumulator.addDouble(v);
+    public void store(ValueAccum<Double> to) {
+        to.pushDouble(v);
     }
 
     @Override
-    public void store(int pos, Accumulator<Double> accumulator) {
-        accumulator.setDouble(pos, v);
+    public void store(ValueAccum<Double> to, int pos) {
+        to.replaceDouble(pos, v);
     }
 
     @Override
-    public double getDouble() {
-        return v;
-    }
-
-    @Override
-    public void setDouble(double v) {
+    public void pushDouble(double v) {
         this.v = v;
     }
 }

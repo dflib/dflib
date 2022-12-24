@@ -39,10 +39,10 @@ public class LongAggregators {
         for (; i < h; i++) {
             Number next = s.get(i);
             if (next == null) {
-                accum.add(null);
+                accum.push(null);
             } else {
                 runningTotal = next.longValue();
-                accum.add(runningTotal);
+                accum.push(runningTotal);
                 i++;
                 break;
             }
@@ -52,10 +52,10 @@ public class LongAggregators {
 
             Number next = s.get(i);
             if (next == null) {
-                accum.add(null);
+                accum.push(null);
             } else {
                 runningTotal += next.longValue();
-                accum.add(runningTotal);
+                accum.push(runningTotal);
             }
         }
 

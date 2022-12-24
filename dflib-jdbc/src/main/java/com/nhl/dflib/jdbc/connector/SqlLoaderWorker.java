@@ -3,7 +3,7 @@ package com.nhl.dflib.jdbc.connector;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.jdbc.connector.loader.JdbcColumnBuilder;
+import com.nhl.dflib.jdbc.connector.loader.JdbcSeriesBuilder;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,10 +11,10 @@ import java.sql.SQLException;
 class SqlLoaderWorker {
 
     private Index columns;
-    protected JdbcColumnBuilder<?>[] columnBuilders;
+    protected JdbcSeriesBuilder<?>[] columnBuilders;
     protected int maxRows;
 
-    public SqlLoaderWorker(Index columns, JdbcColumnBuilder<?>[] columnBuilders, int maxRows) {
+    public SqlLoaderWorker(Index columns, JdbcSeriesBuilder<?>[] columnBuilders, int maxRows) {
         this.columns = columns;
         this.maxRows = maxRows;
         this.columnBuilders = columnBuilders;
@@ -39,7 +39,7 @@ class SqlLoaderWorker {
         int width = columns.size();
         Series<?>[] series = new Series[width];
         for (int i = 0; i < width; i++) {
-            series[i] = columnBuilders[i].toColumn();
+            series[i] = columnBuilders[i].toSeries();
         }
 
         return DataFrame.newFrame(columns).columns(series);
@@ -47,7 +47,7 @@ class SqlLoaderWorker {
 
     protected void addRow(int width, ResultSet resultSet) {
         for (int i = 0; i < width; i++) {
-            columnBuilders[i].convertAndAdd(resultSet);
+            columnBuilders[i].extract(resultSet);
         }
     }
 }

@@ -11,7 +11,7 @@ import java.util.Arrays;
  *
  * @since 0.6
  */
-public class LongAccumulator implements Accumulator<Long> {
+public class LongAccumulator implements ValueAccum<Long> {
 
     private long[] data;
     private int size;
@@ -39,12 +39,12 @@ public class LongAccumulator implements Accumulator<Long> {
     }
 
     @Override
-    public void add(Long v) {
-        addLong(v != null ? v : 0L);
+    public void push(Long v) {
+        pushLong(v != null ? v : 0L);
     }
 
     @Override
-    public void addLong(long value) {
+    public void pushLong(long value) {
 
         if (size == data.length) {
             expand(data.length * 2);
@@ -54,12 +54,12 @@ public class LongAccumulator implements Accumulator<Long> {
     }
 
     @Override
-    public void set(int pos, Long v) {
-        setLong(pos, v != null ? v : 0L);
+    public void replace(int pos, Long v) {
+        replaceLong(pos, v != null ? v : 0L);
     }
 
     @Override
-    public void setLong(int pos, long value) {
+    public void replaceLong(int pos, long value) {
 
         if (pos >= size) {
             size = pos + 1;

@@ -31,10 +31,10 @@ class UpsertInfoTracker {
 
             switch (newOldJoin.get(i)) {
                 case both:
-                    accum.add(SaveOp.skip);
+                    accum.push(SaveOp.skip);
                     break;
                 case left_only:
-                    accum.add(SaveOp.insert);
+                    accum.push(SaveOp.insert);
                     break;
                 default:
                     throw new IllegalStateException("Unexpected join indicator: " + newOldJoin.get(i));
@@ -51,11 +51,11 @@ class UpsertInfoTracker {
             switch (newOldJoin.get(i)) {
                 case both:
                     int c = updatePositions.get(updatePos).cardinality();
-                    accum.add(c == width ? SaveOp.skip : SaveOp.update);
+                    accum.push(c == width ? SaveOp.skip : SaveOp.update);
                     updatePos++;
                     break;
                 case left_only:
-                    accum.add(SaveOp.insert);
+                    accum.push(SaveOp.insert);
                     break;
                 default:
                     throw new IllegalStateException("Unexpected join indicator: " + newOldJoin.get(i));

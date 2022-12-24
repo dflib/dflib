@@ -26,7 +26,7 @@ public interface LongSeries extends Series<Long> {
         int len = series.size();
         LongAccumulator a = new LongAccumulator(len);
         for (int i = 0; i < len; i++) {
-            a.addLong(converter.map(series.get(i)));
+            a.pushLong(converter.map(series.get(i)));
         }
 
         return a.toSeries();
@@ -159,7 +159,7 @@ public interface LongSeries extends Series<Long> {
         LongAccumulator accumulator = new LongAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addLong(this.getLong(i) + s.getLong(i));
+            accumulator.pushLong(this.getLong(i) + s.getLong(i));
         }
 
         return accumulator.toSeries();
@@ -175,7 +175,7 @@ public interface LongSeries extends Series<Long> {
         LongAccumulator accumulator = new LongAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addLong(this.getLong(i) - s.getLong(i));
+            accumulator.pushLong(this.getLong(i) - s.getLong(i));
         }
 
         return accumulator.toSeries();
@@ -191,7 +191,7 @@ public interface LongSeries extends Series<Long> {
         LongAccumulator accumulator = new LongAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addLong(this.getLong(i) * s.getLong(i));
+            accumulator.pushLong(this.getLong(i) * s.getLong(i));
         }
 
         return accumulator.toSeries();
@@ -207,7 +207,7 @@ public interface LongSeries extends Series<Long> {
         LongAccumulator accumulator = new LongAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addLong(this.getLong(i) / s.getLong(i));
+            accumulator.pushLong(this.getLong(i) / s.getLong(i));
         }
 
         return accumulator.toSeries();
@@ -223,7 +223,7 @@ public interface LongSeries extends Series<Long> {
         LongAccumulator accumulator = new LongAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addLong(this.getLong(i) % s.getLong(i));
+            accumulator.pushLong(this.getLong(i) % s.getLong(i));
         }
 
         return accumulator.toSeries();
@@ -238,7 +238,7 @@ public interface LongSeries extends Series<Long> {
         BooleanAccumulator accumulator = new BooleanAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addBoolean(this.getLong(i) < s.getLong(i));
+            accumulator.pushBoolean(this.getLong(i) < s.getLong(i));
         }
 
         return accumulator.toSeries();
@@ -252,7 +252,7 @@ public interface LongSeries extends Series<Long> {
         BooleanAccumulator accumulator = new BooleanAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addBoolean(this.getLong(i) <= s.getLong(i));
+            accumulator.pushBoolean(this.getLong(i) <= s.getLong(i));
         }
 
         return accumulator.toSeries();
@@ -266,7 +266,7 @@ public interface LongSeries extends Series<Long> {
         BooleanAccumulator accumulator = new BooleanAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addBoolean(this.getLong(i) > s.getLong(i));
+            accumulator.pushBoolean(this.getLong(i) > s.getLong(i));
         }
 
         return accumulator.toSeries();
@@ -280,7 +280,7 @@ public interface LongSeries extends Series<Long> {
         BooleanAccumulator accumulator = new BooleanAccumulator(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.addBoolean(this.getLong(i) >= s.getLong(i));
+            accumulator.pushBoolean(this.getLong(i) >= s.getLong(i));
         }
 
         return accumulator.toSeries();

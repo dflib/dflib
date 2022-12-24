@@ -1,8 +1,12 @@
 package com.nhl.dflib.jdbc.connector.loader;
 
 import com.nhl.dflib.*;
-import com.nhl.dflib.accumulator.*;
 import com.nhl.dflib.jdbc.connector.JdbcFunction;
+import com.nhl.dflib.loader.BooleanExtractor;
+import com.nhl.dflib.loader.DoubleExtractor;
+import com.nhl.dflib.loader.IntExtractor;
+import com.nhl.dflib.loader.LongExtractor;
+import com.nhl.dflib.loader.ObjectExtractor;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -17,7 +21,7 @@ import java.util.Calendar;
 @FunctionalInterface
 public interface JdbcColumnBuilderFactory<T> {
 
-    static JdbcColumnBuilder<Boolean> booleanCol(int pos) {
+    static JdbcSeriesBuilder<Boolean> booleanCol(int pos) {
         BooleanValueMapper<ResultSet> mapper = rs -> {
             try {
                 return rs.getBoolean(pos);
@@ -26,10 +30,10 @@ public interface JdbcColumnBuilderFactory<T> {
             }
         };
 
-        return new JdbcColumnBuilder<>(new BooleanConverter<>(mapper));
+        return new JdbcSeriesBuilder<>(new BooleanExtractor<>(mapper));
     }
 
-    static JdbcColumnBuilder<Integer> intCol(int pos) {
+    static JdbcSeriesBuilder<Integer> intCol(int pos) {
         IntValueMapper<ResultSet> mapper = rs -> {
             try {
                 return rs.getInt(pos);
@@ -38,10 +42,10 @@ public interface JdbcColumnBuilderFactory<T> {
             }
         };
 
-        return new JdbcColumnBuilder<>(new IntConverter<>(mapper));
+        return new JdbcSeriesBuilder<>(new IntExtractor<>(mapper));
     }
 
-    static JdbcColumnBuilder<Long> longCol(int pos) {
+    static JdbcSeriesBuilder<Long> longCol(int pos) {
         LongValueMapper<ResultSet> mapper = rs -> {
             try {
                 return rs.getLong(pos);
@@ -50,10 +54,10 @@ public interface JdbcColumnBuilderFactory<T> {
             }
         };
 
-        return new JdbcColumnBuilder<>(new LongConverter<>(mapper));
+        return new JdbcSeriesBuilder<>(new LongExtractor<>(mapper));
     }
 
-    static JdbcColumnBuilder<Double> doubleCol(int pos) {
+    static JdbcSeriesBuilder<Double> doubleCol(int pos) {
         DoubleValueMapper<ResultSet> mapper = rs -> {
             try {
                 return rs.getDouble(pos);
@@ -62,35 +66,35 @@ public interface JdbcColumnBuilderFactory<T> {
             }
         };
 
-        return new JdbcColumnBuilder<>(new DoubleConverter<>(mapper));
+        return new JdbcSeriesBuilder<>(new DoubleExtractor<>(mapper));
     }
 
-    static JdbcColumnBuilder<Object> objectCol(int pos) {
+    static JdbcSeriesBuilder<Object> objectCol(int pos) {
         return fromJdbcFunction(rs -> rs.getObject(pos));
     }
 
-    static JdbcColumnBuilder<LocalDate> dateCol(int pos) {
+    static JdbcSeriesBuilder<LocalDate> dateCol(int pos) {
         return fromJdbcFunction(rs -> {
             Date date = rs.getDate(pos);
             return date != null ? date.toLocalDate() : null;
         });
     }
 
-    static JdbcColumnBuilder<LocalTime> timeCol(int pos) {
+    static JdbcSeriesBuilder<LocalTime> timeCol(int pos) {
         return fromJdbcFunction(rs -> {
             Time time = rs.getTime(pos, Calendar.getInstance());
             return time != null ? time.toLocalTime() : null;
         });
     }
 
-    static JdbcColumnBuilder<LocalDateTime> timestampCol(int pos) {
+    static JdbcSeriesBuilder<LocalDateTime> timestampCol(int pos) {
         return fromJdbcFunction(rs -> {
             Timestamp timestamp = rs.getTimestamp(pos, Calendar.getInstance());
             return timestamp != null ? timestamp.toLocalDateTime() : null;
         });
     }
 
-    static <T> JdbcColumnBuilder<T> fromJdbcFunction(JdbcFunction<ResultSet, T> f) {
+    static <T> JdbcSeriesBuilder<T> fromJdbcFunction(JdbcFunction<ResultSet, T> f) {
 
         ValueMapper<ResultSet, T> mapper = rs -> {
             try {
@@ -100,8 +104,8 @@ public interface JdbcColumnBuilderFactory<T> {
             }
         };
 
-        return new JdbcColumnBuilder<>(new ObjectConverter<>(mapper));
+        return new JdbcSeriesBuilder<>(new ObjectExtractor<>(mapper));
     }
 
-    JdbcColumnBuilder<T> createBuilder(int pos);
+    JdbcSeriesBuilder<T> createBuilder(int pos);
 }

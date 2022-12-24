@@ -4,7 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.accumulator.IntAccumulator;
-import com.nhl.dflib.jdbc.connector.loader.JdbcColumnBuilder;
+import com.nhl.dflib.jdbc.connector.loader.JdbcSeriesBuilder;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,7 +19,7 @@ class SamplingSqlLoaderWorker extends SqlLoaderWorker {
 
     public SamplingSqlLoaderWorker(
             Index columns,
-            JdbcColumnBuilder<?>[] columnBuilders,
+            JdbcSeriesBuilder<?>[] columnBuilders,
             int maxRows,
             int rowSampleSize,
             Random rowsSampleRandom) {
@@ -58,21 +58,21 @@ class SamplingSqlLoaderWorker extends SqlLoaderWorker {
         // fill "reservoir" first
         if (rowNumber < rowSampleSize) {
             addRow(width, rs);
-            sampledRows.addInt(rowNumber);
+            sampledRows.pushInt(rowNumber);
         }
         // replace previously filled values based on random sampling with decaying probability
         else {
             int pos = rowsSampleRandom.nextInt(rowNumber + 1);
             if (pos < rowSampleSize) {
                 replaceRow(pos, width, rs);
-                sampledRows.setInt(pos, rowNumber);
+                sampledRows.replaceInt(pos, rowNumber);
             }
         }
     }
 
     protected void replaceRow(int pos, int width, ResultSet rs) {
         for (int i = 0; i < width; i++) {
-            columnBuilders[i].convertAndReplace(pos, rs);
+            columnBuilders[i].extract(rs, pos);
         }
     }
 }

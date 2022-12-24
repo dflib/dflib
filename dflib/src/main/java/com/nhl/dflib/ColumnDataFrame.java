@@ -225,7 +225,7 @@ public class ColumnDataFrame implements DataFrame {
         BooleanAccumulator data = new BooleanAccumulator(height());
 
         for (RowProxy row : this) {
-            data.addBoolean(rowMapper.map(row));
+            data.pushBoolean(rowMapper.map(row));
         }
 
         return data.toSeries();

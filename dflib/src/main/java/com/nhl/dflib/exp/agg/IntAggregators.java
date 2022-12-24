@@ -41,10 +41,10 @@ public class IntAggregators {
         for (; i < h; i++) {
             Number next = s.get(i);
             if (next == null) {
-                accum.add(null);
+                accum.push(null);
             } else {
                 runningTotal = next.intValue();
-                accum.add(runningTotal);
+                accum.push(runningTotal);
                 i++;
                 break;
             }
@@ -54,10 +54,10 @@ public class IntAggregators {
 
             Number next = s.get(i);
             if (next == null) {
-                accum.add(null);
+                accum.push(null);
             } else {
                 runningTotal += next.intValue();
-                accum.add(runningTotal);
+                accum.push(runningTotal);
             }
         }
 

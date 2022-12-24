@@ -11,7 +11,7 @@ import java.util.Arrays;
  *
  * @since 0.6
  */
-public class IntAccumulator implements Accumulator<Integer> {
+public class IntAccumulator implements ValueAccum<Integer> {
 
     private int[] data;
     private int size;
@@ -42,15 +42,15 @@ public class IntAccumulator implements Accumulator<Integer> {
      * @since 0.8
      */
     @Override
-    public void add(Integer v) {
-        addInt(v != null ? v : 0);
+    public void push(Integer v) {
+        pushInt(v != null ? v : 0);
     }
 
     /**
      * @since 0.8
      */
     @Override
-    public void addInt(int value) {
+    public void pushInt(int value) {
 
         if (size == data.length) {
             expand(data.length * 2);
@@ -60,12 +60,12 @@ public class IntAccumulator implements Accumulator<Integer> {
     }
 
     @Override
-    public void set(int pos, Integer v) {
-        setInt(pos, v != null ? v : 0);
+    public void replace(int pos, Integer v) {
+        replaceInt(pos, v != null ? v : 0);
     }
 
     @Override
-    public void setInt(int pos, int value) {
+    public void replaceInt(int pos, int value) {
 
         if (pos >= size) {
             size = pos + 1;

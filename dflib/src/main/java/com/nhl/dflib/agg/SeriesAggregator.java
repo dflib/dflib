@@ -1,7 +1,7 @@
 package com.nhl.dflib.agg;
 
 import com.nhl.dflib.*;
-import com.nhl.dflib.accumulator.Accumulator;
+import com.nhl.dflib.accumulator.ValueAccum;
 import com.nhl.dflib.accumulator.ObjectAccumulator;
 
 /**
@@ -30,7 +30,7 @@ public class SeriesAggregator {
 
         for (Object key : groupBy.getGroups()) {
             Series<T> group = groupBy.getGroup(key);
-            columnBuilder.add(aggregator.eval(group).get(0));
+            columnBuilder.push(aggregator.eval(group).get(0));
         }
 
         return columnBuilder.toSeries();
@@ -49,11 +49,11 @@ public class SeriesAggregator {
             Exp<?> agg = aggregators[i];
 
             // TODO: let Aggregator fill Accumulator, as it can use primitive collections
-            Accumulator columnBuilder = new ObjectAccumulator(aggH);
+            ValueAccum columnBuilder = new ObjectAccumulator(aggH);
 
             for (Object key : groupBy.getGroups()) {
                 Series<T> group = groupBy.getGroup(key);
-                columnBuilder.add(agg.eval(group).get(0));
+                columnBuilder.push(agg.eval(group).get(0));
             }
 
             aggColumns[i] = columnBuilder.toSeries();

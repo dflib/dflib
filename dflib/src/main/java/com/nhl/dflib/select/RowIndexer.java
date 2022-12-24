@@ -13,7 +13,7 @@ public class RowIndexer {
         int[] i = new int[1];
         source.forEach(rp -> {
             if (p.test(rp)) {
-                index.addInt(i[0]);
+                index.pushInt(i[0]);
             }
 
             i[0]++;

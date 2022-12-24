@@ -30,7 +30,7 @@ public class MapExp2<L, R, T> extends Exp2<L, R, T> {
             for (int i = 0; i < len; i++) {
                 L l = ls.get(i);
                 R r = rs.get(i);
-                accum.add(l != null && r != null ? op.apply(l, r) : null);
+                accum.push(l != null && r != null ? op.apply(l, r) : null);
             }
 
             return accum.toSeries();
