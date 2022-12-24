@@ -3,7 +3,7 @@ package com.nhl.dflib.jdbc.connector;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.jdbc.Jdbc;
 import com.nhl.dflib.jdbc.connector.loader.ColumnBuilder;
-import com.nhl.dflib.jdbc.connector.loader.ColumnBuilderFactory;
+import com.nhl.dflib.jdbc.connector.loader.JdbcColumnBuilderFactory;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
 import com.nhl.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.DisplayName;
@@ -104,21 +104,21 @@ public class JdbcConnectorBuilder_IT extends BaseDbTest {
     }
 
     static ColumnBuilder<String> dateAccum(int pos) {
-        return ColumnBuilderFactory.fromJdbcFunction(rs -> {
+        return JdbcColumnBuilderFactory.fromJdbcFunction(rs -> {
             Date date = rs.getDate(pos);
             return date != null ? date.toLocalDate().toString() : null;
         });
     }
 
     static ColumnBuilder<String> timeAccum(int pos) {
-        return ColumnBuilderFactory.fromJdbcFunction(rs -> {
+        return JdbcColumnBuilderFactory.fromJdbcFunction(rs -> {
             Time time = rs.getTime(pos, Calendar.getInstance());
             return time != null ? time.toLocalTime().toString() : null;
         });
     }
 
     static ColumnBuilder<String> timestampAccum(int pos) {
-        return ColumnBuilderFactory.fromJdbcFunction(rs -> {
+        return JdbcColumnBuilderFactory.fromJdbcFunction(rs -> {
             Timestamp timestamp = rs.getTimestamp(pos, Calendar.getInstance());
             return timestamp != null ? timestamp.toLocalDateTime().toString() : null;
         });

@@ -1,6 +1,6 @@
 package com.nhl.dflib.jdbc.connector;
 
-import com.nhl.dflib.jdbc.connector.loader.ColumnBuilderFactory;
+import com.nhl.dflib.jdbc.connector.loader.JdbcColumnBuilderFactory;
 import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
 import com.nhl.dflib.jdbc.datasource.SimpleDataSource;
 
@@ -18,7 +18,7 @@ public class JdbcConnectorBuilder {
     private String driver;
     private String url;
     private DataSource dataSource;
-    private Map<Integer, ColumnBuilderFactory> columnBuilderFactories;
+    private Map<Integer, JdbcColumnBuilderFactory> columnBuilderFactories;
 
     public JdbcConnectorBuilder url(String url) {
         this.url = url;
@@ -56,14 +56,14 @@ public class JdbcConnectorBuilder {
     }
 
     /**
-     * Adds a custom {@link ColumnBuilderFactory} to handle reading data columns of a given JDBC type.
+     * Adds a custom {@link JdbcColumnBuilderFactory} to handle reading data columns of a given JDBC type.
      *
      * @param columnJdbcType a type of column defined in {@link Types}.
      * @param factory        a factory for column builders that should be associated with the provided type
-     * @see ColumnBuilderFactory for a collection of commonly-used factories.
+     * @see JdbcColumnBuilderFactory for a collection of commonly-used factories.
      * @since 0.8
      */
-    public <T> JdbcConnectorBuilder addColumnBuilderFactory(int columnJdbcType, ColumnBuilderFactory<T> factory) {
+    public <T> JdbcConnectorBuilder addColumnBuilderFactory(int columnJdbcType, JdbcColumnBuilderFactory<T> factory) {
         if (this.columnBuilderFactories == null) {
             this.columnBuilderFactories = new HashMap<>();
         }
@@ -77,13 +77,13 @@ public class JdbcConnectorBuilder {
         return new DefaultJdbcConnector(dataSource, DbMetadata.create(dataSource), createColumnBuilderFactories());
     }
 
-    private Map<Integer, ColumnBuilderFactory> createColumnBuilderFactories() {
+    private Map<Integer, JdbcColumnBuilderFactory> createColumnBuilderFactories() {
         // add standard factories unless already defined by the user
-        Map<Integer, ColumnBuilderFactory> factories = new HashMap<>();
+        Map<Integer, JdbcColumnBuilderFactory> factories = new HashMap<>();
 
-        factories.put(Types.DATE, ColumnBuilderFactory::dateAccum);
-        factories.put(Types.TIME, ColumnBuilderFactory::timeAccum);
-        factories.put(Types.TIMESTAMP, ColumnBuilderFactory::timestampAccum);
+        factories.put(Types.DATE, JdbcColumnBuilderFactory::dateCol);
+        factories.put(Types.TIME, JdbcColumnBuilderFactory::timeCol);
+        factories.put(Types.TIMESTAMP, JdbcColumnBuilderFactory::timestampCol);
 
         if (this.columnBuilderFactories != null) {
             factories.putAll(columnBuilderFactories);

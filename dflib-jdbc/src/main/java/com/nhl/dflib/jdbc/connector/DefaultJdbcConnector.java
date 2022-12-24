@@ -1,8 +1,8 @@
 package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.Printers;
-import com.nhl.dflib.jdbc.connector.loader.ColumnBuilder;
-import com.nhl.dflib.jdbc.connector.loader.ColumnBuilderFactory;
+import com.nhl.dflib.jdbc.connector.loader.JdbcColumnBuilderFactory;
+import com.nhl.dflib.jdbc.connector.loader.JdbcColumnBuilder;
 import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.jdbc.connector.statement.ValueConverter;
@@ -21,9 +21,9 @@ public class DefaultJdbcConnector implements JdbcConnector {
     private final DbMetadata metadata;
     private final IdentifierQuoter quoter;
 
-    private final ColumnBuilderFactory defaultColumnBuilderFactory;
-    private final Map<Integer, ColumnBuilderFactory> primitiveColumnBuilderFactories;
-    private final Map<Integer, ColumnBuilderFactory> columnBuilderFactories;
+    private final JdbcColumnBuilderFactory defaultColumnBuilderFactory;
+    private final Map<Integer, JdbcColumnBuilderFactory> primitiveColumnBuilderFactories;
+    private final Map<Integer, JdbcColumnBuilderFactory> columnBuilderFactories;
 
     private final ValueConverterFactory preBindConverterFactory;
     private final SqlLogger sqlLogger;
@@ -31,22 +31,22 @@ public class DefaultJdbcConnector implements JdbcConnector {
     public DefaultJdbcConnector(
             DataSource dataSource,
             DbMetadata metadata,
-            Map<Integer, ColumnBuilderFactory> columnBuilderFactories) {
+            Map<Integer, JdbcColumnBuilderFactory> columnBuilderFactories) {
 
         this.dataSource = dataSource;
         this.metadata = metadata;
 
-        this.defaultColumnBuilderFactory = ColumnBuilderFactory::objectAccum;
+        this.defaultColumnBuilderFactory = JdbcColumnBuilderFactory::objectCol;
 
         // use primitive converters if the column has no nulls
         this.primitiveColumnBuilderFactories = new HashMap<>();
-        this.primitiveColumnBuilderFactories.put(Types.BOOLEAN, ColumnBuilderFactory::booleanAccum);
-        this.primitiveColumnBuilderFactories.put(Types.INTEGER, ColumnBuilderFactory::intAccum);
-        this.primitiveColumnBuilderFactories.put(Types.DOUBLE, ColumnBuilderFactory::doubleAccum);
-        this.primitiveColumnBuilderFactories.put(Types.FLOAT, ColumnBuilderFactory::doubleAccum);
-        this.primitiveColumnBuilderFactories.put(Types.BIGINT, ColumnBuilderFactory::longAccum);
-        //mysql return bit with code -7 instead boolean -16 type
-        this.primitiveColumnBuilderFactories.put(Types.BIT, ColumnBuilderFactory::booleanAccum);
+        this.primitiveColumnBuilderFactories.put(Types.BOOLEAN, JdbcColumnBuilderFactory::booleanCol);
+        this.primitiveColumnBuilderFactories.put(Types.INTEGER, JdbcColumnBuilderFactory::intCol);
+        this.primitiveColumnBuilderFactories.put(Types.DOUBLE, JdbcColumnBuilderFactory::doubleCol);
+        this.primitiveColumnBuilderFactories.put(Types.FLOAT, JdbcColumnBuilderFactory::doubleCol);
+        this.primitiveColumnBuilderFactories.put(Types.BIGINT, JdbcColumnBuilderFactory::longCol);
+        // mysql return bit with code -7 instead boolean -16 type
+        this.primitiveColumnBuilderFactories.put(Types.BIT, JdbcColumnBuilderFactory::booleanCol);
 
         // Types.DECIMAL should presumably be mapped to BigDecimal, so not attempting to map to a primitive double
 
@@ -133,9 +133,9 @@ public class DefaultJdbcConnector implements JdbcConnector {
     }
 
     @Override
-    public ColumnBuilder<?> createColumnReader(int pos, int type, boolean mandatory) {
+    public JdbcColumnBuilder<?> createColumnReader(int pos, int type, boolean mandatory) {
 
-        ColumnBuilderFactory sbf = null;
+        JdbcColumnBuilderFactory sbf = null;
 
         // try to use primitive converters if the column has no nulls
         if (mandatory) {
@@ -146,7 +146,7 @@ public class DefaultJdbcConnector implements JdbcConnector {
             sbf = columnBuilderFactories.getOrDefault(type, defaultColumnBuilderFactory);
         }
 
-        return sbf.createAccum(pos);
+        return sbf.createBuilder(pos);
     }
 
     /**

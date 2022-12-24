@@ -15,9 +15,9 @@ import java.util.Calendar;
  * @since 0.8
  */
 @FunctionalInterface
-public interface ColumnBuilderFactory<T> {
+public interface JdbcColumnBuilderFactory<T> {
 
-    static ColumnBuilder<Boolean> booleanAccum(int pos) {
+    static JdbcColumnBuilder<Boolean> booleanCol(int pos) {
         BooleanValueMapper<ResultSet> mapper = rs -> {
             try {
                 return rs.getBoolean(pos);
@@ -26,10 +26,10 @@ public interface ColumnBuilderFactory<T> {
             }
         };
 
-        return new ColumnBuilder<>(new BooleanConverter<>(mapper), new BooleanAccumulator());
+        return new JdbcColumnBuilder<>(new BooleanConverter<>(mapper), new BooleanAccumulator());
     }
 
-    static ColumnBuilder<Integer> intAccum(int pos) {
+    static JdbcColumnBuilder<Integer> intCol(int pos) {
         IntValueMapper<ResultSet> mapper = rs -> {
             try {
                 return rs.getInt(pos);
@@ -38,10 +38,10 @@ public interface ColumnBuilderFactory<T> {
             }
         };
 
-        return new ColumnBuilder<>(new IntConverter<>(mapper), new IntAccumulator());
+        return new JdbcColumnBuilder<>(new IntConverter<>(mapper), new IntAccumulator());
     }
 
-    static ColumnBuilder<Long> longAccum(int pos) {
+    static JdbcColumnBuilder<Long> longCol(int pos) {
         LongValueMapper<ResultSet> mapper = rs -> {
             try {
                 return rs.getLong(pos);
@@ -50,10 +50,10 @@ public interface ColumnBuilderFactory<T> {
             }
         };
 
-        return new ColumnBuilder<>(new LongConverter<>(mapper), new LongAccumulator());
+        return new JdbcColumnBuilder<>(new LongConverter<>(mapper), new LongAccumulator());
     }
 
-    static ColumnBuilder<Double> doubleAccum(int pos) {
+    static JdbcColumnBuilder<Double> doubleCol(int pos) {
         DoubleValueMapper<ResultSet> mapper = rs -> {
             try {
                 return rs.getDouble(pos);
@@ -62,35 +62,35 @@ public interface ColumnBuilderFactory<T> {
             }
         };
 
-        return new ColumnBuilder<>(new DoubleConverter<>(mapper), new DoubleAccumulator());
+        return new JdbcColumnBuilder<>(new DoubleConverter<>(mapper), new DoubleAccumulator());
     }
 
-    static ColumnBuilder<Object> objectAccum(int pos) {
+    static JdbcColumnBuilder<Object> objectCol(int pos) {
         return fromJdbcFunction(rs -> rs.getObject(pos));
     }
 
-    static ColumnBuilder<LocalDate> dateAccum(int pos) {
+    static JdbcColumnBuilder<LocalDate> dateCol(int pos) {
         return fromJdbcFunction(rs -> {
             Date date = rs.getDate(pos);
             return date != null ? date.toLocalDate() : null;
         });
     }
 
-    static ColumnBuilder<LocalTime> timeAccum(int pos) {
+    static JdbcColumnBuilder<LocalTime> timeCol(int pos) {
         return fromJdbcFunction(rs -> {
             Time time = rs.getTime(pos, Calendar.getInstance());
             return time != null ? time.toLocalTime() : null;
         });
     }
 
-    static ColumnBuilder<LocalDateTime> timestampAccum(int pos) {
+    static JdbcColumnBuilder<LocalDateTime> timestampCol(int pos) {
         return fromJdbcFunction(rs -> {
             Timestamp timestamp = rs.getTimestamp(pos, Calendar.getInstance());
             return timestamp != null ? timestamp.toLocalDateTime() : null;
         });
     }
 
-    static <T> ColumnBuilder<T> fromJdbcFunction(JdbcFunction<ResultSet, T> f) {
+    static <T> JdbcColumnBuilder<T> fromJdbcFunction(JdbcFunction<ResultSet, T> f) {
 
         ValueMapper<ResultSet, T> mapper = rs -> {
             try {
@@ -100,8 +100,8 @@ public interface ColumnBuilderFactory<T> {
             }
         };
 
-        return new ColumnBuilder<>(new ObjectConverter<>(mapper), new ObjectAccumulator<>());
+        return new JdbcColumnBuilder<>(new ObjectConverter<>(mapper), new ObjectAccumulator<>());
     }
 
-    ColumnBuilder<T> createAccum(int pos);
+    JdbcColumnBuilder<T> createBuilder(int pos);
 }
