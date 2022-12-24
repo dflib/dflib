@@ -33,6 +33,7 @@ public class AvroTest_File {
         File file = new File(destination, "testSaveLoad_File.avro");
 
         DataFrame df = DataFrame.newFrame("a", "b")
+                .byRow()
                 .addRow(1, 2)
                 .addRow(3, 4)
                 .create();

@@ -3,7 +3,7 @@ package com.nhl.dflib;
 import com.nhl.dflib.builder.ValueAccum;
 
 /**
- * Assembles a DataFrame row by row. Created indirectly inside {@link DataFrameBuilder#addRow(Object...)}.
+ * Assembles a DataFrame row by row. Created indirectly inside {@link DataFrameBuilder#byRow(ValueAccum[])}
  *
  * @since 0.6
  */

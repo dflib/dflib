@@ -105,6 +105,10 @@ public class DataFrameBuilder {
         return new DataFrameByRowBuilder(columnsIndex, rowAccumulators);
     }
 
+    /**
+     * @deprecated use {@link #byRow(ValueAccum[])} and then {@link DataFrameByRowBuilder#addRow(Object...)}
+     */
+    @Deprecated(since = "0.16")
     public DataFrameByRowBuilder addRow(Object... row) {
         return byRow().addRow(row);
     }
