@@ -5,7 +5,7 @@ import com.nhl.dflib.Exp;
 import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
+import com.nhl.dflib.builder.ObjectAccum;
 import com.nhl.dflib.series.SingleValueSeries;
 import com.nhl.dflib.window.WindowRange;
 
@@ -27,7 +27,7 @@ public class WindowMapper {
         } else {
 
             int h = df.height();
-            ObjectAccumulator<T> data = new ObjectAccumulator<>(h);
+            ObjectAccum<T> data = new ObjectAccum<>(h);
             for (int i = 0; i < h; i++) {
                 // TODO: recreating DataFrame for every row.. A hot spot?
                 data.push(aggregator.eval(range.selectRows(df, i)).get(0));
@@ -41,7 +41,7 @@ public class WindowMapper {
 
         int h = windowGroupBy.getUngrouped().height();
 
-        ObjectAccumulator<T> data = new ObjectAccumulator<>(h);
+        ObjectAccum<T> data = new ObjectAccum<>(h);
 
         for (Object key : windowGroupBy.getGroups()) {
 

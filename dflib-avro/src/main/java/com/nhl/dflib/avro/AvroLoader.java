@@ -4,12 +4,12 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DataFrameByRowBuilder;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.accumulator.ValueAccum;
-import com.nhl.dflib.accumulator.BooleanAccumulator;
-import com.nhl.dflib.accumulator.DoubleAccumulator;
-import com.nhl.dflib.accumulator.IntAccumulator;
-import com.nhl.dflib.accumulator.LongAccumulator;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
+import com.nhl.dflib.builder.ValueAccum;
+import com.nhl.dflib.builder.BooleanAccum;
+import com.nhl.dflib.builder.DoubleAccum;
+import com.nhl.dflib.builder.IntAccum;
+import com.nhl.dflib.builder.LongAccum;
+import com.nhl.dflib.builder.ObjectAccum;
 import com.nhl.dflib.avro.schema.AvroSchemaUtils;
 import com.nhl.dflib.avro.types.AvroTypeExtensions;
 import org.apache.avro.Schema;
@@ -121,18 +121,18 @@ public class AvroLoader {
             // Raw numeric and boolean types can be loaded as primitives,
             // as numeric nullable types are declared as unions and will fall under the "default" case
             case INT:
-                return new IntAccumulator();
+                return new IntAccum();
             case DOUBLE:
-                return new DoubleAccumulator();
+                return new DoubleAccum();
             case LONG:
-                return new LongAccumulator();
+                return new LongAccum();
             case BOOLEAN:
-                return new BooleanAccumulator();
+                return new BooleanAccum();
             case STRING:
             case BYTES:
             case ENUM:
             case NULL:
-                return new ObjectAccumulator<>();
+                return new ObjectAccum<>();
             case UNION:
                 return mapUnionColumn(columnSchema.getTypes());
             default:
@@ -163,7 +163,7 @@ public class AvroLoader {
             case STRING:
             case BYTES:
             case ENUM:
-                return new ObjectAccumulator<>();
+                return new ObjectAccum<>();
             case UNION:
                 return mapUnionColumn(otherThanNull[0].getTypes());
             default:

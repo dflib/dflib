@@ -1,4 +1,4 @@
-package com.nhl.dflib.accumulator;
+package com.nhl.dflib.builder;
 
 /**
  * A holder of an object or a primitive value. Used as a flyweight to provides value access API that does not require

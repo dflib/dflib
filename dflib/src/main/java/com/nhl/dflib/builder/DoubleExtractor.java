@@ -1,12 +1,9 @@
-package com.nhl.dflib.loader;
+package com.nhl.dflib.builder;
 
 import com.nhl.dflib.DoubleValueMapper;
-import com.nhl.dflib.accumulator.ValueAccum;
-import com.nhl.dflib.accumulator.DoubleAccumulator;
-import com.nhl.dflib.accumulator.ValueStore;
 
 /**
- * @since 0.8
+ * @since 0.16
  */
 public class DoubleExtractor<F> implements ValueExtractor<F, Double> {
 
@@ -27,7 +24,12 @@ public class DoubleExtractor<F> implements ValueExtractor<F, Double> {
     }
 
     @Override
-    public ValueAccum<Double> createAccumulator(int capacity) {
-        return new DoubleAccumulator(capacity);
+    public ValueAccum<Double> createAccum(int capacity) {
+        return new DoubleAccum(capacity);
+    }
+
+    @Override
+    public ValueHolder<Double> createHolder() {
+        return new DoubleHolder();
     }
 }

@@ -1,8 +1,8 @@
 package com.nhl.dflib.csv.loader;
 
-import com.nhl.dflib.accumulator.ValueAccum;
-import com.nhl.dflib.loader.ValueExtractor;
-import com.nhl.dflib.accumulator.ValueHolder;
+import com.nhl.dflib.builder.ValueAccum;
+import com.nhl.dflib.builder.ValueExtractor;
+import com.nhl.dflib.builder.ValueHolder;
 import org.apache.commons.csv.CSVRecord;
 
 /**
@@ -13,16 +13,16 @@ import org.apache.commons.csv.CSVRecord;
  */
 public class CsvCell<T> {
 
-    private final ValueExtractor<CSVRecord, T> converter;
+    private final ValueExtractor<CSVRecord, T> extractor;
     private final ValueHolder<T> holder;
 
-    public CsvCell(ValueExtractor<CSVRecord, T> converter, ValueHolder<T> holder) {
-        this.converter = converter;
-        this.holder = holder;
+    public CsvCell(ValueExtractor<CSVRecord, T> extractor) {
+        this.extractor = extractor;
+        this.holder = extractor.createHolder();
     }
 
     public void set(CSVRecord record) {
-        converter.extract(record, holder);
+        extractor.extract(record, holder);
     }
 
     public void store(ValueAccum<T> accumulator) {

@@ -1,4 +1,4 @@
-package com.nhl.dflib.accumulator;
+package com.nhl.dflib.builder;
 
 import com.nhl.dflib.Series;
 import com.nhl.dflib.series.ArraySeries;
@@ -8,16 +8,16 @@ import java.util.Arrays;
 /**
  * @since 0.6
  */
-public class ObjectAccumulator<T> implements ValueAccum<T> {
+public class ObjectAccum<T> implements ValueAccum<T> {
 
     private T[] data;
     private int size;
 
-    public ObjectAccumulator() {
+    public ObjectAccum() {
         this(10);
     }
 
-    public ObjectAccumulator(int capacity) {
+    public ObjectAccum(int capacity) {
         this.size = 0;
         this.data = (T[]) new Object[capacity];
     }

@@ -1,9 +1,9 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.*;
-import com.nhl.dflib.accumulator.BooleanAccumulator;
-import com.nhl.dflib.accumulator.IntAccumulator;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
+import com.nhl.dflib.builder.BooleanAccum;
+import com.nhl.dflib.builder.IntAccum;
+import com.nhl.dflib.builder.ObjectAccum;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
 import com.nhl.dflib.map.Mapper;
@@ -132,7 +132,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
     @Override
     public Series<T> select(ValuePredicate<T> p) {
 
-        ObjectAccumulator<T> filtered = new ObjectAccumulator<>();
+        ObjectAccum<T> filtered = new ObjectAccum<>();
 
         int len = size();
 
@@ -156,7 +156,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
             throw new IllegalArgumentException("Positions size " + ps + " is not the same as this size " + s);
         }
 
-        ObjectAccumulator<T> data = new ObjectAccumulator<>();
+        ObjectAccum<T> data = new ObjectAccum<>();
 
         for (int i = 0; i < size(); i++) {
             if (positions.getBoolean(i)) {
@@ -179,7 +179,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
     @Override
     public IntSeries index(ValuePredicate<T> predicate) {
-        IntAccumulator index = new IntAccumulator();
+        IntAccum index = new IntAccum();
 
         int len = size();
 
@@ -196,7 +196,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
     public BooleanSeries locate(ValuePredicate<T> predicate) {
         int len = size();
 
-        BooleanAccumulator matches = new BooleanAccumulator(len);
+        BooleanAccum matches = new BooleanAccum(len);
 
         for (int i = 0; i < len; i++) {
             matches.pushBoolean(predicate.test(get(i)));
@@ -209,7 +209,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
     public Series<T> replace(BooleanSeries condition, T with) {
         int s = size();
         int r = Math.min(s, condition.size());
-        ObjectAccumulator<T> values = new ObjectAccumulator<>(s);
+        ObjectAccum<T> values = new ObjectAccum<>(s);
 
         for (int i = 0; i < r; i++) {
             values.push(condition.getBoolean(i) ? with : get(i));
@@ -227,7 +227,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
         int s = size();
         int r = Math.min(s, condition.size());
-        ObjectAccumulator<T> values = new ObjectAccumulator<>(s);
+        ObjectAccum<T> values = new ObjectAccum<>(s);
 
         for (int i = 0; i < r; i++) {
             values.push(condition.getBoolean(i) ? get(i) : with);
@@ -249,7 +249,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanAccumulator bools = new BooleanAccumulator(s);
+        BooleanAccum bools = new BooleanAccum(s);
         for (int i = 0; i < s; i++) {
             bools.pushBoolean(Objects.equals(get(i), another.get(i)));
         }
@@ -266,7 +266,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanAccumulator bools = new BooleanAccumulator(s);
+        BooleanAccum bools = new BooleanAccum(s);
         for (int i = 0; i < s; i++) {
             bools.pushBoolean(!Objects.equals(get(i), another.get(i)));
         }
@@ -278,7 +278,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
     public BooleanSeries isNull() {
         int s = size();
 
-        BooleanAccumulator bools = new BooleanAccumulator(s);
+        BooleanAccum bools = new BooleanAccum(s);
         for (int i = 0; i < s; i++) {
             bools.pushBoolean(get(i) == null);
         }
@@ -290,7 +290,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
     public BooleanSeries isNotNull() {
         int s = size();
 
-        BooleanAccumulator bools = new BooleanAccumulator(s);
+        BooleanAccum bools = new BooleanAccum(s);
         for (int i = 0; i < s; i++) {
             bools.pushBoolean(get(i) != null);
         }

@@ -2,7 +2,7 @@ package com.nhl.dflib.exp.map;
 
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
+import com.nhl.dflib.builder.ObjectAccum;
 import com.nhl.dflib.exp.ExpScalar2;
 import com.nhl.dflib.series.SingleValueSeries;
 
@@ -32,7 +32,7 @@ public class MapExpScalar2<L, R, T> extends ExpScalar2<L, R, T> {
             }
 
             int len = left.size();
-            ObjectAccumulator<T> accum = new ObjectAccumulator<>(len);
+            ObjectAccum<T> accum = new ObjectAccum<>(len);
             for (int i = 0; i < len; i++) {
                 L l = left.get(i);
                 accum.push(l != null ? op.apply(l, right) : null);

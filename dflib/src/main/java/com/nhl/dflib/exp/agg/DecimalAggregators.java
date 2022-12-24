@@ -4,7 +4,7 @@ import com.nhl.dflib.Condition;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.Sorter;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
+import com.nhl.dflib.builder.ObjectAccum;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -27,7 +27,7 @@ public class DecimalAggregators {
             return s;
         }
 
-        ObjectAccumulator<BigDecimal> accum = new ObjectAccumulator<>(h);
+        ObjectAccum<BigDecimal> accum = new ObjectAccum<>(h);
 
         int i = 0;
         BigDecimal runningTotal = null;

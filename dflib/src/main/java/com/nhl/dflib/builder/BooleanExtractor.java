@@ -1,9 +1,6 @@
-package com.nhl.dflib.loader;
+package com.nhl.dflib.builder;
 
 import com.nhl.dflib.BooleanValueMapper;
-import com.nhl.dflib.accumulator.ValueAccum;
-import com.nhl.dflib.accumulator.BooleanAccumulator;
-import com.nhl.dflib.accumulator.ValueStore;
 
 /**
  * @since 0.16
@@ -27,7 +24,12 @@ public class BooleanExtractor<F> implements ValueExtractor<F, Boolean> {
     }
 
     @Override
-    public ValueAccum<Boolean> createAccumulator(int capacity) {
-        return new BooleanAccumulator(capacity);
+    public ValueAccum<Boolean> createAccum(int capacity) {
+        return new BooleanAccum(capacity);
+    }
+
+    @Override
+    public ValueHolder<Boolean> createHolder() {
+        return new BooleanHolder();
     }
 }

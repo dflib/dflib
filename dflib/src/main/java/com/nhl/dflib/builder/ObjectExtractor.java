@@ -1,9 +1,6 @@
-package com.nhl.dflib.loader;
+package com.nhl.dflib.builder;
 
 import com.nhl.dflib.ValueMapper;
-import com.nhl.dflib.accumulator.ValueAccum;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
-import com.nhl.dflib.accumulator.ValueStore;
 
 /**
  * @since 0.8
@@ -27,7 +24,12 @@ public class ObjectExtractor<F, T> implements ValueExtractor<F, T> {
     }
 
     @Override
-    public ValueAccum<T> createAccumulator(int capacity) {
-        return new ObjectAccumulator<>(capacity);
+    public ValueAccum<T> createAccum(int capacity) {
+        return new ObjectAccum<>(capacity);
+    }
+
+    @Override
+    public ValueHolder<T> createHolder() {
+        return new ObjectHolder<>();
     }
 }

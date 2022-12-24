@@ -3,9 +3,9 @@ package com.nhl.dflib.explode;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.accumulator.ValueAccum;
-import com.nhl.dflib.accumulator.IntAccumulator;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
+import com.nhl.dflib.builder.ValueAccum;
+import com.nhl.dflib.builder.IntAccum;
+import com.nhl.dflib.builder.ObjectAccum;
 
 import java.util.Iterator;
 
@@ -21,13 +21,13 @@ public class Exploder {
     private final int columnPos;
     private final DataFrame srcDF;
     private final ValueAccum<Object> explodedAccum;
-    private final IntAccumulator indexAccum;
+    private final IntAccum indexAccum;
 
     protected Exploder(int columnPos, DataFrame srcDF) {
         this.columnPos = columnPos;
         this.srcDF = srcDF;
-        this.explodedAccum = new ObjectAccumulator<>(srcDF.height());
-        this.indexAccum = new IntAccumulator(srcDF.height());
+        this.explodedAccum = new ObjectAccum<>(srcDF.height());
+        this.indexAccum = new IntAccum(srcDF.height());
     }
 
     public DataFrame explode() {

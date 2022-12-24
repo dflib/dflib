@@ -1,29 +1,31 @@
-package com.nhl.dflib.accumulator;
+package com.nhl.dflib.builder;
 
-import com.nhl.dflib.BooleanSeries;
-import com.nhl.dflib.series.BooleanArraySeries;
+import com.nhl.dflib.DoubleSeries;
+import com.nhl.dflib.series.DoubleArraySeries;
 
 import java.util.Arrays;
 
 /**
+ * An expandable list of primitive int values that has minimal overhead and can be converted to compact and efficient
+ * immutable {@link com.nhl.dflib.DoubleSeries}.
+ *
  * @since 0.6
  */
-public class BooleanAccumulator implements ValueAccum<Boolean> {
+public class DoubleAccum implements ValueAccum<Double> {
 
-    // TODO: bitmap?
-    private boolean[] data;
+    private double[] data;
     private int size;
 
-    public BooleanAccumulator() {
+    public DoubleAccum() {
         this(10);
     }
 
-    public BooleanAccumulator(int capacity) {
+    public DoubleAccum(int capacity) {
         this.size = 0;
-        this.data = new boolean[capacity];
+        this.data = new double[capacity];
     }
 
-    public void fill(int from, int to, boolean value) {
+    public void fill(int from, int to, double value) {
 
         if (to - from < 1) {
             return;
@@ -41,15 +43,15 @@ public class BooleanAccumulator implements ValueAccum<Boolean> {
      * @since 0.8
      */
     @Override
-    public void push(Boolean v) {
-        pushBoolean(v != null ? v : false);
+    public void push(Double v) {
+        pushDouble(v != null ? v : 0.);
     }
 
     /**
      * @since 0.8
      */
     @Override
-    public void pushBoolean(boolean value) {
+    public void pushDouble(double value) {
 
         if (size == data.length) {
             expand(data.length * 2);
@@ -59,12 +61,12 @@ public class BooleanAccumulator implements ValueAccum<Boolean> {
     }
 
     @Override
-    public void replace(int pos, Boolean v) {
-        replaceBoolean(pos, v != null ? v : false);
+    public void replace(int pos, Double v) {
+        replaceDouble(pos, v != null ? v : 0.);
     }
 
     @Override
-    public void replaceBoolean(int pos, boolean value) {
+    public void replaceDouble(int pos, double value) {
 
         if (pos >= size) {
             size = pos + 1;
@@ -78,32 +80,32 @@ public class BooleanAccumulator implements ValueAccum<Boolean> {
     }
 
     @Override
-    public BooleanSeries toSeries() {
-        boolean[] data = compactData();
+    public DoubleSeries toSeries() {
+        double[] data = compactData();
 
         // making sure no one can change the series via the Mutable List anymore
         this.data = null;
 
-        return new BooleanArraySeries(data, 0, size);
+        return new DoubleArraySeries(data, 0, size);
     }
 
     public int size() {
         return size;
     }
 
-    private boolean[] compactData() {
+    private double[] compactData() {
         if (data.length == size) {
             return data;
         }
 
-        boolean[] newData = new boolean[size];
+        double[] newData = new double[size];
         System.arraycopy(data, 0, newData, 0, size);
         return newData;
     }
 
     private void expand(int newCapacity) {
 
-        boolean[] newData = new boolean[newCapacity];
+        double[] newData = new double[newCapacity];
         System.arraycopy(data, 0, newData, 0, size);
 
         this.data = newData;

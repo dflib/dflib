@@ -1,7 +1,11 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.*;
-import com.nhl.dflib.accumulator.*;
+import com.nhl.dflib.builder.BooleanAccum;
+import com.nhl.dflib.builder.IntAccum;
+import com.nhl.dflib.builder.LongAccum;
+import com.nhl.dflib.builder.ObjectAccum;
+import com.nhl.dflib.builder.UniqueLongAccum;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
 import com.nhl.dflib.map.Mapper;
@@ -72,7 +76,7 @@ public abstract class LongBaseSeries implements LongSeries {
 
     @Override
     public LongSeries selectLong(LongPredicate p) {
-        LongAccumulator filtered = new LongAccumulator();
+        LongAccum filtered = new LongAccum();
 
         int len = size();
 
@@ -95,7 +99,7 @@ public abstract class LongBaseSeries implements LongSeries {
             throw new IllegalArgumentException("Positions size " + ps + " is not the same as this size " + s);
         }
 
-        LongAccumulator data = new LongAccumulator();
+        LongAccum data = new LongAccum();
 
         for (int i = 0; i < size(); i++) {
             if (positions.getBoolean(i)) {
@@ -261,7 +265,7 @@ public abstract class LongBaseSeries implements LongSeries {
 
     @Override
     public IntSeries indexLong(LongPredicate predicate) {
-        IntAccumulator index = new IntAccumulator();
+        IntAccum index = new IntAccum();
 
         int len = size();
 
@@ -283,7 +287,7 @@ public abstract class LongBaseSeries implements LongSeries {
     public BooleanSeries locateLong(LongPredicate predicate) {
         int len = size();
 
-        BooleanAccumulator matches = new BooleanAccumulator(len);
+        BooleanAccum matches = new BooleanAccum(len);
 
         for (int i = 0; i < len; i++) {
             matches.pushBoolean(predicate.test(getLong(i)));
@@ -316,7 +320,7 @@ public abstract class LongBaseSeries implements LongSeries {
     private LongSeries replaceLong(BooleanSeries condition, long with) {
         int s = size();
         int r = Math.min(s, condition.size());
-        LongAccumulator longs = new LongAccumulator(s);
+        LongAccum longs = new LongAccum(s);
 
         for (int i = 0; i < r; i++) {
             longs.pushLong(condition.getBoolean(i) ? with : getLong(i));
@@ -333,7 +337,7 @@ public abstract class LongBaseSeries implements LongSeries {
 
         int s = size();
         int r = Math.min(s, condition.size());
-        LongAccumulator longs = new LongAccumulator(s);
+        LongAccum longs = new LongAccum(s);
 
         for (int i = 0; i < r; i++) {
             longs.pushLong(condition.getBoolean(i) ? getLong(i) : with);
@@ -349,7 +353,7 @@ public abstract class LongBaseSeries implements LongSeries {
     private Series<Long> nullify(BooleanSeries condition) {
         int s = size();
         int r = Math.min(s, condition.size());
-        ObjectAccumulator<Long> values = new ObjectAccumulator<>(s);
+        ObjectAccum<Long> values = new ObjectAccum<>(s);
 
         for (int i = 0; i < r; i++) {
             values.push(condition.getBoolean(i) ? null : getLong(i));
@@ -365,7 +369,7 @@ public abstract class LongBaseSeries implements LongSeries {
     private Series<Long> nullifyNoMatch(BooleanSeries condition) {
         int s = size();
         int r = Math.min(s, condition.size());
-        ObjectAccumulator<Long> values = new ObjectAccumulator<>(s);
+        ObjectAccum<Long> values = new ObjectAccum<>(s);
 
         for (int i = 0; i < r; i++) {
             values.push(condition.getBoolean(i) ? getLong(i) : null);
@@ -387,7 +391,7 @@ public abstract class LongBaseSeries implements LongSeries {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanAccumulator bools = new BooleanAccumulator(s);
+        BooleanAccum bools = new BooleanAccum(s);
 
         if (another instanceof LongSeries) {
             LongSeries anotherLong = (LongSeries) another;
@@ -413,7 +417,7 @@ public abstract class LongBaseSeries implements LongSeries {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanAccumulator bools = new BooleanAccumulator(s);
+        BooleanAccum bools = new BooleanAccum(s);
         if (another instanceof LongSeries) {
             LongSeries anotherLong = (LongSeries) another;
 
@@ -451,7 +455,7 @@ public abstract class LongBaseSeries implements LongSeries {
             return this;
         }
 
-        LongAccumulator unique = new UniqueLongAccumulator();
+        LongAccum unique = new UniqueLongAccum();
         for (int i = 0; i < size; i++) {
             unique.push(get(i));
         }

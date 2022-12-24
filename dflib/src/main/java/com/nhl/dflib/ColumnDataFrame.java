@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.accumulator.BooleanAccumulator;
+import com.nhl.dflib.builder.BooleanAccum;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.explode.Exploder;
@@ -222,7 +222,7 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public BooleanSeries mapColumnAsBoolean(RowToBooleanValueMapper rowMapper) {
         // don't bother to make it lazy... boolean columns are very compact compared to the rest of the data set
-        BooleanAccumulator data = new BooleanAccumulator(height());
+        BooleanAccum data = new BooleanAccum(height());
 
         for (RowProxy row : this) {
             data.pushBoolean(rowMapper.map(row));

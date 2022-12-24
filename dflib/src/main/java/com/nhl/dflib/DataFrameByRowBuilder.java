@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.accumulator.ValueAccum;
+import com.nhl.dflib.builder.ValueAccum;
 
 /**
  * Assembles a DataFrame row by row. Created indirectly inside {@link DataFrameBuilder#addRow(Object...)}.

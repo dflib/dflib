@@ -3,7 +3,7 @@ package com.nhl.dflib.exp.str;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.StrExp;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
+import com.nhl.dflib.builder.ObjectAccum;
 import com.nhl.dflib.exp.ExpN;
 
 import static com.nhl.dflib.Exp.$val;
@@ -46,7 +46,7 @@ public class ConcatExp extends ExpN<String> implements StrExp {
     protected Series<String> doEval(int height, Series<?>[] args) {
 
         StringBuilder row = new StringBuilder();
-        ObjectAccumulator<String> accum = new ObjectAccumulator<>(height);
+        ObjectAccum<String> accum = new ObjectAccum<>(height);
 
         for (int i = 0; i < height; i++) {
             row.setLength(0);

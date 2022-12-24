@@ -3,7 +3,7 @@ package com.nhl.dflib.join;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.JoinType;
-import com.nhl.dflib.accumulator.IntAccumulator;
+import com.nhl.dflib.builder.IntAccum;
 import com.nhl.dflib.row.RowProxy;
 
 import java.util.LinkedHashSet;
@@ -25,8 +25,8 @@ public class NestedLoopJoiner extends BaseJoiner {
     @Override
     protected IntSeries[] innerJoin(DataFrame lf, DataFrame rf) {
 
-        IntAccumulator li = new IntAccumulator();
-        IntAccumulator ri = new IntAccumulator();
+        IntAccum li = new IntAccum();
+        IntAccum ri = new IntAccum();
 
         // make sure we don't recalculate this frame inside the inner loop
         // TODO: "materialize" is useless in column frames
@@ -54,8 +54,8 @@ public class NestedLoopJoiner extends BaseJoiner {
     @Override
     protected IntSeries[] leftJoin(DataFrame lf, DataFrame rf) {
 
-        IntAccumulator li = new IntAccumulator();
-        IntAccumulator ri = new IntAccumulator();
+        IntAccum li = new IntAccum();
+        IntAccum ri = new IntAccum();
 
         // make sure we don't recalculate this frame inside the inner loop
         DataFrame rfm = rf.materialize();
@@ -89,8 +89,8 @@ public class NestedLoopJoiner extends BaseJoiner {
     @Override
     protected IntSeries[] rightJoin(DataFrame lf, DataFrame rf) {
 
-        IntAccumulator li = new IntAccumulator();
-        IntAccumulator ri = new IntAccumulator();
+        IntAccum li = new IntAccum();
+        IntAccum ri = new IntAccum();
 
         // make sure we don't recalculate this frame inside the inner loop
         DataFrame lfm = lf.materialize();
@@ -124,8 +124,8 @@ public class NestedLoopJoiner extends BaseJoiner {
     @Override
     protected IntSeries[] fullJoin(DataFrame lf, DataFrame rf) {
 
-        IntAccumulator li = new IntAccumulator();
-        IntAccumulator ri = new IntAccumulator();
+        IntAccum li = new IntAccum();
+        IntAccum ri = new IntAccum();
 
         // make sure we don't recalculate this frame inside the inner loop
         DataFrame rfm = rf.materialize();

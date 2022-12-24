@@ -6,8 +6,8 @@ import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.accumulator.ValueAccum;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
+import com.nhl.dflib.builder.ValueAccum;
+import com.nhl.dflib.builder.ObjectAccum;
 import com.nhl.dflib.series.SingleValueSeries;
 
 /**
@@ -28,7 +28,7 @@ public class WindowAggregator {
             Exp<?> agg = aggregators[i];
 
             // TODO: primitives support for performance
-            ValueAccum columnBuilder = new ObjectAccumulator(aggH);
+            ValueAccum columnBuilder = new ObjectAccum(aggH);
 
             for (Object key : groupBy.getGroups()) {
                 DataFrame group = groupBy.getGroup(key);

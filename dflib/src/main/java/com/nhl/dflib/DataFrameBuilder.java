@@ -4,11 +4,11 @@ import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.DoubleArraySeries;
 import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.series.LongArraySeries;
-import com.nhl.dflib.accumulator.ValueAccum;
-import com.nhl.dflib.accumulator.DoubleAccumulator;
-import com.nhl.dflib.accumulator.IntAccumulator;
-import com.nhl.dflib.accumulator.LongAccumulator;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
+import com.nhl.dflib.builder.ValueAccum;
+import com.nhl.dflib.builder.DoubleAccum;
+import com.nhl.dflib.builder.IntAccum;
+import com.nhl.dflib.builder.LongAccum;
+import com.nhl.dflib.builder.ObjectAccum;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,7 +87,7 @@ public class DataFrameBuilder {
             int w = columnsIndex.size();
             rowAccumulators = new ValueAccum[w];
             for (int i = 0; i < w; i++) {
-                rowAccumulators[i] = new ObjectAccumulator<>();
+                rowAccumulators[i] = new ObjectAccum<>();
             }
         } else if (rowAccumulators.length != columnsIndex.size()) {
             throw new IllegalArgumentException("Mismatch between the number of accumulators and index width - "
@@ -168,7 +168,7 @@ public class DataFrameBuilder {
 
         ValueAccum<Object>[] columnBuilders = new ValueAccum[width];
         for (int i = 0; i < width; i++) {
-            columnBuilders[i] = new ObjectAccumulator<>(heightEstimate);
+            columnBuilders[i] = new ObjectAccum<>(heightEstimate);
         }
 
         int p = 0;
@@ -244,9 +244,9 @@ public class DataFrameBuilder {
             throw new IllegalArgumentException("Empty columns");
         }
 
-        IntAccumulator[] columnBuilders = new IntAccumulator[width];
+        IntAccum[] columnBuilders = new IntAccum[width];
         for (int i = 0; i < width; i++) {
-            columnBuilders[i] = new IntAccumulator();
+            columnBuilders[i] = new IntAccum();
         }
 
         PrimitiveIterator.OfInt it = stream.iterator();
@@ -320,9 +320,9 @@ public class DataFrameBuilder {
             throw new IllegalArgumentException("Empty columns");
         }
 
-        LongAccumulator[] columnBuilders = new LongAccumulator[width];
+        LongAccum[] columnBuilders = new LongAccum[width];
         for (int i = 0; i < width; i++) {
-            columnBuilders[i] = new LongAccumulator();
+            columnBuilders[i] = new LongAccum();
         }
 
         PrimitiveIterator.OfLong it = stream.iterator();
@@ -396,9 +396,9 @@ public class DataFrameBuilder {
             throw new IllegalArgumentException("Empty columns");
         }
 
-        DoubleAccumulator[] columnBuilders = new DoubleAccumulator[width];
+        DoubleAccum[] columnBuilders = new DoubleAccum[width];
         for (int i = 0; i < width; i++) {
-            columnBuilders[i] = new DoubleAccumulator();
+            columnBuilders[i] = new DoubleAccum();
         }
 
         PrimitiveIterator.OfDouble it = stream.iterator();

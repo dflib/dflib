@@ -5,7 +5,7 @@ import com.nhl.dflib.DoubleSeries;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.Sorter;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
+import com.nhl.dflib.builder.ObjectAccum;
 
 import java.util.function.Function;
 import java.util.stream.Collector;
@@ -37,7 +37,7 @@ public class DoubleAggregators {
             return ((DoubleSeries) s).cumSum();
         }
 
-        ObjectAccumulator<Double> accum = new ObjectAccumulator<>(h);
+        ObjectAccum<Double> accum = new ObjectAccum<>(h);
 
         int i = 0;
         double runningTotal = 0.;

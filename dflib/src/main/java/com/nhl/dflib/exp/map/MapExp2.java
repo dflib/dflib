@@ -2,7 +2,7 @@ package com.nhl.dflib.exp.map;
 
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
+import com.nhl.dflib.builder.ObjectAccum;
 import com.nhl.dflib.exp.Exp2;
 
 import java.util.function.BiFunction;
@@ -26,7 +26,7 @@ public class MapExp2<L, R, T> extends Exp2<L, R, T> {
     protected static <L, R, T> BiFunction<Series<L>, Series<R>, Series<T>> valToSeries(BiFunction<L, R, T> op) {
         return (ls, rs) -> {
             int len = ls.size();
-            ObjectAccumulator<T> accum = new ObjectAccumulator<>(len);
+            ObjectAccum<T> accum = new ObjectAccum<>(len);
             for (int i = 0; i < len; i++) {
                 L l = ls.get(i);
                 R r = rs.get(i);

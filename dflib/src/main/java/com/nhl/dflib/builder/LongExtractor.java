@@ -1,9 +1,6 @@
-package com.nhl.dflib.loader;
+package com.nhl.dflib.builder;
 
 import com.nhl.dflib.LongValueMapper;
-import com.nhl.dflib.accumulator.ValueAccum;
-import com.nhl.dflib.accumulator.LongAccumulator;
-import com.nhl.dflib.accumulator.ValueStore;
 
 /**
  * @since 0.8
@@ -27,7 +24,12 @@ public class LongExtractor<F> implements ValueExtractor<F, Long> {
     }
 
     @Override
-    public ValueAccum<Long> createAccumulator(int capacity) {
-        return new LongAccumulator(capacity);
+    public ValueAccum<Long> createAccum(int capacity) {
+        return new LongAccum(capacity);
+    }
+
+    @Override
+    public ValueHolder<Long> createHolder() {
+        return new LongHolder();
     }
 }

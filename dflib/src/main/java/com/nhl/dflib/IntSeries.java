@@ -1,8 +1,8 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.accumulator.BooleanAccumulator;
+import com.nhl.dflib.builder.BooleanAccum;
 import com.nhl.dflib.series.IntArraySeries;
-import com.nhl.dflib.accumulator.IntAccumulator;
+import com.nhl.dflib.builder.IntAccum;
 import com.nhl.dflib.sort.IntComparator;
 
 import java.util.Comparator;
@@ -25,7 +25,7 @@ public interface IntSeries extends Series<Integer> {
      */
     static <V> IntSeries forSeries(Series<V> series, IntValueMapper<? super V> converter) {
         int len = series.size();
-        IntAccumulator a = new IntAccumulator(len);
+        IntAccum a = new IntAccum(len);
         for (int i = 0; i < len; i++) {
             a.pushInt(converter.map(series.get(i)));
         }
@@ -167,7 +167,7 @@ public interface IntSeries extends Series<Integer> {
      */
     default IntSeries add(IntSeries s) {
         int len = size();
-        IntAccumulator accumulator = new IntAccumulator(len);
+        IntAccum accumulator = new IntAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushInt(this.getInt(i) + s.getInt(i));
@@ -183,7 +183,7 @@ public interface IntSeries extends Series<Integer> {
      */
     default IntSeries sub(IntSeries s) {
         int len = size();
-        IntAccumulator accumulator = new IntAccumulator(len);
+        IntAccum accumulator = new IntAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushInt(this.getInt(i) - s.getInt(i));
@@ -199,7 +199,7 @@ public interface IntSeries extends Series<Integer> {
      */
     default IntSeries mul(IntSeries s) {
         int len = size();
-        IntAccumulator accumulator = new IntAccumulator(len);
+        IntAccum accumulator = new IntAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushInt(this.getInt(i) * s.getInt(i));
@@ -215,7 +215,7 @@ public interface IntSeries extends Series<Integer> {
      */
     default IntSeries div(IntSeries s) {
         int len = size();
-        IntAccumulator accumulator = new IntAccumulator(len);
+        IntAccum accumulator = new IntAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushInt(this.getInt(i) / s.getInt(i));
@@ -231,7 +231,7 @@ public interface IntSeries extends Series<Integer> {
      */
     default IntSeries mod(IntSeries s) {
         int len = size();
-        IntAccumulator accumulator = new IntAccumulator(len);
+        IntAccum accumulator = new IntAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushInt(this.getInt(i) % s.getInt(i));
@@ -245,7 +245,7 @@ public interface IntSeries extends Series<Integer> {
      */
     default BooleanSeries lt(IntSeries s) {
         int len = size();
-        BooleanAccumulator accumulator = new BooleanAccumulator(len);
+        BooleanAccum accumulator = new BooleanAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushBoolean(this.getInt(i) < s.getInt(i));
@@ -259,7 +259,7 @@ public interface IntSeries extends Series<Integer> {
      */
     default BooleanSeries le(IntSeries s) {
         int len = size();
-        BooleanAccumulator accumulator = new BooleanAccumulator(len);
+        BooleanAccum accumulator = new BooleanAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushBoolean(this.getInt(i) <= s.getInt(i));
@@ -273,7 +273,7 @@ public interface IntSeries extends Series<Integer> {
      */
     default BooleanSeries gt(IntSeries s) {
         int len = size();
-        BooleanAccumulator accumulator = new BooleanAccumulator(len);
+        BooleanAccum accumulator = new BooleanAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushBoolean(this.getInt(i) > s.getInt(i));
@@ -287,7 +287,7 @@ public interface IntSeries extends Series<Integer> {
      */
     default BooleanSeries ge(IntSeries s) {
         int len = size();
-        BooleanAccumulator accumulator = new BooleanAccumulator(len);
+        BooleanAccum accumulator = new BooleanAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushBoolean(this.getInt(i) >= s.getInt(i));

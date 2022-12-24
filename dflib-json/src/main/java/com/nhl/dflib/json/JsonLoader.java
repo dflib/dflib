@@ -8,8 +8,8 @@ import com.nhl.dflib.ColumnDataFrame;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.accumulator.ValueAccum;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
+import com.nhl.dflib.builder.ValueAccum;
+import com.nhl.dflib.builder.ObjectAccum;
 
 import java.io.Reader;
 import java.util.HashSet;
@@ -128,7 +128,7 @@ public class JsonLoader {
     }
 
     protected ValueAccum<Object> createdColumnAccumulator(int length, int offset) {
-        ValueAccum<Object> column = new ObjectAccumulator<>(length);
+        ValueAccum<Object> column = new ObjectAccum<>(length);
 
         for (int i = 0; i < offset; i++) {
             column.push(null);

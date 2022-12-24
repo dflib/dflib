@@ -1,4 +1,4 @@
-package com.nhl.dflib.accumulator;
+package com.nhl.dflib.builder;
 
 /**
  * An abstraction of a mutable primitives-aware store of values.

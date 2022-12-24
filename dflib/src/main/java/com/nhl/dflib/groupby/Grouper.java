@@ -3,7 +3,7 @@ package com.nhl.dflib.groupby;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.IntSeries;
-import com.nhl.dflib.accumulator.IntAccumulator;
+import com.nhl.dflib.builder.IntAccum;
 import com.nhl.dflib.Hasher;
 import com.nhl.dflib.row.RowProxy;
 
@@ -33,7 +33,7 @@ public class Grouper {
             // would allow to store a null key, but would blow up when trying to "get" it, so we kind of go with the flow
             // here
             if(key != null) {
-                ((IntAccumulator) groups.computeIfAbsent(key, k -> new IntAccumulator())).pushInt(i);
+                ((IntAccum) groups.computeIfAbsent(key, k -> new IntAccum())).pushInt(i);
             }
 
             i++;
@@ -41,7 +41,7 @@ public class Grouper {
 
         for (Object o : groups.entrySet()) {
             Map.Entry<?, Object> e = (Map.Entry) o;
-            e.setValue(((IntAccumulator) e.getValue()).toSeries());
+            e.setValue(((IntAccum) e.getValue()).toSeries());
         }
 
         return new GroupBy(df, (Map<Object, IntSeries>) groups, null);

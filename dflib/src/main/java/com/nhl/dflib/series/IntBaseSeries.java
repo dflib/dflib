@@ -1,10 +1,10 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.*;
-import com.nhl.dflib.accumulator.BooleanAccumulator;
-import com.nhl.dflib.accumulator.IntAccumulator;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
-import com.nhl.dflib.accumulator.UniqueIntAccumulator;
+import com.nhl.dflib.builder.BooleanAccum;
+import com.nhl.dflib.builder.IntAccum;
+import com.nhl.dflib.builder.ObjectAccum;
+import com.nhl.dflib.builder.UniqueIntAccum;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
 import com.nhl.dflib.map.Mapper;
@@ -80,7 +80,7 @@ public abstract class IntBaseSeries implements IntSeries {
 
     @Override
     public IntSeries selectInt(IntPredicate p) {
-        IntAccumulator filtered = new IntAccumulator();
+        IntAccum filtered = new IntAccum();
 
         int len = size();
 
@@ -103,7 +103,7 @@ public abstract class IntBaseSeries implements IntSeries {
             throw new IllegalArgumentException("Positions size " + ps + " is not the same as this size " + s);
         }
 
-        IntAccumulator data = new IntAccumulator();
+        IntAccum data = new IntAccum();
 
         for (int i = 0; i < size(); i++) {
             if (positions.getBoolean(i)) {
@@ -299,7 +299,7 @@ public abstract class IntBaseSeries implements IntSeries {
 
     @Override
     public IntSeries indexInt(IntPredicate predicate) {
-        IntAccumulator index = new IntAccumulator();
+        IntAccum index = new IntAccum();
 
         int len = size();
 
@@ -321,7 +321,7 @@ public abstract class IntBaseSeries implements IntSeries {
     public BooleanSeries locateInt(IntPredicate predicate) {
         int len = size();
 
-        BooleanAccumulator matches = new BooleanAccumulator(len);
+        BooleanAccum matches = new BooleanAccum(len);
 
         for (int i = 0; i < len; i++) {
             matches.pushBoolean(predicate.test(getInt(i)));
@@ -354,7 +354,7 @@ public abstract class IntBaseSeries implements IntSeries {
     private IntSeries replaceInt(BooleanSeries condition, int with) {
         int s = size();
         int r = Math.min(s, condition.size());
-        IntAccumulator ints = new IntAccumulator(s);
+        IntAccum ints = new IntAccum(s);
 
         for (int i = 0; i < r; i++) {
             ints.pushInt(condition.getBoolean(i) ? with : getInt(i));
@@ -371,7 +371,7 @@ public abstract class IntBaseSeries implements IntSeries {
 
         int s = size();
         int r = Math.min(s, condition.size());
-        IntAccumulator ints = new IntAccumulator(s);
+        IntAccum ints = new IntAccum(s);
 
         for (int i = 0; i < r; i++) {
             ints.pushInt(condition.getBoolean(i) ? getInt(i) : with);
@@ -387,7 +387,7 @@ public abstract class IntBaseSeries implements IntSeries {
     private Series<Integer> nullify(BooleanSeries condition) {
         int s = size();
         int r = Math.min(s, condition.size());
-        ObjectAccumulator<Integer> values = new ObjectAccumulator<>(s);
+        ObjectAccum<Integer> values = new ObjectAccum<>(s);
 
         for (int i = 0; i < r; i++) {
             values.push(condition.getBoolean(i) ? null : getInt(i));
@@ -403,7 +403,7 @@ public abstract class IntBaseSeries implements IntSeries {
     private Series<Integer> nullifyNoMatch(BooleanSeries condition) {
         int s = size();
         int r = Math.min(s, condition.size());
-        ObjectAccumulator<Integer> values = new ObjectAccumulator<>(s);
+        ObjectAccum<Integer> values = new ObjectAccum<>(s);
 
         for (int i = 0; i < r; i++) {
             values.push(condition.getBoolean(i) ? getInt(i) : null);
@@ -435,7 +435,7 @@ public abstract class IntBaseSeries implements IntSeries {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanAccumulator bools = new BooleanAccumulator(s);
+        BooleanAccum bools = new BooleanAccum(s);
 
         if (another instanceof IntSeries) {
             IntSeries anotherInt = (IntSeries) another;
@@ -461,7 +461,7 @@ public abstract class IntBaseSeries implements IntSeries {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanAccumulator bools = new BooleanAccumulator(s);
+        BooleanAccum bools = new BooleanAccum(s);
         if (another instanceof IntSeries) {
             IntSeries anotherInt = (IntSeries) another;
 
@@ -489,7 +489,7 @@ public abstract class IntBaseSeries implements IntSeries {
             return this;
         }
 
-        IntAccumulator unique = new UniqueIntAccumulator();
+        IntAccum unique = new UniqueIntAccum();
         for (int i = 0; i < size; i++) {
             unique.push(get(i));
         }

@@ -4,7 +4,7 @@ import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.SeriesGroupBy;
 import com.nhl.dflib.ValueMapper;
-import com.nhl.dflib.accumulator.IntAccumulator;
+import com.nhl.dflib.builder.IntAccum;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -35,13 +35,13 @@ public class SeriesGrouper<T> {
             // here
 
             if (key != null) {
-                ((IntAccumulator) groups.computeIfAbsent(key, k -> new IntAccumulator())).pushInt(i);
+                ((IntAccum) groups.computeIfAbsent(key, k -> new IntAccum())).pushInt(i);
             }
         }
 
         for (Object o : groups.entrySet()) {
             Map.Entry<?, Object> e = (Map.Entry) o;
-            e.setValue(((IntAccumulator) e.getValue()).toSeries());
+            e.setValue(((IntAccum) e.getValue()).toSeries());
         }
 
         return new SeriesGroupBy<>(s, (Map<Object, IntSeries>) groups);

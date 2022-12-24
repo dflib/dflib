@@ -1,7 +1,7 @@
 package com.nhl.dflib.csv.loader;
 
-import com.nhl.dflib.loader.SeriesBuilder;
-import com.nhl.dflib.loader.ValueExtractor;
+import com.nhl.dflib.builder.SeriesBuilder;
+import com.nhl.dflib.builder.ValueExtractor;
 import org.apache.commons.csv.CSVRecord;
 
 /**

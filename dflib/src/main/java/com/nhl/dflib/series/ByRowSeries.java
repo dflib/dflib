@@ -2,7 +2,7 @@ package com.nhl.dflib.series;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
+import com.nhl.dflib.builder.ObjectAccum;
 import com.nhl.dflib.row.RowProxy;
 
 /**
@@ -65,7 +65,7 @@ public class ByRowSeries extends ObjectSeries<Object> {
     }
 
     protected Series<Object> doMaterialize() {
-        ObjectAccumulator<Object> data = new ObjectAccumulator<>(size);
+        ObjectAccum<Object> data = new ObjectAccum<>(size);
 
         for (RowProxy r : source) {
             for (int i = 0; i < width; i++) {

@@ -5,7 +5,7 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.csv.loader.CsvSeriesBuilder;
-import com.nhl.dflib.accumulator.IntAccumulator;
+import com.nhl.dflib.builder.IntAccum;
 import org.apache.commons.csv.CSVRecord;
 
 import java.util.Iterator;
@@ -21,7 +21,7 @@ class SamplingCsvLoaderWorker implements CsvLoaderWorker {
 
     protected int rowSampleSize;
     protected Random rowsSampleRandom;
-    protected IntAccumulator sampledRows;
+    protected IntAccum sampledRows;
 
     SamplingCsvLoaderWorker(
             Index columnIndex,
@@ -34,7 +34,7 @@ class SamplingCsvLoaderWorker implements CsvLoaderWorker {
 
         this.rowSampleSize = rowSampleSize;
         this.rowsSampleRandom = rowsSampleRandom;
-        this.sampledRows = new IntAccumulator();
+        this.sampledRows = new IntAccum();
     }
 
     @Override

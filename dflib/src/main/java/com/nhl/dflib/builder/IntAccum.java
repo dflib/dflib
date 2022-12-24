@@ -1,31 +1,31 @@
-package com.nhl.dflib.accumulator;
+package com.nhl.dflib.builder;
 
-import com.nhl.dflib.LongSeries;
-import com.nhl.dflib.series.LongArraySeries;
+import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.series.IntArraySeries;
 
 import java.util.Arrays;
 
 /**
- * An expandable list of primitive long values that has minimal overhead and can be converted to compact and efficient
- * immutable {@link com.nhl.dflib.LongSeries}.
+ * An expandable list of primitive int values that has minimal overhead and can be converted to compact and efficient
+ * immutable {@link IntSeries}.
  *
  * @since 0.6
  */
-public class LongAccumulator implements ValueAccum<Long> {
+public class IntAccum implements ValueAccum<Integer> {
 
-    private long[] data;
+    private int[] data;
     private int size;
 
-    public LongAccumulator() {
+    public IntAccum() {
         this(10);
     }
 
-    public LongAccumulator(int capacity) {
+    public IntAccum(int capacity) {
         this.size = 0;
-        this.data = new long[capacity];
+        this.data = new int[capacity];
     }
 
-    public void fill(int from, int to, long value) {
+    public void fill(int from, int to, int value) {
         if (to - from < 1) {
             return;
         }
@@ -38,13 +38,19 @@ public class LongAccumulator implements ValueAccum<Long> {
         size += to - from;
     }
 
+    /**
+     * @since 0.8
+     */
     @Override
-    public void push(Long v) {
-        pushLong(v != null ? v : 0L);
+    public void push(Integer v) {
+        pushInt(v != null ? v : 0);
     }
 
+    /**
+     * @since 0.8
+     */
     @Override
-    public void pushLong(long value) {
+    public void pushInt(int value) {
 
         if (size == data.length) {
             expand(data.length * 2);
@@ -54,12 +60,12 @@ public class LongAccumulator implements ValueAccum<Long> {
     }
 
     @Override
-    public void replace(int pos, Long v) {
-        replaceLong(pos, v != null ? v : 0L);
+    public void replace(int pos, Integer v) {
+        replaceInt(pos, v != null ? v : 0);
     }
 
     @Override
-    public void replaceLong(int pos, long value) {
+    public void replaceInt(int pos, int value) {
 
         if (pos >= size) {
             size = pos + 1;
@@ -73,31 +79,31 @@ public class LongAccumulator implements ValueAccum<Long> {
     }
 
     @Override
-    public LongSeries toSeries() {
-        long[] data = compactData();
+    public IntSeries toSeries() {
+        int[] data = compactData();
 
         // making sure no one can change the series via the Mutable List anymore
         this.data = null;
 
-        return new LongArraySeries(data, 0, size);
+        return new IntArraySeries(data, 0, size);
     }
 
     public int size() {
         return size;
     }
 
-    private long[] compactData() {
+    private int[] compactData() {
         if (data.length == size) {
             return data;
         }
 
-        long[] newData = new long[size];
+        int[] newData = new int[size];
         System.arraycopy(data, 0, newData, 0, size);
         return newData;
     }
 
     private void expand(int newCapacity) {
-        long[] newData = new long[newCapacity];
+        int[] newData = new int[newCapacity];
         System.arraycopy(data, 0, newData, 0, size);
 
         this.data = newData;

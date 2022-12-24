@@ -3,7 +3,7 @@ package com.nhl.dflib.exp.agg;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.LongSeries;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
+import com.nhl.dflib.builder.ObjectAccum;
 
 import java.util.function.Function;
 import java.util.stream.Collector;
@@ -32,7 +32,7 @@ public class IntAggregators {
             return ((IntSeries) s).cumSum();
         }
 
-        ObjectAccumulator<Long> accum = new ObjectAccumulator<>(h);
+        ObjectAccum<Long> accum = new ObjectAccum<>(h);
 
         int i = 0;
         long runningTotal = 0;

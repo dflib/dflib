@@ -2,11 +2,11 @@ package com.nhl.dflib.jdbc.connector.loader;
 
 import com.nhl.dflib.*;
 import com.nhl.dflib.jdbc.connector.JdbcFunction;
-import com.nhl.dflib.loader.BooleanExtractor;
-import com.nhl.dflib.loader.DoubleExtractor;
-import com.nhl.dflib.loader.IntExtractor;
-import com.nhl.dflib.loader.LongExtractor;
-import com.nhl.dflib.loader.ObjectExtractor;
+import com.nhl.dflib.builder.BooleanExtractor;
+import com.nhl.dflib.builder.DoubleExtractor;
+import com.nhl.dflib.builder.IntExtractor;
+import com.nhl.dflib.builder.LongExtractor;
+import com.nhl.dflib.builder.ObjectExtractor;
 
 import java.sql.*;
 import java.time.LocalDate;

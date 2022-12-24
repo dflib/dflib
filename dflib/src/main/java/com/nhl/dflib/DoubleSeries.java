@@ -1,7 +1,7 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.accumulator.BooleanAccumulator;
-import com.nhl.dflib.accumulator.DoubleAccumulator;
+import com.nhl.dflib.builder.BooleanAccum;
+import com.nhl.dflib.builder.DoubleAccum;
 import com.nhl.dflib.series.DoubleArraySeries;
 
 import java.util.Comparator;
@@ -24,7 +24,7 @@ public interface DoubleSeries extends Series<Double> {
      */
     static <V> DoubleSeries forSeries(Series<V> series, DoubleValueMapper<? super V> converter) {
         int len = series.size();
-        DoubleAccumulator a = new DoubleAccumulator(len);
+        DoubleAccum a = new DoubleAccum(len);
         for (int i = 0; i < len; i++) {
             a.pushDouble(converter.map(series.get(i)));
         }
@@ -156,7 +156,7 @@ public interface DoubleSeries extends Series<Double> {
      */
     default DoubleSeries add(DoubleSeries s) {
         int len = size();
-        DoubleAccumulator accumulator = new DoubleAccumulator(len);
+        DoubleAccum accumulator = new DoubleAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushDouble(this.getDouble(i) + s.getDouble(i));
@@ -172,7 +172,7 @@ public interface DoubleSeries extends Series<Double> {
      */
     default DoubleSeries sub(DoubleSeries s) {
         int len = size();
-        DoubleAccumulator accumulator = new DoubleAccumulator(len);
+        DoubleAccum accumulator = new DoubleAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushDouble(this.getDouble(i) - s.getDouble(i));
@@ -188,7 +188,7 @@ public interface DoubleSeries extends Series<Double> {
      */
     default DoubleSeries mul(DoubleSeries s) {
         int len = size();
-        DoubleAccumulator accumulator = new DoubleAccumulator(len);
+        DoubleAccum accumulator = new DoubleAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushDouble(this.getDouble(i) * s.getDouble(i));
@@ -204,7 +204,7 @@ public interface DoubleSeries extends Series<Double> {
      */
     default DoubleSeries div(DoubleSeries s) {
         int len = size();
-        DoubleAccumulator accumulator = new DoubleAccumulator(len);
+        DoubleAccum accumulator = new DoubleAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushDouble(this.getDouble(i) / s.getDouble(i));
@@ -218,7 +218,7 @@ public interface DoubleSeries extends Series<Double> {
      */
     default DoubleSeries mod(DoubleSeries s) {
         int len = size();
-        DoubleAccumulator accumulator = new DoubleAccumulator(len);
+        DoubleAccum accumulator = new DoubleAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushDouble(this.getDouble(i) % s.getDouble(i));
@@ -232,7 +232,7 @@ public interface DoubleSeries extends Series<Double> {
      */
     default BooleanSeries lt(DoubleSeries s) {
         int len = size();
-        BooleanAccumulator accumulator = new BooleanAccumulator(len);
+        BooleanAccum accumulator = new BooleanAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushBoolean(this.getDouble(i) < s.getDouble(i));
@@ -246,7 +246,7 @@ public interface DoubleSeries extends Series<Double> {
      */
     default BooleanSeries le(DoubleSeries s) {
         int len = size();
-        BooleanAccumulator accumulator = new BooleanAccumulator(len);
+        BooleanAccum accumulator = new BooleanAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushBoolean(this.getDouble(i) <= s.getDouble(i));
@@ -260,7 +260,7 @@ public interface DoubleSeries extends Series<Double> {
      */
     default BooleanSeries gt(DoubleSeries s) {
         int len = size();
-        BooleanAccumulator accumulator = new BooleanAccumulator(len);
+        BooleanAccum accumulator = new BooleanAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushBoolean(this.getDouble(i) > s.getDouble(i));
@@ -274,7 +274,7 @@ public interface DoubleSeries extends Series<Double> {
      */
     default BooleanSeries ge(DoubleSeries s) {
         int len = size();
-        BooleanAccumulator accumulator = new BooleanAccumulator(len);
+        BooleanAccum accumulator = new BooleanAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushBoolean(this.getDouble(i) >= s.getDouble(i));

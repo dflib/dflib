@@ -1,7 +1,11 @@
 package com.nhl.dflib.benchmark;
 
 import com.nhl.dflib.*;
-import com.nhl.dflib.accumulator.*;
+import com.nhl.dflib.builder.BooleanAccum;
+import com.nhl.dflib.builder.DoubleAccum;
+import com.nhl.dflib.builder.IntAccum;
+import com.nhl.dflib.builder.LongAccum;
+import com.nhl.dflib.builder.ObjectAccum;
 
 import java.util.Random;
 
@@ -89,7 +93,7 @@ public interface ValueMaker<T> {
     T get();
 
     default Series<T> series(int len) {
-        ObjectAccumulator ml = new ObjectAccumulator<>(len);
+        ObjectAccum ml = new ObjectAccum<>(len);
 
         for (int j = 0; j < len; j++) {
             ml.push(get());
@@ -100,7 +104,7 @@ public interface ValueMaker<T> {
 
     default BooleanSeries booleanSeries(int len) {
 
-        BooleanAccumulator vals = new BooleanAccumulator(len);
+        BooleanAccum vals = new BooleanAccum(len);
 
         for (int i = 0; i < len; i++) {
             vals.push((Boolean) get());
@@ -111,7 +115,7 @@ public interface ValueMaker<T> {
 
     default IntSeries intSeries(int len) {
 
-        IntAccumulator ints = new IntAccumulator(len);
+        IntAccum ints = new IntAccum(len);
 
         for (int i = 0; i < len; i++) {
             ints.push((Integer) get());
@@ -122,7 +126,7 @@ public interface ValueMaker<T> {
 
     default LongSeries longSeries(int len) {
 
-        LongAccumulator vals = new LongAccumulator(len);
+        LongAccum vals = new LongAccum(len);
 
         for (int i = 0; i < len; i++) {
             vals.push((Long) get());
@@ -133,7 +137,7 @@ public interface ValueMaker<T> {
 
     default DoubleSeries doubleSeries(int len) {
 
-        DoubleAccumulator ds = new DoubleAccumulator(len);
+        DoubleAccum ds = new DoubleAccum(len);
 
         for (int i = 0; i < len; i++) {
             ds.push((Double) get());

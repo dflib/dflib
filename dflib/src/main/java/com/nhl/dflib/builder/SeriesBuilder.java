@@ -1,7 +1,6 @@
-package com.nhl.dflib.loader;
+package com.nhl.dflib.builder;
 
 import com.nhl.dflib.Series;
-import com.nhl.dflib.accumulator.ValueAccum;
 
 /**
  * A mutable by-row Series builder that obtains and converts values from some abstract row source. Provides a high-level
@@ -16,7 +15,7 @@ public class SeriesBuilder<F, T> {
 
     public SeriesBuilder(ValueExtractor<F, T> converter) {
         this.converter = converter;
-        this.accumulator = converter.createAccumulator();
+        this.accumulator = converter.createAccum();
     }
 
     public void extract(F from) {

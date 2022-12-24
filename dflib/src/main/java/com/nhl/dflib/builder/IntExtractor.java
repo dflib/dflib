@@ -1,9 +1,6 @@
-package com.nhl.dflib.loader;
+package com.nhl.dflib.builder;
 
 import com.nhl.dflib.IntValueMapper;
-import com.nhl.dflib.accumulator.ValueAccum;
-import com.nhl.dflib.accumulator.IntAccumulator;
-import com.nhl.dflib.accumulator.ValueStore;
 
 /**
  * @since 0.8
@@ -27,7 +24,12 @@ public class IntExtractor<F> implements ValueExtractor<F, Integer> {
     }
 
     @Override
-    public ValueAccum<Integer> createAccumulator(int capacity) {
-        return new IntAccumulator(capacity);
+    public ValueAccum<Integer> createAccum(int capacity) {
+        return new IntAccum(capacity);
+    }
+
+    @Override
+    public ValueHolder<Integer> createHolder() {
+        return new IntHolder();
     }
 }

@@ -1,7 +1,7 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.accumulator.BooleanAccumulator;
-import com.nhl.dflib.accumulator.LongAccumulator;
+import com.nhl.dflib.builder.BooleanAccum;
+import com.nhl.dflib.builder.LongAccum;
 import com.nhl.dflib.series.LongArraySeries;
 
 import java.util.Comparator;
@@ -24,7 +24,7 @@ public interface LongSeries extends Series<Long> {
      */
     static <V> LongSeries forSeries(Series<V> series, LongValueMapper<? super V> converter) {
         int len = series.size();
-        LongAccumulator a = new LongAccumulator(len);
+        LongAccum a = new LongAccum(len);
         for (int i = 0; i < len; i++) {
             a.pushLong(converter.map(series.get(i)));
         }
@@ -156,7 +156,7 @@ public interface LongSeries extends Series<Long> {
      */
     default LongSeries add(LongSeries s) {
         int len = size();
-        LongAccumulator accumulator = new LongAccumulator(len);
+        LongAccum accumulator = new LongAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushLong(this.getLong(i) + s.getLong(i));
@@ -172,7 +172,7 @@ public interface LongSeries extends Series<Long> {
      */
     default LongSeries sub(LongSeries s) {
         int len = size();
-        LongAccumulator accumulator = new LongAccumulator(len);
+        LongAccum accumulator = new LongAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushLong(this.getLong(i) - s.getLong(i));
@@ -188,7 +188,7 @@ public interface LongSeries extends Series<Long> {
      */
     default LongSeries mul(LongSeries s) {
         int len = size();
-        LongAccumulator accumulator = new LongAccumulator(len);
+        LongAccum accumulator = new LongAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushLong(this.getLong(i) * s.getLong(i));
@@ -204,7 +204,7 @@ public interface LongSeries extends Series<Long> {
      */
     default LongSeries div(LongSeries s) {
         int len = size();
-        LongAccumulator accumulator = new LongAccumulator(len);
+        LongAccum accumulator = new LongAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushLong(this.getLong(i) / s.getLong(i));
@@ -220,7 +220,7 @@ public interface LongSeries extends Series<Long> {
      */
     default LongSeries mod(LongSeries s) {
         int len = size();
-        LongAccumulator accumulator = new LongAccumulator(len);
+        LongAccum accumulator = new LongAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushLong(this.getLong(i) % s.getLong(i));
@@ -235,7 +235,7 @@ public interface LongSeries extends Series<Long> {
      */
     default BooleanSeries lt(LongSeries s) {
         int len = size();
-        BooleanAccumulator accumulator = new BooleanAccumulator(len);
+        BooleanAccum accumulator = new BooleanAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushBoolean(this.getLong(i) < s.getLong(i));
@@ -249,7 +249,7 @@ public interface LongSeries extends Series<Long> {
      */
     default BooleanSeries le(LongSeries s) {
         int len = size();
-        BooleanAccumulator accumulator = new BooleanAccumulator(len);
+        BooleanAccum accumulator = new BooleanAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushBoolean(this.getLong(i) <= s.getLong(i));
@@ -263,7 +263,7 @@ public interface LongSeries extends Series<Long> {
      */
     default BooleanSeries gt(LongSeries s) {
         int len = size();
-        BooleanAccumulator accumulator = new BooleanAccumulator(len);
+        BooleanAccum accumulator = new BooleanAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushBoolean(this.getLong(i) > s.getLong(i));
@@ -277,7 +277,7 @@ public interface LongSeries extends Series<Long> {
      */
     default BooleanSeries ge(LongSeries s) {
         int len = size();
-        BooleanAccumulator accumulator = new BooleanAccumulator(len);
+        BooleanAccum accumulator = new BooleanAccum(len);
 
         for (int i = 0; i < len; i++) {
             accumulator.pushBoolean(this.getLong(i) >= s.getLong(i));

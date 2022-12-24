@@ -1,9 +1,9 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.*;
-import com.nhl.dflib.accumulator.BooleanAccumulator;
-import com.nhl.dflib.accumulator.IntAccumulator;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
+import com.nhl.dflib.builder.BooleanAccum;
+import com.nhl.dflib.builder.IntAccum;
+import com.nhl.dflib.builder.ObjectAccum;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
 import com.nhl.dflib.map.Mapper;
@@ -81,7 +81,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
             throw new IllegalArgumentException("Positions size " + ps + " is not the same as this size " + s);
         }
 
-        BooleanAccumulator data = new BooleanAccumulator();
+        BooleanAccum data = new BooleanAccum();
 
         for (int i = 0; i < size(); i++) {
             if (positions.getBoolean(i)) {
@@ -230,7 +230,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
     @Override
     public IntSeries indexTrue() {
-        IntAccumulator filtered = new IntAccumulator();
+        IntAccum filtered = new IntAccum();
 
         int len = size();
 
@@ -245,7 +245,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
     @Override
     public IntSeries indexFalse() {
-        IntAccumulator filtered = new IntAccumulator();
+        IntAccum filtered = new IntAccum();
 
         int len = size();
 
@@ -260,7 +260,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
     @Override
     public IntSeries index(ValuePredicate<Boolean> predicate) {
-        IntAccumulator index = new IntAccumulator();
+        IntAccum index = new IntAccum();
 
         int len = size();
 
@@ -277,7 +277,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     public BooleanSeries locate(ValuePredicate<Boolean> predicate) {
         int len = size();
 
-        BooleanAccumulator matches = new BooleanAccumulator(len);
+        BooleanAccum matches = new BooleanAccum(len);
 
         for (int i = 0; i < len; i++) {
             matches.pushBoolean(predicate.test(get(i)));
@@ -305,7 +305,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     private BooleanSeries replaceBoolean(BooleanSeries condition, boolean with) {
         int s = size();
         int r = Math.min(s, condition.size());
-        BooleanAccumulator bools = new BooleanAccumulator(s);
+        BooleanAccum bools = new BooleanAccum(s);
 
         for (int i = 0; i < r; i++) {
             bools.pushBoolean(condition.getBoolean(i) ? with : getBoolean(i));
@@ -322,7 +322,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
         int s = size();
         int r = Math.min(s, condition.size());
-        BooleanAccumulator bools = new BooleanAccumulator(s);
+        BooleanAccum bools = new BooleanAccum(s);
 
         for (int i = 0; i < r; i++) {
             bools.pushBoolean(condition.getBoolean(i) ? getBoolean(i) : with);
@@ -338,7 +338,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     private Series<Boolean> nullify(BooleanSeries condition) {
         int s = size();
         int r = Math.min(s, condition.size());
-        ObjectAccumulator<Boolean> values = new ObjectAccumulator<>(s);
+        ObjectAccum<Boolean> values = new ObjectAccum<>(s);
 
         for (int i = 0; i < r; i++) {
             values.push(condition.getBoolean(i) ? null : getBoolean(i));
@@ -354,7 +354,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     private Series<Boolean> nullifyNoMatch(BooleanSeries condition) {
         int s = size();
         int r = Math.min(s, condition.size());
-        ObjectAccumulator<Boolean> values = new ObjectAccumulator<>(s);
+        ObjectAccum<Boolean> values = new ObjectAccum<>(s);
 
         for (int i = 0; i < r; i++) {
             values.push(condition.getBoolean(i) ? getBoolean(i) : null);
@@ -377,7 +377,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanAccumulator bools = new BooleanAccumulator(s);
+        BooleanAccum bools = new BooleanAccum(s);
 
         if (another instanceof BooleanSeries) {
             BooleanSeries anotherBool = (BooleanSeries) another;
@@ -403,7 +403,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanAccumulator bools = new BooleanAccumulator(s);
+        BooleanAccum bools = new BooleanAccum(s);
         if (another instanceof BooleanSeries) {
             BooleanSeries anotherBool = (BooleanSeries) another;
 

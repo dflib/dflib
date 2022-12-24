@@ -1,4 +1,4 @@
-package com.nhl.dflib.accumulator;
+package com.nhl.dflib.builder;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -6,29 +6,29 @@ import java.util.Set;
 /**
  * @since 0.6
  */
-public class UniqueIntAccumulator extends IntAccumulator {
+public class UniqueLongAccum extends LongAccum {
 
-    private Set<Integer> seen;
+    private Set<Long> seen;
 
-    public UniqueIntAccumulator() {
+    public UniqueLongAccum() {
         this(10);
     }
 
-    public UniqueIntAccumulator(int capacity) {
+    public UniqueLongAccum(int capacity) {
         super(capacity);
         this.seen = new HashSet<>(capacity);
     }
 
     @Override
-    public void pushInt(int value) {
+    public void pushLong(long value) {
 
         if (seen.add(value)) {
-            super.pushInt(value);
+            super.pushLong(value);
         }
     }
 
     @Override
-    public void replaceInt(int pos, int value) {
+    public void replaceLong(int pos, long value) {
         throw new UnsupportedOperationException("'set' operation is undefined for unique accumulator");
     }
 }

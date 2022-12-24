@@ -3,7 +3,7 @@ package com.nhl.dflib.jdbc.connector.saver;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.jdbc.SaveOp;
 import com.nhl.dflib.join.JoinIndicator;
-import com.nhl.dflib.accumulator.ObjectAccumulator;
+import com.nhl.dflib.builder.ObjectAccum;
 
 import java.util.BitSet;
 
@@ -26,7 +26,7 @@ class UpsertInfoTracker {
     }
 
     private Series<SaveOp> insertsAndSkips() {
-        ObjectAccumulator<SaveOp> accum = new ObjectAccumulator<>(height);
+        ObjectAccum<SaveOp> accum = new ObjectAccum<>(height);
         for (int i = 0; i < height; i++) {
 
             switch (newOldJoin.get(i)) {
@@ -45,7 +45,7 @@ class UpsertInfoTracker {
 
     private Series<SaveOp> insertsUpdatesAndSkips() {
 
-        ObjectAccumulator<SaveOp> accum = new ObjectAccumulator<>(height);
+        ObjectAccum<SaveOp> accum = new ObjectAccum<>(height);
         for (int i = 0, updatePos = 0; i < height; i++) {
 
             switch (newOldJoin.get(i)) {

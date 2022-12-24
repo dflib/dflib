@@ -3,7 +3,7 @@ package com.nhl.dflib.jdbc.connector;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
-import com.nhl.dflib.accumulator.IntAccumulator;
+import com.nhl.dflib.builder.IntAccum;
 import com.nhl.dflib.jdbc.connector.loader.JdbcSeriesBuilder;
 
 import java.sql.ResultSet;
@@ -15,7 +15,7 @@ class SamplingSqlLoaderWorker extends SqlLoaderWorker {
 
     private int rowSampleSize;
     private Random rowsSampleRandom;
-    private IntAccumulator sampledRows;
+    private IntAccum sampledRows;
 
     public SamplingSqlLoaderWorker(
             Index columns,
@@ -27,7 +27,7 @@ class SamplingSqlLoaderWorker extends SqlLoaderWorker {
         super(columns, columnBuilders, maxRows);
         this.rowSampleSize = rowSampleSize;
         this.rowsSampleRandom = Objects.requireNonNull(rowsSampleRandom);
-        this.sampledRows = new IntAccumulator();
+        this.sampledRows = new IntAccum();
     }
 
     @Override

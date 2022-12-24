@@ -3,7 +3,7 @@ package com.nhl.dflib.exp.map;
 import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.accumulator.BooleanAccumulator;
+import com.nhl.dflib.builder.BooleanAccum;
 import com.nhl.dflib.exp.Condition1;
 
 import java.util.function.Function;
@@ -27,7 +27,7 @@ public class MapCondition1<F> extends Condition1<F> {
     protected static <F> Function<Series<F>, BooleanSeries> valToSeries(Predicate<F> predicate) {
         return s -> {
             int len = s.size();
-            BooleanAccumulator accum = new BooleanAccumulator(len);
+            BooleanAccum accum = new BooleanAccum(len);
             for (int i = 0; i < len; i++) {
                 F v = s.get(i);
                 accum.pushBoolean(v != null ? predicate.test(v) : false);

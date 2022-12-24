@@ -6,16 +6,11 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.IntValueMapper;
 import com.nhl.dflib.LongValueMapper;
 import com.nhl.dflib.ValueMapper;
-import com.nhl.dflib.loader.BooleanExtractor;
-import com.nhl.dflib.accumulator.BooleanHolder;
-import com.nhl.dflib.loader.DoubleExtractor;
-import com.nhl.dflib.accumulator.DoubleHolder;
-import com.nhl.dflib.loader.IntExtractor;
-import com.nhl.dflib.accumulator.IntHolder;
-import com.nhl.dflib.loader.LongExtractor;
-import com.nhl.dflib.accumulator.LongHolder;
-import com.nhl.dflib.loader.ObjectExtractor;
-import com.nhl.dflib.accumulator.ObjectHolder;
+import com.nhl.dflib.builder.BooleanExtractor;
+import com.nhl.dflib.builder.DoubleExtractor;
+import com.nhl.dflib.builder.IntExtractor;
+import com.nhl.dflib.builder.LongExtractor;
+import com.nhl.dflib.builder.ObjectExtractor;
 import org.apache.commons.csv.CSVRecord;
 
 import java.util.List;
@@ -182,7 +177,7 @@ public class ColumnConfig {
             case booleanPrimitive:
                 return new CsvSeriesBuilder<>(boolConverter(csvPos), csvPos);
             default:
-                return new CsvSeriesBuilder(objectConverter(csvPos), csvPos);
+                return new CsvSeriesBuilder<>(objectConverter(csvPos), csvPos);
         }
     }
 
@@ -190,15 +185,15 @@ public class ColumnConfig {
 
         switch (type) {
             case intPrimitive:
-                return new CsvCell<>(intConverter(csvPos), new IntHolder());
+                return new CsvCell<>(intConverter(csvPos));
             case longPrimitive:
-                return new CsvCell<>(longConverter(csvPos), new LongHolder());
+                return new CsvCell<>(longConverter(csvPos));
             case doublePrimitive:
-                return new CsvCell<>(doubleConverter(csvPos), new DoubleHolder());
+                return new CsvCell<>(doubleConverter(csvPos));
             case booleanPrimitive:
-                return new CsvCell<>(boolConverter(csvPos), new BooleanHolder());
+                return new CsvCell<>(boolConverter(csvPos));
             default:
-                return new CsvCell<>(objectConverter(csvPos), new ObjectHolder());
+                return new CsvCell<>(objectConverter(csvPos));
         }
     }
 
