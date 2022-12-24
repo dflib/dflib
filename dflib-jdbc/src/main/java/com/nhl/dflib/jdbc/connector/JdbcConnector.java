@@ -85,7 +85,7 @@ public interface JdbcConnector {
     String quoteTableName(TableFQName tableName);
 
     /**
-     * Creates a reader / value accumulator for a column of the {@link ResultSet} at a given position.
+     * Creates a reader and value accumulator for a column of the {@link ResultSet} at a given position.
      *
      * @param resultSetPosition 1-based position of the column in the ResultSet.
      * @param type              JDBC type of the value per {@link java.sql.Types}
@@ -93,7 +93,7 @@ public interface JdbcConnector {
      *                          using primitive Series for mandatory numeric / boolean columns.
      * @return a new instance of SeriesBuilder
      */
-    JdbcColumnBuilder<?> createColumnReader(int resultSetPosition, int type, boolean mandatory);
+    JdbcColumnBuilder<?> createColumnBuilder(int resultSetPosition, int type, boolean mandatory);
 
     SqlLogger getSqlLogger();
 

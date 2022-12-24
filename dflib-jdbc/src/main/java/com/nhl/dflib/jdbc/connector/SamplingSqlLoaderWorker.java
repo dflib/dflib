@@ -4,7 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.accumulator.IntAccumulator;
-import com.nhl.dflib.jdbc.connector.loader.ColumnBuilder;
+import com.nhl.dflib.jdbc.connector.loader.JdbcColumnBuilder;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,7 +19,7 @@ class SamplingSqlLoaderWorker extends SqlLoaderWorker {
 
     public SamplingSqlLoaderWorker(
             Index columns,
-            ColumnBuilder<?>[] columnBuilders,
+            JdbcColumnBuilder<?>[] columnBuilders,
             int maxRows,
             int rowSampleSize,
             Random rowsSampleRandom) {

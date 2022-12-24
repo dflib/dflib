@@ -2,14 +2,21 @@ package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.jdbc.Jdbc;
-import com.nhl.dflib.jdbc.connector.loader.ColumnBuilder;
+import com.nhl.dflib.jdbc.connector.loader.JdbcColumnBuilder;
 import com.nhl.dflib.jdbc.connector.loader.JdbcColumnBuilderFactory;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
 import com.nhl.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -103,21 +110,21 @@ public class JdbcConnectorBuilder_IT extends BaseDbTest {
                 .expectRow(0, 1L, d, t, ts);
     }
 
-    static ColumnBuilder<String> dateAccum(int pos) {
+    static JdbcColumnBuilder<String> dateAccum(int pos) {
         return JdbcColumnBuilderFactory.fromJdbcFunction(rs -> {
             Date date = rs.getDate(pos);
             return date != null ? date.toLocalDate().toString() : null;
         });
     }
 
-    static ColumnBuilder<String> timeAccum(int pos) {
+    static JdbcColumnBuilder<String> timeAccum(int pos) {
         return JdbcColumnBuilderFactory.fromJdbcFunction(rs -> {
             Time time = rs.getTime(pos, Calendar.getInstance());
             return time != null ? time.toLocalTime().toString() : null;
         });
     }
 
-    static ColumnBuilder<String> timestampAccum(int pos) {
+    static JdbcColumnBuilder<String> timestampAccum(int pos) {
         return JdbcColumnBuilderFactory.fromJdbcFunction(rs -> {
             Timestamp timestamp = rs.getTimestamp(pos, Calendar.getInstance());
             return timestamp != null ? timestamp.toLocalDateTime().toString() : null;

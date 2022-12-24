@@ -8,7 +8,7 @@ import com.nhl.dflib.jdbc.connector.StatementBuilder;
 import com.nhl.dflib.jdbc.connector.TableDeleter;
 import com.nhl.dflib.jdbc.connector.TableLoader;
 import com.nhl.dflib.jdbc.connector.TableSaver;
-import com.nhl.dflib.jdbc.connector.loader.ColumnBuilder;
+import com.nhl.dflib.jdbc.connector.loader.JdbcColumnBuilder;
 import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.jdbc.connector.statement.ValueConverterFactory;
@@ -129,8 +129,8 @@ public class TxJdbcConnector implements JdbcConnector, AutoCloseable {
     }
 
     @Override
-    public ColumnBuilder<?> createColumnReader(int pos, int type, boolean mandatory) {
-        return delegate.createColumnReader(pos, type, mandatory);
+    public JdbcColumnBuilder<?> createColumnBuilder(int pos, int type, boolean mandatory) {
+        return delegate.createColumnBuilder(pos, type, mandatory);
     }
 
     @Override

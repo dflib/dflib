@@ -133,7 +133,7 @@ public class DefaultJdbcConnector implements JdbcConnector {
     }
 
     @Override
-    public JdbcColumnBuilder<?> createColumnReader(int pos, int type, boolean mandatory) {
+    public JdbcColumnBuilder<?> createColumnBuilder(int pos, int type, boolean mandatory) {
 
         JdbcColumnBuilderFactory sbf = null;
 
