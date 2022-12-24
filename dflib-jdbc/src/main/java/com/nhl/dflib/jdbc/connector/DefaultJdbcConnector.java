@@ -17,16 +17,16 @@ import java.util.Map;
 
 public class DefaultJdbcConnector implements JdbcConnector {
 
-    private DataSource dataSource;
-    private DbMetadata metadata;
-    private IdentifierQuoter quoter;
+    private final DataSource dataSource;
+    private final DbMetadata metadata;
+    private final IdentifierQuoter quoter;
 
-    private ColumnBuilderFactory defaultColumnBuilderFactory;
-    private Map<Integer, ColumnBuilderFactory> primitiveColumnBuilderFactories;
-    private Map<Integer, ColumnBuilderFactory> columnBuilderFactories;
+    private final ColumnBuilderFactory defaultColumnBuilderFactory;
+    private final Map<Integer, ColumnBuilderFactory> primitiveColumnBuilderFactories;
+    private final Map<Integer, ColumnBuilderFactory> columnBuilderFactories;
 
-    private ValueConverterFactory preBindConverterFactory;
-    private SqlLogger sqlLogger;
+    private final ValueConverterFactory preBindConverterFactory;
+    private final SqlLogger sqlLogger;
 
     public DefaultJdbcConnector(
             DataSource dataSource,
