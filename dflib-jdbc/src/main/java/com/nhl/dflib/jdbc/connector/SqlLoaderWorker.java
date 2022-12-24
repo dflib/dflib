@@ -11,13 +11,13 @@ import java.sql.SQLException;
 class SqlLoaderWorker {
 
     private Index columns;
-    protected ColumnBuilder<?>[] accumulators;
+    protected ColumnBuilder<?>[] columnBuilders;
     protected int maxRows;
 
-    public SqlLoaderWorker(Index columns, ColumnBuilder<?>[] accumulators, int maxRows) {
+    public SqlLoaderWorker(Index columns, ColumnBuilder<?>[] columnBuilders, int maxRows) {
         this.columns = columns;
         this.maxRows = maxRows;
-        this.accumulators = accumulators;
+        this.columnBuilders = columnBuilders;
     }
 
     DataFrame load(ResultSet rs) throws SQLException {
@@ -27,7 +27,7 @@ class SqlLoaderWorker {
 
     protected void consumeResultSet(ResultSet rs) throws SQLException {
 
-        int w = accumulators.length;
+        int w = columnBuilders.length;
         int size = 0;
 
         while (rs.next() && size++ < maxRows) {
@@ -39,7 +39,7 @@ class SqlLoaderWorker {
         int width = columns.size();
         Series<?>[] series = new Series[width];
         for (int i = 0; i < width; i++) {
-            series[i] = accumulators[i].toColumn();
+            series[i] = columnBuilders[i].toColumn();
         }
 
         return DataFrame.newFrame(columns).columns(series);
@@ -47,7 +47,7 @@ class SqlLoaderWorker {
 
     protected void addRow(int width, ResultSet resultSet) {
         for (int i = 0; i < width; i++) {
-            accumulators[i].convertAndAdd(resultSet);
+            columnBuilders[i].convertAndAdd(resultSet);
         }
     }
 }

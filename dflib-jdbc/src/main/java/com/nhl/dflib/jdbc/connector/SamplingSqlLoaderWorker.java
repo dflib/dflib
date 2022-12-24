@@ -19,12 +19,12 @@ class SamplingSqlLoaderWorker extends SqlLoaderWorker {
 
     public SamplingSqlLoaderWorker(
             Index columns,
-            ColumnBuilder<?>[] accumulators,
+            ColumnBuilder<?>[] columnBuilders,
             int maxRows,
             int rowSampleSize,
             Random rowsSampleRandom) {
 
-        super(columns, accumulators, maxRows);
+        super(columns, columnBuilders, maxRows);
         this.rowSampleSize = rowSampleSize;
         this.rowsSampleRandom = Objects.requireNonNull(rowsSampleRandom);
         this.sampledRows = new IntAccumulator();
@@ -42,7 +42,7 @@ class SamplingSqlLoaderWorker extends SqlLoaderWorker {
 
     @Override
     protected void consumeResultSet(ResultSet rs) throws SQLException {
-        int w = accumulators.length;
+        int w = columnBuilders.length;
         int size = 0;
         int i = 0;
 
@@ -72,7 +72,7 @@ class SamplingSqlLoaderWorker extends SqlLoaderWorker {
 
     protected void replaceRow(int pos, int width, ResultSet rs) {
         for (int i = 0; i < width; i++) {
-            accumulators[i].convertAndReplace(pos, rs);
+            columnBuilders[i].convertAndReplace(pos, rs);
         }
     }
 }
