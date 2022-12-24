@@ -3,6 +3,7 @@ package com.nhl.dflib.exp.str;
 import com.nhl.dflib.Condition;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DateExp;
+import com.nhl.dflib.DateTimeExp;
 import com.nhl.dflib.NumExp;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.StrExp;
@@ -12,6 +13,7 @@ import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import static com.nhl.dflib.Exp.$str;
@@ -132,6 +134,20 @@ public class StrColumnTest {
         TimeExp time = $str(0).castAsTime();
         Series<String> s = Series.forData("23:59:58", null);
         new SeriesAsserts(time.eval(s)).expectData(LocalTime.of(23, 59, 58), null);
+    }
+
+    @Test
+    public void testCastAsDateTime() {
+        DateTimeExp date = $str(0).castAsDateTime();
+        Series<String> s = Series.forData("2021-01-02T11:01:34", null);
+        new SeriesAsserts(date.eval(s)).expectData(LocalDateTime.of(2021, 1, 2, 11, 1, 34), null);
+    }
+
+    @Test
+    public void testCastAsDateTime_Formatter() {
+        DateTimeExp date = $str(0).castAsDateTime("yyyy MM dd HH:mm:ss");
+        Series<String> s = Series.forData("2021 01 02 11:01:34", null);
+        new SeriesAsserts(date.eval(s)).expectData(LocalDateTime.of(2021, 1, 2, 11, 1, 34), null);
     }
 
     @Test
