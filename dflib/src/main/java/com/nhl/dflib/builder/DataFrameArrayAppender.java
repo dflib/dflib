@@ -15,7 +15,7 @@ public class DataFrameArrayAppender extends DataFrameAppender<Object[]> {
     }
 
     /**
-     * Appends a single row, extracting data from the supplied object.
+     * Appends a single row, extracting data from the supplied array vararg.
      */
     @Override
     public DataFrameArrayAppender append(Object... rowSource) {

@@ -6,7 +6,7 @@ import com.nhl.dflib.Index;
 import java.util.Random;
 
 /**
- * A {@link DataFrameAppender} that "sample" appended data, potentially ignorning and skipping a lot of rows.
+ * A {@link DataFrameAppender} that does on-the-fly "sampling" of each appended row, potentially skipping a lot of rows.
  *
  * @since 0.16
  */
@@ -19,9 +19,6 @@ public class DataFrameSamplingAppender<S> extends DataFrameAppender<S> {
         this.sampler = new AppenderSampler<>(rowSampleSize, rowsSampleRandom, super::append, super::replace);
     }
 
-    /**
-     * Appends a single row, extracting data from the supplied object.
-     */
     @Override
     public DataFrameSamplingAppender<S> append(S rowSource) {
         sampler.append(rowSource);

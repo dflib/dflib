@@ -22,9 +22,6 @@ public class DataFrameArraySamplingAppender extends DataFrameArrayAppender {
         this.sampler = new AppenderSampler<>(rowSampleSize, rowsSampleRandom, super::append, super::replace);
     }
 
-    /**
-     * Appends a single row, extracting data from the supplied object.
-     */
     @Override
     public DataFrameArraySamplingAppender append(Object... rowSource) {
         sampler.append(rowSource);
