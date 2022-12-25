@@ -48,7 +48,7 @@ public class AvroSchemaCompilerTest {
     @Test
     public void testCompileSchema_EmptyDF() {
 
-        DataFrame empty = DataFrame.newFrame("A", "B").empty();
+        DataFrame empty = DataFrame.empty("A", "B");
 
         Schema schema = new AvroSchemaCompiler()
                 .name("s")
@@ -64,7 +64,7 @@ public class AvroSchemaCompilerTest {
     @Test
     public void testCompileSchema_DefaultNames() {
 
-        DataFrame empty = DataFrame.newFrame("A").empty();
+        DataFrame empty = DataFrame.empty("A");
         Schema schema = new AvroSchemaCompiler().compileSchema(empty);
 
         Assertions.assertNotNull(schema);

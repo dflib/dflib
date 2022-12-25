@@ -30,7 +30,7 @@ public class TableSaverIT extends BaseDbTest {
     @Test
     public void testEmpty() {
 
-        DataFrame df = DataFrame.newFrame("id", "name", "salary").empty();
+        DataFrame df = DataFrame.empty("id", "name", "salary");
 
         JdbcConnector connector = adapter.createConnector();
         connector.tableSaver("t1").save(df);

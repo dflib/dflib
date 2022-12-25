@@ -7,7 +7,7 @@ public class GroupBy_WindowFuncsTest {
 
     @Test
     public void testGroupBy_RowNumbers_Emtpy() {
-        GroupBy gb = DataFrame.newFrame("a", "b", "c").empty().group("a");
+        GroupBy gb = DataFrame.empty("a", "b", "c").group("a");
         IntSeries rn = gb.rowNumber();
         new IntSeriesAsserts(rn).expectData();
     }

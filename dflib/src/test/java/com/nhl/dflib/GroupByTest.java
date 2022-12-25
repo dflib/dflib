@@ -45,7 +45,7 @@ public class GroupByTest {
 
     @Test
     public void testGroup_Empty() {
-        DataFrame df = DataFrame.newFrame("a", "b").empty();
+        DataFrame df = DataFrame.empty("a", "b");
 
         GroupBy gb = df.group(Hasher.forColumn("a"));
         assertNotNull(gb);

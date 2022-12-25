@@ -7,7 +7,7 @@ public class DataFrame_Over_RowNumberTest {
 
     @Test
     public void testEmpty() {
-        DataFrame df = DataFrame.newFrame("a", "b", "c").empty();
+        DataFrame df = DataFrame.empty("a", "b", "c");
         IntSeries rn = df.over().rowNumber();
         new IntSeriesAsserts(rn).expectData();
     }

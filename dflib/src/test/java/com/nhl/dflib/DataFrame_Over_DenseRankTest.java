@@ -7,7 +7,7 @@ public class DataFrame_Over_DenseRankTest {
 
     @Test
     public void testEmpty() {
-        DataFrame df = DataFrame.newFrame("a", "b", "c").empty();
+        DataFrame df = DataFrame.empty("a", "b", "c");
         IntSeries r = df.over().denseRank();
         new IntSeriesAsserts(r).expectData();
     }

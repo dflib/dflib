@@ -75,7 +75,7 @@ public class SqlSaverIT extends BaseDbTest {
     @Test
     public void testSave_EmptyDataFrame() {
 
-        DataFrame data = DataFrame.newFrame("id", "name", "salary").empty();
+        DataFrame data = DataFrame.empty("id", "name", "salary");
 
         String sql = adapter.toNativeSql("insert INTO \"t1\" (\"id\", \"name\", \"salary\") values (?, ?, ?)");
 

@@ -8,7 +8,7 @@ import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class DataFrame_NewFrame_AppenderTest {
+public class DataFrame_Builder_AppenderTest {
 
     @Test
     public void testObjectSource() {
@@ -16,8 +16,7 @@ public class DataFrame_NewFrame_AppenderTest {
         List<From> data = List.of(new From("L1", -1), new From("L2", -2));
 
         DataFrame df = DataFrame
-                .newFrame("o", "i", "l", "d", "b")
-                .extractWith(
+                .builder(
                         Extractor.$col(From::getS),
                         Extractor.$int(From::getI),
                         Extractor.$long(From::getL),
@@ -31,12 +30,12 @@ public class DataFrame_NewFrame_AppenderTest {
                 .append(data)
                 .build();
 
-        new DataFrameAsserts(df, "o", "i", "l", "d", "b").expectHeight(5)
+        new DataFrameAsserts(df, "0", "1", "2", "3", "4").expectHeight(5)
 
-                .expectIntColumns("i")
-                .expectLongColumns("l")
-                .expectDoubleColumns("d")
-                .expectBooleanColumns("b")
+                .expectIntColumns("1")
+                .expectLongColumns("2")
+                .expectDoubleColumns("3")
+                .expectBooleanColumns("4")
 
                 .expectRow(0, "a", 1, 10_000_000_001L, 1.01, false)
                 .expectRow(1, "b", 2, 10_000_000_002L, 2.01, true)
@@ -51,11 +50,11 @@ public class DataFrame_NewFrame_AppenderTest {
         List<From> data = List.of(new From("L1", -1), new From("L2", -2));
 
         DataFrame df = DataFrame
-                .newFrame("o", "i")
-                .extractWith(
+                .builder(
                         Extractor.$col(From::getS),
                         Extractor.$int(From::getI)
                 )
+                .columnNames("o", "i")
                 // skip extractor creation, create the DataFrame straight from the builder
                 .build(data);
 
@@ -68,8 +67,8 @@ public class DataFrame_NewFrame_AppenderTest {
     @Test
     public void testNoExtractors() {
         assertThrows(IllegalArgumentException.class, () -> DataFrame
-                .newFrame("a", "b")
-                .extractWith()
+                .builder()
+                .columnNames("a", "b")
                 .appendData());
     }
 
@@ -79,11 +78,11 @@ public class DataFrame_NewFrame_AppenderTest {
         List<Object[]> data = List.of(new Object[]{"L1", -1}, new Object[]{"L2", -2});
 
         DataFrame df = DataFrame
-                .newFrame("o", "i")
-                .extractArrayWith(
+                .arrayBuilder(
                         Extractor.$col(a -> a[0]),
                         Extractor.$int(a -> (Integer) a[1])
                 )
+                .columnNames("o", "i")
                 .appendData()
                 .append("a", 1)
                 .append("b", 2)
@@ -106,8 +105,8 @@ public class DataFrame_NewFrame_AppenderTest {
         List<Object[]> data = List.of(new Object[]{"L1", -1}, new Object[]{"L2", -2});
 
         DataFrame df = DataFrame
-                .newFrame("o", "i")
-                .extractArray()
+                .arrayBuilder(2)
+                .columnNames("o", "i")
                 .appendData()
                 .append("a", 1)
                 .append("b", 2)
@@ -130,11 +129,11 @@ public class DataFrame_NewFrame_AppenderTest {
         List<Object[]> data = List.of(new Object[]{"L1", -1}, new Object[]{"L2", -2});
 
         DataFrame df = DataFrame
-                .newFrame("o", "i")
-                .extractArrayWith(
+                .arrayBuilder(
                         Extractor.$col(a -> a[0]),
                         Extractor.$int(a -> (Integer) a[1])
                 )
+                .columnNames("o", "i")
                 .sampleRows(2, rnd)
                 .appendData()
                 .append("a", 1)

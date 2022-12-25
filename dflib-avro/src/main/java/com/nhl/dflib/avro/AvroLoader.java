@@ -73,8 +73,9 @@ public class AvroLoader {
         Schema schema = reader.getExpected();
 
         Index index = createIndex(schema);
-        DataFrameAppender<GenericRecord> appender = DataFrame.newFrame(index)
-                .extractWith(mapColumns(schema))
+        DataFrameAppender<GenericRecord> appender = DataFrame
+                .builder(mapColumns(schema))
+                .columnIndex(index)
                 .appendData();
 
         // reuse "record" flyweight

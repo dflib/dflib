@@ -7,7 +7,7 @@ public class DataFrame_Over_AggTest {
 
     @Test
     public void testEmpty() {
-        DataFrame df = DataFrame.newFrame("a", "b", "c").empty();
+        DataFrame df = DataFrame.empty("a", "b", "c");
         DataFrame r = df.over().agg(Exp.$int("a").sum());
         new DataFrameAsserts(r, "sum(a)").expectHeight(0);
     }

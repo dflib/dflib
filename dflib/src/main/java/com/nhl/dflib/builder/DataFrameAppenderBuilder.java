@@ -5,6 +5,7 @@ import com.nhl.dflib.Extractor;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.sample.Sampler;
 
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -14,16 +15,26 @@ import java.util.Random;
  */
 public class DataFrameAppenderBuilder<S> {
 
-    protected final Index columnsIndex;
-    private final Extractor<S, ?>[] columnExtractors;
+    private final Extractor<S, ?>[] columnsExtractors;
 
+    private Index columnsIndex;
     private int capacity;
     protected int rowSampleSize;
     private Random rowsSampleRandom;
 
-    public DataFrameAppenderBuilder(Index columnsIndex, Extractor<S, ?>[] columnExtractors) {
+    @SafeVarargs
+    public DataFrameAppenderBuilder(Extractor<S, ?>... extractors) {
+        this.columnsExtractors = Objects.requireNonNull(extractors);
+    }
+
+    public DataFrameAppenderBuilder<S> columnNames(String... columnNames) {
+        this.columnsIndex = Index.forLabels(columnNames);
+        return this;
+    }
+
+    public DataFrameAppenderBuilder<S> columnIndex(Index columnsIndex) {
         this.columnsIndex = columnsIndex;
-        this.columnExtractors = columnExtractors;
+        return this;
     }
 
     public DataFrameAppenderBuilder<S> capacity(int capacity) {
@@ -61,9 +72,12 @@ public class DataFrameAppenderBuilder<S> {
      * Creates an "appender" with this builder parameters. The appender can be used to build the DataFrame row by row.
      */
     public DataFrameAppender<S> appendData() {
+        Index index = columnsIndex();
+        SeriesBuilder<S, ?>[] builders = builders(index);
+
         return rowSampleSize > 0
-                ? new DataFrameSamplingAppender<>(columnsIndex, builders(), rowSampleSize, sampleRandom())
-                : new DataFrameAppender<>(columnsIndex, builders());
+                ? new DataFrameSamplingAppender<>(index, builders, rowSampleSize, sampleRandom())
+                : new DataFrameAppender<>(index, builders);
     }
 
     public DataFrame build(Iterable<S> sources) {
@@ -76,20 +90,36 @@ public class DataFrameAppenderBuilder<S> {
                 : (rowSampleSize > 0 ? rowSampleSize : 10);
     }
 
-    protected SeriesBuilder<S, ?>[] builders() {
+    protected Index columnsIndex() {
+        if (this.columnsIndex != null) {
+            return this.columnsIndex;
+        }
+
+        int w = width();
+        String[] labels = new String[w];
+        for (int i = 0; i < w; i++) {
+            labels[i] = Integer.toString(i);
+        }
+
+        return Index.forLabels(labels);
+    }
+
+    protected int width() {
+        return columnsExtractors.length;
+    }
+
+    protected SeriesBuilder<S, ?>[] builders(Index columnsIndex) {
         int w = columnsIndex.size();
-        int cw = columnExtractors != null ? columnExtractors.length : 0;
+        int cw = columnsExtractors.length;
         SeriesBuilder<S, ?>[] builders = new SeriesBuilder[w];
 
-        if (cw == 0) {
-            throw new IllegalArgumentException("No column extractors specified");
-        } else if (cw != w) {
+        if (cw != w) {
             throw new IllegalArgumentException("Mismatch between the number of extractors and index width - " + cw + " vs " + w);
         }
 
         int capacity = capacity();
         for (int i = 0; i < w; i++) {
-            builders[i] = new SeriesBuilder<>(columnExtractors[i], capacity);
+            builders[i] = new SeriesBuilder<>(columnsExtractors[i], capacity);
         }
 
         return builders;

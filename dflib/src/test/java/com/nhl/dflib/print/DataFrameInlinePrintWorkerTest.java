@@ -22,7 +22,7 @@ public class DataFrameInlinePrintWorkerTest {
     @Test
     public void testToString_NoRows() {
         DataFrameInlinePrintWorker w = new DataFrameInlinePrintWorker(new StringBuilder(), 5, 10);
-        assertEquals("a:,b:", w.print(DataFrame.newFrame("a", "b").empty()).toString());
+        assertEquals("a:,b:", w.print(DataFrame.empty("a", "b")).toString());
     }
 
     @Test

@@ -1,6 +1,8 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.agg.DataFrameAggregator;
+import com.nhl.dflib.builder.DataFrameAppenderBuilder;
+import com.nhl.dflib.builder.DataFrameArrayAppenderBuilder;
 import com.nhl.dflib.join.JoinBuilder;
 import com.nhl.dflib.pivot.PivotBuilder;
 import com.nhl.dflib.row.RowProxy;
@@ -23,6 +25,56 @@ import java.util.function.UnaryOperator;
  * otherwise rely on their state outside a single iteration.
  */
 public interface DataFrame extends Iterable<RowProxy> {
+
+    /**
+     * Creates an empty DataFrame
+     *
+     * @since 0.16
+     */
+    static DataFrame empty(String... columnNames) {
+        return empty(Index.forLabels(columnNames));
+    }
+
+    /**
+     * Creates an empty DataFrame
+     *
+     * @since 0.16
+     */
+    static DataFrame empty(Index columnsIndex) {
+        return new ColumnDataFrame(columnsIndex);
+    }
+
+    /**
+     * Starts DataFrame builder.
+     *
+     * @since 0.16
+     */
+    static <T> DataFrameAppenderBuilder<T> builder(Extractor<T, ?>... extractors) {
+        return new DataFrameAppenderBuilder<>(extractors);
+    }
+
+    /**
+     * Starts a DataFrame builder that allows to append rows as arrays via varargs.
+     *
+     * @since 0.16
+     */
+    static DataFrameArrayAppenderBuilder arrayBuilder(Extractor<Object[], ?>... extractors) {
+        return new DataFrameArrayAppenderBuilder(extractors);
+    }
+
+    /**
+     * Starts a DataFrame builder that allows to append rows as arrays via varargs.
+     *
+     * @since 0.16
+     */
+    static DataFrameArrayAppenderBuilder arrayBuilder(int w) {
+        Extractor<Object[], ?>[] extractors = new Extractor[w];
+        for (int i = 0; i < w; i++) {
+            int pos = i;
+            extractors[i] = Extractor.$col(a -> a[pos]);
+        }
+        return new DataFrameArrayAppenderBuilder(extractors);
+    }
 
     /**
      * Creates a DataFrame builder with provided column labels. Callers can then pass in-memory data in various forms

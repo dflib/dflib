@@ -141,7 +141,7 @@ public class TableLoaderIT extends BaseDbTest {
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 11_000.);
 
-        DataFrame empty = DataFrame.newFrame("id", "name").empty();
+        DataFrame empty = DataFrame.empty("id", "name");
 
         DataFrame df = adapter.createConnector()
                 .tableLoader("t1")
@@ -159,7 +159,7 @@ public class TableLoaderIT extends BaseDbTest {
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 11_000.);
 
-        DataFrame empty = DataFrame.newFrame("id", "name").empty();
+        DataFrame empty = DataFrame.empty("id", "name");
 
         DataFrame df = adapter.createConnector()
                 .tableLoader("t1")

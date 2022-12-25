@@ -8,7 +8,7 @@ public class DataFrame_Over_MapColumnTest {
 
     @Test
     public void testEmpty() {
-        DataFrame df = DataFrame.newFrame("a", "b", "c").empty();
+        DataFrame df = DataFrame.empty("a", "b", "c");
         Series<?> r = df.over().mapColumn(Exp.$int("a").sum());
         new SeriesAsserts(r).expectData();
     }

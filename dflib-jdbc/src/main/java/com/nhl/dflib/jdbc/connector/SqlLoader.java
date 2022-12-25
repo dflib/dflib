@@ -117,8 +117,8 @@ public class SqlLoader {
         Extractor<ResultSet, ?>[] extractors = createExtractors(rs);
 
         DataFrameAppender<ResultSet> appender = DataFrame
-                .newFrame(columns)
-                .extractWith(extractors)
+                .builder(extractors)
+                .columnIndex(columns)
                 .capacity(rowSampleSize > 0 ? rowSampleSize : 100)
                 .sampleRows(rowSampleSize, rowsSampleRandom)
                 .appendData();

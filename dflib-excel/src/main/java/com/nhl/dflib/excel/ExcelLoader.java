@@ -48,11 +48,11 @@ public class ExcelLoader {
         // Don't skip empty rows or columns in the middle of a range, but truncate leading empty rows and columns
         SheetRange range = SheetRange.valuesRange(sheet);
         if (range.isEmpty()) {
-            return DataFrame.newFrame().empty();
+            return DataFrame.empty();
         }
 
         if (range.height == 0) {
-            return DataFrame.newFrame(range.columns()).empty();
+            return DataFrame.empty(range.columns());
         }
 
         Extractor<Row, ?>[] extractors = createExtractors(range.startCol, range.width);
@@ -60,7 +60,7 @@ public class ExcelLoader {
         Row row0 = getRow(sheet, range, 0);
         Index index = firstRowAsHeader ? createIndex(row0, extractors) : range.columns();
 
-        DataFrameAppender<Row> builder = DataFrame.newFrame(index).extractWith(extractors).appendData();
+        DataFrameAppender<Row> builder = DataFrame.builder(extractors).columnIndex(index).appendData();
 
         if (!firstRowAsHeader) {
             builder.append(row0);

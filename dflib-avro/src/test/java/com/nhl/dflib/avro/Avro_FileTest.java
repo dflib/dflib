@@ -18,7 +18,7 @@ public class Avro_FileTest {
     @Test
     public void testSaveLoad_File_Empty() {
         File file = new File(destination, "testSaveLoad_File_Empty.avro");
-        DataFrame empty = DataFrame.newFrame("a", "b").empty();
+        DataFrame empty = DataFrame.empty("a", "b");
         Avro.save(empty, file);
         assertTrue(file.exists());
         assertTrue(file.length() > 0);
@@ -32,8 +32,8 @@ public class Avro_FileTest {
     public void testSaveLoad_File() {
         File file = new File(destination, "testSaveLoad_File.avro");
 
-        DataFrame df = DataFrame.newFrame("a", "b")
-                .extractArray()
+        DataFrame df = DataFrame.arrayBuilder(2)
+                .columnNames("a", "b")
                 .appendData()
                 .append(1, 2)
                 .append(3, 4)

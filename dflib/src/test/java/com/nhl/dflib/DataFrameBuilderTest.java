@@ -14,6 +14,7 @@ import static java.util.Arrays.asList;
 
 public class DataFrameBuilderTest {
 
+    @Deprecated(since = "0.16")
     @Test
     public void testEmpty() {
         DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b")).empty();

@@ -150,7 +150,7 @@ public class PivotBuilder {
 
         switch (chunks.size()) {
             case 0:
-                return DataFrame.newFrame(rowColumnName).empty();
+                return DataFrame.empty(rowColumnName);
             case 1:
                 return chunks.get(0);
             default:
@@ -168,7 +168,7 @@ public class PivotBuilder {
     }
 
     private DataFrame empty(String rowColumnName) {
-        return DataFrame.newFrame(rowColumnName).empty();
+        return DataFrame.empty(rowColumnName);
     }
 
     private <T> DataFrame aggregateChunk(DataFrame chunk, Exp<T> aggregator) {

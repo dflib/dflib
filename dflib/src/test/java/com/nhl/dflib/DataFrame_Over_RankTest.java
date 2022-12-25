@@ -7,7 +7,7 @@ public class DataFrame_Over_RankTest {
 
     @Test
     public void testEmtpy() {
-        DataFrame df = DataFrame.newFrame("a", "b", "c").empty();
+        DataFrame df = DataFrame.empty("a", "b", "c");
         IntSeries r = df.over().rank();
         new IntSeriesAsserts(r).expectData();
     }

@@ -163,7 +163,7 @@ public class DataFrame_AggTest {
 
     @Test
     public void test_median_zero() {
-        DataFrame df = DataFrame.newFrame("a", "b").empty();
+        DataFrame df = DataFrame.empty("a", "b");
 
         DataFrame agg = df.agg(
                 Exp.$int("a").median(),
@@ -221,7 +221,7 @@ public class DataFrame_AggTest {
 
     @Test
     public void test_First_Empty() {
-        DataFrame df = DataFrame.newFrame("a", "b").empty();
+        DataFrame df = DataFrame.empty("a", "b");
 
         DataFrame agg = df.agg(
                 Exp.$col("a").first(),

@@ -12,8 +12,26 @@ import java.util.Random;
  */
 public class DataFrameArrayAppenderBuilder extends DataFrameAppenderBuilder<Object[]> {
 
-    public DataFrameArrayAppenderBuilder(Index columnsIndex, Extractor<Object[], ?>[] columnExtractors) {
-        super(columnsIndex, columnExtractors);
+    public DataFrameArrayAppenderBuilder(Extractor<Object[], ?>... extractors) {
+        super(extractors);
+    }
+
+    @Override
+    public DataFrameArrayAppenderBuilder capacity(int capacity) {
+        super.capacity(capacity);
+        return this;
+    }
+
+    @Override
+    public DataFrameArrayAppenderBuilder columnNames(String... columnNames) {
+        super.columnNames(columnNames);
+        return this;
+    }
+
+    @Override
+    public DataFrameArrayAppenderBuilder columnIndex(Index columnsIndex) {
+        super.columnIndex(columnsIndex);
+        return this;
     }
 
     @Override
@@ -30,8 +48,11 @@ public class DataFrameArrayAppenderBuilder extends DataFrameAppenderBuilder<Obje
 
     @Override
     public DataFrameArrayAppender appendData() {
+        Index index = columnsIndex();
+        SeriesBuilder<Object[], ?>[] builders = builders(index);
+
         return rowSampleSize > 0
-                ? new DataFrameArraySamplingAppender(columnsIndex, builders(), rowSampleSize, sampleRandom())
-                : new DataFrameArrayAppender(columnsIndex, builders());
+                ? new DataFrameArraySamplingAppender(index, builders, rowSampleSize, sampleRandom())
+                : new DataFrameArrayAppender(index, builders);
     }
 }

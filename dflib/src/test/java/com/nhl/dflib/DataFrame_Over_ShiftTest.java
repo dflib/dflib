@@ -7,7 +7,7 @@ public class DataFrame_Over_ShiftTest {
 
     @Test
     public void testEmpty() {
-        DataFrame df = DataFrame.newFrame("a", "b", "c").empty();
+        DataFrame df = DataFrame.empty("a", "b", "c");
         Series<Object> r = df.over().shift("b", -1);
         new SeriesAsserts(r).expectData();
     }

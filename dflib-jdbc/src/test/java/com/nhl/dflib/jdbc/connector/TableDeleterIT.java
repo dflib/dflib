@@ -48,7 +48,7 @@ public class TableDeleterIT extends BaseDbTest {
     @Test
     public void testDelete_Eq_Empty() {
 
-        DataFrame matcher = DataFrame.newFrame("id").empty();
+        DataFrame matcher = DataFrame.empty("id");
 
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
@@ -91,7 +91,7 @@ public class TableDeleterIT extends BaseDbTest {
     @Test
     public void testDelete_Neq_Empty() {
 
-        DataFrame matcher = DataFrame.newFrame("id").empty();
+        DataFrame matcher = DataFrame.empty("id");
 
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)

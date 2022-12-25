@@ -51,7 +51,7 @@ public class VConcat {
 
         switch (dfs.length) {
             case 0:
-                return DataFrame.newFrame().empty();
+                return DataFrame.empty();
             case 1:
                 return dfs[0];
             default:

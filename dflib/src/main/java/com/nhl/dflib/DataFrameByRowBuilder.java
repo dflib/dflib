@@ -6,7 +6,7 @@ import com.nhl.dflib.builder.ValueAccum;
  * Assembles a DataFrame row by row. Created indirectly inside {@link DataFrameBuilder#byRow(ValueAccum[])}
  *
  * @since 0.6
- * @deprecated use {@link DataFrameBuilder#extractArray()} or {@link DataFrameBuilder#extractArrayWith(Extractor[])}
+ * @deprecated use {@link DataFrame#arrayBuilder(Extractor[])}  or {@link DataFrame#arrayBuilder(int)}
  */
 @Deprecated(since = "0.16")
 public class DataFrameByRowBuilder {

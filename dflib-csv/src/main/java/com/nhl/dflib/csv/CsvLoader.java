@@ -464,7 +464,7 @@ public class CsvLoader {
             ColumnMap columnMap = createColumnMap(it);
 
             if (!it.hasNext()) {
-                return DataFrame.newFrame(columnMap.dfHeader).empty();
+                return DataFrame.empty(columnMap.dfHeader);
             }
 
             ColumnConfig[] unfilteredColumns = ColumnConfig.columnBuilders(columnMap.csvHeader, this.columns);

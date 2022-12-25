@@ -1,8 +1,6 @@
 package com.nhl.dflib;
 
 
-import com.nhl.dflib.builder.DataFrameAppenderBuilder;
-import com.nhl.dflib.builder.DataFrameArrayAppenderBuilder;
 import com.nhl.dflib.builder.DoubleAccum;
 import com.nhl.dflib.builder.IntAccum;
 import com.nhl.dflib.builder.LongAccum;
@@ -55,6 +53,10 @@ public class DataFrameBuilder {
         return new DataFrameBuilder(columnsIndex);
     }
 
+    /**
+     * @deprecated use {@link DataFrame#empty(Index)}.
+     */
+    @Deprecated(since = "0.16")
     public DataFrame empty() {
         return new ColumnDataFrame(columnsIndex);
     }
@@ -65,7 +67,7 @@ public class DataFrameBuilder {
     }
 
     /**
-     * @deprecated use {@link #extractArray()} or {@link #extractArrayWith(Extractor[])}
+     * @deprecated use {@link DataFrame#arrayBuilder(Extractor[])}
      */
     @Deprecated(since = "0.16")
     public DataFrame rows(Object[]... rows) {
@@ -89,45 +91,12 @@ public class DataFrameBuilder {
     }
 
     /**
-     * Configures the builder to extract values from the source row by row, using provided column extractors.
-     *
-     * @since 0.16
-     */
-    public <T> DataFrameAppenderBuilder<T> extractWith(Extractor<T, ?>... columnExtractors) {
-        return new DataFrameAppenderBuilder<>(columnsIndex, columnExtractors);
-    }
-
-    /**
-     * Configures the builder to extract values from the source row by row, using provided column extractors.
-     *
-     * @since 0.16
-     */
-    public <T> DataFrameArrayAppenderBuilder extractArray() {
-        int w = columnsIndex.size();
-        Extractor<Object[], ?>[] indexExtractors = new Extractor[w];
-        for (int i = 0; i < w; i++) {
-            int pos = i;
-            indexExtractors[i] = Extractor.$col(a -> a[pos]);
-        }
-        return new DataFrameArrayAppenderBuilder(columnsIndex, indexExtractors);
-    }
-
-    /**
-     * Configures the builder to extract values from the source row by row, using provided column extractors.
-     *
-     * @since 0.16
-     */
-    public <T> DataFrameArrayAppenderBuilder extractArrayWith(Extractor<Object[], ?>... columnExtractors) {
-        return new DataFrameArrayAppenderBuilder(columnsIndex, columnExtractors);
-    }
-
-    /**
      * Switches to a builder that allows to append rows to the DataFrame one by one instead of copying from a collection.
      * Can take an optional list of accumulators to control how the columns are created (e.g. primitive vs object).
      * If nothing is passed to theis method, a list of ObjectAccumulators is created implicitly.
      *
      * @since 0.11
-     * @deprecated use {@link #extractArray()} or {@link #extractArrayWith(Extractor[])}
+     * @deprecated use {@link DataFrame#arrayBuilder(Extractor[])}
      */
     @Deprecated(since = "0.16")
     public DataFrameByRowBuilder byRow(ValueAccum<?>... rowAccumulators) {
@@ -255,7 +224,7 @@ public class DataFrameBuilder {
     }
 
     /**
-     * @deprecated use the builder provided via {@link #extractWith(Extractor[])} method instead.
+     * @deprecated use the builder provided via {@link DataFrame#builder(Extractor[])} method instead.
      */
     @Deprecated(since = "0.16")
     public <T> DataFrame objectsToRows(Iterable<T> objects, Function<T, Object[]> rowMapper) {
