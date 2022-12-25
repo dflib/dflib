@@ -92,13 +92,13 @@ class SamplingCsvLoaderWorker implements CsvLoaderWorker {
 
     protected void addRow(int width, CSVRecord record) {
         for (int i = 0; i < width; i++) {
-            columnBuilders[i].extract(record);
+            columnBuilders[i].extractAndStore(record);
         }
     }
 
     protected void replaceRow(int pos, int width, CSVRecord record) {
         for (int i = 0; i < width; i++) {
-            columnBuilders[i].extract(record, pos);
+            columnBuilders[i].extractAndStore(record, pos);
         }
     }
 }

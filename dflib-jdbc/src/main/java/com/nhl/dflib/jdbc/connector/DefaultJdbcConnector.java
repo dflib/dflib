@@ -1,8 +1,8 @@
 package com.nhl.dflib.jdbc.connector;
 
+import com.nhl.dflib.Extractor;
 import com.nhl.dflib.Printers;
-import com.nhl.dflib.jdbc.connector.loader.JdbcColumnBuilderFactory;
-import com.nhl.dflib.jdbc.connector.loader.JdbcSeriesBuilder;
+import com.nhl.dflib.jdbc.connector.loader.JdbcExtractorFactory;
 import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.jdbc.connector.statement.ValueConverter;
@@ -10,6 +10,7 @@ import com.nhl.dflib.jdbc.connector.statement.ValueConverterFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.HashMap;
@@ -21,9 +22,9 @@ public class DefaultJdbcConnector implements JdbcConnector {
     private final DbMetadata metadata;
     private final IdentifierQuoter quoter;
 
-    private final JdbcColumnBuilderFactory defaultColumnBuilderFactory;
-    private final Map<Integer, JdbcColumnBuilderFactory> primitiveColumnBuilderFactories;
-    private final Map<Integer, JdbcColumnBuilderFactory> columnBuilderFactories;
+    private final JdbcExtractorFactory defaultExtractorFactory;
+    private final Map<Integer, JdbcExtractorFactory> primitiveExtractorFactories;
+    private final Map<Integer, JdbcExtractorFactory> extractorFactories;
 
     private final ValueConverterFactory preBindConverterFactory;
     private final SqlLogger sqlLogger;
@@ -31,26 +32,26 @@ public class DefaultJdbcConnector implements JdbcConnector {
     public DefaultJdbcConnector(
             DataSource dataSource,
             DbMetadata metadata,
-            Map<Integer, JdbcColumnBuilderFactory> columnBuilderFactories) {
+            Map<Integer, JdbcExtractorFactory> extractorFactories) {
 
         this.dataSource = dataSource;
         this.metadata = metadata;
 
-        this.defaultColumnBuilderFactory = JdbcColumnBuilderFactory::objectCol;
+        this.defaultExtractorFactory = JdbcExtractorFactory::$col;
 
         // use primitive converters if the column has no nulls
-        this.primitiveColumnBuilderFactories = new HashMap<>();
-        this.primitiveColumnBuilderFactories.put(Types.BOOLEAN, JdbcColumnBuilderFactory::booleanCol);
-        this.primitiveColumnBuilderFactories.put(Types.INTEGER, JdbcColumnBuilderFactory::intCol);
-        this.primitiveColumnBuilderFactories.put(Types.DOUBLE, JdbcColumnBuilderFactory::doubleCol);
-        this.primitiveColumnBuilderFactories.put(Types.FLOAT, JdbcColumnBuilderFactory::doubleCol);
-        this.primitiveColumnBuilderFactories.put(Types.BIGINT, JdbcColumnBuilderFactory::longCol);
+        this.primitiveExtractorFactories = new HashMap<>();
+        this.primitiveExtractorFactories.put(Types.BOOLEAN, JdbcExtractorFactory::$bool);
+        this.primitiveExtractorFactories.put(Types.INTEGER, JdbcExtractorFactory::$int);
+        this.primitiveExtractorFactories.put(Types.DOUBLE, JdbcExtractorFactory::$double);
+        this.primitiveExtractorFactories.put(Types.FLOAT, JdbcExtractorFactory::$double);
+        this.primitiveExtractorFactories.put(Types.BIGINT, JdbcExtractorFactory::$long);
         // mysql return bit with code -7 instead boolean -16 type
-        this.primitiveColumnBuilderFactories.put(Types.BIT, JdbcColumnBuilderFactory::booleanCol);
+        this.primitiveExtractorFactories.put(Types.BIT, JdbcExtractorFactory::$bool);
 
         // Types.DECIMAL should presumably be mapped to BigDecimal, so not attempting to map to a primitive double
 
-        this.columnBuilderFactories = columnBuilderFactories;
+        this.extractorFactories = extractorFactories;
         this.preBindConverterFactory = createPreBindConverterFactory();
 
         this.quoter = createQuoter();
@@ -132,21 +133,22 @@ public class DefaultJdbcConnector implements JdbcConnector {
         return new SqlSaver(this, sql);
     }
 
-    @Override
-    public JdbcSeriesBuilder<?> createColumnBuilder(int pos, int type, boolean mandatory) {
 
-        JdbcColumnBuilderFactory sbf = null;
+    @Override
+    public Extractor<ResultSet, ?> createExtractor(int resultSetPosition, int type, boolean mandatory) {
+
+        JdbcExtractorFactory factory = null;
 
         // try to use primitive converters if the column has no nulls
         if (mandatory) {
-            sbf = primitiveColumnBuilderFactories.get(type);
+            factory = primitiveExtractorFactories.get(type);
         }
 
-        if (sbf == null) {
-            sbf = columnBuilderFactories.getOrDefault(type, defaultColumnBuilderFactory);
+        if (factory == null) {
+            factory = extractorFactories.getOrDefault(type, defaultExtractorFactory);
         }
 
-        return sbf.createBuilder(pos);
+        return factory.createExtractor(resultSetPosition);
     }
 
     /**

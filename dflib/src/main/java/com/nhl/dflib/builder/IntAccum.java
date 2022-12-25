@@ -88,6 +88,7 @@ public class IntAccum implements ValueAccum<Integer> {
         return new IntArraySeries(data, 0, size);
     }
 
+    @Override
     public int size() {
         return size;
     }

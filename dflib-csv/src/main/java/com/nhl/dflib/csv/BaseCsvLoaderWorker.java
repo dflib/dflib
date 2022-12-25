@@ -43,7 +43,7 @@ class BaseCsvLoaderWorker implements CsvLoaderWorker {
 
     protected void addRow(int width, CSVRecord row) {
         for (int i = 0; i < width; i++) {
-            columnBuilders[i].extract(row);
+            columnBuilders[i].extractAndStore(row);
         }
     }
 }

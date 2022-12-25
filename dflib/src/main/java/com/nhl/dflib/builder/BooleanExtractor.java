@@ -1,11 +1,12 @@
 package com.nhl.dflib.builder;
 
 import com.nhl.dflib.BooleanValueMapper;
+import com.nhl.dflib.Extractor;
 
 /**
  * @since 0.16
  */
-public class BooleanExtractor<F> implements ValueExtractor<F, Boolean> {
+public class BooleanExtractor<F> implements Extractor<F, Boolean> {
 
     private final BooleanValueMapper<F> mapper;
 
@@ -14,12 +15,12 @@ public class BooleanExtractor<F> implements ValueExtractor<F, Boolean> {
     }
 
     @Override
-    public void extract(F from, ValueStore<Boolean> to) {
+    public void extractAndStore(F from, ValueStore<Boolean> to) {
         to.pushBoolean(mapper.map(from));
     }
 
     @Override
-    public void extract(F from, ValueStore<Boolean> to, int toPos) {
+    public void extractAndStore(F from, ValueStore<Boolean> to, int toPos) {
         to.replaceBoolean(toPos, mapper.map(from));
     }
 

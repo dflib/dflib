@@ -10,4 +10,6 @@ import com.nhl.dflib.Series;
 public interface ValueAccum<T> extends ValueStore<T> {
 
     Series<T> toSeries();
+
+    int size();
 }

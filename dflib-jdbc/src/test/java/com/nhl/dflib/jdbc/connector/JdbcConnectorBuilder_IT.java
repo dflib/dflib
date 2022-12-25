@@ -1,9 +1,9 @@
 package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Extractor;
 import com.nhl.dflib.jdbc.Jdbc;
-import com.nhl.dflib.jdbc.connector.loader.JdbcSeriesBuilder;
-import com.nhl.dflib.jdbc.connector.loader.JdbcColumnBuilderFactory;
+import com.nhl.dflib.jdbc.connector.loader.JdbcExtractorFactory;
 import com.nhl.dflib.jdbc.unit.BaseDbTest;
 import com.nhl.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.DisplayName;
@@ -88,9 +88,9 @@ public class JdbcConnectorBuilder_IT extends BaseDbTest {
 
         DataFrame customTypes = Jdbc.connector()
                 .dataSource(adapter.getDb().getDataSource())
-                .addColumnBuilderFactory(Types.DATE, JdbcConnectorBuilder_IT::dateAccum)
-                .addColumnBuilderFactory(Types.TIME, JdbcConnectorBuilder_IT::timeAccum)
-                .addColumnBuilderFactory(Types.TIMESTAMP, JdbcConnectorBuilder_IT::timestampAccum)
+                .addColumnBuilderFactory(Types.DATE, JdbcConnectorBuilder_IT::$cdate)
+                .addColumnBuilderFactory(Types.TIME, JdbcConnectorBuilder_IT::$ctime)
+                .addColumnBuilderFactory(Types.TIMESTAMP, JdbcConnectorBuilder_IT::$cdatetime)
                 .build()
                 .tableLoader(table)
                 .load();
@@ -110,22 +110,22 @@ public class JdbcConnectorBuilder_IT extends BaseDbTest {
                 .expectRow(0, 1L, d, t, ts);
     }
 
-    static JdbcSeriesBuilder<String> dateAccum(int pos) {
-        return JdbcColumnBuilderFactory.fromJdbcFunction(rs -> {
+    static Extractor<ResultSet, String> $cdate(int pos) {
+        return JdbcExtractorFactory.fromJdbcFunction(rs -> {
             Date date = rs.getDate(pos);
             return date != null ? date.toLocalDate().toString() : null;
         });
     }
 
-    static JdbcSeriesBuilder<String> timeAccum(int pos) {
-        return JdbcColumnBuilderFactory.fromJdbcFunction(rs -> {
+    static Extractor<ResultSet, String> $ctime(int pos) {
+        return JdbcExtractorFactory.fromJdbcFunction(rs -> {
             Time time = rs.getTime(pos, Calendar.getInstance());
             return time != null ? time.toLocalTime().toString() : null;
         });
     }
 
-    static JdbcSeriesBuilder<String> timestampAccum(int pos) {
-        return JdbcColumnBuilderFactory.fromJdbcFunction(rs -> {
+    static Extractor<ResultSet, String> $cdatetime(int pos) {
+        return JdbcExtractorFactory.fromJdbcFunction(rs -> {
             Timestamp timestamp = rs.getTimestamp(pos, Calendar.getInstance());
             return timestamp != null ? timestamp.toLocalDateTime().toString() : null;
         });

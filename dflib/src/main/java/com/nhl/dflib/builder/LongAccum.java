@@ -82,6 +82,7 @@ public class LongAccum implements ValueAccum<Long> {
         return new LongArraySeries(data, 0, size);
     }
 
+    @Override
     public int size() {
         return size;
     }

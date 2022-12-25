@@ -89,6 +89,7 @@ public class DoubleAccum implements ValueAccum<Double> {
         return new DoubleArraySeries(data, 0, size);
     }
 
+    @Override
     public int size() {
         return size;
     }

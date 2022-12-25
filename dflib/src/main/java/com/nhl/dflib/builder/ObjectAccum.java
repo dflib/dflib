@@ -22,6 +22,11 @@ public class ObjectAccum<T> implements ValueAccum<T> {
         this.data = (T[]) new Object[capacity];
     }
 
+    @Override
+    public int size() {
+        return size;
+    }
+
     public void fill(int from, int to, T value) {
         if (to - from < 1) {
             return;

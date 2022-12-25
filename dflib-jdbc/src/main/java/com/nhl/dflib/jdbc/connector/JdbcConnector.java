@@ -1,6 +1,6 @@
 package com.nhl.dflib.jdbc.connector;
 
-import com.nhl.dflib.jdbc.connector.loader.JdbcSeriesBuilder;
+import com.nhl.dflib.Extractor;
 import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.jdbc.connector.statement.ValueConverterFactory;
@@ -85,15 +85,15 @@ public interface JdbcConnector {
     String quoteTableName(TableFQName tableName);
 
     /**
-     * Creates a reader and value accumulator for a column of the {@link ResultSet} at a given position.
+     * Creates an extractor for a column of the {@link ResultSet} at a given position.
      *
      * @param resultSetPosition 1-based position of the column in the ResultSet.
      * @param type              JDBC type of the value per {@link java.sql.Types}
      * @param mandatory         whether the value is mandatory. This information helps to optimize produced columns,
      *                          using primitive Series for mandatory numeric / boolean columns.
-     * @return a new instance of SeriesBuilder
+     * @since 0.16
      */
-    JdbcSeriesBuilder<?> createColumnBuilder(int resultSetPosition, int type, boolean mandatory);
+    Extractor<ResultSet, ?> createExtractor(int resultSetPosition, int type, boolean mandatory);
 
     SqlLogger getSqlLogger();
 

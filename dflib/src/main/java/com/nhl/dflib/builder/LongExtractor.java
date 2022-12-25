@@ -1,11 +1,12 @@
 package com.nhl.dflib.builder;
 
 import com.nhl.dflib.LongValueMapper;
+import com.nhl.dflib.Extractor;
 
 /**
  * @since 0.8
  */
-public class LongExtractor<F> implements ValueExtractor<F, Long> {
+public class LongExtractor<F> implements Extractor<F, Long> {
 
     private final LongValueMapper<F> mapper;
 
@@ -14,12 +15,12 @@ public class LongExtractor<F> implements ValueExtractor<F, Long> {
     }
 
     @Override
-    public void extract(F from, ValueStore<Long> to) {
+    public void extractAndStore(F from, ValueStore<Long> to) {
         to.pushLong(mapper.map(from));
     }
 
     @Override
-    public void extract(F from, ValueStore<Long> to, int toPos) {
+    public void extractAndStore(F from, ValueStore<Long> to, int toPos) {
         to.replaceLong(toPos, mapper.map(from));
     }
 

@@ -243,6 +243,7 @@ public class DataFrameBuilderTest {
                 .expectRow(2, "b", null);
     }
 
+    @Deprecated(since = "0.16")
     @Test
     public void testObjectsToRows() {
         DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
@@ -330,7 +331,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldIntStreamByColumn_Partial2() {
-        DataFrame df =new DataFrameBuilder(Index.forLabels("a", "b", "c"))
+        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b", "c"))
                 .foldIntStreamByColumn(IntStream.range(0, 10));
 
         new DataFrameAsserts(df, "a", "b", "c")
@@ -483,7 +484,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldDoubleStreamByRow_Partial_DefaultPadding() {
-        DataFrame df =new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
                 .foldDoubleStreamByRow(DoubleStream.of(-1, 1.1, 0, 2, 5));
 
         new DataFrameAsserts(df, "a", "b")

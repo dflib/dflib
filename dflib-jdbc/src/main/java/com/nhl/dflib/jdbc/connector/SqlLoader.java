@@ -1,9 +1,10 @@
 package com.nhl.dflib.jdbc.connector;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.builder.DataFrameAppender;
+import com.nhl.dflib.Extractor;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.jdbc.connector.loader.JdbcSeriesBuilder;
 import com.nhl.dflib.sample.Sampler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,13 +114,16 @@ public class SqlLoader {
     protected DataFrame loadDataFrame(ResultSet rs) throws SQLException {
         Index columns = createIndex(rs);
 
-        JdbcSeriesBuilder<?>[] builders = createColumnBuilders(rs);
+        Extractor<ResultSet, ?>[] extractors = createExtractors(rs);
 
-        SqlLoaderWorker worker = rowSampleSize > 0
-                ? new SamplingSqlLoaderWorker(columns, builders, maxRows, rowSampleSize, rowsSampleRandom)
-                : new SqlLoaderWorker(columns, builders, maxRows);
+        DataFrameAppender<ResultSet> appender = DataFrame
+                .newFrame(columns)
+                .extractWith(extractors)
+                .capacity(rowSampleSize > 0 ? rowSampleSize : 100)
+                .sampleRows(rowSampleSize, rowsSampleRandom)
+                .appendData();
 
-        return worker.load(rs);
+        return new SqlLoaderWorker(appender, maxRows).load(rs);
     }
 
     protected Index createIndex(ResultSet rs) throws SQLException {
@@ -135,19 +139,19 @@ public class SqlLoader {
         return Index.forLabels(names);
     }
 
-    protected JdbcSeriesBuilder<?>[] createColumnBuilders(ResultSet resultSet) throws SQLException {
+    protected Extractor<ResultSet, ?>[] createExtractors(ResultSet resultSet) throws SQLException {
         ResultSetMetaData rsmd = resultSet.getMetaData();
         int w = rsmd.getColumnCount();
-        JdbcSeriesBuilder<?>[] builders = new JdbcSeriesBuilder[w];
+        Extractor<ResultSet, ?>[] extractors = new Extractor[w];
 
         for (int i = 0; i < w; i++) {
             int jdbcPos = i + 1;
-            builders[i] = connector.createColumnBuilder(
+            extractors[i] = connector.createExtractor(
                     jdbcPos,
                     rsmd.getColumnType(jdbcPos),
                     rsmd.isNullable(jdbcPos) == ResultSetMetaData.columnNoNulls);
         }
 
-        return builders;
+        return extractors;
     }
 }

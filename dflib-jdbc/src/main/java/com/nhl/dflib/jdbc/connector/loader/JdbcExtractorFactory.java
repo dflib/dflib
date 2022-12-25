@@ -1,14 +1,18 @@
 package com.nhl.dflib.jdbc.connector.loader;
 
-import com.nhl.dflib.*;
+import com.nhl.dflib.BooleanValueMapper;
+import com.nhl.dflib.DoubleValueMapper;
+import com.nhl.dflib.Extractor;
+import com.nhl.dflib.IntValueMapper;
+import com.nhl.dflib.LongValueMapper;
+import com.nhl.dflib.ValueMapper;
 import com.nhl.dflib.jdbc.connector.JdbcFunction;
-import com.nhl.dflib.builder.BooleanExtractor;
-import com.nhl.dflib.builder.DoubleExtractor;
-import com.nhl.dflib.builder.IntExtractor;
-import com.nhl.dflib.builder.LongExtractor;
-import com.nhl.dflib.builder.ObjectExtractor;
 
-import java.sql.*;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -16,12 +20,12 @@ import java.util.Calendar;
 
 /**
  * @param <T>
- * @since 0.8
+ * @since 0.16
  */
 @FunctionalInterface
-public interface JdbcColumnBuilderFactory<T> {
+public interface JdbcExtractorFactory<T> {
 
-    static JdbcSeriesBuilder<Boolean> booleanCol(int pos) {
+    static Extractor<ResultSet, Boolean> $bool(int pos) {
         BooleanValueMapper<ResultSet> mapper = rs -> {
             try {
                 return rs.getBoolean(pos);
@@ -30,10 +34,10 @@ public interface JdbcColumnBuilderFactory<T> {
             }
         };
 
-        return new JdbcSeriesBuilder<>(new BooleanExtractor<>(mapper));
+        return Extractor.$bool(mapper);
     }
 
-    static JdbcSeriesBuilder<Integer> intCol(int pos) {
+    static Extractor<ResultSet, Integer> $int(int pos) {
         IntValueMapper<ResultSet> mapper = rs -> {
             try {
                 return rs.getInt(pos);
@@ -42,10 +46,10 @@ public interface JdbcColumnBuilderFactory<T> {
             }
         };
 
-        return new JdbcSeriesBuilder<>(new IntExtractor<>(mapper));
+        return Extractor.$int(mapper);
     }
 
-    static JdbcSeriesBuilder<Long> longCol(int pos) {
+    static Extractor<ResultSet, Long> $long(int pos) {
         LongValueMapper<ResultSet> mapper = rs -> {
             try {
                 return rs.getLong(pos);
@@ -54,10 +58,10 @@ public interface JdbcColumnBuilderFactory<T> {
             }
         };
 
-        return new JdbcSeriesBuilder<>(new LongExtractor<>(mapper));
+        return Extractor.$long(mapper);
     }
 
-    static JdbcSeriesBuilder<Double> doubleCol(int pos) {
+    static Extractor<ResultSet, Double> $double(int pos) {
         DoubleValueMapper<ResultSet> mapper = rs -> {
             try {
                 return rs.getDouble(pos);
@@ -66,35 +70,35 @@ public interface JdbcColumnBuilderFactory<T> {
             }
         };
 
-        return new JdbcSeriesBuilder<>(new DoubleExtractor<>(mapper));
+        return Extractor.$double(mapper);
     }
 
-    static JdbcSeriesBuilder<Object> objectCol(int pos) {
+    static Extractor<ResultSet, Object> $col(int pos) {
         return fromJdbcFunction(rs -> rs.getObject(pos));
     }
 
-    static JdbcSeriesBuilder<LocalDate> dateCol(int pos) {
+    static Extractor<ResultSet, LocalDate> $date(int pos) {
         return fromJdbcFunction(rs -> {
             Date date = rs.getDate(pos);
             return date != null ? date.toLocalDate() : null;
         });
     }
 
-    static JdbcSeriesBuilder<LocalTime> timeCol(int pos) {
+    static Extractor<ResultSet, LocalTime> $time(int pos) {
         return fromJdbcFunction(rs -> {
             Time time = rs.getTime(pos, Calendar.getInstance());
             return time != null ? time.toLocalTime() : null;
         });
     }
 
-    static JdbcSeriesBuilder<LocalDateTime> timestampCol(int pos) {
+    static Extractor<ResultSet, LocalDateTime> $datetime(int pos) {
         return fromJdbcFunction(rs -> {
             Timestamp timestamp = rs.getTimestamp(pos, Calendar.getInstance());
             return timestamp != null ? timestamp.toLocalDateTime() : null;
         });
     }
 
-    static <T> JdbcSeriesBuilder<T> fromJdbcFunction(JdbcFunction<ResultSet, T> f) {
+    static <T> Extractor<ResultSet, T> fromJdbcFunction(JdbcFunction<ResultSet, T> f) {
 
         ValueMapper<ResultSet, T> mapper = rs -> {
             try {
@@ -104,8 +108,8 @@ public interface JdbcColumnBuilderFactory<T> {
             }
         };
 
-        return new JdbcSeriesBuilder<>(new ObjectExtractor<>(mapper));
+        return Extractor.$col(mapper);
     }
 
-    JdbcSeriesBuilder<T> createBuilder(int pos);
+    Extractor<ResultSet, T> createExtractor(int pos);
 }

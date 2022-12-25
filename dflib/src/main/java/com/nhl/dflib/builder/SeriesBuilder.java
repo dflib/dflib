@@ -1,29 +1,34 @@
 package com.nhl.dflib.builder;
 
 import com.nhl.dflib.Series;
+import com.nhl.dflib.Extractor;
 
 /**
  * A mutable by-row Series builder that obtains and converts values from some abstract row source. Provides a high-level
- * API over {@link ValueAccum} and {@link ValueExtractor}.
+ * API over {@link ValueAccum} and {@link Extractor}.
  *
  * @since 0.16
  */
 public class SeriesBuilder<F, T> {
 
-    protected final ValueExtractor<F, T> converter;
+    protected final Extractor<F, T> extractor;
     protected final ValueAccum<T> accumulator;
 
-    public SeriesBuilder(ValueExtractor<F, T> converter) {
-        this.converter = converter;
-        this.accumulator = converter.createAccum();
+    public SeriesBuilder(Extractor<F, T> extractor, int accumCapacity) {
+        this.extractor = extractor;
+        this.accumulator = extractor.createAccum(accumCapacity);
     }
 
-    public void extract(F from) {
-        converter.extract(from, accumulator);
+    public int accumulatedSize() {
+        return accumulator.size();
     }
 
-    public void extract(F from, int toPos) {
-        converter.extract(from, accumulator, toPos);
+    public void extractAndStore(F from) {
+        extractor.extractAndStore(from, accumulator);
+    }
+
+    public void extractAndStore(F from, int toPos) {
+        extractor.extractAndStore(from, accumulator, toPos);
     }
 
     public Series<T> toSeries() {

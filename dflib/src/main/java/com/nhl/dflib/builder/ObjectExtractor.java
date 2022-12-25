@@ -1,11 +1,12 @@
 package com.nhl.dflib.builder;
 
+import com.nhl.dflib.Extractor;
 import com.nhl.dflib.ValueMapper;
 
 /**
  * @since 0.8
  */
-public class ObjectExtractor<F, T> implements ValueExtractor<F, T> {
+public class ObjectExtractor<F, T> implements Extractor<F, T> {
 
     private final ValueMapper<F, T> mapper;
 
@@ -14,12 +15,12 @@ public class ObjectExtractor<F, T> implements ValueExtractor<F, T> {
     }
 
     @Override
-    public void extract(F from, ValueStore<T> to) {
+    public void extractAndStore(F from, ValueStore<T> to) {
         to.push(mapper.map(from));
     }
 
     @Override
-    public void extract(F from, ValueStore<T> to, int toPos) {
+    public void extractAndStore(F from, ValueStore<T> to, int toPos) {
         to.replace(toPos, mapper.map(from));
     }
 

@@ -87,6 +87,7 @@ public class BooleanAccum implements ValueAccum<Boolean> {
         return new BooleanArraySeries(data, 0, size);
     }
 
+    @Override
     public int size() {
         return size;
     }

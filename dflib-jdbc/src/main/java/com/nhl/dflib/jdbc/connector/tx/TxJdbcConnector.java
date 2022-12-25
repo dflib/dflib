@@ -1,5 +1,6 @@
 package com.nhl.dflib.jdbc.connector.tx;
 
+import com.nhl.dflib.Extractor;
 import com.nhl.dflib.jdbc.connector.JdbcConnector;
 import com.nhl.dflib.jdbc.connector.SqlLoader;
 import com.nhl.dflib.jdbc.connector.SqlLogger;
@@ -8,7 +9,6 @@ import com.nhl.dflib.jdbc.connector.StatementBuilder;
 import com.nhl.dflib.jdbc.connector.TableDeleter;
 import com.nhl.dflib.jdbc.connector.TableLoader;
 import com.nhl.dflib.jdbc.connector.TableSaver;
-import com.nhl.dflib.jdbc.connector.loader.JdbcSeriesBuilder;
 import com.nhl.dflib.jdbc.connector.metadata.DbMetadata;
 import com.nhl.dflib.jdbc.connector.metadata.TableFQName;
 import com.nhl.dflib.jdbc.connector.statement.ValueConverterFactory;
@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -128,9 +129,12 @@ public class TxJdbcConnector implements JdbcConnector, AutoCloseable {
         return delegate.quoteTableName(tableName);
     }
 
+    /**
+     * @since 0.16
+     */
     @Override
-    public JdbcSeriesBuilder<?> createColumnBuilder(int pos, int type, boolean mandatory) {
-        return delegate.createColumnBuilder(pos, type, mandatory);
+    public Extractor<ResultSet, ?> createExtractor(int resultSetPosition, int type, boolean mandatory) {
+        return delegate.createExtractor(resultSetPosition, type, mandatory);
     }
 
     @Override

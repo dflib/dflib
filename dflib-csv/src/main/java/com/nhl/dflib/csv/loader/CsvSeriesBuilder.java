@@ -1,7 +1,7 @@
 package com.nhl.dflib.csv.loader;
 
 import com.nhl.dflib.builder.SeriesBuilder;
-import com.nhl.dflib.builder.ValueExtractor;
+import com.nhl.dflib.Extractor;
 import org.apache.commons.csv.CSVRecord;
 
 /**
@@ -11,8 +11,9 @@ public class CsvSeriesBuilder<T> extends SeriesBuilder<CSVRecord, T> {
 
     private final int csvColumnPosition;
 
-    public CsvSeriesBuilder(ValueExtractor<CSVRecord, T> converter, int csvColumnPosition) {
-        super(converter);
+    public CsvSeriesBuilder(Extractor<CSVRecord, T> converter, int csvColumnPosition) {
+        // TODO: be more precise about capacity .. e.g. when sampling we can use the sample size as capacity
+        super(converter, 10);
         this.csvColumnPosition = csvColumnPosition;
     }
 

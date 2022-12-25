@@ -1,14 +1,17 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.series.ArraySeries;
-import com.nhl.dflib.series.DoubleArraySeries;
-import com.nhl.dflib.series.IntArraySeries;
-import com.nhl.dflib.series.LongArraySeries;
-import com.nhl.dflib.builder.ValueAccum;
+
+import com.nhl.dflib.builder.DataFrameAppenderBuilder;
+import com.nhl.dflib.builder.DataFrameArrayAppenderBuilder;
 import com.nhl.dflib.builder.DoubleAccum;
 import com.nhl.dflib.builder.IntAccum;
 import com.nhl.dflib.builder.LongAccum;
 import com.nhl.dflib.builder.ObjectAccum;
+import com.nhl.dflib.builder.ValueAccum;
+import com.nhl.dflib.series.ArraySeries;
+import com.nhl.dflib.series.DoubleArraySeries;
+import com.nhl.dflib.series.IntArraySeries;
+import com.nhl.dflib.series.LongArraySeries;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,6 +82,39 @@ public class DataFrameBuilder {
         }
 
         return fromColumnarData(columnarData);
+    }
+
+    /**
+     * Configures the builder to extract values from the source row by row, using provided column extractors.
+     *
+     * @since 0.16
+     */
+    public <T> DataFrameAppenderBuilder<T> extractWith(Extractor<T, ?>... columnExtractors) {
+        return new DataFrameAppenderBuilder<>(columnsIndex, columnExtractors);
+    }
+
+    /**
+     * Configures the builder to extract values from the source row by row, using provided column extractors.
+     *
+     * @since 0.16
+     */
+    public <T> DataFrameArrayAppenderBuilder extractArray() {
+        int w = columnsIndex.size();
+        Extractor<Object[], ?>[] indexExtractors = new Extractor[w];
+        for (int i = 0; i < w; i++) {
+            int pos = i;
+            indexExtractors[i] = Extractor.$col(a -> a[pos]);
+        }
+        return new DataFrameArrayAppenderBuilder(columnsIndex, indexExtractors);
+    }
+
+    /**
+     * Configures the builder to extract values from the source row by row, using provided column extractors.
+     *
+     * @since 0.16
+     */
+    public <T> DataFrameArrayAppenderBuilder extractArrayWith(Extractor<Object[], ?>... columnExtractors) {
+        return new DataFrameArrayAppenderBuilder(columnsIndex, columnExtractors);
     }
 
     /**
@@ -212,6 +248,10 @@ public class DataFrameBuilder {
         return foldByColumn(toCollection(iterable).toArray());
     }
 
+    /**
+     * @deprecated use the builder provided via {@link #extractWith(Extractor[])} method instead.
+     */
+    @Deprecated(since = "0.16")
     public <T> DataFrame objectsToRows(Iterable<T> objects, Function<T, Object[]> rowMapper) {
         DataFrameByRowBuilder byRowBuilder = byRow();
         objects.forEach(o -> byRowBuilder.addRow(rowMapper.apply(o)));

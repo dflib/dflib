@@ -9,6 +9,7 @@
 * #173 Remove API deprecated since 0.12
 * #175 Optimize Exp.concat(..)
 * #179 DateTimeExp
+* #180 Primitives-aware DataFrame builder
 
 ## Release 0.15
 
