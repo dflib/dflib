@@ -20,9 +20,7 @@ import java.util.function.UnaryOperator;
 
 /**
  * An immutable 2D data container with support for a variety of data transformations, queries, joins, etc. Every such
- * transformation returns a new DataFrame object and does not affect the original DataFrame. DataFrame allows to iterate
- * over its contents via {@link RowProxy} instances. You should not attempt to store {@link RowProxy} instances or
- * otherwise rely on their state outside a single iteration.
+ * transformation returns a new DataFrame object and does not affect the original DataFrame.
  */
 public interface DataFrame extends Iterable<RowProxy> {
 

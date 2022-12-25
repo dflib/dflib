@@ -70,7 +70,7 @@ public class DataFrame_BuilderTest {
                 .columnNames("a", "b")
                 .appendData());
     }
-    
+
     static class From {
         final String s;
         final int i;
