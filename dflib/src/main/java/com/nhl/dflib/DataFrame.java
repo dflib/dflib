@@ -43,7 +43,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * Starts DataFrame builder.
+     * Starts a DataFrame builder.
      *
      * @since 0.16
      */
