@@ -10,7 +10,7 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class AvroTest_File {
+public class Avro_FileTest {
 
     @TempDir
     static File destination;
@@ -33,10 +33,11 @@ public class AvroTest_File {
         File file = new File(destination, "testSaveLoad_File.avro");
 
         DataFrame df = DataFrame.newFrame("a", "b")
-                .byRow()
-                .addRow(1, 2)
-                .addRow(3, 4)
-                .create();
+                .extractArray()
+                .appendData()
+                .append(1, 2)
+                .append(3, 4)
+                .build();
 
         Avro.save(df, file);
         assertTrue(file.exists());

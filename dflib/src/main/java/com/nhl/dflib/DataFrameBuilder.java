@@ -26,7 +26,7 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 /**
- * Assembles a DataFrame from various in-memory data structures. Usually created via {@link DataFrame#newFrame(Index)}
+ * Assembles a DataFrame from various in-memory data structures. Created via {@link DataFrame#newFrame(Index)}
  * or {@link DataFrame#newFrame(String...)}.
  *
  * @since 0.6
@@ -64,6 +64,10 @@ public class DataFrameBuilder {
         return new ColumnDataFrame(columnsIndex, columns);
     }
 
+    /**
+     * @deprecated use {@link #extractArray()} or {@link #extractArrayWith(Extractor[])}
+     */
+    @Deprecated(since = "0.16")
     public DataFrame rows(Object[]... rows) {
         int w = columnsIndex.size();
         int h = rows.length;
@@ -123,7 +127,9 @@ public class DataFrameBuilder {
      * If nothing is passed to theis method, a list of ObjectAccumulators is created implicitly.
      *
      * @since 0.11
+     * @deprecated use {@link #extractArray()} or {@link #extractArrayWith(Extractor[])}
      */
+    @Deprecated(since = "0.16")
     public DataFrameByRowBuilder byRow(ValueAccum<?>... rowAccumulators) {
 
         // use default ObjectAccumulators if not set

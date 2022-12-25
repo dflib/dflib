@@ -34,6 +34,7 @@ public class DataFrameBuilderTest {
                 .expectRow(2, "c", 3);
     }
 
+    @Deprecated(since = "0.16")
     @Test
     public void testByRow() {
         DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
@@ -49,6 +50,7 @@ public class DataFrameBuilderTest {
                 .expectRow(2, "c", 3);
     }
 
+    @Deprecated(since = "0.16")
     @Test
     public void testByRow_CustomAccums() {
         DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
@@ -80,6 +82,7 @@ public class DataFrameBuilderTest {
                 .expectRow(2, "c", 3);
     }
 
+    @Deprecated(since = "0.16")
     @Test
     public void testRows() {
 

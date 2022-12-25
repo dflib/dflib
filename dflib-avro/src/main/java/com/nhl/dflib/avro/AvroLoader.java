@@ -1,17 +1,12 @@
 package com.nhl.dflib.avro;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.DataFrameByRowBuilder;
 import com.nhl.dflib.Exp;
+import com.nhl.dflib.Extractor;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.builder.ValueAccum;
-import com.nhl.dflib.builder.BooleanAccum;
-import com.nhl.dflib.builder.DoubleAccum;
-import com.nhl.dflib.builder.IntAccum;
-import com.nhl.dflib.builder.LongAccum;
-import com.nhl.dflib.builder.ObjectAccum;
 import com.nhl.dflib.avro.schema.AvroSchemaUtils;
 import com.nhl.dflib.avro.types.AvroTypeExtensions;
+import com.nhl.dflib.builder.DataFrameAppender;
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileReader;
 import org.apache.avro.file.SeekableByteArrayInput;
@@ -78,28 +73,19 @@ public class AvroLoader {
         Schema schema = reader.getExpected();
 
         Index index = createIndex(schema);
-        DataFrameByRowBuilder dfb = DataFrame.newFrame(index).byRow(mapColumns(schema));
+        DataFrameAppender<GenericRecord> appender = DataFrame.newFrame(index)
+                .extractWith(mapColumns(schema))
+                .appendData();
 
-        // reusing both Avro record and rowHolder flyweights..
+        // reuse "record" flyweight
         GenericRecord record = null;
-        Object[] rowHolder = new Object[index.size()];
-
         while (inReader.hasNext()) {
             record = inReader.next(record);
-            dfb.addRow(recordToRow(record, rowHolder));
+            appender.append(record);
         }
 
-        DataFrame df = dfb.create();
+        DataFrame df = appender.build();
         return fromAvroTypes(df, schema);
-    }
-
-    protected Object[] recordToRow(GenericRecord record, Object[] rowHolder) {
-
-        for (int i = 0; i < rowHolder.length; i++) {
-            rowHolder[i] = record.get(i);
-        }
-
-        return rowHolder;
     }
 
     protected Index createIndex(Schema schema) {
@@ -108,39 +94,47 @@ public class AvroLoader {
         return Index.forLabels(labels);
     }
 
-    protected ValueAccum<?>[] mapColumns(Schema schema) {
+    protected Extractor<GenericRecord, ?>[] mapColumns(Schema schema) {
 
         // all non-null numeric and boolean columns can be used as boolean
 
         // TODO: do we need to explicitly sort field by "order" to recreate save order?
-        return schema.getFields().stream().map(Schema.Field::schema).map(this::mapColumn).toArray(ValueAccum[]::new);
+
+        List<Schema.Field> fields = schema.getFields();
+        int w = fields.size();
+        Extractor<GenericRecord, ?>[] extractors = new Extractor[w];
+        for (int i = 0; i < w; i++) {
+            extractors[i] = mapColumn(i, fields.get(i).schema());
+        }
+
+        return extractors;
     }
 
-    protected ValueAccum<?> mapColumn(Schema columnSchema) {
+    protected Extractor<GenericRecord, ?> mapColumn(int pos, Schema columnSchema) {
         switch (columnSchema.getType()) {
             // Raw numeric and boolean types can be loaded as primitives,
             // as numeric nullable types are declared as unions and will fall under the "default" case
             case INT:
-                return new IntAccum();
+                return Extractor.$int(r -> (Integer) r.get(pos));
             case DOUBLE:
-                return new DoubleAccum();
+                return Extractor.$double(r -> (Double) r.get(pos));
             case LONG:
-                return new LongAccum();
+                return Extractor.$long(r -> (Long) r.get(pos));
             case BOOLEAN:
-                return new BooleanAccum();
+                return Extractor.$bool(r -> (Boolean) r.get(pos));
             case STRING:
             case BYTES:
             case ENUM:
             case NULL:
-                return new ObjectAccum<>();
+                return Extractor.$col(r -> r.get(pos));
             case UNION:
-                return mapUnionColumn(columnSchema.getTypes());
+                return mapUnionColumn(pos, columnSchema.getTypes());
             default:
                 throw new UnsupportedOperationException("(Yet) unsupported Avro schema type: " + columnSchema.getType());
         }
     }
 
-    protected ValueAccum<?> mapUnionColumn(List<Schema> types) {
+    protected Extractor<GenericRecord, ?> mapUnionColumn(int pos, List<Schema> types) {
         // we only know how to handle union with NULL
 
         Schema[] otherThanNull = types.stream().filter(t -> t.getType() != Schema.Type.NULL).toArray(Schema[]::new);
@@ -151,7 +145,7 @@ public class AvroLoader {
         boolean hasNull = types.size() > 1;
         if (!hasNull) {
             // allow primitives
-            return mapColumn(otherThanNull[0]);
+            return mapColumn(pos, otherThanNull[0]);
         }
 
         // don't allow primitives
@@ -163,9 +157,9 @@ public class AvroLoader {
             case STRING:
             case BYTES:
             case ENUM:
-                return new ObjectAccum<>();
+                return Extractor.$col(r -> r.get(pos));
             case UNION:
-                return mapUnionColumn(otherThanNull[0].getTypes());
+                return mapUnionColumn(pos, otherThanNull[0].getTypes());
             default:
                 throw new UnsupportedOperationException("(Yet) unsupported Avro schema type: " + otherThanNull[0].getType());
         }
