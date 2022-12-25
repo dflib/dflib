@@ -18,12 +18,12 @@ public class ObjectHolder<T> implements ValueHolder<T> {
     }
 
     @Override
-    public void store(ValueAccum<T> to) {
+    public void pushToStore(ValueStore<T> to) {
         to.push(v);
     }
 
     @Override
-    public void store(ValueAccum<T> to, int pos) {
+    public void pushToStore(ValueStore<T> to, int pos) {
         to.replace(pos, v);
     }
 }

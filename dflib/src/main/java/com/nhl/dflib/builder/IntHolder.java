@@ -18,12 +18,12 @@ public class IntHolder implements ValueHolder<Integer> {
     }
 
     @Override
-    public void store(ValueAccum<Integer> to) {
+    public void pushToStore(ValueStore<Integer> to) {
         to.pushInt(v);
     }
 
     @Override
-    public void store(ValueAccum<Integer> to, int pos) {
+    public void pushToStore(ValueStore<Integer> to, int pos) {
         to.replaceInt(pos, v);
     }
 

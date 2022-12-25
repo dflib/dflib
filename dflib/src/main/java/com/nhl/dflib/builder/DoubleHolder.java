@@ -18,12 +18,12 @@ public class DoubleHolder implements ValueHolder<Double> {
     }
 
     @Override
-    public void store(ValueAccum<Double> to) {
+    public void pushToStore(ValueStore<Double> to) {
         to.pushDouble(v);
     }
 
     @Override
-    public void store(ValueAccum<Double> to, int pos) {
+    public void pushToStore(ValueStore<Double> to, int pos) {
         to.replaceDouble(pos, v);
     }
 

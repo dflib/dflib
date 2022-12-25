@@ -26,11 +26,11 @@ public class CsvCell<T> {
     }
 
     public void store(ValueAccum<T> accumulator) {
-        holder.store(accumulator);
+        holder.pushToStore(accumulator);
     }
 
     public void store(int pos, ValueAccum<T> accumulator) {
-        holder.store(accumulator, pos);
+        holder.pushToStore(accumulator, pos);
     }
 
     public T get() {
