@@ -7,7 +7,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class DataFrame_BuilderTest {
+public class DataFrame_ByRowTest {
 
     @Test
     public void testObjectSource() {
@@ -15,7 +15,7 @@ public class DataFrame_BuilderTest {
         List<From> data = List.of(new From("L1", -1), new From("L2", -2));
 
         DataFrame df = DataFrame
-                .builder(
+                .byRow(
                         Extractor.$col(From::getS),
                         Extractor.$int(From::getI),
                         Extractor.$long(From::getL),
@@ -49,7 +49,7 @@ public class DataFrame_BuilderTest {
         List<From> data = List.of(new From("L1", -1), new From("L2", -2));
 
         DataFrame df = DataFrame
-                .builder(
+                .byRow(
                         Extractor.$col(From::getS),
                         Extractor.$int(From::getI)
                 )
@@ -66,7 +66,7 @@ public class DataFrame_BuilderTest {
     @Test
     public void testNoExtractors() {
         assertThrows(IllegalArgumentException.class, () -> DataFrame
-                .builder()
+                .byRow()
                 .columnNames("a", "b")
                 .appendData());
     }

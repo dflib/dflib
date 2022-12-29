@@ -1,8 +1,8 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.agg.DataFrameAggregator;
-import com.nhl.dflib.builder.DataFrameAppenderBuilder;
-import com.nhl.dflib.builder.DataFrameArrayAppenderBuilder;
+import com.nhl.dflib.builder.DataFrameByRowBuilder;
+import com.nhl.dflib.builder.DataFrameArrayByRowBuilder;
 import com.nhl.dflib.builder.DataFrameFoldByRowBuilder;
 import com.nhl.dflib.join.JoinBuilder;
 import com.nhl.dflib.pivot.PivotBuilder;
@@ -44,35 +44,39 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * Starts a DataFrame builder.
+     * Starts a DataFrame builder that will extract data from some collection of objects, each object resulting in
+     * a row in a DataFrame.
      *
      * @since 0.16
      */
-    static <T> DataFrameAppenderBuilder<T> builder(Extractor<T, ?>... extractors) {
-        return new DataFrameAppenderBuilder<>(extractors);
+    static <T> DataFrameByRowBuilder<T> byRow(Extractor<T, ?>... extractors) {
+        return new DataFrameByRowBuilder<>(extractors);
     }
 
     /**
-     * Starts a DataFrame builder that allows to append rows as arrays via varargs.
+     * Starts a DataFrame builder that will extract data from some collection of arrays. Each array would result in
+     * a row in a DataFrame. This is a flavor of {@link #byRow(Extractor[])} that allows to append arrays using
+     * vararg methods.
      *
      * @since 0.16
      */
-    static DataFrameArrayAppenderBuilder arrayBuilder(Extractor<Object[], ?>... extractors) {
-        return new DataFrameArrayAppenderBuilder(extractors);
+    static DataFrameArrayByRowBuilder byArrayRow(Extractor<Object[], ?>... extractors) {
+        return new DataFrameArrayByRowBuilder(extractors);
     }
 
     /**
-     * Starts a DataFrame builder that allows to append rows as arrays via varargs.
+     * Starts a DataFrame builder that will extract data from some collection of arrays. Each array would result in
+     * a row in a DataFrame.
      *
      * @since 0.16
      */
-    static DataFrameArrayAppenderBuilder arrayBuilder(int w) {
+    static DataFrameArrayByRowBuilder byArrayRow(int w) {
         Extractor<Object[], ?>[] extractors = new Extractor[w];
         for (int i = 0; i < w; i++) {
             int pos = i;
             extractors[i] = Extractor.$col(a -> a[pos]);
         }
-        return new DataFrameArrayAppenderBuilder(extractors);
+        return new DataFrameArrayByRowBuilder(extractors);
     }
 
     /**

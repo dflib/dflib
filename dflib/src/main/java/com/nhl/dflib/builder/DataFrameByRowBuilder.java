@@ -13,7 +13,7 @@ import java.util.Random;
  *
  * @since 0.16
  */
-public class DataFrameAppenderBuilder<S> {
+public class DataFrameByRowBuilder<S> {
 
     private final Extractor<S, ?>[] columnsExtractors;
 
@@ -23,21 +23,21 @@ public class DataFrameAppenderBuilder<S> {
     private Random rowsSampleRandom;
 
     @SafeVarargs
-    public DataFrameAppenderBuilder(Extractor<S, ?>... extractors) {
+    public DataFrameByRowBuilder(Extractor<S, ?>... extractors) {
         this.columnsExtractors = Objects.requireNonNull(extractors);
     }
 
-    public DataFrameAppenderBuilder<S> columnNames(String... columnNames) {
+    public DataFrameByRowBuilder<S> columnNames(String... columnNames) {
         this.columnsIndex = Index.forLabels(columnNames);
         return this;
     }
 
-    public DataFrameAppenderBuilder<S> columnIndex(Index columnsIndex) {
+    public DataFrameByRowBuilder<S> columnIndex(Index columnsIndex) {
         this.columnsIndex = columnsIndex;
         return this;
     }
 
-    public DataFrameAppenderBuilder<S> capacity(int capacity) {
+    public DataFrameByRowBuilder<S> capacity(int capacity) {
         this.capacity = capacity;
         return this;
     }
@@ -51,7 +51,7 @@ public class DataFrameAppenderBuilder<S> {
      * @param size the size of the sample. Can be bigger than the result set size (as the result set size is not known
      *             upfront).
      */
-    public DataFrameAppenderBuilder<S> sampleRows(int size) {
+    public DataFrameByRowBuilder<S> sampleRows(int size) {
         return sampleRows(size, Sampler.getDefaultRandom());
     }
 
@@ -62,7 +62,7 @@ public class DataFrameAppenderBuilder<S> {
      * @param size   the size of the sample. Can be bigger than the result set size (as the result set size is not known upfront).
      * @param random a custom random number generator
      */
-    public DataFrameAppenderBuilder<S> sampleRows(int size, Random random) {
+    public DataFrameByRowBuilder<S> sampleRows(int size, Random random) {
         this.rowSampleSize = size;
         this.rowsSampleRandom = random;
         return this;

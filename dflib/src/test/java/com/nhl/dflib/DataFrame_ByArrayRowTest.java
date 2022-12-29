@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Random;
 
-public class DataFrame_ArrayBuilderTest {
+public class DataFrame_ByArrayRowTest {
 
     @Test
     public void test() {
@@ -14,7 +14,7 @@ public class DataFrame_ArrayBuilderTest {
         List<Object[]> data = List.of(new Object[]{"L1", -1}, new Object[]{"L2", -2});
 
         DataFrame df = DataFrame
-                .arrayBuilder(
+                .byArrayRow(
                         Extractor.$col(a -> a[0]),
                         Extractor.$int(a -> (Integer) a[1])
                 )
@@ -41,7 +41,7 @@ public class DataFrame_ArrayBuilderTest {
         List<Object[]> data = List.of(new Object[]{"L1", -1}, new Object[]{"L2", -2});
 
         DataFrame df = DataFrame
-                .arrayBuilder(2)
+                .byArrayRow(2)
                 .columnNames("o", "i")
                 .appendData()
                 .append("a", 1)
@@ -65,7 +65,7 @@ public class DataFrame_ArrayBuilderTest {
         List<Object[]> data = List.of(new Object[]{"L1", -1}, new Object[]{"L2", -2});
 
         DataFrame df = DataFrame
-                .arrayBuilder(
+                .byArrayRow(
                         Extractor.$col(a -> a[0]),
                         Extractor.$int(a -> (Integer) a[1])
                 )

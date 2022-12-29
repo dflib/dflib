@@ -10,38 +10,38 @@ import java.util.Random;
  *
  * @since 0.16
  */
-public class DataFrameArrayAppenderBuilder extends DataFrameAppenderBuilder<Object[]> {
+public class DataFrameArrayByRowBuilder extends DataFrameByRowBuilder<Object[]> {
 
-    public DataFrameArrayAppenderBuilder(Extractor<Object[], ?>... extractors) {
+    public DataFrameArrayByRowBuilder(Extractor<Object[], ?>... extractors) {
         super(extractors);
     }
 
     @Override
-    public DataFrameArrayAppenderBuilder capacity(int capacity) {
+    public DataFrameArrayByRowBuilder capacity(int capacity) {
         super.capacity(capacity);
         return this;
     }
 
     @Override
-    public DataFrameArrayAppenderBuilder columnNames(String... columnNames) {
+    public DataFrameArrayByRowBuilder columnNames(String... columnNames) {
         super.columnNames(columnNames);
         return this;
     }
 
     @Override
-    public DataFrameArrayAppenderBuilder columnIndex(Index columnsIndex) {
+    public DataFrameArrayByRowBuilder columnIndex(Index columnsIndex) {
         super.columnIndex(columnsIndex);
         return this;
     }
 
     @Override
-    public DataFrameArrayAppenderBuilder sampleRows(int size) {
+    public DataFrameArrayByRowBuilder sampleRows(int size) {
         super.sampleRows(size);
         return this;
     }
 
     @Override
-    public DataFrameArrayAppenderBuilder sampleRows(int size, Random random) {
+    public DataFrameArrayByRowBuilder sampleRows(int size, Random random) {
         super.sampleRows(size, random);
         return this;
     }

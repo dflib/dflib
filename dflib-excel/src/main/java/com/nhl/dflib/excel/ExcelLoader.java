@@ -60,7 +60,7 @@ public class ExcelLoader {
         Row row0 = getRow(sheet, range, 0);
         Index index = firstRowAsHeader ? createIndex(row0, extractors) : range.columns();
 
-        DataFrameAppender<Row> builder = DataFrame.builder(extractors).columnIndex(index).appendData();
+        DataFrameAppender<Row> builder = DataFrame.byRow(extractors).columnIndex(index).appendData();
 
         if (!firstRowAsHeader) {
             builder.append(row0);

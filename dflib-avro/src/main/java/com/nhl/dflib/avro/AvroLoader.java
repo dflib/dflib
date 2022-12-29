@@ -74,7 +74,7 @@ public class AvroLoader {
 
         Index index = createIndex(schema);
         DataFrameAppender<GenericRecord> appender = DataFrame
-                .builder(mapColumns(schema))
+                .byRow(mapColumns(schema))
                 .columnIndex(index)
                 .appendData();
 

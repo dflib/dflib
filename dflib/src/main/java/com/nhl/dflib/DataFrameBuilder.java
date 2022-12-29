@@ -67,7 +67,7 @@ public class DataFrameBuilder {
     }
 
     /**
-     * @deprecated use {@link DataFrame#arrayBuilder(Extractor[])}
+     * @deprecated use {@link DataFrame#byArrayRow(Extractor[])}
      */
     @Deprecated(since = "0.16")
     public DataFrame rows(Object[]... rows) {
@@ -96,7 +96,7 @@ public class DataFrameBuilder {
      * If nothing is passed to theis method, a list of ObjectAccumulators is created implicitly.
      *
      * @since 0.11
-     * @deprecated use {@link DataFrame#arrayBuilder(Extractor[])}
+     * @deprecated use {@link DataFrame#byArrayRow(Extractor[])}
      */
     @Deprecated(since = "0.16")
     public DataFrameByRowBuilder byRow(ValueAccum<?>... rowAccumulators) {
@@ -236,7 +236,7 @@ public class DataFrameBuilder {
     }
 
     /**
-     * @deprecated use the builder provided via {@link DataFrame#builder(Extractor[])} method instead.
+     * @deprecated use the builder provided via {@link DataFrame#byRow(Extractor[])} method instead.
      */
     @Deprecated(since = "0.16")
     public <T> DataFrame objectsToRows(Iterable<T> objects, Function<T, Object[]> rowMapper) {

@@ -32,7 +32,7 @@ public class Avro_FileTest {
     public void testSaveLoad_File() {
         File file = new File(destination, "testSaveLoad_File.avro");
 
-        DataFrame df = DataFrame.arrayBuilder(2)
+        DataFrame df = DataFrame.byArrayRow(2)
                 .columnNames("a", "b")
                 .appendData()
                 .append(1, 2)
