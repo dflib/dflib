@@ -24,7 +24,7 @@ public class DataFrameFoldByRowBuilder {
         this.columnsIndex = columnsIndex;
     }
 
-    public DataFrame foldByRow(Object... data) {
+    public DataFrame array(Object... data) {
 
         int width = columnsIndex.size();
         if (width == 0) {
@@ -58,7 +58,7 @@ public class DataFrameFoldByRowBuilder {
         return new ColumnDataFrame(columnsIndex, series);
     }
 
-    public <T> DataFrame foldIterableByRow(Iterable<T> iterable) {
+    public <T> DataFrame iterable(Iterable<T> iterable) {
 
         int width = columnsIndex.size();
         if (width == 0) {
@@ -96,15 +96,15 @@ public class DataFrameFoldByRowBuilder {
         return new ColumnDataFrame(columnsIndex, series);
     }
 
-    public <T> DataFrame foldStreamByRow(Stream<T> stream) {
-        return foldIterableByRow(stream::iterator);
+    public <T> DataFrame stream(Stream<T> stream) {
+        return iterable(stream::iterator);
     }
 
-    public DataFrame foldDoubleStreamByRow(DoubleStream stream) {
-        return foldDoubleStreamByRow(0., stream);
+    public DataFrame doubleStream(DoubleStream stream) {
+        return doubleStream(0., stream);
     }
 
-    public DataFrame foldDoubleStreamByRow(double padWith, DoubleStream stream) {
+    public DataFrame doubleStream(double padWith, DoubleStream stream) {
 
         int width = columnsIndex.size();
         if (width == 0) {
@@ -140,11 +140,11 @@ public class DataFrameFoldByRowBuilder {
         return new ColumnDataFrame(columnsIndex, columnsData);
     }
 
-    public DataFrame foldIntStreamByRow(IntStream stream) {
-        return foldIntStreamByRow(0, stream);
+    public DataFrame intStream(IntStream stream) {
+        return intStream(0, stream);
     }
 
-    public DataFrame foldIntStreamByRow(int padWith, IntStream stream) {
+    public DataFrame intStream(int padWith, IntStream stream) {
 
         int width = columnsIndex.size();
         if (width == 0) {
@@ -180,11 +180,11 @@ public class DataFrameFoldByRowBuilder {
         return new ColumnDataFrame(columnsIndex, columnsData);
     }
 
-    public DataFrame foldLongStreamByRow(LongStream stream) {
-        return foldLongStreamByRow(0L, stream);
+    public DataFrame longStream(LongStream stream) {
+        return longStream(0L, stream);
     }
 
-    public DataFrame foldLongStreamByRow(long padWith, LongStream stream) {
+    public DataFrame longStream(long padWith, LongStream stream) {
 
         int width = columnsIndex.size();
         if (width == 0) {

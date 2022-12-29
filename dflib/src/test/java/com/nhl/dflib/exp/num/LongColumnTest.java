@@ -77,8 +77,8 @@ public class LongColumnTest {
 
         NumExp<?> e = $long("b").add($long("a"));
 
-        DataFrame df = DataFrame.newFrame("a", "b")
-                .foldLongStreamByRow(LongStream.of(1L, 2000_000_000_001L, 3L, 4L));
+        DataFrame df = DataFrame.foldByRow("a", "b")
+                .longStream(LongStream.of(1L, 2000_000_000_001L, 3L, 4L));
 
         // sanity check of the test DataFrame
         Series<Long> a = df.getColumn("a");
@@ -97,7 +97,7 @@ public class LongColumnTest {
     public void testLE_Int() {
         Condition c = $long("a").le($int("b"));
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").array(
                 1L, -1,
                 3L, 3,
                 3L, 4);
@@ -109,7 +109,7 @@ public class LongColumnTest {
     public void testLT_LongPrimitive() {
         Condition c = $long("a").lt($long("b"));
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldLongStreamByRow(LongStream.of(2L, 1L, 3L, 4L));
+        DataFrame df = DataFrame.foldByRow("a", "b").longStream(LongStream.of(2L, 1L, 3L, 4L));
         // sanity check of the test DataFrame
         Series<Long> a = df.getColumn("a");
         assertTrue(a instanceof LongSeries);

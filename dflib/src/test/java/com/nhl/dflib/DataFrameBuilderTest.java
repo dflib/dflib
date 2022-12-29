@@ -12,9 +12,9 @@ import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 
+@Deprecated(since = "0.16")
 public class DataFrameBuilderTest {
 
-    @Deprecated(since = "0.16")
     @Test
     public void testEmpty() {
         DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b")).empty();
@@ -35,7 +35,6 @@ public class DataFrameBuilderTest {
                 .expectRow(2, "c", 3);
     }
 
-    @Deprecated(since = "0.16")
     @Test
     public void testByRow() {
         DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
@@ -51,7 +50,6 @@ public class DataFrameBuilderTest {
                 .expectRow(2, "c", 3);
     }
 
-    @Deprecated(since = "0.16")
     @Test
     public void testByRow_CustomAccums() {
         DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
@@ -68,7 +66,6 @@ public class DataFrameBuilderTest {
                 .expectRow(2, "c", 3);
     }
 
-    @Deprecated(since = "0.16")
     @Test
     public void testAddRow() {
         DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
@@ -83,7 +80,6 @@ public class DataFrameBuilderTest {
                 .expectRow(2, "c", 3);
     }
 
-    @Deprecated(since = "0.16")
     @Test
     public void testRows() {
 
@@ -247,7 +243,6 @@ public class DataFrameBuilderTest {
                 .expectRow(2, "b", null);
     }
 
-    @Deprecated(since = "0.16")
     @Test
     public void testObjectsToRows() {
         DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))

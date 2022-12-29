@@ -125,7 +125,7 @@ public class DataFrameBuilder {
     }
 
     /**
-     * @deprecated use {@link DataFrame#foldByRowBuilder(String...)}
+     * @deprecated use {@link DataFrame#foldByRow(String...)}
      */
     @Deprecated(since = "0.16")
     public DataFrame foldByRow(Object... data) {
@@ -176,7 +176,7 @@ public class DataFrameBuilder {
     }
 
     /**
-     * @deprecated use {@link DataFrame#foldByRowBuilder(String...)}
+     * @deprecated use {@link DataFrame#foldByRow(String...)}
      */
     @Deprecated(since = "0.16")
     public <T> DataFrame foldStreamByRow(Stream<T> stream) {
@@ -189,7 +189,7 @@ public class DataFrameBuilder {
     }
 
     /**
-     * @deprecated use {@link DataFrame#foldByRowBuilder(String...)}
+     * @deprecated use {@link DataFrame#foldByRow(String...)}
      */
     @Deprecated(since = "0.16")
     public <T> DataFrame foldIterableByRow(Iterable<T> iterable) {
@@ -273,7 +273,7 @@ public class DataFrameBuilder {
     }
 
     /**
-     * @deprecated use {@link DataFrame#foldByRowBuilder(String...)}
+     * @deprecated use {@link DataFrame#foldByRow(String...)}
      */
     @Deprecated(since = "0.16")
     public DataFrame foldIntStreamByRow(IntStream stream) {
@@ -281,7 +281,7 @@ public class DataFrameBuilder {
     }
 
     /**
-     * @deprecated use {@link DataFrame#foldByRowBuilder(String...)}
+     * @deprecated use {@link DataFrame#foldByRow(String...)}
      */
     @Deprecated(since = "0.16")
     public DataFrame foldIntStreamByRow(int padWith, IntStream stream) {
@@ -357,7 +357,7 @@ public class DataFrameBuilder {
     }
 
     /**
-     * @deprecated use {@link DataFrame#foldByRowBuilder(String...)}
+     * @deprecated use {@link DataFrame#foldByRow(String...)}
      */
     @Deprecated(since = "0.16")
     public DataFrame foldLongStreamByRow(LongStream stream) {
@@ -365,7 +365,7 @@ public class DataFrameBuilder {
     }
 
     /**
-     * @deprecated use {@link DataFrame#foldByRowBuilder(String...)}
+     * @deprecated use {@link DataFrame#foldByRow(String...)}
      */
     @Deprecated(since = "0.16")
     public DataFrame foldLongStreamByRow(long padWith, LongStream stream) {
@@ -441,7 +441,7 @@ public class DataFrameBuilder {
     }
 
     /**
-     * @deprecated use {@link DataFrame#foldByRowBuilder(String...)}
+     * @deprecated use {@link DataFrame#foldByRow(String...)}
      */
     @Deprecated(since = "0.16")
     public DataFrame foldDoubleStreamByRow(DoubleStream stream) {
@@ -449,7 +449,7 @@ public class DataFrameBuilder {
     }
 
     /**
-     * @deprecated use {@link DataFrame#foldByRowBuilder(String...)}
+     * @deprecated use {@link DataFrame#foldByRow(String...)}
      */
     @Deprecated(since = "0.16")
     public DataFrame foldDoubleStreamByRow(double padWith, DoubleStream stream) {

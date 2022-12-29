@@ -78,14 +78,14 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @since 0.16
      */
-    static DataFrameFoldByRowBuilder foldByRowBuilder(String... columnLabels) {
-        return foldByRowBuilder(Index.forLabels(Objects.requireNonNull(columnLabels)));
+    static DataFrameFoldByRowBuilder foldByRow(String... columnLabels) {
+        return foldByRow(Index.forLabels(Objects.requireNonNull(columnLabels)));
     }
 
     /**
      * @since 0.16
      */
-    static DataFrameFoldByRowBuilder foldByRowBuilder(Index columnIndex) {
+    static DataFrameFoldByRowBuilder foldByRow(Index columnIndex) {
         return new DataFrameFoldByRowBuilder(columnIndex);
     }
 

@@ -77,7 +77,7 @@ public class DoubleColumnTest {
 
         NumExp<?> e = $double("b").add($double("a"));
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldDoubleStreamByRow(DoubleStream.of(1.01, 2., 3., 4.5));
+        DataFrame df = DataFrame.foldByRow("a", "b").doubleStream(DoubleStream.of(1.01, 2., 3., 4.5));
 
         // sanity check of the test DataFrame
         Series<Double> a = df.getColumn("a");
