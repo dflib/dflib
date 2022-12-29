@@ -29,6 +29,7 @@ import java.util.stream.Stream;
  *
  * @since 0.6
  */
+@Deprecated(since = "0.16")
 public class DataFrameBuilder {
 
     private final Index columnsIndex;
@@ -162,6 +163,10 @@ public class DataFrameBuilder {
         return fromColumnarData(columnarData);
     }
 
+    /**
+     * @deprecated in favor of {@link DataFrame#foldByColumn(Index)}
+     */
+    @Deprecated(since = "0.16")
     public DataFrame foldByColumn(Object... data) {
 
         FoldByColumnGeometry g = byColumnGeometry(data.length);
@@ -187,6 +192,10 @@ public class DataFrameBuilder {
         return foldIterableByRow(stream::iterator);
     }
 
+    /**
+     * @deprecated in favor of {@link DataFrame#foldByColumn(Index)}
+     */
+    @Deprecated(since = "0.16")
     public <T> DataFrame foldStreamByColumn(Stream<T> stream) {
         // since we can't guess the height from the Stream, convert it to array and fold the array by column
         return foldByColumn(stream.toArray());
@@ -249,6 +258,10 @@ public class DataFrameBuilder {
         return byRowBuilder.create();
     }
 
+    /**
+     * @deprecated use the builder provided via {@link DataFrame#byColumn(String...)} method instead.
+     */
+    @Deprecated(since = "0.16")
     public DataFrame foldIntByColumn(int padWith, int... data) {
 
         FoldByColumnGeometry g = byColumnGeometry(data.length);
@@ -324,15 +337,27 @@ public class DataFrameBuilder {
         return new ColumnDataFrame(columnsIndex, columnsData);
     }
 
+    /**
+     * @deprecated use the builder provided via {@link DataFrame#byColumn(String...)} method instead.
+     */
+    @Deprecated(since = "0.16")
     public DataFrame foldIntStreamByColumn(IntStream stream) {
         return foldIntStreamByColumn(0, stream);
     }
 
+    /**
+     * @deprecated use the builder provided via {@link DataFrame#byColumn(String...)} method instead.
+     */
+    @Deprecated(since = "0.16")
     public DataFrame foldIntStreamByColumn(int padWith, IntStream stream) {
         // since we can't guess the height from the Stream, convert it to array and fold the array by column
         return foldIntByColumn(padWith, stream.toArray());
     }
 
+    /**
+     * @deprecated use {@link DataFrame#foldByColumn(String...)}
+     */
+    @Deprecated(since = "0.16")
     public DataFrame foldLongByColumn(long padWith, long... data) {
 
         FoldByColumnGeometry g = byColumnGeometry(data.length);
@@ -408,15 +433,27 @@ public class DataFrameBuilder {
         return new ColumnDataFrame(columnsIndex, columnsData);
     }
 
+    /**
+     * @deprecated use {@link DataFrame#foldByColumn(String...)}
+     */
+    @Deprecated(since = "0.16")
     public DataFrame foldLongStreamByColumn(LongStream stream) {
         return foldLongStreamByColumn(0L, stream);
     }
 
+    /**
+     * @deprecated use {@link DataFrame#foldByColumn(String...)}
+     */
+    @Deprecated(since = "0.16")
     public DataFrame foldLongStreamByColumn(long padWith, LongStream stream) {
         // since we can't guess the height from the Stream, convert it to array and fold the array by column
         return foldLongByColumn(padWith, stream.toArray());
     }
 
+    /**
+     * @deprecated use {@link DataFrame#foldByColumn(String...)}
+     */
+    @Deprecated(since = "0.16")
     public DataFrame foldDoubleByColumn(double padWith, double... data) {
 
         FoldByColumnGeometry g = byColumnGeometry(data.length);
@@ -492,10 +529,18 @@ public class DataFrameBuilder {
         return new ColumnDataFrame(columnsIndex, columnsData);
     }
 
+    /**
+     * @deprecated use {@link DataFrame#foldByColumn(String...)}
+     */
+    @Deprecated(since = "0.16")
     public DataFrame foldDoubleStreamByColumn(DoubleStream stream) {
         return foldDoubleStreamByColumn(0., stream);
     }
 
+    /**
+     * @deprecated use {@link DataFrame#foldByColumn(String...)}
+     */
+    @Deprecated(since = "0.16")
     public DataFrame foldDoubleStreamByColumn(double padWith, DoubleStream stream) {
         // since we can't guess the height from the Stream, convert it to array and fold the array by column
         return foldDoubleByColumn(padWith, stream.toArray());

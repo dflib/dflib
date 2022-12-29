@@ -4,6 +4,7 @@ import com.nhl.dflib.agg.DataFrameAggregator;
 import com.nhl.dflib.builder.DataFrameByColumnBuilder;
 import com.nhl.dflib.builder.DataFrameByRowBuilder;
 import com.nhl.dflib.builder.DataFrameArrayByRowBuilder;
+import com.nhl.dflib.builder.DataFrameFoldByColumnBuilder;
 import com.nhl.dflib.builder.DataFrameFoldByRowBuilder;
 import com.nhl.dflib.join.JoinBuilder;
 import com.nhl.dflib.pivot.PivotBuilder;
@@ -113,6 +114,22 @@ public interface DataFrame extends Iterable<RowProxy> {
     static DataFrameFoldByRowBuilder foldByRow(Index columnIndex) {
         return new DataFrameFoldByRowBuilder(columnIndex);
     }
+
+
+    /**
+     * @since 0.16
+     */
+    static DataFrameFoldByColumnBuilder foldByColumn(String... columnLabels) {
+        return foldByColumn(Index.forLabels(Objects.requireNonNull(columnLabels)));
+    }
+
+    /**
+     * @since 0.16
+     */
+    static DataFrameFoldByColumnBuilder foldByColumn(Index columnIndex) {
+        return new DataFrameFoldByColumnBuilder(columnIndex);
+    }
+
 
     /**
      * Creates a DataFrame builder with provided column labels. Callers can then pass in-memory data in various forms

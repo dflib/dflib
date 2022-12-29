@@ -27,21 +27,18 @@ public class DataFrameByColumnBuilder {
     }
 
     public DataFrame iterable(Iterable<Series<?>> columns) {
-        return new ColumnDataFrame(columnsIndex, columnsArray(columns));
+        return new ColumnDataFrame(columnsIndex, toCollection(columns).toArray(new Series[0]));
     }
 
-    private Series<?>[] columnsArray(Iterable<Series<?>> columns) {
+    private <T> Collection<T> toCollection(Iterable<T> columns) {
         Objects.requireNonNull(columns);
 
         if (columns instanceof Collection) {
-            return ((Collection<Series<?>>) columns).toArray(new Series[0]);
+            return ((Collection<T>) columns);
         }
 
-        List<Series<?>> list = new ArrayList<>();
-        for (Series<?> s : columns) {
-            list.add(s);
-        }
-
-        return list.toArray(new Series[0]);
+        List<T> list = new ArrayList<>();
+        columns.forEach(list::add);
+        return list;
     }
 }
