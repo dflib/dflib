@@ -23,11 +23,6 @@ import java.util.Random;
 public abstract class LongBaseSeries implements LongSeries {
 
     @Override
-    public <V> Series<V> map(ValueMapper<Long, V> mapper) {
-        return new ColumnMappedSeries<>(this, mapper);
-    }
-
-    @Override
     public DataFrame map(Index resultColumns, ValueToRowMapper<Long> mapper) {
         return Mapper.map(this, resultColumns, mapper);
     }

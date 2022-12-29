@@ -72,11 +72,6 @@ public abstract class ObjectSeries<T> implements Series<T> {
     }
 
     @Override
-    public <V> Series<V> map(ValueMapper<T, V> mapper) {
-        return new ColumnMappedSeries<>(this, mapper);
-    }
-
-    @Override
     public DataFrame map(Index resultColumns, ValueToRowMapper<T> mapper) {
         return Mapper.map(this, resultColumns, mapper);
     }

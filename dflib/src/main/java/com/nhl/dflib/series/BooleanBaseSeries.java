@@ -20,11 +20,6 @@ import java.util.Random;
 public abstract class BooleanBaseSeries implements BooleanSeries {
 
     @Override
-    public <V> Series<V> map(ValueMapper<Boolean, V> mapper) {
-        return new ColumnMappedSeries<>(this, mapper);
-    }
-
-    @Override
     public DataFrame map(Index resultColumns, ValueToRowMapper<Boolean> mapper) {
         return Mapper.map(this, resultColumns, mapper);
     }

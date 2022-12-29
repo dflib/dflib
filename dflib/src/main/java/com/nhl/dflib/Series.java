@@ -127,7 +127,9 @@ public interface Series<T> extends Iterable<T> {
      * @return a Series produced by applying a mapper to this Series
      * @since 0.6
      */
-    <V> Series<V> map(ValueMapper<T, V> mapper);
+    default <V> Series<V> map(ValueMapper<T, V> mapper) {
+        return new ColumnMappedSeries<>(this, mapper);
+    }
 
     /**
      * @since 0.16

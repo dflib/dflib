@@ -31,11 +31,6 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public <V> Series<V> map(ValueMapper<Integer, V> mapper) {
-        return new ColumnMappedSeries<>(this, mapper);
-    }
-
-    @Override
     public DataFrame map(Index resultColumns, ValueToRowMapper<Integer> mapper) {
         return Mapper.map(this, resultColumns, mapper);
     }

@@ -23,11 +23,6 @@ import java.util.Random;
 public abstract class DoubleBaseSeries implements DoubleSeries {
 
     @Override
-    public <V> Series<V> map(ValueMapper<Double, V> mapper) {
-        return new ColumnMappedSeries<>(this, mapper);
-    }
-
-    @Override
     public DataFrame map(Index resultColumns, ValueToRowMapper<Double> mapper) {
         return Mapper.map(this, resultColumns, mapper);
     }
