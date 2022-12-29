@@ -79,7 +79,7 @@ public class StrColumnTest {
     public void testStartsWith() {
         Condition c = $str(0).startsWith("_");
 
-        Series<String> s = Series.forData("a", "_b", "c", "__d");
+        Series<String> s = Series.of("a", "_b", "c", "__d");
         new BooleanSeriesAsserts(c.eval(s)).expectData(false, true, false, true);
     }
 
@@ -87,7 +87,7 @@ public class StrColumnTest {
     public void testEndsWith() {
         Condition c = $str(0).endsWith("_");
 
-        Series<String> s = Series.forData("a_", "_b", "c", "__d_");
+        Series<String> s = Series.of("a_", "_b", "c", "__d_");
         new BooleanSeriesAsserts(c.eval(s)).expectData(true, false, false, true);
     }
 
@@ -95,7 +95,7 @@ public class StrColumnTest {
     public void testMatches() {
         Condition c = $str(0).matches("^a.*[0-9]$");
 
-        Series<String> s = Series.forData("a", "a9", "abcd0", "__d");
+        Series<String> s = Series.of("a", "a9", "abcd0", "__d");
         new BooleanSeriesAsserts(c.eval(s)).expectData(false, true, true, false);
     }
 
@@ -103,7 +103,7 @@ public class StrColumnTest {
     public void testCastAsCondition() {
         Condition c = $str(0).castAsCondition();
 
-        Series<String> s = Series.forData("true", null, "false", "__d_");
+        Series<String> s = Series.of("true", null, "false", "__d_");
         new BooleanSeriesAsserts(c.eval(s)).expectData(true, false, false, false);
     }
 
@@ -111,63 +111,63 @@ public class StrColumnTest {
     public void testCastAsCondition_MapVal() {
         Condition isEven = $str(0).mapVal(s -> s.length() % 2 == 0).castAsCondition();
 
-        Series<String> s = Series.forData("a", "a9", "abcd0", "__d_");
+        Series<String> s = Series.of("a", "a9", "abcd0", "__d_");
         new BooleanSeriesAsserts(isEven.eval(s)).expectData(false, true, false, true);
     }
 
     @Test
     public void testCastAsDate() {
         DateExp date = $str(0).castAsDate();
-        Series<String> s = Series.forData("2021-01-02", null);
+        Series<String> s = Series.of("2021-01-02", null);
         new SeriesAsserts(date.eval(s)).expectData(LocalDate.of(2021, 1, 2), null);
     }
 
     @Test
     public void testCastAsDate_Formatter() {
         DateExp date = $str(0).castAsDate("yyyy MM dd");
-        Series<String> s = Series.forData("2021 01 02", null);
+        Series<String> s = Series.of("2021 01 02", null);
         new SeriesAsserts(date.eval(s)).expectData(LocalDate.of(2021, 1, 2), null);
     }
 
     @Test
     public void testCastAsTime() {
         TimeExp time = $str(0).castAsTime();
-        Series<String> s = Series.forData("23:59:58", null);
+        Series<String> s = Series.of("23:59:58", null);
         new SeriesAsserts(time.eval(s)).expectData(LocalTime.of(23, 59, 58), null);
     }
 
     @Test
     public void testCastAsDateTime() {
         DateTimeExp date = $str(0).castAsDateTime();
-        Series<String> s = Series.forData("2021-01-02T11:01:34", null);
+        Series<String> s = Series.of("2021-01-02T11:01:34", null);
         new SeriesAsserts(date.eval(s)).expectData(LocalDateTime.of(2021, 1, 2, 11, 1, 34), null);
     }
 
     @Test
     public void testCastAsDateTime_Formatter() {
         DateTimeExp date = $str(0).castAsDateTime("yyyy MM dd HH:mm:ss");
-        Series<String> s = Series.forData("2021 01 02 11:01:34", null);
+        Series<String> s = Series.of("2021 01 02 11:01:34", null);
         new SeriesAsserts(date.eval(s)).expectData(LocalDateTime.of(2021, 1, 2, 11, 1, 34), null);
     }
 
     @Test
     public void testCastAsInt() {
         NumExp<Integer> exp = $str(0).castAsInt();
-        Series<String> s = Series.forData("123", "34.6", null);
+        Series<String> s = Series.of("123", "34.6", null);
         new SeriesAsserts(exp.eval(s)).expectData(123, 34, null);
     }
 
     @Test
     public void testCastAsLong() {
         NumExp<Long> exp = $str(0).castAsLong();
-        Series<String> s = Series.forData("123", "34.6", null);
+        Series<String> s = Series.of("123", "34.6", null);
         new SeriesAsserts(exp.eval(s)).expectData(123L, 34L, null);
     }
 
     @Test
     public void testCastAsDouble() {
         NumExp<Double> exp = $str(0).castAsDouble();
-        Series<String> s = Series.forData("123", "34.6", null);
+        Series<String> s = Series.of("123", "34.6", null);
         new SeriesAsserts(exp.eval(s)).expectData(123., 34.6, null);
     }
 }

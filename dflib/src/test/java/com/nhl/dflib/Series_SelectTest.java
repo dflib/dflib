@@ -39,7 +39,7 @@ public class Series_SelectTest {
     @ParameterizedTest
     @EnumSource(SeriesType.class)
     public void testBooleanCondition(SeriesType type) {
-        BooleanSeries condition = BooleanSeries.forBooleans(false, true, true);
+        BooleanSeries condition = Series.ofBool(false, true, true);
         Series<Integer> s = type.createSeries(3, 4, 2).select(condition);
         new SeriesAsserts(s).expectData(4, 2);
     }

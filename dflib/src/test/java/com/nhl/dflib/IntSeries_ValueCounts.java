@@ -7,7 +7,7 @@ public class IntSeries_ValueCounts {
 
     @Test
     public void testValueCounts() {
-        DataFrame counts = IntSeries.forInts(1, 3, 1, 3, 1, 0).valueCounts();
+        DataFrame counts = Series.ofInt(1, 3, 1, 3, 1, 0).valueCounts();
 
         new DataFrameAsserts(counts, "value", "count")
                 .expectHeight(3)

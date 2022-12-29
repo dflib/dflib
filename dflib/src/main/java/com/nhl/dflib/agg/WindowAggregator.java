@@ -76,7 +76,7 @@ public class WindowAggregator {
 
         Series<?>[] columns = new Series[aggW];
         for (int i = 0; i < aggW; i++) {
-            columns[i] = Series.forData(data[i]);
+            columns[i] = Series.of(data[i]);
         }
 
         return DataFrame.byColumn(rowPerGroupDf.getColumnsIndex()).of(columns);

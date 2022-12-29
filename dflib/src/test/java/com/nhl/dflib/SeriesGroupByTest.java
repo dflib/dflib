@@ -8,7 +8,7 @@ public class SeriesGroupByTest {
 
     @Test
     public void testToSeries() {
-        SeriesGroupBy<String> gb = Series.forData("a", "b", "cd", "e", "fg")
+        SeriesGroupBy<String> gb = Series.of("a", "b", "cd", "e", "fg")
                 .group((String s) -> s.length());
 
         new SeriesAsserts(gb.toSeries()).expectData("a", "b", "e", "cd", "fg");
@@ -17,7 +17,7 @@ public class SeriesGroupByTest {
     @Test
     public void testAgg() {
 
-        Series<String> aggregated = Series.forData("a", "b", "cd", "e", "fg")
+        Series<String> aggregated = Series.of("a", "b", "cd", "e", "fg")
                 .group((String s) -> s.length())
                 .agg(Exp.$col("").vConcat("_"));
 
@@ -27,7 +27,7 @@ public class SeriesGroupByTest {
     @Test
     public void testAggMultiple() {
 
-        DataFrame aggregated = Series.forData("a", "b", "cd", "e", "fg")
+        DataFrame aggregated = Series.of("a", "b", "cd", "e", "fg")
                 .group((String s) -> s.length())
                 .aggMultiple(
                         Exp.$col("first").first(),
@@ -43,7 +43,7 @@ public class SeriesGroupByTest {
     @Test
     public void testAggMultiple_Named() {
 
-        DataFrame aggregated = Series.forData("a", "b", "cd", "e", "fg")
+        DataFrame aggregated = Series.of("a", "b", "cd", "e", "fg")
                 .group((String s) -> s.length())
                 .aggMultiple(
                         Exp.$col("").first().as("f"),

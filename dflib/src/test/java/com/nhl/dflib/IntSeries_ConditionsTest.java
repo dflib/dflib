@@ -10,8 +10,8 @@ public class IntSeries_ConditionsTest {
     @Test
     public void testEq1() {
 
-        Series<Integer> s1 = IntSeries.forInts(3, 1, 2);
-        Series<Integer> s2 = IntSeries.forInts(3, 1, 2);
+        Series<Integer> s1 = Series.ofInt(3, 1, 2);
+        Series<Integer> s2 = Series.ofInt(3, 1, 2);
 
         BooleanSeries cond = s1.eq(s2);
         new BooleanSeriesAsserts(cond).expectData(true, true, true);
@@ -20,8 +20,8 @@ public class IntSeries_ConditionsTest {
     @Test
     public void testEq2() {
 
-        Series<Integer> s1 = IntSeries.forInts(3, 4, 2);
-        Series<Integer> s2 = IntSeries.forInts(3, 1, 2);
+        Series<Integer> s1 = Series.ofInt(3, 4, 2);
+        Series<Integer> s2 = Series.ofInt(3, 1, 2);
 
         BooleanSeries cond = s1.eq(s2);
         new BooleanSeriesAsserts(cond).expectData(true, false, true);
@@ -30,8 +30,8 @@ public class IntSeries_ConditionsTest {
     @Test
     public void testEq_SizeMismatch() {
 
-        Series<Integer> s1 = IntSeries.forInts(3, 4, 2);
-        Series<Integer> s2 = IntSeries.forInts(3, 1);
+        Series<Integer> s1 = Series.ofInt(3, 4, 2);
+        Series<Integer> s2 = Series.ofInt(3, 1);
 
         assertThrows(IllegalArgumentException.class, () -> s1.eq(s2));
     }
@@ -39,8 +39,8 @@ public class IntSeries_ConditionsTest {
     @Test
     public void testNe1() {
 
-        Series<Integer> s1 = IntSeries.forInts(3, 1, 2);
-        Series<Integer> s2 = IntSeries.forInts(3, 1, 2);
+        Series<Integer> s1 = Series.ofInt(3, 1, 2);
+        Series<Integer> s2 = Series.ofInt(3, 1, 2);
 
         BooleanSeries cond = s1.ne(s2);
         new BooleanSeriesAsserts(cond).expectData(false, false, false);
@@ -49,8 +49,8 @@ public class IntSeries_ConditionsTest {
     @Test
     public void testNe2() {
 
-        Series<Integer> s1 = IntSeries.forInts(3, 0, 2);
-        Series<Integer> s2 = IntSeries.forInts(-3, 1, 2);
+        Series<Integer> s1 = Series.ofInt(3, 0, 2);
+        Series<Integer> s2 = Series.ofInt(-3, 1, 2);
 
         BooleanSeries cond = s1.ne(s2);
         new BooleanSeriesAsserts(cond).expectData(true, true, false);

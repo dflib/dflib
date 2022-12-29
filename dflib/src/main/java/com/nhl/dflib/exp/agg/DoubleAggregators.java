@@ -30,7 +30,7 @@ public class DoubleAggregators {
 
         int h = s.size();
         if (h == 0) {
-            return DoubleSeries.forDoubles();
+            return Series.ofDouble();
         }
 
         if (s instanceof DoubleSeries) {

@@ -1,6 +1,10 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.agg.SeriesAggregator;
+import com.nhl.dflib.builder.BooleanAccum;
+import com.nhl.dflib.builder.DoubleAccum;
+import com.nhl.dflib.builder.IntAccum;
+import com.nhl.dflib.builder.LongAccum;
 import com.nhl.dflib.series.*;
 import com.nhl.dflib.sort.SeriesSorter;
 
@@ -16,15 +20,18 @@ import static java.util.Arrays.asList;
  */
 public interface Series<T> extends Iterable<T> {
 
+    /**
+     * @since 0.16
+     */
     @SafeVarargs
-    static <T> Series<T> forData(T... data) {
+    static <T> Series<T> of(T... data) {
         return data != null && data.length > 0 ? new ArraySeries<>(data) : new EmptySeries<>();
     }
 
     /**
-     * @since 0.7
+     * @since 0.16
      */
-    static <T> Series<T> forData(Iterable<T> data) {
+    static <T> Series<T> ofIterable(Iterable<T> data) {
         if (data instanceof List) {
             return new ListSeries<>((List<T>) data);
         }
@@ -34,6 +41,51 @@ public interface Series<T> extends Iterable<T> {
             list.add(t);
         }
         return list.size() > 0 ? new ListSeries<>(list) : new EmptySeries<>();
+    }
+
+    /**
+     * @since 0.16
+     */
+    static BooleanSeries ofBool(boolean... bools) {
+        return new BooleanArraySeries(bools);
+    }
+
+    /**
+     * @since 0.16
+     */
+    static IntSeries ofInt(int... ints) {
+        return new IntArraySeries(ints);
+    }
+
+    /**
+     * @since 0.16
+     */
+    static DoubleSeries ofDouble(double... doubles) {
+        return new DoubleArraySeries(doubles);
+    }
+
+    /**
+     * @since 0.16
+     */
+    static LongSeries ofLong(long... longs) {
+        return new LongArraySeries(longs);
+    }
+
+    /**
+     * @deprecated in favor of {@link #of(Object[])}
+     */
+    @Deprecated(since = "0.16")
+    @SafeVarargs
+    static <T> Series<T> forData(T... data) {
+        return of(data);
+    }
+
+    /**
+     * @deprecated in favor of {@link #ofIterable(Iterable)}
+     */
+    @Deprecated(since = "0.16")
+    static <T> Series<T> forData(Iterable<T> data) {
+        return ofIterable(data);
     }
 
     /**
@@ -76,6 +128,58 @@ public interface Series<T> extends Iterable<T> {
      * @since 0.6
      */
     <V> Series<V> map(ValueMapper<T, V> mapper);
+
+    /**
+     * @since 0.16
+     */
+    default BooleanSeries mapAsBool(BooleanValueMapper<? super T> converter) {
+        int len = size();
+        BooleanAccum a = new BooleanAccum(len);
+        for (int i = 0; i < len; i++) {
+            a.pushBoolean(converter.map(get(i)));
+        }
+
+        return a.toSeries();
+    }
+
+    /**
+     * @since 0.16
+     */
+    default IntSeries mapAsInt(IntValueMapper<? super T> converter) {
+        int len = size();
+        IntAccum a = new IntAccum(len);
+        for (int i = 0; i < len; i++) {
+            a.pushInt(converter.map(get(i)));
+        }
+
+        return a.toSeries();
+    }
+
+    /**
+     * @since 0.16
+     */
+    default LongSeries mapAsLong(LongValueMapper<? super T> converter) {
+        int len = size();
+        LongAccum a = new LongAccum(len);
+        for (int i = 0; i < len; i++) {
+            a.pushLong(converter.map(get(i)));
+        }
+
+        return a.toSeries();
+    }
+
+    /**
+     * @since 0.16
+     */
+    default DoubleSeries mapAsDouble(DoubleValueMapper<? super T> converter) {
+        int len = size();
+        DoubleAccum a = new DoubleAccum(len);
+        for (int i = 0; i < len; i++) {
+            a.pushDouble(converter.map(get(i)));
+        }
+
+        return a.toSeries();
+    }
 
     /**
      * A map function over the Series that generates a DataFrame of the same height as the length of the Series,

@@ -1,7 +1,6 @@
 package com.nhl.dflib.exp.agg;
 
 import com.nhl.dflib.IntSeries;
-import com.nhl.dflib.LongSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.builder.ObjectAccum;
 
@@ -25,7 +24,7 @@ public class IntAggregators {
 
         int h = s.size();
         if (h == 0) {
-            return LongSeries.forLongs();
+            return Series.ofLong();
         }
 
         if (s instanceof IntSeries) {

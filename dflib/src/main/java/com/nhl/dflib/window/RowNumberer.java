@@ -2,6 +2,7 @@ package com.nhl.dflib.window;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.series.IntSequenceSeries;
 import com.nhl.dflib.sort.IntComparator;
@@ -60,6 +61,6 @@ public class RowNumberer {
         IntSeries groupsIndexGlued = SeriesConcat.intConcat(partitionsIndex);
 
         // since we control select indices, and don't expect negative values, we can safely cast to IntSeries
-        return (IntSeries) IntSeries.forInts(rowNumbers).select(groupsIndexGlued.sortIndexInt());
+        return (IntSeries) Series.ofInt(rowNumbers).select(groupsIndexGlued.sortIndexInt());
     }
 }

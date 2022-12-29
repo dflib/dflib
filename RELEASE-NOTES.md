@@ -11,6 +11,7 @@
 * #179 DateTimeExp
 * #180 Primitives-aware DataFrame builder
 * #181 Reimplement and deprecate DataFrameBuilder
+* #182 Refactor and unify Series builder methods
 
 ## Release 0.15
 

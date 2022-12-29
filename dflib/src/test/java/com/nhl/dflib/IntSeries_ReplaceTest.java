@@ -9,63 +9,63 @@ public class IntSeries_ReplaceTest {
 
     @Test
     public void testReplace() {
-        BooleanSeries cond = BooleanSeries.forBooleans(true, true, false, false);
+        BooleanSeries cond = Series.ofBool(true, true, false, false);
 
-        Series<Integer> s1 = IntSeries.forInts(1, 0, 2, -1).replace(cond, 5);
+        Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replace(cond, 5);
         assertTrue(s1 instanceof IntSeries);
         new SeriesAsserts(s1).expectData(5, 5, 2, -1);
     }
 
     @Test
     public void testReplace_Null() {
-        BooleanSeries cond = BooleanSeries.forBooleans(true, true, false, false);
+        BooleanSeries cond = Series.ofBool(true, true, false, false);
 
-        Series<Integer> s1 = IntSeries.forInts(1, 0, 2, -1).replace(cond, null);
+        Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replace(cond, null);
         assertFalse(s1 instanceof IntSeries);
         new SeriesAsserts(s1).expectData(null, null, 2, -1);
     }
 
     @Test
     public void testReplace_SmallerCondition() {
-        BooleanSeries cond = BooleanSeries.forBooleans(true, true, false);
+        BooleanSeries cond = Series.ofBool(true, true, false);
 
-        Series<Integer> s1 = IntSeries.forInts(1, 0, 2, -1).replace(cond, 5);
+        Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replace(cond, 5);
         assertTrue(s1 instanceof IntSeries);
         new SeriesAsserts(s1).expectData(5, 5, 2, -1);
     }
 
     @Test
     public void testReplaceNoMatch() {
-        BooleanSeries cond = BooleanSeries.forBooleans(true, true, false, false);
+        BooleanSeries cond = Series.ofBool(true, true, false, false);
 
-        Series<Integer> s1 = IntSeries.forInts(1, 0, 2, -1).replaceNoMatch(cond, 5);
+        Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replaceNoMatch(cond, 5);
         assertTrue(s1 instanceof IntSeries);
         new SeriesAsserts(s1).expectData(1, 0, 5, 5);
     }
 
     @Test
     public void testReplaceNoMatch_Null() {
-        BooleanSeries cond = BooleanSeries.forBooleans(true, true, false, false);
+        BooleanSeries cond = Series.ofBool(true, true, false, false);
 
-        Series<Integer> s1 = IntSeries.forInts(1, 0, 2, -1).replaceNoMatch(cond, null);
+        Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replaceNoMatch(cond, null);
         assertFalse(s1 instanceof IntSeries);
         new SeriesAsserts(s1).expectData(1, 0, null, null);
     }
 
     @Test
     public void testReplaceNoMatch_LargerCondition() {
-        BooleanSeries cond = BooleanSeries.forBooleans(true, true, false, false, false);
+        BooleanSeries cond = Series.ofBool(true, true, false, false, false);
 
-        Series<Integer> s1 = IntSeries.forInts(1, 0, 2, -1).replaceNoMatch(cond, 5);
+        Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replaceNoMatch(cond, 5);
         assertTrue(s1 instanceof IntSeries);
         new SeriesAsserts(s1).expectData(1, 0, 5, 5);
     }
 
     @Test
     public void testReplaceNoMatch_SmallerCondition() {
-        BooleanSeries cond = BooleanSeries.forBooleans(true, true, false);
+        BooleanSeries cond = Series.ofBool(true, true, false);
 
-        Series<Integer> s1 = IntSeries.forInts(1, 0, 2, -1).replaceNoMatch(cond, 5);
+        Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replaceNoMatch(cond, 5);
         assertTrue(s1 instanceof IntSeries);
         new SeriesAsserts(s1).expectData(1, 0, 5, 5);
     }

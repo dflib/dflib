@@ -34,12 +34,12 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
 
         DataFrame df = DataFrame.byColumn("bool", "int", "long", "double", "string", "mix")
                 .of(
-                        BooleanSeries.forBooleans(true, false, false, true),
-                        IntSeries.forInts(1, -20003, 23, 65),
-                        LongSeries.forLongs(0, 34567890324L, -9L, 15),
-                        DoubleSeries.forDoubles(-0.1, 8.45, 7.0001, 67.),
-                        Series.forData("a", "B", "", null),
-                        Series.forData(new BigDecimal("0.001"), null, LocalDateTime.of(2000, 3, 4, 14, 2, 3), LocalDate.of(2003, 5, 7))
+                        Series.ofBool(true, false, false, true),
+                        Series.ofInt(1, -20003, 23, 65),
+                        Series.ofLong(0, 34567890324L, -9L, 15),
+                        Series.ofDouble(-0.1, 8.45, 7.0001, 67.),
+                        Series.of("a", "B", "", null),
+                        Series.of(new BigDecimal("0.001"), null, LocalDateTime.of(2000, 3, 4, 14, 2, 3), LocalDate.of(2003, 5, 7))
                 );
 
         Excel.saver().saveSheet(df, file, "s1");

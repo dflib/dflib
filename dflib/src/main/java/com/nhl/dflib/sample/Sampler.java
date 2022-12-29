@@ -1,6 +1,7 @@
 package com.nhl.dflib.sample;
 
 import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.Series;
 
 import java.security.SecureRandom;
 import java.util.Random;
@@ -32,7 +33,7 @@ public class Sampler {
 
         int[] data = intSequence(originalSize);
         shuffle(data, random);
-        return IntSeries.forInts(data).headInt(sampleSize);
+        return Series.ofInt(data).headInt(sampleSize);
     }
 
     private static int[] intSequence(int size) {

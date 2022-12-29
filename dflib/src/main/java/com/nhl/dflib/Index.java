@@ -347,7 +347,7 @@ public class Index implements Iterable<String> {
      * @return a new Series object with Index labels as elements.
      */
     public Series<String> toSeries() {
-        return Series.forData(labels);
+        return Series.of(labels);
     }
 
     @Override

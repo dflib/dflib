@@ -59,7 +59,7 @@ public class StatementBuilder {
     }
 
     public StatementBuilder bind(Object[] params) {
-        return bind(Series.forData(params));
+        return bind(Series.of(params));
     }
 
     public <T> T select(JdbcFunction<ResultSet, T> resultReader) {

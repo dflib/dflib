@@ -10,8 +10,8 @@ public class Series_ConditionsTest {
     @Test
     public void testEq1() {
 
-        Series<String> s1 = Series.forData("a", "b", "n", "c");
-        Series<String> s2 = Series.forData("a", "b", "n", "c");
+        Series<String> s1 = Series.of("a", "b", "n", "c");
+        Series<String> s2 = Series.of("a", "b", "n", "c");
 
         BooleanSeries cond = s1.eq(s2);
         new BooleanSeriesAsserts(cond).expectData(true, true, true, true);
@@ -20,8 +20,8 @@ public class Series_ConditionsTest {
     @Test
     public void testEq2() {
 
-        Series<String> s1 = Series.forData("a", "b", "n", "c");
-        Series<String> s2 = Series.forData("a ", "b", "N", "c");
+        Series<String> s1 = Series.of("a", "b", "n", "c");
+        Series<String> s2 = Series.of("a ", "b", "N", "c");
 
         BooleanSeries cond = s1.eq(s2);
         new BooleanSeriesAsserts(cond).expectData(false, true, false, true);
@@ -29,8 +29,8 @@ public class Series_ConditionsTest {
 
     @Test
     public void testEq_SizeMismatch() {
-        Series<String> s1 = Series.forData("a", "b", "n", "c");
-        Series<String> s2 = Series.forData("a", "b", "n");
+        Series<String> s1 = Series.of("a", "b", "n", "c");
+        Series<String> s2 = Series.of("a", "b", "n");
 
         assertThrows(IllegalArgumentException.class, () -> s1.eq(s2));
     }
@@ -38,8 +38,8 @@ public class Series_ConditionsTest {
     @Test
     public void testNe1() {
 
-        Series<String> s1 = Series.forData("a", "b", "n", "c");
-        Series<String> s2 = Series.forData("a", "b", "n", "c");
+        Series<String> s1 = Series.of("a", "b", "n", "c");
+        Series<String> s2 = Series.of("a", "b", "n", "c");
 
         BooleanSeries cond = s1.ne(s2);
         new BooleanSeriesAsserts(cond).expectData(false, false, false, false);
@@ -48,8 +48,8 @@ public class Series_ConditionsTest {
     @Test
     public void testNe2() {
 
-        Series<String> s1 = Series.forData("a", "b", "n", "c");
-        Series<String> s2 = Series.forData("a ", "b", "N", "c");
+        Series<String> s1 = Series.of("a", "b", "n", "c");
+        Series<String> s2 = Series.of("a ", "b", "N", "c");
 
         BooleanSeries cond = s1.ne(s2);
         new BooleanSeriesAsserts(cond).expectData(true, false, true, false);

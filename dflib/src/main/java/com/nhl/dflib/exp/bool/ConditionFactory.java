@@ -61,11 +61,11 @@ public class ConditionFactory {
             return (BooleanSeries) s;
         }
 
-        return BooleanSeries.forSeries(s, b -> b != null ? b : false);
+        return s.mapAsBool(b -> b != null ? b : false);
     }
 
     private static BooleanSeries castNumber(Series<? extends Number> s) {
-        return BooleanSeries.forSeries(s, n -> n != null ? n.intValue() != 0 : false);
+        return s.mapAsBool(n -> n != null ? n.intValue() != 0 : false);
     }
 
     private static boolean isTrue(Object o) {

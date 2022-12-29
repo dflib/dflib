@@ -2,7 +2,6 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.builder.BooleanAccum;
 import com.nhl.dflib.builder.LongAccum;
-import com.nhl.dflib.series.LongArraySeries;
 
 import java.util.Comparator;
 import java.util.Random;
@@ -15,21 +14,21 @@ import java.util.Random;
  */
 public interface LongSeries extends Series<Long> {
 
+    /**
+     * @deprecated in favor of {@link Series#ofLong(long...)}
+     */
+    @Deprecated(since = "0.16")
     static LongSeries forLongs(long... longs) {
-        return new LongArraySeries(longs);
+        return Series.ofLong(longs);
     }
 
     /**
      * @since 0.7
+     * @deprecated since 0.16 in favor of {@link #mapAsLong(LongValueMapper)}
      */
+    @Deprecated(since = "0.16")
     static <V> LongSeries forSeries(Series<V> series, LongValueMapper<? super V> converter) {
-        int len = series.size();
-        LongAccum a = new LongAccum(len);
-        for (int i = 0; i < len; i++) {
-            a.pushLong(converter.map(series.get(i)));
-        }
-
-        return a.toSeries();
+        return series.mapAsLong(converter);
     }
 
     @Override

@@ -101,6 +101,6 @@ public class IfExp<T> implements Exp<T> {
             vals[indexFalse.getInt(i)] = dataIfFalse.get(i);
         }
 
-        return (Series<T>) Series.forData(vals);
+        return (Series<T>) Series.of(vals);
     }
 }

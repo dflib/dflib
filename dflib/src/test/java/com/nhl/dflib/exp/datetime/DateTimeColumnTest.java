@@ -54,49 +54,49 @@ public class DateTimeColumnTest {
     @Test
     public void testYear() {
         NumExp<Integer> year = $dateTime(0).year();
-        Series<LocalDateTime> s = Series.forData(LocalDateTime.of(2007, 1, 8, 1, 2, 3), LocalDateTime.of(2008, 1, 1, 4, 5, 6), LocalDateTime.of(2009, 1, 8, 7, 8, 9));
+        Series<LocalDateTime> s = Series.of(LocalDateTime.of(2007, 1, 8, 1, 2, 3), LocalDateTime.of(2008, 1, 1, 4, 5, 6), LocalDateTime.of(2009, 1, 8, 7, 8, 9));
         new SeriesAsserts(year.eval(s)).expectData(2007, 2008, 2009);
     }
 
     @Test
     public void testMonth() {
         NumExp<Integer> month = $dateTime(0).month();
-        Series<LocalDateTime> s = Series.forData(LocalDateTime.of(2007, 2, 8, 1, 2, 3), LocalDateTime.of(2008, 1, 1, 4, 5, 6), LocalDateTime.of(2009, 12, 8, 7, 8, 9));
+        Series<LocalDateTime> s = Series.of(LocalDateTime.of(2007, 2, 8, 1, 2, 3), LocalDateTime.of(2008, 1, 1, 4, 5, 6), LocalDateTime.of(2009, 12, 8, 7, 8, 9));
         new SeriesAsserts(month.eval(s)).expectData(2, 1, 12);
     }
 
     @Test
     public void testDay() {
         NumExp<Integer> day = $dateTime(0).day();
-        Series<LocalDateTime> s = Series.forData(LocalDateTime.of(2007, 2, 8, 1, 2, 3), LocalDateTime.of(2008, 1, 1, 4, 5, 6), LocalDateTime.of(2009, 12, 6, 7, 8, 9));
+        Series<LocalDateTime> s = Series.of(LocalDateTime.of(2007, 2, 8, 1, 2, 3), LocalDateTime.of(2008, 1, 1, 4, 5, 6), LocalDateTime.of(2009, 12, 6, 7, 8, 9));
         new SeriesAsserts(day.eval(s)).expectData(8, 1, 6);
     }
 
     @Test
     public void testHour() {
         NumExp<Integer> hr = $dateTime(0).hour();
-        Series<LocalDateTime> s = Series.forData(LocalDateTime.of(2007, 2, 8, 3, 12, 11), LocalDateTime.of(2007, 2, 8, 4, 10, 1), LocalDateTime.of(2007, 2, 8, 14, 59, 59));
+        Series<LocalDateTime> s = Series.of(LocalDateTime.of(2007, 2, 8, 3, 12, 11), LocalDateTime.of(2007, 2, 8, 4, 10, 1), LocalDateTime.of(2007, 2, 8, 14, 59, 59));
         new SeriesAsserts(hr.eval(s)).expectData(3, 4, 14);
     }
 
     @Test
     public void testMinute() {
         NumExp<Integer> min = $dateTime(0).minute();
-        Series<LocalDateTime> s = Series.forData(LocalDateTime.of(2007, 2, 8, 3, 12, 11), LocalDateTime.of(2007, 2, 8, 4, 10, 1), LocalDateTime.of(2007, 2, 8, 14, 59, 59));
+        Series<LocalDateTime> s = Series.of(LocalDateTime.of(2007, 2, 8, 3, 12, 11), LocalDateTime.of(2007, 2, 8, 4, 10, 1), LocalDateTime.of(2007, 2, 8, 14, 59, 59));
         new SeriesAsserts(min.eval(s)).expectData(12, 10, 59);
     }
 
     @Test
     public void testSecond() {
         NumExp<Integer> exp = $dateTime(0).second();
-        Series<LocalDateTime> s = Series.forData(LocalDateTime.of(2007, 2, 8, 3, 12, 11), LocalDateTime.of(2007, 2, 8, 4, 10, 1), LocalDateTime.of(2007, 2, 8, 14, 59, 59));
+        Series<LocalDateTime> s = Series.of(LocalDateTime.of(2007, 2, 8, 3, 12, 11), LocalDateTime.of(2007, 2, 8, 4, 10, 1), LocalDateTime.of(2007, 2, 8, 14, 59, 59));
         new SeriesAsserts(exp.eval(s)).expectData(11, 1, 59);
     }
 
     @Test
     public void testMillisecond() {
         NumExp<Integer> exp = $dateTime(0).millisecond();
-        Series<LocalDateTime> s = Series.forData(
+        Series<LocalDateTime> s = Series.of(
                 LocalDateTime.of(2007, 2, 8, 3, 12, 11, 4_000_000),
                 LocalDateTime.of(2007, 2, 8, 4, 10, 1),
                 LocalDateTime.of(2007, 2, 8, 14, 59, 59, 400_000));
@@ -141,7 +141,7 @@ public class DateTimeColumnTest {
     @Test
     public void testLtVal() {
         Condition lt = $dateTime(0).lt(LocalDateTime.of(2008, 1, 1, 1, 1));
-        Series<LocalDateTime> s = Series.forData(
+        Series<LocalDateTime> s = Series.of(
                 LocalDateTime.of(2007, 1, 8, 1, 1),
                 LocalDateTime.of(2008, 1, 1, 1, 1),
                 LocalDateTime.of(2009, 1, 8, 1, 1));
@@ -151,7 +151,7 @@ public class DateTimeColumnTest {
     @Test
     public void testLeVal() {
         Condition le = $dateTime(0).le(LocalDateTime.of(2008, 1, 1, 1, 1));
-        Series<LocalDateTime> s = Series.forData(
+        Series<LocalDateTime> s = Series.of(
                 LocalDateTime.of(2007, 1, 8, 1, 1),
                 LocalDateTime.of(2008, 1, 1, 1, 1),
                 LocalDateTime.of(2009, 1, 8, 1, 1));
@@ -162,7 +162,7 @@ public class DateTimeColumnTest {
     public void testPlusDays() {
         DateExp exp = $date(0).plusDays(4);
 
-        Series<LocalDate> s = Series.forData(LocalDate.of(2007, 1, 8), LocalDate.of(2011, 12, 31));
+        Series<LocalDate> s = Series.of(LocalDate.of(2007, 1, 8), LocalDate.of(2011, 12, 31));
         new SeriesAsserts(exp.eval(s)).expectData(LocalDate.of(2007, 1, 12), LocalDate.of(2012, 1, 4));
     }
 
@@ -170,7 +170,7 @@ public class DateTimeColumnTest {
     public void testOpsChain() {
         DateExp exp = $date(0).plusDays(4).plusWeeks(1);
 
-        Series<LocalDate> s = Series.forData(LocalDate.of(2007, 1, 8), LocalDate.of(2011, 12, 31));
+        Series<LocalDate> s = Series.of(LocalDate.of(2007, 1, 8), LocalDate.of(2011, 12, 31));
         new SeriesAsserts(exp.eval(s)).expectData(LocalDate.of(2007, 1, 19), LocalDate.of(2012, 1, 11));
     }
 }

@@ -25,8 +25,8 @@ public class DataFrameBuilderTest {
     public void testSeriesColumns() {
         DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
                 .columns(
-                        Series.forData("a", "b", "c"),
-                        IntSeries.forInts(1, 2, 3)
+                        Series.of("a", "b", "c"),
+                        Series.ofInt(1, 2, 3)
                 );
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)

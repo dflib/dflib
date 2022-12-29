@@ -64,7 +64,7 @@ public class DataFrame_AddDropMapColumnsTest {
     @Test
     public void testAddColumn_Series_DupeName() {
 
-        Series<String> column = Series.forData("m", "n");
+        Series<String> column = Series.of("m", "n");
 
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
@@ -80,7 +80,7 @@ public class DataFrame_AddDropMapColumnsTest {
     @Test
     public void testAddColumn_Series() {
 
-        Series<String> column = Series.forData("m", "n");
+        Series<String> column = Series.of("m", "n");
 
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
@@ -96,7 +96,7 @@ public class DataFrame_AddDropMapColumnsTest {
     @Test
     public void testAddColumn_Series_Shorter() {
 
-        Series<String> column = Series.forData("m");
+        Series<String> column = Series.of("m");
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
@@ -107,7 +107,7 @@ public class DataFrame_AddDropMapColumnsTest {
     @Test
     public void testAddColumn_Series_Longer() {
 
-        Series<String> column = Series.forData("m", "n", "o");
+        Series<String> column = Series.of("m", "n", "o");
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");

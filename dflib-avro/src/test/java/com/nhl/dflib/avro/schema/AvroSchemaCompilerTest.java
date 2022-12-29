@@ -12,16 +12,16 @@ public class AvroSchemaCompilerTest {
     static final DataFrame df = DataFrame.byColumn(
             "int", "Integer", "long", "Long", "double", "Double", "bool", "Bool", "String", "Nulls")
             .of(
-                    IntSeries.forInts(1, 3),
-                    Series.forData(11, null),
-                    LongSeries.forLongs(4L, 5L),
-                    Series.forData(21L, null),
-                    DoubleSeries.forDoubles(20.12, 20.1235),
-                    Series.forData(30.1, null),
-                    BooleanSeries.forBooleans(true, false),
-                    Series.forData(Boolean.TRUE, null),
-                    Series.forData("s1", null),
-                    Series.forData(null, null)
+                    Series.ofInt(1, 3),
+                    Series.of(11, null),
+                    Series.ofLong(4L, 5L),
+                    Series.of(21L, null),
+                    Series.ofDouble(20.12, 20.1235),
+                    Series.of(30.1, null),
+                    Series.ofBool(true, false),
+                    Series.of(Boolean.TRUE, null),
+                    Series.of("s1", null),
+                    Series.of(null, null)
             );
 
     @Test

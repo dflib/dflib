@@ -62,13 +62,13 @@ public class ConditionBuilder {
     public Series<?> bindingParams() {
         int criteriaHeight = condition != null ? condition.height() : 0;
         if (criteriaHeight == 0) {
-            return Series.forData();
+            return Series.of();
         }
 
         int criteriaWidth = condition != null ? condition.width() : 0;
         switch (criteriaWidth) {
             case 0:
-                return Series.forData();
+                return Series.of();
             case 1:
                 return condition.getColumn(0);
             default:

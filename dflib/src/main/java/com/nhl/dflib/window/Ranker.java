@@ -2,6 +2,7 @@ package com.nhl.dflib.window;
 
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.sort.IntComparator;
 import com.nhl.dflib.sort.DataFrameSorter;
 
@@ -27,7 +28,7 @@ public class Ranker {
         Arrays.fill(ints, RowNumberer.START_NUMBER);
 
         // TODO: single value IntSeries
-        return IntSeries.forInts(ints);
+        return Series.ofInt(ints);
     }
 
     public IntSeries rank(DataFrame dataFrame) {
@@ -56,7 +57,7 @@ public class Ranker {
             }
         }
 
-        return IntSeries.forInts(rank);
+        return Series.ofInt(rank);
     }
 
     protected RankResolver createRankResolver(DataFrame dataFrame, int[] rank) {

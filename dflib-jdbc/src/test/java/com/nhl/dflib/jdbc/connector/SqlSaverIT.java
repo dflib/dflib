@@ -149,8 +149,8 @@ public class SqlSaverIT extends BaseDbTest {
         byte[] bytes = new byte[]{3, 5, 11};
         long l1 = Integer.MAX_VALUE + 1L;
 
-        Series<Object> data = Series.forData(l1, 67, 7.8, 1, "s1", ldt, ld, lt, bytes);
-        Series<Object> dataNulls = Series.forData(null, null, null, 0, null, null, null, null, null);
+        Series<Object> data = Series.of(l1, 67, 7.8, 1, "s1", ldt, ld, lt, bytes);
+        Series<Object> dataNulls = Series.of(null, null, null, 0, null, null, null, null, null);
 
         String sql = adapter.toNativeSql("insert into \"t2\" (\"bigint\", \"int\", \"double\", \"boolean\", \"string\", \"timestamp\", \"date\", \"time\", \"bytes\") " +
                 "values (?, ?, ?, ?, ?, ?, ?, ?, ?)");

@@ -16,7 +16,7 @@ public class DataFrameTabularPrintWorkerTest {
     public void initDataFrameParts() {
         this.df = DataFrame
                 .newFrame("col1", "column2")
-                .columns(Series.forData("one", "two", "three", "four"), IntSeries.forInts(1, 2, 3, 4));
+                .columns(Series.of("one", "two", "three", "four"), Series.ofInt(1, 2, 3, 4));
     }
 
     @Test

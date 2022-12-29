@@ -46,7 +46,7 @@ public class DataFrame_FillTest {
                 "a", 1,
                 null, 5,
                 "b", null,
-                null, null).fillNullsFromSeries("b", Series.forData("Q", "R", "S", "T"));
+                null, null).fillNullsFromSeries("b", Series.of("Q", "R", "S", "T"));
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(4)

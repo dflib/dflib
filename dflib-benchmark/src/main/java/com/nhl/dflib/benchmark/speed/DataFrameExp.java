@@ -26,7 +26,7 @@ public class DataFrameExp {
 
         IntSeries c0 = ValueMaker.intSeq().intSeries(rows);
         IntSeries c1 = ValueMaker.randomIntSeq(rows / 2).intSeries(rows);
-        Series<Integer> c2 = Series.forData(c1);
+        Series<Integer> c2 = Series.ofIterable(c1);
         Series<String> c3 = ValueMaker.stringSeq().series(rows);
         Series<String> c4 = ValueMaker.constStringSeq("abc").series(rows);
         DoubleSeries c5 = ValueMaker.doubleSeq().doubleSeries(rows);

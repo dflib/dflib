@@ -2,7 +2,6 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.builder.BooleanAccum;
 import com.nhl.dflib.builder.DoubleAccum;
-import com.nhl.dflib.series.DoubleArraySeries;
 
 import java.util.Comparator;
 import java.util.Random;
@@ -15,21 +14,20 @@ import java.util.Random;
  */
 public interface DoubleSeries extends Series<Double> {
 
+    /**
+     * @deprecated in favor of {@link Series#ofDouble(double...)}
+     */
+    @Deprecated(since = "0.16")
     static DoubleSeries forDoubles(double... doubles) {
-        return new DoubleArraySeries(doubles);
+        return Series.ofDouble(doubles);
     }
 
     /**
      * @since 0.7
+     * @deprecated since 0.16 in favor of {@link #mapAsDouble(DoubleValueMapper)}
      */
     static <V> DoubleSeries forSeries(Series<V> series, DoubleValueMapper<? super V> converter) {
-        int len = series.size();
-        DoubleAccum a = new DoubleAccum(len);
-        for (int i = 0; i < len; i++) {
-            a.pushDouble(converter.map(series.get(i)));
-        }
-
-        return a.toSeries();
+        return series.mapAsDouble(converter);
     }
 
     @Override

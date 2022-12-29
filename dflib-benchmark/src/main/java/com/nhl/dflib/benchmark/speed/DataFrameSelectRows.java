@@ -27,7 +27,7 @@ public class DataFrameSelectRows {
     public void setUp() {
 
         IntSeries c0 = ValueMaker.intSeq().intSeries(rows);
-        Series<Integer> c1 = Series.forData(c0);
+        Series<Integer> c1 = Series.ofIterable(c0);
         Series<String> c2 = ValueMaker.stringSeq().series(rows);
         Series<String> c3 = ValueMaker.constStringSeq("abc").series(rows);
 

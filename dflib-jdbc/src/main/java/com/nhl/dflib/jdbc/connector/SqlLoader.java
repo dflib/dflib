@@ -92,7 +92,7 @@ public class SqlLoader {
      * @since 0.8
      */
     public DataFrame load(Object... params) {
-        return load(Series.forData(params));
+        return load(Series.of(params));
     }
 
     /**

@@ -90,7 +90,7 @@ public class GroupBy {
     public IntSeries rowNumber() {
 
         if (groupsIndex.size() == 0) {
-            return IntSeries.forInts();
+            return Series.ofInt();
         }
 
         return RowNumberer.rowNumber(ungrouped, groupsIndex.values());
@@ -112,7 +112,7 @@ public class GroupBy {
     public IntSeries rank() {
 
         if (groupsIndex.size() == 0) {
-            return IntSeries.forInts();
+            return Series.ofInt();
         }
 
         if (sorter == null) {
@@ -134,7 +134,7 @@ public class GroupBy {
     public IntSeries denseRank() {
 
         if (groupsIndex.size() == 0) {
-            return IntSeries.forInts();
+            return Series.ofInt();
         }
 
         if (sorter == null) {

@@ -9,19 +9,19 @@ public class SeriesTest {
 
     @Test
     public void testForData_Array() {
-        new SeriesAsserts(Series.forData()).expectData();
-        new SeriesAsserts(Series.forData("a")).expectData("a");
-        new SeriesAsserts(Series.forData("a", "b")).expectData("a", "b");
+        new SeriesAsserts(Series.of()).expectData();
+        new SeriesAsserts(Series.of("a")).expectData("a");
+        new SeriesAsserts(Series.of("a", "b")).expectData("a", "b");
     }
 
     @Test
     public void testForData_Iterable() {
         Iterable<String> it = () -> asList("a", "c", "b").iterator();
-        new SeriesAsserts(Series.forData(it)).expectData("a", "c", "b");
+        new SeriesAsserts(Series.ofIterable(it)).expectData("a", "c", "b");
     }
 
     @Test
     public void testForData_Iterable_List() {
-        new SeriesAsserts(Series.forData(asList("a", "c", "b"))).expectData("a", "c", "b");
+        new SeriesAsserts(Series.ofIterable(asList("a", "c", "b"))).expectData("a", "c", "b");
     }
 }

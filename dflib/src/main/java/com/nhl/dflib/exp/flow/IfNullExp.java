@@ -80,7 +80,7 @@ public class IfNullExp<T> implements Exp<T> {
             vals[nullsIndex.getInt(i)] = nullReplacements.get(i);
         }
 
-        return (Series<T>) Series.forData(vals);
+        return (Series<T>) Series.of(vals);
     }
 
 

@@ -52,21 +52,21 @@ public class DateColumnTest {
     @Test
     public void testYear() {
         NumExp<Integer> year = $date(0).year();
-        Series<LocalDate> s = Series.forData(LocalDate.of(2007, 1, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 1, 8));
+        Series<LocalDate> s = Series.of(LocalDate.of(2007, 1, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 1, 8));
         new SeriesAsserts(year.eval(s)).expectData(2007, 2008, 2009);
     }
 
     @Test
     public void testMonth() {
         NumExp<Integer> month = $date(0).month();
-        Series<LocalDate> s = Series.forData(LocalDate.of(2007, 2, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 12, 8));
+        Series<LocalDate> s = Series.of(LocalDate.of(2007, 2, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 12, 8));
         new SeriesAsserts(month.eval(s)).expectData(2, 1, 12);
     }
 
     @Test
     public void testDay() {
         NumExp<Integer> day = $date(0).day();
-        Series<LocalDate> s = Series.forData(LocalDate.of(2007, 1, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 1, 6));
+        Series<LocalDate> s = Series.of(LocalDate.of(2007, 1, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 1, 6));
         new SeriesAsserts(day.eval(s)).expectData(8, 1, 6);
     }
 
@@ -106,14 +106,14 @@ public class DateColumnTest {
     @Test
     public void testLtVal() {
         Condition lt = $date(0).lt(LocalDate.of(2008, 1, 1));
-        Series<LocalDate> s = Series.forData(LocalDate.of(2007, 1, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 1, 8));
+        Series<LocalDate> s = Series.of(LocalDate.of(2007, 1, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 1, 8));
         new BooleanSeriesAsserts(lt.eval(s)).expectData(true, false, false);
     }
 
     @Test
     public void testLeVal() {
         Condition le = $date(0).le(LocalDate.of(2008, 1, 1));
-        Series<LocalDate> s = Series.forData(LocalDate.of(2007, 1, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 1, 8));
+        Series<LocalDate> s = Series.of(LocalDate.of(2007, 1, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 1, 8));
         new BooleanSeriesAsserts(le.eval(s)).expectData(true, true, false);
     }
 
@@ -121,7 +121,7 @@ public class DateColumnTest {
     public void testPlusDays() {
         DateExp exp = $date(0).plusDays(4);
 
-        Series<LocalDate> s = Series.forData(LocalDate.of(2007, 1, 8), LocalDate.of(2011, 12, 31));
+        Series<LocalDate> s = Series.of(LocalDate.of(2007, 1, 8), LocalDate.of(2011, 12, 31));
         new SeriesAsserts(exp.eval(s)).expectData(LocalDate.of(2007, 1, 12), LocalDate.of(2012, 1, 4));
     }
 
@@ -129,7 +129,7 @@ public class DateColumnTest {
     public void testOpsChain() {
         DateExp exp = $date(0).plusDays(4).plusWeeks(1);
 
-        Series<LocalDate> s = Series.forData(LocalDate.of(2007, 1, 8), LocalDate.of(2011, 12, 31));
+        Series<LocalDate> s = Series.of(LocalDate.of(2007, 1, 8), LocalDate.of(2011, 12, 31));
         new SeriesAsserts(exp.eval(s)).expectData(LocalDate.of(2007, 1, 19), LocalDate.of(2012, 1, 11));
     }
 }

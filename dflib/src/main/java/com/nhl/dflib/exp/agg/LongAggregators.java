@@ -23,7 +23,7 @@ public class LongAggregators {
 
         int h = s.size();
         if (h == 0) {
-            return LongSeries.forLongs();
+            return Series.ofLong();
         }
 
         if (s instanceof LongSeries) {

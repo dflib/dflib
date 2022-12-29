@@ -128,9 +128,9 @@ public class WindowBuilder {
 
         switch (dataFrame.height()) {
             case 0:
-                return IntSeries.forInts();
+                return Series.ofInt();
             case 1:
-                return IntSeries.forInts(1);
+                return Series.ofInt(1);
             default:
                 return partitioner != null ? rankPartitioned() : rankUnPartitioned();
         }
@@ -140,9 +140,9 @@ public class WindowBuilder {
 
         switch (dataFrame.height()) {
             case 0:
-                return IntSeries.forInts();
+                return Series.ofInt();
             case 1:
-                return IntSeries.forInts(1);
+                return Series.ofInt(1);
             default:
                 return partitioner != null ? denseRankPartitioned() : denseRankUnPartitioned();
         }
@@ -151,9 +151,9 @@ public class WindowBuilder {
     public IntSeries rowNumber() {
         switch (dataFrame.height()) {
             case 0:
-                return IntSeries.forInts();
+                return Series.ofInt();
             case 1:
-                return IntSeries.forInts(1);
+                return Series.ofInt(1);
             default:
                 return partitioner != null ? rowNumberPartitioned() : rowNumberUnPartitioned();
         }
@@ -192,9 +192,9 @@ public class WindowBuilder {
 
         switch (dataFrame.height()) {
             case 0:
-                return Series.forData();
+                return Series.of();
             case 1:
-                return Series.forData(filler);
+                return Series.of(filler);
             default:
                 return partitioner != null
                         ? shiftPartitioned(column, offset, filler)

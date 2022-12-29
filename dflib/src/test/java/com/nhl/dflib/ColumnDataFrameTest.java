@@ -9,8 +9,8 @@ public class ColumnDataFrameTest {
     public void testConstructor() {
         Index i = Index.forLabels("a", "b");
         ColumnDataFrame df = new ColumnDataFrame(i,
-                IntSeries.forInts(1, 2),
-                IntSeries.forInts(3, 4));
+                Series.ofInt(1, 2),
+                Series.ofInt(3, 4));
 
         new DataFrameAsserts(df, i).expectHeight(2);
     }

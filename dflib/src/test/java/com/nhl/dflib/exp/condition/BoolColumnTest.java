@@ -3,6 +3,7 @@ package com.nhl.dflib.exp.condition;
 import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.Condition;
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.unit.BooleanSeriesAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +30,7 @@ public class BoolColumnTest {
     public void testEval() {
         Condition c = $bool("b");
 
-        BooleanSeries s = BooleanSeries.forBooleans(false, true, true);
+        BooleanSeries s = Series.ofBool(false, true, true);
         new BooleanSeriesAsserts(c.eval(s)).expectData(false, true, true);
     }
 

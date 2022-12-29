@@ -30,7 +30,7 @@ public class BoolColumn extends Column<Boolean> implements Condition {
         Series<Boolean> c = super.eval(df);
         return c instanceof BooleanSeries
                 ? (BooleanSeries) c
-                : BooleanSeries.forSeries(c, BooleanValueMapper.fromObject());
+                : c.mapAsBool(BooleanValueMapper.fromObject());
     }
 
     @Override
@@ -38,6 +38,6 @@ public class BoolColumn extends Column<Boolean> implements Condition {
         Series<Boolean> c = super.eval(s);
         return c instanceof BooleanSeries
                 ? (BooleanSeries) c
-                : BooleanSeries.forSeries(c, BooleanValueMapper.fromObject());
+                : c.mapAsBool(BooleanValueMapper.fromObject());
     }
 }

@@ -39,17 +39,17 @@ public class Avro_SchemaSerializationTest {
         DataFrame df = DataFrame.newFrame(
                 "int", "Integer", "long", "Long", "double", "Double", "bool", "Bool", "String", "byte_array", "LocalDate")
                 .columns(
-                        IntSeries.forInts(1, 2),
-                        Series.forData(11, null),
-                        LongSeries.forLongs(Long.MAX_VALUE - 1L, 5L),
-                        Series.forData(21L, null),
-                        DoubleSeries.forDoubles(20.12, 20.1235),
-                        Series.forData(30.1, null),
-                        BooleanSeries.forBooleans(true, true),
-                        Series.forData(Boolean.TRUE, null),
-                        Series.forData("s1", null),
-                        Series.forData(new byte[]{1, 2, 3}, null),
-                        Series.forData(LocalDate.of(2020, 1, 5), null)
+                        Series.ofInt(1, 2),
+                        Series.of(11, null),
+                        Series.ofLong(Long.MAX_VALUE - 1L, 5L),
+                        Series.of(21L, null),
+                        Series.ofDouble(20.12, 20.1235),
+                        Series.of(30.1, null),
+                        Series.ofBool(true, true),
+                        Series.of(Boolean.TRUE, null),
+                        Series.of("s1", null),
+                        Series.of(new byte[]{1, 2, 3}, null),
+                        Series.of(LocalDate.of(2020, 1, 5), null)
                 );
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();

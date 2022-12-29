@@ -12,7 +12,7 @@ public class DataFrame_ByColumnTest {
 
         DataFrame df = DataFrame
                 .byColumn("a", "b")
-                .of(Series.forData("a", "b", "c"), IntSeries.forInts(1, 2, 3));
+                .of(Series.of("a", "b", "c"), Series.ofInt(1, 2, 3));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
 
@@ -28,7 +28,7 @@ public class DataFrame_ByColumnTest {
 
         DataFrame df = DataFrame
                 .byColumn("a", "b")
-                .ofIterable(List.of(Series.forData("a", "b", "c"), IntSeries.forInts(1, 2, 3)));
+                .ofIterable(List.of(Series.of("a", "b", "c"), Series.ofInt(1, 2, 3)));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
 

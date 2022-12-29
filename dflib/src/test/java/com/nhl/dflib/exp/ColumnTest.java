@@ -22,28 +22,28 @@ public class ColumnTest {
     @Test
     public void testCastAsStr() {
         StrExp str = $col(0).castAsStr();
-        Series<Object> s = Series.forData("a", null, LocalDate.of(2021, 1, 2));
+        Series<Object> s = Series.of("a", null, LocalDate.of(2021, 1, 2));
         new SeriesAsserts(str.eval(s)).expectData("a", null, "2021-01-02");
     }
 
     @Test
     public void testCastAsInt() {
         NumExp<Integer> exp = $col(0).castAsInt();
-        Series<Object> s = Series.forData(new BigDecimal("5.01"), null, 12L);
+        Series<Object> s = Series.of(new BigDecimal("5.01"), null, 12L);
         new SeriesAsserts(exp.eval(s)).expectData(5, null, 12);
     }
 
     @Test
     public void testCastAsLong() {
         NumExp<Long> exp = $col(0).castAsLong();
-        Series<Object> s = Series.forData(new BigDecimal("5.01"), null, 12L, 1);
+        Series<Object> s = Series.of(new BigDecimal("5.01"), null, 12L, 1);
         new SeriesAsserts(exp.eval(s)).expectData(5L, null, 12L, 1L);
     }
 
     @Test
     public void testCastAsDouble() {
         NumExp<Double> exp = $col(0).castAsDouble();
-        Series<Object> s = Series.forData(new BigDecimal("5.01"), null, 12L, 1);
+        Series<Object> s = Series.of(new BigDecimal("5.01"), null, 12L, 1);
         new SeriesAsserts(exp.eval(s)).expectData(5.01, null, 12., 1.);
     }
 

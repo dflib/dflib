@@ -1,8 +1,6 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.op.BooleanSeriesOps;
-import com.nhl.dflib.series.BooleanArraySeries;
-import com.nhl.dflib.builder.BooleanAccum;
 
 import java.util.Comparator;
 import java.util.Random;
@@ -12,22 +10,21 @@ import java.util.Random;
  */
 public interface BooleanSeries extends Series<Boolean> {
 
+    /**
+     * @deprecated in favor of {@link Series#ofBool(boolean...)}
+     */
+    @Deprecated(since = "0.16")
     static BooleanSeries forBooleans(boolean... bools) {
-        return new BooleanArraySeries(bools);
+        return Series.ofBool(bools);
     }
 
     /**
      * @since 0.7
+     * @deprecated since 0.16 in favor of {@link #mapAsBool(BooleanValueMapper)}
      */
+    @Deprecated(since = "0.16")
     static <V> BooleanSeries forSeries(Series<V> series, BooleanValueMapper<? super V> converter) {
-        int len = series.size();
-        BooleanAccum a = new BooleanAccum(len);
-        for (int i = 0; i < len; i++) {
-            a.pushBoolean(converter.map(series.get(i)));
-        }
-
-
-        return a.toSeries();
+        return series.mapAsBool(converter);
     }
 
     static BooleanSeries andAll(BooleanSeries... series) {

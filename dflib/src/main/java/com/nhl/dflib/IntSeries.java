@@ -1,7 +1,6 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.builder.BooleanAccum;
-import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.builder.IntAccum;
 import com.nhl.dflib.sort.IntComparator;
 
@@ -16,21 +15,21 @@ import java.util.Random;
  */
 public interface IntSeries extends Series<Integer> {
 
+    /**
+     * @deprecated in favor of {@link Series#ofInt(int...)}
+     */
+    @Deprecated(since = "0.16")
     static IntSeries forInts(int... ints) {
-        return new IntArraySeries(ints);
+        return Series.ofInt(ints);
     }
 
     /**
      * @since 0.7
+     * @deprecated since 0.16 in favor of {@link #mapAsInt(IntValueMapper)}
      */
+    @Deprecated(since = "0.16")
     static <V> IntSeries forSeries(Series<V> series, IntValueMapper<? super V> converter) {
-        int len = series.size();
-        IntAccum a = new IntAccum(len);
-        for (int i = 0; i < len; i++) {
-            a.pushInt(converter.map(series.get(i)));
-        }
-
-        return a.toSeries();
+        return series.mapAsInt(converter);
     }
 
     @Override

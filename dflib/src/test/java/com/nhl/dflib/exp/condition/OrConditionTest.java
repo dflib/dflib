@@ -30,15 +30,15 @@ public class OrConditionTest {
         OrCondition c = new OrCondition(Exp.$bool(0), Exp.$bool(1));
 
         DataFrame df0 = DataFrame.newFrame("t1", "f1")
-                .columns(BooleanSeries.forBooleans(false, false), BooleanSeries.forBooleans(false, false));
+                .columns(Series.ofBool(false, false), Series.ofBool(false, false));
         assertEquals(-1, c.firstMatch(df0));
 
         DataFrame df1 = DataFrame.newFrame("t1", "f1")
-                .columns(BooleanSeries.forBooleans(true, true), BooleanSeries.forBooleans(false, false));
+                .columns(Series.ofBool(true, true), Series.ofBool(false, false));
         assertEquals(0, c.firstMatch(df1));
 
         DataFrame df2 = DataFrame.newFrame("t1", "f1")
-                .columns(BooleanSeries.forBooleans(false, false), BooleanSeries.forBooleans(false, true));
+                .columns(Series.ofBool(false, false), Series.ofBool(false, true));
         assertEquals(1, c.firstMatch(df2));
     }
 
@@ -46,13 +46,13 @@ public class OrConditionTest {
     public void testFirstMatch_Series() {
         OrCondition c = new OrCondition(Exp.$bool(0), Exp.$bool(1));
 
-        Series<Boolean> s0 = BooleanSeries.forBooleans(false, false);
+        Series<Boolean> s0 = Series.ofBool(false, false);
         assertEquals(-1, c.firstMatch(s0));
 
-        Series<Boolean> s1 = BooleanSeries.forBooleans(true, false);
+        Series<Boolean> s1 = Series.ofBool(true, false);
         assertEquals(0, c.firstMatch(s1));
 
-        Series<Boolean> s2 = BooleanSeries.forBooleans(false, true);
+        Series<Boolean> s2 = Series.ofBool(false, true);
         assertEquals(1, c.firstMatch(s2));
     }
 }

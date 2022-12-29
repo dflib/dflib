@@ -12,7 +12,7 @@ public class InlinePrinter_SeriesTest {
 
     @BeforeEach
     public void initSeries() {
-        this.s1 = Series.forData("one", "two", "three", "four");
+        this.s1 = Series.of("one", "two", "three", "four");
     }
 
     @Test

@@ -7,7 +7,7 @@ public class BooleanSeries_SortTest {
 
     @Test
     public void testSort_Comparator() {
-        BooleanSeries s = BooleanSeries.forBooleans(true, false, true, false)
+        BooleanSeries s = Series.ofBool(true, false, true, false)
                 .sort((b1, b2) -> b1 == b2 ? 0 : b1 ? -1 : 1);
 
         new BooleanSeriesAsserts(s).expectData(true, true, false, false);
@@ -15,7 +15,7 @@ public class BooleanSeries_SortTest {
 
     @Test
     public void testSort_Sorter() {
-        BooleanSeries s = BooleanSeries.forBooleans(true, false, true, false)
+        BooleanSeries s = Series.ofBool(true, false, true, false)
                 .sort(Exp.$bool(0).desc());
 
         new BooleanSeriesAsserts(s).expectData(true, true, false, false);

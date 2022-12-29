@@ -80,7 +80,7 @@ public class DecimalColumnTest {
     @Test
     public void testCastAsStr() {
         StrExp str = $decimal(0).castAsStr();
-        Series<BigDecimal> s = Series.forData(new BigDecimal("5.01"), null);
+        Series<BigDecimal> s = Series.of(new BigDecimal("5.01"), null);
         new SeriesAsserts(str.eval(s)).expectData("5.01", null);
     }
 
@@ -145,7 +145,7 @@ public class DecimalColumnTest {
     public void testMedian_Odd() {
         DecimalExp exp = $decimal(0).median().scale(3);
 
-        Series<BigDecimal> s = Series.forData(new BigDecimal("100.01"), new BigDecimal("55.5"), new BigDecimal("0."));
+        Series<BigDecimal> s = Series.of(new BigDecimal("100.01"), new BigDecimal("55.5"), new BigDecimal("0."));
 
         new SeriesAsserts(exp.eval(s)).expectData(new BigDecimal("55.500"));
     }
@@ -154,7 +154,7 @@ public class DecimalColumnTest {
     public void testMedian_Even() {
         DecimalExp exp = $decimal(0).median().scale(1);
 
-        Series<BigDecimal> s = Series.forData(
+        Series<BigDecimal> s = Series.of(
                 new BigDecimal("100.01"), new BigDecimal("55.5"), new BigDecimal("0."), new BigDecimal("5."));
 
         new SeriesAsserts(exp.eval(s)).expectData(new BigDecimal("30.3"));
@@ -164,7 +164,7 @@ public class DecimalColumnTest {
     public void testMedian_Nulls() {
         DecimalExp exp = $decimal(0).median().scale(3);
 
-        Series<BigDecimal> s = Series.forData(
+        Series<BigDecimal> s = Series.of(
                 new BigDecimal("100.01"), null, new BigDecimal("55.5"), new BigDecimal("0."));
 
         new SeriesAsserts(exp.eval(s)).expectData(new BigDecimal("55.500"));
@@ -289,7 +289,7 @@ public class DecimalColumnTest {
     public void testCastAsCondition() {
         Condition c = $decimal(0).castAsCondition();
 
-        Series<BigDecimal> s = Series.forData(
+        Series<BigDecimal> s = Series.of(
                 new BigDecimal("-5.1"),
                 BigDecimal.ZERO,
                 null,
@@ -301,7 +301,7 @@ public class DecimalColumnTest {
     public void testMapConditionVal() {
         Condition c = $decimal(0).mapConditionVal(d -> d.doubleValue() > 0);
 
-        Series<BigDecimal> s = Series.forData(
+        Series<BigDecimal> s = Series.of(
                 new BigDecimal("-5.1"),
                 BigDecimal.ZERO,
                 null,
@@ -313,7 +313,7 @@ public class DecimalColumnTest {
     public void testMapCondition() {
         Condition c = $decimal(0).mapCondition(Series::isNotNull);
 
-        Series<BigDecimal> s = Series.forData(
+        Series<BigDecimal> s = Series.of(
                 new BigDecimal("-5.1"),
                 BigDecimal.ZERO,
                 null,

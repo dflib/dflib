@@ -105,7 +105,7 @@ public class DataFrame_SelectRowsTest {
     public void testWithBooleanSeries() {
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(10, 20, 30)
-                .selectRows(BooleanSeries.forBooleans(true, false, true));
+                .selectRows(Series.ofBool(true, false, true));
 
         new DataFrameAsserts(df, "a")
                 .expectHeight(2)
