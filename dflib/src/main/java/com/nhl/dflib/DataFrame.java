@@ -3,6 +3,7 @@ package com.nhl.dflib;
 import com.nhl.dflib.agg.DataFrameAggregator;
 import com.nhl.dflib.builder.DataFrameAppenderBuilder;
 import com.nhl.dflib.builder.DataFrameArrayAppenderBuilder;
+import com.nhl.dflib.builder.DataFrameFoldByRowBuilder;
 import com.nhl.dflib.join.JoinBuilder;
 import com.nhl.dflib.pivot.PivotBuilder;
 import com.nhl.dflib.row.RowProxy;
@@ -72,6 +73,20 @@ public interface DataFrame extends Iterable<RowProxy> {
             extractors[i] = Extractor.$col(a -> a[pos]);
         }
         return new DataFrameArrayAppenderBuilder(extractors);
+    }
+
+    /**
+     * @since 0.16
+     */
+    static DataFrameFoldByRowBuilder foldByRowBuilder(String... columnLabels) {
+        return foldByRowBuilder(Index.forLabels(Objects.requireNonNull(columnLabels)));
+    }
+
+    /**
+     * @since 0.16
+     */
+    static DataFrameFoldByRowBuilder foldByRowBuilder(Index columnIndex) {
+        return new DataFrameFoldByRowBuilder(columnIndex);
     }
 
     /**

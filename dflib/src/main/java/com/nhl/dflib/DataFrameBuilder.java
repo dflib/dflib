@@ -124,6 +124,10 @@ public class DataFrameBuilder {
         return byRow().addRow(row);
     }
 
+    /**
+     * @deprecated use {@link DataFrame#foldByRowBuilder(String...)}
+     */
+    @Deprecated(since = "0.16")
     public DataFrame foldByRow(Object... data) {
 
         int width = columnsIndex.size();
@@ -171,6 +175,10 @@ public class DataFrameBuilder {
         return fromColumnarData(columnarData);
     }
 
+    /**
+     * @deprecated use {@link DataFrame#foldByRowBuilder(String...)}
+     */
+    @Deprecated(since = "0.16")
     public <T> DataFrame foldStreamByRow(Stream<T> stream) {
         return foldIterableByRow(stream::iterator);
     }
@@ -180,6 +188,10 @@ public class DataFrameBuilder {
         return foldByColumn(stream.toArray());
     }
 
+    /**
+     * @deprecated use {@link DataFrame#foldByRowBuilder(String...)}
+     */
+    @Deprecated(since = "0.16")
     public <T> DataFrame foldIterableByRow(Iterable<T> iterable) {
 
         int width = columnsIndex.size();
@@ -260,10 +272,18 @@ public class DataFrameBuilder {
         return new ColumnDataFrame(columnsIndex, series);
     }
 
+    /**
+     * @deprecated use {@link DataFrame#foldByRowBuilder(String...)}
+     */
+    @Deprecated(since = "0.16")
     public DataFrame foldIntStreamByRow(IntStream stream) {
         return foldIntStreamByRow(0, stream);
     }
 
+    /**
+     * @deprecated use {@link DataFrame#foldByRowBuilder(String...)}
+     */
+    @Deprecated(since = "0.16")
     public DataFrame foldIntStreamByRow(int padWith, IntStream stream) {
 
         int width = columnsIndex.size();
@@ -336,10 +356,18 @@ public class DataFrameBuilder {
         return new ColumnDataFrame(columnsIndex, series);
     }
 
+    /**
+     * @deprecated use {@link DataFrame#foldByRowBuilder(String...)}
+     */
+    @Deprecated(since = "0.16")
     public DataFrame foldLongStreamByRow(LongStream stream) {
         return foldLongStreamByRow(0L, stream);
     }
 
+    /**
+     * @deprecated use {@link DataFrame#foldByRowBuilder(String...)}
+     */
+    @Deprecated(since = "0.16")
     public DataFrame foldLongStreamByRow(long padWith, LongStream stream) {
 
         int width = columnsIndex.size();
@@ -412,10 +440,18 @@ public class DataFrameBuilder {
         return new ColumnDataFrame(columnsIndex, series);
     }
 
+    /**
+     * @deprecated use {@link DataFrame#foldByRowBuilder(String...)}
+     */
+    @Deprecated(since = "0.16")
     public DataFrame foldDoubleStreamByRow(DoubleStream stream) {
         return foldDoubleStreamByRow(0., stream);
     }
 
+    /**
+     * @deprecated use {@link DataFrame#foldByRowBuilder(String...)}
+     */
+    @Deprecated(since = "0.16")
     public DataFrame foldDoubleStreamByRow(double padWith, DoubleStream stream) {
 
         int width = columnsIndex.size();
