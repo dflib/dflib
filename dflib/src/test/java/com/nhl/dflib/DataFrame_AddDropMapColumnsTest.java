@@ -266,8 +266,8 @@ public class DataFrame_AddDropMapColumnsTest {
 
     @Test
     public void testDropColumns_Predicate() {
-        DataFrame df = DataFrame.newFrame("a1", "b2", "c1")
-                .foldByColumn(1, 2, 3, 4, 5, 6, 7, 8, 9)
+        DataFrame df = DataFrame.foldByColumn("a1", "b2", "c1")
+                .array(1, 2, 3, 4, 5, 6, 7, 8, 9)
                 .dropColumns(c -> c.endsWith("1"));
 
         new DataFrameAsserts(df, "b2")

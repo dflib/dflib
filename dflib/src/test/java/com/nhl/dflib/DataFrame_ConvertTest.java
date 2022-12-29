@@ -16,8 +16,8 @@ public class DataFrame_ConvertTest {
     @Test
     public void testConvertColumn_Exp() {
         DataFrame df = DataFrame
-                .newFrame("a", "b")
-                .foldByRow(1, "x", 2, "y")
+                .foldByRow("a", "b")
+                .array(1, "x", 2, "y")
                 .convertColumn("a", $int("a").mul(10));
 
         new DataFrameAsserts(df, "a", "b")
@@ -29,8 +29,8 @@ public class DataFrame_ConvertTest {
     @Test
     public void testConvertColumn_Exp_Position() {
         DataFrame df = DataFrame
-                .newFrame("a", "b")
-                .foldByRow(1, "x", 2, "y")
+                .foldByRow("a", "b")
+                .array(1, "x", 2, "y")
                 .convertColumn("a", $int(0).mul(10));
 
         new DataFrameAsserts(df, "a", "b")
@@ -42,8 +42,8 @@ public class DataFrame_ConvertTest {
     @Test
     public void testConvertColumn_Exp_ToDate() {
         DataFrame df = DataFrame
-                .newFrame("a")
-                .foldByRow(
+                .foldByRow("a")
+                .array(
                         "2018-01-05",
                         "2019-02-28",
                         null)
@@ -59,8 +59,8 @@ public class DataFrame_ConvertTest {
     @Test
     public void testConvertColumn_ValueMapperToDate_Formatter() {
         DataFrame df = DataFrame
-                .newFrame("a")
-                .foldByRow(
+                .foldByRow("a")
+                .array(
                         "2018 01 05",
                         "2019 02 28",
                         null)
@@ -78,8 +78,8 @@ public class DataFrame_ConvertTest {
     @Test
     public void testConvertColumn_ValueMapperToDateTime() {
         DataFrame df = DataFrame
-                .newFrame("a")
-                .foldByRow(
+                .foldByRow("a")
+                .array(
                         "2018-01-05T00:01:15",
                         "2019-02-28T13:11:12",
                         null)
@@ -95,8 +95,8 @@ public class DataFrame_ConvertTest {
     @Test
     public void testConvertColumnToInt_ByLabel() {
         DataFrame df = DataFrame
-                .newFrame("a", "b")
-                .foldByRow(
+                .foldByRow("a", "b")
+                .array(
                         "1", "x",
                         "5", "z",
                         "2", "y")
@@ -113,8 +113,8 @@ public class DataFrame_ConvertTest {
     @Test
     public void testConvertColumnToInt_ByPos() {
         DataFrame df = DataFrame
-                .newFrame("a", "b")
-                .foldByRow(
+                .foldByRow("a", "b")
+                .array(
                         "1", "x",
                         "5", "z",
                         "2", "y")
@@ -131,8 +131,8 @@ public class DataFrame_ConvertTest {
     @Test
     public void testConvertColumnToInt_FromBoolean() {
         DataFrame df = DataFrame
-                .newFrame("a", "b")
-                .foldByRow(
+                .foldByRow("a", "b")
+                .array(
                         true, "x",
                         false, "z",
                         true, "y")
@@ -148,7 +148,7 @@ public class DataFrame_ConvertTest {
 
     @Test
     public void testConvertColumnToInt_Nulls() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").array(
                 "1", "x",
                 null, "z",
                 "2", "y");
@@ -159,8 +159,8 @@ public class DataFrame_ConvertTest {
     @Test
     public void testConvertColumnToInt_NullsDefault() {
         DataFrame df = DataFrame
-                .newFrame("a", "b")
-                .foldByRow(
+                .foldByRow("a", "b")
+                .array(
                         "1", "x",
                         null, "z",
                         "2", "y")
@@ -176,8 +176,8 @@ public class DataFrame_ConvertTest {
     @Test
     public void testToEnumFromNumColumn() {
         DataFrame df = DataFrame
-                .newFrame("a", "b")
-                .foldByRow(
+                .foldByRow("a", "b")
+                .array(
                         1, "x",
                         null, "z",
                         0, "y")
@@ -193,8 +193,8 @@ public class DataFrame_ConvertTest {
     @Test
     public void testToEnumFromStringColumn() {
         DataFrame df = DataFrame
-                .newFrame("a", "b")
-                .foldByRow(
+                .foldByRow("a", "b")
+                .array(
                         "b", "x",
                         null, "z",
                         "a", "y")
