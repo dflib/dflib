@@ -80,7 +80,7 @@ public class DataFrameByRowBuilder<S> {
                 : new DataFrameAppender<>(index, builders);
     }
 
-    public DataFrame build(Iterable<S> sources) {
+    public DataFrame ofIterable(Iterable<S> sources) {
         return appendData().append(sources).build();
     }
 

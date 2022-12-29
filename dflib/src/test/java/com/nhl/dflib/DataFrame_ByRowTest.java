@@ -55,7 +55,7 @@ public class DataFrame_ByRowTest {
                 )
                 .columnNames("o", "i")
                 // skip extractor creation, create the DataFrame straight from the builder
-                .build(data);
+                .ofIterable(data);
 
         new DataFrameAsserts(df, "o", "i").expectHeight(2)
                 .expectIntColumns("i")
