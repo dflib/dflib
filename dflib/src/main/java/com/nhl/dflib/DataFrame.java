@@ -904,7 +904,7 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * "Explodes" the specified column vertically, adding new rows as needed. This operation has any affect only
-     * if the column that is being "exploded" is an Iterable or an array.
+     * if the column that is being "exploded" contains Iterables or array elements.
      *
      * @since 0.16
      */
@@ -914,7 +914,7 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * "Explodes" the specified column vertically, adding new rows as needed. This operation has any affect only
-     * if the column that is being "exploded" is an Iterable or an array.
+     * if the column that is being "exploded" contains Iterables or array elements.
      *
      * @since 0.16
      */
