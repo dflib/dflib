@@ -31,67 +31,67 @@ public class ColumnarDataFrameMemory extends MemoryTest {
     }
 
     public DataFrame nullCells() {
-        return DataFrame.byColumn("c0", "c1").array(
+        return DataFrame.byColumn("c0", "c1").of(
                 ValueMaker.nullSeq().series(ROWS),
                 ValueMaker.nullSeq().series(ROWS)).materialize();
     }
 
     public DataFrame doubleCells() {
-        return DataFrame.byColumn("c0", "c1").array(
+        return DataFrame.byColumn("c0", "c1").of(
                 ValueMaker.doubleSeq().series(ROWS),
                 ValueMaker.doubleSeq().series(ROWS)).materialize();
     }
 
     public DataFrame primitiveDoubleCells() {
-        return DataFrame.byColumn("c0", "c1").array(
+        return DataFrame.byColumn("c0", "c1").of(
                 ValueMaker.doubleSeq().doubleSeries(ROWS),
                 ValueMaker.doubleSeq().doubleSeries(ROWS)).materialize();
     }
 
     public DataFrame intCells() {
-        return DataFrame.byColumn("c0", "c1").array(
+        return DataFrame.byColumn("c0", "c1").of(
                 ValueMaker.intSeq().series(ROWS),
                 ValueMaker.intSeq().series(ROWS)).materialize();
     }
 
     public DataFrame primitiveIntCells() {
-        return DataFrame.byColumn("c0", "c1").array(
+        return DataFrame.byColumn("c0", "c1").of(
                 ValueMaker.intSeq().intSeries(ROWS),
                 ValueMaker.intSeq().intSeries(ROWS)).materialize();
     }
 
     public DataFrame longCells() {
-        return DataFrame.byColumn("c0", "c1").array(
+        return DataFrame.byColumn("c0", "c1").of(
                 ValueMaker.longSeq().series(ROWS),
                 ValueMaker.longSeq().series(ROWS)).materialize();
     }
 
     public DataFrame primitiveLongCells() {
-        return DataFrame.byColumn("c0", "c1").array(
+        return DataFrame.byColumn("c0", "c1").of(
                 ValueMaker.longSeq().longSeries(ROWS),
                 ValueMaker.longSeq().longSeries(ROWS)).materialize();
     }
 
     public DataFrame boolCells() {
-        return DataFrame.byColumn("c0", "c1").array(
+        return DataFrame.byColumn("c0", "c1").of(
                 ValueMaker.booleanSeq().series(ROWS),
                 ValueMaker.booleanSeq().series(ROWS)).materialize();
     }
 
     public DataFrame primitiveBoolCells() {
-        return DataFrame.byColumn("c0", "c1").array(
+        return DataFrame.byColumn("c0", "c1").of(
                 ValueMaker.booleanSeq().booleanSeries(ROWS),
                 ValueMaker.booleanSeq().booleanSeries(ROWS)).materialize();
     }
 
     public DataFrame repeatingStringCells() {
-        return DataFrame.byColumn("c0", "c1").array(
+        return DataFrame.byColumn("c0", "c1").of(
                 ValueMaker.constStringSeq("abc").series(ROWS),
                 ValueMaker.constStringSeq("xyz").series(ROWS)).materialize();
     }
 
     public DataFrame randStringCells() {
-        return DataFrame.byColumn("c0", "c1").array(
+        return DataFrame.byColumn("c0", "c1").of(
                 ValueMaker.semiRandomStringSeq("abc", ROWS).series(ROWS),
                 ValueMaker.semiRandomStringSeq("xyz", ROWS).series(ROWS)).materialize();
     }
@@ -105,13 +105,13 @@ public class ColumnarDataFrameMemory extends MemoryTest {
 
         };
 
-        return DataFrame.byColumn("c0", "c1").array(
+        return DataFrame.byColumn("c0", "c1").of(
                 bitsMaker.series(ROWS),
                 bitsMaker.series(ROWS)).materialize();
     }
 
     public DataFrame enumCells() {
-        return DataFrame.byColumn("c0", "c1").array(
+        return DataFrame.byColumn("c0", "c1").of(
                 ValueMaker.enumSeq(X.class).series(ROWS),
                 ValueMaker.enumSeq(X.class).series(ROWS)).materialize();
     }

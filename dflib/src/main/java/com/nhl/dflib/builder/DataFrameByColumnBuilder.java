@@ -16,12 +16,12 @@ public class DataFrameByColumnBuilder extends BaseDataFrameBuilder {
         super(columnsIndex);
     }
 
-    public DataFrame array(Series<?>... columns) {
+    public DataFrame of(Series<?>... columns) {
         Objects.requireNonNull(columns);
         return new ColumnDataFrame(columnsIndex, columns);
     }
 
-    public DataFrame iterable(Iterable<Series<?>> columns) {
+    public DataFrame ofIterable(Iterable<Series<?>> columns) {
         return new ColumnDataFrame(columnsIndex, toCollection(columns).toArray(new Series[0]));
     }
 }

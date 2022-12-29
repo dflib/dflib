@@ -155,7 +155,7 @@ public class IntColumnTest {
 
     @Test
     public void testAdd_IntPrimitive() {
-        DataFrame df = DataFrame.foldByRow("a", "b").intStream(IntStream.of(1, 2, 3, 4));
+        DataFrame df = DataFrame.foldByRow("a", "b").ofStream(IntStream.of(1, 2, 3, 4));
 
         // sanity check of the test DataFrame
         Series<Integer> a = df.getColumn("a");

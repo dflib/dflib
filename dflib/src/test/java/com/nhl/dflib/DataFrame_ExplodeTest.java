@@ -9,7 +9,7 @@ public class DataFrame_ExplodeTest {
 
     @Test
     public void testPrimitiveArray() {
-        DataFrame df = DataFrame.foldByRow("a", "b").array(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                         new int[]{1, 2, -1}, "x",
                         new int[]{3}, "y",
                         new int[]{}, "z",
@@ -28,7 +28,7 @@ public class DataFrame_ExplodeTest {
 
     @Test
     public void testArray() {
-        DataFrame df = DataFrame.foldByRow("a", "b").array(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                         new Integer[]{1, 2, -1}, "x",
                         new Integer[]{3}, "y",
                         new Integer[]{}, "z",
@@ -47,7 +47,7 @@ public class DataFrame_ExplodeTest {
 
     @Test
     public void testList() {
-        DataFrame df = DataFrame.foldByRow("a", "b").array(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                         List.of(1, 2, -1), "x",
                         List.of(3), "y",
                         List.of(), "z",
@@ -66,7 +66,7 @@ public class DataFrame_ExplodeTest {
 
     @Test
     public void testScalar() {
-        DataFrame df = DataFrame.foldByRow("a", "b").array(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                         1, "x",
                         2, "y",
                         3, "z",

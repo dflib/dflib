@@ -13,7 +13,7 @@ public class DataFrame_FoldByRowTest {
 
     @Test
     public void testArray() {
-        DataFrame df = DataFrame.foldByRow("a", "b").array(1, 2);
+        DataFrame df = DataFrame.foldByRow("a", "b").of(1, 2);
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(1)
                 .expectRow(0, 1, 2);
@@ -22,7 +22,7 @@ public class DataFrame_FoldByRowTest {
     @Test
     public void testArray_Partial() {
 
-        DataFrame df = DataFrame.foldByRow("a", "b").array(1, 2, 3);
+        DataFrame df = DataFrame.foldByRow("a", "b").of(1, 2, 3);
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)
@@ -33,7 +33,7 @@ public class DataFrame_FoldByRowTest {
     @Test
     public void testStream() {
         DataFrame df = DataFrame.foldByRow("a", "b")
-                .stream(Stream.of("a", 1, "b", 2, "c", 3));
+                .ofStream(Stream.of("a", 1, "b", 2, "c", 3));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, "a", 1)
@@ -44,7 +44,7 @@ public class DataFrame_FoldByRowTest {
     @Test
     public void testStream_Partial() {
         DataFrame df = DataFrame.foldByRow("a", "b")
-                .stream(Stream.of("a", 1, "b", 2, "c"));
+                .ofStream(Stream.of("a", 1, "b", 2, "c"));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, "a", 1)
@@ -55,7 +55,7 @@ public class DataFrame_FoldByRowTest {
     @Test
     public void testIterable() {
         DataFrame df = DataFrame.foldByRow("a", "b")
-                .iterable(List.of("a", 1, "b", 2, "c", 3));
+                .ofIterable(List.of("a", 1, "b", 2, "c", 3));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, "a", 1)
@@ -66,7 +66,7 @@ public class DataFrame_FoldByRowTest {
     @Test
     public void testIterable_Partial() {
         DataFrame df = DataFrame.foldByRow("a", "b")
-                .iterable(List.of("a", 1, "b", 2, "c"));
+                .ofIterable(List.of("a", 1, "b", 2, "c"));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, "a", 1)
@@ -77,7 +77,7 @@ public class DataFrame_FoldByRowTest {
     @Test
     public void testIntStream() {
         DataFrame df = DataFrame.foldByRow("a", "b")
-                .intStream(-9999, IntStream.of(-1, 1, 0, 2, 5, 3));
+                .ofStream(-9999, IntStream.of(-1, 1, 0, 2, 5, 3));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, -1, 1)
@@ -89,7 +89,7 @@ public class DataFrame_FoldByRowTest {
     @Test
     public void testIntStream_Partial() {
         DataFrame df = DataFrame.foldByRow("a", "b")
-                .intStream(-9999, IntStream.of(-1, 1, 0, 2, 5));
+                .ofStream(-9999, IntStream.of(-1, 1, 0, 2, 5));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, -1, 1)
@@ -102,7 +102,7 @@ public class DataFrame_FoldByRowTest {
     @Test
     public void testLongStream() {
         DataFrame df = DataFrame.foldByRow("a", "b")
-                .longStream(-9999L, LongStream.of(-1, 1, 0, 2, 5, 3));
+                .ofStream(-9999L, LongStream.of(-1, 1, 0, 2, 5, 3));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectLongColumns(0, 1)
@@ -114,7 +114,7 @@ public class DataFrame_FoldByRowTest {
     @Test
     public void testLongStream_Partial() {
         DataFrame df = DataFrame.foldByRow("a", "b")
-                .longStream(-9999L, LongStream.of(-1, 1, 0, 2, 5));
+                .ofStream(-9999L, LongStream.of(-1, 1, 0, 2, 5));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectLongColumns(0, 1)
@@ -127,7 +127,7 @@ public class DataFrame_FoldByRowTest {
     @Test
     public void testDoubleStream() {
         DataFrame df = DataFrame.foldByRow("a", "b")
-                .doubleStream(-9999.9, DoubleStream.of(-1, 1.1, 0, 2, 5, 3));
+                .ofStream(-9999.9, DoubleStream.of(-1, 1.1, 0, 2, 5, 3));
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(3)
@@ -140,7 +140,7 @@ public class DataFrame_FoldByRowTest {
     @Test
     public void testDoubleStream_Partial() {
         DataFrame df = DataFrame.foldByRow("a", "b")
-                .doubleStream(-9999.9, DoubleStream.of(-1, 1.1, 0, 2, 5));
+                .ofStream(-9999.9, DoubleStream.of(-1, 1.1, 0, 2, 5));
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(3)
@@ -153,7 +153,7 @@ public class DataFrame_FoldByRowTest {
     @Test
     public void testDoubleStream_Partial_DefaultPadding() {
         DataFrame df = DataFrame.foldByRow("a", "b")
-                .doubleStream(DoubleStream.of(-1, 1.1, 0, 2, 5));
+                .ofStream(DoubleStream.of(-1, 1.1, 0, 2, 5));
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(3)

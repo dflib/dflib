@@ -23,7 +23,7 @@ public class DataFrameAggregator {
             aggLabels[i] = aggregators[i].getColumnName(dataFrame);
         }
 
-        return DataFrame.byColumn(Index.forLabelsDeduplicate(aggLabels)).array(aggColumns);
+        return DataFrame.byColumn(Index.forLabelsDeduplicate(aggLabels)).of(aggColumns);
     }
 
 

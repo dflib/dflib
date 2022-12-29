@@ -38,7 +38,7 @@ class BaseCsvLoaderWorker implements CsvLoaderWorker {
             columns[i] = columnBuilders[i].toSeries();
         }
 
-        return DataFrame.byColumn(columnIndex).array(columns);
+        return DataFrame.byColumn(columnIndex).of(columns);
     }
 
     protected void addRow(int width, CSVRecord row) {

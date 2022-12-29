@@ -34,7 +34,7 @@ public class DataFrameHashJoin {
         Series<Integer> c12 = ValueMaker.randomIntSeq(rows / 2).series(rows);
         Series<String> c13 = ValueMaker.constStringSeq("abcd").series(rows);
 
-        df1 = DataFrame.byColumn("c0", "c1", "c2", "c3").array(c10, c11, c12, c13);
+        df1 = DataFrame.byColumn("c0", "c1", "c2", "c3").of(c10, c11, c12, c13);
 
         Series<Integer> c20 = ValueMaker.intSeq().series(rows);
         Series<String> c21 = ValueMaker.stringSeq().series(rows);
@@ -43,7 +43,7 @@ public class DataFrameHashJoin {
         Series<String> c23 = ValueMaker.constStringSeq("abcd").series(rows);
 
 
-        df2 = DataFrame.byColumn("c0", "c1", "c2", "c3").array(c20, c21, c22, c23);
+        df2 = DataFrame.byColumn("c0", "c1", "c2", "c3").of(c20, c21, c22, c23);
     }
 
     @Benchmark

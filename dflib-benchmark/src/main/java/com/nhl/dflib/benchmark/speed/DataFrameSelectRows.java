@@ -33,7 +33,7 @@ public class DataFrameSelectRows {
 
         df = DataFrame
                 .byColumn("c0", "c1", "c2", "c3")
-                .array(c0, c1, c2, c3);
+                .of(c0, c1, c2, c3);
     }
 
     @Benchmark

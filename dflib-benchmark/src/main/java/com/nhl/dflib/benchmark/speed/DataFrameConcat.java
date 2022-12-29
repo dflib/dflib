@@ -32,7 +32,7 @@ public class DataFrameConcat {
         Series<String> c13 = ValueMaker.constStringSeq(string).series(rows + 5);
 
         df1 = DataFrame.byColumn("c0", "c1", "c2", "c3")
-                .array(c10, c11, c12, c13);
+                .of(c10, c11, c12, c13);
 
         Series<Integer> c20 = ValueMaker.intSeq().series(rows - 5);
         Series<String> c21 = ValueMaker.stringSeq().series(rows - 5);
@@ -40,7 +40,7 @@ public class DataFrameConcat {
         Series<String> c23 = ValueMaker.constStringSeq(string).series(rows - 5);
 
         df2 = DataFrame.byColumn("c0", "c1", "c2", "c3")
-                .array(c20, c21, c22, c23);
+                .of(c20, c21, c22, c23);
     }
 
     @Benchmark

@@ -11,7 +11,7 @@ public class AvroSchemaCompilerTest {
 
     static final DataFrame df = DataFrame.byColumn(
             "int", "Integer", "long", "Long", "double", "Double", "bool", "Bool", "String", "Nulls")
-            .array(
+            .of(
                     IntSeries.forInts(1, 3),
                     Series.forData(11, null),
                     LongSeries.forLongs(4L, 5L),

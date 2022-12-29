@@ -13,7 +13,7 @@ public class DataFrame_AddDropMapColumnsTest {
     public void testMapColumn() {
         Series<Integer> mapped = DataFrame
                 .foldByRow("a", "b")
-                .array(
+                .of(
                         1, "x",
                         2, "y")
                 .mapColumn(r -> ((int) r.get(0)) * 10);
@@ -23,7 +23,7 @@ public class DataFrame_AddDropMapColumnsTest {
 
     @Test
     public void testAddColumn() {
-        DataFrame df = DataFrame.foldByRow("a", "b").array(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                         1, "x",
                         2, "y")
                 .addColumn("c", r -> ((int) r.get(0)) * 10);
@@ -36,7 +36,7 @@ public class DataFrame_AddDropMapColumnsTest {
 
     @Test
     public void testAddColumn_Sparse() {
-        DataFrame df = DataFrame.foldByRow("a", "b").array(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                         1, "x",
                         2, "y")
                 .selectColumns("a")
@@ -51,7 +51,7 @@ public class DataFrame_AddDropMapColumnsTest {
     @Test
     public void testAddSingleValueColumn() {
 
-        DataFrame df = DataFrame.foldByRow("a", "b").array(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y").addSingleValueColumn("c", 5);
 
@@ -66,7 +66,7 @@ public class DataFrame_AddDropMapColumnsTest {
 
         Series<String> column = Series.forData("m", "n");
 
-        DataFrame df = DataFrame.foldByRow("a", "b").array(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y").addColumn("a", column);
 
@@ -82,7 +82,7 @@ public class DataFrame_AddDropMapColumnsTest {
 
         Series<String> column = Series.forData("m", "n");
 
-        DataFrame df = DataFrame.foldByRow("a", "b").array(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y").addColumn("c", column);
 
@@ -97,7 +97,7 @@ public class DataFrame_AddDropMapColumnsTest {
     public void testAddColumn_Series_Shorter() {
 
         Series<String> column = Series.forData("m");
-        DataFrame df = DataFrame.foldByRow("a", "b").array(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
@@ -108,7 +108,7 @@ public class DataFrame_AddDropMapColumnsTest {
     public void testAddColumn_Series_Longer() {
 
         Series<String> column = Series.forData("m", "n", "o");
-        DataFrame df = DataFrame.foldByRow("a", "b").array(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
@@ -117,7 +117,7 @@ public class DataFrame_AddDropMapColumnsTest {
 
     @Test
     public void testAddColumns() {
-        DataFrame df = DataFrame.foldByRow("a", "b").array(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                         1, "x",
                         2, "y")
                 .addColumns(new String[]{"c", "d"},
@@ -133,7 +133,7 @@ public class DataFrame_AddDropMapColumnsTest {
     @Test
     public void testAddColumns_SizeMismatch() {
 
-        DataFrame df = DataFrame.foldByRow("a", "b").array(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
@@ -144,7 +144,7 @@ public class DataFrame_AddDropMapColumnsTest {
 
     @Test
     public void testAddColumns_RowMapper() {
-        DataFrame df = DataFrame.foldByRow("a").array(
+        DataFrame df = DataFrame.foldByRow("a").of(
                         1,
                         2)
                 .addColumns(new String[]{"c", "d"},
@@ -163,7 +163,7 @@ public class DataFrame_AddDropMapColumnsTest {
     @Test
     public void testAddColumn_Exp() {
 
-        DataFrame df = DataFrame.foldByRow("a", "b").array(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                         1, "x",
                         2, "y")
                 .addColumn($int("a").as("a_copy"))
@@ -180,7 +180,7 @@ public class DataFrame_AddDropMapColumnsTest {
     @Test
     public void testAddColumn_Exp_Pos() {
 
-        DataFrame df = DataFrame.foldByRow("a", "b").array(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                         1, "x",
                         2, "y")
                 .addColumn($int(0).as("a_copy"))
@@ -197,7 +197,7 @@ public class DataFrame_AddDropMapColumnsTest {
     @Test
     public void testAddColumns_Exp() {
 
-        DataFrame df = DataFrame.foldByRow("a", "b").array(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                         1, "x",
                         2, "y")
                 .addColumns(
@@ -214,7 +214,7 @@ public class DataFrame_AddDropMapColumnsTest {
 
     @Test
     public void testDropColumns1() {
-        DataFrame df = DataFrame.foldByRow("a", "b").array(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                         1, "x",
                         2, "y")
                 .dropColumns("a");
@@ -227,7 +227,7 @@ public class DataFrame_AddDropMapColumnsTest {
 
     @Test
     public void testDropColumns2() {
-        DataFrame df = DataFrame.foldByRow("a", "b").array(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                         1, "x",
                         2, "y")
                 .dropColumns("b");
@@ -240,7 +240,7 @@ public class DataFrame_AddDropMapColumnsTest {
 
     @Test
     public void testDropColumns3() {
-        DataFrame df = DataFrame.foldByRow("a", "b").array(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                         1, "x",
                         2, "y")
                 .dropColumns();
@@ -253,7 +253,7 @@ public class DataFrame_AddDropMapColumnsTest {
 
     @Test
     public void testDropColumns4() {
-        DataFrame df = DataFrame.foldByRow("a", "b").array(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                         1, "x",
                         2, "y")
                 .dropColumns("no_such_column");
@@ -267,7 +267,7 @@ public class DataFrame_AddDropMapColumnsTest {
     @Test
     public void testDropColumns_Predicate() {
         DataFrame df = DataFrame.foldByColumn("a1", "b2", "c1")
-                .array(1, 2, 3, 4, 5, 6, 7, 8, 9)
+                .of(1, 2, 3, 4, 5, 6, 7, 8, 9)
                 .dropColumns(c -> c.endsWith("1"));
 
         new DataFrameAsserts(df, "b2")
@@ -279,7 +279,7 @@ public class DataFrame_AddDropMapColumnsTest {
 
     @Test
     public void testAddRowNumberColumn() {
-        DataFrame df = DataFrame.foldByRow("a", "b").array(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                         1, "x",
                         2, "y")
                 .addRowNumberColumn("rn");

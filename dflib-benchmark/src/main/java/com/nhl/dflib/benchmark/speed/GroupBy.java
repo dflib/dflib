@@ -35,7 +35,7 @@ public class GroupBy {
         Series<Integer> c2 = ValueMaker.randomIntSeq(groups).series(rows);
         Series<String> c3 = ValueMaker.constStringSeq(string).series(rows);
 
-        df = DataFrame.byColumn("c0", "c1", "c2", "c3").array(c0, c1, c2, c3);
+        df = DataFrame.byColumn("c0", "c1", "c2", "c3").of(c0, c1, c2, c3);
         gb = df.group("c2");
     }
 

@@ -23,7 +23,7 @@ public class DataFrameFoldByRowBuilder extends BaseDataFrameBuilder {
         super(columnsIndex);
     }
 
-    public DataFrame array(Object... data) {
+    public DataFrame of(Object... data) {
         Geometry g = geometry(data.length);
         Object[][] columnarData = new Object[g.width][g.height];
 
@@ -49,17 +49,17 @@ public class DataFrameFoldByRowBuilder extends BaseDataFrameBuilder {
         return new ColumnDataFrame(columnsIndex, series);
     }
 
-    public <T> DataFrame iterable(Iterable<T> iterable) {
+    public <T> DataFrame ofIterable(Iterable<T> iterable) {
         // since we can't know the exact size of the Iterable in a general case, convert it to array and fold that by
         // column
-        return array(toCollection(iterable).toArray());
+        return of(toCollection(iterable).toArray());
     }
 
-    public <T> DataFrame stream(Stream<T> stream) {
-        return array(stream.toArray());
+    public <T> DataFrame ofStream(Stream<T> stream) {
+        return of(stream.toArray());
     }
 
-    public DataFrame doubleArray(double padWith, double... data) {
+    public DataFrame ofDoubles(double padWith, double... data) {
 
         Geometry g = geometry(data.length);
         double[][] columnarData = new double[g.width][g.height];
@@ -90,16 +90,16 @@ public class DataFrameFoldByRowBuilder extends BaseDataFrameBuilder {
         return new ColumnDataFrame(columnsIndex, series);
     }
 
-    public DataFrame doubleStream(DoubleStream stream) {
-        return doubleStream(0., stream);
+    public DataFrame ofStream(DoubleStream stream) {
+        return ofStream(0., stream);
     }
 
-    public DataFrame doubleStream(double padWith, DoubleStream stream) {
+    public DataFrame ofStream(double padWith, DoubleStream stream) {
         // since we can't guess the height from the Stream, convert it to array and fold the array by column
-        return doubleArray(padWith, stream.toArray());
+        return ofDoubles(padWith, stream.toArray());
     }
 
-    public DataFrame intArray(int padWith, int... data) {
+    public DataFrame ofInts(int padWith, int... data) {
 
         Geometry g = geometry(data.length);
         int[][] columnarData = new int[g.width][g.height];
@@ -130,16 +130,16 @@ public class DataFrameFoldByRowBuilder extends BaseDataFrameBuilder {
         return new ColumnDataFrame(columnsIndex, series);
     }
 
-    public DataFrame intStream(IntStream stream) {
-        return intStream(0, stream);
+    public DataFrame ofStream(IntStream stream) {
+        return ofStream(0, stream);
     }
 
-    public DataFrame intStream(int padWith, IntStream stream) {
+    public DataFrame ofStream(int padWith, IntStream stream) {
         // since we can't guess the height from the Stream, convert it to array and fold the array by column
-        return intArray(padWith, stream.toArray());
+        return ofInts(padWith, stream.toArray());
     }
 
-    public DataFrame longArray(long padWith, long... data) {
+    public DataFrame ofLongs(long padWith, long... data) {
 
         Geometry g = geometry(data.length);
         long[][] columnarData = new long[g.width][g.height];
@@ -170,14 +170,14 @@ public class DataFrameFoldByRowBuilder extends BaseDataFrameBuilder {
         return new ColumnDataFrame(columnsIndex, series);
     }
 
-    public DataFrame longStream(LongStream stream) {
-        return longStream(0L, stream);
+    public DataFrame ofStream(LongStream stream) {
+        return ofStream(0L, stream);
     }
 
-    public DataFrame longStream(long padWith, LongStream stream) {
+    public DataFrame ofStream(long padWith, LongStream stream) {
 
         // since we can't guess the height from the Stream, convert it to array and fold the array by column
-        return longArray(padWith, stream.toArray());
+        return ofLongs(padWith, stream.toArray());
     }
 
     protected Geometry geometry(int dataLength) {

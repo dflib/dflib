@@ -558,7 +558,7 @@ public class ColumnDataFrame implements DataFrame {
             }
         }
 
-        return DataFrame.byColumn(labels).array(data);
+        return DataFrame.byColumn(labels).of(data);
     }
 
     @Override

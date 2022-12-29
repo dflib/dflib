@@ -33,7 +33,7 @@ public class DataFrameExp {
         DoubleSeries c6 = ValueMaker.randomDoubleSeq().doubleSeries(rows);
 
         df = DataFrame.byColumn("c0", "c1", "c2", "c3", "c4", "c5", "c6")
-                .array(c0, c1, c2, c3, c4, c5, c6);
+                .of(c0, c1, c2, c3, c4, c5, c6);
     }
 
     @Benchmark

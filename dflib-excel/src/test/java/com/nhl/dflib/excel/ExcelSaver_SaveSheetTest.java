@@ -33,7 +33,7 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
         File file = new File(outPath("testSave_Types.xlsx"));
 
         DataFrame df = DataFrame.byColumn("bool", "int", "long", "double", "string", "mix")
-                .array(
+                .of(
                         BooleanSeries.forBooleans(true, false, false, true),
                         IntSeries.forInts(1, -20003, 23, 65),
                         LongSeries.forLongs(0, 34567890324L, -9L, 15),
@@ -63,7 +63,7 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
     @Test
     public void testSaveSheet_ToStream() {
 
-        DataFrame df = DataFrame.foldByRow("C1", "C2").array(
+        DataFrame df = DataFrame.foldByRow("C1", "C2").of(
                 "a", "b",
                 "c", "d");
 
