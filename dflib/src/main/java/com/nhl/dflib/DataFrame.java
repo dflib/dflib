@@ -136,7 +136,10 @@ public interface DataFrame extends Iterable<RowProxy> {
      * to the returned builder to create a DataFrame.
      *
      * @since 0.6
+     * @deprecated use one of {@link #byColumn(String...)}, {@link #byRow(Extractor[])}, {@link #byArrayRow(int)},
+     * {@link #foldByColumn(String...)}, {@link #foldByRow(String...)}
      */
+    @Deprecated(since = "0.16")
     static DataFrameBuilder newFrame(String... columnLabels) {
         return new DataFrameBuilder(Index.forLabels(Objects.requireNonNull(columnLabels)));
     }
@@ -146,7 +149,10 @@ public interface DataFrame extends Iterable<RowProxy> {
      * to the returned builder to create a DataFrame.
      *
      * @since 0.6
+     * @deprecated use one of {@link #byColumn(Index)} , {@link #byRow(Extractor[])}, {@link #byArrayRow(int)},
+     * {@link #foldByColumn(Index)}, {@link #foldByRow(Index)}
      */
+    @Deprecated(since = "0.16")
     static DataFrameBuilder newFrame(Index columnIndex) {
         return new DataFrameBuilder(columnIndex);
     }

@@ -5,11 +5,10 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.series.ArraySeries;
+import com.nhl.dflib.series.DoubleArraySeries;
+import com.nhl.dflib.series.IntArraySeries;
+import com.nhl.dflib.series.LongArraySeries;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.PrimitiveIterator;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -18,12 +17,10 @@ import java.util.stream.Stream;
 /**
  * @since 0.16
  */
-public class DataFrameFoldByRowBuilder {
-
-    private final Index columnsIndex;
+public class DataFrameFoldByRowBuilder extends BaseDataFrameBuilder {
 
     public DataFrameFoldByRowBuilder(Index columnsIndex) {
-        this.columnsIndex = columnsIndex;
+        super(columnsIndex);
     }
 
     public DataFrame array(Object... data) {
@@ -62,44 +59,75 @@ public class DataFrameFoldByRowBuilder {
         return array(stream.toArray());
     }
 
+    public DataFrame doubleArray(double padWith, double... data) {
+
+        Geometry g = geometry(data.length);
+        double[][] columnarData = new double[g.width][g.height];
+
+        for (int i = 0; i < g.fullRowsHeight; i++) {
+            for (int j = 0; j < g.width; j++) {
+                columnarData[j][i] = data[i * g.width + j];
+            }
+        }
+
+        if (g.isLastRowPartial()) {
+            int lastRowIndex = g.fullRowsHeight;
+            for (int j = 0; j < g.partialRowWidth; j++) {
+                columnarData[j][lastRowIndex] = data[lastRowIndex * g.width + j];
+            }
+
+            for (int j = g.partialRowWidth; j < g.width; j++) {
+                columnarData[j][lastRowIndex] = padWith;
+            }
+        }
+
+        Series[] series = new Series[g.width];
+
+        for (int i = 0; i < g.width; i++) {
+            series[i] = new DoubleArraySeries(columnarData[i]);
+        }
+
+        return new ColumnDataFrame(columnsIndex, series);
+    }
+
     public DataFrame doubleStream(DoubleStream stream) {
         return doubleStream(0., stream);
     }
 
     public DataFrame doubleStream(double padWith, DoubleStream stream) {
+        // since we can't guess the height from the Stream, convert it to array and fold the array by column
+        return doubleArray(padWith, stream.toArray());
+    }
 
-        int width = columnsIndex.size();
-        if (width == 0) {
-            throw new IllegalArgumentException("Empty columns");
-        }
+    public DataFrame intArray(int padWith, int... data) {
 
-        DoubleAccum[] columnBuilders = new DoubleAccum[width];
-        for (int i = 0; i < width; i++) {
-            columnBuilders[i] = new DoubleAccum();
-        }
+        Geometry g = geometry(data.length);
+        int[][] columnarData = new int[g.width][g.height];
 
-        PrimitiveIterator.OfDouble it = stream.iterator();
-
-        int p = 0;
-        while (it.hasNext()) {
-            columnBuilders[p % width].pushDouble(it.nextDouble());
-            p++;
-        }
-
-        // fill the last row to the end
-        int pl = p % width;
-        if (pl > 0) {
-            for (; pl < width; pl++) {
-                columnBuilders[pl].pushDouble(padWith);
+        for (int i = 0; i < g.fullRowsHeight; i++) {
+            for (int j = 0; j < g.width; j++) {
+                columnarData[j][i] = data[i * g.width + j];
             }
         }
 
-        Series[] columnsData = new Series[width];
-        for (int i = 0; i < width; i++) {
-            columnsData[i] = columnBuilders[i].toSeries();
+        if (g.isLastRowPartial()) {
+            int lastRowIndex = g.fullRowsHeight;
+            for (int j = 0; j < g.partialRowWidth; j++) {
+                columnarData[j][lastRowIndex] = data[lastRowIndex * g.width + j];
+            }
+
+            for (int j = g.partialRowWidth; j < g.width; j++) {
+                columnarData[j][lastRowIndex] = padWith;
+            }
         }
 
-        return new ColumnDataFrame(columnsIndex, columnsData);
+        Series[] series = new Series[g.width];
+
+        for (int i = 0; i < g.width; i++) {
+            series[i] = new IntArraySeries(columnarData[i]);
+        }
+
+        return new ColumnDataFrame(columnsIndex, series);
     }
 
     public DataFrame intStream(IntStream stream) {
@@ -107,39 +135,39 @@ public class DataFrameFoldByRowBuilder {
     }
 
     public DataFrame intStream(int padWith, IntStream stream) {
+        // since we can't guess the height from the Stream, convert it to array and fold the array by column
+        return intArray(padWith, stream.toArray());
+    }
 
-        int width = columnsIndex.size();
-        if (width == 0) {
-            throw new IllegalArgumentException("Empty columns");
-        }
+    public DataFrame longArray(long padWith, long... data) {
 
-        IntAccum[] columnBuilders = new IntAccum[width];
-        for (int i = 0; i < width; i++) {
-            columnBuilders[i] = new IntAccum();
-        }
+        Geometry g = geometry(data.length);
+        long[][] columnarData = new long[g.width][g.height];
 
-        PrimitiveIterator.OfInt it = stream.iterator();
-
-        int p = 0;
-        while (it.hasNext()) {
-            columnBuilders[p % width].pushInt(it.nextInt());
-            p++;
-        }
-
-        // fill the last row to the end
-        int pl = p % width;
-        if (pl > 0) {
-            for (; pl < width; pl++) {
-                columnBuilders[pl].pushInt(padWith);
+        for (int i = 0; i < g.fullRowsHeight; i++) {
+            for (int j = 0; j < g.width; j++) {
+                columnarData[j][i] = data[i * g.width + j];
             }
         }
 
-        Series[] columnsData = new Series[width];
-        for (int i = 0; i < width; i++) {
-            columnsData[i] = columnBuilders[i].toSeries();
+        if (g.isLastRowPartial()) {
+            int lastRowIndex = g.fullRowsHeight;
+            for (int j = 0; j < g.partialRowWidth; j++) {
+                columnarData[j][lastRowIndex] = data[lastRowIndex * g.width + j];
+            }
+
+            for (int j = g.partialRowWidth; j < g.width; j++) {
+                columnarData[j][lastRowIndex] = padWith;
+            }
         }
 
-        return new ColumnDataFrame(columnsIndex, columnsData);
+        Series[] series = new Series[g.width];
+
+        for (int i = 0; i < g.width; i++) {
+            series[i] = new LongArraySeries(columnarData[i]);
+        }
+
+        return new ColumnDataFrame(columnsIndex, series);
     }
 
     public DataFrame longStream(LongStream stream) {
@@ -148,49 +176,8 @@ public class DataFrameFoldByRowBuilder {
 
     public DataFrame longStream(long padWith, LongStream stream) {
 
-        int width = columnsIndex.size();
-        if (width == 0) {
-            throw new IllegalArgumentException("Empty columns");
-        }
-
-        LongAccum[] columnBuilders = new LongAccum[width];
-        for (int i = 0; i < width; i++) {
-            columnBuilders[i] = new LongAccum();
-        }
-
-        PrimitiveIterator.OfLong it = stream.iterator();
-
-        int p = 0;
-        while (it.hasNext()) {
-            columnBuilders[p % width].pushLong(it.nextLong());
-            p++;
-        }
-
-        // fill the last row to the end
-        int pl = p % width;
-        if (pl > 0) {
-            for (; pl < width; pl++) {
-                columnBuilders[pl].pushLong(padWith);
-            }
-        }
-
-        Series[] columnsData = new Series[width];
-        for (int i = 0; i < width; i++) {
-            columnsData[i] = columnBuilders[i].toSeries();
-        }
-
-        return new ColumnDataFrame(columnsIndex, columnsData);
-    }
-
-    <T> Collection<T> toCollection(Iterable<T> iterable) {
-
-        if (iterable instanceof Collection) {
-            return (Collection) iterable;
-        }
-
-        List<T> values = new ArrayList<>();
-        iterable.forEach(values::add);
-        return values;
+        // since we can't guess the height from the Stream, convert it to array and fold the array by column
+        return longArray(padWith, stream.toArray());
     }
 
     protected Geometry geometry(int dataLength) {

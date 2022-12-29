@@ -9,10 +9,7 @@ import com.nhl.dflib.series.DoubleArraySeries;
 import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.series.LongArraySeries;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -21,12 +18,10 @@ import java.util.stream.Stream;
 /**
  * @since 0.16
  */
-public class DataFrameFoldByColumnBuilder {
-
-    private final Index columnsIndex;
+public class DataFrameFoldByColumnBuilder extends BaseDataFrameBuilder {
 
     public DataFrameFoldByColumnBuilder(Index columnsIndex) {
-        this.columnsIndex = columnsIndex;
+        super(columnsIndex);
     }
 
     public DataFrame array(Object... data) {
@@ -175,17 +170,6 @@ public class DataFrameFoldByColumnBuilder {
         }
 
         return new ColumnDataFrame(columnsIndex, series);
-    }
-
-    <T> Collection<T> toCollection(Iterable<T> iterable) {
-
-        if (iterable instanceof Collection) {
-            return (Collection) iterable;
-        }
-
-        List<T> values = new ArrayList<>();
-        iterable.forEach(values::add);
-        return values;
     }
 
     FoldByColumnGeometry geometry(int dataLength) {
