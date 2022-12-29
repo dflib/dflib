@@ -567,7 +567,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public DataFrame explode(int columnPos) {
+    public DataFrame vExplode(int columnPos) {
         return Exploder.explode(this, columnPos);
     }
 

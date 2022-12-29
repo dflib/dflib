@@ -903,16 +903,22 @@ public interface DataFrame extends Iterable<RowProxy> {
     GroupBy group(Hasher by);
 
     /**
+     * "Explodes" the specified column vertically, adding new rows as needed. This operation has any affect only
+     * if the column that is being "exploded" is an Iterable or an array.
+     *
      * @since 0.16
      */
-    default DataFrame explode(String columnName) {
-        return explode(getColumnsIndex().position(columnName));
+    default DataFrame vExplode(String columnName) {
+        return vExplode(getColumnsIndex().position(columnName));
     }
 
     /**
+     * "Explodes" the specified column vertically, adding new rows as needed. This operation has any affect only
+     * if the column that is being "exploded" is an Iterable or an array.
+     *
      * @since 0.16
      */
-    DataFrame explode(int columnPos);
+    DataFrame vExplode(int columnPos);
 
     DataFrame fillNulls(Object value);
 

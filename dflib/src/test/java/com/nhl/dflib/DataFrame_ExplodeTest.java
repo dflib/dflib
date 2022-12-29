@@ -14,7 +14,7 @@ public class DataFrame_ExplodeTest {
                         new int[]{3}, "y",
                         new int[]{}, "z",
                         null, "a")
-                .explode("a");
+                .vExplode("a");
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(6)
@@ -33,7 +33,7 @@ public class DataFrame_ExplodeTest {
                         new Integer[]{3}, "y",
                         new Integer[]{}, "z",
                         null, "a")
-                .explode("a");
+                .vExplode("a");
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(6)
@@ -52,7 +52,7 @@ public class DataFrame_ExplodeTest {
                         List.of(3), "y",
                         List.of(), "z",
                         null, "a")
-                .explode("a");
+                .vExplode("a");
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(6)
@@ -71,7 +71,7 @@ public class DataFrame_ExplodeTest {
                         2, "y",
                         3, "z",
                         null, "a")
-                .explode("a");
+                .vExplode("a");
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(4)

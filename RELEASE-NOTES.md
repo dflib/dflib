@@ -1,6 +1,6 @@
 ## Release 0.16
 
-* #158 DataFrame.explode()
+* #158 DataFrame.vExplode()
 * #167 Exp.castAsDate()
 * #168 Exp.castAsStr()
 * #169 DateExp comparison expressions
