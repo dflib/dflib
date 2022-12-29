@@ -32,8 +32,8 @@ public class DataFrameSelectRows {
         Series<String> c3 = ValueMaker.constStringSeq("abc").series(rows);
 
         df = DataFrame
-                .newFrame("c0", "c1", "c2", "c3")
-                .columns(c0, c1, c2, c3);
+                .byColumn("c0", "c1", "c2", "c3")
+                .array(c0, c1, c2, c3);
     }
 
     @Benchmark

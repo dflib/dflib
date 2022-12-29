@@ -33,7 +33,7 @@ public class DataFrameSort {
         Series<String> c3 = ValueMaker.stringSeq().series(rows);
         IntSeries c4 = ValueMaker.randomIntSeq(rows / 2).intSeries(rows);
 
-        this.df = DataFrame.newFrame("c0", "c1", "c2", "c3", "c4").columns(c0, c1, c2, c3, c4);
+        this.df = DataFrame.byColumn("c0", "c1", "c2", "c3", "c4").array(c0, c1, c2, c3, c4);
     }
 
     @Benchmark

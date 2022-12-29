@@ -1,6 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.agg.DataFrameAggregator;
+import com.nhl.dflib.builder.DataFrameByColumnBuilder;
 import com.nhl.dflib.builder.DataFrameByRowBuilder;
 import com.nhl.dflib.builder.DataFrameArrayByRowBuilder;
 import com.nhl.dflib.builder.DataFrameFoldByRowBuilder;
@@ -41,6 +42,26 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     static DataFrame empty(Index columnsIndex) {
         return new ColumnDataFrame(columnsIndex);
+    }
+
+    /**
+     * Starts a DataFrame builder that will build a DataFrame based on some collection of Series. This is one of the
+     * most efficient ways to build DataFrames.
+     *
+     * @since 0.16
+     */
+    static DataFrameByColumnBuilder byColumn(String... columnLabels) {
+        return byColumn(Index.forLabels(columnLabels));
+    }
+
+    /**
+     * Starts a DataFrame builder that will build a DataFrame based on some collection of Series. This is one of the
+     * most efficient ways to build DataFrames.
+     *
+     * @since 0.16
+     */
+    static DataFrameByColumnBuilder byColumn(Index columnIndex) {
+        return new DataFrameByColumnBuilder(columnIndex);
     }
 
     /**

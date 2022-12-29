@@ -139,8 +139,8 @@ public class PivotBuilder {
 
             DataFrame byColumnDf = byColumn.getGroup(col);
             DataFrame pivotChunk = DataFrame
-                    .newFrame(rowColumnName, col.toString())
-                    .columns(
+                    .byColumn(rowColumnName, col.toString())
+                    .array(
                             byColumnDf.getColumn(columnForRows),
                             byColumnDf.getColumn(columnForValues)
                     ).map(df -> aggregateChunk(df, valuesAggregator));

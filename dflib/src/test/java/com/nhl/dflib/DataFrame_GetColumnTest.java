@@ -35,8 +35,8 @@ public class DataFrame_GetColumnTest {
     @Test
     public void testGetColumnAsInt_byLabel() {
         DataFrame df = DataFrame
-                .newFrame("a", "b")
-                .columns(Series.forData("a", "b", "x"), IntSeries.forInts(3, 6, -1));
+                .byColumn("a", "b")
+                .array(Series.forData("a", "b", "x"), IntSeries.forInts(3, 6, -1));
 
         IntSeries cb = df.getColumnAsInt("b");
 

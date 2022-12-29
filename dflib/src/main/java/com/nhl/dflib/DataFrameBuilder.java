@@ -61,6 +61,10 @@ public class DataFrameBuilder {
         return new ColumnDataFrame(columnsIndex);
     }
 
+    /**
+     * @deprecated use {@link DataFrame#byColumn(Index)}
+     */
+    @Deprecated(since = "0.16")
     public DataFrame columns(Series<?>... columns) {
         Objects.requireNonNull(columns);
         return new ColumnDataFrame(columnsIndex, columns);

@@ -41,7 +41,7 @@ public class WindowAggregator {
             aggLabels[i] = agg.getColumnName(groupBy.getUngrouped());
         }
 
-        return DataFrame.newFrame(Index.forLabelsDeduplicate(aggLabels)).columns(aggColumns);
+        return DataFrame.byColumn(Index.forLabelsDeduplicate(aggLabels)).array(aggColumns);
     }
 
     public static DataFrame aggPartitioned(GroupBy windowGroupBy, Exp<?>... aggregators) {
@@ -79,7 +79,7 @@ public class WindowAggregator {
             columns[i] = Series.forData(data[i]);
         }
 
-        return DataFrame.newFrame(rowPerGroupDf.getColumnsIndex()).columns(columns);
+        return DataFrame.byColumn(rowPerGroupDf.getColumnsIndex()).array(columns);
     }
 
     public static DataFrame agg(DataFrame df, Exp<?>... aggregators) {
@@ -95,6 +95,6 @@ public class WindowAggregator {
             expandedColumns[i] = new SingleValueSeries<>(oneRowDf.getColumn(i).get(0), h);
         }
 
-        return DataFrame.newFrame(oneRowDf.getColumnsIndex()).columns(expandedColumns);
+        return DataFrame.byColumn(oneRowDf.getColumnsIndex()).array(expandedColumns);
     }
 }

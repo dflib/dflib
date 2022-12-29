@@ -32,8 +32,8 @@ public class DataFrameExp {
         DoubleSeries c5 = ValueMaker.doubleSeq().doubleSeries(rows);
         DoubleSeries c6 = ValueMaker.randomDoubleSeq().doubleSeries(rows);
 
-        df = DataFrame.newFrame("c0", "c1", "c2", "c3", "c4", "c5", "c6")
-                .columns(c0, c1, c2, c3, c4, c5, c6);
+        df = DataFrame.byColumn("c0", "c1", "c2", "c3", "c4", "c5", "c6")
+                .array(c0, c1, c2, c3, c4, c5, c6);
     }
 
     @Benchmark

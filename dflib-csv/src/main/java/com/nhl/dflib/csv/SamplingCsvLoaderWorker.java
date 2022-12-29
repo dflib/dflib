@@ -54,7 +54,7 @@ class SamplingCsvLoaderWorker implements CsvLoaderWorker {
             columns[i] = columnBuilders[i].toSeries();
         }
 
-        return DataFrame.newFrame(columnIndex).columns(columns);
+        return DataFrame.byColumn(columnIndex).array(columns);
     }
 
     protected DataFrame sortSampled(DataFrame sampledUnsorted) {

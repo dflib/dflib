@@ -45,7 +45,7 @@ public class Exploder {
                     : srcDF.getColumn(i).select(explodeIndex);
         }
 
-        return DataFrame.newFrame(srcDF.getColumnsIndex()).columns(explodedColumns);
+        return DataFrame.byColumn(srcDF.getColumnsIndex()).array(explodedColumns);
     }
 
     private void explodeColumnAndBuildIndex() {
