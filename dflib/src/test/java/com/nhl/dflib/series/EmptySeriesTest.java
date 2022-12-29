@@ -10,17 +10,13 @@ public class EmptySeriesTest {
 
     @Test
     public void testSelect() {
-        Series<Object> s = new EmptySeries<>()
-                .select(Series.ofBool(true, false));
-
+        Series<Object> s = new EmptySeries<>().select(Series.ofBool(true, false));
         new SeriesAsserts(s).expectData();
     }
 
     @Test
     public void testSort() {
-        Series<Object> s = new EmptySeries<>()
-                .sort(Comparator.comparing(x -> x.toString()));
-
+        Series<Object> s = new EmptySeries<>().sort(Comparator.comparing(Object::toString));
         new SeriesAsserts(s).expectData();
     }
 }

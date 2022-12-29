@@ -4,6 +4,7 @@ import com.nhl.dflib.Exp;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class IntArraySeries_AggTest {
 
@@ -13,7 +14,7 @@ public class IntArraySeries_AggTest {
         assertEquals(Integer.valueOf(1), s1.first());
 
         IntArraySeries s2 = new IntArraySeries();
-        assertEquals(null, s2.first());
+        assertNull(s2.first());
     }
 
     @Test
