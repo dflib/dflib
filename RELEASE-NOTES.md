@@ -10,6 +10,7 @@
 * #175 Optimize Exp.concat(..)
 * #179 DateTimeExp
 * #180 Primitives-aware DataFrame builder
+* #181 Reimplement and deprecate DataFrameBuilder
 
 ## Release 0.15
 
