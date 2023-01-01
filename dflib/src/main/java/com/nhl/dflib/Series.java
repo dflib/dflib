@@ -12,14 +12,12 @@ import com.nhl.dflib.series.ColumnMappedSeries;
 import com.nhl.dflib.series.DoubleArraySeries;
 import com.nhl.dflib.series.EmptySeries;
 import com.nhl.dflib.series.IntArraySeries;
-import com.nhl.dflib.series.ListSeries;
 import com.nhl.dflib.series.LongArraySeries;
 import com.nhl.dflib.series.OffsetLagSeries;
 import com.nhl.dflib.series.OffsetLeadSeries;
 import com.nhl.dflib.sort.SeriesSorter;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -40,6 +38,13 @@ public interface Series<T> extends Iterable<T> {
     /**
      * @since 0.16
      */
+    static <S, T> SeriesByElementBuilder<S, T> byElement(Extractor<S, T> extractor) {
+        return new SeriesByElementBuilder<>(extractor);
+    }
+
+    /**
+     * @since 0.16
+     */
     @SafeVarargs
     static <T> Series<T> of(T... data) {
         return data != null && data.length > 0 ? new ArraySeries<>(data) : new EmptySeries<>();
@@ -49,15 +54,12 @@ public interface Series<T> extends Iterable<T> {
      * @since 0.16
      */
     static <T> Series<T> ofIterable(Iterable<T> data) {
-        if (data instanceof List) {
-            return new ListSeries<>((List<T>) data);
-        }
 
-        List<T> list = new ArrayList<>();
-        for (T t : data) {
-            list.add(t);
-        }
-        return list.size() > 0 ? new ListSeries<>(list) : new EmptySeries<>();
+        return byElement(Extractor.<T>$col())
+                .guessCapacity(data)
+                .appender()
+                .append(data)
+                .toSeries();
     }
 
     /**
@@ -86,13 +88,6 @@ public interface Series<T> extends Iterable<T> {
      */
     static LongSeries ofLong(long... longs) {
         return new LongArraySeries(longs);
-    }
-
-    /**
-     * @since 0.16
-     */
-    static <S, T> SeriesByElementBuilder<S, T> byElement(Extractor<S, T> extractor) {
-        return new SeriesByElementBuilder<>(extractor);
     }
 
     /**

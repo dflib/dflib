@@ -5,6 +5,7 @@ import com.nhl.dflib.builder.DoubleExtractor;
 import com.nhl.dflib.builder.IntExtractor;
 import com.nhl.dflib.builder.LongExtractor;
 import com.nhl.dflib.builder.ObjectExtractor;
+import com.nhl.dflib.builder.SelfExtractor;
 import com.nhl.dflib.builder.ValueAccum;
 import com.nhl.dflib.builder.ValueHolder;
 import com.nhl.dflib.builder.ValueStore;
@@ -35,7 +36,7 @@ public interface Extractor<F, T> {
     ValueHolder<T> createHolder();
 
     static <T> Extractor<T, T> $col() {
-        return new ObjectExtractor<>(v -> v);
+        return new SelfExtractor<>();
     }
 
     static <F, T> Extractor<F, T> $col(ValueMapper<F, T> mapper) {

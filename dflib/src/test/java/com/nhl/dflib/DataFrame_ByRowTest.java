@@ -22,7 +22,7 @@ public class DataFrame_ByRowTest {
                         Extractor.$double(From::getD),
                         Extractor.$bool(From::isB)
                 )
-                .appendData()
+                .appender()
                 .append(new From("a", 1))
                 .append(new From("b", 2))
                 .append(new From("c", 3))
@@ -68,7 +68,7 @@ public class DataFrame_ByRowTest {
         assertThrows(IllegalArgumentException.class, () -> DataFrame
                 .byRow()
                 .columnNames("a", "b")
-                .appendData());
+                .appender());
     }
 
     static class From {

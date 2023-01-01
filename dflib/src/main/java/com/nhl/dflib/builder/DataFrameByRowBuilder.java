@@ -5,6 +5,7 @@ import com.nhl.dflib.Extractor;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.sample.Sampler;
 
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Random;
 
@@ -14,6 +15,8 @@ import java.util.Random;
  * @since 0.16
  */
 public class DataFrameByRowBuilder<S> {
+
+    static final int DEFAULT_CAPACITY = 10;
 
     private final Extractor<S, ?>[] columnsExtractors;
 
@@ -39,6 +42,11 @@ public class DataFrameByRowBuilder<S> {
 
     public DataFrameByRowBuilder<S> capacity(int capacity) {
         this.capacity = capacity;
+        return this;
+    }
+
+    public DataFrameByRowBuilder<S> guessCapacity(Iterable<S> source) {
+        this.capacity = (source instanceof Collection) ? ((Collection) source).size() : DEFAULT_CAPACITY;
         return this;
     }
 
@@ -71,7 +79,7 @@ public class DataFrameByRowBuilder<S> {
     /**
      * Creates an "appender" with this builder parameters. The appender can be used to build the DataFrame row by row.
      */
-    public DataFrameAppender<S> appendData() {
+    public DataFrameAppender<S> appender() {
         Index index = columnsIndex();
         SeriesAppender<S, ?>[] builders = builders(index);
 
@@ -81,13 +89,13 @@ public class DataFrameByRowBuilder<S> {
     }
 
     public DataFrame ofIterable(Iterable<S> sources) {
-        return appendData().append(sources).toDataFrame();
+        return appender().append(sources).toDataFrame();
     }
 
     protected int capacity() {
         return capacity > 0
                 ? capacity
-                : (rowSampleSize > 0 ? rowSampleSize : 10);
+                : (rowSampleSize > 0 ? rowSampleSize : DEFAULT_CAPACITY);
     }
 
     protected Index columnsIndex() {

@@ -47,7 +47,7 @@ public class DataFrameArrayByRowBuilder extends DataFrameByRowBuilder<Object[]> 
     }
 
     @Override
-    public DataFrameArrayAppender appendData() {
+    public DataFrameArrayAppender appender() {
         Index index = columnsIndex();
         SeriesAppender<Object[], ?>[] builders = builders(index);
 

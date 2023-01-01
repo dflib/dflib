@@ -13,7 +13,8 @@ public class Series_ByElementTest {
     public void test() {
 
         Series<String> s = Series
-                .byElement(Extractor.<String>$col()).capacity(5).appendData()
+                .byElement(Extractor.<String>$col())
+                .appender()
                 .append(List.of("a", "c", "e"))
                 .toSeries();
 
@@ -21,10 +22,27 @@ public class Series_ByElementTest {
     }
 
     @Test
+    public void test_SmallCapacity() {
+
+        Series<String> s = Series
+                .byElement(Extractor.<String>$col())
+                .capacity(1)
+                .appender()
+                .append("a")
+                .append("b")
+                .append("c")
+                .append(List.of("d", "e"))
+                .toSeries();
+
+        new SeriesAsserts(s).expectData("a", "b", "c", "d", "e");
+    }
+
+    @Test
     public void test_Int() {
 
         Series<Integer> s = Series
-                .byElement(Extractor.$int((String str) -> Integer.parseInt(str))).capacity(5).appendData()
+                .byElement(Extractor.$int((String str) -> Integer.parseInt(str)))
+                .appender()
                 .append(List.of("1", "55", "6"))
                 .toSeries();
 

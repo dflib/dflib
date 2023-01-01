@@ -121,7 +121,7 @@ public class SqlLoader {
                 .columnIndex(columns)
                 .capacity(rowSampleSize > 0 ? rowSampleSize : 100)
                 .sampleRows(rowSampleSize, rowsSampleRandom)
-                .appendData();
+                .appender();
 
         return new SqlLoaderWorker(appender, maxRows).load(rs);
     }

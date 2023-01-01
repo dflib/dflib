@@ -19,7 +19,7 @@ public class DataFrame_ByArrayRowTest {
                         Extractor.$int(a -> (Integer) a[1])
                 )
                 .columnNames("o", "i")
-                .appendData()
+                .appender()
                 .append("a", 1)
                 .append("b", 2)
                 .append(data)
@@ -42,7 +42,7 @@ public class DataFrame_ByArrayRowTest {
 
         DataFrame df = DataFrame
                 .byArrayRow("o", "i")
-                .appendData()
+                .appender()
                 .append("a", 1)
                 .append("b", 2)
                 .append(data)
@@ -70,7 +70,7 @@ public class DataFrame_ByArrayRowTest {
                 )
                 .columnNames("o", "i")
                 .sampleRows(2, rnd)
-                .appendData()
+                .appender()
                 .append("a", 1)
                 .append("b", 2)
                 .append(data)

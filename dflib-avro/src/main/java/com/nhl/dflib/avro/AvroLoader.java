@@ -76,7 +76,7 @@ public class AvroLoader {
         DataFrameAppender<GenericRecord> appender = DataFrame
                 .byRow(mapColumns(schema))
                 .columnIndex(index)
-                .appendData();
+                .appender();
 
         // reuse "record" flyweight
         GenericRecord record = null;

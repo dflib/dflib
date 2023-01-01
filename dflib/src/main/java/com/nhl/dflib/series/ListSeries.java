@@ -5,6 +5,7 @@ import com.nhl.dflib.Series;
 import java.util.Arrays;
 import java.util.List;
 
+// TODO: remove? we no longer use it internally
 public class ListSeries<T> extends ObjectSeries<T> {
 
     private final List<T> data;
