@@ -34,6 +34,10 @@ public interface Extractor<F, T> {
 
     ValueHolder<T> createHolder();
 
+    static <T> Extractor<T, T> $col() {
+        return new ObjectExtractor<>(v -> v);
+    }
+
     static <F, T> Extractor<F, T> $col(ValueMapper<F, T> mapper) {
         return new ObjectExtractor<>(mapper);
     }

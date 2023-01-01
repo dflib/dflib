@@ -5,11 +5,28 @@ import com.nhl.dflib.builder.BooleanAccum;
 import com.nhl.dflib.builder.DoubleAccum;
 import com.nhl.dflib.builder.IntAccum;
 import com.nhl.dflib.builder.LongAccum;
-import com.nhl.dflib.series.*;
+import com.nhl.dflib.builder.SeriesByElementBuilder;
+import com.nhl.dflib.series.ArraySeries;
+import com.nhl.dflib.series.BooleanArraySeries;
+import com.nhl.dflib.series.ColumnMappedSeries;
+import com.nhl.dflib.series.DoubleArraySeries;
+import com.nhl.dflib.series.EmptySeries;
+import com.nhl.dflib.series.IntArraySeries;
+import com.nhl.dflib.series.ListSeries;
+import com.nhl.dflib.series.LongArraySeries;
+import com.nhl.dflib.series.OffsetLagSeries;
+import com.nhl.dflib.series.OffsetLeadSeries;
 import com.nhl.dflib.sort.SeriesSorter;
 
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Random;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
 
@@ -69,6 +86,13 @@ public interface Series<T> extends Iterable<T> {
      */
     static LongSeries ofLong(long... longs) {
         return new LongArraySeries(longs);
+    }
+
+    /**
+     * @since 0.16
+     */
+    static <S, T> SeriesByElementBuilder<S, T> byElement(Extractor<S, T> extractor) {
+        return new SeriesByElementBuilder<>(extractor);
     }
 
     /**

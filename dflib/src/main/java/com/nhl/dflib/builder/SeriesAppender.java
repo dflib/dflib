@@ -19,8 +19,17 @@ public class SeriesAppender<S, T> {
         this.accum = extractor.createAccum(accumCapacity);
     }
 
-    public void append(S from) {
+    public SeriesAppender<S, T> append(S from) {
         extractor.extractAndStore(from, accum);
+        return this;
+    }
+
+    public SeriesAppender<S, T> append(Iterable<S> from) {
+        for (S s : from) {
+            append(s);
+        }
+
+        return this;
     }
 
     public void replace(S from, int toPos) {
