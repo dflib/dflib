@@ -41,8 +41,7 @@ public class DataFrame_ByArrayRowTest {
         List<Object[]> data = List.of(new Object[]{"L1", -1}, new Object[]{"L2", -2});
 
         DataFrame df = DataFrame
-                .byArrayRow(2)
-                .columnNames("o", "i")
+                .byArrayRow("o", "i")
                 .appendData()
                 .append("a", 1)
                 .append("b", 2)

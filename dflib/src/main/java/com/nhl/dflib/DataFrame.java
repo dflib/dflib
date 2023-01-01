@@ -87,18 +87,29 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * Starts a DataFrame builder that will extract data from some collection of arrays. Each array would result in
-     * a row in a DataFrame.
+     * Starts a DataFrame builder that will extract data from a collection of arrays. Each array would produce
+     * a row in the resulting DataFrame.
      *
      * @since 0.16
      */
-    static DataFrameArrayByRowBuilder byArrayRow(int w) {
+    static DataFrameArrayByRowBuilder byArrayRow(String... columnLabels) {
+        return byArrayRow(Index.forLabels(columnLabels));
+    }
+
+    /**
+     * Starts a DataFrame builder that will extract data from some collection of arrays. Each array would produce
+     * a row in the resulting DataFrame.
+     *
+     * @since 0.16
+     */
+    static DataFrameArrayByRowBuilder byArrayRow(Index columnIndex) {
+        int w = columnIndex.size();
         Extractor<Object[], ?>[] extractors = new Extractor[w];
         for (int i = 0; i < w; i++) {
             int pos = i;
             extractors[i] = Extractor.$col(a -> a[pos]);
         }
-        return new DataFrameArrayByRowBuilder(extractors);
+        return new DataFrameArrayByRowBuilder(extractors).columnIndex(columnIndex);
     }
 
     /**
@@ -136,7 +147,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * to the returned builder to create a DataFrame.
      *
      * @since 0.6
-     * @deprecated use one of {@link #byColumn(String...)}, {@link #byRow(Extractor[])}, {@link #byArrayRow(int)},
+     * @deprecated use one of {@link #byColumn(String...)}, {@link #byRow(Extractor[])}, {@link #byArrayRow(String...)},
      * {@link #foldByColumn(String...)}, {@link #foldByRow(String...)}
      */
     @Deprecated(since = "0.16")
@@ -149,7 +160,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * to the returned builder to create a DataFrame.
      *
      * @since 0.6
-     * @deprecated use one of {@link #byColumn(Index)} , {@link #byRow(Extractor[])}, {@link #byArrayRow(int)},
+     * @deprecated use one of {@link #byColumn(Index)} , {@link #byRow(Extractor[])}, {@link #byArrayRow(String...)},
      * {@link #foldByColumn(Index)}, {@link #foldByRow(Index)}
      */
     @Deprecated(since = "0.16")
