@@ -31,11 +31,18 @@ public class DataFrameByRowBuilder<S> {
     }
 
     public DataFrameByRowBuilder<S> columnNames(String... columnNames) {
-        this.columnsIndex = Index.forLabels(columnNames);
-        return this;
+        return columnIndex(Index.forLabels(columnNames));
     }
 
     public DataFrameByRowBuilder<S> columnIndex(Index columnsIndex) {
+
+        if (columnsIndex.size() != columnsExtractors.length) {
+            throw new IllegalArgumentException("Column index size must match the size of the extractors ("
+                    + columnsExtractors.length
+                    + "): "
+                    + columnsIndex.size());
+        }
+
         this.columnsIndex = columnsIndex;
         return this;
     }
