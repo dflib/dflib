@@ -162,22 +162,22 @@ public class ColumnConfig {
         return config;
     }
 
-    public CsvSeriesBuilder<?> createColumnBuilder(int csvPos) {
+    public CsvSeriesAppender<?> createColumnBuilder(int csvPos) {
 
         // using externally passed "csvPos", as "this.columnPosition" may not be initialized (when column name
         // was in use)
 
         switch (type) {
             case intPrimitive:
-                return new CsvSeriesBuilder<>(intConverter(csvPos), csvPos);
+                return new CsvSeriesAppender<>(intConverter(csvPos), csvPos);
             case longPrimitive:
-                return new CsvSeriesBuilder<>(longConverter(csvPos), csvPos);
+                return new CsvSeriesAppender<>(longConverter(csvPos), csvPos);
             case doublePrimitive:
-                return new CsvSeriesBuilder<>(doubleConverter(csvPos), csvPos);
+                return new CsvSeriesAppender<>(doubleConverter(csvPos), csvPos);
             case booleanPrimitive:
-                return new CsvSeriesBuilder<>(boolConverter(csvPos), csvPos);
+                return new CsvSeriesAppender<>(boolConverter(csvPos), csvPos);
             default:
-                return new CsvSeriesBuilder<>(objectConverter(csvPos), csvPos);
+                return new CsvSeriesAppender<>(objectConverter(csvPos), csvPos);
         }
     }
 

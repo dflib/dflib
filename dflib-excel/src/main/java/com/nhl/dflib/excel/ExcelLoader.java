@@ -70,7 +70,7 @@ public class ExcelLoader {
             builder.append(getRow(sheet, range, r));
         }
 
-        return builder.build();
+        return builder.toDataFrame();
     }
 
     public DataFrame loadSheet(InputStream in, String sheetName) {

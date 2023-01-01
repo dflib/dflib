@@ -14,9 +14,9 @@ import com.nhl.dflib.Series;
 public class DataFrameAppender<S> {
 
     protected final Index columnsIndex;
-    protected final SeriesBuilder<S, ?>[] columnBuilders;
+    protected final SeriesAppender<S, ?>[] columnBuilders;
 
-    protected DataFrameAppender(Index columnsIndex, SeriesBuilder<S, ?>[] columnBuilders) {
+    protected DataFrameAppender(Index columnsIndex, SeriesAppender<S, ?>[] columnBuilders) {
         this.columnsIndex = columnsIndex;
         this.columnBuilders = columnBuilders;
     }
@@ -29,7 +29,7 @@ public class DataFrameAppender<S> {
         int w = columnBuilders.length;
 
         for (int i = 0; i < w; i++) {
-            columnBuilders[i].extractAndStore(rowSource);
+            columnBuilders[i].append(rowSource);
         }
 
         return this;
@@ -55,13 +55,13 @@ public class DataFrameAppender<S> {
         int w = columnBuilders.length;
 
         for (int i = 0; i < w; i++) {
-            columnBuilders[i].extractAndStore(from, toPos);
+            columnBuilders[i].replace(from, toPos);
         }
 
         return this;
     }
 
-    public DataFrame build() {
+    public DataFrame toDataFrame() {
         Series<?>[] series = new Series[columnBuilders.length];
         for (int i = 0; i < columnBuilders.length; i++) {
             series[i] = columnBuilders[i].toSeries();

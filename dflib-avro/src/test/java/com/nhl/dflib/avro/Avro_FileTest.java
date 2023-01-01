@@ -36,7 +36,7 @@ public class Avro_FileTest {
                 .appendData()
                 .append(1, 2)
                 .append(3, 4)
-                .build();
+                .toDataFrame();
 
         Avro.save(df, file);
         assertTrue(file.exists());

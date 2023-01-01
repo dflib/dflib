@@ -3,17 +3,17 @@ package com.nhl.dflib.csv;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.csv.loader.CsvSeriesBuilder;
+import com.nhl.dflib.csv.loader.CsvSeriesAppender;
 import org.apache.commons.csv.CSVRecord;
 
 import java.util.Iterator;
 
 class BaseCsvLoaderWorker implements CsvLoaderWorker {
 
-    protected final CsvSeriesBuilder<?>[] columnBuilders;
+    protected final CsvSeriesAppender<?>[] columnBuilders;
     protected final Index columnIndex;
 
-    BaseCsvLoaderWorker(Index columnIndex, CsvSeriesBuilder<?>[] columnBuilders) {
+    BaseCsvLoaderWorker(Index columnIndex, CsvSeriesAppender<?>[] columnBuilders) {
         this.columnIndex = columnIndex;
         this.columnBuilders = columnBuilders;
     }
@@ -43,7 +43,7 @@ class BaseCsvLoaderWorker implements CsvLoaderWorker {
 
     protected void addRow(int width, CSVRecord row) {
         for (int i = 0; i < width; i++) {
-            columnBuilders[i].extractAndStore(row);
+            columnBuilders[i].append(row);
         }
     }
 }

@@ -14,7 +14,7 @@ public class DataFrameArraySamplingAppender extends DataFrameArrayAppender {
 
     public DataFrameArraySamplingAppender(
             Index columnsIndex,
-            SeriesBuilder<Object[], ?>[] columnBuilders,
+            SeriesAppender<Object[], ?>[] columnBuilders,
             int rowSampleSize,
             Random rowsSampleRandom) {
 
@@ -28,7 +28,7 @@ public class DataFrameArraySamplingAppender extends DataFrameArrayAppender {
         return this;
     }
 
-    public DataFrame build() {
-        return sampler.sortSampled(super.build());
+    public DataFrame toDataFrame() {
+        return sampler.sortSampled(super.toDataFrame());
     }
 }

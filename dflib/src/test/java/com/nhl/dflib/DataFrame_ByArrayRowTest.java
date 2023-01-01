@@ -23,7 +23,7 @@ public class DataFrame_ByArrayRowTest {
                 .append("a", 1)
                 .append("b", 2)
                 .append(data)
-                .build();
+                .toDataFrame();
 
         new DataFrameAsserts(df, "o", "i").expectHeight(4)
 
@@ -46,7 +46,7 @@ public class DataFrame_ByArrayRowTest {
                 .append("a", 1)
                 .append("b", 2)
                 .append(data)
-                .build();
+                .toDataFrame();
 
         new DataFrameAsserts(df, "o", "i").expectHeight(4)
                 .expectRow(0, "a", 1)
@@ -74,7 +74,7 @@ public class DataFrame_ByArrayRowTest {
                 .append("a", 1)
                 .append("b", 2)
                 .append(data)
-                .build();
+                .toDataFrame();
 
         new DataFrameAsserts(df, "o", "i").expectHeight(2)
                 .expectIntColumns("i")

@@ -14,7 +14,7 @@ public class DataFrameSamplingAppender<S> extends DataFrameAppender<S> {
 
     private final AppenderSampler<S> sampler;
 
-    public DataFrameSamplingAppender(Index columnsIndex, SeriesBuilder<S, ?>[] columnBuilders, int rowSampleSize, Random rowsSampleRandom) {
+    public DataFrameSamplingAppender(Index columnsIndex, SeriesAppender<S, ?>[] columnBuilders, int rowSampleSize, Random rowsSampleRandom) {
         super(columnsIndex, columnBuilders);
         this.sampler = new AppenderSampler<>(rowSampleSize, rowsSampleRandom, super::append, super::replace);
     }
@@ -26,7 +26,7 @@ public class DataFrameSamplingAppender<S> extends DataFrameAppender<S> {
     }
 
     @Override
-    public DataFrame build() {
-        return sampler.sortSampled(super.build());
+    public DataFrame toDataFrame() {
+        return sampler.sortSampled(super.toDataFrame());
     }
 }

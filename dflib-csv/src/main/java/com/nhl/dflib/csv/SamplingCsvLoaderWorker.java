@@ -4,7 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.csv.loader.CsvSeriesBuilder;
+import com.nhl.dflib.csv.loader.CsvSeriesAppender;
 import com.nhl.dflib.builder.IntAccum;
 import org.apache.commons.csv.CSVRecord;
 
@@ -16,7 +16,7 @@ import java.util.Random;
  */
 class SamplingCsvLoaderWorker implements CsvLoaderWorker {
 
-    protected CsvSeriesBuilder<?>[] columnBuilders;
+    protected CsvSeriesAppender<?>[] columnBuilders;
     protected Index columnIndex;
 
     protected int rowSampleSize;
@@ -25,7 +25,7 @@ class SamplingCsvLoaderWorker implements CsvLoaderWorker {
 
     SamplingCsvLoaderWorker(
             Index columnIndex,
-            CsvSeriesBuilder<?>[] columnBuilders,
+            CsvSeriesAppender<?>[] columnBuilders,
             int rowSampleSize,
             Random rowsSampleRandom) {
 
@@ -92,13 +92,13 @@ class SamplingCsvLoaderWorker implements CsvLoaderWorker {
 
     protected void addRow(int width, CSVRecord record) {
         for (int i = 0; i < width; i++) {
-            columnBuilders[i].extractAndStore(record);
+            columnBuilders[i].append(record);
         }
     }
 
     protected void replaceRow(int pos, int width, CSVRecord record) {
         for (int i = 0; i < width; i++) {
-            columnBuilders[i].extractAndStore(record, pos);
+            columnBuilders[i].replace(record, pos);
         }
     }
 }

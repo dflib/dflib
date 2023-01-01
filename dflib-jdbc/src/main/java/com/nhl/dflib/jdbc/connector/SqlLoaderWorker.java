@@ -31,6 +31,6 @@ class SqlLoaderWorker {
     }
 
     protected DataFrame toDataFrame() {
-        return appender.build();
+        return appender.toDataFrame();
     }
 }

@@ -27,7 +27,7 @@ public class DataFrame_ByRowTest {
                 .append(new From("b", 2))
                 .append(new From("c", 3))
                 .append(data)
-                .build();
+                .toDataFrame();
 
         new DataFrameAsserts(df, "0", "1", "2", "3", "4").expectHeight(5)
 

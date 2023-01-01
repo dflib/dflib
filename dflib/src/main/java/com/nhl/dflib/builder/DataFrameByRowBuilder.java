@@ -73,7 +73,7 @@ public class DataFrameByRowBuilder<S> {
      */
     public DataFrameAppender<S> appendData() {
         Index index = columnsIndex();
-        SeriesBuilder<S, ?>[] builders = builders(index);
+        SeriesAppender<S, ?>[] builders = builders(index);
 
         return rowSampleSize > 0
                 ? new DataFrameSamplingAppender<>(index, builders, rowSampleSize, sampleRandom())
@@ -81,7 +81,7 @@ public class DataFrameByRowBuilder<S> {
     }
 
     public DataFrame ofIterable(Iterable<S> sources) {
-        return appendData().append(sources).build();
+        return appendData().append(sources).toDataFrame();
     }
 
     protected int capacity() {
@@ -108,10 +108,10 @@ public class DataFrameByRowBuilder<S> {
         return columnsExtractors.length;
     }
 
-    protected SeriesBuilder<S, ?>[] builders(Index columnsIndex) {
+    protected SeriesAppender<S, ?>[] builders(Index columnsIndex) {
         int w = columnsIndex.size();
         int cw = columnsExtractors.length;
-        SeriesBuilder<S, ?>[] builders = new SeriesBuilder[w];
+        SeriesAppender<S, ?>[] builders = new SeriesAppender[w];
 
         if (cw != w) {
             throw new IllegalArgumentException("Mismatch between the number of extractors and index width - " + cw + " vs " + w);
@@ -119,7 +119,7 @@ public class DataFrameByRowBuilder<S> {
 
         int capacity = capacity();
         for (int i = 0; i < w; i++) {
-            builders[i] = new SeriesBuilder<>(columnsExtractors[i], capacity);
+            builders[i] = new SeriesAppender<>(columnsExtractors[i], capacity);
         }
 
         return builders;

@@ -1,7 +1,7 @@
 package com.nhl.dflib.csv;
 
 import com.nhl.dflib.*;
-import com.nhl.dflib.csv.loader.CsvSeriesBuilder;
+import com.nhl.dflib.csv.loader.CsvSeriesAppender;
 import com.nhl.dflib.csv.loader.ColumnConfig;
 import com.nhl.dflib.csv.loader.CsvCell;
 import com.nhl.dflib.csv.loader.RowFilterConfig;
@@ -609,10 +609,10 @@ public class CsvLoader {
             this.csvPositions = csvPositions;
         }
 
-        CsvSeriesBuilder<?>[] createColumnBuilders(ColumnConfig[] csvColumns) {
+        CsvSeriesAppender<?>[] createColumnBuilders(ColumnConfig[] csvColumns) {
 
             int w = dfHeader.size();
-            CsvSeriesBuilder<?>[] builders = new CsvSeriesBuilder[w];
+            CsvSeriesAppender<?>[] builders = new CsvSeriesAppender[w];
 
             for (int i = 0; i < w; i++) {
                 builders[i] = csvColumns[csvPositions[i]].createColumnBuilder(csvPositions[i]);

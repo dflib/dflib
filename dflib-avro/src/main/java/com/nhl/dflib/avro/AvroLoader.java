@@ -85,7 +85,7 @@ public class AvroLoader {
             appender.append(record);
         }
 
-        DataFrame df = appender.build();
+        DataFrame df = appender.toDataFrame();
         return fromAvroTypes(df, schema);
     }
 

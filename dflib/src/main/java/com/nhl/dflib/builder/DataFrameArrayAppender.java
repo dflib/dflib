@@ -10,7 +10,7 @@ import com.nhl.dflib.Index;
  */
 public class DataFrameArrayAppender extends DataFrameAppender<Object[]> {
 
-    protected DataFrameArrayAppender(Index columnsIndex, SeriesBuilder<Object[], ?>[] columnBuilders) {
+    protected DataFrameArrayAppender(Index columnsIndex, SeriesAppender<Object[], ?>[] columnBuilders) {
         super(columnsIndex, columnBuilders);
     }
 
@@ -23,7 +23,7 @@ public class DataFrameArrayAppender extends DataFrameAppender<Object[]> {
         int w = columnBuilders.length;
 
         for (int i = 0; i < w; i++) {
-            columnBuilders[i].extractAndStore(rowSource);
+            columnBuilders[i].append(rowSource);
         }
 
         return this;
