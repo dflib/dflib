@@ -1,5 +1,19 @@
 # UPGRADE INSTRUCTIONS
 
+## 0.16
+* [dflib #181](https://github.com/bootique/bootique-agrest/issues/181): This task changes how to manually build 
+  DataFrames. `DataFrame.newFrame(..)` is deprecated. You should use the new methods depending on the required
+  assembly strategy: `DataFrame.empty(..)`, `DataFrame.byColumn(..)`, `DataFrame.byRow(..)`, 
+  `DataFrame.byArrayRow(..)`, `DataFrame.foldByRow(..)`, `DataFrame.foldByColumn(..)`.
+ 
+  `Accumulator` API to assemble Series was renamed. `Accumulator` became `ValueAccum`, `ObjectAccumulator` - 
+  `ObjectAccum` and so on. Since this API is not normally used outside DFLib itself, we decided not to keep the old 
+  classes around. So there will be compilation errors if your code relied on them. It should be easy to upgrade.
+
+* [dflib #182](https://github.com/bootique/bootique-agrest/issues/182): This simplifies manual Series assembly methods,
+  deprecating the old `Series.forData(..)`, `IntSeries.forInts(..)`, etc. Instead, there are a number of `Series.ofXyz`
+  methods on the base Series interface. Make sure to upgrade your code before the old deprecated API goes away completely.
+
 ## 0.14
 
 * [dflib #160](https://github.com/bootique/bootique-agrest/issues/160): From this release DFLob requires Java 11
