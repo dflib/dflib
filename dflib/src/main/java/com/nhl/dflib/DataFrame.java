@@ -310,7 +310,6 @@ public interface DataFrame extends Iterable<RowProxy> {
      * size is the same this DataFrame height.
      *
      * @param rowMapper a function applied to each row of this DataFrame
-     * @param <T>
      * @return a new Series.
      * @since 0.6
      */
