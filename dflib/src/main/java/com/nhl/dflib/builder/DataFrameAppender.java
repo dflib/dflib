@@ -36,14 +36,6 @@ public class DataFrameAppender<S> {
         return this;
     }
 
-    /**
-     * Replaces a single existing row with new extracted row data
-     */
-    public DataFrameAppender<S> replace(S from, int toPos) {
-        sink.replace(from, toPos);
-        return this;
-    }
-
     public DataFrame toDataFrame() {
         return sink.toDataFrame();
     }
