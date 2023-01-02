@@ -9,13 +9,9 @@ import com.nhl.dflib.DataFrame;
  */
 interface RowAccum<S> {
 
-    default void push(S rowSource) {
-        throw new UnsupportedOperationException("No support pushing rows");
-    }
+    void push(S rowSource);
 
-    default void replace(int pos, S rowSource) {
-        throw new UnsupportedOperationException("No support for setting positional values");
-    }
+    void replace(int pos, S rowSource);
 
     DataFrame toDataFrame();
 }
