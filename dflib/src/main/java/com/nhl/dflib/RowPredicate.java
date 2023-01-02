@@ -5,8 +5,26 @@ import com.nhl.dflib.row.RowProxy;
 @FunctionalInterface
 public interface RowPredicate {
 
+    /**
+     * @deprecated in favor of {@link #of(int, ValuePredicate)}
+     */
+    @Deprecated(since = "0.16")
     static <V> RowPredicate forColumn(int pos, ValuePredicate<V> columnPredicate) {
+        return of(pos, columnPredicate);
+    }
+
+    /**
+     * @since 0.16
+     */
+    static <V> RowPredicate of(int pos, ValuePredicate<V> columnPredicate) {
         return r -> columnPredicate.test((V) r.get(pos));
+    }
+
+    /**
+     * @since 0.16
+     */
+    static <V> RowPredicate of(String columnName, ValuePredicate<V> columnPredicate) {
+        return r -> columnPredicate.test((V) r.get(columnName));
     }
 
     boolean test(RowProxy r);

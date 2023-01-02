@@ -1,10 +1,8 @@
 package com.nhl.dflib.csv;
 
 import com.nhl.dflib.*;
-import com.nhl.dflib.csv.loader.CsvSeriesAppender;
-import com.nhl.dflib.csv.loader.ColumnConfig;
-import com.nhl.dflib.csv.loader.CsvCell;
-import com.nhl.dflib.csv.loader.RowFilterConfig;
+import com.nhl.dflib.builder.DataFrameAppender;
+import com.nhl.dflib.builder.DataFrameByRowBuilder;
 import com.nhl.dflib.sample.Sampler;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -18,7 +16,6 @@ import java.math.BigInteger;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.Predicate;
 
 public class CsvLoader {
 
@@ -35,12 +32,11 @@ public class CsvLoader {
     private Random rowsSampleRandom;
 
     private final List<ColumnConfig> columns;
-    private final List<RowFilterConfig<?>> rowFilters;
+    private RowPredicate rowFilter;
 
     public CsvLoader() {
         this.format = CSVFormat.DEFAULT;
         this.columns = new ArrayList<>();
-        this.rowFilters = new ArrayList<>();
     }
 
     /**
@@ -86,30 +82,15 @@ public class CsvLoader {
     }
 
     /**
-     * Configures CSV loader to only include rows that are matching the provided criterion. Applying the condition
-     * during load would allow extracting relevant data from very large CSVs.
+     * Configures the CSV loader to only include rows that are matching the provided condition. Applying the condition
+     * during load would allow extracting only relevant data from very large CSVs using constant memory. Condition is
+     * applied to an already converted row, with column names and positions matching the resulting DataFrame, not the
+     * CSV columns.
      *
-     * @param columnName the name of the column the condition applies to
-     * @param condition  column value condition that needs to be fulfilled for the row to be included in the resulting DataFrame.
-     * @return this loader instance
-     * @since 0.11
+     * @since 0.16
      */
-    public <V> CsvLoader selectRows(String columnName, ValuePredicate<V> condition) {
-        rowFilters.add(RowFilterConfig.create(columnName, condition));
-        return this;
-    }
-
-    /**
-     * Configures CSV loader to only include rows that are matching the provided criterion. Applying the condition
-     * during load would allow extracting relevant data from very large CSVs.
-     *
-     * @param columnPos position of the column the condition applies to
-     * @param condition column value condition that needs to be fulfilled for the row to be included in the resulting DataFrame.
-     * @return this loader instance
-     * @since 0.11
-     */
-    public <V> CsvLoader selectRows(int columnPos, ValuePredicate<V> condition) {
-        rowFilters.add(RowFilterConfig.create(columnPos, condition));
+    public CsvLoader selectRows(RowPredicate rowFilter) {
+        this.rowFilter = rowFilter;
         return this;
     }
 
@@ -170,7 +151,7 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader intColumn(int column) {
-        columns.add(ColumnConfig.intColumn(column));
+        columns.add(ColumnConfig.intColumn(column, IntValueMapper.fromString()));
         return this;
     }
 
@@ -178,7 +159,7 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader intColumn(String column) {
-        columns.add(ColumnConfig.intColumn(column));
+        columns.add(ColumnConfig.intColumn(column, IntValueMapper.fromString()));
         return this;
     }
 
@@ -202,7 +183,7 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader longColumn(int column) {
-        columns.add(ColumnConfig.longColumn(column));
+        columns.add(ColumnConfig.longColumn(column, LongValueMapper.fromString()));
         return this;
     }
 
@@ -210,7 +191,7 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader longColumn(String column) {
-        columns.add(ColumnConfig.longColumn(column));
+        columns.add(ColumnConfig.longColumn(column, LongValueMapper.fromString()));
         return this;
     }
 
@@ -234,7 +215,7 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader doubleColumn(int column) {
-        columns.add(ColumnConfig.doubleColumn(column));
+        columns.add(ColumnConfig.doubleColumn(column, DoubleValueMapper.fromString()));
         return this;
     }
 
@@ -242,7 +223,7 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader doubleColumn(String column) {
-        columns.add(ColumnConfig.doubleColumn(column));
+        columns.add(ColumnConfig.doubleColumn(column, DoubleValueMapper.fromString()));
         return this;
     }
 
@@ -437,29 +418,28 @@ public class CsvLoader {
                 return DataFrame.empty(columnMap.dfHeader);
             }
 
-            ColumnConfig[] unfilteredColumns = ColumnConfig.columnBuilders(columnMap.csvHeader, this.columns);
+            Extractor<CSVRecord, ?>[] extractors = columnMap.extractors(this.columns);
+            DataFrameByRowBuilder<CSVRecord, ?> builder = DataFrame.byRow(extractors).columnIndex(columnMap.dfHeader);
 
-            CsvLoaderWorker worker = rowSampleSize > 0
-                    ? samplingWorker(columnMap, unfilteredColumns)
-                    : noSamplingWorker(columnMap, unfilteredColumns);
+            if (rowSampleSize > 0) {
+                builder.sampleRows(rowSampleSize, rowsSampleRandom);
+            }
 
-            return worker.load(it);
+            if (rowFilter != null) {
+                builder.selectRows(rowFilter);
+            }
+
+            DataFrameAppender<CSVRecord> appender = builder.appender();
+
+            while (it.hasNext()) {
+                appender.append(it.next());
+            }
+
+            return appender.toDataFrame();
 
         } catch (IOException e) {
             throw new RuntimeException("Error reading CSV", e);
         }
-    }
-
-    private CsvLoaderWorker noSamplingWorker(ColumnMap columnMap, ColumnConfig[] csvColumns) {
-        return rowFilters.isEmpty()
-                ? new BaseCsvLoaderWorker(columnMap.dfHeader, columnMap.createColumnBuilders(csvColumns))
-                : new FilteringCsvLoaderWorker(columnMap.dfHeader, columnMap.createColumnBuilders(csvColumns), columnMap.createValueHolders(csvColumns), createRowFilter(columnMap.csvHeader));
-    }
-
-    private CsvLoaderWorker samplingWorker(ColumnMap columnMap, ColumnConfig[] csvColumns) {
-        return rowFilters.isEmpty()
-                ? new SamplingCsvLoaderWorker(columnMap.dfHeader, columnMap.createColumnBuilders(csvColumns), rowSampleSize, rowsSampleRandom)
-                : new FilteringSamplingCsvLoaderWorker(columnMap.dfHeader, columnMap.createColumnBuilders(csvColumns), columnMap.createValueHolders(csvColumns), createRowFilter(columnMap.csvHeader), rowSampleSize, rowsSampleRandom);
     }
 
     private Iterator<CSVRecord> createRecordIterator(Reader reader) throws IOException {
@@ -552,21 +532,6 @@ public class CsvLoader {
         return Index.forLabels(columnNames);
     }
 
-    private Predicate<CsvCell<?>[]> createRowFilter(Index columns) {
-
-        if (rowFilters.isEmpty()) {
-            return c -> true;
-        }
-
-        Predicate<CsvCell<?>[]> p = rowFilters.get(0).toPredicate(columns);
-
-        for (int i = 1; i < rowFilters.size(); i++) {
-            p = p.and(rowFilters.get(i).toPredicate(columns));
-        }
-
-        return p;
-    }
-
     private static class ColumnMap {
 
         Index csvHeader;
@@ -579,28 +544,26 @@ public class CsvLoader {
             this.csvPositions = csvPositions;
         }
 
-        CsvSeriesAppender<?>[] createColumnBuilders(ColumnConfig[] csvColumns) {
+        Extractor<CSVRecord, ?>[] extractors(List<ColumnConfig> definedColumns) {
 
             int w = dfHeader.size();
-            CsvSeriesAppender<?>[] builders = new CsvSeriesAppender[w];
+            Extractor<CSVRecord, ?>[] extractors = new Extractor[w];
 
-            for (int i = 0; i < w; i++) {
-                builders[i] = csvColumns[csvPositions[i]].createColumnBuilder(csvPositions[i]);
+            for (ColumnConfig c : definedColumns) {
+                int csvPos = c.csvColPos >= 0 ? c.csvColPos : csvHeader.position(c.csvColName);
+
+                // later configs override earlier configs at the same position
+                extractors[csvPositions[csvPos]] = c.extractor(csvHeader);
             }
 
-            return builders;
-        }
-
-        CsvCell<?>[] createValueHolders(ColumnConfig[] csvColumns) {
-
-            int w = csvHeader.size();
-            CsvCell<?>[] holders = new CsvCell[w];
-
             for (int i = 0; i < w; i++) {
-                holders[i] = csvColumns[i].createValueHolderColumn(i);
+                if (extractors[i] == null) {
+                    int csvPos = csvPositions[i];
+                    extractors[i] = Extractor.$col(r -> r.get(csvPos));
+                }
             }
 
-            return holders;
+            return extractors;
         }
     }
 
