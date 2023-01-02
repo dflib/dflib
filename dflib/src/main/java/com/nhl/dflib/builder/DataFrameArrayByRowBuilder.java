@@ -48,11 +48,7 @@ public class DataFrameArrayByRowBuilder extends DataFrameByRowBuilder<Object[]> 
 
     @Override
     public DataFrameArrayAppender appender() {
-        Index index = columnsIndex();
-        SeriesAppender<Object[], ?>[] builders = builders(index);
-
-        return rowSampleSize > 0
-                ? new DataFrameArraySamplingAppender(index, builders, rowSampleSize, sampleRandom())
-                : new DataFrameArrayAppender(index, builders);
+        DataFrameAppenderSink<Object[]> sink = sink();
+        return new DataFrameArrayAppender(sink);
     }
 }

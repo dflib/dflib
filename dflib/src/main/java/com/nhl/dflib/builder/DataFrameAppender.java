@@ -1,9 +1,6 @@
 package com.nhl.dflib.builder;
 
-import com.nhl.dflib.ColumnDataFrame;
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
-import com.nhl.dflib.Series;
 
 /**
  * Assembles a DataFrame from a sequence of objects of a some type. Supports source transformations, including
@@ -13,25 +10,17 @@ import com.nhl.dflib.Series;
  */
 public class DataFrameAppender<S> {
 
-    protected final Index columnsIndex;
-    protected final SeriesAppender<S, ?>[] columnBuilders;
+    protected final DataFrameAppenderSink<S> sink;
 
-    protected DataFrameAppender(Index columnsIndex, SeriesAppender<S, ?>[] columnBuilders) {
-        this.columnsIndex = columnsIndex;
-        this.columnBuilders = columnBuilders;
+    protected DataFrameAppender(DataFrameAppenderSink<S> sink) {
+        this.sink = sink;
     }
 
     /**
      * Appends a single row, extracting data from the supplied object.
      */
     public DataFrameAppender<S> append(S rowSource) {
-
-        int w = columnBuilders.length;
-
-        for (int i = 0; i < w; i++) {
-            columnBuilders[i].append(rowSource);
-        }
-
+        sink.append(rowSource);
         return this;
     }
 
@@ -51,22 +40,11 @@ public class DataFrameAppender<S> {
      * Replaces a single existing row with new extracted row data
      */
     public DataFrameAppender<S> replace(S from, int toPos) {
-
-        int w = columnBuilders.length;
-
-        for (int i = 0; i < w; i++) {
-            columnBuilders[i].replace(from, toPos);
-        }
-
+        sink.replace(from, toPos);
         return this;
     }
 
     public DataFrame toDataFrame() {
-        Series<?>[] series = new Series[columnBuilders.length];
-        for (int i = 0; i < columnBuilders.length; i++) {
-            series[i] = columnBuilders[i].toSeries();
-        }
-
-        return new ColumnDataFrame(columnsIndex, series);
+        return sink.toDataFrame();
     }
 }

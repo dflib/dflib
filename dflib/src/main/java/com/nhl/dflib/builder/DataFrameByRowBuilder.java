@@ -87,16 +87,22 @@ public class DataFrameByRowBuilder<S> {
      * Creates an "appender" with this builder parameters. The appender can be used to build the DataFrame row by row.
      */
     public DataFrameAppender<S> appender() {
-        Index index = columnsIndex();
-        SeriesAppender<S, ?>[] builders = builders(index);
-
-        return rowSampleSize > 0
-                ? new DataFrameSamplingAppender<>(index, builders, rowSampleSize, sampleRandom())
-                : new DataFrameAppender<>(index, builders);
+        DataFrameAppenderSink<S> sink = sink();
+        return new DataFrameAppender<>(sink);
     }
 
     public DataFrame ofIterable(Iterable<S> sources) {
         return appender().append(sources).toDataFrame();
+    }
+
+    protected DataFrameAppenderSink<S> sink() {
+        Index index = columnsIndex();
+        SeriesAppender<S, ?>[] builders = builders(index);
+        DataFrameAccumSink<S> accumSink = new DataFrameAccumSink<>(index, builders);
+
+        return rowSampleSize > 0
+                ? new DataFrameSamplingAppenderSink<>(accumSink, rowSampleSize, sampleRandom())
+                : accumSink;
     }
 
     protected int capacity() {

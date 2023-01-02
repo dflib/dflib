@@ -1,7 +1,5 @@
 package com.nhl.dflib.builder;
 
-import com.nhl.dflib.Index;
-
 /**
  * Assembles a DataFrame from a sequence of Object arrays. Supports source transformations, including generation of
  * primitive columns, etc.
@@ -10,8 +8,8 @@ import com.nhl.dflib.Index;
  */
 public class DataFrameArrayAppender extends DataFrameAppender<Object[]> {
 
-    protected DataFrameArrayAppender(Index columnsIndex, SeriesAppender<Object[], ?>[] columnBuilders) {
-        super(columnsIndex, columnBuilders);
+    protected DataFrameArrayAppender(DataFrameAppenderSink<Object[]> sink) {
+        super(sink);
     }
 
     /**
