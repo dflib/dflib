@@ -14,7 +14,7 @@ import java.util.Random;
  *
  * @since 0.16
  */
-public class DataFrameByRowBuilder<S> {
+public class DataFrameByRowBuilder<S, B extends DataFrameByRowBuilder<S, B>> {
 
     static final int DEFAULT_CAPACITY = 10;
 
@@ -30,11 +30,11 @@ public class DataFrameByRowBuilder<S> {
         this.columnsExtractors = Objects.requireNonNull(extractors);
     }
 
-    public DataFrameByRowBuilder<S> columnNames(String... columnNames) {
+    public B columnNames(String... columnNames) {
         return columnIndex(Index.forLabels(columnNames));
     }
 
-    public DataFrameByRowBuilder<S> columnIndex(Index columnsIndex) {
+    public B columnIndex(Index columnsIndex) {
 
         if (columnsIndex.size() != columnsExtractors.length) {
             throw new IllegalArgumentException("Column index size must match the size of the extractors ("
@@ -44,17 +44,17 @@ public class DataFrameByRowBuilder<S> {
         }
 
         this.columnsIndex = columnsIndex;
-        return this;
+        return (B) this;
     }
 
-    public DataFrameByRowBuilder<S> capacity(int capacity) {
+    public B capacity(int capacity) {
         this.capacity = capacity;
-        return this;
+        return (B) this;
     }
 
-    public DataFrameByRowBuilder<S> guessCapacity(Iterable<S> source) {
+    public B guessCapacity(Iterable<S> source) {
         this.capacity = (source instanceof Collection) ? ((Collection) source).size() : DEFAULT_CAPACITY;
-        return this;
+        return (B) this;
     }
 
     /**
@@ -66,7 +66,7 @@ public class DataFrameByRowBuilder<S> {
      * @param size the size of the sample. Can be bigger than the result set size (as the result set size is not known
      *             upfront).
      */
-    public DataFrameByRowBuilder<S> sampleRows(int size) {
+    public B sampleRows(int size) {
         return sampleRows(size, Sampler.getDefaultRandom());
     }
 
@@ -77,10 +77,10 @@ public class DataFrameByRowBuilder<S> {
      * @param size   the size of the sample. Can be bigger than the result set size (as the result set size is not known upfront).
      * @param random a custom random number generator
      */
-    public DataFrameByRowBuilder<S> sampleRows(int size, Random random) {
+    public B sampleRows(int size, Random random) {
         this.rowSampleSize = size;
         this.rowsSampleRandom = random;
-        return this;
+        return (B) this;
     }
 
     /**

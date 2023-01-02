@@ -71,7 +71,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @since 0.16
      */
-    static <T> DataFrameByRowBuilder<T> byRow(Extractor<T, ?>... extractors) {
+    static <T> DataFrameByRowBuilder<T, ?> byRow(Extractor<T, ?>... extractors) {
         return new DataFrameByRowBuilder<>(extractors);
     }
 
