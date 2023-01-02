@@ -26,11 +26,7 @@ public interface Extractor<F, T> {
     void extractAndStore(F from, ValueStore<T> to);
 
     void extractAndStore(F from, ValueStore<T> to, int toPos);
-
-    default ValueAccum<T> createAccum() {
-        return createAccum(10);
-    }
-
+    
     ValueAccum<T> createAccum(int capacity);
 
     ValueHolder<T> createHolder();
