@@ -12,6 +12,7 @@
 * #180 Primitives-aware DataFrame builder
 * #181 Reimplement and deprecate DataFrameBuilder
 * #182 Refactor and unify Series builder methods
+* #183 CsvLoader.selectRows(RowPredicate)
 
 ## Release 0.15
 

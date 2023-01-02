@@ -14,6 +14,16 @@
   deprecating the old `Series.forData(..)`, `IntSeries.forInts(..)`, etc. Instead, there are a number of `Series.ofXyz`
   methods on the base Series interface. Make sure to upgrade your code before the old deprecated API goes away completely.
 
+* [dflib #183](https://github.com/bootique/bootique-agrest/issues/183): There are some changes to `CsvLoader` filtering 
+  API that break backwards compatibility:
+
+  * The existing `selectRows(pos, ValuePredicate)` and `filterRows(pos, ValuePredicate)` were replaced with 
+    `selectRows(RowPredicate)`.
+  * Only the columns included in the resulting DataFrame can be referenced in the select condition. You can no longer 
+  filter on CSV columns that are otherwise not present in the result.
+  * Indices / names of the resulting DataFrame columns should be used in the condition and not the indices of the CSV.
+  * Multiple conditions are not combined. The last specified condition wins.
+
 ## 0.14
 
 * [dflib #160](https://github.com/bootique/bootique-agrest/issues/160): From this release DFLob requires Java 11
