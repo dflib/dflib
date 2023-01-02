@@ -3,6 +3,7 @@ package com.nhl.dflib.builder;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Extractor;
 import com.nhl.dflib.Index;
+import com.nhl.dflib.RowPredicate;
 import com.nhl.dflib.sample.Sampler;
 
 import java.util.Collection;
@@ -24,6 +25,7 @@ public class DataFrameByRowBuilder<S, B extends DataFrameByRowBuilder<S, B>> {
     private int capacity;
     protected int rowSampleSize;
     private Random rowsSampleRandom;
+    private RowPredicate rowFilter;
 
     @SafeVarargs
     public DataFrameByRowBuilder(Extractor<S, ?>... extractors) {
@@ -54,6 +56,11 @@ public class DataFrameByRowBuilder<S, B extends DataFrameByRowBuilder<S, B>> {
 
     public B guessCapacity(Iterable<S> source) {
         this.capacity = (source instanceof Collection) ? ((Collection) source).size() : DEFAULT_CAPACITY;
+        return (B) this;
+    }
+
+    public B selectRows(RowPredicate rowFilter) {
+        this.rowFilter = rowFilter;
         return (B) this;
     }
 
@@ -98,11 +105,17 @@ public class DataFrameByRowBuilder<S, B extends DataFrameByRowBuilder<S, B>> {
     protected RowAccum<S> rowAccum() {
         Index index = columnsIndex();
         SeriesAppender<S, ?>[] builders = builders(index);
-        DefaultRowAccum<S> accumSink = new DefaultRowAccum<>(index, builders);
+        RowAccum<S> accum = new DefaultRowAccum<>(index, builders);
 
-        return rowSampleSize > 0
-                ? new SamplingRowAccum<>(accumSink, rowSampleSize, sampleRandom())
-                : accumSink;
+        if (rowSampleSize > 0) {
+            accum = new SamplingRowAccum<>(accum, rowSampleSize, sampleRandom());
+        }
+
+        if (rowFilter != null) {
+            accum = new FilteringRowAccum<>(accum, rowFilter, index, columnsExtractors);
+        }
+
+        return accum;
     }
 
     protected int capacity() {

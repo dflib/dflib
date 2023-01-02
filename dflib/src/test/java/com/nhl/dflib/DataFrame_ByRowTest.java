@@ -71,6 +71,29 @@ public class DataFrame_ByRowTest {
                 .appender());
     }
 
+    @Test
+    public void testSelectRows() {
+
+        DataFrame df = DataFrame
+                .byRow(
+                        Extractor.$col(From::getS),
+                        Extractor.$int(From::getI)
+                )
+                .selectRows(r -> r.get("0").toString().startsWith("a"))
+                .appender()
+                .append(new From("a", 1))
+                .append(new From("ab", 2))
+                .append(new From("ca", 3))
+                .toDataFrame();
+
+        new DataFrameAsserts(df, "0", "1").expectHeight(2)
+
+                .expectIntColumns("1")
+
+                .expectRow(0, "a", 1)
+                .expectRow(1, "ab", 2);
+    }
+
     static class From {
         final String s;
         final int i;

@@ -81,4 +81,33 @@ public class DataFrame_ByArrayRowTest {
                 .expectRow(0, "b", 2)
                 .expectRow(1, "L2", -2);
     }
+
+    @Test
+    public void testSelectRows_Sample() {
+
+        // fixed seed for predictable results
+        Random rnd = new Random(1L);
+
+        DataFrame df = DataFrame
+                .byArrayRow(
+                        Extractor.$col(a -> a[0]),
+                        Extractor.$int(a -> (Integer) a[1])
+                )
+                .columnNames("o", "i")
+                .selectRows(r -> r.get("o").toString().startsWith("a"))
+                .sampleRows(2, rnd)
+                .appender()
+                .append("a", 1)
+                .append("b", 2)
+                .append("ab", 3)
+                .append("c", 4)
+                .append("ac", 5)
+                .append("ad", 6)
+                .toDataFrame();
+
+        new DataFrameAsserts(df, "o", "i").expectHeight(2)
+                .expectIntColumns("i")
+                .expectRow(0, "ab", 3)
+                .expectRow(1, "ad", 6);
+    }
 }
