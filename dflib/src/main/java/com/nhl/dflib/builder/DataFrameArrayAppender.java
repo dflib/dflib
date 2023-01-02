@@ -19,13 +19,7 @@ public class DataFrameArrayAppender extends DataFrameAppender<Object[]> {
      */
     @Override
     public DataFrameArrayAppender append(Object... rowSource) {
-
-        int w = columnBuilders.length;
-
-        for (int i = 0; i < w; i++) {
-            columnBuilders[i].append(rowSource);
-        }
-
+        super.append(rowSource);
         return this;
     }
 }
