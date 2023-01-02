@@ -114,36 +114,6 @@ public class CsvLoader {
     }
 
     /**
-     * Configures CSV loader to only include rows that are matching the provided criterion. Applying the condition
-     * during load would allow extracting relevant data from very large CSVs.
-     *
-     * @param columnName the name of the column the condition applies to
-     * @param condition  column value condition that needs to be fulfilled for the row to be included in the resulting DataFrame.
-     * @return this loader instance
-     * @since 0.8
-     * @deprecated since 0.11 in favor of {@link #selectRows(String, ValuePredicate)}
-     */
-    @Deprecated
-    public <V> CsvLoader filterRows(String columnName, ValuePredicate<V> condition) {
-        return selectRows(columnName, condition);
-    }
-
-    /**
-     * Configures CSV loader to only include rows that are matching the provided criterion. Applying the condition
-     * during load would allow extracting relevant data from very large CSVs.
-     *
-     * @param columnPos position of the column the condition applies to
-     * @param condition column value condition that needs to be fulfilled for the row to be included in the resulting DataFrame.
-     * @return this loader instance
-     * @since 0.8
-     * @deprecated since 0.11 in favor of {@link #selectRows(int, ValuePredicate)}
-     */
-    @Deprecated
-    public <V> CsvLoader filterRows(int columnPos, ValuePredicate<V> condition) {
-        return selectRows(columnPos, condition);
-    }
-
-    /**
      * Provides an alternative header to the returned DataFrame. If set, the first row of CSV is treated as data, not
      * as header. Column names are assigned to CSV columns positionally from left to right. Header provided here must
      * have a size less or equal to the number of columns in the CSV.
