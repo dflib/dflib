@@ -8,8 +8,8 @@ package com.nhl.dflib.builder;
  */
 public class DataFrameArrayAppender extends DataFrameAppender<Object[]> {
 
-    protected DataFrameArrayAppender(DataFrameAppenderSink<Object[]> sink) {
-        super(sink);
+    protected DataFrameArrayAppender(RowAccum<Object[]> rowAccum) {
+        super(rowAccum);
     }
 
     /**

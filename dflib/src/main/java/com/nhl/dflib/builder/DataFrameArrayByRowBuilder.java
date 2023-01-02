@@ -48,7 +48,7 @@ public class DataFrameArrayByRowBuilder extends DataFrameByRowBuilder<Object[]> 
 
     @Override
     public DataFrameArrayAppender appender() {
-        DataFrameAppenderSink<Object[]> sink = sink();
+        RowAccum<Object[]> sink = rowAccum();
         return new DataFrameArrayAppender(sink);
     }
 }

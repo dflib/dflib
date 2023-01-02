@@ -10,17 +10,17 @@ import com.nhl.dflib.DataFrame;
  */
 public class DataFrameAppender<S> {
 
-    protected final DataFrameAppenderSink<S> sink;
+    protected final RowAccum<S> rowAccum;
 
-    protected DataFrameAppender(DataFrameAppenderSink<S> sink) {
-        this.sink = sink;
+    protected DataFrameAppender(RowAccum<S> rowAccum) {
+        this.rowAccum = rowAccum;
     }
 
     /**
      * Appends a single row, extracting data from the supplied object.
      */
     public DataFrameAppender<S> append(S rowSource) {
-        sink.append(rowSource);
+        rowAccum.push(rowSource);
         return this;
     }
 
@@ -37,6 +37,6 @@ public class DataFrameAppender<S> {
     }
 
     public DataFrame toDataFrame() {
-        return sink.toDataFrame();
+        return rowAccum.toDataFrame();
     }
 }

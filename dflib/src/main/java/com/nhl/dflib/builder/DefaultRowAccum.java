@@ -8,18 +8,18 @@ import com.nhl.dflib.Series;
 /**
  * @since 0.16
  */
-class DataFrameAccumSink<S> implements DataFrameAppenderSink<S> {
+class DefaultRowAccum<S> implements RowAccum<S> {
 
     protected final Index columnsIndex;
     protected final SeriesAppender<S, ?>[] columnBuilders;
 
-    DataFrameAccumSink(Index columnsIndex, SeriesAppender<S, ?>[] columnBuilders) {
+    DefaultRowAccum(Index columnsIndex, SeriesAppender<S, ?>[] columnBuilders) {
         this.columnsIndex = columnsIndex;
         this.columnBuilders = columnBuilders;
     }
 
     @Override
-    public void append(S rowSource) {
+    public void push(S rowSource) {
         int w = columnBuilders.length;
 
         for (int i = 0; i < w; i++) {
@@ -28,7 +28,7 @@ class DataFrameAccumSink<S> implements DataFrameAppenderSink<S> {
     }
 
     @Override
-    public void replace(S from, int toPos) {
+    public void replace(int toPos, S from) {
         int w = columnBuilders.length;
 
         for (int i = 0; i < w; i++) {

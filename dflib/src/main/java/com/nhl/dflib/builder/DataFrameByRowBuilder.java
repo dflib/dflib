@@ -87,21 +87,21 @@ public class DataFrameByRowBuilder<S> {
      * Creates an "appender" with this builder parameters. The appender can be used to build the DataFrame row by row.
      */
     public DataFrameAppender<S> appender() {
-        DataFrameAppenderSink<S> sink = sink();
-        return new DataFrameAppender<>(sink);
+        RowAccum<S> rowAccum = rowAccum();
+        return new DataFrameAppender<>(rowAccum);
     }
 
     public DataFrame ofIterable(Iterable<S> sources) {
         return appender().append(sources).toDataFrame();
     }
 
-    protected DataFrameAppenderSink<S> sink() {
+    protected RowAccum<S> rowAccum() {
         Index index = columnsIndex();
         SeriesAppender<S, ?>[] builders = builders(index);
-        DataFrameAccumSink<S> accumSink = new DataFrameAccumSink<>(index, builders);
+        DefaultRowAccum<S> accumSink = new DefaultRowAccum<>(index, builders);
 
         return rowSampleSize > 0
-                ? new DataFrameSamplingAppenderSink<>(accumSink, rowSampleSize, sampleRandom())
+                ? new SamplingRowAccum<>(accumSink, rowSampleSize, sampleRandom())
                 : accumSink;
     }
 

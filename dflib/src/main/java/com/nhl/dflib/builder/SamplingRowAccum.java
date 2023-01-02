@@ -8,16 +8,16 @@ import java.util.Random;
 /**
  * @since 0.16
  */
-class DataFrameSamplingAppenderSink<S> implements DataFrameAppenderSink<S> {
+class SamplingRowAccum<S> implements RowAccum<S> {
 
-    private final DataFrameAppenderSink<S> delegate;
+    private final RowAccum<S> delegate;
     private final int rowSampleSize;
     private final Random rowsSampleRandom;
     private final IntAccum sampledRows;
 
     private int totalRowsRead;
 
-    DataFrameSamplingAppenderSink(DataFrameAppenderSink<S> delegate, int rowSampleSize, Random rowsSampleRandom) {
+    SamplingRowAccum(RowAccum<S> delegate, int rowSampleSize, Random rowsSampleRandom) {
         this.delegate = delegate;
         this.rowSampleSize = rowSampleSize;
         this.rowsSampleRandom = rowsSampleRandom;
@@ -25,19 +25,19 @@ class DataFrameSamplingAppenderSink<S> implements DataFrameAppenderSink<S> {
     }
 
     @Override
-    public void append(S rowSource) {
+    public void push(S rowSource) {
         // Reservoir sampling algorithm per https://en.wikipedia.org/wiki/Reservoir_sampling
 
         // fill "reservoir" first
         if (totalRowsRead < rowSampleSize) {
-            delegate.append(rowSource);
+            delegate.push(rowSource);
             sampledRows.pushInt(totalRowsRead);
         }
         // replace previously filled values based on random sampling with decaying probability
         else {
             int pos = rowsSampleRandom.nextInt(totalRowsRead + 1);
             if (pos < rowSampleSize) {
-                delegate.replace(rowSource, pos);
+                delegate.replace(pos, rowSource);
                 sampledRows.replaceInt(pos, totalRowsRead);
             }
         }
@@ -46,8 +46,8 @@ class DataFrameSamplingAppenderSink<S> implements DataFrameAppenderSink<S> {
     }
 
     @Override
-    public void replace(S from, int toPos) {
-        delegate.replace(from, toPos);
+    public void replace(int toPos, S from) {
+        delegate.replace(toPos, from);
     }
 
     @Override

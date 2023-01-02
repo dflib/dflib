@@ -5,11 +5,7 @@ import com.nhl.dflib.DataFrame;
 /**
  * @since 0.16
  */
-interface DataFrameAppenderSink<S> {
-
-    void append(S rowSource);
-
-    void replace(S from, int toPos);
+interface RowAccum<S> extends ValueStore<S> {
 
     DataFrame toDataFrame();
 }
