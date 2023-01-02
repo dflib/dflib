@@ -28,11 +28,11 @@ class DefaultRowAccum<S> implements RowAccum<S> {
     }
 
     @Override
-    public void replace(int toPos, S from) {
+    public void replace(int toPos, S rowSource) {
         int w = columnBuilders.length;
 
         for (int i = 0; i < w; i++) {
-            columnBuilders[i].replace(from, toPos);
+            columnBuilders[i].replace(rowSource, toPos);
         }
     }
 

@@ -46,8 +46,8 @@ class SamplingRowAccum<S> implements RowAccum<S> {
     }
 
     @Override
-    public void replace(int toPos, S from) {
-        delegate.replace(toPos, from);
+    public void replace(int toPos, S rowSource) {
+        delegate.replace(toPos, rowSource);
     }
 
     @Override
