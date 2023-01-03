@@ -8,6 +8,7 @@
 * #171 TimeExp
 * #173 Remove API deprecated since 0.12
 * #175 Optimize Exp.concat(..)
+* #178 JsonLoader add columnType function
 * #179 DateTimeExp
 * #180 Primitives-aware DataFrame builder
 * #181 Reimplement and deprecate DataFrameBuilder

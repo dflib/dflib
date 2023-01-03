@@ -4,16 +4,21 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
-import com.nhl.dflib.ColumnDataFrame;
+import com.nhl.dflib.BooleanValueMapper;
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Index;
-import com.nhl.dflib.Series;
-import com.nhl.dflib.builder.ValueAccum;
-import com.nhl.dflib.builder.ObjectAccum;
+import com.nhl.dflib.DoubleValueMapper;
+import com.nhl.dflib.Extractor;
+import com.nhl.dflib.IntValueMapper;
+import com.nhl.dflib.LongValueMapper;
+import com.nhl.dflib.ValueMapper;
 
 import java.io.Reader;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -24,15 +29,17 @@ import java.util.Set;
  */
 public class JsonLoader {
 
-    private static String DEFAULT_SCALAR_COLUMN = "_val";
+    private final Set<Option> options;
+    private final Map<String, Extractor<Map<String, Object>, ?>> extractorPresets;
 
-    private Set<Option> options;
     private String pathExpression;
 
     public JsonLoader() {
         this.pathExpression = "$.*";
         this.options = new HashSet<>();
         options.add(Option.ALWAYS_RETURN_LIST);
+
+        this.extractorPresets = new HashMap<>();
     }
 
     /**
@@ -53,6 +60,119 @@ public class JsonLoader {
         return this;
     }
 
+    /**
+     * @since 0.16
+     */
+    public JsonLoader columnType(String column, ValueMapper<Object, ?> mapper) {
+        extractorPresets.put(column, customExtractor(column, mapper));
+        return this;
+    }
+
+    /**
+     * @since 0.16
+     */
+    public JsonLoader boolColumn(String column) {
+        extractorPresets.put(column, boolExtractor(column));
+        return this;
+    }
+
+    /**
+     * @since 0.16
+     */
+    public JsonLoader intColumn(String column) {
+        extractorPresets.put(column, intExtractor(column));
+        return this;
+    }
+
+    /**
+     * @since 0.16
+     */
+    public JsonLoader intColumn(String column, int forNull) {
+        extractorPresets.put(column, intExtractor(column, forNull));
+        return this;
+    }
+
+    /**
+     * @since 0.16
+     */
+    public JsonLoader longColumn(String column) {
+        extractorPresets.put(column, longExtractor(column));
+        return this;
+    }
+
+    /**
+     * @since 0.16
+     */
+    public JsonLoader longColumn(String column, long forNull) {
+        extractorPresets.put(column, longExtractor(column, forNull));
+        return this;
+    }
+
+    /**
+     * @since 0.16
+     */
+    public JsonLoader doubleColumn(String column) {
+        extractorPresets.put(column, doubleExtractor(column));
+        return this;
+    }
+
+    /**
+     * @since 0.16
+     */
+    public JsonLoader doubleColumn(String column, double forNull) {
+        extractorPresets.put(column, doubleExtractor(column, forNull));
+        return this;
+    }
+
+    /**
+     * @since 0.16
+     */
+    public JsonLoader dateColumn(String column) {
+        extractorPresets.put(column, dateExtractor(column));
+        return this;
+    }
+
+    /**
+     * @since 0.16
+     */
+    public JsonLoader dateColumn(String column, DateTimeFormatter formatter) {
+        extractorPresets.put(column, dateExtractor(column, formatter));
+        return this;
+    }
+
+    /**
+     * @since 0.16
+     */
+    public JsonLoader timeColumn(String column) {
+        extractorPresets.put(column, timeExtractor(column));
+        return this;
+    }
+
+    /**
+     * @since 0.16
+     */
+    public JsonLoader timeColumn(String column, DateTimeFormatter formatter) {
+        extractorPresets.put(column, timeExtractor(column, formatter));
+        return this;
+    }
+
+    /**
+     * @since 0.16
+     */
+    public JsonLoader dateTimeColumn(String column) {
+        extractorPresets.put(column, dateTimeExtractor(column));
+        return this;
+    }
+
+    /**
+     * @since 0.16
+     */
+    public JsonLoader dateTimeColumn(String column, DateTimeFormatter formatter) {
+        extractorPresets.put(column, dateTimeExtractor(column, formatter));
+        return this;
+    }
+
+
     public DataFrame load(String json) {
         DocumentContext context = JsonPath.parse(json, buildJSONPathConfiguration());
         return load(context);
@@ -69,71 +189,89 @@ public class JsonLoader {
 
     protected DataFrame load(DocumentContext context) {
         List<Map<String, Object>> parsed = context.read(pathExpression);
-        LinkedHashMap<String, ValueAccum<Object>> columns = loadColumns(parsed);
-        return toDataFrame(columns);
+        return new JsonLoaderWorker(extractorPresets).load(parsed);
     }
 
-    protected LinkedHashMap<String, ValueAccum<Object>> loadColumns(List<Map<String, Object>> parsed) {
-
-        // Different maps in the list can have different sets of keys...
-        // Algorithm below aligns values by row..
-
-        int height = parsed.size();
-        int offset = 0;
-        LinkedHashMap<String, ValueAccum<Object>> columns = new LinkedHashMap<>();
-        for (Object row : parsed) {
-
-            if (row instanceof Map) {
-                loadRowAsMap((Map<String, Object>) row, columns, height, offset);
-            } else {
-                loadRowAsScalar(row, columns, height, offset);
-            }
-
-            offset++;
-        }
-
-        return columns;
+    static Extractor<Map<String, Object>, Object> defaultExtractor(String name) {
+        return Extractor.$col(m -> getObject(m, name));
     }
 
-    protected void loadRowAsScalar(Object row, LinkedHashMap<String, ValueAccum<Object>> columns, int height, int offset) {
-        columns.computeIfAbsent(DEFAULT_SCALAR_COLUMN, label -> createdColumnAccumulator(height, offset)).push(row);
+    static Extractor<Map<String, Object>, Object> customExtractor(String name, ValueMapper<Object, ?> mapper) {
+        return Extractor.$col(m -> mapper.map(getObject(m, name)));
     }
 
-    protected void loadRowAsMap(Map<String, Object> row, LinkedHashMap<String, ValueAccum<Object>> columns, int height, int offset) {
-
-        for (Map.Entry<String, Object> e : row.entrySet()) {
-            columns.computeIfAbsent(e.getKey(), label -> createdColumnAccumulator(height, offset)).push(e.getValue());
-        }
-
-        // columns not in this record must be filled with nulls
-        if (columns.size() > row.size()) {
-            for (Map.Entry<String, ValueAccum<Object>> e : columns.entrySet()) {
-                if (!row.containsKey(e.getKey())) {
-                    e.getValue().push(null);
-                }
-            }
-        }
+    static Extractor<Map<String, Object>, Boolean> boolExtractor(String name) {
+        return Extractor.$bool(m -> BooleanValueMapper.fromObject().map(getObject(m, name)));
     }
 
-    protected DataFrame toDataFrame(LinkedHashMap<String, ValueAccum<Object>> columnData) {
-        Index columnsIndex = Index.forLabels(columnData.keySet().toArray(new String[0]));
-        int w = columnData.size();
-        Series[] series = new Series[w];
-
-        for (int i = 0; i < w; i++) {
-            series[i] = columnData.get(columnsIndex.getLabel(i)).toSeries();
-        }
-
-        return new ColumnDataFrame(columnsIndex, series);
+    static Extractor<Map<String, Object>, Integer> intExtractor(String name) {
+        return Extractor.$int(m -> IntValueMapper.fromObject().map(getObject(m, name)));
     }
 
-    protected ValueAccum<Object> createdColumnAccumulator(int length, int offset) {
-        ValueAccum<Object> column = new ObjectAccum<>(length);
+    static Extractor<Map<String, Object>, Integer> intExtractor(String name, int fillNulls) {
+        IntValueMapper<Object> mapper = IntValueMapper.fromObject(fillNulls);
+        return Extractor.$int(m -> mapper.map(getObject(m, name)));
+    }
 
-        for (int i = 0; i < offset; i++) {
-            column.push(null);
+    static Extractor<Map<String, Object>, Long> longExtractor(String name) {
+        return Extractor.$long(m -> LongValueMapper.fromObject().map(getObject(m, name)));
+    }
+
+    static Extractor<Map<String, Object>, Long> longExtractor(String name, long fillNulls) {
+        LongValueMapper<Object> mapper = LongValueMapper.fromObject(fillNulls);
+        return Extractor.$long(m -> mapper.map(getObject(m, name)));
+    }
+
+    static Extractor<Map<String, Object>, Double> doubleExtractor(String name) {
+        return Extractor.$double(m -> DoubleValueMapper.fromObject().map(getObject(m, name)));
+    }
+
+    static Extractor<Map<String, Object>, Double> doubleExtractor(String name, double fillNulls) {
+        DoubleValueMapper<Object> mapper = DoubleValueMapper.fromObject(fillNulls);
+        return Extractor.$double(m -> mapper.map(getObject(m, name)));
+    }
+
+    static Extractor<Map<String, Object>, LocalDate> dateExtractor(String name) {
+        return Extractor.$col(m -> ValueMapper.stringToDate().map(getString(m, name)));
+    }
+
+    static Extractor<Map<String, Object>, LocalDate> dateExtractor(String name, DateTimeFormatter formatter) {
+        ValueMapper<String, LocalDate> mapper = ValueMapper.stringToDate(formatter);
+        return Extractor.$col(m -> mapper.map(getString(m, name)));
+    }
+
+    static Extractor<Map<String, Object>, LocalTime> timeExtractor(String name) {
+        return Extractor.$col(m -> ValueMapper.stringToTime().map(getString(m, name)));
+    }
+
+    static Extractor<Map<String, Object>, LocalTime> timeExtractor(String name, DateTimeFormatter formatter) {
+        ValueMapper<String, LocalTime> mapper = ValueMapper.stringToTime(formatter);
+        return Extractor.$col(m -> mapper.map(getString(m, name)));
+    }
+
+    static Extractor<Map<String, Object>, LocalDateTime> dateTimeExtractor(String name) {
+        return Extractor.$col(m -> ValueMapper.stringToDateTime().map(getString(m, name)));
+    }
+
+    static Extractor<Map<String, Object>, LocalDateTime> dateTimeExtractor(String name, DateTimeFormatter formatter) {
+        ValueMapper<String, LocalDateTime> mapper = ValueMapper.stringToDateTime(formatter);
+        return Extractor.$col(m -> mapper.map(getString(m, name)));
+    }
+
+    private static Object getObject(Map<String, Object> map, String key) {
+        if (map == null) {
+            return null;
         }
 
-        return column;
+        return map.get(key);
+    }
+
+    private static String getString(Map<String, Object> map, String key) {
+        if (map == null) {
+            return null;
+        }
+
+        Object val = map.get(key);
+        return val != null ? val.toString() : null;
     }
 }

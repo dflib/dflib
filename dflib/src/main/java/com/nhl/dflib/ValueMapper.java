@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 @FunctionalInterface
@@ -91,6 +92,20 @@ public interface ValueMapper<V, VR> {
      */
     static ValueMapper<String, LocalDate> stringToDate(DateTimeFormatter formatter) {
         return s -> s != null && s.length() > 0 ? LocalDate.parse(s, formatter) : null;
+    }
+
+    /**
+     * @since 0.16
+     */
+    static ValueMapper<String, LocalTime> stringToTime() {
+        return s -> s != null && s.length() > 0 ? LocalTime.parse(s) : null;
+    }
+
+    /**
+     * @since 0.16
+     */
+    static ValueMapper<String, LocalTime> stringToTime(DateTimeFormatter formatter) {
+        return s -> s != null && s.length() > 0 ? LocalTime.parse(s, formatter) : null;
     }
 
     static ValueMapper<String, LocalDateTime> stringToDateTime() {

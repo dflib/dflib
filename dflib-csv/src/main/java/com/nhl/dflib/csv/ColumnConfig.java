@@ -77,14 +77,14 @@ class ColumnConfig {
         return config;
     }
 
-    public static ColumnConfig booleanColumn(int pos) {
+    public static ColumnConfig boolColumn(int pos) {
         ColumnConfig config = new ColumnConfig();
         config.csvColPos = pos;
         config.extractorMaker = i -> Extractor.$bool(r -> BooleanValueMapper.fromString().map(r.get(i)));
         return config;
     }
 
-    public static ColumnConfig booleanColumn(String name) {
+    public static ColumnConfig boolColumn(String name) {
         ColumnConfig config = new ColumnConfig();
         config.csvColName = name;
         config.extractorMaker = i -> Extractor.$bool(r -> BooleanValueMapper.fromString().map(r.get(i)));

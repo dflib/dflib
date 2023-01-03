@@ -36,6 +36,10 @@ public class SeriesAppender<S, T> {
         extractor.extractAndStore(from, accum, toPos);
     }
 
+    public int size() {
+        return accum.size();
+    }
+
     public Series<T> toSeries() {
         return accum.toSeries();
     }

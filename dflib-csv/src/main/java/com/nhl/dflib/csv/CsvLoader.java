@@ -245,17 +245,35 @@ public class CsvLoader {
 
     /**
      * @since 0.6
+     * @deprecated in favor of {@link #boolColumn(int)}
      */
+    @Deprecated(since = "0.16")
     public CsvLoader booleanColumn(int column) {
-        columns.add(ColumnConfig.booleanColumn(column));
+        return boolColumn(column);
+    }
+
+    /**
+     * @since 0.6
+     * @deprecated in favor of {@link #boolColumn(String)}
+     */
+    @Deprecated(since = "0.16")
+    public CsvLoader booleanColumn(String column) {
+        return boolColumn(column);
+    }
+
+    /**
+     * @since 0.16
+     */
+    public CsvLoader boolColumn(int column) {
+        columns.add(ColumnConfig.boolColumn(column));
         return this;
     }
 
     /**
      * @since 0.6
      */
-    public CsvLoader booleanColumn(String column) {
-        columns.add(ColumnConfig.booleanColumn(column));
+    public CsvLoader boolColumn(String column) {
+        columns.add(ColumnConfig.boolColumn(column));
         return this;
     }
 

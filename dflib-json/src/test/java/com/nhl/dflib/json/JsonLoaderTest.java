@@ -5,6 +5,8 @@ import com.nhl.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -115,12 +117,88 @@ public class JsonLoaderTest {
 
     @Test
     @DisplayName("$.*.a : nulls must be excluded")
-    public void testListSkupNulls() {
+    public void testListSkipNulls() {
         String json = "[{\"a\":1},{\"b\":2},{\"a\":3}]";
         DataFrame df = Json.loader().pathExpression("$.*.a").load(json);
         new DataFrameAsserts(df, "_val")
                 .expectHeight(2)
                 .expectRow(0, 1)
                 .expectRow(1, 3);
+    }
+
+    @Test
+    @DisplayName("$.* : bool preset columns")
+    public void test_BoolPresetColumns() {
+        String json = "[{\"a\":true},{\"a\":\"true\"},{\"a\":false},{}]";
+        DataFrame df = Json.loader()
+                .boolColumn("a")
+                .load(json);
+        new DataFrameAsserts(df, "a")
+                .expectHeight(4)
+                .expectBooleanColumns(0)
+                .expectRow(0, true)
+                .expectRow(1, true)
+                .expectRow(2, false)
+                .expectRow(3, false);
+    }
+
+    @Test
+    @DisplayName("$.* : int preset columns")
+    public void test_IntPresetColumns() {
+        String json = "[{\"a\":1},{\"a\":\"2\", \"b\":3},{\"a\":4}]";
+        DataFrame df = Json.loader()
+                .intColumn("a")
+                .intColumn("b", -2)
+                .load(json);
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(3)
+                .expectIntColumns(0, 1)
+                .expectRow(0, 1, -2)
+                .expectRow(1, 2, 3)
+                .expectRow(2, 4, -2);
+    }
+
+    @Test
+    @DisplayName("$.* : long preset columns")
+    public void test_LongPresetColumns() {
+        String json = "[{\"a\":1},{\"a\":\"2\", \"b\":3},{\"a\":4}]";
+        DataFrame df = Json.loader()
+                .longColumn("a")
+                .longColumn("b", -2L)
+                .load(json);
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(3)
+                .expectLongColumns(0, 1)
+                .expectRow(0, 1L, -2L)
+                .expectRow(1, 2L, 3L)
+                .expectRow(2, 4L, -2L);
+    }
+
+    @Test
+    @DisplayName("$.* : date preset columns")
+    public void test_DatePresetColumns() {
+        String json = "[{\"a\":\"2021-01-15\"},{\"a\":\"2022-03-16\"},{\"a\":\"2023-03-18\"}]";
+        DataFrame df = Json.loader()
+                .dateColumn("a")
+                .load(json);
+        new DataFrameAsserts(df, "a")
+                .expectHeight(3)
+                .expectRow(0, LocalDate.parse("2021-01-15"))
+                .expectRow(1, LocalDate.parse("2022-03-16"))
+                .expectRow(2, LocalDate.parse("2023-03-18"));
+    }
+
+    @Test
+    @DisplayName("$.* : datetime preset columns")
+    public void test_DateTimePresetColumns() {
+        String json = "[{\"a\":\"2021-01-15T00:01:02\"},{\"a\":\"2022-03-16T00:02:03\"},{\"a\":\"2023-03-18T00:03:04\"}]";
+        DataFrame df = Json.loader()
+                .dateTimeColumn("a")
+                .load(json);
+        new DataFrameAsserts(df, "a")
+                .expectHeight(3)
+                .expectRow(0, LocalDateTime.parse("2021-01-15T00:01:02"))
+                .expectRow(1, LocalDateTime.parse("2022-03-16T00:02:03"))
+                .expectRow(2, LocalDateTime.parse("2023-03-18T00:03:04"));
     }
 }
