@@ -41,7 +41,7 @@ public class JsonLoader {
      *
      * @param pathExpression a JSONPath expression
      * @return this loader
-     * @see <a href="http://jsonpath.herokuapp.com/?path=$..*">JSONPath online evaludator</a>
+     * @see <a href="http://jsonpath.herokuapp.com/?path=$..*">JSONPath online evaluator</a>
      */
     public JsonLoader pathExpression(String pathExpression) {
         this.pathExpression = Objects.requireNonNull(pathExpression);
