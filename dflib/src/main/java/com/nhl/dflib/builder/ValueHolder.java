@@ -10,8 +10,4 @@ public interface ValueHolder<T> extends ValueStore<T> {
 
     // used in conditions evaluation... no primitive flavors
     T get();
-
-    void pushToStore(ValueStore<T> to);
-
-    void pushToStore(ValueStore<T> to, int pos);
 }

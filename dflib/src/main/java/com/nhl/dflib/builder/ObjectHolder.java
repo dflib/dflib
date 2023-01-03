@@ -16,14 +16,4 @@ public class ObjectHolder<T> implements ValueHolder<T> {
     public void push(T v) {
         this.v = v;
     }
-
-    @Override
-    public void pushToStore(ValueStore<T> to) {
-        to.push(v);
-    }
-
-    @Override
-    public void pushToStore(ValueStore<T> to, int pos) {
-        to.replace(pos, v);
-    }
 }

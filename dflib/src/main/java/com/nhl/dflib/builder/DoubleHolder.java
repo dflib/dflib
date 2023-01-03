@@ -18,16 +18,6 @@ public class DoubleHolder implements ValueHolder<Double> {
     }
 
     @Override
-    public void pushToStore(ValueStore<Double> to) {
-        to.pushDouble(v);
-    }
-
-    @Override
-    public void pushToStore(ValueStore<Double> to, int pos) {
-        to.replaceDouble(pos, v);
-    }
-
-    @Override
     public void pushDouble(double v) {
         this.v = v;
     }

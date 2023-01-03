@@ -18,16 +18,6 @@ public class LongHolder implements ValueHolder<Long> {
     }
 
     @Override
-    public void pushToStore(ValueStore<Long> to) {
-        to.pushLong(v);
-    }
-
-    @Override
-    public void pushToStore(ValueStore<Long> to, int pos) {
-        to.replaceLong(pos, v);
-    }
-
-    @Override
     public void pushLong(long v) {
         this.v = v;
     }

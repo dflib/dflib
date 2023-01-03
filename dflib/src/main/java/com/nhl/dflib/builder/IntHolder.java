@@ -18,16 +18,6 @@ public class IntHolder implements ValueHolder<Integer> {
     }
 
     @Override
-    public void pushToStore(ValueStore<Integer> to) {
-        to.pushInt(v);
-    }
-
-    @Override
-    public void pushToStore(ValueStore<Integer> to, int pos) {
-        to.replaceInt(pos, v);
-    }
-
-    @Override
     public void pushInt(int v) {
         this.v = v;
     }

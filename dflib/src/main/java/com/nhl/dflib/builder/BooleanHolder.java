@@ -18,16 +18,6 @@ public class BooleanHolder implements ValueHolder<Boolean> {
     }
 
     @Override
-    public void pushToStore(ValueStore<Boolean> to) {
-        to.pushBoolean(v);
-    }
-
-    @Override
-    public void pushToStore(ValueStore<Boolean> to, int pos) {
-        to.replaceBoolean(pos, v);
-    }
-
-    @Override
     public void pushBoolean(boolean v) {
         this.v = v;
     }

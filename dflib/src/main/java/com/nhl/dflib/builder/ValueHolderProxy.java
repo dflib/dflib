@@ -6,6 +6,8 @@ import com.nhl.dflib.row.RowBuilder;
 import com.nhl.dflib.row.RowProxy;
 
 /**
+ * A {@link RowProxy} with an internal buffer to store row values.
+ *
  * @since 0.16
  */
 public class ValueHolderProxy<S> implements RowProxy {
