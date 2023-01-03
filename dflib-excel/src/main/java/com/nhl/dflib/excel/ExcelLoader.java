@@ -4,8 +4,6 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Extractor;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.builder.DataFrameAppender;
-import com.nhl.dflib.builder.ObjectHolder;
-import com.nhl.dflib.builder.ValueHolder;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -55,10 +53,9 @@ public class ExcelLoader {
             return DataFrame.empty(range.columns());
         }
 
-        Extractor<Row, ?>[] extractors = createExtractors(range.startCol, range.width);
-
         Row row0 = getRow(sheet, range, 0);
-        Index index = firstRowAsHeader ? createIndex(row0, extractors) : range.columns();
+        Index index = firstRowAsHeader ? createIndex(row0, range.startCol, range.width) : range.columns();
+        Extractor<Row, ?>[] extractors = createExtractors(range.startCol, range.width);
 
         DataFrameAppender<Row> builder = DataFrame.byRow(extractors).columnIndex(index).appender();
 
@@ -211,16 +208,15 @@ public class ExcelLoader {
         return extractors;
     }
 
-    private Index createIndex(Row row, Extractor<Row, ?>[] extractors) {
+    private Index createIndex(Row row, int startCol, int w) {
 
-        int w = extractors.length;
         String[] labels = new String[w];
 
         if (row != null) {
-            ValueHolder holder = new ObjectHolder<>();
             for (int i = 0; i < w; i++) {
-                extractors[i].extractAndStore(row, holder);
-                labels[i] = holder.get() != null ? holder.get().toString() : "";
+                int pos = startCol + i;
+                Object val = value(row, pos);
+                labels[i] = val != null ? val.toString() : "";
             }
         } else {
             Arrays.fill(labels, "");
