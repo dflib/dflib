@@ -1,3 +1,7 @@
+## Release 0.17
+
+* #185 Undeprecate and fix "convertColumn(X, ValueMapper)" 
+
 ## Release 0.16
 
 * #158 DataFrame.vExplode()
