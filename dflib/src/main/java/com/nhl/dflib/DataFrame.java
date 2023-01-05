@@ -345,7 +345,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @deprecated in favor of {@link #mapColumnAsBool(RowToBooleanValueMapper)}
      */
     @Deprecated(since = "0.17")
-    BooleanSeries mapColumnAsBoolean(RowToBooleanValueMapper rowMapper);
+    default BooleanSeries mapColumnAsBoolean(RowToBooleanValueMapper rowMapper) {
+        return mapColumnAsBool(rowMapper);
+    }
 
     /**
      * Creates a new DataFrame which is the exact copy of this DataFrame, only with a single column values transformed
