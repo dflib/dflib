@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.builder.BooleanAccum;
+import com.nhl.dflib.builder.BoolAccum;
 import com.nhl.dflib.builder.DoubleAccum;
 
 import java.util.Comparator;
@@ -230,10 +230,10 @@ public interface DoubleSeries extends Series<Double> {
      */
     default BooleanSeries lt(DoubleSeries s) {
         int len = size();
-        BooleanAccum accumulator = new BooleanAccum(len);
+        BoolAccum accumulator = new BoolAccum(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.pushBoolean(this.getDouble(i) < s.getDouble(i));
+            accumulator.pushBool(this.getDouble(i) < s.getDouble(i));
         }
 
         return accumulator.toSeries();
@@ -244,10 +244,10 @@ public interface DoubleSeries extends Series<Double> {
      */
     default BooleanSeries le(DoubleSeries s) {
         int len = size();
-        BooleanAccum accumulator = new BooleanAccum(len);
+        BoolAccum accumulator = new BoolAccum(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.pushBoolean(this.getDouble(i) <= s.getDouble(i));
+            accumulator.pushBool(this.getDouble(i) <= s.getDouble(i));
         }
 
         return accumulator.toSeries();
@@ -258,10 +258,10 @@ public interface DoubleSeries extends Series<Double> {
      */
     default BooleanSeries gt(DoubleSeries s) {
         int len = size();
-        BooleanAccum accumulator = new BooleanAccum(len);
+        BoolAccum accumulator = new BoolAccum(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.pushBoolean(this.getDouble(i) > s.getDouble(i));
+            accumulator.pushBool(this.getDouble(i) > s.getDouble(i));
         }
 
         return accumulator.toSeries();
@@ -272,10 +272,10 @@ public interface DoubleSeries extends Series<Double> {
      */
     default BooleanSeries ge(DoubleSeries s) {
         int len = size();
-        BooleanAccum accumulator = new BooleanAccum(len);
+        BoolAccum accumulator = new BoolAccum(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.pushBoolean(this.getDouble(i) >= s.getDouble(i));
+            accumulator.pushBool(this.getDouble(i) >= s.getDouble(i));
         }
 
         return accumulator.toSeries();

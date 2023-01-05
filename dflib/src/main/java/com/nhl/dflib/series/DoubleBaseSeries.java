@@ -1,7 +1,7 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.*;
-import com.nhl.dflib.builder.BooleanAccum;
+import com.nhl.dflib.builder.BoolAccum;
 import com.nhl.dflib.builder.DoubleAccum;
 import com.nhl.dflib.builder.IntAccum;
 import com.nhl.dflib.builder.ObjectAccum;
@@ -97,7 +97,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         DoubleAccum data = new DoubleAccum();
 
         for (int i = 0; i < size(); i++) {
-            if (positions.getBoolean(i)) {
+            if (positions.getBool(i)) {
                 data.pushDouble(getDouble(i));
             }
         }
@@ -282,10 +282,10 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     public BooleanSeries locateDouble(DoublePredicate predicate) {
         int len = size();
 
-        BooleanAccum matches = new BooleanAccum(len);
+        BoolAccum matches = new BoolAccum(len);
 
         for (int i = 0; i < len; i++) {
-            matches.pushBoolean(predicate.test(getDouble(i)));
+            matches.pushBool(predicate.test(getDouble(i)));
         }
 
         return matches.toSeries();
@@ -318,7 +318,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         DoubleAccum doubles = new DoubleAccum(s);
 
         for (int i = 0; i < r; i++) {
-            doubles.pushDouble(condition.getBoolean(i) ? with : getDouble(i));
+            doubles.pushDouble(condition.getBool(i) ? with : getDouble(i));
         }
 
         for (int i = r; i < s; i++) {
@@ -335,7 +335,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         DoubleAccum doubles = new DoubleAccum(s);
 
         for (int i = 0; i < r; i++) {
-            doubles.pushDouble(condition.getBoolean(i) ? getDouble(i) : with);
+            doubles.pushDouble(condition.getBool(i) ? getDouble(i) : with);
         }
 
         if (s > r) {
@@ -351,7 +351,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         ObjectAccum<Double> values = new ObjectAccum<>(s);
 
         for (int i = 0; i < r; i++) {
-            values.push(condition.getBoolean(i) ? null : getDouble(i));
+            values.push(condition.getBool(i) ? null : getDouble(i));
         }
 
         for (int i = r; i < s; i++) {
@@ -367,7 +367,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         ObjectAccum<Double> values = new ObjectAccum<>(s);
 
         for (int i = 0; i < r; i++) {
-            values.push(condition.getBoolean(i) ? getDouble(i) : null);
+            values.push(condition.getBool(i) ? getDouble(i) : null);
         }
 
         if (s > r) {
@@ -386,17 +386,17 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanAccum bools = new BooleanAccum(s);
+        BoolAccum bools = new BoolAccum(s);
 
         if (another instanceof DoubleSeries) {
             DoubleSeries anotherDouble = (DoubleSeries) another;
 
             for (int i = 0; i < s; i++) {
-                bools.pushBoolean(getDouble(i) == anotherDouble.getDouble(i));
+                bools.pushBool(getDouble(i) == anotherDouble.getDouble(i));
             }
         } else {
             for (int i = 0; i < s; i++) {
-                bools.pushBoolean(Objects.equals(get(i), another.get(i)));
+                bools.pushBool(Objects.equals(get(i), another.get(i)));
             }
         }
 
@@ -412,16 +412,16 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanAccum bools = new BooleanAccum(s);
+        BoolAccum bools = new BoolAccum(s);
         if (another instanceof DoubleSeries) {
             DoubleSeries anotherDouble = (DoubleSeries) another;
 
             for (int i = 0; i < s; i++) {
-                bools.pushBoolean(getDouble(i) != anotherDouble.getDouble(i));
+                bools.pushBool(getDouble(i) != anotherDouble.getDouble(i));
             }
         } else {
             for (int i = 0; i < s; i++) {
-                bools.pushBoolean(!Objects.equals(get(i), another.get(i)));
+                bools.pushBool(!Objects.equals(get(i), another.get(i)));
             }
         }
 

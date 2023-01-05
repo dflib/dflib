@@ -1,7 +1,7 @@
 package com.nhl.dflib.exp.bool;
 
 import com.nhl.dflib.BooleanSeries;
-import com.nhl.dflib.BooleanValueMapper;
+import com.nhl.dflib.BoolValueMapper;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.exp.Column;
@@ -30,7 +30,7 @@ public class BoolColumn extends Column<Boolean> implements Condition {
         Series<Boolean> c = super.eval(df);
         return c instanceof BooleanSeries
                 ? (BooleanSeries) c
-                : c.mapAsBool(BooleanValueMapper.fromObject());
+                : c.mapAsBool(BoolValueMapper.fromObject());
     }
 
     @Override
@@ -38,6 +38,6 @@ public class BoolColumn extends Column<Boolean> implements Condition {
         Series<Boolean> c = super.eval(s);
         return c instanceof BooleanSeries
                 ? (BooleanSeries) c
-                : c.mapAsBool(BooleanValueMapper.fromObject());
+                : c.mapAsBool(BoolValueMapper.fromObject());
     }
 }

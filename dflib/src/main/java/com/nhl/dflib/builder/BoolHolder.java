@@ -1,9 +1,9 @@
 package com.nhl.dflib.builder;
 
 /**
- * @since 0.8
+ * @since 0.16
  */
-public class BooleanHolder implements ValueHolder<Boolean> {
+public class BoolHolder implements ValueHolder<Boolean> {
 
     private boolean v;
 
@@ -18,7 +18,7 @@ public class BooleanHolder implements ValueHolder<Boolean> {
     }
 
     @Override
-    public void pushBoolean(boolean v) {
+    public void pushBool(boolean v) {
         this.v = v;
     }
 }

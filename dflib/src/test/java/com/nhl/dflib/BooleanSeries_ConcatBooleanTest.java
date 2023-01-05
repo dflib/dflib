@@ -1,7 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.series.BooleanArraySeries;
-import com.nhl.dflib.unit.BooleanSeriesAsserts;
+import com.nhl.dflib.unit.BoolSeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -11,14 +11,14 @@ public class BooleanSeries_ConcatBooleanTest {
     @Test
     public void test_None() {
         BooleanSeries s = new BooleanArraySeries(true, false);
-        assertSame(s, s.concatBoolean());
+        assertSame(s, s.concatBool());
     }
 
     @Test
     public void test_Self() {
         BooleanSeries s = new BooleanArraySeries(true, false);
-        BooleanSeries c = s.concatBoolean(s);
-        new BooleanSeriesAsserts(c).expectData(true, false, true, false);
+        BooleanSeries c = s.concatBool(s);
+        new BoolSeriesAsserts(c).expectData(true, false, true, false);
     }
 
     @Test
@@ -27,7 +27,7 @@ public class BooleanSeries_ConcatBooleanTest {
         BooleanSeries s2 = new BooleanArraySeries(false, false);
         BooleanSeries s3 = new BooleanArraySeries(true, true);
 
-        BooleanSeries c = s1.concatBoolean(s2, s3);
-        new BooleanSeriesAsserts(c).expectData(true, false, false, false, true, true);
+        BooleanSeries c = s1.concatBool(s2, s3);
+        new BoolSeriesAsserts(c).expectData(true, false, false, false, true, true);
     }
 }

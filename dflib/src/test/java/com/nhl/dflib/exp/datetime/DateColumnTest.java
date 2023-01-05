@@ -5,7 +5,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DateExp;
 import com.nhl.dflib.NumExp;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.unit.BooleanSeriesAsserts;
+import com.nhl.dflib.unit.BoolSeriesAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -78,7 +78,7 @@ public class DateColumnTest {
                 LocalDate.of(2007, 1, 8), LocalDate.of(2007, 1, 8),
                 LocalDate.of(2009, 2, 2), LocalDate.of(2005, 3, 5));
 
-        new BooleanSeriesAsserts(eq.eval(df)).expectData(true, false);
+        new BoolSeriesAsserts(eq.eval(df)).expectData(true, false);
     }
 
     @Test
@@ -89,7 +89,7 @@ public class DateColumnTest {
                 LocalDate.of(2007, 1, 8), LocalDate.of(2007, 1, 8),
                 LocalDate.of(2009, 2, 2), LocalDate.of(2005, 3, 5));
 
-        new BooleanSeriesAsserts(ne.eval(df)).expectData(false, true);
+        new BoolSeriesAsserts(ne.eval(df)).expectData(false, true);
     }
 
     @Test
@@ -100,21 +100,21 @@ public class DateColumnTest {
                 LocalDate.of(2007, 1, 8), LocalDate.of(2009, 1, 8),
                 LocalDate.of(2009, 2, 2), LocalDate.of(2005, 3, 5));
 
-        new BooleanSeriesAsserts(lt.eval(df)).expectData(true, false);
+        new BoolSeriesAsserts(lt.eval(df)).expectData(true, false);
     }
 
     @Test
     public void testLtVal() {
         Condition lt = $date(0).lt(LocalDate.of(2008, 1, 1));
         Series<LocalDate> s = Series.of(LocalDate.of(2007, 1, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 1, 8));
-        new BooleanSeriesAsserts(lt.eval(s)).expectData(true, false, false);
+        new BoolSeriesAsserts(lt.eval(s)).expectData(true, false, false);
     }
 
     @Test
     public void testLeVal() {
         Condition le = $date(0).le(LocalDate.of(2008, 1, 1));
         Series<LocalDate> s = Series.of(LocalDate.of(2007, 1, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 1, 8));
-        new BooleanSeriesAsserts(le.eval(s)).expectData(true, true, false);
+        new BoolSeriesAsserts(le.eval(s)).expectData(true, true, false);
     }
 
     @Test

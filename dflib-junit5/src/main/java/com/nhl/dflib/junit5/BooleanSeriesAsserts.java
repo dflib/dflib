@@ -15,7 +15,7 @@ public class BooleanSeriesAsserts {
         assertNotNull(series, "Series is null");
 
         this.data = new boolean[series.size()];
-        series.copyToBoolean(data, 0, 0, series.size());
+        series.copyToBool(data, 0, 0, series.size());
     }
 
     public BooleanSeriesAsserts expectData(boolean... expectedValues) {

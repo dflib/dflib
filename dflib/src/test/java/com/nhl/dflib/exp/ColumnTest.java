@@ -6,7 +6,7 @@ import com.nhl.dflib.Exp;
 import com.nhl.dflib.NumExp;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.StrExp;
-import com.nhl.dflib.unit.BooleanSeriesAsserts;
+import com.nhl.dflib.unit.BoolSeriesAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -76,7 +76,7 @@ public class ColumnTest {
                 "5");
 
         BooleanSeries s = $col("a").isNull().eval(df);
-        new BooleanSeriesAsserts(s).expectData(false, false, true, false);
+        new BoolSeriesAsserts(s).expectData(false, false, true, false);
     }
 
     @Test
@@ -88,6 +88,6 @@ public class ColumnTest {
                 "5");
 
         BooleanSeries s = $col("a").isNotNull().eval(df);
-        new BooleanSeriesAsserts(s).expectData(true, true, false, true);
+        new BoolSeriesAsserts(s).expectData(true, true, false, true);
     }
 }

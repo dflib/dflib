@@ -5,18 +5,18 @@ import com.nhl.dflib.BooleanSeries;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class BooleanSeriesAsserts {
+public class BoolSeriesAsserts {
 
     private boolean[] data;
 
-    public BooleanSeriesAsserts(BooleanSeries series) {
+    public BoolSeriesAsserts(BooleanSeries series) {
         assertNotNull(series, "Series is null");
 
         this.data = new boolean[series.size()];
-        series.copyToBoolean(data, 0, 0, series.size());
+        series.copyToBool(data, 0, 0, series.size());
     }
 
-    public BooleanSeriesAsserts expectData(boolean... expectedValues) {
+    public BoolSeriesAsserts expectData(boolean... expectedValues) {
 
         assertEquals(expectedValues.length, data.length, "Unexpected BooleanSeries length");
 

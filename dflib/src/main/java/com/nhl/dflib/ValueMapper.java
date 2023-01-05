@@ -12,9 +12,9 @@ public interface ValueMapper<V, VR> {
 
     /**
      * @see Exp#castAsCondition()
-     * @since 0.11
+     * @since 0.16
      */
-    static ValueMapper<String, Boolean> stringToBoolean() {
+    static ValueMapper<String, Boolean> stringToBool() {
         return s -> s != null ? Boolean.parseBoolean(s) : null;
     }
 

@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.builder.BooleanAccum;
+import com.nhl.dflib.builder.BoolAccum;
 import com.nhl.dflib.builder.IntAccum;
 import com.nhl.dflib.sort.IntComparator;
 
@@ -244,10 +244,10 @@ public interface IntSeries extends Series<Integer> {
      */
     default BooleanSeries lt(IntSeries s) {
         int len = size();
-        BooleanAccum accumulator = new BooleanAccum(len);
+        BoolAccum accumulator = new BoolAccum(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.pushBoolean(this.getInt(i) < s.getInt(i));
+            accumulator.pushBool(this.getInt(i) < s.getInt(i));
         }
 
         return accumulator.toSeries();
@@ -258,10 +258,10 @@ public interface IntSeries extends Series<Integer> {
      */
     default BooleanSeries le(IntSeries s) {
         int len = size();
-        BooleanAccum accumulator = new BooleanAccum(len);
+        BoolAccum accumulator = new BoolAccum(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.pushBoolean(this.getInt(i) <= s.getInt(i));
+            accumulator.pushBool(this.getInt(i) <= s.getInt(i));
         }
 
         return accumulator.toSeries();
@@ -272,10 +272,10 @@ public interface IntSeries extends Series<Integer> {
      */
     default BooleanSeries gt(IntSeries s) {
         int len = size();
-        BooleanAccum accumulator = new BooleanAccum(len);
+        BoolAccum accumulator = new BoolAccum(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.pushBoolean(this.getInt(i) > s.getInt(i));
+            accumulator.pushBool(this.getInt(i) > s.getInt(i));
         }
 
         return accumulator.toSeries();
@@ -286,10 +286,10 @@ public interface IntSeries extends Series<Integer> {
      */
     default BooleanSeries ge(IntSeries s) {
         int len = size();
-        BooleanAccum accumulator = new BooleanAccum(len);
+        BoolAccum accumulator = new BoolAccum(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.pushBoolean(this.getInt(i) >= s.getInt(i));
+            accumulator.pushBool(this.getInt(i) >= s.getInt(i));
         }
 
         return accumulator.toSeries();

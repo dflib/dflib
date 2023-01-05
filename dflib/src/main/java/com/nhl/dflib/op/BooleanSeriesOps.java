@@ -25,9 +25,9 @@ public class BooleanSeriesOps {
         boolean[] and = new boolean[h];
         for (int i = 0; i < h; i++) {
 
-            boolean b = series[0].getBoolean(i);
+            boolean b = series[0].getBool(i);
             for (int j = 1; j < w; j++) {
-                b = b && series[j].getBoolean(i);
+                b = b && series[j].getBool(i);
             }
 
             and[i] = b;
@@ -56,9 +56,9 @@ public class BooleanSeriesOps {
         boolean[] or = new boolean[h];
         for (int i = 0; i < h; i++) {
 
-            boolean b = series[0].getBoolean(i);
+            boolean b = series[0].getBool(i);
             for (int j = 1; j < w; j++) {
-                b = b || series[j].getBoolean(i);
+                b = b || series[j].getBool(i);
             }
 
             or[i] = b;

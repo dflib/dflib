@@ -8,7 +8,7 @@ import com.nhl.dflib.NumExp;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.StrExp;
 import com.nhl.dflib.TimeExp;
-import com.nhl.dflib.unit.BooleanSeriesAsserts;
+import com.nhl.dflib.unit.BoolSeriesAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -61,7 +61,7 @@ public class StrColumnTest {
                 "1", "1",
                 "4", "5");
 
-        new BooleanSeriesAsserts(eq.eval(df)).expectData(true, false);
+        new BoolSeriesAsserts(eq.eval(df)).expectData(true, false);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class StrColumnTest {
                 "1", "1",
                 "4", "5");
 
-        new BooleanSeriesAsserts(ne.eval(df)).expectData(false, true);
+        new BoolSeriesAsserts(ne.eval(df)).expectData(false, true);
     }
 
     @Test
@@ -80,7 +80,7 @@ public class StrColumnTest {
         Condition c = $str(0).startsWith("_");
 
         Series<String> s = Series.of("a", "_b", "c", "__d");
-        new BooleanSeriesAsserts(c.eval(s)).expectData(false, true, false, true);
+        new BoolSeriesAsserts(c.eval(s)).expectData(false, true, false, true);
     }
 
     @Test
@@ -88,7 +88,7 @@ public class StrColumnTest {
         Condition c = $str(0).endsWith("_");
 
         Series<String> s = Series.of("a_", "_b", "c", "__d_");
-        new BooleanSeriesAsserts(c.eval(s)).expectData(true, false, false, true);
+        new BoolSeriesAsserts(c.eval(s)).expectData(true, false, false, true);
     }
 
     @Test
@@ -96,7 +96,7 @@ public class StrColumnTest {
         Condition c = $str(0).matches("^a.*[0-9]$");
 
         Series<String> s = Series.of("a", "a9", "abcd0", "__d");
-        new BooleanSeriesAsserts(c.eval(s)).expectData(false, true, true, false);
+        new BoolSeriesAsserts(c.eval(s)).expectData(false, true, true, false);
     }
 
     @Test
@@ -104,7 +104,7 @@ public class StrColumnTest {
         Condition c = $str(0).castAsCondition();
 
         Series<String> s = Series.of("true", null, "false", "__d_");
-        new BooleanSeriesAsserts(c.eval(s)).expectData(true, false, false, false);
+        new BoolSeriesAsserts(c.eval(s)).expectData(true, false, false, false);
     }
 
     @Test
@@ -112,7 +112,7 @@ public class StrColumnTest {
         Condition isEven = $str(0).mapVal(s -> s.length() % 2 == 0).castAsCondition();
 
         Series<String> s = Series.of("a", "a9", "abcd0", "__d_");
-        new BooleanSeriesAsserts(isEven.eval(s)).expectData(false, true, false, true);
+        new BoolSeriesAsserts(isEven.eval(s)).expectData(false, true, false, true);
     }
 
     @Test

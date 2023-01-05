@@ -1,6 +1,6 @@
 package com.nhl.dflib.csv;
 
-import com.nhl.dflib.BooleanValueMapper;
+import com.nhl.dflib.BoolValueMapper;
 import com.nhl.dflib.DoubleValueMapper;
 import com.nhl.dflib.Extractor;
 import com.nhl.dflib.Index;
@@ -80,14 +80,14 @@ class ColumnConfig {
     public static ColumnConfig boolColumn(int pos) {
         ColumnConfig config = new ColumnConfig();
         config.csvColPos = pos;
-        config.extractorMaker = i -> Extractor.$bool(r -> BooleanValueMapper.fromString().map(r.get(i)));
+        config.extractorMaker = i -> Extractor.$bool(r -> BoolValueMapper.fromString().map(r.get(i)));
         return config;
     }
 
     public static ColumnConfig boolColumn(String name) {
         ColumnConfig config = new ColumnConfig();
         config.csvColName = name;
-        config.extractorMaker = i -> Extractor.$bool(r -> BooleanValueMapper.fromString().map(r.get(i)));
+        config.extractorMaker = i -> Extractor.$bool(r -> BoolValueMapper.fromString().map(r.get(i)));
         return config;
     }
 

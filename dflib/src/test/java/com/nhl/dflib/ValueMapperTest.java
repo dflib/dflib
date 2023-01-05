@@ -17,7 +17,7 @@ public class ValueMapperTest {
 
     @Test
     public void testStringToBoolean() {
-        ValueMapper<String, Boolean> vm = ValueMapper.stringToBoolean();
+        ValueMapper<String, Boolean> vm = ValueMapper.stringToBool();
         assertNull(vm.map(null));
         assertEquals(false, vm.map(""));
         assertEquals(true, vm.map("TRUE"));

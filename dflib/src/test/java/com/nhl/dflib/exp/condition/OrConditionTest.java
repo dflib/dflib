@@ -5,7 +5,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.exp.bool.OrCondition;
-import com.nhl.dflib.unit.BooleanSeriesAsserts;
+import com.nhl.dflib.unit.BoolSeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import static com.nhl.dflib.Exp.$bool;
@@ -22,7 +22,7 @@ public class OrConditionTest {
                 true, false, false);
 
         BooleanSeries s = or($bool("a"), $bool("b"), $bool("c")).eval(df);
-        new BooleanSeriesAsserts(s).expectData(false, true, true);
+        new BoolSeriesAsserts(s).expectData(false, true, true);
     }
 
     @Test

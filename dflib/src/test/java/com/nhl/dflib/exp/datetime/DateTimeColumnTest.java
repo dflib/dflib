@@ -6,7 +6,7 @@ import com.nhl.dflib.DateExp;
 import com.nhl.dflib.DateTimeExp;
 import com.nhl.dflib.NumExp;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.unit.BooleanSeriesAsserts;
+import com.nhl.dflib.unit.BoolSeriesAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -112,7 +112,7 @@ public class DateTimeColumnTest {
                 LocalDateTime.of(2009, 2, 2, 1, 1, 1), LocalDateTime.of(2005, 3, 5, 1, 1, 1),
                 LocalDateTime.of(2009, 3, 5, 1, 1, 1), LocalDateTime.of(2005, 3, 5, 1, 1, 2));
 
-        new BooleanSeriesAsserts(eq.eval(df)).expectData(true, false, false);
+        new BoolSeriesAsserts(eq.eval(df)).expectData(true, false, false);
     }
 
     @Test
@@ -124,7 +124,7 @@ public class DateTimeColumnTest {
                 LocalDateTime.of(2009, 2, 2, 1, 1, 1), LocalDateTime.of(2005, 3, 5, 1, 1, 1),
                 LocalDateTime.of(2009, 3, 5, 1, 1, 1), LocalDateTime.of(2005, 3, 5, 1, 1, 2));
 
-        new BooleanSeriesAsserts(ne.eval(df)).expectData(false, true, true);
+        new BoolSeriesAsserts(ne.eval(df)).expectData(false, true, true);
     }
 
     @Test
@@ -135,7 +135,7 @@ public class DateTimeColumnTest {
                 LocalDateTime.of(2007, 1, 8, 1, 1, 1), LocalDateTime.of(2009, 1, 8, 1, 1, 1),
                 LocalDateTime.of(2009, 2, 2, 1, 1, 1), LocalDateTime.of(2005, 3, 5, 1, 1, 1));
 
-        new BooleanSeriesAsserts(lt.eval(df)).expectData(true, false);
+        new BoolSeriesAsserts(lt.eval(df)).expectData(true, false);
     }
 
     @Test
@@ -145,7 +145,7 @@ public class DateTimeColumnTest {
                 LocalDateTime.of(2007, 1, 8, 1, 1),
                 LocalDateTime.of(2008, 1, 1, 1, 1),
                 LocalDateTime.of(2009, 1, 8, 1, 1));
-        new BooleanSeriesAsserts(lt.eval(s)).expectData(true, false, false);
+        new BoolSeriesAsserts(lt.eval(s)).expectData(true, false, false);
     }
 
     @Test
@@ -155,7 +155,7 @@ public class DateTimeColumnTest {
                 LocalDateTime.of(2007, 1, 8, 1, 1),
                 LocalDateTime.of(2008, 1, 1, 1, 1),
                 LocalDateTime.of(2009, 1, 8, 1, 1));
-        new BooleanSeriesAsserts(le.eval(s)).expectData(true, true, false);
+        new BoolSeriesAsserts(le.eval(s)).expectData(true, true, false);
     }
 
     @Test

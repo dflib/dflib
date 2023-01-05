@@ -1,7 +1,7 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.*;
-import com.nhl.dflib.builder.BooleanAccum;
+import com.nhl.dflib.builder.BoolAccum;
 import com.nhl.dflib.builder.IntAccum;
 import com.nhl.dflib.builder.ObjectAccum;
 import com.nhl.dflib.concat.SeriesConcat;
@@ -154,7 +154,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
         ObjectAccum<T> data = new ObjectAccum<>();
 
         for (int i = 0; i < size(); i++) {
-            if (positions.getBoolean(i)) {
+            if (positions.getBool(i)) {
                 data.push(get(i));
             }
         }
@@ -191,10 +191,10 @@ public abstract class ObjectSeries<T> implements Series<T> {
     public BooleanSeries locate(ValuePredicate<T> predicate) {
         int len = size();
 
-        BooleanAccum matches = new BooleanAccum(len);
+        BoolAccum matches = new BoolAccum(len);
 
         for (int i = 0; i < len; i++) {
-            matches.pushBoolean(predicate.test(get(i)));
+            matches.pushBool(predicate.test(get(i)));
         }
 
         return matches.toSeries();
@@ -207,7 +207,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
         ObjectAccum<T> values = new ObjectAccum<>(s);
 
         for (int i = 0; i < r; i++) {
-            values.push(condition.getBoolean(i) ? with : get(i));
+            values.push(condition.getBool(i) ? with : get(i));
         }
 
         for (int i = r; i < s; i++) {
@@ -225,7 +225,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
         ObjectAccum<T> values = new ObjectAccum<>(s);
 
         for (int i = 0; i < r; i++) {
-            values.push(condition.getBoolean(i) ? get(i) : with);
+            values.push(condition.getBool(i) ? get(i) : with);
         }
 
         if (s > r) {
@@ -244,9 +244,9 @@ public abstract class ObjectSeries<T> implements Series<T> {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanAccum bools = new BooleanAccum(s);
+        BoolAccum bools = new BoolAccum(s);
         for (int i = 0; i < s; i++) {
-            bools.pushBoolean(Objects.equals(get(i), another.get(i)));
+            bools.pushBool(Objects.equals(get(i), another.get(i)));
         }
 
         return bools.toSeries();
@@ -261,9 +261,9 @@ public abstract class ObjectSeries<T> implements Series<T> {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanAccum bools = new BooleanAccum(s);
+        BoolAccum bools = new BoolAccum(s);
         for (int i = 0; i < s; i++) {
-            bools.pushBoolean(!Objects.equals(get(i), another.get(i)));
+            bools.pushBool(!Objects.equals(get(i), another.get(i)));
         }
 
         return bools.toSeries();
@@ -273,9 +273,9 @@ public abstract class ObjectSeries<T> implements Series<T> {
     public BooleanSeries isNull() {
         int s = size();
 
-        BooleanAccum bools = new BooleanAccum(s);
+        BoolAccum bools = new BoolAccum(s);
         for (int i = 0; i < s; i++) {
-            bools.pushBoolean(get(i) == null);
+            bools.pushBool(get(i) == null);
         }
 
         return bools.toSeries();
@@ -285,9 +285,9 @@ public abstract class ObjectSeries<T> implements Series<T> {
     public BooleanSeries isNotNull() {
         int s = size();
 
-        BooleanAccum bools = new BooleanAccum(s);
+        BoolAccum bools = new BoolAccum(s);
         for (int i = 0; i < s; i++) {
-            bools.pushBoolean(get(i) != null);
+            bools.pushBool(get(i) != null);
         }
 
         return bools.toSeries();

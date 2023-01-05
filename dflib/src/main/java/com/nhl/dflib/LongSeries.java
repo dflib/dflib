@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.builder.BooleanAccum;
+import com.nhl.dflib.builder.BoolAccum;
 import com.nhl.dflib.builder.LongAccum;
 
 import java.util.Comparator;
@@ -234,10 +234,10 @@ public interface LongSeries extends Series<Long> {
      */
     default BooleanSeries lt(LongSeries s) {
         int len = size();
-        BooleanAccum accumulator = new BooleanAccum(len);
+        BoolAccum accumulator = new BoolAccum(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.pushBoolean(this.getLong(i) < s.getLong(i));
+            accumulator.pushBool(this.getLong(i) < s.getLong(i));
         }
 
         return accumulator.toSeries();
@@ -248,10 +248,10 @@ public interface LongSeries extends Series<Long> {
      */
     default BooleanSeries le(LongSeries s) {
         int len = size();
-        BooleanAccum accumulator = new BooleanAccum(len);
+        BoolAccum accumulator = new BoolAccum(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.pushBoolean(this.getLong(i) <= s.getLong(i));
+            accumulator.pushBool(this.getLong(i) <= s.getLong(i));
         }
 
         return accumulator.toSeries();
@@ -262,10 +262,10 @@ public interface LongSeries extends Series<Long> {
      */
     default BooleanSeries gt(LongSeries s) {
         int len = size();
-        BooleanAccum accumulator = new BooleanAccum(len);
+        BoolAccum accumulator = new BoolAccum(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.pushBoolean(this.getLong(i) > s.getLong(i));
+            accumulator.pushBool(this.getLong(i) > s.getLong(i));
         }
 
         return accumulator.toSeries();
@@ -276,10 +276,10 @@ public interface LongSeries extends Series<Long> {
      */
     default BooleanSeries ge(LongSeries s) {
         int len = size();
-        BooleanAccum accumulator = new BooleanAccum(len);
+        BoolAccum accumulator = new BoolAccum(len);
 
         for (int i = 0; i < len; i++) {
-            accumulator.pushBoolean(this.getLong(i) >= s.getLong(i));
+            accumulator.pushBool(this.getLong(i) >= s.getLong(i));
         }
 
         return accumulator.toSeries();

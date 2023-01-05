@@ -21,7 +21,7 @@ public class ConditionFactory {
         Class<?> t = exp.getType();
         if (t.equals(Boolean.class)) {
             Exp<Boolean> bExp = (Exp<Boolean>) exp;
-            return MapCondition1.map("castAsCondition", bExp, ConditionFactory::castBoolean);
+            return MapCondition1.map("castAsCondition", bExp, ConditionFactory::castBool);
         }
 
         if (Number.class.isAssignableFrom(t)) {
@@ -56,7 +56,7 @@ public class ConditionFactory {
         return MapCondition1.map("isNotNull", exp, Series::isNotNull);
     }
 
-    private static BooleanSeries castBoolean(Series<Boolean> s) {
+    private static BooleanSeries castBool(Series<Boolean> s) {
         if (s instanceof BooleanSeries) {
             return (BooleanSeries) s;
         }

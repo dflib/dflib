@@ -1,7 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.agg.SeriesAggregator;
-import com.nhl.dflib.builder.BooleanAccum;
+import com.nhl.dflib.builder.BoolAccum;
 import com.nhl.dflib.builder.DoubleAccum;
 import com.nhl.dflib.builder.IntAccum;
 import com.nhl.dflib.builder.LongAccum;
@@ -153,11 +153,11 @@ public interface Series<T> extends Iterable<T> {
     /**
      * @since 0.16
      */
-    default BooleanSeries mapAsBool(BooleanValueMapper<? super T> converter) {
+    default BooleanSeries mapAsBool(BoolValueMapper<? super T> converter) {
         int len = size();
-        BooleanAccum a = new BooleanAccum(len);
+        BoolAccum a = new BoolAccum(len);
         for (int i = 0; i < len; i++) {
-            a.pushBoolean(converter.map(get(i)));
+            a.pushBool(converter.map(get(i)));
         }
 
         return a.toSeries();

@@ -6,19 +6,19 @@ import com.nhl.dflib.series.BooleanArraySeries;
 import java.util.Arrays;
 
 /**
- * @since 0.6
+ * @since 0.16
  */
-public class BooleanAccum implements ValueAccum<Boolean> {
+public class BoolAccum implements ValueAccum<Boolean> {
 
     // TODO: bitmap?
     private boolean[] data;
     private int size;
 
-    public BooleanAccum() {
+    public BoolAccum() {
         this(10);
     }
 
-    public BooleanAccum(int capacity) {
+    public BoolAccum(int capacity) {
         this.size = 0;
         this.data = new boolean[capacity];
     }
@@ -42,14 +42,14 @@ public class BooleanAccum implements ValueAccum<Boolean> {
      */
     @Override
     public void push(Boolean v) {
-        pushBoolean(v != null ? v : false);
+        pushBool(v != null ? v : false);
     }
 
     /**
-     * @since 0.8
+     * @since 0.16
      */
     @Override
-    public void pushBoolean(boolean value) {
+    public void pushBool(boolean value) {
 
         if (size == data.length) {
             expand(data.length * 2);
@@ -60,11 +60,11 @@ public class BooleanAccum implements ValueAccum<Boolean> {
 
     @Override
     public void replace(int pos, Boolean v) {
-        replaceBoolean(pos, v != null ? v : false);
+        replaceBool(pos, v != null ? v : false);
     }
 
     @Override
-    public void replaceBoolean(int pos, boolean value) {
+    public void replaceBool(int pos, boolean value) {
 
         if (pos >= size) {
             size = pos + 1;

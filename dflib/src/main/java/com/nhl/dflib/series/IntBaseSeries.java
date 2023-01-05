@@ -1,7 +1,7 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.*;
-import com.nhl.dflib.builder.BooleanAccum;
+import com.nhl.dflib.builder.BoolAccum;
 import com.nhl.dflib.builder.IntAccum;
 import com.nhl.dflib.builder.ObjectAccum;
 import com.nhl.dflib.builder.UniqueIntAccum;
@@ -101,7 +101,7 @@ public abstract class IntBaseSeries implements IntSeries {
         IntAccum data = new IntAccum();
 
         for (int i = 0; i < size(); i++) {
-            if (positions.getBoolean(i)) {
+            if (positions.getBool(i)) {
                 data.pushInt(getInt(i));
             }
         }
@@ -316,10 +316,10 @@ public abstract class IntBaseSeries implements IntSeries {
     public BooleanSeries locateInt(IntPredicate predicate) {
         int len = size();
 
-        BooleanAccum matches = new BooleanAccum(len);
+        BoolAccum matches = new BoolAccum(len);
 
         for (int i = 0; i < len; i++) {
-            matches.pushBoolean(predicate.test(getInt(i)));
+            matches.pushBool(predicate.test(getInt(i)));
         }
 
         return matches.toSeries();
@@ -352,7 +352,7 @@ public abstract class IntBaseSeries implements IntSeries {
         IntAccum ints = new IntAccum(s);
 
         for (int i = 0; i < r; i++) {
-            ints.pushInt(condition.getBoolean(i) ? with : getInt(i));
+            ints.pushInt(condition.getBool(i) ? with : getInt(i));
         }
 
         for (int i = r; i < s; i++) {
@@ -369,7 +369,7 @@ public abstract class IntBaseSeries implements IntSeries {
         IntAccum ints = new IntAccum(s);
 
         for (int i = 0; i < r; i++) {
-            ints.pushInt(condition.getBoolean(i) ? getInt(i) : with);
+            ints.pushInt(condition.getBool(i) ? getInt(i) : with);
         }
 
         if (s > r) {
@@ -385,7 +385,7 @@ public abstract class IntBaseSeries implements IntSeries {
         ObjectAccum<Integer> values = new ObjectAccum<>(s);
 
         for (int i = 0; i < r; i++) {
-            values.push(condition.getBoolean(i) ? null : getInt(i));
+            values.push(condition.getBool(i) ? null : getInt(i));
         }
 
         for (int i = r; i < s; i++) {
@@ -401,7 +401,7 @@ public abstract class IntBaseSeries implements IntSeries {
         ObjectAccum<Integer> values = new ObjectAccum<>(s);
 
         for (int i = 0; i < r; i++) {
-            values.push(condition.getBoolean(i) ? getInt(i) : null);
+            values.push(condition.getBool(i) ? getInt(i) : null);
         }
 
         if (s > r) {
@@ -430,17 +430,17 @@ public abstract class IntBaseSeries implements IntSeries {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanAccum bools = new BooleanAccum(s);
+        BoolAccum bools = new BoolAccum(s);
 
         if (another instanceof IntSeries) {
             IntSeries anotherInt = (IntSeries) another;
 
             for (int i = 0; i < s; i++) {
-                bools.pushBoolean(getInt(i) == anotherInt.getInt(i));
+                bools.pushBool(getInt(i) == anotherInt.getInt(i));
             }
         } else {
             for (int i = 0; i < s; i++) {
-                bools.pushBoolean(Objects.equals(get(i), another.get(i)));
+                bools.pushBool(Objects.equals(get(i), another.get(i)));
             }
         }
 
@@ -456,16 +456,16 @@ public abstract class IntBaseSeries implements IntSeries {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanAccum bools = new BooleanAccum(s);
+        BoolAccum bools = new BoolAccum(s);
         if (another instanceof IntSeries) {
             IntSeries anotherInt = (IntSeries) another;
 
             for (int i = 0; i < s; i++) {
-                bools.pushBoolean(getInt(i) != anotherInt.getInt(i));
+                bools.pushBool(getInt(i) != anotherInt.getInt(i));
             }
         } else {
             for (int i = 0; i < s; i++) {
-                bools.pushBoolean(!Objects.equals(get(i), another.get(i)));
+                bools.pushBool(!Objects.equals(get(i), another.get(i)));
             }
         }
 

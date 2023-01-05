@@ -1,6 +1,6 @@
 package com.nhl.dflib.jdbc.connector.loader;
 
-import com.nhl.dflib.BooleanValueMapper;
+import com.nhl.dflib.BoolValueMapper;
 import com.nhl.dflib.DoubleValueMapper;
 import com.nhl.dflib.Extractor;
 import com.nhl.dflib.IntValueMapper;
@@ -26,7 +26,7 @@ import java.util.Calendar;
 public interface JdbcExtractorFactory<T> {
 
     static Extractor<ResultSet, Boolean> $bool(int pos) {
-        BooleanValueMapper<ResultSet> mapper = rs -> {
+        BoolValueMapper<ResultSet> mapper = rs -> {
             try {
                 return rs.getBoolean(pos);
             } catch (SQLException e) {

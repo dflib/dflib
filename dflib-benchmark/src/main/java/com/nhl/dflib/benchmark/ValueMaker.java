@@ -1,7 +1,7 @@
 package com.nhl.dflib.benchmark;
 
 import com.nhl.dflib.*;
-import com.nhl.dflib.builder.BooleanAccum;
+import com.nhl.dflib.builder.BoolAccum;
 import com.nhl.dflib.builder.DoubleAccum;
 import com.nhl.dflib.builder.IntAccum;
 import com.nhl.dflib.builder.LongAccum;
@@ -104,7 +104,7 @@ public interface ValueMaker<T> {
 
     default BooleanSeries booleanSeries(int len) {
 
-        BooleanAccum vals = new BooleanAccum(len);
+        BoolAccum vals = new BoolAccum(len);
 
         for (int i = 0; i < len; i++) {
             vals.push((Boolean) get());

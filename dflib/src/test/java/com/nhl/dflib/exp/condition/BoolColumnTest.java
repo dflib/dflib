@@ -4,7 +4,7 @@ import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.Condition;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.unit.BooleanSeriesAsserts;
+import com.nhl.dflib.unit.BoolSeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import static com.nhl.dflib.Exp.$bool;
@@ -31,7 +31,7 @@ public class BoolColumnTest {
         Condition c = $bool("b");
 
         BooleanSeries s = Series.ofBool(false, true, true);
-        new BooleanSeriesAsserts(c.eval(s)).expectData(false, true, true);
+        new BoolSeriesAsserts(c.eval(s)).expectData(false, true, true);
     }
 
     @Test

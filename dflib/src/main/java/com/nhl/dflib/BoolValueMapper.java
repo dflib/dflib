@@ -3,9 +3,9 @@ package com.nhl.dflib;
 /**
  * @since 0.6
  */
-public interface BooleanValueMapper<V> {
+public interface BoolValueMapper<V> {
 
-    static BooleanValueMapper<Object> fromObject() {
+    static BoolValueMapper<Object> fromObject() {
         return o -> {
 
             if (o instanceof Boolean) {
@@ -19,7 +19,7 @@ public interface BooleanValueMapper<V> {
         };
     }
 
-    static BooleanValueMapper<String> fromString() {
+    static BoolValueMapper<String> fromString() {
         // null-safe... "parseBoolean" returns false for null
         return s -> Boolean.parseBoolean(s);
     }

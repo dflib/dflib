@@ -1,7 +1,7 @@
 package com.nhl.dflib.exp.num;
 
 import com.nhl.dflib.*;
-import com.nhl.dflib.unit.BooleanSeriesAsserts;
+import com.nhl.dflib.unit.BoolSeriesAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -190,7 +190,7 @@ public class IntColumnTest {
                 3., 4,
                 3., 3);
 
-        new BooleanSeriesAsserts(c.eval(df)).expectData(true, false, false);
+        new BoolSeriesAsserts(c.eval(df)).expectData(true, false, false);
     }
 
     @Test
@@ -202,7 +202,7 @@ public class IntColumnTest {
                 3, 3,
                 3, 4);
 
-        new BooleanSeriesAsserts(c.eval(df)).expectData(true, false, false);
+        new BoolSeriesAsserts(c.eval(df)).expectData(true, false, false);
     }
 
 
@@ -216,7 +216,7 @@ public class IntColumnTest {
                 3, 3,
                 3, 4);
 
-        new BooleanSeriesAsserts(c.eval(df)).expectData(true, true, false);
+        new BoolSeriesAsserts(c.eval(df)).expectData(true, true, false);
     }
 
     @Test
@@ -229,7 +229,7 @@ public class IntColumnTest {
                 3, 3,
                 3, 4);
 
-        new BooleanSeriesAsserts(c.eval(df)).expectData(false, true, true);
+        new BoolSeriesAsserts(c.eval(df)).expectData(false, true, true);
     }
 
     @Test
@@ -242,7 +242,7 @@ public class IntColumnTest {
                 3, 3,
                 3, 4);
 
-        new BooleanSeriesAsserts(c.eval(df)).expectData(false, true, true);
+        new BoolSeriesAsserts(c.eval(df)).expectData(false, true, true);
     }
 
     @Test

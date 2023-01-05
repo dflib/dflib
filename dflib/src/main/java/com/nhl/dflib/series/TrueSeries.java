@@ -21,34 +21,34 @@ public class TrueSeries extends BooleanBaseSeries {
     }
 
     @Override
-    public boolean getBoolean(int index) {
+    public boolean getBool(int index) {
         return true;
     }
 
     @Override
-    public void copyToBoolean(boolean[] to, int fromOffset, int toOffset, int len) {
+    public void copyToBool(boolean[] to, int fromOffset, int toOffset, int len) {
         Arrays.fill(to, toOffset, toOffset + len, true);
     }
 
     @Override
-    public BooleanSeries materializeBoolean() {
+    public BooleanSeries materializeBool() {
         return this;
     }
 
     @Override
-    public BooleanSeries rangeOpenClosedBoolean(int fromInclusive, int toExclusive) {
+    public BooleanSeries rangeOpenClosedBool(int fromInclusive, int toExclusive) {
         return fromInclusive == 0 && toExclusive == size()
                 ? this
                 : new TrueSeries(toExclusive - fromInclusive);
     }
 
     @Override
-    public BooleanSeries headBoolean(int len) {
+    public BooleanSeries headBool(int len) {
         return len < size ? new TrueSeries(len) : this;
     }
 
     @Override
-    public BooleanSeries tailBoolean(int len) {
+    public BooleanSeries tailBool(int len) {
         return len < size ? new TrueSeries(len) : this;
     }
 

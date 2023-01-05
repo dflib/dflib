@@ -15,11 +15,11 @@ public interface ValueStore<T> {
         throw new UnsupportedOperationException("No support for setting positional values");
     }
 
-    default void pushBoolean(boolean v) {
+    default void pushBool(boolean v) {
         throw new UnsupportedOperationException("No support for 'boolean' values");
     }
 
-    default void replaceBoolean(int pos, boolean v) {
+    default void replaceBool(int pos, boolean v) {
         throw new UnsupportedOperationException("No support for 'boolean' values");
     }
 

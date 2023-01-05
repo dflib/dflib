@@ -458,7 +458,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new DataFrame
      * @since 0.6
      */
-    default <V> DataFrame toBooleanColumn(String columnLabel, BooleanValueMapper<V> converter) {
+    default <V> DataFrame toBooleanColumn(String columnLabel, BoolValueMapper<V> converter) {
         int pos = getColumnsIndex().position(columnLabel);
         return toBooleanColumn(pos, converter);
     }
@@ -470,7 +470,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new DataFrame
      * @since 0.6
      */
-    <V> DataFrame toBooleanColumn(int pos, BooleanValueMapper<V> converter);
+    <V> DataFrame toBooleanColumn(int pos, BoolValueMapper<V> converter);
 
     /**
      * @param columnLabel name of a column to convert
@@ -488,7 +488,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.6
      */
     default DataFrame toBooleanColumn(int pos) {
-        return toBooleanColumn(pos, BooleanValueMapper.fromObject());
+        return toBooleanColumn(pos, BoolValueMapper.fromObject());
     }
 
     /**

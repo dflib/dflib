@@ -1,7 +1,7 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.*;
-import com.nhl.dflib.builder.BooleanAccum;
+import com.nhl.dflib.builder.BoolAccum;
 import com.nhl.dflib.builder.IntAccum;
 import com.nhl.dflib.builder.LongAccum;
 import com.nhl.dflib.builder.ObjectAccum;
@@ -97,7 +97,7 @@ public abstract class LongBaseSeries implements LongSeries {
         LongAccum data = new LongAccum();
 
         for (int i = 0; i < size(); i++) {
-            if (positions.getBoolean(i)) {
+            if (positions.getBool(i)) {
                 data.pushLong(getLong(i));
             }
         }
@@ -282,10 +282,10 @@ public abstract class LongBaseSeries implements LongSeries {
     public BooleanSeries locateLong(LongPredicate predicate) {
         int len = size();
 
-        BooleanAccum matches = new BooleanAccum(len);
+        BoolAccum matches = new BoolAccum(len);
 
         for (int i = 0; i < len; i++) {
-            matches.pushBoolean(predicate.test(getLong(i)));
+            matches.pushBool(predicate.test(getLong(i)));
         }
 
         return matches.toSeries();
@@ -318,7 +318,7 @@ public abstract class LongBaseSeries implements LongSeries {
         LongAccum longs = new LongAccum(s);
 
         for (int i = 0; i < r; i++) {
-            longs.pushLong(condition.getBoolean(i) ? with : getLong(i));
+            longs.pushLong(condition.getBool(i) ? with : getLong(i));
         }
 
         for (int i = r; i < s; i++) {
@@ -335,7 +335,7 @@ public abstract class LongBaseSeries implements LongSeries {
         LongAccum longs = new LongAccum(s);
 
         for (int i = 0; i < r; i++) {
-            longs.pushLong(condition.getBoolean(i) ? getLong(i) : with);
+            longs.pushLong(condition.getBool(i) ? getLong(i) : with);
         }
 
         if (s > r) {
@@ -351,7 +351,7 @@ public abstract class LongBaseSeries implements LongSeries {
         ObjectAccum<Long> values = new ObjectAccum<>(s);
 
         for (int i = 0; i < r; i++) {
-            values.push(condition.getBoolean(i) ? null : getLong(i));
+            values.push(condition.getBool(i) ? null : getLong(i));
         }
 
         for (int i = r; i < s; i++) {
@@ -367,7 +367,7 @@ public abstract class LongBaseSeries implements LongSeries {
         ObjectAccum<Long> values = new ObjectAccum<>(s);
 
         for (int i = 0; i < r; i++) {
-            values.push(condition.getBoolean(i) ? getLong(i) : null);
+            values.push(condition.getBool(i) ? getLong(i) : null);
         }
 
         if (s > r) {
@@ -386,17 +386,17 @@ public abstract class LongBaseSeries implements LongSeries {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanAccum bools = new BooleanAccum(s);
+        BoolAccum bools = new BoolAccum(s);
 
         if (another instanceof LongSeries) {
             LongSeries anotherLong = (LongSeries) another;
 
             for (int i = 0; i < s; i++) {
-                bools.pushBoolean(getLong(i) == anotherLong.getLong(i));
+                bools.pushBool(getLong(i) == anotherLong.getLong(i));
             }
         } else {
             for (int i = 0; i < s; i++) {
-                bools.pushBoolean(Objects.equals(get(i), another.get(i)));
+                bools.pushBool(Objects.equals(get(i), another.get(i)));
             }
         }
 
@@ -412,16 +412,16 @@ public abstract class LongBaseSeries implements LongSeries {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanAccum bools = new BooleanAccum(s);
+        BoolAccum bools = new BoolAccum(s);
         if (another instanceof LongSeries) {
             LongSeries anotherLong = (LongSeries) another;
 
             for (int i = 0; i < s; i++) {
-                bools.pushBoolean(getLong(i) != anotherLong.getLong(i));
+                bools.pushBool(getLong(i) != anotherLong.getLong(i));
             }
         } else {
             for (int i = 0; i < s; i++) {
-                bools.pushBoolean(!Objects.equals(get(i), another.get(i)));
+                bools.pushBool(!Objects.equals(get(i), another.get(i)));
             }
         }
 

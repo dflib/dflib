@@ -1,7 +1,7 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.*;
-import com.nhl.dflib.builder.BooleanAccum;
+import com.nhl.dflib.builder.BoolAccum;
 import com.nhl.dflib.builder.IntAccum;
 import com.nhl.dflib.builder.ObjectAccum;
 import com.nhl.dflib.concat.SeriesConcat;
@@ -26,7 +26,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
     @Override
     public Series<Boolean> rangeOpenClosed(int fromInclusive, int toExclusive) {
-        return rangeOpenClosedBoolean(fromInclusive, toExclusive);
+        return rangeOpenClosedBool(fromInclusive, toExclusive);
     }
 
     @Override
@@ -46,7 +46,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
                 return selectAsObjectSeries(positions);
             }
 
-            data[i] = getBoolean(index);
+            data[i] = getBool(index);
         }
 
         return new BooleanArraySeries(data);
@@ -54,7 +54,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
     @Override
     public Series<Boolean> select(Condition condition) {
-        return selectBoolean(condition);
+        return selectBool(condition);
     }
 
     @Override
@@ -63,12 +63,12 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
-    public BooleanSeries selectBoolean(Condition condition) {
-        return selectBoolean(condition.eval(this));
+    public BooleanSeries selectBool(Condition condition) {
+        return selectBool(condition.eval(this));
     }
 
     @Override
-    public BooleanSeries selectBoolean(BooleanSeries positions) {
+    public BooleanSeries selectBool(BooleanSeries positions) {
         int s = size();
         int ps = positions.size();
 
@@ -76,11 +76,11 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
             throw new IllegalArgumentException("Positions size " + ps + " is not the same as this size " + s);
         }
 
-        BooleanAccum data = new BooleanAccum();
+        BoolAccum data = new BoolAccum();
 
         for (int i = 0; i < size(); i++) {
-            if (positions.getBoolean(i)) {
-                data.pushBoolean(getBoolean(i));
+            if (positions.getBool(i)) {
+                data.pushBool(getBool(i));
             }
         }
 
@@ -89,7 +89,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
     @Override
     public Series<Boolean> select(BooleanSeries positions) {
-        return selectBoolean(positions);
+        return selectBool(positions);
     }
 
     @Override
@@ -112,7 +112,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
             // unlike SelectSeries, we do not expect negative ints in the index.
             // So if it happens, let it fall through to "getLong()" and fail there
             int index = positions.getInt(i);
-            data[i] = getBoolean(index);
+            data[i] = getBool(index);
         }
 
         return new BooleanArraySeries(data);
@@ -125,14 +125,14 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
         for (int i = 0; i < h; i++) {
             int index = positions.getInt(i);
-            data[i] = index < 0 ? null : getBoolean(index);
+            data[i] = index < 0 ? null : getBool(index);
         }
 
         return new ArraySeries<>(data);
     }
 
     @Override
-    public BooleanSeries concatBoolean(BooleanSeries... other) {
+    public BooleanSeries concatBool(BooleanSeries... other) {
         if (other.length == 0) {
             return this;
         }
@@ -146,12 +146,12 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         }
 
         boolean[] data = new boolean[h];
-        copyToBoolean(data, 0, 0, size);
+        copyToBool(data, 0, 0, size);
 
         int offset = size;
         for (BooleanSeries s : other) {
             int len = s.size();
-            s.copyToBoolean(data, 0, offset, len);
+            s.copyToBool(data, 0, offset, len);
             offset += len;
         }
 
@@ -182,12 +182,12 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
     @Override
     public Series<Boolean> head(int len) {
-        return headBoolean(len);
+        return headBool(len);
     }
 
     @Override
     public Series<Boolean> tail(int len) {
-        return tailBoolean(len);
+        return tailBool(len);
     }
 
     @SafeVarargs
@@ -208,18 +208,18 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
     @Override
     public Series<Boolean> materialize() {
-        return materializeBoolean();
+        return materializeBool();
     }
 
     @Override
     public Boolean get(int index) {
-        return getBoolean(index);
+        return getBool(index);
     }
 
     @Override
     public void copyTo(Object[] to, int fromOffset, int toOffset, int len) {
         for (int i = 0; i < len; i++) {
-            to[toOffset + i] = getBoolean(i);
+            to[toOffset + i] = getBool(i);
         }
     }
 
@@ -230,7 +230,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         int len = size();
 
         for (int i = 0; i < len; i++) {
-            if (getBoolean(i)) {
+            if (getBool(i)) {
                 filtered.pushInt(i);
             }
         }
@@ -245,7 +245,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         int len = size();
 
         for (int i = 0; i < len; i++) {
-            if (!getBoolean(i)) {
+            if (!getBool(i)) {
                 filtered.pushInt(i);
             }
         }
@@ -272,10 +272,10 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     public BooleanSeries locate(ValuePredicate<Boolean> predicate) {
         int len = size();
 
-        BooleanAccum matches = new BooleanAccum(len);
+        BoolAccum matches = new BoolAccum(len);
 
         for (int i = 0; i < len; i++) {
-            matches.pushBoolean(predicate.test(get(i)));
+            matches.pushBool(predicate.test(get(i)));
         }
 
         return matches.toSeries();
@@ -300,14 +300,14 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     private BooleanSeries replaceBoolean(BooleanSeries condition, boolean with) {
         int s = size();
         int r = Math.min(s, condition.size());
-        BooleanAccum bools = new BooleanAccum(s);
+        BoolAccum bools = new BoolAccum(s);
 
         for (int i = 0; i < r; i++) {
-            bools.pushBoolean(condition.getBoolean(i) ? with : getBoolean(i));
+            bools.pushBool(condition.getBool(i) ? with : getBool(i));
         }
 
         for (int i = r; i < s; i++) {
-            bools.pushBoolean(getBoolean(i));
+            bools.pushBool(getBool(i));
         }
 
         return bools.toSeries();
@@ -317,10 +317,10 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
         int s = size();
         int r = Math.min(s, condition.size());
-        BooleanAccum bools = new BooleanAccum(s);
+        BoolAccum bools = new BoolAccum(s);
 
         for (int i = 0; i < r; i++) {
-            bools.pushBoolean(condition.getBoolean(i) ? getBoolean(i) : with);
+            bools.pushBool(condition.getBool(i) ? getBool(i) : with);
         }
 
         if (s > r) {
@@ -336,11 +336,11 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         ObjectAccum<Boolean> values = new ObjectAccum<>(s);
 
         for (int i = 0; i < r; i++) {
-            values.push(condition.getBoolean(i) ? null : getBoolean(i));
+            values.push(condition.getBool(i) ? null : getBool(i));
         }
 
         for (int i = r; i < s; i++) {
-            values.push(getBoolean(i));
+            values.push(getBool(i));
         }
 
         return values.toSeries();
@@ -352,7 +352,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         ObjectAccum<Boolean> values = new ObjectAccum<>(s);
 
         for (int i = 0; i < r; i++) {
-            values.push(condition.getBoolean(i) ? getBoolean(i) : null);
+            values.push(condition.getBool(i) ? getBool(i) : null);
         }
 
         if (s > r) {
@@ -372,17 +372,17 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanAccum bools = new BooleanAccum(s);
+        BoolAccum bools = new BoolAccum(s);
 
         if (another instanceof BooleanSeries) {
             BooleanSeries anotherBool = (BooleanSeries) another;
 
             for (int i = 0; i < s; i++) {
-                bools.pushBoolean(getBoolean(i) == anotherBool.getBoolean(i));
+                bools.pushBool(getBool(i) == anotherBool.getBool(i));
             }
         } else {
             for (int i = 0; i < s; i++) {
-                bools.pushBoolean(Objects.equals(get(i), another.get(i)));
+                bools.pushBool(Objects.equals(get(i), another.get(i)));
             }
         }
 
@@ -398,16 +398,16 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BooleanAccum bools = new BooleanAccum(s);
+        BoolAccum bools = new BoolAccum(s);
         if (another instanceof BooleanSeries) {
             BooleanSeries anotherBool = (BooleanSeries) another;
 
             for (int i = 0; i < s; i++) {
-                bools.pushBoolean(getBoolean(i) != anotherBool.getBoolean(i));
+                bools.pushBool(getBool(i) != anotherBool.getBool(i));
             }
         } else {
             for (int i = 0; i < s; i++) {
-                bools.pushBoolean(!Objects.equals(get(i), another.get(i)));
+                bools.pushBool(!Objects.equals(get(i), another.get(i)));
             }
         }
 
@@ -429,7 +429,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         int s = size();
 
         for (int i = 0; i < s; i++) {
-            if (!getBoolean(i)) {
+            if (!getBool(i)) {
                 return false;
             }
         }
@@ -447,7 +447,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         }
 
         for (int i = 0; i < s; i++) {
-            if (getBoolean(i)) {
+            if (getBool(i)) {
                 return false;
             }
         }
@@ -457,11 +457,11 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
     @Override
     public Series<Boolean> unique() {
-        return uniqueBoolean();
+        return uniqueBool();
     }
 
     @Override
-    public BooleanSeries uniqueBoolean() {
+    public BooleanSeries uniqueBool() {
         // unlike other primitive series, Boolean is categorical data, and there can be at most 2 values in the final
         // array... we can optimize around that
 
@@ -507,7 +507,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
         boolean[] not = new boolean[size];
         for (int i = 0; i < size; i++) {
-            not[i] = !getBoolean(i);
+            not[i] = !getBool(i);
         }
 
         return new BooleanArraySeries(not);

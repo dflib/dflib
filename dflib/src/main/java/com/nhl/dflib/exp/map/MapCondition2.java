@@ -1,7 +1,7 @@
 package com.nhl.dflib.exp.map;
 
 import com.nhl.dflib.*;
-import com.nhl.dflib.builder.BooleanAccum;
+import com.nhl.dflib.builder.BoolAccum;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.exp.Condition2;
 
@@ -27,11 +27,11 @@ public class MapCondition2<L, R> extends Condition2<L, R> {
     protected static <L, R> BiFunction<Series<L>, Series<R>, BooleanSeries> valToSeries(BiPredicate<L, R> predicate) {
         return (ls, rs) -> {
             int len = ls.size();
-            BooleanAccum accum = new BooleanAccum(len);
+            BoolAccum accum = new BoolAccum(len);
             for (int i = 0; i < len; i++) {
                 L l = ls.get(i);
                 R r = rs.get(i);
-                accum.pushBoolean(l != null && r != null ? predicate.test(l, r) : false);
+                accum.pushBool(l != null && r != null ? predicate.test(l, r) : false);
             }
 
             return accum.toSeries();

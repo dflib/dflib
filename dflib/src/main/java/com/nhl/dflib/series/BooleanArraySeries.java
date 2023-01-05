@@ -29,7 +29,7 @@ public class BooleanArraySeries extends BooleanBaseSeries {
     }
 
     @Override
-    public boolean getBoolean(int index) {
+    public boolean getBool(int index) {
         if (index >= size) {
             throw new ArrayIndexOutOfBoundsException(index);
         }
@@ -38,7 +38,7 @@ public class BooleanArraySeries extends BooleanBaseSeries {
     }
 
     @Override
-    public void copyToBoolean(boolean[] to, int fromOffset, int toOffset, int len) {
+    public void copyToBool(boolean[] to, int fromOffset, int toOffset, int len) {
         if (fromOffset + len > size) {
             throw new ArrayIndexOutOfBoundsException(fromOffset + len);
         }
@@ -47,27 +47,27 @@ public class BooleanArraySeries extends BooleanBaseSeries {
     }
 
     @Override
-    public BooleanSeries headBoolean(int len) {
+    public BooleanSeries headBool(int len) {
         return len < size ? new BooleanArraySeries(data, offset, len) : this;
     }
 
     @Override
-    public BooleanSeries tailBoolean(int len) {
+    public BooleanSeries tailBool(int len) {
         return len < size ? new BooleanArraySeries(data, offset + size - len, len) : this;
     }
 
     @Override
-    public BooleanSeries rangeOpenClosedBoolean(int fromInclusive, int toExclusive) {
+    public BooleanSeries rangeOpenClosedBool(int fromInclusive, int toExclusive) {
         return fromInclusive == 0 && toExclusive == size()
                 ? this
                 : new BooleanArraySeries(data, offset + fromInclusive, toExclusive - fromInclusive);
     }
 
     @Override
-    public BooleanSeries materializeBoolean() {
+    public BooleanSeries materializeBool() {
         if (offset > 0 || size + offset < this.data.length) {
             boolean[] data = new boolean[size];
-            copyToBoolean(data, 0, 0, size);
+            copyToBool(data, 0, 0, size);
             return new BooleanArraySeries(data);
         }
 

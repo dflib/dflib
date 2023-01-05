@@ -4,7 +4,7 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
-import com.nhl.dflib.BooleanValueMapper;
+import com.nhl.dflib.BoolValueMapper;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.DoubleValueMapper;
 import com.nhl.dflib.Extractor;
@@ -201,7 +201,7 @@ public class JsonLoader {
     }
 
     static Extractor<Map<String, Object>, Boolean> boolExtractor(String name) {
-        return Extractor.$bool(m -> BooleanValueMapper.fromObject().map(getObject(m, name)));
+        return Extractor.$bool(m -> BoolValueMapper.fromObject().map(getObject(m, name)));
     }
 
     static Extractor<Map<String, Object>, Integer> intExtractor(String name) {

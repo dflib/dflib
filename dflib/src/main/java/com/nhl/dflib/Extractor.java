@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.builder.BooleanExtractor;
+import com.nhl.dflib.builder.BoolExtractor;
 import com.nhl.dflib.builder.DoubleExtractor;
 import com.nhl.dflib.builder.IntExtractor;
 import com.nhl.dflib.builder.LongExtractor;
@@ -51,7 +51,7 @@ public interface Extractor<F, T> {
         return new DoubleExtractor<>(mapper);
     }
 
-    static <F> BooleanExtractor<F> $bool(BooleanValueMapper<F> mapper) {
-        return new BooleanExtractor<>(mapper);
+    static <F> BoolExtractor<F> $bool(BoolValueMapper<F> mapper) {
+        return new BoolExtractor<>(mapper);
     }
 }

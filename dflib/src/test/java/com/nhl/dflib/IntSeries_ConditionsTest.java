@@ -1,6 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.unit.BooleanSeriesAsserts;
+import com.nhl.dflib.unit.BoolSeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -14,7 +14,7 @@ public class IntSeries_ConditionsTest {
         Series<Integer> s2 = Series.ofInt(3, 1, 2);
 
         BooleanSeries cond = s1.eq(s2);
-        new BooleanSeriesAsserts(cond).expectData(true, true, true);
+        new BoolSeriesAsserts(cond).expectData(true, true, true);
     }
 
     @Test
@@ -24,7 +24,7 @@ public class IntSeries_ConditionsTest {
         Series<Integer> s2 = Series.ofInt(3, 1, 2);
 
         BooleanSeries cond = s1.eq(s2);
-        new BooleanSeriesAsserts(cond).expectData(true, false, true);
+        new BoolSeriesAsserts(cond).expectData(true, false, true);
     }
 
     @Test
@@ -43,7 +43,7 @@ public class IntSeries_ConditionsTest {
         Series<Integer> s2 = Series.ofInt(3, 1, 2);
 
         BooleanSeries cond = s1.ne(s2);
-        new BooleanSeriesAsserts(cond).expectData(false, false, false);
+        new BoolSeriesAsserts(cond).expectData(false, false, false);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class IntSeries_ConditionsTest {
         Series<Integer> s2 = Series.ofInt(-3, 1, 2);
 
         BooleanSeries cond = s1.ne(s2);
-        new BooleanSeriesAsserts(cond).expectData(true, true, false);
+        new BoolSeriesAsserts(cond).expectData(true, true, false);
     }
 
 }

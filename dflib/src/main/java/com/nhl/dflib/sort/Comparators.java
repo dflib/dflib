@@ -108,8 +108,8 @@ public final class Comparators {
 
     public static IntComparator of(BooleanSeries s, boolean ascending) {
         return ascending
-                ? (i1, i2) -> Boolean.compare(s.getBoolean(i1), s.getBoolean(i2))
-                : (i1, i2) -> Boolean.compare(s.getBoolean(i2), s.getBoolean(i1));
+                ? (i1, i2) -> Boolean.compare(s.getBool(i1), s.getBool(i2))
+                : (i1, i2) -> Boolean.compare(s.getBool(i2), s.getBool(i1));
     }
 
     public static <T> IntComparator of(Series<T> s, Comparator<? super T> comparator) {

@@ -5,7 +5,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.NumExp;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.TimeExp;
-import com.nhl.dflib.unit.BooleanSeriesAsserts;
+import com.nhl.dflib.unit.BoolSeriesAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -117,7 +117,7 @@ public class TimeColumnTest {
                 LocalTime.of(3, 12, 11), LocalTime.of(3, 12, 11),
                 LocalTime.of(4, 12, 11), LocalTime.of(14, 59, 59));
 
-        new BooleanSeriesAsserts(eq.eval(df)).expectData(true, false);
+        new BoolSeriesAsserts(eq.eval(df)).expectData(true, false);
     }
 
     @Test
@@ -128,7 +128,7 @@ public class TimeColumnTest {
                 LocalTime.of(3, 12, 11), LocalTime.of(3, 12, 11),
                 LocalTime.of(4, 12, 11), LocalTime.of(14, 59, 59));
 
-        new BooleanSeriesAsserts(exp.eval(df)).expectData(false, true);
+        new BoolSeriesAsserts(exp.eval(df)).expectData(false, true);
     }
 
     @Test
@@ -139,7 +139,7 @@ public class TimeColumnTest {
                 LocalTime.of(3, 12, 11), LocalTime.of(3, 12, 11),
                 LocalTime.of(4, 12, 11), LocalTime.of(14, 59, 59));
 
-        new BooleanSeriesAsserts(lt.eval(df)).expectData(false, true);
+        new BoolSeriesAsserts(lt.eval(df)).expectData(false, true);
     }
 
     @Test
@@ -150,6 +150,6 @@ public class TimeColumnTest {
                 LocalTime.of(3, 12, 11), LocalTime.of(3, 12, 11),
                 LocalTime.of(4, 12, 11), LocalTime.of(14, 59, 59));
 
-        new BooleanSeriesAsserts(le.eval(df)).expectData(true, true);
+        new BoolSeriesAsserts(le.eval(df)).expectData(true, true);
     }
 }

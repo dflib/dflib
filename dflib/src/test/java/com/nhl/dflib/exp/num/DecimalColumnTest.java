@@ -7,7 +7,7 @@ import com.nhl.dflib.DecimalExp;
 import com.nhl.dflib.NumExp;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.StrExp;
-import com.nhl.dflib.unit.BooleanSeriesAsserts;
+import com.nhl.dflib.unit.BoolSeriesAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -210,7 +210,7 @@ public class DecimalColumnTest {
                 new BigDecimal("3"), new BigDecimal("3"),
                 new BigDecimal("1.1"), new BigDecimal("1.2"));
 
-        new BooleanSeriesAsserts(c.eval(df)).expectData(true, false, false);
+        new BoolSeriesAsserts(c.eval(df)).expectData(true, false, false);
     }
 
     @Test
@@ -233,7 +233,7 @@ public class DecimalColumnTest {
                 new BigDecimal("11.5"));
 
         BooleanSeries s = $decimal("a").ne(new BigDecimal("11.5")).eval(df);
-        new BooleanSeriesAsserts(s).expectData(true, true, false);
+        new BoolSeriesAsserts(s).expectData(true, true, false);
     }
 
     @Test
@@ -245,7 +245,7 @@ public class DecimalColumnTest {
                 new BigDecimal("11.5"));
 
         BooleanSeries s = $decimal("a").eq(new BigDecimal("11.5")).eval(df);
-        new BooleanSeriesAsserts(s).expectData(false, false, true);
+        new BoolSeriesAsserts(s).expectData(false, false, true);
     }
 
     @Test
@@ -258,7 +258,7 @@ public class DecimalColumnTest {
                 new BigDecimal("11.5"));
 
         BooleanSeries s = $decimal("a").eq(BigDecimal.ZERO).eval(df);
-        new BooleanSeriesAsserts(s).expectData(false, true, true, false);
+        new BoolSeriesAsserts(s).expectData(false, true, true, false);
     }
 
     @Test
@@ -270,7 +270,7 @@ public class DecimalColumnTest {
                 new BigDecimal("11.5"));
 
         BooleanSeries s = $decimal("a").ne("11.5").eval(df);
-        new BooleanSeriesAsserts(s).expectData(true, true, true);
+        new BoolSeriesAsserts(s).expectData(true, true, true);
     }
 
     @Test
@@ -294,7 +294,7 @@ public class DecimalColumnTest {
                 BigDecimal.ZERO,
                 null,
                 new BigDecimal("11.5"));
-        new BooleanSeriesAsserts(c.eval(s)).expectData(true, false, false, true);
+        new BoolSeriesAsserts(c.eval(s)).expectData(true, false, false, true);
     }
 
     @Test
@@ -306,7 +306,7 @@ public class DecimalColumnTest {
                 BigDecimal.ZERO,
                 null,
                 new BigDecimal("11.5"));
-        new BooleanSeriesAsserts(c.eval(s)).expectData(false, false, false, true);
+        new BoolSeriesAsserts(c.eval(s)).expectData(false, false, false, true);
     }
 
     @Test
@@ -318,6 +318,6 @@ public class DecimalColumnTest {
                 BigDecimal.ZERO,
                 null,
                 new BigDecimal("11.5"));
-        new BooleanSeriesAsserts(c.eval(s)).expectData(true, true, false, true);
+        new BoolSeriesAsserts(c.eval(s)).expectData(true, true, false, true);
     }
 }

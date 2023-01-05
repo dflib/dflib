@@ -3,7 +3,7 @@ package com.nhl.dflib.exp.map;
 import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.builder.BooleanAccum;
+import com.nhl.dflib.builder.BoolAccum;
 import com.nhl.dflib.exp.ExpScalarCondition2;
 import com.nhl.dflib.series.FalseSeries;
 
@@ -34,10 +34,10 @@ public class MapExpScalarCondition2<L, R> extends ExpScalarCondition2<L, R> {
             }
 
             int len = ls.size();
-            BooleanAccum accum = new BooleanAccum(len);
+            BoolAccum accum = new BoolAccum(len);
             for (int i = 0; i < len; i++) {
                 L l = ls.get(i);
-                accum.pushBoolean(l != null ? predicate.test(l, r) : false);
+                accum.pushBool(l != null ? predicate.test(l, r) : false);
             }
 
             return accum.toSeries();
