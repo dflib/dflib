@@ -455,7 +455,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public <V> DataFrame toBooleanColumn(int pos, BoolValueMapper<V> converter) {
+    public <V> DataFrame toBoolColumn(int pos, BoolValueMapper<V> converter) {
         Series<V> c = dataColumns[pos];
         return replaceColumn(pos, c.mapAsBool(converter));
     }

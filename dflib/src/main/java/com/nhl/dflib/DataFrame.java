@@ -456,11 +456,20 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param converter   a function to apply to column values to covert them to booleans
      * @param <V>         expected input column value
      * @return a new DataFrame
+     * @since 0.17
+     */
+    default <V> DataFrame toBoolColumn(String columnLabel, BoolValueMapper<V> converter) {
+        int pos = getColumnsIndex().position(columnLabel);
+        return toBoolColumn(pos, converter);
+    }
+
+    /**
+     * @deprecated in favor of {@link #toBoolColumn(String, BoolValueMapper)}
      * @since 0.6
      */
+    @Deprecated(since = "0.17")
     default <V> DataFrame toBooleanColumn(String columnLabel, BoolValueMapper<V> converter) {
-        int pos = getColumnsIndex().position(columnLabel);
-        return toBooleanColumn(pos, converter);
+        return toBoolColumn(columnLabel, converter);
     }
 
     /**
@@ -468,27 +477,54 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param converter a function to apply to column values to covert them to booleans
      * @param <V>       expected input column value
      * @return a new DataFrame
+     * @since 0.17
+     */
+    <V> DataFrame toBoolColumn(int pos, BoolValueMapper<V> converter);
+
+    /**
+     * @deprecated in favor of {@link #toBoolColumn(int, BoolValueMapper)}
      * @since 0.6
      */
-    <V> DataFrame toBooleanColumn(int pos, BoolValueMapper<V> converter);
+    @Deprecated(since = "0.17")
+    default <V> DataFrame toBooleanColumn(int pos, BoolValueMapper<V> converter) {
+        return toBoolColumn(pos, converter);
+    }
 
     /**
      * @param columnLabel name of a column to convert
      * @return a new DataFrame
+     * @since 0.17
+     */
+    default DataFrame toBoolColumn(String columnLabel) {
+        int pos = getColumnsIndex().position(columnLabel);
+        return toBoolColumn(pos);
+    }
+
+    /**
+     * @deprecated in favor of {@link #toBoolColumn(String)}
      * @since 0.6
      */
+    @Deprecated(since = "0.17")
     default DataFrame toBooleanColumn(String columnLabel) {
-        int pos = getColumnsIndex().position(columnLabel);
-        return toBooleanColumn(pos);
+        return toBoolColumn(columnLabel);
     }
 
     /**
      * @param pos position of a column to convert
      * @return a new DataFrame
-     * @since 0.6
+     * @since 0.17
      */
+    default DataFrame toBoolColumn(int pos) {
+        return toBoolColumn(pos, BoolValueMapper.fromObject());
+    }
+
+    /**
+     * @since 0.6
+     * @deprecated in favor of {@link #toBoolColumn(int)}
+     */
+    @Deprecated(since = "0.17")
     default DataFrame toBooleanColumn(int pos) {
-        return toBooleanColumn(pos, BoolValueMapper.fromObject());
+        return toBoolColumn(pos);
     }
 
     /**
