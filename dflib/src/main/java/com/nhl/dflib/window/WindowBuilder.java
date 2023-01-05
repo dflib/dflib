@@ -44,7 +44,7 @@ public class WindowBuilder {
             throw new IllegalArgumentException("No partitioning columns specified");
         }
 
-        Hasher partitioner = Hasher.forColumn(columns[0]);
+        Hasher partitioner = Hasher.of(columns[0]);
         for (int i = 1; i < columns.length; i++) {
             partitioner = partitioner.and(columns[i]);
         }
@@ -59,7 +59,7 @@ public class WindowBuilder {
             throw new IllegalArgumentException("No partitioning columns specified");
         }
 
-        Hasher partitioner = Hasher.forColumn(columns[0]);
+        Hasher partitioner = Hasher.of(columns[0]);
         for (int i = 1; i < columns.length; i++) {
             partitioner = partitioner.and(columns[i]);
         }

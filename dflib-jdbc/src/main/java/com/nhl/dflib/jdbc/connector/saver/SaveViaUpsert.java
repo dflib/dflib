@@ -177,7 +177,7 @@ public class SaveViaUpsert extends SaveViaInsert {
     }
 
     protected Hasher keyHasher() {
-        Hasher h = Hasher.forColumn(keyColumns[0]);
+        Hasher h = Hasher.of(keyColumns[0]);
         for (int i = 1; i < keyColumns.length; i++) {
             h = h.and(keyColumns[i]);
         }

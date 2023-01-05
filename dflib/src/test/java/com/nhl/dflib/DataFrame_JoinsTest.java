@@ -185,7 +185,7 @@ public class DataFrame_JoinsTest {
                 "c", 3);
 
         DataFrame df = df1.innerJoin()
-                .on(Hasher.forColumn(0), Hasher.forColumn(1))
+                .on(Hasher.of(0), Hasher.of(1))
                 .with(df2);
 
         new DataFrameAsserts(df, "a", "b", "c", "d")

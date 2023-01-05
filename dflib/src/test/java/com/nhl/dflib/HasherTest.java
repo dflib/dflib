@@ -18,7 +18,7 @@ public class HasherTest {
                 3, "c");
 
         DataFrame df = df1.innerJoin()
-                .on(Hasher.forColumn("a"), Hasher.forColumn("a"))
+                .on(Hasher.of("a"), Hasher.of("a"))
                 .with(df2);
 
         new DataFrameAsserts(df, "a", "b", "a_", "b_")
@@ -40,7 +40,7 @@ public class HasherTest {
                 3, "c");
 
         DataFrame df = df1.innerJoin()
-                .on(Hasher.forColumn(0), Hasher.forColumn(0))
+                .on(Hasher.of(0), Hasher.of(0))
                 .with(df2);
 
         new DataFrameAsserts(df, "a", "b", "a_", "b_")
@@ -64,7 +64,7 @@ public class HasherTest {
                 3, "c", 5L);
 
         DataFrame df = df1.innerJoin()
-                .on(Hasher.forColumn("a").and("b").and("c"), Hasher.forColumn("x").and("y").and("z"))
+                .on(Hasher.of("a").and("b").and("c"), Hasher.of("x").and("y").and("z"))
                 .with(df2);
 
         new DataFrameAsserts(df, "a", "b", "c", "x", "y", "z")
@@ -86,7 +86,7 @@ public class HasherTest {
                 3, "c", 5L);
 
         DataFrame df = df1.innerJoin()
-                .on(Hasher.forColumn(0).and(1).and(2), Hasher.forColumn(0).and(1).and(2))
+                .on(Hasher.of(0).and(1).and(2), Hasher.of(0).and(1).and(2))
                 .with(df2);
 
         new DataFrameAsserts(df, "a", "b", "c", "x", "y", "z")

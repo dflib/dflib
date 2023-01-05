@@ -929,7 +929,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     default GroupBy group(String column0, String... columns) {
 
-        Hasher mapper = Hasher.forColumn(column0);
+        Hasher mapper = Hasher.of(column0);
         for (int i = 0; i < columns.length; i++) {
             mapper = mapper.and(columns[i]);
         }
@@ -947,7 +947,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     default GroupBy group(int column0, int... columns) {
 
-        Hasher mapper = Hasher.forColumn(column0);
+        Hasher mapper = Hasher.of(column0);
         for (int i = 0; i < columns.length; i++) {
             mapper = mapper.and(columns[i]);
         }

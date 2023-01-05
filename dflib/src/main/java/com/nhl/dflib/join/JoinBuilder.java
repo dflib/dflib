@@ -34,7 +34,7 @@ public class JoinBuilder {
     }
 
     public JoinBuilder on(int leftColumn, int rightColumn) {
-        return on(Hasher.forColumn(leftColumn), Hasher.forColumn(rightColumn));
+        return on(Hasher.of(leftColumn), Hasher.of(rightColumn));
     }
 
     public JoinBuilder on(String column) {
@@ -42,7 +42,7 @@ public class JoinBuilder {
     }
 
     public JoinBuilder on(String leftColumn, String rightColumn) {
-        return on(Hasher.forColumn(leftColumn), Hasher.forColumn(rightColumn));
+        return on(Hasher.of(leftColumn), Hasher.of(rightColumn));
     }
 
     public JoinBuilder on(Hasher hasher) {
