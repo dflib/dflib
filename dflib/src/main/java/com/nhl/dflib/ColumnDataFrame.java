@@ -111,7 +111,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public BooleanSeries getColumnAsBoolean(int pos) throws IllegalArgumentException {
+    public BooleanSeries getColumnAsBool(int pos) throws IllegalArgumentException {
         Series<?> s = getColumn(pos);
         if (s instanceof BooleanSeries) {
             return (BooleanSeries) s;
@@ -121,7 +121,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public BooleanSeries getColumnAsBoolean(String name) throws IllegalArgumentException {
+    public BooleanSeries getColumnAsBool(String name) throws IllegalArgumentException {
         Series<?> s = getColumn(name);
         if (s instanceof BooleanSeries) {
             return (BooleanSeries) s;
@@ -220,7 +220,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public BooleanSeries mapColumnAsBoolean(RowToBooleanValueMapper rowMapper) {
+    public BooleanSeries mapColumnAsBool(RowToBooleanValueMapper rowMapper) {
         // don't bother to make it lazy... boolean columns are very compact compared to the rest of the data set
         BoolAccum data = new BoolAccum(height());
 
@@ -614,7 +614,7 @@ public class ColumnDataFrame implements DataFrame {
             String label = columnsIndex.getLabel(i);
 
             if (condition.getColumnsIndex().hasLabel(label)) {
-                BooleanSeries cc = condition.getColumnAsBoolean(label);
+                BooleanSeries cc = condition.getColumnAsBool(label);
                 newColumns[i] = dataColumns[i].replace(cc, null);
             } else {
                 newColumns[i] = dataColumns[i];
@@ -635,7 +635,7 @@ public class ColumnDataFrame implements DataFrame {
             String label = columnsIndex.getLabel(i);
 
             if (condition.getColumnsIndex().hasLabel(label)) {
-                BooleanSeries cc = condition.getColumnAsBoolean(label);
+                BooleanSeries cc = condition.getColumnAsBool(label);
                 newColumns[i] = dataColumns[i].replaceNoMatch(cc, null);
             } else {
                 newColumns[i] = new SingleValueSeries<>(null, h);

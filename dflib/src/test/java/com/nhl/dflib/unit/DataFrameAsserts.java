@@ -100,7 +100,7 @@ public class DataFrameAsserts {
 
         for (int i = 0; i < positions.length; i++) {
             // the assertion is superfluous ... "getColumnAsBoolean" throws if the column is not an BooleanSeries
-            assertTrue(df.getColumnAsBoolean(positions[i]) instanceof BooleanSeries);
+            assertTrue(df.getColumnAsBool(positions[i]) instanceof BooleanSeries);
         }
         return this;
     }
@@ -109,7 +109,7 @@ public class DataFrameAsserts {
         for (int i = 0; i < labels.length; i++) {
 
             // the assertion is superfluous ... "getColumnAsBoolean" throws if the column is not an BooleanSeries
-            assertTrue(df.getColumnAsBoolean(labels[i]) instanceof BooleanSeries);
+            assertTrue(df.getColumnAsBool(labels[i]) instanceof BooleanSeries);
         }
         return this;
     }

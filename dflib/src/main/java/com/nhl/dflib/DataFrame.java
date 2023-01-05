@@ -225,9 +225,17 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @param name column label
      * @return a named DataFrame column as BooleanSeries.
-     * @since 0.6
+     * @since 0.17
      */
-    BooleanSeries getColumnAsBoolean(String name) throws IllegalArgumentException;
+    BooleanSeries getColumnAsBool(String name) throws IllegalArgumentException;
+
+    /**
+     * @deprecated in favor of {@link #getColumnAsBool(String)}
+     */
+    @Deprecated(since = "0.16")
+    default BooleanSeries getColumnAsBoolean(String name) throws IllegalArgumentException {
+        return getColumnAsBool(name);
+    }
 
     /**
      * Returns a DataFrame column at the specified position as BooleanSeries. If the column is not in the DataFrame or is
@@ -235,9 +243,17 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @param pos column position in the DataFrame
      * @return a named DataFrame column as BooleanSeries.
-     * @since 0.6
+     * @since 0.17
      */
-    BooleanSeries getColumnAsBoolean(int pos) throws IllegalArgumentException;
+    BooleanSeries getColumnAsBool(int pos) throws IllegalArgumentException;
+
+    /**
+     * @deprecated in favor of {@link #getColumnAsBool(int)}
+     */
+    @Deprecated(since = "0.16")
+    default BooleanSeries getColumnAsBoolean(int pos) throws IllegalArgumentException {
+        return getColumnAsBool(pos);
+    }
 
     /**
      * Returns a named DataFrame column as BooleanSeries. If the column is not in the DataFrame or is not an
@@ -321,8 +337,14 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @param rowMapper a boolean function applied to each row of this DataFrame
      * @return a new BooleanSeries.
-     * @since 0.6
+     * @since 0.17
      */
+    BooleanSeries mapColumnAsBool(RowToBooleanValueMapper rowMapper);
+
+    /**
+     * @deprecated in favor of {@link #mapColumnAsBool(RowToBooleanValueMapper)}
+     */
+    @Deprecated(since = "0.17")
     BooleanSeries mapColumnAsBoolean(RowToBooleanValueMapper rowMapper);
 
     /**
@@ -464,8 +486,8 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * @deprecated in favor of {@link #toBoolColumn(String, BoolValueMapper)}
      * @since 0.6
+     * @deprecated in favor of {@link #toBoolColumn(String, BoolValueMapper)}
      */
     @Deprecated(since = "0.17")
     default <V> DataFrame toBooleanColumn(String columnLabel, BoolValueMapper<V> converter) {
@@ -482,8 +504,8 @@ public interface DataFrame extends Iterable<RowProxy> {
     <V> DataFrame toBoolColumn(int pos, BoolValueMapper<V> converter);
 
     /**
-     * @deprecated in favor of {@link #toBoolColumn(int, BoolValueMapper)}
      * @since 0.6
+     * @deprecated in favor of {@link #toBoolColumn(int, BoolValueMapper)}
      */
     @Deprecated(since = "0.17")
     default <V> DataFrame toBooleanColumn(int pos, BoolValueMapper<V> converter) {
@@ -501,8 +523,8 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * @deprecated in favor of {@link #toBoolColumn(String)}
      * @since 0.6
+     * @deprecated in favor of {@link #toBoolColumn(String)}
      */
     @Deprecated(since = "0.17")
     default DataFrame toBooleanColumn(String columnLabel) {
