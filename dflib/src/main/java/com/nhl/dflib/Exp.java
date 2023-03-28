@@ -467,6 +467,20 @@ public interface Exp<T> {
                 : isNotNull();
     }
 
+    /**
+     * @since 0.18
+     */
+    default Condition in(Object... values) {
+        return MapCondition1.map("in", this, s -> s.in(values));
+    }
+
+    /**
+     * @since 0.18
+     */
+    default Condition notIn(Object... values) {
+        return MapCondition1.map("in", this, s -> s.notIn(values));
+    }
+
     default Condition isNull() {
         return ConditionFactory.isNull(this);
     }

@@ -158,4 +158,35 @@ public class DataFrame_SelectRowsTest {
                 .expectHeight(1)
                 .expectRow(0, 1.01, -1, 0, 1);
     }
+
+    @Test
+    public void testExp_In() {
+
+        Condition c = $col("b").in("x", "a");
+
+        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+                "1", "x", false,
+                "2", "2", true,
+                "4", "a", false).selectRows(c);
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(2)
+                .expectRow(0, "1", "x", false)
+                .expectRow(1, "4", "a", false);
+    }
+
+    @Test
+    public void testExp_NotIn() {
+
+        Condition c = $col("b").notIn("x", "a");
+
+        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+                "1", "x", false,
+                "2", "2", true,
+                "4", "a", false).selectRows(c);
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(1)
+                .expectRow(0, "2", "2", true);
+    }
 }

@@ -333,6 +333,16 @@ public interface Series<T> extends Iterable<T> {
     BooleanSeries isNotNull();
 
     /**
+     * @since 0.18
+     */
+    BooleanSeries in(Object... values);
+
+    /**
+     * @since 0.18
+     */
+    BooleanSeries notIn(Object... values);
+
+    /**
      * Returns a boolean series indicating whether each original Series position matched the predicate
      *
      * @param predicate match condition

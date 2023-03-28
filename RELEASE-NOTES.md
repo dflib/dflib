@@ -1,3 +1,7 @@
+## Release 0.18
+
+* #186 Exp.in, Exp.notIn, Series.in, Series.notIn
+
 ## Release 0.17
 
 * #185 Undeprecate and fix "convertColumn(X, ValueMapper)" 

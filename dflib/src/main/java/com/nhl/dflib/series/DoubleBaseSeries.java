@@ -14,8 +14,10 @@ import com.nhl.dflib.sort.SeriesSorter;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * @since 0.6
@@ -423,6 +425,62 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
             for (int i = 0; i < s; i++) {
                 bools.pushBool(!Objects.equals(get(i), another.get(i)));
             }
+        }
+
+        return bools.toSeries();
+    }
+
+    @Override
+    public BooleanSeries in(Object... values) {
+        int s = size();
+
+        if (values == null || values.length == 0) {
+            return new FalseSeries(s);
+        }
+
+        Set<Object> set = new HashSet<>();
+        for (Object o : values) {
+            // TODO: convert from other numeric types
+            if (o instanceof Double) {
+                set.add(o);
+            }
+        }
+
+        if (set.isEmpty()) {
+            return new FalseSeries(s);
+        }
+
+        BoolAccum bools = new BoolAccum(s);
+        for (int i = 0; i < s; i++) {
+            bools.pushBool(set.contains(get(i)));
+        }
+
+        return bools.toSeries();
+    }
+
+    @Override
+    public BooleanSeries notIn(Object... values) {
+        int s = size();
+
+        if (values == null || values.length == 0) {
+            return new TrueSeries(s);
+        }
+
+        Set<Object> set = new HashSet<>();
+        for (Object o : values) {
+            // TODO: convert from other numeric types
+            if (o instanceof Double) {
+                set.add(o);
+            }
+        }
+
+        if (set.isEmpty()) {
+            return new TrueSeries(s);
+        }
+
+        BoolAccum bools = new BoolAccum(s);
+        for (int i = 0; i < s; i++) {
+            bools.pushBool(!set.contains(get(i)));
         }
 
         return bools.toSeries();

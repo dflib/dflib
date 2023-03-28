@@ -294,6 +294,44 @@ public abstract class ObjectSeries<T> implements Series<T> {
     }
 
     @Override
+    public BooleanSeries in(Object... values) {
+
+        int s = size();
+
+        if (values == null || values.length == 0) {
+            return new FalseSeries(s);
+        }
+
+        Set<?> set = new HashSet<>(Arrays.asList(values));
+
+        BoolAccum bools = new BoolAccum(s);
+        for (int i = 0; i < s; i++) {
+            bools.pushBool(set.contains(get(i)));
+        }
+
+        return bools.toSeries();
+    }
+
+    @Override
+    public BooleanSeries notIn(Object... values) {
+
+        int s = size();
+
+        if (values == null || values.length == 0) {
+            return new TrueSeries(s);
+        }
+
+        Set<?> set = new HashSet<>(Arrays.asList(values));
+
+        BoolAccum bools = new BoolAccum(s);
+        for (int i = 0; i < s; i++) {
+            bools.pushBool(!set.contains(get(i)));
+        }
+
+        return bools.toSeries();
+    }
+
+    @Override
     public Series<T> unique() {
 
         int size = size();
