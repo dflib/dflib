@@ -238,16 +238,17 @@ public class GroupByTest {
                 1, "x");
 
         DataFrame df = df1.group("b").agg(
-                Exp.$col("b").first(),
+                Exp.$col("b").first().as("first"),
+                Exp.$col("b").last().as("last"),
                 Exp.$long("a").sum().as("a_sum"),
                 Exp.$double("a").median().as("a_median")
         );
 
-        new DataFrameAsserts(df, "b", "a_sum", "a_median")
+        new DataFrameAsserts(df, "first", "last", "a_sum", "a_median")
                 .expectHeight(3)
-                .expectRow(0, "x", 2L, 1.)
-                .expectRow(1, "y", 3L, 1.5)
-                .expectRow(2, "a", 0L, 0.);
+                .expectRow(0, "x", "x", 2L, 1.)
+                .expectRow(1, "y", "y", 3L, 1.5)
+                .expectRow(2, "a", "a", 0L, 0.);
     }
 
     @Test

@@ -248,6 +248,21 @@ public class DataFrame_AggTest {
     }
 
     @Test
+    public void test_Last() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                1, 100,
+                2, 5);
+
+        DataFrame agg = df.agg(
+                Exp.$col("a").last(),
+                Exp.$col(1).last());
+
+        new DataFrameAsserts(agg, "a", "b")
+                .expectHeight(1)
+                .expectRow(0, 2, 5);
+    }
+
+    @Test
     public void test_Custom() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, 100,

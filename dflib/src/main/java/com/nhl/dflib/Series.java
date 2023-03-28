@@ -423,6 +423,14 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
+     * @since 0.18
+     */
+    default T last() {
+        int size = size();
+        return size > 0 ? get(size - 1) : null;
+    }
+
+    /**
      * @since 0.7
      */
     default String concat(String delimiter) {

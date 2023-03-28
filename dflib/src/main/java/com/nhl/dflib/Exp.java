@@ -507,6 +507,10 @@ public interface Exp<T> {
         return agg(Series::first);
     }
 
+    default Exp<T> last() {
+        return agg(Series::last);
+    }
+
     default Exp<T> first(Condition filter) {
         // special handling of "first" that avoids full condition eval
         return new PreFilterFirstMatchExp<>(filter, first());

@@ -1,6 +1,7 @@
 ## Release 0.18
 
 * #186 Exp.in, Exp.notIn, Series.in, Series.notIn
+* #187 Exp.last(), Series.last()
 
 ## Release 0.17
 
