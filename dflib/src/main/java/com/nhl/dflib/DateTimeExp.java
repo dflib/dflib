@@ -1,6 +1,8 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.exp.datetime.DateExp1;
 import com.nhl.dflib.exp.datetime.DateTimeExpScalar2;
+import com.nhl.dflib.exp.datetime.TimeExp1;
 import com.nhl.dflib.exp.map.MapCondition2;
 import com.nhl.dflib.exp.num.IntExp1;
 
@@ -89,6 +91,16 @@ public interface DateTimeExp extends Exp<LocalDateTime> {
     @Override
     default DateTimeExp castAsDateTime(DateTimeFormatter formatter) {
         return this;
+    }
+
+    @Override
+    default DateExp castAsDate() {
+        return DateExp1.mapVal("date", this, LocalDateTime::toLocalDate);
+    }
+
+    @Override
+    default TimeExp castAsTime() {
+        return TimeExp1.mapVal("time", this, LocalDateTime::toLocalTime);
     }
 
     default DateTimeExp plusHours(int hours) {
