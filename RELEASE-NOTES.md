@@ -2,6 +2,7 @@
 
 * #186 Exp.in, Exp.notIn, Series.in, Series.notIn
 * #187 Exp.last(), Series.last()
+* #189 ExcelLoader: Duplicate empty column names
 
 ## Release 0.17
 

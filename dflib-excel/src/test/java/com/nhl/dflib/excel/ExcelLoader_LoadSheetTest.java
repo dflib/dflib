@@ -173,4 +173,16 @@ public class ExcelLoader_LoadSheetTest {
                     .expectRow(0, "Three", "Four");
         }
     }
+
+    @Test
+    public void testFirstRowAsHeader_EmptyColumnNames() throws IOException {
+
+        try (InputStream in = getClass().getResourceAsStream("empty-column-names.xlsx")) {
+
+            DataFrame s1 = new ExcelLoader().firstRowAsHeader().loadSheet(in, "Sheet1");
+            new DataFrameAsserts(s1, "c1", "c2", "C", "D")
+                    .expectHeight(1)
+                    .expectRow(0, "v1", "v2", "v3", "v4");
+        }
+    }
 }

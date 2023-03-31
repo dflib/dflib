@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -53,8 +52,9 @@ public class ExcelLoader {
             return DataFrame.empty(range.columns());
         }
 
+        Index defaultIndex = range.columns();
         Row row0 = getRow(sheet, range, 0);
-        Index index = firstRowAsHeader ? createIndex(row0, range.startCol, range.width) : range.columns();
+        Index index = firstRowAsHeader && row0 != null ? createIndex(defaultIndex, row0, range.startCol, range.width) : defaultIndex;
         Extractor<Row, ?>[] extractors = createExtractors(range.startCol, range.width);
 
         DataFrameAppender<Row> builder = DataFrame.byRow(extractors).columnIndex(index).appender();
@@ -208,21 +208,17 @@ public class ExcelLoader {
         return extractors;
     }
 
-    private Index createIndex(Row row, int startCol, int w) {
+    private Index createIndex(Index excelColumns, Row row, int startCol, int w) {
 
         String[] labels = new String[w];
 
-        if (row != null) {
-            for (int i = 0; i < w; i++) {
-                int pos = startCol + i;
-                Object val = value(row, pos);
-                labels[i] = val != null ? val.toString() : "";
-            }
-        } else {
-            Arrays.fill(labels, "");
+        for (int i = 0; i < w; i++) {
+            int pos = startCol + i;
+            Object val = value(row, pos);
+            labels[i] = val != null ? val.toString() : excelColumns.getLabel(i);
         }
 
-        return Index.forLabels(labels);
+        return Index.forLabelsDeduplicate(labels);
     }
 
     private Row getRow(Sheet sh, SheetRange range, int rowOffset) {
