@@ -31,36 +31,44 @@ class SheetRange {
         int startCol = Short.MAX_VALUE + 1;
         int endCol = Short.MIN_VALUE - 1;
 
+        boolean allPhantom = true;
+
         for (Row r : sh) {
 
             // skip "phantom" rows from range calculation. The effect of this is stripping leading and
             // trailing phantom rows, but keeping those in the middle of the values
-            if (isPhantom(r)) {
-                continue;
+            if (!isPhantom(r)) {
+
+                allPhantom = false;
+
+                startRow = Math.min(r.getRowNum(), startRow);
+                endRow = Math.max(r.getRowNum(), endRow);
+
+                startCol = Math.min(r.getFirstCellNum(), startCol);
+                endCol = Math.max(r.getLastCellNum(), endCol);
             }
-
-            startRow = Math.min(r.getRowNum(), startRow);
-            endRow = Math.max(r.getRowNum(), endRow);
-
-            startCol = Math.min(r.getFirstCellNum(), startCol);
-            endCol = Math.max(r.getLastCellNum(), endCol);
         }
 
-        return new SheetRange(
-                startCol,
+        return allPhantom
+                ? new SheetRange(0, 0, 0, 0)
+
                 // "endCol" already points past the last column
-                endCol,
-                startRow,
                 // as "endRow" is an index, we must increment it to point past the last row
-                endRow + 1);
+                : new SheetRange(startCol, endCol, startRow, endRow + 1);
     }
 
     private static boolean isPhantom(Row row) {
         return row.getFirstCellNum() < 0;
     }
 
-    public boolean isEmpty() {
-        return height <= 0;
+    SheetRange skipRows(int rows) {
+        if (rows <= 0) {
+            return this;
+        }
+
+        return rows >= height
+                ? new SheetRange(startCol, endCol, endRow, endRow)
+                : new SheetRange(startCol, endCol, startRow + rows, endRow);
     }
 
     Index columns() {

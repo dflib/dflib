@@ -175,6 +175,19 @@ public class ExcelLoader_LoadSheetTest {
     }
 
     @Test
+    public void testFromStream_FirstRowAsHeader_SkipRows() throws IOException {
+
+        try (InputStream in = getClass().getResourceAsStream("one-sheet-offset.xlsx")) {
+
+            DataFrame s1 = new ExcelLoader().skipRows(2).firstRowAsHeader().loadSheet(in, "Sheet1");
+            new DataFrameAsserts(s1, "t1", "t2")
+                    .expectHeight(2)
+                    .expectRow(0, "One", "Two")
+                    .expectRow(1, "Three", "Four");
+        }
+    }
+
+    @Test
     public void testFirstRowAsHeader_EmptyColumnNames() throws IOException {
 
         try (InputStream in = getClass().getResourceAsStream("empty-column-names.xlsx")) {
@@ -183,6 +196,15 @@ public class ExcelLoader_LoadSheetTest {
             new DataFrameAsserts(s1, "c1", "c2", "C", "D")
                     .expectHeight(1)
                     .expectRow(0, "v1", "v2", "v3", "v4");
+        }
+    }
+
+    @Test
+    public void testFromStream_SkipRows_Empty() throws IOException {
+
+        try (InputStream in = getClass().getResourceAsStream("one-sheet.xlsx")) {
+            DataFrame s1 = new ExcelLoader().skipRows(2).loadSheet(in, "Sheet1");
+            new DataFrameAsserts(s1, "A", "B").expectHeight(0);
         }
     }
 }

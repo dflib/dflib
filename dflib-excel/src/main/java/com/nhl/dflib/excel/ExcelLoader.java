@@ -28,12 +28,29 @@ public class ExcelLoader {
     // TODO: add builder method to capture Excel file password
 
     private boolean firstRowAsHeader;
+    private int skipRows;
 
     /**
+     * Generates header index from the first row. If {@link #skipRows(int)} is in use, this will be the first non-skipped
+     * row.
+     *
      * @since 0.14
      */
     public ExcelLoader firstRowAsHeader() {
         this.firstRowAsHeader = true;
+        return this;
+    }
+
+    /**
+     * Skips the specified number of rows. This counter only applies to non-phantom rows. I.e. those rows that have
+     * non-empty cells. Phantom rows are skipped automatically.
+     *
+     * @param n number of rows to skip
+     * @return this loader instance
+     * @since 0.18
+     */
+    public ExcelLoader skipRows(int n) {
+        this.skipRows = n;
         return this;
     }
 
@@ -43,8 +60,8 @@ public class ExcelLoader {
     public DataFrame loadSheet(Sheet sheet) {
 
         // Don't skip empty rows or columns in the middle of a range, but truncate leading empty rows and columns
-        SheetRange range = SheetRange.valuesRange(sheet);
-        if (range.isEmpty()) {
+        SheetRange range = SheetRange.valuesRange(sheet).skipRows(skipRows);
+        if (range.width == 0) {
             return DataFrame.empty();
         }
 

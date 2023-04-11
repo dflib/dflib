@@ -4,6 +4,7 @@
 * #187 Exp.last(), Series.last()
 * #189 ExcelLoader: Duplicate empty column names
 * #190 DateTimeExp - direct converter to DateExp and TimeExp
+* #191 ExcelLoader.skipRows(int)
 
 ## Release 0.17
 
