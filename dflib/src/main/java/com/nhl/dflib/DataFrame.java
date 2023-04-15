@@ -808,6 +808,31 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
+     * Returns a DataFrame with non-repeating rows.
+     *
+     * @since 0.18
+     */
+    default DataFrame uniqueRows() {
+        return uniqueRows(getColumnsIndex().getLabels());
+    }
+
+    /**
+     * Returns a DataFrame with non-repeating rows. Uniqueness check is done based on the specified subset of columns,
+     * ignoring all others.
+     *
+     * @since 0.18
+     */
+    DataFrame uniqueRows(String... columnNamesToCompare);
+
+    /**
+     * Returns a DataFrame with non-repeating rows. Uniqueness check is only done based on the specified subset of
+     * columns, ignoring all others.
+     *
+     * @since 0.18
+     */
+    DataFrame uniqueRows(int... columnNamesToCompare);
+
+    /**
      * @since 0.11
      */
     DataFrame sort(Sorter... sorters);

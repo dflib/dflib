@@ -302,6 +302,39 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
+    public DataFrame uniqueRows(String... columnNamesToCompare) {
+
+        if (columnNamesToCompare.length == 0) {
+            throw new IllegalArgumentException("No 'columnNamesToCompare' for uniqueness checks");
+        }
+
+        int w = width();
+        Exp[] aggregators = new Exp[w];
+
+        for (int i = 0; i < w; i++) {
+            aggregators[i] = Exp.$col(i).first();
+        }
+
+        return group(columnNamesToCompare).agg(aggregators);
+    }
+
+    @Override
+    public DataFrame uniqueRows(int... columnNamesToCompare) {
+        if (columnNamesToCompare.length == 0) {
+            throw new IllegalArgumentException("No 'columnNamesToCompare' for uniqueness checks");
+        }
+
+        int w = width();
+        Exp[] aggregators = new Exp[w];
+
+        for (int i = 0; i < w; i++) {
+            aggregators[i] = Exp.$col(i).first();
+        }
+
+        return group(columnNamesToCompare).agg(aggregators);
+    }
+
+    @Override
     public DataFrame sort(Sorter... sorters) {
         return new DataFrameSorter(this).sort(sorters);
     }

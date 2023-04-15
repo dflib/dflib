@@ -1,5 +1,6 @@
 ## Release 0.18
 
+* #41  DataFrame.unique - produce DataFrame with non-repeating rows
 * #186 Exp.in, Exp.notIn, Series.in, Series.notIn
 * #187 Exp.last(), Series.last()
 * #189 ExcelLoader: Duplicate empty column names
