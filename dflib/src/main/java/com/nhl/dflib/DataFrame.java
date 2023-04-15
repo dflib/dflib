@@ -918,14 +918,18 @@ public interface DataFrame extends Iterable<RowProxy> {
      * An operation similar to SQL "GROUP BY" that partitions this DataFrame into a number of groups based on the values
      * of the specified columns.
      *
-     * @param column0 the first column to use in grouping.
-     * @param columns additional columns to group by
+     * @param columns columns to group by
      * @return a new GroupBy instance that contains row groupings
      */
-    default GroupBy group(String column0, String... columns) {
+    default GroupBy group(String... columns) {
 
-        Hasher mapper = Hasher.of(column0);
-        for (int i = 0; i < columns.length; i++) {
+        int w = columns.length;
+        if (w == 0) {
+            throw new IllegalArgumentException("No columns provided to group by");
+        }
+
+        Hasher mapper = Hasher.of(columns[0]);
+        for (int i = 1; i < columns.length; i++) {
             mapper = mapper.and(columns[i]);
         }
 
@@ -936,14 +940,18 @@ public interface DataFrame extends Iterable<RowProxy> {
      * An operation similar to SQL "GROUP BY" that partitions this DataFrame into a number of groups based on the values
      * of the specified columns.
      *
-     * @param column0 the first column to use in grouping.
-     * @param columns additional columns to group by
+     * @param columns columns to group by
      * @return a new GroupBy instance that contains row groupings
      */
-    default GroupBy group(int column0, int... columns) {
+    default GroupBy group(int... columns) {
 
-        Hasher mapper = Hasher.of(column0);
-        for (int i = 0; i < columns.length; i++) {
+        int w = columns.length;
+        if (w == 0) {
+            throw new IllegalArgumentException("No columns provided to group by");
+        }
+
+        Hasher mapper = Hasher.of(columns[0]);
+        for (int i = 1; i < columns.length; i++) {
             mapper = mapper.and(columns[i]);
         }
 
