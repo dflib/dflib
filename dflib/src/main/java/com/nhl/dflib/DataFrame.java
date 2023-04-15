@@ -71,6 +71,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @since 0.16
      */
+    @SafeVarargs
     static <T> DataFrameByRowBuilder<T, ?> byRow(Extractor<T, ?>... extractors) {
         return new DataFrameByRowBuilder<>(extractors);
     }
@@ -82,6 +83,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @since 0.16
      */
+    @SafeVarargs
     static DataFrameArrayByRowBuilder byArrayRow(Extractor<Object[], ?>... extractors) {
         return new DataFrameArrayByRowBuilder(extractors);
     }
@@ -650,7 +652,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new DataFrame with extra columns added
      * @since 0.7
      */
-    <V> DataFrame addColumns(String[] columnLabels, RowMapper rowMapper);
+    DataFrame addColumns(String[] columnLabels, RowMapper rowMapper);
 
     <V> DataFrame addColumn(String columnLabel, Series<V> column);
 
@@ -687,7 +689,7 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * Renames column index labels by applying the provided function to each label. Useful for name conversions like
-     * lowercasing, etc.
+     * lower-casing, etc.
      *
      * @param renameFunction a function that is passed each label in turn
      * @return a new DataFrame with renamed columns
@@ -749,7 +751,6 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Selects DataFrame rows based on provided row index. This allows to reorder, filter, duplicate rows of this
      * DataFrame.
      *
-     * @param rowPositions
      * @return a new DataFrame that matches the selection criteria
      * @since 0.6
      */
@@ -822,7 +823,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * Horizontally concatenates a DataFrame with another DataFrame, producing a "wider" DataFrame. If the heights of
      * the DataFrames are not the same, the behavior is governed by the "how" parameter. Rows on the left or right sides
-     * can be either truncated or padded. If two DataFrames have have conflicting columns, an underscore suffix ("_")
+     * can be either truncated or padded. If two DataFrames have conflicting columns, an underscore suffix ("_")
      * is added to the column names coming from the right-hand side DataFrame.
      *
      * @param df another DataFrame.
@@ -833,7 +834,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * Returns a DataFrame that combines columns from this and another DataFrame. If two DataFrames have have
+     * Returns a DataFrame that combines columns from this and another DataFrame. If two DataFrames have
      * conflicting columns, an underscore suffix ("_") is added to the column names coming from the right-hand side
      * DataFrame. If the heights of the DataFrames are not the same, the behavior is governed by the "how" parameter.
      * Rows on the left or right sides can be either truncated or padded.
@@ -1043,7 +1044,7 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * @param another a DataFrame to compare with.
-     * @return a DataFrame with true/false values corresponding to the result of comparision of this DataFrame with
+     * @return a DataFrame with true/false values corresponding to the result of comparison of this DataFrame with
      * another.
      * @since 0.6
      */
@@ -1051,7 +1052,7 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * @param another a DataFrame to compare with.
-     * @return a DataFrame with true/false values corresponding to the result of comparision of this DataFrame with
+     * @return a DataFrame with true/false values corresponding to the result of comparison of this DataFrame with
      * another.
      * @since 0.6
      */
