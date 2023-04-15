@@ -67,7 +67,7 @@ public class DataFrame_AggFilteredTest {
     }
 
     @Test
-    public void testFirst() {
+    public void testFirst_Condition() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 7, 1,
                 -1, 5,
@@ -80,6 +80,22 @@ public class DataFrame_AggFilteredTest {
         new DataFrameAsserts(agg, "b", "a")
                 .expectHeight(1)
                 .expectRow(0, 5, 7);
+    }
+
+    @Test
+    public void testFirst_Condition_Never() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                7, 1,
+                -1, 5,
+                -4, 5);
+
+        DataFrame agg = df.agg(
+                Exp.$col(1).first(Exp.$val(false).castAsCondition()),
+                Exp.$col("a").first(Exp.$int("b").mod(2).eq(1)));
+
+        new DataFrameAsserts(agg, "b", "a")
+                .expectHeight(1)
+                .expectRow(0, null, 7);
     }
 
     @Test
