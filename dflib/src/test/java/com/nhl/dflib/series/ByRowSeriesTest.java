@@ -10,7 +10,7 @@ public class ByRowSeriesTest {
 
     @Test
     public void testStructure() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 "a1", "b1",
                 "a2", "b2");
 
@@ -20,7 +20,7 @@ public class ByRowSeriesTest {
 
     @Test
     public void testGet() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 "a1", "b1",
                 "a2", "b2");
 
