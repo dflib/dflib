@@ -697,20 +697,14 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     DataFrame renameColumns(Map<String, String> oldToNewLabels);
 
-    // TODO: breaking vararg into arg and vararg is an anti-pattern that does not allow to pass whole data structures
-    //  built dynamically. Redo this
-    DataFrame selectColumns(String label0, String... otherLabels);
+    DataFrame selectColumns(String... labels);
 
-    // TODO: breaking vararg into arg and vararg is an anti-pattern that does not allow to pass whole data structures
-    //  built dynamically. Redo this
-    DataFrame selectColumns(int pos0, int... otherPositions);
+    DataFrame selectColumns(int... positions);
 
     /**
      * @since 0.11
      */
-    // TODO: breaking vararg into arg and vararg is an anti-pattern that does not allow to pass whole data structures
-    //  built dynamically. Redo this
-    DataFrame selectColumns(Exp<?> exp0, Exp<?>... otherExps);
+    DataFrame selectColumns(Exp<?>... exps);
 
     /**
      * @param columnsIndex an index that defines a subset of columns and their ordering in the returned DataFrame.

@@ -5,6 +5,7 @@
 * #189 ExcelLoader: Duplicate empty column names
 * #190 DateTimeExp - direct converter to DateExp and TimeExp
 * #191 ExcelLoader.skipRows(int)
+* #192 Avoid "arg + vararg" methods
 
 ## Release 0.17
 

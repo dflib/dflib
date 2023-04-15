@@ -485,11 +485,11 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public DataFrame selectColumns(String label0, String... otherLabels) {
+    public DataFrame selectColumns(String... labels) {
 
-        String[] labels = new String[otherLabels.length + 1];
-        labels[0] = label0;
-        System.arraycopy(otherLabels, 0, labels, 1, otherLabels.length);
+        if (labels.length == 0) {
+            throw new IllegalArgumentException("No labels provided to select columns");
+        }
 
         Index newIndex = columnsIndex.selectLabels(labels);
 
@@ -503,11 +503,11 @@ public class ColumnDataFrame implements DataFrame {
 
 
     @Override
-    public DataFrame selectColumns(int pos0, int... otherPositions) {
+    public DataFrame selectColumns(int... positions) {
 
-        int[] positions = new int[otherPositions.length + 1];
-        positions[0] = pos0;
-        System.arraycopy(otherPositions, 0, positions, 1, otherPositions.length);
+        if (positions.length == 0) {
+            throw new IllegalArgumentException("No positions provided to select columns");
+        }
 
         Index newIndex = columnsIndex.selectPositions(positions);
 
@@ -542,22 +542,26 @@ public class ColumnDataFrame implements DataFrame {
      * @since 0.11
      */
     @Override
-    public DataFrame selectColumns(Exp<?> exp0, Exp<?>... otherExps) {
-        int w = otherExps.length + 1;
+    public DataFrame selectColumns(Exp<?>... exps) {
+
+        int w = exps.length;
+        if (w == 0) {
+            throw new IllegalArgumentException("No expressions provided to select columns");
+        }
+
         String[] labels = new String[w];
-        labels[0] = exp0.getColumnName(this);
-        for (int i = 1; i < w; i++) {
-            labels[i] = otherExps[i - 1].getColumnName(this);
+        for (int i = 0; i < w; i++) {
+            labels[i] = exps[i].getColumnName(this);
         }
 
         Series[] data = new Series[w];
-        data[0] = exp0.eval(this);
+        data[0] = exps[0].eval(this);
 
         int h = data[0].size();
         for (int i = 1; i < w; i++) {
-            data[i] = otherExps[i - 1].eval(this);
+            data[i] = exps[i].eval(this);
 
-            // sanity check - all columns must be the same size
+            // sanity check - all columns must be of the same size
             // TODO: move this check to the DataFrame builder?
             if (data[i].size() != h) {
                 throw new IllegalStateException("Unexpected column size for '" + labels[i] + "': " + data[i].size() + ", (expected " + h + ")");
