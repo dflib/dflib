@@ -7,6 +7,7 @@
 * #190 DateTimeExp - direct converter to DateExp and TimeExp
 * #191 ExcelLoader.skipRows(int)
 * #192 Avoid "arg + vararg" methods
+* #195 Bump org.apache.avro:avro from 1.10.1 to 1.11.3
 
 ## Release 0.17
 
