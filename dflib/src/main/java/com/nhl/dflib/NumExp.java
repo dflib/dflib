@@ -234,7 +234,7 @@ public interface NumExp<N extends Number> extends Exp<N> {
      * @since 0.14
      */
     @Override
-    default Condition castAsCondition() {
-        return ConditionFactory.castAsCondition(this);
+    default Condition castAsBool() {
+        return ConditionFactory.castAsBool(this);
     }
 }

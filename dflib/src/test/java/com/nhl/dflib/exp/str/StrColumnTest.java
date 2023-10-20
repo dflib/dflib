@@ -109,7 +109,7 @@ public class StrColumnTest {
 
     @Test
     public void testCastAsCondition() {
-        Condition c = $str(0).castAsCondition();
+        Condition c = $str(0).castAsBool();
 
         Series<String> s = Series.of("true", null, "false", "__d_");
         new BoolSeriesAsserts(c.eval(s)).expectData(true, false, false, false);
@@ -117,7 +117,7 @@ public class StrColumnTest {
 
     @Test
     public void testCastAsCondition_MapVal() {
-        Condition isEven = $str(0).mapVal(s -> s.length() % 2 == 0).castAsCondition();
+        Condition isEven = $str(0).mapVal(s -> s.length() % 2 == 0).castAsBool();
 
         Series<String> s = Series.of("a", "a9", "abcd0", "__d_");
         new BoolSeriesAsserts(isEven.eval(s)).expectData(false, true, false, true);

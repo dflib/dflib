@@ -47,7 +47,7 @@ public interface Condition extends Exp<Boolean> {
      * @since 0.14
      */
     @Override
-    default Condition castAsCondition() {
+    default Condition castAsBool() {
         return this;
     }
 }

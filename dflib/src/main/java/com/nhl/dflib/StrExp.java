@@ -23,7 +23,7 @@ public interface StrExp extends Exp<String> {
     }
 
     @Override
-    default Condition castAsCondition() {
+    default Condition castAsBool() {
         return MapCondition1.mapVal("castAsCondition", this, Boolean::valueOf);
     }
 

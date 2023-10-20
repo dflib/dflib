@@ -287,7 +287,7 @@ public class DecimalColumnTest {
 
     @Test
     public void testCastAsCondition() {
-        Condition c = $decimal(0).castAsCondition();
+        Condition c = $decimal(0).castAsBool();
 
         Series<BigDecimal> s = Series.of(
                 new BigDecimal("-5.1"),

@@ -12,7 +12,7 @@ import com.nhl.dflib.exp.map.MapCondition1;
  */
 public class ConditionFactory {
 
-    public static Condition castAsCondition(Exp<?> exp) {
+    public static Condition castAsBool(Exp<?> exp) {
 
         if (exp instanceof Condition) {
             return (Condition) exp;
@@ -21,31 +21,31 @@ public class ConditionFactory {
         Class<?> t = exp.getType();
         if (t.equals(Boolean.class)) {
             Exp<Boolean> bExp = (Exp<Boolean>) exp;
-            return MapCondition1.map("castAsCondition", bExp, ConditionFactory::castBool);
+            return MapCondition1.map("castAsBool", bExp, ConditionFactory::castBool);
         }
 
         if (Number.class.isAssignableFrom(t)) {
             Exp<? extends Number> bExp = (Exp<? extends Number>) exp;
-            return MapCondition1.map("castAsCondition", bExp, ConditionFactory::castNumber);
+            return MapCondition1.map("castAsBool", bExp, ConditionFactory::castNumber);
         }
 
         if (t.equals(String.class)) {
             Exp<String> sExp = (Exp<String>) exp;
-            return MapCondition1.mapVal("castAsCondition", sExp, Boolean::valueOf);
+            return MapCondition1.mapVal("castAsBool", sExp, Boolean::valueOf);
         }
 
         // if no specific type is set (which is the case with "mapVal" expressions), we will have to run a slow inspection
         // of the individual values
         if (t.equals(Object.class)) {
-            return MapCondition1.mapVal("castAsCondition", exp, ConditionFactory::isTrue);
+            return MapCondition1.mapVal("castAsBool", exp, ConditionFactory::isTrue);
         }
 
         // finally, if the type is something specific that we don't know about,
-        return MapCondition1.map("castAsCondition", exp, Series::isNotNull);
+        return MapCondition1.map("castAsBool", exp, Series::isNotNull);
     }
 
-    public static Condition castAsCondition(NumExp<?> exp) {
-        return MapCondition1.map("castAsCondition", exp, ConditionFactory::castNumber);
+    public static Condition castAsBool(NumExp<?> exp) {
+        return MapCondition1.map("castAsBool", exp, ConditionFactory::castNumber);
     }
 
     public static Condition isNull(Exp<?> exp) {

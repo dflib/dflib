@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 public interface ValueMapper<V, VR> {
 
     /**
-     * @see Exp#castAsCondition()
+     * @see Exp#castAsBool()
      * @since 0.16
      */
     static ValueMapper<String, Boolean> stringToBool() {

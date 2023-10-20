@@ -90,7 +90,7 @@ public class DataFrame_AggFilteredTest {
                 -4, 5);
 
         DataFrame agg = df.agg(
-                Exp.$col(1).first(Exp.$val(false).castAsCondition()),
+                Exp.$col(1).first(Exp.$val(false).castAsBool()),
                 Exp.$col("a").first(Exp.$int("b").mod(2).eq(1)));
 
         new DataFrameAsserts(agg, "b", "a")
