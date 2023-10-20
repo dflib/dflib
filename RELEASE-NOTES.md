@@ -9,6 +9,7 @@
 * #192 Avoid "arg + vararg" methods
 * #195 Bump org.apache.avro:avro from 1.10.1 to 1.11.3
 * #196 StrExp.contains()
+* #198 Numeric "Exp.eq", "Exp.ne" has different op label vs other expressions
 
 ## Release 0.17
 

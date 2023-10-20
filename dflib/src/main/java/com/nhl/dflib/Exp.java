@@ -448,11 +448,11 @@ public interface Exp<T> {
     }
 
     default Condition eq(Exp<?> exp) {
-        return MapCondition2.map("eq", this, exp, Series::eq);
+        return MapCondition2.map("=", this, exp, Series::eq);
     }
 
     default Condition ne(Exp<?> exp) {
-        return MapCondition2.map("ne", this, exp, Series::ne);
+        return MapCondition2.map("!=", this, exp, Series::ne);
     }
 
     default Condition eq(Object value) {
