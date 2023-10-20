@@ -18,7 +18,7 @@ public interface IntSeries extends Series<Integer> {
     /**
      * @deprecated in favor of {@link Series#ofInt(int...)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     static IntSeries forInts(int... ints) {
         return Series.ofInt(ints);
     }
@@ -27,7 +27,7 @@ public interface IntSeries extends Series<Integer> {
      * @since 0.7
      * @deprecated since 0.16 in favor of {@link #mapAsInt(IntValueMapper)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     static <V> IntSeries forSeries(Series<V> series, IntValueMapper<? super V> converter) {
         return series.mapAsInt(converter);
     }

@@ -17,7 +17,7 @@ public interface DoubleSeries extends Series<Double> {
     /**
      * @deprecated in favor of {@link Series#ofDouble(double...)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     static DoubleSeries forDoubles(double... doubles) {
         return Series.ofDouble(doubles);
     }
@@ -26,7 +26,7 @@ public interface DoubleSeries extends Series<Double> {
      * @since 0.7
      * @deprecated in favor of {@link #mapAsDouble(DoubleValueMapper)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     static <V> DoubleSeries forSeries(Series<V> series, DoubleValueMapper<? super V> converter) {
         return series.mapAsDouble(converter);
     }

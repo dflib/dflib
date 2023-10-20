@@ -8,7 +8,7 @@ import com.nhl.dflib.builder.ValueAccum;
  * @since 0.6
  * @deprecated use {@link DataFrame#byArrayRow(Extractor[])}  or {@link DataFrame#byArrayRow(String...)}
  */
-@Deprecated(since = "0.16")
+@Deprecated(since = "0.16", forRemoval = true)
 public class DataFrameByRowBuilder {
 
     private final Index columnsIndex;

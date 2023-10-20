@@ -17,7 +17,7 @@ public interface LongSeries extends Series<Long> {
     /**
      * @deprecated in favor of {@link Series#ofLong(long...)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     static LongSeries forLongs(long... longs) {
         return Series.ofLong(longs);
     }
@@ -26,7 +26,7 @@ public interface LongSeries extends Series<Long> {
      * @since 0.7
      * @deprecated since 0.16 in favor of {@link #mapAsLong(LongValueMapper)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     static <V> LongSeries forSeries(Series<V> series, LongValueMapper<? super V> converter) {
         return series.mapAsLong(converter);
     }

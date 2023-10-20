@@ -13,7 +13,7 @@ public interface BooleanSeries extends Series<Boolean> {
     /**
      * @deprecated in favor of {@link Series#ofBool(boolean...)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     static BooleanSeries forBooleans(boolean... bools) {
         return Series.ofBool(bools);
     }
@@ -22,7 +22,7 @@ public interface BooleanSeries extends Series<Boolean> {
      * @since 0.7
      * @deprecated since 0.16 in favor of {@link #mapAsBool(BoolValueMapper)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     static <V> BooleanSeries forSeries(Series<V> series, BoolValueMapper<? super V> converter) {
         return series.mapAsBool(converter);
     }
@@ -54,7 +54,7 @@ public interface BooleanSeries extends Series<Boolean> {
     /**
      * @deprecated in favor of {@link #getBool(int)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     default boolean getBoolean(int index) {
         return getBool(index);
     }
@@ -67,7 +67,7 @@ public interface BooleanSeries extends Series<Boolean> {
     /**
      * @deprecated in favor of {@link #copyToBool(boolean[], int, int, int)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     default void copyToBoolean(boolean[] to, int fromOffset, int toOffset, int len) {
         copyToBool(to, fromOffset, toOffset, len);
     }
@@ -80,7 +80,7 @@ public interface BooleanSeries extends Series<Boolean> {
     /**
      * @deprecated in favor of {@link #materializeBool()}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     default BooleanSeries materializeBoolean() {
         return materializeBool();
     }
@@ -93,7 +93,7 @@ public interface BooleanSeries extends Series<Boolean> {
     /**
      * @deprecated in favor of {@link #concatBool(BooleanSeries...)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     default BooleanSeries concatBoolean(BooleanSeries... other) {
         return concatBool(other);
     }
@@ -106,7 +106,7 @@ public interface BooleanSeries extends Series<Boolean> {
     /**
      * @deprecated in favor of {@link #rangeOpenClosedBool(int, int)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     default BooleanSeries rangeOpenClosedBoolean(int fromInclusive, int toExclusive) {
         return rangeOpenClosedBool(fromInclusive, toExclusive);
     }
@@ -119,7 +119,7 @@ public interface BooleanSeries extends Series<Boolean> {
     /**
      * @deprecated in favor of {@link #headBool(int)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     default BooleanSeries headBoolean(int len) {
         return headBool(len);
     }
@@ -132,7 +132,7 @@ public interface BooleanSeries extends Series<Boolean> {
     /**
      * @deprecated in favor of {@link #tailBool(int)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     default BooleanSeries tailBoolean(int len) {
         return tailBool(len);
     }
@@ -146,7 +146,7 @@ public interface BooleanSeries extends Series<Boolean> {
      * @since 0.11
      * @deprecated in favor of {@link #selectBool(Condition)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     default BooleanSeries selectBoolean(Condition condition) {
         return selectBool(condition);
     }
@@ -160,7 +160,7 @@ public interface BooleanSeries extends Series<Boolean> {
      * @since 0.11
      * @deprecated in favor of {@link #selectBool(BooleanSeries)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     default BooleanSeries selectBoolean(BooleanSeries positions) {
         return selectBool(positions);
     }
@@ -215,7 +215,7 @@ public interface BooleanSeries extends Series<Boolean> {
     /**
      * @deprecated in favor of {@link #uniqueBool()}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     default BooleanSeries uniqueBoolean() {
         return uniqueBool();
     }
@@ -262,7 +262,7 @@ public interface BooleanSeries extends Series<Boolean> {
      * @since 0.7
      * @deprecated in favor of {@link #toBoolArray()}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     default boolean[] toBooleanArray() {
         return toBoolArray();
     }

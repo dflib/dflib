@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 
-@Deprecated(since = "0.16")
+@Deprecated(since = "0.16", forRemoval = true)
 public class DataFrameBuilderTest {
 
     @Test

@@ -8,7 +8,7 @@ public interface RowPredicate {
     /**
      * @deprecated in favor of {@link #of(int, ValuePredicate)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     static <V> RowPredicate forColumn(int pos, ValuePredicate<V> columnPredicate) {
         return of(pos, columnPredicate);
     }

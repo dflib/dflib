@@ -29,7 +29,7 @@ import java.util.stream.Stream;
  *
  * @since 0.6
  */
-@Deprecated(since = "0.16")
+@Deprecated(since = "0.16", forRemoval = true)
 public class DataFrameBuilder {
 
     private final Index columnsIndex;
@@ -39,17 +39,21 @@ public class DataFrameBuilder {
     }
 
     /**
-     * @deprecated use {@link DataFrame#newFrame(String...)}
+     * @deprecated use one of {@link DataFrame#byColumn(String...)}, {@link DataFrame#byRow(Extractor[])},
+     * {@link DataFrame#byArrayRow(String...)}, {@link DataFrame#foldByColumn(String...)},
+     * {@link DataFrame#foldByRow(String...)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public static DataFrameBuilder builder(String... columnLabels) {
         return new DataFrameBuilder(Index.forLabels(Objects.requireNonNull(columnLabels)));
     }
 
     /**
-     * @deprecated use {@link DataFrame#newFrame(Index)}
+     * @deprecated use one of {@link DataFrame#byColumn(Index)}, {@link DataFrame#byRow(Extractor[])},
+     * {@link DataFrame#byArrayRow(String...)}, {@link DataFrame#foldByColumn(String...)},
+     * {@link DataFrame#foldByRow(String...)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public static DataFrameBuilder builder(Index columnsIndex) {
         return new DataFrameBuilder(columnsIndex);
     }
@@ -57,7 +61,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated use {@link DataFrame#empty(Index)}.
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public DataFrame empty() {
         return new ColumnDataFrame(columnsIndex);
     }
@@ -65,7 +69,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated use {@link DataFrame#byColumn(Index)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public DataFrame columns(Series<?>... columns) {
         Objects.requireNonNull(columns);
         return new ColumnDataFrame(columnsIndex, columns);
@@ -74,7 +78,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated use {@link DataFrame#byArrayRow(Extractor[])}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public DataFrame rows(Object[]... rows) {
         int w = columnsIndex.size();
         int h = rows.length;
@@ -103,7 +107,7 @@ public class DataFrameBuilder {
      * @since 0.11
      * @deprecated use {@link DataFrame#byArrayRow(Extractor[])}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public DataFrameByRowBuilder byRow(ValueAccum<?>... rowAccumulators) {
 
         // use default ObjectAccumulators if not set
@@ -124,7 +128,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated use {@link #byRow(ValueAccum[])} and then {@link DataFrameByRowBuilder#addRow(Object...)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public DataFrameByRowBuilder addRow(Object... row) {
         return byRow().addRow(row);
     }
@@ -132,7 +136,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated use {@link DataFrame#foldByRow(String...)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public DataFrame foldByRow(Object... data) {
 
         int width = columnsIndex.size();
@@ -166,7 +170,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated in favor of {@link DataFrame#foldByColumn(Index)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public DataFrame foldByColumn(Object... data) {
 
         FoldByColumnGeometry g = byColumnGeometry(data.length);
@@ -187,7 +191,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated use {@link DataFrame#foldByRow(String...)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public <T> DataFrame foldStreamByRow(Stream<T> stream) {
         return foldIterableByRow(stream::iterator);
     }
@@ -195,7 +199,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated in favor of {@link DataFrame#foldByColumn(Index)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public <T> DataFrame foldStreamByColumn(Stream<T> stream) {
         // since we can't guess the height from the Stream, convert it to array and fold the array by column
         return foldByColumn(stream.toArray());
@@ -204,7 +208,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated use {@link DataFrame#foldByRow(String...)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public <T> DataFrame foldIterableByRow(Iterable<T> iterable) {
 
         int width = columnsIndex.size();
@@ -251,7 +255,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated use the builder provided via {@link DataFrame#byRow(Extractor[])} method instead.
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public <T> DataFrame objectsToRows(Iterable<T> objects, Function<T, Object[]> rowMapper) {
         DataFrameByRowBuilder byRowBuilder = byRow();
         objects.forEach(o -> byRowBuilder.addRow(rowMapper.apply(o)));
@@ -261,7 +265,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated use the builder provided via {@link DataFrame#byColumn(String...)} method instead.
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public DataFrame foldIntByColumn(int padWith, int... data) {
 
         FoldByColumnGeometry g = byColumnGeometry(data.length);
@@ -292,7 +296,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated use {@link DataFrame#foldByRow(String...)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public DataFrame foldIntStreamByRow(IntStream stream) {
         return foldIntStreamByRow(0, stream);
     }
@@ -300,7 +304,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated use {@link DataFrame#foldByRow(String...)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public DataFrame foldIntStreamByRow(int padWith, IntStream stream) {
 
         int width = columnsIndex.size();
@@ -340,7 +344,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated use the builder provided via {@link DataFrame#byColumn(String...)} method instead.
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public DataFrame foldIntStreamByColumn(IntStream stream) {
         return foldIntStreamByColumn(0, stream);
     }
@@ -348,7 +352,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated use the builder provided via {@link DataFrame#byColumn(String...)} method instead.
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public DataFrame foldIntStreamByColumn(int padWith, IntStream stream) {
         // since we can't guess the height from the Stream, convert it to array and fold the array by column
         return foldIntByColumn(padWith, stream.toArray());
@@ -357,7 +361,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated use {@link DataFrame#foldByColumn(String...)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public DataFrame foldLongByColumn(long padWith, long... data) {
 
         FoldByColumnGeometry g = byColumnGeometry(data.length);
@@ -388,7 +392,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated use {@link DataFrame#foldByRow(String...)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public DataFrame foldLongStreamByRow(LongStream stream) {
         return foldLongStreamByRow(0L, stream);
     }
@@ -396,7 +400,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated use {@link DataFrame#foldByRow(String...)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public DataFrame foldLongStreamByRow(long padWith, LongStream stream) {
 
         int width = columnsIndex.size();
@@ -436,7 +440,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated use {@link DataFrame#foldByColumn(String...)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public DataFrame foldLongStreamByColumn(LongStream stream) {
         return foldLongStreamByColumn(0L, stream);
     }
@@ -444,7 +448,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated use {@link DataFrame#foldByColumn(String...)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public DataFrame foldLongStreamByColumn(long padWith, LongStream stream) {
         // since we can't guess the height from the Stream, convert it to array and fold the array by column
         return foldLongByColumn(padWith, stream.toArray());
@@ -453,7 +457,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated use {@link DataFrame#foldByColumn(String...)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public DataFrame foldDoubleByColumn(double padWith, double... data) {
 
         FoldByColumnGeometry g = byColumnGeometry(data.length);
@@ -484,7 +488,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated use {@link DataFrame#foldByRow(String...)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public DataFrame foldDoubleStreamByRow(DoubleStream stream) {
         return foldDoubleStreamByRow(0., stream);
     }
@@ -492,7 +496,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated use {@link DataFrame#foldByRow(String...)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public DataFrame foldDoubleStreamByRow(double padWith, DoubleStream stream) {
 
         int width = columnsIndex.size();
@@ -532,7 +536,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated use {@link DataFrame#foldByColumn(String...)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public DataFrame foldDoubleStreamByColumn(DoubleStream stream) {
         return foldDoubleStreamByColumn(0., stream);
     }
@@ -540,7 +544,7 @@ public class DataFrameBuilder {
     /**
      * @deprecated use {@link DataFrame#foldByColumn(String...)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     public DataFrame foldDoubleStreamByColumn(double padWith, DoubleStream stream) {
         // since we can't guess the height from the Stream, convert it to array and fold the array by column
         return foldDoubleByColumn(padWith, stream.toArray());

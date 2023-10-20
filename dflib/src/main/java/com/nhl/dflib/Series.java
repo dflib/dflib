@@ -93,7 +93,7 @@ public interface Series<T> extends Iterable<T> {
     /**
      * @deprecated in favor of {@link #of(Object[])}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     @SafeVarargs
     static <T> Series<T> forData(T... data) {
         return of(data);
@@ -102,7 +102,7 @@ public interface Series<T> extends Iterable<T> {
     /**
      * @deprecated in favor of {@link #ofIterable(Iterable)}
      */
-    @Deprecated(since = "0.16")
+    @Deprecated(since = "0.16", forRemoval = true)
     static <T> Series<T> forData(Iterable<T> data) {
         return ofIterable(data);
     }
