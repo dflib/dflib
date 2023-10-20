@@ -562,48 +562,6 @@ public class ColumnDataFrame implements DataFrame {
         return new ColumnDataFrame(columnsIndex, newColumns);
     }
 
-    /**
-     * @since 0.7
-     */
-    @Override
-    public DataFrame selectColumns(Predicate<String> includeCondition) {
-        Index newIndex = columnsIndex.selectLabels(includeCondition);
-        return newIndex != columnsIndex ? selectColumns(newIndex) : this;
-    }
-
-    /**
-     * @since 0.11
-     */
-    @Override
-    public DataFrame selectColumns(Exp<?>... exps) {
-
-        int w = exps.length;
-        if (w == 0) {
-            throw new IllegalArgumentException("No expressions provided to select columns");
-        }
-
-        String[] labels = new String[w];
-        for (int i = 0; i < w; i++) {
-            labels[i] = exps[i].getColumnName(this);
-        }
-
-        Series[] data = new Series[w];
-        data[0] = exps[0].eval(this);
-
-        int h = data[0].size();
-        for (int i = 1; i < w; i++) {
-            data[i] = exps[i].eval(this);
-
-            // sanity check - all columns must be of the same size
-            // TODO: move this check to the DataFrame builder?
-            if (data[i].size() != h) {
-                throw new IllegalStateException("Unexpected column size for '" + labels[i] + "': " + data[i].size() + ", (expected " + h + ")");
-            }
-        }
-
-        return DataFrame.byColumn(labels).of(data);
-    }
-
     @Override
     public GroupBy group(Hasher by) {
         return new Grouper(by).group(this);

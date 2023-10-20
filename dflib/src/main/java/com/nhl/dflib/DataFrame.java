@@ -704,11 +704,6 @@ public interface DataFrame extends Iterable<RowProxy> {
     DataFrame selectColumns(int... positions);
 
     /**
-     * @since 0.11
-     */
-    DataFrame selectColumns(Exp<?>... exps);
-
-    /**
      * @param columnsIndex an index that defines a subset of columns and their ordering in the returned DataFrame.
      * @return a new DataFrame.
      * @since 0.6
@@ -723,7 +718,46 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new DataFrame
      * @since 0.7
      */
-    DataFrame selectColumns(Predicate<String> labelCondition);
+    default DataFrame selectColumns(Predicate<String> labelCondition) {
+        Index columnsIndex = getColumnsIndex();
+        Index newIndex = columnsIndex.selectLabels(labelCondition);
+        return newIndex != columnsIndex ? selectColumns(newIndex) : this;
+    }
+
+    /**
+     * @since 0.11
+     */
+    // TODO: this is different from any of the other "selectColumns":
+    //  1. it may generate a DataFrame with a new set of columns not found in this DataFrame
+    //  2. It transforms the original columns via expressions
+    //  So, maybe rename to "map"?
+    default DataFrame selectColumns(Exp<?>... exps) {
+        int w = exps.length;
+        if (w == 0) {
+            throw new IllegalArgumentException("No expressions provided to select columns");
+        }
+
+        String[] labels = new String[w];
+        for (int i = 0; i < w; i++) {
+            labels[i] = exps[i].getColumnName(this);
+        }
+
+        Series[] data = new Series[w];
+        data[0] = exps[0].eval(this);
+
+        int h = data[0].size();
+        for (int i = 1; i < w; i++) {
+            data[i] = exps[i].eval(this);
+
+            // sanity check - all columns must be of the same size
+            // TODO: move this check to the DataFrame builder?
+            if (data[i].size() != h) {
+                throw new IllegalStateException("Unexpected column size for '" + labels[i] + "': " + data[i].size() + ", (expected " + h + ")");
+            }
+        }
+
+        return DataFrame.byColumn(labels).of(data);
+    }
 
     DataFrame dropColumns(String... columnLabels);
 
