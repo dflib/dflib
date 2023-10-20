@@ -92,6 +92,14 @@ public class StrColumnTest {
     }
 
     @Test
+    public void testContains() {
+        Condition c = $str(0).contains("_");
+
+        Series<String> s = Series.of("a_", "_b", "c", "[_d]");
+        new BoolSeriesAsserts(c.eval(s)).expectData(true, true, false, true);
+    }
+
+    @Test
     public void testMatches() {
         Condition c = $str(0).matches("^a.*[0-9]$");
 

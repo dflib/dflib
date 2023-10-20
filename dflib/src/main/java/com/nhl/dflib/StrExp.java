@@ -82,6 +82,13 @@ public interface StrExp extends Exp<String> {
     }
 
     /**
+     * @since 0.18
+     */
+    default Condition contains(String suffix) {
+        return MapExpScalarCondition2.mapVal("contains", this, suffix, (s, p) -> s.contains(suffix));
+    }
+
+    /**
      * @since 0.16
      */
     default StrExp trim() {
