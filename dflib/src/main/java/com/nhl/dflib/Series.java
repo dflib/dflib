@@ -141,6 +141,8 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
+     * Converts the Series to another Series of the same length, applying the provided function.
+     *
      * @param mapper a function that maps each Series value to some other value
      * @param <V>    value type produced by the mapper
      * @return a Series produced by applying a mapper to this Series
@@ -151,6 +153,8 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
+     * Converts the Series to a BooleanSeries of the same length, applying the provided function.
+     *
      * @since 0.16
      */
     default BooleanSeries mapAsBool(BoolValueMapper<? super T> converter) {
@@ -164,6 +168,8 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
+     * Converts the Series to an IntSeries of the same length, applying the provided function.
+     *
      * @since 0.16
      */
     default IntSeries mapAsInt(IntValueMapper<? super T> converter) {
@@ -177,6 +183,8 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
+     * Converts the Series to a LongSeries of the same length, applying the provided function.
+     *
      * @since 0.16
      */
     default LongSeries mapAsLong(LongValueMapper<? super T> converter) {
@@ -190,6 +198,8 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
+     * Converts the Series to a DoubleSeries of the same length, applying the provided function.
+     *
      * @since 0.16
      */
     default DoubleSeries mapAsDouble(DoubleValueMapper<? super T> converter) {
