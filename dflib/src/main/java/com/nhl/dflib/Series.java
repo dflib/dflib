@@ -213,6 +213,55 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
+     * Casts the Series to a specific type. This is a fast (aka "unsafe") version of cast that does not check that all
+     * elements of the Series conform to the provided type. Instead, it relies on user knowledge of the specific type.
+     * In case of user errors, this will cause ClassCastExceptions downstream. This method is useful when retrieving
+     * untyped Series from DataFrames to simplify various type-aware operations.
+     *
+     * @since 0.18
+     */
+    default <S> Series<S> unsafeCastAs(Class<S> type) {
+        return (Series<S>) this;
+    }
+
+    /**
+     * Casts the Series to a specific type. This is a "slow" version of cast that checks that all elements of the Series
+     * conform to the provided type. Just like {@link #unsafeCastAs(Class)}, this is useful when retrieving untyped Series
+     * from DataFrames to simplify various type-aware operations.
+     *
+     * @since 0.18
+     */
+    <S> Series<S> castAs(Class<S> type);
+
+    /**
+     * @since 0.18
+     */
+    default BooleanSeries castAsBool() {
+        throw new ClassCastException("Can't cast to BooleanSeries");
+    }
+
+    /**
+     * @since 0.18
+     */
+    default DoubleSeries castAsDouble() {
+        throw new ClassCastException("Can't cast to DoubleSeries");
+    }
+
+    /**
+     * @since 0.18
+     */
+    default IntSeries castAsInt() {
+        throw new ClassCastException("Can't cast to IntSeries");
+    }
+
+    /**
+     * @since 0.18
+     */
+    default LongSeries castAsLong() {
+        throw new ClassCastException("Can't cast to LongSeries");
+    }
+
+    /**
      * A map function over the Series that generates a DataFrame of the same height as the length of the Series,
      * which each row produced by applying the map function to each Series value.
      *

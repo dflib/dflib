@@ -46,6 +46,11 @@ public interface BooleanSeries extends Series<Boolean> {
         return Boolean.TYPE;
     }
 
+    @Override
+    default BooleanSeries castAsBool() {
+        return this;
+    }
+
     /**
      * @since 0.16
      */

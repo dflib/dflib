@@ -27,6 +27,18 @@ import java.util.Set;
  */
 public abstract class IntBaseSeries implements IntSeries {
 
+    /**
+     * @since 0.18
+     */
+    @Override
+    public <S> Series<S> castAs(Class<S> type) {
+        if (!type.isAssignableFrom(Integer.class) && !type.equals(Integer.TYPE)) {
+            throw new ClassCastException("IntSeries can not be cast to " + type);
+        }
+
+        return (Series<S>) this;
+    }
+
     @Override
     public Series<Integer> rangeOpenClosed(int fromInclusive, int toExclusive) {
         return rangeOpenClosedInt(fromInclusive, toExclusive);

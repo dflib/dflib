@@ -41,6 +41,11 @@ public interface LongSeries extends Series<Long> {
         return Long.TYPE;
     }
 
+    @Override
+    default LongSeries castAsLong() {
+        return this;
+    }
+
     long getLong(int index);
 
     void copyToLong(long[] to, int fromOffset, int toOffset, int len);

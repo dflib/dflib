@@ -42,6 +42,11 @@ public interface IntSeries extends Series<Integer> {
         return Integer.TYPE;
     }
 
+    @Override
+    default IntSeries castAsInt() {
+        return this;
+    }
+
     int getInt(int index);
 
     void copyToInt(int[] to, int fromOffset, int toOffset, int len);

@@ -76,6 +76,20 @@ public abstract class ObjectSeries<T> implements Series<T> {
         return Mapper.map(this, resultColumns, mapper);
     }
 
+    /**
+     * @since 0.18
+     */
+    @Override
+    public <S> Series<S> castAs(Class<S> type) {
+        Class<?> inferredType = getInferredType();
+
+        if (!type.isAssignableFrom(inferredType)) {
+            throw new ClassCastException("Inferred type of Series elements " + inferredType.getName() + " can not be cast to " + type);
+        }
+
+        return (Series<S>) this;
+    }
+
     @Override
     public Series<T> rangeOpenClosed(int fromInclusive, int toExclusive) {
 

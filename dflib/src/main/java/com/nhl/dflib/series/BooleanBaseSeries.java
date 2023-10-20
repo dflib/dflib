@@ -21,6 +21,18 @@ import java.util.Set;
  */
 public abstract class BooleanBaseSeries implements BooleanSeries {
 
+    /**
+     * @since 0.18
+     */
+    @Override
+    public <S> Series<S> castAs(Class<S> type) {
+        if (!type.equals(Boolean.class) && !type.equals(Boolean.TYPE)) {
+            throw new ClassCastException("BooleanSeries can not be cast to " + type);
+        }
+
+        return (Series<S>) this;
+    }
+
     @Override
     public DataFrame map(Index resultColumns, ValueToRowMapper<Boolean> mapper) {
         return Mapper.map(this, resultColumns, mapper);

@@ -24,6 +24,18 @@ import java.util.Set;
  */
 public abstract class DoubleBaseSeries implements DoubleSeries {
 
+    /**
+     * @since 0.18
+     */
+    @Override
+    public <S> Series<S> castAs(Class<S> type) {
+        if (!type.isAssignableFrom(Double.class) && !type.equals(Double.TYPE)) {
+            throw new ClassCastException("DoubleSeries can not be cast to " + type);
+        }
+
+        return (Series<S>) this;
+    }
+
     @Override
     public DataFrame map(Index resultColumns, ValueToRowMapper<Double> mapper) {
         return Mapper.map(this, resultColumns, mapper);

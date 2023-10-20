@@ -24,6 +24,18 @@ import java.util.Set;
  */
 public abstract class LongBaseSeries implements LongSeries {
 
+    /**
+     * @since 0.18
+     */
+    @Override
+    public <S> Series<S> castAs(Class<S> type) {
+        if (!type.isAssignableFrom(Long.class) && !type.equals(Long.TYPE)) {
+            throw new ClassCastException("LongSeries can not be cast to " + type);
+        }
+
+        return (Series<S>) this;
+    }
+
     @Override
     public DataFrame map(Index resultColumns, ValueToRowMapper<Long> mapper) {
         return Mapper.map(this, resultColumns, mapper);

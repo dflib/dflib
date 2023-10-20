@@ -41,6 +41,11 @@ public interface DoubleSeries extends Series<Double> {
         return Double.TYPE;
     }
 
+    @Override
+    default DoubleSeries castAsDouble() {
+        return this;
+    }
+
     double getDouble(int index);
 
     void copyToDouble(double[] to, int fromOffset, int toOffset, int len);
