@@ -183,15 +183,13 @@ public class DataFrame_AddDropMapColumnsTest {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                         1, "x",
                         2, "y")
-                .addColumn($int(0).as("a_copy"))
                 .addColumn($col(1))
-                .addColumn($val("!").as("x"));
+                .addColumn($col(1).eq("x"));
 
-
-        new DataFrameAsserts(df, "a", "b", "a_copy", "b_", "x")
+        new DataFrameAsserts(df, "a", "b", "b_", "b='x'")
                 .expectHeight(2)
-                .expectRow(0, 1, "x", 1, "x", "!")
-                .expectRow(1, 2, "y", 2, "y", "!");
+                .expectRow(0, 1, "x", "x", true)
+                .expectRow(1, 2, "y", "y", false);
     }
 
     @Test
