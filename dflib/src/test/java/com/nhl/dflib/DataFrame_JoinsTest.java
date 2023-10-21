@@ -201,12 +201,12 @@ public class DataFrame_JoinsTest {
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y")
-                .toIntColumn(0, 0);
+                .compactInt(0, 0);
 
         DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
                 2, "a",
                 2, "b",
-                3, "c").toIntColumn(0, 0);
+                3, "c").compactInt(0, 0);
 
         DataFrame df = df1.fullJoin()
                 .on(0)

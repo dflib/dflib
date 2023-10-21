@@ -13,6 +13,7 @@
 * #198 Numeric "Exp.eq", "Exp.ne" has different op label vs other expressions
 * #200 DataFrame: deprecate methods returning columns
 * #201 Series.castAsXyz methods
+* #202  DataFrame: deprecate "toXyzColumn()" API
 
 ## Release 0.17
 

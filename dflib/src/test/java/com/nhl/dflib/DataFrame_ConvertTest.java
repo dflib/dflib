@@ -9,7 +9,6 @@ import java.time.format.DateTimeFormatter;
 
 import static com.nhl.dflib.Exp.$int;
 import static com.nhl.dflib.Exp.$str;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class DataFrame_ConvertTest {
 
@@ -92,87 +91,7 @@ public class DataFrame_ConvertTest {
                 .expectRow(2, (Object) null);
     }
 
-    @Test
-    public void testConvertColumnToInt_ByLabel() {
-        DataFrame df = DataFrame
-                .foldByRow("a", "b")
-                .of(
-                        "1", "x",
-                        "5", "z",
-                        "2", "y")
-                .toIntColumn("a", IntValueMapper.fromString());
-
-
-        new DataFrameAsserts(df, "a", "b")
-                .expectHeight(3)
-                .expectRow(0, 1, "x")
-                .expectRow(1, 5, "z")
-                .expectRow(2, 2, "y");
-    }
-
-    @Test
-    public void testConvertColumnToInt_ByPos() {
-        DataFrame df = DataFrame
-                .foldByRow("a", "b")
-                .of(
-                        "1", "x",
-                        "5", "z",
-                        "2", "y")
-                .toIntColumn(0, -1);
-
-
-        new DataFrameAsserts(df, "a", "b")
-                .expectHeight(3)
-                .expectRow(0, 1, "x")
-                .expectRow(1, 5, "z")
-                .expectRow(2, 2, "y");
-    }
-
-    @Test
-    public void testConvertColumnToInt_FromBoolean() {
-        DataFrame df = DataFrame
-                .foldByRow("a", "b")
-                .of(
-                        true, "x",
-                        false, "z",
-                        true, "y")
-                .toIntColumn("a", IntValueMapper.fromObject());
-
-        new DataFrameAsserts(df, "a", "b")
-                .expectHeight(3)
-                .expectRow(0, 1, "x")
-                .expectRow(1, 0, "z")
-                .expectRow(2, 1, "y");
-    }
-
-
-    @Test
-    public void testConvertColumnToInt_Nulls() {
-        DataFrame df = DataFrame.foldByRow("a", "b").of(
-                "1", "x",
-                null, "z",
-                "2", "y");
-
-        assertThrows(IllegalArgumentException.class, () -> df.toIntColumn(0, IntValueMapper.fromString()));
-    }
-
-    @Test
-    public void testConvertColumnToInt_NullsDefault() {
-        DataFrame df = DataFrame
-                .foldByRow("a", "b")
-                .of(
-                        "1", "x",
-                        null, "z",
-                        "2", "y")
-                .toIntColumn(0, -100);
-
-        new DataFrameAsserts(df, "a", "b")
-                .expectHeight(3)
-                .expectRow(0, 1, "x")
-                .expectRow(1, -100, "z")
-                .expectRow(2, 2, "y");
-    }
-
+    @Deprecated
     @Test
     public void testToEnumFromNumColumn() {
         DataFrame df = DataFrame
@@ -190,6 +109,7 @@ public class DataFrame_ConvertTest {
                 .expectRow(2, X.a, "y");
     }
 
+    @Deprecated
     @Test
     public void testToEnumFromStringColumn() {
         DataFrame df = DataFrame

@@ -462,214 +462,389 @@ public interface DataFrame extends Iterable<RowProxy> {
     DataFrame convertColumn(int position, Exp<?> exp);
 
     /**
-     * Performs column conversion to a compact IntC
+     * "Compacts" the internal representation of the Integer column, converting it to a {@link IntSeries}.
      *
      * @param columnLabel name of a column to convert
      * @param converter   a function to apply to column values to covert them to ints
      * @param <V>         expected input column value
      * @return a new DataFrame
-     * @since 0.6
+     * @since 0.18
      */
-    default <V> DataFrame toIntColumn(String columnLabel, IntValueMapper<V> converter) {
+    default <V> DataFrame compactInt(String columnLabel, IntValueMapper<V> converter) {
         int pos = getColumnsIndex().position(columnLabel);
-        return toIntColumn(pos, converter);
+        return compactInt(pos, converter);
     }
 
     /**
+     * "Compacts" the internal representation of the Integer column, converting it to a {@link IntSeries}.
+     *
      * @param pos       position of a column to convert
      * @param converter a function to apply to column values to covert them to ints
      * @param <V>       expected input column value
      * @return a new DataFrame
-     * @since 0.6
+     * @since 0.18
      */
-    <V> DataFrame toIntColumn(int pos, IntValueMapper<V> converter);
+    <V> DataFrame compactInt(int pos, IntValueMapper<V> converter);
 
     /**
+     * "Compacts" the internal representation of the Integer column, converting it to a {@link IntSeries}.
+     *
      * @param columnLabel name of a column to convert
      * @param forNull     a value to use in place of nulls
      * @return a new DataFrame
-     * @since 0.6
+     * @since 0.18
      */
-    default DataFrame toIntColumn(String columnLabel, int forNull) {
+    default DataFrame compactInt(String columnLabel, int forNull) {
         int pos = getColumnsIndex().position(columnLabel);
-        return toIntColumn(pos, forNull);
+        return compactInt(pos, forNull);
     }
 
     /**
+     * "Compacts" the internal representation of the Integer column, converting it to a {@link IntSeries}.
+     *
      * @param pos     position of a column to convert
      * @param forNull a value to use in place of nulls
      * @return a new DataFrame
-     * @since 0.6
+     * @since 0.18
      */
-    default DataFrame toIntColumn(int pos, int forNull) {
-        return toIntColumn(pos, IntValueMapper.fromObject(forNull));
+    default DataFrame compactInt(int pos, int forNull) {
+        return compactInt(pos, IntValueMapper.fromObject(forNull));
     }
 
     /**
+     * @since 0.6
+     * @deprecated in favor of {@link #compactInt(String, IntValueMapper)}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default <V> DataFrame toIntColumn(String columnLabel, IntValueMapper<V> converter) {
+        return compactInt(columnLabel, converter);
+    }
+
+    /**
+     * @since 0.6
+     * @deprecated in favor of {@link #compactInt(int, IntValueMapper)}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default <V> DataFrame toIntColumn(int pos, IntValueMapper<V> converter) {
+        return compactInt(pos, converter);
+    }
+
+    /**
+     * @since 0.6
+     * @deprecated in favor of {@link #compactInt(String, int)}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default DataFrame toIntColumn(String columnLabel, int forNull) {
+        return compactInt(columnLabel, forNull);
+    }
+
+    /**
+     * @since 0.6
+     * @deprecated in favor of {@link #compactInt(int, int)}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default DataFrame toIntColumn(int pos, int forNull) {
+        return compactInt(pos, forNull);
+    }
+
+    /**
+     * "Compacts" the internal representation of the Double column, converting it to an {@link DoubleSeries}.
+     *
      * @param columnLabel name of a column to convert
      * @param converter   a function to apply to column values to covert them to doubles
      * @param <V>         expected input column value
      * @return a new DataFrame
-     * @since 0.6
+     * @since 0.18
      */
-    default <V> DataFrame toDoubleColumn(String columnLabel, DoubleValueMapper<V> converter) {
+    default <V> DataFrame compactDouble(String columnLabel, DoubleValueMapper<V> converter) {
         int pos = getColumnsIndex().position(columnLabel);
-        return toDoubleColumn(pos, converter);
+        return compactDouble(pos, converter);
     }
 
     /**
+     * "Compacts" the internal representation of the Double column, converting it to an {@link DoubleSeries}.
+     *
      * @param pos       position of a column to convert
      * @param converter a function to apply to column values to covert them to ints
      * @param <V>       expected input column value
      * @return a new DataFrame
-     * @since 0.6
+     * @since 0.18
      */
-    <V> DataFrame toDoubleColumn(int pos, DoubleValueMapper<V> converter);
+    <V> DataFrame compactDouble(int pos, DoubleValueMapper<V> converter);
 
     /**
+     * "Compacts" the internal representation of the Double column, converting it to an {@link DoubleSeries}.
+     *
      * @param columnLabel name of a column to convert
      * @param forNull     a value to use in place of nulls
      * @return a new DataFrame
-     * @since 0.6
+     * @since 0.18
      */
-    default DataFrame toDoubleColumn(String columnLabel, double forNull) {
+    default DataFrame compactDouble(String columnLabel, double forNull) {
         int pos = getColumnsIndex().position(columnLabel);
-        return toDoubleColumn(pos, forNull);
+        return compactDouble(pos, forNull);
     }
 
     /**
+     * "Compacts" the internal representation of the Double column, converting it to an {@link DoubleSeries}.
+     *
      * @param pos     position of a column to convert
      * @param forNull a value to use in place of nulls
      * @return a new DataFrame
-     * @since 0.6
+     * @since 0.18
      */
-    default DataFrame toDoubleColumn(int pos, double forNull) {
-        return toDoubleColumn(pos, DoubleValueMapper.fromObject(forNull));
+    default DataFrame compactDouble(int pos, double forNull) {
+        return compactDouble(pos, DoubleValueMapper.fromObject(forNull));
     }
 
     /**
+     * @since 0.6
+     * @deprecated in favor of {@link #compactDouble(String, DoubleValueMapper)}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default <V> DataFrame toDoubleColumn(String columnLabel, DoubleValueMapper<V> converter) {
+        return compactDouble(columnLabel, converter);
+    }
+
+    /**
+     * @since 0.6
+     * @deprecated in favor of {@link #compactDouble(int, DoubleValueMapper)}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default <V> DataFrame toDoubleColumn(int pos, DoubleValueMapper<V> converter) {
+        return compactDouble(pos, converter);
+    }
+
+    /**
+     * @since 0.6
+     * @deprecated in favor of {@link #compactDouble(String, double)}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default DataFrame toDoubleColumn(String columnLabel, double forNull) {
+        return compactDouble(columnLabel, forNull);
+    }
+
+    /**
+     * @since 0.6
+     * @deprecated in favor of {@link #compactDouble(int, double)}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default DataFrame toDoubleColumn(int pos, double forNull) {
+        return compactDouble(pos, forNull);
+    }
+
+    /**
+     * "Compacts" the internal representation of the Boolean column, converting it to a {@link BooleanSeries}.
+     *
      * @param columnLabel name of a column to convert
      * @param converter   a function to apply to column values to covert them to booleans
      * @param <V>         expected input column value
      * @return a new DataFrame
-     * @since 0.17
+     * @since 0.18
      */
-    default <V> DataFrame toBoolColumn(String columnLabel, BoolValueMapper<V> converter) {
+    default <V> DataFrame compactBool(String columnLabel, BoolValueMapper<V> converter) {
         int pos = getColumnsIndex().position(columnLabel);
-        return toBoolColumn(pos, converter);
+        return compactBool(pos, converter);
     }
 
     /**
      * @since 0.6
-     * @deprecated in favor of {@link #toBoolColumn(String, BoolValueMapper)}
+     * @deprecated in favor of {@link #compactBool(String, BoolValueMapper)}
      */
     @Deprecated(since = "0.17", forRemoval = true)
     default <V> DataFrame toBooleanColumn(String columnLabel, BoolValueMapper<V> converter) {
-        return toBoolColumn(columnLabel, converter);
+        return compactBool(columnLabel, converter);
     }
 
     /**
+     * "Compacts" the internal representation of the Boolean column, converting it to a {@link BooleanSeries}.
+     *
      * @param pos       position of a column to convert
      * @param converter a function to apply to column values to covert them to booleans
      * @param <V>       expected input column value
      * @return a new DataFrame
-     * @since 0.17
+     * @since 0.18
      */
-    <V> DataFrame toBoolColumn(int pos, BoolValueMapper<V> converter);
+    <V> DataFrame compactBool(int pos, BoolValueMapper<V> converter);
 
     /**
      * @since 0.6
-     * @deprecated in favor of {@link #toBoolColumn(int, BoolValueMapper)}
+     * @deprecated in favor of {@link #compactBool(int, BoolValueMapper)}
      */
     @Deprecated(since = "0.17", forRemoval = true)
     default <V> DataFrame toBooleanColumn(int pos, BoolValueMapper<V> converter) {
-        return toBoolColumn(pos, converter);
+        return compactBool(pos, converter);
     }
 
     /**
+     * "Compacts" the internal representation of the Boolean column, converting it to a {@link BooleanSeries}.
+     *
      * @param columnLabel name of a column to convert
      * @return a new DataFrame
-     * @since 0.17
+     * @since 0.18
      */
-    default DataFrame toBoolColumn(String columnLabel) {
+    default DataFrame compactBool(String columnLabel) {
         int pos = getColumnsIndex().position(columnLabel);
-        return toBoolColumn(pos);
+        return compactBool(pos);
     }
 
     /**
      * @since 0.6
-     * @deprecated in favor of {@link #toBoolColumn(String)}
+     * @deprecated in favor of {@link #compactBool(String)}
      */
     @Deprecated(since = "0.17", forRemoval = true)
     default DataFrame toBooleanColumn(String columnLabel) {
-        return toBoolColumn(columnLabel);
+        return compactBool(columnLabel);
     }
 
     /**
+     * "Compacts" the internal representation of the Boolean column, converting it to a {@link BooleanSeries}.
+     *
      * @param pos position of a column to convert
      * @return a new DataFrame
-     * @since 0.17
+     * @since 0.18
      */
-    default DataFrame toBoolColumn(int pos) {
-        return toBoolColumn(pos, BoolValueMapper.fromObject());
+    default DataFrame compactBool(int pos) {
+        return compactBool(pos, BoolValueMapper.fromObject());
     }
 
     /**
      * @since 0.6
-     * @deprecated in favor of {@link #toBoolColumn(int)}
+     * @deprecated in favor of {@link #compactBool(int)}
      */
     @Deprecated(since = "0.17", forRemoval = true)
     default DataFrame toBooleanColumn(int pos) {
-        return toBoolColumn(pos);
+        return compactBool(pos);
     }
 
     /**
+     * @since 0.17
+     * @deprecated use #convertToBoolColumn(String, BoolValueMapper)
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default <V> DataFrame toBoolColumn(String columnLabel, BoolValueMapper<V> converter) {
+        return compactBool(columnLabel, converter);
+    }
+
+    /**
+     * @since 0.17
+     * @deprecated use #convertToBoolColumn(int, BoolValueMapper)
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default <V> DataFrame toBoolColumn(int pos, BoolValueMapper<V> converter) {
+        return compactBool(pos, converter);
+    }
+
+    /**
+     * @since 0.17
+     * @deprecated use #convertToBoolColumn(String)
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default DataFrame toBoolColumn(String columnLabel) {
+        return compactBool(columnLabel);
+    }
+
+    /**
+     * @since 0.17
+     * @deprecated use #convertToBoolColumn(int)
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default DataFrame toBoolColumn(int pos) {
+        return compactBool(pos);
+    }
+
+    /**
+     * "Compacts" the internal representation of the Long column, converting it to a {@link LongSeries}.
+     *
      * @param columnLabel name of a column to convert
      * @param converter   a function to apply to column values to covert them to longs
      * @param <V>         expected input column value
      * @return a new DataFrame
-     * @since 0.6
+     * @since 0.18
      */
-    default <V> DataFrame toLongColumn(String columnLabel, LongValueMapper<V> converter) {
+    default <V> DataFrame compactLong(String columnLabel, LongValueMapper<V> converter) {
         int pos = getColumnsIndex().position(columnLabel);
-        return toLongColumn(pos, converter);
+        return compactLong(pos, converter);
     }
 
     /**
+     * "Compacts" the internal representation of the Long column, converting it to a {@link LongSeries}.
+     *
      * @param pos       position of a column to convert
      * @param converter a function to apply to column values to covert them to longs
      * @param <V>       expected input column value
      * @return a new DataFrame
-     * @since 0.6
+     * @since 0.18
      */
-    <V> DataFrame toLongColumn(int pos, LongValueMapper<V> converter);
+    <V> DataFrame compactLong(int pos, LongValueMapper<V> converter);
 
     /**
+     * "Compacts" the internal representation of the Long column, converting it to a {@link LongSeries}.
+     *
      * @param columnLabel name of a column to convert
      * @return a new DataFrame
-     * @since 0.6
+     * @since 0.18
      */
-    default DataFrame toLongColumn(String columnLabel, long forNull) {
+    default DataFrame compactLong(String columnLabel, long forNull) {
         int pos = getColumnsIndex().position(columnLabel);
-        return toLongColumn(pos, forNull);
+        return compactLong(pos, forNull);
     }
 
     /**
+     * "Compacts" the internal representation of the Long column, converting it to a {@link LongSeries}.
+     *
      * @param pos position of a column to convert
      * @return a new DataFrame
-     * @since 0.6
+     * @since 0.18
      */
-    default DataFrame toLongColumn(int pos, long forNull) {
-        return toLongColumn(pos, LongValueMapper.fromObject(forNull));
+    default DataFrame compactLong(int pos, long forNull) {
+        return compactLong(pos, LongValueMapper.fromObject(forNull));
     }
 
+    /**
+     * @since 0.6
+     * @deprecated in favor of {@link #compactLong(String, LongValueMapper)}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default <V> DataFrame toLongColumn(String columnLabel, LongValueMapper<V> converter) {
+        return compactLong(columnLabel, converter);
+    }
+
+    /**
+     * @since 0.6
+     * @deprecated in favor of {@link #compactLong(int, LongValueMapper)}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default <V> DataFrame toLongColumn(int pos, LongValueMapper<V> converter) {
+        return compactLong(pos, converter);
+    }
+
+    /**
+     * @since 0.6
+     * @deprecated in favor of {@link #compactLong(String, long)}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default DataFrame toLongColumn(String columnLabel, long forNull) {
+        return compactLong(columnLabel, forNull);
+    }
+
+    /**
+     * @since 0.6
+     * @deprecated in favor of {@link #compactLong(int, long)}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default DataFrame toLongColumn(int pos, long forNull) {
+        return compactLong(pos, forNull);
+    }
 
     /**
      * @param columnLabel name of a column to convert
      * @param <E>         converted column enum type
      * @return a new DataFrame
      * @since 0.6
+     * @deprecated use <code>convertColumn(name, $str(name).castAsEnum(type))</code> instead
      */
+    @Deprecated(since = "0.18", forRemoval = true)
     default <E extends Enum<E>> DataFrame toEnumFromStringColumn(String columnLabel, Class<E> enumType) {
         int pos = getColumnsIndex().position(columnLabel);
         return toEnumFromStringColumn(pos, enumType);
@@ -680,7 +855,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param <E> converted column enum type
      * @return a new DataFrame
      * @since 0.6
+     * @deprecated use <code>convertColumn(pos, $str(pos).castAsEnum(type))</code> instead
      */
+    @Deprecated(since = "0.18", forRemoval = true)
     default <E extends Enum<E>> DataFrame toEnumFromStringColumn(int pos, Class<E> enumType) {
         return convertColumn(pos, Exp.$col(pos).castAsStr().castAsEnum(enumType));
     }
@@ -690,7 +867,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param <E>         converted column enum type
      * @return a new DataFrame
      * @since 0.6
+     * @deprecated use <code>convertColumn(name, $int(name).castAsEnum(type))</code> instead
      */
+    @Deprecated(since = "0.18", forRemoval = true)
     default <E extends Enum<E>> DataFrame toEnumFromNumColumn(String columnLabel, Class<E> enumType) {
         return convertColumn(columnLabel, Exp.$col(columnLabel).castAsInt().castAsEnum(enumType));
     }
@@ -700,7 +879,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param <E> converted column enum type
      * @return a new DataFrame
      * @since 0.6
+     * @deprecated use <code>convertColumn(pos, $int(pos).castAsEnum(type))</code> instead
      */
+    @Deprecated(since = "0.18", forRemoval = true)
     default <E extends Enum<E>> DataFrame toEnumFromNumColumn(int pos, Class<E> enumType) {
         return convertColumn(pos, Exp.$col(pos).castAsInt().castAsEnum(enumType));
     }

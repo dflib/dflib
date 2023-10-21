@@ -417,25 +417,25 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public <V> DataFrame toIntColumn(int pos, IntValueMapper<V> converter) {
+    public <V> DataFrame compactInt(int pos, IntValueMapper<V> converter) {
         Series<V> c = dataColumns[pos];
         return replaceColumn(pos, c.mapAsInt(converter));
     }
 
     @Override
-    public <V> DataFrame toDoubleColumn(int pos, DoubleValueMapper<V> converter) {
+    public <V> DataFrame compactDouble(int pos, DoubleValueMapper<V> converter) {
         Series<V> c = dataColumns[pos];
         return replaceColumn(pos, c.mapAsDouble(converter));
     }
 
     @Override
-    public <V> DataFrame toBoolColumn(int pos, BoolValueMapper<V> converter) {
+    public <V> DataFrame compactBool(int pos, BoolValueMapper<V> converter) {
         Series<V> c = dataColumns[pos];
         return replaceColumn(pos, c.mapAsBool(converter));
     }
 
     @Override
-    public <V> DataFrame toLongColumn(int pos, LongValueMapper<V> converter) {
+    public <V> DataFrame compactLong(int pos, LongValueMapper<V> converter) {
         Series<V> c = dataColumns[pos];
         return replaceColumn(pos, c.mapAsLong(converter));
     }
