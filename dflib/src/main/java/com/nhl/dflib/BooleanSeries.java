@@ -1,6 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.op.BooleanSeriesOps;
+import com.nhl.dflib.series.BooleanArraySeries;
 
 import java.util.Comparator;
 import java.util.Random;
@@ -88,6 +89,30 @@ public interface BooleanSeries extends Series<Boolean> {
     @Deprecated(since = "0.16", forRemoval = true)
     default BooleanSeries materializeBoolean() {
         return materializeBool();
+    }
+
+    /**
+     * @since 0.18
+     */
+    @Override
+    default Series<?> add(Object value) {
+        return value instanceof Boolean
+                ? addBool((Boolean) value)
+                : Series.super.add(value);
+    }
+
+    /**
+     * Creates a new Series with a provided int appended to the end of this Series.
+     *
+     * @since 0.18
+     */
+    default BooleanSeries addBool(boolean val) {
+        int s = size();
+
+        boolean[] data = new boolean[s + 1];
+        this.copyToBool(data, 0, 0, s);
+        data[s] = val;
+        return new BooleanArraySeries(data);
     }
 
     /**

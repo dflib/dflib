@@ -2,6 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.builder.BoolAccum;
 import com.nhl.dflib.builder.DoubleAccum;
+import com.nhl.dflib.series.DoubleArraySeries;
 
 import java.util.Comparator;
 import java.util.Random;
@@ -51,6 +52,30 @@ public interface DoubleSeries extends Series<Double> {
     void copyToDouble(double[] to, int fromOffset, int toOffset, int len);
 
     DoubleSeries materializeDouble();
+
+    /**
+     * @since 0.18
+     */
+    @Override
+    default Series<?> add(Object value) {
+        return value instanceof Double
+                ? addDouble((Double) value)
+                : Series.super.add(value);
+    }
+
+    /**
+     * Creates a new Series with a provided int appended to the end of this Series.
+     *
+     * @since 0.18
+     */
+    default DoubleSeries addDouble(double val) {
+        int s = size();
+
+        double[] data = new double[s + 1];
+        this.copyToDouble(data, 0, 0, s);
+        data[s] = val;
+        return new DoubleArraySeries(data);
+    }
 
     DoubleSeries concatDouble(DoubleSeries... other);
 

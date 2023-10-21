@@ -381,6 +381,19 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
+    public DataFrame addRow(Map<String, Object> row) {
+
+        int w = width();
+        Series<?>[] newColumns = new Series[w];
+
+        for (int i = 0; i < w; i++) {
+            newColumns[i] = dataColumns[i].add(row.get(columnsIndex.getLabel(i)));
+        }
+
+        return DataFrame.byColumn(getColumnsIndex()).of(newColumns);
+    }
+
+    @Override
     public <V, VR> DataFrame convertColumn(int pos, ValueMapper<V, VR> converter) {
         // do not use Exp.mapVal(..) as it will not pass null values to the mapper
         return replaceColumn(pos, dataColumns[pos].map(converter));

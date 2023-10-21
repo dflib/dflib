@@ -751,6 +751,17 @@ public interface DataFrame extends Iterable<RowProxy> {
     DataFrame addColumns(Exp<?>... exps);
 
     /**
+     * Appends a single row in the bottom of the DataFrame. The row is specified as a map of column names to values.
+     * Missing values will be represented as nulls, and extra values with no matching DataFrame columns will be ignored.
+     * Be aware that this operation can be really slow, as DataFrame is optimized for columnar operations, not row appends.
+     * If you are appending more than one row, consider creating a new DataFrame and then concatenating it with this one
+     * using {@link #vConcat(DataFrame...)}.
+     *
+     * @since 0.18
+     */
+    DataFrame addRow(Map<String, Object> row);
+
+    /**
      * @return a new DataFrame with extra columns added
      * @since 0.8
      */

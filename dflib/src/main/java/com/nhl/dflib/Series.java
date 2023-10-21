@@ -141,6 +141,20 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
+     * Creates a new Series with a provided value appended to the end of this Series.
+     *
+     * @since 0.18
+     */
+    default Series<?> add(Object value) {
+        int s = size();
+
+        Object[] data = new Object[s + 1];
+        this.copyTo(data, 0, 0, s);
+        data[s] = value;
+        return new ArraySeries<>(data);
+    }
+
+    /**
      * Converts the Series to another Series of the same length, applying the provided function.
      *
      * @param mapper a function that maps each Series value to some other value

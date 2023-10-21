@@ -7,6 +7,7 @@
 * #190 DateTimeExp - direct converter to DateExp and TimeExp
 * #191 ExcelLoader.skipRows(int)
 * #192 Avoid "arg + vararg" methods
+* #193 DFLib lack of "addRow" method
 * #195 Bump org.apache.avro:avro from 1.10.1 to 1.11.3
 * #196 StrExp.contains()
 * #198 Numeric "Exp.eq", "Exp.ne" has different op label vs other expressions

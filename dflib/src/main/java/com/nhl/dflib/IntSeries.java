@@ -2,6 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.builder.BoolAccum;
 import com.nhl.dflib.builder.IntAccum;
+import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.sort.IntComparator;
 
 import java.util.Comparator;
@@ -52,6 +53,30 @@ public interface IntSeries extends Series<Integer> {
     void copyToInt(int[] to, int fromOffset, int toOffset, int len);
 
     IntSeries materializeInt();
+
+    /**
+     * @since 0.18
+     */
+    @Override
+    default Series<?> add(Object value) {
+        return value instanceof Integer
+                ? addInt((Integer) value)
+                : Series.super.add(value);
+    }
+
+    /**
+     * Creates a new Series with a provided int appended to the end of this Series.
+     *
+     * @since 0.18
+     */
+    default IntSeries addInt(int val) {
+        int s = size();
+
+        int[] data = new int[s + 1];
+        this.copyToInt(data, 0, 0, s);
+        data[s] = val;
+        return new IntArraySeries(data);
+    }
 
     IntSeries concatInt(IntSeries... other);
 
