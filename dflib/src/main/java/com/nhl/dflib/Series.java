@@ -215,21 +215,24 @@ public interface Series<T> extends Iterable<T> {
     /**
      * Casts the Series to a specific type. This is a fast (aka "unsafe") version of cast that does not check that all
      * elements of the Series conform to the provided type. Instead, it relies on user knowledge of the specific type.
-     * In case of user errors, this will cause ClassCastExceptions downstream. This method is useful when retrieving
-     * untyped Series from DataFrames to simplify various type-aware operations.
+     * In case of user errors, this will cause ClassCastExceptions downstream.  One example where this method is useful
+     * is when retrieving untyped Series from DataFrames. Applying a cast allows to keep Series transformation
+     * invocations "fluent".
      *
      * @since 0.18
+     * @see #castAs(Class) 
      */
     default <S> Series<S> unsafeCastAs(Class<S> type) {
         return (Series<S>) this;
     }
 
     /**
-     * Casts the Series to a specific type. This is a "slow" version of cast that checks that all elements of the Series
-     * conform to the provided type. Just like {@link #unsafeCastAs(Class)}, this is useful when retrieving untyped Series
-     * from DataFrames to simplify various type-aware operations.
+     * Casts the Series to a specific type. This is a potentially slow version of cast that checks that all elements
+     * of the Series conform to the provided type. One example where this method is useful is when retrieving untyped
+     * Series from DataFrames. Applying a cast allows to keep Series transformation invocations "fluent".
      *
      * @since 0.18
+     * @see #unsafeCastAs(Class) 
      */
     <S> Series<S> castAs(Class<S> type);
 
