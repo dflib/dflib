@@ -1052,6 +1052,19 @@ public interface DataFrame extends Iterable<RowProxy> {
         return DataFrame.byColumn(labels).of(data);
     }
 
+    /**
+     * Returns a DataFrame with columns from this DataFrame, except the specified column.
+     *
+     * @since 0.18
+     */
+    default DataFrame dropColumn(String columnLabel) {
+        return dropColumns(columnLabel);
+    }
+
+
+    /**
+     * Returns a DataFrame with columns from this DataFrame, except the specified columns.
+     */
     DataFrame dropColumns(String... columnLabels);
 
     /**
