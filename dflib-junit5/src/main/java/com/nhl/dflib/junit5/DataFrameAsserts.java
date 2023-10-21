@@ -50,17 +50,14 @@ public class DataFrameAsserts {
     public DataFrameAsserts expectIntColumns(int... positions) {
 
         for (int i = 0; i < positions.length; i++) {
-            // the assertion is superfluous ... "getColumnAsInt" throws if the column is not an IntSeries
-            assertTrue(df.getColumnAsInt(positions[i]) instanceof IntSeries);
+            assertTrue(df.getColumn(positions[i]).unsafeCastAs(Integer.class) instanceof IntSeries);
         }
         return this;
     }
 
     public DataFrameAsserts expectIntColumns(String... labels) {
         for (int i = 0; i < labels.length; i++) {
-
-            // the assertion is superfluous ... "getColumnAsInt" throws if the column is not an IntSeries
-            assertTrue(df.getColumnAsInt(labels[i]) instanceof IntSeries);
+            assertTrue(df.getColumn(labels[i]).unsafeCastAs(Integer.class) instanceof IntSeries);
         }
         return this;
     }
@@ -68,17 +65,14 @@ public class DataFrameAsserts {
     public DataFrameAsserts expectLongColumns(int... positions) {
 
         for (int i = 0; i < positions.length; i++) {
-            // the assertion is superfluous ... "getColumnAsLong" throws if the column is not an LongSeries
-            assertTrue(df.getColumnAsLong(positions[i]) instanceof LongSeries);
+            assertTrue(df.getColumn(positions[i]).unsafeCastAs(Long.class) instanceof LongSeries);
         }
         return this;
     }
 
     public DataFrameAsserts expectLongColumns(String... labels) {
         for (int i = 0; i < labels.length; i++) {
-
-            // the assertion is superfluous ... "getColumnAsLong" throws if the column is not an LongSeries
-            assertTrue(df.getColumnAsLong(labels[i]) instanceof LongSeries);
+            assertTrue(df.getColumn(labels[i]).unsafeCastAs(Long.class) instanceof LongSeries);
         }
         return this;
     }
@@ -86,17 +80,14 @@ public class DataFrameAsserts {
     public DataFrameAsserts expectDoubleColumns(int... positions) {
 
         for (int i = 0; i < positions.length; i++) {
-            // the assertion is superfluous ... "getColumnAsDouble" throws if the column is not an DoubleSeries
-            assertTrue(df.getColumnAsDouble(positions[i]) instanceof DoubleSeries);
+            assertTrue(df.getColumn(positions[i]).unsafeCastAs(Double.class) instanceof DoubleSeries);
         }
         return this;
     }
 
     public DataFrameAsserts expectDoubleColumns(String... labels) {
         for (int i = 0; i < labels.length; i++) {
-
-            // the assertion is superfluous ... "getColumnAsInt" throws if the column is not an DoubleSeries
-            assertTrue(df.getColumnAsDouble(labels[i]) instanceof DoubleSeries);
+            assertTrue(df.getColumn(labels[i]).unsafeCastAs(Double.class) instanceof DoubleSeries);
         }
         return this;
     }
@@ -104,17 +95,14 @@ public class DataFrameAsserts {
     public DataFrameAsserts expectBooleanColumns(int... positions) {
 
         for (int i = 0; i < positions.length; i++) {
-            // the assertion is superfluous ... "getColumnAsBoolean" throws if the column is not an BooleanSeries
-            assertTrue(df.getColumnAsBool(positions[i]) instanceof BooleanSeries);
+            assertTrue(df.getColumn(positions[i]).unsafeCastAs(Boolean.class) instanceof BooleanSeries);
         }
         return this;
     }
 
     public DataFrameAsserts expectBooleanColumns(String... labels) {
         for (int i = 0; i < labels.length; i++) {
-
-            // the assertion is superfluous ... "getColumnAsBoolean" throws if the column is not an BooleanSeries
-            assertTrue(df.getColumnAsBool(labels[i]) instanceof BooleanSeries);
+            assertTrue(df.getColumn(labels[i]).unsafeCastAs(Boolean.class) instanceof BooleanSeries);
         }
         return this;
     }

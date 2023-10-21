@@ -116,12 +116,11 @@ public class SaveViaUpsert extends SaveViaInsert {
         // partition data to save by updated value positions (using a BitSet), then skip unchanged rows, and generate
         // a batch UPDATE for each parameter pattern
 
-        // TODO: speed up equality test by excluding "keyColumns" from both sides
+        // TODO: speed up the equality test by excluding "keyColumns" from both sides
 
         // note that "toSave" and "previouslySaved" must be ordered by key for "eq" to be meaningful
-        DataFrame eqMatrix = toSave.eq(previouslySaved);
-        DataFrame toSaveClassified = toSave
-                .addColumn(DIFF_COLUMN, eqMatrix.mapColumn(this::booleansAsBitSet));
+        DataFrame eqMatrix = toSave.eq(previouslySaved).addColumn(DIFF_COLUMN, this::booleansAsBitSet);
+        DataFrame toSaveClassified = toSave.addColumn(DIFF_COLUMN, eqMatrix.getColumn(DIFF_COLUMN));
 
         infoTracker.updatesCardinality(toSaveClassified.getColumn(DIFF_COLUMN));
 

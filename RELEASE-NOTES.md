@@ -10,6 +10,7 @@
 * #195 Bump org.apache.avro:avro from 1.10.1 to 1.11.3
 * #196 StrExp.contains()
 * #198 Numeric "Exp.eq", "Exp.ne" has different op label vs other expressions
+* #200 DataFrame: deprecate methods returning columns
 * #201 Series.castAsXyz methods
 
 ## Release 0.17

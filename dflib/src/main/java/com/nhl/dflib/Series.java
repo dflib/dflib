@@ -219,8 +219,8 @@ public interface Series<T> extends Iterable<T> {
      * is when retrieving untyped Series from DataFrames. Applying a cast allows to keep Series transformation
      * invocations "fluent".
      *
+     * @see #castAs(Class)
      * @since 0.18
-     * @see #castAs(Class) 
      */
     default <S> Series<S> unsafeCastAs(Class<S> type) {
         return (Series<S>) this;
@@ -231,36 +231,36 @@ public interface Series<T> extends Iterable<T> {
      * of the Series conform to the provided type. One example where this method is useful is when retrieving untyped
      * Series from DataFrames. Applying a cast allows to keep Series transformation invocations "fluent".
      *
+     * @see #unsafeCastAs(Class)
      * @since 0.18
-     * @see #unsafeCastAs(Class) 
      */
-    <S> Series<S> castAs(Class<S> type);
+    <S> Series<S> castAs(Class<S> type) throws ClassCastException;
 
     /**
      * @since 0.18
      */
-    default BooleanSeries castAsBool() {
+    default BooleanSeries castAsBool() throws ClassCastException {
         throw new ClassCastException("Can't cast to BooleanSeries");
     }
 
     /**
      * @since 0.18
      */
-    default DoubleSeries castAsDouble() {
+    default DoubleSeries castAsDouble() throws ClassCastException {
         throw new ClassCastException("Can't cast to DoubleSeries");
     }
 
     /**
      * @since 0.18
      */
-    default IntSeries castAsInt() {
+    default IntSeries castAsInt() throws ClassCastException {
         throw new ClassCastException("Can't cast to IntSeries");
     }
 
     /**
      * @since 0.18
      */
-    default LongSeries castAsLong() {
+    default LongSeries castAsLong() throws ClassCastException {
         throw new ClassCastException("Can't cast to LongSeries");
     }
 

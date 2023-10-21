@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DataFrame_AddDropMapColumnsTest {
 
+    @Deprecated
     @Test
     public void testMapColumn() {
         Series<Integer> mapped = DataFrame

@@ -10,6 +10,7 @@ import com.nhl.dflib.join.JoinBuilder;
 import com.nhl.dflib.pivot.PivotBuilder;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.RangeSeries;
+import com.nhl.dflib.series.RowMappedSeries;
 import com.nhl.dflib.series.SingleValueSeries;
 import com.nhl.dflib.window.WindowBuilder;
 
@@ -188,8 +189,16 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param name column label
      * @return a named DataFrame column as IntSeries.
      * @since 0.6
+     * @deprecated use <code>getColumn(String).castAsInt()</code> instead
      */
-    IntSeries getColumnAsInt(String name) throws IllegalArgumentException;
+    @Deprecated(since = "0.17", forRemoval = true)
+    default IntSeries getColumnAsInt(String name) throws IllegalArgumentException {
+        try {
+            return getColumn(name).castAsInt();
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 
     /**
      * Returns a DataFrame column at the specified position as IntSeries. If the column is not in the DataFrame or is
@@ -198,8 +207,16 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param pos column position in the DataFrame
      * @return a named DataFrame column as IntSeries.
      * @since 0.6
+     * @deprecated use <code>getColumn(int).castAsInt()</code> instead
      */
-    IntSeries getColumnAsInt(int pos) throws IllegalArgumentException;
+    @Deprecated(since = "0.17", forRemoval = true)
+    default IntSeries getColumnAsInt(int pos) throws IllegalArgumentException {
+        try {
+            return getColumn(pos).castAsInt();
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 
     /**
      * Returns a named DataFrame column as DoubleSeries. If the column is not in the DataFrame or is not an
@@ -208,8 +225,16 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param name column label
      * @return a named DataFrame column as DoubleSeries.
      * @since 0.6
+     * @deprecated in favor of <code>getColumn(int).castAsDouble()</code>
      */
-    DoubleSeries getColumnAsDouble(String name) throws IllegalArgumentException;
+    @Deprecated(since = "0.18", forRemoval = true)
+    default DoubleSeries getColumnAsDouble(String name) throws IllegalArgumentException {
+        try {
+            return getColumn(name).castAsDouble();
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 
     /**
      * Returns a DataFrame column at the specified position as DoubleSeries. If the column is not in the DataFrame or is
@@ -218,8 +243,16 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param pos column position in the DataFrame
      * @return a named DataFrame column as DoubleSeries.
      * @since 0.6
+     * @deprecated in favor of <code>getColumn(int).castAsDouble()</code>
      */
-    DoubleSeries getColumnAsDouble(int pos) throws IllegalArgumentException;
+    @Deprecated(since = "0.18", forRemoval = true)
+    default DoubleSeries getColumnAsDouble(int pos) throws IllegalArgumentException {
+        try {
+            return getColumn(pos).castAsDouble();
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 
     /**
      * Returns a named DataFrame column as BooleanSeries. If the column is not in the DataFrame or is not an
@@ -228,15 +261,27 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param name column label
      * @return a named DataFrame column as BooleanSeries.
      * @since 0.17
+     * @deprecated in favor of <code>getColumn(String).castAsBool()</code>
      */
-    BooleanSeries getColumnAsBool(String name) throws IllegalArgumentException;
+    @Deprecated(since = "0.18", forRemoval = true)
+    default BooleanSeries getColumnAsBool(String name) throws IllegalArgumentException {
+        try {
+            return getColumn(name).castAsBool();
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 
     /**
-     * @deprecated in favor of {@link #getColumnAsBool(String)}
+     * @deprecated in favor of <code>getColumn(String).castAsBool()</code>
      */
     @Deprecated(since = "0.16", forRemoval = true)
     default BooleanSeries getColumnAsBoolean(String name) throws IllegalArgumentException {
-        return getColumnAsBool(name);
+        try {
+            return getColumn(name).castAsBool();
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     /**
@@ -246,15 +291,27 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param pos column position in the DataFrame
      * @return a named DataFrame column as BooleanSeries.
      * @since 0.17
+     * @deprecated in favor of <code>getColumn(int).castAsBool()</code>
      */
-    BooleanSeries getColumnAsBool(int pos) throws IllegalArgumentException;
+    @Deprecated(since = "0.18", forRemoval = true)
+    default BooleanSeries getColumnAsBool(int pos) throws IllegalArgumentException {
+        try {
+            return getColumn(pos).castAsBool();
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 
     /**
-     * @deprecated in favor of {@link #getColumnAsBool(int)}
+     * @deprecated in favor of <code>getColumn(int).castAsBool()</code>
      */
     @Deprecated(since = "0.16", forRemoval = true)
     default BooleanSeries getColumnAsBoolean(int pos) throws IllegalArgumentException {
-        return getColumnAsBool(pos);
+        try {
+            return getColumn(pos).castAsBool();
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     /**
@@ -264,8 +321,16 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param name column label
      * @return a named DataFrame column as LongSeries.
      * @since 0.6
+     * @deprecated use <code>getColumn(String).castAsLong()</code> instead
      */
-    LongSeries getColumnAsLong(String name) throws IllegalArgumentException;
+    @Deprecated(since = "0.18", forRemoval = true)
+    default LongSeries getColumnAsLong(String name) throws IllegalArgumentException {
+        try {
+            return getColumn(name).castAsLong();
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 
     /**
      * Returns a DataFrame column at the specified position as LongSeries. If the column is not in the DataFrame or is
@@ -274,8 +339,16 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param pos column position in the DataFrame
      * @return a named DataFrame column as LongSeries.
      * @since 0.6
+     * @deprecated use <code>getColumn(int).castAsLong()</code> instead
      */
-    LongSeries getColumnAsLong(int pos) throws IllegalArgumentException;
+    @Deprecated(since = "0.18", forRemoval = true)
+    default LongSeries getColumnAsLong(int pos) throws IllegalArgumentException {
+        try {
+            return getColumn(pos).castAsLong();
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 
     /**
      * Returns the number of rows in this DataFrame. Aka the DataFrame "height". Note that depending on the type of
@@ -330,7 +403,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param rowMapper a function applied to each row of this DataFrame
      * @return a new Series.
      * @since 0.6
+     * @deprecated use <code>addColumn("name", rowMapper).getColumn("name")</code> instead
      */
+    @Deprecated(since = "0.18", forRemoval = true)
     <T> Series<T> mapColumn(RowToValueMapper<T> rowMapper);
 
     /**
@@ -340,11 +415,13 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param rowMapper a boolean function applied to each row of this DataFrame
      * @return a new BooleanSeries.
      * @since 0.17
+     * @deprecated use <code>addColumn("name", rowMapper).getColumn("name").castAsBool()</code> instead
      */
+    @Deprecated(since = "0.18", forRemoval = true)
     BooleanSeries mapColumnAsBool(RowToBooleanValueMapper rowMapper);
 
     /**
-     * @deprecated in favor of {@link #mapColumnAsBool(RowToBooleanValueMapper)}
+     * @deprecated use <code>addColumn("name", rowMapper).getColumn("name").castAsBool()</code> instead
      */
     @Deprecated(since = "0.17", forRemoval = true)
     default BooleanSeries mapColumnAsBoolean(RowToBooleanValueMapper rowMapper) {
@@ -637,11 +714,11 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     DataFrame addRowNumberColumn(String columnName);
 
-    default DataFrame addColumn(String columnLabel, RowToValueMapper<?> columnValueProducer) {
-        return addColumn(columnLabel, mapColumn(columnValueProducer));
+    default DataFrame addColumn(String columnLabel, RowToValueMapper<?> columnMaker) {
+        return addColumn(columnLabel, new RowMappedSeries<>(this, columnMaker));
     }
 
-    DataFrame addColumns(String[] columnLabels, RowToValueMapper<?>... columnValueProducers);
+    DataFrame addColumns(String[] columnLabels, RowToValueMapper<?>... columnMakers);
 
     /**
      * Add one more columns to the DataFrame.

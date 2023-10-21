@@ -38,7 +38,7 @@ public class DataFrameExp {
 
     @Benchmark
     public Object mapIntViaLambda() {
-        return df.mapColumn(r -> ((Integer) r.get("c0")) + ((Integer) r.get("c1")))
+        return df.addColumn("C", r -> ((Integer) r.get("c0")) + ((Integer) r.get("c1")))
                 .materialize()
                 .iterator();
     }
@@ -46,12 +46,12 @@ public class DataFrameExp {
     @Benchmark
     public Object mapIntViaExp() {
         Exp<?> add = $int("c0").add($int("c1"));
-        return add.eval(df).materialize().iterator();
+        return df.addColumn(add.as("C")).materialize().iterator();
     }
 
     @Benchmark
     public Object mapIntegerViaLambda() {
-        return df.mapColumn(r -> ((Integer) r.get("c0")) + ((Integer) r.get("c2")))
+        return df.addColumn("C", r -> ((Integer) r.get("c0")) + ((Integer) r.get("c2")))
                 .materialize()
                 .iterator();
     }
@@ -59,12 +59,12 @@ public class DataFrameExp {
     @Benchmark
     public Object mapIntegerViaExp() {
         Exp<?> add = $int("c0").add($int("c2"));
-        return add.eval(df).materialize().iterator();
+        return df.addColumn(add.as("C")).materialize().iterator();
     }
 
     @Benchmark
     public Object mapStringViaLambda() {
-        return df.mapColumn(r -> {
+        return df.addColumn("C", r -> {
                     String c3 = (String) r.get("c3");
                     String c4 = (String) r.get("c4");
 
@@ -77,12 +77,12 @@ public class DataFrameExp {
     @Benchmark
     public Object mapStringViaExp() {
         Exp<String> concat = concat($col("c3"), $col("c4"));
-        return concat.eval(df).materialize().iterator();
+        return df.addColumn(concat.as("C")).materialize().iterator();
     }
 
     @Benchmark
     public Object mapDoubleViaLambda() {
-        return df.mapColumn(r -> ((Double) r.get("c5")) + ((Double) r.get("c6")))
+        return df.addColumn("C", r -> ((Double) r.get("c5")) + ((Double) r.get("c6")))
                 .materialize()
                 .iterator();
     }
@@ -90,6 +90,6 @@ public class DataFrameExp {
     @Benchmark
     public Object mapDoubleViaExp() {
         Exp<?> add = $double("c5").add($double("c6"));
-        return add.eval(df).materialize().iterator();
+        return df.addColumn(add.as("C")).materialize().iterator();
     }
 }

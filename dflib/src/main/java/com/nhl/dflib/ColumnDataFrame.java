@@ -71,86 +71,6 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public IntSeries getColumnAsInt(int pos) {
-        Series<?> s = getColumn(pos);
-        if (s instanceof IntSeries) {
-            return (IntSeries) s;
-        }
-
-        throw new IllegalArgumentException("Column at " + pos + " is not an IntSeries: " + s.getClass().getSimpleName());
-    }
-
-    @Override
-    public IntSeries getColumnAsInt(String name) throws IllegalArgumentException {
-        Series<?> s = getColumn(name);
-        if (s instanceof IntSeries) {
-            return (IntSeries) s;
-        }
-
-        throw new IllegalArgumentException("Column '" + name + "' is not an IntSeries: " + s.getClass().getSimpleName());
-    }
-
-    @Override
-    public DoubleSeries getColumnAsDouble(int pos) throws IllegalArgumentException {
-        Series<?> s = getColumn(pos);
-        if (s instanceof DoubleSeries) {
-            return (DoubleSeries) s;
-        }
-
-        throw new IllegalArgumentException("Column at " + pos + " is not a DoubleSeries: " + s.getClass().getSimpleName());
-    }
-
-    @Override
-    public DoubleSeries getColumnAsDouble(String name) throws IllegalArgumentException {
-        Series<?> s = getColumn(name);
-        if (s instanceof DoubleSeries) {
-            return (DoubleSeries) s;
-        }
-
-        throw new IllegalArgumentException("Column '" + name + "' is not a DoubleSeries: " + s.getClass().getSimpleName());
-    }
-
-    @Override
-    public BooleanSeries getColumnAsBool(int pos) throws IllegalArgumentException {
-        Series<?> s = getColumn(pos);
-        if (s instanceof BooleanSeries) {
-            return (BooleanSeries) s;
-        }
-
-        throw new IllegalArgumentException("Column at " + pos + " is not a BooleanSeries: " + s.getClass().getSimpleName());
-    }
-
-    @Override
-    public BooleanSeries getColumnAsBool(String name) throws IllegalArgumentException {
-        Series<?> s = getColumn(name);
-        if (s instanceof BooleanSeries) {
-            return (BooleanSeries) s;
-        }
-
-        throw new IllegalArgumentException("Column at " + name + " is not a BooleanSeries: " + s.getClass().getSimpleName());
-    }
-
-    @Override
-    public LongSeries getColumnAsLong(int pos) throws IllegalArgumentException {
-        Series<?> s = getColumn(pos);
-        if (s instanceof LongSeries) {
-            return (LongSeries) s;
-        }
-
-        throw new IllegalArgumentException("Column at " + pos + " is not a LongSeries: " + s.getClass().getSimpleName());
-    }
-
-    @Override
-    public LongSeries getColumnAsLong(String name) throws IllegalArgumentException {
-        Series<?> s = getColumn(name);
-        if (s instanceof LongSeries) {
-            return (LongSeries) s;
-        }
-
-        throw new IllegalArgumentException("Column at " + name + " is not a LongSeries: " + s.getClass().getSimpleName());
-    }
-
-    @Override
     public DataFrame addRowNumberColumn(String columnName) {
         return addColumn(columnName, RowNumberer.sequence(height()));
     }
@@ -215,11 +135,13 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
+    @Deprecated(since = "0.18", forRemoval = true)
     public <T> Series<T> mapColumn(RowToValueMapper<T> rowMapper) {
         return new RowMappedSeries<>(this, rowMapper);
     }
 
     @Override
+    @Deprecated(since = "0.18", forRemoval = true)
     public BooleanSeries mapColumnAsBool(RowToBooleanValueMapper rowMapper) {
         // don't bother to make it lazy... boolean columns are very compact compared to the rest of the data set
         BoolAccum data = new BoolAccum(height());
@@ -411,14 +333,14 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public DataFrame addColumns(String[] columnLabels, RowToValueMapper<?>... columnValueProducers) {
+    public DataFrame addColumns(String[] columnLabels, RowToValueMapper<?>... columnMakers) {
 
         int width = width();
         int extraWidth = columnLabels.length;
 
-        if (extraWidth != columnValueProducers.length) {
+        if (extraWidth != columnMakers.length) {
             throw new IllegalArgumentException("Number of new column labels [" + extraWidth +
-                    "] doesn't match the number of supplied producers [" + columnValueProducers.length + "]");
+                    "] doesn't match the number of supplied producers [" + columnMakers.length + "]");
         }
 
         Index expandedIndex = columnsIndex.addLabels(columnLabels);
@@ -427,7 +349,7 @@ public class ColumnDataFrame implements DataFrame {
         System.arraycopy(dataColumns, 0, newData, 0, width);
 
         for (int i = 0; i < extraWidth; i++) {
-            newData[width + i] = mapColumn(columnValueProducers[i]);
+            newData[width + i] = new RowMappedSeries<>(this, columnMakers[i]);
         }
 
         return new ColumnDataFrame(expandedIndex, newData);
@@ -615,7 +537,7 @@ public class ColumnDataFrame implements DataFrame {
             String label = columnsIndex.getLabel(i);
 
             if (condition.getColumnsIndex().hasLabel(label)) {
-                BooleanSeries cc = condition.getColumnAsBool(label);
+                BooleanSeries cc = condition.getColumn(label).castAsBool();
                 newColumns[i] = dataColumns[i].replace(cc, null);
             } else {
                 newColumns[i] = dataColumns[i];
@@ -636,7 +558,7 @@ public class ColumnDataFrame implements DataFrame {
             String label = columnsIndex.getLabel(i);
 
             if (condition.getColumnsIndex().hasLabel(label)) {
-                BooleanSeries cc = condition.getColumnAsBool(label);
+                BooleanSeries cc = condition.getColumn(label).castAsBool();
                 newColumns[i] = dataColumns[i].replaceNoMatch(cc, null);
             } else {
                 newColumns[i] = new SingleValueSeries<>(null, h);
