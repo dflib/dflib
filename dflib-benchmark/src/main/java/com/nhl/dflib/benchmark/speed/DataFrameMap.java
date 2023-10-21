@@ -55,7 +55,7 @@ public class DataFrameMap {
     public Object convertColumn() {
         return df
                 // using cheap "map" function to test benchmark DF overhead
-                .convertColumn("c2", Exp.$col("c2").mapVal(v -> 1))
+                .replaceColumn("c2", Exp.$col("c2").mapVal(v -> 1))
                 .materialize()
                 .iterator();
     }

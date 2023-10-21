@@ -403,7 +403,7 @@ public class ColumnDataFrame implements DataFrame {
      * @since 0.11
      */
     @Override
-    public DataFrame convertColumn(String name, Exp<?> exp) {
+    public DataFrame replaceColumn(String name, Exp<?> exp) {
         int pos = getColumnsIndex().position(name);
         return replaceColumn(pos, exp.eval(this));
     }
@@ -412,7 +412,7 @@ public class ColumnDataFrame implements DataFrame {
      * @since 0.11
      */
     @Override
-    public DataFrame convertColumn(int position, Exp<?> exp) {
+    public DataFrame replaceColumn(int position, Exp<?> exp) {
         return replaceColumn(position, exp.eval(this));
     }
 

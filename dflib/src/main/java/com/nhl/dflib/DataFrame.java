@@ -446,20 +446,44 @@ public interface DataFrame extends Iterable<RowProxy> {
     <V, VR> DataFrame convertColumn(int pos, ValueMapper<V, VR> converter);
 
     /**
-     * Converts column contents using the expression. Unlike {@link #addColumn(Exp)} ignores the name of the Exp,
-     * and uses the "name" argument to identify the column.
+     * Replaces column contents using the expression. Unlike {@link #addColumn(Exp)} the name of the Exp is ignored,
+     * and instead the "name" argument to identify the column to be replaced.
      *
-     * @since 0.11
+     * @since 0.18
      */
-    DataFrame convertColumn(String name, Exp<?> exp);
+    DataFrame replaceColumn(String name, Exp<?> exp);
 
     /**
-     * Converts column contents using the expression. Unlike {@link #addColumn(Exp)} ignores the name of the Exp,
-     * preserving the existing name at the specified DataFrame position.
+     * Replaces column contents using the expression. Unlike {@link #addColumn(Exp)} the name of the Exp is ignored,
+     * and instead the "name" argument to identify the column to be replaced.
+     *
+     * @since 0.18
+     */
+    DataFrame replaceColumn(int position, Exp<?> exp);
+
+    /**
+     * Replaces column contents using the expression. Unlike {@link #addColumn(Exp)} the name of the Exp is ignored,
+     * and instead the "name" argument to identify the column to be replaced.
      *
      * @since 0.11
+     * @deprecated in favor of {@link #replaceColumn(String, Exp)}
      */
-    DataFrame convertColumn(int position, Exp<?> exp);
+    @Deprecated(since = "0.18", forRemoval = true)
+    default DataFrame convertColumn(String name, Exp<?> exp) {
+        return replaceColumn(name, exp);
+    }
+
+    /**
+     * Replaces column contents using the expression. Unlike {@link #addColumn(Exp)} the name of the Exp is ignored,
+     * and instead the "name" argument to identify the column to be replaced.
+     *
+     * @since 0.11
+     * @deprecated in favor of {@link #replaceColumn(int, Exp)}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default DataFrame convertColumn(int position, Exp<?> exp) {
+        return replaceColumn(position, exp);
+    }
 
     /**
      * "Compacts" the internal representation of the Integer column, converting it to a {@link IntSeries}.
@@ -859,7 +883,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default <E extends Enum<E>> DataFrame toEnumFromStringColumn(int pos, Class<E> enumType) {
-        return convertColumn(pos, Exp.$col(pos).castAsStr().castAsEnum(enumType));
+        return replaceColumn(pos, Exp.$col(pos).castAsStr().castAsEnum(enumType));
     }
 
     /**
@@ -871,7 +895,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default <E extends Enum<E>> DataFrame toEnumFromNumColumn(String columnLabel, Class<E> enumType) {
-        return convertColumn(columnLabel, Exp.$col(columnLabel).castAsInt().castAsEnum(enumType));
+        return replaceColumn(columnLabel, Exp.$col(columnLabel).castAsInt().castAsEnum(enumType));
     }
 
     /**
@@ -883,7 +907,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default <E extends Enum<E>> DataFrame toEnumFromNumColumn(int pos, Class<E> enumType) {
-        return convertColumn(pos, Exp.$col(pos).castAsInt().castAsEnum(enumType));
+        return replaceColumn(pos, Exp.$col(pos).castAsInt().castAsEnum(enumType));
     }
 
     /**

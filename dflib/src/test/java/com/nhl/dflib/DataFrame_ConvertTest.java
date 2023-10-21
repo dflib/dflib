@@ -17,7 +17,7 @@ public class DataFrame_ConvertTest {
         DataFrame df = DataFrame
                 .foldByRow("a", "b")
                 .of(1, "x", 2, "y")
-                .convertColumn("a", $int("a").mul(10));
+                .replaceColumn("a", $int("a").mul(10));
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)
@@ -30,7 +30,7 @@ public class DataFrame_ConvertTest {
         DataFrame df = DataFrame
                 .foldByRow("a", "b")
                 .of(1, "x", 2, "y")
-                .convertColumn("a", $int(0).mul(10));
+                .replaceColumn("a", $int(0).mul(10));
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)
@@ -46,7 +46,7 @@ public class DataFrame_ConvertTest {
                         "2018-01-05",
                         "2019-02-28",
                         null)
-                .convertColumn("a", $str("a").castAsDate());
+                .replaceColumn("a", $str("a").castAsDate());
 
         new DataFrameAsserts(df, "a")
                 .expectHeight(3)
@@ -63,7 +63,7 @@ public class DataFrame_ConvertTest {
                         "2018 01 05",
                         "2019 02 28",
                         null)
-                .convertColumn("a", $str("a").castAsDate(DateTimeFormatter.ofPattern("yyyy MM dd")));
+                .replaceColumn("a", $str("a").castAsDate(DateTimeFormatter.ofPattern("yyyy MM dd")));
 
         new DataFrameAsserts(df, "a")
                 .expectHeight(3)

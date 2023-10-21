@@ -109,9 +109,9 @@ public class AvroSaver extends BaseSaver<AvroSaver> {
             Schema fSchema = f.schema().isUnion() ? AvroSchemaUtils.unpackUnion(f.schema()) : f.schema();
 
             if (AvroSchemaUtils.isEnum(fSchema)) {
-                df = df.convertColumn(f.name(), Exp.$col(f.name()).mapVal(v -> new GenericData.EnumSymbol(fSchema, v)));
+                df = df.replaceColumn(f.name(), Exp.$col(f.name()).mapVal(v -> new GenericData.EnumSymbol(fSchema, v)));
             } else if (AvroSchemaUtils.isUnmapped(fSchema)) {
-                df = df.convertColumn(f.name(), Exp.$col(f.name()).castAsStr());
+                df = df.replaceColumn(f.name(), Exp.$col(f.name()).castAsStr());
             }
         }
 
