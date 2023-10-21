@@ -400,7 +400,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     /**
-     * @since 0.11
+     * @since 0.18
      */
     @Override
     public DataFrame replaceColumn(String name, Exp<?> exp) {
@@ -409,7 +409,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     /**
-     * @since 0.11
+     * @since 0.18
      */
     @Override
     public DataFrame replaceColumn(int position, Exp<?> exp) {
