@@ -15,6 +15,7 @@
 * #200 DataFrame: deprecate methods returning columns
 * #201 Series.castAsXyz methods
 * #202  DataFrame: deprecate "toXyzColumn()" API
+* #204 "IntSequenceSeries.headInt(n)" is broken
 
 ## Release 0.17
 

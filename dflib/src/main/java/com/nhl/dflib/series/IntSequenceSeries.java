@@ -14,8 +14,8 @@ import com.nhl.dflib.agg.PrimitiveSeriesSum;
  */
 public class IntSequenceSeries extends IntBaseSeries {
 
-    private int first;
-    private int lastExclusive;
+    private final int first;
+    private final int lastExclusive;
 
     public IntSequenceSeries(int first, int lastExclusive) {
         this.first = first;
@@ -57,7 +57,7 @@ public class IntSequenceSeries extends IntBaseSeries {
 
     @Override
     public IntSeries headInt(int len) {
-        return len < size() ? new IntSequenceSeries(first, lastExclusive - len) : this;
+        return len < size() ? new IntSequenceSeries(first, first + len) : this;
     }
 
     @Override
