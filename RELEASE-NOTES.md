@@ -20,6 +20,7 @@
 * #205 Primitive Series: deprecate "headXyz" and "tailXyz" variants
 * #206 Primitive Series: deprecate "uniqueXyz" variants
 * #207 Primitive Series: deprecate "materializeXyz" variants
+* #208 Polymorphic "select" return type for primitive Series
 
 ## Release 0.17
 

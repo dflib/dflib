@@ -113,20 +113,38 @@ public interface IntSeries extends Series<Integer> {
         return tail(len);
     }
 
+
+    @Override
+    IntSeries select(ValuePredicate<Integer> p);
+
+    @Override
+    IntSeries select(Condition condition);
+
+    @Override
+    IntSeries select(BooleanSeries positions);
+
     /**
      * @since 0.11
+     * @deprecated in favor of {@link #select(Condition)}
      */
-    IntSeries selectInt(Condition condition);
+    @Deprecated(since = "0.18", forRemoval = true)
+    default IntSeries selectInt(Condition condition) {
+        return select(condition);
+    }
+
+    /**
+     * @since 0.11
+     * @deprecated in favor of {@link #select(ValuePredicate)}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default IntSeries selectInt(BooleanSeries positions) {
+        return select(positions);
+    }
 
     /**
      * @since 0.11
      */
     IntSeries selectInt(IntPredicate p);
-
-    /**
-     * @since 0.11
-     */
-    IntSeries selectInt(BooleanSeries positions);
 
     @Override
     IntSeries sort(Sorter... sorters);

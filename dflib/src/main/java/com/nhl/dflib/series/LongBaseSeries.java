@@ -69,38 +69,17 @@ public abstract class LongBaseSeries implements LongSeries {
     }
 
     @Override
-    public Series<Long> select(Condition condition) {
-        return selectLong(condition);
-    }
-
-    @Override
-    public Series<Long> select(ValuePredicate<Long> p) {
+    public LongSeries select(ValuePredicate<Long> p) {
         return selectLong(p::test);
     }
 
     @Override
-    public LongSeries selectLong(Condition condition) {
-        return selectLong(condition.eval(this));
+    public LongSeries select(Condition condition) {
+        return select(condition.eval(this));
     }
 
     @Override
-    public LongSeries selectLong(LongPredicate p) {
-        LongAccum filtered = new LongAccum();
-
-        int len = size();
-
-        for (int i = 0; i < len; i++) {
-            long v = getLong(i);
-            if (p.test(v)) {
-                filtered.pushLong(v);
-            }
-        }
-
-        return filtered.toSeries();
-    }
-
-    @Override
-    public LongSeries selectLong(BooleanSeries positions) {
+    public LongSeries select(BooleanSeries positions) {
         int s = size();
         int ps = positions.size();
 
@@ -120,8 +99,19 @@ public abstract class LongBaseSeries implements LongSeries {
     }
 
     @Override
-    public Series<Long> select(BooleanSeries positions) {
-        return selectLong(positions);
+    public LongSeries selectLong(LongPredicate p) {
+        LongAccum filtered = new LongAccum();
+
+        int len = size();
+
+        for (int i = 0; i < len; i++) {
+            long v = getLong(i);
+            if (p.test(v)) {
+                filtered.pushLong(v);
+            }
+        }
+
+        return filtered.toSeries();
     }
 
     @Override

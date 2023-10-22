@@ -112,20 +112,37 @@ public interface DoubleSeries extends Series<Double> {
         return tail(len);
     }
 
+    @Override
+    DoubleSeries select(Condition condition);
+
+    @Override
+    DoubleSeries select(ValuePredicate<Double> p);
+
+    @Override
+    DoubleSeries select(BooleanSeries positions);
+
     /**
      * @since 0.11
+     * @deprecated in favor of {@link #select(Condition)}
      */
-    DoubleSeries selectDouble(Condition condition);
+    @Deprecated(since = "0.18", forRemoval = true)
+    default DoubleSeries selectDouble(Condition condition) {
+        return select(condition);
+    }
+
+    /**
+     * @since 0.11
+     * @deprecated in favor of {@link #select(ValuePredicate)}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default DoubleSeries selectDouble(BooleanSeries positions) {
+        return select(positions);
+    }
 
     /**
      * @since 0.11
      */
     DoubleSeries selectDouble(DoublePredicate p);
-
-    /**
-     * @since 0.11
-     */
-    DoubleSeries selectDouble(BooleanSeries positions);
 
     @Override
     DoubleSeries sort(Sorter... sorters);

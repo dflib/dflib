@@ -69,38 +69,17 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
-    public Series<Double> select(Condition condition) {
-        return selectDouble(condition);
-    }
-
-    @Override
-    public Series<Double> select(ValuePredicate<Double> p) {
+    public DoubleSeries select(ValuePredicate<Double> p) {
         return selectDouble(p::test);
     }
 
     @Override
-    public DoubleSeries selectDouble(Condition condition) {
-        return selectDouble(condition.eval(this));
+    public DoubleSeries select(Condition condition) {
+        return select(condition.eval(this));
     }
 
     @Override
-    public DoubleSeries selectDouble(DoublePredicate p) {
-        DoubleAccum filtered = new DoubleAccum();
-
-        int len = size();
-
-        for (int i = 0; i < len; i++) {
-            double v = getDouble(i);
-            if (p.test(v)) {
-                filtered.pushDouble(v);
-            }
-        }
-
-        return filtered.toSeries();
-    }
-
-    @Override
-    public DoubleSeries selectDouble(BooleanSeries positions) {
+    public DoubleSeries select(BooleanSeries positions) {
         int s = size();
         int ps = positions.size();
 
@@ -120,8 +99,19 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
-    public Series<Double> select(BooleanSeries positions) {
-        return selectDouble(positions);
+    public DoubleSeries selectDouble(DoublePredicate p) {
+        DoubleAccum filtered = new DoubleAccum();
+
+        int len = size();
+
+        for (int i = 0; i < len; i++) {
+            double v = getDouble(i);
+            if (p.test(v)) {
+                filtered.pushDouble(v);
+            }
+        }
+
+        return filtered.toSeries();
     }
 
     @Override

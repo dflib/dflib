@@ -188,14 +188,27 @@ public interface BooleanSeries extends Series<Boolean> {
         return tail(len);
     }
 
+    @Override
+    BooleanSeries select(BooleanSeries positions);
+
+    @Override
+    BooleanSeries select(ValuePredicate<Boolean> p);
+
+    @Override
+    BooleanSeries select(Condition condition);
+
     /**
      * @since 0.16
+     * @deprecated in favor of {@link #select(Condition)}
      */
-    BooleanSeries selectBool(Condition condition);
+    @Deprecated(since = "0.16", forRemoval = true)
+    default BooleanSeries selectBool(Condition condition) {
+        return select(condition);
+    }
 
     /**
      * @since 0.11
-     * @deprecated in favor of {@link #selectBool(Condition)}
+     * @deprecated in favor of {@link #select(Condition)}
      */
     @Deprecated(since = "0.16", forRemoval = true)
     default BooleanSeries selectBoolean(Condition condition) {
@@ -204,12 +217,16 @@ public interface BooleanSeries extends Series<Boolean> {
 
     /**
      * @since 0.16
+     * @deprecated in favor of {@link #select(BooleanSeries)}
      */
-    BooleanSeries selectBool(BooleanSeries positions);
+    @Deprecated(since = "0.16", forRemoval = true)
+    default BooleanSeries selectBool(BooleanSeries positions) {
+        return select(positions);
+    }
 
     /**
      * @since 0.11
-     * @deprecated in favor of {@link #selectBool(BooleanSeries)}
+     * @deprecated in favor of {@link #select(BooleanSeries)}
      */
     @Deprecated(since = "0.16", forRemoval = true)
     default BooleanSeries selectBoolean(BooleanSeries positions) {

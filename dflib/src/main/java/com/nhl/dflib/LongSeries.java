@@ -112,20 +112,37 @@ public interface LongSeries extends Series<Long> {
         return tail(len);
     }
 
+    @Override
+    LongSeries select(ValuePredicate<Long> p);
+
+    @Override
+    LongSeries select(Condition condition);
+
+    @Override
+    LongSeries select(BooleanSeries positions);
+
     /**
      * @since 0.11
+     * @deprecated in favor of {@link #select(Condition)}
      */
-    LongSeries selectLong(Condition condition);
+    @Deprecated(since = "0.18", forRemoval = true)
+    default LongSeries selectLong(Condition condition) {
+        return select(condition);
+    }
+
+    /**
+     * @since 0.11
+     * @deprecated in favor of {@link #select(ValuePredicate)}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default LongSeries selectLong(BooleanSeries positions) {
+        return select(positions);
+    }
 
     /**
      * @since 0.11
      */
     LongSeries selectLong(LongPredicate p);
-
-    /**
-     * @since 0.11
-     */
-    LongSeries selectLong(BooleanSeries positions);
 
     @Override
     LongSeries sort(Comparator<? super Long> comparator);

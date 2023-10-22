@@ -73,38 +73,17 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public Series<Integer> select(Condition condition) {
-        return selectInt(condition);
-    }
-
-    @Override
-    public Series<Integer> select(ValuePredicate<Integer> p) {
+    public IntSeries select(ValuePredicate<Integer> p) {
         return selectInt(p::test);
     }
 
     @Override
-    public IntSeries selectInt(Condition condition) {
-        return selectInt(condition.eval(this));
+    public IntSeries select(Condition condition) {
+        return select(condition.eval(this));
     }
 
     @Override
-    public IntSeries selectInt(IntPredicate p) {
-        IntAccum filtered = new IntAccum();
-
-        int len = size();
-
-        for (int i = 0; i < len; i++) {
-            int v = getInt(i);
-            if (p.test(v)) {
-                filtered.pushInt(v);
-            }
-        }
-
-        return filtered.toSeries();
-    }
-
-    @Override
-    public IntSeries selectInt(BooleanSeries positions) {
+    public IntSeries select(BooleanSeries positions) {
         int s = size();
         int ps = positions.size();
 
@@ -121,6 +100,22 @@ public abstract class IntBaseSeries implements IntSeries {
         }
 
         return data.toSeries();
+    }
+
+    @Override
+    public IntSeries selectInt(IntPredicate p) {
+        IntAccum filtered = new IntAccum();
+
+        int len = size();
+
+        for (int i = 0; i < len; i++) {
+            int v = getInt(i);
+            if (p.test(v)) {
+                filtered.pushInt(v);
+            }
+        }
+
+        return filtered.toSeries();
     }
 
     @Override
@@ -175,11 +170,6 @@ public abstract class IntBaseSeries implements IntSeries {
         int[] mutableIndex = SeriesSorter.rowNumberSequence(size());
         IntTimSort.sort(mutableIndex, comparator);
         return new IntArraySeries(mutableIndex);
-    }
-
-    @Override
-    public Series<Integer> select(BooleanSeries positions) {
-        return selectInt(positions);
     }
 
     private IntSeries selectAsIntSeries(IntSeries positions) {

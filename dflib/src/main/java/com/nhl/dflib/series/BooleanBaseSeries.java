@@ -67,22 +67,17 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
-    public Series<Boolean> select(Condition condition) {
-        return selectBool(condition);
+    public BooleanSeries select(ValuePredicate<Boolean> p) {
+        return selectAsBooleanSeries(index(p));
     }
 
     @Override
-    public Series<Boolean> select(ValuePredicate<Boolean> p) {
-        return select(index(p));
+    public BooleanSeries select(Condition condition) {
+        return select(condition.eval(this));
     }
 
     @Override
-    public BooleanSeries selectBool(Condition condition) {
-        return selectBool(condition.eval(this));
-    }
-
-    @Override
-    public BooleanSeries selectBool(BooleanSeries positions) {
+    public BooleanSeries select(BooleanSeries positions) {
         int s = size();
         int ps = positions.size();
 
@@ -99,11 +94,6 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         }
 
         return data.toSeries();
-    }
-
-    @Override
-    public Series<Boolean> select(BooleanSeries positions) {
-        return selectBool(positions);
     }
 
     @Override
