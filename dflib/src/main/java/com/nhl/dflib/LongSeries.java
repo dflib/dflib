@@ -51,7 +51,16 @@ public interface LongSeries extends Series<Long> {
 
     void copyToLong(long[] to, int fromOffset, int toOffset, int len);
 
-    LongSeries materializeLong();
+    @Override
+    LongSeries materialize();
+
+    /**
+     * @deprecated in favor of {@link #materialize()}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default LongSeries materializeLong() {
+        return materialize();
+    }
 
     /**
      * @since 0.18

@@ -72,7 +72,7 @@ public class BooleanArraySeries extends BooleanBaseSeries {
     }
 
     @Override
-    public BooleanSeries materializeBool() {
+    public BooleanSeries materialize() {
         if (offset > 0 || size + offset < this.data.length) {
             boolean[] data = new boolean[size];
             copyToBool(data, 0, 0, size);

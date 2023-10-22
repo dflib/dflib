@@ -51,7 +51,16 @@ public interface DoubleSeries extends Series<Double> {
 
     void copyToDouble(double[] to, int fromOffset, int toOffset, int len);
 
-    DoubleSeries materializeDouble();
+    @Override
+    DoubleSeries materialize();
+
+    /**
+     * @deprecated in favor of {@link #materialize()}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default DoubleSeries materializeDouble() {
+        return materialize();
+    }
 
     /**
      * @since 0.18

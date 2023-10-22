@@ -280,11 +280,6 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public Series<Integer> materialize() {
-        return materializeInt();
-    }
-
-    @Override
     public Integer get(int index) {
         return getInt(index);
     }

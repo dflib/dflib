@@ -83,7 +83,7 @@ public class IntArraySeries extends IntBaseSeries {
     }
 
     @Override
-    public IntSeries materializeInt() {
+    public IntSeries materialize() {
         if (offset > 0 || size + offset < this.data.length) {
             int[] data = new int[size];
             copyToInt(data, 0, 0, size);

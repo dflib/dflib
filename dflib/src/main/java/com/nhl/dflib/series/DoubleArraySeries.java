@@ -78,7 +78,7 @@ public class DoubleArraySeries extends DoubleBaseSeries {
     }
 
     @Override
-    public DoubleSeries materializeDouble() {
+    public DoubleSeries materialize() {
         if (offset > 0 || size + offset < this.data.length) {
             double[] data = new double[size];
             copyToDouble(data, 0, 0, size);

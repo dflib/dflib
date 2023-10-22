@@ -75,7 +75,7 @@ public class LongArraySeries extends LongBaseSeries {
     }
 
     @Override
-    public LongSeries materializeLong() {
+    public LongSeries materialize() {
         if (offset > 0 || size + offset < this.data.length) {
             long[] data = new long[size];
             copyToLong(data, 0, 0, size);

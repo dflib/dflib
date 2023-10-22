@@ -78,17 +78,24 @@ public interface BooleanSeries extends Series<Boolean> {
         copyToBool(to, fromOffset, toOffset, len);
     }
 
-    /**
-     * @since 0.16
-     */
-    BooleanSeries materializeBool();
+    @Override
+    BooleanSeries materialize();
 
     /**
-     * @deprecated in favor of {@link #materializeBool()}
+     * @since 0.16
+     * @deprecated in favor of {@link #materialize()}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default BooleanSeries materializeBool() {
+        return materialize();
+    }
+
+    /**
+     * @deprecated in favor of {@link #materialize()}
      */
     @Deprecated(since = "0.16", forRemoval = true)
     default BooleanSeries materializeBoolean() {
-        return materializeBool();
+        return materialize();
     }
 
     /**

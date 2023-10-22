@@ -246,11 +246,6 @@ public abstract class LongBaseSeries implements LongSeries {
     }
 
     @Override
-    public Series<Long> materialize() {
-        return materializeLong();
-    }
-
-    @Override
     public Long get(int index) {
         return getLong(index);
     }

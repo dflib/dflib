@@ -298,9 +298,9 @@ public interface Series<T> extends Iterable<T> {
     // TODO: call "selectRangeOpenClosed()" similar to DataFrame
     Series<T> rangeOpenClosed(int fromInclusive, int toExclusive);
 
-    // TODO: alternative names instead of "materialize" :
-    //  * "compact" - as we often trim unused data
-    //  * "optimize" - which may be anything, depending on the Series structure.. Ambiguous - optimize for storage or access?
+    /**
+     * Resolves the Series executing any lazy calculations. If called more than once, the first evaluation result is reused.
+     */
     Series<T> materialize();
 
     Series<T> fillNulls(T value);

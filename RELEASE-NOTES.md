@@ -18,7 +18,8 @@
 * #203 DataFrame / Series: negative values for "head" and "tail"
 * #204 "IntSequenceSeries.headInt(n)" is broken
 * #205 Primitive Series: deprecate "headXyz" and "tailXyz" variants
-* Primitive Series: deprecate "uniqueXyz" variants
+* #206 Primitive Series: deprecate "uniqueXyz" variants
+* #207 Primitive Series: deprecate "materializeXyz" variants
 
 ## Release 0.17
 

@@ -52,7 +52,16 @@ public interface IntSeries extends Series<Integer> {
 
     void copyToInt(int[] to, int fromOffset, int toOffset, int len);
 
-    IntSeries materializeInt();
+    @Override
+    IntSeries materialize();
+
+    /**
+     * @deprecated in favor of {@link #materialize()}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default IntSeries materializeInt() {
+        return materialize();
+    }
 
     /**
      * @since 0.18

@@ -49,7 +49,7 @@ public class IntSequenceSeries extends IntBaseSeries {
     }
 
     @Override
-    public IntSeries materializeInt() {
+    public IntSeries materialize() {
         return this;
     }
 

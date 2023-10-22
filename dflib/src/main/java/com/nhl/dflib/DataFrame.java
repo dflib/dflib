@@ -368,11 +368,8 @@ public interface DataFrame extends Iterable<RowProxy> {
     DataFrame tail(int len);
 
     /**
-     * Resolves this DataFrame to an implementation that evaluates internal mapping/concat/select functions no more
-     * than once, reusing the first evaluation result for subsequent iterations. Certain operations in DataFrame, such as
-     * {@link #map(Index, RowMapper)}, etc. are materialized by default.
-     *
-     * @return a DataFrame optimized for multiple iterations, calls to {@link #height()}, etc.
+     * Resolves each column in the DataFrame executing any lazy calculations. If called more than once, the first
+     * evaluation result is reused.
      */
     DataFrame materialize();
 

@@ -31,7 +31,7 @@ public class TrueSeries extends BooleanBaseSeries {
     }
 
     @Override
-    public BooleanSeries materializeBool() {
+    public BooleanSeries materialize() {
         return this;
     }
 

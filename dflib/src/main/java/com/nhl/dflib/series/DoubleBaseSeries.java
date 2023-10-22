@@ -246,11 +246,6 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
-    public Series<Double> materialize() {
-        return materializeDouble();
-    }
-
-    @Override
     public Double get(int index) {
         return getDouble(index);
     }

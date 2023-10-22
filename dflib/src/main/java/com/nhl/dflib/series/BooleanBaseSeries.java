@@ -211,11 +211,6 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
-    public Series<Boolean> materialize() {
-        return materializeBool();
-    }
-
-    @Override
     public Boolean get(int index) {
         return getBool(index);
     }
