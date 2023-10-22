@@ -227,17 +227,7 @@ public abstract class LongBaseSeries implements LongSeries {
         // primitive series has no nulls
         return this;
     }
-
-    @Override
-    public Series<Long> head(int len) {
-        return headLong(len);
-    }
-
-    @Override
-    public Series<Long> tail(int len) {
-        return tailLong(len);
-    }
-
+    
     @SafeVarargs
     @Override
     public final Series<Long> concat(Series<? extends Long>... other) {

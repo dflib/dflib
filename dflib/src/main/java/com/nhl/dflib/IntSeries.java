@@ -82,9 +82,27 @@ public interface IntSeries extends Series<Integer> {
 
     IntSeries rangeOpenClosedInt(int fromInclusive, int toExclusive);
 
-    IntSeries headInt(int len);
+    @Override
+    IntSeries head(int len);
 
-    IntSeries tailInt(int len);
+    /**
+     * @deprecated since 0.18 in favor of {@link #head(int)} that returns an IntSeries
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default IntSeries headInt(int len) {
+        return head(len);
+    }
+
+    @Override
+    IntSeries tail(int len);
+
+    /**
+     * @deprecated since 0.18 in favor of {@link #tail(int)} that returns an IntSeries
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default IntSeries tailInt(int len) {
+        return tail(len);
+    }
 
     /**
      * @since 0.11

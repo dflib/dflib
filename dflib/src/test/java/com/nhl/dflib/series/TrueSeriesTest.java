@@ -15,8 +15,8 @@ public class TrueSeriesTest {
     }
 
     @Test
-    public void testHeaBoolean() {
-        new BoolSeriesAsserts(new TrueSeries(3).headBool(2)).expectData(true, true);
-        new BoolSeriesAsserts(new TrueSeries(3).headBool(4)).expectData(true, true, true);
+    public void testHeadBoolean() {
+        new BoolSeriesAsserts(new TrueSeries(3).head(2)).expectData(true, true);
+        new BoolSeriesAsserts(new TrueSeries(3).head(4)).expectData(true, true, true);
     }
 }

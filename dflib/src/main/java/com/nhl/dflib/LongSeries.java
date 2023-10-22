@@ -81,9 +81,27 @@ public interface LongSeries extends Series<Long> {
 
     LongSeries rangeOpenClosedLong(int fromInclusive, int toExclusive);
 
-    LongSeries headLong(int len);
+    @Override
+    LongSeries head(int len);
 
-    LongSeries tailLong(int len);
+    /**
+     * @deprecated since 0.18 in favor of {@link #head(int)}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default LongSeries headLong(int len) {
+        return head(len);
+    }
+
+    @Override
+    LongSeries tail(int len);
+
+    /**
+     * @deprecated since 0.18 in favor of {@link #tail(int)}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default LongSeries tailLong(int len) {
+        return tail(len);
+    }
 
     /**
      * @since 0.11

@@ -33,7 +33,7 @@ public class Sampler {
 
         int[] data = intSequence(originalSize);
         shuffle(data, random);
-        return Series.ofInt(data).headInt(sampleSize);
+        return Series.ofInt(data).head(sampleSize);
     }
 
     private static int[] intSequence(int size) {

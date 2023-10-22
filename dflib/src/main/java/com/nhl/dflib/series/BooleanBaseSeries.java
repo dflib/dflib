@@ -194,16 +194,6 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         return this;
     }
 
-    @Override
-    public Series<Boolean> head(int len) {
-        return headBool(len);
-    }
-
-    @Override
-    public Series<Boolean> tail(int len) {
-        return tailBool(len);
-    }
-
     @SafeVarargs
     @Override
     public final Series<Boolean> concat(Series<? extends Boolean>... other) {

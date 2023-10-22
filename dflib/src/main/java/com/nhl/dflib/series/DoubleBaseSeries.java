@@ -228,16 +228,6 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         return this;
     }
 
-    @Override
-    public Series<Double> head(int len) {
-        return headDouble(len);
-    }
-
-    @Override
-    public Series<Double> tail(int len) {
-        return tailDouble(len);
-    }
-
     @SafeVarargs
     @Override
     public final Series<Double> concat(Series<? extends Double>... other) {

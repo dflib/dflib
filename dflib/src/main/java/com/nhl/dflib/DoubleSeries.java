@@ -81,9 +81,27 @@ public interface DoubleSeries extends Series<Double> {
 
     DoubleSeries rangeOpenClosedDouble(int fromInclusive, int toExclusive);
 
-    DoubleSeries headDouble(int len);
+    @Override
+    DoubleSeries head(int len);
 
-    DoubleSeries tailDouble(int len);
+    /**
+     * @deprecated in favor of {@link #head(int)}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default DoubleSeries headDouble(int len) {
+        return head(len);
+    }
+
+    @Override
+    DoubleSeries tail(int len);
+
+    /**
+     * @deprecated in favor of {@link #tail(int)}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default DoubleSeries tailDouble(int len) {
+        return tail(len);
+    }
 
     /**
      * @since 0.11

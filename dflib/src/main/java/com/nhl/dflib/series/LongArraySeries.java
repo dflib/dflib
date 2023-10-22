@@ -49,19 +49,19 @@ public class LongArraySeries extends LongBaseSeries {
     }
 
     @Override
-    public LongSeries headLong(int len) {
+    public LongSeries head(int len) {
         if (len < 0) {
-            return tailLong(size + len);
+            return tail(size + len);
         }
 
         return len < size ? new LongArraySeries(data, offset, len) : this;
     }
 
     @Override
-    public LongSeries tailLong(int len) {
+    public LongSeries tail(int len) {
 
         if (len < 0) {
-            return headLong(size + len);
+            return head(size + len);
         }
 
         return len < size ? new LongArraySeries(data, offset + size - len, len) : this;

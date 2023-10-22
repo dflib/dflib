@@ -194,7 +194,7 @@ public class GroupBy {
         Map<Object, IntSeries> trimmed = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
         for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
-            trimmed.put(e.getKey(), e.getValue().headInt(len));
+            trimmed.put(e.getKey(), e.getValue().head(len));
         }
 
         return new GroupBy(ungrouped, trimmed, sorter);
@@ -210,7 +210,7 @@ public class GroupBy {
         Map<Object, IntSeries> trimmed = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
 
         for (Map.Entry<Object, IntSeries> e : groupsIndex.entrySet()) {
-            trimmed.put(e.getKey(), e.getValue().tailInt(len));
+            trimmed.put(e.getKey(), e.getValue().tail(len));
         }
 
         return new GroupBy(ungrouped, trimmed, sorter);

@@ -43,12 +43,12 @@ public class TrueSeries extends BooleanBaseSeries {
     }
 
     @Override
-    public BooleanSeries headBool(int len) {
+    public BooleanSeries head(int len) {
         return len < size ? new TrueSeries(len) : this;
     }
 
     @Override
-    public BooleanSeries tailBool(int len) {
+    public BooleanSeries tail(int len) {
         return len < size ? new TrueSeries(len) : this;
     }
 

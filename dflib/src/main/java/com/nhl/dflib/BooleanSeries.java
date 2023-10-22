@@ -141,34 +141,44 @@ public interface BooleanSeries extends Series<Boolean> {
         return rangeOpenClosedBool(fromInclusive, toExclusive);
     }
 
-    /**
-     * Sames as {@link #head(int)}, but returns a BooleanSeries.
-     *
-     * @since 0.16
-     */
-    BooleanSeries headBool(int len);
+    @Override
+    BooleanSeries head(int len);
 
     /**
-     * @deprecated in favor of {@link #headBool(int)}
+     * @since 0.16
+     * @deprecated in favor of {@link #head(int)}
      */
-    @Deprecated(since = "0.16", forRemoval = true)
-    default BooleanSeries headBoolean(int len) {
-        return headBool(len);
+    @Deprecated(since = "0.18", forRemoval = true)
+    default BooleanSeries headBool(int len) {
+        return head(len);
     }
 
     /**
-     * Same as {@link #tail(int)}, but returns a BooleanSeries.
-     *
-     * @since 0.16
+     * @deprecated in favor of {@link #head(int)}
      */
-    BooleanSeries tailBool(int len);
+    @Deprecated(since = "0.16", forRemoval = true)
+    default BooleanSeries headBoolean(int len) {
+        return head(len);
+    }
+
+    @Override
+    BooleanSeries tail(int len);
 
     /**
-     * @deprecated in favor of {@link #tailBool(int)}
+     * @since 0.16
+     * @deprecated in favor of {@link #tail(int)}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default BooleanSeries tailBool(int len) {
+        return tail(len);
+    }
+
+    /**
+     * @deprecated in favor of {@link #tail(int)}
      */
     @Deprecated(since = "0.16", forRemoval = true)
     default BooleanSeries tailBoolean(int len) {
-        return tailBool(len);
+        return tail(len);
     }
 
     /**

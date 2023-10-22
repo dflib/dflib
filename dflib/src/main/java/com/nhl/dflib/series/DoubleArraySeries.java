@@ -51,20 +51,20 @@ public class DoubleArraySeries extends DoubleBaseSeries {
     }
 
     @Override
-    public DoubleSeries headDouble(int len) {
+    public DoubleSeries head(int len) {
 
         if (len < 0) {
-            return tailDouble(size + len);
+            return tail(size + len);
         }
 
         return len < size ? new DoubleArraySeries(data, offset, len) : this;
     }
 
     @Override
-    public DoubleSeries tailDouble(int len) {
+    public DoubleSeries tail(int len) {
 
         if (len < 0) {
-            return headDouble(size + len);
+            return head(size + len);
         }
 
         return len < size ? new DoubleArraySeries(data, offset + size - len, len) : this;

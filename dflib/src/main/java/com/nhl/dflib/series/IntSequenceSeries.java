@@ -61,18 +61,18 @@ public class IntSequenceSeries extends IntBaseSeries {
     }
 
     @Override
-    public IntSeries headInt(int len) {
+    public IntSeries head(int len) {
         if (len < 0) {
-            return tailInt(size() + len);
+            return tail(size() + len);
         }
 
         return len < size() ? new IntSequenceSeries(first, first + len) : this;
     }
 
     @Override
-    public IntSeries tailInt(int len) {
+    public IntSeries tail(int len) {
         if (len < 0) {
-            return headInt(size() + len);
+            return head(size() + len);
         }
 
         return len < size() ? new IntSequenceSeries(first + size() - len, lastExclusive) : this;

@@ -262,16 +262,6 @@ public abstract class IntBaseSeries implements IntSeries {
         return this;
     }
 
-    @Override
-    public Series<Integer> head(int len) {
-        return headInt(len);
-    }
-
-    @Override
-    public Series<Integer> tail(int len) {
-        return tailInt(len);
-    }
-
     @SafeVarargs
     @Override
     public final Series<Integer> concat(Series<? extends Integer>... other) {

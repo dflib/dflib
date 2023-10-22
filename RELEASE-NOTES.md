@@ -17,6 +17,7 @@
 * #202  DataFrame: deprecate "toXyzColumn()" API
 * #203 DataFrame / Series: negative values for "head" and "tail"
 * #204 "IntSequenceSeries.headInt(n)" is broken
+* #205 Primitive Series: deprecate "headXyz" and "tailXyz" variants
 
 ## Release 0.17
 
