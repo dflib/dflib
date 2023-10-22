@@ -21,7 +21,7 @@ public interface BooleanSeries extends Series<Boolean> {
 
     /**
      * @since 0.7
-     * @deprecated since 0.16 in favor of {@link #mapAsBool(BoolValueMapper)}
+     * @deprecated in favor of {@link #mapAsBool(BoolValueMapper)}
      */
     @Deprecated(since = "0.16", forRemoval = true)
     static <V> BooleanSeries forSeries(Series<V> series, BoolValueMapper<? super V> converter) {

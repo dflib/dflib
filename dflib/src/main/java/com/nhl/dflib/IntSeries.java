@@ -26,7 +26,7 @@ public interface IntSeries extends Series<Integer> {
 
     /**
      * @since 0.7
-     * @deprecated since 0.16 in favor of {@link #mapAsInt(IntValueMapper)}
+     * @deprecated in favor of {@link #mapAsInt(IntValueMapper)}
      */
     @Deprecated(since = "0.16", forRemoval = true)
     static <V> IntSeries forSeries(Series<V> series, IntValueMapper<? super V> converter) {
@@ -95,7 +95,7 @@ public interface IntSeries extends Series<Integer> {
     IntSeries head(int len);
 
     /**
-     * @deprecated since 0.18 in favor of {@link #head(int)} that returns an IntSeries
+     * @deprecated in favor of {@link #head(int)} that returns an IntSeries
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default IntSeries headInt(int len) {
@@ -106,7 +106,7 @@ public interface IntSeries extends Series<Integer> {
     IntSeries tail(int len);
 
     /**
-     * @deprecated since 0.18 in favor of {@link #tail(int)} that returns an IntSeries
+     * @deprecated in favor of {@link #tail(int)} that returns an IntSeries
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default IntSeries tailInt(int len) {

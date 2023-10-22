@@ -25,7 +25,7 @@ public interface LongSeries extends Series<Long> {
 
     /**
      * @since 0.7
-     * @deprecated since 0.16 in favor of {@link #mapAsLong(LongValueMapper)}
+     * @deprecated in favor of {@link #mapAsLong(LongValueMapper)}
      */
     @Deprecated(since = "0.16", forRemoval = true)
     static <V> LongSeries forSeries(Series<V> series, LongValueMapper<? super V> converter) {
@@ -94,7 +94,7 @@ public interface LongSeries extends Series<Long> {
     LongSeries head(int len);
 
     /**
-     * @deprecated since 0.18 in favor of {@link #head(int)}
+     * @deprecated in favor of {@link #head(int)}
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default LongSeries headLong(int len) {
@@ -105,7 +105,7 @@ public interface LongSeries extends Series<Long> {
     LongSeries tail(int len);
 
     /**
-     * @deprecated since 0.18 in favor of {@link #tail(int)}
+     * @deprecated in favor of {@link #tail(int)}
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default LongSeries tailLong(int len) {
@@ -171,7 +171,7 @@ public interface LongSeries extends Series<Long> {
 
     /**
      * @return a LongSeries that contains non-repeating values from this Series.
-     * @deprecated since 0.18 in favor of {@link #unique()}
+     * @deprecated in favor of {@link #unique()}
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default LongSeries uniqueLong() {
