@@ -22,4 +22,10 @@ public class IntSeries_HeadIntTest {
         IntSeries s = Series.ofInt(3, 4, 2).headInt(4);
         new IntSeriesAsserts(s).expectData(3, 4, 2);
     }
+
+    @Test
+    public void test_Negative() {
+        IntSeries s = Series.ofInt(3, 4, 2).headInt(-2);
+        new IntSeriesAsserts(s).expectData(2);
+    }
 }

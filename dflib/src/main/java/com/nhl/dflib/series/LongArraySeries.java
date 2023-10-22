@@ -50,11 +50,20 @@ public class LongArraySeries extends LongBaseSeries {
 
     @Override
     public LongSeries headLong(int len) {
+        if (len < 0) {
+            return tailLong(size + len);
+        }
+
         return len < size ? new LongArraySeries(data, offset, len) : this;
     }
 
     @Override
     public LongSeries tailLong(int len) {
+
+        if (len < 0) {
+            return headLong(size + len);
+        }
+
         return len < size ? new LongArraySeries(data, offset + size - len, len) : this;
     }
 

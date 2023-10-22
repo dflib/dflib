@@ -28,4 +28,10 @@ public class IntSeries_TailIntTest {
         IntSeries s = Series.ofInt(3, 4, 2).tailInt(4);
         new IntSeriesAsserts(s).expectData(3, 4, 2);
     }
+
+    @Test
+    public void test_Negative() {
+        IntSeries s = Series.ofInt(3, 4, 2).tailInt(-2);
+        new IntSeriesAsserts(s).expectData(3);
+    }
 }

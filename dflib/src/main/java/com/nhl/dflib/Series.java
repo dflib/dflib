@@ -318,8 +318,18 @@ public interface Series<T> extends Iterable<T> {
 
     Series<T> concat(Series<? extends T>... other);
 
+    /**
+     * Returns a Series with the first <code>len</code> elements of this Series. If this Series is shorter than the
+     * requested length, then the entire Series is returned. If <code>len</code> is negative, instead of returning the
+     * leading elements, they are skipped, and the rest of the Series is returned.
+     */
     Series<T> head(int len);
 
+    /**
+     * Returns a Series with the last <code>len</code> elements of this Series. If this Series is shorter than the
+     * requested length, then the entire Series is returned. If <code>len</code> is negative, instead of returning the
+     * trailing elements, they are skipped, and the rest of the Series is returned.
+     */
     Series<T> tail(int len);
 
     /**

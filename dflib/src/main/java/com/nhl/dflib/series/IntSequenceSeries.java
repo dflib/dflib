@@ -18,6 +18,11 @@ public class IntSequenceSeries extends IntBaseSeries {
     private final int lastExclusive;
 
     public IntSequenceSeries(int first, int lastExclusive) {
+
+        if (first > lastExclusive) {
+            throw new IllegalArgumentException("'first' sequence element is larger than 'last': " + first + " vs. " + lastExclusive);
+        }
+
         this.first = first;
         this.lastExclusive = lastExclusive;
     }
@@ -57,11 +62,19 @@ public class IntSequenceSeries extends IntBaseSeries {
 
     @Override
     public IntSeries headInt(int len) {
+        if (len < 0) {
+            return tailInt(size() + len);
+        }
+
         return len < size() ? new IntSequenceSeries(first, first + len) : this;
     }
 
     @Override
     public IntSeries tailInt(int len) {
+        if (len < 0) {
+            return headInt(size() + len);
+        }
+
         return len < size() ? new IntSequenceSeries(first + size() - len, lastExclusive) : this;
     }
 

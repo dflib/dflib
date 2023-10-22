@@ -142,6 +142,8 @@ public interface BooleanSeries extends Series<Boolean> {
     }
 
     /**
+     * Sames as {@link #head(int)}, but returns a BooleanSeries.
+     *
      * @since 0.16
      */
     BooleanSeries headBool(int len);
@@ -155,6 +157,8 @@ public interface BooleanSeries extends Series<Boolean> {
     }
 
     /**
+     * Same as {@link #tail(int)}, but returns a BooleanSeries.
+     *
      * @since 0.16
      */
     BooleanSeries tailBool(int len);

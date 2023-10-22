@@ -6,6 +6,7 @@ import com.nhl.dflib.agg.PrimitiveSeriesAvg;
 import com.nhl.dflib.agg.PrimitiveSeriesMedian;
 import com.nhl.dflib.agg.PrimitiveSeriesMinMax;
 import com.nhl.dflib.agg.PrimitiveSeriesSum;
+import com.nhl.dflib.range.Range;
 
 /**
  * @since 0.6
@@ -23,6 +24,9 @@ public class IntArraySeries extends IntBaseSeries {
     }
 
     public IntArraySeries(int[] data, int offset, int size) {
+
+        Range.checkRange(offset, size, data.length);
+
         this.data = data;
         this.offset = offset;
         this.size = size;
@@ -53,11 +57,21 @@ public class IntArraySeries extends IntBaseSeries {
 
     @Override
     public IntSeries headInt(int len) {
+
+        if (len < 0) {
+            return tailInt(size + len);
+        }
+
         return len < size ? new IntArraySeries(data, offset, len) : this;
     }
 
     @Override
     public IntSeries tailInt(int len) {
+
+        if (len < 0) {
+            return headInt(size + len);
+        }
+
         return len < size ? new IntArraySeries(data, offset + size - len, len) : this;
     }
 

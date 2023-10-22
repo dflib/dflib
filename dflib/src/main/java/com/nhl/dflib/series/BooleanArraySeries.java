@@ -48,11 +48,19 @@ public class BooleanArraySeries extends BooleanBaseSeries {
 
     @Override
     public BooleanSeries headBool(int len) {
+        if (len < 0) {
+            return tailBool(size + len);
+        }
+
         return len < size ? new BooleanArraySeries(data, offset, len) : this;
     }
 
     @Override
     public BooleanSeries tailBool(int len) {
+        if (len < 0) {
+            return headBool(size + len);
+        }
+
         return len < size ? new BooleanArraySeries(data, offset + size - len, len) : this;
     }
 
