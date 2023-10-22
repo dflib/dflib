@@ -119,22 +119,23 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
     @Override
     public Series<T> head(int len) {
-        if (len < 0) {
-            return tail(size() + len);
+
+        if (Math.abs(len) >= size()) {
+            return this;
         }
 
-        return len >= size() ? this : rangeOpenClosed(0, len);
+        return len < 0 ? tail(size() + len) : rangeOpenClosed(0, len);
     }
 
     @Override
     public Series<T> tail(int len) {
         int size = size();
 
-        if (len < 0) {
-            return head(size + len);
+        if (Math.abs(len) >= size()) {
+            return this;
         }
 
-        return len >= size ? this : rangeOpenClosed(size - len, size);
+        return len < 0 ? head(size + len) : rangeOpenClosed(size - len, size);
     }
 
     @Override

@@ -33,4 +33,11 @@ public class Series_HeadTest {
         Series<String> s = type.createSeries("a", "b", "c").head(-2);
         new SeriesAsserts(s).expectData("c");
     }
+
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testNegative_OutOfBounds(SeriesType type) {
+        Series<String> s = type.createSeries("a", "b", "c").head(-4);
+        new SeriesAsserts(s).expectData("a", "b", "c");
+    }
 }

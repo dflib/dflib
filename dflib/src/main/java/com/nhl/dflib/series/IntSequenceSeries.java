@@ -62,20 +62,22 @@ public class IntSequenceSeries extends IntBaseSeries {
 
     @Override
     public IntSeries head(int len) {
-        if (len < 0) {
-            return tail(size() + len);
+
+        if (Math.abs(len) >= size()) {
+            return this;
         }
 
-        return len < size() ? new IntSequenceSeries(first, first + len) : this;
+        return len < 0 ? tail(size() + len) : new IntSequenceSeries(first, first + len);
     }
 
     @Override
     public IntSeries tail(int len) {
-        if (len < 0) {
-            return head(size() + len);
+
+        if (Math.abs(len) >= size()) {
+            return this;
         }
 
-        return len < size() ? new IntSequenceSeries(first + size() - len, lastExclusive) : this;
+        return len < 0 ? head(size() + len) : new IntSequenceSeries(first + size() - len, lastExclusive);
     }
 
     @Override

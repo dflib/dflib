@@ -44,20 +44,22 @@ public class TrueSeries extends BooleanBaseSeries {
 
     @Override
     public BooleanSeries head(int len) {
-        if (len < 0) {
-            return tail(size + len);
+
+        if (Math.abs(len) >= size) {
+            return this;
         }
 
-        return len < size ? new TrueSeries(len) : this;
+        return len < 0 ? tail(size + len) : new TrueSeries(len);
     }
 
     @Override
     public BooleanSeries tail(int len) {
-        if (len < 0) {
-            return head(size + len);
+
+        if (Math.abs(len) >= size) {
+            return this;
         }
 
-        return len < size ? new TrueSeries(len) : this;
+        return len < 0 ? head(size + len) : new TrueSeries(len);
     }
 
     @Override

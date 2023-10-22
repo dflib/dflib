@@ -58,21 +58,21 @@ public class IntArraySeries extends IntBaseSeries {
     @Override
     public IntSeries head(int len) {
 
-        if (len < 0) {
-            return tail(size + len);
+        if (Math.abs(len) >= size) {
+            return this;
         }
 
-        return len < size ? new IntArraySeries(data, offset, len) : this;
+        return len < 0 ? tail(size + len) : new IntArraySeries(data, offset, len);
     }
 
     @Override
     public IntSeries tail(int len) {
 
-        if (len < 0) {
-            return head(size + len);
+        if (Math.abs(len) >= size) {
+            return this;
         }
 
-        return len < size ? new IntArraySeries(data, offset + size - len, len) : this;
+        return len < 0 ? head(size + len) : new IntArraySeries(data, offset + size - len, len);
     }
 
     @Override

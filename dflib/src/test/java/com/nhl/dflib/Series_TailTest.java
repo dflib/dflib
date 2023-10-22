@@ -33,4 +33,11 @@ public class Series_TailTest {
         Series<String> s = type.createSeries("a", "b", "c").tail(-2);
         new SeriesAsserts(s).expectData("a");
     }
+
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void testNegative_OutOfBounds(SeriesType type) {
+        Series<String> s = type.createSeries("a", "b", "c").tail(-4);
+        new SeriesAsserts(s).expectData("a", "b", "c");
+    }
 }
