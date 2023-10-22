@@ -28,4 +28,10 @@ public class ByRowSeries_TailTest {
         Series<Object> s = createSeries("a", "b").tail(3);
         new SeriesAsserts(s).expectData("a", "b");
     }
+
+    @Test
+    public void testNegative() {
+        Series<Object> s = createSeries("a", "b", "c").tail(-2);
+        new SeriesAsserts(s).expectData("a", "b");
+    }
 }

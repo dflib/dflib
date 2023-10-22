@@ -28,4 +28,10 @@ public class ByRowSeries_HeadTest {
         Series<Object> s = createSeries("a", "b", "c", "d").head(5);
         new SeriesAsserts(s).expectData("a", "b", "c", "d");
     }
+
+    @Test
+    public void testNegative() {
+        Series<Object> s = createSeries("a", "b", "c").head(-2);
+        new SeriesAsserts(s).expectData("c", null);
+    }
 }

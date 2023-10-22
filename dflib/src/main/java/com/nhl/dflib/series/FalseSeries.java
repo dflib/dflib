@@ -44,11 +44,19 @@ public class FalseSeries extends BooleanBaseSeries {
 
     @Override
     public BooleanSeries head(int len) {
+        if (len < 0) {
+            return tail(size + len);
+        }
+
         return len < size ? new FalseSeries(len) : this;
     }
 
     @Override
     public BooleanSeries tail(int len) {
+        if (len < 0) {
+            return head(size + len);
+        }
+
         return len < size ? new FalseSeries(len) : this;
     }
 
