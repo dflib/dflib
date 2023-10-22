@@ -227,7 +227,7 @@ public abstract class LongBaseSeries implements LongSeries {
         // primitive series has no nulls
         return this;
     }
-    
+
     @SafeVarargs
     @Override
     public final Series<Long> concat(Series<? extends Long>... other) {
@@ -499,12 +499,7 @@ public abstract class LongBaseSeries implements LongSeries {
     }
 
     @Override
-    public Series<Long> unique() {
-        return uniqueLong();
-    }
-
-    @Override
-    public LongSeries uniqueLong() {
+    public LongSeries unique() {
         int size = size();
         if (size < 2) {
             return this;

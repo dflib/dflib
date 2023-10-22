@@ -152,10 +152,16 @@ public interface IntSeries extends Series<Integer> {
 
     BooleanSeries locateInt(IntPredicate predicate);
 
+    @Override
+    IntSeries unique();
+
     /**
-     * @return a IntSeries that contains non-repeating values from this Series.
+     * @deprecated in favor of {@link #unique()}
      */
-    IntSeries uniqueInt();
+    @Deprecated(since = "0.18", forRemoval = true)
+    default IntSeries uniqueInt() {
+        return unique();
+    }
 
     /**
      * @since 0.7

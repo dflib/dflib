@@ -514,12 +514,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
-    public Series<Boolean> unique() {
-        return uniqueBool();
-    }
-
-    @Override
-    public BooleanSeries uniqueBool() {
+    public BooleanSeries unique() {
         // unlike other primitive series, Boolean is categorical data, and there can be at most 2 values in the final
         // array... we can optimize around that
 

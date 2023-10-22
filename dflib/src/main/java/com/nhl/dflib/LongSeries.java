@@ -140,10 +140,17 @@ public interface LongSeries extends Series<Long> {
 
     BooleanSeries locateLong(LongPredicate predicate);
 
+    @Override
+    LongSeries unique();
+
     /**
      * @return a LongSeries that contains non-repeating values from this Series.
+     * @deprecated since 0.18 in favor of {@link #unique()}
      */
-    LongSeries uniqueLong();
+    @Deprecated(since = "0.18", forRemoval = true)
+    default LongSeries uniqueLong() {
+        return unique();
+    }
 
     /**
      * @since 0.7

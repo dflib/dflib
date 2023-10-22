@@ -7,25 +7,25 @@ public class BooleanSeries_UniqueTest {
 
     @Test
     public void test() {
-        BooleanSeries s1 = Series.ofBool(true, false, true, false, true).uniqueBool();
+        BooleanSeries s1 = Series.ofBool(true, false, true, false, true).unique();
         new BoolSeriesAsserts(s1).expectData(true, false);
     }
 
     @Test
     public void testTrueOnly() {
-        BooleanSeries s1 = Series.ofBool(true, true, true).uniqueBool();
+        BooleanSeries s1 = Series.ofBool(true, true, true).unique();
         new BoolSeriesAsserts(s1).expectData(true);
     }
 
     @Test
     public void testFalseOnly() {
-        BooleanSeries s1 = Series.ofBool(false, false, false).uniqueBool();
+        BooleanSeries s1 = Series.ofBool(false, false, false).unique();
         new BoolSeriesAsserts(s1).expectData(false);
     }
 
     @Test
     public void testSmall() {
-        BooleanSeries s1 = Series.ofBool(false, true).uniqueBool();
+        BooleanSeries s1 = Series.ofBool(false, true).unique();
         new BoolSeriesAsserts(s1).expectData(false, true);
     }
 }

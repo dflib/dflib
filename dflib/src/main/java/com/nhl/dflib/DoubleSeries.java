@@ -140,10 +140,16 @@ public interface DoubleSeries extends Series<Double> {
 
     BooleanSeries locateDouble(DoublePredicate predicate);
 
+    @Override
+    DoubleSeries unique();
+
     /**
-     * @return a DoubleSeries that contains non-repeating values from this Series.
+     * @deprecated in favor of {@link #unique()}
      */
-    DoubleSeries uniqueDouble();
+    @Deprecated(since = "0.18", forRemoval = true)
+    default DoubleSeries uniqueDouble() {
+        return unique();
+    }
 
     /**
      * @since 0.7

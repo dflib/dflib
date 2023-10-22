@@ -499,12 +499,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
-    public Series<Double> unique() {
-        return uniqueDouble();
-    }
-
-    @Override
-    public DoubleSeries uniqueDouble() {
+    public DoubleSeries unique() {
         int size = size();
         if (size < 2) {
             return this;

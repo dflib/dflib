@@ -533,12 +533,7 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public Series<Integer> unique() {
-        return uniqueInt();
-    }
-
-    @Override
-    public IntSeries uniqueInt() {
+    public IntSeries unique() {
         int size = size();
         if (size < 2) {
             return this;

@@ -250,18 +250,25 @@ public interface BooleanSeries extends Series<Boolean> {
      */
     boolean isFalse();
 
+    @Override
+    BooleanSeries unique();
+
     /**
      * @return a BooleanSeries that contains non-repeating values from this Series.
      * @since 0.16
+     * @deprecated in favor of {@link #unique()}
      */
-    BooleanSeries uniqueBool();
+    @Deprecated(since = "0.18", forRemoval = true)
+    default BooleanSeries uniqueBool() {
+        return unique();
+    }
 
     /**
-     * @deprecated in favor of {@link #uniqueBool()}
+     * @deprecated in favor of {@link #unique()}
      */
     @Deprecated(since = "0.16", forRemoval = true)
     default BooleanSeries uniqueBoolean() {
-        return uniqueBool();
+        return unique();
     }
 
     BooleanSeries and(BooleanSeries another);
