@@ -17,4 +17,11 @@ public class IntSeries_AddTest {
         IntSeries s = Series.ofInt(3, 28).addInt(5);
         new IntSeriesAsserts(s).expectData(3, 28, 5);
     }
+
+    @Test
+    public void testAdd_Series() {
+        IntSeries s0 = Series.ofInt(1, 2);
+        IntSeries s = Series.ofInt(3, 28).add(s0);
+        new SeriesAsserts(s).expectData(4, 30);
+    }
 }
