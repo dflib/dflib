@@ -387,8 +387,8 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Produces a new DataFrame from this DataFrame, applying {@link RowMapper} to each row of this DataFrame. The
      * result DataFrame will be the same height as this, but can have a different width and set of columns.
      *
-     * <p><i>This is a fairly low-level and cumbersome API. Where possible, use alternatives like
-     * {@link #map(Exp[])}</i></p>
+     * <p><i>This is a fairly low-level and cumbersome API. It may be useful when the application needs to dynamically
+     * select a list of columns to operate on. Where possible, use simpler alternatives like {@link #map(Exp[])}</i></p>
      *
      * @param resultColumns column index of the new DataFrame
      * @param rowMapper     a function applied to each row of this DataFrame
@@ -926,17 +926,27 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     DataFrame addRowNumberColumn(String columnName);
 
+    /**
+     * <p><i>This is a fairly low-level API. It may be useful when the application needs to dynamically select
+     * a list of columns to operate on. Where possible, use simpler alternatives like {@link #addColumn(Exp)}</i></p>
+     */
     default DataFrame addColumn(String columnLabel, RowToValueMapper<?> columnMaker) {
         return addColumn(columnLabel, new RowMappedSeries<>(this, columnMaker));
     }
 
+    /**
+     * Adds specified columns to the DataFrame.
+     *
+     * <p><i>This is a fairly low-level and cumbersome API. It may be useful when the application needs to dynamically select
+     * a list of columns to operate on. Where possible, use simpler alternatives like {@link #addColumns(Exp[])}</i></p>
+     */
     DataFrame addColumns(String[] columnLabels, RowToValueMapper<?>... columnMakers);
 
     /**
      * Add one more columns to the DataFrame.
      *
-     * <p><i>This is a fairly low-level and cumbersome API. Where possible, use alternatives like
-     * {@link #addColumns(Exp[])}</i></p>
+     * <p><i>This is a fairly low-level and cumbersome API. It may be useful when the application needs to dynamically select
+     * a list of columns to operate on. Where possible, use simpler alternatives like {@link #addColumns(Exp[])}</i></p>
      *
      * @param columnLabels the names of the added columns
      * @param rowMapper    a mapper with the "read" part based on this DataFrame index, and "write" part matching the
