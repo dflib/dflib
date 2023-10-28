@@ -666,7 +666,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public Iterator<RowProxy> iterator() {
-        return new Iterator<RowProxy>() {
+        return new Iterator<>() {
 
             final CrossColumnRowProxy rowProxy = new CrossColumnRowProxy(columnsIndex, dataColumns, height());
 
