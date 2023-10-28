@@ -1,3 +1,7 @@
+## Release 0.19
+
+* #209 DataFrame.map(Exp...)
+
 ## Release 0.18
 
 *  #41 DataFrame.unique - produce DataFrame with non-repeating rows

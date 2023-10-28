@@ -38,4 +38,20 @@ public class DataFrame_MapTest {
                 .expectRow(0, 10, "x")
                 .expectRow(1, 20, "y");
     }
+
+    @Test
+    public void testMap_Exp() {
+        Index i1 = Index.forLabels("a", "b");
+        DataFrame df = DataFrame
+                .newFrame("a", "b")
+                .foldByRow(
+                        1, "x",
+                        2, "y")
+                .map(Exp.$int(0).mul(10).as("a"), Exp.$col(1).as("b"));
+
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(2)
+                .expectRow(0, 10, "x")
+                .expectRow(1, 20, "y");
+    }
 }

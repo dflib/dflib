@@ -135,6 +135,28 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
+    public DataFrame map(Exp<?>... exps) {
+        int outWidth = exps.length;
+
+        if (outWidth == 0) {
+            throw new IllegalArgumentException("No 'exps' to map a DataFrame");
+        }
+
+        Series[] newData = new Series[outWidth];
+
+        for (int i = 0; i < outWidth; i++) {
+            newData[i] = exps[i].eval(this);
+        }
+
+        String[] outNames = new String[outWidth];
+        for (int i = 0; i < outWidth; i++) {
+            outNames[i] = exps[i].getColumnName(this);
+        }
+
+        return new ColumnDataFrame(Index.forLabels(outNames), newData);
+    }
+
+    @Override
     @Deprecated(since = "0.18", forRemoval = true)
     public <T> Series<T> mapColumn(RowToValueMapper<T> rowMapper) {
         return new RowMappedSeries<>(this, rowMapper);

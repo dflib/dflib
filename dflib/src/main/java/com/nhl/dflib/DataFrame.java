@@ -385,13 +385,23 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * Produces a new DataFrame from this DataFrame, applying {@link RowMapper} to each row of this DataFrame. The
-     * result DataFrame will be the same height as this, but can have a different with and set of columns.
+     * result DataFrame will be the same height as this, but can have a different width and set of columns.
+     *
+     * <p><i>This is a fairly low-level and cumbersome API. Where possible, use alternatives like
+     * {@link #map(Exp[])}</i></p>
      *
      * @param resultColumns column index of the new DataFrame
      * @param rowMapper     a function applied to each row of this DataFrame
      * @return a new DataFrame
      */
     DataFrame map(Index resultColumns, RowMapper rowMapper);
+
+    /**
+     * Produces a new DataFrame from this DataFrame, using an array of expressions, one per new DataFrame's column.
+     *
+     * @since 0.19
+     */
+    DataFrame map(Exp<?>... exps);
 
     /**
      * Creates a new Series with values mapped by applying row mapper function to the DataFrame. The returned Series
@@ -924,6 +934,9 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * Add one more columns to the DataFrame.
+     *
+     * <p><i>This is a fairly low-level and cumbersome API. Where possible, use alternatives like
+     * {@link #addColumns(Exp[])}</i></p>
      *
      * @param columnLabels the names of the added columns
      * @param rowMapper    a mapper with the "read" part based on this DataFrame index, and "write" part matching the
