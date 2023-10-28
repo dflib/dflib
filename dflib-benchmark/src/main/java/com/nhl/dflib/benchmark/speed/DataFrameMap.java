@@ -52,7 +52,7 @@ public class DataFrameMap {
 
     @Benchmark
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public Object convertColumn() {
+    public Object replaceColumn() {
         return df
                 // using cheap "map" function to test benchmark DF overhead
                 .replaceColumn("c2", Exp.$col("c2").mapVal(v -> 1))

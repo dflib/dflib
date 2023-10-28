@@ -55,6 +55,50 @@ public class ValueHolderProxy<S> implements RowProxy {
     }
 
     @Override
+    public int getInt(int columnPos) {
+        // TODO: this code is unaware of primitive columns, and hence will do extra boxing/unboxing
+        return (int) row[columnPos].holder.get();
+    }
+
+    @Override
+    public int getInt(String columnName) {
+        return getInt(index.position(columnName));
+    }
+
+    @Override
+    public long getLong(int columnPos) {
+        // TODO: this code is unaware of primitive columns, and hence will do extra boxing/unboxing
+        return (long) row[columnPos].holder.get();
+    }
+
+    @Override
+    public long getLong(String columnName) {
+        return getLong(index.position(columnName));
+    }
+
+    @Override
+    public double getDouble(int columnPos) {
+        // TODO: this code is unaware of primitive columns, and hence will do extra boxing/unboxing
+        return (double) row[columnPos].holder.get();
+    }
+
+    @Override
+    public double getDouble(String columnName) {
+        return getDouble(index.position(columnName));
+    }
+
+    @Override
+    public boolean getBool(int columnPos) {
+        // TODO: this code is unaware of primitive columns, and hence will do extra boxing/unboxing
+        return (boolean) row[columnPos].holder.get();
+    }
+
+    @Override
+    public boolean getBool(String columnName) {
+        return getBool(index.position(columnName));
+    }
+
+    @Override
     public void copyRange(RowBuilder to, int fromOffset, int toOffset, int len) {
         // TODO: do we need this one for any reason?
         throw new UnsupportedOperationException("Not supported");

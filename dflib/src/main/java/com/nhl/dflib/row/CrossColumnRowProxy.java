@@ -33,6 +33,46 @@ public class CrossColumnRowProxy implements RowProxy {
     }
 
     @Override
+    public int getInt(int columnPos) {
+        return data[columnPos].castAsInt().getInt(rowIndex);
+    }
+
+    @Override
+    public int getInt(String columnName) {
+        return getInt(columns.position(columnName));
+    }
+
+    @Override
+    public long getLong(int columnPos) {
+        return data[columnPos].castAsLong().getLong(rowIndex);
+    }
+
+    @Override
+    public long getLong(String columnName) {
+        return getLong(columns.position(columnName));
+    }
+
+    @Override
+    public double getDouble(int columnPos) {
+        return data[columnPos].castAsDouble().getDouble(rowIndex);
+    }
+
+    @Override
+    public double getDouble(String columnName) {
+        return getDouble(columns.position(columnName));
+    }
+
+    @Override
+    public boolean getBool(int columnPos) {
+        return data[columnPos].castAsBool().getBool(rowIndex);
+    }
+
+    @Override
+    public boolean getBool(String columnName) {
+        return getBool(columns.position(columnName));
+    }
+
+    @Override
     public void copyRange(RowBuilder to, int fromOffset, int toOffset, int len) {
         // row can be missing in joins...
         if (rowIndex >= 0) {

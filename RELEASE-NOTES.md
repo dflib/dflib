@@ -1,6 +1,7 @@
 ## Release 0.19
 
 * #209 DataFrame.map(Exp...)
+* #210 RowProxy: support for primitives and simpler casting
 
 ## Release 0.18
 
