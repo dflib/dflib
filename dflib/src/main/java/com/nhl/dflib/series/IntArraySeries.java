@@ -37,6 +37,195 @@ public class IntArraySeries extends IntBaseSeries {
         return size;
     }
 
+    // oddly enough, the same optimization of the "eq" method with IntArraySeries cast only shows about 3% speed
+    // improvement, so we are ignoring it. While reimplementing "add" gives 33% improvement vs super.
+
+    @Override
+    public IntSeries add(IntSeries s) {
+
+        if (!(s instanceof IntArraySeries)) {
+            return super.add(s);
+        }
+
+        int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
+        IntArraySeries as = (IntArraySeries) s;
+
+        // storing ivars in the local vars for performance
+        int[] l = this.data;
+        int[] r = as.data;
+
+        int lo = this.offset;
+        int ro = as.offset;
+
+        int[] data = new int[len];
+
+        if (lo > 0 || ro > 0) {
+            for (int i = 0; i < len; i++) {
+                data[i] = l[lo + i] + r[ro + i];
+            }
+        } else {
+            // not having to calculate offset (the most common case) results in a performance boost
+            // (due to HotSpot vectorization?)
+            for (int i = 0; i < len; i++) {
+                data[i] = l[i] + r[i];
+            }
+        }
+
+        return new IntArraySeries(data);
+    }
+
+    @Override
+    public IntSeries sub(IntSeries s) {
+        if (!(s instanceof IntArraySeries)) {
+            return super.sub(s);
+        }
+
+        int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
+        IntArraySeries as = (IntArraySeries) s;
+
+        // storing ivars in the local vars for performance
+        int[] l = this.data;
+        int[] r = as.data;
+
+        int lo = this.offset;
+        int ro = as.offset;
+
+        int[] data = new int[len];
+
+        if (lo > 0 || ro > 0) {
+            for (int i = 0; i < len; i++) {
+                data[i] = l[lo + i] - r[ro + i];
+            }
+        } else {
+            // not having to calculate offset (the most common case) results in a performance boost
+            // (due to HotSpot vectorization?)
+            for (int i = 0; i < len; i++) {
+                data[i] = l[i] - r[i];
+            }
+        }
+
+        return new IntArraySeries(data);
+    }
+
+    @Override
+    public IntSeries mul(IntSeries s) {
+        if (!(s instanceof IntArraySeries)) {
+            return super.mul(s);
+        }
+
+        int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
+        IntArraySeries as = (IntArraySeries) s;
+
+        // storing ivars in the local vars for performance
+        int[] l = this.data;
+        int[] r = as.data;
+
+        int lo = this.offset;
+        int ro = as.offset;
+
+        int[] data = new int[len];
+
+        if (lo > 0 || ro > 0) {
+            for (int i = 0; i < len; i++) {
+                data[i] = l[lo + i] * r[ro + i];
+            }
+        } else {
+            // not having to calculate offset (the most common case) results in a performance boost
+            // (due to HotSpot vectorization?)
+            for (int i = 0; i < len; i++) {
+                data[i] = l[i] * r[i];
+            }
+        }
+
+        return new IntArraySeries(data);
+    }
+
+    @Override
+    public IntSeries div(IntSeries s) {
+        if (!(s instanceof IntArraySeries)) {
+            return super.div(s);
+        }
+
+        int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
+        IntArraySeries as = (IntArraySeries) s;
+
+        // storing ivars in the local vars for performance
+        int[] l = this.data;
+        int[] r = as.data;
+
+        int lo = this.offset;
+        int ro = as.offset;
+
+        int[] data = new int[len];
+
+        if (lo > 0 || ro > 0) {
+            for (int i = 0; i < len; i++) {
+                data[i] = l[lo + i] / r[ro + i];
+            }
+        } else {
+            // not having to calculate offset (the most common case) results in a performance boost
+            // (due to HotSpot vectorization?)
+            for (int i = 0; i < len; i++) {
+                data[i] = l[i] / r[i];
+            }
+        }
+
+        return new IntArraySeries(data);
+    }
+
+    @Override
+    public IntSeries mod(IntSeries s) {
+        if (!(s instanceof IntArraySeries)) {
+            return super.mod(s);
+        }
+
+        int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
+        IntArraySeries as = (IntArraySeries) s;
+
+        // storing ivars in the local vars for performance
+        int[] l = this.data;
+        int[] r = as.data;
+
+        int lo = this.offset;
+        int ro = as.offset;
+
+        int[] data = new int[len];
+
+        if (lo > 0 || ro > 0) {
+            for (int i = 0; i < len; i++) {
+                data[i] = l[lo + i] % r[ro + i];
+            }
+        } else {
+            // not having to calculate offset (the most common case) results in a performance boost
+            // (due to HotSpot vectorization?)
+            for (int i = 0; i < len; i++) {
+                data[i] = l[i] % r[i];
+            }
+        }
+
+        return new IntArraySeries(data);
+    }
+
     @Override
     public int getInt(int index) {
         if (index >= size) {

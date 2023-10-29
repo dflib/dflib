@@ -241,11 +241,57 @@ public interface IntSeries extends Series<Integer> {
      */
     double median();
 
+    @Override
+    default BooleanSeries eq(Series<?> s) {
+        if (!(s instanceof IntSeries)) {
+            return Series.super.eq(s);
+        }
+
+        int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
+        boolean[] data = new boolean[len];
+        IntSeries anotherInt = (IntSeries) s;
+
+        for (int i = 0; i < len; i++) {
+            data[i] = getInt(i) == anotherInt.getInt(i);
+        }
+
+        return new BooleanArraySeries(data);
+    }
+
+    @Override
+    default BooleanSeries ne(Series<?> another) {
+        if (!(another instanceof IntSeries)) {
+            return Series.super.ne(another);
+        }
+
+        int len = size();
+        if (len != another.size()) {
+            throw new IllegalArgumentException("Another Series size " + another.size() + " is not the same as this size " + len);
+        }
+
+        boolean[] data = new boolean[len];
+        IntSeries anotherInt = (IntSeries) another;
+
+        for (int i = 0; i < len; i++) {
+            data[i] = getInt(i) != anotherInt.getInt(i);
+        }
+
+        return new BooleanArraySeries(data);
+    }
+
     /**
      * @since 0.11
      */
     default IntSeries add(IntSeries s) {
         int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
         int[] data = new int[len];
 
         for (int i = 0; i < len; i++) {
@@ -262,6 +308,10 @@ public interface IntSeries extends Series<Integer> {
      */
     default IntSeries sub(IntSeries s) {
         int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
         int[] data = new int[len];
 
         for (int i = 0; i < len; i++) {
@@ -278,6 +328,10 @@ public interface IntSeries extends Series<Integer> {
      */
     default IntSeries mul(IntSeries s) {
         int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
         int[] data = new int[len];
 
         for (int i = 0; i < len; i++) {
@@ -294,6 +348,10 @@ public interface IntSeries extends Series<Integer> {
      */
     default IntSeries div(IntSeries s) {
         int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
         int[] data = new int[len];
 
         for (int i = 0; i < len; i++) {
@@ -310,6 +368,10 @@ public interface IntSeries extends Series<Integer> {
      */
     default IntSeries mod(IntSeries s) {
         int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
         int[] data = new int[len];
 
         for (int i = 0; i < len; i++) {

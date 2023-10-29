@@ -422,49 +422,6 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public BooleanSeries eq(Series<?> another) {
-        if (!(another instanceof IntSeries)) {
-            return IntSeries.super.eq(another);
-        }
-
-        int len = size();
-        if (len != another.size()) {
-            throw new IllegalArgumentException("Another Series size " + another.size() + " is not the same as this size " + len);
-        }
-
-        boolean[] data = new boolean[len];
-        IntSeries anotherInt = (IntSeries) another;
-
-        for (int i = 0; i < len; i++) {
-            data[i] = getInt(i) == anotherInt.getInt(i);
-        }
-
-        return new BooleanArraySeries(data);
-    }
-
-    @Override
-    public BooleanSeries ne(Series<?> another) {
-
-        if (!(another instanceof IntSeries)) {
-            return IntSeries.super.ne(another);
-        }
-
-        int len = size();
-        if (len != another.size()) {
-            throw new IllegalArgumentException("Another Series size " + another.size() + " is not the same as this size " + len);
-        }
-
-        boolean[] data = new boolean[len];
-        IntSeries anotherInt = (IntSeries) another;
-
-        for (int i = 0; i < len; i++) {
-            data[i] = getInt(i) != anotherInt.getInt(i);
-        }
-
-        return new BooleanArraySeries(data);
-    }
-
-    @Override
     public BooleanSeries in(Object... values) {
         int len = size();
 
