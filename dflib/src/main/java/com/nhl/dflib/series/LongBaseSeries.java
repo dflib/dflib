@@ -80,29 +80,33 @@ public abstract class LongBaseSeries implements LongSeries {
 
     @Override
     public LongSeries select(BooleanSeries positions) {
-        int s = size();
-        int ps = positions.size();
+        int len = size();
 
-        if (s != ps) {
-            throw new IllegalArgumentException("Positions size " + ps + " is not the same as this size " + s);
+        if (len != positions.size()) {
+            throw new IllegalArgumentException("Positions size " + positions.size() + " is not the same as this size " + len);
         }
 
-        LongAccum data = new LongAccum(s);
+        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
+        // buffer to the actual size when creating the result.
+        LongAccum filtered = new LongAccum(len);
 
-        for (int i = 0; i < s; i++) {
+        for (int i = 0; i < len; i++) {
             if (positions.getBool(i)) {
-                data.pushLong(getLong(i));
+                filtered.pushLong(getLong(i));
             }
         }
 
-        return data.toSeries();
+        return filtered.toSeries();
     }
 
     @Override
     public LongSeries selectLong(LongPredicate p) {
-        LongAccum filtered = new LongAccum();
-
+        
         int len = size();
+
+        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
+        // buffer to the actual size when creating the result.
+        LongAccum filtered = new LongAccum(len);
 
         for (int i = 0; i < len; i++) {
             long v = getLong(i);

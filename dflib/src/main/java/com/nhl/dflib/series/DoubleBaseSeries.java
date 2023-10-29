@@ -80,29 +80,33 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
 
     @Override
     public DoubleSeries select(BooleanSeries positions) {
-        int s = size();
-        int ps = positions.size();
+        int len = size();
 
-        if (s != ps) {
-            throw new IllegalArgumentException("Positions size " + ps + " is not the same as this size " + s);
+        if (len != positions.size()) {
+            throw new IllegalArgumentException("Positions size " + positions.size() + " is not the same as this size " + len);
         }
 
-        DoubleAccum data = new DoubleAccum(s);
+        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
+        // buffer to the actual size when creating the result.
+        DoubleAccum filtered = new DoubleAccum(len);
 
-        for (int i = 0; i < s; i++) {
+        for (int i = 0; i < len; i++) {
             if (positions.getBool(i)) {
-                data.pushDouble(getDouble(i));
+                filtered.pushDouble(getDouble(i));
             }
         }
 
-        return data.toSeries();
+        return filtered.toSeries();
     }
 
     @Override
     public DoubleSeries selectDouble(DoublePredicate p) {
-        DoubleAccum filtered = new DoubleAccum();
 
         int len = size();
+
+        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
+        // buffer to the actual size when creating the result.
+        DoubleAccum filtered = new DoubleAccum(len);
 
         for (int i = 0; i < len; i++) {
             double v = getDouble(i);

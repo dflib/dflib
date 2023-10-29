@@ -78,22 +78,23 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
     @Override
     public BooleanSeries select(BooleanSeries positions) {
-        int s = size();
-        int ps = positions.size();
+        int len = size();
 
-        if (s != ps) {
-            throw new IllegalArgumentException("Positions size " + ps + " is not the same as this size " + s);
+        if (len != positions.size()) {
+            throw new IllegalArgumentException("Positions size " + positions.size() + " is not the same as this size " + len);
         }
 
-        BoolAccum data = new BoolAccum(s);
+        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
+        // buffer to the actual size when creating the result.
+        BoolAccum filtered = new BoolAccum(len);
 
-        for (int i = 0; i < s; i++) {
+        for (int i = 0; i < len; i++) {
             if (positions.getBool(i)) {
-                data.pushBool(getBool(i));
+                filtered.pushBool(getBool(i));
             }
         }
 
-        return data.toSeries();
+        return filtered.toSeries();
     }
 
     @Override

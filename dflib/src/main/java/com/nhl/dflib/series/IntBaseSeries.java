@@ -84,29 +84,33 @@ public abstract class IntBaseSeries implements IntSeries {
 
     @Override
     public IntSeries select(BooleanSeries positions) {
-        int s = size();
-        int ps = positions.size();
+        int len = size();
 
-        if (s != ps) {
-            throw new IllegalArgumentException("Positions size " + ps + " is not the same as this size " + s);
+        if (len != positions.size()) {
+            throw new IllegalArgumentException("Positions size " + positions.size() + " is not the same as this size " + len);
         }
 
-        IntAccum data = new IntAccum(s);
+        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
+        // buffer to the actual size when creating the result.
+        IntAccum filtered = new IntAccum(len);
 
-        for (int i = 0; i < s; i++) {
+        for (int i = 0; i < len; i++) {
             if (positions.getBool(i)) {
-                data.pushInt(getInt(i));
+                filtered.pushInt(getInt(i));
             }
         }
 
-        return data.toSeries();
+        return filtered.toSeries();
     }
 
     @Override
     public IntSeries selectInt(IntPredicate p) {
-        IntAccum filtered = new IntAccum();
 
         int len = size();
+
+        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
+        // buffer to the actual size when creating the result.
+        IntAccum filtered = new IntAccum(len);
 
         for (int i = 0; i < len; i++) {
             int v = getInt(i);
