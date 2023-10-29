@@ -1,8 +1,6 @@
 package com.nhl.dflib.benchmark.speed;
 
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Exp;
-import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.benchmark.ValueMaker;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -24,39 +22,32 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(2)
 @State(Scope.Thread)
-public class IntSeriesAdd {
+public class ObjectSeriesCompare {
 
     @Param("5000000")
     public int rows;
 
-    private IntSeries s1;
-    private IntSeries s2;
-    private DataFrame s1_s2;
+    private Series<String> s1;
+    private Series<String> s2;
 
     @Setup
     public void setUp() {
-        s1 = ValueMaker.intSeq().intSeries(rows);
-        s2 = ValueMaker.intSeq().intSeries(rows);
-        s1_s2 = DataFrame.byColumn("s1", "s2").of(s1, s2);
+        s1 = ValueMaker.stringSeq().series(rows);
+        s2 = ValueMaker.stringSeq().series(rows);
     }
 
     @Benchmark
-    public Object addSeries() {
-        return s1.add(s2);
+    public Object eqSeries() {
+        return s1.eq(s2);
     }
 
     @Benchmark
-    public Object map_AddConst() {
-        return s1.map(Exp.$int(0).add(10));
+    public Object isNull() {
+        return s1.isNull();
     }
 
     @Benchmark
-    public Object map_Add() {
-        return s1_s2.map(Exp.$int(0).add(Exp.$int(1)));
-    }
-
-    @Benchmark
-    public Object mapAsInt_Add() {
-        return s1.mapAsInt(i -> i + 10);
+    public Object locate() {
+        return s1.locate(s -> s.length() % 2 == 0);
     }
 }

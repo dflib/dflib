@@ -13,22 +13,22 @@ mvn package
 Run all benchmarks:
 
 ```bash
-java -jar target/dflib-benchmark.jar
+java -jar dflib-benchmark/target/dflib-benchmark.jar
 ```
 
 List available benchmarks:
 
 ```bash
-java -jar target/dflib-benchmark.jar -l
+java -jar dflib-benchmark/target/dflib-benchmark.jar -l
 ```
 
 Filter benchmarks to run:
 
 ```bash
-java -jar target/dflib-benchmark.jar [regexp]
+java -jar dflib-benchmark/target/dflib-benchmark.jar [regexp]
 ```
 
-### Comparision with Pandas
+### Comparison with Pandas
 
 Data set: 5 000 000 rows with 4 columns
 

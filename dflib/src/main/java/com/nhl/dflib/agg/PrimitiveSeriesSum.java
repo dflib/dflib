@@ -45,6 +45,50 @@ public class PrimitiveSeriesSum {
         return cumSum;
     }
 
+    /**
+     * @since 0.19
+     */
+    public static long[] cumSumOfValue(int val, int len) {
+
+        long[] cumSum = new long[len];
+
+        for (int i = 0; i < len; i++) {
+            cumSum[i] = val * (i + 1);
+        }
+
+        return cumSum;
+    }
+
+    /**
+     * @since 0.19
+     */
+    public static long[] cumSumOfValue(long val, int len) {
+
+        long[] cumSum = new long[len];
+
+        for (int i = 0; i < len; i++) {
+            cumSum[i] = val * (i + 1);
+        }
+
+        return cumSum;
+    }
+
+    /**
+     * @since 0.19
+     */
+    public static double[] cumSumOfValue(double val, int len) {
+
+        // TODO: deal with rounding errors...
+
+        double[] cumSum = new double[len];
+
+        for (int i = 0; i < len; i++) {
+            cumSum[i] = val * (i + 1);
+        }
+
+        return cumSum;
+    }
+
     public static long sumOfArray(int[] ints, int start, int len) {
 
         long s = 0;

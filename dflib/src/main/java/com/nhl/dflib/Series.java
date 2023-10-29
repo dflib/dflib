@@ -1,10 +1,6 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.agg.SeriesAggregator;
-import com.nhl.dflib.builder.BoolAccum;
-import com.nhl.dflib.builder.DoubleAccum;
-import com.nhl.dflib.builder.IntAccum;
-import com.nhl.dflib.builder.LongAccum;
 import com.nhl.dflib.builder.SeriesByElementBuilder;
 import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.BooleanArraySeries;
@@ -173,12 +169,13 @@ public interface Series<T> extends Iterable<T> {
      */
     default BooleanSeries mapAsBool(BoolValueMapper<? super T> converter) {
         int len = size();
-        BoolAccum a = new BoolAccum(len);
+
+        boolean[] data = new boolean[len];
         for (int i = 0; i < len; i++) {
-            a.pushBool(converter.map(get(i)));
+            data[i] = converter.map(get(i));
         }
 
-        return a.toSeries();
+        return new BooleanArraySeries(data);
     }
 
     /**
@@ -188,12 +185,13 @@ public interface Series<T> extends Iterable<T> {
      */
     default IntSeries mapAsInt(IntValueMapper<? super T> converter) {
         int len = size();
-        IntAccum a = new IntAccum(len);
+
+        int[] data = new int[len];
         for (int i = 0; i < len; i++) {
-            a.pushInt(converter.map(get(i)));
+            data[i] = converter.map(get(i));
         }
 
-        return a.toSeries();
+        return new IntArraySeries(data);
     }
 
     /**
@@ -203,12 +201,12 @@ public interface Series<T> extends Iterable<T> {
      */
     default LongSeries mapAsLong(LongValueMapper<? super T> converter) {
         int len = size();
-        LongAccum a = new LongAccum(len);
+        long[] data = new long[len];
         for (int i = 0; i < len; i++) {
-            a.pushLong(converter.map(get(i)));
+            data[i] = converter.map(get(i));
         }
 
-        return a.toSeries();
+        return new LongArraySeries(data);
     }
 
     /**
@@ -218,12 +216,12 @@ public interface Series<T> extends Iterable<T> {
      */
     default DoubleSeries mapAsDouble(DoubleValueMapper<? super T> converter) {
         int len = size();
-        DoubleAccum a = new DoubleAccum(len);
+        double[] data = new double[len];
         for (int i = 0; i < len; i++) {
-            a.pushDouble(converter.map(get(i)));
+            data[i] = converter.map(get(i));
         }
 
-        return a.toSeries();
+        return new DoubleArraySeries(data);
     }
 
     /**
@@ -436,7 +434,20 @@ public interface Series<T> extends Iterable<T> {
      * the predicate.
      * @since 0.6
      */
-    BooleanSeries locate(ValuePredicate<T> predicate);
+    default BooleanSeries locate(ValuePredicate<T> predicate) {
+
+        // even for primitive Series it is slightly faster to implement "locate" directly than delegating
+        // to "locateXyz", because the predicate signature requires primitive boxing
+
+        int len = size();
+        boolean[] matches = new boolean[len];
+
+        for (int i = 0; i < len; i++) {
+            matches[i] = predicate.test(get(i));
+        }
+
+        return new BooleanArraySeries(matches);
+    }
 
     /**
      * @param condition a BooleanSeries that determines which cells need to be replaced.

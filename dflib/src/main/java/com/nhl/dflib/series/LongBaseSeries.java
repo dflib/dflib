@@ -106,6 +106,10 @@ public abstract class LongBaseSeries implements LongSeries {
 
         // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
         // buffer to the actual size when creating the result.
+
+        // Replacing the Accum with a long[] gives very little performance gain, presumably due to the need for another
+        // loop index, that does not allow HotSpot to vectorize the loop. So keeping the Accum.
+
         LongAccum filtered = new LongAccum(len);
 
         for (int i = 0; i < len; i++) {
@@ -282,11 +286,6 @@ public abstract class LongBaseSeries implements LongSeries {
         }
 
         return matches.toSeries();
-    }
-
-    @Override
-    public BooleanSeries locate(ValuePredicate<Long> predicate) {
-        return locateLong(predicate::test);
     }
 
     @Override

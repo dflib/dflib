@@ -86,6 +86,10 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
         // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
         // buffer to the actual size when creating the result.
+
+        // Replacing the Accum with a boolean[] gives very little performance gain, presumably due to the need for another
+        // loop index, that does not allow HotSpot to vectorize the loop. So keeping the Accum.
+
         BoolAccum filtered = new BoolAccum(len);
 
         for (int i = 0; i < len; i++) {
@@ -256,19 +260,6 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         }
 
         return index.toSeries();
-    }
-
-    @Override
-    public BooleanSeries locate(ValuePredicate<Boolean> predicate) {
-        int len = size();
-
-        BoolAccum matches = new BoolAccum(len);
-
-        for (int i = 0; i < len; i++) {
-            matches.pushBool(predicate.test(get(i)));
-        }
-
-        return matches.toSeries();
     }
 
     @Override

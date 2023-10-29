@@ -1,7 +1,16 @@
 package com.nhl.dflib.series;
 
-import com.nhl.dflib.*;
-import com.nhl.dflib.builder.BoolAccum;
+import com.nhl.dflib.BooleanSeries;
+import com.nhl.dflib.Condition;
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Index;
+import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.Series;
+import com.nhl.dflib.SeriesGroupBy;
+import com.nhl.dflib.Sorter;
+import com.nhl.dflib.ValueMapper;
+import com.nhl.dflib.ValuePredicate;
+import com.nhl.dflib.ValueToRowMapper;
 import com.nhl.dflib.builder.IntAccum;
 import com.nhl.dflib.builder.ObjectAccum;
 import com.nhl.dflib.concat.SeriesConcat;
@@ -10,7 +19,13 @@ import com.nhl.dflib.map.Mapper;
 import com.nhl.dflib.sample.Sampler;
 import com.nhl.dflib.sort.SeriesSorter;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.Random;
+import java.util.Set;
 
 public abstract class ObjectSeries<T> implements Series<T> {
 
@@ -212,19 +227,6 @@ public abstract class ObjectSeries<T> implements Series<T> {
     }
 
     @Override
-    public BooleanSeries locate(ValuePredicate<T> predicate) {
-        int len = size();
-
-        BoolAccum matches = new BoolAccum(len);
-
-        for (int i = 0; i < len; i++) {
-            matches.pushBool(predicate.test(get(i)));
-        }
-
-        return matches.toSeries();
-    }
-
-    @Override
     public Series<T> replace(BooleanSeries condition, T with) {
         int s = size();
         int r = Math.min(s, condition.size());
@@ -268,12 +270,13 @@ public abstract class ObjectSeries<T> implements Series<T> {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BoolAccum bools = new BoolAccum(s);
+        boolean[] data = new boolean[s];
+
         for (int i = 0; i < s; i++) {
-            bools.pushBool(Objects.equals(get(i), another.get(i)));
+            data[i] = Objects.equals(get(i), another.get(i));
         }
 
-        return bools.toSeries();
+        return new BooleanArraySeries(data);
     }
 
     @Override
@@ -285,36 +288,36 @@ public abstract class ObjectSeries<T> implements Series<T> {
             throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
         }
 
-        BoolAccum bools = new BoolAccum(s);
+        boolean[] data = new boolean[s];
         for (int i = 0; i < s; i++) {
-            bools.pushBool(!Objects.equals(get(i), another.get(i)));
+            data[i] = !Objects.equals(get(i), another.get(i));
         }
 
-        return bools.toSeries();
+        return new BooleanArraySeries(data);
     }
 
     @Override
     public BooleanSeries isNull() {
         int s = size();
 
-        BoolAccum bools = new BoolAccum(s);
+        boolean[] data = new boolean[s];
         for (int i = 0; i < s; i++) {
-            bools.pushBool(get(i) == null);
+            data[i] = get(i) == null;
         }
 
-        return bools.toSeries();
+        return new BooleanArraySeries(data);
     }
 
     @Override
     public BooleanSeries isNotNull() {
         int s = size();
 
-        BoolAccum bools = new BoolAccum(s);
+        boolean[] data = new boolean[s];
         for (int i = 0; i < s; i++) {
-            bools.pushBool(get(i) != null);
+            data[i] = get(i) != null;
         }
 
-        return bools.toSeries();
+        return new BooleanArraySeries(data);
     }
 
     @Override
@@ -328,12 +331,12 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
         Set<?> set = new HashSet<>(Arrays.asList(values));
 
-        BoolAccum bools = new BoolAccum(s);
+        boolean[] data = new boolean[s];
         for (int i = 0; i < s; i++) {
-            bools.pushBool(set.contains(get(i)));
+            data[i] = set.contains(get(i));
         }
 
-        return bools.toSeries();
+        return new BooleanArraySeries(data);
     }
 
     @Override
@@ -347,12 +350,12 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
         Set<?> set = new HashSet<>(Arrays.asList(values));
 
-        BoolAccum bools = new BoolAccum(s);
+        boolean[] data = new boolean[s];
         for (int i = 0; i < s; i++) {
-            bools.pushBool(!set.contains(get(i)));
+            data[i] = !set.contains(get(i));
         }
 
-        return bools.toSeries();
+        return new BooleanArraySeries(data);
     }
 
     @Override

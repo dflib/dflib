@@ -8,6 +8,7 @@ import com.nhl.dflib.exp.agg.ExpAggregator;
 import com.nhl.dflib.exp.agg.StringAggregators;
 import com.nhl.dflib.exp.bool.AndCondition;
 import com.nhl.dflib.exp.bool.BoolColumn;
+import com.nhl.dflib.exp.bool.BoolConstExp;
 import com.nhl.dflib.exp.bool.ConditionFactory;
 import com.nhl.dflib.exp.bool.OrCondition;
 import com.nhl.dflib.exp.datetime.DateColumn;
@@ -30,8 +31,11 @@ import com.nhl.dflib.exp.map.MapExp1;
 import com.nhl.dflib.exp.map.MapExp2;
 import com.nhl.dflib.exp.num.DecimalColumn;
 import com.nhl.dflib.exp.num.DoubleColumn;
+import com.nhl.dflib.exp.num.DoubleConstExp;
 import com.nhl.dflib.exp.num.IntColumn;
+import com.nhl.dflib.exp.num.IntConstExp;
 import com.nhl.dflib.exp.num.LongColumn;
+import com.nhl.dflib.exp.num.LongConstExp;
 import com.nhl.dflib.exp.sort.ExpSorter;
 import com.nhl.dflib.exp.str.ConcatExp;
 import com.nhl.dflib.exp.str.StrColumn;
@@ -104,11 +108,18 @@ public interface Exp<T> {
      */
     static <T, V extends T> Exp<T> $val(V value, Class<T> type) {
 
-        // note that wrapping the value in primitive-optimized series has only very small effects on performance
-        // (slightly improves comparisons with primitive series, and slows down comparisons with object-wrapped numbers).
-        // So using the same "exp" for all values.
-
-        return new ConstExp<>(value, type);
+        // create primitive Series aware expressions for faster ops
+        if (Integer.class.equals(type) || Integer.TYPE.equals(type)) {
+            return (Exp<T>) new IntConstExp((Integer) value);
+        } else if (Long.class.equals(type) || Long.TYPE.equals(type)) {
+            return (Exp<T>) new LongConstExp((Long) value);
+        } else if (Double.class.equals(type) || Double.TYPE.equals(type)) {
+            return (Exp<T>) new DoubleConstExp((Double) value);
+        } else if (Boolean.class.equals(type) || Boolean.TYPE.equals(type)) {
+            return (Exp<T>) new BoolConstExp((Boolean) value);
+        } else {
+            return new ConstExp<>(value, type);
+        }
     }
 
     /**

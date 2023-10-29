@@ -1,8 +1,9 @@
 package com.nhl.dflib.benchmark.speed;
 
-import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.BooleanSeries;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.benchmark.ValueMaker;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -24,39 +25,57 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(2)
 @State(Scope.Thread)
-public class IntSeriesAdd {
+public class IntSeriesCompare {
 
     @Param("5000000")
     public int rows;
 
     private IntSeries s1;
     private IntSeries s2;
-    private DataFrame s1_s2;
+    private Series<Integer> s3;
+    private BooleanSeries odds;
 
     @Setup
     public void setUp() {
         s1 = ValueMaker.intSeq().intSeries(rows);
         s2 = ValueMaker.intSeq().intSeries(rows);
-        s1_s2 = DataFrame.byColumn("s1", "s2").of(s1, s2);
+        s3 = ValueMaker.intSeq().series(rows);
+        odds = ValueMaker.booleanSeq().booleanSeries(rows);
     }
 
     @Benchmark
-    public Object addSeries() {
-        return s1.add(s2);
+    public Object map_LEConst() {
+        return s1.map(Exp.$int(0).le(10_000));
     }
 
     @Benchmark
-    public Object map_AddConst() {
-        return s1.map(Exp.$int(0).add(10));
+    public Object select_LEConst() {
+        return s1.select(Exp.$int(0).le(1_000_000));
     }
 
     @Benchmark
-    public Object map_Add() {
-        return s1_s2.map(Exp.$int(0).add(Exp.$int(1)));
+    public Object select_BooleanPositions() {
+        return s1.select(odds);
     }
 
     @Benchmark
-    public Object mapAsInt_Add() {
-        return s1.mapAsInt(i -> i + 10);
+    public Object locatePredicate() {
+        // unboxing happens here
+        return s1.locate(i -> i < 1_000_000);
+    }
+
+    @Benchmark
+    public Object eqSeries() {
+        return s1.eq(s2);
+    }
+
+    @Benchmark
+    public Object leSeries() {
+        return s1.le(s2);
+    }
+
+    @Benchmark
+    public Object objectMap_LEConst() {
+        return s3.map(Exp.$int(0).le(10_000));
     }
 }

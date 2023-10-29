@@ -88,6 +88,10 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
 
         // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
         // buffer to the actual size when creating the result.
+
+        // Replacing the Accum with a double[] gives very little performance gain, presumably due to the need for another
+        // loop index, that does not allow HotSpot to vectorize the loop. So keeping the Accum.
+
         DoubleAccum filtered = new DoubleAccum(len);
 
         for (int i = 0; i < len; i++) {
@@ -282,11 +286,6 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         }
 
         return matches.toSeries();
-    }
-
-    @Override
-    public BooleanSeries locate(ValuePredicate<Double> predicate) {
-        return locateDouble(predicate::test);
     }
 
     @Override
