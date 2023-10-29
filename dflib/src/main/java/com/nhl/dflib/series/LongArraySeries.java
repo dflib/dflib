@@ -11,9 +11,9 @@ import com.nhl.dflib.agg.PrimitiveSeriesSum;
  */
 public class LongArraySeries extends LongBaseSeries {
 
-    private long[] data;
-    private int offset;
-    private int size;
+    private final long[] data;
+    private final int offset;
+    private final int size;
 
     public LongArraySeries(long... data) {
         this(data, 0, data.length);
