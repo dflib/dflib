@@ -262,41 +262,6 @@ public abstract class ObjectSeries<T> implements Series<T> {
     }
 
     @Override
-    public BooleanSeries eq(Series<?> another) {
-        int s = size();
-        int as = another.size();
-
-        if (s != as) {
-            throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
-        }
-
-        boolean[] data = new boolean[s];
-
-        for (int i = 0; i < s; i++) {
-            data[i] = Objects.equals(get(i), another.get(i));
-        }
-
-        return new BooleanArraySeries(data);
-    }
-
-    @Override
-    public BooleanSeries ne(Series<?> another) {
-        int s = size();
-        int as = another.size();
-
-        if (s != as) {
-            throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
-        }
-
-        boolean[] data = new boolean[s];
-        for (int i = 0; i < s; i++) {
-            data[i] = !Objects.equals(get(i), another.get(i));
-        }
-
-        return new BooleanArraySeries(data);
-    }
-
-    @Override
     public BooleanSeries isNull() {
         int s = size();
 

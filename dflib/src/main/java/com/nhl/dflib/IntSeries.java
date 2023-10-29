@@ -1,7 +1,6 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.builder.BoolAccum;
-import com.nhl.dflib.builder.IntAccum;
+import com.nhl.dflib.series.BooleanArraySeries;
 import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.sort.IntComparator;
 
@@ -247,13 +246,13 @@ public interface IntSeries extends Series<Integer> {
      */
     default IntSeries add(IntSeries s) {
         int len = size();
-        IntAccum accumulator = new IntAccum(len);
+        int[] data = new int[len];
 
         for (int i = 0; i < len; i++) {
-            accumulator.pushInt(this.getInt(i) + s.getInt(i));
+            data[i] = this.getInt(i) + s.getInt(i);
         }
 
-        return accumulator.toSeries();
+        return new IntArraySeries(data);
     }
 
     /**
@@ -263,13 +262,13 @@ public interface IntSeries extends Series<Integer> {
      */
     default IntSeries sub(IntSeries s) {
         int len = size();
-        IntAccum accumulator = new IntAccum(len);
+        int[] data = new int[len];
 
         for (int i = 0; i < len; i++) {
-            accumulator.pushInt(this.getInt(i) - s.getInt(i));
+            data[i] = this.getInt(i) - s.getInt(i);
         }
 
-        return accumulator.toSeries();
+        return new IntArraySeries(data);
     }
 
     /**
@@ -279,13 +278,13 @@ public interface IntSeries extends Series<Integer> {
      */
     default IntSeries mul(IntSeries s) {
         int len = size();
-        IntAccum accumulator = new IntAccum(len);
+        int[] data = new int[len];
 
         for (int i = 0; i < len; i++) {
-            accumulator.pushInt(this.getInt(i) * s.getInt(i));
+            data[i] = this.getInt(i) * s.getInt(i);
         }
 
-        return accumulator.toSeries();
+        return new IntArraySeries(data);
     }
 
     /**
@@ -295,13 +294,13 @@ public interface IntSeries extends Series<Integer> {
      */
     default IntSeries div(IntSeries s) {
         int len = size();
-        IntAccum accumulator = new IntAccum(len);
+        int[] data = new int[len];
 
         for (int i = 0; i < len; i++) {
-            accumulator.pushInt(this.getInt(i) / s.getInt(i));
+            data[i] = this.getInt(i) / s.getInt(i);
         }
 
-        return accumulator.toSeries();
+        return new IntArraySeries(data);
     }
 
     /**
@@ -311,13 +310,13 @@ public interface IntSeries extends Series<Integer> {
      */
     default IntSeries mod(IntSeries s) {
         int len = size();
-        IntAccum accumulator = new IntAccum(len);
+        int[] data = new int[len];
 
         for (int i = 0; i < len; i++) {
-            accumulator.pushInt(this.getInt(i) % s.getInt(i));
+            data[i] = this.getInt(i) % s.getInt(i);
         }
 
-        return accumulator.toSeries();
+        return new IntArraySeries(data);
     }
 
     /**
@@ -325,13 +324,13 @@ public interface IntSeries extends Series<Integer> {
      */
     default BooleanSeries lt(IntSeries s) {
         int len = size();
-        BoolAccum accumulator = new BoolAccum(len);
+        boolean[] data = new boolean[len];
 
         for (int i = 0; i < len; i++) {
-            accumulator.pushBool(this.getInt(i) < s.getInt(i));
+            data[i] = this.getInt(i) < s.getInt(i);
         }
 
-        return accumulator.toSeries();
+        return new BooleanArraySeries(data);
     }
 
     /**
@@ -339,13 +338,13 @@ public interface IntSeries extends Series<Integer> {
      */
     default BooleanSeries le(IntSeries s) {
         int len = size();
-        BoolAccum accumulator = new BoolAccum(len);
+        boolean[] data = new boolean[len];
 
         for (int i = 0; i < len; i++) {
-            accumulator.pushBool(this.getInt(i) <= s.getInt(i));
+            data[i] = this.getInt(i) <= s.getInt(i);
         }
 
-        return accumulator.toSeries();
+        return new BooleanArraySeries(data);
     }
 
     /**
@@ -353,13 +352,13 @@ public interface IntSeries extends Series<Integer> {
      */
     default BooleanSeries gt(IntSeries s) {
         int len = size();
-        BoolAccum accumulator = new BoolAccum(len);
+        boolean[] data = new boolean[len];
 
         for (int i = 0; i < len; i++) {
-            accumulator.pushBool(this.getInt(i) > s.getInt(i));
+            data[i] = this.getInt(i) > s.getInt(i);
         }
 
-        return accumulator.toSeries();
+        return new BooleanArraySeries(data);
     }
 
     /**
@@ -367,12 +366,12 @@ public interface IntSeries extends Series<Integer> {
      */
     default BooleanSeries ge(IntSeries s) {
         int len = size();
-        BoolAccum accumulator = new BoolAccum(len);
+        boolean[] data = new boolean[len];
 
         for (int i = 0; i < len; i++) {
-            accumulator.pushBool(this.getInt(i) >= s.getInt(i));
+            data[i] = this.getInt(i) >= s.getInt(i);
         }
 
-        return accumulator.toSeries();
+        return new BooleanArraySeries(data);
     }
 }

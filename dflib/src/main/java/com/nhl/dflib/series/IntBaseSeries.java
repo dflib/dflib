@@ -1,9 +1,18 @@
 package com.nhl.dflib.series;
 
-import com.nhl.dflib.*;
-import com.nhl.dflib.builder.BoolAccum;
+import com.nhl.dflib.BooleanSeries;
+import com.nhl.dflib.Condition;
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Index;
+import com.nhl.dflib.IntPredicate;
+import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.Series;
+import com.nhl.dflib.SeriesGroupBy;
+import com.nhl.dflib.Sorter;
+import com.nhl.dflib.ValueMapper;
+import com.nhl.dflib.ValuePredicate;
+import com.nhl.dflib.ValueToRowMapper;
 import com.nhl.dflib.builder.IntAccum;
-import com.nhl.dflib.builder.ObjectAccum;
 import com.nhl.dflib.builder.UniqueIntAccum;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
@@ -16,7 +25,6 @@ import com.nhl.dflib.sort.SeriesSorter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 
@@ -313,13 +321,13 @@ public abstract class IntBaseSeries implements IntSeries {
     public BooleanSeries locateInt(IntPredicate predicate) {
         int len = size();
 
-        BoolAccum matches = new BoolAccum(len);
+        boolean[] data = new boolean[len];
 
         for (int i = 0; i < len; i++) {
-            matches.pushBool(predicate.test(getInt(i)));
+            data[i] = predicate.test(getInt(i));
         }
 
-        return matches.toSeries();
+        return new BooleanArraySeries(data);
     }
 
     @Override
@@ -336,71 +344,71 @@ public abstract class IntBaseSeries implements IntSeries {
                 : nullifyNoMatch(condition);
     }
 
-    // TODO: make int versions of replace public?
-
     private IntSeries replaceInt(BooleanSeries condition, int with) {
-        int s = size();
-        int r = Math.min(s, condition.size());
-        IntAccum ints = new IntAccum(s);
+        int len = size();
+        int r = Math.min(len, condition.size());
+        int[] data = new int[len];
 
         for (int i = 0; i < r; i++) {
-            ints.pushInt(condition.getBool(i) ? with : getInt(i));
+            data[i] = condition.getBool(i) ? with : getInt(i);
         }
 
-        for (int i = r; i < s; i++) {
-            ints.pushInt(getInt(i));
+        for (int i = r; i < len; i++) {
+            data[i] = getInt(i);
         }
 
-        return ints.toSeries();
+        return new IntArraySeries(data);
     }
 
     private IntSeries replaceNoMatchInt(BooleanSeries condition, int with) {
 
-        int s = size();
-        int r = Math.min(s, condition.size());
-        IntAccum ints = new IntAccum(s);
+        int len = size();
+        int r = Math.min(len, condition.size());
+        int[] data = new int[len];
 
         for (int i = 0; i < r; i++) {
-            ints.pushInt(condition.getBool(i) ? getInt(i) : with);
+            data[i] = condition.getBool(i) ? getInt(i) : with;
         }
 
-        if (s > r) {
-            ints.fill(r, s, with);
+        if (len > r) {
+            Arrays.fill(data, r, len, with);
         }
 
-        return ints.toSeries();
+        return new IntArraySeries(data);
     }
 
     private Series<Integer> nullify(BooleanSeries condition) {
-        int s = size();
-        int r = Math.min(s, condition.size());
-        ObjectAccum<Integer> values = new ObjectAccum<>(s);
+        int len = size();
+        int r = Math.min(len, condition.size());
+        Integer[] data = new Integer[len];
 
+        // TODO: delay "data" allocation until at least one match is encountered. This gives a chance to return "this"
         for (int i = 0; i < r; i++) {
-            values.push(condition.getBool(i) ? null : getInt(i));
+            data[i] = condition.getBool(i) ? null : getInt(i);
         }
 
-        for (int i = r; i < s; i++) {
-            values.push(getInt(i));
+        for (int i = r; i < len; i++) {
+            data[i] = getInt(i);
         }
 
-        return values.toSeries();
+        return new ArraySeries<>(data);
     }
 
     private Series<Integer> nullifyNoMatch(BooleanSeries condition) {
-        int s = size();
-        int r = Math.min(s, condition.size());
-        ObjectAccum<Integer> values = new ObjectAccum<>(s);
+        int len = size();
+        int r = Math.min(len, condition.size());
+        Integer[] data = new Integer[len];
 
+        // TODO: delay "data" allocation until at least one no-match is encountered. This gives a chance to return "this"
         for (int i = 0; i < r; i++) {
-            values.push(condition.getBool(i) ? getInt(i) : null);
+            data[i] = condition.getBool(i) ? getInt(i) : null;
         }
 
-        if (s > r) {
-            values.fill(r, s, null);
+        if (len > r) {
+            Arrays.fill(data, r, len, null);
         }
 
-        return values.toSeries();
+        return new ArraySeries<>(data);
     }
 
     @Override
@@ -415,61 +423,53 @@ public abstract class IntBaseSeries implements IntSeries {
 
     @Override
     public BooleanSeries eq(Series<?> another) {
-        int s = size();
-        int as = another.size();
-
-        if (s != as) {
-            throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
+        if (!(another instanceof IntSeries)) {
+            return IntSeries.super.eq(another);
         }
 
-        BoolAccum bools = new BoolAccum(s);
-
-        if (another instanceof IntSeries) {
-            IntSeries anotherInt = (IntSeries) another;
-
-            for (int i = 0; i < s; i++) {
-                bools.pushBool(getInt(i) == anotherInt.getInt(i));
-            }
-        } else {
-            for (int i = 0; i < s; i++) {
-                bools.pushBool(Objects.equals(get(i), another.get(i)));
-            }
+        int len = size();
+        if (len != another.size()) {
+            throw new IllegalArgumentException("Another Series size " + another.size() + " is not the same as this size " + len);
         }
 
-        return bools.toSeries();
+        boolean[] data = new boolean[len];
+        IntSeries anotherInt = (IntSeries) another;
+
+        for (int i = 0; i < len; i++) {
+            data[i] = getInt(i) == anotherInt.getInt(i);
+        }
+
+        return new BooleanArraySeries(data);
     }
 
     @Override
     public BooleanSeries ne(Series<?> another) {
-        int s = size();
-        int as = another.size();
 
-        if (s != as) {
-            throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
+        if (!(another instanceof IntSeries)) {
+            return IntSeries.super.ne(another);
         }
 
-        BoolAccum bools = new BoolAccum(s);
-        if (another instanceof IntSeries) {
-            IntSeries anotherInt = (IntSeries) another;
-
-            for (int i = 0; i < s; i++) {
-                bools.pushBool(getInt(i) != anotherInt.getInt(i));
-            }
-        } else {
-            for (int i = 0; i < s; i++) {
-                bools.pushBool(!Objects.equals(get(i), another.get(i)));
-            }
+        int len = size();
+        if (len != another.size()) {
+            throw new IllegalArgumentException("Another Series size " + another.size() + " is not the same as this size " + len);
         }
 
-        return bools.toSeries();
+        boolean[] data = new boolean[len];
+        IntSeries anotherInt = (IntSeries) another;
+
+        for (int i = 0; i < len; i++) {
+            data[i] = getInt(i) != anotherInt.getInt(i);
+        }
+
+        return new BooleanArraySeries(data);
     }
 
     @Override
     public BooleanSeries in(Object... values) {
-        int s = size();
+        int len = size();
 
         if (values == null || values.length == 0) {
-            return new FalseSeries(s);
+            return new FalseSeries(len);
         }
 
         Set<Object> set = new HashSet<>();
@@ -481,23 +481,23 @@ public abstract class IntBaseSeries implements IntSeries {
         }
 
         if (set.isEmpty()) {
-            return new FalseSeries(s);
+            return new FalseSeries(len);
         }
 
-        BoolAccum bools = new BoolAccum(s);
-        for (int i = 0; i < s; i++) {
-            bools.pushBool(set.contains(get(i)));
+        boolean[] data = new boolean[len];
+        for (int i = 0; i < len; i++) {
+            data[i] = set.contains(get(i));
         }
 
-        return bools.toSeries();
+        return new BooleanArraySeries(data);
     }
 
     @Override
     public BooleanSeries notIn(Object... values) {
-        int s = size();
+        int len = size();
 
         if (values == null || values.length == 0) {
-            return new TrueSeries(s);
+            return new TrueSeries(len);
         }
 
         Set<Object> set = new HashSet<>();
@@ -509,15 +509,15 @@ public abstract class IntBaseSeries implements IntSeries {
         }
 
         if (set.isEmpty()) {
-            return new TrueSeries(s);
+            return new TrueSeries(len);
         }
 
-        BoolAccum bools = new BoolAccum(s);
-        for (int i = 0; i < s; i++) {
-            bools.pushBool(!set.contains(get(i)));
+        boolean[] data = new boolean[len];
+        for (int i = 0; i < len; i++) {
+            data[i] = !set.contains(get(i));
         }
 
-        return bools.toSeries();
+        return new BooleanArraySeries(data);
     }
 
     @Override

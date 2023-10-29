@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 
@@ -396,7 +397,21 @@ public interface Series<T> extends Iterable<T> {
      * another.
      * @since 0.6
      */
-    BooleanSeries eq(Series<?> another);
+    default BooleanSeries eq(Series<?> another) {
+        int len = size();
+
+        if (len != another.size()) {
+            throw new IllegalArgumentException("Another Series size " + another.size() + " is not the same as this size " + len);
+        }
+
+        boolean[] data = new boolean[len];
+
+        for (int i = 0; i < len; i++) {
+            data[i] = Objects.equals(get(i), another.get(i));
+        }
+
+        return new BooleanArraySeries(data);
+    }
 
     /**
      * @param another a Series to compare with.
@@ -404,7 +419,20 @@ public interface Series<T> extends Iterable<T> {
      * another.
      * @since 0.6
      */
-    BooleanSeries ne(Series<?> another);
+    default BooleanSeries ne(Series<?> another) {
+        int len = size();
+
+        if (len != another.size()) {
+            throw new IllegalArgumentException("Another Series size " + another.size() + " is not the same as this size " + len);
+        }
+
+        boolean[] data = new boolean[len];
+        for (int i = 0; i < len; i++) {
+            data[i] = !Objects.equals(get(i), another.get(i));
+        }
+
+        return new BooleanArraySeries(data);
+    }
 
     /**
      * @since 0.11
