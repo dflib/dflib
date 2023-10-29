@@ -91,9 +91,9 @@ public abstract class IntBaseSeries implements IntSeries {
             throw new IllegalArgumentException("Positions size " + ps + " is not the same as this size " + s);
         }
 
-        IntAccum data = new IntAccum();
+        IntAccum data = new IntAccum(s);
 
-        for (int i = 0; i < size(); i++) {
+        for (int i = 0; i < s; i++) {
             if (positions.getBool(i)) {
                 data.pushInt(getInt(i));
             }

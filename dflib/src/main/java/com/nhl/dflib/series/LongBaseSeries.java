@@ -87,9 +87,9 @@ public abstract class LongBaseSeries implements LongSeries {
             throw new IllegalArgumentException("Positions size " + ps + " is not the same as this size " + s);
         }
 
-        LongAccum data = new LongAccum();
+        LongAccum data = new LongAccum(s);
 
-        for (int i = 0; i < size(); i++) {
+        for (int i = 0; i < s; i++) {
             if (positions.getBool(i)) {
                 data.pushLong(getLong(i));
             }

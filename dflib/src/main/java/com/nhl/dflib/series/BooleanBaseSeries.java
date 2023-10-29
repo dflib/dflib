@@ -85,9 +85,9 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
             throw new IllegalArgumentException("Positions size " + ps + " is not the same as this size " + s);
         }
 
-        BoolAccum data = new BoolAccum();
+        BoolAccum data = new BoolAccum(s);
 
-        for (int i = 0; i < size(); i++) {
+        for (int i = 0; i < s; i++) {
             if (positions.getBool(i)) {
                 data.pushBool(getBool(i));
             }

@@ -87,9 +87,9 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
             throw new IllegalArgumentException("Positions size " + ps + " is not the same as this size " + s);
         }
 
-        DoubleAccum data = new DoubleAccum();
+        DoubleAccum data = new DoubleAccum(s);
 
-        for (int i = 0; i < size(); i++) {
+        for (int i = 0; i < s; i++) {
             if (positions.getBool(i)) {
                 data.pushDouble(getDouble(i));
             }
