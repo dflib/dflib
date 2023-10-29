@@ -20,8 +20,10 @@ public class IntSeries_AddTest {
 
     @Test
     public void testAdd_Series() {
-        IntSeries s0 = Series.ofInt(1, 2);
-        IntSeries s = Series.ofInt(3, 28).add(s0);
-        new SeriesAsserts(s).expectData(4, 30);
+
+        // using a longer series to test optional vectorization extensions
+        IntSeries s0 = Series.ofInt(1, 2, 3, 4, 5, 6);
+        IntSeries s = Series.ofInt(3, 28, 15, -4, 3, 11).add(s0);
+        new IntSeriesAsserts(s).expectData(4, 30, 18, 0, 8, 17);
     }
 }
