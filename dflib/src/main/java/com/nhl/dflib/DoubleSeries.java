@@ -1,8 +1,9 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.builder.BoolAccum;
-import com.nhl.dflib.builder.DoubleAccum;
+import com.nhl.dflib.series.BooleanArraySeries;
 import com.nhl.dflib.series.DoubleArraySeries;
+import com.nhl.dflib.series.FalseSeries;
+import com.nhl.dflib.series.TrueSeries;
 
 import java.util.Comparator;
 import java.util.Random;
@@ -167,6 +168,16 @@ public interface DoubleSeries extends Series<Double> {
     BooleanSeries locateDouble(DoublePredicate predicate);
 
     @Override
+    default BooleanSeries isNull() {
+        return new FalseSeries(size());
+    }
+
+    @Override
+    default BooleanSeries isNotNull() {
+        return new TrueSeries(size());
+    }
+
+    @Override
     DoubleSeries unique();
 
     /**
@@ -230,18 +241,64 @@ public interface DoubleSeries extends Series<Double> {
      */
     double median();
 
+    @Override
+    default BooleanSeries eq(Series<?> s) {
+        if (!(s instanceof DoubleSeries)) {
+            return Series.super.eq(s);
+        }
+
+        int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
+        boolean[] data = new boolean[len];
+        DoubleSeries as = (DoubleSeries) s;
+
+        for (int i = 0; i < len; i++) {
+            data[i] = getDouble(i) == as.getDouble(i);
+        }
+
+        return new BooleanArraySeries(data);
+    }
+
+    @Override
+    default BooleanSeries ne(Series<?> s) {
+        if (!(s instanceof DoubleSeries)) {
+            return Series.super.eq(s);
+        }
+
+        int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
+        boolean[] data = new boolean[len];
+        DoubleSeries as = (DoubleSeries) s;
+
+        for (int i = 0; i < len; i++) {
+            data[i] = getDouble(i) != as.getDouble(i);
+        }
+
+        return new BooleanArraySeries(data);
+    }
+
     /**
      * @since 0.11
      */
     default DoubleSeries add(DoubleSeries s) {
         int len = size();
-        DoubleAccum accumulator = new DoubleAccum(len);
-
-        for (int i = 0; i < len; i++) {
-            accumulator.pushDouble(this.getDouble(i) + s.getDouble(i));
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        return accumulator.toSeries();
+        double[] data = new double[len];
+
+        for (int i = 0; i < len; i++) {
+            data[i] = this.getDouble(i) + s.getDouble(i);
+        }
+
+        return new DoubleArraySeries(data);
     }
 
     /**
@@ -251,13 +308,17 @@ public interface DoubleSeries extends Series<Double> {
      */
     default DoubleSeries sub(DoubleSeries s) {
         int len = size();
-        DoubleAccum accumulator = new DoubleAccum(len);
-
-        for (int i = 0; i < len; i++) {
-            accumulator.pushDouble(this.getDouble(i) - s.getDouble(i));
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        return accumulator.toSeries();
+        double[] data = new double[len];
+
+        for (int i = 0; i < len; i++) {
+            data[i] = this.getDouble(i) - s.getDouble(i);
+        }
+
+        return new DoubleArraySeries(data);
     }
 
     /**
@@ -267,13 +328,17 @@ public interface DoubleSeries extends Series<Double> {
      */
     default DoubleSeries mul(DoubleSeries s) {
         int len = size();
-        DoubleAccum accumulator = new DoubleAccum(len);
-
-        for (int i = 0; i < len; i++) {
-            accumulator.pushDouble(this.getDouble(i) * s.getDouble(i));
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        return accumulator.toSeries();
+        double[] data = new double[len];
+
+        for (int i = 0; i < len; i++) {
+            data[i] = this.getDouble(i) * s.getDouble(i);
+        }
+
+        return new DoubleArraySeries(data);
     }
 
     /**
@@ -283,13 +348,17 @@ public interface DoubleSeries extends Series<Double> {
      */
     default DoubleSeries div(DoubleSeries s) {
         int len = size();
-        DoubleAccum accumulator = new DoubleAccum(len);
-
-        for (int i = 0; i < len; i++) {
-            accumulator.pushDouble(this.getDouble(i) / s.getDouble(i));
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        return accumulator.toSeries();
+        double[] data = new double[len];
+
+        for (int i = 0; i < len; i++) {
+            data[i] = this.getDouble(i) / s.getDouble(i);
+        }
+
+        return new DoubleArraySeries(data);
     }
 
     /**
@@ -297,13 +366,17 @@ public interface DoubleSeries extends Series<Double> {
      */
     default DoubleSeries mod(DoubleSeries s) {
         int len = size();
-        DoubleAccum accumulator = new DoubleAccum(len);
-
-        for (int i = 0; i < len; i++) {
-            accumulator.pushDouble(this.getDouble(i) % s.getDouble(i));
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        return accumulator.toSeries();
+        double[] data = new double[len];
+
+        for (int i = 0; i < len; i++) {
+            data[i] = this.getDouble(i) % s.getDouble(i);
+        }
+
+        return new DoubleArraySeries(data);
     }
 
     /**
@@ -311,13 +384,17 @@ public interface DoubleSeries extends Series<Double> {
      */
     default BooleanSeries lt(DoubleSeries s) {
         int len = size();
-        BoolAccum accumulator = new BoolAccum(len);
-
-        for (int i = 0; i < len; i++) {
-            accumulator.pushBool(this.getDouble(i) < s.getDouble(i));
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        return accumulator.toSeries();
+        boolean[] data = new boolean[len];
+
+        for (int i = 0; i < len; i++) {
+            data[i] = this.getDouble(i) < s.getDouble(i);
+        }
+
+        return new BooleanArraySeries(data);
     }
 
     /**
@@ -325,13 +402,17 @@ public interface DoubleSeries extends Series<Double> {
      */
     default BooleanSeries le(DoubleSeries s) {
         int len = size();
-        BoolAccum accumulator = new BoolAccum(len);
-
-        for (int i = 0; i < len; i++) {
-            accumulator.pushBool(this.getDouble(i) <= s.getDouble(i));
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        return accumulator.toSeries();
+        boolean[] data = new boolean[len];
+
+        for (int i = 0; i < len; i++) {
+            data[i] = this.getDouble(i) <= s.getDouble(i);
+        }
+
+        return new BooleanArraySeries(data);
     }
 
     /**
@@ -339,13 +420,17 @@ public interface DoubleSeries extends Series<Double> {
      */
     default BooleanSeries gt(DoubleSeries s) {
         int len = size();
-        BoolAccum accumulator = new BoolAccum(len);
-
-        for (int i = 0; i < len; i++) {
-            accumulator.pushBool(this.getDouble(i) > s.getDouble(i));
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        return accumulator.toSeries();
+        boolean[] data = new boolean[len];
+
+        for (int i = 0; i < len; i++) {
+            data[i] = this.getDouble(i) > s.getDouble(i);
+        }
+
+        return new BooleanArraySeries(data);
     }
 
     /**
@@ -353,12 +438,16 @@ public interface DoubleSeries extends Series<Double> {
      */
     default BooleanSeries ge(DoubleSeries s) {
         int len = size();
-        BoolAccum accumulator = new BoolAccum(len);
-
-        for (int i = 0; i < len; i++) {
-            accumulator.pushBool(this.getDouble(i) >= s.getDouble(i));
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        return accumulator.toSeries();
+        boolean[] data = new boolean[len];
+
+        for (int i = 0; i < len; i++) {
+            data[i] = this.getDouble(i) >= s.getDouble(i);
+        }
+
+        return new BooleanArraySeries(data);
     }
 }

@@ -1,10 +1,20 @@
 package com.nhl.dflib.series;
 
-import com.nhl.dflib.*;
-import com.nhl.dflib.builder.BoolAccum;
+import com.nhl.dflib.BooleanSeries;
+import com.nhl.dflib.Condition;
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.DoublePredicate;
+import com.nhl.dflib.DoubleSeries;
+import com.nhl.dflib.Index;
+import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.Series;
+import com.nhl.dflib.SeriesGroupBy;
+import com.nhl.dflib.Sorter;
+import com.nhl.dflib.ValueMapper;
+import com.nhl.dflib.ValuePredicate;
+import com.nhl.dflib.ValueToRowMapper;
 import com.nhl.dflib.builder.DoubleAccum;
 import com.nhl.dflib.builder.IntAccum;
-import com.nhl.dflib.builder.ObjectAccum;
 import com.nhl.dflib.builder.UniqueDoubleAccum;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
@@ -15,7 +25,6 @@ import com.nhl.dflib.sort.SeriesSorter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 
@@ -110,6 +119,9 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
 
         // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
         // buffer to the actual size when creating the result.
+
+        // Replacing Accum with a double[] gives very little performance gain, presumably due to the need for another
+        // loop index, that does not allow HotSpot to vectorize the loop. So keeping the Accum.
         DoubleAccum filtered = new DoubleAccum(len);
 
         for (int i = 0; i < len; i++) {
@@ -123,18 +135,6 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
-    public DoubleSeries sortDouble() {
-        int size = size();
-        double[] sorted = new double[size];
-        copyToDouble(sorted, 0, 0, size);
-
-        // TODO: use "parallelSort" ?
-        Arrays.sort(sorted);
-
-        return new DoubleArraySeries(sorted);
-    }
-
-    @Override
     public DoubleSeries sort(Sorter... sorters) {
         return selectAsDoubleSeries(new SeriesSorter<>(this).sortIndex(sorters));
     }
@@ -144,6 +144,18 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     @Override
     public DoubleSeries sort(Comparator<? super Double> comparator) {
         return selectAsDoubleSeries(new SeriesSorter<>(this).sortIndex(comparator));
+    }
+
+    @Override
+    public DoubleSeries sortDouble() {
+        int size = size();
+        double[] sorted = new double[size];
+        copyToDouble(sorted, 0, 0, size);
+
+        // TODO: use "parallelSort" ?
+        Arrays.sort(sorted);
+
+        return new DoubleArraySeries(sorted);
     }
 
     private DoubleSeries selectAsDoubleSeries(IntSeries positions) {
@@ -257,9 +269,12 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
 
     @Override
     public IntSeries indexDouble(DoublePredicate predicate) {
-        IntAccum index = new IntAccum();
 
         int len = size();
+
+        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
+        // buffer to the actual size when creating the result.
+        IntAccum index = new IntAccum(len);
 
         for (int i = 0; i < len; i++) {
             if (predicate.test(getDouble(i))) {
@@ -272,20 +287,36 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
 
     @Override
     public IntSeries index(ValuePredicate<Double> predicate) {
-        return indexDouble(predicate::test);
+
+        // reimplementing instead of calling "indexDouble", as it seems to be doing less (un)boxing and is about 13% faster
+        // as a result
+
+        int len = size();
+
+        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
+        // buffer to the actual size when creating the result.
+        IntAccum index = new IntAccum(len);
+
+        for (int i = 0; i < len; i++) {
+            if (predicate.test(get(i))) {
+                index.pushInt(i);
+            }
+        }
+
+        return index.toSeries();
     }
 
     @Override
     public BooleanSeries locateDouble(DoublePredicate predicate) {
         int len = size();
 
-        BoolAccum matches = new BoolAccum(len);
+        boolean[] data = new boolean[len];
 
         for (int i = 0; i < len; i++) {
-            matches.pushBool(predicate.test(getDouble(i)));
+            data[i] = predicate.test(getDouble(i));
         }
 
-        return matches.toSeries();
+        return new BooleanArraySeries(data);
     }
 
     @Override
@@ -305,127 +336,76 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     // TODO: make double versions of replace public?
 
     private DoubleSeries replaceDouble(BooleanSeries condition, double with) {
-        int s = size();
-        int r = Math.min(s, condition.size());
-        DoubleAccum doubles = new DoubleAccum(s);
+        int len = size();
+        int r = Math.min(len, condition.size());
+        double[] data = new double[len];
 
         for (int i = 0; i < r; i++) {
-            doubles.pushDouble(condition.getBool(i) ? with : getDouble(i));
+            data[i] = condition.getBool(i) ? with : getDouble(i);
         }
 
-        for (int i = r; i < s; i++) {
-            doubles.pushDouble(getDouble(i));
+        for (int i = r; i < len; i++) {
+            data[i] = getDouble(i);
         }
 
-        return doubles.toSeries();
+        return new DoubleArraySeries(data);
     }
 
     private DoubleSeries replaceNoMatchDouble(BooleanSeries condition, double with) {
 
-        int s = size();
-        int r = Math.min(s, condition.size());
-        DoubleAccum doubles = new DoubleAccum(s);
+        int len = size();
+        int r = Math.min(len, condition.size());
+        double[] data = new double[len];
 
         for (int i = 0; i < r; i++) {
-            doubles.pushDouble(condition.getBool(i) ? getDouble(i) : with);
+            data[i] = condition.getBool(i) ? getDouble(i) : with;
         }
 
-        if (s > r) {
-            doubles.fill(r, s, with);
+        if (len > r) {
+            Arrays.fill(data, r, len, with);
         }
 
-        return doubles.toSeries();
+        return new DoubleArraySeries(data);
     }
 
     private Series<Double> nullify(BooleanSeries condition) {
-        int s = size();
-        int r = Math.min(s, condition.size());
-        ObjectAccum<Double> values = new ObjectAccum<>(s);
+        int len = size();
+        int r = Math.min(len, condition.size());
+        Double[] data = new Double[len];
 
         for (int i = 0; i < r; i++) {
-            values.push(condition.getBool(i) ? null : getDouble(i));
+            data[i] = condition.getBool(i) ? null : getDouble(i);
         }
 
-        for (int i = r; i < s; i++) {
-            values.push(getDouble(i));
+        for (int i = r; i < len; i++) {
+            data[i] = getDouble(i);
         }
 
-        return values.toSeries();
+        return new ArraySeries<>(data);
     }
 
     private Series<Double> nullifyNoMatch(BooleanSeries condition) {
-        int s = size();
-        int r = Math.min(s, condition.size());
-        ObjectAccum<Double> values = new ObjectAccum<>(s);
+        int len = size();
+        int r = Math.min(len, condition.size());
+        Double[] data = new Double[len];
 
         for (int i = 0; i < r; i++) {
-            values.push(condition.getBool(i) ? getDouble(i) : null);
+            data[i] = condition.getBool(i) ? getDouble(i) : null;
         }
 
-        if (s > r) {
-            values.fill(r, s, null);
+        if (len > r) {
+            Arrays.fill(data, r, len, null);
         }
 
-        return values.toSeries();
-    }
-
-    @Override
-    public BooleanSeries eq(Series<?> another) {
-        int s = size();
-        int as = another.size();
-
-        if (s != as) {
-            throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
-        }
-
-        BoolAccum bools = new BoolAccum(s);
-
-        if (another instanceof DoubleSeries) {
-            DoubleSeries anotherDouble = (DoubleSeries) another;
-
-            for (int i = 0; i < s; i++) {
-                bools.pushBool(getDouble(i) == anotherDouble.getDouble(i));
-            }
-        } else {
-            for (int i = 0; i < s; i++) {
-                bools.pushBool(Objects.equals(get(i), another.get(i)));
-            }
-        }
-
-        return bools.toSeries();
-    }
-
-    @Override
-    public BooleanSeries ne(Series<?> another) {
-        int s = size();
-        int as = another.size();
-
-        if (s != as) {
-            throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
-        }
-
-        BoolAccum bools = new BoolAccum(s);
-        if (another instanceof DoubleSeries) {
-            DoubleSeries anotherDouble = (DoubleSeries) another;
-
-            for (int i = 0; i < s; i++) {
-                bools.pushBool(getDouble(i) != anotherDouble.getDouble(i));
-            }
-        } else {
-            for (int i = 0; i < s; i++) {
-                bools.pushBool(!Objects.equals(get(i), another.get(i)));
-            }
-        }
-
-        return bools.toSeries();
+        return new ArraySeries<>(data);
     }
 
     @Override
     public BooleanSeries in(Object... values) {
-        int s = size();
+        int len = size();
 
         if (values == null || values.length == 0) {
-            return new FalseSeries(s);
+            return new FalseSeries(len);
         }
 
         Set<Object> set = new HashSet<>();
@@ -437,23 +417,23 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         }
 
         if (set.isEmpty()) {
-            return new FalseSeries(s);
+            return new FalseSeries(len);
         }
 
-        BoolAccum bools = new BoolAccum(s);
-        for (int i = 0; i < s; i++) {
-            bools.pushBool(set.contains(get(i)));
+        boolean[] data = new boolean[len];
+        for (int i = 0; i < len; i++) {
+            data[i] = set.contains(get(i));
         }
 
-        return bools.toSeries();
+        return new BooleanArraySeries(data);
     }
 
     @Override
     public BooleanSeries notIn(Object... values) {
-        int s = size();
+        int len = size();
 
         if (values == null || values.length == 0) {
-            return new TrueSeries(s);
+            return new TrueSeries(len);
         }
 
         Set<Object> set = new HashSet<>();
@@ -465,25 +445,15 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         }
 
         if (set.isEmpty()) {
-            return new TrueSeries(s);
+            return new TrueSeries(len);
         }
 
-        BoolAccum bools = new BoolAccum(s);
-        for (int i = 0; i < s; i++) {
-            bools.pushBool(!set.contains(get(i)));
+        boolean[] data = new boolean[len];
+        for (int i = 0; i < len; i++) {
+            data[i] = !set.contains(get(i));
         }
 
-        return bools.toSeries();
-    }
-
-    @Override
-    public BooleanSeries isNull() {
-        return new FalseSeries(size());
-    }
-
-    @Override
-    public BooleanSeries isNotNull() {
-        return new TrueSeries(size());
+        return new BooleanArraySeries(data);
     }
 
     @Override

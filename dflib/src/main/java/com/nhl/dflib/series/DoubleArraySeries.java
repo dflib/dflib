@@ -33,6 +33,191 @@ public class DoubleArraySeries extends DoubleBaseSeries {
     }
 
     @Override
+    public DoubleSeries add(DoubleSeries s) {
+        if (!(s instanceof DoubleArraySeries)) {
+            return super.add(s);
+        }
+
+        int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
+        DoubleArraySeries as = (DoubleArraySeries) s;
+
+        // storing ivars in the local vars for performance
+        double[] l = this.data;
+        double[] r = as.data;
+
+        int lo = this.offset;
+        int ro = as.offset;
+
+        double[] data = new double[len];
+
+        if (lo > 0 || ro > 0) {
+            for (int i = 0; i < len; i++) {
+                data[i] = l[lo + i] + r[ro + i];
+            }
+        } else {
+            // not having to calculate offset (the most common case) results in a performance boost
+            // (due to HotSpot vectorization?)
+            for (int i = 0; i < len; i++) {
+                data[i] = l[i] + r[i];
+            }
+        }
+
+        return new DoubleArraySeries(data);
+    }
+
+    @Override
+    public DoubleSeries sub(DoubleSeries s) {
+        if (!(s instanceof DoubleArraySeries)) {
+            return super.add(s);
+        }
+
+        int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
+        DoubleArraySeries as = (DoubleArraySeries) s;
+
+        // storing ivars in the local vars for performance
+        double[] l = this.data;
+        double[] r = as.data;
+
+        int lo = this.offset;
+        int ro = as.offset;
+
+        double[] data = new double[len];
+
+        if (lo > 0 || ro > 0) {
+            for (int i = 0; i < len; i++) {
+                data[i] = l[lo + i] - r[ro + i];
+            }
+        } else {
+            // not having to calculate offset (the most common case) results in a performance boost
+            // (due to HotSpot vectorization?)
+            for (int i = 0; i < len; i++) {
+                data[i] = l[i] - r[i];
+            }
+        }
+
+        return new DoubleArraySeries(data);
+    }
+
+    @Override
+    public DoubleSeries mul(DoubleSeries s) {
+        if (!(s instanceof DoubleArraySeries)) {
+            return super.add(s);
+        }
+
+        int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
+        DoubleArraySeries as = (DoubleArraySeries) s;
+
+        // storing ivars in the local vars for performance
+        double[] l = this.data;
+        double[] r = as.data;
+
+        int lo = this.offset;
+        int ro = as.offset;
+
+        double[] data = new double[len];
+
+        if (lo > 0 || ro > 0) {
+            for (int i = 0; i < len; i++) {
+                data[i] = l[lo + i] * r[ro + i];
+            }
+        } else {
+            // not having to calculate offset (the most common case) results in a performance boost
+            // (due to HotSpot vectorization?)
+            for (int i = 0; i < len; i++) {
+                data[i] = l[i] * r[i];
+            }
+        }
+
+        return new DoubleArraySeries(data);
+    }
+
+    @Override
+    public DoubleSeries div(DoubleSeries s) {
+        if (!(s instanceof DoubleArraySeries)) {
+            return super.add(s);
+        }
+
+        int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
+        DoubleArraySeries as = (DoubleArraySeries) s;
+
+        // storing ivars in the local vars for performance
+        double[] l = this.data;
+        double[] r = as.data;
+
+        int lo = this.offset;
+        int ro = as.offset;
+
+        double[] data = new double[len];
+
+        if (lo > 0 || ro > 0) {
+            for (int i = 0; i < len; i++) {
+                data[i] = l[lo + i] / r[ro + i];
+            }
+        } else {
+            // not having to calculate offset (the most common case) results in a performance boost
+            // (due to HotSpot vectorization?)
+            for (int i = 0; i < len; i++) {
+                data[i] = l[i] / r[i];
+            }
+        }
+
+        return new DoubleArraySeries(data);
+    }
+
+    @Override
+    public DoubleSeries mod(DoubleSeries s) {
+        if (!(s instanceof DoubleArraySeries)) {
+            return super.add(s);
+        }
+
+        int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
+        DoubleArraySeries as = (DoubleArraySeries) s;
+
+        // storing ivars in the local vars for performance
+        double[] l = this.data;
+        double[] r = as.data;
+
+        int lo = this.offset;
+        int ro = as.offset;
+
+        double[] data = new double[len];
+
+        if (lo > 0 || ro > 0) {
+            for (int i = 0; i < len; i++) {
+                data[i] = l[lo + i] % r[ro + i];
+            }
+        } else {
+            // not having to calculate offset (the most common case) results in a performance boost
+            // (due to HotSpot vectorization?)
+            for (int i = 0; i < len; i++) {
+                data[i] = l[i] % r[i];
+            }
+        }
+
+        return new DoubleArraySeries(data);
+    }
+
+    @Override
     public double getDouble(int index) {
         if (index >= size) {
             throw new ArrayIndexOutOfBoundsException(index);
