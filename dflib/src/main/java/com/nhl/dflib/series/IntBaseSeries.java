@@ -299,9 +299,12 @@ public abstract class IntBaseSeries implements IntSeries {
 
     @Override
     public IntSeries indexInt(IntPredicate predicate) {
-        IntAccum index = new IntAccum();
 
         int len = size();
+
+        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
+        // buffer to the actual size when creating the result.
+        IntAccum index = new IntAccum(len);
 
         for (int i = 0; i < len; i++) {
             if (predicate.test(getInt(i))) {
@@ -314,7 +317,23 @@ public abstract class IntBaseSeries implements IntSeries {
 
     @Override
     public IntSeries index(ValuePredicate<Integer> predicate) {
-        return indexInt(predicate::test);
+
+        // reimplementing instead of calling "indexInt", as it seems to be doing less (un)boxing and is about 13% faster
+        // as a result
+        
+        int len = size();
+
+        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
+        // buffer to the actual size when creating the result.
+        IntAccum index = new IntAccum(len);
+
+        for (int i = 0; i < len; i++) {
+            if (predicate.test(get(i))) {
+                index.pushInt(i);
+            }
+        }
+
+        return index.toSeries();
     }
 
     @Override

@@ -213,9 +213,12 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
     @Override
     public IntSeries index(ValuePredicate<T> predicate) {
-        IntAccum index = new IntAccum();
 
         int len = size();
+
+        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
+        // buffer to the actual size when creating the result.
+        IntAccum index = new IntAccum(len);
 
         for (int i = 0; i < len; i++) {
             if (predicate.test(get(i))) {
