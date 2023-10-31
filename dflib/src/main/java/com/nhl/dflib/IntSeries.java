@@ -1,7 +1,9 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.series.BooleanArraySeries;
+import com.nhl.dflib.series.FalseSeries;
 import com.nhl.dflib.series.IntArraySeries;
+import com.nhl.dflib.series.TrueSeries;
 import com.nhl.dflib.sort.IntComparator;
 
 import java.util.Comparator;
@@ -177,6 +179,16 @@ public interface IntSeries extends Series<Integer> {
     IntSeries indexInt(IntPredicate predicate);
 
     BooleanSeries locateInt(IntPredicate predicate);
+
+    @Override
+    default BooleanSeries isNull() {
+        return new FalseSeries(size());
+    }
+
+    @Override
+    default BooleanSeries isNotNull() {
+        return new TrueSeries(size());
+    }
 
     @Override
     IntSeries unique();
@@ -386,6 +398,10 @@ public interface IntSeries extends Series<Integer> {
      */
     default BooleanSeries lt(IntSeries s) {
         int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
         boolean[] data = new boolean[len];
 
         for (int i = 0; i < len; i++) {
@@ -400,6 +416,10 @@ public interface IntSeries extends Series<Integer> {
      */
     default BooleanSeries le(IntSeries s) {
         int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
         boolean[] data = new boolean[len];
 
         for (int i = 0; i < len; i++) {
@@ -414,6 +434,10 @@ public interface IntSeries extends Series<Integer> {
      */
     default BooleanSeries gt(IntSeries s) {
         int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
         boolean[] data = new boolean[len];
 
         for (int i = 0; i < len; i++) {
@@ -428,6 +452,10 @@ public interface IntSeries extends Series<Integer> {
      */
     default BooleanSeries ge(IntSeries s) {
         int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
         boolean[] data = new boolean[len];
 
         for (int i = 0; i < len; i++) {
