@@ -1,8 +1,9 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.builder.BoolAccum;
-import com.nhl.dflib.builder.LongAccum;
+import com.nhl.dflib.series.BooleanArraySeries;
+import com.nhl.dflib.series.FalseSeries;
 import com.nhl.dflib.series.LongArraySeries;
+import com.nhl.dflib.series.TrueSeries;
 
 import java.util.Comparator;
 import java.util.Random;
@@ -167,6 +168,16 @@ public interface LongSeries extends Series<Long> {
     BooleanSeries locateLong(LongPredicate predicate);
 
     @Override
+    default BooleanSeries isNull() {
+        return new FalseSeries(size());
+    }
+
+    @Override
+    default BooleanSeries isNotNull() {
+        return new TrueSeries(size());
+    }
+
+    @Override
     LongSeries unique();
 
     /**
@@ -231,18 +242,64 @@ public interface LongSeries extends Series<Long> {
      */
     double median();
 
+    @Override
+    default BooleanSeries eq(Series<?> s) {
+        if (!(s instanceof LongSeries)) {
+            return Series.super.eq(s);
+        }
+
+        int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
+        boolean[] data = new boolean[len];
+        LongSeries anotherInt = (LongSeries) s;
+
+        for (int i = 0; i < len; i++) {
+            data[i] = getLong(i) == anotherInt.getLong(i);
+        }
+
+        return new BooleanArraySeries(data);
+    }
+
+    @Override
+    default BooleanSeries ne(Series<?> s) {
+        if (!(s instanceof LongSeries)) {
+            return Series.super.eq(s);
+        }
+
+        int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
+        boolean[] data = new boolean[len];
+        LongSeries anotherInt = (LongSeries) s;
+
+        for (int i = 0; i < len; i++) {
+            data[i] = getLong(i) != anotherInt.getLong(i);
+        }
+
+        return new BooleanArraySeries(data);
+    }
+
     /**
      * @since 0.11
      */
     default LongSeries add(LongSeries s) {
         int len = size();
-        LongAccum accumulator = new LongAccum(len);
-
-        for (int i = 0; i < len; i++) {
-            accumulator.pushLong(this.getLong(i) + s.getLong(i));
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        return accumulator.toSeries();
+        long[] data = new long[len];
+
+        for (int i = 0; i < len; i++) {
+            data[i] = this.getLong(i) + s.getLong(i);
+        }
+
+        return new LongArraySeries(data);
     }
 
     /**
@@ -252,13 +309,17 @@ public interface LongSeries extends Series<Long> {
      */
     default LongSeries sub(LongSeries s) {
         int len = size();
-        LongAccum accumulator = new LongAccum(len);
-
-        for (int i = 0; i < len; i++) {
-            accumulator.pushLong(this.getLong(i) - s.getLong(i));
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        return accumulator.toSeries();
+        long[] data = new long[len];
+
+        for (int i = 0; i < len; i++) {
+            data[i] = this.getLong(i) - s.getLong(i);
+        }
+
+        return new LongArraySeries(data);
     }
 
     /**
@@ -268,13 +329,17 @@ public interface LongSeries extends Series<Long> {
      */
     default LongSeries mul(LongSeries s) {
         int len = size();
-        LongAccum accumulator = new LongAccum(len);
-
-        for (int i = 0; i < len; i++) {
-            accumulator.pushLong(this.getLong(i) * s.getLong(i));
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        return accumulator.toSeries();
+        long[] data = new long[len];
+
+        for (int i = 0; i < len; i++) {
+            data[i] = this.getLong(i) * s.getLong(i);
+        }
+
+        return new LongArraySeries(data);
     }
 
     /**
@@ -284,13 +349,17 @@ public interface LongSeries extends Series<Long> {
      */
     default LongSeries div(LongSeries s) {
         int len = size();
-        LongAccum accumulator = new LongAccum(len);
-
-        for (int i = 0; i < len; i++) {
-            accumulator.pushLong(this.getLong(i) / s.getLong(i));
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        return accumulator.toSeries();
+        long[] data = new long[len];
+
+        for (int i = 0; i < len; i++) {
+            data[i] = this.getLong(i) / s.getLong(i);
+        }
+
+        return new LongArraySeries(data);
     }
 
     /**
@@ -300,28 +369,35 @@ public interface LongSeries extends Series<Long> {
      */
     default LongSeries mod(LongSeries s) {
         int len = size();
-        LongAccum accumulator = new LongAccum(len);
-
-        for (int i = 0; i < len; i++) {
-            accumulator.pushLong(this.getLong(i) % s.getLong(i));
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        return accumulator.toSeries();
-    }
+        long[] data = new long[len];
 
+        for (int i = 0; i < len; i++) {
+            data[i] = this.getLong(i) % s.getLong(i);
+        }
+
+        return new LongArraySeries(data);
+    }
 
     /**
      * @since 0.11
      */
     default BooleanSeries lt(LongSeries s) {
         int len = size();
-        BoolAccum accumulator = new BoolAccum(len);
-
-        for (int i = 0; i < len; i++) {
-            accumulator.pushBool(this.getLong(i) < s.getLong(i));
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        return accumulator.toSeries();
+        boolean[] data = new boolean[len];
+
+        for (int i = 0; i < len; i++) {
+            data[i] = this.getLong(i) < s.getLong(i);
+        }
+
+        return new BooleanArraySeries(data);
     }
 
     /**
@@ -329,13 +405,17 @@ public interface LongSeries extends Series<Long> {
      */
     default BooleanSeries le(LongSeries s) {
         int len = size();
-        BoolAccum accumulator = new BoolAccum(len);
-
-        for (int i = 0; i < len; i++) {
-            accumulator.pushBool(this.getLong(i) <= s.getLong(i));
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        return accumulator.toSeries();
+        boolean[] data = new boolean[len];
+
+        for (int i = 0; i < len; i++) {
+            data[i] = this.getLong(i) <= s.getLong(i);
+        }
+
+        return new BooleanArraySeries(data);
     }
 
     /**
@@ -343,13 +423,17 @@ public interface LongSeries extends Series<Long> {
      */
     default BooleanSeries gt(LongSeries s) {
         int len = size();
-        BoolAccum accumulator = new BoolAccum(len);
-
-        for (int i = 0; i < len; i++) {
-            accumulator.pushBool(this.getLong(i) > s.getLong(i));
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        return accumulator.toSeries();
+        boolean[] data = new boolean[len];
+
+        for (int i = 0; i < len; i++) {
+            data[i] = this.getLong(i) > s.getLong(i);
+        }
+
+        return new BooleanArraySeries(data);
     }
 
     /**
@@ -357,12 +441,16 @@ public interface LongSeries extends Series<Long> {
      */
     default BooleanSeries ge(LongSeries s) {
         int len = size();
-        BoolAccum accumulator = new BoolAccum(len);
-
-        for (int i = 0; i < len; i++) {
-            accumulator.pushBool(this.getLong(i) >= s.getLong(i));
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        return accumulator.toSeries();
+        boolean[] data = new boolean[len];
+
+        for (int i = 0; i < len; i++) {
+            data[i] = this.getLong(i) >= s.getLong(i);
+        }
+
+        return new BooleanArraySeries(data);
     }
 }

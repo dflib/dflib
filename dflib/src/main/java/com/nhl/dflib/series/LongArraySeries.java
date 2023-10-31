@@ -31,6 +31,191 @@ public class LongArraySeries extends LongBaseSeries {
     }
 
     @Override
+    public LongSeries add(LongSeries s) {
+        if (!(s instanceof LongArraySeries)) {
+            return super.add(s);
+        }
+
+        int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
+        LongArraySeries as = (LongArraySeries) s;
+
+        // storing ivars in the local vars for performance
+        long[] l = this.data;
+        long[] r = as.data;
+
+        int lo = this.offset;
+        int ro = as.offset;
+
+        long[] data = new long[len];
+
+        if (lo > 0 || ro > 0) {
+            for (int i = 0; i < len; i++) {
+                data[i] = l[lo + i] + r[ro + i];
+            }
+        } else {
+            // not having to calculate offset (the most common case) results in a performance boost
+            // (due to HotSpot vectorization?)
+            for (int i = 0; i < len; i++) {
+                data[i] = l[i] + r[i];
+            }
+        }
+
+        return new LongArraySeries(data);
+    }
+
+    @Override
+    public LongSeries sub(LongSeries s) {
+        if (!(s instanceof LongArraySeries)) {
+            return super.add(s);
+        }
+
+        int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
+        LongArraySeries as = (LongArraySeries) s;
+
+        // storing ivars in the local vars for performance
+        long[] l = this.data;
+        long[] r = as.data;
+
+        int lo = this.offset;
+        int ro = as.offset;
+
+        long[] data = new long[len];
+
+        if (lo > 0 || ro > 0) {
+            for (int i = 0; i < len; i++) {
+                data[i] = l[lo + i] - r[ro + i];
+            }
+        } else {
+            // not having to calculate offset (the most common case) results in a performance boost
+            // (due to HotSpot vectorization?)
+            for (int i = 0; i < len; i++) {
+                data[i] = l[i] - r[i];
+            }
+        }
+
+        return new LongArraySeries(data);
+    }
+
+    @Override
+    public LongSeries mul(LongSeries s) {
+        if (!(s instanceof LongArraySeries)) {
+            return super.add(s);
+        }
+
+        int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
+        LongArraySeries as = (LongArraySeries) s;
+
+        // storing ivars in the local vars for performance
+        long[] l = this.data;
+        long[] r = as.data;
+
+        int lo = this.offset;
+        int ro = as.offset;
+
+        long[] data = new long[len];
+
+        if (lo > 0 || ro > 0) {
+            for (int i = 0; i < len; i++) {
+                data[i] = l[lo + i] * r[ro + i];
+            }
+        } else {
+            // not having to calculate offset (the most common case) results in a performance boost
+            // (due to HotSpot vectorization?)
+            for (int i = 0; i < len; i++) {
+                data[i] = l[i] * r[i];
+            }
+        }
+
+        return new LongArraySeries(data);
+    }
+
+    @Override
+    public LongSeries div(LongSeries s) {
+        if (!(s instanceof LongArraySeries)) {
+            return super.add(s);
+        }
+
+        int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
+        LongArraySeries as = (LongArraySeries) s;
+
+        // storing ivars in the local vars for performance
+        long[] l = this.data;
+        long[] r = as.data;
+
+        int lo = this.offset;
+        int ro = as.offset;
+
+        long[] data = new long[len];
+
+        if (lo > 0 || ro > 0) {
+            for (int i = 0; i < len; i++) {
+                data[i] = l[lo + i] / r[ro + i];
+            }
+        } else {
+            // not having to calculate offset (the most common case) results in a performance boost
+            // (due to HotSpot vectorization?)
+            for (int i = 0; i < len; i++) {
+                data[i] = l[i] / r[i];
+            }
+        }
+
+        return new LongArraySeries(data);
+    }
+
+    @Override
+    public LongSeries mod(LongSeries s) {
+        if (!(s instanceof LongArraySeries)) {
+            return super.add(s);
+        }
+
+        int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
+        LongArraySeries as = (LongArraySeries) s;
+
+        // storing ivars in the local vars for performance
+        long[] l = this.data;
+        long[] r = as.data;
+
+        int lo = this.offset;
+        int ro = as.offset;
+
+        long[] data = new long[len];
+
+        if (lo > 0 || ro > 0) {
+            for (int i = 0; i < len; i++) {
+                data[i] = l[lo + i] % r[ro + i];
+            }
+        } else {
+            // not having to calculate offset (the most common case) results in a performance boost
+            // (due to HotSpot vectorization?)
+            for (int i = 0; i < len; i++) {
+                data[i] = l[i] % r[i];
+            }
+        }
+
+        return new LongArraySeries(data);
+    }
+
+    @Override
     public long getLong(int index) {
         if (index >= size) {
             throw new ArrayIndexOutOfBoundsException(index);

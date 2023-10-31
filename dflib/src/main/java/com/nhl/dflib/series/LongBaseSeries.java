@@ -1,10 +1,20 @@
 package com.nhl.dflib.series;
 
-import com.nhl.dflib.*;
-import com.nhl.dflib.builder.BoolAccum;
+import com.nhl.dflib.BooleanSeries;
+import com.nhl.dflib.Condition;
+import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.Index;
+import com.nhl.dflib.IntSeries;
+import com.nhl.dflib.LongPredicate;
+import com.nhl.dflib.LongSeries;
+import com.nhl.dflib.Series;
+import com.nhl.dflib.SeriesGroupBy;
+import com.nhl.dflib.Sorter;
+import com.nhl.dflib.ValueMapper;
+import com.nhl.dflib.ValuePredicate;
+import com.nhl.dflib.ValueToRowMapper;
 import com.nhl.dflib.builder.IntAccum;
 import com.nhl.dflib.builder.LongAccum;
-import com.nhl.dflib.builder.ObjectAccum;
 import com.nhl.dflib.builder.UniqueLongAccum;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
@@ -15,11 +25,12 @@ import com.nhl.dflib.sort.SeriesSorter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 
 /**
+ * A base implementation of various boilerplate methods for {@link LongSeries}.
+ *
  * @since 0.6
  */
 public abstract class LongBaseSeries implements LongSeries {
@@ -88,6 +99,9 @@ public abstract class LongBaseSeries implements LongSeries {
 
         // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
         // buffer to the actual size when creating the result.
+
+        // Replacing Accum with a long[] gives very little performance gain, presumably due to the need for another
+        // loop index, that does not allow HotSpot to vectorize the loop. So keeping the Accum.
         LongAccum filtered = new LongAccum(len);
 
         for (int i = 0; i < len; i++) {
@@ -101,14 +115,11 @@ public abstract class LongBaseSeries implements LongSeries {
 
     @Override
     public LongSeries selectLong(LongPredicate p) {
-        
+
         int len = size();
 
         // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
         // buffer to the actual size when creating the result.
-
-        // Replacing the Accum with a long[] gives very little performance gain, presumably due to the need for another
-        // loop index, that does not allow HotSpot to vectorize the loop. So keeping the Accum.
 
         LongAccum filtered = new LongAccum(len);
 
@@ -123,18 +134,6 @@ public abstract class LongBaseSeries implements LongSeries {
     }
 
     @Override
-    public LongSeries sortLong() {
-        int size = size();
-        long[] sorted = new long[size];
-        copyToLong(sorted, 0, 0, size);
-
-        // TODO: use "parallelSort" ?
-        Arrays.sort(sorted);
-
-        return new LongArraySeries(sorted);
-    }
-
-    @Override
     public LongSeries sort(Sorter... sorters) {
         return selectAsLongSeries(new SeriesSorter<>(this).sortIndex(sorters));
     }
@@ -144,6 +143,18 @@ public abstract class LongBaseSeries implements LongSeries {
     @Override
     public LongSeries sort(Comparator<? super Long> comparator) {
         return selectAsLongSeries(new SeriesSorter<>(this).sortIndex(comparator));
+    }
+
+    @Override
+    public LongSeries sortLong() {
+        int size = size();
+        long[] sorted = new long[size];
+        copyToLong(sorted, 0, 0, size);
+
+        // TODO: use "parallelSort" ?
+        Arrays.sort(sorted);
+
+        return new LongArraySeries(sorted);
     }
 
     private LongSeries selectAsLongSeries(IntSeries positions) {
@@ -257,9 +268,12 @@ public abstract class LongBaseSeries implements LongSeries {
 
     @Override
     public IntSeries indexLong(LongPredicate predicate) {
-        IntAccum index = new IntAccum();
 
         int len = size();
+
+        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
+        // buffer to the actual size when creating the result.
+        IntAccum index = new IntAccum(len);
 
         for (int i = 0; i < len; i++) {
             if (predicate.test(getLong(i))) {
@@ -272,20 +286,35 @@ public abstract class LongBaseSeries implements LongSeries {
 
     @Override
     public IntSeries index(ValuePredicate<Long> predicate) {
-        return indexLong(predicate::test);
+        // reimplementing instead of calling "indexInt", as it seems to be doing less (un)boxing and is about 13% faster
+        // as a result
+
+        int len = size();
+
+        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
+        // buffer to the actual size when creating the result.
+        IntAccum index = new IntAccum(len);
+
+        for (int i = 0; i < len; i++) {
+            if (predicate.test(get(i))) {
+                index.pushInt(i);
+            }
+        }
+
+        return index.toSeries();
     }
 
     @Override
     public BooleanSeries locateLong(LongPredicate predicate) {
         int len = size();
 
-        BoolAccum matches = new BoolAccum(len);
+        boolean[] data = new boolean[len];
 
         for (int i = 0; i < len; i++) {
-            matches.pushBool(predicate.test(getLong(i)));
+            data[i] = predicate.test(getLong(i));
         }
 
-        return matches.toSeries();
+        return new BooleanArraySeries(data);
     }
 
     @Override
@@ -305,127 +334,78 @@ public abstract class LongBaseSeries implements LongSeries {
     // TODO: make long versions of 'replace' public?
 
     private LongSeries replaceLong(BooleanSeries condition, long with) {
-        int s = size();
-        int r = Math.min(s, condition.size());
-        LongAccum longs = new LongAccum(s);
+        int len = size();
+        int r = Math.min(len, condition.size());
+        long[] data = new long[len];
 
         for (int i = 0; i < r; i++) {
-            longs.pushLong(condition.getBool(i) ? with : getLong(i));
+            data[i] = condition.getBool(i) ? with : getLong(i);
         }
 
-        for (int i = r; i < s; i++) {
-            longs.pushLong(getLong(i));
+        for (int i = r; i < len; i++) {
+            data[i] = getLong(i);
         }
 
-        return longs.toSeries();
+        return new LongArraySeries(data);
     }
 
     private LongSeries replaceNoMatchLong(BooleanSeries condition, long with) {
 
-        int s = size();
-        int r = Math.min(s, condition.size());
-        LongAccum longs = new LongAccum(s);
+        int len = size();
+        int r = Math.min(len, condition.size());
+        long[] data = new long[len];
 
         for (int i = 0; i < r; i++) {
-            longs.pushLong(condition.getBool(i) ? getLong(i) : with);
+            data[i] = condition.getBool(i) ? getLong(i) : with;
         }
 
-        if (s > r) {
-            longs.fill(r, s, with);
+        if (len > r) {
+            Arrays.fill(data, r, len, with);
         }
 
-        return longs.toSeries();
+        return new LongArraySeries(data);
     }
 
     private Series<Long> nullify(BooleanSeries condition) {
-        int s = size();
-        int r = Math.min(s, condition.size());
-        ObjectAccum<Long> values = new ObjectAccum<>(s);
+        int len = size();
+        int r = Math.min(len, condition.size());
+        Long[] data = new Long[len];
 
+        // TODO: delay "data" allocation until at least one match is encountered. This gives a chance to return "this"
         for (int i = 0; i < r; i++) {
-            values.push(condition.getBool(i) ? null : getLong(i));
+            data[i] = condition.getBool(i) ? null : getLong(i);
         }
 
-        for (int i = r; i < s; i++) {
-            values.push(getLong(i));
+        for (int i = r; i < len; i++) {
+            data[i] = getLong(i);
         }
 
-        return values.toSeries();
+        return new ArraySeries<>(data);
     }
 
     private Series<Long> nullifyNoMatch(BooleanSeries condition) {
-        int s = size();
-        int r = Math.min(s, condition.size());
-        ObjectAccum<Long> values = new ObjectAccum<>(s);
+        int len = size();
+        int r = Math.min(len, condition.size());
+        Long[] data = new Long[len];
 
+        // TODO: delay "data" allocation until at least one no-match is encountered. This gives a chance to return "this"
         for (int i = 0; i < r; i++) {
-            values.push(condition.getBool(i) ? getLong(i) : null);
+            data[i] = condition.getBool(i) ? getLong(i) : null;
         }
 
-        if (s > r) {
-            values.fill(r, s, null);
+        if (len > r) {
+            Arrays.fill(data, r, len, null);
         }
 
-        return values.toSeries();
-    }
-
-    @Override
-    public BooleanSeries eq(Series<?> another) {
-        int s = size();
-        int as = another.size();
-
-        if (s != as) {
-            throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
-        }
-
-        BoolAccum bools = new BoolAccum(s);
-
-        if (another instanceof LongSeries) {
-            LongSeries anotherLong = (LongSeries) another;
-
-            for (int i = 0; i < s; i++) {
-                bools.pushBool(getLong(i) == anotherLong.getLong(i));
-            }
-        } else {
-            for (int i = 0; i < s; i++) {
-                bools.pushBool(Objects.equals(get(i), another.get(i)));
-            }
-        }
-
-        return bools.toSeries();
-    }
-
-    @Override
-    public BooleanSeries ne(Series<?> another) {
-        int s = size();
-        int as = another.size();
-
-        if (s != as) {
-            throw new IllegalArgumentException("Another Series size " + as + " is not the same as this size " + s);
-        }
-
-        BoolAccum bools = new BoolAccum(s);
-        if (another instanceof LongSeries) {
-            LongSeries anotherLong = (LongSeries) another;
-
-            for (int i = 0; i < s; i++) {
-                bools.pushBool(getLong(i) != anotherLong.getLong(i));
-            }
-        } else {
-            for (int i = 0; i < s; i++) {
-                bools.pushBool(!Objects.equals(get(i), another.get(i)));
-            }
-        }
-
-        return bools.toSeries();
+        return new ArraySeries<>(data);
     }
 
     @Override
     public BooleanSeries in(Object... values) {
-        int s = size();
+        int len = size();
 
         if (values == null || values.length == 0) {
-            return new FalseSeries(s);
+            return new FalseSeries(len);
         }
 
         Set<Object> set = new HashSet<>();
@@ -437,23 +417,23 @@ public abstract class LongBaseSeries implements LongSeries {
         }
 
         if (set.isEmpty()) {
-            return new FalseSeries(s);
+            return new FalseSeries(len);
         }
 
-        BoolAccum bools = new BoolAccum(s);
-        for (int i = 0; i < s; i++) {
-            bools.pushBool(set.contains(get(i)));
+        boolean[] data = new boolean[len];
+        for (int i = 0; i < len; i++) {
+            data[i] = set.contains(get(i));
         }
 
-        return bools.toSeries();
+        return new BooleanArraySeries(data);
     }
 
     @Override
     public BooleanSeries notIn(Object... values) {
-        int s = size();
+        int len = size();
 
         if (values == null || values.length == 0) {
-            return new TrueSeries(s);
+            return new TrueSeries(len);
         }
 
         Set<Object> set = new HashSet<>();
@@ -465,25 +445,15 @@ public abstract class LongBaseSeries implements LongSeries {
         }
 
         if (set.isEmpty()) {
-            return new TrueSeries(s);
+            return new TrueSeries(len);
         }
 
-        BoolAccum bools = new BoolAccum(s);
-        for (int i = 0; i < s; i++) {
-            bools.pushBool(!set.contains(get(i)));
+        boolean[] data = new boolean[len];
+        for (int i = 0; i < len; i++) {
+            data[i] = !set.contains(get(i));
         }
 
-        return bools.toSeries();
-    }
-
-    @Override
-    public BooleanSeries isNull() {
-        return new FalseSeries(size());
-    }
-
-    @Override
-    public BooleanSeries isNotNull() {
-        return new TrueSeries(size());
+        return new BooleanArraySeries(data);
     }
 
     @Override
