@@ -156,10 +156,6 @@ public class IntArraySeries extends IntBaseSeries {
 
     @Override
     public int getInt(int index) {
-        if (index >= size()) {
-            throw new ArrayIndexOutOfBoundsException(index);
-        }
-
         return data[index];
     }
 

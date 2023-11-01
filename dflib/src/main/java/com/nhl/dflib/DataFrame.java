@@ -1,15 +1,14 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.agg.DataFrameAggregator;
+import com.nhl.dflib.builder.DataFrameArrayByRowBuilder;
 import com.nhl.dflib.builder.DataFrameByColumnBuilder;
 import com.nhl.dflib.builder.DataFrameByRowBuilder;
-import com.nhl.dflib.builder.DataFrameArrayByRowBuilder;
 import com.nhl.dflib.builder.DataFrameFoldByColumnBuilder;
 import com.nhl.dflib.builder.DataFrameFoldByRowBuilder;
 import com.nhl.dflib.join.JoinBuilder;
 import com.nhl.dflib.pivot.PivotBuilder;
 import com.nhl.dflib.row.RowProxy;
-import com.nhl.dflib.series.RangeSeries;
 import com.nhl.dflib.series.RowMappedSeries;
 import com.nhl.dflib.series.SingleValueSeries;
 import com.nhl.dflib.window.WindowBuilder;
@@ -1160,8 +1159,7 @@ public interface DataFrame extends Iterable<RowProxy> {
         int w = width();
         Series[] rangeColumns = new Series[w];
         for (int i = 0; i < w; i++) {
-            // RangeSeries constructor does range checking
-            rangeColumns[i] = new RangeSeries(getColumn(i), fromInclusive, toExclusive - fromInclusive);
+            rangeColumns[i] = getColumn(i).rangeOpenClosed(fromInclusive, toExclusive);
         }
 
         return new ColumnDataFrame(getColumnsIndex(), rangeColumns);

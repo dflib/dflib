@@ -4,48 +4,69 @@ import com.nhl.dflib.Series;
 
 import java.util.Arrays;
 
-public class ArraySeries<T> extends ObjectSeries<T> {
+/**
+ * @param <T> Series element type
+ * @since 0.19
+ */
+public class ArrayRangeSeries<T> extends ObjectSeries<T> {
 
     private final T[] data;
+    private final int offset;
+    private final int size;
 
-    @SafeVarargs
-    public ArraySeries(T... data) {
-        super(Object.class);
+    public ArrayRangeSeries(Class<?> nominalType, T[] data, int offset, int size) {
+        super(nominalType);
         this.data = data;
+        this.offset = offset;
+        this.size = size;
     }
 
     @Override
     public int size() {
-        return data.length;
+        return size;
     }
 
     @Override
     public T get(int index) {
-        return data[index];
+        if (index >= size) {
+            throw new ArrayIndexOutOfBoundsException(index);
+        }
+
+        return data[offset + index];
     }
 
     @Override
     public void copyTo(Object[] to, int fromOffset, int toOffset, int len) {
-        System.arraycopy(data, fromOffset, to, toOffset, len);
+        if (fromOffset + len > size) {
+            throw new ArrayIndexOutOfBoundsException(fromOffset + len);
+        }
+
+        System.arraycopy(data, offset + fromOffset, to, toOffset, len);
     }
 
     @Override
     public Series<T> materialize() {
-        return this;
+
+        if (offset == 0 && size == data.length) {
+            return new ArraySeries(data);
+        }
+
+        Object[] data = new Object[size];
+        copyTo(data, 0, 0, size);
+        return new ArraySeries(data);
     }
 
     @Override
     public Series<T> fillNulls(T value) {
 
-        int len = data.length;
         T[] copy = null;
 
-        for (int i = 0; i < len; i++) {
-            if (data[i] == null) {
+        for (int i = 0; i < size; i++) {
+            if (data[offset + i] == null) {
 
                 if (copy == null) {
-                    copy = (T[]) new Object[len];
-                    System.arraycopy(data, 0, copy, 0, len);
+                    copy = (T[]) new Object[size];
+                    System.arraycopy(data, offset, copy, 0, size);
                 }
 
                 copy[i] = value;
@@ -57,15 +78,14 @@ public class ArraySeries<T> extends ObjectSeries<T> {
 
     @Override
     public Series<T> fillNullsFromSeries(Series<? extends T> values) {
-        int len = data.length;
         T[] copy = null;
 
-        for (int i = 0; i < len; i++) {
-            if (data[i] == null) {
+        for (int i = 0; i < size; i++) {
+            if (data[offset + i] == null) {
 
                 if (copy == null) {
-                    copy = (T[]) new Object[len];
-                    System.arraycopy(data, 0, copy, 0, len);
+                    copy = (T[]) new Object[size];
+                    System.arraycopy(data, offset, copy, 0, size);
                 }
 
                 copy[i] = values.get(i);
@@ -77,23 +97,22 @@ public class ArraySeries<T> extends ObjectSeries<T> {
 
     @Override
     public Series<T> fillNullsBackwards() {
-        int len = data.length;
         T[] copy = null;
         int fillFrom = -1;
 
-        for (int i = 0; i < len; i++) {
-            if (data[i] == null) {
+        for (int i = 0; i < size; i++) {
+            if (data[offset + i] == null) {
 
                 if (copy == null) {
-                    copy = (T[]) new Object[len];
-                    System.arraycopy(data, 0, copy, 0, len);
+                    copy = (T[]) new Object[size];
+                    System.arraycopy(data, offset, copy, 0, size);
                 }
 
                 if (fillFrom < 0) {
                     fillFrom = i;
                 }
             } else if (fillFrom >= 0) {
-                Arrays.fill(copy, fillFrom, i, data[i]);
+                Arrays.fill(copy, fillFrom, i, data[offset + i]);
                 fillFrom = -1;
             }
         }
@@ -103,11 +122,10 @@ public class ArraySeries<T> extends ObjectSeries<T> {
 
     @Override
     public Series<T> fillNullsForward() {
-        int len = data.length;
         T[] copy = null;
 
-        for (int i = 0; i < len; i++) {
-            if (data[i] == null) {
+        for (int i = 0; i < size; i++) {
+            if (data[offset + i] == null) {
 
                 // leading nulls are fine
                 if (i == 0) {
@@ -115,8 +133,8 @@ public class ArraySeries<T> extends ObjectSeries<T> {
                 }
 
                 if (copy == null) {
-                    copy = (T[]) new Object[len];
-                    System.arraycopy(data, 0, copy, 0, len);
+                    copy = (T[]) new Object[size];
+                    System.arraycopy(data, offset, copy, 0, size);
                 }
 
                 copy[i] = copy[i - 1];
@@ -130,6 +148,6 @@ public class ArraySeries<T> extends ObjectSeries<T> {
     public Series<T> rangeOpenClosed(int fromInclusive, int toExclusive) {
         return fromInclusive == 0 && toExclusive == size()
                 ? this
-                : new ArrayRangeSeries(getNominalType(), data, fromInclusive, toExclusive - fromInclusive);
+                : new ArrayRangeSeries<>(getNominalType(), data, fromInclusive, toExclusive - fromInclusive);
     }
 }

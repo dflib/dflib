@@ -149,10 +149,6 @@ public class DoubleArraySeries extends DoubleBaseSeries {
 
     @Override
     public double getDouble(int index) {
-        if (index >= size()) {
-            throw new ArrayIndexOutOfBoundsException(index);
-        }
-
         return data[index];
     }
 

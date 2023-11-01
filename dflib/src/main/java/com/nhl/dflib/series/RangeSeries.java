@@ -6,15 +6,15 @@ import com.nhl.dflib.range.Range;
 public class RangeSeries<T> extends ObjectSeries<T> {
 
     private Series<T> delegate;
-    private int from;
+    private int offset;
     private int size;
 
-    public RangeSeries(Series<T> delegate, int from, int size) {
+    public RangeSeries(Series<T> delegate, int offset, int size) {
         super(delegate.getNominalType());
         this.delegate = delegate;
-        this.from = from;
+        this.offset = offset;
         this.size = size;
-        Range.checkRange(from, size, delegate.size());
+        Range.checkRange(offset, size, delegate.size());
     }
 
     @Override
@@ -28,7 +28,7 @@ public class RangeSeries<T> extends ObjectSeries<T> {
             throw new ArrayIndexOutOfBoundsException(index);
         }
 
-        return delegate.get(from + index);
+        return delegate.get(offset + index);
     }
 
     @Override
@@ -38,13 +38,13 @@ public class RangeSeries<T> extends ObjectSeries<T> {
             throw new ArrayIndexOutOfBoundsException(fromOffset + len);
         }
 
-        delegate.copyTo(to, this.from + fromOffset, toOffset, len);
+        delegate.copyTo(to, this.offset + fromOffset, toOffset, len);
     }
 
     @Override
     public Series<T> materialize() {
         Object[] range = new Object[size];
-        delegate.copyTo(range, this.from, 0, size);
+        delegate.copyTo(range, this.offset, 0, size);
         return new ArraySeries<>((T[]) range);
     }
 

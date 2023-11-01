@@ -149,10 +149,6 @@ public class LongArraySeries extends LongBaseSeries {
 
     @Override
     public long getLong(int index) {
-        if (index >= size()) {
-            throw new ArrayIndexOutOfBoundsException(index);
-        }
-
         return data[index];
     }
 
