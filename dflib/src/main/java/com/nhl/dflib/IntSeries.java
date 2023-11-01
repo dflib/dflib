@@ -275,18 +275,18 @@ public interface IntSeries extends Series<Integer> {
     }
 
     @Override
-    default BooleanSeries ne(Series<?> another) {
-        if (!(another instanceof IntSeries)) {
-            return Series.super.ne(another);
+    default BooleanSeries ne(Series<?> s) {
+        if (!(s instanceof IntSeries)) {
+            return Series.super.ne(s);
         }
 
         int len = size();
-        if (len != another.size()) {
-            throw new IllegalArgumentException("Another Series size " + another.size() + " is not the same as this size " + len);
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
         boolean[] data = new boolean[len];
-        IntSeries anotherInt = (IntSeries) another;
+        IntSeries anotherInt = (IntSeries) s;
 
         for (int i = 0; i < len; i++) {
             data[i] = getInt(i) != anotherInt.getInt(i);

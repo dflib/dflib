@@ -2,6 +2,8 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.op.BooleanSeriesOps;
 import com.nhl.dflib.series.BooleanArraySeries;
+import com.nhl.dflib.series.FalseSeries;
+import com.nhl.dflib.series.TrueSeries;
 
 import java.util.Comparator;
 import java.util.Random;
@@ -275,6 +277,16 @@ public interface BooleanSeries extends Series<Boolean> {
     boolean isFalse();
 
     @Override
+    default BooleanSeries isNull() {
+        return new FalseSeries(size());
+    }
+
+    @Override
+    default BooleanSeries isNotNull() {
+        return new TrueSeries(size());
+    }
+
+    @Override
     BooleanSeries unique();
 
     /**
@@ -340,5 +352,47 @@ public interface BooleanSeries extends Series<Boolean> {
     @Deprecated(since = "0.16", forRemoval = true)
     default boolean[] toBooleanArray() {
         return toBoolArray();
+    }
+
+    @Override
+    default BooleanSeries eq(Series<?> s) {
+        if (!(s instanceof LongSeries)) {
+            return Series.super.eq(s);
+        }
+
+        int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
+        boolean[] data = new boolean[len];
+        BooleanSeries anotherBool = (BooleanSeries) s;
+
+        for (int i = 0; i < len; i++) {
+            data[i] = getBool(i) == anotherBool.getBool(i);
+        }
+
+        return new BooleanArraySeries(data);
+    }
+
+    @Override
+    default BooleanSeries ne(Series<?> s) {
+        if (!(s instanceof LongSeries)) {
+            return Series.super.eq(s);
+        }
+
+        int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+
+        boolean[] data = new boolean[len];
+        BooleanSeries anotherBool = (BooleanSeries) s;
+
+        for (int i = 0; i < len; i++) {
+            data[i] = getBool(i) != anotherBool.getBool(i);
+        }
+
+        return new BooleanArraySeries(data);
     }
 }

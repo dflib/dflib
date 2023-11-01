@@ -392,43 +392,43 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
-     * @param another a Series to compare with.
+     * @param s a Series to compare with.
      * @return a BooleanSeries with true/false elements corresponding to the result of comparison of this Series with
      * another.
      * @since 0.6
      */
-    default BooleanSeries eq(Series<?> another) {
+    default BooleanSeries eq(Series<?> s) {
         int len = size();
 
-        if (len != another.size()) {
-            throw new IllegalArgumentException("Another Series size " + another.size() + " is not the same as this size " + len);
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
         boolean[] data = new boolean[len];
 
         for (int i = 0; i < len; i++) {
-            data[i] = Objects.equals(get(i), another.get(i));
+            data[i] = Objects.equals(get(i), s.get(i));
         }
 
         return new BooleanArraySeries(data);
     }
 
     /**
-     * @param another a Series to compare with.
+     * @param s a Series to compare with.
      * @return a BooleanSeries with true/false elements corresponding to the result of comparison of this Series with
      * another.
      * @since 0.6
      */
-    default BooleanSeries ne(Series<?> another) {
+    default BooleanSeries ne(Series<?> s) {
         int len = size();
 
-        if (len != another.size()) {
-            throw new IllegalArgumentException("Another Series size " + another.size() + " is not the same as this size " + len);
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
         boolean[] data = new boolean[len];
         for (int i = 0; i < len; i++) {
-            data[i] = !Objects.equals(get(i), another.get(i));
+            data[i] = !Objects.equals(get(i), s.get(i));
         }
 
         return new BooleanArraySeries(data);
