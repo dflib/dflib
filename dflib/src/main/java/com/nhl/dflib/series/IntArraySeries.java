@@ -6,35 +6,21 @@ import com.nhl.dflib.agg.PrimitiveSeriesAvg;
 import com.nhl.dflib.agg.PrimitiveSeriesMedian;
 import com.nhl.dflib.agg.PrimitiveSeriesMinMax;
 import com.nhl.dflib.agg.PrimitiveSeriesSum;
-import com.nhl.dflib.range.Range;
 
 /**
  * @since 0.6
  */
-// TODO: should we split that into a fast IntArraySeries that matches exactly data[], and a slower IntArrayRangeSeries,
-//  that has offset and size? Need to measure the performance gain of not having to calculate offset
 public class IntArraySeries extends IntBaseSeries {
 
     private final int[] data;
-    private final int offset;
-    private final int size;
 
     public IntArraySeries(int... data) {
-        this(data, 0, data.length);
-    }
-
-    public IntArraySeries(int[] data, int offset, int size) {
-
-        Range.checkRange(offset, size, data.length);
-
         this.data = data;
-        this.offset = offset;
-        this.size = size;
     }
 
     @Override
     public int size() {
-        return size;
+        return data.length;
     }
 
     // oddly enough, the same optimization of the "eq" method with IntArraySeries cast only shows about 3% speed
@@ -58,21 +44,10 @@ public class IntArraySeries extends IntBaseSeries {
         int[] l = this.data;
         int[] r = as.data;
 
-        int lo = this.offset;
-        int ro = as.offset;
-
         int[] data = new int[len];
 
-        if (lo > 0 || ro > 0) {
-            for (int i = 0; i < len; i++) {
-                data[i] = l[lo + i] + r[ro + i];
-            }
-        } else {
-            // not having to calculate offset (the most common case) results in a performance boost
-            // (due to HotSpot vectorization?)
-            for (int i = 0; i < len; i++) {
-                data[i] = l[i] + r[i];
-            }
+        for (int i = 0; i < len; i++) {
+            data[i] = l[i] + r[i];
         }
 
         return new IntArraySeries(data);
@@ -95,21 +70,9 @@ public class IntArraySeries extends IntBaseSeries {
         int[] l = this.data;
         int[] r = as.data;
 
-        int lo = this.offset;
-        int ro = as.offset;
-
         int[] data = new int[len];
-
-        if (lo > 0 || ro > 0) {
-            for (int i = 0; i < len; i++) {
-                data[i] = l[lo + i] - r[ro + i];
-            }
-        } else {
-            // not having to calculate offset (the most common case) results in a performance boost
-            // (due to HotSpot vectorization?)
-            for (int i = 0; i < len; i++) {
-                data[i] = l[i] - r[i];
-            }
+        for (int i = 0; i < len; i++) {
+            data[i] = l[i] - r[i];
         }
 
         return new IntArraySeries(data);
@@ -132,21 +95,9 @@ public class IntArraySeries extends IntBaseSeries {
         int[] l = this.data;
         int[] r = as.data;
 
-        int lo = this.offset;
-        int ro = as.offset;
-
         int[] data = new int[len];
-
-        if (lo > 0 || ro > 0) {
-            for (int i = 0; i < len; i++) {
-                data[i] = l[lo + i] * r[ro + i];
-            }
-        } else {
-            // not having to calculate offset (the most common case) results in a performance boost
-            // (due to HotSpot vectorization?)
-            for (int i = 0; i < len; i++) {
-                data[i] = l[i] * r[i];
-            }
+        for (int i = 0; i < len; i++) {
+            data[i] = l[i] * r[i];
         }
 
         return new IntArraySeries(data);
@@ -169,21 +120,10 @@ public class IntArraySeries extends IntBaseSeries {
         int[] l = this.data;
         int[] r = as.data;
 
-        int lo = this.offset;
-        int ro = as.offset;
-
         int[] data = new int[len];
 
-        if (lo > 0 || ro > 0) {
-            for (int i = 0; i < len; i++) {
-                data[i] = l[lo + i] / r[ro + i];
-            }
-        } else {
-            // not having to calculate offset (the most common case) results in a performance boost
-            // (due to HotSpot vectorization?)
-            for (int i = 0; i < len; i++) {
-                data[i] = l[i] / r[i];
-            }
+        for (int i = 0; i < len; i++) {
+            data[i] = l[i] / r[i];
         }
 
         return new IntArraySeries(data);
@@ -206,21 +146,9 @@ public class IntArraySeries extends IntBaseSeries {
         int[] l = this.data;
         int[] r = as.data;
 
-        int lo = this.offset;
-        int ro = as.offset;
-
         int[] data = new int[len];
-
-        if (lo > 0 || ro > 0) {
-            for (int i = 0; i < len; i++) {
-                data[i] = l[lo + i] % r[ro + i];
-            }
-        } else {
-            // not having to calculate offset (the most common case) results in a performance boost
-            // (due to HotSpot vectorization?)
-            for (int i = 0; i < len; i++) {
-                data[i] = l[i] % r[i];
-            }
+        for (int i = 0; i < len; i++) {
+            data[i] = l[i] % r[i];
         }
 
         return new IntArraySeries(data);
@@ -228,88 +156,82 @@ public class IntArraySeries extends IntBaseSeries {
 
     @Override
     public int getInt(int index) {
-        if (index >= size) {
+        if (index >= size()) {
             throw new ArrayIndexOutOfBoundsException(index);
         }
 
-        return data[offset + index];
+        return data[index];
     }
 
     @Override
     public void copyToInt(int[] to, int fromOffset, int toOffset, int len) {
-        if (fromOffset + len > size) {
+        if (fromOffset + len > size()) {
             throw new ArrayIndexOutOfBoundsException(fromOffset + len);
         }
 
-        System.arraycopy(data, offset + fromOffset, to, toOffset, len);
+        System.arraycopy(data, fromOffset, to, toOffset, len);
     }
 
     @Override
     public IntSeries head(int len) {
 
-        if (Math.abs(len) >= size) {
+        if (Math.abs(len) >= size()) {
             return this;
         }
 
-        return len < 0 ? tail(size + len) : new IntArraySeries(data, offset, len);
+        return len < 0 ? tail(size() + len) : new IntArrayRangeSeries(data, 0, len);
     }
 
     @Override
     public IntSeries tail(int len) {
 
-        if (Math.abs(len) >= size) {
+        if (Math.abs(len) >= size()) {
             return this;
         }
 
-        return len < 0 ? head(size + len) : new IntArraySeries(data, offset + size - len, len);
+        return len < 0 ? head(size() + len) : new IntArrayRangeSeries(data, size() - len, len);
     }
 
     @Override
     public IntSeries rangeOpenClosedInt(int fromInclusive, int toExclusive) {
         return fromInclusive == 0 && toExclusive == size()
                 ? this
-                : new IntArraySeries(data, offset + fromInclusive, toExclusive - fromInclusive);
+                : new IntArrayRangeSeries(data, fromInclusive, toExclusive - fromInclusive);
     }
 
     @Override
     public IntSeries materialize() {
-        if (offset > 0 || size + offset < this.data.length) {
-            int[] data = new int[size];
-            copyToInt(data, 0, 0, size);
-            return new IntArraySeries(data);
-        }
-
         return this;
     }
 
     @Override
     public int max() {
-        return PrimitiveSeriesMinMax.maxOfArray(data, offset, size);
+        return PrimitiveSeriesMinMax.maxOfArray(data, 0, size());
     }
 
     @Override
     public int min() {
-        return PrimitiveSeriesMinMax.minOfArray(data, offset, size);
+        return PrimitiveSeriesMinMax.minOfArray(data, 0, size());
     }
 
     @Override
     public long sum() {
-        return PrimitiveSeriesSum.sumOfArray(data, offset, size);
+        return PrimitiveSeriesSum.sumOfArray(data, 0, size());
     }
 
     @Override
     public double avg() {
-        return PrimitiveSeriesAvg.avgOfArray(data, offset, size);
+        return PrimitiveSeriesAvg.avgOfArray(data, 0, size());
     }
 
     @Override
     public double median() {
-        return PrimitiveSeriesMedian.medianOfArray(data, offset, size);
+        return PrimitiveSeriesMedian.medianOfArray(data, 0, size());
     }
 
     @Override
     public LongSeries cumSum() {
-        long[] cumSum = PrimitiveSeriesSum.cumSumOfArray(data, offset, size);
+        long[] cumSum = PrimitiveSeriesSum.cumSumOfArray(data, 0, size());
         return new LongArraySeries(cumSum);
     }
 }

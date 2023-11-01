@@ -79,7 +79,7 @@ public class LongAccum implements ValueAccum<Long> {
         // making sure no one can change the series via the Mutable List anymore
         this.data = null;
 
-        return new LongArraySeries(data, 0, size);
+        return new LongArraySeries(data);
     }
 
     @Override

@@ -85,7 +85,7 @@ public class IntAccum implements ValueAccum<Integer> {
         // making sure no one can change the series via the Mutable List anymore
         this.data = null;
 
-        return new IntArraySeries(data, 0, size);
+        return new IntArraySeries(data);
     }
 
     @Override

@@ -8,85 +8,71 @@ import com.nhl.dflib.agg.PrimitiveSeriesCount;
  */
 public class BooleanArraySeries extends BooleanBaseSeries {
 
-    // TODO should we use a bitset instead of boolean[] for memory and access efficiency?
     private final boolean[] data;
-    private final int offset;
-    private final int size;
 
     public BooleanArraySeries(boolean... data) {
-        this(data, 0, data.length);
-    }
-
-    public BooleanArraySeries(boolean[] data, int offset, int size) {
         this.data = data;
-        this.offset = offset;
-        this.size = size;
     }
 
     @Override
     public int size() {
-        return size;
+        return data.length;
     }
 
     @Override
     public boolean getBool(int index) {
-        if (index >= size) {
+        if (index >= size()) {
             throw new ArrayIndexOutOfBoundsException(index);
         }
 
-        return data[offset + index];
+        return data[index];
     }
 
     @Override
     public void copyToBool(boolean[] to, int fromOffset, int toOffset, int len) {
-        if (fromOffset + len > size) {
+        if (fromOffset + len > size()) {
             throw new ArrayIndexOutOfBoundsException(fromOffset + len);
         }
 
-        System.arraycopy(data, offset + fromOffset, to, toOffset, len);
+        System.arraycopy(data, fromOffset, to, toOffset, len);
     }
 
     @Override
     public BooleanSeries head(int len) {
-        if (Math.abs(len) >= size) {
+        if (Math.abs(len) >= size()) {
             return this;
         }
 
-        return len < 0 ? tail(size + len) : new BooleanArraySeries(data, offset, len);
+        return len < 0 ? tail(size() + len) : new BooleanArrayRangeSeries(data, 0, len);
     }
 
     @Override
     public BooleanSeries tail(int len) {
 
-        if (Math.abs(len) >= size) {
+        if (Math.abs(len) >= size()) {
             return this;
         }
 
-        return len < 0 ? head(size + len) : new BooleanArraySeries(data, offset + size - len, len);
+        return len < 0 ? head(size() + len) : new BooleanArrayRangeSeries(data, size() - len, len);
     }
 
     @Override
     public BooleanSeries rangeOpenClosedBool(int fromInclusive, int toExclusive) {
         return fromInclusive == 0 && toExclusive == size()
                 ? this
-                : new BooleanArraySeries(data, offset + fromInclusive, toExclusive - fromInclusive);
+                : new BooleanArrayRangeSeries(data, fromInclusive, toExclusive - fromInclusive);
     }
 
     @Override
     public BooleanSeries materialize() {
-        if (offset > 0 || size + offset < this.data.length) {
-            boolean[] data = new boolean[size];
-            copyToBool(data, 0, 0, size);
-            return new BooleanArraySeries(data);
-        }
-
         return this;
     }
 
     @Override
     public int firstTrue() {
+        int size = size();
         for (int i = 0; i < size; i++) {
-            if (data[offset + i]) {
+            if (data[i]) {
                 return i;
             }
         }
@@ -95,11 +81,11 @@ public class BooleanArraySeries extends BooleanBaseSeries {
 
     @Override
     public int countTrue() {
-        return PrimitiveSeriesCount.countTrueInArray(data, offset, size);
+        return PrimitiveSeriesCount.countTrueInArray(data, 0, size());
     }
 
     @Override
     public int countFalse() {
-        return PrimitiveSeriesCount.countFalseInArray(data, offset, size);
+        return PrimitiveSeriesCount.countFalseInArray(data, 0, size());
     }
 }

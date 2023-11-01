@@ -31,18 +31,30 @@ public class IntSeriesAdd {
 
     private IntSeries s1;
     private IntSeries s2;
+    private IntSeries sr1;
+    private IntSeries sr2;
     private DataFrame s1_s2;
 
     @Setup
     public void setUp() {
         s1 = ValueMaker.intSeq().intSeries(rows);
         s2 = ValueMaker.intSeq().intSeries(rows);
+
+        // "head" would turn IntArraySeries to IntArrayRangeSeries
+        sr1 = s1.head(-1);
+        sr2 = s2.head(-1);
+
         s1_s2 = DataFrame.byColumn("s1", "s2").of(s1, s2);
     }
 
     @Benchmark
     public Object addSeries() {
         return s1.add(s2);
+    }
+
+    @Benchmark
+    public Object addRangeSeries() {
+        return sr1.add(sr2);
     }
 
     @Benchmark

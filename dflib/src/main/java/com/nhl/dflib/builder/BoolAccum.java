@@ -84,7 +84,7 @@ public class BoolAccum implements ValueAccum<Boolean> {
         // making sure no one can change the series via the Mutable List anymore
         this.data = null;
 
-        return new BooleanArraySeries(data, 0, size);
+        return new BooleanArraySeries(data);
     }
 
     @Override

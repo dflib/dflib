@@ -86,7 +86,7 @@ public class DoubleAccum implements ValueAccum<Double> {
         // making sure no one can change the series via the Mutable List anymore
         this.data = null;
 
-        return new DoubleArraySeries(data, 0, size);
+        return new DoubleArraySeries(data);
     }
 
     @Override
