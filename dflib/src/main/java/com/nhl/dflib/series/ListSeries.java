@@ -5,7 +5,10 @@ import com.nhl.dflib.Series;
 import java.util.Arrays;
 import java.util.List;
 
-// TODO: remove? we no longer use it internally
+/**
+ * @deprecated as it is no longer useful in DFLib internally. Use ArraySeries or any other Series implementation instead.
+ */
+@Deprecated(since = "0.19", forRemoval = true)
 public class ListSeries<T> extends ObjectSeries<T> {
 
     private final List<T> data;

@@ -5,6 +5,9 @@ import com.nhl.dflib.Series;
 import java.util.Arrays;
 
 /**
+ * A specialized Series that maps to a slice of an array. Calculating offsets during every operation creates some
+ * performance overhead, so this Series is somewhat slower than {@link ArraySeries}.
+ *
  * @param <T> Series element type
  * @since 0.19
  */

@@ -3,6 +3,9 @@ package com.nhl.dflib.series;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.range.Range;
 
+/**
+ * A specialized Series that maps to a slice of another Series.
+ */
 public class RangeSeries<T> extends ObjectSeries<T> {
 
     private Series<T> delegate;
