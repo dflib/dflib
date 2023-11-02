@@ -5,6 +5,7 @@ import com.nhl.dflib.exp.map.MapExp1;
 import com.nhl.dflib.exp.map.MapExpScalarCondition2;
 import com.nhl.dflib.exp.num.DecimalExp1;
 import com.nhl.dflib.exp.num.DoubleExp1;
+import com.nhl.dflib.exp.str.StrSplitExp;
 import com.nhl.dflib.exp.str.StrExp1;
 
 import java.math.BigDecimal;
@@ -96,5 +97,49 @@ public interface StrExp extends Exp<String> {
             String trimmed = s.trim();
             return trimmed.isEmpty() ? null : trimmed;
         });
+    }
+
+    /**
+     * An expression that splits this String into a String array using the specified regex as a delimiter.
+     *
+     * @since 0.19
+     */
+    default Exp<String[]> split(char delimiter) {
+        return split(delimiter, 0);
+    }
+
+    /**
+     * An expression that splits this String into a String array using the specified regex as a delimiter. The limit
+     * parameter follows the rules of the <code>Pattern.split(..)</code> method, namely a positive limit results in the
+     * regex evaluated at most the "limit" number of times, "zero" limit results in the regex evaluated as many times as
+     * needed, but trailing empty elements removed, while negative limit is the same as zero, except no trimming of
+     * the trailing empty elements.     *
+     *
+     * @since 0.19
+     */
+    default Exp<String[]> split(char delimiter, int limit) {
+        return StrSplitExp.splitOnChar(this, delimiter, limit);
+    }
+
+    /**
+     * An expression that splits this String into a String array using the specified regex as a delimiter.
+     *
+     * @since 0.19
+     */
+    default Exp<String[]> split(String regex) {
+        return StrSplitExp.splitOnRegex(this, regex);
+    }
+
+    /**
+     * An expression that splits this String into a String array using the specified regex as a delimiter. The limit
+     * parameter follows the rules of the <code>Pattern.split(..)</code> method, namely a positive limit results in the
+     * regex evaluated at most the "limit" number of times, "zero" limit results in the regex evaluated as many times as
+     * needed, but trailing empty elements removed, while negative limit is the same as zero, except no trimming of
+     * the trailing empty elements.
+     *
+     * @since 0.19
+     */
+    default Exp<String[]> split(String regex, int limit) {
+        return StrSplitExp.splitOnRegex(this, regex, limit);
     }
 }

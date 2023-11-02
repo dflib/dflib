@@ -3,6 +3,7 @@
 * #209 DataFrame.map(Exp...)
 * #210 RowProxy: support for primitives and simpler casting
 * #211 Optimization: replace Accum with direct array ops on primitive Series
+* #213 StrExp.split()
 
 ## Release 0.18
 
