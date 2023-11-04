@@ -4,18 +4,10 @@ import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.builder.ObjectAccum;
 
-import java.util.function.Function;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
 /**
  * @since 0.11
  */
 public class IntAggregators {
-
-    private static final Function<Series<? extends Number>, Integer> sum =
-            CollectorAggregator.create((Collector) Collectors.summingInt(Number::intValue));
-
 
     /**
      * @since 0.14
@@ -64,7 +56,27 @@ public class IntAggregators {
     }
 
     public static int sum(Series<? extends Number> s) {
-        return s.size() == 0 ? 0 : sum.apply(s);
+        int h = s.size();
+        if (h == 0) {
+            return 0;
+        }
+
+        if (s instanceof IntSeries) {
+            // TODO: must return long like IntSeries.sum does
+            return (int) ((IntSeries) s).sum();
+        }
+
+        int sum = 0;
+        for (int i = 0; i < h; i++) {
+            Number n = s.get(i);
+
+            if (n != null) {
+                sum += n.intValue();
+            }
+        }
+
+        // TODO: must return long like IntSeries.sum does
+        return sum;
     }
 
     public static int min(Series<? extends Number> s) {

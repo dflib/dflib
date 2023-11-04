@@ -26,6 +26,11 @@ public interface ValueMaker<T> {
         return () -> val[0]++;
     }
 
+    static ValueMaker<Integer> reverseIntSeq() {
+        int[] val = new int[]{Integer.MAX_VALUE};
+        return () -> val[0]--;
+    }
+
     static ValueMaker<Double> doubleSeq() {
         double[] val = new double[1];
         val[0] = 0.01;

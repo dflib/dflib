@@ -26,27 +26,23 @@ public class GroupBy {
     @Setup
     public void setUp() {
 
-        String string =
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate sollicitudin ligula sit amet ornare.";
-
-        Series<Integer> c0 = ValueMaker.intSeq().series(rows);
-        Series<String> c1 = ValueMaker.stringSeq().series(rows);
-        // keep the number of categories relatively low
-        Series<Integer> c2 = ValueMaker.randomIntSeq(groups).series(rows);
-        Series<String> c3 = ValueMaker.constStringSeq(string).series(rows);
-
-        df = DataFrame.byColumn("c0", "c1", "c2", "c3").of(c0, c1, c2, c3);
-        gb = df.group("c2");
+        df = DataFrame.byColumn("e0", "c0", "c1", "c2").of(
+                ValueMaker.randomIntSeq(groups).series(rows),
+                ValueMaker.intSeq().series(rows),
+                ValueMaker.intSeq().series(rows),
+                ValueMaker.reverseIntSeq().series(rows)
+        );
+        gb = df.group("e0");
     }
 
     @Benchmark
     public Object groupBy() {
-        return df.group("c2");
+        return df.group("e0");
     }
 
     @Benchmark
     public Object sumByName() {
-        return gb.agg(Exp.$int("c0").sum())
+        return gb.agg(Exp.$int("e0").sum())
                 .materialize()
                 .iterator();
     }
@@ -63,5 +59,33 @@ public class GroupBy {
         return gb.agg(Exp.$int(0).first())
                 .materialize()
                 .iterator();
+    }
+
+    @Benchmark
+    public Object oneColumn() {
+        return gb.agg(
+                Exp.$int("c0").sum()
+        ).materialize().iterator();
+    }
+
+    @Benchmark
+    public Object threeColumn() {
+        return gb.agg(
+                Exp.$int("c0").sum(),
+                Exp.$int("c1").sum(),
+                Exp.$int("c2").sum()
+        ).materialize().iterator();
+    }
+
+    @Benchmark
+    public Object sixColumn() {
+        return gb.agg(
+                Exp.$int("c0").sum(),
+                Exp.$int("c1").sum(),
+                Exp.$int("c2").sum(),
+                Exp.$int("c0").sum(),
+                Exp.$int("c1").sum(),
+                Exp.$int("c2").sum()
+        ).materialize().iterator();
     }
 }

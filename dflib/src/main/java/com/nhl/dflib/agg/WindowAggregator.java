@@ -1,6 +1,7 @@
 package com.nhl.dflib.agg;
 
 import com.nhl.dflib.DataFrame;
+import com.nhl.dflib.exec.Environment;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.Index;
@@ -9,6 +10,9 @@ import com.nhl.dflib.Series;
 import com.nhl.dflib.builder.ValueAccum;
 import com.nhl.dflib.builder.ObjectAccum;
 import com.nhl.dflib.series.SingleValueSeries;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 /**
  * @since 0.14
@@ -23,25 +27,51 @@ public class WindowAggregator {
         Series[] aggColumns = new Series[aggW];
         String[] aggLabels = new String[aggW];
 
-        for (int i = 0; i < aggW; i++) {
+        Environment env = Environment.commonEnv();
 
-            Exp<?> agg = aggregators[i];
+        // 1. don't parallelize single-column aggregations
+        // 2. don't parallelize small DataFrames, as sequential calculations are fast enough vs the overhead of
+        // creating, submitting and joining tasks
 
-            // TODO: primitives support for performance
-            ValueAccum columnBuilder = new ObjectAccum(aggH);
+        if (aggW <= 1 || groupBy.getUngrouped().height() < env.parallelExecThreshold()) {
+            for (int i = 0; i < aggW; i++) {
+                aggColumns[i] = aggGrouped(groupBy, aggregators[i], aggH);
+                aggLabels[i] = aggregators[i].getColumnName(groupBy.getUngrouped());
+            }
+        } else {
+            ExecutorService pool = env.threadPool();
+            Future<Series<?>>[] aggTasks = new Future[aggW];
 
-            for (Object key : groupBy.getGroups()) {
-                DataFrame group = groupBy.getGroup(key);
-
-                // expecting 1-element Series. Unpack them and add to the accum
-                columnBuilder.push(agg.eval(group).get(0));
+            for (int i = 0; i < aggW; i++) {
+                Exp<?> agg = aggregators[i];
+                aggTasks[i] = pool.submit(() -> aggGrouped(groupBy, agg, aggH));
+                aggLabels[i] = agg.getColumnName(groupBy.getUngrouped());
             }
 
-            aggColumns[i] = columnBuilder.toSeries();
-            aggLabels[i] = agg.getColumnName(groupBy.getUngrouped());
+            for (int i = 0; i < aggW; i++) {
+                try {
+                    aggColumns[i] = aggTasks[i].get();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
 
         return DataFrame.byColumn(Index.forLabelsDeduplicate(aggLabels)).of(aggColumns);
+    }
+
+    private static Series<?> aggGrouped(GroupBy groupBy, Exp<?> agg, int aggH) {
+        // TODO: primitives support for performance
+        ValueAccum columnBuilder = new ObjectAccum(aggH);
+
+        for (Object key : groupBy.getGroups()) {
+            DataFrame group = groupBy.getGroup(key);
+
+            // expecting 1-element Series. Unpack them and add to the accum
+            columnBuilder.push(agg.eval(group).get(0));
+        }
+
+        return columnBuilder.toSeries();
     }
 
     public static DataFrame aggPartitioned(GroupBy windowGroupBy, Exp<?>... aggregators) {
