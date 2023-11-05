@@ -10,7 +10,7 @@ import java.util.Objects;
  */
 public class IndexedSeries<T> extends ObjectSeries<T> {
 
-    private Series<T> source;
+    private volatile Series<T> source;
     private volatile IntSeries includePositions;
     private volatile Series<T> materialized;
 
@@ -42,6 +42,10 @@ public class IndexedSeries<T> extends ObjectSeries<T> {
             synchronized (this) {
                 if (materialized == null) {
                     materialized = doMaterialize();
+
+                    // reset source reference, allowing to free up memory
+                    source = null;
+                    includePositions = null;
                 }
             }
         }
@@ -61,10 +65,6 @@ public class IndexedSeries<T> extends ObjectSeries<T> {
             // skipped positions (index < 0) are found in joins
             data[i] = index < 0 ? null : source.get(index);
         }
-
-        // reset source reference, allowing to free up memory..
-        source = null;
-        includePositions = null;
 
         return new ArraySeries(data);
     }
