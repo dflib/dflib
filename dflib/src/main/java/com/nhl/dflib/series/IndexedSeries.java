@@ -11,9 +11,8 @@ import java.util.Objects;
 public class IndexedSeries<T> extends ObjectSeries<T> {
 
     private Series<T> source;
-    private IntSeries includePositions;
-
-    private Series<T> materialized;
+    private volatile IntSeries includePositions;
+    private volatile Series<T> materialized;
 
     public IndexedSeries(Series<T> source, IntSeries includePositions) {
         super(source.getNominalType());
@@ -23,6 +22,7 @@ public class IndexedSeries<T> extends ObjectSeries<T> {
 
     @Override
     public int size() {
+        IntSeries includePositions = this.includePositions;
         return includePositions != null ? includePositions.size() : materialized.size();
     }
 

@@ -4,6 +4,7 @@
 * #210 RowProxy: support for primitives and simpler casting
 * #211 Optimization: replace Accum with direct array ops on primitive Series
 * #213 StrExp.split()
+* #219 IndexedSeries.size(): NPE due to a race condtion
 
 ## Release 0.18
 
