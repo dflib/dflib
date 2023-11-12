@@ -387,6 +387,81 @@ public class Index implements Iterable<String> {
         return positions;
     }
 
+    /**
+     * Returns Index positions for all index labels except the labels specified as the argument
+     *
+     * @since 0.19
+     */
+    public int[] positionsExcept(String... exceptLabels) {
+
+        int len = exceptLabels.length;
+        if (len == 0) {
+            return getPositions();
+        }
+
+        Set<String> excludes = new HashSet<>();
+        for (String e : exceptLabels) {
+            excludes.add(e);
+        }
+
+        return positions(s -> !excludes.contains(s));
+    }
+
+
+    /**
+     * Returns Index positions for all index labels except the positions specified as the argument
+     *
+     * @since 0.19
+     */
+    public int[] positionsExcept(int... exceptPositions) {
+
+        int exceptLen = exceptPositions.length;
+        if (exceptLen == 0) {
+            return getPositions();
+        }
+
+        Set<Integer> excludes = new HashSet<>((int) Math.ceil(exceptLen / 0.75));
+        for (int e : exceptPositions) {
+            excludes.add(e);
+        }
+
+        int len = labels.length;
+        int[] positions = new int[len - excludes.size()];
+
+        for (int ii = 0, i = 0; i < len; i++) {
+            if (!excludes.contains(i)) {
+                positions[ii++] = i;
+            }
+        }
+
+        return positions;
+    }
+
+    /**
+     * @since 0.19
+     */
+    public int[] positions(Predicate<String> labelCondition) {
+        if (labelPositions == null) {
+            this.labelPositions = computeLabelPositions();
+        }
+
+        List<Integer> positions = new ArrayList<>();
+        for (Map.Entry<String, Integer> e : labelPositions.entrySet()) {
+            if (labelCondition.test(e.getKey())) {
+                positions.add(e.getValue());
+            }
+        }
+
+        // presumably "labelPositions" is in order of labels, so no need to sort "positions"
+        int len = positions.size();
+        int[] intPositions = new int[len];
+        for (int i = 0; i < len; i++) {
+            intPositions[i] = positions.get(i);
+        }
+
+        return intPositions;
+    }
+
     public boolean hasLabel(String label) {
         if (labelPositions == null) {
             this.labelPositions = computeLabelPositions();

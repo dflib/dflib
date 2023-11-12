@@ -16,12 +16,36 @@ public class IndexTest {
     }
 
     @Test
-    public void testPositions() {
+    public void testPositions_ByLabel() {
         Index i = Index.of("a", "b", "c", "d");
 
         assertArrayEquals(new int[0], i.positions());
         assertArrayEquals(new int[]{0, 2}, i.positions("a", "c"));
         assertArrayEquals(new int[]{2, 0}, i.positions("c", "a"));
+    }
+
+    @Test
+    public void testPositionsExcept_ByLabel() {
+        Index i = Index.of("a", "b", "c", "d");
+
+        assertArrayEquals(new int[]{0, 1, 2, 3}, i.positionsExcept(new String[0]));
+        assertArrayEquals(new int[]{1, 3}, i.positionsExcept("a", "c"));
+        assertArrayEquals(new int[0], i.positionsExcept("a", "b", "c", "d"));
+    }
+
+    @Test
+    public void testPositionsExcept_ByPos() {
+        Index i = Index.of("a", "b", "c", "d");
+
+        assertArrayEquals(new int[]{0, 1, 2, 3}, i.positionsExcept(new int[0]));
+        assertArrayEquals(new int[]{0, 2}, i.positionsExcept(1, 3));
+        assertArrayEquals(new int[0], i.positionsExcept(0, 1, 3, 2));
+    }
+
+    @Test
+    public void testPositions_Predicated() {
+        Index i = Index.of("a", "b", "c", "d");
+        assertArrayEquals(new int[]{2, 3}, i.positions(c -> c.charAt(0) >= 'c'));
     }
 
     @Test
