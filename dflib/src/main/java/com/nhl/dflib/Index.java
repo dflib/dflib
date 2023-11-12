@@ -305,6 +305,36 @@ public class Index implements Iterable<String> {
         return pos;
     }
 
+    /**
+     * Returns Index positions corresponding to the array of labels.
+     *
+     * @since 0.19
+     */
+    public int[] positions(String... labels) {
+
+        int len = labels.length;
+        if (len == 0) {
+            return new int[0];
+        }
+
+        if (labelPositions == null) {
+            this.labelPositions = computeLabelPositions();
+        }
+
+        int[] positions = new int[len];
+
+        for (int i = 0; i < len; i++) {
+            Integer pos = labelPositions.get(labels[i]);
+            if (pos == null) {
+                throw new IllegalArgumentException("Label '" + labels[i] + "' is not present in the Index");
+            }
+
+            positions[i] = pos;
+        }
+
+        return positions;
+    }
+
     public boolean hasLabel(String label) {
         if (labelPositions == null) {
             this.labelPositions = computeLabelPositions();
@@ -343,8 +373,8 @@ public class Index implements Iterable<String> {
     }
 
     /**
-     * @since 0.7
      * @return a new Series object with Index labels as elements.
+     * @since 0.7
      */
     public Series<String> toSeries() {
         return Series.of(labels);

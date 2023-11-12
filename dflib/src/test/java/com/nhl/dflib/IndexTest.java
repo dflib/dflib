@@ -4,9 +4,25 @@ import com.nhl.dflib.unit.IndexAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class IndexTest {
+
+    @Test
+    public void testPositions() {
+        Index i = Index.forLabels("a", "b", "c", "d");
+
+        assertArrayEquals(new int[0], i.positions());
+        assertArrayEquals(new int[]{0, 2}, i.positions("a", "c"));
+        assertArrayEquals(new int[]{2, 0}, i.positions("c", "a"));
+    }
+
+    @Test
+    public void testPositions_NoLabel() {
+        Index i = Index.forLabels("a", "b");
+        assertThrows(IllegalArgumentException.class, () -> i.positions("a", "c"));
+    }
 
     @Test
     public void testWithNames_Enum() {
