@@ -36,9 +36,9 @@ public class Avro_SchemaSerializationTest {
     @Test
     public void saveSchema_DataFrame() throws UnsupportedEncodingException {
 
-        DataFrame df = DataFrame.newFrame(
+        DataFrame df = DataFrame.byColumn(
                 "int", "Integer", "long", "Long", "double", "Double", "bool", "Bool", "String", "byte_array", "LocalDate")
-                .columns(
+                .of(
                         Series.ofInt(1, 2),
                         Series.of(11, null),
                         Series.ofLong(Long.MAX_VALUE - 1L, 5L),

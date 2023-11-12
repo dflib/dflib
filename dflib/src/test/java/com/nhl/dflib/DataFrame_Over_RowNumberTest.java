@@ -14,7 +14,7 @@ public class DataFrame_Over_RowNumberTest {
 
     @Test
     public void test() {
-        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 1, "x", "m",
                 2, "y", "n",
                 1, "z", "k",
@@ -27,7 +27,7 @@ public class DataFrame_Over_RowNumberTest {
 
     @Test
     public void partitioned() {
-        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 1, "x", "m",
                 2, "y", "n",
                 1, "z", "k",
@@ -43,7 +43,7 @@ public class DataFrame_Over_RowNumberTest {
 
     @Test
     public void sorted() {
-        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 1, "x", "3",
                 2, "y", "4",
                 1, "z", "2",
@@ -62,7 +62,7 @@ public class DataFrame_Over_RowNumberTest {
 
     @Test
     public void partitioned_Sorted() {
-        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 1, "x", "m",
                 2, "y", "n",
                 1, "z", "k",

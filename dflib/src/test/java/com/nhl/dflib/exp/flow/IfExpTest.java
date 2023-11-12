@@ -13,7 +13,7 @@ public class IfExpTest {
     public void mix() {
         Exp<String> exp = ifExp($col("c").eq("x"), $str("a"), $str("b"));
 
-        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 "1", "2", "x",
                 null, "5", "y",
                 null, "6", "x",
@@ -27,7 +27,7 @@ public class IfExpTest {
     public void allTrue() {
         Exp<String> exp = ifExp($col("c").eq("x"), $str("a"), $str("b"));
 
-        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 "1", "2", "x",
                 null, "5", "x",
                 null, "6", "x",
@@ -41,7 +41,7 @@ public class IfExpTest {
     public void allFalse() {
         Exp<String> exp = ifExp($col("c").eq("y"), $str("a"), $str("b"));
 
-        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 "1", "2", "x",
                 null, "5", "x",
                 null, "6", "x",

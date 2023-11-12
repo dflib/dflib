@@ -12,7 +12,7 @@ public class DataFrameInlinePrintWorkerTest {
 
     @BeforeEach
     public void initDataFrameParts() {
-        this.df = DataFrame.newFrame("col1", "column2").foldByRow(
+        this.df = DataFrame.foldByRow("col1", "column2").of(
                 "one", 1,
                 "two", 2,
                 "three", 3,

@@ -23,7 +23,7 @@ public class LongColumnTest {
 
     @Test
     public void getColumnName_DataFrame() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
+        DataFrame df = DataFrame.foldByRow("a", "b").of();
         assertEquals("b", $long("b").getColumnName(df));
         assertEquals("a", $long(0).getColumnName(df));
     }
@@ -39,7 +39,7 @@ public class LongColumnTest {
     public void eval() {
         NumExp<Long> e = $long("b");
 
-        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 "1", 2L, 3L,
                 "4", Long.MAX_VALUE, 6L);
 
@@ -50,7 +50,7 @@ public class LongColumnTest {
     public void castAsDecimal() {
 
         DecimalExp e = $long("a").castAsDecimal().scale(2);
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 2L,
                 355L,
                 -3L);
@@ -63,7 +63,7 @@ public class LongColumnTest {
 
         NumExp<?> e = $long("b").add($long("a"));
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1L, 2000_000_000_001L,
                 3L, 4L);
 
@@ -126,7 +126,7 @@ public class LongColumnTest {
 
         Condition c = $long("a").eq(3);
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1L, -1,
                 3L, 3,
                 3L, 4);
@@ -139,7 +139,7 @@ public class LongColumnTest {
 
         Condition c = $long("a").ne(3);
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1L, -1,
                 3L, 3,
                 3L, 4);
@@ -153,7 +153,7 @@ public class LongColumnTest {
 
         Condition c = $long("a").ne(new BigDecimal("3"));
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1L, -1,
                 3L, 3,
                 3L, 4);
@@ -165,7 +165,7 @@ public class LongColumnTest {
     public void cumSum() {
         NumExp<?> exp = $long("a").cumSum();
 
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 null,
                 2L,
                 5L,

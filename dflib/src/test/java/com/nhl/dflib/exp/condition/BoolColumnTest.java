@@ -21,7 +21,7 @@ public class BoolColumnTest {
 
     @Test
     public void name_DataFrame() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
+        DataFrame df = DataFrame.foldByRow("a", "b").of();
         assertEquals("b", $bool("b").getColumnName(df));
         assertEquals("a", $bool(0).getColumnName(df));
     }

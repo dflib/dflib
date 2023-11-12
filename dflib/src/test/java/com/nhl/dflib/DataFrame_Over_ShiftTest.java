@@ -14,7 +14,7 @@ public class DataFrame_Over_ShiftTest {
 
     @Test
     public void default_One() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(1, "x");
+        DataFrame df = DataFrame.foldByRow("a", "b").of(1, "x");
 
         Series<Integer> s1 = df.over().shift("b", 1);
         new SeriesAsserts(s1).expectData(new Object[]{null});
@@ -31,7 +31,7 @@ public class DataFrame_Over_ShiftTest {
 
     @Test
     public void default_Many() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "z",
@@ -50,7 +50,7 @@ public class DataFrame_Over_ShiftTest {
 
     @Test
     public void partitioned() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "z",
@@ -67,7 +67,7 @@ public class DataFrame_Over_ShiftTest {
 
     @Test
     public void sorted() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "z",
@@ -83,7 +83,7 @@ public class DataFrame_Over_ShiftTest {
 
     @Test
     public void partitioned_Sorted() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 2, "x",
                 2, "y",
                 1, "z",

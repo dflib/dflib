@@ -82,7 +82,7 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
 
         File file = new File(outPath("testSave_ToFile.xlsx"));
 
-        DataFrame df = DataFrame.newFrame("C1", "C2").foldByRow(
+        DataFrame df = DataFrame.foldByRow("C1", "C2").of(
                 "a", "b",
                 "c", "d");
 
@@ -100,7 +100,7 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
 
         String filePath = outPath("testSave_ToFilePath.xlsx");
 
-        DataFrame df = DataFrame.newFrame("C1", "C2").foldByRow(
+        DataFrame df = DataFrame.foldByRow("C1", "C2").of(
                 "a", "b",
                 "c", "d");
 
@@ -119,7 +119,7 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
         String path = outPath("Mkdirs" + File.separator + "f2" + File.separator + "testSave_Mkdirs.xlsx");
         File file = new File(path);
 
-        DataFrame df = DataFrame.newFrame("C1", "C2").foldByRow(
+        DataFrame df = DataFrame.foldByRow("C1", "C2").of(
                 "a", "b",
                 "c", "d");
 
@@ -138,7 +138,7 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
         String path = outPath("NoMkdirs" + File.separator + "f4" + File.separator + "testSave_NoMkdirs.xlsx");
         File file = new File(path);
 
-        DataFrame df = DataFrame.newFrame("C1", "C2").foldByRow(
+        DataFrame df = DataFrame.foldByRow("C1", "C2").of(
                 "a", "b",
                 "c", "d");
 
@@ -150,7 +150,7 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
 
         File file = new File(outPath("testSave_NoHeader.xlsx"));
 
-        DataFrame df = DataFrame.newFrame("C1", "C2").foldByRow(
+        DataFrame df = DataFrame.foldByRow("C1", "C2").of(
                 "x", "y",
                 "c", "d");
 
@@ -168,15 +168,15 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
 
         File file = new File(outPath("testSave_MultiSheet.xlsx"));
 
-        DataFrame df1 = DataFrame.newFrame("C1", "C2").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("C1", "C2").of(
                 "a", "b",
                 "d", "c");
 
-        DataFrame df2 = DataFrame.newFrame("C3", "C4").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("C3", "C4").of(
                 "e", "f",
                 "g", "h");
 
-        DataFrame df3 = DataFrame.newFrame("C5", "C6").foldByRow(
+        DataFrame df3 = DataFrame.foldByRow("C5", "C6").of(
                 "i", "j",
                 "k", "l");
 
@@ -203,7 +203,7 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
     @Test
     public void saveSheet_CustomStyle() throws IOException {
 
-        DataFrame df = DataFrame.newFrame("C1", "C2").foldByRow(
+        DataFrame df = DataFrame.foldByRow("C1", "C2").of(
                 "a", "b",
                 "c", "d");
 
@@ -242,7 +242,7 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
     @Test
     public void saveSheet_CustomColumnWidth() throws IOException {
 
-        DataFrame df = DataFrame.newFrame("C1", "C2").foldByRow(
+        DataFrame df = DataFrame.foldByRow("C1", "C2").of(
                 "--", "b",
                 "c", "d");
 
@@ -266,7 +266,7 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
     @Test
     public void saveSheet_CustomColumnWidth_AutosizeColumnWidth() throws IOException {
 
-        DataFrame df = DataFrame.newFrame("C1", "C2", "C3").foldByRow(
+        DataFrame df = DataFrame.foldByRow("C1", "C2", "C3").of(
                 "--", "b", "--",
                 "c", "d", null);
 

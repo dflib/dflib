@@ -14,7 +14,7 @@ public class DataFrame_Over_AggTest {
 
     @Test
     public void test() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "z",
@@ -33,7 +33,7 @@ public class DataFrame_Over_AggTest {
 
     @Test
     public void partitioned() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "z",
@@ -52,7 +52,7 @@ public class DataFrame_Over_AggTest {
 
     @Test
     public void sorted() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "z",
@@ -77,7 +77,7 @@ public class DataFrame_Over_AggTest {
 
     @Test
     public void partitioned_Sorted() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "z",

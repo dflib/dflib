@@ -16,7 +16,7 @@ public class JsonSaverTest {
     @DisplayName("single column")
     public void singleColumn() {
 
-        DataFrame df = DataFrame.newFrame("a").foldByRow(1, 2, 3);
+        DataFrame df = DataFrame.foldByRow("a").of(1, 2, 3);
 
         StringWriter out = new StringWriter();
         Json.saver().save(df, out);
@@ -30,7 +30,7 @@ public class JsonSaverTest {
         LocalDate date = LocalDate.of(2021, 2, 1);
         LocalDateTime timestamp = LocalDateTime.of(2021, 2, 1, 1, 2, 3);
 
-        DataFrame df = DataFrame.newFrame("a", "b", "c", "d", "e").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b", "c", "d", "e").of(
                 1, "B", date, timestamp, true,
                 2, "C", date.plusDays(1), timestamp, false,
                 3, "D", date.minusDays(1), timestamp, true);

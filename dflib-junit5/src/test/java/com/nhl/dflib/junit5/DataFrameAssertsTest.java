@@ -1,7 +1,6 @@
 package com.nhl.dflib.junit5;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
@@ -13,7 +12,7 @@ public class DataFrameAssertsTest {
     @Test
     public void expectRows_String() {
 
-        DataFrame df = DataFrame.newFrame("a").foldByRow("a", "b");
+        DataFrame df = DataFrame.foldByRow("a").of("a", "b");
         new DataFrameAsserts(df, "a")
                 .expectHeight(2)
                 .expectRow(0, "a")
@@ -23,7 +22,7 @@ public class DataFrameAssertsTest {
     @Test
     public void expectRows_Nulls() {
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(null, null, null, null);
+        DataFrame df = DataFrame.foldByRow("a", "b").of(null, null, null, null);
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)
                 .expectRow(0, null, null)
@@ -33,7 +32,7 @@ public class DataFrameAssertsTest {
     @Test
     public void expectRows_NullVararg() {
 
-        DataFrame df = DataFrame.newFrame("a").foldByRow(null, null);
+        DataFrame df = DataFrame.foldByRow("a").of(null, null);
         new DataFrameAsserts(df, "a")
                 .expectHeight(2)
                 .expectRow(0, (Object[]) null)
@@ -43,8 +42,7 @@ public class DataFrameAssertsTest {
     @Test
     public void expectRows_ByteArray() {
 
-        DataFrame df = DataFrame.newFrame("a")
-                .foldByRow(new byte[]{3, 4, 5}, new byte[]{}, null);
+        DataFrame df = DataFrame.foldByRow("a").of(new byte[]{3, 4, 5}, new byte[]{}, null);
 
         new DataFrameAsserts(df, "a")
                 .expectHeight(3)
@@ -55,7 +53,7 @@ public class DataFrameAssertsTest {
 
     @Test
     public void expectRows_ArryaTypeMismatch() {
-        DataFrame df = DataFrame.newFrame("a").foldByRow(new int[]{3, 4, 5});
+        DataFrame df = DataFrame.foldByRow("a").of(new int[]{3, 4, 5});
         DataFrameAsserts asserts = new DataFrameAsserts(df, "a");
         assertThrows(AssertionError.class, () -> asserts.expectRow(0, new Object[]{new long[]{3, 4, 5}}));
     }
@@ -63,7 +61,7 @@ public class DataFrameAssertsTest {
     @Test
     public void expectRows_Mismatch() {
 
-        DataFrame df = DataFrame.newFrame("a").foldByRow("a", "b");
+        DataFrame df = DataFrame.foldByRow("a").of("a", "b");
 
         try {
             new DataFrameAsserts(df, "a")
@@ -79,7 +77,7 @@ public class DataFrameAssertsTest {
 
     @Test
     public void assertRows() {
-        DataFrame df = DataFrame.newFrame("c1").foldByRow("a", "b");
+        DataFrame df = DataFrame.foldByRow("c1").of("a", "b");
         new DataFrameAsserts(df, "c1")
                 .expectHeight(2)
                 .assertRow(0, (v) -> assertEquals("a", v))
@@ -88,7 +86,7 @@ public class DataFrameAssertsTest {
 
     @Test
     public void assertRows_MissedColumnAssert() {
-        DataFrame df = DataFrame.newFrame("c1", "c2").foldByRow("a", "b", "c", "d");
+        DataFrame df = DataFrame.foldByRow("c1", "c2").of("a", "b", "c", "d");
         try {
             new DataFrameAsserts(df, "c1", "c2")
                     .expectHeight(2)
@@ -102,7 +100,7 @@ public class DataFrameAssertsTest {
 
     @Test
     public void assertRows_nullColumnAssert() {
-        DataFrame df = DataFrame.newFrame("c1", "c2").foldByRow("a", "b", "c", "d");
+        DataFrame df = DataFrame.foldByRow("c1", "c2").of("a", "b", "c", "d");
 
         DataFrameAsserts asserts = new DataFrameAsserts(df, "c1", "c2").expectHeight(2);
 
@@ -115,7 +113,7 @@ public class DataFrameAssertsTest {
 
     @Test
     public void assertRows_nullRowAssert() {
-        DataFrame df = DataFrame.newFrame("c1", "c2").foldByRow("a", "b", "c", "d");
+        DataFrame df = DataFrame.foldByRow("c1", "c2").of("a", "b", "c", "d");
 
         DataFrameAsserts asserts = new DataFrameAsserts(df, "c1", "c2").expectHeight(2);
 
@@ -127,7 +125,7 @@ public class DataFrameAssertsTest {
     @Test
     public void expectHeight_Mismatch() {
 
-        DataFrame df = DataFrame.newFrame("a").foldByRow("a", "b");
+        DataFrame df = DataFrame.foldByRow("a").of("a", "b");
 
         try {
             new DataFrameAsserts(df, "a").expectHeight(3);

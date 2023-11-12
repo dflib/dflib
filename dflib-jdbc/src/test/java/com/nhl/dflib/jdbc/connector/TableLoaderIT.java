@@ -97,7 +97,7 @@ public class TableLoaderIT extends BaseDbTest {
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 11_000.);
 
-        DataFrame matcher = DataFrame.newFrame("id").foldByRow(1L, 3L);
+        DataFrame matcher = DataFrame.foldByRow("id").of(1L, 3L);
 
         DataFrame df = adapter.createConnector()
                 .tableLoader("t1")
@@ -119,7 +119,7 @@ public class TableLoaderIT extends BaseDbTest {
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 11_000.);
 
-        DataFrame matcher = DataFrame.newFrame("id", "name").foldByRow(
+        DataFrame matcher = DataFrame.foldByRow("id", "name").of(
                 1L, "n5",
                 3L, "n3");
 
@@ -178,7 +178,7 @@ public class TableLoaderIT extends BaseDbTest {
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 11_000.);
 
-        DataFrame matcher = DataFrame.newFrame("id").foldByRow(1L, 3L);
+        DataFrame matcher = DataFrame.foldByRow("id").of(1L, 3L);
 
         DataFrame df = adapter.createConnector()
                 .tableLoader("t1")
@@ -199,7 +199,7 @@ public class TableLoaderIT extends BaseDbTest {
                 .insert(2L, "n2", 120_000.)
                 .insert(3L, "n3", 11_000.);
 
-        DataFrame matcher = DataFrame.newFrame("id", "name").foldByRow(
+        DataFrame matcher = DataFrame.foldByRow("id", "name").of(
                 1L, "n5",
                 3L, "n3");
 

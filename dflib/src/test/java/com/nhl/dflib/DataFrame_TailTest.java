@@ -7,7 +7,7 @@ public class DataFrame_TailTest {
 
     @Test
     public void tail() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 3, "z")
@@ -21,7 +21,7 @@ public class DataFrame_TailTest {
 
     @Test
     public void tail_Zero() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 3, "z")
@@ -33,7 +33,7 @@ public class DataFrame_TailTest {
 
     @Test
     public void tail_OutOfBounds() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 3, "z")

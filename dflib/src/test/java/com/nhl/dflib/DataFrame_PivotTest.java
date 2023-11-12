@@ -15,7 +15,7 @@ public class DataFrame_PivotTest {
     @Test
     public void withAggregation_2by2() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b", "c").of(
                 1, "x", 15.0,
                 2, "y", 18.0,
                 2, "y", 19.0,
@@ -33,7 +33,7 @@ public class DataFrame_PivotTest {
     @Test
     public void withAggregation_4_4() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b", "c").of(
                 1, "x", 1,
                 3, "y", 2,
                 2, "y", 3,
@@ -64,7 +64,7 @@ public class DataFrame_PivotTest {
     @DisplayName("Rows with null values in row columns should be included")
     public void withAggregation_NullsInPivotRows() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b", "c").of(
                 1, "x", 15.0,
                 null, "y", 18.0,
                 null, "y", 19.0,
@@ -83,7 +83,7 @@ public class DataFrame_PivotTest {
     @DisplayName("Rows with null values in pivot columns are skipped, as we can't have null column labels")
     public void withAggregation_NullInPivotColumns() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b", "c").of(
                 1, null, 15.0,
                 2, "y", 18.0,
                 2, "y", 19.0,
@@ -101,7 +101,7 @@ public class DataFrame_PivotTest {
     @Test
     public void noAggregation() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b", "c").of(
                 1, "x", 15.0,
                 2, "y", 19.0,
                 1, "y", 20.0);
@@ -118,7 +118,7 @@ public class DataFrame_PivotTest {
     @Test
     public void noAggregation_Dupes() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b", "c").of(
                 1, "x", 15.0,
                 2, "y", 19.0,
                 2, "y", 21.0,
@@ -131,7 +131,7 @@ public class DataFrame_PivotTest {
     @Test
     public void withAggregation_WithConverstion() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b", "c").of(
                 1, "x", 15.0,
                 2, "y", 18.0,
                 2, "y", 19.0,

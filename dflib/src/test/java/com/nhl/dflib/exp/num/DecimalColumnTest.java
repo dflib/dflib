@@ -28,7 +28,7 @@ public class DecimalColumnTest {
 
     @Test
     public void getColumnName_DataFrame() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
+        DataFrame df = DataFrame.foldByRow("a", "b").of();
         assertEquals("b", $decimal("b").getColumnName(df));
         assertEquals("a", $decimal(0).getColumnName(df));
     }
@@ -37,7 +37,7 @@ public class DecimalColumnTest {
     public void eval() {
         DecimalExp exp = $decimal("b");
 
-        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 "1", new BigDecimal("2.0100287"), new BigDecimal("2.010029"),
                 "4", new BigDecimal("2.01001"), new BigDecimal("2.01003"));
 
@@ -53,7 +53,7 @@ public class DecimalColumnTest {
 
     @Test
     public void scale() {
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 new BigDecimal("2.0100287"),
                 new BigDecimal("4.5"));
 
@@ -69,7 +69,7 @@ public class DecimalColumnTest {
 
     @Test
     public void castAsDecimal_DataFrame() {
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 new BigDecimal("2.0100287"),
                 new BigDecimal("4.5"));
 
@@ -89,7 +89,7 @@ public class DecimalColumnTest {
 
         DecimalExp exp = $decimal("a").add(1).scale(2);
 
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 new BigDecimal("2.0100287"),
                 new BigDecimal("4.5"));
 
@@ -100,7 +100,7 @@ public class DecimalColumnTest {
     public void cumSum() {
         DecimalExp exp = $decimal("a").cumSum();
 
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 null,
                 new BigDecimal("2.01"),
                 new BigDecimal("4.59"),
@@ -122,7 +122,7 @@ public class DecimalColumnTest {
     public void sum() {
         DecimalExp exp = $decimal("a").sum().scale(2);
 
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 new BigDecimal("2.0100287"),
                 new BigDecimal("4.5"));
 
@@ -133,7 +133,7 @@ public class DecimalColumnTest {
     public void sum_Nulls() {
         DecimalExp exp = $decimal("a").sum().scale(2);
 
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 new BigDecimal("2.0100287"),
                 null,
                 new BigDecimal("4.5"));
@@ -172,7 +172,7 @@ public class DecimalColumnTest {
 
     @Test
     public void add_Decimal() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 new BigDecimal("1.01"), new BigDecimal("2."),
                 new BigDecimal("3."), new BigDecimal("4.5"));
 
@@ -182,7 +182,7 @@ public class DecimalColumnTest {
 
     @Test
     public void divide_Int() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 new BigDecimal("35"), 2,
                 new BigDecimal("3.3"), 3);
 
@@ -192,7 +192,7 @@ public class DecimalColumnTest {
 
     @Test
     public void divide_Double() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 new BigDecimal("5.0"), 2.5,
                 new BigDecimal("3.3"), 3.33);
 
@@ -205,7 +205,7 @@ public class DecimalColumnTest {
     public void gT_Decimal() {
         Condition c = $decimal("a").gt($decimal("b"));
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 new BigDecimal("1.1"), new BigDecimal("1.0001"),
                 new BigDecimal("3"), new BigDecimal("3"),
                 new BigDecimal("1.1"), new BigDecimal("1.2"));
@@ -215,7 +215,7 @@ public class DecimalColumnTest {
 
     @Test
     public void abs() {
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 new BigDecimal("-5.1"),
                 BigDecimal.ZERO,
                 new BigDecimal("11.5"));
@@ -227,7 +227,7 @@ public class DecimalColumnTest {
     @Test
     public void ne() {
 
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 new BigDecimal("-5.1"),
                 BigDecimal.ZERO,
                 new BigDecimal("11.5"));
@@ -239,7 +239,7 @@ public class DecimalColumnTest {
     @Test
     public void eq() {
 
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 new BigDecimal("-5.1"),
                 BigDecimal.ZERO,
                 new BigDecimal("11.5"));
@@ -251,7 +251,7 @@ public class DecimalColumnTest {
     @Test
     public void eq_Zero() {
 
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 new BigDecimal("-5.1"),
                 BigDecimal.ZERO,
                 new BigDecimal("0"),
@@ -264,7 +264,7 @@ public class DecimalColumnTest {
     @Test
     public void ne_NonNumber() {
 
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 new BigDecimal("-5.1"),
                 BigDecimal.ZERO,
                 new BigDecimal("11.5"));

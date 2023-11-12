@@ -15,7 +15,7 @@ public class CsvSaverTest extends BaseCsvTest {
     @Test
     public void saveToString() {
 
-        DataFrame df = DataFrame.newFrame("A", "B").foldByRow(
+        DataFrame df = DataFrame.foldByRow("A", "B").of(
                 1, 2,
                 3, 4);
 
@@ -27,7 +27,7 @@ public class CsvSaverTest extends BaseCsvTest {
     @Test
     public void save_ToWriter() {
 
-        DataFrame df = DataFrame.newFrame("A", "B").foldByRow(
+        DataFrame df = DataFrame.foldByRow("A", "B").of(
                 1, 2,
                 3, 4);
 
@@ -41,7 +41,7 @@ public class CsvSaverTest extends BaseCsvTest {
     @Test
     public void save_ToWriter_Format() {
 
-        DataFrame df = DataFrame.newFrame("A", "B").foldByRow(
+        DataFrame df = DataFrame.foldByRow("A", "B").of(
                 1, 2,
                 3, 4);
 
@@ -58,7 +58,7 @@ public class CsvSaverTest extends BaseCsvTest {
 
         File file = new File(outPath("testToFile.csv"));
 
-        DataFrame df = DataFrame.newFrame("A", "B").foldByRow(
+        DataFrame df = DataFrame.foldByRow("A", "B").of(
                 1, 2,
                 3, 4);
 
@@ -73,7 +73,7 @@ public class CsvSaverTest extends BaseCsvTest {
 
         String filePath = outPath("testToFilePath.csv");
 
-        DataFrame df = DataFrame.newFrame("A", "B").foldByRow(
+        DataFrame df = DataFrame.foldByRow("A", "B").of(
                 1, 2,
                 3, 4);
 
@@ -89,7 +89,7 @@ public class CsvSaverTest extends BaseCsvTest {
         String path = outPath("Mkdirs" + File.separator + "f2" + File.separator + "testToFile.csv");
         File file = new File(path);
 
-        DataFrame df = DataFrame.newFrame("A", "B").foldByRow(
+        DataFrame df = DataFrame.foldByRow("A", "B").of(
                 1, 2,
                 3, 4);
 
@@ -105,7 +105,7 @@ public class CsvSaverTest extends BaseCsvTest {
         String path = outPath("NoMkdirs" + File.separator + "f4" + File.separator + "testToFile.csv");
         File file = new File(path);
 
-        DataFrame df = DataFrame.newFrame("A", "B").foldByRow(
+        DataFrame df = DataFrame.foldByRow("A", "B").of(
                 1, 2,
                 3, 4);
 
@@ -115,7 +115,7 @@ public class CsvSaverTest extends BaseCsvTest {
 
     @Test
     public void save_NoHeader() {
-        DataFrame df = DataFrame.newFrame("A", "B").foldByRow(
+        DataFrame df = DataFrame.foldByRow("A", "B").of(
                 1, 2,
                 3, 4);
 

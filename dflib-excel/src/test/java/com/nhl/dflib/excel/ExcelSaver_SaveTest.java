@@ -17,11 +17,11 @@ public class ExcelSaver_SaveTest extends BaseExcelTest {
     @Test
     public void save_ToStream() {
 
-        DataFrame df1 = DataFrame.newFrame("C1", "C2").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("C1", "C2").of(
                 "a", "b",
                 "c", "d");
 
-        DataFrame df2 = DataFrame.newFrame("C3", "C4").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("C3", "C4").of(
                 "e", "f",
                 "g", "h");
 
@@ -49,11 +49,11 @@ public class ExcelSaver_SaveTest extends BaseExcelTest {
 
         File file = new File(outPath("testSave_ToFile.xlsx"));
 
-        DataFrame df1 = DataFrame.newFrame("C1", "C2").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("C1", "C2").of(
                 "a", "b",
                 "c", "d");
 
-        DataFrame df2 = DataFrame.newFrame("C3", "C4").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("C3", "C4").of(
                 "e", "f",
                 "g", "h");
 
@@ -80,11 +80,11 @@ public class ExcelSaver_SaveTest extends BaseExcelTest {
 
         String filePath = outPath("testSave_ToFilePath.xlsx");
 
-        DataFrame df1 = DataFrame.newFrame("C1", "C2").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("C1", "C2").of(
                 "a", "b",
                 "c", "d");
 
-        DataFrame df2 = DataFrame.newFrame("C3", "C4").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("C3", "C4").of(
                 "e", "f",
                 "g", "h");
 
@@ -112,11 +112,11 @@ public class ExcelSaver_SaveTest extends BaseExcelTest {
         String path = outPath("Mkdirs" + File.separator + "f2" + File.separator + "testSave_Mkdirs.xlsx");
         File file = new File(path);
 
-        DataFrame df1 = DataFrame.newFrame("C1", "C2").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("C1", "C2").of(
                 "a", "b",
                 "c", "d");
 
-        DataFrame df2 = DataFrame.newFrame("C3", "C4").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("C3", "C4").of(
                 "e", "f",
                 "g", "h");
 
@@ -144,11 +144,11 @@ public class ExcelSaver_SaveTest extends BaseExcelTest {
         String path = outPath("NoMkdirs" + File.separator + "f4" + File.separator + "testSave_NoMkdirs.xlsx");
         File file = new File(path);
 
-        DataFrame df1 = DataFrame.newFrame("C1", "C2").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("C1", "C2").of(
                 "a", "b",
                 "c", "d");
 
-        DataFrame df2 = DataFrame.newFrame("C3", "C4").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("C3", "C4").of(
                 "e", "f",
                 "g", "h");
 

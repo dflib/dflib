@@ -15,7 +15,7 @@ public class DataFrame_Over_MapColumnTest {
 
     @Test
     public void test() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "z",
@@ -28,7 +28,7 @@ public class DataFrame_Over_MapColumnTest {
 
     @Test
     public void partitioned() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "z",
@@ -41,7 +41,7 @@ public class DataFrame_Over_MapColumnTest {
 
     @Test
     public void sorted() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "z",
@@ -54,7 +54,7 @@ public class DataFrame_Over_MapColumnTest {
 
     @Test
     public void range_Preceding() {
-        DataFrame df = DataFrame.newFrame("value").foldByRow(
+        DataFrame df = DataFrame.foldByRow("value").of(
                 1,
                 22,
                 15,
@@ -69,7 +69,7 @@ public class DataFrame_Over_MapColumnTest {
 
     @Test
     public void sorted_Range_Preceding() {
-        DataFrame df = DataFrame.newFrame("order", "value").foldByRow(
+        DataFrame df = DataFrame.foldByRow("order", "value").of(
                 2, 1,
                 4, 22,
                 1, 15,
@@ -85,7 +85,7 @@ public class DataFrame_Over_MapColumnTest {
 
     @Test
     public void sorted_Range_Following() {
-        DataFrame df = DataFrame.newFrame("order", "value").foldByRow(
+        DataFrame df = DataFrame.foldByRow("order", "value").of(
                 2, 1,
                 4, 22,
                 1, 15,
@@ -101,7 +101,7 @@ public class DataFrame_Over_MapColumnTest {
 
     @Test
     public void partitioned_Sorted() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "z",
@@ -114,7 +114,7 @@ public class DataFrame_Over_MapColumnTest {
 
     @Test
     public void partitioned_Sorted_Range_Preceding() {
-        DataFrame df = DataFrame.newFrame("label", "order", "value").foldByRow(
+        DataFrame df = DataFrame.foldByRow("label", "order", "value").of(
                 "a", 2, 1,
                 "a", 3, 22,
                 "b", 1, 15,

@@ -54,7 +54,7 @@ public class SqlSaverIT extends BaseDbTest {
     public void save_DataFrame() {
 
 
-        DataFrame data = DataFrame.newFrame("id", "name", "salary").foldByRow(
+        DataFrame data = DataFrame.foldByRow("id", "name", "salary").of(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
@@ -91,7 +91,7 @@ public class SqlSaverIT extends BaseDbTest {
     @Test
     public void save_ParamWithFunction() {
 
-        DataFrame data = DataFrame.newFrame("id", "name", "salary").foldByRow(
+        DataFrame data = DataFrame.foldByRow("id", "name", "salary").of(
                 1, "na1", 50_000.01,
                 2L, "na2", 120_000.);
 
@@ -112,11 +112,11 @@ public class SqlSaverIT extends BaseDbTest {
     @Test
     public void save_ReuseUpdater() {
 
-        DataFrame data1 = DataFrame.newFrame("id", "name", "salary").foldByRow(
+        DataFrame data1 = DataFrame.foldByRow("id", "name", "salary").of(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
-        DataFrame data2 = DataFrame.newFrame("id", "name", "salary").foldByRow(
+        DataFrame data2 = DataFrame.foldByRow("id", "name", "salary").of(
                 3L, "n3", 60_000.01,
                 4L, "n4", 20_000.);
 
@@ -171,7 +171,7 @@ public class SqlSaverIT extends BaseDbTest {
     @Test
     public void save_Update() {
 
-        DataFrame data = DataFrame.newFrame("id", "name", "salary").foldByRow(
+        DataFrame data = DataFrame.foldByRow("id", "name", "salary").of(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
@@ -181,7 +181,7 @@ public class SqlSaverIT extends BaseDbTest {
 
         connector.sqlSaver(sql).save(data);
 
-        DataFrame updateData = DataFrame.newFrame("name", "id").foldByRow(
+        DataFrame updateData = DataFrame.foldByRow("name", "id").of(
                 "nx", 0,
                 "ny", 1);
 

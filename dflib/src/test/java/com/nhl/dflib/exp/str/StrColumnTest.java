@@ -30,7 +30,7 @@ public class StrColumnTest {
 
     @Test
     public void getColumnName_DataFrame() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
+        DataFrame df = DataFrame.foldByRow("a", "b").of();
         assertEquals("b", $str("b").getColumnName(df));
         assertEquals("a", $str(0).getColumnName(df));
     }
@@ -46,7 +46,7 @@ public class StrColumnTest {
     public void eval() {
         StrExp exp = $str("b");
 
-        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 "1", "2", "3",
                 "4", "5", "6");
 
@@ -57,7 +57,7 @@ public class StrColumnTest {
     public void eq() {
         Condition eq = $str("b").eq($str("a"));
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 "1", "1",
                 "4", "5");
 
@@ -68,7 +68,7 @@ public class StrColumnTest {
     public void ne() {
         Condition ne = $str("b").ne($str("a"));
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 "1", "1",
                 "4", "5");
 

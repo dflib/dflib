@@ -19,13 +19,13 @@ public class TxIT extends BaseDbTest {
         adapter.delete("t1");
 
         JdbcConnector connector = adapter.createConnector();
-        DataFrame df1 = DataFrame.newFrame("id", "name", "salary")
-                .foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("id", "name", "salary")
+                .of(
                         1L, "n1", 50_000.01,
                         2L, "n2", 120_000.);
 
-        DataFrame df2 = DataFrame.newFrame("id", "name", "salary")
-                .foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("id", "name", "salary")
+                .of(
                         3L, "n3", 60_000.01,
                         4L, "n4", 1_000.);
 
@@ -82,13 +82,13 @@ public class TxIT extends BaseDbTest {
     public void run_Rollback_ErrorInMetadata() {
         adapter.delete("t1");
         JdbcConnector connector = adapter.createConnector();
-        DataFrame df1 = DataFrame.newFrame("id", "name", "salary")
-                .foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("id", "name", "salary")
+                .of(
                         1L, "n1", 50_000.01,
                         2L, "n2", 120_000.);
 
-        DataFrame df2 = DataFrame.newFrame("id", "name", "salary")
-                .foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("id", "name", "salary")
+                .of(
                         3L, "n3", 60_000.01,
                         4L, "n4", 1_000.);
 
@@ -115,13 +115,13 @@ public class TxIT extends BaseDbTest {
     public void run_Rollback_ErrorData() {
         adapter.delete("t1");
         JdbcConnector connector = adapter.createConnector();
-        DataFrame df1 = DataFrame.newFrame("id", "name", "salary")
-                .foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("id", "name", "salary")
+                .of(
                         1L, "n1", 50_000.01,
                         2L, "n2", 120_000.);
 
-        DataFrame df2 = DataFrame.newFrame("id", "name", "salary")
-                .foldByRow(3L, "n3", "XXXX");
+        DataFrame df2 = DataFrame.foldByRow("id", "name", "salary")
+                .of(3L, "n3", "XXXX");
 
 
         try {

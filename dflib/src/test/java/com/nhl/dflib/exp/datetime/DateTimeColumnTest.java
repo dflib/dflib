@@ -27,7 +27,7 @@ public class DateTimeColumnTest {
 
     @Test
     public void getColumnName_DataFrame() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
+        DataFrame df = DataFrame.foldByRow("a", "b").of();
         assertEquals("b", $dateTime("b").getColumnName(df));
         assertEquals("a", $dateTime(0).getColumnName(df));
     }
@@ -36,7 +36,7 @@ public class DateTimeColumnTest {
     public void eval() {
         DateTimeExp exp = $dateTime("b");
 
-        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 "1", LocalDateTime.of(2007, 1, 8, 1, 2, 3), LocalDate.of(209, 2, 2),
                 "4", LocalDateTime.of(2011, 11, 9, 4, 5, 6), LocalDate.of(2005, 3, 5));
 
@@ -107,7 +107,7 @@ public class DateTimeColumnTest {
     public void eq() {
         Condition eq = $dateTime("b").eq($col("c"));
 
-        DataFrame df = DataFrame.newFrame("b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("b", "c").of(
                 LocalDateTime.of(2007, 1, 8, 1, 1, 2), LocalDateTime.of(2007, 1, 8, 1, 1, 2),
                 LocalDateTime.of(2009, 2, 2, 1, 1, 1), LocalDateTime.of(2005, 3, 5, 1, 1, 1),
                 LocalDateTime.of(2009, 3, 5, 1, 1, 1), LocalDateTime.of(2005, 3, 5, 1, 1, 2));
@@ -119,7 +119,7 @@ public class DateTimeColumnTest {
     public void ne() {
         Condition ne = $dateTime("b").ne($col("c"));
 
-        DataFrame df = DataFrame.newFrame("b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("b", "c").of(
                 LocalDateTime.of(2007, 1, 8, 1, 1, 2), LocalDateTime.of(2007, 1, 8, 1, 1, 2),
                 LocalDateTime.of(2009, 2, 2, 1, 1, 1), LocalDateTime.of(2005, 3, 5, 1, 1, 1),
                 LocalDateTime.of(2009, 3, 5, 1, 1, 1), LocalDateTime.of(2005, 3, 5, 1, 1, 2));
@@ -131,7 +131,7 @@ public class DateTimeColumnTest {
     public void lt() {
         Condition lt = $dateTime("b").lt($col("c"));
 
-        DataFrame df = DataFrame.newFrame("b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("b", "c").of(
                 LocalDateTime.of(2007, 1, 8, 1, 1, 1), LocalDateTime.of(2009, 1, 8, 1, 1, 1),
                 LocalDateTime.of(2009, 2, 2, 1, 1, 1), LocalDateTime.of(2005, 3, 5, 1, 1, 1));
 

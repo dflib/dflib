@@ -10,7 +10,7 @@ public class DataFrameAssertsTest {
     @Test
     public void expectRows_String() {
 
-        DataFrame df = DataFrame.newFrame("a").foldByRow("a", "b", null);
+        DataFrame df = DataFrame.foldByRow("a").of("a", "b", null);
         new DataFrameAsserts(df, "a")
                 .expectHeight(3)
                 .expectRow(0, "a")
@@ -21,7 +21,7 @@ public class DataFrameAssertsTest {
     @Test
     public void expectRows_ByteArray() {
 
-        DataFrame df = DataFrame.newFrame("a").foldByRow(new byte[]{3, 4, 5}, new byte[]{}, null);
+        DataFrame df = DataFrame.foldByRow("a").of(new byte[]{3, 4, 5}, new byte[]{}, null);
         new DataFrameAsserts(df, "a")
                 .expectHeight(3)
                 .expectRow(0, new Object[]{new byte[]{3, 4, 5}})
@@ -31,7 +31,7 @@ public class DataFrameAssertsTest {
 
     @Test
     public void expectRows_ArrayTypeMismatch() {
-        DataFrame df = DataFrame.newFrame("a").foldByRow(new int[]{3, 4, 5});
+        DataFrame df = DataFrame.foldByRow("a").of(new int[]{3, 4, 5});
         assertThrows(AssertionError.class, () ->  new DataFrameAsserts(df, "a").expectRow(0, new Object[]{new long[]{3, 4, 5}}));
     }
 }

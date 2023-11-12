@@ -10,11 +10,11 @@ public class DataFrameConditionsTest {
     @Test
     public void eq1() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
@@ -29,11 +29,11 @@ public class DataFrameConditionsTest {
     @Test
     public void eq2() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("a", "b").of(
                 1, "X",
                 2, "y");
 
@@ -48,11 +48,11 @@ public class DataFrameConditionsTest {
     @Test
     public void ne1() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
@@ -67,11 +67,11 @@ public class DataFrameConditionsTest {
     @Test
     public void ne2() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "Y");
 
@@ -86,11 +86,11 @@ public class DataFrameConditionsTest {
     @Test
     public void ne_ColMismatch() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.newFrame("a", "B").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("a", "B").of(
                 1, "x",
                 2, "Y");
 
@@ -100,11 +100,11 @@ public class DataFrameConditionsTest {
     @Test
     public void ne_RowsMismatch() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("a", "b").of(
                 2, "Y");
 
         assertThrows(IllegalArgumentException.class, () -> df1.ne(df2));

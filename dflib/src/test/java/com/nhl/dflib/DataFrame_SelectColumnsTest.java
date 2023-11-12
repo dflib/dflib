@@ -10,7 +10,7 @@ public class DataFrame_SelectColumnsTest {
 
     @Test
     public void byCondition() {
-        DataFrame df = DataFrame.newFrame("x1", "b", "x2").foldByRow(
+        DataFrame df = DataFrame.foldByRow("x1", "b", "x2").of(
                 1, "x", "z",
                 2, "y", "a")
                 .selectColumns(c -> c.startsWith("x"));
@@ -23,7 +23,7 @@ public class DataFrame_SelectColumnsTest {
 
     @Test
     public void byLabel() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y")
                 .selectColumns("b");
@@ -36,7 +36,7 @@ public class DataFrame_SelectColumnsTest {
 
     @Test
     public void withExp() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y")
                 .selectColumns($col("b"), $int("a").mul($int("a")));
@@ -49,7 +49,7 @@ public class DataFrame_SelectColumnsTest {
 
     @Test
     public void duplicateColumn() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y")
                 .selectColumns("b", "b", "b");
@@ -64,7 +64,7 @@ public class DataFrame_SelectColumnsTest {
     @Test
     public void byIndex() {
 
-        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 1, "x", "m",
                 2, "y", "n")
                 .selectColumns(Index.of("b", "a"));
@@ -77,7 +77,7 @@ public class DataFrame_SelectColumnsTest {
 
     @Test
     public void withAsExp(){
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y")
                 .selectColumns($col("b"), $int("a").mul($int("a")).as("c"));

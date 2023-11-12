@@ -26,7 +26,7 @@ public class DateColumnTest {
 
     @Test
     public void getColumnName_DataFrame() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
+        DataFrame df = DataFrame.foldByRow("a", "b").of();
         assertEquals("b", $date("b").getColumnName(df));
         assertEquals("a", $date(0).getColumnName(df));
     }
@@ -35,7 +35,7 @@ public class DateColumnTest {
     public void eval() {
         DateExp exp = $date("b");
 
-        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 "1", LocalDate.of(2007, 1, 8), LocalDate.of(209, 2, 2),
                 "4", LocalDate.of(2011, 11, 9), LocalDate.of(2005, 3, 5));
 
@@ -74,7 +74,7 @@ public class DateColumnTest {
     public void eq() {
         Condition eq = $date("b").eq($col("c"));
 
-        DataFrame df = DataFrame.newFrame("b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("b", "c").of(
                 LocalDate.of(2007, 1, 8), LocalDate.of(2007, 1, 8),
                 LocalDate.of(2009, 2, 2), LocalDate.of(2005, 3, 5));
 
@@ -85,7 +85,7 @@ public class DateColumnTest {
     public void ne() {
         Condition ne = $date("b").ne($col("c"));
 
-        DataFrame df = DataFrame.newFrame("b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("b", "c").of(
                 LocalDate.of(2007, 1, 8), LocalDate.of(2007, 1, 8),
                 LocalDate.of(2009, 2, 2), LocalDate.of(2005, 3, 5));
 
@@ -96,7 +96,7 @@ public class DateColumnTest {
     public void lt() {
         Condition lt = $date("b").lt($col("c"));
 
-        DataFrame df = DataFrame.newFrame("b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("b", "c").of(
                 LocalDate.of(2007, 1, 8), LocalDate.of(2009, 1, 8),
                 LocalDate.of(2009, 2, 2), LocalDate.of(2005, 3, 5));
 

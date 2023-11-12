@@ -48,7 +48,7 @@ public class WindowRangeTest {
 
         WindowRange range = WindowRange.of(2, 2);
 
-        DataFrame df = DataFrame.newFrame("a").foldByRow(1, 2, 3, 4);
+        DataFrame df = DataFrame.foldByRow("a").of(1, 2, 3, 4);
 
         new DataFrameAsserts(range.selectRows(df, 0), "a").expectHeight(3).expectRow(0, 1).expectRow(1, 2).expectRow(2, 3);
         new DataFrameAsserts(range.selectRows(df, 1), "a").expectHeight(4).expectRow(0, 1).expectRow(1, 2).expectRow(2, 3).expectRow(3, 4);
@@ -59,7 +59,7 @@ public class WindowRangeTest {
     @Test
     public void selectRows_AllPreceding() {
 
-        DataFrame df = DataFrame.newFrame("a").foldByRow(1, 2, 3, 4);
+        DataFrame df = DataFrame.foldByRow("a").of(1, 2, 3, 4);
 
         new DataFrameAsserts(WindowRange.allPreceding.selectRows(df, 0), "a").expectHeight(1).expectRow(0, 1);
         new DataFrameAsserts(WindowRange.allPreceding.selectRows(df, 1), "a").expectHeight(2).expectRow(0, 1).expectRow(1, 2);
@@ -70,7 +70,7 @@ public class WindowRangeTest {
     @Test
     public void selectRows_AllFollowing() {
 
-        DataFrame df = DataFrame.newFrame("a").foldByRow(1, 2, 3, 4);
+        DataFrame df = DataFrame.foldByRow("a").of(1, 2, 3, 4);
 
         new DataFrameAsserts(WindowRange.allFollowing.selectRows(df, 3), "a").expectHeight(1).expectRow(0, 4);
         new DataFrameAsserts(WindowRange.allFollowing.selectRows(df, 2), "a").expectHeight(2).expectRow(0, 3).expectRow(1, 4);

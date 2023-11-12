@@ -22,7 +22,7 @@ public class ConcatExpTest {
         StrExp exp1 = Exp.concat($str("b"), $int("a"));
         StrExp exp2 = Exp.concat("_", $str("b"), "]");
 
-        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 1, "2", "3",
                 4, "5", "6",
                 7, null, null,

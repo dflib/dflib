@@ -16,7 +16,7 @@ public class OrConditionTest {
 
     @Test
     public void or_Multiple() {
-        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 false, false, false,
                 true, true, true,
                 true, false, false);
@@ -29,16 +29,16 @@ public class OrConditionTest {
     public void firstMatch_DataFrame() {
         OrCondition c = new OrCondition(Exp.$bool(0), Exp.$bool(1));
 
-        DataFrame df0 = DataFrame.newFrame("t1", "f1")
-                .columns(Series.ofBool(false, false), Series.ofBool(false, false));
+        DataFrame df0 = DataFrame.byColumn("t1", "f1")
+                .of(Series.ofBool(false, false), Series.ofBool(false, false));
         assertEquals(-1, c.firstMatch(df0));
 
-        DataFrame df1 = DataFrame.newFrame("t1", "f1")
-                .columns(Series.ofBool(true, true), Series.ofBool(false, false));
+        DataFrame df1 = DataFrame.byColumn("t1", "f1")
+                .of(Series.ofBool(true, true), Series.ofBool(false, false));
         assertEquals(0, c.firstMatch(df1));
 
-        DataFrame df2 = DataFrame.newFrame("t1", "f1")
-                .columns(Series.ofBool(false, false), Series.ofBool(false, true));
+        DataFrame df2 = DataFrame.byColumn("t1", "f1")
+                .of(Series.ofBool(false, false), Series.ofBool(false, true));
         assertEquals(1, c.firstMatch(df2));
     }
 

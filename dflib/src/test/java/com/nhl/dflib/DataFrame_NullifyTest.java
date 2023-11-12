@@ -11,8 +11,8 @@ public class DataFrame_NullifyTest {
                 .newFrame("a", "b")
                 .columns(Series.ofBool(true, false), Series.ofBool(true, false));
 
-        DataFrame df = DataFrame.newFrame("a", "b")
-                .foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b")
+                .of(
                         1, "x",
                         2, "y")
                 .nullify(cond);
@@ -29,8 +29,8 @@ public class DataFrame_NullifyTest {
                 .newFrame("a", "b")
                 .columns(Series.ofBool(true, false), Series.ofBool(true, false));
 
-        DataFrame df = DataFrame.newFrame("a", "b")
-                .foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b")
+                .of(
                         1, "x",
                         2, "y").nullifyNoMatch(cond);
 

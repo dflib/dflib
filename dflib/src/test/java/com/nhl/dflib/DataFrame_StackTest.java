@@ -7,7 +7,7 @@ public class DataFrame_StackTest {
 
     @Test
     public void stack() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 null, null,
                 2, "y").stack();
@@ -22,7 +22,7 @@ public class DataFrame_StackTest {
 
     @Test
     public void stack_NoNulls() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 5, "z",
                 2, "y").stack();
@@ -39,7 +39,7 @@ public class DataFrame_StackTest {
 
     @Test
     public void stackIncludeNulls() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 null, null,
                 2, "y").stackIncludeNulls();

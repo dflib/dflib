@@ -14,7 +14,7 @@ public class GroupBy_WindowFuncsTest {
 
     @Test
     public void groupBy_RowNumbers0() {
-        GroupBy gb = DataFrame.newFrame("a", "b", "c").foldByRow(
+        GroupBy gb = DataFrame.foldByRow("a", "b", "c").of(
                 1, "x", "m",
                 2, "y", "n",
                 1, "z", "k",
@@ -27,7 +27,7 @@ public class GroupBy_WindowFuncsTest {
 
     @Test
     public void groupBy_RowNumbers1() {
-        GroupBy gb = DataFrame.newFrame("a", "b", "c").foldByRow(
+        GroupBy gb = DataFrame.foldByRow("a", "b", "c").of(
                 3, "x", "m",
                 2, "y", "n",
                 1, "z", "k",
@@ -40,7 +40,7 @@ public class GroupBy_WindowFuncsTest {
 
     @Test
     public void groupBy_RowNumbers2() {
-        GroupBy gb =  DataFrame.newFrame("a", "b", "c").foldByRow(
+        GroupBy gb =  DataFrame.foldByRow("a", "b", "c").of(
                 3, "x", "m",
                 0, "y", "n",
                 3, "z", "k",
@@ -53,7 +53,7 @@ public class GroupBy_WindowFuncsTest {
 
     @Test
     public void groupBy_RowNumbers_Sort() {
-        GroupBy gb = DataFrame.newFrame("a", "b", "c").foldByRow(
+        GroupBy gb = DataFrame.foldByRow("a", "b", "c").of(
                 3, "x", "m",
                 0, "y", "n",
                 3, "z", "k",

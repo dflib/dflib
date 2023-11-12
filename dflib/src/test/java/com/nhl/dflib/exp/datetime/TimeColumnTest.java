@@ -26,7 +26,7 @@ public class TimeColumnTest {
 
     @Test
     public void getColumnName_DataFrame() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
+        DataFrame df = DataFrame.foldByRow("a", "b").of();
         assertEquals("b", $time("b").getColumnName(df));
         assertEquals("a", $time(0).getColumnName(df));
     }
@@ -35,7 +35,7 @@ public class TimeColumnTest {
     public void eval() {
         TimeExp exp = $time("b");
 
-        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 "1", LocalTime.of(3, 12, 11), LocalTime.of(4, 10, 1),
                 "4", LocalTime.of(14, 59, 59), LocalTime.of(3, 0, 0));
 
@@ -113,7 +113,7 @@ public class TimeColumnTest {
     public void eq() {
         Condition eq = $time("b").eq($col("c"));
 
-        DataFrame df = DataFrame.newFrame("b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("b", "c").of(
                 LocalTime.of(3, 12, 11), LocalTime.of(3, 12, 11),
                 LocalTime.of(4, 12, 11), LocalTime.of(14, 59, 59));
 
@@ -124,7 +124,7 @@ public class TimeColumnTest {
     public void ne() {
         Condition exp = $time("b").ne($col("c"));
 
-        DataFrame df = DataFrame.newFrame("b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("b", "c").of(
                 LocalTime.of(3, 12, 11), LocalTime.of(3, 12, 11),
                 LocalTime.of(4, 12, 11), LocalTime.of(14, 59, 59));
 
@@ -135,7 +135,7 @@ public class TimeColumnTest {
     public void lt() {
         Condition lt = $time("b").lt($col("c"));
 
-        DataFrame df = DataFrame.newFrame("b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("b", "c").of(
                 LocalTime.of(3, 12, 11), LocalTime.of(3, 12, 11),
                 LocalTime.of(4, 12, 11), LocalTime.of(14, 59, 59));
 
@@ -146,7 +146,7 @@ public class TimeColumnTest {
     public void le() {
         Condition le = $time("b").le($col("c"));
 
-        DataFrame df = DataFrame.newFrame("b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("b", "c").of(
                 LocalTime.of(3, 12, 11), LocalTime.of(3, 12, 11),
                 LocalTime.of(4, 12, 11), LocalTime.of(14, 59, 59));
 

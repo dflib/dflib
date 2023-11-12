@@ -21,7 +21,7 @@ public class StrSplitExpTest {
     public void splitOnChar_Eval_DataFrame() {
         Exp<String[]> exp = $str("b").split(' ');
 
-        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 "1", "ab cd", "3",
                 "4", " ef g ", "6",
                 "4", "no_space", "6",

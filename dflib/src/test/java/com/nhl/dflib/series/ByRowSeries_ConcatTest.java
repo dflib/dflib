@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ByRowSeries_ConcatTest {
 
     private <T> ByRowSeries createSeries(Object... data) {
-        return new ByRowSeries(DataFrame.newFrame("a", "b").foldByRow(data));
+        return new ByRowSeries(DataFrame.foldByRow("a", "b").of(data));
     }
 
     @Test

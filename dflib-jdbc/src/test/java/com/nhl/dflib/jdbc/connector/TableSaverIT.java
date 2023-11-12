@@ -14,7 +14,7 @@ public class TableSaverIT extends BaseDbTest {
     @Test
     public void test() {
 
-        DataFrame df = DataFrame.newFrame("id", "name", "salary").foldByRow(
+        DataFrame df = DataFrame.foldByRow("id", "name", "salary").of(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
@@ -41,11 +41,11 @@ public class TableSaverIT extends BaseDbTest {
     @Test
     public void save_Append() {
 
-        DataFrame df1 = DataFrame.newFrame("id", "name", "salary").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("id", "name", "salary").of(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
-        DataFrame df2 = DataFrame.newFrame("id", "name", "salary").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("id", "name", "salary").of(
                 3L, "n3", 60_000.01,
                 4L, "n4", 20_000.);
 
@@ -65,11 +65,11 @@ public class TableSaverIT extends BaseDbTest {
     @Test
     public void save_DeleteTableData() {
 
-        DataFrame df1 = DataFrame.newFrame("id", "name", "salary").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("id", "name", "salary").of(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
-        DataFrame df2 = DataFrame.newFrame("id", "name", "salary").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("id", "name", "salary").of(
                 3L, "n3", 60_000.01,
                 4L, "n4", 20_000.);
 
@@ -94,7 +94,7 @@ public class TableSaverIT extends BaseDbTest {
                 .values(2L, "n2", 120_000.)
                 .exec();
 
-        DataFrame df = DataFrame.newFrame("id", "name", "salary").foldByRow(
+        DataFrame df = DataFrame.foldByRow("id", "name", "salary").of(
                 1L, "n1_x", 50_000.02,
                 3L, "n3", 60_000.01,
                 4L, "n4", 20_000.);
@@ -121,7 +121,7 @@ public class TableSaverIT extends BaseDbTest {
                 .values(2L, "n2", 120_000.)
                 .exec();
 
-        DataFrame df = DataFrame.newFrame("id", "name", "salary").foldByRow(
+        DataFrame df = DataFrame.foldByRow("id", "name", "salary").of(
                 1L, "n1", 50_000.02,
                 3L, "n3", 60_000.01,
                 4L, "n4", 20_000.);
@@ -153,7 +153,7 @@ public class TableSaverIT extends BaseDbTest {
                 .values(2L, "n2", 120_000.)
                 .exec();
 
-        DataFrame df = DataFrame.newFrame("id", "name", "salary").foldByRow(
+        DataFrame df = DataFrame.foldByRow("id", "name", "salary").of(
                 1L, "n1", 50_000.02,
                 3L, "n3", 60_000.01,
                 4L, "n4", 20_000.);
@@ -186,7 +186,7 @@ public class TableSaverIT extends BaseDbTest {
                 .values(2L, "n2", 120_000.)
                 .exec();
 
-        DataFrame df = DataFrame.newFrame("id", "name", "salary").foldByRow(
+        DataFrame df = DataFrame.foldByRow("id", "name", "salary").of(
                 1L, "n1_x", 50_000.02,
                 2L, "n2", 120_000.,
                 3L, "n3", 60_000.01,
@@ -222,7 +222,7 @@ public class TableSaverIT extends BaseDbTest {
                 .values(3L, "n3", 7.)
                 .exec();
 
-        DataFrame df = DataFrame.newFrame("id", "name", "salary").foldByRow(
+        DataFrame df = DataFrame.foldByRow("id", "name", "salary").of(
                 1L, "n1_x", 5.,
                 2L, "n2", 6.01,
                 3L, "n3", 7.01,
@@ -258,8 +258,8 @@ public class TableSaverIT extends BaseDbTest {
         byte[] bytes = new byte[]{3, 5, 11};
         long l1 = Integer.MAX_VALUE + 1L;
 
-        DataFrame df = DataFrame.newFrame("bigint", "int", "timestamp", "time", "date", "bytes")
-                .foldByRow(l1, 1, ldt, lt, ld, bytes);
+        DataFrame df = DataFrame.foldByRow("bigint", "int", "timestamp", "time", "date", "bytes")
+                .of(l1, 1, ldt, lt, ld, bytes);
 
         JdbcConnector connector = adapter.createConnector();
         connector.tableSaver("t2").save(df);
@@ -278,7 +278,7 @@ public class TableSaverIT extends BaseDbTest {
     @Test
     public void dataTypes_DatePartsAsInts() {
 
-        DataFrame df = DataFrame.newFrame("bigint", "int").foldByRow(
+        DataFrame df = DataFrame.foldByRow("bigint", "int").of(
                 1L, Month.DECEMBER,
                 2L, Year.of(1973),
                 3L, DayOfWeek.TUESDAY);
@@ -302,7 +302,7 @@ public class TableSaverIT extends BaseDbTest {
     @Test
     public void dataTypes_Enums() {
 
-        DataFrame df = DataFrame.newFrame("bigint", "int", "string").foldByRow(
+        DataFrame df = DataFrame.foldByRow("bigint", "int", "string").of(
                 1L, X.a, X.a,
                 2L, X.b, X.b);
 
@@ -324,7 +324,7 @@ public class TableSaverIT extends BaseDbTest {
     @Test
     public void saveWithInfo_Insert() {
 
-        DataFrame df = DataFrame.newFrame("id", "name", "salary").foldByRow(
+        DataFrame df = DataFrame.foldByRow("id", "name", "salary").of(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
@@ -349,7 +349,7 @@ public class TableSaverIT extends BaseDbTest {
                 .values(2L, "n2", 120_000.)
                 .exec();
 
-        DataFrame df = DataFrame.newFrame("id", "name", "salary").foldByRow(
+        DataFrame df = DataFrame.foldByRow("id", "name", "salary").of(
                 1L, "n1", 50_000.01,
                 2L, "n2", 120_000.);
 
@@ -375,7 +375,7 @@ public class TableSaverIT extends BaseDbTest {
                 .values(2L, "n2", 120_000.)
                 .exec();
 
-        DataFrame df = DataFrame.newFrame("id", "name", "salary").foldByRow(
+        DataFrame df = DataFrame.foldByRow("id", "name", "salary").of(
                 2L, "n2", 120_001.,
                 3L, "n3", 11_000.);
 
@@ -404,7 +404,7 @@ public class TableSaverIT extends BaseDbTest {
                 .values(5L, "n5", 5.)
                 .exec();
 
-        DataFrame df = DataFrame.newFrame("id", "name", "salary").foldByRow(
+        DataFrame df = DataFrame.foldByRow("id", "name", "salary").of(
                 1L, "n1", 50_000.01,
                 2L, "n2_u", 120_000.,
                 3L, "n3", 320_000.,

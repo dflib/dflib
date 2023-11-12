@@ -9,7 +9,7 @@ public class DataFrameSorterTest {
 
     @Test
     public void sortedPositions() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "z",

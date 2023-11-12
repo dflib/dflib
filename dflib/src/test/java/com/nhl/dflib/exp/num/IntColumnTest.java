@@ -22,7 +22,7 @@ public class IntColumnTest {
 
     @Test
     public void getColumnName_DataFrame() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
+        DataFrame df = DataFrame.foldByRow("a", "b").of();
         assertEquals("b", $int("b").getColumnName(df));
         assertEquals("a", $int(0).getColumnName(df));
     }
@@ -38,7 +38,7 @@ public class IntColumnTest {
     public void eval() {
         NumExp<Integer> e = $int("b");
 
-        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 "1", 2, 3,
                 "4", Integer.MAX_VALUE, 6);
 
@@ -48,7 +48,7 @@ public class IntColumnTest {
     @Test
     public void castAsDecimal() {
         DecimalExp e = $int("a").castAsDecimal().scale(2);
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 2,
                 355,
                 -3);
@@ -59,7 +59,7 @@ public class IntColumnTest {
 
     @Test
     public void divide_Double() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 2., 3,
                 3., 9);
 
@@ -69,7 +69,7 @@ public class IntColumnTest {
 
     @Test
     public void mod() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 2, 3,
                 3, 9);
 
@@ -79,7 +79,7 @@ public class IntColumnTest {
 
     @Test
     public void mod_IntVal() {
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 5,
                 0,
                 11);
@@ -90,7 +90,7 @@ public class IntColumnTest {
 
     @Test
     public void abs() {
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 -5,
                 0,
                 11);
@@ -101,7 +101,7 @@ public class IntColumnTest {
 
     @Test
     public void add_Long() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1L, 2,
                 3L, 4);
 
@@ -111,7 +111,7 @@ public class IntColumnTest {
 
     @Test
     public void subtract_Int() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, 2,
                 3, 4);
 
@@ -122,7 +122,7 @@ public class IntColumnTest {
 
     @Test
     public void multiply_Int() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 6, 2,
                 3, 5);
 
@@ -133,7 +133,7 @@ public class IntColumnTest {
 
     @Test
     public void multiply_Decimal() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 new BigDecimal("35.1"), 2,
                 new BigDecimal("3.3"), 3);
 
@@ -144,7 +144,7 @@ public class IntColumnTest {
 
     @Test
     public void add_Int() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, 2,
                 3, 4);
 
@@ -172,7 +172,7 @@ public class IntColumnTest {
 
     @Test
     public void add_Double() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1.01, 2,
                 3., 4);
 
@@ -185,7 +185,7 @@ public class IntColumnTest {
     public void lT_Double() {
         Condition c = $int("b").lt($double("a"));
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1.01, -1,
                 3., 4,
                 3., 3);
@@ -197,7 +197,7 @@ public class IntColumnTest {
     public void gT_Int() {
         Condition c = $int("a").gt($int("b"));
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, -1,
                 3, 3,
                 3, 4);
@@ -211,7 +211,7 @@ public class IntColumnTest {
 
         Condition c = $int("a").ge($int("b"));
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, -1,
                 3, 3,
                 3, 4);
@@ -224,7 +224,7 @@ public class IntColumnTest {
 
         Condition c = $int("a").eq(3);
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, -1,
                 3, 3,
                 3, 4);
@@ -237,7 +237,7 @@ public class IntColumnTest {
 
         Condition c = $int("a").eq(3L);
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, -1,
                 3, 3,
                 3, 4);
@@ -250,7 +250,7 @@ public class IntColumnTest {
 
         Exp<String> exp = $int("b").map(s -> s.map(i -> "_" + i));
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, 2,
                 3, 4);
 
@@ -262,7 +262,7 @@ public class IntColumnTest {
 
         Exp<String> exp = $int("b").mapVal(i -> "_" + i);
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, 2,
                 3, 4,
                 5, null);
@@ -276,7 +276,7 @@ public class IntColumnTest {
 
         Exp<Boolean> exp = $int("b").map($int("a"), Series::eq);
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, 2,
                 3, 3);
 
@@ -288,7 +288,7 @@ public class IntColumnTest {
 
         Exp<Boolean> exp = $int("b").mapVal($int("a"), Integer::equals);
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, 2,
                 3, 3,
                 5, null);
@@ -300,7 +300,7 @@ public class IntColumnTest {
     public void cumSum() {
         NumExp<?> exp = $int("a").cumSum();
 
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 null,
                 2,
                 5,

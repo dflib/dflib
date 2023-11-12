@@ -10,8 +10,8 @@ public class ValuePredicateTest {
     @Test
     public void isIn_Array() {
 
-        DataFrame df = DataFrame.newFrame("a")
-                .foldByRow(10, 20, 30, 40)
+        DataFrame df = DataFrame.foldByRow("a")
+                .of(10, 20, 30, 40)
                 .selectRows("a", ValuePredicate.isIn(20, 40));
 
         new DataFrameAsserts(df, "a")
@@ -23,8 +23,8 @@ public class ValuePredicateTest {
     @Test
     public void isIn_Iterable() {
 
-        DataFrame df = DataFrame.newFrame("a")
-                .foldByRow(10, 20, 30, 40)
+        DataFrame df = DataFrame.foldByRow("a")
+                .of(10, 20, 30, 40)
                 .selectRows("a", ValuePredicate.isIn(asList(20, 40)));
 
         new DataFrameAsserts(df, "a")
@@ -38,8 +38,8 @@ public class ValuePredicateTest {
 
         ValuePredicate<Integer> p = ValuePredicate.isIn(20, 40).and(ValuePredicate.isIn(10, 20));
 
-        DataFrame df = DataFrame.newFrame("a")
-                .foldByRow( 10, 20, 30, 40)
+        DataFrame df = DataFrame.foldByRow("a")
+                .of( 10, 20, 30, 40)
                 .selectRows("a", p);
 
         new DataFrameAsserts(df, "a")
@@ -52,8 +52,8 @@ public class ValuePredicateTest {
 
         ValuePredicate<Integer> p = ValuePredicate.isIn(20, 40).or(ValuePredicate.isIn(10, 20));
 
-        DataFrame df = DataFrame.newFrame("a")
-                .foldByRow(10, 20, 30, 40)
+        DataFrame df = DataFrame.foldByRow("a")
+                .of(10, 20, 30, 40)
                 .selectRows("a", p);
 
         new DataFrameAsserts(df, "a")
@@ -68,8 +68,8 @@ public class ValuePredicateTest {
 
         ValuePredicate<Integer> p = ValuePredicate.isIn(20, 40).negate();
 
-        DataFrame df = DataFrame.newFrame("a")
-                .foldByRow(10, 20, 30, 40)
+        DataFrame df = DataFrame.foldByRow("a")
+                .of(10, 20, 30, 40)
                 .selectRows("a", p);
 
         new DataFrameAsserts(df, "a")

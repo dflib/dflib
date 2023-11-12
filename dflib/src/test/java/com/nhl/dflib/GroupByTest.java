@@ -15,7 +15,7 @@ public class GroupByTest {
 
     @Test
     public void group() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "z",
@@ -56,7 +56,7 @@ public class GroupByTest {
 
     @Test
     public void group_NullKeysIgnored() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "z",
@@ -82,7 +82,7 @@ public class GroupByTest {
 
     @Test
     public void group_Agg() {
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "z",
@@ -102,7 +102,7 @@ public class GroupByTest {
 
     @Test
     public void group_Agg_MultipleAggregationsForKey() {
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "y",
@@ -125,7 +125,7 @@ public class GroupByTest {
 
     @Test
     public void group_toDataFrame() {
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "y",
@@ -146,7 +146,7 @@ public class GroupByTest {
 
     @Test
     public void group_Head_toDataFrame() {
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "y",
@@ -177,7 +177,7 @@ public class GroupByTest {
 
     @Test
     public void group_Head_Sort_toDataFrame() {
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "y",
@@ -199,7 +199,7 @@ public class GroupByTest {
 
     @Test
     public void group_Tail_toDataFrame() {
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "y",
@@ -230,7 +230,7 @@ public class GroupByTest {
 
     @Test
     public void group_Agg_Named() {
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "y",
@@ -253,7 +253,7 @@ public class GroupByTest {
 
     @Test
     public void group_Sort_Pos() {
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "b",
                 2, "a",
@@ -277,7 +277,7 @@ public class GroupByTest {
 
     @Test
     public void group_Sort_Name() {
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "b",
                 2, "a",
@@ -301,7 +301,7 @@ public class GroupByTest {
 
     @Test
     public void group_Sort_Names() {
-        DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b", "c").of(
                 1, "x", 2,
                 2, "b", 1,
                 2, "a", 2,
@@ -325,7 +325,7 @@ public class GroupByTest {
 
     @Test
     public void rank_NoSort() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "z",
@@ -341,7 +341,7 @@ public class GroupByTest {
 
     @Test
     public void sort_Rank() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "z",
@@ -357,7 +357,7 @@ public class GroupByTest {
 
     @Test
     public void group_Sort_Sorters() {
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "b",
                 2, "a",
@@ -381,7 +381,7 @@ public class GroupByTest {
 
     @Test
     public void sort_Sorter_Rank() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 1, "z",

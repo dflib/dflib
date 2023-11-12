@@ -55,7 +55,7 @@ public class ColumnTest {
 
     @Test
     public void name_DataFrame() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
+        DataFrame df = DataFrame.foldByRow("a", "b").of();
         assertEquals("b", $col("b").getColumnName(df));
         assertEquals("a", $col(0).getColumnName(df));
     }
@@ -69,7 +69,7 @@ public class ColumnTest {
 
     @Test
     public void isNull() {
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 "1",
                 "4",
                 null,
@@ -81,7 +81,7 @@ public class ColumnTest {
 
     @Test
     public void isNotNull() {
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 "1",
                 "4",
                 null,

@@ -11,11 +11,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void nestedLoop_Inner() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("c", "d").of(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -33,11 +33,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void nestedLoop_Inner_NoMatches() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("c", "d").of(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -53,11 +53,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void nestedLoop_Inner_IndexOverlap() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("a", "b").of(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -75,11 +75,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void nestedLoop_Left() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("c", "d").of(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -99,11 +99,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void nestedLoop_Right() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("c", "d").of(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -123,11 +123,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void nestedLoop_Full() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("c", "d").of(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -148,11 +148,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void nestedLoop_Indicator() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("c", "d").of(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -173,12 +173,12 @@ public class DataFrame_JoinsTest {
     @Test
     public void hash_Inner() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
                 4, "z");
 
-        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("c", "d").of(
                 "a", 2,
                 "b", 2,
                 "x", 4,
@@ -198,12 +198,12 @@ public class DataFrame_JoinsTest {
     @Test
     public void hash_Full_IntColumn() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y")
                 .compactInt(0, 0);
 
-        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("c", "d").of(
                 2, "a",
                 2, "b",
                 3, "c").compactInt(0, 0);
@@ -224,11 +224,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void hash_Inner_Indexed_HashOverlap() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("a", "b").of(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -246,11 +246,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void hash_Left() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("c", "d").of(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -269,11 +269,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void hash_Right_ByPos() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("c", "d").of(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -292,11 +292,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void hash_Right_ByName() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("c", "d").of(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -315,11 +315,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void hash_Right_ByMatchingName() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.newFrame("a", "d").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("a", "d").of(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -338,11 +338,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void hash_Full() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("c", "d").of(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -362,12 +362,12 @@ public class DataFrame_JoinsTest {
     @Test
     public void hash_MultiColumnHash() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "a",
                 2, "y");
 
-        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("c", "d").of(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -385,11 +385,11 @@ public class DataFrame_JoinsTest {
     @Test
     public void hash_Indicator() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.newFrame("c", "d").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("c", "d").of(
                 2, "a",
                 2, "b",
                 3, "c");

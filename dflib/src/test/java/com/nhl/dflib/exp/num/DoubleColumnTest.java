@@ -26,7 +26,7 @@ public class DoubleColumnTest {
 
     @Test
     public void name_DataFrame() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
+        DataFrame df = DataFrame.foldByRow("a", "b").of();
         assertEquals("b", $double("b").toQL(df));
         assertEquals("a", $double(0).toQL(df));
     }
@@ -42,7 +42,7 @@ public class DoubleColumnTest {
     public void eval() {
         NumExp<Double> e = $double("b");
 
-        DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 "1", 2.1, 3.,
                 "4", Double.MAX_VALUE, 6.);
 
@@ -52,7 +52,7 @@ public class DoubleColumnTest {
     @Test
     public void castAdDecimal() {
         DecimalExp e = $double("a").castAsDecimal().scale(2);
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 2.0100287,
                 4.5);
 
@@ -63,7 +63,7 @@ public class DoubleColumnTest {
     public void add_Double() {
         NumExp<?> e = $double("b").add($double("a"));
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1.01, 2.,
                 3., 4.5);
 
@@ -96,7 +96,7 @@ public class DoubleColumnTest {
     public void add_Int() {
         NumExp<?> e = $double("a").add($int("b"));
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1.01, 2,
                 3., 4);
 
@@ -109,7 +109,7 @@ public class DoubleColumnTest {
     public void subtract_Double() {
         NumExp<?> e = $double("b").sub($double("a"));
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1.01, 2.,
                 3., 4.5);
 
@@ -120,7 +120,7 @@ public class DoubleColumnTest {
 
     @Test
     public void abs() {
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 -5.1,
                 0.0,
                 11.5);
@@ -133,7 +133,7 @@ public class DoubleColumnTest {
     public void cumSum() {
         NumExp<?> exp = $double("a").cumSum();
 
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 null,
                 2.0,
                 5.3,

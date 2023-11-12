@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 public class ByRowSeries_TailTest {
 
     private ByRowSeries createSeries(Object... data) {
-        return new ByRowSeries(DataFrame.newFrame("a", "b").foldByRow(data));
+        return new ByRowSeries(DataFrame.foldByRow("a", "b").of(data));
     }
 
     @Test

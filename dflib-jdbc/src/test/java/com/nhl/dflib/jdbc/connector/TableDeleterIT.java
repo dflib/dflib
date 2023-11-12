@@ -27,7 +27,7 @@ public class TableDeleterIT extends BaseDbTest {
     @Test
     public void delete_Eq() {
 
-        DataFrame matcher = DataFrame.newFrame("id").foldByRow(1L, 3L);
+        DataFrame matcher = DataFrame.foldByRow("id").of(1L, 3L);
 
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
@@ -70,7 +70,7 @@ public class TableDeleterIT extends BaseDbTest {
     @Test
     public void delete_Neq() {
 
-        DataFrame matcher = DataFrame.newFrame("id").foldByRow(1L, 3L);
+        DataFrame matcher = DataFrame.foldByRow("id").of(1L, 3L);
 
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)

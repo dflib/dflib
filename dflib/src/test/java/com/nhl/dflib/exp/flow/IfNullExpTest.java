@@ -13,7 +13,7 @@ public class IfNullExpTest {
     public void string() {
         Exp<String> noNulls = ifNull($str("a"), $str("b"));
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 "1", "2",
                 null, "5",
                 null, "6",
@@ -26,7 +26,7 @@ public class IfNullExpTest {
     public void number() {
         Exp<?> noNulls = ifNull($int("a"), $int("b"));
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, 2,
                 null, 5,
                 8, 6,
@@ -39,7 +39,7 @@ public class IfNullExpTest {
     public void val() {
         Exp<?> noNulls = ifNull($int("a"), 77);
 
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 1,
                 null,
                 8,

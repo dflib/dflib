@@ -8,7 +8,7 @@ public class DataFrame_ShapeTest {
 
     @Test
     public void width() {
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 1,
                 2
         );
@@ -18,7 +18,7 @@ public class DataFrame_ShapeTest {
 
     @Test
     public void height() {
-        DataFrame df = DataFrame.newFrame("a").foldByRow(
+        DataFrame df = DataFrame.foldByRow("a").of(
                 1,
                 2
         );

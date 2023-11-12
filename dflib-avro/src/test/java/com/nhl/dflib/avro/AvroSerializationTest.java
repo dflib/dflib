@@ -12,7 +12,7 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
 
     @Test
     public void ints() {
-        DataFrame df = DataFrame.newFrame("c1", "c2").columns(
+        DataFrame df = DataFrame.byColumn("c1", "c2").of(
                 Series.ofInt(1, 2, 3),
                 Series.of(11, 12, null)
         );
@@ -27,7 +27,7 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
 
     @Test
     public void longs() {
-        DataFrame df = DataFrame.newFrame("c1", "c2").columns(
+        DataFrame df = DataFrame.byColumn("c1", "c2").of(
                 Series.ofLong(Long.MAX_VALUE, Long.MIN_VALUE + 1L, 5L),
                 Series.of(21L, 22L, null)
         );
@@ -42,7 +42,7 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
 
     @Test
     public void doubles() {
-        DataFrame df = DataFrame.newFrame("c1", "c2").columns(
+        DataFrame df = DataFrame.byColumn("c1", "c2").of(
                 Series.ofDouble(20.12, 20.123, 20.1235),
                 Series.of(30.1, 31.45, null)
         );
@@ -57,7 +57,7 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
 
     @Test
     public void booleans() {
-        DataFrame df = DataFrame.newFrame("c1", "c2").columns(
+        DataFrame df = DataFrame.byColumn("c1", "c2").of(
                 Series.ofBool(true, false, true),
                 Series.of(Boolean.TRUE, Boolean.FALSE, null)
         );
@@ -72,7 +72,7 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
 
     @Test
     public void strings() {
-        DataFrame df = DataFrame.newFrame("c1").columns(
+        DataFrame df = DataFrame.byColumn("c1").of(
                 Series.of("s1", "s2", null)
         );
 
@@ -84,7 +84,7 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
 
     @Test
     public void byteArrays() {
-        DataFrame df = DataFrame.newFrame("c1").columns(
+        DataFrame df = DataFrame.byColumn("c1").of(
                 Series.of(new byte[]{1, 2, 3}, new byte[0], null)
         );
 
@@ -95,8 +95,8 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
     }
 
     @Test
-    public void dateTime() {
-        DataFrame df = DataFrame.newFrame("LocalDate", "LocalTime", "LocalDateTime", "YearMonth", "Year").columns(
+    public void dateTimes() {
+        DataFrame df = DataFrame.byColumn("LocalDate", "LocalTime", "LocalDateTime", "YearMonth", "Year").of(
                 Series.of(LocalDate.of(2020, 1, 5), LocalDate.of(2019, 6, 8), null),
                 Series.of(LocalTime.of(4, 0, 1, 11), LocalTime.of(23, 59, 59), null),
                 Series.of(LocalDateTime.of(2200, 11, 5, 1, 2, 15, 9), LocalDateTime.of(1776, 6, 8, 6, 7, 8), null),
@@ -116,7 +116,7 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
 
     @Test
     public void bigInteger() {
-        DataFrame df = DataFrame.newFrame("c1").columns(
+        DataFrame df = DataFrame.byColumn("c1").of(
                 Series.of(new BigInteger("987654321"), new BigInteger("-11111"), null)
         );
 
@@ -128,7 +128,7 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
 
     @Test
     public void bigDecimal() {
-        DataFrame df = DataFrame.newFrame("c1").columns(
+        DataFrame df = DataFrame.byColumn("c1").of(
                 Series.of(
                         new BigDecimal("9876543.211234567890123455"),
                         new BigDecimal(new BigInteger("-11111"), 2),
@@ -148,7 +148,7 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
 
     @Test
     public void durations() {
-        DataFrame df = DataFrame.newFrame("c1", "c2").columns(
+        DataFrame df = DataFrame.byColumn("c1", "c2").of(
                 Series.of(Duration.ofDays(350000), Duration.ofSeconds(15, 101), Duration.ZERO, null),
                 Series.of(Period.ofWeeks(15), Period.ofYears(5), Period.ZERO, null)
         );
@@ -162,7 +162,7 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
 
     @Test
     public void enums() {
-        DataFrame df = DataFrame.newFrame("c1", "c2").columns(
+        DataFrame df = DataFrame.byColumn("c1", "c2").of(
                 Series.of(TestEnum1.ab, TestEnum1.m, null),
                 Series.of(TestEnum2.ab, TestEnum2.x, null)
         );
@@ -176,7 +176,7 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
 
     @Test
     public void unmapped() {
-        DataFrame df = DataFrame.newFrame("c1", "c2").columns(
+        DataFrame df = DataFrame.byColumn("c1", "c2").of(
                 Series.of(new TestUnmapped1("x"), new TestUnmapped1("y"), null),
                 Series.of(new TestUnmapped2("a"), new TestUnmapped2("b"), null)
         );
@@ -190,7 +190,7 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
 
     @Test
     public void nulls() {
-        DataFrame df = DataFrame.newFrame("c1", "c2").columns(
+        DataFrame df = DataFrame.byColumn("c1", "c2").of(
                 Series.of(null, null),
                 Series.of(null, null)
         );
