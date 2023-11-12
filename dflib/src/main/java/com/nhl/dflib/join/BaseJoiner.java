@@ -86,7 +86,7 @@ public abstract class BaseJoiner {
     }
 
     protected Index joinIndex(Index li, Index ri) {
-        return HConcat.zipIndex(li, ri);
+        return HConcat.zipIndex(li, ri.getLabels());
     }
 
 

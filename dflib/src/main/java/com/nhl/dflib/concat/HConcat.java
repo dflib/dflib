@@ -15,32 +15,29 @@ import java.util.function.UnaryOperator;
 
 public class HConcat {
 
-    private JoinType semantics;
+    private final JoinType semantics;
 
     public HConcat(JoinType semantics) {
         this.semantics = semantics;
     }
 
-    public static Index zipIndex(Index leftIndex, Index rightIndex) {
-
-        int llen = leftIndex.size();
-        int rlen = rightIndex.size();
+    public static Index zipIndex(Index leftIndex, String[] rightLabels) {
 
         String[] lLabels = leftIndex.getLabels();
-        String[] rLabels = rightIndex.getLabels();
+
+        int rlen = rightLabels.length;
+        int llen = lLabels.length;
 
         // zipped index is continuous to match rowZipper algorithm below that rebuilds the arrays, so reset left and
         // right positions, only preserve the names...
 
         String[] zipped = new String[llen + rlen];
-        for (int i = 0; i < llen; i++) {
-            zipped[i] = lLabels[i];
-        }
+        System.arraycopy(lLabels, 0, zipped, 0, llen);
 
         // resolve dupes on the right
         for (int i = 0; i < rlen; i++) {
 
-            String name = rLabels[i];
+            String name = rightLabels[i];
             while (leftIndex.hasLabel(name)) {
                 name = name + "_";
             }

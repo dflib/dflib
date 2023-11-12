@@ -181,8 +181,7 @@ public class Index implements Iterable<String> {
     }
 
     public Index addLabels(String... extraLabels) {
-        // TODO: implement direct array copy instead of wrapping in Index first
-        return HConcat.zipIndex(this, of(extraLabels));
+        return HConcat.zipIndex(this, extraLabels);
     }
 
     /**

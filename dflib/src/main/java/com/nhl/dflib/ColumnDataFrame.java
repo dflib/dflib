@@ -305,7 +305,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public DataFrame hConcat(JoinType how, DataFrame df) {
-        Index zipIndex = HConcat.zipIndex(getColumnsIndex(), df.getColumnsIndex());
+        Index zipIndex = HConcat.zipIndex(getColumnsIndex(), df.getColumnsIndex().getLabels());
         return new HConcat(how).concat(zipIndex, this, df);
     }
 
