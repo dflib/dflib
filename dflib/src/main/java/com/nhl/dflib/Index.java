@@ -101,7 +101,7 @@ public class Index implements Iterable<String> {
      * Creates an index from an array of labels. Duplicate labels will be renamed by appending one or more underscore
      * symbols.
      *
-     * @since 0.6
+     * @since 0.19
      */
     public static Index ofDeduplicated(String... labels) {
         int len = labels.length;
