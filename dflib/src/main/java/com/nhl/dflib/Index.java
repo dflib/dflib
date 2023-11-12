@@ -322,6 +322,20 @@ public class Index implements Iterable<String> {
         return labels;
     }
 
+    /**
+     * @since 0.19
+     */
+    public int[] getPositions() {
+        int len = labels.length;
+        int[] positions = new int[len];
+
+        for (int i = 0; i < len; i++) {
+            positions[i] = i;
+        }
+
+        return positions;
+    }
+
     public String getLabel(int pos) {
         return labels[pos];
     }
