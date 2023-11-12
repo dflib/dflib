@@ -3,7 +3,7 @@ package com.nhl.dflib;
 import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
-public class DataFrame_FillTest {
+public class DataFrame_FillNullsTest {
 
     @Test
     public void testFillNulls() {
