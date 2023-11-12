@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class CsvLoaderTest extends BaseCsvTest {
 
     @Test
-    public void testFromReader() {
+    public void fromReader() {
 
         StringReader r = new StringReader("A,B" + System.lineSeparator()
                 + "1,2" + System.lineSeparator()
@@ -32,7 +32,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void testFromFile() {
+    public void fromFile() {
         DataFrame df = new CsvLoader().load(inPath("f1.csv"));
         new DataFrameAsserts(df, "A", "b", "C")
                 .expectHeight(2)
@@ -41,7 +41,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void testFromFile_DefaultFormat_Excel() {
+    public void fromFile_DefaultFormat_Excel() {
         DataFrame df = new CsvLoader().load(inPath("from_excel.csv"));
         new DataFrameAsserts(df, "A", "b", "C")
                 .expectHeight(2)
@@ -50,7 +50,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void testFromFile_MySQLFormat() {
+    public void fromFile_MySQLFormat() {
         DataFrame df = new CsvLoader().format(CSVFormat.MYSQL).load(inPath("from_mysql.csv"));
         new DataFrameAsserts(df, "1", "3365430", " xxxx")
                 .expectHeight(4)
@@ -61,7 +61,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void testFromFile_Header() {
+    public void fromFile_Header() {
         DataFrame df = new CsvLoader().header("X", "Y", "Z").load(inPath("f1.csv"));
         new DataFrameAsserts(df, "X", "Y", "Z")
                 .expectHeight(3)
@@ -71,7 +71,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void testFromFile_SelectColumns_ByName() {
+    public void fromFile_SelectColumns_ByName() {
         DataFrame df = new CsvLoader().selectColumns("b", "A").load(inPath("f1.csv"));
         new DataFrameAsserts(df, "b", "A")
                 .expectHeight(2)
@@ -80,7 +80,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void testFromFile_SelectColumns_ByPosition() {
+    public void fromFile_SelectColumns_ByPosition() {
         DataFrame df = new CsvLoader().selectColumns(1, 0).load(inPath("f1.csv"));
         new DataFrameAsserts(df, "b", "A")
                 .expectHeight(2)
@@ -89,7 +89,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void testFromFile_SelectColumns_ByName_CustomHeader() {
+    public void fromFile_SelectColumns_ByName_CustomHeader() {
         DataFrame df = new CsvLoader().header("X", "Y", "Z").selectColumns("Y", "X").load(inPath("f1.csv"));
         new DataFrameAsserts(df, "Y", "X")
                 .expectHeight(3)
@@ -99,7 +99,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void testFromFile_DropColumns() {
+    public void fromFile_DropColumns() {
         DataFrame df = new CsvLoader().dropColumns("b").load(inPath("f1.csv"));
         new DataFrameAsserts(df, "A", "C")
                 .expectHeight(2)
@@ -108,7 +108,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void testFromFile_SkipRows() {
+    public void fromFile_SkipRows() {
         DataFrame df = new CsvLoader().skipRows(1).load(inPath("f1.csv"));
         new DataFrameAsserts(df, "1", "2", "3")
                 .expectHeight(1)
@@ -116,7 +116,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void testFromFile_ColumnType() {
+    public void fromFile_ColumnType() {
         DataFrame df = new CsvLoader()
                 .columnType(0, ValueMapper.stringToInt())
                 .columnType(2, ValueMapper.stringToLong())
@@ -128,7 +128,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void testFromFile_ColumnType_OverrideType() {
+    public void fromFile_ColumnType_OverrideType() {
         DataFrame df = new CsvLoader()
                 .columnType(0, ValueMapper.stringToInt())
                 .columnType("A", ValueMapper.stringToLong())
@@ -140,7 +140,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void testFromFile_NumColumn1() {
+    public void fromFile_NumColumn1() {
         DataFrame df = new CsvLoader()
                 .numColumn(0, Integer.class)
                 .numColumn("b", Long.class)
@@ -154,7 +154,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void testFromFile_NumColumn2() {
+    public void fromFile_NumColumn2() {
         DataFrame df = new CsvLoader()
                 .numColumn(0, Float.class)
                 .numColumn("b", BigDecimal.class)
@@ -168,7 +168,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void testFromFile_IntColumn_Nulls() {
+    public void fromFile_IntColumn_Nulls() {
         CsvLoader loader = new CsvLoader()
                 .intColumn(0)
                 .intColumn(1);
@@ -177,7 +177,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void testFromFile_IntColumn_Nulls_Default() {
+    public void fromFile_IntColumn_Nulls_Default() {
         DataFrame df = new CsvLoader()
                 .intColumn(0, -100)
                 .intColumn(1, -200)
@@ -191,7 +191,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void testFromFile_IntColumn_Nulls_Throw() {
+    public void fromFile_IntColumn_Nulls_Throw() {
         CsvLoader loader = new CsvLoader()
                 .intColumn(0)
                 .intColumn(1);
@@ -201,7 +201,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void testFromFile_LongColumn_Nulls() {
+    public void fromFile_LongColumn_Nulls() {
         CsvLoader loader = new CsvLoader()
                 .longColumn(0)
                 .longColumn(1);
@@ -210,7 +210,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void testFromFile_LongColumn_Nulls_Default() {
+    public void fromFile_LongColumn_Nulls_Default() {
         DataFrame df = new CsvLoader()
                 .longColumn(0, -100L)
                 .longColumn(1, -200L)
@@ -224,7 +224,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void testFromFile_LongColumn_Nulls_Throw() {
+    public void fromFile_LongColumn_Nulls_Throw() {
         CsvLoader loader = new CsvLoader()
                 .longColumn(0)
                 .longColumn(1);
@@ -234,7 +234,7 @@ public class CsvLoaderTest extends BaseCsvTest {
 
 
     @Test
-    public void testFromFile_DoubleColumn_Nulls_Default() {
+    public void fromFile_DoubleColumn_Nulls_Default() {
         DataFrame df = new CsvLoader()
                 .doubleColumn(0, -1.1)
                 .doubleColumn(1, -3.14)
@@ -248,7 +248,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void testFromFile_DateTimeColumns() {
+    public void fromFile_DateTimeColumns() {
         DataFrame df = new CsvLoader()
                 .dateColumn(0)
                 .dateTimeColumn("default_date_time")
@@ -271,7 +271,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void testFromFile_EmptyStringColumn() {
+    public void fromFile_EmptyStringColumn() {
         DataFrame df = new CsvLoader()
                 .load(inPath("strings_w_nulls.csv"));
 
@@ -282,7 +282,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void testFromFile_EmptyStringColumn_emptyStringIsNull() {
+    public void fromFile_EmptyStringColumn_emptyStringIsNull() {
         DataFrame df = new CsvLoader()
                 .emptyStringIsNull()
                 .load(inPath("strings_w_nulls.csv"));

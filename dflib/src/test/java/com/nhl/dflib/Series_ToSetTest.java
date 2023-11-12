@@ -14,14 +14,14 @@ public class Series_ToSetTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testContents(SeriesType type) {
+    public void contents(SeriesType type) {
         Set<String> set = type.createSeries("a", "b", "a", "d", "b").toSet();
         assertEquals(new HashSet<>(asList("a", "b", "d")), set);
     }
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testMutability(SeriesType type) {
+    public void mutability(SeriesType type) {
         Series<String> s = type.createSeries("a", "b");
         Set<String> set = s.toSet();
         set.remove("b");

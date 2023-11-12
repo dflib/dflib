@@ -20,55 +20,55 @@ import static org.mockito.Mockito.mock;
 public class ColumnTest {
 
     @Test
-    public void testCastAsStr() {
+    public void castAsStr() {
         StrExp str = $col(0).castAsStr();
         Series<Object> s = Series.of("a", null, LocalDate.of(2021, 1, 2));
         new SeriesAsserts(str.eval(s)).expectData("a", null, "2021-01-02");
     }
 
     @Test
-    public void testCastAsInt() {
+    public void castAsInt() {
         NumExp<Integer> exp = $col(0).castAsInt();
         Series<Object> s = Series.of(new BigDecimal("5.01"), null, 12L);
         new SeriesAsserts(exp.eval(s)).expectData(5, null, 12);
     }
 
     @Test
-    public void testCastAsLong() {
+    public void castAsLong() {
         NumExp<Long> exp = $col(0).castAsLong();
         Series<Object> s = Series.of(new BigDecimal("5.01"), null, 12L, 1);
         new SeriesAsserts(exp.eval(s)).expectData(5L, null, 12L, 1L);
     }
 
     @Test
-    public void testCastAsDouble() {
+    public void castAsDouble() {
         NumExp<Double> exp = $col(0).castAsDouble();
         Series<Object> s = Series.of(new BigDecimal("5.01"), null, 12L, 1);
         new SeriesAsserts(exp.eval(s)).expectData(5.01, null, 12., 1.);
     }
 
     @Test
-    public void testGetColumnName() {
+    public void getColumnName() {
         assertEquals("a", $col("a").getColumnName());
         assertEquals("$col(0)", $col(0).getColumnName());
     }
 
     @Test
-    public void testName_DataFrame() {
+    public void name_DataFrame() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
         assertEquals("b", $col("b").getColumnName(df));
         assertEquals("a", $col(0).getColumnName(df));
     }
 
     @Test
-    public void testAs() {
+    public void as() {
         Exp<?> e = $col("b");
         assertEquals("b", e.getColumnName(mock(DataFrame.class)));
         assertEquals("c", e.as("c").getColumnName(mock(DataFrame.class)));
     }
 
     @Test
-    public void testIsNull() {
+    public void isNull() {
         DataFrame df = DataFrame.newFrame("a").foldByRow(
                 "1",
                 "4",
@@ -80,7 +80,7 @@ public class ColumnTest {
     }
 
     @Test
-    public void testIsNotNull() {
+    public void isNotNull() {
         DataFrame df = DataFrame.newFrame("a").foldByRow(
                 "1",
                 "4",

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class ColumnDataFrameTest {
 
     @Test
-    public void testConstructor() {
+    public void constructor() {
         Index i = Index.of("a", "b");
         ColumnDataFrame df = new ColumnDataFrame(i,
                 Series.ofInt(1, 2),
@@ -16,7 +16,7 @@ public class ColumnDataFrameTest {
     }
 
     @Test
-    public void testConstructor_NoData() {
+    public void constructor_NoData() {
         Index i = Index.of("a", "b");
         ColumnDataFrame df = new ColumnDataFrame(i);
 

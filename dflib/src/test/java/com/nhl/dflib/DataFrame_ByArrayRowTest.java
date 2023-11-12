@@ -36,7 +36,7 @@ public class DataFrame_ByArrayRowTest {
     }
 
     @Test
-    public void testImplicitExtractors() {
+    public void implicitExtractors() {
 
         List<Object[]> data = List.of(new Object[]{"L1", -1}, new Object[]{"L2", -2});
 
@@ -56,7 +56,7 @@ public class DataFrame_ByArrayRowTest {
     }
 
     @Test
-    public void testSample() {
+    public void sample() {
 
         // fixed seed for predictable results
         Random rnd = new Random(1L);
@@ -83,7 +83,7 @@ public class DataFrame_ByArrayRowTest {
     }
 
     @Test
-    public void testSelectRows_Sample() {
+    public void selectRows_Sample() {
 
         // fixed seed for predictable results
         Random rnd = new Random(1L);

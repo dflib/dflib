@@ -16,7 +16,7 @@ public class Series_IteratorTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testIterator(SeriesType type) {
+    public void iterator(SeriesType type) {
         Iterator<String> it = type.createSeries("a", "b", "c", "d", "e").iterator();
 
         List<String> vals = new ArrayList<>();
@@ -30,7 +30,7 @@ public class Series_IteratorTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testIterator_BoundaryChecks(SeriesType type) {
+    public void iterator_BoundaryChecks(SeriesType type) {
         Iterator<String> it = type.createSeries("a", "b").iterator();
 
         while (it.hasNext()) {
@@ -42,7 +42,7 @@ public class Series_IteratorTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testIterator_Immutable(SeriesType type) {
+    public void iterator_Immutable(SeriesType type) {
         Iterator<String> it = type.createSeries("a", "b").iterator();
 
         while (it.hasNext()) {

@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class IntSequenceSeriesTest {
 
     @Test
-    public void testSize() {
+    public void size() {
         IntSequenceSeries s1 = new IntSequenceSeries(-1, 5);
         assertEquals(6, s1.size());
 
@@ -19,7 +19,7 @@ public class IntSequenceSeriesTest {
     }
 
     @Test
-    public void testSizeZero() {
+    public void sizeZero() {
         IntSequenceSeries s1 = new IntSequenceSeries(0, 0);
         assertEquals(0, s1.size());
     }

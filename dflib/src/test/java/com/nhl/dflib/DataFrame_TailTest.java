@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class DataFrame_TailTest {
 
     @Test
-    public void testTail() {
+    public void tail() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -20,7 +20,7 @@ public class DataFrame_TailTest {
     }
 
     @Test
-    public void testTail_Zero() {
+    public void tail_Zero() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -32,7 +32,7 @@ public class DataFrame_TailTest {
     }
 
     @Test
-    public void testTail_OutOfBounds() {
+    public void tail_OutOfBounds() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",

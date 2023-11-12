@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 public class DataFrameSorterTest {
 
     @Test
-    public void testSortedPositions() {
+    public void sortedPositions() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",

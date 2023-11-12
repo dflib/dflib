@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class IntSeries_ConditionsTest {
 
     @Test
-    public void testEq1() {
+    public void eq1() {
 
         Series<Integer> s1 = Series.ofInt(3, 1, 2);
         Series<Integer> s2 = Series.ofInt(3, 1, 2);
@@ -18,7 +18,7 @@ public class IntSeries_ConditionsTest {
     }
 
     @Test
-    public void testEq2() {
+    public void eq2() {
 
         Series<Integer> s1 = Series.ofInt(3, 4, 2);
         Series<Integer> s2 = Series.ofInt(3, 1, 2);
@@ -28,7 +28,7 @@ public class IntSeries_ConditionsTest {
     }
 
     @Test
-    public void testEq_SizeMismatch() {
+    public void eq_SizeMismatch() {
 
         Series<Integer> s1 = Series.ofInt(3, 4, 2);
         Series<Integer> s2 = Series.ofInt(3, 1);
@@ -37,7 +37,7 @@ public class IntSeries_ConditionsTest {
     }
 
     @Test
-    public void testNe1() {
+    public void ne1() {
 
         Series<Integer> s1 = Series.ofInt(3, 1, 2);
         Series<Integer> s2 = Series.ofInt(3, 1, 2);
@@ -47,7 +47,7 @@ public class IntSeries_ConditionsTest {
     }
 
     @Test
-    public void testNe2() {
+    public void ne2() {
 
         Series<Integer> s1 = Series.ofInt(3, 0, 2);
         Series<Integer> s2 = Series.ofInt(-3, 1, 2);

@@ -6,14 +6,14 @@ import org.junit.jupiter.api.Test;
 public class DataFrame_Over_DenseRankTest {
 
     @Test
-    public void testEmpty() {
+    public void empty() {
         DataFrame df = DataFrame.empty("a", "b", "c");
         IntSeries r = df.over().denseRank();
         new IntSeriesAsserts(r).expectData();
     }
 
     @Test
-    public void testDefault() {
+    public void test() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -27,7 +27,7 @@ public class DataFrame_Over_DenseRankTest {
     }
 
     @Test
-    public void testPartitioned() {
+    public void partitioned() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -45,7 +45,7 @@ public class DataFrame_Over_DenseRankTest {
     }
 
     @Test
-    public void testSorted() {
+    public void sorted() {
         DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
                 1, "x", "m",
                 2, "y", "v",
@@ -64,7 +64,7 @@ public class DataFrame_Over_DenseRankTest {
     }
 
     @Test
-    public void testPartitioned_Sorted() {
+    public void partitioned_Sorted() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -77,7 +77,7 @@ public class DataFrame_Over_DenseRankTest {
     }
 
     @Test
-    public void testSorted_Sorter() {
+    public void sorted_Sorter() {
         DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
                 1, "x", "m",
                 2, "y", "v",
@@ -100,7 +100,7 @@ public class DataFrame_Over_DenseRankTest {
     }
 
     @Test
-    public void testPartitioned_Sorted_Sorter() {
+    public void partitioned_Sorted_Sorter() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",

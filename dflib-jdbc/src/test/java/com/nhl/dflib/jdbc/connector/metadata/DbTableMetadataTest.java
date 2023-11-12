@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DbTableMetadataTest {
 
     @Test
-    public void testGetColumn() {
+    public void getColumn() {
         DbColumnMetadata c1 = new DbColumnMetadata("c1", Types.INTEGER, false, false);
         DbColumnMetadata c2 = new DbColumnMetadata("c2", Types.VARCHAR, false, false);
 
@@ -19,7 +19,7 @@ public class DbTableMetadataTest {
     }
 
     @Test
-    public void testGetColumn_Unknown() {
+    public void getColumn_Unknown() {
         DbColumnMetadata c1 = new DbColumnMetadata("c1", Types.INTEGER, false, false);
 
         DbTableMetadata md = new DbTableMetadata(TableFQName.forName("x"), new DbColumnMetadata[]{c1});

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class DataFrame_VConcat_Test {
 
     @Test
-    public void testVConcat_Default() {
+    public void vConcat_Default() {
 
         DataFrame df1 = DataFrame.newFrame("a").foldByRow(1, 2);
         DataFrame df2 = DataFrame.newFrame("a").foldByRow(10, 20);
@@ -22,7 +22,7 @@ public class DataFrame_VConcat_Test {
     }
 
     @Test
-    public void testVConcat_Default_Multiple() {
+    public void vConcat_Default_Multiple() {
 
         DataFrame df1 = DataFrame.newFrame("a").foldByRow(1, 2);
         DataFrame df2 = DataFrame.newFrame("a").foldByRow(10);
@@ -39,7 +39,7 @@ public class DataFrame_VConcat_Test {
     }
 
     @Test
-    public void testVConcat_Default_Left() {
+    public void vConcat_Default_Left() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, 2,
@@ -60,7 +60,7 @@ public class DataFrame_VConcat_Test {
     }
 
     @Test
-    public void testVConcat_Left() {
+    public void vConcat_Left() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, 2,
@@ -81,7 +81,7 @@ public class DataFrame_VConcat_Test {
     }
 
     @Test
-    public void testVConcat_Right() {
+    public void vConcat_Right() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, 2,
@@ -102,7 +102,7 @@ public class DataFrame_VConcat_Test {
     }
 
     @Test
-    public void testVConcat_Inner_Multiple() {
+    public void vConcat_Inner_Multiple() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, 2,
@@ -129,7 +129,7 @@ public class DataFrame_VConcat_Test {
     }
 
     @Test
-    public void testVConcat_Full() {
+    public void vConcat_Full() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, 2,

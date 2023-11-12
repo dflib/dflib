@@ -9,14 +9,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class DoubleSeries_CastTest {
 
     @Test
-    public void testUnsafeCastAs() {
+    public void unsafeCastAs() {
         DoubleSeries s = new DoubleArraySeries(1., 2.);
         assertDoesNotThrow(() -> s.unsafeCastAs(String.class));
         assertDoesNotThrow(() -> s.unsafeCastAs(Double.class));
     }
 
     @Test
-    public void testCastAs() {
+    public void castAs() {
         DoubleSeries s = new DoubleArraySeries(1., 2.);
         assertDoesNotThrow(() -> s.castAs(Double.class));
         assertDoesNotThrow(() -> s.castAs(Double.TYPE));
@@ -24,7 +24,7 @@ public class DoubleSeries_CastTest {
     }
 
     @Test
-    public void testCastAs_Upcast() {
+    public void castAs_Upcast() {
         DoubleSeries s = new DoubleArraySeries(1., 2.);
         assertDoesNotThrow(() -> s.castAs(Double.class));
         assertDoesNotThrow(() -> s.castAs(Number.class));
@@ -32,7 +32,7 @@ public class DoubleSeries_CastTest {
     }
 
     @Test
-    public void testCastAsPrimitive() {
+    public void castAsPrimitive() {
         DoubleSeries s = new DoubleArraySeries(1., 2.);
         assertDoesNotThrow(() -> s.castAsDouble());
         assertThrows(ClassCastException.class, () -> s.castAsBool());

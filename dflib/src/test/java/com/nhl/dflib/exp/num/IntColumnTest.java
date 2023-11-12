@@ -15,27 +15,27 @@ import static org.mockito.Mockito.mock;
 public class IntColumnTest {
 
     @Test
-    public void testGetColumnName() {
+    public void getColumnName() {
         assertEquals("a", $int("a").getColumnName());
         assertEquals("$int(0)", $int(0).getColumnName());
     }
 
     @Test
-    public void testGetColumnName_DataFrame() {
+    public void getColumnName_DataFrame() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
         assertEquals("b", $int("b").getColumnName(df));
         assertEquals("a", $int(0).getColumnName(df));
     }
 
     @Test
-    public void testAs() {
+    public void as() {
         NumExp<Integer> e = $int("b");
         assertEquals("b", e.getColumnName(mock(DataFrame.class)));
         assertEquals("c", e.as("c").getColumnName(mock(DataFrame.class)));
     }
 
     @Test
-    public void testEval() {
+    public void eval() {
         NumExp<Integer> e = $int("b");
 
         DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
@@ -46,7 +46,7 @@ public class IntColumnTest {
     }
 
     @Test
-    public void testCastAsDecimal() {
+    public void castAsDecimal() {
         DecimalExp e = $int("a").castAsDecimal().scale(2);
         DataFrame df = DataFrame.newFrame("a").foldByRow(
                 2,
@@ -58,7 +58,7 @@ public class IntColumnTest {
     }
 
     @Test
-    public void testDivide_Double() {
+    public void divide_Double() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 2., 3,
                 3., 9);
@@ -68,7 +68,7 @@ public class IntColumnTest {
     }
 
     @Test
-    public void testMod() {
+    public void mod() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 2, 3,
                 3, 9);
@@ -78,7 +78,7 @@ public class IntColumnTest {
     }
 
     @Test
-    public void testMod_IntVal() {
+    public void mod_IntVal() {
         DataFrame df = DataFrame.newFrame("a").foldByRow(
                 5,
                 0,
@@ -89,7 +89,7 @@ public class IntColumnTest {
     }
 
     @Test
-    public void testAbs() {
+    public void abs() {
         DataFrame df = DataFrame.newFrame("a").foldByRow(
                 -5,
                 0,
@@ -100,7 +100,7 @@ public class IntColumnTest {
     }
 
     @Test
-    public void testAdd_Long() {
+    public void add_Long() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1L, 2,
                 3L, 4);
@@ -110,7 +110,7 @@ public class IntColumnTest {
     }
 
     @Test
-    public void testSubtract_Int() {
+    public void subtract_Int() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, 2,
                 3, 4);
@@ -121,7 +121,7 @@ public class IntColumnTest {
     }
 
     @Test
-    public void testMultiply_Int() {
+    public void multiply_Int() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 6, 2,
                 3, 5);
@@ -132,7 +132,7 @@ public class IntColumnTest {
     }
 
     @Test
-    public void testMultiply_Decimal() {
+    public void multiply_Decimal() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 new BigDecimal("35.1"), 2,
                 new BigDecimal("3.3"), 3);
@@ -143,7 +143,7 @@ public class IntColumnTest {
 
 
     @Test
-    public void testAdd_Int() {
+    public void add_Int() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, 2,
                 3, 4);
@@ -154,7 +154,7 @@ public class IntColumnTest {
     }
 
     @Test
-    public void testAdd_IntPrimitive() {
+    public void add_IntPrimitive() {
         DataFrame df = DataFrame.foldByRow("a", "b").ofStream(IntStream.of(1, 2, 3, 4));
 
         // sanity check of the test DataFrame
@@ -171,7 +171,7 @@ public class IntColumnTest {
     }
 
     @Test
-    public void testAdd_Double() {
+    public void add_Double() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1.01, 2,
                 3., 4);
@@ -182,7 +182,7 @@ public class IntColumnTest {
     }
 
     @Test
-    public void testLT_Double() {
+    public void lT_Double() {
         Condition c = $int("b").lt($double("a"));
 
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
@@ -194,7 +194,7 @@ public class IntColumnTest {
     }
 
     @Test
-    public void testGT_Int() {
+    public void gT_Int() {
         Condition c = $int("a").gt($int("b"));
 
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
@@ -207,7 +207,7 @@ public class IntColumnTest {
 
 
     @Test
-    public void testGE_Int() {
+    public void gE_Int() {
 
         Condition c = $int("a").ge($int("b"));
 
@@ -220,7 +220,7 @@ public class IntColumnTest {
     }
 
     @Test
-    public void testEQ_IntVal() {
+    public void eQ_IntVal() {
 
         Condition c = $int("a").eq(3);
 
@@ -233,7 +233,7 @@ public class IntColumnTest {
     }
 
     @Test
-    public void testEQ_LongVal() {
+    public void eQ_LongVal() {
 
         Condition c = $int("a").eq(3L);
 
@@ -246,7 +246,7 @@ public class IntColumnTest {
     }
 
     @Test
-    public void testMap_Unary() {
+    public void map_Unary() {
 
         Exp<String> exp = $int("b").map(s -> s.map(i -> "_" + i));
 
@@ -258,7 +258,7 @@ public class IntColumnTest {
     }
 
     @Test
-    public void testMapVal_Unary() {
+    public void mapVal_Unary() {
 
         Exp<String> exp = $int("b").mapVal(i -> "_" + i);
 
@@ -272,7 +272,7 @@ public class IntColumnTest {
 
 
     @Test
-    public void testMap_Binary() {
+    public void map_Binary() {
 
         Exp<Boolean> exp = $int("b").map($int("a"), Series::eq);
 
@@ -284,7 +284,7 @@ public class IntColumnTest {
     }
 
     @Test
-    public void testMapVal_Binary() {
+    public void mapVal_Binary() {
 
         Exp<Boolean> exp = $int("b").mapVal($int("a"), Integer::equals);
 
@@ -297,7 +297,7 @@ public class IntColumnTest {
     }
 
     @Test
-    public void testCumSum() {
+    public void cumSum() {
         NumExp<?> exp = $int("a").cumSum();
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(
@@ -319,13 +319,13 @@ public class IntColumnTest {
     }
 
     @Test
-    public void testCumSum_getColumnName() {
+    public void cumSum_getColumnName() {
         NumExp<?> exp = $int("a").cumSum();
         assertEquals("cumSum(a)", exp.getColumnName());
     }
 
     @Test
-    public void testSum_getColumnName() {
+    public void sum_getColumnName() {
         NumExp<?> exp = $int("a").sum();
         assertEquals("sum(a)", exp.getColumnName());
     }

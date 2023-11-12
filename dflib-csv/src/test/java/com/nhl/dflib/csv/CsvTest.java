@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 public class CsvTest extends BaseCsvTest {
 
     @Test
-    public void testFromFile() {
+    public void fromFile() {
         DataFrame df = Csv.load(inPath("f1.csv"));
         new DataFrameAsserts(df, "A", "b", "C")
                 .expectHeight(2)
@@ -16,7 +16,7 @@ public class CsvTest extends BaseCsvTest {
     }
 
     @Test
-    public void testLoader_FromFile() {
+    public void loader_FromFile() {
         DataFrame df = Csv.loader().load(inPath("f1.csv"));
         new DataFrameAsserts(df, "A", "b", "C")
                 .expectHeight(2)

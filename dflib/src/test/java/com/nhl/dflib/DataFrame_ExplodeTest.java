@@ -8,7 +8,7 @@ import java.util.List;
 public class DataFrame_ExplodeTest {
 
     @Test
-    public void testPrimitiveArray() {
+    public void primitiveArray() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                         new int[]{1, 2, -1}, "x",
                         new int[]{3}, "y",
@@ -27,7 +27,7 @@ public class DataFrame_ExplodeTest {
     }
 
     @Test
-    public void testArray() {
+    public void array() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                         new Integer[]{1, 2, -1}, "x",
                         new Integer[]{3}, "y",
@@ -46,7 +46,7 @@ public class DataFrame_ExplodeTest {
     }
 
     @Test
-    public void testList() {
+    public void list() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                         List.of(1, 2, -1), "x",
                         List.of(3), "y",
@@ -65,7 +65,7 @@ public class DataFrame_ExplodeTest {
     }
 
     @Test
-    public void testScalar() {
+    public void scalar() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                         1, "x",
                         2, "y",

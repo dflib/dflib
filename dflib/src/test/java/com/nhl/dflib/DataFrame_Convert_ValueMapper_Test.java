@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 public class DataFrame_Convert_ValueMapper_Test {
 
     @Test
-    public void testConvertColumn() {
+    public void convertColumn() {
         DataFrame df = DataFrame
                 .foldByRow("a", "b")
                 .of(1, "x", 2, "y")
@@ -22,7 +22,7 @@ public class DataFrame_Convert_ValueMapper_Test {
     }
 
     @Test
-    public void testConvertColumn_ByPos() {
+    public void convertColumn_ByPos() {
         DataFrame df = DataFrame
                 .foldByRow("a", "b")
                 .of(1, "x", 2, "y")
@@ -35,7 +35,7 @@ public class DataFrame_Convert_ValueMapper_Test {
     }
 
     @Test
-    public void testConvertColumn_WithNulls() {
+    public void convertColumn_WithNulls() {
         DataFrame df = DataFrame
                 .foldByRow("a", "b")
                 .of(1, "x", 2, null)
@@ -48,7 +48,7 @@ public class DataFrame_Convert_ValueMapper_Test {
     }
 
     @Test
-    public void testConvertColumn_ValueMapperToDate() {
+    public void convertColumn_ValueMapperToDate() {
         DataFrame df = DataFrame
                 .foldByRow("a")
                 .of(
@@ -65,7 +65,7 @@ public class DataFrame_Convert_ValueMapper_Test {
     }
 
     @Test
-    public void testConvertColumn_ValueMapperToDate_Formatter() {
+    public void convertColumn_ValueMapperToDate_Formatter() {
         DataFrame df = DataFrame
                 .foldByRow("a")
                 .of(

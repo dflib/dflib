@@ -16,7 +16,7 @@ public class Avro_FileTest {
     static File destination;
 
     @Test
-    public void testSaveLoad_File_Empty() {
+    public void saveLoad_File_Empty() {
         File file = new File(destination, "testSaveLoad_File_Empty.avro");
         DataFrame empty = DataFrame.empty("a", "b");
         Avro.save(empty, file);
@@ -29,7 +29,7 @@ public class Avro_FileTest {
     }
 
     @Test
-    public void testSaveLoad_File() {
+    public void saveLoad_File() {
         File file = new File(destination, "testSaveLoad_File.avro");
 
         DataFrame df = DataFrame.byArrayRow("a", "b")

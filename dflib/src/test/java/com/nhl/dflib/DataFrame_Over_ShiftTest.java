@@ -6,14 +6,14 @@ import org.junit.jupiter.api.Test;
 public class DataFrame_Over_ShiftTest {
 
     @Test
-    public void testEmpty() {
+    public void empty() {
         DataFrame df = DataFrame.empty("a", "b", "c");
         Series<Object> r = df.over().shift("b", -1);
         new SeriesAsserts(r).expectData();
     }
 
     @Test
-    public void testDefault_One() {
+    public void default_One() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(1, "x");
 
         Series<Integer> s1 = df.over().shift("b", 1);
@@ -30,7 +30,7 @@ public class DataFrame_Over_ShiftTest {
     }
 
     @Test
-    public void testDefault_Many() {
+    public void default_Many() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -49,7 +49,7 @@ public class DataFrame_Over_ShiftTest {
     }
 
     @Test
-    public void testPartitioned() {
+    public void partitioned() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -66,7 +66,7 @@ public class DataFrame_Over_ShiftTest {
     }
 
     @Test
-    public void testSorted() {
+    public void sorted() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -82,7 +82,7 @@ public class DataFrame_Over_ShiftTest {
     }
 
     @Test
-    public void testPartitioned_Sorted() {
+    public void partitioned_Sorted() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 2, "x",
                 2, "y",

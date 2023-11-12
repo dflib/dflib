@@ -16,13 +16,13 @@ import static java.util.Arrays.asList;
 public class DataFrameBuilderTest {
 
     @Test
-    public void testEmpty() {
+    public void empty() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b")).empty();
         new DataFrameAsserts(df, "a", "b").expectHeight(0);
     }
 
     @Test
-    public void testSeriesColumns() {
+    public void seriesColumns() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .columns(
                         Series.of("a", "b", "c"),
@@ -36,7 +36,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testByRow() {
+    public void byRow() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .byRow()
                 .addRow("a", 1)
@@ -51,7 +51,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testByRow_CustomAccums() {
+    public void byRow_CustomAccums() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .byRow(new ObjectAccum<>(3), new IntAccum(3))
                 .addRow("a", 1)
@@ -67,7 +67,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testAddRow() {
+    public void addRow() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .addRow("a", 1)
                 .addRow("b", 2)
@@ -81,7 +81,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testRows() {
+    public void rows() {
 
         Object[][] rows = new Object[][]{
                 {"a", 1},
@@ -98,7 +98,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldByRow() {
+    public void foldByRow() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldByRow("a", 1, "b", 2, "c", 3);
 
@@ -109,7 +109,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldByRow_Partial() {
+    public void foldByRow_Partial() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldByRow("a", 1, "b", 2, "c");
 
@@ -120,7 +120,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldByColumn() {
+    public void foldByColumn() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldByColumn("a", 1, "b", 2, "c", 3);
 
@@ -131,7 +131,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldByColumn_Partial1() {
+    public void foldByColumn_Partial1() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldByColumn("a", 1, "b", 2, "c");
 
@@ -142,7 +142,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldByColumn_Partial2() {
+    public void foldByColumn_Partial2() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b", "c"))
                 .foldByColumn("a", "b", "c", "d", "e", "f", "g", "h", "i", "j");
 
@@ -156,7 +156,7 @@ public class DataFrameBuilderTest {
 
 
     @Test
-    public void testFoldStreamByRow() {
+    public void foldStreamByRow() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldStreamByRow(Stream.of("a", 1, "b", 2, "c", 3));
 
@@ -167,7 +167,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldStreamByRow_Partial() {
+    public void foldStreamByRow_Partial() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldStreamByRow(Stream.of("a", 1, "b", 2, "c"));
 
@@ -178,7 +178,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldStreamByColumn() {
+    public void foldStreamByColumn() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldStreamByColumn(Stream.of("a", 1, "b", 2, "c", 3));
 
@@ -189,7 +189,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldStreamByColumn_Partial() {
+    public void foldStreamByColumn_Partial() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldStreamByColumn(Stream.of("a", 1, "b", 2, "c"));
 
@@ -200,7 +200,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldIterableByRow() {
+    public void foldIterableByRow() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldIterableByRow(asList("a", 1, "b", 2, "c", 3));
 
@@ -211,7 +211,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldIterableByRow_Partial() {
+    public void foldIterableByRow_Partial() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldIterableByRow(asList("a", 1, "b", 2, "c"));
 
@@ -222,7 +222,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldIterableByColumn() {
+    public void foldIterableByColumn() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldIterableByColumn(asList("a", 1, "b", 2, "c", 3));
 
@@ -233,7 +233,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldIterableByColumn_Partial() {
+    public void foldIterableByColumn_Partial() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldIterableByColumn(asList("a", 1, "b", 2, "c"));
 
@@ -244,7 +244,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testObjectsToRows() {
+    public void objectsToRows() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .objectsToRows(asList("a", "bc", "def"), s -> new Object[]{s, s.length()});
 
@@ -255,7 +255,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldIntByColumn() {
+    public void foldIntByColumn() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldIntByColumn(-9999, 0, 1, 2, 3, 4, 5);
 
@@ -267,7 +267,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldIntByColumn_Partial() {
+    public void foldIntByColumn_Partial() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldIntByColumn(-9999, 0, 1, 2, 3, 4);
 
@@ -280,7 +280,7 @@ public class DataFrameBuilderTest {
 
 
     @Test
-    public void testFoldIntStreamByRow() {
+    public void foldIntStreamByRow() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldIntStreamByRow(-9999, IntStream.of(-1, 1, 0, 2, 5, 3));
 
@@ -292,7 +292,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldIntStreamByRow_Partial() {
+    public void foldIntStreamByRow_Partial() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldIntStreamByRow(-9999, IntStream.of(-1, 1, 0, 2, 5));
 
@@ -305,7 +305,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldIntStreamByColumn() {
+    public void foldIntStreamByColumn() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldIntStreamByColumn(-9999, IntStream.of(-1, 1, 0, 2, 5, 3));
 
@@ -317,7 +317,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldIntStreamByColumn_Partial1() {
+    public void foldIntStreamByColumn_Partial1() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldIntStreamByColumn(-9999, IntStream.of(-1, 1, 0, 2, 5));
 
@@ -329,7 +329,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldIntStreamByColumn_Partial2() {
+    public void foldIntStreamByColumn_Partial2() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b", "c"))
                 .foldIntStreamByColumn(IntStream.range(0, 10));
 
@@ -343,7 +343,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldLongByColumn() {
+    public void foldLongByColumn() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldLongByColumn(-9999, 0, 1, 2, 3, 4, 5);
 
@@ -356,7 +356,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldLongByColumn_Partial() {
+    public void foldLongByColumn_Partial() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldLongByColumn(-9999, 0, 1, 2, 3, 4);
 
@@ -368,7 +368,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldLongStreamByRow() {
+    public void foldLongStreamByRow() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldLongStreamByRow(-9999L, LongStream.of(-1, 1, 0, 2, 5, 3));
 
@@ -380,7 +380,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldLongStreamByRow_Partial() {
+    public void foldLongStreamByRow_Partial() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldLongStreamByRow(-9999L, LongStream.of(-1, 1, 0, 2, 5));
 
@@ -393,7 +393,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldLongStreamByColumn() {
+    public void foldLongStreamByColumn() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldLongStreamByColumn(-9999, LongStream.of(-1, 1, 0, 2, 5, 3));
 
@@ -405,7 +405,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldLongStreamByColumn_Partial1() {
+    public void foldLongStreamByColumn_Partial1() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldLongStreamByColumn(-9999, LongStream.of(-1, 1, 0, 2, 5));
 
@@ -417,7 +417,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldLongStreamByColumn_Partial2() {
+    public void foldLongStreamByColumn_Partial2() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b", "c"))
                 .foldLongStreamByColumn(LongStream.range(0, 10));
 
@@ -431,7 +431,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldDoubleByColumn() {
+    public void foldDoubleByColumn() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldDoubleByColumn(-9999.9, 0, 1.1, 2, 3, 4, 5);
 
@@ -443,7 +443,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldDoubleByColumn_Partial() {
+    public void foldDoubleByColumn_Partial() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldDoubleByColumn(-9999.9, 0, 1.1, 2, 3, 4);
 
@@ -456,7 +456,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldDoubleStreamByRow() {
+    public void foldDoubleStreamByRow() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldDoubleStreamByRow(-9999.9, DoubleStream.of(-1, 1.1, 0, 2, 5, 3));
 
@@ -469,7 +469,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldDoubleStreamByRow_Partial() {
+    public void foldDoubleStreamByRow_Partial() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldDoubleStreamByRow(-9999.9, DoubleStream.of(-1, 1.1, 0, 2, 5));
 
@@ -482,7 +482,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldDoubleStreamByRow_Partial_DefaultPadding() {
+    public void foldDoubleStreamByRow_Partial_DefaultPadding() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldDoubleStreamByRow(DoubleStream.of(-1, 1.1, 0, 2, 5));
 
@@ -495,7 +495,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldDoubleStreamByColumn() {
+    public void foldDoubleStreamByColumn() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldDoubleStreamByColumn(-9999.9, DoubleStream.of(-1, 1.1, 0, 2, 5, 3));
 
@@ -508,7 +508,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldDoubleStreamByColumn_Partial1() {
+    public void foldDoubleStreamByColumn_Partial1() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldDoubleStreamByColumn(-9999.9, DoubleStream.of(-1, 1.1, 0, 2, 5));
 
@@ -521,7 +521,7 @@ public class DataFrameBuilderTest {
     }
 
     @Test
-    public void testFoldDoubleStreamByColumn_Partial2() {
+    public void foldDoubleStreamByColumn_Partial2() {
         DataFrame df = new DataFrameBuilder(Index.of("a", "b", "c"))
                 .foldDoubleStreamByColumn(DoubleStream.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));
 

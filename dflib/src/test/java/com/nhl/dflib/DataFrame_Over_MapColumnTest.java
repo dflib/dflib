@@ -7,14 +7,14 @@ import org.junit.jupiter.api.Test;
 public class DataFrame_Over_MapColumnTest {
 
     @Test
-    public void testEmpty() {
+    public void empty() {
         DataFrame df = DataFrame.empty("a", "b", "c");
         Series<?> r = df.over().mapColumn(Exp.$int("a").sum());
         new SeriesAsserts(r).expectData();
     }
 
     @Test
-    public void testDefault() {
+    public void test() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -27,7 +27,7 @@ public class DataFrame_Over_MapColumnTest {
     }
 
     @Test
-    public void testPartitioned() {
+    public void partitioned() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -40,7 +40,7 @@ public class DataFrame_Over_MapColumnTest {
     }
 
     @Test
-    public void testSorted() {
+    public void sorted() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -53,7 +53,7 @@ public class DataFrame_Over_MapColumnTest {
     }
 
     @Test
-    public void testRange_Preceding() {
+    public void range_Preceding() {
         DataFrame df = DataFrame.newFrame("value").foldByRow(
                 1,
                 22,
@@ -68,7 +68,7 @@ public class DataFrame_Over_MapColumnTest {
     }
 
     @Test
-    public void testSorted_Range_Preceding() {
+    public void sorted_Range_Preceding() {
         DataFrame df = DataFrame.newFrame("order", "value").foldByRow(
                 2, 1,
                 4, 22,
@@ -84,7 +84,7 @@ public class DataFrame_Over_MapColumnTest {
     }
 
     @Test
-    public void testSorted_Range_Following() {
+    public void sorted_Range_Following() {
         DataFrame df = DataFrame.newFrame("order", "value").foldByRow(
                 2, 1,
                 4, 22,
@@ -100,7 +100,7 @@ public class DataFrame_Over_MapColumnTest {
     }
 
     @Test
-    public void testPartitioned_Sorted() {
+    public void partitioned_Sorted() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -113,7 +113,7 @@ public class DataFrame_Over_MapColumnTest {
     }
 
     @Test
-    public void testPartitioned_Sorted_Range_Preceding() {
+    public void partitioned_Sorted_Range_Preceding() {
         DataFrame df = DataFrame.newFrame("label", "order", "value").foldByRow(
                 "a", 2, 1,
                 "a", 3, 22,

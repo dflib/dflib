@@ -6,14 +6,14 @@ import org.junit.jupiter.api.Test;
 public class DataFrame_Over_RankTest {
 
     @Test
-    public void testEmtpy() {
+    public void emtpy() {
         DataFrame df = DataFrame.empty("a", "b", "c");
         IntSeries r = df.over().rank();
         new IntSeriesAsserts(r).expectData();
     }
 
     @Test
-    public void testDefault() {
+    public void test() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -27,7 +27,7 @@ public class DataFrame_Over_RankTest {
     }
 
     @Test
-    public void testPartitioned() {
+    public void partitioned() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -45,7 +45,7 @@ public class DataFrame_Over_RankTest {
     }
 
     @Test
-    public void testSorted() {
+    public void sorted() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -61,7 +61,7 @@ public class DataFrame_Over_RankTest {
     }
 
     @Test
-    public void testPartitioned_Sorted() {
+    public void partitioned_Sorted() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",

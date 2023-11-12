@@ -8,7 +8,7 @@ import static java.util.Arrays.asList;
 public class ValuePredicateTest {
 
     @Test
-    public void testIsIn_Array() {
+    public void isIn_Array() {
 
         DataFrame df = DataFrame.newFrame("a")
                 .foldByRow(10, 20, 30, 40)
@@ -21,7 +21,7 @@ public class ValuePredicateTest {
     }
 
     @Test
-    public void testIsIn_Iterable() {
+    public void isIn_Iterable() {
 
         DataFrame df = DataFrame.newFrame("a")
                 .foldByRow(10, 20, 30, 40)
@@ -34,7 +34,7 @@ public class ValuePredicateTest {
     }
 
     @Test
-    public void testAnd() {
+    public void and() {
 
         ValuePredicate<Integer> p = ValuePredicate.isIn(20, 40).and(ValuePredicate.isIn(10, 20));
 
@@ -48,7 +48,7 @@ public class ValuePredicateTest {
     }
 
     @Test
-    public void testOr() {
+    public void or() {
 
         ValuePredicate<Integer> p = ValuePredicate.isIn(20, 40).or(ValuePredicate.isIn(10, 20));
 
@@ -64,7 +64,7 @@ public class ValuePredicateTest {
     }
 
     @Test
-    public void testNegate() {
+    public void negate() {
 
         ValuePredicate<Integer> p = ValuePredicate.isIn(20, 40).negate();
 

@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ByRowSeriesTest {
 
     @Test
-    public void testStructure() {
+    public void structure() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 "a1", "b1",
                 "a2", "b2");
@@ -19,7 +19,7 @@ public class ByRowSeriesTest {
     }
 
     @Test
-    public void testGet() {
+    public void get() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 "a1", "b1",
                 "a2", "b2");

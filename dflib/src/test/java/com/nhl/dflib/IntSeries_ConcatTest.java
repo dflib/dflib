@@ -11,13 +11,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class IntSeries_ConcatTest {
 
     @Test
-    public void test_None() {
+    public void none() {
         Series<Integer> s = new IntArraySeries(1, 2);
         assertSame(s, s.concat());
     }
 
     @Test
-    public void test_Self() {
+    public void self() {
         Series<Integer> s = new IntArraySeries(1, 2);
         Series<Integer> c = s.concat(s);
         new SeriesAsserts(c).expectData(1, 2, 1, 2);

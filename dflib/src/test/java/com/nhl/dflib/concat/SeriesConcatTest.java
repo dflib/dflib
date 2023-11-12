@@ -11,7 +11,7 @@ import static java.util.Arrays.asList;
 public class SeriesConcatTest {
 
     @Test
-    public void testConcat_Array() {
+    public void concat_Array() {
         Series<String> s1 = Series.of("m", "n");
         Series<String> s2 = Series.of("a", "b");
         Series<String> s3 = Series.of("d");
@@ -21,7 +21,7 @@ public class SeriesConcatTest {
     }
 
     @Test
-    public void testConcat_List() {
+    public void concat_List() {
         Collection<Series<String>> ss = asList(
                 Series.of("m", "n"),
                 Series.of("a", "b"),

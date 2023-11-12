@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class JdbcConnector_MetadataIT extends BaseDbTest {
 
     @Test
-    public void testGetMetadata() {
+    public void getMetadata() {
 
         DbTableMetadata t1 = adapter.createConnector().getMetadata().getTable("t1");
         assertNotNull(t1);

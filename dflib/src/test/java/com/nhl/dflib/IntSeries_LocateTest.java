@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test;
 public class IntSeries_LocateTest {
 
     @Test
-    public void testLocate() {
+    public void locate() {
         BooleanSeries s = Series.ofInt(3, 4, 2).locate(i -> i.intValue() % 2 == 0);
         new BoolSeriesAsserts(s).expectData(false, true, true);
     }
 
     @Test
-    public void testLocateInt() {
+    public void locateInt() {
         BooleanSeries s = Series.ofInt(3, 4, 2).locateInt(i -> i % 2 == 0);
         new BoolSeriesAsserts(s).expectData(false, true, true);
     }

@@ -64,7 +64,7 @@ public class TableLoader_SamplingIT extends BaseDbTest {
     }
 
     @Test
-    public void testSampleRows_SampleLargerThanResultSet() {
+    public void sampleRows_SampleLargerThanResultSet() {
         adapter.delete("t1");
         JdbcConnector connector = adapter.createConnector();
 
@@ -88,7 +88,7 @@ public class TableLoader_SamplingIT extends BaseDbTest {
     }
 
     @Test
-    public void testSampleRows_SampleSameAsCSV() {
+    public void sampleRows_SampleSameAsCSV() {
         adapter.delete("t1");
         JdbcConnector connector = adapter.createConnector();
 

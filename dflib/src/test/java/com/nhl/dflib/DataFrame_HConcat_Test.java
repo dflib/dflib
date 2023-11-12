@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class DataFrame_HConcat_Test {
 
     @Test
-    public void testZipRows_ImplicitInnerJoin() {
+    public void zipRows_ImplicitInnerJoin() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
@@ -29,7 +29,7 @@ public class DataFrame_HConcat_Test {
     }
 
     @Test
-    public void testZipRows_SparseDF() {
+    public void zipRows_SparseDF() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
@@ -50,7 +50,7 @@ public class DataFrame_HConcat_Test {
     }
 
     @Test
-    public void testZipRows_SparseDF_CustomIndex() {
+    public void zipRows_SparseDF_CustomIndex() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
@@ -72,7 +72,7 @@ public class DataFrame_HConcat_Test {
     }
 
     @Test
-    public void testZipRows_SparseDF_ReorgColumns() {
+    public void zipRows_SparseDF_ReorgColumns() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
@@ -104,7 +104,7 @@ public class DataFrame_HConcat_Test {
     }
 
     @Test
-    public void testZipRows_InnerJoin() {
+    public void zipRows_InnerJoin() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
@@ -126,7 +126,7 @@ public class DataFrame_HConcat_Test {
     }
 
     @Test
-    public void testZipRows_Left() {
+    public void zipRows_Left() {
 
         DataFrame df1 = DataFrame.newFrame("a").foldByRow(
                 0,
@@ -149,7 +149,7 @@ public class DataFrame_HConcat_Test {
     }
 
     @Test
-    public void testZipRows_Right() {
+    public void zipRows_Right() {
 
         DataFrame df1 = DataFrame.newFrame("a").foldByRow(
                 0,
@@ -171,7 +171,7 @@ public class DataFrame_HConcat_Test {
     }
 
     @Test
-    public void testZipRows_Full() {
+    public void zipRows_Full() {
 
         DataFrame df1 = DataFrame.newFrame("a").foldByRow(
                 0,

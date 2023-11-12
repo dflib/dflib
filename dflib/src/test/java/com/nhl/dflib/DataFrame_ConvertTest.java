@@ -13,7 +13,7 @@ import static com.nhl.dflib.Exp.$str;
 public class DataFrame_ConvertTest {
 
     @Test
-    public void testConvertColumn_Exp() {
+    public void convertColumn_Exp() {
         DataFrame df = DataFrame
                 .foldByRow("a", "b")
                 .of(1, "x", 2, "y")
@@ -26,7 +26,7 @@ public class DataFrame_ConvertTest {
     }
 
     @Test
-    public void testConvertColumn_Exp_Position() {
+    public void convertColumn_Exp_Position() {
         DataFrame df = DataFrame
                 .foldByRow("a", "b")
                 .of(1, "x", 2, "y")
@@ -39,7 +39,7 @@ public class DataFrame_ConvertTest {
     }
 
     @Test
-    public void testConvertColumn_Exp_ToDate() {
+    public void convertColumn_Exp_ToDate() {
         DataFrame df = DataFrame
                 .foldByRow("a")
                 .of(
@@ -56,7 +56,7 @@ public class DataFrame_ConvertTest {
     }
 
     @Test
-    public void testConvertColumn_ValueMapperToDate_Formatter() {
+    public void convertColumn_ValueMapperToDate_Formatter() {
         DataFrame df = DataFrame
                 .foldByRow("a")
                 .of(
@@ -75,7 +75,7 @@ public class DataFrame_ConvertTest {
     // TODO: move the rest of the deprecated ValueMapper-based tests to DataFrame_Convert_ValueMapper_Test once we implement the expression analogs
 
     @Test
-    public void testConvertColumn_ValueMapperToDateTime() {
+    public void convertColumn_ValueMapperToDateTime() {
         DataFrame df = DataFrame
                 .foldByRow("a")
                 .of(
@@ -93,7 +93,7 @@ public class DataFrame_ConvertTest {
 
     @Deprecated
     @Test
-    public void testToEnumFromNumColumn() {
+    public void toEnumFromNumColumn() {
         DataFrame df = DataFrame
                 .foldByRow("a", "b")
                 .of(
@@ -111,7 +111,7 @@ public class DataFrame_ConvertTest {
 
     @Deprecated
     @Test
-    public void testToEnumFromStringColumn() {
+    public void toEnumFromStringColumn() {
         DataFrame df = DataFrame
                 .foldByRow("a", "b")
                 .of(

@@ -18,19 +18,19 @@ public class ByRowSeries_TailTest {
     }
 
     @Test
-    public void test_Zero() {
+    public void zero() {
         Series<Object> s = createSeries("a", "b", "c", "d").tail(0);
         new SeriesAsserts(s).expectData();
     }
 
     @Test
-    public void test_OutOfBounds() {
+    public void outOfBounds() {
         Series<Object> s = createSeries("a", "b").tail(3);
         new SeriesAsserts(s).expectData("a", "b");
     }
 
     @Test
-    public void testNegative() {
+    public void negative() {
         Series<Object> s = createSeries("a", "b", "c").tail(-2);
         new SeriesAsserts(s).expectData("a", "b");
     }

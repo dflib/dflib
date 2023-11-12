@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class IntSeries_ReplaceTest {
 
     @Test
-    public void testReplace() {
+    public void replace() {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
         Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replace(cond, 5);
@@ -17,7 +17,7 @@ public class IntSeries_ReplaceTest {
     }
 
     @Test
-    public void testReplace_Null() {
+    public void replace_Null() {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
         Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replace(cond, null);
@@ -26,7 +26,7 @@ public class IntSeries_ReplaceTest {
     }
 
     @Test
-    public void testReplace_SmallerCondition() {
+    public void replace_SmallerCondition() {
         BooleanSeries cond = Series.ofBool(true, true, false);
 
         Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replace(cond, 5);
@@ -35,7 +35,7 @@ public class IntSeries_ReplaceTest {
     }
 
     @Test
-    public void testReplaceNoMatch() {
+    public void replaceNoMatch() {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
         Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replaceNoMatch(cond, 5);
@@ -44,7 +44,7 @@ public class IntSeries_ReplaceTest {
     }
 
     @Test
-    public void testReplaceNoMatch_Null() {
+    public void replaceNoMatch_Null() {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
         Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replaceNoMatch(cond, null);
@@ -53,7 +53,7 @@ public class IntSeries_ReplaceTest {
     }
 
     @Test
-    public void testReplaceNoMatch_LargerCondition() {
+    public void replaceNoMatch_LargerCondition() {
         BooleanSeries cond = Series.ofBool(true, true, false, false, false);
 
         Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replaceNoMatch(cond, 5);
@@ -62,7 +62,7 @@ public class IntSeries_ReplaceTest {
     }
 
     @Test
-    public void testReplaceNoMatch_SmallerCondition() {
+    public void replaceNoMatch_SmallerCondition() {
         BooleanSeries cond = Series.ofBool(true, true, false);
 
         Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replaceNoMatch(cond, 5);

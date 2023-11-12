@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class SqlSaverIT extends BaseDbTest {
 
     @Test
-    public void testSave() {
+    public void save() {
 
         JdbcConnector connector = adapter.createConnector();
 
@@ -33,7 +33,7 @@ public class SqlSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testSave_Array() {
+    public void save_Array() {
 
 
         JdbcConnector connector = adapter.createConnector();
@@ -51,7 +51,7 @@ public class SqlSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testSave_DataFrame() {
+    public void save_DataFrame() {
 
 
         DataFrame data = DataFrame.newFrame("id", "name", "salary").foldByRow(
@@ -73,7 +73,7 @@ public class SqlSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testSave_EmptyDataFrame() {
+    public void save_EmptyDataFrame() {
 
         DataFrame data = DataFrame.empty("id", "name", "salary");
 
@@ -89,7 +89,7 @@ public class SqlSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testSave_ParamWithFunction() {
+    public void save_ParamWithFunction() {
 
         DataFrame data = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1, "na1", 50_000.01,
@@ -110,7 +110,7 @@ public class SqlSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testSave_ReuseUpdater() {
+    public void save_ReuseUpdater() {
 
         DataFrame data1 = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.01,
@@ -140,7 +140,7 @@ public class SqlSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testDataTypeConversions() {
+    public void dataTypeConversions() {
 
         LocalDate ld = LocalDate.of(1977, 02, 05);
         LocalDateTime ldt = LocalDateTime.of(2019, 02, 03, 1, 2, 5);
@@ -169,7 +169,7 @@ public class SqlSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testSave_Update() {
+    public void save_Update() {
 
         DataFrame data = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.01,

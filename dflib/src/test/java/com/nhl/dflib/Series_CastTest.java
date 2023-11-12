@@ -10,7 +10,7 @@ public class Series_CastTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testUnsafeCastAs(SeriesType type) {
+    public void unsafeCastAs(SeriesType type) {
         Series<?> s = type.createSeries("s1", "s2");
         assertDoesNotThrow(() -> s.unsafeCastAs(String.class));
         assertDoesNotThrow(() -> s.unsafeCastAs(Integer.class));
@@ -18,7 +18,7 @@ public class Series_CastTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testCastAs(SeriesType type) {
+    public void castAs(SeriesType type) {
         Series<?> s = type.createSeries("s1", "s2");
         assertDoesNotThrow(() -> s.castAs(String.class));
         assertThrows(ClassCastException.class, () -> s.castAs(Integer.class));
@@ -26,7 +26,7 @@ public class Series_CastTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testCastAs_Upcast(SeriesType type) {
+    public void castAs_Upcast(SeriesType type) {
         Series<?> s = type.createSeries(1, 2);
         assertDoesNotThrow(() -> s.castAs(Integer.class));
         assertDoesNotThrow(() -> s.castAs(Number.class));

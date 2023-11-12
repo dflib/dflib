@@ -12,13 +12,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class StrSplitExpTest {
 
     @Test
-    public void testToQL() {
+    public void toQL() {
         Exp<String[]> exp = $str("a").split(' ');
         assertEquals("split(a)", exp.toQL());
     }
 
     @Test
-    public void testSplitOnChar_Eval_DataFrame() {
+    public void splitOnChar_Eval_DataFrame() {
         Exp<String[]> exp = $str("b").split(' ');
 
         DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
@@ -34,7 +34,7 @@ public class StrSplitExpTest {
     }
 
     @Test
-    public void testSplitOnChar_Eval_Series() {
+    public void splitOnChar_Eval_Series() {
         Exp<String[]> exp = $str(0).split(' ');
 
         Series<String> s = Series.of("ab cd", " ef g ", null);
@@ -44,7 +44,7 @@ public class StrSplitExpTest {
     }
 
     @Test
-    public void testSplitOnChar_Eval_Series_Limit() {
+    public void splitOnChar_Eval_Series_Limit() {
         Exp<String[]> exp = $str(0).split(' ', 2);
 
         Series<String> s = Series.of("ab cd", " ef g ", null);
@@ -54,7 +54,7 @@ public class StrSplitExpTest {
     }
 
     @Test
-    public void testSplitOnChar_Eval_Series_NegativeLimit() {
+    public void splitOnChar_Eval_Series_NegativeLimit() {
         Exp<String[]> exp = $str(0).split(' ', -1);
 
         Series<String> s = Series.of("ab cd", " ef g ", null);
@@ -64,7 +64,7 @@ public class StrSplitExpTest {
     }
 
     @Test
-    public void testSplitRegex_Eval() {
+    public void splitRegex_Eval() {
         Exp<String[]> exp = $str(0).split("\\'_");
 
         Series<String> s = Series.of("ab'_cd", "'_ef g '_", null);
@@ -75,7 +75,7 @@ public class StrSplitExpTest {
     }
 
     @Test
-    public void testSplitRegexWithLimit_Eval() {
+    public void splitRegexWithLimit_Eval() {
         Exp<String[]> exp = $str(0).split("\\'_", 2);
 
         Series<String> s = Series.of("ab'_cd", "'_ef g '_", "AB", null);
@@ -87,7 +87,7 @@ public class StrSplitExpTest {
     }
 
     @Test
-    public void testSplitRegexWithNegativeLimit_Eval() {
+    public void splitRegexWithNegativeLimit_Eval() {
         Exp<String[]> exp = $str(0).split("\\'_", -2);
 
         Series<String> s = Series.of("ab'_cd", "'_ef g '_", "AB", null);

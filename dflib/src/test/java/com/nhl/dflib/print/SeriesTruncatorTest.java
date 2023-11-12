@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SeriesTruncatorTest {
 
     @Test
-    public void testCreate_Odd() {
+    public void create_Odd() {
         Series<Integer> s = new IntSequenceSeries(0, 10);
         SeriesTruncator<Integer> tr = SeriesTruncator.create(s, 5);
 
@@ -20,7 +20,7 @@ public class SeriesTruncatorTest {
     }
 
     @Test
-    public void testCreate_Even() {
+    public void create_Even() {
         Series<Integer> s = new IntSequenceSeries(0, 10);
         SeriesTruncator<Integer> tr = SeriesTruncator.create(s, 6);
 
@@ -31,7 +31,7 @@ public class SeriesTruncatorTest {
     }
 
     @Test
-    public void testCreate_Two() {
+    public void create_Two() {
         Series<Integer> s = new IntSequenceSeries(0, 10);
         SeriesTruncator<Integer> tr = SeriesTruncator.create(s, 2);
 
@@ -42,7 +42,7 @@ public class SeriesTruncatorTest {
     }
 
     @Test
-    public void testCreate_One() {
+    public void create_One() {
         Series<Integer> s = new IntSequenceSeries(0, 10);
         SeriesTruncator<Integer> tr = SeriesTruncator.create(s, 1);
 
@@ -53,7 +53,7 @@ public class SeriesTruncatorTest {
     }
 
     @Test
-    public void testCreate_Zero() {
+    public void create_Zero() {
         Series<Integer> s = new IntSequenceSeries(0, 10);
         SeriesTruncator<Integer> tr = SeriesTruncator.create(s, 0);
 

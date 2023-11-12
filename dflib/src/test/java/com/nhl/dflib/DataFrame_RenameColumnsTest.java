@@ -11,10 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class DataFrame_RenameColumnsTest {
 
     @Test
-    public void testRenameColumns_All() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
-                1, "x",
-                2, "y")
+    public void renameColumns() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(1, "x", 2, "y")
                 .renameColumns("c", "d");
 
         new DataFrameAsserts(df, "c", "d")
@@ -24,23 +22,18 @@ public class DataFrame_RenameColumnsTest {
     }
 
     @Test
-    public void testRenameColumns_SizeMismatch() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
-                1, "x",
-                2, "y");
-
+    public void renameColumns_sizeMismatch() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(1, "x", 2, "y");
         assertThrows(IllegalArgumentException.class, () -> df.renameColumns("c"));
     }
 
     @Test
-    public void testRenameColumns_Map() {
+    public void renameColumns_withMap() {
 
         Map<String, String> names = new HashMap<>();
         names.put("b", "c");
 
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
-                1, "x",
-                2, "y")
+        DataFrame df = DataFrame.foldByRow("a", "b").of(1, "x", 2, "y")
                 .renameColumns(names);
 
         new DataFrameAsserts(df, "a", "c")
@@ -50,10 +43,8 @@ public class DataFrame_RenameColumnsTest {
     }
 
     @Test
-    public void testRenameColumns_WithFunction() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
-                1, "x",
-                2, "y")
+    public void renameColumns_withFunction() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(1, "x", 2, "y")
                 .renameColumns(String::toUpperCase);
 
         new DataFrameAsserts(df, "A", "B")
@@ -63,10 +54,8 @@ public class DataFrame_RenameColumnsTest {
     }
 
     @Test
-    public void testRenameColumn() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
-                1, "x",
-                2, "y")
+    public void renameColumn() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(1, "x", 2, "y")
                 .renameColumn("b", "d");
 
         new DataFrameAsserts(df, "a", "d")
@@ -76,11 +65,8 @@ public class DataFrame_RenameColumnsTest {
     }
 
     @Test
-    public void testRenameColumn_Duplicate() {
-        DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
-                1, "x",
-                2, "y");
-
+    public void renameColumns_Duplicate() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(1, "x", 2, "y");
         assertThrows(IllegalArgumentException.class, () -> df.renameColumn("b", "a"));
     }
 }

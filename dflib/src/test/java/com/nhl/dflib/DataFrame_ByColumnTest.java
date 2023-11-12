@@ -8,7 +8,7 @@ import java.util.List;
 public class DataFrame_ByColumnTest {
 
     @Test
-    public void testArray() {
+    public void array() {
 
         DataFrame df = DataFrame
                 .byColumn("a", "b")
@@ -24,7 +24,7 @@ public class DataFrame_ByColumnTest {
     }
 
     @Test
-    public void testIterable() {
+    public void iterable() {
 
         DataFrame df = DataFrame
                 .byColumn("a", "b")

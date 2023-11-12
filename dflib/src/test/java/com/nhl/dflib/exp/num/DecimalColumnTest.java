@@ -21,20 +21,20 @@ import static org.mockito.Mockito.mock;
 public class DecimalColumnTest {
 
     @Test
-    public void testGetColumnName() {
+    public void getColumnName() {
         assertEquals("a", $decimal("a").getColumnName());
         assertEquals("$decimal(0)", $decimal(0).getColumnName());
     }
 
     @Test
-    public void testGetColumnName_DataFrame() {
+    public void getColumnName_DataFrame() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
         assertEquals("b", $decimal("b").getColumnName(df));
         assertEquals("a", $decimal(0).getColumnName(df));
     }
 
     @Test
-    public void testEval() {
+    public void eval() {
         DecimalExp exp = $decimal("b");
 
         DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
@@ -45,14 +45,14 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void testAs() {
+    public void as() {
         DecimalExp exp = $decimal("b");
         assertEquals("b", exp.getColumnName(mock(DataFrame.class)));
         assertEquals("c", exp.as("c").getColumnName(mock(DataFrame.class)));
     }
 
     @Test
-    public void testScale() {
+    public void scale() {
         DataFrame df = DataFrame.newFrame("a").foldByRow(
                 new BigDecimal("2.0100287"),
                 new BigDecimal("4.5"));
@@ -62,13 +62,13 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void testCastAsDecimal() {
+    public void castAsDecimal() {
         DecimalExp e = $decimal("a");
         assertSame(e, e.castAsDecimal());
     }
 
     @Test
-    public void testCastAsDecimal_DataFrame() {
+    public void castAsDecimal_DataFrame() {
         DataFrame df = DataFrame.newFrame("a").foldByRow(
                 new BigDecimal("2.0100287"),
                 new BigDecimal("4.5"));
@@ -78,14 +78,14 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void testCastAsStr() {
+    public void castAsStr() {
         StrExp str = $decimal(0).castAsStr();
         Series<BigDecimal> s = Series.of(new BigDecimal("5.01"), null);
         new SeriesAsserts(str.eval(s)).expectData("5.01", null);
     }
 
     @Test
-    public void testAdd_IntPrimitive() {
+    public void add_IntPrimitive() {
 
         DecimalExp exp = $decimal("a").add(1).scale(2);
 
@@ -97,7 +97,7 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void testCumSum() {
+    public void cumSum() {
         DecimalExp exp = $decimal("a").cumSum();
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(
@@ -119,7 +119,7 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void testSum() {
+    public void sum() {
         DecimalExp exp = $decimal("a").sum().scale(2);
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(
@@ -130,7 +130,7 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void testSum_Nulls() {
+    public void sum_Nulls() {
         DecimalExp exp = $decimal("a").sum().scale(2);
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(
@@ -142,7 +142,7 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void testMedian_Odd() {
+    public void median_Odd() {
         DecimalExp exp = $decimal(0).median().scale(3);
 
         Series<BigDecimal> s = Series.of(new BigDecimal("100.01"), new BigDecimal("55.5"), new BigDecimal("0."));
@@ -151,7 +151,7 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void testMedian_Even() {
+    public void median_Even() {
         DecimalExp exp = $decimal(0).median().scale(1);
 
         Series<BigDecimal> s = Series.of(
@@ -161,7 +161,7 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void testMedian_Nulls() {
+    public void median_Nulls() {
         DecimalExp exp = $decimal(0).median().scale(3);
 
         Series<BigDecimal> s = Series.of(
@@ -171,7 +171,7 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void testAdd_Decimal() {
+    public void add_Decimal() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 new BigDecimal("1.01"), new BigDecimal("2."),
                 new BigDecimal("3."), new BigDecimal("4.5"));
@@ -181,7 +181,7 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void testDivide_Int() {
+    public void divide_Int() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 new BigDecimal("35"), 2,
                 new BigDecimal("3.3"), 3);
@@ -191,7 +191,7 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void testDivide_Double() {
+    public void divide_Double() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 new BigDecimal("5.0"), 2.5,
                 new BigDecimal("3.3"), 3.33);
@@ -202,7 +202,7 @@ public class DecimalColumnTest {
 
 
     @Test
-    public void testGT_Decimal() {
+    public void gT_Decimal() {
         Condition c = $decimal("a").gt($decimal("b"));
 
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
@@ -214,7 +214,7 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void testAbs() {
+    public void abs() {
         DataFrame df = DataFrame.newFrame("a").foldByRow(
                 new BigDecimal("-5.1"),
                 BigDecimal.ZERO,
@@ -225,7 +225,7 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void testNe() {
+    public void ne() {
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(
                 new BigDecimal("-5.1"),
@@ -237,7 +237,7 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void testEq() {
+    public void eq() {
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(
                 new BigDecimal("-5.1"),
@@ -249,7 +249,7 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void testEq_Zero() {
+    public void eq_Zero() {
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(
                 new BigDecimal("-5.1"),
@@ -262,7 +262,7 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void testNe_NonNumber() {
+    public void ne_NonNumber() {
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(
                 new BigDecimal("-5.1"),
@@ -274,19 +274,19 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void testCumSum_getColumnName() {
+    public void cumSum_getColumnName() {
         NumExp<?> exp = $decimal("a").cumSum();
         assertEquals("cumSum(a)", exp.getColumnName());
     }
 
     @Test
-    public void testSum_getColumnName() {
+    public void sum_getColumnName() {
         NumExp<?> exp = $decimal("a").sum();
         assertEquals("sum(a)", exp.getColumnName());
     }
 
     @Test
-    public void testCastAsCondition() {
+    public void castAsCondition() {
         Condition c = $decimal(0).castAsBool();
 
         Series<BigDecimal> s = Series.of(
@@ -298,7 +298,7 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void testMapConditionVal() {
+    public void mapConditionVal() {
         Condition c = $decimal(0).mapConditionVal(d -> d.doubleValue() > 0);
 
         Series<BigDecimal> s = Series.of(
@@ -310,7 +310,7 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void testMapCondition() {
+    public void mapCondition() {
         Condition c = $decimal(0).mapCondition(Series::isNotNull);
 
         Series<BigDecimal> s = Series.of(

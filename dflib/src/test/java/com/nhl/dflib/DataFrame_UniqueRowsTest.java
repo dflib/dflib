@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class DataFrame_UniqueRowsTest {
 
     @Test
-    public void testAll() {
+    public void all() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                         "a", 1,
                         "b", 2,
@@ -23,7 +23,7 @@ public class DataFrame_UniqueRowsTest {
     }
 
     @Test
-    public void testByColumnName() {
+    public void byColumnName() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                         "a", 1, "A",
                         "b", 2, "B",
@@ -40,7 +40,7 @@ public class DataFrame_UniqueRowsTest {
     }
 
     @Test
-    public void testByColumnPos() {
+    public void byColumnPos() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                         "a", 1, "A",
                         "b", 2, "B",
@@ -57,7 +57,7 @@ public class DataFrame_UniqueRowsTest {
     }
 
     @Test
-    public void testByColumnName_OrderOfKeyIsIrrelevant() {
+    public void byColumnName_OrderOfKeyIsIrrelevant() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                         "a", 1, "A",
                         "b", 2, "B",

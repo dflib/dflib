@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class DataFrame_AddRowTest {
 
     @Test
-    public void testAddRow() {
+    public void addRow() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
@@ -34,7 +34,7 @@ public class DataFrame_AddRowTest {
     }
 
     @Test
-    public void testAddRowMissingOrExtraValues() {
+    public void addRowMissingOrExtraValues() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
@@ -48,7 +48,7 @@ public class DataFrame_AddRowTest {
     }
 
     @Test
-    public void testAddRow_PrimitiveColumns() {
+    public void addRow_PrimitiveColumns() {
         DataFrame df = DataFrame.byColumn("a", "b").of(
                 Series.ofLong(5L, 6L),
                 Series.ofInt(1, 2))

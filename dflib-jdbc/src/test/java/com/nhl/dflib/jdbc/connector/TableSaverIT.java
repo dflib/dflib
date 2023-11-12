@@ -28,7 +28,7 @@ public class TableSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testEmpty() {
+    public void empty() {
 
         DataFrame df = DataFrame.empty("id", "name", "salary");
 
@@ -39,7 +39,7 @@ public class TableSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testSave_Append() {
+    public void save_Append() {
 
         DataFrame df1 = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.01,
@@ -63,7 +63,7 @@ public class TableSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testSave_DeleteTableData() {
+    public void save_DeleteTableData() {
 
         DataFrame df1 = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.01,
@@ -87,7 +87,7 @@ public class TableSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testSave_MergeByPk() {
+    public void save_MergeByPk() {
 
         adapter.getTable("t1").insertColumns("id", "name", "salary")
                 .values(1L, "n1", 50_000.01)
@@ -114,7 +114,7 @@ public class TableSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testSave_MergeByColumns() {
+    public void save_MergeByColumns() {
 
         adapter.getTable("t1").insertColumns("id", "name", "salary")
                 .values(1L, "n1", 50_000.01)
@@ -146,7 +146,7 @@ public class TableSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testSave_MergeByColumns_DeleteUnmatchedRows() {
+    public void save_MergeByColumns_DeleteUnmatchedRows() {
 
         adapter.getTable("t1").insertColumns("id", "name", "salary")
                 .values(1L, "n1", 50_000.01)
@@ -179,7 +179,7 @@ public class TableSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testSave_SkipUpdatingUnchagedRows() {
+    public void save_SkipUpdatingUnchagedRows() {
 
         adapter.getTable("t1").insertColumns("id", "name", "salary")
                 .values(1L, "n1", 50_000.01)
@@ -212,7 +212,7 @@ public class TableSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testSave_SkipUpdatingUnchagedColumns() {
+    public void save_SkipUpdatingUnchagedColumns() {
 
         adapter.getTable("t1").insertColumns("id", "name", "salary")
                 .values(4L, "n4", 8.)
@@ -249,7 +249,7 @@ public class TableSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testDataTypes() {
+    public void dataTypes() {
 
         LocalDate ld = LocalDate.of(1977, 2, 5);
         LocalDateTime ldt = LocalDateTime.of(2019, 2, 3, 1, 2, 5);
@@ -276,7 +276,7 @@ public class TableSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testDataTypes_DatePartsAsInts() {
+    public void dataTypes_DatePartsAsInts() {
 
         DataFrame df = DataFrame.newFrame("bigint", "int").foldByRow(
                 1L, Month.DECEMBER,
@@ -300,7 +300,7 @@ public class TableSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testDataTypes_Enums() {
+    public void dataTypes_Enums() {
 
         DataFrame df = DataFrame.newFrame("bigint", "int", "string").foldByRow(
                 1L, X.a, X.a,
@@ -322,7 +322,7 @@ public class TableSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testSaveWithInfo_Insert() {
+    public void saveWithInfo_Insert() {
 
         DataFrame df = DataFrame.newFrame("id", "name", "salary").foldByRow(
                 1L, "n1", 50_000.01,
@@ -342,7 +342,7 @@ public class TableSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testSaveWithInfo_DeleteInsert() {
+    public void saveWithInfo_DeleteInsert() {
 
         adapter.getTable("t1").insertColumns("id", "name", "salary")
                 .values(1L, "n1", 50_000.01)
@@ -368,7 +368,7 @@ public class TableSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testSave_MergeByPk_DeleteUnmatchedRows() {
+    public void save_MergeByPk_DeleteUnmatchedRows() {
 
         adapter.getTable("t1").insertColumns("id", "name", "salary")
                 .values(1L, "n1", 50_000.01)
@@ -395,7 +395,7 @@ public class TableSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void testSaveWithInfo_Merge() {
+    public void saveWithInfo_Merge() {
 
         adapter.getTable("t1").insertColumns("id", "name", "salary")
                 .values(1L, "n1", 50_000.01)

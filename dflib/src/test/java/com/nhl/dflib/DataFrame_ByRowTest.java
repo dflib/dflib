@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class DataFrame_ByRowTest {
 
     @Test
-    public void testObjectSource() {
+    public void objectSource() {
 
         List<From> data = List.of(new From("L1", -1), new From("L2", -2));
 
@@ -44,7 +44,7 @@ public class DataFrame_ByRowTest {
     }
 
     @Test
-    public void testObjectSource_SkipExtractor() {
+    public void objectSource_SkipExtractor() {
 
         List<From> data = List.of(new From("L1", -1), new From("L2", -2));
 
@@ -64,7 +64,7 @@ public class DataFrame_ByRowTest {
     }
 
     @Test
-    public void testNoExtractors() {
+    public void noExtractors() {
         assertThrows(IllegalArgumentException.class, () -> DataFrame
                 .byRow()
                 .columnNames("a", "b")
@@ -72,7 +72,7 @@ public class DataFrame_ByRowTest {
     }
 
     @Test
-    public void testSelectRows() {
+    public void selectRows() {
 
         DataFrame df = DataFrame
                 .byRow(

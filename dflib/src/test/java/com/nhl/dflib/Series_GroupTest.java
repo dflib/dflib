@@ -8,7 +8,7 @@ public class Series_GroupTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testGroup(SeriesType type) {
+    public void group(SeriesType type) {
         SeriesGroupBy<Integer> g = type.createSeries(1, 5, 5, 8, 5).group();
         new SeriesGroupByAsserts(g)
                 .expectGroups(1, 5, 8)
@@ -19,7 +19,7 @@ public class Series_GroupTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testGroup_SkipNulls(SeriesType type) {
+    public void group_SkipNulls(SeriesType type) {
         SeriesGroupBy<Integer> g = type.createSeries(8, null, 5, 8, 5, null).group();
         new SeriesGroupByAsserts(g)
                 .expectGroups(8, 5)
@@ -29,7 +29,7 @@ public class Series_GroupTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testGroup_WithHash(SeriesType type) {
+    public void group_WithHash(SeriesType type) {
         SeriesGroupBy<Integer> g = type.createSeries(1, 16, 5, 8, 7).group((Integer i) -> i % 2);
         new SeriesGroupByAsserts(g)
                 .expectGroups(0, 1)

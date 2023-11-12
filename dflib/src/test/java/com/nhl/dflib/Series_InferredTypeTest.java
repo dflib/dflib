@@ -9,35 +9,35 @@ public class Series_InferredTypeTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testEmptys(SeriesType type) {
+    public void emptys(SeriesType type) {
         Series<?> s = type.createSeries();
         assertSame(Object.class, s.getInferredType());
     }
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testAllNulls(SeriesType type) {
+    public void allNulls(SeriesType type) {
         Series<?> s = type.createSeries(null, null);
         assertSame(Object.class, s.getInferredType());
     }
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testSomeNulls(SeriesType type) {
+    public void someNulls(SeriesType type) {
         Series<?> s = type.createSeries(null, 5);
         assertSame(Integer.class, s.getInferredType());
     }
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testSameType(SeriesType type) {
+    public void sameType(SeriesType type) {
         Series<String> s = type.createSeries("a", "b");
         assertSame(String.class, s.getInferredType());
     }
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testSubclassSuperclassTypes(SeriesType type) {
+    public void subclassSuperclassTypes(SeriesType type) {
         Series<Object> s = type.createSeries(
                 new java.sql.Date(System.currentTimeMillis()),
                 new java.util.Date(System.currentTimeMillis()));
@@ -46,14 +46,14 @@ public class Series_InferredTypeTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testCommonAncestorTypes(SeriesType type) {
+    public void commonAncestorTypes(SeriesType type) {
         Series<Object> s = type.createSeries(Long.valueOf(5), Integer.valueOf(6));
         assertSame(Number.class, s.getInferredType());
     }
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testNoCommonAncestorTypes(SeriesType type) {
+    public void noCommonAncestorTypes(SeriesType type) {
         Series<Object> s = type.createSeries(Long.valueOf(5), "YYY");
         assertSame(Object.class, s.getInferredType());
     }

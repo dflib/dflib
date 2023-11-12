@@ -20,7 +20,7 @@ public class DataFrameTabularPrintWorkerTest {
     }
 
     @Test
-    public void testAppendFixedWidth() {
+    public void appendFixedWidth() {
         assertEquals("a  ", new DataFrameTabularPrintWorker(new StringBuilder(), 3, 20).appendFixedWidth("a", 3, "%1$-3s").toString());
         assertEquals("a ", new DataFrameTabularPrintWorker(new StringBuilder(), 3, 20).appendFixedWidth("a", 2, "%1$-2s").toString());
         assertEquals("a", new DataFrameTabularPrintWorker(new StringBuilder(), 3, 20).appendFixedWidth("a", 1, "%1$-1s").toString());
@@ -28,7 +28,7 @@ public class DataFrameTabularPrintWorkerTest {
     }
 
     @Test
-    public void testPrint_Full() {
+    public void print_Full() {
         DataFrameTabularPrintWorker w = new DataFrameTabularPrintWorker(new StringBuilder(), 5, 10);
 
         assertEquals(System.lineSeparator() +
@@ -42,7 +42,7 @@ public class DataFrameTabularPrintWorkerTest {
     }
 
     @Test
-    public void testPrint_TruncateRows() {
+    public void print_TruncateRows() {
         DataFrameTabularPrintWorker w = new DataFrameTabularPrintWorker(new StringBuilder(), 2, 10);
 
         assertEquals(System.lineSeparator() +
@@ -55,7 +55,7 @@ public class DataFrameTabularPrintWorkerTest {
     }
 
     @Test
-    public void testPrint_TruncateColumns() {
+    public void print_TruncateColumns() {
         DataFrameTabularPrintWorker w = new DataFrameTabularPrintWorker(new StringBuilder(), 5, 4);
 
         assertEquals(System.lineSeparator() +

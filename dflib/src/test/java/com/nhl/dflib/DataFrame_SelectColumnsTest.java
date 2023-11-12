@@ -9,7 +9,7 @@ import static com.nhl.dflib.Exp.$int;
 public class DataFrame_SelectColumnsTest {
 
     @Test
-    public void testByCondition() {
+    public void byCondition() {
         DataFrame df = DataFrame.newFrame("x1", "b", "x2").foldByRow(
                 1, "x", "z",
                 2, "y", "a")
@@ -22,7 +22,7 @@ public class DataFrame_SelectColumnsTest {
     }
 
     @Test
-    public void test() {
+    public void byLabel() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y")
@@ -35,7 +35,7 @@ public class DataFrame_SelectColumnsTest {
     }
 
     @Test
-    public void testExp() {
+    public void withExp() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y")
@@ -48,7 +48,7 @@ public class DataFrame_SelectColumnsTest {
     }
 
     @Test
-    public void testDuplicateColumn() {
+    public void duplicateColumn() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y")
@@ -62,7 +62,7 @@ public class DataFrame_SelectColumnsTest {
 
 
     @Test
-    public void testByIndex() {
+    public void byIndex() {
 
         DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
                 1, "x", "m",
@@ -76,7 +76,7 @@ public class DataFrame_SelectColumnsTest {
     }
 
     @Test
-    public void testWithAsExp(){
+    public void withAsExp(){
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y")

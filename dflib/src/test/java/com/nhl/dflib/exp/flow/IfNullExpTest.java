@@ -10,7 +10,7 @@ import static com.nhl.dflib.Exp.*;
 public class IfNullExpTest {
 
     @Test
-    public void testString() {
+    public void string() {
         Exp<String> noNulls = ifNull($str("a"), $str("b"));
 
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
@@ -23,7 +23,7 @@ public class IfNullExpTest {
     }
 
     @Test
-    public void testNumber() {
+    public void number() {
         Exp<?> noNulls = ifNull($int("a"), $int("b"));
 
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
@@ -36,7 +36,7 @@ public class IfNullExpTest {
     }
 
     @Test
-    public void testConst() {
+    public void val() {
         Exp<?> noNulls = ifNull($int("a"), 77);
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(

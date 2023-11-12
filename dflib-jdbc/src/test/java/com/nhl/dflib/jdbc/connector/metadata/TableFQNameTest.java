@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TableFQNameTest {
 
     @Test
-    public void testEquals_CatalogSchemaName() {
+    public void equals_CatalogSchemaName() {
 
         TableFQName n1 = TableFQName.forCatalogSchemaAndName("c1", "s1", "t1");
         TableFQName n2 = TableFQName.forCatalogSchemaAndName("c1", "s1", "t1");
@@ -23,7 +23,7 @@ public class TableFQNameTest {
     }
 
     @Test
-    public void testEquals_CatalogName() {
+    public void equals_CatalogName() {
 
         TableFQName n1 = TableFQName.forCatalogAndName("c1", "t1");
         TableFQName n2 = TableFQName.forCatalogAndName("c1", "t1");
@@ -37,7 +37,7 @@ public class TableFQNameTest {
     }
 
     @Test
-    public void testEquals_SchemaName() {
+    public void equals_SchemaName() {
 
         TableFQName n1 = TableFQName.forSchemaAndName("s1", "t1");
         TableFQName n2 = TableFQName.forSchemaAndName("s1", "t1");
@@ -51,7 +51,7 @@ public class TableFQNameTest {
     }
 
     @Test
-    public void testEquals_Name() {
+    public void equals_Name() {
 
         TableFQName n1 = TableFQName.forName("t1");
         TableFQName n2 = TableFQName.forName("t1");
@@ -63,7 +63,7 @@ public class TableFQNameTest {
     }
 
     @Test
-    public void testHashCode_CatalogSchemaName() {
+    public void hashCode_CatalogSchemaName() {
 
         TableFQName n1 = TableFQName.forCatalogSchemaAndName("c1", "s1", "t1");
         TableFQName n2 = TableFQName.forCatalogSchemaAndName("c1", "s1", "t1");
@@ -79,7 +79,7 @@ public class TableFQNameTest {
     }
 
     @Test
-    public void testHashCode_CatalogName() {
+    public void hashCode_CatalogName() {
 
         TableFQName n1 = TableFQName.forCatalogAndName("c1", "t1");
         TableFQName n2 = TableFQName.forCatalogAndName("c1", "t1");
@@ -93,7 +93,7 @@ public class TableFQNameTest {
     }
 
     @Test
-    public void testHashCode_SchemaName() {
+    public void hashCode_SchemaName() {
 
         TableFQName n1 = TableFQName.forSchemaAndName("s1", "t1");
         TableFQName n2 = TableFQName.forSchemaAndName("s1", "t1");
@@ -107,7 +107,7 @@ public class TableFQNameTest {
     }
 
     @Test
-    public void testHashCode_Name() {
+    public void hashCode_Name() {
 
         TableFQName n1 = TableFQName.forName("t1");
         TableFQName n2 = TableFQName.forName("t1");

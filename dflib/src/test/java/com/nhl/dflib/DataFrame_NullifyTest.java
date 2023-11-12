@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class DataFrame_NullifyTest {
 
     @Test
-    public void testNullify() {
+    public void nullify() {
         DataFrame cond = DataFrame
                 .newFrame("a", "b")
                 .columns(Series.ofBool(true, false), Series.ofBool(true, false));
@@ -24,7 +24,7 @@ public class DataFrame_NullifyTest {
     }
 
     @Test
-    public void testNullifyNoMatch() {
+    public void nullifyNoMatch() {
         DataFrame cond = DataFrame
                 .newFrame("a", "b")
                 .columns(Series.ofBool(true, false), Series.ofBool(true, false));
@@ -41,7 +41,7 @@ public class DataFrame_NullifyTest {
     }
 
     @Test
-    public void testNullifyByColumn() {
+    public void nullifyByColumn() {
 
         DataFrame cond = DataFrame
                 .newFrame("c", "b")

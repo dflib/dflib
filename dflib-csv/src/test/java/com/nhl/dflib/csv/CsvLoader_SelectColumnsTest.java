@@ -23,7 +23,7 @@ public class CsvLoader_SelectColumnsTest {
     }
 
     @Test
-    public void testPos() {
+    public void pos() {
 
         DataFrame df = new CsvLoader()
                 .intColumn(0)
@@ -38,7 +38,7 @@ public class CsvLoader_SelectColumnsTest {
     }
 
     @Test
-    public void testName() {
+    public void name() {
 
         DataFrame df = new CsvLoader()
                 .intColumn(0)
@@ -53,7 +53,7 @@ public class CsvLoader_SelectColumnsTest {
     }
 
     @Test
-    public void testMultipleConditions_LastWins() {
+    public void multipleConditions_LastWins() {
 
         DataFrame df = new CsvLoader()
                 .intColumn(0)
@@ -103,7 +103,7 @@ public class CsvLoader_SelectColumnsTest {
     }
 
     @Test
-    public void testCantFilterOnExcludedColumns() {
+    public void cantFilterOnExcludedColumns() {
 
         CsvLoader loader = new CsvLoader()
                 .intColumn("A")
@@ -117,7 +117,7 @@ public class CsvLoader_SelectColumnsTest {
     }
 
     @Test
-    public void testSelectColumns_Condition() {
+    public void selectColumns_Condition() {
 
         DataFrame df = new CsvLoader()
                 .intColumn("A")

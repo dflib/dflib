@@ -32,7 +32,7 @@ public class SqlLoaderIT extends BaseDbTest {
     }
 
     @Test
-    public void testReuse() {
+    public void reuse() {
 
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
@@ -55,7 +55,7 @@ public class SqlLoaderIT extends BaseDbTest {
     }
 
     @Test
-    public void testEmpty() {
+    public void empty() {
 
         adapter.getTable("t1").insert(1L, "n1", 50_000.01);
 
@@ -70,7 +70,7 @@ public class SqlLoaderIT extends BaseDbTest {
     }
 
     @Test
-    public void testColumnFunctions() {
+    public void columnFunctions() {
 
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
@@ -90,7 +90,7 @@ public class SqlLoaderIT extends BaseDbTest {
     }
 
     @Test
-    public void testMaxRows() {
+    public void maxRows() {
 
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
@@ -111,7 +111,7 @@ public class SqlLoaderIT extends BaseDbTest {
     }
 
     @Test
-    public void testParams() {
+    public void params() {
 
         LocalDate ld = LocalDate.of(1977, 02, 05);
         LocalDateTime ldt = LocalDateTime.of(2019, 02, 03, 1, 2, 5);
@@ -144,7 +144,7 @@ public class SqlLoaderIT extends BaseDbTest {
     }
 
     @Test
-    public void testPrimitives() {
+    public void primitives() {
 
 
         adapter.getTable("t3").insert(-15, Long.MAX_VALUE - 1, 0.505, true);

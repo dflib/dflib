@@ -22,7 +22,7 @@ public class Series_ByElementTest {
     }
 
     @Test
-    public void test_SmallCapacity() {
+    public void smallCapacity() {
 
         Series<String> s = Series
                 .byElement(Extractor.<String>$col())
@@ -38,7 +38,7 @@ public class Series_ByElementTest {
     }
 
     @Test
-    public void test_Int() {
+    public void convertingExtractor() {
 
         Series<Integer> s = Series
                 .byElement(Extractor.$int((String str) -> Integer.parseInt(str)))

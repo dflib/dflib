@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 public class SeriesGroupByTest {
 
     @Test
-    public void testToSeries() {
+    public void toSeries() {
         SeriesGroupBy<String> gb = Series.of("a", "b", "cd", "e", "fg")
                 .group((String s) -> s.length());
 
@@ -15,7 +15,7 @@ public class SeriesGroupByTest {
     }
 
     @Test
-    public void testAgg() {
+    public void agg() {
 
         Series<String> aggregated = Series.of("a", "b", "cd", "e", "fg")
                 .group((String s) -> s.length())
@@ -25,7 +25,7 @@ public class SeriesGroupByTest {
     }
 
     @Test
-    public void testAggMultiple() {
+    public void aggMultiple() {
 
         DataFrame aggregated = Series.of("a", "b", "cd", "e", "fg")
                 .group((String s) -> s.length())
@@ -41,7 +41,7 @@ public class SeriesGroupByTest {
     }
 
     @Test
-    public void testAggMultiple_Named() {
+    public void aggMultiple_Named() {
 
         DataFrame aggregated = Series.of("a", "b", "cd", "e", "fg")
                 .group((String s) -> s.length())

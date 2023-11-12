@@ -6,14 +6,14 @@ import org.junit.jupiter.api.Test;
 public class DataFrame_Over_AggTest {
 
     @Test
-    public void testEmpty() {
+    public void empty() {
         DataFrame df = DataFrame.empty("a", "b", "c");
         DataFrame r = df.over().agg(Exp.$int("a").sum());
         new DataFrameAsserts(r, "sum(a)").expectHeight(0);
     }
 
     @Test
-    public void testDefault() {
+    public void test() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -32,7 +32,7 @@ public class DataFrame_Over_AggTest {
     }
 
     @Test
-    public void testPartitioned() {
+    public void partitioned() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -51,7 +51,7 @@ public class DataFrame_Over_AggTest {
     }
 
     @Test
-    public void testSorted() {
+    public void sorted() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -76,7 +76,7 @@ public class DataFrame_Over_AggTest {
     }
 
     @Test
-    public void testPartitioned_Sorted() {
+    public void partitioned_Sorted() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",

@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class DataFrame_PivotTest {
 
     @Test
-    public void testWithAggregation_2by2() {
+    public void withAggregation_2by2() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
                 1, "x", 15.0,
@@ -31,7 +31,7 @@ public class DataFrame_PivotTest {
     }
 
     @Test
-    public void testWithAggregation_4_4() {
+    public void withAggregation_4_4() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
                 1, "x", 1,
@@ -62,7 +62,7 @@ public class DataFrame_PivotTest {
     // "TODO: allow nulls as group by keys"
     @Disabled("TODO: allow nulls as group by keys")
     @DisplayName("Rows with null values in row columns should be included")
-    public void testWithAggregation_NullsInPivotRows() {
+    public void withAggregation_NullsInPivotRows() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
                 1, "x", 15.0,
@@ -81,7 +81,7 @@ public class DataFrame_PivotTest {
 
     @Test
     @DisplayName("Rows with null values in pivot columns are skipped, as we can't have null column labels")
-    public void testWithAggregation_NullInPivotColumns() {
+    public void withAggregation_NullInPivotColumns() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
                 1, null, 15.0,
@@ -99,7 +99,7 @@ public class DataFrame_PivotTest {
     }
 
     @Test
-    public void testNoAggregation() {
+    public void noAggregation() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
                 1, "x", 15.0,
@@ -116,7 +116,7 @@ public class DataFrame_PivotTest {
     }
 
     @Test
-    public void testNoAggregation_Dupes() {
+    public void noAggregation_Dupes() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
                 1, "x", 15.0,
@@ -129,7 +129,7 @@ public class DataFrame_PivotTest {
     }
 
     @Test
-    public void testWithAggregation_WithConverstion() {
+    public void withAggregation_WithConverstion() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
                 1, "x", 15.0,

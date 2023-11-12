@@ -14,7 +14,7 @@ public class JsonSaverTest {
 
     @Test
     @DisplayName("single column")
-    public void testSingleColumn() {
+    public void singleColumn() {
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(1, 2, 3);
 
@@ -25,7 +25,7 @@ public class JsonSaverTest {
 
     @Test
     @DisplayName("multi-column, different types")
-    public void testMultiColumn_Types() {
+    public void multiColumn_Types() {
 
         LocalDate date = LocalDate.of(2021, 2, 1);
         LocalDateTime timestamp = LocalDateTime.of(2021, 2, 1, 1, 2, 3);

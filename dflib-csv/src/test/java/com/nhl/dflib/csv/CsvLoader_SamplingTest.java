@@ -10,7 +10,7 @@ import java.util.Random;
 public class CsvLoader_SamplingTest {
 
     @Test
-    public void testSampleRows() {
+    public void sampleRows() {
 
         String csv = "A,B" + System.lineSeparator()
                 + "1,2" + System.lineSeparator()
@@ -53,7 +53,7 @@ public class CsvLoader_SamplingTest {
     }
 
     @Test
-    public void testSampleRows_SampleLargerThanCSV() {
+    public void sampleRows_SampleLargerThanCSV() {
 
         String csv = "A,B" + System.lineSeparator()
                 + "1,2" + System.lineSeparator()
@@ -71,7 +71,7 @@ public class CsvLoader_SamplingTest {
     }
 
     @Test
-    public void testSampleRows_SampleSameAsCSV() {
+    public void sampleRows_SampleSameAsCSV() {
 
         String csv = "A,B" + System.lineSeparator()
                 + "1,2" + System.lineSeparator()

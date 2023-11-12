@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TxIT extends BaseDbTest {
 
     @Test
-    public void testRun() {
+    public void run() {
 
         adapter.delete("t1");
 
@@ -50,7 +50,7 @@ public class TxIT extends BaseDbTest {
     }
 
     @Test
-    public void testRun_Isolation() {
+    public void run_Isolation() {
 
         JdbcConnector connector = adapter.createConnector();
         Tx.newTransaction(connector)
@@ -79,7 +79,7 @@ public class TxIT extends BaseDbTest {
     }
 
     @Test
-    public void testRun_Rollback_ErrorInMetadata() {
+    public void run_Rollback_ErrorInMetadata() {
         adapter.delete("t1");
         JdbcConnector connector = adapter.createConnector();
         DataFrame df1 = DataFrame.newFrame("id", "name", "salary")
@@ -112,7 +112,7 @@ public class TxIT extends BaseDbTest {
     }
 
     @Test
-    public void testRun_Rollback_ErrorData() {
+    public void run_Rollback_ErrorData() {
         adapter.delete("t1");
         JdbcConnector connector = adapter.createConnector();
         DataFrame df1 = DataFrame.newFrame("id", "name", "salary")

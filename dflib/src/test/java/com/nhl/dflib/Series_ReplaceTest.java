@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class Series_ReplaceTest {
 
     @Test
-    public void testReplace() {
+    public void replace() {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
         Series<String> s1 = Series.of("a", "b", "n", "c").replace(cond, "X");
@@ -14,7 +14,7 @@ public class Series_ReplaceTest {
     }
 
     @Test
-    public void testReplace_Null() {
+    public void replace_Null() {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
         Series<String> s1 = Series.of("a", "b", "n", "c").replace(cond, null);
@@ -22,7 +22,7 @@ public class Series_ReplaceTest {
     }
 
     @Test
-    public void testReplace_SmallerCondition() {
+    public void replace_SmallerCondition() {
         BooleanSeries cond = Series.ofBool(true, true, false);
 
         Series<String> s1 = Series.of("a", "b", "n", "c").replace(cond, "X");
@@ -30,7 +30,7 @@ public class Series_ReplaceTest {
     }
 
     @Test
-    public void testReplaceNoMatch() {
+    public void replaceNoMatch() {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
         Series<String> s1 = Series.of("a", "b", "n", "c").replaceNoMatch(cond, "X");
@@ -38,7 +38,7 @@ public class Series_ReplaceTest {
     }
 
     @Test
-    public void testReplaceNoMatch_Null() {
+    public void replaceNoMatch_Null() {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
         Series<String> s1 = Series.of("a", "b", "n", "c").replaceNoMatch(cond, null);
@@ -46,7 +46,7 @@ public class Series_ReplaceTest {
     }
 
     @Test
-    public void testReplaceNoMatch_LargerCondition() {
+    public void replaceNoMatch_LargerCondition() {
         BooleanSeries cond = Series.ofBool(true, true, false, false, false);
 
         Series<String> s1 = Series.of("a", "b", "n", "c").replaceNoMatch(cond, "X");
@@ -54,7 +54,7 @@ public class Series_ReplaceTest {
     }
 
     @Test
-    public void testReplaceNoMatch_SmallerCondition() {
+    public void replaceNoMatch_SmallerCondition() {
         BooleanSeries cond = Series.ofBool(true, true, false);
 
         Series<String> s1 = Series.of("a", "b", "n", "c").replaceNoMatch(cond, "X");

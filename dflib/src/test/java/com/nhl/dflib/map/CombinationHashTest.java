@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CombinationHashTest {
 
     @Test
-    public void testEquals_Simple() {
+    public void equals_Simple() {
         CombinationHash k1 = new CombinationHash("a", "b");
         CombinationHash k2 = new CombinationHash("a", "b");
         CombinationHash k3 = new CombinationHash("a", "c");
@@ -26,7 +26,7 @@ public class CombinationHashTest {
     }
 
     @Test
-    public void testEquals_Nested() {
+    public void equals_Nested() {
         CombinationHash k1 = new CombinationHash(new CombinationHash("a", "b"), "c");
         CombinationHash k2 = new CombinationHash(new CombinationHash("a", "b"), "c");
         CombinationHash k3 = new CombinationHash("a", new CombinationHash("b", "c"));

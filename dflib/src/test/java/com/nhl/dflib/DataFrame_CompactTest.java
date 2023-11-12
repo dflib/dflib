@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class DataFrame_CompactTest {
 
     @Test
-    public void testCompactInt_ByLabel() {
+    public void compactInt_ByLabel() {
         DataFrame df = DataFrame
                 .foldByRow("a", "b")
                 .of(
@@ -26,7 +26,7 @@ public class DataFrame_CompactTest {
     }
 
     @Test
-    public void testCompactInt_ByPos() {
+    public void compactInt_ByPos() {
         DataFrame df = DataFrame
                 .foldByRow("a", "b")
                 .of(
@@ -44,7 +44,7 @@ public class DataFrame_CompactTest {
     }
 
     @Test
-    public void testCompactInt_FromBoolean() {
+    public void compactInt_FromBoolean() {
         DataFrame df = DataFrame
                 .foldByRow("a", "b")
                 .of(
@@ -62,7 +62,7 @@ public class DataFrame_CompactTest {
 
 
     @Test
-    public void testCompactInt_Nulls() {
+    public void compactInt_Nulls() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 "1", "x",
                 null, "z",
@@ -72,7 +72,7 @@ public class DataFrame_CompactTest {
     }
 
     @Test
-    public void testCompactInt_NullsDefault() {
+    public void compactInt_NullsDefault() {
         DataFrame df = DataFrame
                 .foldByRow("a", "b")
                 .of(

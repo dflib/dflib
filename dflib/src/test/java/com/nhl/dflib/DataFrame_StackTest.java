@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class DataFrame_StackTest {
 
     @Test
-    public void testStack() {
+    public void stack() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 null, null,
@@ -21,7 +21,7 @@ public class DataFrame_StackTest {
     }
 
     @Test
-    public void testStack_NoNulls() {
+    public void stack_NoNulls() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 5, "z",
@@ -38,7 +38,7 @@ public class DataFrame_StackTest {
     }
 
     @Test
-    public void testStackIncludeNulls() {
+    public void stackIncludeNulls() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 null, null,

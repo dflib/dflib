@@ -8,7 +8,7 @@ public class Series_ValueCountsTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testValueCounts(SeriesType type) {
+    public void valueCounts(SeriesType type) {
         DataFrame counts = type.createSeries("a", "b", "a", "a", "c").valueCounts();
 
         new DataFrameAsserts(counts, "value", "count")
@@ -20,7 +20,7 @@ public class Series_ValueCountsTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testValueCounts_Nulls(SeriesType type) {
+    public void valueCounts_Nulls(SeriesType type) {
         DataFrame counts = type.createSeries("a", "b", "a", "a", null, "c").valueCounts();
 
         new DataFrameAsserts(counts, "value", "count")

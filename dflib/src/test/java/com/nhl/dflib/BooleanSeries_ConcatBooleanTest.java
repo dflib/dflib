@@ -9,13 +9,13 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 public class BooleanSeries_ConcatBooleanTest {
 
     @Test
-    public void test_None() {
+    public void none() {
         BooleanSeries s = new BooleanArraySeries(true, false);
         assertSame(s, s.concatBool());
     }
 
     @Test
-    public void test_Self() {
+    public void self() {
         BooleanSeries s = new BooleanArraySeries(true, false);
         BooleanSeries c = s.concatBool(s);
         new BoolSeriesAsserts(c).expectData(true, false, true, false);

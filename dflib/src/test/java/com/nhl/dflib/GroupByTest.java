@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class GroupByTest {
 
     @Test
-    public void testGroup() {
+    public void group() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -44,7 +44,7 @@ public class GroupByTest {
     }
 
     @Test
-    public void testGroup_Empty() {
+    public void group_Empty() {
         DataFrame df = DataFrame.empty("a", "b");
 
         GroupBy gb = df.group(Hasher.of("a"));
@@ -55,7 +55,7 @@ public class GroupByTest {
     }
 
     @Test
-    public void testGroup_NullKeysIgnored() {
+    public void group_NullKeysIgnored() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -81,7 +81,7 @@ public class GroupByTest {
     }
 
     @Test
-    public void testGroup_Agg() {
+    public void group_Agg() {
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -101,7 +101,7 @@ public class GroupByTest {
     }
 
     @Test
-    public void testGroup_Agg_MultipleAggregationsForKey() {
+    public void group_Agg_MultipleAggregationsForKey() {
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -124,7 +124,7 @@ public class GroupByTest {
     }
 
     @Test
-    public void testGroup_toDataFrame() {
+    public void group_toDataFrame() {
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -145,7 +145,7 @@ public class GroupByTest {
     }
 
     @Test
-    public void testGroup_Head_toDataFrame() {
+    public void group_Head_toDataFrame() {
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -176,7 +176,7 @@ public class GroupByTest {
     }
 
     @Test
-    public void testGroup_Head_Sort_toDataFrame() {
+    public void group_Head_Sort_toDataFrame() {
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -198,7 +198,7 @@ public class GroupByTest {
     }
 
     @Test
-    public void testGroup_Tail_toDataFrame() {
+    public void group_Tail_toDataFrame() {
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -229,7 +229,7 @@ public class GroupByTest {
     }
 
     @Test
-    public void testGroup_Agg_Named() {
+    public void group_Agg_Named() {
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -252,7 +252,7 @@ public class GroupByTest {
     }
 
     @Test
-    public void testGroup_Sort_Pos() {
+    public void group_Sort_Pos() {
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "b",
@@ -276,7 +276,7 @@ public class GroupByTest {
     }
 
     @Test
-    public void testGroup_Sort_Name() {
+    public void group_Sort_Name() {
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "b",
@@ -300,7 +300,7 @@ public class GroupByTest {
     }
 
     @Test
-    public void testGroup_Sort_Names() {
+    public void group_Sort_Names() {
         DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
                 1, "x", 2,
                 2, "b", 1,
@@ -324,7 +324,7 @@ public class GroupByTest {
     }
 
     @Test
-    public void testRank_NoSort() {
+    public void rank_NoSort() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -340,7 +340,7 @@ public class GroupByTest {
     }
 
     @Test
-    public void testSort_Rank() {
+    public void sort_Rank() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -356,7 +356,7 @@ public class GroupByTest {
     }
 
     @Test
-    public void testGroup_Sort_Sorters() {
+    public void group_Sort_Sorters() {
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "b",
@@ -380,7 +380,7 @@ public class GroupByTest {
     }
 
     @Test
-    public void testSort_Sorter_Rank() {
+    public void sort_Sorter_Rank() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",

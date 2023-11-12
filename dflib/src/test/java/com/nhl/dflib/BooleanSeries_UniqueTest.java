@@ -12,19 +12,19 @@ public class BooleanSeries_UniqueTest {
     }
 
     @Test
-    public void testTrueOnly() {
+    public void trueOnly() {
         BooleanSeries s1 = Series.ofBool(true, true, true).unique();
         new BoolSeriesAsserts(s1).expectData(true);
     }
 
     @Test
-    public void testFalseOnly() {
+    public void falseOnly() {
         BooleanSeries s1 = Series.ofBool(false, false, false).unique();
         new BoolSeriesAsserts(s1).expectData(false);
     }
 
     @Test
-    public void testSmall() {
+    public void small() {
         BooleanSeries s1 = Series.ofBool(false, true).unique();
         new BoolSeriesAsserts(s1).expectData(false, true);
     }

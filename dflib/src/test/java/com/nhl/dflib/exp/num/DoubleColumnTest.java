@@ -19,27 +19,27 @@ import static org.mockito.Mockito.mock;
 public class DoubleColumnTest {
 
     @Test
-    public void testGetColumnName() {
+    public void getColumnName() {
         assertEquals("a", $double("a").getColumnName());
         assertEquals("$double(0)", $double(0).getColumnName());
     }
 
     @Test
-    public void testName_DataFrame() {
+    public void name_DataFrame() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
         assertEquals("b", $double("b").toQL(df));
         assertEquals("a", $double(0).toQL(df));
     }
 
     @Test
-    public void testAs() {
+    public void as() {
         NumExp<Double> e = $double("b");
         assertEquals("b", e.getColumnName(mock(DataFrame.class)));
         assertEquals("c", e.as("c").getColumnName(mock(DataFrame.class)));
     }
 
     @Test
-    public void testEval() {
+    public void eval() {
         NumExp<Double> e = $double("b");
 
         DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
@@ -50,7 +50,7 @@ public class DoubleColumnTest {
     }
 
     @Test
-    public void testCastAdDecimal() {
+    public void castAdDecimal() {
         DecimalExp e = $double("a").castAsDecimal().scale(2);
         DataFrame df = DataFrame.newFrame("a").foldByRow(
                 2.0100287,
@@ -60,7 +60,7 @@ public class DoubleColumnTest {
     }
 
     @Test
-    public void testAdd_Double() {
+    public void add_Double() {
         NumExp<?> e = $double("b").add($double("a"));
 
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
@@ -73,7 +73,7 @@ public class DoubleColumnTest {
     }
 
     @Test
-    public void testAdd_DoublePrimitive() {
+    public void add_DoublePrimitive() {
 
         NumExp<?> e = $double("b").add($double("a"));
 
@@ -93,7 +93,7 @@ public class DoubleColumnTest {
     }
 
     @Test
-    public void testAdd_Int() {
+    public void add_Int() {
         NumExp<?> e = $double("a").add($int("b"));
 
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
@@ -106,7 +106,7 @@ public class DoubleColumnTest {
     }
 
     @Test
-    public void testSubtract_Double() {
+    public void subtract_Double() {
         NumExp<?> e = $double("b").sub($double("a"));
 
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
@@ -119,7 +119,7 @@ public class DoubleColumnTest {
     }
 
     @Test
-    public void testAbs() {
+    public void abs() {
         DataFrame df = DataFrame.newFrame("a").foldByRow(
                 -5.1,
                 0.0,
@@ -130,7 +130,7 @@ public class DoubleColumnTest {
     }
 
     @Test
-    public void testCumSum() {
+    public void cumSum() {
         NumExp<?> exp = $double("a").cumSum();
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(
@@ -150,13 +150,13 @@ public class DoubleColumnTest {
     }
 
     @Test
-    public void testCumSum_getColumnName() {
+    public void cumSum_getColumnName() {
         NumExp<?> exp = $double("a").cumSum();
         assertEquals("cumSum(a)", exp.getColumnName());
     }
 
     @Test
-    public void testSum_getColumnName() {
+    public void sum_getColumnName() {
         NumExp<?> exp = $double("a").sum();
         assertEquals("sum(a)", exp.getColumnName());
     }

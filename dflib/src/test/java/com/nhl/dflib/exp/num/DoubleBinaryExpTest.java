@@ -10,12 +10,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class DoubleBinaryExpTest {
 
     @Test
-    public void testCreation() {
+    public void creation() {
         assertTrue($double("a").add(5) instanceof DoubleExp2);
     }
 
     @Test
-    public void testGetColumnName() {
+    public void getColumnName() {
         assertEquals("a + castAsDouble(5)", $double("a").add(5).getColumnName());
         assertEquals("a - b", $double("a").sub($double("b")).getColumnName());
         assertEquals("a * castAsDouble(b)", $double("a").mul($int("b")).getColumnName());

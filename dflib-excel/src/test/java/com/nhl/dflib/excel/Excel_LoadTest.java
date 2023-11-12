@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class Excel_LoadTest {
 
     @Test
-    public void testFromFile() throws URISyntaxException {
+    public void fromFile() throws URISyntaxException {
         File file = new File(getClass().getResource("one-sheet.xlsx").toURI());
 
         Map<String, DataFrame> data = Excel.load(file);
@@ -33,7 +33,7 @@ public class Excel_LoadTest {
     }
 
     @Test
-    public void testFromStringFilePath() throws URISyntaxException {
+    public void fromStringFilePath() throws URISyntaxException {
         File file = new File(getClass().getResource("one-sheet.xlsx").toURI());
 
         Map<String, DataFrame> data = Excel.load(file.getPath());
@@ -48,7 +48,7 @@ public class Excel_LoadTest {
     }
 
     @Test
-    public void testFromPath() throws URISyntaxException {
+    public void fromPath() throws URISyntaxException {
         Path path = Paths.get(getClass().getResource("one-sheet.xlsx").toURI());
 
         Map<String, DataFrame> data = Excel.load(path);
@@ -63,7 +63,7 @@ public class Excel_LoadTest {
     }
 
     @Test
-    public void testFromStream() throws IOException {
+    public void fromStream() throws IOException {
 
         try (InputStream in = getClass().getResourceAsStream("one-sheet.xlsx")) {
 

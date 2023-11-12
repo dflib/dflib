@@ -12,14 +12,14 @@ import static org.mockito.Mockito.mock;
 public class TableSaverTest {
 
     @Test
-    public void testCreateSaveStrategy_Default() {
+    public void createSaveStrategy_Default() {
         TableSaver saver = new TableSaver(mock(DefaultJdbcConnector.class), TableFQName.forName("xt"));
 
         assertEquals(SaveViaInsert.class, saver.createSaveStrategy().getClass());
     }
 
     @Test
-    public void testCreateSaveStrategy_DeleteInsert() {
+    public void createSaveStrategy_DeleteInsert() {
         TableSaver saver = new TableSaver(mock(DefaultJdbcConnector.class), TableFQName.forName("xt"))
                 .deleteTableData();
 
@@ -27,7 +27,7 @@ public class TableSaverTest {
     }
 
     @Test
-    public void testCreateSaveStrategy_DeleteUpsert() {
+    public void createSaveStrategy_DeleteUpsert() {
         TableSaver saver = new TableSaver(mock(DefaultJdbcConnector.class), TableFQName.forName("xt"))
                 .deleteTableData()
                 .mergeByPk();
@@ -37,7 +37,7 @@ public class TableSaverTest {
     }
 
     @Test
-    public void testCreateSaveStrategy_Upsert_PK() {
+    public void createSaveStrategy_Upsert_PK() {
         TableSaver saver = new TableSaver(mock(DefaultJdbcConnector.class), TableFQName.forName("xt")) {
             @Override
             protected String[] getPkColumns() {
@@ -51,7 +51,7 @@ public class TableSaverTest {
     }
 
     @Test
-    public void testCreateSaveStrategy_Upsert_Columns() {
+    public void createSaveStrategy_Upsert_Columns() {
         TableSaver saver = new TableSaver(mock(DefaultJdbcConnector.class), TableFQName.forName("xt"))
                 .mergeByColumns("X", "Y");
 

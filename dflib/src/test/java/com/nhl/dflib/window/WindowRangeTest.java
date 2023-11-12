@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class WindowRangeTest {
 
     @Test
-    public void testAlwaysInRange() {
+    public void alwaysInRange() {
         WindowRange range = WindowRange.of(2, 3);
         assertTrue(range.alwaysInRange(0));
         assertTrue(range.alwaysInRange(1));
@@ -20,7 +20,7 @@ public class WindowRangeTest {
     }
 
     @Test
-    public void testAlwaysInRange_All() {
+    public void alwaysInRange_All() {
         assertTrue(WindowRange.all.alwaysInRange(0));
         assertTrue(WindowRange.all.alwaysInRange(1));
         assertTrue(WindowRange.all.alwaysInRange(2));
@@ -28,7 +28,7 @@ public class WindowRangeTest {
     }
 
     @Test
-    public void testAlwaysInRange_AllPreceding() {
+    public void alwaysInRange_AllPreceding() {
         assertTrue(WindowRange.allPreceding.alwaysInRange(0));
         assertTrue(WindowRange.allPreceding.alwaysInRange(1));
         assertFalse(WindowRange.allPreceding.alwaysInRange(2));
@@ -36,7 +36,7 @@ public class WindowRangeTest {
     }
 
     @Test
-    public void testAlwaysInRange_AllFollowing() {
+    public void alwaysInRange_AllFollowing() {
         assertTrue(WindowRange.allFollowing.alwaysInRange(0));
         assertTrue(WindowRange.allFollowing.alwaysInRange(1));
         assertFalse(WindowRange.allFollowing.alwaysInRange(2));
@@ -44,7 +44,7 @@ public class WindowRangeTest {
     }
 
     @Test
-    public void testSelectRows() {
+    public void selectRows() {
 
         WindowRange range = WindowRange.of(2, 2);
 
@@ -57,7 +57,7 @@ public class WindowRangeTest {
     }
 
     @Test
-    public void testSelectRows_AllPreceding() {
+    public void selectRows_AllPreceding() {
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(1, 2, 3, 4);
 
@@ -68,7 +68,7 @@ public class WindowRangeTest {
     }
 
     @Test
-    public void testSelectRows_AllFollowing() {
+    public void selectRows_AllFollowing() {
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(1, 2, 3, 4);
 

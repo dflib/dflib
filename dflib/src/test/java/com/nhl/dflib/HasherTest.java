@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test;
 public class HasherTest {
 
     @Test
-    public void testForColumn_ByName() {
+    public void of_ByName() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("a", "b").of(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -28,13 +28,13 @@ public class HasherTest {
     }
 
     @Test
-    public void testForColumn_ByPos() {
+    public void of_ByPos() {
 
-        DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
 
-        DataFrame df2 = DataFrame.newFrame("a", "b").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("a", "b").of(
                 2, "a",
                 2, "b",
                 3, "c");
@@ -50,15 +50,13 @@ public class HasherTest {
     }
 
     @Test
-    public void testForColumn_MultiColumn_ByName() {
+    public void of_MultiColumn_ByName() {
 
-        Index i1 = Index.of("a", "b", "c");
-        DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b", "c").of(
                 1, "x", 5L,
                 2, "y", 4L);
 
-        Index i2 = Index.of("x", "y", "z");
-        DataFrame df2 = DataFrame.newFrame("x", "y", "z").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("x", "y", "z").of(
                 2, "a", 6L,
                 2, "y", 4L,
                 3, "c", 5L);
@@ -73,14 +71,13 @@ public class HasherTest {
     }
 
     @Test
-    public void testForColumn_MultiColumn_ByPos() {
+    public void of_MultiColumn_ByPos() {
 
-        Index i1 = Index.of("a", "b", "c");
-        DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
+        DataFrame df1 = DataFrame.foldByRow("a", "b", "c").of(
                 1, "x", 5L,
                 2, "y", 4L);
 
-        DataFrame df2 = DataFrame.newFrame("x", "y", "z").foldByRow(
+        DataFrame df2 = DataFrame.foldByRow("x", "y", "z").of(
                 2, "a", 6L,
                 2, "y", 4L,
                 3, "c", 5L);

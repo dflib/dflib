@@ -8,7 +8,7 @@ import java.util.Random;
 public class DataFrame_SampleTest {
 
     @Test
-    public void testSampleRows() {
+    public void sampleRows() {
 
         DataFrame df = DataFrame
                 .newFrame("a", "b")
@@ -30,7 +30,7 @@ public class DataFrame_SampleTest {
     }
 
     @Test
-    public void testSampleColumns() {
+    public void sampleColumns() {
 
         DataFrame df = DataFrame
                 .newFrame("a", "b", "c", "d")

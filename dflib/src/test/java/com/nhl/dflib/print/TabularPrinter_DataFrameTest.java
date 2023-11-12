@@ -1,7 +1,6 @@
 package com.nhl.dflib.print;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,7 @@ public class TabularPrinter_DataFrameTest {
     }
 
     @Test
-    public void testToString() {
+    public void toString_Normal() {
         TabularPrinter p = new TabularPrinter(5, 10);
 
         assertEquals(System.lineSeparator() +
@@ -34,7 +33,7 @@ public class TabularPrinter_DataFrameTest {
     }
 
     @Test
-    public void testToString_TruncateRows() {
+    public void toString_TruncateRows() {
         TabularPrinter p = new TabularPrinter(2, 10);
 
         assertEquals(System.lineSeparator() +
@@ -47,7 +46,7 @@ public class TabularPrinter_DataFrameTest {
     }
 
     @Test
-    public void testToString_TruncateColumns() {
+    public void toString_TruncateColumns() {
         TabularPrinter p = new TabularPrinter(5, 4);
 
         assertEquals(System.lineSeparator() +

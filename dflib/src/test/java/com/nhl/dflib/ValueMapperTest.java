@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ValueMapperTest {
 
     @Test
-    public void testAnd() {
+    public void and() {
         ValueMapper<String, Integer> trimming = ValueMapper.stringTrim().and(ValueMapper.stringToInt());
         assertNull(trimming.map(null));
         assertNull(trimming.map(""));
@@ -16,7 +16,7 @@ public class ValueMapperTest {
     }
 
     @Test
-    public void testStringToBoolean() {
+    public void stringToBoolean() {
         ValueMapper<String, Boolean> vm = ValueMapper.stringToBool();
         assertNull(vm.map(null));
         assertEquals(false, vm.map(""));

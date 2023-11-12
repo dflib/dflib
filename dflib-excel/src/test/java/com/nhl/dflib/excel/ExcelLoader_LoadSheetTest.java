@@ -18,7 +18,7 @@ public class ExcelLoader_LoadSheetTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"multi-sheet.xls", "multi-sheet.xlsx"})
-    public void testFromStream_MultiSheet(String source) throws IOException {
+    public void fromStream_MultiSheet(String source) throws IOException {
 
         try (InputStream in = getClass().getResourceAsStream(source)) {
 
@@ -42,7 +42,7 @@ public class ExcelLoader_LoadSheetTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"multi-sheet.xls", "multi-sheet.xlsx"})
-    public void testFromFile_MultiSheet(String source) throws URISyntaxException {
+    public void fromFile_MultiSheet(String source) throws URISyntaxException {
 
         File file = new File(getClass().getResource(source).toURI());
 
@@ -60,7 +60,7 @@ public class ExcelLoader_LoadSheetTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"multi-sheet.xls", "multi-sheet.xlsx"})
-    public void testFromFile_MultiSheet_ByPosition(String source) throws URISyntaxException {
+    public void fromFile_MultiSheet_ByPosition(String source) throws URISyntaxException {
 
         File file = new File(getClass().getResource(source).toURI());
 
@@ -77,13 +77,13 @@ public class ExcelLoader_LoadSheetTest {
     }
 
     @Test
-    public void testInvalidSheetName() throws URISyntaxException {
+    public void invalidSheetName() throws URISyntaxException {
         File file = new File(getClass().getResource("multi-sheet.xlsx").toURI());
         assertThrows(RuntimeException.class, () -> new ExcelLoader().loadSheet(file, "No_such_Sheet"));
     }
 
     @Test
-    public void testDataTypes() throws URISyntaxException {
+    public void dataTypes() throws URISyntaxException {
 
         File file = new File(getClass().getResource("one-sheet-data-types.xlsx").toURI());
 
@@ -105,7 +105,7 @@ public class ExcelLoader_LoadSheetTest {
     }
 
     @Test
-    public void testSparse() throws IOException {
+    public void sparse() throws IOException {
 
         try (InputStream in = getClass().getResourceAsStream("sparse.xlsx")) {
             DataFrame df = new ExcelLoader().loadSheet(in, "Sheet1");
@@ -120,7 +120,7 @@ public class ExcelLoader_LoadSheetTest {
     }
 
     @Test
-    public void testPhantomRowsOnly() throws URISyntaxException {
+    public void phantomRowsOnly() throws URISyntaxException {
         // "phantom-trailing-rows.xlsx" contains only phantom rows that are included by POI in the
         // rows iterator, but need to be skipped by DFLib
         File file = new File(getClass().getResource("phantom-rows-only.xlsx").toURI());
@@ -131,7 +131,7 @@ public class ExcelLoader_LoadSheetTest {
     }
 
     @Test
-    public void testPhantomLeadingRows() throws URISyntaxException {
+    public void phantomLeadingRows() throws URISyntaxException {
         // "phantom-leading-rows.xlsx" contains leading phantom rows that are included by POI in the
         // rows iterator, but need to be skipped by DFLib
         File file = new File(getClass().getResource("phantom-leading-rows.xlsx").toURI());
@@ -147,7 +147,7 @@ public class ExcelLoader_LoadSheetTest {
     }
 
     @Test
-    public void testPhantomTrailingRows() throws URISyntaxException {
+    public void phantomTrailingRows() throws URISyntaxException {
         // "phantom-trailing-rows.xlsx" contains trailing phantom rows that are included by POI in the
         // rows iterator, but need to be skipped by DFLib
         File file = new File(getClass().getResource("phantom-trailing-rows.xlsx").toURI());
@@ -163,7 +163,7 @@ public class ExcelLoader_LoadSheetTest {
     }
 
     @Test
-    public void testFromStream_FirstRowAsHeader() throws IOException {
+    public void fromStream_FirstRowAsHeader() throws IOException {
 
         try (InputStream in = getClass().getResourceAsStream("one-sheet.xlsx")) {
 
@@ -175,7 +175,7 @@ public class ExcelLoader_LoadSheetTest {
     }
 
     @Test
-    public void testFromStream_FirstRowAsHeader_SkipRows() throws IOException {
+    public void fromStream_FirstRowAsHeader_SkipRows() throws IOException {
 
         try (InputStream in = getClass().getResourceAsStream("one-sheet-offset.xlsx")) {
 
@@ -188,7 +188,7 @@ public class ExcelLoader_LoadSheetTest {
     }
 
     @Test
-    public void testFirstRowAsHeader_EmptyColumnNames() throws IOException {
+    public void firstRowAsHeader_EmptyColumnNames() throws IOException {
 
         try (InputStream in = getClass().getResourceAsStream("empty-column-names.xlsx")) {
 
@@ -200,7 +200,7 @@ public class ExcelLoader_LoadSheetTest {
     }
 
     @Test
-    public void testFromStream_SkipRows_Empty() throws IOException {
+    public void fromStream_SkipRows_Empty() throws IOException {
 
         try (InputStream in = getClass().getResourceAsStream("one-sheet.xlsx")) {
             DataFrame s1 = new ExcelLoader().skipRows(2).loadSheet(in, "Sheet1");

@@ -10,13 +10,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class IndexTest {
 
     @Test
-    public void testGetPositions() {
+    public void getPositions() {
         Index i = Index.of("a", "b", "c", "d");
         assertArrayEquals(new int[]{0, 1, 2, 3}, i.getPositions());
     }
 
     @Test
-    public void testPositions_ByLabel() {
+    public void positions_ByLabel() {
         Index i = Index.of("a", "b", "c", "d");
 
         assertArrayEquals(new int[0], i.positions());
@@ -25,7 +25,7 @@ public class IndexTest {
     }
 
     @Test
-    public void testPositionsExcept_ByLabel() {
+    public void positionsExcept_ByLabel() {
         Index i = Index.of("a", "b", "c", "d");
 
         assertArrayEquals(new int[]{0, 1, 2, 3}, i.positionsExcept(new String[0]));
@@ -34,7 +34,7 @@ public class IndexTest {
     }
 
     @Test
-    public void testPositionsExcept_ByPos() {
+    public void positionsExcept_ByPos() {
         Index i = Index.of("a", "b", "c", "d");
 
         assertArrayEquals(new int[]{0, 1, 2, 3}, i.positionsExcept(new int[0]));
@@ -43,42 +43,42 @@ public class IndexTest {
     }
 
     @Test
-    public void testPositions_Predicated() {
+    public void positions_Predicated() {
         Index i = Index.of("a", "b", "c", "d");
         assertArrayEquals(new int[]{2, 3}, i.positions(c -> c.charAt(0) >= 'c'));
     }
 
     @Test
-    public void testPositions_NoLabel() {
+    public void positions_NoLabel() {
         Index i = Index.of("a", "b");
         assertThrows(IllegalArgumentException.class, () -> i.positions("a", "c"));
     }
 
     @Test
-    public void testWithNames_Enum() {
+    public void withNames_Enum() {
         Index i = Index.of(E1.class);
         IndexAsserts.expect(i, "a", "b", "c");
     }
 
     @Test
-    public void testRangeOpenClosed0() {
+    public void rangeOpenClosed0() {
         Index i = Index.of("a", "b", "c", "d").rangeOpenClosed(1, 3);
         IndexAsserts.expect(i, "b", "c");
     }
 
     @Test
-    public void testRangeOpenClosed1() {
+    public void rangeOpenClosed1() {
         Index i = Index.of("a", "b", "c", "d").rangeOpenClosed(0, 4);
         IndexAsserts.expect(i, "a", "b", "c", "d");
     }
 
     @Test
-    public void testRangeOpenClosed_OutOfRange() {
+    public void rangeOpenClosed_OutOfRange() {
         assertThrows(IllegalArgumentException.class, () -> Index.of("a", "b", "c", "d").rangeOpenClosed(0, 5));
     }
 
     @Test
-    public void testToSeries() {
+    public void toSeries() {
         Series<String> s = Index.of("a", "b", "c", "d").toSeries();
         new SeriesAsserts(s).expectData("a", "b", "c", "d");
     }

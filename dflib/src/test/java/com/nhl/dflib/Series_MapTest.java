@@ -9,14 +9,14 @@ public class Series_MapTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testMap_Value(SeriesType type) {
+    public void map_Value(SeriesType type) {
         Series<String> s = type.createSeries("a", "b", "c").map(String::toUpperCase);
         new SeriesAsserts(s).expectData("A", "B", "C");
     }
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testMap_DataFrame(SeriesType type) {
+    public void map_DataFrame(SeriesType type) {
         DataFrame df = type.createSeries("a", "b", "c").map(Index.of("upper", "is_c"), (v, r) -> {
             r.set(0, v.toUpperCase());
             r.set(1, v.equals("c"));

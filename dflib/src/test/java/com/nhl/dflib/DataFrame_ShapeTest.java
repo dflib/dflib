@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DataFrame_ShapeTest {
 
     @Test
-    public void testWidth() {
+    public void width() {
         DataFrame df = DataFrame.newFrame("a").foldByRow(
                 1,
                 2
@@ -17,7 +17,7 @@ public class DataFrame_ShapeTest {
     }
 
     @Test
-    public void testHeight() {
+    public void height() {
         DataFrame df = DataFrame.newFrame("a").foldByRow(
                 1,
                 2

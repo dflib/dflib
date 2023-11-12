@@ -12,19 +12,19 @@ public class BooleanSeries_HeadTest {
     }
 
     @Test
-    public void test_Zero() {
+    public void zero() {
         BooleanSeries s = Series.ofBool(true, false, true).head(0);
         new BoolSeriesAsserts(s).expectData();
     }
 
     @Test
-    public void test_OutOfBounds() {
+    public void outOfBounds() {
         BooleanSeries s = Series.ofBool(true, false, true).head(4);
         new BoolSeriesAsserts(s).expectData(true, false, true);
     }
 
     @Test
-    public void test_Negative() {
+    public void negative() {
         BooleanSeries s = Series.ofBool(true, false, true).head(-2);
         new BoolSeriesAsserts(s).expectData(true);
     }

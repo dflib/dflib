@@ -28,7 +28,7 @@ public class JdbcConnectorBuilder_IT extends BaseDbTest {
 
     @Test
     @DisplayName("Connector smoke test")
-    public void testSmoke() throws SQLException {
+    public void smoke() throws SQLException {
 
         JdbcConnector connector = Jdbc.connector().dataSource(adapter.getDb().getDataSource()).build();
         String table = "JdbcConnectorBuilder_IT_smoke_test";
@@ -67,7 +67,7 @@ public class JdbcConnectorBuilder_IT extends BaseDbTest {
 
     @Test
     @DisplayName("Custom ColumnBuilderFactories")
-    public void testAddColumnBuilderFactory() throws SQLException {
+    public void addColumnBuilderFactory() throws SQLException {
 
         String table = "JdbcConnectorBuilder_IT_AddColumnBuilderFactory";
         String sql = adapter.toNativeSql("create table \"%s\" (\"id\" bigint, \"d\" date, \"t\" time, \"ts\" timestamp)", table);

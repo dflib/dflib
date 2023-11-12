@@ -8,17 +8,17 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AsExpTest {
 
     @Test
-    public void testToQL() {
+    public void toQL() {
         assertEquals("a as b", Exp.$col("a").as("b").toQL());
     }
 
     @Test
-    public void testToQL_Chained() {
+    public void toQL_Chained() {
         assertEquals("a as c", Exp.$col("a").as("b").as("c").toQL());
     }
 
     @Test
-    public void testAs() {
+    public void as() {
         Exp<String> as = Exp.$str("a").as("b");
         assertSame(as, as.as("b"));
         assertNotSame(as, as.as("c"));

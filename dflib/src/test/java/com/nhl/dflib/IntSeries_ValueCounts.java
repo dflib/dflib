@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class IntSeries_ValueCounts {
 
     @Test
-    public void testValueCounts() {
+    public void valueCounts() {
         DataFrame counts = Series.ofInt(1, 3, 1, 3, 1, 0).valueCounts();
 
         new DataFrameAsserts(counts, "value", "count")

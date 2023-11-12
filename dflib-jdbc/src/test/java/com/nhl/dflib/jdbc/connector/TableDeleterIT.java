@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TableDeleterIT extends BaseDbTest {
 
     @Test
-    public void testDelete_All() {
+    public void delete_All() {
 
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
@@ -25,7 +25,7 @@ public class TableDeleterIT extends BaseDbTest {
     }
 
     @Test
-    public void testDelete_Eq() {
+    public void delete_Eq() {
 
         DataFrame matcher = DataFrame.newFrame("id").foldByRow(1L, 3L);
 
@@ -46,7 +46,7 @@ public class TableDeleterIT extends BaseDbTest {
     }
 
     @Test
-    public void testDelete_Eq_Empty() {
+    public void delete_Eq_Empty() {
 
         DataFrame matcher = DataFrame.empty("id");
 
@@ -68,7 +68,7 @@ public class TableDeleterIT extends BaseDbTest {
     }
 
     @Test
-    public void testDelete_Neq() {
+    public void delete_Neq() {
 
         DataFrame matcher = DataFrame.newFrame("id").foldByRow(1L, 3L);
 
@@ -89,7 +89,7 @@ public class TableDeleterIT extends BaseDbTest {
     }
 
     @Test
-    public void testDelete_Neq_Empty() {
+    public void delete_Neq_Empty() {
 
         DataFrame matcher = DataFrame.empty("id");
 

@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class OffsetLeadSeriesTest {
 
     @Test
-    public void testGet() {
+    public void get() {
 
         Series<String> s = new OffsetLeadSeries<>(Series.of("a", "b", "c", "d"), 1, "X");
 
@@ -22,14 +22,14 @@ public class OffsetLeadSeriesTest {
     }
 
     @Test
-    public void testMaterialize() {
+    public void materialize() {
         Series<String> s = new OffsetLeadSeries<>(Series.of("a", "b", "c", "d"), 1, "X").materialize();
         assertTrue(s instanceof ArraySeries);
         new SeriesAsserts(s).expectData("X", "a", "b", "c");
     }
 
     @Test
-    public void testCopyTo() {
+    public void copyTo() {
 
         Series<String> s = new OffsetLeadSeries<>(Series.of("a", "b", "c", "d"), 1, "X");
 
@@ -51,7 +51,7 @@ public class OffsetLeadSeriesTest {
     }
 
     @Test
-    public void testShift() {
+    public void shift() {
 
         Series<String> s = new OffsetLeadSeries<>(Series.of("a", "b", "c", "d"), 1, "X");
 

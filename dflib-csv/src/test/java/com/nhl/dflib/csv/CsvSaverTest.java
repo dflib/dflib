@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CsvSaverTest extends BaseCsvTest {
 
     @Test
-    public void testSaveToString() {
+    public void saveToString() {
 
         DataFrame df = DataFrame.newFrame("A", "B").foldByRow(
                 1, 2,
@@ -25,7 +25,7 @@ public class CsvSaverTest extends BaseCsvTest {
     }
 
     @Test
-    public void testSave_ToWriter() {
+    public void save_ToWriter() {
 
         DataFrame df = DataFrame.newFrame("A", "B").foldByRow(
                 1, 2,
@@ -39,7 +39,7 @@ public class CsvSaverTest extends BaseCsvTest {
     }
 
     @Test
-    public void testSave_ToWriter_Format() {
+    public void save_ToWriter_Format() {
 
         DataFrame df = DataFrame.newFrame("A", "B").foldByRow(
                 1, 2,
@@ -54,7 +54,7 @@ public class CsvSaverTest extends BaseCsvTest {
     }
 
     @Test
-    public void testSave_ToFile() throws IOException {
+    public void save_ToFile() throws IOException {
 
         File file = new File(outPath("testToFile.csv"));
 
@@ -69,7 +69,7 @@ public class CsvSaverTest extends BaseCsvTest {
     }
 
     @Test
-    public void testSave_ToFilePath() throws IOException {
+    public void save_ToFilePath() throws IOException {
 
         String filePath = outPath("testToFilePath.csv");
 
@@ -84,7 +84,7 @@ public class CsvSaverTest extends BaseCsvTest {
     }
 
     @Test
-    public void testSave_Mkdirs() throws IOException {
+    public void save_Mkdirs() throws IOException {
 
         String path = outPath("Mkdirs" + File.separator + "f2" + File.separator + "testToFile.csv");
         File file = new File(path);
@@ -100,7 +100,7 @@ public class CsvSaverTest extends BaseCsvTest {
     }
 
     @Test
-    public void testSave_NoMkdirs() {
+    public void save_NoMkdirs() {
 
         String path = outPath("NoMkdirs" + File.separator + "f4" + File.separator + "testToFile.csv");
         File file = new File(path);
@@ -114,7 +114,7 @@ public class CsvSaverTest extends BaseCsvTest {
 
 
     @Test
-    public void testSave_NoHeader() {
+    public void save_NoHeader() {
         DataFrame df = DataFrame.newFrame("A", "B").foldByRow(
                 1, 2,
                 3, 4);

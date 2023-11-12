@@ -18,19 +18,19 @@ public class ByRowSeries_HeadTest {
     }
 
     @Test
-    public void test_Zero() {
+    public void zero() {
         Series<Object> s = createSeries("a", "b", "c").head(0);
         new SeriesAsserts(s).expectData();
     }
 
     @Test
-    public void test_OutOfBounds() {
+    public void outOfBounds() {
         Series<Object> s = createSeries("a", "b", "c", "d").head(5);
         new SeriesAsserts(s).expectData("a", "b", "c", "d");
     }
 
     @Test
-    public void testNegative() {
+    public void negative() {
         Series<Object> s = createSeries("a", "b", "c").head(-2);
         new SeriesAsserts(s).expectData("c", null);
     }

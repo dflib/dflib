@@ -13,7 +13,7 @@ import static org.mockito.Mockito.mock;
 public class DbMetadataTest {
 
     @Test
-    public void testParseTableName_CatalogNoSchema() throws SQLException {
+    public void parseTableName_CatalogNoSchema() throws SQLException {
 
         DatabaseMetaData jdbcMetaData = mock(DatabaseMetaData.class);
         DbMetadata md = new DbMetadata(mock(DataSource.class), MySQLFlavor.create(jdbcMetaData));

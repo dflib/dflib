@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
 
     @Test
-    public void testSaveSheet_Types() {
+    public void saveSheet_Types() {
 
         File file = new File(outPath("testSave_Types.xlsx"));
 
@@ -61,7 +61,7 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
     }
 
     @Test
-    public void testSaveSheet_ToStream() {
+    public void saveSheet_ToStream() {
 
         DataFrame df = DataFrame.foldByRow("C1", "C2").of(
                 "a", "b",
@@ -78,7 +78,7 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
     }
 
     @Test
-    public void testSaveSheet_ToFile() {
+    public void saveSheet_ToFile() {
 
         File file = new File(outPath("testSave_ToFile.xlsx"));
 
@@ -96,7 +96,7 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
     }
 
     @Test
-    public void testSaveSheet_ToFilePath() {
+    public void saveSheet_ToFilePath() {
 
         String filePath = outPath("testSave_ToFilePath.xlsx");
 
@@ -114,7 +114,7 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
     }
 
     @Test
-    public void testSaveSheet_Mkdirs() {
+    public void saveSheet_Mkdirs() {
 
         String path = outPath("Mkdirs" + File.separator + "f2" + File.separator + "testSave_Mkdirs.xlsx");
         File file = new File(path);
@@ -133,7 +133,7 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
     }
 
     @Test
-    public void testSaveSheet_NoMkdirs() {
+    public void saveSheet_NoMkdirs() {
 
         String path = outPath("NoMkdirs" + File.separator + "f4" + File.separator + "testSave_NoMkdirs.xlsx");
         File file = new File(path);
@@ -146,7 +146,7 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
     }
 
     @Test
-    public void testSaveSheet_NoHeader() {
+    public void saveSheet_NoHeader() {
 
         File file = new File(outPath("testSave_NoHeader.xlsx"));
 
@@ -164,7 +164,7 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
     }
 
     @Test
-    public void testSaveSheet_Merge() {
+    public void saveSheet_Merge() {
 
         File file = new File(outPath("testSave_MultiSheet.xlsx"));
 
@@ -201,7 +201,7 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
     }
 
     @Test
-    public void testSaveSheet_CustomStyle() throws IOException {
+    public void saveSheet_CustomStyle() throws IOException {
 
         DataFrame df = DataFrame.newFrame("C1", "C2").foldByRow(
                 "a", "b",
@@ -240,7 +240,7 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
     }
 
     @Test
-    public void testSaveSheet_CustomColumnWidth() throws IOException {
+    public void saveSheet_CustomColumnWidth() throws IOException {
 
         DataFrame df = DataFrame.newFrame("C1", "C2").foldByRow(
                 "--", "b",
@@ -264,7 +264,7 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
     }
 
     @Test
-    public void testSaveSheet_CustomColumnWidth_AutosizeColumnWidth() throws IOException {
+    public void saveSheet_CustomColumnWidth_AutosizeColumnWidth() throws IOException {
 
         DataFrame df = DataFrame.newFrame("C1", "C2", "C3").foldByRow(
                 "--", "b", "--",

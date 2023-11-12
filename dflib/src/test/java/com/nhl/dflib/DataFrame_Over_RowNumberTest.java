@@ -6,14 +6,14 @@ import org.junit.jupiter.api.Test;
 public class DataFrame_Over_RowNumberTest {
 
     @Test
-    public void testEmpty() {
+    public void empty() {
         DataFrame df = DataFrame.empty("a", "b", "c");
         IntSeries rn = df.over().rowNumber();
         new IntSeriesAsserts(rn).expectData();
     }
 
     @Test
-    public void testDefault() {
+    public void test() {
         DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
                 1, "x", "m",
                 2, "y", "n",
@@ -26,7 +26,7 @@ public class DataFrame_Over_RowNumberTest {
     }
 
     @Test
-    public void testPartitioned() {
+    public void partitioned() {
         DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
                 1, "x", "m",
                 2, "y", "n",
@@ -42,7 +42,7 @@ public class DataFrame_Over_RowNumberTest {
     }
 
     @Test
-    public void testSorted() {
+    public void sorted() {
         DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
                 1, "x", "3",
                 2, "y", "4",
@@ -61,7 +61,7 @@ public class DataFrame_Over_RowNumberTest {
     }
 
     @Test
-    public void testPartitioned_Sorted() {
+    public void partitioned_Sorted() {
         DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
                 1, "x", "m",
                 2, "y", "n",

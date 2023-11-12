@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class Avro_SchemaSerializationTest {
 
     @Test
-    public void testLoadSchema() {
+    public void loadSchema() {
 
         String schemaJson = "{\"type\":\"record\",\"name\":\"x\",\"namespace\":\"com.foo\",\"fields\":[" +
                 "{\"name\":\"c\",\"type\":\"bytes\"}]}";
@@ -34,7 +34,7 @@ public class Avro_SchemaSerializationTest {
     }
 
     @Test
-    public void testSaveSchema_DataFrame() throws UnsupportedEncodingException {
+    public void saveSchema_DataFrame() throws UnsupportedEncodingException {
 
         DataFrame df = DataFrame.newFrame(
                 "int", "Integer", "long", "Long", "double", "Double", "bool", "Bool", "String", "byte_array", "LocalDate")
@@ -71,7 +71,7 @@ public class Avro_SchemaSerializationTest {
     }
 
     @Test
-    public void testSaveSchema_ExplicitSchema() throws UnsupportedEncodingException {
+    public void saveSchema_ExplicitSchema() throws UnsupportedEncodingException {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 

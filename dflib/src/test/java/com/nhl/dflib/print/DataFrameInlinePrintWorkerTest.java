@@ -20,13 +20,13 @@ public class DataFrameInlinePrintWorkerTest {
     }
 
     @Test
-    public void testToString_NoRows() {
+    public void toString_NoRows() {
         DataFrameInlinePrintWorker w = new DataFrameInlinePrintWorker(new StringBuilder(), 5, 10);
         assertEquals("a:,b:", w.print(DataFrame.empty("a", "b")).toString());
     }
 
     @Test
-    public void testToString() {
+    public void toString_Normal() {
         DataFrameInlinePrintWorker w = new DataFrameInlinePrintWorker(new StringBuilder(), 5, 10);
 
         assertEquals("{col1:one,column2:1},{col1:two,column2:2},{col1:three,column2:3},{col1:four,column2:4}",
@@ -34,13 +34,13 @@ public class DataFrameInlinePrintWorkerTest {
     }
 
     @Test
-    public void testToString_TruncateRows() {
+    public void toString_TruncateRows() {
         DataFrameInlinePrintWorker w = new DataFrameInlinePrintWorker(new StringBuilder(), 2, 10);
         assertEquals("{col1:one,column2:1},...,{col1:four,column2:4}", w.print(df).toString());
     }
 
     @Test
-    public void testToString_TruncateColumns() {
+    public void toString_TruncateColumns() {
         DataFrameInlinePrintWorker w = new DataFrameInlinePrintWorker(new StringBuilder(), 5, 4);
         assertEquals("{col1:one,c..2:1},{col1:two,c..2:2},{col1:t..e,c..2:3},{col1:four,c..2:4}",
                 w.print(df).toString());

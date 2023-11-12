@@ -16,27 +16,27 @@ import static org.mockito.Mockito.mock;
 public class LongColumnTest {
 
     @Test
-    public void testGetColumnName() {
+    public void getColumnName() {
         assertEquals("a", $long("a").getColumnName());
         assertEquals("$long(0)", $long(0).getColumnName());
     }
 
     @Test
-    public void testGetColumnName_DataFrame() {
+    public void getColumnName_DataFrame() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
         assertEquals("b", $long("b").getColumnName(df));
         assertEquals("a", $long(0).getColumnName(df));
     }
 
     @Test
-    public void testAs() {
+    public void as() {
         NumExp<Long> e = $long("b");
         assertEquals("b", e.getColumnName(mock(DataFrame.class)));
         assertEquals("c", e.as("c").getColumnName(mock(DataFrame.class)));
     }
 
     @Test
-    public void testEval() {
+    public void eval() {
         NumExp<Long> e = $long("b");
 
         DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
@@ -47,7 +47,7 @@ public class LongColumnTest {
     }
 
     @Test
-    public void testCastAsDecimal() {
+    public void castAsDecimal() {
 
         DecimalExp e = $long("a").castAsDecimal().scale(2);
         DataFrame df = DataFrame.newFrame("a").foldByRow(
@@ -59,7 +59,7 @@ public class LongColumnTest {
     }
 
     @Test
-    public void testAdd_Long() {
+    public void add_Long() {
 
         NumExp<?> e = $long("b").add($long("a"));
 
@@ -73,7 +73,7 @@ public class LongColumnTest {
     }
 
     @Test
-    public void testAdd_LongPrimitive() {
+    public void add_LongPrimitive() {
 
         NumExp<?> e = $long("b").add($long("a"));
 
@@ -94,7 +94,7 @@ public class LongColumnTest {
     }
 
     @Test
-    public void testLE_Int() {
+    public void lE_Int() {
         Condition c = $long("a").le($int("b"));
 
         DataFrame df = DataFrame.foldByRow("a", "b").of(
@@ -106,7 +106,7 @@ public class LongColumnTest {
     }
 
     @Test
-    public void testLT_LongPrimitive() {
+    public void lT_LongPrimitive() {
         Condition c = $long("a").lt($long("b"));
 
         DataFrame df = DataFrame.foldByRow("a", "b").ofStream(LongStream.of(2L, 1L, 3L, 4L));
@@ -122,7 +122,7 @@ public class LongColumnTest {
     }
 
     @Test
-    public void testEQ_IntVal() {
+    public void eQ_IntVal() {
 
         Condition c = $long("a").eq(3);
 
@@ -135,7 +135,7 @@ public class LongColumnTest {
     }
 
     @Test
-    public void testNE_IntVal() {
+    public void nE_IntVal() {
 
         Condition c = $long("a").ne(3);
 
@@ -149,7 +149,7 @@ public class LongColumnTest {
 
 
     @Test
-    public void testNE_Decimal() {
+    public void nE_Decimal() {
 
         Condition c = $long("a").ne(new BigDecimal("3"));
 
@@ -162,7 +162,7 @@ public class LongColumnTest {
     }
 
     @Test
-    public void testCumSum() {
+    public void cumSum() {
         NumExp<?> exp = $long("a").cumSum();
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(
@@ -184,13 +184,13 @@ public class LongColumnTest {
     }
 
     @Test
-    public void testCumSum_getColumnName() {
+    public void cumSum_getColumnName() {
         NumExp<?> exp = $long("a").cumSum();
         assertEquals("cumSum(a)", exp.getColumnName());
     }
 
     @Test
-    public void testSum_getColumnName() {
+    public void sum_getColumnName() {
         NumExp<?> exp = $long("a").sum();
         assertEquals("sum(a)", exp.getColumnName());
     }

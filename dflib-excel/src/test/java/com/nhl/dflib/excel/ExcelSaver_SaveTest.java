@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class ExcelSaver_SaveTest extends BaseExcelTest {
 
     @Test
-    public void testSave_ToStream() {
+    public void save_ToStream() {
 
         DataFrame df1 = DataFrame.newFrame("C1", "C2").foldByRow(
                 "a", "b",
@@ -45,7 +45,7 @@ public class ExcelSaver_SaveTest extends BaseExcelTest {
     }
 
     @Test
-    public void testSaveSheet_ToFile() {
+    public void saveSheet_ToFile() {
 
         File file = new File(outPath("testSave_ToFile.xlsx"));
 
@@ -76,7 +76,7 @@ public class ExcelSaver_SaveTest extends BaseExcelTest {
     }
 
     @Test
-    public void testSaveSheet_ToFilePath() {
+    public void saveSheet_ToFilePath() {
 
         String filePath = outPath("testSave_ToFilePath.xlsx");
 
@@ -107,7 +107,7 @@ public class ExcelSaver_SaveTest extends BaseExcelTest {
     }
 
     @Test
-    public void testSaveSheet_Mkdirs() {
+    public void saveSheet_Mkdirs() {
 
         String path = outPath("Mkdirs" + File.separator + "f2" + File.separator + "testSave_Mkdirs.xlsx");
         File file = new File(path);
@@ -139,7 +139,7 @@ public class ExcelSaver_SaveTest extends BaseExcelTest {
     }
 
     @Test
-    public void testSaveSheet_NoMkdirs() {
+    public void saveSheet_NoMkdirs() {
 
         String path = outPath("NoMkdirs" + File.separator + "f4" + File.separator + "testSave_NoMkdirs.xlsx");
         File file = new File(path);

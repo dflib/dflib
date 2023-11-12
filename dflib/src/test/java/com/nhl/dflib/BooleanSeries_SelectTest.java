@@ -9,33 +9,33 @@ import static org.junit.jupiter.api.Assertions.*;
 public class BooleanSeries_SelectTest {
 
     @Test
-    public void testPositional() {
+    public void positional() {
         Series<Boolean> s = Series.ofBool(true, false, true).select(2, 1);
         new SeriesAsserts(s).expectData(true, false);
         assertTrue(s instanceof BooleanSeries);
     }
 
     @Test
-    public void testPositional_Empty() {
+    public void positional_Empty() {
         Series<Boolean> s = Series.ofBool(true, false, true).select();
         new SeriesAsserts(s).expectData();
         assertTrue(s instanceof BooleanSeries);
     }
 
     @Test
-    public void testPosition_OutOfBounds() {
+    public void position_OutOfBounds() {
         assertThrows(ArrayIndexOutOfBoundsException.class, () -> Series.ofBool(true, false, true).select(0, 3));
     }
 
     @Test
-    public void testPositional_Nulls() {
+    public void positional_Nulls() {
         Series<Boolean> s = Series.ofBool(true, false, true).select(2, 1, -1);
         new SeriesAsserts(s).expectData(true, false, null);
         assertFalse(s instanceof BooleanSeries);
     }
 
     @Test
-    public void testBooleanCondition() {
+    public void booleanCondition() {
         BooleanSeries condition = Series.ofBool(false, true, true);
         Series<Boolean> s = Series.ofBool(true, false, true).select(condition);
         new SeriesAsserts(s).expectData(false, true);

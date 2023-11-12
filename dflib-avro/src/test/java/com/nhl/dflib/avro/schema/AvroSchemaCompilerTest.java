@@ -25,7 +25,7 @@ public class AvroSchemaCompilerTest {
             );
 
     @Test
-    public void testCompileSchema() {
+    public void compileSchema() {
         Schema schema = new AvroSchemaCompiler()
                 .name("s")
                 .namespace("com.foo")
@@ -46,7 +46,7 @@ public class AvroSchemaCompilerTest {
     }
 
     @Test
-    public void testCompileSchema_EmptyDF() {
+    public void compileSchema_EmptyDF() {
 
         DataFrame empty = DataFrame.empty("A", "B");
 
@@ -62,7 +62,7 @@ public class AvroSchemaCompilerTest {
     }
 
     @Test
-    public void testCompileSchema_DefaultNames() {
+    public void compileSchema_DefaultNames() {
 
         DataFrame empty = DataFrame.empty("A");
         Schema schema = new AvroSchemaCompiler().compileSchema(empty);
@@ -73,7 +73,7 @@ public class AvroSchemaCompilerTest {
     }
 
     @Test
-    public void testEnumSchema() {
+    public void enumSchema() {
 
         Schema schema = new AvroSchemaCompiler().enumSchema(_TestEnum.class);
 

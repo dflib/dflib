@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class BasePrintWorkerTest {
 
     @Test
-    public void testTruncate() {
+    public void truncate() {
         assertEquals("..", BasePrintWorker.truncate("abc", 1));
         assertEquals("..", BasePrintWorker.truncate("abc", 2));
         assertEquals("abc", BasePrintWorker.truncate("abc", 3));

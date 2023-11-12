@@ -10,14 +10,14 @@ public class Series_ToArrayTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testContents(SeriesType type) {
+    public void contents(SeriesType type) {
         String[] a = type.createSeries("a", "b", "c", "d", "e").toArray(new String[0]);
         assertArrayEquals(new Object[]{"a", "b", "c", "d", "e"}, a);
     }
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testMutability(SeriesType type) {
+    public void mutability(SeriesType type) {
         Series<String> s = type.createSeries("a", "b");
         String[] a = s.toArray(new String[0]);
         a[0] = "c";

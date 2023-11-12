@@ -7,19 +7,19 @@ import org.junit.jupiter.api.Test;
 public class DoubleSeries_AddTest {
 
     @Test
-    public void testAdd() {
+    public void add() {
         Series<?> s = Series.ofDouble(3., 28.).add("abc");
         new SeriesAsserts(s).expectData(3., 28., "abc");
     }
 
     @Test
-    public void testAddDouble() {
+    public void addDouble() {
         DoubleSeries s = Series.ofDouble(3., 28.).addDouble(5.3);
         new DoubleSeriesAsserts(s).expectData(3., 28., 5.3);
     }
 
     @Test
-    public void testAdd_Series() {
+    public void add_Series() {
 
         // using a longer series to test optional vectorization extensions
         DoubleSeries s0 = Series.ofDouble(1, 2, 3, 4, 5, 6.56);

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class DataFrame_HeadTest {
 
     @Test
-    public void testHead() {
+    public void withinBounds() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -20,7 +20,7 @@ public class DataFrame_HeadTest {
     }
 
     @Test
-    public void testHead_Zero() {
+    public void zero() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",
@@ -32,7 +32,7 @@ public class DataFrame_HeadTest {
     }
 
     @Test
-    public void testHead_OutOfBounds() {
+    public void outOfBounds() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
                 2, "y",

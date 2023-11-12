@@ -20,14 +20,14 @@ public class Series_UniqueTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testAlreadyUnique(SeriesType type) {
+    public void alreadyUnique(SeriesType type) {
         Series<Object> s1 = type.createSeries(o4, o1, o2).unique();
         new SeriesAsserts(s1).expectData(o4, o1, o2);
     }
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testSmall(SeriesType type) {
+    public void small(SeriesType type) {
         Series<Object> s1 = type.createSeries(o4).unique();
         new SeriesAsserts(s1).expectData(o4);
     }

@@ -13,14 +13,14 @@ public class Series_ToListTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testContents(SeriesType type) {
+    public void contents(SeriesType type) {
         List<String> l = type.createSeries("a", "b", "c", "d", "e").toList();
         assertEquals(asList("a", "b", "c", "d", "e"), l);
     }
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testMutability(SeriesType type) {
+    public void mutability(SeriesType type) {
         Series<String> s = type.createSeries("a", "b");
         List<String> l = s.toList();
         l.set(0, "c");

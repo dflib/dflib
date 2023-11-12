@@ -7,19 +7,19 @@ import org.junit.jupiter.api.Test;
 public class LongSeries_AddTest {
 
     @Test
-    public void testAdd() {
+    public void add() {
         Series<?> s = Series.ofLong(3, 28).add("abc");
         new SeriesAsserts(s).expectData(3L, 28L, "abc");
     }
 
     @Test
-    public void testAddLong() {
+    public void addLong() {
         LongSeries s = Series.ofLong(3, 28).addLong(5L);
         new LongSeriesAsserts(s).expectData(3L, 28L, 5L);
     }
 
     @Test
-    public void testAdd_Series() {
+    public void add_Series() {
 
         // using a longer series to test optional vectorization extensions
         LongSeries s0 = Series.ofLong(1, 2, 3, 4, 5, 6);

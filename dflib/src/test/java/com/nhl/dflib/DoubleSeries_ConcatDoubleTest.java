@@ -9,13 +9,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DoubleSeries_ConcatDoubleTest {
 
     @Test
-    public void test_None() {
+    public void none() {
         DoubleSeries s = new DoubleArraySeries(1, 2);
         assertSame(s, s.concatDouble());
     }
 
     @Test
-    public void test_Self() {
+    public void self() {
         DoubleSeries s = new DoubleArraySeries(1, 2);
         DoubleSeries c = s.concatDouble(s);
         new DoubleSeriesAsserts(c).expectData(1, 2, 1, 2);

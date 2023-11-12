@@ -1,25 +1,14 @@
 package com.nhl.dflib.print;
 
-import com.nhl.dflib.BooleanSeries;
-import com.nhl.dflib.DoubleSeries;
-import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TabularPrinter_SeriesTest {
 
-    private Series<String> s1;
-
-    @BeforeEach
-    public void initSeries() {
-        this.s1 = Series.of("one", "two", "three", "four");
-    }
-
     @Test
-    public void testToString_Double() {
+    public void toString_Double() {
         TabularPrinter p = new TabularPrinter(5, 10);
 
         assertEquals(System.lineSeparator() +
@@ -31,7 +20,7 @@ public class TabularPrinter_SeriesTest {
     }
 
     @Test
-    public void testToString_Int() {
+    public void toString_Int() {
         TabularPrinter p = new TabularPrinter(5, 10);
 
         assertEquals(System.lineSeparator() +
@@ -43,7 +32,7 @@ public class TabularPrinter_SeriesTest {
     }
 
     @Test
-    public void testToString_Boolean() {
+    public void toString_Boolean() {
         TabularPrinter p = new TabularPrinter(5, 10);
 
         assertEquals(System.lineSeparator() +
@@ -53,7 +42,7 @@ public class TabularPrinter_SeriesTest {
     }
 
     @Test
-    public void testToString() {
+    public void toString_Full() {
         TabularPrinter p = new TabularPrinter(5, 10);
 
         assertEquals(System.lineSeparator() +
@@ -61,11 +50,11 @@ public class TabularPrinter_SeriesTest {
                 "two  " + System.lineSeparator() +
                 "three" + System.lineSeparator() +
                 "four " + System.lineSeparator() +
-                "4 elements", p.toString(s1));
+                "4 elements", p.toString(Series.of("one", "two", "three", "four")));
     }
 
     @Test
-    public void testToString_TruncateRows() {
+    public void toString_TruncateRows() {
 
         TabularPrinter p = new TabularPrinter(2, 10);
 
@@ -73,11 +62,11 @@ public class TabularPrinter_SeriesTest {
                 "one " + System.lineSeparator() +
                 "... " + System.lineSeparator() +
                 "four" + System.lineSeparator() +
-                "4 elements", p.toString(s1));
+                "4 elements", p.toString(Series.of("one", "two", "three", "four")));
     }
 
     @Test
-    public void testToString_TruncateColumns() {
+    public void toString_TruncateColumns() {
         TabularPrinter p = new TabularPrinter(5, 4);
 
         assertEquals(System.lineSeparator() +
@@ -85,6 +74,6 @@ public class TabularPrinter_SeriesTest {
                 "two " + System.lineSeparator() +
                 "t..e" + System.lineSeparator() +
                 "four" + System.lineSeparator() +
-                "4 elements", p.toString(s1));
+                "4 elements", p.toString(Series.of("one", "two", "three", "four")));
     }
 }

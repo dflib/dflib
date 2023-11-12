@@ -23,7 +23,7 @@ public class ExcelLoader_LoadTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"one-sheet.xls", "one-sheet.xlsx"})
-    public void testFromFile(String source) throws URISyntaxException {
+    public void fromFile(String source) throws URISyntaxException {
 
         File file = new File(getClass().getResource(source).toURI());
 
@@ -40,7 +40,7 @@ public class ExcelLoader_LoadTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"one-sheet.xls", "one-sheet.xlsx"})
-    public void testFromStringFilePath(String source) throws URISyntaxException {
+    public void fromStringFilePath(String source) throws URISyntaxException {
 
         File file = new File(getClass().getResource(source).toURI());
 
@@ -57,7 +57,7 @@ public class ExcelLoader_LoadTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"one-sheet.xls", "one-sheet.xlsx"})
-    public void testFromPath(String source) throws URISyntaxException {
+    public void fromPath(String source) throws URISyntaxException {
 
         Path path = Paths.get(getClass().getResource(source).toURI());
 
@@ -74,7 +74,7 @@ public class ExcelLoader_LoadTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"one-sheet.xls", "one-sheet.xlsx"})
-    public void testFromStream(String source) throws IOException {
+    public void fromStream(String source) throws IOException {
 
         try (InputStream in = getClass().getResourceAsStream(source)) {
 
@@ -92,7 +92,7 @@ public class ExcelLoader_LoadTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"multi-sheet.xls", "multi-sheet.xlsx"})
-    public void testFromStreamMultiSheet(String source) throws IOException {
+    public void fromStreamMultiSheet(String source) throws IOException {
 
         try (InputStream in = getClass().getResourceAsStream(source)) {
 

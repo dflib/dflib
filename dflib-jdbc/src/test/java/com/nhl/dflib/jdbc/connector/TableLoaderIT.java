@@ -29,7 +29,7 @@ public class TableLoaderIT extends BaseDbTest {
     }
 
     @Test
-    public void testIncludeColumns() {
+    public void includeColumns() {
 
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
@@ -47,7 +47,7 @@ public class TableLoaderIT extends BaseDbTest {
     }
 
     @Test
-    public void testDataTypeConversions() {
+    public void dataTypeConversions() {
 
         LocalDate ld = LocalDate.of(1977, 02, 05);
         LocalDateTime ldt = LocalDateTime.of(2019, 02, 03, 1, 2, 5);
@@ -71,7 +71,7 @@ public class TableLoaderIT extends BaseDbTest {
     }
 
     @Test
-    public void testMaxRows() {
+    public void maxRows() {
 
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
@@ -90,7 +90,7 @@ public class TableLoaderIT extends BaseDbTest {
     }
 
     @Test
-    public void testEq_SingleColumn() {
+    public void eq_SingleColumn() {
 
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
@@ -112,7 +112,7 @@ public class TableLoaderIT extends BaseDbTest {
     }
 
     @Test
-    public void testEq_MultiColumn() {
+    public void eq_MultiColumn() {
 
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
@@ -135,7 +135,7 @@ public class TableLoaderIT extends BaseDbTest {
     }
 
     @Test
-    public void testEq_EmptyCondition() {
+    public void eq_EmptyCondition() {
 
         adapter.getTable("t1").insert(1L, "n1", 50_000.01)
                 .insert(2L, "n2", 120_000.)
@@ -152,7 +152,7 @@ public class TableLoaderIT extends BaseDbTest {
     }
 
     @Test
-    public void testEq_EmptyCondition_CustomColumns() {
+    public void eq_EmptyCondition_CustomColumns() {
 
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
@@ -171,7 +171,7 @@ public class TableLoaderIT extends BaseDbTest {
     }
 
     @Test
-    public void testNeq_SingleColumn() {
+    public void neq_SingleColumn() {
 
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
@@ -192,7 +192,7 @@ public class TableLoaderIT extends BaseDbTest {
     }
 
     @Test
-    public void testNeq_MultiColumn() {
+    public void neq_MultiColumn() {
 
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)

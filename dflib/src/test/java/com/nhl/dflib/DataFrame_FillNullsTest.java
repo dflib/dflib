@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class DataFrame_FillNullsTest {
 
     @Test
-    public void testFillNulls() {
+    public void fillNulls() {
 
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 "a", 1,
@@ -23,7 +23,7 @@ public class DataFrame_FillNullsTest {
     }
 
     @Test
-    public void testFillNulls_Column() {
+    public void fillNulls_Column() {
 
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 "a", 1,
@@ -40,7 +40,7 @@ public class DataFrame_FillNullsTest {
     }
 
     @Test
-    public void testFillNullsFromSeries() {
+    public void fillNullsFromSeries() {
 
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 "a", 1,
@@ -57,7 +57,7 @@ public class DataFrame_FillNullsTest {
     }
 
     @Test
-    public void testFillNullsBackwards() {
+    public void fillNullsBackwards() {
 
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 "a", null,
@@ -76,7 +76,7 @@ public class DataFrame_FillNullsTest {
     }
 
     @Test
-    public void testFillNullsForward() {
+    public void fillNullsForward() {
 
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 "a", null,

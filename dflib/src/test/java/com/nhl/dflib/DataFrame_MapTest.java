@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class DataFrame_MapTest {
 
     @Test
-    public void testMap_UnaryOp() {
+    public void map_UnaryOp() {
         DataFrame df = DataFrame
                 .newFrame("a", "b")
                 .foldByRow(
@@ -21,7 +21,7 @@ public class DataFrame_MapTest {
     }
 
     @Test
-    public void testMap_Exp() {
+    public void map_Exp() {
         Index i1 = Index.of("a", "b");
         DataFrame df = DataFrame
                 .newFrame("a", "b")
@@ -37,7 +37,7 @@ public class DataFrame_MapTest {
     }
 
     @Test
-    public void testMap_RowMapper_Get() {
+    public void map_RowMapper_Get() {
         Index i1 = Index.of("a", "b");
         DataFrame df = DataFrame
                 .newFrame("a", "b")
@@ -56,7 +56,7 @@ public class DataFrame_MapTest {
     }
 
     @Test
-    public void testMap_RowMapper_GetWithCast() {
+    public void map_RowMapper_GetWithCast() {
         Index index = Index.of("a", "b");
         DataFrame df = DataFrame
                 .newFrame(index)
@@ -75,7 +75,7 @@ public class DataFrame_MapTest {
     }
 
     @Test
-    public void testMap_RowMapper_GetWithCast_ByName() {
+    public void map_RowMapper_GetWithCast_ByName() {
         Index index = Index.of("a", "b");
         DataFrame df = DataFrame
                 .newFrame(index)
@@ -94,7 +94,7 @@ public class DataFrame_MapTest {
     }
 
     @Test
-    public void testMap_RowMapper_GetPrimitive() {
+    public void map_RowMapper_GetPrimitive() {
         Index index = Index.of("i", "l", "d", "b");
         DataFrame df = DataFrame
                 .byColumn(index)

@@ -12,7 +12,7 @@ public class Excel_LoadSheetTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"multi-sheet.xls", "multi-sheet.xlsx"})
-    public void testFromStreamMultiSheet(String source) throws IOException {
+    public void fromStreamMultiSheet(String source) throws IOException {
 
         try (InputStream in = getClass().getResourceAsStream(source)) {
 

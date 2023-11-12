@@ -13,13 +13,13 @@ public class IntSeries_MatchingPositionsIntTest {
     }
 
     @Test
-    public void test_All() {
+    public void all() {
         IntSeries s = new IntArraySeries(3, 4, 2).indexInt(i -> true);
         new IntSeriesAsserts(s).expectData(0, 1, 2);
     }
 
     @Test
-    public void test_None() {
+    public void none() {
         IntSeries s = new IntArraySeries(3, 4, 2).indexInt(i -> false);
         new IntSeriesAsserts(s).expectData();
     }

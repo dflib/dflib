@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DataFrame_Sort_Test {
 
     @Test
-    public void testSort_Immutable() {
+    public void sort_Immutable() {
         DataFrame dfi = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
                 2, 3,
@@ -36,7 +36,7 @@ public class DataFrame_Sort_Test {
     }
 
     @Test
-    public void testSort_NullsLast() {
+    public void sort_NullsLast() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
                 null, 3,
@@ -50,7 +50,7 @@ public class DataFrame_Sort_Test {
     }
 
     @Test
-    public void testSort_ByColumn_NullsLast() {
+    public void sort_ByColumn_NullsLast() {
         DataFrame dfi = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
                 null, 3,
@@ -72,7 +72,7 @@ public class DataFrame_Sort_Test {
     }
 
     @Test
-    public void testSortByColumns_Names() {
+    public void sortByColumns_Names() {
         DataFrame dfi = DataFrame.newFrame("a", "b").foldByRow(
                 0, 4,
                 2, 2,
@@ -94,7 +94,7 @@ public class DataFrame_Sort_Test {
     }
 
     @Test
-    public void testSortByColumns_Names_Nulls() {
+    public void sortByColumns_Names_Nulls() {
         DataFrame dfi = DataFrame.newFrame("a", "b").foldByRow(
                 0, 4,
                 2, null,
@@ -116,7 +116,7 @@ public class DataFrame_Sort_Test {
     }
 
     @Test
-    public void testSortByColumns_Positions() {
+    public void sortByColumns_Positions() {
         DataFrame dfi = DataFrame.newFrame("a", "b").foldByRow(
                 0, 4,
                 2, 2,
@@ -139,7 +139,7 @@ public class DataFrame_Sort_Test {
     }
 
     @Test
-    public void testSortByColumn_Position_Direction() {
+    public void sortByColumn_Position_Direction() {
         DataFrame dfi = DataFrame.newFrame("a", "b").foldByRow(
                 0, 3,
                 2, 4,
@@ -161,7 +161,7 @@ public class DataFrame_Sort_Test {
     }
 
     @Test
-    public void testSort_NoSorter() {
+    public void sort_NoSorter() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
                 2, 3,
@@ -177,7 +177,7 @@ public class DataFrame_Sort_Test {
     }
 
     @Test
-    public void testSort_WithSorter_Asc() {
+    public void sort_WithSorter_Asc() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
                 2, 3,
@@ -192,7 +192,7 @@ public class DataFrame_Sort_Test {
     }
 
     @Test
-    public void testSort_WithSorter_Desc() {
+    public void sort_WithSorter_Desc() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
                 2, 3,
@@ -207,7 +207,7 @@ public class DataFrame_Sort_Test {
     }
 
     @Test
-    public void testSort_WithSorter_Multiple() {
+    public void sort_WithSorter_Multiple() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 0, 1,
                 2, 3,
@@ -224,7 +224,7 @@ public class DataFrame_Sort_Test {
     }
 
     @Test
-    public void testSort_WithSorter_BigDecimal() {
+    public void sort_WithSorter_BigDecimal() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 0, new BigDecimal("2"),
                 2, new BigDecimal("1.0"),

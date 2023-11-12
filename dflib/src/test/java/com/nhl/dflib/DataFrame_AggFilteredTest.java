@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class DataFrame_AggFilteredTest {
 
     @Test
-    public void testSumInt() {
+    public void sumInt() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, 1,
                 -1, 5,
@@ -27,7 +27,7 @@ public class DataFrame_AggFilteredTest {
     }
 
     @Test
-    public void testSumLong() {
+    public void sumLong() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, 1,
                 -1, 5,
@@ -46,7 +46,7 @@ public class DataFrame_AggFilteredTest {
     }
 
     @Test
-    public void testSumDouble() {
+    public void sumDouble() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1.1, 1.8,
                 -1., 5.8,
@@ -67,7 +67,7 @@ public class DataFrame_AggFilteredTest {
     }
 
     @Test
-    public void testFirst_Condition() {
+    public void first_Condition() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 7, 1,
                 -1, 5,
@@ -83,7 +83,7 @@ public class DataFrame_AggFilteredTest {
     }
 
     @Test
-    public void testFirst_Condition_Never() {
+    public void first_Condition_Never() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 7, 1,
                 -1, 5,
@@ -99,7 +99,7 @@ public class DataFrame_AggFilteredTest {
     }
 
     @Test
-    public void testCount() {
+    public void count() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 7, 1,
                 -1, 5,
@@ -116,7 +116,7 @@ public class DataFrame_AggFilteredTest {
     }
 
     @Test
-    public void testVConcat() {
+    public void vConcat() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 7, 1,
                 -1, 5,
@@ -133,7 +133,7 @@ public class DataFrame_AggFilteredTest {
     }
 
     @Test
-    public void test_MinMaxLong() {
+    public void minMaxLong() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1L, 1L,
                 2L, 4L,
@@ -153,7 +153,7 @@ public class DataFrame_AggFilteredTest {
     }
 
     @Test
-    public void test_MinMaxInt() {
+    public void minMaxInt() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, 1,
                 2, 4,
@@ -173,7 +173,7 @@ public class DataFrame_AggFilteredTest {
     }
 
     @Test
-    public void test_MinMaxDouble() {
+    public void minMaxDouble() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1., 1.01,
                 6.5, 15.7,
@@ -193,7 +193,7 @@ public class DataFrame_AggFilteredTest {
     }
 
     @Test
-    public void test_AverageDouble() {
+    public void averageDouble() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, 4L,
                 5, 8L,

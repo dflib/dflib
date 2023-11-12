@@ -10,14 +10,14 @@ public class Series_ConcatTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testConcat_None(SeriesType type) {
+    public void concat_None(SeriesType type) {
         Series<String> s = type.createSeries("a", "b");
         assertSame(s, s.concat());
     }
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testConcat_Self(SeriesType type) {
+    public void concat_Self(SeriesType type) {
         Series<String> s = type.createSeries("a", "b");
         Series<String> c = s.concat(s);
         new SeriesAsserts(c).expectData("a", "b", "a", "b");
@@ -25,7 +25,7 @@ public class Series_ConcatTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void testConcat(SeriesType type) {
+    public void concat(SeriesType type) {
         Series<String> s1 = type.createSeries("m", "n");
         Series<String> s2 = type.createSeries("a", "b");
         Series<String> s3 = type.createSeries("d", "c");

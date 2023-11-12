@@ -10,7 +10,7 @@ import static com.nhl.dflib.Exp.*;
 public class IfExpTest {
 
     @Test
-    public void testMix() {
+    public void mix() {
         Exp<String> exp = ifExp($col("c").eq("x"), $str("a"), $str("b"));
 
         DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
@@ -24,7 +24,7 @@ public class IfExpTest {
     }
 
     @Test
-    public void testAllTrue() {
+    public void allTrue() {
         Exp<String> exp = ifExp($col("c").eq("x"), $str("a"), $str("b"));
 
         DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
@@ -38,7 +38,7 @@ public class IfExpTest {
     }
 
     @Test
-    public void testAllFalse() {
+    public void allFalse() {
         Exp<String> exp = ifExp($col("c").eq("y"), $str("a"), $str("b"));
 
         DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(

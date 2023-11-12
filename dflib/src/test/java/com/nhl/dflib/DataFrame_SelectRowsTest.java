@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class DataFrame_SelectRowsTest {
 
     @Test
-    public void testInts() {
+    public void ints() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 5, "x",
                 9, "y",
@@ -24,7 +24,7 @@ public class DataFrame_SelectRowsTest {
     }
 
     @Test
-    public void testInts_out_of_range() {
+    public void ints_out_of_range() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 5, "x",
                 9, "y",
@@ -34,7 +34,7 @@ public class DataFrame_SelectRowsTest {
     }
 
     @Test
-    public void testIntSeries() {
+    public void intSeries() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 5, "x",
                 9, "y",
@@ -48,7 +48,7 @@ public class DataFrame_SelectRowsTest {
     }
 
     @Test
-    public void testReorder() {
+    public void reorder() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 5, "x",
                 9, "y",
@@ -62,7 +62,7 @@ public class DataFrame_SelectRowsTest {
     }
 
     @Test
-    public void testSelectRows_duplicate() {
+    public void selectRows_duplicate() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(
                 5, "x",
                 9, "y",
@@ -78,7 +78,7 @@ public class DataFrame_SelectRowsTest {
     }
 
     @Test
-    public void testByColumn_Name() {
+    public void byColumn_Name() {
 
         DataFrame df = DataFrame.newFrame("a")
                 .foldByRow(10, 20)
@@ -90,7 +90,7 @@ public class DataFrame_SelectRowsTest {
     }
 
     @Test
-    public void testSByColumn_Pos() {
+    public void sByColumn_Pos() {
 
         DataFrame df = DataFrame.newFrame("a")
                 .foldByRow(10, 20)
@@ -102,7 +102,7 @@ public class DataFrame_SelectRowsTest {
     }
 
     @Test
-    public void testWithBooleanSeries() {
+    public void withBooleanSeries() {
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(10, 20, 30)
                 .selectRows(Series.ofBool(true, false, true));
@@ -114,7 +114,7 @@ public class DataFrame_SelectRowsTest {
     }
 
     @Test
-    public void testExp_Ge() {
+    public void exp_Ge() {
 
         Condition c = $int("a").ge(20);
 
@@ -130,7 +130,7 @@ public class DataFrame_SelectRowsTest {
     }
 
     @Test
-    public void testExp_EqOr() {
+    public void exp_EqOr() {
 
         Condition c = $col("b").eq($col("a")).or($bool("c"));
 
@@ -146,7 +146,7 @@ public class DataFrame_SelectRowsTest {
     }
 
     @Test
-    public void testExp_Lt() {
+    public void exp_Lt() {
 
         Condition c = $int("b").mul($int("c")).lt($double("a").div($int("d")));
 
@@ -160,7 +160,7 @@ public class DataFrame_SelectRowsTest {
     }
 
     @Test
-    public void testExp_In() {
+    public void exp_In() {
 
         Condition c = $col("b").in("x", "a");
 
@@ -176,7 +176,7 @@ public class DataFrame_SelectRowsTest {
     }
 
     @Test
-    public void testExp_NotIn() {
+    public void exp_NotIn() {
 
         Condition c = $col("b").notIn("x", "a");
 

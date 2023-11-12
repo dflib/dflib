@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class DataFrameAssertsTest {
 
     @Test
-    public void testExpectRows_String() {
+    public void expectRows_String() {
 
         DataFrame df = DataFrame.newFrame("a").foldByRow("a", "b");
         new DataFrameAsserts(df, "a")
@@ -21,7 +21,7 @@ public class DataFrameAssertsTest {
     }
 
     @Test
-    public void testExpectRows_Nulls() {
+    public void expectRows_Nulls() {
 
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow(null, null, null, null);
         new DataFrameAsserts(df, "a", "b")
@@ -31,7 +31,7 @@ public class DataFrameAssertsTest {
     }
 
     @Test
-    public void testExpectRows_NullVararg() {
+    public void expectRows_NullVararg() {
 
         DataFrame df = DataFrame.newFrame("a").foldByRow(null, null);
         new DataFrameAsserts(df, "a")
@@ -41,7 +41,7 @@ public class DataFrameAssertsTest {
     }
 
     @Test
-    public void testExpectRows_ByteArray() {
+    public void expectRows_ByteArray() {
 
         DataFrame df = DataFrame.newFrame("a")
                 .foldByRow(new byte[]{3, 4, 5}, new byte[]{}, null);
@@ -54,14 +54,14 @@ public class DataFrameAssertsTest {
     }
 
     @Test
-    public void testExpectRows_ArryaTypeMismatch() {
+    public void expectRows_ArryaTypeMismatch() {
         DataFrame df = DataFrame.newFrame("a").foldByRow(new int[]{3, 4, 5});
         DataFrameAsserts asserts = new DataFrameAsserts(df, "a");
         assertThrows(AssertionError.class, () -> asserts.expectRow(0, new Object[]{new long[]{3, 4, 5}}));
     }
 
     @Test
-    public void testExpectRows_Mismatch() {
+    public void expectRows_Mismatch() {
 
         DataFrame df = DataFrame.newFrame("a").foldByRow("a", "b");
 
@@ -78,7 +78,7 @@ public class DataFrameAssertsTest {
     }
 
     @Test
-    public void testAssertRows() {
+    public void assertRows() {
         DataFrame df = DataFrame.newFrame("c1").foldByRow("a", "b");
         new DataFrameAsserts(df, "c1")
                 .expectHeight(2)
@@ -87,7 +87,7 @@ public class DataFrameAssertsTest {
     }
 
     @Test
-    public void testAssertRows_MissedColumnAssert() {
+    public void assertRows_MissedColumnAssert() {
         DataFrame df = DataFrame.newFrame("c1", "c2").foldByRow("a", "b", "c", "d");
         try {
             new DataFrameAsserts(df, "c1", "c2")
@@ -101,7 +101,7 @@ public class DataFrameAssertsTest {
     }
 
     @Test
-    public void testAssertRows_nullColumnAssert() {
+    public void assertRows_nullColumnAssert() {
         DataFrame df = DataFrame.newFrame("c1", "c2").foldByRow("a", "b", "c", "d");
 
         DataFrameAsserts asserts = new DataFrameAsserts(df, "c1", "c2").expectHeight(2);
@@ -114,7 +114,7 @@ public class DataFrameAssertsTest {
     }
 
     @Test
-    public void testAssertRows_nullRowAssert() {
+    public void assertRows_nullRowAssert() {
         DataFrame df = DataFrame.newFrame("c1", "c2").foldByRow("a", "b", "c", "d");
 
         DataFrameAsserts asserts = new DataFrameAsserts(df, "c1", "c2").expectHeight(2);
@@ -125,7 +125,7 @@ public class DataFrameAssertsTest {
     }
 
     @Test
-    public void testExpectHeight_Mismatch() {
+    public void expectHeight_Mismatch() {
 
         DataFrame df = DataFrame.newFrame("a").foldByRow("a", "b");
 

@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class OrConditionTest {
 
     @Test
-    public void testOr_Multiple() {
+    public void or_Multiple() {
         DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
                 false, false, false,
                 true, true, true,
@@ -26,7 +26,7 @@ public class OrConditionTest {
     }
 
     @Test
-    public void testFirstMatch_DataFrame() {
+    public void firstMatch_DataFrame() {
         OrCondition c = new OrCondition(Exp.$bool(0), Exp.$bool(1));
 
         DataFrame df0 = DataFrame.newFrame("t1", "f1")
@@ -43,7 +43,7 @@ public class OrConditionTest {
     }
 
     @Test
-    public void testFirstMatch_Series() {
+    public void firstMatch_Series() {
         OrCondition c = new OrCondition(Exp.$bool(0), Exp.$bool(1));
 
         Series<Boolean> s0 = Series.ofBool(false, false);

@@ -9,13 +9,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class IntSeries_ToArrayTest {
 
     @Test
-    public void testContents() {
+    public void contents() {
         int[] a = new IntArraySeries(1, 2).toIntArray();
         assertArrayEquals(new int[]{1, 2}, a);
     }
 
     @Test
-    public void testMutability() {
+    public void mutability() {
         IntSeries s = new IntArraySeries(1, 2);
         int[] a  = s.toIntArray();
         a[0] = -1;

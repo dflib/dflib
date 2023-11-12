@@ -12,13 +12,13 @@ public class LongSeries_UniqueTest {
     }
 
     @Test
-    public void testAlreadyUnique() {
+    public void alreadyUnique() {
         LongSeries s1 = Series.ofLong(0, -1, 1, 375, Integer.MAX_VALUE, 5).unique();
         new LongSeriesAsserts(s1).expectData(0, -1, 1, 375, Integer.MAX_VALUE, 5);
     }
 
     @Test
-    public void testSmall() {
+    public void small() {
         LongSeries s1 = Series.ofLong(-1).unique();
         new LongSeriesAsserts(s1).expectData(-1);
     }

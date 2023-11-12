@@ -19,20 +19,20 @@ import static org.mockito.Mockito.mock;
 public class DateColumnTest {
 
     @Test
-    public void testGetColumnName() {
+    public void getColumnName() {
         assertEquals("a", $date("a").getColumnName());
         assertEquals("$date(0)", $date(0).getColumnName());
     }
 
     @Test
-    public void testGetColumnName_DataFrame() {
+    public void getColumnName_DataFrame() {
         DataFrame df = DataFrame.newFrame("a", "b").foldByRow();
         assertEquals("b", $date("b").getColumnName(df));
         assertEquals("a", $date(0).getColumnName(df));
     }
 
     @Test
-    public void testEval() {
+    public void eval() {
         DateExp exp = $date("b");
 
         DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
@@ -43,35 +43,35 @@ public class DateColumnTest {
     }
 
     @Test
-    public void testAs() {
+    public void as() {
         DateExp exp = $date("b");
         assertEquals("b", exp.getColumnName(mock(DataFrame.class)));
         assertEquals("c", exp.as("c").getColumnName(mock(DataFrame.class)));
     }
 
     @Test
-    public void testYear() {
+    public void year() {
         NumExp<Integer> year = $date(0).year();
         Series<LocalDate> s = Series.of(LocalDate.of(2007, 1, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 1, 8));
         new SeriesAsserts(year.eval(s)).expectData(2007, 2008, 2009);
     }
 
     @Test
-    public void testMonth() {
+    public void month() {
         NumExp<Integer> month = $date(0).month();
         Series<LocalDate> s = Series.of(LocalDate.of(2007, 2, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 12, 8));
         new SeriesAsserts(month.eval(s)).expectData(2, 1, 12);
     }
 
     @Test
-    public void testDay() {
+    public void day() {
         NumExp<Integer> day = $date(0).day();
         Series<LocalDate> s = Series.of(LocalDate.of(2007, 1, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 1, 6));
         new SeriesAsserts(day.eval(s)).expectData(8, 1, 6);
     }
 
     @Test
-    public void testEq() {
+    public void eq() {
         Condition eq = $date("b").eq($col("c"));
 
         DataFrame df = DataFrame.newFrame("b", "c").foldByRow(
@@ -82,7 +82,7 @@ public class DateColumnTest {
     }
 
     @Test
-    public void testNe() {
+    public void ne() {
         Condition ne = $date("b").ne($col("c"));
 
         DataFrame df = DataFrame.newFrame("b", "c").foldByRow(
@@ -93,7 +93,7 @@ public class DateColumnTest {
     }
 
     @Test
-    public void testLt() {
+    public void lt() {
         Condition lt = $date("b").lt($col("c"));
 
         DataFrame df = DataFrame.newFrame("b", "c").foldByRow(
@@ -104,21 +104,21 @@ public class DateColumnTest {
     }
 
     @Test
-    public void testLtVal() {
+    public void ltVal() {
         Condition lt = $date(0).lt(LocalDate.of(2008, 1, 1));
         Series<LocalDate> s = Series.of(LocalDate.of(2007, 1, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 1, 8));
         new BoolSeriesAsserts(lt.eval(s)).expectData(true, false, false);
     }
 
     @Test
-    public void testLeVal() {
+    public void leVal() {
         Condition le = $date(0).le(LocalDate.of(2008, 1, 1));
         Series<LocalDate> s = Series.of(LocalDate.of(2007, 1, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 1, 8));
         new BoolSeriesAsserts(le.eval(s)).expectData(true, true, false);
     }
 
     @Test
-    public void testPlusDays() {
+    public void plusDays() {
         DateExp exp = $date(0).plusDays(4);
 
         Series<LocalDate> s = Series.of(LocalDate.of(2007, 1, 8), LocalDate.of(2011, 12, 31));
@@ -126,7 +126,7 @@ public class DateColumnTest {
     }
 
     @Test
-    public void testOpsChain() {
+    public void opsChain() {
         DateExp exp = $date(0).plusDays(4).plusWeeks(1);
 
         Series<LocalDate> s = Series.of(LocalDate.of(2007, 1, 8), LocalDate.of(2011, 12, 31));

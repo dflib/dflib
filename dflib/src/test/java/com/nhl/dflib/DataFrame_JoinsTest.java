@@ -9,7 +9,7 @@ import java.util.Objects;
 public class DataFrame_JoinsTest {
 
     @Test
-    public void testNestedLoop_Inner() {
+    public void nestedLoop_Inner() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -31,7 +31,7 @@ public class DataFrame_JoinsTest {
     }
 
     @Test
-    public void testNestedLoop_Inner_NoMatches() {
+    public void nestedLoop_Inner_NoMatches() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -51,7 +51,7 @@ public class DataFrame_JoinsTest {
     }
 
     @Test
-    public void testNestedLoop_Inner_IndexOverlap() {
+    public void nestedLoop_Inner_IndexOverlap() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -73,7 +73,7 @@ public class DataFrame_JoinsTest {
     }
 
     @Test
-    public void testNestedLoop_Left() {
+    public void nestedLoop_Left() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -97,7 +97,7 @@ public class DataFrame_JoinsTest {
     }
 
     @Test
-    public void testNestedLoop_Right() {
+    public void nestedLoop_Right() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -121,7 +121,7 @@ public class DataFrame_JoinsTest {
     }
 
     @Test
-    public void testNestedLoop_Full() {
+    public void nestedLoop_Full() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -146,7 +146,7 @@ public class DataFrame_JoinsTest {
     }
 
     @Test
-    public void testNestedLoop_Indicator() {
+    public void nestedLoop_Indicator() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -171,7 +171,7 @@ public class DataFrame_JoinsTest {
     }
 
     @Test
-    public void testHash_Inner() {
+    public void hash_Inner() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -196,7 +196,7 @@ public class DataFrame_JoinsTest {
     }
 
     @Test
-    public void testHash_Full_IntColumn() {
+    public void hash_Full_IntColumn() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -222,7 +222,7 @@ public class DataFrame_JoinsTest {
 
 
     @Test
-    public void testHash_Inner_Indexed_HashOverlap() {
+    public void hash_Inner_Indexed_HashOverlap() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -244,7 +244,7 @@ public class DataFrame_JoinsTest {
     }
 
     @Test
-    public void testHash_Left() {
+    public void hash_Left() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -267,7 +267,7 @@ public class DataFrame_JoinsTest {
     }
 
     @Test
-    public void testHash_Right_ByPos() {
+    public void hash_Right_ByPos() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -290,7 +290,7 @@ public class DataFrame_JoinsTest {
     }
 
     @Test
-    public void testHash_Right_ByName() {
+    public void hash_Right_ByName() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -313,7 +313,7 @@ public class DataFrame_JoinsTest {
     }
 
     @Test
-    public void testHash_Right_ByMatchingName() {
+    public void hash_Right_ByMatchingName() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -336,7 +336,7 @@ public class DataFrame_JoinsTest {
     }
 
     @Test
-    public void testHash_Full() {
+    public void hash_Full() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -360,7 +360,7 @@ public class DataFrame_JoinsTest {
     }
 
     @Test
-    public void testHash_MultiColumnHash() {
+    public void hash_MultiColumnHash() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -383,7 +383,7 @@ public class DataFrame_JoinsTest {
     }
 
     @Test
-    public void testHash_Indicator() {
+    public void hash_Indicator() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",

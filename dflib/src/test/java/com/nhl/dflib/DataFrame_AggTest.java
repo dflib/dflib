@@ -10,7 +10,7 @@ import static java.util.Arrays.asList;
 public class DataFrame_AggTest {
 
     @Test
-    public void testMix() {
+    public void mix() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c", "d").of(
                 1, "x", "n", 1.0,
                 2, "y", "a", 2.5,
@@ -27,7 +27,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void test_Count() {
+    public void count() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 0, "a");
@@ -40,7 +40,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void test_SumInt_SumLong() {
+    public void sumInt_SumLong() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, 1,
                 -1, 5L);
@@ -55,7 +55,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void test_MinMax() {
+    public void minMax() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, 1,
                 -1, 1,
@@ -86,7 +86,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void test_Set() {
+    public void set() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "x",
@@ -100,7 +100,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void test_list() {
+    public void list() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "x",
@@ -114,7 +114,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void test_average() {
+    public void average() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, 4L,
                 0, 55.5);
@@ -129,7 +129,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void test_median_odd() {
+    public void median_odd() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, 100.,
                 0, 55.5,
@@ -145,7 +145,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void test_median_even() {
+    public void median_even() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, 100.,
                 0, 55.5,
@@ -162,7 +162,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void test_median_zero() {
+    public void median_zero() {
         DataFrame df = DataFrame.empty("a", "b");
 
         DataFrame agg = df.agg(
@@ -175,7 +175,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void test_median_one() {
+    public void median_one() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(1, 100);
 
         DataFrame agg = df.agg(
@@ -188,7 +188,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void test_median_nulls() {
+    public void median_nulls() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, null,
                 0, 55.5,
@@ -205,7 +205,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void test_First() {
+    public void first() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, 100,
                 2, 5);
@@ -220,7 +220,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void test_First_Empty() {
+    public void first_Empty() {
         DataFrame df = DataFrame.empty("a", "b");
 
         DataFrame agg = df.agg(
@@ -233,7 +233,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void test_First_Nulls() {
+    public void first_Nulls() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, null,
                 null, 5);
@@ -248,7 +248,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void test_Last() {
+    public void last() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, 100,
                 2, 5);
@@ -263,7 +263,7 @@ public class DataFrame_AggTest {
     }
 
     @Test
-    public void test_Custom() {
+    public void custom() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, 100,
                 2, 5);

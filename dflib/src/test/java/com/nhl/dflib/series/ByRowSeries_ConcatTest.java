@@ -14,20 +14,20 @@ public class ByRowSeries_ConcatTest {
     }
 
     @Test
-    public void testConcat_None() {
+    public void concat_None() {
         Series<Object> s = createSeries("a", "b");
         assertSame(s, s.concat());
     }
 
     @Test
-    public void testConcat_Self() {
+    public void concat_Self() {
         Series<Object> s = createSeries("a", "b");
         Series<Object> c = s.concat(s);
         new SeriesAsserts(c).expectData("a", "b", "a", "b");
     }
 
     @Test
-    public void testConcat() {
+    public void concat() {
         Series<Object> s1 = createSeries("m", "n");
         Series<Object> s2 = createSeries("a", "b");
         Series<Object> s3 = createSeries("d", "c");

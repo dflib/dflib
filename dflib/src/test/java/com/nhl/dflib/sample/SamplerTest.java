@@ -14,26 +14,26 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SamplerTest {
 
     @Test
-    public void testSampleIndex_SizeTooLarge() {
+    public void sampleIndex_SizeTooLarge() {
         assertThrows(IllegalArgumentException.class, () -> Sampler.sampleIndex(6, 5, new Random(5)));
     }
 
     @Test
-    public void testSampleIndex() {
+    public void sampleIndex() {
         // using fixed seed to get reproducible result
         IntSeries sample = Sampler.sampleIndex(5, 10, new Random(5));
         new IntSeriesAsserts(sample).expectData(3, 4, 2, 8, 5);
     }
 
     @Test
-    public void testSampleIndex_SameSize() {
+    public void sampleIndex_SameSize() {
         // using fixed seed to get reproducible result
         IntSeries sample = Sampler.sampleIndex(5, 5, new Random(5));
         new IntSeriesAsserts(sample).expectData(3, 1, 4, 0, 2);
     }
 
     @Test
-    public void testSampleIndex_NonRepeating() {
+    public void sampleIndex_NonRepeating() {
         IntSeries sample = Sampler.sampleIndex(50, 100, new SecureRandom());
         Set<Integer> seen = new HashSet<>();
 
@@ -44,7 +44,7 @@ public class SamplerTest {
     }
 
     @Test
-    public void testSampleIndex_NonRepeating_BetweenRuns() {
+    public void sampleIndex_NonRepeating_BetweenRuns() {
         Random random = new SecureRandom();
 
         IntSeries s1 = Sampler.sampleIndex(5, 100, random);
@@ -62,7 +62,7 @@ public class SamplerTest {
     }
 
     @Test
-    public void testSampleIndex_ImplicitRandom_NonRepeating_BetweenRuns() {
+    public void sampleIndex_ImplicitRandom_NonRepeating_BetweenRuns() {
         IntSeries s1 = Sampler.sampleIndex(5, 100);
         IntSeries s2 = Sampler.sampleIndex(5, 100);
 

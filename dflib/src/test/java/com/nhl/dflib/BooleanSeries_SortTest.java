@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class BooleanSeries_SortTest {
 
     @Test
-    public void testSort_Comparator() {
+    public void sort_Comparator() {
         BooleanSeries s = Series.ofBool(true, false, true, false)
                 .sort((b1, b2) -> b1 == b2 ? 0 : b1 ? -1 : 1);
 
@@ -14,7 +14,7 @@ public class BooleanSeries_SortTest {
     }
 
     @Test
-    public void testSort_Sorter() {
+    public void sort_Sorter() {
         BooleanSeries s = Series.ofBool(true, false, true, false)
                 .sort(Exp.$bool(0).desc());
 

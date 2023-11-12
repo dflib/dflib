@@ -14,7 +14,7 @@ public class JsonLoaderTest {
 
     @Test
     @DisplayName("$.*.a : single column with default label")
-    public void testSingleColumn() {
+    public void singleColumn() {
         String json = "[{\"a\":1},{\"a\":2},{\"a\":3}]";
         DataFrame df = Json.loader().pathExpression("$.*.a").load(json);
         new DataFrameAsserts(df, "_val")
@@ -26,7 +26,7 @@ public class JsonLoaderTest {
 
     @Test
     @DisplayName("$.* : root is object, properties are rows")
-    public void testObjectProperties() {
+    public void objectProperties() {
         String json = "{\"a\": {\"x\":1, \"y\":2}, \"b\":{\"x\":3, \"y\":4}}";
         DataFrame df = Json.loader().load(json);
         new DataFrameAsserts(df, "x", "y")
@@ -37,7 +37,7 @@ public class JsonLoaderTest {
 
     @Test
     @DisplayName("$ : root is object, root is single row")
-    public void testObject_RootPath() {
+    public void object_RootPath() {
         String json = "{\"a\":1, \"b\":\"B\"}";
         DataFrame df = Json.loader().pathExpression("$").load(json);
         new DataFrameAsserts(df, "a", "b")
@@ -47,7 +47,7 @@ public class JsonLoaderTest {
 
     @Test
     @DisplayName("$.* : root is list, objects are rows")
-    public void testListOfObjects() {
+    public void listOfObjects() {
         String json = "[{\"a\":1, \"b\":\"B\"},{\"a\":2, \"b\":\"C\"},{\"a\":3, \"b\":\"D\"}]";
         DataFrame df = Json.loader().load(json);
         new DataFrameAsserts(df, "a", "b")
@@ -59,7 +59,7 @@ public class JsonLoaderTest {
 
     @Test
     @DisplayName("$.* : root is list, objects are rows, different property names")
-    public void testListOfObjects_Sparse() {
+    public void listOfObjects_Sparse() {
         String json = "[{\"a\":1, \"b\":\"B\"},{\"b\":\"C\"},{\"a\":3, \"c\":\"D\"}]";
 
         DataFrame df = Json.loader().load(json);
@@ -72,7 +72,7 @@ public class JsonLoaderTest {
 
     @Test
     @DisplayName("$.* : root is list, objects are rows, nested maps")
-    public void testListOfNestedObjects() {
+    public void listOfNestedObjects() {
         String json = "[{\"a\":1, \"b\":{\"x\":1, \"y\":2}},{\"a\":2, \"b\":{\"x\":3, \"y\":4}}]";
         DataFrame df = Json.loader().load(json);
 
@@ -92,7 +92,7 @@ public class JsonLoaderTest {
 
     @Test
     @DisplayName("$..['a', 'c'] : selecting specific properties, nulls must be included if no match")
-    public void testListOfObjects_AttributeSelector_NullsForMissingLeafs() {
+    public void listOfObjects_AttributeSelector_NullsForMissingLeafs() {
         String json = "[{\"a\":1, \"b\":\"B\"},{\"b\":\"C\"},{\"a\":3, \"c\":\"D\"}]";
 
         DataFrame df = Json.loader().pathExpression("$..['a', 'c']").nullsForMissingLeafs().load(json);
@@ -105,7 +105,7 @@ public class JsonLoaderTest {
 
     @Test
     @DisplayName("$.*.a : nulls must be included if no match")
-    public void testListNullsForMissingLeafs() {
+    public void listNullsForMissingLeafs() {
         String json = "[{\"a\":1},{\"b\":2},{\"a\":3}]";
         DataFrame df = Json.loader().pathExpression("$.*.a").nullsForMissingLeafs().load(json);
         new DataFrameAsserts(df, "_val")
@@ -117,7 +117,7 @@ public class JsonLoaderTest {
 
     @Test
     @DisplayName("$.*.a : nulls must be excluded")
-    public void testListSkipNulls() {
+    public void listSkipNulls() {
         String json = "[{\"a\":1},{\"b\":2},{\"a\":3}]";
         DataFrame df = Json.loader().pathExpression("$.*.a").load(json);
         new DataFrameAsserts(df, "_val")

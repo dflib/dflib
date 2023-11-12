@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class DataFrameConditionsTest {
 
     @Test
-    public void testEq1() {
+    public void eq1() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -27,7 +27,7 @@ public class DataFrameConditionsTest {
     }
 
     @Test
-    public void testEq2() {
+    public void eq2() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -46,7 +46,7 @@ public class DataFrameConditionsTest {
     }
 
     @Test
-    public void testNe1() {
+    public void ne1() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -65,7 +65,7 @@ public class DataFrameConditionsTest {
     }
 
     @Test
-    public void testNe2() {
+    public void ne2() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -84,7 +84,7 @@ public class DataFrameConditionsTest {
     }
 
     @Test
-    public void testNe_ColMismatch() {
+    public void ne_ColMismatch() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",
@@ -98,7 +98,7 @@ public class DataFrameConditionsTest {
     }
 
     @Test
-    public void testNe_RowsMismatch() {
+    public void ne_RowsMismatch() {
 
         DataFrame df1 = DataFrame.newFrame("a", "b").foldByRow(
                 1, "x",

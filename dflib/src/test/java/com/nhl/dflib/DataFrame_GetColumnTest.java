@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class DataFrame_GetColumnTest {
 
     @Test
-    public void testGetColumn_byLabel() {
+    public void byLabel() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
@@ -22,7 +22,7 @@ public class DataFrame_GetColumnTest {
     }
 
     @Test
-    public void testGetColumn_byPosition() {
+    public void byPosition() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y");
@@ -34,7 +34,7 @@ public class DataFrame_GetColumnTest {
 
     @Deprecated
     @Test
-    public void testGetColumnAsInt_byLabel() {
+    public void asInt_byLabel() {
         DataFrame df = DataFrame
                 .byColumn("a", "b")
                 .of(Series.of("a", "b", "x"), Series.ofInt(3, 6, -1));
@@ -46,7 +46,7 @@ public class DataFrame_GetColumnTest {
 
     @Deprecated
     @Test
-    public void testGetColumnAsInt_byPosition() {
+    public void asInt_byPosition() {
         DataFrame df = DataFrame
                 .byColumn("a", "b")
                 .of(Series.of("a", "b", "x"), Series.ofInt(3, 6, -1));
@@ -58,7 +58,7 @@ public class DataFrame_GetColumnTest {
 
     @Deprecated
     @Test
-    public void testGetColumnAsInt_NotIntLabel() {
+    public void asInt_NotIntLabel() {
         DataFrame df = DataFrame
                 .byColumn("a", "b")
                 .of(Series.of("a", "b", "x"), Series.ofInt(3, 6, -1));
@@ -69,7 +69,7 @@ public class DataFrame_GetColumnTest {
 
     @Deprecated
     @Test
-    public void testGetColumnAsDouble_byLabel() {
+    public void asDouble_byLabel() {
         DataFrame df = DataFrame
                 .byColumn("a", "b")
                 .of(Series.of("a", "b", "x"), Series.ofDouble(3., 6.3, -1.01));
@@ -81,7 +81,7 @@ public class DataFrame_GetColumnTest {
 
     @Deprecated
     @Test
-    public void testGetColumnAsDouble_byPosition() {
+    public void asDouble_byPosition() {
         DataFrame df = DataFrame
                 .byColumn("a", "b")
                 .of(Series.of("a", "b", "x"), Series.ofDouble(3., 6.3, -1.01));
@@ -93,7 +93,7 @@ public class DataFrame_GetColumnTest {
 
     @Deprecated
     @Test
-    public void testGetColumnAsDouble_NotDoubleLabel() {
+    public void asDouble_NotDoubleLabel() {
         DataFrame df = DataFrame
                 .byColumn("a", "b")
                 .of(Series.of("a", "b", "x"), Series.ofDouble(3., 6.3, -1.01));
@@ -103,7 +103,7 @@ public class DataFrame_GetColumnTest {
 
     @Deprecated
     @Test
-    public void testGetColumnAsLong_byLabel() {
+    public void asLong_byLabel() {
         DataFrame df = DataFrame
                 .byColumn("a", "b")
                 .of(Series.of("a", "b", "x"), Series.ofLong(3, 6, -1));
@@ -115,7 +115,7 @@ public class DataFrame_GetColumnTest {
 
     @Deprecated
     @Test
-    public void testGetColumnAsLong_byPosition() {
+    public void asLong_byPosition() {
         DataFrame df = DataFrame
                 .byColumn("a", "b")
                 .of(Series.of("a", "b", "x"), Series.ofLong(3, 6, -1));

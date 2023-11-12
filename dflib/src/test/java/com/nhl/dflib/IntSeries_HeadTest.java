@@ -12,19 +12,19 @@ public class IntSeries_HeadTest {
     }
 
     @Test
-    public void test_Zero() {
+    public void zero() {
         IntSeries s = Series.ofInt(3, 4, 2).head(0);
         new IntSeriesAsserts(s).expectData();
     }
 
     @Test
-    public void test_OutOfBounds() {
+    public void outOfBounds() {
         IntSeries s = Series.ofInt(3, 4, 2).head(4);
         new IntSeriesAsserts(s).expectData(3, 4, 2);
     }
 
     @Test
-    public void test_Negative() {
+    public void negative() {
         IntSeries s = Series.ofInt(3, 4, 2).head(-2);
         new IntSeriesAsserts(s).expectData(2);
     }

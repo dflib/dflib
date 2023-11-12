@@ -12,19 +12,19 @@ public class DoubleSeries_TailTest {
     }
 
     @Test
-    public void test_Zero() {
+    public void zero() {
         DoubleSeries s = Series.ofDouble(3, 4, 2).tail(0);
         new DoubleSeriesAsserts(s).expectData();
     }
 
     @Test
-    public void test_OutOfBounds() {
+    public void outOfBounds() {
         DoubleSeries s = Series.ofDouble(3, 4, 2).tail(4);
         new DoubleSeriesAsserts(s).expectData(3, 4, 2);
     }
 
     @Test
-    public void test_Negative() {
+    public void negative() {
         DoubleSeries s = Series.ofDouble(3, 4, 2).tail(-2);
         new DoubleSeriesAsserts(s).expectData(3);
     }
