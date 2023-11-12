@@ -17,13 +17,13 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testEmpty() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b")).empty();
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b")).empty();
         new DataFrameAsserts(df, "a", "b").expectHeight(0);
     }
 
     @Test
     public void testSeriesColumns() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .columns(
                         Series.of("a", "b", "c"),
                         Series.ofInt(1, 2, 3)
@@ -37,7 +37,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testByRow() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .byRow()
                 .addRow("a", 1)
                 .addRow("b", 2)
@@ -52,7 +52,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testByRow_CustomAccums() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .byRow(new ObjectAccum<>(3), new IntAccum(3))
                 .addRow("a", 1)
                 .addRow("b", 2)
@@ -68,7 +68,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testAddRow() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .addRow("a", 1)
                 .addRow("b", 2)
                 .addRow("c", 3)
@@ -89,7 +89,7 @@ public class DataFrameBuilderTest {
                 {"c", 3}
         };
 
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b")).rows(rows);
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b")).rows(rows);
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
                 .expectRow(0, "a", 1)
@@ -99,7 +99,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldByRow() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldByRow("a", 1, "b", 2, "c", 3);
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -110,7 +110,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldByRow_Partial() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldByRow("a", 1, "b", 2, "c");
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -121,7 +121,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldByColumn() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldByColumn("a", 1, "b", 2, "c", 3);
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -132,7 +132,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldByColumn_Partial1() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldByColumn("a", 1, "b", 2, "c");
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -143,7 +143,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldByColumn_Partial2() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b", "c"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b", "c"))
                 .foldByColumn("a", "b", "c", "d", "e", "f", "g", "h", "i", "j");
 
         new DataFrameAsserts(df, "a", "b", "c")
@@ -157,7 +157,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldStreamByRow() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldStreamByRow(Stream.of("a", 1, "b", 2, "c", 3));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -168,7 +168,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldStreamByRow_Partial() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldStreamByRow(Stream.of("a", 1, "b", 2, "c"));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -179,7 +179,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldStreamByColumn() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldStreamByColumn(Stream.of("a", 1, "b", 2, "c", 3));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -190,7 +190,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldStreamByColumn_Partial() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldStreamByColumn(Stream.of("a", 1, "b", 2, "c"));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -201,7 +201,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldIterableByRow() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldIterableByRow(asList("a", 1, "b", 2, "c", 3));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -212,7 +212,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldIterableByRow_Partial() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldIterableByRow(asList("a", 1, "b", 2, "c"));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -223,7 +223,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldIterableByColumn() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldIterableByColumn(asList("a", 1, "b", 2, "c", 3));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -234,7 +234,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldIterableByColumn_Partial() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldIterableByColumn(asList("a", 1, "b", 2, "c"));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -245,7 +245,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testObjectsToRows() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .objectsToRows(asList("a", "bc", "def"), s -> new Object[]{s, s.length()});
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -256,7 +256,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldIntByColumn() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldIntByColumn(-9999, 0, 1, 2, 3, 4, 5);
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -268,7 +268,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldIntByColumn_Partial() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldIntByColumn(-9999, 0, 1, 2, 3, 4);
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -281,7 +281,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldIntStreamByRow() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldIntStreamByRow(-9999, IntStream.of(-1, 1, 0, 2, 5, 3));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -293,7 +293,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldIntStreamByRow_Partial() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldIntStreamByRow(-9999, IntStream.of(-1, 1, 0, 2, 5));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -306,7 +306,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldIntStreamByColumn() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldIntStreamByColumn(-9999, IntStream.of(-1, 1, 0, 2, 5, 3));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -318,7 +318,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldIntStreamByColumn_Partial1() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldIntStreamByColumn(-9999, IntStream.of(-1, 1, 0, 2, 5));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -330,7 +330,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldIntStreamByColumn_Partial2() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b", "c"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b", "c"))
                 .foldIntStreamByColumn(IntStream.range(0, 10));
 
         new DataFrameAsserts(df, "a", "b", "c")
@@ -344,7 +344,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldLongByColumn() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldLongByColumn(-9999, 0, 1, 2, 3, 4, 5);
 
         new DataFrameAsserts(df, "a", "b")
@@ -357,7 +357,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldLongByColumn_Partial() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldLongByColumn(-9999, 0, 1, 2, 3, 4);
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -369,7 +369,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldLongStreamByRow() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldLongStreamByRow(-9999L, LongStream.of(-1, 1, 0, 2, 5, 3));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -381,7 +381,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldLongStreamByRow_Partial() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldLongStreamByRow(-9999L, LongStream.of(-1, 1, 0, 2, 5));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -394,7 +394,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldLongStreamByColumn() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldLongStreamByColumn(-9999, LongStream.of(-1, 1, 0, 2, 5, 3));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -406,7 +406,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldLongStreamByColumn_Partial1() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldLongStreamByColumn(-9999, LongStream.of(-1, 1, 0, 2, 5));
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -418,7 +418,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldLongStreamByColumn_Partial2() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b", "c"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b", "c"))
                 .foldLongStreamByColumn(LongStream.range(0, 10));
 
         new DataFrameAsserts(df, "a", "b", "c")
@@ -432,7 +432,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldDoubleByColumn() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldDoubleByColumn(-9999.9, 0, 1.1, 2, 3, 4, 5);
 
         new DataFrameAsserts(df, "a", "b").expectHeight(3)
@@ -444,7 +444,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldDoubleByColumn_Partial() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldDoubleByColumn(-9999.9, 0, 1.1, 2, 3, 4);
 
         new DataFrameAsserts(df, "a", "b")
@@ -457,7 +457,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldDoubleStreamByRow() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldDoubleStreamByRow(-9999.9, DoubleStream.of(-1, 1.1, 0, 2, 5, 3));
 
         new DataFrameAsserts(df, "a", "b")
@@ -470,7 +470,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldDoubleStreamByRow_Partial() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldDoubleStreamByRow(-9999.9, DoubleStream.of(-1, 1.1, 0, 2, 5));
 
         new DataFrameAsserts(df, "a", "b")
@@ -483,7 +483,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldDoubleStreamByRow_Partial_DefaultPadding() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldDoubleStreamByRow(DoubleStream.of(-1, 1.1, 0, 2, 5));
 
         new DataFrameAsserts(df, "a", "b")
@@ -496,7 +496,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldDoubleStreamByColumn() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldDoubleStreamByColumn(-9999.9, DoubleStream.of(-1, 1.1, 0, 2, 5, 3));
 
         new DataFrameAsserts(df, "a", "b")
@@ -509,7 +509,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldDoubleStreamByColumn_Partial1() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b"))
                 .foldDoubleStreamByColumn(-9999.9, DoubleStream.of(-1, 1.1, 0, 2, 5));
 
         new DataFrameAsserts(df, "a", "b")
@@ -522,7 +522,7 @@ public class DataFrameBuilderTest {
 
     @Test
     public void testFoldDoubleStreamByColumn_Partial2() {
-        DataFrame df = new DataFrameBuilder(Index.forLabels("a", "b", "c"))
+        DataFrame df = new DataFrameBuilder(Index.of("a", "b", "c"))
                 .foldDoubleStreamByColumn(DoubleStream.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));
 
         new DataFrameAsserts(df, "a", "b", "c")

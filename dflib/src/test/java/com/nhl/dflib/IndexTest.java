@@ -11,7 +11,7 @@ public class IndexTest {
 
     @Test
     public void testPositions() {
-        Index i = Index.forLabels("a", "b", "c", "d");
+        Index i = Index.of("a", "b", "c", "d");
 
         assertArrayEquals(new int[0], i.positions());
         assertArrayEquals(new int[]{0, 2}, i.positions("a", "c"));
@@ -20,36 +20,36 @@ public class IndexTest {
 
     @Test
     public void testPositions_NoLabel() {
-        Index i = Index.forLabels("a", "b");
+        Index i = Index.of("a", "b");
         assertThrows(IllegalArgumentException.class, () -> i.positions("a", "c"));
     }
 
     @Test
     public void testWithNames_Enum() {
-        Index i = Index.forLabels(E1.class);
+        Index i = Index.of(E1.class);
         IndexAsserts.expect(i, "a", "b", "c");
     }
 
     @Test
     public void testRangeOpenClosed0() {
-        Index i = Index.forLabels("a", "b", "c", "d").rangeOpenClosed(1, 3);
+        Index i = Index.of("a", "b", "c", "d").rangeOpenClosed(1, 3);
         IndexAsserts.expect(i, "b", "c");
     }
 
     @Test
     public void testRangeOpenClosed1() {
-        Index i = Index.forLabels("a", "b", "c", "d").rangeOpenClosed(0, 4);
+        Index i = Index.of("a", "b", "c", "d").rangeOpenClosed(0, 4);
         IndexAsserts.expect(i, "a", "b", "c", "d");
     }
 
     @Test
     public void testRangeOpenClosed_OutOfRange() {
-        assertThrows(IllegalArgumentException.class, () -> Index.forLabels("a", "b", "c", "d").rangeOpenClosed(0, 5));
+        assertThrows(IllegalArgumentException.class, () -> Index.of("a", "b", "c", "d").rangeOpenClosed(0, 5));
     }
 
     @Test
     public void testToSeries() {
-        Series<String> s = Index.forLabels("a", "b", "c", "d").toSeries();
+        Series<String> s = Index.of("a", "b", "c", "d").toSeries();
         new SeriesAsserts(s).expectData("a", "b", "c", "d");
     }
 

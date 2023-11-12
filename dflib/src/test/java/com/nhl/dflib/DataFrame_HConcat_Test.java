@@ -63,7 +63,7 @@ public class DataFrame_HConcat_Test {
                 .selectColumns("c");
 
 
-        DataFrame df = df1.hConcat(Index.forLabels("x", "y"), JoinType.inner, df2, RowCombiner.zip(df1.width()));
+        DataFrame df = df1.hConcat(Index.of("x", "y"), JoinType.inner, df2, RowCombiner.zip(df1.width()));
 
         new DataFrameAsserts(df, "x", "y")
                 .expectHeight(2)
@@ -94,7 +94,7 @@ public class DataFrame_HConcat_Test {
             }
         };
 
-        DataFrame df = df1.hConcat(Index.forLabels("x", "y"), JoinType.right, df2, c);
+        DataFrame df = df1.hConcat(Index.of("x", "y"), JoinType.right, df2, c);
 
         new DataFrameAsserts(df, "x", "y")
                 .expectHeight(3)

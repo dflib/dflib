@@ -57,7 +57,7 @@ public class WindowAggregator {
             }
         }
 
-        return DataFrame.byColumn(Index.forLabelsDeduplicate(aggLabels)).of(aggColumns);
+        return DataFrame.byColumn(Index.ofDeduplicated(aggLabels)).of(aggColumns);
     }
 
     private static Series<?> aggGrouped(GroupBy groupBy, Exp<?> agg, int aggH) {

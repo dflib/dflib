@@ -7,7 +7,7 @@ public class ColumnDataFrameTest {
 
     @Test
     public void testConstructor() {
-        Index i = Index.forLabels("a", "b");
+        Index i = Index.of("a", "b");
         ColumnDataFrame df = new ColumnDataFrame(i,
                 Series.ofInt(1, 2),
                 Series.ofInt(3, 4));
@@ -17,7 +17,7 @@ public class ColumnDataFrameTest {
 
     @Test
     public void testConstructor_NoData() {
-        Index i = Index.forLabels("a", "b");
+        Index i = Index.of("a", "b");
         ColumnDataFrame df = new ColumnDataFrame(i);
 
         new DataFrameAsserts(df, i).expectHeight(0);

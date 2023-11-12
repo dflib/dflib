@@ -32,12 +32,21 @@ public class Index implements Iterable<String> {
     }
 
     /**
+     * @deprecated in favor of {@link #of(Class)}
+     */
+    @Deprecated(since = "0.19", forRemoval = true)
+    public static <E extends Enum<E>> Index forLabels(Class<E> columns) {
+        return of(columns);
+    }
+
+    /**
      * Creates a new index based on enum values.
      *
      * @param columns enum type that defines Index columns
      * @return a new Index with columns matching the provided Enum
+     * @since 0.19
      */
-    public static <E extends Enum<E>> Index forLabels(Class<E> columns) {
+    public static <E extends Enum<E>> Index of(Class<E> columns) {
 
         E[] enumValues = columns.getEnumConstants();
         String[] labels = new String[enumValues.length];
@@ -45,18 +54,47 @@ public class Index implements Iterable<String> {
             labels[i] = enumValues[i].name();
         }
 
-        return forLabels(labels);
+        return of(labels);
     }
 
+    /**
+     * @deprecated in favor of {@link #of(String...)}
+     */
+    @Deprecated(since = "0.19", forRemoval = true)
     public static Index forLabels(String... labels) {
+        return of(labels);
+    }
+
+    /**
+     * @since 0.19
+     */
+    public static Index of(String... labels) {
         return new Index(labels);
     }
 
     /**
      * @since 0.7
+     * @deprecated in favor of {@link #of(Series)}
      */
+    @Deprecated(since = "0.19", forRemoval = true)
     public static Index forLabels(Series<String> labels) {
+        return of(labels);
+    }
+
+    /**
+     * @since 0.19
+     */
+    public static Index of(Series<String> labels) {
         return new Index(labels.toArray(new String[0]));
+    }
+
+    /**
+     * @since 0.6
+     * @deprecated in favor of {@link #ofDeduplicated(String...)}
+     */
+    @Deprecated(since = "0.19", forRemoval = true)
+    public static Index forLabelsDeduplicate(String... labels) {
+        return ofDeduplicated(labels);
     }
 
     /**
@@ -65,7 +103,7 @@ public class Index implements Iterable<String> {
      *
      * @since 0.6
      */
-    public static Index forLabelsDeduplicate(String... labels) {
+    public static Index ofDeduplicated(String... labels) {
         int len = labels.length;
         String[] selectedLabels = new String[len];
         Set<String> uniqueLabels = new HashSet<>((int) (len / 0.75));
@@ -144,7 +182,7 @@ public class Index implements Iterable<String> {
 
     public Index addLabels(String... extraLabels) {
         // TODO: implement direct array copy instead of wrapping in Index first
-        return HConcat.zipIndex(this, forLabels(extraLabels));
+        return HConcat.zipIndex(this, of(extraLabels));
     }
 
     /**
@@ -166,7 +204,7 @@ public class Index implements Iterable<String> {
             selectedLabels[i] = label;
         }
 
-        return Index.forLabels(selectedLabels);
+        return Index.of(selectedLabels);
     }
 
     public Index selectPositions(int... positions) {
@@ -185,7 +223,7 @@ public class Index implements Iterable<String> {
             selectedLabels[i] = label;
         }
 
-        return Index.forLabels(selectedLabels);
+        return Index.of(selectedLabels);
     }
 
     /**
@@ -203,7 +241,7 @@ public class Index implements Iterable<String> {
         String[] newLabels = new String[len];
         System.arraycopy(labels, fromInclusive, newLabels, 0, len);
 
-        return Index.forLabels(newLabels);
+        return Index.of(newLabels);
     }
 
     public Index selectLabels(String... labels) {
@@ -214,7 +252,7 @@ public class Index implements Iterable<String> {
             position(labels[i]);
         }
 
-        return Index.forLabelsDeduplicate(labels);
+        return Index.ofDeduplicated(labels);
     }
 
     /**
@@ -231,7 +269,7 @@ public class Index implements Iterable<String> {
             }
         }
 
-        return selected.size() == size() ? this : Index.forLabels(selected.toArray(new String[0]));
+        return selected.size() == size() ? this : Index.of(selected.toArray(new String[0]));
     }
 
     public Index dropLabels(String... labels) {
@@ -260,7 +298,7 @@ public class Index implements Iterable<String> {
             }
         }
 
-        return Index.forLabels(toKeep);
+        return Index.of(toKeep);
     }
 
     /**
@@ -277,7 +315,7 @@ public class Index implements Iterable<String> {
             }
         }
 
-        return selected.size() == size() ? this : Index.forLabels(selected.toArray(new String[0]));
+        return selected.size() == size() ? this : Index.of(selected.toArray(new String[0]));
     }
 
     public String[] getLabels() {

@@ -45,7 +45,7 @@ public class DataFrameBuilder {
      */
     @Deprecated(since = "0.16", forRemoval = true)
     public static DataFrameBuilder builder(String... columnLabels) {
-        return new DataFrameBuilder(Index.forLabels(Objects.requireNonNull(columnLabels)));
+        return new DataFrameBuilder(Index.of(Objects.requireNonNull(columnLabels)));
     }
 
     /**

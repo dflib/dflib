@@ -153,7 +153,7 @@ public class ColumnDataFrame implements DataFrame {
             outNames[i] = exps[i].getColumnName(this);
         }
 
-        return new ColumnDataFrame(Index.forLabels(outNames), newData);
+        return new ColumnDataFrame(Index.of(outNames), newData);
     }
 
     @Override
@@ -379,7 +379,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public DataFrame addColumns(String[] columnLabels, RowMapper rowMapper) {
-        return hConcat(map(Index.forLabels(columnLabels), rowMapper));
+        return hConcat(map(Index.of(columnLabels), rowMapper));
     }
 
     @Override

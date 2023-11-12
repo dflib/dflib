@@ -70,7 +70,7 @@ class JsonLoaderWorker {
     }
 
     protected DataFrame toDataFrame() {
-        Index columnsIndex = Index.forLabels(appenders.keySet().toArray(new String[0]));
+        Index columnsIndex = Index.of(appenders.keySet().toArray(new String[0]));
         int w = appenders.size();
         Series[] series = new Series[w];
 

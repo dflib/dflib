@@ -33,7 +33,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.16
      */
     static DataFrame empty(String... columnNames) {
-        return empty(Index.forLabels(columnNames));
+        return empty(Index.of(columnNames));
     }
 
     /**
@@ -52,7 +52,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.16
      */
     static DataFrameByColumnBuilder byColumn(String... columnLabels) {
-        return byColumn(Index.forLabels(columnLabels));
+        return byColumn(Index.of(columnLabels));
     }
 
     /**
@@ -95,7 +95,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.16
      */
     static DataFrameArrayByRowBuilder byArrayRow(String... columnLabels) {
-        return byArrayRow(Index.forLabels(columnLabels));
+        return byArrayRow(Index.of(columnLabels));
     }
 
     /**
@@ -118,7 +118,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.16
      */
     static DataFrameFoldByRowBuilder foldByRow(String... columnLabels) {
-        return foldByRow(Index.forLabels(Objects.requireNonNull(columnLabels)));
+        return foldByRow(Index.of(Objects.requireNonNull(columnLabels)));
     }
 
     /**
@@ -133,7 +133,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.16
      */
     static DataFrameFoldByColumnBuilder foldByColumn(String... columnLabels) {
-        return foldByColumn(Index.forLabels(Objects.requireNonNull(columnLabels)));
+        return foldByColumn(Index.of(Objects.requireNonNull(columnLabels)));
     }
 
     /**
@@ -154,7 +154,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     @Deprecated(since = "0.16", forRemoval = true)
     static DataFrameBuilder newFrame(String... columnLabels) {
-        return new DataFrameBuilder(Index.forLabels(Objects.requireNonNull(columnLabels)));
+        return new DataFrameBuilder(Index.of(Objects.requireNonNull(columnLabels)));
     }
 
     /**

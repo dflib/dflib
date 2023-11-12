@@ -20,7 +20,7 @@ public class SeriesAggregator {
             aggLabels[i] = aggregators[i].getColumnName();
         }
 
-        return DataFrame.byColumn(Index.forLabelsDeduplicate(aggLabels)).of(aggColumns);
+        return DataFrame.byColumn(Index.ofDeduplicated(aggLabels)).of(aggColumns);
     }
 
     public static <T, R> Series<R> aggGroupBy(SeriesGroupBy<T> groupBy, Exp<R> aggregator) {
@@ -60,6 +60,6 @@ public class SeriesAggregator {
             aggLabels[i] = agg.getColumnName();
         }
 
-        return DataFrame.byColumn(Index.forLabelsDeduplicate(aggLabels)).of(aggColumns);
+        return DataFrame.byColumn(Index.ofDeduplicated(aggLabels)).of(aggColumns);
     }
 }

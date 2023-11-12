@@ -78,6 +78,6 @@ class SheetRange {
             names[i] = CellReference.convertNumToColString(startCol + i);
         }
 
-        return Index.forLabels(names);
+        return Index.of(names);
     }
 }

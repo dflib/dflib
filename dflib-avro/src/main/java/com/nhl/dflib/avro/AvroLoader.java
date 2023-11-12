@@ -92,7 +92,7 @@ public class AvroLoader {
     protected Index createIndex(Schema schema) {
         // TODO: do we need to explicitly sort field by "order" to recreate save order?
         String[] labels = schema.getFields().stream().map(Schema.Field::name).toArray(String[]::new);
-        return Index.forLabels(labels);
+        return Index.of(labels);
     }
 
     protected Extractor<GenericRecord, ?>[] mapColumns(Schema schema) {

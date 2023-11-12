@@ -7,6 +7,7 @@
 * #214 Parallel Aggregation of columns
 * #219 IndexedSeries.size(): NPE due to a race condtion
 * #221 Index.positions()
+* #222 Refactor "Index.forLabel(..)" to "Index.of(..)" 
 
 ## Release 0.18
 

@@ -33,7 +33,7 @@ public class DataFrameByRowBuilder<S, B extends DataFrameByRowBuilder<S, B>> {
     }
 
     public B columnNames(String... columnNames) {
-        return columnIndex(Index.forLabels(columnNames));
+        return columnIndex(Index.of(columnNames));
     }
 
     public B columnIndex(Index columnsIndex) {
@@ -135,7 +135,7 @@ public class DataFrameByRowBuilder<S, B extends DataFrameByRowBuilder<S, B>> {
             labels[i] = Integer.toString(i);
         }
 
-        return Index.forLabels(labels);
+        return Index.of(labels);
     }
 
     protected int width() {

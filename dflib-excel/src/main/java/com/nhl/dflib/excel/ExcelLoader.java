@@ -235,7 +235,7 @@ public class ExcelLoader {
             labels[i] = val != null ? val.toString() : excelColumns.getLabel(i);
         }
 
-        return Index.forLabelsDeduplicate(labels);
+        return Index.ofDeduplicated(labels);
     }
 
     private Row getRow(Sheet sh, SheetRange range, int rowOffset) {

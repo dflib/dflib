@@ -30,7 +30,7 @@ public class Stacker {
             values[i] = new IndexedSeries<>(df.getColumn(i), rows[i]);
         }
 
-        return new ColumnDataFrame(Index.forLabels(ROW_LABEL, COLUMN_LABEL, VALUE_LABEL),
+        return new ColumnDataFrame(Index.of(ROW_LABEL, COLUMN_LABEL, VALUE_LABEL),
                 SeriesConcat.intConcat(rows),
                 SeriesConcat.concat(columns),
                 SeriesConcat.concat(values)
@@ -53,7 +53,7 @@ public class Stacker {
             values[i] = df.getColumn(i);
         }
 
-        return new ColumnDataFrame(Index.forLabels(ROW_LABEL, COLUMN_LABEL, VALUE_LABEL),
+        return new ColumnDataFrame(Index.of(ROW_LABEL, COLUMN_LABEL, VALUE_LABEL),
                 SeriesConcat.intConcat(rows),
                 SeriesConcat.concat(columns),
                 SeriesConcat.concat(values)

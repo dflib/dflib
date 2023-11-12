@@ -38,7 +38,7 @@ public class SaveViaUpsert extends SaveViaInsert {
     }
 
     protected DataFrame keyValues(DataFrame df) {
-        return df.selectColumns(Index.forLabels(keyColumns));
+        return df.selectColumns(Index.of(keyColumns));
     }
 
     protected Supplier<Series<SaveOp>> doSave(JdbcConnector connector, DataFrame df, DataFrame keyDf) {
@@ -144,7 +144,7 @@ public class SaveViaUpsert extends SaveViaInsert {
             }
 
             // reorder columns to start with updated values and end with keys to match PreparedStatement parameter ordering
-            Index valueIndex = Index.forLabels(updateColumns).dropLabels(keyColumns);
+            Index valueIndex = Index.of(updateColumns).dropLabels(keyColumns);
             Index valueAndKeyIndex = valueIndex.addLabels(keyColumns);
 
             StatementBuilder builder = connector.createStatementBuilder(createUpdateStatement(keyColumns, valueIndex.getLabels()))

@@ -75,7 +75,7 @@ public class VConcat {
             innerJoin(columns, indices[i]);
         }
 
-        return Index.forLabels(columns.toArray(new String[columns.size()]));
+        return Index.of(columns.toArray(new String[columns.size()]));
     }
 
     private static void innerJoin(Set<String> columns, Index index) {
@@ -98,7 +98,7 @@ public class VConcat {
             }
         }
 
-        return Index.forLabels(columns.toArray(new String[columns.size()]));
+        return Index.of(columns.toArray(new String[columns.size()]));
     }
 
     private static Index leftJoin(Index[] indices) {

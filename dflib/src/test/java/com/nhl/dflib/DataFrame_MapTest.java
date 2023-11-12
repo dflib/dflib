@@ -22,7 +22,7 @@ public class DataFrame_MapTest {
 
     @Test
     public void testMap_Exp() {
-        Index i1 = Index.forLabels("a", "b");
+        Index i1 = Index.of("a", "b");
         DataFrame df = DataFrame
                 .newFrame("a", "b")
                 .foldByRow(
@@ -38,7 +38,7 @@ public class DataFrame_MapTest {
 
     @Test
     public void testMap_RowMapper_Get() {
-        Index i1 = Index.forLabels("a", "b");
+        Index i1 = Index.of("a", "b");
         DataFrame df = DataFrame
                 .newFrame("a", "b")
                 .foldByRow(
@@ -57,7 +57,7 @@ public class DataFrame_MapTest {
 
     @Test
     public void testMap_RowMapper_GetWithCast() {
-        Index index = Index.forLabels("a", "b");
+        Index index = Index.of("a", "b");
         DataFrame df = DataFrame
                 .newFrame(index)
                 .foldByRow(
@@ -76,7 +76,7 @@ public class DataFrame_MapTest {
 
     @Test
     public void testMap_RowMapper_GetWithCast_ByName() {
-        Index index = Index.forLabels("a", "b");
+        Index index = Index.of("a", "b");
         DataFrame df = DataFrame
                 .newFrame(index)
                 .foldByRow(
@@ -95,7 +95,7 @@ public class DataFrame_MapTest {
 
     @Test
     public void testMap_RowMapper_GetPrimitive() {
-        Index index = Index.forLabels("i", "l", "d", "b");
+        Index index = Index.of("i", "l", "d", "b");
         DataFrame df = DataFrame
                 .byColumn(index)
                 .of(

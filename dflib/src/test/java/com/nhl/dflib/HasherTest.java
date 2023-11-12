@@ -52,12 +52,12 @@ public class HasherTest {
     @Test
     public void testForColumn_MultiColumn_ByName() {
 
-        Index i1 = Index.forLabels("a", "b", "c");
+        Index i1 = Index.of("a", "b", "c");
         DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
                 1, "x", 5L,
                 2, "y", 4L);
 
-        Index i2 = Index.forLabels("x", "y", "z");
+        Index i2 = Index.of("x", "y", "z");
         DataFrame df2 = DataFrame.newFrame("x", "y", "z").foldByRow(
                 2, "a", 6L,
                 2, "y", 4L,
@@ -75,7 +75,7 @@ public class HasherTest {
     @Test
     public void testForColumn_MultiColumn_ByPos() {
 
-        Index i1 = Index.forLabels("a", "b", "c");
+        Index i1 = Index.of("a", "b", "c");
         DataFrame df1 = DataFrame.newFrame("a", "b", "c").foldByRow(
                 1, "x", 5L,
                 2, "y", 4L);

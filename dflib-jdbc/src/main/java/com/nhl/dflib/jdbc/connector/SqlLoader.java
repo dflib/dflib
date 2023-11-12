@@ -136,7 +136,7 @@ public class SqlLoader {
             names[i] = rsmd.getColumnLabel(i + 1);
         }
 
-        return Index.forLabels(names);
+        return Index.of(names);
     }
 
     protected Extractor<ResultSet, ?>[] createExtractors(ResultSet resultSet) throws SQLException {

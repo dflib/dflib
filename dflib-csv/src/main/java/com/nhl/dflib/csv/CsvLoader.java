@@ -104,7 +104,7 @@ public class CsvLoader {
      * @since 0.7
      */
     public CsvLoader header(String... columns) {
-        this.header = Index.forLabels(columns);
+        this.header = Index.of(columns);
         return this;
     }
 
@@ -521,7 +521,7 @@ public class CsvLoader {
             }
         }
 
-        Index dfHeader = Index.forLabels(columns.toArray(new String[0]));
+        Index dfHeader = Index.of(columns.toArray(new String[0]));
 
         int[] csvPositions = new int[positions.size()];
         for (int i = 0; i < csvPositions.length; i++) {
@@ -535,7 +535,7 @@ public class CsvLoader {
         if (it.hasNext()) {
             return header != null ? header : loadCsvHeader(it.next());
         } else {
-            return header != null ? header : Index.forLabels();
+            return header != null ? header : Index.of();
         }
     }
 
@@ -547,7 +547,7 @@ public class CsvLoader {
             columnNames[i] = header.get(i);
         }
 
-        return Index.forLabels(columnNames);
+        return Index.of(columnNames);
     }
 
     private static class ColumnMap {

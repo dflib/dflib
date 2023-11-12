@@ -67,7 +67,7 @@ public class DataFrame_SelectColumnsTest {
         DataFrame df = DataFrame.newFrame("a", "b", "c").foldByRow(
                 1, "x", "m",
                 2, "y", "n")
-                .selectColumns(Index.forLabels("b", "a"));
+                .selectColumns(Index.of("b", "a"));
 
         new DataFrameAsserts(df, "b", "a")
                 .expectHeight(2)
