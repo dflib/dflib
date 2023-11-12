@@ -24,8 +24,8 @@ import java.util.function.UnaryOperator;
  */
 public class Index implements Iterable<String> {
 
-    protected String[] labels;
-    protected Map<String, Integer> labelPositions;
+    protected final String[] labels;
+    protected volatile Map<String, Integer> labelPositions;
 
     protected Index(String... labels) {
         this.labels = labels;
@@ -91,7 +91,7 @@ public class Index implements Iterable<String> {
 
     /**
      * Renames index labels by applying the provided function to each label. Useful for name conversions like
-     * lowercasing, etc.
+     * lower-casing, etc.
      *
      * @param renameFunction a function that is passed each label in turn
      * @return a new Index with renamed labels
@@ -208,7 +208,7 @@ public class Index implements Iterable<String> {
 
     public Index selectLabels(String... labels) {
 
-        // check whether the labels are valid.. "position" call on an invalid label would throw
+        // check whether the labels are valid. "position" call on an invalid label would throw
         int len = labels.length;
         for (int i = 0; i < len; i++) {
             position(labels[i]);
@@ -231,7 +231,7 @@ public class Index implements Iterable<String> {
             }
         }
 
-        return selected.size() == size() ? this : Index.forLabels(selected.toArray(new String[selected.size()]));
+        return selected.size() == size() ? this : Index.forLabels(selected.toArray(new String[0]));
     }
 
     public Index dropLabels(String... labels) {
@@ -277,7 +277,7 @@ public class Index implements Iterable<String> {
             }
         }
 
-        return selected.size() == size() ? this : Index.forLabels(selected.toArray(new String[selected.size()]));
+        return selected.size() == size() ? this : Index.forLabels(selected.toArray(new String[0]));
     }
 
     public String[] getLabels() {
