@@ -421,13 +421,13 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param rowMapper a boolean function applied to each row of this DataFrame
      * @return a new BooleanSeries.
      * @since 0.17
-     * @deprecated use <code>addColumn("name", rowMapper).getColumn("name").castAsBool()</code> instead
+     * @deprecated use <code>Condition.eval(df)</code> or <code>addColumn("name", rowMapper).getColumn("name").mapAsBool(..)</code> instead.
      */
     @Deprecated(since = "0.18", forRemoval = true)
     BooleanSeries mapColumnAsBool(RowToBooleanValueMapper rowMapper);
 
     /**
-     * @deprecated use <code>addColumn("name", rowMapper).getColumn("name").castAsBool()</code> instead
+     * @deprecated use <code>Condition.eval(df)</code> or <code>addColumn("name", rowMapper).getColumn("name").mapAsBool(..)</code> instead.
      */
     @Deprecated(since = "0.17", forRemoval = true)
     default BooleanSeries mapColumnAsBoolean(RowToBooleanValueMapper rowMapper) {
