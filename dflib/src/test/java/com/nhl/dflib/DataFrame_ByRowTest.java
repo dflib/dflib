@@ -1,16 +1,37 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.series.SingleValueSeries;
 import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DataFrame_ByRowTest {
 
     @Test
     public void objectSource() {
+
+        List<From> data = List.of(new From("L1", -1), new From("L2", -2));
+
+        DataFrame df = DataFrame
+                .byRow(
+                        Extractor.$col(From::getS),
+                        Extractor.$int(From::getI)
+                )
+                .columnNames("o", "i")
+                .ofIterable(data);
+
+        new DataFrameAsserts(df, "o", "i").expectHeight(2)
+                .expectIntColumns("i")
+                .expectRow(0, "L1", -1)
+                .expectRow(1, "L2", -2);
+    }
+
+    @Test
+    public void objectSource_WithAppender() {
 
         List<From> data = List.of(new From("L1", -1), new From("L2", -2));
 
@@ -44,23 +65,30 @@ public class DataFrame_ByRowTest {
     }
 
     @Test
-    public void objectSource_SkipExtractor() {
+    public void objectSource_WithVal() {
 
         List<From> data = List.of(new From("L1", -1), new From("L2", -2));
 
         DataFrame df = DataFrame
                 .byRow(
-                        Extractor.$col(From::getS),
-                        Extractor.$int(From::getI)
+                        Extractor.$val("const"),
+                        Extractor.$col(From::getS)
                 )
-                .columnNames("o", "i")
-                // skip extractor creation, create the DataFrame straight from the builder
-                .ofIterable(data);
+                .appender()
+                .append(new From("a", 1))
+                .append(new From("b", 2))
+                .append(new From("c", 3))
+                .append(data)
+                .toDataFrame();
 
-        new DataFrameAsserts(df, "o", "i").expectHeight(2)
-                .expectIntColumns("i")
-                .expectRow(0, "L1", -1)
-                .expectRow(1, "L2", -2);
+        new DataFrameAsserts(df, "0", "1").expectHeight(5)
+                .expectRow(0, "const", "a")
+                .expectRow(1, "const", "b")
+                .expectRow(2, "const", "c")
+                .expectRow(3, "const", "L1")
+                .expectRow(4, "const", "L2");
+
+        assertTrue(df.getColumn(0) instanceof SingleValueSeries);
     }
 
     @Test

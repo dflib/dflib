@@ -6,6 +6,7 @@ import com.nhl.dflib.builder.IntExtractor;
 import com.nhl.dflib.builder.LongExtractor;
 import com.nhl.dflib.builder.ObjectExtractor;
 import com.nhl.dflib.builder.SelfExtractor;
+import com.nhl.dflib.builder.SingleValueExtractor;
 import com.nhl.dflib.builder.ValueAccum;
 import com.nhl.dflib.builder.ValueHolder;
 import com.nhl.dflib.builder.ValueStore;
@@ -26,10 +27,20 @@ public interface Extractor<F, T> {
     void extractAndStore(F from, ValueStore<T> to);
 
     void extractAndStore(F from, ValueStore<T> to, int toPos);
-    
+
     ValueAccum<T> createAccum(int capacity);
 
     ValueHolder<T> createHolder();
+
+    /**
+     * Returns an extractor that generates a column filled with a constant value that is known upfront and is not
+     * extracted from the source object.
+     *
+     * @since 0.19
+     */
+    static <F, T> Extractor<F, T> $val(T val) {
+        return new SingleValueExtractor<>(val);
+    }
 
     static <T> Extractor<T, T> $col() {
         return new SelfExtractor<>();

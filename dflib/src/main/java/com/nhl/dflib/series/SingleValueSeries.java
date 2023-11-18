@@ -11,8 +11,8 @@ import java.util.Arrays;
  */
 public class SingleValueSeries<T> extends ObjectSeries<T> {
 
-    private T value;
-    private int size;
+    private final T value;
+    private final int size;
 
     public SingleValueSeries(T value, int size) {
         super(Object.class);
