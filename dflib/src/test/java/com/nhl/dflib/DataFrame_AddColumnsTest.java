@@ -1,26 +1,12 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.unit.DataFrameAsserts;
-import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import static com.nhl.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class DataFrame_AddDropMapColumnsTest {
-
-    @Deprecated
-    @Test
-    public void mapColumn() {
-        Series<Integer> mapped = DataFrame
-                .foldByRow("a", "b")
-                .of(
-                        1, "x",
-                        2, "y")
-                .mapColumn(r -> ((int) r.get(0)) * 10);
-
-        new SeriesAsserts(mapped).expectData(10, 20);
-    }
+public class DataFrame_AddColumnsTest {
 
     @Test
     public void addColumn() {
@@ -36,17 +22,16 @@ public class DataFrame_AddDropMapColumnsTest {
     }
 
     @Test
-    public void addColumn_Sparse() {
+    public void addColumn_DupeName() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                         1, "x",
                         2, "y")
-                .selectColumns("a")
-                .addColumn("c", r -> ((int) r.get(0)) * 10);
+                .addColumn("a", r -> r.get(0, Integer.class) * 10);
 
-        new DataFrameAsserts(df, "a", "c")
+        new DataFrameAsserts(df, "a", "b", "a_")
                 .expectHeight(2)
-                .expectRow(0, 1, 10)
-                .expectRow(1, 2, 20);
+                .expectRow(0, 1, "x", 10)
+                .expectRow(1, 2, "y", 20);
     }
 
     @Test
@@ -209,83 +194,5 @@ public class DataFrame_AddDropMapColumnsTest {
                 .expectHeight(2)
                 .expectRow(0, 1, "x", 1, "x", "!")
                 .expectRow(1, 2, "y", 2, "y", "!");
-    }
-
-    @Test
-    public void dropColumns1() {
-        DataFrame df = DataFrame.foldByRow("a", "b").of(
-                        1, "x",
-                        2, "y")
-                .dropColumns("a");
-
-        new DataFrameAsserts(df, "b")
-                .expectHeight(2)
-                .expectRow(0, "x")
-                .expectRow(1, "y");
-    }
-
-    @Test
-    public void dropColumns2() {
-        DataFrame df = DataFrame.foldByRow("a", "b").of(
-                        1, "x",
-                        2, "y")
-                .dropColumns("b");
-
-        new DataFrameAsserts(df, "a")
-                .expectHeight(2)
-                .expectRow(0, 1)
-                .expectRow(1, 2);
-    }
-
-    @Test
-    public void dropColumns3() {
-        DataFrame df = DataFrame.foldByRow("a", "b").of(
-                        1, "x",
-                        2, "y")
-                .dropColumns();
-
-        new DataFrameAsserts(df, "a", "b")
-                .expectHeight(2)
-                .expectRow(0, 1, "x")
-                .expectRow(1, 2, "y");
-    }
-
-    @Test
-    public void dropColumns4() {
-        DataFrame df = DataFrame.foldByRow("a", "b").of(
-                        1, "x",
-                        2, "y")
-                .dropColumns("no_such_column");
-
-        new DataFrameAsserts(df, "a", "b")
-                .expectHeight(2)
-                .expectRow(0, 1, "x")
-                .expectRow(1, 2, "y");
-    }
-
-    @Test
-    public void dropColumns_Predicate() {
-        DataFrame df = DataFrame.foldByColumn("a1", "b2", "c1")
-                .of(1, 2, 3, 4, 5, 6, 7, 8, 9)
-                .dropColumns(c -> c.endsWith("1"));
-
-        new DataFrameAsserts(df, "b2")
-                .expectHeight(3)
-                .expectRow(0, 4)
-                .expectRow(1, 5)
-                .expectRow(2, 6);
-    }
-
-    @Test
-    public void addRowNumberColumn() {
-        DataFrame df = DataFrame.foldByRow("a", "b").of(
-                        1, "x",
-                        2, "y")
-                .addRowNumberColumn("rn");
-
-        new DataFrameAsserts(df, "a", "b", "rn")
-                .expectHeight(2)
-                .expectRow(0, 1, "x", 1)
-                .expectRow(1, 2, "y", 2);
     }
 }
