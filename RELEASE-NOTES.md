@@ -9,6 +9,7 @@
 * #221 Index.positions(), .positionsExcept()
 * #222 Refactor "Index.forLabel(..)" to "Index.of(..)" 
 * #224 Extractor.$val(..)
+* #225 Exp.rowNum()
 
 ## Release 0.18
 

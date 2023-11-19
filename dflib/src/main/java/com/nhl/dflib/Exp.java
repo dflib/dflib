@@ -3,6 +3,7 @@ package com.nhl.dflib;
 import com.nhl.dflib.exp.AsExp;
 import com.nhl.dflib.exp.Column;
 import com.nhl.dflib.exp.ConstExp;
+import com.nhl.dflib.exp.RowNumExp;
 import com.nhl.dflib.exp.agg.CountExp;
 import com.nhl.dflib.exp.agg.ExpAggregator;
 import com.nhl.dflib.exp.agg.StringAggregators;
@@ -334,6 +335,14 @@ public interface Exp<T> {
         return new PreFilteredCountExp(filter);
     }
 
+    /**
+     * Returns an expression that generates a Series with row numbers, starting with 1.
+     *
+     * @since 0.19
+     */
+    static NumExp<Integer> rowNum() {
+        return RowNumExp.getInstance();
+    }
 
     /**
      * Returns the type of the evaluation result. The type is used internally by the DBLib expression engine to compile

@@ -26,7 +26,7 @@ public class Column<T> implements Exp<T> {
 
     public Column(int position, Class<T> type) {
         if (position < 0) {
-            throw new IllegalArgumentException("Position must nit be negative: " + position);
+            throw new IllegalArgumentException("Position must not be negative: " + position);
         }
 
         this.type = Objects.requireNonNull(type);
