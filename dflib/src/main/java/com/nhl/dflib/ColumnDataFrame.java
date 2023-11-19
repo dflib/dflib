@@ -4,18 +4,24 @@ import com.nhl.dflib.builder.BoolAccum;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.explode.Exploder;
-import com.nhl.dflib.select.RowIndexer;
 import com.nhl.dflib.groupby.Grouper;
 import com.nhl.dflib.map.Mapper;
 import com.nhl.dflib.row.CrossColumnRowProxy;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.sample.Sampler;
-import com.nhl.dflib.series.*;
+import com.nhl.dflib.select.RowIndexer;
+import com.nhl.dflib.series.EmptySeries;
+import com.nhl.dflib.series.IntArraySeries;
+import com.nhl.dflib.series.RowMappedSeries;
+import com.nhl.dflib.series.SingleValueSeries;
 import com.nhl.dflib.sort.DataFrameSorter;
 import com.nhl.dflib.stack.Stacker;
-import com.nhl.dflib.window.RowNumberer;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
@@ -72,7 +78,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public DataFrame addRowNumberColumn(String columnName) {
-        return addColumn(columnName, RowNumberer.sequence(height()));
+        return addColumn(Exp.rowNum().as(columnName));
     }
 
     @Override
