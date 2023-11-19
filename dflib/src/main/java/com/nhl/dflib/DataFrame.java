@@ -1,6 +1,7 @@
 package com.nhl.dflib;
 
 import com.nhl.dflib.agg.DataFrameAggregator;
+import com.nhl.dflib.builder.BoolAccum;
 import com.nhl.dflib.builder.DataFrameArrayByRowBuilder;
 import com.nhl.dflib.builder.DataFrameByColumnBuilder;
 import com.nhl.dflib.builder.DataFrameByRowBuilder;
@@ -412,7 +413,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @deprecated use <code>addColumn("name", rowMapper).getColumn("name")</code> instead
      */
     @Deprecated(since = "0.18", forRemoval = true)
-    <T> Series<T> mapColumn(RowToValueMapper<T> rowMapper);
+    default <T> Series<T> mapColumn(RowToValueMapper<T> rowMapper) {
+        return new RowMappedSeries<>(this, rowMapper);
+    }
 
     /**
      * Creates a new BooleanSeries with values mapped by applying row mapper function to the DataFrame. The returned
@@ -424,7 +427,16 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @deprecated use <code>Condition.eval(df)</code> or <code>addColumn("name", rowMapper).getColumn("name").mapAsBool(..)</code> instead.
      */
     @Deprecated(since = "0.18", forRemoval = true)
-    BooleanSeries mapColumnAsBool(RowToBooleanValueMapper rowMapper);
+    default BooleanSeries mapColumnAsBool(RowToBooleanValueMapper rowMapper) {
+        // don't bother to make it lazy... boolean columns are very compact compared to the rest of the data set
+        BoolAccum data = new BoolAccum(height());
+
+        for (RowProxy row : this) {
+            data.pushBool(rowMapper.map(row));
+        }
+
+        return data.toSeries();
+    }
 
     /**
      * @deprecated use <code>Condition.eval(df)</code> or <code>addColumn("name", rowMapper).getColumn("name").mapAsBool(..)</code> instead.

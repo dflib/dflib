@@ -1,6 +1,5 @@
 package com.nhl.dflib;
 
-import com.nhl.dflib.builder.BoolAccum;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.explode.Exploder;
@@ -160,25 +159,6 @@ public class ColumnDataFrame implements DataFrame {
         }
 
         return new ColumnDataFrame(Index.of(outNames), newData);
-    }
-
-    @Override
-    @Deprecated(since = "0.18", forRemoval = true)
-    public <T> Series<T> mapColumn(RowToValueMapper<T> rowMapper) {
-        return new RowMappedSeries<>(this, rowMapper);
-    }
-
-    @Override
-    @Deprecated(since = "0.18", forRemoval = true)
-    public BooleanSeries mapColumnAsBool(RowToBooleanValueMapper rowMapper) {
-        // don't bother to make it lazy... boolean columns are very compact compared to the rest of the data set
-        BoolAccum data = new BoolAccum(height());
-
-        for (RowProxy row : this) {
-            data.pushBool(rowMapper.map(row));
-        }
-
-        return data.toSeries();
     }
 
     @Override
