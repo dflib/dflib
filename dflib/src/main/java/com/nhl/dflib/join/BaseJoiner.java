@@ -67,7 +67,7 @@ public abstract class BaseJoiner {
 
     protected DataFrame merge(IntSeries leftIndex, IntSeries rightIndex, DataFrame lf, DataFrame rf) {
 
-        Index index = joinIndex(lf.getColumnsIndex(), rf.getColumnsIndex());
+        Index index = joinIndex(lf, rf);
 
         int w = index.size();
         int wl = lf.width();
@@ -82,13 +82,18 @@ public abstract class BaseJoiner {
             data[i] = rf.getColumn(i - wl).select(rightIndex);
         }
 
-        return new ColumnDataFrame(index, data);
+        return new ColumnDataFrame(null, index, data);
     }
 
-    protected Index joinIndex(Index li, Index ri) {
+    protected Index joinIndex(DataFrame lf, DataFrame rf) {
+        String lp = lf.getName() != null ? lf.getName() + "." : null;
+        String rp = rf.getName() != null ? rf.getName() + "." : null;
+
+        Index li = lp != null ? lf.getColumnsIndex().rename(s -> lp + s) : lf.getColumnsIndex();
+        Index ri = rp != null ? rf.getColumnsIndex().rename(s -> rp + s) : rf.getColumnsIndex();
+
         return HConcat.zipIndex(li, ri.getLabels());
     }
-
 
     protected abstract IntSeries[] innerJoin(DataFrame lf, DataFrame rf);
 

@@ -126,9 +126,13 @@ public class DataFrameTabularPrintWorker extends BasePrintWorker {
 
         int h = df.height();
 
+        String nameLabel = df.getName() != null ? "[" + df.getName() + "] " : "";
         String rowsLabel = h == 1 ? " row x " : " rows x ";
         String columnsLabel = w == 1 ? " column" : " columns";
-        appendNewLine().append(h).append(rowsLabel).append(w).append(columnsLabel);
+        appendNewLine()
+                .append(nameLabel)
+                .append(h).append(rowsLabel)
+                .append(w).append(columnsLabel);
 
         return out;
     }

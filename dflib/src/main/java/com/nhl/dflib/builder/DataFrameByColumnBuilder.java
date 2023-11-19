@@ -18,10 +18,10 @@ public class DataFrameByColumnBuilder extends BaseDataFrameBuilder {
 
     public DataFrame of(Series<?>... columns) {
         Objects.requireNonNull(columns);
-        return new ColumnDataFrame(columnsIndex, columns);
+        return new ColumnDataFrame(null, columnsIndex, columns);
     }
 
     public DataFrame ofIterable(Iterable<Series<?>> columns) {
-        return new ColumnDataFrame(columnsIndex, toCollection(columns).toArray(new Series[0]));
+        return new ColumnDataFrame(null, columnsIndex, toCollection(columns).toArray(new Series[0]));
     }
 }

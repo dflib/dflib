@@ -69,7 +69,7 @@ public class HConcat {
             tr.reset();
         }
 
-        return new ColumnDataFrame(joinedColumns, tr.getData());
+        return new ColumnDataFrame(null, joinedColumns, tr.getData());
     }
 
     public DataFrame concat(Index joinedColumns, DataFrame lf, DataFrame rf) {
@@ -93,7 +93,7 @@ public class HConcat {
             newData[i++] = rt.apply(rf.getColumn(s));
         }
 
-        return new ColumnDataFrame(joinedColumns, newData);
+        return new ColumnDataFrame(null, joinedColumns, newData);
     }
 
     private UnaryOperator<Series<?>> seriesTrimmer(int seriesHeight, int desiredHeight) {

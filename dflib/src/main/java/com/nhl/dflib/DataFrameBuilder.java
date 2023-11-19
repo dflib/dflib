@@ -63,7 +63,7 @@ public class DataFrameBuilder {
      */
     @Deprecated(since = "0.16", forRemoval = true)
     public DataFrame empty() {
-        return new ColumnDataFrame(columnsIndex);
+        return new ColumnDataFrame(null, columnsIndex);
     }
 
     /**
@@ -72,7 +72,7 @@ public class DataFrameBuilder {
     @Deprecated(since = "0.16", forRemoval = true)
     public DataFrame columns(Series<?>... columns) {
         Objects.requireNonNull(columns);
-        return new ColumnDataFrame(columnsIndex, columns);
+        return new ColumnDataFrame(null, columnsIndex, columns);
     }
 
     /**
@@ -242,7 +242,7 @@ public class DataFrameBuilder {
             series[i] = columnBuilders[i].toSeries();
         }
 
-        return new ColumnDataFrame(columnsIndex, series);
+        return new ColumnDataFrame(null, columnsIndex, series);
     }
 
     public <T> DataFrame foldIterableByColumn(Iterable<T> iterable) {
@@ -290,7 +290,7 @@ public class DataFrameBuilder {
             series[i] = new IntArraySeries(columnarData[i]);
         }
 
-        return new ColumnDataFrame(columnsIndex, series);
+        return new ColumnDataFrame(null, columnsIndex, series);
     }
 
     /**
@@ -338,7 +338,7 @@ public class DataFrameBuilder {
             columnsData[i] = columnBuilders[i].toSeries();
         }
 
-        return new ColumnDataFrame(columnsIndex, columnsData);
+        return new ColumnDataFrame(null, columnsIndex, columnsData);
     }
 
     /**
@@ -386,7 +386,7 @@ public class DataFrameBuilder {
             series[i] = new LongArraySeries(columnarData[i]);
         }
 
-        return new ColumnDataFrame(columnsIndex, series);
+        return new ColumnDataFrame(null, columnsIndex, series);
     }
 
     /**
@@ -434,7 +434,7 @@ public class DataFrameBuilder {
             columnsData[i] = columnBuilders[i].toSeries();
         }
 
-        return new ColumnDataFrame(columnsIndex, columnsData);
+        return new ColumnDataFrame(null, columnsIndex, columnsData);
     }
 
     /**
@@ -482,7 +482,7 @@ public class DataFrameBuilder {
             series[i] = new DoubleArraySeries(columnarData[i]);
         }
 
-        return new ColumnDataFrame(columnsIndex, series);
+        return new ColumnDataFrame(null, columnsIndex, series);
     }
 
     /**
@@ -530,7 +530,7 @@ public class DataFrameBuilder {
             columnsData[i] = columnBuilders[i].toSeries();
         }
 
-        return new ColumnDataFrame(columnsIndex, columnsData);
+        return new ColumnDataFrame(null, columnsIndex, columnsData);
     }
 
     /**
@@ -570,7 +570,7 @@ public class DataFrameBuilder {
             series[i] = new ArraySeries(columnarData[i]);
         }
 
-        return new ColumnDataFrame(columnsIndex, series);
+        return new ColumnDataFrame(null, columnsIndex, series);
     }
 
     FoldByColumnGeometry byColumnGeometry(int dataLength) {

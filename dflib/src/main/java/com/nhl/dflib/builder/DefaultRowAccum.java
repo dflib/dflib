@@ -43,6 +43,6 @@ class DefaultRowAccum<S> implements RowAccum<S> {
             series[i] = columnBuilders[i].toSeries();
         }
 
-        return new ColumnDataFrame(columnsIndex, series);
+        return new ColumnDataFrame(null, columnsIndex, series);
     }
 }

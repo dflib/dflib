@@ -5,6 +5,7 @@
 * #212 DataFrame.cols(..).op(..): transformation over a subset of columns
 * #213 StrExp.split()
 * #214 Parallel Aggregation of columns
+* #215 DataFrame: "name" property and column aliases in joins
 * #219 IndexedSeries.size(): NPE due to a race condtion
 * #221 Index.positions(), .positionsExcept()
 * #222 Refactor "Index.forLabel(..)" to "Index.of(..)" 

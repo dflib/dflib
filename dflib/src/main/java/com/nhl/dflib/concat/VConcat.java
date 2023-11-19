@@ -146,7 +146,7 @@ public class VConcat {
             voffset += dfs[i].height();
         }
 
-        return new ColumnDataFrame(concatColumns, toSeries(w, data));
+        return new ColumnDataFrame(null, concatColumns, toSeries(w, data));
     }
 
     private Series<?>[] toSeries(int w, Object[][] data) {

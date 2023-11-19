@@ -70,7 +70,7 @@ public class DataFrameFoldByColumnBuilder extends BaseDataFrameBuilder {
             series[i] = new DoubleArraySeries(columnarData[i]);
         }
 
-        return new ColumnDataFrame(columnsIndex, series);
+        return new ColumnDataFrame(null, columnsIndex, series);
     }
 
     public DataFrame ofStream(DoubleStream stream) {
@@ -106,7 +106,7 @@ public class DataFrameFoldByColumnBuilder extends BaseDataFrameBuilder {
             series[i] = new IntArraySeries(columnarData[i]);
         }
 
-        return new ColumnDataFrame(columnsIndex, series);
+        return new ColumnDataFrame(null, columnsIndex, series);
     }
 
     public DataFrame ofStream(IntStream stream) {
@@ -142,7 +142,7 @@ public class DataFrameFoldByColumnBuilder extends BaseDataFrameBuilder {
             series[i] = new LongArraySeries(columnarData[i]);
         }
 
-        return new ColumnDataFrame(columnsIndex, series);
+        return new ColumnDataFrame(null, columnsIndex, series);
     }
 
     public DataFrame ofStream(LongStream stream) {
@@ -169,7 +169,7 @@ public class DataFrameFoldByColumnBuilder extends BaseDataFrameBuilder {
             series[i] = new ArraySeries(columnarData[i]);
         }
 
-        return new ColumnDataFrame(columnsIndex, series);
+        return new ColumnDataFrame(null, columnsIndex, series);
     }
 
     FoldByColumnGeometry geometry(int dataLength) {

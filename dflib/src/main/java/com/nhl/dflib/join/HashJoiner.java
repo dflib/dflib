@@ -18,8 +18,8 @@ import java.util.Set;
  */
 public class HashJoiner extends BaseJoiner {
 
-    private Hasher leftHasher;
-    private Hasher rightHasher;
+    private final Hasher leftHasher;
+    private final Hasher rightHasher;
 
     public HashJoiner(
             Hasher leftHasher,

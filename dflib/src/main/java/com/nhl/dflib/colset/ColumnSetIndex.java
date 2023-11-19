@@ -41,27 +41,27 @@ public abstract class ColumnSetIndex {
     public abstract int size();
 
     public DataFrame select(Series<?>[] columns, Map<String, String> oldToNewNames) {
-        return new ColumnDataFrame(targetIndex().rename(oldToNewNames), columns);
+        return new ColumnDataFrame(null, targetIndex().rename(oldToNewNames), columns);
     }
 
     public DataFrame select(Series<?>[] columns) {
-        return new ColumnDataFrame(targetIndex(), columns);
+        return new ColumnDataFrame(null, targetIndex(), columns);
     }
 
     public DataFrame replace(Series<?>[] columns, Map<String, String> oldToNewNames) {
-        return new ColumnDataFrame(source.getColumnsIndex().rename(oldToNewNames), columns);
+        return new ColumnDataFrame(null, source.getColumnsIndex().rename(oldToNewNames), columns);
     }
 
     public DataFrame merge(Series<?>[] columns, Map<String, String> oldToNewNames) {
         ColumnSetMerger merger = merger();
-        return new ColumnDataFrame(
+        return new ColumnDataFrame(null,
                 merger.mergedIndex().rename(oldToNewNames),
                 merger.mergedColumns(source, columns));
     }
 
     public DataFrame merge(Series<?>[] columns) {
         ColumnSetMerger merger = merger();
-        return new ColumnDataFrame(
+        return new ColumnDataFrame(null,
                 merger.mergedIndex(),
                 merger.mergedColumns(source, columns));
     }

@@ -14,14 +14,14 @@ public class Mapper {
      */
     @Deprecated(since = "0.19", forRemoval = true)
     public static DataFrame map(DataFrame source, Index resultColumns, RowMapper mapper) {
-        return new ColumnDataFrame(resultColumns, mapData(source, resultColumns, mapper));
+        return new ColumnDataFrame(null, resultColumns, mapData(source, resultColumns, mapper));
     }
 
     /**
      * @since 0.7
      */
     public static <T> DataFrame map(Series<T> source, Index resultColumns, ValueToRowMapper<T> mapper) {
-        return new ColumnDataFrame(resultColumns, mapData(source, resultColumns, mapper));
+        return new ColumnDataFrame(null, resultColumns, mapData(source, resultColumns, mapper));
     }
 
     /**

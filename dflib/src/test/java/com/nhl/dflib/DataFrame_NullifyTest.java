@@ -7,12 +7,11 @@ public class DataFrame_NullifyTest {
 
     @Test
     public void nullify() {
-        DataFrame cond = DataFrame
-                .newFrame("a", "b")
-                .columns(Series.ofBool(true, false), Series.ofBool(true, false));
+        DataFrame cond = DataFrame.byColumn("a", "b").of(
+                Series.ofBool(true, false),
+                Series.ofBool(true, false));
 
-        DataFrame df = DataFrame.foldByRow("a", "b")
-                .of(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                         1, "x",
                         2, "y")
                 .nullify(cond);
@@ -25,14 +24,13 @@ public class DataFrame_NullifyTest {
 
     @Test
     public void nullifyNoMatch() {
-        DataFrame cond = DataFrame
-                .newFrame("a", "b")
-                .columns(Series.ofBool(true, false), Series.ofBool(true, false));
+        DataFrame cond = DataFrame.byColumn("a", "b").of(
+                Series.ofBool(true, false),
+                Series.ofBool(true, false));
 
-        DataFrame df = DataFrame.foldByRow("a", "b")
-                .of(
-                        1, "x",
-                        2, "y").nullifyNoMatch(cond);
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                1, "x",
+                2, "y").nullifyNoMatch(cond);
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)
@@ -43,16 +41,13 @@ public class DataFrame_NullifyTest {
     @Test
     public void nullifyByColumn() {
 
-        DataFrame cond = DataFrame
-                .newFrame("c", "b")
-                .columns(Series.ofBool(true, false), Series.ofBool(true, false));
+        DataFrame cond = DataFrame.byColumn("c", "b").of(
+                Series.ofBool(true, false),
+                Series.ofBool(true, false));
 
-        DataFrame df = DataFrame
-                .newFrame("a", "b")
-                .foldByRow(
-                        1, "x",
-                        2, "y")
-                .nullify(cond);
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                1, "x",
+                2, "y").nullify(cond);
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)

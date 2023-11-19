@@ -264,6 +264,6 @@ public class GroupBy {
             data[j] = ungrouped.getColumn(j).select(index);
         }
 
-        return new ColumnDataFrame(ungrouped.getColumnsIndex(), data);
+        return new ColumnDataFrame(null, ungrouped.getColumnsIndex(), data);
     }
 }

@@ -9,9 +9,7 @@ public class ColumnSet_ColsSampl_SelectTest {
 
     @Test
     public void byName() {
-        DataFrame df = DataFrame
-                .newFrame("a", "b", "c", "d")
-                .foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b", "c", "d").of(
                         1, "x", "m", "z",
                         2, "y", "x", "E")
                 // using fixed seed to get reproducible result

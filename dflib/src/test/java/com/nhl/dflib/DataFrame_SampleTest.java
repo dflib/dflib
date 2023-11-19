@@ -11,9 +11,7 @@ public class DataFrame_SampleTest {
     @Test
     public void sampleRows() {
 
-        DataFrame df = DataFrame
-                .newFrame("a", "b")
-                .foldByRow(
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
                         1, "x",
                         2, "y",
                         4, "z",
@@ -34,8 +32,7 @@ public class DataFrame_SampleTest {
     public void sampleColumns() {
 
         DataFrame df = DataFrame
-                .newFrame("a", "b", "c", "d")
-                .foldByRow(
+                .foldByRow("a", "b", "c", "d").of(
                         1, "x", "m", "z",
                         2, "y", "x", "E")
                 // using fixed seed to get reproducible result

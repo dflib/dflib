@@ -23,6 +23,7 @@ import java.util.Random;
 
 public class ColumnDataFrame implements DataFrame {
 
+    private final String name;
     private final Index columnsIndex;
     private final Series[] dataColumns;
 
@@ -47,9 +48,28 @@ public class ColumnDataFrame implements DataFrame {
         return finalColumns;
     }
 
+    /**
+     * @deprecated in favor of {@link #ColumnDataFrame(String, Index, Series[])}
+     */
+    @Deprecated(since = "0.19", forRemoval = true)
     public ColumnDataFrame(Index columnsIndex, Series<?>... dataColumns) {
+        this(null, columnsIndex, dataColumns);
+    }
+
+    public ColumnDataFrame(String name, Index columnsIndex, Series<?>... dataColumns) {
+        this.name = name;
         this.columnsIndex = Objects.requireNonNull(columnsIndex);
         this.dataColumns = alignColumns(columnsIndex.size(), dataColumns);
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public DataFrame as(String name) {
+        return Objects.equals(name, this.name) ? this : new ColumnDataFrame(name, columnsIndex, dataColumns);
     }
 
     @Override
@@ -90,7 +110,7 @@ public class ColumnDataFrame implements DataFrame {
             newColumnsData[i] = dataColumns[i].head(len);
         }
 
-        return new ColumnDataFrame(columnsIndex, newColumnsData);
+        return new ColumnDataFrame(null, columnsIndex, newColumnsData);
     }
 
     @Override
@@ -111,7 +131,7 @@ public class ColumnDataFrame implements DataFrame {
             newColumnsData[i] = dataColumns[i].tail(len);
         }
 
-        return new ColumnDataFrame(columnsIndex, newColumnsData);
+        return new ColumnDataFrame(null, columnsIndex, newColumnsData);
     }
 
     @Override
@@ -123,7 +143,7 @@ public class ColumnDataFrame implements DataFrame {
             newColumnsData[i] = dataColumns[i].materialize();
         }
 
-        return new ColumnDataFrame(columnsIndex, newColumnsData);
+        return new ColumnDataFrame(null, columnsIndex, newColumnsData);
     }
 
     @Override
@@ -140,7 +160,7 @@ public class ColumnDataFrame implements DataFrame {
             newColumnsData[i] = dataColumns[i].select(rowPositions);
         }
 
-        return new ColumnDataFrame(columnsIndex, newColumnsData);
+        return new ColumnDataFrame(null, columnsIndex, newColumnsData);
     }
 
     @Override
@@ -330,7 +350,7 @@ public class ColumnDataFrame implements DataFrame {
             }
         }
 
-        return new ColumnDataFrame(columnsIndex, newColumns);
+        return new ColumnDataFrame(null, columnsIndex, newColumns);
     }
 
     @Override
@@ -351,7 +371,7 @@ public class ColumnDataFrame implements DataFrame {
             }
         }
 
-        return new ColumnDataFrame(columnsIndex, newColumns);
+        return new ColumnDataFrame(null, columnsIndex, newColumns);
     }
 
 
@@ -367,7 +387,7 @@ public class ColumnDataFrame implements DataFrame {
             resultColumns[i] = dataColumns[i].eq(another.getColumn(i));
         }
 
-        return new ColumnDataFrame(columnsIndex, resultColumns);
+        return new ColumnDataFrame(null, columnsIndex, resultColumns);
     }
 
     @Override
@@ -382,7 +402,7 @@ public class ColumnDataFrame implements DataFrame {
             resultColumns[i] = dataColumns[i].ne(another.getColumn(i));
         }
 
-        return new ColumnDataFrame(columnsIndex, resultColumns);
+        return new ColumnDataFrame(null, columnsIndex, resultColumns);
     }
 
     private void checkShapeMatches(DataFrame another) {
@@ -470,6 +490,6 @@ public class ColumnDataFrame implements DataFrame {
             newColumns[i] = i == pos ? newColumn : dataColumns[i];
         }
 
-        return new ColumnDataFrame(columnsIndex, newColumns);
+        return new ColumnDataFrame(null, columnsIndex, newColumns);
     }
 }

@@ -13,9 +13,9 @@ public class TabularPrinter_DataFrameTest {
 
     @BeforeEach
     public void initDataFrame() {
-        this.df = DataFrame
-                .newFrame("col1", "column2")
-                .columns(Series.of("one", "two", "three", "four"), Series.ofInt(1, 2, 3, 44));
+        this.df = DataFrame.byColumn("col1", "column2").of(
+                Series.of("one", "two", "three", "four"),
+                Series.ofInt(1, 2, 3, 44));
     }
 
     @Test
@@ -30,6 +30,20 @@ public class TabularPrinter_DataFrameTest {
                 "three       3" + System.lineSeparator() +
                 "four       44" + System.lineSeparator() +
                 "4 rows x 2 columns", p.toString(df));
+    }
+
+    @Test
+    public void toString_Name() {
+        TabularPrinter p = new TabularPrinter(5, 10);
+
+        assertEquals(System.lineSeparator() +
+                "col1  column2" + System.lineSeparator() +
+                "----- -------" + System.lineSeparator() +
+                "one         1" + System.lineSeparator() +
+                "two         2" + System.lineSeparator() +
+                "three       3" + System.lineSeparator() +
+                "four       44" + System.lineSeparator() +
+                "[df0] 4 rows x 2 columns", p.toString(df.as("df0")));
     }
 
     @Test

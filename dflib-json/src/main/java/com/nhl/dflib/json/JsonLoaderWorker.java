@@ -78,7 +78,7 @@ class JsonLoaderWorker {
             series[i] = appenders.get(columnsIndex.getLabel(i)).toSeries();
         }
 
-        return new ColumnDataFrame(columnsIndex, series);
+        return new ColumnDataFrame(null, columnsIndex, series);
     }
 
     protected SeriesAppender<Map<String, Object>, ?> createdAppender(String name, int length, int offset) {

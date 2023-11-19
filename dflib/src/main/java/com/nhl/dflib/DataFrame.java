@@ -43,7 +43,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.16
      */
     static DataFrame empty(Index columnsIndex) {
-        return new ColumnDataFrame(columnsIndex);
+        return new ColumnDataFrame(null, columnsIndex);
     }
 
     /**
@@ -170,6 +170,22 @@ public interface DataFrame extends Iterable<RowProxy> {
     static DataFrameBuilder newFrame(Index columnIndex) {
         return new DataFrameBuilder(columnIndex);
     }
+
+    /**
+     * Returns user-assigned name of the DataFrame. It is null by default, and can be set via {@link #as(String)}.
+     * A name is useful in various contexts. E.g. the result of a join may prefix column names with original DataFrame
+     * name, helping to identify the origin of each column.
+     *
+     * @since 0.19
+     */
+    String getName();
+
+    /**
+     * Assigns a name to the DataFrame.
+     *
+     * @since 0.19
+     */
+    DataFrame as(String name);
 
     /**
      * Returns DataFrame column index.
@@ -1233,7 +1249,7 @@ public interface DataFrame extends Iterable<RowProxy> {
             rangeColumns[i] = getColumn(i).rangeOpenClosed(fromInclusive, toExclusive);
         }
 
-        return new ColumnDataFrame(getColumnsIndex(), rangeColumns);
+        return new ColumnDataFrame(null, getColumnsIndex(), rangeColumns);
     }
 
     /**

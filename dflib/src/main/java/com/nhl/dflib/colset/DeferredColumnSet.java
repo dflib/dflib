@@ -38,21 +38,21 @@ public class DeferredColumnSet implements ColumnSet {
 
     @Override
     public DataFrame rename(String... newColumnNames) {
-        return new ColumnDataFrame(
+        return new ColumnDataFrame(null,
                 source.getColumnsIndex().rename(newColumnNames),
                 sourceColumns);
     }
 
     @Override
     public DataFrame rename(UnaryOperator<String> renameFunction) {
-        return new ColumnDataFrame(
+        return new ColumnDataFrame(null,
                 source.getColumnsIndex().rename(renameFunction),
                 sourceColumns);
     }
 
     @Override
     public DataFrame rename(Map<String, String> oldToNewNames) {
-        return new ColumnDataFrame(
+        return new ColumnDataFrame(null,
                 source.getColumnsIndex().rename(oldToNewNames),
                 sourceColumns);
     }
@@ -72,7 +72,7 @@ public class DeferredColumnSet implements ColumnSet {
             columns[i] = new SingleValueSeries<>(values[i], h);
         }
 
-        return new ColumnDataFrame(source.getColumnsIndex(), columns);
+        return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class DeferredColumnSet implements ColumnSet {
             columns[i] = source.getColumn(i).fillNulls(value);
         }
 
-        return new ColumnDataFrame(source.getColumnsIndex(), columns);
+        return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class DeferredColumnSet implements ColumnSet {
             columns[i] = source.getColumn(i).fillNullsBackwards();
         }
 
-        return new ColumnDataFrame(source.getColumnsIndex(), columns);
+        return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class DeferredColumnSet implements ColumnSet {
             columns[i] = source.getColumn(i).fillNullsForward();
         }
 
-        return new ColumnDataFrame(source.getColumnsIndex(), columns);
+        return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
     }
 
     @Override
@@ -120,7 +120,7 @@ public class DeferredColumnSet implements ColumnSet {
             columns[i] = source.getColumn(i).fillNullsFromSeries(series);
         }
 
-        return new ColumnDataFrame(source.getColumnsIndex(), columns);
+        return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
     }
 
     @Override
@@ -155,7 +155,7 @@ public class DeferredColumnSet implements ColumnSet {
             columns[i] = exps[i].eval(source);
         }
 
-        return new ColumnDataFrame(Index.of(labels), columns);
+        return new ColumnDataFrame(null, Index.of(labels), columns);
     }
 
     @Override
@@ -206,7 +206,7 @@ public class DeferredColumnSet implements ColumnSet {
             columns[i] = new RowMappedSeries<>(source, mappers[i]);
         }
 
-        return new ColumnDataFrame(Index.of(labels), columns);
+        return new ColumnDataFrame(null, Index.of(labels), columns);
     }
 
     @Override
@@ -258,7 +258,7 @@ public class DeferredColumnSet implements ColumnSet {
             labels[i] = String.valueOf(i);
         }
 
-        return new ColumnDataFrame(Index.of(labels), columns);
+        return new ColumnDataFrame(null, Index.of(labels), columns);
     }
 
     private Series<?>[] doMapIterables(Exp<? extends Iterable<?>> mapper) {
@@ -319,7 +319,7 @@ public class DeferredColumnSet implements ColumnSet {
             labels[i] = String.valueOf(i);
         }
 
-        return new ColumnDataFrame(Index.of(labels), doMapArrays(mapper));
+        return new ColumnDataFrame(null, Index.of(labels), doMapArrays(mapper));
     }
 
     private Series<?>[] doMapArrays(Exp<? extends Object[]> mapper) {
@@ -389,7 +389,7 @@ public class DeferredColumnSet implements ColumnSet {
             columns[i] = source.getColumn(existingColumns[i]);
         }
 
-        return new ColumnDataFrame(Index.of(existingColumns), columns);
+        return new ColumnDataFrame(null, Index.of(existingColumns), columns);
     }
 
     @Override
@@ -401,6 +401,6 @@ public class DeferredColumnSet implements ColumnSet {
             columns[i] = source.getColumn(existingColumns[i]);
         }
 
-        return new ColumnDataFrame(source.getColumnsIndex().selectPositions(existingColumns), columns);
+        return new ColumnDataFrame(null, source.getColumnsIndex().selectPositions(existingColumns), columns);
     }
 }

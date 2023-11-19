@@ -1,7 +1,6 @@
 package com.nhl.dflib.print;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,9 +13,9 @@ public class DataFrameTabularPrintWorkerTest {
 
     @BeforeEach
     public void initDataFrameParts() {
-        this.df = DataFrame
-                .newFrame("col1", "column2")
-                .columns(Series.of("one", "two", "three", "four"), Series.ofInt(1, 2, 3, 4));
+        this.df = DataFrame.byColumn("col1", "column2").of(
+                Series.of("one", "two", "three", "four"),
+                Series.ofInt(1, 2, 3, 4));
     }
 
     @Test
