@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
+@Deprecated
 public class DataFrame_SampleTest {
 
     @Test

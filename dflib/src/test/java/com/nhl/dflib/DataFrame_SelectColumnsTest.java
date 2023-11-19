@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import static com.nhl.dflib.Exp.$col;
 import static com.nhl.dflib.Exp.$int;
 
+@Deprecated
 public class DataFrame_SelectColumnsTest {
 
     @Test
@@ -53,6 +54,19 @@ public class DataFrame_SelectColumnsTest {
                 1, "x",
                 2, "y")
                 .selectColumns("b", "b", "b");
+
+        new DataFrameAsserts(df, "b", "b_", "b__")
+                .expectHeight(2)
+                .expectRow(0, "x", "x", "x")
+                .expectRow(1, "y", "y", "y");
+    }
+
+    @Test
+    public void duplicateColumn_ByPos() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                        1, "x",
+                        2, "y")
+                .selectColumns(1, 1, 1);
 
         new DataFrameAsserts(df, "b", "b_", "b__")
                 .expectHeight(2)

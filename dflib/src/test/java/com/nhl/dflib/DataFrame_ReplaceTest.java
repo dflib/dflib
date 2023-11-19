@@ -10,7 +10,8 @@ import java.time.format.DateTimeFormatter;
 import static com.nhl.dflib.Exp.$int;
 import static com.nhl.dflib.Exp.$str;
 
-public class DataFrame_ConvertTest {
+@Deprecated
+public class DataFrame_ReplaceTest {
 
     @Test
     public void convertColumn_Exp() {
@@ -91,7 +92,6 @@ public class DataFrame_ConvertTest {
                 .expectRow(2, (Object) null);
     }
 
-    @Deprecated
     @Test
     public void toEnumFromNumColumn() {
         DataFrame df = DataFrame
@@ -109,7 +109,6 @@ public class DataFrame_ConvertTest {
                 .expectRow(2, X.a, "y");
     }
 
-    @Deprecated
     @Test
     public void toEnumFromStringColumn() {
         DataFrame df = DataFrame

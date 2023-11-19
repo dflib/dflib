@@ -1,8 +1,8 @@
 ## Release 0.19
 
-* #209 DataFrame.map(Exp...)
 * #210 RowProxy: support for primitives and simpler casting
 * #211 Optimization: replace Accum with direct array ops on primitive Series
+* #212 DataFrame.cols(..).op(..): transformation over a subset of columns
 * #213 StrExp.split()
 * #214 Parallel Aggregation of columns
 * #219 IndexedSeries.size(): NPE due to a race condtion

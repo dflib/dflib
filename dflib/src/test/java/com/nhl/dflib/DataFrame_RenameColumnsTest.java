@@ -8,6 +8,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Deprecated
 public class DataFrame_RenameColumnsTest {
 
     @Test

@@ -38,7 +38,7 @@ public class SaveViaUpsert extends SaveViaInsert {
     }
 
     protected DataFrame keyValues(DataFrame df) {
-        return df.selectColumns(Index.of(keyColumns));
+        return df.cols(keyColumns).select();
     }
 
     protected Supplier<Series<SaveOp>> doSave(JdbcConnector connector, DataFrame df, DataFrame keyDf) {
@@ -92,8 +92,8 @@ public class SaveViaUpsert extends SaveViaInsert {
             Index joinedIndex = insertAndUpdate.getColumnsIndex().rangeOpenClosed(mainColumns.size(), mainColumns.size() * 2);
 
             DataFrame previouslySavedOrdered = insertAndUpdate
-                    .selectColumns(joinedIndex)
-                    .renameColumns(mainColumns.getLabels());
+                    .cols(joinedIndex).select()
+                    .cols().rename(mainColumns.getLabels());
 
             update(connector, df.selectRows(updateIndex), previouslySavedOrdered.selectRows(updateIndex), infoTracker);
         }
@@ -153,7 +153,7 @@ public class SaveViaUpsert extends SaveViaInsert {
                     // metadata in PreparedStatements. See e.g. https://github.com/nhl/dflib/issues/49
 
                     .paramDescriptors(fixedParams(valueAndKeyIndex))
-                    .bindBatch(toUpdate.selectColumns(valueAndKeyIndex));
+                    .bindBatch(toUpdate.cols(valueAndKeyIndex).select());
 
             try (Connection c = connector.getConnection()) {
                 builder.update(c);

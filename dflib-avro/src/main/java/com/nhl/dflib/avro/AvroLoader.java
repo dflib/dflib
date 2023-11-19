@@ -177,9 +177,9 @@ public class AvroLoader {
             if (AvroSchemaUtils.isEnum(fSchema)) {
                 Class<Enum> enumType = AvroSchemaUtils.knownEnumType(fSchema);
                 if (enumType != null) {
-                    df = df.replaceColumn(f.name(), Exp.$col(f.name()).castAsStr().castAsEnum(enumType));
+                    df = df.cols(f.name()).map(Exp.$col(f.name()).castAsStr().castAsEnum(enumType));
                 } else {
-                    df = df.replaceColumn(f.name(), Exp.$col(f.name()).castAsStr());
+                    df = df.cols(f.name()).map(Exp.$col(f.name()).castAsStr());
                 }
             }
         }

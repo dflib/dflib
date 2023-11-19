@@ -29,17 +29,9 @@ public class DataFrame_HConcat_Test {
     }
 
     @Test
-    public void zipRows_SparseDF() {
-
-        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
-                0, 1,
-                2, 3)
-                .selectColumns("b");
-
-        DataFrame df2 = DataFrame.foldByRow("c", "d").of(
-                10, 20,
-                30, 40)
-                .selectColumns("c");
+    public void zipRows_OneColumnDF() {
+        DataFrame df1 = DataFrame.foldByRow("b").of(1, 3);
+        DataFrame df2 = DataFrame.foldByRow("c").of(10, 30);
 
         DataFrame df = df1.hConcat(df2);
 
@@ -52,16 +44,8 @@ public class DataFrame_HConcat_Test {
     @Test
     public void zipRows_SparseDF_CustomIndex() {
 
-        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
-                0, 1,
-                2, 3)
-                .selectColumns("b");
-
-        DataFrame df2 = DataFrame.foldByRow("c", "d").of(
-                10, 20,
-                30, 40)
-                .selectColumns("c");
-
+        DataFrame df1 = DataFrame.foldByRow("b").of(1, 3);
+        DataFrame df2 = DataFrame.foldByRow("c").of(10, 30);
 
         DataFrame df = df1.hConcat(Index.of("x", "y"), JoinType.inner, df2, RowCombiner.zip(df1.width()));
 

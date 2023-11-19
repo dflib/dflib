@@ -9,6 +9,10 @@ import com.nhl.dflib.ValueToRowMapper;
 
 public class Mapper {
 
+    /**
+     * @deprecated no longer in use
+     */
+    @Deprecated(since = "0.19", forRemoval = true)
     public static DataFrame map(DataFrame source, Index resultColumns, RowMapper mapper) {
         return new ColumnDataFrame(resultColumns, mapData(source, resultColumns, mapper));
     }
@@ -20,7 +24,11 @@ public class Mapper {
         return new ColumnDataFrame(resultColumns, mapData(source, resultColumns, mapper));
     }
 
-    private static Series<?>[] mapData(DataFrame source, Index resultColumns, RowMapper mapper) {
+    /**
+     * @deprecated no longer in use
+     */
+    @Deprecated(since = "0.19", forRemoval = true)
+    static Series<?>[] mapData(DataFrame source, Index resultColumns, RowMapper mapper) {
 
         MultiArrayRowBuilder rowBuilder = new MultiArrayRowBuilder(resultColumns, source.height());
 
@@ -32,7 +40,7 @@ public class Mapper {
         return rowBuilder.getData();
     }
 
-    private static <T> Series<?>[] mapData(Series<T> source, Index resultColumns, ValueToRowMapper<T> mapper) {
+    static <T> Series<?>[] mapData(Series<T> source, Index resultColumns, ValueToRowMapper<T> mapper) {
         MultiArrayRowBuilder rowBuilder = new MultiArrayRowBuilder(resultColumns, source.size());
 
         source.forEach(from -> {

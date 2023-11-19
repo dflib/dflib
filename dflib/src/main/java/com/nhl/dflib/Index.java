@@ -180,6 +180,32 @@ public class Index implements Iterable<String> {
         return rename(map);
     }
 
+    /**
+     * Creates and returns an index based on the provided labels, appending "_" to those labels that are present in the
+     * current index. The goal is to create an index that does not have any common labels with the current index. Also
+     * deduplicates repeating columns in the "labels" array itself.
+     *
+     * @since 0.19
+     */
+    public Index deduplicateLabels(String... labels) {
+
+        int len = labels.length;
+        String[] deDuplicated = new String[len];
+        Set<String> seen = new HashSet<>((int) Math.ceil(len / 0.75));
+
+        for (int i = 0; i < len; i++) {
+
+            String name = labels[i];
+            while (hasLabel(name) || !seen.add(name)) {
+                name = name + "_";
+            }
+
+            deDuplicated[i] = name;
+        }
+
+        return Index.of(deDuplicated);
+    }
+
     public Index addLabels(String... extraLabels) {
         return HConcat.zipIndex(this, extraLabels);
     }

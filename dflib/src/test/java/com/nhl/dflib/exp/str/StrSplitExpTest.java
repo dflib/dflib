@@ -3,6 +3,7 @@ package com.nhl.dflib.exp.str;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.Series;
+import com.nhl.dflib.unit.DataFrameAsserts;
 import com.nhl.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -31,6 +32,26 @@ public class StrSplitExpTest {
                 new String[]{"ab", "cd"},
                 new String[]{"", "ef", "g"},
                 new String[]{"no_space"}, null);
+    }
+
+    @Test
+    public void splitOnChar_Range_DataFrame() {
+        Exp<String[]> exp = $str("b").split(' ');
+
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                        1, "ab cd",
+                        4, " ef g ",
+                        5, "no_space",
+                        8, null)
+                .cols("b1", "b2").mapArrays(exp)
+                .colsExcept("b").select();
+
+        new DataFrameAsserts(df, "a", "b1", "b2")
+                .expectHeight(4)
+                .expectRow(0, 1, "ab", "cd")
+                .expectRow(1, 4, "", "ef")
+                .expectRow(2, 5, "no_space", null)
+                .expectRow(3, 8, null, null);
     }
 
     @Test

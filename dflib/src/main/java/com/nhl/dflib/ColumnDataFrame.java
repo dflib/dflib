@@ -1,17 +1,16 @@
 package com.nhl.dflib;
 
+import com.nhl.dflib.colset.DeferredColumnSet;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.explode.Exploder;
 import com.nhl.dflib.groupby.Grouper;
-import com.nhl.dflib.map.Mapper;
 import com.nhl.dflib.row.CrossColumnRowProxy;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.sample.Sampler;
 import com.nhl.dflib.select.RowIndexer;
 import com.nhl.dflib.series.EmptySeries;
 import com.nhl.dflib.series.IntArraySeries;
-import com.nhl.dflib.series.RowMappedSeries;
 import com.nhl.dflib.series.SingleValueSeries;
 import com.nhl.dflib.sort.DataFrameSorter;
 import com.nhl.dflib.stack.Stacker;
@@ -21,8 +20,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
 public class ColumnDataFrame implements DataFrame {
 
@@ -73,11 +70,6 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public <T> Series<T> getColumn(String name) {
         return dataColumns[columnsIndex.position(name)];
-    }
-
-    @Override
-    public DataFrame addRowNumberColumn(String columnName) {
-        return addColumn(Exp.rowNum().as(columnName));
     }
 
     @Override
@@ -132,51 +124,6 @@ public class ColumnDataFrame implements DataFrame {
         }
 
         return new ColumnDataFrame(columnsIndex, newColumnsData);
-    }
-
-    @Override
-    public DataFrame map(Index mappedColumns, RowMapper rowMapper) {
-        return Mapper.map(this, mappedColumns, rowMapper);
-    }
-
-    @Override
-    public DataFrame map(Exp<?>... exps) {
-        int outWidth = exps.length;
-
-        if (outWidth == 0) {
-            throw new IllegalArgumentException("No 'exps' to map a DataFrame");
-        }
-
-        Series[] newData = new Series[outWidth];
-
-        for (int i = 0; i < outWidth; i++) {
-            newData[i] = exps[i].eval(this);
-        }
-
-        String[] outNames = new String[outWidth];
-        for (int i = 0; i < outWidth; i++) {
-            outNames[i] = exps[i].getColumnName(this);
-        }
-
-        return new ColumnDataFrame(Index.of(outNames), newData);
-    }
-
-    @Override
-    public DataFrame renameColumns(UnaryOperator<String> renameFunction) {
-        Index renamed = getColumnsIndex().rename(renameFunction);
-        return new ColumnDataFrame(renamed, dataColumns);
-    }
-
-    @Override
-    public DataFrame renameColumns(String... newColumnNames) {
-        Index renamed = getColumnsIndex().rename(newColumnNames);
-        return new ColumnDataFrame(renamed, dataColumns);
-    }
-
-    @Override
-    public DataFrame renameColumns(Map<String, String> oldToNewNames) {
-        Index renamed = getColumnsIndex().rename(oldToNewNames);
-        return new ColumnDataFrame(renamed, dataColumns);
     }
 
     @Override
@@ -314,81 +261,6 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public DataFrame addColumns(Exp<?>... exps) {
-
-        int extraWidth = exps.length;
-        if (extraWidth == 0) {
-            return this;
-        }
-
-        String[] extraNames = new String[extraWidth];
-        for (int i = 0; i < extraWidth; i++) {
-            extraNames[i] = exps[i].getColumnName(this);
-        }
-
-        int width = width();
-
-        Index expandedIndex = columnsIndex.addLabels(extraNames);
-
-        Series[] newData = new Series[width + extraWidth];
-        System.arraycopy(dataColumns, 0, newData, 0, width);
-
-        for (int i = 0; i < extraWidth; i++) {
-            newData[width + i] = exps[i].eval(this);
-        }
-
-        return new ColumnDataFrame(expandedIndex, newData);
-    }
-
-    @Override
-    public DataFrame addColumns(String[] columnLabels, RowToValueMapper<?>... columnMakers) {
-
-        int width = width();
-        int extraWidth = columnLabels.length;
-
-        if (extraWidth != columnMakers.length) {
-            throw new IllegalArgumentException("Number of new column labels [" + extraWidth +
-                    "] doesn't match the number of supplied producers [" + columnMakers.length + "]");
-        }
-
-        Index expandedIndex = columnsIndex.addLabels(columnLabels);
-
-        Series[] newData = new Series[width + extraWidth];
-        System.arraycopy(dataColumns, 0, newData, 0, width);
-
-        for (int i = 0; i < extraWidth; i++) {
-            newData[width + i] = new RowMappedSeries<>(this, columnMakers[i]);
-        }
-
-        return new ColumnDataFrame(expandedIndex, newData);
-    }
-
-    @Override
-    public DataFrame addColumns(String[] columnLabels, RowMapper rowMapper) {
-        return hConcat(map(Index.of(columnLabels), rowMapper));
-    }
-
-    @Override
-    public <V> DataFrame addColumn(String columnName, Series<V> column) {
-
-        int ch = column.size();
-        int h = height();
-
-        if (ch != h) {
-            throw new IllegalArgumentException("The new column height (" + ch + ") is different from the DataFrame height (" + h + ")");
-        }
-
-        Index newIndex = columnsIndex.addLabels(columnName);
-
-        int w = dataColumns.length;
-        Series<?>[] newDataColumns = new Series[w + 1];
-        System.arraycopy(dataColumns, 0, newDataColumns, 0, w);
-        newDataColumns[w] = column;
-
-        return new ColumnDataFrame(newIndex, newDataColumns);
-    }
-
-    @Override
     public DataFrame addRow(Map<String, Object> row) {
 
         int w = width();
@@ -405,23 +277,6 @@ public class ColumnDataFrame implements DataFrame {
     public <V, VR> DataFrame convertColumn(int pos, ValueMapper<V, VR> converter) {
         // do not use Exp.mapVal(..) as it will not pass null values to the mapper
         return replaceColumn(pos, dataColumns[pos].map(converter));
-    }
-
-    /**
-     * @since 0.18
-     */
-    @Override
-    public DataFrame replaceColumn(String name, Exp<?> exp) {
-        int pos = getColumnsIndex().position(name);
-        return replaceColumn(pos, exp.eval(this));
-    }
-
-    /**
-     * @since 0.18
-     */
-    @Override
-    public DataFrame replaceColumn(int position, Exp<?> exp) {
-        return replaceColumn(position, exp.eval(this));
     }
 
     @Override
@@ -449,63 +304,6 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public DataFrame dropColumns(String... columnNames) {
-        Index newIndex = columnsIndex.dropLabels(columnNames);
-        return newIndex == columnsIndex ? this : selectColumns(newIndex);
-    }
-
-    @Override
-    public DataFrame dropColumns(Predicate<String> labelCondition) {
-        Index newIndex = columnsIndex.dropLabels(labelCondition);
-        return newIndex == columnsIndex ? this : selectColumns(newIndex);
-    }
-
-    @Override
-    public DataFrame selectColumns(String... labels) {
-
-        if (labels.length == 0) {
-            throw new IllegalArgumentException("No labels provided to select columns");
-        }
-
-        Index newIndex = columnsIndex.selectLabels(labels);
-
-        Series[] newColumns = new Series[newIndex.size()];
-        for (int i = 0; i < newColumns.length; i++) {
-            newColumns[i] = dataColumns[columnsIndex.position(labels[i])];
-        }
-
-        return new ColumnDataFrame(newIndex, newColumns);
-    }
-
-
-    @Override
-    public DataFrame selectColumns(int... positions) {
-
-        if (positions.length == 0) {
-            throw new IllegalArgumentException("No positions provided to select columns");
-        }
-
-        Index newIndex = columnsIndex.selectPositions(positions);
-
-        Series[] newColumns = new Series[newIndex.size()];
-        for (int i = 0; i < newColumns.length; i++) {
-            newColumns[i] = dataColumns[positions[i]];
-        }
-
-        return new ColumnDataFrame(newIndex, newColumns);
-    }
-
-    @Override
-    public DataFrame selectColumns(Index columnsIndex) {
-        Series[] newColumns = new Series[columnsIndex.size()];
-        for (int i = 0; i < newColumns.length; i++) {
-            newColumns[i] = dataColumns[this.columnsIndex.position(columnsIndex.getLabel(i))];
-        }
-
-        return new ColumnDataFrame(columnsIndex, newColumns);
-    }
-
-    @Override
     public GroupBy group(Hasher by) {
         return new Grouper(by).group(this);
     }
@@ -513,39 +311,6 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public DataFrame vExplode(int columnPos) {
         return Exploder.explode(this, columnPos);
-    }
-
-    @Override
-    public DataFrame fillNulls(Object value) {
-
-        int w = width();
-        Series[] newColumns = new Series[w];
-
-        for (int i = 0; i < w; i++) {
-            newColumns[i] = dataColumns[i].fillNulls(value);
-        }
-
-        return new ColumnDataFrame(columnsIndex, newColumns);
-    }
-
-    @Override
-    public DataFrame fillNulls(int columnPos, Object value) {
-        return replaceColumn(columnPos, dataColumns[columnPos].fillNulls(value));
-    }
-
-    @Override
-    public DataFrame fillNullsFromSeries(int columnPos, Series<?> values) {
-        return replaceColumn(columnPos, dataColumns[columnPos].fillNullsFromSeries(values));
-    }
-
-    @Override
-    public DataFrame fillNullsBackwards(int columnPos) {
-        return replaceColumn(columnPos, dataColumns[columnPos].fillNullsBackwards());
-    }
-
-    @Override
-    public DataFrame fillNullsForward(int columnPos) {
-        return replaceColumn(columnPos, dataColumns[columnPos].fillNullsForward());
     }
 
     @Override
@@ -685,13 +450,8 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public DataFrame sampleColumns(int size) {
-        return selectColumns(columnsIndex.sample(size));
-    }
-
-    @Override
-    public DataFrame sampleColumns(int size, Random random) {
-        return selectColumns(columnsIndex.sample(size, random));
+    public ColumnSet cols() {
+        return new DeferredColumnSet(this, dataColumns);
     }
 
     @Override

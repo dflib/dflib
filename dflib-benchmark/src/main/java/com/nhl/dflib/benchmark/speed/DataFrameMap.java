@@ -15,6 +15,9 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(2)
 @State(Scope.Thread)
+
+// makes no sense to measure the old "map" API, as it is reimplemented to delegate to the new API
+@Deprecated(since = "0.19", forRemoval = true)
 public class DataFrameMap {
 
     @Param("1000000")
@@ -32,7 +35,8 @@ public class DataFrameMap {
         Series<Integer> c2 = ValueMaker.randomIntSeq((rows) / 2).series(rows);
         Series<String> c3 = ValueMaker.constStringSeq(string).series(rows);
 
-        df = DataFrame.byColumn("c0", "c1", "c2", "c3").of(c0, c1, c2, c3);    }
+        df = DataFrame.byColumn("c0", "c1", "c2", "c3").of(c0, c1, c2, c3);
+    }
 
     @Benchmark
     public Object map() {
@@ -55,7 +59,7 @@ public class DataFrameMap {
     public Object replaceColumn() {
         return df
                 // using cheap "map" function to test benchmark DF overhead
-                .replaceColumn("c2", Exp.$col("c2").mapVal(v -> 1))
+                .cols("c2").map(Exp.$col("c2").mapVal(v -> 1))
                 .materialize()
                 .iterator();
     }

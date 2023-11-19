@@ -3,6 +3,7 @@ package com.nhl.dflib;
 import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
+@Deprecated
 public class DataFrame_AddRowNumberColumnTest {
 
     @Test

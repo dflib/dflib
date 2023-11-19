@@ -7,14 +7,14 @@ import com.nhl.dflib.builder.DataFrameByColumnBuilder;
 import com.nhl.dflib.builder.DataFrameByRowBuilder;
 import com.nhl.dflib.builder.DataFrameFoldByColumnBuilder;
 import com.nhl.dflib.builder.DataFrameFoldByRowBuilder;
+import com.nhl.dflib.colset.ColumnSetIndex;
+import com.nhl.dflib.colset.FixedColumnSet;
 import com.nhl.dflib.join.JoinBuilder;
 import com.nhl.dflib.pivot.PivotBuilder;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.RowMappedSeries;
-import com.nhl.dflib.series.SingleValueSeries;
 import com.nhl.dflib.window.WindowBuilder;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -388,20 +388,17 @@ public interface DataFrame extends Iterable<RowProxy> {
      * result DataFrame will be the same height as this, but can have a different width and set of columns.
      *
      * <p><i>This is a fairly low-level and cumbersome API. It may be useful when the application needs to dynamically
-     * select a list of columns to operate on. Where possible, use simpler alternatives like {@link #map(Exp[])}</i></p>
+     * select a list of columns to operate on.
      *
      * @param resultColumns column index of the new DataFrame
      * @param rowMapper     a function applied to each row of this DataFrame
      * @return a new DataFrame
+     * @deprecated use more performant {@link #cols(Index)} and then {@link ColumnSet#select(RowMapper)}
      */
-    DataFrame map(Index resultColumns, RowMapper rowMapper);
-
-    /**
-     * Produces a new DataFrame from this DataFrame, using an array of expressions, one per new DataFrame's column.
-     *
-     * @since 0.19
-     */
-    DataFrame map(Exp<?>... exps);
+    @Deprecated(since = "0.19", forRemoval = true)
+    default DataFrame map(Index resultColumns, RowMapper rowMapper) {
+        return cols(resultColumns).select(rowMapper);
+    }
 
     /**
      * Creates a new Series with values mapped by applying row mapper function to the DataFrame. The returned Series
@@ -468,27 +465,23 @@ public interface DataFrame extends Iterable<RowProxy> {
      * and instead the "name" argument to identify the column to be replaced.
      *
      * @since 0.18
+     * @deprecated in favor of {@link #cols(String...)} and then {@link ColumnSet#map(Exp[])}
      */
-    DataFrame replaceColumn(String name, Exp<?> exp);
+    @Deprecated(since = "0.19", forRemoval = true)
+    default DataFrame replaceColumn(String name, Exp<?> exp) {
+        return cols(name).map(exp);
+    }
 
     /**
      * Replaces column contents using the expression. Unlike {@link #addColumn(Exp)} the name of the Exp is ignored,
      * and instead the "name" argument to identify the column to be replaced.
      *
      * @since 0.18
+     * @deprecated in favor of {@link #cols(int...)}  and then {@link ColumnSet#map(Exp[])}
      */
-    DataFrame replaceColumn(int position, Exp<?> exp);
-
-    /**
-     * Replaces column contents using the expression. Unlike {@link #addColumn(Exp)} the name of the Exp is ignored,
-     * and instead the "name" argument to identify the column to be replaced.
-     *
-     * @since 0.11
-     * @deprecated in favor of {@link #replaceColumn(String, Exp)}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default DataFrame convertColumn(String name, Exp<?> exp) {
-        return replaceColumn(name, exp);
+    @Deprecated(since = "0.19", forRemoval = true)
+    default DataFrame replaceColumn(int position, Exp<?> exp) {
+        return cols(position).map(exp);
     }
 
     /**
@@ -496,11 +489,23 @@ public interface DataFrame extends Iterable<RowProxy> {
      * and instead the "name" argument to identify the column to be replaced.
      *
      * @since 0.11
-     * @deprecated in favor of {@link #replaceColumn(int, Exp)}
+     * @deprecated in favor of {@link #cols(String...)} and then {@link ColumnSet#map(Exp[])}
+     */
+    @Deprecated(since = "0.18", forRemoval = true)
+    default DataFrame convertColumn(String name, Exp<?> exp) {
+        return cols(name).map(exp);
+    }
+
+    /**
+     * Replaces column contents using the expression. Unlike {@link #addColumn(Exp)} the name of the Exp is ignored,
+     * and instead the "name" argument to identify the column to be replaced.
+     *
+     * @since 0.11
+     * @deprecated in favor of {@link #cols(int...)}  and then {@link ColumnSet#map(Exp[])}
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default DataFrame convertColumn(int position, Exp<?> exp) {
-        return replaceColumn(position, exp);
+        return cols(position).map(exp);
     }
 
     /**
@@ -909,11 +914,11 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param <E>         converted column enum type
      * @return a new DataFrame
      * @since 0.6
-     * @deprecated use <code>convertColumn(name, $int(name).castAsEnum(type))</code> instead
+     * @deprecated instead use {@link #cols(int...)} and then  <code>map($int(name).castAsEnum(type))</code>
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default <E extends Enum<E>> DataFrame toEnumFromNumColumn(String columnLabel, Class<E> enumType) {
-        return replaceColumn(columnLabel, Exp.$col(columnLabel).castAsInt().castAsEnum(enumType));
+        return cols(columnLabel).map(Exp.$col(columnLabel).castAsInt().castAsEnum(enumType));
     }
 
     /**
@@ -921,11 +926,11 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param <E> converted column enum type
      * @return a new DataFrame
      * @since 0.6
-     * @deprecated use <code>convertColumn(pos, $int(pos).castAsEnum(type))</code> instead
+     * @deprecated instead use {@link #cols(int...)} and then <code>map($int(pos).castAsEnum(type))</code>
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default <E extends Enum<E>> DataFrame toEnumFromNumColumn(int pos, Class<E> enumType) {
-        return replaceColumn(pos, Exp.$col(pos).castAsInt().castAsEnum(enumType));
+        return cols(pos).map(Exp.$col(pos).castAsInt().castAsEnum(enumType));
     }
 
     /**
@@ -934,15 +939,22 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param columnName the name of the row number column
      * @return a new DataFrame with an extra row number column
      * @since 0.8
+     * @deprecated in favor of {@link #colsAdd(String...)} and then <code>ColumnSet#map(Exp.rowNum())</code>
      */
-    DataFrame addRowNumberColumn(String columnName);
+    @Deprecated(since = "0.19", forRemoval = true)
+    default DataFrame addRowNumberColumn(String columnName) {
+        return colsAdd(columnName).map(Exp.rowNum());
+    }
 
     /**
      * <p><i>This is a fairly low-level API. It may be useful when the application needs to dynamically select
      * a list of columns to operate on. Where possible, use simpler alternatives like {@link #addColumn(Exp)}</i></p>
+     *
+     * @deprecated in favor of {@link #colsAdd(String...)} and then {@link ColumnSet#map(RowToValueMapper[])}
      */
+    @Deprecated(since = "0.19", forRemoval = true)
     default DataFrame addColumn(String columnLabel, RowToValueMapper<?> columnMaker) {
-        return addColumn(columnLabel, new RowMappedSeries<>(this, columnMaker));
+        return colsAdd(columnLabel).map(columnMaker);
     }
 
     /**
@@ -950,8 +962,13 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * <p><i>This is a fairly low-level and cumbersome API. It may be useful when the application needs to dynamically select
      * a list of columns to operate on. Where possible, use simpler alternatives like {@link #addColumns(Exp[])}</i></p>
+     *
+     * @deprecated in favor of {@link #colsAdd(String...)} and then {@link ColumnSet#map(RowToValueMapper[])}
      */
-    DataFrame addColumns(String[] columnLabels, RowToValueMapper<?>... columnMakers);
+    @Deprecated(since = "0.19", forRemoval = true)
+    default DataFrame addColumns(String[] columnLabels, RowToValueMapper<?>... columnMakers) {
+        return colsAdd(columnLabels).map(columnMakers);
+    }
 
     /**
      * Add one more columns to the DataFrame.
@@ -964,18 +981,30 @@ public interface DataFrame extends Iterable<RowProxy> {
      *                     newly added columns
      * @return a new DataFrame with extra columns added
      * @since 0.7
+     * @deprecated in favor of {@link #colsAdd(String...)} and then {@link ColumnSet#map(RowMapper)}
      */
-    DataFrame addColumns(String[] columnLabels, RowMapper rowMapper);
+    @Deprecated(since = "0.19", forRemoval = true)
+    default DataFrame addColumns(String[] columnLabels, RowMapper rowMapper) {
+        return colsAdd(columnLabels).map(rowMapper);
+    }
 
-    <V> DataFrame addColumn(String columnLabel, Series<V> column);
+    /**
+     * @deprecated in favor of {@link #colsAdd(String...)} and then {@link ColumnSet#map(Series[])}
+     */
+    @Deprecated(since = "0.19", forRemoval = true)
+    default <V> DataFrame addColumn(String columnLabel, Series<V> column) {
+        return colsAdd(columnLabel).map(column);
+    }
 
     /**
      * Adds a column with values derived from this DataFrame by applying a given expression.
      *
      * @since 0.11
+     * @deprecated in favor of {@link #colsAdd(String...)} and then {@link ColumnSet#map(Exp[])}
      */
+    @Deprecated(since = "0.19", forRemoval = true)
     default DataFrame addColumn(Exp<?> exp) {
-        return addColumns(exp);
+        return colsAdd(exp.getColumnName(this)).map(exp);
     }
 
     /**
@@ -983,8 +1012,18 @@ public interface DataFrame extends Iterable<RowProxy> {
      * be taken from {@link Exp} names.
      *
      * @since 0.11
+     * @deprecated in favor of {@link #colsAdd(String...)} and then {@link ColumnSet#map(Exp[])}
      */
-    DataFrame addColumns(Exp<?>... exps);
+    @Deprecated(since = "0.19", forRemoval = true)
+    default DataFrame addColumns(Exp<?>... exps) {
+        int w = exps.length;
+        String[] names = new String[w];
+        for (int i = 0; i < w; i++) {
+            names[i] = exps[i].getColumnName(this);
+        }
+
+        return colsAdd(names).map(exps);
+    }
 
     /**
      * Appends a single row in the bottom of the DataFrame. The row is specified as a map of column names to values.
@@ -1000,15 +1039,27 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @return a new DataFrame with extra columns added
      * @since 0.8
+     * @deprecated use {@link #colsAdd(String...)} and then {@link ColumnSet#fill(Object...)}
      */
+    @Deprecated(since = "0.19", forRemoval = true)
     default DataFrame addSingleValueColumn(String columnLabel, Object value) {
-        return addColumn(columnLabel, new SingleValueSeries<>(value, height()));
+        return colsAdd(columnLabel).fill(value);
     }
 
-    DataFrame renameColumns(String... columnLabels);
+    /**
+     * @deprecated use {@link #cols()} and then {@link ColumnSet#rename(String...)}
+     */
+    @Deprecated(since = "0.19", forRemoval = true)
+    default DataFrame renameColumns(String... columnLabels) {
+        return cols().rename(columnLabels);
+    }
 
+    /**
+     * @deprecated use {@link #cols()} and then {@link ColumnSet#renameOne(String, String)}
+     */
+    @Deprecated(since = "0.19", forRemoval = true)
     default DataFrame renameColumn(String oldLabel, String newLabel) {
-        return renameColumns(Collections.singletonMap(oldLabel, newLabel));
+        return cols().renameOne(oldLabel, newLabel);
     }
 
     /**
@@ -1018,21 +1069,47 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param renameFunction a function that is passed each label in turn
      * @return a new DataFrame with renamed columns
      * @since 0.6
+     * @deprecated use {@link #cols()} and then {@link ColumnSet#rename(UnaryOperator)}
      */
-    DataFrame renameColumns(UnaryOperator<String> renameFunction);
+    @Deprecated(since = "0.19", forRemoval = true)
+    default DataFrame renameColumns(UnaryOperator<String> renameFunction) {
+        return cols().rename(renameFunction);
+    }
 
-    DataFrame renameColumns(Map<String, String> oldToNewLabels);
+    /**
+     * @deprecated use {@link #cols()} and then {@link ColumnSet#rename(Map)}
+     */
+    @Deprecated(since = "0.19", forRemoval = true)
+    default DataFrame renameColumns(Map<String, String> oldToNewLabels) {
+        return cols().rename(oldToNewLabels);
+    }
 
-    DataFrame selectColumns(String... labels);
+    /**
+     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#select()}
+     */
+    @Deprecated(since = "0.19", forRemoval = true)
+    default DataFrame selectColumns(String... labels) {
+        return cols(labels).select();
+    }
 
-    DataFrame selectColumns(int... positions);
+    /**
+     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#select()}
+     */
+    @Deprecated(since = "0.19", forRemoval = true)
+    default DataFrame selectColumns(int... positions) {
+        return cols(positions).select();
+    }
 
     /**
      * @param columnsIndex an index that defines a subset of columns and their ordering in the returned DataFrame.
      * @return a new DataFrame.
      * @since 0.6
+     * @deprecated use {@link #cols(Index)} and then {@link ColumnSet#select()}
      */
-    DataFrame selectColumns(Index columnsIndex);
+    @Deprecated(since = "0.19", forRemoval = true)
+    default DataFrame selectColumns(Index columnsIndex) {
+        return cols(columnsIndex).select();
+    }
 
     /**
      * Returns a DataFrame with only columns from this DataFrame whose labels match the specified condition.
@@ -1041,46 +1118,24 @@ public interface DataFrame extends Iterable<RowProxy> {
      *                       in the resulting DataFrame
      * @return a new DataFrame
      * @since 0.7
+     * @deprecated use {@link #cols(Predicate)} and then {@link ColumnSet#select()}
      */
+    @Deprecated(since = "0.19", forRemoval = true)
     default DataFrame selectColumns(Predicate<String> labelCondition) {
-        Index columnsIndex = getColumnsIndex();
-        Index newIndex = columnsIndex.selectLabels(labelCondition);
-        return newIndex != columnsIndex ? selectColumns(newIndex) : this;
+        return cols(labelCondition).select();
     }
 
     /**
      * @since 0.11
+     * @deprecated use {@link #cols()} and then {@link ColumnSet#select(Exp...)}
      */
+    @Deprecated(since = "0.19", forRemoval = true)
     // TODO: this is different from any of the other "selectColumns":
     //  1. it may generate a DataFrame with a new set of columns not found in this DataFrame
     //  2. It transforms the original columns via expressions
     //  So, maybe rename to "map"?
     default DataFrame selectColumns(Exp<?>... exps) {
-        int w = exps.length;
-        if (w == 0) {
-            throw new IllegalArgumentException("No expressions provided to select columns");
-        }
-
-        String[] labels = new String[w];
-        for (int i = 0; i < w; i++) {
-            labels[i] = exps[i].getColumnName(this);
-        }
-
-        Series[] data = new Series[w];
-        data[0] = exps[0].eval(this);
-
-        int h = data[0].size();
-        for (int i = 1; i < w; i++) {
-            data[i] = exps[i].eval(this);
-
-            // sanity check - all columns must be of the same size
-            // TODO: move this check to the DataFrame builder?
-            if (data[i].size() != h) {
-                throw new IllegalStateException("Unexpected column size for '" + labels[i] + "': " + data[i].size() + ", (expected " + h + ")");
-            }
-        }
-
-        return DataFrame.byColumn(labels).of(data);
+        return cols().select(exps);
     }
 
     /**
@@ -1096,7 +1151,9 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * Returns a DataFrame with columns from this DataFrame, except the specified columns.
      */
-    DataFrame dropColumns(String... columnLabels);
+    default DataFrame dropColumns(String... columnLabels) {
+        return colsExcept(columnLabels).select();
+    }
 
     /**
      * Returns a DataFrame with columns from this DataFrame, except those columns whose labels match the specified
@@ -1107,7 +1164,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new DataFrame
      * @since 0.7
      */
-    DataFrame dropColumns(Predicate<String> labelCondition);
+    default DataFrame dropColumns(Predicate<String> labelCondition) {
+        return cols(labelCondition.negate()).select();
+    }
 
     /**
      * Selects DataFrame rows based on provided row index. This allows to reorder, filter, duplicate rows of this
@@ -1381,12 +1440,28 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     DataFrame vExplode(int columnPos);
 
-    DataFrame fillNulls(Object value);
+    /**
+     * @deprecated in favor of {@link #cols()} and then {@link ColumnSet#fillNulls(Object)}
+     */
+    @Deprecated(since = "0.19", forRemoval = true)
+    default DataFrame fillNulls(Object value) {
+        return cols().fillNulls(value);
+    }
 
-    DataFrame fillNulls(int columnPos, Object value);
+    /**
+     * @deprecated in favor of {@link #cols(int...)} and then {@link ColumnSet#fillNulls(Object)}
+     */
+    @Deprecated(since = "0.19", forRemoval = true)
+    default DataFrame fillNulls(int columnPos, Object value) {
+        return cols(columnPos).fillNulls(value);
+    }
 
+    /**
+     * @deprecated in favor of {@link #cols(String...)} and then {@link ColumnSet#fillNulls(Object)}
+     */
+    @Deprecated(since = "0.19", forRemoval = true)
     default DataFrame fillNulls(String columnName, Object value) {
-        return fillNulls(getColumnsIndex().position(columnName), value);
+        return cols(columnName).fillNulls(value);
     }
 
     /**
@@ -1396,8 +1471,12 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param values    a Series to take null replacement values from
      * @return a new DataFrame
      * @since 0.6
+     * @deprecated in favor of {@link #cols(int...)} and then {@link ColumnSet#fillNullsFromSeries(Series)}
      */
-    DataFrame fillNullsFromSeries(int columnPos, Series<?> values);
+    @Deprecated(since = "0.19", forRemoval = true)
+    default DataFrame fillNullsFromSeries(int columnPos, Series<?> values) {
+        return cols(columnPos).fillNullsFromSeries(values);
+    }
 
     /**
      * Fills nulls in the specified column with values taken from a Series at a given index.
@@ -1406,21 +1485,43 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param values     a Series to take null replacement values from
      * @return a new DataFrame
      * @since 0.6
+     * @deprecated in favor of {@link #cols(String...)} and then {@link ColumnSet#fillNullsFromSeries(Series)}
      */
+    @Deprecated(since = "0.19", forRemoval = true)
     default DataFrame fillNullsFromSeries(String columnName, Series<?> values) {
-        return fillNullsFromSeries(getColumnsIndex().position(columnName), values);
+        return cols(columnName).fillNullsFromSeries(values);
     }
 
-    DataFrame fillNullsBackwards(int columnPos);
+    /**
+     * @deprecated in favor of {@link #cols(int...)} and then {@link ColumnSet#fillNullsBackwards()}
+     */
+    @Deprecated(since = "0.19", forRemoval = true)
+    default DataFrame fillNullsBackwards(int columnPos) {
+        return cols(columnPos).fillNullsBackwards();
+    }
 
+    /**
+     * @deprecated in favor of {@link #cols(String...)} and then {@link ColumnSet#fillNullsBackwards()}
+     */
+    @Deprecated(since = "0.19", forRemoval = true)
     default DataFrame fillNullsBackwards(String columnName) {
-        return fillNullsBackwards(getColumnsIndex().position(columnName));
+        return cols(columnName).fillNullsBackwards();
     }
 
-    DataFrame fillNullsForward(int columnPos);
+    /**
+     * @deprecated in favor of {@link #cols(int...)} and then {@link ColumnSet#fillNullsForward()}
+     */
+    @Deprecated(since = "0.19", forRemoval = true)
+    default DataFrame fillNullsForward(int columnPos) {
+        return cols(columnPos).fillNullsForward();
+    }
 
+    /**
+     * @deprecated in favor of {@link #cols(String...)} and then {@link ColumnSet#fillNullsForward()}
+     */
+    @Deprecated(since = "0.19", forRemoval = true)
     default DataFrame fillNullsForward(String columnName) {
-        return fillNullsForward(getColumnsIndex().position(columnName));
+        return cols(columnName).fillNullsForward();
     }
 
     /**
@@ -1517,8 +1618,12 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param size the size of the sample. Can't be bigger than the height of this DataFrame.
      * @return a DataFrame object that is a sample of columns from this object
      * @since 0.7
+     * @deprecated in favor of {@link #colsSample(int)} and then {@link ColumnSet#select()}
      */
-    DataFrame sampleColumns(int size);
+    @Deprecated(since = "0.19", forRemoval = true)
+    default DataFrame sampleColumns(int size) {
+        return colsSample(size).select();
+    }
 
     /**
      * Returns a DataFrame object that is a random sample of columns from this object, with the specified sample size.
@@ -1527,8 +1632,12 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param random a custom random number generator
      * @return a DataFrame object that is a sample of columns from this object
      * @since 0.7
+     * @deprecated in favor of {@link #colsSample(int, Random)} and then {@link ColumnSet#select()}
      */
-    DataFrame sampleColumns(int size, Random random);
+    @Deprecated(since = "0.19", forRemoval = true)
+    default DataFrame sampleColumns(int size, Random random) {
+        return colsSample(size, random).select();
+    }
 
     /**
      * Returns a new {@link WindowBuilder} that allows to assemble a window function over this DataFrame.
@@ -1537,6 +1646,103 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     default WindowBuilder over() {
         return new WindowBuilder(this);
+    }
+
+    /**
+     * Creates a ColumnSet with column definitions deferred until some operation is applied to it. Columns will be
+     * resolved dynamically based on the semantics of the operation.
+     *
+     * @since 0.19
+     */
+    ColumnSet cols();
+
+    /**
+     * Creates a ColumnSet for the columns in the Index. Columns may or may not already exist in the DataFrame.
+     * Non-existent columns will be added to the result of the column set operation, while the ones already in the
+     * DataFrame will be replaced by columns calculated by the operation.
+     *
+     * @since 0.19
+     */
+    default ColumnSet cols(Index columnsIndex) {
+        return new FixedColumnSet(ColumnSetIndex.of(this, columnsIndex), this);
+    }
+
+    /**
+     * Creates a ColumnSet for the provided column names. Columns may or may not already exist in the DataFrame.
+     * Non-existent columns will be added to the result of the column set operation, while the ones already in the
+     * DataFrame will be replaced by columns calculated by the operation.
+     *
+     * @since 0.19
+     */
+    default ColumnSet cols(String... columns) {
+        return new FixedColumnSet(ColumnSetIndex.of(this, columns), this);
+    }
+
+    /**
+     * Creates a ColumnSet for the provided column names, ensuring that the names do not match any of the DataFrame
+     * existing columns. For any duplicate labels, the ColumnSet labels are renamed using the common DFLib approach of
+     * adding a "_" suffix.
+     *
+     * @since 0.19
+     */
+    default ColumnSet colsAdd(String... columns) {
+        return new FixedColumnSet(ColumnSetIndex.ofAdd(this, columns), this);
+    }
+
+    /**
+     * Creates a ColumnSet with columns from this DataFrame excluding specified columns.
+     *
+     * @since 0.19
+     */
+    default ColumnSet colsExcept(String... columns) {
+        // all positions here will be within the existing DataFrame, so we are not losing any labels by delegating to
+        // an index-based method
+        return cols(getColumnsIndex().positionsExcept(columns));
+    }
+
+    /**
+     * Creates a ColumnSet with columns from this DataFrame that match the specified condition.
+     *
+     * @since 0.19
+     */
+    default ColumnSet cols(Predicate<String> condition) {
+        // all positions here will be within the existing DataFrame, so we are not losing any labels by delegating to
+        // an index-based method
+        return cols(getColumnsIndex().positions(condition));
+    }
+
+    /**
+     * Creates a ColumnSet for the provided column positions. Columns may or may not already exist in the DataFrame.
+     * Non-existent columns will be added to the result of the column set operation, while the ones already in the
+     * DataFrame will be replaced by columns calculated by the operation.
+     *
+     * @since 0.19
+     */
+    default ColumnSet cols(int... columns) {
+        return new FixedColumnSet(ColumnSetIndex.of(this, columns), this);
+    }
+
+    /**
+     * Creates a ColumnSet with columns from this DataFrame excluding specified column positions.
+     *
+     * @since 0.19
+     */
+    default ColumnSet colsExcept(int... columns) {
+        return cols(getColumnsIndex().positionsExcept(columns));
+    }
+
+    /**
+     * @since 0.19
+     */
+    default ColumnSet colsSample(int size) {
+        return cols(getColumnsIndex().sample(size));
+    }
+
+    /**
+     * @since 0.19
+     */
+    default ColumnSet colsSample(int size, Random random) {
+        return cols(getColumnsIndex().sample(size, random));
     }
 
     @Override

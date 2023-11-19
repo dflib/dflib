@@ -3,6 +3,7 @@ package com.nhl.dflib;
 import com.nhl.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
+@Deprecated(since = "0.19", forRemoval = true)
 public class DataFrame_Map_RowMapperTest {
 
     @Test
