@@ -1,4 +1,4 @@
-## Release 0.19
+## Release 1.0.0-M1
 
 * #210 RowProxy: support for primitives and simpler casting
 * #211 Optimization: replace Accum with direct array ops on primitive Series
