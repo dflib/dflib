@@ -7,7 +7,7 @@ import com.nhl.dflib.range.Range;
 import java.util.Arrays;
 
 /**
- * @since 0.19
+ * @since 1.0.0-M19
  */
 public class DoubleSingleValueSeries extends DoubleBaseSeries {
 

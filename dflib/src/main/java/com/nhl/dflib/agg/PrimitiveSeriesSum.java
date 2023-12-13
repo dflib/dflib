@@ -46,7 +46,7 @@ public class PrimitiveSeriesSum {
     }
 
     /**
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     public static long[] cumSumOfValue(int val, int len) {
 
@@ -60,7 +60,7 @@ public class PrimitiveSeriesSum {
     }
 
     /**
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     public static long[] cumSumOfValue(long val, int len) {
 
@@ -74,7 +74,7 @@ public class PrimitiveSeriesSum {
     }
 
     /**
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     public static double[] cumSumOfValue(double val, int len) {
 

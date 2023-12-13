@@ -6,7 +6,7 @@ import com.nhl.dflib.series.FalseSeries;
 import com.nhl.dflib.series.TrueSeries;
 
 /**
- * @since 0.19
+ * @since 1.0.0-M19
  */
 public class BoolConstExp extends ExpScalarCondition1<Boolean> {
 

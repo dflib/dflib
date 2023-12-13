@@ -6,7 +6,7 @@ import com.nhl.dflib.exp.ExpScalar1;
 import com.nhl.dflib.series.IntSingleValueSeries;
 
 /**
- * @since 0.19
+ * @since 1.0.0-M19
  */
 public class IntConstExp extends ExpScalar1<Integer> implements NumExp<Integer> {
 

@@ -3,7 +3,7 @@ package com.nhl.dflib.builder;
 import com.nhl.dflib.Extractor;
 
 /**
- * @since 0.19
+ * @since 1.0.0-M19
  */
 public class SingleValueExtractor<F, T> implements Extractor<F, T> {
 

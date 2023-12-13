@@ -338,7 +338,7 @@ public interface Exp<T> {
     /**
      * Returns an expression that generates a Series with row numbers, starting with 1.
      *
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     static NumExp<Integer> rowNum() {
         return RowNumExp.getInstance();

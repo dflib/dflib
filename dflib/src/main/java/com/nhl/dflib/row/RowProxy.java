@@ -15,7 +15,7 @@ public interface RowProxy {
     Object get(int columnPos);
 
     /**
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     default <T> T get(int columnPos, Class<T> type) {
         return type.cast(get(columnPos));
@@ -24,49 +24,49 @@ public interface RowProxy {
     Object get(String columnName);
 
     /**
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     default <T> T get(String columnName, Class<T> type) {
         return type.cast(get(columnName));
     }
 
     /**
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     int getInt(int columnPos);
 
     /**
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     int getInt(String columnName);
 
     /**
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     long getLong(int columnPos);
 
     /**
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     long getLong(String columnName);
 
     /**
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     double getDouble(int columnPos);
 
     /**
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     double getDouble(String columnName);
 
     /**
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     boolean getBool(int columnPos);
 
     /**
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     boolean getBool(String columnName);
 

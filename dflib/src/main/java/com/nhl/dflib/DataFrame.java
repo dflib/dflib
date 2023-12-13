@@ -176,14 +176,14 @@ public interface DataFrame extends Iterable<RowProxy> {
      * A name is useful in various contexts. E.g. the result of a join may prefix column names with original DataFrame
      * name, helping to identify the origin of each column.
      *
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     String getName();
 
     /**
      * Assigns a name to the DataFrame.
      *
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     DataFrame as(String name);
 
@@ -1668,7 +1668,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Creates a ColumnSet with column definitions deferred until some operation is applied to it. Columns will be
      * resolved dynamically based on the semantics of the operation.
      *
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     ColumnSet cols();
 
@@ -1677,7 +1677,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Non-existent columns will be added to the result of the column set operation, while the ones already in the
      * DataFrame will be replaced by columns calculated by the operation.
      *
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     default ColumnSet cols(Index columnsIndex) {
         return new FixedColumnSet(ColumnSetIndex.of(this, columnsIndex), this);
@@ -1688,7 +1688,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Non-existent columns will be added to the result of the column set operation, while the ones already in the
      * DataFrame will be replaced by columns calculated by the operation.
      *
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     default ColumnSet cols(String... columns) {
         return new FixedColumnSet(ColumnSetIndex.of(this, columns), this);
@@ -1699,7 +1699,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * existing columns. For any duplicate labels, the ColumnSet labels are renamed using the common DFLib approach of
      * adding a "_" suffix.
      *
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     default ColumnSet colsAdd(String... columns) {
         return new FixedColumnSet(ColumnSetIndex.ofAdd(this, columns), this);
@@ -1708,7 +1708,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * Creates a ColumnSet with columns from this DataFrame excluding specified columns.
      *
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     default ColumnSet colsExcept(String... columns) {
         // all positions here will be within the existing DataFrame, so we are not losing any labels by delegating to
@@ -1719,7 +1719,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * Creates a ColumnSet with columns from this DataFrame that match the specified condition.
      *
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     default ColumnSet cols(Predicate<String> condition) {
         // all positions here will be within the existing DataFrame, so we are not losing any labels by delegating to
@@ -1732,7 +1732,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Non-existent columns will be added to the result of the column set operation, while the ones already in the
      * DataFrame will be replaced by columns calculated by the operation.
      *
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     default ColumnSet cols(int... columns) {
         return new FixedColumnSet(ColumnSetIndex.of(this, columns), this);
@@ -1741,21 +1741,21 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * Creates a ColumnSet with columns from this DataFrame excluding specified column positions.
      *
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     default ColumnSet colsExcept(int... columns) {
         return cols(getColumnsIndex().positionsExcept(columns));
     }
 
     /**
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     default ColumnSet colsSample(int size) {
         return cols(getColumnsIndex().sample(size));
     }
 
     /**
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     default ColumnSet colsSample(int size, Random random) {
         return cols(getColumnsIndex().sample(size, random));

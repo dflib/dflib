@@ -22,7 +22,7 @@ import java.util.function.UnaryOperator;
  * A {@link ColumnSet} implementation that defers defining the resulting columns until the operation is applied, and
  * does it based on the operation semantics.
  *
- * @since 0.19
+ * @since 1.0.0-M19
  */
 public class DeferredColumnSet implements ColumnSet {
 

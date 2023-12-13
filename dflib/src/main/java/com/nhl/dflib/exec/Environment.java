@@ -9,7 +9,7 @@ import java.util.concurrent.ForkJoinPool;
  * etc. {@link #commonEnv()} provides access to the Environment singleton. Its parameters can be customized individually
  * via static "set" methods.
  *
- * @since 0.19
+ * @since 1.0.0-M19
  */
 public class Environment {
 

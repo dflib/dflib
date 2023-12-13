@@ -10,7 +10,7 @@ import java.util.function.UnaryOperator;
  * built from the ColumnSet columns. All the rest produce a DataFrame by merging the ColumnSet into the source DataFrame,
  * replacing or adding columns as needed.
  *
- * @since 0.19
+ * @since 1.0.0-M19
  */
 public interface ColumnSet {
 

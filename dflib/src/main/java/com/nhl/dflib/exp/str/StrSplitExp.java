@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  * it generates empty entries in the returned array for leading or repeating delimiters, but skips trailing empty
  * entries.
  *
- * @since 0.19
+ * @since 1.0.0-M19
  */
 public class StrSplitExp extends MapExp1<String, String[]> {
 

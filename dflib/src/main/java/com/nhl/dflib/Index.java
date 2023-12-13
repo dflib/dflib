@@ -44,7 +44,7 @@ public class Index implements Iterable<String> {
      *
      * @param columns enum type that defines Index columns
      * @return a new Index with columns matching the provided Enum
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     public static <E extends Enum<E>> Index of(Class<E> columns) {
 
@@ -66,7 +66,7 @@ public class Index implements Iterable<String> {
     }
 
     /**
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     public static Index of(String... labels) {
         return new Index(labels);
@@ -82,7 +82,7 @@ public class Index implements Iterable<String> {
     }
 
     /**
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     public static Index of(Series<String> labels) {
         return new Index(labels.toArray(new String[0]));
@@ -101,7 +101,7 @@ public class Index implements Iterable<String> {
      * Creates an index from an array of labels. Duplicate labels will be renamed by appending one or more underscore
      * symbols.
      *
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     public static Index ofDeduplicated(String... labels) {
         int len = labels.length;
@@ -185,7 +185,7 @@ public class Index implements Iterable<String> {
      * current index. The goal is to create an index that does not have any common labels with the current index. Also
      * deduplicates repeating columns in the "labels" array itself.
      *
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     public Index deduplicateLabels(String... labels) {
 
@@ -348,7 +348,7 @@ public class Index implements Iterable<String> {
     }
 
     /**
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     public int[] getPositions() {
         int len = labels.length;
@@ -385,7 +385,7 @@ public class Index implements Iterable<String> {
     /**
      * Returns Index positions corresponding to the array of labels.
      *
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     public int[] positions(String... labels) {
 
@@ -415,7 +415,7 @@ public class Index implements Iterable<String> {
     /**
      * Returns Index positions for all index labels except the labels specified as the argument
      *
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     public int[] positionsExcept(String... exceptLabels) {
 
@@ -436,7 +436,7 @@ public class Index implements Iterable<String> {
     /**
      * Returns Index positions for all index labels except the positions specified as the argument
      *
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     public int[] positionsExcept(int... exceptPositions) {
 
@@ -463,7 +463,7 @@ public class Index implements Iterable<String> {
     }
 
     /**
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     public int[] positions(Predicate<String> labelCondition) {
         if (labelPositions == null) {

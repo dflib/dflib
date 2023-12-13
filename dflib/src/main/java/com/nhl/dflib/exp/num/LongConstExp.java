@@ -6,7 +6,7 @@ import com.nhl.dflib.exp.ExpScalar1;
 import com.nhl.dflib.series.LongSingleValueSeries;
 
 /**
- * @since 0.19
+ * @since 1.0.0-M19
  */
 public class LongConstExp extends ExpScalar1<Long> implements NumExp<Long> {
 

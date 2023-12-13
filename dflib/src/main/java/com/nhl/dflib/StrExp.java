@@ -102,7 +102,7 @@ public interface StrExp extends Exp<String> {
     /**
      * An expression that splits this String into a String array using the specified regex as a delimiter.
      *
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     default Exp<String[]> split(char delimiter) {
         return split(delimiter, 0);
@@ -115,7 +115,7 @@ public interface StrExp extends Exp<String> {
      * needed, but trailing empty elements removed, while negative limit is the same as zero, except no trimming of
      * the trailing empty elements.     *
      *
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     default Exp<String[]> split(char delimiter, int limit) {
         return StrSplitExp.splitOnChar(this, delimiter, limit);
@@ -124,7 +124,7 @@ public interface StrExp extends Exp<String> {
     /**
      * An expression that splits this String into a String array using the specified regex as a delimiter.
      *
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     default Exp<String[]> split(String regex) {
         return StrSplitExp.splitOnRegex(this, regex);
@@ -137,7 +137,7 @@ public interface StrExp extends Exp<String> {
      * needed, but trailing empty elements removed, while negative limit is the same as zero, except no trimming of
      * the trailing empty elements.
      *
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     default Exp<String[]> split(String regex, int limit) {
         return StrSplitExp.splitOnRegex(this, regex, limit);

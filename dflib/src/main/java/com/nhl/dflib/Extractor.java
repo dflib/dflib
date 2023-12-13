@@ -36,7 +36,7 @@ public interface Extractor<F, T> {
      * Returns an extractor that generates a column filled with a constant value that is known upfront and is not
      * extracted from the source object.
      *
-     * @since 0.19
+     * @since 1.0.0-M19
      */
     static <F, T> Extractor<F, T> $val(T val) {
         return new SingleValueExtractor<>(val);

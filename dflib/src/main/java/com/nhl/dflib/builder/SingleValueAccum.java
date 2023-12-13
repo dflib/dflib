@@ -4,7 +4,7 @@ import com.nhl.dflib.Series;
 import com.nhl.dflib.series.SingleValueSeries;
 
 /**
- * @since 0.19
+ * @since 1.0.0-M19
  */
 public class SingleValueAccum<T> implements ValueAccum<T> {
 

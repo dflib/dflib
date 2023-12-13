@@ -6,7 +6,7 @@ import com.nhl.dflib.Series;
 import com.nhl.dflib.series.IntSequenceSeries;
 
 /**
- * @since 0.19
+ * @since 1.0.0-M19
  */
 public class RowNumExp extends Exp0<Integer> implements NumExp<Integer> {
 

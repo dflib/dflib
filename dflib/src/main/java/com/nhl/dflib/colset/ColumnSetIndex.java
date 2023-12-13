@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 /**
- * @since 0.19
+ * @since 1.0.0-M19
  */
 public abstract class ColumnSetIndex {
 
