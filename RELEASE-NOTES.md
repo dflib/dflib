@@ -11,6 +11,7 @@
 * #222 Refactor "Index.forLabel(..)" to "Index.of(..)" 
 * #224 Extractor.$val(..)
 * #225 Exp.rowNum()
+* #226 "between(..)" operator
 
 ## Release 0.18
 

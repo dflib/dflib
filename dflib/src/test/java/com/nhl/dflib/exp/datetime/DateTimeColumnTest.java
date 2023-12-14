@@ -159,6 +159,19 @@ public class DateTimeColumnTest {
     }
 
     @Test
+    public void betweenVal() {
+        Condition le = $dateTime(0).between(LocalDateTime.of(2008, 1, 1, 1, 1), LocalDateTime.of(2012, 1, 1, 1, 1));
+        Series<LocalDateTime> s = Series.of(
+                LocalDateTime.of(2008, 1, 1, 1, 0),
+                LocalDateTime.of(2008, 1, 1, 1, 1),
+                LocalDateTime.of(2008, 5, 8, 5, 6),
+                LocalDateTime.of(2012, 1, 1, 1, 1),
+                LocalDateTime.of(2012, 1, 1, 1, 2));
+
+        new BoolSeriesAsserts(le.eval(s)).expectData(false, true, true, true, false);
+    }
+
+    @Test
     public void plusDays() {
         DateExp exp = $date(0).plusDays(4);
 

@@ -450,4 +450,25 @@ public interface DoubleSeries extends Series<Double> {
 
         return new BooleanArraySeries(data);
     }
+
+    /**
+     * @since 1.0.0-M19
+     */
+    default BooleanSeries between(DoubleSeries from, DoubleSeries to) {
+        int len = size();
+        if (len != from.size()) {
+            throw new IllegalArgumentException("'from' Series size " + from.size() + " is not the same as this size " + len);
+        } else if (len != to.size()) {
+            throw new IllegalArgumentException("'to' Series size " + to.size() + " is not the same as this size " + len);
+        }
+
+        boolean[] data = new boolean[len];
+
+        for (int i = 0; i < len; i++) {
+            double d = this.getDouble(i);
+            data[i] = d >= from.getDouble(i) && d <= to.getDouble(i);
+        }
+
+        return new BooleanArraySeries(data);
+    }
 }

@@ -181,6 +181,20 @@ public interface NumExp<N extends Number> extends Exp<N> {
     }
 
     /**
+     * @since 1.0.0-M19
+     */
+    default Condition between(Exp<? extends Number> from, Exp<? extends Number> to) {
+        return NumericExpFactory.factory(this.getType(), from.getType(), to.getType()).between(this, from, to);
+    }
+
+    /**
+     * @since 1.0.0-M19
+     */
+    default Condition between(Number from, Number to) {
+        return between(Exp.$val(from), Exp.$val(to));
+    }
+
+    /**
      * A "running total" function that produces a cumulative sum of each row from the beginning of the DataFrame or
      * Series.
      *

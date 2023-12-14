@@ -133,4 +133,16 @@ public class IntExpFactory extends NumericExpFactory {
     public Condition ge(Exp<? extends Number> left, Exp<? extends Number> right) {
         return IntCondition2.mapVal(">=", cast(left), cast(right), (n1, n2) -> n1 >= n2, IntSeries::ge);
     }
+
+    @Override
+    public Condition between(Exp<? extends Number> left, Exp<? extends Number> from, Exp<? extends Number> to) {
+        return IntCondition3.mapVal(
+                "between",
+                "and",
+                cast(left),
+                cast(from),
+                cast(to),
+                (n1, n2, n3) -> n1 >= n2 && n1 <= n3,
+                IntSeries::between);
+    }
 }

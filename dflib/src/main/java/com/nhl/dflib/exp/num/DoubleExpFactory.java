@@ -151,4 +151,16 @@ public class DoubleExpFactory extends NumericExpFactory {
     public Condition ge(Exp<? extends Number> left, Exp<? extends Number> right) {
         return DoubleCondition2.mapVal(">=", cast(left), cast(right), (n1, n2) -> n1 >= n2, DoubleSeries::ge);
     }
+
+    @Override
+    public Condition between(Exp<? extends Number> left, Exp<? extends Number> from, Exp<? extends Number> to) {
+        return DoubleCondition3.mapVal(
+                "between",
+                "and",
+                cast(left),
+                cast(from),
+                cast(to),
+                (n1, n2, n3) -> n1 >= n2 && n1 <= n3,
+                DoubleSeries::between);
+    }
 }

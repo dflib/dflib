@@ -464,4 +464,25 @@ public interface IntSeries extends Series<Integer> {
 
         return new BooleanArraySeries(data);
     }
+
+    /**
+     * @since 1.0.0-M19
+     */
+    default BooleanSeries between(IntSeries from, IntSeries to) {
+        int len = size();
+        if (len != from.size()) {
+            throw new IllegalArgumentException("'from' Series size " + from.size() + " is not the same as this size " + len);
+        } else if (len != to.size()) {
+            throw new IllegalArgumentException("'to' Series size " + to.size() + " is not the same as this size " + len);
+        }
+
+        boolean[] data = new boolean[len];
+
+        for (int i = 0; i < len; i++) {
+            int v = this.getInt(i);
+            data[i] = v >= from.getInt(i) && v <= to.getInt(i);
+        }
+
+        return new BooleanArraySeries(data);
+    }
 }

@@ -97,6 +97,21 @@ public abstract class NumericExpFactory {
         return factory;
     }
 
+    /**
+     * @since 1.0.0-M19
+     */
+    public static NumericExpFactory factory(Class<? extends Number> one, Class<? extends Number> two, Class<? extends Number> three) {
+
+        Class<? extends Number> type = factoryType(factoryType(one, two), three);
+
+        NumericExpFactory factory = factories.get(type);
+        if (factory == null) {
+            throw new IllegalArgumentException("Unsupported arithmetic type: " + type);
+        }
+
+        return factory;
+    }
+
     protected static Class<? extends Number> factoryType(Class<? extends Number> left, Class<? extends Number> right) {
 
         Integer lr = typeConversionRank.get(left);
@@ -184,4 +199,9 @@ public abstract class NumericExpFactory {
     public abstract Condition gt(Exp<? extends Number> left, Exp<? extends Number> right);
 
     public abstract Condition ge(Exp<? extends Number> left, Exp<? extends Number> right);
+
+    /**
+     * @since 1.0.0-M19
+     */
+    public abstract Condition between(Exp<? extends Number> left, Exp<? extends Number> from, Exp<? extends Number> to);
 }

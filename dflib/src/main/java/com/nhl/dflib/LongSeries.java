@@ -453,4 +453,25 @@ public interface LongSeries extends Series<Long> {
 
         return new BooleanArraySeries(data);
     }
+
+    /**
+     * @since 1.0.0-M19
+     */
+    default BooleanSeries between(LongSeries from, LongSeries to) {
+        int len = size();
+        if (len != from.size()) {
+            throw new IllegalArgumentException("'from' Series size " + from.size() + " is not the same as this size " + len);
+        } else if (len != to.size()) {
+            throw new IllegalArgumentException("'to' Series size " + to.size() + " is not the same as this size " + len);
+        }
+
+        boolean[] data = new boolean[len];
+
+        for (int i = 0; i < len; i++) {
+            long v = this.getLong(i);
+            data[i] = v >= from.getLong(i) && v <= to.getLong(i);
+        }
+
+        return new BooleanArraySeries(data);
+    }
 }

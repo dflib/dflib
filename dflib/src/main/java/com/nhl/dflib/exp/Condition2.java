@@ -22,6 +22,7 @@ public abstract class Condition2<L, R> implements Condition {
         return toQL();
     }
 
+    // TODO: space between the operand and arguments
     public String toQL() {
         return left.toQL() + opName + right.toQL();
     }

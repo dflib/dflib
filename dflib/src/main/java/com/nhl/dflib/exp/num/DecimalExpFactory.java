@@ -8,6 +8,7 @@ import com.nhl.dflib.exp.agg.ComparableAggregators;
 import com.nhl.dflib.exp.agg.DecimalAggregators;
 import com.nhl.dflib.exp.agg.DecimalExpAggregator;
 import com.nhl.dflib.exp.map.MapCondition2;
+import com.nhl.dflib.exp.map.MapCondition3;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -177,5 +178,10 @@ public class DecimalExpFactory extends NumericExpFactory {
     @Override
     public Condition ge(Exp<? extends Number> left, Exp<? extends Number> right) {
         return MapCondition2.mapVal(">=", cast(left), cast(right), (n1, n2) -> n1.compareTo(n2) >= 0);
+    }
+
+    @Override
+    public Condition between(Exp<? extends Number> left, Exp<? extends Number> from, Exp<? extends Number> to) {
+        return MapCondition3.mapVal("between", "and", cast(left), cast(from), cast(to), (n1, n2, n3) -> n1.compareTo(n2) >= 0 && n1.compareTo(n3) <= 0);
     }
 }

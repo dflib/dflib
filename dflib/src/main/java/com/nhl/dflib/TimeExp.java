@@ -2,6 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.exp.datetime.TimeExpScalar2;
 import com.nhl.dflib.exp.map.MapCondition2;
+import com.nhl.dflib.exp.map.MapCondition3;
 import com.nhl.dflib.exp.num.IntExp1;
 
 import java.time.LocalTime;
@@ -67,7 +68,7 @@ public interface TimeExp extends Exp<LocalTime> {
     }
 
     default Condition lt(Exp<LocalTime> exp) {
-        return MapCondition2.mapVal("<", this, exp.castAsTime(), (d1, d2) -> d1.compareTo(d2) < 0);
+        return MapCondition2.mapVal("<", this, exp.castAsTime(), (t1, t2) -> t1.compareTo(t2) < 0);
     }
 
     default Condition lt(LocalTime val) {
@@ -75,7 +76,7 @@ public interface TimeExp extends Exp<LocalTime> {
     }
 
     default Condition le(Exp<LocalTime> exp) {
-        return MapCondition2.mapVal("<=", this, exp.castAsTime(), (d1, d2) -> d1.compareTo(d2) <= 0);
+        return MapCondition2.mapVal("<=", this, exp.castAsTime(), (t1, t2) -> t1.compareTo(t2) <= 0);
     }
 
     default Condition le(LocalTime val) {
@@ -83,7 +84,7 @@ public interface TimeExp extends Exp<LocalTime> {
     }
 
     default Condition gt(Exp<LocalTime> exp) {
-        return MapCondition2.mapVal(">", this, exp.castAsTime(), (d1, d2) -> d1.compareTo(d2) > 0);
+        return MapCondition2.mapVal(">", this, exp.castAsTime(), (t1, t2) -> t1.compareTo(t2) > 0);
     }
 
     default Condition gt(LocalTime val) {
@@ -91,11 +92,30 @@ public interface TimeExp extends Exp<LocalTime> {
     }
 
     default Condition ge(Exp<LocalTime> exp) {
-        return MapCondition2.mapVal(">=", this, exp.castAsTime(), (d1, d2) -> d1.compareTo(d2) >= 0);
+        return MapCondition2.mapVal(">=", this, exp.castAsTime(), (t1, t2) -> t1.compareTo(t2) >= 0);
     }
 
     default Condition ge(LocalTime val) {
         return ge(Exp.$timeVal(val));
     }
 
+    /**
+     * @since 1.0.0-M19
+     */
+    default Condition between(Exp<LocalTime> from, Exp<LocalTime> to) {
+        return MapCondition3.mapVal(
+                "between",
+                "and",
+                this,
+                from.castAsTime(),
+                to.castAsTime(),
+                (t1, t2, t3) -> t1.compareTo(t2) >= 0 && t1.compareTo(t3) <= 0);
+    }
+
+    /**
+     * @since 1.0.0-M19
+     */
+    default Condition between(LocalTime from, LocalTime to) {
+        return between(Exp.$val(from), Exp.$val(to));
+    }
 }

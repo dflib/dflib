@@ -8,8 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.util.stream.LongStream;
 
-import static com.nhl.dflib.Exp.$int;
-import static com.nhl.dflib.Exp.$long;
+import static com.nhl.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
@@ -94,7 +93,7 @@ public class LongColumnTest {
     }
 
     @Test
-    public void lE_Int() {
+    public void le_Int() {
         Condition c = $long("a").le($int("b"));
 
         DataFrame df = DataFrame.foldByRow("a", "b").of(
@@ -106,7 +105,7 @@ public class LongColumnTest {
     }
 
     @Test
-    public void lT_LongPrimitive() {
+    public void lt_LongPrimitive() {
         Condition c = $long("a").lt($long("b"));
 
         DataFrame df = DataFrame.foldByRow("a", "b").ofStream(LongStream.of(2L, 1L, 3L, 4L));
@@ -122,7 +121,22 @@ public class LongColumnTest {
     }
 
     @Test
-    public void eQ_IntVal() {
+    public void between_LongPrimitive() {
+        Condition c = $long("a").between($long("b"), $val(5));
+
+        DataFrame df = DataFrame.foldByRow("a", "b").ofStream(LongStream.of(
+                0L, 1L,
+                1L, 1L,
+                2L, 1L,
+                5L, 2L,
+                6L, 2L));
+
+        // run and verify the calculation
+        new BoolSeriesAsserts(c.eval(df)).expectData(false, true, true, true, false);
+    }
+
+    @Test
+    public void eq_IntVal() {
 
         Condition c = $long("a").eq(3);
 
@@ -135,7 +149,7 @@ public class LongColumnTest {
     }
 
     @Test
-    public void nE_IntVal() {
+    public void ne_IntVal() {
 
         Condition c = $long("a").ne(3);
 

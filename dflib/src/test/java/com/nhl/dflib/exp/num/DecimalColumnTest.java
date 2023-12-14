@@ -320,4 +320,19 @@ public class DecimalColumnTest {
                 new BigDecimal("11.5"));
         new BoolSeriesAsserts(c.eval(s)).expectData(true, true, false, true);
     }
+
+    @Test
+    public void between() {
+        Condition c = $decimal("a").between(new BigDecimal("1.0"), new BigDecimal("2.01"));
+
+        Series<BigDecimal> s = Series.of(
+                new BigDecimal("0.99"),
+                new BigDecimal("1.0"),
+                new BigDecimal("1.5"),
+                new BigDecimal("2.01"),
+                new BigDecimal("2.02"));
+
+        // run and verify the calculation
+        new BoolSeriesAsserts(c.eval(s)).expectData(false, true, true, true, false);
+    }
 }

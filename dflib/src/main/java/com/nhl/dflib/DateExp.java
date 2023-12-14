@@ -2,6 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.exp.datetime.DateExpScalar2;
 import com.nhl.dflib.exp.map.MapCondition2;
+import com.nhl.dflib.exp.map.MapCondition3;
 import com.nhl.dflib.exp.num.IntExp1;
 
 import java.time.LocalDate;
@@ -89,6 +90,26 @@ public interface DateExp extends Exp<LocalDate> {
      */
     default Condition ge(LocalDate val) {
         return ge(Exp.$dateVal(val));
+    }
+
+    /**
+     * @since 1.0.0-M19
+     */
+    default Condition between(Exp<LocalDate> from, Exp<LocalDate> to) {
+        return MapCondition3.mapVal(
+                "between",
+                "and",
+                this,
+                from.castAsDate(),
+                to.castAsDate(),
+                (d1, d2, d3) -> d1.compareTo(d2) >= 0 && d1.compareTo(d3) <= 0);
+    }
+
+    /**
+     * @since 1.0.0-M19
+     */
+    default Condition between(LocalDate from, LocalDate to) {
+        return between(Exp.$val(from), Exp.$val(to));
     }
 
     /**

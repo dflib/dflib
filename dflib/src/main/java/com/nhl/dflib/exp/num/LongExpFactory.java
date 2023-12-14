@@ -133,4 +133,16 @@ public class LongExpFactory extends NumericExpFactory {
     public Condition ge(Exp<? extends Number> left, Exp<? extends Number> right) {
         return LongCondition2.mapVal(">=", cast(left), cast(right), (n1, n2) -> n1 >= n2, LongSeries::ge);
     }
+
+    @Override
+    public Condition between(Exp<? extends Number> left, Exp<? extends Number> from, Exp<? extends Number> to) {
+        return LongCondition3.mapVal(
+                "between",
+                "and",
+                cast(left),
+                cast(from),
+                cast(to),
+                (n1, n2, n3) -> n1 >= n2 && n1 <= n3,
+                LongSeries::between);
+    }
 }
