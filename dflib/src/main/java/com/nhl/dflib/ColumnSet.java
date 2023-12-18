@@ -105,7 +105,8 @@ public interface ColumnSet {
     DataFrame selectArrays(Exp<? extends Object[]> mpper);
 
     /**
-     * Returns a new DataFrame with the specified columns renamed to match the ColumnSet column names.
+     * Returns a new DataFrame with the same columns as the source DataFrame, but a subset of columns specified by the
+     * labels passed to the method assuming the names from the ColumnSet.
      */
     DataFrame map(String... existingColumns);
 
@@ -115,7 +116,8 @@ public interface ColumnSet {
     DataFrame select(String... existingColumns);
 
     /**
-     * Returns a new DataFrame made of the specified columns, but with names that match the ColumnSet column names.
+     * Returns a new DataFrame with the same columns as the source DataFrame, but a subset of columns specified by the
+     * indexes passed to the method assuming the names from the ColumnSet.
      */
     DataFrame map(int... existingColumns);
 
