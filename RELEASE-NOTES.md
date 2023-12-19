@@ -12,6 +12,7 @@
 * #224 Extractor.$val(..)
 * #225 Exp.rowNum()
 * #226 "between(..)" operator
+* #227 Super-lazy IndexedSeries
 
 ## Release 0.18
 

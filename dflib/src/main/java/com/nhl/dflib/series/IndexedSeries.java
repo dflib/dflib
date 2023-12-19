@@ -10,20 +10,25 @@ import java.util.Objects;
  */
 public class IndexedSeries<T> extends ObjectSeries<T> {
 
-    private volatile Series<T> source;
-    private volatile IntSeries includePositions;
-    private volatile Series<T> materialized;
+    protected volatile Raw<T> raw;
+    protected volatile Series<T> materialized;
 
     public IndexedSeries(Series<T> source, IntSeries includePositions) {
         super(source.getNominalType());
-        this.source = Objects.requireNonNull(source);
-        this.includePositions = Objects.requireNonNull(includePositions);
+        this.raw = new Raw<>(source, includePositions);
+    }
+
+    /**
+     * @since 1.0.0-M19
+     */
+    public boolean isMaterialized() {
+        return materialized != null;
     }
 
     @Override
     public int size() {
-        IntSeries includePositions = this.includePositions;
-        return includePositions != null ? includePositions.size() : materialized.size();
+        Raw raw = this.raw;
+        return raw != null ? raw.size() : materialized.size();
     }
 
     @Override
@@ -41,11 +46,10 @@ public class IndexedSeries<T> extends ObjectSeries<T> {
         if (materialized == null) {
             synchronized (this) {
                 if (materialized == null) {
-                    materialized = doMaterialize();
+                    materialized = raw.materialize();
 
                     // reset source reference, allowing to free up memory
-                    source = null;
-                    includePositions = null;
+                    raw = null;
                 }
             }
         }
@@ -53,21 +57,6 @@ public class IndexedSeries<T> extends ObjectSeries<T> {
         return materialized;
     }
 
-    protected ArraySeries doMaterialize() {
-
-        int h = includePositions.size();
-
-        Object[] data = new Object[h];
-
-        for (int i = 0; i < h; i++) {
-            int index = includePositions.getInt(i);
-
-            // skipped positions (index < 0) are found in joins
-            data[i] = index < 0 ? null : source.get(index);
-        }
-
-        return new ArraySeries(data);
-    }
 
     @Override
     public Series<T> fillNulls(T value) {
@@ -87,5 +76,39 @@ public class IndexedSeries<T> extends ObjectSeries<T> {
     @Override
     public Series<T> fillNullsForward() {
         return materialize().fillNullsForward();
+    }
+
+    static class Raw<T> {
+        final Series<T> source;
+        final IntSeries includePositions;
+
+        Raw(Series<T> source, IntSeries includePositions) {
+            this.source = Objects.requireNonNull(source);
+            this.includePositions = Objects.requireNonNull(includePositions);
+        }
+
+        int size() {
+            return includePositions.size();
+        }
+
+        T get(int index) {
+            int i = includePositions.getInt(index);
+
+            // skipped positions (index < 0) are found in joins
+            return i < 0 ? null : source.get(i);
+        }
+
+        ArraySeries materialize() {
+
+            int h = includePositions.size();
+
+            Object[] data = new Object[h];
+
+            for (int i = 0; i < h; i++) {
+                data[i] = get(i);
+            }
+
+            return new ArraySeries(data);
+        }
     }
 }
