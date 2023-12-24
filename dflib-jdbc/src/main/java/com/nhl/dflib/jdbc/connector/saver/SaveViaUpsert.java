@@ -53,10 +53,10 @@ public class SaveViaUpsert extends SaveViaInsert {
             return () -> new SingleValueSeries<>(SaveOp.insert, df.height());
         }
 
-        DataFrame insertAndUpdate = df.leftJoin()
+        DataFrame insertAndUpdate = df.leftJoin(previouslySaved)
                 .on(keyHasher())
                 .indicatorColumn(INDICATOR_COLUMN)
-                .with(previouslySaved);
+                .select();
 
         Series<JoinIndicator> index = insertAndUpdate.getColumn(INDICATOR_COLUMN);
         IntSeries insertIndex = index.index(i -> i == JoinIndicator.left_only);

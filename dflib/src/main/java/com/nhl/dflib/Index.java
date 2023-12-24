@@ -537,7 +537,7 @@ public class Index implements Iterable<String> {
         return toSeries().toString();
     }
 
-    private Map<String, Integer> computeLabelPositions() {
+    protected Map<String, Integer> computeLabelPositions() {
 
         Map<String, Integer> index = new LinkedHashMap<>();
 

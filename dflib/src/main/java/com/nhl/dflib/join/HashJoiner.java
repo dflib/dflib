@@ -24,10 +24,9 @@ public class HashJoiner extends BaseJoiner {
     public HashJoiner(
             Hasher leftHasher,
             Hasher rightHasher,
-            JoinType semantics,
-            String indicatorColumn) {
+            JoinType semantics) {
 
-        super(semantics, indicatorColumn);
+        super(semantics);
         this.leftHasher = leftHasher;
         this.rightHasher = rightHasher;
     }

@@ -9,6 +9,7 @@
 * #219 IndexedSeries.size(): NPE due to a race condtion
 * #221 Index.positions(), .positionsExcept()
 * #222 Refactor "Index.forLabel(..)" to "Index.of(..)" 
+* #223 Select / transform columns inside joins
 * #224 Extractor.$val(..)
 * #225 Exp.rowNum()
 * #226 "between(..)" operator

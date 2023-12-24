@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
 
-public class DataFrame_NestedLoopJoinsTest {
+public class DataFrame_Join_NestedLoopTest {
 
     @Test
     public void inner() {
@@ -20,9 +20,9 @@ public class DataFrame_NestedLoopJoinsTest {
                 2, "b",
                 3, "c");
 
-        DataFrame df = df1.innerJoin()
+        DataFrame df = df1.innerJoin(df2)
                 .predicatedBy((lr, rr) -> Objects.equals(lr.get(0), rr.get(0)))
-                .with(df2);
+                .select();
 
         new DataFrameAsserts(df, "a", "b", "c", "d")
                 .expectHeight(2)
@@ -42,9 +42,9 @@ public class DataFrame_NestedLoopJoinsTest {
                 2, "b",
                 3, "c");
 
-        DataFrame df = df1.innerJoin()
+        DataFrame df = df1.innerJoin(df2)
                 .predicatedBy((lr, rr) -> false)
-                .with(df2);
+                .select();
 
         new DataFrameAsserts(df, "a", "b", "c", "d")
                 .expectHeight(0);
@@ -62,9 +62,9 @@ public class DataFrame_NestedLoopJoinsTest {
                 2, "b",
                 3, "c");
 
-        DataFrame df = df1.innerJoin()
+        DataFrame df = df1.innerJoin(df2)
                 .predicatedBy((lr, rr) -> Objects.equals(lr.get(0), rr.get(0)))
-                .with(df2);
+                .select();
 
         new DataFrameAsserts(df, "a", "b", "a_", "b_")
                 .expectHeight(2)
@@ -84,9 +84,9 @@ public class DataFrame_NestedLoopJoinsTest {
                 2, "b",
                 3, "c");
 
-        DataFrame df = df1.innerJoin()
+        DataFrame df = df1.innerJoin(df2.as("df2"))
                 .predicatedBy((lr, rr) -> Objects.equals(lr.get(0), rr.get(0)))
-                .with(df2.as("df2"));
+                .select();
 
         new DataFrameAsserts(df, "a", "b", "df2.a", "df2.b")
                 .expectHeight(2)
@@ -106,9 +106,9 @@ public class DataFrame_NestedLoopJoinsTest {
                 2, "b",
                 3, "c");
 
-        DataFrame df = df1.as("df1").innerJoin()
+        DataFrame df = df1.as("df1").innerJoin(df2)
                 .predicatedBy((lr, rr) -> Objects.equals(lr.get(0), rr.get(0)))
-                .with(df2);
+                .select();
 
         new DataFrameAsserts(df, "df1.a", "df1.b", "a", "b")
                 .expectHeight(2)
@@ -128,9 +128,9 @@ public class DataFrame_NestedLoopJoinsTest {
                 2, "b",
                 3, "c");
 
-        DataFrame df = df1.as("df1").innerJoin()
+        DataFrame df = df1.as("df1").innerJoin(df2.as("df2"))
                 .predicatedBy((lr, rr) -> Objects.equals(lr.get(0), rr.get(0)))
-                .with(df2.as("df2"));
+                .select();
 
         new DataFrameAsserts(df, "df1.a", "df1.b", "df2.a", "df2.b")
                 .expectHeight(2)
@@ -151,9 +151,9 @@ public class DataFrame_NestedLoopJoinsTest {
                 3, "c");
 
         DataFrame df = df1
-                .leftJoin()
+                .leftJoin(df2)
                 .predicatedBy((lr, rr) -> Objects.equals(lr.get(0), rr.get(0)))
-                .with(df2);
+                .select();
 
         new DataFrameAsserts(df, "a", "b", "c", "d")
                 .expectHeight(3)
@@ -175,9 +175,9 @@ public class DataFrame_NestedLoopJoinsTest {
                 3, "c");
 
         DataFrame df = df2
-                .rightJoin()
+                .rightJoin(df1)
                 .predicatedBy((lr, rr) -> Objects.equals(lr.get(0), rr.get(0)))
-                .with(df1);
+                .select();
 
         new DataFrameAsserts(df, "c", "d", "a", "b")
                 .expectHeight(3)
@@ -199,9 +199,9 @@ public class DataFrame_NestedLoopJoinsTest {
                 3, "c");
 
         DataFrame df = df1
-                .fullJoin()
+                .fullJoin(df2)
                 .predicatedBy((lr, rr) -> Objects.equals(lr.get(0), rr.get(0)))
-                .with(df2);
+                .select();
 
         new DataFrameAsserts(df, "a", "b", "c", "d")
                 .expectHeight(4)
@@ -223,10 +223,10 @@ public class DataFrame_NestedLoopJoinsTest {
                 2, "b",
                 3, "c");
 
-        DataFrame df = df1.fullJoin()
+        DataFrame df = df1.fullJoin(df2)
                 .predicatedBy((lr, rr) -> Objects.equals(lr.get(0), rr.get(0)))
                 .indicatorColumn("ind")
-                .with(df2);
+                .select();
 
         new DataFrameAsserts(df, "a", "b", "c", "d", "ind")
                 .expectHeight(4)

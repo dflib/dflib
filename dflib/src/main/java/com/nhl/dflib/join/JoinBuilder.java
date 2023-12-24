@@ -1,14 +1,22 @@
 package com.nhl.dflib.join;
 
+import com.nhl.dflib.ColumnDataFrame;
 import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Hasher;
+import com.nhl.dflib.Index;
+import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.JoinType;
+import com.nhl.dflib.Series;
+import com.nhl.dflib.builder.ObjectAccum;
+import com.nhl.dflib.concat.HConcat;
 
 import java.util.Objects;
 
 /**
  * @since 0.6
+ * @deprecated in favor of more advanced join builder obtained via {@link DataFrame#innerJoin(DataFrame)}, etc.
  */
+@Deprecated(since = "1.0.0-M19", forRemoval = true)
 public class JoinBuilder {
 
     private DataFrame leftFrame;
@@ -86,20 +94,68 @@ public class JoinBuilder {
 
     public DataFrame with(DataFrame rightFrame) {
 
+        IntSeries[] conditions = rowConditions(rightFrame);
+
+        DataFrame joined = merge(conditions[0], conditions[1], rightFrame);
+
+        return indicatorColumn != null
+                ? joined.addColumn(indicatorColumn, buildIndicator(conditions[0], conditions[1]))
+                : joined;
+    }
+
+    private IntSeries[] rowConditions(DataFrame rightFrame) {
         if (predicate != null) {
-            return nestedLoopJoin(rightFrame);
+            return new NestedLoopJoiner(predicate, semantics).rowSelectors(leftFrame, rightFrame);
         } else if (leftHasher != null && rightHasher != null) {
-            return hashJoin(rightFrame);
+            return new HashJoiner(leftHasher, rightHasher, semantics).rowSelectors(leftFrame, rightFrame);
         } else {
-            throw new IllegalStateException("No join condition set. Either join columns / Hashers or a predicate must be specified");
+            throw new IllegalStateException("No join condition set. Either join columns, Hashers or a predicate must be specified");
         }
     }
 
-    private DataFrame nestedLoopJoin(DataFrame rightFrame) {
-        return new NestedLoopJoiner(predicate, semantics, indicatorColumn).join(leftFrame, rightFrame);
+    protected Series<JoinIndicator> buildIndicator(IntSeries leftIndex, IntSeries rightIndex) {
+
+        int h = leftIndex.size();
+        ObjectAccum<JoinIndicator> appender = new ObjectAccum<>(h);
+
+        for (int i = 0; i < h; i++) {
+            appender.push(
+                    leftIndex.getInt(i) < 0
+                            ? JoinIndicator.right_only
+                            : rightIndex.getInt(i) < 0 ? JoinIndicator.left_only : JoinIndicator.both
+            );
+        }
+
+        return appender.toSeries();
     }
 
-    private DataFrame hashJoin(DataFrame rightFrame) {
-        return new HashJoiner(leftHasher, rightHasher, semantics, indicatorColumn).join(leftFrame, rightFrame);
+    protected DataFrame merge(IntSeries leftIndex, IntSeries rightIndex, DataFrame rf) {
+
+        Index index = joinIndex(leftFrame, rf);
+
+        int w = index.size();
+        int wl = leftFrame.width();
+
+        Series[] data = new Series[w];
+
+        for (int i = 0; i < wl; i++) {
+            data[i] = leftFrame.getColumn(i).select(leftIndex);
+        }
+
+        for (int i = wl; i < w; i++) {
+            data[i] = rf.getColumn(i - wl).select(rightIndex);
+        }
+
+        return new ColumnDataFrame(null, index, data);
+    }
+
+    protected Index joinIndex(DataFrame lf, DataFrame rf) {
+        String lp = lf.getName() != null ? lf.getName() + "." : null;
+        String rp = rf.getName() != null ? rf.getName() + "." : null;
+
+        Index li = lp != null ? lf.getColumnsIndex().rename(s -> lp + s) : lf.getColumnsIndex();
+        Index ri = rp != null ? rf.getColumnsIndex().rename(s -> rp + s) : rf.getColumnsIndex();
+
+        return HConcat.zipIndex(li, ri.getLabels());
     }
 }

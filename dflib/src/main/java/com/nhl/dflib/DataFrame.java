@@ -9,6 +9,7 @@ import com.nhl.dflib.builder.DataFrameFoldByColumnBuilder;
 import com.nhl.dflib.builder.DataFrameFoldByRowBuilder;
 import com.nhl.dflib.colset.ColumnSetIndex;
 import com.nhl.dflib.colset.FixedColumnSet;
+import com.nhl.dflib.join.Join;
 import com.nhl.dflib.join.JoinBuilder;
 import com.nhl.dflib.pivot.PivotBuilder;
 import com.nhl.dflib.row.RowProxy;
@@ -1340,35 +1341,75 @@ public interface DataFrame extends Iterable<RowProxy> {
     DataFrame vConcat(JoinType how, DataFrame... dfs);
 
     /**
-     * @return an inner join "hash" join builder
+     * @return an inner join builder
      * @since 0.6
+     * @deprecated in favor of {@link #innerJoin(DataFrame)}
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default JoinBuilder innerJoin() {
         return new JoinBuilder(this).type(JoinType.inner);
     }
 
     /**
-     * @return a left join "hash" join builder
-     * @since 0.6
+     * @return an inner join builder
+     * @since 1.0.0-M19
      */
+    default Join innerJoin(DataFrame rightFrame) {
+        return new Join(JoinType.inner, this, rightFrame);
+    }
+
+    /**
+     * @return a left join builder
+     * @since 0.6
+     * @deprecated in favor of {@link #leftJoin(DataFrame)}
+     */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default JoinBuilder leftJoin() {
         return new JoinBuilder(this).type(JoinType.left);
     }
 
     /**
-     * @return a right join "hash" join builder
-     * @since 0.6
+     * @return a left join builder
+     * @since 1.0.0-M19
      */
+    default Join leftJoin(DataFrame rightFrame) {
+        return new Join(JoinType.left, this, rightFrame);
+    }
+
+    /**
+     * @return a right join builder
+     * @since 0.6
+     * @deprecated in favor of {@link #rightJoin(DataFrame)}
+     */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default JoinBuilder rightJoin() {
         return new JoinBuilder(this).type(JoinType.right);
     }
 
     /**
-     * @return a full join "hash" join builder
-     * @since 0.6
+     * @return a right join builder
+     * @since 1.0.0-M19
      */
+    default Join rightJoin(DataFrame rightFrame) {
+        return new Join(JoinType.right, this, rightFrame);
+    }
+
+    /**
+     * @return a full join builder
+     * @since 0.6
+     * @deprecated in favor of {@link #fullJoin(DataFrame)}
+     */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default JoinBuilder fullJoin() {
         return new JoinBuilder(this).type(JoinType.full);
+    }
+
+    /**
+     * @return a full join builder
+     * @since 1.0.0-M19
+     */
+    default Join fullJoin(DataFrame rightFrame) {
+        return new Join(JoinType.full, this, rightFrame);
     }
 
     /**

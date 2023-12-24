@@ -49,9 +49,9 @@ public class DataFrameHashJoin {
     @Benchmark
     public Object leftJoin() {
         return df1
-                .leftJoin()
+                .leftJoin(df2)
                 .on("c0", "c2")
-                .with(df2)
+                .select()
                 .materialize()
                 .iterator();
     }
@@ -59,9 +59,9 @@ public class DataFrameHashJoin {
     @Benchmark
     public Object leftJoin_ByPosition() {
         return df1
-                .leftJoin()
+                .leftJoin(df2)
                 .on(0, 2)
-                .with(df2)
+                .select()
                 .materialize()
                 .iterator();
     }
@@ -69,9 +69,9 @@ public class DataFrameHashJoin {
     @Benchmark
     public Object rightJoin() {
         return df1
-                .rightJoin()
+                .rightJoin(df2)
                 .on("c0", "c2")
-                .with(df2)
+                .select()
                 .materialize()
                 .iterator();
     }
@@ -79,9 +79,19 @@ public class DataFrameHashJoin {
     @Benchmark
     public Object innerJoin() {
         return df1
-                .innerJoin()
+                .innerJoin(df2)
                 .on("c0", "c2")
-                .with(df2)
+                .select()
+                .materialize()
+                .iterator();
+    }
+
+    @Benchmark
+    public Object innerJoin_Subset() {
+        return df1
+                .innerJoin(df2)
+                .on("c0", "c2")
+                .select("c0", "c1_", "c2")
                 .materialize()
                 .iterator();
     }
@@ -89,9 +99,9 @@ public class DataFrameHashJoin {
     @Benchmark
     public Object fullJoin() {
         return df1
-                .fullJoin()
+                .fullJoin(df2)
                 .on("c0", "c2")
-                .with(df2)
+                .select()
                 .materialize()
                 .iterator();
     }

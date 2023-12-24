@@ -15,10 +15,10 @@ import java.util.Set;
  */
 public class NestedLoopJoiner extends BaseJoiner {
 
-    private JoinPredicate joinPredicate;
+    private final JoinPredicate joinPredicate;
 
-    public NestedLoopJoiner(JoinPredicate joinPredicate, JoinType semantics, String indicatorColumn) {
-        super(semantics, indicatorColumn);
+    public NestedLoopJoiner(JoinPredicate joinPredicate, JoinType semantics) {
+        super(semantics);
         this.joinPredicate = Objects.requireNonNull(joinPredicate);
     }
 
