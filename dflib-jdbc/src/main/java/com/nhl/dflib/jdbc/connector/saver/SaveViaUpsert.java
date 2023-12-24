@@ -119,8 +119,8 @@ public class SaveViaUpsert extends SaveViaInsert {
         // TODO: speed up the equality test by excluding "keyColumns" from both sides
 
         // note that "toSave" and "previouslySaved" must be ordered by key for "eq" to be meaningful
-        DataFrame eqMatrix = toSave.eq(previouslySaved).addColumn(DIFF_COLUMN, this::booleansAsBitSet);
-        DataFrame toSaveClassified = toSave.addColumn(DIFF_COLUMN, eqMatrix.getColumn(DIFF_COLUMN));
+        DataFrame eqMatrix = toSave.eq(previouslySaved).colsAdd(DIFF_COLUMN).map(this::booleansAsBitSet);
+        DataFrame toSaveClassified = toSave.colsAdd(DIFF_COLUMN).map(eqMatrix.getColumn(DIFF_COLUMN));
 
         infoTracker.updatesCardinality(toSaveClassified.getColumn(DIFF_COLUMN));
 
