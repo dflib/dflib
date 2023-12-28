@@ -15,8 +15,8 @@ DFLib comes with connectors for a variety of data formats: CSV, Excel, RDBMS (JD
 
 ## Project Links
 
-* [Getting Started](https://nhl.github.io/dflib-docs/#_getting_started_with_dflib)
-* [Documentation](https://nhl.github.io/dflib-docs/)
+* [Getting Started](https://dflib.org/docs/1.x/#_getting_started_with_dflib)
+* [Documentation](https://dflib.org/docs/1.x/)
 
 
 ### Older Stuff
