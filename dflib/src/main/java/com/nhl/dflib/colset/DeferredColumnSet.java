@@ -10,7 +10,6 @@ import com.nhl.dflib.RowToValueMapper;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.map.DynamicColsRowBuilder;
 import com.nhl.dflib.series.RowMappedSeries;
-import com.nhl.dflib.series.SingleValueSeries;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -69,7 +68,7 @@ public class DeferredColumnSet implements ColumnSet {
 
         Series<?>[] columns = new Series[w];
         for (int i = 0; i < w; i++) {
-            columns[i] = new SingleValueSeries<>(values[i], h);
+            columns[i] = Series.ofVal(values[i], h);
         }
 
         return new ColumnDataFrame(null, source.getColumnsIndex(), columns);

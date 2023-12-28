@@ -1,7 +1,6 @@
 package com.nhl.dflib.builder;
 
 import com.nhl.dflib.Series;
-import com.nhl.dflib.series.SingleValueSeries;
 
 /**
  * @since 1.0.0-M19
@@ -18,7 +17,7 @@ public class SingleValueAccum<T> implements ValueAccum<T> {
 
     @Override
     public Series<T> toSeries() {
-        return new SingleValueSeries<>(value, size);
+        return Series.ofVal(value, size);
     }
 
     @Override

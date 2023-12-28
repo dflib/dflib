@@ -6,11 +6,17 @@ import com.nhl.dflib.series.ArraySeries;
 import com.nhl.dflib.series.BooleanArraySeries;
 import com.nhl.dflib.series.ColumnMappedSeries;
 import com.nhl.dflib.series.DoubleArraySeries;
+import com.nhl.dflib.series.DoubleSingleValueSeries;
 import com.nhl.dflib.series.EmptySeries;
+import com.nhl.dflib.series.FalseSeries;
 import com.nhl.dflib.series.IntArraySeries;
+import com.nhl.dflib.series.IntSingleValueSeries;
 import com.nhl.dflib.series.LongArraySeries;
+import com.nhl.dflib.series.LongSingleValueSeries;
 import com.nhl.dflib.series.OffsetLagSeries;
 import com.nhl.dflib.series.OffsetLeadSeries;
+import com.nhl.dflib.series.SingleValueSeries;
+import com.nhl.dflib.series.TrueSeries;
 import com.nhl.dflib.sort.SeriesSorter;
 
 import java.lang.reflect.Array;
@@ -85,6 +91,28 @@ public interface Series<T> extends Iterable<T> {
      */
     static LongSeries ofLong(long... longs) {
         return new LongArraySeries(longs);
+    }
+
+    /**
+     * Returns a Series of the specified size filled with a single value.
+     *
+     * @since 1.0.0-M19
+     */
+    static <T> Series<T> ofVal(T value, int size) {
+        if (value == null) {
+            return new SingleValueSeries<>(null, size);
+        }
+        else if (value instanceof Integer) {
+            return (Series<T>) new IntSingleValueSeries((int) value, size);
+        } else if (value instanceof Long) {
+            return (Series<T>) new LongSingleValueSeries((long) value, size);
+        } else if (value instanceof Double) {
+            return (Series<T>) new DoubleSingleValueSeries((double) value, size);
+        } else if (value instanceof Boolean) {
+            return (boolean) value ? (Series<T>) new TrueSeries(size) : (Series<T>) new FalseSeries(size);
+        } else {
+            return new SingleValueSeries<>(value, size);
+        }
     }
 
     /**

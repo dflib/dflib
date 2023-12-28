@@ -1,9 +1,8 @@
 package com.nhl.dflib.exp.agg;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Series;
 import com.nhl.dflib.Exp;
-import com.nhl.dflib.series.SingleValueSeries;
+import com.nhl.dflib.Series;
 
 import java.util.function.Function;
 
@@ -65,6 +64,6 @@ public class ExpAggregator<S, T> implements Exp<T> {
 
     protected Series<T> aggregate(Series<S> s) {
         T val = aggregator.apply(s);
-        return new SingleValueSeries<>(val, 1);
+        return Series.ofVal(val, 1);
     }
 }

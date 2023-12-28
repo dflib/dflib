@@ -1,10 +1,10 @@
 package com.nhl.dflib.exp.filter;
 
-import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.Series;
 import com.nhl.dflib.Condition;
+import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Exp;
-import com.nhl.dflib.series.SingleValueSeries;
+import com.nhl.dflib.Series;
+import com.nhl.dflib.series.IntSingleValueSeries;
 
 /**
  * @since 0.11
@@ -43,16 +43,13 @@ public class PreFilteredCountExp implements Exp<Integer> {
         // optimization: not rebuilding a filtered DataFrame ... Just count filter index
         int c = filter.eval(df).countTrue();
 
-        // TODO: IntSingleValueSeries
-        return new SingleValueSeries<>(c, 1);
+        return new IntSingleValueSeries(c, 1);
     }
 
     @Override
     public Series<Integer> eval(Series<?> s) {
         // optimization: not rebuilding a filtered DataFrame ... Just count filter index
         int c = filter.eval(s).countTrue();
-
-        // TODO: IntSingleValueSeries
-        return new SingleValueSeries<>(c, 1);
+        return new IntSingleValueSeries(c, 1);
     }
 }

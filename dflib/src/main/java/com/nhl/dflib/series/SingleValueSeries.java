@@ -15,7 +15,7 @@ public class SingleValueSeries<T> extends ObjectSeries<T> {
     private final int size;
 
     public SingleValueSeries(T value, int size) {
-        super(Object.class);
+        super(value != null ? value.getClass() : Object.class);
         this.value = value;
         this.size = size;
     }

@@ -85,7 +85,7 @@ public class FixedColumnSet implements ColumnSet {
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            columns[i] = new SingleValueSeries<>(values[i], h);
+            columns[i] = Series.ofVal(values[i], h);
         }
 
         return index.merge(columns);
@@ -106,7 +106,7 @@ public class FixedColumnSet implements ColumnSet {
         for (int i = 0; i < w; i++) {
             columns[i] = index.getOrCreateColumn(i,
                     e -> ((Series<Object>) e).fillNulls(value),
-                    () -> new SingleValueSeries<>(value, h));
+                    () -> Series.ofVal(value, h));
         }
 
         return index.merge(columns);

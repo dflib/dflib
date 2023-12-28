@@ -16,6 +16,7 @@
 * #227 Super-lazy IndexedSeries
 * #228 DataFrame : negative values for "head" and "tail"
 * #229 Add missing Avro, Excel, JSON modules to Jupyter dependencies
+* #230 Optimize SingleValueSeries creation
 
 ## Release 0.18
 

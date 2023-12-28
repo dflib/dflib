@@ -1,15 +1,14 @@
 package com.nhl.dflib.agg;
 
 import com.nhl.dflib.DataFrame;
-import com.nhl.dflib.exec.Environment;
 import com.nhl.dflib.Exp;
 import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.builder.ValueAccum;
 import com.nhl.dflib.builder.ObjectAccum;
-import com.nhl.dflib.series.SingleValueSeries;
+import com.nhl.dflib.builder.ValueAccum;
+import com.nhl.dflib.exec.Environment;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -121,8 +120,7 @@ public class WindowAggregator {
         int w = oneRowDf.width();
         Series<?>[] expandedColumns = new Series[w];
         for (int i = 0; i < w; i++) {
-            // TODO: primitive series support
-            expandedColumns[i] = new SingleValueSeries<>(oneRowDf.getColumn(i).get(0), h);
+            expandedColumns[i] = Series.ofVal(oneRowDf.getColumn(i).get(0), h);
         }
 
         return DataFrame.byColumn(oneRowDf.getColumnsIndex()).of(expandedColumns);

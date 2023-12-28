@@ -6,7 +6,6 @@ import com.nhl.dflib.GroupBy;
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.builder.ObjectAccum;
-import com.nhl.dflib.series.SingleValueSeries;
 import com.nhl.dflib.window.WindowRange;
 
 /**
@@ -22,8 +21,7 @@ public class WindowMapper {
             // expand the column to the height of the original DataFrame
             int h = df.height();
 
-            // TODO: primitive series support
-            return new SingleValueSeries<>(oneValSeries.get(0), h);
+            return Series.ofVal(oneValSeries.get(0), h);
         } else {
 
             int h = df.height();
