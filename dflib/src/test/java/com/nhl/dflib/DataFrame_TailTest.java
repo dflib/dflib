@@ -8,9 +8,9 @@ public class DataFrame_TailTest {
     @Test
     public void tail() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
-                1, "x",
-                2, "y",
-                3, "z")
+                        1, "x",
+                        2, "y",
+                        3, "z")
                 .tail(2);
 
         new DataFrameAsserts(df, "a", "b")
@@ -22,9 +22,9 @@ public class DataFrame_TailTest {
     @Test
     public void tail_Zero() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
-                1, "x",
-                2, "y",
-                3, "z")
+                        1, "x",
+                        2, "y",
+                        3, "z")
                 .tail(0);
 
         new DataFrameAsserts(df, "a", "b")
@@ -34,9 +34,9 @@ public class DataFrame_TailTest {
     @Test
     public void tail_OutOfBounds() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
-                1, "x",
-                2, "y",
-                3, "z")
+                        1, "x",
+                        2, "y",
+                        3, "z")
                 .tail(4);
 
         new DataFrameAsserts(df, "a", "b")
@@ -44,5 +44,18 @@ public class DataFrame_TailTest {
                 .expectRow(0, 1, "x")
                 .expectRow(1, 2, "y")
                 .expectRow(2, 3, "z");
+    }
+
+    @Test
+    public void negative() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                        1, "x",
+                        2, "y",
+                        3, "z")
+                .tail(-2);
+
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(1)
+                .expectRow(0, 1, "x");
     }
 }

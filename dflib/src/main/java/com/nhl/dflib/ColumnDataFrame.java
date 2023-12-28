@@ -95,12 +95,7 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public DataFrame head(int len) {
 
-        if (len < 0) {
-            throw new IllegalArgumentException("Length must be non-negative: " + len);
-        }
-
-        int maxLen = height();
-        if (maxLen <= len) {
+        if (Math.abs(len) >= height()) {
             return this;
         }
 
@@ -116,12 +111,7 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public DataFrame tail(int len) {
 
-        if (len < 0) {
-            throw new IllegalArgumentException("Length must be non-negative: " + len);
-        }
-
-        int maxLen = height();
-        if (maxLen <= len) {
+        if (Math.abs(len) >= height()) {
             return this;
         }
 

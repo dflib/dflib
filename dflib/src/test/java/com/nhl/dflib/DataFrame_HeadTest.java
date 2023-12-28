@@ -8,9 +8,9 @@ public class DataFrame_HeadTest {
     @Test
     public void withinBounds() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
-                1, "x",
-                2, "y",
-                3, "z")
+                        1, "x",
+                        2, "y",
+                        3, "z")
                 .head(2);
 
         new DataFrameAsserts(df, "a", "b")
@@ -22,9 +22,9 @@ public class DataFrame_HeadTest {
     @Test
     public void zero() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
-                1, "x",
-                2, "y",
-                3, "z")
+                        1, "x",
+                        2, "y",
+                        3, "z")
                 .head(0);
 
         new DataFrameAsserts(df, "a", "b")
@@ -34,9 +34,9 @@ public class DataFrame_HeadTest {
     @Test
     public void outOfBounds() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
-                1, "x",
-                2, "y",
-                3, "z")
+                        1, "x",
+                        2, "y",
+                        3, "z")
                 .head(4);
 
         new DataFrameAsserts(df, "a", "b")
@@ -44,5 +44,18 @@ public class DataFrame_HeadTest {
                 .expectRow(0, 1, "x")
                 .expectRow(1, 2, "y")
                 .expectRow(2, 3, "z");
+    }
+
+    @Test
+    public void negative() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                        1, "x",
+                        2, "y",
+                        3, "z")
+                .head(-2);
+
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(1)
+                .expectRow(0, 3, "z");
     }
 }

@@ -14,6 +14,7 @@
 * #225 Exp.rowNum()
 * #226 "between(..)" operator
 * #227 Super-lazy IndexedSeries
+* #228 DataFrame : negative values for "head" and "tail"
 
 ## Release 0.18
 
