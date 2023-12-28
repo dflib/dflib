@@ -26,6 +26,11 @@ public class SingleValueSeries<T> extends ObjectSeries<T> {
     }
 
     @Override
+    public Class<?> getInferredType() {
+        return getNominalType();
+    }
+
+    @Override
     public T get(int index) {
         if (index >= size) {
             throw new ArrayIndexOutOfBoundsException(index);

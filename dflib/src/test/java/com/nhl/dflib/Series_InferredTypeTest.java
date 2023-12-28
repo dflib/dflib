@@ -9,7 +9,7 @@ public class Series_InferredTypeTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void emptys(SeriesType type) {
+    public void empty(SeriesType type) {
         Series<?> s = type.createSeries();
         assertSame(Object.class, s.getInferredType());
     }
