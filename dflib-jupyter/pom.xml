@@ -20,20 +20,33 @@
             <groupId>com.nhl.dflib</groupId>
             <artifactId>dflib</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.nhl.dflib</groupId>
-            <artifactId>dflib-jdbc</artifactId>
+            <artifactId>dflib-avro</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.nhl.dflib</groupId>
             <artifactId>dflib-csv</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.nhl.dflib</groupId>
+            <artifactId>dflib-excel</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.nhl.dflib</groupId>
+            <artifactId>dflib-jdbc</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.nhl.dflib</groupId>
+            <artifactId>dflib-json</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>

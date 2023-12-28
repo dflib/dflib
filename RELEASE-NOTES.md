@@ -15,6 +15,7 @@
 * #226 "between(..)" operator
 * #227 Super-lazy IndexedSeries
 * #228 DataFrame : negative values for "head" and "tail"
+* #229 Add missing Avro, Excel, JSON modules to Jupyter dependencies
 
 ## Release 0.18
 
