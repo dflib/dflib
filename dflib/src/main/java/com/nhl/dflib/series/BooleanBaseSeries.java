@@ -95,15 +95,27 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
             throw new IllegalArgumentException("Positions size " + positions.size() + " is not the same as this size " + len);
         }
 
-        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
-        // buffer to the actual size when creating the result.
+        // skip as many of the elements as we can before allocating an Accum
+        int i = 0;
+        for (; i < len; i++) {
+            if (positions.getBool(i)) {
+                break;
+            }
+        }
 
-        // Replacing the Accum with a boolean[] gives very little performance gain, presumably due to the need for another
-        // loop index, that does not allow HotSpot to vectorize the loop. So keeping the Accum.
+        if (i == len) {
+            return Series.ofBool();
+        }
 
-        BoolAccum filtered = new BoolAccum(len);
+        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will
+        // shrink the buffer to the actual size when creating the result.
 
-        for (int i = 0; i < len; i++) {
+        // Replacing Accum with a boolean[] gives very little performance gain (no vectorization). So keeping the Accum.
+
+        BoolAccum filtered = new BoolAccum(len - i);
+        filtered.pushBool(getBool(i));
+
+        for (i++; i < len; i++) {
             if (positions.getBool(i)) {
                 filtered.pushBool(getBool(i));
             }

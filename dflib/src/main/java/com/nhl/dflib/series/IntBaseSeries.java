@@ -98,15 +98,27 @@ public abstract class IntBaseSeries implements IntSeries {
             throw new IllegalArgumentException("Positions size " + positions.size() + " is not the same as this size " + len);
         }
 
-        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
-        // buffer to the actual size when creating the result.
+        // skip as many of the elements as we can before allocating an Accum
+        int i = 0;
+        for (; i < len; i++) {
+            if (positions.getBool(i)) {
+                break;
+            }
+        }
 
-        // Replacing Accum with an int[] gives very little performance gain, presumably due to the need for another
-        // loop index, that does not allow HotSpot to vectorize the loop. So keeping the Accum.
+        if (i == len) {
+            return Series.ofInt();
+        }
 
-        IntAccum filtered = new IntAccum(len);
+        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will
+        // shrink the buffer to the actual size when creating the result.
 
-        for (int i = 0; i < len; i++) {
+        // Replacing Accum with an int[] gives very little performance gain (no vectorization). So keeping the Accum.
+
+        IntAccum filtered = new IntAccum(len - i);
+        filtered.pushInt(getInt(i));
+
+        for (i++; i < len; i++) {
             if (positions.getBool(i)) {
                 filtered.pushInt(getInt(i));
             }
@@ -120,11 +132,25 @@ public abstract class IntBaseSeries implements IntSeries {
 
         int len = size();
 
-        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
-        // buffer to the actual size when creating the result.
-        IntAccum filtered = new IntAccum(len);
+        // skip as many of the elements as we can before allocating an Accum
+        int i = 0;
+        for (; i < len; i++) {
+            if (p.test(getInt(i))) {
+                break;
+            }
+        }
 
-        for (int i = 0; i < len; i++) {
+        if (i == len) {
+            return Series.ofInt();
+        }
+
+        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will
+        // shrink the buffer to the actual size when creating the result.
+
+        IntAccum filtered = new IntAccum(len - i);
+        filtered.pushInt(getInt(i));
+
+        for (i++; i < len; i++) {
             int v = getInt(i);
             if (p.test(v)) {
                 filtered.pushInt(v);
@@ -320,7 +346,7 @@ public abstract class IntBaseSeries implements IntSeries {
 
         // reimplementing instead of calling "indexInt", as it seems to be doing less (un)boxing and is about 13% faster
         // as a result
-        
+
         int len = size();
 
         // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the

@@ -95,15 +95,27 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
             throw new IllegalArgumentException("Positions size " + positions.size() + " is not the same as this size " + len);
         }
 
-        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
-        // buffer to the actual size when creating the result.
+        // skip as many of the elements as we can before allocating an Accum
+        int i = 0;
+        for (; i < len; i++) {
+            if (positions.getBool(i)) {
+                break;
+            }
+        }
 
-        // Replacing the Accum with a double[] gives very little performance gain, presumably due to the need for another
-        // loop index, that does not allow HotSpot to vectorize the loop. So keeping the Accum.
+        if (i == len) {
+            return Series.ofDouble();
+        }
 
-        DoubleAccum filtered = new DoubleAccum(len);
+        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will
+        // shrink the buffer to the actual size when creating the result.
 
-        for (int i = 0; i < len; i++) {
+        // Replacing Accum with an double[] gives very little performance gain (no vectorization). So keeping the Accum.
+
+        DoubleAccum filtered = new DoubleAccum(len - i);
+        filtered.pushDouble(getDouble(i));
+
+        for (i++; i < len; i++) {
             if (positions.getBool(i)) {
                 filtered.pushDouble(getDouble(i));
             }
@@ -117,14 +129,25 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
 
         int len = size();
 
-        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
-        // buffer to the actual size when creating the result.
+        // skip as many of the elements as we can before allocating an Accum
+        int i = 0;
+        for (; i < len; i++) {
+            if (p.test(getDouble(i))) {
+                break;
+            }
+        }
 
-        // Replacing Accum with a double[] gives very little performance gain, presumably due to the need for another
-        // loop index, that does not allow HotSpot to vectorize the loop. So keeping the Accum.
-        DoubleAccum filtered = new DoubleAccum(len);
+        if (i == len) {
+            return Series.ofDouble();
+        }
 
-        for (int i = 0; i < len; i++) {
+        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will
+        // shrink the buffer to the actual size when creating the result.
+
+        DoubleAccum filtered = new DoubleAccum(len - i);
+        filtered.pushDouble(getDouble(i));
+
+        for (i++; i < len; i++) {
             double v = getDouble(i);
             if (p.test(v)) {
                 filtered.pushDouble(v);

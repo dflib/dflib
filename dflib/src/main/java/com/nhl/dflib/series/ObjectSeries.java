@@ -167,14 +167,30 @@ public abstract class ObjectSeries<T> implements Series<T> {
     @Override
     public Series<T> select(ValuePredicate<T> p) {
 
-        ObjectAccum<T> filtered = new ObjectAccum<>();
-
         int len = size();
 
-        for (int i = 0; i < len; i++) {
-            T value = get(i);
-            if (p.test(value)) {
-                filtered.push(value);
+        // skip as many of the elements as we can before allocating an Accum
+        int i = 0;
+        for (; i < len; i++) {
+            if (p.test(get(i))) {
+                break;
+            }
+        }
+
+        if (i == len) {
+            return Series.of();
+        }
+
+        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will
+        // shrink the buffer to the actual size when creating the result.
+
+        ObjectAccum<T> filtered = new ObjectAccum<>(len - i);
+        filtered.push(get(i));
+
+        for (i++; i < len; i++) {
+            T v = get(i);
+            if (p.test(v)) {
+                filtered.push(v);
             }
         }
 
@@ -184,22 +200,37 @@ public abstract class ObjectSeries<T> implements Series<T> {
     @Override
     public Series<T> select(BooleanSeries positions) {
 
-        int s = size();
-        int ps = positions.size();
+        int len = size();
 
-        if (s != ps) {
-            throw new IllegalArgumentException("Positions size " + ps + " is not the same as this size " + s);
+        if (len != positions.size()) {
+            throw new IllegalArgumentException("Positions size " + positions.size() + " is not the same as this size " + len);
         }
 
-        ObjectAccum<T> data = new ObjectAccum<>();
-
-        for (int i = 0; i < size(); i++) {
+        // skip as many of the matches as we can before allocating an Accum
+        int i = 0;
+        for (; i < len; i++) {
             if (positions.getBool(i)) {
-                data.push(get(i));
+                break;
             }
         }
 
-        return data.toSeries();
+        if(i == len) {
+            return Series.of();
+        }
+
+        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will
+        // shrink the buffer to the actual size when creating the result.
+
+        ObjectAccum<T> filtered = new ObjectAccum<>(len - i);
+        filtered.push(get(i));
+
+        for (i++; i < len; i++) {
+            if (positions.getBool(i)) {
+                filtered.push(get(i));
+            }
+        }
+
+        return filtered.toSeries();
     }
 
     @Override

@@ -97,14 +97,27 @@ public abstract class LongBaseSeries implements LongSeries {
             throw new IllegalArgumentException("Positions size " + positions.size() + " is not the same as this size " + len);
         }
 
-        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
-        // buffer to the actual size when creating the result.
+        // skip as many of the elements as we can before allocating an Accum
+        int i = 0;
+        for (; i < len; i++) {
+            if (positions.getBool(i)) {
+                break;
+            }
+        }
 
-        // Replacing Accum with a long[] gives very little performance gain, presumably due to the need for another
-        // loop index, that does not allow HotSpot to vectorize the loop. So keeping the Accum.
-        LongAccum filtered = new LongAccum(len);
+        if (i == len) {
+            return Series.ofLong();
+        }
 
-        for (int i = 0; i < len; i++) {
+        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will
+        // shrink the buffer to the actual size when creating the result.
+
+        // Replacing Accum with an long[] gives very little performance gain (no vectorization). So keeping the Accum.
+
+        LongAccum filtered = new LongAccum(len - i);
+        filtered.pushLong(getLong(i));
+
+        for (i++; i < len; i++) {
             if (positions.getBool(i)) {
                 filtered.pushLong(getLong(i));
             }
@@ -118,12 +131,25 @@ public abstract class LongBaseSeries implements LongSeries {
 
         int len = size();
 
-        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will shrink the
-        // buffer to the actual size when creating the result.
+        // skip as many of the elements as we can before allocating an Accum
+        int i = 0;
+        for (; i < len; i++) {
+            if (p.test(getLong(i))) {
+                break;
+            }
+        }
 
-        LongAccum filtered = new LongAccum(len);
+        if (i == len) {
+            return Series.ofLong();
+        }
 
-        for (int i = 0; i < len; i++) {
+        // Allocate the max possible buffer, trading temp memory for speed (2x speedup). The Accum will
+        // shrink the buffer to the actual size when creating the result.
+
+        LongAccum filtered = new LongAccum(len - i);
+        filtered.pushLong(getLong(i));
+
+        for (i++; i < len; i++) {
             long v = getLong(i);
             if (p.test(v)) {
                 filtered.pushLong(v);
