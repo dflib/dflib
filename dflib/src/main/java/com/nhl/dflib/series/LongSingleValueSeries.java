@@ -1,6 +1,7 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.LongSeries;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.agg.PrimitiveSeriesSum;
 import com.nhl.dflib.range.Range;
 
@@ -45,6 +46,38 @@ public class LongSingleValueSeries extends LongBaseSeries {
     @Override
     public void copyToLong(long[] to, int fromOffset, int toOffset, int len) {
         Arrays.fill(to, toOffset, toOffset + len, value);
+    }
+
+    @Override
+    public LongSeries diff(Series<? extends Long> other) {
+        if (size == 0 || other.size() == 0) {
+            return this;
+        }
+
+        for (Long t : other) {
+            if (t != null && t == value) {
+                return Series.ofLong();
+            }
+        }
+
+        return this;
+    }
+
+    @Override
+    public LongSeries intersect(Series<? extends Long> other) {
+        if (size == 0) {
+            return this;
+        } else if (other.size() == 0) {
+            return Series.ofLong();
+        }
+
+        for (Long t : other) {
+            if (t != null && t == value) {
+                return this;
+            }
+        }
+
+        return Series.ofLong();
     }
 
     @Override

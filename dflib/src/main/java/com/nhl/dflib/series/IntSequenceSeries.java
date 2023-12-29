@@ -2,6 +2,7 @@ package com.nhl.dflib.series;
 
 import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.LongSeries;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.agg.PrimitiveSeriesAvg;
 import com.nhl.dflib.agg.PrimitiveSeriesMedian;
 import com.nhl.dflib.agg.PrimitiveSeriesMinMax;
@@ -45,6 +46,65 @@ public class IntSequenceSeries extends IntBaseSeries {
 
         for (int i = 0; i < len; i++) {
             to[toOffset + i] = first + i;
+        }
+    }
+
+    @Override
+    public IntSeries diff(Series<? extends Integer> other) {
+
+        if (!(other instanceof IntSequenceSeries)) {
+            return super.diff(other);
+        }
+
+        int otherFirst = ((IntSequenceSeries) other).first;
+        int otherLastExclusive = ((IntSequenceSeries) other).lastExclusive;
+
+        int head = otherFirst - first;
+        int tail = lastExclusive - otherLastExclusive;
+
+        if (head > 0) {
+            if (tail <= 0) {
+                return head(head);
+            }
+
+            int len = head + tail;
+            int[] data = new int[len];
+            for (int i = 0; i < head; i++) {
+                data[i] = first + i;
+            }
+
+            int tailOffset = lastExclusive - tail - 1;
+            for (int i = head; i < len; i++) {
+                data[i] = tailOffset + i;
+            }
+
+            return Series.ofInt(data);
+
+        } else if (tail > 0) {
+            return tail(tail);
+        } else {
+            return Series.ofInt();
+        }
+    }
+
+    @Override
+    public IntSeries intersect(Series<? extends Integer> other) {
+        if (!(other instanceof IntSequenceSeries)) {
+            return super.intersect(other);
+        }
+
+        int otherFirst = ((IntSequenceSeries) other).first;
+        int otherLastExclusive = ((IntSequenceSeries) other).lastExclusive;
+
+        int head = otherFirst - first;
+        int tail = lastExclusive - otherLastExclusive;
+
+        if (head > 0) {
+            return tail > 0 ? head(-head).tail(-tail) : head(-head);
+        } else if (tail > 0) {
+            return tail(-tail);
+        } else {
+            return this;
         }
     }
 

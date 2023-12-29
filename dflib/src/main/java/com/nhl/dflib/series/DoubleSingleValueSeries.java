@@ -1,6 +1,7 @@
 package com.nhl.dflib.series;
 
 import com.nhl.dflib.DoubleSeries;
+import com.nhl.dflib.Series;
 import com.nhl.dflib.agg.PrimitiveSeriesSum;
 import com.nhl.dflib.range.Range;
 
@@ -45,6 +46,38 @@ public class DoubleSingleValueSeries extends DoubleBaseSeries {
     @Override
     public void copyToDouble(double[] to, int fromOffset, int toOffset, int len) {
         Arrays.fill(to, toOffset, toOffset + len, value);
+    }
+
+    @Override
+    public DoubleSeries diff(Series<? extends Double> other) {
+        if (size == 0 || other.size() == 0) {
+            return this;
+        }
+
+        for (Double t : other) {
+            if (t != null && t == value) {
+                return Series.ofDouble();
+            }
+        }
+
+        return this;
+    }
+
+    @Override
+    public DoubleSeries intersect(Series<? extends Double> other) {
+        if (size == 0) {
+            return this;
+        } else if (other.size() == 0) {
+            return Series.ofDouble();
+        }
+
+        for (Double t : other) {
+            if (t != null && t == value) {
+                return this;
+            }
+        }
+
+        return Series.ofDouble();
     }
 
     @Override

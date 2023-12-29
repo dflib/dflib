@@ -4,6 +4,7 @@ import com.nhl.dflib.Series;
 import com.nhl.dflib.range.Range;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * @param <T>
@@ -47,6 +48,38 @@ public class SingleValueSeries<T> extends ObjectSeries<T> {
     @Override
     public Series<T> materialize() {
         return this;
+    }
+
+    @Override
+    public Series<T> diff(Series<? extends T> other) {
+        if (size == 0 || other.size() == 0) {
+            return this;
+        }
+
+        for (T t : other) {
+            if (Objects.equals(value, t)) {
+                return Series.of();
+            }
+        }
+
+        return this;
+    }
+
+    @Override
+    public Series<T> intersect(Series<? extends T> other) {
+        if (size == 0) {
+            return this;
+        } else if (other.size() == 0) {
+            return (Series<T>) other;
+        }
+
+        for (T t : other) {
+            if (Objects.equals(value, t)) {
+                return this;
+            }
+        }
+
+        return Series.of();
     }
 
     @Override

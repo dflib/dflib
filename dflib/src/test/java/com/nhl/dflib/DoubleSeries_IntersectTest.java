@@ -19,7 +19,7 @@ public class DoubleSeries_IntersectTest {
     }
 
     @Test
-    public void diff() {
+    public void intersect() {
         DoubleSeries s1 = new DoubleArraySeries(5, 6, 7);
         Series<Double> s2 = Series.of(6., null, 8.);
         new SeriesAsserts(s1.intersect(s2)).expectData(6.);
