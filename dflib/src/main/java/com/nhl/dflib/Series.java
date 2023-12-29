@@ -101,8 +101,7 @@ public interface Series<T> extends Iterable<T> {
     static <T> Series<T> ofVal(T value, int size) {
         if (value == null) {
             return new SingleValueSeries<>(null, size);
-        }
-        else if (value instanceof Integer) {
+        } else if (value instanceof Integer) {
             return (Series<T>) new IntSingleValueSeries((int) value, size);
         } else if (value instanceof Long) {
             return (Series<T>) new LongSingleValueSeries((long) value, size);
@@ -343,7 +342,26 @@ public interface Series<T> extends Iterable<T> {
 
     Series<T> fillNullsForward();
 
+    /**
+     * Combines this Series with multiple other Series. This is an operation similar to SQL "UNION"
+     */
     Series<T> concat(Series<? extends T>... other);
+
+    /**
+     * Returns a Series with elements from this Series that are not present in another Series. This is an operation
+     * similar to SQL "EXCEPT".
+     *
+     * @since 1.0.0-M19
+     */
+    Series<T> diff(Series<? extends T> other);
+
+    /**
+     * Returns a Series with elements that are present in this and another Series. This is an operation similar to
+     * SQL "INTERSECT".
+     *
+     * @since 1.0.0-M19
+     */
+    Series<T> intersect(Series<? extends T> other);
 
     /**
      * Returns a Series with the first <code>len</code> elements of this Series. If this Series is shorter than the

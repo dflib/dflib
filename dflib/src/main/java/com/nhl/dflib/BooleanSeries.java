@@ -4,6 +4,8 @@ import com.nhl.dflib.op.BooleanSeriesOps;
 import com.nhl.dflib.series.BooleanArraySeries;
 import com.nhl.dflib.series.FalseSeries;
 import com.nhl.dflib.series.TrueSeries;
+import com.nhl.dflib.set.Diff;
+import com.nhl.dflib.set.Intersect;
 
 import java.util.Comparator;
 import java.util.Random;
@@ -135,6 +137,16 @@ public interface BooleanSeries extends Series<Boolean> {
     @Deprecated(since = "0.16", forRemoval = true)
     default BooleanSeries concatBoolean(BooleanSeries... other) {
         return concatBool(other);
+    }
+
+    @Override
+    default BooleanSeries diff(Series<? extends Boolean> other) {
+        return Diff.diffBool(this, other);
+    }
+
+    @Override
+    default BooleanSeries intersect(Series<? extends Boolean> other) {
+        return Intersect.intersectBool(this, other);
     }
 
     /**

@@ -17,6 +17,8 @@ import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
 import com.nhl.dflib.map.Mapper;
 import com.nhl.dflib.sample.Sampler;
+import com.nhl.dflib.set.Diff;
+import com.nhl.dflib.set.Intersect;
 import com.nhl.dflib.sort.SeriesSorter;
 
 import java.util.Arrays;
@@ -131,6 +133,16 @@ public abstract class ObjectSeries<T> implements Series<T> {
         System.arraycopy(other, 0, combined, 1, other.length);
 
         return SeriesConcat.concat(combined);
+    }
+
+    @Override
+    public Series<T> diff(Series<? extends T> other) {
+        return Diff.diff(this, other);
+    }
+
+    @Override
+    public Series<T> intersect(Series<? extends T> other) {
+        return Intersect.intersect(this, other);
     }
 
     @Override

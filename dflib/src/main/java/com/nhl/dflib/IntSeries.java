@@ -4,6 +4,8 @@ import com.nhl.dflib.series.BooleanArraySeries;
 import com.nhl.dflib.series.FalseSeries;
 import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.series.TrueSeries;
+import com.nhl.dflib.set.Diff;
+import com.nhl.dflib.set.Intersect;
 import com.nhl.dflib.sort.IntComparator;
 
 import java.util.Comparator;
@@ -89,6 +91,16 @@ public interface IntSeries extends Series<Integer> {
     }
 
     IntSeries concatInt(IntSeries... other);
+
+    @Override
+    default IntSeries diff(Series<? extends Integer> other) {
+        return Diff.diffInt(this, other);
+    }
+
+    @Override
+    default IntSeries intersect(Series<? extends Integer> other) {
+        return Intersect.intersectInt(this, other);
+    }
 
     IntSeries rangeOpenClosedInt(int fromInclusive, int toExclusive);
 

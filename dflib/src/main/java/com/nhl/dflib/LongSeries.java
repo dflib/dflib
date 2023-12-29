@@ -4,6 +4,8 @@ import com.nhl.dflib.series.BooleanArraySeries;
 import com.nhl.dflib.series.FalseSeries;
 import com.nhl.dflib.series.LongArraySeries;
 import com.nhl.dflib.series.TrueSeries;
+import com.nhl.dflib.set.Diff;
+import com.nhl.dflib.set.Intersect;
 
 import java.util.Comparator;
 import java.util.Random;
@@ -88,6 +90,16 @@ public interface LongSeries extends Series<Long> {
     }
 
     LongSeries concatLong(LongSeries... other);
+
+    @Override
+    default LongSeries diff(Series<? extends Long> other) {
+        return Diff.diffLong(this, other);
+    }
+
+    @Override
+    default LongSeries intersect(Series<? extends Long> other) {
+        return Intersect.intersectLong(this, other);
+    }
 
     LongSeries rangeOpenClosedLong(int fromInclusive, int toExclusive);
 
