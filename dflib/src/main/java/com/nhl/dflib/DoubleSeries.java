@@ -265,7 +265,7 @@ public interface DoubleSeries extends Series<Double> {
     @Override
     default BooleanSeries ne(Series<?> s) {
         if (!(s instanceof DoubleSeries)) {
-            return Series.super.eq(s);
+            return Series.super.ne(s);
         }
 
         int len = size();

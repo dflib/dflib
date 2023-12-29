@@ -17,6 +17,7 @@
 * #228 DataFrame : negative values for "head" and "tail"
 * #229 Add missing Avro, Excel, JSON modules to Jupyter dependencies
 * #230 Optimize SingleValueSeries creation
+* #232 "ne(..)" is broken for BooleanSeries, DoubleSeries, LongSeries
 
 ## Release 0.18
 

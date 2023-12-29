@@ -266,7 +266,7 @@ public interface LongSeries extends Series<Long> {
     @Override
     default BooleanSeries ne(Series<?> s) {
         if (!(s instanceof LongSeries)) {
-            return Series.super.eq(s);
+            return Series.super.ne(s);
         }
 
         int len = size();

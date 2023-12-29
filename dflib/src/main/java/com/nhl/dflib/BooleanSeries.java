@@ -377,8 +377,8 @@ public interface BooleanSeries extends Series<Boolean> {
 
     @Override
     default BooleanSeries ne(Series<?> s) {
-        if (!(s instanceof LongSeries)) {
-            return Series.super.eq(s);
+        if (!(s instanceof BooleanSeries)) {
+            return Series.super.ne(s);
         }
 
         int len = size();
