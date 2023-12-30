@@ -21,8 +21,8 @@ import com.nhl.dflib.sort.SeriesSorter;
 
 import java.lang.reflect.Array;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -721,7 +721,12 @@ public interface Series<T> extends Iterable<T> {
     default Set<T> toSet() {
         int len = size();
 
-        Set<T> set = new HashSet<>();
+        // 1. use a Set with predictable ordering.
+        // 2. Start with a set size higher than the default to minimize resizing
+        // (have to guess the capacity, as we don't know the Series cardinality)
+
+        int capacity = len < 1000 ? (int) (1 + len / 0.75) : 1300;
+        Set<T> set = new LinkedHashSet<>(capacity);
         for (int i = 0; i < len; i++) {
             set.add(get(i));
         }

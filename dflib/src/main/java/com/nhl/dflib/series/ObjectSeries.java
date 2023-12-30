@@ -24,7 +24,6 @@ import com.nhl.dflib.sort.SeriesSorter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
@@ -226,7 +225,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
             }
         }
 
-        if(i == len) {
+        if (i == len) {
             return Series.of();
         }
 
@@ -378,12 +377,8 @@ public abstract class ObjectSeries<T> implements Series<T> {
             return this;
         }
 
-        Set<Object> unique = new LinkedHashSet<>();
-        for (int i = 0; i < size; i++) {
-            unique.add(get(i));
-        }
-
-        return unique.size() < size() ? new ArraySeries<>(unique.toArray((T[]) new Object[unique.size()])) : this;
+        Set<T> unique = toSet();
+        return unique.size() < size() ? new ArraySeries<>(unique.toArray(s -> (T[]) new Object[s])) : this;
     }
 
     @Override
