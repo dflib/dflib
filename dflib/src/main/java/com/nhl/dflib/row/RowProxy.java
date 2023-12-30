@@ -3,9 +3,9 @@ package com.nhl.dflib.row;
 import com.nhl.dflib.Index;
 
 /**
- * A read-only row "proxy" provided to the outside code during DataFrame transformations and iterations. Usually the same
- * proxy points to a different row with each iteration, and hence should not be cached or relied upon outside the
- * operation scope. {@link RowProxy} is a form of a
+ * A read-only "proxy" that points to a single DataFrame row at any given time. Provided by the DataFrame to the outside
+ * code that iterates over DataFrame rows. With each iteration, the same proxy object points to a different row. Hence,
+ * it should not be accessed outside the iterator scope. {@link RowProxy} is a form of a
  * <a href="https://en.wikipedia.org/wiki/Flyweight_pattern">flyweight</a>.
  */
 public interface RowProxy {
