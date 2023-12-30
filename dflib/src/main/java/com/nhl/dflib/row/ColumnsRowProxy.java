@@ -82,7 +82,8 @@ public class ColumnsRowProxy implements RowProxy {
     public void copyRange(RowBuilder to, int fromOffset, int toOffset, int len) {
         // row can be missing in joins...
         if (rowIndex >= 0) {
-            for (int i = 0; i < columns.size(); i++) {
+            int w = data.length;
+            for (int i = 0; i < w; i++) {
                 to.set(i + toOffset, data[i].get(rowIndex));
             }
         }
@@ -97,7 +98,7 @@ public class ColumnsRowProxy implements RowProxy {
         return this;
     }
 
-    public ColumnsRowProxy nextAt(int index) {
+    public ColumnsRowProxy next(int index) {
         this.rowIndex = index;
         return this;
     }
