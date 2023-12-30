@@ -24,6 +24,7 @@ public class DynamicColsRowBuilder implements RowBuilder {
         // row with nulls ... The tradeoff is the inability to use primitive accums.
         this.columns = new LinkedHashMap<>();
         this.height = height;
+        this.rowIndex = -1;
     }
 
     public void next() {

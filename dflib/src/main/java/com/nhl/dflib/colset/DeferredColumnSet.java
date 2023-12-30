@@ -213,8 +213,8 @@ public class DeferredColumnSet implements ColumnSet {
 
         DynamicColsRowBuilder b = new DynamicColsRowBuilder(source.height());
         source.forEach(from -> {
-            mapper.map(from, b);
             b.next();
+            mapper.map(from, b);
         });
 
         return ColumnSetIndex.of(source, Index.of(b.getLabels())).merge(b.getData());
@@ -224,8 +224,8 @@ public class DeferredColumnSet implements ColumnSet {
     public DataFrame select(RowMapper mapper) {
         DynamicColsRowBuilder b = new DynamicColsRowBuilder(source.height());
         source.forEach(from -> {
-            mapper.map(from, b);
             b.next();
+            mapper.map(from, b);
         });
 
         return ColumnSetIndex.of(source, Index.of(b.getLabels())).select(b.getData());

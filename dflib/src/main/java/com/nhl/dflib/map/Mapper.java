@@ -34,8 +34,8 @@ public class Mapper {
         MultiArrayRowBuilder rowBuilder = new MultiArrayRowBuilder(resultColumns, source.height());
 
         source.forEach(from -> {
-            mapper.map(from, rowBuilder);
             rowBuilder.next();
+            mapper.map(from, rowBuilder);
         });
 
         return rowBuilder.getData();
@@ -45,8 +45,8 @@ public class Mapper {
         MultiArrayRowBuilder rowBuilder = new MultiArrayRowBuilder(resultColumns, source.size());
 
         source.forEach(from -> {
-            mapper.map(from, rowBuilder);
             rowBuilder.next();
+            mapper.map(from, rowBuilder);
         });
 
         return rowBuilder.getData();

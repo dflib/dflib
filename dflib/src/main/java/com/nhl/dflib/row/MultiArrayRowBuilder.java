@@ -17,6 +17,7 @@ public class MultiArrayRowBuilder implements RowBuilder {
         // using Object[] instead of ValueAccum as this allows to rewind rows without the need to initialize previous
         // row with nulls ... The tradeoff is the inability to use primitive accums.
         this.data = new Object[index.size()][height];
+        this.rowIndex = -1;
     }
 
     public void next() {

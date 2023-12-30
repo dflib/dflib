@@ -251,8 +251,8 @@ public class FixedColumnSet implements ColumnSet {
         MultiArrayRowBuilder b = new MultiArrayRowBuilder(index.targetIndex(), source.height());
 
         source.forEach(from -> {
-            mapper.map(from, b);
             b.next();
+            mapper.map(from, b);
         });
 
         return index.merge(b.getData());
@@ -263,8 +263,8 @@ public class FixedColumnSet implements ColumnSet {
         MultiArrayRowBuilder b = new MultiArrayRowBuilder(index.targetIndex(), source.height());
 
         source.forEach(from -> {
-            mapper.map(from, b);
             b.next();
+            mapper.map(from, b);
         });
 
         return index.select(b.getData());

@@ -61,12 +61,12 @@ public class HConcat {
         Iterator<RowProxy> ri = rf.iterator();
 
         for (int i = 0; i < h; i++) {
+            tr.next();
 
             RowProxy lr = i < lh ? li.next() : null;
             RowProxy rr = i < rh ? ri.next() : null;
 
             rowCombiner.combine(lr, rr, tr);
-            tr.next();
         }
 
         return new ColumnDataFrame(null, joinedColumns, tr.getData());
