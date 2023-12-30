@@ -5,7 +5,7 @@ import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.VConcat;
 import com.nhl.dflib.explode.Exploder;
 import com.nhl.dflib.groupby.Grouper;
-import com.nhl.dflib.row.CrossColumnRowProxy;
+import com.nhl.dflib.row.ColumnsRowProxy;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.sample.Sampler;
 import com.nhl.dflib.select.RowIndexer;
@@ -429,7 +429,7 @@ public class ColumnDataFrame implements DataFrame {
     public Iterator<RowProxy> iterator() {
         return new Iterator<>() {
 
-            final CrossColumnRowProxy rowProxy = new CrossColumnRowProxy(columnsIndex, dataColumns, height());
+            final ColumnsRowProxy rowProxy = new ColumnsRowProxy(columnsIndex, dataColumns, height());
 
             @Override
             public boolean hasNext() {

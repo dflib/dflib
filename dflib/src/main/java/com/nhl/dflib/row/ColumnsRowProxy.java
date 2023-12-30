@@ -3,7 +3,12 @@ package com.nhl.dflib.row;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 
-public class CrossColumnRowProxy implements RowProxy {
+/**
+ * A RowProxy over an array of columns.
+ *
+ * @since 1.0.0-M19
+ */
+public class ColumnsRowProxy implements RowProxy {
 
     private final Index columns;
     private final Series[] data;
@@ -11,7 +16,7 @@ public class CrossColumnRowProxy implements RowProxy {
 
     private int rowIndex;
 
-    public CrossColumnRowProxy(Index columns, Series[] data, int height) {
+    public ColumnsRowProxy(Index columns, Series[] data, int height) {
         this.columns = columns;
         this.data = data;
         this.height = height;
@@ -87,12 +92,12 @@ public class CrossColumnRowProxy implements RowProxy {
         return rowIndex + 1 < height;
     }
 
-    public CrossColumnRowProxy next() {
+    public ColumnsRowProxy next() {
         this.rowIndex++;
         return this;
     }
 
-    public CrossColumnRowProxy nextAt(int index) {
+    public ColumnsRowProxy nextAt(int index) {
         this.rowIndex = index;
         return this;
     }
