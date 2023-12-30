@@ -438,7 +438,7 @@ public class ColumnDataFrame implements DataFrame {
 
             @Override
             public RowProxy next() {
-                return rowProxy.rewind();
+                return rowProxy.next();
             }
         };
     }

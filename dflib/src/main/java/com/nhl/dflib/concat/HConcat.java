@@ -66,7 +66,7 @@ public class HConcat {
             RowProxy rr = i < rh ? ri.next() : null;
 
             rowCombiner.combine(lr, rr, tr);
-            tr.rewind();
+            tr.next();
         }
 
         return new ColumnDataFrame(null, joinedColumns, tr.getData());

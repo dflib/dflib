@@ -252,7 +252,7 @@ public class FixedColumnSet implements ColumnSet {
 
         source.forEach(from -> {
             mapper.map(from, b);
-            b.rewind();
+            b.next();
         });
 
         return index.merge(b.getData());
@@ -264,7 +264,7 @@ public class FixedColumnSet implements ColumnSet {
 
         source.forEach(from -> {
             mapper.map(from, b);
-            b.rewind();
+            b.next();
         });
 
         return index.select(b.getData());

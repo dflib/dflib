@@ -214,7 +214,7 @@ public class DeferredColumnSet implements ColumnSet {
         DynamicColsRowBuilder b = new DynamicColsRowBuilder(source.height());
         source.forEach(from -> {
             mapper.map(from, b);
-            b.rewind();
+            b.next();
         });
 
         return ColumnSetIndex.of(source, Index.of(b.getLabels())).merge(b.getData());
@@ -225,7 +225,7 @@ public class DeferredColumnSet implements ColumnSet {
         DynamicColsRowBuilder b = new DynamicColsRowBuilder(source.height());
         source.forEach(from -> {
             mapper.map(from, b);
-            b.rewind();
+            b.next();
         });
 
         return ColumnSetIndex.of(source, Index.of(b.getLabels())).select(b.getData());

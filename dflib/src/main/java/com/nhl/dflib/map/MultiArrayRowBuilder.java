@@ -61,7 +61,7 @@ public class MultiArrayRowBuilder implements RowBuilder {
         }
     }
 
-    public void rewind() {
+    public void next() {
         rowIndex++;
     }
 }

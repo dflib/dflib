@@ -65,7 +65,7 @@ public class DynamicColsRowBuilder implements RowBuilder {
         throw new UnsupportedOperationException("'setRange' is not supported by DynamicColsRowBuilder. Use 'set(String..)' instead");
     }
 
-    public void rewind() {
+    public void next() {
         rowIndex++;
     }
 }

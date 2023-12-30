@@ -87,12 +87,12 @@ public class CrossColumnRowProxy implements RowProxy {
         return rowIndex + 1 < height;
     }
 
-    public CrossColumnRowProxy rewind() {
+    public CrossColumnRowProxy next() {
         this.rowIndex++;
         return this;
     }
 
-    public CrossColumnRowProxy rewind(int index) {
+    public CrossColumnRowProxy nextAt(int index) {
         this.rowIndex = index;
         return this;
     }
