@@ -8,6 +8,26 @@ import static org.junit.jupiter.api.Assertions.*;
 public class IntSeries_ReplaceTest {
 
     @Test
+    public void replace_positions() {
+
+        Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replace(
+                Series.ofInt(1, 3),
+                Series.ofInt(10, 100));
+
+        new SeriesAsserts(s1).expectData(1, 10, 2, 100);
+    }
+
+    @Test
+    public void replace_positions_nulls() {
+
+        Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replace(
+                Series.ofInt(1, 3),
+                Series.of(10, null));
+
+        new SeriesAsserts(s1).expectData(1, 10, 2, null);
+    }
+
+    @Test
     public void replace() {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 

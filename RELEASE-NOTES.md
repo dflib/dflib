@@ -19,6 +19,7 @@
 * #230 Optimize SingleValueSeries creation
 * #231 Series.diff(), intersect()
 * #232 "ne(..)" is broken for BooleanSeries, DoubleSeries, LongSeries
+* #233 Series.replace(..) to replace positions from another Series
 
 ## Release 0.18
 

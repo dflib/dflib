@@ -524,6 +524,14 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
+     * Replaces values at positions with values from another Series. "with" Series should have the same size as
+     * the "positions" Series.
+     *
+     * @since 1.0.0-M19
+     */
+    Series<T> replace(IntSeries positions, Series<T> with);
+
+    /**
      * @param condition a BooleanSeries that determines which cells need to be replaced.
      * @param with      a value to replace matching cells with
      * @return a new series with replaced values

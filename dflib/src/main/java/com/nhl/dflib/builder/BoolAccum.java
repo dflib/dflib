@@ -23,6 +23,13 @@ public class BoolAccum implements ValueAccum<Boolean> {
         this.data = new boolean[capacity];
     }
 
+    /**
+     * @since 1.0.0-M19
+     */
+    public void fill(BooleanSeries values, int valuesOffset, int accumOffset, int len) {
+        values.copyToBool(data, valuesOffset, accumOffset, len);
+    }
+
     public void fill(int from, int to, boolean value) {
 
         if (to - from < 1) {

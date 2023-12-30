@@ -6,6 +6,16 @@ import org.junit.jupiter.api.Test;
 public class Series_ReplaceTest {
 
     @Test
+    public void replace_positions() {
+
+        Series<String> s1 = Series.of("a", "b", "n", "c").replace(
+                Series.ofInt(1, 3),
+                Series.of("B", "C"));
+
+        new SeriesAsserts(s1).expectData("a", "B", "n", "C");
+    }
+
+    @Test
     public void replace() {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 

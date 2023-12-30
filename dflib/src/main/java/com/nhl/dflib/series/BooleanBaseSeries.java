@@ -13,6 +13,7 @@ import com.nhl.dflib.ValuePredicate;
 import com.nhl.dflib.ValueToRowMapper;
 import com.nhl.dflib.builder.BoolAccum;
 import com.nhl.dflib.builder.IntAccum;
+import com.nhl.dflib.builder.ObjectAccum;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
 import com.nhl.dflib.map.Mapper;
@@ -291,6 +292,47 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         }
 
         return index.toSeries();
+    }
+
+    @Override
+    public Series<Boolean> replace(IntSeries positions, Series<Boolean> with) {
+        int rs = positions.size();
+        if (rs != with.size()) {
+            throw new IllegalArgumentException("Positions size " + rs + " is not the same replacement Series size " + with.size());
+        }
+
+        if (rs == 0) {
+            return this;
+        }
+
+        int s = size();
+
+        // Quick check for nulls in "with". May result in false positives (no nulls in Series<Boolean>), but does not
+        // require checking each value
+
+        if (with instanceof BooleanSeries) {
+
+            BooleanSeries withBool = (BooleanSeries) with;
+            BoolAccum values = new BoolAccum(s);
+
+            values.fill(this, 0, 0, s);
+
+            for (int i = 0; i < rs; i++) {
+                values.replace(positions.getInt(i), withBool.getBool(i));
+            }
+
+            return values.toSeries();
+        } else {
+            ObjectAccum<Boolean> values = new ObjectAccum<>(s);
+
+            values.fill(this, 0, 0, s);
+
+            for (int i = 0; i < rs; i++) {
+                values.replace(positions.getInt(i), with.get(i));
+            }
+
+            return values.toSeries();
+        }
     }
 
     @Override

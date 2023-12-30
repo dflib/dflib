@@ -25,6 +25,13 @@ public class DoubleAccum implements ValueAccum<Double> {
         this.data = new double[capacity];
     }
 
+    /**
+     * @since 1.0.0-M19
+     */
+    public void fill(DoubleSeries values, int valuesOffset, int accumOffset, int len) {
+        values.copyToDouble(data, valuesOffset, accumOffset, len);
+    }
+
     public void fill(int from, int to, double value) {
 
         if (to - from < 1) {

@@ -273,6 +273,30 @@ public abstract class ObjectSeries<T> implements Series<T> {
     }
 
     @Override
+    public Series<T> replace(IntSeries positions, Series<T> with) {
+        int rs = positions.size();
+        if (rs != with.size()) {
+            throw new IllegalArgumentException("Positions size " + rs + " is not the same replacement Series size " + with.size());
+        }
+
+        if (rs == 0) {
+            return this;
+        }
+
+        int s = size();
+        ObjectAccum<T> values = new ObjectAccum<>(s);
+
+        // copy the old values first, then replace a subset with the values from the index
+        values.fill(this, 0, 0, s);
+
+        for (int i = 0; i < rs; i++) {
+            values.replace(positions.getInt(i), with.get(i));
+        }
+
+        return values.toSeries();
+    }
+
+    @Override
     public Series<T> replace(BooleanSeries condition, T with) {
         int s = size();
         int r = Math.min(s, condition.size());

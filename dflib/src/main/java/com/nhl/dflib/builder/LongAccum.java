@@ -25,6 +25,13 @@ public class LongAccum implements ValueAccum<Long> {
         this.data = new long[capacity];
     }
 
+    /**
+     * @since 1.0.0-M19
+     */
+    public void fill(LongSeries values, int valuesOffset, int accumOffset, int len) {
+        values.copyToLong(data, valuesOffset, accumOffset, len);
+    }
+
     public void fill(int from, int to, long value) {
         if (to - from < 1) {
             return;

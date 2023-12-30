@@ -25,6 +25,13 @@ public class IntAccum implements ValueAccum<Integer> {
         this.data = new int[capacity];
     }
 
+    /**
+     * @since 1.0.0-M19
+     */
+    public void fill(IntSeries values, int valuesOffset, int accumOffset, int len) {
+        values.copyToInt(data, valuesOffset, accumOffset, len);
+    }
+
     public void fill(int from, int to, int value) {
         if (to - from < 1) {
             return;

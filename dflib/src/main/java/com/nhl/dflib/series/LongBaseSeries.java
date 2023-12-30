@@ -15,6 +15,7 @@ import com.nhl.dflib.ValuePredicate;
 import com.nhl.dflib.ValueToRowMapper;
 import com.nhl.dflib.builder.IntAccum;
 import com.nhl.dflib.builder.LongAccum;
+import com.nhl.dflib.builder.ObjectAccum;
 import com.nhl.dflib.builder.UniqueLongAccum;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
@@ -341,6 +342,47 @@ public abstract class LongBaseSeries implements LongSeries {
         }
 
         return new BooleanArraySeries(data);
+    }
+
+    @Override
+    public Series<Long> replace(IntSeries positions, Series<Long> with) {
+        int rs = positions.size();
+        if (rs != with.size()) {
+            throw new IllegalArgumentException("Positions size " + rs + " is not the same replacement Series size " + with.size());
+        }
+
+        if (rs == 0) {
+            return this;
+        }
+
+        int s = size();
+
+        // Quick check for nulls in "with". May result in false positives (no nulls in Series<Long>), but does not
+        // require checking each value
+
+        if (with instanceof LongSeries) {
+
+            LongSeries withLong = (LongSeries) with;
+            LongAccum values = new LongAccum(s);
+
+            values.fill(this, 0, 0, s);
+
+            for (int i = 0; i < rs; i++) {
+                values.replace(positions.getInt(i), withLong.getLong(i));
+            }
+
+            return values.toSeries();
+        } else {
+            ObjectAccum<Long> values = new ObjectAccum<>(s);
+
+            values.fill(this, 0, 0, s);
+
+            for (int i = 0; i < rs; i++) {
+                values.replace(positions.getInt(i), with.get(i));
+            }
+
+            return values.toSeries();
+        }
     }
 
     @Override

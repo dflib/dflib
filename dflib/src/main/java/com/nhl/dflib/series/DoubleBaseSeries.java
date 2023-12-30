@@ -15,6 +15,7 @@ import com.nhl.dflib.ValuePredicate;
 import com.nhl.dflib.ValueToRowMapper;
 import com.nhl.dflib.builder.DoubleAccum;
 import com.nhl.dflib.builder.IntAccum;
+import com.nhl.dflib.builder.ObjectAccum;
 import com.nhl.dflib.builder.UniqueDoubleAccum;
 import com.nhl.dflib.concat.SeriesConcat;
 import com.nhl.dflib.groupby.SeriesGrouper;
@@ -340,6 +341,47 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         }
 
         return new BooleanArraySeries(data);
+    }
+
+    @Override
+    public Series<Double> replace(IntSeries positions, Series<Double> with) {
+        int rs = positions.size();
+        if (rs != with.size()) {
+            throw new IllegalArgumentException("Positions size " + rs + " is not the same replacement Series size " + with.size());
+        }
+
+        if (rs == 0) {
+            return this;
+        }
+
+        int s = size();
+
+        // Quick check for nulls in "with". May result in false positives (no nulls in Series<Double>), but does not
+        // require checking each value
+
+        if (with instanceof DoubleSeries) {
+
+            DoubleSeries withDouble = (DoubleSeries) with;
+            DoubleAccum values = new DoubleAccum(s);
+
+            values.fill(this, 0, 0, s);
+
+            for (int i = 0; i < rs; i++) {
+                values.replace(positions.getInt(i), withDouble.getDouble(i));
+            }
+
+            return values.toSeries();
+        } else {
+            ObjectAccum<Double> values = new ObjectAccum<>(s);
+
+            values.fill(this, 0, 0, s);
+
+            for (int i = 0; i < rs; i++) {
+                values.replace(positions.getInt(i), with.get(i));
+            }
+
+            return values.toSeries();
+        }
     }
 
     @Override
