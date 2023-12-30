@@ -7,7 +7,7 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.RowMapper;
 import com.nhl.dflib.RowToValueMapper;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.map.MultiArrayRowBuilder;
+import com.nhl.dflib.row.MultiArrayRowBuilder;
 import com.nhl.dflib.series.RowMappedSeries;
 import com.nhl.dflib.series.SingleValueSeries;
 

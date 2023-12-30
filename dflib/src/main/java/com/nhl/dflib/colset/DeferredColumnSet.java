@@ -8,7 +8,7 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.RowMapper;
 import com.nhl.dflib.RowToValueMapper;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.map.DynamicColsRowBuilder;
+import com.nhl.dflib.row.DynamicColsRowBuilder;
 import com.nhl.dflib.series.RowMappedSeries;
 
 import java.util.ArrayList;

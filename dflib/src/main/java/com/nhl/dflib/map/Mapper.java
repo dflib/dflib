@@ -6,6 +6,7 @@ import com.nhl.dflib.Index;
 import com.nhl.dflib.RowMapper;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.ValueToRowMapper;
+import com.nhl.dflib.row.MultiArrayRowBuilder;
 
 public class Mapper {
 

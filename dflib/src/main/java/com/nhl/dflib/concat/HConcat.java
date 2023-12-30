@@ -5,7 +5,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.JoinType;
-import com.nhl.dflib.map.MultiArrayRowBuilder;
+import com.nhl.dflib.row.MultiArrayRowBuilder;
 import com.nhl.dflib.RowCombiner;
 import com.nhl.dflib.row.RowProxy;
 import com.nhl.dflib.series.ArraySeries;

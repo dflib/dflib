@@ -1,21 +1,20 @@
-package com.nhl.dflib.builder;
+package com.nhl.dflib.row;
 
 import com.nhl.dflib.Extractor;
 import com.nhl.dflib.Index;
-import com.nhl.dflib.row.RowBuilder;
-import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.builder.ValueHolder;
 
 /**
- * A {@link RowProxy} with an internal buffer to store row values.
+ * A {@link RowProxy} with a resettable internal buffer to store a single row.
  *
  * @since 0.16
  */
-public class ValueHolderProxy<S> implements RowProxy {
+public class ValueHolderRowProxy<S> implements RowProxy {
 
     private final Index index;
     private final ValueExtractor<S, ?>[] row;
 
-    public ValueHolderProxy(Index index, Extractor<S, ?>[] extractors) {
+    public ValueHolderRowProxy(Index index, Extractor<S, ?>[] extractors) {
         this.index = index;
         this.row = createRow(extractors);
     }
@@ -42,7 +41,7 @@ public class ValueHolderProxy<S> implements RowProxy {
         return index;
     }
 
-    // TODO: ValueHolder and RowProxy should have primitive-aware getters (kinda like ValueStore primitive-aware "push)
+    // TODO: ValueHolder should have primitive-aware getters (kinda like ValueStore primitive-aware "push)
 
     @Override
     public Object get(int columnPos) {

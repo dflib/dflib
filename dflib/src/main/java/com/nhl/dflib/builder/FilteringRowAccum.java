@@ -4,6 +4,7 @@ import com.nhl.dflib.DataFrame;
 import com.nhl.dflib.Extractor;
 import com.nhl.dflib.Index;
 import com.nhl.dflib.RowPredicate;
+import com.nhl.dflib.row.ValueHolderRowProxy;
 
 /**
  * @since 0.16
@@ -17,12 +18,12 @@ class FilteringRowAccum<S> implements RowAccum<S> {
     //  time when we accumulate the values in the delegate. It wasn't easy to separate the extraction phase and keep all
     //  the accum efficiencies for non-filtering cases
 
-    private final ValueHolderProxy rowProxy;
+    private final ValueHolderRowProxy rowProxy;
 
     FilteringRowAccum(RowAccum<S> delegate, RowPredicate filter, Index index, Extractor<S, ?>[] extractors) {
         this.delegate = delegate;
         this.filter = filter;
-        this.rowProxy = new ValueHolderProxy(index, extractors);
+        this.rowProxy = new ValueHolderRowProxy(index, extractors);
     }
 
     @Override

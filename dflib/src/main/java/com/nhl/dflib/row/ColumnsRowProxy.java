@@ -23,6 +23,20 @@ public class ColumnsRowProxy implements RowProxy {
         this.rowIndex = -1;
     }
 
+    public boolean hasNext() {
+        return rowIndex + 1 < height;
+    }
+
+    public ColumnsRowProxy next() {
+        this.rowIndex++;
+        return this;
+    }
+
+    public ColumnsRowProxy next(int index) {
+        this.rowIndex = index;
+        return this;
+    }
+
     @Override
     public Index getIndex() {
         return columns;
@@ -87,19 +101,5 @@ public class ColumnsRowProxy implements RowProxy {
                 to.set(i + toOffset, data[i].get(rowIndex));
             }
         }
-    }
-
-    public boolean hasNext() {
-        return rowIndex + 1 < height;
-    }
-
-    public ColumnsRowProxy next() {
-        this.rowIndex++;
-        return this;
-    }
-
-    public ColumnsRowProxy next(int index) {
-        this.rowIndex = index;
-        return this;
     }
 }

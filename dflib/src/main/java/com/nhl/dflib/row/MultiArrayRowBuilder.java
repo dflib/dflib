@@ -1,8 +1,7 @@
-package com.nhl.dflib.map;
+package com.nhl.dflib.row;
 
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.row.RowBuilder;
 import com.nhl.dflib.series.ArraySeries;
 
 public class MultiArrayRowBuilder implements RowBuilder {
@@ -20,12 +19,16 @@ public class MultiArrayRowBuilder implements RowBuilder {
         this.data = new Object[index.size()][height];
     }
 
+    public void next() {
+        rowIndex++;
+    }
+
     public Series<?>[] getData() {
         int w = index.size();
         Series[] series = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            series[i] = new ArraySeries(data[i]);
+            series[i] = new ArraySeries<>(data[i]);
         }
 
         return series;
@@ -59,9 +62,5 @@ public class MultiArrayRowBuilder implements RowBuilder {
         for (int i = 0; i < len; i++) {
             data[toOffset + i][rowIndex] = values[fromOffset + i];
         }
-    }
-
-    public void next() {
-        rowIndex++;
     }
 }

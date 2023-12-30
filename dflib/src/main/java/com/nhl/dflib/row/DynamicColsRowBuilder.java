@@ -1,8 +1,7 @@
-package com.nhl.dflib.map;
+package com.nhl.dflib.row;
 
 import com.nhl.dflib.Index;
 import com.nhl.dflib.Series;
-import com.nhl.dflib.row.RowBuilder;
 import com.nhl.dflib.series.ArraySeries;
 
 import java.util.Iterator;
@@ -25,6 +24,10 @@ public class DynamicColsRowBuilder implements RowBuilder {
         // row with nulls ... The tradeoff is the inability to use primitive accums.
         this.columns = new LinkedHashMap<>();
         this.height = height;
+    }
+
+    public void next() {
+        rowIndex++;
     }
 
     public String[] getLabels() {
@@ -63,9 +66,5 @@ public class DynamicColsRowBuilder implements RowBuilder {
     @Override
     public void setRange(Object[] values, int fromOffset, int toOffset, int len) {
         throw new UnsupportedOperationException("'setRange' is not supported by DynamicColsRowBuilder. Use 'set(String..)' instead");
-    }
-
-    public void next() {
-        rowIndex++;
     }
 }
