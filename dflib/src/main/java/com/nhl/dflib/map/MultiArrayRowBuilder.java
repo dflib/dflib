@@ -7,9 +7,10 @@ import com.nhl.dflib.series.ArraySeries;
 
 public class MultiArrayRowBuilder implements RowBuilder {
 
-    private Index index;
-    private Object[][] data;
-    private int row;
+    private final Index index;
+    private final Object[][] data;
+
+    private int rowIndex;
 
     public MultiArrayRowBuilder(Index index, int height) {
         this.index = index;
@@ -37,12 +38,12 @@ public class MultiArrayRowBuilder implements RowBuilder {
 
     @Override
     public void set(String columnName, Object value) {
-        data[index.position(columnName)][row] = value;
+        data[index.position(columnName)][rowIndex] = value;
     }
 
     @Override
     public void set(int columnPos, Object value) {
-        data[columnPos][row] = value;
+        data[columnPos][rowIndex] = value;
     }
 
     @Override
@@ -56,11 +57,11 @@ public class MultiArrayRowBuilder implements RowBuilder {
         }
 
         for (int i = 0; i < len; i++) {
-            data[toOffset + i][row] = values[fromOffset + i];
+            data[toOffset + i][rowIndex] = values[fromOffset + i];
         }
     }
 
-    public void reset() {
-        row++;
+    public void rewind() {
+        rowIndex++;
     }
 }

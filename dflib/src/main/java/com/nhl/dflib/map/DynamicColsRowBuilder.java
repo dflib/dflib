@@ -17,7 +17,7 @@ public class DynamicColsRowBuilder implements RowBuilder {
     private final Map<String, Object[]> columns;
     private final int height;
 
-    private int row;
+    private int rowIndex;
 
     public DynamicColsRowBuilder(int height) {
 
@@ -52,7 +52,7 @@ public class DynamicColsRowBuilder implements RowBuilder {
 
     @Override
     public void set(String columnName, Object value) {
-        columns.computeIfAbsent(columnName, n -> new Object[height])[row] = value;
+        columns.computeIfAbsent(columnName, n -> new Object[height])[rowIndex] = value;
     }
 
     @Override
@@ -65,7 +65,7 @@ public class DynamicColsRowBuilder implements RowBuilder {
         throw new UnsupportedOperationException("'setRange' is not supported by DynamicColsRowBuilder. Use 'set(String..)' instead");
     }
 
-    public void reset() {
-        row++;
+    public void rewind() {
+        rowIndex++;
     }
 }

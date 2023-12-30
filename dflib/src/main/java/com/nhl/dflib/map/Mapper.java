@@ -34,7 +34,7 @@ public class Mapper {
 
         source.forEach(from -> {
             mapper.map(from, rowBuilder);
-            rowBuilder.reset();
+            rowBuilder.rewind();
         });
 
         return rowBuilder.getData();
@@ -45,7 +45,7 @@ public class Mapper {
 
         source.forEach(from -> {
             mapper.map(from, rowBuilder);
-            rowBuilder.reset();
+            rowBuilder.rewind();
         });
 
         return rowBuilder.getData();

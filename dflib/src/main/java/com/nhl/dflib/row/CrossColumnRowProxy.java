@@ -8,6 +8,7 @@ public class CrossColumnRowProxy implements RowProxy {
     private final Index columns;
     private final Series[] data;
     private final int height;
+
     private int rowIndex;
 
     public CrossColumnRowProxy(Index columns, Series[] data, int height) {
