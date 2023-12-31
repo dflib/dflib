@@ -59,29 +59,6 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public Series<Integer> select(IntSeries positions) {
-
-        int h = positions.size();
-
-        int[] data = new int[h];
-
-        for (int i = 0; i < h; i++) {
-            int index = positions.getInt(i);
-
-            // "index < 0" (often found in outer joins) indicate nulls.
-            // If a null is encountered, we can no longer maintain IntSeries and have to change to Series<Integer>...
-            if (index < 0) {
-                // TODO: implement NullableIntSeries as a Series of long[], where NULLs are encoded as Integer.MAX_VALUE + 1
-                return selectAsObjectSeries(positions);
-            }
-
-            data[i] = getInt(index);
-        }
-
-        return new IntArraySeries(data);
-    }
-
-    @Override
     public IntSeries select(ValuePredicate<Integer> p) {
         return selectInt(p::test);
     }

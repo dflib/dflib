@@ -9,7 +9,7 @@ import com.nhl.dflib.IntSeries;
 import com.nhl.dflib.JoinType;
 import com.nhl.dflib.Series;
 import com.nhl.dflib.builder.ObjectAccum;
-import com.nhl.dflib.series.LazyIndexedSeries;
+import com.nhl.dflib.series.IndexedSeries;
 
 import java.util.Map;
 import java.util.Objects;
@@ -194,11 +194,11 @@ public class Join {
         Series[] data = new Series[len];
 
         for (int i = 0; i < llen; i++) {
-            data[i] = new LazyIndexedSeries<>(leftFrame.getColumn(i), leftIndex);
+            data[i] = new IndexedSeries<>(leftFrame.getColumn(i), leftIndex);
         }
 
         for (int i = 0; i < rlen; i++) {
-            data[llen + i] = new LazyIndexedSeries<>(rightFrame.getColumn(i), rightIndex);
+            data[llen + i] = new IndexedSeries<>(rightFrame.getColumn(i), rightIndex);
         }
 
         if (indicatorColumn != null) {
@@ -219,9 +219,9 @@ public class Join {
         for (int i = 0; i < len; i++) {
             int si = columns[i];
             if (si < llen) {
-                data[i] = new LazyIndexedSeries<>(leftFrame.getColumn(si), leftIndex);
+                data[i] = new IndexedSeries<>(leftFrame.getColumn(si), leftIndex);
             } else if (si < lrlen) {
-                data[i] = new LazyIndexedSeries<>(rightFrame.getColumn(si - llen), rightIndex);
+                data[i] = new IndexedSeries<>(rightFrame.getColumn(si - llen), rightIndex);
             } else if (si == lrlen && indicatorColumn != null) {
                 data[i] = buildIndicator(leftIndex, rightIndex);
             } else {

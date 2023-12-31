@@ -2,6 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.series.BooleanArraySeries;
 import com.nhl.dflib.series.DoubleArraySeries;
+import com.nhl.dflib.series.DoubleIndexedSeries;
 import com.nhl.dflib.series.FalseSeries;
 import com.nhl.dflib.series.TrueSeries;
 import com.nhl.dflib.set.Diff;
@@ -148,6 +149,11 @@ public interface DoubleSeries extends Series<Double> {
 
     @Override
     DoubleSeries select(BooleanSeries positions);
+
+    @Override
+    default Series<Double> select(IntSeries positions) {
+        return DoubleIndexedSeries.of(this, positions);
+    }
 
     /**
      * @since 0.11

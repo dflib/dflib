@@ -24,7 +24,7 @@ public class IntSeries_SelectTest {
     @Test
     public void positional_OutOfBounds() {
         IntSeries s = Series.ofInt(3, 4, 2);
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> s.select(0, 3));
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> s.select(0, 3).materialize());
     }
 
     @Test

@@ -382,9 +382,8 @@ public interface Series<T> extends Iterable<T> {
      */
     Series<T> select(Condition condition);
 
-
     default Series<T> select(int... positions) {
-        return select(new IntArraySeries(positions));
+        return select(Series.ofInt(positions));
     }
 
     Series<T> select(IntSeries positions);

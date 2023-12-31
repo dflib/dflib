@@ -24,7 +24,7 @@ public class BooleanSeries_SelectTest {
 
     @Test
     public void position_OutOfBounds() {
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> Series.ofBool(true, false, true).select(0, 3));
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> Series.ofBool(true, false, true).select(0, 3).materialize());
     }
 
     @Test

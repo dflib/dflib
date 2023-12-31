@@ -24,7 +24,7 @@ public class LongSeries_SelectTest {
     @Test
     public void tesPositionalt_OutOfBounds() {
         LongSeries s = Series.ofLong(3, 4, 2);
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> s.select(0, 3));
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> s.select(0, 3).materialize());
     }
 
     @Test

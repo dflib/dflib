@@ -2,6 +2,7 @@ package com.nhl.dflib;
 
 import com.nhl.dflib.op.BooleanSeriesOps;
 import com.nhl.dflib.series.BooleanArraySeries;
+import com.nhl.dflib.series.BooleanIndexedSeries;
 import com.nhl.dflib.series.FalseSeries;
 import com.nhl.dflib.series.TrueSeries;
 import com.nhl.dflib.set.Diff;
@@ -225,6 +226,11 @@ public interface BooleanSeries extends Series<Boolean> {
 
     @Override
     BooleanSeries select(Condition condition);
+
+    @Override
+    default Series<Boolean> select(IntSeries positions) {
+        return BooleanIndexedSeries.of(this, positions);
+    }
 
     /**
      * @since 0.16

@@ -6,6 +6,9 @@ import com.nhl.dflib.Series;
 import java.util.Objects;
 
 /**
+ * A lazily-resolved Series that is a subset of another Series based on an IntSeries index. Most operations are implemented
+ * as read-through on the underlying Series and do not cause "materialization".
+ *
  * @param <T> type of series value
  */
 public class IndexedSeries<T> extends ObjectSeries<T> {
@@ -27,18 +30,27 @@ public class IndexedSeries<T> extends ObjectSeries<T> {
 
     @Override
     public int size() {
-        Raw raw = this.raw;
+        Raw<T> raw = this.raw;
         return raw != null ? raw.size() : materialized.size();
     }
 
     @Override
     public T get(int index) {
-        return materialize().get(index);
+        Raw<T> raw = this.raw;
+        return raw != null ? raw.get(index) : materialized.get(index);
     }
 
     @Override
     public void copyTo(Object[] to, int fromOffset, int toOffset, int len) {
         materialize().copyTo(to, fromOffset, toOffset, len);
+    }
+
+    @Override
+    public Series<T> rangeOpenClosed(int fromInclusive, int toExclusive) {
+        Raw<T> raw = this.raw;
+        return raw != null
+                ? new IndexedSeries(raw.source, raw.includePositions.rangeOpenClosedInt(fromInclusive, toExclusive))
+                : materialized.rangeOpenClosed(fromInclusive, toExclusive);
     }
 
     @Override
@@ -78,7 +90,7 @@ public class IndexedSeries<T> extends ObjectSeries<T> {
         return materialize().fillNullsForward();
     }
 
-    static class Raw<T> {
+    protected static class Raw<T> {
         final Series<T> source;
         final IntSeries includePositions;
 
@@ -98,7 +110,7 @@ public class IndexedSeries<T> extends ObjectSeries<T> {
             return i < 0 ? null : source.get(i);
         }
 
-        ArraySeries materialize() {
+        ArraySeries<T> materialize() {
 
             int h = includePositions.size();
 

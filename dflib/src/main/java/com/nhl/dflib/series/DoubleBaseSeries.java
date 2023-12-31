@@ -57,28 +57,6 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
-    public Series<Double> select(IntSeries positions) {
-
-        int h = positions.size();
-
-        double[] data = new double[h];
-
-        for (int i = 0; i < h; i++) {
-            int index = positions.getInt(i);
-
-            // "index < 0" (often found in outer joins) indicate nulls.
-            // If a null is encountered, we can no longer maintain primitive and have to change to Series<Double>...
-            if (index < 0) {
-                return selectAsObjectSeries(positions);
-            }
-
-            data[i] = getDouble(index);
-        }
-
-        return new DoubleArraySeries(data);
-    }
-
-    @Override
     public DoubleSeries select(ValuePredicate<Double> p) {
         return selectDouble(p::test);
     }

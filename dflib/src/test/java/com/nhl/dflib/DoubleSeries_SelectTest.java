@@ -24,7 +24,7 @@ public class DoubleSeries_SelectTest {
     @Test
     public void outOfBounds() {
         DoubleSeries s =  Series.ofDouble(3, 4, 2);
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> s.select(0, 3));
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> s.select(0, 3).materialize());
     }
 
     @Test

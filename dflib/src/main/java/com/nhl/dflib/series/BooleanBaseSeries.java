@@ -56,29 +56,6 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
-    public Series<Boolean> select(IntSeries positions) {
-
-        int h = positions.size();
-
-        boolean[] data = new boolean[h];
-
-        for (int i = 0; i < h; i++) {
-            int index = positions.getInt(i);
-
-            // "index < 0" (often found in outer joins) indicate nulls.
-            // If a null is encountered, we can no longer maintain IntSeries and have to change to Series<Boolean>...
-            if (index < 0) {
-                // TODO: implement NullableBooleanSeries as a Series of short[], where null, true, false are encoded as 0, 1, -1
-                return selectAsObjectSeries(positions);
-            }
-
-            data[i] = getBool(index);
-        }
-
-        return new BooleanArraySeries(data);
-    }
-
-    @Override
     public BooleanSeries select(ValuePredicate<Boolean> p) {
         return selectAsBooleanSeries(index(p));
     }

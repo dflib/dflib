@@ -3,6 +3,7 @@ package com.nhl.dflib;
 import com.nhl.dflib.series.BooleanArraySeries;
 import com.nhl.dflib.series.FalseSeries;
 import com.nhl.dflib.series.IntArraySeries;
+import com.nhl.dflib.series.IntIndexedSeries;
 import com.nhl.dflib.series.TrueSeries;
 import com.nhl.dflib.set.Diff;
 import com.nhl.dflib.set.Intersect;
@@ -150,6 +151,11 @@ public interface IntSeries extends Series<Integer> {
 
     @Override
     IntSeries select(BooleanSeries positions);
+
+    @Override
+    default Series<Integer> select(IntSeries positions) {
+        return IntIndexedSeries.of(this, positions);
+    }
 
     /**
      * @since 0.11

@@ -3,6 +3,7 @@ package com.nhl.dflib;
 import com.nhl.dflib.series.BooleanArraySeries;
 import com.nhl.dflib.series.FalseSeries;
 import com.nhl.dflib.series.LongArraySeries;
+import com.nhl.dflib.series.LongIndexedSeries;
 import com.nhl.dflib.series.TrueSeries;
 import com.nhl.dflib.set.Diff;
 import com.nhl.dflib.set.Intersect;
@@ -148,6 +149,11 @@ public interface LongSeries extends Series<Long> {
 
     @Override
     LongSeries select(BooleanSeries positions);
+
+    @Override
+    default Series<Long> select(IntSeries positions) {
+        return LongIndexedSeries.of(this, positions);
+    }
 
     /**
      * @since 0.11

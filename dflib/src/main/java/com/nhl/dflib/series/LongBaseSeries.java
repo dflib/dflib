@@ -59,28 +59,6 @@ public abstract class LongBaseSeries implements LongSeries {
     }
 
     @Override
-    public Series<Long> select(IntSeries positions) {
-
-        int h = positions.size();
-
-        long[] data = new long[h];
-
-        for (int i = 0; i < h; i++) {
-            int index = positions.getInt(i);
-
-            // "index < 0" (often found in outer joins) indicate nulls.
-            // If a null is encountered, we can no longer maintain primitive and have to change to Series<Long>...
-            if (index < 0) {
-                return selectAsObjectSeries(positions);
-            }
-
-            data[i] = getLong(index);
-        }
-
-        return new LongArraySeries(data);
-    }
-
-    @Override
     public LongSeries select(ValuePredicate<Long> p) {
         return selectLong(p::test);
     }
