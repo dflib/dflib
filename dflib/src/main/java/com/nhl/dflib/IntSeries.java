@@ -105,7 +105,14 @@ public interface IntSeries extends Series<Integer> {
     IntSeries rangeOpenClosedInt(int fromInclusive, int toExclusive);
 
     @Override
-    IntSeries head(int len);
+    default IntSeries head(int len) {
+
+        if (Math.abs(len) >= size()) {
+            return this;
+        }
+
+        return len < 0 ? tail(size() + len) : rangeOpenClosedInt(0, len);
+    }
 
     /**
      * @deprecated in favor of {@link #head(int)} that returns an IntSeries
@@ -116,7 +123,15 @@ public interface IntSeries extends Series<Integer> {
     }
 
     @Override
-    IntSeries tail(int len);
+    default IntSeries tail(int len) {
+        int size = size();
+
+        if (Math.abs(len) >= size()) {
+            return this;
+        }
+
+        return len < 0 ? head(size + len) : rangeOpenClosedInt(size - len, size);
+    }
 
     /**
      * @deprecated in favor of {@link #tail(int)} that returns an IntSeries

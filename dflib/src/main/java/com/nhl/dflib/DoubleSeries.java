@@ -104,7 +104,14 @@ public interface DoubleSeries extends Series<Double> {
     DoubleSeries rangeOpenClosedDouble(int fromInclusive, int toExclusive);
 
     @Override
-    DoubleSeries head(int len);
+    default DoubleSeries head(int len) {
+
+        if (Math.abs(len) >= size()) {
+            return this;
+        }
+
+        return len < 0 ? tail(size() + len) : rangeOpenClosedDouble(0, len);
+    }
 
     /**
      * @deprecated in favor of {@link #head(int)}
@@ -115,7 +122,15 @@ public interface DoubleSeries extends Series<Double> {
     }
 
     @Override
-    DoubleSeries tail(int len);
+    default DoubleSeries tail(int len) {
+        int size = size();
+
+        if (Math.abs(len) >= size()) {
+            return this;
+        }
+
+        return len < 0 ? head(size + len) : rangeOpenClosedDouble(size - len, size);
+    }
 
     /**
      * @deprecated in favor of {@link #tail(int)}

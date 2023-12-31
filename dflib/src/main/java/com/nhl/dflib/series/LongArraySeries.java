@@ -162,26 +162,6 @@ public class LongArraySeries extends LongBaseSeries {
     }
 
     @Override
-    public LongSeries head(int len) {
-
-        if (Math.abs(len) >= size()) {
-            return this;
-        }
-
-        return len < 0 ? tail(size() + len) : new LongArrayRangeSeries(data, 0, len);
-    }
-
-    @Override
-    public LongSeries tail(int len) {
-
-        if (len < 0) {
-            return head(size() + len);
-        }
-
-        return len < size() ? new LongArrayRangeSeries(data, size() - len, len) : this;
-    }
-
-    @Override
     public LongSeries rangeOpenClosedLong(int fromInclusive, int toExclusive) {
         return fromInclusive == 0 && toExclusive == size()
                 ? this

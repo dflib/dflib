@@ -102,25 +102,6 @@ public class DoubleSingleValueSeries extends DoubleBaseSeries {
     }
 
     @Override
-    public DoubleSeries head(int len) {
-
-        if (Math.abs(len) >= size) {
-            return this;
-        }
-
-        return len < 0 ? tail(size + len) : new DoubleSingleValueSeries(value, len);
-    }
-
-    @Override
-    public DoubleSeries tail(int len) {
-        if (Math.abs(len) >= size) {
-            return this;
-        }
-
-        return len < 0 ? head(size + len) : new DoubleSingleValueSeries(value, len);
-    }
-
-    @Override
     public DoubleSeries cumSum() {
         double[] cumSum = PrimitiveSeriesSum.cumSumOfValue(value, size);
         return new DoubleArraySeries(cumSum);

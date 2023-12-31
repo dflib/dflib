@@ -163,7 +163,14 @@ public interface BooleanSeries extends Series<Boolean> {
     }
 
     @Override
-    BooleanSeries head(int len);
+    default BooleanSeries head(int len) {
+
+        if (Math.abs(len) >= size()) {
+            return this;
+        }
+
+        return len < 0 ? tail(size() + len) : rangeOpenClosedBool(0, len);
+    }
 
     /**
      * @since 0.16
@@ -183,7 +190,15 @@ public interface BooleanSeries extends Series<Boolean> {
     }
 
     @Override
-    BooleanSeries tail(int len);
+    default BooleanSeries tail(int len) {
+        int size = size();
+
+        if (Math.abs(len) >= size()) {
+            return this;
+        }
+
+        return len < 0 ? head(size + len) : rangeOpenClosedBool(size - len, size);
+    }
 
     /**
      * @since 0.16

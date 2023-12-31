@@ -101,25 +101,6 @@ public class LongSingleValueSeries extends LongBaseSeries {
     }
 
     @Override
-    public LongSeries head(int len) {
-
-        if (Math.abs(len) >= size) {
-            return this;
-        }
-
-        return len < 0 ? tail(size + len) : new LongSingleValueSeries(value, len);
-    }
-
-    @Override
-    public LongSeries tail(int len) {
-        if (Math.abs(len) >= size) {
-            return this;
-        }
-
-        return len < 0 ? head(size + len) : new LongSingleValueSeries(value, len);
-    }
-
-    @Override
     public LongSeries cumSum() {
         long[] cumSum = PrimitiveSeriesSum.cumSumOfValue(value, size);
         return new LongArraySeries(cumSum);

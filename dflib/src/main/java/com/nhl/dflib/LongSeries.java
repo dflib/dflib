@@ -104,7 +104,14 @@ public interface LongSeries extends Series<Long> {
     LongSeries rangeOpenClosedLong(int fromInclusive, int toExclusive);
 
     @Override
-    LongSeries head(int len);
+    default LongSeries head(int len) {
+
+        if (Math.abs(len) >= size()) {
+            return this;
+        }
+
+        return len < 0 ? tail(size() + len) : rangeOpenClosedLong(0, len);
+    }
 
     /**
      * @deprecated in favor of {@link #head(int)}
@@ -115,7 +122,15 @@ public interface LongSeries extends Series<Long> {
     }
 
     @Override
-    LongSeries tail(int len);
+    default LongSeries tail(int len) {
+        int size = size();
+
+        if (Math.abs(len) >= size()) {
+            return this;
+        }
+
+        return len < 0 ? head(size + len) : rangeOpenClosedLong(size - len, size);
+    }
 
     /**
      * @deprecated in favor of {@link #tail(int)}

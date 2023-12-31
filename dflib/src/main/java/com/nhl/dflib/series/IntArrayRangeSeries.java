@@ -244,26 +244,6 @@ public class IntArrayRangeSeries extends IntBaseSeries {
     }
 
     @Override
-    public IntSeries head(int len) {
-
-        if (Math.abs(len) >= size) {
-            return this;
-        }
-
-        return len < 0 ? tail(size + len) : new IntArrayRangeSeries(data, offset, len);
-    }
-
-    @Override
-    public IntSeries tail(int len) {
-
-        if (Math.abs(len) >= size) {
-            return this;
-        }
-
-        return len < 0 ? head(size + len) : new IntArrayRangeSeries(data, offset + size - len, len);
-    }
-
-    @Override
     public IntSeries rangeOpenClosedInt(int fromInclusive, int toExclusive) {
         return fromInclusive == 0 && toExclusive == size()
                 ? this

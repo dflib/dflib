@@ -162,26 +162,6 @@ public class DoubleArraySeries extends DoubleBaseSeries {
     }
 
     @Override
-    public DoubleSeries head(int len) {
-
-        if (Math.abs(len) >= size()) {
-            return this;
-        }
-
-        return len < 0 ? tail(size() + len) : new DoubleArrayRangeSeries(data, 0, len);
-    }
-
-    @Override
-    public DoubleSeries tail(int len) {
-
-        if (Math.abs(len) >= size()) {
-            return this;
-        }
-
-        return len < 0 ? head(size() + len) : new DoubleArrayRangeSeries(data, size() - len, len);
-    }
-
-    @Override
     public DoubleSeries rangeOpenClosedDouble(int fromInclusive, int toExclusive) {
         return fromInclusive == 0 && toExclusive == size()
                 ? this

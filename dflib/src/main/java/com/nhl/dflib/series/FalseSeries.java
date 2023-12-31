@@ -43,26 +43,6 @@ public class FalseSeries extends BooleanBaseSeries {
     }
 
     @Override
-    public BooleanSeries head(int len) {
-
-        if (Math.abs(len) >= size) {
-            return this;
-        }
-
-        return len < 0 ? tail(size + len) : new FalseSeries(len);
-    }
-
-    @Override
-    public BooleanSeries tail(int len) {
-
-        if (Math.abs(len) >= size) {
-            return this;
-        }
-
-        return len < 0 ? head(size + len) : new FalseSeries(len);
-    }
-
-    @Override
     public int firstTrue() {
         return -1;
     }

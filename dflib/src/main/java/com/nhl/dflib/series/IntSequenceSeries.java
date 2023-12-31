@@ -130,27 +130,6 @@ public class IntSequenceSeries extends IntBaseSeries {
     }
 
     @Override
-    public IntSeries head(int len) {
-
-        if (Math.abs(len) >= size()) {
-            return this;
-        }
-
-        return len < 0 ? tail(size() + len) : rangeOpenClosedInt(0, len);
-    }
-
-    @Override
-    public IntSeries tail(int len) {
-        int size = size();
-
-        if (Math.abs(len) >= size()) {
-            return this;
-        }
-
-        return len < 0 ? head(size + len) : rangeOpenClosedInt(size - len, size);
-    }
-
-    @Override
     public int size() {
         return toExclusive - fromInclusive;
     }
