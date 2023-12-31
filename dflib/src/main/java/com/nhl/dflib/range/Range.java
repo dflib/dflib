@@ -20,7 +20,7 @@ public class Range {
         }
 
         if (from + len > masterLen) {
-            throw new IllegalArgumentException("Length is out of range: " + (from + len) + " > " + masterLen + ")");
+            throw new IllegalArgumentException("Length is out of range: (" + (from + len) + " > " + masterLen + ")");
         }
     }
 }

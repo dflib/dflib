@@ -88,15 +88,16 @@ public class DoubleSingleValueSeries extends DoubleBaseSeries {
     @Override
     public DoubleSeries rangeOpenClosedDouble(int fromInclusive, int toExclusive) {
 
-        if (fromInclusive == toExclusive) {
-            return new DoubleArraySeries();
-        }
-
         if (fromInclusive == 0 && toExclusive == size) {
             return this;
         }
 
         Range.checkRange(fromInclusive, toExclusive - fromInclusive, size);
+
+        if (fromInclusive == toExclusive) {
+            return new DoubleArraySeries();
+        }
+
         return new DoubleSingleValueSeries(this.value, toExclusive - fromInclusive);
     }
 

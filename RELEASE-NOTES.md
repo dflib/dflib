@@ -20,6 +20,7 @@
 * #231 Series.diff(), intersect()
 * #232 "ne(..)" is broken for BooleanSeries, DoubleSeries, LongSeries
 * #233 Series.replace(..) to replace positions from another Series
+* #234 IntSequenceSeries.rangeOpenClosedInt() is broken
 
 ## Release 0.18
 
