@@ -3,14 +3,15 @@ package com.nhl.dflib;
 import com.nhl.dflib.colset.DeferredColumnSet;
 import com.nhl.dflib.concat.HConcat;
 import com.nhl.dflib.concat.VConcat;
-import com.nhl.dflib.explode.Exploder;
 import com.nhl.dflib.groupby.Grouper;
 import com.nhl.dflib.row.ColumnsRowProxy;
 import com.nhl.dflib.row.RowProxy;
+import com.nhl.dflib.rowset.AllRowSet;
+import com.nhl.dflib.rowset.ConditionalRowSet;
+import com.nhl.dflib.rowset.IndexedRowSet;
 import com.nhl.dflib.sample.Sampler;
 import com.nhl.dflib.select.RowIndexer;
 import com.nhl.dflib.series.EmptySeries;
-import com.nhl.dflib.series.IntArraySeries;
 import com.nhl.dflib.series.SingleValueSeries;
 import com.nhl.dflib.sort.DataFrameSorter;
 import com.nhl.dflib.stack.Stacker;
@@ -137,28 +138,6 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public DataFrame selectRows(int... rowPositions) {
-        return selectRows(new IntArraySeries(rowPositions));
-    }
-
-    @Override
-    public DataFrame selectRows(IntSeries rowPositions) {
-
-        int width = width();
-        Series<?>[] newColumnsData = new Series[width];
-        for (int i = 0; i < width; i++) {
-            newColumnsData[i] = dataColumns[i].select(rowPositions);
-        }
-
-        return new ColumnDataFrame(null, columnsIndex, newColumnsData);
-    }
-
-    @Override
-    public DataFrame selectRows(BooleanSeries condition) {
-        return selectRows(condition.indexTrue());
-    }
-
-    @Override
     public DataFrame selectRows(RowPredicate p) {
 
         IntSeries rowPositions = RowIndexer.index(this, p);
@@ -181,44 +160,6 @@ public class ColumnDataFrame implements DataFrame {
         }
 
         return selectRows(rowPositions);
-    }
-
-    @Override
-    public DataFrame selectRows(Condition condition) {
-        return selectRows(condition.eval(this).indexTrue());
-    }
-
-    @Override
-    public DataFrame uniqueRows(String... columnNamesToCompare) {
-
-        if (columnNamesToCompare.length == 0) {
-            throw new IllegalArgumentException("No 'columnNamesToCompare' for uniqueness checks");
-        }
-
-        int w = width();
-        Exp[] aggregators = new Exp[w];
-
-        for (int i = 0; i < w; i++) {
-            aggregators[i] = Exp.$col(i).first();
-        }
-
-        return group(columnNamesToCompare).agg(aggregators);
-    }
-
-    @Override
-    public DataFrame uniqueRows(int... columnNamesToCompare) {
-        if (columnNamesToCompare.length == 0) {
-            throw new IllegalArgumentException("No 'columnNamesToCompare' for uniqueness checks");
-        }
-
-        int w = width();
-        Exp[] aggregators = new Exp[w];
-
-        for (int i = 0; i < w; i++) {
-            aggregators[i] = Exp.$col(i).first();
-        }
-
-        return group(columnNamesToCompare).agg(aggregators);
     }
 
     @Override
@@ -316,11 +257,6 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public GroupBy group(Hasher by) {
         return new Grouper(by).group(this);
-    }
-
-    @Override
-    public DataFrame vExplode(int columnPos) {
-        return Exploder.explode(this, columnPos);
     }
 
     @Override
@@ -462,6 +398,21 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public ColumnSet cols() {
         return new DeferredColumnSet(this, dataColumns);
+    }
+
+    @Override
+    public RowSet rows() {
+        return new AllRowSet(this, dataColumns);
+    }
+
+    @Override
+    public RowSet rows(IntSeries positions) {
+        return new IndexedRowSet(this, dataColumns, positions);
+    }
+
+    @Override
+    public RowSet rows(BooleanSeries condition) {
+        return new ConditionalRowSet(this, dataColumns, condition);
     }
 
     @Override

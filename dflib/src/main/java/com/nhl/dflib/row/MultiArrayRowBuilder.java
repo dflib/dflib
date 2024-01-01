@@ -24,6 +24,14 @@ public class MultiArrayRowBuilder implements RowBuilder {
         rowIndex++;
     }
 
+    public void next(int index) {
+        this.rowIndex = index;
+    }
+
+    public void fill(int column, Series<?> values, int valuesOffset, int builderOffset, int len) {
+        values.copyTo(data[column], valuesOffset, builderOffset, len);
+    }
+
     public Series<?>[] getData() {
         int w = index.size();
         Series[] series = new Series[w];

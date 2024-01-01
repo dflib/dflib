@@ -1191,8 +1191,12 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @return a new DataFrame that matches the selection criteria
      * @since 0.6
+     * @deprecated in favor of {@link #rows(int...)} and then {@link RowSet#select()}
      */
-    DataFrame selectRows(int... rowPositions);
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    default DataFrame selectRows(int... rowPositions) {
+        return rows(rowPositions).select();
+    }
 
     /**
      * Selects DataFrame rows based on provided row index. This allows to reorder, filter, duplicate rows of this
@@ -1200,14 +1204,21 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @return a new DataFrame that matches the selection criteria
      * @since 0.6
+     * @deprecated in favor of {@link #rows(IntSeries)} and then {@link RowSet#select()}
      */
-    DataFrame selectRows(IntSeries rowPositions);
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    default DataFrame selectRows(IntSeries rowPositions) {
+        return rows(rowPositions).select();
+    }
 
     /**
      * @since 0.11
+     * @deprecated in favor of {@link #rows(Condition)} and then {@link RowSet#select()}
      */
-    DataFrame selectRows(Condition condition);
-
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    default DataFrame selectRows(Condition condition) {
+        return rows(condition).select();
+    }
 
     /**
      * @since 0.11
@@ -1232,8 +1243,12 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @param condition a {@link BooleanSeries} whose "true" values indicate which rows to keep in the result
      * @since 0.11
+     * @deprecated in favor of {@link #rows(BooleanSeries)} and then {@link RowSet#select()}
      */
-    DataFrame selectRows(BooleanSeries condition);
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    default DataFrame selectRows(BooleanSeries condition) {
+        return rows(condition).select();
+    }
 
     /**
      * Returns a DataFrame that contains a range of rows from this DataFrame.
@@ -1257,9 +1272,11 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Returns a DataFrame with non-repeating rows.
      *
      * @since 0.18
+     * @deprecated in favor of {@link #rows()} and then {@link RowSet#unique()}
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame uniqueRows() {
-        return uniqueRows(getColumnsIndex().getLabels());
+        return rows().unique();
     }
 
     /**
@@ -1267,16 +1284,24 @@ public interface DataFrame extends Iterable<RowProxy> {
      * ignoring all others.
      *
      * @since 0.18
+     * @deprecated in favor of {@link #rows()} and then {@link RowSet#unique(String...)}
      */
-    DataFrame uniqueRows(String... columnNamesToCompare);
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    default DataFrame uniqueRows(String... columnNamesToCompare) {
+        return rows().unique(columnNamesToCompare);
+    }
 
     /**
      * Returns a DataFrame with non-repeating rows. Uniqueness check is only done based on the specified subset of
      * columns, ignoring all others.
      *
      * @since 0.18
+     * @deprecated in favor of {@link #rows()} and then {@link RowSet#unique(int...)}
      */
-    DataFrame uniqueRows(int... columnNamesToCompare);
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    default DataFrame uniqueRows(int... columnNamesToCompare) {
+        return rows().unique(columnNamesToCompare);
+    }
 
     /**
      * @since 0.11
@@ -1484,7 +1509,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      * if the column that is being "exploded" contains Iterables or array elements.
      *
      * @since 0.16
+     * @deprecated in favor of {@link #rows()} and then {@link RowSet#explode(String)}
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame vExplode(String columnName) {
         return vExplode(getColumnsIndex().position(columnName));
     }
@@ -1494,8 +1521,12 @@ public interface DataFrame extends Iterable<RowProxy> {
      * if the column that is being "exploded" contains Iterables or array elements.
      *
      * @since 0.16
+     * @deprecated in favor of {@link #rows()} and then {@link RowSet#explode(int)}
      */
-    DataFrame vExplode(int columnPos);
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    default DataFrame vExplode(int columnPos) {
+        return rows().explode(columnPos);
+    }
 
     /**
      * @deprecated in favor of {@link #cols()} and then {@link ColumnSet#fillNulls(Object)}
@@ -1801,6 +1832,37 @@ public interface DataFrame extends Iterable<RowProxy> {
     default ColumnSet colsSample(int size, Random random) {
         return cols(getColumnsIndex().sample(size, random));
     }
+
+    /**
+     * Returns a {@link RowSet} with all rows from this DataFrame included.
+     *
+     * @since 1.0.0-M19
+     */
+    RowSet rows();
+
+    /**
+     * @since 1.0.0-M19
+     */
+    default RowSet rows(Condition rowCondition) {
+        return rows(rowCondition.eval(this).indexTrue());
+    }
+
+    /**
+     * @since 1.0.0-M19
+     */
+    default RowSet rows(int... positions) {
+        return rows(Series.ofInt(positions));
+    }
+
+    /**
+     * @since 1.0.0-M19
+     */
+    RowSet rows(IntSeries positions);
+
+    /**
+     * @since 1.0.0-M19
+     */
+    RowSet rows(BooleanSeries condition);
 
     @Override
     Iterator<RowProxy> iterator();
