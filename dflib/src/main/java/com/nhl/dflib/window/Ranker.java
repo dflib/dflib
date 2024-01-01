@@ -16,7 +16,7 @@ import java.util.Objects;
  */
 public class Ranker {
 
-    protected IntComparator sorter;
+    protected final IntComparator sorter;
 
     public Ranker(IntComparator sorter) {
         this.sorter = Objects.requireNonNull(sorter);
