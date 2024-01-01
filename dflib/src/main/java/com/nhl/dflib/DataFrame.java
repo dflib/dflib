@@ -783,7 +783,7 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * @since 0.17
-     * @deprecated use #convertToBoolColumn(String, BoolValueMapper)
+     * @deprecated use {@link #compactBool(String, BoolValueMapper)}
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default <V> DataFrame toBoolColumn(String columnLabel, BoolValueMapper<V> converter) {
@@ -792,7 +792,7 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * @since 0.17
-     * @deprecated use #convertToBoolColumn(int, BoolValueMapper)
+     * @deprecated use {@link #compactBool(int, BoolValueMapper)}
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default <V> DataFrame toBoolColumn(int pos, BoolValueMapper<V> converter) {
@@ -801,7 +801,7 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * @since 0.17
-     * @deprecated use #convertToBoolColumn(String)
+     * @deprecated use {@link #compactBool(String)}
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default DataFrame toBoolColumn(String columnLabel) {
@@ -810,7 +810,7 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * @since 0.17
-     * @deprecated use #convertToBoolColumn(int)
+     * @deprecated use {@link #compactBool(int)}
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default DataFrame toBoolColumn(int pos) {
