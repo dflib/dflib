@@ -116,6 +116,7 @@ public class GroupBy {
         }
 
         if (sorter == null) {
+            // no sort order means each row is equivalent from the ranking perspective, so return a Series of 1's
             return Ranker.sameRank(ungrouped.height());
         }
 
@@ -138,6 +139,7 @@ public class GroupBy {
         }
 
         if (sorter == null) {
+            // no sort order means each row is equivalent from the ranking perspective, so return a Series of 1's
             return Ranker.sameRank(ungrouped.height());
         }
 

@@ -260,6 +260,7 @@ public class WindowBuilder {
     private IntSeries rankPartitioned() {
         return sorter != null
                 ? dataFrame.group(partitioner).sort(sorter).rank()
+                // no sort order means each row is equivalent from the ranking perspective, so return a Series of 1's
                 : Ranker.sameRank(dataFrame.height());
     }
 
