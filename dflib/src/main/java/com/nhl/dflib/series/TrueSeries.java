@@ -43,6 +43,16 @@ public class TrueSeries extends BooleanBaseSeries {
     }
 
     @Override
+    public boolean isFalse() {
+        return false;
+    }
+
+    @Override
+    public boolean isTrue() {
+        return true;
+    }
+
+    @Override
     public int firstTrue() {
         return size > 0 ? 0 : -1;
     }
