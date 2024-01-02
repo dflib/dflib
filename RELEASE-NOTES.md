@@ -21,6 +21,7 @@
 * #232 "ne(..)" is broken for BooleanSeries, DoubleSeries, LongSeries
 * #233 Series.replace(..) to replace positions from another Series
 * #234 IntSequenceSeries.rangeOpenClosedInt() is broken
+* #235 Move to dflib.org - change POM group and Java packages
 
 ## Release 0.18
 
