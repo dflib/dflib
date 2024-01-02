@@ -18,7 +18,7 @@
     <licenses>
         <license>
             <name>Apache License</name>
-            <url>https://github.com/nhl/dflib/blob/master/LICENSE</url>
+            <url>https://github.com/dflib/dflib/blob/master/LICENSE</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -33,12 +33,12 @@
         </developer>
     </developers>
 
-    <url>https://github.com/nhl/dflib</url>
+    <url>https://github.com/dflib/dflib</url>
 
     <scm>
-        <connection>scm:git:https://github.com/nhl/dflib</connection>
-        <developerConnection>scm:git:ssh://git@github.com/nhl/dflib</developerConnection>
-        <url>https://github.com/nhl/dflib</url>
+        <connection>scm:git:https://github.com/dflib/dflib</connection>
+        <developerConnection>scm:git:ssh://git@github.com/dflib/dflib</developerConnection>
+        <url>https://github.com/dflib/dflib</url>
         <tag>HEAD</tag>
     </scm>
 
