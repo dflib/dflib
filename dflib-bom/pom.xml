@@ -4,7 +4,7 @@
 
     <!-- Do not inherit from parent to avoid leaking parent <dependencyManagement> section -->
 
-    <groupId>com.nhl.dflib</groupId>
+    <groupId>org.dflib</groupId>
     <artifactId>dflib-bom</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -59,42 +59,42 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.nhl.dflib</groupId>
+                <groupId>org.dflib</groupId>
                 <artifactId>dflib</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.nhl.dflib</groupId>
+                <groupId>org.dflib</groupId>
                 <artifactId>dflib-avro</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.nhl.dflib</groupId>
+                <groupId>org.dflib</groupId>
                 <artifactId>dflib-csv</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.nhl.dflib</groupId>
+                <groupId>org.dflib</groupId>
                 <artifactId>dflib-excel</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.nhl.dflib</groupId>
+                <groupId>org.dflib</groupId>
                 <artifactId>dflib-jdbc</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.nhl.dflib</groupId>
+                <groupId>org.dflib</groupId>
                 <artifactId>dflib-json</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.nhl.dflib</groupId>
+                <groupId>org.dflib</groupId>
                 <artifactId>dflib-junit5</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.nhl.dflib</groupId>
+                <groupId>org.dflib</groupId>
                 <artifactId>dflib-jupyter</artifactId>
                 <version>${project.version}</version>
             </dependency>
