@@ -65,10 +65,10 @@ public class FixedColumnSet implements ColumnSet {
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            columns[i] = index.getOrCreateColumn(i);
+            columns[i] = index.getOrCreateColumn(source, i);
         }
 
-        return index.merge(columns, oldToNewNames);
+        return index.merge(source, columns, oldToNewNames);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class FixedColumnSet implements ColumnSet {
             columns[i] = Series.ofVal(values[i], h);
         }
 
-        return index.merge(columns);
+        return index.merge(source, columns);
     }
 
     @Override
@@ -104,12 +104,12 @@ public class FixedColumnSet implements ColumnSet {
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            columns[i] = index.getOrCreateColumn(i,
+            columns[i] = index.getOrCreateColumn(source, i,
                     e -> ((Series<Object>) e).fillNulls(value),
                     () -> Series.ofVal(value, h));
         }
 
-        return index.merge(columns);
+        return index.merge(source, columns);
     }
 
     @Override
@@ -121,12 +121,13 @@ public class FixedColumnSet implements ColumnSet {
 
         for (int i = 0; i < w; i++) {
             columns[i] = index.getOrCreateColumn(
+                    source,
                     i,
                     e -> e.fillNullsBackwards(),
                     () -> new SingleValueSeries<>(null, h));
         }
 
-        return index.merge(columns);
+        return index.merge(source, columns);
     }
 
     @Override
@@ -138,12 +139,13 @@ public class FixedColumnSet implements ColumnSet {
 
         for (int i = 0; i < w; i++) {
             columns[i] = index.getOrCreateColumn(
+                    source,
                     i,
                     e -> e.fillNullsForward(),
                     () -> new SingleValueSeries<>(null, h));
         }
 
-        return index.merge(columns);
+        return index.merge(source, columns);
     }
 
     @Override
@@ -153,11 +155,11 @@ public class FixedColumnSet implements ColumnSet {
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            Series s = index.getOrCreateColumn(i);
+            Series s = index.getOrCreateColumn(source, i);
             columns[i] = s.fillNullsFromSeries(series);
         }
 
-        return index.merge(columns);
+        return index.merge(source, columns);
     }
 
     @Override
@@ -167,7 +169,7 @@ public class FixedColumnSet implements ColumnSet {
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            columns[i] = index.getOrCreateColumn(i);
+            columns[i] = index.getOrCreateColumn(source, i);
         }
 
         return index.select(columns);
@@ -175,7 +177,7 @@ public class FixedColumnSet implements ColumnSet {
 
     @Override
     public DataFrame map(Exp<?>... exps) {
-        return index.merge(doMap(exps));
+        return index.merge(source, doMap(exps));
     }
 
     @Override
@@ -216,12 +218,12 @@ public class FixedColumnSet implements ColumnSet {
             }
         }
 
-        return index.merge(columns);
+        return index.merge(source, columns);
     }
 
     @Override
     public DataFrame map(RowToValueMapper<?>... exps) {
-        return index.merge(doMap(exps));
+        return index.merge(source, doMap(exps));
     }
 
     @Override
@@ -255,7 +257,7 @@ public class FixedColumnSet implements ColumnSet {
             mapper.map(from, b);
         });
 
-        return index.merge(b.getData());
+        return index.merge(source, b.getData());
     }
 
     @Override
@@ -272,7 +274,7 @@ public class FixedColumnSet implements ColumnSet {
 
     @Override
     public DataFrame mapIterables(Exp<? extends Iterable<?>> mapper) {
-        return index.merge(doMapIterables(mapper));
+        return index.merge(source, doMapIterables(mapper));
     }
 
     @Override
@@ -314,7 +316,7 @@ public class FixedColumnSet implements ColumnSet {
 
     @Override
     public DataFrame mapArrays(Exp<? extends Object[]> mapper) {
-        return index.merge(doMapArrays(mapper));
+        return index.merge(source, doMapArrays(mapper));
     }
 
     @Override

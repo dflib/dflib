@@ -139,7 +139,7 @@ public class DeferredColumnSet implements ColumnSet {
             columns[i] = exps[i].eval(source);
         }
 
-        return ColumnSetIndex.of(source, Index.of(labels)).merge(columns);
+        return ColumnSetIndex.of(source.getColumnsIndex(), Index.of(labels)).merge(source, columns);
     }
 
     @Override
@@ -174,7 +174,7 @@ public class DeferredColumnSet implements ColumnSet {
             labels[i] = String.valueOf(srcW + i);
         }
 
-        return ColumnSetIndex.of(source, Index.of(labels)).merge(columns);
+        return ColumnSetIndex.of(source.getColumnsIndex(), Index.of(labels)).merge(source, columns);
     }
 
     @Override
@@ -190,7 +190,7 @@ public class DeferredColumnSet implements ColumnSet {
             columns[i] = new RowMappedSeries<>(source, mappers[i]);
         }
 
-        return ColumnSetIndex.of(source, Index.of(labels)).merge(columns);
+        return ColumnSetIndex.of(source.getColumnsIndex(), Index.of(labels)).merge(source, columns);
     }
 
     @Override
@@ -217,7 +217,7 @@ public class DeferredColumnSet implements ColumnSet {
             mapper.map(from, b);
         });
 
-        return ColumnSetIndex.of(source, Index.of(b.getLabels())).merge(b.getData());
+        return ColumnSetIndex.of(source.getColumnsIndex(), Index.of(b.getLabels())).merge(source, b.getData());
     }
 
     @Override
@@ -228,7 +228,7 @@ public class DeferredColumnSet implements ColumnSet {
             mapper.map(from, b);
         });
 
-        return ColumnSetIndex.of(source, Index.of(b.getLabels())).select(b.getData());
+        return ColumnSetIndex.of(source.getColumnsIndex(), Index.of(b.getLabels())).select(b.getData());
     }
 
     @Override
@@ -243,7 +243,7 @@ public class DeferredColumnSet implements ColumnSet {
             positions[i] = srcW + i;
         }
 
-        return ColumnSetIndex.of(source, positions).merge(columns);
+        return ColumnSetIndex.of(source.getColumnsIndex(), positions).merge(source, columns);
     }
 
     @Override
@@ -306,7 +306,7 @@ public class DeferredColumnSet implements ColumnSet {
             positions[i] = srcW + i;
         }
 
-        return ColumnSetIndex.of(source, positions).merge(columns);
+        return ColumnSetIndex.of(source.getColumnsIndex(), positions).merge(source, columns);
     }
 
     @Override

@@ -15,27 +15,27 @@ import java.util.function.UnaryOperator;
  */
 public abstract class ColumnSetIndex {
 
-    public static ColumnSetIndex ofAdd(DataFrame source, String... columns) {
-        Index noColumnsFromSource = source.getColumnsIndex().deduplicateLabels(columns);
-        return new ByLabelColumnSetIndex(source, noColumnsFromSource, noColumnsFromSource.getLabels());
+    public static ColumnSetIndex ofAdd(Index columnIndex, String... columns) {
+        Index noColumnsFromSource = columnIndex.deduplicateLabels(columns);
+        return new ByLabelColumnSetIndex(columnIndex, noColumnsFromSource, noColumnsFromSource.getLabels());
     }
 
-    public static ColumnSetIndex of(DataFrame source, String... columns) {
-        return new ByLabelColumnSetIndex(source, Index.ofDeduplicated(columns), columns);
+    public static ColumnSetIndex of(Index columnIndex, String... columns) {
+        return new ByLabelColumnSetIndex(columnIndex, Index.ofDeduplicated(columns), columns);
     }
 
-    public static ColumnSetIndex of(DataFrame source, Index index) {
-        return new ByLabelColumnSetIndex(source, index, index.getLabels());
+    public static ColumnSetIndex of(Index columnIndex, Index index) {
+        return new ByLabelColumnSetIndex(columnIndex, index, index.getLabels());
     }
 
-    public static ColumnSetIndex of(DataFrame source, int[] positions) {
-        return new ByPosColumnSetIndex(source, positions);
+    public static ColumnSetIndex of(Index columnIndex, int[] positions) {
+        return new ByPosColumnSetIndex(columnIndex, positions);
     }
 
-    final DataFrame source;
+    final Index columnIndex;
 
-    protected ColumnSetIndex(DataFrame source) {
-        this.source = source;
+    protected ColumnSetIndex(Index columnIndex) {
+        this.columnIndex = columnIndex;
     }
 
     public abstract int size();
@@ -49,37 +49,38 @@ public abstract class ColumnSetIndex {
     }
 
     public DataFrame replace(Series<?>[] columns, Map<String, String> oldToNewNames) {
-        return new ColumnDataFrame(null, source.getColumnsIndex().rename(oldToNewNames), columns);
+        return new ColumnDataFrame(null, columnIndex.rename(oldToNewNames), columns);
     }
 
-    public DataFrame merge(Series<?>[] columns, Map<String, String> oldToNewNames) {
+    public DataFrame merge(DataFrame source, Series<?>[] columns, Map<String, String> oldToNewNames) {
         ColumnSetMerger merger = merger();
         return new ColumnDataFrame(null,
                 merger.mergedIndex().rename(oldToNewNames),
                 merger.mergedColumns(source, columns));
     }
 
-    public DataFrame merge(Series<?>[] columns) {
+    public DataFrame merge(DataFrame source, Series<?>[] columns) {
         ColumnSetMerger merger = merger();
         return new ColumnDataFrame(null,
                 merger.mergedIndex(),
                 merger.mergedColumns(source, columns));
     }
 
-    public Series<?> getOrCreateColumn(int pos) {
+    public Series<?> getOrCreateColumn(DataFrame source, int pos) {
         String name = originalLabels()[pos];
-        return source.getColumnsIndex().hasLabel(name)
+        return columnIndex.hasLabel(name)
                 ? source.getColumn(name)
                 : new SingleValueSeries<>(null, source.height());
     }
 
     public Series<?> getOrCreateColumn(
+            DataFrame source,
             int pos,
             UnaryOperator<Series<?>> andApplyToExisting,
             Supplier<Series<?>> createNew) {
 
         String name = originalLabels()[pos];
-        return source.getColumnsIndex().hasLabel(name)
+        return columnIndex.hasLabel(name)
                 ? andApplyToExisting.apply(source.getColumn(name))
                 : createNew.get();
     }
@@ -98,8 +99,8 @@ public abstract class ColumnSetIndex {
         final String[] originalLabels;
         final Index targetIndex;
 
-        ByLabelColumnSetIndex(DataFrame source, Index targetIndex, String[] labels) {
-            super(source);
+        ByLabelColumnSetIndex(Index columnIndex, Index targetIndex, String[] labels) {
+            super(columnIndex);
             this.targetIndex = targetIndex;
             this.originalLabels = labels;
         }
@@ -121,7 +122,7 @@ public abstract class ColumnSetIndex {
 
         @Override
         ColumnSetMerger merger() {
-            return ColumnSetMerger.of(source.getColumnsIndex(), originalLabels);
+            return ColumnSetMerger.of(columnIndex, originalLabels);
         }
     }
 
@@ -131,8 +132,8 @@ public abstract class ColumnSetIndex {
         volatile String[] originalLabels;
         volatile Index targetIndex;
 
-        ByPosColumnSetIndex(DataFrame source, int[] positions) {
-            super(source);
+        ByPosColumnSetIndex(Index columnIndex, int[] positions) {
+            super(columnIndex);
             this.positions = positions;
         }
 
@@ -164,14 +165,13 @@ public abstract class ColumnSetIndex {
         }
 
         private String[] createOriginalLabels() {
-            Index sourceIndex = source.getColumnsIndex();
-            int sourceLen = sourceIndex.size();
+            int sourceLen = columnIndex.size();
 
             int len = positions.length;
             String[] labels = new String[len];
             for (int i = 0; i < len; i++) {
                 labels[i] = positions[i] < sourceLen
-                        ? sourceIndex.getLabel(positions[i])
+                        ? columnIndex.getLabel(positions[i])
                         : String.valueOf(positions[i]);
             }
 
@@ -180,7 +180,7 @@ public abstract class ColumnSetIndex {
 
         @Override
         ColumnSetMerger merger() {
-            return ColumnSetMerger.of(source.getColumnsIndex(), positions);
+            return ColumnSetMerger.of(columnIndex, positions);
         }
     }
 }

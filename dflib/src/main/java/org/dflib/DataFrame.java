@@ -1721,7 +1721,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 1.0.0-M19
      */
     default ColumnSet cols(Index columnsIndex) {
-        return new FixedColumnSet(ColumnSetIndex.of(this, columnsIndex), this);
+        return new FixedColumnSet(ColumnSetIndex.of(getColumnsIndex(), columnsIndex), this);
     }
 
     /**
@@ -1732,7 +1732,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 1.0.0-M19
      */
     default ColumnSet cols(String... columns) {
-        return new FixedColumnSet(ColumnSetIndex.of(this, columns), this);
+        return new FixedColumnSet(ColumnSetIndex.of(getColumnsIndex(), columns), this);
     }
 
     /**
@@ -1743,7 +1743,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 1.0.0-M19
      */
     default ColumnSet colsAdd(String... columns) {
-        return new FixedColumnSet(ColumnSetIndex.ofAdd(this, columns), this);
+        return new FixedColumnSet(ColumnSetIndex.ofAdd(getColumnsIndex(), columns), this);
     }
 
     /**
@@ -1776,7 +1776,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 1.0.0-M19
      */
     default ColumnSet cols(int... columns) {
-        return new FixedColumnSet(ColumnSetIndex.of(this, columns), this);
+        return new FixedColumnSet(ColumnSetIndex.of(getColumnsIndex(), columns), this);
     }
 
     /**
