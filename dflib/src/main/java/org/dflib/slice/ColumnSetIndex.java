@@ -1,4 +1,4 @@
-package org.dflib.colset;
+package org.dflib.slice;
 
 import org.dflib.ColumnDataFrame;
 import org.dflib.DataFrame;

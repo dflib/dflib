@@ -1,6 +1,6 @@
 package org.dflib;
 
-import org.dflib.colset.DeferredColumnSet;
+import org.dflib.slice.DeferredColumnSet;
 import org.dflib.concat.HConcat;
 import org.dflib.concat.VConcat;
 import org.dflib.explode.Exploder;
