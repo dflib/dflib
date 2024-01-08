@@ -130,15 +130,11 @@ public class DataFrame_AddColumnsTest {
 
     @Test
     public void addColumns_RowMapper() {
-        DataFrame df = DataFrame.foldByRow("a").of(
-                        1,
-                        2)
-                .addColumns(new String[]{"c", "d"},
-                        (from, to) -> {
-                            int i = (int) from.get(0);
-                            to.set(0, i + 1);
-                            to.set(1, i + 2);
-                        });
+        DataFrame df = DataFrame.foldByRow("a").of(1, 2)
+                .compactInt(0, 0)
+                .addColumns(new String[]{"c", "d"}, (f, t) -> t
+                        .set(0, f.getInt(0) + 1)
+                        .set(1, f.getInt(0) + 2));
 
         new DataFrameAsserts(df, "a", "c", "d")
                 .expectHeight(2)

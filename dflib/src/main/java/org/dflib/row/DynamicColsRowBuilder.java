@@ -55,17 +55,18 @@ public class DynamicColsRowBuilder implements RowBuilder {
     }
 
     @Override
-    public void set(String columnName, Object value) {
+    public RowBuilder set(String columnName, Object value) {
         columns.computeIfAbsent(columnName, n -> new Object[height])[rowIndex] = value;
+        return this;
     }
 
     @Override
-    public void set(int columnPos, Object value) {
+    public RowBuilder set(int columnPos, Object value) {
         throw new UnsupportedOperationException("'set' by position is not supported by DynamicColsRowBuilder. Use 'set(String..)' instead");
     }
 
     @Override
-    public void setRange(Object[] values, int fromOffset, int toOffset, int len) {
+    public RowBuilder setRange(Object[] values, int fromOffset, int toOffset, int len) {
         throw new UnsupportedOperationException("'setRange' is not supported by DynamicColsRowBuilder. Use 'set(String..)' instead");
     }
 }

@@ -22,6 +22,7 @@
 * #233 Series.replace(..) to replace positions from another Series
 * #234 IntSequenceSeries.rangeOpenClosedInt() is broken
 * #235 Move to dflib.org - change POM group and Java packages
+* #236 Fluent RowBuilder.set(..)
 
 ## Release 0.18
 

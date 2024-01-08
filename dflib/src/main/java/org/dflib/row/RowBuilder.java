@@ -11,14 +11,14 @@ public interface RowBuilder {
 
     Index getIndex();
 
-    void set(int columnPos, Object value);
+    RowBuilder set(int columnPos, Object value);
 
-    void set(String columnName, Object value);
+    RowBuilder set(String columnName, Object value);
 
-    void setRange(Object[] values, int fromOffset, int toOffset, int len);
+    RowBuilder setRange(Object[] values, int fromOffset, int toOffset, int len);
 
-    default void setValues(Object... values) {
-        setRange(values, 0, 0, getIndex().size());
+    default RowBuilder setValues(Object... values) {
+        return setRange(values, 0, 0, getIndex().size());
     }
 }
 
