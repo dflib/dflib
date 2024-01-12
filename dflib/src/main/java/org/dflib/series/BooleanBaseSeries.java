@@ -214,7 +214,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     @Override
     public void copyTo(Object[] to, int fromOffset, int toOffset, int len) {
         for (int i = 0; i < len; i++) {
-            to[toOffset + i] = getBool(i);
+            to[toOffset + i] = getBool(fromOffset + i);
         }
     }
 

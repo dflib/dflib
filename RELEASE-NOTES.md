@@ -23,6 +23,7 @@
 * #234 IntSequenceSeries.rangeOpenClosedInt() is broken
 * #235 Move to dflib.org - change POM group and Java packages
 * #236 Fluent RowBuilder.set(..)
+* #237 Primitive Series "copyTo" ignores "fromOffset"
 
 ## Release 0.18
 

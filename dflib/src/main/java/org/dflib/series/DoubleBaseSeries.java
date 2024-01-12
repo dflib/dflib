@@ -265,7 +265,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     @Override
     public void copyTo(Object[] to, int fromOffset, int toOffset, int len) {
         for (int i = 0; i < len; i++) {
-            to[toOffset + i] = getDouble(i);
+            to[toOffset + i] = getDouble(fromOffset + i);
         }
     }
 

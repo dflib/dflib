@@ -267,7 +267,7 @@ public abstract class LongBaseSeries implements LongSeries {
     @Override
     public void copyTo(Object[] to, int fromOffset, int toOffset, int len) {
         for (int i = 0; i < len; i++) {
-            to[toOffset + i] = getLong(i);
+            to[toOffset + i] = getLong(fromOffset + i);
         }
     }
 
