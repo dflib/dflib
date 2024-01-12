@@ -27,6 +27,18 @@ public class BoolAccum implements ValueAccum<Boolean> {
      * @since 1.0.0-M19
      */
     public void fill(BooleanSeries values, int valuesOffset, int accumOffset, int len) {
+        if (len <= 0) {
+            return;
+        }
+
+        int pastFillEnd = accumOffset + len;
+        if (data.length < pastFillEnd) {
+            expand(pastFillEnd);
+            size = pastFillEnd;
+        } else if (size < pastFillEnd) {
+            size = pastFillEnd;
+        }
+
         values.copyToBool(data, valuesOffset, accumOffset, len);
     }
 

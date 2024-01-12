@@ -31,6 +31,19 @@ public class ObjectAccum<T> implements ValueAccum<T> {
      * @since 1.0.0-M19
      */
     public void fill(Series<T> values, int valuesOffset, int accumOffset, int len) {
+
+        if (len <= 0) {
+            return;
+        }
+
+        int pastFillEnd = accumOffset + len;
+        if (data.length < pastFillEnd) {
+            expand(pastFillEnd);
+            size = pastFillEnd;
+        } else if (size < pastFillEnd) {
+            size = pastFillEnd;
+        }
+
         values.copyTo(data, valuesOffset, accumOffset, len);
     }
 

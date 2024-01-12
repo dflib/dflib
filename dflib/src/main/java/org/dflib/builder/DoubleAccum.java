@@ -29,6 +29,18 @@ public class DoubleAccum implements ValueAccum<Double> {
      * @since 1.0.0-M19
      */
     public void fill(DoubleSeries values, int valuesOffset, int accumOffset, int len) {
+        if (len <= 0) {
+            return;
+        }
+
+        int pastFillEnd = accumOffset + len;
+        if (data.length < pastFillEnd) {
+            expand(pastFillEnd);
+            size = pastFillEnd;
+        } else if (size < pastFillEnd) {
+            size = pastFillEnd;
+        }
+
         values.copyToDouble(data, valuesOffset, accumOffset, len);
     }
 
