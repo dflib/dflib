@@ -24,7 +24,7 @@
 * #235 Move to dflib.org - change POM group and Java packages
 * #236 Fluent RowBuilder.set(..)
 * #237 Primitive Series "copyTo" ignores "fromOffset"
-* #238 Exp.mapVal(..) to allow mapping nulls
+* #238  Exp.mapVal(..) / mapConditionVal(..) to allow mapping nulls
 
 ## Release 0.18
 

@@ -20,8 +20,28 @@ public class MapCondition1<F> extends Condition1<F> {
         return new MapCondition1<>(opName, exp, op);
     }
 
+    /**
+     * @since 1.0.0-M19
+     */
+    public static <F> MapCondition1<F> mapValWithNulls(String opName, Exp<F> exp, Predicate<F> predicate) {
+        return new MapCondition1<>(opName, exp, valToSeriesWithNulls(predicate));
+    }
+
     public static <F> MapCondition1<F> mapVal(String opName, Exp<F> exp, Predicate<F> predicate) {
         return new MapCondition1<>(opName, exp, valToSeries(predicate));
+    }
+
+    protected static <F> Function<Series<F>, BooleanSeries> valToSeriesWithNulls(Predicate<F> predicate) {
+        return s -> {
+            int len = s.size();
+            BoolAccum accum = new BoolAccum(len);
+            for (int i = 0; i < len; i++) {
+                F v = s.get(i);
+                accum.pushBool(predicate.test(v));
+            }
+
+            return accum.toSeries();
+        };
     }
 
     protected static <F> Function<Series<F>, BooleanSeries> valToSeries(Predicate<F> predicate) {

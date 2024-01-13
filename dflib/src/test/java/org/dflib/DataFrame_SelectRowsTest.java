@@ -80,12 +80,13 @@ public class DataFrame_SelectRowsTest {
     @Test
     public void byColumn_Name() {
 
-        DataFrame df = DataFrame.foldByRow("a").of(10, 20)
-                .selectRows("a", (Integer v) -> v > 15);
+        DataFrame df = DataFrame.foldByRow("a").of(10, 20, null)
+                .selectRows("a", (Integer v) -> v == null || v > 15);
 
         new DataFrameAsserts(df, "a")
-                .expectHeight(1)
-                .expectRow(0, 20);
+                .expectHeight(2)
+                .expectRow(0, 20)
+                .expectRow(1, null);
     }
 
     @Test

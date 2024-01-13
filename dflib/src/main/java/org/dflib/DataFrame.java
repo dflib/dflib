@@ -21,6 +21,8 @@ import java.util.Random;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
+import static org.dflib.Exp.$col;
+
 /**
  * An immutable 2D data container with support for a variety of data transformations, queries, joins, etc. Every such
  * transformation returns a new DataFrame object and does not affect the original DataFrame.
@@ -1214,16 +1216,21 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * @since 0.11
+     * @deprecated in favor of {@link #selectRows(Condition)}
      */
+    @Deprecated(since = "1.0.0-M19")
     default <V> DataFrame selectRows(String columnName, ValuePredicate<V> p) {
-        int pos = getColumnsIndex().position(columnName);
-        return selectRows(pos, p);
+        return selectRows($col(columnName).mapConditionVal(v -> p.test((V) v), false));
     }
 
     /**
      * @since 0.11
+     * @deprecated in favor of {@link #selectRows(Condition)}
      */
-    <V> DataFrame selectRows(int columnPos, ValuePredicate<V> p);
+    @Deprecated(since = "1.0.0-M19")
+    default <V> DataFrame selectRows(int columnPos, ValuePredicate<V> p) {
+        return selectRows($col(columnPos).mapConditionVal(v -> p.test((V) v), false));
+    }
 
     /**
      * Returns a DataFrame with subset of rows matching condition.

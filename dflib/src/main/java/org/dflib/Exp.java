@@ -455,14 +455,10 @@ public interface Exp<T> {
      * @since 1.0.0-M19
      */
     default <R> Exp<R> mapVal(Function<T, R> op, boolean hideNulls) {
-        Function<T, R> nullSafeOp = hideNulls
-                ? t -> t != null ? op.apply(t) : null
-                : op;
-
         // Exp type vagueness ALERT: this is one of those expressions where we can't infer the correct return type...
         return hideNulls
-                ? MapExp1.mapVal("map", (Class<R>) Object.class, this, nullSafeOp)
-                : MapExp1.mapValWithNulls("map", (Class<R>) Object.class, this, nullSafeOp);
+                ? MapExp1.mapVal("map", (Class<R>) Object.class, this, op)
+                : MapExp1.mapValWithNulls("map", (Class<R>) Object.class, this, op);
     }
 
     /**
@@ -631,7 +627,16 @@ public interface Exp<T> {
      * @since 0.15
      */
     default Condition mapConditionVal(Predicate<T> op) {
-        return MapCondition1.mapVal("map", this, op);
+        return mapConditionVal(op, true);
+    }
+
+    /**
+     * @since 1.0.0-M19
+     */
+    default Condition mapConditionVal(Predicate<T> op, boolean hideNulls) {
+        return hideNulls
+                ? MapCondition1.mapVal("map", this, op)
+                : MapCondition1.mapValWithNulls("map", this, op);
     }
 
     /**

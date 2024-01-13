@@ -1,6 +1,5 @@
 package org.dflib;
 
-import org.dflib.slice.DeferredColumnSet;
 import org.dflib.concat.HConcat;
 import org.dflib.concat.VConcat;
 import org.dflib.explode.Exploder;
@@ -12,8 +11,8 @@ import org.dflib.select.RowIndexer;
 import org.dflib.series.EmptySeries;
 import org.dflib.series.IntArraySeries;
 import org.dflib.series.SingleValueSeries;
-import org.dflib.slice.FixedColumnSet;
 import org.dflib.slice.DeferredColumnSet;
+import org.dflib.slice.FixedColumnSet;
 import org.dflib.sort.DataFrameSorter;
 import org.dflib.stack.Stacker;
 
@@ -164,18 +163,6 @@ public class ColumnDataFrame implements DataFrame {
     public DataFrame selectRows(RowPredicate p) {
 
         IntSeries rowPositions = RowIndexer.index(this, p);
-
-        // there's no reordering or index duplication during "select", so we can compare size to detect changes
-        if (rowPositions.size() == height()) {
-            return this;
-        }
-
-        return selectRows(rowPositions);
-    }
-
-    @Override
-    public <V> DataFrame selectRows(int columnPos, ValuePredicate<V> p) {
-        IntSeries rowPositions = dataColumns[columnPos].index(p);
 
         // there's no reordering or index duplication during "select", so we can compare size to detect changes
         if (rowPositions.size() == height()) {
