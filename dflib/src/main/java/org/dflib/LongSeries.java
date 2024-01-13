@@ -166,7 +166,7 @@ public interface LongSeries extends Series<Long> {
 
     /**
      * @since 0.11
-     * @deprecated in favor of {@link #select(ValuePredicate)}
+     * @deprecated in favor of {@link #select(BooleanSeries)}
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default LongSeries selectLong(BooleanSeries positions) {

@@ -166,7 +166,7 @@ public interface DoubleSeries extends Series<Double> {
 
     /**
      * @since 0.11
-     * @deprecated in favor of {@link #select(ValuePredicate)}
+     * @deprecated in favor of {@link #select(BooleanSeries)}
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default DoubleSeries selectDouble(BooleanSeries positions) {
