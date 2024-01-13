@@ -20,8 +20,19 @@ public class MapExp1<F, T> extends Exp1<F, T> {
         return new MapExp1<>(opName, type, exp, op);
     }
 
+    /**
+     * @since 1.0.0-M19
+     */
+    public static <F, T> MapExp1<F, T> mapValWithNulls(String opName, Class<T> type, Exp<F> exp, Function<F, T> op) {
+        return new MapExp1<>(opName, type, exp, valToSeriesWithNulls(op));
+    }
+
     public static <F, T> MapExp1<F, T> mapVal(String opName, Class<T> type, Exp<F> exp, Function<F, T> op) {
         return new MapExp1<>(opName, type, exp, valToSeries(op));
+    }
+
+    protected static <F, T> Function<Series<F>, Series<T>> valToSeriesWithNulls(Function<F, T> op) {
+        return s -> s.map(op::apply);
     }
 
     protected static <F, T> Function<Series<F>, Series<T>> valToSeries(Function<F, T> op) {

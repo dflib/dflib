@@ -438,12 +438,31 @@ public interface Exp<T> {
      * Creates an expression that takes the result of this Exp and applies the provided value transformation function
      * to each value. Note that DFLib will only pass non-null values to the "op" function. Any source "null" values
      * automatically evaluate to "null" result. This assumption makes writing transformation functions easier
-     * (and closer to how SQL operates). If special handling of nulls is required, consider using
-     * {@link #map(Function)} method instead.
+     * (and closer to how SQL operates). If the "op" wants to process nulls, use {@link #mapVal(Function, boolean)}
+     * with the "false" second parameter.
      */
     default <R> Exp<R> mapVal(Function<T, R> op) {
+        return mapVal(op, true);
+    }
+
+    /**
+     * Creates an expression that takes the result of this Exp and applies the provided value transformation function
+     * to each value. If "hideNulls" argument is "true", DFLib will only pass non-null values to the "op"
+     * function, so any source "null" value would automatically evaluate to "null". This makes writing
+     * transformation functions easier (and closer to how SQL operates), but if nulls are relevant to the transformation
+     * function, "false" can be passed to this method.
+     *
+     * @since 1.0.0-M19
+     */
+    default <R> Exp<R> mapVal(Function<T, R> op, boolean hideNulls) {
+        Function<T, R> nullSafeOp = hideNulls
+                ? t -> t != null ? op.apply(t) : null
+                : op;
+
         // Exp type vagueness ALERT: this is one of those expressions where we can't infer the correct return type...
-        return MapExp1.mapVal("map", (Class<R>) Object.class, this, op);
+        return hideNulls
+                ? MapExp1.mapVal("map", (Class<R>) Object.class, this, nullSafeOp)
+                : MapExp1.mapValWithNulls("map", (Class<R>) Object.class, this, nullSafeOp);
     }
 
     /**

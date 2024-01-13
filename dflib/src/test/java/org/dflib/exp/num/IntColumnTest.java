@@ -277,6 +277,19 @@ public class IntColumnTest {
         new SeriesAsserts(exp.eval(df)).expectData("_2", "_4", null);
     }
 
+    @Test
+    public void mapVal_Unary_WithNulls() {
+
+        Exp<String> exp = $int("b").mapVal(i -> "_" + i, false);
+
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                1, 2,
+                3, 4,
+                5, null);
+
+        new SeriesAsserts(exp.eval(df)).expectData("_2", "_4", "_null");
+    }
+
 
     @Test
     public void map_Binary() {
