@@ -410,7 +410,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @return a new DataFrame
      * @deprecated use more performant {@link #cols(Index)} and then {@link ColumnSet#select(RowMapper)}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame map(Index resultColumns, RowMapper rowMapper) {
         return cols(resultColumns).select(rowMapper);
     }
@@ -482,7 +482,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.18
      * @deprecated in favor of {@link #cols(String...)} and then {@link ColumnSet#map(Exp[])}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame replaceColumn(String name, Exp<?> exp) {
         return cols(name).map(exp);
     }
@@ -494,7 +494,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.18
      * @deprecated in favor of {@link #cols(int...)}  and then {@link ColumnSet#map(Exp[])}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame replaceColumn(int position, Exp<?> exp) {
         return cols(position).map(exp);
     }
@@ -956,7 +956,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.8
      * @deprecated in favor of {@link #colsAdd(String...)} and then <code>ColumnSet#map(Exp.rowNum())</code>
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame addRowNumberColumn(String columnName) {
         return colsAdd(columnName).map(Exp.rowNum());
     }
@@ -967,7 +967,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @deprecated in favor of {@link #colsAdd(String...)} and then {@link ColumnSet#map(RowToValueMapper[])}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame addColumn(String columnLabel, RowToValueMapper<?> columnMaker) {
         return colsAdd(columnLabel).map(columnMaker);
     }
@@ -980,7 +980,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @deprecated in favor of {@link #colsAdd(String...)} and then {@link ColumnSet#map(RowToValueMapper[])}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame addColumns(String[] columnLabels, RowToValueMapper<?>... columnMakers) {
         return colsAdd(columnLabels).map(columnMakers);
     }
@@ -998,7 +998,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.7
      * @deprecated in favor of {@link #colsAdd(String...)} and then {@link ColumnSet#map(RowMapper)}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame addColumns(String[] columnLabels, RowMapper rowMapper) {
         return colsAdd(columnLabels).map(rowMapper);
     }
@@ -1006,7 +1006,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @deprecated in favor of {@link #colsAdd(String...)} and then {@link ColumnSet#map(Series[])}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default <V> DataFrame addColumn(String columnLabel, Series<V> column) {
         return colsAdd(columnLabel).map(column);
     }
@@ -1017,7 +1017,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.11
      * @deprecated in favor of {@link #colsAdd(String...)} and then {@link ColumnSet#map(Exp[])}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame addColumn(Exp<?> exp) {
         return colsAdd(exp.getColumnName(this)).map(exp);
     }
@@ -1029,7 +1029,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.11
      * @deprecated in favor of {@link #colsAdd(String...)} and then {@link ColumnSet#map(Exp[])}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame addColumns(Exp<?>... exps) {
         int w = exps.length;
         String[] names = new String[w];
@@ -1056,7 +1056,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.8
      * @deprecated use {@link #colsAdd(String...)} and then {@link ColumnSet#fill(Object...)}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame addSingleValueColumn(String columnLabel, Object value) {
         return colsAdd(columnLabel).fill(value);
     }
@@ -1064,7 +1064,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @deprecated use {@link #cols()} and then {@link ColumnSet#rename(String...)}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame renameColumns(String... columnLabels) {
         return cols().rename(columnLabels);
     }
@@ -1072,7 +1072,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @deprecated use {@link #cols()} and then {@link ColumnSet#renameOne(String, String)}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame renameColumn(String oldLabel, String newLabel) {
         return cols().renameOne(oldLabel, newLabel);
     }
@@ -1086,7 +1086,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.6
      * @deprecated use {@link #cols()} and then {@link ColumnSet#rename(UnaryOperator)}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame renameColumns(UnaryOperator<String> renameFunction) {
         return cols().rename(renameFunction);
     }
@@ -1094,7 +1094,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @deprecated use {@link #cols()} and then {@link ColumnSet#rename(Map)}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame renameColumns(Map<String, String> oldToNewLabels) {
         return cols().rename(oldToNewLabels);
     }
@@ -1102,7 +1102,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#select()}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame selectColumns(String... labels) {
         return cols(labels).select();
     }
@@ -1110,7 +1110,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#select()}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame selectColumns(int... positions) {
         return cols(positions).select();
     }
@@ -1121,7 +1121,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.6
      * @deprecated use {@link #cols(Index)} and then {@link ColumnSet#select()}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame selectColumns(Index columnsIndex) {
         return cols(columnsIndex).select();
     }
@@ -1135,7 +1135,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.7
      * @deprecated use {@link #cols(Predicate)} and then {@link ColumnSet#select()}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame selectColumns(Predicate<String> labelCondition) {
         return cols(labelCondition).select();
     }
@@ -1144,7 +1144,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.11
      * @deprecated use {@link #cols()} and then {@link ColumnSet#select(Exp...)}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     // TODO: this is different from any of the other "selectColumns":
     //  1. it may generate a DataFrame with a new set of columns not found in this DataFrame
     //  2. It transforms the original columns via expressions
@@ -1498,7 +1498,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @deprecated in favor of {@link #cols()} and then {@link ColumnSet#fillNulls(Object)}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame fillNulls(Object value) {
         return cols().fillNulls(value);
     }
@@ -1506,7 +1506,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @deprecated in favor of {@link #cols(int...)} and then {@link ColumnSet#fillNulls(Object)}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame fillNulls(int columnPos, Object value) {
         return cols(columnPos).fillNulls(value);
     }
@@ -1514,7 +1514,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @deprecated in favor of {@link #cols(String...)} and then {@link ColumnSet#fillNulls(Object)}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame fillNulls(String columnName, Object value) {
         return cols(columnName).fillNulls(value);
     }
@@ -1528,7 +1528,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.6
      * @deprecated in favor of {@link #cols(int...)} and then {@link ColumnSet#fillNullsFromSeries(Series)}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame fillNullsFromSeries(int columnPos, Series<?> values) {
         return cols(columnPos).fillNullsFromSeries(values);
     }
@@ -1542,7 +1542,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.6
      * @deprecated in favor of {@link #cols(String...)} and then {@link ColumnSet#fillNullsFromSeries(Series)}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame fillNullsFromSeries(String columnName, Series<?> values) {
         return cols(columnName).fillNullsFromSeries(values);
     }
@@ -1550,7 +1550,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @deprecated in favor of {@link #cols(int...)} and then {@link ColumnSet#fillNullsBackwards()}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame fillNullsBackwards(int columnPos) {
         return cols(columnPos).fillNullsBackwards();
     }
@@ -1558,7 +1558,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @deprecated in favor of {@link #cols(String...)} and then {@link ColumnSet#fillNullsBackwards()}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame fillNullsBackwards(String columnName) {
         return cols(columnName).fillNullsBackwards();
     }
@@ -1566,7 +1566,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @deprecated in favor of {@link #cols(int...)} and then {@link ColumnSet#fillNullsForward()}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame fillNullsForward(int columnPos) {
         return cols(columnPos).fillNullsForward();
     }
@@ -1574,7 +1574,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @deprecated in favor of {@link #cols(String...)} and then {@link ColumnSet#fillNullsForward()}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame fillNullsForward(String columnName) {
         return cols(columnName).fillNullsForward();
     }
@@ -1675,7 +1675,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.7
      * @deprecated in favor of {@link #colsSample(int)} and then {@link ColumnSet#select()}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame sampleColumns(int size) {
         return colsSample(size).select();
     }
@@ -1689,7 +1689,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 0.7
      * @deprecated in favor of {@link #colsSample(int, Random)} and then {@link ColumnSet#select()}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame sampleColumns(int size, Random random) {
         return colsSample(size, random).select();
     }

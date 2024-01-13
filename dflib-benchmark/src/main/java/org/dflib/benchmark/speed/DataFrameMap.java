@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Thread)
 
 // makes no sense to measure the old "map" API, as it is reimplemented to delegate to the new API
-@Deprecated(since = "0.19", forRemoval = true)
+@Deprecated(since = "1.0.0-M19", forRemoval = true)
 public class DataFrameMap {
 
     @Param("1000000")

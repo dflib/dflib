@@ -3,7 +3,7 @@ package org.dflib;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
-@Deprecated(since = "0.19", forRemoval = true)
+@Deprecated(since = "1.0.0-M19", forRemoval = true)
 public class DataFrame_Map_RowMapperTest {
 
     @Test

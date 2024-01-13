@@ -53,7 +53,7 @@ public class ColumnDataFrame implements DataFrame {
     /**
      * @deprecated in favor of {@link #ColumnDataFrame(String, Index, Series[])}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     public ColumnDataFrame(Index columnsIndex, Series<?>... dataColumns) {
         this(null, columnsIndex, dataColumns);
     }

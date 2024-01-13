@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @deprecated as it is no longer useful in DFLib internally. Use ArraySeries or any other Series implementation instead.
  */
-@Deprecated(since = "0.19", forRemoval = true)
+@Deprecated(since = "1.0.0-M19", forRemoval = true)
 public class ListSeries<T> extends ObjectSeries<T> {
 
     private final List<T> data;

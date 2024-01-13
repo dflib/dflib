@@ -35,7 +35,7 @@ public class Index implements Iterable<String> {
     /**
      * @deprecated in favor of {@link #of(Class)}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     public static <E extends Enum<E>> Index forLabels(Class<E> columns) {
         return of(columns);
     }
@@ -61,7 +61,7 @@ public class Index implements Iterable<String> {
     /**
      * @deprecated in favor of {@link #of(String...)}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     public static Index forLabels(String... labels) {
         return of(labels);
     }
@@ -77,7 +77,7 @@ public class Index implements Iterable<String> {
      * @since 0.7
      * @deprecated in favor of {@link #of(Series)}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     public static Index forLabels(Series<String> labels) {
         return of(labels);
     }
@@ -93,7 +93,7 @@ public class Index implements Iterable<String> {
      * @since 0.6
      * @deprecated in favor of {@link #ofDeduplicated(String...)}
      */
-    @Deprecated(since = "0.19", forRemoval = true)
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     public static Index forLabelsDeduplicate(String... labels) {
         return ofDeduplicated(labels);
     }
