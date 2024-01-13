@@ -1,154 +1,124 @@
 package org.dflib.slice;
 
+import org.dflib.ColumnDataFrame;
 import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.Series;
 
-import java.util.Arrays;
+/**
+ * @since 1.0.0-M19
+ */
+public class ColumnSetMerger {
 
-abstract class ColumnSetMerger {
+    public static ColumnSetMerger of(Index sourceIndex, String[] csLabels) {
 
-    final Index sourceIndex;
-    final int[] mergeIndex;
-    final int addOffset;
-
-    static ColumnSetMerger of(Index sourceIndex, String[] labels) {
-        int sourceLen = sourceIndex.size();
-        int mergedLen = labels.length;
+        int sLen = sourceIndex.size();
+        int csLen = csLabels.length;
 
         // allocate max possible array for the merge index to fit all merge possibilities,
         // up to when all columns are added and none are replaced
-        int[] mergeIndex = new int[sourceLen + mergedLen];
-        Arrays.fill(mergeIndex, -1);
 
-        int addOffset = 0;
+        int[] mergeIndex = new int[sLen + csLen];
+        for (int i = 0; i < sLen; i++) {
+            mergeIndex[i] = i;
+        }
 
-        for (int i = 0; i < mergedLen; i++) {
-            if (sourceIndex.hasLabel(labels[i])) {
+        int expandBy = 0;
 
-                int pos = sourceIndex.position(labels[i]);
-                if (mergeIndex[pos] == -1) {
-                    mergeIndex[pos] = i;
-                }
-                // duplicate of existing, add as new
-                else {
-                    mergeIndex[sourceLen + addOffset++] = i;
-                }
+        for (int i = 0; i < csLen; i++) {
+            if (sourceIndex.hasLabel(csLabels[i])) {
+
+                int srcPos = sourceIndex.position(csLabels[i]);
+
+                // if duplicate existing name, add as an extra column
+                int mPos = mergeIndex[srcPos] >= 0 ? srcPos : sLen + expandBy++;
+                mergeIndex[mPos] = -1 - i;
+
             } else {
-                mergeIndex[sourceLen + addOffset++] = i;
+                mergeIndex[sLen + expandBy++] = -1 - i;
             }
         }
 
-        return new ByLabelColumnSetMerger(sourceIndex, mergeIndex, addOffset, labels);
+        return new ColumnSetMerger(sLen + expandBy, mergeIndex);
     }
 
-    static ColumnSetMerger of(Index sourceIndex, int[] positions) {
-        int sourceLen = sourceIndex.size();
-        int mergedLen = positions.length;
+    public static ColumnSetMerger of(Index sourceIndex, int[] csPositions) {
+        int sLen = sourceIndex.size();
+        int csLen = csPositions.length;
 
         // allocate max possible array for the merge index to fit all merge possibilities,
         // up to when all columns are added and none are replaced
-        int[] mergeIndex = new int[sourceLen + mergedLen];
-        Arrays.fill(mergeIndex, -1);
+        int[] mergeIndex = new int[sLen + csLen];
+        for (int i = 0; i < sLen; i++) {
+            mergeIndex[i] = i;
+        }
 
-        int addOffset = 0;
+        int expandBy = 0;
 
-        for (int i = 0; i < mergedLen; i++) {
-            int pos = positions[i];
-            if (positions[i] < sourceLen) {
-                if (mergeIndex[pos] == -1) {
-                    mergeIndex[pos] = i;
-                }
-                // duplicate of existing, add as new
-                else {
-                    mergeIndex[sourceLen + addOffset++] = i;
-                }
+        for (int i = 0; i < csLen; i++) {
+            int pos = csPositions[i];
+
+            if (pos < sLen) {
+
+                // if duplicate existing name, add as an extra column
+                int mPos = mergeIndex[pos] >= 0 ? pos : sLen + expandBy++;
+                mergeIndex[mPos] = -1 - i;
+
             } else {
-                mergeIndex[sourceLen + addOffset++] = i;
+                mergeIndex[sLen + expandBy++] = -1 - i;
             }
         }
 
-        return new ByPosColumnSetMerger(sourceIndex, mergeIndex, addOffset, positions);
+        return new ColumnSetMerger(sLen + expandBy, mergeIndex);
     }
 
-    ColumnSetMerger(Index sourceIndex, int[] mergeIndex, int addOffset) {
-        this.sourceIndex = sourceIndex;
+
+    // An index to reconstruct a DataFrame from the original source and a transformed column set. It encodes a source
+    // of column value in each position (source Series, or transformed column set series), and also implicitly allows
+    // to generate more or less values (compared to the original Series)
+
+    // Model of the index:
+    //   "mergeIndex.length":                 merged size
+    //   "i" in 0..length-1:                  merged column position
+    //   "mergeIndex[i]" is negative:         colSetPos = -1 - i
+    //   "mergeIndex[i]" is positive or zero: srcPos = i
+
+    private final int mergeLen;
+    private final int[] mergeIndex;
+
+    public ColumnSetMerger(int mergeLen, int[] mergeIndex) {
+
+        // merge index array may be bigger than the column set size. So using "mergeLen"
+        // to define the relevant part of the index.
+        this.mergeLen = mergeLen;
         this.mergeIndex = mergeIndex;
-        this.addOffset = addOffset;
     }
 
-    Series<?>[] mergedColumns(DataFrame source, Series<?>[] newColumns) {
+    /**
+     * Performs a merge of the source Series with a transformed row set Series.
+     */
+    public DataFrame merge(
+            String[] sLabels,
+            Series<?>[] sColumns,
+            String[] csLabels,
+            Series<?>[] csColumns) {
 
-        int w = sourceIndex.size() + addOffset;
-        Series<?>[] mergedColumns = new Series[w];
+        String[] labels = new String[mergeLen];
+        Series<?>[] columns = new Series[mergeLen];
 
-        for (int i = 0; i < w; i++) {
-            if (mergeIndex[i] == -1) {
-                mergedColumns[i] = source.getColumn(i);
+        for (int i = 0; i < mergeLen; i++) {
+            int si = mergeIndex[i];
+
+            if (si < 0) {
+                int csi = -1 - si;
+                labels[i] = csLabels[csi];
+                columns[i] = csColumns[csi];
             } else {
-                mergedColumns[i] = newColumns[mergeIndex[i]];
+                labels[i] = sLabels[si];
+                columns[i] = sColumns[si];
             }
         }
 
-        return mergedColumns;
-    }
-
-    protected abstract Index mergedIndex();
-
-    static final class ByLabelColumnSetMerger extends ColumnSetMerger {
-
-        final String[] labels;
-
-        ByLabelColumnSetMerger(Index sourceIndex, int[] mergeIndex, int addOffset, String[] labels) {
-            super(sourceIndex, mergeIndex, addOffset);
-            this.labels = labels;
-        }
-
-        @Override
-        protected Index mergedIndex() {
-
-            if (addOffset <= 0) {
-                return sourceIndex;
-            }
-
-            int sourceLen = sourceIndex.size();
-
-            String[] extraLabels = new String[addOffset];
-            for (int i = 0; i < addOffset; i++) {
-                extraLabels[i] = labels[mergeIndex[sourceLen + i]];
-            }
-
-            // "addLabels" also does name deduplication
-            return sourceIndex.addLabels(extraLabels);
-        }
-    }
-
-    static final class ByPosColumnSetMerger extends ColumnSetMerger {
-
-        final int[] positions;
-
-        ByPosColumnSetMerger(Index sourceIndex, int[] mergeIndex, int addOffset, int[] positions) {
-            super(sourceIndex, mergeIndex, addOffset);
-            this.positions = positions;
-        }
-
-        @Override
-        protected Index mergedIndex() {
-
-            if (addOffset <= 0) {
-                return sourceIndex;
-            }
-
-            int sourceLen = sourceIndex.size();
-
-            String[] extraLabels = new String[addOffset];
-            for (int i = 0; i < addOffset; i++) {
-                // generate extra column names based on the position numbers
-                extraLabels[i] = String.valueOf(positions[mergeIndex[sourceLen + i]]);
-            }
-
-            // "addLabels" also does name deduplication
-            return sourceIndex.addLabels(extraLabels);
-        }
+        return new ColumnDataFrame(null, Index.ofDeduplicated(labels), columns);
     }
 }

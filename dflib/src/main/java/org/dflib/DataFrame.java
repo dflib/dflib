@@ -7,8 +7,6 @@ import org.dflib.builder.DataFrameByColumnBuilder;
 import org.dflib.builder.DataFrameByRowBuilder;
 import org.dflib.builder.DataFrameFoldByColumnBuilder;
 import org.dflib.builder.DataFrameFoldByRowBuilder;
-import org.dflib.slice.ColumnSetIndex;
-import org.dflib.slice.FixedColumnSet;
 import org.dflib.join.Join;
 import org.dflib.join.JoinBuilder;
 import org.dflib.pivot.PivotBuilder;
@@ -1720,9 +1718,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @since 1.0.0-M19
      */
-    default ColumnSet cols(Index columnsIndex) {
-        return new FixedColumnSet(ColumnSetIndex.of(getColumnsIndex(), columnsIndex), this);
-    }
+    ColumnSet cols(Index columnsIndex);
 
     /**
      * Creates a ColumnSet for the provided column names. Columns may or may not already exist in the DataFrame.
@@ -1731,9 +1727,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @since 1.0.0-M19
      */
-    default ColumnSet cols(String... columns) {
-        return new FixedColumnSet(ColumnSetIndex.of(getColumnsIndex(), columns), this);
-    }
+    ColumnSet cols(String... columns);
 
     /**
      * Creates a ColumnSet for the provided column names, ensuring that the names do not match any of the DataFrame
@@ -1742,9 +1736,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @since 1.0.0-M19
      */
-    default ColumnSet colsAdd(String... columns) {
-        return new FixedColumnSet(ColumnSetIndex.ofAdd(getColumnsIndex(), columns), this);
-    }
+    ColumnSet colsAdd(String... columns);
 
     /**
      * Creates a ColumnSet with columns from this DataFrame excluding specified columns.
@@ -1775,9 +1767,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @since 1.0.0-M19
      */
-    default ColumnSet cols(int... columns) {
-        return new FixedColumnSet(ColumnSetIndex.of(getColumnsIndex(), columns), this);
-    }
+    ColumnSet cols(int... columns);
 
     /**
      * Creates a ColumnSet with columns from this DataFrame excluding specified column positions.

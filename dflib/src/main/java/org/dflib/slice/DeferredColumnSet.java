@@ -132,14 +132,11 @@ public class DeferredColumnSet implements ColumnSet {
         int w = exps.length;
 
         String[] labels = new String[w];
-        Series<?>[] columns = new Series[w];
-
         for (int i = 0; i < w; i++) {
             labels[i] = exps[i].getColumnName(source);
-            columns[i] = exps[i].eval(source);
         }
 
-        return ColumnSetIndex.of(source.getColumnsIndex(), Index.of(labels)).merge(source, columns);
+        return delegate(labels).map(exps);
     }
 
     @Override
@@ -174,7 +171,7 @@ public class DeferredColumnSet implements ColumnSet {
             labels[i] = String.valueOf(srcW + i);
         }
 
-        return ColumnSetIndex.of(source.getColumnsIndex(), Index.of(labels)).merge(source, columns);
+        return delegate(labels).map(columns);
     }
 
     @Override
@@ -183,14 +180,11 @@ public class DeferredColumnSet implements ColumnSet {
         int srcW = source.width();
 
         String[] labels = new String[w];
-        Series<?>[] columns = new Series[w];
-
         for (int i = 0; i < w; i++) {
             labels[i] = String.valueOf(srcW + i);
-            columns[i] = new RowMappedSeries<>(source, mappers[i]);
         }
 
-        return ColumnSetIndex.of(source.getColumnsIndex(), Index.of(labels)).merge(source, columns);
+        return delegate(labels).map(mappers);
     }
 
     @Override
@@ -217,7 +211,7 @@ public class DeferredColumnSet implements ColumnSet {
             mapper.map(from, b);
         });
 
-        return ColumnSetIndex.of(source.getColumnsIndex(), Index.of(b.getLabels())).merge(source, b.getData());
+        return delegate(b.getLabels()).map(b.getData());
     }
 
     @Override
@@ -228,7 +222,7 @@ public class DeferredColumnSet implements ColumnSet {
             mapper.map(from, b);
         });
 
-        return ColumnSetIndex.of(source.getColumnsIndex(), Index.of(b.getLabels())).select(b.getData());
+        return new ColumnDataFrame(null, Index.of(b.getLabels()), b.getData());
     }
 
     @Override
@@ -243,7 +237,7 @@ public class DeferredColumnSet implements ColumnSet {
             positions[i] = srcW + i;
         }
 
-        return ColumnSetIndex.of(source.getColumnsIndex(), positions).merge(source, columns);
+        return delegate(positions).mapIterables(mapper);
     }
 
     @Override
@@ -306,7 +300,7 @@ public class DeferredColumnSet implements ColumnSet {
             positions[i] = srcW + i;
         }
 
-        return ColumnSetIndex.of(source.getColumnsIndex(), positions).merge(source, columns);
+        return delegate(positions).mapArrays(mapper);
     }
 
     @Override
@@ -401,5 +395,13 @@ public class DeferredColumnSet implements ColumnSet {
         }
 
         return new ColumnDataFrame(null, source.getColumnsIndex().selectPositions(existingColumns), columns);
+    }
+
+    private ColumnSet delegate(String[] csIndex) {
+        return FixedColumnSet.of(source, sourceColumns, csIndex);
+    }
+
+    private ColumnSet delegate(int[] csIndex) {
+        return FixedColumnSet.of(source, sourceColumns, csIndex);
     }
 }

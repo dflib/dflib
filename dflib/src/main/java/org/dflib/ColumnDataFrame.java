@@ -12,6 +12,8 @@ import org.dflib.select.RowIndexer;
 import org.dflib.series.EmptySeries;
 import org.dflib.series.IntArraySeries;
 import org.dflib.series.SingleValueSeries;
+import org.dflib.slice.FixedColumnSet;
+import org.dflib.slice.DeferredColumnSet;
 import org.dflib.sort.DataFrameSorter;
 import org.dflib.stack.Stacker;
 
@@ -465,6 +467,25 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
+    public ColumnSet cols(String... columns) {
+        return FixedColumnSet.of(this, dataColumns, columns);
+    }
+
+    @Override
+    public ColumnSet cols(Index columnsIndex) {
+        return FixedColumnSet.of(this, dataColumns, columnsIndex);
+    }
+
+    @Override
+    public ColumnSet colsAdd(String... columns) {
+        return FixedColumnSet.ofAdd(this, dataColumns, columns);
+    }
+
+    @Override
+    public ColumnSet cols(int... columns) {
+        return FixedColumnSet.of(this, dataColumns, columns);
+    }
+
     public String toString() {
         return Printers.inline.print(new StringBuilder("ColumnDataFrame ["), this).append("]").toString();
     }
