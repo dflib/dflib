@@ -366,14 +366,17 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * Returns the number of rows in this DataFrame. Aka the DataFrame "height". Note that depending on the type of
-     * the DataFrame this operation may or may not be constant speed. In the worst case it would require a full scan
-     * through all rows.
+     * Returns the number of rows in this DataFrame, aka "height". Depending on the type of columns in the DataFrame,
+     * this operation may or may not be constant speed. In the worst case it may cause a full scan through at least one
+     * of the columns.
      *
      * @return an int indicating the number of rows in the DataFrame
      */
     int height();
 
+    /**
+     * Returns the number of columns in this DataFrame.
+     */
     default int width() {
         return getColumnsIndex().size();
     }
