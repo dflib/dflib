@@ -75,6 +75,8 @@ public class ConditionalRowSet extends BaseRowSet {
 
     @Override
     protected <T> Series<T> select(Series<T> sourceColumn) {
+        // TODO: an implicitly lazy impl instead of Series.select(..) to avoid evaluation of unneeded columns when
+        //  calculating DefaultRowColumnSet
         return sourceColumn.select(conditionalIndex);
     }
 

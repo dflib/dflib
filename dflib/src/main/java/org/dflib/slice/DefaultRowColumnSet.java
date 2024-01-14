@@ -37,9 +37,6 @@ public class DefaultRowColumnSet implements RowColumnSet {
 
     @Override
     public DataFrame map(Exp<?>... exps) {
-
-        // TODO: this must be super-lazy, as not all columns will be ultimately needed ...
-        //  It is lazy enough for IndexedRowSet, but not yet for ConditionalRowSet
         DataFrame rowsResolved = rowSet.select();
         DataFrame hSlice = columnSetMaker.apply(rowsResolved).map(exps);
         return mergeRows(hSlice);
@@ -47,8 +44,6 @@ public class DefaultRowColumnSet implements RowColumnSet {
 
     @Override
     public DataFrame map(RowMapper mapper) {
-        // TODO: this must be super-lazy, as not all columns will be ultimately needed ...
-        //  It is lazy enough for IndexedRowSet, but not yet for ConditionalRowSet
         DataFrame rowsResolved = rowSet.select();
         DataFrame hSlice = columnSetMaker.apply(rowsResolved).map(mapper);
         return mergeRows(hSlice);
@@ -56,8 +51,6 @@ public class DefaultRowColumnSet implements RowColumnSet {
 
     @Override
     public DataFrame map(RowToValueMapper<?>... mappers) {
-        // TODO: this must be super-lazy, as not all columns will be ultimately needed ...
-        //  It is lazy enough for IndexedRowSet, but not yet for ConditionalRowSet
         DataFrame rowsResolved = rowSet.select();
         DataFrame hSlice = columnSetMaker.apply(rowsResolved).map(mappers);
         return mergeRows(hSlice);
