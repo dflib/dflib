@@ -477,7 +477,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public ColumnSet colsAppend(String... columns) {
-        return FixedColumnSet.ofAdd(this, dataColumns, columns);
+        return FixedColumnSet.ofAppend(this, dataColumns, columns);
     }
 
     @Override

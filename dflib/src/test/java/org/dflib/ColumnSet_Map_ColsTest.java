@@ -18,6 +18,20 @@ public class ColumnSet_Map_ColsTest {
     }
 
     @Test
+    public void colsAppend() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(1, "x", "a", 2, "y", "b")
+                .colsAppend("X", "Y")
+                .map("a", "b");
+
+        new DataFrameAsserts(df, "X", "Y", "c")
+                .expectHeight(2)
+                .expectRow(0, 1, "x", "a")
+                .expectRow(1, 2, "y", "b");
+    }
+
+
+    @Test
     public void byName() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(1, "x", "a", 2, "y", "b")

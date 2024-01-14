@@ -37,7 +37,7 @@ public class FixedColumnSet implements ColumnSet {
         return new FixedColumnSet(source, sourceColumns, csIndex);
     }
 
-    public static FixedColumnSet ofAdd(DataFrame source, Series<?>[] sourceColumns, String[] csIndex) {
+    public static FixedColumnSet ofAppend(DataFrame source, Series<?>[] sourceColumns, String[] csIndex) {
 
         Index index = source.getColumnsIndex();
         int csLen = csIndex.length;
