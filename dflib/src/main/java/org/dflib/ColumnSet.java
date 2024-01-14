@@ -29,6 +29,8 @@ public interface ColumnSet {
 
     DataFrame fillNullsFromSeries(Series<?> series);
 
+    DataFrame fillNullsWithExp(Exp<?> replacementValuesExp);
+
     /**
      * Returns a transformed DataFrame that contains columns from this DataFrame and added / replaced columns
      * produced by the specified expressions. Expressions are matched with the result columns using the algorithm

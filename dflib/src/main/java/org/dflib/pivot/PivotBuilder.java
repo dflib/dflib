@@ -163,7 +163,7 @@ public class PivotBuilder {
     private DataFrame joinChunks(DataFrame left, DataFrame right) {
         int rightRowPos = left.width();
         return left.fullJoin(right).on(0).select()
-                .map(df -> df.cols(0).fillNullsFromSeries(df.getColumn(rightRowPos)))
+                .cols(0).fillNullsWithExp(Exp.$col(rightRowPos))
                 .cols(rightRowPos).drop();
     }
 

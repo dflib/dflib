@@ -128,6 +128,11 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
+    public DataFrame fillNullsWithExp(Exp<?> replacementValuesExp) {
+        return fillNullsFromSeries(replacementValuesExp.eval(source));
+    }
+
+    @Override
     public DataFrame select() {
         return source;
     }
