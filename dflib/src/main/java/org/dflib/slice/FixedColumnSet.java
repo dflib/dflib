@@ -77,6 +77,11 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     @Override
+    public DataFrame drop() {
+        return source.colsExcept(csIndex).select();
+    }
+
+    @Override
     public DataFrame rename(String... newColumnNames) {
         int w = newColumnNames.length;
         if (w != csIndex.length) {

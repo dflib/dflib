@@ -1158,10 +1158,6 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @deprecated use {@link #cols()} and then {@link ColumnSet#select(Exp...)}
      */
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
-    // TODO: this is different from any of the other "selectColumns":
-    //  1. it may generate a DataFrame with a new set of columns not found in this DataFrame
-    //  2. It transforms the original columns via expressions
-    //  So, maybe rename to "map"?
     default DataFrame selectColumns(Exp<?>... exps) {
         return cols().select(exps);
     }
@@ -1170,7 +1166,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Returns a DataFrame with columns from this DataFrame, except the specified column.
      *
      * @since 0.18
+     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#drop()}
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame dropColumn(String columnLabel) {
         return dropColumns(columnLabel);
     }
@@ -1178,7 +1176,10 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * Returns a DataFrame with columns from this DataFrame, except the specified columns.
+     *
+     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#drop()}
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame dropColumns(String... columnLabels) {
         return colsExcept(columnLabels).select();
     }
@@ -1191,7 +1192,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      *                       from the resulting DataFrame
      * @return a new DataFrame
      * @since 0.7
+     * @deprecated use {@link #cols(Predicate)} and then {@link ColumnSet#drop()}
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame dropColumns(Predicate<String> labelCondition) {
         return cols(labelCondition.negate()).select();
     }

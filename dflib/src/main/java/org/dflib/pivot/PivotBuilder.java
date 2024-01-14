@@ -164,7 +164,7 @@ public class PivotBuilder {
         int rightRowPos = left.width();
         return left.fullJoin(right).on(0).select()
                 .map(df -> df.cols(0).fillNullsFromSeries(df.getColumn(rightRowPos)))
-                .map(df -> df.dropColumns(df.getColumnsIndex().getLabel(rightRowPos)));
+                .map(df -> df.cols(rightRowPos).drop());
     }
 
     private DataFrame empty(String rowColumnName) {

@@ -14,6 +14,11 @@ import java.util.function.UnaryOperator;
  */
 public interface ColumnSet {
 
+    /**
+     * Returns the original DataFrame with the ColumnSet columns removed.
+     */
+    DataFrame drop();
+
     DataFrame fill(Object... values);
 
     DataFrame fillNulls(Object value);

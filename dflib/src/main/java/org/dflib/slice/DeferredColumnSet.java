@@ -36,6 +36,11 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
+    public DataFrame drop() {
+        return DataFrame.empty();
+    }
+
+    @Override
     public DataFrame rename(String... newColumnNames) {
         return new ColumnDataFrame(null,
                 source.getColumnsIndex().rename(newColumnNames),

@@ -9,7 +9,7 @@ public class DataFrame_Map_DataFrameTest {
     public void map_UnaryOp() {
         DataFrame df = DataFrame
                 .foldByRow("a", "b").of(1, "x", 2, "y")
-                .map(_df -> _df.dropColumns("b"));
+                .map(f -> f.cols("b").drop());
 
         new DataFrameAsserts(df, "a")
                 .expectHeight(2)
