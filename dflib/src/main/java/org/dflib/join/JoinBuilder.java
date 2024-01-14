@@ -99,7 +99,7 @@ public class JoinBuilder {
         DataFrame joined = merge(conditions[0], conditions[1], rightFrame);
 
         return indicatorColumn != null
-                ? joined.addColumn(indicatorColumn, buildIndicator(conditions[0], conditions[1]))
+                ? joined.colsAppend(indicatorColumn).map(buildIndicator(conditions[0], conditions[1]))
                 : joined;
     }
 

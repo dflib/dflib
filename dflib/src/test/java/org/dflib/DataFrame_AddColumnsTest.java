@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Deprecated
 public class DataFrame_AddColumnsTest {
 
     @Test
