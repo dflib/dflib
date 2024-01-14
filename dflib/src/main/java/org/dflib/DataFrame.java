@@ -378,8 +378,18 @@ public interface DataFrame extends Iterable<RowProxy> {
         return getColumnsIndex().size();
     }
 
+    /**
+     * Returns a DataFrame with the first <code>len</code> rows of this DataFrame. If this DataFrame is shorter
+     * than the requested length, then the entire DataFrame is returned. If <code>len</code> is negative, instead of
+     * returning the leading rows, they are skipped, and the rest of the DataFrame is returned.
+     */
     DataFrame head(int len);
 
+    /**
+     * Returns a DataFrame with the last <code>len</code> rows of this DataFrame. If this DataFrame is shorter than the
+     * requested length, then the entire DataFrame is returned. If <code>len</code> is negative, instead of returning the
+     * trailing rows, they are skipped, and the rest of the DataFrame is returned.
+     */
     DataFrame tail(int len);
 
     /**
