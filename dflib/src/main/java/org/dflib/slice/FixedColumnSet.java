@@ -400,14 +400,14 @@ public class FixedColumnSet implements ColumnSet {
         return columns;
     }
 
-    public Series<?> getOrCreateColumn(DataFrame source, int pos) {
+    private Series<?> getOrCreateColumn(DataFrame source, int pos) {
         String name = csIndex[pos];
         return sourceColumnsIndex.hasLabel(name)
                 ? source.getColumn(name)
                 : new SingleValueSeries<>(null, source.height());
     }
 
-    public Series<?> getOrCreateColumn(
+    private Series<?> getOrCreateColumn(
             DataFrame source,
             int pos,
             UnaryOperator<Series<?>> andApplyToExisting,
