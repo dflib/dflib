@@ -173,6 +173,18 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
+    public <V> DataFrame selectRows(int columnPos, ValuePredicate<V> p) {
+        IntSeries rowPositions = dataColumns[columnPos].index(p);
+
+        // there's no reordering or index duplication during "select", so we can compare size to detect changes
+        if (rowPositions.size() == height()) {
+            return this;
+        }
+
+        return selectRows(rowPositions);
+    }
+
+    @Override
     public DataFrame selectRows(Condition condition) {
         return selectRows(condition.eval(this).indexTrue());
     }

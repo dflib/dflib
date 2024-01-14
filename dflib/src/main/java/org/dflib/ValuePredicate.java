@@ -4,6 +4,10 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+// TODO: consider deprecating it (as well as the primitive analogs, like DoublePredicate, etc.) in favor of a
+//  null-aware Condition. We already deprecated "DataFrame.selectRows(_, ValuePredicate)", and while theoretically
+//  it is faster than the Condition version, benchmarks are inconclusive (ValuePredicate is a often slower, but the
+//  margins of error are very large).
 @FunctionalInterface
 public interface ValuePredicate<V> {
 
