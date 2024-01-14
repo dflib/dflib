@@ -489,8 +489,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     <V, VR> DataFrame convertColumn(int pos, ValueMapper<V, VR> converter);
 
     /**
-     * Replaces column contents using the expression. Unlike {@link #addColumn(Exp)} the name of the Exp is ignored,
-     * and instead the "name" argument to identify the column to be replaced.
+     * Replaces column contents using the expression.
      *
      * @since 0.18
      * @deprecated in favor of {@link #cols(String...)} and then {@link ColumnSet#map(Exp[])}
@@ -501,8 +500,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * Replaces column contents using the expression. Unlike {@link #addColumn(Exp)} the name of the Exp is ignored,
-     * and instead the "name" argument to identify the column to be replaced.
+     * Replaces column contents using the expression.
      *
      * @since 0.18
      * @deprecated in favor of {@link #cols(int...)}  and then {@link ColumnSet#map(Exp[])}
@@ -513,8 +511,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * Replaces column contents using the expression. Unlike {@link #addColumn(Exp)} the name of the Exp is ignored,
-     * and instead the "name" argument to identify the column to be replaced.
+     * Replaces column contents using the expression.
      *
      * @since 0.11
      * @deprecated in favor of {@link #cols(String...)} and then {@link ColumnSet#map(Exp[])}
@@ -525,8 +522,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * Replaces column contents using the expression. Unlike {@link #addColumn(Exp)} the name of the Exp is ignored,
-     * and instead the "name" argument to identify the column to be replaced.
+     * Replaces column contents using the expression.
      *
      * @since 0.11
      * @deprecated in favor of {@link #cols(int...)}  and then {@link ColumnSet#map(Exp[])}
@@ -976,7 +972,7 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * <p><i>This is a fairly low-level API. It may be useful when the application needs to dynamically select
-     * a list of columns to operate on. Where possible, use simpler alternatives like {@link #addColumn(Exp)}</i></p>
+     * a list of columns to operate on.
      *
      * @deprecated in favor of {@link #colsAppend(String...)} and then {@link ColumnSet#map(RowToValueMapper[])}
      */
@@ -989,7 +985,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Adds specified columns to the DataFrame.
      *
      * <p><i>This is a fairly low-level and cumbersome API. It may be useful when the application needs to dynamically select
-     * a list of columns to operate on. Where possible, use simpler alternatives like {@link #addColumns(Exp[])}</i></p>
+     * a list of columns to operate on.</i></p>
      *
      * @deprecated in favor of {@link #colsAppend(String...)} and then {@link ColumnSet#map(RowToValueMapper[])}
      */
@@ -1002,7 +998,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Add one more columns to the DataFrame.
      *
      * <p><i>This is a fairly low-level and cumbersome API. It may be useful when the application needs to dynamically select
-     * a list of columns to operate on. Where possible, use simpler alternatives like {@link #addColumns(Exp[])}</i></p>
+     * a list of columns to operate on.</i></p>
      *
      * @param columnLabels the names of the added columns
      * @param rowMapper    a mapper with the "read" part based on this DataFrame index, and "write" part matching the
