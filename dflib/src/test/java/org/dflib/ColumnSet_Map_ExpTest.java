@@ -30,6 +30,21 @@ public class ColumnSet_Map_ExpTest {
     }
 
     @Test
+    public void colsAppend() {
+        DataFrame df = DataFrame.foldByRow("a", "b")
+                .of(1, "x", 2, "y")
+                .colsAppend("b", "c", "b").map(
+                        Exp.$int(0).mul(100),
+                        Exp.$int(0).mul(10),
+                        Exp.$str(1).mapVal(v -> "[" + v + "]"));
+
+        new DataFrameAsserts(df, "a", "b", "b_", "c", "b__")
+                .expectHeight(2)
+                .expectRow(0, 1, "x", 100, 10, "[x]")
+                .expectRow(1, 2, "y", 200, 20, "[y]");
+    }
+
+    @Test
     public void cols() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")

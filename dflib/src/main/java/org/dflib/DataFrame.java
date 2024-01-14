@@ -967,22 +967,22 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param columnName the name of the row number column
      * @return a new DataFrame with an extra row number column
      * @since 0.8
-     * @deprecated in favor of {@link #colsAdd(String...)} and then <code>ColumnSet#map(Exp.rowNum())</code>
+     * @deprecated in favor of {@link #colsAppend(String...)} and then <code>ColumnSet#map(Exp.rowNum())</code>
      */
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame addRowNumberColumn(String columnName) {
-        return colsAdd(columnName).map(Exp.rowNum());
+        return colsAppend(columnName).map(Exp.rowNum());
     }
 
     /**
      * <p><i>This is a fairly low-level API. It may be useful when the application needs to dynamically select
      * a list of columns to operate on. Where possible, use simpler alternatives like {@link #addColumn(Exp)}</i></p>
      *
-     * @deprecated in favor of {@link #colsAdd(String...)} and then {@link ColumnSet#map(RowToValueMapper[])}
+     * @deprecated in favor of {@link #colsAppend(String...)} and then {@link ColumnSet#map(RowToValueMapper[])}
      */
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame addColumn(String columnLabel, RowToValueMapper<?> columnMaker) {
-        return colsAdd(columnLabel).map(columnMaker);
+        return colsAppend(columnLabel).map(columnMaker);
     }
 
     /**
@@ -991,11 +991,11 @@ public interface DataFrame extends Iterable<RowProxy> {
      * <p><i>This is a fairly low-level and cumbersome API. It may be useful when the application needs to dynamically select
      * a list of columns to operate on. Where possible, use simpler alternatives like {@link #addColumns(Exp[])}</i></p>
      *
-     * @deprecated in favor of {@link #colsAdd(String...)} and then {@link ColumnSet#map(RowToValueMapper[])}
+     * @deprecated in favor of {@link #colsAppend(String...)} and then {@link ColumnSet#map(RowToValueMapper[])}
      */
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame addColumns(String[] columnLabels, RowToValueMapper<?>... columnMakers) {
-        return colsAdd(columnLabels).map(columnMakers);
+        return colsAppend(columnLabels).map(columnMakers);
     }
 
     /**
@@ -1009,30 +1009,30 @@ public interface DataFrame extends Iterable<RowProxy> {
      *                     newly added columns
      * @return a new DataFrame with extra columns added
      * @since 0.7
-     * @deprecated in favor of {@link #colsAdd(String...)} and then {@link ColumnSet#map(RowMapper)}
+     * @deprecated in favor of {@link #colsAppend(String...)} and then {@link ColumnSet#map(RowMapper)}
      */
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame addColumns(String[] columnLabels, RowMapper rowMapper) {
-        return colsAdd(columnLabels).map(rowMapper);
+        return colsAppend(columnLabels).map(rowMapper);
     }
 
     /**
-     * @deprecated in favor of {@link #colsAdd(String...)} and then {@link ColumnSet#map(Series[])}
+     * @deprecated in favor of {@link #colsAppend(String...)} and then {@link ColumnSet#map(Series[])}
      */
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default <V> DataFrame addColumn(String columnLabel, Series<V> column) {
-        return colsAdd(columnLabel).map(column);
+        return colsAppend(columnLabel).map(column);
     }
 
     /**
      * Adds a column with values derived from this DataFrame by applying a given expression.
      *
      * @since 0.11
-     * @deprecated in favor of {@link #colsAdd(String...)} and then {@link ColumnSet#map(Exp[])}
+     * @deprecated in favor of {@link #colsAppend(String...)} and then {@link ColumnSet#map(Exp[])}
      */
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame addColumn(Exp<?> exp) {
-        return colsAdd(exp.getColumnName(this)).map(exp);
+        return colsAppend(exp.getColumnName(this)).map(exp);
     }
 
     /**
@@ -1040,7 +1040,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * be taken from {@link Exp} names.
      *
      * @since 0.11
-     * @deprecated in favor of {@link #colsAdd(String...)} and then {@link ColumnSet#map(Exp[])}
+     * @deprecated in favor of {@link #colsAppend(String...)} and then {@link ColumnSet#map(Exp[])}
      */
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame addColumns(Exp<?>... exps) {
@@ -1050,7 +1050,7 @@ public interface DataFrame extends Iterable<RowProxy> {
             names[i] = exps[i].getColumnName(this);
         }
 
-        return colsAdd(names).map(exps);
+        return colsAppend(names).map(exps);
     }
 
     /**
@@ -1067,11 +1067,11 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @return a new DataFrame with extra columns added
      * @since 0.8
-     * @deprecated use {@link #colsAdd(String...)} and then {@link ColumnSet#fill(Object...)}
+     * @deprecated use {@link #colsAppend(String...)} and then {@link ColumnSet#fill(Object...)}
      */
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame addSingleValueColumn(String columnLabel, Object value) {
-        return colsAdd(columnLabel).fill(value);
+        return colsAppend(columnLabel).fill(value);
     }
 
     /**
@@ -1746,13 +1746,13 @@ public interface DataFrame extends Iterable<RowProxy> {
     ColumnSet cols(String... columns);
 
     /**
-     * Creates a ColumnSet for the provided column names, ensuring that the names do not match any of the DataFrame
-     * existing columns. For any duplicate labels, the ColumnSet labels are renamed using the common DFLib approach of
-     * adding a "_" suffix.
+     * Creates a ColumnSet for the provided column names, ensuring that none of the names match any of the DataFrame
+     * existing columns. This results in the columns being appended to the DataFrame. For any duplicate name, the
+     * ColumnSet labels are renamed to ensure uniqueness, using the common DFLib approach of adding a "_" suffix.
      *
      * @since 1.0.0-M19
      */
-    ColumnSet colsAdd(String... columns);
+    ColumnSet colsAppend(String... columns);
 
     /**
      * Creates a ColumnSet with columns from this DataFrame excluding specified columns.
