@@ -52,7 +52,7 @@ public class IfNullExp<T> implements Exp<T> {
             return data;
         }
 
-        return evalMergeReplacements(data, ifNullExp.eval(df.selectRows(nullsIndex)), nullsIndex);
+        return evalMergeReplacements(data, ifNullExp.eval(df.rows(nullsIndex).select()), nullsIndex);
     }
 
     @Override

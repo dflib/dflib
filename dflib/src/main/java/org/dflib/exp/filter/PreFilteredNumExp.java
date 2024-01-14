@@ -24,7 +24,7 @@ public class PreFilteredNumExp<N extends Number> implements NumExp<N> {
 
     @Override
     public Series<N> eval(DataFrame df) {
-        return delegate.eval(df.selectRows(filter));
+        return delegate.eval(df.rows(filter).select());
     }
 
     @Override

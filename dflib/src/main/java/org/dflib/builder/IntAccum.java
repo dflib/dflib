@@ -97,6 +97,15 @@ public class IntAccum implements ValueAccum<Integer> {
         data[pos] = value;
     }
 
+    public int[] toArray() {
+        int[] data = compactData();
+
+        // making sure no one can change the series via the Mutable List anymore
+        this.data = null;
+
+        return data;
+    }
+
     @Override
     public IntSeries toSeries() {
         int[] data = compactData();

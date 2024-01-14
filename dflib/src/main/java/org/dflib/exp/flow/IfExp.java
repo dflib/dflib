@@ -63,8 +63,8 @@ public class IfExp<T> implements Exp<T> {
         IntSeries indexFalse = mask.indexFalse();
 
         return evalMerge(
-                ifTrueExp.eval(df.selectRows(indexTrue)),
-                ifFalseExp.eval(df.selectRows(indexFalse)),
+                ifTrueExp.eval(df.rows(indexTrue).select()),
+                ifFalseExp.eval(df.rows(indexFalse).select()),
                 indexTrue,
                 indexFalse
         );
@@ -91,12 +91,15 @@ public class IfExp<T> implements Exp<T> {
         );
     }
 
-    protected Series<T> evalMerge(Series<T> dataIfTrue, Series<T> dataIfFalse, IntSeries indexTrue, IntSeries indexFalse) {
+    protected Series<T> evalMerge(
+            Series<T> dataIfTrue,
+            Series<T> dataIfFalse,
+            IntSeries indexTrue,
+            IntSeries indexFalse) {
 
         int st = dataIfTrue.size();
         int sf = dataIfFalse.size();
 
-        // TODO: Use Accumulator, but for this 'Accumulator.set(pos, val)' must auto-expand when position is >= size
         Object[] vals = new Object[st + sf];
 
         for (int i = 0; i < st; i++) {

@@ -85,7 +85,7 @@ public class SaveViaUpsert extends SaveViaInsert {
         infoTracker.insertAndUpdate(index);
 
         if (insertIndex.size() > 0) {
-            insert(connector, df.selectRows(insertIndex));
+            insert(connector, df.rows(insertIndex).select());
         }
 
         if (updateIndex.size() > 0) {
@@ -100,7 +100,10 @@ public class SaveViaUpsert extends SaveViaInsert {
                     .cols(joinedIndex).select()
                     .cols().rename(mainColumns.getLabels());
 
-            update(connector, df.selectRows(updateIndex), previouslySavedOrdered.selectRows(updateIndex), infoTracker);
+            update(connector,
+                    df.rows(updateIndex).select(),
+                    previouslySavedOrdered.rows(updateIndex).select(),
+                    infoTracker);
         }
 
         return infoTracker::getInfo;

@@ -53,7 +53,7 @@ public class GroupBy {
      */
     public DataFrame toDataFrame() {
         IntSeries index = SeriesConcat.intConcat(groupsIndex.values());
-        return ungrouped.selectRows(index);
+        return ungrouped.rows(index).select();
     }
 
     public Collection<Object> getGroups() {

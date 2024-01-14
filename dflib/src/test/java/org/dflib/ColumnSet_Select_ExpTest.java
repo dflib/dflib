@@ -31,6 +31,19 @@ public class ColumnSet_Select_ExpTest {
     }
 
     @Test
+    public void cols_ByName_Duplicate() {
+        DataFrame df = DataFrame.foldByRow("a", "b")
+                .of(1, "x", 2, "y")
+                .cols("b", "b")
+                .select(Exp.$int(0).mul(100), Exp.$int(0).mul(10));
+
+        new DataFrameAsserts(df, "b", "b_")
+                .expectHeight(2)
+                .expectRow(0, 100, 10)
+                .expectRow(1, 200, 20);
+    }
+
+    @Test
     public void cols_ByPos() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")

@@ -2,17 +2,20 @@ package org.dflib;
 
 import org.dflib.concat.HConcat;
 import org.dflib.concat.VConcat;
-import org.dflib.explode.Exploder;
 import org.dflib.groupby.Grouper;
 import org.dflib.row.ColumnsRowProxy;
 import org.dflib.row.RowProxy;
 import org.dflib.sample.Sampler;
 import org.dflib.select.RowIndexer;
 import org.dflib.series.EmptySeries;
-import org.dflib.series.IntArraySeries;
 import org.dflib.series.SingleValueSeries;
-import org.dflib.slice.DeferredColumnSet;
+import org.dflib.slice.EmptyRowSet;
 import org.dflib.slice.FixedColumnSet;
+import org.dflib.slice.AllRowSet;
+import org.dflib.slice.ConditionalRowSet;
+import org.dflib.slice.DeferredColumnSet;
+import org.dflib.slice.IndexedRowSet;
+import org.dflib.slice.RangeRowSet;
 import org.dflib.sort.DataFrameSorter;
 import org.dflib.stack.Stacker;
 
@@ -135,28 +138,6 @@ public class ColumnDataFrame implements DataFrame {
         }
 
         return new ColumnDataFrame(null, columnsIndex, newColumnsData);
-    }
-
-    @Override
-    public DataFrame selectRows(int... rowPositions) {
-        return selectRows(new IntArraySeries(rowPositions));
-    }
-
-    @Override
-    public DataFrame selectRows(IntSeries rowPositions) {
-
-        int width = width();
-        Series<?>[] newColumnsData = new Series[width];
-        for (int i = 0; i < width; i++) {
-            newColumnsData[i] = dataColumns[i].select(rowPositions);
-        }
-
-        return new ColumnDataFrame(null, columnsIndex, newColumnsData);
-    }
-
-    @Override
-    public DataFrame selectRows(BooleanSeries condition) {
-        return selectRows(condition.indexTrue());
     }
 
     @Override
@@ -320,11 +301,6 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public DataFrame vExplode(int columnPos) {
-        return Exploder.explode(this, columnPos);
-    }
-
-    @Override
     public DataFrame nullify(DataFrame condition) {
         int w = width();
         Series<?>[] newColumns = new Series[w];
@@ -485,6 +461,28 @@ public class ColumnDataFrame implements DataFrame {
         return FixedColumnSet.of(this, dataColumns, columns);
     }
 
+    public RowSet rows() {
+        return new AllRowSet(this, dataColumns);
+    }
+
+    @Override
+    public RowSet rows(IntSeries positions) {
+        return positions.size() > 0 ? new IndexedRowSet(this, dataColumns, positions) : new EmptyRowSet(this);
+    }
+
+    @Override
+    public RowSet rows(BooleanSeries condition) {
+        return new ConditionalRowSet(this, dataColumns, condition);
+    }
+
+    @Override
+    public RowSet rowsRangeOpenClosed(int fromInclusive, int toExclusive) {
+        return toExclusive - fromInclusive != 0
+                ? new RangeRowSet(this, dataColumns, fromInclusive, toExclusive)
+                : new EmptyRowSet(this);
+    }
+
+    @Override
     public String toString() {
         return Printers.inline.print(new StringBuilder("ColumnDataFrame ["), this).append("]").toString();
     }

@@ -11,6 +11,7 @@ import org.dflib.join.Join;
 import org.dflib.join.JoinBuilder;
 import org.dflib.pivot.PivotBuilder;
 import org.dflib.row.RowProxy;
+import org.dflib.sample.Sampler;
 import org.dflib.series.RowMappedSeries;
 import org.dflib.window.WindowBuilder;
 
@@ -1201,8 +1202,12 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @return a new DataFrame that matches the selection criteria
      * @since 0.6
+     * @deprecated in favor of {@link #rows(int...)} and then {@link RowSet#select()}
      */
-    DataFrame selectRows(int... rowPositions);
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    default DataFrame selectRows(int... rowPositions) {
+        return rows(rowPositions).select();
+    }
 
     /**
      * Selects DataFrame rows based on provided row index. This allows to reorder, filter, duplicate rows of this
@@ -1210,34 +1215,43 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @return a new DataFrame that matches the selection criteria
      * @since 0.6
+     * @deprecated in favor of {@link #rows(IntSeries)} and then {@link RowSet#select()}
      */
-    DataFrame selectRows(IntSeries rowPositions);
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    default DataFrame selectRows(IntSeries rowPositions) {
+        return rows(rowPositions).select();
+    }
 
     /**
      * @since 0.11
+     * @deprecated in favor of {@link #rows(Condition)} and then {@link RowSet#select()}
      */
-    DataFrame selectRows(Condition condition);
-
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    default DataFrame selectRows(Condition condition) {
+        return rows(condition).select();
+    }
 
     /**
      * @since 0.11
+     * @deprecated in favor of {@link #rows(Condition)} and then {@link RowSet#select()}
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     DataFrame selectRows(RowPredicate p);
 
     /**
      * @since 0.11
-     * @deprecated in favor of {@link #selectRows(Condition)}
+     * @deprecated in favor of {@link #rows(Condition)} and then {@link RowSet#select()}
      */
-    @Deprecated(since = "1.0.0-M19")
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default <V> DataFrame selectRows(String columnName, ValuePredicate<V> p) {
         return selectRows(getColumnsIndex().position(columnName), p);
     }
 
     /**
      * @since 0.11
-     * @deprecated in favor of {@link #selectRows(Condition)}
+     * @deprecated in favor of {@link #rows(Condition)} and then {@link RowSet#select()}
      */
-    @Deprecated(since = "1.0.0-M19")
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     <V> DataFrame selectRows(int columnPos, ValuePredicate<V> p);
 
     /**
@@ -1245,8 +1259,12 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @param condition a {@link BooleanSeries} whose "true" values indicate which rows to keep in the result
      * @since 0.11
+     * @deprecated in favor of {@link #rows(BooleanSeries)} and then {@link RowSet#select()}
      */
-    DataFrame selectRows(BooleanSeries condition);
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    default DataFrame selectRows(BooleanSeries condition) {
+        return rows(condition).select();
+    }
 
     /**
      * Returns a DataFrame that contains a range of rows from this DataFrame.
@@ -1255,24 +1273,22 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param toExclusive   a right boundary index (excluded in the returned range)
      * @return a Series that contains a sub-range of data from this Series.
      * @since 0.14
+     * @deprecated in favor of {@link #rowsRangeOpenClosed(int, int)} and then {@link RowSet#select()}
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame selectRowRangeOpenClosed(int fromInclusive, int toExclusive) {
-        int w = width();
-        Series[] rangeColumns = new Series[w];
-        for (int i = 0; i < w; i++) {
-            rangeColumns[i] = getColumn(i).rangeOpenClosed(fromInclusive, toExclusive);
-        }
-
-        return new ColumnDataFrame(null, getColumnsIndex(), rangeColumns);
+        return rowsRangeOpenClosed(fromInclusive, toExclusive).select();
     }
 
     /**
      * Returns a DataFrame with non-repeating rows.
      *
      * @since 0.18
+     * @deprecated in favor of {@link #rows()} and then {@link RowSet#unique()}
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame uniqueRows() {
-        return uniqueRows(getColumnsIndex().getLabels());
+        return rows().unique();
     }
 
     /**
@@ -1280,16 +1296,24 @@ public interface DataFrame extends Iterable<RowProxy> {
      * ignoring all others.
      *
      * @since 0.18
+     * @deprecated in favor of {@link #rows()} and then {@link RowSet#unique(String...)}
      */
-    DataFrame uniqueRows(String... columnNamesToCompare);
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    default DataFrame uniqueRows(String... columnNamesToCompare) {
+        return rows().unique(columnNamesToCompare);
+    }
 
     /**
      * Returns a DataFrame with non-repeating rows. Uniqueness check is only done based on the specified subset of
      * columns, ignoring all others.
      *
      * @since 0.18
+     * @deprecated in favor of {@link #rows()} and then {@link RowSet#unique(int...)}
      */
-    DataFrame uniqueRows(int... columnNamesToCompare);
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    default DataFrame uniqueRows(int... columnNamesToCompare) {
+        return rows().unique(columnNamesToCompare);
+    }
 
     /**
      * @since 0.11
@@ -1497,7 +1521,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      * if the column that is being "exploded" contains Iterables or array elements.
      *
      * @since 0.16
+     * @deprecated in favor of {@link #rows()} and then {@link RowSet#explode(String)}
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame vExplode(String columnName) {
         return vExplode(getColumnsIndex().position(columnName));
     }
@@ -1507,8 +1533,12 @@ public interface DataFrame extends Iterable<RowProxy> {
      * if the column that is being "exploded" contains Iterables or array elements.
      *
      * @since 0.16
+     * @deprecated in favor of {@link #rows()} and then {@link RowSet#explode(int)}
      */
-    DataFrame vExplode(int columnPos);
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    default DataFrame vExplode(int columnPos) {
+        return rows().explode(columnPos);
+    }
 
     /**
      * @deprecated in favor of {@link #cols()} and then {@link ColumnSet#fillNulls(Object)}
@@ -1667,7 +1697,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param size the size of the sample. Can't be bigger than the height of this DataFrame.
      * @return a DataFrame object that is a sample of rows from this object
      * @since 0.7
+     * @deprecated in favor of {@link #rowsSample(int)}
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     DataFrame sampleRows(int size);
 
     /**
@@ -1677,7 +1709,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param random a custom random number generator
      * @return a DataFrame object that is a sample of rows from this object
      * @since 0.7
+     * @deprecated in favor of {@link #rowsSample(int, Random)}
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     DataFrame sampleRows(int size, Random random);
 
     /**
@@ -1805,6 +1839,62 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     default ColumnSet colsSample(int size, Random random) {
         return cols(getColumnsIndex().sample(size, random));
+    }
+
+    /**
+     * Returns a {@link RowSet} with all rows from this DataFrame included.
+     *
+     * @since 1.0.0-M19
+     */
+    RowSet rows();
+
+    /**
+     * @since 1.0.0-M19
+     */
+    default RowSet rows(Condition rowCondition) {
+        return rows(rowCondition.eval(this).indexTrue());
+    }
+
+    /**
+     * @since 1.0.0-M19
+     */
+    default RowSet rows(int... positions) {
+        return rows(Series.ofInt(positions));
+    }
+
+    /**
+     * @since 1.0.0-M19
+     */
+    RowSet rows(IntSeries positions);
+
+    /**
+     * @since 1.0.0-M19
+     */
+    RowSet rows(BooleanSeries condition);
+
+    /**
+     * @since 1.0.0-M19
+     */
+    RowSet rowsRangeOpenClosed(int fromInclusive, int toExclusive);
+
+    /**
+     * Returns a RowSet that is a random sample of rows from this DataFrame, with the specified sample size and
+     * a default random number generator.
+     *
+     * @since 1.0.0-M19
+     */
+    default RowSet rowsSample(int size) {
+        return rows(Sampler.sampleIndex(size, height()));
+    }
+
+    /**
+     * Returns a RowSet that is a random sample of rows from this DataFrame, with the specified sample size and
+     * a user-provided random number generator.
+     *
+     * @since 1.0.0-M19
+     */
+    default RowSet rowsSample(int size, Random random) {
+        return rows(Sampler.sampleIndex(size, height(), random));
     }
 
     @Override

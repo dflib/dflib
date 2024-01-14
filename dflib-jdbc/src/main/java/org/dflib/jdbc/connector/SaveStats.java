@@ -26,7 +26,7 @@ public class SaveStats {
     }
 
     public DataFrame changedRows(DataFrame savedDf) {
-        return savedDf.selectRows(getRowSaveStatuses().index(op -> op != SaveOp.skip));
+        return savedDf.rows(getRowSaveStatuses().index(op -> op != SaveOp.skip)).select();
     }
 
     public Series<SaveOp> getRowSaveStatuses() {

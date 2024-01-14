@@ -43,7 +43,7 @@ public class PreFilteredExp<T> implements Exp<T> {
 
     @Override
     public Series<T> eval(DataFrame df) {
-        return delegate.eval(df.selectRows(filter));
+        return delegate.eval(df.rows(filter).select());
     }
 
     @Override

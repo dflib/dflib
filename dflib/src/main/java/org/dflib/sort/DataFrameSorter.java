@@ -53,7 +53,7 @@ public class DataFrameSorter {
 
     public DataFrame sort(IntComparator comparator) {
         IntSeries sortIndex = sortIndex(comparator);
-        return dataFrame.selectRows(sortIndex);
+        return dataFrame.rows(sortIndex).select();
     }
 
     public DataFrame sort(Sorter... sorters) {

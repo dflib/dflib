@@ -5,10 +5,11 @@ import java.util.Map;
 import java.util.function.UnaryOperator;
 
 /**
- * Defines a set of columns that can be produced from a DataFrame by applying a transformation, also defines a number
- * of such transformation methods. Those methods are of two kinds. Those named "select[Something]" return a DataFrame
- * built from the ColumnSet columns. All the rest produce a DataFrame by merging the ColumnSet into the source DataFrame,
- * replacing or adding columns as needed.
+ * Encapsulates a subset of columns within a DataFrame. The columns can be then transformed in some way and either
+ * extracted into a separate DataFrame (see the various "select" methods) or merged to the original DataFrame. A
+ * transformation can increase or decrease the number of columns (or leave it unchanged), and may result in a change
+ * of values in those columns. A "merge" scenario either replaces the existing columns by name and/or produces new
+ * columns.
  *
  * @since 1.0.0-M19
  */

@@ -39,7 +39,8 @@ public class PreFilterFirstMatchExp<T> implements Exp<T> {
     public Series<T> eval(DataFrame df) {
         // Optimization - using "firstMatch" instead of full "eval"
         int index = filter.firstMatch(df);
-        return delegate.eval(index < 0 ? df.selectRows() : df.selectRows(index));
+        DataFrame prefiltered = index < 0 ? DataFrame.empty(df.getColumnsIndex()) : df.rows(index).select();
+        return delegate.eval(prefiltered);
     }
 
     @Override

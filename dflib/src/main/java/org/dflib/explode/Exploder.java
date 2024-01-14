@@ -10,80 +10,78 @@ import org.dflib.builder.ObjectAccum;
 import java.util.Iterator;
 
 /**
- * @since 0.16
+ * @since 1.0.0-M19
  */
 public class Exploder {
 
-    public static DataFrame explode(DataFrame df, int columnPos) {
-        return df.height() > 0 ? new Exploder(columnPos, df).explode() : df;
+    private final Series<?> exploded;
+    private final IntSeries stretchCounts;
+
+    private Exploder(Series<?> exploded, IntSeries stretchCounts) {
+        this.exploded = exploded;
+        this.stretchCounts = stretchCounts;
     }
 
-    private final int columnPos;
-    private final DataFrame srcDF;
-    private final ValueAccum<Object> explodedAccum;
-    private final IntAccum indexAccum;
-
-    protected Exploder(int columnPos, DataFrame srcDF) {
-        this.columnPos = columnPos;
-        this.srcDF = srcDF;
-        this.explodedAccum = new ObjectAccum<>(srcDF.height());
-        this.indexAccum = new IntAccum(srcDF.height());
+    public Series<?> getExploded() {
+        return exploded;
     }
 
-    public DataFrame explode() {
-        explodeColumnAndBuildIndex();
-        return reassembleExploded();
+    public IntSeries getStretchCounts() {
+        return stretchCounts;
     }
 
-    private DataFrame reassembleExploded() {
-        IntSeries explodeIndex = indexAccum.toSeries();
-        int w = srcDF.width();
-        Series[] explodedColumns = new Series[w];
-        for (int i = 0; i < w; i++) {
-            explodedColumns[i] = i == columnPos
-                    ? explodedAccum.toSeries()
-                    : srcDF.getColumn(i).select(explodeIndex);
-        }
+    public static Exploder explode(Series<?> s) {
 
-        return DataFrame.byColumn(srcDF.getColumnsIndex()).of(explodedColumns);
-    }
+        int h = s.size();
+        ValueAccum<Object> explodedAccum = new ObjectAccum<>(h);
+        IntAccum indexAccum = new IntAccum(h);
 
-    private void explodeColumnAndBuildIndex() {
-        Series<?> toExplode = srcDF.getColumn(columnPos);
-        int h = toExplode.size();
         for (int i = 0; i < h; i++) {
-
-            Object v = toExplode.get(i);
+            Object v = s.get(i);
             if (v == null) {
                 explodedAccum.push(null);
-                indexAccum.push(i);
+                indexAccum.push(1);
             } else if (v instanceof Iterable) {
-
-                // empty iterable should generate a single null row
-                Iterator<?> it = ((Iterable) v).iterator();
-
-                if (!it.hasNext()) {
-                    explodedAccum.push(null);
-                    indexAccum.push(i);
-                } else {
-                    while (it.hasNext()) {
-                        explodedAccum.push(it.next());
-                        indexAccum.push(i);
-                    }
-                }
-
+                explodeIterable(explodedAccum, indexAccum, (Iterable<?>) v);
             } else if (v.getClass().isArray()) {
-                explodeArray(v, i);
+                explodeArray(explodedAccum, indexAccum, v);
             }
             // scalar
             else {
                 explodedAccum.push(v);
-                indexAccum.push(i);
+                indexAccum.push(1);
             }
+        }
+
+        return new Exploder(explodedAccum.toSeries(), indexAccum.toSeries());
+    }
+
+    private static void explodeIterable(
+            ValueAccum<Object> explodedAccum,
+            IntAccum indexAccum,
+            Iterable<?> iterable) {
+
+        // empty iterable should generate a single null row
+        Iterator<?> it = iterable.iterator();
+
+        if (!it.hasNext()) {
+            explodedAccum.push(null);
+            indexAccum.push(1);
+        } else {
+            int c = 0;
+            while (it.hasNext()) {
+                explodedAccum.push(it.next());
+                c++;
+            }
+
+            indexAccum.push(c);
         }
     }
 
-    private void explodeArray(Object array, int i) {
+    private static void explodeArray(
+            ValueAccum<Object> explodedAccum,
+            IntAccum indexAccum,
+            Object array) {
 
         if (array instanceof Object[]) {
             Object[] a = (Object[]) array;
@@ -91,12 +89,13 @@ public class Exploder {
             // empty array should generate a single null row
             if (a.length == 0) {
                 explodedAccum.push(null);
-                indexAccum.push(i);
+                indexAccum.push(1);
             } else {
                 for (Object sv : a) {
                     explodedAccum.push(sv);
-                    indexAccum.push(i);
                 }
+
+                indexAccum.push(a.length);
             }
         } else if (array instanceof int[]) {
             int[] a = (int[]) array;
@@ -104,12 +103,12 @@ public class Exploder {
             // empty array should generate a single null row
             if (a.length == 0) {
                 explodedAccum.push(null);
-                indexAccum.push(i);
+                indexAccum.push(1);
             } else {
                 for (int sv : a) {
                     explodedAccum.push(sv);
-                    indexAccum.push(i);
                 }
+                indexAccum.push(a.length);
             }
         } else if (array instanceof double[]) {
             double[] a = (double[]) array;
@@ -117,12 +116,12 @@ public class Exploder {
             // empty array should generate a single null row
             if (a.length == 0) {
                 explodedAccum.push(null);
-                indexAccum.push(i);
+                indexAccum.push(1);
             } else {
                 for (double sv : a) {
                     explodedAccum.push(sv);
-                    indexAccum.push(i);
                 }
+                indexAccum.push(a.length);
             }
         } else if (array instanceof long[]) {
             long[] a = (long[]) array;
@@ -130,12 +129,13 @@ public class Exploder {
             // empty array should generate a single null row
             if (a.length == 0) {
                 explodedAccum.push(null);
-                indexAccum.push(i);
+                indexAccum.push(1);
             } else {
                 for (long sv : a) {
                     explodedAccum.push(sv);
-                    indexAccum.push(i);
                 }
+
+                indexAccum.push(a.length);
             }
         } else if (array instanceof boolean[]) {
             boolean[] a = (boolean[]) array;
@@ -143,26 +143,26 @@ public class Exploder {
             // empty array should generate a single null row
             if (a.length == 0) {
                 explodedAccum.push(null);
-                indexAccum.push(i);
+                indexAccum.push(1);
             } else {
                 for (boolean sv : a) {
                     explodedAccum.push(sv);
-                    indexAccum.push(i);
                 }
+
+                indexAccum.push(a.length);
             }
-        }
-        else if (array instanceof byte[]) {
+        } else if (array instanceof byte[]) {
             byte[] a = (byte[]) array;
 
             // empty array should generate a single null row
             if (a.length == 0) {
                 explodedAccum.push(null);
-                indexAccum.push(i);
+                indexAccum.push(1);
             } else {
                 for (byte sv : a) {
                     explodedAccum.push(sv);
-                    indexAccum.push(i);
                 }
+                indexAccum.push(a.length);
             }
         }
         // TODO: short[], float[]?

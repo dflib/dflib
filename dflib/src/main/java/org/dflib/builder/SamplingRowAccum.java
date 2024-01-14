@@ -53,6 +53,6 @@ class SamplingRowAccum<S> implements RowAccum<S> {
     @Override
     public DataFrame toDataFrame() {
         IntSeries sortIndex = sampledRows.toSeries().sortIndexInt();
-        return delegate.toDataFrame().selectRows(sortIndex);
+        return delegate.toDataFrame().rows(sortIndex).select();
     }
 }

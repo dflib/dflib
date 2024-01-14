@@ -7,7 +7,7 @@ import java.security.SecureRandom;
 import java.util.Random;
 
 /**
- * An object that provides random sampling facilities to DFLib. By default uses {@link SecureRandom} that may create
+ * An object that provides random sampling facilities to DFLib. By default, uses {@link SecureRandom} that may create
  * contention in multi-threaded environments. If this becomes a problem, use the variants of Sampler methods that take
  * a custom Random.
  *
@@ -15,7 +15,7 @@ import java.util.Random;
  */
 public class Sampler {
 
-    private static Random defaultRandom = new SecureRandom();
+    private static final Random defaultRandom = new SecureRandom();
 
     public static Random getDefaultRandom() {
         return defaultRandom;

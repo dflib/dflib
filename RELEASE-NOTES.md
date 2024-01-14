@@ -1,5 +1,6 @@
 ## Release 1.0.0-M1
 
+* #78 DataFrame.rows(..) : transformation over a subset of rows
 * #210 RowProxy: support for primitives and simpler casting
 * #211 Optimization: replace Accum with direct array ops on primitive Series
 * #212 DataFrame.cols(..).op(..): transformation over a subset of columns
