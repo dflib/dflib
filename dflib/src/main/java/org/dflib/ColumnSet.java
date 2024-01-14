@@ -105,28 +105,6 @@ public interface ColumnSet {
     DataFrame selectArrays(Exp<? extends Object[]> mapper);
 
     /**
-     * Returns a new DataFrame with the same columns as the source DataFrame, except that the columns passed in this
-     * method arguments will be assigned the names from the ColumnSet.
-     */
-    DataFrame map(String... existingColumns);
-
-    /**
-     * Returns a new DataFrame made of the specified columns, but with names from the ColumnSet.
-     */
-    DataFrame select(String... existingColumns);
-
-    /**
-     * Returns a new DataFrame with the same columns as the source DataFrame, but a subset of columns specified by the
-     * indexes passed to the method assuming the names from the ColumnSet.
-     */
-    DataFrame map(int... existingColumns);
-
-    /**
-     * Returns a new DataFrame based on the specified columns, that are renamed to match the ColumnSet column names.
-     */
-    DataFrame select(int... existingColumns);
-
-    /**
      * Returns a new DataFrame based on the specified columns from the source DataFrame used without transformation.
      * If the column set contains a column not present in the source, a column with null values will be returned. If
      * column set is dynamic (has no explicit columns defined), the source DataFrame is returned unchanged.

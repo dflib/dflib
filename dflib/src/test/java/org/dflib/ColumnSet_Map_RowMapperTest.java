@@ -6,6 +6,20 @@ import org.junit.jupiter.api.Test;
 public class ColumnSet_Map_RowMapperTest {
 
     @Test
+    public void colsAppend() {
+        DataFrame df = DataFrame.foldByRow("a", "b")
+                .of(1, "x", 2, "y")
+                .colsAppend("b", "c").map((f, t) -> t
+                        .set(0, f.get(0, Integer.class) * 100)
+                        .set(1, f.get(0, Integer.class) * 10));
+
+        new DataFrameAsserts(df, "a", "b", "b_", "c")
+                .expectHeight(2)
+                .expectRow(0, 1, "x", 100, 10)
+                .expectRow(1, 2, "y", 200, 20);
+    }
+
+    @Test
     public void cols_ByName() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")

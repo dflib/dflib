@@ -348,55 +348,6 @@ public class DeferredColumnSet implements ColumnSet {
         return columns;
     }
 
-    @Override
-    public DataFrame map(String... existingColumns) {
-
-        // check that all columns exist, but otherwise return the unchanged DataFrame, as we do not have target
-        // column names specified. "getColumn(..)" with a non-existing name throws.
-        for (String c : existingColumns) {
-            source.getColumn(c);
-        }
-
-        return source;
-    }
-
-    @Override
-    public DataFrame map(int... existingColumns) {
-
-        // check that all columns exist, but otherwise return the unchanged DataFrame, as we do not have target
-        // column names specified. "getColumn(..)" with a non-existing name throws.
-        for (int c : existingColumns) {
-            source.getColumn(c);
-        }
-
-        return source;
-    }
-
-    @Override
-    public DataFrame select(String... existingColumns) {
-
-        // select without renaming
-        int w = existingColumns.length;
-        Series<?>[] columns = new Series[w];
-        for (int i = 0; i < w; i++) {
-            columns[i] = source.getColumn(existingColumns[i]);
-        }
-
-        return new ColumnDataFrame(null, Index.of(existingColumns), columns);
-    }
-
-    @Override
-    public DataFrame select(int... existingColumns) {
-        // select without renaming
-        int w = existingColumns.length;
-        Series<?>[] columns = new Series[w];
-        for (int i = 0; i < w; i++) {
-            columns[i] = source.getColumn(existingColumns[i]);
-        }
-
-        return new ColumnDataFrame(null, source.getColumnsIndex().selectPositions(existingColumns), columns);
-    }
-
     private ColumnSet delegate(String[] csIndex) {
         return FixedColumnSet.of(source, sourceColumns, csIndex);
     }

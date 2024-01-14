@@ -6,6 +6,19 @@ import org.junit.jupiter.api.Test;
 public class ColumnSet_Select_ExpTest {
 
     @Test
+    public void colsAppend() {
+        DataFrame df = DataFrame.foldByRow("a", "b")
+                .of(1, "x", 2, "y")
+                .colsAppend("b", "c")
+                .select(Exp.$int(0).mul(100), Exp.$int(0).mul(10));
+
+        new DataFrameAsserts(df, "b_", "c")
+                .expectHeight(2)
+                .expectRow(0, 100, 10)
+                .expectRow(1, 200, 20);
+    }
+
+    @Test
     public void cols_ByName() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")
