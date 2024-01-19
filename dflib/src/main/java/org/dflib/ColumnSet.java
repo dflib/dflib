@@ -122,9 +122,9 @@ public interface ColumnSet {
      * Returns a new DataFrame with all the columns from the source DataFrame (and, possibly, some extra all-null columns
      * defined in the ColumnSet), with the columns from the ColumnSet renamed by applying the renaming function.
      */
-    DataFrame rename(UnaryOperator<String> renameFunction);
+    DataFrame rename(UnaryOperator<String> renamer);
 
-    DataFrame selectRename(UnaryOperator<String> renameFunction);
+    DataFrame selectRename(UnaryOperator<String> renamer);
 
     /**
      * Returns a new DataFrame with all the columns from the source DataFrame (and, possibly, some extra all-null columns

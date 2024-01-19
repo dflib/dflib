@@ -57,18 +57,18 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame rename(UnaryOperator<String> renameFunction) {
+    public DataFrame rename(UnaryOperator<String> renamer) {
         return new ColumnDataFrame(
                 null,
-                source.getColumnsIndex().rename(renameFunction),
+                source.getColumnsIndex().rename(renamer),
                 sourceColumns);
     }
 
     @Override
-    public DataFrame selectRename(UnaryOperator<String> renameFunction) {
+    public DataFrame selectRename(UnaryOperator<String> renamer) {
         return new ColumnDataFrame(
                 null,
-                source.getColumnsIndex().rename(renameFunction),
+                source.getColumnsIndex().rename(renamer),
                 sourceColumns);
     }
 

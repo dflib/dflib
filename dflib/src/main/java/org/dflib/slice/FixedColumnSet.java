@@ -103,19 +103,19 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame rename(UnaryOperator<String> renameFunction) {
+    public DataFrame rename(UnaryOperator<String> renamer) {
 
         Map<String, String> oldToNewMap = new HashMap<>((int) Math.ceil(csIndex.length / 0.75));
         for (String l : csIndex) {
-            oldToNewMap.put(l, renameFunction.apply(l));
+            oldToNewMap.put(l, renamer.apply(l));
         }
 
         return rename(oldToNewMap);
     }
 
     @Override
-    public DataFrame selectRename(UnaryOperator<String> renameFunction) {
-        return new ColumnDataFrame(null, Index.of(csIndex).rename(renameFunction), doSelect());
+    public DataFrame selectRename(UnaryOperator<String> renamer) {
+        return new ColumnDataFrame(null, Index.of(csIndex).rename(renamer), doSelect());
 
     }
 

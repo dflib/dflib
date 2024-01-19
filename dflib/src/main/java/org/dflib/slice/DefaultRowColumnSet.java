@@ -11,8 +11,10 @@ import org.dflib.RowToValueMapper;
 import org.dflib.Series;
 import org.dflib.series.SingleValueSeries;
 
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 /**
  * @since 1.0.0-M19
@@ -74,6 +76,21 @@ public class DefaultRowColumnSet implements RowColumnSet {
     @Override
     public DataFrame select(RowToValueMapper<?>... mappers) {
         return columnSetMaker.apply(rowSet.select()).select(mappers);
+    }
+
+    @Override
+    public DataFrame selectRename(Map<String, String> oldToNewNames) {
+        return columnSetMaker.apply(rowSet.select()).selectRename(oldToNewNames);
+    }
+
+    @Override
+    public DataFrame selectRename(UnaryOperator<String> renamer) {
+        return columnSetMaker.apply(rowSet.select()).selectRename(renamer);
+    }
+
+    @Override
+    public DataFrame selectRename(String... newColumnNames) {
+        return columnSetMaker.apply(rowSet.select()).selectRename(newColumnNames);
     }
 
     private DataFrame mergeRows(DataFrame hSlice) {

@@ -7,6 +7,9 @@ import org.dflib.RowColumnSet;
 import org.dflib.RowMapper;
 import org.dflib.RowToValueMapper;
 
+import java.util.Map;
+import java.util.function.UnaryOperator;
+
 /**
  * @since 1.0.0-M19
  */
@@ -51,5 +54,20 @@ public class AllRowColumnSet implements RowColumnSet {
     @Override
     public DataFrame select(RowToValueMapper<?>... mappers) {
         return columnSet.select(mappers);
+    }
+
+    @Override
+    public DataFrame selectRename(UnaryOperator<String> renamer) {
+        return columnSet.selectRename(renamer);
+    }
+
+    @Override
+    public DataFrame selectRename(Map<String, String> oldToNewNames) {
+        return columnSet.selectRename(oldToNewNames);
+    }
+
+    @Override
+    public DataFrame selectRename(String... newColumnNames) {
+        return columnSet.selectRename(newColumnNames);
     }
 }

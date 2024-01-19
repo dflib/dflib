@@ -118,17 +118,17 @@ public class Index implements Iterable<String> {
      * Renames index labels by applying the provided function to each label. Useful for name conversions like
      * lower-casing, etc.
      *
-     * @param renameFunction a function that is passed each label in turn
+     * @param renamer a function that is passed each label in turn
      * @return a new Index with renamed labels
      * @since 0.6
      */
-    public Index rename(UnaryOperator<String> renameFunction) {
+    public Index rename(UnaryOperator<String> renamer) {
 
         int len = size();
 
         String[] newLabels = new String[len];
         for (int i = 0; i < len; i++) {
-            newLabels[i] = renameFunction.apply(labels[i]);
+            newLabels[i] = renamer.apply(labels[i]);
         }
 
         return new Index(newLabels);

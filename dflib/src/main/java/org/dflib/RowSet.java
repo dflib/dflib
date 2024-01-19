@@ -52,10 +52,16 @@ public interface RowSet {
      */
     DataFrame select();
 
+    DataFrame select(Exp<?>... exps);
+
+    DataFrame select(RowMapper mapper);
+
+    DataFrame select(RowToValueMapper<?>... mappers);
+
     /**
      * A form of {@link #select()} that also renames the result columns using the provided operator.
      */
-    DataFrame selectRename(UnaryOperator<String> renameFunction);
+    DataFrame selectRename(UnaryOperator<String> renamer);
 
     /**
      * A form of {@link #select()} that also renames the result columns.
@@ -66,10 +72,4 @@ public interface RowSet {
      * A form of {@link #select()} that also renames the result columns using the provided old to new names map.
      */
     DataFrame selectRename(Map<String, String> oldToNewNames);
-
-    DataFrame select(Exp<?>... exps);
-
-    DataFrame select(RowMapper mapper);
-
-    DataFrame select(RowToValueMapper<?>... mappers);
 }

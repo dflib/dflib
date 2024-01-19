@@ -1092,14 +1092,14 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Renames column index labels by applying the provided function to each label. Useful for name conversions like
      * lower-casing, etc.
      *
-     * @param renameFunction a function that is passed each label in turn
+     * @param renamer a function that is passed each label in turn
      * @return a new DataFrame with renamed columns
      * @since 0.6
      * @deprecated use {@link #cols()} and then {@link ColumnSet#rename(UnaryOperator)}
      */
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
-    default DataFrame renameColumns(UnaryOperator<String> renameFunction) {
-        return cols().rename(renameFunction);
+    default DataFrame renameColumns(UnaryOperator<String> renamer) {
+        return cols().rename(renamer);
     }
 
     /**

@@ -193,8 +193,8 @@ public abstract class BaseRowSet implements RowSet {
     }
 
     @Override
-    public DataFrame selectRename(UnaryOperator<String> renameFunction) {
-        return new ColumnDataFrame(null, sourceColumnsIndex.rename(renameFunction), doSelect());
+    public DataFrame selectRename(UnaryOperator<String> renamer) {
+        return new ColumnDataFrame(null, sourceColumnsIndex.rename(renamer), doSelect());
     }
 
     @Override
