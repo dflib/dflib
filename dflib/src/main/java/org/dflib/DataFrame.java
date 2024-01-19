@@ -1081,11 +1081,11 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * @deprecated use {@link #cols()} and then {@link ColumnSet#renameOne(String, String)}
+     * @deprecated use {@link #cols()} and then {@link ColumnSet#rename(Map)}
      */
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame renameColumn(String oldLabel, String newLabel) {
-        return cols().renameOne(oldLabel, newLabel);
+        return cols().rename(Map.of(oldLabel, newLabel));
     }
 
     /**

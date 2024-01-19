@@ -142,12 +142,4 @@ public interface ColumnSet {
     DataFrame rename(Map<String, String> oldToNewNames);
 
     DataFrame selectRename(Map<String, String> oldToNewNames);
-
-    default DataFrame renameOne(String oldLabel, String newLabel) {
-        return rename(Map.of(oldLabel, newLabel));
-    }
-
-    default DataFrame selectRenameOne(String oldLabel, String newLabel) {
-        return selectRename(Map.of(oldLabel, newLabel));
-    }
 }
