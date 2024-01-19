@@ -98,6 +98,11 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     @Override
+    public DataFrame selectRename(String... newColumnNames) {
+        return new ColumnDataFrame(null, Index.ofDeduplicated(newColumnNames), doSelect());
+    }
+
+    @Override
     public DataFrame rename(UnaryOperator<String> renameFunction) {
 
         Map<String, String> oldToNewMap = new HashMap<>((int) Math.ceil(csIndex.length / 0.75));
@@ -106,6 +111,12 @@ public class FixedColumnSet implements ColumnSet {
         }
 
         return rename(oldToNewMap);
+    }
+
+    @Override
+    public DataFrame selectRename(UnaryOperator<String> renameFunction) {
+        return new ColumnDataFrame(null, Index.of(csIndex).rename(renameFunction), doSelect());
+
     }
 
     @Override
@@ -119,6 +130,11 @@ public class FixedColumnSet implements ColumnSet {
         }
 
         return merge(columns, oldToNewNames);
+    }
+
+    @Override
+    public DataFrame selectRename(Map<String, String> oldToNewNames) {
+        return new ColumnDataFrame(null, Index.of(csIndex).rename(oldToNewNames), doSelect());
     }
 
     @Override
@@ -219,15 +235,7 @@ public class FixedColumnSet implements ColumnSet {
 
     @Override
     public DataFrame select() {
-
-        int w = csIndex.length;
-        Series<?>[] columns = new Series[w];
-
-        for (int i = 0; i < w; i++) {
-            columns[i] = getOrCreateColumn(source, i);
-        }
-
-        return select(columns);
+        return new ColumnDataFrame(null, Index.ofDeduplicated(csIndex), doSelect());
     }
 
     @Override
@@ -237,7 +245,7 @@ public class FixedColumnSet implements ColumnSet {
 
     @Override
     public DataFrame select(Exp<?>... exps) {
-        return select(doMap(exps));
+        return new ColumnDataFrame(null, Index.ofDeduplicated(csIndex), doMap(exps));
     }
 
     private Series<?>[] doMap(Exp<?>[] exps) {
@@ -324,7 +332,7 @@ public class FixedColumnSet implements ColumnSet {
             mapper.map(from, b);
         });
 
-        return select(b.getData());
+        return new ColumnDataFrame(null, Index.ofDeduplicated(csIndex), b.getData());
     }
 
     @Override
@@ -334,7 +342,7 @@ public class FixedColumnSet implements ColumnSet {
 
     @Override
     public DataFrame selectIterables(Exp<? extends Iterable<?>> mapper) {
-        return select(doMapIterables(mapper));
+        return new ColumnDataFrame(null, Index.ofDeduplicated(csIndex), doMapIterables(mapper));
     }
 
     private Series<?>[] doMapIterables(Exp<? extends Iterable<?>> mapper) {
@@ -376,7 +384,7 @@ public class FixedColumnSet implements ColumnSet {
 
     @Override
     public DataFrame selectArrays(Exp<? extends Object[]> mapper) {
-        return select(doMapArrays(mapper));
+        return new ColumnDataFrame(null, Index.ofDeduplicated(csIndex), doMapArrays(mapper));
     }
 
     private Series<?>[] doMapArrays(Exp<? extends Object[]> mapper) {
@@ -429,11 +437,11 @@ public class FixedColumnSet implements ColumnSet {
                 : createNew.get();
     }
 
-    protected DataFrame merge(Series<?>[] columns) {
+    private DataFrame merge(Series<?>[] columns) {
         return merger().merge(sourceColumnsIndex.getLabels(), sourceColumns, csIndex, columns);
     }
 
-    protected DataFrame merge(Series<?>[] columns, Map<String, String> oldToNewNames) {
+    private DataFrame merge(Series<?>[] columns, Map<String, String> oldToNewNames) {
         return merger().merge(
                 sourceColumnsIndex.getLabels(),
                 sourceColumns,
@@ -441,15 +449,18 @@ public class FixedColumnSet implements ColumnSet {
                 columns);
     }
 
-    protected DataFrame select(Series<?>[] columns) {
-        return new ColumnDataFrame(null, Index.ofDeduplicated(csIndex), columns);
-    }
-
-    protected DataFrame replace(Series<?>[] columns, Map<String, String> oldToNewNames) {
-        return new ColumnDataFrame(null, sourceColumnsIndex.rename(oldToNewNames), columns);
-    }
-
-    protected ColumnSetMerger merger() {
+    private ColumnSetMerger merger() {
         return ColumnSetMerger.of(sourceColumnsIndex, csIndex);
+    }
+
+    private Series<?>[] doSelect() {
+        int w = csIndex.length;
+        Series<?>[] columns = new Series[w];
+
+        for (int i = 0; i < w; i++) {
+            columns[i] = getOrCreateColumn(source, i);
+        }
+
+        return columns;
     }
 }

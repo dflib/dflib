@@ -42,21 +42,48 @@ public class DeferredColumnSet implements ColumnSet {
 
     @Override
     public DataFrame rename(String... newColumnNames) {
-        return new ColumnDataFrame(null,
+        return new ColumnDataFrame(
+                null,
+                source.getColumnsIndex().rename(newColumnNames),
+                sourceColumns);
+    }
+
+    @Override
+    public DataFrame selectRename(String... newColumnNames) {
+        return new ColumnDataFrame(
+                null,
                 source.getColumnsIndex().rename(newColumnNames),
                 sourceColumns);
     }
 
     @Override
     public DataFrame rename(UnaryOperator<String> renameFunction) {
-        return new ColumnDataFrame(null,
+        return new ColumnDataFrame(
+                null,
+                source.getColumnsIndex().rename(renameFunction),
+                sourceColumns);
+    }
+
+    @Override
+    public DataFrame selectRename(UnaryOperator<String> renameFunction) {
+        return new ColumnDataFrame(
+                null,
                 source.getColumnsIndex().rename(renameFunction),
                 sourceColumns);
     }
 
     @Override
     public DataFrame rename(Map<String, String> oldToNewNames) {
-        return new ColumnDataFrame(null,
+        return new ColumnDataFrame(
+                null,
+                source.getColumnsIndex().rename(oldToNewNames),
+                sourceColumns);
+    }
+
+    @Override
+    public DataFrame selectRename(Map<String, String> oldToNewNames) {
+        return new ColumnDataFrame(
+                null,
                 source.getColumnsIndex().rename(oldToNewNames),
                 sourceColumns);
     }

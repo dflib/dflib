@@ -1,6 +1,5 @@
 package org.dflib;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
@@ -125,6 +124,8 @@ public interface ColumnSet {
      */
     DataFrame rename(UnaryOperator<String> renameFunction);
 
+    DataFrame selectRename(UnaryOperator<String> renameFunction);
+
     /**
      * Returns a new DataFrame with all the columns from the source DataFrame (and, possibly, some extra all-null columns
      * defined in the ColumnSet), with the columns from the ColumnSet renamed to the specified names. The new
@@ -132,13 +133,21 @@ public interface ColumnSet {
      */
     DataFrame rename(String... newColumnNames);
 
+    DataFrame selectRename(String... newColumnNames);
+
     /**
      * Returns a new DataFrame with all the columns from the source DataFrame (and, possibly, some extra all-null columns
      * defined in the ColumnSet), with the columns from the ColumnSet renamed using old to new names map argument.
      */
     DataFrame rename(Map<String, String> oldToNewNames);
 
+    DataFrame selectRename(Map<String, String> oldToNewNames);
+
     default DataFrame renameOne(String oldLabel, String newLabel) {
-        return rename(Collections.singletonMap(oldLabel, newLabel));
+        return rename(Map.of(oldLabel, newLabel));
+    }
+
+    default DataFrame selectRenameOne(String oldLabel, String newLabel) {
+        return selectRename(Map.of(oldLabel, newLabel));
     }
 }
