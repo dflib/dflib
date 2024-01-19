@@ -9,7 +9,9 @@ import org.dflib.RowSet;
 import org.dflib.RowToValueMapper;
 import org.dflib.Sorter;
 
+import java.util.Map;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 /**
  * @since 1.0.0-M19
@@ -132,6 +134,21 @@ public class EmptyRowSet implements RowSet {
     @Override
     public DataFrame select() {
         return DataFrame.empty(source.getColumnsIndex());
+    }
+
+    @Override
+    public DataFrame selectRename(Map<String, String> oldToNewNames) {
+        return DataFrame.empty(source.getColumnsIndex().rename(oldToNewNames));
+    }
+
+    @Override
+    public DataFrame selectRename(UnaryOperator<String> renameFunction) {
+        return DataFrame.empty(source.getColumnsIndex().rename(renameFunction));
+    }
+
+    @Override
+    public DataFrame selectRename(String... newColumnNames) {
+        return DataFrame.empty(source.getColumnsIndex().rename(newColumnNames));
     }
 
     @Override

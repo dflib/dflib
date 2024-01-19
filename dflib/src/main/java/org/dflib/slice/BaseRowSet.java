@@ -17,6 +17,9 @@ import org.dflib.row.MultiArrayRowBuilder;
 import org.dflib.series.IntSingleValueSeries;
 import org.dflib.series.RowMappedSeries;
 
+import java.util.Map;
+import java.util.function.UnaryOperator;
+
 /**
  * @since 1.0.0-M19
  */
@@ -40,7 +43,7 @@ public abstract class BaseRowSet implements RowSet {
     @Override
     public DataFrame explode(int columnPos) {
 
-        Exploder exploder = Exploder.explode(select(sourceColumns[columnPos]));
+        Exploder exploder = Exploder.explode(doSelect(sourceColumns[columnPos]));
         int rsLen = (int) exploder.getStretchCounts().sum();
 
         RowSetMerger merger = merger();
@@ -181,14 +184,22 @@ public abstract class BaseRowSet implements RowSet {
 
     @Override
     public DataFrame select() {
+        return new ColumnDataFrame(null, sourceColumnsIndex, doSelect());
+    }
 
-        int w = sourceColumns.length;
-        Series<?>[] to = new Series[w];
-        for (int i = 0; i < w; i++) {
-            to[i] = select(sourceColumns[i]);
-        }
+    @Override
+    public DataFrame selectRename(Map<String, String> oldToNewNames) {
+        return new ColumnDataFrame(null, sourceColumnsIndex.rename(oldToNewNames), doSelect());
+    }
 
-        return new ColumnDataFrame(null, sourceColumnsIndex, to);
+    @Override
+    public DataFrame selectRename(UnaryOperator<String> renameFunction) {
+        return new ColumnDataFrame(null, sourceColumnsIndex.rename(renameFunction), doSelect());
+    }
+
+    @Override
+    public DataFrame selectRename(String... newColumnNames) {
+        return new ColumnDataFrame(null, sourceColumnsIndex.rename(newColumnNames), doSelect());
     }
 
     @Override
@@ -209,7 +220,7 @@ public abstract class BaseRowSet implements RowSet {
         ColumnsRowProxy from = new ColumnsRowProxy(sourceColumnsIndex, sourceColumns, h);
         MultiArrayRowBuilder to = new MultiArrayRowBuilder(sourceColumnsIndex, ih);
 
-        selectByRow(mapper, from, to);
+        doSelectByRow(mapper, from, to);
 
         return DataFrame.byColumn(sourceColumnsIndex).of(to.getData());
     }
@@ -269,9 +280,18 @@ public abstract class BaseRowSet implements RowSet {
 
     protected abstract int size();
 
-    protected abstract void selectByRow(RowMapper mapper, ColumnsRowProxy from, MultiArrayRowBuilder to);
+    protected Series<?>[] doSelect() {
+        int w = sourceColumns.length;
+        Series<?>[] to = new Series[w];
+        for (int i = 0; i < w; i++) {
+            to[i] = doSelect(sourceColumns[i]);
+        }
+        return to;
+    }
 
-    protected abstract <T> Series<T> select(Series<T> sourceColumn);
+    protected abstract void doSelectByRow(RowMapper mapper, ColumnsRowProxy from, MultiArrayRowBuilder to);
+
+    protected abstract <T> Series<T> doSelect(Series<T> sourceColumn);
 
     protected abstract RowSetMapper mapper();
 

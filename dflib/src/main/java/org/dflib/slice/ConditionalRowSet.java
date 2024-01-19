@@ -61,7 +61,7 @@ public class ConditionalRowSet extends BaseRowSet {
     }
 
     @Override
-    protected void selectByRow(RowMapper mapper, ColumnsRowProxy from, MultiArrayRowBuilder to) {
+    protected void doSelectByRow(RowMapper mapper, ColumnsRowProxy from, MultiArrayRowBuilder to) {
         int h = sourceColumns[0].size();
         for (int i = 0; i < h; i++) {
 
@@ -74,7 +74,7 @@ public class ConditionalRowSet extends BaseRowSet {
     }
 
     @Override
-    protected <T> Series<T> select(Series<T> sourceColumn) {
+    protected <T> Series<T> doSelect(Series<T> sourceColumn) {
         // TODO: an implicitly lazy impl instead of Series.select(..) to avoid evaluation of unneeded columns when
         //  calculating DefaultRowColumnSet
         return sourceColumn.select(conditionalIndex);
