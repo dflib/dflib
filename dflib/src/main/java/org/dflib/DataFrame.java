@@ -12,6 +12,7 @@ import org.dflib.join.JoinBuilder;
 import org.dflib.pivot.PivotBuilder;
 import org.dflib.row.RowProxy;
 import org.dflib.sample.Sampler;
+import org.dflib.select.RowIndexer;
 import org.dflib.series.RowMappedSeries;
 import org.dflib.window.WindowBuilder;
 
@@ -1233,10 +1234,12 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * @since 0.11
-     * @deprecated in favor of {@link #rows(Condition)} and then {@link RowSet#select()}
+     * @deprecated in favor of {@link #rows(RowPredicate)}  and then {@link RowSet#select()}
      */
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
-    DataFrame selectRows(RowPredicate p);
+    default DataFrame selectRows(RowPredicate condition) {
+        return rows(condition).select();
+    }
 
     /**
      * @since 0.11
@@ -1852,7 +1855,13 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 1.0.0-M19
      */
     default RowSet rows(Condition rowCondition) {
-        return rows(rowCondition.eval(this).indexTrue());
+        IntSeries index = rowCondition.eval(this).indexTrue();
+
+        // there's no reordering or index duplication when applying a Condition,
+        // so we can compare the sizes to detect changes
+        return index.size() == height()
+                ? rows()
+                : rows(index);
     }
 
     /**
@@ -1871,6 +1880,19 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @since 1.0.0-M19
      */
     RowSet rows(BooleanSeries condition);
+
+    /**
+     * @since 1.0.0-M19
+     */
+    default RowSet rows(RowPredicate condition) {
+        IntSeries index = RowIndexer.index(this, condition);
+
+        // there's no reordering or index duplication when applying RowPredicate,
+        // so we can compare the sizes to detect changes
+        return index.size() == height()
+                ? rows()
+                : rows(index);
+    }
 
     /**
      * @since 1.0.0-M19
