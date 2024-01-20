@@ -13,8 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
 // TODO: common inheritance hierarchy between GroupBy and SeriesGroupBy (will likely need a DataFrameGroupBy)
 public class SeriesGroupBy<T> {
 
-    private Series<T> ungrouped;
-    private Map<Object, IntSeries> groupsIndex;
+    private final Series<T> ungrouped;
+    private final Map<Object, IntSeries> groupsIndex;
     private Map<Object, Series<T>> resolvedGroups;
 
     public SeriesGroupBy(Series<T> ungrouped, Map<Object, IntSeries> groupsIndex) {

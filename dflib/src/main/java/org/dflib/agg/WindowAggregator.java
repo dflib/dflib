@@ -23,7 +23,7 @@ public class WindowAggregator {
         int aggW = aggregators.length;
         int aggH = groupBy.size();
 
-        Series[] aggColumns = new Series[aggW];
+        Series<?>[] aggColumns = new Series[aggW];
         String[] aggLabels = new String[aggW];
 
         Environment env = Environment.commonEnv();
@@ -61,7 +61,7 @@ public class WindowAggregator {
 
     private static Series<?> aggGrouped(GroupBy groupBy, Exp<?> agg, int aggH) {
         // TODO: primitives support for performance
-        ValueAccum columnBuilder = new ObjectAccum(aggH);
+        ValueAccum columnBuilder = new ObjectAccum<>(aggH);
 
         for (Object key : groupBy.getGroups()) {
             DataFrame group = groupBy.getGroup(key);

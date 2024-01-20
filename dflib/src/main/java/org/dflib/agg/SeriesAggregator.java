@@ -46,7 +46,7 @@ public class SeriesAggregator {
         int aggW = aggregators.length;
         int aggH = groupBy.size();
 
-        Series[] aggColumns = new Series[aggW];
+        Series<?>[] aggColumns = new Series[aggW];
         String[] aggLabels = new String[aggW];
 
         for (int i = 0; i < aggW; i++) {
@@ -54,7 +54,7 @@ public class SeriesAggregator {
             Exp<?> agg = aggregators[i];
 
             // TODO: let Aggregator fill Accumulator, as it can use primitive collections
-            ValueAccum columnBuilder = new ObjectAccum(aggH);
+            ValueAccum columnBuilder = new ObjectAccum<>(aggH);
 
             for (Object key : groupBy.getGroups()) {
                 Series<T> group = groupBy.getGroup(key);

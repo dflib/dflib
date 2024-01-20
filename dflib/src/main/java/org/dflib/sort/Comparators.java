@@ -37,7 +37,7 @@ public final class Comparators {
         }
     }
 
-    public static IntComparator of(Series s, Sorter[] sorters) {
+    public static IntComparator of(Series<?> s, Sorter[] sorters) {
         int w = sorters.length;
 
         switch (w) {
