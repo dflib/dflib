@@ -58,16 +58,16 @@ public class AllRowColumnSet implements RowColumnSet {
 
     @Override
     public DataFrame selectRename(UnaryOperator<String> renamer) {
-        return columnSet.selectRename(renamer);
+        return columnSet.selectAs(renamer);
     }
 
     @Override
     public DataFrame selectRename(Map<String, String> oldToNewNames) {
-        return columnSet.selectRename(oldToNewNames);
+        return columnSet.selectAs(oldToNewNames);
     }
 
     @Override
     public DataFrame selectRename(String... newColumnNames) {
-        return columnSet.selectRename(newColumnNames);
+        return columnSet.selectAs(newColumnNames);
     }
 }

@@ -82,7 +82,7 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame rename(String... newColumnNames) {
+    public DataFrame as(String... newColumnNames) {
         int w = newColumnNames.length;
         if (w != csIndex.length) {
             throw new IllegalArgumentException(
@@ -94,33 +94,33 @@ public class FixedColumnSet implements ColumnSet {
             oldToNewMap.put(csIndex[i], newColumnNames[i]);
         }
 
-        return rename(oldToNewMap);
+        return as(oldToNewMap);
     }
 
     @Override
-    public DataFrame selectRename(String... newColumnNames) {
+    public DataFrame selectAs(String... newColumnNames) {
         return new ColumnDataFrame(null, Index.ofDeduplicated(newColumnNames), doSelect());
     }
 
     @Override
-    public DataFrame rename(UnaryOperator<String> renamer) {
+    public DataFrame as(UnaryOperator<String> renamer) {
 
         Map<String, String> oldToNewMap = new HashMap<>((int) Math.ceil(csIndex.length / 0.75));
         for (String l : csIndex) {
             oldToNewMap.put(l, renamer.apply(l));
         }
 
-        return rename(oldToNewMap);
+        return as(oldToNewMap);
     }
 
     @Override
-    public DataFrame selectRename(UnaryOperator<String> renamer) {
+    public DataFrame selectAs(UnaryOperator<String> renamer) {
         return new ColumnDataFrame(null, Index.of(csIndex).rename(renamer), doSelect());
 
     }
 
     @Override
-    public DataFrame rename(Map<String, String> oldToNewNames) {
+    public DataFrame as(Map<String, String> oldToNewNames) {
 
         int w = csIndex.length;
         Series<?>[] columns = new Series[w];
@@ -133,7 +133,7 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame selectRename(Map<String, String> oldToNewNames) {
+    public DataFrame selectAs(Map<String, String> oldToNewNames) {
         return new ColumnDataFrame(null, Index.of(csIndex).rename(oldToNewNames), doSelect());
     }
 

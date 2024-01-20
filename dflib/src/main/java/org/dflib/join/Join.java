@@ -122,7 +122,7 @@ public class Join {
         return select(columnsPos)
                 // renaming is counterintuitive, but needed to produce column labels matching the method
                 // arguments in respect to label prefixes (e.g. "a_" -> "a_" instead of "df1.a")
-                .cols().rename(columns);
+                .cols().as(columns);
     }
 
     public DataFrame selectExcept(int... columns) {

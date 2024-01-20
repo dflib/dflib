@@ -3,14 +3,16 @@ package org.dflib;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
-public class ColumnSet_SelectRename_NameArrayTest {
+import java.util.Map;
+
+public class ColumnSet_SelectAs_NameMapTest {
 
     @Test
     public void all() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")
                 .cols()
-                .selectRename("c", "d");
+                .selectAs(Map.of("a", "c", "b", "d"));
 
         new DataFrameAsserts(df, "c", "d")
                 .expectHeight(2)
@@ -23,7 +25,7 @@ public class ColumnSet_SelectRename_NameArrayTest {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(1, "x", "a", 2, "y", "b")
                 .cols("a", "c")
-                .selectRename("X", "Y");
+                .selectAs(Map.of("a", "X", "c", "Y"));
 
         new DataFrameAsserts(df, "X", "Y")
                 .expectHeight(2)
@@ -32,13 +34,13 @@ public class ColumnSet_SelectRename_NameArrayTest {
     }
 
     @Test
-    public void newColumns() {
+    public void newColumnsAndPartialRename() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(1, "x", "a", 2, "y", "b")
                 .cols("a", "c", "new")
-                .selectRename("X", "Y", "NEW");
+                .selectAs(Map.of("a", "X", "new", "NEW"));
 
-        new DataFrameAsserts(df, "X", "Y", "NEW")
+        new DataFrameAsserts(df, "X", "c", "NEW")
                 .expectHeight(2)
                 .expectRow(0, 1, "a", null)
                 .expectRow(1, 2, "b", null);

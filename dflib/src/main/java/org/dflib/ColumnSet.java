@@ -122,24 +122,24 @@ public interface ColumnSet {
      * Returns a new DataFrame with all the columns from the source DataFrame (and, possibly, some extra all-null columns
      * defined in the ColumnSet), with the columns from the ColumnSet renamed by applying the renaming function.
      */
-    DataFrame rename(UnaryOperator<String> renamer);
+    DataFrame as(UnaryOperator<String> renamer);
 
-    DataFrame selectRename(UnaryOperator<String> renamer);
+    DataFrame selectAs(UnaryOperator<String> renamer);
 
     /**
      * Returns a new DataFrame with all the columns from the source DataFrame (and, possibly, some extra all-null columns
      * defined in the ColumnSet), with the columns from the ColumnSet renamed to the specified names. The new
      * names array argument should match the length of the ColumnSet.
      */
-    DataFrame rename(String... newColumnNames);
+    DataFrame as(String... newColumnNames);
 
-    DataFrame selectRename(String... newColumnNames);
+    DataFrame selectAs(String... newColumnNames);
 
     /**
      * Returns a new DataFrame with all the columns from the source DataFrame (and, possibly, some extra all-null columns
      * defined in the ColumnSet), with the columns from the ColumnSet renamed using old to new names map argument.
      */
-    DataFrame rename(Map<String, String> oldToNewNames);
+    DataFrame as(Map<String, String> oldToNewNames);
 
-    DataFrame selectRename(Map<String, String> oldToNewNames);
+    DataFrame selectAs(Map<String, String> oldToNewNames);
 }

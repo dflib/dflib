@@ -98,7 +98,7 @@ public class SaveViaUpsert extends SaveViaInsert {
 
             DataFrame previouslySavedOrdered = insertAndUpdate
                     .cols(joinedIndex).select()
-                    .cols().rename(mainColumns.getLabels());
+                    .cols().as(mainColumns.getLabels());
 
             update(connector,
                     df.rows(updateIndex).select(),

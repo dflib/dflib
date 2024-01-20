@@ -41,7 +41,7 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame rename(String... newColumnNames) {
+    public DataFrame as(String... newColumnNames) {
         return new ColumnDataFrame(
                 null,
                 source.getColumnsIndex().rename(newColumnNames),
@@ -49,7 +49,7 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame selectRename(String... newColumnNames) {
+    public DataFrame selectAs(String... newColumnNames) {
         return new ColumnDataFrame(
                 null,
                 source.getColumnsIndex().rename(newColumnNames),
@@ -57,7 +57,7 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame rename(UnaryOperator<String> renamer) {
+    public DataFrame as(UnaryOperator<String> renamer) {
         return new ColumnDataFrame(
                 null,
                 source.getColumnsIndex().rename(renamer),
@@ -65,7 +65,7 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame selectRename(UnaryOperator<String> renamer) {
+    public DataFrame selectAs(UnaryOperator<String> renamer) {
         return new ColumnDataFrame(
                 null,
                 source.getColumnsIndex().rename(renamer),
@@ -73,7 +73,7 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame rename(Map<String, String> oldToNewNames) {
+    public DataFrame as(Map<String, String> oldToNewNames) {
         return new ColumnDataFrame(
                 null,
                 source.getColumnsIndex().rename(oldToNewNames),
@@ -81,7 +81,7 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame selectRename(Map<String, String> oldToNewNames) {
+    public DataFrame selectAs(Map<String, String> oldToNewNames) {
         return new ColumnDataFrame(
                 null,
                 source.getColumnsIndex().rename(oldToNewNames),

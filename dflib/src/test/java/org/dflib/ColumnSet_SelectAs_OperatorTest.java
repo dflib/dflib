@@ -3,14 +3,14 @@ package org.dflib;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
-public class ColumnSet_SelectRename_OperatorTest {
+public class ColumnSet_SelectAs_OperatorTest {
 
     @Test
     public void all() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")
                 .cols()
-                .selectRename(c -> "[" + c + "]");
+                .selectAs(c -> "[" + c + "]");
 
         new DataFrameAsserts(df, "[a]", "[b]")
                 .expectHeight(2)
@@ -24,7 +24,7 @@ public class ColumnSet_SelectRename_OperatorTest {
                 .of(1, "x", "a",
                         2, "y", "b")
                 .cols("a", "c")
-                .selectRename(c -> "[" + c + "]");
+                .selectAs(c -> "[" + c + "]");
 
         new DataFrameAsserts(df, "[a]", "[c]")
                 .expectHeight(2)
@@ -38,7 +38,7 @@ public class ColumnSet_SelectRename_OperatorTest {
                 .of(1, "x", "a",
                         2, "y", "b")
                 .cols("a", "c", "new")
-                .selectRename(c -> "[" + c + "]");
+                .selectAs(c -> "[" + c + "]");
 
         new DataFrameAsserts(df, "[a]", "[c]", "[new]")
                 .expectHeight(2)

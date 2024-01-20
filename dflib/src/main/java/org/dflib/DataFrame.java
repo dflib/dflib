@@ -1073,19 +1073,19 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * @deprecated use {@link #cols()} and then {@link ColumnSet#rename(String...)}
+     * @deprecated use {@link #cols()} and then {@link ColumnSet#as(String...)}
      */
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame renameColumns(String... columnLabels) {
-        return cols().rename(columnLabels);
+        return cols().as(columnLabels);
     }
 
     /**
-     * @deprecated use {@link #cols()} and then {@link ColumnSet#rename(Map)}
+     * @deprecated use {@link #cols()} and then {@link ColumnSet#as(Map)}
      */
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame renameColumn(String oldLabel, String newLabel) {
-        return cols().rename(Map.of(oldLabel, newLabel));
+        return cols().as(Map.of(oldLabel, newLabel));
     }
 
     /**
@@ -1095,19 +1095,19 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param renamer a function that is passed each label in turn
      * @return a new DataFrame with renamed columns
      * @since 0.6
-     * @deprecated use {@link #cols()} and then {@link ColumnSet#rename(UnaryOperator)}
+     * @deprecated use {@link #cols()} and then {@link ColumnSet#as(UnaryOperator)}
      */
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame renameColumns(UnaryOperator<String> renamer) {
-        return cols().rename(renamer);
+        return cols().as(renamer);
     }
 
     /**
-     * @deprecated use {@link #cols()} and then {@link ColumnSet#rename(Map)}
+     * @deprecated use {@link #cols()} and then {@link ColumnSet#as(Map)}
      */
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame renameColumns(Map<String, String> oldToNewLabels) {
-        return cols().rename(oldToNewLabels);
+        return cols().as(oldToNewLabels);
     }
 
     /**
