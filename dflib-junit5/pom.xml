@@ -19,7 +19,6 @@
             <groupId>org.dflib</groupId>
             <artifactId>dflib</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
         </dependency>
 
         <!-- Provided dependencies -->

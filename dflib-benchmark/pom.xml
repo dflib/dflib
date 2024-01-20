@@ -10,7 +10,7 @@
     <artifactId>dflib-benchmark</artifactId>
 
     <properties>
-        <jmh.version>1.21</jmh.version>
+        <jmh.version>1.37</jmh.version>
     </properties>
 
     <dependencies>
@@ -35,14 +35,12 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.1.1</version>
                 <executions>
