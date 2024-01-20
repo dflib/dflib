@@ -3,7 +3,7 @@ package org.dflib;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
-public class RowColumnSet_SelectRename_NameArrayTest {
+public class RowColumnSet_SelectAs_NameArrayTest {
 
     @Test
     public void all() {
@@ -14,7 +14,7 @@ public class RowColumnSet_SelectRename_NameArrayTest {
                         -1, "m", "n")
                 .rows()
                 .cols("b", "a")
-                .selectRename("X", "Y");
+                .selectAs("X", "Y");
 
         new DataFrameAsserts(df, "X", "Y")
                 .expectHeight(3)
@@ -32,7 +32,7 @@ public class RowColumnSet_SelectRename_NameArrayTest {
                         -1, "m", "n")
                 .rows(Series.ofInt(0, 2))
                 .cols("b", "a")
-                .selectRename("X", "Y");
+                .selectAs("X", "Y");
 
         new DataFrameAsserts(df, "X", "Y")
                 .expectHeight(2)
@@ -49,7 +49,7 @@ public class RowColumnSet_SelectRename_NameArrayTest {
                         -1, "m", "n")
                 .rows(0, 2, 2)
                 .cols("b", "a", "x")
-                .selectRename("X", "Y", "Z");
+                .selectAs("X", "Y", "Z");
 
         new DataFrameAsserts(df, "X", "Y", "Z")
                 .expectHeight(3)
@@ -67,7 +67,7 @@ public class RowColumnSet_SelectRename_NameArrayTest {
                         -1, "m", "n")
                 .rows(Series.ofBool(true, false, true))
                 .cols("b", "a")
-                .selectRename("X", "Y");
+                .selectAs("X", "Y");
 
         new DataFrameAsserts(df, "X", "Y")
                 .expectHeight(2)

@@ -188,17 +188,17 @@ public abstract class BaseRowSet implements RowSet {
     }
 
     @Override
-    public DataFrame selectRename(Map<String, String> oldToNewNames) {
+    public DataFrame selectAs(Map<String, String> oldToNewNames) {
         return new ColumnDataFrame(null, sourceColumnsIndex.rename(oldToNewNames), doSelect());
     }
 
     @Override
-    public DataFrame selectRename(UnaryOperator<String> renamer) {
+    public DataFrame selectAs(UnaryOperator<String> renamer) {
         return new ColumnDataFrame(null, sourceColumnsIndex.rename(renamer), doSelect());
     }
 
     @Override
-    public DataFrame selectRename(String... newColumnNames) {
+    public DataFrame selectAs(String... newColumnNames) {
         return new ColumnDataFrame(null, sourceColumnsIndex.rename(newColumnNames), doSelect());
     }
 

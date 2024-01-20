@@ -79,17 +79,17 @@ public class DefaultRowColumnSet implements RowColumnSet {
     }
 
     @Override
-    public DataFrame selectRename(Map<String, String> oldToNewNames) {
+    public DataFrame selectAs(Map<String, String> oldToNewNames) {
         return columnSetMaker.apply(rowSet.select()).selectAs(oldToNewNames);
     }
 
     @Override
-    public DataFrame selectRename(UnaryOperator<String> renamer) {
+    public DataFrame selectAs(UnaryOperator<String> renamer) {
         return columnSetMaker.apply(rowSet.select()).selectAs(renamer);
     }
 
     @Override
-    public DataFrame selectRename(String... newColumnNames) {
+    public DataFrame selectAs(String... newColumnNames) {
         return columnSetMaker.apply(rowSet.select()).selectAs(newColumnNames);
     }
 

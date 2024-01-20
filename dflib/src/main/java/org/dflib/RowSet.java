@@ -59,17 +59,17 @@ public interface RowSet {
     DataFrame select(RowToValueMapper<?>... mappers);
 
     /**
-     * A form of {@link #select()} that also renames the result columns using the provided operator.
+     * A form of {@link #select()} that renames the result columns using the provided operator.
      */
-    DataFrame selectRename(UnaryOperator<String> renamer);
+    DataFrame selectAs(UnaryOperator<String> renamer);
 
     /**
-     * A form of {@link #select()} that also renames the result columns.
+     * A form of {@link #select()} that renames the result columns.
      */
-    DataFrame selectRename(String... newColumnNames);
+    DataFrame selectAs(String... newColumnNames);
 
     /**
-     * A form of {@link #select()} that also renames the result columns using the provided old to new names map.
+     * A form of {@link #select()} that renames the result columns using the provided old to new names map.
      */
-    DataFrame selectRename(Map<String, String> oldToNewNames);
+    DataFrame selectAs(Map<String, String> oldToNewNames);
 }
