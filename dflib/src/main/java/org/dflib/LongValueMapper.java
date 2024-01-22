@@ -30,6 +30,10 @@ public interface LongValueMapper<V> {
                 return ((Number) o).longValue();
             }
 
+            if (o instanceof Boolean) {
+                return ((Boolean) o) ? 1L : 0L;
+            }
+
             String s = o != null ? o.toString() : null;
             return s != null && s.length() > 0 ? Long.parseLong(s) : forNull;
         };

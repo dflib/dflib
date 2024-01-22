@@ -29,6 +29,10 @@ public interface DoubleValueMapper<V> {
                 return ((Number) o).doubleValue();
             }
 
+            if (o instanceof Boolean) {
+                return ((Boolean) o) ? 1. : 0.;
+            }
+
             String s = o != null ? o.toString() : null;
             return s != null && s.length() > 0 ? Double.parseDouble(s) : forNull;
         };

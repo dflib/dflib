@@ -542,10 +542,11 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param <V>         expected input column value
      * @return a new DataFrame
      * @since 0.18
+     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactInt(IntValueMapper)}  instead
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default <V> DataFrame compactInt(String columnLabel, IntValueMapper<V> converter) {
-        int pos = getColumnsIndex().position(columnLabel);
-        return compactInt(pos, converter);
+        return cols(columnLabel).compactInt(converter);
     }
 
     /**
@@ -556,8 +557,12 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param <V>       expected input column value
      * @return a new DataFrame
      * @since 0.18
+     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactInt(IntValueMapper)}  instead
      */
-    <V> DataFrame compactInt(int pos, IntValueMapper<V> converter);
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    default <V> DataFrame compactInt(int pos, IntValueMapper<V> converter) {
+        return cols(pos).compactInt(converter);
+    }
 
     /**
      * "Compacts" the internal representation of the Integer column, converting it to a {@link IntSeries}.
@@ -566,10 +571,11 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param forNull     a value to use in place of nulls
      * @return a new DataFrame
      * @since 0.18
+     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactInt(int)}  instead
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame compactInt(String columnLabel, int forNull) {
-        int pos = getColumnsIndex().position(columnLabel);
-        return compactInt(pos, forNull);
+        return cols(columnLabel).compactInt(forNull);
     }
 
     /**
@@ -579,45 +585,47 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param forNull a value to use in place of nulls
      * @return a new DataFrame
      * @since 0.18
+     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactInt(IntValueMapper)}  instead
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame compactInt(int pos, int forNull) {
-        return compactInt(pos, IntValueMapper.fromObject(forNull));
+        return cols(pos).compactInt(forNull);
     }
 
     /**
      * @since 0.6
-     * @deprecated in favor of {@link #compactInt(String, IntValueMapper)}
+     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactInt(IntValueMapper)}  instead
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default <V> DataFrame toIntColumn(String columnLabel, IntValueMapper<V> converter) {
-        return compactInt(columnLabel, converter);
+        return cols(columnLabel).compactInt(converter);
     }
 
     /**
      * @since 0.6
-     * @deprecated in favor of {@link #compactInt(int, IntValueMapper)}
+     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactInt(IntValueMapper)}  instead
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default <V> DataFrame toIntColumn(int pos, IntValueMapper<V> converter) {
-        return compactInt(pos, converter);
+        return cols(pos).compactInt(converter);
     }
 
     /**
      * @since 0.6
-     * @deprecated in favor of {@link #compactInt(String, int)}
+     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactInt(int)}  instead
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default DataFrame toIntColumn(String columnLabel, int forNull) {
-        return compactInt(columnLabel, forNull);
+        return cols(columnLabel).compactInt(forNull);
     }
 
     /**
      * @since 0.6
-     * @deprecated in favor of {@link #compactInt(int, int)}
+     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactInt(int)}  instead
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default DataFrame toIntColumn(int pos, int forNull) {
-        return compactInt(pos, forNull);
+        return cols(pos).compactInt(forNull);
     }
 
     /**
@@ -628,10 +636,11 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param <V>         expected input column value
      * @return a new DataFrame
      * @since 0.18
+     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactDouble(DoubleValueMapper)} instead
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default <V> DataFrame compactDouble(String columnLabel, DoubleValueMapper<V> converter) {
-        int pos = getColumnsIndex().position(columnLabel);
-        return compactDouble(pos, converter);
+        return cols(columnLabel).compactDouble(converter);
     }
 
     /**
@@ -642,8 +651,12 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param <V>       expected input column value
      * @return a new DataFrame
      * @since 0.18
+     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactDouble(DoubleValueMapper)} instead
      */
-    <V> DataFrame compactDouble(int pos, DoubleValueMapper<V> converter);
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    default <V> DataFrame compactDouble(int pos, DoubleValueMapper<V> converter) {
+        return cols(pos).compactDouble(converter);
+    }
 
     /**
      * "Compacts" the internal representation of the Double column, converting it to an {@link DoubleSeries}.
@@ -652,10 +665,11 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param forNull     a value to use in place of nulls
      * @return a new DataFrame
      * @since 0.18
+     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactDouble(double)} instead
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame compactDouble(String columnLabel, double forNull) {
-        int pos = getColumnsIndex().position(columnLabel);
-        return compactDouble(pos, forNull);
+        return cols(columnLabel).compactDouble(forNull);
     }
 
     /**
@@ -665,45 +679,47 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param forNull a value to use in place of nulls
      * @return a new DataFrame
      * @since 0.18
+     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactDouble(double)} instead
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame compactDouble(int pos, double forNull) {
-        return compactDouble(pos, DoubleValueMapper.fromObject(forNull));
+        return cols(pos).compactDouble(forNull);
     }
 
     /**
      * @since 0.6
-     * @deprecated in favor of {@link #compactDouble(String, DoubleValueMapper)}
+     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactDouble(DoubleValueMapper)}  instead
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default <V> DataFrame toDoubleColumn(String columnLabel, DoubleValueMapper<V> converter) {
-        return compactDouble(columnLabel, converter);
+        return cols(columnLabel).compactDouble(converter);
     }
 
     /**
      * @since 0.6
-     * @deprecated in favor of {@link #compactDouble(int, DoubleValueMapper)}
+     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactDouble(DoubleValueMapper)}  instead
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default <V> DataFrame toDoubleColumn(int pos, DoubleValueMapper<V> converter) {
-        return compactDouble(pos, converter);
+        return cols(pos).compactDouble(converter);
     }
 
     /**
      * @since 0.6
-     * @deprecated in favor of {@link #compactDouble(String, double)}
+     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactDouble(double)}  instead
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default DataFrame toDoubleColumn(String columnLabel, double forNull) {
-        return compactDouble(columnLabel, forNull);
+        return cols(columnLabel).compactDouble(forNull);
     }
 
     /**
      * @since 0.6
-     * @deprecated in favor of {@link #compactDouble(int, double)}
+     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactDouble(double)}  instead
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default DataFrame toDoubleColumn(int pos, double forNull) {
-        return compactDouble(pos, forNull);
+        return cols(pos).compactDouble(forNull);
     }
 
     /**
@@ -714,19 +730,20 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param <V>         expected input column value
      * @return a new DataFrame
      * @since 0.18
+     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactBool(BoolValueMapper)} instead
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default <V> DataFrame compactBool(String columnLabel, BoolValueMapper<V> converter) {
-        int pos = getColumnsIndex().position(columnLabel);
-        return compactBool(pos, converter);
+        return cols(columnLabel).compactBool(converter);
     }
 
     /**
      * @since 0.6
-     * @deprecated in favor of {@link #compactBool(String, BoolValueMapper)}
+     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactBool(BoolValueMapper)} instead
      */
     @Deprecated(since = "0.17", forRemoval = true)
     default <V> DataFrame toBooleanColumn(String columnLabel, BoolValueMapper<V> converter) {
-        return compactBool(columnLabel, converter);
+        return cols(columnLabel).compactBool(converter);
     }
 
     /**
@@ -737,16 +754,20 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param <V>       expected input column value
      * @return a new DataFrame
      * @since 0.18
+     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactBool(BoolValueMapper)} instead
      */
-    <V> DataFrame compactBool(int pos, BoolValueMapper<V> converter);
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    default <V> DataFrame compactBool(int pos, BoolValueMapper<V> converter) {
+        return cols(pos).compactBool(converter);
+    }
 
     /**
      * @since 0.6
-     * @deprecated in favor of {@link #compactBool(int, BoolValueMapper)}
+     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactBool(BoolValueMapper)} instead
      */
     @Deprecated(since = "0.17", forRemoval = true)
     default <V> DataFrame toBooleanColumn(int pos, BoolValueMapper<V> converter) {
-        return compactBool(pos, converter);
+        return cols(pos).compactBool(converter);
     }
 
     /**
@@ -755,19 +776,20 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param columnLabel name of a column to convert
      * @return a new DataFrame
      * @since 0.18
+     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactBool()} instead
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame compactBool(String columnLabel) {
-        int pos = getColumnsIndex().position(columnLabel);
-        return compactBool(pos);
+        return cols(columnLabel).compactBool();
     }
 
     /**
      * @since 0.6
-     * @deprecated in favor of {@link #compactBool(String)}
+     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactBool()} instead
      */
     @Deprecated(since = "0.17", forRemoval = true)
     default DataFrame toBooleanColumn(String columnLabel) {
-        return compactBool(columnLabel);
+        return cols(columnLabel).compactBool();
     }
 
     /**
@@ -776,54 +798,56 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param pos position of a column to convert
      * @return a new DataFrame
      * @since 0.18
+     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactBool()} instead
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame compactBool(int pos) {
-        return compactBool(pos, BoolValueMapper.fromObject());
+        return cols(pos).compactBool();
     }
 
     /**
      * @since 0.6
-     * @deprecated in favor of {@link #compactBool(int)}
+     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactBool()} instead
      */
     @Deprecated(since = "0.17", forRemoval = true)
     default DataFrame toBooleanColumn(int pos) {
-        return compactBool(pos);
+        return cols(pos).compactBool();
     }
 
     /**
      * @since 0.17
-     * @deprecated use {@link #compactBool(String, BoolValueMapper)}
+     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactBool(BoolValueMapper)} instead
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default <V> DataFrame toBoolColumn(String columnLabel, BoolValueMapper<V> converter) {
-        return compactBool(columnLabel, converter);
+        return cols(columnLabel).compactBool(converter);
     }
 
     /**
      * @since 0.17
-     * @deprecated use {@link #compactBool(int, BoolValueMapper)}
+     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactBool(BoolValueMapper)} instead
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default <V> DataFrame toBoolColumn(int pos, BoolValueMapper<V> converter) {
-        return compactBool(pos, converter);
+        return cols(pos).compactBool(converter);
     }
 
     /**
      * @since 0.17
-     * @deprecated use {@link #compactBool(String)}
+     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactBool()} instead
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default DataFrame toBoolColumn(String columnLabel) {
-        return compactBool(columnLabel);
+        return cols(columnLabel).compactBool();
     }
 
     /**
      * @since 0.17
-     * @deprecated use {@link #compactBool(int)}
+     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactBool()} instead
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default DataFrame toBoolColumn(int pos) {
-        return compactBool(pos);
+        return cols(pos).compactBool();
     }
 
     /**
@@ -834,10 +858,11 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param <V>         expected input column value
      * @return a new DataFrame
      * @since 0.18
+     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactLong(LongValueMapper)} instead
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default <V> DataFrame compactLong(String columnLabel, LongValueMapper<V> converter) {
-        int pos = getColumnsIndex().position(columnLabel);
-        return compactLong(pos, converter);
+        return cols(columnLabel).compactLong(converter);
     }
 
     /**
@@ -848,8 +873,12 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param <V>       expected input column value
      * @return a new DataFrame
      * @since 0.18
+     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactLong(LongValueMapper)} instead
      */
-    <V> DataFrame compactLong(int pos, LongValueMapper<V> converter);
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    default <V> DataFrame compactLong(int pos, LongValueMapper<V> converter) {
+        return cols(pos).compactLong(converter);
+    }
 
     /**
      * "Compacts" the internal representation of the Long column, converting it to a {@link LongSeries}.
@@ -857,10 +886,11 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param columnLabel name of a column to convert
      * @return a new DataFrame
      * @since 0.18
+     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactLong(long)} instead
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame compactLong(String columnLabel, long forNull) {
-        int pos = getColumnsIndex().position(columnLabel);
-        return compactLong(pos, forNull);
+        return cols(columnLabel).compactLong(forNull);
     }
 
     /**
@@ -869,45 +899,47 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param pos position of a column to convert
      * @return a new DataFrame
      * @since 0.18
+     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactLong(long)} instead
      */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame compactLong(int pos, long forNull) {
-        return compactLong(pos, LongValueMapper.fromObject(forNull));
+        return cols(pos).compactLong(forNull);
     }
 
     /**
      * @since 0.6
-     * @deprecated in favor of {@link #compactLong(String, LongValueMapper)}
+     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactLong(LongValueMapper)} instead
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default <V> DataFrame toLongColumn(String columnLabel, LongValueMapper<V> converter) {
-        return compactLong(columnLabel, converter);
+        return cols(columnLabel).compactLong(converter);
     }
 
     /**
      * @since 0.6
-     * @deprecated in favor of {@link #compactLong(int, LongValueMapper)}
+     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactLong(LongValueMapper)} instead
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default <V> DataFrame toLongColumn(int pos, LongValueMapper<V> converter) {
-        return compactLong(pos, converter);
+        return cols(pos).compactLong(converter);
     }
 
     /**
      * @since 0.6
-     * @deprecated in favor of {@link #compactLong(String, long)}
+     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactLong(long)} instead
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default DataFrame toLongColumn(String columnLabel, long forNull) {
-        return compactLong(columnLabel, forNull);
+        return cols(columnLabel).compactLong(forNull);
     }
 
     /**
      * @since 0.6
-     * @deprecated in favor of {@link #compactLong(int, long)}
+     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactLong(long)} instead
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default DataFrame toLongColumn(int pos, long forNull) {
-        return compactLong(pos, forNull);
+        return cols(pos).compactLong(forNull);
     }
 
     /**

@@ -1,10 +1,18 @@
 package org.dflib.slice;
 
+import org.dflib.BoolValueMapper;
+import org.dflib.BooleanSeries;
 import org.dflib.ColumnDataFrame;
 import org.dflib.ColumnSet;
 import org.dflib.DataFrame;
+import org.dflib.DoubleSeries;
+import org.dflib.DoubleValueMapper;
 import org.dflib.Exp;
 import org.dflib.Index;
+import org.dflib.IntSeries;
+import org.dflib.IntValueMapper;
+import org.dflib.LongSeries;
+import org.dflib.LongValueMapper;
 import org.dflib.RowMapper;
 import org.dflib.RowToValueMapper;
 import org.dflib.Series;
@@ -157,6 +165,116 @@ public class DeferredColumnSet implements ColumnSet {
     @Override
     public DataFrame fillNullsWithExp(Exp<?> replacementValuesExp) {
         return fillNullsFromSeries(replacementValuesExp.eval(source));
+    }
+
+    @Override
+    public DataFrame compactBool() {
+        int w = source.width();
+        Series<?>[] columns = new Series[w];
+
+        for (int i = 0; i < w; i++) {
+            Series s = source.getColumn(i);
+            columns[i] = s instanceof BooleanSeries ? s.castAsBool() : s.mapAsBool(BoolValueMapper.fromObject());
+        }
+
+        return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
+    }
+
+    @Override
+    public <V> DataFrame compactBool(BoolValueMapper<V> converter) {
+        int w = source.width();
+        Series<?>[] columns = new Series[w];
+
+        for (int i = 0; i < w; i++) {
+            Series s = source.getColumn(i);
+            columns[i] = s.mapAsBool(converter);
+        }
+
+        return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
+    }
+
+    @Override
+    public DataFrame compactInt(int forNull) {
+        int w = source.width();
+        Series<?>[] columns = new Series[w];
+
+        IntValueMapper<?> converter = IntValueMapper.fromObject(forNull);
+
+        for (int i = 0; i < w; i++) {
+            Series s = source.getColumn(i);
+            columns[i] = s instanceof IntSeries ? s.castAsInt() : s.mapAsInt(converter);
+        }
+
+        return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
+    }
+
+    @Override
+    public <V> DataFrame compactInt(IntValueMapper<V> converter) {
+        int w = source.width();
+        Series<?>[] columns = new Series[w];
+
+        for (int i = 0; i < w; i++) {
+            Series s = source.getColumn(i);
+            columns[i] = s.mapAsInt(converter);
+        }
+
+        return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
+    }
+
+    @Override
+    public DataFrame compactLong(long forNull) {
+        int w = source.width();
+        Series<?>[] columns = new Series[w];
+
+        LongValueMapper<?> converter = LongValueMapper.fromObject(forNull);
+
+        for (int i = 0; i < w; i++) {
+            Series s = source.getColumn(i);
+            columns[i] = s instanceof LongSeries ? s.castAsLong() : s.mapAsLong(converter);
+        }
+
+        return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
+    }
+
+    @Override
+    public <V> DataFrame compactLong(LongValueMapper<V> converter) {
+        int w = source.width();
+        Series<?>[] columns = new Series[w];
+
+        for (int i = 0; i < w; i++) {
+            Series s = source.getColumn(i);
+            columns[i] = s.mapAsLong(converter);
+        }
+
+        return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
+    }
+
+    @Override
+    public DataFrame compactDouble(double forNull) {
+        int w = source.width();
+        Series<?>[] columns = new Series[w];
+
+        DoubleValueMapper<?> converter = DoubleValueMapper.fromObject(forNull);
+
+        for (int i = 0; i < w; i++) {
+            Series s = source.getColumn(i);
+            columns[i] = s instanceof DoubleSeries ? s.castAsDouble() : s.mapAsDouble(converter);
+        }
+
+        return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
+    }
+
+    @Override
+    public <V> DataFrame compactDouble(DoubleValueMapper<V> converter) {
+        int w = source.width();
+        Series<?>[] columns = new Series[w];
+
+        for (int i = 0; i < w; i++) {
+            Series s = source.getColumn(i);
+            columns[i] = s.mapAsDouble(converter);
+        }
+
+        return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
     }
 
     @Override

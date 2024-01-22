@@ -32,6 +32,49 @@ public interface ColumnSet {
     DataFrame fillNullsWithExp(Exp<?> replacementValuesExp);
 
     /**
+     * "Compacts" the internal representation of each column in a set, converting it to a {@link BooleanSeries}.
+     * For this to work, each column in the ColumnSet must contain Booleans or values that can be converted to a
+     * String and parsed as booleans.
+     */
+    DataFrame compactBool();
+
+    /**
+     * "Compacts" the internal representation of each column in a set, converting it to a {@link BooleanSeries}.
+     * For this to work, each column in the ColumnSet must be compatible with the supplied converter.
+     */
+    <V> DataFrame compactBool(BoolValueMapper<V> converter);
+
+    /**
+     * "Compacts" the internal representation of each column in a set, converting it to an {@link IntSeries}.
+     */
+    DataFrame compactInt(int forNull);
+
+    /**
+     * "Compacts" the internal representation of each column in a set, converting it to an {@link IntSeries}.
+     */
+    <V> DataFrame compactInt(IntValueMapper<V> converter);
+
+    /**
+     * "Compacts" the internal representation of each column in a set, converting it to an {@link LongSeries}.
+     */
+    DataFrame compactLong(long forNull);
+
+    /**
+     * "Compacts" the internal representation of each column in a set, converting it to an {@link LongSeries}.
+     */
+    <V> DataFrame compactLong(LongValueMapper<V> converter);
+
+    /**
+     * "Compacts" the internal representation of each column in a set, converting it to an {@link DoubleSeries}.
+     */
+    DataFrame compactDouble(double forNull);
+
+    /**
+     * "Compacts" the internal representation of each column in a set, converting it to an {@link DoubleSeries}.
+     */
+    <V> DataFrame compactDouble(DoubleValueMapper<V> converter);
+
+    /**
      * Returns a transformed DataFrame that contains columns from this DataFrame and added / replaced columns
      * produced by the specified expressions. Expressions are matched with the result columns using the algorithm
      * defined in this specific ColumnSet.
