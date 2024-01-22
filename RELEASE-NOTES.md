@@ -27,6 +27,7 @@
 * #237 Primitive Series "copyTo" ignores "fromOffset"
 * #238  Exp.mapVal(..) / mapConditionVal(..) to allow mapping nulls
 * #239 Upgrade json-path lib to 2.9.0
+* #242 DataFrame.getColumn(int) must throw declared IllegalArgumentException
 
 ## Release 0.18
 

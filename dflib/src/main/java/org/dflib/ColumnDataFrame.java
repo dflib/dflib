@@ -6,14 +6,13 @@ import org.dflib.groupby.Grouper;
 import org.dflib.row.ColumnsRowProxy;
 import org.dflib.row.RowProxy;
 import org.dflib.sample.Sampler;
-import org.dflib.select.RowIndexer;
 import org.dflib.series.EmptySeries;
 import org.dflib.series.SingleValueSeries;
-import org.dflib.slice.EmptyRowSet;
-import org.dflib.slice.FixedColumnSet;
 import org.dflib.slice.AllRowSet;
 import org.dflib.slice.ConditionalRowSet;
 import org.dflib.slice.DeferredColumnSet;
+import org.dflib.slice.EmptyRowSet;
+import org.dflib.slice.FixedColumnSet;
 import org.dflib.slice.IndexedRowSet;
 import org.dflib.slice.RangeRowSet;
 import org.dflib.sort.DataFrameSorter;
@@ -88,7 +87,12 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public <T> Series<T> getColumn(int pos) {
-        return dataColumns[pos];
+        try {
+            return dataColumns[pos];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // fulfilling the interface method exception contract
+            throw new IllegalArgumentException("Position '" + pos + "' is outside of DataFrame bounds. DataFrame width is " + width());
+        }
     }
 
     @Override
