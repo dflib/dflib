@@ -37,6 +37,11 @@ public class AllRowColumnSet implements RowColumnSet {
     }
 
     @Override
+    public DataFrame drop() {
+        return DataFrame.empty(columnSet.drop().getColumnsIndex());
+    }
+
+    @Override
     public DataFrame select() {
         return columnSet.select();
     }

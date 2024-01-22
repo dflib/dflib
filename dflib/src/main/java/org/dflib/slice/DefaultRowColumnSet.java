@@ -59,6 +59,11 @@ public class DefaultRowColumnSet implements RowColumnSet {
     }
 
     @Override
+    public DataFrame drop() {
+        return columnSetMaker.apply(rowSet.drop()).drop();
+    }
+
+    @Override
     public DataFrame select() {
         return columnSetMaker.apply(rowSet.select()).select();
     }
