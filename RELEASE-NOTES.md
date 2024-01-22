@@ -26,7 +26,7 @@
 * #236 Fluent RowBuilder.set(..)
 * #237 Primitive Series "copyTo" ignores "fromOffset"
 * #238  Exp.mapVal(..) / mapConditionVal(..) to allow mapping nulls
-* #239 Upgrade json-path lib to 2.8.0
+* #239 Upgrade json-path lib to 2.9.0
 
 ## Release 0.18
 
