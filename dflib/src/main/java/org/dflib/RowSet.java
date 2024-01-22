@@ -27,6 +27,10 @@ public interface RowSet {
 
     RowColumnSet colsExcept(int... columns);
 
+    /**
+     * Returns the original DataFrame with the RowSet rows removed.
+     */
+    DataFrame drop();
 
     DataFrame explode(String columnName);
 

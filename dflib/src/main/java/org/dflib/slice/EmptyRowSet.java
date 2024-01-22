@@ -79,6 +79,11 @@ public class EmptyRowSet implements RowSet {
     }
 
     @Override
+    public DataFrame drop() {
+        return source;
+    }
+
+    @Override
     public DataFrame explode(String columnName) {
 
         // validate the argument, even those the operation does nothing

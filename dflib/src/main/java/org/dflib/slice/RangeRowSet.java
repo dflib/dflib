@@ -61,6 +61,23 @@ public class RangeRowSet extends BaseRowSet {
     }
 
     @Override
+    public DataFrame drop() {
+        int srcLen = source.height();
+        int[] index = new int[srcLen - size()];
+
+        int ii = 0;
+        for (int i = 0; i < fromInclusive; i++) {
+            index[ii++] = i;
+        }
+
+        for (int i = toExclusive; i < srcLen; i++) {
+            index[ii++] = i;
+        }
+
+        return new IndexedRowSet(source, sourceColumns, Series.ofInt(index)).select();
+    }
+
+    @Override
     protected int size() {
         return toExclusive - fromInclusive;
     }

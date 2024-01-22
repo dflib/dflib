@@ -52,6 +52,11 @@ public class AllRowSet extends BaseRowSet {
     }
 
     @Override
+    public DataFrame drop() {
+        return DataFrame.empty(source.getColumnsIndex());
+    }
+
+    @Override
     public DataFrame select() {
         return source;
     }

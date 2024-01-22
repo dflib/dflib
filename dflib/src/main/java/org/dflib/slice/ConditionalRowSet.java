@@ -56,6 +56,11 @@ public class ConditionalRowSet extends BaseRowSet {
     }
 
     @Override
+    public DataFrame drop() {
+        return new ConditionalRowSet(source, sourceColumns, conditionalIndex.not()).select();
+    }
+
+    @Override
     protected int size() {
         return conditionalIndex.countTrue();
     }

@@ -10,6 +10,7 @@ import org.dflib.Sorter;
 import org.dflib.row.ColumnsRowProxy;
 import org.dflib.row.MultiArrayRowBuilder;
 
+import java.util.Arrays;
 import java.util.function.Predicate;
 
 /**
@@ -54,6 +55,23 @@ public class IndexedRowSet extends BaseRowSet {
     @Override
     public RowColumnSet colsExcept(int... columns) {
         return new DefaultRowColumnSet(source, this, df -> df.colsExcept(columns), this::merger);
+    }
+
+    @Override
+    public DataFrame drop() {
+
+        // build an inverted Boolean condition
+
+        int srcLen = source.height();
+        boolean[] condition = new boolean[srcLen];
+        Arrays.fill(condition, true);
+
+        int iiLen = intIndex.size();
+        for (int i = 0; i < iiLen; i++) {
+            condition[intIndex.getInt(i)] = false;
+        }
+
+        return new ConditionalRowSet(source, sourceColumns, Series.ofBool(condition)).select();
     }
 
     @Override
