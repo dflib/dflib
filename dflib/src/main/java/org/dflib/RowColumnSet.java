@@ -17,7 +17,7 @@ public interface RowColumnSet {
     DataFrame map(RowToValueMapper<?>... mappers);
 
     /**
-     * Returns the original DataFrame with the RowColumnSet rows and columns removed.
+     * Returns the original DataFrame with rows and columns matched by this RowColumnSet removed.
      */
     DataFrame drop();
 
