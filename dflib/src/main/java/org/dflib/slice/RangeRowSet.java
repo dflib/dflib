@@ -31,6 +31,11 @@ public class RangeRowSet extends BaseRowSet {
     }
 
     @Override
+    public RowColumnSet cols() {
+        return new DefaultRowColumnSet(source, this, df -> df.cols(), this::merger);
+    }
+
+    @Override
     public RowColumnSet cols(String... columns) {
         return new DefaultRowColumnSet(source, this, df -> df.cols(columns), this::merger);
     }

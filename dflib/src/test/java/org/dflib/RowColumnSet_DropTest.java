@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class RowColumnSet_DropTest {
 
     @Test
-    public void all() {
+    public void rowsAll_colsByName() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(
                         1, "x", "a",
@@ -19,7 +19,20 @@ public class RowColumnSet_DropTest {
     }
 
     @Test
-    public void byIndex() {
+    public void rowsAll_colsDeferred() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x", "a",
+                        2, "y", "b",
+                        -1, "m", "n")
+                .rows().cols()
+                .drop();
+
+        new DataFrameAsserts(df).expectHeight(0);
+    }
+
+    @Test
+    public void rowsByIndex_colsByName() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(
                         1, "x", "a",
@@ -34,7 +47,20 @@ public class RowColumnSet_DropTest {
     }
 
     @Test
-    public void byIndex_ExpandRows_ExpandCols() {
+    public void rowsByIndex_colsDeferred() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x", "a",
+                        2, "y", "b",
+                        -1, "m", "n")
+                .rows(0, 2).cols()
+                .drop();
+
+        new DataFrameAsserts(df).expectHeight(0);
+    }
+
+    @Test
+    public void rowsByIndex_colsByName_ExpandRows_ExpandCols() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(
                         1, "x", "a",
@@ -49,7 +75,7 @@ public class RowColumnSet_DropTest {
     }
 
     @Test
-    public void byCondition() {
+    public void rowsByCondition_colsByName() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(
                         1, "x", "a",

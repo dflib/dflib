@@ -14,6 +14,22 @@ import java.util.function.UnaryOperator;
  */
 public interface ColumnSet {
 
+    RowColumnSet rows();
+
+    RowColumnSet rows(Condition condition);
+
+    default RowColumnSet rows(int... positions) {
+        return rows(Series.ofInt(positions));
+    }
+
+    RowColumnSet rows(IntSeries positions);
+
+    RowColumnSet rows(BooleanSeries condition);
+
+    RowColumnSet rows(RowPredicate condition);
+
+    RowColumnSet rowsRangeOpenClosed(int fromInclusive, int toExclusive);
+
     /**
      * Returns the original DataFrame with the ColumnSet columns removed.
      */

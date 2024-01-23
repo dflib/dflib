@@ -8,14 +8,33 @@ import java.util.List;
 public class RowColumnSet_Map_ExpTest {
 
     @Test
-    public void allRows_NamedCols() {
+    public void rowsAll_colsDeferred() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .rows()
-                .cols("b", "a")
+                .rows().cols()
+                .map(
+                        Exp.concat(Exp.$str(1), Exp.$str(2)).as("a"),
+                        Exp.$int(0).mul(3)
+                );
+
+        new DataFrameAsserts(df, "a", "b", "c", "a * 3")
+                .expectHeight(3)
+                .expectRow(0, "xa", "x", "a", 3)
+                .expectRow(1, "yb", "y", "b", 6)
+                .expectRow(2, "mn", "m", "n", -3);
+    }
+
+    @Test
+    public void rowsAll_colsByName() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x", "a",
+                        2, "y", "b",
+                        -1, "m", "n")
+                .rows().cols("b", "a")
                 .map(
                         Exp.concat(Exp.$str(1), Exp.$str(2)),
                         Exp.$int(0).mul(3)
@@ -29,14 +48,13 @@ public class RowColumnSet_Map_ExpTest {
     }
 
     @Test
-    public void allRows_PosCols() {
+    public void colsByName_rowsAll() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .rows()
-                .cols(1, 0)
+                .cols("b", "a").rows()
                 .map(
                         Exp.concat(Exp.$str(1), Exp.$str(2)),
                         Exp.$int(0).mul(3)
@@ -50,14 +68,33 @@ public class RowColumnSet_Map_ExpTest {
     }
 
     @Test
-    public void rowsByIndex_NamedCols() {
+    public void rowsAll_colsByPos() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .rows(Series.ofInt(0, 2))
-                .cols("b", "a")
+                .rows().cols(1, 0)
+                .map(
+                        Exp.concat(Exp.$str(1), Exp.$str(2)),
+                        Exp.$int(0).mul(3)
+                );
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(3)
+                .expectRow(0, 3, "xa", "a")
+                .expectRow(1, 6, "yb", "b")
+                .expectRow(2, -3, "mn", "n");
+    }
+
+    @Test
+    public void rowsByIndex_colsByName() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x", "a",
+                        2, "y", "b",
+                        -1, "m", "n")
+                .rows(0, 2).cols("b", "a")
                 .map(
                         Exp.concat(Exp.$str(1), Exp.$str(2)),
                         Exp.$int(0).mul(3)
@@ -71,14 +108,13 @@ public class RowColumnSet_Map_ExpTest {
     }
 
     @Test
-    public void rowsByIndex_PosCols() {
+    public void colsByName_rowsByIndex() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .rows(Series.ofInt(0, 2))
-                .cols(1, 0)
+                .cols("b", "a").rows(0, 2)
                 .map(
                         Exp.concat(Exp.$str(1), Exp.$str(2)),
                         Exp.$int(0).mul(3)
@@ -92,14 +128,53 @@ public class RowColumnSet_Map_ExpTest {
     }
 
     @Test
-    public void rowsByIndex_PredicatedCols() {
+    public void rowsByIndex_colsByPos() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .rows(Series.ofInt(0, 2))
-                .cols(c -> List.of("a", "b").contains(c))
+                .rows(Series.ofInt(0, 2)).cols(1, 0)
+                .map(
+                        Exp.concat(Exp.$str(1), Exp.$str(2)),
+                        Exp.$int(0).mul(3)
+                );
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(3)
+                .expectRow(0, 3, "xa", "a")
+                .expectRow(1, 2, "y", "b")
+                .expectRow(2, -3, "mn", "n");
+    }
+
+    @Test
+    public void rowsByIndex_colsDeferred() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x", "a",
+                        2, "y", "b",
+                        -1, "m", "n")
+                .rows(Series.ofInt(0, 2)).cols()
+                .map(
+                        Exp.$int(0).mul(3).as("a"),
+                        Exp.concat(Exp.$str(1), Exp.$str(2)).as("b")
+                );
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(3)
+                .expectRow(0, 3, "xa", "a")
+                .expectRow(1, 2, "y", "b")
+                .expectRow(2, -3, "mn", "n");
+    }
+
+    @Test
+    public void rowsByIndex_colsPredicated() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x", "a",
+                        2, "y", "b",
+                        -1, "m", "n")
+                .rows(0, 2).cols(c -> List.of("a", "b").contains(c))
                 .map(
                         Exp.concat(Exp.$str(1), Exp.$str(2)),
                         Exp.$int(0).mul(3)
@@ -113,7 +188,7 @@ public class RowColumnSet_Map_ExpTest {
     }
 
     @Test
-    public void rowsByIndex_NamedCols_RepeatRows_ExpandCols() {
+    public void rowsByIndex_colsByName_RepeatRows_ExpandCols() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(
                         1, "x", "a",
@@ -136,14 +211,13 @@ public class RowColumnSet_Map_ExpTest {
     }
 
     @Test
-    public void rowsByIndex_NamedCols_EmptyRows() {
+    public void rowsByIndex_colsByName_EmptyRows() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .rows(Series.ofInt())
-                .cols("b", "a")
+                .rows(Series.ofInt()).cols("b", "a")
                 .map(
                         Exp.concat(Exp.$str(1), Exp.$str(2)),
                         Exp.$int(0).mul(3)
@@ -157,14 +231,13 @@ public class RowColumnSet_Map_ExpTest {
     }
 
     @Test
-    public void rowsByCondition_NamedCols() {
+    public void rowsByCondition_colsByName() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .rows(Series.ofBool(true, false, true))
-                .cols("b", "a")
+                .rows(Series.ofBool(true, false, true)).cols("b", "a")
                 .map(
                         Exp.concat(Exp.$str(1), Exp.$str(2)),
                         Exp.$int(0).mul(3)

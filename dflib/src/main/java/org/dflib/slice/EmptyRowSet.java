@@ -25,6 +25,15 @@ public class EmptyRowSet implements RowSet {
     }
 
     @Override
+    public RowColumnSet cols() {
+        return new DefaultRowColumnSet(
+                source,
+                this,
+                df -> df.cols(),
+                () -> EmptyRowSetMerger.instance);
+    }
+
+    @Override
     public RowColumnSet cols(String... columns) {
         return new DefaultRowColumnSet(
                 source,

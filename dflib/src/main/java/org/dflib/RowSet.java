@@ -15,6 +15,8 @@ import java.util.function.UnaryOperator;
  */
 public interface RowSet {
 
+    RowColumnSet cols();
+
     RowColumnSet cols(Index columnsIndex);
 
     RowColumnSet cols(String... columns);

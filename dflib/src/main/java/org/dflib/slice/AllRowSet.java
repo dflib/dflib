@@ -22,6 +22,11 @@ public class AllRowSet extends BaseRowSet {
     }
 
     @Override
+    public RowColumnSet cols() {
+        return new AllRowColumnSet(source.cols());
+    }
+
+    @Override
     public RowColumnSet cols(String... columns) {
         return new AllRowColumnSet(source.cols(columns));
     }

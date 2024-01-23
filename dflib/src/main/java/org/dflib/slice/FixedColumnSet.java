@@ -4,6 +4,7 @@ import org.dflib.BoolValueMapper;
 import org.dflib.BooleanSeries;
 import org.dflib.ColumnDataFrame;
 import org.dflib.ColumnSet;
+import org.dflib.Condition;
 import org.dflib.DataFrame;
 import org.dflib.DoubleSeries;
 import org.dflib.DoubleValueMapper;
@@ -13,7 +14,9 @@ import org.dflib.IntSeries;
 import org.dflib.IntValueMapper;
 import org.dflib.LongSeries;
 import org.dflib.LongValueMapper;
+import org.dflib.RowColumnSet;
 import org.dflib.RowMapper;
+import org.dflib.RowPredicate;
 import org.dflib.RowToValueMapper;
 import org.dflib.Series;
 import org.dflib.index.LabelDeduplicator;
@@ -82,6 +85,36 @@ public class FixedColumnSet implements ColumnSet {
         this.sourceColumnsIndex = source.getColumnsIndex();
         this.sourceColumns = sourceColumns;
         this.csIndex = csIndex;
+    }
+
+    @Override
+    public RowColumnSet rows() {
+        return source.rows().cols(csIndex);
+    }
+
+    @Override
+    public RowColumnSet rows(IntSeries positions) {
+        return source.rows(positions).cols(csIndex);
+    }
+
+    @Override
+    public RowColumnSet rows(RowPredicate condition) {
+        return source.rows(condition).cols(csIndex);
+    }
+
+    @Override
+    public RowColumnSet rows(Condition condition) {
+        return source.rows(condition).cols(csIndex);
+    }
+
+    @Override
+    public RowColumnSet rows(BooleanSeries condition) {
+        return source.rows(condition).cols(csIndex);
+    }
+
+    @Override
+    public RowColumnSet rowsRangeOpenClosed(int fromInclusive, int toExclusive) {
+        return source.rowsRangeOpenClosed(fromInclusive, toExclusive).cols(csIndex);
     }
 
     @Override
