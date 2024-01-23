@@ -103,12 +103,13 @@ public class DataFrame_Join_HashTest {
         DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y")
-                .compactInt(0, 0);
+                .cols(0).compactInt(0);
 
         DataFrame df2 = DataFrame.foldByRow("c", "d").of(
                 2, "a",
                 2, "b",
-                3, "c").compactInt(0, 0);
+                3, "c")
+                .cols(0).compactInt(0);
 
         DataFrame df = df1.fullJoin(df2)
                 .on(0)

@@ -12,7 +12,7 @@ public class RowSet_Map_RowMapperTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rows()
                 .map((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -34,7 +34,7 @@ public class RowSet_Map_RowMapperTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rows(Series.ofInt(0, 2))
                 .map((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -56,7 +56,7 @@ public class RowSet_Map_RowMapperTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rows(Series.ofInt(0, 2, 2, 0))
                 .map((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -80,7 +80,7 @@ public class RowSet_Map_RowMapperTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rowsRangeOpenClosed(1, 2)
                 .map((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -102,7 +102,7 @@ public class RowSet_Map_RowMapperTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rows(Series.ofInt(2, 0))
                 .map((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -124,7 +124,7 @@ public class RowSet_Map_RowMapperTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rows(Series.ofBool(true, false, true))
                 .map((f, t) -> {
                     t.set(0, f.getInt(0) * 3);

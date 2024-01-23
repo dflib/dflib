@@ -54,7 +54,7 @@ public class RowSet_Map_ExpTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rows(Series.ofInt(0, 2, 2, 0))
                 .map(
                         Exp.$int(0).mul(3),

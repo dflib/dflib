@@ -190,7 +190,7 @@ public class RowSet_Select_ExpTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rows(r -> r.getInt(0) % 2 != 0)
                 .select(
                         Exp.$int(0).mul(3),
@@ -211,7 +211,7 @@ public class RowSet_Select_ExpTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rows(r -> true)
                 .select(
                         Exp.$int(0).mul(3),

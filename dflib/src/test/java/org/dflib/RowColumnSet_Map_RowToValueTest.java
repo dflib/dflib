@@ -12,7 +12,7 @@ public class RowColumnSet_Map_RowToValueTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rows()
                 .cols("b", "a")
                 .map(
@@ -33,7 +33,7 @@ public class RowColumnSet_Map_RowToValueTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rows(Series.ofInt(0, 2))
                 .cols("b", "a")
                 .map(
@@ -54,7 +54,7 @@ public class RowColumnSet_Map_RowToValueTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rows(Series.ofBool(true, false, true))
                 .cols("b", "a")
                 .map(

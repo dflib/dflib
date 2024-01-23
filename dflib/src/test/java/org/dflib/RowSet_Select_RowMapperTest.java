@@ -12,7 +12,7 @@ public class RowSet_Select_RowMapperTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rows()
                 .select((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -34,7 +34,7 @@ public class RowSet_Select_RowMapperTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rows(Series.ofInt(0, 2))
                 .select((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -55,7 +55,7 @@ public class RowSet_Select_RowMapperTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rows(Series.ofInt(0, 2, 2, 0))
                 .select((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -78,7 +78,7 @@ public class RowSet_Select_RowMapperTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rows(Series.ofInt())
                 .select((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -96,7 +96,7 @@ public class RowSet_Select_RowMapperTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rows(0, 2, 2, 0)
                 .select((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -119,7 +119,7 @@ public class RowSet_Select_RowMapperTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rowsRangeOpenClosed(1, 2)
                 .select((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -139,7 +139,7 @@ public class RowSet_Select_RowMapperTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rowsRangeOpenClosed(1, 1)
                 .select((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -157,7 +157,7 @@ public class RowSet_Select_RowMapperTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rows(Series.ofBool(true, false, true))
                 .select((f, t) -> {
                     t.set(0, f.getInt(0) * 3);

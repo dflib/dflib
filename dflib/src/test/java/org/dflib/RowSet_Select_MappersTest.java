@@ -12,7 +12,7 @@ public class RowSet_Select_MappersTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rows()
                 .select(
                         r -> r.getInt(0) * 3,
@@ -34,7 +34,7 @@ public class RowSet_Select_MappersTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rows(Series.ofInt(0, 2))
                 .select(
                         r -> r.getInt(0) * 3,
@@ -55,7 +55,7 @@ public class RowSet_Select_MappersTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rowsRangeOpenClosed(0, 2)
                 .select(
                         r -> r.getInt(0) * 3,
@@ -77,7 +77,7 @@ public class RowSet_Select_MappersTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .compactInt(0, 0)
+                .cols(0).compactInt(0)
                 .rows(Series.ofBool(true, false, true))
                 .select(
                         r -> r.getInt(0) * 3,
