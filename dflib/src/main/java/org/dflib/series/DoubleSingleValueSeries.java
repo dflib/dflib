@@ -86,7 +86,7 @@ public class DoubleSingleValueSeries extends DoubleBaseSeries {
     }
 
     @Override
-    public DoubleSeries rangeOpenClosedDouble(int fromInclusive, int toExclusive) {
+    public DoubleSeries rangeDouble(int fromInclusive, int toExclusive) {
 
         if (fromInclusive == 0 && toExclusive == size) {
             return this;

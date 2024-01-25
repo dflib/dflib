@@ -94,7 +94,7 @@ public class SaveViaUpsert extends SaveViaInsert {
             // So instead recreate ordered version of "previouslySaved" by getting data from the join df "insertAndUpdate"
 
             Index mainColumns = df.getColumnsIndex();
-            Index joinedIndex = insertAndUpdate.getColumnsIndex().rangeOpenClosed(mainColumns.size(), mainColumns.size() * 2);
+            Index joinedIndex = insertAndUpdate.getColumnsIndex().selectRange(mainColumns.size(), mainColumns.size() * 2);
 
             DataFrame previouslySavedOrdered = insertAndUpdate
                     .cols(joinedIndex).select()

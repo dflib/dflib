@@ -115,7 +115,7 @@ public class RangeRowSet extends BaseRowSet {
 
     @Override
     protected <T> Series<T> doSelect(Series<T> sourceColumn) {
-        return sourceColumn.rangeOpenClosed(fromInclusive, toExclusive);
+        return sourceColumn.range(fromInclusive, toExclusive);
     }
 
     @Override

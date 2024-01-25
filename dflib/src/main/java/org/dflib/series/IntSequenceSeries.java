@@ -115,7 +115,7 @@ public class IntSequenceSeries extends IntBaseSeries {
     }
 
     @Override
-    public IntSeries rangeOpenClosedInt(int fromInclusive, int toExclusive) {
+    public IntSeries rangeInt(int fromInclusive, int toExclusive) {
         int len = size();
         if (fromInclusive == 0 && toExclusive == len) {
             return this;

@@ -87,7 +87,7 @@ public class IntSingleValueSeries extends IntBaseSeries {
     }
 
     @Override
-    public IntSeries rangeOpenClosedInt(int fromInclusive, int toExclusive) {
+    public IntSeries rangeInt(int fromInclusive, int toExclusive) {
 
         if (fromInclusive == toExclusive) {
             return new IntArraySeries();

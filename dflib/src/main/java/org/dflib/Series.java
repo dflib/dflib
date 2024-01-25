@@ -319,10 +319,18 @@ public interface Series<T> extends Iterable<T> {
      * @param fromInclusive a left boundary index of the returned range (included in the returned range)
      * @param toExclusive   a right boundary index (excluded in the returned range)
      * @return a Series that contains a sub-range of data from this Series.
-     * @since 0.6
+     * @since 1.0.0-M19
      */
-    // TODO: call "selectRangeOpenClosed()" similar to DataFrame
-    Series<T> rangeOpenClosed(int fromInclusive, int toExclusive);
+    Series<T> range(int fromInclusive, int toExclusive);
+
+    /**
+     * @since 0.6
+     * @deprecated in favor of {@link #range(int, int)}
+     */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    default Series<T> rangeOpenClosed(int fromInclusive, int toExclusive) {
+        return range(fromInclusive, toExclusive);
+    }
 
     /**
      * Resolves the Series executing any lazy calculations. If called more than once, the first evaluation result is reused.

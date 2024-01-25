@@ -148,7 +148,7 @@ public class ArrayRangeSeries<T> extends ObjectSeries<T> {
     }
 
     @Override
-    public Series<T> rangeOpenClosed(int fromInclusive, int toExclusive) {
+    public Series<T> range(int fromInclusive, int toExclusive) {
         return fromInclusive == 0 && toExclusive == size()
                 ? this
                 : new ArrayRangeSeries<>(getNominalType(), data, fromInclusive, toExclusive - fromInclusive);

@@ -233,7 +233,7 @@ public class DoubleArrayRangeSeries extends DoubleBaseSeries {
     }
 
     @Override
-    public DoubleSeries rangeOpenClosedDouble(int fromInclusive, int toExclusive) {
+    public DoubleSeries rangeDouble(int fromInclusive, int toExclusive) {
         return fromInclusive == 0 && toExclusive == size()
                 ? this
                 : new DoubleArrayRangeSeries(data, offset + fromInclusive, toExclusive - fromInclusive);

@@ -51,8 +51,8 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
-    public Series<Boolean> rangeOpenClosed(int fromInclusive, int toExclusive) {
-        return rangeOpenClosedBool(fromInclusive, toExclusive);
+    public Series<Boolean> range(int fromInclusive, int toExclusive) {
+        return rangeBool(fromInclusive, toExclusive);
     }
 
     @Override

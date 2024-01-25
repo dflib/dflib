@@ -56,11 +56,11 @@ public class LongIndexedSeries extends LongBaseSeries {
     }
 
     @Override
-    public LongSeries rangeOpenClosedLong(int fromInclusive, int toExclusive) {
+    public LongSeries rangeLong(int fromInclusive, int toExclusive) {
         Raw raw = this.raw;
         return raw != null
-                ? new LongIndexedSeries(raw.source, raw.includePositions.rangeOpenClosedInt(fromInclusive, toExclusive))
-                : materialized.rangeOpenClosedLong(fromInclusive, toExclusive);
+                ? new LongIndexedSeries(raw.source, raw.includePositions.rangeInt(fromInclusive, toExclusive))
+                : materialized.rangeLong(fromInclusive, toExclusive);
     }
 
     @Override

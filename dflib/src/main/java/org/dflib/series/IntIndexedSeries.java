@@ -56,11 +56,11 @@ public class IntIndexedSeries extends IntBaseSeries {
     }
 
     @Override
-    public IntSeries rangeOpenClosedInt(int fromInclusive, int toExclusive) {
+    public IntSeries rangeInt(int fromInclusive, int toExclusive) {
         Raw raw = this.raw;
         return raw != null
-                ? new IntIndexedSeries(raw.source, raw.includePositions.rangeOpenClosedInt(fromInclusive, toExclusive))
-                : materialized.rangeOpenClosedInt(fromInclusive, toExclusive);
+                ? new IntIndexedSeries(raw.source, raw.includePositions.rangeInt(fromInclusive, toExclusive))
+                : materialized.rangeInt(fromInclusive, toExclusive);
     }
 
     @Override

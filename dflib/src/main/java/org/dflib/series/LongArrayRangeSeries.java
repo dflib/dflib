@@ -237,7 +237,7 @@ public class LongArrayRangeSeries extends LongBaseSeries {
     }
 
     @Override
-    public LongSeries rangeOpenClosedLong(int fromInclusive, int toExclusive) {
+    public LongSeries rangeLong(int fromInclusive, int toExclusive) {
         return fromInclusive == 0 && toExclusive == size()
                 ? this
                 : new LongArrayRangeSeries(data, offset + fromInclusive, toExclusive - fromInclusive);

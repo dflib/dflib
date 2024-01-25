@@ -102,7 +102,18 @@ public interface LongSeries extends Series<Long> {
         return Intersect.intersectLong(this, other);
     }
 
-    LongSeries rangeOpenClosedLong(int fromInclusive, int toExclusive);
+    /**
+     * @since 1.0.0-M19
+     */
+    LongSeries rangeLong(int fromInclusive, int toExclusive);
+
+    /**
+     * @deprecated in favor of {@link #rangeLong(int, int)}
+     */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    default LongSeries rangeOpenClosedLong(int fromInclusive, int toExclusive) {
+        return rangeLong(fromInclusive, toExclusive);
+    }
 
     @Override
     default LongSeries head(int len) {
@@ -111,7 +122,7 @@ public interface LongSeries extends Series<Long> {
             return this;
         }
 
-        return len < 0 ? tail(size() + len) : rangeOpenClosedLong(0, len);
+        return len < 0 ? tail(size() + len) : rangeLong(0, len);
     }
 
     /**
@@ -130,7 +141,7 @@ public interface LongSeries extends Series<Long> {
             return this;
         }
 
-        return len < 0 ? head(size + len) : rangeOpenClosedLong(size - len, size);
+        return len < 0 ? head(size + len) : rangeLong(size - len, size);
     }
 
     /**

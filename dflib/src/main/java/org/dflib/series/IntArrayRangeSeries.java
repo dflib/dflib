@@ -244,7 +244,7 @@ public class IntArrayRangeSeries extends IntBaseSeries {
     }
 
     @Override
-    public IntSeries rangeOpenClosedInt(int fromInclusive, int toExclusive) {
+    public IntSeries rangeInt(int fromInclusive, int toExclusive) {
         return fromInclusive == 0 && toExclusive == size()
                 ? this
                 : new IntArrayRangeSeries(data, offset + fromInclusive, toExclusive - fromInclusive);

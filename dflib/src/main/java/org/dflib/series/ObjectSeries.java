@@ -107,7 +107,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
     }
 
     @Override
-    public Series<T> rangeOpenClosed(int fromInclusive, int toExclusive) {
+    public Series<T> range(int fromInclusive, int toExclusive) {
 
         if (fromInclusive == toExclusive) {
             return new EmptySeries<>();
@@ -151,7 +151,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
             return this;
         }
 
-        return len < 0 ? tail(size() + len) : rangeOpenClosed(0, len);
+        return len < 0 ? tail(size() + len) : range(0, len);
     }
 
     @Override
@@ -162,7 +162,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
             return this;
         }
 
-        return len < 0 ? head(size + len) : rangeOpenClosed(size - len, size);
+        return len < 0 ? head(size + len) : range(size - len, size);
     }
 
     @Override

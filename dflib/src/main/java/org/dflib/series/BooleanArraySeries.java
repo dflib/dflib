@@ -34,7 +34,7 @@ public class BooleanArraySeries extends BooleanBaseSeries {
     }
 
     @Override
-    public BooleanSeries rangeOpenClosedBool(int fromInclusive, int toExclusive) {
+    public BooleanSeries rangeBool(int fromInclusive, int toExclusive) {
         return fromInclusive == 0 && toExclusive == size()
                 ? this
                 : new BooleanArrayRangeSeries(data, fromInclusive, toExclusive - fromInclusive);

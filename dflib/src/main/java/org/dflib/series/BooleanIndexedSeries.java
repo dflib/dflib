@@ -56,11 +56,11 @@ public class BooleanIndexedSeries extends BooleanBaseSeries {
     }
 
     @Override
-    public BooleanSeries rangeOpenClosedBool(int fromInclusive, int toExclusive) {
+    public BooleanSeries rangeBool(int fromInclusive, int toExclusive) {
         Raw raw = this.raw;
         return raw != null
-                ? new BooleanIndexedSeries(raw.source, raw.includePositions.rangeOpenClosedInt(fromInclusive, toExclusive))
-                : materialized.rangeOpenClosedBool(fromInclusive, toExclusive);
+                ? new BooleanIndexedSeries(raw.source, raw.includePositions.rangeInt(fromInclusive, toExclusive))
+                : materialized.rangeBool(fromInclusive, toExclusive);
     }
 
     @Override

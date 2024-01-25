@@ -49,8 +49,8 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public Series<Integer> rangeOpenClosed(int fromInclusive, int toExclusive) {
-        return rangeOpenClosedInt(fromInclusive, toExclusive);
+    public Series<Integer> range(int fromInclusive, int toExclusive) {
+        return rangeInt(fromInclusive, toExclusive);
     }
 
     @Override

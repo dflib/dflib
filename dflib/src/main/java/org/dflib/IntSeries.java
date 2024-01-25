@@ -103,7 +103,15 @@ public interface IntSeries extends Series<Integer> {
         return Intersect.intersectInt(this, other);
     }
 
-    IntSeries rangeOpenClosedInt(int fromInclusive, int toExclusive);
+    /**
+     * @since 1.0.0-M19
+     */
+    IntSeries rangeInt(int fromInclusive, int toExclusive);
+
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    default IntSeries rangeOpenClosedInt(int fromInclusive, int toExclusive) {
+        return rangeInt(fromInclusive, toExclusive);
+    }
 
     @Override
     default IntSeries head(int len) {
@@ -112,7 +120,7 @@ public interface IntSeries extends Series<Integer> {
             return this;
         }
 
-        return len < 0 ? tail(size() + len) : rangeOpenClosedInt(0, len);
+        return len < 0 ? tail(size() + len) : rangeInt(0, len);
     }
 
     /**
@@ -131,7 +139,7 @@ public interface IntSeries extends Series<Integer> {
             return this;
         }
 
-        return len < 0 ? head(size + len) : rangeOpenClosedInt(size - len, size);
+        return len < 0 ? head(size + len) : rangeInt(size - len, size);
     }
 
     /**

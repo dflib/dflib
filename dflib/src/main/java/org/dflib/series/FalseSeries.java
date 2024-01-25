@@ -36,7 +36,7 @@ public class FalseSeries extends BooleanBaseSeries {
     }
 
     @Override
-    public BooleanSeries rangeOpenClosedBool(int fromInclusive, int toExclusive) {
+    public BooleanSeries rangeBool(int fromInclusive, int toExclusive) {
         return fromInclusive == 0 && toExclusive == size()
                 ? this
                 : new FalseSeries(toExclusive - fromInclusive);

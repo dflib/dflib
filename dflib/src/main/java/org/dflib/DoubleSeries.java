@@ -102,7 +102,18 @@ public interface DoubleSeries extends Series<Double> {
         return Intersect.intersectDouble(this, other);
     }
 
-    DoubleSeries rangeOpenClosedDouble(int fromInclusive, int toExclusive);
+    /**
+     * @since 1.0.0-M19
+     */
+    DoubleSeries rangeDouble(int fromInclusive, int toExclusive);
+
+    /**
+     * @deprecated in favor of {@link #rangeDouble(int, int)}
+     */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    default DoubleSeries rangeOpenClosedDouble(int fromInclusive, int toExclusive) {
+        return rangeDouble(fromInclusive, toExclusive);
+    }
 
     @Override
     default DoubleSeries head(int len) {
@@ -111,7 +122,7 @@ public interface DoubleSeries extends Series<Double> {
             return this;
         }
 
-        return len < 0 ? tail(size() + len) : rangeOpenClosedDouble(0, len);
+        return len < 0 ? tail(size() + len) : rangeDouble(0, len);
     }
 
     /**
@@ -130,7 +141,7 @@ public interface DoubleSeries extends Series<Double> {
             return this;
         }
 
-        return len < 0 ? head(size + len) : rangeOpenClosedDouble(size - len, size);
+        return len < 0 ? head(size + len) : rangeDouble(size - len, size);
     }
 
     /**

@@ -168,7 +168,6 @@ public class Index implements Iterable<String> {
     }
 
 
-
     public Index addLabels(String... extraLabels) {
         return HConcat.zipIndex(this, extraLabels);
     }
@@ -218,10 +217,9 @@ public class Index implements Iterable<String> {
      * @param fromInclusive position of the first label from this Index to include in the new Index.
      * @param toExclusive   position of the label from this Index following the last included position.
      * @return a new index with labels from this index in the range specified
-     * @since 0.6
+     * @since 1.0.0-M19
      */
-    // TODO: align naming with "select*" methods. Perhaps a Range object is required
-    public Index rangeOpenClosed(int fromInclusive, int toExclusive) {
+    public Index selectRange(int fromInclusive, int toExclusive) {
 
         int len = toExclusive - fromInclusive;
         Range.checkRange(fromInclusive, len, labels.length);
@@ -230,6 +228,15 @@ public class Index implements Iterable<String> {
         System.arraycopy(labels, fromInclusive, newLabels, 0, len);
 
         return Index.of(newLabels);
+    }
+
+    /**
+     * @since 0.6
+     * @deprecated in favor of {@link #selectRange(int, int)}
+     */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    public Index rangeOpenClosed(int fromInclusive, int toExclusive) {
+        return selectRange(fromInclusive, toExclusive);
     }
 
     public Index selectLabels(String... labels) {

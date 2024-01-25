@@ -52,8 +52,8 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
-    public Series<Double> rangeOpenClosed(int fromInclusive, int toExclusive) {
-        return rangeOpenClosedDouble(fromInclusive, toExclusive);
+    public Series<Double> range(int fromInclusive, int toExclusive) {
+        return rangeDouble(fromInclusive, toExclusive);
     }
 
     @Override

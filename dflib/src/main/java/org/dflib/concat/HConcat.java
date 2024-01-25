@@ -100,7 +100,7 @@ public class HConcat {
         if (seriesHeight < desiredHeight) {
             return s -> padSeries(s, desiredHeight - seriesHeight);
         } else if (seriesHeight > desiredHeight) {
-            return s -> s.rangeOpenClosed(0, desiredHeight);
+            return s -> s.range(0, desiredHeight);
         } else {
             return UnaryOperator.identity();
         }

@@ -151,16 +151,25 @@ public interface BooleanSeries extends Series<Boolean> {
     }
 
     /**
-     * @since 0.16
+     * @since 1.0.0-M19
      */
-    BooleanSeries rangeOpenClosedBool(int fromInclusive, int toExclusive);
+    BooleanSeries rangeBool(int fromInclusive, int toExclusive);
 
     /**
-     * @deprecated in favor of {@link #rangeOpenClosedBool(int, int)}
+     * @since 0.16
+     * @deprecated in favor of {@link #rangeBool(int, int)}
+     */
+    @Deprecated(since = "1.0.0-M19", forRemoval = true)
+    default BooleanSeries rangeOpenClosedBool(int fromInclusive, int toExclusive) {
+        return rangeBool(fromInclusive, toExclusive);
+    }
+
+    /**
+     * @deprecated in favor of {@link #rangeBool(int, int)}
      */
     @Deprecated(since = "0.16", forRemoval = true)
     default BooleanSeries rangeOpenClosedBoolean(int fromInclusive, int toExclusive) {
-        return rangeOpenClosedBool(fromInclusive, toExclusive);
+        return rangeBool(fromInclusive, toExclusive);
     }
 
     @Override
@@ -170,7 +179,7 @@ public interface BooleanSeries extends Series<Boolean> {
             return this;
         }
 
-        return len < 0 ? tail(size() + len) : rangeOpenClosedBool(0, len);
+        return len < 0 ? tail(size() + len) : rangeBool(0, len);
     }
 
     /**
@@ -198,7 +207,7 @@ public interface BooleanSeries extends Series<Boolean> {
             return this;
         }
 
-        return len < 0 ? head(size + len) : rangeOpenClosedBool(size - len, size);
+        return len < 0 ? head(size + len) : rangeBool(size - len, size);
     }
 
     /**

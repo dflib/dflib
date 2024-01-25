@@ -46,11 +46,11 @@ public class IndexedSeries<T> extends ObjectSeries<T> {
     }
 
     @Override
-    public Series<T> rangeOpenClosed(int fromInclusive, int toExclusive) {
+    public Series<T> range(int fromInclusive, int toExclusive) {
         Raw<T> raw = this.raw;
         return raw != null
-                ? new IndexedSeries(raw.source, raw.includePositions.rangeOpenClosedInt(fromInclusive, toExclusive))
-                : materialized.rangeOpenClosed(fromInclusive, toExclusive);
+                ? new IndexedSeries(raw.source, raw.includePositions.rangeInt(fromInclusive, toExclusive))
+                : materialized.range(fromInclusive, toExclusive);
     }
 
     @Override

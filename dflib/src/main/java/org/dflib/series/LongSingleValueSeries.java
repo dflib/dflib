@@ -86,7 +86,7 @@ public class LongSingleValueSeries extends LongBaseSeries {
     }
 
     @Override
-    public LongSeries rangeOpenClosedLong(int fromInclusive, int toExclusive) {
+    public LongSeries rangeLong(int fromInclusive, int toExclusive) {
 
         if (fromInclusive == toExclusive) {
             return new LongArraySeries();

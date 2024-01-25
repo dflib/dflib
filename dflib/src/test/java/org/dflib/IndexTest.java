@@ -61,20 +61,20 @@ public class IndexTest {
     }
 
     @Test
-    public void rangeOpenClosed0() {
-        Index i = Index.of("a", "b", "c", "d").rangeOpenClosed(1, 3);
+    public void selectRange0() {
+        Index i = Index.of("a", "b", "c", "d").selectRange(1, 3);
         IndexAsserts.expect(i, "b", "c");
     }
 
     @Test
-    public void rangeOpenClosed1() {
-        Index i = Index.of("a", "b", "c", "d").rangeOpenClosed(0, 4);
+    public void selectRange1() {
+        Index i = Index.of("a", "b", "c", "d").selectRange(0, 4);
         IndexAsserts.expect(i, "a", "b", "c", "d");
     }
 
     @Test
-    public void rangeOpenClosed_OutOfRange() {
-        assertThrows(IllegalArgumentException.class, () -> Index.of("a", "b", "c", "d").rangeOpenClosed(0, 5));
+    public void selectRangeOutOfRange() {
+        assertThrows(IllegalArgumentException.class, () -> Index.of("a", "b", "c", "d").selectRange(0, 5));
     }
 
     @Test

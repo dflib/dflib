@@ -56,11 +56,11 @@ public class DoubleIndexedSeries extends DoubleBaseSeries {
     }
 
     @Override
-    public DoubleSeries rangeOpenClosedDouble(int fromInclusive, int toExclusive) {
+    public DoubleSeries rangeDouble(int fromInclusive, int toExclusive) {
         Raw raw = this.raw;
         return raw != null
-                ? new DoubleIndexedSeries(raw.source, raw.includePositions.rangeOpenClosedInt(fromInclusive, toExclusive))
-                : materialized.rangeOpenClosedDouble(fromInclusive, toExclusive);
+                ? new DoubleIndexedSeries(raw.source, raw.includePositions.rangeInt(fromInclusive, toExclusive))
+                : materialized.rangeDouble(fromInclusive, toExclusive);
     }
 
     @Override
