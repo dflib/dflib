@@ -125,6 +125,10 @@ public class Join {
                 .cols().as(columns);
     }
 
+    public DataFrame selectExcept(Predicate<String> labelCondition) {
+        return select(labelCondition.negate());
+    }
+
     public DataFrame selectExcept(int... columns) {
         Index index = JoinIndexer.simpleIndex(leftFrame, rightFrame, indicatorColumn);
         int[] includeColumns = index.positionsExcept(columns);

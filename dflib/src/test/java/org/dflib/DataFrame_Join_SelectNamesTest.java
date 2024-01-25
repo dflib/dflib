@@ -84,6 +84,31 @@ public class DataFrame_Join_SelectNamesTest {
     }
 
     @Test
+    public void exceptPredicate() {
+
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
+                1, "x",
+                2, "y",
+                4, "z");
+
+        DataFrame df2 = DataFrame.foldByRow("a", "b").of(
+                "a", 2,
+                "b", 2,
+                "x", 4,
+                "c", 3);
+
+        DataFrame df = df1.innerJoin(df2)
+                .on(Hasher.of(0), Hasher.of(1))
+                .selectExcept(c -> c.endsWith("_"));
+
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(3)
+                .expectRow(0, 2, "y")
+                .expectRow(1, 2, "y")
+                .expectRow(2, 4, "z");
+    }
+
+    @Test
     public void except() {
 
         DataFrame df1 = DataFrame.foldByRow("a", "b").of(
