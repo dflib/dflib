@@ -1,12 +1,16 @@
 package org.dflib.slice;
 
+import org.dflib.BooleanSeries;
 import org.dflib.DataFrame;
 import org.dflib.Index;
+import org.dflib.IntSeries;
 import org.dflib.RowColumnSet;
 import org.dflib.RowMapper;
 import org.dflib.Series;
 import org.dflib.row.ColumnsRowProxy;
 import org.dflib.row.MultiArrayRowBuilder;
+import org.dflib.series.IntSequenceSeries;
+import org.dflib.series.TrueSeries;
 
 import java.util.function.Predicate;
 
@@ -64,6 +68,16 @@ public class AllRowSet extends BaseRowSet {
     @Override
     public DataFrame select() {
         return source;
+    }
+
+    @Override
+    public BooleanSeries locate() {
+        return new TrueSeries(source.height());
+    }
+
+    @Override
+    public IntSeries index() {
+        return new IntSequenceSeries(0, source.height());
     }
 
     @Override

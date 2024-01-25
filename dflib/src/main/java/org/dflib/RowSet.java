@@ -78,4 +78,16 @@ public interface RowSet {
      * A form of {@link #select()} that renames the result columns using the provided old to new names map.
      */
     DataFrame selectAs(Map<String, String> oldToNewNames);
+
+    /**
+     * Returns a BooleanSeries indicating whether each source DataFrame position is included in the RowSet. Can be
+     * utilized as a reusable "selector" of RowSets from other DataFrames.
+     */
+    BooleanSeries locate();
+
+    /**
+     * Returns a IntSeries of the source DataFrame positions thta re included in the RowSet. Can be
+     * utilized as a reusable "selector" of RowSets from other DataFrames.
+     */
+    IntSeries index();
 }

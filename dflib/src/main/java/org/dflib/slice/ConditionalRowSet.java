@@ -3,6 +3,7 @@ package org.dflib.slice;
 import org.dflib.BooleanSeries;
 import org.dflib.DataFrame;
 import org.dflib.Index;
+import org.dflib.IntSeries;
 import org.dflib.RowColumnSet;
 import org.dflib.RowMapper;
 import org.dflib.Series;
@@ -63,6 +64,16 @@ public class ConditionalRowSet extends BaseRowSet {
     @Override
     public DataFrame drop() {
         return new ConditionalRowSet(source, sourceColumns, conditionalIndex.not()).select();
+    }
+
+    @Override
+    public BooleanSeries locate() {
+        return conditionalIndex;
+    }
+
+    @Override
+    public IntSeries index() {
+        return conditionalIndex.indexTrue();
     }
 
     @Override

@@ -1,12 +1,15 @@
 package org.dflib.slice;
 
+import org.dflib.BooleanSeries;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Index;
+import org.dflib.IntSeries;
 import org.dflib.RowColumnSet;
 import org.dflib.RowMapper;
 import org.dflib.RowSet;
 import org.dflib.RowToValueMapper;
+import org.dflib.Series;
 import org.dflib.Sorter;
 
 import java.util.Map;
@@ -178,5 +181,15 @@ public class EmptyRowSet implements RowSet {
     @Override
     public DataFrame select(RowToValueMapper<?>... mappers) {
         return DataFrame.empty(source.getColumnsIndex());
+    }
+
+    @Override
+    public BooleanSeries locate() {
+        return Series.ofBool();
+    }
+
+    @Override
+    public IntSeries index() {
+        return Series.ofInt();
     }
 }

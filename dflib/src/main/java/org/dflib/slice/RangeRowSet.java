@@ -1,14 +1,18 @@
 package org.dflib.slice;
 
+import org.dflib.BooleanSeries;
 import org.dflib.DataFrame;
 import org.dflib.Index;
+import org.dflib.IntSeries;
 import org.dflib.RowColumnSet;
 import org.dflib.RowMapper;
 import org.dflib.Series;
 import org.dflib.range.Range;
 import org.dflib.row.ColumnsRowProxy;
 import org.dflib.row.MultiArrayRowBuilder;
+import org.dflib.series.IntSequenceSeries;
 
+import java.util.Arrays;
 import java.util.function.Predicate;
 
 /**
@@ -80,6 +84,19 @@ public class RangeRowSet extends BaseRowSet {
         }
 
         return new IndexedRowSet(source, sourceColumns, Series.ofInt(index)).select();
+    }
+
+    @Override
+    public BooleanSeries locate() {
+        int h = source.height();
+        boolean[] values = new boolean[h];
+        Arrays.fill(values, fromInclusive, toExclusive, true);
+        return Series.ofBool(values);
+    }
+
+    @Override
+    public IntSeries index() {
+        return new IntSequenceSeries(fromInclusive, toExclusive);
     }
 
     @Override

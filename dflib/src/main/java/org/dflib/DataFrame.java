@@ -451,7 +451,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param rowMapper a boolean function applied to each row of this DataFrame
      * @return a new BooleanSeries.
      * @since 0.17
-     * @deprecated use <code>Condition.eval(df)</code> or <code>colsAppend(name).map(rowMapper).getColumn("name").mapAsBool(..)</code> instead.
+     * @deprecated instead use {@link #rows(RowPredicate)} and then {@link RowSet#locate()}, or {@link Condition#eval(DataFrame)}
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default BooleanSeries mapColumnAsBool(RowToBooleanValueMapper rowMapper) {
@@ -466,7 +466,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * @deprecated use <code>Condition.eval(df)</code> or <code>colsAppend(name).map(rowMapper).getColumn("name").mapAsBool(..)</code> instead.
+     * @deprecated instead use {@link #rows(RowPredicate)} and then {@link RowSet#locate()}, or {@link Condition#eval(DataFrame)}
      */
     @Deprecated(since = "0.17", forRemoval = true)
     default BooleanSeries mapColumnAsBoolean(RowToBooleanValueMapper rowMapper) {

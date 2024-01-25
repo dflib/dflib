@@ -1,5 +1,6 @@
 package org.dflib.slice;
 
+import org.dflib.BooleanSeries;
 import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.IntSeries;
@@ -86,6 +87,25 @@ public class IndexedRowSet extends BaseRowSet {
         }
 
         return super.sort(sorters);
+    }
+
+    @Override
+    public BooleanSeries locate() {
+        int h = source.height();
+        int ih = intIndex.size();
+
+        boolean[] values = new boolean[h];
+
+        for (int i = 0; i < ih; i++) {
+            values[intIndex.getInt(i)] = true;
+        }
+
+        return Series.ofBool(values);
+    }
+
+    @Override
+    public IntSeries index() {
+        return intIndex;
     }
 
     @Override
