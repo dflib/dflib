@@ -56,7 +56,7 @@ public class RowSet_Select_MappersTest {
                         2, "y", "b",
                         -1, "m", "n")
                 .cols(0).compactInt(0)
-                .rowsRangeOpenClosed(0, 2)
+                .rowsRange(0, 2)
                 .select(
                         r -> r.getInt(0) * 3,
                         r -> r.get(1) + "" + r.get(2),

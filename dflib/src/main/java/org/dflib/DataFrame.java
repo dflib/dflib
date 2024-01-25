@@ -1308,11 +1308,11 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param toExclusive   a right boundary index (excluded in the returned range)
      * @return a Series that contains a sub-range of data from this Series.
      * @since 0.14
-     * @deprecated in favor of {@link #rowsRangeOpenClosed(int, int)} and then {@link RowSet#select()}
+     * @deprecated in favor of {@link #rowsRange(int, int)} and then {@link RowSet#select()}
      */
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame selectRowRangeOpenClosed(int fromInclusive, int toExclusive) {
-        return rowsRangeOpenClosed(fromInclusive, toExclusive).select();
+        return rowsRange(fromInclusive, toExclusive).select();
     }
 
     /**
@@ -1929,7 +1929,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @since 1.0.0-M19
      */
-    RowSet rowsRangeOpenClosed(int fromInclusive, int toExclusive);
+    RowSet rowsRange(int fromInclusive, int toExclusive);
 
     /**
      * Returns a RowSet that is a random sample of rows from this DataFrame, with the specified sample size and

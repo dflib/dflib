@@ -443,7 +443,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public RowSet rowsRangeOpenClosed(int fromInclusive, int toExclusive) {
+    public RowSet rowsRange(int fromInclusive, int toExclusive) {
         return toExclusive - fromInclusive != 0
                 ? new RangeRowSet(this, dataColumns, fromInclusive, toExclusive)
                 : new EmptyRowSet(this);

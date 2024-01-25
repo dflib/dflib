@@ -53,7 +53,7 @@ public class RowSet_IndexTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .rowsRangeOpenClosed(1, 3)
+                .rowsRange(1, 3)
                 .index();
 
         new IntSeriesAsserts(index).expectData(1, 2);

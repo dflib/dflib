@@ -78,7 +78,7 @@ public class RowSet_SelectAs_OperatorTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .rowsRangeOpenClosed(1, 2)
+                .rowsRange(1, 2)
                 .selectAs(String::toUpperCase);
 
         new DataFrameAsserts(df, "A", "B", "C")
@@ -93,7 +93,7 @@ public class RowSet_SelectAs_OperatorTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .rowsRangeOpenClosed(1, 1)
+                .rowsRange(1, 1)
                 .selectAs(String::toUpperCase);
 
         new DataFrameAsserts(df, "A", "B", "C").expectHeight(0);

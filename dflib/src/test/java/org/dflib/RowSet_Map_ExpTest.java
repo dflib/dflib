@@ -78,7 +78,7 @@ public class RowSet_Map_ExpTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .rowsRangeOpenClosed(1, 3)
+                .rowsRange(1, 3)
                 .map(
                         Exp.$int(0).mul(3),
                         Exp.concat(Exp.$str(1), Exp.$str(2)),

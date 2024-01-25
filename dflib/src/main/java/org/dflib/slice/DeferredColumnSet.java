@@ -72,8 +72,8 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
-    public RowColumnSet rowsRangeOpenClosed(int fromInclusive, int toExclusive) {
-        return source.rowsRangeOpenClosed(fromInclusive, toExclusive).cols();
+    public RowColumnSet rowsRange(int fromInclusive, int toExclusive) {
+        return source.rowsRange(fromInclusive, toExclusive).cols();
     }
 
     @Override

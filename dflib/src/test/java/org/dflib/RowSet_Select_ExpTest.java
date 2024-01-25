@@ -114,7 +114,7 @@ public class RowSet_Select_ExpTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .rowsRangeOpenClosed(1, 2)
+                .rowsRange(1, 2)
                 .select(
                         Exp.$int(0).mul(3),
                         Exp.concat(Exp.$str(1), Exp.$str(2)),
@@ -133,7 +133,7 @@ public class RowSet_Select_ExpTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .rowsRangeOpenClosed(1, 1)
+                .rowsRange(1, 1)
                 .select(
                         Exp.$int(0).mul(3),
                         Exp.concat(Exp.$str(1), Exp.$str(2)),

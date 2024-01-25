@@ -89,7 +89,7 @@ public class WindowRange {
         int delta = endOffsetInclusive - h;
         int toExclusive = delta <= 0 ? Math.min(h, rowIndex + endOffsetInclusive + 1) : h;
 
-        return dataFrame.rowsRangeOpenClosed(fromInclusive, toExclusive).select();
+        return dataFrame.rowsRange(fromInclusive, toExclusive).select();
     }
 
     @Override

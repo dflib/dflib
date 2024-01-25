@@ -151,7 +151,7 @@ public class RowSet_UniqueTest {
                         1, "e", "k", // <-
                         1, "f", "g", // <-
                         1, "m", "n")
-                .rowsRangeOpenClosed(0, 4)
+                .rowsRange(0, 4)
                 .unique(0);
 
         new DataFrameAsserts(df, "a", "b", "c")

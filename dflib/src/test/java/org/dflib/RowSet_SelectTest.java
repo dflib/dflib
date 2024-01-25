@@ -75,7 +75,7 @@ public class RowSet_SelectTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .rowsRangeOpenClosed(1, 2).select();
+                .rowsRange(1, 2).select();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(1)
@@ -89,7 +89,7 @@ public class RowSet_SelectTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .rowsRangeOpenClosed(1, 1).select();
+                .rowsRange(1, 1).select();
 
         new DataFrameAsserts(df, "a", "b", "c").expectHeight(0);
     }

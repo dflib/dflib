@@ -28,7 +28,7 @@ public interface ColumnSet {
 
     RowColumnSet rows(RowPredicate condition);
 
-    RowColumnSet rowsRangeOpenClosed(int fromInclusive, int toExclusive);
+    RowColumnSet rowsRange(int fromInclusive, int toExclusive);
 
     /**
      * Returns the original DataFrame with the ColumnSet columns removed.

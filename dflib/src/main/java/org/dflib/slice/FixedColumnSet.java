@@ -113,8 +113,8 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     @Override
-    public RowColumnSet rowsRangeOpenClosed(int fromInclusive, int toExclusive) {
-        return source.rowsRangeOpenClosed(fromInclusive, toExclusive).cols(csIndex);
+    public RowColumnSet rowsRange(int fromInclusive, int toExclusive) {
+        return source.rowsRange(fromInclusive, toExclusive).cols(csIndex);
     }
 
     @Override

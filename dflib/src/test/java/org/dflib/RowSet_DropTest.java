@@ -74,7 +74,7 @@ public class RowSet_DropTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .rowsRangeOpenClosed(1, 2)
+                .rowsRange(1, 2)
                 .drop();
 
         new DataFrameAsserts(df, "a", "b", "c")
@@ -90,7 +90,7 @@ public class RowSet_DropTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .rowsRangeOpenClosed(1, 1)
+                .rowsRange(1, 1)
                 .drop();
 
         new DataFrameAsserts(df, "a", "b", "c")

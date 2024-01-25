@@ -58,7 +58,7 @@ public class RowSet_SortTest {
                         4, "e", "k", // <--
                         0, "f", "g", // <--
                         1, "m", "n")
-                .rowsRangeOpenClosed(1, 4)
+                .rowsRange(1, 4)
                 .sort(Exp.$int("a").asc(), Exp.$str("b").desc());
 
         new DataFrameAsserts(df, "a", "b", "c")

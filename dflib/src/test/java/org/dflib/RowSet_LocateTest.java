@@ -52,7 +52,7 @@ public class RowSet_LocateTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .rowsRangeOpenClosed(1, 3)
+                .rowsRange(1, 3)
                 .locate();
 
         new BoolSeriesAsserts(index).expectData(false, true, true);

@@ -78,7 +78,7 @@ public class RowSet_SelectAs_NameArrayTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .rowsRangeOpenClosed(1, 2)
+                .rowsRange(1, 2)
                 .selectAs("x", "y", "z");
 
         new DataFrameAsserts(df, "x", "y", "z")
@@ -93,7 +93,7 @@ public class RowSet_SelectAs_NameArrayTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .rowsRangeOpenClosed(1, 1)
+                .rowsRange(1, 1)
                 .selectAs("x", "y", "z");
 
         new DataFrameAsserts(df, "x", "y", "z").expectHeight(0);

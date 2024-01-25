@@ -81,7 +81,7 @@ public class RowSet_Map_MappersTest {
                         2, "y", "b",
                         -1, "m", "n")
                 .cols(0).compactInt(0)
-                .rowsRangeOpenClosed(0, 2)
+                .rowsRange(0, 2)
                 .map(
                         r -> r.getInt(0) * 3,
                         r -> r.get(1) + "" + r.get(2),

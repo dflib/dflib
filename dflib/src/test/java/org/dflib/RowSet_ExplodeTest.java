@@ -72,7 +72,7 @@ public class RowSet_ExplodeTest {
                         0, List.of("f1", "f2"), "g", // <--
                         1, List.of("m1", "m2"), "n", // <--
                         5, null, "x")
-                .rowsRangeOpenClosed(2, 5)
+                .rowsRange(2, 5)
                 .explode("b");
 
         new DataFrameAsserts(df, "a", "b", "c")
