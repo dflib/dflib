@@ -17,10 +17,11 @@ class AllRowSetMerger extends RowSetMerger {
 
     @Override
     public RowSetMerger removeUnmatchedRows(BooleanSeries rsCondition) {
+        int rsh = rsCondition.size();
         int h = rsCondition.countTrue();
         int[] shrunkIndex = new int[h];
 
-        for (int i = 0, si = 0; i < h; i++) {
+        for (int i = 0, si = 0; i < rsh; i++) {
             if (rsCondition.getBool(i)) {
                 shrunkIndex[si++] = i;
             }

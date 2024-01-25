@@ -24,6 +24,26 @@ public class RowSet_UniqueTest {
     }
 
     @Test
+    public void all_TwoColumns() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x", "a",
+                        2, "x", "b",
+                        1, "x", "k",
+                        1, "f", "g",
+                        1, "m", "n")
+                .rows()
+                .unique("a", "b");
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(4)
+                .expectRow(0, 1, "x", "a")
+                .expectRow(1, 2, "x", "b")
+                .expectRow(2, 1, "f", "g")
+                .expectRow(3, 1, "m", "n");
+    }
+
+    @Test
     public void byIndex() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(
@@ -40,6 +60,26 @@ public class RowSet_UniqueTest {
                 .expectRow(0, 1, "x", "a")
                 .expectRow(1, 2, "y", "b")
                 .expectRow(2, 1, "e", "k");
+    }
+
+    @Test
+    public void byIndex_TwoColumns() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x", "a", // <--
+                        1, "x", "b",
+                        1, "e", "k", // <--
+                        1, "x", "g", // <--
+                        1, "m", "n") // <--
+                .rows(Series.ofInt(0, 2, 3, 4))
+                .unique("a", "b");
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(4)
+                .expectRow(0, 1, "x", "a")
+                .expectRow(1, 1, "x", "b")
+                .expectRow(2, 1, "e", "k")
+                .expectRow(3, 1, "m", "n");
     }
 
     @Test
