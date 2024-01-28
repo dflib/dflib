@@ -34,8 +34,17 @@ public interface RowSet {
      */
     DataFrame drop();
 
+
+    /**
+     * "Explodes" the specified column vertically, adding new rows to the end of the RowSet as needed. This operation has
+     * any affect only if the column being "exploded" contains Iterables or array elements.
+     */
     DataFrame explode(String columnName);
 
+    /**
+     * "Explodes" the specified column vertically, adding new rows to the end of the RowSet as needed. This operation has
+     * any affect only if the column being "exploded" contains Iterables or array elements.
+     */
     DataFrame explode(int columnPos);
 
     DataFrame map(Exp<?>... exps);
