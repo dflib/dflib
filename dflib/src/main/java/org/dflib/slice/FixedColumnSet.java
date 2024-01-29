@@ -487,12 +487,12 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame explode(Exp<? extends Iterable<?>> splitExp) {
+    public DataFrame expand(Exp<? extends Iterable<?>> splitExp) {
         return merge(doMapIterables(splitExp));
     }
 
     @Override
-    public DataFrame selectExploded(Exp<? extends Iterable<?>> splitExp) {
+    public DataFrame selectExpand(Exp<? extends Iterable<?>> splitExp) {
         return new ColumnDataFrame(null, Index.ofDeduplicated(csIndex), doMapIterables(splitExp));
     }
 
@@ -529,12 +529,12 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame explodeArray(Exp<? extends Object[]> splitExp) {
+    public DataFrame expandArray(Exp<? extends Object[]> splitExp) {
         return merge(doMapArrays(splitExp));
     }
 
     @Override
-    public DataFrame selectExplodedArray(Exp<? extends Object[]> splitExp) {
+    public DataFrame selectExpandArray(Exp<? extends Object[]> splitExp) {
         return new ColumnDataFrame(null, Index.ofDeduplicated(csIndex), doMapArrays(splitExp));
     }
 

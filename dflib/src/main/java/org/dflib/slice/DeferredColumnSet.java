@@ -414,7 +414,7 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame explode(Exp<? extends Iterable<?>> splitExp) {
+    public DataFrame expand(Exp<? extends Iterable<?>> splitExp) {
         Series<?>[] columns = doMapIterables(splitExp);
 
         int w = columns.length;
@@ -425,11 +425,11 @@ public class DeferredColumnSet implements ColumnSet {
             positions[i] = srcW + i;
         }
 
-        return delegate(positions).explode(splitExp);
+        return delegate(positions).expand(splitExp);
     }
 
     @Override
-    public DataFrame selectExploded(Exp<? extends Iterable<?>> splitExp) {
+    public DataFrame selectExpand(Exp<? extends Iterable<?>> splitExp) {
         Series<?>[] columns = doMapIterables(splitExp);
 
         int w = columns.length;
@@ -477,7 +477,7 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame explodeArray(Exp<? extends Object[]> splitExp) {
+    public DataFrame expandArray(Exp<? extends Object[]> splitExp) {
 
         Series<?>[] columns = doMapArrays(splitExp);
         int w = columns.length;
@@ -488,11 +488,11 @@ public class DeferredColumnSet implements ColumnSet {
             positions[i] = srcW + i;
         }
 
-        return delegate(positions).explodeArray(splitExp);
+        return delegate(positions).expandArray(splitExp);
     }
 
     @Override
-    public DataFrame selectExplodedArray(Exp<? extends Object[]> splitExp) {
+    public DataFrame selectExpandArray(Exp<? extends Object[]> splitExp) {
         Series<?>[] columns = doMapArrays(splitExp);
         int w = columns.length;
         String[] labels = new String[w];
