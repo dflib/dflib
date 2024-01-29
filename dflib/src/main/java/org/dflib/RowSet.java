@@ -40,14 +40,14 @@ public interface RowSet {
      * All other columns in the newly produced rows will be populated with values of the source rows. The new rows are
      * added at the bottom of the returned DataFrame.
      */
-    DataFrame explode(String columnName);
+    DataFrame expand(String columnName);
 
     /**
      * For the specified column, expands its Iterable or array objects, creating new rows for each collection element.
      * All other columns in the newly produced rows will be populated with values of the source rows. The new rows are
      * added at the bottom of the returned DataFrame.
      */
-    DataFrame explode(int columnPos);
+    DataFrame expand(int columnPos);
 
     DataFrame map(Exp<?>... exps);
 

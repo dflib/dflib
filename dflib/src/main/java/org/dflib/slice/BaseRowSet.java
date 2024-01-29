@@ -36,12 +36,12 @@ public abstract class BaseRowSet implements RowSet {
     }
 
     @Override
-    public DataFrame explode(String columnName) {
-        return explode(sourceColumnsIndex.position(columnName));
+    public DataFrame expand(String columnName) {
+        return expand(sourceColumnsIndex.position(columnName));
     }
 
     @Override
-    public DataFrame explode(int columnPos) {
+    public DataFrame expand(int columnPos) {
 
         Exploder exploder = Exploder.explode(doSelect(sourceColumns[columnPos]));
         int rsLen = (int) exploder.getStretchCounts().sum();

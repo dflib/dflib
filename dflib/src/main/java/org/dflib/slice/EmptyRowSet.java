@@ -96,7 +96,7 @@ public class EmptyRowSet implements RowSet {
     }
 
     @Override
-    public DataFrame explode(String columnName) {
+    public DataFrame expand(String columnName) {
 
         // validate the argument, even those the operation does nothing
         source.getColumnsIndex().position(columnName);
@@ -105,7 +105,7 @@ public class EmptyRowSet implements RowSet {
     }
 
     @Override
-    public DataFrame explode(int columnPos) {
+    public DataFrame expand(int columnPos) {
 
         // validate the argument, even those the operation does nothing
         source.getColumnsIndex().getLabel(columnPos);

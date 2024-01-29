@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Random;
 
-public class RowSet_ExplodeTest {
+public class RowSet_ExpandTest {
 
     @Test
     public void all() {
@@ -19,7 +19,7 @@ public class RowSet_ExplodeTest {
                         1, List.of("m1", "m2"), "n",
                         5, null, "x")
                 .rows()
-                .explode("b");
+                .expand("b");
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(11)
@@ -46,8 +46,7 @@ public class RowSet_ExplodeTest {
                         0, List.of("f1", "f2"), "g", // <--
                         1, List.of("m1", "m2"), "n", // <--
                         5, null, "x") // <--
-                .rows(Series.ofInt(0, 3, 4, 5))
-                .explode("b");
+                .rows(Series.ofInt(0, 3, 4, 5)).expand("b");
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(9)
@@ -72,8 +71,7 @@ public class RowSet_ExplodeTest {
                         0, List.of("f1", "f2"), "g", // <--
                         1, List.of("m1", "m2"), "n", // <--
                         5, null, "x")
-                .rowsRange(2, 5)
-                .explode("b");
+                .rowsRange(2, 5).expand("b");
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(9)
@@ -98,8 +96,7 @@ public class RowSet_ExplodeTest {
                         0, List.of("f1", "f2"), "g", // <--
                         1, List.of("m1", "m2"), "n", // <--
                         5, null, "x") // <--
-                .rows(Series.ofBool(true, false, false, true, true, true))
-                .explode("b");
+                .rows(Series.ofBool(true, false, false, true, true, true)).expand("b");
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(9)
@@ -125,8 +122,7 @@ public class RowSet_ExplodeTest {
                         1, List.of("m1", "m2"), "n",
                         5, null, "x")
                 // using fixed seed to get reproducible result
-                .rowsSample(2, new Random(9))
-                .explode("b");
+                .rowsSample(2, new Random(9)).expand("b");
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(8)

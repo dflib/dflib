@@ -1556,7 +1556,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * if the column that is being "exploded" contains Iterables or array elements.
      *
      * @since 0.16
-     * @deprecated in favor of {@link #rows()} and then {@link RowSet#explode(String)}
+     * @deprecated in favor of {@link #rows()} and then {@link RowSet#expand(String)}
      */
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame vExplode(String columnName) {
@@ -1568,11 +1568,11 @@ public interface DataFrame extends Iterable<RowProxy> {
      * if the column that is being "exploded" contains Iterables or array elements.
      *
      * @since 0.16
-     * @deprecated in favor of {@link #rows()} and then {@link RowSet#explode(int)}
+     * @deprecated in favor of {@link #rows()} and then {@link RowSet#expand(int)}
      */
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame vExplode(int columnPos) {
-        return rows().explode(columnPos);
+        return rows().expand(columnPos);
     }
 
     /**
