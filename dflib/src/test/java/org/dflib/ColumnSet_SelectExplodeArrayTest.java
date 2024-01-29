@@ -3,17 +3,16 @@ package org.dflib;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.dflib.Exp.$int;
+import static org.dflib.Exp.$val;
 
-public class ColumnSet_SelectIterablesTest {
+public class ColumnSet_SelectExplodeArrayTest {
 
     @Test
-    public void list() {
+    public void array() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")
-                .cols("c", "b").selectIterables(Exp.$val(List.of("one", "two")));
+                .cols("c", "b").selectExplodedArray($val(new String[]{"one", "two"}));
 
         new DataFrameAsserts(df, "c", "b")
                 .expectHeight(2)
@@ -22,17 +21,18 @@ public class ColumnSet_SelectIterablesTest {
     }
 
     @Test
-    public void list_VaryingSize() {
+    public void array_VaryingSize() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y", 3, "z")
-                .cols("b", "c").selectIterables($int("a").mapVal(i -> {
+                .cols("b", "c").selectExplodedArray($int("a").mapVal(i -> {
+
                     switch (i) {
                         case 1:
-                            return List.of("one");
+                            return new String[]{"one"};
                         case 2:
-                            return List.of("one", "two");
+                            return new String[]{"one", "two"};
                         case 3:
-                            return List.of("one", "two", "three");
+                            return new String[]{"one", "two", "three"};
                         default:
                             return null;
                     }
@@ -46,15 +46,16 @@ public class ColumnSet_SelectIterablesTest {
     }
 
     @Test
-    public void list_WithNulls() {
+    public void array_WithNulls() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y", 3, "z")
-                .cols("b", "c").selectIterables($int("a").mapVal(i -> {
+                .cols("b", "c").selectExplodedArray($int("a").mapVal(i -> {
+
                     switch (i) {
                         case 1:
-                            return List.of("one");
+                            return new String[]{"one"};
                         case 3:
-                            return List.of("one", "two", "three");
+                            return new String[]{"one", "two", "three"};
                         default:
                             return null;
                     }
@@ -68,17 +69,17 @@ public class ColumnSet_SelectIterablesTest {
     }
 
     @Test
-    public void list_DynamicSize() {
+    public void array_DynamicSize() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y", 3, "z")
-                .cols().selectIterables($int("a").mapVal(i -> {
+                .cols().selectExplodedArray($int("a").mapVal(i -> {
                     switch (i) {
                         case 1:
-                            return List.of("one");
+                            return new String[]{"one"};
                         case 2:
-                            return List.of("one", "two");
+                            return new String[]{"one", "two"};
                         case 3:
-                            return List.of("one", "two", "three");
+                            return new String[]{"one", "two", "three"};
                         default:
                             return null;
                     }

@@ -414,8 +414,8 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame mapIterables(Exp<? extends Iterable<?>> mapper) {
-        Series<?>[] columns = doMapIterables(mapper);
+    public DataFrame explode(Exp<? extends Iterable<?>> splitExp) {
+        Series<?>[] columns = doMapIterables(splitExp);
 
         int w = columns.length;
         int srcW = source.width();
@@ -425,12 +425,12 @@ public class DeferredColumnSet implements ColumnSet {
             positions[i] = srcW + i;
         }
 
-        return delegate(positions).mapIterables(mapper);
+        return delegate(positions).explode(splitExp);
     }
 
     @Override
-    public DataFrame selectIterables(Exp<? extends Iterable<?>> mapper) {
-        Series<?>[] columns = doMapIterables(mapper);
+    public DataFrame selectExploded(Exp<? extends Iterable<?>> splitExp) {
+        Series<?>[] columns = doMapIterables(splitExp);
 
         int w = columns.length;
         String[] labels = new String[w];
@@ -477,9 +477,9 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame mapArrays(Exp<? extends Object[]> mapper) {
+    public DataFrame explodeArray(Exp<? extends Object[]> splitExp) {
 
-        Series<?>[] columns = doMapArrays(mapper);
+        Series<?>[] columns = doMapArrays(splitExp);
         int w = columns.length;
         int[] positions = new int[w];
         int srcW = source.width();
@@ -488,19 +488,19 @@ public class DeferredColumnSet implements ColumnSet {
             positions[i] = srcW + i;
         }
 
-        return delegate(positions).mapArrays(mapper);
+        return delegate(positions).explodeArray(splitExp);
     }
 
     @Override
-    public DataFrame selectArrays(Exp<? extends Object[]> mapper) {
-        Series<?>[] columns = doMapArrays(mapper);
+    public DataFrame selectExplodedArray(Exp<? extends Object[]> splitExp) {
+        Series<?>[] columns = doMapArrays(splitExp);
         int w = columns.length;
         String[] labels = new String[w];
         for (int i = 0; i < w; i++) {
             labels[i] = String.valueOf(i);
         }
 
-        return new ColumnDataFrame(null, Index.of(labels), doMapArrays(mapper));
+        return new ColumnDataFrame(null, Index.of(labels), doMapArrays(splitExp));
     }
 
     private Series<?>[] doMapArrays(Exp<? extends Object[]> mapper) {

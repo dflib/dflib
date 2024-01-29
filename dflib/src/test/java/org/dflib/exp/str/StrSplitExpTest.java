@@ -43,7 +43,7 @@ public class StrSplitExpTest {
                         4, " ef g ",
                         5, "no_space",
                         8, null)
-                .cols("b1", "b2").mapArrays(exp)
+                .cols("b1", "b2").explodeArray(exp)
                 .colsExcept("b").select();
 
         new DataFrameAsserts(df, "a", "b1", "b2")

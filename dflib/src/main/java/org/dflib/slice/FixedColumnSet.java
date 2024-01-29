@@ -487,13 +487,13 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame mapIterables(Exp<? extends Iterable<?>> mapper) {
-        return merge(doMapIterables(mapper));
+    public DataFrame explode(Exp<? extends Iterable<?>> splitExp) {
+        return merge(doMapIterables(splitExp));
     }
 
     @Override
-    public DataFrame selectIterables(Exp<? extends Iterable<?>> mapper) {
-        return new ColumnDataFrame(null, Index.ofDeduplicated(csIndex), doMapIterables(mapper));
+    public DataFrame selectExploded(Exp<? extends Iterable<?>> splitExp) {
+        return new ColumnDataFrame(null, Index.ofDeduplicated(csIndex), doMapIterables(splitExp));
     }
 
     private Series<?>[] doMapIterables(Exp<? extends Iterable<?>> mapper) {
@@ -529,13 +529,13 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame mapArrays(Exp<? extends Object[]> mapper) {
-        return merge(doMapArrays(mapper));
+    public DataFrame explodeArray(Exp<? extends Object[]> splitExp) {
+        return merge(doMapArrays(splitExp));
     }
 
     @Override
-    public DataFrame selectArrays(Exp<? extends Object[]> mapper) {
-        return new ColumnDataFrame(null, Index.ofDeduplicated(csIndex), doMapArrays(mapper));
+    public DataFrame selectExplodedArray(Exp<? extends Object[]> splitExp) {
+        return new ColumnDataFrame(null, Index.ofDeduplicated(csIndex), doMapArrays(splitExp));
     }
 
     private Series<?>[] doMapArrays(Exp<? extends Object[]> mapper) {

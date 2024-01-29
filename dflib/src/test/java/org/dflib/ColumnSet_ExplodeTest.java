@@ -3,16 +3,17 @@ package org.dflib;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
-import static org.dflib.Exp.$int;
-import static org.dflib.Exp.$val;
+import java.util.List;
 
-public class ColumnSet_MapArraysTest {
+import static org.dflib.Exp.$int;
+
+public class ColumnSet_ExplodeTest {
 
     @Test
-    public void array() {
+    public void list() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")
-                .cols("c", "b").mapArrays($val(new String[]{"one", "two"}));
+                .cols("c", "b").explode(Exp.$val(List.of("one", "two")));
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(2)
@@ -21,18 +22,17 @@ public class ColumnSet_MapArraysTest {
     }
 
     @Test
-    public void array_VaryingSize() {
+    public void list_VaryingSize() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y", 3, "z")
-                .cols("b", "c").mapArrays($int("a").mapVal(i -> {
-
+                .cols("b", "c").explode($int("a").mapVal(i -> {
                     switch (i) {
                         case 1:
-                            return new String[]{"one"};
+                            return List.of("one");
                         case 2:
-                            return new String[]{"one", "two"};
+                            return List.of("one", "two");
                         case 3:
-                            return new String[]{"one", "two", "three"};
+                            return List.of("one", "two", "three");
                         default:
                             return null;
                     }
@@ -46,16 +46,15 @@ public class ColumnSet_MapArraysTest {
     }
 
     @Test
-    public void array_WithNulls() {
+    public void list_WithNulls() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y", 3, "z")
-                .cols("b", "c").mapArrays($int("a").mapVal(i -> {
-
+                .cols("b", "c").explode($int("a").mapVal(i -> {
                     switch (i) {
                         case 1:
-                            return new String[]{"one"};
+                            return List.of("one");
                         case 3:
-                            return new String[]{"one", "two", "three"};
+                            return List.of("one", "two", "three");
                         default:
                             return null;
                     }
@@ -69,17 +68,17 @@ public class ColumnSet_MapArraysTest {
     }
 
     @Test
-    public void array_DynamicSize() {
+    public void list_DynamicSize() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y", 3, "z")
-                .cols().mapArrays($int("a").mapVal(i -> {
+                .cols().explode($int("a").mapVal(i -> {
                     switch (i) {
                         case 1:
-                            return new String[]{"one"};
+                            return List.of("one");
                         case 2:
-                            return new String[]{"one", "two"};
+                            return List.of("one", "two");
                         case 3:
-                            return new String[]{"one", "two", "three"};
+                            return List.of("one", "two", "three");
                         default:
                             return null;
                     }
