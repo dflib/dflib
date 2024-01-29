@@ -1,7 +1,6 @@
 package org.dflib.slice;
 
 import org.dflib.BooleanSeries;
-import org.dflib.IntSeries;
 import org.dflib.Series;
 
 /**
@@ -22,12 +21,12 @@ public class EmptyRowSetMerger extends RowSetMerger {
     }
 
     @Override
-    public RowSetMerger explodeRows(int rsLen, IntSeries rsStretchCounts) {
+    public RowSetMerger expandCols(ColumnExpander expander) {
         return this;
     }
 
     @Override
-    public RowSetMerger stretchRows(int rsLen, IntSeries rsStretchCounts) {
+    public RowSetMerger stretchCols(ColumnExpander expander) {
         return this;
     }
 }

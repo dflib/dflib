@@ -91,6 +91,20 @@ public interface RowSet {
     DataFrame selectAs(Map<String, String> oldToNewNames);
 
     /**
+     * For the specified column, expands and selects its Iterable or array objects, creating new rows for each
+     * collection element. All other columns in the newly produced rows will be populated with values of the source
+     * rows.
+     */
+    DataFrame selectExpand(String columnName);
+
+    /**
+     * For the specified column, expands and selects its Iterable or array objects, creating new rows for each
+     * collection element. All other columns in the newly produced rows will be populated with values of the source
+     * rows.
+     */
+    DataFrame selectExpand(int columnPos);
+
+    /**
      * Returns a BooleanSeries indicating whether each source DataFrame position is included in the RowSet. Can be
      * utilized as a reusable "selector" of RowSets from other DataFrames.
      */

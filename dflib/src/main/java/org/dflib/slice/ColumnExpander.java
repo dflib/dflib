@@ -6,6 +6,7 @@ import org.dflib.builder.ValueAccum;
 import org.dflib.builder.IntAccum;
 import org.dflib.builder.ObjectAccum;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 class ColumnExpander {
@@ -24,6 +25,26 @@ class ColumnExpander {
 
     public IntSeries getStretchCounts() {
         return stretchCounts;
+    }
+
+    public int[] getStretchIndex() {
+
+        int shrunkLen = stretchCounts.size();
+        int stretchLen = expanded.size();
+
+        int[] stretchIndex = new int[stretchLen];
+
+        for (int i = 0, si = 0; i < shrunkLen; i++) {
+            int stretchBy = stretchCounts.getInt(i);
+            if (stretchBy > 1) {
+                Arrays.fill(stretchIndex, si, si + stretchBy, i);
+                si += stretchBy;
+            } else {
+                stretchIndex[si++] = i;
+            }
+        }
+
+        return stretchIndex;
     }
 
     // TODO: slow.. we check the type of each element. Disallow heterogeneous columns, and set the algorithm

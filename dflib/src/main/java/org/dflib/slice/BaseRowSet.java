@@ -43,16 +43,15 @@ public abstract class BaseRowSet implements RowSet {
     public DataFrame expand(int columnPos) {
 
         ColumnExpander expander = ColumnExpander.expand(doSelect(sourceColumns[columnPos]));
-        int rsLen = (int) expander.getStretchCounts().sum();
 
         RowSetMerger merger = merger();
-        RowSetMerger explodeMerger = merger.explodeRows(rsLen, expander.getStretchCounts());
-        RowSetMerger stretchMerger = merger.stretchRows(rsLen, expander.getStretchCounts());
+        RowSetMerger expandMerger = merger.expandCols(expander);
+        RowSetMerger stretchMerger = merger.stretchCols(expander);
 
         int w = source.width();
         Series[] explodedColumns = new Series[w];
         for (int i = 0; i < w; i++) {
-            RowSetMerger m = i == columnPos ? explodeMerger : stretchMerger;
+            RowSetMerger m = i == columnPos ? expandMerger : stretchMerger;
             explodedColumns[i] = m.merge(source.getColumn(i), expander.getExpanded());
         }
 
@@ -232,6 +231,29 @@ public abstract class BaseRowSet implements RowSet {
         }
 
         return selectByColumn((i, rowsAsDf) -> new RowMappedSeries<>(rowsAsDf, mappers[i]));
+    }
+
+    @Override
+    public DataFrame selectExpand(String columnName) {
+        return selectExpand(sourceColumnsIndex.position(columnName));
+    }
+
+    @Override
+    public DataFrame selectExpand(int columnPos) {
+
+        Series<?>[] rowSetCols = doSelect();
+        ColumnExpander expander = ColumnExpander.expand(rowSetCols[columnPos]);
+        int[] stretchIndex = expander.getStretchIndex();
+
+        int w = source.width();
+        Series[] explodedColumns = new Series[w];
+        for (int i = 0; i < w; i++) {
+            explodedColumns[i] = i == columnPos
+                    ? expander.getExpanded()
+                    : rowSetCols[i].select(stretchIndex);
+        }
+
+        return DataFrame.byColumn(sourceColumnsIndex).of(explodedColumns);
     }
 
     protected DataFrame mapByColumn(IntObjectFunction2<DataFrame, Series<?>> columnMaker) {

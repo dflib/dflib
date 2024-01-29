@@ -68,7 +68,9 @@ class DefaultRowSetMerger extends RowSetMerger {
     }
 
     @Override
-    public RowSetMerger explodeRows(int rsLen, IntSeries rsStretchCounts) {
+    public RowSetMerger expandCols(ColumnExpander expander) {
+        IntSeries rsStretchCounts = expander.getStretchCounts();
+        int rsLen = expander.getExpanded().size();
 
         int ch = mergeIndex.length;
         int nn = mergeIndex.length - rsStretchCounts.size() + rsLen;
@@ -96,7 +98,10 @@ class DefaultRowSetMerger extends RowSetMerger {
     }
 
     @Override
-    public RowSetMerger stretchRows(int rsLen, IntSeries rsStretchCounts) {
+    public RowSetMerger stretchCols(ColumnExpander expander) {
+
+        IntSeries rsStretchCounts = expander.getStretchCounts();
+        int rsLen = expander.getExpanded().size();
 
         int ch = mergeIndex.length;
         int nn = mergeIndex.length - rsStretchCounts.size() + rsLen;
@@ -108,7 +113,7 @@ class DefaultRowSetMerger extends RowSetMerger {
 
             if (mv < 0) {
 
-                // unlike "explode", the returned index here will ignore the row set Series, and will fill
+                // unlike "expand", the returned index here will ignore the row set Series, and will fill
                 // everything from the source, thus "stretching" values to fill exploded ranges
 
                 int stretchBy = rsStretchCounts.getInt(rsi++);

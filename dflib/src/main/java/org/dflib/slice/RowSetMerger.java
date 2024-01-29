@@ -76,12 +76,8 @@ public abstract class RowSetMerger {
      */
     public abstract RowSetMerger removeUnmatchedRows(BooleanSeries rsCondition);
 
-    // rsLen == rsStretchCounts.sum(), still passing it explicitly, so that it can be calculated once and shared
-    // for "explode" and "stretch" indices
-    public abstract RowSetMerger explodeRows(int rsLen, IntSeries rsStretchCounts);
+    public abstract RowSetMerger expandCols(ColumnExpander expander);
 
-    // rsLen == rsStretchCounts.sum(), still passing it explicitly, so that it can be calculated once and shared
-    // for "explode" and "stretch" indices
-    public abstract RowSetMerger stretchRows(int rsLen, IntSeries rsStretchCounts);
+    public abstract RowSetMerger stretchCols(ColumnExpander expander);
 
 }

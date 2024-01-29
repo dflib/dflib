@@ -1,7 +1,6 @@
 package org.dflib.slice;
 
 import org.dflib.BooleanSeries;
-import org.dflib.IntSeries;
 import org.dflib.Series;
 import org.dflib.range.Range;
 import org.dflib.series.IntSequenceSeries;
@@ -61,13 +60,13 @@ class RangeRowSetMerger extends RowSetMerger {
     }
 
     @Override
-    public RowSetMerger explodeRows(int rsLen, IntSeries rsStretchCounts) {
-        return delegate().explodeRows(rsLen, rsStretchCounts);
+    public RowSetMerger expandCols(ColumnExpander expander) {
+        return delegate().expandCols(expander);
     }
 
     @Override
-    public RowSetMerger stretchRows(int rsLen, IntSeries rsStretchCounts) {
-        return delegate().stretchRows(rsLen, rsStretchCounts);
+    public RowSetMerger stretchCols(ColumnExpander expander) {
+        return delegate().stretchCols(expander);
     }
 
     private RowSetMerger delegate() {

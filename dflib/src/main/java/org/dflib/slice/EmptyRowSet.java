@@ -184,6 +184,23 @@ public class EmptyRowSet implements RowSet {
     }
 
     @Override
+    public DataFrame selectExpand(int columnPos) {
+
+        // validate the argument, even those the operation does nothing
+        source.getColumnsIndex().getLabel(columnPos);
+
+        return DataFrame.empty(source.getColumnsIndex());
+    }
+
+    @Override
+    public DataFrame selectExpand(String columnName) {
+        // validate the argument, even those the operation does nothing
+        source.getColumnsIndex().position(columnName);
+
+        return DataFrame.empty(source.getColumnsIndex());
+    }
+
+    @Override
     public BooleanSeries locate() {
         return Series.ofBool();
     }

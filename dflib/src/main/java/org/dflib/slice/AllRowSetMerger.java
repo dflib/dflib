@@ -32,7 +32,10 @@ class AllRowSetMerger extends RowSetMerger {
     }
 
     @Override
-    public RowSetMerger explodeRows(int rsLen, IntSeries rsStretchCounts) {
+    public RowSetMerger expandCols(ColumnExpander expander) {
+
+        IntSeries rsStretchCounts = expander.getStretchCounts();
+        int rsLen = expander.getExpanded().size();
 
         int ch = rsStretchCounts.size();
 
@@ -53,7 +56,10 @@ class AllRowSetMerger extends RowSetMerger {
     }
 
     @Override
-    public RowSetMerger stretchRows(int rsLen, IntSeries rsStretchCounts) {
+    public RowSetMerger stretchCols(ColumnExpander expander) {
+
+        IntSeries rsStretchCounts = expander.getStretchCounts();
+        int rsLen = expander.getExpanded().size();
 
         int ch = rsStretchCounts.size();
 
