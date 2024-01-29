@@ -10,7 +10,6 @@ import org.dflib.RowSet;
 import org.dflib.RowToValueMapper;
 import org.dflib.Series;
 import org.dflib.Sorter;
-import org.dflib.explode.Exploder;
 import org.dflib.f.IntObjectFunction2;
 import org.dflib.row.ColumnsRowProxy;
 import org.dflib.row.MultiArrayRowBuilder;
@@ -43,18 +42,18 @@ public abstract class BaseRowSet implements RowSet {
     @Override
     public DataFrame expand(int columnPos) {
 
-        Exploder exploder = Exploder.explode(doSelect(sourceColumns[columnPos]));
-        int rsLen = (int) exploder.getStretchCounts().sum();
+        ColumnExpander expander = ColumnExpander.expand(doSelect(sourceColumns[columnPos]));
+        int rsLen = (int) expander.getStretchCounts().sum();
 
         RowSetMerger merger = merger();
-        RowSetMerger explodeMerger = merger.explodeRows(rsLen, exploder.getStretchCounts());
-        RowSetMerger stretchMerger = merger.stretchRows(rsLen, exploder.getStretchCounts());
+        RowSetMerger explodeMerger = merger.explodeRows(rsLen, expander.getStretchCounts());
+        RowSetMerger stretchMerger = merger.stretchRows(rsLen, expander.getStretchCounts());
 
         int w = source.width();
         Series[] explodedColumns = new Series[w];
         for (int i = 0; i < w; i++) {
             RowSetMerger m = i == columnPos ? explodeMerger : stretchMerger;
-            explodedColumns[i] = m.merge(source.getColumn(i), exploder.getExploded());
+            explodedColumns[i] = m.merge(source.getColumn(i), expander.getExpanded());
         }
 
         return DataFrame.byColumn(sourceColumnsIndex).of(explodedColumns);

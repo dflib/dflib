@@ -1,6 +1,5 @@
-package org.dflib.explode;
+package org.dflib.slice;
 
-import org.dflib.DataFrame;
 import org.dflib.IntSeries;
 import org.dflib.Series;
 import org.dflib.builder.ValueAccum;
@@ -9,28 +8,27 @@ import org.dflib.builder.ObjectAccum;
 
 import java.util.Iterator;
 
-/**
- * @since 1.0.0-M19
- */
-public class Exploder {
+class ColumnExpander {
 
-    private final Series<?> exploded;
+    private final Series<?> expanded;
     private final IntSeries stretchCounts;
 
-    private Exploder(Series<?> exploded, IntSeries stretchCounts) {
-        this.exploded = exploded;
+    private ColumnExpander(Series<?> expanded, IntSeries stretchCounts) {
+        this.expanded = expanded;
         this.stretchCounts = stretchCounts;
     }
 
-    public Series<?> getExploded() {
-        return exploded;
+    public Series<?> getExpanded() {
+        return expanded;
     }
 
     public IntSeries getStretchCounts() {
         return stretchCounts;
     }
 
-    public static Exploder explode(Series<?> s) {
+    // TODO: slow.. we check the type of each element. Disallow heterogeneous columns, and set the algorithm
+    //   for the entire Series?
+    public static ColumnExpander expand(Series<?> s) {
 
         int h = s.size();
         ValueAccum<Object> explodedAccum = new ObjectAccum<>(h);
@@ -53,7 +51,7 @@ public class Exploder {
             }
         }
 
-        return new Exploder(explodedAccum.toSeries(), indexAccum.toSeries());
+        return new ColumnExpander(explodedAccum.toSeries(), indexAccum.toSeries());
     }
 
     private static void explodeIterable(
