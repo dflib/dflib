@@ -1423,6 +1423,16 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
+     * A shorter-named equivalent of {@link #innerJoin(DataFrame)}
+     *
+     * @return an inner join builder
+     * @since 1.0.0-M19
+     */
+    default Join join(DataFrame rightFrame) {
+        return innerJoin(rightFrame);
+    }
+
+    /**
      * @return an inner join builder
      * @since 1.0.0-M19
      */

@@ -98,6 +98,31 @@ public class DataFrame_Join_HashTest {
     }
 
     @Test
+    public void innerImplicit() {
+
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
+                1, "x",
+                2, "y",
+                4, "z");
+
+        DataFrame df2 = DataFrame.foldByRow("c", "d").of(
+                "a", 2,
+                "b", 2,
+                "x", 4,
+                "c", 3);
+
+        DataFrame df = df1.join(df2)
+                .on(Hasher.of(0), Hasher.of(1))
+                .select();
+
+        new DataFrameAsserts(df, "a", "b", "c", "d")
+                .expectHeight(3)
+                .expectRow(0, 2, "y", "a", 2)
+                .expectRow(1, 2, "y", "b", 2)
+                .expectRow(2, 4, "z", "x", 4);
+    }
+
+    @Test
     public void select_full_IntColumn() {
 
         DataFrame df1 = DataFrame.foldByRow("a", "b").of(
