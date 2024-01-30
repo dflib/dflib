@@ -1,4 +1,4 @@
-## Release 1.0.0-M1
+## Release 1.0.0-M19
 
 * #78 DataFrame.rows(..) : transformation over a subset of rows
 * #210 RowProxy: support for primitives and simpler casting
