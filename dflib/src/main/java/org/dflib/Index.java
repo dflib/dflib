@@ -21,7 +21,7 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 /**
- * An "index" of the DataFrame that provides access to column (and in the future potentially row) metadata.
+ * An "index" of the DataFrame that provides access to column names and positions.
  */
 public class Index implements Iterable<String> {
 

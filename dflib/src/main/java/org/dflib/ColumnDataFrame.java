@@ -7,6 +7,7 @@ import org.dflib.row.ColumnsRowProxy;
 import org.dflib.row.RowProxy;
 import org.dflib.sample.Sampler;
 import org.dflib.series.EmptySeries;
+import org.dflib.series.IntSequenceSeries;
 import org.dflib.series.SingleValueSeries;
 import org.dflib.slice.AllRowSet;
 import org.dflib.slice.ConditionalRowSet;
@@ -435,6 +436,12 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public RowSet rows(IntSeries positions) {
         return positions.size() > 0 ? new IndexedRowSet(this, dataColumns, positions) : new EmptyRowSet(this);
+    }
+
+    @Override
+    public RowSet rowsExcept(IntSeries positions) {
+        // TODO: "diff" is likely more expensive vs converting IntSeries to a negated BooleanSeries matching DF height
+        return rows(new IntSequenceSeries(0, height()).diff(positions));
     }
 
     @Override

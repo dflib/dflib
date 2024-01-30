@@ -48,6 +48,27 @@ public class RowSet_Map_ExpTest {
     }
 
     @Test
+    public void rowsExcept_byIndex() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x", "a",
+                        2, "y", "b",
+                        -1, "m", "n")
+                .rowsExcept(Series.ofInt(0, 2))
+                .map(
+                        Exp.$int(0).mul(3),
+                        Exp.concat(Exp.$str(1), Exp.$str(2)),
+                        Exp.$str(2)
+                );
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(3)
+                .expectRow(0, 1, "x", "a")
+                .expectRow(1, 6, "yb", "b")
+                .expectRow(2, -1, "m", "n");
+    }
+
+    @Test
     public void byIndex_Duplicate() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(

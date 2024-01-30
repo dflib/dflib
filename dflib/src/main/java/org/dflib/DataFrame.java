@@ -1906,7 +1906,19 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @since 1.0.0-M19
      */
+    default RowSet rowsExcept(int... positions) {
+        return rowsExcept(Series.ofInt(positions));
+    }
+
+    /**
+     * @since 1.0.0-M19
+     */
     RowSet rows(IntSeries positions);
+
+    /**
+     * @since 1.0.0-M19
+     */
+    RowSet rowsExcept(IntSeries positions);
 
     /**
      * @since 1.0.0-M19
@@ -1924,6 +1936,13 @@ public interface DataFrame extends Iterable<RowProxy> {
         return index.size() == height()
                 ? rows()
                 : rows(index);
+    }
+
+    /**
+     * @since 1.0.0-M19
+     */
+    default RowSet rowsExcept(RowPredicate condition) {
+        return rows(condition.negate());
     }
 
     /**
