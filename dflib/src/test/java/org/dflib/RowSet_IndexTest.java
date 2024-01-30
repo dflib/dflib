@@ -71,4 +71,31 @@ public class RowSet_IndexTest {
 
         new IntSeriesAsserts(index).expectData(0, 2);
     }
+
+    @Test
+    public void byConditionExp() {
+        IntSeries index = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x", "a",
+                        2, "y", "b",
+                        -1, "m", "n")
+                .cols(0).compactInt(0)
+                .rows(r -> Math.abs(r.getInt(0)) == 1).index();
+
+        new IntSeriesAsserts(index).expectData(0, 2);
+    }
+
+    @Test
+    public void byConditionExp_NoMatches() {
+        IntSeries index = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x", "a",
+                        2, "y", "b",
+                        -1, "m", "n")
+                .cols(0).compactInt(0)
+                .rows(r -> false).index();
+
+        new IntSeriesAsserts(index).expectData();
+    }
+
 }

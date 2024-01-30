@@ -11,6 +11,7 @@ import org.dflib.RowSet;
 import org.dflib.RowToValueMapper;
 import org.dflib.Series;
 import org.dflib.Sorter;
+import org.dflib.series.FalseSeries;
 
 import java.util.Map;
 import java.util.function.Predicate;
@@ -224,7 +225,7 @@ public class EmptyRowSet implements RowSet {
 
     @Override
     public BooleanSeries locate() {
-        return Series.ofBool();
+        return new FalseSeries(source.height());
     }
 
     @Override

@@ -6,6 +6,14 @@ import org.junit.jupiter.api.Test;
 public class RowSet_LocateTest {
 
     @Test
+    public void rows_emptyAll() {
+        BooleanSeries index = DataFrame.empty("a", "b", "c")
+                .rows().locate();
+
+        new BoolSeriesAsserts(index).expectData();
+    }
+
+    @Test
     public void all() {
         BooleanSeries index = DataFrame.foldByRow("a", "b", "c")
                 .of(
@@ -70,4 +78,44 @@ public class RowSet_LocateTest {
 
         new BoolSeriesAsserts(index).expectData(true, false, true);
     }
+
+    @Test
+    public void rows_byCondition_NoMatches() {
+        BooleanSeries index = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x", "a",
+                        2, "y", "b",
+                        -1, "m", "n")
+                .rows(Series.ofBool(false, false, false))
+                .locate();
+
+        new BoolSeriesAsserts(index).expectData(false, false, false);
+    }
+
+    @Test
+    public void byConditionExp() {
+        BooleanSeries index = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x", "a",
+                        2, "y", "b",
+                        -1, "m", "n")
+                .cols(0).compactInt(0)
+                .rows(r -> Math.abs(r.getInt(0)) == 1).locate();
+
+        new BoolSeriesAsserts(index).expectData(true, false, true);
+    }
+
+    @Test
+    public void byConditionExp_NoMatches() {
+        BooleanSeries index = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x", "a",
+                        2, "y", "b",
+                        -1, "m", "n")
+                .cols(0).compactInt(0)
+                .rows(r -> false).locate();
+
+        new BoolSeriesAsserts(index).expectData(false, false, false);
+    }
+
 }
