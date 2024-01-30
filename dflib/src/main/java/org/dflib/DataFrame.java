@@ -1948,6 +1948,13 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @since 1.0.0-M19
      */
+    default RowSet rowsExcept(Condition condition) {
+        return rows(condition.not());
+    }
+
+    /**
+     * @since 1.0.0-M19
+     */
     RowSet rowsRange(int fromInclusive, int toExclusive);
 
     /**

@@ -205,6 +205,26 @@ public class RowSet_Select_ExpTest {
     }
 
     @Test
+    public void rowsExcept_byRowPredicate() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x", "a",
+                        2, "y", "b",
+                        -1, "m", "n")
+                .cols(0).compactInt(0)
+                .rowsExcept(r -> r.getInt(0) % 2 != 0)
+                .select(
+                        Exp.$int(0).mul(3),
+                        Exp.concat(Exp.$str(1), Exp.$str(2)),
+                        Exp.$str(2)
+                );
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(1)
+                .expectRow(0, 6, "yb", "b");
+    }
+
+    @Test
     public void byRowPredicate_All() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(
