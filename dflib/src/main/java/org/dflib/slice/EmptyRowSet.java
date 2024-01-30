@@ -98,7 +98,7 @@ public class EmptyRowSet implements RowSet {
     @Override
     public DataFrame expand(String columnName) {
 
-        // validate the argument, even those the operation does nothing
+        // validate the argument, even though the operation does nothing
         source.getColumnsIndex().position(columnName);
 
         return source;
@@ -107,7 +107,7 @@ public class EmptyRowSet implements RowSet {
     @Override
     public DataFrame expand(int columnPos) {
 
-        // validate the argument, even those the operation does nothing
+        // validate the argument, even though the operation does nothing
         source.getColumnsIndex().getLabel(columnPos);
 
         return source;
@@ -186,7 +186,7 @@ public class EmptyRowSet implements RowSet {
     @Override
     public DataFrame selectExpand(int columnPos) {
 
-        // validate the argument, even those the operation does nothing
+        // validate the argument, even though the operation does nothing
         source.getColumnsIndex().getLabel(columnPos);
 
         return DataFrame.empty(source.getColumnsIndex());
@@ -194,10 +194,32 @@ public class EmptyRowSet implements RowSet {
 
     @Override
     public DataFrame selectExpand(String columnName) {
-        // validate the argument, even those the operation does nothing
+        // validate the argument, even though the operation does nothing
         source.getColumnsIndex().position(columnName);
 
         return DataFrame.empty(source.getColumnsIndex());
+    }
+
+    @Override
+    public DataFrame selectUnique(String... uniqueKeyColumns) {
+        // validate the argument, even though the operation does nothing
+        source.getColumnsIndex().positions(uniqueKeyColumns);
+        return DataFrame.empty(source.getColumnsIndex());
+    }
+
+    @Override
+    public DataFrame selectUnique(int... uniqueKeyColumns) {
+        // validate the argument, even though the operation does nothing
+        for (int p : uniqueKeyColumns) {
+            source.getColumnsIndex().getLabel(p);
+        }
+
+        return DataFrame.empty(source.getColumnsIndex());
+    }
+
+    @Override
+    public DataFrame selectUnique() {
+        return selectUnique(source.getColumnsIndex().getLabels());
     }
 
     @Override

@@ -256,6 +256,43 @@ public abstract class BaseRowSet implements RowSet {
         return DataFrame.byColumn(sourceColumnsIndex).of(explodedColumns);
     }
 
+    @Override
+    public DataFrame selectUnique() {
+        return selectUnique(source.getColumnsIndex().getLabels());
+    }
+
+    @Override
+    public DataFrame selectUnique(String... uniqueKeyColumns) {
+        return selectUnique(sourceColumnsIndex.positions(uniqueKeyColumns));
+    }
+
+    @Override
+    public DataFrame selectUnique(int... uniqueKeyColumns) {
+        if (uniqueKeyColumns.length == 0) {
+            throw new IllegalArgumentException("No 'columnPositionsToCompare' for uniqueness checks");
+        }
+
+        int w = sourceColumns.length;
+        if (w == 0) {
+            return source;
+        }
+
+        if (sourceColumns[0].size() == 0) {
+            return source;
+        }
+
+        DataFrame rowsAsDf = select();
+        BooleanSeries uniqueIndex = rowsAsDf
+                .over().partitioned(uniqueKeyColumns).rowNumber()
+                .eq(new IntSingleValueSeries(1, rowsAsDf.height()));
+
+        if (uniqueIndex.isTrue()) {
+            return rowsAsDf;
+        }
+
+        return rowsAsDf.rows(uniqueIndex).select();
+    }
+
     protected DataFrame mapByColumn(IntObjectFunction2<DataFrame, Series<?>> columnMaker) {
 
         if (sourceColumns.length == 0) {

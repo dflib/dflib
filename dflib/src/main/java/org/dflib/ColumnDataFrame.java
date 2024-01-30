@@ -429,7 +429,7 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     public RowSet rows() {
-        return new AllRowSet(this, dataColumns);
+        return height() > 0 ? new AllRowSet(this, dataColumns) : new EmptyRowSet(this);
     }
 
     @Override

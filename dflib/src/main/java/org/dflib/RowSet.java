@@ -104,6 +104,12 @@ public interface RowSet {
      */
     DataFrame selectExpand(int columnPos);
 
+    DataFrame selectUnique();
+
+    DataFrame selectUnique(String... uniqueKeyColumns);
+
+    DataFrame selectUnique(int... uniqueKeyColumns);
+
     /**
      * Returns a BooleanSeries indicating whether each source DataFrame position is included in the RowSet. Can be
      * utilized as a reusable "selector" of RowSets from other DataFrames.
