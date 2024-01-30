@@ -91,16 +91,16 @@ public interface RowSet {
     DataFrame selectAs(Map<String, String> oldToNewNames);
 
     /**
-     * For the specified column, expands and selects its Iterable or array objects, creating new rows for each
-     * collection element. All other columns in the newly produced rows will be populated with values of the source
-     * rows.
+     * Returns a DataFrame with RowSet rows "expanded" based on a column with array or Iterable objects. New rows are
+     * created for each collection element in the specified "expansion" column. All other columns are populated with
+     * values of the "unexpanded" rows.
      */
     DataFrame selectExpand(String columnName);
 
     /**
-     * For the specified column, expands and selects its Iterable or array objects, creating new rows for each
-     * collection element. All other columns in the newly produced rows will be populated with values of the source
-     * rows.
+     * Returns a DataFrame with RowSet rows "expanded" based on a column with array or Iterable objects. New rows are
+     * created for each collection element in the specified "expansion" column. All other columns are populated with
+     * values of the "unexpanded" rows.
      */
     DataFrame selectExpand(int columnPos);
 
