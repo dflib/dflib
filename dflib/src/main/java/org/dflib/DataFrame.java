@@ -1855,6 +1855,15 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
+     * Creates a ColumnSet with columns from this DataFrame that do not match the specified condition.
+     *
+     * @since 1.0.0-M19
+     */
+    default ColumnSet colsExcept(Predicate<String> condition) {
+        return cols(condition.negate());
+    }
+
+    /**
      * Creates a ColumnSet for the provided column positions. Columns may or may not already exist in the DataFrame.
      * Non-existent columns will be added to the result of the column set operation, while the ones already in the
      * DataFrame will be replaced by columns calculated by the operation.
