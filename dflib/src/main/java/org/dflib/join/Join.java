@@ -10,8 +10,10 @@ import org.dflib.Series;
 import org.dflib.builder.ObjectAccum;
 import org.dflib.series.IndexedSeries;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 /**
  * Join builder
@@ -29,6 +31,9 @@ public class Join {
     private Hasher rightHasher;
     private JoinPredicate predicate;
     private String indicatorColumn;
+
+    private boolean userColumns;
+    private UnaryOperator<JoinIndex> colSelector = UnaryOperator.identity();
 
     public Join(JoinType type, DataFrame leftFrame, DataFrame rightFrame) {
         this.type = type;
@@ -86,8 +91,44 @@ public class Join {
         return this;
     }
 
+    public Join cols(int... columns) {
+        this.colSelector = i -> i.select(columns);
+        this.userColumns = true;
+        return this;
+    }
+
+    public Join cols(String... columns) {
+        this.colSelector = i -> i.select(columns);
+        this.userColumns = true;
+        return this;
+    }
+
+    public Join cols(Predicate<String> labelCondition) {
+        this.colSelector = i -> i.select(labelCondition);
+        this.userColumns = true;
+        return this;
+    }
+
+    public Join colsExcept(int... columns) {
+        this.colSelector = i -> i.selectExcept(columns);
+        this.userColumns = true;
+        return this;
+    }
+
+    public Join colsExcept(String... columns) {
+        this.colSelector = i -> i.selectExcept(columns);
+        this.userColumns = true;
+        return this;
+    }
+
+    public Join colsExcept(Predicate<String> labelCondition) {
+        this.colSelector = i -> i.selectExcept(labelCondition);
+        this.userColumns = true;
+        return this;
+    }
+
     public DataFrame select() {
-        JoinIndex index = createJoinIndex();
+        JoinIndex index = colSelector.apply(defaultJoinIndex());
         IntSeries[] selectors = rowSelectors();
 
         return new ColumnDataFrame(null,
@@ -95,72 +136,66 @@ public class Join {
                 merge(selectors[0], selectors[1], index.getPositions()));
     }
 
-    public DataFrame select(int... positions) {
-        JoinIndex index = createJoinIndex().select(positions);
+    public DataFrame selectAs(UnaryOperator<String> renamer) {
+        JoinIndex index = colSelector.apply(defaultJoinIndex());
         IntSeries[] selectors = rowSelectors();
 
         return new ColumnDataFrame(null,
-                index.getIndex(),
+                index.getIndex().rename(renamer),
                 merge(selectors[0], selectors[1], index.getPositions()));
     }
 
-    public DataFrame select(String... columns) {
-        JoinIndex index = createJoinIndex().select(columns);
+    public DataFrame selectAs(String... newColumnNames) {
+        JoinIndex index = colSelector.apply(defaultJoinIndex());
         IntSeries[] selectors = rowSelectors();
 
         return new ColumnDataFrame(null,
-                index.getIndex(),
+                index.getIndex().rename(newColumnNames),
                 merge(selectors[0], selectors[1], index.getPositions()));
     }
 
-    public DataFrame selectExcept(Predicate<String> labelCondition) {
-        // due to aliases "selectExcept(c)" is not the same as "select(!c)", so need to process it explicitly
-
-        JoinIndex index = createJoinIndex().selectExcept(labelCondition);
+    public DataFrame selectAs(Map<String, String> oldToNewNames) {
+        JoinIndex index = colSelector.apply(defaultJoinIndex());
         IntSeries[] selectors = rowSelectors();
 
         return new ColumnDataFrame(null,
-                index.getIndex(),
-                merge(selectors[0], selectors[1], index.getPositions()));
-    }
-
-    public DataFrame selectExcept(int... columns) {
-        JoinIndex index = createJoinIndex().selectExcept(columns);
-        IntSeries[] selectors = rowSelectors();
-
-        return new ColumnDataFrame(null,
-                index.getIndex(),
-                merge(selectors[0], selectors[1], index.getPositions()));
-    }
-
-    public DataFrame selectExcept(String... columns) {
-        JoinIndex index = createJoinIndex().selectExcept(columns);
-        IntSeries[] selectors = rowSelectors();
-
-        return new ColumnDataFrame(null,
-                index.getIndex(),
-                merge(selectors[0], selectors[1], index.getPositions()));
-    }
-
-    public DataFrame select(Predicate<String> labelCondition) {
-        JoinIndex index = createJoinIndex().select(labelCondition);
-        IntSeries[] selectors = rowSelectors();
-
-        return new ColumnDataFrame(null,
-                index.getIndex(),
+                index.getIndex().rename(oldToNewNames),
                 merge(selectors[0], selectors[1], index.getPositions()));
     }
 
     public DataFrame select(Exp<?>... exps) {
-        JoinIndex index = createJoinIndex().selectAllAliases();
+
+        JoinIndex defaultIndex = defaultJoinIndex();
+        JoinIndex resultIndex = colSelector.apply(defaultIndex);
+
+        // if there was no explicit column set defined, exps can be of any width. If there was a selection, they must match
+        if (userColumns) {
+            int w = exps.length;
+            if (w != resultIndex.size()) {
+                throw new IllegalArgumentException(
+                        "Can't perform 'select': Exp[] size is different from the ColumnSet size: " + w + " vs. " + resultIndex.size());
+            }
+        }
+
+        JoinIndex allAliasesIndex = defaultIndex.selectAllAliases();
         IntSeries[] selectors = rowSelectors();
 
-        return new ColumnDataFrame(null,
-                index.getIndex(),
-                merge(selectors[0], selectors[1], index.getPositions())).cols().select(exps);
+        // select the full DataFrame first, and then apply expressions, as exps can reference columns in the join that are not
+        // a part of the result
+        DataFrame allAliasesDf = new ColumnDataFrame(
+                null,
+                allAliasesIndex.getIndex(),
+                merge(selectors[0], selectors[1], allAliasesIndex.getPositions()));
+
+        return userColumns
+                ? allAliasesDf.cols(resultIndex.getPositions()).select(exps)
+
+                // important to use no-arg "cols()" if no user columns were specified. Any other form of "cols()"
+                // would explode due to "exps" and cols size mismatch
+                : allAliasesDf.cols().select(exps);
     }
 
-    private JoinIndex createJoinIndex() {
+    private JoinIndex defaultJoinIndex() {
         return JoinIndex.of(
                 leftFrame.getName(),
                 rightFrame.getName(),
@@ -207,7 +242,7 @@ public class Join {
 
         return data;
     }
-    
+
     private Series<JoinIndicator> buildIndicator(IntSeries leftIndex, IntSeries rightIndex) {
 
         int h = leftIndex.size();

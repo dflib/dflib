@@ -91,7 +91,8 @@ public class DataFrameHashJoin {
         return df1
                 .innerJoin(df2)
                 .on("c0", "c2")
-                .select("c0", "c1_", "c2")
+                .cols("c0", "c1_", "c2")
+                .select()
                 .materialize()
                 .iterator();
     }

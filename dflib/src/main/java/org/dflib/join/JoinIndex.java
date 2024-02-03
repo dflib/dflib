@@ -64,6 +64,10 @@ class JoinIndex {
         this.columns = columns;
     }
 
+    public int size() {
+        return columns.length;
+    }
+
     public Index getIndex() {
         int len = columns.length;
         String[] labels = new String[len];

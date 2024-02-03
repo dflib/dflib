@@ -22,7 +22,8 @@ public class DataFrame_Join_SelectIntsTest {
 
         DataFrame df = df1.innerJoin(df2)
                 .on(Hasher.of(0), Hasher.of(1))
-                .select(0, 1, 2, 3);
+                .cols(0, 1, 2, 3)
+                .select();
 
         new DataFrameAsserts(df, "a", "b", "c", "d")
                 .expectHeight(3)
@@ -47,7 +48,8 @@ public class DataFrame_Join_SelectIntsTest {
 
         DataFrame df = df1.innerJoin(df2)
                 .on(Hasher.of(0), Hasher.of(1))
-                .select(0, 2);
+                .cols(0, 2)
+                .select();
 
         new DataFrameAsserts(df, "a", "c")
                 .expectHeight(3)
@@ -72,7 +74,8 @@ public class DataFrame_Join_SelectIntsTest {
 
         DataFrame df = df1.innerJoin(df2)
                 .on(Hasher.of(0), Hasher.of(1))
-                .selectExcept(0, 2);
+                .colsExcept(0, 2)
+                .select();
 
         new DataFrameAsserts(df, "b", "d")
                 .expectHeight(3)
@@ -96,7 +99,8 @@ public class DataFrame_Join_SelectIntsTest {
 
         DataFrame df = df1.innerJoin(df2.as("df2"))
                 .on(0)
-                .select(0, 3);
+                .cols(0, 3)
+                .select();
 
         new DataFrameAsserts(df, "a", "df2.b")
                 .expectHeight(2)
@@ -118,7 +122,8 @@ public class DataFrame_Join_SelectIntsTest {
 
         DataFrame df = df1.as("df1").innerJoin(df2)
                 .on(0)
-                .select(0, 3);
+                .cols(0, 3)
+                .select();
 
         new DataFrameAsserts(df, "df1.a", "b_")
                 .expectHeight(2)
@@ -140,12 +145,37 @@ public class DataFrame_Join_SelectIntsTest {
 
         DataFrame df = df1.as("df1").innerJoin(df2.as("df2"))
                 .on(0)
-                .select(0, 3);
+                .cols(0, 3)
+                .select();
 
         new DataFrameAsserts(df, "df1.a", "df2.b")
                 .expectHeight(2)
                 .expectRow(0, 2, "a")
                 .expectRow(1, 2, "b");
+    }
+
+    @Test
+    public void exceptPositions() {
+
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
+                1, "x",
+                2, "y",
+                4, "z");
+
+        DataFrame df2 = DataFrame.foldByRow("c", "d").of(
+                "a", 2,
+                "x", 4,
+                "c", 3);
+
+        DataFrame df = df1.innerJoin(df2)
+                .on(0, 1)
+                .colsExcept(0, 2)
+                .select();
+
+        new DataFrameAsserts(df, "b", "d")
+                .expectHeight(2)
+                .expectRow(0, "y", 2)
+                .expectRow(1, "z", 4);
     }
 
     @Test
@@ -163,7 +193,8 @@ public class DataFrame_Join_SelectIntsTest {
         DataFrame df = df1.fullJoin(df2)
                 .on(0)
                 .indicatorColumn("ind")
-                .select(0, 4, 3);
+                .cols(0, 4, 3)
+                .select();
 
         new DataFrameAsserts(df, "a", "ind", "d")
                 .expectHeight(4)
