@@ -2,14 +2,16 @@ package org.dflib;
 
 import org.dflib.join.JoinIndicator;
 import org.dflib.unit.DataFrameAsserts;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.dflib.Exp.*;
 
-public class DataFrame_Join_SelectExpTest {
+public class Join_SelectExpTest {
+
 
     @Test
-    public void exp() {
+    public void cols_Implicit_All() {
 
         DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
@@ -18,19 +20,72 @@ public class DataFrame_Join_SelectExpTest {
 
         DataFrame df2 = DataFrame.foldByRow("c", "d").of(
                 "a", 2,
-                "b", 2,
                 "x", 4,
                 "c", 3);
 
         DataFrame df = df1.innerJoin(df2)
-                .on(Hasher.of(0), Hasher.of(1))
+                .on(0, 1)
                 .select($col("a").as("a1"), $int("a").mul(2).as("a2"), concat($str("c"), $str("b")));
 
         new DataFrameAsserts(df, "a1", "a2", "concat(c, b)")
-                .expectHeight(3)
+                .expectHeight(2)
                 .expectRow(0, 2, 4, "ay")
-                .expectRow(1, 2, 4, "by")
-                .expectRow(2, 4, 8, "xz");
+                .expectRow(1, 4, 8, "xz");
+    }
+
+    @Disabled("TODO")
+    @Test
+    public void cols_ByName() {
+
+        DataFrame df1 = DataFrame.foldByRow("a", "b", "c").of(
+                1, "x", "X",
+                2, "y", "Y",
+                4, "z", "Z");
+
+        DataFrame df2 = DataFrame.foldByRow("a", "b", "d").of(
+                "a", 2, 20,
+                "x", 4, 40,
+                "c", 3, 30);
+
+        DataFrame df = df1.join(df2)
+                .on(0, 1)
+                .cols("X", "Y")
+                .select(
+                        concat($str("a_"), $str("b")),
+                        $int("a").add($int("c_")));
+
+        new DataFrameAsserts(df, "X", "Y")
+                .expectHeight(2)
+                .expectRow(0, "ax", 22)
+                .expectRow(2, "xz", 44);
+    }
+
+    @Disabled("TODO")
+    @Test
+    public void cols_ByPos() {
+
+        DataFrame df1 = DataFrame.foldByRow("a", "b", "c").of(
+                1, "x", "X",
+                2, "y", "Y",
+                4, "z", "Z");
+
+        DataFrame df2 = DataFrame.foldByRow("a", "b", "d").of(
+                "a", 2, 20,
+                "x", 4, 40,
+                "c", 3, 30);
+
+        DataFrame df = df1.join(df2)
+                .on(0, 1)
+                // position selection fixes the resulting column names
+                .cols(1, 7)
+                .select(
+                        concat($str("a_"), $str("b")),
+                        $int("a").add($int("c_")));
+
+        new DataFrameAsserts(df, "b", "1")
+                .expectHeight(2)
+                .expectRow(0, "ax", 22)
+                .expectRow(2, "xz", 44);
     }
 
     @Test

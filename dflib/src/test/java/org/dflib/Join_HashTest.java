@@ -4,7 +4,7 @@ import org.dflib.join.JoinIndicator;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
-public class DataFrame_Join_HashTest {
+public class Join_HashTest {
 
     @Test
     public void rightAlias() {

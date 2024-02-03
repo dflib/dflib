@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
 
-public class DataFrame_Join_NestedLoopTest {
+public class Join_NestedLoopTest {
 
     @Test
     public void inner() {
