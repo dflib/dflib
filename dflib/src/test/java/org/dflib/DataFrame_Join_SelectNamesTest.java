@@ -4,6 +4,8 @@ import org.dflib.join.JoinIndicator;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DataFrame_Join_SelectNamesTest {
@@ -18,19 +20,17 @@ public class DataFrame_Join_SelectNamesTest {
 
         DataFrame df2 = DataFrame.foldByRow("c", "d").of(
                 "a", 2,
-                "b", 2,
                 "x", 4,
                 "c", 3);
 
         DataFrame df = df1.innerJoin(df2)
-                .on(Hasher.of(0), Hasher.of(1))
+                .on(0, 1)
                 .select("a", "b", "c", "d");
 
         new DataFrameAsserts(df, "a", "b", "c", "d")
-                .expectHeight(3)
+                .expectHeight(2)
                 .expectRow(0, 2, "y", "a", 2)
-                .expectRow(1, 2, "y", "b", 2)
-                .expectRow(2, 4, "z", "x", 4);
+                .expectRow(1, 4, "z", "x", 4);
     }
 
     @Test
@@ -48,7 +48,7 @@ public class DataFrame_Join_SelectNamesTest {
                 "c", 3);
 
         DataFrame df = df1.innerJoin(df2)
-                .on(Hasher.of(0), Hasher.of(1))
+                .on(0, 1)
                 .select("a", "c");
 
         new DataFrameAsserts(df, "a", "c")
@@ -73,7 +73,7 @@ public class DataFrame_Join_SelectNamesTest {
                 "c", 3);
 
         DataFrame df = df1.innerJoin(df2)
-                .on(Hasher.of(0), Hasher.of(1))
+                .on(0, 1)
                 .select(c -> !c.endsWith("_"));
 
         new DataFrameAsserts(df, "a", "b")
@@ -93,23 +93,92 @@ public class DataFrame_Join_SelectNamesTest {
 
         DataFrame df2 = DataFrame.foldByRow("a", "b").of(
                 "a", 2,
-                "b", 2,
                 "x", 4,
                 "c", 3);
 
         DataFrame df = df1.innerJoin(df2)
-                .on(Hasher.of(0), Hasher.of(1))
+                .on(0, 1)
                 .selectExcept(c -> c.endsWith("_"));
 
         new DataFrameAsserts(df, "a", "b")
-                .expectHeight(3)
+                .expectHeight(2)
                 .expectRow(0, 2, "y")
-                .expectRow(1, 2, "y")
-                .expectRow(2, 4, "z");
+                .expectRow(1, 4, "z");
     }
 
     @Test
-    public void except() {
+    public void exceptPredicate_BothAliases() {
+
+        DataFrame df1 = DataFrame.foldByRow("a", "b", "c").of(
+                1, "x", "n",
+                2, "y", "o",
+                4, "z", "q");
+
+        DataFrame df2 = DataFrame.foldByRow("a", "b", "c").of(
+                "a", 2, 20,
+                "x", 4, 40,
+                "c", 3, 30);
+
+        Set<String> except = Set.of("df1.a", "a_");
+
+        DataFrame df = df1.as("df1").join(df2.as("df2"))
+                .on(0, 1)
+                .selectExcept(s -> except.contains(s));
+
+        new DataFrameAsserts(df, "df1.b", "df1.c", "df2.b", "df2.c")
+                .expectHeight(2)
+                .expectRow(0, "y", "o", 2, 20)
+                .expectRow(1, "z", "q", 4, 40);
+    }
+
+    @Test
+    public void exceptNames() {
+
+        DataFrame df1 = DataFrame.foldByRow("a", "b", "c").of(
+                1, "x", "n",
+                2, "y", "o",
+                4, "z", "q");
+
+        DataFrame df2 = DataFrame.foldByRow("a", "b", "c").of(
+                "a", 2, 20,
+                "x", 4, 40,
+                "c", 3, 30);
+
+        DataFrame df = df1.join(df2)
+                .on(0, 1)
+                .selectExcept("a", "c", "b_");
+
+        new DataFrameAsserts(df, "b", "a_", "c_")
+                .expectHeight(2)
+                .expectRow(0, "y", "a", 20)
+                .expectRow(1, "z", "x", 40);
+    }
+
+    @Test
+    public void exceptNames_BothAliases() {
+
+        DataFrame df1 = DataFrame.foldByRow("a", "b", "c").of(
+                1, "x", "n",
+                2, "y", "o",
+                4, "z", "q");
+
+        DataFrame df2 = DataFrame.foldByRow("a", "b", "c").of(
+                "a", 2, 20,
+                "x", 4, 40,
+                "c", 3, 30);
+
+        DataFrame df = df1.as("df1").join(df2.as("df2"))
+                .on(0, 1)
+                .selectExcept("df1.a", "df2.a", "b", "b_");
+
+        new DataFrameAsserts(df, "df1.c", "df2.c")
+                .expectHeight(2)
+                .expectRow(0, "o", 20)
+                .expectRow(1, "q", 40);
+    }
+
+    @Test
+    public void exceptPositions() {
 
         DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",
@@ -118,19 +187,17 @@ public class DataFrame_Join_SelectNamesTest {
 
         DataFrame df2 = DataFrame.foldByRow("c", "d").of(
                 "a", 2,
-                "b", 2,
                 "x", 4,
                 "c", 3);
 
         DataFrame df = df1.innerJoin(df2)
-                .on(Hasher.of(0), Hasher.of(1))
-                .selectExcept("a", "c");
+                .on(0, 1)
+                .selectExcept(0, 2);
 
         new DataFrameAsserts(df, "b", "d")
-                .expectHeight(3)
+                .expectHeight(2)
                 .expectRow(0, "y", 2)
-                .expectRow(1, "y", 2)
-                .expectRow(2, "z", 4);
+                .expectRow(1, "z", 4);
     }
 
     @Test
@@ -208,12 +275,13 @@ public class DataFrame_Join_SelectNamesTest {
 
         DataFrame df = df1.innerJoin(df2.as("df2"))
                 .on(0)
-                .select("a", "df2.b");
+                // select all possible valid aliases
+                .select("df2.a", "df2.b", "a", "a_", "b", "b_");
 
-        new DataFrameAsserts(df, "a", "df2.b")
+        new DataFrameAsserts(df, "df2.a", "df2.b", "a", "a_", "b", "b_")
                 .expectHeight(2)
-                .expectRow(0, 2, "a")
-                .expectRow(1, 2, "b");
+                .expectRow(0, 2, "a", 2, 2, "y", "a")
+                .expectRow(1, 2, "b", 2, 2, "y", "b");
     }
 
     @Test
@@ -228,14 +296,15 @@ public class DataFrame_Join_SelectNamesTest {
                 2, "b",
                 3, "c");
 
-        DataFrame df = df1.as("df1").innerJoin(df2)
+        DataFrame df = df1.as("df1").join(df2)
                 .on(0)
-                .select("df1.a", "b_");
+                // select all possible valid aliases
+                .select("df1.a", "df1.b", "a", "a_", "b", "b_");
 
-        new DataFrameAsserts(df, "df1.a", "b_")
+        new DataFrameAsserts(df, "df1.a", "df1.b", "a", "a_", "b", "b_")
                 .expectHeight(2)
-                .expectRow(0, 2, "a")
-                .expectRow(1, 2, "b");
+                .expectRow(0, 2, "y", 2, 2, "y", "a")
+                .expectRow(1, 2, "y", 2, 2, "y", "b");
     }
 
     @Test
@@ -250,14 +319,15 @@ public class DataFrame_Join_SelectNamesTest {
                 2, "b",
                 3, "c");
 
-        DataFrame df = df1.as("df1").innerJoin(df2.as("df2"))
+        DataFrame df = df1.as("df1").join(df2.as("df2"))
                 .on(0)
-                .select("df1.a", "df2.b", "b", "b_");
+                // select all possible valid aliases
+                .select("df1.a", "df1.b", "df2.a", "df2.b", "a", "a_", "b", "b_");
 
-        new DataFrameAsserts(df, "df1.a", "df2.b", "b", "b_")
+        new DataFrameAsserts(df, "df1.a", "df1.b", "df2.a", "df2.b", "a", "a_", "b", "b_")
                 .expectHeight(2)
-                .expectRow(0, 2, "a", "y", "a")
-                .expectRow(1, 2, "b", "y", "b");
+                .expectRow(0, 2, "y", 2, "a", 2, 2, "y", "a")
+                .expectRow(1, 2, "y", 2, "b", 2, 2, "y", "b");
     }
 
     @Test

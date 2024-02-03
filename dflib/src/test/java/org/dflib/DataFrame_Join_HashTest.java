@@ -44,7 +44,7 @@ public class DataFrame_Join_HashTest {
                 .on(0)
                 .select();
 
-        new DataFrameAsserts(df, "df1.a", "df1.b", "a", "b")
+        new DataFrameAsserts(df, "df1.a", "df1.b", "a_", "b_")
                 .expectHeight(2)
                 .expectRow(0, 2, "y", 2, "a")
                 .expectRow(1, 2, "y", 2, "b");

@@ -91,12 +91,13 @@ public class DataFrame_Join_SelectExpTest {
 
         DataFrame df = df1.innerJoin(df2.as("df2"))
                 .on(0)
-                .select($col("a"), $col("df2.b"));
+                // select all possible valid aliases
+                .select($col("df2.a"), $col("df2.b"), $col("a"), $col("a_"), $col("b"), $col("b_"));
 
-        new DataFrameAsserts(df, "a", "df2.b")
+        new DataFrameAsserts(df, "df2.a", "df2.b", "a", "a_", "b", "b_")
                 .expectHeight(2)
-                .expectRow(0, 2, "a")
-                .expectRow(1, 2, "b");
+                .expectRow(0, 2, "a", 2, 2, "y", "a")
+                .expectRow(1, 2, "b", 2, 2, "y", "b");
     }
 
     @Test
@@ -113,12 +114,13 @@ public class DataFrame_Join_SelectExpTest {
 
         DataFrame df = df1.as("df1").innerJoin(df2)
                 .on(0)
-                .select($col("df1.a"), $col("b"));
+                // select all possible valid aliases
+                .select($col("df1.a"), $col("df1.b"), $col("a"), $col("a_"), $col("b"), $col("b_"));
 
-        new DataFrameAsserts(df, "df1.a", "b")
+        new DataFrameAsserts(df, "df1.a", "df1.b", "a", "a_", "b", "b_")
                 .expectHeight(2)
-                .expectRow(0, 2, "a")
-                .expectRow(1, 2, "b");
+                .expectRow(0, 2, "y", 2, 2, "y", "a")
+                .expectRow(1, 2, "y", 2, 2, "y", "b");
     }
 
     @Test
@@ -135,12 +137,13 @@ public class DataFrame_Join_SelectExpTest {
 
         DataFrame df = df1.as("df1").innerJoin(df2.as("df2"))
                 .on(0)
-                .select($col("df1.a"), $col("df2.b"));
+                // select all possible valid aliases
+                .select($col("df1.a"), $col("df1.b"), $col("df2.a"), $col("df2.b"), $col("a"), $col("a_"), $col("b"), $col("b_"));
 
-        new DataFrameAsserts(df, "df1.a", "df2.b")
+        new DataFrameAsserts(df, "df1.a", "df1.b", "df2.a", "df2.b", "a", "a_", "b", "b_")
                 .expectHeight(2)
-                .expectRow(0, 2, "a")
-                .expectRow(1, 2, "b");
+                .expectRow(0, 2, "y", 2, "a", 2, 2, "y", "a")
+                .expectRow(1, 2, "y", 2, "b", 2, 2, "y", "b");
     }
 
     @Test

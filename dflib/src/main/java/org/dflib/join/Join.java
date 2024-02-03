@@ -4,14 +4,12 @@ import org.dflib.ColumnDataFrame;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Hasher;
-import org.dflib.Index;
 import org.dflib.IntSeries;
 import org.dflib.JoinType;
 import org.dflib.Series;
 import org.dflib.builder.ObjectAccum;
 import org.dflib.series.IndexedSeries;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -89,87 +87,86 @@ public class Join {
     }
 
     public DataFrame select() {
-        Index index = JoinIndexer.simpleIndex(leftFrame, rightFrame, indicatorColumn);
-        IntSeries[] selectors = rowSelectors();
-        Series<?>[] data = merge(selectors[0], selectors[1]);
-
-        return new ColumnDataFrame(null, index, data);
-    }
-
-    public DataFrame select(int... columns) {
-        Index index = JoinIndexer.simpleIndex(leftFrame, rightFrame, indicatorColumn);
+        JoinIndex index = createJoinIndex();
         IntSeries[] selectors = rowSelectors();
 
         return new ColumnDataFrame(null,
-                index.selectPositions(columns),
-                merge(selectors[0], selectors[1], columns));
+                index.getIndex(),
+                merge(selectors[0], selectors[1], index.getPositions()));
+    }
+
+    public DataFrame select(int... positions) {
+        JoinIndex index = createJoinIndex().select(positions);
+        IntSeries[] selectors = rowSelectors();
+
+        return new ColumnDataFrame(null,
+                index.getIndex(),
+                merge(selectors[0], selectors[1], index.getPositions()));
     }
 
     public DataFrame select(String... columns) {
-        Map<String, Integer> positions = JoinIndexer.multiLabelPositions(leftFrame, rightFrame, indicatorColumn);
-        int len = columns.length;
-        int[] columnsPos = new int[len];
+        JoinIndex index = createJoinIndex().select(columns);
+        IntSeries[] selectors = rowSelectors();
 
-        for (int i = 0; i < len; i++) {
-            Integer pos = positions.get(columns[i]);
-            if (pos == null) {
-                throw new IllegalArgumentException("Unknown join column reference: " + columns[i]);
-            }
-
-            columnsPos[i] = pos;
-        }
-
-        return select(columnsPos)
-                // renaming is counterintuitive, but needed to produce column labels matching the method
-                // arguments in respect to label prefixes (e.g. "a_" -> "a_" instead of "df1.a")
-                .cols().as(columns);
+        return new ColumnDataFrame(null,
+                index.getIndex(),
+                merge(selectors[0], selectors[1], index.getPositions()));
     }
 
     public DataFrame selectExcept(Predicate<String> labelCondition) {
-        return select(labelCondition.negate());
+        // due to aliases "selectExcept(c)" is not the same as "select(!c)", so need to process it explicitly
+
+        JoinIndex index = createJoinIndex().selectExcept(labelCondition);
+        IntSeries[] selectors = rowSelectors();
+
+        return new ColumnDataFrame(null,
+                index.getIndex(),
+                merge(selectors[0], selectors[1], index.getPositions()));
     }
 
     public DataFrame selectExcept(int... columns) {
-        Index index = JoinIndexer.simpleIndex(leftFrame, rightFrame, indicatorColumn);
-        int[] includeColumns = index.positionsExcept(columns);
-
+        JoinIndex index = createJoinIndex().selectExcept(columns);
         IntSeries[] selectors = rowSelectors();
 
         return new ColumnDataFrame(null,
-                index.selectPositions(includeColumns),
-                merge(selectors[0], selectors[1], includeColumns));
+                index.getIndex(),
+                merge(selectors[0], selectors[1], index.getPositions()));
     }
 
     public DataFrame selectExcept(String... columns) {
-
-        Index index = JoinIndexer.simpleIndex(leftFrame, rightFrame, indicatorColumn);
-        int[] includeColumns = index.positionsExcept(columns);
-
+        JoinIndex index = createJoinIndex().selectExcept(columns);
         IntSeries[] selectors = rowSelectors();
 
         return new ColumnDataFrame(null,
-                index.selectPositions(includeColumns),
-                merge(selectors[0], selectors[1], includeColumns));
+                index.getIndex(),
+                merge(selectors[0], selectors[1], index.getPositions()));
     }
 
     public DataFrame select(Predicate<String> labelCondition) {
-
-        Index index = JoinIndexer.simpleIndex(leftFrame, rightFrame, indicatorColumn);
-        int[] includeColumns = index.positions(labelCondition);
-
+        JoinIndex index = createJoinIndex().select(labelCondition);
         IntSeries[] selectors = rowSelectors();
 
         return new ColumnDataFrame(null,
-                index.selectPositions(includeColumns),
-                merge(selectors[0], selectors[1], includeColumns));
+                index.getIndex(),
+                merge(selectors[0], selectors[1], index.getPositions()));
     }
 
     public DataFrame select(Exp<?>... exps) {
-        MultiNameIndex index = JoinIndexer.multiNameIndex(leftFrame, rightFrame, indicatorColumn);
+        JoinIndex index = createJoinIndex().selectAllAliases();
         IntSeries[] selectors = rowSelectors();
-        Series<?>[] data = merge(selectors[0], selectors[1]);
 
-        return new ColumnDataFrame(null, index, data).cols().select(exps);
+        return new ColumnDataFrame(null,
+                index.getIndex(),
+                merge(selectors[0], selectors[1], index.getPositions())).cols().select(exps);
+    }
+
+    private JoinIndex createJoinIndex() {
+        return JoinIndex.of(
+                leftFrame.getName(),
+                rightFrame.getName(),
+                leftFrame.getColumnsIndex(),
+                rightFrame.getColumnsIndex(),
+                indicatorColumn);
     }
 
     private Hasher combineHashers(Hasher possiblyNull, Hasher mustBeNotNull) {
@@ -187,41 +184,16 @@ public class Join {
         }
     }
 
-    private Series<?>[] merge(IntSeries leftIndex, IntSeries rightIndex) {
-
-        int llen = leftFrame.width();
-        int rlen = rightFrame.width();
-        int len = indicatorColumn != null
-                ? llen + rlen + 1
-                : llen + rlen;
-
-        Series[] data = new Series[len];
-
-        for (int i = 0; i < llen; i++) {
-            data[i] = new IndexedSeries<>(leftFrame.getColumn(i), leftIndex);
-        }
-
-        for (int i = 0; i < rlen; i++) {
-            data[llen + i] = new IndexedSeries<>(rightFrame.getColumn(i), rightIndex);
-        }
-
-        if (indicatorColumn != null) {
-            data[llen + rlen] = buildIndicator(leftIndex, rightIndex);
-        }
-
-        return data;
-    }
-
-    private Series<?>[] merge(IntSeries leftIndex, IntSeries rightIndex, int[] columns) {
+    private Series<?>[] merge(IntSeries leftIndex, IntSeries rightIndex, int[] positions) {
 
         int llen = leftFrame.width();
         int rlen = rightFrame.width();
         int lrlen = llen + rlen;
-        int len = columns.length;
+        int len = positions.length;
 
         Series[] data = new Series[len];
         for (int i = 0; i < len; i++) {
-            int si = columns[i];
+            int si = positions[i];
             if (si < llen) {
                 data[i] = new IndexedSeries<>(leftFrame.getColumn(si), leftIndex);
             } else if (si < lrlen) {
@@ -235,8 +207,7 @@ public class Join {
 
         return data;
     }
-
-
+    
     private Series<JoinIndicator> buildIndicator(IntSeries leftIndex, IntSeries rightIndex) {
 
         int h = leftIndex.size();

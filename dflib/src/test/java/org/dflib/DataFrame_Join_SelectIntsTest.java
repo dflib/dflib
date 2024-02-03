@@ -120,7 +120,7 @@ public class DataFrame_Join_SelectIntsTest {
                 .on(0)
                 .select(0, 3);
 
-        new DataFrameAsserts(df, "df1.a", "b")
+        new DataFrameAsserts(df, "df1.a", "b_")
                 .expectHeight(2)
                 .expectRow(0, 2, "a")
                 .expectRow(1, 2, "b");
