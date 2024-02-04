@@ -23,7 +23,6 @@ import java.util.function.UnaryOperator;
  */
 public class Join {
 
-    // TODO: change to multi-join of an arbitrary number of frames
     private final JoinType type;
     private final DataFrame leftFrame;
     private final DataFrame rightFrame;
@@ -33,6 +32,8 @@ public class Join {
     private JoinPredicate predicate;
     private String indicatorColumn;
 
+    // TODO: instead of tracking column selection algorithm with these 2 vars, should we try to reuse some
+    //  ColumnSet logic (FixedColumnSet vs DeferredColumnSet, etc.)
     private boolean userColumns;
     private UnaryOperator<JoinIndex> colSelector = UnaryOperator.identity();
 
