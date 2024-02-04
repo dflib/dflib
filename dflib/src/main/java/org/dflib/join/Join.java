@@ -92,37 +92,37 @@ public class Join {
     }
 
     public Join cols(int... columns) {
-        this.colSelector = i -> i.select(columns);
+        this.colSelector = i -> i.cols(columns);
         this.userColumns = true;
         return this;
     }
 
     public Join cols(String... columns) {
-        this.colSelector = i -> i.select(columns);
+        this.colSelector = i -> i.cols(columns);
         this.userColumns = true;
         return this;
     }
 
     public Join cols(Predicate<String> labelCondition) {
-        this.colSelector = i -> i.select(labelCondition);
+        this.colSelector = i -> i.cols(labelCondition);
         this.userColumns = true;
         return this;
     }
 
     public Join colsExcept(int... columns) {
-        this.colSelector = i -> i.selectExcept(columns);
+        this.colSelector = i -> i.colsExcept(columns);
         this.userColumns = true;
         return this;
     }
 
     public Join colsExcept(String... columns) {
-        this.colSelector = i -> i.selectExcept(columns);
+        this.colSelector = i -> i.colsExcept(columns);
         this.userColumns = true;
         return this;
     }
 
     public Join colsExcept(Predicate<String> labelCondition) {
-        this.colSelector = i -> i.selectExcept(labelCondition);
+        this.colSelector = i -> i.colsExcept(labelCondition);
         this.userColumns = true;
         return this;
     }
@@ -177,15 +177,21 @@ public class Join {
             }
         }
 
-        JoinIndex allAliasesIndex = defaultIndex.selectAllAliases();
+        JoinIndex allAliasesIndex = defaultIndex.colsExpandAliases();
         IntSeries[] selectors = rowSelectors();
 
-        // select the full DataFrame first, and then apply expressions, as exps can reference columns in the join that are not
+        // Select the full DataFrame first, and then apply expressions, as exps can reference columns in the join that are not
         // a part of the result
+
+        // Since "merge" doesn't check for duplicate columns, first merge unique columns, and then expand them to
+        // include aliases via "pick"
+
+        Series<?>[] uniqueColumns = merge(selectors[0], selectors[1], defaultIndex.getPositions());
+
         DataFrame allAliasesDf = new ColumnDataFrame(
                 null,
                 allAliasesIndex.getIndex(),
-                merge(selectors[0], selectors[1], allAliasesIndex.getPositions()));
+                pick(uniqueColumns, allAliasesIndex.getPositions()));
 
         return userColumns
                 ? allAliasesDf.cols(resultIndex.getPositions()).select(exps)
@@ -226,8 +232,11 @@ public class Join {
         int lrlen = llen + rlen;
         int len = positions.length;
 
+        // We do not check for duplicate column positions here and recalculate each column. So to expand columns with
+        // aliases, first do "merge" on a set of unique columns, and then call "pick" to arrange / duplicate columns.
         Series[] data = new Series[len];
         for (int i = 0; i < len; i++) {
+
             int si = positions[i];
             if (si < llen) {
                 data[i] = new IndexedSeries<>(leftFrame.getColumn(si), leftIndex);
@@ -238,6 +247,18 @@ public class Join {
             } else {
                 throw new IllegalArgumentException("Join result index is out of bounds: " + si);
             }
+        }
+
+        return data;
+    }
+
+    private Series<?>[] pick(Series<?>[] cols, int[] positions) {
+
+        int len = positions.length;
+
+        Series[] data = new Series[len];
+        for (int i = 0; i < len; i++) {
+            data[i] = cols[positions[i]];
         }
 
         return data;

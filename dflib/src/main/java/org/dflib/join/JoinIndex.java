@@ -88,7 +88,7 @@ class JoinIndex {
         return pos;
     }
 
-    public JoinIndex select(int... positions) {
+    public JoinIndex cols(int... positions) {
         int len = positions.length;
         JoinColumn[] subset = new JoinColumn[len];
 
@@ -99,7 +99,7 @@ class JoinIndex {
         return new JoinIndex(subset);
     }
 
-    public JoinIndex select(String... labels) {
+    public JoinIndex cols(String... labels) {
 
         int len = labels.length;
         JoinColumn[] subset = new JoinColumn[len];
@@ -111,7 +111,7 @@ class JoinIndex {
         return new JoinIndex(subset);
     }
 
-    public JoinIndex select(Predicate<String> predicate) {
+    public JoinIndex cols(Predicate<String> predicate) {
 
         List<JoinColumn> included = new ArrayList<>(columns.length);
         for (JoinColumn column : columns) {
@@ -123,7 +123,7 @@ class JoinIndex {
         return new JoinIndex(included.toArray(new JoinColumn[0]));
     }
 
-    public JoinIndex selectExcept(Predicate<String> predicate) {
+    public JoinIndex colsExcept(Predicate<String> predicate) {
 
         // due to aliases "selectExcept(c)" is not the same as "select(!c)", so need to process it explicitly
 
@@ -137,7 +137,7 @@ class JoinIndex {
         return new JoinIndex(included.toArray(new JoinColumn[0]));
     }
 
-    public JoinIndex selectExcept(int... positions) {
+    public JoinIndex colsExcept(int... positions) {
         int exceptLen = positions.length;
         if (exceptLen == 0) {
             return this;
@@ -159,7 +159,7 @@ class JoinIndex {
         return new JoinIndex(included.toArray(new JoinColumn[0]));
     }
 
-    public JoinIndex selectExcept(String... labels) {
+    public JoinIndex colsExcept(String... labels) {
         if (labels.length == 0) {
             return this;
         }
@@ -176,12 +176,13 @@ class JoinIndex {
         return new JoinIndex(included.toArray(new JoinColumn[0]));
     }
 
-    public JoinIndex selectAllAliases() {
+    public JoinIndex colsExpandAliases() {
         List<JoinColumn> expanded = new ArrayList<>(columns.length * 2);
         for (JoinColumn c : columns) {
             expanded.add(c);
+
+            // conditionally add an extra column with name matching the prefixed name of the original column
             if (c.prefixedName != null) {
-                // add an extra column whose name is the same as the aliased name of the original column
                 expanded.add(c.unalias());
             }
         }

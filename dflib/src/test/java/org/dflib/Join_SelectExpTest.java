@@ -33,7 +33,7 @@ public class Join_SelectExpTest {
                 .expectRow(1, 4, 8, "xz");
     }
 
-    @Disabled("TODO")
+    @Disabled
     @Test
     public void cols_ByName() {
 
@@ -60,7 +60,7 @@ public class Join_SelectExpTest {
                 .expectRow(2, "xz", 44);
     }
 
-    @Disabled("TODO")
+    @Disabled
     @Test
     public void cols_ByPos() {
 

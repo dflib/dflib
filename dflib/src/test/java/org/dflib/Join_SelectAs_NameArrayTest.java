@@ -2,6 +2,7 @@ package org.dflib;
 
 import org.dflib.join.JoinIndicator;
 import org.dflib.unit.DataFrameAsserts;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class Join_SelectAs_NameArrayTest {
@@ -77,6 +78,31 @@ public class Join_SelectAs_NameArrayTest {
                 .expectRow(0, 2, "a")
                 .expectRow(1, 2, "b")
                 .expectRow(2, 4, "x");
+    }
+
+    @Disabled
+    @Test
+    public void cols_ByName_SomeNew() {
+
+        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
+                1, "x",
+                2, "y",
+                4, "z");
+
+        DataFrame df2 = DataFrame.foldByRow("c", "d").of(
+                "a", 2,
+                "x", 4,
+                "c", 3);
+
+        DataFrame df = df1.innerJoin(df2)
+                .on(0, 1)
+                .cols("a", "b", "X")
+                .selectAs("A", "B", "Y");
+
+        new DataFrameAsserts(df, "A", "B", "Y")
+                .expectHeight(2)
+                .expectRow(0, 2, "y", null)
+                .expectRow(1, 4, "z", null);
     }
 
     @Test
