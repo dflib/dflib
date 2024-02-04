@@ -2,12 +2,9 @@ package org.dflib;
 
 import org.dflib.join.JoinIndicator;
 import org.dflib.unit.DataFrameAsserts;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class Join_SelectTest {
 
@@ -84,7 +81,6 @@ public class Join_SelectTest {
                 .expectRow(2, 4, "x");
     }
 
-    @Disabled
     @Test
     public void cols_ByName_SomeNew() {
 
@@ -326,24 +322,6 @@ public class Join_SelectTest {
                 .expectHeight(2)
                 .expectRow(0, 2, "a")
                 .expectRow(1, 2, "b");
-    }
-
-    @Test
-    public void cols_ByName_InvalidNames() {
-
-        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
-                1, "x",
-                2, "y");
-
-        DataFrame df2 = DataFrame.foldByRow("c", "d").of(
-                2, "a",
-                2, "b",
-                3, "c");
-
-        assertThrows(IllegalArgumentException.class, () -> df1.innerJoin(df2.as("df2"))
-                .on(0)
-                .cols("a", "df2.c", "X")
-                .select());
     }
 
 

@@ -47,9 +47,9 @@ public class ColumnSet_Select_ExpTest {
     public void cols_ByPos() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")
-                .cols(1, 2).select(Exp.$int(0).mul(100), Exp.$int(0).mul(10));
+                .cols(1, 7).select(Exp.$int(0).mul(100), Exp.$int(0).mul(10));
 
-        new DataFrameAsserts(df, "b", "2")
+        new DataFrameAsserts(df, "b", "7")
                 .expectHeight(2)
                 .expectRow(0, 100, 10)
                 .expectRow(1, 200, 20);

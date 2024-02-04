@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
 class JoinIndex {
 
@@ -24,44 +23,46 @@ class JoinIndex {
         String rp = rightAlias != null ? rightAlias + "." : null;
 
         Set<String> uniqueNames = new HashSet<>();
-        UnaryOperator<String> deduplicator = s -> {
-            while (!uniqueNames.add(s)) {
-                s = s + "_";
-            }
-
-            return s;
-        };
-
         JoinColumn[] columns = new JoinColumn[len];
         int i = 0;
 
         for (String label : lLabels) {
-            String name = deduplicator.apply(label);
-            String aliasedName = lp != null ? deduplicator.apply(lp + label) : null;
+            String name = uniqueName(uniqueNames, label);
+            String aliasedName = lp != null ? uniqueName(uniqueNames, lp + label) : null;
             columns[i] = new JoinColumn(i, name, aliasedName, null);
             i++;
         }
 
         for (String label : rLabels) {
-            String name = deduplicator.apply(label);
-            String aliasedName = rp != null ? deduplicator.apply(rp + label) : null;
+            String name = uniqueName(uniqueNames, label);
+            String aliasedName = rp != null ? uniqueName(uniqueNames, rp + label) : null;
             columns[i] = new JoinColumn(i, name, aliasedName, null);
             i++;
         }
 
         if (indicatorColumn != null) {
-            String name = deduplicator.apply(indicatorColumn);
+            String name = uniqueName(uniqueNames, indicatorColumn);
             columns[i] = new JoinColumn(i, name, null, null);
         }
 
-        return new JoinIndex(columns);
+        return new JoinIndex(columns, uniqueNames);
     }
 
-    private final JoinColumn[] columns;
-    private volatile Map<String, JoinColumn> columnsByAllPossibleAliases;
+    private static String uniqueName(Set<String> uniqueNames, String name) {
+        while (!uniqueNames.add(name)) {
+            name = name + "_";
+        }
 
-    private JoinIndex(JoinColumn[] columns) {
+        return name;
+    }
+
+    private final Set<String> uniqueNames;
+    private final JoinColumn[] columns;
+    private Map<String, JoinColumn> columnsByAllPossibleAliases;
+
+    private JoinIndex(JoinColumn[] columns, Set<String> uniqueNames) {
         this.columns = columns;
+        this.uniqueNames = uniqueNames;
     }
 
     public int size() {
@@ -88,39 +89,46 @@ class JoinIndex {
         return pos;
     }
 
-    public JoinIndex cols(int... positions) {
-        int len = positions.length;
-        JoinColumn[] subset = new JoinColumn[len];
+    public JoinIndex cols(int... csIndex) {
 
-        for (int i = 0; i < len; i++) {
-            subset[i] = columns[positions[i]];
+        int sLen = columns.length;
+        int csLen = csIndex.length;
+
+        JoinColumn[] cols = new JoinColumn[csLen];
+
+        for (int i = 0; i < csLen; i++) {
+            cols[i] = csIndex[i] < sLen
+                    ? columns[csIndex[i]]
+                    : createColumn(String.valueOf(csIndex[i]), csIndex[i]);
         }
 
-        return new JoinIndex(subset);
+        return new JoinIndex(cols, uniqueNames);
     }
 
     public JoinIndex cols(String... labels) {
 
         int len = labels.length;
-        JoinColumn[] subset = new JoinColumn[len];
+        JoinColumn[] cols = new JoinColumn[len];
 
-        for (int i = 0; i < len; i++) {
-            subset[i] = resolveColumn(labels[i]).nameResult(labels[i]);
+        for (int i = 0, extras = columns.length; i < len; i++) {
+            String name = labels[i];
+            JoinColumn c = resolveColumn(name);
+            cols[i] = c != null ? c.nameResult(name) : createColumn(name, extras++);
         }
 
-        return new JoinIndex(subset);
+        return new JoinIndex(cols, uniqueNames);
     }
 
     public JoinIndex cols(Predicate<String> predicate) {
 
-        List<JoinColumn> included = new ArrayList<>(columns.length);
+        List<JoinColumn> cols = new ArrayList<>(columns.length);
         for (JoinColumn column : columns) {
             if (column.test(predicate)) {
-                included.add(column);
+                cols.add(column);
             }
         }
 
-        return new JoinIndex(included.toArray(new JoinColumn[0]));
+        return new JoinIndex(cols.toArray(new JoinColumn[0]), uniqueNames);
     }
 
     public JoinIndex colsExcept(Predicate<String> predicate) {
@@ -134,7 +142,7 @@ class JoinIndex {
             }
         }
 
-        return new JoinIndex(included.toArray(new JoinColumn[0]));
+        return new JoinIndex(included.toArray(new JoinColumn[0]), uniqueNames);
     }
 
     public JoinIndex colsExcept(int... positions) {
@@ -156,7 +164,7 @@ class JoinIndex {
             }
         }
 
-        return new JoinIndex(included.toArray(new JoinColumn[0]));
+        return new JoinIndex(included.toArray(new JoinColumn[0]), uniqueNames);
     }
 
     public JoinIndex colsExcept(String... labels) {
@@ -173,7 +181,7 @@ class JoinIndex {
             }
         }
 
-        return new JoinIndex(included.toArray(new JoinColumn[0]));
+        return new JoinIndex(included.toArray(new JoinColumn[0]), uniqueNames);
     }
 
     public JoinIndex colsExpandAliases() {
@@ -187,7 +195,7 @@ class JoinIndex {
             }
         }
 
-        return new JoinIndex(expanded.toArray(new JoinColumn[0]));
+        return new JoinIndex(expanded.toArray(new JoinColumn[0]), uniqueNames);
     }
 
     private JoinColumn resolveColumn(String label) {
@@ -205,11 +213,15 @@ class JoinIndex {
             this.columnsByAllPossibleAliases = map;
         }
 
-        JoinColumn c = columnsByAllPossibleAliases.get(label);
-        if (c == null) {
-            throw new IllegalArgumentException("Unrecognized join column name: " + label);
-        }
+        return columnsByAllPossibleAliases.get(label);
+    }
 
-        return c;
+    private JoinColumn createColumn(String label, int pos) {
+        String name = uniqueName(label);
+        return new JoinColumn(pos, name, null, name);
+    }
+
+    private String uniqueName(String name) {
+        return uniqueName(uniqueNames, name);
     }
 }

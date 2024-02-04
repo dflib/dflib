@@ -9,6 +9,7 @@ import org.dflib.JoinType;
 import org.dflib.Series;
 import org.dflib.builder.ObjectAccum;
 import org.dflib.series.IndexedSeries;
+import org.dflib.series.SingleValueSeries;
 
 import java.util.Map;
 import java.util.Objects;
@@ -194,7 +195,8 @@ public class Join {
                 pick(uniqueColumns, allAliasesIndex.getPositions()));
 
         return userColumns
-                ? allAliasesDf.cols(resultIndex.getPositions()).select(exps)
+                // picking cols by index instead of by positions to preserve the names
+                ? allAliasesDf.cols(resultIndex.getIndex()).select(exps)
 
                 // important to use no-arg "cols()" if no user columns were specified. Any other form of "cols()"
                 // would explode due to "exps" and cols size mismatch
@@ -231,6 +233,7 @@ public class Join {
         int rlen = rightFrame.width();
         int lrlen = llen + rlen;
         int len = positions.length;
+        int h = leftIndex.size();
 
         // We do not check for duplicate column positions here and recalculate each column. So to expand columns with
         // aliases, first do "merge" on a set of unique columns, and then call "pick" to arrange / duplicate columns.
@@ -245,7 +248,7 @@ public class Join {
             } else if (si == lrlen && indicatorColumn != null) {
                 data[i] = buildIndicator(leftIndex, rightIndex);
             } else {
-                throw new IllegalArgumentException("Join result index is out of bounds: " + si);
+                data[i] = new SingleValueSeries<>(null, h);
             }
         }
 

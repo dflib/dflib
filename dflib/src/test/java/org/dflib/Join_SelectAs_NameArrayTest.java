@@ -2,7 +2,6 @@ package org.dflib;
 
 import org.dflib.join.JoinIndicator;
 import org.dflib.unit.DataFrameAsserts;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class Join_SelectAs_NameArrayTest {
@@ -80,7 +79,6 @@ public class Join_SelectAs_NameArrayTest {
                 .expectRow(2, 4, "x");
     }
 
-    @Disabled
     @Test
     public void cols_ByName_SomeNew() {
 

@@ -2,13 +2,12 @@ package org.dflib;
 
 import org.dflib.join.JoinIndicator;
 import org.dflib.unit.DataFrameAsserts;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.dflib.Exp.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class Join_SelectExpTest {
-
 
     @Test
     public void cols_Implicit_All() {
@@ -23,8 +22,7 @@ public class Join_SelectExpTest {
                 "x", 4,
                 "c", 3);
 
-        DataFrame df = df1.innerJoin(df2)
-                .on(0, 1)
+        DataFrame df = df1.innerJoin(df2).on(0, 1)
                 .select($col("a").as("a1"), $int("a").mul(2).as("a2"), concat($str("c"), $str("b")));
 
         new DataFrameAsserts(df, "a1", "a2", "concat(c, b)")
@@ -33,7 +31,6 @@ public class Join_SelectExpTest {
                 .expectRow(1, 4, 8, "xz");
     }
 
-    @Disabled
     @Test
     public void cols_ByName() {
 
@@ -47,20 +44,38 @@ public class Join_SelectExpTest {
                 "x", 4, 40,
                 "c", 3, 30);
 
-        DataFrame df = df1.join(df2)
-                .on(0, 1)
+        DataFrame df = df1.join(df2).on(0, 1)
                 .cols("X", "Y")
                 .select(
                         concat($str("a_"), $str("b")),
-                        $int("a").add($int("c_")));
+                        $int("a").add($int("d")));
 
         new DataFrameAsserts(df, "X", "Y")
                 .expectHeight(2)
-                .expectRow(0, "ax", 22)
-                .expectRow(2, "xz", 44);
+                .expectRow(0, "ay", 22)
+                .expectRow(1, "xz", 44);
     }
 
-    @Disabled
+    @Test
+    public void cols_ByName_ExpDifferentLength() {
+
+        DataFrame df1 = DataFrame.foldByRow("a", "b", "c").of(
+                1, "x", "X",
+                2, "y", "Y",
+                4, "z", "Z");
+
+        DataFrame df2 = DataFrame.foldByRow("a", "b", "d").of(
+                "a", 2, 20,
+                "x", 4, 40,
+                "c", 3, 30);
+
+        assertThrows(IllegalArgumentException.class, () -> df1.join(df2).on(0, 1)
+                .cols("X")
+                .select(
+                        concat($str("a_"), $str("b")),
+                        $int("a").add($int("d"))));
+    }
+
     @Test
     public void cols_ByPos() {
 
@@ -80,12 +95,12 @@ public class Join_SelectExpTest {
                 .cols(1, 7)
                 .select(
                         concat($str("a_"), $str("b")),
-                        $int("a").add($int("c_")));
+                        $int("a").add($int("d")));
 
-        new DataFrameAsserts(df, "b", "1")
+        new DataFrameAsserts(df, "b", "7")
                 .expectHeight(2)
-                .expectRow(0, "ax", 22)
-                .expectRow(2, "xz", 44);
+                .expectRow(0, "ay", 22)
+                .expectRow(1, "xz", 44);
     }
 
     @Test
