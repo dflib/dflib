@@ -242,18 +242,10 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>3.0.0-M6</version>
+                    <version>3.0.1</version>
                     <configuration>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
-
-                        <!-- This is to allow test dependencies to be SNAPSHOTS-->
-                        <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
                     </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.sonatype.plugins</groupId>
-                    <artifactId>nexus-staging-maven-plugin</artifactId>
-                    <version>1.6.13</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -269,19 +261,6 @@
             <id>release</id>
             <build>
                 <plugins>
-                    <!-- This plugin replaces maven-deploy-plugin and "deploy" goal -->
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>oss-sonatype-releases</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
-                            <!-- Default timeout is 5 minute and it's not enought for the all validation rules -->
-                            <stagingProgressTimeoutMinutes>20</stagingProgressTimeoutMinutes>
-                        </configuration>
-                    </plugin>
                     <plugin>
                         <artifactId>maven-gpg-plugin</artifactId>
                         <executions>
