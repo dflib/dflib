@@ -79,9 +79,9 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * Starts a DataFrame builder that will extract data from some collection of arrays. Each array would result in
+     * Starts a DataFrame builder that will extract data from a collection of arrays. Each array would result in
      * a row in a DataFrame. This is a flavor of {@link #byRow(Extractor[])} that allows to append arrays using
-     * vararg methods.
+     * vararg methods. Provided extractors will be applied to the array to calculate cell values.
      *
      * @since 0.16
      */
@@ -101,7 +101,7 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * Starts a DataFrame builder that will extract data from some collection of arrays. Each array would produce
+     * Starts a DataFrame builder that will extract data from a collection of arrays. Each array would produce
      * a row in the resulting DataFrame.
      *
      * @since 0.16
