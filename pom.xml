@@ -70,7 +70,7 @@
             <uniqueVersion>false</uniqueVersion>
             <id>oss-sonatype-releases</id>
             <name>Deployment Repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
         <snapshotRepository>
             <id>oss-sonatype-snapshots</id>
