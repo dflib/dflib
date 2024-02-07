@@ -6,7 +6,7 @@
 # DFLib
 
 DFLib ("DataFrame Library") is a lightweight pure Java implementation of a common `DataFrame` data structure. 
-DataFrames exist in Python (pandas), in Spark and other languages and frameworks. DFLib's DataFrame is specifically 
+DataFrames exist in Python (pandas), R, Spark and other languages and frameworks. DFLib's DataFrame is specifically 
 intended for Java and JVM languages.
 
 With DataFrame API, you get essentially the same data manipulation capabilities you may be used to in SQL (such as 
