@@ -13,8 +13,8 @@ With DataFrame API, you get essentially the same data manipulation capabilities 
 joins, etc.), only you apply them in-memory and over dynamically defined "tables". While SQL is "declarative", 
 `DataFrame` allows step-by-step transformations that are somewhat easier to understand and much easier to compose. 
 
-`DataFrame` is extremely versatile and can be used to model a variety of data tasks. Ad-hoc log analysis, simple ETL, 
-spreadsheets processing are just some of the common examples. DFLib comes with connectors for a variety of data formats: 
+`DataFrame` is extremely versatile and can be used to model a variety of data tasks. ETL, log analysis, spreadsheets 
+processing are just some of the examples. DFLib comes with connectors for a variety of data formats: 
 CSV, Excel, RDBMS (JDBC), Avro, JSON and can be easily adapted to any other formats (e.g. web-service-based ones like 
 Google Sheets, etc.)
 
