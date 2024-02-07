@@ -5,15 +5,17 @@
 
 # DFLib
 
-DFLib ("DataFrame Library") is a lightweight pure Java implementation of a common
-DataFrame data structure. With DFLib you get essentially the same data 
-manipulation tools you may be used to in SQL (such as queries and joins), 
-only you can use them in-memory and over dynamically defined data structures.
+DFLib ("DataFrame Library") is a lightweight pure Java implementation of a common `DataFrame` data structure. 
+DataFrame is quite common in Python (pandas), Spark, etc. DFLib's DataFrame is intended for Java and JVM languages.
 
-It is somewhat close to Python [pandas](https://pandas.pydata.org/), except it is intended to be used 
-with Java and other JVM languages.
+With DataFrame API, you get essentially the same data manipulation capabilities you may be used to in SQL (such as 
+joins, etc.), only you apply them in-memory and over dynamically defined "tables". While SQL is "declarative", 
+`DataFrame` allows step-by-step transformations that are somewhat easier to understand and much easier to compose. 
 
-DFLib comes with connectors for a variety of data formats: CSV, Excel, RDBMS (JDBC), Avro, JSON, etc.
+`DataFrame` is extremely versatile and can be used to model a variety of data tasks. Ad-hoc log analysis, simple ETL, 
+spreadsheets processing are just some of the common examples. DFLib comes with connectors for a variety of data formats: 
+CSV, Excel, RDBMS (JDBC), Avro, JSON and can be easily adapted to any other formats (e.g. web-service-based ones like 
+Google Sheets, etc.)
 
 ## Project Links
 
@@ -23,7 +25,8 @@ DFLib comes with connectors for a variety of data formats: CSV, Excel, RDBMS (JD
 
 ### Older Stuff
 
-* a 20-min presentation of an early version of DFLib. While the DFLib API has evolved substantially since then, the video still demonstrates the idea of the project...
+* A 20-min presentation of an early version of DFLib. While the DFLib API has evolved substantially since then, the 
+video still demonstrates the idea of the project...
 
 [![DFLib at WODay Frankfurt](http://img.youtube.com/vi/WSqvEdRZsuE/0.jpg)](http://www.youtube.com/watch?v=WSqvEdRZsuE)
 
