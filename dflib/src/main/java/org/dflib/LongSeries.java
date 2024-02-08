@@ -42,14 +42,6 @@ public interface LongSeries extends Series<Long> {
     LongSeries materialize();
 
     /**
-     * @deprecated in favor of {@link #materialize()}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default LongSeries materializeLong() {
-        return materialize();
-    }
-
-    /**
      * @since 0.18
      */
     @Override
@@ -108,14 +100,6 @@ public interface LongSeries extends Series<Long> {
         return len < 0 ? tail(size() + len) : rangeLong(0, len);
     }
 
-    /**
-     * @deprecated in favor of {@link #head(int)}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default LongSeries headLong(int len) {
-        return head(len);
-    }
-
     @Override
     default LongSeries tail(int len) {
         int size = size();
@@ -125,14 +109,6 @@ public interface LongSeries extends Series<Long> {
         }
 
         return len < 0 ? head(size + len) : rangeLong(size - len, size);
-    }
-
-    /**
-     * @deprecated in favor of {@link #tail(int)}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default LongSeries tailLong(int len) {
-        return tail(len);
     }
 
     @Override
@@ -147,24 +123,6 @@ public interface LongSeries extends Series<Long> {
     @Override
     default Series<Long> select(IntSeries positions) {
         return LongIndexedSeries.of(this, positions);
-    }
-
-    /**
-     * @since 0.11
-     * @deprecated in favor of {@link #select(Condition)}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default LongSeries selectLong(Condition condition) {
-        return select(condition);
-    }
-
-    /**
-     * @since 0.11
-     * @deprecated in favor of {@link #select(BooleanSeries)}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default LongSeries selectLong(BooleanSeries positions) {
-        return select(positions);
     }
 
     /**
@@ -206,15 +164,6 @@ public interface LongSeries extends Series<Long> {
 
     @Override
     LongSeries unique();
-
-    /**
-     * @return a LongSeries that contains non-repeating values from this Series.
-     * @deprecated in favor of {@link #unique()}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default LongSeries uniqueLong() {
-        return unique();
-    }
 
     /**
      * @since 0.7

@@ -606,17 +606,6 @@ public interface Exp<T> {
     }
 
     /**
-     * Converts this expression to a {@link Condition} that can be used for row filtering, etc.
-     *
-     * @since 0.14
-     * @deprecated in favor of {@link #castAsBool()}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default Condition castAsCondition() {
-        return castAsBool();
-    }
-
-    /**
      * @since 0.15
      */
     default Condition mapCondition(Function<Series<T>, BooleanSeries> op) {

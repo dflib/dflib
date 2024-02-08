@@ -42,14 +42,6 @@ public interface DoubleSeries extends Series<Double> {
     DoubleSeries materialize();
 
     /**
-     * @deprecated in favor of {@link #materialize()}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default DoubleSeries materializeDouble() {
-        return materialize();
-    }
-
-    /**
      * @since 0.18
      */
     @Override
@@ -108,14 +100,6 @@ public interface DoubleSeries extends Series<Double> {
         return len < 0 ? tail(size() + len) : rangeDouble(0, len);
     }
 
-    /**
-     * @deprecated in favor of {@link #head(int)}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default DoubleSeries headDouble(int len) {
-        return head(len);
-    }
-
     @Override
     default DoubleSeries tail(int len) {
         int size = size();
@@ -125,14 +109,6 @@ public interface DoubleSeries extends Series<Double> {
         }
 
         return len < 0 ? head(size + len) : rangeDouble(size - len, size);
-    }
-
-    /**
-     * @deprecated in favor of {@link #tail(int)}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default DoubleSeries tailDouble(int len) {
-        return tail(len);
     }
 
     @Override
@@ -147,24 +123,6 @@ public interface DoubleSeries extends Series<Double> {
     @Override
     default Series<Double> select(IntSeries positions) {
         return DoubleIndexedSeries.of(this, positions);
-    }
-
-    /**
-     * @since 0.11
-     * @deprecated in favor of {@link #select(Condition)}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default DoubleSeries selectDouble(Condition condition) {
-        return select(condition);
-    }
-
-    /**
-     * @since 0.11
-     * @deprecated in favor of {@link #select(BooleanSeries)}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default DoubleSeries selectDouble(BooleanSeries positions) {
-        return select(positions);
     }
 
     /**
@@ -206,14 +164,6 @@ public interface DoubleSeries extends Series<Double> {
 
     @Override
     DoubleSeries unique();
-
-    /**
-     * @deprecated in favor of {@link #unique()}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default DoubleSeries uniqueDouble() {
-        return unique();
-    }
 
     /**
      * @since 0.7

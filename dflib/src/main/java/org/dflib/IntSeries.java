@@ -43,14 +43,6 @@ public interface IntSeries extends Series<Integer> {
     IntSeries materialize();
 
     /**
-     * @deprecated in favor of {@link #materialize()}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default IntSeries materializeInt() {
-        return materialize();
-    }
-
-    /**
      * @since 0.18
      */
     @Override
@@ -106,14 +98,6 @@ public interface IntSeries extends Series<Integer> {
         return len < 0 ? tail(size() + len) : rangeInt(0, len);
     }
 
-    /**
-     * @deprecated in favor of {@link #head(int)} that returns an IntSeries
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default IntSeries headInt(int len) {
-        return head(len);
-    }
-
     @Override
     default IntSeries tail(int len) {
         int size = size();
@@ -124,15 +108,6 @@ public interface IntSeries extends Series<Integer> {
 
         return len < 0 ? head(size + len) : rangeInt(size - len, size);
     }
-
-    /**
-     * @deprecated in favor of {@link #tail(int)} that returns an IntSeries
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default IntSeries tailInt(int len) {
-        return tail(len);
-    }
-
 
     @Override
     IntSeries select(ValuePredicate<Integer> p);
@@ -146,24 +121,6 @@ public interface IntSeries extends Series<Integer> {
     @Override
     default Series<Integer> select(IntSeries positions) {
         return IntIndexedSeries.of(this, positions);
-    }
-
-    /**
-     * @since 0.11
-     * @deprecated in favor of {@link #select(Condition)}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default IntSeries selectInt(Condition condition) {
-        return select(condition);
-    }
-
-    /**
-     * @since 0.11
-     * @deprecated in favor of {@link #select(BooleanSeries)}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default IntSeries selectInt(BooleanSeries positions) {
-        return select(positions);
     }
 
     /**
@@ -216,14 +173,6 @@ public interface IntSeries extends Series<Integer> {
 
     @Override
     IntSeries unique();
-
-    /**
-     * @deprecated in favor of {@link #unique()}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default IntSeries uniqueInt() {
-        return unique();
-    }
 
     /**
      * @since 0.7

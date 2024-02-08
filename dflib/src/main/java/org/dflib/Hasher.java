@@ -23,22 +23,6 @@ public interface Hasher {
         return r -> r.get(column);
     }
 
-    /**
-     * @deprecated in favor of {@link #of(String)}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    static Hasher forColumn(String column) {
-        return of(column);
-    }
-
-    /**
-     * @deprecated in favor of {@link #of(int)}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    static Hasher forColumn(int column) {
-        return of(column);
-    }
-
     default Hasher and(String column) {
         Hasher and = Hasher.of(column);
         return r -> new CombinationHash(map(r), and.map(r));

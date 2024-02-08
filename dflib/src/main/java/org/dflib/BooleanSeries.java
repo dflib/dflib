@@ -54,15 +54,6 @@ public interface BooleanSeries extends Series<Boolean> {
     BooleanSeries materialize();
 
     /**
-     * @since 0.16
-     * @deprecated in favor of {@link #materialize()}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default BooleanSeries materializeBool() {
-        return materialize();
-    }
-
-    /**
      * @since 0.18
      */
     @Override
@@ -125,15 +116,6 @@ public interface BooleanSeries extends Series<Boolean> {
         return len < 0 ? tail(size() + len) : rangeBool(0, len);
     }
 
-    /**
-     * @since 0.16
-     * @deprecated in favor of {@link #head(int)}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default BooleanSeries headBool(int len) {
-        return head(len);
-    }
-
     @Override
     default BooleanSeries tail(int len) {
         int size = size();
@@ -143,15 +125,6 @@ public interface BooleanSeries extends Series<Boolean> {
         }
 
         return len < 0 ? head(size + len) : rangeBool(size - len, size);
-    }
-
-    /**
-     * @since 0.16
-     * @deprecated in favor of {@link #tail(int)}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default BooleanSeries tailBool(int len) {
-        return tail(len);
     }
 
     @Override
@@ -221,16 +194,6 @@ public interface BooleanSeries extends Series<Boolean> {
 
     @Override
     BooleanSeries unique();
-
-    /**
-     * @return a BooleanSeries that contains non-repeating values from this Series.
-     * @since 0.16
-     * @deprecated in favor of {@link #unique()}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default BooleanSeries uniqueBool() {
-        return unique();
-    }
 
     BooleanSeries and(BooleanSeries another);
 

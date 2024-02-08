@@ -91,41 +91,5 @@ public class DataFrame_ReplaceTest {
                 .expectRow(1, LocalDateTime.of(2019, 2, 28, 13, 11, 12))
                 .expectRow(2, (Object) null);
     }
-
-    @Test
-    public void toEnumFromNumColumn() {
-        DataFrame df = DataFrame
-                .foldByRow("a", "b")
-                .of(
-                        1, "x",
-                        null, "z",
-                        0, "y")
-                .toEnumFromNumColumn(0, X.class);
-
-        new DataFrameAsserts(df, "a", "b")
-                .expectHeight(3)
-                .expectRow(0, X.b, "x")
-                .expectRow(1, null, "z")
-                .expectRow(2, X.a, "y");
-    }
-
-    @Test
-    public void toEnumFromStringColumn() {
-        DataFrame df = DataFrame
-                .foldByRow("a", "b")
-                .of(
-                        "b", "x",
-                        null, "z",
-                        "a", "y")
-                .toEnumFromStringColumn(0, X.class);
-
-        new DataFrameAsserts(df, "a", "b")
-                .expectHeight(3)
-                .expectRow(0, X.b, "x")
-                .expectRow(1, null, "z")
-                .expectRow(2, X.a, "y");
-    }
-
-    enum X {a, b, c, d, e}
 }
 

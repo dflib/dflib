@@ -1,7 +1,6 @@
 package org.dflib;
 
 import org.dflib.agg.DataFrameAggregator;
-import org.dflib.builder.BoolAccum;
 import org.dflib.builder.DataFrameArrayByRowBuilder;
 import org.dflib.builder.DataFrameByColumnBuilder;
 import org.dflib.builder.DataFrameByRowBuilder;
@@ -13,7 +12,6 @@ import org.dflib.pivot.PivotBuilder;
 import org.dflib.row.RowProxy;
 import org.dflib.sample.Sampler;
 import org.dflib.select.RowIndexer;
-import org.dflib.series.RowMappedSeries;
 import org.dflib.window.WindowBuilder;
 
 import java.util.Iterator;
@@ -173,114 +171,6 @@ public interface DataFrame extends Iterable<RowProxy> {
     <T> Series<T> getColumn(int pos) throws IllegalArgumentException;
 
     /**
-     * Returns a named DataFrame column as DoubleSeries. If the column is not in the DataFrame or is not an
-     * {@link DoubleSeries}, an exception is thrown.
-     *
-     * @param name column label
-     * @return a named DataFrame column as DoubleSeries.
-     * @since 0.6
-     * @deprecated in favor of <code>getColumn(int).castAsDouble()</code>
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default DoubleSeries getColumnAsDouble(String name) throws IllegalArgumentException {
-        try {
-            return getColumn(name).castAsDouble();
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * Returns a DataFrame column at the specified position as DoubleSeries. If the column is not in the DataFrame or is
-     * not an {@link DoubleSeries}, an exception is thrown.
-     *
-     * @param pos column position in the DataFrame
-     * @return a named DataFrame column as DoubleSeries.
-     * @since 0.6
-     * @deprecated in favor of <code>getColumn(int).castAsDouble()</code>
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default DoubleSeries getColumnAsDouble(int pos) throws IllegalArgumentException {
-        try {
-            return getColumn(pos).castAsDouble();
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * Returns a named DataFrame column as BooleanSeries. If the column is not in the DataFrame or is not an
-     * {@link BooleanSeries}, an exception is thrown.
-     *
-     * @param name column label
-     * @return a named DataFrame column as BooleanSeries.
-     * @since 0.17
-     * @deprecated in favor of <code>getColumn(String).castAsBool()</code>
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default BooleanSeries getColumnAsBool(String name) throws IllegalArgumentException {
-        try {
-            return getColumn(name).castAsBool();
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * Returns a DataFrame column at the specified position as BooleanSeries. If the column is not in the DataFrame or is
-     * not an {@link BooleanSeries}, an exception is thrown.
-     *
-     * @param pos column position in the DataFrame
-     * @return a named DataFrame column as BooleanSeries.
-     * @since 0.17
-     * @deprecated in favor of <code>getColumn(int).castAsBool()</code>
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default BooleanSeries getColumnAsBool(int pos) throws IllegalArgumentException {
-        try {
-            return getColumn(pos).castAsBool();
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * Returns a named DataFrame column as BooleanSeries. If the column is not in the DataFrame or is not an
-     * {@link LongSeries}, an exception is thrown.
-     *
-     * @param name column label
-     * @return a named DataFrame column as LongSeries.
-     * @since 0.6
-     * @deprecated use <code>getColumn(String).castAsLong()</code> instead
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default LongSeries getColumnAsLong(String name) throws IllegalArgumentException {
-        try {
-            return getColumn(name).castAsLong();
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * Returns a DataFrame column at the specified position as LongSeries. If the column is not in the DataFrame or is
-     * not an {@link LongSeries}, an exception is thrown.
-     *
-     * @param pos column position in the DataFrame
-     * @return a named DataFrame column as LongSeries.
-     * @since 0.6
-     * @deprecated use <code>getColumn(int).castAsLong()</code> instead
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default LongSeries getColumnAsLong(int pos) throws IllegalArgumentException {
-        try {
-            return getColumn(pos).castAsLong();
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
      * Returns the number of rows in this DataFrame, aka "height". Depending on the type of columns in the DataFrame,
      * this operation may or may not be constant speed. In the worst case it may cause a full scan through at least one
      * of the columns.
@@ -344,41 +234,6 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * Creates a new Series with values mapped by applying row mapper function to the DataFrame. The returned Series
-     * size is the same this DataFrame height.
-     *
-     * @param rowMapper a function applied to each row of this DataFrame
-     * @return a new Series.
-     * @since 0.6
-     * @deprecated use <code>addColumn("name", rowMapper).getColumn("name")</code> instead
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default <T> Series<T> mapColumn(RowToValueMapper<T> rowMapper) {
-        return new RowMappedSeries<>(this, rowMapper);
-    }
-
-    /**
-     * Creates a new BooleanSeries with values mapped by applying row mapper function to the DataFrame. The returned
-     * series size is the same this DataFrame height.
-     *
-     * @param rowMapper a boolean function applied to each row of this DataFrame
-     * @return a new BooleanSeries.
-     * @since 0.17
-     * @deprecated instead use {@link #rows(RowPredicate)} and then {@link RowSet#locate()}, or {@link Condition#eval(DataFrame)}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default BooleanSeries mapColumnAsBool(RowToBooleanValueMapper rowMapper) {
-        // don't bother to make it lazy... boolean columns are very compact compared to the rest of the data set
-        BoolAccum data = new BoolAccum(height());
-
-        for (RowProxy row : this) {
-            data.pushBool(rowMapper.map(row));
-        }
-
-        return data.toSeries();
-    }
-
-    /**
      * Creates a new DataFrame which is the exact copy of this DataFrame, only with a single column values transformed
      * using the provided converter function.
      *
@@ -414,28 +269,6 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame replaceColumn(int position, Exp<?> exp) {
-        return cols(position).map(exp);
-    }
-
-    /**
-     * Replaces column contents using the expression.
-     *
-     * @since 0.11
-     * @deprecated in favor of {@link #cols(String...)} and then {@link ColumnSet#map(Exp[])}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default DataFrame convertColumn(String name, Exp<?> exp) {
-        return cols(name).map(exp);
-    }
-
-    /**
-     * Replaces column contents using the expression.
-     *
-     * @since 0.11
-     * @deprecated in favor of {@link #cols(int...)}  and then {@link ColumnSet#map(Exp[])}
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default DataFrame convertColumn(int position, Exp<?> exp) {
         return cols(position).map(exp);
     }
 
@@ -498,42 +331,6 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * @since 0.6
-     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactInt(IntValueMapper)}  instead
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default <V> DataFrame toIntColumn(String columnLabel, IntValueMapper<V> converter) {
-        return cols(columnLabel).compactInt(converter);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactInt(IntValueMapper)}  instead
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default <V> DataFrame toIntColumn(int pos, IntValueMapper<V> converter) {
-        return cols(pos).compactInt(converter);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactInt(int)}  instead
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default DataFrame toIntColumn(String columnLabel, int forNull) {
-        return cols(columnLabel).compactInt(forNull);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactInt(int)}  instead
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default DataFrame toIntColumn(int pos, int forNull) {
-        return cols(pos).compactInt(forNull);
-    }
-
-    /**
      * "Compacts" the internal representation of the Double column, converting it to an {@link DoubleSeries}.
      *
      * @param columnLabel name of a column to convert
@@ -588,42 +385,6 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame compactDouble(int pos, double forNull) {
-        return cols(pos).compactDouble(forNull);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactDouble(DoubleValueMapper)}  instead
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default <V> DataFrame toDoubleColumn(String columnLabel, DoubleValueMapper<V> converter) {
-        return cols(columnLabel).compactDouble(converter);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactDouble(DoubleValueMapper)}  instead
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default <V> DataFrame toDoubleColumn(int pos, DoubleValueMapper<V> converter) {
-        return cols(pos).compactDouble(converter);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactDouble(double)}  instead
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default DataFrame toDoubleColumn(String columnLabel, double forNull) {
-        return cols(columnLabel).compactDouble(forNull);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactDouble(double)}  instead
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default DataFrame toDoubleColumn(int pos, double forNull) {
         return cols(pos).compactDouble(forNull);
     }
 
@@ -684,42 +445,6 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * @since 0.17
-     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactBool(BoolValueMapper)} instead
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default <V> DataFrame toBoolColumn(String columnLabel, BoolValueMapper<V> converter) {
-        return cols(columnLabel).compactBool(converter);
-    }
-
-    /**
-     * @since 0.17
-     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactBool(BoolValueMapper)} instead
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default <V> DataFrame toBoolColumn(int pos, BoolValueMapper<V> converter) {
-        return cols(pos).compactBool(converter);
-    }
-
-    /**
-     * @since 0.17
-     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactBool()} instead
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default DataFrame toBoolColumn(String columnLabel) {
-        return cols(columnLabel).compactBool();
-    }
-
-    /**
-     * @since 0.17
-     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactBool()} instead
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default DataFrame toBoolColumn(int pos) {
-        return cols(pos).compactBool();
-    }
-
-    /**
      * "Compacts" the internal representation of the Long column, converting it to a {@link LongSeries}.
      *
      * @param columnLabel name of a column to convert
@@ -773,91 +498,6 @@ public interface DataFrame extends Iterable<RowProxy> {
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame compactLong(int pos, long forNull) {
         return cols(pos).compactLong(forNull);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactLong(LongValueMapper)} instead
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default <V> DataFrame toLongColumn(String columnLabel, LongValueMapper<V> converter) {
-        return cols(columnLabel).compactLong(converter);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactLong(LongValueMapper)} instead
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default <V> DataFrame toLongColumn(int pos, LongValueMapper<V> converter) {
-        return cols(pos).compactLong(converter);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactLong(long)} instead
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default DataFrame toLongColumn(String columnLabel, long forNull) {
-        return cols(columnLabel).compactLong(forNull);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactLong(long)} instead
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default DataFrame toLongColumn(int pos, long forNull) {
-        return cols(pos).compactLong(forNull);
-    }
-
-    /**
-     * @param columnLabel name of a column to convert
-     * @param <E>         converted column enum type
-     * @return a new DataFrame
-     * @since 0.6
-     * @deprecated use <code>convertColumn(name, $str(name).castAsEnum(type))</code> instead
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default <E extends Enum<E>> DataFrame toEnumFromStringColumn(String columnLabel, Class<E> enumType) {
-        int pos = getColumnsIndex().position(columnLabel);
-        return toEnumFromStringColumn(pos, enumType);
-    }
-
-    /**
-     * @param pos position of a column to convert
-     * @param <E> converted column enum type
-     * @return a new DataFrame
-     * @since 0.6
-     * @deprecated use <code>convertColumn(pos, $str(pos).castAsEnum(type))</code> instead
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default <E extends Enum<E>> DataFrame toEnumFromStringColumn(int pos, Class<E> enumType) {
-        return replaceColumn(pos, Exp.$col(pos).castAsStr().castAsEnum(enumType));
-    }
-
-    /**
-     * @param columnLabel name of a column to convert
-     * @param <E>         converted column enum type
-     * @return a new DataFrame
-     * @since 0.6
-     * @deprecated instead use {@link #cols(int...)} and then  <code>map($int(name).castAsEnum(type))</code>
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default <E extends Enum<E>> DataFrame toEnumFromNumColumn(String columnLabel, Class<E> enumType) {
-        return cols(columnLabel).map(Exp.$col(columnLabel).castAsInt().castAsEnum(enumType));
-    }
-
-    /**
-     * @param pos position of a column to convert
-     * @param <E> converted column enum type
-     * @return a new DataFrame
-     * @since 0.6
-     * @deprecated instead use {@link #cols(int...)} and then <code>map($int(pos).castAsEnum(type))</code>
-     */
-    @Deprecated(since = "0.18", forRemoval = true)
-    default <E extends Enum<E>> DataFrame toEnumFromNumColumn(int pos, Class<E> enumType) {
-        return cols(pos).map(Exp.$col(pos).castAsInt().castAsEnum(enumType));
     }
 
     /**

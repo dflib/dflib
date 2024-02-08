@@ -1,7 +1,5 @@
 package org.dflib;
 
-import org.dflib.unit.DoubleSeriesAsserts;
-import org.dflib.unit.LongSeriesAsserts;
 import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -42,63 +40,5 @@ public class DataFrame_GetColumnTest {
         DataFrame df = DataFrame.foldByRow("a").of(1, 2);
         assertThrows(IllegalArgumentException.class, () -> df.getColumn(1));
         assertThrows(IllegalArgumentException.class, () -> df.getColumn(-1));
-    }
-
-    @Deprecated
-    @Test
-    public void asDouble_byLabel() {
-        DataFrame df = DataFrame
-                .byColumn("a", "b")
-                .of(Series.of("a", "b", "x"), Series.ofDouble(3., 6.3, -1.01));
-
-        DoubleSeries cb = df.getColumnAsDouble("b");
-
-        new DoubleSeriesAsserts(cb).expectData(3., 6.3, -1.01);
-    }
-
-    @Deprecated
-    @Test
-    public void asDouble_byPosition() {
-        DataFrame df = DataFrame
-                .byColumn("a", "b")
-                .of(Series.of("a", "b", "x"), Series.ofDouble(3., 6.3, -1.01));
-
-        DoubleSeries cb = df.getColumnAsDouble(1);
-
-        new DoubleSeriesAsserts(cb).expectData(3., 6.3, -1.01);
-    }
-
-    @Deprecated
-    @Test
-    public void asDouble_NotDoubleLabel() {
-        DataFrame df = DataFrame
-                .byColumn("a", "b")
-                .of(Series.of("a", "b", "x"), Series.ofDouble(3., 6.3, -1.01));
-
-        assertThrows(IllegalArgumentException.class, () -> df.getColumnAsDouble("a"));
-    }
-
-    @Deprecated
-    @Test
-    public void asLong_byLabel() {
-        DataFrame df = DataFrame
-                .byColumn("a", "b")
-                .of(Series.of("a", "b", "x"), Series.ofLong(3, 6, -1));
-
-        LongSeries cb = df.getColumnAsLong("b");
-
-        new LongSeriesAsserts(cb).expectData(3, 6, -1);
-    }
-
-    @Deprecated
-    @Test
-    public void asLong_byPosition() {
-        DataFrame df = DataFrame
-                .byColumn("a", "b")
-                .of(Series.of("a", "b", "x"), Series.ofLong(3, 6, -1));
-
-        LongSeries cb = df.getColumnAsLong(1);
-
-        new LongSeriesAsserts(cb).expectData(3, 6, -1);
     }
 }
