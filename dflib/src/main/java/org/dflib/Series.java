@@ -115,23 +115,6 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
-     * @deprecated in favor of {@link #of(Object[])}
-     */
-    @Deprecated(since = "0.16", forRemoval = true)
-    @SafeVarargs
-    static <T> Series<T> forData(T... data) {
-        return of(data);
-    }
-
-    /**
-     * @deprecated in favor of {@link #ofIterable(Iterable)}
-     */
-    @Deprecated(since = "0.16", forRemoval = true)
-    static <T> Series<T> forData(Iterable<T> data) {
-        return ofIterable(data);
-    }
-
-    /**
      * Returns a "nominal" type of elements this Series object. Since most Series do not carry the type around, this
      * may be the "Object.class" in all cases except for primitive Series. Use a more expensive
      * {@link #getInferredType()} to check the real type of series values.

@@ -6,14 +6,6 @@ import org.dflib.row.RowProxy;
 public interface RowPredicate {
 
     /**
-     * @deprecated in favor of {@link #of(int, ValuePredicate)}
-     */
-    @Deprecated(since = "0.16", forRemoval = true)
-    static <V> RowPredicate forColumn(int pos, ValuePredicate<V> columnPredicate) {
-        return of(pos, columnPredicate);
-    }
-
-    /**
      * @since 0.16
      */
     static <V> RowPredicate of(int pos, ValuePredicate<V> columnPredicate) {

@@ -145,33 +145,6 @@ public interface DataFrame extends Iterable<RowProxy> {
         return new DataFrameFoldByColumnBuilder(columnIndex);
     }
 
-
-    /**
-     * Creates a DataFrame builder with provided column labels. Callers can then pass in-memory data in various forms
-     * to the returned builder to create a DataFrame.
-     *
-     * @since 0.6
-     * @deprecated use one of {@link #byColumn(String...)}, {@link #byRow(Extractor[])}, {@link #byArrayRow(String...)},
-     * {@link #foldByColumn(String...)}, {@link #foldByRow(String...)}
-     */
-    @Deprecated(since = "0.16", forRemoval = true)
-    static DataFrameBuilder newFrame(String... columnLabels) {
-        return new DataFrameBuilder(Index.of(Objects.requireNonNull(columnLabels)));
-    }
-
-    /**
-     * Creates a DataFrame builder with provided column index. Callers can then pass in-memory data in various forms
-     * to the returned builder to create a DataFrame.
-     *
-     * @since 0.6
-     * @deprecated use one of {@link #byColumn(Index)} , {@link #byRow(Extractor[])}, {@link #byArrayRow(String...)},
-     * {@link #foldByColumn(Index)}, {@link #foldByRow(Index)}
-     */
-    @Deprecated(since = "0.16", forRemoval = true)
-    static DataFrameBuilder newFrame(Index columnIndex) {
-        return new DataFrameBuilder(columnIndex);
-    }
-
     /**
      * Returns user-assigned name of the DataFrame. It is null by default, and can be set via {@link #as(String)}.
      * A name is useful in various contexts. E.g. the result of a join may prefix column names with original DataFrame
@@ -290,18 +263,6 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * @deprecated in favor of <code>getColumn(String).castAsBool()</code>
-     */
-    @Deprecated(since = "0.16", forRemoval = true)
-    default BooleanSeries getColumnAsBoolean(String name) throws IllegalArgumentException {
-        try {
-            return getColumn(name).castAsBool();
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
      * Returns a DataFrame column at the specified position as BooleanSeries. If the column is not in the DataFrame or is
      * not an {@link BooleanSeries}, an exception is thrown.
      *
@@ -312,18 +273,6 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     @Deprecated(since = "0.18", forRemoval = true)
     default BooleanSeries getColumnAsBool(int pos) throws IllegalArgumentException {
-        try {
-            return getColumn(pos).castAsBool();
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * @deprecated in favor of <code>getColumn(int).castAsBool()</code>
-     */
-    @Deprecated(since = "0.16", forRemoval = true)
-    default BooleanSeries getColumnAsBoolean(int pos) throws IllegalArgumentException {
         try {
             return getColumn(pos).castAsBool();
         } catch (ClassCastException e) {

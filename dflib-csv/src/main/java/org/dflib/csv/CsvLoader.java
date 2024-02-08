@@ -251,24 +251,6 @@ public class CsvLoader {
     }
 
     /**
-     * @since 0.6
-     * @deprecated in favor of {@link #boolColumn(int)}
-     */
-    @Deprecated(since = "0.16", forRemoval = true)
-    public CsvLoader booleanColumn(int column) {
-        return boolColumn(column);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #boolColumn(String)}
-     */
-    @Deprecated(since = "0.16", forRemoval = true)
-    public CsvLoader booleanColumn(String column) {
-        return boolColumn(column);
-    }
-
-    /**
      * @since 0.16
      */
     public CsvLoader boolColumn(int column) {

@@ -1,3 +1,7 @@
+## Release 1.0.0-M20
+
+* #249 Remove APIs deprecated since 0.16
+
 ## Release 1.0.0-M19
 
 * #78 DataFrame.rows(..) : transformation over a subset of rows
