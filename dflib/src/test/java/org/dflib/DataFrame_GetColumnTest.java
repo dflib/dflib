@@ -1,7 +1,6 @@
 package org.dflib;
 
 import org.dflib.unit.DoubleSeriesAsserts;
-import org.dflib.unit.IntSeriesAsserts;
 import org.dflib.unit.LongSeriesAsserts;
 import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
@@ -44,41 +43,6 @@ public class DataFrame_GetColumnTest {
         assertThrows(IllegalArgumentException.class, () -> df.getColumn(1));
         assertThrows(IllegalArgumentException.class, () -> df.getColumn(-1));
     }
-
-    @Deprecated
-    @Test
-    public void asInt_byLabel() {
-        DataFrame df = DataFrame
-                .byColumn("a", "b")
-                .of(Series.of("a", "b", "x"), Series.ofInt(3, 6, -1));
-
-        IntSeries cb = df.getColumnAsInt("b");
-
-        new IntSeriesAsserts(cb).expectData(3, 6, -1);
-    }
-
-    @Deprecated
-    @Test
-    public void asInt_byPosition() {
-        DataFrame df = DataFrame
-                .byColumn("a", "b")
-                .of(Series.of("a", "b", "x"), Series.ofInt(3, 6, -1));
-
-        IntSeries cb = df.getColumnAsInt(1);
-
-        new IntSeriesAsserts(cb).expectData(3, 6, -1);
-    }
-
-    @Deprecated
-    @Test
-    public void asInt_NotIntLabel() {
-        DataFrame df = DataFrame
-                .byColumn("a", "b")
-                .of(Series.of("a", "b", "x"), Series.ofInt(3, 6, -1));
-
-        assertThrows(IllegalArgumentException.class, () -> df.getColumnAsInt("a"));
-    }
-
 
     @Deprecated
     @Test

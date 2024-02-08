@@ -173,42 +173,6 @@ public interface DataFrame extends Iterable<RowProxy> {
     <T> Series<T> getColumn(int pos) throws IllegalArgumentException;
 
     /**
-     * Returns a named DataFrame column as IntSeries. If the column is not in the DataFrame or is not an
-     * {@link IntSeries}, an exception is thrown.
-     *
-     * @param name column label
-     * @return a named DataFrame column as IntSeries.
-     * @since 0.6
-     * @deprecated use <code>getColumn(String).castAsInt()</code> instead
-     */
-    @Deprecated(since = "0.17", forRemoval = true)
-    default IntSeries getColumnAsInt(String name) throws IllegalArgumentException {
-        try {
-            return getColumn(name).castAsInt();
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * Returns a DataFrame column at the specified position as IntSeries. If the column is not in the DataFrame or is
-     * not an {@link IntSeries}, an exception is thrown.
-     *
-     * @param pos column position in the DataFrame
-     * @return a named DataFrame column as IntSeries.
-     * @since 0.6
-     * @deprecated use <code>getColumn(int).castAsInt()</code> instead
-     */
-    @Deprecated(since = "0.17", forRemoval = true)
-    default IntSeries getColumnAsInt(int pos) throws IllegalArgumentException {
-        try {
-            return getColumn(pos).castAsInt();
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
      * Returns a named DataFrame column as DoubleSeries. If the column is not in the DataFrame or is not an
      * {@link DoubleSeries}, an exception is thrown.
      *
@@ -412,14 +376,6 @@ public interface DataFrame extends Iterable<RowProxy> {
         }
 
         return data.toSeries();
-    }
-
-    /**
-     * @deprecated instead use {@link #rows(RowPredicate)} and then {@link RowSet#locate()}, or {@link Condition#eval(DataFrame)}
-     */
-    @Deprecated(since = "0.17", forRemoval = true)
-    default BooleanSeries mapColumnAsBoolean(RowToBooleanValueMapper rowMapper) {
-        return mapColumnAsBool(rowMapper);
     }
 
     /**
@@ -687,15 +643,6 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * @since 0.6
-     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactBool(BoolValueMapper)} instead
-     */
-    @Deprecated(since = "0.17", forRemoval = true)
-    default <V> DataFrame toBooleanColumn(String columnLabel, BoolValueMapper<V> converter) {
-        return cols(columnLabel).compactBool(converter);
-    }
-
-    /**
      * "Compacts" the internal representation of the Boolean column, converting it to a {@link BooleanSeries}.
      *
      * @param pos       position of a column to convert
@@ -707,15 +654,6 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default <V> DataFrame compactBool(int pos, BoolValueMapper<V> converter) {
-        return cols(pos).compactBool(converter);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactBool(BoolValueMapper)} instead
-     */
-    @Deprecated(since = "0.17", forRemoval = true)
-    default <V> DataFrame toBooleanColumn(int pos, BoolValueMapper<V> converter) {
         return cols(pos).compactBool(converter);
     }
 
@@ -733,15 +671,6 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * @since 0.6
-     * @deprecated use {@link #cols(String...)} and then {@link ColumnSet#compactBool()} instead
-     */
-    @Deprecated(since = "0.17", forRemoval = true)
-    default DataFrame toBooleanColumn(String columnLabel) {
-        return cols(columnLabel).compactBool();
-    }
-
-    /**
      * "Compacts" the internal representation of the Boolean column, converting it to a {@link BooleanSeries}.
      *
      * @param pos position of a column to convert
@@ -751,15 +680,6 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     @Deprecated(since = "1.0.0-M19", forRemoval = true)
     default DataFrame compactBool(int pos) {
-        return cols(pos).compactBool();
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated use {@link #cols(int...)} and then {@link ColumnSet#compactBool()} instead
-     */
-    @Deprecated(since = "0.17", forRemoval = true)
-    default DataFrame toBooleanColumn(int pos) {
         return cols(pos).compactBool();
     }
 
