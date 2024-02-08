@@ -4,7 +4,7 @@
 
 * [dflib #235](https://github.com/bootique/bootique-agrest/issues/235): Since the project got moved to dflib.org,
 you will need to change your Maven/Gradle artifact group from `com.nhl.dflib` to `org.dflib` (e.g. 
-`org.dflib:dflib-bom:1.0.0-M19`), and in the Java code change the import packages from `com.nhl.dflib` to `org.dflib`.
+`org.dflib:dflib-bom:1.0.0-M19`). And in the Java code, change the import packages from `com.nhl.dflib` to `org.dflib`.
 
 ## 0.16
 * [dflib #181](https://github.com/bootique/bootique-agrest/issues/181): This task changes how to manually build 
