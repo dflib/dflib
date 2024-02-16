@@ -17,7 +17,7 @@ import java.util.Random;
  */
 public class DataFrameByRowBuilder<S, B extends DataFrameByRowBuilder<S, B>> {
 
-    static final int DEFAULT_CAPACITY = 10;
+    static final int DEFAULT_CAPACITY = 1000;
 
     private final Extractor<S, ?>[] columnsExtractors;
 
@@ -49,11 +49,19 @@ public class DataFrameByRowBuilder<S, B extends DataFrameByRowBuilder<S, B>> {
         return (B) this;
     }
 
+    /**
+     * Explicitly sets builder "vertical" capacity to avoid internal array resizing. If not set, DFLib will make a
+     * guess if possible or use a default.
+     */
     public B capacity(int capacity) {
         this.capacity = capacity;
         return (B) this;
     }
 
+    /**
+     * @deprecated in cases where the capacity can be guessed, we can do it automatically.
+     */
+    @Deprecated(since = "1.0.0-M20", forRemoval = true)
     public B guessCapacity(Iterable<S> source) {
         this.capacity = (source instanceof Collection) ? ((Collection) source).size() : DEFAULT_CAPACITY;
         return (B) this;
@@ -90,21 +98,27 @@ public class DataFrameByRowBuilder<S, B extends DataFrameByRowBuilder<S, B>> {
         return (B) this;
     }
 
+    public DataFrame ofIterable(Iterable<S> sources) {
+        int autoCapacity = (sources instanceof Collection) ? ((Collection) sources).size() : -1;
+        int capacity = guessCapacity(autoCapacity);
+
+        RowAccum<S> rowAccum = rowAccum(capacity);
+        return new DataFrameAppender<>(rowAccum).append(sources).toDataFrame();
+    }
+
     /**
      * Creates an "appender" with this builder parameters. The appender can be used to build the DataFrame row by row.
      */
     public DataFrameAppender<S> appender() {
-        RowAccum<S> rowAccum = rowAccum();
+        int capacity = guessCapacity(-1);
+
+        RowAccum<S> rowAccum = rowAccum(capacity);
         return new DataFrameAppender<>(rowAccum);
     }
 
-    public DataFrame ofIterable(Iterable<S> sources) {
-        return appender().append(sources).toDataFrame();
-    }
-
-    protected RowAccum<S> rowAccum() {
+    protected RowAccum<S> rowAccum(int capacity) {
         Index index = columnsIndex();
-        SeriesAppender<S, ?>[] builders = builders(index);
+        SeriesAppender<S, ?>[] builders = builders(index, capacity);
         RowAccum<S> accum = new DefaultRowAccum<>(index, builders);
 
         if (rowSampleSize > 0) {
@@ -116,12 +130,6 @@ public class DataFrameByRowBuilder<S, B extends DataFrameByRowBuilder<S, B>> {
         }
 
         return accum;
-    }
-
-    protected int capacity() {
-        return capacity > 0
-                ? capacity
-                : (rowSampleSize > 0 ? rowSampleSize : DEFAULT_CAPACITY);
     }
 
     protected Index columnsIndex() {
@@ -142,7 +150,7 @@ public class DataFrameByRowBuilder<S, B extends DataFrameByRowBuilder<S, B>> {
         return columnsExtractors.length;
     }
 
-    protected SeriesAppender<S, ?>[] builders(Index columnsIndex) {
+    protected SeriesAppender<S, ?>[] builders(Index columnsIndex, int capacity) {
         int w = columnsIndex.size();
         int cw = columnsExtractors.length;
         SeriesAppender<S, ?>[] builders = new SeriesAppender[w];
@@ -151,7 +159,6 @@ public class DataFrameByRowBuilder<S, B extends DataFrameByRowBuilder<S, B>> {
             throw new IllegalArgumentException("Mismatch between the number of extractors and index width - " + cw + " vs " + w);
         }
 
-        int capacity = capacity();
         for (int i = 0; i < w; i++) {
             builders[i] = new SeriesAppender<>(columnsExtractors[i], capacity);
         }
@@ -161,5 +168,17 @@ public class DataFrameByRowBuilder<S, B extends DataFrameByRowBuilder<S, B>> {
 
     protected Random sampleRandom() {
         return this.rowsSampleRandom != null ? this.rowsSampleRandom : Sampler.getDefaultRandom();
+    }
+
+    protected int guessCapacity(int guessedCapacity) {
+        int defaultCapacity = guessedCapacity > 0 ? guessedCapacity : DEFAULT_CAPACITY;
+
+        if (this.capacity > 0) {
+            return this.capacity;
+        } else if (rowSampleSize > 0) {
+            return Math.min(rowSampleSize, defaultCapacity);
+        } else {
+            return defaultCapacity;
+        }
     }
 }

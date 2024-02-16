@@ -15,7 +15,9 @@ public class DataFrameArrayByRowBuilder extends DataFrameByRowBuilder<Object[], 
 
     @Override
     public DataFrameArrayAppender appender() {
-        RowAccum<Object[]> rowAccum = rowAccum();
+        int capacity = guessCapacity(-1);
+
+        RowAccum<Object[]> rowAccum = rowAccum(capacity);
         return new DataFrameArrayAppender(rowAccum);
     }
 }
