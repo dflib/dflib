@@ -13,10 +13,14 @@ public class DataFrameArrayByRowBuilder extends DataFrameByRowBuilder<Object[], 
         super(extractors);
     }
 
+    // override to return covariant subclass
     @Override
     public DataFrameArrayAppender appender() {
-        int capacity = guessCapacity(-1);
+        return appender(guessCapacity(-1));
+    }
 
+    @Override
+    protected DataFrameArrayAppender appender(int capacity) {
         RowAccum<Object[]> rowAccum = rowAccum(capacity);
         return new DataFrameArrayAppender(rowAccum);
     }

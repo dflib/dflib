@@ -102,16 +102,17 @@ public class DataFrameByRowBuilder<S, B extends DataFrameByRowBuilder<S, B>> {
         int autoCapacity = (sources instanceof Collection) ? ((Collection) sources).size() : -1;
         int capacity = guessCapacity(autoCapacity);
 
-        RowAccum<S> rowAccum = rowAccum(capacity);
-        return new DataFrameAppender<>(rowAccum).append(sources).toDataFrame();
+        return appender(capacity).append(sources).toDataFrame();
     }
 
     /**
      * Creates an "appender" with this builder parameters. The appender can be used to build the DataFrame row by row.
      */
     public DataFrameAppender<S> appender() {
-        int capacity = guessCapacity(-1);
+        return appender(guessCapacity(-1));
+    }
 
+    protected DataFrameAppender<S> appender(int capacity) {
         RowAccum<S> rowAccum = rowAccum(capacity);
         return new DataFrameAppender<>(rowAccum);
     }
