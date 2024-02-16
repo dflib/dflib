@@ -110,4 +110,25 @@ public class DataFrame_ByArrayRowTest {
                 .expectRow(0, "ab", 3)
                 .expectRow(1, "ad", 6);
     }
+
+    @Test
+    public void ofIterable() {
+
+        List<Object[]> data = List.of(new Object[]{"L1", -1}, new Object[]{"L2", -2});
+
+        DataFrame df = DataFrame
+                .byArrayRow(
+                        Extractor.$col(a -> a[0]),
+                        Extractor.$int(a -> (Integer) a[1])
+                )
+                .columnNames("o", "i")
+                .ofIterable(data);
+
+        new DataFrameAsserts(df, "o", "i")
+                .expectHeight(2)
+                .expectIntColumns("i")
+
+                .expectRow(0, "L1", -1)
+                .expectRow(1, "L2", -2);
+    }
 }
