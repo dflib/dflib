@@ -8,7 +8,7 @@ import org.dflib.IntSeries;
 import org.dflib.Series;
 import org.dflib.builder.ObjectAccum;
 import org.dflib.builder.ValueAccum;
-import org.dflib.exec.Environment;
+import org.dflib.Environment;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;

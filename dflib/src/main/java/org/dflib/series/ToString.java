@@ -1,7 +1,7 @@
 package org.dflib.series;
 
 import org.dflib.Series;
-import org.dflib.exec.Environment;
+import org.dflib.Environment;
 
 class ToString {
 

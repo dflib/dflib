@@ -2,7 +2,6 @@ package org.dflib;
 
 import org.dflib.concat.HConcat;
 import org.dflib.concat.VConcat;
-import org.dflib.exec.Environment;
 import org.dflib.groupby.Grouper;
 import org.dflib.row.ColumnsRowProxy;
 import org.dflib.row.RowProxy;

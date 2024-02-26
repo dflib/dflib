@@ -1,7 +1,7 @@
 package org.dflib.agg;
 
 import org.dflib.DataFrame;
-import org.dflib.exec.Environment;
+import org.dflib.Environment;
 import org.dflib.Exp;
 import org.dflib.Index;
 import org.dflib.Series;
