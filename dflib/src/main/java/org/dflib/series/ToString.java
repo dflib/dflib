@@ -1,14 +1,11 @@
 package org.dflib.series;
 
-import org.dflib.Printers;
 import org.dflib.Series;
+import org.dflib.exec.Environment;
 
 class ToString {
 
     static String toString(Series<?> series) {
-        String name = series.getClass().getSimpleName();
-        StringBuilder buffer = new StringBuilder(name).append(" [");
-        Printers.inline.print(buffer, series);
-        return buffer.append("]").toString();
+        return Environment.commonEnv().printer().print(new StringBuilder(), series).toString();
     }
 }

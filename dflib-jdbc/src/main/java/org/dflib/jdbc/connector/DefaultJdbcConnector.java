@@ -70,6 +70,7 @@ public class DefaultJdbcConnector implements JdbcConnector {
     }
 
     protected SqlLogger createSqlLogger() {
+        // Ignoring Environment printer, as SQL params always need to be printed inline
         return new SqlLogger(Printers.inline);
     }
 

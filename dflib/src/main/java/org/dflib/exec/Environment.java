@@ -1,5 +1,8 @@
 package org.dflib.exec;
 
+import org.dflib.print.InlineClassExposingPrinter;
+import org.dflib.print.Printer;
+
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
@@ -13,10 +16,14 @@ import java.util.concurrent.ForkJoinPool;
  */
 public class Environment {
 
-    private static Environment commonEnv = new Environment(ForkJoinPool.commonPool(), 5000);
+    private static Environment commonEnv = new Environment(
+            ForkJoinPool.commonPool(),
+            5000,
+            new InlineClassExposingPrinter());
 
     private final ExecutorService threadPool;
     private final int parallelExecThreshold;
+    private final Printer printer;
 
     public static Environment commonEnv() {
         return commonEnv;
@@ -29,7 +36,8 @@ public class Environment {
     public static void setThreadPool(ExecutorService threadPool) {
         Environment.commonEnv = new Environment(
                 Objects.requireNonNull(threadPool),
-                commonEnv.parallelExecThreshold
+                commonEnv.parallelExecThreshold,
+                commonEnv.printer
         );
     }
 
@@ -39,15 +47,31 @@ public class Environment {
     public static void setParallelExecThreshold(int parallelExecThreshold) {
         Environment.commonEnv = new Environment(
                 commonEnv.threadPool,
-                parallelExecThreshold
+                parallelExecThreshold,
+                commonEnv.printer
+        );
+    }
+
+    /**
+     * Sets a common printer for Series and DataFrames
+     *
+     * @since 1.0.0-M20
+     */
+    public static void setPrinter(Printer printer) {
+        Environment.commonEnv = new Environment(
+                commonEnv.threadPool,
+                commonEnv.parallelExecThreshold,
+                printer
         );
     }
 
     protected Environment(
             ExecutorService threadPool,
-            int parallelExecThreshold) {
+            int parallelExecThreshold,
+            Printer printer) {
         this.threadPool = threadPool;
         this.parallelExecThreshold = parallelExecThreshold;
+        this.printer = printer;
     }
 
     public ExecutorService threadPool() {
@@ -59,5 +83,12 @@ public class Environment {
 
     public int parallelExecThreshold() {
         return parallelExecThreshold;
+    }
+
+    /**
+     * @since 1.0.0-M20
+     */
+    public Printer printer() {
+        return printer;
     }
 }

@@ -4,6 +4,7 @@
 * #250 Remove APIs deprecated since 0.17 
 * #251 Remove APIs deprecated since 0.18
 * #253 DataFrame.byRow() - automatically guess buffer capacity
+* #256 Environment-based Printer for better JShell integration
 
 ## Release 1.0.0-M19
 

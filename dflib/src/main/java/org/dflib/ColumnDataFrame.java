@@ -2,6 +2,7 @@ package org.dflib;
 
 import org.dflib.concat.HConcat;
 import org.dflib.concat.VConcat;
+import org.dflib.exec.Environment;
 import org.dflib.groupby.Grouper;
 import org.dflib.row.ColumnsRowProxy;
 import org.dflib.row.RowProxy;
@@ -458,7 +459,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public String toString() {
-        return Printers.inline.print(new StringBuilder("ColumnDataFrame ["), this).append("]").toString();
+        return Environment.commonEnv().printer().print(new StringBuilder(), this).toString();
     }
 
     protected DataFrame replaceColumn(int pos, Series<?> newColumn) {
