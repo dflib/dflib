@@ -5,6 +5,8 @@ import org.dflib.Series;
 import org.dflib.SeriesGroupBy;
 import org.dflib.jdbc.SaveOp;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 /**
@@ -59,6 +61,15 @@ public class SaveStats {
         }
 
         return rowSaveStatusesByOp.hasGroup(op) ? rowSaveStatusesByOp.getGroup(op).size() : 0;
+    }
+
+    @Override
+    public String toString() {
+        Map<String, Integer> map = new LinkedHashMap<>(5);
+        map.put("inserted", getInsertCount());
+        map.put("updated", getUpdateCount());
+        map.put("unchanged", getSkipCount());
+        return map.toString();
     }
 }
 
