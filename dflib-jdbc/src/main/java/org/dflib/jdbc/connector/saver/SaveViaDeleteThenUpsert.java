@@ -6,12 +6,12 @@ import org.dflib.jdbc.connector.TableDeleter;
 import org.dflib.jdbc.connector.metadata.TableFQName;
 
 /**
- * @since 0.6
+ * @since 0.8
  */
-public class SaveViaDeleteThenInsert extends SaveViaInsert {
+public class SaveViaDeleteThenUpsert extends SaveViaUpsert {
 
-    public SaveViaDeleteThenInsert(JdbcConnector connector, TableFQName tableName) {
-        super(connector, tableName);
+    public SaveViaDeleteThenUpsert(JdbcConnector connector, TableFQName tableName, String[] keyColumns) {
+        super(connector, tableName, keyColumns);
     }
 
     @Override
@@ -21,6 +21,7 @@ public class SaveViaDeleteThenInsert extends SaveViaInsert {
 
     @Override
     protected int doDelete(JdbcConnector connector, DataFrame df) {
-        return new TableDeleter(connector, tableName).delete();
+        DataFrame keyDf = keyValues(df);
+        return new TableDeleter(connector, tableName).neq(keyDf).delete();
     }
 }

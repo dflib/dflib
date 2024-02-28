@@ -3,7 +3,7 @@ package org.dflib.jdbc.connector;
 import org.dflib.DataFrame;
 import org.dflib.jdbc.connector.metadata.DbColumnMetadata;
 import org.dflib.jdbc.connector.metadata.TableFQName;
-import org.dflib.jdbc.connector.saver.FullSync;
+import org.dflib.jdbc.connector.saver.SaveViaDeleteThenUpsert;
 import org.dflib.jdbc.connector.saver.SaveViaDeleteThenInsert;
 import org.dflib.jdbc.connector.saver.SaveViaInsert;
 import org.dflib.jdbc.connector.saver.SaveViaUpsert;
@@ -106,7 +106,7 @@ public class TableSaver {
 
         String[] keyColumns = mergeByPk ? getPkColumns() : mergeByColumns;
         return deleteUnmatchedRows
-                ? new FullSync(connector, tableName, keyColumns)
+                ? new SaveViaDeleteThenUpsert(connector, tableName, keyColumns)
                 : new SaveViaUpsert(connector, tableName, keyColumns);
     }
 

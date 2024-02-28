@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 /**
  * @since 0.6
  */
-public class SaveViaUpsert extends SaveViaInsert {
+public class SaveViaUpsert extends TableSaveStrategy {
 
     // used as a column for join indicator. Semi-random to avoid conflicts with real column names
     private static final String INDICATOR_COLUMN = "dflib_ind_%$#86AcD3";
@@ -38,15 +38,8 @@ public class SaveViaUpsert extends SaveViaInsert {
     }
 
     @Override
-    protected Supplier<Series<SaveOp>> doSave(JdbcConnector connector, DataFrame df) {
-        return doSave(connector, df, keyValues(df));
-    }
-
-    protected DataFrame keyValues(DataFrame df) {
-        return df.cols(keyColumns).select();
-    }
-
-    protected Supplier<Series<SaveOp>> doSave(JdbcConnector connector, DataFrame df, DataFrame keyDf) {
+    protected Supplier<Series<SaveOp>> doInsertOrUpdate(JdbcConnector connector, DataFrame df) {
+        DataFrame keyDf = keyValues(df);
 
         DataFrame previouslySaved = new TableLoader(connector, tableName)
                 .includeColumns(df.getColumnsIndex().getLabels())
@@ -54,7 +47,7 @@ public class SaveViaUpsert extends SaveViaInsert {
                 .load();
 
         if (previouslySaved.height() == 0) {
-            insert(connector, df);
+            doInsert(connector, df);
             return () -> new SingleValueSeries<>(SaveOp.insert, df.height());
         }
 
@@ -85,7 +78,7 @@ public class SaveViaUpsert extends SaveViaInsert {
         infoTracker.insertAndUpdate(index);
 
         if (insertIndex.size() > 0) {
-            insert(connector, df.rows(insertIndex).select());
+            doInsert(connector, df.rows(insertIndex).select());
         }
 
         if (updateIndex.size() > 0) {
@@ -100,7 +93,7 @@ public class SaveViaUpsert extends SaveViaInsert {
                     .cols(joinedIndex).select()
                     .cols().as(mainColumns.getLabels());
 
-            update(connector,
+            doUpdate(connector,
                     df.rows(updateIndex).select(),
                     previouslySavedOrdered.rows(updateIndex).select(),
                     infoTracker);
@@ -109,11 +102,11 @@ public class SaveViaUpsert extends SaveViaInsert {
         return infoTracker::getInfo;
     }
 
-    protected void insert(JdbcConnector connector, DataFrame toSave) {
-        super.doSave(connector, toSave);
+    protected DataFrame keyValues(DataFrame df) {
+        return df.cols(keyColumns).select();
     }
 
-    protected void update(JdbcConnector connector, DataFrame toSave, DataFrame previouslySaved, UpsertInfoTracker infoTracker) {
+    protected void doUpdate(JdbcConnector connector, DataFrame toSave, DataFrame previouslySaved, UpsertInfoTracker infoTracker) {
 
         int w = toSave.width();
         if (w == keyColumns.length) {
