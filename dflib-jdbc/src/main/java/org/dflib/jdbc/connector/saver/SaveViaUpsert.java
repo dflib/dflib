@@ -32,8 +32,8 @@ public class SaveViaUpsert extends TableSaveStrategy {
 
     protected String[] keyColumns;
 
-    public SaveViaUpsert(JdbcConnector connector, TableFQName tableName, String[] keyColumns) {
-        super(connector, tableName);
+    public SaveViaUpsert(JdbcConnector connector, TableFQName tableName, String[] keyColumns, int batchSize) {
+        super(connector, tableName, batchSize);
         this.keyColumns = keyColumns;
     }
 

@@ -25,10 +25,23 @@ public class TableSaver {
     private boolean deleteUnmatchedRows;
     private boolean mergeByPk;
     private String[] mergeByColumns;
+    private int batchSize;
 
     public TableSaver(JdbcConnector connector, TableFQName tableName) {
         this.connector = connector;
         this.tableName = tableName;
+    }
+
+    /**
+     * Configures max size of the saver processing batch to save data via a set of smaller queries instead of all at
+     * once. Can not be combined and will be ignored if "deleteUnmatchedRows" is in use.
+     *
+     * @return this saver instance
+     * @since 1.0.0-M20
+     */
+    public TableSaver batchSize(int rows) {
+        this.batchSize = rows;
+        return this;
     }
 
     /**
@@ -94,20 +107,25 @@ public class TableSaver {
     }
 
     protected TableSaveStrategy createSaveStrategy() {
-        
+
         // if delete is in effect, we don't need the UPDATE part of "UPSERT"
         if (deleteTableData) {
-            return new SaveViaDeleteThenInsert(connector, tableName);
+            return new SaveViaDeleteThenInsert(connector, tableName, batchSize);
         }
 
         if (!mergeByPk && mergeByColumns == null) {
-            return new SaveViaInsert(connector, tableName);
+            return new SaveViaInsert(connector, tableName, batchSize);
         }
 
         String[] keyColumns = mergeByPk ? getPkColumns() : mergeByColumns;
+
+        if (deleteUnmatchedRows && batchSize > 0) {
+            LOGGER.warn("'batchSize' will be ignored, as 'deleteUnmatchedRows' is in use");
+        }
+
         return deleteUnmatchedRows
                 ? new SaveViaDeleteThenUpsert(connector, tableName, keyColumns)
-                : new SaveViaUpsert(connector, tableName, keyColumns);
+                : new SaveViaUpsert(connector, tableName, keyColumns, batchSize);
     }
 
     protected String[] getPkColumns() {

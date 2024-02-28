@@ -5,6 +5,7 @@
 * #251 Remove APIs deprecated since 0.18
 * #253 DataFrame.byRow() - automatically guess buffer capacity
 * #256 Environment-based Printer for better JShell integration
+* #258 TableSaver.batchSize(int)
 
 ## Release 1.0.0-M19
 

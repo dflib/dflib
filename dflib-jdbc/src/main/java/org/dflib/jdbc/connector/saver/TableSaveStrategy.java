@@ -3,6 +3,7 @@ package org.dflib.jdbc.connector.saver;
 import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.Series;
+import org.dflib.concat.SeriesConcat;
 import org.dflib.jdbc.SaveOp;
 import org.dflib.jdbc.connector.JdbcConnector;
 import org.dflib.jdbc.connector.StatementBuilder;
@@ -16,7 +17,10 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * @since 0.6
@@ -27,10 +31,12 @@ public abstract class TableSaveStrategy {
 
     protected final JdbcConnector connector;
     protected final TableFQName tableName;
+    private final int batchSize;
 
-    public TableSaveStrategy(JdbcConnector connector, TableFQName tableName) {
+    public TableSaveStrategy(JdbcConnector connector, TableFQName tableName, int batchSize) {
         this.connector = connector;
         this.tableName = tableName;
+        this.batchSize = batchSize;
     }
 
     public Supplier<Series<SaveOp>> save(DataFrame df) {
@@ -48,8 +54,45 @@ public abstract class TableSaveStrategy {
                 doDelete(c, df);
             }
 
-            return shouldInsertOrUpdate ? doInsertOrUpdate(c, df) : () -> new SingleValueSeries<>(SaveOp.skip, df.height());
+            if (!shouldInsertOrUpdate) {
+                return () -> new SingleValueSeries<>(SaveOp.skip, df.height());
+            }
+
+            if (batchSize <= 0) {
+                return doInsertOrUpdate(c, df);
+            }
+
+            List<DataFrame> splits = split(df);
+            List<Supplier<Series<SaveOp>>> results = new ArrayList<>(splits.size());
+            for (DataFrame sdf : splits) {
+                results.add(doInsertOrUpdate(c, sdf));
+            }
+
+            return () -> SeriesConcat.concat(results.stream().map(Supplier::get).collect(Collectors.toList()));
         });
+    }
+
+    protected List<DataFrame> split(DataFrame df) {
+        int h = df.height();
+        if (batchSize < 1 || batchSize >= h) {
+            return List.of(df);
+        }
+
+        int fullSlots = h / batchSize;
+        int partialSlotSize = h % batchSize;
+        List<DataFrame> split = new ArrayList<>(partialSlotSize > 0 ? fullSlots + 1 : fullSlots);
+
+        for (int i = 0; i < fullSlots; i++) {
+            int start = i * batchSize;
+            split.add(df.rowsRange(start, start + batchSize).select());
+        }
+
+        if (partialSlotSize > 0) {
+            int start = fullSlots * batchSize;
+            split.add(df.rowsRange(start, start + partialSlotSize).select());
+        }
+
+        return split;
     }
 
     protected boolean shouldDelete(DataFrame df) {

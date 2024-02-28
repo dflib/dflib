@@ -14,8 +14,8 @@ import java.util.function.Supplier;
  */
 public class SaveViaInsert extends TableSaveStrategy {
 
-    public SaveViaInsert(JdbcConnector connector, TableFQName tableName) {
-        super(connector, tableName);
+    public SaveViaInsert(JdbcConnector connector, TableFQName tableName, int batchSize) {
+        super(connector, tableName, batchSize);
     }
 
     @Override

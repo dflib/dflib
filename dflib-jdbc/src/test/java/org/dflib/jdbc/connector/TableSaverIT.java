@@ -39,54 +39,6 @@ public class TableSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void save_Append() {
-
-        DataFrame df1 = DataFrame.foldByRow("id", "name", "salary").of(
-                1L, "n1", 50_000.01,
-                2L, "n2", 120_000.);
-
-        DataFrame df2 = DataFrame.foldByRow("id", "name", "salary").of(
-                3L, "n3", 60_000.01,
-                4L, "n4", 20_000.);
-
-        JdbcConnector connector = adapter.createConnector();
-        TableSaver saver = connector.tableSaver("t1");
-        saver.save(df1);
-        saver.save(df2);
-
-        assertT1Contents()
-                .expectHeight(4)
-                .expectRow(0, 1L, "n1", 50_000.01)
-                .expectRow(1, 2L, "n2", 120_000.)
-                .expectRow(2, 3L, "n3", 60_000.01)
-                .expectRow(3, 4L, "n4", 20_000.);
-    }
-
-    @Test
-    public void save_DeleteTableData() {
-
-        DataFrame df1 = DataFrame.foldByRow("id", "name", "salary").of(
-                1L, "n1", 50_000.01,
-                2L, "n2", 120_000.);
-
-        DataFrame df2 = DataFrame.foldByRow("id", "name", "salary").of(
-                3L, "n3", 60_000.01,
-                4L, "n4", 20_000.);
-
-        JdbcConnector connector = adapter.createConnector();
-        TableSaver saver = connector
-                .tableSaver("t1")
-                .deleteTableData();
-        saver.save(df1);
-        saver.save(df2);
-
-        assertT1Contents()
-                .expectHeight(2)
-                .expectRow(0, 3L, "n3", 60_000.01)
-                .expectRow(1, 4L, "n4", 20_000.);
-    }
-
-    @Test
     public void save_MergeByPk() {
 
         adapter.getTable("t1").insertColumns("id", "name", "salary")
@@ -111,6 +63,36 @@ public class TableSaverIT extends BaseDbTest {
                 .expectRow(1, 2L, "n2", 120_000.)
                 .expectRow(2, 3L, "n3", 60_000.01)
                 .expectRow(3, 4L, "n4", 20_000.);
+    }
+
+    @Test
+    public void save_MergeByPk_Batches() {
+
+        adapter.getTable("t1").insertColumns("id", "name", "salary")
+                .values(1L, "n1", 50_000.01)
+                .values(2L, "n2", 120_000.)
+                .exec();
+
+        DataFrame df = DataFrame.foldByRow("id", "name", "salary").of(
+                1L, "n1_x", 50_000.02,
+                3L, "n3", 60_000.01,
+                4L, "n4", 20_000.,
+                5L, "n5", 40_000.);
+
+        JdbcConnector connector = adapter.createConnector();
+        connector
+                .tableSaver("t1")
+                .mergeByPk()
+                .batchSize(3)
+                .save(df);
+
+        assertT1Contents()
+                .expectHeight(5)
+                .expectRow(0, 1L, "n1_x", 50_000.02)
+                .expectRow(1, 2L, "n2", 120_000.)
+                .expectRow(2, 3L, "n3", 60_000.01)
+                .expectRow(3, 4L, "n4", 20_000.)
+                .expectRow(4, 5L, "n5", 40_000.);
     }
 
     @Test
@@ -322,7 +304,7 @@ public class TableSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void saveWithInfo_Insert() {
+    public void saveInsert() {
 
         DataFrame df = DataFrame.foldByRow("id", "name", "salary").of(
                 1L, "n1", 50_000.01,
@@ -342,7 +324,107 @@ public class TableSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void saveWithInfo_DeleteInsert() {
+    public void saveInsert_Batches_Divisible() {
+
+        DataFrame df = DataFrame.foldByRow("id", "name", "salary").of(
+                1L, "n1", 50_000.01,
+                2L, "n2", 120_000.,
+                3L, "n3", 220_000.,
+                4L, "n4", 320_000.);
+
+        JdbcConnector connector = adapter.createConnector();
+        SaveStats info = connector
+                .tableSaver("t1")
+                .batchSize(2)
+                .save(df);
+
+        new SeriesAsserts(info.getRowSaveStatuses()).expectData(SaveOp.insert, SaveOp.insert, SaveOp.insert, SaveOp.insert);
+
+        assertT1Contents()
+                .expectHeight(4)
+                .expectRow(0, 1L, "n1", 50_000.01)
+                .expectRow(1, 2L, "n2", 120_000.)
+                .expectRow(2, 3L, "n3", 220_000.)
+                .expectRow(3, 4L, "n4", 320_000.);
+    }
+
+    @Test
+    public void saveInsert_Batches_Indivisible() {
+
+        DataFrame df = DataFrame.foldByRow("id", "name", "salary").of(
+                1L, "n1", 50_000.01,
+                2L, "n2", 120_000.,
+                3L, "n3", 220_000.,
+                4L, "n4", 320_000.);
+
+        JdbcConnector connector = adapter.createConnector();
+        SaveStats info = connector
+                .tableSaver("t1")
+                .batchSize(3)
+                .save(df);
+
+        new SeriesAsserts(info.getRowSaveStatuses()).expectData(SaveOp.insert, SaveOp.insert, SaveOp.insert, SaveOp.insert);
+
+        assertT1Contents()
+                .expectHeight(4)
+                .expectRow(0, 1L, "n1", 50_000.01)
+                .expectRow(1, 2L, "n2", 120_000.)
+                .expectRow(2, 3L, "n3", 220_000.)
+                .expectRow(3, 4L, "n4", 320_000.);
+    }
+
+    @Test
+    public void saveInsert_Batches_Large() {
+
+        DataFrame df = DataFrame.foldByRow("id", "name", "salary").of(
+                1L, "n1", 50_000.01,
+                2L, "n2", 120_000.,
+                3L, "n3", 220_000.,
+                4L, "n4", 320_000.);
+
+        JdbcConnector connector = adapter.createConnector();
+        SaveStats info = connector
+                .tableSaver("t1")
+                .batchSize(100)
+                .save(df);
+
+        new SeriesAsserts(info.getRowSaveStatuses()).expectData(SaveOp.insert, SaveOp.insert, SaveOp.insert, SaveOp.insert);
+
+        assertT1Contents()
+                .expectHeight(4)
+                .expectRow(0, 1L, "n1", 50_000.01)
+                .expectRow(1, 2L, "n2", 120_000.)
+                .expectRow(2, 3L, "n3", 220_000.)
+                .expectRow(3, 4L, "n4", 320_000.);
+    }
+
+    @Test
+    public void saveInsert_MultipleDfs() {
+
+        DataFrame df1 = DataFrame.foldByRow("id", "name", "salary").of(
+                1L, "n1", 50_000.01,
+                2L, "n2", 120_000.);
+
+        DataFrame df2 = DataFrame.foldByRow("id", "name", "salary").of(
+                3L, "n3", 60_000.01,
+                4L, "n4", 20_000.);
+
+        JdbcConnector connector = adapter.createConnector();
+        TableSaver saver = connector.tableSaver("t1");
+        saver.save(df1);
+        saver.save(df2);
+
+        assertT1Contents()
+                .expectHeight(4)
+                .expectRow(0, 1L, "n1", 50_000.01)
+                .expectRow(1, 2L, "n2", 120_000.)
+                .expectRow(2, 3L, "n3", 60_000.01)
+                .expectRow(3, 4L, "n4", 20_000.);
+    }
+
+
+    @Test
+    public void saveDeleteInsert() {
 
         adapter.getTable("t1").insertColumns("id", "name", "salary")
                 .values(1L, "n1", 50_000.01)
@@ -365,6 +447,30 @@ public class TableSaverIT extends BaseDbTest {
                 .expectHeight(2)
                 .expectRow(0, 1L, "n1", 50_000.01)
                 .expectRow(1, 2L, "n2", 120_000.);
+    }
+
+    @Test
+    public void saveDeleteInsert_MultipleDfs() {
+
+        DataFrame df1 = DataFrame.foldByRow("id", "name", "salary").of(
+                1L, "n1", 50_000.01,
+                2L, "n2", 120_000.);
+
+        DataFrame df2 = DataFrame.foldByRow("id", "name", "salary").of(
+                3L, "n3", 60_000.01,
+                4L, "n4", 20_000.);
+
+        JdbcConnector connector = adapter.createConnector();
+        TableSaver saver = connector
+                .tableSaver("t1")
+                .deleteTableData();
+        saver.save(df1);
+        saver.save(df2);
+
+        assertT1Contents()
+                .expectHeight(2)
+                .expectRow(0, 3L, "n3", 60_000.01)
+                .expectRow(1, 4L, "n4", 20_000.);
     }
 
     @Test
@@ -395,7 +501,37 @@ public class TableSaverIT extends BaseDbTest {
     }
 
     @Test
-    public void saveWithInfo_Merge() {
+    public void save_MergeByPk_DeleteUnmatchedRows_Batches() {
+
+        adapter.getTable("t1").insertColumns("id", "name", "salary")
+                .values(1L, "n1", 50_000.01)
+                .values(2L, "n2", 120_000.)
+                .exec();
+
+        DataFrame df = DataFrame.foldByRow("id", "name", "salary").of(
+                2L, "n2", 120_001.,
+                3L, "n3", 11_000.);
+
+        JdbcConnector connector = adapter.createConnector();
+        SaveStats info = connector
+                .tableSaver("t1")
+                .mergeByPk()
+                .deleteUnmatchedRows()
+                // this will be ignored, warning printed, but the op should succeed
+                .batchSize(1)
+                .save(df);
+
+        new SeriesAsserts(info.getRowSaveStatuses()).expectData(SaveOp.update, SaveOp.insert);
+
+        assertT1Contents()
+                .expectHeight(2)
+                .expectRow(0, 2L, "n2", 120_001.)
+                .expectRow(1, 3L, "n3", 11_000.);
+    }
+
+
+    @Test
+    public void saveMerge() {
 
         adapter.getTable("t1").insertColumns("id", "name", "salary")
                 .values(1L, "n1", 50_000.01)

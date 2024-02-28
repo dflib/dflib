@@ -10,8 +10,8 @@ import org.dflib.jdbc.connector.metadata.TableFQName;
  */
 public class SaveViaDeleteThenInsert extends SaveViaInsert {
 
-    public SaveViaDeleteThenInsert(JdbcConnector connector, TableFQName tableName) {
-        super(connector, tableName);
+    public SaveViaDeleteThenInsert(JdbcConnector connector, TableFQName tableName, int batchSize) {
+        super(connector, tableName, batchSize);
     }
 
     @Override

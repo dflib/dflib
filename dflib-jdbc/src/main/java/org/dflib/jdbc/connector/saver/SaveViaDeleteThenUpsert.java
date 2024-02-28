@@ -11,7 +11,8 @@ import org.dflib.jdbc.connector.metadata.TableFQName;
 public class SaveViaDeleteThenUpsert extends SaveViaUpsert {
 
     public SaveViaDeleteThenUpsert(JdbcConnector connector, TableFQName tableName, String[] keyColumns) {
-        super(connector, tableName, keyColumns);
+        // TODO: support batch size for full-sync operations
+        super(connector, tableName, keyColumns, -1);
     }
 
     @Override
