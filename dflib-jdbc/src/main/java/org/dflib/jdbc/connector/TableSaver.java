@@ -33,8 +33,9 @@ public class TableSaver {
     }
 
     /**
-     * Configures max size of the saver processing batch to save data via a set of smaller queries instead of all at
-     * once. Can not be combined and will be ignored if "deleteUnmatchedRows" is in use.
+     * Configures max number of rows in the Saver processing batch. When set, the Saver will save data via a set of
+     * smaller queries instead of doing ti all at once. Can not be combined and will be ignored if "deleteUnmatchedRows"
+     * is in use.
      *
      * @return this saver instance
      * @since 1.0.0-M20
