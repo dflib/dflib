@@ -21,6 +21,16 @@ public class VsArrayOfObjectsMemory extends MemoryTest {
         }
     }
 
+    static class TestIntPrimitiveRow {
+        final int i1;
+        final int i2;
+
+        TestIntPrimitiveRow(int i1, int i2) {
+            this.i1 = i1;
+            this.i2 = i2;
+        }
+    }
+
     public static void main(String[] args) {
 
         int cells = ROWS * 2;
@@ -28,13 +38,21 @@ public class VsArrayOfObjectsMemory extends MemoryTest {
         VsArrayOfObjectsMemory test = new VsArrayOfObjectsMemory();
         test.run("Integer DataFrame", test::intCells, cells);
         test.run("Integer List<..>", test::intCellsAsObjectList, cells);
-        test.run("Integer Object[]", test::intCellsAsObjectArray, cells);
+
+        test.run("int DataFrame", test::intPrimitiveCells, cells);
+        test.run("int List<..>", test::intPrimitiveCellsAsObjectList, cells);
     }
 
     public DataFrame intCells() {
         return DataFrame.byColumn("c0", "c1").of(
                 ValueMaker.intSeq().series(ROWS),
                 ValueMaker.intSeq().series(ROWS)).materialize();
+    }
+
+    public DataFrame intPrimitiveCells() {
+        return DataFrame.byColumn("c0", "c1").of(
+                ValueMaker.intSeq().intSeries(ROWS),
+                ValueMaker.intSeq().intSeries(ROWS)).materialize();
     }
 
     public List<TestIntRow> intCellsAsObjectList() {
@@ -49,13 +67,13 @@ public class VsArrayOfObjectsMemory extends MemoryTest {
         return rows;
     }
 
-    public TestIntRow[] intCellsAsObjectArray() {
+    public List<TestIntPrimitiveRow> intPrimitiveCellsAsObjectList() {
 
         ValueMaker<Integer> i1s = ValueMaker.intSeq();
         ValueMaker<Integer> i2s = ValueMaker.intSeq();
-        TestIntRow[] rows = new TestIntRow[ROWS];
+        List<TestIntPrimitiveRow> rows = new ArrayList<>(ROWS);
         for (int i = 0; i < ROWS; i++) {
-            rows[i] = new TestIntRow(i1s.get(), i2s.get());
+            rows.add(new TestIntPrimitiveRow(i1s.get(), i2s.get()));
         }
 
         return rows;
