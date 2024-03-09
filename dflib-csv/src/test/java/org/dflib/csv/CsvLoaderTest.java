@@ -107,9 +107,40 @@ public class CsvLoaderTest extends BaseCsvTest {
                 .expectRow(1, "4", "6");
     }
 
+    @Deprecated
     @Test
     public void fromFile_SkipRows() {
         DataFrame df = new CsvLoader().skipRows(1).load(inPath("f1.csv"));
+        new DataFrameAsserts(df, "1", "2", "3")
+                .expectHeight(1)
+                .expectRow(0, "4", "5", "6");
+    }
+
+    @Test
+    public void fromFile_Head() {
+        DataFrame df = new CsvLoader().head(1).load(inPath("f1.csv"));
+        new DataFrameAsserts(df, "A", "b", "C")
+                .expectHeight(1)
+                .expectRow(0, "1", "2", "3");
+    }
+
+    @Test
+    public void fromFile_Head_Header() {
+        DataFrame df = new CsvLoader()
+                .header("C0", "C1", "C2")
+                .head(2)
+                .load(inPath("f1.csv"));
+
+        new DataFrameAsserts(df, "C0", "C1", "C2")
+                .expectHeight(2)
+                .expectRow(0, "A", "b", "C")
+                .expectRow(1, "1", "2", "3");
+    }
+
+
+    @Test
+    public void fromFile_Head_Negative() {
+        DataFrame df = new CsvLoader().head(-1).load(inPath("f1.csv"));
         new DataFrameAsserts(df, "1", "2", "3")
                 .expectHeight(1)
                 .expectRow(0, "4", "5", "6");

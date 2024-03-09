@@ -1,5 +1,7 @@
 package org.dflib.csv;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 import org.dflib.DataFrame;
 import org.dflib.DoubleValueMapper;
 import org.dflib.Extractor;
@@ -10,9 +12,8 @@ import org.dflib.RowPredicate;
 import org.dflib.ValueMapper;
 import org.dflib.builder.DataFrameAppender;
 import org.dflib.builder.DataFrameByRowBuilder;
+import org.dflib.collection.Iterators;
 import org.dflib.sample.Sampler;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
 
 import java.io.File;
 import java.io.FileReader;
@@ -22,11 +23,15 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
 public class CsvLoader {
 
-    private int skipRows;
+    private Integer head;
     private Index header;
 
     private String[] includeColumns;
@@ -47,15 +52,29 @@ public class CsvLoader {
     }
 
     /**
+     * Loads at most the specified number of rows from the CSV. If <code>len</code> is negative, instead of limiting
+     * the number of rows, skips the specified rows. This works similar to {@link DataFrame#head(int)}, but there's no
+     * corresponding "tail", as the CSV
+     *
+     * @since 1.0.0-M20
+     */
+    // TODO: for completeness, we also need something like "rowsRange()" to specify both the offset and max rows
+    public CsvLoader head(int len) {
+        this.head = len;
+        return this;
+    }
+
+    /**
      * Skips the specified number of rows. E.g. if the header is defined manually, you might call this method with "1"
      * as an argument.
      *
      * @param n number of rows to skip
      * @return this loader instance
+     * @deprecated the new alternative is calling {@link #head} with <code>-n</code>
      */
+    @Deprecated(since = "1.0.0-M20", forRemoval = true)
     public CsvLoader skipRows(int n) {
-        this.skipRows = n;
-        return this;
+        return head(-n);
     }
 
     /**
@@ -416,47 +435,45 @@ public class CsvLoader {
     }
 
     public DataFrame load(Reader reader) {
+
+        Iterator<CSVRecord> it0 = read(reader);
+
+        // "skip" is applied even if we read the header from the iterator
+        Iterator<CSVRecord> it1 = head != null && head < 0 ? Iterators.skip(it0, -head) : it0;
+        ColumnMap columnMap = createColumnMap(it1);
+
+        if (!it1.hasNext()) {
+            return DataFrame.empty(columnMap.dfHeader);
+        }
+
+        Extractor<CSVRecord, ?>[] extractors = columnMap.extractors(this.columns);
+        DataFrameByRowBuilder<CSVRecord, ?> builder = DataFrame.byRow(extractors).columnIndex(columnMap.dfHeader);
+
+        if (rowSampleSize > 0) {
+            builder.sampleRows(rowSampleSize, rowsSampleRandom);
+        }
+
+        if (rowFilter != null) {
+            builder.selectRows(rowFilter);
+        }
+
+        DataFrameAppender<CSVRecord> appender = builder.appender();
+
+        // The header does not count towards the limit, so apply limit AFTER reading the header.
+        Iterator<CSVRecord> it2 = head != null && head >= 0 ? Iterators.limit(it1, head) : it1;
+        while (it2.hasNext()) {
+            appender.append(it2.next());
+        }
+
+        return appender.toDataFrame();
+    }
+
+    private Iterator<CSVRecord> read(Reader reader) {
         try {
-
-            Iterator<CSVRecord> it = createRecordIterator(reader);
-            ColumnMap columnMap = createColumnMap(it);
-
-            if (!it.hasNext()) {
-                return DataFrame.empty(columnMap.dfHeader);
-            }
-
-            Extractor<CSVRecord, ?>[] extractors = columnMap.extractors(this.columns);
-            DataFrameByRowBuilder<CSVRecord, ?> builder = DataFrame.byRow(extractors).columnIndex(columnMap.dfHeader);
-
-            if (rowSampleSize > 0) {
-                builder.sampleRows(rowSampleSize, rowsSampleRandom);
-            }
-
-            if (rowFilter != null) {
-                builder.selectRows(rowFilter);
-            }
-
-            DataFrameAppender<CSVRecord> appender = builder.appender();
-
-            while (it.hasNext()) {
-                appender.append(it.next());
-            }
-
-            return appender.toDataFrame();
-
+            return format.parse(reader).iterator();
         } catch (IOException e) {
             throw new RuntimeException("Error reading CSV", e);
         }
-    }
-
-    private Iterator<CSVRecord> createRecordIterator(Reader reader) throws IOException {
-
-        Iterator<CSVRecord> it = format.parse(reader).iterator();
-        for (int i = 0; i < skipRows && it.hasNext(); i++) {
-            it.next();
-        }
-
-        return it;
     }
 
     private ColumnMap createColumnMap(Iterator<CSVRecord> it) {
