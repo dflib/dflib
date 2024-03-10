@@ -10,7 +10,7 @@ import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CsvLoader_SelectColumnsTest {
+public class CsvLoader_RowsTest {
 
     private String csv() {
         return "A,B" + System.lineSeparator()
@@ -27,7 +27,7 @@ public class CsvLoader_SelectColumnsTest {
 
         DataFrame df = new CsvLoader()
                 .intColumn(0)
-                .selectRows(RowPredicate.of(0, (Integer i) -> i % 2 == 0))
+                .rows(RowPredicate.of(0, (Integer i) -> i % 2 == 0))
                 .load(new StringReader(csv()));
 
         new DataFrameAsserts(df, "A", "B")
@@ -42,7 +42,7 @@ public class CsvLoader_SelectColumnsTest {
 
         DataFrame df = new CsvLoader()
                 .intColumn(0)
-                .selectRows(RowPredicate.of("A", (Integer i) -> i % 2 == 0))
+                .rows(RowPredicate.of("A", (Integer i) -> i % 2 == 0))
                 .load(new StringReader(csv()));
 
         new DataFrameAsserts(df, "A", "B")
@@ -58,11 +58,11 @@ public class CsvLoader_SelectColumnsTest {
         DataFrame df = new CsvLoader()
                 .intColumn(0)
                 .intColumn(1)
-                .selectRows(RowPredicate.of("B", (Integer i) -> i % 2 == 0))
-                .selectRows(RowPredicate.of("B", (Integer i) -> i == 12))
+                .rows(RowPredicate.of("B", (Integer i) -> i % 2 == 0))
+                .rows(RowPredicate.of("B", (Integer i) -> i == 12))
 
                 // this is the only one that will have effect
-                .selectRows(RowPredicate.of("B", (Integer i) -> i > 10))
+                .rows(RowPredicate.of("B", (Integer i) -> i > 10))
                 .load(new StringReader(csv()));
 
         new DataFrameAsserts(df, "A", "B")
@@ -76,8 +76,8 @@ public class CsvLoader_SelectColumnsTest {
 
         DataFrame df = new CsvLoader()
                 .intColumn(0)
-                .selectRows(RowPredicate.of("A", (Integer i) -> i > 1))
-                .sampleRows(2, new Random(9))
+                .rows(RowPredicate.of("A", (Integer i) -> i > 1))
+                .rowsSample(2, new Random(9))
                 .load(new StringReader(csv()));
 
         new DataFrameAsserts(df, "A", "B")
@@ -91,8 +91,8 @@ public class CsvLoader_SelectColumnsTest {
 
         DataFrame df = new CsvLoader()
                 .intColumn(0)
-                .selectRows(RowPredicate.of("A", (Integer i) -> i % 2 == 0))
-                .sampleRows(4, new Random(8))
+                .rows(RowPredicate.of("A", (Integer i) -> i % 2 == 0))
+                .rowsSample(4, new Random(8))
                 .load(new StringReader(csv()));
 
         new DataFrameAsserts(df, "A", "B")
@@ -110,8 +110,8 @@ public class CsvLoader_SelectColumnsTest {
                 .intColumn("B")
 
                 // column "A" is not present in the result, so it should cause an exception on load
-                .selectRows(RowPredicate.of("A", (Integer i) -> i % 2 == 0))
-                .selectColumns("B");
+                .rows(RowPredicate.of("A", (Integer i) -> i % 2 == 0))
+                .cols("B");
 
         assertThrows(ArrayIndexOutOfBoundsException.class, () -> loader.load(new StringReader(csv())));
     }
@@ -122,10 +122,10 @@ public class CsvLoader_SelectColumnsTest {
         DataFrame df = new CsvLoader()
                 .intColumn("A")
                 .intColumn("B")
-                .selectColumns("B", "A")
+                .cols("B", "A")
 
                 // using positional indices of the resulting DataFrame, not the CSV
-                .selectRows(RowPredicate.of(1, (Integer i) -> i == 4))
+                .rows(RowPredicate.of(1, (Integer i) -> i == 4))
                 .load(new StringReader(csv()));
 
         new DataFrameAsserts(df, "B", "A")

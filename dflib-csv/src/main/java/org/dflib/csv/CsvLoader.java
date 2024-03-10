@@ -29,26 +29,26 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
+/**
+ * A configurable loader of CSV files.
+ */
 public class CsvLoader {
 
-    private Integer head;
     private Index header;
 
-    private String[] includeColumns;
-    private int[] includeColumnPositions;
-    private String[] dropColumns;
+    private CsvColumnMapFactory columnMapFactory;
+    private final List<ColumnConfig> columnConfigs;
 
     private CSVFormat format;
 
+    private RowPredicate rowCondition;
     private int rowSampleSize;
     private Random rowsSampleRandom;
-
-    private final List<ColumnConfig> columns;
-    private RowPredicate rowFilter;
+    private Integer head; // null, negative (offset), positive (limit)
 
     public CsvLoader() {
         this.format = CSVFormat.DEFAULT;
-        this.columns = new ArrayList<>();
+        this.columnConfigs = new ArrayList<>();
     }
 
     /**
@@ -80,15 +80,24 @@ public class CsvLoader {
     /**
      * Configures CSV loader to select a sample of the rows of a CSV. Unlike {@link DataFrame#sampleRows(int, Random)},
      * this method will prevent the full CSV from loading in memory, and hence can be used on potentially very large
-     * CSVs. If you are executing multiple sampling runs in parallel, consider using {@link #sampleRows(int, Random)},
+     * CSVs. If you are executing multiple sampling runs in parallel, consider using {@link #rowsSample(int, Random)},
      * as this method is using a shared {@link Random} instance with synchronization.
      *
      * @param size the size of the sample. Can be bigger than the CSV size (as the CSV size is not known upfront).
      * @return this loader instance
-     * @since 0.7
+     * @since 1.0.0-M20
      */
+    public CsvLoader rowsSample(int size) {
+        return rowsSample(size, Sampler.getDefaultRandom());
+    }
+
+    /**
+     * @since 0.7
+     * @deprecated in favor of {@link #rowsSample(int)}
+     */
+    @Deprecated(since = "1.0.0-M20", forRemoval = true)
     public CsvLoader sampleRows(int size) {
-        return sampleRows(size, Sampler.getDefaultRandom());
+        return rowsSample(size);
     }
 
     /**
@@ -99,12 +108,21 @@ public class CsvLoader {
      * @param size   the size of the sample. Can be bigger than the CSV size (as the CSV size is not known upfront).
      * @param random a custom random number generator
      * @return this loader instance
-     * @since 0.7
+     * @since 1.0.0-M20
      */
-    public CsvLoader sampleRows(int size, Random random) {
+    public CsvLoader rowsSample(int size, Random random) {
         this.rowSampleSize = size;
         this.rowsSampleRandom = Objects.requireNonNull(random);
         return this;
+    }
+
+    /**
+     * @since 0.7
+     * @deprecated in favor of {@link #rowsSample(int, Random)} 
+     */
+    @Deprecated(since = "1.0.0-M20", forRemoval = true)
+    public CsvLoader sampleRows(int size, Random random) {
+        return rowsSample(size, random);
     }
 
     /**
@@ -113,17 +131,28 @@ public class CsvLoader {
      * applied to an already converted row, with column names and positions matching the resulting DataFrame, not the
      * CSV columns.
      *
-     * @since 0.16
+     * @since 1.0.0-M20
      */
-    public CsvLoader selectRows(RowPredicate rowFilter) {
-        this.rowFilter = rowFilter;
+    public CsvLoader rows(RowPredicate rowCondition) {
+        this.rowCondition = rowCondition;
         return this;
     }
 
     /**
-     * Provides an alternative header to the returned DataFrame. If set, the first row of CSV is treated as data, not
-     * as header. Column names are assigned to CSV columns positionally from left to right. Header provided here must
-     * have a size less or equal to the number of columns in the CSV.
+     * @since 0.16
+     * @deprecated in favor of {@link #rows(RowPredicate)}
+     */
+    @Deprecated(since = "1.0.0-M20", forRemoval = true)
+    public CsvLoader selectRows(RowPredicate condition) {
+        return rows(condition);
+    }
+
+    /**
+     * Provides an explicit header for the processed CSV. If not set, the first row of CSV will be treated as a header.
+     * If set, the first row will be treated as data. Column names are assigned to CSV columns positionally from left
+     * to right. Header provided here must have a size less or equal to the number of columns in the CSV.
+     * <p>The columns of the result DataFrame may be the same or a subset of the header columns (if further filtered via
+     * the various "cols(..)" methods</p>.
      *
      * @param columns user-defined DataFrame columns
      * @return this loader instance
@@ -135,41 +164,82 @@ public class CsvLoader {
     }
 
     /**
+     * Configures the loader to only process the specified columns, and include them in the DataFrame in the specified
+     * order. Column names argument refers to the names of the resulting DataFrame that may or may not match the CSV
+     * columns header, depending on the loader settings.
+     *
+     * @return this loader instance
+     * @since 1.0.0-M20
+     */
+    public CsvLoader cols(String... columns) {
+        this.columnMapFactory = CsvColumnMapFactory.ofCols(columns);
+        return this;
+    }
+
+    /**
      * @return this loader instance
      * @since 0.7
+     * @deprecated in favor of {@link #cols(String...)}
      */
+    @Deprecated(since = "1.0.0-M20", forRemoval = true)
     public CsvLoader selectColumns(String... columns) {
-        this.includeColumnPositions = null;
-        this.includeColumns = columns;
+        return cols(columns);
+    }
+
+    /**
+     * @return this loader instance
+     * @since 1.0.0-M20
+     */
+    public CsvLoader cols(int... columns) {
+        this.columnMapFactory = CsvColumnMapFactory.ofCols(columns);
         return this;
     }
 
     /**
      * @return this loader instance
      * @since 0.7
+     * @deprecated in favor of {@link #cols(int...)}
      */
+    @Deprecated(since = "1.0.0-M20", forRemoval = true)
     public CsvLoader selectColumns(int... columns) {
-        this.includeColumnPositions = columns;
-        this.includeColumns = null;
+        return cols(columns);
+    }
+
+    /**
+     * @return this loader instance
+     * @since 1.0.0-M20
+     */
+    public CsvLoader colsExcept(String... columns) {
+        this.columnMapFactory = CsvColumnMapFactory.ofColsExcept(columns);
+        return this;
+    }
+
+    /**
+     * @return this loader instance
+     * @since 1.0.0-M20
+     */
+    public CsvLoader colsExcept(int... columns) {
+        this.columnMapFactory = CsvColumnMapFactory.ofColsExcept(columns);
         return this;
     }
 
     /**
      * @return this loader instance
      * @since 0.7
+     * @deprecated in favor of {@link #colsExcept(String...)}
      */
+    @Deprecated(since = "1.0.0-M20", forRemoval = true)
     public CsvLoader dropColumns(String... columns) {
-        this.dropColumns = columns;
-        return this;
+        return colsExcept(columns);
     }
 
     public CsvLoader columnType(int column, ValueMapper<String, ?> mapper) {
-        columns.add(ColumnConfig.objectColumn(column, mapper));
+        columnConfigs.add(ColumnConfig.objectColumn(column, mapper));
         return this;
     }
 
     public CsvLoader columnType(String column, ValueMapper<String, ?> mapper) {
-        columns.add(ColumnConfig.objectColumn(column, mapper));
+        columnConfigs.add(ColumnConfig.objectColumn(column, mapper));
         return this;
     }
 
@@ -177,7 +247,7 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader intColumn(int column) {
-        columns.add(ColumnConfig.intColumn(column, IntValueMapper.fromString()));
+        columnConfigs.add(ColumnConfig.intColumn(column, IntValueMapper.fromString()));
         return this;
     }
 
@@ -185,7 +255,7 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader intColumn(String column) {
-        columns.add(ColumnConfig.intColumn(column, IntValueMapper.fromString()));
+        columnConfigs.add(ColumnConfig.intColumn(column, IntValueMapper.fromString()));
         return this;
     }
 
@@ -193,7 +263,7 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader intColumn(int column, int forNull) {
-        columns.add(ColumnConfig.intColumn(column, IntValueMapper.fromString(forNull)));
+        columnConfigs.add(ColumnConfig.intColumn(column, IntValueMapper.fromString(forNull)));
         return this;
     }
 
@@ -201,7 +271,7 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader intColumn(String column, int forNull) {
-        columns.add(ColumnConfig.intColumn(column, IntValueMapper.fromString(forNull)));
+        columnConfigs.add(ColumnConfig.intColumn(column, IntValueMapper.fromString(forNull)));
         return this;
     }
 
@@ -209,7 +279,7 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader longColumn(int column) {
-        columns.add(ColumnConfig.longColumn(column, LongValueMapper.fromString()));
+        columnConfigs.add(ColumnConfig.longColumn(column, LongValueMapper.fromString()));
         return this;
     }
 
@@ -217,7 +287,7 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader longColumn(String column) {
-        columns.add(ColumnConfig.longColumn(column, LongValueMapper.fromString()));
+        columnConfigs.add(ColumnConfig.longColumn(column, LongValueMapper.fromString()));
         return this;
     }
 
@@ -225,7 +295,7 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader longColumn(int column, long forNull) {
-        columns.add(ColumnConfig.longColumn(column, LongValueMapper.fromString(forNull)));
+        columnConfigs.add(ColumnConfig.longColumn(column, LongValueMapper.fromString(forNull)));
         return this;
     }
 
@@ -233,7 +303,7 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader longColumn(String column, long forNull) {
-        columns.add(ColumnConfig.longColumn(column, LongValueMapper.fromString(forNull)));
+        columnConfigs.add(ColumnConfig.longColumn(column, LongValueMapper.fromString(forNull)));
         return this;
     }
 
@@ -241,7 +311,7 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader doubleColumn(int column) {
-        columns.add(ColumnConfig.doubleColumn(column, DoubleValueMapper.fromString()));
+        columnConfigs.add(ColumnConfig.doubleColumn(column, DoubleValueMapper.fromString()));
         return this;
     }
 
@@ -249,7 +319,7 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader doubleColumn(String column) {
-        columns.add(ColumnConfig.doubleColumn(column, DoubleValueMapper.fromString()));
+        columnConfigs.add(ColumnConfig.doubleColumn(column, DoubleValueMapper.fromString()));
         return this;
     }
 
@@ -257,7 +327,7 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader doubleColumn(int column, double forNull) {
-        columns.add(ColumnConfig.doubleColumn(column, DoubleValueMapper.fromString(forNull)));
+        columnConfigs.add(ColumnConfig.doubleColumn(column, DoubleValueMapper.fromString(forNull)));
         return this;
     }
 
@@ -265,7 +335,7 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader doubleColumn(String column, double forNull) {
-        columns.add(ColumnConfig.doubleColumn(column, DoubleValueMapper.fromString(forNull)));
+        columnConfigs.add(ColumnConfig.doubleColumn(column, DoubleValueMapper.fromString(forNull)));
         return this;
     }
 
@@ -273,7 +343,7 @@ public class CsvLoader {
      * @since 0.16
      */
     public CsvLoader boolColumn(int column) {
-        columns.add(ColumnConfig.boolColumn(column));
+        columnConfigs.add(ColumnConfig.boolColumn(column));
         return this;
     }
 
@@ -281,7 +351,7 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader boolColumn(String column) {
-        columns.add(ColumnConfig.boolColumn(column));
+        columnConfigs.add(ColumnConfig.boolColumn(column));
         return this;
     }
 
@@ -440,21 +510,21 @@ public class CsvLoader {
 
         // "skip" is applied even if we read the header from the iterator
         Iterator<CSVRecord> it1 = head != null && head < 0 ? Iterators.skip(it0, -head) : it0;
-        ColumnMap columnMap = createColumnMap(it1);
+        CsvColumnMap columnMap = createColumnMap(it1);
 
         if (!it1.hasNext()) {
-            return DataFrame.empty(columnMap.dfHeader);
+            return DataFrame.empty(columnMap.getDfHeader());
         }
 
-        Extractor<CSVRecord, ?>[] extractors = columnMap.extractors(this.columns);
-        DataFrameByRowBuilder<CSVRecord, ?> builder = DataFrame.byRow(extractors).columnIndex(columnMap.dfHeader);
+        Extractor<CSVRecord, ?>[] extractors = columnMap.extractors(this.columnConfigs);
+        DataFrameByRowBuilder<CSVRecord, ?> builder = DataFrame.byRow(extractors).columnIndex(columnMap.getDfHeader());
 
         if (rowSampleSize > 0) {
             builder.sampleRows(rowSampleSize, rowsSampleRandom);
         }
 
-        if (rowFilter != null) {
-            builder.selectRows(rowFilter);
+        if (rowCondition != null) {
+            builder.selectRows(rowCondition);
         }
 
         DataFrameAppender<CSVRecord> appender = builder.appender();
@@ -476,65 +546,11 @@ public class CsvLoader {
         }
     }
 
-    private ColumnMap createColumnMap(Iterator<CSVRecord> it) {
-        return createColumnMap(createCsvHeader(it));
-    }
-
-    private ColumnMap createColumnMap(Index csvHeader) {
-
-        int uw = csvHeader.size();
-
-        if (includeColumns == null && includeColumnPositions == null && dropColumns == null) {
-            int[] positions = new int[uw];
-            for (int i = 0; i < positions.length; i++) {
-                positions[i] = i;
-            }
-
-            return new ColumnMap(csvHeader, csvHeader, positions);
-        }
-
-        List<String> columns = new ArrayList<>(uw);
-        List<Integer> positions = new ArrayList<>(uw);
-
-        if (includeColumns != null) {
-            for (String includeColumn : includeColumns) {
-                columns.add(includeColumn);
-                // this will throw if the label is invalid, which is exactly what we want
-                positions.add(csvHeader.position(includeColumn));
-            }
-
-        } else if (includeColumnPositions != null) {
-
-            for (int includeColumnPosition : includeColumnPositions) {
-                columns.add(csvHeader.getLabel(includeColumnPosition));
-                positions.add(includeColumnPosition);
-            }
-
-        } else {
-            for (int i = 0; i < uw; i++) {
-                columns.add(csvHeader.getLabel(i));
-                positions.add(i);
-            }
-        }
-
-        if (dropColumns != null) {
-            for (String toDrop : dropColumns) {
-                int i = columns.indexOf(toDrop);
-                if (i >= 0) {
-                    columns.remove(i);
-                    positions.remove(i);
-                }
-            }
-        }
-
-        Index dfHeader = Index.of(columns.toArray(new String[0]));
-
-        int[] csvPositions = new int[positions.size()];
-        for (int i = 0; i < csvPositions.length; i++) {
-            csvPositions[i] = positions.get(i);
-        }
-
-        return new ColumnMap(csvHeader, dfHeader, csvPositions);
+    private CsvColumnMap createColumnMap(Iterator<CSVRecord> it) {
+        Index csvHeader = createCsvHeader(it);
+        return columnMapFactory != null
+                ? columnMapFactory.create(csvHeader)
+                : CsvColumnMapFactory.all().create(csvHeader);
     }
 
     private Index createCsvHeader(Iterator<CSVRecord> it) {
@@ -555,40 +571,4 @@ public class CsvLoader {
 
         return Index.of(columnNames);
     }
-
-    private static class ColumnMap {
-
-        Index csvHeader;
-        Index dfHeader;
-        int[] csvPositions;
-
-        ColumnMap(Index csvHeader, Index dfHeader, int[] csvPositions) {
-            this.csvHeader = csvHeader;
-            this.dfHeader = dfHeader;
-            this.csvPositions = csvPositions;
-        }
-
-        Extractor<CSVRecord, ?>[] extractors(List<ColumnConfig> definedColumns) {
-
-            int w = dfHeader.size();
-            Extractor<CSVRecord, ?>[] extractors = new Extractor[w];
-
-            for (ColumnConfig c : definedColumns) {
-                int csvPos = c.csvColPos >= 0 ? c.csvColPos : csvHeader.position(c.csvColName);
-
-                // later configs override earlier configs at the same position
-                extractors[csvPositions[csvPos]] = c.extractor(csvHeader);
-            }
-
-            for (int i = 0; i < w; i++) {
-                if (extractors[i] == null) {
-                    int csvPos = csvPositions[i];
-                    extractors[i] = Extractor.$col(r -> r.get(csvPos));
-                }
-            }
-
-            return extractors;
-        }
-    }
-
 }

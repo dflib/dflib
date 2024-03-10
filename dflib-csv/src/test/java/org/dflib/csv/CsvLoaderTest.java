@@ -71,8 +71,8 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_SelectColumns_ByName() {
-        DataFrame df = new CsvLoader().selectColumns("b", "A").load(inPath("f1.csv"));
+    public void fromFile_Cols() {
+        DataFrame df = new CsvLoader().cols("b", "A").load(inPath("f1.csv"));
         new DataFrameAsserts(df, "b", "A")
                 .expectHeight(2)
                 .expectRow(0, "2", "1")
@@ -80,8 +80,8 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_SelectColumns_ByPosition() {
-        DataFrame df = new CsvLoader().selectColumns(1, 0).load(inPath("f1.csv"));
+    public void fromFile_Cols_Pos() {
+        DataFrame df = new CsvLoader().cols(1, 0).load(inPath("f1.csv"));
         new DataFrameAsserts(df, "b", "A")
                 .expectHeight(2)
                 .expectRow(0, "2", "1")
@@ -89,8 +89,8 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_SelectColumns_ByName_CustomHeader() {
-        DataFrame df = new CsvLoader().header("X", "Y", "Z").selectColumns("Y", "X").load(inPath("f1.csv"));
+    public void fromFile_Cols_CustomHeader() {
+        DataFrame df = new CsvLoader().header("X", "Y", "Z").cols("Y", "X").load(inPath("f1.csv"));
         new DataFrameAsserts(df, "Y", "X")
                 .expectHeight(3)
                 .expectRow(0, "b", "A")
@@ -99,8 +99,17 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_DropColumns() {
-        DataFrame df = new CsvLoader().dropColumns("b").load(inPath("f1.csv"));
+    public void fromFile_ColsExcept() {
+        DataFrame df = new CsvLoader().colsExcept("b").load(inPath("f1.csv"));
+        new DataFrameAsserts(df, "A", "C")
+                .expectHeight(2)
+                .expectRow(0, "1", "3")
+                .expectRow(1, "4", "6");
+    }
+
+    @Test
+    public void fromFile_ColsExcept_Pos() {
+        DataFrame df = new CsvLoader().colsExcept(1).load(inPath("f1.csv"));
         new DataFrameAsserts(df, "A", "C")
                 .expectHeight(2)
                 .expectRow(0, "1", "3")

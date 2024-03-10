@@ -3,6 +3,7 @@
 * #249 Remove APIs deprecated since 0.16
 * #250 Remove APIs deprecated since 0.17 
 * #251 Remove APIs deprecated since 0.18
+* #252 ColumnSet / RowSet like API for CsvLoader
 * #253 DataFrame.byRow() - automatically guess buffer capacity
 * #254 CsvLoader.head()
 * #256 Environment-based Printer for better JShell integration

@@ -22,7 +22,7 @@ public class CsvLoader_SamplingTest {
 
         // using fixed Random seed to get reproducible result
         DataFrame df1 = new CsvLoader()
-                .sampleRows(2, new Random(8))
+                .rowsSample(2, new Random(8))
                 .load(new StringReader(csv));
 
         new DataFrameAsserts(df1, "A", "B")
@@ -32,7 +32,7 @@ public class CsvLoader_SamplingTest {
 
         // do another test with different random seed
         DataFrame df2 = new CsvLoader()
-                .sampleRows(2, new Random(15))
+                .rowsSample(2, new Random(15))
                 .load(new StringReader(csv));
 
         new DataFrameAsserts(df2, "A", "B")
@@ -42,7 +42,7 @@ public class CsvLoader_SamplingTest {
 
         // and one more test
         DataFrame df3 = new CsvLoader()
-                .sampleRows(3, new Random(3))
+                .rowsSample(3, new Random(3))
                 .load(new StringReader(csv));
 
         new DataFrameAsserts(df3, "A", "B")
@@ -61,7 +61,7 @@ public class CsvLoader_SamplingTest {
 
         // using fixed Random seed to get reproducible result
         DataFrame df = new CsvLoader()
-                .sampleRows(5, new Random(8))
+                .rowsSample(5, new Random(8))
                 .load(new StringReader(csv));
 
         new DataFrameAsserts(df, "A", "B")
@@ -79,7 +79,7 @@ public class CsvLoader_SamplingTest {
 
         // using fixed Random seed to get reproducible result
         DataFrame df = new CsvLoader()
-                .sampleRows(2, new Random(8))
+                .rowsSample(2, new Random(8))
                 .load(new StringReader(csv));
 
         new DataFrameAsserts(df, "A", "B")
