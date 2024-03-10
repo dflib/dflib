@@ -43,23 +43,32 @@ public class CsvLoader {
     private RowPredicate rowCondition;
     private int rowSampleSize;
     private Random rowsSampleRandom;
-    private Integer head; // null, negative (offset), positive (limit)
+    private int offset;
+    private int limit;
 
     public CsvLoader() {
         this.format = CSVFormat.DEFAULT;
         this.columnConfigs = new ArrayList<>();
+        this.limit = -1;
     }
 
     /**
-     * Loads at most the specified number of rows from the CSV. If <code>len</code> is negative, instead of limiting
-     * the number of rows, skips the specified rows. This works similar to {@link DataFrame#head(int)}, but there's no
-     * corresponding "tail", as the CSV
+     * Skips the specified number of rows.
      *
      * @since 1.0.0-M20
      */
-    // TODO: for completeness, we also need something like "rowsRange()" to specify both the offset and max rows
-    public CsvLoader head(int len) {
-        this.head = len;
+    public CsvLoader offset(int len) {
+        this.offset = len;
+        return this;
+    }
+
+    /**
+     * Limits the max number of rows to the provided value
+     *
+     * @since 1.0.0-M20
+     */
+    public CsvLoader limit(int len) {
+        this.limit = len;
         return this;
     }
 
@@ -69,11 +78,11 @@ public class CsvLoader {
      *
      * @param n number of rows to skip
      * @return this loader instance
-     * @deprecated the new alternative is calling {@link #head} with <code>-n</code>
+     * @deprecated the new alternative is calling {@link #offset(int)}
      */
     @Deprecated(since = "1.0.0-M20", forRemoval = true)
     public CsvLoader skipRows(int n) {
-        return head(-n);
+        return offset(n);
     }
 
     /**
@@ -517,8 +526,8 @@ public class CsvLoader {
 
         Iterator<CSVRecord> it0 = read(reader);
 
-        // "skip" is applied even if we read the header from the iterator
-        Iterator<CSVRecord> it1 = head != null && head < 0 ? Iterators.skip(it0, -head) : it0;
+        // "offset" is applied even if we read the header from the iterator
+        Iterator<CSVRecord> it1 = offset > 0 ? Iterators.skip(it0, offset) : it0;
         CsvHeader csvHeader = createCsvHeader(it1);
         CsvColumnMap columnMap = createColumnMap(csvHeader.getHeader());
 
@@ -527,8 +536,7 @@ public class CsvLoader {
         CSVRecord maybeUnconsumedDataRow = csvHeader.getMaybeUnconsumedDataRow();
 
         // The header does not count towards the limit, so apply the limit AFTER reading the header
-        int limit = head != null && head >= 0 ? head : -1;
-
+        int limit = this.limit;
         if (limit == 0 || (maybeUnconsumedDataRow == null && !it1.hasNext())) {
             return DataFrame.empty(columnMap.getDfHeader());
         }

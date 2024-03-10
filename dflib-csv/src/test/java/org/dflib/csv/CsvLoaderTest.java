@@ -156,18 +156,18 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_Head() {
-        DataFrame df = new CsvLoader().head(1).load(inPath("f1.csv"));
+    public void fromFile_Limit() {
+        DataFrame df = new CsvLoader().limit(1).load(inPath("f1.csv"));
         new DataFrameAsserts(df, "A", "b", "C")
                 .expectHeight(1)
                 .expectRow(0, "1", "2", "3");
     }
 
     @Test
-    public void fromFile_Head_Header() {
+    public void fromFile_Limit_Header() {
         DataFrame df = new CsvLoader()
                 .header("C0", "C1", "C2")
-                .head(2)
+                .limit(2)
                 .load(inPath("f1.csv"));
 
         new DataFrameAsserts(df, "C0", "C1", "C2")
@@ -176,13 +176,25 @@ public class CsvLoaderTest extends BaseCsvTest {
                 .expectRow(1, "1", "2", "3");
     }
 
-
     @Test
-    public void fromFile_Head_Negative() {
-        DataFrame df = new CsvLoader().head(-1).load(inPath("f1.csv"));
+    public void fromFile_Offset() {
+        DataFrame df = new CsvLoader().offset(1).load(inPath("f1.csv"));
         new DataFrameAsserts(df, "1", "2", "3")
                 .expectHeight(1)
                 .expectRow(0, "4", "5", "6");
+    }
+
+    @Test
+    public void fromFile_Offset_Limit() {
+        DataFrame df = new CsvLoader()
+                .generateHeader()
+                .offset(1)
+                .limit(1)
+                .load(inPath("f1.csv"));
+
+        new DataFrameAsserts(df, "c0", "c1", "c2")
+                .expectHeight(1)
+                .expectRow(0, "1", "2", "3");
     }
 
     @Test
