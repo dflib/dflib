@@ -19,6 +19,7 @@ import org.dflib.RowMapper;
 import org.dflib.RowPredicate;
 import org.dflib.RowToValueMapper;
 import org.dflib.Series;
+import org.dflib.agg.DataFrameAggregator;
 import org.dflib.row.DynamicColsRowBuilder;
 import org.dflib.series.RowMappedSeries;
 
@@ -501,6 +502,19 @@ public class DeferredColumnSet implements ColumnSet {
         }
 
         return new ColumnDataFrame(null, Index.of(labels), doMapArrays(splitExp));
+    }
+
+    @Override
+    public DataFrame agg(Exp<?>... aggregators) {
+        int w = aggregators.length;
+
+        String[] labels = new String[w];
+        for (int i = 0; i < w; i++) {
+            labels[i] = aggregators[i].getColumnName(source);
+        }
+
+        Series<?>[] aggregated = DataFrameAggregator.agg(source, aggregators);
+        return new ColumnDataFrame(null, Index.ofDeduplicated(labels), aggregated);
     }
 
     private Series<?>[] doMapArrays(Exp<? extends Object[]> mapper) {

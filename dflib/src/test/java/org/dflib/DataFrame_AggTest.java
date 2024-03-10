@@ -7,6 +7,7 @@ import java.util.HashSet;
 
 import static java.util.Arrays.asList;
 
+@Deprecated
 public class DataFrame_AggTest {
 
     @Test

@@ -19,6 +19,7 @@ import org.dflib.RowMapper;
 import org.dflib.RowPredicate;
 import org.dflib.RowToValueMapper;
 import org.dflib.Series;
+import org.dflib.agg.DataFrameAggregator;
 import org.dflib.index.LabelDeduplicator;
 import org.dflib.row.MultiArrayRowBuilder;
 import org.dflib.series.RowMappedSeries;
@@ -536,6 +537,18 @@ public class FixedColumnSet implements ColumnSet {
     @Override
     public DataFrame selectExpandArray(Exp<? extends Object[]> splitExp) {
         return new ColumnDataFrame(null, Index.ofDeduplicated(csIndex), doMapArrays(splitExp));
+    }
+
+    @Override
+    public DataFrame agg(Exp<?>... aggregators) {
+        int w = aggregators.length;
+        if (w != csIndex.length) {
+            throw new IllegalArgumentException(
+                    "Can't perform 'agg': Exp[] size is different from the ColumnSet size: " + w + " vs. " + csIndex.length);
+        }
+
+        Series<?>[] aggregated = DataFrameAggregator.agg(source, aggregators);
+        return new ColumnDataFrame(null, Index.ofDeduplicated(csIndex), aggregated);
     }
 
     private Series<?>[] doMapArrays(Exp<? extends Object[]> mapper) {

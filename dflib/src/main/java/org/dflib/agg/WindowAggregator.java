@@ -1,5 +1,6 @@
 package org.dflib.agg;
 
+import org.dflib.ColumnDataFrame;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.GroupBy;
@@ -112,17 +113,19 @@ public class WindowAggregator {
     }
 
     public static DataFrame agg(DataFrame df, Exp<?>... aggregators) {
+        int h = df.height();
+        int w = aggregators.length;
 
-        DataFrame oneRowDf = df.agg(aggregators);
+        Series<?>[] oneRowSeries = DataFrameAggregator.agg(df, aggregators);
+        String[] labels = new String[w];
 
         // expand each column to the height of the original DataFrame
-        int h = df.height();
-        int w = oneRowDf.width();
         Series<?>[] expandedColumns = new Series[w];
         for (int i = 0; i < w; i++) {
-            expandedColumns[i] = Series.ofVal(oneRowDf.getColumn(i).get(0), h);
+            expandedColumns[i] = Series.ofVal(oneRowSeries[i].get(0), h);
+            labels[i] = aggregators[i].getColumnName(df);
         }
 
-        return DataFrame.byColumn(oneRowDf.getColumnsIndex()).of(expandedColumns);
+        return new ColumnDataFrame(null, Index.ofDeduplicated(labels), expandedColumns);
     }
 }

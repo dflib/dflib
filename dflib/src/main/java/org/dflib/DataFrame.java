@@ -1,6 +1,5 @@
 package org.dflib;
 
-import org.dflib.agg.DataFrameAggregator;
 import org.dflib.builder.DataFrameArrayByRowBuilder;
 import org.dflib.builder.DataFrameByColumnBuilder;
 import org.dflib.builder.DataFrameByRowBuilder;
@@ -1011,9 +1010,11 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param aggregators an array of aggregators corresponding to the aggregated result columns
      * @return a DataFrame with a single row
      * @see Exp for static factory methods of column aggregators
+     * @deprecated in favor of {@link #cols()} and then {@link ColumnSet#agg(Exp[])}
      */
+    @Deprecated(since = "1.0.0-M20", forRemoval = true)
     default DataFrame agg(Exp<?>... aggregators) {
-        return DataFrameAggregator.agg(this, aggregators);
+        return cols().agg(aggregators);
     }
 
     /**

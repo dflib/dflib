@@ -3,7 +3,6 @@ package org.dflib.agg;
 import org.dflib.DataFrame;
 import org.dflib.Environment;
 import org.dflib.Exp;
-import org.dflib.Index;
 import org.dflib.Series;
 
 import java.util.concurrent.ExecutorService;
@@ -16,11 +15,14 @@ import java.util.concurrent.Future;
  */
 public class DataFrameAggregator {
 
-    public static DataFrame agg(DataFrame df, Exp<?>... aggregators) {
+    /**
+     * @since 1.0.0-M20
+     */
+    public static Series<?>[] agg(DataFrame df, Exp<?>... aggregators) {
 
         int aggW = aggregators.length;
+
         Series<?>[] aggColumns = new Series[aggW];
-        String[] aggLabels = new String[aggW];
 
         Environment env = Environment.commonEnv();
 
@@ -31,7 +33,6 @@ public class DataFrameAggregator {
         if (aggW <= 1 || df.height() < env.parallelExecThreshold()) {
             for (int i = 0; i < aggW; i++) {
                 aggColumns[i] = aggregators[i].eval(df);
-                aggLabels[i] = aggregators[i].getColumnName(df);
             }
         } else {
             ExecutorService pool = env.threadPool();
@@ -40,7 +41,6 @@ public class DataFrameAggregator {
             for (int i = 0; i < aggW; i++) {
                 Exp<?> aggregator = aggregators[i];
                 aggTasks[i] = pool.submit(() -> aggregator.eval(df));
-                aggLabels[i] = aggregator.getColumnName(df);
             }
 
             for (int i = 0; i < aggW; i++) {
@@ -50,8 +50,9 @@ public class DataFrameAggregator {
                     throw new RuntimeException(e);
                 }
             }
+
         }
 
-        return DataFrame.byColumn(Index.ofDeduplicated(aggLabels)).of(aggColumns);
+        return aggColumns;
     }
 }

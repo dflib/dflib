@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Deprecated
 public class DataFrame_AggFilteredTest {
 
     @Test

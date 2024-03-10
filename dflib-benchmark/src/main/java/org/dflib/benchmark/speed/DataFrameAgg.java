@@ -41,26 +41,27 @@ public class DataFrameAgg {
 
     @Benchmark
     public Object median() {
-        return df.agg(Exp.$int("c0").median());
+        return df.cols().agg(Exp.$int("c0").median());
     }
 
     @Benchmark
     public Object medianWithFilter() {
         return df
                 .selectRows(Exp.$int("c0").mod(2).eq(0))
+                .cols()
                 .agg(Exp.$int(0).median());
     }
 
     @Benchmark
     public Object oneColumn() {
-        return df.agg(
-                Exp.$int("c0").sum()
+        return df.cols()
+                .agg(Exp.$int("c0").sum()
         ).materialize().iterator();
     }
 
     @Benchmark
     public Object threeColumn() {
-        return df.agg(
+        return df.cols().agg(
                 Exp.$int("c0").sum(),
                 Exp.$int("c1").sum(),
                 Exp.$int("c2").sum()
@@ -69,7 +70,7 @@ public class DataFrameAgg {
 
     @Benchmark
     public Object sixColumn() {
-        return df.agg(
+        return df.cols().agg(
                 Exp.$int("c0").sum(),
                 Exp.$int("c1").sum(),
                 Exp.$int("c2").sum(),

@@ -11,6 +11,7 @@
 * #259 CsvLoader.generateHeader()
 * #260 ExcelLoader.offset(..), ExcelLoader.limit(..)
 * #261 TableLoader and SqlLoader - align API with CsvLoader
+* #262 ColumnSet.agg(Exp...)
 
 ## Release 1.0.0-M19
 
