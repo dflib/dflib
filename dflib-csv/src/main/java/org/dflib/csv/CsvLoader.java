@@ -34,9 +34,8 @@ import java.util.Random;
  */
 public class CsvLoader {
 
-    private Index header;
-
-    private CsvColumnMapFactory columnMapFactory;
+    private HeaderStrategy headerStrategy;
+    private ColumnExtractStrategy columnExtractStrategy;
     private final List<ColumnConfig> columnConfigs;
 
     private CSVFormat format;
@@ -118,7 +117,7 @@ public class CsvLoader {
 
     /**
      * @since 0.7
-     * @deprecated in favor of {@link #rowsSample(int, Random)} 
+     * @deprecated in favor of {@link #rowsSample(int, Random)}
      */
     @Deprecated(since = "1.0.0-M20", forRemoval = true)
     public CsvLoader sampleRows(int size, Random random) {
@@ -159,7 +158,17 @@ public class CsvLoader {
      * @since 0.7
      */
     public CsvLoader header(String... columns) {
-        this.header = Index.of(columns);
+        this.headerStrategy = HeaderStrategy.explicit(Index.of(columns));
+        return this;
+    }
+
+    /**
+     * Instead of using the first CSV row as a DataFrame header, generate a header with labels like "c0", "c1", etc.
+     *
+     * @since 1.0.0-M20
+     */
+    public CsvLoader generateHeader() {
+        this.headerStrategy = HeaderStrategy.generated();
         return this;
     }
 
@@ -172,7 +181,7 @@ public class CsvLoader {
      * @since 1.0.0-M20
      */
     public CsvLoader cols(String... columns) {
-        this.columnMapFactory = CsvColumnMapFactory.ofCols(columns);
+        this.columnExtractStrategy = ColumnExtractStrategy.ofCols(columns);
         return this;
     }
 
@@ -191,7 +200,7 @@ public class CsvLoader {
      * @since 1.0.0-M20
      */
     public CsvLoader cols(int... columns) {
-        this.columnMapFactory = CsvColumnMapFactory.ofCols(columns);
+        this.columnExtractStrategy = ColumnExtractStrategy.ofCols(columns);
         return this;
     }
 
@@ -210,7 +219,7 @@ public class CsvLoader {
      * @since 1.0.0-M20
      */
     public CsvLoader colsExcept(String... columns) {
-        this.columnMapFactory = CsvColumnMapFactory.ofColsExcept(columns);
+        this.columnExtractStrategy = ColumnExtractStrategy.ofColsExcept(columns);
         return this;
     }
 
@@ -219,7 +228,7 @@ public class CsvLoader {
      * @since 1.0.0-M20
      */
     public CsvLoader colsExcept(int... columns) {
-        this.columnMapFactory = CsvColumnMapFactory.ofColsExcept(columns);
+        this.columnExtractStrategy = ColumnExtractStrategy.ofColsExcept(columns);
         return this;
     }
 
@@ -510,9 +519,17 @@ public class CsvLoader {
 
         // "skip" is applied even if we read the header from the iterator
         Iterator<CSVRecord> it1 = head != null && head < 0 ? Iterators.skip(it0, -head) : it0;
-        CsvColumnMap columnMap = createColumnMap(it1);
+        CsvHeader csvHeader = createCsvHeader(it1);
+        CsvColumnMap columnMap = createColumnMap(csvHeader.getHeader());
 
-        if (!it1.hasNext()) {
+        // Some header strategies may peek inside the iterator, but not use the first row for the header.
+        // So we need to re-add this row back to the DataFrame
+        CSVRecord maybeUnconsumedDataRow = csvHeader.getMaybeUnconsumedDataRow();
+
+        // The header does not count towards the limit, so apply the limit AFTER reading the header
+        int limit = head != null && head >= 0 ? head : -1;
+
+        if (limit == 0 || (maybeUnconsumedDataRow == null && !it1.hasNext())) {
             return DataFrame.empty(columnMap.getDfHeader());
         }
 
@@ -529,8 +546,12 @@ public class CsvLoader {
 
         DataFrameAppender<CSVRecord> appender = builder.appender();
 
-        // The header does not count towards the limit, so apply limit AFTER reading the header.
-        Iterator<CSVRecord> it2 = head != null && head >= 0 ? Iterators.limit(it1, head) : it1;
+        if (maybeUnconsumedDataRow != null) {
+            appender.append(maybeUnconsumedDataRow);
+            limit--;
+        }
+
+        Iterator<CSVRecord> it2 = limit >= 0 ? Iterators.limit(it1, limit) : it1;
         while (it2.hasNext()) {
             appender.append(it2.next());
         }
@@ -546,29 +567,15 @@ public class CsvLoader {
         }
     }
 
-    private CsvColumnMap createColumnMap(Iterator<CSVRecord> it) {
-        Index csvHeader = createCsvHeader(it);
-        return columnMapFactory != null
-                ? columnMapFactory.create(csvHeader)
-                : CsvColumnMapFactory.all().create(csvHeader);
+    private CsvColumnMap createColumnMap(Index csvHeader) {
+        return columnExtractStrategy != null
+                ? columnExtractStrategy.columnMap(csvHeader)
+                : ColumnExtractStrategy.all().columnMap(csvHeader);
     }
 
-    private Index createCsvHeader(Iterator<CSVRecord> it) {
-        if (it.hasNext()) {
-            return header != null ? header : loadCsvHeader(it.next());
-        } else {
-            return header != null ? header : Index.of();
-        }
-    }
-
-    private Index loadCsvHeader(CSVRecord header) {
-
-        int width = header.size();
-        String[] columnNames = new String[width];
-        for (int i = 0; i < width; i++) {
-            columnNames[i] = header.get(i);
-        }
-
-        return Index.of(columnNames);
+    private CsvHeader createCsvHeader(Iterator<CSVRecord> it) {
+        return headerStrategy != null
+                ? headerStrategy.createCsvHeader(it)
+                : HeaderStrategy.firstRow().createCsvHeader(it);
     }
 }

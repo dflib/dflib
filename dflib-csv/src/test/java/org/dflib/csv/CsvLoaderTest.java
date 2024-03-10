@@ -71,6 +71,16 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
+    public void fromFile_generateHeader() {
+        DataFrame df = new CsvLoader().generateHeader().load(inPath("f1.csv"));
+        new DataFrameAsserts(df, "c0", "c1", "c2")
+                .expectHeight(3)
+                .expectRow(0, "A", "b", "C")
+                .expectRow(1, "1", "2", "3")
+                .expectRow(2, "4", "5", "6");
+    }
+
+    @Test
     public void fromFile_Cols() {
         DataFrame df = new CsvLoader().cols("b", "A").load(inPath("f1.csv"));
         new DataFrameAsserts(df, "b", "A")
@@ -89,9 +99,29 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_Cols_CustomHeader() {
+    public void fromFile_Cols_Header() {
         DataFrame df = new CsvLoader().header("X", "Y", "Z").cols("Y", "X").load(inPath("f1.csv"));
         new DataFrameAsserts(df, "Y", "X")
+                .expectHeight(3)
+                .expectRow(0, "b", "A")
+                .expectRow(1, "2", "1")
+                .expectRow(2, "5", "4");
+    }
+
+    @Test
+    public void fromFile_Cols_generateHeader() {
+        DataFrame df = new CsvLoader().generateHeader().cols("c1", "c0").load(inPath("f1.csv"));
+        new DataFrameAsserts(df, "c1", "c0")
+                .expectHeight(3)
+                .expectRow(0, "b", "A")
+                .expectRow(1, "2", "1")
+                .expectRow(2, "5", "4");
+    }
+
+    @Test
+    public void fromFile_ColsPos_generateHeader() {
+        DataFrame df = new CsvLoader().generateHeader().cols(1, 0).load(inPath("f1.csv"));
+        new DataFrameAsserts(df, "c1", "c0")
                 .expectHeight(3)
                 .expectRow(0, "b", "A")
                 .expectRow(1, "2", "1")

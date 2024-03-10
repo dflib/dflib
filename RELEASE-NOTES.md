@@ -8,6 +8,7 @@
 * #254 CsvLoader.head()
 * #256 Environment-based Printer for better JShell integration
 * #258 TableSaver.batchSize(int)
+* #259 CsvLoader.generateHeader()
 
 ## Release 1.0.0-M19
 
