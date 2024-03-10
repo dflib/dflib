@@ -6,8 +6,7 @@ import org.dflib.Series;
 import org.dflib.unit.BoolSeriesAsserts;
 import org.junit.jupiter.api.Test;
 
-import static org.dflib.Exp.$bool;
-import static org.dflib.Exp.not;
+import static org.dflib.Exp.*;
 
 public class NotConditionTest {
 

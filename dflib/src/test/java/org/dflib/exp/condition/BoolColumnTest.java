@@ -7,7 +7,7 @@ import org.dflib.Series;
 import org.dflib.unit.BoolSeriesAsserts;
 import org.junit.jupiter.api.Test;
 
-import static org.dflib.Exp.$bool;
+import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 

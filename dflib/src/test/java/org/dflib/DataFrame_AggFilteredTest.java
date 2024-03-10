@@ -4,6 +4,7 @@ import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.dflib.Exp.*;
 
 @Deprecated
 public class DataFrame_AggFilteredTest {
@@ -18,7 +19,7 @@ public class DataFrame_AggFilteredTest {
 
         DataFrame agg = df.agg(
                 // filter is applied to column 0, sum is applied to column 1
-                Exp.$int(1).sum(Exp.$int(0).mod(2).eq(0)),
+                $int(1).sum(Exp.$int(0).mod(2).eq(0)),
                 // filter is applied to column 1, sum is applied to column 0
                 Exp.$int("a").sum(Exp.$int("b").mod(2).eq(1)));
 

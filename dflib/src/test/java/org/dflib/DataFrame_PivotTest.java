@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.dflib.Exp.*;
 
 public class DataFrame_PivotTest {
 
@@ -22,7 +23,7 @@ public class DataFrame_PivotTest {
                 1, "y", 20.0);
 
 
-        DataFrame df = df1.pivot().columns("b").rows("a").values("c", Exp.$double(0).sum());
+        DataFrame df = df1.pivot().columns("b").rows("a").values("c", $double(0).sum());
 
         new DataFrameAsserts(df, "a", "x", "y")
                 .expectHeight(2)
@@ -47,7 +48,7 @@ public class DataFrame_PivotTest {
 
 
         DataFrame df = df1.pivot().columns("b").rows("a")
-                .values("c", Exp.$int(0).sum())
+                .values("c", $int(0).sum())
                 .sort("a", true);
 
         new DataFrameAsserts(df, "a", "x", "y", "z", "t")
@@ -71,7 +72,7 @@ public class DataFrame_PivotTest {
                 1, "y", 20.0);
 
 
-        DataFrame df = df1.pivot().columns("b").rows("a").values("c", Exp.$double(0).sum());
+        DataFrame df = df1.pivot().columns("b").rows("a").values("c", $double(0).sum());
 
         new DataFrameAsserts(df, "a", "x", "y")
                 .expectHeight(2)
@@ -90,7 +91,7 @@ public class DataFrame_PivotTest {
                 1, "y", 20.0);
 
 
-        DataFrame df = df1.pivot().columns("b").rows("a").values("c", Exp.$double(0).sum());
+        DataFrame df = df1.pivot().columns("b").rows("a").values("c", $double(0).sum());
 
         new DataFrameAsserts(df, "a", "y")
                 .expectHeight(2)
@@ -138,7 +139,7 @@ public class DataFrame_PivotTest {
                 1, "y", 20.0);
 
 
-        DataFrame df = df1.pivot().columns("b").rows("a").values("c", Exp.$double(0).sum().castAsDecimal().scale(2));
+        DataFrame df = df1.pivot().columns("b").rows("a").values("c", $double(0).sum().castAsDecimal().scale(2));
 
         new DataFrameAsserts(df, "a", "x", "y")
                 .expectHeight(2)

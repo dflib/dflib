@@ -2,6 +2,7 @@ package org.dflib;
 
 import org.dflib.unit.IntSeriesAsserts;
 import org.junit.jupiter.api.Test;
+import static org.dflib.Exp.*;
 
 public class DataFrame_Over_DenseRankTest {
 
@@ -89,13 +90,13 @@ public class DataFrame_Over_DenseRankTest {
         IntSeries rn0 = df.over().sorted().denseRank();
         new IntSeriesAsserts(rn0).expectData(1, 1, 1, 1, 1);
 
-        IntSeries rn1 = df.over().sorted(Exp.$col("a").asc()).denseRank();
+        IntSeries rn1 = df.over().sorted($col("a").asc()).denseRank();
         new IntSeriesAsserts(rn1).expectData(2, 3, 2, 1, 2);
 
-        IntSeries rn2 = df.over().sorted(Exp.$col("b").asc()).denseRank();
+        IntSeries rn2 = df.over().sorted($col("b").asc()).denseRank();
         new IntSeriesAsserts(rn2).expectData(2, 3, 4, 1, 2);
 
-        IntSeries rn3 = df.over().sorted(Exp.$col("c").asc()).denseRank();
+        IntSeries rn3 = df.over().sorted($col("c").asc()).denseRank();
         new IntSeriesAsserts(rn3).expectData(1, 2, 3, 3, 1);
     }
 
@@ -112,7 +113,7 @@ public class DataFrame_Over_DenseRankTest {
         IntSeries rn0 = df.over().partitioned("a").sorted().denseRank();
         new IntSeriesAsserts(rn0).expectData(1, 1, 1, 1, 1);
 
-        IntSeries rn1 = df.over().partitioned("a").sorted(Exp.$col("b").asc()).denseRank();
+        IntSeries rn1 = df.over().partitioned("a").sorted($col("b").asc()).denseRank();
         new IntSeriesAsserts(rn1).expectData(1, 1, 2, 1, 1);
     }
 

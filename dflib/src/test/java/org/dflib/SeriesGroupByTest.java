@@ -3,6 +3,7 @@ package org.dflib;
 import org.dflib.unit.DataFrameAsserts;
 import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
+import static org.dflib.Exp.*;
 
 public class SeriesGroupByTest {
 
@@ -19,7 +20,7 @@ public class SeriesGroupByTest {
 
         Series<String> aggregated = Series.of("a", "b", "cd", "e", "fg")
                 .group((String s) -> s.length())
-                .agg(Exp.$col("").vConcat("_"));
+                .agg($col("").vConcat("_"));
 
         new SeriesAsserts(aggregated).expectData("a_b_e", "cd_fg");
     }
@@ -30,9 +31,9 @@ public class SeriesGroupByTest {
         DataFrame aggregated = Series.of("a", "b", "cd", "e", "fg")
                 .group((String s) -> s.length())
                 .aggMultiple(
-                        Exp.$col("first").first(),
-                        Exp.$col("pipe").vConcat("|"),
-                        Exp.$col("underscore").vConcat("_"));
+                        $col("first").first(),
+                        $col("pipe").vConcat("|"),
+                        $col("underscore").vConcat("_"));
 
         new DataFrameAsserts(aggregated, "first", "pipe", "underscore")
                 .expectHeight(2)
@@ -46,9 +47,9 @@ public class SeriesGroupByTest {
         DataFrame aggregated = Series.of("a", "b", "cd", "e", "fg")
                 .group((String s) -> s.length())
                 .aggMultiple(
-                        Exp.$col("").first().as("f"),
-                        Exp.$col("").vConcat("|").as("c1"),
-                        Exp.$col("").vConcat("_").as("c2"));
+                        $col("").first().as("f"),
+                        $col("").vConcat("|").as("c1"),
+                        $col("").vConcat("_").as("c2"));
 
         new DataFrameAsserts(aggregated, "f", "c1", "c2")
                 .expectHeight(2)

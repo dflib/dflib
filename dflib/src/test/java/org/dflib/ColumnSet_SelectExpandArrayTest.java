@@ -2,9 +2,7 @@ package org.dflib;
 
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
-
-import static org.dflib.Exp.$int;
-import static org.dflib.Exp.$val;
+import static org.dflib.Exp.*;
 
 public class ColumnSet_SelectExpandArrayTest {
 

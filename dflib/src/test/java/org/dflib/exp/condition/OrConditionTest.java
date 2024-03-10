@@ -8,8 +8,7 @@ import org.dflib.exp.bool.OrCondition;
 import org.dflib.unit.BoolSeriesAsserts;
 import org.junit.jupiter.api.Test;
 
-import static org.dflib.Exp.$bool;
-import static org.dflib.Exp.or;
+import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class OrConditionTest {

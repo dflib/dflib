@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.dflib.Exp.$int;
+import static org.dflib.Exp.*;
 
 public class ColumnSet_ExpandTest {
 
@@ -13,7 +13,7 @@ public class ColumnSet_ExpandTest {
     public void list() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")
-                .cols("c", "b").expand(Exp.$val(List.of("one", "two")));
+                .cols("c", "b").expand($val(List.of("one", "two")));
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(2)

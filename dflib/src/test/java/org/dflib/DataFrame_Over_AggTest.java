@@ -2,13 +2,14 @@ package org.dflib;
 
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
+import static org.dflib.Exp.*;
 
 public class DataFrame_Over_AggTest {
 
     @Test
     public void empty() {
         DataFrame df = DataFrame.empty("a", "b", "c");
-        DataFrame r = df.over().agg(Exp.$int("a").sum());
+        DataFrame r = df.over().agg($int("a").sum());
         new DataFrameAsserts(r, "sum(a)").expectHeight(0);
     }
 
@@ -21,7 +22,7 @@ public class DataFrame_Over_AggTest {
                 0, "a",
                 1, "x");
 
-        DataFrame r = df.over().agg(Exp.$int("a").sum());
+        DataFrame r = df.over().agg($int("a").sum());
         new DataFrameAsserts(r, "sum(a)")
                 .expectHeight(5)
                 .expectRow(0, 5)
@@ -40,7 +41,7 @@ public class DataFrame_Over_AggTest {
                 0, "a",
                 1, "x");
 
-        DataFrame r = df.over().partitioned("a").agg(Exp.$int("a").sum());
+        DataFrame r = df.over().partitioned("a").agg($int("a").sum());
         new DataFrameAsserts(r, "sum(a)")
                 .expectHeight(5)
                 .expectRow(0, 3)
@@ -60,10 +61,10 @@ public class DataFrame_Over_AggTest {
                 1, "x");
 
         DataFrame r = df.over()
-                .sorted(Exp.$col("b").asc())
+                .sorted($col("b").asc())
                 .agg(
-                        Exp.$int("a").sum(),
-                        Exp.$col("b").first()
+                        $int("a").sum(),
+                        $col("b").first()
                 );
 
         new DataFrameAsserts(r, "sum(a)", "b")
@@ -86,10 +87,10 @@ public class DataFrame_Over_AggTest {
 
         DataFrame r = df.over()
                 .partitioned("a")
-                .sorted(Exp.$col("b").asc())
+                .sorted($col("b").asc())
                 .agg(
-                        Exp.$int("a").sum(),
-                        Exp.$col("b").first()
+                        $int("a").sum(),
+                        $col("b").first()
                 );
 
         new DataFrameAsserts(r, "sum(a)", "b")

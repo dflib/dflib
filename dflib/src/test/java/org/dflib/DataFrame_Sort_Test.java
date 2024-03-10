@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static org.dflib.Exp.$decimal;
-import static org.dflib.Exp.$int;
+import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DataFrame_Sort_Test {

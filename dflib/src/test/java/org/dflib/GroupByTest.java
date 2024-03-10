@@ -10,6 +10,7 @@ import java.util.HashSet;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.dflib.Exp.*;
 
 public class GroupByTest {
 
@@ -90,8 +91,8 @@ public class GroupByTest {
                 1, "x");
 
         DataFrame df = df1.group("a").agg(
-                Exp.$long("a").sum(),
-                Exp.$str(1).vConcat(";"));
+                $long("a").sum(),
+                $str(1).vConcat(";"));
 
         new DataFrameAsserts(df, "sum(a)", "b")
                 .expectHeight(3)
@@ -112,9 +113,9 @@ public class GroupByTest {
         DataFrame df = df1
                 .group("b")
                 .agg(
-                        Exp.$col("b").first(),
-                        Exp.$long("a").sum(),
-                        Exp.$double("a").median());
+                        $col("b").first(),
+                        $long("a").sum(),
+                        $double("a").median());
 
         new DataFrameAsserts(df, "b", "sum(a)", "median(a)")
                 .expectHeight(3)
@@ -238,10 +239,10 @@ public class GroupByTest {
                 1, "x");
 
         DataFrame df = df1.group("b").agg(
-                Exp.$col("b").first().as("first"),
-                Exp.$col("b").last().as("last"),
-                Exp.$long("a").sum().as("a_sum"),
-                Exp.$double("a").median().as("a_median")
+                $col("b").first().as("first"),
+                $col("b").last().as("last"),
+                $long("a").sum().as("a_sum"),
+                $double("a").median().as("a_median")
         );
 
         new DataFrameAsserts(df, "first", "last", "a_sum", "a_median")
@@ -366,7 +367,7 @@ public class GroupByTest {
                 1, "y");
 
         DataFrame df2 = df1.group("a")
-                .sort(Exp.$col(1).asc())
+                .sort($col(1).asc())
                 .toDataFrame();
 
         new DataFrameAsserts(df2, "a", "b")
@@ -388,10 +389,10 @@ public class GroupByTest {
                 0, "a",
                 1, "x");
 
-        IntSeries rn1 = df.group("a").sort(Exp.$col("b").asc()).rank();
+        IntSeries rn1 = df.group("a").sort($col("b").asc()).rank();
         new IntSeriesAsserts(rn1).expectData(1, 1, 3, 1, 1);
 
-        IntSeries rn2 = df.group("b").sort(Exp.$col("a").asc()).rank();
+        IntSeries rn2 = df.group("b").sort($col("a").asc()).rank();
         new IntSeriesAsserts(rn2).expectData(1, 1, 1, 1, 1);
     }
 

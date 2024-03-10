@@ -3,13 +3,14 @@ package org.dflib;
 import org.dflib.unit.SeriesAsserts;
 import org.dflib.window.WindowRange;
 import org.junit.jupiter.api.Test;
+import static org.dflib.Exp.*;
 
 public class DataFrame_Over_MapColumnTest {
 
     @Test
     public void empty() {
         DataFrame df = DataFrame.empty("a", "b", "c");
-        Series<?> r = df.over().mapColumn(Exp.$int("a").sum());
+        Series<?> r = df.over().mapColumn($int("a").sum());
         new SeriesAsserts(r).expectData();
     }
 
@@ -22,7 +23,7 @@ public class DataFrame_Over_MapColumnTest {
                 0, "a",
                 1, "x");
 
-        Series<?> r = df.over().mapColumn(Exp.$int("a").sum());
+        Series<?> r = df.over().mapColumn($int("a").sum());
         new SeriesAsserts(r).expectData(5, 5, 5, 5, 5);
     }
 
@@ -35,7 +36,7 @@ public class DataFrame_Over_MapColumnTest {
                 0, "a",
                 1, "x");
 
-        Series<?> r = df.over().partitioned("a").mapColumn(Exp.$int("a").sum());
+        Series<?> r = df.over().partitioned("a").mapColumn($int("a").sum());
         new SeriesAsserts(r).expectData(3, 2, 3, 0, 3);
     }
 
@@ -48,7 +49,7 @@ public class DataFrame_Over_MapColumnTest {
                 0, "a",
                 1, "x");
 
-        Series<?> r = df.over().sorted(Exp.$col("b").asc()).mapColumn(Exp.$int("a").sum());
+        Series<?> r = df.over().sorted($col("b").asc()).mapColumn($int("a").sum());
         new SeriesAsserts(r).expectData(5, 5, 5, 5, 5);
     }
 
@@ -62,7 +63,7 @@ public class DataFrame_Over_MapColumnTest {
 
         Series<?> r = df.over()
                 .range(WindowRange.allPreceding)
-                .mapColumn(Exp.$int("value").sum());
+                .mapColumn($int("value").sum());
 
         new SeriesAsserts(r).expectData(1, 23, 38, 40);
     }
@@ -76,9 +77,9 @@ public class DataFrame_Over_MapColumnTest {
                 3, 2);
 
         Series<?> r = df.over()
-                .sorted(Exp.$col("order").asc())
+                .sorted($col("order").asc())
                 .range(WindowRange.allPreceding)
-                .mapColumn(Exp.$int("value").sum());
+                .mapColumn($int("value").sum());
 
         new SeriesAsserts(r).expectData(15, 16, 18, 40);
     }
@@ -92,9 +93,9 @@ public class DataFrame_Over_MapColumnTest {
                 3, 2);
 
         Series<?> r = df.over()
-                .sorted(Exp.$col("order").asc())
+                .sorted($col("order").asc())
                 .range(WindowRange.allFollowing)
-                .mapColumn(Exp.$int("value").sum());
+                .mapColumn($int("value").sum());
 
         new SeriesAsserts(r).expectData(40, 25, 24, 22);
     }
@@ -108,7 +109,7 @@ public class DataFrame_Over_MapColumnTest {
                 0, "a",
                 1, "x");
 
-        Series<?> r = df.over().partitioned("a").sorted(Exp.$col("b").asc()).mapColumn(Exp.$int("a").sum());
+        Series<?> r = df.over().partitioned("a").sorted($col("b").asc()).mapColumn($int("a").sum());
         new SeriesAsserts(r).expectData(3, 2, 3, 0, 3);
     }
 
@@ -124,9 +125,9 @@ public class DataFrame_Over_MapColumnTest {
 
         Series<?> r = df.over()
                 .partitioned("label")
-                .sorted(Exp.$col("order").asc())
+                .sorted($col("order").asc())
                 .range(WindowRange.allPreceding)
-                .mapColumn(Exp.$int("value").sum());
+                .mapColumn($int("value").sum());
 
         new SeriesAsserts(r).expectData(3, 25, 15, 2, 77, 27);
     }

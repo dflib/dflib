@@ -18,7 +18,7 @@ public class ColumnSet_AggTest {
                 .cols()
                 .agg(
                         $long("a").sum(),
-                        Exp.count(),
+                        count(),
                         $double("d").sum());
 
         new DataFrameAsserts(agg, "sum(a)", "count", "sum(d)")
@@ -37,7 +37,7 @@ public class ColumnSet_AggTest {
                 .cols("sum_a", "count", "sum_d")
                 .agg(
                         $long("a").sum(),
-                        Exp.count(),
+                        count(),
                         $double("d").sum());
 
         new DataFrameAsserts(agg, "sum_a", "count", "sum_d")
@@ -55,9 +55,9 @@ public class ColumnSet_AggTest {
         DataFrame agg = df
                 .cols(0, 2, 3)
                 .agg(
-                        Exp.$long("a").sum(),
-                        Exp.count(),
-                        Exp.$double("d").sum());
+                        $long("a").sum(),
+                        count(),
+                        $double("d").sum());
 
         new DataFrameAsserts(agg, "a", "c", "d")
                 .expectHeight(1)

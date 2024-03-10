@@ -7,8 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static org.dflib.Exp.$int;
-import static org.dflib.Exp.$str;
+import static org.dflib.Exp.*;
 
 @Deprecated
 public class DataFrame_ReplaceTest {

@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.dflib.Exp.*;
 
 public class Series_AggTest {
 
@@ -22,10 +23,10 @@ public class Series_AggTest {
 
         DataFrame aggregated = type.createSeries("a", "b", "cd", "e", "fg")
                 .aggMultiple(
-                        Exp.$col("first").first(),
-                        Exp.$col("concat").vConcat("|"),
-                        Exp.$col("concat").vConcat("_", "[", "]"),
-                        Exp.count().as("count"));
+                        $col(0).first().as("first"),
+                        $col(0).vConcat("|").as("concat"),
+                        $col(0).vConcat("_", "[", "]").as("concat"),
+                        count().as("count"));
 
         new DataFrameAsserts(aggregated, "first", "concat", "concat_", "count")
                 .expectRow(0, "a", "a|b|cd|e|fg", "[a_b_cd_e_fg]", 5);
