@@ -248,7 +248,7 @@ public class TableSaverIT extends BaseDbTest {
 
         DataFrame df2 = connector
                 .tableLoader("t2")
-                .includeColumns("bigint", "int", "timestamp", "time", "date", "bytes")
+                .cols("bigint", "int", "timestamp", "time", "date", "bytes")
                 .load()
                 .sort("bigint", true);
 
@@ -270,7 +270,7 @@ public class TableSaverIT extends BaseDbTest {
 
         DataFrame df2 = connector
                 .tableLoader("t2")
-                .includeColumns("bigint", "int")
+                .cols("bigint", "int")
                 .load()
                 .sort("bigint", true);
 
@@ -293,7 +293,7 @@ public class TableSaverIT extends BaseDbTest {
 
         DataFrame df2 = connector
                 .tableLoader("t2")
-                .includeColumns("bigint", "int", "string")
+                .cols("bigint", "int", "string")
                 .load()
                 .sort("bigint", true);
 

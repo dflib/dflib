@@ -37,7 +37,7 @@ public class TableLoaderIT extends BaseDbTest {
 
         DataFrame df = adapter.createConnector()
                 .tableLoader("t1")
-                .includeColumns("id", "salary")
+                .cols("id", "salary")
                 .load();
 
         new DataFrameAsserts(df, "id", "salary")
@@ -80,7 +80,7 @@ public class TableLoaderIT extends BaseDbTest {
 
         DataFrame df = adapter.createConnector()
                 .tableLoader("t1")
-                .maxRows(2)
+                .limit(2)
                 .load();
 
         new DataFrameAsserts(df, adapter.getColumnNames("t1"))
@@ -102,7 +102,7 @@ public class TableLoaderIT extends BaseDbTest {
         DataFrame df = adapter.createConnector()
                 .tableLoader("t1")
                 .eq(matcher)
-                .includeColumns("name", "salary")
+                .cols("name", "salary")
                 .load();
 
         new DataFrameAsserts(df, "name", "salary")
@@ -126,7 +126,7 @@ public class TableLoaderIT extends BaseDbTest {
         DataFrame df = adapter.createConnector()
                 .tableLoader("t1")
                 .eq(matcher)
-                .includeColumns("name", "salary")
+                .cols("name", "salary")
                 .load();
 
         new DataFrameAsserts(df, "name", "salary")
@@ -163,7 +163,7 @@ public class TableLoaderIT extends BaseDbTest {
 
         DataFrame df = adapter.createConnector()
                 .tableLoader("t1")
-                .includeColumns("name", "salary")
+                .cols("name", "salary")
                 .eq(empty)
                 .load();
 
@@ -183,7 +183,7 @@ public class TableLoaderIT extends BaseDbTest {
         DataFrame df = adapter.createConnector()
                 .tableLoader("t1")
                 .neq(matcher)
-                .includeColumns("name", "salary")
+                .cols("name", "salary")
                 .load();
 
         new DataFrameAsserts(df, "name", "salary")
@@ -206,7 +206,7 @@ public class TableLoaderIT extends BaseDbTest {
         DataFrame df = adapter.createConnector()
                 .tableLoader("t1")
                 .neq(matcher)
-                .includeColumns("name", "salary")
+                .cols("name", "salary")
                 .load();
 
         new DataFrameAsserts(df, "name", "salary")

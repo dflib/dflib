@@ -11,7 +11,7 @@ import java.util.Random;
 public class TableLoader {
 
     protected JdbcConnector connector;
-    protected int maxRows;
+    protected int limit = -1;
     private TableFQName tableName;
     private String[] columns;
     private ConditionBuilder condition;
@@ -20,14 +20,24 @@ public class TableLoader {
 
     public TableLoader(JdbcConnector connector, TableFQName tableName) {
         this.connector = connector;
-        this.maxRows = Integer.MAX_VALUE;
         this.tableName = tableName;
         this.condition = new ConditionBuilder(connector);
     }
 
-    public TableLoader includeColumns(String... columns) {
+    /**
+     * @since 1.0.0-M20
+     */
+    public TableLoader cols(String... columns) {
         this.columns = columns;
         return this;
+    }
+
+    /**
+     * @deprecated in favor of {@link #cols(String...)}
+     */
+    @Deprecated(since = "1.0.0-M20", forRemoval = true)
+    public TableLoader includeColumns(String... columns) {
+        return cols(columns);
     }
 
     /**
@@ -58,39 +68,66 @@ public class TableLoader {
         return this;
     }
 
+    /**
+     * @since 1.0.0-M20
+     */
     // TODO: limit without sorting may return unpredictable data.. should we allow to specify a sort column?
-    public TableLoader maxRows(int maxRows) {
-        this.maxRows = maxRows;
+    public TableLoader limit(int limit) {
+        this.limit = limit;
         return this;
+    }
+
+    /**
+     * @deprecated in favor of {@link #limit(int)}
+     */
+    @Deprecated(since = "1.0.0-M20", forRemoval = true)
+    public TableLoader maxRows(int limit) {
+        return limit(limit);
     }
 
     /**
      * Configures the loader to select a sample of the rows from the ResultSet. Unlike
      * {@link DataFrame#sampleRows(int, Random)}, this method can be used on potentially very large
-     * result sets. If you are executing multiple sampling runs in parallel, consider using {@link #sampleRows(int, Random)},
+     * result sets. If you are executing multiple sampling runs in parallel, consider using {@link #rowsSample(int, Random)},
      * as this method is using a shared {@link Random} instance with synchronization.
      *
      * @param size the size of the sample. Can be bigger than the result set size (as the result set size is not known upfront).
      * @return this loader instance
-     * @since 0.7
+     * @since 1.0.0-M20
      */
+    public TableLoader rowsSample(int size) {
+        return rowsSample(size, Sampler.getDefaultRandom());
+    }
+
+    /**
+     * @deprecated in facfor of {@link #rowsSample(int)}
+     */
+    @Deprecated(since = "1.0.0-M20", forRemoval = true)
     public TableLoader sampleRows(int size) {
-        return sampleRows(size, Sampler.getDefaultRandom());
+        return rowsSample(size);
     }
 
     /**
      * Configures the loader to select a sample of the rows from the ResultSet. Unlike
-     * {@link DataFrame#sampleRows(int, Random)}, this method can be used on potentially very large result sets.
+     * {@link DataFrame#rowsSample(int, Random)}, this method can be used on potentially very large result sets.
      *
      * @param size   the size of the sample. Can be bigger than the result set size (as the result set size is not known upfront).
      * @param random a custom random number generator
      * @return this loader instance
-     * @since 0.7
+     * @since 1.0.0-M20
      */
-    public TableLoader sampleRows(int size, Random random) {
+    public TableLoader rowsSample(int size, Random random) {
         this.rowSampleSize = size;
         this.rowsSampleRandom = Objects.requireNonNull(random);
         return this;
+    }
+
+    /**
+     * @deprecated in favor of {@link #rowsSample(int, Random)}
+     */
+    @Deprecated(since = "1.0.0-M20", forRemoval = true)
+    public TableLoader sampleRows(int size, Random random) {
+        return rowsSample(size, random);
     }
 
     public DataFrame load() {
@@ -110,8 +147,8 @@ public class TableLoader {
 
     protected DataFrame fetchDataFrame() {
         return new SqlLoader(connector, buildSql())
-                .maxRows(maxRows)
-                .sampleRows(rowSampleSize, rowsSampleRandom)
+                .limit(limit)
+                .rowsSample(rowSampleSize, rowsSampleRandom)
                 .load(condition.bindingParams());
     }
 

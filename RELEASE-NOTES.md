@@ -10,6 +10,7 @@
 * #258 TableSaver.batchSize(int)
 * #259 CsvLoader.generateHeader()
 * #260 ExcelLoader.offset(..), ExcelLoader.limit(..)
+* #261 TableLoader and SqlLoader - align API with CsvLoader
 
 ## Release 1.0.0-M19
 

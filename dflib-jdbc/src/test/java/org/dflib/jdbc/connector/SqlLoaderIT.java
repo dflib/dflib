@@ -90,7 +90,7 @@ public class SqlLoaderIT extends BaseDbTest {
     }
 
     @Test
-    public void maxRows() {
+    public void limit() {
 
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)
@@ -101,7 +101,7 @@ public class SqlLoaderIT extends BaseDbTest {
 
         DataFrame df = adapter.createConnector()
                 .sqlLoader(sql)
-                .maxRows(2)
+                .limit(2)
                 .load();
 
         new DataFrameAsserts(df, adapter.getColumnNames("t1"))

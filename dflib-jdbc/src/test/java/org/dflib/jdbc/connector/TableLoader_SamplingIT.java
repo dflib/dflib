@@ -28,8 +28,8 @@ public class TableLoader_SamplingIT extends BaseDbTest {
 
         DataFrame df = connector
                 .tableLoader("t1")
-                .includeColumns("id", "name")
-                .sampleRows(2, new Random(8))
+                .cols("id", "name")
+                .rowsSample(2, new Random(8))
                 .load();
 
         new DataFrameAsserts(df, "id", "name")
@@ -40,8 +40,8 @@ public class TableLoader_SamplingIT extends BaseDbTest {
         // do another test with different random seed
         DataFrame df2 = connector
                 .tableLoader("t1")
-                .includeColumns("id", "name")
-                .sampleRows(2, new Random(15))
+                .cols("id", "name")
+                .rowsSample(2, new Random(15))
                 .load();
 
         new DataFrameAsserts(df2, "id", "name")
@@ -52,8 +52,8 @@ public class TableLoader_SamplingIT extends BaseDbTest {
         // and one more test
         DataFrame df3 = connector
                 .tableLoader("t1")
-                .includeColumns("id", "name")
-                .sampleRows(3, new Random(3))
+                .cols("id", "name")
+                .rowsSample(3, new Random(3))
                 .load();
 
         new DataFrameAsserts(df3, "id", "name")
@@ -77,8 +77,8 @@ public class TableLoader_SamplingIT extends BaseDbTest {
         // using fixed Random seed to get reproducible result
         DataFrame df = connector
                 .tableLoader("t1")
-                .includeColumns("id", "name")
-                .sampleRows(5, new Random(8))
+                .cols("id", "name")
+                .rowsSample(5, new Random(8))
                 .load();
 
         new DataFrameAsserts(df, "id", "name")
@@ -101,8 +101,8 @@ public class TableLoader_SamplingIT extends BaseDbTest {
         // using fixed Random seed to get reproducible result
         DataFrame df = connector
                 .tableLoader("t1")
-                .includeColumns("id", "name")
-                .sampleRows(2, new Random(8))
+                .cols("id", "name")
+                .rowsSample(2, new Random(8))
                 .load();
 
         new DataFrameAsserts(df, "id", "name")

@@ -31,7 +31,7 @@ public class SqlLoader_SamplingIT extends BaseDbTest {
         // using fixed Random seed to get reproducible result
         DataFrame df = connector
                 .sqlLoader(sql)
-                .sampleRows(2, new Random(8))
+                .rowsSample(2, new Random(8))
                 .load();
 
         new DataFrameAsserts(df, "id", "name")
@@ -42,7 +42,7 @@ public class SqlLoader_SamplingIT extends BaseDbTest {
         // do another test with different random seed
         DataFrame df2 = connector
                 .sqlLoader(sql)
-                .sampleRows(2, new Random(15))
+                .rowsSample(2, new Random(15))
                 .load();
 
         new DataFrameAsserts(df2, "id", "name")
@@ -53,7 +53,7 @@ public class SqlLoader_SamplingIT extends BaseDbTest {
         // and one more test
         DataFrame df3 = connector
                 .sqlLoader(sql)
-                .sampleRows(3, new Random(3))
+                .rowsSample(3, new Random(3))
                 .load();
 
         new DataFrameAsserts(df3, "id", "name")
@@ -79,7 +79,7 @@ public class SqlLoader_SamplingIT extends BaseDbTest {
         // using fixed Random seed to get reproducible result
         DataFrame df = connector
                 .sqlLoader(sql)
-                .sampleRows(5, new Random(8))
+                .rowsSample(5, new Random(8))
                 .load();
 
         new DataFrameAsserts(df, "id", "name")
@@ -104,7 +104,7 @@ public class SqlLoader_SamplingIT extends BaseDbTest {
         // using fixed Random seed to get reproducible result
         DataFrame df = connector
                 .sqlLoader(sql)
-                .sampleRows(2, new Random(8))
+                .rowsSample(2, new Random(8))
                 .load();
 
         new DataFrameAsserts(df, "id", "name")

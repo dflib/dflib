@@ -42,7 +42,7 @@ public class SaveViaUpsert extends TableSaveStrategy {
         DataFrame keyDf = keyValues(df);
 
         DataFrame previouslySaved = new TableLoader(connector, tableName)
-                .includeColumns(df.getColumnsIndex().getLabels())
+                .cols(df.getColumnsIndex().getLabels())
                 .eq(keyDf)
                 .load();
 

@@ -12,7 +12,7 @@ class SqlLoaderWorker {
     protected final int maxRows;
 
     public SqlLoaderWorker(DataFrameAppender<ResultSet> appender, int maxRows) {
-        this.maxRows = maxRows;
+        this.maxRows = maxRows < 0 ? Integer.MAX_VALUE : maxRows;
         this.appender = appender;
     }
 
