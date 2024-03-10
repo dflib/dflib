@@ -61,14 +61,26 @@ class SheetRange {
         return row.getFirstCellNum() < 0;
     }
 
-    SheetRange skipRows(int rows) {
+    SheetRange offset(int rows) {
         if (rows <= 0) {
             return this;
         }
 
         return rows >= height
+                // TODO: should the first condition return "this"?
                 ? new SheetRange(startCol, endCol, endRow, endRow)
                 : new SheetRange(startCol, endCol, startRow + rows, endRow);
+    }
+
+    SheetRange limit(int rows) {
+        if (rows < 0) {
+            return this;
+        }
+
+        return rows >= height
+                // TODO: should the first condition return "this"?
+                ? new SheetRange(startCol, endCol, endRow, endRow)
+                : new SheetRange(startCol, endCol, startRow, startRow + rows);
     }
 
     Index columns() {

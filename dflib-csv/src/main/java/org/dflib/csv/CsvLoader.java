@@ -44,12 +44,11 @@ public class CsvLoader {
     private int rowSampleSize;
     private Random rowsSampleRandom;
     private int offset;
-    private int limit;
+    private int limit = -1;
 
     public CsvLoader() {
         this.format = CSVFormat.DEFAULT;
         this.columnConfigs = new ArrayList<>();
-        this.limit = -1;
     }
 
     /**

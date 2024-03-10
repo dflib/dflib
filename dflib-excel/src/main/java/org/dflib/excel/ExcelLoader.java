@@ -28,10 +28,11 @@ public class ExcelLoader {
     // TODO: add builder method to capture Excel file password
 
     private boolean firstRowAsHeader;
-    private int skipRows;
+    private int offset;
+    private int limit = -1;
 
     /**
-     * Generates header index from the first row. If {@link #skipRows(int)} is in use, this will be the first non-skipped
+     * Generates header index from the first row. If {@link #offset(int)} is in use, this will be the first non-skipped
      * row.
      *
      * @since 0.14
@@ -45,13 +46,36 @@ public class ExcelLoader {
      * Skips the specified number of rows. This counter only applies to non-phantom rows. I.e. those rows that have
      * non-empty cells. Phantom rows are skipped automatically.
      *
+     * @since 1.0.0-M20
+     */
+    public ExcelLoader offset(int len) {
+        this.offset = len;
+        return this;
+    }
+
+    /**
+     * Limits the max number of rows to the provided value. This counter only applies to non-phantom rows. I.e. those
+     * rows that have non-empty cells. Phantom rows are skipped automatically.
+     *
+     * @since 1.0.0-M20
+     */
+    public ExcelLoader limit(int len) {
+        this.limit = len;
+        return this;
+    }
+
+    /**
+     * Skips the specified number of rows. This counter only applies to non-phantom rows. I.e. those rows that have
+     * non-empty cells. Phantom rows are skipped automatically.
+     *
      * @param n number of rows to skip
      * @return this loader instance
      * @since 0.18
+     * @deprecated in favor of {@link #offset(int)}
      */
+    @Deprecated(since = "1.0.0-M20", forRemoval = true)
     public ExcelLoader skipRows(int n) {
-        this.skipRows = n;
-        return this;
+        return offset(n);
     }
 
     /**
@@ -60,7 +84,8 @@ public class ExcelLoader {
     public DataFrame loadSheet(Sheet sheet) {
 
         // Don't skip empty rows or columns in the middle of a range, but truncate leading empty rows and columns
-        SheetRange range = SheetRange.valuesRange(sheet).skipRows(skipRows);
+        int limit = this.limit >= 0 ? (firstRowAsHeader ? this.limit + 1 : this.limit) : -1;
+        SheetRange range = SheetRange.valuesRange(sheet).offset(offset).limit(limit);
         if (range.width == 0) {
             return DataFrame.empty();
         }

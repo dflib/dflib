@@ -175,15 +175,27 @@ public class ExcelLoader_LoadSheetTest {
     }
 
     @Test
-    public void fromStream_FirstRowAsHeader_SkipRows() throws IOException {
+    public void fromStream_FirstRowAsHeader_Offset() throws IOException {
 
         try (InputStream in = getClass().getResourceAsStream("one-sheet-offset.xlsx")) {
 
-            DataFrame s1 = new ExcelLoader().skipRows(2).firstRowAsHeader().loadSheet(in, "Sheet1");
+            DataFrame s1 = new ExcelLoader().offset(2).firstRowAsHeader().loadSheet(in, "Sheet1");
             new DataFrameAsserts(s1, "t1", "t2")
                     .expectHeight(2)
                     .expectRow(0, "One", "Two")
                     .expectRow(1, "Three", "Four");
+        }
+    }
+
+    @Test
+    public void fromStream_FirstRowAsHeader_Offset_Limit() throws IOException {
+
+        try (InputStream in = getClass().getResourceAsStream("one-sheet-offset.xlsx")) {
+
+            DataFrame s1 = new ExcelLoader().offset(2).limit(1).firstRowAsHeader().loadSheet(in, "Sheet1");
+            new DataFrameAsserts(s1, "t1", "t2")
+                    .expectHeight(1)
+                    .expectRow(0, "One", "Two");
         }
     }
 
@@ -200,10 +212,19 @@ public class ExcelLoader_LoadSheetTest {
     }
 
     @Test
-    public void fromStream_SkipRows_Empty() throws IOException {
+    public void fromStream_Offset_Empty() throws IOException {
 
         try (InputStream in = getClass().getResourceAsStream("one-sheet.xlsx")) {
-            DataFrame s1 = new ExcelLoader().skipRows(2).loadSheet(in, "Sheet1");
+            DataFrame s1 = new ExcelLoader().offset(2).loadSheet(in, "Sheet1");
+            new DataFrameAsserts(s1, "A", "B").expectHeight(0);
+        }
+    }
+
+    @Test
+    public void fromStream_Limit_Empty() throws IOException {
+
+        try (InputStream in = getClass().getResourceAsStream("one-sheet.xlsx")) {
+            DataFrame s1 = new ExcelLoader().limit(0).loadSheet(in, "Sheet1");
             new DataFrameAsserts(s1, "A", "B").expectHeight(0);
         }
     }

@@ -9,6 +9,7 @@
 * #256 Environment-based Printer for better JShell integration
 * #258 TableSaver.batchSize(int)
 * #259 CsvLoader.generateHeader()
+* #260 ExcelLoader.offset(..), ExcelLoader.limit(..)
 
 ## Release 1.0.0-M19
 
