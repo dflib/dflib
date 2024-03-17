@@ -154,7 +154,7 @@ public class TableLoader {
 
     protected String buildSql() {
 
-        // TODO: should maxRows be translated into the SQL LIMIT clause?
+        // TODO: should "limit"" be translated into the SQL LIMIT clause?
         //  Some DBs have crazy limit syntax, so this may be hard to generalize..
 
         StringBuilder sql = new StringBuilder("select ");

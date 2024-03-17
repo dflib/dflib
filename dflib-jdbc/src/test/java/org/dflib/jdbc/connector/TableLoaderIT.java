@@ -71,7 +71,7 @@ public class TableLoaderIT extends BaseDbTest {
     }
 
     @Test
-    public void maxRows() {
+    public void limit() {
 
         adapter.getTable("t1")
                 .insert(1L, "n1", 50_000.01)

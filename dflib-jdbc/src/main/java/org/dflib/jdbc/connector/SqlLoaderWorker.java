@@ -9,10 +9,10 @@ import java.sql.SQLException;
 class SqlLoaderWorker {
 
     protected final DataFrameAppender<ResultSet> appender;
-    protected final int maxRows;
+    protected final int limit;
 
-    public SqlLoaderWorker(DataFrameAppender<ResultSet> appender, int maxRows) {
-        this.maxRows = maxRows < 0 ? Integer.MAX_VALUE : maxRows;
+    public SqlLoaderWorker(DataFrameAppender<ResultSet> appender, int limit) {
+        this.limit = limit < 0 ? Integer.MAX_VALUE : limit;
         this.appender = appender;
     }
 
@@ -25,7 +25,7 @@ class SqlLoaderWorker {
 
         int size = 0;
 
-        while (rs.next() && size++ < maxRows) {
+        while (rs.next() && size++ < limit) {
             appender.append(rs);
         }
     }

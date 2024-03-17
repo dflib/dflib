@@ -46,13 +46,13 @@ public class SqlLoader {
     /**
      * @since 1.0.0-M20
      */
-    public SqlLoader limit(int maxRows) {
-        if (this.limit == maxRows) {
+    public SqlLoader limit(int limit) {
+        if (this.limit == limit) {
             return this;
         }
 
         SqlLoader copy = copy();
-        copy.limit = maxRows;
+        copy.limit = limit;
         return copy;
     }
 
@@ -129,7 +129,7 @@ public class SqlLoader {
 
         LOGGER.debug("loading DataFrame...");
 
-        // TODO: should maxRows be translated into the SQL LIMIT clause?
+        // TODO: should "limit" be translated into the SQL LIMIT clause?
         //  Some DBs have crazy limit syntax, so this may be hard to generalize..
 
         return connector
