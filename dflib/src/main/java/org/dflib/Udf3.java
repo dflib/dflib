@@ -12,6 +12,12 @@ import static org.dflib.Exp.$col;
 @FunctionalInterface
 public interface Udf3<A1, A2, A3, R> {
 
+    /**
+     * Produces an expression based on the provided expressions. This should be the preferred (though also most verbose)
+     * way to resolve a UDF if the type of any argument columns is of significance. I.e.
+     * <code>call($int("a"), $col("b"), $col("c"))</code> will be faster than <code>call("a", "b", "c")</code>, if the
+     * UDF converts the contents of "a" to ints internally.
+     */
     Exp<R> call(Exp<A1> exp1, Exp<A2> exp2, Exp<A3> exp3);
 
     default Exp<R> call(String column1, String column2, String column3) {
