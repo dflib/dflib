@@ -298,8 +298,8 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void mapConditionVal() {
-        Condition c = $decimal(0).mapConditionVal(d -> d.doubleValue() > 0);
+    public void mapBoolVal() {
+        Condition c = $decimal(0).mapBoolVal(d -> d.doubleValue() > 0);
 
         Series<BigDecimal> s = Series.of(
                 new BigDecimal("-5.1"),
@@ -310,8 +310,8 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void mapCondition() {
-        Condition c = $decimal(0).mapCondition(Series::isNotNull);
+    public void mapBool() {
+        Condition c = $decimal(0).mapBool(Series::isNotNull);
 
         Series<BigDecimal> s = Series.of(
                 new BigDecimal("-5.1"),
