@@ -1,6 +1,6 @@
 ## Release 1.0.0-M20
 
-* #240 Reusable user-defined functions
+* #240 Reusable user-defined functions (UDF)
 * #249 Remove APIs deprecated since 0.16
 * #250 Remove APIs deprecated since 0.17 
 * #251 Remove APIs deprecated since 0.18
