@@ -124,7 +124,7 @@ public class StrColumnTest {
     }
 
     @Test
-    public void castAsCondition() {
+    public void castAsBool() {
         Condition c = $str(0).castAsBool();
 
         Series<String> s = Series.of("true", null, "false", "__d_");
@@ -132,7 +132,7 @@ public class StrColumnTest {
     }
 
     @Test
-    public void castAsCondition_MapVal() {
+    public void castAsBool_MapVal() {
         Condition isEven = $str(0).mapVal(s -> s.length() % 2 == 0).castAsBool();
 
         Series<String> s = Series.of("a", "a9", "abcd0", "__d_");

@@ -25,7 +25,7 @@ public interface StrExp extends Exp<String> {
 
     @Override
     default Condition castAsBool() {
-        return MapCondition1.mapVal("castAsCondition", this, Boolean::valueOf);
+        return MapCondition1.mapVal("castAsBool", this, Boolean::valueOf);
     }
 
     /**

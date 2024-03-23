@@ -286,7 +286,7 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void castAsCondition() {
+    public void castAsBool() {
         Condition c = $decimal(0).castAsBool();
 
         Series<BigDecimal> s = Series.of(
