@@ -3,6 +3,7 @@
 * #265 RowSet: add missing "sort" methods
 * #266 GroupBy.cols(..)
 * #268 Remove APIs deprecated since 1.0.0-M19
+* #269 StrExp.substr(..)
 
 ## Release 1.0.0-M20
 

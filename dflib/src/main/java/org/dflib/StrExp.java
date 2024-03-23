@@ -5,8 +5,8 @@ import org.dflib.exp.map.MapExp1;
 import org.dflib.exp.map.MapExpScalarCondition2;
 import org.dflib.exp.num.DecimalExp1;
 import org.dflib.exp.num.DoubleExp1;
-import org.dflib.exp.str.StrSplitExp;
 import org.dflib.exp.str.StrExp1;
+import org.dflib.exp.str.StrSplitExp;
 
 import java.math.BigDecimal;
 import java.util.regex.Pattern;
@@ -87,6 +87,34 @@ public interface StrExp extends Exp<String> {
      */
     default Condition contains(String suffix) {
         return MapExpScalarCondition2.mapVal("contains", this, suffix, (s, p) -> s.contains(suffix));
+    }
+
+    /**
+     * A substring expression. Unlike Java "substring" methods, this expression does not throw out of bounds exceptions
+     * if the String is shorter than the start index, and simply returns an empty string.
+     *
+     * @param fromInclusive a zero-based substring starting position
+     * @since 1.0.0-M21
+     */
+    default StrExp substr(int fromInclusive) {
+        return StrExp1.mapVal("substr", this, s -> s.length() <= fromInclusive ? "" : s.substring(fromInclusive));
+    }
+
+    /**
+     * A substring expression. Unlike Java "substring" methods, this expression does not throw out of bounds exceptions
+     * if the String is shorter than the start or end index, and simply returns an empty string.
+     *
+     * @param fromInclusive a zero-based substring starting position
+     * @param toExclusive   a zero-based position of the index past the last index of the substring
+     * @since 1.0.0-M21
+     */
+    default StrExp substr(int fromInclusive, int toExclusive) {
+        if (fromInclusive >= toExclusive) {
+            throw new IllegalArgumentException("'toExclusive' must be higher than 'fromInclusive': " + toExclusive + " vs " + fromInclusive);
+        }
+
+        return StrExp1.mapVal("substr", this, s ->
+                s.length() <= fromInclusive ? "" : s.substring(fromInclusive, s.length() < toExclusive ? s.length() : toExclusive));
     }
 
     /**

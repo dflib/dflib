@@ -108,6 +108,22 @@ public class StrColumnTest {
     }
 
     @Test
+    public void substr1() {
+        StrExp exp = $str(0).substr(2);
+
+        Series<String> s = Series.of(null, "", "a", "ab", "abc", "abcd");
+        new SeriesAsserts(exp.eval(s)).expectData(null, "", "", "", "c", "cd");
+    }
+
+    @Test
+    public void substr2() {
+        StrExp exp = $str(0).substr(2, 3);
+
+        Series<String> s = Series.of(null, "", "a", "ab", "abc", "abcd");
+        new SeriesAsserts(exp.eval(s)).expectData(null, "", "", "", "c", "c");
+    }
+
+    @Test
     public void castAsCondition() {
         Condition c = $str(0).castAsBool();
 
