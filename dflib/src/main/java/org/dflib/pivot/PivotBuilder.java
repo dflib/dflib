@@ -135,7 +135,7 @@ public class PivotBuilder {
 
         List<DataFrame> chunks = new ArrayList<>(byColumn.size());
 
-        for (Object col : byColumn.getGroups()) {
+        for (Object col : byColumn.getGroupKeys()) {
 
             DataFrame byColumnDf = byColumn.getGroup(col);
             DataFrame pivotChunk = DataFrame

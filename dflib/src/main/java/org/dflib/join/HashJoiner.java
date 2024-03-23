@@ -152,7 +152,7 @@ public class HashJoiner extends BaseJoiner {
         }
 
         // add missing right rows
-        for (Object key : rightIndex.getGroups()) {
+        for (Object key : rightIndex.getGroupKeys()) {
             if (!seenRightKeys.contains(key)) {
                 IntSeries rgi = rightIndex.getGroupIndex(key);
 

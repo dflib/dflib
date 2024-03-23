@@ -41,7 +41,7 @@ public class WindowMapper {
 
         ObjectAccum<T> data = new ObjectAccum<>(h);
 
-        for (Object key : windowGroupBy.getGroups()) {
+        for (Object key : windowGroupBy.getGroupKeys()) {
 
             DataFrame gdf = windowGroupBy.getGroup(key);
             Series<T> groupData = map(gdf, aggregator, range);

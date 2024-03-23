@@ -64,7 +64,7 @@ public class WindowAggregator {
         // TODO: primitives support for performance
         ValueAccum columnBuilder = new ObjectAccum<>(aggH);
 
-        for (Object key : groupBy.getGroups()) {
+        for (Object key : groupBy.getGroupKeys()) {
             DataFrame group = groupBy.getGroup(key);
 
             // expecting 1-element Series. Unpack them and add to the accum
@@ -87,7 +87,7 @@ public class WindowAggregator {
         }
 
         int gi = 0;
-        for (Object key : windowGroupBy.getGroups()) {
+        for (Object key : windowGroupBy.getGroupKeys()) {
 
             IntSeries index = windowGroupBy.getGroupIndex(key);
             int ih = index.size();

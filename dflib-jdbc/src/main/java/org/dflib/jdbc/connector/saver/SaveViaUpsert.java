@@ -126,7 +126,7 @@ public class SaveViaUpsert extends TableSaveStrategy {
         infoTracker.updatesCardinality(toSaveClassified.getColumn(DIFF_COLUMN));
 
         GroupBy byUpdatePattern = toSaveClassified.group(DIFF_COLUMN);
-        for (Object o : byUpdatePattern.getGroups()) {
+        for (Object o : byUpdatePattern.getGroupKeys()) {
             BitSet bits = (BitSet) o;
 
             int cardinality = bits.cardinality();

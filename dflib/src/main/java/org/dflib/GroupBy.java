@@ -40,7 +40,7 @@ public class GroupBy {
      * Returns the unchanged original DataFrame that was used in the grouping, that does not have GroupBy sorting,
      * trimming and other changes applied.
      *
-     * @since 0.11
+     * @since 1.0.0-M21
      */
     public DataFrame getSource() {
         return source;
@@ -48,8 +48,9 @@ public class GroupBy {
 
     /**
      * @deprecated in favor of {@link #getSource()}
+     * @since 0.11
      */
-    @Deprecated(since = "1.0.0-M20", forRemoval = true)
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
     public DataFrame getUngrouped() {
         return getSource();
     }
@@ -58,7 +59,7 @@ public class GroupBy {
      * @since 0.6
      * @deprecated in favor of {@link #getSource()} and then {@link DataFrame#getColumnsIndex()}
      */
-    @Deprecated(since = "1.0.0-M20", forRemoval = true)
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
     public Index getUngroupedColumnIndex() {
         return source.getColumnsIndex();
     }
@@ -74,8 +75,19 @@ public class GroupBy {
         return source.rows(index).select();
     }
 
-    public Set<Object> getGroups() {
+    /**
+     * @since 1.0.0-M21
+     */
+    public Set<Object> getGroupKeys() {
         return groupsIndex.keySet();
+    }
+
+    /**
+     * @deprecated in favor of {@link #getGroupKeys()}
+     */
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
+    public Set<Object> getGroups() {
+        return getGroupKeys();
     }
 
     public boolean hasGroup(Object key) {
@@ -189,7 +201,7 @@ public class GroupBy {
         Series[] shifted = new Series[groupsIndex.size()];
 
         int i = 0;
-        for (Object key : getGroups()) {
+        for (Object key : getGroupKeys()) {
             DataFrame group = getGroup(key);
             shifted[i++] = group.getColumn(column).shift(offset, filler);
         }

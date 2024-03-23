@@ -66,6 +66,8 @@ public interface RowSet {
     /**
      * Sorts the RowSet based on the specified column and returns a DataFrame with the sorted rows from the RowSet merged
      * into the original DataFrame.
+     *
+     * @since 1.0.0-M21
      */
     default DataFrame sort(int sortCol, boolean ascending) {
         return sort(new int[]{sortCol}, new boolean[]{ascending});
@@ -74,11 +76,16 @@ public interface RowSet {
     /**
      * Sorts the RowSet based on the specified column and returns a DataFrame with the sorted rows from the RowSet merged
      * into the original DataFrame.
+     *
+     * @since 1.0.0-M21
      */
     default DataFrame sort(String sortCol, boolean ascending) {
         return sort(new String[]{sortCol}, new boolean[]{ascending});
     }
 
+    /**
+     * @since 1.0.0-M21
+     */
     default DataFrame sort(int[] sortCols, boolean[] ascending) {
         int len = sortCols.length;
         Sorter[] sorters = new Sorter[len];
@@ -89,6 +96,9 @@ public interface RowSet {
         return sort(sorters);
     }
 
+    /**
+     * @since 1.0.0-M21
+     */
     default DataFrame sort(String[] sortCols, boolean[] ascending) {
         int len = sortCols.length;
         Sorter[] sorters = new Sorter[len];

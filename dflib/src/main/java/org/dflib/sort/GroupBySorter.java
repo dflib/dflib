@@ -51,7 +51,7 @@ public class GroupBySorter {
         DataFrame ungrouped = groupBy.getSource();
         Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupBy.size() / 0.75));
 
-        for (Object groupKey : groupBy.getGroups()) {
+        for (Object groupKey : groupBy.getGroupKeys()) {
             IntSeries groupIndex = groupBy.getGroupIndex(groupKey);
             IntSeries sortedGroup = DataFrameSorter.sort(sorter, groupIndex);
             sorted.put(groupKey, sortedGroup);
