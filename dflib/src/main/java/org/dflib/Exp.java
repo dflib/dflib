@@ -321,7 +321,7 @@ public interface Exp<T> {
      * expressions.
      */
     static StrExp concat(Object... valuesOrExps) {
-        return ConcatExp.forObjects(valuesOrExps);
+        return ConcatExp.of(valuesOrExps);
     }
 
     /**
