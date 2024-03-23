@@ -133,7 +133,7 @@ public class GroupByTest {
                 0, "a",
                 1, "x");
 
-        DataFrame df = df1.group("a").recombine();
+        DataFrame df = df1.group("a").select();
 
         // must be sorted by groups in the order they are encountered
         new DataFrameAsserts(df, "a", "b")
@@ -156,7 +156,7 @@ public class GroupByTest {
 
         DataFrame df2 = df1.group("a")
                 .head(2)
-                .recombine();
+                .select();
 
         new DataFrameAsserts(df2, "a", "b")
                 .expectHeight(4)
@@ -167,7 +167,7 @@ public class GroupByTest {
 
         DataFrame df3 = df1.group("a")
                 .head(1)
-                .recombine();
+                .select();
 
         new DataFrameAsserts(df3, "a", "b")
                 .expectHeight(3)
@@ -188,7 +188,7 @@ public class GroupByTest {
         DataFrame df2 = df1.group("a")
                 .sort("b", false)
                 .head(2)
-                .recombine();
+                .select();
 
         new DataFrameAsserts(df2, "a", "b")
                 .expectHeight(4)
@@ -209,7 +209,7 @@ public class GroupByTest {
 
         DataFrame df2 = df1.group("a")
                 .tail(2)
-                .recombine();
+                .select();
 
         new DataFrameAsserts(df2, "a", "b")
                 .expectHeight(4)
@@ -220,7 +220,7 @@ public class GroupByTest {
 
         DataFrame df3 = df1.group("a")
                 .tail(1)
-                .recombine();
+                .select();
 
         new DataFrameAsserts(df3, "a", "b")
                 .expectHeight(3)
@@ -264,7 +264,7 @@ public class GroupByTest {
 
         DataFrame df2 = df1.group("a")
                 .sort(1, true)
-                .recombine();
+                .select();
 
         new DataFrameAsserts(df2, "a", "b")
                 .expectHeight(6)
@@ -288,7 +288,7 @@ public class GroupByTest {
 
         DataFrame df2 = df1.group("a")
                 .sort("b", true)
-                .recombine();
+                .select();
 
         new DataFrameAsserts(df2, "a", "b")
                 .expectHeight(6)
@@ -312,7 +312,7 @@ public class GroupByTest {
 
         DataFrame df2 = df1.group("a")
                 .sort(new String[]{"b", "c"}, new boolean[]{true, true})
-                .recombine();
+                .select();
 
         new DataFrameAsserts(df2, "a", "b", "c")
                 .expectHeight(6)
@@ -368,7 +368,7 @@ public class GroupByTest {
 
         DataFrame df2 = df1.group("a")
                 .sort($col(1).asc())
-                .recombine();
+                .select();
 
         new DataFrameAsserts(df2, "a", "b")
                 .expectHeight(6)

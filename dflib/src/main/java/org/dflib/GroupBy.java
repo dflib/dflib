@@ -71,17 +71,17 @@ public class GroupBy {
      * @return a new DataFrame made from recombined groups.
      * @since 1.0.0-M21
      */
-    public DataFrame recombine() {
+    public DataFrame select() {
         IntSeries index = SeriesConcat.intConcat(groupsIndex.values());
         return source.rows(index).select();
     }
 
     /**
-     * @deprecated in favor of {@link #recombine()}
+     * @deprecated in favor of {@link #select()}
      */
     @Deprecated(since = "1.0.0-M21", forRemoval = true)
     public DataFrame toDataFrame() {
-        return recombine();
+        return select();
     }
 
     /**
