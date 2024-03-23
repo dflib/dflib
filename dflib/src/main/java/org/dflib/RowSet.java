@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
+import static org.dflib.Exp.$col;
+
 /**
  * Encapsulates a subset of rows within a DataFrame. The rows can be then transformed in some way and either extracted
  * into a separate DataFrame (see the various "select" methods) or merged to the original DataFrame. Depending on a
@@ -55,7 +57,47 @@ public interface RowSet {
 
     DataFrame map(RowToValueMapper<?>... mappers);
 
+    /**
+     * Sorts the RowSet, applying provided sorters and returns a DataFrame with the sorted rows from the RowSet merged
+     * into the original DataFrame.
+     */
     DataFrame sort(Sorter... sorters);
+
+    /**
+     * Sorts the RowSet based on the specified column and returns a DataFrame with the sorted rows from the RowSet merged
+     * into the original DataFrame.
+     */
+    default DataFrame sort(int sortCol, boolean ascending) {
+        return sort(new int[]{sortCol}, new boolean[]{ascending});
+    }
+
+    /**
+     * Sorts the RowSet based on the specified column and returns a DataFrame with the sorted rows from the RowSet merged
+     * into the original DataFrame.
+     */
+    default DataFrame sort(String sortCol, boolean ascending) {
+        return sort(new String[]{sortCol}, new boolean[]{ascending});
+    }
+
+    default DataFrame sort(int[] sortCols, boolean[] ascending) {
+        int len = sortCols.length;
+        Sorter[] sorters = new Sorter[len];
+        for (int i = 0; i < len; i++) {
+            sorters[i] = ascending[i] ? $col(sortCols[i]).asc() : $col(sortCols[i]).desc();
+        }
+
+        return sort(sorters);
+    }
+
+    default DataFrame sort(String[] sortCols, boolean[] ascending) {
+        int len = sortCols.length;
+        Sorter[] sorters = new Sorter[len];
+        for (int i = 0; i < len; i++) {
+            sorters[i] = ascending[i] ? $col(sortCols[i]).asc() : $col(sortCols[i]).desc();
+        }
+
+        return sort(sorters);
+    }
 
     DataFrame unique();
 

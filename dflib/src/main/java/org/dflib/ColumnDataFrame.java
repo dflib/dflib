@@ -16,7 +16,6 @@ import org.dflib.slice.EmptyRowSet;
 import org.dflib.slice.FixedColumnSet;
 import org.dflib.slice.IndexedRowSet;
 import org.dflib.slice.RangeRowSet;
-import org.dflib.sort.DataFrameSorter;
 import org.dflib.stack.Stacker;
 
 import java.util.Arrays;
@@ -193,31 +192,6 @@ public class ColumnDataFrame implements DataFrame {
         }
 
         return group(columnNamesToCompare).agg(aggregators);
-    }
-
-    @Override
-    public DataFrame sort(Sorter... sorters) {
-        return new DataFrameSorter(this).sort(sorters);
-    }
-
-    @Override
-    public DataFrame sort(String[] columns, boolean[] ascending) {
-        return new DataFrameSorter(this).sort(columns, ascending);
-    }
-
-    @Override
-    public DataFrame sort(int[] columns, boolean[] ascending) {
-        return new DataFrameSorter(this).sort(columns, ascending);
-    }
-
-    @Override
-    public DataFrame sort(int column, boolean ascending) {
-        return new DataFrameSorter(this).sort(column, ascending);
-    }
-
-    @Override
-    public DataFrame sort(String column, boolean ascending) {
-        return new DataFrameSorter(this).sort(column, ascending);
     }
 
     @Override

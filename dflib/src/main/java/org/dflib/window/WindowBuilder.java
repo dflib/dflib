@@ -210,7 +210,7 @@ public class WindowBuilder {
     private <T> Series<T> shiftUnPartitioned(int column, int offset, T filler) {
         if (sorter != null) {
             IntSeries index = new IntSequenceSeries(0, dataFrame.height());
-            IntSeries sortedPositions = new DataFrameSorter(dataFrame, index).sortIndex(sorter);
+            IntSeries sortedPositions = DataFrameSorter.sort(sorter, index);
             Series<T> s = dataFrame.getColumn(column);
             return s.select(sortedPositions).shift(offset, filler).select(sortedPositions.sortIndexInt());
         } else {
@@ -229,8 +229,7 @@ public class WindowBuilder {
 
     private DataFrame aggUnPartitioned(Exp<?>... aggregators) {
         DataFrame df = sorter != null
-                // TODO: create a DataFrame sort method that takes IntComparator
-                ? new DataFrameSorter(dataFrame).sort(sorter)
+                ? dataFrame.rows(DataFrameSorter.sort(sorter, dataFrame.height())).select()
                 : dataFrame;
 
         return WindowAggregator.agg(df, aggregators);
@@ -246,8 +245,7 @@ public class WindowBuilder {
 
     private <T> Series<T> mapUnPartitioned(Exp<T> aggregator) {
         DataFrame sorted = sorter != null
-                // TODO: create a DataFrame sort method that takes IntComparator
-                ? new DataFrameSorter(dataFrame).sort(sorter)
+                ? dataFrame.rows(DataFrameSorter.sort(sorter, dataFrame.height())).select()
                 : dataFrame;
 
         return WindowMapper.map(sorted, aggregator, resolveRange());

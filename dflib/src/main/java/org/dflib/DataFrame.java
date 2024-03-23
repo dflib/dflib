@@ -861,15 +861,25 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * @since 0.11
      */
-    DataFrame sort(Sorter... sorters);
+    default DataFrame sort(Sorter... sorters) {
+        return rows().sort(sorters);
+    }
 
-    DataFrame sort(String column, boolean ascending);
+    default DataFrame sort(String column, boolean ascending) {
+        return rows().sort(column, ascending);
+    }
 
-    DataFrame sort(int column, boolean ascending);
+    default DataFrame sort(int column, boolean ascending) {
+        return rows().sort(column, ascending);
+    }
 
-    DataFrame sort(String[] columns, boolean[] ascending);
+    default DataFrame sort(String[] columns, boolean[] ascending) {
+        return rows().sort(columns, ascending);
+    }
 
-    DataFrame sort(int[] columns, boolean[] ascending);
+    default DataFrame sort(int[] columns, boolean[] ascending) {
+        return rows().sort(columns, ascending);
+    }
 
     /**
      * Horizontally concatenates a DataFrame with another DataFrame, producing a "wider" DataFrame. If the heights of

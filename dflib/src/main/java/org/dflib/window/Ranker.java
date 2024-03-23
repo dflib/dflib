@@ -27,7 +27,7 @@ public class Ranker {
     }
 
     public IntSeries rank(DataFrame dataFrame) {
-        IntSeries sortIndex = new DataFrameSorter(dataFrame).sortIndex(sorter);
+        IntSeries sortIndex = DataFrameSorter.sort(sorter, dataFrame.height());
         return rank(dataFrame, Collections.singletonList(sortIndex));
     }
 

@@ -1,3 +1,7 @@
+## Release 1.0.0-M21
+
+* #265 RowSet: add missing "sort" methods
+
 ## Release 1.0.0-M20
 
 * #240 Reusable user-defined functions (UDF)

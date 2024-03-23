@@ -3,7 +3,7 @@ package org.dflib;
 import org.dflib.sort.IntComparator;
 
 /**
- * An expression for sorting DataFrame data.
+ * An expression derivative for sorting Series, DataFrames and RowSets.
  *
  * @since 0.11
  */

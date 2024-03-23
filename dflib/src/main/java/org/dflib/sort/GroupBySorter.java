@@ -53,7 +53,7 @@ public class GroupBySorter {
 
         for (Object groupKey : groupBy.getGroups()) {
             IntSeries groupIndex = groupBy.getGroupIndex(groupKey);
-            IntSeries sortedGroup = new DataFrameSorter(ungrouped, groupIndex).sortIndex(sorter);
+            IntSeries sortedGroup = DataFrameSorter.sort(sorter, groupIndex);
             sorted.put(groupKey, sortedGroup);
         }
 

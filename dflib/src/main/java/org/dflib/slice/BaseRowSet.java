@@ -15,6 +15,9 @@ import org.dflib.row.ColumnsRowProxy;
 import org.dflib.row.MultiArrayRowBuilder;
 import org.dflib.series.IntSingleValueSeries;
 import org.dflib.series.RowMappedSeries;
+import org.dflib.sort.Comparators;
+import org.dflib.sort.DataFrameSorter;
+import org.dflib.sort.IntComparator;
 
 import java.util.Map;
 import java.util.function.UnaryOperator;
@@ -88,6 +91,11 @@ public abstract class BaseRowSet implements RowSet {
 
     @Override
     public DataFrame sort(Sorter... sorters) {
+
+        if (sorters.length == 0) {
+            return source;
+        }
+
         if (sourceColumns.length == 0) {
             return source;
         }
@@ -96,7 +104,9 @@ public abstract class BaseRowSet implements RowSet {
             return source;
         }
 
-        DataFrame rowsAsDf = select().sort(sorters);
+        DataFrame rsDf = select();
+        IntComparator comparator = Comparators.of(rsDf, sorters);
+        DataFrame rowsAsDf = rsDf.rows(DataFrameSorter.sort(comparator, rsDf.height())).select();
 
         RowSetMerger merger = merger();
 
