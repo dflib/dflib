@@ -1,13 +1,16 @@
 package org.dflib.window;
 
+import org.dflib.ColumnDataFrame;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.GroupBy;
 import org.dflib.Hasher;
+import org.dflib.Index;
 import org.dflib.IntSeries;
 import org.dflib.Series;
 import org.dflib.Sorter;
-import org.dflib.agg.WindowAggregator;
+import org.dflib.agg.DataFrameAggregator;
+import org.dflib.agg.GroupByAggregator;
 import org.dflib.agg.WindowMapper;
 import org.dflib.series.IntSequenceSeries;
 import org.dflib.sort.Comparators;
@@ -224,7 +227,40 @@ public class WindowBuilder {
                 ? dataFrame.group(partitioner).sort(sorter)
                 : dataFrame.group(partitioner);
 
-        return WindowAggregator.aggPartitioned(gb, aggregators);
+        DataFrame rowPerGroupDf = GroupByAggregator.agg(gb, aggregators);
+        int h = gb.getSource().height();
+        int aggW = rowPerGroupDf.width();
+
+        Object[][] data = new Object[aggW][h];
+
+        for (int i = 0; i < aggW; i++) {
+            data[i] = new Object[h];
+        }
+
+        int gi = 0;
+        for (Object key : gb.getGroupKeys()) {
+
+            IntSeries index = gb.getGroupIndex(key);
+            int ih = index.size();
+
+            for (int i = 0; i < aggW; i++) {
+
+                // fill positions in the index with the singe aggregated value
+                Object val = rowPerGroupDf.getColumn(i).get(gi);
+                for (int j = 0; j < ih; j++) {
+                    data[i][index.getInt(j)] = val;
+                }
+            }
+
+            gi++;
+        }
+
+        Series<?>[] columns = new Series[aggW];
+        for (int i = 0; i < aggW; i++) {
+            columns[i] = Series.of(data[i]);
+        }
+
+        return DataFrame.byColumn(rowPerGroupDf.getColumnsIndex()).of(columns);
     }
 
     private DataFrame aggUnPartitioned(Exp<?>... aggregators) {
@@ -232,7 +268,20 @@ public class WindowBuilder {
                 ? dataFrame.rows(DataFrameSorter.sort(sorter, dataFrame.height())).select()
                 : dataFrame;
 
-        return WindowAggregator.agg(df, aggregators);
+        int h = df.height();
+        int w = aggregators.length;
+
+        Series<?>[] oneRowSeries = DataFrameAggregator.agg(df, aggregators);
+        String[] labels = new String[w];
+
+        // expand each column to the height of the original DataFrame
+        Series<?>[] expandedColumns = new Series[w];
+        for (int i = 0; i < w; i++) {
+            expandedColumns[i] = Series.ofVal(oneRowSeries[i].get(0), h);
+            labels[i] = aggregators[i].getColumnName(df);
+        }
+
+        return new ColumnDataFrame(null, Index.ofDeduplicated(labels), expandedColumns);
     }
 
     private <T> Series<T> mapPartitioned(Exp<T> aggregator) {

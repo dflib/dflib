@@ -1,6 +1,6 @@
 package org.dflib;
 
-import org.dflib.agg.WindowAggregator;
+import org.dflib.agg.GroupByAggregator;
 import org.dflib.concat.SeriesConcat;
 import org.dflib.series.EmptySeries;
 import org.dflib.sort.GroupBySorter;
@@ -284,7 +284,7 @@ public class GroupBy {
     }
 
     public DataFrame agg(Exp<?>... aggregators) {
-        return WindowAggregator.aggGrouped(this, aggregators);
+        return GroupByAggregator.agg(this, aggregators);
     }
 
     protected DataFrame resolveGroup(Object key) {
