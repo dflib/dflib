@@ -1,6 +1,7 @@
 ## Release 1.0.0-M21
 
 * #265 RowSet: add missing "sort" methods
+* #266 GroupBy.cols(..)
 
 ## Release 1.0.0-M20
 

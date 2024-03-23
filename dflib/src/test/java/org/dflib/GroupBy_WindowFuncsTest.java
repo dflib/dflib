@@ -6,14 +6,14 @@ import org.junit.jupiter.api.Test;
 public class GroupBy_WindowFuncsTest {
 
     @Test
-    public void groupBy_RowNumbers_Emtpy() {
+    public void rowNumbers_Emtpy() {
         GroupBy gb = DataFrame.empty("a", "b", "c").group("a");
         IntSeries rn = gb.rowNumber();
         new IntSeriesAsserts(rn).expectData();
     }
 
     @Test
-    public void groupBy_RowNumbers0() {
+    public void rowNumbers0() {
         GroupBy gb = DataFrame.foldByRow("a", "b", "c").of(
                 1, "x", "m",
                 2, "y", "n",
@@ -26,7 +26,7 @@ public class GroupBy_WindowFuncsTest {
     }
 
     @Test
-    public void groupBy_RowNumbers1() {
+    public void rowNumbers1() {
         GroupBy gb = DataFrame.foldByRow("a", "b", "c").of(
                 3, "x", "m",
                 2, "y", "n",
@@ -39,7 +39,7 @@ public class GroupBy_WindowFuncsTest {
     }
 
     @Test
-    public void groupBy_RowNumbers2() {
+    public void rowNumbers2() {
         GroupBy gb =  DataFrame.foldByRow("a", "b", "c").of(
                 3, "x", "m",
                 0, "y", "n",
@@ -52,7 +52,7 @@ public class GroupBy_WindowFuncsTest {
     }
 
     @Test
-    public void groupBy_RowNumbers_Sort() {
+    public void rowNumbers_Sort() {
         GroupBy gb = DataFrame.foldByRow("a", "b", "c").of(
                 3, "x", "m",
                 0, "y", "n",

@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 public class GroupBy {
 
@@ -23,10 +25,26 @@ public class GroupBy {
     private final IntComparator sorter;
     private final ConcurrentMap<Object, DataFrame> groupsCache;
 
+    private final boolean userColumns;
+    private final UnaryOperator<Index> colSelector;
+
     public GroupBy(DataFrame source, Map<Object, IntSeries> groupsIndex, IntComparator sorter) {
+        this(source, groupsIndex, sorter, false, null);
+    }
+
+    protected GroupBy(
+            DataFrame source,
+            Map<Object, IntSeries> groupsIndex,
+            IntComparator sorter,
+            boolean userColumns,
+            UnaryOperator<Index> colSelector) {
+
         this.source = source;
         this.groupsIndex = groupsIndex;
         this.sorter = sorter;
+        this.userColumns = userColumns;
+        this.colSelector = colSelector;
+
         this.groupsCache = new ConcurrentHashMap<>();
     }
 
@@ -66,15 +84,45 @@ public class GroupBy {
     }
 
     /**
-     * Recombines groups back to a DataFrame, preserving the effects of the initial grouping, and per-group sorting,
-     * truncation and other operations.
-     *
-     * @return a new DataFrame made from recombined groups.
+     * Specifies the columns of the aggregation or select result.
+     */
+    public GroupBy cols(Predicate<String> colsPredicate) {
+        return new GroupBy(source, groupsIndex, sorter, true, i -> i.selectLabels(colsPredicate));
+    }
+
+    /**
+     * Specifies the columns of the aggregation or select result.
+     */
+    public GroupBy cols(String... cols) {
+        return new GroupBy(source, groupsIndex, sorter, true, i -> Index.of(cols));
+    }
+
+    /**
+     * Specifies the columns of the aggregation or select result.
+     */
+    public GroupBy cols(int... cols) {
+        return new GroupBy(source, groupsIndex, sorter, true, i -> i.selectPositions(cols));
+    }
+
+    /**
      * @since 1.0.0-M21
      */
-    public DataFrame select() {
-        IntSeries index = SeriesConcat.intConcat(groupsIndex.values());
-        return source.rows(index).select();
+    public GroupBy colsExcept(String... cols) {
+        return cols(source.getColumnsIndex().positionsExcept(cols));
+    }
+
+    /**
+     * @since 1.0.0-M21
+     */
+    public GroupBy colsExcept(int... cols) {
+        return cols(source.getColumnsIndex().positionsExcept(cols));
+    }
+
+    /**
+     * @since 1.0.0-M21
+     */
+    public GroupBy colsExcept(Predicate<String> colsPredicate) {
+        return cols(colsPredicate.negate());
     }
 
     /**
@@ -284,9 +332,37 @@ public class GroupBy {
         return new GroupBySorter(this).sort(columns, ascending);
     }
 
+    /**
+     * Recombines groups back to a DataFrame, preserving the effects of the initial grouping, and per-group sorting,
+     * truncation and other operations.
+     *
+     * @return a new DataFrame made from recombined groups.
+     * @since 1.0.0-M21
+     */
+    public DataFrame select() {
+        IntSeries index = SeriesConcat.intConcat(groupsIndex.values());
+
+        return userColumns
+                ? source.rows(index).cols(colSelector.apply(source.getColumnsIndex())).select()
+                : source.rows(index).select();
+    }
+
     public DataFrame agg(Exp<?>... aggregators) {
+
+        Index index = userColumns
+                ? colSelector.apply(source.getColumnsIndex())
+                : Exps.index(source, aggregators);
+
+        if (userColumns) {
+            int w = aggregators.length;
+            if (w != index.size()) {
+                throw new IllegalArgumentException(
+                        "Can't perform 'agg': Exp[] size is different from the ColumnSet size: " + w + " vs. " + index.size());
+            }
+        }
+
         return new ColumnDataFrame(null,
-                Exps.index(source, aggregators),
+                index,
                 GroupByAggregator.agg(this, aggregators));
     }
 
