@@ -9,40 +9,58 @@ import org.dflib.window.DenseRanker;
 import org.dflib.window.Ranker;
 import org.dflib.window.RowNumberer;
 
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class GroupBy {
 
-    private final DataFrame ungrouped;
+    private final DataFrame source;
     private final Map<Object, IntSeries> groupsIndex;
-    private Map<Object, DataFrame> resolvedGroups;
     private final IntComparator sorter;
+    private final ConcurrentMap<Object, DataFrame> groupsCache;
 
-    public GroupBy(DataFrame ungrouped, Map<Object, IntSeries> groupsIndex, IntComparator sorter) {
-        this.ungrouped = ungrouped;
+    public GroupBy(DataFrame source, Map<Object, IntSeries> groupsIndex, IntComparator sorter) {
+        this.source = source;
         this.groupsIndex = groupsIndex;
         this.sorter = sorter;
+        this.groupsCache = new ConcurrentHashMap<>();
     }
 
+    /**
+     * Returns the number of groups. For the underlying DataFrame size, use "getSource().height()".
+     */
     public int size() {
         return groupsIndex.size();
     }
 
     /**
+     * Returns the unchanged original DataFrame that was used in the grouping, that does not have GroupBy sorting,
+     * trimming and other changes applied.
+     *
      * @since 0.11
      */
+    public DataFrame getSource() {
+        return source;
+    }
+
+    /**
+     * @deprecated in favor of {@link #getSource()}
+     */
+    @Deprecated(since = "1.0.0-M20", forRemoval = true)
     public DataFrame getUngrouped() {
-        return ungrouped;
+        return getSource();
     }
 
     /**
      * @since 0.6
+     * @deprecated in favor of {@link #getSource()} and then {@link DataFrame#getColumnsIndex()}
      */
+    @Deprecated(since = "1.0.0-M20", forRemoval = true)
     public Index getUngroupedColumnIndex() {
-        return ungrouped.getColumnsIndex();
+        return source.getColumnsIndex();
     }
 
     /**
@@ -53,10 +71,10 @@ public class GroupBy {
      */
     public DataFrame toDataFrame() {
         IntSeries index = SeriesConcat.intConcat(groupsIndex.values());
-        return ungrouped.rows(index).select();
+        return source.rows(index).select();
     }
 
-    public Collection<Object> getGroups() {
+    public Set<Object> getGroups() {
         return groupsIndex.keySet();
     }
 
@@ -69,12 +87,8 @@ public class GroupBy {
     }
 
     public DataFrame getGroup(Object key) {
-        if (resolvedGroups == null) {
-            resolvedGroups = new ConcurrentHashMap<>();
-        }
-
         // TODO: nulls will blow up on read... check for nulls and do something right here..
-        return resolvedGroups.computeIfAbsent(key, this::resolveGroup);
+        return groupsCache.computeIfAbsent(key, this::resolveGroup);
     }
 
     /**
@@ -93,7 +107,7 @@ public class GroupBy {
             return Series.ofInt();
         }
 
-        return RowNumberer.rowNumber(ungrouped, groupsIndex.values());
+        return RowNumberer.rowNumber(source, groupsIndex.values());
     }
 
     /**
@@ -117,10 +131,10 @@ public class GroupBy {
 
         if (sorter == null) {
             // no sort order means each row is equivalent from the ranking perspective, so return a Series of 1's
-            return Ranker.sameRank(ungrouped.height());
+            return Ranker.sameRank(source.height());
         }
 
-        return new Ranker(sorter).rank(ungrouped, groupsIndex.values());
+        return new Ranker(sorter).rank(source, groupsIndex.values());
     }
 
     /**
@@ -140,10 +154,10 @@ public class GroupBy {
 
         if (sorter == null) {
             // no sort order means each row is equivalent from the ranking perspective, so return a Series of 1's
-            return Ranker.sameRank(ungrouped.height());
+            return Ranker.sameRank(source.height());
         }
 
-        return new DenseRanker(sorter).rank(ungrouped, groupsIndex.values());
+        return new DenseRanker(sorter).rank(source, groupsIndex.values());
     }
 
     /**
@@ -155,7 +169,7 @@ public class GroupBy {
      * @since 0.9
      */
     public <T> Series<T> shift(String column, int offset, T filler) {
-        int pos = ungrouped.getColumnsIndex().position(column);
+        int pos = source.getColumnsIndex().position(column);
         return shift(pos, offset, filler);
     }
 
@@ -199,7 +213,7 @@ public class GroupBy {
             trimmed.put(e.getKey(), e.getValue().head(len));
         }
 
-        return new GroupBy(ungrouped, trimmed, sorter);
+        return new GroupBy(source, trimmed, sorter);
     }
 
     public GroupBy tail(int len) {
@@ -215,7 +229,7 @@ public class GroupBy {
             trimmed.put(e.getKey(), e.getValue().tail(len));
         }
 
-        return new GroupBy(ungrouped, trimmed, sorter);
+        return new GroupBy(source, trimmed, sorter);
     }
 
     /**
@@ -259,13 +273,13 @@ public class GroupBy {
             return null;
         }
 
-        int w = ungrouped.width();
+        int w = source.width();
         Series[] data = new Series[w];
 
         for (int j = 0; j < w; j++) {
-            data[j] = ungrouped.getColumn(j).select(index);
+            data[j] = source.getColumn(j).select(index);
         }
 
-        return new ColumnDataFrame(null, ungrouped.getColumnsIndex(), data);
+        return new ColumnDataFrame(null, source.getColumnsIndex(), data);
     }
 }

@@ -1041,12 +1041,12 @@ public interface DataFrame extends Iterable<RowProxy> {
             throw new IllegalArgumentException("No columns provided to group by");
         }
 
-        Hasher mapper = Hasher.of(columns[0]);
+        Hasher hasher = Hasher.of(columns[0]);
         for (int i = 1; i < columns.length; i++) {
-            mapper = mapper.and(columns[i]);
+            hasher = hasher.and(columns[i]);
         }
 
-        return group(mapper);
+        return group(hasher);
     }
 
     /**
@@ -1063,12 +1063,12 @@ public interface DataFrame extends Iterable<RowProxy> {
             throw new IllegalArgumentException("No columns provided to group by");
         }
 
-        Hasher mapper = Hasher.of(columns[0]);
+        Hasher hasher = Hasher.of(columns[0]);
         for (int i = 1; i < columns.length; i++) {
-            mapper = mapper.and(columns[i]);
+            hasher = hasher.and(columns[i]);
         }
 
-        return group(mapper);
+        return group(hasher);
     }
 
 

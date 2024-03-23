@@ -37,7 +37,7 @@ public class WindowMapper {
 
     public static <T> Series<T> mapPartitioned(GroupBy windowGroupBy, Exp<T> aggregator, WindowRange range) {
 
-        int h = windowGroupBy.getUngrouped().height();
+        int h = windowGroupBy.getSource().height();
 
         ObjectAccum<T> data = new ObjectAccum<>(h);
 

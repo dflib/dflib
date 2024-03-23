@@ -33,10 +33,10 @@ public class WindowAggregator {
         // 2. don't parallelize small DataFrames, as sequential calculations are fast enough vs the overhead of
         // creating, submitting and joining tasks
 
-        if (aggW <= 1 || groupBy.getUngrouped().height() < env.parallelExecThreshold()) {
+        if (aggW <= 1 || groupBy.getSource().height() < env.parallelExecThreshold()) {
             for (int i = 0; i < aggW; i++) {
                 aggColumns[i] = aggGrouped(groupBy, aggregators[i], aggH);
-                aggLabels[i] = aggregators[i].getColumnName(groupBy.getUngrouped());
+                aggLabels[i] = aggregators[i].getColumnName(groupBy.getSource());
             }
         } else {
             ExecutorService pool = env.threadPool();
@@ -45,7 +45,7 @@ public class WindowAggregator {
             for (int i = 0; i < aggW; i++) {
                 Exp<?> agg = aggregators[i];
                 aggTasks[i] = pool.submit(() -> aggGrouped(groupBy, agg, aggH));
-                aggLabels[i] = agg.getColumnName(groupBy.getUngrouped());
+                aggLabels[i] = agg.getColumnName(groupBy.getSource());
             }
 
             for (int i = 0; i < aggW; i++) {
@@ -77,7 +77,7 @@ public class WindowAggregator {
     public static DataFrame aggPartitioned(GroupBy windowGroupBy, Exp<?>... aggregators) {
 
         DataFrame rowPerGroupDf = aggGrouped(windowGroupBy, aggregators);
-        int h = windowGroupBy.getUngrouped().height();
+        int h = windowGroupBy.getSource().height();
         int aggW = rowPerGroupDf.width();
 
         Object[][] data = new Object[aggW][h];

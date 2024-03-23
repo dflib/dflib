@@ -25,30 +25,30 @@ public class GroupBySorter {
     }
 
     public GroupBy sort(String column, boolean ascending) {
-        return sort(Comparators.of(groupBy.getUngrouped().getColumn(column), ascending));
+        return sort(Comparators.of(groupBy.getSource().getColumn(column), ascending));
     }
 
     public GroupBy sort(int column, boolean ascending) {
-        return sort(Comparators.of(groupBy.getUngrouped().getColumn(column), ascending));
+        return sort(Comparators.of(groupBy.getSource().getColumn(column), ascending));
     }
 
     public GroupBy sort(String[] columns, boolean[] ascending) {
-        return sort(Comparators.of(groupBy.getUngrouped(), columns, ascending));
+        return sort(Comparators.of(groupBy.getSource(), columns, ascending));
     }
 
     public GroupBy sort(int[] columns, boolean[] ascending) {
-        return sort(Comparators.of(groupBy.getUngrouped(), columns, ascending));
+        return sort(Comparators.of(groupBy.getSource(), columns, ascending));
     }
 
     public GroupBy sort(Sorter... sorters) {
-        return sorters.length == 0 ? groupBy : sort(Comparators.of(groupBy.getUngrouped(), sorters));
+        return sorters.length == 0 ? groupBy : sort(Comparators.of(groupBy.getSource(), sorters));
     }
 
     public GroupBy sort(IntComparator sorter) {
 
         Objects.requireNonNull(sorter, "Null 'sorter'");
 
-        DataFrame ungrouped = groupBy.getUngrouped();
+        DataFrame ungrouped = groupBy.getSource();
         Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (groupBy.size() / 0.75));
 
         for (Object groupKey : groupBy.getGroups()) {
