@@ -83,11 +83,6 @@ public interface IntSeries extends Series<Integer> {
      */
     IntSeries rangeInt(int fromInclusive, int toExclusive);
 
-    @Deprecated(since = "1.0.0-M19", forRemoval = true)
-    default IntSeries rangeOpenClosedInt(int fromInclusive, int toExclusive) {
-        return rangeInt(fromInclusive, toExclusive);
-    }
-
     @Override
     default IntSeries head(int len) {
 

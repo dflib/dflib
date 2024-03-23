@@ -5,7 +5,6 @@ import org.dflib.concat.VConcat;
 import org.dflib.groupby.Grouper;
 import org.dflib.row.ColumnsRowProxy;
 import org.dflib.row.RowProxy;
-import org.dflib.sample.Sampler;
 import org.dflib.series.EmptySeries;
 import org.dflib.series.IntSequenceSeries;
 import org.dflib.series.SingleValueSeries;
@@ -22,7 +21,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 
 public class ColumnDataFrame implements DataFrame {
 
@@ -49,14 +47,6 @@ public class ColumnDataFrame implements DataFrame {
         EmptySeries es = new EmptySeries();
         Arrays.fill(finalColumns, es);
         return finalColumns;
-    }
-
-    /**
-     * @deprecated in favor of {@link #ColumnDataFrame(String, Index, Series[])}
-     */
-    @Deprecated(since = "1.0.0-M19", forRemoval = true)
-    public ColumnDataFrame(Index columnsIndex, Series<?>... dataColumns) {
-        this(null, columnsIndex, dataColumns);
     }
 
     public ColumnDataFrame(String name, Index columnsIndex, Series<?>... dataColumns) {
@@ -142,56 +132,6 @@ public class ColumnDataFrame implements DataFrame {
         }
 
         return new ColumnDataFrame(null, columnsIndex, newColumnsData);
-    }
-
-    @Override
-    public <V> DataFrame selectRows(int columnPos, ValuePredicate<V> p) {
-        IntSeries rowPositions = dataColumns[columnPos].index(p);
-
-        // there's no reordering or index duplication during "select", so we can compare size to detect changes
-        if (rowPositions.size() == height()) {
-            return this;
-        }
-
-        return selectRows(rowPositions);
-    }
-
-    @Override
-    public DataFrame selectRows(Condition condition) {
-        return selectRows(condition.eval(this).indexTrue());
-    }
-
-    @Override
-    public DataFrame uniqueRows(String... columnNamesToCompare) {
-
-        if (columnNamesToCompare.length == 0) {
-            throw new IllegalArgumentException("No 'columnNamesToCompare' for uniqueness checks");
-        }
-
-        int w = width();
-        Exp[] aggregators = new Exp[w];
-
-        for (int i = 0; i < w; i++) {
-            aggregators[i] = Exp.$col(i).first();
-        }
-
-        return group(columnNamesToCompare).agg(aggregators);
-    }
-
-    @Override
-    public DataFrame uniqueRows(int... columnNamesToCompare) {
-        if (columnNamesToCompare.length == 0) {
-            throw new IllegalArgumentException("No 'columnNamesToCompare' for uniqueness checks");
-        }
-
-        int w = width();
-        Exp[] aggregators = new Exp[w];
-
-        for (int i = 0; i < w; i++) {
-            aggregators[i] = Exp.$col(i).first();
-        }
-
-        return group(columnNamesToCompare).agg(aggregators);
     }
 
     @Override
@@ -360,22 +300,6 @@ public class ColumnDataFrame implements DataFrame {
                 return rowProxy.next();
             }
         };
-    }
-
-    /**
-     * @since 0.7
-     */
-    @Override
-    public DataFrame sampleRows(int size) {
-        return selectRows(Sampler.sampleIndex(size, height()));
-    }
-
-    /**
-     * @since 0.7
-     */
-    @Override
-    public DataFrame sampleRows(int size, Random random) {
-        return selectRows(Sampler.sampleIndex(size, height(), random));
     }
 
     @Override

@@ -11,6 +11,7 @@ public class ColumnDataFrameTest {
     @Test
     public void constructor_NoName() {
         ColumnDataFrame df = new ColumnDataFrame(
+                null,
                 Index.of("a", "b"),
                 Series.ofInt(1, 2),
                 Series.ofInt(3, 4));

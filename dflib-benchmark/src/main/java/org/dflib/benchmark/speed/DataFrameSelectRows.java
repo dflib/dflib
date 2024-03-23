@@ -38,28 +38,32 @@ public class DataFrameSelectRows {
 
     @Benchmark
     public Object selectRowsIntValuePredicate() {
-        return df.selectRows("c0", (Integer i) -> i % 2 == 0)
+        return df.rows($int("c0").mapBoolVal(i -> i % 2 == 0))
+                .select()
                 .materialize()
                 .iterator();
     }
 
     @Benchmark
     public Object selectRowsIntegerValuePredicate() {
-        return df.selectRows("c1", (Integer i) -> i % 2 == 0)
+        return df.rows($int("c1").mapBoolVal(i -> i % 2 == 0))
+                .select()
                 .materialize()
                 .iterator();
     }
 
     @Benchmark
     public Object selectRowsIntConditionViaExp() {
-        return df.selectRows($int("c0").mod(2).eq(0))
+        return df.rows($int("c0").mod(2).eq(0))
+                .select()
                 .materialize()
                 .iterator();
     }
 
     @Benchmark
     public Object selectRowsIntegerConditionViaExp() {
-        return df.selectRows($int("c1").mod(2).eq(0))
+        return df.rows($int("c1").mod(2).eq(0))
+                .select()
                 .materialize()
                 .iterator();
     }

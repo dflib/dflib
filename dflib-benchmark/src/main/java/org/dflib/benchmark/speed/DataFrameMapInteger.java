@@ -39,7 +39,8 @@ public class DataFrameMapInteger {
     @Benchmark
     public Object mapCast() {
         return df
-                .map(df.getColumnsIndex(), (r, t) -> t.set(0, ((int) r.get(0)) * 10))
+                .cols()
+                .map((r, t) -> t.set(0, ((int) r.get(0)) * 10))
                 .materialize()
                 .iterator();
     }
@@ -47,7 +48,8 @@ public class DataFrameMapInteger {
     @Benchmark
     public Object mapApiCast() {
         return df
-                .map(df.getColumnsIndex(), (r, t) -> t.set(0, r.get(0, Integer.class) * 10))
+                .cols()
+                .map((r, t) -> t.set(0, r.get(0, Integer.class) * 10))
                 .materialize()
                 .iterator();
     }

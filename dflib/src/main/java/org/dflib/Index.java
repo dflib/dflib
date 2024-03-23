@@ -33,14 +33,6 @@ public class Index implements Iterable<String> {
     }
 
     /**
-     * @deprecated in favor of {@link #of(Class)}
-     */
-    @Deprecated(since = "1.0.0-M19", forRemoval = true)
-    public static <E extends Enum<E>> Index forLabels(Class<E> columns) {
-        return of(columns);
-    }
-
-    /**
      * Creates a new index based on enum values.
      *
      * @param columns enum type that defines Index columns
@@ -59,14 +51,6 @@ public class Index implements Iterable<String> {
     }
 
     /**
-     * @deprecated in favor of {@link #of(String...)}
-     */
-    @Deprecated(since = "1.0.0-M19", forRemoval = true)
-    public static Index forLabels(String... labels) {
-        return of(labels);
-    }
-
-    /**
      * @since 1.0.0-M19
      */
     public static Index of(String... labels) {
@@ -74,28 +58,10 @@ public class Index implements Iterable<String> {
     }
 
     /**
-     * @since 0.7
-     * @deprecated in favor of {@link #of(Series)}
-     */
-    @Deprecated(since = "1.0.0-M19", forRemoval = true)
-    public static Index forLabels(Series<String> labels) {
-        return of(labels);
-    }
-
-    /**
      * @since 1.0.0-M19
      */
     public static Index of(Series<String> labels) {
         return new Index(labels.toArray(new String[0]));
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #ofDeduplicated(String...)}
-     */
-    @Deprecated(since = "1.0.0-M19", forRemoval = true)
-    public static Index forLabelsDeduplicate(String... labels) {
-        return ofDeduplicated(labels);
     }
 
     /**
@@ -228,15 +194,6 @@ public class Index implements Iterable<String> {
         System.arraycopy(labels, fromInclusive, newLabels, 0, len);
 
         return Index.of(newLabels);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #selectRange(int, int)}
-     */
-    @Deprecated(since = "1.0.0-M19", forRemoval = true)
-    public Index rangeOpenClosed(int fromInclusive, int toExclusive) {
-        return selectRange(fromInclusive, toExclusive);
     }
 
     public Index selectLabels(String... labels) {

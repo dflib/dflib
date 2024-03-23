@@ -307,15 +307,6 @@ public interface Series<T> extends Iterable<T> {
     Series<T> range(int fromInclusive, int toExclusive);
 
     /**
-     * @since 0.6
-     * @deprecated in favor of {@link #range(int, int)}
-     */
-    @Deprecated(since = "1.0.0-M19", forRemoval = true)
-    default Series<T> rangeOpenClosed(int fromInclusive, int toExclusive) {
-        return range(fromInclusive, toExclusive);
-    }
-
-    /**
      * Resolves the Series executing any lazy calculations. If called more than once, the first evaluation result is reused.
      */
     Series<T> materialize();

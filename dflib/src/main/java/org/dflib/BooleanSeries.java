@@ -97,15 +97,6 @@ public interface BooleanSeries extends Series<Boolean> {
      */
     BooleanSeries rangeBool(int fromInclusive, int toExclusive);
 
-    /**
-     * @since 0.16
-     * @deprecated in favor of {@link #rangeBool(int, int)}
-     */
-    @Deprecated(since = "1.0.0-M19", forRemoval = true)
-    default BooleanSeries rangeOpenClosedBool(int fromInclusive, int toExclusive) {
-        return rangeBool(fromInclusive, toExclusive);
-    }
-
     @Override
     default BooleanSeries head(int len) {
 

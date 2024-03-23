@@ -82,14 +82,6 @@ public interface LongSeries extends Series<Long> {
      */
     LongSeries rangeLong(int fromInclusive, int toExclusive);
 
-    /**
-     * @deprecated in favor of {@link #rangeLong(int, int)}
-     */
-    @Deprecated(since = "1.0.0-M19", forRemoval = true)
-    default LongSeries rangeOpenClosedLong(int fromInclusive, int toExclusive) {
-        return rangeLong(fromInclusive, toExclusive);
-    }
-
     @Override
     default LongSeries head(int len) {
 

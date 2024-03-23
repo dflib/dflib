@@ -45,14 +45,6 @@ public class DataFrameAgg {
     }
 
     @Benchmark
-    public Object medianWithFilter() {
-        return df
-                .selectRows(Exp.$int("c0").mod(2).eq(0))
-                .cols()
-                .agg(Exp.$int(0).median());
-    }
-
-    @Benchmark
     public Object oneColumn() {
         return df.cols()
                 .agg(Exp.$int("c0").sum()

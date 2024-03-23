@@ -82,14 +82,6 @@ public interface DoubleSeries extends Series<Double> {
      */
     DoubleSeries rangeDouble(int fromInclusive, int toExclusive);
 
-    /**
-     * @deprecated in favor of {@link #rangeDouble(int, int)}
-     */
-    @Deprecated(since = "1.0.0-M19", forRemoval = true)
-    default DoubleSeries rangeOpenClosedDouble(int fromInclusive, int toExclusive) {
-        return rangeDouble(fromInclusive, toExclusive);
-    }
-
     @Override
     default DoubleSeries head(int len) {
 
