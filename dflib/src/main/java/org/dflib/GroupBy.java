@@ -47,8 +47,8 @@ public class GroupBy {
     }
 
     /**
-     * @deprecated in favor of {@link #getSource()}
      * @since 0.11
+     * @deprecated in favor of {@link #getSource()}
      */
     @Deprecated(since = "1.0.0-M21", forRemoval = true)
     public DataFrame getUngrouped() {
@@ -69,10 +69,19 @@ public class GroupBy {
      * truncation and other operations.
      *
      * @return a new DataFrame made from recombined groups.
+     * @since 1.0.0-M21
      */
-    public DataFrame toDataFrame() {
+    public DataFrame recombine() {
         IntSeries index = SeriesConcat.intConcat(groupsIndex.values());
         return source.rows(index).select();
+    }
+
+    /**
+     * @deprecated in favor of {@link #recombine()}
+     */
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
+    public DataFrame toDataFrame() {
+        return recombine();
     }
 
     /**
