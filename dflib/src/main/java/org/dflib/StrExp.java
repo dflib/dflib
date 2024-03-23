@@ -93,28 +93,45 @@ public interface StrExp extends Exp<String> {
      * A substring expression. Unlike Java "substring" methods, this expression does not throw out of bounds exceptions
      * if the String is shorter than the start index, and simply returns an empty string.
      *
-     * @param fromInclusive a zero-based substring starting position
+     * @param fromInclusive a zero-based substring starting position. Can be negative, in which case the index is counted
+     *                      from the end of the String.
      * @since 1.0.0-M21
      */
     default StrExp substr(int fromInclusive) {
-        return StrExp1.mapVal("substr", this, s -> s.length() <= fromInclusive ? "" : s.substring(fromInclusive));
+        if (fromInclusive == 0) {
+            return StrExp1.mapVal("substr", this, s -> s);
+        } else if (fromInclusive < 0) {
+            int endOffset = -fromInclusive;
+            return StrExp1.mapVal("substr", this, s -> s.length() <= endOffset ? "" : s.substring(s.length() - endOffset));
+        } else {
+            return StrExp1.mapVal("substr", this, s -> s.length() <= fromInclusive ? "" : s.substring(fromInclusive));
+        }
     }
 
     /**
      * A substring expression. Unlike Java "substring" methods, this expression does not throw out of bounds exceptions
-     * if the String is shorter than the start or end index, and simply returns an empty string.
+     * if the String is shorter than the start index, or the substring is shorter than "len", and simply returns an
+     * empty string.
      *
      * @param fromInclusive a zero-based substring starting position
-     * @param toExclusive   a zero-based position of the index past the last index of the substring
+     * @param len           a max length of the substring.
      * @since 1.0.0-M21
      */
-    default StrExp substr(int fromInclusive, int toExclusive) {
-        if (fromInclusive >= toExclusive) {
-            throw new IllegalArgumentException("'toExclusive' must be higher than 'fromInclusive': " + toExclusive + " vs " + fromInclusive);
+    default StrExp substr(int fromInclusive, int len) {
+        if (len < 0) {
+            throw new IllegalArgumentException("'len' must be non-negative: " + len);
+        } else if (len == 0) {
+            return StrExp1.mapVal("substr", this, s -> "");
         }
 
-        return StrExp1.mapVal("substr", this, s ->
-                s.length() <= fromInclusive ? "" : s.substring(fromInclusive, s.length() < toExclusive ? s.length() : toExclusive));
+        if (fromInclusive < 0) {
+            int endOffset = -fromInclusive;
+            return StrExp1.mapVal("substr", this, s ->
+                    s.length() <= endOffset ? "" : s.substring(s.length() - endOffset, Math.min(s.length(), s.length() - endOffset + len)));
+        } else {
+            return StrExp1.mapVal("substr", this, s ->
+                    s.length() <= fromInclusive ? "" : s.substring(fromInclusive, Math.min(s.length(), fromInclusive + len)));
+        }
     }
 
     /**

@@ -108,7 +108,15 @@ public class StrColumnTest {
     }
 
     @Test
-    public void substr1() {
+    public void substr0() {
+        StrExp exp = $str(0).substr(0);
+
+        Series<String> s = Series.of(null, "", "a", "ab", "abc", "abcd");
+        new SeriesAsserts(exp.eval(s)).expectData(null, "", "a", "ab", "abc", "abcd");
+    }
+
+    @Test
+    public void substr2() {
         StrExp exp = $str(0).substr(2);
 
         Series<String> s = Series.of(null, "", "a", "ab", "abc", "abcd");
@@ -116,11 +124,27 @@ public class StrColumnTest {
     }
 
     @Test
-    public void substr2() {
-        StrExp exp = $str(0).substr(2, 3);
+    public void substr2_Negative() {
+        StrExp exp = $str(0).substr(-2);
+
+        Series<String> s = Series.of(null, "", "a", "ab", "abc", "abcd");
+        new SeriesAsserts(exp.eval(s)).expectData(null, "", "", "", "bc", "cd");
+    }
+
+    @Test
+    public void substr_Len() {
+        StrExp exp = $str(0).substr(2, 1);
 
         Series<String> s = Series.of(null, "", "a", "ab", "abc", "abcd");
         new SeriesAsserts(exp.eval(s)).expectData(null, "", "", "", "c", "c");
+    }
+
+    @Test
+    public void substr_Negative_Len() {
+        StrExp exp = $str(0).substr(-2, 1);
+
+        Series<String> s = Series.of(null, "", "a", "ab", "abc", "abcd");
+        new SeriesAsserts(exp.eval(s)).expectData(null, "", "", "", "b", "c");
     }
 
     @Test
