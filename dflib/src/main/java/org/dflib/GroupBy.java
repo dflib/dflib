@@ -2,6 +2,7 @@ package org.dflib;
 
 import org.dflib.agg.GroupByAggregator;
 import org.dflib.concat.SeriesConcat;
+import org.dflib.exp.Exps;
 import org.dflib.series.EmptySeries;
 import org.dflib.sort.GroupBySorter;
 import org.dflib.sort.IntComparator;
@@ -284,16 +285,9 @@ public class GroupBy {
     }
 
     public DataFrame agg(Exp<?>... aggregators) {
-        Series<?>[] aggregated = GroupByAggregator.agg(this, aggregators);
-
-        int aggW = aggregated.length;
-
-        String[] labels = new String[aggW];
-        for (int i = 0; i < aggW; i++) {
-            labels[i] = aggregators[i].getColumnName(source);
-        }
-
-        return new ColumnDataFrame(null, Index.ofDeduplicated(labels), aggregated);
+        return new ColumnDataFrame(null,
+                Exps.index(source, aggregators),
+                GroupByAggregator.agg(this, aggregators));
     }
 
     protected DataFrame resolveGroup(Object key) {

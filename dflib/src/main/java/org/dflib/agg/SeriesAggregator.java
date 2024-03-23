@@ -1,13 +1,13 @@
 package org.dflib.agg;
 
 
-import org.dflib.Exp;
-import org.dflib.SeriesGroupBy;
-import org.dflib.builder.ValueAccum;
-import org.dflib.builder.ObjectAccum;
 import org.dflib.DataFrame;
-import org.dflib.Index;
+import org.dflib.Exp;
 import org.dflib.Series;
+import org.dflib.SeriesGroupBy;
+import org.dflib.builder.ObjectAccum;
+import org.dflib.builder.ValueAccum;
+import org.dflib.exp.Exps;
 
 /**
  * @since 0.14
@@ -18,14 +18,12 @@ public class SeriesAggregator {
 
         int aggW = aggregators.length;
         Series<?>[] aggColumns = new Series[aggW];
-        String[] aggLabels = new String[aggW];
 
         for (int i = 0; i < aggW; i++) {
             aggColumns[i] = aggregators[i].eval(series);
-            aggLabels[i] = aggregators[i].getColumnName();
         }
 
-        return DataFrame.byColumn(Index.ofDeduplicated(aggLabels)).of(aggColumns);
+        return DataFrame.byColumn(Exps.index(aggregators)).of(aggColumns);
     }
 
     public static <T, R> Series<R> aggGroupBy(SeriesGroupBy<T> groupBy, Exp<R> aggregator) {
@@ -47,7 +45,6 @@ public class SeriesAggregator {
         int aggH = groupBy.size();
 
         Series<?>[] aggColumns = new Series[aggW];
-        String[] aggLabels = new String[aggW];
 
         for (int i = 0; i < aggW; i++) {
 
@@ -62,9 +59,8 @@ public class SeriesAggregator {
             }
 
             aggColumns[i] = columnBuilder.toSeries();
-            aggLabels[i] = agg.getColumnName();
         }
 
-        return DataFrame.byColumn(Index.ofDeduplicated(aggLabels)).of(aggColumns);
+        return DataFrame.byColumn(Exps.index(aggregators)).of(aggColumns);
     }
 }

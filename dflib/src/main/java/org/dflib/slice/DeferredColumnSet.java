@@ -20,6 +20,7 @@ import org.dflib.RowPredicate;
 import org.dflib.RowToValueMapper;
 import org.dflib.Series;
 import org.dflib.agg.DataFrameAggregator;
+import org.dflib.exp.Exps;
 import org.dflib.row.DynamicColsRowBuilder;
 import org.dflib.series.RowMappedSeries;
 
@@ -318,29 +319,22 @@ public class DeferredColumnSet implements ColumnSet {
 
     @Override
     public DataFrame map(Exp<?>... exps) {
-        int w = exps.length;
-
-        String[] labels = new String[w];
-        for (int i = 0; i < w; i++) {
-            labels[i] = exps[i].getColumnName(source);
-        }
-
-        return delegate(labels).map(exps);
+        return delegate(Exps.labels(source, exps)).map(exps);
     }
 
     @Override
     public DataFrame select(Exp<?>... exps) {
         int w = exps.length;
 
-        String[] labels = new String[w];
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            labels[i] = exps[i].getColumnName(source);
             columns[i] = exps[i].eval(source);
         }
 
-        return new ColumnDataFrame(null, Index.of(labels), columns);
+        return new ColumnDataFrame(null,
+                Index.ofDeduplicated(Exps.labels(source, exps)),
+                columns);
     }
 
     @Override
@@ -506,15 +500,9 @@ public class DeferredColumnSet implements ColumnSet {
 
     @Override
     public DataFrame agg(Exp<?>... aggregators) {
-        int w = aggregators.length;
-
-        String[] labels = new String[w];
-        for (int i = 0; i < w; i++) {
-            labels[i] = aggregators[i].getColumnName(source);
-        }
-
         Series<?>[] aggregated = DataFrameAggregator.agg(source, aggregators);
-        return new ColumnDataFrame(null, Index.ofDeduplicated(labels), aggregated);
+        Index index = Exps.index(source, aggregators);
+        return new ColumnDataFrame(null, index, aggregated);
     }
 
     private Series<?>[] doMapArrays(Exp<? extends Object[]> mapper) {

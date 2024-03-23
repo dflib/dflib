@@ -5,13 +5,13 @@ import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.GroupBy;
 import org.dflib.Hasher;
-import org.dflib.Index;
 import org.dflib.IntSeries;
 import org.dflib.Series;
 import org.dflib.Sorter;
 import org.dflib.agg.DataFrameAggregator;
 import org.dflib.agg.GroupByAggregator;
 import org.dflib.agg.WindowMapper;
+import org.dflib.exp.Exps;
 import org.dflib.series.IntSequenceSeries;
 import org.dflib.sort.Comparators;
 import org.dflib.sort.DataFrameSorter;
@@ -255,14 +255,12 @@ public class WindowBuilder {
             gi++;
         }
 
-        String[] labels = new String[aggW];
         Series<?>[] columns = new Series[aggW];
         for (int i = 0; i < aggW; i++) {
-            labels[i] = aggregators[i].getColumnName(dataFrame);
             columns[i] = Series.of(data[i]);
         }
 
-        return new ColumnDataFrame(null, Index.ofDeduplicated(labels), columns);
+        return new ColumnDataFrame(null, Exps.index(dataFrame, aggregators), columns);
     }
 
     private DataFrame aggUnPartitioned(Exp<?>... aggregators) {
@@ -274,16 +272,14 @@ public class WindowBuilder {
         int w = aggregators.length;
 
         Series<?>[] oneRowSeries = DataFrameAggregator.agg(df, aggregators);
-        String[] labels = new String[w];
 
         // expand each column to the height of the original DataFrame
         Series<?>[] expandedColumns = new Series[w];
         for (int i = 0; i < w; i++) {
             expandedColumns[i] = Series.ofVal(oneRowSeries[i].get(0), h);
-            labels[i] = aggregators[i].getColumnName(df);
         }
 
-        return new ColumnDataFrame(null, Index.ofDeduplicated(labels), expandedColumns);
+        return new ColumnDataFrame(null, Exps.index(df, aggregators), expandedColumns);
     }
 
     private <T> Series<T> mapPartitioned(Exp<T> aggregator) {
