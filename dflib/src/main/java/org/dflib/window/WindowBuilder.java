@@ -227,9 +227,9 @@ public class WindowBuilder {
                 ? dataFrame.group(partitioner).sort(sorter)
                 : dataFrame.group(partitioner);
 
-        DataFrame rowPerGroupDf = GroupByAggregator.agg(gb, aggregators);
+        Series<?>[] rowPerGroup = GroupByAggregator.agg(gb, aggregators);
         int h = gb.getSource().height();
-        int aggW = rowPerGroupDf.width();
+        int aggW = rowPerGroup.length;
 
         Object[][] data = new Object[aggW][h];
 
@@ -246,7 +246,7 @@ public class WindowBuilder {
             for (int i = 0; i < aggW; i++) {
 
                 // fill positions in the index with the singe aggregated value
-                Object val = rowPerGroupDf.getColumn(i).get(gi);
+                Object val = rowPerGroup[i].get(gi);
                 for (int j = 0; j < ih; j++) {
                     data[i][index.getInt(j)] = val;
                 }
@@ -255,12 +255,14 @@ public class WindowBuilder {
             gi++;
         }
 
+        String[] labels = new String[aggW];
         Series<?>[] columns = new Series[aggW];
         for (int i = 0; i < aggW; i++) {
+            labels[i] = aggregators[i].getColumnName(dataFrame);
             columns[i] = Series.of(data[i]);
         }
 
-        return DataFrame.byColumn(rowPerGroupDf.getColumnsIndex()).of(columns);
+        return new ColumnDataFrame(null, Index.ofDeduplicated(labels), columns);
     }
 
     private DataFrame aggUnPartitioned(Exp<?>... aggregators) {

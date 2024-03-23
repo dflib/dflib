@@ -4,7 +4,6 @@ import org.dflib.DataFrame;
 import org.dflib.Environment;
 import org.dflib.Exp;
 import org.dflib.GroupBy;
-import org.dflib.Index;
 import org.dflib.Series;
 import org.dflib.builder.ObjectAccum;
 import org.dflib.builder.ValueAccum;
@@ -17,13 +16,12 @@ import java.util.concurrent.Future;
  */
 public class GroupByAggregator {
 
-    public static DataFrame agg(GroupBy groupBy, Exp<?>... aggregators) {
+    public static Series<?>[] agg(GroupBy groupBy, Exp<?>... aggregators) {
 
         int aggW = aggregators.length;
         int aggH = groupBy.size();
 
         Series<?>[] aggColumns = new Series[aggW];
-        String[] aggLabels = new String[aggW];
 
         Environment env = Environment.commonEnv();
 
@@ -34,7 +32,6 @@ public class GroupByAggregator {
         if (aggW <= 1 || groupBy.getSource().height() < env.parallelExecThreshold()) {
             for (int i = 0; i < aggW; i++) {
                 aggColumns[i] = agg(groupBy, aggregators[i], aggH);
-                aggLabels[i] = aggregators[i].getColumnName(groupBy.getSource());
             }
         } else {
             ExecutorService pool = env.threadPool();
@@ -43,7 +40,6 @@ public class GroupByAggregator {
             for (int i = 0; i < aggW; i++) {
                 Exp<?> agg = aggregators[i];
                 aggTasks[i] = pool.submit(() -> agg(groupBy, agg, aggH));
-                aggLabels[i] = agg.getColumnName(groupBy.getSource());
             }
 
             for (int i = 0; i < aggW; i++) {
@@ -55,7 +51,7 @@ public class GroupByAggregator {
             }
         }
 
-        return DataFrame.byColumn(Index.ofDeduplicated(aggLabels)).of(aggColumns);
+        return aggColumns;
     }
 
     private static Series<?> agg(GroupBy groupBy, Exp<?> agg, int aggH) {
