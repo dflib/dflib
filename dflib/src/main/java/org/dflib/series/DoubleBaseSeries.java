@@ -3,7 +3,6 @@ package org.dflib.series;
 import org.dflib.BooleanSeries;
 import org.dflib.Condition;
 import org.dflib.DataFrame;
-import org.dflib.DoublePredicate;
 import org.dflib.DoubleSeries;
 import org.dflib.Index;
 import org.dflib.IntSeries;
@@ -11,7 +10,6 @@ import org.dflib.Series;
 import org.dflib.SeriesGroupBy;
 import org.dflib.Sorter;
 import org.dflib.ValueMapper;
-import org.dflib.ValuePredicate;
 import org.dflib.ValueToRowMapper;
 import org.dflib.builder.DoubleAccum;
 import org.dflib.builder.IntAccum;
@@ -28,6 +26,8 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.DoublePredicate;
+import java.util.function.Predicate;
 
 /**
  * @since 0.6
@@ -57,7 +57,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
-    public DoubleSeries select(ValuePredicate<Double> p) {
+    public DoubleSeries select(Predicate<Double> p) {
         return selectDouble(p::test);
     }
 
@@ -288,7 +288,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
-    public IntSeries index(ValuePredicate<Double> predicate) {
+    public IntSeries index(Predicate<Double> predicate) {
 
         // reimplementing instead of calling "indexDouble", as it seems to be doing less (un)boxing and is about 13% faster
         // as a result

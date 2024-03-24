@@ -9,7 +9,6 @@ import org.dflib.Series;
 import org.dflib.SeriesGroupBy;
 import org.dflib.Sorter;
 import org.dflib.ValueMapper;
-import org.dflib.ValuePredicate;
 import org.dflib.ValueToRowMapper;
 import org.dflib.builder.BoolAccum;
 import org.dflib.builder.IntAccum;
@@ -25,6 +24,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * A base implementation of various boilerplate methods for {@link BooleanSeries}.
@@ -56,7 +56,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
-    public BooleanSeries select(ValuePredicate<Boolean> p) {
+    public BooleanSeries select(Predicate<Boolean> p) {
         return selectAsBooleanSeries(index(p));
     }
 
@@ -254,7 +254,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
-    public IntSeries index(ValuePredicate<Boolean> predicate) {
+    public IntSeries index(Predicate<Boolean> predicate) {
 
         int len = size();
 

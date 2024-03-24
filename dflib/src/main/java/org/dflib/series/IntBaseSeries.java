@@ -4,13 +4,11 @@ import org.dflib.BooleanSeries;
 import org.dflib.Condition;
 import org.dflib.DataFrame;
 import org.dflib.Index;
-import org.dflib.IntPredicate;
 import org.dflib.IntSeries;
 import org.dflib.Series;
 import org.dflib.SeriesGroupBy;
 import org.dflib.Sorter;
 import org.dflib.ValueMapper;
-import org.dflib.ValuePredicate;
 import org.dflib.ValueToRowMapper;
 import org.dflib.builder.IntAccum;
 import org.dflib.builder.ObjectAccum;
@@ -28,6 +26,8 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.IntPredicate;
+import java.util.function.Predicate;
 
 /**
  * A base implementation of various boilerplate methods for {@link IntSeries}.
@@ -59,7 +59,7 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public IntSeries select(ValuePredicate<Integer> p) {
+    public IntSeries select(Predicate<Integer> p) {
         return selectInt(p::test);
     }
 
@@ -320,7 +320,7 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public IntSeries index(ValuePredicate<Integer> predicate) {
+    public IntSeries index(Predicate<Integer> predicate) {
 
         // reimplementing instead of calling "indexInt", as it seems to be doing less (un)boxing and is about 13% faster
         // as a result

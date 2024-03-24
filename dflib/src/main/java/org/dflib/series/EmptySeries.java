@@ -5,9 +5,9 @@ import org.dflib.BooleanSeries;
 import org.dflib.Condition;
 import org.dflib.Series;
 import org.dflib.Sorter;
-import org.dflib.ValuePredicate;
 
 import java.util.Comparator;
+import java.util.function.Predicate;
 
 public class EmptySeries<T> extends ObjectSeries<T> {
 
@@ -42,7 +42,7 @@ public class EmptySeries<T> extends ObjectSeries<T> {
     }
 
     @Override
-    public Series<T> select(ValuePredicate<T> p) {
+    public Series<T> select(Predicate<T> p) {
         return this;
     }
 

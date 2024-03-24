@@ -5,13 +5,11 @@ import org.dflib.Condition;
 import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.IntSeries;
-import org.dflib.LongPredicate;
 import org.dflib.LongSeries;
 import org.dflib.Series;
 import org.dflib.SeriesGroupBy;
 import org.dflib.Sorter;
 import org.dflib.ValueMapper;
-import org.dflib.ValuePredicate;
 import org.dflib.ValueToRowMapper;
 import org.dflib.builder.IntAccum;
 import org.dflib.builder.LongAccum;
@@ -28,6 +26,8 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.LongPredicate;
+import java.util.function.Predicate;
 
 /**
  * A base implementation of various boilerplate methods for {@link LongSeries}.
@@ -59,7 +59,7 @@ public abstract class LongBaseSeries implements LongSeries {
     }
 
     @Override
-    public LongSeries select(ValuePredicate<Long> p) {
+    public LongSeries select(Predicate<Long> p) {
         return selectLong(p::test);
     }
 
@@ -290,7 +290,7 @@ public abstract class LongBaseSeries implements LongSeries {
     }
 
     @Override
-    public IntSeries index(ValuePredicate<Long> predicate) {
+    public IntSeries index(Predicate<Long> predicate) {
         // reimplementing instead of calling "indexInt", as it seems to be doing less (un)boxing and is about 13% faster
         // as a result
 

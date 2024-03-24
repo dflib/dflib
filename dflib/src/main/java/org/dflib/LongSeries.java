@@ -10,6 +10,8 @@ import org.dflib.set.Intersect;
 
 import java.util.Comparator;
 import java.util.Random;
+import java.util.function.LongPredicate;
+import java.util.function.Predicate;
 
 /**
  * A Series optimized to store and access primitive long values without <code>java.lang.Long</code> wrapper. Can also
@@ -104,7 +106,7 @@ public interface LongSeries extends Series<Long> {
     }
 
     @Override
-    LongSeries select(ValuePredicate<Long> p);
+    LongSeries select(Predicate<Long> p);
 
     @Override
     LongSeries select(Condition condition);
@@ -134,7 +136,7 @@ public interface LongSeries extends Series<Long> {
 
     /**
      * Returns an IntSeries that represents positions in the Series that match the predicate. The returned value can be
-     * used to "select" data from this Series or from DataFrame containing this Series. Same as {@link #index(ValuePredicate)},
+     * used to "select" data from this Series or from DataFrame containing this Series. Same as {@link #index(Predicate)},
      * only much faster.
      *
      * @param predicate match condition

@@ -28,6 +28,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import static java.util.Arrays.asList;
 
@@ -374,7 +375,7 @@ public interface Series<T> extends Iterable<T> {
     /**
      * @since 0.11
      */
-    Series<T> select(ValuePredicate<T> p);
+    Series<T> select(Predicate<T> p);
 
     /**
      * @since 0.11
@@ -390,7 +391,7 @@ public interface Series<T> extends Iterable<T> {
      * @param predicate match condition
      * @return an IntSeries that represents positions in the Series that match the predicate.
      */
-    IntSeries index(ValuePredicate<T> predicate);
+    IntSeries index(Predicate<T> predicate);
 
     /**
      * @since 0.11
@@ -490,8 +491,7 @@ public interface Series<T> extends Iterable<T> {
      * the predicate.
      * @since 0.6
      */
-    // TODO: functionally, this is a duplicate of "mapAsBool()"
-    default BooleanSeries locate(ValuePredicate<T> predicate) {
+    default BooleanSeries locate(Predicate<T> predicate) {
 
         // even for primitive Series it is slightly faster to implement "locate" directly than delegating
         // to "locateXyz", because the predicate signature requires primitive boxing

@@ -9,7 +9,6 @@ import org.dflib.Series;
 import org.dflib.SeriesGroupBy;
 import org.dflib.Sorter;
 import org.dflib.ValueMapper;
-import org.dflib.ValuePredicate;
 import org.dflib.ValueToRowMapper;
 import org.dflib.builder.IntAccum;
 import org.dflib.builder.ObjectAccum;
@@ -27,6 +26,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public abstract class ObjectSeries<T> implements Series<T> {
 
@@ -176,7 +176,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
     }
 
     @Override
-    public Series<T> select(ValuePredicate<T> p) {
+    public Series<T> select(Predicate<T> p) {
 
         int len = size();
 
@@ -255,7 +255,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
     }
 
     @Override
-    public IntSeries index(ValuePredicate<T> predicate) {
+    public IntSeries index(Predicate<T> predicate) {
 
         int len = size();
 

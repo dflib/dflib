@@ -10,6 +10,7 @@ import org.dflib.set.Intersect;
 
 import java.util.Comparator;
 import java.util.Random;
+import java.util.function.Predicate;
 
 /**
  * @since 0.6
@@ -122,7 +123,7 @@ public interface BooleanSeries extends Series<Boolean> {
     BooleanSeries select(BooleanSeries positions);
 
     @Override
-    BooleanSeries select(ValuePredicate<Boolean> p);
+    BooleanSeries select(Predicate<Boolean> p);
 
     @Override
     BooleanSeries select(Condition condition);
@@ -147,7 +148,7 @@ public interface BooleanSeries extends Series<Boolean> {
 
     /**
      * Returns an IntSeries that represents positions in the Series that contain true values. The returned value can be
-     * used to "select" data from this Series or from DataFrame containing this Series. Same as {@link #index(ValuePredicate)},
+     * used to "select" data from this Series or from DataFrame containing this Series. Same as {@link #index(Predicate)},
      * only usually much faster.
      *
      * @return an IntSeries that represents positions in the Series that contain "true" values
@@ -156,7 +157,7 @@ public interface BooleanSeries extends Series<Boolean> {
 
     /**
      * Returns an IntSeries that represents positions in the Series that contain false values. The returned value can be
-     * used to "select" data from this Series or from DataFrame containing this Series. Same as {@link #index(ValuePredicate)},
+     * used to "select" data from this Series or from DataFrame containing this Series. Same as {@link #index(Predicate)},
      * only usually much faster.
      *
      * @return an IntSeries that represents positions in the Series that contain "false" values

@@ -1,10 +1,9 @@
 package org.dflib;
 
 /**
- * @since 0.6
+ * @deprecated in favor of the JDK {@link java.util.function.LongPredicate}
  */
+@Deprecated(since = "1.0.0-M21", forRemoval = true)
 @FunctionalInterface
-public interface LongPredicate {
-
-    boolean test(long value);
+public interface LongPredicate extends java.util.function.LongPredicate {
 }

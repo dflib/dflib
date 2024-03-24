@@ -10,6 +10,8 @@ import org.dflib.set.Intersect;
 
 import java.util.Comparator;
 import java.util.Random;
+import java.util.function.DoublePredicate;
+import java.util.function.Predicate;
 
 /**
  * A Series optimized to store and access primitive double values without <code>java.lang.Double</code> wrapper. Can also
@@ -107,7 +109,7 @@ public interface DoubleSeries extends Series<Double> {
     DoubleSeries select(Condition condition);
 
     @Override
-    DoubleSeries select(ValuePredicate<Double> p);
+    DoubleSeries select(Predicate<Double> p);
 
     @Override
     DoubleSeries select(BooleanSeries positions);
@@ -134,7 +136,7 @@ public interface DoubleSeries extends Series<Double> {
 
     /**
      * Returns an IntSeries that represents positions in the Series that match the predicate. The returned value can be
-     * used to "select" data from this Series or from DataFrame containing this Series. Same as {@link #index(ValuePredicate)},
+     * used to "select" data from this Series or from DataFrame containing this Series. Same as {@link #index(Predicate)},
      * only usually much faster.
      *
      * @param predicate match condition

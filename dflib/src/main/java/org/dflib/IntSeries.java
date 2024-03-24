@@ -11,6 +11,8 @@ import org.dflib.sort.IntComparator;
 
 import java.util.Comparator;
 import java.util.Random;
+import java.util.function.IntPredicate;
+import java.util.function.Predicate;
 
 /**
  * A Series optimized to store and access primitive int values without <code>java.lang.Integer</code> wrapper. Can also
@@ -105,7 +107,7 @@ public interface IntSeries extends Series<Integer> {
     }
 
     @Override
-    IntSeries select(ValuePredicate<Integer> p);
+    IntSeries select(Predicate<Integer> p);
 
     @Override
     IntSeries select(Condition condition);

@@ -1,10 +1,9 @@
 package org.dflib;
 
 /**
- * @since 0.6
+ * @deprecated in favor of the JDK {@link java.util.function.DoublePredicate}
  */
+@Deprecated(since = "1.0.0-M21", forRemoval = true)
 @FunctionalInterface
-public interface DoublePredicate {
-
-    boolean test(double value);
+public interface DoublePredicate extends java.util.function.DoublePredicate {
 }
