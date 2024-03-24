@@ -6,11 +6,30 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 /**
- * Contains static helper methods to create some useful predicates.
+ * Contains static methods to create a few useful predicates.
  *
  * @since 1.0.0-M21
  */
 public final class Predicates {
+
+    public static Predicate<Object> isTrue() {
+        return o -> {
+
+            if (o instanceof Boolean) {
+                return ((Boolean) o).booleanValue();
+            }
+
+            String s = o != null ? o.toString() : null;
+
+            // null-safe... "parseBoolean" returns false for null
+            return Boolean.parseBoolean(s);
+        };
+    }
+
+    public static BoolValueMapper<String> isTrueString() {
+        // null-safe... "parseBoolean" returns false for null
+        return s -> Boolean.parseBoolean(s);
+    }
 
     public static <T> Predicate<T> isIn(T... values) {
 
@@ -29,7 +48,7 @@ public final class Predicates {
         return set::contains;
     }
 
-    static <T> Predicate<T> isIn(Iterable<? extends T> values) {
+    public static <T> Predicate<T> isIn(Iterable<? extends T> values) {
 
         // index for faster lookups
         Set<T> set;
