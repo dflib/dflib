@@ -8,6 +8,8 @@ import java.util.Set;
 //  null-aware Condition. We already deprecated "DataFrame.selectRows(_, ValuePredicate)", and while theoretically
 //  it is faster than the Condition version, benchmarks are inconclusive (ValuePredicate is a often slower, but the
 //  margins of error are very large).
+
+// TODO: this is a complete analog of java.util.function.Predicate and BoolValueMapper ... Consolidate these APIs?
 @FunctionalInterface
 public interface ValuePredicate<V> {
 

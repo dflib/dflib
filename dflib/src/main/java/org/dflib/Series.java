@@ -178,6 +178,7 @@ public interface Series<T> extends Iterable<T> {
      *
      * @since 0.16
      */
+    // TODO: functionally, this is a duplicate of "locate()"
     default BooleanSeries mapAsBool(BoolValueMapper<? super T> converter) {
         int len = size();
 
@@ -489,6 +490,7 @@ public interface Series<T> extends Iterable<T> {
      * the predicate.
      * @since 0.6
      */
+    // TODO: functionally, this is a duplicate of "mapAsBool()"
     default BooleanSeries locate(ValuePredicate<T> predicate) {
 
         // even for primitive Series it is slightly faster to implement "locate" directly than delegating
