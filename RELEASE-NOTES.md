@@ -2,6 +2,7 @@
 
 * #265 RowSet: add missing "sort" methods
 * #266 GroupBy.cols(..)
+* #267 GroupBy "head()", "tail()" to support negative values
 * #268 Remove APIs deprecated since 1.0.0-M19
 * #269 StrExp.substr(..)
 * #270 Replace custom predicates with the ones from JDK

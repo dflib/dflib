@@ -57,6 +57,17 @@ public class GroupBy_SelectTest {
                 .expectRow(0, 1, "x")
                 .expectRow(1, 2, "y")
                 .expectRow(2, 0, "a");
+
+        DataFrame df4 = df1.group("a")
+                .head(-1)
+                .select();
+
+        new DataFrameAsserts(df4, "a", "b")
+                .expectHeight(4)
+                .expectRow(0, 1, "y")
+                .expectRow(1, 1, "x")
+                .expectRow(2, 2, "y")
+                .expectRow(3, 0, "a");
     }
 
     @Test
@@ -111,6 +122,17 @@ public class GroupBy_SelectTest {
                 .expectRow(0, 1, "z")
                 .expectRow(1, 2, "y")
                 .expectRow(2, 0, "a");
+
+        DataFrame df4 = df1.group("a")
+                .tail(-1)
+                .select();
+
+        new DataFrameAsserts(df4, "a", "b")
+                .expectHeight(4)
+                .expectRow(0, 1, "x")
+                .expectRow(1, 1, "y")
+                .expectRow(2, 2, "y")
+                .expectRow(3, 0, "a");
     }
 
     @Test

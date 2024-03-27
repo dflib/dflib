@@ -270,11 +270,15 @@ public class GroupBy {
         return shiftedAll.select(groupsIndexAll.sortIndexInt());
     }
 
+    /**
+     * Returns a GroupBy object that will only use the first <code>len</code> elements in each group. If a group is
+     * shorter than the requested length, then the entire group is used. If <code>len</code> is negative, instead of
+     * using the leading elements, they are skipped, and the rest of the group is used.
+     */
     public GroupBy head(int len) {
 
-        if (len < 0) {
-            // TODO: treat negative len as counting from the other end
-            throw new IllegalArgumentException("Length must be non-negative: " + len);
+        if (len == 0) {
+            return this;
         }
 
         Map<Object, IntSeries> trimmed = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
@@ -286,11 +290,15 @@ public class GroupBy {
         return new GroupBy(source, trimmed, sorter);
     }
 
+    /**
+     * Returns a GroupBy object that will only use the last <code>len</code> elements in each group. If a group is
+     * shorter than the requested length, then the entire group is used. If <code>len</code> is negative, instead of
+     * using the trailing elements, they are skipped, and the rest of the group is used.
+     */
     public GroupBy tail(int len) {
 
-        if (len < 0) {
-            // TODO: treat negative len as counting from the other end
-            throw new IllegalArgumentException("Length must be non-negative: " + len);
+        if (len == 0) {
+            return this;
         }
 
         Map<Object, IntSeries> trimmed = new LinkedHashMap<>((int) (groupsIndex.size() / 0.75));
