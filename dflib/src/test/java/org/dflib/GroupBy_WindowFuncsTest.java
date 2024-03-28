@@ -3,6 +3,7 @@ package org.dflib;
 import org.dflib.unit.IntSeriesAsserts;
 import org.junit.jupiter.api.Test;
 
+@Deprecated
 public class GroupBy_WindowFuncsTest {
 
     @Test

@@ -5,8 +5,8 @@ import org.dflib.IntSeries;
 import org.dflib.Series;
 import org.dflib.concat.SeriesConcat;
 import org.dflib.series.IntSequenceSeries;
-import org.dflib.sort.IntComparator;
 import org.dflib.sort.DataFrameSorter;
+import org.dflib.sort.IntComparator;
 
 import java.util.Collection;
 
@@ -47,7 +47,31 @@ public class RowNumberer {
         return (IntSeries) RowNumberer.sequence(dataFrame.height()).select(rowPositions);
     }
 
+    /**
+     * @deprecated in favor of {@link #rowNumber(DataFrame, IntSeries[])}
+     */
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
     public static IntSeries rowNumber(DataFrame dataFrame, Collection<IntSeries> partitionsIndex) {
+
+        int[] rowNumbers = new int[dataFrame.height()];
+
+        int offset = 0;
+        for (IntSeries s : partitionsIndex) {
+            int len = s.size();
+            RowNumberer.fillSequence(rowNumbers, offset, len);
+            offset += len;
+        }
+
+        IntSeries groupsIndexGlued = SeriesConcat.intConcat(partitionsIndex);
+
+        // since we control select indices, and don't expect negative values, we can safely cast to IntSeries
+        return (IntSeries) Series.ofInt(rowNumbers).select(groupsIndexGlued.sortIndexInt());
+    }
+
+    /**
+     * @since 1.0.0-M21
+     */
+    public static IntSeries rowNumber(DataFrame dataFrame, IntSeries[] partitionsIndex) {
 
         int[] rowNumbers = new int[dataFrame.height()];
 

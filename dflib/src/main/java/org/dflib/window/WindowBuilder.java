@@ -18,6 +18,7 @@ import org.dflib.sort.DataFrameSorter;
 import org.dflib.sort.IntComparator;
 
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * A mutable builder of a window function. Returned by {@link DataFrame#over()} method.
@@ -328,10 +329,19 @@ public class WindowBuilder {
     }
 
     private IntSeries rowNumberPartitioned() {
-        GroupBy gb = dataFrame.group(partitioner);
-        return sorter != null
-                ? gb.sort(sorter).rowNumber()
-                : gb.rowNumber();
+        GroupBy gb = sorter != null
+                ? dataFrame.group(partitioner).sort(sorter)
+                : dataFrame.group(partitioner);
+
+        Set<Object> groupKeys = gb.getGroupKeys();
+        int len = groupKeys.size();
+        IntSeries[] groupIndices = new IntSeries[len];
+        int i = 0;
+        for (Object key : groupKeys) {
+            groupIndices[i++] = gb.getGroupIndex(key);
+        }
+
+        return RowNumberer.rowNumber(dataFrame, groupIndices);
     }
 
     private IntSeries rowNumberUnPartitioned() {
