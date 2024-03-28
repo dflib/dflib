@@ -118,6 +118,10 @@ public class Index implements Iterable<String> {
         return new Index(unique.toArray(new String[0]));
     }
 
+    /**
+     * @deprecated not particularly useful, as this is a functional equivalent of {@link #of(String...)}
+     */
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
     public Index rename(String... newLabels) {
 
         if (newLabels.length != size()) {

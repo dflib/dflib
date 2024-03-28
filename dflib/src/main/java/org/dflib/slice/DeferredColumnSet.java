@@ -87,7 +87,7 @@ public class DeferredColumnSet implements ColumnSet {
     public DataFrame as(String... newColumnNames) {
         return new ColumnDataFrame(
                 null,
-                source.getColumnsIndex().rename(newColumnNames),
+                Index.of(newColumnNames),
                 sourceColumns);
     }
 
@@ -95,7 +95,7 @@ public class DeferredColumnSet implements ColumnSet {
     public DataFrame selectAs(String... newColumnNames) {
         return new ColumnDataFrame(
                 null,
-                source.getColumnsIndex().rename(newColumnNames),
+                Index.of(newColumnNames),
                 sourceColumns);
     }
 

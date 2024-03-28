@@ -4,6 +4,7 @@ import org.dflib.ColumnDataFrame;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Hasher;
+import org.dflib.Index;
 import org.dflib.IntSeries;
 import org.dflib.JoinType;
 import org.dflib.Series;
@@ -150,7 +151,7 @@ public class Join {
         IntSeries[] selectors = rowSelectors();
 
         return new ColumnDataFrame(null,
-                index.getIndex().rename(newColumnNames),
+                Index.of(newColumnNames),
                 merge(selectors[0], selectors[1], index.getPositions()));
     }
 
