@@ -88,7 +88,7 @@ public class GroupBy {
      * Specifies the columns of the aggregation or select result.
      */
     public GroupBy cols(Predicate<String> colsPredicate) {
-        return new GroupBy(source, groupsIndex, sorter, true, i -> i.selectLabels(colsPredicate));
+        return new GroupBy(source, groupsIndex, sorter, true, i -> i.select(colsPredicate));
     }
 
     /**
@@ -102,7 +102,7 @@ public class GroupBy {
      * Specifies the columns of the aggregation or select result.
      */
     public GroupBy cols(int... cols) {
-        return new GroupBy(source, groupsIndex, sorter, true, i -> i.selectPositions(cols));
+        return new GroupBy(source, groupsIndex, sorter, true, i -> i.select(cols));
     }
 
     /**

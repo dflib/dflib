@@ -143,9 +143,9 @@ public class Index implements Iterable<String> {
     }
 
     /**
-     * @since 0.7
+     * @since 1.0.0-M21
      */
-    public Index selectPositions(IntSeries positions) {
+    public Index select(IntSeries positions) {
         int len = positions.size();
         String[] selectedLabels = new String[len];
         Set<String> uniqueLabels = new HashSet<>((int) (len / 0.75));
@@ -164,7 +164,19 @@ public class Index implements Iterable<String> {
         return Index.of(selectedLabels);
     }
 
-    public Index selectPositions(int... positions) {
+    /**
+     * @since 0.7
+     * @deprecated in favor of {@link #select(IntSeries)}
+     */
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
+    public Index selectPositions(IntSeries positions) {
+        return select(positions);
+    }
+
+    /**
+     * @since 1.0.0-M21
+     */
+    public Index select(int... positions) {
         int len = positions.length;
         String[] selectedLabels = new String[len];
         Set<String> uniqueLabels = new HashSet<>((int) (len / 0.75));
@@ -184,6 +196,14 @@ public class Index implements Iterable<String> {
     }
 
     /**
+     * @deprecated in favor of {@link #select(int...)}
+     */
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
+    public Index selectPositions(int... positions) {
+        return select(positions);
+    }
+
+    /**
      * @param fromInclusive position of the first label from this Index to include in the new Index.
      * @param toExclusive   position of the label from this Index following the last included position.
      * @return a new index with labels from this index in the range specified
@@ -200,6 +220,10 @@ public class Index implements Iterable<String> {
         return Index.of(newLabels);
     }
 
+    /**
+     * @deprecated not particularly useful, as this is a functional equivalent of {@link #of(String...)}
+     */
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
     public Index selectLabels(String... labels) {
 
         // check whether the labels are valid. "position" call on an invalid label would throw
@@ -214,18 +238,27 @@ public class Index implements Iterable<String> {
     /**
      * @since 0.7
      */
-    public Index selectLabels(Predicate<String> includeCondition) {
+    public Index select(Predicate<String> condition) {
         // must preserve label order
         Set<String> selected = new LinkedHashSet<>();
 
         int len = labels.length;
         for (int i = 0; i < len; i++) {
-            if (includeCondition.test(labels[i])) {
+            if (condition.test(labels[i])) {
                 selected.add(labels[i]);
             }
         }
 
         return selected.size() == size() ? this : Index.of(selected.toArray(new String[0]));
+    }
+
+    /**
+     * @since 0.7
+     * @deprecated in favor of {@link #select(Predicate)}
+     */
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
+    public Index selectLabels(Predicate<String> includeCondition) {
+        return select(includeCondition);
     }
 
     public Index dropLabels(String... labels) {
@@ -458,14 +491,14 @@ public class Index implements Iterable<String> {
      * @since 0.7
      */
     public Index sample(int size) {
-        return selectPositions(Sampler.sampleIndex(size, size()));
+        return select(Sampler.sampleIndex(size, size()));
     }
 
     /**
      * @since 0.7
      */
     public Index sample(int size, Random random) {
-        return selectPositions(Sampler.sampleIndex(size, size(), random));
+        return select(Sampler.sampleIndex(size, size(), random));
     }
 
     /**
