@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 public class IntSeries_AddTest {
 
     @Test
-    public void add() {
-        Series<?> s = Series.ofInt(3, 28).add("abc");
+    public void expand() {
+        Series<?> s = Series.ofInt(3, 28).expand("abc");
         new SeriesAsserts(s).expectData(3, 28, "abc");
     }
 

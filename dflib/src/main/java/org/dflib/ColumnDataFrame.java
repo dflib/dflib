@@ -165,7 +165,7 @@ public class ColumnDataFrame implements DataFrame {
         Series<?>[] newColumns = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            newColumns[i] = dataColumns[i].add(row.get(columnsIndex.get(i)));
+            newColumns[i] = dataColumns[i].expand(row.get(columnsIndex.get(i)));
         }
 
         return DataFrame.byColumn(getColumnsIndex()).of(newColumns);
