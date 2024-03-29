@@ -161,7 +161,7 @@ public class EmptyRowSet implements RowSet {
 
     @Override
     public DataFrame selectAs(UnaryOperator<String> renamer) {
-        return DataFrame.empty(source.getColumnsIndex().rename(renamer));
+        return DataFrame.empty(source.getColumnsIndex().replace(renamer));
     }
 
     @Override

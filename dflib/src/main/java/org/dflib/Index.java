@@ -21,7 +21,7 @@ import java.util.function.UnaryOperator;
 
 /**
  * An "index" of the DataFrame that provides access to column names and positions. Index object is essentially a series
- * of unique Strings with indexed search.
+ * of unique Strings with indexed position search by value.
  */
 public class Index implements Iterable<String> {
 
@@ -84,20 +84,29 @@ public class Index implements Iterable<String> {
      * Renames index labels by applying the provided function to each label. Useful for name conversions like
      * lower-casing, etc.
      *
-     * @param renamer a function that is passed each label in turn
+     * @param mapper a function that is passed each value in turn, altering it in some way
      * @return a new Index with renamed labels
      * @since 0.6
      */
-    public Index rename(UnaryOperator<String> renamer) {
+    public Index replace(UnaryOperator<String> mapper) {
 
         int len = size();
 
-        String[] newLabels = new String[len];
+        String[] newVals = new String[len];
         for (int i = 0; i < len; i++) {
-            newLabels[i] = renamer.apply(values[i]);
+            newVals[i] = mapper.apply(values[i]);
         }
 
-        return new Index(newLabels);
+        return new Index(newVals);
+    }
+
+    /**
+     * @since 0.6
+     * @deprecated in favor of {@link #replace(UnaryOperator)}
+     */
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
+    public Index rename(UnaryOperator<String> renamer) {
+        return replace(renamer);
     }
 
     /**

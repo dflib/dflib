@@ -103,7 +103,7 @@ public class DeferredColumnSet implements ColumnSet {
     public DataFrame as(UnaryOperator<String> renamer) {
         return new ColumnDataFrame(
                 null,
-                source.getColumnsIndex().rename(renamer),
+                source.getColumnsIndex().replace(renamer),
                 sourceColumns);
     }
 
@@ -111,7 +111,7 @@ public class DeferredColumnSet implements ColumnSet {
     public DataFrame selectAs(UnaryOperator<String> renamer) {
         return new ColumnDataFrame(
                 null,
-                source.getColumnsIndex().rename(renamer),
+                source.getColumnsIndex().replace(renamer),
                 sourceColumns);
     }
 

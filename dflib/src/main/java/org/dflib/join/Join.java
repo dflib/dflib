@@ -142,7 +142,7 @@ public class Join {
         IntSeries[] selectors = rowSelectors();
 
         return new ColumnDataFrame(null,
-                index.getIndex().rename(renamer),
+                index.getIndex().replace(renamer),
                 merge(selectors[0], selectors[1], index.getPositions()));
     }
 

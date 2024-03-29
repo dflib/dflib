@@ -202,7 +202,7 @@ public abstract class BaseRowSet implements RowSet {
 
     @Override
     public DataFrame selectAs(UnaryOperator<String> renamer) {
-        return new ColumnDataFrame(null, sourceColumnsIndex.rename(renamer), doSelect());
+        return new ColumnDataFrame(null, sourceColumnsIndex.replace(renamer), doSelect());
     }
 
     @Override

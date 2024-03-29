@@ -157,7 +157,7 @@ public class FixedColumnSet implements ColumnSet {
 
     @Override
     public DataFrame selectAs(UnaryOperator<String> renamer) {
-        return new ColumnDataFrame(null, Index.of(csIndex).rename(renamer), doSelect());
+        return new ColumnDataFrame(null, Index.of(csIndex).replace(renamer), doSelect());
 
     }
 
