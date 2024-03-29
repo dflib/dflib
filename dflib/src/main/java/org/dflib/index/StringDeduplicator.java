@@ -8,46 +8,46 @@ import java.util.Set;
 /**
  * @since 1.0.0-M19
  */
-public abstract class LabelDeduplicator {
+public abstract class StringDeduplicator {
 
-    public static LabelDeduplicator of(int capacity) {
+    public static StringDeduplicator of(int capacity) {
         return new DefaultDeduplicator(capacity);
     }
 
-    public static LabelDeduplicator of(Index index, int capacity) {
+    public static StringDeduplicator of(Index index, int capacity) {
         return new RefIndexDeduplicator(index, capacity);
     }
 
     public abstract String nonConflictingName(String baseName);
 
-    public String[] nonConflictingLabels(String[] labels) {
-        int len = labels.length;
+    public String[] nonConflicting(String[] values) {
+        int len = values.length;
 
         int i = 0;
         String firstConflict = null;
         for (; i < len; i++) {
-            String l = nonConflictingName(labels[i]);
-            if (l != labels[i]) {
+            String l = nonConflictingName(values[i]);
+            if (l != values[i]) {
                 firstConflict = l;
                 break;
             }
         }
 
         if (firstConflict == null) {
-            return labels;
+            return values;
         }
 
         String[] nonConflicting = new String[len];
-        System.arraycopy(labels, 0, nonConflicting, 0, i);
+        System.arraycopy(values, 0, nonConflicting, 0, i);
         nonConflicting[i] = firstConflict;
         for (int j = i + 1; j < len; j++) {
-            nonConflicting[j] = nonConflictingName(labels[j]);
+            nonConflicting[j] = nonConflictingName(values[j]);
         }
 
-        return nonConflicting != null ? nonConflicting : labels;
+        return nonConflicting != null ? nonConflicting : values;
     }
 
-    public static class DefaultDeduplicator extends LabelDeduplicator {
+    public static class DefaultDeduplicator extends StringDeduplicator {
 
         private final Set<String> seen;
 
@@ -64,7 +64,7 @@ public abstract class LabelDeduplicator {
         }
     }
 
-    public static class RefIndexDeduplicator extends LabelDeduplicator {
+    public static class RefIndexDeduplicator extends StringDeduplicator {
 
         private final Index refIndex;
         private final Set<String> seen;

@@ -20,7 +20,7 @@ import org.dflib.RowPredicate;
 import org.dflib.RowToValueMapper;
 import org.dflib.Series;
 import org.dflib.agg.DataFrameAggregator;
-import org.dflib.index.LabelDeduplicator;
+import org.dflib.index.StringDeduplicator;
 import org.dflib.row.MultiArrayRowBuilder;
 import org.dflib.series.RowMappedSeries;
 import org.dflib.series.SingleValueSeries;
@@ -54,7 +54,7 @@ public class FixedColumnSet implements ColumnSet {
         Index index = source.getColumnsIndex();
         int csLen = csIndex.length;
 
-        LabelDeduplicator deduplicator = LabelDeduplicator.of(index, csLen);
+        StringDeduplicator deduplicator = StringDeduplicator.of(index, csLen);
         String[] csIndexAdd = new String[csLen];
         for (int i = 0; i < csLen; i++) {
             csIndexAdd[i] = deduplicator.nonConflictingName(csIndex[i]);

@@ -1,6 +1,6 @@
 package org.dflib;
 
-import org.dflib.index.LabelDeduplicator;
+import org.dflib.index.StringDeduplicator;
 import org.dflib.range.Range;
 import org.dflib.sample.Sampler;
 
@@ -20,10 +20,10 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 /**
- * DataFrame header with access to column names and positions. While not formally a {@link Series}, the Index object is
- * a very similar data structure and has a similar API. It is an ordered sequence of Strings, but the positions of
- * its values are indexed (so {@link #contains(String)} and {@link #position(String)} are O(1) operations), and values
- * are generally unique.
+ * A Series-like object with access to column names and positions. Index is an ordered sequence of Strings, with
+ * position resolution by value implemented as amortized O(1) operations (i.e. {@link #contains(String)} and
+ * {@link #position(String)}). Values are generally unique. Normally, Index is used as DataFrame header, with values
+ * corresponding to the column names.
  */
 public class Index implements Iterable<String> {
 
@@ -44,37 +44,37 @@ public class Index implements Iterable<String> {
     public static <E extends Enum<E>> Index of(Class<E> columns) {
 
         E[] enumValues = columns.getEnumConstants();
-        String[] labels = new String[enumValues.length];
+        String[] values = new String[enumValues.length];
         for (int i = 0; i < enumValues.length; i++) {
-            labels[i] = enumValues[i].name();
+            values[i] = enumValues[i].name();
         }
 
-        return of(labels);
+        return of(values);
     }
 
     /**
      * @since 1.0.0-M19
      */
-    public static Index of(String... labels) {
-        return new Index(labels);
+    public static Index of(String... values) {
+        return new Index(values);
     }
 
     /**
      * @since 1.0.0-M19
      */
-    public static Index of(Series<String> labels) {
-        return new Index(labels.toArray(new String[0]));
+    public static Index of(Series<String> values) {
+        return new Index(values.toArray(new String[0]));
     }
 
     /**
-     * Creates an index from an array of labels. Duplicate labels will be renamed by appending one or more underscore
+     * Creates an index from an array of values. Duplicate values will be renamed by appending one or more underscore
      * characters to ensure uniqueness.
      *
      * @since 1.0.0-M19
      */
-    public static Index ofDeduplicated(String... labels) {
-        String[] selectedLabels = LabelDeduplicator.of(labels.length).nonConflictingLabels(labels);
-        return new Index(selectedLabels);
+    public static Index ofDeduplicated(String... values) {
+        String[] nonConflicted = StringDeduplicator.of(values.length).nonConflicting(labels);
+        return new Index(nonConflicted);
     }
 
     @Override
@@ -83,11 +83,11 @@ public class Index implements Iterable<String> {
     }
 
     /**
-     * Renames index labels by applying the provided function to each label. Useful for name conversions like
+     * Replaces Index values by applying the provided function to each value. Useful for name conversions like
      * lower-casing, etc.
      *
      * @param mapper a function that is passed each value in turn, altering it in some way
-     * @return a new Index with renamed labels
+     * @return a new Index with renamed values
      * @since 0.6
      */
     public Index replace(UnaryOperator<String> mapper) {
@@ -197,21 +197,21 @@ public class Index implements Iterable<String> {
      */
     public Index select(IntSeries positions) {
         int len = positions.size();
-        String[] selectedLabels = new String[len];
-        Set<String> uniqueLabels = new HashSet<>((int) (len / 0.75));
+        String[] selected = new String[len];
+        Set<String> unique = new HashSet<>((int) (len / 0.75));
 
         for (int i = 0; i < len; i++) {
 
-            String label = values[positions.getInt(i)];
+            String val = values[positions.getInt(i)];
 
-            while (!uniqueLabels.add(label)) {
-                label = label + "_";
+            while (!unique.add(val)) {
+                val = val + "_";
             }
 
-            selectedLabels[i] = label;
+            selected[i] = val;
         }
 
-        return Index.of(selectedLabels);
+        return Index.of(selected);
     }
 
     /**
@@ -228,21 +228,21 @@ public class Index implements Iterable<String> {
      */
     public Index select(int... positions) {
         int len = positions.length;
-        String[] selectedLabels = new String[len];
-        Set<String> uniqueLabels = new HashSet<>((int) (len / 0.75));
+        String[] selected = new String[len];
+        Set<String> unqiue = new HashSet<>((int) (len / 0.75));
 
         for (int i = 0; i < len; i++) {
 
-            String label = values[positions[i]];
+            String val = values[positions[i]];
 
-            while (!uniqueLabels.add(label)) {
-                label = label + "_";
+            while (!unqiue.add(val)) {
+                val = val + "_";
             }
 
-            selectedLabels[i] = label;
+            selected[i] = val;
         }
 
-        return Index.of(selectedLabels);
+        return Index.of(selected);
     }
 
     /**
@@ -254,9 +254,9 @@ public class Index implements Iterable<String> {
     }
 
     /**
-     * @param fromInclusive position of the first label from this Index to include in the new Index.
-     * @param toExclusive   position of the label from this Index following the last included position.
-     * @return a new index with labels from this index in the range specified
+     * @param fromInclusive position of the first value from this Index to include in the new Index.
+     * @param toExclusive   position of the value from this Index following the last included position.
+     * @return a new index with values from this Index in the range specified
      * @since 1.0.0-M19
      */
     public Index selectRange(int fromInclusive, int toExclusive) {
@@ -264,10 +264,10 @@ public class Index implements Iterable<String> {
         int len = toExclusive - fromInclusive;
         Range.checkRange(fromInclusive, len, values.length);
 
-        String[] newLabels = new String[len];
-        System.arraycopy(values, fromInclusive, newLabels, 0, len);
+        String[] newValues = new String[len];
+        System.arraycopy(values, fromInclusive, newValues, 0, len);
 
-        return Index.of(newLabels);
+        return Index.of(newValues);
     }
 
     /**
@@ -320,9 +320,9 @@ public class Index implements Iterable<String> {
         }
 
         List<String> toDrop = new ArrayList<>(values.length);
-        for (String l : values) {
-            if (contains(l)) {
-                toDrop.add(l);
+        for (String v : values) {
+            if (contains(v)) {
+                toDrop.add(v);
             }
         }
 
@@ -383,7 +383,7 @@ public class Index implements Iterable<String> {
         return toArray();
     }
 
-    // not-public direct accessor to mutable labels ... Saves on data copy, but the callers should be
+    // not-public direct accessor to mutable values ... Saves on data copy, but the callers should be
     // careful not to alter the values
     String[] toArrayNoCopy() {
         return values;
@@ -400,7 +400,7 @@ public class Index implements Iterable<String> {
     }
 
     /**
-     * Returns a column label at the given position.
+     * Returns a String value at the given position.
      *
      * @since 1.0.0-M21
      */
@@ -420,27 +420,27 @@ public class Index implements Iterable<String> {
         return values.length;
     }
 
-    public int position(String label) {
+    public int position(String value) {
         if (valueIndex == null) {
             this.valueIndex = computeIndex();
         }
 
-        Integer pos = valueIndex.get(label);
+        Integer pos = valueIndex.get(value);
         if (pos == null) {
-            throw new IllegalArgumentException("Label '" + label + "' is not present in the Index");
+            throw new IllegalArgumentException("Value '" + value + "' is not present in the Index");
         }
 
         return pos;
     }
 
     /**
-     * Returns Index positions corresponding to the array of labels.
+     * Returns Index positions corresponding to the array of values
      *
      * @since 1.0.0-M19
      */
-    public int[] positions(String... labels) {
+    public int[] positions(String... value) {
 
-        int len = labels.length;
+        int len = value.length;
         if (len == 0) {
             return new int[0];
         }
@@ -452,9 +452,9 @@ public class Index implements Iterable<String> {
         int[] positions = new int[len];
 
         for (int i = 0; i < len; i++) {
-            Integer pos = valueIndex.get(labels[i]);
+            Integer pos = valueIndex.get(value[i]);
             if (pos == null) {
-                throw new IllegalArgumentException("Label '" + labels[i] + "' is not present in the Index");
+                throw new IllegalArgumentException("Value '" + value[i] + "' is not present in the Index");
             }
 
             positions[i] = pos;
@@ -464,19 +464,19 @@ public class Index implements Iterable<String> {
     }
 
     /**
-     * Returns Index positions for all index labels except the labels specified as the argument
+     * Returns Index positions for all index values except the ones specified as the argument
      *
      * @since 1.0.0-M19
      */
-    public int[] positionsExcept(String... exceptLabels) {
+    public int[] positionsExcept(String... exceptVals) {
 
-        int len = exceptLabels.length;
+        int len = exceptVals.length;
         if (len == 0) {
             return positionsArray(values.length);
         }
 
         Set<String> excludes = new HashSet<>();
-        for (String e : exceptLabels) {
+        for (String e : exceptVals) {
             excludes.add(e);
         }
 
@@ -485,7 +485,7 @@ public class Index implements Iterable<String> {
 
 
     /**
-     * Returns Index positions for all index labels except the positions specified as the argument
+     * Returns Index positions for all Index values except the positions specified as the argument
      *
      * @since 1.0.0-M19
      */
@@ -516,19 +516,19 @@ public class Index implements Iterable<String> {
     /**
      * @since 1.0.0-M19
      */
-    public int[] positions(Predicate<String> labelCondition) {
+    public int[] positions(Predicate<String> condition) {
         if (valueIndex == null) {
             this.valueIndex = computeIndex();
         }
 
         List<Integer> positions = new ArrayList<>();
         for (Map.Entry<String, Integer> e : valueIndex.entrySet()) {
-            if (labelCondition.test(e.getKey())) {
+            if (condition.test(e.getKey())) {
                 positions.add(e.getValue());
             }
         }
 
-        // presumably "labelPositions" is in order of labels, so no need to sort "positions"
+        // presumably "positions" is in order of values, so no need to sort "positions"
         int len = positions.size();
         int[] intPositions = new int[len];
         for (int i = 0; i < len; i++) {
@@ -587,7 +587,7 @@ public class Index implements Iterable<String> {
     }
 
     /**
-     * @return a new Series object with Index labels as elements.
+     * @return a Series object with Index values as elements.
      * @since 0.7
      */
     public Series<String> toSeries() {
@@ -606,7 +606,7 @@ public class Index implements Iterable<String> {
         for (int i = 0; i < values.length; i++) {
             Integer previous = index.put(values[i], i);
             if (previous != null) {
-                throw new IllegalStateException("Duplicate label '"
+                throw new IllegalStateException("Duplicate value '"
                         + values[i]
                         + "'. Found at " + previous + " and " + i);
             }
