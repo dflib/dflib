@@ -136,9 +136,11 @@ public class Index implements Iterable<String> {
         return rename(map);
     }
 
-
-    public Index addLabels(String... extraLabels) {
-        int rlen = extraLabels.length;
+    /**
+     * @since 1.0.0-M21
+     */
+    public Index add(String... values) {
+        int rlen = values.length;
         int llen = labels.length;
 
         String[] zipped = new String[llen + rlen];
@@ -147,7 +149,7 @@ public class Index implements Iterable<String> {
         // resolve dupes on the right
         for (int i = 0; i < rlen; i++) {
 
-            String name = extraLabels[i];
+            String name = values[i];
             while (hasLabel(name)) {
                 name = name + "_";
             }
@@ -157,6 +159,14 @@ public class Index implements Iterable<String> {
         }
 
         return Index.of(zipped);
+    }
+
+    /**
+     * @deprecated in favor of {@link #add(String...)}
+     */
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
+    public Index addLabels(String... extraLabels) {
+        return add(extraLabels);
     }
 
     /**
