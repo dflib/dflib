@@ -68,7 +68,7 @@ public class Index implements Iterable<String> {
 
     /**
      * Creates an index from an array of labels. Duplicate labels will be renamed by appending one or more underscore
-     * symbols.
+     * characters to ensure uniqueness.
      *
      * @since 1.0.0-M19
      */
