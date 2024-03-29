@@ -4,6 +4,9 @@ import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -62,6 +65,17 @@ public class BooleanSeries_ReplaceTest {
         Series<Boolean> s2 = Series.ofBool(true, false, true, true).replace(cond, true);
         assertTrue(s2 instanceof BooleanSeries);
         new SeriesAsserts(s2).expectData(true, true, true, true);
+    }
+
+    @Test
+    public void replaceMap() {
+
+        Series<Boolean> s1 = Series.ofBool(true, false, true, true).replace(Map.of(true, false, false, true));
+        assertTrue(s1 instanceof BooleanSeries);
+        new SeriesAsserts(s1).expectData(false, true, false, false);
+
+        Series<Boolean> s2 = Series.ofBool(true, false, true, true).replace(Collections.singletonMap(true, null));
+        new SeriesAsserts(s2).expectData(null, false, null, null);
     }
 
     @Test

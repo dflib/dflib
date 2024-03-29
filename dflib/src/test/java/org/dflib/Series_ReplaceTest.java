@@ -3,6 +3,9 @@ package org.dflib;
 import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Series_ReplaceTest {
 
     @Test
@@ -37,6 +40,17 @@ public class Series_ReplaceTest {
 
         Series<String> s1 = Series.of("a", "b", "n", "c").replace(cond, "X");
         new SeriesAsserts(s1).expectData("X", "X", "n", "c");
+    }
+
+    @Test
+    public void replaceMap() {
+
+        Map<String, String> replacement = new HashMap<>();
+        replacement.put("a", "A");
+        replacement.put("n", null);
+
+        Series<String> s1 = Series.of("a", "b", "n", "c").replace(replacement);
+        new SeriesAsserts(s1).expectData("A", "b", null, "c");
     }
 
     @Test

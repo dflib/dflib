@@ -23,6 +23,7 @@ import org.dflib.sort.SeriesSorter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
@@ -294,6 +295,19 @@ public abstract class ObjectSeries<T> implements Series<T> {
         }
 
         return values.toSeries();
+    }
+
+    @Override
+    public Series<T> replace(Map<T, T> oldToNewValues) {
+        int len = size();
+        T[] replaced = (T[]) new Object[len];
+
+        for (int i = 0; i < len; i++) {
+            T val = get(i);
+            replaced[i] = oldToNewValues.getOrDefault(val, val);
+        }
+
+        return Series.of(replaced);
     }
 
     @Override

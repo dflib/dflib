@@ -24,6 +24,7 @@ import org.dflib.sort.SeriesSorter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.LongPredicate;
@@ -320,6 +321,40 @@ public abstract class LongBaseSeries implements LongSeries {
         }
 
         return new BooleanArraySeries(data);
+    }
+
+    @Override
+    public Series<Long> replace(Map<Long, Long> oldToNewValues) {
+
+        int len = size();
+        long[] replaced = new long[len];
+
+        for (int i = 0; i < len; i++) {
+            Long val = getLong(i);
+            Long newVal = oldToNewValues.getOrDefault(val, val);
+
+            if (newVal == null) {
+                // abandon the longs collected so far, and return object series
+                return replaceAsObjects(oldToNewValues);
+            }
+
+            replaced[i] = newVal;
+        }
+
+        return Series.ofLong(replaced);
+    }
+
+    private Series<Long> replaceAsObjects(Map<Long, Long> oldToNewValues) {
+
+        int len = size();
+        Long[] replaced = new Long[len];
+
+        for (int i = 0; i < len; i++) {
+            Long val = getLong(i);
+            replaced[i] = oldToNewValues.getOrDefault(val, val);
+        }
+
+        return Series.of(replaced);
     }
 
     @Override

@@ -22,6 +22,7 @@ import org.dflib.sort.SeriesSorter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -269,6 +270,40 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         }
 
         return index.toSeries();
+    }
+
+    @Override
+    public Series<Boolean> replace(Map<Boolean, Boolean> oldToNewValues) {
+
+        int len = size();
+        boolean[] replaced = new boolean[len];
+
+        for (int i = 0; i < len; i++) {
+            Boolean val = getBool(i);
+            Boolean newVal = oldToNewValues.getOrDefault(val, val);
+
+            if (newVal == null) {
+                // abandon the booleans collected so far, and return object series
+                return replaceAsObjects(oldToNewValues);
+            }
+
+            replaced[i] = newVal;
+        }
+
+        return Series.ofBool(replaced);
+    }
+
+    private Series<Boolean> replaceAsObjects(Map<Boolean, Boolean> oldToNewValues) {
+
+        int len = size();
+        Boolean[] replaced = new Boolean[len];
+
+        for (int i = 0; i < len; i++) {
+            Boolean val = getBool(i);
+            replaced[i] = oldToNewValues.getOrDefault(val, val);
+        }
+
+        return Series.of(replaced);
     }
 
     @Override

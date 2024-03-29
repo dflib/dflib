@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Random;
@@ -521,6 +522,13 @@ public interface Series<T> extends Iterable<T> {
      * @since 0.6
      */
     Series<T> replace(BooleanSeries condition, T with);
+
+    /**
+     * Replaces Series values that match map keys with map values.
+     *
+     * @since 1.0.0-M21
+     */
+    Series<T> replace(Map<T, T> oldToNewValues);
 
     /**
      * Creates a new Series replacing the elements from this Series with the provided value at positions that correspond

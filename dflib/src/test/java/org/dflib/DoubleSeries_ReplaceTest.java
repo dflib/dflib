@@ -3,6 +3,9 @@ package org.dflib;
 import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DoubleSeries_ReplaceTest {
@@ -52,6 +55,17 @@ public class DoubleSeries_ReplaceTest {
         Series<Double> s1 = Series.ofDouble(1.1, 0, 2.05, -1.0015).replace(cond, 5.2);
         assertTrue(s1 instanceof DoubleSeries);
         new SeriesAsserts(s1).expectData(5.2, 5.2, 2.05, -1.0015);
+    }
+
+    @Test
+    public void replaceMap() {
+
+        Series<Double> s1 = Series.ofDouble(1.1, 0., 2., -1.01).replace(Map.of(1.1, -1.5, 2., 15.));
+        assertTrue(s1 instanceof DoubleSeries);
+        new SeriesAsserts(s1).expectData(-1.5, 0., 15., -1.01);
+
+        Series<Double> s2 = Series.ofDouble(1.1, 0., 2., -1.01).replace(Collections.singletonMap(2., null));
+        new SeriesAsserts(s2).expectData(1.1, 0., null, -1.01);
     }
 
     @Test

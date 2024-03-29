@@ -117,19 +117,23 @@ public class Index implements Iterable<String> {
     public Index replace(Map<String, String> oldToNewValues) {
 
         int len = size();
-
-        Set<String> unique = new LinkedHashSet<>();
+        LinkedHashSet<String> unique = new LinkedHashSet<>((int) (len / 0.75));
+        String[] replaced = new String[len];
 
         for (int i = 0; i < len; i++) {
-            String oldLabel = values[i];
-            String newLabel = oldToNewValues.get(oldLabel);
-            String label = newLabel != null ? newLabel : oldLabel;
-            if (!unique.add(label)) {
-                throw new IllegalArgumentException("Duplicate column name: " + label);
+
+            // TODO: "val" may be null if it is mapped to null in the renaming map. Though that's not the only place
+            //  where we allow nulls to be passed as column names, so I guess that's ok?
+            String val = oldToNewValues.getOrDefault(values[i], values[i]);
+
+            if (!unique.add(val)) {
+                throw new IllegalArgumentException("Duplicate column name: " + val);
             }
+
+            replaced[i] = val;
         }
 
-        return new Index(unique.toArray(new String[0]));
+        return new Index(replaced);
     }
 
     /**
