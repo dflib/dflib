@@ -55,7 +55,7 @@ public abstract class LongBaseSeries implements LongSeries {
     }
 
     @Override
-    public Series<Long> range(int fromInclusive, int toExclusive) {
+    public Series<Long> selectRange(int fromInclusive, int toExclusive) {
         return rangeLong(fromInclusive, toExclusive);
     }
 

@@ -53,7 +53,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
-    public Series<Double> range(int fromInclusive, int toExclusive) {
+    public Series<Double> selectRange(int fromInclusive, int toExclusive) {
         return rangeDouble(fromInclusive, toExclusive);
     }
 

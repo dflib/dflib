@@ -83,7 +83,7 @@ public class SingleValueSeries<T> extends ObjectSeries<T> {
     }
 
     @Override
-    public Series<T> range(int fromInclusive, int toExclusive) {
+    public Series<T> selectRange(int fromInclusive, int toExclusive) {
 
         if (fromInclusive == toExclusive) {
             return new EmptySeries<>();

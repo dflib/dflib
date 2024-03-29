@@ -50,7 +50,7 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public Series<Integer> range(int fromInclusive, int toExclusive) {
+    public Series<Integer> selectRange(int fromInclusive, int toExclusive) {
         return rangeInt(fromInclusive, toExclusive);
     }
 

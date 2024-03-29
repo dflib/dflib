@@ -52,7 +52,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
-    public Series<Boolean> range(int fromInclusive, int toExclusive) {
+    public Series<Boolean> selectRange(int fromInclusive, int toExclusive) {
         return rangeBool(fromInclusive, toExclusive);
     }
 
