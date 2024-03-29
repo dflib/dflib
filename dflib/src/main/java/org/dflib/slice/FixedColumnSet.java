@@ -176,7 +176,7 @@ public class FixedColumnSet implements ColumnSet {
 
     @Override
     public DataFrame selectAs(Map<String, String> oldToNewNames) {
-        return new ColumnDataFrame(null, Index.of(csIndex).rename(oldToNewNames), doSelect());
+        return new ColumnDataFrame(null, Index.of(csIndex).replace(oldToNewNames), doSelect());
     }
 
     @Override
@@ -609,7 +609,7 @@ public class FixedColumnSet implements ColumnSet {
         return merger().merge(
                 sourceColumnsIndex,
                 sourceColumns,
-                Index.of(csIndex).rename(oldToNewNames).toArray(),
+                Index.of(csIndex).replace(oldToNewNames).toArray(),
                 columns);
     }
 

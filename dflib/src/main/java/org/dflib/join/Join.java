@@ -160,7 +160,7 @@ public class Join {
         IntSeries[] selectors = rowSelectors();
 
         return new ColumnDataFrame(null,
-                index.getIndex().rename(oldToNewNames),
+                index.getIndex().replace(oldToNewNames),
                 merge(selectors[0], selectors[1], index.getPositions()));
     }
 

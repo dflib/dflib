@@ -156,7 +156,7 @@ public class EmptyRowSet implements RowSet {
 
     @Override
     public DataFrame selectAs(Map<String, String> oldToNewNames) {
-        return DataFrame.empty(source.getColumnsIndex().rename(oldToNewNames));
+        return DataFrame.empty(source.getColumnsIndex().replace(oldToNewNames));
     }
 
     @Override

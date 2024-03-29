@@ -100,7 +100,10 @@ public class Index implements Iterable<String> {
         return new Index(newLabels);
     }
 
-    public Index rename(Map<String, String> oldToNewLabels) {
+    /**
+     * @since 1.0.0-M21
+     */
+    public Index replace(Map<String, String> oldToNewValues) {
 
         int len = size();
 
@@ -108,7 +111,7 @@ public class Index implements Iterable<String> {
 
         for (int i = 0; i < len; i++) {
             String oldLabel = values[i];
-            String newLabel = oldToNewLabels.get(oldLabel);
+            String newLabel = oldToNewValues.get(oldLabel);
             String label = newLabel != null ? newLabel : oldLabel;
             if (!unique.add(label)) {
                 throw new IllegalArgumentException("Duplicate column name: " + label);
@@ -116,6 +119,14 @@ public class Index implements Iterable<String> {
         }
 
         return new Index(unique.toArray(new String[0]));
+    }
+
+    /**
+     * @deprecated in favor of {@link #replace(Map)}
+     */
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
+    public Index rename(Map<String, String> oldToNewValues) {
+        return replace(oldToNewValues);
     }
 
     /**
@@ -134,7 +145,7 @@ public class Index implements Iterable<String> {
             map.put(values[i], newLabels[i]);
         }
 
-        return rename(map);
+        return replace(map);
     }
 
     /**

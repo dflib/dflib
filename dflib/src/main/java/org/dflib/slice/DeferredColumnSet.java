@@ -119,7 +119,7 @@ public class DeferredColumnSet implements ColumnSet {
     public DataFrame as(Map<String, String> oldToNewNames) {
         return new ColumnDataFrame(
                 null,
-                source.getColumnsIndex().rename(oldToNewNames),
+                source.getColumnsIndex().replace(oldToNewNames),
                 sourceColumns);
     }
 
@@ -127,7 +127,7 @@ public class DeferredColumnSet implements ColumnSet {
     public DataFrame selectAs(Map<String, String> oldToNewNames) {
         return new ColumnDataFrame(
                 null,
-                source.getColumnsIndex().rename(oldToNewNames),
+                source.getColumnsIndex().replace(oldToNewNames),
                 sourceColumns);
     }
 
