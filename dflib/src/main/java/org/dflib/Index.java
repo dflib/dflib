@@ -73,7 +73,7 @@ public class Index implements Iterable<String> {
      * @since 1.0.0-M19
      */
     public static Index ofDeduplicated(String... values) {
-        String[] nonConflicted = StringDeduplicator.of(values.length).nonConflicting(labels);
+        String[] nonConflicted = StringDeduplicator.of(values.length).nonConflicting(values);
         return new Index(nonConflicted);
     }
 
