@@ -377,20 +377,6 @@ public class Index implements Iterable<String> {
     }
 
     /**
-     * @since 1.0.0-M19
-     */
-    public int[] getPositions() {
-        int len = labels.length;
-        int[] positions = new int[len];
-
-        for (int i = 0; i < len; i++) {
-            positions[i] = i;
-        }
-
-        return positions;
-    }
-
-    /**
      * Returns a column label at the given position.
      *
      * @since 1.0.0-M21
@@ -463,7 +449,7 @@ public class Index implements Iterable<String> {
 
         int len = exceptLabels.length;
         if (len == 0) {
-            return getPositions();
+            return positionsArray(labels.length);
         }
 
         Set<String> excludes = new HashSet<>();
@@ -484,7 +470,7 @@ public class Index implements Iterable<String> {
 
         int exceptLen = exceptPositions.length;
         if (exceptLen == 0) {
-            return getPositions();
+            return positionsArray(labels.length);
         }
 
         Set<Integer> excludes = new HashSet<>((int) Math.ceil(exceptLen / 0.75));
@@ -592,6 +578,16 @@ public class Index implements Iterable<String> {
             }
         }
         return index;
+    }
+
+    static int[] positionsArray(int len) {
+        int[] positions = new int[len];
+
+        for (int i = 0; i < len; i++) {
+            positions[i] = i;
+        }
+
+        return positions;
     }
 
     static class ArrayIterator<T> implements Iterator<T> {
