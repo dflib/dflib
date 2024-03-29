@@ -236,13 +236,12 @@ public class Index implements Iterable<String> {
     }
 
     /**
-     * @since 0.7
+     * @since 1.0.0-M21
      */
     public Index select(Predicate<String> condition) {
-        // must preserve label order
-        Set<String> selected = new LinkedHashSet<>();
-
         int len = labels.length;
+        List<String> selected = new ArrayList<>(len);
+
         for (int i = 0; i < len; i++) {
             if (condition.test(labels[i])) {
                 selected.add(labels[i]);
@@ -261,14 +260,17 @@ public class Index implements Iterable<String> {
         return select(includeCondition);
     }
 
-    public Index dropLabels(String... labels) {
+    /**
+     * @since 1.0.0-M21
+     */
+    public Index selectExcept(String... values) {
 
-        if (labels.length == 0) {
+        if (values.length == 0) {
             return this;
         }
 
-        List<String> toDrop = new ArrayList<>(labels.length);
-        for (String l : labels) {
+        List<String> toDrop = new ArrayList<>(values.length);
+        for (String l : values) {
             if (hasLabel(l)) {
                 toDrop.add(l);
             }
@@ -291,20 +293,36 @@ public class Index implements Iterable<String> {
     }
 
     /**
-     * @since 0.7
+     * @deprecated in favor of {@link #selectExcept(String...)}
      */
-    public Index dropLabels(Predicate<String> labelCondition) {
-        // must preserve label order
-        Set<String> selected = new LinkedHashSet<>();
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
+    public Index dropLabels(String... labels) {
+        return selectExcept(labels);
+    }
+
+    /**
+     * @since 1.0.0-M21
+     */
+    public Index selectExcept(Predicate<String> condition) {
 
         int len = labels.length;
+        List<String> selected = new ArrayList<>(len);
+
         for (int i = 0; i < len; i++) {
-            if (!labelCondition.test(labels[i])) {
+            if (!condition.test(labels[i])) {
                 selected.add(labels[i]);
             }
         }
 
         return selected.size() == size() ? this : Index.of(selected.toArray(new String[0]));
+    }
+
+    /**
+     * @deprecated in favor of {@link #selectExcept(Predicate)}
+     */
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
+    public Index dropLabels(Predicate<String> labelCondition) {
+        return selectExcept(labelCondition);
     }
 
     public String[] getLabels() {
