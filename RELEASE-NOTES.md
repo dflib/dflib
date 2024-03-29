@@ -6,6 +6,7 @@
 * #268 Remove APIs deprecated since 1.0.0-M19
 * #269 StrExp.substr(..)
 * #270 Replace custom predicates with the ones from JDK
+* #271 Make Index more Series-like
 * #272 GroupBy.select(Exp...) / map(Exp...)
 
 ## Release 1.0.0-M20
