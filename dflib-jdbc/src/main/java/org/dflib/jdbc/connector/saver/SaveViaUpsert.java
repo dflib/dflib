@@ -146,7 +146,7 @@ public class SaveViaUpsert extends TableSaveStrategy {
 
             // reorder columns to start with updated values and end with keys to match PreparedStatement parameter ordering
             Index valueIndex = Index.of(updateColumns).selectExcept(keyColumns);
-            Index valueAndKeyIndex = valueIndex.add(keyColumns);
+            Index valueAndKeyIndex = valueIndex.expand(keyColumns);
 
             StatementBuilder builder = connector.createStatementBuilder(createUpdateStatement(keyColumns, valueIndex.toArray()))
 

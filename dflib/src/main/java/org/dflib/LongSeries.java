@@ -43,28 +43,52 @@ public interface LongSeries extends Series<Long> {
     @Override
     LongSeries materialize();
 
-    /**
-     * @since 0.18
-     */
     @Override
-    default Series<?> add(Object value) {
-        return value instanceof Long
-                ? addLong((Long) value)
-                : Series.super.add(value);
+    default Series<?> expand(Object... values) {
+        int len = values.length;
+        if (len == 0) {
+            return this;
+        }
+
+        long[] primitives = new long[len];
+        for (int i = 0; i < len; i++) {
+            if (values[i] instanceof Long) {
+                primitives[i] = (Long) values[i];
+            } else {
+                return Series.super.expand(values);
+            }
+        }
+
+        return expandLong(primitives);
     }
 
     /**
-     * Creates a new Series with a provided int appended to the end of this Series.
+     * Creates a new Series with a provided long appended to the end of this Series.
      *
      * @since 0.18
+     * @deprecated use {@link #expandLong(long...)}
      */
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
     default LongSeries addLong(long val) {
-        int s = size();
+        return expandLong(val);
+    }
 
-        long[] data = new long[s + 1];
-        this.copyToLong(data, 0, 0, s);
-        data[s] = val;
-        return new LongArraySeries(data);
+    /**
+     * @since 1.0.0-M21
+     */
+    default LongSeries expandLong(long... values) {
+        int rlen = values.length;
+        if (rlen == 0) {
+            return this;
+        }
+
+        int llen = size();
+
+        long[] expanded = new long[llen + rlen];
+        this.copyToLong(expanded, 0, 0, llen);
+        System.arraycopy(values, 0, expanded, llen, rlen);
+
+        return Series.ofLong(expanded);
     }
 
     LongSeries concatLong(LongSeries... other);

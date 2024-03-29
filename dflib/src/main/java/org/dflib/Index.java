@@ -164,36 +164,32 @@ public class Index implements Iterable<String> {
     }
 
     /**
+     * Extends the index, adding extra values to it. The newly added values are deduplicated using "_" suffix to
+     * make sure they do not conflict with the existing values and with each other.
+     *
      * @since 1.0.0-M21
      */
-    public Index add(String... values) {
+    public Index expand(String... values) {
         int rlen = values.length;
-        int llen = this.values.length;
-
-        String[] zipped = new String[llen + rlen];
-        System.arraycopy(this.values, 0, zipped, 0, llen);
-
-        // resolve dupes on the right
-        for (int i = 0; i < rlen; i++) {
-
-            String name = values[i];
-            while (contains(name)) {
-                name = name + "_";
-            }
-
-            int ri = i + llen;
-            zipped[ri] = name;
+        if (rlen == 0) {
+            return this;
         }
 
-        return Index.of(zipped);
+        int llen = this.values.length;
+
+        String[] expanded = new String[llen + rlen];
+        System.arraycopy(this.values, 0, expanded, 0, llen);
+        System.arraycopy(values, 0, expanded, llen, rlen);
+
+        return Index.ofDeduplicated(expanded);
     }
 
     /**
-     * @deprecated in favor of {@link #add(String...)}
+     * @deprecated in favor of {@link #expand(String...)}
      */
     @Deprecated(since = "1.0.0-M21", forRemoval = true)
     public Index addLabels(String... extraLabels) {
-        return add(extraLabels);
+        return expand(extraLabels);
     }
 
     /**

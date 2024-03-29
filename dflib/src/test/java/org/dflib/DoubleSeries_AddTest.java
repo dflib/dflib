@@ -13,8 +13,8 @@ public class DoubleSeries_AddTest {
     }
 
     @Test
-    public void addDouble() {
-        DoubleSeries s = Series.ofDouble(3., 28.).addDouble(5.3);
+    public void expandDouble() {
+        DoubleSeries s = Series.ofDouble(3., 28.).expandDouble(5.3);
         new DoubleSeriesAsserts(s).expectData(3., 28., 5.3);
     }
 

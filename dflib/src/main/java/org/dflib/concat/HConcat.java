@@ -22,7 +22,7 @@ public class HConcat {
     }
 
     /**
-     * @deprecated in favor of {@link Index#add(String...)}
+     * @deprecated in favor of {@link Index#expand(String...)}
      */
     @Deprecated(since = "1.0.0-M21", forRemoval = true)
     public static Index zipIndex(Index leftIndex, String[] rightLabels) {

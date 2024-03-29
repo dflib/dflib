@@ -13,8 +13,8 @@ public class LongSeries_AddTest {
     }
 
     @Test
-    public void addLong() {
-        LongSeries s = Series.ofLong(3, 28).addLong(5L);
+    public void expandLong() {
+        LongSeries s = Series.ofLong(3, 28).expandLong(5L);
         new LongSeriesAsserts(s).expectData(3L, 28L, 5L);
     }
 

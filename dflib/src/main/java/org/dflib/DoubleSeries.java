@@ -43,28 +43,52 @@ public interface DoubleSeries extends Series<Double> {
     @Override
     DoubleSeries materialize();
 
-    /**
-     * @since 0.18
-     */
     @Override
-    default Series<?> add(Object value) {
-        return value instanceof Double
-                ? addDouble((Double) value)
-                : Series.super.add(value);
+    default Series<?> expand(Object... values) {
+        int len = values.length;
+        if (len == 0) {
+            return this;
+        }
+
+        double[] primitives = new double[len];
+        for (int i = 0; i < len; i++) {
+            if (values[i] instanceof Double) {
+                primitives[i] = (Double) values[i];
+            } else {
+                return Series.super.expand(values);
+            }
+        }
+
+        return expandDouble(primitives);
     }
 
     /**
-     * Creates a new Series with a provided int appended to the end of this Series.
+     * Creates a new Series with a provided double appended to the end of this Series.
      *
      * @since 0.18
+     * @deprecated use {@link #expandDouble(double...)}
      */
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
     default DoubleSeries addDouble(double val) {
-        int s = size();
+        return expandDouble(val);
+    }
 
-        double[] data = new double[s + 1];
-        this.copyToDouble(data, 0, 0, s);
-        data[s] = val;
-        return new DoubleArraySeries(data);
+    /**
+     * @since 1.0.0-M21
+     */
+    default DoubleSeries expandDouble(double... values) {
+        int rlen = values.length;
+        if (rlen == 0) {
+            return this;
+        }
+
+        int llen = size();
+
+        double[] expanded = new double[llen + rlen];
+        this.copyToDouble(expanded, 0, 0, llen);
+        System.arraycopy(values, 0, expanded, llen, rlen);
+
+        return Series.ofDouble(expanded);
     }
 
     DoubleSeries concatDouble(DoubleSeries... other);

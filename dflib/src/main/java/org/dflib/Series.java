@@ -153,14 +153,31 @@ public interface Series<T> extends Iterable<T> {
      * Creates a new Series with a provided value appended to the end of this Series.
      *
      * @since 0.18
+     * @deprecated use {@link #expand(Object...)}
      */
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
     default Series<?> add(Object value) {
-        int s = size();
+        return expand(value);
+    }
 
-        Object[] data = new Object[s + 1];
-        this.copyTo(data, 0, 0, s);
-        data[s] = value;
-        return new ArraySeries<>(data);
+    /**
+     * Extends the Series, adding extra values to the end of this Series.
+     *
+     * @since 1.0.0-M21
+     */
+    default Series<?> expand(Object... values) {
+        int rlen = values.length;
+        if (rlen == 0) {
+            return this;
+        }
+
+        int llen = size();
+
+        Object[] expanded = new Object[llen + rlen];
+        this.copyTo(expanded, 0, 0, llen);
+        System.arraycopy(values, 0, expanded, llen, rlen);
+
+        return Series.of(expanded);
     }
 
     /**
@@ -623,17 +640,22 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
+     * Aggregating operation, concatenating Series values into a single String using the provided element separator.
+     *
      * @since 0.7
      */
-    default String concat(String delimiter) {
-        return agg(Exp.$col("").vConcat(delimiter)).get(0);
+    default String concat(String separator) {
+        return agg(Exp.$col("").vConcat(separator)).get(0);
     }
 
     /**
+     * Aggregating operation, concatenating Series values into a single String using the provided element separator,
+     * prefix and suffix.
+     *
      * @since 0.7
      */
-    default String concat(String delimiter, String prefix, String suffix) {
-        return agg(Exp.$col("").vConcat(delimiter, prefix, suffix)).get(0);
+    default String concat(String separator, String prefix, String suffix) {
+        return agg(Exp.$col("").vConcat(separator, prefix, suffix)).get(0);
     }
 
     /**

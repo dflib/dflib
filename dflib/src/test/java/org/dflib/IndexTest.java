@@ -10,6 +10,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class IndexTest {
 
     @Test
+    public void addTest() {
+        Index i = Index.of("a", "b", "c").expand("d", "e", "d", "a");
+        new SeriesAsserts(i.toSeries()).expectData("a", "b", "c", "d", "e", "d_", "a_");
+    }
+
+    @Test
     public void positionsArray() {
         assertArrayEquals(new int[]{0, 1, 2, 3}, Index.positionsArray(4));
     }

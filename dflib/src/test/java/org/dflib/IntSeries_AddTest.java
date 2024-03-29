@@ -13,8 +13,8 @@ public class IntSeries_AddTest {
     }
 
     @Test
-    public void addInt() {
-        IntSeries s = Series.ofInt(3, 28).addInt(5);
+    public void expandInt() {
+        IntSeries s = Series.ofInt(3, 28).expandInt(5);
         new IntSeriesAsserts(s).expectData(3, 28, 5);
     }
 

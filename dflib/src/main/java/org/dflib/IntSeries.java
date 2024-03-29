@@ -44,28 +44,52 @@ public interface IntSeries extends Series<Integer> {
     @Override
     IntSeries materialize();
 
-    /**
-     * @since 0.18
-     */
     @Override
-    default Series<?> add(Object value) {
-        return value instanceof Integer
-                ? addInt((Integer) value)
-                : Series.super.add(value);
+    default Series<?> expand(Object... values) {
+        int len = values.length;
+        if (len == 0) {
+            return this;
+        }
+
+        int[] primitives = new int[len];
+        for (int i = 0; i < len; i++) {
+            if (values[i] instanceof Integer) {
+                primitives[i] = (Integer) values[i];
+            } else {
+                return Series.super.expand(values);
+            }
+        }
+
+        return expandInt(primitives);
     }
 
     /**
      * Creates a new Series with a provided int appended to the end of this Series.
      *
      * @since 0.18
+     * @deprecated use {@link #expandInt(int...)}
      */
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
     default IntSeries addInt(int val) {
-        int s = size();
+        return expandInt(val);
+    }
 
-        int[] data = new int[s + 1];
-        this.copyToInt(data, 0, 0, s);
-        data[s] = val;
-        return new IntArraySeries(data);
+    /**
+     * @since 1.0.0-M21
+     */
+    default IntSeries expandInt(int... values) {
+        int rlen = values.length;
+        if (rlen == 0) {
+            return this;
+        }
+
+        int llen = size();
+
+        int[] expanded = new int[llen + rlen];
+        this.copyToInt(expanded, 0, 0, llen);
+        System.arraycopy(values, 0, expanded, llen, rlen);
+
+        return Series.ofInt(expanded);
     }
 
     IntSeries concatInt(IntSeries... other);
