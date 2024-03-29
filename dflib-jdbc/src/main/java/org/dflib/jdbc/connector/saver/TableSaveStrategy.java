@@ -152,15 +152,15 @@ public abstract class TableSaveStrategy {
                 .append(" (");
 
         // append columns
-        String[] labels = df.getColumnsIndex().getLabels();
-        int len = labels.length;
+        Index index = df.getColumnsIndex();
+        int len = index.size();
 
-        for (int i = 0; i < labels.length; i++) {
+        for (int i = 0; i < len; i++) {
             if (i > 0) {
                 sql.append(", ");
             }
 
-            sql.append(connector.quoteIdentifier(labels[i]));
+            sql.append(connector.quoteIdentifier(index.get(i)));
         }
 
         // append value placeholders

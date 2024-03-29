@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class IndexAsserts {
 
     public static void expect(Index index, Index expectedIndex) {
-        expect(index, expectedIndex.getLabels());
+        expect(index, expectedIndex.toArray());
     }
 
     public static void expect(Index index, List<String> expectedLabels) {
@@ -19,6 +19,6 @@ public class IndexAsserts {
 
     public static void expect(Index index, String... expectedLabels) {
         assertNotNull(index, "Index is null");
-        assertArrayEquals(expectedLabels, index.getLabels(), "Index differs from expected");
+        assertArrayEquals(expectedLabels, index.toArray(), "Index differs from expected");
     }
 }

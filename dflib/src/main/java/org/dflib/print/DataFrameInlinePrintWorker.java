@@ -23,8 +23,6 @@ public class DataFrameInlinePrintWorker extends BasePrintWorker {
         int width = columns.size();
         int h = truncator.height();
 
-        String[] labels = columns.getLabels();
-
         // if no data, print column labels once
         if (h == 0) {
             for (int j = 0; j < width; j++) {
@@ -33,7 +31,7 @@ public class DataFrameInlinePrintWorker extends BasePrintWorker {
                     out.append(",");
                 }
 
-                appendTruncate(labels[j]);
+                appendTruncate(columns.get(j));
                 out.append(":");
             }
 
@@ -56,7 +54,7 @@ public class DataFrameInlinePrintWorker extends BasePrintWorker {
                     out.append(",");
                 }
 
-                appendTruncate(labels[j]);
+                appendTruncate(columns.get(j));
                 out.append(":");
                 appendTruncate(String.valueOf(p.get(j)));
             }
@@ -79,7 +77,7 @@ public class DataFrameInlinePrintWorker extends BasePrintWorker {
                         out.append(",");
                     }
 
-                    appendTruncate(labels[j]);
+                    appendTruncate(columns.get(j));
                     out.append(":");
                     appendTruncate(String.valueOf(p.get(j)));
                 }

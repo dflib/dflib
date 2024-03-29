@@ -42,7 +42,7 @@ public class SaveViaUpsert extends TableSaveStrategy {
         DataFrame keyDf = keyValues(df);
 
         DataFrame previouslySaved = new TableLoader(connector, tableName)
-                .cols(df.getColumnsIndex().getLabels())
+                .cols(df.getColumnsIndex().toArray())
                 .eq(keyDf)
                 .load();
 
@@ -91,7 +91,7 @@ public class SaveViaUpsert extends TableSaveStrategy {
 
             DataFrame previouslySavedOrdered = insertAndUpdate
                     .cols(joinedIndex).select()
-                    .cols().as(mainColumns.getLabels());
+                    .cols().as(mainColumns.toArray());
 
             doUpdate(connector,
                     df.rows(updateIndex).select(),
@@ -148,7 +148,7 @@ public class SaveViaUpsert extends TableSaveStrategy {
             Index valueIndex = Index.of(updateColumns).selectExcept(keyColumns);
             Index valueAndKeyIndex = valueIndex.addLabels(keyColumns);
 
-            StatementBuilder builder = connector.createStatementBuilder(createUpdateStatement(keyColumns, valueIndex.getLabels()))
+            StatementBuilder builder = connector.createStatementBuilder(createUpdateStatement(keyColumns, valueIndex.toArray()))
 
                     // use param descriptors from metadata, as (1) we can and (b) some DBs don't support real
                     // metadata in PreparedStatements. See e.g. https://github.com/dflib/dflib/issues/49

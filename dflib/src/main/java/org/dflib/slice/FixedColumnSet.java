@@ -42,7 +42,7 @@ public class FixedColumnSet implements ColumnSet {
     protected final String[] csIndex;
 
     public static FixedColumnSet of(DataFrame source, Series<?>[] sourceColumns, Index csIndex) {
-        return new FixedColumnSet(source, sourceColumns, csIndex.getLabels());
+        return new FixedColumnSet(source, sourceColumns, csIndex.toArray());
     }
 
     public static FixedColumnSet of(DataFrame source, Series<?>[] sourceColumns, String[] csIndex) {
@@ -602,14 +602,14 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     private DataFrame merge(Series<?>[] columns) {
-        return merger().merge(sourceColumnsIndex.getLabels(), sourceColumns, csIndex, columns);
+        return merger().merge(sourceColumnsIndex, sourceColumns, csIndex, columns);
     }
 
     private DataFrame merge(Series<?>[] columns, Map<String, String> oldToNewNames) {
         return merger().merge(
-                sourceColumnsIndex.getLabels(),
+                sourceColumnsIndex,
                 sourceColumns,
-                Index.of(csIndex).rename(oldToNewNames).getLabels(),
+                Index.of(csIndex).rename(oldToNewNames).toArray(),
                 columns);
     }
 

@@ -27,14 +27,13 @@ public class DataFrameTabularPrintWorker extends BasePrintWorker {
             return out;
         }
 
-        String[] labels = columns.getLabels();
         int[] columnWidth = new int[w];
         String[] columnFormat = new String[w];
 
         DataFrameTruncator truncator = DataFrameTruncator.create(df, maxDisplayRows);
 
         for (int i = 0; i < w; i++) {
-            columnWidth[i] = labels[i].length();
+            columnWidth[i] = columns.get(i).length();
         }
 
         DataFrame head = truncator.head();
@@ -84,7 +83,7 @@ public class DataFrameTabularPrintWorker extends BasePrintWorker {
             if (i > 0) {
                 append(" ");
             }
-            appendFixedWidth(labels[i], columnWidth[i], columnFormat[i]);
+            appendFixedWidth(columns.get(i), columnWidth[i], columnFormat[i]);
         }
 
         // print header separator

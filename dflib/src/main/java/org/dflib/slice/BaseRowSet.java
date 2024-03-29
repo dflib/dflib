@@ -121,7 +121,7 @@ public abstract class BaseRowSet implements RowSet {
 
     @Override
     public DataFrame unique() {
-        return unique(sourceColumnsIndex.getLabels());
+        return unique(sourceColumnsIndex.toArray());
     }
 
     @Override
@@ -268,7 +268,7 @@ public abstract class BaseRowSet implements RowSet {
 
     @Override
     public DataFrame selectUnique() {
-        return selectUnique(source.getColumnsIndex().getLabels());
+        return selectUnique(source.getColumnsIndex().toArray());
     }
 
     @Override

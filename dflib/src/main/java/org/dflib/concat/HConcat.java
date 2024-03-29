@@ -21,6 +21,10 @@ public class HConcat {
         this.semantics = semantics;
     }
 
+    /**
+     * @deprecated in favor of {@link Index#addLabels(String...)}
+     */
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
     public static Index zipIndex(Index leftIndex, String[] rightLabels) {
 
         String[] lLabels = leftIndex.getLabels();

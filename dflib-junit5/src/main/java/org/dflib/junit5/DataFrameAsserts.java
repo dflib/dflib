@@ -26,7 +26,7 @@ public class DataFrameAsserts {
     private DataFrame df;
 
     public DataFrameAsserts(DataFrame df, Index expectedColumns) {
-        this(df, expectedColumns.getLabels());
+        this(df, expectedColumns.toArray());
     }
 
     public DataFrameAsserts(DataFrame df, List<String> expectedColumns) {
@@ -36,7 +36,7 @@ public class DataFrameAsserts {
     public DataFrameAsserts(DataFrame df, String... expectedColumns) {
 
         assertNotNull(df, "DataFrame is null");
-        assertArrayEquals(expectedColumns, df.getColumnsIndex().getLabels(), "DataFrame columns differ from expected");
+        assertArrayEquals(expectedColumns, df.getColumnsIndex().toArray(), "DataFrame columns differ from expected");
 
         this.expectedColumns = expectedColumns;
         this.df = df;

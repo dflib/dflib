@@ -16,9 +16,6 @@ class JoinIndex {
         int baseLen = leftIndex.size() + rightIndex.size();
         int len = indicatorColumn != null ? baseLen + 1 : baseLen;
 
-        String[] lLabels = leftIndex.getLabels();
-        String[] rLabels = rightIndex.getLabels();
-
         String lp = leftAlias != null ? leftAlias + "." : null;
         String rp = rightAlias != null ? rightAlias + "." : null;
 
@@ -26,14 +23,14 @@ class JoinIndex {
         JoinColumn[] columns = new JoinColumn[len];
         int i = 0;
 
-        for (String label : lLabels) {
+        for (String label : leftIndex) {
             String name = uniqueName(uniqueNames, label);
             String aliasedName = lp != null ? uniqueName(uniqueNames, lp + label) : null;
             columns[i] = new JoinColumn(i, name, aliasedName, null);
             i++;
         }
 
-        for (String label : rLabels) {
+        for (String label : rightIndex) {
             String name = uniqueName(uniqueNames, label);
             String aliasedName = rp != null ? uniqueName(uniqueNames, rp + label) : null;
             columns[i] = new JoinColumn(i, name, aliasedName, null);

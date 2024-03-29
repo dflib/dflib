@@ -98,7 +98,7 @@ public class ColumnSetMerger {
      * Performs a merge of the source Series with a transformed row set Series.
      */
     public DataFrame merge(
-            String[] sLabels,
+            Index sIndex,
             Series<?>[] sColumns,
             String[] csLabels,
             Series<?>[] csColumns) {
@@ -114,7 +114,7 @@ public class ColumnSetMerger {
                 labels[i] = csLabels[csi];
                 columns[i] = csColumns[csi];
             } else {
-                labels[i] = sLabels[si];
+                labels[i] = sIndex.get(si);
                 columns[i] = sColumns[si];
             }
         }

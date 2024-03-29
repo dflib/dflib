@@ -112,7 +112,7 @@ public class CsvSaver {
     }
 
     private void printHeader(CSVPrinter printer, Index index) throws IOException {
-        for (String label : index.getLabels()) {
+        for (String label : index) {
             printer.print(label);
         }
         printer.println();

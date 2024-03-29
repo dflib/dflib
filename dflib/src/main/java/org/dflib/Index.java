@@ -1,6 +1,5 @@
 package org.dflib;
 
-import org.dflib.concat.HConcat;
 import org.dflib.index.LabelDeduplicator;
 import org.dflib.range.Range;
 import org.dflib.sample.Sampler;
@@ -139,7 +138,25 @@ public class Index implements Iterable<String> {
 
 
     public Index addLabels(String... extraLabels) {
-        return HConcat.zipIndex(this, extraLabels);
+        int rlen = extraLabels.length;
+        int llen = labels.length;
+
+        String[] zipped = new String[llen + rlen];
+        System.arraycopy(labels, 0, zipped, 0, llen);
+
+        // resolve dupes on the right
+        for (int i = 0; i < rlen; i++) {
+
+            String name = extraLabels[i];
+            while (hasLabel(name)) {
+                name = name + "_";
+            }
+
+            int ri = i + llen;
+            zipped[ri] = name;
+        }
+
+        return Index.of(zipped);
     }
 
     /**
@@ -325,8 +342,28 @@ public class Index implements Iterable<String> {
         return selectExcept(labelCondition);
     }
 
+    /**
+     * @deprecated in favor of {@link #toArray()}
+     */
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
     public String[] getLabels() {
+        return toArray();
+    }
+
+    // not-public direct accessor to mutable labels ... Saves on data copy, but the callers should be
+    // careful not to alter the values
+    String[] toArrayNoCopy() {
         return labels;
+    }
+
+    /**
+     * @since 1.0.0-M21
+     */
+    public String[] toArray() {
+        int len = labels.length;
+        String[] copy = new String[len];
+        System.arraycopy(labels, 0, copy, 0, len);
+        return copy;
     }
 
     /**

@@ -220,7 +220,7 @@ public class EmptyRowSet implements RowSet {
 
     @Override
     public DataFrame selectUnique() {
-        return selectUnique(source.getColumnsIndex().getLabels());
+        return selectUnique(source.getColumnsIndex().toArray());
     }
 
     @Override
