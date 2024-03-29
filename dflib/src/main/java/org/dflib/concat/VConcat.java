@@ -136,7 +136,7 @@ public class VConcat {
 
                 // need to rewind the iterator even if we exclude the series from copy
                 Series<?> next = dfs[i].getColumn(j);
-                int pos = mapSeriesPosition(concatColumns, dfc.getLabel(j));
+                int pos = mapSeriesPosition(concatColumns, dfc.get(j));
 
                 if (pos >= 0) {
                     next.copyTo(data[pos], 0, voffset, next.size());

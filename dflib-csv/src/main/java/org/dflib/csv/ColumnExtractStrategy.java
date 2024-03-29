@@ -43,7 +43,7 @@ interface ColumnExtractStrategy {
         String[] labels = new String[w];
 
         for (int i = 0; i < w; i++) {
-            labels[i] = csvHeader.getLabel(columns[i]);
+            labels[i] = csvHeader.get(columns[i]);
         }
 
         Index dfHeader = Index.of(labels);

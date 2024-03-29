@@ -257,7 +257,7 @@ public class ExcelLoader {
         for (int i = 0; i < w; i++) {
             int pos = startCol + i;
             Object val = value(row, pos);
-            labels[i] = val != null ? val.toString() : excelColumns.getLabel(i);
+            labels[i] = val != null ? val.toString() : excelColumns.get(i);
         }
 
         return Index.ofDeduplicated(labels);

@@ -222,7 +222,7 @@ public class ExcelSaver {
             int w = df.width();
             for (int i = 0; i < w; i++) {
                 Cell cell = row.createCell(i);
-                cell.setCellValue(index.getLabel(i));
+                cell.setCellValue(index.get(i));
                 cell.setCellStyle(topRowStyle);
             }
         }
@@ -242,7 +242,7 @@ public class ExcelSaver {
         int w = index.size();
         for (int i = 0; i < w; i++) {
 
-            Integer width = columnWidths.get(index.getLabel(i));
+            Integer width = columnWidths.get(index.get(i));
             if (width == null) {
                 if (autoSizeColumns) {
                     sheet.autoSizeColumn(i);

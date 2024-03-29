@@ -51,7 +51,7 @@ public class Column<T> implements Exp<T> {
 
     @Override
     public String toQL(DataFrame df) {
-        return position >= 0 ? df.getColumnsIndex().getLabel(position) : name;
+        return position >= 0 ? df.getColumnsIndex().get(position) : name;
     }
 
     @Override

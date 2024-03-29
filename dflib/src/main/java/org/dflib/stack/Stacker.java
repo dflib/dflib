@@ -26,7 +26,7 @@ public class Stacker {
 
         for (int i = 0; i < w; i++) {
             rows[i] = df.getColumn(i).index(v -> v != null);
-            columns[i] = new SingleValueSeries<>(columnsIndex.getLabel(i), rows[i].size());
+            columns[i] = new SingleValueSeries<>(columnsIndex.get(i), rows[i].size());
             values[i] = new IndexedSeries<>(df.getColumn(i), rows[i]);
         }
 
@@ -49,7 +49,7 @@ public class Stacker {
 
         for (int i = 0; i < w; i++) {
             rows[i] = sequence;
-            columns[i] = new SingleValueSeries<>(columnsIndex.getLabel(i), h);
+            columns[i] = new SingleValueSeries<>(columnsIndex.get(i), h);
             values[i] = df.getColumn(i);
         }
 

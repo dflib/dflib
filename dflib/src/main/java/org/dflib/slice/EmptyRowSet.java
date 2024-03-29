@@ -109,7 +109,7 @@ public class EmptyRowSet implements RowSet {
     public DataFrame expand(int columnPos) {
 
         // validate the argument, even though the operation does nothing
-        source.getColumnsIndex().getLabel(columnPos);
+        source.getColumnsIndex().get(columnPos);
 
         return source;
     }
@@ -188,7 +188,7 @@ public class EmptyRowSet implements RowSet {
     public DataFrame selectExpand(int columnPos) {
 
         // validate the argument, even though the operation does nothing
-        source.getColumnsIndex().getLabel(columnPos);
+        source.getColumnsIndex().get(columnPos);
 
         return DataFrame.empty(source.getColumnsIndex());
     }
@@ -212,7 +212,7 @@ public class EmptyRowSet implements RowSet {
     public DataFrame selectUnique(int... uniqueKeyColumns) {
         // validate the argument, even though the operation does nothing
         for (int p : uniqueKeyColumns) {
-            source.getColumnsIndex().getLabel(p);
+            source.getColumnsIndex().get(p);
         }
 
         return DataFrame.empty(source.getColumnsIndex());

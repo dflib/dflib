@@ -130,7 +130,7 @@ public class PivotBuilder {
             throw new IllegalStateException("Column for pivot rows is not specified. Call 'rows(..)'.");
         }
 
-        String rowColumnName = dataFrame.getColumnsIndex().getLabel(columnForRows);
+        String rowColumnName = dataFrame.getColumnsIndex().get(columnForRows);
         GroupBy byColumn = dataFrame.group(columnForColumns);
 
         List<DataFrame> chunks = new ArrayList<>(byColumn.size());
@@ -173,8 +173,8 @@ public class PivotBuilder {
 
     private <T> DataFrame aggregateChunk(DataFrame chunk, Exp<T> aggregator) {
 
-        String rowColumnName = chunk.getColumnsIndex().getLabel(0);
-        String valueColumnName = chunk.getColumnsIndex().getLabel(1);
+        String rowColumnName = chunk.getColumnsIndex().get(0);
+        String valueColumnName = chunk.getColumnsIndex().get(1);
 
         return chunk.group(rowColumnName).agg(
                 Exp.$col(rowColumnName).first(),

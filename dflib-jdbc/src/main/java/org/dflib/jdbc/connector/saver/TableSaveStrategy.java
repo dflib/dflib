@@ -133,7 +133,7 @@ public abstract class TableSaveStrategy {
 
         DbColumnMetadata[] params = new DbColumnMetadata[index.size()];
         for (int i = 0; i < index.size(); i++) {
-            params[i] = tableMetadata.getColumn(index.getLabel(i));
+            params[i] = tableMetadata.getColumn(index.get(i));
         }
 
         return params;

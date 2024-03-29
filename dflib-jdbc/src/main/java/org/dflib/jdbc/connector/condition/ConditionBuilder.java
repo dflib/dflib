@@ -52,7 +52,7 @@ public class ConditionBuilder {
             case 1:
                 return appendWhereSql_SingleColumn(
                         buffer,
-                        condition.getColumnsIndex().getLabel(0),
+                        condition.getColumnsIndex().get(0),
                         criteriaHeight);
             default:
                 return appendWhereSql_MultiColumns(buffer, condition.getColumnsIndex(), criteriaHeight);
@@ -107,7 +107,7 @@ public class ConditionBuilder {
         int w = columnsIndex.size();
         String[] columns = new String[w];
         for (int i = 0; i < w; i++) {
-            columns[i] = connector.quoteIdentifier(columnsIndex.getLabel(i));
+            columns[i] = connector.quoteIdentifier(columnsIndex.get(i));
         }
 
         StringBuilder buffer = new StringBuilder();

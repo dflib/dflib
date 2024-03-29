@@ -74,7 +74,7 @@ public class FixedColumnSet implements ColumnSet {
         String[] csLabelsIndex = new String[csLen];
         for (int i = 0; i < csLen; i++) {
             csLabelsIndex[i] = csIndex[i] < sLen
-                    ? index.getLabel(csIndex[i])
+                    ? index.get(csIndex[i])
                     : String.valueOf(csIndex[i]);
         }
 

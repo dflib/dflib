@@ -165,7 +165,7 @@ public class ColumnDataFrame implements DataFrame {
         Series<?>[] newColumns = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            newColumns[i] = dataColumns[i].add(row.get(columnsIndex.getLabel(i)));
+            newColumns[i] = dataColumns[i].add(row.get(columnsIndex.get(i)));
         }
 
         return DataFrame.byColumn(getColumnsIndex()).of(newColumns);
@@ -189,7 +189,7 @@ public class ColumnDataFrame implements DataFrame {
 
         for (int i = 0; i < w; i++) {
 
-            String label = columnsIndex.getLabel(i);
+            String label = columnsIndex.get(i);
 
             if (condition.getColumnsIndex().hasLabel(label)) {
                 BooleanSeries cc = condition.getColumn(label).castAsBool();
@@ -210,7 +210,7 @@ public class ColumnDataFrame implements DataFrame {
 
         for (int i = 0; i < w; i++) {
 
-            String label = columnsIndex.getLabel(i);
+            String label = columnsIndex.get(i);
 
             if (condition.getColumnsIndex().hasLabel(label)) {
                 BooleanSeries cc = condition.getColumn(label).castAsBool();

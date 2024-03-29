@@ -292,8 +292,21 @@ public class Index implements Iterable<String> {
         return positions;
     }
 
-    public String getLabel(int pos) {
+    /**
+     * Returns a column label at the given position.
+     *
+     * @since 1.0.0-M21
+     */
+    public String get(int pos) {
         return labels[pos];
+    }
+
+    /**
+     * @deprecated in favor of {@link #get(int)}
+     */
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
+    public String getLabel(int pos) {
+        return get(pos);
     }
 
     public int size() {

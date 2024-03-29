@@ -120,7 +120,7 @@ public class DefaultRowColumnSet implements RowColumnSet {
         int w = hSliceIndex.size();
         Series<?>[] columns = new Series[w];
         for (int i = 0; i < w; i++) {
-            String name = hSliceIndex.getLabel(i);
+            String name = hSliceIndex.get(i);
             columns[i] = index.hasLabel(name)
                     ? source.getColumn(name)
                     : new SingleValueSeries<>(null, source.height());

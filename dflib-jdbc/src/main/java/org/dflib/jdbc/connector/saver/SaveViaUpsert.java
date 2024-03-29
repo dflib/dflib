@@ -140,7 +140,7 @@ public class SaveViaUpsert extends TableSaveStrategy {
             String[] updateColumns = new String[w - cardinality];
             for (int i = 0, j = 0; i < w; i++) {
                 if (!bits.get(i)) {
-                    updateColumns[j++] = toUpdate.getColumnsIndex().getLabel(i);
+                    updateColumns[j++] = toUpdate.getColumnsIndex().get(i);
                 }
             }
 

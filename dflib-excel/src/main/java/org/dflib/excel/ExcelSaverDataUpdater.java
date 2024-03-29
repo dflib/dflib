@@ -59,7 +59,7 @@ class ExcelSaverDataUpdater {
     private <T> void updateTypedColumn(int columnPos, Class<T> type, BiConsumer<Cell, T> cellUpdater) {
 
         Series<T> column = dataFrame.getColumn(columnPos);
-        String columName = dataFrame.getColumnsIndex().getLabel(columnPos);
+        String columName = dataFrame.getColumnsIndex().get(columnPos);
 
         // since all the values are of the same type, we can precalculate the style
         CellStyle style = cellStyle(columName, type);
@@ -81,7 +81,7 @@ class ExcelSaverDataUpdater {
     private void updateAnyTypeColumn(int columnPos) {
 
         Series<?> column = dataFrame.getColumn(columnPos);
-        String columName = dataFrame.getColumnsIndex().getLabel(columnPos);
+        String columName = dataFrame.getColumnsIndex().get(columnPos);
 
         int h = dataFrame.height();
         for (int i = 0; i < h; i++) {

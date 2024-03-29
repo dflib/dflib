@@ -75,7 +75,7 @@ class JsonLoaderWorker {
         Series[] series = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            series[i] = appenders.get(columnsIndex.getLabel(i)).toSeries();
+            series[i] = appenders.get(columnsIndex.get(i)).toSeries();
         }
 
         return new ColumnDataFrame(null, columnsIndex, series);
