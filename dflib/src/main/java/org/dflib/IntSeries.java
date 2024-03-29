@@ -45,6 +45,23 @@ public interface IntSeries extends Series<Integer> {
     IntSeries materialize();
 
     @Override
+    default int position(Integer value) {
+        if (value == null) {
+            return -1;
+        }
+
+        int ival = value;
+        int len = size();
+        for (int i = 0; i < len; i++) {
+            if (ival == getInt(i)) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    @Override
     default Series<?> expand(Object... values) {
         int len = values.length;
         if (len == 0) {

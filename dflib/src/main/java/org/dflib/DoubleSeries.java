@@ -44,6 +44,23 @@ public interface DoubleSeries extends Series<Double> {
     DoubleSeries materialize();
 
     @Override
+    default int position(Double value) {
+        if (value == null) {
+            return -1;
+        }
+
+        double pval = value;
+        int len = size();
+        for (int i = 0; i < len; i++) {
+            if (pval == getDouble(i)) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    @Override
     default Series<?> expand(Object... values) {
         int len = values.length;
         if (len == 0) {

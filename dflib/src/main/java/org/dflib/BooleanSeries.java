@@ -55,6 +55,23 @@ public interface BooleanSeries extends Series<Boolean> {
     BooleanSeries materialize();
 
     @Override
+    default int position(Boolean value) {
+        if (value == null) {
+            return -1;
+        }
+
+        boolean pval = value;
+        int len = size();
+        for (int i = 0; i < len; i++) {
+            if (pval == getBool(i)) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    @Override
     default Series<?> expand(Object... values) {
         int len = values.length;
         if (len == 0) {

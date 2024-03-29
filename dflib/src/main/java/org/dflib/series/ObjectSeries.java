@@ -89,6 +89,18 @@ public abstract class ObjectSeries<T> implements Series<T> {
     }
 
     @Override
+    public int position(T value) {
+        int len = size();
+        for (int i = 0; i < len; i++) {
+            if (Objects.equals(value, get(i))) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    @Override
     public DataFrame map(Index resultColumns, ValueToRowMapper<T> mapper) {
         return Mapper.map(this, resultColumns, mapper);
     }
