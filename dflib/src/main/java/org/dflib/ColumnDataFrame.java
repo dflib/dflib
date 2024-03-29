@@ -214,7 +214,7 @@ public class ColumnDataFrame implements DataFrame {
 
             if (condition.getColumnsIndex().hasLabel(label)) {
                 BooleanSeries cc = condition.getColumn(label).castAsBool();
-                newColumns[i] = dataColumns[i].replaceNoMatch(cc, null);
+                newColumns[i] = dataColumns[i].replaceExcept(cc, null);
             } else {
                 newColumns[i] = new SingleValueSeries<>(null, h);
             }

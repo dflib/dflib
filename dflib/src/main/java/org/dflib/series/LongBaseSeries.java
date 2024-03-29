@@ -371,7 +371,7 @@ public abstract class LongBaseSeries implements LongSeries {
     }
 
     @Override
-    public Series<Long> replaceNoMatch(BooleanSeries condition, Long with) {
+    public Series<Long> replaceExcept(BooleanSeries condition, Long with) {
         return with != null
                 ? replaceNoMatchLong(condition, with)
                 : nullifyNoMatch(condition);

@@ -320,7 +320,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
-    public Series<Boolean> replaceNoMatch(BooleanSeries condition, Boolean with) {
+    public Series<Boolean> replaceExcept(BooleanSeries condition, Boolean with) {
         return with != null
                 ? replaceNoMatchBoolean(condition, with)
                 : nullifyNoMatch(condition);

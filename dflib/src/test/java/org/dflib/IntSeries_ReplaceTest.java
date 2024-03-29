@@ -55,37 +55,37 @@ public class IntSeries_ReplaceTest {
     }
 
     @Test
-    public void replaceNoMatch() {
+    public void replaceExcept() {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
-        Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replaceNoMatch(cond, 5);
+        Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replaceExcept(cond, 5);
         assertTrue(s1 instanceof IntSeries);
         new SeriesAsserts(s1).expectData(1, 0, 5, 5);
     }
 
     @Test
-    public void replaceNoMatch_Null() {
+    public void replaceExcept_Null() {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
-        Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replaceNoMatch(cond, null);
+        Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replaceExcept(cond, null);
         assertFalse(s1 instanceof IntSeries);
         new SeriesAsserts(s1).expectData(1, 0, null, null);
     }
 
     @Test
-    public void replaceNoMatch_LargerCondition() {
+    public void replaceExcept_LargerCondition() {
         BooleanSeries cond = Series.ofBool(true, true, false, false, false);
 
-        Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replaceNoMatch(cond, 5);
+        Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replaceExcept(cond, 5);
         assertTrue(s1 instanceof IntSeries);
         new SeriesAsserts(s1).expectData(1, 0, 5, 5);
     }
 
     @Test
-    public void replaceNoMatch_SmallerCondition() {
+    public void replaceExcept_SmallerCondition() {
         BooleanSeries cond = Series.ofBool(true, true, false);
 
-        Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replaceNoMatch(cond, 5);
+        Series<Integer> s1 = Series.ofInt(1, 0, 2, -1).replaceExcept(cond, 5);
         assertTrue(s1 instanceof IntSeries);
         new SeriesAsserts(s1).expectData(1, 0, 5, 5);
     }

@@ -370,7 +370,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
-    public Series<Double> replaceNoMatch(BooleanSeries condition, Double with) {
+    public Series<Double> replaceExcept(BooleanSeries condition, Double with) {
         return with != null
                 ? replaceNoMatchDouble(condition, with)
                 : nullifyNoMatch(condition);

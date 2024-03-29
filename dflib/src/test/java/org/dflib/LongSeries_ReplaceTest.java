@@ -55,37 +55,37 @@ public class LongSeries_ReplaceTest {
     }
 
     @Test
-    public void replaceNoMatch() {
+    public void replaceExcept() {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
-        Series<Long> s1 = Series.ofLong(1, 0, 2, -1).replaceNoMatch(cond, 5L);
+        Series<Long> s1 = Series.ofLong(1, 0, 2, -1).replaceExcept(cond, 5L);
         assertTrue(s1 instanceof LongSeries);
         new SeriesAsserts(s1).expectData(1L, 0L, 5L, 5L);
     }
 
     @Test
-    public void replaceNoMatch_Null() {
+    public void replaceExcept_Null() {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
-        Series<Long> s1 = Series.ofLong(1, 0, 2, -1).replaceNoMatch(cond, null);
+        Series<Long> s1 = Series.ofLong(1, 0, 2, -1).replaceExcept(cond, null);
         assertFalse(s1 instanceof LongSeries);
         new SeriesAsserts(s1).expectData(1L, 0L, null, null);
     }
 
     @Test
-    public void replaceNoMatch_LargerCondition() {
+    public void replaceExcept_LargerCondition() {
         BooleanSeries cond = Series.ofBool(true, true, false, false, false);
 
-        Series<Long> s1 = Series.ofLong(1, 0, 2, -1).replaceNoMatch(cond, 5L);
+        Series<Long> s1 = Series.ofLong(1, 0, 2, -1).replaceExcept(cond, 5L);
         assertTrue(s1 instanceof LongSeries);
         new SeriesAsserts(s1).expectData(1L, 0L, 5L, 5L);
     }
 
     @Test
-    public void replaceNoMatch_SmallerCondition() {
+    public void replaceExcept_SmallerCondition() {
         BooleanSeries cond = Series.ofBool(true, true, false);
 
-        Series<Long> s1 = Series.ofLong(1, 0, 2, -1).replaceNoMatch(cond, 5L);
+        Series<Long> s1 = Series.ofLong(1, 0, 2, -1).replaceExcept(cond, 5L);
         assertTrue(s1 instanceof LongSeries);
         new SeriesAsserts(s1).expectData(1L, 0L, 5L, 5L);
     }

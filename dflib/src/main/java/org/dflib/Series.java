@@ -523,12 +523,25 @@ public interface Series<T> extends Iterable<T> {
     Series<T> replace(BooleanSeries condition, T with);
 
     /**
+     * Creates a new Series replacing the elements from this Series with the provided value at positions that correspond
+     * to "false" values in the "condition" Series.
+     *
      * @param condition a BooleanSeries that determines which cells need not be replaced.
      * @param with      a value to replace non-matching cells with
      * @return a new series with replaced values
-     * @since 0.6
+     * @since 1.0.0-M21
      */
-    Series<T> replaceNoMatch(BooleanSeries condition, T with);
+    Series<T> replaceExcept(BooleanSeries condition, T with);
+
+    /**
+     * @since 0.6
+     * @deprecated in favor of {@link #replaceExcept(BooleanSeries, Object)}
+     */
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
+    default Series<T> replaceNoMatch(BooleanSeries condition, T with) {
+        return replaceExcept(condition, with);
+    }
+
 
     /**
      * @return a Series that contains non-repeating values from this Series.

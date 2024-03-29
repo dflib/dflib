@@ -314,7 +314,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
     }
 
     @Override
-    public Series<T> replaceNoMatch(BooleanSeries condition, T with) {
+    public Series<T> replaceExcept(BooleanSeries condition, T with) {
 
         int s = size();
         int r = Math.min(s, condition.size());

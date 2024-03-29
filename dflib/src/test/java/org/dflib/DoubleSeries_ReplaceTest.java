@@ -55,37 +55,37 @@ public class DoubleSeries_ReplaceTest {
     }
 
     @Test
-    public void replaceNoMatch() {
+    public void replaceExcept() {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
-        Series<Double> s1 = Series.ofDouble(1.1, 0, 2.05, -1.0015).replaceNoMatch(cond, 5.2);
+        Series<Double> s1 = Series.ofDouble(1.1, 0, 2.05, -1.0015).replaceExcept(cond, 5.2);
         assertTrue(s1 instanceof DoubleSeries);
         new SeriesAsserts(s1).expectData(1.1, 0., 5.2, 5.2);
     }
 
     @Test
-    public void replaceNoMatch_Null() {
+    public void replaceExcept_Null() {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
-        Series<Double> s1 = Series.ofDouble(1.1, 0, 2.05, -1.0015).replaceNoMatch(cond, null);
+        Series<Double> s1 = Series.ofDouble(1.1, 0, 2.05, -1.0015).replaceExcept(cond, null);
         assertFalse(s1 instanceof DoubleSeries);
         new SeriesAsserts(s1).expectData(1.1, 0., null, null);
     }
 
     @Test
-    public void replaceNoMatch_LargerCondition() {
+    public void replaceExcept_LargerCondition() {
         BooleanSeries cond = Series.ofBool(true, true, false, false, false);
 
-        Series<Double> s1 = Series.ofDouble(1.1, 0, 2.05, -1.0015).replaceNoMatch(cond, 5.2);
+        Series<Double> s1 = Series.ofDouble(1.1, 0, 2.05, -1.0015).replaceExcept(cond, 5.2);
         assertTrue(s1 instanceof DoubleSeries);
         new SeriesAsserts(s1).expectData(1.1, 0., 5.2, 5.2);
     }
 
     @Test
-    public void replaceNoMatch_SmallerCondition() {
+    public void replaceExcept_SmallerCondition() {
         BooleanSeries cond = Series.ofBool(true, true, false);
 
-        Series<Double> s1 = Series.ofDouble(1.1, 0, 2.05, -1.0015).replaceNoMatch(cond, 5.2);
+        Series<Double> s1 = Series.ofDouble(1.1, 0, 2.05, -1.0015).replaceExcept(cond, 5.2);
         assertTrue(s1 instanceof DoubleSeries);
         new SeriesAsserts(s1).expectData(1.1, 0., 5.2, 5.2);
     }

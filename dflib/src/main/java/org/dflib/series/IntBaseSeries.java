@@ -402,7 +402,7 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public Series<Integer> replaceNoMatch(BooleanSeries condition, Integer with) {
+    public Series<Integer> replaceExcept(BooleanSeries condition, Integer with) {
         return with != null
                 ? replaceNoMatchInt(condition, with)
                 : nullifyNoMatch(condition);

@@ -40,34 +40,34 @@ public class Series_ReplaceTest {
     }
 
     @Test
-    public void replaceNoMatch() {
+    public void replaceExcept() {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
-        Series<String> s1 = Series.of("a", "b", "n", "c").replaceNoMatch(cond, "X");
+        Series<String> s1 = Series.of("a", "b", "n", "c").replaceExcept(cond, "X");
         new SeriesAsserts(s1).expectData("a", "b", "X", "X");
     }
 
     @Test
-    public void replaceNoMatch_Null() {
+    public void replaceExcept_Null() {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
-        Series<String> s1 = Series.of("a", "b", "n", "c").replaceNoMatch(cond, null);
+        Series<String> s1 = Series.of("a", "b", "n", "c").replaceExcept(cond, null);
         new SeriesAsserts(s1).expectData("a", "b", null, null);
     }
 
     @Test
-    public void replaceNoMatch_LargerCondition() {
+    public void replaceExcept_LargerCondition() {
         BooleanSeries cond = Series.ofBool(true, true, false, false, false);
 
-        Series<String> s1 = Series.of("a", "b", "n", "c").replaceNoMatch(cond, "X");
+        Series<String> s1 = Series.of("a", "b", "n", "c").replaceExcept(cond, "X");
         new SeriesAsserts(s1).expectData("a", "b", "X", "X");
     }
 
     @Test
-    public void replaceNoMatch_SmallerCondition() {
+    public void replaceExcept_SmallerCondition() {
         BooleanSeries cond = Series.ofBool(true, true, false);
 
-        Series<String> s1 = Series.of("a", "b", "n", "c").replaceNoMatch(cond, "X");
+        Series<String> s1 = Series.of("a", "b", "n", "c").replaceExcept(cond, "X");
         new SeriesAsserts(s1).expectData("a", "b", "X", "X");
     }
 }
