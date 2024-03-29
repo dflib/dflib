@@ -142,6 +142,25 @@ public interface Series<T> extends Iterable<T> {
 
     void copyTo(Object[] to, int fromOffset, int toOffset, int len);
 
+
+    /**
+     * Finds a position of the first occurrence of the value. Returns -1, if the value is not found. Most Series are not
+     * indexed, so this operation will have an O(N) performance (unlike O(1) performance of {@link Index#contains(String)}).
+     *
+     * @since 1.0.0-M21
+     */
+    int position(T value);
+
+    /**
+     * Returns true if the value is found in the Series. Most Series are not indexed, so this operation will have an
+     * O(N) performance (unlike O(1) performance of {@link Index#contains(String)}).
+     *
+     * @since 1.0.0-M21
+     */
+    default boolean contains(T value) {
+        return position(value) >= 0;
+    }
+
     /**
      * @since 0.16
      */
