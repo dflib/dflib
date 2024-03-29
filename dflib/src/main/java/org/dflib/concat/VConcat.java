@@ -83,7 +83,7 @@ public class VConcat {
         Iterator<String> it = columns.iterator();
         while (it.hasNext()) {
             String c = it.next();
-            if (!index.hasLabel(c)) {
+            if (!index.contains(c)) {
                 it.remove();
             }
         }
@@ -160,6 +160,6 @@ public class VConcat {
     }
 
     private int mapSeriesPosition(Index concatColumns, String dfColumn) {
-        return concatColumns.hasLabel(dfColumn) ? concatColumns.position(dfColumn) : -1;
+        return concatColumns.contains(dfColumn) ? concatColumns.position(dfColumn) : -1;
     }
 }

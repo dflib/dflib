@@ -26,7 +26,7 @@ public class ColumnSetMerger {
         int expandBy = 0;
 
         for (int i = 0; i < csLen; i++) {
-            if (sourceIndex.hasLabel(csLabels[i])) {
+            if (sourceIndex.contains(csLabels[i])) {
 
                 int srcPos = sourceIndex.position(csLabels[i]);
 

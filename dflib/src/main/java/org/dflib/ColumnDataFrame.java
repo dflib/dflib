@@ -191,7 +191,7 @@ public class ColumnDataFrame implements DataFrame {
 
             String label = columnsIndex.get(i);
 
-            if (condition.getColumnsIndex().hasLabel(label)) {
+            if (condition.getColumnsIndex().contains(label)) {
                 BooleanSeries cc = condition.getColumn(label).castAsBool();
                 newColumns[i] = dataColumns[i].replace(cc, null);
             } else {
@@ -212,7 +212,7 @@ public class ColumnDataFrame implements DataFrame {
 
             String label = columnsIndex.get(i);
 
-            if (condition.getColumnsIndex().hasLabel(label)) {
+            if (condition.getColumnsIndex().contains(label)) {
                 BooleanSeries cc = condition.getColumn(label).castAsBool();
                 newColumns[i] = dataColumns[i].replaceExcept(cc, null);
             } else {

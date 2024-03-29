@@ -584,7 +584,7 @@ public class FixedColumnSet implements ColumnSet {
 
     private Series<?> getOrCreateColumn(DataFrame source, int pos) {
         String name = csIndex[pos];
-        return sourceColumnsIndex.hasLabel(name)
+        return sourceColumnsIndex.contains(name)
                 ? source.getColumn(name)
                 : new SingleValueSeries<>(null, source.height());
     }
@@ -596,7 +596,7 @@ public class FixedColumnSet implements ColumnSet {
             Supplier<Series<?>> createNew) {
 
         String name = csIndex[pos];
-        return sourceColumnsIndex.hasLabel(name)
+        return sourceColumnsIndex.contains(name)
                 ? andApplyToExisting.apply(source.getColumn(name))
                 : createNew.get();
     }

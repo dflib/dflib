@@ -76,7 +76,7 @@ public abstract class LabelDeduplicator {
 
         @Override
         public String nonConflictingName(String baseName) {
-            while (refIndex.hasLabel(baseName) || !seen.add(baseName)) {
+            while (refIndex.contains(baseName) || !seen.add(baseName)) {
                 baseName = baseName + "_";
             }
             return baseName;

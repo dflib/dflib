@@ -42,7 +42,7 @@ public class HConcat {
         for (int i = 0; i < rlen; i++) {
 
             String name = rightLabels[i];
-            while (leftIndex.hasLabel(name)) {
+            while (leftIndex.contains(name)) {
                 name = name + "_";
             }
 

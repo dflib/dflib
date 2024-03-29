@@ -66,7 +66,6 @@ interface ColumnExtractStrategy {
 
     private static CsvColumnMap positionsExcept(Index csvHeader, int[] columns) {
         return positions(csvHeader, csvHeader.positionsExcept(columns));
-
     }
 
     private static CsvColumnMap labelsExcept(Index csvHeader, String[] columns) {

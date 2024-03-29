@@ -20,15 +20,16 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 /**
- * An "index" of the DataFrame that provides access to column names and positions.
+ * An "index" of the DataFrame that provides access to column names and positions. Index object is essentially a series
+ * of unique Strings with indexed search.
  */
 public class Index implements Iterable<String> {
 
-    protected final String[] labels;
-    protected volatile Map<String, Integer> labelPositions;
+    protected final String[] values;
+    protected volatile Map<String, Integer> valueIndex;
 
-    protected Index(String... labels) {
-        this.labels = labels;
+    protected Index(String... values) {
+        this.values = values;
     }
 
     /**
@@ -76,7 +77,7 @@ public class Index implements Iterable<String> {
 
     @Override
     public Iterator<String> iterator() {
-        return new ArrayIterator<>(labels);
+        return new ArrayIterator<>(values);
     }
 
     /**
@@ -93,7 +94,7 @@ public class Index implements Iterable<String> {
 
         String[] newLabels = new String[len];
         for (int i = 0; i < len; i++) {
-            newLabels[i] = renamer.apply(labels[i]);
+            newLabels[i] = renamer.apply(values[i]);
         }
 
         return new Index(newLabels);
@@ -106,7 +107,7 @@ public class Index implements Iterable<String> {
         Set<String> unique = new LinkedHashSet<>();
 
         for (int i = 0; i < len; i++) {
-            String oldLabel = labels[i];
+            String oldLabel = values[i];
             String newLabel = oldToNewLabels.get(oldLabel);
             String label = newLabel != null ? newLabel : oldLabel;
             if (!unique.add(label)) {
@@ -130,7 +131,7 @@ public class Index implements Iterable<String> {
 
         Map<String, String> map = new HashMap<>((int) (newLabels.length / 0.75));
         for (int i = 0; i < newLabels.length; i++) {
-            map.put(labels[i], newLabels[i]);
+            map.put(values[i], newLabels[i]);
         }
 
         return rename(map);
@@ -141,16 +142,16 @@ public class Index implements Iterable<String> {
      */
     public Index add(String... values) {
         int rlen = values.length;
-        int llen = labels.length;
+        int llen = this.values.length;
 
         String[] zipped = new String[llen + rlen];
-        System.arraycopy(labels, 0, zipped, 0, llen);
+        System.arraycopy(this.values, 0, zipped, 0, llen);
 
         // resolve dupes on the right
         for (int i = 0; i < rlen; i++) {
 
             String name = values[i];
-            while (hasLabel(name)) {
+            while (contains(name)) {
                 name = name + "_";
             }
 
@@ -179,7 +180,7 @@ public class Index implements Iterable<String> {
 
         for (int i = 0; i < len; i++) {
 
-            String label = labels[positions.getInt(i)];
+            String label = values[positions.getInt(i)];
 
             while (!uniqueLabels.add(label)) {
                 label = label + "_";
@@ -210,7 +211,7 @@ public class Index implements Iterable<String> {
 
         for (int i = 0; i < len; i++) {
 
-            String label = labels[positions[i]];
+            String label = values[positions[i]];
 
             while (!uniqueLabels.add(label)) {
                 label = label + "_";
@@ -239,10 +240,10 @@ public class Index implements Iterable<String> {
     public Index selectRange(int fromInclusive, int toExclusive) {
 
         int len = toExclusive - fromInclusive;
-        Range.checkRange(fromInclusive, len, labels.length);
+        Range.checkRange(fromInclusive, len, values.length);
 
         String[] newLabels = new String[len];
-        System.arraycopy(labels, fromInclusive, newLabels, 0, len);
+        System.arraycopy(values, fromInclusive, newLabels, 0, len);
 
         return Index.of(newLabels);
     }
@@ -266,12 +267,12 @@ public class Index implements Iterable<String> {
      * @since 1.0.0-M21
      */
     public Index select(Predicate<String> condition) {
-        int len = labels.length;
+        int len = values.length;
         List<String> selected = new ArrayList<>(len);
 
         for (int i = 0; i < len; i++) {
-            if (condition.test(labels[i])) {
-                selected.add(labels[i]);
+            if (condition.test(values[i])) {
+                selected.add(values[i]);
             }
         }
 
@@ -298,7 +299,7 @@ public class Index implements Iterable<String> {
 
         List<String> toDrop = new ArrayList<>(values.length);
         for (String l : values) {
-            if (hasLabel(l)) {
+            if (contains(l)) {
                 toDrop.add(l);
             }
         }
@@ -308,10 +309,10 @@ public class Index implements Iterable<String> {
         }
 
         String[] toKeep = new String[size() - toDrop.size()];
-        for (int i = 0, j = 0; i < this.labels.length; i++) {
+        for (int i = 0, j = 0; i < this.values.length; i++) {
 
-            if (!toDrop.contains(this.labels[i])) {
-                toKeep[j] = this.labels[i];
+            if (!toDrop.contains(this.values[i])) {
+                toKeep[j] = this.values[i];
                 j++;
             }
         }
@@ -332,12 +333,12 @@ public class Index implements Iterable<String> {
      */
     public Index selectExcept(Predicate<String> condition) {
 
-        int len = labels.length;
+        int len = values.length;
         List<String> selected = new ArrayList<>(len);
 
         for (int i = 0; i < len; i++) {
-            if (!condition.test(labels[i])) {
-                selected.add(labels[i]);
+            if (!condition.test(values[i])) {
+                selected.add(values[i]);
             }
         }
 
@@ -363,16 +364,16 @@ public class Index implements Iterable<String> {
     // not-public direct accessor to mutable labels ... Saves on data copy, but the callers should be
     // careful not to alter the values
     String[] toArrayNoCopy() {
-        return labels;
+        return values;
     }
 
     /**
      * @since 1.0.0-M21
      */
     public String[] toArray() {
-        int len = labels.length;
+        int len = values.length;
         String[] copy = new String[len];
-        System.arraycopy(labels, 0, copy, 0, len);
+        System.arraycopy(values, 0, copy, 0, len);
         return copy;
     }
 
@@ -382,7 +383,7 @@ public class Index implements Iterable<String> {
      * @since 1.0.0-M21
      */
     public String get(int pos) {
-        return labels[pos];
+        return values[pos];
     }
 
     /**
@@ -394,15 +395,15 @@ public class Index implements Iterable<String> {
     }
 
     public int size() {
-        return labels.length;
+        return values.length;
     }
 
     public int position(String label) {
-        if (labelPositions == null) {
-            this.labelPositions = computeLabelPositions();
+        if (valueIndex == null) {
+            this.valueIndex = computeIndex();
         }
 
-        Integer pos = labelPositions.get(label);
+        Integer pos = valueIndex.get(label);
         if (pos == null) {
             throw new IllegalArgumentException("Label '" + label + "' is not present in the Index");
         }
@@ -422,14 +423,14 @@ public class Index implements Iterable<String> {
             return new int[0];
         }
 
-        if (labelPositions == null) {
-            this.labelPositions = computeLabelPositions();
+        if (valueIndex == null) {
+            this.valueIndex = computeIndex();
         }
 
         int[] positions = new int[len];
 
         for (int i = 0; i < len; i++) {
-            Integer pos = labelPositions.get(labels[i]);
+            Integer pos = valueIndex.get(labels[i]);
             if (pos == null) {
                 throw new IllegalArgumentException("Label '" + labels[i] + "' is not present in the Index");
             }
@@ -449,7 +450,7 @@ public class Index implements Iterable<String> {
 
         int len = exceptLabels.length;
         if (len == 0) {
-            return positionsArray(labels.length);
+            return positionsArray(values.length);
         }
 
         Set<String> excludes = new HashSet<>();
@@ -470,7 +471,7 @@ public class Index implements Iterable<String> {
 
         int exceptLen = exceptPositions.length;
         if (exceptLen == 0) {
-            return positionsArray(labels.length);
+            return positionsArray(values.length);
         }
 
         Set<Integer> excludes = new HashSet<>((int) Math.ceil(exceptLen / 0.75));
@@ -478,7 +479,7 @@ public class Index implements Iterable<String> {
             excludes.add(e);
         }
 
-        int len = labels.length;
+        int len = values.length;
         int[] positions = new int[len - excludes.size()];
 
         for (int ii = 0, i = 0; i < len; i++) {
@@ -494,12 +495,12 @@ public class Index implements Iterable<String> {
      * @since 1.0.0-M19
      */
     public int[] positions(Predicate<String> labelCondition) {
-        if (labelPositions == null) {
-            this.labelPositions = computeLabelPositions();
+        if (valueIndex == null) {
+            this.valueIndex = computeIndex();
         }
 
         List<Integer> positions = new ArrayList<>();
-        for (Map.Entry<String, Integer> e : labelPositions.entrySet()) {
+        for (Map.Entry<String, Integer> e : valueIndex.entrySet()) {
             if (labelCondition.test(e.getKey())) {
                 positions.add(e.getValue());
             }
@@ -515,12 +516,23 @@ public class Index implements Iterable<String> {
         return intPositions;
     }
 
-    public boolean hasLabel(String label) {
-        if (labelPositions == null) {
-            this.labelPositions = computeLabelPositions();
+    /**
+     * @since 1.0.0-M21
+     */
+    public boolean contains(String value) {
+        if (valueIndex == null) {
+            this.valueIndex = computeIndex();
         }
 
-        return labelPositions.containsKey(label);
+        return valueIndex.containsKey(value);
+    }
+
+    /**
+     * @deprecated in favor of {@link #contains(String)}
+     */
+    @Deprecated(since = "1.0.0-M21", forRemoval = true)
+    public boolean hasLabel(String label) {
+        return contains(label);
     }
 
     @Override
@@ -532,7 +544,7 @@ public class Index implements Iterable<String> {
 
         if (obj instanceof Index) {
             Index otherIndex = (Index) obj;
-            return Arrays.equals(labels, otherIndex.labels);
+            return Arrays.equals(values, otherIndex.values);
         }
 
         return false;
@@ -557,7 +569,7 @@ public class Index implements Iterable<String> {
      * @since 0.7
      */
     public Series<String> toSeries() {
-        return Series.of(labels);
+        return Series.of(values);
     }
 
     @Override
@@ -565,15 +577,15 @@ public class Index implements Iterable<String> {
         return toSeries().toString();
     }
 
-    protected Map<String, Integer> computeLabelPositions() {
+    protected Map<String, Integer> computeIndex() {
 
         Map<String, Integer> index = new LinkedHashMap<>();
 
-        for (int i = 0; i < labels.length; i++) {
-            Integer previous = index.put(labels[i], i);
+        for (int i = 0; i < values.length; i++) {
+            Integer previous = index.put(values[i], i);
             if (previous != null) {
                 throw new IllegalStateException("Duplicate label '"
-                        + labels[i]
+                        + values[i]
                         + "'. Found at " + previous + " and " + i);
             }
         }
