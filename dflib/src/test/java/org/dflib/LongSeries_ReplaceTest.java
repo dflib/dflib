@@ -35,7 +35,7 @@ public class LongSeries_ReplaceTest {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
         Series<Long> s1 = Series.ofLong(1, 0, 2, -1).replace(cond, 5L);
-        assertTrue(s1 instanceof LongSeries);
+        assertInstanceOf(LongSeries.class, s1);
         new SeriesAsserts(s1).expectData(5L, 5L, 2L, -1L);
     }
 
@@ -53,7 +53,7 @@ public class LongSeries_ReplaceTest {
         BooleanSeries cond = Series.ofBool(true, true, false);
 
         Series<Long> s1 = Series.ofLong(1, 0, 2, -1).replace(cond, 5L);
-        assertTrue(s1 instanceof LongSeries);
+        assertInstanceOf(LongSeries.class, s1);
         new SeriesAsserts(s1).expectData(5L, 5L, 2L, -1L);
     }
 
@@ -61,7 +61,7 @@ public class LongSeries_ReplaceTest {
     public void replaceMap() {
 
         Series<Long> s1 = Series.ofLong(1L, 0L, 2L, -1L).replace(Map.of(1L, -1L, 2L, 15L));
-        assertTrue(s1 instanceof LongSeries);
+        assertInstanceOf(LongSeries.class, s1);
         new SeriesAsserts(s1).expectData(-1L, 0L, 15L, -1L);
 
         Series<Long> s2 = Series.ofLong(1L, 0L, 2L, -1L).replace(Collections.singletonMap(2L, null));
@@ -73,7 +73,7 @@ public class LongSeries_ReplaceTest {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
         Series<Long> s1 = Series.ofLong(1, 0, 2, -1).replaceExcept(cond, 5L);
-        assertTrue(s1 instanceof LongSeries);
+        assertInstanceOf(LongSeries.class, s1);
         new SeriesAsserts(s1).expectData(1L, 0L, 5L, 5L);
     }
 
@@ -91,7 +91,7 @@ public class LongSeries_ReplaceTest {
         BooleanSeries cond = Series.ofBool(true, true, false, false, false);
 
         Series<Long> s1 = Series.ofLong(1, 0, 2, -1).replaceExcept(cond, 5L);
-        assertTrue(s1 instanceof LongSeries);
+        assertInstanceOf(LongSeries.class, s1);
         new SeriesAsserts(s1).expectData(1L, 0L, 5L, 5L);
     }
 
@@ -100,7 +100,7 @@ public class LongSeries_ReplaceTest {
         BooleanSeries cond = Series.ofBool(true, true, false);
 
         Series<Long> s1 = Series.ofLong(1, 0, 2, -1).replaceExcept(cond, 5L);
-        assertTrue(s1 instanceof LongSeries);
+        assertInstanceOf(LongSeries.class, s1);
         new SeriesAsserts(s1).expectData(1L, 0L, 5L, 5L);
     }
 

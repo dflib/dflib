@@ -1,7 +1,6 @@
 package org.dflib;
 
 import org.dflib.unit.SeriesAsserts;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,14 +11,14 @@ public class BooleanSeries_SelectTest {
     public void positional() {
         Series<Boolean> s = Series.ofBool(true, false, true).select(2, 1);
         new SeriesAsserts(s).expectData(true, false);
-        assertTrue(s instanceof BooleanSeries);
+        assertInstanceOf(BooleanSeries.class, s);
     }
 
     @Test
     public void positional_Empty() {
         Series<Boolean> s = Series.ofBool(true, false, true).select();
         new SeriesAsserts(s).expectData();
-        assertTrue(s instanceof BooleanSeries);
+        assertInstanceOf(BooleanSeries.class, s);
     }
 
     @Test
@@ -39,6 +38,6 @@ public class BooleanSeries_SelectTest {
         BooleanSeries condition = Series.ofBool(false, true, true);
         Series<Boolean> s = Series.ofBool(true, false, true).select(condition);
         new SeriesAsserts(s).expectData(false, true);
-        Assertions.assertTrue(s instanceof BooleanSeries);
+        assertInstanceOf(BooleanSeries.class, s);
     }
 }

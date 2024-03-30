@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 
 public class DataFrame_AddRowTest {
@@ -60,7 +60,7 @@ public class DataFrame_AddRowTest {
                 .expectRow(1, 6L, 2)
                 .expectRow(2, 3L, "str");
 
-        assertTrue(df.getColumn("a").unsafeCastAs(Long.class) instanceof LongSeries);
-        assertTrue(df.getColumn("b") instanceof ObjectSeries);
+        assertInstanceOf(LongSeries.class, df.getColumn("a").unsafeCastAs(Long.class));
+        assertInstanceOf(ObjectSeries.class, df.getColumn("b"));
     }
 }

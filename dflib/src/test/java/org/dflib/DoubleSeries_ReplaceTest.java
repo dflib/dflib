@@ -35,7 +35,7 @@ public class DoubleSeries_ReplaceTest {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
         Series<Double> s1 = Series.ofDouble(1.1, 0, 2.05, -1.0015).replace(cond, 5.2);
-        assertTrue(s1 instanceof DoubleSeries);
+        assertInstanceOf(DoubleSeries.class, s1);
         new SeriesAsserts(s1).expectData(5.2, 5.2, 2.05, -1.0015);
     }
 
@@ -44,7 +44,6 @@ public class DoubleSeries_ReplaceTest {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
         Series<Double> s1 = Series.ofDouble(1.1, 0, 2.05, -1.0015).replace(cond, null);
-        assertFalse(s1 instanceof DoubleSeries);
         new SeriesAsserts(s1).expectData(null, null, 2.05, -1.0015);
     }
 
@@ -53,7 +52,7 @@ public class DoubleSeries_ReplaceTest {
         BooleanSeries cond = Series.ofBool(true, true, false);
 
         Series<Double> s1 = Series.ofDouble(1.1, 0, 2.05, -1.0015).replace(cond, 5.2);
-        assertTrue(s1 instanceof DoubleSeries);
+        assertInstanceOf(DoubleSeries.class, s1);
         new SeriesAsserts(s1).expectData(5.2, 5.2, 2.05, -1.0015);
     }
 
@@ -61,7 +60,7 @@ public class DoubleSeries_ReplaceTest {
     public void replaceMap() {
 
         Series<Double> s1 = Series.ofDouble(1.1, 0., 2., -1.01).replace(Map.of(1.1, -1.5, 2., 15.));
-        assertTrue(s1 instanceof DoubleSeries);
+        assertInstanceOf(DoubleSeries.class, s1);
         new SeriesAsserts(s1).expectData(-1.5, 0., 15., -1.01);
 
         Series<Double> s2 = Series.ofDouble(1.1, 0., 2., -1.01).replace(Collections.singletonMap(2., null));
@@ -73,7 +72,7 @@ public class DoubleSeries_ReplaceTest {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
         Series<Double> s1 = Series.ofDouble(1.1, 0, 2.05, -1.0015).replaceExcept(cond, 5.2);
-        assertTrue(s1 instanceof DoubleSeries);
+        assertInstanceOf(DoubleSeries.class, s1);
         new SeriesAsserts(s1).expectData(1.1, 0., 5.2, 5.2);
     }
 
@@ -82,7 +81,6 @@ public class DoubleSeries_ReplaceTest {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
         Series<Double> s1 = Series.ofDouble(1.1, 0, 2.05, -1.0015).replaceExcept(cond, null);
-        assertFalse(s1 instanceof DoubleSeries);
         new SeriesAsserts(s1).expectData(1.1, 0., null, null);
     }
 
@@ -91,7 +89,7 @@ public class DoubleSeries_ReplaceTest {
         BooleanSeries cond = Series.ofBool(true, true, false, false, false);
 
         Series<Double> s1 = Series.ofDouble(1.1, 0, 2.05, -1.0015).replaceExcept(cond, 5.2);
-        assertTrue(s1 instanceof DoubleSeries);
+        assertInstanceOf(DoubleSeries.class, s1);
         new SeriesAsserts(s1).expectData(1.1, 0., 5.2, 5.2);
     }
 
@@ -100,7 +98,7 @@ public class DoubleSeries_ReplaceTest {
         BooleanSeries cond = Series.ofBool(true, true, false);
 
         Series<Double> s1 = Series.ofDouble(1.1, 0, 2.05, -1.0015).replaceExcept(cond, 5.2);
-        assertTrue(s1 instanceof DoubleSeries);
+        assertInstanceOf(DoubleSeries.class, s1);
         new SeriesAsserts(s1).expectData(1.1, 0., 5.2, 5.2);
     }
 

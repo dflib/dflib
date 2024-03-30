@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DataFrame_ByRowTest {
 
@@ -88,7 +87,7 @@ public class DataFrame_ByRowTest {
                 .expectRow(3, "const", "L1")
                 .expectRow(4, "const", "L2");
 
-        assertTrue(df.getColumn(0) instanceof SingleValueSeries);
+        assertInstanceOf(SingleValueSeries.class, df.getColumn(0));
     }
 
     @Test

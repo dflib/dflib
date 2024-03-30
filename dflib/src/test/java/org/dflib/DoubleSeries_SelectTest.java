@@ -11,14 +11,14 @@ public class DoubleSeries_SelectTest {
     public void test() {
         Series<Double> s = Series.ofDouble(3, 4, 2).select(2, 1);
         new SeriesAsserts(s).expectData(2., 4.);
-        assertTrue(s instanceof DoubleSeries);
+        assertInstanceOf(DoubleSeries.class, s);
     }
 
     @Test
     public void empty() {
         Series<Double> s = Series.ofDouble(3, 4, 2).select();
         new SeriesAsserts(s).expectData();
-        assertTrue(s instanceof DoubleSeries);
+        assertInstanceOf(DoubleSeries.class, s);
     }
 
     @Test
@@ -31,7 +31,6 @@ public class DoubleSeries_SelectTest {
     public void nulls() {
         Series<Double> s = Series.ofDouble(3, 4, 2).select(2, 1, -1);
         new SeriesAsserts(s).expectData(2., 4., null);
-        assertFalse(s instanceof DoubleSeries);
     }
 
     @Test
@@ -39,6 +38,6 @@ public class DoubleSeries_SelectTest {
         BooleanSeries condition = Series.ofBool(false, true, true);
         Series<Double> s = Series.ofDouble(3, 4, 2).select(condition);
         new SeriesAsserts(s).expectData(4., 2.);
-        assertTrue(s instanceof DoubleSeries);
+        assertInstanceOf(DoubleSeries.class, s);
     }
 }

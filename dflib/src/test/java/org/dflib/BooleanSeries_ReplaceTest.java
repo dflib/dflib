@@ -1,14 +1,12 @@
 package org.dflib;
 
 import org.dflib.unit.SeriesAsserts;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BooleanSeries_ReplaceTest {
 
@@ -37,11 +35,11 @@ public class BooleanSeries_ReplaceTest {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
         Series<Boolean> s1 = Series.ofBool(true, false, true, true).replace(cond, false);
-        assertTrue(s1 instanceof BooleanSeries);
+        assertInstanceOf(BooleanSeries.class, s1);
         new SeriesAsserts(s1).expectData(false, false, true, true);
 
         Series<Boolean> s2 = Series.ofBool(true, false, true, true).replace(cond, true);
-        assertTrue(s2 instanceof BooleanSeries);
+        assertInstanceOf(BooleanSeries.class, s2);
         new SeriesAsserts(s2).expectData(true, true, true, true);
     }
 
@@ -59,11 +57,11 @@ public class BooleanSeries_ReplaceTest {
         BooleanSeries cond = Series.ofBool(true, true, false);
 
         Series<Boolean> s1 = Series.ofBool(true, false, true, true).replace(cond, false);
-        assertTrue(s1 instanceof BooleanSeries);
+        assertInstanceOf(BooleanSeries.class, s1);
         new SeriesAsserts(s1).expectData(false, false, true, true);
 
         Series<Boolean> s2 = Series.ofBool(true, false, true, true).replace(cond, true);
-        assertTrue(s2 instanceof BooleanSeries);
+        assertInstanceOf(BooleanSeries.class, s2);
         new SeriesAsserts(s2).expectData(true, true, true, true);
     }
 
@@ -71,7 +69,7 @@ public class BooleanSeries_ReplaceTest {
     public void replaceMap() {
 
         Series<Boolean> s1 = Series.ofBool(true, false, true, true).replace(Map.of(true, false, false, true));
-        assertTrue(s1 instanceof BooleanSeries);
+        assertInstanceOf(BooleanSeries.class, s1);
         new SeriesAsserts(s1).expectData(false, true, false, false);
 
         Series<Boolean> s2 = Series.ofBool(true, false, true, true).replace(Collections.singletonMap(true, null));
@@ -83,11 +81,11 @@ public class BooleanSeries_ReplaceTest {
         BooleanSeries cond = Series.ofBool(true, true, false, false);
 
         Series<Boolean> s1 = Series.ofBool(true, false, true, true).replaceExcept(cond, false);
-        Assertions.assertTrue(s1 instanceof BooleanSeries);
+        assertInstanceOf(BooleanSeries.class, s1);
         new SeriesAsserts(s1).expectData(true, false, false, false);
 
         Series<Boolean> s2 = Series.ofBool(true, false, true, true).replaceExcept(cond, true);
-        assertTrue(s2 instanceof BooleanSeries);
+        assertInstanceOf(BooleanSeries.class, s2);
         new SeriesAsserts(s2).expectData(true, false, true, true);
     }
 
@@ -105,11 +103,11 @@ public class BooleanSeries_ReplaceTest {
         BooleanSeries cond = Series.ofBool(true, true, false, false, false);
 
         Series<Boolean> s1 = Series.ofBool(true, false, true, true).replaceExcept(cond, false);
-        assertTrue(s1 instanceof BooleanSeries);
+        assertInstanceOf(BooleanSeries.class, s1);
         new SeriesAsserts(s1).expectData(true, false, false, false);
 
         Series<Boolean> s2 = Series.ofBool(true, false, true, true).replaceExcept(cond, true);
-        assertTrue(s2 instanceof BooleanSeries);
+        assertInstanceOf(BooleanSeries.class, s2);
         new SeriesAsserts(s2).expectData(true, false, true, true);
     }
 
@@ -118,11 +116,11 @@ public class BooleanSeries_ReplaceTest {
         BooleanSeries cond = Series.ofBool(true, true, false);
 
         Series<Boolean> s1 = Series.ofBool(true, false, true, true).replaceExcept(cond, false);
-        assertTrue(s1 instanceof BooleanSeries);
+        assertInstanceOf(BooleanSeries.class, s1);
         new SeriesAsserts(s1).expectData(true, false, false, false);
 
         Series<Boolean> s2 = Series.ofBool(true, false, true, true).replaceExcept(cond, true);
-        assertTrue(s2 instanceof BooleanSeries);
+        assertInstanceOf(BooleanSeries.class, s2);
         new SeriesAsserts(s2).expectData(true, false, true, true);
     }
 }
