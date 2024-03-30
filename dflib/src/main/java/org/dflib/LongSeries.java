@@ -279,6 +279,9 @@ public interface LongSeries extends Series<Long> {
     }
 
     /**
+     * Performs per-element addition between this and another LongSeries, returning the Series of the same
+     * length.
+     *
      * @since 0.11
      */
     default LongSeries add(LongSeries s) {

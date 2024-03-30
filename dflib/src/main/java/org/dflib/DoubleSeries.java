@@ -279,6 +279,9 @@ public interface DoubleSeries extends Series<Double> {
     }
 
     /**
+     * Performs per-element addition between this and another DoubleSeries, returning the Series of the same
+     * length.
+     *
      * @since 0.11
      */
     default DoubleSeries add(DoubleSeries s) {

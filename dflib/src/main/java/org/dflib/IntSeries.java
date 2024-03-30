@@ -290,6 +290,9 @@ public interface IntSeries extends Series<Integer> {
     }
 
     /**
+     * Performs per-element addition between this and another IntSeries, returning the Series of the same
+     * length.
+     *
      * @since 0.11
      */
     default IntSeries add(IntSeries s) {
