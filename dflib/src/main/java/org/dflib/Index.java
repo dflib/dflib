@@ -20,8 +20,10 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 /**
- * An "index" of the DataFrame that provides access to column names and positions. Index object is essentially a series
- * of unique Strings with indexed position search by value.
+ * DataFrame header with access to column names and positions. While not formally a {@link Series}, the Index object is
+ * a very similar data structure and has a similar API. It is an ordered sequence of Strings, but the positions of
+ * its values are indexed (so {@link #contains(String)} and {@link #position(String)} are O(1) operations), and values
+ * are generally unique.
  */
 public class Index implements Iterable<String> {
 
