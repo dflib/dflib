@@ -4,13 +4,34 @@ import org.dflib.unit.IndexAsserts;
 import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class IndexTest {
 
     @Test
-    public void addTest() {
+    public void testEquals() {
+        Index i1 = Index.of("a", "b", "c");
+        Index i2 = Index.of("a", "b", "c");
+        Index i3 = Index.of("a", "b", "C");
+
+        assertEquals(i1, i1);
+        assertEquals(i1, i2);
+        assertNotEquals(i1, i3);
+    }
+
+    @Test
+    public void testHashCode() {
+        Index i1 = Index.of("a", "b", "c");
+        Index i2 = Index.of("a", "b", "c");
+        Index i3 = Index.of("a", "b", "C");
+
+        assertEquals(i1.hashCode(), i1.hashCode());
+        assertEquals(i1.hashCode(), i2.hashCode());
+        assertNotEquals(i1.hashCode(), i3.hashCode());
+    }
+
+    @Test
+    public void expand() {
         Index i = Index.of("a", "b", "c").expand("d", "e", "d", "a");
         new SeriesAsserts(i.toSeries()).expectData("a", "b", "c", "d", "e", "d_", "a_");
     }

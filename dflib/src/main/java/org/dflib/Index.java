@@ -572,6 +572,11 @@ public class Index implements Iterable<String> {
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(values);
+    }
+
     /**
      * @since 0.7
      */
