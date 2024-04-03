@@ -25,11 +25,10 @@ Google Sheets, etc.)
 * [Documentation](https://dflib.org/docs/1.x/)
 * [Discussions and Support Forum](https://github.com/dflib/dflib/discussions)
 
-### Older Stuff
+## Presentation Videos
 
-* A 20-min presentation of an early version of DFLib. While the DFLib API has evolved substantially since then, the 
-video still demonstrates the idea of the project...
+* [DataFrame, a Swiss Army Knife of Java Data Processing](https://www.youtube.com/watch?v=OrGqCflOMIc). Nashville JUG, 03/2024
+* [Early version of DFLib](http://www.youtube.com/watch?v=WSqvEdRZsuE). Frankfurt WO Day, 04/2019
 
-[![DFLib at WODay Frankfurt](http://img.youtube.com/vi/WSqvEdRZsuE/0.jpg)](http://www.youtube.com/watch?v=WSqvEdRZsuE)
 
 
