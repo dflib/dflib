@@ -27,8 +27,8 @@ Google Sheets, etc.)
 
 ## Presentation Videos
 
-* [DataFrame, a Swiss Army Knife of Java Data Processing](https://www.youtube.com/watch?v=OrGqCflOMIc). Nashville JUG, 03/2024
-* [Early version of DFLib](http://www.youtube.com/watch?v=WSqvEdRZsuE). Frankfurt WO Day, 04/2019
+* [DataFrame, a Swiss Army Knife of Java Data Processing](https://www.youtube.com/watch?v=OrGqCflOMIc), Nashville JUG, 03/2024
+* [Early version of DFLib](http://www.youtube.com/watch?v=WSqvEdRZsuE), Frankfurt WO Day, 04/2019
 
 
 
