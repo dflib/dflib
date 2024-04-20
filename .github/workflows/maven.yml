@@ -22,15 +22,7 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
           distribution: 'temurin'
-
-      - name: Retrieve mvn repo cache...
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}-build-${{ matrix.db }}-v1
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
+          cache: 'maven'
       - name: Build and test...
         run: mvn clean verify -U -P ${{ matrix.db }}
 
@@ -47,14 +39,7 @@ jobs:
       with:
         java-version: 11
         distribution: 'temurin'
-
-    - name: Retrieve mvn repo cache...
-      uses: actions/cache@v4
-      with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}-deploy-v1
-        restore-keys: |
-          ${{ runner.os }}-maven-
+        cache: 'maven'
     - name: Deploy...
       run: mvn clean source:jar javadoc:javadoc deploy -U -DskipTests --settings .github/workflows/maven_settings.xml
       env:
