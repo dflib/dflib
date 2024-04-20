@@ -18,9 +18,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up JDK...
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v4
         with:
           java-version: ${{ matrix.java }}
+          distribution: 'temurin'
 
       - name: Retrieve mvn repo cache...
         uses: actions/cache@v2
@@ -42,9 +43,10 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Set up JDK...
-      uses: actions/setup-java@v1
+      uses: actions/setup-java@v4
       with:
         java-version: 11
+        distribution: 'temurin'
 
     - name: Retrieve mvn repo cache...
       uses: actions/cache@v2
