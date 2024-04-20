@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout...
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up JDK...
         uses: actions/setup-java@v4
@@ -24,7 +24,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Retrieve mvn repo cache...
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}-build-${{ matrix.db }}-v1
@@ -40,7 +40,7 @@ jobs:
 
     steps:
     - name: Checkout...
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Set up JDK...
       uses: actions/setup-java@v4
@@ -49,7 +49,7 @@ jobs:
         distribution: 'temurin'
 
     - name: Retrieve mvn repo cache...
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}-deploy-v1
