@@ -115,14 +115,17 @@ public class TxIT extends BaseDbTest {
     public void run_Rollback_ErrorData() {
         adapter.delete("t1");
         JdbcConnector connector = adapter.createConnector();
-        DataFrame df1 = DataFrame.foldByRow("id", "name", "salary")
+        DataFrame df1 = DataFrame
+                .foldByRow("id", "name", "salary")
                 .of(
                         1L, "n1", 50_000.01,
                         2L, "n2", 120_000.);
 
-        DataFrame df2 = DataFrame.foldByRow("id", "name", "salary")
-                .of(3L, "n3", "XXXX");
-
+        // this String exceeds column max length of 100
+        String longString = new String(new char[102]).replace('\0', 'X');
+        DataFrame df2 = DataFrame
+                .foldByRow("id", "name", "salary")
+                .of(3L, longString, 50_000.01);
 
         try {
             Tx.newTransaction(connector).run(c -> {
