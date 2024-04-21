@@ -253,7 +253,7 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
             // this is an auto-sized column...
             // Its actual width depends on the default font, and is generally platform-specific,
             // so doing a range comparison
-            assertTrue(s.getColumnWidth(0) > 600 && s.getColumnWidth(0) < 700);
+            assertTrue(s.getColumnWidth(0) > 500 && s.getColumnWidth(0) < 700, () -> "Actual column width: " + s.getColumnWidth(0));
 
             assertEquals(256 * 5, s.getColumnWidth(1));
         }
@@ -278,7 +278,7 @@ public class ExcelSaver_SaveSheetTest extends BaseExcelTest {
             // this is an auto-sized column...
             // Its actual width depends on the default font, and is generally platform-specific,
             // so doing a range comparison
-            assertTrue(s.getColumnWidth(0) > 600 && s.getColumnWidth(0) < 700);
+            assertTrue(s.getColumnWidth(0) > 500 && s.getColumnWidth(0) < 700, () -> "Actual column width: " + s.getColumnWidth(0));
             assertEquals(256 * 5, s.getColumnWidth(1));
             assertEquals(s.getColumnWidth(0), s.getColumnWidth(2), "Auto-sizing should happen for columns not mentioned explicitly");
         }

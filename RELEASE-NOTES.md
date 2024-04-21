@@ -10,6 +10,7 @@
 * #272 GroupBy.select(Exp...) / map(Exp...)
 * #273 Series.replace(Map), position(..), contains(..), expand(..)
 * #278 Upgrade Avro -> commons-compress to 1.26.1
+* #279 Upgrade POI dependency to 5.2.5
 
 ## Release 1.0.0-M20
 
