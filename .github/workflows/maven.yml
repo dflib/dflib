@@ -3,6 +3,8 @@ name: 'build test deploy'
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ '*' ]
 
 jobs:
   build:
@@ -27,6 +29,7 @@ jobs:
         run: mvn clean verify -U -P ${{ matrix.db }}
 
   deploy:
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main'}}
     needs: build
     runs-on: ubuntu-latest
 
