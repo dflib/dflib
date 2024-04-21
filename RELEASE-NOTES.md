@@ -11,6 +11,7 @@
 * #273 Series.replace(Map), position(..), contains(..), expand(..)
 * #278 Upgrade Avro -> commons-compress to 1.26.1
 * #279 Upgrade POI dependency to 5.2.5
+* #280 Upgrade Jackson dependency to 2.15.4
 
 ## Release 1.0.0-M20
 

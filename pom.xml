@@ -52,8 +52,8 @@
         <junit5.version>5.10.1</junit5.version>
         <jsonpath.version>2.9.0</jsonpath.version>
         <avro.version>1.11.3</avro.version>
-        <jackson.version>2.13.4</jackson.version>
-        <jackson.databind.version>2.13.4.2</jackson.databind.version>
+        <jackson.version>2.15.4</jackson.version>
+        <jackson.databind.version>2.15.4</jackson.databind.version>
         <poi.version>5.2.5</poi.version>
         <commons.compress.version>1.26.1</commons.compress.version>
     </properties>
