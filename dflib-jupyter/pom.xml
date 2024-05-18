@@ -47,6 +47,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.dflib</groupId>
+            <artifactId>dflib-echarts</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
         </dependency>

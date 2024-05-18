@@ -13,6 +13,7 @@
         <module>dflib</module>
         <module>dflib-avro</module>
         <module>dflib-csv</module>
+        <module>dflib-echarts</module>
         <module>dflib-excel</module>
         <module>dflib-jdbc</module>
         <module>dflib-json</module>
@@ -57,6 +58,7 @@
         <poi.version>5.2.5</poi.version>
         <commons.compress.version>1.26.1</commons.compress.version>
         <commons.csv.version>1.11.0</commons.csv.version>
+        <mustache.version>0.9.10</mustache.version>
     </properties>
 
     <url>https://github.com/dflib/dflib</url>
@@ -220,6 +222,12 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson.databind.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.spullara.mustache.java</groupId>
+                <artifactId>compiler</artifactId>
+                <version>${mustache.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

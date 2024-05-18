@@ -95,6 +95,11 @@
             </dependency>
             <dependency>
                 <groupId>org.dflib</groupId>
+                <artifactId>dflib-echarts</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dflib</groupId>
                 <artifactId>dflib-jupyter</artifactId>
                 <version>${project.version}</version>
             </dependency>

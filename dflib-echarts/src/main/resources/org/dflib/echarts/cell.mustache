@@ -1,0 +1,22 @@
+<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js'></script>
+<div id='{{id}}' style='width: 600px;height:400px;'></div>
+<script type='text/javascript'>
+    var myChart = echarts.init(document.getElementById('{{id}}'));
+    var option = {
+        xAxis: {
+            type: 'category',
+            data: [{{#xAxis}}'{{value}}'{{^last}},{{/last}}{{/xAxis}}]
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {{#yAxes}}
+            {
+              data: [{{#value}}{{value}}{{^last}},{{/last}}{{/value}}],
+              type: 'line'
+            }{{^last}},{{/last}}
+            {{/yAxes}}
+        ]
+    };
+    option && myChart.setOption(option);</script>
