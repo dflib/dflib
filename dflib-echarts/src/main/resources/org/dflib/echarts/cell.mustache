@@ -1,8 +1,8 @@
 <script type='text/javascript' src='https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js'></script>
 <div id='{{id}}' style='width: 600px;height:400px;'></div>
 <script type='text/javascript'>
-    var myChart = echarts.init(document.getElementById('{{id}}'));
-    var option = {
+    var chart_{{id}} = echarts.init(document.getElementById('{{id}}'{{#darkMode}}, 'dark'{{/darkMode}}));
+    var option_{{id}} = {
         xAxis: {
             type: 'category',
             data: [{{#xAxis}}'{{value}}'{{^last}},{{/last}}{{/xAxis}}]
@@ -19,4 +19,4 @@
             {{/yAxes}}
         ]
     };
-    option && myChart.setOption(option);</script>
+    option_{{id}} && chart_{{id}}.setOption(option_{{id}});</script>

@@ -42,6 +42,7 @@ public class ECharts {
 
     private final String x;
     private String[] ys;
+    private boolean darkMode;
 
     public static ECharts x(String xAxisColumn) {
         return new ECharts(xAxisColumn);
@@ -53,6 +54,11 @@ public class ECharts {
 
     public ECharts y(String... yAxisColumns) {
         this.ys = yAxisColumns;
+        return this;
+    }
+
+    public ECharts darkMode() {
+        this.darkMode = true;
         return this;
     }
 
@@ -74,9 +80,10 @@ public class ECharts {
         }
 
         return new ChartModel(
-                "dflib-echarts-" + rnd.nextInt(),
+                "dfl_ech_" + Math.abs(rnd.nextInt(10_000)),
                 dataFrame.getColumn(x),
-                ySeries
+                ySeries,
+                this.darkMode
         );
     }
 }

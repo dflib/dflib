@@ -13,11 +13,17 @@ public class ChartModel {
     private final String id;
     private final Series<?> xAxis;
     private final Series[] yAxes;
+    private final boolean darkMode;
 
-    public ChartModel(String id, Series<?> xAxis, Series[] yAxes) {
+    public ChartModel(
+            String id,
+            Series<?> xAxis,
+            Series[] yAxes,
+            boolean darkMode) {
         this.id = id;
         this.xAxis = xAxis;
         this.yAxes = yAxes;
+        this.darkMode = darkMode;
     }
 
     public String getId() {
@@ -51,5 +57,9 @@ public class ChartModel {
         }
 
         return series;
+    }
+
+    public boolean isDarkMode() {
+        return darkMode;
     }
 }
