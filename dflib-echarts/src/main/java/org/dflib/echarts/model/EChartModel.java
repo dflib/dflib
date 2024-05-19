@@ -4,30 +4,55 @@ import org.dflib.Series;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
+ * A model for internal EChart rendering.
+ *
  * @since 1.0.0-M21
  */
-public class ChartModel {
+public class EChartModel {
 
     private final String id;
+    private final String echartsJsUrl;
+    private final String title;
     private final Series<?> xAxis;
     private final Series[] yAxes;
-    private final boolean darkMode;
+    private final String theme;
+    private final int width;
+    private final int height;
 
-    public ChartModel(
+    public EChartModel(
             String id,
+            String echartsJsUrl,
+            String title,
             Series<?> xAxis,
             Series[] yAxes,
-            boolean darkMode) {
-        this.id = id;
+            String theme,
+            int width,
+            int height) {
+
+        this.id = Objects.requireNonNull(id);
+        this.echartsJsUrl = Objects.requireNonNull(echartsJsUrl);
+
+        this.title = title;
         this.xAxis = xAxis;
         this.yAxes = yAxes;
-        this.darkMode = darkMode;
+        this.theme = theme;
+        this.width = width;
+        this.height = height;
     }
 
     public String getId() {
         return id;
+    }
+
+    public String getEchartsJsUrl() {
+        return echartsJsUrl;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public List<ListElement<?>> getXAxis() {
@@ -59,7 +84,15 @@ public class ChartModel {
         return series;
     }
 
-    public boolean isDarkMode() {
-        return darkMode;
+    public String getTheme() {
+        return theme;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 }

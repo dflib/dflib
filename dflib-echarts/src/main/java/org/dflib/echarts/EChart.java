@@ -1,11 +1,15 @@
 package org.dflib.echarts;
 
-// TODO: HTML type is not specific to ECharts
-public class HTML {
+/**
+ * A rendered EChart.
+ *
+ * @since 1.0.0-M21
+ */
+public class EChart {
 
     private final String content;
 
-    public HTML(String content) {
+    public EChart(String content) {
         this.content = content;
     }
 

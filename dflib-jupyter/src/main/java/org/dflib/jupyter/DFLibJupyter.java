@@ -2,9 +2,9 @@ package org.dflib.jupyter;
 
 import org.dflib.DataFrame;
 import org.dflib.Series;
-import org.dflib.echarts.HTML;
+import org.dflib.echarts.EChart;
 import org.dflib.jupyter.render.DataFrameRenderer;
-import org.dflib.jupyter.render.HTMLRenderer;
+import org.dflib.jupyter.render.EChartRenderer;
 import org.dflib.jupyter.render.MutableTabularPrinter;
 import org.dflib.jupyter.render.SeriesRenderer;
 import io.github.spencerpark.jupyter.kernel.BaseKernel;
@@ -57,16 +57,11 @@ public class DFLibJupyter {
     }
 
     private void doInit(BaseKernel kernel) {
-        RenderFunction<HTML> htmlRenderer = new HTMLRenderer();
+        RenderFunction<EChart> htmlRenderer = new EChartRenderer();
         RenderFunction<DataFrame> dfRenderer = new DataFrameRenderer(printer);
         RenderFunction<Series> seriesRenderer = new SeriesRenderer(printer);
 
         Renderer renderer = kernel.getRenderer();
-
-        renderer.createRegistration(HTML.class)
-                .preferring(MIMEType.TEXT_HTML)
-                .supporting(MIMEType.TEXT_HTML)
-                .register(htmlRenderer);
 
         renderer.createRegistration(DataFrame.class)
                 .preferring(MIMEType.TEXT_PLAIN)
@@ -77,5 +72,10 @@ public class DFLibJupyter {
                 .preferring(MIMEType.TEXT_PLAIN)
                 .supporting(MIMEType.TEXT_PLAIN)
                 .register(seriesRenderer);
+
+        renderer.createRegistration(EChart.class)
+                .preferring(MIMEType.TEXT_HTML)
+                .supporting(MIMEType.TEXT_HTML, MIMEType.TEXT_PLAIN)
+                .register(htmlRenderer);
     }
 }

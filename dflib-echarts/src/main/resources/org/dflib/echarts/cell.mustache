@@ -1,8 +1,13 @@
-<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js'></script>
-<div id='{{id}}' style='width: 600px;height:400px;'></div>
+<script type='text/javascript' src='{{echartsJsUrl}}'></script>
+<div id='{{id}}' style='width: {{width}}px;height:{{height}}px;'></div>
 <script type='text/javascript'>
-    var chart_{{id}} = echarts.init(document.getElementById('{{id}}'{{#darkMode}}, 'dark'{{/darkMode}}));
+    var chart_{{id}} = echarts.init(document.getElementById('{{id}}'){{#theme}}, '{{.}}'{{/theme}});
     var option_{{id}} = {
+        {{#title}}
+        title: {
+            text: '{{.}}'
+        },
+        {{/title}}
         xAxis: {
             type: 'category',
             data: [{{#xAxis}}'{{value}}'{{^last}},{{/last}}{{/xAxis}}]

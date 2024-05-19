@@ -4,7 +4,7 @@ import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import org.dflib.DataFrame;
 import org.dflib.Series;
-import org.dflib.echarts.model.ChartModel;
+import org.dflib.echarts.model.EChartModel;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,12 +16,13 @@ import java.util.Objects;
 import java.util.Random;
 
 /**
- * A build of an ECharts-based chart.
+ * A builder of HTML/JS code that renders DataFrame data using ECharts library.
  *
  * @since 1.0.0-M21
  */
 public class ECharts {
 
+    private static final String DEFAULT_ECHARTS_JS_URL = "https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js";
     private static final Mustache TEMPLATE = loadTemplate("cell.mustache");
 
     static Mustache loadTemplate(String name) {
@@ -40,9 +41,13 @@ public class ECharts {
         }
     }
 
+    private String echartsJsUrl;
     private final String x;
     private String[] ys;
-    private boolean darkMode;
+    private String theme;
+    private String title;
+    private Integer width;
+    private Integer height;
 
     public static ECharts x(String xAxisColumn) {
         return new ECharts(xAxisColumn);
@@ -57,33 +62,57 @@ public class ECharts {
         return this;
     }
 
-    public ECharts darkMode() {
-        this.darkMode = true;
+    public ECharts echartsJsUrl(String url) {
+        this.echartsJsUrl = url;
         return this;
     }
 
-    public HTML plot(DataFrame dataFrame) {
-        return new HTML(plotString(dataFrame));
+    public ECharts title(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public ECharts sizePixels(int width, int height) {
+        this.width = width;
+        this.height = height;
+        return this;
+    }
+
+    public ECharts theme(String theme) {
+        this.theme = theme;
+        return this;
+    }
+
+    public ECharts darkTheme() {
+        return theme("dark");
+    }
+
+    public EChart plot(DataFrame dataFrame) {
+        return new EChart(plotString(dataFrame));
     }
 
     protected String plotString(DataFrame dataFrame) {
         return TEMPLATE.execute(new StringWriter(), createModel(dataFrame)).toString();
     }
 
-    protected ChartModel createModel(DataFrame dataFrame) {
+    protected EChartModel createModel(DataFrame dataFrame) {
         Random rnd = new SecureRandom();
 
-        int w = ys.length;
+        int w = ys != null ? ys.length : 0;
         Series[] ySeries = new Series[w];
         for (int i = 0; i < w; i++) {
             ySeries[i] = dataFrame.getColumn(ys[i]);
         }
 
-        return new ChartModel(
+        return new EChartModel(
                 "dfl_ech_" + Math.abs(rnd.nextInt(10_000)),
+                this.echartsJsUrl != null ? this.echartsJsUrl : DEFAULT_ECHARTS_JS_URL,
+                title,
                 dataFrame.getColumn(x),
                 ySeries,
-                this.darkMode
+                theme,
+                this.width != null ? this.width : 600,
+                this.height != null ? this.height : 400
         );
     }
 }
