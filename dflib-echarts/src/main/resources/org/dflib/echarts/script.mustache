@@ -1,27 +1,34 @@
-<script type='text/javascript' src='{{echartsJsUrl}}'></script>
-<div id='{{id}}' style='width: {{width}}px;height:{{height}}px;'></div>
 <script type='text/javascript'>
     var chart_{{id}} = echarts.init(document.getElementById('{{id}}'){{#theme}}, '{{.}}'{{/theme}});
     var option_{{id}} = {
-        {{#title}}
+    {{#title}}
         title: {
             text: '{{.}}'
         },
-        {{/title}}
+    {{/title}}
+    {{#legend}}
+        legend: {},
+    {{/legend}}
+    {{#xAxis}}
         xAxis: {
             type: 'category',
-            data: [{{#xAxis}}'{{value}}'{{^last}},{{/last}}{{/xAxis}}]
+            {{#noBoundaryGap}}
+            boundaryGap: false,
+            {{/noBoundaryGap}}
+            data: [{{#data}}'{{value}}'{{^last}},{{/last}}{{/data}}]
         },
+    {{/xAxis}}
         yAxis: {
             type: 'value'
         },
         series: [
-            {{#yAxes}}
+            {{#series}}
             {
-              data: [{{#value}}{{value}}{{^last}},{{/last}}{{/value}}],
-              type: 'line'
+              name: '{{name}}',
+              data: [{{#data}}{{value}}{{^last}},{{/last}}{{/data}}],
+              type: '{{type}}'
             }{{^last}},{{/last}}
-            {{/yAxes}}
+            {{/series}}
         ]
     };
     option_{{id}} && chart_{{id}}.setOption(option_{{id}});</script>

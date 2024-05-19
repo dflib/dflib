@@ -3,69 +3,139 @@ package org.dflib.echarts;
 import org.dflib.DataFrame;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EChartsTest {
 
-    @Test
-    void testPlotString() {
-        DataFrame df = DataFrame.foldByRow("y1_col", "y2_col", "x_col")
-                .of(
-                        10, 20, "A",
-                        11, 25, "B",
-                        14, 28, "C");
+    static final DataFrame df1 = DataFrame.foldByRow("y", "x").of(14, "C");
 
-        String js = ECharts.x("x_col").y("y1_col", "y2_col").plotString(df);
-        assertTrue(js.contains("<div id='dfl_ech_"), js);
-        assertTrue(js.contains("data: ['A','B','C']"), js);
-        assertTrue(js.contains("data: [10,11,14]"), js);
-        assertTrue(js.contains("data: [20,25,28]"), js);
+    static final DataFrame df2 = DataFrame.foldByRow("y1", "y2", "x").of(
+            10, 20, "A",
+            11, 25, "B",
+            14, 28, "C");
+
+    @Test
+    public void plot() {
+        EChart ch = ECharts.chart().xAxis("x").data("y1", "y2").plot(df2);
+        assertTrue(ch.getExternalScript().contains("<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js'></script>"), ch.getExternalScript());
+        assertTrue(ch.getContainer().contains("<div id='dfl_ech_"), ch.getContainer());
+        assertTrue(ch.getScript().contains("data: ['A','B','C']"), ch.getScript());
+        assertTrue(ch.getScript().contains("data: [10,11,14]"), ch.getScript());
+        assertTrue(ch.getScript().contains("data: [20,25,28]"), ch.getScript());
     }
 
     @Test
-    void testPlotString_Title() {
-        DataFrame df = DataFrame.foldByRow("y_col", "x_col").of(14, "C");
+    public void generateExternalScriptHtml() {
 
-        String js1 = ECharts.x("x_col").plotString(df);
-        assertFalse(js1.contains("title: {"), js1);
-        assertFalse(js1.contains("text: 'My chart'"), js1);
+        String s1 = ECharts.chart().generateExternalScriptHtml();
+        assertTrue(s1.contains("<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js'></script>"), s1);
 
-        String js2 = ECharts.x("x_col").title("My chart").plotString(df);
-        assertTrue(js2.contains("title: {"), js2);
-        assertTrue(js2.contains("text: 'My chart'"), js2);
+        String s2 = ECharts.chart().scriptUrl("https://example.org/x.js").generateExternalScriptHtml();
+        assertTrue(s2.contains("<script type='text/javascript' src='https://example.org/x.js'></script>"), s2);
     }
 
     @Test
-    void testPlotString_DarkTheme() {
-        DataFrame df = DataFrame.foldByRow("y_col", "x_col").of(14, "C");
+    public void generateContainerHtml() {
 
-        String js1 = ECharts.x("x_col").plotString(df);
-        assertFalse(js1.contains("), 'dark');"), js1);
+        String s1 = ECharts.chart().generateContainerHtml("_tid");
+        assertEquals("<div id='_tid' style='width: 600px;height:400px;'></div>\n", s1);
 
-        String js2 = ECharts.x("x_col").darkTheme().plotString(df);
-        assertTrue(js2.contains("), 'dark');"), js2);
+        String s2 = ECharts.chart().sizePixels(20, 10).generateContainerHtml("_tid");
+        assertEquals("<div id='_tid' style='width: 20px;height:10px;'></div>\n", s2);
     }
 
     @Test
-    void testPlotString_echartsJsUrl() {
-        DataFrame df = DataFrame.foldByRow("y_col", "x_col").of(14, "C");
+    public void generateScriptHtml_Title() {
 
-        String js1 = ECharts.x("x_col").plotString(df);
-        assertTrue(js1.contains("<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js'></script>"), js1);
+        String s1 = ECharts.chart().generateScriptHtml("_tid", df1);
+        assertFalse(s1.contains("title: {"), s1);
+        assertFalse(s1.contains("text: 'My chart'"), s1);
 
-        String js2 = ECharts.x("x_col").echartsJsUrl("https://example.org/x.js").plotString(df);
-        assertTrue(js2.contains("<script type='text/javascript' src='https://example.org/x.js'></script>"), js2);
+        String s2 = ECharts.chart().title("My chart").generateScriptHtml("_tid", df1);
+        assertTrue(s2.contains("title: {"), s2);
+        assertTrue(s2.contains("text: 'My chart'"), s2);
+
+        String s3 = ECharts.chart("My chart").generateScriptHtml("_tid", df1);
+        assertTrue(s3.contains("title: {"), s3);
+        assertTrue(s3.contains("text: 'My chart'"), s3);
     }
 
     @Test
-    void testPlotString_sizePixels() {
-        DataFrame df = DataFrame.foldByRow("y_col", "x_col").of(14, "C");
+    public void generateScriptHtml_DarkTheme() {
 
-        String js1 = ECharts.x("x_col").plotString(df);
-        assertTrue(js1.contains("' style='width: 600px;height:400px;'></div>"), js1);
+        String s1 = ECharts.chart().generateScriptHtml("_tid", df1);
+        assertFalse(s1.contains("), 'dark');"), s1);
 
-        String js2 = ECharts.x("x_col").sizePixels(20, 10).plotString(df);
-        assertTrue(js2.contains("' style='width: 20px;height:10px;'></div>"), js2);
+        String s2 = ECharts.chart().darkTheme().generateScriptHtml("_tid", df1);
+        assertTrue(s2.contains("), 'dark');"), s2);
     }
+
+    @Test
+    public void generateScriptHtml_xAxisData() {
+
+        String s1 = ECharts.chart().generateScriptHtml("_tid", df2);
+        assertTrue(s1.contains("data: ['1','2','3']"), s1);
+
+        String s2 = ECharts.chart().data("y1").generateScriptHtml("_tid", df2);
+        assertTrue(s2.contains("data: ['1','2','3']"), s2);
+
+        String s3 = ECharts.chart().xAxis("x").generateScriptHtml("_tid", df2);
+        assertTrue(s3.contains("data: ['A','B','C']"), s3);
+    }
+
+    @Test
+    public void generateScriptHtml_xAxisNoBoundaryGap() {
+
+        String s1 = ECharts.chart().generateScriptHtml("_tid", df1);
+        assertFalse(s1.contains("boundaryGap: false,"), s1);
+
+        String s2 = ECharts.chart().xAxisNoBoundaryGap().generateScriptHtml("_tid", df1);
+        assertTrue(s2.contains("boundaryGap: false,"), s2);
+    }
+
+    @Test
+    public void generateScriptHtml_Legend() {
+
+        String s1 = ECharts.chart().generateScriptHtml("_tid", df1);
+        assertFalse(s1.contains("legend: {}"), s1);
+
+        String s2 = ECharts.chart().legend().generateScriptHtml("_tid", df1);
+        assertTrue(s2.contains("legend: {}"), s2);
+    }
+
+    @Test
+    public void generateScriptHtml_Data() {
+
+        String s1 = ECharts.chart().generateScriptHtml("_tid", df2);
+        assertTrue(s1.contains("series: ["), s1);
+
+        String s2 = ECharts.chart().data("y2").generateScriptHtml("_tid", df2);
+        assertTrue(s2.contains("series: ["), s2);
+        assertTrue(s2.contains("name: 'y2',"), s2);
+        assertTrue(s2.contains("data: [20,25,28],"), s2);
+
+        String s3 = ECharts.chart().data("y2", "y1").generateScriptHtml("_tid", df2);
+        assertTrue(s3.contains("series: ["), s3);
+        assertTrue(s3.contains("name: 'y2',"), s3);
+        assertTrue(s3.contains("data: [20,25,28],"), s3);
+        assertTrue(s3.contains("name: 'y1',"), s3);
+        assertTrue(s3.contains("data: [10,11,14],"), s3);
+    }
+
+    @Test
+    public void generateScriptHtml_SeriesChartType() {
+
+        String s1 = ECharts.chart().data("y1").generateScriptHtml("_tid", df2);
+        assertTrue(s1.contains("type: 'line'"), s1);
+
+        String s2 = ECharts.chart().data("y1").chartType(EChartType.bar).generateScriptHtml("_tid", df2);
+        assertTrue(s2.contains("type: 'bar'"), s2);
+
+        String s3 = ECharts.chart().data("y1").chartType("y1", EChartType.bar).generateScriptHtml("_tid", df2);
+        assertTrue(s3.contains("type: 'bar'"), s3);
+
+        String s4 = ECharts.chart().data("y1").chartType("XX", EChartType.bar).generateScriptHtml("_tid", df2);
+        assertTrue(s4.contains("type: 'line'"), s4);
+    }
+
 }
