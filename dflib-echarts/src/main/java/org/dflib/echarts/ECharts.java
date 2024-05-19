@@ -11,7 +11,7 @@ public class ECharts {
      * Starts a builder for a new chart.
      */
     public static EChartBuilder chart() {
-        return new EChartBuilder();
+        return new EChartBuilder(series().chartType(EChartType.line).build());
     }
 
     /**
@@ -21,4 +21,10 @@ public class ECharts {
         return chart().title(title);
     }
 
+    /**
+     * Starts a builder for the default chart series style
+     */
+    public static EChartSeriesBuilder series() {
+        return EChartSeries.series();
+    }
 }

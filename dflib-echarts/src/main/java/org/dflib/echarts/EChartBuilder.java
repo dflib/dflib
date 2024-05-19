@@ -20,7 +20,9 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -52,10 +54,9 @@ public class EChartBuilder {
     }
 
     private final Random rnd;
-    private final PerColumnPropertyBuilder<EChartType> chartType;
-    private final PerColumnPropertyBuilder<Boolean> areaStyle;
-    private final PerColumnPropertyBuilder<Boolean> stack;
-    private final PerColumnPropertyBuilder<Boolean> smooth;
+    private final EChartSeries defaultSeriesStyle;
+    private final Map<String, EChartSeries> series;
+    private EChartSeries userSeriesStyle;
 
     private String scriptUrl;
 
@@ -68,14 +69,12 @@ public class EChartBuilder {
     private String xAxisColumn;
     private Boolean xAxisNoBoundaryGap;
 
-    private String[] dataColumns;
-
-    protected EChartBuilder() {
+    protected EChartBuilder(EChartSeries defaultSeriesStyle) {
         this.rnd = new SecureRandom();
-        this.chartType = new PerColumnPropertyBuilder<>(EChartType.line);
-        this.areaStyle = new PerColumnPropertyBuilder<>(false);
-        this.stack = new PerColumnPropertyBuilder<>(false);
-        this.smooth = new PerColumnPropertyBuilder<>(false);
+        this.defaultSeriesStyle = defaultSeriesStyle;
+
+        // keeping the "series" order predictable
+        this.series = new LinkedHashMap<>();
     }
 
     /**
@@ -93,59 +92,31 @@ public class EChartBuilder {
     }
 
     /**
-     * Specifies which DataFrame columns should be plotted as data "series". A separate plot line (or bars, etc.)
-     * will be created for each named column.
+     * Alters the default chart style that will be used by all data series that don't have explicit styles.
      */
-    public EChartBuilder data(String... dataColumns) {
-        this.dataColumns = dataColumns;
+    public EChartBuilder seriesStyle(EChartSeries style) {
+        this.userSeriesStyle = style;
         return this;
     }
 
     /**
-     * Optionally sets the default chart type used by all data series that do not have an explicit type. If the default
-     * is not provided here, {@link EChartType#line} is assumed.
+     * Specifies a DataFrame column that should be plotted as a single data "series". Specifies style overrides
+     * for this series.
      */
-    public EChartBuilder chartType(EChartType type) {
-        this.chartType.setType(type);
+    public EChartBuilder series(String dataColumn, EChartSeries style) {
+        series.put(dataColumn, style);
         return this;
     }
 
     /**
-     * Optionally sets the type of the chart for the given named data series. If none is set, and no explicit default is
-     * provided, {@link EChartType#line} is assumed.
+     * Specifies which DataFrame columns should be plotted as data "series". Unless you override the styles later,
+     * all series will be rendered with the default chart style.
      */
-    public EChartBuilder chartType(String dataColumn, EChartType type) {
-        this.chartType.setType(dataColumn, type);
-        return this;
-    }
+    public EChartBuilder series(String... dataColumns) {
+        for (String c : dataColumns) {
+            series.computeIfAbsent(c, s -> ECharts.series().build());
+        }
 
-    public EChartBuilder areaStyle() {
-        this.areaStyle.setType(true);
-        return this;
-    }
-
-    public EChartBuilder areaStyle(String dataColumn) {
-        this.areaStyle.setType(dataColumn, true);
-        return this;
-    }
-
-    public EChartBuilder smooth() {
-        this.smooth.setType(true);
-        return this;
-    }
-
-    public EChartBuilder smooth(String dataColumn) {
-        this.smooth.setType(dataColumn, true);
-        return this;
-    }
-
-    public EChartBuilder stack() {
-        this.stack.setType(true);
-        return this;
-    }
-
-    public EChartBuilder stack(String dataColumn) {
-        this.stack.setType(dataColumn, true);
         return this;
     }
 
@@ -243,28 +214,31 @@ public class EChartBuilder {
     }
 
     protected List<SeriesModel> dataSeries(DataFrame df) {
-        String[] columns = this.dataColumns != null ? this.dataColumns : new String[0];
 
-        List<EChartType> types = chartType.resolve(columns);
-        List<Boolean> areaStyles = areaStyle.resolve(columns);
-        List<Boolean> stacks = stack.resolve(columns);
-        List<Boolean> smooths = smooth.resolve(columns);
+        EChartSeries defaultStyle = this.userSeriesStyle != null
+                ? this.defaultSeriesStyle.merge(this.userSeriesStyle)
+                : this.defaultSeriesStyle;
 
+        String[] columns = series.keySet().toArray(new String[0]);
         DataFrame dataSeries = df.cols(columns).select();
 
-        // just in case there were duplicates, take labels from the index, not from the original columns
         Index dataSeriesIndex = dataSeries.getColumnsIndex();
+        int len = columns.length;
 
-        int len = dataSeriesIndex.size();
         List<SeriesModel> models = new ArrayList<>(len);
         for (int i = 0; i < len; i++) {
+
+            EChartSeries columnStyle = series.get(columns[i]);
+            EChartSeries mergedStyle = columnStyle != null ? defaultStyle.merge(columnStyle) : defaultStyle;
+
             SeriesModel m = new SeriesModel(
+                    // just in case there were duplicates, take labels from the index, not from the original columns
                     dataSeriesIndex.get(i),
                     seriesData(dataSeries.getColumn(i)),
-                    types.get(i).name(),
-                    areaStyles.get(i),
-                    stacks.get(i),
-                    smooths.get(i),
+                    mergedStyle.getChartType().name(),
+                    mergedStyle.isAreaStyle(),
+                    mergedStyle.isStack(),
+                    mergedStyle.isSmooth(),
                     i + 1 == len
             );
 

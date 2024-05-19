@@ -16,7 +16,7 @@ public class EChartsTest {
 
     @Test
     public void plot() {
-        EChart ch = ECharts.chart().xAxis("x").data("y1", "y2").plot(df2);
+        EChart ch = ECharts.chart().xAxis("x").series("y1", "y2").plot(df2);
         assertTrue(ch.getExternalScript().contains("<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js'></script>"), ch.getExternalScript());
         assertTrue(ch.getContainer().contains("<div id='dfl_ech_"), ch.getContainer());
         assertTrue(ch.getScript().contains("data: ['A','B','C']"), ch.getScript());
@@ -76,7 +76,7 @@ public class EChartsTest {
         String s1 = ECharts.chart().generateScriptHtml("_tid", df2);
         assertTrue(s1.contains("data: ['1','2','3']"), s1);
 
-        String s2 = ECharts.chart().data("y1").generateScriptHtml("_tid", df2);
+        String s2 = ECharts.chart().series("y1").generateScriptHtml("_tid", df2);
         assertTrue(s2.contains("data: ['1','2','3']"), s2);
 
         String s3 = ECharts.chart().xAxis("x").generateScriptHtml("_tid", df2);
@@ -109,12 +109,12 @@ public class EChartsTest {
         String s1 = ECharts.chart().generateScriptHtml("_tid", df2);
         assertTrue(s1.contains("series: ["), s1);
 
-        String s2 = ECharts.chart().data("y2").generateScriptHtml("_tid", df2);
+        String s2 = ECharts.chart().series("y2").generateScriptHtml("_tid", df2);
         assertTrue(s2.contains("series: ["), s2);
         assertTrue(s2.contains("name: 'y2',"), s2);
         assertTrue(s2.contains("data: [20,25,28],"), s2);
 
-        String s3 = ECharts.chart().data("y2", "y1").generateScriptHtml("_tid", df2);
+        String s3 = ECharts.chart().series("y2", "y1").generateScriptHtml("_tid", df2);
         assertTrue(s3.contains("series: ["), s3);
         assertTrue(s3.contains("name: 'y2',"), s3);
         assertTrue(s3.contains("data: [20,25,28],"), s3);
@@ -125,65 +125,53 @@ public class EChartsTest {
     @Test
     public void generateScriptHtml_SeriesChartType() {
 
-        String s1 = ECharts.chart().data("y1").generateScriptHtml("_tid", df2);
+        String s1 = ECharts.chart().series("y1").generateScriptHtml("_tid", df2);
         assertTrue(s1.contains("type: 'line'"), s1);
 
-        String s2 = ECharts.chart().data("y1").chartType(EChartType.bar).generateScriptHtml("_tid", df2);
+        String s2 = ECharts.chart().series("y1", ECharts.series().chartType(EChartType.bar).build()).generateScriptHtml("_tid", df2);
         assertTrue(s2.contains("type: 'bar'"), s2);
 
-        String s3 = ECharts.chart().data("y1").chartType("y1", EChartType.bar).generateScriptHtml("_tid", df2);
+        String s3 = ECharts.chart().series("y1", ECharts.series().chartType(EChartType.bar).build()).generateScriptHtml("_tid", df2);
         assertTrue(s3.contains("type: 'bar'"), s3);
-
-        String s4 = ECharts.chart().data("y1").chartType("XX", EChartType.bar).generateScriptHtml("_tid", df2);
-        assertTrue(s4.contains("type: 'line'"), s4);
     }
 
     @Test
     public void generateScriptHtml_SeriesAreaStyle() {
 
-        String s1 = ECharts.chart().data("y1").generateScriptHtml("_tid", df2);
+        String s1 = ECharts.chart().series("y1").generateScriptHtml("_tid", df2);
         assertFalse(s1.contains("areaStyle"), s1);
 
-        String s2 = ECharts.chart().data("y1").areaStyle().generateScriptHtml("_tid", df2);
+        String s2 = ECharts.chart().series("y1", ECharts.series().areaStyle().build()).generateScriptHtml("_tid", df2);
         assertTrue(s2.contains("areaStyle: {}"), s2);
 
-        String s3 = ECharts.chart().data("y1").areaStyle("y1").generateScriptHtml("_tid", df2);
+        String s3 = ECharts.chart().series("y1", ECharts.series().areaStyle().build()).generateScriptHtml("_tid", df2);
         assertTrue(s3.contains("areaStyle: {}"), s3);
-
-        String s4 = ECharts.chart().data("y1").areaStyle("XX").generateScriptHtml("_tid", df2);
-        assertFalse(s4.contains("areaStyle"), s4);
     }
 
     @Test
     public void generateScriptHtml_SeriesStack() {
 
-        String s1 = ECharts.chart().data("y1").generateScriptHtml("_tid", df2);
+        String s1 = ECharts.chart().series("y1").generateScriptHtml("_tid", df2);
         assertFalse(s1.contains("stack:"), s1);
 
-        String s2 = ECharts.chart().data("y1").stack().generateScriptHtml("_tid", df2);
+        String s2 = ECharts.chart().series("y1", ECharts.series().stack().build()).generateScriptHtml("_tid", df2);
         assertTrue(s2.contains("stack: 'total'"), s2);
 
-        String s3 = ECharts.chart().data("y1").stack("y1").generateScriptHtml("_tid", df2);
+        String s3 = ECharts.chart().series("y1", ECharts.series().stack().build()).generateScriptHtml("_tid", df2);
         assertTrue(s3.contains("stack: 'total'"), s3);
-
-        String s4 = ECharts.chart().data("y1").stack("XX").generateScriptHtml("_tid", df2);
-        assertFalse(s4.contains("stack"), s4);
     }
 
     @Test
     public void generateScriptHtml_SeriesSmooth() {
 
-        String s1 = ECharts.chart().data("y1").generateScriptHtml("_tid", df2);
+        String s1 = ECharts.chart().series("y1").generateScriptHtml("_tid", df2);
         assertFalse(s1.contains("smooth"), s1);
 
-        String s2 = ECharts.chart().data("y1").smooth().generateScriptHtml("_tid", df2);
+        String s2 = ECharts.chart().series("y1", ECharts.series().smooth().build()).generateScriptHtml("_tid", df2);
         assertTrue(s2.contains("smooth: true,"), s2);
 
-        String s3 = ECharts.chart().data("y1").smooth("y1").generateScriptHtml("_tid", df2);
+        String s3 = ECharts.chart().series("y1", ECharts.series().smooth().build()).generateScriptHtml("_tid", df2);
         assertTrue(s3.contains("smooth: true,"), s3);
-
-        String s4 = ECharts.chart().data("y1").smooth("XX").generateScriptHtml("_tid", df2);
-        assertFalse(s4.contains("smooth"), s4);
     }
 
 }
