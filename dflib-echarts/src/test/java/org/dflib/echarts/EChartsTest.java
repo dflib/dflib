@@ -138,4 +138,52 @@ public class EChartsTest {
         assertTrue(s4.contains("type: 'line'"), s4);
     }
 
+    @Test
+    public void generateScriptHtml_SeriesAreaStyle() {
+
+        String s1 = ECharts.chart().data("y1").generateScriptHtml("_tid", df2);
+        assertFalse(s1.contains("areaStyle"), s1);
+
+        String s2 = ECharts.chart().data("y1").areaStyle().generateScriptHtml("_tid", df2);
+        assertTrue(s2.contains("areaStyle: {}"), s2);
+
+        String s3 = ECharts.chart().data("y1").areaStyle("y1").generateScriptHtml("_tid", df2);
+        assertTrue(s3.contains("areaStyle: {}"), s3);
+
+        String s4 = ECharts.chart().data("y1").areaStyle("XX").generateScriptHtml("_tid", df2);
+        assertFalse(s4.contains("areaStyle"), s4);
+    }
+
+    @Test
+    public void generateScriptHtml_SeriesStack() {
+
+        String s1 = ECharts.chart().data("y1").generateScriptHtml("_tid", df2);
+        assertFalse(s1.contains("stack:"), s1);
+
+        String s2 = ECharts.chart().data("y1").stack().generateScriptHtml("_tid", df2);
+        assertTrue(s2.contains("stack: 'total'"), s2);
+
+        String s3 = ECharts.chart().data("y1").stack("y1").generateScriptHtml("_tid", df2);
+        assertTrue(s3.contains("stack: 'total'"), s3);
+
+        String s4 = ECharts.chart().data("y1").stack("XX").generateScriptHtml("_tid", df2);
+        assertFalse(s4.contains("stack"), s4);
+    }
+
+    @Test
+    public void generateScriptHtml_SeriesSmooth() {
+
+        String s1 = ECharts.chart().data("y1").generateScriptHtml("_tid", df2);
+        assertFalse(s1.contains("smooth"), s1);
+
+        String s2 = ECharts.chart().data("y1").smooth().generateScriptHtml("_tid", df2);
+        assertTrue(s2.contains("smooth: true,"), s2);
+
+        String s3 = ECharts.chart().data("y1").smooth("y1").generateScriptHtml("_tid", df2);
+        assertTrue(s3.contains("smooth: true,"), s3);
+
+        String s4 = ECharts.chart().data("y1").smooth("XX").generateScriptHtml("_tid", df2);
+        assertFalse(s4.contains("smooth"), s4);
+    }
+
 }

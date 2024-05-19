@@ -12,12 +12,26 @@ public class SeriesModel {
     private final String name;
     private final List<ListElementModel> data;
     private final String type;
+    private final boolean areaStyle;
+    private final boolean stack;
+    private final boolean smooth;
     private final boolean last;
 
-    public SeriesModel(String name, String type, List<ListElementModel> data, boolean last) {
-        this.data = data;
+    public SeriesModel(
+            String name,
+            List<ListElementModel> data,
+            String type,
+            boolean areaStyle,
+            boolean stack,
+            boolean smooth,
+            boolean last) {
+
         this.name = name;
+        this.data = data;
         this.type = type;
+        this.areaStyle = areaStyle;
+        this.stack = stack;
+        this.smooth = smooth;
         this.last = last;
     }
 
@@ -31,6 +45,18 @@ public class SeriesModel {
 
     public List<ListElementModel> getData() {
         return data;
+    }
+
+    public boolean isAreaStyle() {
+        return areaStyle;
+    }
+
+    public boolean isStack() {
+        return stack;
+    }
+
+    public boolean isSmooth() {
+        return smooth;
     }
 
     public boolean isLast() {

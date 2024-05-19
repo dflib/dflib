@@ -25,6 +25,15 @@
             {{#series}}
             {
               name: '{{name}}',
+              {{#areaStyle}}
+              areaStyle: {},
+              {{/areaStyle}}
+              {{#stack}}
+              stack: 'total',
+              {{/stack}}
+              {{#smooth}}
+              smooth: true,
+              {{/smooth}}
               data: [{{#data}}{{value}}{{^last}},{{/last}}{{/data}}],
               type: '{{type}}'
             }{{^last}},{{/last}}
