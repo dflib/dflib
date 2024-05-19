@@ -1,7 +1,6 @@
 package org.dflib.print;
 
 import org.dflib.Series;
-import org.dflib.print.TabularPrinter;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

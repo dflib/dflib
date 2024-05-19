@@ -8,7 +8,7 @@ import io.github.spencerpark.jupyter.kernel.display.mime.MIMEType;
 
 public class DataFrameRenderer implements RenderFunction<DataFrame> {
 
-    private Printer printer;
+    private final Printer printer;
 
     public DataFrameRenderer(Printer printer) {
         this.printer = printer;

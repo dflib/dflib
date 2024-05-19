@@ -8,7 +8,7 @@ import io.github.spencerpark.jupyter.kernel.display.mime.MIMEType;
 
 public class SeriesRenderer implements RenderFunction<Series> {
 
-    private Printer printer;
+    private final Printer printer;
 
     public SeriesRenderer(Printer printer) {
         this.printer = printer;

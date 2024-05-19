@@ -1,7 +1,6 @@
 package org.dflib.print;
 
 import org.dflib.DataFrame;
-import org.dflib.print.DataFrameInlinePrintWorker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
