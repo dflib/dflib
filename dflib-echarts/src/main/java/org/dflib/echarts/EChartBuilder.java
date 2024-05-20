@@ -127,8 +127,8 @@ public class EChartBuilder {
     }
 
     /**
-     * Specifies which DataFrame columns should be plotted as data "series". Unless you override the styles later,
-     * all series will be rendered with the default chart style.
+     * Specifies which DataFrame columns should be plotted as data "series". Unless you override it later,
+     * all series will be rendered with the default chart options.
      */
     public EChartBuilder series(String... dataColumns) {
         for (String c : dataColumns) {
@@ -252,7 +252,7 @@ public class EChartBuilder {
 
     protected List<SeriesModel> dataSeries(DataFrame df) {
 
-        SeriesOpts defaultStyle = this.seriesOpts != null
+        SeriesOpts defaultOpts = this.seriesOpts != null
                 ? this.defaultSeriesOpts.merge(this.seriesOpts)
                 : this.defaultSeriesOpts;
 
@@ -265,17 +265,17 @@ public class EChartBuilder {
         List<SeriesModel> models = new ArrayList<>(len);
         for (int i = 0; i < len; i++) {
 
-            SeriesOpts columnStyle = series.get(columns[i]);
-            SeriesOpts mergedStyle = columnStyle != null ? defaultStyle.merge(columnStyle) : defaultStyle;
+            SeriesOpts columnOpts = series.get(columns[i]);
+            SeriesOpts mergedOpts = columnOpts != null ? defaultOpts.merge(columnOpts) : defaultOpts;
 
             SeriesModel m = new SeriesModel(
                     // just in case there were duplicates, take labels from the index, not from the original columns
                     dataSeriesIndex.get(i),
                     seriesData(dataSeries.getColumn(i)),
-                    mergedStyle.getType().name(),
-                    mergedStyle.isAreaStyle(),
-                    mergedStyle.isStack(),
-                    mergedStyle.isSmooth(),
+                    mergedOpts.getType().name(),
+                    mergedOpts.isAreaStyle(),
+                    mergedOpts.isStack(),
+                    mergedOpts.isSmooth(),
                     i + 1 == len
             );
 

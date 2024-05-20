@@ -18,28 +18,28 @@ public class SeriesOpts {
     private Boolean stack;
 
     /**
-     * Starts a builder for a line series style object.
+     * Starts a builder for a line series options object.
      */
     public static SeriesOpts line() {
         return new SeriesOpts(EChartType.line, null, null, null);
     }
 
     /**
-     * Starts a builder for a bar series style object.
+     * Starts a builder for a bar series options object.
      */
     public static SeriesOpts bar() {
         return new SeriesOpts(EChartType.bar, null, null, null);
     }
 
     /**
-     * Starts a builder for a pie series style object.
+     * Starts a builder for a pie series options object.
      */
     public static SeriesOpts pie() {
         return new SeriesOpts(EChartType.pie, null, null, null);
     }
 
     /**
-     * Starts a builder for a scatter series style object.
+     * Starts a builder for a scatter series options object.
      */
     public static SeriesOpts scatter() {
         return new SeriesOpts(EChartType.scatter, null, null, null);
