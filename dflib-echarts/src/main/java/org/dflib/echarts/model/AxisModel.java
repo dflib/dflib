@@ -5,18 +5,31 @@ import org.dflib.Series;
 import java.util.ArrayList;
 import java.util.List;
 
-public class XAxisModel {
+/**
+ * @since 1.0.0-M21
+ */
+public class AxisModel {
 
-    private final boolean noBoundaryGap;
+    private final AxisLabelModel axisLabel;
+    private final boolean boundaryGap;
     private final Series<?> data;
 
-    public XAxisModel(boolean noBoundaryGap, Series<?> data) {
-        this.noBoundaryGap = noBoundaryGap;
+    public AxisModel(AxisLabelModel axisLabel, boolean boundaryGap, Series<?> data) {
+        this.axisLabel = axisLabel;
+        this.boundaryGap = boundaryGap;
         this.data = data;
     }
 
+    public AxisLabelModel getAxisLabel() {
+        return axisLabel;
+    }
+
+    public boolean isBoundaryGap() {
+        return boundaryGap;
+    }
+
     public boolean isNoBoundaryGap() {
-        return noBoundaryGap;
+        return !boundaryGap;
     }
 
     public List<ListElementModel> getData() {

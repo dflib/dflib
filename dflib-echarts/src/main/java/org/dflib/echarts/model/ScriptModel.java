@@ -12,7 +12,8 @@ public class ScriptModel {
 
     private final String id;
     private final String title;
-    private final XAxisModel xAxis;
+    private final AxisModel xAxis;
+    private final AxisModel yAxis;
     private final List<SeriesModel> series;
     private final String theme;
     private final boolean legend;
@@ -20,7 +21,8 @@ public class ScriptModel {
     public ScriptModel(
             String id,
             String title,
-            XAxisModel xAxis,
+            AxisModel xAxis,
+            AxisModel yAxis,
             List<SeriesModel> series,
             String theme,
             boolean legend) {
@@ -28,6 +30,7 @@ public class ScriptModel {
         this.id = Objects.requireNonNull(id);
         this.title = title;
         this.xAxis = xAxis;
+        this.yAxis = yAxis;
         this.series = series;
         this.theme = theme;
         this.legend = legend;
@@ -41,8 +44,12 @@ public class ScriptModel {
         return title;
     }
 
-    public XAxisModel getXAxis() {
+    public AxisModel getXAxis() {
         return xAxis;
+    }
+
+    public AxisModel getYAxis() {
+        return yAxis;
     }
 
     public List<SeriesModel> getSeries() {

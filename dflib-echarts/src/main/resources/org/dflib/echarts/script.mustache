@@ -11,16 +11,32 @@
     {{/legend}}
     {{#xAxis}}
         xAxis: {
+        {{#axisLabel}}
+            axisLabel: {
+            {{#formatter}}
+                formatter: '{{.}}'
+            {{/formatter}}
+            },
+        {{/axisLabel}}
             type: 'category',
-            {{#noBoundaryGap}}
+        {{#noBoundaryGap}}
             boundaryGap: false,
-            {{/noBoundaryGap}}
+        {{/noBoundaryGap}}
             data: [{{#data}}'{{value}}'{{^last}},{{/last}}{{/data}}]
         },
     {{/xAxis}}
+    {{#yAxis}}
         yAxis: {
+        {{#axisLabel}}
+            axisLabel: {
+            {{#formatter}}
+                formatter: '{{.}}'
+            {{/formatter}}
+            },
+        {{/axisLabel}}
             type: 'value'
         },
+    {{/yAxis}}
         series: [
             {{#series}}
             {

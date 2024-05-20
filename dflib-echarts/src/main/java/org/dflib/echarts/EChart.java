@@ -1,7 +1,7 @@
 package org.dflib.echarts;
 
 /**
- * Contains rendered parts of an EChart. Each part is made of a set of HTML tags.
+ * Provides rendered parts of an EChart. Each part is made of a set of HTML tags.
  *
  * @since 1.0.0-M21
  */

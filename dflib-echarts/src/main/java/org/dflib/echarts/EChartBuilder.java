@@ -5,12 +5,13 @@ import com.github.mustachejava.Mustache;
 import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.Series;
+import org.dflib.echarts.model.AxisLabelModel;
 import org.dflib.echarts.model.ContainerModel;
 import org.dflib.echarts.model.ExternalScriptModel;
 import org.dflib.echarts.model.ListElementModel;
 import org.dflib.echarts.model.ScriptModel;
 import org.dflib.echarts.model.SeriesModel;
-import org.dflib.echarts.model.XAxisModel;
+import org.dflib.echarts.model.AxisModel;
 import org.dflib.series.IntSequenceSeries;
 
 import java.io.IOException;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -53,25 +55,30 @@ public class EChartBuilder {
         }
     }
 
+    // TODO: extract "RootOpts" or "Opts" from the builder similar to SeriesOpts, etc.
+
     private final Random rnd;
-    private final EChartSeries defaultSeriesStyle;
-    private final Map<String, EChartSeries> series;
-    private EChartSeries userSeriesStyle;
+    private String theme;
 
     private String scriptUrl;
-
     private String title;
-    private String theme;
     private Integer width;
     private Integer height;
     private Boolean legend;
 
     private String xAxisColumn;
-    private Boolean xAxisNoBoundaryGap;
+    private AxisOpts xAxisOpts;
 
-    protected EChartBuilder(EChartSeries defaultSeriesStyle) {
+    private AxisOpts yAxisOpts;
+
+    private final Map<String, SeriesOpts> series;
+    private final SeriesOpts defaultSeriesOpts;
+    private SeriesOpts seriesOpts;
+
+    protected EChartBuilder(SeriesOpts defaultSeriesOpts) {
         this.rnd = new SecureRandom();
-        this.defaultSeriesStyle = defaultSeriesStyle;
+
+        this.defaultSeriesOpts = defaultSeriesOpts;
 
         // keeping the "series" order predictable
         this.series = new LinkedHashMap<>();
@@ -86,25 +93,36 @@ public class EChartBuilder {
         return this;
     }
 
-    public EChartBuilder xAxisNoBoundaryGap() {
-        this.xAxisNoBoundaryGap = Boolean.TRUE;
+    public EChartBuilder xAxis(String xAxisColumn, AxisOpts opts) {
+        this.xAxisColumn = Objects.requireNonNull(xAxisColumn);
+        this.xAxisOpts = Objects.requireNonNull(opts);
+        return this;
+    }
+
+    public EChartBuilder xAxisOpts(AxisOpts opts) {
+        this.xAxisOpts = Objects.requireNonNull(opts);
+        return this;
+    }
+
+    public EChartBuilder yAxisOpts(AxisOpts opts) {
+        this.yAxisOpts = Objects.requireNonNull(opts);
         return this;
     }
 
     /**
-     * Alters the default chart style that will be used by all data series that don't have explicit styles.
+     * Alters the default series options that will be used by all data series that don't have explicit options.
      */
-    public EChartBuilder seriesStyle(EChartSeries style) {
-        this.userSeriesStyle = style;
+    public EChartBuilder seriesOpts(SeriesOpts opts) {
+        this.seriesOpts = opts;
         return this;
     }
 
     /**
-     * Specifies a DataFrame column that should be plotted as a single data "series". Specifies style overrides
+     * Specifies a DataFrame column that should be plotted as a single data "series". Specifies option overrides
      * for this series.
      */
-    public EChartBuilder series(String dataColumn, EChartSeries style) {
-        series.put(dataColumn, style);
+    public EChartBuilder series(String dataColumn, SeriesOpts opts) {
+        series.put(dataColumn, opts);
         return this;
     }
 
@@ -114,7 +132,7 @@ public class EChartBuilder {
      */
     public EChartBuilder series(String... dataColumns) {
         for (String c : dataColumns) {
-            series.computeIfAbsent(c, s -> ECharts.series().build());
+            series.computeIfAbsent(c, s -> SeriesOpts.line());
         }
 
         return this;
@@ -187,6 +205,7 @@ public class EChartBuilder {
                 id,
                 this.title,
                 xAxis(df),
+                yAxis(),
                 dataSeries(df),
                 this.theme,
                 this.legend != null ? this.legend : false
@@ -198,26 +217,40 @@ public class EChartBuilder {
         return "dfl_ech_" + Math.abs(rnd.nextInt(10_000));
     }
 
-    protected XAxisModel xAxis(DataFrame df) {
+    protected AxisModel xAxis(DataFrame df) {
+
+        AxisOpts xAxis = this.xAxisOpts != null ? this.xAxisOpts : AxisOpts.create();
 
         // TODO: "getColumn" here would throw on invalid column name, while "cols" in "dataSeries" will
         //  create an empty column... An inconsistency?
 
-        Series<?> xSeries = xAxisColumn != null
-                ? df.getColumn(xAxisColumn)
+        Series<?> xSeries = this.xAxisColumn != null
+                ? df.getColumn(this.xAxisColumn)
                 : new IntSequenceSeries(1, df.height() + 1);
 
-        return new XAxisModel(
-                xAxisNoBoundaryGap != null ? xAxisNoBoundaryGap : false,
+        return new AxisModel(
+                xAxis.getAxisLabel() != null ? new AxisLabelModel(xAxis.getAxisLabel().getFormatter()) : null,
+                xAxis.isBoundaryGap(),
                 xSeries
+        );
+    }
+
+    protected AxisModel yAxis() {
+
+        AxisOpts yAxis = this.yAxisOpts != null ? this.yAxisOpts : AxisOpts.create();
+
+        return new AxisModel(
+                yAxis.getAxisLabel() != null ? new AxisLabelModel(yAxis.getAxisLabel().getFormatter()) : null,
+                yAxis.isBoundaryGap(),
+                null
         );
     }
 
     protected List<SeriesModel> dataSeries(DataFrame df) {
 
-        EChartSeries defaultStyle = this.userSeriesStyle != null
-                ? this.defaultSeriesStyle.merge(this.userSeriesStyle)
-                : this.defaultSeriesStyle;
+        SeriesOpts defaultStyle = this.seriesOpts != null
+                ? this.defaultSeriesOpts.merge(this.seriesOpts)
+                : this.defaultSeriesOpts;
 
         String[] columns = series.keySet().toArray(new String[0]);
         DataFrame dataSeries = df.cols(columns).select();
@@ -228,14 +261,14 @@ public class EChartBuilder {
         List<SeriesModel> models = new ArrayList<>(len);
         for (int i = 0; i < len; i++) {
 
-            EChartSeries columnStyle = series.get(columns[i]);
-            EChartSeries mergedStyle = columnStyle != null ? defaultStyle.merge(columnStyle) : defaultStyle;
+            SeriesOpts columnStyle = series.get(columns[i]);
+            SeriesOpts mergedStyle = columnStyle != null ? defaultStyle.merge(columnStyle) : defaultStyle;
 
             SeriesModel m = new SeriesModel(
                     // just in case there were duplicates, take labels from the index, not from the original columns
                     dataSeriesIndex.get(i),
                     seriesData(dataSeries.getColumn(i)),
-                    mergedStyle.getChartType().name(),
+                    mergedStyle.getType().name(),
                     mergedStyle.isAreaStyle(),
                     mergedStyle.isStack(),
                     mergedStyle.isSmooth(),
