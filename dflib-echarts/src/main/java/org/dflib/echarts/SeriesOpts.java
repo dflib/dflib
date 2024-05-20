@@ -12,6 +12,7 @@ public class SeriesOpts {
     private final EChartType type;
 
     // using objects instead of primitives to be able to perform merge
+    // TODO: areaStyle and smooth are not present in the Bar chart... subclass opts?
     private Boolean areaStyle;
     private Boolean smooth;
     private Boolean stack;

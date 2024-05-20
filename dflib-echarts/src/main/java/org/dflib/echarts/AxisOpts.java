@@ -6,19 +6,19 @@ package org.dflib.echarts;
 public class AxisOpts {
 
     private AxisLabelOpts axisLabel;
-    private Boolean boundaryGap;
+    private boolean boundaryGap;
 
     public static AxisOpts create() {
         // "true" is the same default as ECharts
-        return new AxisOpts(null).boundaryGap(true);
+        return new AxisOpts(true);
     }
 
-    protected AxisOpts(Boolean boundaryGap) {
+    protected AxisOpts(boolean boundaryGap) {
         this.boundaryGap = boundaryGap;
     }
 
     public boolean isBoundaryGap() {
-        return boundaryGap != null ? boundaryGap : false;
+        return boundaryGap;
     }
 
     public AxisOpts boundaryGap(boolean gap) {

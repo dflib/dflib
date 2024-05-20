@@ -155,6 +155,9 @@ public class EChartsTest {
 
         String s2 = ECharts.lineChart().series("y1", SeriesOpts.bar()).generateScriptHtml("_tid", df2);
         assertTrue(s2.contains("type: 'bar'"), s2);
+
+        String s3 = ECharts.barChart().series("y1").generateScriptHtml("_tid", df2);
+        assertTrue(s3.contains("type: 'bar'"), s3);
     }
 
     @Test

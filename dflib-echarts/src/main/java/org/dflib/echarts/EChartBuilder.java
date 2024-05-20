@@ -132,7 +132,11 @@ public class EChartBuilder {
      */
     public EChartBuilder series(String... dataColumns) {
         for (String c : dataColumns) {
-            series.computeIfAbsent(c, s -> SeriesOpts.line());
+
+            // can't use "computeIfAbsent", as it doesn't handle null properly
+            if (!series.containsKey(c)) {
+                series.put(c, null);
+            }
         }
 
         return this;
