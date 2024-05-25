@@ -3,6 +3,8 @@ package org.dflib.echarts;
 import org.dflib.DataFrame;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EChartsTest {
@@ -13,6 +15,11 @@ public class EChartsTest {
             10, 20, "A",
             11, 25, "B",
             14, 28, "C");
+
+    static final DataFrame df3 = DataFrame.foldByRow("t1", "t2", "y1", "y2", "x").of(
+            LocalDate.of(2022, 1, 1), LocalDate.of(2024, 1, 1), 10, 20, "A",
+            LocalDate.of(2022, 2, 1), LocalDate.of(2024, 2, 1), 11, 25, "B",
+            LocalDate.of(2022, 3, 1), LocalDate.of(2024, 3, 1), 14, 28, "C");
 
     @Test
     public void plot() {
@@ -89,10 +96,10 @@ public class EChartsTest {
         String s1 = ECharts.lineChart().generateScriptHtml("_tid", df1);
         assertFalse(s1.contains("boundaryGap: false,"), s1);
 
-        String s2 = ECharts.lineChart().xAxis("x", AxisOpts.create().boundaryGap(false)).generateScriptHtml("_tid", df1);
+        String s2 = ECharts.lineChart().xAxis("x", AxisOpts.defaultX().boundaryGap(false)).generateScriptHtml("_tid", df1);
         assertTrue(s2.contains("boundaryGap: false,"), s2);
 
-        String s3 = ECharts.lineChart().xAxis("x", AxisOpts.create().boundaryGap(true)).generateScriptHtml("_tid", df1);
+        String s3 = ECharts.lineChart().xAxis("x", AxisOpts.defaultX().boundaryGap(true)).generateScriptHtml("_tid", df1);
         assertFalse(s3.contains("boundaryGap: false,"), s3);
     }
 
@@ -102,7 +109,7 @@ public class EChartsTest {
         String s1 = ECharts.lineChart().generateScriptHtml("_tid", df1);
         assertTrue(s1.contains("yAxis: {"), s1);
 
-        String s2 = ECharts.lineChart().yAxisOpts(AxisOpts.create()).generateScriptHtml("_tid", df1);
+        String s2 = ECharts.lineChart().yAxisOpts(AxisOpts.defaultY()).generateScriptHtml("_tid", df1);
         assertTrue(s2.contains("yAxis: {"), s2);
     }
 
@@ -113,7 +120,7 @@ public class EChartsTest {
         assertFalse(s1.contains("axisLabel: {"), s1);
         assertFalse(s1.contains("formatter:"), s1);
 
-        String s2 = ECharts.lineChart().yAxisOpts(AxisOpts.create().axisLabel(AxisLabelOpts.create().formatter("{value} cm"))).generateScriptHtml("_tid", df1);
+        String s2 = ECharts.lineChart().yAxisOpts(AxisOpts.defaultY().label(AxisLabelOpts.create().formatter("{value} cm"))).generateScriptHtml("_tid", df1);
         assertTrue(s2.contains("axisLabel: {"), s2);
         assertTrue(s2.contains("formatter: '{value} cm'"), s2);
     }
@@ -129,10 +136,13 @@ public class EChartsTest {
     }
 
     @Test
-    public void generateScriptHtml_Data() {
-
+    public void generateScriptHtml_SeriesEmpty() {
         String s1 = ECharts.lineChart().generateScriptHtml("_tid", df2);
         assertTrue(s1.contains("series: ["), s1);
+    }
+
+    @Test
+    public void generateScriptHtml_Series() {
 
         String s2 = ECharts.lineChart().series("y2").generateScriptHtml("_tid", df2);
         assertTrue(s2.contains("series: ["), s2);
@@ -145,6 +155,22 @@ public class EChartsTest {
         assertTrue(s3.contains("data: [20,25,28],"), s3);
         assertTrue(s3.contains("name: 'y1',"), s3);
         assertTrue(s3.contains("data: [10,11,14],"), s3);
+    }
+
+    @Test
+    public void generateScriptHtml_TimeSeries() {
+
+        String s2 = ECharts.lineChart().timeSeries("t2", "y2").generateScriptHtml("_tid", df3);
+        assertTrue(s2.contains("series: ["), s2);
+        assertTrue(s2.contains("name: 'y2',"), s2);
+        assertTrue(s2.contains("data: [['2024-01-01',20],['2024-02-01',25],['2024-03-01',28]],"), s2);
+
+        String s3 = ECharts.lineChart().timeSeries("t1", "y1").timeSeries("t2", "y2").generateScriptHtml("_tid", df3);
+        assertTrue(s3.contains("series: ["), s3);
+        assertTrue(s3.contains("name: 'y2',"), s3);
+        assertTrue(s3.contains("data: [['2024-01-01',20],['2024-02-01',25],['2024-03-01',28]],"), s3);
+        assertTrue(s3.contains("name: 'y1',"), s3);
+        assertTrue(s3.contains("data: [['2022-01-01',10],['2022-02-01',11],['2022-03-01',14]],"), s3);
     }
 
     @Test

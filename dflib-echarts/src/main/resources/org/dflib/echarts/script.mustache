@@ -54,7 +54,7 @@
               {{#smooth}}
               smooth: true,
               {{/smooth}}
-              data: [{{#data}}{{value}}{{^last}},{{/last}}{{/data}}],
+              data: [{{#data}}{{{quotedValue}}}{{^last}},{{/last}}{{/data}}{{#dataPairs}}[{{{quotedValue1}}},{{{quotedValue2}}}]{{^last}},{{/last}}{{/dataPairs}}],
               type: '{{type}}'
             }{{^last}},{{/last}}
             {{/series}}

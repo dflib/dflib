@@ -38,13 +38,13 @@ public class AxisModel {
         return !boundaryGap;
     }
 
-    public List<ListElementModel> getData() {
+    public List<ValueModel> getData() {
 
         int len = data.size();
-        List<ListElementModel> elements = new ArrayList<>(len);
+        List<ValueModel> elements = new ArrayList<>(len);
 
         for (int i = 0; i < len; i++) {
-            elements.add(new ListElementModel(data.get(i), i + 1 == len));
+            elements.add(new ValueModel(data.get(i), i + 1 == len));
         }
 
         return elements;

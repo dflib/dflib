@@ -1,21 +1,32 @@
 package org.dflib.echarts;
 
+import java.util.Objects;
+
 /**
  * @since 1.0.0-M21
  */
 public class AxisOpts {
 
-    private AxisType type;
-    private AxisLabelOpts axisLabel;
+    private final AxisType type;
+    private AxisLabelOpts label;
     private boolean boundaryGap;
 
-    public static AxisOpts create() {
-        // "true" is the same default as ECharts
-        return new AxisOpts(true);
+    public static AxisOpts defaultX() {
+        return of(AxisType.category);
     }
 
-    protected AxisOpts(boolean boundaryGap) {
-        this.boundaryGap = boundaryGap;
+    public static AxisOpts defaultY() {
+        return of(AxisType.value);
+    }
+
+    public static AxisOpts of(AxisType type) {
+        return new AxisOpts(type);
+    }
+
+    protected AxisOpts(AxisType type) {
+        this.type = Objects.requireNonNull(type);
+        // "true" is the same default as ECharts
+        this.boundaryGap = true;
     }
 
     public boolean isBoundaryGap() {
@@ -27,21 +38,16 @@ public class AxisOpts {
         return this;
     }
 
-    public AxisLabelOpts getAxisLabel() {
-        return axisLabel;
+    public AxisLabelOpts getLabel() {
+        return label;
     }
 
-    public AxisOpts axisLabel(AxisLabelOpts axisLabel) {
-        this.axisLabel = axisLabel;
+    public AxisOpts label(AxisLabelOpts axisLabel) {
+        this.label = axisLabel;
         return this;
     }
 
     public AxisType getType() {
         return type;
-    }
-
-    public AxisOpts type(AxisType type) {
-        this.type = type;
-        return this;
     }
 }

@@ -10,7 +10,8 @@ import java.util.List;
 public class SeriesModel {
 
     private final String name;
-    private final List<ListElementModel> data;
+    private final List<ValueModel> data;
+    private final List<ValuePairModel> dataPairs;
     private final String type;
     private final boolean areaStyle;
     private final boolean stack;
@@ -19,7 +20,8 @@ public class SeriesModel {
 
     public SeriesModel(
             String name,
-            List<ListElementModel> data,
+            List<ValueModel> data,
+            List<ValuePairModel> dataPairs,
             String type,
             boolean areaStyle,
             boolean stack,
@@ -28,6 +30,7 @@ public class SeriesModel {
 
         this.name = name;
         this.data = data;
+        this.dataPairs = dataPairs;
         this.type = type;
         this.areaStyle = areaStyle;
         this.stack = stack;
@@ -43,8 +46,12 @@ public class SeriesModel {
         return type;
     }
 
-    public List<ListElementModel> getData() {
+    public List<ValueModel> getData() {
         return data;
+    }
+
+    public List<ValuePairModel> getDataPairs() {
+        return dataPairs;
     }
 
     public boolean isAreaStyle() {
