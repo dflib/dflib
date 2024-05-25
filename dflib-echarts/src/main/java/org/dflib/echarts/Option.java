@@ -1,99 +1,54 @@
 package org.dflib.echarts;
 
-import com.github.mustachejava.DefaultMustacheFactory;
-import com.github.mustachejava.Mustache;
 import org.dflib.DataFrame;
 import org.dflib.Series;
-import org.dflib.echarts.model.AxisLabelModel;
-import org.dflib.echarts.model.AxisModel;
-import org.dflib.echarts.model.ContainerModel;
-import org.dflib.echarts.model.DataSetModel;
-import org.dflib.echarts.model.EncodeModel;
-import org.dflib.echarts.model.ExternalScriptModel;
-import org.dflib.echarts.model.RowModel;
-import org.dflib.echarts.model.ScriptModel;
-import org.dflib.echarts.model.SeriesModel;
-import org.dflib.echarts.model.ToolboxModel;
-import org.dflib.echarts.model.toolbox.FeatureDataZoomModel;
-import org.dflib.echarts.model.toolbox.FeatureRestoreModel;
-import org.dflib.echarts.model.toolbox.FeatureSaveAsImageModel;
-import org.dflib.echarts.model.ValueModel;
+import org.dflib.echarts.render.AxisLabelModel;
+import org.dflib.echarts.render.AxisModel;
+import org.dflib.echarts.render.DataSetModel;
+import org.dflib.echarts.render.EncodeModel;
+import org.dflib.echarts.render.OptionModel;
+import org.dflib.echarts.render.RowModel;
+import org.dflib.echarts.render.SeriesModel;
+import org.dflib.echarts.render.ToolboxModel;
+import org.dflib.echarts.render.ValueModel;
+import org.dflib.echarts.render.toolbox.FeatureDataZoomModel;
+import org.dflib.echarts.render.toolbox.FeatureRestoreModel;
+import org.dflib.echarts.render.toolbox.FeatureSaveAsImageModel;
 import org.dflib.series.IntSequenceSeries;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 
 /**
- * A builder of HTML/JS code that renders DataFrame data using ECharts library.
+ * A builder of the EChart "option" object - the main chart configuration.
  *
  * @since 1.0.0-M21
  */
-public class EChartBuilder {
-    private static final String DEFAULT_ECHARTS_SCRIPT_URL = "https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js";
-
-    private static final Mustache CONTAINER_TEMPLATE = loadTemplate("container.mustache");
-    private static final Mustache EXTERNAL_SCRIPT_TEMPLATE = loadTemplate("external_script.mustache");
-    private static final Mustache SCRIPT_TEMPLATE = loadTemplate("script.mustache");
-
-    static Mustache loadTemplate(String name) {
-        try (InputStream in = ECharts.class.getResourceAsStream(name)) {
-
-            if (in == null) {
-                throw new RuntimeException("ECharts 'cell.mustache' template is not found");
-            }
-
-            // not providing an explicit resolver of subtemplates.. assuming a single flat template for now
-            try (Reader reader = new InputStreamReader(in)) {
-                return new DefaultMustacheFactory().compile(reader, name);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Error loading muustache template: " + name, e);
-        }
-    }
-
-    // TODO: extract "RootOpts" or "Opts" from the builder similar to SeriesOpts, etc.
-
-    private final Random rnd;
-    private String theme;
-
-    private String scriptUrl;
+public class Option {
     private String title;
-    private Integer width;
-    private Integer height;
     private Boolean legend;
     private Toolbox toolbox;
 
     private String xAxisColumn;
     private Axis xAxis;
-
     private Axis yAxis;
 
     private final Map<String, SeriesOpts> series;
-
     private final SeriesOpts defaultSeriesOpts;
     private SeriesOpts seriesOpts;
 
-    protected EChartBuilder(SeriesOpts defaultSeriesOpts) {
-        this.rnd = new SecureRandom();
-
+    public Option(SeriesOpts defaultSeriesOpts) {
         this.defaultSeriesOpts = defaultSeriesOpts;
 
         // keeping the "series" order predictable
         this.series = new LinkedHashMap<>();
     }
 
-    public EChartBuilder toolbox(Toolbox opts) {
-        this.toolbox = Objects.requireNonNull(opts);
+    public Option toolbox(Toolbox toolbox) {
+        this.toolbox = Objects.requireNonNull(toolbox);
         return this;
     }
 
@@ -101,32 +56,31 @@ public class EChartBuilder {
      * Specifies which DataFrame column should be used to label the X axis. This setting is optional. If not set,
      * series element indices will be used for X.
      */
-    public EChartBuilder xAxis(String dataColumn) {
+    public Option xAxis(String dataColumn) {
         this.xAxisColumn = dataColumn;
         return this;
     }
 
-    public EChartBuilder xAxis(String dataColumn, Axis opts) {
+    public Option xAxis(String dataColumn, Axis axis) {
         this.xAxisColumn = Objects.requireNonNull(dataColumn);
-        this.xAxis = Objects.requireNonNull(opts);
+        this.xAxis = Objects.requireNonNull(axis);
         return this;
     }
 
-    public EChartBuilder xAxis(Axis opts) {
-        this.xAxis = Objects.requireNonNull(opts);
+    public Option xAxis(Axis axis) {
+        this.xAxis = Objects.requireNonNull(axis);
         return this;
     }
 
-    public EChartBuilder yAxis(Axis opts) {
-        this.yAxis = Objects.requireNonNull(opts);
+    public Option yAxis(Axis axis) {
+        this.yAxis = Objects.requireNonNull(axis);
         return this;
     }
-
 
     /**
      * Alters the default series options that will be used by all data series that don't have explicit options.
      */
-    public EChartBuilder seriesOpts(SeriesOpts opts) {
+    public Option seriesOpts(SeriesOpts opts) {
         this.seriesOpts = opts;
         return this;
     }
@@ -135,7 +89,7 @@ public class EChartBuilder {
      * Specifies a DataFrame column that should be plotted as a single data "series". Specifies option overrides
      * for this series.
      */
-    public EChartBuilder series(String dataColumn, SeriesOpts opts) {
+    public Option series(String dataColumn, SeriesOpts opts) {
         series.put(dataColumn, opts);
         return this;
     }
@@ -144,7 +98,7 @@ public class EChartBuilder {
      * Specifies which DataFrame columns should be plotted as data "series". Unless you override it later,
      * all series will be rendered with the default chart options.
      */
-    public EChartBuilder series(String... dataColumns) {
+    public Option series(String... dataColumns) {
         for (String c : dataColumns) {
 
             // can't use "computeIfAbsent", as it doesn't handle null properly
@@ -156,85 +110,26 @@ public class EChartBuilder {
         return this;
     }
 
-    /**
-     * Sets an alternative URL of ECharts JavaScript source. If not set, the default public URL is provided.
-     */
-    public EChartBuilder scriptUrl(String url) {
-        this.scriptUrl = url;
-        return this;
-    }
-
-    public EChartBuilder title(String title) {
+    public Option title(String title) {
         this.title = title;
         return this;
     }
 
-    public EChartBuilder legend() {
+    public Option legend() {
         this.legend = Boolean.TRUE;
         return this;
     }
 
-    public EChartBuilder sizePixels(int width, int height) {
-        this.width = width;
-        this.height = height;
-        return this;
-    }
-
-    /**
-     * @see #darkTheme()
-     */
-    public EChartBuilder theme(String theme) {
-        this.theme = theme;
-        return this;
-    }
-
-    public EChartBuilder darkTheme() {
-        return theme("dark");
-    }
-
-    public EChart plot(DataFrame dataFrame) {
-        String id = newId();
-        return new EChart(
-                generateContainerHtml(id),
-                generateExternalScriptHtml(),
-                generateScriptHtml(id, dataFrame)
-        );
-    }
-
-    protected String generateContainerHtml(String id) {
-        ContainerModel model = new ContainerModel(
-                id,
-                this.width != null ? this.width : 600,
-                this.height != null ? this.height : 400
-        );
-        return CONTAINER_TEMPLATE.execute(new StringWriter(), model).toString();
-    }
-
-    protected String generateExternalScriptHtml() {
-        ExternalScriptModel model = new ExternalScriptModel(
-                this.scriptUrl != null ? this.scriptUrl : DEFAULT_ECHARTS_SCRIPT_URL
-        );
-        return EXTERNAL_SCRIPT_TEMPLATE.execute(new StringWriter(), model).toString();
-    }
-
-    protected String generateScriptHtml(String id, DataFrame df) {
-
-        ScriptModel model = new ScriptModel(
-                id,
+    public OptionModel resolve(DataFrame df) {
+        return new OptionModel(
                 this.title,
                 toolbox(),
                 dataset(df),
                 xAxis(),
                 yAxis(),
                 seriesFromSeries(),
-                this.theme,
                 this.legend != null ? this.legend : false
         );
-        return SCRIPT_TEMPLATE.execute(new StringWriter(), model).toString();
-    }
-
-    protected String newId() {
-        return "dfl_ech_" + Math.abs(rnd.nextInt(10_000));
     }
 
     protected ToolboxModel toolbox() {
@@ -345,4 +240,5 @@ public class EChartBuilder {
                 ? this.defaultSeriesOpts.merge(this.seriesOpts)
                 : this.defaultSeriesOpts;
     }
+
 }

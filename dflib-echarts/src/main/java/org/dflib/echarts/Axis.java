@@ -8,7 +8,7 @@ import java.util.Objects;
 public class Axis {
 
     private final AxisType type;
-    private AxisLabelOpts label;
+    private AxisLabel label;
     private boolean boundaryGap;
 
     public static Axis defaultX() {
@@ -50,11 +50,11 @@ public class Axis {
         return this;
     }
 
-    public AxisLabelOpts getLabel() {
+    public AxisLabel getLabel() {
         return label;
     }
 
-    public Axis label(AxisLabelOpts axisLabel) {
+    public Axis label(AxisLabel axisLabel) {
         this.label = axisLabel;
         return this;
     }

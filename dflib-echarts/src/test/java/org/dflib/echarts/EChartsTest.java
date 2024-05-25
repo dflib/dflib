@@ -23,7 +23,7 @@ public class EChartsTest {
 
     @Test
     public void plot() {
-        EChart ch = ECharts.lineChart().xAxis("x").series("y1", "y2").plot(df2);
+        EChartHtml ch = ECharts.lineChart().xAxis("x").series("y1", "y2").plot(df2);
         assertTrue(ch.getExternalScript().contains("<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js'></script>"), ch.getExternalScript());
         assertTrue(ch.getContainer().contains("<div id='dfl_ech_"), ch.getContainer());
         assertTrue(ch.getScript().contains("['x','A','B','C'],"), ch.getScript());
@@ -125,7 +125,7 @@ public class EChartsTest {
         assertFalse(s1.contains("axisLabel: {"), s1);
         assertFalse(s1.contains("formatter:"), s1);
 
-        String s2 = ECharts.lineChart().yAxis(Axis.defaultY().label(AxisLabelOpts.create().formatter("{value} cm"))).generateScriptHtml("_tid", df1);
+        String s2 = ECharts.lineChart().yAxis(Axis.defaultY().label(AxisLabel.create().formatter("{value} cm"))).generateScriptHtml("_tid", df1);
         assertTrue(s2.contains("axisLabel: {"), s2);
         assertTrue(s2.contains("formatter: '{value} cm'"), s2);
     }

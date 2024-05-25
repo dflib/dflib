@@ -1,4 +1,4 @@
-package org.dflib.echarts.model;
+package org.dflib.echarts.render;
 
 /**
  * A model for rendering EChart script "series" element

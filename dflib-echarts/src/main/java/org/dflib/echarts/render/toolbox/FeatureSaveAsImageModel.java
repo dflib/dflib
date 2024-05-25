@@ -1,4 +1,4 @@
-package org.dflib.echarts.model.toolbox;
+package org.dflib.echarts.render.toolbox;
 
 /**
  * @since 1.0.0-M21

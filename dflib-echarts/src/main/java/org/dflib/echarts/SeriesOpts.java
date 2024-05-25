@@ -3,7 +3,7 @@ package org.dflib.echarts;
 import java.util.Objects;
 
 /**
- * Configuration of a single data series of an {@link EChart}.
+ * Configuration of a single data series of an {@link EChartHtml}.
  *
  * @since 1.0.0-M21
  */

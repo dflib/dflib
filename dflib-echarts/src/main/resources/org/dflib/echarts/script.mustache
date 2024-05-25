@@ -1,6 +1,7 @@
 <script type='text/javascript'>
     var chart_{{id}} = echarts.init(document.getElementById('{{id}}'){{#theme}}, '{{.}}'{{/theme}});
     var option_{{id}} = {
+{{#option}}
     {{#title}}
         title: {
             text: '{{.}}'
@@ -87,5 +88,6 @@
             }{{^last}},{{/last}}
             {{/series}}
         ]
+{{/option}}
     };
     option_{{id}} && chart_{{id}}.setOption(option_{{id}});</script>

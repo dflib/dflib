@@ -1,4 +1,4 @@
-package org.dflib.echarts.model;
+package org.dflib.echarts.render;
 
 /**
  * An abstract list value model that stores a pair of values and the "last" position indicator.

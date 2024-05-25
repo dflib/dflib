@@ -3,15 +3,15 @@ package org.dflib.echarts;
 /**
  * @since 1.0.0-M21
  */
-public class AxisLabelOpts {
+public class AxisLabel {
 
     private String formatter;
 
-    public static AxisLabelOpts create() {
-        return new AxisLabelOpts(null);
+    public static AxisLabel create() {
+        return new AxisLabel(null);
     }
 
-    protected AxisLabelOpts(String formatter) {
+    protected AxisLabel(String formatter) {
         this.formatter = formatter;
     }
 
@@ -19,7 +19,7 @@ public class AxisLabelOpts {
         return formatter;
     }
 
-    public AxisLabelOpts formatter(String formatter) {
+    public AxisLabel formatter(String formatter) {
         this.formatter = formatter;
         return this;
     }

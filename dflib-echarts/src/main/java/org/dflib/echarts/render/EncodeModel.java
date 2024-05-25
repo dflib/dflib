@@ -1,4 +1,4 @@
-package org.dflib.echarts.model;
+package org.dflib.echarts.render;
 
 public class EncodeModel {
 
