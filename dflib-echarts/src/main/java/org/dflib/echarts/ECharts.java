@@ -36,20 +36,6 @@ public class ECharts {
     }
 
     /**
-     * Starts a builder for a new pie chart.
-     */
-    public static EChartBuilder pieChart() {
-        return new EChartBuilder(SeriesOpts.pie());
-    }
-
-    /**
-     * Starts a builder for a new named pie chart.
-     */
-    public static EChartBuilder pieChart(String title) {
-        return pieChart().title(title);
-    }
-
-    /**
      * Starts a builder for a new scatter chart.
      */
     public static EChartBuilder scatterChart() {

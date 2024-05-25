@@ -1,10 +1,5 @@
 package org.dflib.echarts.model;
 
-import org.dflib.Series;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @since 1.0.0-M21
  */
@@ -13,13 +8,11 @@ public class AxisModel {
     private final String type;
     private final AxisLabelModel axisLabel;
     private final boolean boundaryGap;
-    private final Series<?> data;
 
-    public AxisModel(String type, AxisLabelModel axisLabel, boolean boundaryGap, Series<?> data) {
+    public AxisModel(String type, AxisLabelModel axisLabel, boolean boundaryGap) {
         this.type = type;
         this.axisLabel = axisLabel;
         this.boundaryGap = boundaryGap;
-        this.data = data;
     }
 
     public String getType() {
@@ -37,17 +30,4 @@ public class AxisModel {
     public boolean isNoBoundaryGap() {
         return !boundaryGap;
     }
-
-    public List<ValueModel> getData() {
-
-        int len = data.size();
-        List<ValueModel> elements = new ArrayList<>(len);
-
-        for (int i = 0; i < len; i++) {
-            elements.add(new ValueModel(data.get(i), i + 1 == len));
-        }
-
-        return elements;
-    }
-
 }

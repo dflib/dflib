@@ -19,7 +19,19 @@ public class AxisOpts {
         return of(AxisType.value);
     }
 
-    public static AxisOpts of(AxisType type) {
+    public static AxisOpts time() {
+        return of(AxisType.time);
+    }
+
+    public static AxisOpts value() {
+        return of(AxisType.value);
+    }
+
+    public static AxisOpts category() {
+        return of(AxisType.category);
+    }
+
+    protected static AxisOpts of(AxisType type) {
         return new AxisOpts(type);
     }
 

@@ -32,20 +32,17 @@ public class SeriesOpts {
     }
 
     /**
-     * Starts a builder for a pie series options object.
-     */
-    public static SeriesOpts pie() {
-        return new SeriesOpts(ChartType.pie, null, null, null);
-    }
-
-    /**
      * Starts a builder for a scatter series options object.
      */
     public static SeriesOpts scatter() {
         return new SeriesOpts(ChartType.scatter, null, null, null);
     }
 
-    protected SeriesOpts(ChartType type, Boolean areaStyle, Boolean smooth, Boolean stack) {
+    protected SeriesOpts(
+            ChartType type,
+            Boolean areaStyle,
+            Boolean smooth,
+            Boolean stack) {
         this.type = Objects.requireNonNull(type);
         this.stack = stack;
         this.smooth = smooth;

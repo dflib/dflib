@@ -7,11 +7,13 @@ import org.dflib.Series;
 import org.dflib.echarts.model.AxisLabelModel;
 import org.dflib.echarts.model.AxisModel;
 import org.dflib.echarts.model.ContainerModel;
+import org.dflib.echarts.model.DataSetModel;
+import org.dflib.echarts.model.EncodeModel;
 import org.dflib.echarts.model.ExternalScriptModel;
+import org.dflib.echarts.model.RowModel;
 import org.dflib.echarts.model.ScriptModel;
 import org.dflib.echarts.model.SeriesModel;
 import org.dflib.echarts.model.ValueModel;
-import org.dflib.echarts.model.ValuePairModel;
 import org.dflib.series.IntSequenceSeries;
 
 import java.io.IOException;
@@ -72,7 +74,6 @@ public class EChartBuilder {
     private AxisOpts yAxisOpts;
 
     private final Map<String, SeriesOpts> series;
-    private final Map<StringPair, SeriesOpts> timeSeries;
 
     private final SeriesOpts defaultSeriesOpts;
     private SeriesOpts seriesOpts;
@@ -84,7 +85,6 @@ public class EChartBuilder {
 
         // keeping the "series" order predictable
         this.series = new LinkedHashMap<>();
-        this.timeSeries = new LinkedHashMap<>();
     }
 
     /**
@@ -142,23 +142,6 @@ public class EChartBuilder {
             }
         }
 
-        return this;
-    }
-
-
-    public EChartBuilder timeSeries(String timeColumn, String dataColumn) {
-        StringPair key = new StringPair(timeColumn, dataColumn);
-
-        // can't use "computeIfAbsent", as it doesn't handle null properly
-        if (!timeSeries.containsKey(key)) {
-            timeSeries.put(key, null);
-        }
-
-        return this;
-    }
-
-    public EChartBuilder timeSeries(String timeColumn, String dataColumn, SeriesOpts opts) {
-        timeSeries.put(new StringPair(timeColumn, dataColumn), opts);
         return this;
     }
 
@@ -225,18 +208,13 @@ public class EChartBuilder {
 
     protected String generateScriptHtml(String id, DataFrame df) {
 
-        if (!series.isEmpty() && !timeSeries.isEmpty()) {
-            throw new IllegalStateException("Both 'series' and 'timeSeries' are set. Only one of them can be present");
-        }
-
-        boolean isTimeSeries = !timeSeries.isEmpty();
-
         ScriptModel model = new ScriptModel(
                 id,
                 this.title,
-                xAxis(df, isTimeSeries),
+                dataset(df),
+                xAxis(),
                 yAxis(),
-                isTimeSeries ? dataSeriesFromTimeSeries(df) : dataSeriesFromSeries(df),
+                seriesFromSeries(),
                 this.theme,
                 this.legend != null ? this.legend : false
         );
@@ -247,22 +225,53 @@ public class EChartBuilder {
         return "dfl_ech_" + Math.abs(rnd.nextInt(10_000));
     }
 
-    protected AxisModel xAxis(DataFrame df, boolean isTimeSeries) {
+    protected DataSetModel dataset(DataFrame df) {
 
-        AxisOpts xAxis = this.xAxisOpts != null ? this.xAxisOpts : (isTimeSeries ? AxisOpts.of(AxisType.time) : AxisOpts.defaultX());
+        // DF columns become rows and rows become columns in the EChart dataset
+        int w = df.height();
+        int h = series.size();
 
-        // TODO: "getColumn" here would throw on invalid column name, while "cols" in "dataSeries" will
-        //  create an empty column... An inconsistency?
+        List<ValueModel> headerRow = new ArrayList<>(w + 1);
+        List<RowModel> rows = new ArrayList<>(h + 1);
 
-        Series<?> xSeries = this.xAxisColumn != null
+        String[] rowLabels = series.keySet().toArray(new String[0]);
+
+
+        Series<?> columnLabels = this.xAxisColumn != null
                 ? df.getColumn(this.xAxisColumn)
-                : new IntSequenceSeries(1, df.height() + 1);
+                : new IntSequenceSeries(1, w + 1);
+        String columnLabelsLabel = this.xAxisColumn != null ? this.xAxisColumn : "labels";
+
+        headerRow.add(new ValueModel(columnLabelsLabel, w == 0));
+        for (int i = 0; i < w; i++) {
+            headerRow.add(new ValueModel(columnLabels.get(i), i + 1 == w));
+        }
+
+        rows.add(new RowModel(headerRow, h == 0));
+
+        for (int i = 0; i < h; i++) {
+            List<ValueModel> row = new ArrayList<>(w + 1);
+            row.add(new ValueModel(rowLabels[i], w == 0));
+            Series<?> data = df.getColumn(rowLabels[i]);
+
+            for (int j = 0; j < w; j++) {
+                row.add(new ValueModel(data.get(j), j + 1 == w));
+            }
+
+            rows.add(new RowModel(row, i + 1 == h));
+        }
+
+        return new DataSetModel(rows);
+    }
+
+    protected AxisModel xAxis() {
+
+        AxisOpts xAxis = this.xAxisOpts != null ? this.xAxisOpts : AxisOpts.defaultX();
 
         return new AxisModel(
                 xAxis.getType().name(),
                 xAxis.getLabel() != null ? new AxisLabelModel(xAxis.getLabel().getFormatter()) : null,
-                xAxis.isBoundaryGap(),
-                xSeries
+                xAxis.isBoundaryGap()
         );
     }
 
@@ -273,12 +282,11 @@ public class EChartBuilder {
         return new AxisModel(
                 yAxis.getType().name(),
                 yAxis.getLabel() != null ? new AxisLabelModel(yAxis.getLabel().getFormatter()) : null,
-                yAxis.isBoundaryGap(),
-                null
+                yAxis.isBoundaryGap()
         );
     }
 
-    protected List<SeriesModel> dataSeriesFromSeries(DataFrame df) {
+    protected List<SeriesModel> seriesFromSeries() {
         SeriesOpts defaultOpts = defaultSeriesOpts();
         String[] columns = series.keySet().toArray(new String[0]);
 
@@ -292,37 +300,10 @@ public class EChartBuilder {
 
             SeriesModel m = new SeriesModel(
                     columns[i],
-                    seriesData(df.getColumn(columns[i])),
-                    null,
                     mergedOpts.getType().name(),
-                    mergedOpts.isAreaStyle(),
-                    mergedOpts.isStack(),
-                    mergedOpts.isSmooth(),
-                    i + 1 == len
-            );
-
-            models.add(m);
-        }
-        return models;
-    }
-
-    protected List<SeriesModel> dataSeriesFromTimeSeries(DataFrame df) {
-
-        SeriesOpts defaultOpts = defaultSeriesOpts();
-        StringPair[] columnPairs = timeSeries.keySet().toArray(new StringPair[0]);
-        int len = columnPairs.length;
-
-        List<SeriesModel> models = new ArrayList<>(len);
-        for (int i = 0; i < len; i++) {
-
-            SeriesOpts columnOpts = timeSeries.get(columnPairs[i]);
-            SeriesOpts mergedOpts = columnOpts != null ? defaultOpts.merge(columnOpts) : defaultOpts;
-
-            SeriesModel m = new SeriesModel(
-                    columnPairs[i].right,
-                    null,
-                    timeSeriesData(df.getColumn(columnPairs[i].left), df.getColumn(columnPairs[i].right)),
-                    mergedOpts.getType().name(),
+                    new EncodeModel(0, i + 1),
+                    // hardcoding "row" series layout. It corresponds to the dataset layout
+                    SeriesLayoutType.row.name(),
                     mergedOpts.isAreaStyle(),
                     mergedOpts.isStack(),
                     mergedOpts.isSmooth(),
@@ -338,48 +319,5 @@ public class EChartBuilder {
         return this.seriesOpts != null
                 ? this.defaultSeriesOpts.merge(this.seriesOpts)
                 : this.defaultSeriesOpts;
-    }
-
-    protected List<ValueModel> seriesData(Series<?> series) {
-        int len = series.size();
-        List<ValueModel> data = new ArrayList<>(len);
-        for (int i = 0; i < len; i++) {
-            data.add(new ValueModel(series.get(i), i + 1 == len));
-        }
-
-        return data;
-    }
-
-    protected List<ValuePairModel> timeSeriesData(Series<?> time, Series<?> values) {
-        int len = values.size();
-        List<ValuePairModel> data = new ArrayList<>(len);
-        for (int i = 0; i < len; i++) {
-            data.add(new ValuePairModel(time.get(i), values.get(i), i + 1 == len));
-        }
-
-        return data;
-    }
-
-    static class StringPair {
-        final String left;
-        final String right;
-
-        StringPair(String left, String right) {
-            this.left = left;
-            this.right = right;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            StringPair that = (StringPair) o;
-            return Objects.equals(left, that.left) && Objects.equals(right, that.right);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(left, right);
-        }
     }
 }

@@ -1,7 +1,5 @@
 package org.dflib.echarts.model;
 
-import java.util.List;
-
 /**
  * A model for rendering EChart script "series" element
  *
@@ -10,9 +8,9 @@ import java.util.List;
 public class SeriesModel {
 
     private final String name;
-    private final List<ValueModel> data;
-    private final List<ValuePairModel> dataPairs;
     private final String type;
+    private final EncodeModel encode;
+    private final String seriesLayoutBy;
     private final boolean areaStyle;
     private final boolean stack;
     private final boolean smooth;
@@ -20,18 +18,18 @@ public class SeriesModel {
 
     public SeriesModel(
             String name,
-            List<ValueModel> data,
-            List<ValuePairModel> dataPairs,
             String type,
+            EncodeModel encode,
+            String seriesLayoutBy,
             boolean areaStyle,
             boolean stack,
             boolean smooth,
             boolean last) {
 
         this.name = name;
-        this.data = data;
-        this.dataPairs = dataPairs;
         this.type = type;
+        this.encode = encode;
+        this.seriesLayoutBy = seriesLayoutBy;
         this.areaStyle = areaStyle;
         this.stack = stack;
         this.smooth = smooth;
@@ -46,12 +44,12 @@ public class SeriesModel {
         return type;
     }
 
-    public List<ValueModel> getData() {
-        return data;
+    public EncodeModel getEncode() {
+        return encode;
     }
 
-    public List<ValuePairModel> getDataPairs() {
-        return dataPairs;
+    public String getSeriesLayoutBy() {
+        return seriesLayoutBy;
     }
 
     public boolean isAreaStyle() {

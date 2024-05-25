@@ -9,6 +9,15 @@
     {{#legend}}
         legend: {},
     {{/legend}}
+    {{#dataset}}
+        dataset: {
+            source: [
+                {{#rows}}
+                [{{#columns}}{{{quotedValue}}}{{^last}},{{/last}}{{/columns}}]{{^last}},{{/last}}
+                {{/rows}}
+            ]
+        },
+    {{/dataset}}
     {{#xAxis}}
         xAxis: {
         {{#axisLabel}}
@@ -18,13 +27,12 @@
             {{/formatter}}
             },
         {{/axisLabel}}
-        {{#type}}
-            type: '{{.}}',
-        {{/type}}
         {{#noBoundaryGap}}
             boundaryGap: false,
         {{/noBoundaryGap}}
-            data: [{{#data}}'{{value}}'{{^last}},{{/last}}{{/data}}]
+        {{#type}}
+            type: '{{.}}'
+        {{/type}}
         },
     {{/xAxis}}
     {{#yAxis}}
@@ -44,18 +52,23 @@
         series: [
             {{#series}}
             {
-              name: '{{name}}',
-              {{#areaStyle}}
-              areaStyle: {},
-              {{/areaStyle}}
-              {{#stack}}
-              stack: 'total',
-              {{/stack}}
-              {{#smooth}}
-              smooth: true,
-              {{/smooth}}
-              data: [{{#data}}{{{quotedValue}}}{{^last}},{{/last}}{{/data}}{{#dataPairs}}[{{{quotedValue1}}},{{{quotedValue2}}}]{{^last}},{{/last}}{{/dataPairs}}],
-              type: '{{type}}'
+                name: '{{name}}',
+            {{#areaStyle}}
+                areaStyle: {},
+            {{/areaStyle}}
+            {{#encode}}
+                encode: { x: {{x}}, y: {{y}} },
+            {{/encode}}
+            {{#seriesLayoutBy}}
+                seriesLayoutBy: '{{.}}',
+            {{/seriesLayoutBy}}
+            {{#stack}}
+                stack: 'total',
+            {{/stack}}
+            {{#smooth}}
+                smooth: true,
+            {{/smooth}}
+                type: '{{type}}'
             }{{^last}},{{/last}}
             {{/series}}
         ]

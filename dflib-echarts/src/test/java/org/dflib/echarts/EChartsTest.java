@@ -16,19 +16,21 @@ public class EChartsTest {
             11, 25, "B",
             14, 28, "C");
 
-    static final DataFrame df3 = DataFrame.foldByRow("t1", "t2", "y1", "y2", "x").of(
-            LocalDate.of(2022, 1, 1), LocalDate.of(2024, 1, 1), 10, 20, "A",
-            LocalDate.of(2022, 2, 1), LocalDate.of(2024, 2, 1), 11, 25, "B",
-            LocalDate.of(2022, 3, 1), LocalDate.of(2024, 3, 1), 14, 28, "C");
+    static final DataFrame df3 = DataFrame.foldByRow("t", "y1", "y2", "x").of(
+            LocalDate.of(2022, 1, 1), 10, 20, "A",
+            LocalDate.of(2022, 2, 1), 11, 25, "B",
+            LocalDate.of(2022, 3, 1), 14, 28, "C");
 
     @Test
     public void plot() {
         EChart ch = ECharts.lineChart().xAxis("x").series("y1", "y2").plot(df2);
         assertTrue(ch.getExternalScript().contains("<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js'></script>"), ch.getExternalScript());
         assertTrue(ch.getContainer().contains("<div id='dfl_ech_"), ch.getContainer());
-        assertTrue(ch.getScript().contains("data: ['A','B','C']"), ch.getScript());
-        assertTrue(ch.getScript().contains("data: [10,11,14]"), ch.getScript());
-        assertTrue(ch.getScript().contains("data: [20,25,28]"), ch.getScript());
+        assertTrue(ch.getScript().contains("['x','A','B','C'],"), ch.getScript());
+        assertTrue(ch.getScript().contains("['y1',10,11,14],"), ch.getScript());
+        assertTrue(ch.getScript().contains("['y2',20,25,28]"), ch.getScript());
+        assertTrue(ch.getScript().contains("name: 'y1',"), ch.getScript());
+        assertTrue(ch.getScript().contains("name: 'y2',"), ch.getScript());
     }
 
     @Test
@@ -81,13 +83,16 @@ public class EChartsTest {
     public void generateScriptHtml_xAxisData() {
 
         String s1 = ECharts.lineChart().generateScriptHtml("_tid", df2);
-        assertTrue(s1.contains("data: ['1','2','3']"), s1);
+        assertTrue(s1.contains("['labels',1,2,3]"), s1);
+        assertTrue(s1.contains("type: 'category'"), s1);
 
         String s2 = ECharts.lineChart().series("y1").generateScriptHtml("_tid", df2);
-        assertTrue(s2.contains("data: ['1','2','3']"), s2);
+        assertTrue(s2.contains("['labels',1,2,3]"), s2);
+        assertTrue(s2.contains("type: 'category'"), s2);
 
         String s3 = ECharts.lineChart().xAxis("x").generateScriptHtml("_tid", df2);
-        assertTrue(s3.contains("data: ['A','B','C']"), s3);
+        assertTrue(s3.contains("['x','A','B','C']"), s3);
+        assertTrue(s3.contains("type: 'category'"), s3);
     }
 
     @Test
@@ -147,30 +152,33 @@ public class EChartsTest {
         String s2 = ECharts.lineChart().series("y2").generateScriptHtml("_tid", df2);
         assertTrue(s2.contains("series: ["), s2);
         assertTrue(s2.contains("name: 'y2',"), s2);
-        assertTrue(s2.contains("data: [20,25,28],"), s2);
+        assertTrue(s2.contains("['labels',1,2,3],"), s2);
+        assertTrue(s2.contains("['y2',20,25,28]"), s2);
 
         String s3 = ECharts.lineChart().series("y2", "y1").generateScriptHtml("_tid", df2);
+        assertTrue(s3.contains("['y2',20,25,28],"), s3);
+        assertTrue(s3.contains("['y1',10,11,14]"), s3);
         assertTrue(s3.contains("series: ["), s3);
         assertTrue(s3.contains("name: 'y2',"), s3);
-        assertTrue(s3.contains("data: [20,25,28],"), s3);
         assertTrue(s3.contains("name: 'y1',"), s3);
-        assertTrue(s3.contains("data: [10,11,14],"), s3);
     }
 
     @Test
     public void generateScriptHtml_TimeSeries() {
 
-        String s2 = ECharts.lineChart().timeSeries("t2", "y2").generateScriptHtml("_tid", df3);
+        String s2 = ECharts.lineChart().series("y2").xAxis("t", AxisOpts.time()).generateScriptHtml("_tid", df3);
         assertTrue(s2.contains("series: ["), s2);
         assertTrue(s2.contains("name: 'y2',"), s2);
-        assertTrue(s2.contains("data: [['2024-01-01',20],['2024-02-01',25],['2024-03-01',28]],"), s2);
+        assertTrue(s2.contains("['t','2022-01-01','2022-02-01','2022-03-01'],"), s2);
+        assertTrue(s2.contains("['y2',20,25,28]"), s2);
 
-        String s3 = ECharts.lineChart().timeSeries("t1", "y1").timeSeries("t2", "y2").generateScriptHtml("_tid", df3);
+        String s3 = ECharts.lineChart().series("y2", "y1").xAxis("t", AxisOpts.time()).generateScriptHtml("_tid", df3);
+        assertTrue(s3.contains("['t','2022-01-01','2022-02-01','2022-03-01'],"), s3);
+        assertTrue(s3.contains("['y2',20,25,28],"), s3);
+        assertTrue(s3.contains("['y1',10,11,14]"), s3);
         assertTrue(s3.contains("series: ["), s3);
         assertTrue(s3.contains("name: 'y2',"), s3);
-        assertTrue(s3.contains("data: [['2024-01-01',20],['2024-02-01',25],['2024-03-01',28]],"), s3);
         assertTrue(s3.contains("name: 'y1',"), s3);
-        assertTrue(s3.contains("data: [['2022-01-01',10],['2022-02-01',11],['2022-03-01',14]],"), s3);
     }
 
     @Test
