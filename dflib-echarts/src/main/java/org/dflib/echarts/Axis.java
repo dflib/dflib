@@ -5,37 +5,37 @@ import java.util.Objects;
 /**
  * @since 1.0.0-M21
  */
-public class AxisOpts {
+public class Axis {
 
     private final AxisType type;
     private AxisLabelOpts label;
     private boolean boundaryGap;
 
-    public static AxisOpts defaultX() {
+    public static Axis defaultX() {
         return of(AxisType.category);
     }
 
-    public static AxisOpts defaultY() {
+    public static Axis defaultY() {
         return of(AxisType.value);
     }
 
-    public static AxisOpts time() {
+    public static Axis time() {
         return of(AxisType.time);
     }
 
-    public static AxisOpts value() {
+    public static Axis value() {
         return of(AxisType.value);
     }
 
-    public static AxisOpts category() {
+    public static Axis category() {
         return of(AxisType.category);
     }
 
-    protected static AxisOpts of(AxisType type) {
-        return new AxisOpts(type);
+    protected static Axis of(AxisType type) {
+        return new Axis(type);
     }
 
-    protected AxisOpts(AxisType type) {
+    protected Axis(AxisType type) {
         this.type = Objects.requireNonNull(type);
         // "true" is the same default as ECharts
         this.boundaryGap = true;
@@ -45,7 +45,7 @@ public class AxisOpts {
         return boundaryGap;
     }
 
-    public AxisOpts boundaryGap(boolean gap) {
+    public Axis boundaryGap(boolean gap) {
         this.boundaryGap = gap;
         return this;
     }
@@ -54,7 +54,7 @@ public class AxisOpts {
         return label;
     }
 
-    public AxisOpts label(AxisLabelOpts axisLabel) {
+    public Axis label(AxisLabelOpts axisLabel) {
         this.label = axisLabel;
         return this;
     }

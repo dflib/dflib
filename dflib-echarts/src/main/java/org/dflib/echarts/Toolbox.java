@@ -3,27 +3,27 @@ package org.dflib.echarts;
 /**
  * @since 1.0.0-M21
  */
-public class ToolboxOpts {
+public class Toolbox {
 
     private boolean featureDataZoom;
     private boolean featureSaveAsImage;
     private boolean featureRestore;
 
-    public static ToolboxOpts create() {
-        return new ToolboxOpts();
+    public static Toolbox create() {
+        return new Toolbox();
     }
 
-    public ToolboxOpts featureSaveAsImage() {
+    public Toolbox featureSaveAsImage() {
         this.featureSaveAsImage = Boolean.TRUE;
         return this;
     }
 
-    public ToolboxOpts featureRestore() {
+    public Toolbox featureRestore() {
         this.featureRestore = true;
         return this;
     }
 
-    public ToolboxOpts featureDataZoom() {
+    public Toolbox featureDataZoom() {
         this.featureDataZoom = true;
         return this;
     }

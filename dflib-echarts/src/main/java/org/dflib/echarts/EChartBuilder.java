@@ -71,12 +71,12 @@ public class EChartBuilder {
     private Integer width;
     private Integer height;
     private Boolean legend;
-    private ToolboxOpts toolboxOpts;
+    private Toolbox toolbox;
 
     private String xAxisColumn;
-    private AxisOpts xAxisOpts;
+    private Axis xAxis;
 
-    private AxisOpts yAxisOpts;
+    private Axis yAxis;
 
     private final Map<String, SeriesOpts> series;
 
@@ -92,8 +92,8 @@ public class EChartBuilder {
         this.series = new LinkedHashMap<>();
     }
 
-    public EChartBuilder toolboxOpts(ToolboxOpts opts) {
-        this.toolboxOpts = Objects.requireNonNull(opts);
+    public EChartBuilder toolbox(Toolbox opts) {
+        this.toolbox = Objects.requireNonNull(opts);
         return this;
     }
 
@@ -101,24 +101,24 @@ public class EChartBuilder {
      * Specifies which DataFrame column should be used to label the X axis. This setting is optional. If not set,
      * series element indices will be used for X.
      */
-    public EChartBuilder xAxis(String xAxisColumn) {
-        this.xAxisColumn = xAxisColumn;
+    public EChartBuilder xAxis(String dataColumn) {
+        this.xAxisColumn = dataColumn;
         return this;
     }
 
-    public EChartBuilder xAxis(String xAxisColumn, AxisOpts opts) {
-        this.xAxisColumn = Objects.requireNonNull(xAxisColumn);
-        this.xAxisOpts = Objects.requireNonNull(opts);
+    public EChartBuilder xAxis(String dataColumn, Axis opts) {
+        this.xAxisColumn = Objects.requireNonNull(dataColumn);
+        this.xAxis = Objects.requireNonNull(opts);
         return this;
     }
 
-    public EChartBuilder xAxisOpts(AxisOpts opts) {
-        this.xAxisOpts = Objects.requireNonNull(opts);
+    public EChartBuilder xAxis(Axis opts) {
+        this.xAxis = Objects.requireNonNull(opts);
         return this;
     }
 
-    public EChartBuilder yAxisOpts(AxisOpts opts) {
-        this.yAxisOpts = Objects.requireNonNull(opts);
+    public EChartBuilder yAxis(Axis opts) {
+        this.yAxis = Objects.requireNonNull(opts);
         return this;
     }
 
@@ -239,14 +239,14 @@ public class EChartBuilder {
 
     protected ToolboxModel toolbox() {
 
-        if (toolboxOpts == null) {
+        if (toolbox == null) {
             return null;
         }
 
         return new ToolboxModel(
-                toolboxOpts.isFeatureDataZoom() ? new FeatureDataZoomModel() : null,
-                toolboxOpts.isFeatureSaveAsImage() ? new FeatureSaveAsImageModel() : null,
-                toolboxOpts.isFeatureRestore() ? new FeatureRestoreModel() : null
+                toolbox.isFeatureDataZoom() ? new FeatureDataZoomModel() : null,
+                toolbox.isFeatureSaveAsImage() ? new FeatureSaveAsImageModel() : null,
+                toolbox.isFeatureRestore() ? new FeatureRestoreModel() : null
         );
     }
 
@@ -291,7 +291,7 @@ public class EChartBuilder {
 
     protected AxisModel xAxis() {
 
-        AxisOpts xAxis = this.xAxisOpts != null ? this.xAxisOpts : AxisOpts.defaultX();
+        Axis xAxis = this.xAxis != null ? this.xAxis : Axis.defaultX();
 
         return new AxisModel(
                 xAxis.getType().name(),
@@ -302,7 +302,7 @@ public class EChartBuilder {
 
     protected AxisModel yAxis() {
 
-        AxisOpts yAxis = this.yAxisOpts != null ? this.yAxisOpts : AxisOpts.defaultY();
+        Axis yAxis = this.yAxis != null ? this.yAxis : Axis.defaultY();
 
         return new AxisModel(
                 yAxis.getType().name(),

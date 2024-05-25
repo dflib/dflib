@@ -101,10 +101,10 @@ public class EChartsTest {
         String s1 = ECharts.lineChart().generateScriptHtml("_tid", df1);
         assertFalse(s1.contains("boundaryGap: false,"), s1);
 
-        String s2 = ECharts.lineChart().xAxis("x", AxisOpts.defaultX().boundaryGap(false)).generateScriptHtml("_tid", df1);
+        String s2 = ECharts.lineChart().xAxis("x", Axis.defaultX().boundaryGap(false)).generateScriptHtml("_tid", df1);
         assertTrue(s2.contains("boundaryGap: false,"), s2);
 
-        String s3 = ECharts.lineChart().xAxis("x", AxisOpts.defaultX().boundaryGap(true)).generateScriptHtml("_tid", df1);
+        String s3 = ECharts.lineChart().xAxis("x", Axis.defaultX().boundaryGap(true)).generateScriptHtml("_tid", df1);
         assertFalse(s3.contains("boundaryGap: false,"), s3);
     }
 
@@ -114,7 +114,7 @@ public class EChartsTest {
         String s1 = ECharts.lineChart().generateScriptHtml("_tid", df1);
         assertTrue(s1.contains("yAxis: {"), s1);
 
-        String s2 = ECharts.lineChart().yAxisOpts(AxisOpts.defaultY()).generateScriptHtml("_tid", df1);
+        String s2 = ECharts.lineChart().yAxis(Axis.defaultY()).generateScriptHtml("_tid", df1);
         assertTrue(s2.contains("yAxis: {"), s2);
     }
 
@@ -125,7 +125,7 @@ public class EChartsTest {
         assertFalse(s1.contains("axisLabel: {"), s1);
         assertFalse(s1.contains("formatter:"), s1);
 
-        String s2 = ECharts.lineChart().yAxisOpts(AxisOpts.defaultY().label(AxisLabelOpts.create().formatter("{value} cm"))).generateScriptHtml("_tid", df1);
+        String s2 = ECharts.lineChart().yAxis(Axis.defaultY().label(AxisLabelOpts.create().formatter("{value} cm"))).generateScriptHtml("_tid", df1);
         assertTrue(s2.contains("axisLabel: {"), s2);
         assertTrue(s2.contains("formatter: '{value} cm'"), s2);
     }
@@ -166,13 +166,13 @@ public class EChartsTest {
     @Test
     public void generateScriptHtml_TimeSeries() {
 
-        String s2 = ECharts.lineChart().series("y2").xAxis("t", AxisOpts.time()).generateScriptHtml("_tid", df3);
+        String s2 = ECharts.lineChart().series("y2").xAxis("t", Axis.time()).generateScriptHtml("_tid", df3);
         assertTrue(s2.contains("series: ["), s2);
         assertTrue(s2.contains("name: 'y2',"), s2);
         assertTrue(s2.contains("['t','2022-01-01','2022-02-01','2022-03-01'],"), s2);
         assertTrue(s2.contains("['y2',20,25,28]"), s2);
 
-        String s3 = ECharts.lineChart().series("y2", "y1").xAxis("t", AxisOpts.time()).generateScriptHtml("_tid", df3);
+        String s3 = ECharts.lineChart().series("y2", "y1").xAxis("t", Axis.time()).generateScriptHtml("_tid", df3);
         assertTrue(s3.contains("['t','2022-01-01','2022-02-01','2022-03-01'],"), s3);
         assertTrue(s3.contains("['y2',20,25,28],"), s3);
         assertTrue(s3.contains("['y1',10,11,14]"), s3);
@@ -230,7 +230,7 @@ public class EChartsTest {
         String s1 = ECharts.lineChart().generateScriptHtml("_tid", df1);
         assertFalse(s1.contains("toolbox: {"), s1);
 
-        String s2 = ECharts.lineChart().toolboxOpts(ToolboxOpts.create().featureSaveAsImage()).generateScriptHtml("_tid", df1);
+        String s2 = ECharts.lineChart().toolbox(Toolbox.create().featureSaveAsImage()).generateScriptHtml("_tid", df1);
         assertTrue(s2.contains("toolbox: {"), s2);
         assertTrue(s2.contains("saveAsImage: {}"), s2);
     }
