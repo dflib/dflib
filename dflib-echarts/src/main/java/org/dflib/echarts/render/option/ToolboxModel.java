@@ -1,8 +1,8 @@
-package org.dflib.echarts.render;
+package org.dflib.echarts.render.option;
 
-import org.dflib.echarts.render.toolbox.FeatureDataZoomModel;
-import org.dflib.echarts.render.toolbox.FeatureRestoreModel;
-import org.dflib.echarts.render.toolbox.FeatureSaveAsImageModel;
+import org.dflib.echarts.render.option.toolbox.FeatureDataZoomModel;
+import org.dflib.echarts.render.option.toolbox.FeatureRestoreModel;
+import org.dflib.echarts.render.option.toolbox.FeatureSaveAsImageModel;
 
 /**
  * A model for rendering EChart toolbox

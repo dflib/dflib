@@ -1,9 +1,12 @@
 package org.dflib.echarts;
 
+import org.dflib.echarts.render.option.EncodeModel;
+import org.dflib.echarts.render.option.SeriesModel;
+
 import java.util.Objects;
 
 /**
- * Configuration of a single data series of an {@link EChartHtml}.
+ * A partial configuration of a single data series options. The full configuration is obtained
  *
  * @since 1.0.0-M21
  */
@@ -12,7 +15,6 @@ public class SeriesOpts {
     private final ChartType type;
 
     // using objects instead of primitives to be able to perform merge
-    // TODO: areaStyle and smooth are not present in the Bar chart... subclass opts?
     private Boolean areaStyle;
     private Boolean smooth;
     private Boolean stack;
@@ -21,57 +23,25 @@ public class SeriesOpts {
      * Starts a builder for a line series options object.
      */
     public static SeriesOpts line() {
-        return new SeriesOpts(ChartType.line, null, null, null);
+        return new SeriesOpts(ChartType.line);
     }
 
     /**
      * Starts a builder for a bar series options object.
      */
     public static SeriesOpts bar() {
-        return new SeriesOpts(ChartType.bar, null, null, null);
+        return new SeriesOpts(ChartType.bar);
     }
 
     /**
      * Starts a builder for a scatter series options object.
      */
     public static SeriesOpts scatter() {
-        return new SeriesOpts(ChartType.scatter, null, null, null);
+        return new SeriesOpts(ChartType.scatter);
     }
 
-    protected SeriesOpts(
-            ChartType type,
-            Boolean areaStyle,
-            Boolean smooth,
-            Boolean stack) {
+    protected SeriesOpts(ChartType type) {
         this.type = Objects.requireNonNull(type);
-        this.stack = stack;
-        this.smooth = smooth;
-        this.areaStyle = areaStyle;
-    }
-
-    public SeriesOpts merge(SeriesOpts other) {
-        return new SeriesOpts(
-                other.type,
-                other.areaStyle != null ? other.areaStyle : this.areaStyle,
-                other.smooth != null ? other.smooth : this.smooth,
-                other.stack != null ? other.stack : this.stack
-        );
-    }
-
-    public ChartType getType() {
-        return type;
-    }
-
-    public boolean isAreaStyle() {
-        return areaStyle != null ? areaStyle : false;
-    }
-
-    public boolean isSmooth() {
-        return smooth != null ? smooth : false;
-    }
-
-    public boolean isStack() {
-        return stack != null ? stack : false;
     }
 
     public SeriesOpts areaStyle() {
@@ -87,5 +57,18 @@ public class SeriesOpts {
     public SeriesOpts stack() {
         this.stack = Boolean.TRUE;
         return this;
+    }
+
+    protected SeriesModel resolve(String name, EncodeModel encodeModel, String seriesLayoutBy, boolean last) {
+        return new SeriesModel(
+                name,
+                type.name(),
+                encodeModel,
+                seriesLayoutBy,
+                areaStyle != null ? areaStyle : false,
+                stack != null ? stack : false,
+                smooth != null ? smooth : false,
+                last
+        );
     }
 }

@@ -1,4 +1,4 @@
-package org.dflib.echarts.render;
+package org.dflib.echarts.render.option;
 
 /**
  * @since 1.0.0-M21

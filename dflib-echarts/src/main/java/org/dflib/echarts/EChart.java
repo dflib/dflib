@@ -51,9 +51,9 @@ public class EChart {
     private Integer width;
     private Integer height;
 
-    protected EChart(SeriesOpts defaultSeriesOpts) {
+    protected EChart() {
         this.rnd = new SecureRandom();
-        this.option = new Option(defaultSeriesOpts);
+        this.option = new Option();
     }
 
     /**
@@ -106,6 +106,10 @@ public class EChart {
         return this;
     }
 
+    /**
+     * Configures the X axis of the chart with no link to any DataFrame series. In this case, a series with element
+     * position numbers will be generated implicitly. 
+     */
     public EChart yAxis(Axis axis) {
         option.yAxis(axis);
         return this;
@@ -114,8 +118,8 @@ public class EChart {
     /**
      * Alters the default series options that will be used by all data series that don't have explicit options.
      */
-    public EChart seriesOpts(SeriesOpts seriesOpts) {
-        option.seriesOpts(seriesOpts);
+    public EChart defaultSeriesOpts(SeriesOpts opts) {
+        option.defaultSeriesOpts(opts);
         return this;
     }
 
@@ -123,8 +127,8 @@ public class EChart {
      * Specifies a DataFrame column that should be plotted as a single data "series". Specifies option overrides
      * for this series.
      */
-    public EChart series(String dataColumn, SeriesOpts seriesOpts) {
-        option.series(dataColumn, seriesOpts);
+    public EChart series(SeriesOpts seriesOpts, String... dataColumns) {
+        option.series(seriesOpts, dataColumns);
         return this;
     }
 

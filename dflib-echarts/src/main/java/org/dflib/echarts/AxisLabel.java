@@ -1,5 +1,7 @@
 package org.dflib.echarts;
 
+import org.dflib.echarts.render.option.AxisLabelModel;
+
 /**
  * @since 1.0.0-M21
  */
@@ -15,12 +17,12 @@ public class AxisLabel {
         this.formatter = formatter;
     }
 
-    public String getFormatter() {
-        return formatter;
-    }
-
     public AxisLabel formatter(String formatter) {
         this.formatter = formatter;
         return this;
+    }
+
+    protected AxisLabelModel resolve() {
+        return new AxisLabelModel(formatter);
     }
 }

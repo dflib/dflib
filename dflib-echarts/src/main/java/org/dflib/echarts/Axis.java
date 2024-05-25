@@ -1,5 +1,7 @@
 package org.dflib.echarts;
 
+import org.dflib.echarts.render.option.AxisModel;
+
 import java.util.Objects;
 
 /**
@@ -41,25 +43,21 @@ public class Axis {
         this.boundaryGap = true;
     }
 
-    public boolean isBoundaryGap() {
-        return boundaryGap;
-    }
-
     public Axis boundaryGap(boolean gap) {
         this.boundaryGap = gap;
         return this;
     }
 
-    public AxisLabel getLabel() {
-        return label;
-    }
-
-    public Axis label(AxisLabel axisLabel) {
-        this.label = axisLabel;
+    public Axis label(AxisLabel label) {
+        this.label = label;
         return this;
     }
 
-    public AxisType getType() {
-        return type;
+    protected AxisModel resolve() {
+        return new AxisModel(
+                type.name(),
+                label != null ? label.resolve() : null,
+                boundaryGap
+        );
     }
 }

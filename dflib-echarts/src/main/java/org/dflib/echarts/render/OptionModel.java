@@ -1,5 +1,10 @@
 package org.dflib.echarts.render;
 
+import org.dflib.echarts.render.option.AxisModel;
+import org.dflib.echarts.render.option.DataSetModel;
+import org.dflib.echarts.render.option.SeriesModel;
+import org.dflib.echarts.render.option.ToolboxModel;
+
 import java.util.List;
 
 /**

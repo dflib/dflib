@@ -1,5 +1,10 @@
 package org.dflib.echarts;
 
+import org.dflib.echarts.render.option.ToolboxModel;
+import org.dflib.echarts.render.option.toolbox.FeatureDataZoomModel;
+import org.dflib.echarts.render.option.toolbox.FeatureRestoreModel;
+import org.dflib.echarts.render.option.toolbox.FeatureSaveAsImageModel;
+
 /**
  * @since 1.0.0-M21
  */
@@ -28,15 +33,11 @@ public class Toolbox {
         return this;
     }
 
-    public boolean isFeatureSaveAsImage() {
-        return featureSaveAsImage;
-    }
-
-    public boolean isFeatureRestore() {
-        return featureRestore;
-    }
-
-    public boolean isFeatureDataZoom() {
-        return featureDataZoom;
+    protected ToolboxModel resolve() {
+        return new ToolboxModel(
+                featureDataZoom ? new FeatureDataZoomModel() : null,
+                featureSaveAsImage ? new FeatureSaveAsImageModel() : null,
+                featureRestore ? new FeatureRestoreModel() : null
+        );
     }
 }

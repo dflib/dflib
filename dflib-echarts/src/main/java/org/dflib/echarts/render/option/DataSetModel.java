@@ -1,4 +1,4 @@
-package org.dflib.echarts.render;
+package org.dflib.echarts.render.option;
 
 import java.util.List;
 

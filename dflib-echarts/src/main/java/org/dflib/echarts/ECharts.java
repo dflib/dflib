@@ -8,46 +8,16 @@ package org.dflib.echarts;
 public class ECharts {
 
     /**
-     * Starts a builder for a new line chart.
+     * Starts a builder for a new chart.
      */
-    public static EChart lineChart() {
-        return new EChart(SeriesOpts.line());
+    public static EChart chart() {
+        return new EChart();
     }
 
     /**
-     * Starts a builder for a new named line chart.
+     * Starts a builder for a new named chart.
      */
-    public static EChart lineChart(String title) {
-        return lineChart().title(title);
+    public static EChart chart(String title) {
+        return chart().title(title);
     }
-
-    /**
-     * Starts a builder for a new bar chart.
-     */
-    public static EChart barChart() {
-        return new EChart(SeriesOpts.bar());
-    }
-
-    /**
-     * Starts a builder for a new named bar chart.
-     */
-    public static EChart barChart(String title) {
-        return barChart().title(title);
-    }
-
-    /**
-     * Starts a builder for a new scatter chart.
-     */
-    public static EChart scatterChart() {
-        return new EChart(SeriesOpts.scatter());
-    }
-
-    /**
-     * Starts a builder for a new named scatter chart.
-     */
-    public static EChart scatterChart(String title) {
-        return scatterChart().title(title);
-    }
-
-
 }

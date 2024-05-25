@@ -2,18 +2,12 @@ package org.dflib.echarts;
 
 import org.dflib.DataFrame;
 import org.dflib.Series;
-import org.dflib.echarts.render.AxisLabelModel;
-import org.dflib.echarts.render.AxisModel;
-import org.dflib.echarts.render.DataSetModel;
-import org.dflib.echarts.render.EncodeModel;
 import org.dflib.echarts.render.OptionModel;
-import org.dflib.echarts.render.RowModel;
-import org.dflib.echarts.render.SeriesModel;
-import org.dflib.echarts.render.ToolboxModel;
 import org.dflib.echarts.render.ValueModel;
-import org.dflib.echarts.render.toolbox.FeatureDataZoomModel;
-import org.dflib.echarts.render.toolbox.FeatureRestoreModel;
-import org.dflib.echarts.render.toolbox.FeatureSaveAsImageModel;
+import org.dflib.echarts.render.option.DataSetModel;
+import org.dflib.echarts.render.option.EncodeModel;
+import org.dflib.echarts.render.option.RowModel;
+import org.dflib.echarts.render.option.SeriesModel;
 import org.dflib.series.IntSequenceSeries;
 
 import java.util.ArrayList;
@@ -32,17 +26,13 @@ public class Option {
     private Boolean legend;
     private Toolbox toolbox;
 
-    private String xAxisColumn;
-    private Axis xAxis;
+    private BoundAxis xAxis;
     private Axis yAxis;
 
-    private final Map<String, SeriesOpts> series;
-    private final SeriesOpts defaultSeriesOpts;
-    private SeriesOpts seriesOpts;
+    private final Map<String, BoundSeries> series;
+    private SeriesOpts defaultSeriesOpts;
 
-    public Option(SeriesOpts defaultSeriesOpts) {
-        this.defaultSeriesOpts = defaultSeriesOpts;
-
+    public Option() {
         // keeping the "series" order predictable
         this.series = new LinkedHashMap<>();
     }
@@ -57,18 +47,17 @@ public class Option {
      * series element indices will be used for X.
      */
     public Option xAxis(String dataColumn) {
-        this.xAxisColumn = dataColumn;
+        this.xAxis = new BoundAxis(dataColumn, Axis.defaultX());
         return this;
     }
 
     public Option xAxis(String dataColumn, Axis axis) {
-        this.xAxisColumn = Objects.requireNonNull(dataColumn);
-        this.xAxis = Objects.requireNonNull(axis);
+        this.xAxis = new BoundAxis(dataColumn, axis);
         return this;
     }
 
     public Option xAxis(Axis axis) {
-        this.xAxis = Objects.requireNonNull(axis);
+        this.xAxis = new BoundAxis(null, axis);
         return this;
     }
 
@@ -78,33 +67,31 @@ public class Option {
     }
 
     /**
-     * Alters the default series options that will be used by all data series that don't have explicit options.
+     * Sets a template to be used with all data series that don't have their own explicit options.
      */
-    public Option seriesOpts(SeriesOpts opts) {
-        this.seriesOpts = opts;
+    public Option defaultSeriesOpts(SeriesOpts opts) {
+        this.defaultSeriesOpts = opts;
         return this;
     }
 
     /**
-     * Specifies a DataFrame column that should be plotted as a single data "series". Specifies option overrides
-     * for this series.
+     * Specifies one or more DataFrame columns to be plotted as individual series. Sets series options.
      */
-    public Option series(String dataColumn, SeriesOpts opts) {
-        series.put(dataColumn, opts);
+    public Option series(SeriesOpts opts, String... dataColumns) {
+        for (String c : dataColumns) {
+            series.put(c, new BoundSeries(c, opts));
+        }
+
         return this;
     }
 
     /**
-     * Specifies which DataFrame columns should be plotted as data "series". Unless you override it later,
-     * all series will be rendered with the default chart options.
+     * Specifies one or more DataFrame columns to be plotted as individual series. Series will be rendered with default
+     * options.
      */
     public Option series(String... dataColumns) {
         for (String c : dataColumns) {
-
-            // can't use "computeIfAbsent", as it doesn't handle null properly
-            if (!series.containsKey(c)) {
-                series.put(c, null);
-            }
+            series.put(c, new BoundSeries(c, null));
         }
 
         return this;
@@ -120,32 +107,23 @@ public class Option {
         return this;
     }
 
-    public OptionModel resolve(DataFrame df) {
+    protected OptionModel resolve(DataFrame df) {
+
+        BoundAxis x = xAxis != null ? xAxis : new BoundAxis(null, Axis.defaultX());
+        Axis y = yAxis != null ? yAxis : Axis.defaultY();
+
         return new OptionModel(
                 this.title,
-                toolbox(),
-                dataset(df),
-                xAxis(),
-                yAxis(),
-                seriesFromSeries(),
+                this.toolbox != null ? this.toolbox.resolve() : null,
+                dataset(df, x),
+                x.axis.resolve(),
+                y.resolve(),
+                datasetSeries(),
                 this.legend != null ? this.legend : false
         );
     }
 
-    protected ToolboxModel toolbox() {
-
-        if (toolbox == null) {
-            return null;
-        }
-
-        return new ToolboxModel(
-                toolbox.isFeatureDataZoom() ? new FeatureDataZoomModel() : null,
-                toolbox.isFeatureSaveAsImage() ? new FeatureSaveAsImageModel() : null,
-                toolbox.isFeatureRestore() ? new FeatureRestoreModel() : null
-        );
-    }
-
-    protected DataSetModel dataset(DataFrame df) {
+    protected DataSetModel dataset(DataFrame df, BoundAxis x) {
 
         // DF columns become rows and rows become columns in the EChart dataset
         int w = df.height();
@@ -155,12 +133,8 @@ public class Option {
         List<RowModel> rows = new ArrayList<>(h + 1);
 
         String[] rowLabels = series.keySet().toArray(new String[0]);
-
-
-        Series<?> columnLabels = this.xAxisColumn != null
-                ? df.getColumn(this.xAxisColumn)
-                : new IntSequenceSeries(1, w + 1);
-        String columnLabelsLabel = this.xAxisColumn != null ? this.xAxisColumn : "labels";
+        Series<?> columnLabels = x.resolve(df);
+        String columnLabelsLabel = x.resolveLabel();
 
         headerRow.add(new ValueModel(columnLabelsLabel, w == 0));
         for (int i = 0; i < w; i++) {
@@ -184,61 +158,65 @@ public class Option {
         return new DataSetModel(rows);
     }
 
-    protected AxisModel xAxis() {
-
-        Axis xAxis = this.xAxis != null ? this.xAxis : Axis.defaultX();
-
-        return new AxisModel(
-                xAxis.getType().name(),
-                xAxis.getLabel() != null ? new AxisLabelModel(xAxis.getLabel().getFormatter()) : null,
-                xAxis.isBoundaryGap()
-        );
-    }
-
-    protected AxisModel yAxis() {
-
-        Axis yAxis = this.yAxis != null ? this.yAxis : Axis.defaultY();
-
-        return new AxisModel(
-                yAxis.getType().name(),
-                yAxis.getLabel() != null ? new AxisLabelModel(yAxis.getLabel().getFormatter()) : null,
-                yAxis.isBoundaryGap()
-        );
-    }
-
-    protected List<SeriesModel> seriesFromSeries() {
-        SeriesOpts defaultOpts = defaultSeriesOpts();
-        String[] columns = series.keySet().toArray(new String[0]);
-
-        int len = columns.length;
+    protected List<SeriesModel> datasetSeries() {
+        SeriesOpts baseOpts = baseSeriesOptsTemplate();
+        int len = series.size();
+        int i = 0;
 
         List<SeriesModel> models = new ArrayList<>(len);
-        for (int i = 0; i < len; i++) {
-
-            SeriesOpts columnOpts = series.get(columns[i]);
-            SeriesOpts mergedOpts = columnOpts != null ? defaultOpts.merge(columnOpts) : defaultOpts;
-
-            SeriesModel m = new SeriesModel(
-                    columns[i],
-                    mergedOpts.getType().name(),
-                    new EncodeModel(0, i + 1),
-                    // hardcoding "row" series layout. It corresponds to the dataset layout
-                    SeriesLayoutType.row.name(),
-                    mergedOpts.isAreaStyle(),
-                    mergedOpts.isStack(),
-                    mergedOpts.isSmooth(),
-                    i + 1 == len
-            );
-
+        for (BoundSeries s : series.values()) {
+            SeriesModel m = s.fillOpts(baseOpts).resolve(i++, len);
             models.add(m);
         }
+
         return models;
     }
 
-    protected SeriesOpts defaultSeriesOpts() {
-        return this.seriesOpts != null
-                ? this.defaultSeriesOpts.merge(this.seriesOpts)
-                : this.defaultSeriesOpts;
+    protected SeriesOpts baseSeriesOptsTemplate() {
+        return this.defaultSeriesOpts != null ? defaultSeriesOpts : SeriesOpts.line();
     }
 
+    static class BoundAxis {
+        final String columnName;
+        final Axis axis;
+
+        BoundAxis(String columnName, Axis axis) {
+            this.columnName = columnName;
+            this.axis = axis;
+        }
+
+        Series<?> resolve(DataFrame df) {
+            return columnName != null
+                    ? df.getColumn(columnName)
+                    : new IntSequenceSeries(1, df.height() + 1);
+        }
+
+        String resolveLabel() {
+            return columnName != null ? columnName : "labels";
+        }
+    }
+
+    static class BoundSeries {
+        final String columnName;
+        final SeriesOpts opts;
+
+        BoundSeries(String columnName, SeriesOpts opts) {
+            this.columnName = Objects.requireNonNull(columnName);
+            this.opts = opts;
+        }
+
+        BoundSeries fillOpts(SeriesOpts defaultOpts) {
+            return opts != null ? this : new BoundSeries(columnName, defaultOpts);
+        }
+
+        SeriesModel resolve(int seriesNum, int totalSeries) {
+            return opts.resolve(
+                    columnName,
+                    new EncodeModel(0, seriesNum + 1),
+                    // hardcoding "row" series layout. It corresponds to the dataset layout
+                    "row",
+                    seriesNum + 1 == totalSeries
+            );
+        }
+    }
 }
