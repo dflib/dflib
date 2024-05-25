@@ -12,6 +12,7 @@
 * #278 Upgrade Avro -> commons-compress to 1.26.1
 * #279 Upgrade POI dependency to 5.2.5
 * #280 Upgrade Jackson dependency to 2.15.4
+* #285 Integrate ECharts JS plot library in DFLib
 * #286 commons-csv 1.11.0
 
 ## Release 1.0.0-M20
