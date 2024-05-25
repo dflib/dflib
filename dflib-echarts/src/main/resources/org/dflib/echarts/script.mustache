@@ -18,7 +18,9 @@
             {{/formatter}}
             },
         {{/axisLabel}}
-            type: 'category',
+        {{#type}}
+            type: '{{.}}',
+        {{/type}}
         {{#noBoundaryGap}}
             boundaryGap: false,
         {{/noBoundaryGap}}
@@ -34,7 +36,9 @@
             {{/formatter}}
             },
         {{/axisLabel}}
-            type: 'value'
+        {{#type}}
+            type: '{{.}}'
+        {{/type}}
         },
     {{/yAxis}}
         series: [

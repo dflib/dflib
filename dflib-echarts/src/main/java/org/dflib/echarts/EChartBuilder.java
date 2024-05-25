@@ -233,6 +233,7 @@ public class EChartBuilder {
                 : new IntSequenceSeries(1, df.height() + 1);
 
         return new AxisModel(
+                xAxis.getType() != null ? xAxis.getType().name() : AxisType.category.name(),
                 xAxis.getAxisLabel() != null ? new AxisLabelModel(xAxis.getAxisLabel().getFormatter()) : null,
                 xAxis.isBoundaryGap(),
                 xSeries
@@ -244,6 +245,7 @@ public class EChartBuilder {
         AxisOpts yAxis = this.yAxisOpts != null ? this.yAxisOpts : AxisOpts.create();
 
         return new AxisModel(
+                yAxis.getType() != null ? yAxis.getType().name() : AxisType.value.name(),
                 yAxis.getAxisLabel() != null ? new AxisLabelModel(yAxis.getAxisLabel().getFormatter()) : null,
                 yAxis.isBoundaryGap(),
                 null

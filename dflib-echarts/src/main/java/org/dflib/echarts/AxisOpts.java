@@ -5,6 +5,7 @@ package org.dflib.echarts;
  */
 public class AxisOpts {
 
+    private AxisType type;
     private AxisLabelOpts axisLabel;
     private boolean boundaryGap;
 
@@ -32,6 +33,15 @@ public class AxisOpts {
 
     public AxisOpts axisLabel(AxisLabelOpts axisLabel) {
         this.axisLabel = axisLabel;
+        return this;
+    }
+
+    public AxisType getType() {
+        return type;
+    }
+
+    public AxisOpts type(AxisType type) {
+        this.type = type;
         return this;
     }
 }

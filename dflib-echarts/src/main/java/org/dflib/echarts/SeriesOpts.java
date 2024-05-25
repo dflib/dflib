@@ -9,7 +9,7 @@ import java.util.Objects;
  */
 public class SeriesOpts {
 
-    private final EChartType type;
+    private final ChartType type;
 
     // using objects instead of primitives to be able to perform merge
     // TODO: areaStyle and smooth are not present in the Bar chart... subclass opts?
@@ -21,31 +21,31 @@ public class SeriesOpts {
      * Starts a builder for a line series options object.
      */
     public static SeriesOpts line() {
-        return new SeriesOpts(EChartType.line, null, null, null);
+        return new SeriesOpts(ChartType.line, null, null, null);
     }
 
     /**
      * Starts a builder for a bar series options object.
      */
     public static SeriesOpts bar() {
-        return new SeriesOpts(EChartType.bar, null, null, null);
+        return new SeriesOpts(ChartType.bar, null, null, null);
     }
 
     /**
      * Starts a builder for a pie series options object.
      */
     public static SeriesOpts pie() {
-        return new SeriesOpts(EChartType.pie, null, null, null);
+        return new SeriesOpts(ChartType.pie, null, null, null);
     }
 
     /**
      * Starts a builder for a scatter series options object.
      */
     public static SeriesOpts scatter() {
-        return new SeriesOpts(EChartType.scatter, null, null, null);
+        return new SeriesOpts(ChartType.scatter, null, null, null);
     }
 
-    protected SeriesOpts(EChartType type, Boolean areaStyle, Boolean smooth, Boolean stack) {
+    protected SeriesOpts(ChartType type, Boolean areaStyle, Boolean smooth, Boolean stack) {
         this.type = Objects.requireNonNull(type);
         this.stack = stack;
         this.smooth = smooth;
@@ -61,7 +61,7 @@ public class SeriesOpts {
         );
     }
 
-    public EChartType getType() {
+    public ChartType getType() {
         return type;
     }
 

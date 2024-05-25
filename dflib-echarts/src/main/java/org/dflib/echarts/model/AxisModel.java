@@ -10,14 +10,20 @@ import java.util.List;
  */
 public class AxisModel {
 
+    private final String type;
     private final AxisLabelModel axisLabel;
     private final boolean boundaryGap;
     private final Series<?> data;
 
-    public AxisModel(AxisLabelModel axisLabel, boolean boundaryGap, Series<?> data) {
+    public AxisModel(String type, AxisLabelModel axisLabel, boolean boundaryGap, Series<?> data) {
+        this.type = type;
         this.axisLabel = axisLabel;
         this.boundaryGap = boundaryGap;
         this.data = data;
+    }
+
+    public String getType() {
+        return type;
     }
 
     public AxisLabelModel getAxisLabel() {
