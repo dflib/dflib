@@ -6,6 +6,21 @@
             text: '{{.}}'
         },
     {{/title}}
+    {{#toolbox}}
+        toolbox: {
+            feature: {
+            {{#dataZoom}}
+                dataZoom: {},
+            {{/dataZoom}}
+            {{#saveAsImage}}
+                saveAsImage: {},
+            {{/saveAsImage}}
+            {{#restore}}
+                restore: {}
+            {{/restore}}
+            }
+        },
+    {{/toolbox}}
     {{#legend}}
         legend: {},
     {{/legend}}

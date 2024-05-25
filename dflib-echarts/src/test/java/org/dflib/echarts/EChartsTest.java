@@ -224,4 +224,15 @@ public class EChartsTest {
         assertTrue(s2.contains("smooth: true,"), s2);
     }
 
+    @Test
+    public void generateScriptHtml_toolbox() {
+
+        String s1 = ECharts.lineChart().generateScriptHtml("_tid", df1);
+        assertFalse(s1.contains("toolbox: {"), s1);
+
+        String s2 = ECharts.lineChart().toolboxOpts(ToolboxOpts.create().featureSaveAsImage()).generateScriptHtml("_tid", df1);
+        assertTrue(s2.contains("toolbox: {"), s2);
+        assertTrue(s2.contains("saveAsImage: {}"), s2);
+    }
+
 }

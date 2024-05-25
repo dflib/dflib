@@ -12,6 +12,7 @@ public class ScriptModel {
 
     private final String id;
     private final String title;
+    private final ToolboxModel toolbox;
     private final DataSetModel dataset;
     private final AxisModel xAxis;
     private final AxisModel yAxis;
@@ -22,6 +23,7 @@ public class ScriptModel {
     public ScriptModel(
             String id,
             String title,
+            ToolboxModel toolbox,
             DataSetModel dataset,
             AxisModel xAxis,
             AxisModel yAxis,
@@ -31,6 +33,7 @@ public class ScriptModel {
 
         this.id = Objects.requireNonNull(id);
         this.title = title;
+        this.toolbox = toolbox;
         this.dataset = dataset;
         this.xAxis = xAxis;
         this.yAxis = yAxis;
@@ -45,6 +48,10 @@ public class ScriptModel {
 
     public String getTitle() {
         return title;
+    }
+
+    public ToolboxModel getToolbox() {
+        return toolbox;
     }
 
     public DataSetModel getDataset() {

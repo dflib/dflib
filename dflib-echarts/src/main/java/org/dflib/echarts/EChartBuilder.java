@@ -13,6 +13,10 @@ import org.dflib.echarts.model.ExternalScriptModel;
 import org.dflib.echarts.model.RowModel;
 import org.dflib.echarts.model.ScriptModel;
 import org.dflib.echarts.model.SeriesModel;
+import org.dflib.echarts.model.ToolboxModel;
+import org.dflib.echarts.model.toolbox.FeatureDataZoomModel;
+import org.dflib.echarts.model.toolbox.FeatureRestoreModel;
+import org.dflib.echarts.model.toolbox.FeatureSaveAsImageModel;
 import org.dflib.echarts.model.ValueModel;
 import org.dflib.series.IntSequenceSeries;
 
@@ -67,6 +71,7 @@ public class EChartBuilder {
     private Integer width;
     private Integer height;
     private Boolean legend;
+    private ToolboxOpts toolboxOpts;
 
     private String xAxisColumn;
     private AxisOpts xAxisOpts;
@@ -85,6 +90,11 @@ public class EChartBuilder {
 
         // keeping the "series" order predictable
         this.series = new LinkedHashMap<>();
+    }
+
+    public EChartBuilder toolboxOpts(ToolboxOpts opts) {
+        this.toolboxOpts = Objects.requireNonNull(opts);
+        return this;
     }
 
     /**
@@ -111,6 +121,7 @@ public class EChartBuilder {
         this.yAxisOpts = Objects.requireNonNull(opts);
         return this;
     }
+
 
     /**
      * Alters the default series options that will be used by all data series that don't have explicit options.
@@ -211,6 +222,7 @@ public class EChartBuilder {
         ScriptModel model = new ScriptModel(
                 id,
                 this.title,
+                toolbox(),
                 dataset(df),
                 xAxis(),
                 yAxis(),
@@ -223,6 +235,19 @@ public class EChartBuilder {
 
     protected String newId() {
         return "dfl_ech_" + Math.abs(rnd.nextInt(10_000));
+    }
+
+    protected ToolboxModel toolbox() {
+
+        if (toolboxOpts == null) {
+            return null;
+        }
+
+        return new ToolboxModel(
+                toolboxOpts.isFeatureDataZoom() ? new FeatureDataZoomModel() : null,
+                toolboxOpts.isFeatureSaveAsImage() ? new FeatureSaveAsImageModel() : null,
+                toolboxOpts.isFeatureRestore() ? new FeatureRestoreModel() : null
+        );
     }
 
     protected DataSetModel dataset(DataFrame df) {
