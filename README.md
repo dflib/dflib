@@ -18,6 +18,13 @@ processing are just some of the examples. DFLib comes with connectors for many d
 CSV, Excel, RDBMS, Avro, JSON and can be easily adapted to other formats (e.g. web-service-based ones like 
 Google Sheets, etc.)
 
+## DFLib and Jupyter
+
+While DFLib works in any Java application, it has a [special intergation](https://dflib.org/docs/1.x/#jupyter) with 
+[Jupyter Notebook](https://jupyter.org/), a browser-based interactive data exploration and analysis enviroment popular 
+among data scientists and data engineers. In fact, our community maintains a [Java "kernel" for Jupyter](https://github.com/dflib/jjava) 
+as a sister project to DFLib. 
+
 ## Project Links
 
 * [Website](https://dflib.org/)
