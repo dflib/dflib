@@ -23,7 +23,15 @@ Google Sheets, etc.)
 While DFLib works in any Java application, it has a [special intergation](https://dflib.org/docs/1.x/#jupyter) with 
 [Jupyter Notebook](https://jupyter.org/), a browser-based interactive enviroment for data exploration and analysis popular 
 among data scientists and data engineers. In fact, our community maintains a [Java "kernel" for Jupyter](https://github.com/dflib/jjava) 
-as a sister project to DFLib. 
+as a sister project to DFLib.
+
+## Charts
+
+DFLib provides integration with Apache Echarts to visualize DataFrame data. Charts are generated in a form of HTML/JavaScript 
+code and work in Jupyter as well as regular web applications.
+
+![dflib-bar-chart](https://github.com/dflib/dflib/assets/42668/58dc95fe-8d3e-481b-8b2b-89ca3cf73882) ![dflib-timeseries-chart](https://github.com/dflib/dflib/assets/42668/87480e77-ffad-4c72-a2c4-ea7f404f43ed)
+
 
 ## Project Links
 
