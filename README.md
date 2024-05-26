@@ -26,14 +26,14 @@ While DFLib works in any Java application, it has a [special intergation](https:
 among data scientists and data engineers. In fact, our community maintains a [Java "kernel" for Jupyter](https://github.com/dflib/jjava) 
 as a sister project to DFLib.
 
-### Project Links
+## Project Links
 
 * [Website](https://dflib.org/)
 * [Getting Started](https://dflib.org/docs/1.x/#_get_started_with_dflib)
 * [Documentation](https://dflib.org/docs/1.x/)
 * [Discussions and Support Forum](https://github.com/dflib/dflib/discussions)
 
-### Presentation Videos
+## Presentation Videos
 * [DataFrame, a Swiss Army Knife of Java Data Processing](https://www.youtube.com/watch?v=OrGqCflOMIc), Nashville JUG, 03/2024
 * [Early version of DFLib](http://www.youtube.com/watch?v=WSqvEdRZsuE), Frankfurt WO Day, 04/2019
 
