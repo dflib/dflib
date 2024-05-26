@@ -5,6 +5,7 @@ import com.github.mustachejava.Mustache;
 import org.dflib.DataFrame;
 import org.dflib.echarts.render.ContainerModel;
 import org.dflib.echarts.render.ExternalScriptModel;
+import org.dflib.echarts.render.InitOptsModel;
 import org.dflib.echarts.render.ScriptModel;
 
 import java.io.IOException;
@@ -45,8 +46,8 @@ public class EChart {
 
     private final Random rnd;
     private final Option option;
-
     private String theme;
+    private RendererType renderer;
     private String scriptUrl;
     private Integer width;
     private Integer height;
@@ -54,6 +55,11 @@ public class EChart {
     protected EChart() {
         this.rnd = new SecureRandom();
         this.option = new Option();
+    }
+
+    public EChart renderAsSvg() {
+        this.renderer = RendererType.svg;
+        return this;
     }
 
     /**
@@ -108,7 +114,7 @@ public class EChart {
 
     /**
      * Configures the X axis of the chart with no link to any DataFrame series. In this case, a series with element
-     * position numbers will be generated implicitly. 
+     * position numbers will be generated implicitly.
      */
     public EChart yAxis(Axis axis) {
         option.yAxis(axis);
@@ -181,6 +187,7 @@ public class EChart {
         ScriptModel model = new ScriptModel(
                 id,
                 this.theme,
+                this.renderer != null ? new InitOptsModel(renderer.name()) : null,
                 option.resolve(df)
         );
         return SCRIPT_TEMPLATE.execute(new StringWriter(), model).toString();

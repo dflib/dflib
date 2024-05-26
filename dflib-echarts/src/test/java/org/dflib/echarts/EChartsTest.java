@@ -73,10 +73,32 @@ public class EChartsTest {
     public void generateScriptHtml_DarkTheme() {
 
         String s1 = ECharts.chart().generateScriptHtml("_tid", df1);
-        assertFalse(s1.contains("), 'dark');"), s1);
+        assertFalse(s1.contains("'dark'"), s1);
 
         String s2 = ECharts.chart().darkTheme().generateScriptHtml("_tid", df1);
-        assertTrue(s2.contains("), 'dark');"), s2);
+        assertTrue(s2.contains("'dark',"), s2);
+    }
+
+    @Test
+    public void generateScriptHtml_SvgRenderer() {
+
+        String s1 = ECharts.chart().generateScriptHtml("_tid", df1);
+        assertFalse(s1.contains("renderer: 'svg'"), s1);
+
+        String s2 = ECharts.chart().renderAsSvg().generateScriptHtml("_tid", df1);
+        assertTrue(s2.contains("renderer: 'svg'"), s2);
+    }
+
+    @Test
+    public void generateScriptHtml_SvgRenderer_DarkTheme() {
+
+        String s1 = ECharts.chart().generateScriptHtml("_tid", df1);
+        assertFalse(s1.contains("'dark'"), s1);
+        assertFalse(s1.contains("renderer: 'svg'"), s1);
+
+        String s2 = ECharts.chart().renderAsSvg().darkTheme().generateScriptHtml("_tid", df1);
+        assertTrue(s2.contains("'dark',"), s2);
+        assertTrue(s2.contains("renderer: 'svg'"), s2);
     }
 
     @Test

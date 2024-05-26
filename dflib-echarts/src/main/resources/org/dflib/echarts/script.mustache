@@ -1,5 +1,12 @@
 <script type='text/javascript'>
-    var chart_{{id}} = echarts.init(document.getElementById('{{id}}'){{#theme}}, '{{.}}'{{/theme}});
+    var chart_{{id}} = echarts.init(
+        document.getElementById('{{id}}'),
+        {{{themeOrNull}}},
+    {{#initOpts}}
+        {
+            {{#renderer}}renderer: '{{.}}'{{/renderer}}
+        }
+    {{/initOpts}}   );
     var option_{{id}} = {
 {{#option}}
     {{#title}}

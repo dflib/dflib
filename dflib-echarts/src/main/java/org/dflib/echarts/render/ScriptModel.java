@@ -11,15 +11,18 @@ public class ScriptModel {
 
     private final String id;
     private final String theme;
+    private final InitOptsModel initOpts;
     private final OptionModel option;
 
     public ScriptModel(
             String id,
             String theme,
+            InitOptsModel initOpts,
             OptionModel option) {
 
         this.id = Objects.requireNonNull(id);
         this.theme = theme;
+        this.initOpts = initOpts;
         this.option = option;
     }
 
@@ -27,11 +30,16 @@ public class ScriptModel {
         return id;
     }
 
-    public OptionModel getOption() {
-        return option;
+    public String getThemeOrNull() {
+        // need to have a null arg placeholder to be able to optionally pass init options
+        return theme != null ? "'" + theme + "'" : "null";
     }
 
-    public String getTheme() {
-        return theme;
+    public InitOptsModel getInitOpts() {
+        return initOpts;
+    }
+
+    public OptionModel getOption() {
+        return option;
     }
 }
