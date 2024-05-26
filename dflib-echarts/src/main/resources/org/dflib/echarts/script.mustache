@@ -14,7 +14,11 @@
                 dataZoom: {},
             {{/dataZoom}}
             {{#saveAsImage}}
-                saveAsImage: {},
+                saveAsImage: {
+                {{#pixelRatio}}
+                    pixelRatio: {{.}}
+                {{/pixelRatio}}
+                },
             {{/saveAsImage}}
             {{#restore}}
                 restore: {}

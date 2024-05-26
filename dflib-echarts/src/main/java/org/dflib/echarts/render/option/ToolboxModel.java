@@ -1,8 +1,8 @@
 package org.dflib.echarts.render.option;
 
-import org.dflib.echarts.render.option.toolbox.FeatureDataZoomModel;
-import org.dflib.echarts.render.option.toolbox.FeatureRestoreModel;
-import org.dflib.echarts.render.option.toolbox.FeatureSaveAsImageModel;
+import org.dflib.echarts.render.option.toolbox.DataZoomModel;
+import org.dflib.echarts.render.option.toolbox.RestoreModel;
+import org.dflib.echarts.render.option.toolbox.SaveAsImageModel;
 
 /**
  * A model for rendering EChart toolbox
@@ -11,28 +11,28 @@ import org.dflib.echarts.render.option.toolbox.FeatureSaveAsImageModel;
  */
 public class ToolboxModel {
 
-    private final FeatureDataZoomModel dataZoom;
-    private final FeatureSaveAsImageModel saveAsImage;
-    private final FeatureRestoreModel restore;
+    private final DataZoomModel dataZoom;
+    private final SaveAsImageModel saveAsImage;
+    private final RestoreModel restore;
 
     public ToolboxModel(
-            FeatureDataZoomModel dataZoom,
-            FeatureSaveAsImageModel saveAsImage,
-            FeatureRestoreModel restore) {
+            DataZoomModel dataZoom,
+            SaveAsImageModel saveAsImage,
+            RestoreModel restore) {
         this.dataZoom = dataZoom;
         this.saveAsImage = saveAsImage;
         this.restore = restore;
     }
 
-    public FeatureSaveAsImageModel getSaveAsImage() {
+    public SaveAsImageModel getSaveAsImage() {
         return saveAsImage;
     }
 
-    public FeatureDataZoomModel getDataZoom() {
+    public DataZoomModel getDataZoom() {
         return dataZoom;
     }
 
-    public FeatureRestoreModel getRestore() {
+    public RestoreModel getRestore() {
         return restore;
     }
 }

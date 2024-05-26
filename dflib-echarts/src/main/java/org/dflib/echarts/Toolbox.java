@@ -1,9 +1,8 @@
 package org.dflib.echarts;
 
 import org.dflib.echarts.render.option.ToolboxModel;
-import org.dflib.echarts.render.option.toolbox.FeatureDataZoomModel;
-import org.dflib.echarts.render.option.toolbox.FeatureRestoreModel;
-import org.dflib.echarts.render.option.toolbox.FeatureSaveAsImageModel;
+import org.dflib.echarts.render.option.toolbox.DataZoomModel;
+import org.dflib.echarts.render.option.toolbox.RestoreModel;
 
 /**
  * @since 1.0.0-M21
@@ -11,7 +10,7 @@ import org.dflib.echarts.render.option.toolbox.FeatureSaveAsImageModel;
 public class Toolbox {
 
     private boolean featureDataZoom;
-    private boolean featureSaveAsImage;
+    private SaveAsImage featureSaveAsImage;
     private boolean featureRestore;
 
     public static Toolbox create() {
@@ -19,7 +18,12 @@ public class Toolbox {
     }
 
     public Toolbox featureSaveAsImage() {
-        this.featureSaveAsImage = Boolean.TRUE;
+        this.featureSaveAsImage = SaveAsImage.create();
+        return this;
+    }
+
+    public Toolbox featureSaveAsImage(SaveAsImage saveAsImage) {
+        this.featureSaveAsImage = saveAsImage;
         return this;
     }
 
@@ -35,9 +39,9 @@ public class Toolbox {
 
     protected ToolboxModel resolve() {
         return new ToolboxModel(
-                featureDataZoom ? new FeatureDataZoomModel() : null,
-                featureSaveAsImage ? new FeatureSaveAsImageModel() : null,
-                featureRestore ? new FeatureRestoreModel() : null
+                featureDataZoom ? new DataZoomModel() : null,
+                featureSaveAsImage != null ? featureSaveAsImage.resolve() : null,
+                featureRestore ? new RestoreModel() : null
         );
     }
 }

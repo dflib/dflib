@@ -232,7 +232,21 @@ public class EChartsTest {
 
         String s2 = ECharts.chart().toolbox(Toolbox.create().featureSaveAsImage()).generateScriptHtml("_tid", df1);
         assertTrue(s2.contains("toolbox: {"), s2);
-        assertTrue(s2.contains("saveAsImage: {}"), s2);
+        assertTrue(s2.contains("saveAsImage: {"), s2);
+    }
+
+    @Test
+    public void generateScriptHtml_toolbox_saveAsImage() {
+
+        String s2 = ECharts.chart().toolbox(Toolbox.create().featureSaveAsImage()).generateScriptHtml("_tid", df1);
+        assertTrue(s2.contains("toolbox: {"), s2);
+        assertTrue(s2.contains("saveAsImage: {"), s2);
+        assertFalse(s2.contains("pixelRatio: 2"), s2);
+
+        String s3 = ECharts.chart().toolbox(Toolbox.create().featureSaveAsImage(SaveAsImage.create().pixelRatio(2))).generateScriptHtml("_tid", df1);
+        assertTrue(s3.contains("toolbox: {"), s3);
+        assertTrue(s3.contains("saveAsImage: {"), s3);
+        assertTrue(s3.contains("pixelRatio: 2"), s3);
     }
 
 }
