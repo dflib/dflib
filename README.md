@@ -19,7 +19,7 @@ Google Sheets, etc.)
 DFLib provides integration with Apache Echarts to visualize DataFrame data. Charts are generated in a form of HTML/JavaScript 
 code and work in Jupyter as well as regular web applications.
 
-![dflib-bar-chart](https://dflib.org/images/charts/dflib-bar-chart.svg) ![dflib-timeseries-chart](https://dflib.org/images/charts/dflib-timeseries-chart.svg) 
+![dflib-bar-chart](https://dflib.org/images/charts/dflib-bar-chart_v2.svg) ![dflib-timeseries-chart](https://dflib.org/images/charts/dflib-timeseries-chart_v2.svg) 
 
 While DFLib works in any Java application, it has a [special intergation](https://dflib.org/docs/1.x/#jupyter) with 
 [Jupyter Notebook](https://jupyter.org/), a browser-based interactive environment for data exploration and analysis popular 
