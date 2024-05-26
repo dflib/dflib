@@ -21,7 +21,7 @@ Google Sheets, etc.)
 ## DFLib and Jupyter
 
 While DFLib works in any Java application, it has a [special intergation](https://dflib.org/docs/1.x/#jupyter) with 
-[Jupyter Notebook](https://jupyter.org/), a browser-based interactive data exploration and analysis enviroment popular 
+[Jupyter Notebook](https://jupyter.org/), a browser-based interactive enviroment for data exploration and analysis popular 
 among data scientists and data engineers. In fact, our community maintains a [Java "kernel" for Jupyter](https://github.com/dflib/jjava) 
 as a sister project to DFLib. 
 
