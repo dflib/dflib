@@ -8,7 +8,7 @@ DataFrames exist in Python (pandas), R, Spark and other languages and frameworks
 intended for Java and JVM languages.
 
 With DataFrame API, you get essentially the same data manipulation capabilities you may be used to in SQL (such as 
-joins, etc.), only you apply them in-memory and over dynamically defined "tables". While SQL is "declarative", 
+joins, etc.), only you apply them in-memory and over dynamically defined "table" objects. While SQL is "declarative", 
 `DataFrame` allows step-by-step transformations that are somewhat easier to understand and much easier to compose. 
 
 `DataFrame` is extremely versatile and can be used to model a variety of data tasks. ETL, log analysis, spreadsheets 
