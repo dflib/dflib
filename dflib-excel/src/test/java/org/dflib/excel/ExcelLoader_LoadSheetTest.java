@@ -24,7 +24,7 @@ public class ExcelLoader_LoadSheetTest {
             new ExcelLoader().loadSheet(file, 3);
             fail("Expected exception was not thrown");
         } catch (RuntimeException e) {
-            assertTrue(e.getMessage().startsWith("Excel file is not found"), e.getMessage());
+            assertEquals("Error reading file: no-such-file.xlsx", e.getMessage());
         }
     }
 

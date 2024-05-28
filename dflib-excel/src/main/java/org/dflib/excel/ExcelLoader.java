@@ -1,9 +1,5 @@
 package org.dflib.excel;
 
-import org.dflib.DataFrame;
-import org.dflib.Extractor;
-import org.dflib.Index;
-import org.dflib.builder.DataFrameAppender;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -11,9 +7,12 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.dflib.DataFrame;
+import org.dflib.Extractor;
+import org.dflib.Index;
+import org.dflib.builder.DataFrameAppender;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -225,10 +224,8 @@ public class ExcelLoader {
 
         try {
             return WorkbookFactory.create(file);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("Excel file is not found", e);
         } catch (IOException e) {
-            throw new RuntimeException("Error reading Excel data", e);
+            throw new RuntimeException("Error reading file: " + file, e);
         }
     }
 

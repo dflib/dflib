@@ -6,6 +6,7 @@ import org.dflib.junit5.DataFrameAsserts;
 import org.apache.commons.csv.CSVFormat;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -13,9 +14,21 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CsvLoaderTest extends BaseCsvTest {
+
+    @Test
+    public void notFound() {
+        File file = new File("no-such-file.csv");
+
+        try {
+            new CsvLoader().load(file);
+            fail("Expected exception was not thrown");
+        } catch (RuntimeException e) {
+            assertEquals("Error reading file: no-such-file.csv", e.getMessage());
+        }
+    }
 
     @Test
     public void fromReader() {
