@@ -13,6 +13,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -224,6 +225,8 @@ public class ExcelLoader {
 
         try {
             return WorkbookFactory.create(file);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("Excel file is not found", e);
         } catch (IOException e) {
             throw new RuntimeException("Error reading Excel data", e);
         }

@@ -12,9 +12,21 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ExcelLoader_LoadSheetTest {
+
+    @Test
+    public void notFound() {
+        File file = new File("no-such-file.xlsx");
+
+        try {
+            new ExcelLoader().loadSheet(file, 3);
+            fail("Expected exception was not thrown");
+        } catch (RuntimeException e) {
+            assertTrue(e.getMessage().startsWith("Excel file is not found"), e.getMessage());
+        }
+    }
 
     @ParameterizedTest
     @ValueSource(strings = {"multi-sheet.xls", "multi-sheet.xlsx"})
