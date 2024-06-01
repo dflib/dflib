@@ -86,6 +86,17 @@
             {{#encode}}
                 encode: { x: {{x}}, y: {{y}} },
             {{/encode}}
+            {{#label}}
+                label: {
+                    show: true,
+                {{#formatter}}
+                    formatter: '{{.}}',
+                {{/formatter}}
+                {{#position}}
+                    position: '{{.}}'
+                {{/position}}
+                },
+            {{/label}}
             {{#seriesLayoutBy}}
                 seriesLayoutBy: '{{.}}',
             {{/seriesLayoutBy}}

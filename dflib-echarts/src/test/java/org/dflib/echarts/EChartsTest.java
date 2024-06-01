@@ -257,6 +257,18 @@ public class EChartsTest {
     }
 
     @Test
+    public void generateScriptHtml_SeriesLabel() {
+
+        String s1 = ECharts.chart().series("y1").generateScriptHtml("_tid", df2);
+        assertFalse(s1.contains("label:"), s1);
+
+        String s2 = ECharts.chart().series(SeriesOpts.line().label(Label.create().position(LabelPosition.inside)), "y1").generateScriptHtml("_tid", df2);
+        assertTrue(s2.contains("label: {"), s2);
+        assertTrue(s2.contains("position: 'inside'"), s2);
+    }
+
+
+    @Test
     public void generateScriptHtml_toolbox() {
 
         String s1 = ECharts.chart().generateScriptHtml("_tid", df1);

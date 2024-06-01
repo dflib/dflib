@@ -14,6 +14,7 @@ public class SeriesOpts {
 
     private final ChartType type;
 
+    private Label label;
     private boolean areaStyle;
     private boolean showSymbol;
     private boolean smooth;
@@ -50,6 +51,22 @@ public class SeriesOpts {
         this.stack = false;
     }
 
+    /**
+     * @since 1.0.0-M22
+     */
+    public SeriesOpts label(LabelPosition position) {
+        this.label = Label.create().position(position);
+        return this;
+    }
+
+    /**
+     * @since 1.0.0-M22
+     */
+    public SeriesOpts label(Label label) {
+        this.label = label;
+        return this;
+    }
+
     public SeriesOpts areaStyle() {
         this.areaStyle = true;
         return this;
@@ -78,6 +95,7 @@ public class SeriesOpts {
                 name,
                 type.name(),
                 encodeModel,
+                label != null ? label.resolve() : null,
                 seriesLayoutBy,
                 areaStyle,
                 showSymbol,

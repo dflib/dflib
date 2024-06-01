@@ -10,6 +10,7 @@ public class SeriesModel {
     private final String name;
     private final String type;
     private final EncodeModel encode;
+    private final LabelModel label;
     private final String seriesLayoutBy;
     private final boolean areaStyle;
     private final boolean showSymbol;
@@ -21,6 +22,7 @@ public class SeriesModel {
             String name,
             String type,
             EncodeModel encode,
+            LabelModel label,
             String seriesLayoutBy,
             boolean areaStyle,
             boolean showSymbol,
@@ -31,6 +33,7 @@ public class SeriesModel {
         this.name = name;
         this.type = type;
         this.encode = encode;
+        this.label = label;
         this.seriesLayoutBy = seriesLayoutBy;
         this.areaStyle = areaStyle;
         this.showSymbol = showSymbol;
@@ -49,6 +52,13 @@ public class SeriesModel {
 
     public EncodeModel getEncode() {
         return encode;
+    }
+
+    /**
+     * @since 1.0.0-M22
+     */
+    public LabelModel getLabel() {
+        return label;
     }
 
     public String getSeriesLayoutBy() {
