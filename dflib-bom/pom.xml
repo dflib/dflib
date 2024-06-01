@@ -75,6 +75,11 @@
             </dependency>
             <dependency>
                 <groupId>org.dflib</groupId>
+                <artifactId>dflib-echarts</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dflib</groupId>
                 <artifactId>dflib-excel</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -91,11 +96,6 @@
             <dependency>
                 <groupId>org.dflib</groupId>
                 <artifactId>dflib-junit5</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.dflib</groupId>
-                <artifactId>dflib-echarts</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
