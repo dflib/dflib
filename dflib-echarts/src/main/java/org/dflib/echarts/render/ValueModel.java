@@ -20,14 +20,13 @@ public class ValueModel {
     }
 
     public Object getQuotedValue() {
-        return shouldQuote(value) ? "'" + value + "'" : value;
+        return Renderer.quotedValue(value);
     }
 
     public boolean isLast() {
         return last;
     }
 
-    static boolean shouldQuote(Object o) {
-        return !(o instanceof Number) && !(o instanceof Boolean);
-    }
+
+
 }

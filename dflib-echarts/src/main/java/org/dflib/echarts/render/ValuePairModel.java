@@ -26,11 +26,11 @@ public class ValuePairModel {
     }
 
     public Object getQuotedValue1() {
-        return ValueModel.shouldQuote(value1) ? "'" + value1 + "'" : value1;
+        return Renderer.quotedValue(value1);
     }
 
     public Object getQuotedValue2() {
-        return ValueModel.shouldQuote(value2) ? "'" + value2 + "'" : value2;
+        return Renderer.quotedValue(value2);
     }
 
     public boolean isLast() {

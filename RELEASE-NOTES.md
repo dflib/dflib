@@ -1,6 +1,7 @@
 ## Release 1.0.0-M22
 
 * #291 Remove APIs deprecated since M20
+* #292 Invalid ECharts JS for strings containing single quotes
 
 ## Release 1.0.0-M21
 
