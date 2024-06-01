@@ -2,6 +2,9 @@ package org.dflib.echarts;
 
 import org.dflib.echarts.render.option.toolbox.SaveAsImageModel;
 
+/**
+ * @since 1.0.0-M21
+ */
 public class SaveAsImage {
 
     private Integer pixelRatio;

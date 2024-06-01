@@ -14,10 +14,10 @@ public class SeriesOpts {
 
     private final ChartType type;
 
-    private Boolean areaStyle;
-    private Boolean smooth;
-    private Boolean stack;
+    private boolean areaStyle;
     private boolean showSymbol;
+    private boolean smooth;
+    private boolean stack;
 
     /**
      * Starts a builder for a line series options object.
@@ -43,22 +43,25 @@ public class SeriesOpts {
     protected SeriesOpts(ChartType type) {
         this.type = Objects.requireNonNull(type);
 
-        // "true" is the same default as ECharts
+        // set ECharts defaults
+        this.areaStyle = false;
         this.showSymbol = true;
+        this.smooth = false;
+        this.stack = false;
     }
 
     public SeriesOpts areaStyle() {
-        this.areaStyle = Boolean.TRUE;
+        this.areaStyle = true;
         return this;
     }
 
     public SeriesOpts smooth() {
-        this.smooth = Boolean.TRUE;
+        this.smooth = true;
         return this;
     }
 
     public SeriesOpts stack() {
-        this.stack = Boolean.TRUE;
+        this.stack = true;
         return this;
     }
 
@@ -76,10 +79,10 @@ public class SeriesOpts {
                 type.name(),
                 encodeModel,
                 seriesLayoutBy,
-                areaStyle != null ? areaStyle : false,
+                areaStyle,
                 showSymbol,
-                stack != null ? stack : false,
-                smooth != null ? smooth : false,
+                stack,
+                smooth,
                 last
         );
     }
