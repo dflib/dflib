@@ -606,15 +606,6 @@ public interface Exp<T> {
     }
 
     /**
-     * @since 0.15
-     * @deprecated in favor of {@link #mapBool(Function)}
-     */
-    @Deprecated(since = "1.0.0-M20", forRemoval = true)
-    default Condition mapCondition(Function<Series<T>, BooleanSeries> op) {
-        return mapBool(op);
-    }
-
-    /**
      * @since 1.0.0-M20
      */
     default Condition mapBool(Function<Series<T>, BooleanSeries> op) {
@@ -622,28 +613,10 @@ public interface Exp<T> {
     }
 
     /**
-     * @since 0.15
-     * @deprecated in favor of {@link #mapBoolVal(Predicate)}
-     */
-    @Deprecated(since = "1.0.0-M20", forRemoval = true)
-    default Condition mapConditionVal(Predicate<T> op) {
-        return mapBoolVal(op);
-    }
-
-    /**
      * @since 1.0.0-M20
      */
     default Condition mapBoolVal(Predicate<T> op) {
         return mapBoolVal(op, true);
-    }
-
-    /**
-     * @since 1.0.0-M19
-     * @deprecated in favor of {@link #mapBoolVal(Predicate, boolean)}
-     */
-    @Deprecated(since = "1.0.0-M20", forRemoval = true)
-    default Condition mapConditionVal(Predicate<T> op, boolean hideNulls) {
-        return mapBoolVal(op, hideNulls);
     }
 
     /**

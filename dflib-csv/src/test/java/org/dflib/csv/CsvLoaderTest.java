@@ -159,15 +159,6 @@ public class CsvLoaderTest extends BaseCsvTest {
                 .expectRow(1, "4", "6");
     }
 
-    @Deprecated
-    @Test
-    public void fromFile_SkipRows() {
-        DataFrame df = new CsvLoader().skipRows(1).load(inPath("f1.csv"));
-        new DataFrameAsserts(df, "1", "2", "3")
-                .expectHeight(1)
-                .expectRow(0, "4", "5", "6");
-    }
-
     @Test
     public void fromFile_Limit() {
         DataFrame df = new CsvLoader().limit(1).load(inPath("f1.csv"));

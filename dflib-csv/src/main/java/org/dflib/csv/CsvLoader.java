@@ -72,19 +72,6 @@ public class CsvLoader {
     }
 
     /**
-     * Skips the specified number of rows. E.g. if the header is defined manually, you might call this method with "1"
-     * as an argument.
-     *
-     * @param n number of rows to skip
-     * @return this loader instance
-     * @deprecated the new alternative is calling {@link #offset(int)}
-     */
-    @Deprecated(since = "1.0.0-M20", forRemoval = true)
-    public CsvLoader skipRows(int n) {
-        return offset(n);
-    }
-
-    /**
      * Configures CSV loader to select a sample of the rows of a CSV. Unlike {@link DataFrame#sampleRows(int, Random)},
      * this method will prevent the full CSV from loading in memory, and hence can be used on potentially very large
      * CSVs. If you are executing multiple sampling runs in parallel, consider using {@link #rowsSample(int, Random)},
@@ -96,15 +83,6 @@ public class CsvLoader {
      */
     public CsvLoader rowsSample(int size) {
         return rowsSample(size, Sampler.getDefaultRandom());
-    }
-
-    /**
-     * @since 0.7
-     * @deprecated in favor of {@link #rowsSample(int)}
-     */
-    @Deprecated(since = "1.0.0-M20", forRemoval = true)
-    public CsvLoader sampleRows(int size) {
-        return rowsSample(size);
     }
 
     /**
@@ -124,15 +102,6 @@ public class CsvLoader {
     }
 
     /**
-     * @since 0.7
-     * @deprecated in favor of {@link #rowsSample(int, Random)}
-     */
-    @Deprecated(since = "1.0.0-M20", forRemoval = true)
-    public CsvLoader sampleRows(int size, Random random) {
-        return rowsSample(size, random);
-    }
-
-    /**
      * Configures the CSV loader to only include rows that are matching the provided condition. Applying the condition
      * during load would allow extracting only relevant data from very large CSVs using constant memory. Condition is
      * applied to an already converted row, with column names and positions matching the resulting DataFrame, not the
@@ -143,15 +112,6 @@ public class CsvLoader {
     public CsvLoader rows(RowPredicate rowCondition) {
         this.rowCondition = rowCondition;
         return this;
-    }
-
-    /**
-     * @since 0.16
-     * @deprecated in favor of {@link #rows(RowPredicate)}
-     */
-    @Deprecated(since = "1.0.0-M20", forRemoval = true)
-    public CsvLoader selectRows(RowPredicate condition) {
-        return rows(condition);
     }
 
     /**
@@ -195,31 +155,11 @@ public class CsvLoader {
 
     /**
      * @return this loader instance
-     * @since 0.7
-     * @deprecated in favor of {@link #cols(String...)}
-     */
-    @Deprecated(since = "1.0.0-M20", forRemoval = true)
-    public CsvLoader selectColumns(String... columns) {
-        return cols(columns);
-    }
-
-    /**
-     * @return this loader instance
      * @since 1.0.0-M20
      */
     public CsvLoader cols(int... columns) {
         this.columnExtractStrategy = ColumnExtractStrategy.ofCols(columns);
         return this;
-    }
-
-    /**
-     * @return this loader instance
-     * @since 0.7
-     * @deprecated in favor of {@link #cols(int...)}
-     */
-    @Deprecated(since = "1.0.0-M20", forRemoval = true)
-    public CsvLoader selectColumns(int... columns) {
-        return cols(columns);
     }
 
     /**
@@ -238,16 +178,6 @@ public class CsvLoader {
     public CsvLoader colsExcept(int... columns) {
         this.columnExtractStrategy = ColumnExtractStrategy.ofColsExcept(columns);
         return this;
-    }
-
-    /**
-     * @return this loader instance
-     * @since 0.7
-     * @deprecated in favor of {@link #colsExcept(String...)}
-     */
-    @Deprecated(since = "1.0.0-M20", forRemoval = true)
-    public CsvLoader dropColumns(String... columns) {
-        return colsExcept(columns);
     }
 
     public CsvLoader columnType(int column, ValueMapper<String, ?> mapper) {

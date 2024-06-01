@@ -1,3 +1,7 @@
+## Release 1.0.0-M22
+
+* #291 Remove APIs deprecated since M20
+
 ## Release 1.0.0-M21
 
 * #265 RowSet: add missing "sort" methods

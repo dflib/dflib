@@ -65,20 +65,6 @@ public class ExcelLoader {
     }
 
     /**
-     * Skips the specified number of rows. This counter only applies to non-phantom rows. I.e. those rows that have
-     * non-empty cells. Phantom rows are skipped automatically.
-     *
-     * @param n number of rows to skip
-     * @return this loader instance
-     * @since 0.18
-     * @deprecated in favor of {@link #offset(int)}
-     */
-    @Deprecated(since = "1.0.0-M20", forRemoval = true)
-    public ExcelLoader skipRows(int n) {
-        return offset(n);
-    }
-
-    /**
      * @since 0.14
      */
     public DataFrame loadSheet(Sheet sheet) {

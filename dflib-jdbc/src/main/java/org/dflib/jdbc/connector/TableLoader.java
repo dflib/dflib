@@ -33,14 +33,6 @@ public class TableLoader {
     }
 
     /**
-     * @deprecated in favor of {@link #cols(String...)}
-     */
-    @Deprecated(since = "1.0.0-M20", forRemoval = true)
-    public TableLoader includeColumns(String... columns) {
-        return cols(columns);
-    }
-
-    /**
      * Configures TableLoader to retrieve rows that match rows in the provided "condition" DataFrame. Condition
      * DataFrame must contain columns with names that are present in the DB table. Often it would contain PK columns
      * or otherwise unique columns.
@@ -78,16 +70,8 @@ public class TableLoader {
     }
 
     /**
-     * @deprecated in favor of {@link #limit(int)}
-     */
-    @Deprecated(since = "1.0.0-M20", forRemoval = true)
-    public TableLoader maxRows(int limit) {
-        return limit(limit);
-    }
-
-    /**
      * Configures the loader to select a sample of the rows from the ResultSet. Unlike
-     * {@link DataFrame#sampleRows(int, Random)}, this method can be used on potentially very large
+     * {@link DataFrame#rowsSample(int, Random)}, this method can be used on potentially very large
      * result sets. If you are executing multiple sampling runs in parallel, consider using {@link #rowsSample(int, Random)},
      * as this method is using a shared {@link Random} instance with synchronization.
      *
@@ -97,14 +81,6 @@ public class TableLoader {
      */
     public TableLoader rowsSample(int size) {
         return rowsSample(size, Sampler.getDefaultRandom());
-    }
-
-    /**
-     * @deprecated in facfor of {@link #rowsSample(int)}
-     */
-    @Deprecated(since = "1.0.0-M20", forRemoval = true)
-    public TableLoader sampleRows(int size) {
-        return rowsSample(size);
     }
 
     /**
@@ -120,14 +96,6 @@ public class TableLoader {
         this.rowSampleSize = size;
         this.rowsSampleRandom = Objects.requireNonNull(random);
         return this;
-    }
-
-    /**
-     * @deprecated in favor of {@link #rowsSample(int, Random)}
-     */
-    @Deprecated(since = "1.0.0-M20", forRemoval = true)
-    public TableLoader sampleRows(int size, Random random) {
-        return rowsSample(size, random);
     }
 
     public DataFrame load() {

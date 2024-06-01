@@ -58,15 +58,6 @@ public class DataFrameByRowBuilder<S, B extends DataFrameByRowBuilder<S, B>> {
         return (B) this;
     }
 
-    /**
-     * @deprecated in cases where the capacity can be guessed, we can do it automatically.
-     */
-    @Deprecated(since = "1.0.0-M20", forRemoval = true)
-    public B guessCapacity(Iterable<S> source) {
-        this.capacity = (source instanceof Collection) ? ((Collection) source).size() : DEFAULT_CAPACITY;
-        return (B) this;
-    }
-
     public B selectRows(RowPredicate rowFilter) {
         this.rowFilter = rowFilter;
         return (B) this;
@@ -74,7 +65,7 @@ public class DataFrameByRowBuilder<S, B extends DataFrameByRowBuilder<S, B>> {
 
     /**
      * Configures the appender to select a sample of the rows from the source. Unlike
-     * {@link DataFrame#sampleRows(int, Random)}, this method can be used on potentially very large data sets. If you
+     * {@link DataFrame#rowsSample(int, Random)}, this method can be used on potentially very large data sets. If you
      * are executing multiple sampling runs in parallel, consider using {@link #sampleRows(int, Random)}, as this
      * method is using a shared {@link Random} instance with synchronization.
      *
@@ -87,7 +78,7 @@ public class DataFrameByRowBuilder<S, B extends DataFrameByRowBuilder<S, B>> {
 
     /**
      * Configures the appender to select a sample of the rows from the source. Unlike
-     * {@link DataFrame#sampleRows(int, Random)}, this method can be used on potentially very large data sets.
+     * {@link DataFrame#rowsSample(int, Random)}, this method can be used on potentially very large data sets.
      *
      * @param size   the size of the sample. Can be bigger than the result set size (as the result set size is not known upfront).
      * @param random a custom random number generator

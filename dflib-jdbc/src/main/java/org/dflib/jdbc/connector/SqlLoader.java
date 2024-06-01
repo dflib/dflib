@@ -57,16 +57,8 @@ public class SqlLoader {
     }
 
     /**
-     * @deprecated in favor of {@link #limit(int)}
-     */
-    @Deprecated(since = "1.0.0-M20", forRemoval = true)
-    public SqlLoader maxRows(int maxRows) {
-        return limit(maxRows);
-    }
-
-    /**
      * Configures the loader to select a sample of the rows from the ResultSet. Unlike
-     * {@link DataFrame#sampleRows(int, Random)}, this method can be used on potentially very large
+     * {@link DataFrame#rowsSample(int, Random)}, this method can be used on potentially very large
      * result sets. If you are executing multiple sampling runs in parallel, consider using {@link #rowsSample(int, Random)},
      * as this method is using a shared {@link Random} instance with synchronization.
      *
@@ -79,16 +71,8 @@ public class SqlLoader {
     }
 
     /**
-     * @deprecated in facfor of {@link #rowsSample(int)}
-     */
-    @Deprecated(since = "1.0.0-M20", forRemoval = true)
-    public SqlLoader sampleRows(int size) {
-        return rowsSample(size);
-    }
-
-    /**
      * Configures the loader to select a sample of the rows from the ResultSet. Unlike
-     * {@link DataFrame#sampleRows(int, Random)}, this method can be used on potentially very large result sets.
+     * {@link DataFrame#rowsSample(int, Random)}, this method can be used on potentially very large result sets.
      *
      * @param size   the size of the sample. Can be bigger than the result set size (as the result set size is not known upfront).
      * @param random a custom random number generator
@@ -105,14 +89,6 @@ public class SqlLoader {
         copy.rowSampleSize = size;
         copy.rowsSampleRandom = random;
         return copy;
-    }
-
-    /**
-     * @deprecated in favor of {@link #rowsSample(int, Random)}
-     */
-    @Deprecated(since = "1.0.0-M20", forRemoval = true)
-    public SqlLoader sampleRows(int size, Random random) {
-        return rowsSample(size, random);
     }
 
     /**

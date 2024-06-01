@@ -357,21 +357,6 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * Aggregates DataFrame columns into a single-row DataFrame, using provided per-column aggregators. Note that
-     * aggregator positions correspond to returned DataFrame columns and do not generally match column positions
-     * in this DataFrame.
-     *
-     * @param aggregators an array of aggregators corresponding to the aggregated result columns
-     * @return a DataFrame with a single row
-     * @see Exp for static factory methods of column aggregators
-     * @deprecated in favor of {@link #cols()} and then {@link ColumnSet#agg(Exp[])}
-     */
-    @Deprecated(since = "1.0.0-M20", forRemoval = true)
-    default DataFrame agg(Exp<?>... aggregators) {
-        return cols().agg(aggregators);
-    }
-
-    /**
      * An operation similar to SQL "GROUP BY" that partitions this DataFrame into a number of groups based on the values
      * of the specified columns.
      *
