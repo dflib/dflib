@@ -247,6 +247,16 @@ public class EChartsTest {
     }
 
     @Test
+    public void generateScriptHtml_SeriesShowSymbol() {
+
+        String s1 = ECharts.chart().series("y1").generateScriptHtml("_tid", df2);
+        assertFalse(s1.contains("showSymbol"), s1);
+
+        String s2 = ECharts.chart().series(SeriesOpts.line().showSymbol(false), "y1").generateScriptHtml("_tid", df2);
+        assertTrue(s2.contains("showSymbol: false,"), s2);
+    }
+
+    @Test
     public void generateScriptHtml_toolbox() {
 
         String s1 = ECharts.chart().generateScriptHtml("_tid", df1);

@@ -2,6 +2,7 @@
 
 * #291 Remove APIs deprecated since M20
 * #292 Invalid ECharts JS for strings containing single quotes
+* #293 ECharts: SeriesOps.showSymbol
 
 ## Release 1.0.0-M21
 

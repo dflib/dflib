@@ -12,8 +12,9 @@ public class SeriesModel {
     private final EncodeModel encode;
     private final String seriesLayoutBy;
     private final boolean areaStyle;
-    private final boolean stack;
+    private final boolean showSymbol;
     private final boolean smooth;
+    private final boolean stack;
     private final boolean last;
 
     public SeriesModel(
@@ -22,6 +23,7 @@ public class SeriesModel {
             EncodeModel encode,
             String seriesLayoutBy,
             boolean areaStyle,
+            boolean showSymbol,
             boolean stack,
             boolean smooth,
             boolean last) {
@@ -31,6 +33,7 @@ public class SeriesModel {
         this.encode = encode;
         this.seriesLayoutBy = seriesLayoutBy;
         this.areaStyle = areaStyle;
+        this.showSymbol = showSymbol;
         this.stack = stack;
         this.smooth = smooth;
         this.last = last;
@@ -54,6 +57,13 @@ public class SeriesModel {
 
     public boolean isAreaStyle() {
         return areaStyle;
+    }
+
+    /**
+     * @since 1.0.0-M22
+     */
+    public boolean dontShowSymbol() {
+        return !showSymbol;
     }
 
     public boolean isStack() {

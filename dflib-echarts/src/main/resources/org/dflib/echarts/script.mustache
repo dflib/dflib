@@ -89,12 +89,15 @@
             {{#seriesLayoutBy}}
                 seriesLayoutBy: '{{.}}',
             {{/seriesLayoutBy}}
-            {{#stack}}
-                stack: 'total',
-            {{/stack}}
+            {{#dontShowSymbol}}
+                showSymbol: false,
+            {{/dontShowSymbol}}
             {{#smooth}}
                 smooth: true,
             {{/smooth}}
+            {{#stack}}
+                stack: 'total',
+            {{/stack}}
                 type: '{{type}}'
             }{{^last}},{{/last}}
             {{/series}}

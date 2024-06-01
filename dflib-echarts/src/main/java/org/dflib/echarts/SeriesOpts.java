@@ -14,10 +14,10 @@ public class SeriesOpts {
 
     private final ChartType type;
 
-    // using objects instead of primitives to be able to perform merge
     private Boolean areaStyle;
     private Boolean smooth;
     private Boolean stack;
+    private boolean showSymbol;
 
     /**
      * Starts a builder for a line series options object.
@@ -42,6 +42,9 @@ public class SeriesOpts {
 
     protected SeriesOpts(ChartType type) {
         this.type = Objects.requireNonNull(type);
+
+        // "true" is the same default as ECharts
+        this.showSymbol = true;
     }
 
     public SeriesOpts areaStyle() {
@@ -59,6 +62,14 @@ public class SeriesOpts {
         return this;
     }
 
+    /**
+     * @since 1.0.0-M22
+     */
+    public SeriesOpts showSymbol(boolean showSymbol) {
+        this.showSymbol = showSymbol;
+        return this;
+    }
+
     protected SeriesModel resolve(String name, EncodeModel encodeModel, String seriesLayoutBy, boolean last) {
         return new SeriesModel(
                 name,
@@ -66,6 +77,7 @@ public class SeriesOpts {
                 encodeModel,
                 seriesLayoutBy,
                 areaStyle != null ? areaStyle : false,
+                showSymbol,
                 stack != null ? stack : false,
                 smooth != null ? smooth : false,
                 last
