@@ -1,8 +1,11 @@
-package org.dflib.echarts.render;
+package org.dflib.echarts.render.util;
 
-class Renderer {
+/**
+ * @since 1.0.0-M21
+ */
+public class Renderer {
 
-    static String quotedValue(Object value) {
+    public static String quotedValue(Object value) {
         return shouldQuote(value) ? quoteAndEscape(value) : String.valueOf(value);
     }
 
@@ -42,6 +45,6 @@ class Renderer {
     }
 
     private static boolean shouldQuote(Object o) {
-        return !(o instanceof Number) && !(o instanceof Boolean);
+        return o != null && !(o instanceof Number) && !(o instanceof Boolean);
     }
 }

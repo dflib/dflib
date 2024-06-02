@@ -61,6 +61,9 @@
     {{/dataset}}
     {{#xAxis}}
         xAxis: {
+        {{#alignTicksPresent}}
+            alignTicks: {{alignTicks}},
+        {{/alignTicksPresent}}
         {{#axisLabel}}
             axisLabel: {
             {{#formatter}}
@@ -68,9 +71,23 @@
             {{/formatter}}
             },
         {{/axisLabel}}
+        {{#axisLine}}
+            axisLine: {
+                show: {{show}}
+            },
+        {{/axisLine}}
         {{#noBoundaryGap}}
             boundaryGap: false,
         {{/noBoundaryGap}}
+        {{#name}}
+            name: {{{quotedName}}},
+        {{/name}}
+        {{#offset}}
+            offset: {{.}},
+        {{/offset}}
+        {{#position}}
+            position: '{{.}}',
+        {{/position}}
         {{#type}}
             type: '{{.}}'
         {{/type}}
@@ -78,6 +95,9 @@
     {{/xAxis}}
     {{#yAxis}}
         yAxis: {
+        {{#alignTicksPresent}}
+            alignTicks: {{alignTicks}},
+        {{/alignTicksPresent}}
         {{#axisLabel}}
             axisLabel: {
             {{#formatter}}
@@ -85,6 +105,20 @@
             {{/formatter}}
             },
         {{/axisLabel}}
+        {{#axisLine}}
+            axisLine: {
+                show: {{show}}
+            },
+        {{/axisLine}}
+        {{#name}}
+            name: {{{quotedName}}},
+        {{/name}}
+        {{#offset}}
+            offset: {{.}},
+        {{/offset}}
+        {{#position}}
+            position: '{{.}}',
+        {{/position}}
         {{#type}}
             type: '{{.}}'
         {{/type}}

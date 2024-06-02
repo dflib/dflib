@@ -1,40 +1,36 @@
 package org.dflib.echarts;
 
-import org.dflib.echarts.render.option.AxisModel;
+import org.dflib.echarts.render.option.axis.AxisModel;
 
 import java.util.Objects;
 
 /**
  * @since 1.0.0-M21
  */
-public class Axis {
+public abstract class Axis<T extends Axis<T>> {
 
-    private final AxisType type;
-    private AxisLabel label;
-    private boolean boundaryGap;
+    protected String name;
+    protected Integer offset;
+    protected AxisType type;
+    protected AxisLabel label;
+    protected AxisLine line;
+    protected boolean boundaryGap;
+    protected Boolean alignTicks;
 
-    public static Axis defaultX() {
-        return of(AxisType.category);
+    /**
+     * @deprecated in favor of {@link XAxis#ofDefault()}
+     */
+    @Deprecated(since = "1.0.0-M22", forRemoval = true)
+    public static XAxis defaultX() {
+        return XAxis.ofDefault();
     }
 
-    public static Axis defaultY() {
-        return of(AxisType.value);
-    }
-
-    public static Axis time() {
-        return of(AxisType.time);
-    }
-
-    public static Axis value() {
-        return of(AxisType.value);
-    }
-
-    public static Axis category() {
-        return of(AxisType.category);
-    }
-
-    protected static Axis of(AxisType type) {
-        return new Axis(type);
+    /**
+     * @deprecated in favor of {@link YAxis#ofDefault()}
+     */
+    @Deprecated(since = "1.0.0-M22", forRemoval = true)
+    public static YAxis defaultY() {
+        return YAxis.ofDefault();
     }
 
     protected Axis(AxisType type) {
@@ -43,21 +39,44 @@ public class Axis {
         this.boundaryGap = true;
     }
 
-    public Axis boundaryGap(boolean gap) {
+    public T boundaryGap(boolean gap) {
         this.boundaryGap = gap;
-        return this;
+        return (T) this;
     }
 
-    public Axis label(AxisLabel label) {
+    /**
+     * @since 1.0.0-M22
+     */
+    public T alignTicks(boolean alignTicks) {
+        this.alignTicks = alignTicks;
+        return (T) this;
+    }
+
+    /**
+     * Sets the "axisLabel" property of the Axis object.
+     */
+    public T label(AxisLabel label) {
         this.label = label;
-        return this;
+        return (T) this;
     }
 
-    protected AxisModel resolve() {
-        return new AxisModel(
-                type.name(),
-                label != null ? label.resolve() : null,
-                boundaryGap
-        );
+    /**
+     * Sets the "axisLine" property of the Axis object.
+     */
+    public T line(AxisLine line) {
+        this.line = line;
+        return (T) this;
     }
+
+    public T name(String name) {
+        this.name = name;
+        return (T) this;
+    }
+
+    public T offset(int offset) {
+        this.offset = offset;
+        return (T) this;
+    }
+
+    protected abstract AxisModel resolve();
 }

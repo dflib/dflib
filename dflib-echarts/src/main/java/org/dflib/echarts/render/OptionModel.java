@@ -1,9 +1,9 @@
 package org.dflib.echarts.render;
 
-import org.dflib.echarts.render.option.AxisModel;
+import org.dflib.echarts.render.option.axis.AxisModel;
 import org.dflib.echarts.render.option.DataSetModel;
 import org.dflib.echarts.render.option.SeriesModel;
-import org.dflib.echarts.render.option.ToolboxModel;
+import org.dflib.echarts.render.option.toolbox.ToolboxModel;
 import org.dflib.echarts.render.option.tooltip.TooltipModel;
 
 import java.util.List;

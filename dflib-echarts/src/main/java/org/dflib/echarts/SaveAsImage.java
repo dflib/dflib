@@ -9,6 +9,17 @@ public class SaveAsImage {
 
     private Integer pixelRatio;
 
+    /**
+     * @since 1.0.0-M22
+     */
+    public static SaveAsImage of() {
+        return new SaveAsImage();
+    }
+
+    /**
+     * @deprecated in favor of {@link #of()}
+     */
+    @Deprecated(since = "1.0.0-M22", forRemoval = true)
     public static SaveAsImage create() {
         return new SaveAsImage();
     }

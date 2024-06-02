@@ -110,21 +110,20 @@ public class EChart {
         return this;
     }
 
-    public EChart xAxis(String dataColumn, Axis axis) {
+    public EChart xAxis(String dataColumn, XAxis axis) {
         option.xAxis(dataColumn, axis);
         return this;
     }
 
-    public EChart xAxis(Axis axis) {
+    public EChart xAxis(XAxis axis) {
         option.xAxis(axis);
         return this;
     }
 
     /**
-     * Configures the X axis of the chart with no link to any DataFrame series. In this case, a series with element
-     * position numbers will be generated implicitly.
+     * Configures the Y axis of the chart.
      */
-    public EChart yAxis(Axis axis) {
+    public EChart yAxis(YAxis axis) {
         option.yAxis(axis);
         return this;
     }

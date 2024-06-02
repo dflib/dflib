@@ -28,7 +28,7 @@ public class Option {
     private Toolbox toolbox;
     private Tooltip tooltip;
 
-    private BoundAxis xAxis;
+    private BoundXAxis xAxis;
     private Axis yAxis;
 
     private final Map<String, BoundSeries> series;
@@ -57,21 +57,21 @@ public class Option {
      * series element indices will be used for X.
      */
     public Option xAxis(String dataColumn) {
-        this.xAxis = new BoundAxis(dataColumn, Axis.defaultX());
+        this.xAxis = new BoundXAxis(dataColumn, XAxis.ofDefault());
         return this;
     }
 
-    public Option xAxis(String dataColumn, Axis axis) {
-        this.xAxis = new BoundAxis(dataColumn, axis);
+    public Option xAxis(String dataColumn, XAxis axis) {
+        this.xAxis = new BoundXAxis(dataColumn, axis);
         return this;
     }
 
-    public Option xAxis(Axis axis) {
-        this.xAxis = new BoundAxis(null, axis);
+    public Option xAxis(XAxis axis) {
+        this.xAxis = new BoundXAxis(null, axis);
         return this;
     }
 
-    public Option yAxis(Axis axis) {
+    public Option yAxis(YAxis axis) {
         this.yAxis = Objects.requireNonNull(axis);
         return this;
     }
@@ -119,8 +119,8 @@ public class Option {
 
     protected OptionModel resolve(DataFrame df) {
 
-        BoundAxis x = xAxis != null ? xAxis : new BoundAxis(null, Axis.defaultX());
-        Axis y = yAxis != null ? yAxis : Axis.defaultY();
+        BoundXAxis x = xAxis != null ? xAxis : new BoundXAxis(null, XAxis.ofDefault());
+        Axis y = yAxis != null ? yAxis : YAxis.ofDefault();
 
         return new OptionModel(
                 dataset(df, x),
@@ -134,7 +134,7 @@ public class Option {
         );
     }
 
-    protected DataSetModel dataset(DataFrame df, BoundAxis x) {
+    protected DataSetModel dataset(DataFrame df, BoundXAxis x) {
 
         // DF columns become rows and rows become columns in the EChart dataset
         int w = df.height();
@@ -187,11 +187,11 @@ public class Option {
         return this.defaultSeriesOpts != null ? defaultSeriesOpts : SeriesOpts.line();
     }
 
-    static class BoundAxis {
+    static class BoundXAxis {
         final String columnName;
-        final Axis axis;
+        final XAxis axis;
 
-        BoundAxis(String columnName, Axis axis) {
+        BoundXAxis(String columnName, XAxis axis) {
             this.columnName = columnName;
             this.axis = axis;
         }

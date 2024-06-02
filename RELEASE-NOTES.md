@@ -5,6 +5,7 @@
 * #293 ECharts: SeriesOps.showSymbol
 * #294 ECharts: SeriesOpts.label
 * #295 ECharts: tooltip
+* #296 ECharts: more Axis properties, multiple Y axes
 
 ## Release 1.0.0-M21
 

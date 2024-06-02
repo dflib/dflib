@@ -1,4 +1,4 @@
-package org.dflib.echarts.render;
+package org.dflib.echarts.render.util;
 
 import org.junit.jupiter.api.Test;
 

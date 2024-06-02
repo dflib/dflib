@@ -1,5 +1,7 @@
 package org.dflib.echarts.render;
 
+import org.dflib.echarts.render.util.Renderer;
+
 /**
  * An abstract list value model that stores a pair of values and the "last" position indicator.
  *

@@ -1,6 +1,6 @@
 package org.dflib.echarts;
 
-import org.dflib.echarts.render.option.ToolboxModel;
+import org.dflib.echarts.render.option.toolbox.ToolboxModel;
 import org.dflib.echarts.render.option.toolbox.DataZoomModel;
 import org.dflib.echarts.render.option.toolbox.RestoreModel;
 
@@ -13,12 +13,23 @@ public class Toolbox {
     private SaveAsImage featureSaveAsImage;
     private boolean featureRestore;
 
+    /**
+     * @since 1.0.0-M22
+     */
+    public static Toolbox of() {
+        return new Toolbox();
+    }
+
+    /**
+     * @deprecated in favor of {@link #of()}
+     */
+    @Deprecated(since = "1.0.0-M22", forRemoval = true)
     public static Toolbox create() {
         return new Toolbox();
     }
 
     public Toolbox featureSaveAsImage() {
-        this.featureSaveAsImage = SaveAsImage.create();
+        this.featureSaveAsImage = SaveAsImage.of();
         return this;
     }
 
