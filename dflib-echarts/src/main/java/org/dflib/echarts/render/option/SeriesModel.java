@@ -16,6 +16,7 @@ public class SeriesModel {
     private final boolean showSymbol;
     private final boolean smooth;
     private final boolean stack;
+    private final Integer yAxisIndex;
     private final boolean last;
 
     public SeriesModel(
@@ -28,6 +29,7 @@ public class SeriesModel {
             boolean showSymbol,
             boolean stack,
             boolean smooth,
+            Integer yAxisIndex,
             boolean last) {
 
         this.name = name;
@@ -39,6 +41,7 @@ public class SeriesModel {
         this.showSymbol = showSymbol;
         this.stack = stack;
         this.smooth = smooth;
+        this.yAxisIndex = yAxisIndex;
         this.last = last;
     }
 
@@ -74,6 +77,13 @@ public class SeriesModel {
      */
     public boolean dontShowSymbol() {
         return !showSymbol;
+    }
+
+    /**
+     * @since 1.0.0-M22
+     */
+    public Integer getYAxisIndex() {
+        return yAxisIndex;
     }
 
     public boolean isStack() {

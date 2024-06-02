@@ -20,7 +20,7 @@ public class OptionModel {
     private final ToolboxModel toolbox;
     private final TooltipModel tooltip;
     private final AxisModel xAxis;
-    private final AxisModel yAxis;
+    private final List<AxisModel> yAxes;
 
     public OptionModel(
             DataSetModel dataset,
@@ -30,14 +30,14 @@ public class OptionModel {
             ToolboxModel toolbox,
             TooltipModel tooltip,
             AxisModel xAxis,
-            AxisModel yAxis) {
+            List<AxisModel> yAxes) {
 
         this.title = title;
         this.toolbox = toolbox;
         this.tooltip = tooltip;
         this.dataset = dataset;
         this.xAxis = xAxis;
-        this.yAxis = yAxis;
+        this.yAxes = yAxes;
         this.series = series;
         this.legend = legend;
     }
@@ -62,8 +62,12 @@ public class OptionModel {
         return xAxis;
     }
 
-    public AxisModel getYAxis() {
-        return yAxis;
+    public boolean isYAxesPresent() {
+        return yAxes != null;
+    }
+
+    public List<AxisModel> getYAxes() {
+        return yAxes;
     }
 
     public List<SeriesModel> getSeries() {

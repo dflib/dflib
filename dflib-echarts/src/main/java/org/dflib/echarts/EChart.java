@@ -121,7 +121,17 @@ public class EChart {
     }
 
     /**
-     * Configures the Y axis of the chart.
+     * Add one or more configured Y axes of the chart.
+     *
+     * @since 1.0.0-M22
+     */
+    public EChart yAxes(YAxis... axes) {
+        option.yAxes(axes);
+        return this;
+    }
+
+    /**
+     * Add a configured Y axis of the chart.
      */
     public EChart yAxis(YAxis axis) {
         option.yAxis(axis);

@@ -93,8 +93,10 @@
         {{/type}}
         },
     {{/xAxis}}
-    {{#yAxis}}
-        yAxis: {
+    {{#yAxesPresent}}
+        yAxis: [
+        {{#yAxes}}
+        {
         {{#alignTicksPresent}}
             alignTicks: {{alignTicks}},
         {{/alignTicksPresent}}
@@ -123,7 +125,9 @@
             type: '{{.}}'
         {{/type}}
         },
-    {{/yAxis}}
+        {{/yAxes}}
+        ],
+    {{/yAxesPresent}}
         series: [
             {{#series}}
             {
@@ -157,6 +161,9 @@
             {{#stack}}
                 stack: 'total',
             {{/stack}}
+            {{#yAxisIndex}}
+                yAxisIndex: {{.}},
+            {{/yAxisIndex}}
                 type: '{{type}}'
             }{{^last}},{{/last}}
             {{/series}}

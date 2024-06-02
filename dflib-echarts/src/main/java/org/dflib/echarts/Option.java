@@ -8,6 +8,7 @@ import org.dflib.echarts.render.option.DataSetModel;
 import org.dflib.echarts.render.option.EncodeModel;
 import org.dflib.echarts.render.option.RowModel;
 import org.dflib.echarts.render.option.SeriesModel;
+import org.dflib.echarts.render.option.axis.AxisModel;
 import org.dflib.series.IntSequenceSeries;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * A builder of the EChart "option" object - the main chart configuration.
@@ -29,7 +31,7 @@ public class Option {
     private Tooltip tooltip;
 
     private BoundXAxis xAxis;
-    private Axis yAxis;
+    private List<YAxis> yAxes;
 
     private final Map<String, BoundSeries> series;
     private SeriesOpts defaultSeriesOpts;
@@ -71,8 +73,30 @@ public class Option {
         return this;
     }
 
+    /**
+     * Adds one or more Y axis to the chart.
+     *
+     * @since 1.0.0-M22
+     */
+    public Option yAxes(YAxis... axes) {
+        for (YAxis a : axes) {
+            yAxis(a);
+        }
+
+        return this;
+    }
+
+    /**
+     * Adds a Y axis to the chart.
+     */
     public Option yAxis(YAxis axis) {
-        this.yAxis = Objects.requireNonNull(axis);
+        Objects.requireNonNull(axis);
+
+        if (this.yAxes == null) {
+            this.yAxes = new ArrayList<>(3);
+        }
+
+        this.yAxes.add(axis);
         return this;
     }
 
@@ -120,7 +144,8 @@ public class Option {
     protected OptionModel resolve(DataFrame df) {
 
         BoundXAxis x = xAxis != null ? xAxis : new BoundXAxis(null, XAxis.ofDefault());
-        Axis y = yAxis != null ? yAxis : YAxis.ofDefault();
+        List<YAxis> ys = yAxes != null ? yAxes : List.of(YAxis.ofDefault());
+        List<AxisModel> yModels = ys.stream().map(YAxis::resolve).collect(Collectors.toList());
 
         return new OptionModel(
                 dataset(df, x),
@@ -130,7 +155,7 @@ public class Option {
                 this.toolbox != null ? this.toolbox.resolve() : null,
                 this.tooltip != null ? this.tooltip.resolve() : null,
                 x.axis.resolve(),
-                y.resolve()
+                yModels
         );
     }
 

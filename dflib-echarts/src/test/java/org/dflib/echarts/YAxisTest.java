@@ -11,10 +11,26 @@ public class YAxisTest extends GenerateScriptHtmlTest {
     public void yAxis() {
 
         String s1 = ECharts.chart().generateScriptHtml("_tid", df1);
-        assertTrue(s1.contains("yAxis: {"), s1);
+        assertTrue(s1.contains("yAxis: ["), s1);
 
         String s2 = ECharts.chart().yAxis(YAxis.ofDefault()).generateScriptHtml("_tid", df1);
-        assertTrue(s2.contains("yAxis: {"), s2);
+        assertTrue(s2.contains("yAxis: ["), s2);
+    }
+
+    @Test
+    public void yAxes() {
+
+        String s1 = ECharts.chart().generateScriptHtml("_tid", df1);
+        assertTrue(s1.contains("yAxis: ["), s1);
+
+        String s2 = ECharts.chart().yAxes(
+                YAxis.ofDefault(),
+                YAxis.ofTime()
+        ).generateScriptHtml("_tid", df1);
+
+        assertTrue(s2.contains("yAxis: ["), s2);
+        assertTrue(s2.contains("type: 'value'"), s2);
+        assertTrue(s2.contains("type: 'time'"), s2);
     }
 
     @Test

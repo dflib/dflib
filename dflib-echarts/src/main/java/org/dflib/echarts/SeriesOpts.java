@@ -18,6 +18,7 @@ public class SeriesOpts {
     private boolean areaStyle;
     private boolean showSymbol;
     private boolean smooth;
+    private Integer yAxisIndex;
     private boolean stack;
 
     /**
@@ -49,6 +50,14 @@ public class SeriesOpts {
         this.showSymbol = true;
         this.smooth = false;
         this.stack = false;
+    }
+
+    /**
+     * @since 1.0.0-M22
+     */
+    public SeriesOpts yAxisIndex(int index) {
+        this.yAxisIndex = index;
+        return this;
     }
 
     /**
@@ -101,6 +110,7 @@ public class SeriesOpts {
                 showSymbol,
                 stack,
                 smooth,
+                yAxisIndex,
                 last
         );
     }

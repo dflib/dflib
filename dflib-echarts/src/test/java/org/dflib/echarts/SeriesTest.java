@@ -113,4 +113,15 @@ public class SeriesTest extends GenerateScriptHtmlTest {
         assertTrue(s2.contains("position: 'inside'"), s2);
     }
 
+    @Test
+    public void yAxisIndex() {
+
+        String s1 = ECharts.chart().series("y1").generateScriptHtml("_tid", df2);
+        assertFalse(s1.contains("yAxisIndex"), s1);
+
+        String s2 = ECharts.chart().series(SeriesOpts.line().yAxisIndex(2), "y1").generateScriptHtml("_tid", df2);
+        assertTrue(s2.contains("yAxisIndex: 2,"), s2);
+    }
+
+
 }
