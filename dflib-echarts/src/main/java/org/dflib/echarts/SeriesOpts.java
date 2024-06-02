@@ -55,7 +55,7 @@ public class SeriesOpts {
      * @since 1.0.0-M22
      */
     public SeriesOpts label(LabelPosition position) {
-        this.label = Label.create().position(position);
+        this.label = Label.of(position);
         return this;
     }
 

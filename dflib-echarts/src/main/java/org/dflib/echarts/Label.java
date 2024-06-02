@@ -10,17 +10,64 @@ public class Label {
     private LabelPosition position;
     private String formatter;
 
-    public static Label create() {
-        return new Label();
+    public static Label of(LabelPosition position) {
+        return new Label(position);
     }
 
-    protected Label() {
-        this.position = LabelPosition.top;
+    public static Label top() {
+        return new Label(LabelPosition.top);
     }
 
-    public Label position(LabelPosition position) {
+    public static Label left() {
+        return new Label(LabelPosition.left);
+    }
+
+    public static Label right() {
+        return new Label(LabelPosition.right);
+    }
+
+    public static Label bottom() {
+        return new Label(LabelPosition.bottom);
+    }
+
+    public static Label inside() {
+        return new Label(LabelPosition.inside);
+    }
+
+    public static Label insideLeft() {
+        return new Label(LabelPosition.insideLeft);
+    }
+
+    public static Label insideRight() {
+        return new Label(LabelPosition.insideRight);
+    }
+
+    public static Label insideTop() {
+        return new Label(LabelPosition.insideTop);
+    }
+
+    public static Label insideBottom() {
+        return new Label(LabelPosition.insideBottom);
+    }
+
+    public static Label insideTopLeft() {
+        return new Label(LabelPosition.insideTopLeft);
+    }
+
+    public static Label insideBottomLeft() {
+        return new Label(LabelPosition.insideBottomLeft);
+    }
+
+    public static Label insideTopRight() {
+        return new Label(LabelPosition.insideTopRight);
+    }
+
+    public static Label insideBottomRight() {
+        return new Label(LabelPosition.insideBottomRight);
+    }
+
+    protected Label(LabelPosition position) {
         this.position = position;
-        return this;
     }
 
     public Label formatter(String formatter) {
