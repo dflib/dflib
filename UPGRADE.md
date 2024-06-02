@@ -1,5 +1,12 @@
 # UPGRADE INSTRUCTIONS
 
+## 1.0.0-M22
+
+* [dflib #296](https://github.com/bootique/bootique-agrest/issues/296): ECharts `Axis` class was split into two
+subclasses - `XAxis` and `YAxis`, so some of the static factory methods on `Axis` are no longer possible (and the
+rest are deprecated).  If yuo get a compilation error in your charts code, please convert those methods to the 
+corresponding static factory methods coming from `XAxis` and `YAxis`.
+
 ## 1.0.0-M19
 
 * [dflib #235](https://github.com/bootique/bootique-agrest/issues/235): Since the project got moved to dflib.org,
