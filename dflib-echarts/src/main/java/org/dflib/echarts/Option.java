@@ -22,9 +22,11 @@ import java.util.Objects;
  * @since 1.0.0-M21
  */
 public class Option {
+
     private String title;
     private Boolean legend;
     private Toolbox toolbox;
+    private Tooltip tooltip;
 
     private BoundAxis xAxis;
     private Axis yAxis;
@@ -38,7 +40,15 @@ public class Option {
     }
 
     public Option toolbox(Toolbox toolbox) {
-        this.toolbox = Objects.requireNonNull(toolbox);
+        this.toolbox = toolbox;
+        return this;
+    }
+
+    /**
+     * @since 1.0.0-M22
+     */
+    public Option tooltip(Tooltip tooltip) {
+        this.tooltip = tooltip;
         return this;
     }
 
@@ -113,13 +123,14 @@ public class Option {
         Axis y = yAxis != null ? yAxis : Axis.defaultY();
 
         return new OptionModel(
+                dataset(df, x),
+                this.legend != null ? this.legend : false,
+                datasetSeries(),
                 this.title,
                 this.toolbox != null ? this.toolbox.resolve() : null,
-                dataset(df, x),
+                this.tooltip != null ? this.tooltip.resolve() : null,
                 x.axis.resolve(),
-                y.resolve(),
-                datasetSeries(),
-                this.legend != null ? this.legend : false
+                y.resolve()
         );
     }
 

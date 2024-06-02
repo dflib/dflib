@@ -4,6 +4,7 @@ import org.dflib.echarts.render.option.AxisModel;
 import org.dflib.echarts.render.option.DataSetModel;
 import org.dflib.echarts.render.option.SeriesModel;
 import org.dflib.echarts.render.option.ToolboxModel;
+import org.dflib.echarts.render.option.tooltip.TooltipModel;
 
 import java.util.List;
 
@@ -12,25 +13,28 @@ import java.util.List;
  */
 public class OptionModel {
 
+    private final DataSetModel dataset;
+    private final boolean legend;
+    private final List<SeriesModel> series;
     private final String title;
     private final ToolboxModel toolbox;
-    private final DataSetModel dataset;
+    private final TooltipModel tooltip;
     private final AxisModel xAxis;
     private final AxisModel yAxis;
-    private final List<SeriesModel> series;
-    private final boolean legend;
 
     public OptionModel(
+            DataSetModel dataset,
+            boolean legend,
+            List<SeriesModel> series,
             String title,
             ToolboxModel toolbox,
-            DataSetModel dataset,
+            TooltipModel tooltip,
             AxisModel xAxis,
-            AxisModel yAxis,
-            List<SeriesModel> series,
-            boolean legend) {
+            AxisModel yAxis) {
 
         this.title = title;
         this.toolbox = toolbox;
+        this.tooltip = tooltip;
         this.dataset = dataset;
         this.xAxis = xAxis;
         this.yAxis = yAxis;
@@ -40,6 +44,10 @@ public class OptionModel {
 
     public String getTitle() {
         return title;
+    }
+
+    public TooltipModel getTooltip() {
+        return tooltip;
     }
 
     public ToolboxModel getToolbox() {

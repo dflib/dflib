@@ -4,6 +4,7 @@
 * #292 Invalid ECharts JS for strings containing single quotes
 * #293 ECharts: SeriesOps.showSymbol
 * #294 ECharts: SeriesOpts.label
+* #295 ECharts: tooltip
 
 ## Release 1.0.0-M21
 

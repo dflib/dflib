@@ -94,6 +94,14 @@ public class EChart {
     }
 
     /**
+     * @since 1.0.0-M22
+     */
+    public EChart tooltip(Tooltip tooltip) {
+        option.tooltip(tooltip);
+        return this;
+    }
+
+    /**
      * Specifies which DataFrame column should be used to label the X axis. This setting is optional. If not set,
      * series element indices will be used for X.
      */

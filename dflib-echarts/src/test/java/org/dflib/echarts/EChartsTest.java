@@ -293,4 +293,16 @@ public class EChartsTest {
         assertTrue(s3.contains("pixelRatio: 2"), s3);
     }
 
+    @Test
+    public void generateScriptHtml_tooltip() {
+
+        String s1 = ECharts.chart().generateScriptHtml("_tid", df1);
+        assertFalse(s1.contains("tooltip: {"), s1);
+
+        String s2 = ECharts.chart().tooltip(Tooltip.axis().axisPointerCross()).generateScriptHtml("_tid", df1);
+        assertTrue(s2.contains("tooltip: {"), s2);
+        assertTrue(s2.contains("trigger: 'axis'"), s2);
+        assertTrue(s2.contains("axisPointer: {"), s2);
+        assertTrue(s2.contains("type: 'cross',"), s2);
+    }
 }

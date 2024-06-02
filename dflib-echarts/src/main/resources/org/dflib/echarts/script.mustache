@@ -14,6 +14,20 @@
             text: '{{.}}'
         },
     {{/title}}
+    {{#tooltip}}
+        tooltip: {
+        {{#trigger}}
+            trigger: '{{.}}',
+        {{/trigger}}
+        {{#axisPointer}}
+            axisPointer: {
+            {{#type}}
+                type: '{{.}}',
+            {{/type}}
+            }
+        {{/axisPointer}}
+        },
+    {{/tooltip}}
     {{#toolbox}}
         toolbox: {
             feature: {
