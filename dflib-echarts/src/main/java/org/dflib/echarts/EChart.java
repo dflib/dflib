@@ -52,9 +52,27 @@ public class EChart {
     private Integer width;
     private Integer height;
 
+    /**
+     * Starts a builder for a new chart.
+     *
+     * @since 1.0.0-M22
+     */
+    public static EChart chart() {
+        return new EChart();
+    }
+
+    /**
+     * Starts a builder for a new named chart.
+     *
+     * @since 1.0.0-M22
+     */
+    public static EChart chart(String title) {
+        return chart().title(title);
+    }
+
     protected EChart() {
         this.rnd = new SecureRandom();
-        this.option = new Option();
+        this.option = Option.of();
     }
 
     public EChart renderAsSvg() {

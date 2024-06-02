@@ -14,55 +14,55 @@ public class Label {
         return new Label(position);
     }
 
-    public static Label top() {
+    public static Label ofTop() {
         return new Label(LabelPosition.top);
     }
 
-    public static Label left() {
+    public static Label ofLeft() {
         return new Label(LabelPosition.left);
     }
 
-    public static Label right() {
+    public static Label ofRight() {
         return new Label(LabelPosition.right);
     }
 
-    public static Label bottom() {
+    public static Label ofBottom() {
         return new Label(LabelPosition.bottom);
     }
 
-    public static Label inside() {
+    public static Label ofInside() {
         return new Label(LabelPosition.inside);
     }
 
-    public static Label insideLeft() {
+    public static Label ofInsideLeft() {
         return new Label(LabelPosition.insideLeft);
     }
 
-    public static Label insideRight() {
+    public static Label ofInsideRight() {
         return new Label(LabelPosition.insideRight);
     }
 
-    public static Label insideTop() {
+    public static Label ofInsideTop() {
         return new Label(LabelPosition.insideTop);
     }
 
-    public static Label insideBottom() {
+    public static Label ofInsideBottom() {
         return new Label(LabelPosition.insideBottom);
     }
 
-    public static Label insideTopLeft() {
+    public static Label ofInsideTopLeft() {
         return new Label(LabelPosition.insideTopLeft);
     }
 
-    public static Label insideBottomLeft() {
+    public static Label ofInsideBottomLeft() {
         return new Label(LabelPosition.insideBottomLeft);
     }
 
-    public static Label insideTopRight() {
+    public static Label ofInsideTopRight() {
         return new Label(LabelPosition.insideTopRight);
     }
 
-    public static Label insideBottomRight() {
+    public static Label ofInsideBottomRight() {
         return new Label(LabelPosition.insideBottomRight);
     }
 

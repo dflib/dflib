@@ -14,15 +14,15 @@ public class Tooltip {
         return new Tooltip(trigger);
     }
 
-    public static Tooltip item() {
+    public static Tooltip ofItem() {
         return new Tooltip(TooltipTrigger.item);
     }
 
-    public static Tooltip axis() {
+    public static Tooltip ofAxis() {
         return new Tooltip(TooltipTrigger.axis);
     }
 
-    public static Tooltip none() {
+    public static Tooltip ofNone() {
         return new Tooltip(TooltipTrigger.none);
     }
 
@@ -36,17 +36,17 @@ public class Tooltip {
     }
 
     public Tooltip axisPointerLine() {
-        this.axisPointer = TooltipAxisPointer.line();
+        this.axisPointer = TooltipAxisPointer.ofLine();
         return this;
     }
 
     public Tooltip axisPointerCross() {
-        this.axisPointer = TooltipAxisPointer.cross();
+        this.axisPointer = TooltipAxisPointer.ofCross();
         return this;
     }
 
     public Tooltip axisPointerShadow() {
-        this.axisPointer = TooltipAxisPointer.shadow();
+        this.axisPointer = TooltipAxisPointer.ofShadow();
         return this;
     }
 

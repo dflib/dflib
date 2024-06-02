@@ -9,15 +9,21 @@ public class ECharts {
 
     /**
      * Starts a builder for a new chart.
+     *
+     * @deprecated in favor of {@link EChart#chart()}
      */
+    @Deprecated(since = "1.0.0-M22", forRemoval = true)
     public static EChart chart() {
-        return new EChart();
+        return EChart.chart();
     }
 
     /**
      * Starts a builder for a new named chart.
+     *
+     * @deprecated in favor of {@link EChart#chart(String)}
      */
+    @Deprecated(since = "1.0.0-M22", forRemoval = true)
     public static EChart chart(String title) {
-        return chart().title(title);
+        return EChart.chart(title);
     }
 }

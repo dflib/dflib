@@ -22,22 +22,59 @@ public class SeriesOpts {
     private boolean stack;
 
     /**
-     * Starts a builder for a line series options object.
+     * @since 1.0.0-M22
      */
+    public static SeriesOpts of(ChartType type) {
+        return new SeriesOpts(type);
+    }
+
+    /**
+     * Starts a builder for a line series options object.
+     *
+     * @since 1.0.0-M22
+     */
+    public static SeriesOpts ofLine() {
+        return new SeriesOpts(ChartType.line);
+    }
+
+    /**
+     * @deprecated in favor of {@link #ofLine()}
+     */
+    @Deprecated(since = "1.0.0-M22", forRemoval = true)
     public static SeriesOpts line() {
         return new SeriesOpts(ChartType.line);
     }
 
     /**
      * Starts a builder for a bar series options object.
+     *
+     * @since 1.0.0-M22
      */
+    public static SeriesOpts ofBar() {
+        return new SeriesOpts(ChartType.bar);
+    }
+
+    /**
+     * @deprecated in favor of {@link #ofBar()}
+     */
+    @Deprecated(since = "1.0.0-M22", forRemoval = true)
     public static SeriesOpts bar() {
         return new SeriesOpts(ChartType.bar);
     }
 
     /**
      * Starts a builder for a scatter series options object.
+     *
+     * @since 1.0.0-M22
      */
+    public static SeriesOpts ofScatter() {
+        return new SeriesOpts(ChartType.scatter);
+    }
+
+    /**
+     * @deprecated in favor of {@link #ofScatter()}
+     */
+    @Deprecated(since = "1.0.0-M22", forRemoval = true)
     public static SeriesOpts scatter() {
         return new SeriesOpts(ChartType.scatter);
     }
@@ -53,6 +90,9 @@ public class SeriesOpts {
     }
 
     /**
+     * Sets an index of Y axis to use for this Series. There can be one or more Y axes, so this method allows to
+     * pick one. If not set, 0 is assumed.
+     *
      * @since 1.0.0-M22
      */
     public SeriesOpts yAxisIndex(int index) {

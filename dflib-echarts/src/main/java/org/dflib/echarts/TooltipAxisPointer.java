@@ -13,15 +13,15 @@ public class TooltipAxisPointer {
         return new TooltipAxisPointer(type);
     }
 
-    public static TooltipAxisPointer line() {
+    public static TooltipAxisPointer ofLine() {
         return new TooltipAxisPointer(TooltipAxisPointerType.line);
     }
 
-    public static TooltipAxisPointer shadow() {
+    public static TooltipAxisPointer ofShadow() {
         return new TooltipAxisPointer(TooltipAxisPointerType.shadow);
     }
 
-    public static TooltipAxisPointer cross() {
+    public static TooltipAxisPointer ofCross() {
         return new TooltipAxisPointer(TooltipAxisPointerType.cross);
     }
 

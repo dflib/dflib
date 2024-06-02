@@ -36,7 +36,14 @@ public class Option {
     private final Map<String, BoundSeries> series;
     private SeriesOpts defaultSeriesOpts;
 
-    public Option() {
+    /**
+     * @since 1.0.0-M22
+     */
+    public static Option of() {
+        return new Option();
+    }
+
+    protected Option() {
         // keeping the "series" order predictable
         this.series = new LinkedHashMap<>();
     }
@@ -209,7 +216,7 @@ public class Option {
     }
 
     protected SeriesOpts baseSeriesOptsTemplate() {
-        return this.defaultSeriesOpts != null ? defaultSeriesOpts : SeriesOpts.line();
+        return this.defaultSeriesOpts != null ? defaultSeriesOpts : SeriesOpts.ofLine();
     }
 
     static class BoundXAxis {
