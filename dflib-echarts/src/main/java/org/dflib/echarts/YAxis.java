@@ -51,6 +51,7 @@ public class YAxis extends Axis<YAxis> {
     protected AxisModel resolve() {
         return new AxisModel(
                 alignTicks,
+                gridIndex,
                 name,
                 offset,
                 this.position != null ? position.name() : null,

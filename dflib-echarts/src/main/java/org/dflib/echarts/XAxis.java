@@ -51,6 +51,7 @@ public class XAxis extends Axis<XAxis> {
     protected AxisModel resolve() {
         return new AxisModel(
                 alignTicks,
+                gridIndex,
                 name,
                 offset,
                 this.position != null ? position.name() : null,

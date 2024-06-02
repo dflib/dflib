@@ -8,6 +8,7 @@ import org.dflib.echarts.render.util.Renderer;
 public class AxisModel {
 
     private final Boolean alignTicks;
+    private final Integer gridIndex;
     private final String name;
     private final Integer offset;
     private final String position;
@@ -18,6 +19,7 @@ public class AxisModel {
 
     public AxisModel(
             Boolean alignTicks,
+            Integer gridIndex,
             String name,
             Integer offset,
             String position,
@@ -27,6 +29,7 @@ public class AxisModel {
             boolean boundaryGap) {
 
         this.alignTicks = alignTicks;
+        this.gridIndex = gridIndex;
         this.name = name;
         this.offset = offset;
         this.position = position;
@@ -42,6 +45,10 @@ public class AxisModel {
 
     public Boolean getAlignTicks() {
         return alignTicks;
+    }
+
+    public Integer getGridIndex() {
+        return gridIndex;
     }
 
     public String getName() {

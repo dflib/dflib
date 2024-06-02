@@ -66,6 +66,16 @@ public class XAxisTest extends GenerateScriptHtmlTest {
     }
 
     @Test
+    public void gridIndex() {
+
+        String s1 = EChart.chart().generateScriptHtml("_tid", df1);
+        assertFalse(s1.contains("gridIndex:"), s1);
+
+        String s2 = EChart.chart().xAxis("x", XAxis.ofDefault().gridIndex(2)).generateScriptHtml("_tid", df1);
+        assertTrue(s2.contains("gridIndex: 2,"), s2);
+    }
+
+    @Test
     public void alignTicks() {
 
         String s1 = EChart.chart().generateScriptHtml("_tid", df1);

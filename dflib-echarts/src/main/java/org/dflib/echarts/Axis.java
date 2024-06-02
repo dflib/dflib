@@ -9,6 +9,7 @@ import java.util.Objects;
  */
 public abstract class Axis<T extends Axis<T>> {
 
+    protected Integer gridIndex;
     protected String name;
     protected Integer offset;
     protected AxisType type;
@@ -65,6 +66,16 @@ public abstract class Axis<T extends Axis<T>> {
      */
     public T line(AxisLine line) {
         this.line = line;
+        return (T) this;
+    }
+
+    /**
+     * Specifies which grid position this axis belongs to. 0 is the default. TODO: will only make sense once we support grids.
+     *
+     * @since 1.0.0-M22
+     */
+    public T gridIndex(int gridIndex) {
+        this.gridIndex = gridIndex;
         return (T) this;
     }
 

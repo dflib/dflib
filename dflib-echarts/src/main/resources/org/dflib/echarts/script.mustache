@@ -79,6 +79,9 @@
         {{#noBoundaryGap}}
             boundaryGap: false,
         {{/noBoundaryGap}}
+        {{#gridIndex}}
+            gridIndex: {{.}},
+        {{/gridIndex}}
         {{#name}}
             name: {{{quotedName}}},
         {{/name}}
@@ -112,6 +115,12 @@
                 show: {{show}}
             },
         {{/axisLine}}
+        {{#noBoundaryGap}}
+            boundaryGap: false,
+        {{/noBoundaryGap}}
+        {{#gridIndex}}
+            gridIndex: {{.}},
+        {{/gridIndex}}
         {{#name}}
             name: {{{quotedName}}},
         {{/name}}
