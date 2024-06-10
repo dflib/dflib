@@ -6,6 +6,7 @@
 * #294 ECharts: SeriesOpts.label
 * #295 ECharts: tooltip
 * #296 ECharts: more Axis properties, multiple Y axes
+* #297 PivotBuilder - align method naming with DataFrame
 
 ## Release 1.0.0-M21
 

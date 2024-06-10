@@ -23,7 +23,7 @@ public class DataFrame_PivotTest {
                 1, "y", 20.0);
 
 
-        DataFrame df = df1.pivot().columns("b").rows("a").values("c", $double(0).sum());
+        DataFrame df = df1.pivot().cols("b").rows("a").vals("c", $double(0).sum());
 
         new DataFrameAsserts(df, "a", "x", "y")
                 .expectHeight(2)
@@ -47,8 +47,8 @@ public class DataFrame_PivotTest {
                 1, "y", 10);
 
 
-        DataFrame df = df1.pivot().columns("b").rows("a")
-                .values("c", $int(0).sum())
+        DataFrame df = df1.pivot().cols("b").rows("a")
+                .vals("c", $int(0).sum())
                 .sort("a", true);
 
         new DataFrameAsserts(df, "a", "x", "y", "z", "t")
@@ -72,7 +72,7 @@ public class DataFrame_PivotTest {
                 1, "y", 20.0);
 
 
-        DataFrame df = df1.pivot().columns("b").rows("a").values("c", $double(0).sum());
+        DataFrame df = df1.pivot().cols("b").rows("a").vals("c", $double(0).sum());
 
         new DataFrameAsserts(df, "a", "x", "y")
                 .expectHeight(2)
@@ -91,7 +91,7 @@ public class DataFrame_PivotTest {
                 1, "y", 20.0);
 
 
-        DataFrame df = df1.pivot().columns("b").rows("a").values("c", $double(0).sum());
+        DataFrame df = df1.pivot().cols("b").rows("a").vals("c", $double(0).sum());
 
         new DataFrameAsserts(df, "a", "y")
                 .expectHeight(2)
@@ -108,7 +108,7 @@ public class DataFrame_PivotTest {
                 1, "y", 20.0);
 
 
-        DataFrame df = df1.pivot().columns("b").rows("a").values("c");
+        DataFrame df = df1.pivot().cols("b").rows("a").vals("c");
 
         new DataFrameAsserts(df, "a", "x", "y")
                 .expectHeight(2)
@@ -125,8 +125,8 @@ public class DataFrame_PivotTest {
                 2, "y", 21.0,
                 1, "y", 20.0);
 
-        PivotBuilder pb = df1.pivot().columns("b").rows("a");
-        assertThrows(IllegalArgumentException.class, () -> pb.values("c"));
+        PivotBuilder pb = df1.pivot().cols("b").rows("a");
+        assertThrows(IllegalArgumentException.class, () -> pb.vals("c"));
     }
 
     @Test
@@ -139,7 +139,7 @@ public class DataFrame_PivotTest {
                 1, "y", 20.0);
 
 
-        DataFrame df = df1.pivot().columns("b").rows("a").values("c", $double(0).sum().castAsDecimal().scale(2));
+        DataFrame df = df1.pivot().cols("b").rows("a").vals("c", $double(0).sum().castAsDecimal().scale(2));
 
         new DataFrameAsserts(df, "a", "x", "y")
                 .expectHeight(2)
