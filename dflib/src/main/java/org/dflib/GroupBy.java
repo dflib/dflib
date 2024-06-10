@@ -26,24 +26,21 @@ public class GroupBy {
     private final IntComparator sorter;
     private final ConcurrentMap<Object, DataFrame> groupsCache;
 
-    private final boolean userColumns;
     private final UnaryOperator<Index> colSelector;
 
     public GroupBy(DataFrame source, Map<Object, IntSeries> groupsIndex, IntComparator sorter) {
-        this(source, groupsIndex, sorter, false, null);
+        this(source, groupsIndex, sorter, null);
     }
 
     protected GroupBy(
             DataFrame source,
             Map<Object, IntSeries> groupsIndex,
             IntComparator sorter,
-            boolean userColumns,
             UnaryOperator<Index> colSelector) {
 
         this.source = source;
         this.groupsIndex = groupsIndex;
         this.sorter = sorter;
-        this.userColumns = userColumns;
         this.colSelector = colSelector;
 
         this.groupsCache = new ConcurrentHashMap<>();
@@ -88,21 +85,21 @@ public class GroupBy {
      * Specifies the columns of the aggregation or select result.
      */
     public GroupBy cols(Predicate<String> colsPredicate) {
-        return new GroupBy(source, groupsIndex, sorter, true, i -> i.select(colsPredicate));
+        return new GroupBy(source, groupsIndex, sorter, i -> i.select(colsPredicate));
     }
 
     /**
      * Specifies the columns of the aggregation or select result.
      */
     public GroupBy cols(String... cols) {
-        return new GroupBy(source, groupsIndex, sorter, true, i -> Index.of(cols));
+        return new GroupBy(source, groupsIndex, sorter, i -> Index.of(cols));
     }
 
     /**
      * Specifies the columns of the aggregation or select result.
      */
     public GroupBy cols(int... cols) {
-        return new GroupBy(source, groupsIndex, sorter, true, i -> i.select(cols));
+        return new GroupBy(source, groupsIndex, sorter, i -> i.select(cols));
     }
 
     /**
@@ -176,7 +173,7 @@ public class GroupBy {
     @Deprecated(since = "1.0.0-M21", forRemoval = true)
     public IntSeries rowNumber() {
 
-        if (groupsIndex.size() == 0) {
+        if (groupsIndex.isEmpty()) {
             return Series.ofInt();
         }
 
@@ -198,7 +195,7 @@ public class GroupBy {
      */
     public IntSeries rank() {
 
-        if (groupsIndex.size() == 0) {
+        if (groupsIndex.isEmpty()) {
             return Series.ofInt();
         }
 
@@ -221,7 +218,7 @@ public class GroupBy {
      */
     public IntSeries denseRank() {
 
-        if (groupsIndex.size() == 0) {
+        if (groupsIndex.isEmpty()) {
             return Series.ofInt();
         }
 
@@ -255,7 +252,7 @@ public class GroupBy {
      * @since 0.9
      */
     public <T> Series<T> shift(int column, int offset, T filler) {
-        if (groupsIndex.size() == 0) {
+        if (groupsIndex.isEmpty()) {
             return new EmptySeries<>();
         }
 
@@ -353,7 +350,7 @@ public class GroupBy {
     public DataFrame select() {
         IntSeries index = SeriesConcat.intConcat(groupsIndex.values());
 
-        return userColumns
+        return colSelector != null
                 ? source.rows(index).cols(colSelector.apply(source.getColumnsIndex())).select()
                 : source.rows(index).select();
     }
@@ -371,12 +368,16 @@ public class GroupBy {
         int len = groupsIndex.size();
         DataFrame[] dfs = new DataFrame[len];
         int i = 0;
-        Index customIndex = userColumns ? colSelector.apply(source.getColumnsIndex()) : null;
 
-        for (IntSeries gi : groupsIndex.values()) {
-            dfs[i++] = userColumns
-                    ? source.rows(gi).cols(customIndex).select(exps)
-                    : source.rows(gi).cols().select(exps);
+        if (colSelector != null) {
+            Index customIndex = colSelector.apply(source.getColumnsIndex());
+            for (IntSeries gi : groupsIndex.values()) {
+                dfs[i++] = source.rows(gi).cols(customIndex).select(exps);
+            }
+        } else {
+            for (IntSeries gi : groupsIndex.values()) {
+                dfs[i++] = source.rows(gi).cols().select(exps);
+            }
         }
 
         return VConcat.concat(JoinType.inner, dfs);
@@ -396,30 +397,39 @@ public class GroupBy {
         int len = groupsIndex.size();
         DataFrame[] dfs = new DataFrame[len];
         int i = 0;
-        Index customIndex = userColumns ? colSelector.apply(source.getColumnsIndex()) : null;
 
-        for (IntSeries gi : groupsIndex.values()) {
-            dfs[i++] = userColumns
-                    // must call "select()" before applying "map()", otherwise "map()" is applied to the row set, not columns
-                    ? source.rows(gi).select().cols(customIndex).map(exps)
-                    : source.rows(gi).select().cols().map(exps);
+        if (colSelector != null) {
+            Index customIndex = colSelector.apply(source.getColumnsIndex());
+
+            for (IntSeries gi : groupsIndex.values()) {
+                // must call "select()" before applying "map()", otherwise "map()" is applied to the row set, not columns
+                dfs[i++] = source.rows(gi).select().cols(customIndex).map(exps);
+            }
+        } else {
+            for (IntSeries gi : groupsIndex.values()) {
+                // must call "select()" before applying "map()", otherwise "map()" is applied to the row set, not columns
+                dfs[i++] = source.rows(gi).select().cols().map(exps);
+            }
         }
+
 
         return VConcat.concat(JoinType.inner, dfs);
     }
 
     public DataFrame agg(Exp<?>... aggregators) {
 
-        Index index = userColumns
-                ? colSelector.apply(source.getColumnsIndex())
-                : Exps.index(source, aggregators);
+        Index index;
+        
+        if (colSelector != null) {
+            index = colSelector.apply(source.getColumnsIndex());
 
-        if (userColumns) {
             int w = aggregators.length;
             if (w != index.size()) {
                 throw new IllegalArgumentException(
                         "Can't perform 'agg': Exp[] size is different from the ColumnSet size: " + w + " vs. " + index.size());
             }
+        } else {
+            index = Exps.index(source, aggregators);
         }
 
         return new ColumnDataFrame(null,

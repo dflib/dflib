@@ -27,13 +27,13 @@ import java.util.Set;
  */
 public class WindowBuilder {
 
-    private final DataFrame dataFrame;
+    private final DataFrame source;
     private Hasher partitioner;
     private IntComparator sorter;
     private WindowRange range;
 
-    public WindowBuilder(DataFrame dataFrame) {
-        this.dataFrame = Objects.requireNonNull(dataFrame);
+    public WindowBuilder(DataFrame source) {
+        this.source = Objects.requireNonNull(source);
     }
 
     public WindowBuilder partitioned(Hasher partitioner) {
@@ -76,27 +76,27 @@ public class WindowBuilder {
      * @since 0.11
      */
     public WindowBuilder sorted(Sorter... sorters) {
-        this.sorter = sorters.length == 0 ? null : Comparators.of(dataFrame, sorters);
+        this.sorter = sorters.length == 0 ? null : Comparators.of(source, sorters);
         return this;
     }
 
     public WindowBuilder sorted(String column, boolean ascending) {
-        this.sorter = Comparators.of(dataFrame.getColumn(column), ascending);
+        this.sorter = Comparators.of(source.getColumn(column), ascending);
         return this;
     }
 
     public WindowBuilder sorted(int column, boolean ascending) {
-        this.sorter = Comparators.of(dataFrame.getColumn(column), ascending);
+        this.sorter = Comparators.of(source.getColumn(column), ascending);
         return this;
     }
 
     public WindowBuilder sorted(String[] columns, boolean[] ascending) {
-        this.sorter = Comparators.of(dataFrame, columns, ascending);
+        this.sorter = Comparators.of(source, columns, ascending);
         return this;
     }
 
     public WindowBuilder sorted(int[] columns, boolean[] ascending) {
-        this.sorter = Comparators.of(dataFrame, columns, ascending);
+        this.sorter = Comparators.of(source, columns, ascending);
         return this;
     }
 
@@ -130,7 +130,7 @@ public class WindowBuilder {
 
     public IntSeries rank() {
 
-        switch (dataFrame.height()) {
+        switch (source.height()) {
             case 0:
                 return Series.ofInt();
             case 1:
@@ -142,7 +142,7 @@ public class WindowBuilder {
 
     public IntSeries denseRank() {
 
-        switch (dataFrame.height()) {
+        switch (source.height()) {
             case 0:
                 return Series.ofInt();
             case 1:
@@ -153,7 +153,7 @@ public class WindowBuilder {
     }
 
     public IntSeries rowNumber() {
-        switch (dataFrame.height()) {
+        switch (source.height()) {
             case 0:
                 return Series.ofInt();
             case 1:
@@ -174,7 +174,7 @@ public class WindowBuilder {
      * @since 0.9
      */
     public <T> Series<T> shift(String column, int offset, T filler) {
-        int pos = dataFrame.getColumnsIndex().position(column);
+        int pos = source.getColumnsIndex().position(column);
         return shift(pos, offset, filler);
     }
 
@@ -191,10 +191,10 @@ public class WindowBuilder {
     public <T> Series<T> shift(int column, int offset, T filler) {
 
         if (offset == 0) {
-            return dataFrame.getColumn(column);
+            return source.getColumn(column);
         }
 
-        switch (dataFrame.height()) {
+        switch (source.height()) {
             case 0:
                 return Series.of();
             case 1:
@@ -207,26 +207,26 @@ public class WindowBuilder {
     }
 
     private <T> Series<T> shiftPartitioned(int column, int offset, T filler) {
-        GroupBy gb = dataFrame.group(partitioner);
+        GroupBy gb = source.group(partitioner);
         return sorter != null ? gb.sort(sorter).shift(column, offset, filler) : gb.shift(column, offset, filler);
     }
 
     private <T> Series<T> shiftUnPartitioned(int column, int offset, T filler) {
         if (sorter != null) {
-            IntSeries index = new IntSequenceSeries(0, dataFrame.height());
+            IntSeries index = new IntSequenceSeries(0, source.height());
             IntSeries sortedPositions = DataFrameSorter.sort(sorter, index);
-            Series<T> s = dataFrame.getColumn(column);
+            Series<T> s = source.getColumn(column);
             return s.select(sortedPositions).shift(offset, filler).select(sortedPositions.sortIndexInt());
         } else {
-            Series<T> s = dataFrame.getColumn(column);
+            Series<T> s = source.getColumn(column);
             return s.shift(offset, filler);
         }
     }
 
     private DataFrame aggPartitioned(Exp<?>... aggregators) {
         GroupBy gb = sorter != null
-                ? dataFrame.group(partitioner).sort(sorter)
-                : dataFrame.group(partitioner);
+                ? source.group(partitioner).sort(sorter)
+                : source.group(partitioner);
 
         Series<?>[] rowPerGroup = GroupByAggregator.agg(gb, aggregators);
         int h = gb.getSource().height();
@@ -261,13 +261,13 @@ public class WindowBuilder {
             columns[i] = Series.of(data[i]);
         }
 
-        return new ColumnDataFrame(null, Exps.index(dataFrame, aggregators), columns);
+        return new ColumnDataFrame(null, Exps.index(source, aggregators), columns);
     }
 
     private DataFrame aggUnPartitioned(Exp<?>... aggregators) {
         DataFrame df = sorter != null
-                ? dataFrame.rows(DataFrameSorter.sort(sorter, dataFrame.height())).select()
-                : dataFrame;
+                ? source.rows(DataFrameSorter.sort(sorter, source.height())).select()
+                : source;
 
         int h = df.height();
         int w = aggregators.length;
@@ -285,16 +285,16 @@ public class WindowBuilder {
 
     private <T> Series<T> mapPartitioned(Exp<T> aggregator) {
         GroupBy gb = sorter != null
-                ? dataFrame.group(partitioner).sort(sorter)
-                : dataFrame.group(partitioner);
+                ? source.group(partitioner).sort(sorter)
+                : source.group(partitioner);
 
         return WindowMapper.mapPartitioned(gb, aggregator, resolveRange());
     }
 
     private <T> Series<T> mapUnPartitioned(Exp<T> aggregator) {
         DataFrame sorted = sorter != null
-                ? dataFrame.rows(DataFrameSorter.sort(sorter, dataFrame.height())).select()
-                : dataFrame;
+                ? source.rows(DataFrameSorter.sort(sorter, source.height())).select()
+                : source;
 
         return WindowMapper.map(sorted, aggregator, resolveRange());
     }
@@ -305,33 +305,33 @@ public class WindowBuilder {
 
     private IntSeries rankPartitioned() {
         return sorter != null
-                ? dataFrame.group(partitioner).sort(sorter).rank()
+                ? source.group(partitioner).sort(sorter).rank()
                 // no sort order means each row is equivalent from the ranking perspective, so return a Series of 1's
-                : Ranker.sameRank(dataFrame.height());
+                : Ranker.sameRank(source.height());
     }
 
     private IntSeries rankUnPartitioned() {
         return sorter != null
-                ? new Ranker(sorter).rank(dataFrame)
-                : Ranker.sameRank(dataFrame.height());
+                ? new Ranker(sorter).rank(source)
+                : Ranker.sameRank(source.height());
     }
 
     private IntSeries denseRankPartitioned() {
         return sorter != null
-                ? dataFrame.group(partitioner).sort(sorter).denseRank()
-                : Ranker.sameRank(dataFrame.height());
+                ? source.group(partitioner).sort(sorter).denseRank()
+                : Ranker.sameRank(source.height());
     }
 
     private IntSeries denseRankUnPartitioned() {
         return sorter != null
-                ? new DenseRanker(sorter).rank(dataFrame)
-                : Ranker.sameRank(dataFrame.height());
+                ? new DenseRanker(sorter).rank(source)
+                : Ranker.sameRank(source.height());
     }
 
     private IntSeries rowNumberPartitioned() {
         GroupBy gb = sorter != null
-                ? dataFrame.group(partitioner).sort(sorter)
-                : dataFrame.group(partitioner);
+                ? source.group(partitioner).sort(sorter)
+                : source.group(partitioner);
 
         Set<Object> groupKeys = gb.getGroupKeys();
         int len = groupKeys.size();
@@ -341,12 +341,12 @@ public class WindowBuilder {
             groupIndices[i++] = gb.getGroupIndex(key);
         }
 
-        return RowNumberer.rowNumber(dataFrame, groupIndices);
+        return RowNumberer.rowNumber(source, groupIndices);
     }
 
     private IntSeries rowNumberUnPartitioned() {
         return sorter != null
-                ? RowNumberer.rowNumber(dataFrame, sorter)
-                : RowNumberer.sequence(dataFrame.height());
+                ? RowNumberer.rowNumber(source, sorter)
+                : RowNumberer.sequence(source.height());
     }
 }
