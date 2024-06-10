@@ -7,6 +7,7 @@
 * #295 ECharts: tooltip
 * #296 ECharts: more Axis properties, multiple Y axes
 * #297 PivotBuilder - align method naming with DataFrame
+* #298 WindowBuilder - support "range" in "agg(..)"
 
 ## Release 1.0.0-M21
 

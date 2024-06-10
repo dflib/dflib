@@ -8,6 +8,17 @@ import static org.dflib.Exp.*;
 public class GroupBy_AggTest {
 
     @Test
+    public void empty() {
+        DataFrame df1 = DataFrame.empty("a", "b");
+
+        DataFrame df = df1.group("a").agg(
+                $long("a").sum(),
+                $str(1).vConcat(";"));
+
+        new DataFrameAsserts(df, "sum(a)", "b").expectHeight(0);
+    }
+
+    @Test
     public void cols_Implicit() {
         DataFrame df1 = DataFrame.foldByRow("a", "b").of(
                 1, "x",

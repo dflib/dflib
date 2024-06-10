@@ -58,6 +58,8 @@ public class GroupByAggregator {
         // TODO: primitives support for performance
         ValueAccum columnBuilder = new ObjectAccum<>(aggH);
 
+        // if aggH == 0, there will be no group keys, and the result will be empty
+        // TODO: a check for aggH == 0 to avoid the implicit assumption?
         for (Object key : groupBy.getGroupKeys()) {
             DataFrame group = groupBy.getGroup(key);
 
