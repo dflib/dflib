@@ -3,7 +3,7 @@ package org.dflib;
 import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
-public class DataFrame_Over_ShiftTest {
+public class Window_ShiftTest {
 
     @Test
     public void empty() {

@@ -10,7 +10,7 @@ import org.dflib.pivot.PivotBuilder;
 import org.dflib.row.RowProxy;
 import org.dflib.sample.Sampler;
 import org.dflib.select.RowIndexer;
-import org.dflib.window.WindowBuilder;
+import org.dflib.window.Window;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -476,12 +476,12 @@ public interface DataFrame extends Iterable<RowProxy> {
     }
 
     /**
-     * Returns a new {@link WindowBuilder} that allows to assemble a window function over this DataFrame.
+     * Returns a new {@link Window} that allows to assemble a window function over this DataFrame.
      *
-     * @return a new {@link WindowBuilder}
+     * @return a new {@link Window}
      */
-    default WindowBuilder over() {
-        return new WindowBuilder(this);
+    default Window over() {
+        return new Window(this);
     }
 
     /**

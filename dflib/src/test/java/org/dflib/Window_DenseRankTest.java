@@ -4,7 +4,7 @@ import org.dflib.unit.IntSeriesAsserts;
 import org.junit.jupiter.api.Test;
 import static org.dflib.Exp.*;
 
-public class DataFrame_Over_DenseRankTest {
+public class Window_DenseRankTest {
 
     @Test
     public void empty() {

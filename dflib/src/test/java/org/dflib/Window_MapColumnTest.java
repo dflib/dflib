@@ -5,7 +5,8 @@ import org.dflib.window.WindowRange;
 import org.junit.jupiter.api.Test;
 import static org.dflib.Exp.*;
 
-public class DataFrame_Over_MapColumnTest {
+@Deprecated
+public class Window_MapColumnTest {
 
     @Test
     public void empty() {

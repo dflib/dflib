@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.dflib.Exp.*;
 
-public class DataFrame_Over_RangeTest {
+public class Window_RangeTest {
 
     @Test
     public void all_empty() {

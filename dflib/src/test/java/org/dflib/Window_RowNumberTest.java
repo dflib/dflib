@@ -3,7 +3,7 @@ package org.dflib;
 import org.dflib.unit.IntSeriesAsserts;
 import org.junit.jupiter.api.Test;
 
-public class DataFrame_Over_RowNumberTest {
+public class Window_RowNumberTest {
 
     @Test
     public void empty() {

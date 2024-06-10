@@ -5,42 +5,110 @@ import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.GroupBy;
 import org.dflib.Hasher;
+import org.dflib.Index;
 import org.dflib.IntSeries;
 import org.dflib.Series;
 import org.dflib.Sorter;
 import org.dflib.agg.RangeAggregator;
-import org.dflib.agg.WindowMapper;
 import org.dflib.exp.Exps;
 import org.dflib.series.IntSequenceSeries;
+import org.dflib.slice.FixedColumnSetIndex;
 import org.dflib.sort.Comparators;
 import org.dflib.sort.DataFrameSorter;
 import org.dflib.sort.IntComparator;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * A mutable builder of a window function. Returned by {@link DataFrame#over()} method.
  *
- * @since 0.8
+ * @since 1.0.0-M22
  */
-public class WindowBuilder {
+public class Window {
 
     private final DataFrame source;
+
     private Hasher partitioner;
     private IntComparator sorter;
     private WindowRange range;
+    private  FixedColumnSetIndex columnSetIndex;
 
-    public WindowBuilder(DataFrame source) {
+    public Window(DataFrame source) {
         this.source = Objects.requireNonNull(source);
     }
 
-    public WindowBuilder partitioned(Hasher partitioner) {
+    /**
+     * Returns the unchanged original DataFrame that was used to build the window, that does not have GroupBy sorting,
+     * trimming and other changes applied.
+     *
+     * @since 1.0.0-M22
+     */
+    public DataFrame getSource() {
+        return source;
+    }
+
+    /**
+     * Specifies the columns of the aggregation or select result.
+     *
+     * @since 1.0.0-M22
+     */
+    public Window cols(Predicate<String> colsPredicate) {
+        Index srcIndex = source.getColumnsIndex();
+        this.columnSetIndex = FixedColumnSetIndex.of(srcIndex, srcIndex.positions(colsPredicate));
+        return this;
+    }
+
+    /**
+     * Specifies the columns of the aggregation or select result.
+     *
+     * @since 1.0.0-M22
+     */
+    public Window cols(String... cols) {
+        this.columnSetIndex = FixedColumnSetIndex.of(cols);
+        return this;
+    }
+
+    /**
+     * Specifies the columns for the select result.
+     *
+     * @since 1.0.0-M22
+     */
+    public Window cols(int... cols) {
+        Index srcIndex = source.getColumnsIndex();
+        this.columnSetIndex = FixedColumnSetIndex.of(srcIndex, cols);
+        return this;
+    }
+
+    /**
+     * @since 1.0.0-M22
+     */
+    public Window colsExcept(String... cols) {
+        return cols(source.getColumnsIndex().positionsExcept(cols));
+    }
+
+    /**
+     * @since 1.0.0-M22
+     */
+    public Window colsExcept(int... cols) {
+        return cols(source.getColumnsIndex().positionsExcept(cols));
+    }
+
+    /**
+     * @since 1.0.0-M22
+     */
+    public Window colsExcept(Predicate<String> colsPredicate) {
+        return cols(colsPredicate.negate());
+    }
+
+
+    public Window partitioned(Hasher partitioner) {
         this.partitioner = Objects.requireNonNull(partitioner);
         return this;
     }
 
-    public WindowBuilder partitioned(String... columns) {
+    public Window partitioned(String... columns) {
 
         int len = columns.length;
         if (len == 0) {
@@ -56,7 +124,7 @@ public class WindowBuilder {
         return this;
     }
 
-    public WindowBuilder partitioned(int... columns) {
+    public Window partitioned(int... columns) {
         int len = columns.length;
         if (len == 0) {
             throw new IllegalArgumentException("No partitioning columns specified");
@@ -74,27 +142,27 @@ public class WindowBuilder {
     /**
      * @since 0.11
      */
-    public WindowBuilder sorted(Sorter... sorters) {
+    public Window sorted(Sorter... sorters) {
         this.sorter = sorters.length == 0 ? null : Comparators.of(source, sorters);
         return this;
     }
 
-    public WindowBuilder sorted(String column, boolean ascending) {
+    public Window sorted(String column, boolean ascending) {
         this.sorter = Comparators.of(source.getColumn(column), ascending);
         return this;
     }
 
-    public WindowBuilder sorted(int column, boolean ascending) {
+    public Window sorted(int column, boolean ascending) {
         this.sorter = Comparators.of(source.getColumn(column), ascending);
         return this;
     }
 
-    public WindowBuilder sorted(String[] columns, boolean[] ascending) {
+    public Window sorted(String[] columns, boolean[] ascending) {
         this.sorter = Comparators.of(source, columns, ascending);
         return this;
     }
 
-    public WindowBuilder sorted(int[] columns, boolean[] ascending) {
+    public Window sorted(int[] columns, boolean[] ascending) {
         this.sorter = Comparators.of(source, columns, ascending);
         return this;
     }
@@ -106,25 +174,60 @@ public class WindowBuilder {
      * @since 0.14
      */
     //  TODO: which operations other than mapColumn require a range? Does is make sense for rank or shift?
-    public WindowBuilder range(WindowRange range) {
+    public Window range(WindowRange range) {
         this.range = range;
         return this;
     }
 
     /**
-     * @since 0.11
+     * Generates a DataFrame of the same height as the source DataFrame, with columns generated from the provided
+     * aggregating expressions. Aggregating expressions are invoked once per each row, and are passed the range of rows
+     * corresponding to the partitioning, sorting and range settings.
+     *
+     * @since 1.0.0-M22
      */
+    public DataFrame select(Exp<?>... aggregators) {
+        Index index = columnSetIndex != null
+                ? columnSetIndex.getIndex()
+                : Exps.index(source, aggregators);
+
+        return partitioner != null ? selectPartitioned(index, aggregators) : selectUnPartitioned(index, aggregators);
+    }
+
+    /**
+     * @since 0.11
+     * @deprecated in favor of {@link #select(Exp[])}
+     */
+    @Deprecated(since = "1.0.0-M22", forRemoval = true)
     public DataFrame agg(Exp<?>... aggregators) {
-        return partitioner != null ? aggPartitioned(aggregators) : aggUnPartitioned(aggregators);
+        return select(aggregators);
+    }
+
+    /**
+     * Generates a DataFrame of the same height as the source DataFrame, combining columns generated from the provided
+     * aggregating expressions with the original DataFrame columns. Aggregating expressions are invoked once per each
+     * row, and are passed the range of rows corresponding to the partitioning, sorting and range settings.
+     *
+     * @since 1.0.0-M22
+     */
+    public DataFrame map(Exp<?>... aggregators) {
+        
+        Index index = columnSetIndex != null
+                ? columnSetIndex.getIndex()
+                : Exps.index(source, aggregators);
+
+        return partitioner != null ? selectPartitioned(index, aggregators) : selectUnPartitioned(index, aggregators);
     }
 
     /**
      * Applies an aggregating expression to each DataFrame row, passing it a window associated with the current row.
      *
      * @since 0.14
+     * @deprecated use {@link #map(Exp[])} or {@link #select(Exp[])} instead.
      */
+    @Deprecated(since = "1.0.0-M22", forRemoval = true)
     public <T> Series<T> mapColumn(Exp<T> windowAggregator) {
-        return partitioner != null ? mapPartitioned(windowAggregator) : mapUnPartitioned(windowAggregator);
+        return select(windowAggregator).getColumn(0);
     }
 
     public IntSeries rank() {
@@ -222,7 +325,7 @@ public class WindowBuilder {
         }
     }
 
-    private DataFrame aggPartitioned(Exp<?>... aggregators) {
+    private DataFrame selectPartitioned(Index index, Exp<?>... aggregators) {
         GroupBy gb = sorter != null
                 ? source.group(partitioner).sort(sorter)
                 : source.group(partitioner);
@@ -242,13 +345,12 @@ public class WindowBuilder {
 
             Series<?>[] gAggs = RangeAggregator.of(gb.getGroup(key), resolveRange()).agg(aggregators);
 
-            IntSeries index = gb.getGroupIndex(key);
-            int ih = index.size();
-
+            IntSeries gIndex = gb.getGroupIndex(key);
+            int ih = gIndex.size();
             for (int i = 0; i < aggW; i++) {
                 Series<?> gAgg = gAggs[i];
                 for (int j = 0; j < ih; j++) {
-                    data[i][index.getInt(j)] = gAgg.get(j);
+                    data[i][gIndex.getInt(j)] = gAgg.get(j);
                 }
             }
         }
@@ -258,32 +360,16 @@ public class WindowBuilder {
             columns[i] = Series.of(data[i]);
         }
 
-        return new ColumnDataFrame(null, Exps.index(source, aggregators), columns);
+        return new ColumnDataFrame(null, index, columns);
     }
 
-    private DataFrame aggUnPartitioned(Exp<?>... aggregators) {
+    private DataFrame selectUnPartitioned(Index index, Exp<?>... aggregators) {
         DataFrame df = sorter != null
                 ? source.rows(DataFrameSorter.sort(sorter, source.height())).select()
                 : source;
 
         Series<?>[] agg = RangeAggregator.of(df, resolveRange()).agg(aggregators);
-        return new ColumnDataFrame(null, Exps.index(df, aggregators), agg);
-    }
-
-    private <T> Series<T> mapPartitioned(Exp<T> aggregator) {
-        GroupBy gb = sorter != null
-                ? source.group(partitioner).sort(sorter)
-                : source.group(partitioner);
-
-        return WindowMapper.mapPartitioned(gb, aggregator, resolveRange());
-    }
-
-    private <T> Series<T> mapUnPartitioned(Exp<T> aggregator) {
-        DataFrame sorted = sorter != null
-                ? source.rows(DataFrameSorter.sort(sorter, source.height())).select()
-                : source;
-
-        return WindowMapper.map(sorted, aggregator, resolveRange());
+        return new ColumnDataFrame(null, index, agg);
     }
 
     private WindowRange resolveRange() {
