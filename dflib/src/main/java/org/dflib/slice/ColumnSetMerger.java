@@ -86,7 +86,7 @@ public class ColumnSetMerger {
     private final int mergeLen;
     private final int[] mergeIndex;
 
-    public ColumnSetMerger(int mergeLen, int[] mergeIndex) {
+    protected ColumnSetMerger(int mergeLen, int[] mergeIndex) {
 
         // merge index array may be bigger than the column set size. So using "mergeLen"
         // to define the relevant part of the index.

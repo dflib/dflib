@@ -3,8 +3,7 @@ package org.dflib;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
-import static org.dflib.Exp.$col;
-import static org.dflib.Exp.rowNum;
+import static org.dflib.Exp.*;
 
 public class GroupBy_Select_ExpTest {
 
@@ -79,15 +78,15 @@ public class GroupBy_Select_ExpTest {
                 0, "d",
                 1, "e");
 
-        DataFrame df = df1.group("a").cols(1).select(rowNum());
+        DataFrame df = df1.group("a").cols(1, 2).select(rowNum(), $val("c"));
 
-        new DataFrameAsserts(df, "b")
+        new DataFrameAsserts(df, "b", "2")
                 .expectHeight(5)
-                .expectRow(0, 1)
-                .expectRow(1, 2)
-                .expectRow(2, 3)
-                .expectRow(3, 1)
-                .expectRow(4, 1);
+                .expectRow(0, 1, "c")
+                .expectRow(1, 2, "c")
+                .expectRow(2, 3, "c")
+                .expectRow(3, 1, "c")
+                .expectRow(4, 1, "c");
     }
 
     @Test

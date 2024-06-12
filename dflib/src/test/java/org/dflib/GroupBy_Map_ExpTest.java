@@ -3,6 +3,7 @@ package org.dflib;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
+import static org.dflib.Exp.$val;
 import static org.dflib.Exp.rowNum;
 
 public class GroupBy_Map_ExpTest {
@@ -76,15 +77,15 @@ public class GroupBy_Map_ExpTest {
                 0, "d",
                 1, "e");
 
-        DataFrame df = df1.group("a").cols(1).map(rowNum());
+        DataFrame df = df1.group("a").cols(1, 2).map(rowNum(), $val("c"));
 
-        new DataFrameAsserts(df, "a", "b")
+        new DataFrameAsserts(df, "a", "b", "2")
                 .expectHeight(5)
-                .expectRow(0, 1, 1)
-                .expectRow(1, 1, 2)
-                .expectRow(2, 1, 3)
-                .expectRow(3, 2, 1)
-                .expectRow(4, 0, 1);
+                .expectRow(0, 1, 1, "c")
+                .expectRow(1, 1, 2, "c")
+                .expectRow(2, 1, 3, "c")
+                .expectRow(3, 2, 1, "c")
+                .expectRow(4, 0, 1, "c");
     }
 
     @Test

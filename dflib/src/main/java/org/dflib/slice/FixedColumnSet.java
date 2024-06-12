@@ -88,6 +88,15 @@ public class FixedColumnSet implements ColumnSet {
         this.csIndex = csIndex;
     }
 
+    /**
+     * Returns the index of this column set. This is the index produced by various "select" operations
+     *
+     * @since 1.0.0-M22
+     */
+    public Index getColumnSetIndex() {
+        return Index.ofDeduplicated(csIndex);
+    }
+
     @Override
     public RowColumnSet rows() {
         return source.rows().cols(csIndex);
