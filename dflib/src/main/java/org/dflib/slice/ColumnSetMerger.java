@@ -96,6 +96,36 @@ public class ColumnSetMerger {
 
     /**
      * Performs a merge of the source Series with a transformed row set Series.
+     *
+     * @
+     */
+    public DataFrame merge(
+            DataFrame source,
+            String[] csLabels,
+            Series<?>[] csColumns) {
+
+        Index sIndex = source.getColumnsIndex();
+        String[] labels = new String[mergeLen];
+        Series<?>[] columns = new Series[mergeLen];
+
+        for (int i = 0; i < mergeLen; i++) {
+            int si = mergeIndex[i];
+
+            if (si < 0) {
+                int csi = -1 - si;
+                labels[i] = csLabels[csi];
+                columns[i] = csColumns[csi];
+            } else {
+                labels[i] = sIndex.get(si);
+                columns[i] = source.getColumn(si);
+            }
+        }
+
+        return new ColumnDataFrame(null, Index.ofDeduplicated(labels), columns);
+    }
+
+    /**
+     * Performs a merge of the source Series with a transformed row set Series.
      */
     public DataFrame merge(
             Index sIndex,

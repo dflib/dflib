@@ -12,6 +12,7 @@ import org.dflib.Sorter;
 import org.dflib.agg.RangeAggregator;
 import org.dflib.exp.Exps;
 import org.dflib.series.IntSequenceSeries;
+import org.dflib.slice.ColumnSetMerger;
 import org.dflib.slice.FixedColumnSetIndex;
 import org.dflib.sort.Comparators;
 import org.dflib.sort.DataFrameSorter;
@@ -33,7 +34,7 @@ public class Window {
     private Hasher partitioner;
     private IntComparator sorter;
     private WindowRange range;
-    private  FixedColumnSetIndex columnSetIndex;
+    private FixedColumnSetIndex columnSetIndex;
 
     public Window(DataFrame source) {
         this.source = Objects.requireNonNull(source);
@@ -187,11 +188,9 @@ public class Window {
      * @since 1.0.0-M22
      */
     public DataFrame select(Exp<?>... aggregators) {
-        Index index = columnSetIndex != null
-                ? columnSetIndex.getIndex()
-                : Exps.index(source, aggregators);
-
-        return partitioner != null ? selectPartitioned(index, aggregators) : selectUnPartitioned(index, aggregators);
+        return new ColumnDataFrame(null,
+                Index.ofDeduplicated(selectLabels(aggregators)),
+                selectColumns(aggregators));
     }
 
     /**
@@ -211,12 +210,11 @@ public class Window {
      * @since 1.0.0-M22
      */
     public DataFrame map(Exp<?>... aggregators) {
-        
-        Index index = columnSetIndex != null
-                ? columnSetIndex.getIndex()
-                : Exps.index(source, aggregators);
-
-        return partitioner != null ? selectPartitioned(index, aggregators) : selectUnPartitioned(index, aggregators);
+        String[] labels = selectLabels(aggregators);
+        return merger(labels).merge(
+                source,
+                labels,
+                selectColumns(aggregators));
     }
 
     /**
@@ -325,7 +323,21 @@ public class Window {
         }
     }
 
-    private DataFrame selectPartitioned(Index index, Exp<?>... aggregators) {
+    private String[] selectLabels(Exp<?>... aggregators) {
+        return columnSetIndex != null
+                ? columnSetIndex.getLabels()
+                : Exps.labels(source, aggregators);
+    }
+
+    private ColumnSetMerger merger(String... labels) {
+        return ColumnSetMerger.of(source.getColumnsIndex(), labels);
+    }
+
+    private Series<?>[] selectColumns(Exp<?>... aggregators) {
+        return partitioner != null ? selectPartitioned(aggregators) : selectUnPartitioned(aggregators);
+    }
+
+    private Series<?>[] selectPartitioned(Exp<?>... aggregators) {
         GroupBy gb = sorter != null
                 ? source.group(partitioner).sort(sorter)
                 : source.group(partitioner);
@@ -360,16 +372,15 @@ public class Window {
             columns[i] = Series.of(data[i]);
         }
 
-        return new ColumnDataFrame(null, index, columns);
+        return columns;
     }
 
-    private DataFrame selectUnPartitioned(Index index, Exp<?>... aggregators) {
+    private Series<?>[] selectUnPartitioned(Exp<?>... aggregators) {
         DataFrame df = sorter != null
                 ? source.rows(DataFrameSorter.sort(sorter, source.height())).select()
                 : source;
 
-        Series<?>[] agg = RangeAggregator.of(df, resolveRange()).agg(aggregators);
-        return new ColumnDataFrame(null, index, agg);
+        return RangeAggregator.of(df, resolveRange()).agg(aggregators);
     }
 
     private WindowRange resolveRange() {
