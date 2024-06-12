@@ -20,7 +20,6 @@ import org.dflib.RowPredicate;
 import org.dflib.RowToValueMapper;
 import org.dflib.Series;
 import org.dflib.agg.DataFrameAggregator;
-import org.dflib.index.StringDeduplicator;
 import org.dflib.row.MultiArrayRowBuilder;
 import org.dflib.series.RowMappedSeries;
 import org.dflib.series.SingleValueSeries;
@@ -50,35 +49,17 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     public static FixedColumnSet ofAppend(DataFrame source, Series<?>[] sourceColumns, String[] csIndex) {
-
-        Index index = source.getColumnsIndex();
-        int csLen = csIndex.length;
-
-        StringDeduplicator deduplicator = StringDeduplicator.of(index, csLen);
-        String[] csIndexAdd = new String[csLen];
-        for (int i = 0; i < csLen; i++) {
-            csIndexAdd[i] = deduplicator.nonConflictingName(csIndex[i]);
-        }
-
-        // TODO: an "append-only" version of FixedColumnSet, as we are guaranteed to not replace any existing columns
-        return new FixedColumnSet(source, sourceColumns, csIndexAdd);
+        return new FixedColumnSet(
+                source,
+                sourceColumns,
+                FixedColumnSetIndex.ofAppend(source.getColumnsIndex(), csIndex).getLabels());
     }
 
     public static FixedColumnSet of(DataFrame source, Series<?>[] sourceColumns, int[] csIndex) {
-
-        Index index = source.getColumnsIndex();
-
-        int sLen = index.size();
-        int csLen = csIndex.length;
-
-        String[] csLabelsIndex = new String[csLen];
-        for (int i = 0; i < csLen; i++) {
-            csLabelsIndex[i] = csIndex[i] < sLen
-                    ? index.get(csIndex[i])
-                    : String.valueOf(csIndex[i]);
-        }
-
-        return new FixedColumnSet(source, sourceColumns, csLabelsIndex);
+        return new FixedColumnSet(
+                source,
+                sourceColumns,
+                FixedColumnSetIndex.of(source.getColumnsIndex(), csIndex).getLabels());
     }
 
     protected FixedColumnSet(DataFrame source, Series<?>[] sourceColumns, String[] csIndex) {

@@ -5,7 +5,7 @@ import org.dflib.concat.SeriesConcat;
 import org.dflib.concat.VConcat;
 import org.dflib.exp.Exps;
 import org.dflib.series.EmptySeries;
-import org.dflib.slice.FixedColumnSet;
+import org.dflib.slice.FixedColumnSetIndex;
 import org.dflib.sort.GroupBySorter;
 import org.dflib.sort.IntComparator;
 import org.dflib.window.DenseRanker;
@@ -25,7 +25,7 @@ public class GroupBy {
     private final Map<Object, IntSeries> groupsIndex;
     private final IntComparator sorter;
     private final ConcurrentMap<Object, DataFrame> groupsCache;
-    private final FixedColumnSet columnSet;
+    private final FixedColumnSetIndex columnSetIndex;
 
     public GroupBy(DataFrame source, Map<Object, IntSeries> groupsIndex, IntComparator sorter) {
         this(source, groupsIndex, sorter, null);
@@ -35,12 +35,12 @@ public class GroupBy {
             DataFrame source,
             Map<Object, IntSeries> groupsIndex,
             IntComparator sorter,
-            FixedColumnSet columnSet) {
+            FixedColumnSetIndex columnSetIndex) {
 
         this.source = source;
         this.groupsIndex = groupsIndex;
         this.sorter = sorter;
-        this.columnSet = columnSet;
+        this.columnSetIndex = columnSetIndex;
 
         this.groupsCache = new ConcurrentHashMap<>();
     }
@@ -84,21 +84,23 @@ public class GroupBy {
      * Specifies the columns of the aggregation or select result.
      */
     public GroupBy cols(Predicate<String> colsPredicate) {
-        return new GroupBy(source, groupsIndex, sorter, (FixedColumnSet) source.cols(colsPredicate));
+        Index srcIndex = source.getColumnsIndex();
+        return new GroupBy(source, groupsIndex, sorter, FixedColumnSetIndex.of(srcIndex, srcIndex.positions(colsPredicate)));
     }
 
     /**
      * Specifies the columns of the aggregation or select result.
      */
     public GroupBy cols(String... cols) {
-        return new GroupBy(source, groupsIndex, sorter, (FixedColumnSet) source.cols(cols));
+        return new GroupBy(source, groupsIndex, sorter, FixedColumnSetIndex.of(cols));
     }
 
     /**
      * Specifies the columns of the aggregation or select result.
      */
     public GroupBy cols(int... cols) {
-        return new GroupBy(source, groupsIndex, sorter, (FixedColumnSet) source.cols(cols));
+        Index srcIndex = source.getColumnsIndex();
+        return new GroupBy(source, groupsIndex, sorter, FixedColumnSetIndex.of(srcIndex, cols));
     }
 
     /**
@@ -349,8 +351,8 @@ public class GroupBy {
     public DataFrame select() {
         IntSeries index = SeriesConcat.intConcat(groupsIndex.values());
 
-        return columnSet != null
-                ? source.rows(index).cols(columnSet.getColumnSetIndex()).select()
+        return columnSetIndex != null
+                ? source.rows(index).cols(columnSetIndex.getIndex()).select()
                 : source.rows(index).select();
     }
 
@@ -368,8 +370,8 @@ public class GroupBy {
         DataFrame[] dfs = new DataFrame[len];
         int i = 0;
 
-        if (columnSet != null) {
-            Index customIndex = columnSet.getColumnSetIndex();
+        if (columnSetIndex != null) {
+            Index customIndex = columnSetIndex.getIndex();
             for (IntSeries gi : groupsIndex.values()) {
                 dfs[i++] = source.rows(gi).cols(customIndex).select(exps);
             }
@@ -397,8 +399,8 @@ public class GroupBy {
         DataFrame[] dfs = new DataFrame[len];
         int i = 0;
 
-        if (columnSet != null) {
-            Index customIndex = columnSet.getColumnSetIndex();
+        if (columnSetIndex != null) {
+            Index customIndex = columnSetIndex.getIndex();
 
             for (IntSeries gi : groupsIndex.values()) {
                 // must call "select()" before applying "map()", otherwise "map()" is applied to the row set, not columns
@@ -419,8 +421,8 @@ public class GroupBy {
 
         Index index;
 
-        if (columnSet != null) {
-            index = columnSet.getColumnSetIndex();
+        if (columnSetIndex != null) {
+            index = columnSetIndex.getIndex();
 
             int w = aggregators.length;
             if (w != index.size()) {
