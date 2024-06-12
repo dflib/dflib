@@ -174,7 +174,6 @@ public class Window {
      *
      * @since 0.14
      */
-    //  TODO: which operations other than mapColumn require a range? Does is make sense for rank or shift?
     public Window range(WindowRange range) {
         this.range = range;
         return this;
@@ -211,10 +210,7 @@ public class Window {
      */
     public DataFrame map(Exp<?>... aggregators) {
         String[] labels = selectLabels(aggregators);
-        return merger(labels).merge(
-                source,
-                labels,
-                selectColumns(aggregators));
+        return ColumnSetMerger.merge(source, labels, selectColumns(aggregators));
     }
 
     /**
@@ -327,10 +323,6 @@ public class Window {
         return columnSetIndex != null
                 ? columnSetIndex.getLabels()
                 : Exps.labels(source, aggregators);
-    }
-
-    private ColumnSetMerger merger(String... labels) {
-        return ColumnSetMerger.of(source.getColumnsIndex(), labels);
     }
 
     private Series<?>[] selectColumns(Exp<?>... aggregators) {

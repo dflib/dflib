@@ -10,6 +10,7 @@ import org.dflib.pivot.PivotBuilder;
 import org.dflib.row.RowProxy;
 import org.dflib.sample.Sampler;
 import org.dflib.select.RowIndexer;
+import org.dflib.slice.FixedColumnSet;
 import org.dflib.window.Window;
 
 import java.util.Iterator;
@@ -499,7 +500,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @since 1.0.0-M19
      */
-    ColumnSet cols(Index columnsIndex);
+    default ColumnSet cols(Index columnsIndex) {
+        return FixedColumnSet.of(this, columnsIndex);
+    }
 
     /**
      * Creates a ColumnSet for the provided column names. Columns may or may not already exist in the DataFrame.
@@ -508,7 +511,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @since 1.0.0-M19
      */
-    ColumnSet cols(String... columns);
+    default ColumnSet cols(String... columns) {
+        return FixedColumnSet.of(this, columns);
+    }
 
     /**
      * Creates a ColumnSet for the provided column names, ensuring that none of the names match any of the DataFrame
@@ -517,7 +522,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @since 1.0.0-M19
      */
-    ColumnSet colsAppend(String... columns);
+    default ColumnSet colsAppend(String... columns) {
+        return FixedColumnSet.ofAppend(this, columns);
+    }
 
     /**
      * Creates a ColumnSet with columns from this DataFrame excluding specified columns.
@@ -557,7 +564,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      *
      * @since 1.0.0-M19
      */
-    ColumnSet cols(int... columns);
+    default ColumnSet cols(int... columns) {
+        return FixedColumnSet.of(this, columns);
+    }
 
     /**
      * Creates a ColumnSet with columns from this DataFrame excluding specified column positions.

@@ -36,36 +36,30 @@ import java.util.function.UnaryOperator;
 public class FixedColumnSet implements ColumnSet {
 
     protected final DataFrame source;
-    protected final Index sourceColumnsIndex;
-    protected final Series[] sourceColumns;
     protected final String[] csIndex;
 
-    public static FixedColumnSet of(DataFrame source, Series<?>[] sourceColumns, Index csIndex) {
-        return new FixedColumnSet(source, sourceColumns, csIndex.toArray());
+    public static FixedColumnSet of(DataFrame source, Index csIndex) {
+        return new FixedColumnSet(source, csIndex.toArray());
     }
 
-    public static FixedColumnSet of(DataFrame source, Series<?>[] sourceColumns, String[] csIndex) {
-        return new FixedColumnSet(source, sourceColumns, csIndex);
+    public static FixedColumnSet of(DataFrame source, String[] csIndex) {
+        return new FixedColumnSet(source, csIndex);
     }
 
-    public static FixedColumnSet ofAppend(DataFrame source, Series<?>[] sourceColumns, String[] csIndex) {
+    public static FixedColumnSet ofAppend(DataFrame source, String[] csIndex) {
         return new FixedColumnSet(
                 source,
-                sourceColumns,
                 FixedColumnSetIndex.ofAppend(source.getColumnsIndex(), csIndex).getLabels());
     }
 
-    public static FixedColumnSet of(DataFrame source, Series<?>[] sourceColumns, int[] csIndex) {
+    public static FixedColumnSet of(DataFrame source, int[] csIndex) {
         return new FixedColumnSet(
                 source,
-                sourceColumns,
                 FixedColumnSetIndex.of(source.getColumnsIndex(), csIndex).getLabels());
     }
 
-    protected FixedColumnSet(DataFrame source, Series<?>[] sourceColumns, String[] csIndex) {
+    protected FixedColumnSet(DataFrame source, String[] csIndex) {
         this.source = source;
-        this.sourceColumnsIndex = source.getColumnsIndex();
-        this.sourceColumns = sourceColumns;
         this.csIndex = csIndex;
     }
 
@@ -158,7 +152,7 @@ public class FixedColumnSet implements ColumnSet {
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            columns[i] = getOrCreateColumn(source, i);
+            columns[i] = getOrCreateColumn(i);
         }
 
         return merge(columns, oldToNewNames);
@@ -202,7 +196,8 @@ public class FixedColumnSet implements ColumnSet {
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            columns[i] = getOrCreateColumn(source, i,
+            columns[i] = getOrCreateColumn(
+                    i,
                     e -> ((Series<Object>) e).fillNulls(value),
                     () -> Series.ofVal(value, h));
         }
@@ -219,7 +214,6 @@ public class FixedColumnSet implements ColumnSet {
 
         for (int i = 0; i < w; i++) {
             columns[i] = getOrCreateColumn(
-                    source,
                     i,
                     e -> e.fillNullsBackwards(),
                     () -> new SingleValueSeries<>(null, h));
@@ -237,7 +231,6 @@ public class FixedColumnSet implements ColumnSet {
 
         for (int i = 0; i < w; i++) {
             columns[i] = getOrCreateColumn(
-                    source,
                     i,
                     e -> e.fillNullsForward(),
                     () -> new SingleValueSeries<>(null, h));
@@ -253,7 +246,7 @@ public class FixedColumnSet implements ColumnSet {
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            Series s = getOrCreateColumn(source, i);
+            Series s = getOrCreateColumn(i);
             columns[i] = s.fillNullsFromSeries(series);
         }
 
@@ -271,7 +264,7 @@ public class FixedColumnSet implements ColumnSet {
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            Series s = getOrCreateColumn(source, i);
+            Series s = getOrCreateColumn(i);
             columns[i] = s instanceof BooleanSeries ? s.castAsBool() : s.mapAsBool(BoolValueMapper.fromObject());
         }
 
@@ -284,7 +277,7 @@ public class FixedColumnSet implements ColumnSet {
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            Series s = getOrCreateColumn(source, i);
+            Series s = getOrCreateColumn(i);
             columns[i] = s.mapAsBool(converter);
         }
 
@@ -299,7 +292,7 @@ public class FixedColumnSet implements ColumnSet {
         IntValueMapper<?> converter = IntValueMapper.fromObject(forNull);
 
         for (int i = 0; i < w; i++) {
-            Series s = getOrCreateColumn(source, i);
+            Series s = getOrCreateColumn(i);
             columns[i] = s instanceof IntSeries ? s.castAsInt() : s.mapAsInt(converter);
         }
 
@@ -312,7 +305,7 @@ public class FixedColumnSet implements ColumnSet {
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            Series s = getOrCreateColumn(source, i);
+            Series s = getOrCreateColumn(i);
             columns[i] = s.mapAsInt(converter);
         }
 
@@ -327,7 +320,7 @@ public class FixedColumnSet implements ColumnSet {
         LongValueMapper<?> converter = LongValueMapper.fromObject(forNull);
 
         for (int i = 0; i < w; i++) {
-            Series s = getOrCreateColumn(source, i);
+            Series s = getOrCreateColumn(i);
             columns[i] = s instanceof LongSeries ? s.castAsLong() : s.mapAsLong(converter);
         }
 
@@ -340,7 +333,7 @@ public class FixedColumnSet implements ColumnSet {
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            Series s = getOrCreateColumn(source, i);
+            Series s = getOrCreateColumn(i);
             columns[i] = s.mapAsLong(converter);
         }
 
@@ -355,7 +348,7 @@ public class FixedColumnSet implements ColumnSet {
         DoubleValueMapper<?> converter = DoubleValueMapper.fromObject(forNull);
 
         for (int i = 0; i < w; i++) {
-            Series s = getOrCreateColumn(source, i);
+            Series s = getOrCreateColumn(i);
             columns[i] = s instanceof DoubleSeries ? s.castAsDouble() : s.mapAsDouble(converter);
         }
 
@@ -368,7 +361,7 @@ public class FixedColumnSet implements ColumnSet {
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            Series s = getOrCreateColumn(source, i);
+            Series s = getOrCreateColumn(i);
             columns[i] = s.mapAsDouble(converter);
         }
 
@@ -572,39 +565,33 @@ public class FixedColumnSet implements ColumnSet {
         return columns;
     }
 
-    private Series<?> getOrCreateColumn(DataFrame source, int pos) {
+    private Series<?> getOrCreateColumn(int pos) {
         String name = csIndex[pos];
-        return sourceColumnsIndex.contains(name)
+        return source.getColumnsIndex().contains(name)
                 ? source.getColumn(name)
                 : new SingleValueSeries<>(null, source.height());
     }
 
     private Series<?> getOrCreateColumn(
-            DataFrame source,
             int pos,
             UnaryOperator<Series<?>> andApplyToExisting,
             Supplier<Series<?>> createNew) {
 
         String name = csIndex[pos];
-        return sourceColumnsIndex.contains(name)
+        return source.getColumnsIndex().contains(name)
                 ? andApplyToExisting.apply(source.getColumn(name))
                 : createNew.get();
     }
 
     private DataFrame merge(Series<?>[] columns) {
-        return merger().merge(sourceColumnsIndex, sourceColumns, csIndex, columns);
+        return ColumnSetMerger.merge(source, csIndex, columns);
     }
 
     private DataFrame merge(Series<?>[] columns, Map<String, String> oldToNewNames) {
-        return merger().merge(
-                sourceColumnsIndex,
-                sourceColumns,
+        return ColumnSetMerger.mergeAs(source,
+                csIndex,
                 Index.of(csIndex).replace(oldToNewNames).toArray(),
                 columns);
-    }
-
-    private ColumnSetMerger merger() {
-        return ColumnSetMerger.of(sourceColumnsIndex, csIndex);
     }
 
     private Series<?>[] doSelect() {
@@ -612,7 +599,7 @@ public class FixedColumnSet implements ColumnSet {
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            columns[i] = getOrCreateColumn(source, i);
+            columns[i] = getOrCreateColumn(i);
         }
 
         return columns;

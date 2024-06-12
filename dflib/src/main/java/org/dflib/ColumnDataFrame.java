@@ -12,7 +12,6 @@ import org.dflib.slice.AllRowSet;
 import org.dflib.slice.ConditionalRowSet;
 import org.dflib.slice.DeferredColumnSet;
 import org.dflib.slice.EmptyRowSet;
-import org.dflib.slice.FixedColumnSet;
 import org.dflib.slice.IndexedRowSet;
 import org.dflib.slice.RangeRowSet;
 import org.dflib.stack.Stacker;
@@ -305,26 +304,6 @@ public class ColumnDataFrame implements DataFrame {
     @Override
     public ColumnSet cols() {
         return new DeferredColumnSet(this, dataColumns);
-    }
-
-    @Override
-    public ColumnSet cols(String... columns) {
-        return FixedColumnSet.of(this, dataColumns, columns);
-    }
-
-    @Override
-    public ColumnSet cols(Index columnsIndex) {
-        return FixedColumnSet.of(this, dataColumns, columnsIndex);
-    }
-
-    @Override
-    public ColumnSet colsAppend(String... columns) {
-        return FixedColumnSet.ofAppend(this, dataColumns, columns);
-    }
-
-    @Override
-    public ColumnSet cols(int... columns) {
-        return FixedColumnSet.of(this, dataColumns, columns);
     }
 
     public RowSet rows() {

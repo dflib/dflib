@@ -539,10 +539,10 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     private ColumnSet delegate(String[] csIndex) {
-        return FixedColumnSet.of(source, sourceColumns, csIndex);
+        return FixedColumnSet.of(source, csIndex);
     }
 
     private ColumnSet delegate(int[] csIndex) {
-        return FixedColumnSet.of(source, sourceColumns, csIndex);
+        return FixedColumnSet.of(source, csIndex);
     }
 }

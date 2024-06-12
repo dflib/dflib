@@ -10,8 +10,34 @@ import org.dflib.Series;
  */
 public class ColumnSetMerger {
 
-    public static ColumnSetMerger of(Index sourceIndex, String[] csLabels) {
+    /**
+     * Merges an array of named columns into a DataFrame, adding to or replacing the existing columns.
+     *
+     * @since 1.0.0-M22
+     */
+    public static DataFrame merge(
+            DataFrame source,
+            String[] csLabels,
+            Series<?>[] csColumns) {
 
+        return createMerger(source.getColumnsIndex(), csLabels).doMerge(source, csLabels, csColumns);
+    }
+
+    /**
+     * Merges an array of named columns into a DataFrame, adding to or replacing the existing columns.
+     *
+     * @since 1.0.0-M22
+     */
+    public static DataFrame mergeAs(
+            DataFrame source,
+            String[] csLabels,
+            String[] csAsLabels,
+            Series<?>[] csColumns) {
+
+        return createMerger(source.getColumnsIndex(), csLabels).doMerge(source, csAsLabels, csColumns);
+    }
+
+    private static ColumnSetMerger createMerger(Index sourceIndex, String[] csLabels) {
         int sLen = sourceIndex.size();
         int csLen = csLabels.length;
 
@@ -42,6 +68,18 @@ public class ColumnSetMerger {
         return new ColumnSetMerger(sLen + expandBy, mergeIndex);
     }
 
+    /**
+     * @deprecated unused
+     */
+    @Deprecated(since = "1.0.0-M22", forRemoval = true)
+    public static ColumnSetMerger of(Index sourceIndex, String[] csLabels) {
+        return createMerger(sourceIndex, csLabels);
+    }
+
+    /**
+     * @deprecated unused
+     */
+    @Deprecated(since = "1.0.0-M22", forRemoval = true)
     public static ColumnSetMerger of(Index sourceIndex, int[] csPositions) {
         int sLen = sourceIndex.size();
         int csLen = csPositions.length;
@@ -94,15 +132,7 @@ public class ColumnSetMerger {
         this.mergeIndex = mergeIndex;
     }
 
-    /**
-     * Performs a merge of the source Series with a transformed row set Series.
-     *
-     * @
-     */
-    public DataFrame merge(
-            DataFrame source,
-            String[] csLabels,
-            Series<?>[] csColumns) {
+    private DataFrame doMerge(DataFrame source, String[] csLabels, Series<?>[] csColumns) {
 
         Index sIndex = source.getColumnsIndex();
         String[] labels = new String[mergeLen];
@@ -126,7 +156,10 @@ public class ColumnSetMerger {
 
     /**
      * Performs a merge of the source Series with a transformed row set Series.
+     *
+     * @deprecated in favor of the static {@link #merge(DataFrame, String[], Series[])}
      */
+    @Deprecated(since = "1.0.0-M22", forRemoval = true)
     public DataFrame merge(
             Index sIndex,
             Series<?>[] sColumns,
