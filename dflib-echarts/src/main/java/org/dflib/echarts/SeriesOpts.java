@@ -3,46 +3,31 @@ package org.dflib.echarts;
 import org.dflib.echarts.render.option.EncodeModel;
 import org.dflib.echarts.render.option.SeriesModel;
 
-import java.util.Objects;
-
 /**
  * A configuration of a single data series.
  *
  * @since 1.0.0-M21
  */
-public class SeriesOpts {
+public abstract class SeriesOpts<T extends SeriesOpts> {
 
-    private final ChartType type;
-
-    private Label label;
-    private boolean areaStyle;
-    private boolean showSymbol;
-    private boolean smooth;
-    private Integer yAxisIndex;
-    private boolean stack;
-
-    /**
-     * @since 1.0.0-M22
-     */
-    public static SeriesOpts of(ChartType type) {
-        return new SeriesOpts(type);
-    }
+    protected Label label;
+    protected Integer yAxisIndex;
 
     /**
      * Starts a builder for a line series options object.
      *
      * @since 1.0.0-M22
      */
-    public static SeriesOpts ofLine() {
-        return new SeriesOpts(ChartType.line);
+    public static LineSeriesOpts ofLine() {
+        return new LineSeriesOpts();
     }
 
     /**
      * @deprecated in favor of {@link #ofLine()}
      */
     @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    public static SeriesOpts line() {
-        return new SeriesOpts(ChartType.line);
+    public static LineSeriesOpts line() {
+        return ofLine();
     }
 
     /**
@@ -50,16 +35,16 @@ public class SeriesOpts {
      *
      * @since 1.0.0-M22
      */
-    public static SeriesOpts ofBar() {
-        return new SeriesOpts(ChartType.bar);
+    public static BarSeriesOpts ofBar() {
+        return new BarSeriesOpts();
     }
 
     /**
      * @deprecated in favor of {@link #ofBar()}
      */
     @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    public static SeriesOpts bar() {
-        return new SeriesOpts(ChartType.bar);
+    public static BarSeriesOpts bar() {
+        return ofBar();
     }
 
     /**
@@ -67,26 +52,19 @@ public class SeriesOpts {
      *
      * @since 1.0.0-M22
      */
-    public static SeriesOpts ofScatter() {
-        return new SeriesOpts(ChartType.scatter);
+    public static ScatterSeriesOpts ofScatter() {
+        return new ScatterSeriesOpts();
     }
 
     /**
      * @deprecated in favor of {@link #ofScatter()}
      */
     @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    public static SeriesOpts scatter() {
-        return new SeriesOpts(ChartType.scatter);
+    public static ScatterSeriesOpts scatter() {
+        return ofScatter();
     }
 
-    protected SeriesOpts(ChartType type) {
-        this.type = Objects.requireNonNull(type);
-
-        // set ECharts defaults
-        this.areaStyle = false;
-        this.showSymbol = true;
-        this.smooth = false;
-        this.stack = false;
+    protected SeriesOpts() {
     }
 
     /**
@@ -103,55 +81,18 @@ public class SeriesOpts {
     /**
      * @since 1.0.0-M22
      */
-    public SeriesOpts label(LabelPosition position) {
+    public T label(LabelPosition position) {
         this.label = Label.of(position);
-        return this;
+        return (T) this;
     }
 
     /**
      * @since 1.0.0-M22
      */
-    public SeriesOpts label(Label label) {
+    public T label(Label label) {
         this.label = label;
-        return this;
+        return (T) this;
     }
 
-    public SeriesOpts areaStyle() {
-        this.areaStyle = true;
-        return this;
-    }
-
-    public SeriesOpts smooth() {
-        this.smooth = true;
-        return this;
-    }
-
-    public SeriesOpts stack() {
-        this.stack = true;
-        return this;
-    }
-
-    /**
-     * @since 1.0.0-M22
-     */
-    public SeriesOpts showSymbol(boolean showSymbol) {
-        this.showSymbol = showSymbol;
-        return this;
-    }
-
-    protected SeriesModel resolve(String name, EncodeModel encodeModel, String seriesLayoutBy, boolean last) {
-        return new SeriesModel(
-                name,
-                type.name(),
-                encodeModel,
-                label != null ? label.resolve() : null,
-                seriesLayoutBy,
-                areaStyle,
-                showSymbol,
-                stack,
-                smooth,
-                yAxisIndex,
-                last
-        );
-    }
+    protected abstract SeriesModel resolve(String name, EncodeModel encodeModel, String seriesLayoutBy, boolean last);
 }
