@@ -6,7 +6,7 @@ import org.dflib.echarts.render.option.SeriesModel;
 import java.util.Objects;
 
 /**
- * A partial configuration of a single data series options. The full configuration is obtained
+ * A configuration of a single data series.
  *
  * @since 1.0.0-M21
  */
