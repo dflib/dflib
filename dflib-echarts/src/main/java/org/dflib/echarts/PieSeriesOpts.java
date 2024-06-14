@@ -13,6 +13,7 @@ public class PieSeriesOpts extends SeriesOpts<PieSeriesOpts> {
     private BoundLabel label;
     private Integer startAngle;
     private Integer endAngle;
+    private RoseType roseType;
 
     public PieSeriesOpts label(String labelColumn) {
         this.label = new BoundLabel(labelColumn, null);
@@ -59,6 +60,11 @@ public class PieSeriesOpts extends SeriesOpts<PieSeriesOpts> {
         return this;
     }
 
+    public PieSeriesOpts roseType(RoseType roseType) {
+        this.roseType = roseType;
+        return this;
+    }
+
     protected String getLabelColumn() {
         return label != null ? label.columnName : null;
     }
@@ -78,7 +84,8 @@ public class PieSeriesOpts extends SeriesOpts<PieSeriesOpts> {
                 null,
                 radius != null ? new RadiusModel(radius) : null,
                 startAngle,
-                endAngle
+                endAngle,
+                roseType != null ? roseType.name() : null
         );
     }
 

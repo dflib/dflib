@@ -51,6 +51,7 @@ public class LineSeriesOpts extends CartesianSeriesOpts<LineSeriesOpts> {
                 yAxisIndex,
                 null,
                 null,
+                null,
                 null
         );
     }

@@ -57,6 +57,19 @@ public class PieSeriesTest extends GenerateScriptHtmlTest {
     }
 
     @Test
+    public void roseType() {
+
+        String s1 = EChart.chart().series(SeriesOpts.ofPie(), "y1").generateScriptHtml("_tid", df2);
+        assertFalse(s1.contains("roseType:"), s1);
+
+        String s2 = EChart.chart().series(SeriesOpts.ofPie().roseType(RoseType.radius), "y1").generateScriptHtml("_tid", df2);
+        assertTrue(s2.contains("roseType: 'radius',"), s2);
+
+        String s3 = EChart.chart().series(SeriesOpts.ofPie().roseType(RoseType.area), "y1").generateScriptHtml("_tid", df2);
+        assertTrue(s3.contains("roseType: 'area',"), s3);
+    }
+
+    @Test
     public void data() {
         String s2 = EChart.chart().series(SeriesOpts.ofPie(), "y1").generateScriptHtml("_tid", df2);
         assertTrue(s2.contains("['labels',1,2,3],"), s2);

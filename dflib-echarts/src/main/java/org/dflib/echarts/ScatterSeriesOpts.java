@@ -23,6 +23,7 @@ public class ScatterSeriesOpts extends CartesianSeriesOpts<ScatterSeriesOpts> {
                 yAxisIndex,
                 null,
                 null,
+                null,
                 null
         );
     }

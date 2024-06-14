@@ -35,6 +35,7 @@ public class BarSeriesOpts extends CartesianSeriesOpts<BarSeriesOpts> {
                 yAxisIndex,
                 null,
                 null,
+                null,
                 null
         );
     }

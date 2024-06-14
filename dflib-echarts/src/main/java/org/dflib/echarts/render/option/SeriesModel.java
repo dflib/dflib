@@ -22,6 +22,7 @@ public class SeriesModel {
     private final RadiusModel radius;
     private final Integer startAngle;
     private final Integer endAngle;
+    private final String roseType;
 
     public SeriesModel(
             String name,
@@ -36,7 +37,8 @@ public class SeriesModel {
             Integer yAxisIndex,
             RadiusModel radius,
             Integer startAngle,
-            Integer endAngle) {
+            Integer endAngle,
+            String roseType) {
 
         this.name = name;
         this.type = type;
@@ -51,6 +53,7 @@ public class SeriesModel {
         this.radius = radius;
         this.startAngle = startAngle;
         this.endAngle = endAngle;
+        this.roseType = roseType;
     }
 
     public String getName() {
@@ -113,6 +116,13 @@ public class SeriesModel {
      */
     public Integer getEndAngle() {
         return endAngle;
+    }
+
+    /**
+     * @since 1.0.0-M22
+     */
+    public String getRoseType() {
+        return roseType;
     }
 
     public boolean isStack() {
