@@ -24,6 +24,7 @@ public class ScatterSeriesOpts extends CartesianSeriesOpts<ScatterSeriesOpts> {
                 null,
                 null,
                 null,
+                null,
                 null
         );
     }

@@ -52,6 +52,7 @@ public class LineSeriesOpts extends CartesianSeriesOpts<LineSeriesOpts> {
                 null,
                 null,
                 null,
+                null,
                 null
         );
     }

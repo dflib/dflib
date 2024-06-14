@@ -1,5 +1,6 @@
 package org.dflib.echarts.render.option;
 
+import org.dflib.echarts.render.option.series.CenterModel;
 import org.dflib.echarts.render.option.series.RadiusModel;
 
 /**
@@ -20,6 +21,7 @@ public class SeriesModel {
     private final Boolean stack;
     private final Integer yAxisIndex;
     private final RadiusModel radius;
+    private final CenterModel center;
     private final Integer startAngle;
     private final Integer endAngle;
     private final String roseType;
@@ -36,6 +38,7 @@ public class SeriesModel {
             Boolean smooth,
             Integer yAxisIndex,
             RadiusModel radius,
+            CenterModel center,
             Integer startAngle,
             Integer endAngle,
             String roseType) {
@@ -51,6 +54,7 @@ public class SeriesModel {
         this.smooth = smooth;
         this.yAxisIndex = yAxisIndex;
         this.radius = radius;
+        this.center = center;
         this.startAngle = startAngle;
         this.endAngle = endAngle;
         this.roseType = roseType;
@@ -102,6 +106,13 @@ public class SeriesModel {
      */
     public RadiusModel getRadius() {
         return radius;
+    }
+
+    /**
+     * @since 1.0.0-M22
+     */
+    public CenterModel getCenter() {
+        return center;
     }
 
     /**

@@ -2,6 +2,7 @@ package org.dflib.echarts;
 
 import org.dflib.echarts.render.option.EncodeModel;
 import org.dflib.echarts.render.option.SeriesModel;
+import org.dflib.echarts.render.option.series.CenterModel;
 import org.dflib.echarts.render.option.series.RadiusModel;
 
 /**
@@ -10,6 +11,7 @@ import org.dflib.echarts.render.option.series.RadiusModel;
 public class PieSeriesOpts extends SeriesOpts<PieSeriesOpts> {
 
     private Object[] radius;
+    private Object[] center;
     private BoundLabel label;
     private Integer startAngle;
     private Integer endAngle;
@@ -50,6 +52,16 @@ public class PieSeriesOpts extends SeriesOpts<PieSeriesOpts> {
         return this;
     }
 
+    public PieSeriesOpts centerPixels(int horizontal, int vertical) {
+        this.center = new Object[]{horizontal, vertical};
+        return this;
+    }
+
+    public PieSeriesOpts centerPct(double horizontal, double vertical) {
+        this.center = new Object[]{horizontal + "%", vertical + "%"};
+        return this;
+    }
+
     public PieSeriesOpts startAngle(int angle) {
         this.startAngle = angle;
         return this;
@@ -83,6 +95,7 @@ public class PieSeriesOpts extends SeriesOpts<PieSeriesOpts> {
                 null,
                 null,
                 radius != null ? new RadiusModel(radius) : null,
+                center != null ? new CenterModel(center[0], center[1]) : null,
                 startAngle,
                 endAngle,
                 roseType != null ? roseType.name() : null

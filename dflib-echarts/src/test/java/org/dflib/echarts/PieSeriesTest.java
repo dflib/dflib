@@ -41,6 +41,19 @@ public class PieSeriesTest extends GenerateScriptHtmlTest {
     }
 
     @Test
+    public void center() {
+
+        String s1 = EChart.chart().series(SeriesOpts.ofPie(), "y1").generateScriptHtml("_tid", df2);
+        assertFalse(s1.contains("center:"), s1);
+
+        String s2 = EChart.chart().series(SeriesOpts.ofPie().centerPct(10, 12.5), "y1").generateScriptHtml("_tid", df2);
+        assertTrue(s2.contains("center: ['10.0%','12.5%'],"), s2);
+
+        String s3 = EChart.chart().series(SeriesOpts.ofPie().centerPixels(10, 12), "y1").generateScriptHtml("_tid", df2);
+        assertTrue(s3.contains("center: [10,12],"), s3);
+    }
+
+    @Test
     public void angle() {
 
         String s1 = EChart.chart().series(SeriesOpts.ofPie(), "y1").generateScriptHtml("_tid", df2);
