@@ -114,6 +114,17 @@ public class SeriesTest extends GenerateScriptHtmlTest {
     }
 
     @Test
+    public void label_Show() {
+
+        String s1 = EChart.chart().series("y1").generateScriptHtml("_tid", df2);
+        assertFalse(s1.contains("label:"), s1);
+
+        String s2 = EChart.chart().series(SeriesOpts.ofLine().label(Label.ofLeft().show(false)), "y1").generateScriptHtml("_tid", df2);
+        assertTrue(s2.contains("label: {"), s2);
+        assertTrue(s2.contains("show: false"), s2);
+    }
+
+    @Test
     public void yAxisIndex() {
 
         String s1 = EChart.chart().series("y1").generateScriptHtml("_tid", df2);

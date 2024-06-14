@@ -6,7 +6,7 @@ import org.dflib.echarts.render.option.SeriesModel;
 /**
  * @since 1.0.0-M22
  */
-public class BarSeriesOpts extends SeriesOpts<BarSeriesOpts> {
+public class BarSeriesOpts extends CartesianSeriesOpts<BarSeriesOpts> {
 
     private boolean stack;
 
@@ -20,19 +20,22 @@ public class BarSeriesOpts extends SeriesOpts<BarSeriesOpts> {
         return this;
     }
 
-    protected SeriesModel resolve(String name, EncodeModel encodeModel, String seriesLayoutBy, boolean last) {
+    @Override
+    protected SeriesModel resolve(String name, int labelsPos, int seriesPos, String seriesLayoutBy) {
         return new SeriesModel(
                 name,
                 ChartType.bar.name(),
-                encodeModel,
+                new EncodeModel(labelsPos, seriesPos, null, null),
                 label != null ? label.resolve() : null,
                 seriesLayoutBy,
-                false,
-                false,
-                stack,
-                false,
+                null,
+                null,
+                null,
+                null,
                 yAxisIndex,
-                last
+                null,
+                null,
+                null
         );
     }
 }

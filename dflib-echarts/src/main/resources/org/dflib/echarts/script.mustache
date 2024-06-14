@@ -145,11 +145,26 @@
                 areaStyle: {},
             {{/areaStyle}}
             {{#encode}}
-                encode: { x: {{x}}, y: {{y}} },
+                encode: {
+                {{#x}}
+                    x: {{.}},
+                {{/x}}
+                {{#y}}
+                    y: {{.}},
+                {{/y}}
+                {{#value}}
+                    value: {{.}},
+                {{/value}}
+                {{#itemName}}
+                    itemName: {{.}},
+                {{/itemName}}
+                },
             {{/encode}}
             {{#label}}
                 label: {
-                    show: true,
+                {{#showPresent}}
+                    show: {{show}},
+                {{/showPresent}}
                 {{#formatter}}
                     formatter: '{{.}}',
                 {{/formatter}}
@@ -173,8 +188,17 @@
             {{#yAxisIndex}}
                 yAxisIndex: {{.}},
             {{/yAxisIndex}}
+            {{#radius}}
+                radius: {{{radius}}},
+            {{/radius}}
+            {{#startAngle}}
+                startAngle: {{.}},
+            {{/startAngle}}
+            {{#endAngle}}
+                endAngle: {{.}},
+            {{/endAngle}}
                 type: '{{type}}'
-            }{{^last}},{{/last}}
+            },
             {{/series}}
         ]
 {{/option}}

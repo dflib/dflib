@@ -6,20 +6,12 @@ import org.dflib.echarts.render.option.SeriesModel;
 /**
  * @since 1.0.0-M22
  */
-public class LineSeriesOpts extends SeriesOpts<LineSeriesOpts> {
+public class LineSeriesOpts extends CartesianSeriesOpts<LineSeriesOpts> {
 
-    private boolean areaStyle;
-    private boolean showSymbol;
-    private boolean smooth;
-    protected boolean stack;
-
-    public LineSeriesOpts() {
-        // ECharts defaults
-        this.areaStyle = false;
-        this.showSymbol = true;
-        this.smooth = false;
-        this.stack = false;
-    }
+    private Boolean areaStyle;
+    private Boolean showSymbol;
+    private Boolean smooth;
+    private Boolean stack;
 
     public LineSeriesOpts smooth() {
         this.smooth = true;
@@ -45,11 +37,11 @@ public class LineSeriesOpts extends SeriesOpts<LineSeriesOpts> {
     }
 
     @Override
-    protected SeriesModel resolve(String name, EncodeModel encodeModel, String seriesLayoutBy, boolean last) {
+    protected SeriesModel resolve(String name, int labelsPos, int seriesPos, String seriesLayoutBy) {
         return new SeriesModel(
                 name,
                 ChartType.line.name(),
-                encodeModel,
+                new EncodeModel(labelsPos, seriesPos, null, null),
                 label != null ? label.resolve() : null,
                 seriesLayoutBy,
                 areaStyle,
@@ -57,7 +49,9 @@ public class LineSeriesOpts extends SeriesOpts<LineSeriesOpts> {
                 stack,
                 smooth,
                 yAxisIndex,
-                last
+                null,
+                null,
+                null
         );
     }
 }

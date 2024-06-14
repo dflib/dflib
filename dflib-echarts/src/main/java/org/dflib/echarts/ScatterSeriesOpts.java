@@ -6,21 +6,24 @@ import org.dflib.echarts.render.option.SeriesModel;
 /**
  * @since 1.0.0-M22
  */
-public class ScatterSeriesOpts extends SeriesOpts<ScatterSeriesOpts> {
+public class ScatterSeriesOpts extends CartesianSeriesOpts<ScatterSeriesOpts> {
 
-    protected SeriesModel resolve(String name, EncodeModel encodeModel, String seriesLayoutBy, boolean last) {
+    @Override
+    protected SeriesModel resolve(String name, int labelsPos, int seriesPos, String seriesLayoutBy) {
         return new SeriesModel(
                 name,
                 ChartType.scatter.name(),
-                encodeModel,
+                new EncodeModel(labelsPos, seriesPos, null, null),
                 label != null ? label.resolve() : null,
                 seriesLayoutBy,
-                false,
-                false,
-                false,
-                false,
+                null,
+                null,
+                null,
+                null,
                 yAxisIndex,
-                last
+                null,
+                null,
+                null
         );
     }
 }

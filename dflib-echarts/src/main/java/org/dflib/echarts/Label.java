@@ -7,6 +7,7 @@ import org.dflib.echarts.render.option.LabelModel;
  */
 public class Label {
 
+    private Boolean show;
     private LabelPosition position;
     private String formatter;
 
@@ -75,8 +76,14 @@ public class Label {
         return this;
     }
 
+    public Label show(boolean show) {
+        this.show = show;
+        return this;
+    }
+
     LabelModel resolve() {
         return new LabelModel(
+                show,
                 formatter,
                 position != null ? position.name() : null
         );

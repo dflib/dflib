@@ -5,10 +5,8 @@ import org.dflib.Series;
 import org.dflib.echarts.render.OptionModel;
 import org.dflib.echarts.render.ValueModel;
 import org.dflib.echarts.render.option.DataSetModel;
-import org.dflib.echarts.render.option.EncodeModel;
 import org.dflib.echarts.render.option.RowModel;
 import org.dflib.echarts.render.option.SeriesModel;
-import org.dflib.echarts.render.option.axis.AxisModel;
 import org.dflib.series.IntSequenceSeries;
 
 import java.util.ArrayList;
@@ -150,41 +148,36 @@ public class Option {
 
     protected OptionModel resolve(DataFrame df) {
 
-        BoundXAxis x = xAxis != null ? xAxis : new BoundXAxis(null, XAxis.ofDefault());
-        List<YAxis> ys = yAxes != null ? yAxes : List.of(YAxis.ofDefault());
-        List<AxisModel> yModels = ys.stream().map(YAxis::resolve).collect(Collectors.toList());
+        boolean cartesianDefaults = useCartesianDefaults();
+        XAxis x = xAxis != null ? xAxis.axis : (cartesianDefaults ? XAxis.ofDefault() : null);
+        List<YAxis> ys = yAxes != null ? yAxes : (cartesianDefaults ? List.of(YAxis.ofDefault()) : null);
 
         return new OptionModel(
-                dataset(df, x),
+                dataset(df, cartesianDefaults),
                 this.legend != null ? this.legend : false,
                 datasetSeries(),
                 this.title,
                 this.toolbox != null ? this.toolbox.resolve() : null,
                 this.tooltip != null ? this.tooltip.resolve() : null,
-                x.axis.resolve(),
-                yModels
+                x != null ? x.resolve() : null,
+                ys != null ? ys.stream().map(YAxis::resolve).collect(Collectors.toList()) : null
         );
     }
 
-    protected DataSetModel dataset(DataFrame df, BoundXAxis x) {
+    protected boolean useCartesianDefaults() {
+        return series.isEmpty()
+                || series.values().stream().filter(BoundSeries::isCartesianOrNull).findFirst().isPresent();
+    }
+
+    protected DataSetModel dataset(DataFrame df, boolean cartesianDefaults) {
 
         // DF columns become rows and rows become columns in the EChart dataset
         int w = df.height();
         int h = series.size();
 
-        List<ValueModel> headerRow = new ArrayList<>(w + 1);
         List<RowModel> rows = new ArrayList<>(h + 1);
-
         String[] rowLabels = series.keySet().toArray(new String[0]);
-        Series<?> columnLabels = x.resolve(df);
-        String columnLabelsLabel = x.resolveLabel();
-
-        headerRow.add(new ValueModel(columnLabelsLabel, w == 0));
-        for (int i = 0; i < w; i++) {
-            headerRow.add(new ValueModel(columnLabels.get(i), i + 1 == w));
-        }
-
-        rows.add(new RowModel(headerRow, h == 0));
+        rows.addAll(datasetLabelRows(df, cartesianDefaults));
 
         for (int i = 0; i < h; i++) {
             List<ValueModel> row = new ArrayList<>(w + 1);
@@ -201,14 +194,70 @@ public class Option {
         return new DataSetModel(rows);
     }
 
+    protected List<RowModel> datasetLabelRows(DataFrame df, boolean cartesianDefaults) {
+
+        Map<String, List<ValueModel>> rowMap = new LinkedHashMap<>();
+
+        // the first source of labels - a column associated with XAxis
+        if (xAxis != null) {
+            List<ValueModel> xAxisLabels = datasetLabelRow(df, xAxis.columnName);
+            rowMap.put((String) xAxisLabels.get(0).getValue(), xAxisLabels);
+        } else if (cartesianDefaults) {
+            List<ValueModel> xAxisLabels = datasetLabelRow(df, null);
+            rowMap.put((String) xAxisLabels.get(0).getValue(), xAxisLabels);
+        }
+
+        // the next source of labels - columns associated with pie charts
+        for (BoundSeries s : series.values()) {
+
+            if (s.opts instanceof PieSeriesOpts) {
+                PieSeriesOpts pco = (PieSeriesOpts) s.opts;
+
+                List<ValueModel> pieLabels = datasetLabelRow(df, pco.getLabelColumn());
+                String key = (String) pieLabels.get(0).getValue();
+
+                rowMap.putIfAbsent(key, pieLabels);
+            }
+        }
+
+        int len = rowMap.size();
+        List<RowModel> rows = new ArrayList<>(len);
+
+        int[] i = new int[1];
+        rowMap.forEach((k, v) -> rows.add(new RowModel(v, i[0]++ == len)));
+
+        return rows;
+    }
+
+    protected List<ValueModel> datasetLabelRow(DataFrame df, String columnName) {
+
+        // DF columns become rows and rows become columns in the EChart dataset
+        int w = df.height();
+
+        List<ValueModel> row = new ArrayList<>(w + 1);
+
+        Series<?> columnLabels = columnName != null
+                ? df.getColumn(columnName)
+                : new IntSequenceSeries(1, df.height() + 1);
+
+        String labelsName = columnName != null ? columnName : "labels";
+        row.add(new ValueModel(labelsName, w == 0));
+        for (int i = 0; i < w; i++) {
+            row.add(new ValueModel(columnLabels.get(i), i + 1 == w));
+        }
+
+        return row;
+    }
+
     protected List<SeriesModel> datasetSeries() {
         SeriesOpts baseOpts = baseSeriesOptsTemplate();
         int len = series.size();
-        int i = 0;
+        int i = 1;
 
         List<SeriesModel> models = new ArrayList<>(len);
         for (BoundSeries s : series.values()) {
-            SeriesModel m = s.fillOpts(baseOpts).resolve(i++, len);
+            // TODO: "0" only works for labels when we have a single set of labels
+            SeriesModel m = s.fillOpts(baseOpts).resolve(0, i++);
             models.add(m);
         }
 
@@ -227,16 +276,6 @@ public class Option {
             this.columnName = columnName;
             this.axis = axis;
         }
-
-        Series<?> resolve(DataFrame df) {
-            return columnName != null
-                    ? df.getColumn(columnName)
-                    : new IntSequenceSeries(1, df.height() + 1);
-        }
-
-        String resolveLabel() {
-            return columnName != null ? columnName : "labels";
-        }
     }
 
     static class BoundSeries {
@@ -252,13 +291,17 @@ public class Option {
             return opts != null ? this : new BoundSeries(columnName, defaultOpts);
         }
 
-        SeriesModel resolve(int seriesNum, int totalSeries) {
+        boolean isCartesianOrNull() {
+            return opts == null || opts instanceof CartesianSeriesOpts;
+        }
+
+        SeriesModel resolve(int labelsPos, int seriesPos) {
             return opts.resolve(
                     columnName,
-                    new EncodeModel(0, seriesNum + 1),
+                    labelsPos,
+                    seriesPos,
                     // hardcoding "row" series layout. It corresponds to the dataset layout
-                    "row",
-                    seriesNum + 1 == totalSeries
+                    "row"
             );
         }
     }

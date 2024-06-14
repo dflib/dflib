@@ -1,5 +1,7 @@
 package org.dflib.echarts.render.option;
 
+import org.dflib.echarts.render.option.series.RadiusModel;
+
 /**
  * A model for rendering EChart script "series" element
  *
@@ -12,12 +14,14 @@ public class SeriesModel {
     private final EncodeModel encode;
     private final LabelModel label;
     private final String seriesLayoutBy;
-    private final boolean areaStyle;
-    private final boolean showSymbol;
-    private final boolean smooth;
-    private final boolean stack;
+    private final Boolean areaStyle;
+    private final Boolean showSymbol;
+    private final Boolean smooth;
+    private final Boolean stack;
     private final Integer yAxisIndex;
-    private final boolean last;
+    private final RadiusModel radius;
+    private final Integer startAngle;
+    private final Integer endAngle;
 
     public SeriesModel(
             String name,
@@ -25,12 +29,14 @@ public class SeriesModel {
             EncodeModel encode,
             LabelModel label,
             String seriesLayoutBy,
-            boolean areaStyle,
-            boolean showSymbol,
-            boolean stack,
-            boolean smooth,
+            Boolean areaStyle,
+            Boolean showSymbol,
+            Boolean stack,
+            Boolean smooth,
             Integer yAxisIndex,
-            boolean last) {
+            RadiusModel radius,
+            Integer startAngle,
+            Integer endAngle) {
 
         this.name = name;
         this.type = type;
@@ -42,7 +48,9 @@ public class SeriesModel {
         this.stack = stack;
         this.smooth = smooth;
         this.yAxisIndex = yAxisIndex;
-        this.last = last;
+        this.radius = radius;
+        this.startAngle = startAngle;
+        this.endAngle = endAngle;
     }
 
     public String getName() {
@@ -69,14 +77,14 @@ public class SeriesModel {
     }
 
     public boolean isAreaStyle() {
-        return areaStyle;
+        return areaStyle != null && areaStyle;
     }
 
     /**
      * @since 1.0.0-M22
      */
     public boolean dontShowSymbol() {
-        return !showSymbol;
+        return showSymbol != null && !showSymbol;
     }
 
     /**
@@ -86,15 +94,32 @@ public class SeriesModel {
         return yAxisIndex;
     }
 
+    /**
+     * @since 1.0.0-M22
+     */
+    public RadiusModel getRadius() {
+        return radius;
+    }
+
+    /**
+     * @since 1.0.0-M22
+     */
+    public Integer getStartAngle() {
+        return startAngle;
+    }
+
+    /**
+     * @since 1.0.0-M22
+     */
+    public Integer getEndAngle() {
+        return endAngle;
+    }
+
     public boolean isStack() {
-        return stack;
+        return stack != null && stack;
     }
 
     public boolean isSmooth() {
-        return smooth;
-    }
-
-    public boolean isLast() {
-        return last;
+        return smooth != null && smooth;
     }
 }
