@@ -36,7 +36,7 @@ public class PieSeriesTest extends GenerateScriptHtmlTest {
         String s2 = ECharts.chart().series(SeriesOpts.ofPie().radiusPct(10, 12.5), "y1").generateScriptHtml("_tid", df2);
         assertTrue(s2.contains("radius: ['10.0%','12.5%'],"), s2);
 
-        String s3 = ECharts.chart().series(SeriesOpts.ofPie().radiusPixels(10, 12), "y1").generateScriptHtml("_tid", df2);
+        String s3 = ECharts.chart().series(SeriesOpts.ofPie().radiusPx(10, 12), "y1").generateScriptHtml("_tid", df2);
         assertTrue(s3.contains("radius: [10,12],"), s3);
     }
 

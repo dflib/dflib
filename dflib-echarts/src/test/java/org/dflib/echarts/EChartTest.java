@@ -34,7 +34,7 @@ public class EChartTest extends GenerateScriptHtmlTest {
         String s1 = ECharts.chart().generateContainerHtml("_tid");
         assertEquals("<div id='_tid' style='width: 600px;height:400px;'></div>\n", s1);
 
-        String s2 = ECharts.chart().sizePixels(20, 10).generateContainerHtml("_tid");
+        String s2 = ECharts.chart().sizePx(20, 10).generateContainerHtml("_tid");
         assertEquals("<div id='_tid' style='width: 20px;height:10px;'></div>\n", s2);
     }
 

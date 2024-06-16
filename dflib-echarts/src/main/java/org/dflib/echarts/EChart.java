@@ -83,7 +83,18 @@ public class EChart {
         return this;
     }
 
+    /**
+     * @deprecated in favor of {@link #sizePx(int, int)}
+     */
+    @Deprecated(since = "1.0.0-M20", forRemoval = true)
     public EChart sizePixels(int width, int height) {
+        return sizePx(width, height);
+    }
+
+    /**
+     * @since 1.0.0-M22
+     */
+    public EChart sizePx(int width, int height) {
         this.width = width;
         this.height = height;
         return this;
@@ -99,6 +110,17 @@ public class EChart {
      */
     public EChart tooltip(Tooltip tooltip) {
         option.tooltip(tooltip);
+        return this;
+    }
+
+    /**
+     * Adds a Grid to the chart. Grids are used to plot multiple charts in cartesian coordinates. Axis objects can
+     * optionally have grid references.
+     *
+     * @since 1.0.0-M22
+     */
+    public EChart grid(Grid grid) {
+        option.grid(grid);
         return this;
     }
 

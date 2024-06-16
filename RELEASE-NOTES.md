@@ -13,6 +13,7 @@
 * #301 ECharts: pie chart
 * #302 Rename "map" to "merge" in RowSet, ColumnSet, GroupBy
 * #303 ECharts: multiple X axes
+* #304 ECharts: Grid support
 
 ## Release 1.0.0-M21
 

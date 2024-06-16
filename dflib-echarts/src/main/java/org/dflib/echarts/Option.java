@@ -5,11 +5,13 @@ import org.dflib.Series;
 import org.dflib.echarts.render.OptionModel;
 import org.dflib.echarts.render.ValueModel;
 import org.dflib.echarts.render.option.DataSetModel;
+import org.dflib.echarts.render.option.GridModel;
 import org.dflib.echarts.render.option.RowModel;
 import org.dflib.echarts.render.option.SeriesModel;
 import org.dflib.series.IntSequenceSeries;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +25,13 @@ import java.util.stream.Collectors;
  */
 public class Option {
 
+    private static final String DEFAULT_LABELS_LABEL = "labels";
+
     private String title;
     private Boolean legend;
     private Toolbox toolbox;
     private Tooltip tooltip;
-
+    private List<Grid> grids;
     private List<BoundXAxis> xAxes;
     private List<YAxis> yAxes;
 
@@ -56,6 +60,23 @@ public class Option {
      */
     public Option tooltip(Tooltip tooltip) {
         this.tooltip = tooltip;
+        return this;
+    }
+
+    /**
+     * Adds a Grid to the chart. Grids are used to plot multiple charts in cartesian coordinates. Axis objects can
+     * optionally have grid references.
+     *
+     * @since 1.0.0-M22
+     */
+    public Option grid(Grid grid) {
+        Objects.requireNonNull(grid);
+
+        if (this.grids == null) {
+            this.grids = new ArrayList<>();
+        }
+
+        this.grids.add(grid);
         return this;
     }
 
@@ -158,12 +179,14 @@ public class Option {
                 ? xAxes.stream().map(BoundXAxis::getAxis).collect(Collectors.toList())
                 : (cartesianDefaults ? List.of(XAxis.ofDefault()) : null);
         List<YAxis> ys = yAxes != null ? yAxes : (cartesianDefaults ? List.of(YAxis.ofDefault()) : null);
-        DataSetModelMeta dataset = dataset(df, cartesianDefaults);
+        DataSetLabels labels = datasetLabels(df, cartesianDefaults);
+        DataSetModel dataset = dataset(df, labels.rows);
 
         return new OptionModel(
-                dataset.dataset,
+                dataset,
                 this.legend != null ? this.legend : false,
-                datasetSeries(dataset.labelsOffset),
+                grids(),
+                datasetSeries(labels),
                 this.title,
                 this.toolbox != null ? this.toolbox.resolve() : null,
                 this.tooltip != null ? this.tooltip.resolve() : null,
@@ -177,16 +200,20 @@ public class Option {
                 || series.values().stream().filter(BoundSeries::isCartesianOrNull).findFirst().isPresent();
     }
 
-    protected DataSetModelMeta dataset(DataFrame df, boolean cartesianDefaults) {
+    protected List<GridModel> grids() {
+        return grids != null
+                ? grids.stream().map(Grid::resolve).collect(Collectors.toList())
+                : null;
+    }
+
+    protected DataSetModel dataset(DataFrame df, List<RowModel> labels) {
 
         // DF columns become rows and rows become columns in the EChart dataset
         int w = df.height();
         int h = series.size();
 
-        List<RowModel> labelRows = datasetLabelRows(df, cartesianDefaults);
-
-        List<RowModel> rows = new ArrayList<>(h + labelRows.size());
-        rows.addAll(labelRows);
+        List<RowModel> rows = new ArrayList<>(h + labels.size());
+        rows.addAll(labels);
 
         String[] rowLabels = series.keySet().toArray(new String[0]);
         for (int i = 0; i < h; i++) {
@@ -201,23 +228,38 @@ public class Option {
             rows.add(new RowModel(row, i + 1 == h));
         }
 
-        return new DataSetModelMeta(new DataSetModel(rows), labelRows.size());
+        return new DataSetModel(rows);
     }
 
-    protected List<RowModel> datasetLabelRows(DataFrame df, boolean cartesianDefaults) {
+    protected DataSetLabels datasetLabels(DataFrame df, boolean cartesianDefaults) {
 
         Map<String, List<ValueModel>> rowMap = new LinkedHashMap<>();
 
-        // the first source of labels - a column associated with XAxis
+        Map<Integer, Integer> rowPosByXAxisIndex = new HashMap<>();
+        Map<String, Integer> rowPosByRowLabel = new HashMap<>();
+
+        // The first source of labels - a column associated with XAxis.
         if (xAxes != null) {
 
-            for (BoundXAxis a : xAxes) {
-                List<ValueModel> xAxisLabels = datasetLabelRow(df, a.columnName);
-                rowMap.put((String) xAxisLabels.get(0).getValue(), xAxisLabels);
+            // If multiple Axis point to the same data column, we'll generate only one dataset row for it
+            int xlen = xAxes.size();
+            for (int i = 0; i < xlen; i++) {
+                String columnName = xAxes.get(i).columnName;
+                String labelsName = labelsName(columnName);
+
+                Integer existingPos = rowPosByRowLabel.get(labelsName);
+                if (existingPos != null) {
+                    rowPosByXAxisIndex.put(i, existingPos);
+                } else {
+                    rowPosByRowLabel.put(labelsName, i);
+                    rowPosByXAxisIndex.put(i, i);
+                    rowMap.put(labelsName, datasetLabelRow(df, columnName, labelsName));
+                }
             }
 
         } else if (cartesianDefaults) {
-            List<ValueModel> xAxisLabels = datasetLabelRow(df, null);
+            String labelsName = labelsName(null);
+            List<ValueModel> xAxisLabels = datasetLabelRow(df, null, labelsName);
             rowMap.put((String) xAxisLabels.get(0).getValue(), xAxisLabels);
         }
 
@@ -226,8 +268,8 @@ public class Option {
 
             if (s.opts instanceof PieSeriesOpts) {
                 PieSeriesOpts pco = (PieSeriesOpts) s.opts;
-
-                List<ValueModel> pieLabels = datasetLabelRow(df, pco.getLabelColumn());
+                String labelsName = labelsName(pco.getLabelColumn());
+                List<ValueModel> pieLabels = datasetLabelRow(df, pco.getLabelColumn(), labelsName);
                 String key = (String) pieLabels.get(0).getValue();
 
                 rowMap.putIfAbsent(key, pieLabels);
@@ -240,10 +282,14 @@ public class Option {
         int[] i = new int[1];
         rowMap.forEach((k, v) -> rows.add(new RowModel(v, i[0]++ == len)));
 
-        return rows;
+        return new DataSetLabels(rowPosByXAxisIndex, rows);
     }
 
-    protected List<ValueModel> datasetLabelRow(DataFrame df, String columnName) {
+    protected String labelsName(String columnName) {
+        return columnName != null ? columnName : DEFAULT_LABELS_LABEL;
+    }
+
+    protected List<ValueModel> datasetLabelRow(DataFrame df, String columnName, String labelsName) {
 
         // DF columns become rows and rows become columns in the EChart dataset
         int w = df.height();
@@ -254,7 +300,6 @@ public class Option {
                 ? df.getColumn(columnName)
                 : new IntSequenceSeries(1, df.height() + 1);
 
-        String labelsName = columnName != null ? columnName : "labels";
         row.add(new ValueModel(labelsName, w == 0));
         for (int i = 0; i < w; i++) {
             row.add(new ValueModel(columnLabels.get(i), i + 1 == w));
@@ -263,18 +308,28 @@ public class Option {
         return row;
     }
 
-    protected List<SeriesModel> datasetSeries(int labelsOffset) {
+    protected List<SeriesModel> datasetSeries(DataSetLabels labels) {
         SeriesOpts baseOpts = baseSeriesOptsTemplate();
         int len = series.size();
-        int i = labelsOffset;
+
+        // Series data rows follow label rows. So apply the offset to the "y" of the encoder
+        int y = labels.size();
 
         List<SeriesModel> models = new ArrayList<>(len);
         for (BoundSeries s : series.values()) {
 
-            // TODO: other cases when labelsPos != 0 ?? (pie charts?)
+            int labelsPos;
 
-            Integer labelsPos = (s.opts instanceof CartesianSeriesOpts) ? ((CartesianSeriesOpts) s.opts).xAxisIndex : null;
-            SeriesModel m = s.fillOpts(baseOpts).resolve(labelsPos != null ? labelsPos : 0, i++);
+            if (s.opts instanceof CartesianSeriesOpts) {
+                labelsPos = labels.xForXAxis(((CartesianSeriesOpts) s.opts).xAxisIndex);
+            } else if (s.opts instanceof PieSeriesOpts) {
+                // TODO: PieChart label to column resolution (other than 0 would not work)
+                labelsPos = 0;
+            } else {
+                labelsPos = 0;
+            }
+
+            SeriesModel m = s.fillOpts(baseOpts).resolve(labelsPos, y++);
             models.add(m);
         }
 
@@ -285,13 +340,21 @@ public class Option {
         return this.defaultSeriesOpts != null ? defaultSeriesOpts : SeriesOpts.ofLine();
     }
 
-    static class DataSetModelMeta {
-        final int labelsOffset;
-        final DataSetModel dataset;
+    static class DataSetLabels {
+        final List<RowModel> rows;
+        final Map<Integer, Integer> xAxisIndices;
 
-        DataSetModelMeta(DataSetModel dataset, int labelsOffset) {
-            this.dataset = dataset;
-            this.labelsOffset = labelsOffset;
+        DataSetLabels(Map<Integer, Integer> xAxisIndices, List<RowModel> rows) {
+            this.xAxisIndices = xAxisIndices;
+            this.rows = rows;
+        }
+
+        int size() {
+            return rows.size();
+        }
+
+        int xForXAxis(Integer xAxisIndex) {
+            return xAxisIndex != null ? xAxisIndices.get(xAxisIndex) : 0;
         }
     }
 

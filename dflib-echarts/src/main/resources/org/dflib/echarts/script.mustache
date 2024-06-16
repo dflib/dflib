@@ -50,6 +50,32 @@
     {{#legend}}
         legend: {},
     {{/legend}}
+    {{#gridPresent}}
+        grid: [
+        {{#grid}}
+            {
+            {{#left}}
+                left: {{{.}}},
+            {{/left}}
+            {{#right}}
+                right: {{{.}}},
+            {{/right}}
+            {{#top}}
+                top: {{{.}}},
+            {{/top}}
+            {{#bottom}}
+                bottom: {{{.}}},
+            {{/bottom}}
+            {{#width}}
+                width: {{{.}}},
+            {{/width}}
+            {{#height}}
+                height: {{{.}}},
+            {{/height}}
+            },
+        {{/grid}}
+        ],
+    {{/gridPresent}}
     {{#dataset}}
         dataset: {
             source: [

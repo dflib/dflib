@@ -1,8 +1,9 @@
 package org.dflib.echarts.render;
 
-import org.dflib.echarts.render.option.axis.AxisModel;
 import org.dflib.echarts.render.option.DataSetModel;
+import org.dflib.echarts.render.option.GridModel;
 import org.dflib.echarts.render.option.SeriesModel;
+import org.dflib.echarts.render.option.axis.AxisModel;
 import org.dflib.echarts.render.option.toolbox.ToolboxModel;
 import org.dflib.echarts.render.option.tooltip.TooltipModel;
 
@@ -15,6 +16,7 @@ public class OptionModel {
 
     private final DataSetModel dataset;
     private final boolean legend;
+    private final List<GridModel> grid;
     private final List<SeriesModel> series;
     private final String title;
     private final ToolboxModel toolbox;
@@ -25,6 +27,7 @@ public class OptionModel {
     public OptionModel(
             DataSetModel dataset,
             boolean legend,
+            List<GridModel> grid,
             List<SeriesModel> series,
             String title,
             ToolboxModel toolbox,
@@ -38,6 +41,7 @@ public class OptionModel {
         this.dataset = dataset;
         this.xAxes = xAxes;
         this.yAxes = yAxes;
+        this.grid = grid;
         this.series = series;
         this.legend = legend;
     }
@@ -52,6 +56,20 @@ public class OptionModel {
 
     public ToolboxModel getToolbox() {
         return toolbox;
+    }
+
+    /**
+     * @since 1.0.0-M22
+     */
+    public boolean isGridPresent() {
+        return grid != null;
+    }
+
+    /**
+     * @since 1.0.0-M22
+     */
+    public List<GridModel> getGrid() {
+        return grid;
     }
 
     public DataSetModel getDataset() {

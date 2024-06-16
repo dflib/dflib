@@ -33,12 +33,12 @@ public class PieSeriesOpts extends SeriesOpts {
         return this;
     }
 
-    public PieSeriesOpts radiusPixels(int pixels) {
+    public PieSeriesOpts radiusPx(int pixels) {
         this.radius = new Distance[]{Distance.ofPx(pixels)};
         return this;
     }
 
-    public PieSeriesOpts radiusPixels(int inner, int outer) {
+    public PieSeriesOpts radiusPx(int inner, int outer) {
         this.radius = new Distance[]{Distance.ofPx(inner), Distance.ofPx(outer)};
         return this;
     }
