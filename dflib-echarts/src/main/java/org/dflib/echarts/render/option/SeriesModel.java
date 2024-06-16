@@ -19,6 +19,7 @@ public class SeriesModel {
     private final Boolean showSymbol;
     private final Boolean smooth;
     private final Boolean stack;
+    private final Integer xAxisIndex;
     private final Integer yAxisIndex;
     private final RadiusModel radius;
     private final CenterModel center;
@@ -36,6 +37,7 @@ public class SeriesModel {
             Boolean showSymbol,
             Boolean stack,
             Boolean smooth,
+            Integer xAxisIndex,
             Integer yAxisIndex,
             RadiusModel radius,
             CenterModel center,
@@ -52,6 +54,7 @@ public class SeriesModel {
         this.showSymbol = showSymbol;
         this.stack = stack;
         this.smooth = smooth;
+        this.xAxisIndex = xAxisIndex;
         this.yAxisIndex = yAxisIndex;
         this.radius = radius;
         this.center = center;
@@ -92,6 +95,13 @@ public class SeriesModel {
      */
     public boolean dontShowSymbol() {
         return showSymbol != null && !showSymbol;
+    }
+
+    /**
+     * @since 1.0.0-M22
+     */
+    public Integer getXAxisIndex() {
+        return xAxisIndex;
     }
 
     /**

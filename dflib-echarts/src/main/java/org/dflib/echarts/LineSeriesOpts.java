@@ -48,6 +48,7 @@ public class LineSeriesOpts extends CartesianSeriesOpts<LineSeriesOpts> {
                 showSymbol,
                 stack,
                 smooth,
+                xAxisIndex,
                 yAxisIndex,
                 null,
                 null,

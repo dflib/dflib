@@ -59,8 +59,10 @@
             ]
         },
     {{/dataset}}
-    {{#xAxis}}
-        xAxis: {
+    {{#xAxesPresent}}
+        xAxis: [
+        {{#xAxes}}
+        {
         {{#alignTicksPresent}}
             alignTicks: {{alignTicks}},
         {{/alignTicksPresent}}
@@ -73,7 +75,10 @@
         {{/axisLabel}}
         {{#axisLine}}
             axisLine: {
-                show: {{show}}
+                show: {{show}},
+            {{#onZeroPresent}}
+                onZero: {{onZero}},
+            {{/onZeroPresent}}
             },
         {{/axisLine}}
         {{#noBoundaryGap}}
@@ -95,7 +100,9 @@
             type: '{{.}}'
         {{/type}}
         },
-    {{/xAxis}}
+        {{/xAxes}}
+        ],
+    {{/xAxesPresent}}
     {{#yAxesPresent}}
         yAxis: [
         {{#yAxes}}
@@ -112,7 +119,10 @@
         {{/axisLabel}}
         {{#axisLine}}
             axisLine: {
-                show: {{show}}
+                show: {{show}},
+            {{#onZeroPresent}}
+                onZero: {{onZero}},
+            {{/onZeroPresent}}
             },
         {{/axisLine}}
         {{#noBoundaryGap}}
@@ -185,6 +195,9 @@
             {{#stack}}
                 stack: 'total',
             {{/stack}}
+            {{#xAxisIndex}}
+                xAxisIndex: {{.}},
+            {{/xAxisIndex}}
             {{#yAxisIndex}}
                 yAxisIndex: {{.}},
             {{/yAxisIndex}}

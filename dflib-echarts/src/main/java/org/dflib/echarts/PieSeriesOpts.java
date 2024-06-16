@@ -94,6 +94,7 @@ public class PieSeriesOpts extends SeriesOpts {
                 null,
                 null,
                 null,
+                null,
                 radius != null ? new RadiusModel(radius) : null,
                 center != null ? new CenterModel(center[0], center[1]) : null,
                 startAngle,

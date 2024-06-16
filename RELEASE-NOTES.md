@@ -12,6 +12,7 @@
 * #300 GroupBy.map(..) / select(..) - create columns for positions that do not match
 * #301 ECharts: pie chart
 * #302 Rename "map" to "merge" in RowSet, ColumnSet, GroupBy
+* #303 ECharts: multiple X axes
 
 ## Release 1.0.0-M21
 

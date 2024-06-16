@@ -28,7 +28,7 @@ public class Option {
     private Toolbox toolbox;
     private Tooltip tooltip;
 
-    private BoundXAxis xAxis;
+    private List<BoundXAxis> xAxes;
     private List<YAxis> yAxes;
 
     private final Map<String, BoundSeries> series;
@@ -60,26 +60,31 @@ public class Option {
     }
 
     /**
-     * Specifies which DataFrame column should be used to label the X axis. This setting is optional. If not set,
+     * Adds an X axis to the chart, that will use the specified DataFrame column as axis labels. If no X axis is set,
      * series element indices will be used for X.
      */
     public Option xAxis(String dataColumn) {
-        this.xAxis = new BoundXAxis(dataColumn, XAxis.ofDefault());
-        return this;
-    }
-
-    public Option xAxis(String dataColumn, XAxis axis) {
-        this.xAxis = new BoundXAxis(dataColumn, axis);
-        return this;
+        return xAxis(dataColumn, XAxis.ofDefault());
     }
 
     public Option xAxis(XAxis axis) {
-        this.xAxis = new BoundXAxis(null, axis);
+        return xAxis(null, axis);
+    }
+
+    public Option xAxis(String dataColumn, XAxis axis) {
+        Objects.requireNonNull(dataColumn);
+
+        if (xAxes == null) {
+            xAxes = new ArrayList<>(3);
+        }
+
+        xAxes.add(new BoundXAxis(dataColumn, axis));
         return this;
     }
 
+
     /**
-     * Adds one or more Y axis to the chart.
+     * Adds one or more Y axes to the chart.
      *
      * @since 1.0.0-M22
      */
@@ -149,17 +154,20 @@ public class Option {
     protected OptionModel resolve(DataFrame df) {
 
         boolean cartesianDefaults = useCartesianDefaults();
-        XAxis x = xAxis != null ? xAxis.axis : (cartesianDefaults ? XAxis.ofDefault() : null);
+        List<XAxis> xs = xAxes != null
+                ? xAxes.stream().map(BoundXAxis::getAxis).collect(Collectors.toList())
+                : (cartesianDefaults ? List.of(XAxis.ofDefault()) : null);
         List<YAxis> ys = yAxes != null ? yAxes : (cartesianDefaults ? List.of(YAxis.ofDefault()) : null);
+        DataSetModelMeta dataset = dataset(df, cartesianDefaults);
 
         return new OptionModel(
-                dataset(df, cartesianDefaults),
+                dataset.dataset,
                 this.legend != null ? this.legend : false,
-                datasetSeries(),
+                datasetSeries(dataset.labelsOffset),
                 this.title,
                 this.toolbox != null ? this.toolbox.resolve() : null,
                 this.tooltip != null ? this.tooltip.resolve() : null,
-                x != null ? x.resolve() : null,
+                xs != null ? xs.stream().map(XAxis::resolve).collect(Collectors.toList()) : null,
                 ys != null ? ys.stream().map(YAxis::resolve).collect(Collectors.toList()) : null
         );
     }
@@ -169,16 +177,18 @@ public class Option {
                 || series.values().stream().filter(BoundSeries::isCartesianOrNull).findFirst().isPresent();
     }
 
-    protected DataSetModel dataset(DataFrame df, boolean cartesianDefaults) {
+    protected DataSetModelMeta dataset(DataFrame df, boolean cartesianDefaults) {
 
         // DF columns become rows and rows become columns in the EChart dataset
         int w = df.height();
         int h = series.size();
 
-        List<RowModel> rows = new ArrayList<>(h + 1);
-        String[] rowLabels = series.keySet().toArray(new String[0]);
-        rows.addAll(datasetLabelRows(df, cartesianDefaults));
+        List<RowModel> labelRows = datasetLabelRows(df, cartesianDefaults);
 
+        List<RowModel> rows = new ArrayList<>(h + labelRows.size());
+        rows.addAll(labelRows);
+
+        String[] rowLabels = series.keySet().toArray(new String[0]);
         for (int i = 0; i < h; i++) {
             List<ValueModel> row = new ArrayList<>(w + 1);
             row.add(new ValueModel(rowLabels[i], w == 0));
@@ -191,7 +201,7 @@ public class Option {
             rows.add(new RowModel(row, i + 1 == h));
         }
 
-        return new DataSetModel(rows);
+        return new DataSetModelMeta(new DataSetModel(rows), labelRows.size());
     }
 
     protected List<RowModel> datasetLabelRows(DataFrame df, boolean cartesianDefaults) {
@@ -199,9 +209,13 @@ public class Option {
         Map<String, List<ValueModel>> rowMap = new LinkedHashMap<>();
 
         // the first source of labels - a column associated with XAxis
-        if (xAxis != null) {
-            List<ValueModel> xAxisLabels = datasetLabelRow(df, xAxis.columnName);
-            rowMap.put((String) xAxisLabels.get(0).getValue(), xAxisLabels);
+        if (xAxes != null) {
+
+            for (BoundXAxis a : xAxes) {
+                List<ValueModel> xAxisLabels = datasetLabelRow(df, a.columnName);
+                rowMap.put((String) xAxisLabels.get(0).getValue(), xAxisLabels);
+            }
+
         } else if (cartesianDefaults) {
             List<ValueModel> xAxisLabels = datasetLabelRow(df, null);
             rowMap.put((String) xAxisLabels.get(0).getValue(), xAxisLabels);
@@ -249,15 +263,18 @@ public class Option {
         return row;
     }
 
-    protected List<SeriesModel> datasetSeries() {
+    protected List<SeriesModel> datasetSeries(int labelsOffset) {
         SeriesOpts baseOpts = baseSeriesOptsTemplate();
         int len = series.size();
-        int i = 1;
+        int i = labelsOffset;
 
         List<SeriesModel> models = new ArrayList<>(len);
         for (BoundSeries s : series.values()) {
-            // TODO: "0" only works for labels when we have a single set of labels
-            SeriesModel m = s.fillOpts(baseOpts).resolve(0, i++);
+
+            // TODO: other cases when labelsPos != 0 ?? (pie charts?)
+
+            Integer labelsPos = (s.opts instanceof CartesianSeriesOpts) ? ((CartesianSeriesOpts) s.opts).xAxisIndex : null;
+            SeriesModel m = s.fillOpts(baseOpts).resolve(labelsPos != null ? labelsPos : 0, i++);
             models.add(m);
         }
 
@@ -268,6 +285,16 @@ public class Option {
         return this.defaultSeriesOpts != null ? defaultSeriesOpts : SeriesOpts.ofLine();
     }
 
+    static class DataSetModelMeta {
+        final int labelsOffset;
+        final DataSetModel dataset;
+
+        DataSetModelMeta(DataSetModel dataset, int labelsOffset) {
+            this.dataset = dataset;
+            this.labelsOffset = labelsOffset;
+        }
+    }
+
     static class BoundXAxis {
         final String columnName;
         final XAxis axis;
@@ -275,6 +302,10 @@ public class Option {
         BoundXAxis(String columnName, XAxis axis) {
             this.columnName = columnName;
             this.axis = axis;
+        }
+
+        XAxis getAxis() {
+            return axis;
         }
     }
 

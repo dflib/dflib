@@ -23,6 +23,17 @@ public class XAxisTest extends GenerateScriptHtmlTest {
     }
 
     @Test
+    public void xAxes() {
+        String s1 = ECharts.chart()
+                .xAxis("x1")
+                .xAxis("x2")
+                .generateScriptHtml("_tid", df4);
+        assertTrue(s1.contains("['x1','A','B','C'],"), s1);
+        assertTrue(s1.contains("['x2','X','Y','Z'],"), s1);
+        assertTrue(s1.contains("type: 'category'"), s1);
+    }
+
+    @Test
     public void boundaryGap() {
 
         String s1 = ECharts.chart().generateScriptHtml("_tid", df1);
@@ -94,13 +105,22 @@ public class XAxisTest extends GenerateScriptHtmlTest {
         String s1 = ECharts.chart().generateScriptHtml("_tid", df1);
         assertFalse(s1.contains("axisLine:"), s1);
         assertFalse(s1.contains("show:"), s1);
+        assertFalse(s1.contains("onZero:"), s1);
 
         String s2 = ECharts.chart().xAxis("x", XAxis.ofDefault().line(AxisLine.of())).generateScriptHtml("_tid", df1);
         assertTrue(s2.contains("axisLine: {"), s2);
         assertTrue(s2.contains("show: true"), s2);
+        assertFalse(s2.contains("onZero:"), s2);
 
         String s3 = ECharts.chart().xAxis("x", XAxis.ofDefault().line(AxisLine.of().show(false))).generateScriptHtml("_tid", df1);
         assertTrue(s3.contains("axisLine: {"), s3);
         assertTrue(s3.contains("show: false"), s3);
+        assertFalse(s3.contains("onZero:"), s3);
+
+        String s4 = ECharts.chart().xAxis("x", XAxis.ofDefault().line(AxisLine.of().onZero(false))).generateScriptHtml("_tid", df1);
+        assertTrue(s4.contains("axisLine: {"), s4);
+        assertTrue(s4.contains("show: true"), s4);
+        assertTrue(s4.contains("onZero: false"), s4);
+
     }
 }

@@ -103,14 +103,18 @@ public class EChart {
     }
 
     /**
-     * Specifies which DataFrame column should be used to label the X axis. This setting is optional. If not set,
-     * series element indices will be used for X.
+     * Adds an X axis to the chart, that will use the specified DataFrame column as axis labels. If this or other
+     * "xAxis" methods are not invoked, a default categorical X axis will be generated using element indices for labels
      */
     public EChart xAxis(String dataColumn) {
         option.xAxis(dataColumn);
         return this;
     }
 
+    /**
+     * Adds an X axis to the chart, that will use the specified DataFrame column as axis labels. If this or other
+     * "xAxis" methods are not invoked, a default categorical X axis will be generated using element indices for labels
+     */
     public EChart xAxis(String dataColumn, XAxis axis) {
         option.xAxis(dataColumn, axis);
         return this;

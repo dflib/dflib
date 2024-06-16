@@ -8,6 +8,7 @@ import org.dflib.echarts.render.option.axis.AxisLineModel;
 public class AxisLine {
 
     private boolean show;
+    private Boolean onZero;
 
     public static AxisLine of() {
         return new AxisLine();
@@ -25,7 +26,12 @@ public class AxisLine {
         return this;
     }
 
+    public AxisLine onZero(boolean onZero) {
+        this.onZero = onZero;
+        return this;
+    }
+
     protected AxisLineModel resolve() {
-        return new AxisLineModel(show);
+        return new AxisLineModel(show, onZero);
     }
 }

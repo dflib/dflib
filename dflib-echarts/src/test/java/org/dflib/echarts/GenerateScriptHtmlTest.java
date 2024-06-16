@@ -17,4 +17,9 @@ public abstract class GenerateScriptHtmlTest {
             LocalDate.of(2022, 1, 1), 10, 20, "A",
             LocalDate.of(2022, 2, 1), 11, 25, "B",
             LocalDate.of(2022, 3, 1), 14, 28, "C");
+
+    protected static final DataFrame df4 = DataFrame.foldByRow("x2", "y1", "y2", "x1").of(
+            "X", 10, 20, "A",
+            "Y", 11, 25, "B",
+            "Z", 14, 28, "C");
 }
