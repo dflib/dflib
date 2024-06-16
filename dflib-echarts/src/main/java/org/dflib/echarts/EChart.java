@@ -17,7 +17,8 @@ import java.security.SecureRandom;
 import java.util.Random;
 
 /**
- * A builder of HTML/JS code that renders DataFrame data using ECharts library.
+ * A builder of HTML/JS code that renders DataFrame data using ECharts library. Created via {@link ECharts#chart()} and
+ * {@link ECharts#chart(String)} methods.
  *
  * @since 1.0.0-M21
  */
@@ -51,24 +52,6 @@ public class EChart {
     private String scriptUrl;
     private Integer width;
     private Integer height;
-
-    /**
-     * Starts a builder for a new chart.
-     *
-     * @since 1.0.0-M22
-     */
-    public static EChart chart() {
-        return new EChart();
-    }
-
-    /**
-     * Starts a builder for a new named chart.
-     *
-     * @since 1.0.0-M22
-     */
-    public static EChart chart(String title) {
-        return chart().title(title);
-    }
 
     protected EChart() {
         this.rnd = new SecureRandom();
