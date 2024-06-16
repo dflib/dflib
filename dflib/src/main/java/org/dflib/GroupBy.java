@@ -169,7 +169,7 @@ public class GroupBy {
      * @return a new Series object with ranking numbers of each row within its group. The order matches the order of
      * the original DataFrame that was used to build the grouping.
      * @since 0.8
-     * @deprecated in favor of {@link #map(Exp[])} or {@link #select()} with {@link Exp#rowNum()}
+     * @deprecated in favor of {@link #merge(Exp[])} or {@link #select()} with {@link Exp#rowNum()}
      */
     @Deprecated(since = "1.0.0-M21", forRemoval = true)
     public IntSeries rowNumber() {
@@ -391,9 +391,9 @@ public class GroupBy {
      * truncation and other operations.
      *
      * @return a new DataFrame made from recombined groups after applying provided expressions
-     * @since 1.0.0-M21
+     * @since 1.0.0-M22
      */
-    public DataFrame map(Exp<?>... exps) {
+    public DataFrame merge(Exp<?>... exps) {
 
         int len = groupsIndex.size();
         DataFrame[] dfs = new DataFrame[len];
@@ -404,17 +404,26 @@ public class GroupBy {
 
             for (IntSeries gi : groupsIndex.values()) {
                 // must call "select()" before applying "map()", otherwise "map()" is applied to the row set, not columns
-                dfs[i++] = source.rows(gi).select().cols(customIndex).map(exps);
+                dfs[i++] = source.rows(gi).select().cols(customIndex).merge(exps);
             }
         } else {
             for (IntSeries gi : groupsIndex.values()) {
                 // must call "select()" before applying "map()", otherwise "map()" is applied to the row set, not columns
-                dfs[i++] = source.rows(gi).select().cols().map(exps);
+                dfs[i++] = source.rows(gi).select().cols().merge(exps);
             }
         }
 
 
         return VConcat.concat(JoinType.inner, dfs);
+    }
+
+    /**
+     * @since 1.0.0-M21
+     * @deprecated in favor of {@link #merge(Exp[])}
+     */
+    @Deprecated(since = "1.0.0-M22", forRemoval = true)
+    public DataFrame map(Exp<?>... exps) {
+        return merge(exps);
     }
 
     public DataFrame agg(Exp<?>... aggregators) {

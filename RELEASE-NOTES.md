@@ -11,6 +11,7 @@
 * #299 Window - align API with ColumnSet and GroupBy
 * #300 GroupBy.map(..) / select(..) - create columns for positions that do not match
 * #301 ECharts: pie chart
+* #302 Rename "map" to "merge" in RowSet, ColumnSet, GroupBy
 
 ## Release 1.0.0-M21
 

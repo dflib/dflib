@@ -155,7 +155,7 @@ public class FixedColumnSet implements ColumnSet {
             columns[i] = getOrCreateColumn(i);
         }
 
-        return merge(columns, oldToNewNames);
+        return doMerge(columns, oldToNewNames);
     }
 
     @Override
@@ -180,7 +180,7 @@ public class FixedColumnSet implements ColumnSet {
             columns[i] = Series.ofVal(values[i], h);
         }
 
-        return merge(columns);
+        return doMerge(columns);
     }
 
     @Override
@@ -202,7 +202,7 @@ public class FixedColumnSet implements ColumnSet {
                     () -> Series.ofVal(value, h));
         }
 
-        return merge(columns);
+        return doMerge(columns);
     }
 
     @Override
@@ -219,7 +219,7 @@ public class FixedColumnSet implements ColumnSet {
                     () -> new SingleValueSeries<>(null, h));
         }
 
-        return merge(columns);
+        return doMerge(columns);
     }
 
     @Override
@@ -236,7 +236,7 @@ public class FixedColumnSet implements ColumnSet {
                     () -> new SingleValueSeries<>(null, h));
         }
 
-        return merge(columns);
+        return doMerge(columns);
     }
 
     @Override
@@ -250,7 +250,7 @@ public class FixedColumnSet implements ColumnSet {
             columns[i] = s.fillNullsFromSeries(series);
         }
 
-        return merge(columns);
+        return doMerge(columns);
     }
 
     @Override
@@ -268,7 +268,7 @@ public class FixedColumnSet implements ColumnSet {
             columns[i] = s instanceof BooleanSeries ? s.castAsBool() : s.mapAsBool(BoolValueMapper.fromObject());
         }
 
-        return merge(columns);
+        return doMerge(columns);
     }
 
     @Override
@@ -281,7 +281,7 @@ public class FixedColumnSet implements ColumnSet {
             columns[i] = s.mapAsBool(converter);
         }
 
-        return merge(columns);
+        return doMerge(columns);
     }
 
     @Override
@@ -296,7 +296,7 @@ public class FixedColumnSet implements ColumnSet {
             columns[i] = s instanceof IntSeries ? s.castAsInt() : s.mapAsInt(converter);
         }
 
-        return merge(columns);
+        return doMerge(columns);
     }
 
     @Override
@@ -309,7 +309,7 @@ public class FixedColumnSet implements ColumnSet {
             columns[i] = s.mapAsInt(converter);
         }
 
-        return merge(columns);
+        return doMerge(columns);
     }
 
     @Override
@@ -324,7 +324,7 @@ public class FixedColumnSet implements ColumnSet {
             columns[i] = s instanceof LongSeries ? s.castAsLong() : s.mapAsLong(converter);
         }
 
-        return merge(columns);
+        return doMerge(columns);
     }
 
     @Override
@@ -337,7 +337,7 @@ public class FixedColumnSet implements ColumnSet {
             columns[i] = s.mapAsLong(converter);
         }
 
-        return merge(columns);
+        return doMerge(columns);
     }
 
     @Override
@@ -352,7 +352,7 @@ public class FixedColumnSet implements ColumnSet {
             columns[i] = s instanceof DoubleSeries ? s.castAsDouble() : s.mapAsDouble(converter);
         }
 
-        return merge(columns);
+        return doMerge(columns);
     }
 
     @Override
@@ -365,7 +365,7 @@ public class FixedColumnSet implements ColumnSet {
             columns[i] = s.mapAsDouble(converter);
         }
 
-        return merge(columns);
+        return doMerge(columns);
     }
 
     @Override
@@ -374,8 +374,8 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame map(Exp<?>... exps) {
-        return merge(doMap(exps));
+    public DataFrame merge(Exp<?>... exps) {
+        return doMerge(doMap(exps));
     }
 
     @Override
@@ -400,7 +400,7 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame map(Series<?>... columns) {
+    public DataFrame merge(Series<?>... columns) {
 
         int w = csIndex.length;
 
@@ -416,17 +416,17 @@ public class FixedColumnSet implements ColumnSet {
             }
         }
 
-        return merge(columns);
+        return doMerge(columns);
     }
 
     @Override
-    public DataFrame map(RowToValueMapper<?>... exps) {
-        return merge(doMap(exps));
+    public DataFrame merge(RowToValueMapper<?>... exps) {
+        return doMerge(doMap(exps));
     }
 
     @Override
     public DataFrame select(RowToValueMapper<?>... exps) {
-        return merge(doMap(exps));
+        return doMerge(doMap(exps));
     }
 
     private Series<?>[] doMap(RowToValueMapper<?>[] mappers) {
@@ -446,7 +446,7 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame map(RowMapper mapper) {
+    public DataFrame merge(RowMapper mapper) {
 
         MultiArrayRowBuilder b = new MultiArrayRowBuilder(Index.of(csIndex), source.height());
 
@@ -455,7 +455,7 @@ public class FixedColumnSet implements ColumnSet {
             mapper.map(from, b);
         });
 
-        return merge(b.getData());
+        return doMerge(b.getData());
     }
 
     @Override
@@ -472,7 +472,7 @@ public class FixedColumnSet implements ColumnSet {
 
     @Override
     public DataFrame expand(Exp<? extends Iterable<?>> splitExp) {
-        return merge(doMapIterables(splitExp));
+        return doMerge(doMapIterables(splitExp));
     }
 
     @Override
@@ -514,7 +514,7 @@ public class FixedColumnSet implements ColumnSet {
 
     @Override
     public DataFrame expandArray(Exp<? extends Object[]> splitExp) {
-        return merge(doMapArrays(splitExp));
+        return doMerge(doMapArrays(splitExp));
     }
 
     @Override
@@ -583,11 +583,11 @@ public class FixedColumnSet implements ColumnSet {
                 : createNew.get();
     }
 
-    private DataFrame merge(Series<?>[] columns) {
+    private DataFrame doMerge(Series<?>[] columns) {
         return ColumnSetMerger.merge(source, csIndex, columns);
     }
 
-    private DataFrame merge(Series<?>[] columns, Map<String, String> oldToNewNames) {
+    private DataFrame doMerge(Series<?>[] columns, Map<String, String> oldToNewNames) {
         return ColumnSetMerger.mergeAs(source,
                 csIndex,
                 Index.of(csIndex).replace(oldToNewNames).toArray(),

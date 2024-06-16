@@ -208,7 +208,7 @@ public class Window {
      *
      * @since 1.0.0-M22
      */
-    public DataFrame map(Exp<?>... aggregators) {
+    public DataFrame merge(Exp<?>... aggregators) {
         String[] labels = selectLabels(aggregators);
         return ColumnSetMerger.merge(source, labels, selectColumns(aggregators));
     }
@@ -217,7 +217,7 @@ public class Window {
      * Applies an aggregating expression to each DataFrame row, passing it a window associated with the current row.
      *
      * @since 0.14
-     * @deprecated use {@link #map(Exp[])} or {@link #select(Exp[])} instead.
+     * @deprecated use {@link #merge(Exp[])} or {@link #select(Exp[])} instead.
      */
     @Deprecated(since = "1.0.0-M22", forRemoval = true)
     public <T> Series<T> mapColumn(Exp<T> windowAggregator) {

@@ -3,7 +3,7 @@ package org.dflib;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
-public class RowSet_Map_MappersTest {
+public class RowSet_Merge_ExpTest {
 
     @Test
     public void all() {
@@ -12,12 +12,11 @@ public class RowSet_Map_MappersTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .cols(0).compactInt(0)
                 .rows()
-                .map(
-                        r -> r.getInt(0) * 3,
-                        r -> r.get(1) + "" + r.get(2),
-                        r -> r.get(2)
+                .merge(
+                        Exp.$int(0).mul(3),
+                        Exp.concat(Exp.$str(1), Exp.$str(2)),
+                        Exp.$str(2)
                 );
 
         new DataFrameAsserts(df, "a", "b", "c")
@@ -34,12 +33,11 @@ public class RowSet_Map_MappersTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .cols(0).compactInt(0)
                 .rows(Series.ofInt(0, 2))
-                .map(
-                        r -> r.getInt(0) * 3,
-                        r -> r.get(1) + "" + r.get(2),
-                        r -> r.get(2)
+                .merge(
+                        Exp.$int(0).mul(3),
+                        Exp.concat(Exp.$str(1), Exp.$str(2)),
+                        Exp.$str(2)
                 );
 
         new DataFrameAsserts(df, "a", "b", "c")
@@ -47,6 +45,27 @@ public class RowSet_Map_MappersTest {
                 .expectRow(0, 3, "xa", "a")
                 .expectRow(1, 2, "y", "b")
                 .expectRow(2, -3, "mn", "n");
+    }
+
+    @Test
+    public void rowsExcept_byIndex() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, "x", "a",
+                        2, "y", "b",
+                        -1, "m", "n")
+                .rowsExcept(Series.ofInt(0, 2))
+                .merge(
+                        Exp.$int(0).mul(3),
+                        Exp.concat(Exp.$str(1), Exp.$str(2)),
+                        Exp.$str(2)
+                );
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(3)
+                .expectRow(0, 1, "x", "a")
+                .expectRow(1, 6, "yb", "b")
+                .expectRow(2, -1, "m", "n");
     }
 
     @Test
@@ -58,10 +77,10 @@ public class RowSet_Map_MappersTest {
                         -1, "m", "n")
                 .cols(0).compactInt(0)
                 .rows(Series.ofInt(0, 2, 2, 0))
-                .map(
-                        r -> r.getInt(0) * 3,
-                        r -> r.get(1) + "" + r.get(2),
-                        r -> r.get(2)
+                .merge(
+                        Exp.$int(0).mul(3),
+                        Exp.concat(Exp.$str(1), Exp.$str(2)),
+                        Exp.$str(2)
                 );
 
         new DataFrameAsserts(df, "a", "b", "c")
@@ -80,21 +99,19 @@ public class RowSet_Map_MappersTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .cols(0).compactInt(0)
-                .rowsRange(0, 2)
-                .map(
-                        r -> r.getInt(0) * 3,
-                        r -> r.get(1) + "" + r.get(2),
-                        r -> r.get(2)
+                .rowsRange(1, 3)
+                .merge(
+                        Exp.$int(0).mul(3),
+                        Exp.concat(Exp.$str(1), Exp.$str(2)),
+                        Exp.$str(2)
                 );
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(3)
-                .expectRow(0, 3, "xa", "a")
+                .expectRow(0, 1, "x", "a")
                 .expectRow(1, 6, "yb", "b")
-                .expectRow(2, -1, "m", "n");
+                .expectRow(2, -3, "mn", "n");
     }
-
 
     @Test
     public void byCondition() {
@@ -103,12 +120,11 @@ public class RowSet_Map_MappersTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .cols(0).compactInt(0)
                 .rows(Series.ofBool(true, false, true))
-                .map(
-                        r -> r.getInt(0) * 3,
-                        r -> r.get(1) + "" + r.get(2),
-                        r -> r.get(2)
+                .merge(
+                        Exp.$int(0).mul(3),
+                        Exp.concat(Exp.$str(1), Exp.$str(2)),
+                        Exp.$str(2)
                 );
 
         new DataFrameAsserts(df, "a", "b", "c")

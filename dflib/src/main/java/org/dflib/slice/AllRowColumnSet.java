@@ -23,17 +23,17 @@ public class AllRowColumnSet implements RowColumnSet {
 
     @Override
     public DataFrame map(Exp<?>... exps) {
-        return columnSet.map(exps);
+        return columnSet.merge(exps);
     }
 
     @Override
     public DataFrame map(RowMapper mapper) {
-        return columnSet.map(mapper);
+        return columnSet.merge(mapper);
     }
 
     @Override
     public DataFrame map(RowToValueMapper<?>... mappers) {
-        return columnSet.map(mappers);
+        return columnSet.merge(mappers);
     }
 
     @Override

@@ -62,7 +62,7 @@ public abstract class BaseRowSet implements RowSet {
     }
 
     @Override
-    public DataFrame map(Exp<?>... exps) {
+    public DataFrame merge(Exp<?>... exps) {
 
         int w = exps.length;
         if (w != sourceColumnsIndex.size()) {
@@ -73,7 +73,7 @@ public abstract class BaseRowSet implements RowSet {
     }
 
     @Override
-    public DataFrame map(RowToValueMapper<?>... mappers) {
+    public DataFrame merge(RowToValueMapper<?>... mappers) {
 
         int w = mappers.length;
         if (w != sourceColumnsIndex.size()) {
@@ -84,7 +84,7 @@ public abstract class BaseRowSet implements RowSet {
     }
 
     @Override
-    public DataFrame map(RowMapper mapper) {
+    public DataFrame merge(RowMapper mapper) {
         Series<?>[] mapped = mapper().map(sourceColumnsIndex, sourceColumns, mapper);
         return DataFrame.byColumn(sourceColumnsIndex).of(mapped);
     }

@@ -318,8 +318,8 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame map(Exp<?>... exps) {
-        return delegate(Exps.labels(source, exps)).map(exps);
+    public DataFrame merge(Exp<?>... exps) {
+        return delegate(Exps.labels(source, exps)).merge(exps);
     }
 
     @Override
@@ -338,7 +338,7 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame map(Series<?>... columns) {
+    public DataFrame merge(Series<?>... columns) {
 
         int w = columns.length;
         int h = source.height();
@@ -354,11 +354,11 @@ public class DeferredColumnSet implements ColumnSet {
             labels[i] = String.valueOf(srcW + i);
         }
 
-        return delegate(labels).map(columns);
+        return delegate(labels).merge(columns);
     }
 
     @Override
-    public DataFrame map(RowToValueMapper<?>... mappers) {
+    public DataFrame merge(RowToValueMapper<?>... mappers) {
         int w = mappers.length;
         int srcW = source.width();
 
@@ -367,7 +367,7 @@ public class DeferredColumnSet implements ColumnSet {
             labels[i] = String.valueOf(srcW + i);
         }
 
-        return delegate(labels).map(mappers);
+        return delegate(labels).merge(mappers);
     }
 
     @Override
@@ -386,7 +386,7 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame map(RowMapper mapper) {
+    public DataFrame merge(RowMapper mapper) {
 
         DynamicColsRowBuilder b = new DynamicColsRowBuilder(source.height());
         source.forEach(from -> {
@@ -394,7 +394,7 @@ public class DeferredColumnSet implements ColumnSet {
             mapper.map(from, b);
         });
 
-        return delegate(b.getLabels()).map(b.getData());
+        return delegate(b.getLabels()).merge(b.getData());
     }
 
     @Override

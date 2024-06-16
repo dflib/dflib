@@ -115,17 +115,17 @@ public class EmptyRowSet implements RowSet {
     }
 
     @Override
-    public DataFrame map(Exp<?>... exps) {
+    public DataFrame merge(Exp<?>... exps) {
         return source;
     }
 
     @Override
-    public DataFrame map(RowMapper mapper) {
+    public DataFrame merge(RowMapper mapper) {
         return source;
     }
 
     @Override
-    public DataFrame map(RowToValueMapper<?>... mappers) {
+    public DataFrame merge(RowToValueMapper<?>... mappers) {
         return source;
     }
 

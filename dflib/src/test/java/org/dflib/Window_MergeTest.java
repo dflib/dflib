@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test;
 import static org.dflib.Exp.$col;
 import static org.dflib.Exp.$int;
 
-public class Window_MapTest {
+public class Window_MergeTest {
 
     @Test
     public void empty() {
         DataFrame df = DataFrame.empty("a", "b", "c");
-        DataFrame r = df.over().cols("a", "d").map($col("a"), $int("a").sum());
+        DataFrame r = df.over().cols("a", "d").merge($col("a"), $int("a").sum());
         new DataFrameAsserts(r, "a", "b", "c", "d").expectHeight(0);
     }
 
@@ -24,7 +24,7 @@ public class Window_MapTest {
                 0, "a",
                 1, "x");
 
-        DataFrame r = df.over().map($int("a").sum());
+        DataFrame r = df.over().merge($int("a").sum());
         new DataFrameAsserts(r, "a", "b", "sum(a)")
                 .expectHeight(5)
                 .expectRow(0, 1, "x", 5)
@@ -45,7 +45,7 @@ public class Window_MapTest {
 
         DataFrame r = df.over()
                 .cols("b", "c")
-                .map(
+                .merge(
                         $col("b").first(),
                         $int("a").sum()
                 );
@@ -70,7 +70,7 @@ public class Window_MapTest {
 
         DataFrame r = df.over()
                 .cols(1, 2)
-                .map(
+                .merge(
                         $col("b").first(),
                         $int("a").sum()
                 );
@@ -95,7 +95,7 @@ public class Window_MapTest {
 
         DataFrame r = df.over()
                 .cols("a"::equals)
-                .map($int("a").sum());
+                .merge($int("a").sum());
 
         new DataFrameAsserts(r, "a", "b")
                 .expectHeight(5)
@@ -117,7 +117,7 @@ public class Window_MapTest {
 
         DataFrame r = df.over()
                 .colsExcept("b")
-                .map($int("a").sum());
+                .merge($int("a").sum());
 
         new DataFrameAsserts(r, "a", "b")
                 .expectHeight(5)
@@ -139,7 +139,7 @@ public class Window_MapTest {
 
         DataFrame r = df.over()
                 .colsExcept(1)
-                .map($int("a").sum());
+                .merge($int("a").sum());
 
         new DataFrameAsserts(r, "a", "b")
                 .expectHeight(5)
@@ -161,7 +161,7 @@ public class Window_MapTest {
 
         DataFrame r = df.over()
                 .colsExcept("b"::equals)
-                .map($int("a").sum());
+                .merge($int("a").sum());
 
         new DataFrameAsserts(r, "a", "b")
                 .expectHeight(5)

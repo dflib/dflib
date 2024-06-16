@@ -36,26 +36,58 @@ public interface RowSet {
      */
     DataFrame drop();
 
-
     /**
-     * For the specified column, expands its Iterable or array objects, creating new rows for each collection element.
-     * All other columns in the newly produced rows will be populated with values of the source rows. The new rows are
-     * added at the bottom of the returned DataFrame.
+     * A flavor of "merge" that for the specified column, expands its Iterable or array objects, creating new rows for
+     * each collection element. All other columns in the newly produced rows will be populated with values of the source
+     * rows. The new rows are added at the bottom of the returned DataFrame.
      */
     DataFrame expand(String columnName);
 
     /**
-     * For the specified column, expands its Iterable or array objects, creating new rows for each collection element.
-     * All other columns in the newly produced rows will be populated with values of the source rows. The new rows are
-     * added at the bottom of the returned DataFrame.
+     * A flavor of "merge" that for the specified column, expands its Iterable or array objects, creating new rows for
+     * each collection element. All other columns in the newly produced rows will be populated with values of the
+     * source rows. The new rows are added at the bottom of the returned DataFrame.
      */
     DataFrame expand(int columnPos);
 
-    DataFrame map(Exp<?>... exps);
+    /**
+     * @since 1.0.0-M22
+     */
+    DataFrame merge(Exp<?>... exps);
 
-    DataFrame map(RowMapper mapper);
+    /**
+     * @since 1.0.0-M22
+     */
+    DataFrame merge(RowMapper mapper);
 
-    DataFrame map(RowToValueMapper<?>... mappers);
+    /**
+     * @since 1.0.0-M22
+     */
+    DataFrame merge(RowToValueMapper<?>... mappers);
+
+    /**
+     * @deprecated in favor of {@link #merge(Exp[])}
+     */
+    @Deprecated(since = "1.0.0-M22", forRemoval = true)
+    default DataFrame map(Exp<?>... exps) {
+        return merge(exps);
+    }
+
+    /**
+     * @deprecated in favor of {@link #merge(RowMapper)}
+     */
+    @Deprecated(since = "1.0.0-M22", forRemoval = true)
+    default DataFrame map(RowMapper mapper) {
+        return merge(mapper);
+    }
+
+    /**
+     * @deprecated in favor of {@link #merge(RowToValueMapper[])}
+     */
+    @Deprecated(since = "1.0.0-M22", forRemoval = true)
+    default DataFrame map(RowToValueMapper<?>... mappers) {
+        return merge(mappers);
+    }
 
     /**
      * Sorts the RowSet, applying provided sorters and returns a DataFrame with the sorted rows from the RowSet merged

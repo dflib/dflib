@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.dflib.Exp.$val;
 import static org.dflib.Exp.rowNum;
 
-public class GroupBy_Map_ExpTest {
+public class GroupBy_Merge_ExpTest {
 
     @Test
     public void cols_Implicit() {
@@ -17,7 +17,7 @@ public class GroupBy_Map_ExpTest {
                 0, "a",
                 1, "z");
 
-        DataFrame df = df1.group("a").map(rowNum());
+        DataFrame df = df1.group("a").merge(rowNum());
         new DataFrameAsserts(df, "a", "b", "rowNum()")
                 .expectHeight(5)
                 .expectRow(0, 1, "x", 1)
@@ -38,7 +38,7 @@ public class GroupBy_Map_ExpTest {
 
         DataFrame df2 = df1.group("a")
                 .head(2)
-                .map(rowNum());
+                .merge(rowNum());
 
         new DataFrameAsserts(df2, "a", "b", "rowNum()")
                 .expectHeight(4)
@@ -57,7 +57,7 @@ public class GroupBy_Map_ExpTest {
                 0, "d",
                 1, "e");
 
-        DataFrame df = df1.group("a").cols("X").map(rowNum());
+        DataFrame df = df1.group("a").cols("X").merge(rowNum());
 
         new DataFrameAsserts(df, "a", "b", "X")
                 .expectHeight(5)
@@ -77,7 +77,7 @@ public class GroupBy_Map_ExpTest {
                 0, "d",
                 1, "e");
 
-        DataFrame df = df1.group("a").cols(1, 2).map(rowNum(), $val("c"));
+        DataFrame df = df1.group("a").cols(1, 2).merge(rowNum(), $val("c"));
 
         new DataFrameAsserts(df, "a", "b", "2")
                 .expectHeight(5)
@@ -97,7 +97,7 @@ public class GroupBy_Map_ExpTest {
                 0, "d",
                 1, "e");
 
-        DataFrame df = df1.group("a").cols(c -> c.startsWith("b")).map(rowNum());
+        DataFrame df = df1.group("a").cols(c -> c.startsWith("b")).merge(rowNum());
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(5)
@@ -117,7 +117,7 @@ public class GroupBy_Map_ExpTest {
                 0, "d",
                 1, "e");
 
-        DataFrame df = df1.group("a").colsExcept("a").map(rowNum());
+        DataFrame df = df1.group("a").colsExcept("a").merge(rowNum());
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(5)
@@ -137,7 +137,7 @@ public class GroupBy_Map_ExpTest {
                 0, "d",
                 1, "e");
 
-        DataFrame df = df1.group("a").colsExcept(0).map(rowNum());
+        DataFrame df = df1.group("a").colsExcept(0).merge(rowNum());
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(5)
@@ -157,7 +157,7 @@ public class GroupBy_Map_ExpTest {
                 0, "d",
                 1, "e");
 
-        DataFrame df = df1.group("a").colsExcept(c -> c.startsWith("a")).map(rowNum());
+        DataFrame df = df1.group("a").colsExcept(c -> c.startsWith("a")).merge(rowNum());
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(5)

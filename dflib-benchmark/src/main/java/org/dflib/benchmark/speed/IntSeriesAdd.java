@@ -64,7 +64,7 @@ public class IntSeriesAdd {
 
     @Benchmark
     public Object map_Add() {
-        return s1_s2.cols().map(Exp.$int(0).add(Exp.$int(1)));
+        return s1_s2.cols().merge(Exp.$int(0).add(Exp.$int(1)));
     }
 
     @Benchmark

@@ -16,7 +16,7 @@ public class Udf1Test {
                         "xx", "x ",
                         " m", null,
                         null, " y")
-                .cols("a", "b").map(udf.call("a"), udf.call("b"));
+                .cols("a", "b").merge(udf.call("a"), udf.call("b"));
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(3)
@@ -55,7 +55,7 @@ public class Udf1Test {
                         "xx", "x ",
                         " m", null,
                         null, " y")
-                .cols("a", "b").map(udf.call(0), udf.call(1));
+                .cols("a", "b").merge(udf.call(0), udf.call(1));
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(3)
@@ -73,7 +73,7 @@ public class Udf1Test {
                         "xx", "x ",
                         " m", null,
                         null, " y")
-                .cols("a", "b").map(udf.call($str("a")), udf.call($col("b")));
+                .cols("a", "b").merge(udf.call($str("a")), udf.call($col("b")));
 
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(3)

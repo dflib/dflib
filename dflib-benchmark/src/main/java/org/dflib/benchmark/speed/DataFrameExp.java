@@ -42,7 +42,7 @@ public class DataFrameExp {
 
     @Benchmark
     public Object mapIntViaLambda() {
-        return df.cols("C").map(r -> r.get("c0", Integer.class) + r.get("c1", Integer.class))
+        return df.cols("C").merge(r -> r.get("c0", Integer.class) + r.get("c1", Integer.class))
                 .materialize()
                 .iterator();
     }
@@ -50,12 +50,12 @@ public class DataFrameExp {
     @Benchmark
     public Object mapIntViaExp() {
         Exp<?> add = $int("c0").add($int("c1"));
-        return df.cols("C").map(add).materialize().iterator();
+        return df.cols("C").merge(add).materialize().iterator();
     }
 
     @Benchmark
     public Object mapIntegerViaLambda() {
-        return df.cols("C").map(r -> r.get("c0", Integer.class) + r.get("c2", Integer.class))
+        return df.cols("C").merge(r -> r.get("c0", Integer.class) + r.get("c2", Integer.class))
                 .materialize()
                 .iterator();
     }
@@ -63,12 +63,12 @@ public class DataFrameExp {
     @Benchmark
     public Object mapIntegerViaExp() {
         Exp<?> add = $int("c0").add($int("c2"));
-        return df.cols("C").map(add).materialize().iterator();
+        return df.cols("C").merge(add).materialize().iterator();
     }
 
     @Benchmark
     public Object mapStringViaLambda() {
-        return df.cols("C").map(r -> {
+        return df.cols("C").merge(r -> {
                     String c3 = (String) r.get("c3");
                     String c4 = (String) r.get("c4");
 
@@ -81,12 +81,12 @@ public class DataFrameExp {
     @Benchmark
     public Object mapStringViaExp() {
         Exp<String> concat = concat($col("c3"), $col("c4"));
-        return df.cols("C").map(concat).materialize().iterator();
+        return df.cols("C").merge(concat).materialize().iterator();
     }
 
     @Benchmark
     public Object mapDoubleViaLambda() {
-        return df.cols("C").map(r -> ((Double) r.get("c5")) + ((Double) r.get("c6")))
+        return df.cols("C").merge(r -> ((Double) r.get("c5")) + ((Double) r.get("c6")))
                 .materialize()
                 .iterator();
     }
@@ -94,6 +94,6 @@ public class DataFrameExp {
     @Benchmark
     public Object mapDoubleViaExp() {
         Exp<?> add = $double("c5").add($double("c6"));
-        return df.cols("C").map(add).materialize().iterator();
+        return df.cols("C").merge(add).materialize().iterator();
     }
 }
