@@ -1,5 +1,6 @@
 package org.dflib.echarts;
 
+import org.dflib.echarts.render.option.Distance;
 import org.dflib.echarts.render.option.EncodeModel;
 import org.dflib.echarts.render.option.SeriesModel;
 import org.dflib.echarts.render.option.series.CenterModel;
@@ -10,8 +11,8 @@ import org.dflib.echarts.render.option.series.RadiusModel;
  */
 public class PieSeriesOpts extends SeriesOpts {
 
-    private Object[] radius;
-    private Object[] center;
+    private Distance[] radius;
+    private Distance[] center;
     private BoundLabel label;
     private Integer startAngle;
     private Integer endAngle;
@@ -33,32 +34,32 @@ public class PieSeriesOpts extends SeriesOpts {
     }
 
     public PieSeriesOpts radiusPixels(int pixels) {
-        this.radius = new Object[]{pixels};
+        this.radius = new Distance[]{Distance.ofPx(pixels)};
         return this;
     }
 
     public PieSeriesOpts radiusPixels(int inner, int outer) {
-        this.radius = new Object[]{inner, outer};
+        this.radius = new Distance[]{Distance.ofPx(inner), Distance.ofPx(outer)};
         return this;
     }
 
     public PieSeriesOpts radiusPct(double percent) {
-        this.radius = new Object[]{percent + "%"};
+        this.radius = new Distance[]{Distance.ofPct(percent)};
         return this;
     }
 
     public PieSeriesOpts radiusPct(double inner, double outer) {
-        this.radius = new Object[]{inner + "%", outer + "%"};
+        this.radius = new Distance[]{Distance.ofPct(inner), Distance.ofPct(outer)};
         return this;
     }
 
     public PieSeriesOpts centerPixels(int horizontal, int vertical) {
-        this.center = new Object[]{horizontal, vertical};
+        this.center = new Distance[]{Distance.ofPx(horizontal), Distance.ofPx(vertical)};
         return this;
     }
 
     public PieSeriesOpts centerPct(double horizontal, double vertical) {
-        this.center = new Object[]{horizontal + "%", vertical + "%"};
+        this.center = new Distance[]{Distance.ofPct(horizontal), Distance.ofPct(vertical)};
         return this;
     }
 

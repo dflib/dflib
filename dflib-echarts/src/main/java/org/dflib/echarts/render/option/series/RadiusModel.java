@@ -1,12 +1,12 @@
 package org.dflib.echarts.render.option.series;
 
-import org.dflib.echarts.render.util.Renderer;
+import org.dflib.echarts.render.option.Distance;
 
 public class RadiusModel {
 
-    private final Object[] radius;
+    private final Distance[] radius;
 
-    public RadiusModel(Object[] radius) {
+    public RadiusModel(Distance[] radius) {
         this.radius = radius;
     }
 
@@ -15,9 +15,9 @@ public class RadiusModel {
             case 0:
                 return null;
             case 1:
-                return Renderer.quotedValue(radius[0]);
+                return radius[0].asString();
             default:
-                return '[' + Renderer.quotedValue(radius[0]) + ',' + Renderer.quotedValue(radius[1]) + ']';
+                return '[' + radius[0].asString() + ',' + radius[1].asString() + ']';
         }
     }
 }

@@ -1,18 +1,18 @@
 package org.dflib.echarts.render.option.series;
 
-import org.dflib.echarts.render.util.Renderer;
+import org.dflib.echarts.render.option.Distance;
 
 public class CenterModel {
 
-    private final Object horizontal;
-    private final Object vertical;
+    private final Distance horizontal;
+    private final Distance vertical;
 
-    public CenterModel(Object horizontal, Object vertical) {
+    public CenterModel(Distance horizontal, Distance vertical) {
         this.horizontal = horizontal;
         this.vertical = vertical;
     }
 
     public String getCenter() {
-        return '[' + Renderer.quotedValue(horizontal) + ',' + Renderer.quotedValue(vertical) + ']';
+        return '[' + horizontal.asString() + ',' + vertical.asString() + ']';
     }
 }
