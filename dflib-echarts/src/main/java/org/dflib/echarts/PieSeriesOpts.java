@@ -8,7 +8,7 @@ import org.dflib.echarts.render.option.series.RadiusModel;
 /**
  * @since 1.0.0-M22
  */
-public class PieSeriesOpts extends SeriesOpts<PieSeriesOpts> {
+public class PieSeriesOpts extends SeriesOpts {
 
     private Object[] radius;
     private Object[] center;

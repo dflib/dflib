@@ -3,7 +3,7 @@ package org.dflib.echarts;
 /**
  * @since 1.0.0-M22
  */
-public abstract class CartesianSeriesOpts<T extends SeriesOpts<T>> extends SeriesOpts<T> {
+public abstract class CartesianSeriesOpts<T extends CartesianSeriesOpts<T>> extends SeriesOpts {
 
     protected Label label;
     protected Integer yAxisIndex;
@@ -30,8 +30,8 @@ public abstract class CartesianSeriesOpts<T extends SeriesOpts<T>> extends Serie
      *
      * @since 1.0.0-M22
      */
-    public SeriesOpts yAxisIndex(int index) {
+    public T yAxisIndex(int index) {
         this.yAxisIndex = index;
-        return this;
+        return (T) this;
     }
 }

@@ -7,9 +7,7 @@ import org.dflib.echarts.render.option.SeriesModel;
  *
  * @since 1.0.0-M21
  */
-public abstract class SeriesOpts<T extends SeriesOpts> {
-
-
+public abstract class SeriesOpts {
 
     /**
      * Starts a builder for a line series options object.
