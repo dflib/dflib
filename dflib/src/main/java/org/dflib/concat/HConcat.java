@@ -21,38 +21,6 @@ public class HConcat {
         this.semantics = semantics;
     }
 
-    /**
-     * @deprecated in favor of {@link Index#expand(String...)}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    public static Index zipIndex(Index leftIndex, String[] rightLabels) {
-
-        String[] lLabels = leftIndex.getLabels();
-
-        int rlen = rightLabels.length;
-        int llen = lLabels.length;
-
-        // zipped index is continuous to match rowZipper algorithm below that rebuilds the arrays, so reset left and
-        // right positions, only preserve the names...
-
-        String[] zipped = new String[llen + rlen];
-        System.arraycopy(lLabels, 0, zipped, 0, llen);
-
-        // resolve dupes on the right
-        for (int i = 0; i < rlen; i++) {
-
-            String name = rightLabels[i];
-            while (leftIndex.contains(name)) {
-                name = name + "_";
-            }
-
-            int ri = i + llen;
-            zipped[ri] = name;
-        }
-
-        return Index.of(zipped);
-    }
-
     public DataFrame concat(Index joinedColumns, DataFrame lf, DataFrame rf, RowCombiner rowCombiner) {
         int lh = lf.height();
         int rh = rf.height();

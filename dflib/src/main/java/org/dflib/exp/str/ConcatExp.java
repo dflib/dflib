@@ -14,14 +14,6 @@ import static org.dflib.Exp.$val;
 public class ConcatExp extends ExpN<String> implements StrExp {
 
     /**
-     * @deprecated in favor of {@link #of(Object...)}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    public static StrExp forObjects(Object... valuesOrExps) {
-        return of(valuesOrExps);
-    }
-
-    /**
      * @since 1.0.0-M21
      */
     public static StrExp of(Object... valuesOrExps) {

@@ -1,3 +1,7 @@
+## Release 1.0.0-M23
+
+* #306 Remove APIs deprecated since M21
+
 ## Release 1.0.0-M22
 
 * #291 Remove APIs deprecated since M20

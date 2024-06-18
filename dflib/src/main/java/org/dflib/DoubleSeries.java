@@ -80,17 +80,8 @@ public interface DoubleSeries extends Series<Double> {
     }
 
     /**
-     * Creates a new Series with a provided double appended to the end of this Series.
+     * Creates a new Series with a provided values appended to the end of this Series.
      *
-     * @since 0.18
-     * @deprecated use {@link #expandDouble(double...)}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    default DoubleSeries addDouble(double val) {
-        return expandDouble(val);
-    }
-
-    /**
      * @since 1.0.0-M21
      */
     default DoubleSeries expandDouble(double... values) {

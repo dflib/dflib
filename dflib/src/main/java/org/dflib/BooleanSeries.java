@@ -91,17 +91,6 @@ public interface BooleanSeries extends Series<Boolean> {
     }
 
     /**
-     * Creates a new Series with a provided int appended to the end of this Series.
-     *
-     * @since 0.18
-     * @deprecated use {@link #expandBool(boolean...)}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    default BooleanSeries addBool(boolean val) {
-        return expandBool(val);
-    }
-
-    /**
      * @since 1.0.0-M21
      */
     default BooleanSeries expandBool(boolean... values) {

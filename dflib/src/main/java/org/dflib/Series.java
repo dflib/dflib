@@ -169,17 +169,6 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
-     * Creates a new Series with a provided value appended to the end of this Series.
-     *
-     * @since 0.18
-     * @deprecated use {@link #expand(Object...)}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    default Series<?> add(Object value) {
-        return expand(value);
-    }
-
-    /**
      * Extends the Series, adding extra values to the end of this Series.
      *
      * @since 1.0.0-M21
@@ -344,15 +333,6 @@ public interface Series<T> extends Iterable<T> {
      * @since 1.0.0-M21
      */
     Series<T> selectRange(int fromInclusive, int toExclusive);
-
-    /**
-     * @since 1.0.0-M19
-     * @deprecated use {@link #selectRange(int, int)}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    default Series<T> range(int fromInclusive, int toExclusive) {
-        return selectRange(fromInclusive, toExclusive);
-    }
 
     /**
      * Resolves the Series executing any lazy calculations. If called more than once, the first evaluation result is reused.
@@ -585,16 +565,6 @@ public interface Series<T> extends Iterable<T> {
      * @since 1.0.0-M21
      */
     Series<T> replaceExcept(BooleanSeries condition, T with);
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #replaceExcept(BooleanSeries, Object)}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    default Series<T> replaceNoMatch(BooleanSeries condition, T with) {
-        return replaceExcept(condition, with);
-    }
-
 
     /**
      * @return a Series that contains non-repeating values from this Series.

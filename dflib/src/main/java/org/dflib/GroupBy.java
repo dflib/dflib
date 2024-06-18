@@ -10,7 +10,6 @@ import org.dflib.sort.GroupBySorter;
 import org.dflib.sort.IntComparator;
 import org.dflib.window.DenseRanker;
 import org.dflib.window.Ranker;
-import org.dflib.window.RowNumberer;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -63,24 +62,6 @@ public class GroupBy {
     }
 
     /**
-     * @since 0.11
-     * @deprecated in favor of {@link #getSource()}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    public DataFrame getUngrouped() {
-        return getSource();
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #getSource()} and then {@link DataFrame#getColumnsIndex()}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    public Index getUngroupedColumnIndex() {
-        return source.getColumnsIndex();
-    }
-
-    /**
      * Specifies the columns of the aggregation or select result.
      */
     public GroupBy cols(Predicate<String> colsPredicate) {
@@ -125,26 +106,10 @@ public class GroupBy {
     }
 
     /**
-     * @deprecated in favor of {@link #select()}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    public DataFrame toDataFrame() {
-        return select();
-    }
-
-    /**
      * @since 1.0.0-M21
      */
     public Set<Object> getGroupKeys() {
         return groupsIndex.keySet();
-    }
-
-    /**
-     * @deprecated in favor of {@link #getGroupKeys()}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    public Set<Object> getGroups() {
-        return getGroupKeys();
     }
 
     public boolean hasGroup(Object key) {
@@ -158,27 +123,6 @@ public class GroupBy {
     public DataFrame getGroup(Object key) {
         // TODO: nulls will blow up on read... check for nulls and do something right here..
         return groupsCache.computeIfAbsent(key, this::resolveGroup);
-    }
-
-    /**
-     * A window function that returns an IntSeries for this grouping that contains a row number of each row within its
-     * group. The order of row numbers corresponds to the order of rows in the original DataFrame used to
-     * build the grouping. So the returned Series can be added back to the original DataFrame, providing it with a
-     * per-group ranking column.
-     *
-     * @return a new Series object with ranking numbers of each row within its group. The order matches the order of
-     * the original DataFrame that was used to build the grouping.
-     * @since 0.8
-     * @deprecated in favor of {@link #merge(Exp[])} or {@link #select()} with {@link Exp#rowNum()}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    public IntSeries rowNumber() {
-
-        if (groupsIndex.isEmpty()) {
-            return Series.ofInt();
-        }
-
-        return RowNumberer.rowNumber(source, groupsIndex.values());
     }
 
     /**

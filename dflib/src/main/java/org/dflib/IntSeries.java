@@ -81,17 +81,8 @@ public interface IntSeries extends Series<Integer> {
     }
 
     /**
-     * Creates a new Series with a provided int appended to the end of this Series.
+     * Creates a new Series with a provided values appended to the end of this Series.
      *
-     * @since 0.18
-     * @deprecated use {@link #expandInt(int...)}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    default IntSeries addInt(int val) {
-        return expandInt(val);
-    }
-
-    /**
      * @since 1.0.0-M21
      */
     default IntSeries expandInt(int... values) {
@@ -188,7 +179,7 @@ public interface IntSeries extends Series<Integer> {
 
     /**
      * Returns an IntSeries that represents positions in the Series that match the predicate. The returned value can be
-     * used to "select" data from this Series or from DataFrame containing this Series. Same as {@link #index(ValuePredicate)},
+     * used to "select" data from this Series or from DataFrame containing this Series. Same as {@link #index(Predicate)}
      * only usually much faster.
      *
      * @param predicate match condition

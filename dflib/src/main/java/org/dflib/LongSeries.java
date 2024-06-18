@@ -80,17 +80,6 @@ public interface LongSeries extends Series<Long> {
     }
 
     /**
-     * Creates a new Series with a provided long appended to the end of this Series.
-     *
-     * @since 0.18
-     * @deprecated use {@link #expandLong(long...)}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    default LongSeries addLong(long val) {
-        return expandLong(val);
-    }
-
-    /**
      * @since 1.0.0-M21
      */
     default LongSeries expandLong(long... values) {

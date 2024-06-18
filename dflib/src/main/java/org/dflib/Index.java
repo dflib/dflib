@@ -6,7 +6,6 @@ import org.dflib.sample.Sampler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -103,15 +102,6 @@ public class Index implements Iterable<String> {
     }
 
     /**
-     * @since 0.6
-     * @deprecated in favor of {@link #replace(UnaryOperator)}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    public Index rename(UnaryOperator<String> renamer) {
-        return replace(renamer);
-    }
-
-    /**
      * @since 1.0.0-M21
      */
     public Index replace(Map<String, String> oldToNewValues) {
@@ -137,33 +127,6 @@ public class Index implements Iterable<String> {
     }
 
     /**
-     * @deprecated in favor of {@link #replace(Map)}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    public Index rename(Map<String, String> oldToNewValues) {
-        return replace(oldToNewValues);
-    }
-
-    /**
-     * @deprecated not particularly useful, as this is a functional equivalent of {@link #of(String...)}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    public Index rename(String... newLabels) {
-
-        if (newLabels.length != size()) {
-            throw new IllegalArgumentException("New columns length does not match existing index size: "
-                    + newLabels.length + " vs " + size());
-        }
-
-        Map<String, String> map = new HashMap<>((int) (newLabels.length / 0.75));
-        for (int i = 0; i < newLabels.length; i++) {
-            map.put(values[i], newLabels[i]);
-        }
-
-        return replace(map);
-    }
-
-    /**
      * Extends the index, adding extra values to it. The newly added values are deduplicated using "_" suffix to
      * make sure they do not conflict with the existing values and with each other.
      *
@@ -182,14 +145,6 @@ public class Index implements Iterable<String> {
         System.arraycopy(values, 0, expanded, llen, rlen);
 
         return Index.ofDeduplicated(expanded);
-    }
-
-    /**
-     * @deprecated in favor of {@link #expand(String...)}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    public Index addLabels(String... extraLabels) {
-        return expand(extraLabels);
     }
 
     /**
@@ -215,27 +170,18 @@ public class Index implements Iterable<String> {
     }
 
     /**
-     * @since 0.7
-     * @deprecated in favor of {@link #select(IntSeries)}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    public Index selectPositions(IntSeries positions) {
-        return select(positions);
-    }
-
-    /**
      * @since 1.0.0-M21
      */
     public Index select(int... positions) {
         int len = positions.length;
         String[] selected = new String[len];
-        Set<String> unqiue = new HashSet<>((int) (len / 0.75));
+        Set<String> unique = new HashSet<>((int) (len / 0.75));
 
         for (int i = 0; i < len; i++) {
 
             String val = values[positions[i]];
 
-            while (!unqiue.add(val)) {
+            while (!unique.add(val)) {
                 val = val + "_";
             }
 
@@ -243,14 +189,6 @@ public class Index implements Iterable<String> {
         }
 
         return Index.of(selected);
-    }
-
-    /**
-     * @deprecated in favor of {@link #select(int...)}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    public Index selectPositions(int... positions) {
-        return select(positions);
     }
 
     /**
@@ -271,21 +209,6 @@ public class Index implements Iterable<String> {
     }
 
     /**
-     * @deprecated not particularly useful, as this is a functional equivalent of {@link #of(String...)}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    public Index selectLabels(String... labels) {
-
-        // check whether the labels are valid. "position" call on an invalid label would throw
-        int len = labels.length;
-        for (int i = 0; i < len; i++) {
-            position(labels[i]);
-        }
-
-        return Index.ofDeduplicated(labels);
-    }
-
-    /**
      * @since 1.0.0-M21
      */
     public Index select(Predicate<String> condition) {
@@ -299,15 +222,6 @@ public class Index implements Iterable<String> {
         }
 
         return selected.size() == size() ? this : Index.of(selected.toArray(new String[0]));
-    }
-
-    /**
-     * @since 0.7
-     * @deprecated in favor of {@link #select(Predicate)}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    public Index selectLabels(Predicate<String> includeCondition) {
-        return select(includeCondition);
     }
 
     /**
@@ -343,14 +257,6 @@ public class Index implements Iterable<String> {
     }
 
     /**
-     * @deprecated in favor of {@link #selectExcept(String...)}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    public Index dropLabels(String... labels) {
-        return selectExcept(labels);
-    }
-
-    /**
      * @since 1.0.0-M21
      */
     public Index selectExcept(Predicate<String> condition) {
@@ -365,22 +271,6 @@ public class Index implements Iterable<String> {
         }
 
         return selected.size() == size() ? this : Index.of(selected.toArray(new String[0]));
-    }
-
-    /**
-     * @deprecated in favor of {@link #selectExcept(Predicate)}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    public Index dropLabels(Predicate<String> labelCondition) {
-        return selectExcept(labelCondition);
-    }
-
-    /**
-     * @deprecated in favor of {@link #toArray()}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    public String[] getLabels() {
-        return toArray();
     }
 
     // not-public direct accessor to mutable values ... Saves on data copy, but the callers should be
@@ -406,14 +296,6 @@ public class Index implements Iterable<String> {
      */
     public String get(int pos) {
         return values[pos];
-    }
-
-    /**
-     * @deprecated in favor of {@link #get(int)}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    public String getLabel(int pos) {
-        return get(pos);
     }
 
     public int size() {
@@ -547,14 +429,6 @@ public class Index implements Iterable<String> {
         }
 
         return valueIndex.containsKey(value);
-    }
-
-    /**
-     * @deprecated in favor of {@link #contains(String)}
-     */
-    @Deprecated(since = "1.0.0-M21", forRemoval = true)
-    public boolean hasLabel(String label) {
-        return contains(label);
     }
 
     @Override
