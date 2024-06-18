@@ -328,9 +328,14 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public RowSet rowsRange(int fromInclusive, int toExclusive) {
-        return toExclusive - fromInclusive != 0
-                ? new RangeRowSet(this, dataColumns, fromInclusive, toExclusive)
-                : new EmptyRowSet(this);
+        int h = toExclusive - fromInclusive;
+        if (h == 0) {
+            return new EmptyRowSet(this);
+        } else if (h == height()) {
+            return new AllRowSet(this, dataColumns);
+        } else {
+            return new RangeRowSet(this, dataColumns, fromInclusive, toExclusive);
+        }
     }
 
     @Override
