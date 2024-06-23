@@ -113,7 +113,7 @@ public class CsvLoader_RowsTest {
                 .rows(RowPredicate.of("A", (Integer i) -> i % 2 == 0))
                 .cols("B");
 
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> loader.load(new StringReader(csv())));
+        assertThrows(IllegalArgumentException.class, () -> loader.load(new StringReader(csv())));
     }
 
     @Test

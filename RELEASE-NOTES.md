@@ -1,6 +1,7 @@
 ## Release 1.0.0-M23
 
 * #306 Remove APIs deprecated since M21
+* #307 CsvLoader - error when specifying columns types and col names
 
 ## Release 1.0.0-M22
 

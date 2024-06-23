@@ -254,6 +254,21 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
+    public void fromFile_NumColumn_PartialColumns() {
+
+        DataFrame df = new CsvLoader()
+                .intColumn("A")
+                .intColumn("C")
+                .cols("C", "A")
+                .load(inPath("f1.csv"));
+
+        new DataFrameAsserts(df, "C", "A")
+                .expectHeight(2)
+                .expectRow(0, 3, 1)
+                .expectRow(1, 6, 4);
+    }
+
+    @Test
     public void fromFile_IntColumn_Nulls() {
         CsvLoader loader = new CsvLoader()
                 .intColumn(0)
