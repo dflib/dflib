@@ -13,7 +13,7 @@ joins, etc.), only you apply them in-memory and over dynamically defined "table"
 
 `DataFrame` is extremely versatile and can be used to model a variety of data tasks. ETL, log analysis, spreadsheets 
 processing are just some of the examples. DFLib comes with connectors for many data formats: 
-CSV, Excel, RDBMS, Avro, JSON and can be easily adapted to other formats (e.g. web-service-based ones like 
+CSV, Excel, RDBMS, Avro, JSON and can be easily adapted to other formats (e.g. web-based ones like 
 Google Sheets, etc.)
 
 DFLib provides integration with Apache Echarts to visualize DataFrame data. Charts are generated in a form of HTML/JavaScript 
