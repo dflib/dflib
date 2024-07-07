@@ -425,8 +425,27 @@ public class CsvLoader {
     }
 
     /**
-     * Sets the type of CSV column at a given position to boolean. This results in a String to boolean
-     * conversion applied during loading.
+     * Will convert values of a CSV column at a given position to BigDecimals.
+     *
+     * @since 1.0.0-M23
+     */
+    public CsvLoader decimalCol(int column) {
+        columnConfigs.add(ColumnConfig.objectCol(column, ValueMapper.stringToBigDecimal()));
+        return this;
+    }
+
+    /**
+     * Will convert values of a CSV column at a given position to BigDecimals.
+     *
+     * @since 1.0.0-M23
+     */
+    public CsvLoader decimalCol(String column) {
+        columnConfigs.add(ColumnConfig.objectCol(column, ValueMapper.stringToBigDecimal()));
+        return this;
+    }
+
+    /**
+     * Will convert values of a CSV column at a given position to primitive booleans.
      *
      * @since 1.0.0-M23
      */
@@ -436,8 +455,7 @@ public class CsvLoader {
     }
 
     /**
-     * Sets the type of CSV column at a given position to boolean. This results in a String to boolean
-     * conversion applied during loading.
+     * Will convert values of a CSV column at a given position to primitive booleans.
      *
      * @since 1.0.0-M23
      */

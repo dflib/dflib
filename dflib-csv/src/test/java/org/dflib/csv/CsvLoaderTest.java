@@ -349,6 +349,19 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
+    public void fromFile_DecimalCol() {
+        DataFrame df = new CsvLoader()
+                .decimalCol(0)
+                .decimalCol(1)
+                .load(inPath("doubles_w_nulls.csv"));
+
+        new DataFrameAsserts(df, "One", "Two")
+                .expectHeight(2)
+                .expectRow(0, null, new BigDecimal("3.1"))
+                .expectRow(1, new BigDecimal("5.2002"), null);
+    }
+
+    @Test
     public void fromFile_DateTimeColumns() {
         DataFrame df = new CsvLoader()
                 .dateCol(0)

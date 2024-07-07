@@ -3,6 +3,7 @@
 * #306 Remove APIs deprecated since M21
 * #307 CsvLoader - error when specifying columns types and col names
 * #308 CsvLoader - unify method naming
+* #309 CsvLoader.decimalCol(..)
 
 ## Release 1.0.0-M22
 
