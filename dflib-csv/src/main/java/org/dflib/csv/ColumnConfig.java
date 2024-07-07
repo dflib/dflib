@@ -21,70 +21,70 @@ class ColumnConfig {
         csvColPos = -1;
     }
 
-    public static ColumnConfig objectColumn(int pos, ValueMapper<String, ?> mapper) {
+    public static ColumnConfig objectCol(int pos, ValueMapper<String, ?> mapper) {
         ColumnConfig config = new ColumnConfig();
         config.csvColPos = pos;
         config.extractorMaker = i -> Extractor.$col(r -> mapper.map(r.get(i)));
         return config;
     }
 
-    public static ColumnConfig objectColumn(String name, ValueMapper<String, ?> mapper) {
+    public static ColumnConfig objectCol(String name, ValueMapper<String, ?> mapper) {
         ColumnConfig config = new ColumnConfig();
         config.csvColName = name;
         config.extractorMaker = i -> Extractor.$col(r -> mapper.map(r.get(i)));
         return config;
     }
 
-    public static ColumnConfig intColumn(int pos, IntValueMapper<String> mapper) {
+    public static ColumnConfig intCol(int pos, IntValueMapper<String> mapper) {
         ColumnConfig config = new ColumnConfig();
         config.csvColPos = pos;
         config.extractorMaker = i -> Extractor.$int(r -> mapper.map(r.get(i)));
         return config;
     }
 
-    public static ColumnConfig intColumn(String name, IntValueMapper<String> mapper) {
+    public static ColumnConfig intCol(String name, IntValueMapper<String> mapper) {
         ColumnConfig config = new ColumnConfig();
         config.csvColName = name;
         config.extractorMaker = i -> Extractor.$int(r -> mapper.map(r.get(i)));
         return config;
     }
 
-    public static ColumnConfig longColumn(int pos, LongValueMapper<String> mapper) {
+    public static ColumnConfig longCol(int pos, LongValueMapper<String> mapper) {
         ColumnConfig config = new ColumnConfig();
         config.csvColPos = pos;
         config.extractorMaker = i -> Extractor.$long(r -> mapper.map(r.get(i)));
         return config;
     }
 
-    public static ColumnConfig longColumn(String name, LongValueMapper<String> mapper) {
+    public static ColumnConfig longCol(String name, LongValueMapper<String> mapper) {
         ColumnConfig config = new ColumnConfig();
         config.csvColName = name;
         config.extractorMaker = i -> Extractor.$long(r -> mapper.map(r.get(i)));
         return config;
     }
 
-    public static ColumnConfig doubleColumn(int pos, DoubleValueMapper<String> mapper) {
+    public static ColumnConfig doubleCol(int pos, DoubleValueMapper<String> mapper) {
         ColumnConfig config = new ColumnConfig();
         config.csvColPos = pos;
         config.extractorMaker = i -> Extractor.$double(r -> mapper.map(r.get(i)));
         return config;
     }
 
-    public static ColumnConfig doubleColumn(String name, DoubleValueMapper<String> mapper) {
+    public static ColumnConfig doubleCol(String name, DoubleValueMapper<String> mapper) {
         ColumnConfig config = new ColumnConfig();
         config.csvColName = name;
         config.extractorMaker = i -> Extractor.$double(r -> mapper.map(r.get(i)));
         return config;
     }
 
-    public static ColumnConfig boolColumn(int pos) {
+    public static ColumnConfig boolCol(int pos) {
         ColumnConfig config = new ColumnConfig();
         config.csvColPos = pos;
         config.extractorMaker = i -> Extractor.$bool(r -> BoolValueMapper.fromString().map(r.get(i)));
         return config;
     }
 
-    public static ColumnConfig boolColumn(String name) {
+    public static ColumnConfig boolCol(String name) {
         ColumnConfig config = new ColumnConfig();
         config.csvColName = name;
         config.extractorMaker = i -> Extractor.$bool(r -> BoolValueMapper.fromString().map(r.get(i)));

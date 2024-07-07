@@ -202,10 +202,10 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_ColumnType() {
+    public void fromFile_colType() {
         DataFrame df = new CsvLoader()
-                .columnType(0, ValueMapper.stringToInt())
-                .columnType(2, ValueMapper.stringToLong())
+                .colType(0, ValueMapper.stringToInt())
+                .colType(2, ValueMapper.stringToLong())
                 .load(inPath("f1.csv"));
         new DataFrameAsserts(df, "A", "b", "C")
                 .expectHeight(2)
@@ -214,10 +214,10 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_ColumnType_OverrideType() {
+    public void fromFile_colType_OverrideType() {
         DataFrame df = new CsvLoader()
-                .columnType(0, ValueMapper.stringToInt())
-                .columnType("A", ValueMapper.stringToLong())
+                .colType(0, ValueMapper.stringToInt())
+                .colType("A", ValueMapper.stringToLong())
                 .load(inPath("f1.csv"));
         new DataFrameAsserts(df, "A", "b", "C")
                 .expectHeight(2)
@@ -228,9 +228,9 @@ public class CsvLoaderTest extends BaseCsvTest {
     @Test
     public void fromFile_NumColumn1() {
         DataFrame df = new CsvLoader()
-                .numColumn(0, Integer.class)
-                .numColumn("b", Long.class)
-                .numColumn("C", Double.class)
+                .numCol(0, Integer.class)
+                .numCol("b", Long.class)
+                .numCol("C", Double.class)
                 .load(inPath("f1.csv"));
 
         new DataFrameAsserts(df, "A", "b", "C")
@@ -242,9 +242,9 @@ public class CsvLoaderTest extends BaseCsvTest {
     @Test
     public void fromFile_NumColumn2() {
         DataFrame df = new CsvLoader()
-                .numColumn(0, Float.class)
-                .numColumn("b", BigDecimal.class)
-                .numColumn("C", BigInteger.class)
+                .numCol(0, Float.class)
+                .numCol("b", BigDecimal.class)
+                .numCol("C", BigInteger.class)
                 .load(inPath("f1.csv"));
 
         new DataFrameAsserts(df, "A", "b", "C")
@@ -257,8 +257,8 @@ public class CsvLoaderTest extends BaseCsvTest {
     public void fromFile_NumColumn_PartialColumns() {
 
         DataFrame df = new CsvLoader()
-                .intColumn("A")
-                .intColumn("C")
+                .intCol("A")
+                .intCol("C")
                 .cols("C", "A")
                 .load(inPath("f1.csv"));
 
@@ -269,19 +269,19 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_IntColumn_Nulls() {
+    public void fromFile_IntCol_Nulls() {
         CsvLoader loader = new CsvLoader()
-                .intColumn(0)
-                .intColumn(1);
+                .intCol(0)
+                .intCol(1);
 
         assertThrows(IllegalArgumentException.class, () -> loader.load(inPath("numbers_w_nulls.csv")));
     }
 
     @Test
-    public void fromFile_IntColumn_Nulls_Default() {
+    public void fromFile_IntCol_Nulls_Default() {
         DataFrame df = new CsvLoader()
-                .intColumn(0, -100)
-                .intColumn(1, -200)
+                .intCol(0, -100)
+                .intCol(1, -200)
                 .load(inPath("numbers_w_nulls.csv"));
 
         new DataFrameAsserts(df, "One", "Two")
@@ -292,29 +292,29 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_IntColumn_Nulls_Throw() {
+    public void fromFile_IntCol_Nulls_Throw() {
         CsvLoader loader = new CsvLoader()
-                .intColumn(0)
-                .intColumn(1);
+                .intCol(0)
+                .intCol(1);
 
         assertThrows(IllegalArgumentException.class, () -> loader.load(inPath("numbers_w_nulls.csv")));
 
     }
 
     @Test
-    public void fromFile_LongColumn_Nulls() {
+    public void fromFile_LongCol_Nulls() {
         CsvLoader loader = new CsvLoader()
-                .longColumn(0)
-                .longColumn(1);
+                .longCol(0)
+                .longCol(1);
 
         assertThrows(IllegalArgumentException.class, () -> loader.load(inPath("numbers_w_nulls.csv")));
     }
 
     @Test
-    public void fromFile_LongColumn_Nulls_Default() {
+    public void fromFile_LongCol_Nulls_Default() {
         DataFrame df = new CsvLoader()
-                .longColumn(0, -100L)
-                .longColumn(1, -200L)
+                .longCol(0, -100L)
+                .longCol(1, -200L)
                 .load(inPath("numbers_w_nulls.csv"));
 
         new DataFrameAsserts(df, "One", "Two")
@@ -325,20 +325,20 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_LongColumn_Nulls_Throw() {
+    public void fromFile_LongCol_Nulls_Throw() {
         CsvLoader loader = new CsvLoader()
-                .longColumn(0)
-                .longColumn(1);
+                .longCol(0)
+                .longCol(1);
 
         assertThrows(IllegalArgumentException.class, () -> loader.load(inPath("numbers_w_nulls.csv")));
     }
 
 
     @Test
-    public void fromFile_DoubleColumn_Nulls_Default() {
+    public void fromFile_DoubleCol_Nulls_Default() {
         DataFrame df = new CsvLoader()
-                .doubleColumn(0, -1.1)
-                .doubleColumn(1, -3.14)
+                .doubleCol(0, -1.1)
+                .doubleCol(1, -3.14)
                 .load(inPath("doubles_w_nulls.csv"));
 
         new DataFrameAsserts(df, "One", "Two")
@@ -351,10 +351,10 @@ public class CsvLoaderTest extends BaseCsvTest {
     @Test
     public void fromFile_DateTimeColumns() {
         DataFrame df = new CsvLoader()
-                .dateColumn(0)
-                .dateTimeColumn("default_date_time")
-                .dateColumn("custom_date", DateTimeFormatter.ofPattern("M/d/yy"))
-                .dateTimeColumn(3, DateTimeFormatter.ofPattern("M/d/yy HH:mm:ss"))
+                .dateCol(0)
+                .dateTimeCol("default_date_time")
+                .dateCol("custom_date", DateTimeFormatter.ofPattern("M/d/yy"))
+                .dateTimeCol(3, DateTimeFormatter.ofPattern("M/d/yy HH:mm:ss"))
                 .load(inPath("dt1.csv"));
 
         new DataFrameAsserts(df, "default_date", "default_date_time", "custom_date", "custom_date_time")

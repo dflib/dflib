@@ -26,7 +26,7 @@ public class CsvLoader_RowsTest {
     public void pos() {
 
         DataFrame df = new CsvLoader()
-                .intColumn(0)
+                .intCol(0)
                 .rows(RowPredicate.of(0, (Integer i) -> i % 2 == 0))
                 .load(new StringReader(csv()));
 
@@ -41,7 +41,7 @@ public class CsvLoader_RowsTest {
     public void name() {
 
         DataFrame df = new CsvLoader()
-                .intColumn(0)
+                .intCol(0)
                 .rows(RowPredicate.of("A", (Integer i) -> i % 2 == 0))
                 .load(new StringReader(csv()));
 
@@ -56,8 +56,8 @@ public class CsvLoader_RowsTest {
     public void multipleConditions_LastWins() {
 
         DataFrame df = new CsvLoader()
-                .intColumn(0)
-                .intColumn(1)
+                .intCol(0)
+                .intCol(1)
                 .rows(RowPredicate.of("B", (Integer i) -> i % 2 == 0))
                 .rows(RowPredicate.of("B", (Integer i) -> i == 12))
 
@@ -75,7 +75,7 @@ public class CsvLoader_RowsTest {
     public void testWithSampling() {
 
         DataFrame df = new CsvLoader()
-                .intColumn(0)
+                .intCol(0)
                 .rows(RowPredicate.of("A", (Integer i) -> i > 1))
                 .rowsSample(2, new Random(9))
                 .load(new StringReader(csv()));
@@ -90,7 +90,7 @@ public class CsvLoader_RowsTest {
     public void testWithSampling_SmallerThanSampleSize() {
 
         DataFrame df = new CsvLoader()
-                .intColumn(0)
+                .intCol(0)
                 .rows(RowPredicate.of("A", (Integer i) -> i % 2 == 0))
                 .rowsSample(4, new Random(8))
                 .load(new StringReader(csv()));
@@ -106,8 +106,8 @@ public class CsvLoader_RowsTest {
     public void cantFilterOnExcludedColumns() {
 
         CsvLoader loader = new CsvLoader()
-                .intColumn("A")
-                .intColumn("B")
+                .intCol("A")
+                .intCol("B")
 
                 // column "A" is not present in the result, so it should cause an exception on load
                 .rows(RowPredicate.of("A", (Integer i) -> i % 2 == 0))
@@ -120,8 +120,8 @@ public class CsvLoader_RowsTest {
     public void selectColumns_Condition() {
 
         DataFrame df = new CsvLoader()
-                .intColumn("A")
-                .intColumn("B")
+                .intCol("A")
+                .intCol("B")
                 .cols("B", "A")
 
                 // using positional indices of the resulting DataFrame, not the CSV
