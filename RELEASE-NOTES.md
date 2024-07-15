@@ -5,6 +5,7 @@
 * #308 CsvLoader - unify method naming
 * #309 CsvLoader.decimalCol(..)
 * #311 ColSet.select(RowToValueMapper...) does "merge" instead of "select"
+* #312 DataFrame.get(col, row)
 
 ## Release 1.0.0-M22
 

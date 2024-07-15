@@ -170,6 +170,24 @@ public interface DataFrame extends Iterable<RowProxy> {
     <T> Series<T> getColumn(int pos) throws IllegalArgumentException;
 
     /**
+     * Returns a value in the specified DataFrame cell.
+     *
+     * @since 1.0.0-M23
+     */
+    default Object get(int column, int row) {
+        return getColumn(column).get(row);
+    }
+
+    /**
+     * Returns a value in the specified DataFrame cell.
+     *
+     * @since 1.0.0-M23
+     */
+    default Object get(String column, int row) {
+        return getColumn(column).get(row);
+    }
+
+    /**
      * Returns the number of rows in this DataFrame, aka "height". Depending on the type of columns in the DataFrame,
      * this operation may or may not be constant speed. In the worst case it may cause a full scan through at least one
      * of the columns.
