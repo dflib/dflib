@@ -426,7 +426,7 @@ public class FixedColumnSet implements ColumnSet {
 
     @Override
     public DataFrame select(RowToValueMapper<?>... exps) {
-        return doMerge(doMap(exps));
+        return new ColumnDataFrame(null, Index.ofDeduplicated(csIndex), doMap(exps));
     }
 
     private Series<?>[] doMap(RowToValueMapper<?>[] mappers) {

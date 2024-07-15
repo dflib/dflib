@@ -4,6 +4,7 @@
 * #307 CsvLoader - error when specifying columns types and col names
 * #308 CsvLoader - unify method naming
 * #309 CsvLoader.decimalCol(..)
+* #311 ColSet.select(RowToValueMapper...) does "merge" instead of "select"
 
 ## Release 1.0.0-M22
 
