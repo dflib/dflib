@@ -1,5 +1,6 @@
 [![Maven Central](https://img.shields.io/maven-central/v/org.dflib/dflib.svg)](https://maven-badges.herokuapp.com/maven-central/org.dflib/dflib/)
-[![Build Status](https://github.com/dflib/dflib/workflows/build%20test%20deploy/badge.svg?branch=master)](https://github.com/dflib/dflib/actions)
+[![build test deploy](https://github.com/dflib/dflib/workflows/build%20test%20deploy/badge.svg)](https://github.com/dflib/dflib/actions)
+
 
 # DFLib
 
