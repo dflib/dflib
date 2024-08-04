@@ -9,7 +9,7 @@ public class EChartTest extends GenerateScriptHtmlTest {
     @Test
     public void plot() {
         EChartHtml ch = ECharts.chart().xAxis("x").series("y1", "y2").plot(df2);
-        assertTrue(ch.getExternalScript().contains("<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js'></script>"), ch.getExternalScript());
+        assertTrue(ch.getExternalScript().contains("<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js'></script>"), ch.getExternalScript());
         assertTrue(ch.getContainer().contains("<div id='dfl_ech_"), ch.getContainer());
         assertTrue(ch.getScript().contains("['x','A','B','C'],"), ch.getScript());
         assertTrue(ch.getScript().contains("['y1',10,11,14],"), ch.getScript());
@@ -22,7 +22,7 @@ public class EChartTest extends GenerateScriptHtmlTest {
     public void generateExternalScriptHtml() {
 
         String s1 = ECharts.chart().generateExternalScriptHtml();
-        assertTrue(s1.contains("<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js'></script>"), s1);
+        assertTrue(s1.contains("<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js'></script>"), s1);
 
         String s2 = ECharts.chart().scriptUrl("https://example.org/x.js").generateExternalScriptHtml();
         assertTrue(s2.contains("<script type='text/javascript' src='https://example.org/x.js'></script>"), s2);

@@ -6,6 +6,7 @@
 * #309 CsvLoader.decimalCol(..)
 * #311 ColSet.select(RowToValueMapper...) does "merge" instead of "select"
 * #312 DataFrame.get(col, row)
+* #313 Upgrade ECharts to 5.5.1
 
 ## Release 1.0.0-M22
 

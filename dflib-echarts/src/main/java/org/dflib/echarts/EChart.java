@@ -23,7 +23,7 @@ import java.util.Random;
  * @since 1.0.0-M21
  */
 public class EChart {
-    private static final String DEFAULT_ECHARTS_SCRIPT_URL = "https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js";
+    private static final String DEFAULT_ECHARTS_SCRIPT_URL = "https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js";
 
     private static final Mustache CONTAINER_TEMPLATE = loadTemplate("container.mustache");
     private static final Mustache EXTERNAL_SCRIPT_TEMPLATE = loadTemplate("external_script.mustache");
