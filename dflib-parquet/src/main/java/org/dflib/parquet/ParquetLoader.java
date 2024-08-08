@@ -6,6 +6,8 @@ import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.apache.parquet.ParquetReadOptions;
+import org.apache.parquet.conf.PlainParquetConfiguration;
 import org.apache.parquet.hadoop.ParquetFileReader;
 import org.apache.parquet.hadoop.ParquetReader;
 import org.apache.parquet.io.LocalInputFile;
@@ -34,7 +36,9 @@ public class ParquetLoader {
         try {
             LocalInputFile localInputFile = new LocalInputFile(filePath);
             MessageType schema = null;
-            try (ParquetFileReader parquetFile = ParquetFileReader.open(localInputFile)) {
+
+            ParquetReadOptions parquetReadOptions = ParquetReadOptions.builder(new PlainParquetConfiguration()).build();
+            try (ParquetFileReader parquetFile = new ParquetFileReader(localInputFile, parquetReadOptions)) {
                 schema = parquetFile.getFileMetaData().getSchema();
             }
             DataFrameAppender<Row> appender = DataFrame.byRow(mapColumns(schema))
