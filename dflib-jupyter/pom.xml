@@ -38,6 +38,11 @@
         </dependency>
         <dependency>
             <groupId>org.dflib</groupId>
+            <artifactId>dflib-parquet</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.dflib</groupId>
             <artifactId>dflib-jdbc</artifactId>
             <version>${project.version}</version>
         </dependency>
