@@ -1,5 +1,6 @@
 ## Release 1.0.0-M23
 
+* #117 Read/write DataFrames from/to Parquet files
 * #306 Remove APIs deprecated since M21
 * #307 CsvLoader - error when specifying columns types and col names
 * #308 CsvLoader - unify method naming
