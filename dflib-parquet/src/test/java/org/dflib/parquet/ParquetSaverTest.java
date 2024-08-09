@@ -1,20 +1,5 @@
 package org.dflib.parquet;
 
-import static java.nio.file.Files.createTempFile;
-import static java.time.Instant.ofEpochSecond;
-import static java.time.ZoneOffset.ofHours;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.nio.file.Path;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.UUID;
-
 import org.apache.avro.Conversions;
 import org.apache.avro.data.TimeConversions;
 import org.apache.avro.generic.GenericData;
@@ -29,16 +14,31 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.file.Path;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.UUID;
+
+import static java.nio.file.Files.createTempFile;
+import static java.time.Instant.ofEpochSecond;
+import static java.time.ZoneOffset.ofHours;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 /**
  * Test Parquet serialization. To verify generated file content we use existing
  * Parquet Avro reader.
  *
  */
-class ParquetSaverTest {
+public class ParquetSaverTest {
 
     @Test
     @DisplayName("Integer Column")
-    void integerColumn() throws IOException {
+    public void integerColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of(1, 2, 3);
 
         Path file = createTempFile("integerColumn", ".parquet");
@@ -55,7 +55,7 @@ class ParquetSaverTest {
 
     @Test
     @DisplayName("Int Column")
-    void intColumn() throws IOException {
+    public void intColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").ofInts(0, 18, 49, 32);
         Path file = createTempFile("intColumn", ".parquet");
         Parquet.saver().save(df, file);
@@ -72,7 +72,7 @@ class ParquetSaverTest {
 
     @Test
     @DisplayName("Double Object Column")
-    void doubleObjectColumn() throws IOException {
+    public void doubleObjectColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of(1.0, 2.0, 3.0);
 
         Path file = createTempFile("doubleObjectColumn", ".parquet");
@@ -89,7 +89,7 @@ class ParquetSaverTest {
 
     @Test
     @DisplayName("Double Column")
-    void doubleColumn() throws IOException {
+    public void doubleColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").ofDoubles(0.0, 18.0, 49.0, 32.0);
         Path file = createTempFile("doubleColumn", ".parquet");
         Parquet.saver().save(df, file);
@@ -105,7 +105,7 @@ class ParquetSaverTest {
 
     @Test
     @DisplayName("Long Object Column")
-    void longObjectColumn() throws IOException {
+    public void longObjectColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of(1L, 2L, 3L);
 
         Path file = createTempFile("longObjectColumn", ".parquet");
@@ -122,7 +122,7 @@ class ParquetSaverTest {
 
     @Test
     @DisplayName("Long Column")
-    void longColumn() throws IOException {
+    public void longColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").ofLongs(0L, 18L, 49L, 32L);
         Path file = createTempFile("longColumn", ".parquet");
         Parquet.saver().save(df, file);
@@ -138,7 +138,7 @@ class ParquetSaverTest {
 
     @Test
     @DisplayName("Boolean Object Column")
-    void booleanObjectColumn() throws IOException {
+    public void booleanObjectColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of(true, false, true);
 
         Path file = createTempFile("booleanObjectColumn", ".parquet");
@@ -155,7 +155,7 @@ class ParquetSaverTest {
 
     @Test
     @DisplayName("Short Object Column")
-    void shortObjectColumn() throws IOException {
+    public void shortObjectColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of((short) 1, (short) 2, (short) 3);
 
         Path file = createTempFile("shortObjectColumn", ".parquet");
@@ -172,7 +172,7 @@ class ParquetSaverTest {
 
     @Test
     @DisplayName("Byte Object Column")
-    void byteObjectColumn() throws IOException {
+    public void byteObjectColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of((byte) 1, (byte) 2, (byte) 3);
 
         Path file = createTempFile("byteObjectColumn", ".parquet");
@@ -189,7 +189,7 @@ class ParquetSaverTest {
 
     @Test
     @DisplayName("Float Object Column")
-    void floatObjectColumn() throws IOException {
+    public void floatObjectColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of(1.0f, 2.0f, 3.0f);
 
         Path file = createTempFile("floatObjectColumn", ".parquet");
@@ -206,7 +206,7 @@ class ParquetSaverTest {
 
     @Test
     @DisplayName("String Column")
-    void stringColumn() throws IOException {
+    public void stringColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of("one", "two", "three");
 
         Path file = createTempFile("stringColumn", ".parquet");
@@ -223,7 +223,7 @@ class ParquetSaverTest {
 
     @Test
     @DisplayName("UUID Column")
-    void uuidColumn() throws IOException {
+    public void uuidColumn() throws IOException {
         UUID uuid1 = UUID.randomUUID();
         UUID uuid2 = UUID.randomUUID();
         UUID uuid3 = UUID.randomUUID();
@@ -247,7 +247,7 @@ class ParquetSaverTest {
 
     @Test
     @DisplayName("Enum Column")
-    void enumColumn() throws IOException {
+    public void enumColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of(EnumValues.one, EnumValues.two, EnumValues.three);
 
         Path file = createTempFile("enumColumn", ".parquet");
@@ -263,11 +263,11 @@ class ParquetSaverTest {
     }
 
     @Nested
-    class BigDecimalColumn {
+    public class BigDecimalColumn {
 
         @Test
         @DisplayName("BigDecimal High Precision Column")
-        void highPrecision() throws IOException {
+        public void highPrecision() throws IOException {
             var bigDec1 = new BigDecimal("12345678901234.56789");
             var bigDec2 = new BigDecimal("98765432109876.54321");
             var bigDec3 = new BigDecimal("12389137372521.35839");
@@ -288,7 +288,7 @@ class ParquetSaverTest {
 
         @Test
         @DisplayName("BigDecimal Medium Precision Column")
-        void mediumPrecision() throws IOException {
+        public void mediumPrecision() throws IOException {
             var bigDec1 = new BigDecimal("1234567890123.456");
             var bigDec2 = new BigDecimal("9876543210987.654");
             var bigDec3 = new BigDecimal("1238913737252.135");
@@ -310,7 +310,7 @@ class ParquetSaverTest {
 
         @Test
         @DisplayName("BigDecimal Low Precision Column")
-        void lowPrecision() throws IOException {
+        public void lowPrecision() throws IOException {
             var bigDec1 = new BigDecimal("12345.6789");
             var bigDec2 = new BigDecimal("98765.4321");
             var bigDec3 = new BigDecimal("12389.1373");
@@ -334,7 +334,7 @@ class ParquetSaverTest {
 
     @Test
     @DisplayName("LocalDate Column")
-    void localDateColumn() throws IOException {
+    public void localDateColumn() throws IOException {
         LocalDate localDate1 = LocalDate.of(1969, 7, 20);
         LocalDate localDate2 = LocalDate.of(2001, 9, 11);
         LocalDate localDate3 = LocalDate.of(2004, 3, 11);
@@ -354,7 +354,7 @@ class ParquetSaverTest {
     }
 
     @Nested
-    class LocalTimeColumn {
+    public class LocalTimeColumn {
 
         private final LocalTime localTime1 = LocalTime.of(10, 1, 18);
         private final LocalTime localTime2 = LocalTime.of(13, 9, 22);
@@ -362,7 +362,7 @@ class ParquetSaverTest {
 
         @Test
         @DisplayName("LocalTime Column Micros")
-        void localTimeColumnMicros() throws IOException {
+        public void localTimeColumnMicros() throws IOException {
 
             DataFrame df = DataFrame.foldByRow("a").of(localTime1, localTime2, localTime3);
 
@@ -380,7 +380,7 @@ class ParquetSaverTest {
 
         @Test
         @DisplayName("LocalTime Column Millis")
-        void localTimeColumnMillis() throws IOException {
+        public void localTimeColumnMillis() throws IOException {
             DataFrame df = DataFrame.foldByRow("a").of(localTime1, localTime2, localTime3);
 
             Path file = createTempFile("localTimeColumnMillis", ".parquet");
@@ -398,7 +398,7 @@ class ParquetSaverTest {
     }
 
     @Nested
-    class LocalDateTimeColumn {
+    public class LocalDateTimeColumn {
 
         private final LocalDateTime localDateTime1 = LocalDateTime.of(1969, 7, 20, 10, 1, 18);
         private final LocalDateTime localDateTime2 = LocalDateTime.of(2001, 9, 11, 8, 50, 22);
@@ -406,7 +406,7 @@ class ParquetSaverTest {
 
         @Test
         @DisplayName("LocalDateTime Column Micros")
-        void localDateTimeColumnMicros() throws IOException {
+        public void localDateTimeColumnMicros() throws IOException {
 
             DataFrame df = DataFrame.foldByRow("a").of(localDateTime1, localDateTime2, localDateTime3);
 
@@ -424,7 +424,7 @@ class ParquetSaverTest {
 
         @Test
         @DisplayName("LocalDateTime Column Millis")
-        void localDateTimeColumnMillis() throws IOException {
+        public void localDateTimeColumnMillis() throws IOException {
             DataFrame df = DataFrame.foldByRow("a").of(localDateTime1, localDateTime2, localDateTime3);
 
             Path file = createTempFile("localDateTimeColumnMillis", ".parquet");
@@ -442,7 +442,7 @@ class ParquetSaverTest {
     }
 
     @Nested
-    class InstantColumn {
+    public class InstantColumn {
 
         private final LocalDateTime localDateTime1 = LocalDateTime.of(1969, 7, 20, 10, 1, 18);
         private final LocalDateTime localDateTime2 = LocalDateTime.of(2001, 9, 11, 8, 50, 22);
@@ -453,7 +453,7 @@ class ParquetSaverTest {
 
         @Test
         @DisplayName("Instant Column Micros")
-        void instantColumnMicros() throws IOException {
+        public void instantColumnMicros() throws IOException {
 
             DataFrame df = DataFrame.foldByRow("a").of(instant1, instant2, instant3);
 
@@ -471,7 +471,7 @@ class ParquetSaverTest {
 
         @Test
         @DisplayName("Instant Column Millis")
-        void instantColumnMillis() throws IOException {
+        public void instantColumnMillis() throws IOException {
             DataFrame df = DataFrame.foldByRow("a").of(instant1, instant2, instant3);
 
             Path file = createTempFile("instantColumnMillis", ".parquet");
@@ -490,7 +490,7 @@ class ParquetSaverTest {
 
     @Test
     @DisplayName("Multiple Column Types")
-    void multipleColumnTypes() throws IOException {
+    public void multipleColumnTypes() throws IOException {
         DataFrame df = DataFrame.byArrayRow("a", "b", "c", "d", "e", "f")
                 .appender()
                 .append(1, 2L, 3.0, 4.0f, true, "foo")
@@ -528,7 +528,7 @@ class ParquetSaverTest {
 
     @Test
     @DisplayName("Null Values")
-    void nullValues() throws IOException {
+    public void nullValues() throws IOException {
         DataFrame df = DataFrame.byArrayRow("a", "b", "c", "d", "e", "f")
                 .appender()
                 .append(1, 2L, 3.0, 4.0f, true, "foo")
