@@ -1,5 +1,8 @@
 package org.dflib.parquet.write;
 
+/**
+ * @since 1.0.0-M23
+ */
 public class DecimalConfig {
 
     private final int precision;

@@ -12,6 +12,9 @@ import java.util.function.Consumer;
 import static org.apache.parquet.schema.LogicalTypeAnnotation.*;
 import static org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.*;
 
+/**
+ * @since 1.0.0-M23
+ */
 public class RowConverter extends GroupConverter {
 
     private final Converter[] converters;

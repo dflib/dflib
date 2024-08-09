@@ -1,8 +1,5 @@
 package org.dflib.parquet.read;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.parquet.hadoop.api.InitContext;
 import org.apache.parquet.hadoop.api.ReadSupport;
@@ -11,12 +8,15 @@ import org.apache.parquet.io.api.RecordMaterializer;
 import org.apache.parquet.schema.MessageType;
 import org.dflib.parquet.read.converter.RowConverter;
 
-class DataframeReadSupport extends ReadSupport<Object[]> {
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+class DataFrameReadSupport extends ReadSupport<Object[]> {
 
     @Override
     public RecordMaterializer<Object[]> prepareForRead(Configuration configuration, Map<String, String> keyValueMetaData,
             MessageType fileSchema, ReadContext readContext) {
-        return new DataframeMaterializer(readContext.getRequestedSchema());
+        return new DataFrameMaterializer(readContext.getRequestedSchema());
     }
 
     @Override
@@ -26,12 +26,12 @@ class DataframeReadSupport extends ReadSupport<Object[]> {
         return new ReadContext(projection, metadata);
     }
 
-    private static class DataframeMaterializer extends RecordMaterializer<Object[]> {
+    private static class DataFrameMaterializer extends RecordMaterializer<Object[]> {
 
         private final GroupConverter root;
         private Object[] value;
 
-        public DataframeMaterializer(MessageType requestedSchema) {
+        public DataFrameMaterializer(MessageType requestedSchema) {
             this.root = new RowConverter(requestedSchema, v -> this.value = v);
         }
 

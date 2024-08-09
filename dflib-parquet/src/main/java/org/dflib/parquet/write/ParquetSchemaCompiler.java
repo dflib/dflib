@@ -35,7 +35,7 @@ class ParquetSchemaCompiler {
         this.writeConfiguration = writeConfiguration;
     }
 
-    public MessageType compileSchema(DataframeSchema dataFrameSchema) {
+    public MessageType compileSchema(DataFrameSchema dataFrameSchema) {
         List<Type> fields = new ArrayList<>();
 
         for (ColumnMeta column : dataFrameSchema.getColumns()) {

@@ -7,8 +7,8 @@ import org.apache.parquet.io.LocalOutputFile;
 import org.dflib.DataFrame;
 import org.dflib.Series;
 import org.dflib.parquet.write.ColumnMeta;
-import org.dflib.parquet.write.DataframeParquetWriterBuilder;
-import org.dflib.parquet.write.DataframeSchema;
+import org.dflib.parquet.write.DataFrameParquetWriterBuilder;
+import org.dflib.parquet.write.DataFrameSchema;
 import org.dflib.parquet.write.DecimalConfig;
 import org.dflib.parquet.write.WriteConfiguration;
 import org.dflib.row.RowProxy;
@@ -68,8 +68,8 @@ public class ParquetSaver {
     }
 
     private void doSave(DataFrame df, Path filePath) throws IOException {
-        DataframeSchema dataFrameSchema = extractDataFrameSchema(df);
-        try (ParquetWriter<RowProxy> parquetWriter = new DataframeParquetWriterBuilder(new LocalOutputFile(filePath))
+        DataFrameSchema dataFrameSchema = extractDataFrameSchema(df);
+        try (ParquetWriter<RowProxy> parquetWriter = new DataFrameParquetWriterBuilder(new LocalOutputFile(filePath))
                 .withWriteConfiguration(new WriteConfiguration(timeUnit, decimalConfig))
                 .withDataFrameSchema(dataFrameSchema)
                 .withCompressionCodec(compressionCodec)
@@ -90,7 +90,7 @@ public class ParquetSaver {
         }
     }
 
-    private DataframeSchema extractDataFrameSchema(DataFrame df) {
+    private DataFrameSchema extractDataFrameSchema(DataFrame df) {
         List<ColumnMeta> result = new ArrayList<>();
         int index = 0;
         for (String column : df.getColumnsIndex()) {
@@ -99,7 +99,7 @@ public class ParquetSaver {
             result.add(new ColumnMeta(column, inferredType, index));
             index++;
         }
-        return new DataframeSchema(result);
+        return new DataFrameSchema(result);
     }
 
 }

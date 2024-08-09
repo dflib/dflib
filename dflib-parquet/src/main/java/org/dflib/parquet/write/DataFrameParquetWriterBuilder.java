@@ -1,8 +1,5 @@
 package org.dflib.parquet.write;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.parquet.conf.ParquetConfiguration;
 import org.apache.parquet.hadoop.ParquetWriter;
@@ -12,18 +9,24 @@ import org.apache.parquet.io.api.RecordConsumer;
 import org.apache.parquet.schema.MessageType;
 import org.dflib.row.RowProxy;
 
-public class DataframeParquetWriterBuilder extends ParquetWriter.Builder<RowProxy, DataframeParquetWriterBuilder> {
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * @since 1.0.0-M23
+ */
+public class DataFrameParquetWriterBuilder extends ParquetWriter.Builder<RowProxy, DataFrameParquetWriterBuilder> {
 
     private final Map<String, String> extraMetaData = new HashMap<>();
     private WriteConfiguration writeConfiguration;
-    private DataframeSchema dataFrameSchema;
+    private DataFrameSchema dataFrameSchema;
 
-    public DataframeParquetWriterBuilder(OutputFile outputFile) {
+    public DataFrameParquetWriterBuilder(OutputFile outputFile) {
         super(outputFile);
     }
 
     @Override
-    protected DataframeParquetWriterBuilder self() {
+    protected DataFrameParquetWriterBuilder self() {
         return this;
     }
 
@@ -37,12 +40,12 @@ public class DataframeParquetWriterBuilder extends ParquetWriter.Builder<RowProx
         return getWriteSupport();
     }
 
-    public DataframeParquetWriterBuilder withWriteConfiguration(WriteConfiguration writeConfiguration) {
+    public DataFrameParquetWriterBuilder withWriteConfiguration(WriteConfiguration writeConfiguration) {
         this.writeConfiguration = writeConfiguration;
         return self();
     }
 
-    public DataframeParquetWriterBuilder withDataFrameSchema(DataframeSchema dataFrameSchema) {
+    public DataFrameParquetWriterBuilder withDataFrameSchema(DataFrameSchema dataFrameSchema) {
         this.dataFrameSchema = dataFrameSchema;
         return self();
     }
@@ -55,11 +58,11 @@ public class DataframeParquetWriterBuilder extends ParquetWriter.Builder<RowProx
 
         private final Map<String, String> extraMetaData;
         private final WriteConfiguration writeConfiguration;
-        private final DataframeSchema dataFrameSchema;
+        private final DataFrameSchema dataFrameSchema;
         private RowWriter rowWriter;
 
         DataframeParquetWriterSupport(Map<String, String> extraMetaData, WriteConfiguration writeConfiguration,
-                DataframeSchema dataFrameSchema) {
+                DataFrameSchema dataFrameSchema) {
             this.extraMetaData = extraMetaData;
             this.writeConfiguration = writeConfiguration;
             this.dataFrameSchema = dataFrameSchema;
@@ -86,7 +89,6 @@ public class DataframeParquetWriterBuilder extends ParquetWriter.Builder<RowProx
         public void write(RowProxy record) {
             rowWriter.write(record);
         }
-
     }
 
 }

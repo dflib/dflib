@@ -4,15 +4,15 @@ import org.apache.parquet.hadoop.ParquetReader;
 import org.apache.parquet.hadoop.api.ReadSupport;
 import org.apache.parquet.io.InputFile;
 
-public class DataframeParquetReaderBuilder extends ParquetReader.Builder<Object[]> {
+public class DataFrameParquetReaderBuilder extends ParquetReader.Builder<Object[]> {
 
-    public DataframeParquetReaderBuilder(InputFile file) {
+    public DataFrameParquetReaderBuilder(InputFile file) {
         super(file);
     }
 
     @Override
     protected ReadSupport<Object[]> getReadSupport() {
-        return new DataframeReadSupport();
+        return new DataFrameReadSupport();
     }
 
 }

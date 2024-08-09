@@ -8,6 +8,9 @@ import org.dflib.Extractor;
 import static org.apache.parquet.schema.LogicalTypeAnnotation.*;
 import static org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.*;
 
+/**
+ * @since 1.0.0-M23
+ */
 public class RowExtractorFactory {
 
     public static Extractor<Object[], ?> converterFor(Type schemaField, int idx) {

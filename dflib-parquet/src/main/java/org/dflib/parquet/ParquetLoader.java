@@ -12,7 +12,7 @@ import org.dflib.DataFrame;
 import org.dflib.Extractor;
 import org.dflib.Index;
 import org.dflib.builder.DataFrameAppender;
-import org.dflib.parquet.read.DataframeParquetReaderBuilder;
+import org.dflib.parquet.read.DataFrameParquetReaderBuilder;
 import org.dflib.parquet.read.RowExtractorFactory;
 
 import java.io.File;
@@ -47,7 +47,7 @@ public class ParquetLoader {
                     .columnIndex(createIndex(schema))
                     .appender();
 
-            ParquetReader<Object[]> reader = new DataframeParquetReaderBuilder(localInputFile).build();
+            ParquetReader<Object[]> reader = new DataFrameParquetReaderBuilder(localInputFile).build();
 
             Object[] row = null;
             while ((row = reader.read()) != null) {

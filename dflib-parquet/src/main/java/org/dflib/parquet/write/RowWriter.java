@@ -25,7 +25,7 @@ class RowWriter {
     private final WriteConfiguration writeConfiguration;
     private final List<Consumer<RowProxy>> fieldWriters = new ArrayList<>();
 
-    public RowWriter(RecordConsumer recordConsumer, WriteConfiguration writeConfiguration, DataframeSchema schema) {
+    public RowWriter(RecordConsumer recordConsumer, WriteConfiguration writeConfiguration, DataFrameSchema schema) {
         this.recordConsumer = recordConsumer;
         this.writeConfiguration = writeConfiguration;
 
