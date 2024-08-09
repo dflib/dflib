@@ -27,7 +27,7 @@ public class ParquetSaver {
 
     private boolean createMissingDirs;
     private TimeUnit timeUnit = TimeUnit.MICROS;
-    private CompressionCodecName compressionCodec = ParquetWriter.DEFAULT_COMPRESSION_CODEC_NAME;
+    private CompressionCodec compressionCodec;
     private DecimalConfig decimalConfig;
 
     public ParquetSaver createMissingDirs() {
@@ -45,7 +45,7 @@ public class ParquetSaver {
         return this;
     }
 
-    public ParquetSaver compressionCodec(CompressionCodecName compressionCodec) {
+    public ParquetSaver compressionCodec(CompressionCodec compressionCodec) {
         this.compressionCodec = compressionCodec;
         return this;
     }
@@ -72,7 +72,7 @@ public class ParquetSaver {
         try (ParquetWriter<RowProxy> parquetWriter = new DataFrameParquetWriterBuilder(new LocalOutputFile(filePath))
                 .withWriteConfiguration(new WriteConfiguration(timeUnit, decimalConfig))
                 .withDataFrameSchema(dataFrameSchema)
-                .withCompressionCodec(compressionCodec)
+                .withCompressionCodec(compressionCodecName())
                 .withWriteMode(Mode.OVERWRITE)
                 .build()) {
             for (RowProxy r : df) {
@@ -100,6 +100,25 @@ public class ParquetSaver {
             index++;
         }
         return new DataFrameSchema(result);
+    }
+
+    private CompressionCodecName compressionCodecName() {
+        if (compressionCodec == null) {
+            return CompressionCodecName.UNCOMPRESSED;
+        }
+
+        switch (compressionCodec) {
+            case GZIP:
+                return CompressionCodecName.GZIP;
+            case ZSTD:
+                return CompressionCodecName.ZSTD;
+            case SNAPPY:
+                return CompressionCodecName.SNAPPY;
+            case LZ4_RAW:
+                return CompressionCodecName.LZ4_RAW;
+            default:
+                return CompressionCodecName.UNCOMPRESSED;
+        }
     }
 
 }

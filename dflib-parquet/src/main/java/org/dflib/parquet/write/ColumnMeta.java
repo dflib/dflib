@@ -19,10 +19,6 @@ public class ColumnMeta {
         return columnName;
     }
 
-    public Class<?> getInferredType() {
-        return inferredType;
-    }
-
     public String getInferredTypeName() {
         return inferredType.isArray() ? inferredType.getComponentType().getName() + "[]" : inferredType.getName();
     }
