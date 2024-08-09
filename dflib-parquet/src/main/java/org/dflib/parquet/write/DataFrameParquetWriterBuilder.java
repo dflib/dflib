@@ -17,12 +17,13 @@ import java.util.Map;
  */
 public class DataFrameParquetWriterBuilder extends ParquetWriter.Builder<RowProxy, DataFrameParquetWriterBuilder> {
 
-    private final Map<String, String> extraMetaData = new HashMap<>();
+    private final Map<String, String> extraMetaData;
     private WriteConfiguration writeConfiguration;
     private DataFrameSchema schema;
 
     public DataFrameParquetWriterBuilder(OutputFile outputFile) {
         super(outputFile);
+        this.extraMetaData = new HashMap<>();
     }
 
     @Override
@@ -51,18 +52,21 @@ public class DataFrameParquetWriterBuilder extends ParquetWriter.Builder<RowProx
     }
 
     private WriteSupport<RowProxy> getWriteSupport() {
-        return new DataframeParquetWriterSupport(extraMetaData, writeConfiguration, schema);
+        return new DataFrameParquetWriterSupport(extraMetaData, writeConfiguration, schema);
     }
 
-    private static class DataframeParquetWriterSupport extends WriteSupport<RowProxy> {
+    private static class DataFrameParquetWriterSupport extends WriteSupport<RowProxy> {
 
         private final Map<String, String> extraMetaData;
         private final WriteConfiguration writeConfiguration;
         private final DataFrameSchema dataFrameSchema;
         private RowWriter rowWriter;
 
-        DataframeParquetWriterSupport(Map<String, String> extraMetaData, WriteConfiguration writeConfiguration,
+        DataFrameParquetWriterSupport(
+                Map<String, String> extraMetaData,
+                WriteConfiguration writeConfiguration,
                 DataFrameSchema dataFrameSchema) {
+
             this.extraMetaData = extraMetaData;
             this.writeConfiguration = writeConfiguration;
             this.dataFrameSchema = dataFrameSchema;
@@ -70,7 +74,7 @@ public class DataFrameParquetWriterBuilder extends ParquetWriter.Builder<RowProx
 
         @Override
         public String getName() {
-            return ParquetSchemaCompiler.DEFAULT_NAME;
+            return "DFLib";
         }
 
         @Override

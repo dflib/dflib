@@ -19,7 +19,7 @@ import static org.apache.parquet.schema.Types.primitive;
 
 class ParquetSchemaCompiler {
 
-    public static final String DEFAULT_NAME = "DataFrame";
+    private static final String DEFAULT_NAME = "DataFrame";
 
     private final WriteConfiguration writeConfiguration;
 
