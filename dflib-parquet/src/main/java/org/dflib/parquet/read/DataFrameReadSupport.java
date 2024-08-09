@@ -13,15 +13,23 @@ import java.util.Map;
 
 class DataFrameReadSupport extends ReadSupport<Object[]> {
 
+    private final MessageType projection;
+
+    DataFrameReadSupport(MessageType projection) {
+        this.projection = projection;
+    }
+
     @Override
-    public RecordMaterializer<Object[]> prepareForRead(Configuration configuration, Map<String, String> keyValueMetaData,
-            MessageType fileSchema, ReadContext readContext) {
+    public RecordMaterializer<Object[]> prepareForRead(
+            Configuration configuration,
+            Map<String, String> keyValueMetaData,
+            MessageType fileSchema,
+            ReadContext readContext) {
         return new DataFrameMaterializer(readContext.getRequestedSchema());
     }
 
     @Override
     public ReadContext init(InitContext initContext) {
-        MessageType projection = initContext.getFileSchema();
         Map<String, String> metadata = new LinkedHashMap<>();
         return new ReadContext(projection, metadata);
     }

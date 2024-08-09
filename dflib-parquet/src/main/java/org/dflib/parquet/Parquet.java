@@ -1,5 +1,6 @@
 package org.dflib.parquet;
 
+import org.apache.parquet.schema.MessageType;
 import org.dflib.DataFrame;
 
 import java.io.File;
@@ -22,6 +23,18 @@ public class Parquet {
         return loader().load(filePath);
     }
 
+    public static MessageType loadSchema(File file) {
+        return schemaLoader().load(file);
+    }
+
+    public static MessageType loadSchema(Path filePath) {
+        return schemaLoader().load(filePath);
+    }
+
+    public static MessageType loadSchema(String filePath) {
+        return schemaLoader().load(filePath);
+    }
+
     public static void save(DataFrame df, Path filePath) {
         saver().save(df, filePath);
     }
@@ -42,4 +55,7 @@ public class Parquet {
         return new ParquetLoader();
     }
 
+    public static ParquetSchemaLoader schemaLoader() {
+        return new ParquetSchemaLoader();
+    }
 }

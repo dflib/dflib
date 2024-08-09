@@ -1,10 +1,6 @@
 package org.dflib.parquet;
 
-import org.apache.parquet.ParquetReadOptions;
-import org.apache.parquet.conf.PlainParquetConfiguration;
-import org.apache.parquet.hadoop.ParquetFileReader;
 import org.apache.parquet.hadoop.ParquetReader;
-import org.apache.parquet.io.InputFile;
 import org.apache.parquet.io.LocalInputFile;
 import org.apache.parquet.schema.GroupType;
 import org.apache.parquet.schema.MessageType;
@@ -15,6 +11,7 @@ import org.dflib.Index;
 import org.dflib.builder.DataFrameAppender;
 import org.dflib.parquet.read.DataFrameParquetReaderBuilder;
 import org.dflib.parquet.read.RowExtractorFactory;
+import org.dflib.parquet.read.SchemaProjector;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +24,43 @@ import java.util.List;
  */
 public class ParquetLoader {
 
+    private SchemaProjector schemaProjector;
+
+    /**
+     * Configures the loader to only process the specified columns, and include them in the DataFrame in the specified
+     * order.
+     *
+     * @return this loader instance
+     */
+    public ParquetLoader cols(String... columns) {
+        this.schemaProjector = SchemaProjector.ofCols(columns);
+        return this;
+    }
+
+    /**
+     * @return this loader instance
+     */
+    public ParquetLoader cols(int... columns) {
+        this.schemaProjector = SchemaProjector.ofCols(columns);
+        return this;
+    }
+
+    /**
+     * @return this loader instance
+     */
+    public ParquetLoader colsExcept(String... columns) {
+        this.schemaProjector = SchemaProjector.ofColsExcept(columns);
+        return this;
+    }
+
+    /**
+     * @return this loader instance
+     */
+    public ParquetLoader colsExcept(int... columns) {
+        this.schemaProjector = SchemaProjector.ofColsExcept(columns);
+        return this;
+    }
+
     public DataFrame load(File file) {
         return load(file.toPath());
     }
@@ -37,14 +71,19 @@ public class ParquetLoader {
 
     public DataFrame load(Path filePath) {
         try {
-            LocalInputFile inputFile = new LocalInputFile(filePath);
-            MessageType schema = loadSchema(inputFile);
 
-            DataFrameAppender<Object[]> appender = DataFrame.byArrayRow(mapColumns(schema))
-                    .columnIndex(createIndex(schema))
+            // TODO: to avoid reading the schema twice, is it possible to defer schema extraction to
+            //  DataFrameReadSupport.init(..) ?
+
+            MessageType fileSchema = Parquet.schemaLoader().load(filePath);
+            MessageType projectedSchema = projectSchema(fileSchema);
+
+            DataFrameAppender<Object[]> appender = DataFrame.byArrayRow(mapColumns(projectedSchema))
+                    .columnIndex(createIndex(projectedSchema))
                     .appender();
 
-            ParquetReader<Object[]> reader = new DataFrameParquetReaderBuilder(inputFile).build();
+            LocalInputFile inputFile = new LocalInputFile(filePath);
+            ParquetReader<Object[]> reader = new DataFrameParquetReaderBuilder(inputFile, projectedSchema).build();
 
             Object[] row;
             while ((row = reader.read()) != null) {
@@ -56,11 +95,10 @@ public class ParquetLoader {
         }
     }
 
-    private MessageType loadSchema(InputFile inputFile) throws IOException {
-        ParquetReadOptions parquetReadOptions = ParquetReadOptions.builder(new PlainParquetConfiguration()).build();
-        try (ParquetFileReader parquetFile = new ParquetFileReader(inputFile, parquetReadOptions)) {
-            return parquetFile.getFileMetaData().getSchema();
-        }
+    private MessageType projectSchema(MessageType schema) {
+        return schemaProjector != null
+                ? schemaProjector.project(schema)
+                : schema;
     }
 
     private Index createIndex(GroupType schema) {
