@@ -17,6 +17,7 @@
         <module>dflib-excel</module>
         <module>dflib-jdbc</module>
         <module>dflib-json</module>
+        <module>dflib-parquet</module>
         <module>dflib-junit5</module>
         <module>dflib-jupyter</module>
         <module>dflib-benchmark</module>
@@ -59,6 +60,8 @@
         <commons.compress.version>1.26.1</commons.compress.version>
         <commons.csv.version>1.11.0</commons.csv.version>
         <mustache.version>0.9.10</mustache.version>
+        <parquet.version>1.14.1</parquet.version>
+        <hadoop.version>3.3.6</hadoop.version>
     </properties>
 
     <url>https://github.com/dflib/dflib</url>
@@ -228,6 +231,42 @@
                 <groupId>com.github.spullara.mustache.java</groupId>
                 <artifactId>compiler</artifactId>
                 <version>${mustache.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.parquet</groupId>
+                <artifactId>parquet-common</artifactId>
+                <version>${parquet.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.parquet</groupId>
+                <artifactId>parquet-column</artifactId>
+                <version>${parquet.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.parquet</groupId>
+                <artifactId>parquet-hadoop</artifactId>
+                <version>${parquet.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.parquet</groupId>
+                <artifactId>parquet-avro</artifactId>
+                <version>${parquet.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-common</artifactId>
+                <version>${hadoop.version}</version>
+            </dependency>            
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-client</artifactId>
+                <version>${hadoop.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-mapreduce-client-core</artifactId>
+                <version>${hadoop.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
