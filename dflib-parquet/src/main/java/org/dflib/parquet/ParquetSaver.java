@@ -1,12 +1,5 @@
 package org.dflib.parquet;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.parquet.hadoop.ParquetFileWriter.Mode;
 import org.apache.parquet.hadoop.ParquetWriter;
 import org.apache.parquet.hadoop.metadata.CompressionCodecName;
@@ -20,6 +13,16 @@ import org.dflib.parquet.write.DecimalConfig;
 import org.dflib.parquet.write.WriteConfiguration;
 import org.dflib.row.RowProxy;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @since 1.0.0-M23
+ */
 public class ParquetSaver {
 
     private boolean createMissingDirs;

@@ -1,11 +1,5 @@
 package org.dflib.parquet;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Path;
-import java.util.List;
-
 import org.apache.parquet.ParquetReadOptions;
 import org.apache.parquet.conf.PlainParquetConfiguration;
 import org.apache.parquet.hadoop.ParquetFileReader;
@@ -22,6 +16,15 @@ import org.dflib.parquet.read.DataframeParquetReaderBuilder;
 import org.dflib.parquet.read.Row;
 import org.dflib.parquet.read.RowExtractorFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Path;
+import java.util.List;
+
+/**
+ * @since 1.0.0-M23
+ */
 public class ParquetLoader {
 
     public DataFrame load(File file) {

@@ -1,10 +1,13 @@
 package org.dflib.parquet;
 
+import org.dflib.DataFrame;
+
 import java.io.File;
 import java.nio.file.Path;
 
-import org.dflib.DataFrame;
-
+/**
+ * @since 1.0.0-M23
+ */
 public class Parquet {
 
     public static DataFrame load(File file) {
