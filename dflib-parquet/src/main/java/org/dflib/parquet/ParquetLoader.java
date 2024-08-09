@@ -4,6 +4,7 @@ import org.apache.parquet.ParquetReadOptions;
 import org.apache.parquet.conf.PlainParquetConfiguration;
 import org.apache.parquet.hadoop.ParquetFileReader;
 import org.apache.parquet.hadoop.ParquetReader;
+import org.apache.parquet.io.InputFile;
 import org.apache.parquet.io.LocalInputFile;
 import org.apache.parquet.schema.GroupType;
 import org.apache.parquet.schema.MessageType;
@@ -36,26 +37,29 @@ public class ParquetLoader {
 
     public DataFrame load(Path filePath) {
         try {
-            LocalInputFile localInputFile = new LocalInputFile(filePath);
-            MessageType schema = null;
+            LocalInputFile inputFile = new LocalInputFile(filePath);
+            MessageType schema = loadSchema(inputFile);
 
-            ParquetReadOptions parquetReadOptions = ParquetReadOptions.builder(new PlainParquetConfiguration()).build();
-            try (ParquetFileReader parquetFile = new ParquetFileReader(localInputFile, parquetReadOptions)) {
-                schema = parquetFile.getFileMetaData().getSchema();
-            }
             DataFrameAppender<Object[]> appender = DataFrame.byArrayRow(mapColumns(schema))
                     .columnIndex(createIndex(schema))
                     .appender();
 
-            ParquetReader<Object[]> reader = new DataFrameParquetReaderBuilder(localInputFile).build();
+            ParquetReader<Object[]> reader = new DataFrameParquetReaderBuilder(inputFile).build();
 
-            Object[] row = null;
+            Object[] row;
             while ((row = reader.read()) != null) {
                 appender.append(row);
             }
             return appender.toDataFrame();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
+        }
+    }
+
+    private MessageType loadSchema(InputFile inputFile) throws IOException {
+        ParquetReadOptions parquetReadOptions = ParquetReadOptions.builder(new PlainParquetConfiguration()).build();
+        try (ParquetFileReader parquetFile = new ParquetFileReader(inputFile, parquetReadOptions)) {
+            return parquetFile.getFileMetaData().getSchema();
         }
     }
 
