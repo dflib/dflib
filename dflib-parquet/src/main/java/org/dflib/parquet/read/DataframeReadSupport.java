@@ -11,10 +11,10 @@ import org.apache.parquet.io.api.RecordMaterializer;
 import org.apache.parquet.schema.MessageType;
 import org.dflib.parquet.read.converter.RowConverter;
 
-class DataframeReadSupport extends ReadSupport<Row> {
+class DataframeReadSupport extends ReadSupport<Object[]> {
 
     @Override
-    public RecordMaterializer<Row> prepareForRead(Configuration configuration, Map<String, String> keyValueMetaData,
+    public RecordMaterializer<Object[]> prepareForRead(Configuration configuration, Map<String, String> keyValueMetaData,
             MessageType fileSchema, ReadContext readContext) {
         return new DataframeMaterializer(readContext.getRequestedSchema());
     }
@@ -26,17 +26,17 @@ class DataframeReadSupport extends ReadSupport<Row> {
         return new ReadContext(projection, metadata);
     }
 
-    private static class DataframeMaterializer extends RecordMaterializer<Row> {
+    private static class DataframeMaterializer extends RecordMaterializer<Object[]> {
 
         private final GroupConverter root;
-        private Row value;
+        private Object[] value;
 
         public DataframeMaterializer(MessageType requestedSchema) {
             this.root = new RowConverter(requestedSchema, v -> this.value = v);
         }
 
         @Override
-        public Row getCurrentRecord() {
+        public Object[] getCurrentRecord() {
             return value;
         }
 

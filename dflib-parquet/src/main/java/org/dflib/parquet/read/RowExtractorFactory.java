@@ -1,26 +1,17 @@
 package org.dflib.parquet.read;
 
-import static org.apache.parquet.schema.LogicalTypeAnnotation.dateType;
-import static org.apache.parquet.schema.LogicalTypeAnnotation.enumType;
-import static org.apache.parquet.schema.LogicalTypeAnnotation.stringType;
-import static org.apache.parquet.schema.LogicalTypeAnnotation.uuidType;
-import static org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.FIXED_LEN_BYTE_ARRAY;
-import static org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.INT32;
-import static org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.INT64;
-
-import org.apache.parquet.schema.LogicalTypeAnnotation.DecimalLogicalTypeAnnotation;
-import org.apache.parquet.schema.LogicalTypeAnnotation.IntLogicalTypeAnnotation;
-import org.apache.parquet.schema.LogicalTypeAnnotation.TimeLogicalTypeAnnotation;
-import org.apache.parquet.schema.LogicalTypeAnnotation.TimestampLogicalTypeAnnotation;
 import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName;
 import org.apache.parquet.schema.Type;
 import org.apache.parquet.schema.Type.Repetition;
 import org.dflib.Extractor;
 
+import static org.apache.parquet.schema.LogicalTypeAnnotation.*;
+import static org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.*;
+
 public class RowExtractorFactory {
 
-    public static Extractor<Row, ?> converterFor(Type schemaField, int idx) {
-        Extractor<Row, ?> converter = buildFromLogicalTypeConverter(schemaField, idx);
+    public static Extractor<Object[], ?> converterFor(Type schemaField, int idx) {
+        Extractor<Object[], ?> converter = buildFromLogicalTypeConverter(schemaField, idx);
         if (converter != null) {
             return converter;
         }
@@ -30,33 +21,33 @@ public class RowExtractorFactory {
         throw new RuntimeException(schemaField.asGroupType().getName() + " deserialization not supported");
     }
 
-    private static Extractor<Row, ?> buildPrimitiveExtractor(Type parquetField, int idx) {
+    private static Extractor<Object[], ?> buildPrimitiveExtractor(Type parquetField, int idx) {
         PrimitiveTypeName type = parquetField.asPrimitiveType().getPrimitiveTypeName();
         if (parquetField.isRepetition(Repetition.OPTIONAL)) {
-            return Extractor.$col(r -> r.get(idx));
+            return Extractor.$col(r -> r[idx]);
         }
         switch (type) {
         case INT32:
-            return Extractor.$int(r -> (Integer) r.get(idx));
+            return Extractor.$int(r -> (Integer) r[idx]);
         case INT64:
-            return Extractor.$long(r -> (Long) r.get(idx));
+            return Extractor.$long(r -> (Long) r[idx]);
         case FLOAT:
-            return Extractor.$col(r -> r.get(idx));
+            return Extractor.$col(r -> r[idx]);
         case DOUBLE:
-            return Extractor.$double(r -> (Double) r.get(idx));
+            return Extractor.$double(r -> (Double) r[idx]);
         case BOOLEAN:
-            return Extractor.$bool(r -> (Boolean) r.get(idx));
+            return Extractor.$bool(r -> (Boolean) r[idx]);
         default:
             throw new RuntimeException(type + " deserialization not supported");
         }
     }
 
-    private static Extractor<Row, ?> buildFromLogicalTypeConverter(Type parquetField, int idx) {
+    private static Extractor<Object[], ?> buildFromLogicalTypeConverter(Type parquetField, int idx) {
         var logicalTypeAnnotation = parquetField.getLogicalTypeAnnotation();
         if (logicalTypeAnnotation == null) {
             return null;
         }
-        Extractor<Row, ?> defaultExtractor = Extractor.$col(r -> r.get(idx));
+        Extractor<Object[], ?> defaultExtractor = Extractor.$col(r -> r[idx]);
         if (logicalTypeAnnotation.equals(stringType())) {
             return defaultExtractor;
         }

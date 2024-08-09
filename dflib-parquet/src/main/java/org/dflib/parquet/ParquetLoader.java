@@ -13,7 +13,6 @@ import org.dflib.Extractor;
 import org.dflib.Index;
 import org.dflib.builder.DataFrameAppender;
 import org.dflib.parquet.read.DataframeParquetReaderBuilder;
-import org.dflib.parquet.read.Row;
 import org.dflib.parquet.read.RowExtractorFactory;
 
 import java.io.File;
@@ -44,13 +43,13 @@ public class ParquetLoader {
             try (ParquetFileReader parquetFile = new ParquetFileReader(localInputFile, parquetReadOptions)) {
                 schema = parquetFile.getFileMetaData().getSchema();
             }
-            DataFrameAppender<Row> appender = DataFrame.byRow(mapColumns(schema))
+            DataFrameAppender<Object[]> appender = DataFrame.byArrayRow(mapColumns(schema))
                     .columnIndex(createIndex(schema))
                     .appender();
 
-            ParquetReader<Row> reader = new DataframeParquetReaderBuilder(localInputFile).build();
+            ParquetReader<Object[]> reader = new DataframeParquetReaderBuilder(localInputFile).build();
 
-            Row row = null;
+            Object[] row = null;
             while ((row = reader.read()) != null) {
                 appender.append(row);
             }
@@ -65,9 +64,9 @@ public class ParquetLoader {
         return Index.of(labels);
     }
 
-    private Extractor<Row, ?>[] mapColumns(GroupType schema) {
+    private Extractor<Object[], ?>[] mapColumns(GroupType schema) {
         List<Type> fields = schema.getFields();
-        Extractor<Row, ?>[] extractors = new Extractor[fields.size()];
+        Extractor<Object[], ?>[] extractors = new Extractor[fields.size()];
         for (int i = 0; i < fields.size(); i++) {
             extractors[i] = RowExtractorFactory.converterFor(fields.get(i), i);
         }

@@ -1,36 +1,27 @@
 package org.dflib.parquet.read.converter;
 
-import static org.apache.parquet.schema.LogicalTypeAnnotation.dateType;
-import static org.apache.parquet.schema.LogicalTypeAnnotation.enumType;
-import static org.apache.parquet.schema.LogicalTypeAnnotation.stringType;
-import static org.apache.parquet.schema.LogicalTypeAnnotation.uuidType;
-import static org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.FIXED_LEN_BYTE_ARRAY;
-import static org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.INT32;
-import static org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.INT64;
-
-import java.util.function.Consumer;
-
 import org.apache.parquet.io.api.Converter;
 import org.apache.parquet.io.api.GroupConverter;
 import org.apache.parquet.schema.GroupType;
-import org.apache.parquet.schema.LogicalTypeAnnotation.DecimalLogicalTypeAnnotation;
-import org.apache.parquet.schema.LogicalTypeAnnotation.IntLogicalTypeAnnotation;
-import org.apache.parquet.schema.LogicalTypeAnnotation.TimeLogicalTypeAnnotation;
-import org.apache.parquet.schema.LogicalTypeAnnotation.TimestampLogicalTypeAnnotation;
 import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName;
 import org.apache.parquet.schema.Type;
-import org.dflib.parquet.read.Row;
+
+import java.util.Arrays;
+import java.util.function.Consumer;
+
+import static org.apache.parquet.schema.LogicalTypeAnnotation.*;
+import static org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.*;
 
 public class RowConverter extends GroupConverter {
 
     private final Converter[] converters;
-    private final Consumer<Row> rowConsumer;
-    private final Row row;
+    private final Consumer<Object[]> rowConsumer;
+    private final Object[] row;
 
-    public RowConverter(GroupType schema, Consumer<Row> rowConsumer) {
+    public RowConverter(GroupType schema, Consumer<Object[]> rowConsumer) {
         this.rowConsumer = rowConsumer;
         this.converters = new Converter[schema.getFields().size()];
-        this.row = new Row(schema.getFields().size());
+        this.row = new Object[schema.getFields().size()];
         int cont = 0;
         for (var schemaField : schema.getFields()) {
             converters[cont] = converterFor(cont, schemaField, row);
@@ -38,8 +29,8 @@ public class RowConverter extends GroupConverter {
         }
     }
 
-    private Converter converterFor(int idx, Type schemaField, Row row) {
-        Consumer<Object> consumer = value -> row.set(idx, value);
+    private Converter converterFor(int idx, Type schemaField, Object[] row) {
+        Consumer<Object> consumer = value -> row[idx] = value;
         Converter converter = buildFromLogicalTypeConverter(schemaField, consumer);
         if (converter != null) {
             return converter;
@@ -120,8 +111,7 @@ public class RowConverter extends GroupConverter {
 
     @Override
     public void start() {
-        row.resetParams();
-
+        Arrays.fill(row, null);
     }
 
     @Override
