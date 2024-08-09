@@ -22,7 +22,7 @@ public class Parquet_CompressionTest extends BaseParquetTest {
 
     @BeforeAll
     static void measureUncompressed() {
-        File file = new File(outPath("uncompressed.parquet"));
+        File file = tempFile("uncompressed.parquet");
         Parquet.saver().save(df, file);
 
         UNCOMPRESSED_SIZE = file.length();
@@ -31,9 +31,9 @@ public class Parquet_CompressionTest extends BaseParquetTest {
 
     @Test
     public void gzip() {
-        File file = new File(outPath("gzip.parquet"));
+        File file = tempFile("gzip.parquet");
         Parquet.saver()
-                .compressionCodec(CompressionCodec.GZIP)
+                .compression(CompressionCodec.GZIP)
                 .save(df, file);
 
         assertTrue(file.length() < UNCOMPRESSED_SIZE, () -> "Failed to compress: " + file.length() + " vs " + UNCOMPRESSED_SIZE);
@@ -48,9 +48,9 @@ public class Parquet_CompressionTest extends BaseParquetTest {
 
     @Test
     public void snappy() {
-        File file = new File(outPath("snappy.parquet"));
+        File file = tempFile("snappy.parquet");
         Parquet.saver()
-                .compressionCodec(CompressionCodec.SNAPPY)
+                .compression(CompressionCodec.SNAPPY)
                 .save(df, file);
 
         assertTrue(file.length() < UNCOMPRESSED_SIZE, () -> "Failed to compress: " + file.length() + " vs " + UNCOMPRESSED_SIZE);
@@ -65,9 +65,9 @@ public class Parquet_CompressionTest extends BaseParquetTest {
 
     @Test
     public void lz4_raw() {
-        File file = new File(outPath("lz4_raw.parquet"));
+        File file = tempFile("lz4_raw.parquet");
         Parquet.saver()
-                .compressionCodec(CompressionCodec.LZ4_RAW)
+                .compression(CompressionCodec.LZ4_RAW)
                 .save(df, file);
 
         assertTrue(file.length() < UNCOMPRESSED_SIZE, () -> "Failed to compress: " + file.length() + " vs " + UNCOMPRESSED_SIZE);
@@ -82,9 +82,9 @@ public class Parquet_CompressionTest extends BaseParquetTest {
 
     @Test
     public void zstd() {
-        File file = new File(outPath("zstd.parquet"));
+        File file = tempFile("zstd.parquet");
         Parquet.saver()
-                .compressionCodec(CompressionCodec.ZSTD)
+                .compression(CompressionCodec.ZSTD)
                 .save(df, file);
 
         assertTrue(file.length() < UNCOMPRESSED_SIZE, () -> "Failed to compress: " + file.length() + " vs " + UNCOMPRESSED_SIZE);

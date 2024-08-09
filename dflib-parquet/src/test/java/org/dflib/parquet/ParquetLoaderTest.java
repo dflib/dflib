@@ -15,23 +15,21 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.UUID;
 
-import static java.nio.file.Files.createTempFile;
 import static java.time.Instant.ofEpochSecond;
 import static java.time.ZoneOffset.ofHours;
 
 /**
  * Test Parquet deserialization. Given that saver has been tested, we can use it
  * to generate content to read and test
- *
  */
-public class ParquetLoaderTest {
+public class ParquetLoaderTest extends BaseParquetTest {
 
     @Test
     @DisplayName("Integer Column")
     public void integerColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of(1, 2, 3);
 
-        Path file = createTempFile("integerColumn", ".parquet");
+        Path file = tempPath("integerColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -47,7 +45,7 @@ public class ParquetLoaderTest {
     @DisplayName("Int Column")
     public void intColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").ofInts(0, 18, 49, 32);
-        Path file = createTempFile("intColumn", ".parquet");
+        Path file = tempPath("intColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -65,7 +63,7 @@ public class ParquetLoaderTest {
     public void doubleObjectColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of(1.0, 2.0, 3.0);
 
-        Path file = createTempFile("doubleObjectColumn", ".parquet");
+        Path file = tempPath("doubleObjectColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -81,7 +79,7 @@ public class ParquetLoaderTest {
     @DisplayName("Double Column")
     public void doubleColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").ofDoubles(0.0, 18.0, 49.0, 32.0);
-        Path file = createTempFile("doubleColumn", ".parquet");
+        Path file = tempPath("doubleColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -98,7 +96,7 @@ public class ParquetLoaderTest {
     public void longObjectColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of(1L, 2L, 3L);
 
-        Path file = createTempFile("longObjectColumn", ".parquet");
+        Path file = tempPath("longObjectColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -114,7 +112,7 @@ public class ParquetLoaderTest {
     @DisplayName("Long Column")
     public void longColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").ofLongs(0L, 18L, 49L, 32L);
-        Path file = createTempFile("longColumn", ".parquet");
+        Path file = tempPath("longColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -131,7 +129,7 @@ public class ParquetLoaderTest {
     public void booleanObjectColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of(true, false, true);
 
-        Path file = createTempFile("booleanObjectColumn", ".parquet");
+        Path file = tempPath("booleanObjectColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -148,7 +146,7 @@ public class ParquetLoaderTest {
     public void shortObjectColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of((short) 1, (short) 2, (short) 3);
 
-        Path file = createTempFile("shortObjectColumn", ".parquet");
+        Path file = tempPath("shortObjectColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -165,7 +163,7 @@ public class ParquetLoaderTest {
     public void byteObjectColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of((byte) 1, (byte) 2, (byte) 3);
 
-        Path file = createTempFile("byteObjectColumn", ".parquet");
+        Path file = tempPath("byteObjectColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -182,7 +180,7 @@ public class ParquetLoaderTest {
     public void floatObjectColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of(1.0f, 2.0f, 3.0f);
 
-        Path file = createTempFile("floatObjectColumn", ".parquet");
+        Path file = tempPath("floatObjectColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -199,7 +197,7 @@ public class ParquetLoaderTest {
     public void stringColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of("one", "two", "three");
 
-        Path file = createTempFile("stringColumn", ".parquet");
+        Path file = tempPath("stringColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -219,7 +217,7 @@ public class ParquetLoaderTest {
         UUID uuid3 = UUID.randomUUID();
         DataFrame df = DataFrame.foldByRow("a").of(uuid1, uuid2, uuid3);
 
-        Path file = createTempFile("uuidColumn", ".parquet");
+        Path file = tempPath("uuidColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -240,7 +238,7 @@ public class ParquetLoaderTest {
     public void enumColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of(EnumValues.one, EnumValues.two, EnumValues.three);
 
-        Path file = createTempFile("enumColumn", ".parquet");
+        Path file = tempPath("enumColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -266,7 +264,7 @@ public class ParquetLoaderTest {
 
             DataFrame df = DataFrame.foldByRow("a").of(bigDec1, bigDec2, bigDec3);
 
-            Path file = createTempFile("bigDecimalColumn", ".parquet");
+            Path file = tempPath("bigDecimalColumn.parquet");
             Parquet.saver().bigDecimal(20, 5).save(df, file);
 
             DataFrame dfRead = Parquet.loader().load(file);
@@ -287,7 +285,7 @@ public class ParquetLoaderTest {
 
             DataFrame df = DataFrame.foldByRow("a").of(bigDec1, bigDec2, bigDec3);
 
-            Path file = createTempFile("bigDecimalColumn", ".parquet");
+            Path file = tempPath("bigDecimalColumn.parquet");
             Parquet.saver().bigDecimal(18, 3).save(df, file);
 
             DataFrame dfRead = Parquet.loader().load(file);
@@ -309,7 +307,7 @@ public class ParquetLoaderTest {
 
             DataFrame df = DataFrame.foldByRow("a").of(bigDec1, bigDec2, bigDec3);
 
-            Path file = createTempFile("bigDecimalColumn", ".parquet");
+            Path file = tempPath("bigDecimalColumn.parquet");
             Parquet.saver().bigDecimal(9, 4).save(df, file);
 
             DataFrame dfRead = Parquet.loader().load(file);
@@ -332,7 +330,7 @@ public class ParquetLoaderTest {
 
         DataFrame df = DataFrame.foldByRow("a").of(localDate1, localDate2, localDate3);
 
-        Path file = createTempFile("localDateColumn", ".parquet");
+        Path file = tempPath("localDateColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -357,7 +355,7 @@ public class ParquetLoaderTest {
 
             DataFrame df = DataFrame.foldByRow("a").of(localTime1, localTime2, localTime3);
 
-            Path file = createTempFile("localTimeColumnMicros", ".parquet");
+            Path file = tempPath("localTimeColumnMicros.parquet");
             Parquet.saver().save(df, file);
 
             DataFrame dfRead = Parquet.loader().load(file);
@@ -374,7 +372,7 @@ public class ParquetLoaderTest {
         public void localTimeColumnMillis() throws IOException {
             DataFrame df = DataFrame.foldByRow("a").of(localTime1, localTime2, localTime3);
 
-            Path file = createTempFile("localTimeColumnMillis", ".parquet");
+            Path file = tempPath("localTimeColumnMillis.parquet");
             Parquet.saver().timeUnit(TimeUnit.MILLIS)
                     .save(df, file);
 
@@ -401,7 +399,7 @@ public class ParquetLoaderTest {
 
             DataFrame df = DataFrame.foldByRow("a").of(localDateTime1, localDateTime2, localDateTime3);
 
-            Path file = createTempFile("localDateTimeColumnMicros", ".parquet");
+            Path file = tempPath("localDateTimeColumnMicros.parquet");
             Parquet.saver().save(df, file);
 
             DataFrame dfRead = Parquet.loader().load(file);
@@ -418,7 +416,7 @@ public class ParquetLoaderTest {
         public void localDateTimeColumnMillis() throws IOException {
             DataFrame df = DataFrame.foldByRow("a").of(localDateTime1, localDateTime2, localDateTime3);
 
-            Path file = createTempFile("localDateTimeColumnMillis", ".parquet");
+            Path file = tempPath("localDateTimeColumnMillis.parquet");
             Parquet.saver().timeUnit(TimeUnit.MILLIS)
                     .save(df, file);
 
@@ -448,7 +446,7 @@ public class ParquetLoaderTest {
 
             DataFrame df = DataFrame.foldByRow("a").of(instant1, instant2, instant3);
 
-            Path file = createTempFile("instantColumnMicros", ".parquet");
+            Path file = tempPath("instantColumnMicros.parquet");
             Parquet.saver().save(df, file);
 
             DataFrame dfRead = Parquet.loader().load(file);
@@ -466,7 +464,7 @@ public class ParquetLoaderTest {
         public void instantColumnMillis() throws IOException {
             DataFrame df = DataFrame.foldByRow("a").of(instant1, instant2, instant3);
 
-            Path file = createTempFile("instantColumnMillis", ".parquet");
+            Path file = tempPath("instantColumnMillis.parquet");
             Parquet.saver().timeUnit(TimeUnit.MILLIS)
                     .save(df, file);
 
@@ -489,7 +487,7 @@ public class ParquetLoaderTest {
                 .append(11, 12L, 13.0, 14.0f, false, "bar")
                 .toDataFrame();
 
-        Path file = createTempFile("multipleColumnTypes", ".parquet");
+        Path file = tempPath("multipleColumnTypes.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -509,7 +507,7 @@ public class ParquetLoaderTest {
                 .append(null, null, null, null, null, null)
                 .toDataFrame();
 
-        Path file = createTempFile("nullValues", ".parquet");
+        Path file = tempPath("nullValues.parquet");
         Parquet.saver().save(df, file);
         DataFrame dfRead = Parquet.loader().load(file);
 

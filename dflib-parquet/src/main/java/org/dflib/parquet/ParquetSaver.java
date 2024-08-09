@@ -45,7 +45,7 @@ public class ParquetSaver {
         return this;
     }
 
-    public ParquetSaver compressionCodec(CompressionCodec compressionCodec) {
+    public ParquetSaver compression(CompressionCodec compressionCodec) {
         this.compressionCodec = compressionCodec;
         return this;
     }
@@ -71,7 +71,7 @@ public class ParquetSaver {
         DataFrameSchema dataFrameSchema = extractDataFrameSchema(df);
         try (ParquetWriter<RowProxy> parquetWriter = new DataFrameParquetWriterBuilder(new LocalOutputFile(filePath))
                 .withWriteConfiguration(new WriteConfiguration(timeUnit, decimalConfig))
-                .withDataFrameSchema(dataFrameSchema)
+                .withSchema(dataFrameSchema)
                 .withCompressionCodec(compressionCodecName())
                 .withWriteMode(Mode.OVERWRITE)
                 .build()) {

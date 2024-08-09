@@ -19,7 +19,7 @@ public class DataFrameParquetWriterBuilder extends ParquetWriter.Builder<RowProx
 
     private final Map<String, String> extraMetaData = new HashMap<>();
     private WriteConfiguration writeConfiguration;
-    private DataFrameSchema dataFrameSchema;
+    private DataFrameSchema schema;
 
     public DataFrameParquetWriterBuilder(OutputFile outputFile) {
         super(outputFile);
@@ -45,13 +45,13 @@ public class DataFrameParquetWriterBuilder extends ParquetWriter.Builder<RowProx
         return self();
     }
 
-    public DataFrameParquetWriterBuilder withDataFrameSchema(DataFrameSchema dataFrameSchema) {
-        this.dataFrameSchema = dataFrameSchema;
+    public DataFrameParquetWriterBuilder withSchema(DataFrameSchema schema) {
+        this.schema = schema;
         return self();
     }
 
-    protected WriteSupport<RowProxy> getWriteSupport() {
-        return new DataframeParquetWriterSupport(extraMetaData, writeConfiguration, dataFrameSchema);
+    private WriteSupport<RowProxy> getWriteSupport() {
+        return new DataframeParquetWriterSupport(extraMetaData, writeConfiguration, schema);
     }
 
     private static class DataframeParquetWriterSupport extends WriteSupport<RowProxy> {
