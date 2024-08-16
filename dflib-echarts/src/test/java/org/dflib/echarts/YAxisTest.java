@@ -44,7 +44,7 @@ public class YAxisTest extends GenerateScriptHtmlTest {
     }
 
     @Test
-    public void formatter() {
+    public void label_formatter() {
 
         String s1 = ECharts.chart().generateScriptHtml("_tid", df1);
         assertFalse(s1.contains("axisLabel: {"), s1);

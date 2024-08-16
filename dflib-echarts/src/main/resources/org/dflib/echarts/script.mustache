@@ -94,9 +94,24 @@
         {{/alignTicksPresent}}
         {{#axisLabel}}
             axisLabel: {
+            {{#fontSize}}
+                fontSize: {{.}},
+            {{/fontSize}}
+            {{#fontStyle}}
+                fontStyle: '{{.}}',
+            {{/fontStyle}}
+            {{#fontWeight}}
+                fontWeight: {{{.}}},
+            {{/fontWeight}}
+            {{#fontFamily}}
+                fontFamily: '{{.}}',
+            {{/fontFamily}}
             {{#formatter}}
-                formatter: '{{.}}'
+                formatter: '{{.}}',
             {{/formatter}}
+            {{#rotate}}
+                rotate: {{.}}
+            {{/rotate}}
             },
         {{/axisLabel}}
         {{#axisLine}}
@@ -138,9 +153,24 @@
         {{/alignTicksPresent}}
         {{#axisLabel}}
             axisLabel: {
+            {{#fontSize}}
+                fontSize: {{.}},
+            {{/fontSize}}
+            {{#fontStyle}}
+                fontStyle: '{{.}}',
+            {{/fontStyle}}
+            {{#fontWeight}}
+                fontWeight: {{{.}}},
+            {{/fontWeight}}
+            {{#fontFamily}}
+                fontFamily: '{{.}}',
+            {{/fontFamily}}
             {{#formatter}}
-                formatter: '{{.}}'
+                formatter: '{{.}}',
             {{/formatter}}
+            {{#rotate}}
+                rotate: {{.}}
+            {{/rotate}}
             },
         {{/axisLabel}}
         {{#axisLine}}

@@ -123,4 +123,50 @@ public class XAxisTest extends GenerateScriptHtmlTest {
         assertTrue(s4.contains("onZero: false"), s4);
 
     }
+
+
+    @Test
+    public void label_formatter() {
+
+        String s1 = ECharts.chart().generateScriptHtml("_tid", df1);
+        assertFalse(s1.contains("axisLabel: {"), s1);
+        assertFalse(s1.contains("formatter:"), s1);
+
+        String s2 = ECharts.chart().xAxis("x", XAxis.ofDefault().label(AxisLabel.of().formatter("{value} cm"))).generateScriptHtml("_tid", df1);
+        assertTrue(s2.contains("axisLabel: {"), s2);
+        assertTrue(s2.contains("formatter: '{value} cm'"), s2);
+    }
+
+    @Test
+    public void label_rotate() {
+
+        String s1 = ECharts.chart().generateScriptHtml("_tid", df1);
+        assertFalse(s1.contains("axisLabel: {"), s1);
+        assertFalse(s1.contains("rotate:"), s1);
+
+        String s2 = ECharts.chart().xAxis("x", XAxis.ofDefault().label(AxisLabel.of().rotate(-20))).generateScriptHtml("_tid", df1);
+        assertTrue(s2.contains("axisLabel: {"), s2);
+        assertTrue(s2.contains("rotate: -20"), s2);
+    }
+
+    @Test
+    public void label_font() {
+        String s1 = ECharts.chart().generateScriptHtml("_tid", df1);
+        assertFalse(s1.contains("axisLabel: {"), s1);
+        assertFalse(s1.contains("fontSize:"), s1);
+        assertFalse(s1.contains("fontStyle:"), s1);
+        assertFalse(s1.contains("fontFamily:"), s1);
+        assertFalse(s1.contains("fontWeight:"), s1);
+
+        String s2 = ECharts.chart().xAxis("x", XAxis.ofDefault().label(AxisLabel.of()
+                .fontSize(18)
+                .fontStyle(FontStyle.italic)
+                .fontFamily("monospace")
+                .fontWeight(200))).generateScriptHtml("_tid", df1);
+        assertTrue(s2.contains("axisLabel: {"), s2);
+        assertTrue(s2.contains("fontSize: 18"), s2);
+        assertTrue(s2.contains("fontStyle: 'italic'"), s2);
+        assertTrue(s2.contains("fontFamily: 'monospace'"), s2);
+        assertTrue(s2.contains("fontWeight: 200"), s2);
+    }
 }
