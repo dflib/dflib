@@ -1,5 +1,11 @@
 # UPGRADE INSTRUCTIONS
 
+## 1.0.0-M23
+* [dflib #318](https://github.com/bootique/bootique-agrest/issues/318): The default series type can no longer
+be overridden and is always a "line chart" with default set of options. `Echarts.chart().defaultSeriesOpts(..)` 
+method was removed as a result. If you are calling this method, you will get a compilation error. You will need to
+remove it, and pass its `opts` argument to each affected `Echarts.chart().series(opts, "a", "b")` call instead.
+
 ## 1.0.0-M22
 
 * [dflib #296](https://github.com/bootique/bootique-agrest/issues/296): ECharts `Axis` class was split into two
