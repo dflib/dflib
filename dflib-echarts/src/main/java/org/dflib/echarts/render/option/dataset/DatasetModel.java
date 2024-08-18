@@ -7,15 +7,15 @@ import java.util.List;
  *
  * @since 1.0.0-M21
  */
-public class DataSetModel {
+public class DatasetModel {
 
-    private final List<DataSetRowModel> rows;
+    private final List<DatasetRowModel> rows;
 
-    public DataSetModel(List<DataSetRowModel> rows) {
+    public DatasetModel(List<DatasetRowModel> rows) {
         this.rows = rows;
     }
 
-    public List<DataSetRowModel> getRows() {
+    public List<DatasetRowModel> getRows() {
         return rows;
     }
 }

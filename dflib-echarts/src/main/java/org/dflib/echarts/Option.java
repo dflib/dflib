@@ -5,9 +5,9 @@ import org.dflib.Index;
 import org.dflib.Series;
 import org.dflib.echarts.render.OptionModel;
 import org.dflib.echarts.render.ValueModel;
-import org.dflib.echarts.render.option.dataset.DataSetModel;
+import org.dflib.echarts.render.option.dataset.DatasetModel;
 import org.dflib.echarts.render.option.GridModel;
-import org.dflib.echarts.render.option.dataset.DataSetRowModel;
+import org.dflib.echarts.render.option.dataset.DatasetRowModel;
 import org.dflib.echarts.render.option.SeriesModel;
 import org.dflib.series.IntSequenceSeries;
 
@@ -168,7 +168,7 @@ public class Option {
                 : (cartesianDefaults ? List.of(XAxis.ofDefault()) : null);
         List<YAxis> ys = yAxes != null ? yAxes : (cartesianDefaults ? List.of(YAxis.ofDefault()) : null);
         DataSetLabels labels = datasetLabels(df, cartesianDefaults);
-        DataSetModel dataset = dataset(df, labels.rows);
+        DatasetModel dataset = dataset(df, labels.rows);
         List<SeriesModel> series = series(labels);
 
         return new OptionModel(
@@ -195,7 +195,7 @@ public class Option {
                 : null;
     }
 
-    protected DataSetModel dataset(DataFrame df, List<DataSetRowModel> labels) {
+    protected DatasetModel dataset(DataFrame df, List<DatasetRowModel> labels) {
 
         List<List<ValueModel>> rows = new ArrayList<>(series.size());
 
@@ -229,13 +229,13 @@ public class Option {
         }
 
         int h = rows.size();
-        List<DataSetRowModel> rowModels = new ArrayList<>(h + labels.size());
+        List<DatasetRowModel> rowModels = new ArrayList<>(h + labels.size());
         rowModels.addAll(labels);
         for (int i = 0; i < h; i++) {
-            rowModels.add(new DataSetRowModel(rows.get(i), i + 1 == h));
+            rowModels.add(new DatasetRowModel(rows.get(i), i + 1 == h));
         }
 
-        return new DataSetModel(rowModels);
+        return new DatasetModel(rowModels);
     }
 
     protected DataSetLabels datasetLabels(DataFrame df, boolean cartesianDefaults) {
@@ -284,10 +284,10 @@ public class Option {
         }
 
         int len = rowMap.size();
-        List<DataSetRowModel> rows = new ArrayList<>(len);
+        List<DatasetRowModel> rows = new ArrayList<>(len);
 
         int[] i = new int[1];
-        rowMap.forEach((k, v) -> rows.add(new DataSetRowModel(v, i[0]++ == len)));
+        rowMap.forEach((k, v) -> rows.add(new DatasetRowModel(v, i[0]++ == len)));
 
         return new DataSetLabels(rowPosByXAxisIndex, rows);
     }
@@ -336,10 +336,10 @@ public class Option {
     }
 
     static class DataSetLabels {
-        final List<DataSetRowModel> rows;
+        final List<DatasetRowModel> rows;
         final Map<Integer, Integer> xAxisIndices;
 
-        DataSetLabels(Map<Integer, Integer> xAxisIndices, List<DataSetRowModel> rows) {
+        DataSetLabels(Map<Integer, Integer> xAxisIndices, List<DatasetRowModel> rows) {
             this.xAxisIndices = xAxisIndices;
             this.rows = rows;
         }

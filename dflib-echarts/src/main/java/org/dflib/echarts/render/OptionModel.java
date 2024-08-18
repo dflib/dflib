@@ -1,6 +1,6 @@
 package org.dflib.echarts.render;
 
-import org.dflib.echarts.render.option.dataset.DataSetModel;
+import org.dflib.echarts.render.option.dataset.DatasetModel;
 import org.dflib.echarts.render.option.GridModel;
 import org.dflib.echarts.render.option.SeriesModel;
 import org.dflib.echarts.render.option.axis.AxisModel;
@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class OptionModel {
 
-    private final DataSetModel dataset;
+    private final DatasetModel dataset;
     private final boolean legend;
     private final List<GridModel> grid;
     private final List<SeriesModel> series;
@@ -25,7 +25,7 @@ public class OptionModel {
     private final List<AxisModel> yAxes;
 
     public OptionModel(
-            DataSetModel dataset,
+            DatasetModel dataset,
             boolean legend,
             List<GridModel> grid,
             List<SeriesModel> series,
@@ -72,7 +72,7 @@ public class OptionModel {
         return grid;
     }
 
-    public DataSetModel getDataset() {
+    public DatasetModel getDataset() {
         return dataset;
     }
 

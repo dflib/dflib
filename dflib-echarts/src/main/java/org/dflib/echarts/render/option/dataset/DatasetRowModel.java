@@ -9,12 +9,12 @@ import java.util.List;
  *
  * @since 1.0.0-M21
  */
-public class DataSetRowModel {
+public class DatasetRowModel {
 
     private final List<ValueModel> columns;
     private final boolean last;
 
-    public DataSetRowModel(List<ValueModel> columns, boolean last) {
+    public DatasetRowModel(List<ValueModel> columns, boolean last) {
         this.columns = columns;
         this.last = last;
     }
