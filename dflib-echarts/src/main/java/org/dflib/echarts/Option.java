@@ -141,18 +141,6 @@ public class Option {
         return this;
     }
 
-    /**
-     * Specifies one or more DataFrame columns to be plotted as individual series. Series will be rendered with default
-     * options.
-     */
-    public Option series(String... dataColumns) {
-        for (String c : dataColumns) {
-            series.put(c, new BoundSeries(c, null));
-        }
-
-        return this;
-    }
-
     public Option title(String title) {
         this.title = title;
         return this;
