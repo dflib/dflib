@@ -5,61 +5,37 @@ import org.dflib.echarts.render.option.SeriesModel;
 import org.dflib.echarts.render.option.series.CenterModel;
 import org.dflib.echarts.render.option.series.RadiusModel;
 
-import java.util.List;
-import java.util.Map;
-
-/**
- * Resolves a sequence of {@link SeriesOpts} to {@link SeriesModel} that references data in the dataset.
- */
 class OpToSeriesModel {
 
-    private final Map<Integer, Integer> xAxisIndices;
-    private final String dataSetSeriesLayoutBy;
-    private int dataSetSeriesPos;
+    SeriesModel resolve(OptionSeriesBuilder<?> sb) {
 
-    OpToSeriesModel(
-            Map<Integer, Integer> xAxisIndices,
-            String dataSetSeriesLayoutBy,
-            int dataSetSeriesPosOffset) {
-
-        this.xAxisIndices = xAxisIndices;
-        this.dataSetSeriesLayoutBy = dataSetSeriesLayoutBy;
-        this.dataSetSeriesPos = dataSetSeriesPosOffset;
-    }
-
-    SeriesModel resolve(SeriesOpts<?> opts, String name) {
-
-        switch (opts.getType()) {
+        switch (sb.opts.getType()) {
             case line:
-                return lineModel((LineSeriesOpts) opts, name);
+                return lineModel((OptionSeriesBuilder<LineSeriesOpts>) sb);
             case bar:
-                return barModel((BarSeriesOpts) opts, name);
+                return barModel((OptionSeriesBuilder<BarSeriesOpts>) sb);
             case scatter:
-                return scatterModel((ScatterSeriesOpts) opts, name);
+                return scatterModel((OptionSeriesBuilder<ScatterSeriesOpts>) sb);
             case pie:
-                return pieModel((PieSeriesOpts) opts, name);
+                return pieModel((OptionSeriesBuilder<PieSeriesOpts>) sb);
             default:
                 throw new UnsupportedOperationException("Unexpected ChartType: " + this);
         }
     }
 
-    private int getLabelPos(Integer xAxisIndex) {
-        return xAxisIndex != null ? xAxisIndices.get(xAxisIndex) : 0;
-    }
-
-    private SeriesModel barModel(BarSeriesOpts o, String name) {
+    private SeriesModel barModel(OptionSeriesBuilder<BarSeriesOpts> sb) {
         return new SeriesModel(
-                name,
-                o.getType().name(),
-                new EncodeModel(getLabelPos(o.xAxisIndex), List.of(dataSetSeriesPos++), null, null),
-                o.label != null ? o.label.resolve() : null,
-                dataSetSeriesLayoutBy,
+                sb.name,
+                sb.opts.getType().name(),
+                new EncodeModel(sb.xDimension, sb.yDimensions, null, null),
+                sb.opts.label != null ? sb.opts.label.resolve() : null,
+                sb.datasetSeriesLayoutBy,
                 null,
                 null,
-                o.stack,
+                sb.opts.stack,
                 null,
-                o.xAxisIndex,
-                o.yAxisIndex,
+                sb.opts.xAxisIndex,
+                sb.opts.yAxisIndex,
                 null,
                 null,
                 null,
@@ -68,19 +44,19 @@ class OpToSeriesModel {
         );
     }
 
-    private SeriesModel lineModel(LineSeriesOpts o, String name) {
+    private SeriesModel lineModel(OptionSeriesBuilder<LineSeriesOpts> sb) {
         return new SeriesModel(
-                name,
-                o.getType().name(),
-                new EncodeModel(getLabelPos(o.xAxisIndex), List.of(dataSetSeriesPos++), null, null),
-                o.label != null ? o.label.resolve() : null,
-                dataSetSeriesLayoutBy,
-                o.areaStyle,
-                o.showSymbol,
-                o.stack,
-                o.smooth,
-                o.xAxisIndex,
-                o.yAxisIndex,
+                sb.name,
+                sb.opts.getType().name(),
+                new EncodeModel(sb.xDimension, sb.yDimensions, null, null),
+                sb.opts.label != null ? sb.opts.label.resolve() : null,
+                sb.datasetSeriesLayoutBy,
+                sb.opts.areaStyle,
+                sb.opts.showSymbol,
+                sb.opts.stack,
+                sb.opts.smooth,
+                sb.opts.xAxisIndex,
+                sb.opts.yAxisIndex,
                 null,
                 null,
                 null,
@@ -89,19 +65,19 @@ class OpToSeriesModel {
     }
 
 
-    private SeriesModel scatterModel(ScatterSeriesOpts o, String name) {
+    private SeriesModel scatterModel(OptionSeriesBuilder<ScatterSeriesOpts> sb) {
         return new SeriesModel(
-                name,
-                ChartType.scatter.name(),
-                new EncodeModel(getLabelPos(o.xAxisIndex), List.of(dataSetSeriesPos++), null, null),
-                o.label != null ? o.label.resolve() : null,
-                dataSetSeriesLayoutBy,
+                sb.name,
+                sb.opts.getType().name(),
+                new EncodeModel(sb.xDimension, sb.yDimensions, null, null),
+                sb.opts.label != null ? sb.opts.label.resolve() : null,
+                sb.datasetSeriesLayoutBy,
                 null,
                 null,
                 null,
                 null,
-                o.xAxisIndex,
-                o.yAxisIndex,
+                sb.opts.xAxisIndex,
+                sb.opts.yAxisIndex,
                 null,
                 null,
                 null,
@@ -110,28 +86,30 @@ class OpToSeriesModel {
         );
     }
 
+    private SeriesModel pieModel(OptionSeriesBuilder<PieSeriesOpts> sb) {
 
-    private SeriesModel pieModel(PieSeriesOpts o, String name) {
+        // TODO: multiple series in a pie chart?
+        Integer dataDim = sb.yDimensions != null && !sb.yDimensions.isEmpty() ? sb.yDimensions.get(0) : null;
+
         return new SeriesModel(
-                name,
-                ChartType.pie.name(),
+                sb.name,
+                sb.opts.getType().name(),
 
-                // TODO: implement PieChart label to column resolution (other than 0 would not work)
-                new EncodeModel(null, null, 0, dataSetSeriesPos++),
+                new EncodeModel(null, null, sb.pieLabelsDimension, dataDim),
 
-                o.label != null && o.label.label != null ? o.label.label.resolve() : null,
-                dataSetSeriesLayoutBy,
+                sb.opts.label != null && sb.opts.label.label != null ? sb.opts.label.label.resolve() : null,
+                sb.datasetSeriesLayoutBy,
                 null,
                 null,
                 null,
                 null,
                 null,
                 null,
-                o.radius != null ? new RadiusModel(o.radius) : null,
-                o.center != null ? new CenterModel(o.center[0], o.center[1]) : null,
-                o.startAngle,
-                o.endAngle,
-                o.roseType != null ? o.roseType.name() : null
+                sb.opts.radius != null ? new RadiusModel(sb.opts.radius) : null,
+                sb.opts.center != null ? new CenterModel(sb.opts.center[0], sb.opts.center[1]) : null,
+                sb.opts.startAngle,
+                sb.opts.endAngle,
+                sb.opts.roseType != null ? sb.opts.roseType.name() : null
         );
     }
 }

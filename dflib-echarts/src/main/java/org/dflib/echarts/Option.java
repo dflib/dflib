@@ -20,10 +20,10 @@ public class Option {
     Toolbox toolbox;
     Tooltip tooltip;
     List<Grid> grids;
-    List<BoundXAxis> xAxes;
+    List<OptionXAxisBuilder> xAxes;
     List<YAxis> yAxes;
 
-    final List<OptionSeriesBuilder> series;
+    final List<OptionSeriesBuilder<?>> series;
 
     /**
      * @since 1.0.0-M22
@@ -85,7 +85,7 @@ public class Option {
             xAxes = new ArrayList<>(3);
         }
 
-        xAxes.add(new BoundXAxis(dataColumn, axis));
+        xAxes.add(new OptionXAxisBuilder(dataColumn, axis));
         return this;
     }
 
@@ -148,20 +148,6 @@ public class Option {
 
     protected OptionModel resolve(DataFrame df) {
         return new OpToOptionModel(this, df).resolve();
-    }
-
-    static class BoundXAxis {
-        final String columnName;
-        final XAxis axis;
-
-        BoundXAxis(String columnName, XAxis axis) {
-            this.columnName = columnName;
-            this.axis = axis;
-        }
-
-        XAxis getAxis() {
-            return axis;
-        }
     }
 
 }

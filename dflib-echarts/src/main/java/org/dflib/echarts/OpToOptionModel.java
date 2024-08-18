@@ -1,29 +1,20 @@
 package org.dflib.echarts;
 
 import org.dflib.DataFrame;
-import org.dflib.Series;
 import org.dflib.echarts.render.OptionModel;
-import org.dflib.echarts.render.ValueModel;
 import org.dflib.echarts.render.option.GridModel;
 import org.dflib.echarts.render.option.SeriesModel;
-import org.dflib.echarts.render.option.dataset.DatasetModel;
-import org.dflib.echarts.render.option.dataset.DatasetRowModel;
 import org.dflib.series.IntSequenceSeries;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 class OpToOptionModel {
-
-    private static final String DEFAULT_LABELS_LABEL = "labels";
 
     private final Option opt;
     private final DataFrame dataFrame;
@@ -35,42 +26,44 @@ class OpToOptionModel {
 
     OptionModel resolve() {
 
-        List<OptionSeriesBuilder> series = dedupeSeriesNames();
-
+        List<OptionSeriesBuilder<?>> series = dedupeSeriesNames();
         boolean cartesianDefaults = useCartesianDefaults(series);
-        List<XAxis> xs = opt.xAxes != null
-                ? opt.xAxes.stream().map(Option.BoundXAxis::getAxis).collect(Collectors.toList())
-                : (cartesianDefaults ? List.of(XAxis.ofDefault()) : null);
+
+        List<OptionXAxisBuilder> xs = opt.xAxes != null
+                ? opt.xAxes
+                : (cartesianDefaults ? List.of(new OptionXAxisBuilder(null, XAxis.ofDefault())) : null);
         List<YAxis> ys = opt.yAxes != null ? opt.yAxes : (cartesianDefaults ? List.of(YAxis.ofDefault()) : null);
-        DataSetLabels labels = datasetLabels(series, cartesianDefaults);
-        DatasetModel dataset = dataset(series, labels.rows);
-        List<SeriesModel> seriesModels = seriesModels(series, labels);
+
+        OptionDatasetBuilder dsb = new OptionDatasetBuilder(dataFrame);
+        appendXAxesLabels(dsb, xs);
+        appendPieChartLabels(dsb, series);
+        appendDatasetRows(dsb, series);
 
         return new OptionModel(
-                dataset,
+                dsb.datasetModel(),
                 opt.legend != null ? opt.legend : false,
                 grids(),
-                seriesModels,
+                seriesModels(series),
                 opt.title,
                 opt.toolbox != null ? opt.toolbox.resolve() : null,
                 opt.tooltip != null ? opt.tooltip.resolve() : null,
-                xs != null ? xs.stream().map(XAxis::resolve).collect(Collectors.toList()) : null,
+                xs != null ? xs.stream().map(OptionXAxisBuilder::getAxis).map(XAxis::resolve).collect(Collectors.toList()) : null,
                 ys != null ? ys.stream().map(YAxis::resolve).collect(Collectors.toList()) : null
         );
     }
 
-    private List<OptionSeriesBuilder> dedupeSeriesNames() {
+    private List<OptionSeriesBuilder<?>> dedupeSeriesNames() {
 
         if (opt.series.size() < 2) {
             return opt.series;
         }
 
-        UnaryOperator<OptionSeriesBuilder> nameDeduplicator = new UnaryOperator<>() {
+        UnaryOperator<OptionSeriesBuilder<?>> nameDeduplicator = new UnaryOperator<>() {
             final Set<String> names = new HashSet<>();
             int counter;
 
             @Override
-            public OptionSeriesBuilder apply(OptionSeriesBuilder sb) {
+            public OptionSeriesBuilder<?> apply(OptionSeriesBuilder<?> sb) {
                 String startName = sb.name;
 
                 // change in-place... OptionSeriesBuilder is not externally visible
@@ -91,158 +84,65 @@ class OpToOptionModel {
                 : null;
     }
 
-    protected boolean useCartesianDefaults(List<OptionSeriesBuilder> series) {
-        return series.isEmpty()
-                || series.stream().filter(sb -> sb.opts.getType().isCartesian()).findFirst().isPresent();
-    }
-
-    protected DataSetLabels datasetLabels(List<OptionSeriesBuilder> series, boolean cartesianDefaults) {
-
-        Map<String, List<ValueModel>> rowMap = new LinkedHashMap<>();
-
-        Map<Integer, Integer> rowPosByXAxisIndex = new HashMap<>();
-        Map<String, Integer> rowPosByRowLabel = new HashMap<>();
-
-        // The first source of labels - a column associated with XAxis.
-        if (opt.xAxes != null) {
-
-            // If multiple Axis point to the same data column, we'll generate only one dataset row for it
-            int xlen = opt.xAxes.size();
-            for (int i = 0; i < xlen; i++) {
-                String columnName = opt.xAxes.get(i).columnName;
-                String labelsName = labelsName(columnName);
-
-                Integer existingPos = rowPosByRowLabel.get(labelsName);
-                if (existingPos != null) {
-                    rowPosByXAxisIndex.put(i, existingPos);
-                } else {
-                    rowPosByRowLabel.put(labelsName, i);
-                    rowPosByXAxisIndex.put(i, i);
-                    rowMap.put(labelsName, datasetLabelRow(columnName, labelsName));
-                }
-            }
-
-        } else if (cartesianDefaults) {
-            String labelsName = labelsName(null);
-            List<ValueModel> xAxisLabels = datasetLabelRow(null, labelsName);
-            rowMap.put((String) xAxisLabels.get(0).getValue(), xAxisLabels);
-        }
-
-        // the next source of labels - columns associated with pie charts
-        for (OptionSeriesBuilder sb : series) {
-
-            if (sb.opts instanceof PieSeriesOpts) {
-                PieSeriesOpts pco = (PieSeriesOpts) sb.opts;
-                String labelsName = labelsName(pco.getLabelColumn());
-                List<ValueModel> pieLabels = datasetLabelRow(pco.getLabelColumn(), labelsName);
-                String key = (String) pieLabels.get(0).getValue();
-
-                rowMap.putIfAbsent(key, pieLabels);
-            }
-        }
-
-        int len = rowMap.size();
-        List<DatasetRowModel> rows = new ArrayList<>(len);
-
-        int[] i = new int[1];
-        rowMap.forEach((k, v) -> rows.add(new DatasetRowModel(v, i[0]++ == len)));
-
-        return new DataSetLabels(rowPosByXAxisIndex, rows);
-    }
-
-    private List<SeriesModel> seriesModels(List<OptionSeriesBuilder> series, DataSetLabels labels) {
-
-        OpToSeriesModel resolver = new OpToSeriesModel(
-                labels.xAxisIndices,
-
-                // hardcoding "row" series layout. It corresponds to the dataset layout created elsewhere in this object
-                "row",
-
-                // Series data rows follow label rows. So apply the offset to the "seriesPos" of the encoder
-                labels.rows.size()
-        );
-
-        List<SeriesModel> models = new ArrayList<>(series.size());
-        for (OptionSeriesBuilder sb : series) {
-            models.add(resolver.resolve(sb.opts, sb.name));
-        }
-
-        return models;
-    }
-
-    protected List<ValueModel> datasetLabelRow(String columnName, String labelsName) {
-
-        // DF columns become rows and rows become columns in the EChart dataset
-        int w = dataFrame.height();
-
-        List<ValueModel> row = new ArrayList<>(w + 1);
-
-        Series<?> columnLabels = columnName != null
-                ? dataFrame.getColumn(columnName)
-                : new IntSequenceSeries(1, dataFrame.height() + 1);
-
-        row.add(new ValueModel(labelsName, w == 0));
-        for (int i = 0; i < w; i++) {
-            row.add(new ValueModel(columnLabels.get(i), i + 1 == w));
-        }
-
-        return row;
-    }
-
-    protected String labelsName(String columnName) {
-        return columnName != null ? columnName : DEFAULT_LABELS_LABEL;
-    }
-
-    protected DatasetModel dataset(List<OptionSeriesBuilder> series, List<DatasetRowModel> labels) {
-
-        List<List<ValueModel>> rows = new ArrayList<>(series.size());
-
-        // DF columns become rows and rows become columns in the EChart dataset
-        int w = dataFrame.height();
-
-        for (OptionSeriesBuilder sb : series) {
-
-            List<ValueModel> row = new ArrayList<>(w + 1);
-
-            // for now, only support "dataset" for single column series.
-            // TODO: multi-column support for series like "candlestick" or "boxplot"
-            if (sb.dataColumns.size() > 1) {
-                String chartType = sb.opts.getClass().getSimpleName();
-                throw new UnsupportedOperationException("'dataset' generation is not supported for multi-column charts type: " + chartType);
-            }
-
-            String rowLabel = sb.dataColumns.get(0);
-            row.add(new ValueModel(rowLabel, w == 0));
-            Series<?> data = dataFrame.getColumn(rowLabel);
-
-            for (int j = 0; j < w; j++) {
-                row.add(new ValueModel(data.get(j), j + 1 == w));
-            }
-
-            rows.add(row);
-        }
-
-        if (rows.isEmpty()) {
+    List<SeriesModel> seriesModels(List<OptionSeriesBuilder<?>> series) {
+        if (series.isEmpty()) {
             return null;
         }
 
-        int h = rows.size();
-        List<DatasetRowModel> rowModels = new ArrayList<>(h + labels.size());
-        rowModels.addAll(labels);
-        for (int i = 0; i < h; i++) {
-            rowModels.add(new DatasetRowModel(rows.get(i), i + 1 == h));
-        }
-
-        return new DatasetModel(rowModels);
+        OpToSeriesModel resolver = new OpToSeriesModel();
+        return series.stream().map(resolver::resolve).collect(Collectors.toList());
     }
 
-    static class DataSetLabels {
-        final List<DatasetRowModel> rows;
-        final Map<Integer, Integer> xAxisIndices;
+    private boolean useCartesianDefaults(List<OptionSeriesBuilder<?>> series) {
+        return series.isEmpty()
+                || series.stream().anyMatch(sb -> sb.opts.getType().isCartesian());
+    }
 
-        DataSetLabels(Map<Integer, Integer> xAxisIndices, List<DatasetRowModel> rows) {
-            this.xAxisIndices = xAxisIndices;
-            this.rows = rows;
+    // updates both "dsb" (new dataset rows) and "xs" (label indices)
+    private void appendXAxesLabels(OptionDatasetBuilder dsb, List<OptionXAxisBuilder> xs) {
+
+        if (xs != null) {
+            int len = xs.size();
+            for (int i = 0; i < len; i++) {
+                OptionXAxisBuilder ab = xs.get(i);
+                int pos = ab.columnName != null
+                        ? dsb.appendRow(ab.columnName)
+                        : dsb.appendRow(new IntSequenceSeries(1, dataFrame.height() + 1));
+                ab.datasetRowIndex(pos);
+            }
+        }
+    }
+
+    // updates both "dsb" (new dataset rows) and some "series" (index of pie labels)
+    private void appendPieChartLabels(OptionDatasetBuilder dsb, List<OptionSeriesBuilder<?>> series) {
+
+        for (OptionSeriesBuilder<?> sb : series) {
+
+            if (sb.opts instanceof PieSeriesOpts) {
+                PieSeriesOpts pco = (PieSeriesOpts) sb.opts;
+                int pos = pco.getLabelColumn() != null
+                        ? dsb.appendRow(pco.getLabelColumn())
+                        : dsb.appendRow(new IntSequenceSeries(1, dataFrame.height() + 1));
+
+                sb.pieLabelsDimension(pos);
+            }
+        }
+    }
+
+    // updates both "dsb" (new dataset rows) and "series" (indices of dataset rows)
+    private void appendDatasetRows(OptionDatasetBuilder dsb, List<OptionSeriesBuilder<?>> series) {
+        for (OptionSeriesBuilder<?> sb : series) {
+
+            if (sb.dataColumns != null) {
+
+                List<Integer> ys = new ArrayList<>(sb.dataColumns.size());
+                sb.dataColumns.forEach(dc -> ys.add(dsb.appendRow(dc)));
+                sb.yDimensions(ys);
+
+                // we are laying out DataFrame series as horizontal rows that are somewhat more readable when
+                // laid out in JS
+                sb.datasetSeriesLayoutBy("row");
+            }
         }
     }
 }
