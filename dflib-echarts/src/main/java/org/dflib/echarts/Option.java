@@ -181,12 +181,13 @@ public class Option {
         List<YAxis> ys = yAxes != null ? yAxes : (cartesianDefaults ? List.of(YAxis.ofDefault()) : null);
         DataSetLabels labels = datasetLabels(df, cartesianDefaults);
         DataSetModel dataset = dataset(df, labels.rows);
+        List<SeriesModel> datasetSeries = datasetSeries(labels);
 
         return new OptionModel(
                 dataset,
                 this.legend != null ? this.legend : false,
                 grids(),
-                datasetSeries(labels),
+                datasetSeries,
                 this.title,
                 this.toolbox != null ? this.toolbox.resolve() : null,
                 this.tooltip != null ? this.tooltip.resolve() : null,
@@ -312,8 +313,8 @@ public class Option {
         SeriesOpts baseOpts = baseSeriesOptsTemplate();
         int len = series.size();
 
-        // Series data rows follow label rows. So apply the offset to the "y" of the encoder
-        int y = labels.size();
+        // Series data rows follow label rows. So apply the offset to the "seriesPos" of the encoder
+        int seriesPos = labels.size();
 
         List<SeriesModel> models = new ArrayList<>(len);
         for (BoundSeries s : series.values()) {
@@ -325,11 +326,13 @@ public class Option {
             } else if (s.opts instanceof PieSeriesOpts) {
                 // TODO: PieChart label to column resolution (other than 0 would not work)
                 labelsPos = 0;
-            } else {
+            } else if (s.opts == null) {
                 labelsPos = 0;
+            } else {
+                throw new IllegalStateException("Series options type is either unknown or doesn't support dataset references: " + s.opts.getClass().getName());
             }
 
-            SeriesModel m = s.fillOpts(baseOpts).resolve(labelsPos, y++);
+            SeriesModel m = s.fillOpts(baseOpts).resolve(labelsPos, seriesPos++);
             models.add(m);
         }
 
