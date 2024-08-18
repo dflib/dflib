@@ -215,9 +215,12 @@
                 {{#x}}
                     x: {{.}},
                 {{/x}}
-                {{#y}}
-                    y: {{.}},
-                {{/y}}
+                {{#ysPresent}}
+                    y: [{{#ys}}{{{.}}},{{/ys}}],
+                {{/ysPresent}}
+                {{#yPresent}}
+                    y: {{y}},
+                {{/yPresent}}
                 {{#value}}
                     value: {{.}},
                 {{/value}}

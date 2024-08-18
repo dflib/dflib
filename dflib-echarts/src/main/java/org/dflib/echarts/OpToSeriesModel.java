@@ -5,6 +5,7 @@ import org.dflib.echarts.render.option.SeriesModel;
 import org.dflib.echarts.render.option.series.CenterModel;
 import org.dflib.echarts.render.option.series.RadiusModel;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,7 +51,7 @@ class OpToSeriesModel {
         return new SeriesModel(
                 name,
                 o.getType().name(),
-                new EncodeModel(getLabelPos(o.xAxisIndex), dataSetSeriesPos++, null, null),
+                new EncodeModel(getLabelPos(o.xAxisIndex), List.of(dataSetSeriesPos++), null, null),
                 o.label != null ? o.label.resolve() : null,
                 dataSetSeriesLayoutBy,
                 null,
@@ -71,7 +72,7 @@ class OpToSeriesModel {
         return new SeriesModel(
                 name,
                 o.getType().name(),
-                new EncodeModel(getLabelPos(o.xAxisIndex), dataSetSeriesPos++, null, null),
+                new EncodeModel(getLabelPos(o.xAxisIndex), List.of(dataSetSeriesPos++), null, null),
                 o.label != null ? o.label.resolve() : null,
                 dataSetSeriesLayoutBy,
                 o.areaStyle,
@@ -92,7 +93,7 @@ class OpToSeriesModel {
         return new SeriesModel(
                 name,
                 ChartType.scatter.name(),
-                new EncodeModel(getLabelPos(o.xAxisIndex), dataSetSeriesPos++, null, null),
+                new EncodeModel(getLabelPos(o.xAxisIndex), List.of(dataSetSeriesPos++), null, null),
                 o.label != null ? o.label.resolve() : null,
                 dataSetSeriesLayoutBy,
                 null,
