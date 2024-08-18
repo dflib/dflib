@@ -1,44 +1,24 @@
 package org.dflib.echarts;
 
-import org.dflib.echarts.render.option.EncodeModel;
-import org.dflib.echarts.render.option.SeriesModel;
-
 /**
  * @since 1.0.0-M22
  */
 public class BarSeriesOpts extends CartesianSeriesOpts<BarSeriesOpts> {
 
-    private boolean stack;
+    boolean stack;
 
     public BarSeriesOpts() {
         // ECharts defaults
         this.stack = false;
     }
 
+    @Override
+    public ChartType getType() {
+        return ChartType.bar;
+    }
+
     public BarSeriesOpts stack() {
         this.stack = true;
         return this;
-    }
-
-    @Override
-    protected SeriesModel resolve(String name, int labelsPos, int seriesPos, String seriesLayoutBy) {
-        return new SeriesModel(
-                name,
-                ChartType.bar.name(),
-                new EncodeModel(labelsPos, seriesPos, null, null),
-                label != null ? label.resolve() : null,
-                seriesLayoutBy,
-                null,
-                null,
-                stack,
-                null,
-                xAxisIndex,
-                yAxisIndex,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
     }
 }

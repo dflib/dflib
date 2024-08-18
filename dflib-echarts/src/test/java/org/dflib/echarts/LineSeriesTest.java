@@ -87,9 +87,7 @@ public class LineSeriesTest extends GenerateScriptHtmlTest {
     public void dataset() {
 
         String s1 = ECharts.chart().generateScriptHtml("_tid", df2);
-        assertTrue(s1.contains("dataset"), s1);
-        assertTrue(s1.contains("['labels',1,2,3]"), s1);
-        assertFalse(s1.contains("['y1'"), s1);
+        assertFalse(s1.contains("dataset"), s1);
 
         String s2 = ECharts.chart().series(SeriesOpts.ofLine(), "y1", "y2").generateScriptHtml("_tid", df2);
         assertTrue(s2.contains("dataset"), s2);

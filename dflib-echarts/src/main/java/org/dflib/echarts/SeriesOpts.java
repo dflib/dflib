@@ -1,7 +1,5 @@
 package org.dflib.echarts;
 
-import org.dflib.echarts.render.option.SeriesModel;
-
 /**
  * A configuration of a single data series.
  *
@@ -74,7 +72,6 @@ public abstract class SeriesOpts<SO extends SeriesOpts<SO>> {
     protected SeriesOpts() {
     }
 
-
     /**
      * Sets plot series name. Optional, and in most cases the name is taken from the DataFrame column name bound
      * to the series.
@@ -86,5 +83,8 @@ public abstract class SeriesOpts<SO extends SeriesOpts<SO>> {
         return (SO) this;
     }
 
-    protected abstract SeriesModel resolve(String name, int labelsPos, int seriesPos, String seriesLayoutBy);
+    /**
+     * @since 1.0.0-M23
+     */
+    public abstract ChartType getType();
 }

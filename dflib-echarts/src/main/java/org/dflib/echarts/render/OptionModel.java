@@ -1,6 +1,6 @@
 package org.dflib.echarts.render;
 
-import org.dflib.echarts.render.option.DataSetModel;
+import org.dflib.echarts.render.option.dataset.DataSetModel;
 import org.dflib.echarts.render.option.GridModel;
 import org.dflib.echarts.render.option.SeriesModel;
 import org.dflib.echarts.render.option.axis.AxisModel;

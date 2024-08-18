@@ -10,14 +10,14 @@ public class XAxisTest extends GenerateScriptHtmlTest {
     public void data() {
 
         String s1 = ECharts.chart().generateScriptHtml("_tid", df2);
-        assertTrue(s1.contains("['labels',1,2,3]"), s1);
+        assertFalse(s1.contains("['labels',1,2,3]"), s1);
         assertTrue(s1.contains("type: 'category'"), s1);
 
         String s2 = ECharts.chart().series("y1").generateScriptHtml("_tid", df2);
         assertTrue(s2.contains("['labels',1,2,3]"), s2);
         assertTrue(s2.contains("type: 'category'"), s2);
 
-        String s3 = ECharts.chart().xAxis("x").generateScriptHtml("_tid", df2);
+        String s3 = ECharts.chart().xAxis("x").series(SeriesOpts.ofLine(), "y1").generateScriptHtml("_tid", df2);
         assertTrue(s3.contains("['x','A','B','C']"), s3);
         assertTrue(s3.contains("type: 'category'"), s3);
     }
@@ -27,6 +27,7 @@ public class XAxisTest extends GenerateScriptHtmlTest {
         String s1 = ECharts.chart()
                 .xAxis("x1")
                 .xAxis("x2")
+                .series("y1", "y2")
                 .generateScriptHtml("_tid", df4);
         assertTrue(s1.contains("['x1','A','B','C'],"), s1);
         assertTrue(s1.contains("['x2','X','Y','Z'],"), s1);

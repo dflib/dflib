@@ -3,6 +3,7 @@ package org.dflib.echarts;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import org.dflib.DataFrame;
+import org.dflib.Index;
 import org.dflib.echarts.render.ContainerModel;
 import org.dflib.echarts.render.ExternalScriptModel;
 import org.dflib.echarts.render.InitOptsModel;
@@ -172,7 +173,7 @@ public class EChart {
     public EChart series(String... dataColumns) {
         LineSeriesOpts opts = SeriesOpts.ofLine();
         for (String c : dataColumns) {
-            option.series(opts, c);
+            option.series(opts, Index.of(c));
         }
         return this;
     }
@@ -183,7 +184,7 @@ public class EChart {
      */
     public EChart series(SeriesOpts<?> seriesOpts, String... dataColumns) {
         for (String c : dataColumns) {
-            option.series(seriesOpts, c);
+            option.series(seriesOpts, Index.of(c));
         }
         return this;
     }

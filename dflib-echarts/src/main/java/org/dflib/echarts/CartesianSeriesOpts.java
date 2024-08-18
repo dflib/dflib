@@ -3,7 +3,7 @@ package org.dflib.echarts;
 /**
  * @since 1.0.0-M22
  */
-public abstract class CartesianSeriesOpts<T extends CartesianSeriesOpts<T>> extends SeriesOpts<T> {
+public abstract class CartesianSeriesOpts<SO extends CartesianSeriesOpts<SO>> extends SeriesOpts<SO> {
 
     protected Label label;
     protected Integer xAxisIndex;
@@ -12,17 +12,17 @@ public abstract class CartesianSeriesOpts<T extends CartesianSeriesOpts<T>> exte
     /**
      * @since 1.0.0-M22
      */
-    public T label(LabelPosition position) {
+    public SO label(LabelPosition position) {
         this.label = Label.of(position);
-        return (T) this;
+        return (SO) this;
     }
 
     /**
      * @since 1.0.0-M22
      */
-    public T label(Label label) {
+    public SO label(Label label) {
         this.label = label;
-        return (T) this;
+        return (SO) this;
     }
 
     /**
@@ -31,9 +31,9 @@ public abstract class CartesianSeriesOpts<T extends CartesianSeriesOpts<T>> exte
      *
      * @since 1.0.0-M22
      */
-    public T xAxisIndex(int index) {
+    public SO xAxisIndex(int index) {
         this.xAxisIndex = index;
-        return (T) this;
+        return (SO) this;
     }
 
     /**
@@ -42,8 +42,8 @@ public abstract class CartesianSeriesOpts<T extends CartesianSeriesOpts<T>> exte
      *
      * @since 1.0.0-M22
      */
-    public T yAxisIndex(int index) {
+    public SO yAxisIndex(int index) {
         this.yAxisIndex = index;
-        return (T) this;
+        return (SO) this;
     }
 }

@@ -1,12 +1,13 @@
 package org.dflib.echarts;
 
 import org.dflib.DataFrame;
+import org.dflib.Index;
 import org.dflib.Series;
 import org.dflib.echarts.render.OptionModel;
 import org.dflib.echarts.render.ValueModel;
-import org.dflib.echarts.render.option.DataSetModel;
+import org.dflib.echarts.render.option.dataset.DataSetModel;
 import org.dflib.echarts.render.option.GridModel;
-import org.dflib.echarts.render.option.RowModel;
+import org.dflib.echarts.render.option.dataset.DataSetRowModel;
 import org.dflib.echarts.render.option.SeriesModel;
 import org.dflib.series.IntSequenceSeries;
 
@@ -35,7 +36,7 @@ public class Option {
     private List<BoundXAxis> xAxes;
     private List<YAxis> yAxes;
 
-    private final List<BoundSeries> series;
+    private final List<OptionSeriesBuilder> series;
 
     /**
      * @since 1.0.0-M22
@@ -134,23 +135,19 @@ public class Option {
      *
      * @since 1.0.0-M23
      */
-    public Option series(SeriesOpts opts, String dataColumn) {
-        series.add(new BoundSeries(dataColumn, opts));
+    public Option series(SeriesOpts opts, Index dataColumns) {
+        series.add(new OptionSeriesBuilder(opts, dataColumns));
         return this;
     }
 
     /**
      * Specifies one or more DataFrame columns to be plotted as individual series. Sets series options.
      *
-     * @deprecated in favor of {@link #series(SeriesOpts, String)}
+     * @deprecated in favor of {@link #series(SeriesOpts, Index)}
      */
     @Deprecated(since = "1.0.0-M23", forRemoval = true)
     public Option series(SeriesOpts opts, String... dataColumns) {
-        for (String c : dataColumns) {
-            series.add(new BoundSeries(c, opts));
-        }
-
-        return this;
+        return series(opts, Index.of(dataColumns));
     }
 
     public Option title(String title) {
@@ -172,13 +169,13 @@ public class Option {
         List<YAxis> ys = yAxes != null ? yAxes : (cartesianDefaults ? List.of(YAxis.ofDefault()) : null);
         DataSetLabels labels = datasetLabels(df, cartesianDefaults);
         DataSetModel dataset = dataset(df, labels.rows);
-        List<SeriesModel> datasetSeries = datasetSeries(labels);
+        List<SeriesModel> series = series(labels);
 
         return new OptionModel(
                 dataset,
                 this.legend != null ? this.legend : false,
                 grids(),
-                datasetSeries,
+                series,
                 this.title,
                 this.toolbox != null ? this.toolbox.resolve() : null,
                 this.tooltip != null ? this.tooltip.resolve() : null,
@@ -189,7 +186,7 @@ public class Option {
 
     protected boolean useCartesianDefaults() {
         return series.isEmpty()
-                || series.stream().filter(BoundSeries::isCartesian).findFirst().isPresent();
+                || series.stream().filter(ops -> ops.opts.getType().isCartesian()).findFirst().isPresent();
     }
 
     protected List<GridModel> grids() {
@@ -198,19 +195,25 @@ public class Option {
                 : null;
     }
 
-    protected DataSetModel dataset(DataFrame df, List<RowModel> labels) {
+    protected DataSetModel dataset(DataFrame df, List<DataSetRowModel> labels) {
+
+        List<List<ValueModel>> rows = new ArrayList<>(series.size());
 
         // DF columns become rows and rows become columns in the EChart dataset
         int w = df.height();
-        int h = series.size();
 
-        List<RowModel> rows = new ArrayList<>(h + labels.size());
-        rows.addAll(labels);
+        for (OptionSeriesBuilder sb : series) {
 
-        for (int i = 0; i < h; i++) {
             List<ValueModel> row = new ArrayList<>(w + 1);
-            String rowLabel = series.get(i).columnName;
 
+            // for now, only support "dataset" for single column series. Multi-column like "candlestick" or "boxplot"
+            // will be using embedded "data" element.
+            if (sb.dataColumns.size() > 1) {
+                String chartType = sb.opts.getClass().getSimpleName();
+                throw new UnsupportedOperationException("'dataset' generation is not supported for multi-column charts type: " + chartType);
+            }
+
+            String rowLabel = sb.dataColumns.get(0);
             row.add(new ValueModel(rowLabel, w == 0));
             Series<?> data = df.getColumn(rowLabel);
 
@@ -218,10 +221,21 @@ public class Option {
                 row.add(new ValueModel(data.get(j), j + 1 == w));
             }
 
-            rows.add(new RowModel(row, i + 1 == h));
+            rows.add(row);
         }
 
-        return new DataSetModel(rows);
+        if (rows.isEmpty()) {
+            return null;
+        }
+
+        int h = rows.size();
+        List<DataSetRowModel> rowModels = new ArrayList<>(h + labels.size());
+        rowModels.addAll(labels);
+        for (int i = 0; i < h; i++) {
+            rowModels.add(new DataSetRowModel(rows.get(i), i + 1 == h));
+        }
+
+        return new DataSetModel(rowModels);
     }
 
     protected DataSetLabels datasetLabels(DataFrame df, boolean cartesianDefaults) {
@@ -257,10 +271,10 @@ public class Option {
         }
 
         // the next source of labels - columns associated with pie charts
-        for (BoundSeries s : series) {
+        for (OptionSeriesBuilder sb : series) {
 
-            if (s.opts instanceof PieSeriesOpts) {
-                PieSeriesOpts pco = (PieSeriesOpts) s.opts;
+            if (sb.opts instanceof PieSeriesOpts) {
+                PieSeriesOpts pco = (PieSeriesOpts) sb.opts;
                 String labelsName = labelsName(pco.getLabelColumn());
                 List<ValueModel> pieLabels = datasetLabelRow(df, pco.getLabelColumn(), labelsName);
                 String key = (String) pieLabels.get(0).getValue();
@@ -270,10 +284,10 @@ public class Option {
         }
 
         int len = rowMap.size();
-        List<RowModel> rows = new ArrayList<>(len);
+        List<DataSetRowModel> rows = new ArrayList<>(len);
 
         int[] i = new int[1];
-        rowMap.forEach((k, v) -> rows.add(new RowModel(v, i[0]++ == len)));
+        rowMap.forEach((k, v) -> rows.add(new DataSetRowModel(v, i[0]++ == len)));
 
         return new DataSetLabels(rowPosByXAxisIndex, rows);
     }
@@ -301,50 +315,33 @@ public class Option {
         return row;
     }
 
-    protected List<SeriesModel> datasetSeries(DataSetLabels labels) {
-        int len = series.size();
+    protected List<SeriesModel> series(DataSetLabels labels) {
 
-        // Series data rows follow label rows. So apply the offset to the "seriesPos" of the encoder
-        int seriesPos = labels.size();
+        OpToSeriesModel resolver = new OpToSeriesModel(
+                labels.xAxisIndices,
 
-        List<SeriesModel> models = new ArrayList<>(len);
-        for (BoundSeries s : series) {
+                // hardcoding "row" series layout. It corresponds to the dataset layout created elsewhere in this object
+                "row",
 
-            int labelsPos;
+                // Series data rows follow label rows. So apply the offset to the "seriesPos" of the encoder
+                labels.rows.size()
+        );
 
-            if (s.opts instanceof CartesianSeriesOpts) {
-                labelsPos = labels.xForXAxis(((CartesianSeriesOpts) s.opts).xAxisIndex);
-            } else if (s.opts instanceof PieSeriesOpts) {
-                // TODO: PieChart label to column resolution (other than 0 would not work)
-                labelsPos = 0;
-            } else if (s.opts == null) {
-                throw new IllegalStateException("Series options is null");
-            } else {
-                throw new IllegalStateException("Series options type is either unknown or doesn't support dataset references: " + s.opts.getClass().getName());
-            }
-
-            SeriesModel m = s.resolve(labelsPos, seriesPos++);
-            models.add(m);
+        List<SeriesModel> models = new ArrayList<>(series.size());
+        for (OptionSeriesBuilder sb : series) {
+            models.add(resolver.resolve(sb.opts, sb.name));
         }
 
         return models;
     }
 
     static class DataSetLabels {
-        final List<RowModel> rows;
+        final List<DataSetRowModel> rows;
         final Map<Integer, Integer> xAxisIndices;
 
-        DataSetLabels(Map<Integer, Integer> xAxisIndices, List<RowModel> rows) {
+        DataSetLabels(Map<Integer, Integer> xAxisIndices, List<DataSetRowModel> rows) {
             this.xAxisIndices = xAxisIndices;
             this.rows = rows;
-        }
-
-        int size() {
-            return rows.size();
-        }
-
-        int xForXAxis(Integer xAxisIndex) {
-            return xAxisIndex != null ? xAxisIndices.get(xAxisIndex) : 0;
         }
     }
 
@@ -362,27 +359,30 @@ public class Option {
         }
     }
 
-    static class BoundSeries {
-        final String columnName;
+    static class OptionSeriesBuilder {
         final SeriesOpts<?> opts;
+        final Index dataColumns;
+        String name;
 
-        BoundSeries(String columnName, SeriesOpts<?> opts) {
-            this.columnName = Objects.requireNonNull(columnName);
+        OptionSeriesBuilder(SeriesOpts<?> opts, Index dataColumns) {
             this.opts = Objects.requireNonNull(opts);
+            this.dataColumns = Objects.requireNonNull(dataColumns);
+            this.name = defaultName(opts, dataColumns);
         }
 
-        boolean isCartesian() {
-            return opts instanceof CartesianSeriesOpts;
-        }
+        private String defaultName(SeriesOpts<?> opts, Index dataColumns) {
 
-        SeriesModel resolve(int labelsPos, int seriesPos) {
-            return opts.resolve(
-                    opts.name != null ? opts.name : columnName,
-                    labelsPos,
-                    seriesPos,
-                    // hardcoding "row" series layout. It corresponds to the dataset layout
-                    "row"
-            );
+            if (opts.name != null) {
+                return opts.name;
+            }
+
+            int len = dataColumns != null ? dataColumns.size() : 0;
+            if (len == 1) {
+                return dataColumns.get(0);
+            } else {
+                // either "0" or ">1"
+                return opts.getType().name();
+            }
         }
     }
 }

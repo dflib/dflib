@@ -1,22 +1,23 @@
 package org.dflib.echarts;
 
 import org.dflib.echarts.render.option.Distance;
-import org.dflib.echarts.render.option.EncodeModel;
-import org.dflib.echarts.render.option.SeriesModel;
-import org.dflib.echarts.render.option.series.CenterModel;
-import org.dflib.echarts.render.option.series.RadiusModel;
 
 /**
  * @since 1.0.0-M22
  */
 public class PieSeriesOpts extends SeriesOpts<PieSeriesOpts> {
 
-    private Distance[] radius;
-    private Distance[] center;
-    private BoundLabel label;
-    private Integer startAngle;
-    private Integer endAngle;
-    private RoseType roseType;
+    Distance[] radius;
+    Distance[] center;
+    BoundLabel label;
+    Integer startAngle;
+    Integer endAngle;
+    RoseType roseType;
+
+    @Override
+    public ChartType getType() {
+        return ChartType.pie;
+    }
 
     public PieSeriesOpts label(String labelColumn) {
         this.label = new BoundLabel(labelColumn, null);
@@ -80,28 +81,6 @@ public class PieSeriesOpts extends SeriesOpts<PieSeriesOpts> {
 
     protected String getLabelColumn() {
         return label != null ? label.columnName : null;
-    }
-
-    @Override
-    protected SeriesModel resolve(String name, int labelsPos, int seriesPos, String seriesLayoutBy) {
-        return new SeriesModel(
-                name,
-                ChartType.pie.name(),
-                new EncodeModel(null, null, labelsPos, seriesPos),
-                label != null && label.label != null ? label.label.resolve() : null,
-                seriesLayoutBy,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                radius != null ? new RadiusModel(radius) : null,
-                center != null ? new CenterModel(center[0], center[1]) : null,
-                startAngle,
-                endAngle,
-                roseType != null ? roseType.name() : null
-        );
     }
 
     static class BoundLabel {
