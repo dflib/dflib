@@ -129,7 +129,7 @@ public class YAxisTest extends GenerateScriptHtmlTest {
                 .fontStyle(FontStyle.italic)
                 .fontFamily("monospace")
                 .fontWeight(200))).generateScriptHtml("_tid", df1);
-        
+
         assertTrue(s2.contains("axisLabel: {"), s2);
         assertTrue(s2.contains("fontSize: 18"), s2);
         assertTrue(s2.contains("fontStyle: 'italic'"), s2);

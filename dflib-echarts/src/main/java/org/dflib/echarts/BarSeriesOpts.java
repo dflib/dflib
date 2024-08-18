@@ -30,7 +30,7 @@ public class BarSeriesOpts extends CartesianSeriesOpts<BarSeriesOpts> {
                 seriesLayoutBy,
                 null,
                 null,
-                null,
+                stack,
                 null,
                 xAxisIndex,
                 yAxisIndex,
