@@ -36,7 +36,6 @@ public class Option {
     private List<YAxis> yAxes;
 
     private final Map<String, BoundSeries> series;
-    private SeriesOpts defaultSeriesOpts;
 
     /**
      * @since 1.0.0-M22
@@ -132,14 +131,6 @@ public class Option {
     }
 
     /**
-     * Sets a template to be used with all data series that don't have their own explicit options.
-     */
-    public Option defaultSeriesOpts(SeriesOpts opts) {
-        this.defaultSeriesOpts = opts;
-        return this;
-    }
-
-    /**
      * Specifies one or more DataFrame columns to be plotted as individual series. Sets series options.
      */
     public Option series(SeriesOpts opts, String... dataColumns) {
@@ -198,7 +189,7 @@ public class Option {
 
     protected boolean useCartesianDefaults() {
         return series.isEmpty()
-                || series.values().stream().filter(BoundSeries::isCartesianOrNull).findFirst().isPresent();
+                || series.values().stream().filter(BoundSeries::isCartesian).findFirst().isPresent();
     }
 
     protected List<GridModel> grids() {
@@ -310,7 +301,6 @@ public class Option {
     }
 
     protected List<SeriesModel> datasetSeries(DataSetLabels labels) {
-        SeriesOpts baseOpts = baseSeriesOptsTemplate();
         int len = series.size();
 
         // Series data rows follow label rows. So apply the offset to the "seriesPos" of the encoder
@@ -327,20 +317,16 @@ public class Option {
                 // TODO: PieChart label to column resolution (other than 0 would not work)
                 labelsPos = 0;
             } else if (s.opts == null) {
-                labelsPos = 0;
+                throw new IllegalStateException("Series options is null");
             } else {
                 throw new IllegalStateException("Series options type is either unknown or doesn't support dataset references: " + s.opts.getClass().getName());
             }
 
-            SeriesModel m = s.fillOpts(baseOpts).resolve(labelsPos, seriesPos++);
+            SeriesModel m = s.resolve(labelsPos, seriesPos++);
             models.add(m);
         }
 
         return models;
-    }
-
-    protected SeriesOpts baseSeriesOptsTemplate() {
-        return this.defaultSeriesOpts != null ? defaultSeriesOpts : SeriesOpts.ofLine();
     }
 
     static class DataSetLabels {
@@ -381,15 +367,11 @@ public class Option {
 
         BoundSeries(String columnName, SeriesOpts opts) {
             this.columnName = Objects.requireNonNull(columnName);
-            this.opts = opts;
+            this.opts = Objects.requireNonNull(opts);
         }
 
-        BoundSeries fillOpts(SeriesOpts defaultOpts) {
-            return opts != null ? this : new BoundSeries(columnName, defaultOpts);
-        }
-
-        boolean isCartesianOrNull() {
-            return opts == null || opts instanceof CartesianSeriesOpts;
+        boolean isCartesian() {
+            return opts instanceof CartesianSeriesOpts;
         }
 
         SeriesModel resolve(int labelsPos, int seriesPos) {

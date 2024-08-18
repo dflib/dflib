@@ -12,7 +12,7 @@ public class PieSeriesTest extends GenerateScriptHtmlTest {
         String s2 = ECharts.chart().series(SeriesOpts.ofPie(), "y1").generateScriptHtml("_tid", df2);
         assertTrue(s2.contains("type: 'pie'"), s2);
 
-        String s3 = ECharts.chart().defaultSeriesOpts(SeriesOpts.ofPie()).series("y1").generateScriptHtml("_tid", df2);
+        String s3 = ECharts.chart().series(SeriesOpts.ofPie(), "y1").generateScriptHtml("_tid", df2);
         assertTrue(s3.contains("type: 'pie'"), s3);
     }
 

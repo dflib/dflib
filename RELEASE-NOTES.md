@@ -10,6 +10,7 @@
 * #313 Upgrade ECharts to 5.5.1
 * #316 ECharts AxisLabel options: rotate, font...
 * #317 ECharts: bar chart ignores "stack" setting
+* #318 ECharts: disallow overriding the hardcoded default series opts
 
 ## Release 1.0.0-M22
 

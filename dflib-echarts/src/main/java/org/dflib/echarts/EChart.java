@@ -166,28 +166,20 @@ public class EChart {
     }
 
     /**
-     * Alters the default series options that will be used by all data series that don't have explicit options.
+     * Specifies one or more DataFrame columns that should be plotted as data series. The series will be rendered
+     * using the default options (a line chart).
      */
-    public EChart defaultSeriesOpts(SeriesOpts opts) {
-        option.defaultSeriesOpts(opts);
+    public EChart series(String... dataColumns) {
+        option.series(SeriesOpts.ofLine(), dataColumns);
         return this;
     }
 
     /**
-     * Specifies a DataFrame column that should be plotted as a single data "series". Specifies option overrides
-     * for this series.
+     * Specifies one or more DataFrame columns that should be plotted as data series. Provides series style via the
+     * {@link SeriesOpts} argument.
      */
     public EChart series(SeriesOpts seriesOpts, String... dataColumns) {
         option.series(seriesOpts, dataColumns);
-        return this;
-    }
-
-    /**
-     * Specifies which DataFrame columns should be plotted as data "series". Unless you override it later,
-     * all series will be rendered with the default chart options.
-     */
-    public EChart series(String... dataColumns) {
-        option.series(dataColumns);
         return this;
     }
 
