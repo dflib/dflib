@@ -33,8 +33,8 @@ as a sister project to DFLib.
 ## Project Links
 
 * [Website](https://dflib.org/)
-* [Getting Started](https://dflib.org/docs/1.x/#_get_started_with_dflib)
-* [Documentation](https://dflib.org/docs/1.x/)
+* [Getting Started](https://dflib.org/dflib/docs/1.x/#_get_started_with_dflib)
+* [Documentation](https://dflib.org/dflib/docs/1.x/)
 * [Discussions and Support Forum](https://github.com/dflib/dflib/discussions)
 
 ## Presentation Videos
