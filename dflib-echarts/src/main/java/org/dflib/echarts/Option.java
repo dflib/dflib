@@ -364,9 +364,9 @@ public class Option {
 
     static class BoundSeries {
         final String columnName;
-        final SeriesOpts opts;
+        final SeriesOpts<?> opts;
 
-        BoundSeries(String columnName, SeriesOpts opts) {
+        BoundSeries(String columnName, SeriesOpts<?> opts) {
             this.columnName = Objects.requireNonNull(columnName);
             this.opts = Objects.requireNonNull(opts);
         }

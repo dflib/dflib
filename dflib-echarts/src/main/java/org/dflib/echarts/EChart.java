@@ -170,7 +170,7 @@ public class EChart {
      * using the default options (a line chart).
      */
     public EChart series(String... dataColumns) {
-        SeriesOpts opts = SeriesOpts.ofLine();
+        LineSeriesOpts opts = SeriesOpts.ofLine();
         for (String c : dataColumns) {
             option.series(opts, c);
         }
@@ -181,7 +181,7 @@ public class EChart {
      * Specifies one or more DataFrame columns that should be plotted as data series. Provides series style via the
      * {@link SeriesOpts} argument.
      */
-    public EChart series(SeriesOpts seriesOpts, String... dataColumns) {
+    public EChart series(SeriesOpts<?> seriesOpts, String... dataColumns) {
         for (String c : dataColumns) {
             option.series(seriesOpts, c);
         }
