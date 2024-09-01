@@ -35,7 +35,7 @@ public class Option {
     private List<BoundXAxis> xAxes;
     private List<YAxis> yAxes;
 
-    private final Map<String, BoundSeries> series;
+    private final List<BoundSeries> series;
 
     /**
      * @since 1.0.0-M22
@@ -45,8 +45,7 @@ public class Option {
     }
 
     protected Option() {
-        // keeping the "series" order predictable
-        this.series = new LinkedHashMap<>();
+        this.series = new ArrayList<>();
     }
 
     public Option toolbox(Toolbox toolbox) {
@@ -135,7 +134,7 @@ public class Option {
      */
     public Option series(SeriesOpts opts, String... dataColumns) {
         for (String c : dataColumns) {
-            series.put(c, new BoundSeries(c, opts));
+            series.add(new BoundSeries(c, opts));
         }
 
         return this;
@@ -177,7 +176,7 @@ public class Option {
 
     protected boolean useCartesianDefaults() {
         return series.isEmpty()
-                || series.values().stream().filter(BoundSeries::isCartesian).findFirst().isPresent();
+                || series.stream().filter(BoundSeries::isCartesian).findFirst().isPresent();
     }
 
     protected List<GridModel> grids() {
@@ -195,11 +194,12 @@ public class Option {
         List<RowModel> rows = new ArrayList<>(h + labels.size());
         rows.addAll(labels);
 
-        String[] rowLabels = series.keySet().toArray(new String[0]);
         for (int i = 0; i < h; i++) {
             List<ValueModel> row = new ArrayList<>(w + 1);
-            row.add(new ValueModel(rowLabels[i], w == 0));
-            Series<?> data = df.getColumn(rowLabels[i]);
+            String rowLabel = series.get(i).columnName;
+
+            row.add(new ValueModel(rowLabel, w == 0));
+            Series<?> data = df.getColumn(rowLabel);
 
             for (int j = 0; j < w; j++) {
                 row.add(new ValueModel(data.get(j), j + 1 == w));
@@ -244,7 +244,7 @@ public class Option {
         }
 
         // the next source of labels - columns associated with pie charts
-        for (BoundSeries s : series.values()) {
+        for (BoundSeries s : series) {
 
             if (s.opts instanceof PieSeriesOpts) {
                 PieSeriesOpts pco = (PieSeriesOpts) s.opts;
@@ -295,7 +295,7 @@ public class Option {
         int seriesPos = labels.size();
 
         List<SeriesModel> models = new ArrayList<>(len);
-        for (BoundSeries s : series.values()) {
+        for (BoundSeries s : series) {
 
             int labelsPos;
 
