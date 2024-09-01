@@ -170,7 +170,10 @@ public class EChart {
      * using the default options (a line chart).
      */
     public EChart series(String... dataColumns) {
-        option.series(SeriesOpts.ofLine(), dataColumns);
+        SeriesOpts opts = SeriesOpts.ofLine();
+        for (String c : dataColumns) {
+            option.series(opts, c);
+        }
         return this;
     }
 
@@ -179,7 +182,9 @@ public class EChart {
      * {@link SeriesOpts} argument.
      */
     public EChart series(SeriesOpts seriesOpts, String... dataColumns) {
-        option.series(seriesOpts, dataColumns);
+        for (String c : dataColumns) {
+            option.series(seriesOpts, c);
+        }
         return this;
     }
 

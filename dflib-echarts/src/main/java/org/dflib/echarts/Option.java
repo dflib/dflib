@@ -130,8 +130,21 @@ public class Option {
     }
 
     /**
-     * Specifies one or more DataFrame columns to be plotted as individual series. Sets series options.
+     * Specifies a DataFrame column to be plotted as individual series and configuration for series display.
+     *
+     * @since 1.0.0-M23
      */
+    public Option series(SeriesOpts opts, String dataColumn) {
+        series.add(new BoundSeries(dataColumn, opts));
+        return this;
+    }
+
+    /**
+     * Specifies one or more DataFrame columns to be plotted as individual series. Sets series options.
+     *
+     * @deprecated in favor of {@link #series(SeriesOpts, String)}
+     */
+    @Deprecated(since = "1.0.0-M23", forRemoval = true)
     public Option series(SeriesOpts opts, String... dataColumns) {
         for (String c : dataColumns) {
             series.add(new BoundSeries(c, opts));
