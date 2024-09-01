@@ -377,7 +377,7 @@ public class Option {
 
         SeriesModel resolve(int labelsPos, int seriesPos) {
             return opts.resolve(
-                    columnName,
+                    opts.name != null ? opts.name : columnName,
                     labelsPos,
                     seriesPos,
                     // hardcoding "row" series layout. It corresponds to the dataset layout

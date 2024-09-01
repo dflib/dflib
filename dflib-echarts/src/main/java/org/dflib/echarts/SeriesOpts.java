@@ -7,7 +7,9 @@ import org.dflib.echarts.render.option.SeriesModel;
  *
  * @since 1.0.0-M21
  */
-public abstract class SeriesOpts {
+public abstract class SeriesOpts<T extends SeriesOpts<T>> {
+
+    protected String name;
 
     /**
      * Starts a builder for a line series options object.
@@ -70,6 +72,18 @@ public abstract class SeriesOpts {
     }
 
     protected SeriesOpts() {
+    }
+
+
+    /**
+     * Sets plot series name. Optional, and in most cases the name is taken from the DataFrame column name bound
+     * to the series.
+     *
+     * @since 1.0.0-M23
+     */
+    public T name(String name) {
+        this.name = name;
+        return (T) this;
     }
 
     protected abstract SeriesModel resolve(String name, int labelsPos, int seriesPos, String seriesLayoutBy);

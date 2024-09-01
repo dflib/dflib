@@ -3,7 +3,7 @@ package org.dflib.echarts;
 /**
  * @since 1.0.0-M22
  */
-public abstract class CartesianSeriesOpts<T extends CartesianSeriesOpts<T>> extends SeriesOpts {
+public abstract class CartesianSeriesOpts<T extends CartesianSeriesOpts<T>> extends SeriesOpts<T> {
 
     protected Label label;
     protected Integer xAxisIndex;

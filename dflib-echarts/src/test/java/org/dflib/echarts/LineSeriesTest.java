@@ -8,6 +8,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class LineSeriesTest extends GenerateScriptHtmlTest {
 
     @Test
+    public void name() {
+
+        String s2 = ECharts.chart().series(SeriesOpts.ofLine(), "y2").generateScriptHtml("_tid", df2);
+        assertFalse(s2.contains("name: 'Y2',"), s2);
+        assertTrue(s2.contains("name: 'y2',"), s2);
+        assertTrue(s2.contains("['y2',20,25,28]"), s2);
+
+        String s3 = ECharts.chart().series(SeriesOpts.ofLine().name("Y2"), "y2").generateScriptHtml("_tid", df2);
+        assertTrue(s3.contains("name: 'Y2',"), s3);
+        assertFalse(s3.contains("name: 'y2',"), s3);
+        assertTrue(s3.contains("['y2',20,25,28]"), s3);
+    }
+
+    @Test
     public void areaStyle() {
 
         String s1 = ECharts.chart().series("y1").generateScriptHtml("_tid", df2);

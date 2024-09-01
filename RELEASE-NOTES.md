@@ -11,6 +11,7 @@
 * #316 ECharts AxisLabel options: rotate, font...
 * #317 ECharts: bar chart ignores "stack" setting
 * #318 ECharts: disallow overriding the hardcoded default series opts
+* #320 ECharts: plot series - explicit "name" property
 
 ## Release 1.0.0-M22
 
