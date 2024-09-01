@@ -7,7 +7,7 @@ import org.dflib.echarts.render.option.SeriesModel;
  *
  * @since 1.0.0-M21
  */
-public abstract class SeriesOpts<T extends SeriesOpts<T>> {
+public abstract class SeriesOpts<SO extends SeriesOpts<SO>> {
 
     protected String name;
 
@@ -81,9 +81,9 @@ public abstract class SeriesOpts<T extends SeriesOpts<T>> {
      *
      * @since 1.0.0-M23
      */
-    public T name(String name) {
+    public SO name(String name) {
         this.name = name;
-        return (T) this;
+        return (SO) this;
     }
 
     protected abstract SeriesModel resolve(String name, int labelsPos, int seriesPos, String seriesLayoutBy);
