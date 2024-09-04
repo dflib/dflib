@@ -3,6 +3,9 @@ package org.dflib.jupyter;
 import org.dflib.jjava.jupyter.Extension;
 import org.dflib.jjava.jupyter.kernel.BaseKernel;
 
+/**
+ * @since 1.0.0-M23
+ */
 public class DFLibJupyterExtension implements Extension {
 
     private static final String STARTUP_SCRIPT =
