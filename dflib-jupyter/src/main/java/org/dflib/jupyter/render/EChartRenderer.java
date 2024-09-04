@@ -1,9 +1,9 @@
 package org.dflib.jupyter.render;
 
-import io.github.spencerpark.jupyter.kernel.display.RenderContext;
-import io.github.spencerpark.jupyter.kernel.display.RenderFunction;
-import io.github.spencerpark.jupyter.kernel.display.mime.MIMEType;
 import org.dflib.echarts.EChartHtml;
+import org.dflib.jjava.jupyter.kernel.display.RenderContext;
+import org.dflib.jjava.jupyter.kernel.display.RenderFunction;
+import org.dflib.jjava.jupyter.kernel.display.mime.MIMEType;
 
 import java.util.Set;
 
@@ -18,11 +18,11 @@ public class EChartRenderer implements RenderFunction<EChartHtml> {
 
     @Override
     public void render(EChartHtml data, RenderContext context) {
-        boolean canRender = SUPPORTED_TYPES.stream().filter(context::wantsDataRenderedAs).findFirst().isPresent();
+        boolean canRender = SUPPORTED_TYPES.stream().anyMatch(context::wantsDataRenderedAs);
 
         if (canRender) {
             String content = toString(data);
-            SUPPORTED_TYPES.stream().forEach(t -> context.renderIfRequested(t, () -> content));
+            SUPPORTED_TYPES.forEach(t -> context.renderIfRequested(t, () -> content));
         }
     }
 

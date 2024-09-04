@@ -3,14 +3,14 @@ package org.dflib.jupyter;
 import org.dflib.DataFrame;
 import org.dflib.Series;
 import org.dflib.echarts.EChartHtml;
+import org.dflib.jjava.jupyter.kernel.BaseKernel;
+import org.dflib.jjava.jupyter.kernel.display.RenderFunction;
+import org.dflib.jjava.jupyter.kernel.display.Renderer;
+import org.dflib.jjava.jupyter.kernel.display.mime.MIMEType;
 import org.dflib.jupyter.render.DataFrameRenderer;
 import org.dflib.jupyter.render.EChartRenderer;
 import org.dflib.jupyter.render.MutableTabularPrinter;
 import org.dflib.jupyter.render.SeriesRenderer;
-import io.github.spencerpark.jupyter.kernel.BaseKernel;
-import io.github.spencerpark.jupyter.kernel.display.RenderFunction;
-import io.github.spencerpark.jupyter.kernel.display.Renderer;
-import io.github.spencerpark.jupyter.kernel.display.mime.MIMEType;
 
 /**
  * A bridge between DFLib and Jupyter notebook environment. Bootstraps DFLib renderers into a Jupyter notebook under

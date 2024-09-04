@@ -1,10 +1,10 @@
 package org.dflib.jupyter.render;
 
 import org.dflib.Series;
+import org.dflib.jjava.jupyter.kernel.display.RenderContext;
+import org.dflib.jjava.jupyter.kernel.display.RenderFunction;
+import org.dflib.jjava.jupyter.kernel.display.mime.MIMEType;
 import org.dflib.print.Printer;
-import io.github.spencerpark.jupyter.kernel.display.RenderContext;
-import io.github.spencerpark.jupyter.kernel.display.RenderFunction;
-import io.github.spencerpark.jupyter.kernel.display.mime.MIMEType;
 
 public class SeriesRenderer implements RenderFunction<Series> {
 
