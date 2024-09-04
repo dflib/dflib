@@ -12,6 +12,7 @@
 * #317 ECharts: bar chart ignores "stack" setting
 * #318 ECharts: disallow overriding the hardcoded default series opts
 * #320 ECharts: plot series - explicit "name" property
+* #321 Switch to the org.dflib.jjava:jupyter-jvm-basekernel:1.0-M3
 
 ## Release 1.0.0-M22
 
