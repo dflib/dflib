@@ -62,6 +62,7 @@
         <mustache.version>0.9.10</mustache.version>
         <parquet.version>1.14.1</parquet.version>
         <hadoop.version>3.3.6</hadoop.version>
+        <jjava.version>1.0-M3</jjava.version>
     </properties>
 
     <url>https://github.com/dflib/dflib</url>
@@ -88,6 +89,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.dflib.jjava</groupId>
+                <artifactId>jupyter-jvm-basekernel</artifactId>
+                <version>${jjava.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-engine</artifactId>
