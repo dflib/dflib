@@ -6,11 +6,11 @@ be overridden and is always a "line chart" with default set of options. `Echarts
 method was removed as a result. If you are calling this method, you will get a compilation error. You will need to
 remove it, and pass its `opts` argument to each affected `Echarts.chart().series(opts, "a", "b")` call instead.
 
-* [dflib #321](https://github.com/bootique/bootique-agrest/issues/321): "jjava" Jupyter kernel just changed its backend,
-and `dflib-jupyter` had to be updated accordingly. This makes it incompatible with "jjava" below version `1.0-M3`. 
-If you are using "jjava", make sure you upgrade it to the latest one (or at least to `1.0-M3`). As a bonus, there
-are fewer notebook setup steps, as DFLib would now load basic imports and kernel integrations automatically on
-startup, using the new "jjava" extensions mechanism.
+* [dflib #321](https://github.com/bootique/bootique-agrest/issues/321): "jjava" Jupyter kernel had a significant backend,
+change in version `1.0-M3`. `dflib-jupyter` had to be updated accordingly, making it incompatible with older version os 
+"jjava". If you are working with DFLib in Jupyter, once you switch to DFLib `M23` or newer, you will need to upgrade
+your kernel to `1.0-M3` (and vice versa). As a bonus, there are fewer notebook setup steps with the newer kernel and 
+DFLib. Basic imports and kernel integrations are loaded automatically on startup using the new "jjava" extensions mechanism.
 
 ## 1.0.0-M22
 
