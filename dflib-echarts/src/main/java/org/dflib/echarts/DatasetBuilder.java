@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
 
-class OptionDatasetBuilder {
+class DatasetBuilder {
 
     private final DataFrame dataFrame;
 
@@ -23,7 +23,7 @@ class OptionDatasetBuilder {
     private final Map<String, Integer> datasetPosByDataColumn;
     private final Map<Integer, String> dataColumnByDatasetPos;
 
-    OptionDatasetBuilder(DataFrame dataFrame) {
+    DatasetBuilder(DataFrame dataFrame) {
         this.dataFrame = dataFrame;
 
         this.dataset = new ArrayList<>();

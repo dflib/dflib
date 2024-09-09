@@ -5,9 +5,9 @@ import org.dflib.Index;
 import java.util.List;
 import java.util.Objects;
 
-class OptionSeriesBuilder<T extends SeriesOpts<T>> {
+class SeriesBuilder<T extends SeriesOpts<T>> {
 
-    final T opts;
+    final T seriesOpts;
     final Index dataColumns;
     String name;
 
@@ -20,10 +20,10 @@ class OptionSeriesBuilder<T extends SeriesOpts<T>> {
 
     String datasetSeriesLayoutBy;
 
-    OptionSeriesBuilder(T opts, Index dataColumns) {
-        this.opts = Objects.requireNonNull(opts);
+    SeriesBuilder(T seriesOpts, Index dataColumns) {
+        this.seriesOpts = Objects.requireNonNull(seriesOpts);
         this.dataColumns = Objects.requireNonNull(dataColumns);
-        this.name = defaultName(opts, dataColumns);
+        this.name = defaultName(seriesOpts, dataColumns);
     }
 
     private String defaultName(SeriesOpts<?> opts, Index dataColumns) {
@@ -41,28 +41,28 @@ class OptionSeriesBuilder<T extends SeriesOpts<T>> {
         }
     }
 
-    OptionSeriesBuilder name(String name) {
+    SeriesBuilder name(String name) {
         this.name = Objects.requireNonNull(name);
         return this;
     }
 
-    OptionSeriesBuilder xDimension(int dim) {
+    SeriesBuilder xDimension(int dim) {
         this.xDimension = dim;
         return this;
     }
 
-    OptionSeriesBuilder yDimensions(List<Integer> dims) {
+    SeriesBuilder yDimensions(List<Integer> dims) {
         this.yDimensions = Objects.requireNonNull(dims);
         return this;
     }
 
-    OptionSeriesBuilder pieLabelsDimension(int dim) {
+    SeriesBuilder pieLabelsDimension(int dim) {
         this.pieLabelsDimension = dim;
         return this;
     }
 
 
-    OptionSeriesBuilder datasetSeriesLayoutBy(String layout) {
+    SeriesBuilder datasetSeriesLayoutBy(String layout) {
         this.datasetSeriesLayoutBy = layout;
         return this;
     }

@@ -20,10 +20,10 @@ public class Option {
     Toolbox toolbox;
     Tooltip tooltip;
     List<Grid> grids;
-    List<OptionXAxisBuilder> xAxes;
+    List<XAxisBuilder> xAxes;
     List<YAxis> yAxes;
 
-    final List<OptionSeriesBuilder<?>> series;
+    final List<SeriesBuilder<?>> series;
 
     /**
      * @since 1.0.0-M22
@@ -85,7 +85,7 @@ public class Option {
             xAxes = new ArrayList<>(3);
         }
 
-        xAxes.add(new OptionXAxisBuilder(dataColumn, axis));
+        xAxes.add(new XAxisBuilder(dataColumn, axis));
         return this;
     }
 
@@ -122,7 +122,7 @@ public class Option {
      * @since 1.0.0-M23
      */
     public Option series(SeriesOpts opts, Index dataColumns) {
-        series.add(new OptionSeriesBuilder(opts, dataColumns));
+        series.add(new SeriesBuilder(opts, dataColumns));
         return this;
     }
 
@@ -147,7 +147,7 @@ public class Option {
     }
 
     protected OptionModel resolve(DataFrame df) {
-        return new OpToOptionModel(this, df).resolve();
+        return new OptionModelMaker(this, df).resolve();
     }
 
 }

@@ -14,27 +14,27 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-class OpToOptionModel {
+class OptionModelMaker {
 
     private final Option opt;
     private final DataFrame dataFrame;
 
-    OpToOptionModel(Option opt, DataFrame dataFrame) {
+    OptionModelMaker(Option opt, DataFrame dataFrame) {
         this.opt = Objects.requireNonNull(opt);
         this.dataFrame = Objects.requireNonNull(dataFrame);
     }
 
     OptionModel resolve() {
 
-        List<OptionSeriesBuilder<?>> series = dedupeSeriesNames();
+        List<SeriesBuilder<?>> series = dedupeSeriesNames();
         boolean cartesianDefaults = useCartesianDefaults(series);
 
-        List<OptionXAxisBuilder> xs = opt.xAxes != null
+        List<XAxisBuilder> xs = opt.xAxes != null
                 ? opt.xAxes
-                : (cartesianDefaults ? List.of(new OptionXAxisBuilder(null, XAxis.ofDefault())) : null);
+                : (cartesianDefaults ? List.of(new XAxisBuilder(null, XAxis.ofDefault())) : null);
         List<YAxis> ys = opt.yAxes != null ? opt.yAxes : (cartesianDefaults ? List.of(YAxis.ofDefault()) : null);
 
-        OptionDatasetBuilder dsb = new OptionDatasetBuilder(dataFrame);
+        DatasetBuilder dsb = new DatasetBuilder(dataFrame);
         appendXAxesLabels(dsb, xs);
         appendPieChartLabels(dsb, series);
         appendDatasetRows(dsb, series);
@@ -47,23 +47,23 @@ class OpToOptionModel {
                 opt.title,
                 opt.toolbox != null ? opt.toolbox.resolve() : null,
                 opt.tooltip != null ? opt.tooltip.resolve() : null,
-                xs != null ? xs.stream().map(OptionXAxisBuilder::getAxis).map(XAxis::resolve).collect(Collectors.toList()) : null,
+                xs != null ? xs.stream().map(XAxisBuilder::getAxis).map(XAxis::resolve).collect(Collectors.toList()) : null,
                 ys != null ? ys.stream().map(YAxis::resolve).collect(Collectors.toList()) : null
         );
     }
 
-    private List<OptionSeriesBuilder<?>> dedupeSeriesNames() {
+    private List<SeriesBuilder<?>> dedupeSeriesNames() {
 
         if (opt.series.size() < 2) {
             return opt.series;
         }
 
-        UnaryOperator<OptionSeriesBuilder<?>> nameDeduplicator = new UnaryOperator<>() {
+        UnaryOperator<SeriesBuilder<?>> nameDeduplicator = new UnaryOperator<>() {
             final Set<String> names = new HashSet<>();
             int counter;
 
             @Override
-            public OptionSeriesBuilder<?> apply(OptionSeriesBuilder<?> sb) {
+            public SeriesBuilder<?> apply(SeriesBuilder<?> sb) {
                 String startName = sb.name;
 
                 // change in-place... OptionSeriesBuilder is not externally visible
@@ -84,42 +84,42 @@ class OpToOptionModel {
                 : null;
     }
 
-    List<SeriesModel> seriesModels(List<OptionSeriesBuilder<?>> series) {
+    List<SeriesModel> seriesModels(List<SeriesBuilder<?>> series) {
         if (series.isEmpty()) {
             return null;
         }
 
-        OpToSeriesModel resolver = new OpToSeriesModel();
+        SeriesModelMaker resolver = new SeriesModelMaker();
         return series.stream().map(resolver::resolve).collect(Collectors.toList());
     }
 
-    private boolean useCartesianDefaults(List<OptionSeriesBuilder<?>> series) {
+    private boolean useCartesianDefaults(List<SeriesBuilder<?>> series) {
         return series.isEmpty()
-                || series.stream().anyMatch(sb -> sb.opts.getType().isCartesian());
+                || series.stream().anyMatch(sb -> sb.seriesOpts.getType().isCartesian());
     }
 
     // updates both "dsb" (new dataset rows) and "xs" (label indices)
-    private void appendXAxesLabels(OptionDatasetBuilder dsb, List<OptionXAxisBuilder> xs) {
+    private void appendXAxesLabels(DatasetBuilder dsb, List<XAxisBuilder> xs) {
 
         if (xs != null) {
             int len = xs.size();
             for (int i = 0; i < len; i++) {
-                OptionXAxisBuilder ab = xs.get(i);
+                XAxisBuilder ab = xs.get(i);
                 int pos = ab.columnName != null
                         ? dsb.appendRow(ab.columnName)
                         : dsb.appendRow(new IntSequenceSeries(1, dataFrame.height() + 1));
-                ab.datasetRowIndex(pos);
+//                ab.datasetRowIndex(pos);
             }
         }
     }
 
     // updates both "dsb" (new dataset rows) and some "series" (index of pie labels)
-    private void appendPieChartLabels(OptionDatasetBuilder dsb, List<OptionSeriesBuilder<?>> series) {
+    private void appendPieChartLabels(DatasetBuilder dsb, List<SeriesBuilder<?>> series) {
 
-        for (OptionSeriesBuilder<?> sb : series) {
+        for (SeriesBuilder<?> sb : series) {
 
-            if (sb.opts instanceof PieSeriesOpts) {
-                PieSeriesOpts pco = (PieSeriesOpts) sb.opts;
+            if (sb.seriesOpts instanceof PieSeriesOpts) {
+                PieSeriesOpts pco = (PieSeriesOpts) sb.seriesOpts;
                 int pos = pco.getLabelColumn() != null
                         ? dsb.appendRow(pco.getLabelColumn())
                         : dsb.appendRow(new IntSequenceSeries(1, dataFrame.height() + 1));
@@ -130,8 +130,8 @@ class OpToOptionModel {
     }
 
     // updates both "dsb" (new dataset rows) and "series" (indices of dataset rows)
-    private void appendDatasetRows(OptionDatasetBuilder dsb, List<OptionSeriesBuilder<?>> series) {
-        for (OptionSeriesBuilder<?> sb : series) {
+    private void appendDatasetRows(DatasetBuilder dsb, List<SeriesBuilder<?>> series) {
+        for (SeriesBuilder<?> sb : series) {
 
             if (sb.dataColumns != null) {
 
