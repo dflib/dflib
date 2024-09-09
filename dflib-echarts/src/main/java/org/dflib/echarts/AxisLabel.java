@@ -21,14 +21,6 @@ public class AxisLabel {
         return new AxisLabel(null);
     }
 
-    /**
-     * @deprecated in favor of {@link #of()}
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    public static AxisLabel create() {
-        return of();
-    }
-
     protected AxisLabel(String formatter) {
         this.formatter = formatter;
     }

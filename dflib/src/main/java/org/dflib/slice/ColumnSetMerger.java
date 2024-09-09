@@ -68,49 +68,6 @@ public class ColumnSetMerger {
         return new ColumnSetMerger(sLen + expandBy, mergeIndex);
     }
 
-    /**
-     * @deprecated unused
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    public static ColumnSetMerger of(Index sourceIndex, String[] csLabels) {
-        return createMerger(sourceIndex, csLabels);
-    }
-
-    /**
-     * @deprecated unused
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    public static ColumnSetMerger of(Index sourceIndex, int[] csPositions) {
-        int sLen = sourceIndex.size();
-        int csLen = csPositions.length;
-
-        // allocate max possible array for the merge index to fit all merge possibilities,
-        // up to when all columns are added and none are replaced
-        int[] mergeIndex = new int[sLen + csLen];
-        for (int i = 0; i < sLen; i++) {
-            mergeIndex[i] = i;
-        }
-
-        int expandBy = 0;
-
-        for (int i = 0; i < csLen; i++) {
-            int pos = csPositions[i];
-
-            if (pos < sLen) {
-
-                // if duplicate existing name, add as an extra column
-                int mPos = mergeIndex[pos] >= 0 ? pos : sLen + expandBy++;
-                mergeIndex[mPos] = -1 - i;
-
-            } else {
-                mergeIndex[sLen + expandBy++] = -1 - i;
-            }
-        }
-
-        return new ColumnSetMerger(sLen + expandBy, mergeIndex);
-    }
-
-
     // An index to reconstruct a DataFrame from the original source and a transformed column set. It encodes a source
     // of column value in each position (source Series, or transformed column set series), and also implicitly allows
     // to generate more or less values (compared to the original Series)
@@ -148,37 +105,6 @@ public class ColumnSetMerger {
             } else {
                 labels[i] = sIndex.get(si);
                 columns[i] = source.getColumn(si);
-            }
-        }
-
-        return new ColumnDataFrame(null, Index.ofDeduplicated(labels), columns);
-    }
-
-    /**
-     * Performs a merge of the source Series with a transformed row set Series.
-     *
-     * @deprecated in favor of the static {@link #merge(DataFrame, String[], Series[])}
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    public DataFrame merge(
-            Index sIndex,
-            Series<?>[] sColumns,
-            String[] csLabels,
-            Series<?>[] csColumns) {
-
-        String[] labels = new String[mergeLen];
-        Series<?>[] columns = new Series[mergeLen];
-
-        for (int i = 0; i < mergeLen; i++) {
-            int si = mergeIndex[i];
-
-            if (si < 0) {
-                int csi = -1 - si;
-                labels[i] = csLabels[csi];
-                columns[i] = csColumns[csi];
-            } else {
-                labels[i] = sIndex.get(si);
-                columns[i] = sColumns[si];
             }
         }
 

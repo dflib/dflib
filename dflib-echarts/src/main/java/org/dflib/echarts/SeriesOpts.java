@@ -19,14 +19,6 @@ public abstract class SeriesOpts<SO extends SeriesOpts<SO>> {
     }
 
     /**
-     * @deprecated in favor of {@link #ofLine()}
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    public static LineSeriesOpts line() {
-        return ofLine();
-    }
-
-    /**
      * Starts a builder for a bar series options object.
      *
      * @since 1.0.0-M22
@@ -36,28 +28,12 @@ public abstract class SeriesOpts<SO extends SeriesOpts<SO>> {
     }
 
     /**
-     * @deprecated in favor of {@link #ofBar()}
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    public static BarSeriesOpts bar() {
-        return ofBar();
-    }
-
-    /**
      * Starts a builder for a scatter series options object.
      *
      * @since 1.0.0-M22
      */
     public static ScatterSeriesOpts ofScatter() {
         return new ScatterSeriesOpts();
-    }
-
-    /**
-     * @deprecated in favor of {@link #ofScatter()}
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    public static ScatterSeriesOpts scatter() {
-        return ofScatter();
     }
 
     /**

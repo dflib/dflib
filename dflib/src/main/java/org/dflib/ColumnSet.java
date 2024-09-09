@@ -127,38 +127,6 @@ public interface ColumnSet {
     DataFrame merge(RowMapper mapper);
 
     /**
-     * @deprecated in favor of {@link #merge(Exp[])}
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    default DataFrame map(Exp<?>... exps) {
-        return merge(exps);
-    }
-
-    /**
-     * @deprecated in favor of {@link #merge(Series[])}
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    default DataFrame map(Series<?>... columns) {
-        return merge(columns);
-    }
-
-    /**
-     * @deprecated in favor of {@link #merge(RowToValueMapper[])}
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    default DataFrame map(RowToValueMapper<?>... mappers) {
-        return merge(mappers);
-    }
-
-    /**
-     * @deprecated in favor of {@link #merge(RowMapper)}
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    default DataFrame map(RowMapper mapper) {
-        return merge(mapper);
-    }
-
-    /**
      * A flavor of "merge" that returns a DataFrame with merged columns produced from the expression that maps each row
      * to an Iterable of values, such as a List or a Set. Each element in each Iterable goes in its own column. For a
      * ColumnSet with a defined width, if the splitExp does not generate enough values to fill a given row, the tail of

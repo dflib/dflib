@@ -11,21 +11,21 @@ public class Window_RangeTest {
     @Test
     public void all_empty() {
         DataFrame df = DataFrame.empty("a", "b", "c");
-        DataFrame r = df.over().range(WindowRange.all).agg($int("a").sum());
+        DataFrame r = df.over().range(WindowRange.all).select($int("a").sum());
         new DataFrameAsserts(r, "sum(a)").expectHeight(0);
     }
 
     @Test
     public void preceding_empty() {
         DataFrame df = DataFrame.empty("a", "b", "c");
-        DataFrame r = df.over().range(WindowRange.allPreceding).agg($int("a").sum());
+        DataFrame r = df.over().range(WindowRange.allPreceding).select($int("a").sum());
         new DataFrameAsserts(r, "sum(a)").expectHeight(0);
     }
 
     @Test
     public void following_empty() {
         DataFrame df = DataFrame.empty("a", "b", "c");
-        DataFrame r = df.over().range(WindowRange.allFollowing).agg($int("a").sum());
+        DataFrame r = df.over().range(WindowRange.allFollowing).select($int("a").sum());
         new DataFrameAsserts(r, "sum(a)").expectHeight(0);
     }
 
@@ -38,7 +38,7 @@ public class Window_RangeTest {
                 0, "a",
                 1, "x");
 
-        DataFrame r = df.over().range(WindowRange.all).agg($int("a").sum());
+        DataFrame r = df.over().range(WindowRange.all).select($int("a").sum());
         new DataFrameAsserts(r, "sum(a)").expectHeight(5)
                 .expectRow(0, 5)
                 .expectRow(1, 5)
@@ -55,7 +55,7 @@ public class Window_RangeTest {
                 15,
                 2);
 
-        DataFrame r = df.over().range(WindowRange.allPreceding).agg($int("val").sum());
+        DataFrame r = df.over().range(WindowRange.allPreceding).select($int("val").sum());
         new DataFrameAsserts(r, "sum(val)").expectHeight(4)
                 .expectRow(0, 1)
                 .expectRow(1, 23)
@@ -71,7 +71,7 @@ public class Window_RangeTest {
                 15,
                 2);
 
-        DataFrame r = df.over().range(WindowRange.allPreceding).agg(
+        DataFrame r = df.over().range(WindowRange.allPreceding).select(
                 $int("val").sum(),
                 $int("val").max());
 
@@ -90,7 +90,7 @@ public class Window_RangeTest {
                 15,
                 2);
 
-        DataFrame r = df.over().range(WindowRange.allFollowing).agg($int("val").sum());
+        DataFrame r = df.over().range(WindowRange.allFollowing).select($int("val").sum());
         new DataFrameAsserts(r, "sum(val)").expectHeight(4)
                 .expectRow(0, 40)
                 .expectRow(1, 39)
@@ -109,7 +109,7 @@ public class Window_RangeTest {
         DataFrame r = df.over()
                 .sorted($col("order").asc())
                 .range(WindowRange.allPreceding)
-                .agg($int("val").sum());
+                .select($int("val").sum());
 
         new DataFrameAsserts(r, "sum(val)").expectHeight(4)
                 .expectRow(0, 15)
@@ -129,7 +129,7 @@ public class Window_RangeTest {
         DataFrame r = df.over()
                 .sorted($col("order").asc())
                 .range(WindowRange.allFollowing)
-                .agg($int("val").sum());
+                .select($int("val").sum());
 
         new DataFrameAsserts(r, "sum(val)").expectHeight(4)
                 .expectRow(0, 40)
@@ -153,7 +153,7 @@ public class Window_RangeTest {
                 .partitioned("label")
                 .sorted($col("order").asc())
                 .range(WindowRange.allPreceding)
-                .agg(
+                .select(
                         $int("val").sum(),
                         $str("label").first());
 

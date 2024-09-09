@@ -50,14 +50,6 @@ public class PivotBuilder {
     }
 
     /**
-     * @deprecated in favor of {@link #cols(String)}
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    public PivotBuilder columns(String columnName) {
-        return cols(columnName);
-    }
-
-    /**
      * Use values from "columnPos" to create pivoted table columns. For meaningful results, "columnPos" should contain
      * "categorical" data.
      *
@@ -66,14 +58,6 @@ public class PivotBuilder {
     public PivotBuilder cols(int columnPos) {
         this.columnForColumns = validateColumn(columnPos);
         return this;
-    }
-
-    /**
-     * @deprecated in favor of {@link #cols(int)}
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    public PivotBuilder columns(int columnPos) {
-        return cols(columnPos);
     }
 
     /**
@@ -104,15 +88,6 @@ public class PivotBuilder {
         return doPivot(pos, oneValueAgg);
     }
 
-
-    /**
-     * @deprecated in favor of {@link #vals(String)}
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    public DataFrame values(String columnName) {
-        return vals(columnName);
-    }
-
     /**
      * Executes pivot transform, using values from the provided column name to populate the resulting DataFame.
      * There must be no more than one value for each pivot row and column combination, or an exception will be thrown.
@@ -122,14 +97,6 @@ public class PivotBuilder {
      */
     public DataFrame vals(int columnPos) {
         return doPivot(columnPos, oneValueAgg);
-    }
-
-    /**
-     * @deprecated in favor of {@link #vals(int)}
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    public DataFrame values(int columnPos) {
-        return vals(columnPos);
     }
 
     /**
@@ -146,14 +113,6 @@ public class PivotBuilder {
     }
 
     /**
-     * @deprecated in favor of {@link #vals(String, Exp)}
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    public <T> DataFrame values(String columnName, Exp<T> valuesAggregator) {
-        return vals(columnName, valuesAggregator);
-    }
-
-    /**
      * Executes pivot transform, using values from the provided column name to populate the resulting DataFame. Values
      * with matching pivot row and column are aggregated with the provided aggregator. Aggregator may look like this:
      * <code>$decimal(0).sum()</code>. Notice that the column name or index can be anything, as the evaluation happens
@@ -163,14 +122,6 @@ public class PivotBuilder {
      */
     public <T> DataFrame vals(int columnPos, Exp<T> valuesAggregator) {
         return doPivot(columnPos, valuesAggregator);
-    }
-
-    /**
-     * @deprecated in favor of {@link #vals(String, Exp)}
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    public <T> DataFrame values(int columnPos, Exp<T> valuesAggregator) {
-        return values(columnPos, valuesAggregator);
     }
 
     protected <T> DataFrame doPivot(int columnPos, Exp<T> valuesAggregator) {

@@ -361,15 +361,6 @@ public class GroupBy {
         return VConcat.concat(JoinType.inner, dfs);
     }
 
-    /**
-     * @since 1.0.0-M21
-     * @deprecated in favor of {@link #merge(Exp[])}
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    public DataFrame map(Exp<?>... exps) {
-        return merge(exps);
-    }
-
     public DataFrame agg(Exp<?>... aggregators) {
 
         Index index;

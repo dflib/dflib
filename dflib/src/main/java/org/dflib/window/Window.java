@@ -193,15 +193,6 @@ public class Window {
     }
 
     /**
-     * @since 0.11
-     * @deprecated in favor of {@link #select(Exp[])}
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    public DataFrame agg(Exp<?>... aggregators) {
-        return select(aggregators);
-    }
-
-    /**
      * Generates a DataFrame of the same height as the source DataFrame, combining columns generated from the provided
      * aggregating expressions with the original DataFrame columns. Aggregating expressions are invoked once per each
      * row, and are passed the range of rows corresponding to the partitioning, sorting and range settings.
@@ -211,17 +202,6 @@ public class Window {
     public DataFrame merge(Exp<?>... aggregators) {
         String[] labels = selectLabels(aggregators);
         return ColumnSetMerger.merge(source, labels, selectColumns(aggregators));
-    }
-
-    /**
-     * Applies an aggregating expression to each DataFrame row, passing it a window associated with the current row.
-     *
-     * @since 0.14
-     * @deprecated use {@link #merge(Exp[])} or {@link #select(Exp[])} instead.
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    public <T> Series<T> mapColumn(Exp<T> windowAggregator) {
-        return select(windowAggregator).getColumn(0);
     }
 
     public IntSeries rank() {

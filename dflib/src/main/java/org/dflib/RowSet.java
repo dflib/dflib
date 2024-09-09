@@ -66,30 +66,6 @@ public interface RowSet {
     DataFrame merge(RowToValueMapper<?>... mappers);
 
     /**
-     * @deprecated in favor of {@link #merge(Exp[])}
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    default DataFrame map(Exp<?>... exps) {
-        return merge(exps);
-    }
-
-    /**
-     * @deprecated in favor of {@link #merge(RowMapper)}
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    default DataFrame map(RowMapper mapper) {
-        return merge(mapper);
-    }
-
-    /**
-     * @deprecated in favor of {@link #merge(RowToValueMapper[])}
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    default DataFrame map(RowToValueMapper<?>... mappers) {
-        return merge(mappers);
-    }
-
-    /**
      * Sorts the RowSet, applying provided sorters and returns a DataFrame with the sorted rows from the RowSet merged
      * into the original DataFrame.
      */

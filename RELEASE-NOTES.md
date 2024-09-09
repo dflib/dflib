@@ -1,3 +1,7 @@
+## Release 1.0.0-M24
+
+* #324 Remove API deprecated since M22
+
 ## Release 1.0.0-M23
 
 * #117 Read/write DataFrames from/to Parquet files

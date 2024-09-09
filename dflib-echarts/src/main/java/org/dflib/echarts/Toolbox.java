@@ -20,14 +20,6 @@ public class Toolbox {
         return new Toolbox();
     }
 
-    /**
-     * @deprecated in favor of {@link #of()}
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    public static Toolbox create() {
-        return new Toolbox();
-    }
-
     public Toolbox featureSaveAsImage() {
         this.featureSaveAsImage = SaveAsImage.of();
         return this;

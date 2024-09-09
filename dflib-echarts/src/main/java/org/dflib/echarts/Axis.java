@@ -18,22 +18,6 @@ public abstract class Axis<T extends Axis<T>> {
     protected boolean boundaryGap;
     protected Boolean alignTicks;
 
-    /**
-     * @deprecated in favor of {@link XAxis#ofDefault()}
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    public static XAxis defaultX() {
-        return XAxis.ofDefault();
-    }
-
-    /**
-     * @deprecated in favor of {@link YAxis#ofDefault()}
-     */
-    @Deprecated(since = "1.0.0-M22", forRemoval = true)
-    public static YAxis defaultY() {
-        return YAxis.ofDefault();
-    }
-
     protected Axis(AxisType type) {
         this.type = Objects.requireNonNull(type);
         // "true" is the same default as ECharts
