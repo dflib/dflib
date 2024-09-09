@@ -83,15 +83,7 @@ public class EChart {
         this.scriptUrl = url;
         return this;
     }
-
-    /**
-     * @deprecated in favor of {@link #sizePx(int, int)}
-     */
-    @Deprecated(since = "1.0.0-M20", forRemoval = true)
-    public EChart sizePixels(int width, int height) {
-        return sizePx(width, height);
-    }
-
+    
     /**
      * @since 1.0.0-M22
      */
