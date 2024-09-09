@@ -85,15 +85,15 @@ public class PieSeriesTest extends GenerateScriptHtmlTest {
     @Test
     public void data() {
         String s2 = ECharts.chart().series(SeriesOpts.ofPie(), "y1").generateScriptHtml("_tid", df2);
-        assertTrue(s2.contains("['labels',1,2,3],"), s2);
+        assertTrue(s2.contains("['L0',1,2,3],"), s2);
         assertTrue(s2.contains("['y1',10,11,14]"), s2);
         assertTrue(s2.contains("encode: {"), s2);
         assertTrue(s2.contains("value: 1,"), s2);
         assertTrue(s2.contains("itemName: 0,"), s2);
 
         String s3 = ECharts.chart().series(SeriesOpts.ofPie().label("x"), "y1").generateScriptHtml("_tid", df2);
-        assertFalse(s3.contains("['labels',1,2,3],"), s3);
-        assertTrue(s3.contains("['x','A','B','C'],"), s3);
+        assertFalse(s3.contains("['L0',1,2,3],"), s3);
+        assertTrue(s3.contains("['L0','A','B','C'],"), s3);
         assertTrue(s3.contains("['y1',10,11,14]"), s3);
         assertTrue(s3.contains("encode: {"), s3);
         assertTrue(s3.contains("value: 1,"), s3);

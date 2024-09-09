@@ -12,7 +12,7 @@ public class SeriesTest extends GenerateScriptHtmlTest {
         String s2 = ECharts.chart().series("y2").generateScriptHtml("_tid", df2);
         assertTrue(s2.contains("series: ["), s2);
         assertTrue(s2.contains("name: 'y2',"), s2);
-        assertTrue(s2.contains("['labels',1,2,3],"), s2);
+        assertTrue(s2.contains("['L0',1,2,3],"), s2);
         assertTrue(s2.contains("['y2',20,25,28]"), s2);
 
         String s3 = ECharts.chart().series("y2", "y1").generateScriptHtml("_tid", df2);
@@ -36,11 +36,11 @@ public class SeriesTest extends GenerateScriptHtmlTest {
         String s2 = ECharts.chart().series("y2").xAxis("t", XAxis.ofTime()).generateScriptHtml("_tid", df3);
         assertTrue(s2.contains("series: ["), s2);
         assertTrue(s2.contains("name: 'y2',"), s2);
-        assertTrue(s2.contains("['t','2022-01-01','2022-02-01','2022-03-01'],"), s2);
+        assertTrue(s2.contains("['L0','2022-01-01','2022-02-01','2022-03-01'],"), s2);
         assertTrue(s2.contains("['y2',20,25,28]"), s2);
 
         String s3 = ECharts.chart().series("y2", "y1").xAxis("t", XAxis.ofTime()).generateScriptHtml("_tid", df3);
-        assertTrue(s3.contains("['t','2022-01-01','2022-02-01','2022-03-01'],"), s3);
+        assertTrue(s3.contains("['L0','2022-01-01','2022-02-01','2022-03-01'],"), s3);
         assertTrue(s3.contains("['y2',20,25,28],"), s3);
         assertTrue(s3.contains("['y1',10,11,14]"), s3);
         assertTrue(s3.contains("series: ["), s3);

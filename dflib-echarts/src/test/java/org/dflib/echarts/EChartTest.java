@@ -11,7 +11,7 @@ public class EChartTest extends GenerateScriptHtmlTest {
         EChartHtml ch = ECharts.chart().xAxis("x").series("y1", "y2").plot(df2);
         assertTrue(ch.getExternalScript().contains("<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js'></script>"), ch.getExternalScript());
         assertTrue(ch.getContainer().contains("<div id='dfl_ech_"), ch.getContainer());
-        assertTrue(ch.getScript().contains("['x','A','B','C'],"), ch.getScript());
+        assertTrue(ch.getScript().contains("['L0','A','B','C'],"), ch.getScript());
         assertTrue(ch.getScript().contains("['y1',10,11,14],"), ch.getScript());
         assertTrue(ch.getScript().contains("['y2',20,25,28]"), ch.getScript());
         assertTrue(ch.getScript().contains("name: 'y1',"), ch.getScript());
