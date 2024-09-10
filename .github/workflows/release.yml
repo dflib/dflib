@@ -1,0 +1,49 @@
+name: 'create release'
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+*'
+
+permissions:
+  # allow a write access to GitHub Releases
+  contents: write
+
+jobs:
+  prepare-release:
+    runs-on: ubuntu-latest
+
+    outputs:
+      tag: ${{ steps.vars.outputs.tag }}
+      version: ${{ steps.vars.outputs.version }}
+      upload_url:  ${{ steps.create_release.outputs.upload_url }}
+
+    steps:
+      - name: Checkout...
+        uses: actions/checkout@v4
+
+      - name: Set up JDK...
+        uses: actions/setup-java@v4
+        with:
+          java-version: 11
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build...
+        run: mvn clean package
+
+      - name: Set version...
+        id: vars
+        run: |
+          RELEASE_TAG=${GITHUB_REF#refs/*/}
+          echo "tag=${RELEASE_TAG}" >> $GITHUB_OUTPUT
+          echo "version=${RELEASE_TAG}" >> $GITHUB_OUTPUT
+
+      - name: Create release...
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.vars.outputs.tag }}
+          body: DFLib ${{ steps.vars.outputs.version }} release
+          draft: true
+          prerelease: false

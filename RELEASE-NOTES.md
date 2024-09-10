@@ -1,5 +1,6 @@
 ## Release 1.0.0-M24
 
+* #323 CI/CD actions to create a GitHub release when doing a Maven release
 * #324 Remove API deprecated since M22
 
 ## Release 1.0.0-M23
