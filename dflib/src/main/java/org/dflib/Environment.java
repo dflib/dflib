@@ -6,6 +6,8 @@ import org.dflib.print.Printer;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.UnaryOperator;
 
 /**
  * A static "environment" used by DFLib, providing settings for parallel operations, common optimization thresholds,
@@ -16,17 +18,24 @@ import java.util.concurrent.ForkJoinPool;
  */
 public class Environment {
 
-    private static Environment commonEnv = new Environment(
-            ForkJoinPool.commonPool(),
-            5000,
-            new InlineClassExposingPrinter());
+    private static final AtomicReference<Environment> commonEnv;
+
+    static {
+        Environment defaultEnv = new Environment(
+                ForkJoinPool.commonPool(),
+                5000,
+                new InlineClassExposingPrinter());
+
+        commonEnv = new AtomicReference<>(defaultEnv);
+    }
+
 
     private final ExecutorService threadPool;
     private final int parallelExecThreshold;
     private final Printer printer;
 
     public static Environment commonEnv() {
-        return commonEnv;
+        return commonEnv.get();
     }
 
     /**
@@ -34,22 +43,15 @@ public class Environment {
      * pool configured by DFLib.
      */
     public static void setThreadPool(ExecutorService threadPool) {
-        Environment.commonEnv = new Environment(
-                Objects.requireNonNull(threadPool),
-                commonEnv.parallelExecThreshold,
-                commonEnv.printer
-        );
+        Objects.requireNonNull(threadPool);
+        resetEnv(old -> new Environment(threadPool, old.parallelExecThreshold, old.printer));
     }
 
     /**
      * Sets a common minimal size threshold for operations that can be split and run in parallel.
      */
     public static void setParallelExecThreshold(int parallelExecThreshold) {
-        Environment.commonEnv = new Environment(
-                commonEnv.threadPool,
-                parallelExecThreshold,
-                commonEnv.printer
-        );
+        resetEnv(old -> new Environment(old.threadPool, parallelExecThreshold, old.printer));
     }
 
     /**
@@ -58,11 +60,16 @@ public class Environment {
      * @since 1.0.0-M20
      */
     public static void setPrinter(Printer printer) {
-        Environment.commonEnv = new Environment(
-                commonEnv.threadPool,
-                commonEnv.parallelExecThreshold,
-                printer
-        );
+        resetEnv(old -> new Environment(old.threadPool, old.parallelExecThreshold, printer));
+    }
+
+    static void resetEnv(UnaryOperator<Environment> envFactory) {
+        Environment oldEnv;
+        Environment newEnv;
+        do {
+            oldEnv = commonEnv();
+            newEnv = envFactory.apply(oldEnv);
+        } while (!Environment.commonEnv.compareAndSet(oldEnv, newEnv));
     }
 
     protected Environment(
@@ -90,5 +97,10 @@ public class Environment {
      */
     public Printer printer() {
         return printer;
+    }
+
+    // only used by tests
+    static void setCommonEnv(Environment env) {
+        commonEnv.set(env);
     }
 }
