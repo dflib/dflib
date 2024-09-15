@@ -45,6 +45,15 @@ public abstract class SeriesOpts<SO extends SeriesOpts<SO>> {
         return new PieSeriesOpts();
     }
 
+    /**
+     * Starts a builder for a candlestick series options object.
+     *
+     * @since 1.0.0-M24
+     */
+    public static CandlestickSeriesOpts ofCandlestick() {
+        return new CandlestickSeriesOpts();
+    }
+
     protected SeriesOpts() {
     }
 

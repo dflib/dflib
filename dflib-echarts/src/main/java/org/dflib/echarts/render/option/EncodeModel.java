@@ -1,15 +1,15 @@
 package org.dflib.echarts.render.option;
 
-import java.util.List;
+import org.dflib.echarts.render.ValueModels;
 
 public class EncodeModel {
 
     private final Integer x;
-    private final List<Integer> ys;
+    private final ValueModels<Integer> ys;
     private final Integer value;
     private final Integer itemName;
 
-    public EncodeModel(Integer x, List<Integer> ys, Integer itemName, Integer value) {
+    public EncodeModel(Integer x, ValueModels<Integer> ys, Integer itemName, Integer value) {
         this.itemName = itemName;
         this.x = x;
         this.ys = ys;
@@ -30,7 +30,7 @@ public class EncodeModel {
     /**
      * @since 1.0.0-M23
      */
-    public List<Integer> getYs() {
+    public ValueModels<Integer> getYs() {
         return ys;
     }
 
@@ -42,7 +42,7 @@ public class EncodeModel {
     }
 
     public Integer getY() {
-        return ys.get(0);
+        return ys.getValue(0);
     }
 
     /**

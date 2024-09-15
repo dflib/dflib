@@ -1,6 +1,6 @@
 package org.dflib.echarts.render.option.dataset;
 
-import java.util.List;
+import org.dflib.echarts.render.ValueModels;
 
 /**
  * A model of a chart dataset.
@@ -9,13 +9,13 @@ import java.util.List;
  */
 public class DatasetModel {
 
-    private final List<DatasetRowModel> rows;
+    private final ValueModels<ValueModels<?>> rows;
 
-    public DatasetModel(List<DatasetRowModel> rows) {
+    public DatasetModel(ValueModels<ValueModels<?>> rows) {
         this.rows = rows;
     }
 
-    public List<DatasetRowModel> getRows() {
+    public ValueModels<ValueModels<?>> getRows() {
         return rows;
     }
 }

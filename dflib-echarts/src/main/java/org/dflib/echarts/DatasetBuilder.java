@@ -2,9 +2,8 @@ package org.dflib.echarts;
 
 import org.dflib.DataFrame;
 import org.dflib.Series;
-import org.dflib.echarts.render.ValueModel;
+import org.dflib.echarts.render.ValueModels;
 import org.dflib.echarts.render.option.dataset.DatasetModel;
-import org.dflib.echarts.render.option.dataset.DatasetRowModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,24 +80,24 @@ class DatasetBuilder {
             }
         };
 
-        List<DatasetRowModel> rows = new ArrayList<>(h);
+        List<ValueModels<?>> rows = new ArrayList<>(h);
         for (int i = 0; i < h; i++) {
 
-            List<ValueModel> row = new ArrayList<>(w + 1);
+            List<Object> row = new ArrayList<>(w + 1);
 
             String dataColumn = dataColumnByDatasetPos.get(i);
             String rowLabel = dataColumn != null ? dataColumn : labelMaker.get();
 
-            row.add(new ValueModel(rowLabel, w == 0));
+            row.add(rowLabel);
             Series<?> rowData = dataset.get(i);
 
             for (int j = 0; j < w; j++) {
-                row.add(new ValueModel(rowData.get(j), j + 1 == w));
+                row.add(rowData.get(j));
             }
 
-            rows.add(new DatasetRowModel(row, i + 1 == h));
+            rows.add(ValueModels.of(row));
         }
 
-        return new DatasetModel(rows);
+        return new DatasetModel(ValueModels.of(rows));
     }
 }

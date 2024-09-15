@@ -112,12 +112,8 @@ class OptionModelMaker {
                         : dsb.appendRow(new IntSequenceSeries(1, dataFrame.height() + 1));
 
                 for (SeriesBuilder<?> sb : series) {
-                    switch (sb.seriesOpts.getType()) {
-                        // only cartesian types care for xDimension
-                        case line:
-                        case bar:
-                        case scatter:
-                            sb.xDimension(pos);
+                    if (sb.seriesOpts.getType().isCartesian()) {
+                        sb.xDimension(pos);
                     }
                 }
             }

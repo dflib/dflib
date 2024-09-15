@@ -6,7 +6,7 @@ package org.dflib.echarts;
  * @since 1.0.0-M21
  */
 public enum ChartType {
-    line, bar, scatter, pie;
+    line, bar, scatter, pie, candlestick;
 
     /**
      * @since 1.0.0-M23
@@ -16,6 +16,7 @@ public enum ChartType {
             case line:
             case bar:
             case scatter:
+            case candlestick:
                 return true;
             case pie:
                 return false;

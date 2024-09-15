@@ -3,21 +3,21 @@ package org.dflib.echarts.render;
 import org.dflib.echarts.render.util.Renderer;
 
 /**
- * An abstract list value model that stores a value and the "last" position indicator.
+ * A wrapper for a collection item that stores a value and the "last" position indicator.
  *
  * @since 1.0.0-M21
  */
-public class ValueModel {
+public class ValueModel<T> {
 
-    private final Object value;
+    private final T value;
     private final boolean last;
 
-    public ValueModel(Object value, boolean last) {
+    public ValueModel(T value, boolean last) {
         this.value = value;
         this.last = last;
     }
 
-    public Object getValue() {
+    public T getValue() {
         return value;
     }
 
@@ -28,7 +28,4 @@ public class ValueModel {
     public boolean isLast() {
         return last;
     }
-
-
-
 }

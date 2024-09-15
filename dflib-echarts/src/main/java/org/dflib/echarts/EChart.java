@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.security.SecureRandom;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -83,7 +84,7 @@ public class EChart {
         this.scriptUrl = url;
         return this;
     }
-    
+
     /**
      * @since 1.0.0-M22
      */
@@ -159,25 +160,81 @@ public class EChart {
     }
 
     /**
-     * Specifies one or more DataFrame columns that should be plotted as data series. The series will be rendered
-     * using the default options (a line chart).
+     * Adds one or more line series to the plot, created from DataFrame columns passed as method arguments.
      */
     public EChart series(String... dataColumns) {
-        LineSeriesOpts opts = SeriesOpts.ofLine();
+        return series(SeriesOpts.ofLine(), dataColumns);
+    }
+
+    // defining individual "series(XyzSeriesOpts, String...)" methods instead of a single "series(SeriesOpts, String...)",
+    // so that we can disallow series types not compatible with a single data column (like candlestick).
+
+    /**
+     * Adds one or more "line" series to the plot with data coming from DataFrame columns passed as method arguments.
+     * Series configuration is specified via the {@link LineSeriesOpts} argument.
+     *
+     * @since 1.0.0-M24
+     */
+    public EChart series(LineSeriesOpts seriesOpts, String... dataColumns) {
+        return singleColumnSeries(seriesOpts, dataColumns);
+    }
+
+    /**
+     * Adds one or more "bar" series to the plot with data coming from DataFrame columns passed as method arguments.
+     * Series configuration is specified via the {@link BarSeriesOpts} argument.
+     *
+     * @since 1.0.0-M24
+     */
+    public EChart series(BarSeriesOpts seriesOpts, String... dataColumns) {
+        return singleColumnSeries(seriesOpts, dataColumns);
+    }
+
+    /**
+     * Adds one or more "scatter" series to the plot with data coming from DataFrame columns passed as method arguments.
+     * Series configuration is specified via the {@link ScatterSeriesOpts} argument.
+     *
+     * @since 1.0.0-M24
+     */
+    public EChart series(ScatterSeriesOpts seriesOpts, String... dataColumns) {
+        return singleColumnSeries(seriesOpts, dataColumns);
+    }
+
+    /**
+     * Adds one or more "pie" series to the plot with data coming from DataFrame columns passed as method arguments.
+     * Series configuration is specified via the {@link PieSeriesOpts} argument.
+     *
+     * @since 1.0.0-M24
+     */
+    public EChart series(PieSeriesOpts seriesOpts, String... dataColumns) {
+        return singleColumnSeries(seriesOpts, dataColumns);
+    }
+
+    private EChart singleColumnSeries(SeriesOpts<?> seriesOpts, String... dataColumns) {
         for (String c : dataColumns) {
-            option.series(opts, Index.of(c));
+            option.series(seriesOpts, Index.of(c));
         }
         return this;
     }
 
     /**
-     * Specifies one or more DataFrame columns that should be plotted as data series. Provides series style via the
-     * {@link SeriesOpts} argument.
+     * Adds a "candlestick" series to the chart, with references to 4 data columns indicating "open", "close",
+     * "lowest" and "highest" columns.
+     *
+     * @since 1.0.0-M24
      */
-    public EChart series(SeriesOpts<?> seriesOpts, String... dataColumns) {
-        for (String c : dataColumns) {
-            option.series(seriesOpts, Index.of(c));
-        }
+    public EChart candlestickSeries(
+            CandlestickSeriesOpts seriesOpts,
+            String openColumn,
+            String closeColumn,
+            String lowestColumn,
+            String highestColumn) {
+
+        option.series(seriesOpts, Index.of(
+                Objects.requireNonNull(openColumn, "Null 'open' column"),
+                Objects.requireNonNull(closeColumn, "Null 'close' column"),
+                Objects.requireNonNull(lowestColumn, "Null 'lowest' column"),
+                Objects.requireNonNull(highestColumn, "Null 'highest' column")));
+
         return this;
     }
 

@@ -80,7 +80,7 @@
         dataset: {
             source: [
                 {{#rows}}
-                [{{#columns}}{{{quotedValue}}}{{^last}},{{/last}}{{/columns}}]{{^last}},{{/last}}
+                [{{#value}}{{{quotedValue}}}{{^last}},{{/last}}{{/value}}]{{^last}},{{/last}}
                 {{/rows}}
             ]
         },
@@ -216,7 +216,7 @@
                     x: {{.}},
                 {{/x}}
                 {{#ysPresent}}
-                    y: [{{#ys}}{{{.}}},{{/ys}}],
+                    y: [{{#ys}}{{value}}{{^last}},{{/last}}{{/ys}}],
                 {{/ysPresent}}
                 {{#yPresent}}
                     y: {{y}},

@@ -5,6 +5,7 @@ package org.dflib.echarts;
  */
 public class LineSeriesOpts extends CartesianSeriesOpts<LineSeriesOpts> {
 
+    Label label;
     Boolean areaStyle;
     Boolean showSymbol;
     Boolean smooth;
@@ -37,4 +38,15 @@ public class LineSeriesOpts extends CartesianSeriesOpts<LineSeriesOpts> {
         this.stack = true;
         return this;
     }
+
+    public LineSeriesOpts label(LabelPosition position) {
+        this.label = Label.of(position);
+        return this;
+    }
+
+    public LineSeriesOpts label(Label label) {
+        this.label = label;
+        return this;
+    }
+
 }

@@ -5,6 +5,7 @@ package org.dflib.echarts;
  */
 public class BarSeriesOpts extends CartesianSeriesOpts<BarSeriesOpts> {
 
+    Label label;
     boolean stack;
 
     public BarSeriesOpts() {
@@ -19,6 +20,16 @@ public class BarSeriesOpts extends CartesianSeriesOpts<BarSeriesOpts> {
 
     public BarSeriesOpts stack() {
         this.stack = true;
+        return this;
+    }
+
+    public BarSeriesOpts label(LabelPosition position) {
+        this.label = Label.of(position);
+        return this;
+    }
+
+    public BarSeriesOpts label(Label label) {
+        this.label = label;
         return this;
     }
 }

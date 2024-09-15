@@ -1,5 +1,6 @@
 package org.dflib.echarts;
 
+import org.dflib.echarts.render.ValueModels;
 import org.dflib.echarts.render.option.EncodeModel;
 import org.dflib.echarts.render.option.SeriesModel;
 import org.dflib.echarts.render.option.series.CenterModel;
@@ -16,6 +17,8 @@ class SeriesModelMaker {
                 return barModel((SeriesBuilder<BarSeriesOpts>) sb);
             case scatter:
                 return scatterModel((SeriesBuilder<ScatterSeriesOpts>) sb);
+            case candlestick:
+                return candlestickModel((SeriesBuilder<CandlestickSeriesOpts>) sb);
             case pie:
                 return pieModel((SeriesBuilder<PieSeriesOpts>) sb);
             default:
@@ -27,7 +30,7 @@ class SeriesModelMaker {
         return new SeriesModel(
                 sb.name,
                 sb.seriesOpts.getType().name(),
-                new EncodeModel(sb.xDimension, sb.yDimensions, null, null),
+                new EncodeModel(sb.xDimension, ValueModels.of(sb.yDimensions), null, null),
                 sb.seriesOpts.label != null ? sb.seriesOpts.label.resolve() : null,
                 sb.datasetSeriesLayoutBy,
                 null,
@@ -48,7 +51,7 @@ class SeriesModelMaker {
         return new SeriesModel(
                 sb.name,
                 sb.seriesOpts.getType().name(),
-                new EncodeModel(sb.xDimension, sb.yDimensions, null, null),
+                new EncodeModel(sb.xDimension, ValueModels.of(sb.yDimensions), null, null),
                 sb.seriesOpts.label != null ? sb.seriesOpts.label.resolve() : null,
                 sb.datasetSeriesLayoutBy,
                 sb.seriesOpts.areaStyle,
@@ -69,8 +72,29 @@ class SeriesModelMaker {
         return new SeriesModel(
                 sb.name,
                 sb.seriesOpts.getType().name(),
-                new EncodeModel(sb.xDimension, sb.yDimensions, null, null),
+                new EncodeModel(sb.xDimension, ValueModels.of(sb.yDimensions), null, null),
                 sb.seriesOpts.label != null ? sb.seriesOpts.label.resolve() : null,
+                sb.datasetSeriesLayoutBy,
+                null,
+                null,
+                null,
+                null,
+                sb.seriesOpts.xAxisIndex,
+                sb.seriesOpts.yAxisIndex,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
+    private SeriesModel candlestickModel(SeriesBuilder<CandlestickSeriesOpts> sb) {
+        return new SeriesModel(
+                sb.name,
+                sb.seriesOpts.getType().name(),
+                new EncodeModel(sb.xDimension, ValueModels.of(sb.yDimensions), null, null),
+                null,
                 sb.datasetSeriesLayoutBy,
                 null,
                 null,
