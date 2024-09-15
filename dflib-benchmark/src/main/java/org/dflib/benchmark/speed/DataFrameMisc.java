@@ -28,7 +28,7 @@ public class DataFrameMisc {
         Series<Integer> c0 = ValueMaker.intSeq().series(rows);
         Series<String> c1 = ValueMaker.stringSeq().series(rows);
         Series<Integer> c2 = ValueMaker.randomIntSeq((rows) / 2).series(rows);
-        Series<String> c3 = ValueMaker.constStringSeq(string).series(rows);
+        Series<String> c3 = ValueMaker.constSeq(string).series(rows);
 
         df = DataFrame.byColumn("c0", "c1", "c2", "c3").of(c0, c1, c2, c3);
     }

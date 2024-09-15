@@ -17,6 +17,7 @@ public class ColumnarDataFrameMemory extends MemoryTest {
         ColumnarDataFrameMemory test = new ColumnarDataFrameMemory();
         test.run("null", test::nullCells, cells);
         test.run("int (object)", test::intCells, cells);
+        test.run("int (object, repeating)", test::repeatingIntCells, cells);
         test.run("int (primitive)", test::primitiveIntCells, cells);
         test.run("double (object)", test::doubleCells, cells);
         test.run("double (primitive)", test::primitiveDoubleCells, cells);
@@ -25,6 +26,7 @@ public class ColumnarDataFrameMemory extends MemoryTest {
         test.run("boolean (object)", test::boolCells, cells);
         test.run("boolean (primitive)", test::primitiveBoolCells, cells);
         test.run("string (repeating)", test::repeatingStringCells, cells);
+        test.run("string (interned)", test::internedStringCells, cells);
         test.run("string (random)", test::randStringCells, cells);
         test.run("bitSet", test::bitSetCells, cells);
         test.run("enum", test::enumCells, cells);
@@ -52,6 +54,12 @@ public class ColumnarDataFrameMemory extends MemoryTest {
         return DataFrame.byColumn("c0", "c1").of(
                 ValueMaker.intSeq().series(ROWS),
                 ValueMaker.intSeq().series(ROWS)).materialize();
+    }
+
+    public DataFrame repeatingIntCells() {
+        return DataFrame.byColumn("c0", "c1").of(
+                ValueMaker.constSeq(999, Integer::valueOf).series(ROWS),
+                ValueMaker.constSeq(13_555_101, Integer::valueOf).series(ROWS)).materialize();
     }
 
     public DataFrame primitiveIntCells() {
@@ -86,8 +94,14 @@ public class ColumnarDataFrameMemory extends MemoryTest {
 
     public DataFrame repeatingStringCells() {
         return DataFrame.byColumn("c0", "c1").of(
-                ValueMaker.constStringSeq("abc").series(ROWS),
-                ValueMaker.constStringSeq("xyz").series(ROWS)).materialize();
+                ValueMaker.constSeq("abc", s -> new String(s.toCharArray())).series(ROWS),
+                ValueMaker.constSeq("xyz", s -> new String(s.toCharArray())).series(ROWS)).materialize();
+    }
+
+    public DataFrame internedStringCells() {
+        return DataFrame.byColumn("c0", "c1").of(
+                ValueMaker.constSeq("abc", s -> new String(s.toCharArray()).intern()).series(ROWS),
+                ValueMaker.constSeq("xyz", s -> new String(s.toCharArray()).intern()).series(ROWS)).materialize();
     }
 
     public DataFrame randStringCells() {

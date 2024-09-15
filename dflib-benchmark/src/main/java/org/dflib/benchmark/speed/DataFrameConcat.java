@@ -29,7 +29,7 @@ public class DataFrameConcat {
         Series<Integer> c10 = ValueMaker.intSeq().series(rows + 5);
         Series<String> c11 = ValueMaker.stringSeq().series(rows + 5);
         Series<Integer> c12 = ValueMaker.randomIntSeq((rows + 5) / 2).series(rows + 5);
-        Series<String> c13 = ValueMaker.constStringSeq(string).series(rows + 5);
+        Series<String> c13 = ValueMaker.constSeq(string).series(rows + 5);
 
         df1 = DataFrame.byColumn("c0", "c1", "c2", "c3")
                 .of(c10, c11, c12, c13);
@@ -37,7 +37,7 @@ public class DataFrameConcat {
         Series<Integer> c20 = ValueMaker.intSeq().series(rows - 5);
         Series<String> c21 = ValueMaker.stringSeq().series(rows - 5);
         Series<Integer> c22 = ValueMaker.randomIntSeq((rows - 5) / 2).series(rows - 5);
-        Series<String> c23 = ValueMaker.constStringSeq(string).series(rows - 5);
+        Series<String> c23 = ValueMaker.constSeq(string).series(rows - 5);
 
         df2 = DataFrame.byColumn("c0", "c1", "c2", "c3")
                 .of(c20, c21, c22, c23);

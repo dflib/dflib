@@ -32,7 +32,7 @@ public class DataFrameExp {
         IntSeries c1 = ValueMaker.randomIntSeq(rows / 2).intSeries(rows);
         Series<Integer> c2 = Series.ofIterable(c1);
         Series<String> c3 = ValueMaker.stringSeq().series(rows);
-        Series<String> c4 = ValueMaker.constStringSeq("abc").series(rows);
+        Series<String> c4 = ValueMaker.constSeq("abc").series(rows);
         DoubleSeries c5 = ValueMaker.doubleSeq().doubleSeries(rows);
         DoubleSeries c6 = ValueMaker.randomDoubleSeq().doubleSeries(rows);
 

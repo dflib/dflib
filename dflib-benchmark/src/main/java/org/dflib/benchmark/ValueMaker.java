@@ -12,6 +12,7 @@ import org.dflib.builder.LongAccum;
 import org.dflib.builder.ObjectAccum;
 
 import java.util.Random;
+import java.util.function.UnaryOperator;
 
 /**
  * Series data generator for DFLib benchmarks.
@@ -77,8 +78,12 @@ public interface ValueMaker<T> {
         return () -> "data_" + val[0]++;
     }
 
-    static ValueMaker<String> constStringSeq(String string) {
-        return () -> string;
+    static <T> ValueMaker<T> constSeq(T t) {
+        return constSeq(t, lt -> lt);
+    }
+
+    static <T> ValueMaker<T> constSeq(T t, UnaryOperator<T> cloneFunction) {
+        return () -> cloneFunction.apply(t);
     }
 
     static ValueMaker<String> semiRandomStringSeq(String prefix, int max) {
