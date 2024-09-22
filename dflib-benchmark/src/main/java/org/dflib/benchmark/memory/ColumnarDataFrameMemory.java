@@ -4,8 +4,6 @@ import org.dflib.DataFrame;
 import org.dflib.benchmark.ValueMaker;
 import org.dflib.benchmark.memory.benchmark.MemoryTest;
 
-import java.util.BitSet;
-
 public class ColumnarDataFrameMemory extends MemoryTest {
 
     private static final int ROWS = 1_000_000;
@@ -25,10 +23,10 @@ public class ColumnarDataFrameMemory extends MemoryTest {
         test.run("long (primitive)", test::primitiveLongCells, cells);
         test.run("boolean (object)", test::boolCells, cells);
         test.run("boolean (primitive)", test::primitiveBoolCells, cells);
+        test.run("boolean (bitset)", test::bitSetCells, cells);
         test.run("string (repeating)", test::repeatingStringCells, cells);
         test.run("string (interned)", test::internedStringCells, cells);
         test.run("string (random)", test::randStringCells, cells);
-        test.run("bitSet", test::bitSetCells, cells);
         test.run("enum", test::enumCells, cells);
     }
 
@@ -111,17 +109,10 @@ public class ColumnarDataFrameMemory extends MemoryTest {
     }
 
     public DataFrame bitSetCells() {
-        ValueMaker<Integer> intMaker = ValueMaker.intSeq(0, 1024);
-        ValueMaker<BitSet> bitsMaker = () -> {
-            BitSet s = new BitSet();
-            s.set(intMaker.get());
-            return s;
-
-        };
-
+        ValueMaker<Boolean> maker = ValueMaker.booleanSeq();
         return DataFrame.byColumn("c0", "c1").of(
-                bitsMaker.series(ROWS),
-                bitsMaker.series(ROWS)).materialize();
+                maker.bitSeries(ROWS),
+                maker.bitSeries(ROWS)).materialize();
     }
 
     public DataFrame enumCells() {

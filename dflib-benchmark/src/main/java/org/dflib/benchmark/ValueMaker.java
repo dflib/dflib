@@ -10,7 +10,9 @@ import org.dflib.builder.DoubleAccum;
 import org.dflib.builder.IntAccum;
 import org.dflib.builder.LongAccum;
 import org.dflib.builder.ObjectAccum;
+import org.dflib.series.BooleanBitsetSeries;
 
+import java.util.BitSet;
 import java.util.Random;
 import java.util.function.UnaryOperator;
 
@@ -125,6 +127,19 @@ public interface ValueMaker<T> {
         }
 
         return vals.toSeries();
+    }
+
+    default BooleanSeries bitSeries(int len) {
+
+        BitSet vals = new BitSet(len);
+
+        for (int i = 0; i < len; i++) {
+            if ((Boolean) get()) {
+                vals.set(i);
+            }
+        }
+
+        return new BooleanBitsetSeries(vals);
     }
 
     default IntSeries intSeries(int len) {
