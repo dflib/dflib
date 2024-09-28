@@ -153,6 +153,8 @@ public class CsvLoader {
     }
 
     /**
+     * Configures the loader to only process the specified columns.
+     *
      * @return this loader instance
      * @since 1.0.0-M20
      */
@@ -182,9 +184,9 @@ public class CsvLoader {
     /**
      * Provides a conversion function of a CSV column at a given position to produce a desired type.
      *
-     * @since 1.0.0-M23
+     * @since 1.0.0-RC1
      */
-    public CsvLoader colType(int column, ValueMapper<String, ?> mapper) {
+    public CsvLoader col(int column, ValueMapper<String, ?> mapper) {
         columnConfigs.add(ColumnConfig.objectCol(column, mapper));
         return this;
     }
@@ -192,9 +194,9 @@ public class CsvLoader {
     /**
      * Provides a conversion function of a CSV column at a given position to produce a desired type.
      *
-     * @since 1.0.0-M23
+     * @since 1.0.0-RC1
      */
-    public CsvLoader colType(String column, ValueMapper<String, ?> mapper) {
+    public CsvLoader col(String column, ValueMapper<String, ?> mapper) {
         columnConfigs.add(ColumnConfig.objectCol(column, mapper));
         return this;
     }
@@ -343,14 +345,14 @@ public class CsvLoader {
      * @since 1.0.0-M23
      */
     public CsvLoader numCol(int column, Class<? extends Number> type) {
-        return colType(column, numericMapper(type));
+        return col(column, numericMapper(type));
     }
 
     /**
      * @since 1.0.0-M23
      */
     public CsvLoader numCol(String column, Class<? extends Number> type) {
-        return colType(column, numericMapper(type));
+        return col(column, numericMapper(type));
     }
 
     private ValueMapper<String, ?> numericMapper(Class<? extends Number> type) {
@@ -386,42 +388,42 @@ public class CsvLoader {
      * @since 1.0.0-M23
      */
     public CsvLoader dateCol(int column) {
-        return colType(column, ValueMapper.stringToDate());
+        return col(column, ValueMapper.stringToDate());
     }
 
     /**
      * @since 1.0.0-M23
      */
     public CsvLoader dateCol(String column) {
-        return colType(column, ValueMapper.stringToDate());
+        return col(column, ValueMapper.stringToDate());
     }
 
     /**
      * @since 1.0.0-M23
      */
     public CsvLoader dateCol(int column, DateTimeFormatter formatter) {
-        return colType(column, ValueMapper.stringToDate(formatter));
+        return col(column, ValueMapper.stringToDate(formatter));
     }
 
     /**
      * @since 1.0.0-M23
      */
     public CsvLoader dateCol(String column, DateTimeFormatter formatter) {
-        return colType(column, ValueMapper.stringToDate(formatter));
+        return col(column, ValueMapper.stringToDate(formatter));
     }
 
     /**
      * @since 1.0.0-M23
      */
     public CsvLoader dateTimeCol(int column) {
-        return colType(column, ValueMapper.stringToDateTime());
+        return col(column, ValueMapper.stringToDateTime());
     }
 
     /**
      * @since 1.0.0-M23
      */
     public CsvLoader dateTimeCol(String column) {
-        return colType(column, ValueMapper.stringToDateTime());
+        return col(column, ValueMapper.stringToDateTime());
     }
 
 
@@ -429,14 +431,14 @@ public class CsvLoader {
      * @since 1.0.0-M23
      */
     public CsvLoader dateTimeCol(int column, DateTimeFormatter formatter) {
-        return colType(column, ValueMapper.stringToDateTime(formatter));
+        return col(column, ValueMapper.stringToDateTime(formatter));
     }
 
     /**
      * @since 1.0.0-M23
      */
     public CsvLoader dateTimeCol(String column, DateTimeFormatter formatter) {
-        return colType(column, ValueMapper.stringToDateTime(formatter));
+        return col(column, ValueMapper.stringToDateTime(formatter));
     }
 
     /**

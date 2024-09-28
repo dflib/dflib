@@ -202,10 +202,10 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_colType() {
+    public void fromFile_col() {
         DataFrame df = new CsvLoader()
-                .colType(0, ValueMapper.stringToInt())
-                .colType(2, ValueMapper.stringToLong())
+                .col(0, ValueMapper.stringToInt())
+                .col(2, ValueMapper.stringToLong())
                 .load(inPath("f1.csv"));
         new DataFrameAsserts(df, "A", "b", "C")
                 .expectHeight(2)
@@ -214,10 +214,10 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_colType_OverrideType() {
+    public void fromFile_colType_Override() {
         DataFrame df = new CsvLoader()
-                .colType(0, ValueMapper.stringToInt())
-                .colType("A", ValueMapper.stringToLong())
+                .col(0, ValueMapper.stringToInt())
+                .col("A", ValueMapper.stringToLong())
                 .load(inPath("f1.csv"));
         new DataFrameAsserts(df, "A", "b", "C")
                 .expectHeight(2)

@@ -1,5 +1,11 @@
 # UPGRADE INSTRUCTIONS
 
+## 1.0.0-RC1
+
+* [dflib #331](https://github.com/bootique/bootique-agrest/issues/331): Recently added `CsvLoader.colType(...)` was
+replaced with `CsvLoader.col(...)` without deprecation. If you get a compilation error on this method, change it 
+accordingly.
+
 ## 1.0.0-M23
 * [dflib #318](https://github.com/bootique/bootique-agrest/issues/318): The default series type can no longer
 be overridden and is always a "line chart" with default set of options. `Echarts.chart().defaultSeriesOpts(..)` 
