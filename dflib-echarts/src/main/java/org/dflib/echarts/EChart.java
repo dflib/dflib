@@ -173,7 +173,7 @@ public class EChart {
      * Adds one or more "line" series to the plot with data coming from DataFrame columns passed as method arguments.
      * Series configuration is specified via the {@link LineSeriesOpts} argument.
      *
-     * @since 1.0.0-M24
+     * @since 1.0.0-RC1
      */
     public EChart series(LineSeriesOpts seriesOpts, String... dataColumns) {
         return singleColumnSeries(seriesOpts, dataColumns);
@@ -183,7 +183,7 @@ public class EChart {
      * Adds one or more "bar" series to the plot with data coming from DataFrame columns passed as method arguments.
      * Series configuration is specified via the {@link BarSeriesOpts} argument.
      *
-     * @since 1.0.0-M24
+     * @since 1.0.0-RC1
      */
     public EChart series(BarSeriesOpts seriesOpts, String... dataColumns) {
         return singleColumnSeries(seriesOpts, dataColumns);
@@ -193,7 +193,7 @@ public class EChart {
      * Adds one or more "scatter" series to the plot with data coming from DataFrame columns passed as method arguments.
      * Series configuration is specified via the {@link ScatterSeriesOpts} argument.
      *
-     * @since 1.0.0-M24
+     * @since 1.0.0-RC1
      */
     public EChart series(ScatterSeriesOpts seriesOpts, String... dataColumns) {
         return singleColumnSeries(seriesOpts, dataColumns);
@@ -203,7 +203,7 @@ public class EChart {
      * Adds one or more "pie" series to the plot with data coming from DataFrame columns passed as method arguments.
      * Series configuration is specified via the {@link PieSeriesOpts} argument.
      *
-     * @since 1.0.0-M24
+     * @since 1.0.0-RC1
      */
     public EChart series(PieSeriesOpts seriesOpts, String... dataColumns) {
         return singleColumnSeries(seriesOpts, dataColumns);
@@ -220,7 +220,7 @@ public class EChart {
      * Adds a "candlestick" series to the chart, with references to 4 data columns indicating "open", "close",
      * "lowest" and "highest" columns.
      *
-     * @since 1.0.0-M24
+     * @since 1.0.0-RC1
      */
     public EChart candlestickSeries(
             CandlestickSeriesOpts seriesOpts,
