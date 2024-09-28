@@ -72,10 +72,10 @@ public class CsvLoader {
     }
 
     /**
-     * Configures CSV loader to select a sample of the rows of a CSV. Unlike {@link DataFrame#sampleRows(int, Random)},
-     * this method will prevent the full CSV from loading in memory, and hence can be used on potentially very large
-     * CSVs. If you are executing multiple sampling runs in parallel, consider using {@link #rowsSample(int, Random)},
-     * as this method is using a shared {@link Random} instance with synchronization.
+     * Configures CSV loader to select a sample of the rows of a CSV. This method will prevent the full CSV from loading
+     * in memory, and hence can be used on potentially very large CSVs. If you are executing multiple sampling runs in
+     * parallel, consider using {@link #rowsSample(int, Random)}, as this method is using a shared {@link Random}
+     * instance with synchronization.
      *
      * @param size the size of the sample. Can be bigger than the CSV size (as the CSV size is not known upfront).
      * @return this loader instance
@@ -86,9 +86,8 @@ public class CsvLoader {
     }
 
     /**
-     * Configures CSV loader to select a sample of the rows of a CSV. Unlike {@link DataFrame#sampleRows(int, Random)},
-     * this method will prevent the full CSV from loading in memory, and hence can be used on potentially very large
-     * CSVs.
+     * Configures CSV loader to select a sample of the rows of a CSV. This method will prevent the full CSV from loading
+     * in memory, and hence can be used on potentially very large CSVs.
      *
      * @param size   the size of the sample. Can be bigger than the CSV size (as the CSV size is not known upfront).
      * @param random a custom random number generator
