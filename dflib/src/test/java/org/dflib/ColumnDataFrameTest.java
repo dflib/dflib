@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ColumnDataFrameTest {
 
-    @Deprecated
     @Test
     public void constructor_NoName() {
         ColumnDataFrame df = new ColumnDataFrame(

@@ -5,6 +5,7 @@
 * #324 Remove API deprecated since M22
 * #327 Bump org.apache.hadoop:hadoop-common from 3.3.6 to 3.4.0
 * #328 Upgrade to parquet 1.14.2
+* #330 Remove API deprecated since M23
 
 ## Release 1.0.0-M23
 

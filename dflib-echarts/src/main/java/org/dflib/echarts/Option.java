@@ -126,16 +126,6 @@ public class Option {
         return this;
     }
 
-    /**
-     * Specifies one or more DataFrame columns to be plotted as individual series. Sets series options.
-     *
-     * @deprecated in favor of {@link #series(SeriesOpts, Index)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public Option series(SeriesOpts opts, String... dataColumns) {
-        return series(opts, Index.of(dataColumns));
-    }
-
     public Option title(String title) {
         this.title = title;
         return this;

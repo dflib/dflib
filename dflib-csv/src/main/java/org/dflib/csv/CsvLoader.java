@@ -201,22 +201,6 @@ public class CsvLoader {
     }
 
     /**
-     * @deprecated in favor of {@link #colType(int, ValueMapper)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader columnType(int column, ValueMapper<String, ?> mapper) {
-        return colType(column, mapper);
-    }
-
-    /**
-     * @deprecated in favor of {@link #colType(String, ValueMapper)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader columnType(String column, ValueMapper<String, ?> mapper) {
-        return colType(column, mapper);
-    }
-
-    /**
      * @since 1.0.0-M23
      */
     public CsvLoader intCol(int column) {
@@ -244,46 +228,6 @@ public class CsvLoader {
      * @since 1.0.0-M23
      */
     public CsvLoader intCol(String column, int forNull) {
-        columnConfigs.add(ColumnConfig.intCol(column, IntValueMapper.fromString(forNull)));
-        return this;
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #intCol(int)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader intColumn(int column) {
-        columnConfigs.add(ColumnConfig.intCol(column, IntValueMapper.fromString()));
-        return this;
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #intCol(String)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader intColumn(String column) {
-        columnConfigs.add(ColumnConfig.intCol(column, IntValueMapper.fromString()));
-        return this;
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #intCol(int, int)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader intColumn(int column, int forNull) {
-        columnConfigs.add(ColumnConfig.intCol(column, IntValueMapper.fromString(forNull)));
-        return this;
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #intCol(String, int)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader intColumn(String column, int forNull) {
         columnConfigs.add(ColumnConfig.intCol(column, IntValueMapper.fromString(forNull)));
         return this;
     }
@@ -321,42 +265,6 @@ public class CsvLoader {
     }
 
     /**
-     * @since 0.6
-     * @deprecated in favor of {@link #longCol(int)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader longColumn(int column) {
-        return longCol(column);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #longCol(String)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader longColumn(String column) {
-        return longCol(column);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #longCol(int, long)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader longColumn(int column, long forNull) {
-        return longCol(column, forNull);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #longCol(String, long)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader longColumn(String column, long forNull) {
-        return longCol(column, forNull);
-    }
-
-    /**
      * @since 1.0.0-M23
      */
     public CsvLoader doubleCol(int column) {
@@ -386,42 +294,6 @@ public class CsvLoader {
     public CsvLoader doubleCol(String column, double forNull) {
         columnConfigs.add(ColumnConfig.doubleCol(column, DoubleValueMapper.fromString(forNull)));
         return this;
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #doubleCol(int)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader doubleColumn(int column) {
-        return doubleCol(column);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #doubleCol(String)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader doubleColumn(String column) {
-        return doubleCol(column);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #doubleCol(int, double)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader doubleColumn(int column, double forNull) {
-        return doubleCol(column, forNull);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #doubleCol(String, double)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader doubleColumn(String column, double forNull) {
-        return doubleCol(column, forNull);
     }
 
     /**
@@ -465,24 +337,6 @@ public class CsvLoader {
     }
 
     /**
-     * @since 0.16
-     * @deprecated in favor of {@link #boolCol(int)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader boolColumn(int column) {
-        return boolCol(column);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #boolCol(String)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader boolColumn(String column) {
-        return boolCol(column);
-    }
-
-    /**
      * Instructs the loader to convert values in the specified column to numbers of the specified type. This method will
      * result in "object" columns (and hence can store nulls). If you want a column with primitive numbers, use methods
      * like {@link #intCol(int)}, etc. instead.
@@ -498,24 +352,6 @@ public class CsvLoader {
      */
     public CsvLoader numCol(String column, Class<? extends Number> type) {
         return colType(column, numericMapper(type));
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #numCol(int, Class)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader numColumn(int column, Class<? extends Number> type) {
-        return numCol(column, type);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #numCol(String, Class)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader numColumn(String column, Class<? extends Number> type) {
-        return numCol(column, type);
     }
 
     private ValueMapper<String, ?> numericMapper(Class<? extends Number> type) {
@@ -576,42 +412,6 @@ public class CsvLoader {
     }
 
     /**
-     * @since 0.6
-     * @deprecated in favor of {@link #dateCol(int)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader dateColumn(int column) {
-        return dateCol(column);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #dateCol(String)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader dateColumn(String column) {
-        return dateCol(column);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #dateCol(int, DateTimeFormatter)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader dateColumn(int column, DateTimeFormatter formatter) {
-        return dateCol(column, formatter);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #dateCol(String, DateTimeFormatter)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader dateColumn(String column, DateTimeFormatter formatter) {
-        return dateCol(column, formatter);
-    }
-
-    /**
      * @since 1.0.0-M23
      */
     public CsvLoader dateTimeCol(int column) {
@@ -638,42 +438,6 @@ public class CsvLoader {
      */
     public CsvLoader dateTimeCol(String column, DateTimeFormatter formatter) {
         return colType(column, ValueMapper.stringToDateTime(formatter));
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #dateTimeCol(int)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader dateTimeColumn(int column) {
-        return dateTimeColumn(column);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #dateTimeCol(String)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader dateTimeColumn(String column) {
-        return dateTimeColumn(column);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #dateTimeCol(int, DateTimeFormatter)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader dateTimeColumn(int column, DateTimeFormatter formatter) {
-        return dateTimeColumn(column, formatter);
-    }
-
-    /**
-     * @since 0.6
-     * @deprecated in favor of {@link #dateTimeCol(String, DateTimeFormatter)}
-     */
-    @Deprecated(since = "1.0.0-M23", forRemoval = true)
-    public CsvLoader dateTimeColumn(String column, DateTimeFormatter formatter) {
-        return dateTimeColumn(column, formatter);
     }
 
     /**
