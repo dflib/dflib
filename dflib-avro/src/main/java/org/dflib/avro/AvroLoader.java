@@ -124,11 +124,12 @@ public class AvroLoader {
                 return Extractor.$long(r -> (Long) r.get(pos));
             case BOOLEAN:
                 return Extractor.$bool(r -> (Boolean) r.get(pos));
-            case STRING:
             case BYTES:
             case ENUM:
             case NULL:
                 return Extractor.$col(r -> r.get(pos));
+            case STRING:
+                return mapStringColumn(pos, columnSchema);
             case UNION:
                 return mapUnionColumn(pos, columnSchema.getTypes());
             default:
