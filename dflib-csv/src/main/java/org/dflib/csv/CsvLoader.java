@@ -193,7 +193,7 @@ public class CsvLoader {
      * @since 1.0.0-RC1
      */
     public CsvLoader col(int column, ValueMapper<String, ?> mapper) {
-        columnConfigs.add(ColumnConfig.objectCol(column, mapper));
+        columnConfigs.add(ColumnConfig.objectCol(column, mapper, false));
         return this;
     }
 
@@ -203,7 +203,51 @@ public class CsvLoader {
      * @since 1.0.0-RC1
      */
     public CsvLoader col(String column, ValueMapper<String, ?> mapper) {
-        columnConfigs.add(ColumnConfig.objectCol(column, mapper));
+        columnConfigs.add(ColumnConfig.objectCol(column, mapper, false));
+        return this;
+    }
+
+    /**
+     * Configures a CSV column to be loaded without conversion (as a String), but with value compaction. Should be used
+     * to save memory for low-cardinality columns.
+     *
+     * @since 1.0.0-RC1
+     */
+    public CsvLoader compactCol(int column) {
+        columnConfigs.add(ColumnConfig.objectCol(column, true));
+        return this;
+    }
+
+    /**
+     * Configures a CSV column to be loaded without conversion (as a String), but with value compaction. Should be used
+     * to save memory for low-cardinality columns.
+     *
+     * @since 1.0.0-RC1
+     */
+    public CsvLoader compactCol(String column) {
+        columnConfigs.add(ColumnConfig.objectCol(column, true));
+        return this;
+    }
+
+    /**
+     * Configures a CSV column to be loaded with the specified conversion and with converted value compaction. Should
+     * be used instead of {@link #col(int, ValueMapper)} to save memory for low-cardinality columns.
+     *
+     * @since 1.0.0-RC1
+     */
+    public CsvLoader compactCol(int column, ValueMapper<String, ?> mapper) {
+        columnConfigs.add(ColumnConfig.objectCol(column, mapper, true));
+        return this;
+    }
+
+    /**
+     * Configures a CSV column to be loaded with the specified conversion and with converted value compaction. Should
+     * be used instead of {@link #col(String, ValueMapper)} to save memory for low-cardinality columns.
+     *
+     * @since 1.0.0-RC1
+     */
+    public CsvLoader compactCol(String column, ValueMapper<String, ?> mapper) {
+        columnConfigs.add(ColumnConfig.objectCol(column, mapper, true));
         return this;
     }
 
@@ -309,7 +353,7 @@ public class CsvLoader {
      * @since 1.0.0-M23
      */
     public CsvLoader decimalCol(int column) {
-        columnConfigs.add(ColumnConfig.objectCol(column, ValueMapper.stringToBigDecimal()));
+        columnConfigs.add(ColumnConfig.objectCol(column, ValueMapper.stringToBigDecimal(), false));
         return this;
     }
 
@@ -319,7 +363,7 @@ public class CsvLoader {
      * @since 1.0.0-M23
      */
     public CsvLoader decimalCol(String column) {
-        columnConfigs.add(ColumnConfig.objectCol(column, ValueMapper.stringToBigDecimal()));
+        columnConfigs.add(ColumnConfig.objectCol(column, ValueMapper.stringToBigDecimal(), false));
         return this;
     }
 
@@ -513,7 +557,9 @@ public class CsvLoader {
         }
 
         Extractor<CSVRecord, ?>[] extractors = columnMap.extractors(this.columnConfigs);
-        DataFrameByRowBuilder<CSVRecord, ?> builder = DataFrame.byRow(extractors).columnIndex(columnMap.getDfHeader());
+        DataFrameByRowBuilder<CSVRecord, ?> builder = DataFrame
+                .byRow(extractors)
+                .columnIndex(columnMap.getDfHeader());
 
         if (rowSampleSize > 0) {
             builder.sampleRows(rowSampleSize, rowsSampleRandom);

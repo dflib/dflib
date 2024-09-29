@@ -8,6 +8,7 @@
 * #329 Compacting columns on load
 * #330 Remove API deprecated since M23
 * #331 CsvLoader.colType() -> col()
+* #332 Compacting CSV columns on load
 
 ## Release 1.0.0-M23
 

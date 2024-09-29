@@ -16,22 +16,41 @@ class ColumnConfig {
     int csvColPos;
     String csvColName;
     IntFunction<Extractor<CSVRecord, ?>> extractorMaker;
+    boolean compact;
 
     private ColumnConfig() {
         csvColPos = -1;
     }
 
-    public static ColumnConfig objectCol(int pos, ValueMapper<String, ?> mapper) {
+    public static ColumnConfig objectCol(int pos, boolean compact) {
         ColumnConfig config = new ColumnConfig();
         config.csvColPos = pos;
-        config.extractorMaker = i -> Extractor.$col(r -> mapper.map(r.get(i)));
+        config.extractorMaker = i -> Extractor.$col(r -> r.get(i));
+        config.compact = compact;
         return config;
     }
 
-    public static ColumnConfig objectCol(String name, ValueMapper<String, ?> mapper) {
+    public static ColumnConfig objectCol(String name, boolean compact) {
+        ColumnConfig config = new ColumnConfig();
+        config.csvColName = name;
+        config.extractorMaker = i -> Extractor.$col(r -> r.get(i));
+        config.compact = compact;
+        return config;
+    }
+
+    public static ColumnConfig objectCol(int pos, ValueMapper<String, ?> mapper, boolean compact) {
+        ColumnConfig config = new ColumnConfig();
+        config.csvColPos = pos;
+        config.extractorMaker = i -> Extractor.$col(r -> mapper.map(r.get(i)));
+        config.compact = compact;
+        return config;
+    }
+
+    public static ColumnConfig objectCol(String name, ValueMapper<String, ?> mapper, boolean compact) {
         ColumnConfig config = new ColumnConfig();
         config.csvColName = name;
         config.extractorMaker = i -> Extractor.$col(r -> mapper.map(r.get(i)));
+        config.compact = compact;
         return config;
     }
 
@@ -93,6 +112,7 @@ class ColumnConfig {
 
     public Extractor<CSVRecord, ?> extractor(Index csvHeader) {
         int csvPos = csvColPos >= 0 ? csvColPos : csvHeader.position(csvColName);
-        return extractorMaker.apply(csvPos);
+        Extractor<CSVRecord, ?> e = extractorMaker.apply(csvPos);
+        return compact ? e.compact() : e;
     }
 }
