@@ -2,24 +2,34 @@ package org.dflib.builder;
 
 import org.dflib.Extractor;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @since 0.16
  */
-public class SelfExtractor<T> implements Extractor<T, T> {
+public class CompactSelfExtractor<T> implements Extractor<T, T> {
+
+    private final Map<T, T> valueCache;
+
+    public CompactSelfExtractor() {
+        // extractors are single-threaded, can use a thread-unsafe map
+        this.valueCache = new HashMap<>();
+    }
 
     @Override
     public Extractor<T, T> compact() {
-        return new CompactSelfExtractor();
+        return this;
     }
 
     @Override
     public void extractAndStore(T from, ValueStore<T> to) {
-        to.push(from);
+        to.push(ValueCompactor.get(valueCache, from));
     }
 
     @Override
     public void extractAndStore(T from, ValueStore<T> to, int toPos) {
-        to.replace(toPos, from);
+        to.replace(toPos, ValueCompactor.get(valueCache, from));
     }
 
     @Override

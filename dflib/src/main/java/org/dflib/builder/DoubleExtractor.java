@@ -15,6 +15,11 @@ public class DoubleExtractor<F> implements Extractor<F, Double> {
     }
 
     @Override
+    public Extractor<F, Double> compact() {
+        return this;
+    }
+
+    @Override
     public void extractAndStore(F from, ValueStore<Double> to) {
         to.pushDouble(mapper.map(from));
     }

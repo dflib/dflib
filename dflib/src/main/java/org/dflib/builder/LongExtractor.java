@@ -15,6 +15,11 @@ public class LongExtractor<F> implements Extractor<F, Long> {
     }
 
     @Override
+    public Extractor<F, Long> compact() {
+        return this;
+    }
+
+    @Override
     public void extractAndStore(F from, ValueStore<Long> to) {
         to.pushLong(mapper.map(from));
     }

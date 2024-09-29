@@ -15,6 +15,11 @@ public class IntExtractor<F> implements Extractor<F, Integer> {
     }
 
     @Override
+    public Extractor<F, Integer> compact() {
+        return this;
+    }
+
+    @Override
     public void extractAndStore(F from, ValueStore<Integer> to) {
         to.pushInt(mapper.map(from));
     }

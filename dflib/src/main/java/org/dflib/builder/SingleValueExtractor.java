@@ -14,6 +14,11 @@ public class SingleValueExtractor<F, T> implements Extractor<F, T> {
     }
 
     @Override
+    public Extractor<F, T> compact() {
+        return this;
+    }
+
+    @Override
     public void extractAndStore(F from, ValueStore<T> to) {
         to.push(value);
     }

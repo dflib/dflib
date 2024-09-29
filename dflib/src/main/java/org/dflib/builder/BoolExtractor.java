@@ -15,6 +15,11 @@ public class BoolExtractor<F> implements Extractor<F, Boolean> {
     }
 
     @Override
+    public Extractor<F, Boolean> compact() {
+        return this;
+    }
+
+    @Override
     public void extractAndStore(F from, ValueStore<Boolean> to) {
         to.pushBool(mapper.map(from));
     }

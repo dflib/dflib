@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.dflib.Exp.$col;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DataFrame_ByRowTest {
@@ -119,6 +120,64 @@ public class DataFrame_ByRowTest {
 
                 .expectRow(0, "a", 1)
                 .expectRow(1, "ab", 2);
+    }
+
+    @Test
+    public void noCompaction() {
+
+        List<From> data = List.of(
+                new From(new String("L1"), -1000),
+                new From(new String("L2"), -1000),
+                new From(new String("L2"), -2001));
+
+        DataFrame df = DataFrame
+                .byRow(
+                        Extractor.$col(From::getS),
+                        Extractor.$col(From::getI)
+                )
+                .columnNames("o", "i")
+                .ofIterable(data);
+
+        new DataFrameAsserts(df, "o", "i").expectHeight(3)
+                .expectRow(0, "L1", -1000)
+                .expectRow(1, "L2", -1000)
+                .expectRow(2, "L2", -2001);
+
+        DataFrame idCardinality = df.cols().select(
+                $col("o").mapVal(System::identityHashCode),
+                $col("i").mapVal(System::identityHashCode));
+
+        assertEquals(3, idCardinality.getColumn(0).unique().size());
+        assertEquals(3, idCardinality.getColumn(1).unique().size());
+    }
+
+    @Test
+    public void compaction() {
+
+        List<From> data = List.of(
+                new From(new String("L1"), -1000),
+                new From(new String("L2"), -1000),
+                new From(new String("L2"), -2001));
+
+        DataFrame df = DataFrame
+                .byRow(
+                        Extractor.$col(From::getS).compact(),
+                        Extractor.$col(From::getI).compact()
+                )
+                .columnNames("o", "i")
+                .ofIterable(data);
+
+        new DataFrameAsserts(df, "o", "i").expectHeight(3)
+                .expectRow(0, "L1", -1000)
+                .expectRow(1, "L2", -1000)
+                .expectRow(2, "L2", -2001);
+
+        DataFrame idCardinality = df.cols().select(
+                $col("o").mapVal(System::identityHashCode),
+                $col("i").mapVal(System::identityHashCode));
+
+        assertEquals(2, idCardinality.getColumn(0).unique().size());
+        assertEquals(2, idCardinality.getColumn(1).unique().size());
     }
 
     static class From {

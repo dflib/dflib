@@ -33,6 +33,14 @@ public interface Extractor<F, T> {
     ValueHolder<T> createHolder();
 
     /**
+     * Returns a version of this extractor that would "compact" extracted values, removing any duplicates based on
+     * object equality. For low cardinality columns it can save significant amount of memory and improve GC pauses.
+     *
+     * @since 1.0.0-RC1
+     */
+    Extractor<F, T> compact();
+
+    /**
      * Returns an extractor that generates a column filled with a constant value that is known upfront and is not
      * extracted from the source object.
      *
