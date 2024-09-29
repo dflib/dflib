@@ -1,12 +1,5 @@
 package org.dflib.avro;
 
-import org.dflib.DataFrame;
-import org.dflib.Exp;
-import org.dflib.Extractor;
-import org.dflib.Index;
-import org.dflib.avro.schema.AvroSchemaUtils;
-import org.dflib.avro.types.AvroTypeExtensions;
-import org.dflib.builder.DataFrameAppender;
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileReader;
 import org.apache.avro.file.SeekableByteArrayInput;
@@ -14,6 +7,14 @@ import org.apache.avro.file.SeekableFileInput;
 import org.apache.avro.file.SeekableInput;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericRecord;
+import org.dflib.DataFrame;
+import org.dflib.Exp;
+import org.dflib.Extractor;
+import org.dflib.Index;
+import org.dflib.ValueMapper;
+import org.dflib.avro.schema.AvroSchemaUtils;
+import org.dflib.avro.types.AvroTypeExtensions;
+import org.dflib.builder.DataFrameAppender;
 
 import java.io.File;
 import java.io.IOException;
@@ -155,15 +156,32 @@ public class AvroLoader {
             case DOUBLE:
             case LONG:
             case BOOLEAN:
-            case STRING:
             case BYTES:
             case ENUM:
                 return Extractor.$col(r -> r.get(pos));
+            case STRING:
+                return mapStringColumn(pos, otherThanNull[0]);
             case UNION:
                 return mapUnionColumn(pos, otherThanNull[0].getTypes());
             default:
                 throw new UnsupportedOperationException("(Yet) unsupported Avro schema type: " + otherThanNull[0].getType());
         }
+    }
+
+    private Extractor<GenericRecord, ?> mapStringColumn(int pos, Schema colSchema) {
+
+        // A few cases to handle:
+        // 1. "String".equals(colSchema.getProp(GenericData.STRING_PROP)) -> String
+        // 2. AvroTypeExtensions.UNMAPPED_TYPE.getName().equals(colSchema.getLogicalType().getName()) -> String
+        // 3. All others: avro.util.Utf8 (which is mutable and requires an immediate conversion)
+        // Luckily, all 3 can be converted to a String via "toString", so treating them the same...
+
+        ValueMapper<GenericRecord, ?> mapper = r -> {
+            Object val = r.get(pos);
+            return val != null ? val.toString() : null;
+        };
+
+        return Extractor.$col(mapper);
     }
 
     protected DataFrame fromAvroTypes(DataFrame df, Schema schema) {
