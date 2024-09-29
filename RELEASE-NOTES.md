@@ -9,6 +9,7 @@
 * #330 Remove API deprecated since M23
 * #331 CsvLoader.colType() -> col()
 * #332 Compacting CSV columns on load
+* #333 Compacting Avro columns on load
 * #334 AvroLoader: "string" type without "avro.java.string":"String" is processed incorrectly
 
 ## Release 1.0.0-M23

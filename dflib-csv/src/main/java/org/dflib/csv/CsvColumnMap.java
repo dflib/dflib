@@ -31,7 +31,7 @@ class CsvColumnMap {
 
         Map<Integer, ColumnConfig> definedColsMap = new HashMap<>();
         for (ColumnConfig c : definedColumns) {
-            int csvPos = c.csvColPos >= 0 ? c.csvColPos : csvHeader.position(c.csvColName);
+            int csvPos = c.srcColPos >= 0 ? c.srcColPos : csvHeader.position(c.srcColName);
 
             // later configs override earlier configs at the same position
             definedColsMap.put(csvPos, c);

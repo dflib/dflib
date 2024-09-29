@@ -58,7 +58,55 @@ public class AvroLoaderTest {
                 $col("a").mapVal(System::identityHashCode),
                 $col("b").mapVal(System::identityHashCode));
 
-        assertEquals(4, idCardinality.getColumn(0).unique().size());
+
         assertEquals(4, idCardinality.getColumn(1).unique().size());
+    }
+
+    @Test
+    public void compactCol_Name() {
+        DataFrame df = new AvroLoader()
+                .compactCol("a")
+                .compactCol("b")
+                .load(_TEST1_AVRO);
+
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(6)
+                .expectRow(0, 1, "ab")
+                .expectRow(1, 40000, "ab")
+                .expectRow(2, 40000, "bc")
+                .expectRow(3, 30000, "bc")
+                .expectRow(4, 30000, null)
+                .expectRow(5, null, "bc");
+
+        DataFrame idCardinality = df.cols().select(
+                $col("a").mapVal(System::identityHashCode),
+                $col("b").mapVal(System::identityHashCode));
+
+        assertEquals(4, idCardinality.getColumn(0).unique().size());
+        assertEquals(3, idCardinality.getColumn(1).unique().size());
+    }
+
+    @Test
+    public void compactCol_Pos() {
+        DataFrame df = new AvroLoader()
+                .compactCol(0)
+                .compactCol(1)
+                .load(_TEST1_AVRO);
+
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(6)
+                .expectRow(0, 1, "ab")
+                .expectRow(1, 40000, "ab")
+                .expectRow(2, 40000, "bc")
+                .expectRow(3, 30000, "bc")
+                .expectRow(4, 30000, null)
+                .expectRow(5, null, "bc");
+
+        DataFrame idCardinality = df.cols().select(
+                $col("a").mapVal(System::identityHashCode),
+                $col("b").mapVal(System::identityHashCode));
+
+        assertEquals(4, idCardinality.getColumn(0).unique().size());
+        assertEquals(3, idCardinality.getColumn(1).unique().size());
     }
 }

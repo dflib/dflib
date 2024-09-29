@@ -11,7 +11,6 @@ import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Extractor;
 import org.dflib.Index;
-import org.dflib.ValueMapper;
 import org.dflib.avro.schema.AvroSchemaUtils;
 import org.dflib.avro.types.AvroTypeExtensions;
 import org.dflib.builder.DataFrameAppender;
@@ -19,7 +18,10 @@ import org.dflib.builder.DataFrameAppender;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AvroLoader {
 
@@ -28,6 +30,11 @@ public class AvroLoader {
     }
 
     private Schema schema;
+    private final List<ColConfigurator> colConfigurators;
+
+    public AvroLoader() {
+        this.colConfigurators = new ArrayList<>();
+    }
 
     /**
      * Sets an explicit "reader" schema. If not set, embedded "writer" schema of the file will be used. Of course
@@ -36,6 +43,26 @@ public class AvroLoader {
      */
     public AvroLoader schema(Schema schema) {
         this.schema = schema;
+        return this;
+    }
+
+    /**
+     * Configures an Avro column to be loaded with value compaction. Should be used to save memory for low-cardinality columns.
+     *
+     * @since 1.0.0-RC1
+     */
+    public AvroLoader compactCol(int column) {
+        colConfigurators.add(ColConfigurator.objectCol(column, true));
+        return this;
+    }
+
+    /**
+     * Configures an Avro column to be loaded with value compaction. Should be used to save memory for low-cardinality columns.
+     *
+     * @since 1.0.0-RC1
+     */
+    public AvroLoader compactCol(String column) {
+        colConfigurators.add(ColConfigurator.objectCol(column, true));
         return this;
     }
 
@@ -75,7 +102,7 @@ public class AvroLoader {
 
         Index index = createIndex(schema);
         DataFrameAppender<GenericRecord> appender = DataFrame
-                .byRow(mapColumns(schema))
+                .byRow(extractors(index, schema))
                 .columnIndex(index)
                 .appender();
 
@@ -96,95 +123,30 @@ public class AvroLoader {
         return Index.of(labels);
     }
 
-    protected Extractor<GenericRecord, ?>[] mapColumns(Schema schema) {
+    protected Extractor<GenericRecord, ?>[] extractors(Index index, Schema schema) {
 
         // all non-null numeric and boolean columns can be used as boolean
 
         // TODO: do we need to explicitly sort field by "order" to recreate save order?
 
-        List<Schema.Field> fields = schema.getFields();
-        int w = fields.size();
+        Map<Integer, ColConfigurator> definedColsMap = new HashMap<>();
+        for (ColConfigurator c : colConfigurators) {
+            // later configs override earlier configs at the same position
+            definedColsMap.put(c.srcPos(index), c);
+        }
+
+        int w = schema.getFields().size();
         Extractor<GenericRecord, ?>[] extractors = new Extractor[w];
         for (int i = 0; i < w; i++) {
-            extractors[i] = mapColumn(i, fields.get(i).schema());
+            ColConfigurator  cc = definedColsMap.computeIfAbsent(i, ii -> ColConfigurator.objectCol(ii, false));
+            extractors[i] = cc.extractor(i, schema);
         }
 
         return extractors;
     }
 
-    protected Extractor<GenericRecord, ?> mapColumn(int pos, Schema columnSchema) {
-        switch (columnSchema.getType()) {
-            // Raw numeric and boolean types can be loaded as primitives,
-            // as numeric nullable types are declared as unions and will fall under the "default" case
-            case INT:
-                return Extractor.$int(r -> (Integer) r.get(pos));
-            case DOUBLE:
-                return Extractor.$double(r -> (Double) r.get(pos));
-            case LONG:
-                return Extractor.$long(r -> (Long) r.get(pos));
-            case BOOLEAN:
-                return Extractor.$bool(r -> (Boolean) r.get(pos));
-            case BYTES:
-            case ENUM:
-            case NULL:
-                return Extractor.$col(r -> r.get(pos));
-            case STRING:
-                return mapStringColumn(pos, columnSchema);
-            case UNION:
-                return mapUnionColumn(pos, columnSchema.getTypes());
-            default:
-                throw new UnsupportedOperationException("(Yet) unsupported Avro schema type: " + columnSchema.getType());
-        }
-    }
-
-    protected Extractor<GenericRecord, ?> mapUnionColumn(int pos, List<Schema> types) {
-        // we only know how to handle union with NULL
-
-        Schema[] otherThanNull = types.stream().filter(t -> t.getType() != Schema.Type.NULL).toArray(Schema[]::new);
-        if (otherThanNull.length != 1) {
-            throw new IllegalStateException("Can't handle union type that is not ['something', null]: " + types);
-        }
-
-        boolean hasNull = types.size() > 1;
-        if (!hasNull) {
-            // allow primitives
-            return mapColumn(pos, otherThanNull[0]);
-        }
-
-        // don't allow primitives
-        switch (otherThanNull[0].getType()) {
-            case INT:
-            case DOUBLE:
-            case LONG:
-            case BOOLEAN:
-            case BYTES:
-            case ENUM:
-                return Extractor.$col(r -> r.get(pos));
-            case STRING:
-                return mapStringColumn(pos, otherThanNull[0]);
-            case UNION:
-                return mapUnionColumn(pos, otherThanNull[0].getTypes());
-            default:
-                throw new UnsupportedOperationException("(Yet) unsupported Avro schema type: " + otherThanNull[0].getType());
-        }
-    }
-
-    private Extractor<GenericRecord, ?> mapStringColumn(int pos, Schema colSchema) {
-
-        // A few cases to handle:
-        // 1. "String".equals(colSchema.getProp(GenericData.STRING_PROP)) -> String
-        // 2. AvroTypeExtensions.UNMAPPED_TYPE.getName().equals(colSchema.getLogicalType().getName()) -> String
-        // 3. All others: avro.util.Utf8 (which is mutable and requires an immediate conversion)
-        // Luckily, all 3 can be converted to a String via "toString", so treating them the same...
-
-        ValueMapper<GenericRecord, ?> mapper = r -> {
-            Object val = r.get(pos);
-            return val != null ? val.toString() : null;
-        };
-
-        return Extractor.$col(mapper);
-    }
-
+    
+    // TODO: should this be folded into the Extractor?
     protected DataFrame fromAvroTypes(DataFrame df, Schema schema) {
 
         // GenericEnumSymbols are converted to enums if possible, or to Strings if not
