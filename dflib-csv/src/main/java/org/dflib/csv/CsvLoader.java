@@ -164,6 +164,9 @@ public class CsvLoader {
     }
 
     /**
+     * Configures the loader to only process the columns that do not match the specified names. The remaining CSV columns
+     * will be loaded in the order they are present in the CSV.
+     *
      * @return this loader instance
      * @since 1.0.0-M20
      */
@@ -173,6 +176,9 @@ public class CsvLoader {
     }
 
     /**
+     * Configures the loader to only process the columns that do not match the specified positions. The remaining CSV
+     * columns will be loaded in the order they are present in the CSV.
+     *
      * @return this loader instance
      * @since 1.0.0-M20
      */
@@ -182,7 +188,7 @@ public class CsvLoader {
     }
 
     /**
-     * Provides a conversion function of a CSV column at a given position to produce a desired type.
+     * Provides a conversion function for a CSV column at a given position to produce a desired type.
      *
      * @since 1.0.0-RC1
      */
