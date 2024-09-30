@@ -5,6 +5,8 @@ import org.dflib.jdbc.connector.condition.ConditionBuilder;
 import org.dflib.jdbc.connector.metadata.TableFQName;
 import org.dflib.sample.Sampler;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
@@ -17,11 +19,13 @@ public class TableLoader {
     private ConditionBuilder condition;
     private int rowSampleSize;
     private Random rowsSampleRandom;
+    private final List<ColConfigurator> colConfigurators;
 
     public TableLoader(JdbcConnector connector, TableFQName tableName) {
         this.connector = connector;
         this.tableName = tableName;
         this.condition = new ConditionBuilder(connector);
+        this.colConfigurators = new ArrayList<>();
     }
 
     /**
@@ -29,6 +33,26 @@ public class TableLoader {
      */
     public TableLoader cols(String... columns) {
         this.columns = columns;
+        return this;
+    }
+
+    /**
+     * Configures a column to be loaded with value compaction. Should be used to save memory for low-cardinality columns.
+     *
+     * @since 1.0.0-RC1
+     */
+    public TableLoader compactCol(int column) {
+        colConfigurators.add(ColConfigurator.objectCol(column, true));
+        return this;
+    }
+
+    /**
+     * Configures a column to be loaded with value compaction. Should be used to save memory for low-cardinality columns.
+     *
+     * @since 1.0.0-RC1
+     */
+    public TableLoader compactCol(String column) {
+        colConfigurators.add(ColConfigurator.objectCol(column, true));
         return this;
     }
 
@@ -115,6 +139,7 @@ public class TableLoader {
 
     protected DataFrame fetchDataFrame() {
         return new SqlLoader(connector, buildSql())
+                .colConfigurators(colConfigurators)
                 .limit(limit)
                 .rowsSample(rowSampleSize, rowsSampleRandom)
                 .load(condition.bindingParams());

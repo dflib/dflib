@@ -9,6 +9,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import static org.dflib.Exp.$col;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class TableLoaderIT extends BaseDbTest {
 
     @Test
@@ -26,6 +29,74 @@ public class TableLoaderIT extends BaseDbTest {
                 .expectHeight(2)
                 .expectRow(0, 1L, "n1", 50_000.01)
                 .expectRow(1, 2L, "n2", 120_000.);
+    }
+
+    @Test
+    public void valueCardinality() {
+
+        adapter.getTable("t1")
+                .insert(1L, "ab", 1)
+                .insert(2L, "ab", 40_000)
+                .insert(3L, "bc", 40_000)
+                .insert(4L, "bc", 30_000)
+                .insert(5L, null, 30_000)
+                .insert(6L, "bc", null);
+
+        DataFrame df = adapter.createConnector()
+                .tableLoader("t1")
+                .cols("salary", "name")
+                .load();
+
+        new DataFrameAsserts(df, "salary", "name")
+                .expectHeight(6)
+                .expectRow(0, 1.0, "ab")
+                .expectRow(1, 40000.0, "ab")
+                .expectRow(2, 40000.0, "bc")
+                .expectRow(3, 30000.0, "bc")
+                .expectRow(4, 30000.0, null)
+                .expectRow(5, null, "bc");
+
+        DataFrame idCardinality = df.cols().select(
+                $col(0).mapVal(System::identityHashCode),
+                $col(1).mapVal(System::identityHashCode));
+
+        assertEquals(6, idCardinality.getColumn(0).unique().size());
+        assertEquals(6, idCardinality.getColumn(1).unique().size());
+    }
+
+    @Test
+    public void valueCardinality_compactCol_Name() {
+
+        adapter.getTable("t1")
+                .insert(1L, "ab", 1)
+                .insert(2L, "ab", 40_000)
+                .insert(3L, "bc", 40_000)
+                .insert(4L, "bc", 30_000)
+                .insert(5L, null, 30_000)
+                .insert(6L, "bc", null);
+
+        DataFrame df = adapter.createConnector()
+                .tableLoader("t1")
+                .cols("salary", "name")
+                .compactCol("salary")
+                .compactCol("name")
+                .load();
+
+        new DataFrameAsserts(df, "salary", "name")
+                .expectHeight(6)
+                .expectRow(0, 1.0, "ab")
+                .expectRow(1, 40000.0, "ab")
+                .expectRow(2, 40000.0, "bc")
+                .expectRow(3, 30000.0, "bc")
+                .expectRow(4, 30000.0, null)
+                .expectRow(5, null, "bc");
+
+        DataFrame idCardinality = df.cols().select(
+                $col(0).mapVal(System::identityHashCode),
+                $col(1).mapVal(System::identityHashCode));
+
+        assertEquals(4, idCardinality.getColumn(0).unique().size());
+        assertEquals(3, idCardinality.getColumn(1).unique().size());
     }
 
     @Test

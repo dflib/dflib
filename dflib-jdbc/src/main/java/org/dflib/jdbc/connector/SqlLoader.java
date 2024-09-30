@@ -12,6 +12,10 @@ import org.slf4j.LoggerFactory;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -24,6 +28,7 @@ public class SqlLoader {
 
     protected final JdbcConnector connector;
     private final String sql;
+    private final List<ColConfigurator> colConfigurators;
 
     protected int limit;
     private int rowSampleSize;
@@ -33,6 +38,7 @@ public class SqlLoader {
         this.connector = connector;
         this.limit = Integer.MAX_VALUE;
         this.sql = sql;
+        this.colConfigurators = new ArrayList<>();
     }
 
     protected SqlLoader copy() {
@@ -40,7 +46,34 @@ public class SqlLoader {
         copy.limit = this.limit;
         copy.rowSampleSize = this.rowSampleSize;
         copy.rowsSampleRandom = this.rowsSampleRandom;
+        copy.colConfigurators.addAll(this.colConfigurators);
         return copy;
+    }
+
+    // non-public method for the sake of TableLoader
+    SqlLoader colConfigurators(List<ColConfigurator> configurators) {
+        colConfigurators.addAll(configurators);
+        return this;
+    }
+
+    /**
+     * Configures a column to be loaded with value compaction. Should be used to save memory for low-cardinality columns.
+     *
+     * @since 1.0.0-RC1
+     */
+    public SqlLoader compactCol(int column) {
+        colConfigurators.add(ColConfigurator.objectCol(column, true));
+        return this;
+    }
+
+    /**
+     * Configures a column to be loaded with value compaction. Should be used to save memory for low-cardinality columns.
+     *
+     * @since 1.0.0-RC1
+     */
+    public SqlLoader compactCol(String column) {
+        colConfigurators.add(ColConfigurator.objectCol(column, true));
+        return this;
     }
 
     /**
@@ -115,13 +148,13 @@ public class SqlLoader {
     }
 
     protected DataFrame loadDataFrame(ResultSet rs) throws SQLException {
-        Index columns = createIndex(rs);
+        Index index = createIndex(rs);
 
-        Extractor<ResultSet, ?>[] extractors = createExtractors(rs);
+        Extractor<ResultSet, ?>[] extractors = extractors(index, rs);
 
         DataFrameAppender<ResultSet> appender = DataFrame
                 .byRow(extractors)
-                .columnIndex(columns)
+                .columnIndex(index)
                 .capacity(rowSampleSize > 0 ? rowSampleSize : 100)
                 .sampleRows(rowSampleSize, rowsSampleRandom)
                 .appender();
@@ -142,17 +175,21 @@ public class SqlLoader {
         return Index.of(names);
     }
 
-    protected Extractor<ResultSet, ?>[] createExtractors(ResultSet resultSet) throws SQLException {
-        ResultSetMetaData rsmd = resultSet.getMetaData();
-        int w = rsmd.getColumnCount();
+    protected Extractor<ResultSet, ?>[] extractors(Index index, ResultSet resultSet) throws SQLException {
+
+        Map<Integer, ColConfigurator> configurators = new HashMap<>();
+        for (ColConfigurator c : colConfigurators) {
+            // later configs override earlier configs at the same position
+            configurators.put(c.srcPos(index), c);
+        }
+
+        ResultSetMetaData schema = resultSet.getMetaData();
+        int w = schema.getColumnCount();
         Extractor<ResultSet, ?>[] extractors = new Extractor[w];
 
         for (int i = 0; i < w; i++) {
-            int jdbcPos = i + 1;
-            extractors[i] = connector.createExtractor(
-                    jdbcPos,
-                    rsmd.getColumnType(jdbcPos),
-                    rsmd.isNullable(jdbcPos) == ResultSetMetaData.columnNoNulls);
+            ColConfigurator cc = configurators.computeIfAbsent(i, ii -> ColConfigurator.objectCol(ii, false));
+            extractors[i] = cc.extractor(i, connector, schema);
         }
 
         return extractors;
