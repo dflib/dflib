@@ -6,20 +6,20 @@ import org.dflib.Index;
 import java.util.Iterator;
 
 @FunctionalInterface
-interface HeaderStrategy {
+interface CsvHeaderFactory {
 
-    CsvHeader createCsvHeader(Iterator<CSVRecord> it);
+    CsvHeader header(Iterator<CSVRecord> it);
 
-    static HeaderStrategy explicit(Index header) {
+    static CsvHeaderFactory explicit(Index header) {
         return it -> new CsvHeader(header, null);
     }
 
-    static HeaderStrategy firstRow() {
-        return HeaderStrategy::firstRow;
+    static CsvHeaderFactory firstRow() {
+        return CsvHeaderFactory::firstRow;
     }
 
-    static HeaderStrategy generated() {
-        return HeaderStrategy::generated;
+    static CsvHeaderFactory generated() {
+        return CsvHeaderFactory::generated;
     }
 
     private static CsvHeader firstRow(Iterator<CSVRecord> it) {

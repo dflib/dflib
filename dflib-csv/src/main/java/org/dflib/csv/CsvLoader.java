@@ -36,7 +36,7 @@ import java.util.Random;
  */
 public class CsvLoader {
 
-    private HeaderStrategy headerStrategy;
+    private CsvHeaderFactory headerFactory;
     private CsvSchemaFactory schemaFactory;
     private final List<ColConfigurator> colConfigurators;
 
@@ -127,7 +127,7 @@ public class CsvLoader {
      * @since 0.7
      */
     public CsvLoader header(String... columns) {
-        this.headerStrategy = HeaderStrategy.explicit(Index.of(columns));
+        this.headerFactory = CsvHeaderFactory.explicit(Index.of(columns));
         return this;
     }
 
@@ -137,7 +137,7 @@ public class CsvLoader {
      * @since 1.0.0-M20
      */
     public CsvLoader generateHeader() {
-        this.headerStrategy = HeaderStrategy.generated();
+        this.headerFactory = CsvHeaderFactory.generated();
         return this;
     }
 
@@ -601,9 +601,9 @@ public class CsvLoader {
     }
 
     private CsvHeader createCsvHeader(Iterator<CSVRecord> it) {
-        return headerStrategy != null
-                ? headerStrategy.createCsvHeader(it)
-                : HeaderStrategy.firstRow().createCsvHeader(it);
+        return headerFactory != null
+                ? headerFactory.header(it)
+                : CsvHeaderFactory.firstRow().header(it);
     }
 
     private Extractor<CSVRecord, ?>[] extractors(CsvSchema schema) {
