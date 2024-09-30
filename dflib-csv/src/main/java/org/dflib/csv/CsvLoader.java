@@ -24,8 +24,10 @@ import java.math.BigInteger;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 
@@ -35,8 +37,8 @@ import java.util.Random;
 public class CsvLoader {
 
     private HeaderStrategy headerStrategy;
-    private ColumnExtractStrategy columnExtractStrategy;
-    private final List<ColumnConfig> columnConfigs;
+    private CsvSchemaFactory schemaFactory;
+    private final List<ColConfigurator> colConfigurators;
 
     private CSVFormat format;
 
@@ -48,7 +50,7 @@ public class CsvLoader {
 
     public CsvLoader() {
         this.format = CSVFormat.DEFAULT;
-        this.columnConfigs = new ArrayList<>();
+        this.colConfigurators = new ArrayList<>();
     }
 
     /**
@@ -148,7 +150,7 @@ public class CsvLoader {
      * @since 1.0.0-M20
      */
     public CsvLoader cols(String... columns) {
-        this.columnExtractStrategy = ColumnExtractStrategy.ofCols(columns);
+        this.schemaFactory = CsvSchemaFactory.ofCols(columns);
         return this;
     }
 
@@ -159,7 +161,7 @@ public class CsvLoader {
      * @since 1.0.0-M20
      */
     public CsvLoader cols(int... columns) {
-        this.columnExtractStrategy = ColumnExtractStrategy.ofCols(columns);
+        this.schemaFactory = CsvSchemaFactory.ofCols(columns);
         return this;
     }
 
@@ -171,7 +173,7 @@ public class CsvLoader {
      * @since 1.0.0-M20
      */
     public CsvLoader colsExcept(String... columns) {
-        this.columnExtractStrategy = ColumnExtractStrategy.ofColsExcept(columns);
+        this.schemaFactory = CsvSchemaFactory.ofColsExcept(columns);
         return this;
     }
 
@@ -183,7 +185,7 @@ public class CsvLoader {
      * @since 1.0.0-M20
      */
     public CsvLoader colsExcept(int... columns) {
-        this.columnExtractStrategy = ColumnExtractStrategy.ofColsExcept(columns);
+        this.schemaFactory = CsvSchemaFactory.ofColsExcept(columns);
         return this;
     }
 
@@ -193,7 +195,7 @@ public class CsvLoader {
      * @since 1.0.0-RC1
      */
     public CsvLoader col(int column, ValueMapper<String, ?> mapper) {
-        columnConfigs.add(ColumnConfig.objectCol(column, mapper, false));
+        colConfigurators.add(ColConfigurator.objectCol(column, mapper, false));
         return this;
     }
 
@@ -203,7 +205,7 @@ public class CsvLoader {
      * @since 1.0.0-RC1
      */
     public CsvLoader col(String column, ValueMapper<String, ?> mapper) {
-        columnConfigs.add(ColumnConfig.objectCol(column, mapper, false));
+        colConfigurators.add(ColConfigurator.objectCol(column, mapper, false));
         return this;
     }
 
@@ -214,7 +216,7 @@ public class CsvLoader {
      * @since 1.0.0-RC1
      */
     public CsvLoader compactCol(int column) {
-        columnConfigs.add(ColumnConfig.objectCol(column, true));
+        colConfigurators.add(ColConfigurator.objectCol(column, true));
         return this;
     }
 
@@ -225,7 +227,7 @@ public class CsvLoader {
      * @since 1.0.0-RC1
      */
     public CsvLoader compactCol(String column) {
-        columnConfigs.add(ColumnConfig.objectCol(column, true));
+        colConfigurators.add(ColConfigurator.objectCol(column, true));
         return this;
     }
 
@@ -236,7 +238,7 @@ public class CsvLoader {
      * @since 1.0.0-RC1
      */
     public CsvLoader compactCol(int column, ValueMapper<String, ?> mapper) {
-        columnConfigs.add(ColumnConfig.objectCol(column, mapper, true));
+        colConfigurators.add(ColConfigurator.objectCol(column, mapper, true));
         return this;
     }
 
@@ -247,7 +249,7 @@ public class CsvLoader {
      * @since 1.0.0-RC1
      */
     public CsvLoader compactCol(String column, ValueMapper<String, ?> mapper) {
-        columnConfigs.add(ColumnConfig.objectCol(column, mapper, true));
+        colConfigurators.add(ColConfigurator.objectCol(column, mapper, true));
         return this;
     }
 
@@ -255,7 +257,7 @@ public class CsvLoader {
      * @since 1.0.0-M23
      */
     public CsvLoader intCol(int column) {
-        columnConfigs.add(ColumnConfig.intCol(column, IntValueMapper.fromString()));
+        colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.fromString()));
         return this;
     }
 
@@ -263,7 +265,7 @@ public class CsvLoader {
      * @since 1.0.0-M23
      */
     public CsvLoader intCol(String column) {
-        columnConfigs.add(ColumnConfig.intCol(column, IntValueMapper.fromString()));
+        colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.fromString()));
         return this;
     }
 
@@ -271,7 +273,7 @@ public class CsvLoader {
      * @since 1.0.0-M23
      */
     public CsvLoader intCol(int column, int forNull) {
-        columnConfigs.add(ColumnConfig.intCol(column, IntValueMapper.fromString(forNull)));
+        colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.fromString(forNull)));
         return this;
     }
 
@@ -279,7 +281,7 @@ public class CsvLoader {
      * @since 1.0.0-M23
      */
     public CsvLoader intCol(String column, int forNull) {
-        columnConfigs.add(ColumnConfig.intCol(column, IntValueMapper.fromString(forNull)));
+        colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.fromString(forNull)));
         return this;
     }
 
@@ -287,7 +289,7 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader longCol(int column) {
-        columnConfigs.add(ColumnConfig.longCol(column, LongValueMapper.fromString()));
+        colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.fromString()));
         return this;
     }
 
@@ -295,7 +297,7 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader longCol(String column) {
-        columnConfigs.add(ColumnConfig.longCol(column, LongValueMapper.fromString()));
+        colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.fromString()));
         return this;
     }
 
@@ -303,7 +305,7 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader longCol(int column, long forNull) {
-        columnConfigs.add(ColumnConfig.longCol(column, LongValueMapper.fromString(forNull)));
+        colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.fromString(forNull)));
         return this;
     }
 
@@ -311,7 +313,7 @@ public class CsvLoader {
      * @since 0.6
      */
     public CsvLoader longCol(String column, long forNull) {
-        columnConfigs.add(ColumnConfig.longCol(column, LongValueMapper.fromString(forNull)));
+        colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.fromString(forNull)));
         return this;
     }
 
@@ -319,7 +321,7 @@ public class CsvLoader {
      * @since 1.0.0-M23
      */
     public CsvLoader doubleCol(int column) {
-        columnConfigs.add(ColumnConfig.doubleCol(column, DoubleValueMapper.fromString()));
+        colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.fromString()));
         return this;
     }
 
@@ -327,7 +329,7 @@ public class CsvLoader {
      * @since 1.0.0-M23
      */
     public CsvLoader doubleCol(String column) {
-        columnConfigs.add(ColumnConfig.doubleCol(column, DoubleValueMapper.fromString()));
+        colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.fromString()));
         return this;
     }
 
@@ -335,7 +337,7 @@ public class CsvLoader {
      * @since 1.0.0-M23
      */
     public CsvLoader doubleCol(int column, double forNull) {
-        columnConfigs.add(ColumnConfig.doubleCol(column, DoubleValueMapper.fromString(forNull)));
+        colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.fromString(forNull)));
         return this;
     }
 
@@ -343,7 +345,7 @@ public class CsvLoader {
      * @since 1.0.0-M23
      */
     public CsvLoader doubleCol(String column, double forNull) {
-        columnConfigs.add(ColumnConfig.doubleCol(column, DoubleValueMapper.fromString(forNull)));
+        colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.fromString(forNull)));
         return this;
     }
 
@@ -353,7 +355,7 @@ public class CsvLoader {
      * @since 1.0.0-M23
      */
     public CsvLoader decimalCol(int column) {
-        columnConfigs.add(ColumnConfig.objectCol(column, ValueMapper.stringToBigDecimal(), false));
+        colConfigurators.add(ColConfigurator.objectCol(column, ValueMapper.stringToBigDecimal(), false));
         return this;
     }
 
@@ -363,7 +365,7 @@ public class CsvLoader {
      * @since 1.0.0-M23
      */
     public CsvLoader decimalCol(String column) {
-        columnConfigs.add(ColumnConfig.objectCol(column, ValueMapper.stringToBigDecimal(), false));
+        colConfigurators.add(ColConfigurator.objectCol(column, ValueMapper.stringToBigDecimal(), false));
         return this;
     }
 
@@ -373,7 +375,7 @@ public class CsvLoader {
      * @since 1.0.0-M23
      */
     public CsvLoader boolCol(int column) {
-        columnConfigs.add(ColumnConfig.boolCol(column));
+        colConfigurators.add(ColConfigurator.boolCol(column));
         return this;
     }
 
@@ -383,7 +385,7 @@ public class CsvLoader {
      * @since 1.0.0-M23
      */
     public CsvLoader boolCol(String column) {
-        columnConfigs.add(ColumnConfig.boolCol(column));
+        colConfigurators.add(ColConfigurator.boolCol(column));
         return this;
     }
 
@@ -544,7 +546,7 @@ public class CsvLoader {
         // "offset" is applied even if we read the header from the iterator
         Iterator<CSVRecord> it1 = offset > 0 ? Iterators.skip(it0, offset) : it0;
         CsvHeader csvHeader = createCsvHeader(it1);
-        CsvColumnMap columnMap = createColumnMap(csvHeader.getHeader());
+        CsvSchema schema = createSchema(csvHeader.getHeader());
 
         // Some header strategies may peek inside the iterator, but not use the first row for the header.
         // So we need to re-add this row back to the DataFrame
@@ -553,13 +555,13 @@ public class CsvLoader {
         // The header does not count towards the limit, so apply the limit AFTER reading the header
         int limit = this.limit;
         if (limit == 0 || (maybeUnconsumedDataRow == null && !it1.hasNext())) {
-            return DataFrame.empty(columnMap.getDfHeader());
+            return DataFrame.empty(schema.getDfHeader());
         }
 
-        Extractor<CSVRecord, ?>[] extractors = columnMap.extractors(this.columnConfigs);
+        Extractor<CSVRecord, ?>[] extractors = extractors(schema);
         DataFrameByRowBuilder<CSVRecord, ?> builder = DataFrame
                 .byRow(extractors)
-                .columnIndex(columnMap.getDfHeader());
+                .columnIndex(schema.getDfHeader());
 
         if (rowSampleSize > 0) {
             builder.sampleRows(rowSampleSize, rowsSampleRandom);
@@ -592,15 +594,40 @@ public class CsvLoader {
         }
     }
 
-    private CsvColumnMap createColumnMap(Index csvHeader) {
-        return columnExtractStrategy != null
-                ? columnExtractStrategy.columnMap(csvHeader)
-                : ColumnExtractStrategy.all().columnMap(csvHeader);
+    private CsvSchema createSchema(Index csvHeader) {
+        return schemaFactory != null
+                ? schemaFactory.schema(csvHeader)
+                : CsvSchemaFactory.all().schema(csvHeader);
     }
 
     private CsvHeader createCsvHeader(Iterator<CSVRecord> it) {
         return headerStrategy != null
                 ? headerStrategy.createCsvHeader(it)
                 : HeaderStrategy.firstRow().createCsvHeader(it);
+    }
+
+    private Extractor<CSVRecord, ?>[] extractors(CsvSchema schema) {
+
+        Index csvHeader = schema.getCsvHeader();
+        int[] csvPositions = schema.getCsvPositions();
+
+        int w = schema.getDfHeader().size();
+        Extractor<CSVRecord, ?>[] extractors = new Extractor[w];
+
+        Map<Integer, ColConfigurator> configurators = new HashMap<>();
+        for (ColConfigurator c : colConfigurators) {
+            int csvPos = c.srcColPos >= 0 ? c.srcColPos : csvHeader.position(c.srcColName);
+
+            // later configs override earlier configs at the same position
+            configurators.put(csvPos, c);
+        }
+
+        for (int i = 0; i < w; i++) {
+            int csvPos = csvPositions[i];
+            ColConfigurator cc = configurators.computeIfAbsent(csvPos, ii -> ColConfigurator.objectCol(ii, false));
+            extractors[i] = cc.extractor(csvHeader);
+        }
+
+        return extractors;
     }
 }
