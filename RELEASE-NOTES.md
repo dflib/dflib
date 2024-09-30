@@ -12,6 +12,7 @@
 * #333 Compacting Avro columns on load
 * #334 AvroLoader: "string" type without "avro.java.string":"String" is processed incorrectly
 * #335 Stop adding "avro.java.string" property to String field schemas
+* #337 Compacting Parquet columns on load
 
 ## Release 1.0.0-M23
 

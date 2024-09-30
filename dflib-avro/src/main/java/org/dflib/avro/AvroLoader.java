@@ -129,16 +129,16 @@ public class AvroLoader {
 
         // TODO: do we need to explicitly sort field by "order" to recreate save order?
 
-        Map<Integer, ColConfigurator> definedColsMap = new HashMap<>();
+        Map<Integer, ColConfigurator> configurators = new HashMap<>();
         for (ColConfigurator c : colConfigurators) {
             // later configs override earlier configs at the same position
-            definedColsMap.put(c.srcPos(index), c);
+            configurators.put(c.srcPos(index), c);
         }
 
         int w = schema.getFields().size();
         Extractor<GenericRecord, ?>[] extractors = new Extractor[w];
         for (int i = 0; i < w; i++) {
-            ColConfigurator  cc = definedColsMap.computeIfAbsent(i, ii -> ColConfigurator.objectCol(ii, false));
+            ColConfigurator  cc = configurators.computeIfAbsent(i, ii -> ColConfigurator.objectCol(ii, false));
             extractors[i] = cc.extractor(i, schema);
         }
 

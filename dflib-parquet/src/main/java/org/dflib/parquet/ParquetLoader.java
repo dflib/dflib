@@ -10,14 +10,16 @@ import org.dflib.Extractor;
 import org.dflib.Index;
 import org.dflib.builder.DataFrameAppender;
 import org.dflib.parquet.read.DataFrameParquetReaderBuilder;
-import org.dflib.parquet.read.RowExtractorFactory;
 import org.dflib.parquet.read.SchemaProjector;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @since 1.0.0-M23
@@ -25,6 +27,11 @@ import java.util.List;
 public class ParquetLoader {
 
     private SchemaProjector schemaProjector;
+    private final List<ColConfigurator> colConfigurators;
+
+    public ParquetLoader() {
+        this.colConfigurators = new ArrayList<>();
+    }
 
     /**
      * Configures the loader to only process the specified columns, and include them in the DataFrame in the specified
@@ -61,6 +68,27 @@ public class ParquetLoader {
         return this;
     }
 
+    /**
+     * Configures a Parquet column to be loaded with value compaction. Should be used to save memory for low-cardinality
+     * columns. Note that Parquet already does compaction on some column types
+     *
+     * @since 1.0.0-RC1
+     */
+    public ParquetLoader compactCol(int column) {
+        colConfigurators.add(ColConfigurator.objectCol(column, true));
+        return this;
+    }
+
+    /**
+     * Configures an Parquet column to be loaded with value compaction. Should be used to save memory for low-cardinality columns.
+     *
+     * @since 1.0.0-RC1
+     */
+    public ParquetLoader compactCol(String column) {
+        colConfigurators.add(ColConfigurator.objectCol(column, true));
+        return this;
+    }
+
     public DataFrame load(File file) {
         return load(file.toPath());
     }
@@ -78,8 +106,10 @@ public class ParquetLoader {
             MessageType fileSchema = Parquet.schemaLoader().load(filePath);
             MessageType projectedSchema = projectSchema(fileSchema);
 
-            DataFrameAppender<Object[]> appender = DataFrame.byArrayRow(mapColumns(projectedSchema))
-                    .columnIndex(createIndex(projectedSchema))
+            Index index = createIndex(projectedSchema);
+
+            DataFrameAppender<Object[]> appender = DataFrame.byArrayRow(extractors(index, projectedSchema))
+                    .columnIndex(index)
                     .appender();
 
             LocalInputFile inputFile = new LocalInputFile(filePath);
@@ -106,12 +136,21 @@ public class ParquetLoader {
         return Index.of(labels);
     }
 
-    private Extractor<Object[], ?>[] mapColumns(GroupType schema) {
-        List<Type> fields = schema.getFields();
-        Extractor<Object[], ?>[] extractors = new Extractor[fields.size()];
-        for (int i = 0; i < fields.size(); i++) {
-            extractors[i] = RowExtractorFactory.converterFor(fields.get(i), i);
+    private Extractor<Object[], ?>[] extractors(Index index, GroupType schema) {
+
+        Map<Integer, ColConfigurator> configurators = new HashMap<>();
+        for (ColConfigurator c : colConfigurators) {
+            // later configs override earlier configs at the same position
+            configurators.put(c.srcPos(index), c);
         }
+
+        int w = schema.getFields().size();
+        Extractor<Object[], ?>[] extractors = new Extractor[w];
+        for (int i = 0; i < w; i++) {
+            ColConfigurator  cc = configurators.computeIfAbsent(i, ii -> ColConfigurator.objectCol(ii, false));
+            extractors[i] = cc.extractor(i, schema);
+        }
+
         return extractors;
     }
 
