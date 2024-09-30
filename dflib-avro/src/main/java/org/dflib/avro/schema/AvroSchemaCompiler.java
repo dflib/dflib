@@ -113,10 +113,8 @@ public class AvroSchemaCompiler {
             case "java.lang.Boolean":
                 return makeNullable(Schema.create(Schema.Type.BOOLEAN));
 
-            // 2. String is special. It requires no conversion, but does require a special schema property to be handled
-            // as String and not org.apache.avro.util.Utf8
             case "java.lang.String":
-                return makeNullable(stringSchema());
+                return makeNullable(Schema.create(Schema.Type.STRING));
 
             // 3. Try to find a conversion to a "logical type"
             default:
@@ -146,12 +144,6 @@ public class AvroSchemaCompiler {
 
         Schema schema = Schema.createEnum(name, namespace, null, values);
         schema.addProp(PROPERTY_DFLIB_ENUM_TYPE, typeName);
-        return schema;
-    }
-
-    protected Schema stringSchema() {
-        Schema schema = Schema.create(Schema.Type.STRING);
-        GenericData.setStringType(schema, GenericData.StringType.String);
         return schema;
     }
 

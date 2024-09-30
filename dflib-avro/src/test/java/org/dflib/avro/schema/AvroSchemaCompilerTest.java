@@ -3,7 +3,6 @@ package org.dflib.avro.schema;
 import org.apache.avro.Schema;
 import org.dflib.DataFrame;
 import org.dflib.Series;
-import org.dflib.avro.schema.AvroSchemaCompiler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -43,7 +42,7 @@ public class AvroSchemaCompilerTest {
                 "{\"name\":\"Double\",\"type\":[\"double\",\"null\"]}," +
                 "{\"name\":\"bool\",\"type\":\"boolean\"}," +
                 "{\"name\":\"Bool\",\"type\":[\"boolean\",\"null\"]}," +
-                "{\"name\":\"String\",\"type\":[{\"type\":\"string\",\"avro.java.string\":\"String\"},\"null\"]}," +
+                "{\"name\":\"String\",\"type\":[\"string\",\"null\"]}," +
                 "{\"name\":\"Nulls\",\"type\":\"null\"}]}", schema.toString());
     }
 
