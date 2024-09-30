@@ -39,25 +39,25 @@ class ColConfigurator {
     }
 
     Extractor<Object[], ?> extractor(int srcPos, GroupType schema) {
-        Extractor<Object[], ?> e = extractorInternal(srcPos, schema.getFields().get(srcPos));
+        Extractor<Object[], ?> e = sparseExtractor(srcPos, schema.getFields().get(srcPos));
         return compact ? e.compact() : e;
     }
 
-    private static Extractor<Object[], ?> extractorInternal(int pos, Type colSchema) {
-        Extractor<Object[], ?> extractor = logicalExtractorInternal(pos, colSchema);
+    private static Extractor<Object[], ?> sparseExtractor(int pos, Type colSchema) {
+        Extractor<Object[], ?> extractor = logicalExtractor(pos, colSchema);
 
         if (extractor != null) {
             return extractor;
         }
 
         if (colSchema.isPrimitive()) {
-            return primitiveExtractorInternal(pos, colSchema);
+            return primitiveExtractor(pos, colSchema);
         }
 
         throw new RuntimeException(colSchema.asGroupType().getName() + " deserialization not supported");
     }
 
-    private static Extractor<Object[], ?> primitiveExtractorInternal(int pos, Type colSchema) {
+    private static Extractor<Object[], ?> primitiveExtractor(int pos, Type colSchema) {
         PrimitiveType.PrimitiveTypeName type = colSchema.asPrimitiveType().getPrimitiveTypeName();
         if (colSchema.isRepetition(Type.Repetition.OPTIONAL)) {
             return Extractor.$col(r -> r[pos]);
@@ -78,7 +78,7 @@ class ColConfigurator {
         }
     }
 
-    private static Extractor<Object[], ?> logicalExtractorInternal(int pos, Type colSchema) {
+    private static Extractor<Object[], ?> logicalExtractor(int pos, Type colSchema) {
         var logicalTypeAnnotation = colSchema.getLogicalTypeAnnotation();
         if (logicalTypeAnnotation == null) {
             return null;
