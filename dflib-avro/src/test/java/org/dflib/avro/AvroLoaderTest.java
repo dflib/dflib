@@ -17,7 +17,7 @@ public class AvroLoaderTest {
     static File _TEST2_AVRO;
 
     @BeforeAll
-    public static void setupCsvDirs() throws URISyntaxException {
+    public static void setupSrcDirs() throws URISyntaxException {
         _TEST1_AVRO = new File(AvroLoaderTest.class.getResource("test1.avro").toURI()).getAbsoluteFile();
         _TEST2_AVRO = new File(AvroLoaderTest.class.getResource("test2.avro").toURI()).getAbsoluteFile();
     }
