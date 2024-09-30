@@ -5,6 +5,7 @@ import org.apache.avro.generic.GenericRecord;
 import org.dflib.Extractor;
 import org.dflib.Index;
 import org.dflib.ValueMapper;
+import org.dflib.avro.schema.AvroSchemaUtils;
 
 import java.util.List;
 
@@ -54,9 +55,10 @@ class ColConfigurator {
             case BOOLEAN:
                 return Extractor.$bool(r -> (Boolean) r.get(pos));
             case BYTES:
-            case ENUM:
             case NULL:
                 return Extractor.$col(r -> r.get(pos));
+            case ENUM:
+                return enumExtractorInternal(pos, colSchema);
             case STRING:
                 return stringColumnExtractorInternal(pos);
             case UNION:
@@ -87,8 +89,9 @@ class ColConfigurator {
             case LONG:
             case BOOLEAN:
             case BYTES:
-            case ENUM:
                 return Extractor.$col(r -> r.get(pos));
+            case ENUM:
+                return enumExtractorInternal(pos, otherThanNull[0]);
             case STRING:
                 return stringColumnExtractorInternal(pos);
             case UNION:
@@ -96,6 +99,26 @@ class ColConfigurator {
             default:
                 throw new UnsupportedOperationException("(Yet) unsupported Avro schema type: " + otherThanNull[0].getType());
         }
+    }
+
+    private Extractor<GenericRecord, ?> enumExtractorInternal(int pos, Schema colSchema) {
+
+        // GenericEnumSymbols are converted to enums if possible, or to Strings if not
+        // (when the class is not known in the deserialization env)
+
+        Class<Enum> enumType = AvroSchemaUtils.knownEnumType(colSchema);
+        ValueMapper<GenericRecord, ?> mapper = enumType != null
+                ? r -> asEnum(enumType, r.get(pos))
+                : r -> asString(r.get(pos));
+        return Extractor.$col(mapper);
+    }
+
+    private static <T extends Enum<T>> T asEnum(Class<T> enumType, Object val) {
+        return val != null ? Enum.valueOf(enumType, val.toString()) : null;
+    }
+
+    private static String asString(Object val) {
+        return val != null ? val.toString() : null;
     }
 
     private Extractor<GenericRecord, ?> stringColumnExtractorInternal(int pos) {

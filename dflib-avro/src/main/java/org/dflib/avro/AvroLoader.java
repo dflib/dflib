@@ -8,10 +8,8 @@ import org.apache.avro.file.SeekableInput;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericRecord;
 import org.dflib.DataFrame;
-import org.dflib.Exp;
 import org.dflib.Extractor;
 import org.dflib.Index;
-import org.dflib.avro.schema.AvroSchemaUtils;
 import org.dflib.avro.types.AvroTypeExtensions;
 import org.dflib.builder.DataFrameAppender;
 
@@ -113,8 +111,7 @@ public class AvroLoader {
             appender.append(record);
         }
 
-        DataFrame df = appender.toDataFrame();
-        return fromAvroTypes(df, schema);
+        return appender.toDataFrame();
     }
 
     protected Index createIndex(Schema schema) {
@@ -143,28 +140,5 @@ public class AvroLoader {
         }
 
         return extractors;
-    }
-
-    
-    // TODO: should this be folded into the Extractor?
-    protected DataFrame fromAvroTypes(DataFrame df, Schema schema) {
-
-        // GenericEnumSymbols are converted to enums if possible, or to Strings if not
-        // (when the class is not known in the deserialization env)
-
-        for (Schema.Field f : schema.getFields()) {
-            Schema fSchema = f.schema().isUnion() ? AvroSchemaUtils.unpackUnion(f.schema()) : f.schema();
-
-            if (AvroSchemaUtils.isEnum(fSchema)) {
-                Class<Enum> enumType = AvroSchemaUtils.knownEnumType(fSchema);
-                if (enumType != null) {
-                    df = df.cols(f.name()).merge(Exp.$col(f.name()).castAsStr().castAsEnum(enumType));
-                } else {
-                    df = df.cols(f.name()).merge(Exp.$col(f.name()).castAsStr());
-                }
-            }
-        }
-
-        return df;
     }
 }
