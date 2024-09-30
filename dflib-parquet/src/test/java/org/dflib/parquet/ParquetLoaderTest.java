@@ -43,7 +43,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
     @Test
     @DisplayName("Int Column")
-    public void intColumn() throws IOException {
+    public void intColumn() {
         DataFrame df = DataFrame.foldByRow("a").ofInts(0, 18, 49, 32);
         Path file = tempPath("intColumn.parquet");
         Parquet.saver().save(df, file);
@@ -60,7 +60,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
     @Test
     @DisplayName("Double Object Column")
-    public void doubleObjectColumn() throws IOException {
+    public void doubleObjectColumn() {
         DataFrame df = DataFrame.foldByRow("a").of(1.0, 2.0, 3.0);
 
         Path file = tempPath("doubleObjectColumn.parquet");
@@ -77,7 +77,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
     @Test
     @DisplayName("Double Column")
-    public void doubleColumn() throws IOException {
+    public void doubleColumn() {
         DataFrame df = DataFrame.foldByRow("a").ofDoubles(0.0, 18.0, 49.0, 32.0);
         Path file = tempPath("doubleColumn.parquet");
         Parquet.saver().save(df, file);
@@ -93,7 +93,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
     @Test
     @DisplayName("Long Object Column")
-    public void longObjectColumn() throws IOException {
+    public void longObjectColumn() {
         DataFrame df = DataFrame.foldByRow("a").of(1L, 2L, 3L);
 
         Path file = tempPath("longObjectColumn.parquet");
@@ -110,7 +110,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
     @Test
     @DisplayName("Long Column")
-    public void longColumn() throws IOException {
+    public void longColumn() {
         DataFrame df = DataFrame.foldByRow("a").ofLongs(0L, 18L, 49L, 32L);
         Path file = tempPath("longColumn.parquet");
         Parquet.saver().save(df, file);
@@ -126,7 +126,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
     @Test
     @DisplayName("Boolean Object Column")
-    public void booleanObjectColumn() throws IOException {
+    public void booleanObjectColumn() {
         DataFrame df = DataFrame.foldByRow("a").of(true, false, true);
 
         Path file = tempPath("booleanObjectColumn.parquet");
@@ -143,7 +143,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
     @Test
     @DisplayName("Short Object Column")
-    public void shortObjectColumn() throws IOException {
+    public void shortObjectColumn() {
         DataFrame df = DataFrame.foldByRow("a").of((short) 1, (short) 2, (short) 3);
 
         Path file = tempPath("shortObjectColumn.parquet");
@@ -160,7 +160,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
     @Test
     @DisplayName("Byte Object Column")
-    public void byteObjectColumn() throws IOException {
+    public void byteObjectColumn() {
         DataFrame df = DataFrame.foldByRow("a").of((byte) 1, (byte) 2, (byte) 3);
 
         Path file = tempPath("byteObjectColumn.parquet");
@@ -177,7 +177,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
     @Test
     @DisplayName("Float Object Column")
-    public void floatObjectColumn() throws IOException {
+    public void floatObjectColumn() {
         DataFrame df = DataFrame.foldByRow("a").of(1.0f, 2.0f, 3.0f);
 
         Path file = tempPath("floatObjectColumn.parquet");
@@ -194,7 +194,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
     @Test
     @DisplayName("String Column")
-    public void stringColumn() throws IOException {
+    public void stringColumn() {
         DataFrame df = DataFrame.foldByRow("a").of("one", "two", "three");
 
         Path file = tempPath("stringColumn.parquet");
@@ -211,7 +211,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
     @Test
     @DisplayName("UUID Column")
-    public void uuidColumn() throws IOException {
+    public void uuidColumn() {
         UUID uuid1 = UUID.randomUUID();
         UUID uuid2 = UUID.randomUUID();
         UUID uuid3 = UUID.randomUUID();
@@ -235,7 +235,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
     @Test
     @DisplayName("Enum Column")
-    public void enumColumn() throws IOException {
+    public void enumColumn() {
         DataFrame df = DataFrame.foldByRow("a").of(EnumValues.one, EnumValues.two, EnumValues.three);
 
         Path file = tempPath("enumColumn.parquet");
@@ -257,7 +257,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
         @Test
         @DisplayName("BigDecimal High Precision Column")
-        public void highPrecision() throws IOException {
+        public void highPrecision() {
             var bigDec1 = new BigDecimal("12345678901234.56789");
             var bigDec2 = new BigDecimal("98765432109876.54321");
             var bigDec3 = new BigDecimal("12389137372521.35839");
@@ -278,7 +278,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
         @Test
         @DisplayName("BigDecimal Medium Precision Column")
-        public void mediumPrecision() throws IOException {
+        public void mediumPrecision() {
             var bigDec1 = new BigDecimal("1234567890123.456");
             var bigDec2 = new BigDecimal("9876543210987.654");
             var bigDec3 = new BigDecimal("1238913737252.135");
@@ -300,7 +300,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
         @Test
         @DisplayName("BigDecimal Low Precision Column")
-        public void lowPrecision() throws IOException {
+        public void lowPrecision() {
             var bigDec1 = new BigDecimal("12345.6789");
             var bigDec2 = new BigDecimal("98765.4321");
             var bigDec3 = new BigDecimal("12389.1373");
@@ -323,7 +323,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
     @Test
     @DisplayName("LocalDate Column")
-    public void localDateColumn() throws IOException {
+    public void localDateColumn() {
         LocalDate localDate1 = LocalDate.of(1969, 7, 20);
         LocalDate localDate2 = LocalDate.of(2001, 9, 11);
         LocalDate localDate3 = LocalDate.of(2004, 3, 11);
@@ -351,7 +351,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
         @Test
         @DisplayName("LocalTime Column Micros")
-        public void localTimeColumnMicros() throws IOException {
+        public void localTimeColumnMicros() {
 
             DataFrame df = DataFrame.foldByRow("a").of(localTime1, localTime2, localTime3);
 
@@ -369,7 +369,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
         @Test
         @DisplayName("LocalTime Column Millis")
-        public void localTimeColumnMillis() throws IOException {
+        public void localTimeColumnMillis() {
             DataFrame df = DataFrame.foldByRow("a").of(localTime1, localTime2, localTime3);
 
             Path file = tempPath("localTimeColumnMillis.parquet");
@@ -395,7 +395,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
         @Test
         @DisplayName("LocalDateTime Column Micros")
-        public void localDateTimeColumnMicros() throws IOException {
+        public void localDateTimeColumnMicros() {
 
             DataFrame df = DataFrame.foldByRow("a").of(localDateTime1, localDateTime2, localDateTime3);
 
@@ -413,7 +413,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
         @Test
         @DisplayName("LocalDateTime Column Millis")
-        public void localDateTimeColumnMillis() throws IOException {
+        public void localDateTimeColumnMillis() {
             DataFrame df = DataFrame.foldByRow("a").of(localDateTime1, localDateTime2, localDateTime3);
 
             Path file = tempPath("localDateTimeColumnMillis.parquet");
@@ -442,7 +442,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
         @Test
         @DisplayName("Instant Column Micros")
-        public void instantColumnMicros() throws IOException {
+        public void instantColumnMicros() {
 
             DataFrame df = DataFrame.foldByRow("a").of(instant1, instant2, instant3);
 
@@ -461,7 +461,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
         @Test
         @DisplayName("Instant Column Millis")
-        public void instantColumnMillis() throws IOException {
+        public void instantColumnMillis() {
             DataFrame df = DataFrame.foldByRow("a").of(instant1, instant2, instant3);
 
             Path file = tempPath("instantColumnMillis.parquet");
@@ -480,7 +480,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
     @Test
     @DisplayName("Multiple Column Types")
-    public void multipleColumnTypes() throws IOException {
+    public void multipleColumnTypes() {
         DataFrame df = DataFrame.byArrayRow("a", "b", "c", "d", "e", "f")
                 .appender()
                 .append(1, 2L, 3.0, 4.0f, true, "foo")
@@ -500,7 +500,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
     @Test
     @DisplayName("Null Values")
-    public void nullValues() throws IOException {
+    public void nullValues() {
         DataFrame df = DataFrame.byArrayRow("a", "b", "c", "d", "e", "f")
                 .appender()
                 .append(1, 2L, 3.0, 4.0f, true, "foo")
