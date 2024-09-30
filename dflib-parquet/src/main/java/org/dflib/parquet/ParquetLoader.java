@@ -70,7 +70,8 @@ public class ParquetLoader {
 
     /**
      * Configures a Parquet column to be loaded with value compaction. Should be used to save memory for low-cardinality
-     * columns. Note that Parquet already does compaction on some column types
+     * columns. Note that Parquet already does compaction on String columns by default, but some other column types
+     * can take advantage of an explicit compaction.
      *
      * @since 1.0.0-RC1
      */
@@ -80,7 +81,9 @@ public class ParquetLoader {
     }
 
     /**
-     * Configures an Parquet column to be loaded with value compaction. Should be used to save memory for low-cardinality columns.
+     * Configures a Parquet column to be loaded with value compaction. Should be used to save memory for low-cardinality
+     * columns. Note that Parquet already does compaction on String columns by default, but some other column types
+     * can take advantage of an explicit compaction.
      *
      * @since 1.0.0-RC1
      */
@@ -147,7 +150,7 @@ public class ParquetLoader {
         int w = schema.getFields().size();
         Extractor<Object[], ?>[] extractors = new Extractor[w];
         for (int i = 0; i < w; i++) {
-            ColConfigurator  cc = configurators.computeIfAbsent(i, ii -> ColConfigurator.objectCol(ii, false));
+            ColConfigurator cc = configurators.computeIfAbsent(i, ii -> ColConfigurator.objectCol(ii, false));
             extractors[i] = cc.extractor(i, schema);
         }
 
