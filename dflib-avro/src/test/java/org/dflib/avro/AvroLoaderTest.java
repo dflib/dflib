@@ -23,7 +23,7 @@ public class AvroLoaderTest {
     }
 
     @Test
-    public void nulls() {
+    public void valueCardinality_Nulls() {
         DataFrame df = new AvroLoader().load(_TEST1_AVRO);
 
         new DataFrameAsserts(df, "a", "b")
@@ -44,7 +44,7 @@ public class AvroLoaderTest {
     }
 
     @Test
-    public void noNulls() {
+    public void valueCardinality_noNulls() {
         DataFrame df = new AvroLoader().load(_TEST2_AVRO);
 
         new DataFrameAsserts(df, "a", "b")
@@ -63,7 +63,7 @@ public class AvroLoaderTest {
     }
 
     @Test
-    public void compactCol_Name() {
+    public void valueCardinality_compactCol_Name() {
         DataFrame df = new AvroLoader()
                 .compactCol("a")
                 .compactCol("b")
@@ -87,7 +87,7 @@ public class AvroLoaderTest {
     }
 
     @Test
-    public void compactCol_Pos() {
+    public void valueCardinality_Nulls_compactCol_Pos() {
         DataFrame df = new AvroLoader()
                 .compactCol(0)
                 .compactCol(1)

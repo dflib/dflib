@@ -409,7 +409,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void noCompaction() {
+    public void valueCardinality_Nulls() {
         DataFrame df = new CsvLoader()
                 .col("A", s -> s != null ? Integer.parseInt(s) : null)
                 .emptyStringIsNull()
@@ -433,7 +433,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void compactCol_Name() {
+    public void valueCardinality_compactCol_Name() {
         DataFrame df = new CsvLoader()
                 .compactCol("A", s -> s != null ? Integer.parseInt(s) : null)
                 .compactCol("B")
@@ -458,7 +458,7 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void compactCol_Pos() {
+    public void valueCardinality_compactCol_Pos() {
         DataFrame df = new CsvLoader()
                 .compactCol(0, s -> s != null ? Integer.parseInt(s) : null)
                 .compactCol(1)
