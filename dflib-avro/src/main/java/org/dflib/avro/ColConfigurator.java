@@ -38,11 +38,11 @@ class ColConfigurator {
     }
 
     Extractor<GenericRecord, ?> extractor(int srcPos, Schema schema) {
-        Extractor<GenericRecord, ?> e = extractorInternal(srcPos, schema.getFields().get(srcPos).schema());
+        Extractor<GenericRecord, ?> e = sparseExtractor(srcPos, schema.getFields().get(srcPos).schema());
         return compact ? e.compact() : e;
     }
 
-    private Extractor<GenericRecord, ?> extractorInternal(int pos, Schema colSchema) {
+    private static Extractor<GenericRecord, ?> sparseExtractor(int pos, Schema colSchema) {
         switch (colSchema.getType()) {
             // Raw numeric and boolean types can be loaded as primitives,
             // as numeric nullable types are declared as unions and will fall under the "default" case
@@ -58,17 +58,17 @@ class ColConfigurator {
             case NULL:
                 return Extractor.$col(r -> r.get(pos));
             case ENUM:
-                return enumExtractorInternal(pos, colSchema);
+                return enumExtractor(pos, colSchema);
             case STRING:
-                return stringColumnExtractorInternal(pos);
+                return stringExtractor(pos);
             case UNION:
-                return unionExtractorInternal(pos, colSchema.getTypes());
+                return unionExtractor(pos, colSchema.getTypes());
             default:
                 throw new UnsupportedOperationException("(Yet) unsupported Avro schema type: " + colSchema.getType());
         }
     }
 
-    private Extractor<GenericRecord, ?> unionExtractorInternal(int pos, List<Schema> types) {
+    private static Extractor<GenericRecord, ?> unionExtractor(int pos, List<Schema> types) {
         // we only know how to handle union with NULL
 
         Schema[] otherThanNull = types.stream().filter(t -> t.getType() != Schema.Type.NULL).toArray(Schema[]::new);
@@ -79,7 +79,7 @@ class ColConfigurator {
         boolean hasNull = types.size() > 1;
         if (!hasNull) {
             // allow primitives
-            return extractorInternal(pos, otherThanNull[0]);
+            return sparseExtractor(pos, otherThanNull[0]);
         }
 
         // don't allow primitives
@@ -91,17 +91,17 @@ class ColConfigurator {
             case BYTES:
                 return Extractor.$col(r -> r.get(pos));
             case ENUM:
-                return enumExtractorInternal(pos, otherThanNull[0]);
+                return enumExtractor(pos, otherThanNull[0]);
             case STRING:
-                return stringColumnExtractorInternal(pos);
+                return stringExtractor(pos);
             case UNION:
-                return unionExtractorInternal(pos, otherThanNull[0].getTypes());
+                return unionExtractor(pos, otherThanNull[0].getTypes());
             default:
                 throw new UnsupportedOperationException("(Yet) unsupported Avro schema type: " + otherThanNull[0].getType());
         }
     }
 
-    private Extractor<GenericRecord, ?> enumExtractorInternal(int pos, Schema colSchema) {
+    private static Extractor<GenericRecord, ?> enumExtractor(int pos, Schema colSchema) {
 
         // GenericEnumSymbols are converted to enums if possible, or to Strings if not
         // (when the class is not known in the deserialization env)
@@ -113,27 +113,22 @@ class ColConfigurator {
         return Extractor.$col(mapper);
     }
 
-    private static <T extends Enum<T>> T asEnum(Class<T> enumType, Object val) {
-        return val != null ? Enum.valueOf(enumType, val.toString()) : null;
-    }
-
-    private static String asString(Object val) {
-        return val != null ? val.toString() : null;
-    }
-
-    private Extractor<GenericRecord, ?> stringColumnExtractorInternal(int pos) {
+    private static Extractor<GenericRecord, ?> stringExtractor(int pos) {
 
         // A few cases to handle:
         // 1. "String".equals(colSchema.getProp(GenericData.STRING_PROP)) -> String
         // 2. AvroTypeExtensions.UNMAPPED_TYPE.getName().equals(colSchema.getLogicalType().getName()) -> String
         // 3. All others: avro.util.Utf8 (which is mutable and requires an immediate conversion)
         // Luckily, all 3 can be converted to a String via "toString", so treating them the same...
+        
+        return Extractor.$col(r -> asString(r.get(pos)));
+    }
 
-        ValueMapper<GenericRecord, ?> mapper = r -> {
-            Object val = r.get(pos);
-            return val != null ? val.toString() : null;
-        };
+    private static <T extends Enum<T>> T asEnum(Class<T> enumType, Object val) {
+        return val != null ? Enum.valueOf(enumType, val.toString()) : null;
+    }
 
-        return Extractor.$col(mapper);
+    private static String asString(Object val) {
+        return val != null ? val.toString() : null;
     }
 }
