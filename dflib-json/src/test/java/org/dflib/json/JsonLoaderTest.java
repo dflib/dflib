@@ -131,7 +131,7 @@ public class JsonLoaderTest {
     public void test_BoolPresetColumns() {
         String json = "[{\"a\":true},{\"a\":\"true\"},{\"a\":false},{}]";
         DataFrame df = Json.loader()
-                .boolColumn("a")
+                .boolCol("a")
                 .load(json);
         new DataFrameAsserts(df, "a")
                 .expectHeight(4)
@@ -147,8 +147,8 @@ public class JsonLoaderTest {
     public void test_IntPresetColumns() {
         String json = "[{\"a\":1},{\"a\":\"2\", \"b\":3},{\"a\":4}]";
         DataFrame df = Json.loader()
-                .intColumn("a")
-                .intColumn("b", -2)
+                .intCol("a")
+                .intCol("b", -2)
                 .load(json);
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(3)
@@ -179,7 +179,7 @@ public class JsonLoaderTest {
     public void test_DatePresetColumns() {
         String json = "[{\"a\":\"2021-01-15\"},{\"a\":\"2022-03-16\"},{\"a\":\"2023-03-18\"}]";
         DataFrame df = Json.loader()
-                .dateColumn("a")
+                .dateCol("a")
                 .load(json);
         new DataFrameAsserts(df, "a")
                 .expectHeight(3)
@@ -193,7 +193,7 @@ public class JsonLoaderTest {
     public void test_DateTimePresetColumns() {
         String json = "[{\"a\":\"2021-01-15T00:01:02\"},{\"a\":\"2022-03-16T00:02:03\"},{\"a\":\"2023-03-18T00:03:04\"}]";
         DataFrame df = Json.loader()
-                .dateTimeColumn("a")
+                .dateTimeCol("a")
                 .load(json);
         new DataFrameAsserts(df, "a")
                 .expectHeight(3)

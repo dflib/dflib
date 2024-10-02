@@ -61,9 +61,9 @@ public class JsonLoader {
     }
 
     /**
-     * @since 0.16
+     * @since 1.0.0-RC1
      */
-    public JsonLoader columnType(String column, ValueMapper<Object, ?> mapper) {
+    public JsonLoader col(String column, ValueMapper<Object, ?> mapper) {
         extractorPresets.put(column, customExtractor(column, mapper));
         return this;
     }
@@ -71,7 +71,7 @@ public class JsonLoader {
     /**
      * @since 0.16
      */
-    public JsonLoader boolColumn(String column) {
+    public JsonLoader boolCol(String column) {
         extractorPresets.put(column, boolExtractor(column));
         return this;
     }
@@ -79,7 +79,7 @@ public class JsonLoader {
     /**
      * @since 0.16
      */
-    public JsonLoader intColumn(String column) {
+    public JsonLoader intCol(String column) {
         extractorPresets.put(column, intExtractor(column));
         return this;
     }
@@ -87,7 +87,7 @@ public class JsonLoader {
     /**
      * @since 0.16
      */
-    public JsonLoader intColumn(String column, int forNull) {
+    public JsonLoader intCol(String column, int forNull) {
         extractorPresets.put(column, intExtractor(column, forNull));
         return this;
     }
@@ -111,7 +111,7 @@ public class JsonLoader {
     /**
      * @since 0.16
      */
-    public JsonLoader doubleColumn(String column) {
+    public JsonLoader doubleCol(String column) {
         extractorPresets.put(column, doubleExtractor(column));
         return this;
     }
@@ -119,7 +119,7 @@ public class JsonLoader {
     /**
      * @since 0.16
      */
-    public JsonLoader doubleColumn(String column, double forNull) {
+    public JsonLoader doubleCol(String column, double forNull) {
         extractorPresets.put(column, doubleExtractor(column, forNull));
         return this;
     }
@@ -127,7 +127,7 @@ public class JsonLoader {
     /**
      * @since 0.16
      */
-    public JsonLoader dateColumn(String column) {
+    public JsonLoader dateCol(String column) {
         extractorPresets.put(column, dateExtractor(column));
         return this;
     }
@@ -135,7 +135,7 @@ public class JsonLoader {
     /**
      * @since 0.16
      */
-    public JsonLoader dateColumn(String column, DateTimeFormatter formatter) {
+    public JsonLoader dateCol(String column, DateTimeFormatter formatter) {
         extractorPresets.put(column, dateExtractor(column, formatter));
         return this;
     }
@@ -143,7 +143,7 @@ public class JsonLoader {
     /**
      * @since 0.16
      */
-    public JsonLoader timeColumn(String column) {
+    public JsonLoader timeCol(String column) {
         extractorPresets.put(column, timeExtractor(column));
         return this;
     }
@@ -151,7 +151,7 @@ public class JsonLoader {
     /**
      * @since 0.16
      */
-    public JsonLoader timeColumn(String column, DateTimeFormatter formatter) {
+    public JsonLoader timeCol(String column, DateTimeFormatter formatter) {
         extractorPresets.put(column, timeExtractor(column, formatter));
         return this;
     }
@@ -159,7 +159,7 @@ public class JsonLoader {
     /**
      * @since 0.16
      */
-    public JsonLoader dateTimeColumn(String column) {
+    public JsonLoader dateTimeCol(String column) {
         extractorPresets.put(column, dateTimeExtractor(column));
         return this;
     }
@@ -167,7 +167,7 @@ public class JsonLoader {
     /**
      * @since 0.16
      */
-    public JsonLoader dateTimeColumn(String column, DateTimeFormatter formatter) {
+    public JsonLoader dateTimeCol(String column, DateTimeFormatter formatter) {
         extractorPresets.put(column, dateTimeExtractor(column, formatter));
         return this;
     }

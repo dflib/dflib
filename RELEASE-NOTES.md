@@ -14,6 +14,7 @@
 * #335 Stop adding "avro.java.string" property to String field schemas
 * #337 Compacting Parquet columns on load
 * #338 Compacting JDBC columns on load
+* #341 JsonLoader: align API naming with other loaders
 
 ## Release 1.0.0-M23
 
