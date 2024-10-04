@@ -222,7 +222,7 @@ public class EChart {
      *
      * @since 1.0.0-RC1
      */
-    public EChart candlestickSeries(
+    public EChart series(
             CandlestickSeriesOpts seriesOpts,
             String openColumn,
             String closeColumn,
