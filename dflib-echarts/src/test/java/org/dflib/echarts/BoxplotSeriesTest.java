@@ -1,0 +1,55 @@
+package org.dflib.echarts;
+
+import org.dflib.DataFrame;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class BoxplotSeriesTest {
+
+    protected static final DataFrame df = DataFrame.foldByRow("min", "q1", "median", "q3", "max", "on", "on2").of(
+            15, 18, 19, 20, 21, "2024-08-12", "2024-07-12",
+            18, 19, 20, 25, 28, "2024-08-13", "2024-07-13",
+            15, 20, 21, 27, 30, "2024-08-14", "2024-07-14");
+
+    @Test
+    public void xAxisIndex() {
+
+        String s1 = ECharts.chart()
+                .series(SeriesOpts.ofBoxplot(), "min", "q1", "median", "q3", "max")
+                .generateScriptHtml("_tid", df);
+        assertFalse(s1.contains("xAxisIndex"), s1);
+
+        String s2 = ECharts.chart()
+                .xAxis("on")
+                .xAxis("on2")
+                .series(SeriesOpts.ofBoxplot().xAxisIndex(1),  "min", "q1", "median", "q3", "max")
+                .generateScriptHtml("_tid", df);
+        assertTrue(s2.contains("['L0','2024-08-12','2024-08-13','2024-08-14'],"), s2);
+        assertTrue(s2.contains("['L1','2024-07-12','2024-07-13','2024-07-14']"), s2);
+        assertTrue(s2.contains("type: 'boxplot'"), s2);
+        assertTrue(s2.contains("xAxisIndex: 1,"), s2);
+        assertTrue(s2.contains("x: 1,"), s2);
+        assertTrue(s2.contains("y: [2,3,4,5,6]"), s2);
+    }
+
+    @Test
+    public void data() {
+
+        String s1 = ECharts.chart().generateScriptHtml("_tid", df);
+        assertTrue(s1.contains("dataset"), s1);
+
+        String s2 = ECharts.chart().series(SeriesOpts.ofBoxplot(),  "min", "q1", "median", "q3", "max").generateScriptHtml("_tid", df);
+        assertTrue(s2.contains("dataset"), s2);
+        assertTrue(s2.contains("['L0',1,2,3]"), s2);
+        assertTrue(s2.contains("['min',15,18,15],"), s2);
+        assertTrue(s2.contains("['q1',18,19,20],"), s2);
+        assertTrue(s2.contains("['median',19,20,21],"), s2);
+        assertTrue(s2.contains("['q3',20,25,27],"), s2);
+        assertTrue(s2.contains("['max',21,28,30]"), s2);
+
+        assertTrue(s2.contains("x: 0,"), s2);
+        assertTrue(s2.contains("y: [1,2,3,4,5]"), s2);
+    }
+}

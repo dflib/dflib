@@ -218,7 +218,7 @@ public class EChart {
 
     /**
      * Adds a "candlestick" series to the chart, with references to 4 data columns indicating "open", "close",
-     * "lowest" and "highest" columns.
+     * "lowest" and "highest" values.
      *
      * @since 1.0.0-RC1
      */
@@ -234,6 +234,30 @@ public class EChart {
                 Objects.requireNonNull(closeColumn, "Null 'close' column"),
                 Objects.requireNonNull(lowestColumn, "Null 'lowest' column"),
                 Objects.requireNonNull(highestColumn, "Null 'highest' column")));
+
+        return this;
+    }
+
+    /**
+     * Adds a "boxplot" series to the chart, with references to 5 data columns indicating "min", "Q1", "median", "Q3",
+     * "max" values.
+     *
+     * @since 1.0.0-RC1
+     */
+    public EChart series(
+            BoxplotSeriesOpts seriesOpts,
+            String minColumn,
+            String q1Column,
+            String medianColumn,
+            String q3Column,
+            String maxColumn) {
+
+        option.series(seriesOpts, Index.of(
+                Objects.requireNonNull(minColumn, "Null 'min' column"),
+                Objects.requireNonNull(q1Column, "Null 'q1' column"),
+                Objects.requireNonNull(medianColumn, "Null 'median' column"),
+                Objects.requireNonNull(q3Column, "Null 'q3' column"),
+                Objects.requireNonNull(maxColumn, "Null 'max' column")));
 
         return this;
     }

@@ -19,6 +19,8 @@ class SeriesModelMaker {
                 return scatterModel((SeriesBuilder<ScatterSeriesOpts>) sb);
             case candlestick:
                 return candlestickModel((SeriesBuilder<CandlestickSeriesOpts>) sb);
+            case boxplot:
+                return boxplotModel((SeriesBuilder<BoxplotSeriesOpts>) sb);
             case pie:
                 return pieModel((SeriesBuilder<PieSeriesOpts>) sb);
             default:
@@ -90,6 +92,27 @@ class SeriesModelMaker {
     }
 
     private SeriesModel candlestickModel(SeriesBuilder<CandlestickSeriesOpts> sb) {
+        return new SeriesModel(
+                sb.name,
+                sb.seriesOpts.getType().name(),
+                new EncodeModel(sb.xDimension, ValueModels.of(sb.yDimensions), null, null),
+                null,
+                sb.datasetSeriesLayoutBy,
+                null,
+                null,
+                null,
+                null,
+                sb.seriesOpts.xAxisIndex,
+                sb.seriesOpts.yAxisIndex,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
+    private SeriesModel boxplotModel(SeriesBuilder<BoxplotSeriesOpts> sb) {
         return new SeriesModel(
                 sb.name,
                 sb.seriesOpts.getType().name(),

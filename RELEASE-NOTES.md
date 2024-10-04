@@ -3,6 +3,7 @@
 * #314 ECharts: "candlestick" series
 * #323 CI/CD actions to create a GitHub release when doing a Maven release
 * #324 Remove API deprecated since M22
+* #325 ECharts: "boxplot" series
 * #327 Bump org.apache.hadoop:hadoop-common from 3.3.6 to 3.4.0
 * #328 Upgrade to parquet 1.14.2
 * #329 Compacting columns on load

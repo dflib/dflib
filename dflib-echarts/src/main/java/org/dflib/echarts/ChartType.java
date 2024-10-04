@@ -6,17 +6,18 @@ package org.dflib.echarts;
  * @since 1.0.0-M21
  */
 public enum ChartType {
-    line, bar, scatter, pie, candlestick;
+    line, bar, scatter, pie, candlestick, boxplot;
 
     /**
      * @since 1.0.0-M23
      */
     public boolean isCartesian() {
         switch (this) {
-            case line:
             case bar:
-            case scatter:
+            case boxplot:
             case candlestick:
+            case line:
+            case scatter:
                 return true;
             case pie:
                 return false;

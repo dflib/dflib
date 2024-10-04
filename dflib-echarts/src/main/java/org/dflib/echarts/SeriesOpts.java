@@ -54,6 +54,16 @@ public abstract class SeriesOpts<SO extends SeriesOpts<SO>> {
         return new CandlestickSeriesOpts();
     }
 
+
+    /**
+     * Starts a builder for a boxplot series options object.
+     *
+     * @since 1.0.0-RC1
+     */
+    public static BoxplotSeriesOpts ofBoxplot() {
+        return new BoxplotSeriesOpts();
+    }
+
     protected SeriesOpts() {
     }
 
