@@ -8,7 +8,11 @@ import org.dflib.DataFrame;
 import org.dflib.Extractor;
 import org.dflib.ValueMapper;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
+import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -192,10 +196,48 @@ public class JsonLoader {
         return this;
     }
 
+    /**
+     * Loads a DataFrame from the provided JSON String.
+     */
     public DataFrame load(String json) {
         DocumentContext context = JsonPath.parse(json, buildJSONPathConfiguration());
         return load(context);
     }
+
+
+    /**
+     * Loads a DataFrame from a JSON file at the specified path.
+     *
+     * @since 1.0.0-RC1
+     */
+    public DataFrame load(Path filePath) {
+        return load(filePath.toFile());
+    }
+
+    /**
+     * Loads a DataFrame from a JSON file.
+     *
+     * @since 1.0.0-RC1
+     */
+    public DataFrame load(File file) {
+        try {
+            DocumentContext context = JsonPath.parse(file, buildJSONPathConfiguration());
+            return load(context);
+        } catch (IOException e) {
+            throw new RuntimeException("Error parsing JSON file: " + file, e);
+        }
+    }
+
+    /**
+     * Loads a DataFrame from the provided InputStream
+     *
+     * @since 1.0.0-RC1
+     */
+    public DataFrame load(InputStream in) {
+        DocumentContext context = JsonPath.parse(in, buildJSONPathConfiguration());
+        return load(context);
+    }
+
 
     public DataFrame load(Reader reader) {
         DocumentContext context = JsonPath.parse(reader, buildJSONPathConfiguration());

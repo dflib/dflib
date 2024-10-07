@@ -18,6 +18,7 @@
 * #341 JsonLoader: align API naming with other loaders
 * #343 Compacting Excel columns on load
 * #344 Compacting JSON columns on load
+* #45 JsonLoader: File, Path, InputStream load options
 
 ## Release 1.0.0-M23
 
