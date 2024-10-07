@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
 
 public class JsonLoaderTest {
@@ -76,18 +75,10 @@ public class JsonLoaderTest {
         String json = "[{\"a\":1, \"b\":{\"x\":1, \"y\":2}},{\"a\":2, \"b\":{\"x\":3, \"y\":4}}]";
         DataFrame df = Json.loader().load(json);
 
-        Map<String, Object> expectedMap1 = new HashMap<>();
-        expectedMap1.put("x", 1);
-        expectedMap1.put("y", 2);
-
-        Map<String, Object> expectedMap2 = new HashMap<>();
-        expectedMap2.put("x", 3);
-        expectedMap2.put("y", 4);
-
         new DataFrameAsserts(df, "a", "b")
                 .expectHeight(2)
-                .expectRow(0, 1, expectedMap1)
-                .expectRow(1, 2, expectedMap2);
+                .expectRow(0, 1, Map.of("x", 1, "y", 2))
+                .expectRow(1, 2, Map.of("x", 3, "y", 4));
     }
 
     @Test
@@ -128,7 +119,7 @@ public class JsonLoaderTest {
 
     @Test
     @DisplayName("$.* : bool preset columns")
-    public void test_BoolPresetColumns() {
+    public void boolPresetColumns() {
         String json = "[{\"a\":true},{\"a\":\"true\"},{\"a\":false},{}]";
         DataFrame df = Json.loader()
                 .boolCol("a")
@@ -144,7 +135,7 @@ public class JsonLoaderTest {
 
     @Test
     @DisplayName("$.* : int preset columns")
-    public void test_IntPresetColumns() {
+    public void intPresetColumns() {
         String json = "[{\"a\":1},{\"a\":\"2\", \"b\":3},{\"a\":4}]";
         DataFrame df = Json.loader()
                 .intCol("a")
@@ -160,7 +151,7 @@ public class JsonLoaderTest {
 
     @Test
     @DisplayName("$.* : long preset columns")
-    public void test_LongPresetColumns() {
+    public void longPresetColumns() {
         String json = "[{\"a\":1},{\"a\":\"2\", \"b\":3},{\"a\":4}]";
         DataFrame df = Json.loader()
                 .longColumn("a")
@@ -176,7 +167,7 @@ public class JsonLoaderTest {
 
     @Test
     @DisplayName("$.* : date preset columns")
-    public void test_DatePresetColumns() {
+    public void datePresetColumns() {
         String json = "[{\"a\":\"2021-01-15\"},{\"a\":\"2022-03-16\"},{\"a\":\"2023-03-18\"}]";
         DataFrame df = Json.loader()
                 .dateCol("a")
@@ -190,7 +181,7 @@ public class JsonLoaderTest {
 
     @Test
     @DisplayName("$.* : datetime preset columns")
-    public void test_DateTimePresetColumns() {
+    public void dateTimePresetColumns() {
         String json = "[{\"a\":\"2021-01-15T00:01:02\"},{\"a\":\"2022-03-16T00:02:03\"},{\"a\":\"2023-03-18T00:03:04\"}]";
         DataFrame df = Json.loader()
                 .dateTimeCol("a")
