@@ -70,4 +70,33 @@ public class Json {
     public static JsonSaver saver() {
         return new JsonSaver();
     }
+
+    /**
+     * @since 1.0.0-RC1
+     */
+    public void save(DataFrame df, Appendable out) {
+        saver().save(df, out);
+    }
+
+    /**
+     * @since 1.0.0-RC1
+     */
+    public void save(DataFrame df, File file) {
+        saver().save(df, file);
+    }
+
+    /**
+     * @since 1.0.0-RC1
+     */
+    public void save(DataFrame df, Path filePath) {
+        saver().save(df, filePath);
+    }
+
+    /**
+     * @since 1.0.0-RC1
+     */
+    public void save(DataFrame df, String fileName) {
+        saver().save(df, fileName);
+    }
+
 }
