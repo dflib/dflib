@@ -20,6 +20,7 @@
 * #344 Compacting JSON columns on load
 * #345 JsonLoader: File, Path, InputStream load options
 * #346 JsonLoader: loading from Reader results in an empty DataFrame
+* #347 JsonSaver.saveToString(..)
 
 ## Release 1.0.0-M23
 

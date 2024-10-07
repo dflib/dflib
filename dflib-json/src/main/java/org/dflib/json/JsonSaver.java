@@ -12,6 +12,7 @@ import org.dflib.row.RowProxy;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.file.Path;
 
@@ -57,6 +58,16 @@ public class JsonSaver {
 
     public void save(DataFrame df, String fileName) {
         save(df, new File(fileName));
+    }
+
+    /**
+     * @since 1.0.0-RC1
+     */
+    public String saveToString(DataFrame df) {
+
+        StringWriter out = new StringWriter();
+        save(df, out);
+        return out.toString();
     }
 
     protected void createMissingDirsIfNeeded(File file) {
