@@ -6,9 +6,12 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -37,6 +40,20 @@ public class JsonLoader_LoadSourcesTest {
                 .expectRow(0, 1)
                 .expectRow(1, 2)
                 .expectRow(2, 3);
+    }
+
+    @Test
+    public void fromReader() throws URISyntaxException, IOException {
+        File json = new File(getClass().getResource("list-of-values.json").toURI());
+
+        try (Reader r = new FileReader(json, StandardCharsets.UTF_8)) {
+            DataFrame df = new JsonLoader().load(r);
+            new DataFrameAsserts(df, "_val")
+                    .expectHeight(3)
+                    .expectRow(0, 1)
+                    .expectRow(1, 2)
+                    .expectRow(2, 3);
+        }
     }
 
     @Test

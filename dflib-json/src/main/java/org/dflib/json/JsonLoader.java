@@ -224,7 +224,7 @@ public class JsonLoader {
             DocumentContext context = JsonPath.parse(file, buildJSONPathConfiguration());
             return load(context);
         } catch (IOException e) {
-            throw new RuntimeException("Error parsing JSON file: " + file, e);
+            throw new RuntimeException("Error reading JSON file: " + file, e);
         }
     }
 
@@ -238,9 +238,22 @@ public class JsonLoader {
         return load(context);
     }
 
-
     public DataFrame load(Reader reader) {
-        DocumentContext context = JsonPath.parse(reader, buildJSONPathConfiguration());
+        StringBuilder json = new StringBuilder();
+
+        int len = 8192;
+        char[] chars = new char[len];
+        int read;
+
+        try {
+            while ((read = reader.read(chars, 0, len)) != -1) {
+                json.append(chars, 0, read);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading JSON", e);
+        }
+
+        DocumentContext context = JsonPath.parse(json.toString(), buildJSONPathConfiguration());
         return load(context);
     }
 
