@@ -17,6 +17,7 @@
 * #338 Compacting JDBC columns on load
 * #341 JsonLoader: align API naming with other loaders
 * #343 Compacting Excel columns on load
+* #344 Compacting JSON columns on load
 
 ## Release 1.0.0-M23
 

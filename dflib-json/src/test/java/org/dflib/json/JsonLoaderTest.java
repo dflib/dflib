@@ -9,6 +9,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+import static org.dflib.Exp.$col;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+
 public class JsonLoaderTest {
 
     @Test
@@ -118,8 +122,23 @@ public class JsonLoaderTest {
     }
 
     @Test
-    @DisplayName("$.* : bool preset columns")
-    public void boolPresetColumns() {
+    @DisplayName("$.* : custom mapper")
+    public void column_Mapper() {
+        String json = "[{\"a\":\"A\"},{\"a\":null},{\"a\":\"B\"},{}]";
+        DataFrame df = Json.loader()
+                .col("a", c -> c != null ? c : "XXX")
+                .load(json);
+        new DataFrameAsserts(df, "a")
+                .expectHeight(4)
+                .expectRow(0, "A")
+                .expectRow(1, "XXX")
+                .expectRow(2, "B")
+                .expectRow(3, "XXX");
+    }
+
+    @Test
+    @DisplayName("$.* : bool columns")
+    public void boolColumn() {
         String json = "[{\"a\":true},{\"a\":\"true\"},{\"a\":false},{}]";
         DataFrame df = Json.loader()
                 .boolCol("a")
@@ -134,8 +153,8 @@ public class JsonLoaderTest {
     }
 
     @Test
-    @DisplayName("$.* : int preset columns")
-    public void intPresetColumns() {
+    @DisplayName("$.* : int column")
+    public void intColumn() {
         String json = "[{\"a\":1},{\"a\":\"2\", \"b\":3},{\"a\":4}]";
         DataFrame df = Json.loader()
                 .intCol("a")
@@ -150,8 +169,8 @@ public class JsonLoaderTest {
     }
 
     @Test
-    @DisplayName("$.* : long preset columns")
-    public void longPresetColumns() {
+    @DisplayName("$.* : long column")
+    public void longColumn() {
         String json = "[{\"a\":1},{\"a\":\"2\", \"b\":3},{\"a\":4}]";
         DataFrame df = Json.loader()
                 .longColumn("a")
@@ -166,8 +185,8 @@ public class JsonLoaderTest {
     }
 
     @Test
-    @DisplayName("$.* : date preset columns")
-    public void datePresetColumns() {
+    @DisplayName("$.* : date column")
+    public void dateColumn() {
         String json = "[{\"a\":\"2021-01-15\"},{\"a\":\"2022-03-16\"},{\"a\":\"2023-03-18\"}]";
         DataFrame df = Json.loader()
                 .dateCol("a")
@@ -180,8 +199,8 @@ public class JsonLoaderTest {
     }
 
     @Test
-    @DisplayName("$.* : datetime preset columns")
-    public void dateTimePresetColumns() {
+    @DisplayName("$.* : datetime column")
+    public void dateTimeColumn() {
         String json = "[{\"a\":\"2021-01-15T00:01:02\"},{\"a\":\"2022-03-16T00:02:03\"},{\"a\":\"2023-03-18T00:03:04\"}]";
         DataFrame df = Json.loader()
                 .dateTimeCol("a")
@@ -191,5 +210,87 @@ public class JsonLoaderTest {
                 .expectRow(0, LocalDateTime.parse("2021-01-15T00:01:02"))
                 .expectRow(1, LocalDateTime.parse("2022-03-16T00:02:03"))
                 .expectRow(2, LocalDateTime.parse("2023-03-18T00:03:04"));
+    }
+
+    @Test
+    public void valueCardinality() {
+        DataFrame df = new JsonLoader()
+                .load("[{\"a\": 1, \"b\": \"ab\"}," +
+                        "{\"a\": 40000, \"b\": \"ab\"}," +
+                        "{\"a\": 40000, \"b\": \"bc\"}," +
+                        "{\"a\": 30000, \"b\": \"bc\"}," +
+                        "{\"a\": 30000}," +
+                        "{\"b\": \"bc\"}]");
+
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(6)
+                .expectRow(0, 1, "ab")
+                .expectRow(1, 40000, "ab")
+                .expectRow(2, 40000, "bc")
+                .expectRow(3, 30000, "bc")
+                .expectRow(4, 30000, null)
+                .expectRow(5, null, "bc");
+
+        DataFrame idCardinality = df.cols().select(
+                $col("a").mapVal(System::identityHashCode),
+                $col("b").mapVal(System::identityHashCode));
+
+        assertEquals(6, idCardinality.getColumn(0).unique().size());
+        assertEquals(6, idCardinality.getColumn(1).unique().size());
+    }
+
+    @Test
+    public void valueCardinality_CompactCol() {
+        DataFrame df = new JsonLoader()
+                .compactCol("a")
+                .compactCol("b")
+                .load("[{\"a\": 1, \"b\": \"ab\"}," +
+                        "{\"a\": 40000, \"b\": \"ab\"}," +
+                        "{\"a\": 40000, \"b\": \"bc\"}," +
+                        "{\"a\": 30000, \"b\": \"bc\"}," +
+                        "{\"a\": 30000}," +
+                        "{\"b\": \"bc\"}]");
+
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(6)
+                .expectRow(0, 1, "ab")
+                .expectRow(1, 40000, "ab")
+                .expectRow(2, 40000, "bc")
+                .expectRow(3, 30000, "bc")
+                .expectRow(4, 30000, null)
+                .expectRow(5, null, "bc");
+
+        DataFrame idCardinality = df.cols().select(
+                $col("a").mapVal(System::identityHashCode),
+                $col("b").mapVal(System::identityHashCode));
+
+        assertEquals(4, idCardinality.getColumn(0).unique().size());
+        assertEquals(3, idCardinality.getColumn(1).unique().size());
+    }
+
+    @Test
+    public void valueCardinality_CompactCol_Mapper() {
+        DataFrame df = new JsonLoader()
+                .compactCol("b", s -> s != null ? "_" + s : null)
+                .load("[{\"a\": 1, \"b\": \"ab\"}," +
+                        "{\"a\": 40000, \"b\": \"ab\"}," +
+                        "{\"a\": 40000, \"b\": \"bc\"}," +
+                        "{\"a\": 30000, \"b\": \"bc\"}," +
+                        "{\"a\": 30000}," +
+                        "{\"b\": \"bc\"}]");
+
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(6)
+                .expectRow(0, 1, "_ab")
+                .expectRow(1, 40000, "_ab")
+                .expectRow(2, 40000, "_bc")
+                .expectRow(3, 30000, "_bc")
+                .expectRow(4, 30000, null)
+                .expectRow(5, null, "_bc");
+
+        DataFrame idCardinality = df.cols().select(
+                $col("b").mapVal(System::identityHashCode));
+
+        assertEquals(3, idCardinality.getColumn(0).unique().size());
     }
 }
