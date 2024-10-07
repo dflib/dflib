@@ -11,15 +11,15 @@ import java.net.URISyntaxException;
 import static org.dflib.Exp.$col;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AvroLoaderTest {
+public class AvroLoader_CardinalityTest {
 
     static File _TEST1_AVRO;
     static File _TEST2_AVRO;
 
     @BeforeAll
-    public static void setupSrcDirs() throws URISyntaxException {
-        _TEST1_AVRO = new File(AvroLoaderTest.class.getResource("test1.avro").toURI()).getAbsoluteFile();
-        _TEST2_AVRO = new File(AvroLoaderTest.class.getResource("test2.avro").toURI()).getAbsoluteFile();
+    static void setupSrcDirs() throws URISyntaxException {
+        _TEST1_AVRO = new File(AvroLoader_CardinalityTest.class.getResource("test1.avro").toURI()).getAbsoluteFile();
+        _TEST2_AVRO = new File(AvroLoader_CardinalityTest.class.getResource("test2.avro").toURI()).getAbsoluteFile();
     }
 
     @Test

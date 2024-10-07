@@ -19,7 +19,7 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class ExcelLoader_LoadTest {
+public class ExcelLoader_LoadSourcesTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"one-sheet.xls", "one-sheet.xlsx"})

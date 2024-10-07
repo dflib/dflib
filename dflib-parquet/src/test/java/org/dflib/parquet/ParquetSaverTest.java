@@ -13,6 +13,7 @@ import org.dflib.DataFrame;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -32,14 +33,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Test Parquet serialization. To verify generated file content we use existing
  * Parquet Avro reader.
  */
-public class ParquetSaverTest extends BaseParquetTest {
+public class ParquetSaverTest {
+
+    @TempDir
+    Path outBase;
 
     @Test
     @DisplayName("Integer Column")
     public void integerColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of(1, 2, 3);
 
-        Path file = tempPath("integerColumn.parquet");
+        Path file = outBase.resolve("integerColumn.parquet");
         Parquet.saver().save(df, file);
 
         String schema = getSchema(file);
@@ -55,7 +59,7 @@ public class ParquetSaverTest extends BaseParquetTest {
     @DisplayName("Int Column")
     public void intColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").ofInts(0, 18, 49, 32);
-        Path file = tempPath("intColumn.parquet");
+        Path file = outBase.resolve("intColumn.parquet");
         Parquet.saver().save(df, file);
 
         String schema = getSchema(file);
@@ -73,7 +77,7 @@ public class ParquetSaverTest extends BaseParquetTest {
     public void doubleObjectColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of(1.0, 2.0, 3.0);
 
-        Path file = tempPath("doubleObjectColumn.parquet");
+        Path file = outBase.resolve("doubleObjectColumn.parquet");
         Parquet.saver().save(df, file);
 
         String schema = getSchema(file);
@@ -89,7 +93,7 @@ public class ParquetSaverTest extends BaseParquetTest {
     @DisplayName("Double Column")
     public void doubleColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").ofDoubles(0.0, 18.0, 49.0, 32.0);
-        Path file = tempPath("doubleColumn.parquet");
+        Path file = outBase.resolve("doubleColumn.parquet");
         Parquet.saver().save(df, file);
 
         String schema = getSchema(file);
@@ -106,7 +110,7 @@ public class ParquetSaverTest extends BaseParquetTest {
     public void longObjectColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of(1L, 2L, 3L);
 
-        Path file = tempPath("longObjectColumn.parquet");
+        Path file = outBase.resolve("longObjectColumn.parquet");
         Parquet.saver().save(df, file);
 
         String schema = getSchema(file);
@@ -122,7 +126,7 @@ public class ParquetSaverTest extends BaseParquetTest {
     @DisplayName("Long Column")
     public void longColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").ofLongs(0L, 18L, 49L, 32L);
-        Path file = tempPath("longColumn.parquet");
+        Path file = outBase.resolve("longColumn.parquet");
         Parquet.saver().save(df, file);
 
         String schema = getSchema(file);
@@ -139,7 +143,7 @@ public class ParquetSaverTest extends BaseParquetTest {
     public void booleanObjectColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of(true, false, true);
 
-        Path file = tempPath("booleanObjectColumn.parquet");
+        Path file = outBase.resolve("booleanObjectColumn.parquet");
         Parquet.saver().save(df, file);
 
         String schema = getSchema(file);
@@ -156,7 +160,7 @@ public class ParquetSaverTest extends BaseParquetTest {
     public void shortObjectColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of((short) 1, (short) 2, (short) 3);
 
-        Path file = tempPath("shortObjectColumn.parquet");
+        Path file = outBase.resolve("shortObjectColumn.parquet");
         Parquet.saver().save(df, file);
 
         String schema = getSchema(file);
@@ -173,7 +177,7 @@ public class ParquetSaverTest extends BaseParquetTest {
     public void byteObjectColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of((byte) 1, (byte) 2, (byte) 3);
 
-        Path file = tempPath("byteObjectColumn.parquet");
+        Path file = outBase.resolve("byteObjectColumn.parquet");
         Parquet.saver().save(df, file);
 
         String schema = getSchema(file);
@@ -190,7 +194,7 @@ public class ParquetSaverTest extends BaseParquetTest {
     public void floatObjectColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of(1.0f, 2.0f, 3.0f);
 
-        Path file = tempPath("floatObjectColumn.parquet");
+        Path file = outBase.resolve("floatObjectColumn.parquet");
         Parquet.saver().save(df, file);
 
         String schema = getSchema(file);
@@ -207,7 +211,7 @@ public class ParquetSaverTest extends BaseParquetTest {
     public void stringColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of("one", "two", "three");
 
-        Path file = tempPath("stringColumn.parquet");
+        Path file = outBase.resolve("stringColumn.parquet");
         Parquet.saver().save(df, file);
 
         String schema = getSchema(file);
@@ -227,7 +231,7 @@ public class ParquetSaverTest extends BaseParquetTest {
         UUID uuid3 = UUID.randomUUID();
         DataFrame df = DataFrame.foldByRow("a").of(uuid1, uuid2, uuid3);
 
-        Path file = tempPath("uuidColumn.parquet");
+        Path file = outBase.resolve("uuidColumn.parquet");
         Parquet.saver().save(df, file);
 
         String schema = getSchema(file);
@@ -248,7 +252,7 @@ public class ParquetSaverTest extends BaseParquetTest {
     public void enumColumn() throws IOException {
         DataFrame df = DataFrame.foldByRow("a").of(EnumValues.one, EnumValues.two, EnumValues.three);
 
-        Path file = tempPath("enumColumn.parquet");
+        Path file = outBase.resolve("enumColumn.parquet");
         Parquet.saver().save(df, file);
 
         String schema = getSchema(file);
@@ -272,7 +276,7 @@ public class ParquetSaverTest extends BaseParquetTest {
 
             DataFrame df = DataFrame.foldByRow("a").of(bigDec1, bigDec2, bigDec3);
 
-            Path file = tempPath("bigDecimalColumn.parquet");
+            Path file = outBase.resolve("bigDecimalColumn.parquet");
             Parquet.saver().bigDecimal(20, 5).save(df, file);
 
             String schema = getSchema(file);
@@ -293,7 +297,7 @@ public class ParquetSaverTest extends BaseParquetTest {
 
             DataFrame df = DataFrame.foldByRow("a").of(bigDec1, bigDec2, bigDec3);
 
-            Path file = tempPath("bigDecimalColumn.parquet");
+            Path file = outBase.resolve("bigDecimalColumn.parquet");
             Parquet.saver().bigDecimal(18, 3).save(df, file);
 
             String schema = getSchema(file);
@@ -315,7 +319,7 @@ public class ParquetSaverTest extends BaseParquetTest {
 
             DataFrame df = DataFrame.foldByRow("a").of(bigDec1, bigDec2, bigDec3);
 
-            Path file = tempPath("bigDecimalColumn.parquet");
+            Path file = outBase.resolve("bigDecimalColumn.parquet");
             Parquet.saver().bigDecimal(9, 4).save(df, file);
 
             String schema = getSchema(file);
@@ -327,7 +331,6 @@ public class ParquetSaverTest extends BaseParquetTest {
             assertEquals(987654321, reader.read().get("a"));
             assertEquals(123891373, reader.read().get("a"));
         }
-
     }
 
     @Test
@@ -339,7 +342,7 @@ public class ParquetSaverTest extends BaseParquetTest {
 
         DataFrame df = DataFrame.foldByRow("a").of(localDate1, localDate2, localDate3);
 
-        Path file = tempPath("localDateColumn.parquet");
+        Path file = outBase.resolve("localDateColumn.parquet");
         Parquet.saver().save(df, file);
 
         String schema = getSchema(file);
@@ -364,7 +367,7 @@ public class ParquetSaverTest extends BaseParquetTest {
 
             DataFrame df = DataFrame.foldByRow("a").of(localTime1, localTime2, localTime3);
 
-            Path file = tempPath("localTimeColumnMicros.parquet");
+            Path file = outBase.resolve("localTimeColumnMicros.parquet");
             Parquet.saver().save(df, file);
 
             String schema = getSchema(file);
@@ -381,9 +384,8 @@ public class ParquetSaverTest extends BaseParquetTest {
         public void localTimeColumnMillis() throws IOException {
             DataFrame df = DataFrame.foldByRow("a").of(localTime1, localTime2, localTime3);
 
-            Path file = tempPath("localTimeColumnMillis.parquet");
-            Parquet.saver().timeUnit(TimeUnit.MILLIS)
-                    .save(df, file);
+            Path file = outBase.resolve("localTimeColumnMillis.parquet");
+            Parquet.saver().timeUnit(TimeUnit.MILLIS).save(df, file);
 
             String schema = getSchema(file);
             assertTrue(schema.contains("optional int32 a (TIME(MILLIS,false));"));
@@ -408,7 +410,7 @@ public class ParquetSaverTest extends BaseParquetTest {
 
             DataFrame df = DataFrame.foldByRow("a").of(localDateTime1, localDateTime2, localDateTime3);
 
-            Path file = tempPath("localDateTimeColumnMicros.parquet");
+            Path file = outBase.resolve("localDateTimeColumnMicros.parquet");
             Parquet.saver().save(df, file);
 
             String schema = getSchema(file);
@@ -425,7 +427,7 @@ public class ParquetSaverTest extends BaseParquetTest {
         public void localDateTimeColumnMillis() throws IOException {
             DataFrame df = DataFrame.foldByRow("a").of(localDateTime1, localDateTime2, localDateTime3);
 
-            Path file = tempPath("localDateTimeColumnMillis.parquet");
+            Path file = outBase.resolve("localDateTimeColumnMillis.parquet");
             Parquet.saver().timeUnit(TimeUnit.MILLIS)
                     .save(df, file);
 
@@ -455,7 +457,7 @@ public class ParquetSaverTest extends BaseParquetTest {
 
             DataFrame df = DataFrame.foldByRow("a").of(instant1, instant2, instant3);
 
-            Path file = tempPath("instantColumnMicros.parquet");
+            Path file = outBase.resolve("instantColumnMicros.parquet");
             Parquet.saver().save(df, file);
 
             String schema = getSchema(file);
@@ -472,9 +474,8 @@ public class ParquetSaverTest extends BaseParquetTest {
         public void instantColumnMillis() throws IOException {
             DataFrame df = DataFrame.foldByRow("a").of(instant1, instant2, instant3);
 
-            Path file = tempPath("instantColumnMillis.parquet");
-            Parquet.saver().timeUnit(TimeUnit.MILLIS)
-                    .save(df, file);
+            Path file = outBase.resolve("instantColumnMillis.parquet");
+            Parquet.saver().timeUnit(TimeUnit.MILLIS).save(df, file);
 
             String schema = getSchema(file);
             assertTrue(schema.contains("optional int64 a (TIMESTAMP(MILLIS,true));"));
@@ -495,7 +496,7 @@ public class ParquetSaverTest extends BaseParquetTest {
                 .append(11, 12L, 13.0, 14.0f, false, "bar")
                 .toDataFrame();
 
-        Path file = tempPath("multipleColumnTypes.parquet");
+        Path file = outBase.resolve("multipleColumnTypes.parquet");
         Parquet.saver().save(df, file);
 
         String schema = getSchema(file);
@@ -533,7 +534,7 @@ public class ParquetSaverTest extends BaseParquetTest {
                 .append(null, null, null, null, null, null)
                 .toDataFrame();
 
-        Path file = tempPath("nullValues.parquet");
+        Path file = outBase.resolve("nullValues.parquet");
         Parquet.saver().save(df, file);
 
         String schema = getSchema(file);

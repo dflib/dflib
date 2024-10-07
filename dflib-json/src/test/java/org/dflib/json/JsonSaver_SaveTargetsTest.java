@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class JsonSaver_SaveTargetsTest {
 
     @TempDir
-    Path OUT_BASE;
+    Path outBase;
 
     @Test
     public void saveToAppendable() {
@@ -53,7 +53,7 @@ public class JsonSaver_SaveTargetsTest {
                 2, "C",
                 3, "D");
 
-        Path out = OUT_BASE.resolve("saveToPath.json");
+        Path out = outBase.resolve("saveToPath.json");
         new JsonSaver().save(df, out);
 
         String json = Files.readString(out);
@@ -71,7 +71,7 @@ public class JsonSaver_SaveTargetsTest {
                 2, "C",
                 3, "D");
 
-        Path out = OUT_BASE.resolve("saveToPath.json");
+        Path out = outBase.resolve("saveToFile.json");
         new JsonSaver().save(df, out.toFile());
 
         String json = Files.readString(out);

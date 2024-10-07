@@ -4,12 +4,19 @@ import org.dflib.DataFrame;
 import org.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import java.io.File;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class Parquet_CompressionTest extends BaseParquetTest {
+public class Parquet_CompressionTest {
+
+    @TempDir
+    static Path uncompressedBase;
+
+    @TempDir
+    Path outBase;
 
     static final DataFrame df = DataFrame.foldByRow("a", "b", "c")
             .of(
@@ -22,23 +29,27 @@ public class Parquet_CompressionTest extends BaseParquetTest {
 
     @BeforeAll
     static void measureUncompressed() {
-        File file = tempFile("uncompressed.parquet");
-        Parquet.saver().save(df, file);
+        Path out = uncompressedBase.resolve("uncompressed.parquet");
+        Parquet.saver().save(df, out);
 
-        UNCOMPRESSED_SIZE = file.length();
+        UNCOMPRESSED_SIZE = out.toFile().length();
         assertTrue(UNCOMPRESSED_SIZE > 0);
+    }
+
+    private void checkCompressed(Path path) {
+        assertTrue(path.toFile().length() < UNCOMPRESSED_SIZE, () -> "Failed to compress: " + path.toFile().length() + " vs " + UNCOMPRESSED_SIZE);
     }
 
     @Test
     public void gzip() {
-        File file = tempFile("gzip.parquet");
+        Path out = outBase.resolve("gzip.parquet");
         Parquet.saver()
                 .compression(CompressionCodec.GZIP)
-                .save(df, file);
+                .save(df, out);
 
-        assertTrue(file.length() < UNCOMPRESSED_SIZE, () -> "Failed to compress: " + file.length() + " vs " + UNCOMPRESSED_SIZE);
+        checkCompressed(out);
 
-        DataFrame loaded = Parquet.loader().load(file);
+        DataFrame loaded = Parquet.loader().load(out);
         new DataFrameAsserts(loaded, df.getColumnsIndex())
                 .expectHeight(3)
                 .expectRow(0, 4.0f, true, "abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd")
@@ -48,14 +59,14 @@ public class Parquet_CompressionTest extends BaseParquetTest {
 
     @Test
     public void snappy() {
-        File file = tempFile("snappy.parquet");
+        Path out = outBase.resolve("snappy.parquet");
         Parquet.saver()
                 .compression(CompressionCodec.SNAPPY)
-                .save(df, file);
+                .save(df, out);
 
-        assertTrue(file.length() < UNCOMPRESSED_SIZE, () -> "Failed to compress: " + file.length() + " vs " + UNCOMPRESSED_SIZE);
+        checkCompressed(out);
 
-        DataFrame loaded = Parquet.loader().load(file);
+        DataFrame loaded = Parquet.loader().load(out);
         new DataFrameAsserts(loaded, df.getColumnsIndex())
                 .expectHeight(3)
                 .expectRow(0, 4.0f, true, "abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd")
@@ -65,14 +76,14 @@ public class Parquet_CompressionTest extends BaseParquetTest {
 
     @Test
     public void lz4_raw() {
-        File file = tempFile("lz4_raw.parquet");
+        Path out = outBase.resolve("lz4_raw.parquet");
         Parquet.saver()
                 .compression(CompressionCodec.LZ4_RAW)
-                .save(df, file);
+                .save(df, out);
 
-        assertTrue(file.length() < UNCOMPRESSED_SIZE, () -> "Failed to compress: " + file.length() + " vs " + UNCOMPRESSED_SIZE);
+        checkCompressed(out);
 
-        DataFrame loaded = Parquet.loader().load(file);
+        DataFrame loaded = Parquet.loader().load(out);
         new DataFrameAsserts(loaded, df.getColumnsIndex())
                 .expectHeight(3)
                 .expectRow(0, 4.0f, true, "abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd")
@@ -82,14 +93,14 @@ public class Parquet_CompressionTest extends BaseParquetTest {
 
     @Test
     public void zstd() {
-        File file = tempFile("zstd.parquet");
+        Path out = outBase.resolve("zstd.parquet");
         Parquet.saver()
                 .compression(CompressionCodec.ZSTD)
-                .save(df, file);
+                .save(df, out);
 
-        assertTrue(file.length() < UNCOMPRESSED_SIZE, () -> "Failed to compress: " + file.length() + " vs " + UNCOMPRESSED_SIZE);
+        checkCompressed(out);
 
-        DataFrame loaded = Parquet.loader().load(file);
+        DataFrame loaded = Parquet.loader().load(out);
         new DataFrameAsserts(loaded, df.getColumnsIndex())
                 .expectHeight(3)
                 .expectRow(0, 4.0f, true, "abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd")

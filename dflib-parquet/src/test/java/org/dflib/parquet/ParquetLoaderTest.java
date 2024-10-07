@@ -2,15 +2,12 @@ package org.dflib.parquet;
 
 import org.dflib.DataFrame;
 import org.dflib.junit5.DataFrameAsserts;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -20,76 +17,21 @@ import java.util.UUID;
 
 import static java.time.Instant.ofEpochSecond;
 import static java.time.ZoneOffset.ofHours;
-import static org.dflib.Exp.$col;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Test Parquet deserialization. Given that saver has been tested, we can use it
- * to generate content to read and test
+ * Test Parquet deserialization. Given that saver has been tested, we can use it to generate content to read and test
  */
-public class ParquetLoaderTest extends BaseParquetTest {
+public class ParquetLoaderTest {
 
-    static File _TEST1_PARQUET;
-
-    @BeforeAll
-    public static void setupSrcDirs() throws URISyntaxException {
-        // the file is intentionally created with "parquet" tool, not DFLib
-        _TEST1_PARQUET = new File(ParquetLoaderTest.class.getResource("test1.parquet").toURI()).getAbsoluteFile();
-    }
-
-    @Test
-    public void valueCardinality() {
-        DataFrame df = new ParquetLoader().load(_TEST1_PARQUET);
-
-        new DataFrameAsserts(df, "a", "b")
-                .expectHeight(6)
-                .expectRow(0, 1, "ab")
-                .expectRow(1, 40000, "ab")
-                .expectRow(2, 40000, "bc")
-                .expectRow(3, 30000, "bc")
-                .expectRow(4, 30000, null)
-                .expectRow(5, null, "bc");
-
-        DataFrame idCardinality = df.cols().select(
-                $col("a").mapVal(System::identityHashCode),
-                $col("b").mapVal(System::identityHashCode));
-
-        // looks like Parquet interns deserialized Strings (but not integers or other types),
-        // so String id cardinality is reduced by default
-        assertEquals(6, idCardinality.getColumn(0).unique().size());
-        assertEquals(3, idCardinality.getColumn(1).unique().size());
-    }
-
-    @Test
-    public void valueCardinality_compactCol_Name() {
-        DataFrame df = new ParquetLoader()
-                .compactCol("a")
-                .compactCol("b")
-                .load(_TEST1_PARQUET);
-
-        new DataFrameAsserts(df, "a", "b")
-                .expectHeight(6)
-                .expectRow(0, 1, "ab")
-                .expectRow(1, 40000, "ab")
-                .expectRow(2, 40000, "bc")
-                .expectRow(3, 30000, "bc")
-                .expectRow(4, 30000, null)
-                .expectRow(5, null, "bc");
-
-        DataFrame idCardinality = df.cols().select(
-                $col("a").mapVal(System::identityHashCode),
-                $col("b").mapVal(System::identityHashCode));
-
-        assertEquals(4, idCardinality.getColumn(0).unique().size());
-        assertEquals(3, idCardinality.getColumn(1).unique().size());
-    }
+    @TempDir
+    Path outBase;
 
     @Test
     @DisplayName("Integer Column")
-    public void integerColumn() throws IOException {
+    public void integerColumn() {
         DataFrame df = DataFrame.foldByRow("a").of(1, 2, 3);
 
-        Path file = tempPath("integerColumn.parquet");
+        Path file = outBase.resolve("integerColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -105,7 +47,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
     @DisplayName("Int Column")
     public void intColumn() {
         DataFrame df = DataFrame.foldByRow("a").ofInts(0, 18, 49, 32);
-        Path file = tempPath("intColumn.parquet");
+        Path file = outBase.resolve("intColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -123,7 +65,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
     public void doubleObjectColumn() {
         DataFrame df = DataFrame.foldByRow("a").of(1.0, 2.0, 3.0);
 
-        Path file = tempPath("doubleObjectColumn.parquet");
+        Path file = outBase.resolve("doubleObjectColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -139,7 +81,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
     @DisplayName("Double Column")
     public void doubleColumn() {
         DataFrame df = DataFrame.foldByRow("a").ofDoubles(0.0, 18.0, 49.0, 32.0);
-        Path file = tempPath("doubleColumn.parquet");
+        Path file = outBase.resolve("doubleColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -156,7 +98,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
     public void longObjectColumn() {
         DataFrame df = DataFrame.foldByRow("a").of(1L, 2L, 3L);
 
-        Path file = tempPath("longObjectColumn.parquet");
+        Path file = outBase.resolve("longObjectColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -172,7 +114,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
     @DisplayName("Long Column")
     public void longColumn() {
         DataFrame df = DataFrame.foldByRow("a").ofLongs(0L, 18L, 49L, 32L);
-        Path file = tempPath("longColumn.parquet");
+        Path file = outBase.resolve("longColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -189,7 +131,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
     public void booleanObjectColumn() {
         DataFrame df = DataFrame.foldByRow("a").of(true, false, true);
 
-        Path file = tempPath("booleanObjectColumn.parquet");
+        Path file = outBase.resolve("booleanObjectColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -206,7 +148,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
     public void shortObjectColumn() {
         DataFrame df = DataFrame.foldByRow("a").of((short) 1, (short) 2, (short) 3);
 
-        Path file = tempPath("shortObjectColumn.parquet");
+        Path file = outBase.resolve("shortObjectColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -223,7 +165,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
     public void byteObjectColumn() {
         DataFrame df = DataFrame.foldByRow("a").of((byte) 1, (byte) 2, (byte) 3);
 
-        Path file = tempPath("byteObjectColumn.parquet");
+        Path file = outBase.resolve("byteObjectColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -240,7 +182,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
     public void floatObjectColumn() {
         DataFrame df = DataFrame.foldByRow("a").of(1.0f, 2.0f, 3.0f);
 
-        Path file = tempPath("floatObjectColumn.parquet");
+        Path file = outBase.resolve("floatObjectColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -257,7 +199,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
     public void stringColumn() {
         DataFrame df = DataFrame.foldByRow("a").of("one", "two", "three");
 
-        Path file = tempPath("stringColumn.parquet");
+        Path file = outBase.resolve("stringColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -277,7 +219,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
         UUID uuid3 = UUID.randomUUID();
         DataFrame df = DataFrame.foldByRow("a").of(uuid1, uuid2, uuid3);
 
-        Path file = tempPath("uuidColumn.parquet");
+        Path file = outBase.resolve("uuidColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -298,7 +240,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
     public void enumColumn() {
         DataFrame df = DataFrame.foldByRow("a").of(EnumValues.one, EnumValues.two, EnumValues.three);
 
-        Path file = tempPath("enumColumn.parquet");
+        Path file = outBase.resolve("enumColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -324,7 +266,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
             DataFrame df = DataFrame.foldByRow("a").of(bigDec1, bigDec2, bigDec3);
 
-            Path file = tempPath("bigDecimalColumn.parquet");
+            Path file = outBase.resolve("bigDecimalColumn.parquet");
             Parquet.saver().bigDecimal(20, 5).save(df, file);
 
             DataFrame dfRead = Parquet.loader().load(file);
@@ -345,7 +287,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
             DataFrame df = DataFrame.foldByRow("a").of(bigDec1, bigDec2, bigDec3);
 
-            Path file = tempPath("bigDecimalColumn.parquet");
+            Path file = outBase.resolve("bigDecimalColumn.parquet");
             Parquet.saver().bigDecimal(18, 3).save(df, file);
 
             DataFrame dfRead = Parquet.loader().load(file);
@@ -367,7 +309,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
             DataFrame df = DataFrame.foldByRow("a").of(bigDec1, bigDec2, bigDec3);
 
-            Path file = tempPath("bigDecimalColumn.parquet");
+            Path file = outBase.resolve("bigDecimalColumn.parquet");
             Parquet.saver().bigDecimal(9, 4).save(df, file);
 
             DataFrame dfRead = Parquet.loader().load(file);
@@ -390,7 +332,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
         DataFrame df = DataFrame.foldByRow("a").of(localDate1, localDate2, localDate3);
 
-        Path file = tempPath("localDateColumn.parquet");
+        Path file = outBase.resolve("localDateColumn.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -415,7 +357,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
             DataFrame df = DataFrame.foldByRow("a").of(localTime1, localTime2, localTime3);
 
-            Path file = tempPath("localTimeColumnMicros.parquet");
+            Path file = outBase.resolve("localTimeColumnMicros.parquet");
             Parquet.saver().save(df, file);
 
             DataFrame dfRead = Parquet.loader().load(file);
@@ -432,7 +374,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
         public void localTimeColumnMillis() {
             DataFrame df = DataFrame.foldByRow("a").of(localTime1, localTime2, localTime3);
 
-            Path file = tempPath("localTimeColumnMillis.parquet");
+            Path file = outBase.resolve("localTimeColumnMillis.parquet");
             Parquet.saver().timeUnit(TimeUnit.MILLIS)
                     .save(df, file);
 
@@ -459,7 +401,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
             DataFrame df = DataFrame.foldByRow("a").of(localDateTime1, localDateTime2, localDateTime3);
 
-            Path file = tempPath("localDateTimeColumnMicros.parquet");
+            Path file = outBase.resolve("localDateTimeColumnMicros.parquet");
             Parquet.saver().save(df, file);
 
             DataFrame dfRead = Parquet.loader().load(file);
@@ -476,7 +418,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
         public void localDateTimeColumnMillis() {
             DataFrame df = DataFrame.foldByRow("a").of(localDateTime1, localDateTime2, localDateTime3);
 
-            Path file = tempPath("localDateTimeColumnMillis.parquet");
+            Path file = outBase.resolve("localDateTimeColumnMillis.parquet");
             Parquet.saver().timeUnit(TimeUnit.MILLIS)
                     .save(df, file);
 
@@ -506,7 +448,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
 
             DataFrame df = DataFrame.foldByRow("a").of(instant1, instant2, instant3);
 
-            Path file = tempPath("instantColumnMicros.parquet");
+            Path file = outBase.resolve("instantColumnMicros.parquet");
             Parquet.saver().save(df, file);
 
             DataFrame dfRead = Parquet.loader().load(file);
@@ -524,7 +466,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
         public void instantColumnMillis() {
             DataFrame df = DataFrame.foldByRow("a").of(instant1, instant2, instant3);
 
-            Path file = tempPath("instantColumnMillis.parquet");
+            Path file = outBase.resolve("instantColumnMillis.parquet");
             Parquet.saver().timeUnit(TimeUnit.MILLIS)
                     .save(df, file);
 
@@ -547,7 +489,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
                 .append(11, 12L, 13.0, 14.0f, false, "bar")
                 .toDataFrame();
 
-        Path file = tempPath("multipleColumnTypes.parquet");
+        Path file = outBase.resolve("multipleColumnTypes.parquet");
         Parquet.saver().save(df, file);
 
         DataFrame dfRead = Parquet.loader().load(file);
@@ -567,7 +509,7 @@ public class ParquetLoaderTest extends BaseParquetTest {
                 .append(null, null, null, null, null, null)
                 .toDataFrame();
 
-        Path file = tempPath("nullValues.parquet");
+        Path file = outBase.resolve("nullValues.parquet");
         Parquet.saver().save(df, file);
         DataFrame dfRead = Parquet.loader().load(file);
 

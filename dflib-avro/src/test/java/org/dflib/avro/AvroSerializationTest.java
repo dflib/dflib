@@ -5,11 +5,15 @@ import org.dflib.DataFrame;
 import org.dflib.Series;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.*;
 
-public class AvroSerializationTest extends BaseAvroSerializationTest {
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class AvroSerializationTest {
 
     @Test
     public void ints() {
@@ -201,6 +205,24 @@ public class AvroSerializationTest extends BaseAvroSerializationTest {
                 .expectHeight(2)
                 .expectColumn("c1", null, null)
                 .expectColumn("c2", null, null);
+    }
+
+    private DataFrame saveAndLoad(DataFrame df) {
+        return load(save(df));
+    }
+
+    private byte[] save(DataFrame df) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Avro.save(df, out);
+        byte[] bytes = out.toByteArray();
+        assertTrue(bytes.length > 0, "No bytes generated");
+        return bytes;
+    }
+
+    private DataFrame load(byte[] bytes) {
+        DataFrame df = Avro.load(bytes);
+        assertNotNull(df);
+        return df;
     }
 
     public enum TestEnum1 {

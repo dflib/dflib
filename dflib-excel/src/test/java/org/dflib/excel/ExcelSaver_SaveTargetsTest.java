@@ -3,27 +3,31 @@ package org.dflib.excel;
 import org.dflib.DataFrame;
 import org.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
+import java.nio.file.Path;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ExcelSaver_SaveTest extends BaseExcelTest {
+public class ExcelSaver_SaveTargetsTest {
+
+    static final DataFrame df1 = DataFrame.foldByRow("C1", "C2").of(
+            "a", "b",
+            "c", "d");
+
+    static final DataFrame df2 = DataFrame.foldByRow("C3", "C4").of(
+            "e", "f",
+            "g", "h");
+
+    @TempDir
+    Path outBase;
 
     @Test
     public void save_ToStream() {
-
-        DataFrame df1 = DataFrame.foldByRow("C1", "C2").of(
-                "a", "b",
-                "c", "d");
-
-        DataFrame df2 = DataFrame.foldByRow("C3", "C4").of(
-                "e", "f",
-                "g", "h");
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Excel.saver().save(Map.of("df1", df1, "df2", df2), out);
@@ -45,23 +49,14 @@ public class ExcelSaver_SaveTest extends BaseExcelTest {
     }
 
     @Test
-    public void saveSheet_ToFile() {
+    public void save_ToPath() {
 
-        File file = new File(outPath("testSave_ToFile.xlsx"));
-
-        DataFrame df1 = DataFrame.foldByRow("C1", "C2").of(
-                "a", "b",
-                "c", "d");
-
-        DataFrame df2 = DataFrame.foldByRow("C3", "C4").of(
-                "e", "f",
-                "g", "h");
-
-        Excel.saver().save(Map.of("df1", df1, "df2", df2), file);
+        Path out = outBase.resolve("save_ToPath.csv");
+        Excel.saver().save(Map.of("df1", df1, "df2", df2), out);
 
         Map<String, DataFrame> reload = Excel.loader()
                 .firstRowAsHeader()
-                .load(file);
+                .load(out);
 
         assertEquals(2, reload.size());
         new DataFrameAsserts(reload.get("df1"), "C1", "C2")
@@ -76,23 +71,14 @@ public class ExcelSaver_SaveTest extends BaseExcelTest {
     }
 
     @Test
-    public void saveSheet_ToFilePath() {
+    public void save_ToFile() {
 
-        String filePath = outPath("testSave_ToFilePath.xlsx");
-
-        DataFrame df1 = DataFrame.foldByRow("C1", "C2").of(
-                "a", "b",
-                "c", "d");
-
-        DataFrame df2 = DataFrame.foldByRow("C3", "C4").of(
-                "e", "f",
-                "g", "h");
-
-        Excel.saver().save(Map.of("df1", df1, "df2", df2), filePath);
+        Path out = outBase.resolve("save_ToFile.csv");
+        Excel.saver().save(Map.of("df1", df1, "df2", df2), out.toFile());
 
         Map<String, DataFrame> reload = Excel.loader()
                 .firstRowAsHeader()
-                .load(filePath);
+                .load(out);
 
         assertEquals(2, reload.size());
         new DataFrameAsserts(reload.get("df1"), "C1", "C2")
@@ -107,24 +93,36 @@ public class ExcelSaver_SaveTest extends BaseExcelTest {
     }
 
     @Test
-    public void saveSheet_Mkdirs() {
+    public void save_ToFilePath() {
 
-        String path = outPath("Mkdirs" + File.separator + "f2" + File.separator + "testSave_Mkdirs.xlsx");
-        File file = new File(path);
-
-        DataFrame df1 = DataFrame.foldByRow("C1", "C2").of(
-                "a", "b",
-                "c", "d");
-
-        DataFrame df2 = DataFrame.foldByRow("C3", "C4").of(
-                "e", "f",
-                "g", "h");
-
-        Excel.saver().createMissingDirs().save(Map.of("df1", df1, "df2", df2), file);
+        Path out = outBase.resolve("save_ToFilePath.csv");
+        Excel.saver().save(Map.of("df1", df1, "df2", df2), out.toFile().getAbsolutePath());
 
         Map<String, DataFrame> reload = Excel.loader()
                 .firstRowAsHeader()
-                .load(file);
+                .load(out);
+
+        assertEquals(2, reload.size());
+        new DataFrameAsserts(reload.get("df1"), "C1", "C2")
+                .expectHeight(2)
+                .expectRow(0, "a", "b")
+                .expectRow(1, "c", "d");
+
+        new DataFrameAsserts(reload.get("df2"), "C3", "C4")
+                .expectHeight(2)
+                .expectRow(0, "e", "f")
+                .expectRow(1, "g", "h");
+    }
+
+    @Test
+    public void save_ToPath_Mkdirs() {
+
+        Path out = outBase.resolve("dir").resolve("save_ToPath_Mkdirs.csv");
+        Excel.saver().createMissingDirs().save(Map.of("df1", df1, "df2", df2), out);
+
+        Map<String, DataFrame> reload = Excel.loader()
+                .firstRowAsHeader()
+                .load(out);
 
         assertEquals(2, reload.size());
         new DataFrameAsserts(reload.get("df1"), "C1", "C2")
@@ -141,17 +139,7 @@ public class ExcelSaver_SaveTest extends BaseExcelTest {
     @Test
     public void saveSheet_NoMkdirs() {
 
-        String path = outPath("NoMkdirs" + File.separator + "f4" + File.separator + "testSave_NoMkdirs.xlsx");
-        File file = new File(path);
-
-        DataFrame df1 = DataFrame.foldByRow("C1", "C2").of(
-                "a", "b",
-                "c", "d");
-
-        DataFrame df2 = DataFrame.foldByRow("C3", "C4").of(
-                "e", "f",
-                "g", "h");
-
-        assertThrows(RuntimeException.class, () -> Excel.saver().save(Map.of("df1", df1, "df2", df2), file));
+        Path out = outBase.resolve("dir").resolve("save_ToPath_Mkdirs.csv");
+        assertThrows(RuntimeException.class, () -> Excel.saver().save(Map.of("df1", df1, "df2", df2), out));
     }
 }
