@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 import static org.dflib.Exp.$col;
@@ -197,6 +199,35 @@ public class JsonLoaderTest {
                 .expectRow(1, LocalDate.parse("2022-03-16"))
                 .expectRow(2, LocalDate.parse("2023-03-18"));
     }
+
+    @Test
+    @DisplayName("$.* : time column")
+    public void timeColumn() {
+        String json = "[{\"a\":\"00:01:02\"},{\"a\":\"00:02:03\"},{\"a\":\"00:03:04\"}]";
+        DataFrame df = Json.loader()
+                .timeCol("a")
+                .load(json);
+        new DataFrameAsserts(df, "a")
+                .expectHeight(3)
+                .expectRow(0, LocalTime.parse("00:01:02"))
+                .expectRow(1, LocalTime.parse("00:02:03"))
+                .expectRow(2, LocalTime.parse("00:03:04"));
+    }
+
+    @Test
+    @DisplayName("$.* : time column")
+    public void timeColumn_Formatter() {
+        String json = "[{\"a\":\"00_01_02\"},{\"a\":\"00_02_03\"},{\"a\":\"00_03_04\"}]";
+        DataFrame df = Json.loader()
+                .timeCol("a", DateTimeFormatter.ofPattern("H_m_s"))
+                .load(json);
+        new DataFrameAsserts(df, "a")
+                .expectHeight(3)
+                .expectRow(0, LocalTime.parse("00:01:02"))
+                .expectRow(1, LocalTime.parse("00:02:03"))
+                .expectRow(2, LocalTime.parse("00:03:04"));
+    }
+
 
     @Test
     @DisplayName("$.* : datetime column")
