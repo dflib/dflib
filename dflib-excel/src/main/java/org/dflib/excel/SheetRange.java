@@ -67,7 +67,6 @@ class SheetRange {
         }
 
         return rows >= height
-                // TODO: should the first condition return "this"?
                 ? new SheetRange(startCol, endCol, endRow, endRow)
                 : new SheetRange(startCol, endCol, startRow + rows, endRow);
     }
@@ -78,12 +77,11 @@ class SheetRange {
         }
 
         return rows >= height
-                // TODO: should the first condition return "this"?
                 ? new SheetRange(startCol, endCol, endRow, endRow)
                 : new SheetRange(startCol, endCol, startRow, startRow + rows);
     }
 
-    Index columns() {
+    Index header() {
         String[] names = new String[width];
 
         for (int i = 0; i < width; i++) {
@@ -91,5 +89,19 @@ class SheetRange {
         }
 
         return Index.of(names);
+    }
+
+    Index header(Row row) {
+
+        Index defaultHeader = header();
+        String[] labels = new String[width];
+
+        for (int i = 0; i < width; i++) {
+            int pos = startCol + i;
+            Object val = ColConfigurator.value(row, pos);
+            labels[i] = val != null ? val.toString() : defaultHeader.get(i);
+        }
+
+        return Index.ofDeduplicated(labels);
     }
 }

@@ -1,21 +1,15 @@
 package org.dflib.excel;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.DateUtil;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.dflib.DataFrame;
-import org.dflib.Extractor;
-import org.dflib.Index;
-import org.dflib.builder.DataFrameAppender;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -25,11 +19,15 @@ import java.util.Objects;
  */
 public class ExcelLoader {
 
+    private final SheetLoader defaultSheetLoader;
+    private final Map<String, SheetLoader> sheetLoaders;
+
     // TODO: add builder method to capture Excel file password
 
-    private boolean firstRowAsHeader;
-    private int offset;
-    private int limit = -1;
+    public ExcelLoader() {
+        this.defaultSheetLoader = new SheetLoader();
+        this.sheetLoaders = new HashMap<>();
+    }
 
     /**
      * Generates header index from the first row. If {@link #offset(int)} is in use, this will be the first non-skipped
@@ -38,29 +36,39 @@ public class ExcelLoader {
      * @since 0.14
      */
     public ExcelLoader firstRowAsHeader() {
-        this.firstRowAsHeader = true;
+        defaultSheetLoader.firstRowAsHeader();
         return this;
     }
 
     /**
-     * Skips the specified number of rows. This counter only applies to non-phantom rows. I.e. those rows that have
+     * Sets configuration specific to a given sheet.
+     *
+     * @since 1.0.0-RC1
+     */
+    public ExcelLoader sheet(String sheetName, SheetLoader sheetLoader) {
+        sheetLoaders.put(sheetName, sheetLoader);
+        return this;
+    }
+
+    /**
+     * Skips the specified number of rows. This counter only applies to non-phantom rows. I.e., those rows that have
      * non-empty cells. Phantom rows are skipped automatically.
      *
      * @since 1.0.0-M20
      */
     public ExcelLoader offset(int len) {
-        this.offset = len;
+        defaultSheetLoader.offset(len);
         return this;
     }
 
     /**
-     * Limits the max number of rows to the provided value. This counter only applies to non-phantom rows. I.e. those
+     * Limits the max number of rows to the provided value. This counter only applies to non-phantom rows. I.e., those
      * rows that have non-empty cells. Phantom rows are skipped automatically.
      *
      * @since 1.0.0-M20
      */
     public ExcelLoader limit(int len) {
-        this.limit = len;
+        defaultSheetLoader.limit(len);
         return this;
     }
 
@@ -68,34 +76,12 @@ public class ExcelLoader {
      * @since 0.14
      */
     public DataFrame loadSheet(Sheet sheet) {
+        SheetLoader storedSl = sheetLoaders.get(sheet.getSheetName());
 
-        // Don't skip empty rows or columns in the middle of a range, but truncate leading empty rows and columns
-        int limit = this.limit >= 0 ? (firstRowAsHeader ? this.limit + 1 : this.limit) : -1;
-        SheetRange range = SheetRange.valuesRange(sheet).offset(offset).limit(limit);
-        if (range.width == 0) {
-            return DataFrame.empty();
-        }
+        // note that the stored SheetLoader is mutated here
+        SheetLoader sl = storedSl != null ? storedSl.mergeWith(defaultSheetLoader) : defaultSheetLoader;
 
-        if (range.height == 0) {
-            return DataFrame.empty(range.columns());
-        }
-
-        Index defaultIndex = range.columns();
-        Row row0 = getRow(sheet, range, 0);
-        Index index = firstRowAsHeader && row0 != null ? createIndex(defaultIndex, row0, range.startCol, range.width) : defaultIndex;
-        Extractor<Row, ?>[] extractors = createExtractors(range.startCol, range.width);
-
-        DataFrameAppender<Row> builder = DataFrame.byRow(extractors).columnIndex(index).appender();
-
-        if (!firstRowAsHeader) {
-            builder.append(row0);
-        }
-
-        for (int r = 1; r < range.height; r++) {
-            builder.append(getRow(sheet, range, r));
-        }
-
-        return builder.toDataFrame();
+        return sl.load(sheet);
     }
 
     public DataFrame loadSheet(InputStream in, String sheetName) {
@@ -222,67 +208,6 @@ public class ExcelLoader {
             return WorkbookFactory.create(in);
         } catch (IOException e) {
             throw new RuntimeException("Error reading Excel data", e);
-        }
-    }
-
-    private Extractor<Row, ?>[] createExtractors(int startCol, int w) {
-        Extractor<Row, ?>[] extractors = new Extractor[w];
-
-        for (int i = 0; i < w; i++) {
-            int pos = startCol + i;
-            extractors[i] = Extractor.$col(r -> value(r, pos));
-        }
-
-        return extractors;
-    }
-
-    private Index createIndex(Index excelColumns, Row row, int startCol, int w) {
-
-        String[] labels = new String[w];
-
-        for (int i = 0; i < w; i++) {
-            int pos = startCol + i;
-            Object val = value(row, pos);
-            labels[i] = val != null ? val.toString() : excelColumns.get(i);
-        }
-
-        return Index.ofDeduplicated(labels);
-    }
-
-    private Row getRow(Sheet sh, SheetRange range, int rowOffset) {
-        return sh.getRow(range.startRow + rowOffset);
-    }
-
-    private Object value(Row row, int pos) {
-        if (row == null) {
-            return null;
-        }
-
-        Cell cell = row.getCell(pos, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
-        return cell != null ? value(cell) : null;
-    }
-
-    private Object value(Cell cell) {
-
-        CellType type = cell.getCellType() == CellType.FORMULA
-                ? cell.getCachedFormulaResultType() : cell.getCellType();
-
-        switch (type) {
-            case STRING:
-                return cell.getStringCellValue();
-            case NUMERIC:
-                // TODO: check the actual format to return LocalDate, LocalDateTime or smth else
-                return DateUtil.isCellDateFormatted(cell)
-                        ? cell.getLocalDateTimeCellValue()
-                        : cell.getNumericCellValue();
-            case BOOLEAN:
-                return cell.getBooleanCellValue();
-            case FORMULA:
-                throw new IllegalStateException("FORMULA is unexpected as a FORMULA cell result");
-            case BLANK:
-            case ERROR:
-            default:
-                return null;
         }
     }
 }

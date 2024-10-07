@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 
+import static org.dflib.Exp.$col;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ExcelLoader_LoadSheetTest {
@@ -238,6 +239,195 @@ public class ExcelLoader_LoadSheetTest {
         try (InputStream in = getClass().getResourceAsStream("one-sheet.xlsx")) {
             DataFrame s1 = new ExcelLoader().limit(0).loadSheet(in, "Sheet1");
             new DataFrameAsserts(s1, "A", "B").expectHeight(0);
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"cardinality.xls", "cardinality.xlsx"})
+    public void valueCardinality_Nulls(String source) throws IOException {
+        try (InputStream in = getClass().getResourceAsStream(source)) {
+            DataFrame df = new ExcelLoader().loadSheet(in, "Sheet1");
+
+            new DataFrameAsserts(df, "A", "B")
+                    .expectHeight(6)
+                    .expectRow(0, 1.0, "ab")
+                    .expectRow(1, 40000.0, "ab")
+                    .expectRow(2, 40000.0, "bc")
+                    .expectRow(3, 30000.0, "bc")
+                    .expectRow(4, 30000.0, null)
+                    .expectRow(5, null, "bc");
+
+            DataFrame idCardinality = df.cols().select(
+                    $col("A").mapVal(System::identityHashCode),
+                    $col("B").mapVal(System::identityHashCode));
+
+            // looks like POI interns deserialized Excel Strings (but not double or other types),
+            // so String id cardinality is reduced by default
+            assertEquals(6, idCardinality.getColumn(0).unique().size());
+            assertEquals(3, idCardinality.getColumn(1).unique().size());
+        }
+    }
+
+    @Test
+    public void valueCardinality_compactCol_Name() throws IOException {
+
+        try (InputStream in = getClass().getResourceAsStream("cardinality.xlsx")) {
+            DataFrame df = new ExcelLoader()
+                    .sheet("Sheet1", SheetLoader.of().compactCol("A").compactCol("B"))
+                    .loadSheet(in, "Sheet1");
+
+            new DataFrameAsserts(df, "A", "B")
+                    .expectHeight(6)
+                    .expectRow(0, 1.0, "ab")
+                    .expectRow(1, 40000.0, "ab")
+                    .expectRow(2, 40000.0, "bc")
+                    .expectRow(3, 30000.0, "bc")
+                    .expectRow(4, 30000.0, null)
+                    .expectRow(5, null, "bc");
+
+            DataFrame idCardinality = df.cols().select(
+                    $col("A").mapVal(System::identityHashCode),
+                    $col("B").mapVal(System::identityHashCode));
+
+            assertEquals(4, idCardinality.getColumn(0).unique().size());
+            assertEquals(3, idCardinality.getColumn(1).unique().size());
+        }
+    }
+
+    @Test
+    public void valueCardinality_compactCol_Name_MidRange() throws IOException {
+
+        try (InputStream in = getClass().getResourceAsStream("cardinality-midrange.xlsx")) {
+            DataFrame df = new ExcelLoader()
+                    .sheet("Sheet1", SheetLoader.of()
+                            // "A" is out of range and should be ignored
+                            .compactCol("A")
+
+                            // "B" is in range, but we leave it as sparse
+
+                            // "C" and "D" are in range and should be compacted
+                            .compactCol("C")
+                            .compactCol("D"))
+                    .loadSheet(in, "Sheet1");
+
+            new DataFrameAsserts(df, "B", "C", "D")
+                    .expectHeight(6)
+                    .expectRow(0, 1.0, "ab", 1.0)
+                    .expectRow(1, 40000.0, "ab", 40000.0)
+                    .expectRow(2, 40000.0, "bc", 40000.0)
+                    .expectRow(3, 30000.0, "bc", 30000.0)
+                    .expectRow(4, 30000.0, null, 30000.0)
+                    .expectRow(5, null, "bc", null);
+
+            DataFrame idCardinality = df.cols().select(
+                    $col("B").mapVal(System::identityHashCode),
+                    $col("C").mapVal(System::identityHashCode),
+                    $col("D").mapVal(System::identityHashCode));
+
+            assertEquals(6, idCardinality.getColumn(0).unique().size());
+            assertEquals(3, idCardinality.getColumn(1).unique().size());
+            assertEquals(4, idCardinality.getColumn(2).unique().size());
+        }
+    }
+
+
+    @Test
+    public void valueCardinality_compactCol_Pos() throws IOException {
+
+        try (InputStream in = getClass().getResourceAsStream("cardinality.xlsx")) {
+            DataFrame df = new ExcelLoader()
+                    .sheet("Sheet1", SheetLoader.of().compactCol(0).compactCol(1))
+                    .loadSheet(in, "Sheet1");
+
+            new DataFrameAsserts(df, "A", "B")
+                    .expectHeight(6)
+                    .expectRow(0, 1.0, "ab")
+                    .expectRow(1, 40000.0, "ab")
+                    .expectRow(2, 40000.0, "bc")
+                    .expectRow(3, 30000.0, "bc")
+                    .expectRow(4, 30000.0, null)
+                    .expectRow(5, null, "bc");
+
+            DataFrame idCardinality = df.cols().select(
+                    $col("A").mapVal(System::identityHashCode),
+                    $col("B").mapVal(System::identityHashCode));
+
+            assertEquals(4, idCardinality.getColumn(0).unique().size());
+            assertEquals(3, idCardinality.getColumn(1).unique().size());
+        }
+    }
+
+    @Test
+    public void valueCardinality_compactCol_Pos_MidRange() throws IOException {
+
+        try (InputStream in = getClass().getResourceAsStream("cardinality-midrange.xlsx")) {
+            DataFrame df = new ExcelLoader()
+                    .sheet("Sheet1", SheetLoader.of()
+                            // "0" is out of range and should be ignored
+                            .compactCol(0)
+
+                            // "1" is in range, but we leave it as sparse
+
+                            // "2" and "3" are in range and should be compacted
+                            .compactCol(2)
+                            .compactCol(3))
+                    .loadSheet(in, "Sheet1");
+
+            new DataFrameAsserts(df, "B", "C", "D")
+                    .expectHeight(6)
+                    .expectRow(0, 1.0, "ab", 1.0)
+                    .expectRow(1, 40000.0, "ab", 40000.0)
+                    .expectRow(2, 40000.0, "bc", 40000.0)
+                    .expectRow(3, 30000.0, "bc", 30000.0)
+                    .expectRow(4, 30000.0, null, 30000.0)
+                    .expectRow(5, null, "bc", null);
+
+            DataFrame idCardinality = df.cols().select(
+                    $col("B").mapVal(System::identityHashCode),
+                    $col("C").mapVal(System::identityHashCode),
+                    $col("D").mapVal(System::identityHashCode));
+
+            assertEquals(6, idCardinality.getColumn(0).unique().size());
+            assertEquals(3, idCardinality.getColumn(1).unique().size());
+            assertEquals(4, idCardinality.getColumn(2).unique().size());
+        }
+    }
+
+    @Test
+    public void valueCardinality_compactCol_Name_MidRange_firstRowAsHeader() throws IOException {
+
+        try (InputStream in = getClass().getResourceAsStream("cardinality-midrange-header.xlsx")) {
+            DataFrame df = new ExcelLoader()
+                    .sheet("Sheet1", SheetLoader.of()
+                            .firstRowAsHeader()
+
+                            // Out of range (and really undefined) and should be ignored
+                            .compactCol("A")
+
+                            // "X" is in range, but we leave it as sparse
+
+                            // "Y" and "Z" are in range and should be compacted
+                            .compactCol("Y")
+                            .compactCol("Z"))
+                    .loadSheet(in, "Sheet1");
+
+            new DataFrameAsserts(df, "X", "Y", "Z")
+                    .expectHeight(6)
+                    .expectRow(0, 1.0, "ab", 1.0)
+                    .expectRow(1, 40000.0, "ab", 40000.0)
+                    .expectRow(2, 40000.0, "bc", 40000.0)
+                    .expectRow(3, 30000.0, "bc", 30000.0)
+                    .expectRow(4, 30000.0, null, 30000.0)
+                    .expectRow(5, null, "bc", null);
+
+            DataFrame idCardinality = df.cols().select(
+                    $col("X").mapVal(System::identityHashCode),
+                    $col("Y").mapVal(System::identityHashCode),
+                    $col("Z").mapVal(System::identityHashCode));
+
+            assertEquals(6, idCardinality.getColumn(0).unique().size());
+            assertEquals(3, idCardinality.getColumn(1).unique().size());
+            assertEquals(4, idCardinality.getColumn(2).unique().size());
         }
     }
 }
