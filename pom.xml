@@ -53,11 +53,10 @@
         <testcontainers.version>1.19.8</testcontainers.version>
         <junit5.version>5.10.3</junit5.version>
         <jsonpath.version>2.9.0</jsonpath.version>
-        <avro.version>1.11.3</avro.version>
+        <avro.version>1.12.0</avro.version>
         <jackson.version>2.15.4</jackson.version>
         <jackson.databind.version>2.15.4</jackson.databind.version>
         <poi.version>5.2.5</poi.version>
-        <commons.compress.version>1.26.1</commons.compress.version>
         <commons.csv.version>1.11.0</commons.csv.version>
         <mustache.version>0.9.10</mustache.version>
         <parquet.version>1.14.2</parquet.version>
@@ -180,12 +179,6 @@
                 <groupId>org.apache.avro</groupId>
                 <artifactId>avro</artifactId>
                 <version>${avro.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.commons</groupId>
-                        <artifactId>commons-compress</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
@@ -209,12 +202,6 @@
                         <artifactId>*</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-compress</artifactId>
-                <version>${commons.compress.version}</version>
             </dependency>
 
             <dependency>

@@ -21,6 +21,7 @@
 * #345 JsonLoader: File, Path, InputStream load options
 * #346 JsonLoader: loading from Reader results in an empty DataFrame
 * #347 JsonSaver.saveToString(..)
+* #349 Upgrade Avro client to 1.12.0
 
 ## Release 1.0.0-M23
 
