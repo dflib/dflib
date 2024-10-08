@@ -26,4 +26,11 @@ public class LongSeries_AddTest {
         LongSeries s = Series.ofLong(3, 28, 15, -4, 3, 11).add(s0);
         new LongSeriesAsserts(s).expectData(4L, 30L, 18L, 0L, 8L, 17L);
     }
+
+    @Test
+    public void add_Value() {
+
+        LongSeries s = Series.ofLong(3, 28, 15, -4, 3, 11).add(10);
+        new LongSeriesAsserts(s).expectData(13L, 38L, 25L, 6L, 13L, 21L);
+    }
 }

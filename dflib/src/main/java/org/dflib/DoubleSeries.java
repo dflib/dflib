@@ -308,6 +308,26 @@ public interface DoubleSeries extends Series<Double> {
     }
 
     /**
+     * Performs per-element addition between this and a constant value returning the Series of the same
+     * length.
+     *
+     * @since 1.0.0-M23
+     */
+    default DoubleSeries add(final double v) {
+        final int len = size();
+
+        final double[] data = new double[len];
+
+        for (int i = 0; i < len; i++) {
+            data[i] = this.getDouble(i) + v;
+        }
+
+        return new DoubleArraySeries(data);
+    }
+
+
+
+    /**
      * Performs subtraction operation between this and another DoubleSeries.
      *
      * @since 0.11

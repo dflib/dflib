@@ -306,6 +306,24 @@ public interface LongSeries extends Series<Long> {
     }
 
     /**
+     * Performs per-element addition between this and a constant value, returning the Series of the same
+     * length.
+     *
+     * @since 1.0.0-M23
+     */
+    default LongSeries add(final long v) {
+        final int len = size();
+
+        final long[] data = new long[len];
+
+        for (int i = 0; i < len; i++) {
+            data[i] = this.getLong(i) + v;
+        }
+
+        return new LongArraySeries(data);
+    }
+
+    /**
      * Performs subtraction operation between this and another LongSeries.
      *
      * @since 0.11

@@ -319,6 +319,24 @@ public interface IntSeries extends Series<Integer> {
     }
 
     /**
+     * Performs per-element addition between this and a constant value, returning the Series of the same
+     * length.
+     *
+     * @since 1.0.0-M23
+     */
+    default IntSeries add(final int v) {
+        final int len = size();
+
+        final int[] data = new int[len];
+
+        for (int i = 0; i < len; i++) {
+            data[i] = this.getInt(i) + v;
+        }
+
+        return new IntArraySeries(data);
+    }
+
+	/**
      * Performs subtraction operation between this and another IntSeries.
      *
      * @since 0.11
