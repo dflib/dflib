@@ -377,6 +377,24 @@ public interface IntSeries extends Series<Integer> {
     }
 
     /**
+     * Performs multiplication operation between this and another IntSeries.
+     *
+     * @since 1.0.0-M23
+     */
+    default IntSeries mul(final int v) {
+        final int len = size();
+
+        final int[] data = new int[len];
+
+        for (int i = 0; i < len; i++) {
+            data[i] = this.getInt(i) * v;
+        }
+
+        return new IntArraySeries(data);
+    }
+
+
+    /**
      * Performs division operation between this and another IntSeries.
      *
      * @since 0.11

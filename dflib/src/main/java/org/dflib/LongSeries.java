@@ -364,6 +364,23 @@ public interface LongSeries extends Series<Long> {
     }
 
     /**
+     * Performs multiplication operation between this and a constant value.
+     *
+     * @since 1.0.0-M23
+     */
+    default LongSeries mul(final long v) {
+        final int len = size();
+
+        long[] data = new long[len];
+
+        for (int i = 0; i < len; i++) {
+            data[i] = this.getLong(i) * v;
+        }
+
+        return new LongArraySeries(data);
+    }
+
+    /**
      * Performs division operation between this and another LongSeries.
      *
      * @since 0.11
