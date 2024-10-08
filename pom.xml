@@ -53,7 +53,7 @@
         <testcontainers.version>1.19.8</testcontainers.version>
         <junit5.version>5.10.3</junit5.version>
         <jsonpath.version>2.9.0</jsonpath.version>
-        <avro.version>1.11.3</avro.version>
+        <avro.version>1.11.4</avro.version>
         <jackson.version>2.15.4</jackson.version>
         <jackson.databind.version>2.15.4</jackson.databind.version>
         <poi.version>5.2.5</poi.version>
