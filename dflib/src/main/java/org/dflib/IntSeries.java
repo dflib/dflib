@@ -255,6 +255,63 @@ public interface IntSeries extends Series<Integer> {
      */
     double median();
 
+	/**
+	 * Compute the standard deviation
+	 * 
+	 * @param usePopulationStdDev Use the Population variant if true, Sample variant
+	 *                            if false
+	 *
+	 * @since 1.0.0-M23
+	 * 
+	 */
+	default double stdDev(final boolean usePopulationStdDev) {
+		final double variance = variance(usePopulationStdDev);
+		return Math.sqrt(variance);
+	}
+
+	/**
+	 * Compute the standard deviation, using the population variant
+	 * 
+	 * @since 1.0.0-M23
+	 * 
+	 */
+	default double stdDev() {
+		return stdDev(true);
+	}
+
+	/**
+	 * Compute the variance
+	 * 
+	 * @param usePopulationVariance Use the Population variant if true, Sample variant
+	 *                            if false
+	 *
+	 * @since 1.0.0-M23
+	 * 
+	 */
+	default double variance(final boolean usePopulationVariance) {
+		final int len = size();
+		final double avg = avg();
+		final double denominator = usePopulationVariance ? len : len - 1;
+
+		double acc = 0;
+		for (int i = 0; i < len; i++) {
+			final double x = this.getInt(i);
+			acc += (x - avg) * (x - avg);
+		}
+
+		return acc / denominator;
+	}
+
+	/**
+	 * Compute the variance, using the population variant
+	 * 
+	 * @since 1.0.0-M23
+	 * 
+	 */
+	default double variance() {
+		return variance(true);
+	}
+
     @Override
     default BooleanSeries eq(Series<?> s) {
         if (!(s instanceof IntSeries)) {
