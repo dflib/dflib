@@ -670,19 +670,18 @@ public interface Series<T> extends Iterable<T> {
     Series<T> sample(int size, Random random);
 
     /**
-     * Performs a reduction over the values similarly to {@link Stream#reduce(Object, BinaryOperator)}.
+     * Performs a reduction over the values similarly to {@link java.util.stream.Stream#reduce(Object, BinaryOperator)}.
      * It applies the accumulator over all the values from the Series
      *
-     * @param identity Identity value for the accumulator
+     * @param identity    Identity value for the accumulator
      * @param accumulator Associative operator to combine two values
-     *
-     * @since 1.0.0-M23
+     * @since 1.0.0-RC1
      */
-    default T reduce(final T identity, final BinaryOperator<T> accumulator) {
+    default T reduce(T identity, BinaryOperator<T> accumulator) {
         Objects.requireNonNull(identity);
         Objects.requireNonNull(accumulator);
 
-        final int len = size();
+        int len = size();
         T result = identity;
         for (int i = 0; i < len; i++) {
             result = accumulator.apply(result, get(i));

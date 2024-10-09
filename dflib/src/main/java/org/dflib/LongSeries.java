@@ -242,62 +242,54 @@ public interface LongSeries extends Series<Long> {
      */
     double median();
 
-	/**
-	 * Compute the standard deviation
-	 * 
-	 * @param usePopulationStdDev Use the Population variant if true, Sample variant
-	 *                            if false
-	 *
-	 * @since 1.0.0-M23
-	 * 
-	 */
-	default double stdDev(final boolean usePopulationStdDev) {
-		final double variance = variance(usePopulationStdDev);
-		return Math.sqrt(variance);
-	}
+    /**
+     * Compute the standard deviation
+     *
+     * @param usePopulationStdDev Use the Population variant if true, Sample variant if false
+     * @since 1.0.0-RC1
+     */
+    default double stdDev(final boolean usePopulationStdDev) {
+        final double variance = variance(usePopulationStdDev);
+        return Math.sqrt(variance);
+    }
 
-	/**
-	 * Compute the standard deviation, using the population variant
-	 * 
-	 * @since 1.0.0-M23
-	 * 
-	 */
-	default double stdDev() {
-		return stdDev(true);
-	}
+    /**
+     * Compute the standard deviation, using the population variant
+     *
+     * @since 1.0.0-RC1
+     */
+    default double stdDev() {
+        return stdDev(true);
+    }
 
-	/**
-	 * Compute the variance
-	 * 
-	 * @param usePopulationVariance Use the Population variant if true, Sample variant
-	 *                            if false
-	 *
-	 * @since 1.0.0-M23
-	 * 
-	 */
-	default double variance(final boolean usePopulationVariance) {
-		final int len = size();
-		final double avg = avg();
-		final double denominator = usePopulationVariance ? len : len - 1;
+    /**
+     * Compute the variance
+     *
+     * @param usePopulationVariance Use the Population variant if true, Sample variant if false
+     * @since 1.0.0-RC1
+     */
+    default double variance(boolean usePopulationVariance) {
+        int len = size();
+        double avg = avg();
+        double denominator = usePopulationVariance ? len : len - 1;
 
-		double acc = 0;
-		for (int i = 0; i < len; i++) {
-			final double x = this.getLong(i);
-			acc += (x - avg) * (x - avg);
-		}
+        double acc = 0;
+        for (int i = 0; i < len; i++) {
+            final double x = this.getLong(i);
+            acc += (x - avg) * (x - avg);
+        }
 
-		return acc / denominator;
-	}
+        return acc / denominator;
+    }
 
-	/**
-	 * Compute the variance, using the population variant
-	 * 
-	 * @since 1.0.0-M23
-	 * 
-	 */
-	default double variance() {
-		return variance(true);
-	}
+    /**
+     * Compute the variance, using the population variant
+     *
+     * @since 1.0.0-RC1
+     */
+    default double variance() {
+        return variance(true);
+    }
 
     @Override
     default BooleanSeries eq(Series<?> s) {
@@ -363,15 +355,14 @@ public interface LongSeries extends Series<Long> {
     }
 
     /**
-     * Performs per-element addition between this and a constant value, returning the Series of the same
-     * length.
+     * Performs per-element addition between this and a constant value, returning the Series of the same length.
      *
-     * @since 1.0.0-M23
+     * @since 1.0.0-RC1
      */
-    default LongSeries add(final long v) {
-        final int len = size();
+    default LongSeries add(long v) {
+        int len = size();
 
-        final long[] data = new long[len];
+        long[] data = new long[len];
 
         for (int i = 0; i < len; i++) {
             data[i] = this.getLong(i) + v;
@@ -423,10 +414,10 @@ public interface LongSeries extends Series<Long> {
     /**
      * Performs multiplication operation between this and a constant value.
      *
-     * @since 1.0.0-M23
+     * @since 1.0.0-RC1
      */
-    default LongSeries mul(final long v) {
-        final int len = size();
+    default LongSeries mul(long v) {
+        int len = size();
 
         long[] data = new long[len];
 

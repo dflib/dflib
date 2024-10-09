@@ -244,62 +244,54 @@ public interface DoubleSeries extends Series<Double> {
      */
     double median();
 
-	/**
-	 * Compute the standard deviation
-	 * 
-	 * @param usePopulationStdDev Use the Population variant if true, Sample variant
-	 *                            if false
-	 *
-	 * @since 1.0.0-M23
-	 * 
-	 */
-	default double stdDev(final boolean usePopulationStdDev) {
-		final double variance = variance(usePopulationStdDev);
-		return Math.sqrt(variance);
-	}
+    /**
+     * Compute the standard deviation
+     *
+     * @param usePopulationStdDev Use the Population variant if true, Sample variant if false
+     * @since 1.0.0-RC1
+     */
+    default double stdDev(boolean usePopulationStdDev) {
+        double variance = variance(usePopulationStdDev);
+        return Math.sqrt(variance);
+    }
 
-	/**
-	 * Compute the standard deviation, using the population variant
-	 * 
-	 * @since 1.0.0-M23
-	 * 
-	 */
-	default double stdDev() {
-		return stdDev(true);
-	}
+    /**
+     * Compute the standard deviation, using the population variant
+     *
+     * @since 1.0.0-RC1
+     */
+    default double stdDev() {
+        return stdDev(true);
+    }
 
-	/**
-	 * Compute the variance
-	 * 
-	 * @param usePopulationVariance Use the Population variant if true, Sample variant
-	 *                            if false
-	 *
-	 * @since 1.0.0-M23
-	 * 
-	 */
-	default double variance(final boolean usePopulationVariance) {
-		final int len = size();
-		final double avg = avg();
-		final double denominator = usePopulationVariance ? len : len - 1;
+    /**
+     * Compute the variance
+     *
+     * @param usePopulationVariance Use the Population variant if true, Sample variant if false
+     * @since 1.0.0-RC1
+     */
+    default double variance(boolean usePopulationVariance) {
+        int len = size();
+        double avg = avg();
+        double denominator = usePopulationVariance ? len : len - 1;
 
-		double acc = 0;
-		for (int i = 0; i < len; i++) {
-			final double x = this.getDouble(i);
-			acc += (x - avg) * (x - avg);
-		}
+        double acc = 0;
+        for (int i = 0; i < len; i++) {
+            final double x = this.getDouble(i);
+            acc += (x - avg) * (x - avg);
+        }
 
-		return acc / denominator;
-	}
+        return acc / denominator;
+    }
 
-	/**
-	 * Compute the variance, using the population variant
-	 * 
-	 * @since 1.0.0-M23
-	 * 
-	 */
-	default double variance() {
-		return variance(true);
-	}
+    /**
+     * Compute the variance, using the population variant
+     *
+     * @since 1.0.0-RC1
+     */
+    default double variance() {
+        return variance(true);
+    }
 
     @Override
     default BooleanSeries eq(Series<?> s) {
@@ -344,8 +336,7 @@ public interface DoubleSeries extends Series<Double> {
     }
 
     /**
-     * Performs per-element addition between this and another DoubleSeries, returning the Series of the same
-     * length.
+     * Performs per-element addition between this and another DoubleSeries, returning the Series of the same length.
      *
      * @since 0.11
      */
@@ -365,15 +356,14 @@ public interface DoubleSeries extends Series<Double> {
     }
 
     /**
-     * Performs per-element addition between this and a constant value returning the Series of the same
-     * length.
+     * Performs per-element addition between this and a constant value returning the Series of the same length.
      *
-     * @since 1.0.0-M23
+     * @since 1.0.0-RC1
      */
-    default DoubleSeries add(final double v) {
-        final int len = size();
+    default DoubleSeries add(double v) {
+        int len = size();
 
-        final double[] data = new double[len];
+        double[] data = new double[len];
 
         for (int i = 0; i < len; i++) {
             data[i] = this.getDouble(i) + v;
@@ -381,8 +371,6 @@ public interface DoubleSeries extends Series<Double> {
 
         return new DoubleArraySeries(data);
     }
-
-
 
     /**
      * Performs subtraction operation between this and another DoubleSeries.
@@ -427,12 +415,12 @@ public interface DoubleSeries extends Series<Double> {
     /**
      * Performs multiplication operation between this and a constant value.
      *
-     * @since 1.0.0-M23
+     * @since 1.0.0-RC1
      */
-    default DoubleSeries mul(final double v) {
-        final int len = size();
+    default DoubleSeries mul(double v) {
+        int len = size();
 
-        final double[] data = new double[len];
+        double[] data = new double[len];
 
         for (int i = 0; i < len; i++) {
             data[i] = this.getDouble(i) * v;

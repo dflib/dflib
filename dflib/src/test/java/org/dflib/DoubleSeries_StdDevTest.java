@@ -1,8 +1,8 @@
 package org.dflib;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DoubleSeries_StdDevTest {
 
@@ -11,18 +11,12 @@ public class DoubleSeries_StdDevTest {
 
 		final DoubleSeries series = Series.ofDouble(3, 28, 15, -4, 3, 11);
 
-		/**
-		 * Validated results with python:
-		 * 
-		 * In [1]: import numpy as np
-		 * 
-		 * In [2]: a = np.array([3, 28, 15, -4, 3, 11])
-		 * 
-		 * In [3]: np.std(a)
-		 * 
-		 * Out[3]: 10.338708279513881
-		 * 
-		 */
+//		Validated results with python:
+//
+//		In [1]: import numpy as np
+//		In [2]: a = np.array([3, 28, 15, -4, 3, 11])
+//		In [3]: np.std(a)
+//		Out[3]: 10.338708279513881
 		assertEquals(10.338708279513881d, series.stdDev(true));
 		assertEquals(10.338708279513881d, series.stdDev());
 	}
@@ -32,17 +26,13 @@ public class DoubleSeries_StdDevTest {
 
 		final DoubleSeries series = Series.ofDouble(3, 28, 15, -4, 3, 11);
 
-		/**
-		 * Validated results with python:
-		 * 
-		 * In [1]: import numpy as np
-		 * 
-		 * In [2]: a = np.array([3, 28, 15, -4, 3, 11])
-		 * 
-		 * In [3]: np.std(a, ddof=1)
-		 * 
-		 * Out[3]: 11.325487480310358
-		 */
+//		Validated results with python:
+//
+//		In [1]: import numpy as np
+//		In [2]: a = np.array([3, 28, 15, -4, 3, 11])
+//		In [3]: np.std(a, ddof=1)
+//		Out[3]: 11.325487480310358
+
 		final double stdDev = series.stdDev(false);
 		assertEquals(11.325487480310358d, stdDev);
 	}

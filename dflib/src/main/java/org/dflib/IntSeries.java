@@ -255,62 +255,54 @@ public interface IntSeries extends Series<Integer> {
      */
     double median();
 
-	/**
-	 * Compute the standard deviation
-	 * 
-	 * @param usePopulationStdDev Use the Population variant if true, Sample variant
-	 *                            if false
-	 *
-	 * @since 1.0.0-M23
-	 * 
-	 */
-	default double stdDev(final boolean usePopulationStdDev) {
-		final double variance = variance(usePopulationStdDev);
-		return Math.sqrt(variance);
-	}
+    /**
+     * Compute the standard deviation
+     *
+     * @param usePopulationStdDev Use the Population variant if true, Sample variant if false
+     * @since 1.0.0-RC1
+     */
+    default double stdDev(boolean usePopulationStdDev) {
+        double variance = variance(usePopulationStdDev);
+        return Math.sqrt(variance);
+    }
 
-	/**
-	 * Compute the standard deviation, using the population variant
-	 * 
-	 * @since 1.0.0-M23
-	 * 
-	 */
-	default double stdDev() {
-		return stdDev(true);
-	}
+    /**
+     * Compute the standard deviation, using the population variant
+     *
+     * @since 1.0.0-RC1
+     */
+    default double stdDev() {
+        return stdDev(true);
+    }
 
-	/**
-	 * Compute the variance
-	 * 
-	 * @param usePopulationVariance Use the Population variant if true, Sample variant
-	 *                            if false
-	 *
-	 * @since 1.0.0-M23
-	 * 
-	 */
-	default double variance(final boolean usePopulationVariance) {
-		final int len = size();
-		final double avg = avg();
-		final double denominator = usePopulationVariance ? len : len - 1;
+    /**
+     * Compute the variance
+     *
+     * @param usePopulationVariance Use the Population variant if true, Sample variant if false
+     * @since 1.0.0-RC1
+     */
+    default double variance(boolean usePopulationVariance) {
+        int len = size();
+        double avg = avg();
+        double denominator = usePopulationVariance ? len : len - 1;
 
-		double acc = 0;
-		for (int i = 0; i < len; i++) {
-			final double x = this.getInt(i);
-			acc += (x - avg) * (x - avg);
-		}
+        double acc = 0;
+        for (int i = 0; i < len; i++) {
+            final double x = this.getInt(i);
+            acc += (x - avg) * (x - avg);
+        }
 
-		return acc / denominator;
-	}
+        return acc / denominator;
+    }
 
-	/**
-	 * Compute the variance, using the population variant
-	 * 
-	 * @since 1.0.0-M23
-	 * 
-	 */
-	default double variance() {
-		return variance(true);
-	}
+    /**
+     * Compute the variance, using the population variant
+     *
+     * @since 1.0.0-RC1
+     */
+    default double variance() {
+        return variance(true);
+    }
 
     @Override
     default BooleanSeries eq(Series<?> s) {
@@ -379,12 +371,12 @@ public interface IntSeries extends Series<Integer> {
      * Performs per-element addition between this and a constant value, returning the Series of the same
      * length.
      *
-     * @since 1.0.0-M23
+     * @since 1.0.0-RC1
      */
-    default IntSeries add(final int v) {
-        final int len = size();
+    default IntSeries add(int v) {
+        int len = size();
 
-        final int[] data = new int[len];
+        int[] data = new int[len];
 
         for (int i = 0; i < len; i++) {
             data[i] = this.getInt(i) + v;
@@ -393,7 +385,7 @@ public interface IntSeries extends Series<Integer> {
         return new IntArraySeries(data);
     }
 
-	/**
+    /**
      * Performs subtraction operation between this and another IntSeries.
      *
      * @since 0.11
@@ -436,12 +428,12 @@ public interface IntSeries extends Series<Integer> {
     /**
      * Performs multiplication operation between this and another IntSeries.
      *
-     * @since 1.0.0-M23
+     * @since 1.0.0-RC1
      */
-    default IntSeries mul(final int v) {
-        final int len = size();
+    default IntSeries mul(int v) {
+        int len = size();
 
-        final int[] data = new int[len];
+        int[] data = new int[len];
 
         for (int i = 0; i < len; i++) {
             data[i] = this.getInt(i) * v;
@@ -449,7 +441,6 @@ public interface IntSeries extends Series<Integer> {
 
         return new IntArraySeries(data);
     }
-
 
     /**
      * Performs division operation between this and another IntSeries.
