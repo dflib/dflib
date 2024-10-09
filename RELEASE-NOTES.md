@@ -24,6 +24,7 @@
 * #349 Upgrade Avro client to 1.12.0
 * #351 Methods for std deviation and variance
 * #352 Methods to add and multiply Series with a constant value
+* #353 Series.reduce(..)
 
 ## Release 1.0.0-M23
 
