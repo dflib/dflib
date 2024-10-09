@@ -23,6 +23,7 @@
 * #347 JsonSaver.saveToString(..)
 * #349 Upgrade Avro client to 1.12.0
 * #351 Methods for std deviation and variance
+* #352 Methods to add and multiply Series with a constant value
 
 ## Release 1.0.0-M23
 
