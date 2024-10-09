@@ -29,6 +29,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 
 import static java.util.Arrays.asList;
@@ -667,6 +668,27 @@ public interface Series<T> extends Iterable<T> {
      * @since 0.7
      */
     Series<T> sample(int size, Random random);
+
+    /**
+     * Performs a reduction over the values similarly to {@link Stream#reduce(Object, BinaryOperator)}.
+     * It applies the accumulator over all the values from the Series
+     *
+     * @param identity Identity value for the accumulator
+     * @param accumulator Associative operator to combine two values
+     *
+     * @since 1.0.0-M23
+     */
+    default T reduce(final T identity, final BinaryOperator<T> accumulator) {
+        Objects.requireNonNull(identity);
+        Objects.requireNonNull(accumulator);
+
+        final int len = size();
+        T result = identity;
+        for (int i = 0; i < len; i++) {
+            result = accumulator.apply(result, get(i));
+        }
+        return result;
+    }
 
     /**
      * Produces a Series with the same size as this Series, with values shifted forward or backwards depending on the
