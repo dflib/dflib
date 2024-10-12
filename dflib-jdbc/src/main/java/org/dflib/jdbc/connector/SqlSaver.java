@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Stores DataFrame or Series data in DB via custom SQL. Instances of this class can be reused for different sets of
  * data. This is a more customizable alternative to {@link TableSaver}.
- *
- * @since 0.8
  */
 public class SqlSaver {
 

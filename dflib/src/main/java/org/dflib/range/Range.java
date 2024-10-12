@@ -1,8 +1,5 @@
 package org.dflib.range;
 
-/**
- * @since 0.6
- */
 public class Range {
 
     public static void checkRange(int from, int len, int masterLen) {

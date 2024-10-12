@@ -5,10 +5,6 @@ import org.apache.avro.Schema;
 
 import java.util.Objects;
 
-/**
- * @param <T>
- * @since 0.11
- */
 public abstract class SingleSchemaConversion<T> extends Conversion<T> {
 
     private final SingleSchemaLogicalType logicalType;

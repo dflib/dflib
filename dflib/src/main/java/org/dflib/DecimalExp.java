@@ -6,9 +6,6 @@ import org.dflib.exp.num.NumericExpFactory;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-/**
- * @since 0.11
- */
 public interface DecimalExp extends NumExp<BigDecimal> {
 
     @Override

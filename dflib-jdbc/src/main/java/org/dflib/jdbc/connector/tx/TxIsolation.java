@@ -4,8 +4,6 @@ import java.sql.Connection;
 
 /**
  * Defines transaction isolation levels.
- *
- * @since 0.6
  */
 public enum TxIsolation {
 

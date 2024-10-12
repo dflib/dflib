@@ -3,9 +3,6 @@ package org.dflib.print;
 import org.dflib.Series;
 import org.dflib.series.EmptySeries;
 
-/**
- * @since 0.6
- */
 public class SeriesTruncator<T> {
 
     Series<T> series;

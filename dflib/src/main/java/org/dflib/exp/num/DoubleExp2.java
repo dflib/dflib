@@ -9,9 +9,7 @@ import org.dflib.exp.map.MapExp2;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 
-/**
- * @since 0.11
- */
+
 public class DoubleExp2 extends MapExp2<Double, Double, Double> implements NumExp<Double> {
 
     public static DoubleExp2 mapVal(

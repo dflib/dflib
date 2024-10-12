@@ -3,9 +3,6 @@ package org.dflib.jdbc.connector.metadata.flavors;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
-/**
- * @since 0.8
- */
 public class MySQLFlavor extends GenericFlavor {
 
     protected MySQLFlavor() {

@@ -9,8 +9,6 @@ import java.util.logging.Logger;
 
 /**
  * A DataSource with transaction scope that returns active transaction connection.
- *
- * @since 0.7
  */
 public class TxDataSource implements DataSource {
 

@@ -6,8 +6,6 @@ import org.dflib.Series;
 
 /**
  * A binary expression with two {@link Exp} arguments.
- *
- * @since 0.11
  */
 public abstract class Exp2<L, R, T> implements Exp<T> {
 

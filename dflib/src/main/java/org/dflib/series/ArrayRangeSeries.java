@@ -9,7 +9,6 @@ import java.util.Arrays;
  * performance overhead, so this Series is somewhat slower than {@link ArraySeries}.
  *
  * @param <T> Series element type
- * @since 1.0.0-M19
  */
 public class ArrayRangeSeries<T> extends ObjectSeries<T> {
 

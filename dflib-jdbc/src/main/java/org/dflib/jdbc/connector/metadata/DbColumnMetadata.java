@@ -1,8 +1,5 @@
 package org.dflib.jdbc.connector.metadata;
 
-/**
- * @since 0.6
- */
 public class DbColumnMetadata {
 
     private String name;
@@ -29,9 +26,7 @@ public class DbColumnMetadata {
         return pk;
     }
 
-    /**
-     * @since 0.7
-     */
+
     public boolean isNullable() {
         return nullable;
     }

@@ -58,8 +58,6 @@ public class SqlLoader {
 
     /**
      * Configures a column to be loaded with value compaction. Should be used to save memory for low-cardinality columns.
-     *
-     * @since 1.0.0-RC1
      */
     public SqlLoader compactCol(int column) {
         colConfigurators.add(ColConfigurator.objectCol(column, true));
@@ -68,17 +66,12 @@ public class SqlLoader {
 
     /**
      * Configures a column to be loaded with value compaction. Should be used to save memory for low-cardinality columns.
-     *
-     * @since 1.0.0-RC1
      */
     public SqlLoader compactCol(String column) {
         colConfigurators.add(ColConfigurator.objectCol(column, true));
         return this;
     }
 
-    /**
-     * @since 1.0.0-M20
-     */
     public SqlLoader limit(int limit) {
         if (this.limit == limit) {
             return this;
@@ -97,7 +90,6 @@ public class SqlLoader {
      *
      * @param size the size of the sample. Can be bigger than the result set size (as the result set size is not known upfront).
      * @return this loader instance
-     * @since 1.0.0-M20
      */
     public SqlLoader rowsSample(int size) {
         return rowsSample(size, Sampler.getDefaultRandom());
@@ -110,7 +102,6 @@ public class SqlLoader {
      * @param size   the size of the sample. Can be bigger than the result set size (as the result set size is not known upfront).
      * @param random a custom random number generator
      * @return this loader instance
-     * @since 1.0.0-M20
      */
     public SqlLoader rowsSample(int size, Random random) {
 
@@ -124,16 +115,10 @@ public class SqlLoader {
         return copy;
     }
 
-    /**
-     * @since 0.8
-     */
     public DataFrame load(Object... params) {
         return load(Series.of(params));
     }
 
-    /**
-     * @since 0.8
-     */
     public DataFrame load(Series<?> params) {
 
         LOGGER.debug("loading DataFrame...");

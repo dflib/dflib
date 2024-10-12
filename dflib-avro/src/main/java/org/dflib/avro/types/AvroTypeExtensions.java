@@ -3,9 +3,7 @@ package org.dflib.avro.types;
 import org.dflib.avro.Avro;
 import org.apache.avro.Schema;
 
-/**
- * @since 0.11
- */
+
 public class AvroTypeExtensions {
 
     public static final SingleSchemaLogicalType UNMAPPED_TYPE = new SingleSchemaLogicalType("dflib-unmapped", Schema.Type.STRING);

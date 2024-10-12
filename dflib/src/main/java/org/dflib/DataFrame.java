@@ -28,8 +28,6 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * Creates an empty DataFrame
-     *
-     * @since 0.16
      */
     static DataFrame empty(String... columnNames) {
         return empty(Index.of(columnNames));
@@ -37,8 +35,6 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * Creates an empty DataFrame
-     *
-     * @since 0.16
      */
     static DataFrame empty(Index columnsIndex) {
         return new ColumnDataFrame(null, columnsIndex);
@@ -47,8 +43,6 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * Starts a DataFrame builder that will build a DataFrame based on some collection of Series. This is one of the
      * most efficient ways to build DataFrames.
-     *
-     * @since 0.16
      */
     static DataFrameByColumnBuilder byColumn(String... columnLabels) {
         return byColumn(Index.of(columnLabels));
@@ -57,8 +51,6 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * Starts a DataFrame builder that will build a DataFrame based on some collection of Series. This is one of the
      * most efficient ways to build DataFrames.
-     *
-     * @since 0.16
      */
     static DataFrameByColumnBuilder byColumn(Index columnIndex) {
         return new DataFrameByColumnBuilder(columnIndex);
@@ -67,8 +59,6 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * Starts a DataFrame builder that will extract data from some collection of objects, each object resulting in
      * a row in a DataFrame.
-     *
-     * @since 0.16
      */
     @SafeVarargs
     static <T> DataFrameByRowBuilder<T, ?> byRow(Extractor<T, ?>... extractors) {
@@ -79,8 +69,6 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Starts a DataFrame builder that will extract data from a collection of arrays. Each array would result in
      * a row in a DataFrame. This is a flavor of {@link #byRow(Extractor[])} that allows to append arrays using
      * vararg methods. Provided extractors will be applied to the array to calculate cell values.
-     *
-     * @since 0.16
      */
     @SafeVarargs
     static DataFrameArrayByRowBuilder byArrayRow(Extractor<Object[], ?>... extractors) {
@@ -90,8 +78,6 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * Starts a DataFrame builder that will extract data from a collection of arrays. Each array would produce
      * a row in the resulting DataFrame.
-     *
-     * @since 0.16
      */
     static DataFrameArrayByRowBuilder byArrayRow(String... columnLabels) {
         return byArrayRow(Index.of(columnLabels));
@@ -100,8 +86,6 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * Starts a DataFrame builder that will extract data from a collection of arrays. Each array would produce
      * a row in the resulting DataFrame.
-     *
-     * @since 0.16
      */
     static DataFrameArrayByRowBuilder byArrayRow(Index columnIndex) {
         int w = columnIndex.size();
@@ -113,31 +97,18 @@ public interface DataFrame extends Iterable<RowProxy> {
         return new DataFrameArrayByRowBuilder(extractors).columnIndex(columnIndex);
     }
 
-    /**
-     * @since 0.16
-     */
     static DataFrameFoldByRowBuilder foldByRow(String... columnLabels) {
         return foldByRow(Index.of(Objects.requireNonNull(columnLabels)));
     }
 
-    /**
-     * @since 0.16
-     */
     static DataFrameFoldByRowBuilder foldByRow(Index columnIndex) {
         return new DataFrameFoldByRowBuilder(columnIndex);
     }
 
-
-    /**
-     * @since 0.16
-     */
     static DataFrameFoldByColumnBuilder foldByColumn(String... columnLabels) {
         return foldByColumn(Index.of(Objects.requireNonNull(columnLabels)));
     }
 
-    /**
-     * @since 0.16
-     */
     static DataFrameFoldByColumnBuilder foldByColumn(Index columnIndex) {
         return new DataFrameFoldByColumnBuilder(columnIndex);
     }
@@ -146,15 +117,11 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Returns user-assigned name of the DataFrame. It is null by default, and can be set via {@link #as(String)}.
      * A name is useful in various contexts. E.g. the result of a join may prefix column names with original DataFrame
      * name, helping to identify the origin of each column.
-     *
-     * @since 1.0.0-M19
      */
     String getName();
 
     /**
      * Assigns a name to the DataFrame.
-     *
-     * @since 1.0.0-M19
      */
     DataFrame as(String name);
 
@@ -171,8 +138,6 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * Returns a value in the specified DataFrame cell.
-     *
-     * @since 1.0.0-M23
      */
     default Object get(int column, int row) {
         return getColumn(column).get(row);
@@ -180,8 +145,6 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * Returns a value in the specified DataFrame cell.
-     *
-     * @since 1.0.0-M23
      */
     default Object get(String column, int row) {
         return getColumn(column).get(row);
@@ -226,8 +189,6 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * Applies an operation to the entire DataFrame. This is a convenience shortcut that allows to chain multiple
      * transformation methods for a given DataFrame.
-     *
-     * @since 0.11
      */
     default DataFrame map(UnaryOperator<DataFrame> op) {
         return op.apply(this);
@@ -256,14 +217,9 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Be aware that this operation can be really slow, as DataFrame is optimized for columnar operations, not row appends.
      * If you are appending more than one row, consider creating a new DataFrame and then concatenating it with this one
      * using {@link #vConcat(DataFrame...)}.
-     *
-     * @since 0.18
      */
     DataFrame addRow(Map<String, Object> row);
 
-    /**
-     * @since 0.11
-     */
     default DataFrame sort(Sorter... sorters) {
         return rows().sort(sorters);
     }
@@ -337,7 +293,6 @@ public interface DataFrame extends Iterable<RowProxy> {
      * A shorter-named equivalent of {@link #innerJoin(DataFrame)}
      *
      * @return an inner join builder
-     * @since 1.0.0-M19
      */
     default Join join(DataFrame rightFrame) {
         return innerJoin(rightFrame);
@@ -345,7 +300,6 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * @return an inner join builder
-     * @since 1.0.0-M19
      */
     default Join innerJoin(DataFrame rightFrame) {
         return new Join(JoinType.inner, this, rightFrame);
@@ -353,7 +307,6 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * @return a left join builder
-     * @since 1.0.0-M19
      */
     default Join leftJoin(DataFrame rightFrame) {
         return new Join(JoinType.left, this, rightFrame);
@@ -361,7 +314,6 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * @return a right join builder
-     * @since 1.0.0-M19
      */
     default Join rightJoin(DataFrame rightFrame) {
         return new Join(JoinType.right, this, rightFrame);
@@ -369,7 +321,6 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * @return a full join builder
-     * @since 1.0.0-M19
      */
     default Join fullJoin(DataFrame rightFrame) {
         return new Join(JoinType.full, this, rightFrame);
@@ -436,7 +387,6 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param condition a DataFrame that contains only boolean values. It doesn't have to match the shape of this
      *                  DataFrame. Mask operation matches the columns by name and rows by number.
      * @return a new DataFrame of the same shape as this
-     * @since 0.6
      */
     DataFrame nullify(DataFrame condition);
 
@@ -447,7 +397,6 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param condition a DataFrame that contains only boolean values. It doesn't have to match the shape of this
      *                  DataFrame. Mask operation matches the columns by name and rows by number.
      * @return a new DataFrame of the same shape as this
-     * @since 0.6
      */
     DataFrame nullifyNoMatch(DataFrame condition);
 
@@ -455,7 +404,6 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param another a DataFrame to compare with.
      * @return a DataFrame with true/false values corresponding to the result of comparison of this DataFrame with
      * another.
-     * @since 0.6
      */
     DataFrame eq(DataFrame another);
 
@@ -463,7 +411,6 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param another a DataFrame to compare with.
      * @return a DataFrame with true/false values corresponding to the result of comparison of this DataFrame with
      * another.
-     * @since 0.6
      */
     DataFrame ne(DataFrame another);
 
@@ -472,7 +419,6 @@ public interface DataFrame extends Iterable<RowProxy> {
      * this DataFrame. Null values are not included.
      *
      * @return a new DataFrame with columns called "row", "column", "value".
-     * @since 0.6
      */
     DataFrame stack();
 
@@ -481,14 +427,11 @@ public interface DataFrame extends Iterable<RowProxy> {
      * this DataFrame. Null values are included.
      *
      * @return a new DataFrame with columns called "row", "column", "value".
-     * @since 0.6
      */
     DataFrame stackIncludeNulls();
 
     /**
      * Returns a mutable builder of a "pivot" transformation.
-     *
-     * @since 0.11
      */
     default PivotBuilder pivot() {
         return new PivotBuilder(this);
@@ -506,8 +449,6 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * Creates a ColumnSet with column definitions deferred until some operation is applied to it. Columns will be
      * resolved dynamically based on the semantics of the operation.
-     *
-     * @since 1.0.0-M19
      */
     ColumnSet cols();
 
@@ -515,8 +456,6 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Creates a ColumnSet for the columns in the Index. Columns may or may not already exist in the DataFrame.
      * Non-existent columns will be added to the result of the column set operation, while the ones already in the
      * DataFrame will be replaced by columns calculated by the operation.
-     *
-     * @since 1.0.0-M19
      */
     default ColumnSet cols(Index columnsIndex) {
         return FixedColumnSet.of(this, columnsIndex);
@@ -526,8 +465,6 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Creates a ColumnSet for the provided column names. Columns may or may not already exist in the DataFrame.
      * Non-existent columns will be added to the result of the column set operation, while the ones already in the
      * DataFrame will be replaced by columns calculated by the operation.
-     *
-     * @since 1.0.0-M19
      */
     default ColumnSet cols(String... columns) {
         return FixedColumnSet.of(this, columns);
@@ -537,8 +474,6 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Creates a ColumnSet for the provided column names, ensuring that none of the names match any of the DataFrame
      * existing columns. This results in the columns being appended to the DataFrame. For any duplicate name, the
      * ColumnSet labels are renamed to ensure uniqueness, using the common DFLib approach of adding a "_" suffix.
-     *
-     * @since 1.0.0-M19
      */
     default ColumnSet colsAppend(String... columns) {
         return FixedColumnSet.ofAppend(this, columns);
@@ -546,8 +481,6 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * Creates a ColumnSet with columns from this DataFrame excluding specified columns.
-     *
-     * @since 1.0.0-M19
      */
     default ColumnSet colsExcept(String... columns) {
         // all positions here will be within the existing DataFrame, so we are not losing any labels by delegating to
@@ -557,8 +490,6 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * Creates a ColumnSet with columns from this DataFrame that match the specified condition.
-     *
-     * @since 1.0.0-M19
      */
     default ColumnSet cols(Predicate<String> condition) {
         // all positions here will be within the existing DataFrame, so we are not losing any labels by delegating to
@@ -568,8 +499,6 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * Creates a ColumnSet with columns from this DataFrame that do not match the specified condition.
-     *
-     * @since 1.0.0-M19
      */
     default ColumnSet colsExcept(Predicate<String> condition) {
         return cols(condition.negate());
@@ -579,8 +508,6 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Creates a ColumnSet for the provided column positions. Columns may or may not already exist in the DataFrame.
      * Non-existent columns will be added to the result of the column set operation, while the ones already in the
      * DataFrame will be replaced by columns calculated by the operation.
-     *
-     * @since 1.0.0-M19
      */
     default ColumnSet cols(int... columns) {
         return FixedColumnSet.of(this, columns);
@@ -588,37 +515,24 @@ public interface DataFrame extends Iterable<RowProxy> {
 
     /**
      * Creates a ColumnSet with columns from this DataFrame excluding specified column positions.
-     *
-     * @since 1.0.0-M19
      */
     default ColumnSet colsExcept(int... columns) {
         return cols(getColumnsIndex().positionsExcept(columns));
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
     default ColumnSet colsSample(int size) {
         return cols(getColumnsIndex().sample(size));
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
     default ColumnSet colsSample(int size, Random random) {
         return cols(getColumnsIndex().sample(size, random));
     }
 
     /**
      * Returns a {@link RowSet} with all rows from this DataFrame included.
-     *
-     * @since 1.0.0-M19
      */
     RowSet rows();
 
-    /**
-     * @since 1.0.0-M19
-     */
     default RowSet rows(Condition rowCondition) {
         IntSeries index = rowCondition.eval(this).indexTrue();
 
@@ -629,38 +543,20 @@ public interface DataFrame extends Iterable<RowProxy> {
                 : rows(index);
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
     default RowSet rows(int... positions) {
         return rows(Series.ofInt(positions));
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
     default RowSet rowsExcept(int... positions) {
         return rowsExcept(Series.ofInt(positions));
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
     RowSet rows(IntSeries positions);
 
-    /**
-     * @since 1.0.0-M19
-     */
     RowSet rowsExcept(IntSeries positions);
 
-    /**
-     * @since 1.0.0-M19
-     */
     RowSet rows(BooleanSeries condition);
 
-    /**
-     * @since 1.0.0-M19
-     */
     default RowSet rows(RowPredicate condition) {
         IntSeries index = RowIndexer.index(this, condition);
 
@@ -671,30 +567,19 @@ public interface DataFrame extends Iterable<RowProxy> {
                 : rows(index);
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
     default RowSet rowsExcept(RowPredicate condition) {
         return rows(condition.negate());
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
     default RowSet rowsExcept(Condition condition) {
         return rows(condition.not());
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
     RowSet rowsRange(int fromInclusive, int toExclusive);
 
     /**
      * Returns a RowSet that is a random sample of rows from this DataFrame, with the specified sample size and
      * a default random number generator.
-     *
-     * @since 1.0.0-M19
      */
     default RowSet rowsSample(int size) {
         return rows(Sampler.sampleIndex(size, height()));
@@ -703,8 +588,6 @@ public interface DataFrame extends Iterable<RowProxy> {
     /**
      * Returns a RowSet that is a random sample of rows from this DataFrame, with the specified sample size and
      * a user-provided random number generator.
-     *
-     * @since 1.0.0-M19
      */
     default RowSet rowsSample(int size, Random random) {
         return rows(Sampler.sampleIndex(size, height(), random));

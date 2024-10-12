@@ -11,9 +11,7 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-/**
- * @since 0.11
- */
+
 public class DoubleAggregators {
 
     private static final Condition notNullExp = Exp.$col(0).isNotNull();
@@ -23,9 +21,7 @@ public class DoubleAggregators {
     private static final Function<Series<? extends Number>, Double> sum =
             CollectorAggregator.create((Collector) Collectors.summingDouble(Number::doubleValue));
 
-    /**
-     * @since 0.14
-     */
+
     public static Series<Double> cumSum(Series<? extends Number> s) {
 
         int h = s.size();

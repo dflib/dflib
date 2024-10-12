@@ -9,8 +9,6 @@ import java.util.Objects;
 /**
  * An expression that evaluates to a named or a positional column from a DataFrame. In case of Series, it evaluates to
  * the Series itself.
- *
- * @since 0.11
  */
 public class Column<T> implements Exp<T> {
 

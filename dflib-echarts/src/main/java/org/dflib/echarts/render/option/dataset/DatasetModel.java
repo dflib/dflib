@@ -4,8 +4,6 @@ import org.dflib.echarts.render.ValueModels;
 
 /**
  * A model of a chart dataset.
- *
- * @since 1.0.0-M21
  */
 public class DatasetModel {
 

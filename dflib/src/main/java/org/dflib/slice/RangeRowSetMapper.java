@@ -6,9 +6,6 @@ import org.dflib.Series;
 import org.dflib.row.ColumnsRowProxy;
 import org.dflib.row.MultiArrayRowBuilder;
 
-/**
- * @since 1.0.0-M19
- */
 public class RangeRowSetMapper extends RowSetMapper {
 
     private final int fromInclusive;

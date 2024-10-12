@@ -21,9 +21,6 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.function.Supplier;
 
-/**
- * @since 0.6
- */
 public class SaveViaUpsert extends TableSaveStrategy {
 
     // used as a column for join indicator. Semi-random to avoid conflicts with real column names

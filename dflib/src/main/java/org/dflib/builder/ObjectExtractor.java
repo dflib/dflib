@@ -3,9 +3,6 @@ package org.dflib.builder;
 import org.dflib.Extractor;
 import org.dflib.ValueMapper;
 
-/**
- * @since 0.8
- */
 public class ObjectExtractor<F, T> implements Extractor<F, T> {
 
     private final ValueMapper<F, T> mapper;

@@ -2,9 +2,6 @@ package org.dflib.builder;
 
 import org.dflib.Extractor;
 
-/**
- * @since 1.0.0-M19
- */
 public class SingleValueExtractor<F, T> implements Extractor<F, T> {
 
     private final T value;

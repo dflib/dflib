@@ -21,9 +21,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-/**
- * @since 0.8
- */
 public class JsonLoader {
 
     private final Set<Option> options;
@@ -64,9 +61,7 @@ public class JsonLoader {
         return this;
     }
 
-    /**
-     * @since 1.0.0-RC1
-     */
+    
     public JsonLoader col(String column, ValueMapper<Object, ?> mapper) {
         extractors.put(column, ColConfigurator.objectCol(column, mapper, false));
         return this;
@@ -74,8 +69,6 @@ public class JsonLoader {
 
     /**
      * Configures a column to be loaded with value compaction. Should be used to save memory for low-cardinality columns.
-     *
-     * @since 1.0.0-RC1
      */
     public JsonLoader compactCol(String column) {
         extractors.put(column, ColConfigurator.objectCol(column, true));
@@ -84,113 +77,85 @@ public class JsonLoader {
 
     /**
      * Configures a column to be loaded with value compaction. Should be used to save memory for low-cardinality columns.
-     *
-     * @since 1.0.0-RC1
      */
     public JsonLoader compactCol(String column, ValueMapper<Object, ?> mapper) {
         extractors.put(column, ColConfigurator.objectCol(column, mapper, true));
         return this;
     }
 
-    /**
-     * @since 0.16
-     */
+
     public JsonLoader boolCol(String column) {
         extractors.put(column, ColConfigurator.boolCol(column));
         return this;
     }
 
-    /**
-     * @since 0.16
-     */
+
     public JsonLoader intCol(String column) {
         extractors.put(column, ColConfigurator.intCol(column));
         return this;
     }
 
-    /**
-     * @since 0.16
-     */
+
     public JsonLoader intCol(String column, int forNull) {
         extractors.put(column, ColConfigurator.intCol(column, forNull));
         return this;
     }
 
-    /**
-     * @since 0.16
-     */
+
     public JsonLoader longColumn(String column) {
         extractors.put(column, ColConfigurator.longCol(column));
         return this;
     }
 
-    /**
-     * @since 0.16
-     */
+
     public JsonLoader longColumn(String column, long forNull) {
         extractors.put(column, ColConfigurator.longCol(column, forNull));
         return this;
     }
 
-    /**
-     * @since 0.16
-     */
+
     public JsonLoader doubleCol(String column) {
         extractors.put(column, ColConfigurator.doubleCol(column));
         return this;
     }
 
-    /**
-     * @since 0.16
-     */
+
     public JsonLoader doubleCol(String column, double forNull) {
         extractors.put(column, ColConfigurator.doubleCol(column, forNull));
         return this;
     }
 
-    /**
-     * @since 0.16
-     */
+
     public JsonLoader dateCol(String column) {
         extractors.put(column, ColConfigurator.dateCol(column));
         return this;
     }
 
-    /**
-     * @since 0.16
-     */
+
     public JsonLoader dateCol(String column, DateTimeFormatter formatter) {
         extractors.put(column, ColConfigurator.dateCol(column, formatter));
         return this;
     }
 
-    /**
-     * @since 0.16
-     */
+
     public JsonLoader timeCol(String column) {
         extractors.put(column, ColConfigurator.timeCol(column));
         return this;
     }
 
-    /**
-     * @since 0.16
-     */
+
     public JsonLoader timeCol(String column, DateTimeFormatter formatter) {
         extractors.put(column, ColConfigurator.timeCol(column, formatter));
         return this;
     }
 
-    /**
-     * @since 0.16
-     */
+
     public JsonLoader dateTimeCol(String column) {
         extractors.put(column, ColConfigurator.dateTimeCol(column));
         return this;
     }
 
-    /**
-     * @since 0.16
-     */
+
     public JsonLoader dateTimeCol(String column, DateTimeFormatter formatter) {
         extractors.put(column, ColConfigurator.dateTimeCol(column, formatter));
         return this;
@@ -207,8 +172,6 @@ public class JsonLoader {
 
     /**
      * Loads a DataFrame from a JSON file at the specified path.
-     *
-     * @since 1.0.0-RC1
      */
     public DataFrame load(Path filePath) {
         return load(filePath.toFile());
@@ -216,8 +179,6 @@ public class JsonLoader {
 
     /**
      * Loads a DataFrame from a JSON file.
-     *
-     * @since 1.0.0-RC1
      */
     public DataFrame load(File file) {
         try {
@@ -230,8 +191,6 @@ public class JsonLoader {
 
     /**
      * Loads a DataFrame from the provided InputStream
-     *
-     * @since 1.0.0-RC1
      */
     public DataFrame load(InputStream in) {
         DocumentContext context = JsonPath.parse(in, buildJSONPathConfiguration());

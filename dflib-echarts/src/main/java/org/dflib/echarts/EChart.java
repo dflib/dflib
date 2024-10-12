@@ -21,8 +21,6 @@ import java.util.Random;
 /**
  * A builder of HTML/JS code that renders DataFrame data using ECharts library. Created via {@link ECharts#chart()} and
  * {@link ECharts#chart(String)} methods.
- *
- * @since 1.0.0-M21
  */
 public class EChart {
     private static final String DEFAULT_ECHARTS_SCRIPT_URL = "https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js";
@@ -85,9 +83,6 @@ public class EChart {
         return this;
     }
 
-    /**
-     * @since 1.0.0-M22
-     */
     public EChart sizePx(int width, int height) {
         this.width = width;
         this.height = height;
@@ -99,9 +94,6 @@ public class EChart {
         return this;
     }
 
-    /**
-     * @since 1.0.0-M22
-     */
     public EChart tooltip(Tooltip tooltip) {
         option.tooltip(tooltip);
         return this;
@@ -110,8 +102,6 @@ public class EChart {
     /**
      * Adds a Grid to the chart. Grids are used to plot multiple charts in cartesian coordinates. Axis objects can
      * optionally have grid references.
-     *
-     * @since 1.0.0-M22
      */
     public EChart grid(Grid grid) {
         option.grid(grid);
@@ -143,8 +133,6 @@ public class EChart {
 
     /**
      * Add one or more configured Y axes of the chart.
-     *
-     * @since 1.0.0-M22
      */
     public EChart yAxes(YAxis... axes) {
         option.yAxes(axes);
@@ -172,8 +160,6 @@ public class EChart {
     /**
      * Adds one or more "line" series to the plot with data coming from DataFrame columns passed as method arguments.
      * Series configuration is specified via the {@link LineSeriesOpts} argument.
-     *
-     * @since 1.0.0-RC1
      */
     public EChart series(LineSeriesOpts seriesOpts, String... dataColumns) {
         return singleColumnSeries(seriesOpts, dataColumns);
@@ -182,8 +168,6 @@ public class EChart {
     /**
      * Adds one or more "bar" series to the plot with data coming from DataFrame columns passed as method arguments.
      * Series configuration is specified via the {@link BarSeriesOpts} argument.
-     *
-     * @since 1.0.0-RC1
      */
     public EChart series(BarSeriesOpts seriesOpts, String... dataColumns) {
         return singleColumnSeries(seriesOpts, dataColumns);
@@ -192,8 +176,6 @@ public class EChart {
     /**
      * Adds one or more "scatter" series to the plot with data coming from DataFrame columns passed as method arguments.
      * Series configuration is specified via the {@link ScatterSeriesOpts} argument.
-     *
-     * @since 1.0.0-RC1
      */
     public EChart series(ScatterSeriesOpts seriesOpts, String... dataColumns) {
         return singleColumnSeries(seriesOpts, dataColumns);
@@ -202,8 +184,6 @@ public class EChart {
     /**
      * Adds one or more "pie" series to the plot with data coming from DataFrame columns passed as method arguments.
      * Series configuration is specified via the {@link PieSeriesOpts} argument.
-     *
-     * @since 1.0.0-RC1
      */
     public EChart series(PieSeriesOpts seriesOpts, String... dataColumns) {
         return singleColumnSeries(seriesOpts, dataColumns);
@@ -219,8 +199,6 @@ public class EChart {
     /**
      * Adds a "candlestick" series to the chart, with references to 4 data columns indicating "open", "close",
      * "lowest" and "highest" values.
-     *
-     * @since 1.0.0-RC1
      */
     public EChart series(
             CandlestickSeriesOpts seriesOpts,
@@ -241,8 +219,6 @@ public class EChart {
     /**
      * Adds a "boxplot" series to the chart, with references to 5 data columns indicating "min", "Q1", "median", "Q3",
      * "max" values.
-     *
-     * @since 1.0.0-RC1
      */
     public EChart series(
             BoxplotSeriesOpts seriesOpts,

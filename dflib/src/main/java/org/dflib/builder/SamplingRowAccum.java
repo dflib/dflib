@@ -5,9 +5,6 @@ import org.dflib.IntSeries;
 
 import java.util.Random;
 
-/**
- * @since 0.16
- */
 class SamplingRowAccum<S> implements RowAccum<S> {
 
     private final RowAccum<S> delegate;

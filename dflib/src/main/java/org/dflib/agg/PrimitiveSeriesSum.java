@@ -1,8 +1,6 @@
 package org.dflib.agg;
 
-/**
- * @since 0.11
- */
+
 public class PrimitiveSeriesSum {
 
     public static long sumOfRange(int first, int lastExclusive) {
@@ -29,9 +27,7 @@ public class PrimitiveSeriesSum {
         return cumSum;
     }
 
-    /**
-     * @since 0.14
-     */
+
     public static long[] cumSumOfArray(int[] ints, int start, int len) {
 
         long[] cumSum = new long[len];
@@ -45,9 +41,7 @@ public class PrimitiveSeriesSum {
         return cumSum;
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     public static long[] cumSumOfValue(int val, int len) {
 
         long[] cumSum = new long[len];
@@ -59,9 +53,7 @@ public class PrimitiveSeriesSum {
         return cumSum;
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     public static long[] cumSumOfValue(long val, int len) {
 
         long[] cumSum = new long[len];
@@ -73,9 +65,7 @@ public class PrimitiveSeriesSum {
         return cumSum;
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     public static double[] cumSumOfValue(double val, int len) {
 
         // TODO: deal with rounding errors...
@@ -99,9 +89,7 @@ public class PrimitiveSeriesSum {
         return s;
     }
 
-    /**
-     * @since 0.14
-     */
+
     public static long[] cumSumOfArray(long[] longs, int start, int len) {
 
         long[] cumSum = new long[len];
@@ -125,9 +113,7 @@ public class PrimitiveSeriesSum {
         return s;
     }
 
-    /**
-     * @since 0.14
-     */
+
     public static double[] cumSumOfArray(double[] doubles, int start, int len) {
 
         double[] cumSum = new double[len];

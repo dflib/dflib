@@ -5,9 +5,6 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
-/**
- * @since 0.8
- */
 public class DbFlavorFactory {
 
     public static DbFlavor create(DataSource dataSource) {

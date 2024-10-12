@@ -5,9 +5,7 @@ import org.apache.avro.Schema;
 
 import java.time.LocalTime;
 
-/**
- * @since 0.11
- */
+
 public class LocalTimeConversion extends SingleSchemaConversion<LocalTime> {
 
     static final String NAME = "dflib-localtime";

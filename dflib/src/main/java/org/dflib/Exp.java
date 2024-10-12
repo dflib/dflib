@@ -60,8 +60,6 @@ import java.util.function.Predicate;
  * <p>
  * Contains static factory methods to create various types of expressions. By convention expressions referencing
  * columns start with "$".
- *
- * @since 0.11
  */
 public interface Exp<T> {
 
@@ -79,8 +77,6 @@ public interface Exp<T> {
 
     /**
      * Returns an expression that evaluates to a Series containing a single LocalDate value.
-     *
-     * @since 0.16
      */
     static DateExp $dateVal(LocalDate value) {
         return new DateConstExp(value);
@@ -88,8 +84,6 @@ public interface Exp<T> {
 
     /**
      * Returns an expression that evaluates to a Series containing a single LocalTime value.
-     *
-     * @since 0.16
      */
     static TimeExp $timeVal(LocalTime value) {
         return new TimeConstExp(value);
@@ -97,8 +91,6 @@ public interface Exp<T> {
 
     /**
      * Returns an expression that evaluates to a Series containing a single LocalDateTime value.
-     *
-     * @since 0.16
      */
     static DateTimeExp $dateTimeVal(LocalDateTime value) {
         return new DateTimeConstExp(value);
@@ -263,8 +255,6 @@ public interface Exp<T> {
 
     /**
      * Returns an expression that evaluates to a named date column.
-     *
-     * @since 0.16
      */
     static DateTimeExp $dateTime(String name) {
         return new DateTimeColumn(name);
@@ -272,8 +262,6 @@ public interface Exp<T> {
 
     /**
      * Returns an expression that evaluates to a date column at a given position.
-     *
-     * @since 0.16
      */
     static DateTimeExp $dateTime(int position) {
         return new DateTimeColumn(position);
@@ -337,8 +325,6 @@ public interface Exp<T> {
 
     /**
      * Returns an expression that generates a Series with row numbers, starting with 1.
-     *
-     * @since 1.0.0-M19
      */
     static NumExp<Integer> rowNum() {
         return RowNumExp.getInstance();
@@ -451,8 +437,6 @@ public interface Exp<T> {
      * function, so any source "null" value would automatically evaluate to "null". This makes writing
      * transformation functions easier (and closer to how SQL operates), but if nulls are relevant to the transformation
      * function, "false" can be passed to this method.
-     *
-     * @since 1.0.0-M19
      */
     default <R> Exp<R> mapVal(Function<T, R> op, boolean hideNulls) {
         // Exp type vagueness ALERT: this is one of those expressions where we can't infer the correct return type...
@@ -502,16 +486,10 @@ public interface Exp<T> {
                 : isNotNull();
     }
 
-    /**
-     * @since 0.18
-     */
     default Condition in(Object... values) {
         return MapCondition1.map("in", this, s -> s.in(values));
     }
 
-    /**
-     * @since 0.18
-     */
     default Condition notIn(Object... values) {
         return MapCondition1.map("in", this, s -> s.notIn(values));
     }
@@ -598,134 +576,95 @@ public interface Exp<T> {
 
     /**
      * Converts this expression to a {@link Condition} that can be used for row filtering, etc.
-     *
-     * @since 0.18
      */
     default Condition castAsBool() {
         return ConditionFactory.castAsBool(this);
     }
 
-    /**
-     * @since 1.0.0-M20
-     */
     default Condition mapBool(Function<Series<T>, BooleanSeries> op) {
         return MapCondition1.map("map", this, op);
     }
 
-    /**
-     * @since 1.0.0-M20
-     */
     default Condition mapBoolVal(Predicate<T> op) {
         return mapBoolVal(op, true);
     }
 
-    /**
-     * @since 1.0.0-M20
-     */
     default Condition mapBoolVal(Predicate<T> op, boolean hideNulls) {
         return hideNulls
                 ? MapCondition1.mapVal("map", this, op)
                 : MapCondition1.mapValWithNulls("map", this, op);
     }
 
-    /**
-     * @since 0.16
-     */
+
     default DateExp castAsDate() {
         return DateExp1.mapVal("castAsDate", this.castAsStr(), LocalDate::parse);
     }
 
-    /**
-     * @since 0.16
-     */
+
     default DateExp castAsDate(String format) {
         return castAsDate(DateTimeFormatter.ofPattern(format));
     }
 
-    /**
-     * @since 0.16
-     */
+
     default DateExp castAsDate(DateTimeFormatter formatter) {
         return DateExp1.mapVal("castAsDate", this.castAsStr(), s -> LocalDate.parse(s, formatter));
     }
 
-    /**
-     * @since 0.16
-     */
+
     default TimeExp castAsTime() {
         return TimeExp1.mapVal("castAsTime", this.castAsStr(), LocalTime::parse);
     }
 
-    /**
-     * @since 0.16
-     */
+
     default TimeExp castAsTime(String formatter) {
         return castAsTime(DateTimeFormatter.ofPattern(formatter));
     }
 
-    /**
-     * @since 0.16
-     */
+
     default TimeExp castAsTime(DateTimeFormatter formatter) {
         return TimeExp1.mapVal("castAsTime", this.castAsStr(), s -> LocalTime.parse(s, formatter));
     }
 
-    /**
-     * @since 0.16
-     */
+
     default DateTimeExp castAsDateTime() {
         return DateTimeExp1.mapVal("castAsDateTime", this.castAsStr(), LocalDateTime::parse);
     }
 
-    /**
-     * @since 0.16
-     */
+
     default DateTimeExp castAsDateTime(String format) {
         return castAsDateTime(DateTimeFormatter.ofPattern(format));
     }
 
-    /**
-     * @since 0.16
-     */
+
     default DateTimeExp castAsDateTime(DateTimeFormatter formatter) {
         return DateTimeExp1.mapVal("castAsDateTime", this.castAsStr(), s -> LocalDateTime.parse(s, formatter));
     }
 
-    /**
-     * @since 0.16
-     */
+
     default StrExp castAsStr() {
         return StrExp1.mapVal("castAsStr", this, o -> o.toString());
     }
 
-    /**
-     * @since 0.16
-     */
+
     default NumExp<Integer> castAsInt() {
         // Need to do multiple conversions, so that we can properly cast any number format.
         // Int expressions must override this method to return "this"
         return castAsStr().castAsDecimal().castAsInt();
     }
 
-    /**
-     * @since 0.16
-     */
+
     default NumExp<Long> castAsLong() {
         // Need to do multiple conversions, so that we can properly cast any number format.
         // Long expressions must override this method to return "this"
         return castAsStr().castAsDecimal().castAsLong();
     }
 
-    /**
-     * @since 0.16
-     */
+
     default NumExp<Double> castAsDouble() {
         return castAsStr().castAsDouble();
     }
 
-    /**
-     * @since 0.16
-     */
+
     default DecimalExp castAsDecimal() {
         return castAsStr().castAsDecimal();
     }

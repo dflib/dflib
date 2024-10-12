@@ -5,9 +5,6 @@ import org.dflib.NumExp;
 import org.dflib.exp.ExpScalar1;
 import org.dflib.series.LongSingleValueSeries;
 
-/**
- * @since 1.0.0-M19
- */
 public class LongConstExp extends ExpScalar1<Long> implements NumExp<Long> {
 
     private final long longValue;

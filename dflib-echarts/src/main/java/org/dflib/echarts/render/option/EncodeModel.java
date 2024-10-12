@@ -20,23 +20,14 @@ public class EncodeModel {
         return x;
     }
 
-    /**
-     * @since 1.0.0-M23
-     */
     public boolean isYsPresent() {
         return ys != null && ys.size() > 1;
     }
 
-    /**
-     * @since 1.0.0-M23
-     */
     public ValueModels<Integer> getYs() {
         return ys;
     }
 
-    /**
-     * @since 1.0.0-M23
-     */
     public boolean isYPresent() {
         return ys != null && ys.size() == 1;
     }
@@ -45,16 +36,10 @@ public class EncodeModel {
         return ys.getValue(0);
     }
 
-    /**
-     * @since 1.0.0-M22
-     */
     public Integer getItemName() {
         return itemName;
     }
 
-    /**
-     * @since 1.0.0-M22
-     */
     public Integer getValue() {
         return value;
     }

@@ -11,9 +11,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 
-/**
- * @since 0.8
- */
 public class Ranker {
 
     protected final IntComparator sorter;

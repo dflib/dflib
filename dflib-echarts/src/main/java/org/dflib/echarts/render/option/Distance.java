@@ -2,8 +2,6 @@ package org.dflib.echarts.render.option;
 
 /**
  * A distance expressed as % or pixels.
- *
- * @since 1.0.0-M22
  */
 public abstract class Distance {
 

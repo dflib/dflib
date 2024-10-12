@@ -7,9 +7,7 @@ import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
-/**
- * @since 0.11
- */
+
 public class LocalDateTimeConversion extends SingleSchemaConversion<LocalDateTime> {
 
     static final String NAME = "dflib-localdatetime";

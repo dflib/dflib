@@ -15,9 +15,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * @since 0.6
- */
 public class DbMetadata {
 
     private DataSource dataSource;
@@ -70,9 +67,7 @@ public class DbMetadata {
         return tables.computeIfAbsent(fqName, this::loadTableMetadata);
     }
 
-    /**
-     * @since 0.7
-     */
+
     public DbTableMetadata getTable(TableFQName tableName) {
 
         // the name can be full or partial (i.e. catalogs and schemas may or may not be there). Not trying to resolve
@@ -88,7 +83,6 @@ public class DbMetadata {
      *
      * @param tableName a String identifying either fully-qualified or partial table name
      * @return a {@link TableFQName} object corresponding to the table.
-     * @since 0.7
      */
     // TODO: currently two related issues with this method
     //   1. will not work for DBs like Hana that are using dots as separators of their internal namespace that is
@@ -96,7 +90,6 @@ public class DbMetadata {
     //   2. If table name components are passed in already quoted, this parser will not strip the quotes and hence
     //   will produce an incorrect FQN. (e.g. "c"."n")
     public TableFQName parseTableName(String tableName) {
-
 
         String[] parts = tableName.split("\\.", 3);
         switch (parts.length) {

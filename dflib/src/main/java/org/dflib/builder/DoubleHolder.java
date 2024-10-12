@@ -1,8 +1,5 @@
 package org.dflib.builder;
 
-/**
- * @since 0.8
- */
 public class DoubleHolder implements ValueHolder<Double> {
 
     private double v;

@@ -16,9 +16,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.file.Path;
 
-/**
- * @since 0.11
- */
+
 public class JsonSaver {
 
     private boolean createMissingDirs;
@@ -60,9 +58,7 @@ public class JsonSaver {
         save(df, new File(fileName));
     }
 
-    /**
-     * @since 1.0.0-RC1
-     */
+    
     public String saveToString(DataFrame df) {
 
         StringWriter out = new StringWriter();

@@ -5,9 +5,6 @@ import org.dflib.Series;
 import java.util.Arrays;
 import java.util.Objects;
 
-/**
- * @since 0.9
- */
 // While this can be expressed as a concatenation of a RangeSeries and SingleValueSeries, a dedicated
 // offset series would yield better performance
 public class OffsetLeadSeries<T> extends OffsetSeries<T> {

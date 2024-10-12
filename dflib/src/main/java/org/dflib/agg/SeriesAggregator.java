@@ -9,9 +9,6 @@ import org.dflib.builder.ObjectAccum;
 import org.dflib.builder.ValueAccum;
 import org.dflib.exp.Exps;
 
-/**
- * @since 0.14
- */
 public class SeriesAggregator {
 
     public static DataFrame aggAsDataFrame(Series<?> series, Exp<?>... aggregators) {

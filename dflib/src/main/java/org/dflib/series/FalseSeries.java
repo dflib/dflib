@@ -4,9 +4,7 @@ import org.dflib.BooleanSeries;
 
 import java.util.Arrays;
 
-/**
- * @since 0.11
- */
+
 public class FalseSeries extends BooleanBaseSeries {
 
     private final int size;

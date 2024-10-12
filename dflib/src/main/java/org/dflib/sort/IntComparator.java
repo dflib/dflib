@@ -2,16 +2,11 @@ package org.dflib.sort;
 
 import java.util.Objects;
 
-/**
- * @since 0.6
- */
 public interface IntComparator {
 
     int compare(int i1, int i2);
 
-    /**
-     * @since 0.11
-     */
+
     default IntComparator thenComparing(IntComparator other) {
         Objects.requireNonNull(other);
         return (i1, i2) -> {

@@ -2,9 +2,6 @@ package org.dflib.echarts;
 
 import org.dflib.echarts.render.option.axis.AxisModel;
 
-/**
- * @since 1.0.0-M22
- */
 public class YAxis extends Axis<YAxis> {
 
     private YAxisPosition position;

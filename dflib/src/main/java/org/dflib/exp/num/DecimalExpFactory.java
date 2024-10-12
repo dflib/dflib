@@ -16,9 +16,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.function.Function;
 
-/**
- * @since 0.11
- */
+
 public class DecimalExpFactory extends NumericExpFactory {
 
     private static MathContext divisionContext(BigDecimal n1, BigDecimal n2) {

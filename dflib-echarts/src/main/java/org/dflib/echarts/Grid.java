@@ -5,9 +5,6 @@ import org.dflib.echarts.render.option.GridModel;
 
 import java.util.Objects;
 
-/**
- * @since 1.0.0-M22
- */
 public class Grid {
 
     private LeftDistance left;

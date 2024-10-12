@@ -8,9 +8,6 @@ import org.dflib.exp.map.MapCondition3;
 import org.dflib.f.Function3;
 import org.dflib.f.Predicate3;
 
-/**
- * @since 1.0.0-M19
- */
 public class LongCondition3 extends MapCondition3<Long, Long, Long> {
 
     public static LongCondition3 mapVal(

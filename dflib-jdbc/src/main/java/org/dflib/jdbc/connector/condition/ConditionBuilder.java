@@ -8,9 +8,6 @@ import org.dflib.series.ByRowSeries;
 
 import java.util.Objects;
 
-/**
- * @since 0.8
- */
 public class ConditionBuilder {
 
     private JdbcConnector connector;

@@ -9,9 +9,7 @@ import org.dflib.exp.Condition1;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-/**
- * @since 0.11
- */
+
 public class MapCondition1<F> extends Condition1<F> {
 
     private final Function<Series<F>, BooleanSeries> op;
@@ -20,9 +18,7 @@ public class MapCondition1<F> extends Condition1<F> {
         return new MapCondition1<>(opName, exp, op);
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     public static <F> MapCondition1<F> mapValWithNulls(String opName, Exp<F> exp, Predicate<F> predicate) {
         return new MapCondition1<>(opName, exp, valToSeriesWithNulls(predicate));
     }

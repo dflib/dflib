@@ -6,8 +6,6 @@ import org.apache.avro.Schema;
 /**
  * A catch-all conversion for unmapped types that takes a kind of a CSV approach of serializing object as String,
  * and deserializing Strings instead of specific objects.
- *
- * @since 0.11
  */
 public class UnmappedConversion extends SingleSchemaConversion<String> {
 

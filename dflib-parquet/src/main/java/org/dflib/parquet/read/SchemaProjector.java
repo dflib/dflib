@@ -8,9 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * @since 1.0.0-M23
- */
+
+
 @FunctionalInterface
 public interface SchemaProjector {
 

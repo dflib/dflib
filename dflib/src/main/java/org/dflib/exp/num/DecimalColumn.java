@@ -5,9 +5,7 @@ import org.dflib.exp.Column;
 
 import java.math.BigDecimal;
 
-/**
- * @since 0.11
- */
+
 public class DecimalColumn extends Column<BigDecimal> implements DecimalExp {
 
     public DecimalColumn(String name) {

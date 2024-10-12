@@ -3,9 +3,7 @@ package org.dflib.exp.str;
 import org.dflib.StrExp;
 import org.dflib.exp.Column;
 
-/**
- * @since 0.11
- */
+
 public class StrColumn extends Column<String> implements StrExp {
 
     public StrColumn(String name) {

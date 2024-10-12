@@ -23,8 +23,6 @@ import java.sql.SQLException;
 
 /**
  * A connector that provides the same connection to all consumers, opening it lazily when first requested.
- *
- * @since 0.6
  */
 public class TxJdbcConnector implements JdbcConnector, AutoCloseable {
 
@@ -47,9 +45,7 @@ public class TxJdbcConnector implements JdbcConnector, AutoCloseable {
         return tableSaver(getMetadata().parseTableName(tableName));
     }
 
-    /**
-     * @since 0.7
-     */
+
     @Override
     public TableSaver tableSaver(TableFQName tableName) {
         return new TableSaver(this, tableName);
@@ -60,9 +56,6 @@ public class TxJdbcConnector implements JdbcConnector, AutoCloseable {
         return tableLoader(getMetadata().parseTableName(tableName));
     }
 
-    /**
-     * @since 0.7
-     */
     @Override
     public TableLoader tableLoader(TableFQName tableName) {
         return new TableLoader(this, tableName);
@@ -121,17 +114,13 @@ public class TxJdbcConnector implements JdbcConnector, AutoCloseable {
         return delegate.quoteIdentifier(bareIdentifier);
     }
 
-    /**
-     * @since 0.7
-     */
+
     @Override
     public String quoteTableName(TableFQName tableName) {
         return delegate.quoteTableName(tableName);
     }
 
-    /**
-     * @since 0.16
-     */
+
     @Override
     public Extractor<ResultSet, ?> createExtractor(int resultSetPosition, int type, boolean mandatory) {
         return delegate.createExtractor(resultSetPosition, type, mandatory);

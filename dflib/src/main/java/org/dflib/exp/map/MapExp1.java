@@ -9,8 +9,6 @@ import java.util.function.Function;
 /**
  * A unary expression that evaluates parent expression first, and passes the result to a mapping function to
  * produce the final result.
- *
- * @since 0.11
  */
 public class MapExp1<F, T> extends Exp1<F, T> {
 
@@ -20,9 +18,7 @@ public class MapExp1<F, T> extends Exp1<F, T> {
         return new MapExp1<>(opName, type, exp, op);
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     public static <F, T> MapExp1<F, T> mapValWithNulls(String opName, Class<T> type, Exp<F> exp, Function<F, T> op) {
         return new MapExp1<>(opName, type, exp, valToSeriesWithNulls(op));
     }

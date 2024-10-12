@@ -16,8 +16,6 @@ import java.util.function.Predicate;
 /**
  * A Series optimized to store and access primitive long values without <code>java.lang.Long</code> wrapper. Can also
  * pose as "Series&lt;Long>", although this is not the most efficient way of using it.
- *
- * @since 0.6
  */
 public interface LongSeries extends Series<Long> {
 
@@ -79,9 +77,6 @@ public interface LongSeries extends Series<Long> {
         return expandLong(primitives);
     }
 
-    /**
-     * @since 1.0.0-M21
-     */
     default LongSeries expandLong(long... values) {
         int rlen = values.length;
         if (rlen == 0) {
@@ -109,9 +104,7 @@ public interface LongSeries extends Series<Long> {
         return Intersect.intersectLong(this, other);
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     LongSeries rangeLong(int fromInclusive, int toExclusive);
 
     @Override
@@ -149,9 +142,7 @@ public interface LongSeries extends Series<Long> {
         return LongIndexedSeries.of(this, positions);
     }
 
-    /**
-     * @since 0.11
-     */
+
     LongSeries selectLong(LongPredicate p);
 
     @Override
@@ -189,21 +180,15 @@ public interface LongSeries extends Series<Long> {
     @Override
     LongSeries unique();
 
-    /**
-     * @since 0.7
-     */
+
     @Override
     LongSeries sample(int size);
 
-    /**
-     * @since 0.7
-     */
+
     @Override
     LongSeries sample(int size, Random random);
 
-    /**
-     * @since 0.7
-     */
+
     default long[] toLongArray() {
         int len = size();
         long[] copy = new long[len];
@@ -211,42 +196,29 @@ public interface LongSeries extends Series<Long> {
         return copy;
     }
 
-    /**
-     * @since 0.14
-     */
+
     LongSeries cumSum();
 
-    /**
-     * @since 0.7
-     */
+
     long max();
 
-    /**
-     * @since 0.7
-     */
+
     long min();
 
-    /**
-     * @since 0.7
-     */
+
     // TODO: deal with overflow?
     long sum();
 
-    /**
-     * @since 0.11
-     */
+
     double avg();
 
-    /**
-     * @since 0.7
-     */
+
     double median();
 
     /**
      * Compute the standard deviation
      *
      * @param usePopulationStdDev Use the Population variant if true, Sample variant if false
-     * @since 1.0.0-RC1
      */
     default double stdDev(final boolean usePopulationStdDev) {
         final double variance = variance(usePopulationStdDev);
@@ -255,8 +227,6 @@ public interface LongSeries extends Series<Long> {
 
     /**
      * Compute the standard deviation, using the population variant
-     *
-     * @since 1.0.0-RC1
      */
     default double stdDev() {
         return stdDev(true);
@@ -266,7 +236,6 @@ public interface LongSeries extends Series<Long> {
      * Compute the variance
      *
      * @param usePopulationVariance Use the Population variant if true, Sample variant if false
-     * @since 1.0.0-RC1
      */
     default double variance(boolean usePopulationVariance) {
         int len = size();
@@ -284,8 +253,6 @@ public interface LongSeries extends Series<Long> {
 
     /**
      * Compute the variance, using the population variant
-     *
-     * @since 1.0.0-RC1
      */
     default double variance() {
         return variance(true);
@@ -336,8 +303,6 @@ public interface LongSeries extends Series<Long> {
     /**
      * Performs per-element addition between this and another LongSeries, returning the Series of the same
      * length.
-     *
-     * @since 0.11
      */
     default LongSeries add(LongSeries s) {
         int len = size();
@@ -356,8 +321,6 @@ public interface LongSeries extends Series<Long> {
 
     /**
      * Performs per-element addition between this and a constant value, returning the Series of the same length.
-     *
-     * @since 1.0.0-RC1
      */
     default LongSeries add(long v) {
         int len = size();
@@ -373,8 +336,6 @@ public interface LongSeries extends Series<Long> {
 
     /**
      * Performs subtraction operation between this and another LongSeries.
-     *
-     * @since 0.11
      */
     default LongSeries sub(LongSeries s) {
         int len = size();
@@ -393,8 +354,6 @@ public interface LongSeries extends Series<Long> {
 
     /**
      * Performs multiplication operation between this and another LongSeries.
-     *
-     * @since 0.11
      */
     default LongSeries mul(LongSeries s) {
         int len = size();
@@ -413,8 +372,6 @@ public interface LongSeries extends Series<Long> {
 
     /**
      * Performs multiplication operation between this and a constant value.
-     *
-     * @since 1.0.0-RC1
      */
     default LongSeries mul(long v) {
         int len = size();
@@ -430,8 +387,6 @@ public interface LongSeries extends Series<Long> {
 
     /**
      * Performs division operation between this and another LongSeries.
-     *
-     * @since 0.11
      */
     default LongSeries div(LongSeries s) {
         int len = size();
@@ -450,8 +405,6 @@ public interface LongSeries extends Series<Long> {
 
     /**
      * Performs modulo operation between this and another LongSeries.
-     *
-     * @since 0.11
      */
     default LongSeries mod(LongSeries s) {
         int len = size();
@@ -468,9 +421,7 @@ public interface LongSeries extends Series<Long> {
         return new LongArraySeries(data);
     }
 
-    /**
-     * @since 0.11
-     */
+
     default BooleanSeries lt(LongSeries s) {
         int len = size();
         if (len != s.size()) {
@@ -486,9 +437,7 @@ public interface LongSeries extends Series<Long> {
         return new BooleanArraySeries(data);
     }
 
-    /**
-     * @since 0.11
-     */
+
     default BooleanSeries le(LongSeries s) {
         int len = size();
         if (len != s.size()) {
@@ -504,9 +453,7 @@ public interface LongSeries extends Series<Long> {
         return new BooleanArraySeries(data);
     }
 
-    /**
-     * @since 0.11
-     */
+
     default BooleanSeries gt(LongSeries s) {
         int len = size();
         if (len != s.size()) {
@@ -522,9 +469,7 @@ public interface LongSeries extends Series<Long> {
         return new BooleanArraySeries(data);
     }
 
-    /**
-     * @since 0.11
-     */
+
     default BooleanSeries ge(LongSeries s) {
         int len = size();
         if (len != s.size()) {
@@ -540,9 +485,7 @@ public interface LongSeries extends Series<Long> {
         return new BooleanArraySeries(data);
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     default BooleanSeries between(LongSeries from, LongSeries to) {
         int len = size();
         if (len != from.size()) {

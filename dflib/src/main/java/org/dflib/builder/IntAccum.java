@@ -8,8 +8,6 @@ import java.util.Arrays;
 /**
  * An expandable list of primitive int values that has minimal overhead and can be converted to compact and efficient
  * immutable {@link IntSeries}.
- *
- * @since 0.6
  */
 public class IntAccum implements ValueAccum<Integer> {
 
@@ -25,9 +23,7 @@ public class IntAccum implements ValueAccum<Integer> {
         this.data = new int[capacity];
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     public void fill(IntSeries values, int valuesOffset, int accumOffset, int len) {
         if (len <= 0) {
             return;
@@ -57,17 +53,11 @@ public class IntAccum implements ValueAccum<Integer> {
         size += to - from;
     }
 
-    /**
-     * @since 0.8
-     */
     @Override
     public void push(Integer v) {
         pushInt(v != null ? v : 0);
     }
 
-    /**
-     * @since 0.8
-     */
     @Override
     public void pushInt(int value) {
 

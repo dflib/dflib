@@ -12,8 +12,6 @@ import java.util.stream.Collector;
 
 /**
  * An adapter between Java {@link Collector} and an aggregation function.
- *
- * @since 0.11
  */
 public class CollectorAggregator<S, A, T> implements Function<Series<S>, T> {
 

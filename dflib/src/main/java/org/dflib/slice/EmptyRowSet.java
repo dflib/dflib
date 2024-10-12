@@ -17,9 +17,6 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
-/**
- * @since 1.0.0-M19
- */
 public class EmptyRowSet implements RowSet {
 
     private final DataFrame source;

@@ -9,9 +9,7 @@ import org.dflib.row.MultiArrayRowBuilder;
 
 public class Mapper {
 
-    /**
-     * @since 0.7
-     */
+
     public static <T> DataFrame map(Series<T> source, Index resultColumns, ValueToRowMapper<T> mapper) {
         return new ColumnDataFrame(null, resultColumns, mapData(source, resultColumns, mapper));
     }

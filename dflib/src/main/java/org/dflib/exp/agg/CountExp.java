@@ -6,9 +6,7 @@ import org.dflib.Series;
 import org.dflib.exp.Exp0;
 import org.dflib.series.IntSingleValueSeries;
 
-/**
- * @since 0.11
- */
+
 public class CountExp extends Exp0<Integer> implements NumExp<Integer> {
 
     private static final CountExp instance = new CountExp();

@@ -2,9 +2,7 @@ package org.dflib.exp.agg;
 
 import org.dflib.Series;
 
-/**
- * @since 0.11
- */
+
 public class ComparableAggregators {
 
     public static <T extends Comparable<T>> T min(Series<? extends T> s) {

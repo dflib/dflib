@@ -5,9 +5,6 @@ import org.dflib.jdbc.connector.JdbcConnector;
 import org.dflib.jdbc.connector.TableDeleter;
 import org.dflib.jdbc.connector.metadata.TableFQName;
 
-/**
- * @since 0.6
- */
 public class SaveViaDeleteThenInsert extends SaveViaInsert {
 
     public SaveViaDeleteThenInsert(JdbcConnector connector, TableFQName tableName, int batchSize) {

@@ -11,9 +11,6 @@ import org.dflib.builder.ValueAccum;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
-/**
- * @since 1.0.0-M21
- */
 public class GroupByAggregator {
 
     public static Series<?>[] agg(GroupBy groupBy, Exp<?>... aggregators) {

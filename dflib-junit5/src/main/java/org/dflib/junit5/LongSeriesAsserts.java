@@ -4,9 +4,6 @@ import org.dflib.LongSeries;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * @since 0.8
- */
 public class LongSeriesAsserts {
     private long[] data;
 

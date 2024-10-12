@@ -43,9 +43,6 @@ public class JdbcConnectorBuilder {
         return this;
     }
 
-    /**
-     * @since 0.8
-     */
     public JdbcConnectorBuilder dataSource(DataSource dataSource) {
         this.dataSource = Objects.requireNonNull(dataSource);
         this.userName = null;
@@ -61,7 +58,6 @@ public class JdbcConnectorBuilder {
      * @param columnJdbcType a type of column defined in {@link Types}.
      * @param factory        a factory for column builders that should be associated with the provided type
      * @see JdbcExtractorFactory for a collection of commonly-used factories.
-     * @since 0.8
      */
     public <T> JdbcConnectorBuilder addColumnBuilderFactory(int columnJdbcType, JdbcExtractorFactory<T> factory) {
         if (this.columnBuilderFactories == null) {

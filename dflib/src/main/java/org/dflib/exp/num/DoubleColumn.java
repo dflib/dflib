@@ -3,9 +3,7 @@ package org.dflib.exp.num;
 import org.dflib.exp.Column;
 import org.dflib.NumExp;
 
-/**
- * @since 0.11
- */
+
 public class DoubleColumn extends Column<Double> implements NumExp<Double> {
 
     public DoubleColumn(String name) {

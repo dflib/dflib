@@ -8,9 +8,6 @@ import org.dflib.exp.Condition3;
 import org.dflib.f.Function3;
 import org.dflib.f.Predicate3;
 
-/**
- * @since 1.0.0-M19
- */
 public class MapCondition3<One, Two, Three> extends Condition3<One, Two, Three> {
 
     private final Function3<Series<One>, Series<Two>, Series<Three>, BooleanSeries> op;

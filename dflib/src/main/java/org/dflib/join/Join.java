@@ -19,8 +19,6 @@ import java.util.function.UnaryOperator;
 
 /**
  * Join builder
- *
- * @since 1.0.0-M19
  */
 public class Join {
 

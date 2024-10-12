@@ -10,9 +10,7 @@ import org.dflib.series.FalseSeries;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
-/**
- * @since 0.11
- */
+
 public class MapExpScalarCondition2<L, R> extends ExpScalarCondition2<L, R> {
 
     private final BiFunction<Series<L>, R, BooleanSeries> op;

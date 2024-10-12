@@ -20,8 +20,6 @@ import java.nio.file.Path;
 
 /**
  * Saves DataFrames to binary ".avro" files with an embedded schema and optional compression.
- *
- * @since 0.11
  */
 public class AvroSaver extends BaseSaver<AvroSaver> {
 

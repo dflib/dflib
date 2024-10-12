@@ -7,9 +7,7 @@ import org.dflib.Series;
 import org.dflib.exp.map.MapConjunctiveConditionN;
 import org.dflib.exp.ConjunctiveConditionN;
 
-/**
- * @since 0.11
- */
+
 public class OrCondition extends MapConjunctiveConditionN {
 
     public OrCondition(Condition... parts) {

@@ -7,8 +7,6 @@ import org.dflib.row.RowProxy;
 
 /**
  * A Series that is a concatenation of rows in a DataFrame.
- *
- * @since 0.6
  */
 public class ByRowSeries extends ObjectSeries<Object> {
 

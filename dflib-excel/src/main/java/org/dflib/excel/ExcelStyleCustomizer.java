@@ -3,9 +3,6 @@ package org.dflib.excel;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Workbook;
 
-/**
- * @since 0.14
- */
 @FunctionalInterface
 public interface ExcelStyleCustomizer {
 

@@ -8,9 +8,7 @@ import org.dflib.Series;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-/**
- * @since 0.11
- */
+
 public abstract class ConjunctiveConditionN implements Condition {
 
     private final String opName;

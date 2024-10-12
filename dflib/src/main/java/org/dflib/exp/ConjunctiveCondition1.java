@@ -5,9 +5,7 @@ import org.dflib.Condition;
 import org.dflib.DataFrame;
 import org.dflib.Series;
 
-/**
- * @since 0.11
- */
+
 public abstract class ConjunctiveCondition1 implements Condition {
 
     private final String opName;

@@ -8,8 +8,6 @@ import java.util.function.Function;
 
 /**
  * Provides API to build a DB transaction wrapper around a set of JDBC operations.
- *
- * @since 0.6
  */
 public class Tx {
 

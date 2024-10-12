@@ -5,9 +5,6 @@ import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.Series;
 
-/**
- * @since 0.16
- */
 class DefaultRowAccum<S> implements RowAccum<S> {
 
     protected final Index columnsIndex;

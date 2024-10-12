@@ -5,9 +5,6 @@ import org.dflib.NumExp;
 import org.dflib.Series;
 import org.dflib.series.IntSequenceSeries;
 
-/**
- * @since 1.0.0-M19
- */
 public class RowNumExp extends Exp0<Integer> implements NumExp<Integer> {
 
     private static final int START_NUMBER = 1;

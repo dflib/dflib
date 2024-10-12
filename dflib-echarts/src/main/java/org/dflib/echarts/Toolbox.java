@@ -4,18 +4,12 @@ import org.dflib.echarts.render.option.toolbox.ToolboxModel;
 import org.dflib.echarts.render.option.toolbox.DataZoomModel;
 import org.dflib.echarts.render.option.toolbox.RestoreModel;
 
-/**
- * @since 1.0.0-M21
- */
 public class Toolbox {
 
     private boolean featureDataZoom;
     private SaveAsImage featureSaveAsImage;
     private boolean featureRestore;
 
-    /**
-     * @since 1.0.0-M22
-     */
     public static Toolbox of() {
         return new Toolbox();
     }

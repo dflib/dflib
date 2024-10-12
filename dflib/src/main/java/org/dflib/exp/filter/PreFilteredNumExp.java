@@ -9,8 +9,6 @@ import org.dflib.Series;
 
 /**
  * An expression that applies a filter to the DataFrame before delegating processing to another expression.
- *
- * @since 0.11
  */
 public class PreFilteredNumExp<N extends Number> implements NumExp<N> {
 

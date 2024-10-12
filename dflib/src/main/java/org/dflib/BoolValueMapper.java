@@ -3,8 +3,6 @@ package org.dflib;
 /**
  * A mapper of some value to a boolean. Can be used to convert values or as a predicate to calculate matching
  * element positions in Series or DataFrames.
- *
- * @since 0.6
  */
 public interface BoolValueMapper<V> {
 

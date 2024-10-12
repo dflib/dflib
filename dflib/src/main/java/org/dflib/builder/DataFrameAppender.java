@@ -5,8 +5,7 @@ import org.dflib.DataFrame;
 /**
  * Assembles a DataFrame from a sequence of objects of a some type. Supports source transformations, including
  * generation of primitive columns, etc.
- *
- * @since 0.16
+
  */
 public class DataFrameAppender<S> {
 

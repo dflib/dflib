@@ -6,9 +6,6 @@ import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Series;
 
-/**
- * @since 1.0.0-M19
- */
 public abstract class Condition3<One, Two, Three> implements Condition {
 
     private final String opName1;

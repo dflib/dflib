@@ -28,9 +28,6 @@ public class TableLoader {
         this.colConfigurators = new ArrayList<>();
     }
 
-    /**
-     * @since 1.0.0-M20
-     */
     public TableLoader cols(String... columns) {
         this.columns = columns;
         return this;
@@ -38,8 +35,6 @@ public class TableLoader {
 
     /**
      * Configures a column to be loaded with value compaction. Should be used to save memory for low-cardinality columns.
-     *
-     * @since 1.0.0-RC1
      */
     public TableLoader compactCol(int column) {
         colConfigurators.add(ColConfigurator.objectCol(column, true));
@@ -48,8 +43,6 @@ public class TableLoader {
 
     /**
      * Configures a column to be loaded with value compaction. Should be used to save memory for low-cardinality columns.
-     *
-     * @since 1.0.0-RC1
      */
     public TableLoader compactCol(String column) {
         colConfigurators.add(ColConfigurator.objectCol(column, true));
@@ -63,7 +56,6 @@ public class TableLoader {
      *
      * @param condition a DataFrame with data that defines load criteria.
      * @return this TableLoader
-     * @since 0.6
      */
     public TableLoader eq(DataFrame condition) {
         this.condition.condition(condition, false);
@@ -77,16 +69,12 @@ public class TableLoader {
      *
      * @param condition a DataFrame with data that defines negated load criteria.
      * @return this TableLoader
-     * @since 0.8
      */
     public TableLoader neq(DataFrame condition) {
         this.condition.condition(condition, true);
         return this;
     }
 
-    /**
-     * @since 1.0.0-M20
-     */
     // TODO: limit without sorting may return unpredictable data.. should we allow to specify a sort column?
     public TableLoader limit(int limit) {
         this.limit = limit;
@@ -101,7 +89,6 @@ public class TableLoader {
      *
      * @param size the size of the sample. Can be bigger than the result set size (as the result set size is not known upfront).
      * @return this loader instance
-     * @since 1.0.0-M20
      */
     public TableLoader rowsSample(int size) {
         return rowsSample(size, Sampler.getDefaultRandom());
@@ -114,7 +101,6 @@ public class TableLoader {
      * @param size   the size of the sample. Can be bigger than the result set size (as the result set size is not known upfront).
      * @param random a custom random number generator
      * @return this loader instance
-     * @since 1.0.0-M20
      */
     public TableLoader rowsSample(int size, Random random) {
         this.rowSampleSize = size;

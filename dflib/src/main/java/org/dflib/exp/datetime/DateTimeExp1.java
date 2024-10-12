@@ -8,9 +8,6 @@ import org.dflib.exp.map.MapExp1;
 import java.time.LocalDateTime;
 import java.util.function.Function;
 
-/**
- * @since 0.16
- */
 public class DateTimeExp1<F> extends MapExp1<F, LocalDateTime> implements DateTimeExp {
 
     public static <F> DateTimeExp1<F> mapVal(String opName, Exp<F> exp, Function<F, LocalDateTime> op) {

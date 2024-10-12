@@ -9,16 +9,10 @@ import org.dflib.row.RowProxy;
 @FunctionalInterface
 public interface Hasher {
 
-    /**
-     * @since 0.18
-     */
     static Hasher of(String column) {
         return r -> r.get(column);
     }
 
-    /**
-     * @since 0.18
-     */
     static Hasher of(int column) {
         return r -> r.get(column);
     }

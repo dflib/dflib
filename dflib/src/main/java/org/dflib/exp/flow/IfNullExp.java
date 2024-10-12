@@ -7,9 +7,7 @@ import org.dflib.Exp;
 
 import java.util.Objects;
 
-/**
- * @since 0.11
- */
+
 // TODO: this exp doesn't fit our Exp templates,
 //  as it does lazy eval. Is there a reasonable template for that?
 public class IfNullExp<T> implements Exp<T> {

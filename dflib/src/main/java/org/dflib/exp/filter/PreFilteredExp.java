@@ -7,8 +7,6 @@ import org.dflib.Exp;
 
 /**
  * An expression that applies a filter to the DataFrame before delegating processing to another expression.
- *
- * @since 0.11
  */
 public class PreFilteredExp<T> implements Exp<T> {
 

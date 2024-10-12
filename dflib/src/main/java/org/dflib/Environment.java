@@ -13,8 +13,6 @@ import java.util.function.UnaryOperator;
  * A static "environment" used by DFLib, providing settings for parallel operations, common optimization thresholds,
  * etc. {@link #commonEnv()} provides access to the Environment singleton. Its parameters can be customized individually
  * via static "set" methods.
- *
- * @since 1.0.0-M19
  */
 public class Environment {
 
@@ -56,8 +54,6 @@ public class Environment {
 
     /**
      * Sets a common printer for Series and DataFrames
-     *
-     * @since 1.0.0-M20
      */
     public static void setPrinter(Printer printer) {
         resetEnv(old -> new Environment(old.threadPool, old.parallelExecThreshold, printer));
@@ -92,9 +88,6 @@ public class Environment {
         return parallelExecThreshold;
     }
 
-    /**
-     * @since 1.0.0-M20
-     */
     public Printer printer() {
         return printer;
     }

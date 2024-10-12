@@ -7,9 +7,6 @@ import org.dflib.NumExp;
 import org.dflib.Series;
 import org.dflib.exp.map.MapCondition1;
 
-/**
- * @since 0.14
- */
 public class ConditionFactory {
 
     public static Condition castAsBool(Exp<?> exp) {

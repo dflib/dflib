@@ -4,9 +4,6 @@ import org.dflib.IntSeries;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * @since 0.8
- */
 public class IntSeriesAsserts {
     private int[] data;
 

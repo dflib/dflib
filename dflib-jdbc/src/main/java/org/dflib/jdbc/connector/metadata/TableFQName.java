@@ -4,8 +4,6 @@ import java.util.Objects;
 
 /**
  * DB table fully qualified name that may contain table name, plus optional catalog and schema.
- *
- * @since 0.7
  */
 public class TableFQName {
 

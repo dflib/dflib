@@ -8,9 +8,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * @since 1.0.0-M19
- */
 public class DynamicColsRowBuilder implements RowBuilder {
 
     private final Map<String, Object[]> columns;

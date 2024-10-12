@@ -6,8 +6,7 @@ import org.dflib.Extractor;
 /**
  * A mutable by-row Series builder that obtains and converts values from some abstract row source. Provides a high-level
  * API over {@link ValueAccum} and {@link Extractor}.
- *
- * @since 0.16
+
  */
 public class SeriesAppender<S, T> {
 

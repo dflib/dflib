@@ -6,9 +6,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * @since 0.16
- */
 public abstract class BaseDataFrameBuilder {
 
     protected final Index columnsIndex;

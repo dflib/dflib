@@ -4,9 +4,6 @@ import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Index;
 
-/**
- * @since 1.0.0-M21
- */
 public class Exps {
 
     public static Index index(Exp<?>... exps) {

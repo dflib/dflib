@@ -7,8 +7,6 @@ import org.dflib.exp.num.NumericExpFactory;
 /**
  * An expression applied to any Java primitive or object numeric columns. Provides various arithmetic, comparison and
  * statistical operations. Allows to combine arguments of different numeric types in a single expression.
- *
- * @since 0.11
  */
 public interface NumExp<N extends Number> extends Exp<N> {
 
@@ -79,17 +77,13 @@ public interface NumExp<N extends Number> extends Exp<N> {
         return (NumExp<N>) NumericExpFactory.factory(this).abs(this);
     }
 
-    /**
-     * @since 0.16
-     */
+
     @Override
     default NumExp<Integer> castAsInt() {
         return NumericExpFactory.factory(this).castAsInt(this);
     }
 
-    /**
-     * @since 0.16
-     */
+
     @Override
     default NumExp<Long> castAsLong() {
         return NumericExpFactory.factory(this).castAsLong(this);
@@ -105,9 +99,7 @@ public interface NumExp<N extends Number> extends Exp<N> {
         return NumericExpFactory.factory(this).castAsDecimal(this);
     }
 
-    /**
-     * @since 0.16
-     */
+
     default <E extends Enum<E>> Exp<E> castAsEnum(Class<E> type) {
         return NumericExpFactory.factory(this).castAsEnum(this, type);
     }
@@ -180,16 +172,12 @@ public interface NumExp<N extends Number> extends Exp<N> {
         return NumericExpFactory.factory(this, ve).ge(this, ve);
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     default Condition between(Exp<? extends Number> from, Exp<? extends Number> to) {
         return NumericExpFactory.factory(this.getType(), from.getType(), to.getType()).between(this, from, to);
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     default Condition between(Number from, Number to) {
         return between(Exp.$val(from), Exp.$val(to));
     }
@@ -197,8 +185,6 @@ public interface NumExp<N extends Number> extends Exp<N> {
     /**
      * A "running total" function that produces a cumulative sum of each row from the beginning of the DataFrame or
      * Series.
-     *
-     * @since 0.14
      */
     default NumExp<?> cumSum() {
         return NumericExpFactory.factory(this).cumSum(this);
@@ -244,9 +230,7 @@ public interface NumExp<N extends Number> extends Exp<N> {
         return new PreFilteredNumExp<>(filter, median());
     }
 
-    /**
-     * @since 0.14
-     */
+
     @Override
     default Condition castAsBool() {
         return ConditionFactory.castAsBool(this);

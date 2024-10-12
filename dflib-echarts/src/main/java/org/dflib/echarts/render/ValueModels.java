@@ -5,8 +5,6 @@ import java.util.List;
 
 /**
  * An adapter for a list of values that simplifies stripping trailing commas when rendering a list in a Mustache template
- *
- * @since 1.0.0-RC1
  */
 public class ValueModels<T> implements Iterable<ValueModel<T>> {
 

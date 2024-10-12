@@ -7,9 +7,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-/**
- * @since 0.6
- */
 public class UpdateStatementParamsRow implements UpdateStatement {
 
     private String sql;

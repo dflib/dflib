@@ -9,8 +9,6 @@ import java.util.Objects;
 /**
  * A lazily-resolved LongSeries that is a subset of another IntSeries based on an IntSeries index. Most
  * operations are implemented as read-through on the underlying Series and do not cause "materialization".
- *
- * @since 1.0.0-M19
  */
 public class LongIndexedSeries extends LongBaseSeries {
 

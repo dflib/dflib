@@ -6,9 +6,6 @@ import org.dflib.Index;
 import org.dflib.RowPredicate;
 import org.dflib.row.ValueHolderRowProxy;
 
-/**
- * @since 0.16
- */
 class FilteringRowAccum<S> implements RowAccum<S> {
 
     private final RowAccum<S> delegate;

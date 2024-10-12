@@ -2,9 +2,6 @@ package org.dflib.echarts;
 
 import org.dflib.echarts.render.option.axis.AxisModel;
 
-/**
- * @since 1.0.0-M22
- */
 public class XAxis extends Axis<XAxis> {
 
     private XAxisPosition position;

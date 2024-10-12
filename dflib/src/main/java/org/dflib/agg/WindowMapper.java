@@ -8,9 +8,6 @@ import org.dflib.Series;
 import org.dflib.builder.ObjectAccum;
 import org.dflib.window.WindowRange;
 
-/**
- * @since 0.14
- */
 public class WindowMapper {
 
     public static <T> Series<T> map(DataFrame df, Exp<T> aggregator, WindowRange range) {

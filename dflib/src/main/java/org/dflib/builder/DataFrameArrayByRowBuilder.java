@@ -4,8 +4,7 @@ import org.dflib.Extractor;
 
 /**
  * An appender builder with Object[] source that creates an appender with vararg support.
- *
- * @since 0.16
+
  */
 public class DataFrameArrayByRowBuilder extends DataFrameByRowBuilder<Object[], DataFrameArrayByRowBuilder> {
 

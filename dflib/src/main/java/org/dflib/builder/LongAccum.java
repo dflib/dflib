@@ -8,8 +8,6 @@ import java.util.Arrays;
 /**
  * An expandable list of primitive long values that has minimal overhead and can be converted to compact and efficient
  * immutable {@link LongSeries}.
- *
- * @since 0.6
  */
 public class LongAccum implements ValueAccum<Long> {
 
@@ -25,9 +23,7 @@ public class LongAccum implements ValueAccum<Long> {
         this.data = new long[capacity];
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     public void fill(LongSeries values, int valuesOffset, int accumOffset, int len) {
         if (len <= 0) {
             return;

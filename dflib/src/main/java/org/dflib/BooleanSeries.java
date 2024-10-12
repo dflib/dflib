@@ -12,9 +12,6 @@ import java.util.Comparator;
 import java.util.Random;
 import java.util.function.Predicate;
 
-/**
- * @since 0.6
- */
 public interface BooleanSeries extends Series<Boolean> {
 
     static BooleanSeries andAll(BooleanSeries... series) {
@@ -41,14 +38,8 @@ public interface BooleanSeries extends Series<Boolean> {
         return this;
     }
 
-    /**
-     * @since 0.16
-     */
     boolean getBool(int index);
 
-    /**
-     * @since 0.16
-     */
     void copyToBool(boolean[] to, int fromOffset, int toOffset, int len);
 
     @Override
@@ -90,9 +81,6 @@ public interface BooleanSeries extends Series<Boolean> {
         return expandBool(bools);
     }
 
-    /**
-     * @since 1.0.0-M21
-     */
     default BooleanSeries expandBool(boolean... values) {
         int rlen = values.length;
         if (rlen == 0) {
@@ -108,9 +96,6 @@ public interface BooleanSeries extends Series<Boolean> {
         return Series.ofBool(expanded);
     }
 
-    /**
-     * @since 0.16
-     */
     BooleanSeries concatBool(BooleanSeries... other);
 
     @Override
@@ -123,9 +108,6 @@ public interface BooleanSeries extends Series<Boolean> {
         return Intersect.intersectBool(this, other);
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
     BooleanSeries rangeBool(int fromInclusive, int toExclusive);
 
     @Override
@@ -171,8 +153,6 @@ public interface BooleanSeries extends Series<Boolean> {
 
     /**
      * Returns the index of a first "true" value in the series, or -1 if all values are false.
-     *
-     * @since 0.11
      */
     int firstTrue();
 
@@ -223,31 +203,16 @@ public interface BooleanSeries extends Series<Boolean> {
 
     BooleanSeries not();
 
-    /**
-     * @since 0.7
-     */
     @Override
     BooleanSeries sample(int size);
 
-    /**
-     * @since 0.7
-     */
     @Override
     BooleanSeries sample(int size, Random random);
 
-    /**
-     * @since 0.7
-     */
     int countTrue();
 
-    /**
-     * @since 0.7
-     */
     int countFalse();
 
-    /**
-     * @since 0.16
-     */
     default boolean[] toBoolArray() {
         int len = size();
         boolean[] copy = new boolean[len];

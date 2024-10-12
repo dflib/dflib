@@ -5,8 +5,6 @@ import org.dflib.Exp;
 
 /**
  * A base class for expressions that are not composed of other expressions.
- *
- * @since 0.11
  */
 public abstract class Exp0<T> implements Exp<T> {
 

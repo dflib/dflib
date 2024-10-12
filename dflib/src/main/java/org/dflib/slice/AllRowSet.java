@@ -16,8 +16,6 @@ import java.util.function.Predicate;
 
 /**
  * A {@link org.dflib.RowSet} over the entire DataFrame.
- *
- * @since 1.0.0-M19
  */
 public class AllRowSet extends BaseRowSet {
 

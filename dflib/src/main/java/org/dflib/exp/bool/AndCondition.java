@@ -5,9 +5,7 @@ import org.dflib.Condition;
 import org.dflib.exp.map.MapConjunctiveConditionN;
 import org.dflib.exp.ConjunctiveConditionN;
 
-/**
- * @since 0.11
- */
+
 public class AndCondition extends MapConjunctiveConditionN {
 
     public AndCondition(Condition... parts) {

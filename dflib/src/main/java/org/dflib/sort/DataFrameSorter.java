@@ -7,7 +7,6 @@ import org.dflib.series.IntArraySeries;
  * Sorting processor for DataFrames.
  *
  * @see Comparators
- * @since 0.11
  */
 public class DataFrameSorter {
 

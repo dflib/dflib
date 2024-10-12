@@ -30,14 +30,8 @@ import java.util.Set;
 import java.util.function.DoublePredicate;
 import java.util.function.Predicate;
 
-/**
- * @since 0.6
- */
 public abstract class DoubleBaseSeries implements DoubleSeries {
 
-    /**
-     * @since 0.18
-     */
     @Override
     public <S> Series<S> castAs(Class<S> type) {
         if (!type.isAssignableFrom(Double.class) && !type.equals(Double.TYPE)) {
@@ -567,17 +561,13 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
         return new SeriesGrouper<>(by).group(this);
     }
 
-    /**
-     * @since 0.7
-     */
+
     @Override
     public DoubleSeries sample(int size) {
         return selectAsDoubleSeries(Sampler.sampleIndex(size, size()));
     }
 
-    /**
-     * @since 0.7
-     */
+
     @Override
     public DoubleSeries sample(int size, Random random) {
         return selectAsDoubleSeries(Sampler.sampleIndex(size, size(), random));

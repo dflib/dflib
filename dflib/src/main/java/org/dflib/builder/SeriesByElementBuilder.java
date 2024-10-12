@@ -5,9 +5,6 @@ import org.dflib.Extractor;
 import java.util.Collection;
 import java.util.Objects;
 
-/**
- * @since 0.16
- */
 // TODO: support for sampling and other customizations from DataFrameByRowBuilder
 public class SeriesByElementBuilder<S, T> {
 

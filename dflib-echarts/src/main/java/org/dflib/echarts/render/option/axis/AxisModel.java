@@ -2,9 +2,6 @@ package org.dflib.echarts.render.option.axis;
 
 import org.dflib.echarts.render.util.Renderer;
 
-/**
- * @since 1.0.0-M21
- */
 public class AxisModel {
 
     private final Boolean alignTicks;
@@ -75,9 +72,6 @@ public class AxisModel {
         return axisLabel;
     }
 
-    /**
-     * @since 1.0.0-M22
-     */
     public AxisLineModel getAxisLine() {
         return axisLine;
     }

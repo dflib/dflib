@@ -9,8 +9,6 @@ import java.util.Calendar;
 /**
  * A ColumnBinder for DBs that don't provide explicit PreparedStatement parameter metadata. MySQL is one of the DBs this
  * binder is applicable for. Luckily it allows binding by Java type regardless of the underlying column.
- *
- * @since 0.9
  */
 public class ByJavaTypeColumnBinder implements ColumnBinder {
 

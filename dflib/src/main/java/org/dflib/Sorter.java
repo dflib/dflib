@@ -4,8 +4,6 @@ import org.dflib.sort.IntComparator;
 
 /**
  * An expression derivative for sorting Series, DataFrames and RowSets.
- *
- * @since 0.11
  */
 public interface Sorter {
 

@@ -8,8 +8,6 @@ import java.util.function.Function;
 
 /**
  * Evaluates {@link Exp} and then aggregates the result into a single-value series.
- *
- * @since 0.11
  */
 public class ExpAggregator<S, T> implements Exp<T> {
 

@@ -46,8 +46,6 @@ public class AvroLoader {
 
     /**
      * Configures an Avro column to be loaded with value compaction. Should be used to save memory for low-cardinality columns.
-     *
-     * @since 1.0.0-RC1
      */
     public AvroLoader compactCol(int column) {
         colConfigurators.add(ColConfigurator.objectCol(column, true));
@@ -56,8 +54,6 @@ public class AvroLoader {
 
     /**
      * Configures an Avro column to be loaded with value compaction. Should be used to save memory for low-cardinality columns.
-     *
-     * @since 1.0.0-RC1
      */
     public AvroLoader compactCol(String column) {
         colConfigurators.add(ColConfigurator.objectCol(column, true));

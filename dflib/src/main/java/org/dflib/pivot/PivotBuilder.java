@@ -9,9 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * @since 0.11
- */
+
 public class PivotBuilder {
 
     private static final Exp<?> oneValueAgg = Exp.$col(0).agg(PivotBuilder::oneValueAggregator);
@@ -41,8 +39,6 @@ public class PivotBuilder {
     /**
      * Use values from "columnName" to create pivoted table columns. For meaningful results, "columnName" should contain
      * "categorical" data.
-     *
-     * @since 1.0.0-M22
      */
     public PivotBuilder cols(String columnName) {
         this.columnForColumns = validateColumn(columnName);
@@ -52,8 +48,6 @@ public class PivotBuilder {
     /**
      * Use values from "columnPos" to create pivoted table columns. For meaningful results, "columnPos" should contain
      * "categorical" data.
-     *
-     * @since 1.0.0-M22
      */
     public PivotBuilder cols(int columnPos) {
         this.columnForColumns = validateColumn(columnPos);
@@ -80,8 +74,6 @@ public class PivotBuilder {
      * Executes pivot transform, using values from the provided column name to populate the resulting DataFame.
      * There must be no more than one value for each pivot row and column combination, or an exception will be thrown.
      * For datasets where multiple values are present, use a flavor with value aggregator - {@link #vals(int, Exp)}.
-     *
-     * @since 1.0.0-M22
      */
     public DataFrame vals(String columnName) {
         int pos = validateColumn(columnName);
@@ -92,8 +84,6 @@ public class PivotBuilder {
      * Executes pivot transform, using values from the provided column name to populate the resulting DataFame.
      * There must be no more than one value for each pivot row and column combination, or an exception will be thrown.
      * For datasets where multiple values are present, use a flavor with value aggregator - {@link #vals(int, Exp)}.
-     *
-     * @since 1.0.0-M22
      */
     public DataFrame vals(int columnPos) {
         return doPivot(columnPos, oneValueAgg);
@@ -104,8 +94,6 @@ public class PivotBuilder {
      * with matching pivot row and column are aggregated with the provided aggregator. Aggregator may look like this:
      * <code>$decimal(0).sum()</code>. Notice that the column name or index can be anything, as the evaluation happens
      * against individual columns, not DataFrame.
-     *
-     * @since 1.0.0-M22
      */
     public <T> DataFrame vals(String columnName, Exp<T> valuesAggregator) {
         int pos = validateColumn(columnName);
@@ -117,8 +105,6 @@ public class PivotBuilder {
      * with matching pivot row and column are aggregated with the provided aggregator. Aggregator may look like this:
      * <code>$decimal(0).sum()</code>. Notice that the column name or index can be anything, as the evaluation happens
      * against individual columns, not DataFrame.
-     *
-     * @since 1.0.0-M22
      */
     public <T> DataFrame vals(int columnPos, Exp<T> valuesAggregator) {
         return doPivot(columnPos, valuesAggregator);

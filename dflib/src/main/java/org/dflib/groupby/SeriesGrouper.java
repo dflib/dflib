@@ -9,9 +9,6 @@ import org.dflib.builder.IntAccum;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * @since 0.6
- */
 public class SeriesGrouper<T> {
 
     private ValueMapper<T, ?> hasher;

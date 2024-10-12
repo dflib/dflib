@@ -10,9 +10,7 @@ import org.dflib.Series;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 
-/**
- * @since 0.11
- */
+
 public class LongExp2 extends MapExp2<Long, Long, Long> implements NumExp<Long> {
 
     public static LongExp2 mapVal(

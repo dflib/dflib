@@ -26,9 +26,6 @@ public class SeriesConcat {
         return new ArraySeries<>(data);
     }
 
-    /**
-     * @since 0.6
-     */
     public static <T> Series<T> concat(Iterable<Series<T>> concat) {
         int h = 0;
         for (Series<? extends T> s : concat) {

@@ -14,8 +14,6 @@ import java.time.temporal.ChronoUnit;
 
 /**
  * An expression applied to datetime columns.
- *
- * @since 0.16
  */
 public interface DateTimeExp extends Exp<LocalDateTime> {
 
@@ -79,9 +77,7 @@ public interface DateTimeExp extends Exp<LocalDateTime> {
         return ge(Exp.$dateTimeVal(val));
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     default Condition between(Exp<LocalDateTime> from, Exp<LocalDateTime> to) {
         return MapCondition3.mapVal(
                 "between",
@@ -92,9 +88,7 @@ public interface DateTimeExp extends Exp<LocalDateTime> {
                 (d1, d2, d3) -> d1.compareTo(d2) >= 0 && d1.compareTo(d3) <= 0);
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     default Condition between(LocalDateTime from, LocalDateTime to) {
         return between(Exp.$val(from), Exp.$val(to));
     }

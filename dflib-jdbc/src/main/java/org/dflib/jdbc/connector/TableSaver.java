@@ -38,7 +38,6 @@ public class TableSaver {
      * is in use.
      *
      * @return this saver instance
-     * @since 1.0.0-M20
      */
     public TableSaver batchSize(int rows) {
         this.batchSize = rows;
@@ -74,7 +73,6 @@ public class TableSaver {
      * setting has no effect, and a full INSERT is performed.
      *
      * @return this saver instance
-     * @since 0.6
      */
     public TableSaver mergeByPk() {
         this.mergeByPk = true;
@@ -89,7 +87,6 @@ public class TableSaver {
      * effect, and a full INSERT is performed.
      *
      * @return this saver instance
-     * @since 0.6
      */
     public TableSaver mergeByColumns(String... columns) {
         this.mergeByPk = false;

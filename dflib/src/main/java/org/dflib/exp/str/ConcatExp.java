@@ -8,14 +8,9 @@ import org.dflib.exp.ExpN;
 
 import static org.dflib.Exp.$val;
 
-/**
- * @since 0.11
- */
+
 public class ConcatExp extends ExpN<String> implements StrExp {
 
-    /**
-     * @since 1.0.0-M21
-     */
     public static StrExp of(Object... valuesOrExps) {
 
         int len = valuesOrExps.length;

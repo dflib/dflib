@@ -14,8 +14,6 @@ import java.util.Map;
 
 /**
  * Provides loading options for a single sheet in the context of {@link ExcelLoader}.
- *
- * @since 1.0.0-RC1
  */
 public class SheetLoader {
 

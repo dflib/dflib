@@ -10,9 +10,6 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.time.Year;
 
-/**
- * @since 0.6
- */
 public interface ValueConverter {
 
     static ValueConverter defaultConverter() {

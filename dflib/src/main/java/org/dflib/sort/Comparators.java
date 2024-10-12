@@ -13,8 +13,6 @@ import java.util.Comparator;
 /**
  * A factory of comparators whose inputs are row position indices, and that are applied to individual columns.
  * Comparators are composable so ordering by multiple columns can be specified.
- *
- * @since 0.11
  */
 public final class Comparators {
 

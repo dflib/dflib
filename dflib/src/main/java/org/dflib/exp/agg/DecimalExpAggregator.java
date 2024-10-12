@@ -9,9 +9,7 @@ import org.dflib.series.SingleValueSeries;
 import java.math.BigDecimal;
 import java.util.function.Function;
 
-/**
- * @since 0.11
- */
+
 public class DecimalExpAggregator<F> extends Exp1<F, BigDecimal> implements DecimalExp {
 
     private final Function<Series<F>, BigDecimal> aggregator;

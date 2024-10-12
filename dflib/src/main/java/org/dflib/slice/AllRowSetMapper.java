@@ -6,9 +6,6 @@ import org.dflib.Series;
 import org.dflib.row.ColumnsRowProxy;
 import org.dflib.row.MultiArrayRowBuilder;
 
-/**
- * @since 1.0.0-M19
- */
 public class AllRowSetMapper extends RowSetMapper {
 
     static final AllRowSetMapper instance = new AllRowSetMapper();

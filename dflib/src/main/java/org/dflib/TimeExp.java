@@ -10,9 +10,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 
-/**
- * @since 0.16
- */
 public interface TimeExp extends Exp<LocalTime> {
 
     @Override
@@ -99,9 +96,7 @@ public interface TimeExp extends Exp<LocalTime> {
         return ge(Exp.$timeVal(val));
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     default Condition between(Exp<LocalTime> from, Exp<LocalTime> to) {
         return MapCondition3.mapVal(
                 "between",
@@ -112,9 +107,7 @@ public interface TimeExp extends Exp<LocalTime> {
                 (t1, t2, t3) -> t1.compareTo(t2) >= 0 && t1.compareTo(t3) <= 0);
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     default Condition between(LocalTime from, LocalTime to) {
         return between(Exp.$val(from), Exp.$val(to));
     }

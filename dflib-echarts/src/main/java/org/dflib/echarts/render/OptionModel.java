@@ -9,9 +9,6 @@ import org.dflib.echarts.render.option.tooltip.TooltipModel;
 
 import java.util.List;
 
-/**
- * @since 1.0.0-M21
- */
 public class OptionModel {
 
     private final DatasetModel dataset;
@@ -58,16 +55,10 @@ public class OptionModel {
         return toolbox;
     }
 
-    /**
-     * @since 1.0.0-M22
-     */
     public boolean isGridPresent() {
         return grid != null;
     }
 
-    /**
-     * @since 1.0.0-M22
-     */
     public List<GridModel> getGrid() {
         return grid;
     }

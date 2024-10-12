@@ -21,12 +21,10 @@ import java.sql.SQLException;
 
 /**
  * Low-level JDBC PreparedStatement builder. Relied upon by higher-level load/save API.
- *
- * @since 0.6
  */
 public class StatementBuilder {
 
-    private JdbcConnector connector;
+    private final JdbcConnector connector;
     private String sql;
     private DbColumnMetadata[] paramDescriptors;
     private Series<?> params;
@@ -78,9 +76,6 @@ public class StatementBuilder {
         }
     }
 
-    /**
-     * @since 0.8
-     */
     public int[] update() {
 
         // bail early if we were passed an empty batch of parameters (as opposed to an empty array of params, which means

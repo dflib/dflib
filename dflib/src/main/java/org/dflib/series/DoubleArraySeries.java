@@ -6,9 +6,6 @@ import org.dflib.agg.PrimitiveSeriesMedian;
 import org.dflib.agg.PrimitiveSeriesMinMax;
 import org.dflib.agg.PrimitiveSeriesSum;
 
-/**
- * @since 0.6
- */
 public class DoubleArraySeries extends DoubleBaseSeries {
 
     private final double[] data;

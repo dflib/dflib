@@ -12,8 +12,6 @@ import java.nio.file.Path;
 
 /**
  * Saves DataFrame schemas in JSON format.
- *
- * @since 0.11
  */
 public class AvroSchemaSaver extends BaseSaver<AvroSchemaSaver> {
 

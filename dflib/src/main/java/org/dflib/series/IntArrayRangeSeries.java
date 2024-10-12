@@ -11,8 +11,6 @@ import org.dflib.range.Range;
 /**
  * A specialized IntSeries that maps to a slice of an array. Calculating offsets during every operation has some
  * performance overhead, so this Series is somewhat slower than {@link IntArraySeries}.
- *
- * @since 1.0.0-M19
  */
 public class IntArrayRangeSeries extends IntBaseSeries {
 

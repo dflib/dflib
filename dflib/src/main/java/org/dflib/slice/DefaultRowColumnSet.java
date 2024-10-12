@@ -16,9 +16,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-/**
- * @since 1.0.0-M19
- */
 public class DefaultRowColumnSet implements RowColumnSet {
 
     private final DataFrame source;

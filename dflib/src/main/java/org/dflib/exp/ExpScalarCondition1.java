@@ -7,8 +7,6 @@ import org.dflib.Series;
 
 /**
  * A unary condition with a single scalar argument.
- *
- * @since 1.0.0-M19
  */
 public abstract class ExpScalarCondition1<T> implements Condition {
 

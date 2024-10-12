@@ -3,9 +3,6 @@ package org.dflib.builder;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * @since 0.6
- */
 public class UniqueDoubleAccum extends DoubleAccum {
 
     private Set<Double> seen;

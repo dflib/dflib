@@ -5,8 +5,6 @@ import org.dflib.Series;
 
 /**
  * A RowProxy over an array of columns.
- *
- * @since 1.0.0-M19
  */
 public class ColumnsRowProxy implements RowProxy {
 

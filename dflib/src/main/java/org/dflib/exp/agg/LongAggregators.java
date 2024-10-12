@@ -4,14 +4,10 @@ import org.dflib.LongSeries;
 import org.dflib.Series;
 import org.dflib.builder.ObjectAccum;
 
-/**
- * @since 0.11
- */
+
 public class LongAggregators {
 
-    /**
-     * @since 0.14
-     */
+
     public static Series<Long> cumSum(Series<? extends Number> s) {
 
         int h = s.size();

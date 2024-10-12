@@ -3,9 +3,6 @@ package org.dflib.window;
 import org.dflib.DataFrame;
 import org.dflib.sort.IntComparator;
 
-/**
- * @since 0.8
- */
 public class DenseRanker extends Ranker {
 
     public DenseRanker(IntComparator sorter) {

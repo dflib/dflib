@@ -8,8 +8,6 @@ import java.util.Arrays;
 /**
  * An expandable list of primitive int values that has minimal overhead and can be converted to compact and efficient
  * immutable {@link DoubleSeries}.
- *
- * @since 0.6
  */
 public class DoubleAccum implements ValueAccum<Double> {
 
@@ -25,9 +23,7 @@ public class DoubleAccum implements ValueAccum<Double> {
         this.data = new double[capacity];
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     public void fill(DoubleSeries values, int valuesOffset, int accumOffset, int len) {
         if (len <= 0) {
             return;
@@ -58,17 +54,11 @@ public class DoubleAccum implements ValueAccum<Double> {
         size += to - from;
     }
 
-    /**
-     * @since 0.8
-     */
     @Override
     public void push(Double v) {
         pushDouble(v != null ? v : 0.);
     }
 
-    /**
-     * @since 0.8
-     */
     @Override
     public void pushDouble(double value) {
 

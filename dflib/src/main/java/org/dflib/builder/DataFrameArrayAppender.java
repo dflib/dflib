@@ -3,8 +3,7 @@ package org.dflib.builder;
 /**
  * Assembles a DataFrame from a sequence of Object arrays. Supports source transformations, including generation of
  * primitive columns, etc.
- *
- * @since 0.16
+
  */
 public class DataFrameArrayAppender extends DataFrameAppender<Object[]> {
 

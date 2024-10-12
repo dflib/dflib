@@ -8,9 +8,7 @@ import org.dflib.series.SingleValueSeries;
 
 import java.util.function.BiFunction;
 
-/**
- * @since 0.11
- */
+
 public class MapExpScalar2<L, R, T> extends ExpScalar2<L, R, T> {
 
     private final BiFunction<Series<L>, R, Series<T>> op;

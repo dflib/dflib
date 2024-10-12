@@ -7,25 +7,19 @@ import java.util.function.Predicate;
 @FunctionalInterface
 public interface RowPredicate {
 
-    /**
-     * @since 0.16
-     */
+
     static <V> RowPredicate of(int pos, Predicate<V> columnPredicate) {
         return r -> columnPredicate.test((V) r.get(pos));
     }
 
-    /**
-     * @since 0.16
-     */
+
     static <V> RowPredicate of(String columnName, Predicate<V> columnPredicate) {
         return r -> columnPredicate.test((V) r.get(columnName));
     }
 
     boolean test(RowProxy r);
 
-    /**
-     * @since 0.7
-     */
+
     default <V> RowPredicate and(RowPredicate another) {
         return r -> this.test(r) && another.test(r);
     }

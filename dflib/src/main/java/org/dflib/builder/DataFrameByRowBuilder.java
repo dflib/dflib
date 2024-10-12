@@ -12,8 +12,7 @@ import java.util.Random;
 
 /**
  * Builds a DataFrameExtractor that can be used to create DataFrames from a sequence of objects of a some type.
- *
- * @since 0.16
+
  */
 public class DataFrameByRowBuilder<S, B extends DataFrameByRowBuilder<S, B>> {
 

@@ -12,9 +12,8 @@ import org.dflib.row.RowProxy;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @since 1.0.0-M23
- */
+
+
 public class DataFrameParquetWriterBuilder extends ParquetWriter.Builder<RowProxy, DataFrameParquetWriterBuilder> {
 
     private final Map<String, String> extraMetaData;

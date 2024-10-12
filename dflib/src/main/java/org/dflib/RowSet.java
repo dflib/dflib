@@ -12,8 +12,6 @@ import static org.dflib.Exp.$col;
  * transformation type, the number of rows can increase or decrease (or remain the same). Also, RowSet can produce
  * another type of DataFrame subset - {@link RowColumnSet} - which defines specific rows and columns and its own
  * transformations.
- *
- * @since 1.0.0-M19
  */
 public interface RowSet {
 
@@ -50,19 +48,10 @@ public interface RowSet {
      */
     DataFrame expand(int columnPos);
 
-    /**
-     * @since 1.0.0-M22
-     */
     DataFrame merge(Exp<?>... exps);
 
-    /**
-     * @since 1.0.0-M22
-     */
     DataFrame merge(RowMapper mapper);
 
-    /**
-     * @since 1.0.0-M22
-     */
     DataFrame merge(RowToValueMapper<?>... mappers);
 
     /**
@@ -74,8 +63,6 @@ public interface RowSet {
     /**
      * Sorts the RowSet based on the specified column and returns a DataFrame with the sorted rows from the RowSet merged
      * into the original DataFrame.
-     *
-     * @since 1.0.0-M21
      */
     default DataFrame sort(int sortCol, boolean ascending) {
         return sort(new int[]{sortCol}, new boolean[]{ascending});
@@ -84,16 +71,11 @@ public interface RowSet {
     /**
      * Sorts the RowSet based on the specified column and returns a DataFrame with the sorted rows from the RowSet merged
      * into the original DataFrame.
-     *
-     * @since 1.0.0-M21
      */
     default DataFrame sort(String sortCol, boolean ascending) {
         return sort(new String[]{sortCol}, new boolean[]{ascending});
     }
 
-    /**
-     * @since 1.0.0-M21
-     */
     default DataFrame sort(int[] sortCols, boolean[] ascending) {
         int len = sortCols.length;
         Sorter[] sorters = new Sorter[len];
@@ -104,9 +86,6 @@ public interface RowSet {
         return sort(sorters);
     }
 
-    /**
-     * @since 1.0.0-M21
-     */
     default DataFrame sort(String[] sortCols, boolean[] ascending) {
         int len = sortCols.length;
         Sorter[] sorters = new Sorter[len];

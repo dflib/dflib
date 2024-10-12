@@ -5,9 +5,6 @@ import org.dflib.Index;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * @since 1.0.0-M19
- */
 public abstract class StringDeduplicator {
 
     public static StringDeduplicator of(int capacity) {

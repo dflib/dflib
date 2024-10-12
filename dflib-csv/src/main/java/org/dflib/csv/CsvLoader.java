@@ -55,8 +55,6 @@ public class CsvLoader {
 
     /**
      * Skips the specified number of rows.
-     *
-     * @since 1.0.0-M20
      */
     public CsvLoader offset(int len) {
         this.offset = len;
@@ -65,8 +63,6 @@ public class CsvLoader {
 
     /**
      * Limits the max number of rows to the provided value
-     *
-     * @since 1.0.0-M20
      */
     public CsvLoader limit(int len) {
         this.limit = len;
@@ -81,7 +77,6 @@ public class CsvLoader {
      *
      * @param size the size of the sample. Can be bigger than the CSV size (as the CSV size is not known upfront).
      * @return this loader instance
-     * @since 1.0.0-M20
      */
     public CsvLoader rowsSample(int size) {
         return rowsSample(size, Sampler.getDefaultRandom());
@@ -94,7 +89,6 @@ public class CsvLoader {
      * @param size   the size of the sample. Can be bigger than the CSV size (as the CSV size is not known upfront).
      * @param random a custom random number generator
      * @return this loader instance
-     * @since 1.0.0-M20
      */
     public CsvLoader rowsSample(int size, Random random) {
         this.rowSampleSize = size;
@@ -107,8 +101,6 @@ public class CsvLoader {
      * during load would allow extracting only relevant data from very large CSVs using constant memory. Condition is
      * applied to an already converted row, with column names and positions matching the resulting DataFrame, not the
      * CSV columns.
-     *
-     * @since 1.0.0-M20
      */
     public CsvLoader rows(RowPredicate rowCondition) {
         this.rowCondition = rowCondition;
@@ -124,7 +116,6 @@ public class CsvLoader {
      *
      * @param columns user-defined DataFrame columns
      * @return this loader instance
-     * @since 0.7
      */
     public CsvLoader header(String... columns) {
         this.headerFactory = CsvHeaderFactory.explicit(Index.of(columns));
@@ -133,8 +124,6 @@ public class CsvLoader {
 
     /**
      * Instead of using the first CSV row as a DataFrame header, generate a header with labels like "c0", "c1", etc.
-     *
-     * @since 1.0.0-M20
      */
     public CsvLoader generateHeader() {
         this.headerFactory = CsvHeaderFactory.generated();
@@ -147,7 +136,6 @@ public class CsvLoader {
      * columns header, depending on the loader settings.
      *
      * @return this loader instance
-     * @since 1.0.0-M20
      */
     public CsvLoader cols(String... columns) {
         this.schemaFactory = CsvSchemaFactory.ofCols(columns);
@@ -158,7 +146,6 @@ public class CsvLoader {
      * Configures the loader to only process the specified columns.
      *
      * @return this loader instance
-     * @since 1.0.0-M20
      */
     public CsvLoader cols(int... columns) {
         this.schemaFactory = CsvSchemaFactory.ofCols(columns);
@@ -170,7 +157,6 @@ public class CsvLoader {
      * will be loaded in the order they are present in the CSV.
      *
      * @return this loader instance
-     * @since 1.0.0-M20
      */
     public CsvLoader colsExcept(String... columns) {
         this.schemaFactory = CsvSchemaFactory.ofColsExcept(columns);
@@ -182,7 +168,6 @@ public class CsvLoader {
      * columns will be loaded in the order they are present in the CSV.
      *
      * @return this loader instance
-     * @since 1.0.0-M20
      */
     public CsvLoader colsExcept(int... columns) {
         this.schemaFactory = CsvSchemaFactory.ofColsExcept(columns);
@@ -191,8 +176,6 @@ public class CsvLoader {
 
     /**
      * Provides a conversion function for a CSV column at a given position to produce a desired type.
-     *
-     * @since 1.0.0-RC1
      */
     public CsvLoader col(int column, ValueMapper<String, ?> mapper) {
         colConfigurators.add(ColConfigurator.objectCol(column, mapper, false));
@@ -201,8 +184,6 @@ public class CsvLoader {
 
     /**
      * Provides a conversion function of a CSV column at a given position to produce a desired type.
-     *
-     * @since 1.0.0-RC1
      */
     public CsvLoader col(String column, ValueMapper<String, ?> mapper) {
         colConfigurators.add(ColConfigurator.objectCol(column, mapper, false));
@@ -212,8 +193,6 @@ public class CsvLoader {
     /**
      * Configures a CSV column to be loaded without conversion (as a String), but with value compaction. Should be used
      * to save memory for low-cardinality columns.
-     *
-     * @since 1.0.0-RC1
      */
     public CsvLoader compactCol(int column) {
         colConfigurators.add(ColConfigurator.objectCol(column, true));
@@ -223,8 +202,6 @@ public class CsvLoader {
     /**
      * Configures a CSV column to be loaded without conversion (as a String), but with value compaction. Should be used
      * to save memory for low-cardinality columns.
-     *
-     * @since 1.0.0-RC1
      */
     public CsvLoader compactCol(String column) {
         colConfigurators.add(ColConfigurator.objectCol(column, true));
@@ -234,8 +211,6 @@ public class CsvLoader {
     /**
      * Configures a CSV column to be loaded with the specified conversion and with converted value compaction. Should
      * be used instead of {@link #col(int, ValueMapper)} to save memory for low-cardinality columns.
-     *
-     * @since 1.0.0-RC1
      */
     public CsvLoader compactCol(int column, ValueMapper<String, ?> mapper) {
         colConfigurators.add(ColConfigurator.objectCol(column, mapper, true));
@@ -245,105 +220,67 @@ public class CsvLoader {
     /**
      * Configures a CSV column to be loaded with the specified conversion and with converted value compaction. Should
      * be used instead of {@link #col(String, ValueMapper)} to save memory for low-cardinality columns.
-     *
-     * @since 1.0.0-RC1
      */
     public CsvLoader compactCol(String column, ValueMapper<String, ?> mapper) {
         colConfigurators.add(ColConfigurator.objectCol(column, mapper, true));
         return this;
     }
 
-    /**
-     * @since 1.0.0-M23
-     */
     public CsvLoader intCol(int column) {
         colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.fromString()));
         return this;
     }
 
-    /**
-     * @since 1.0.0-M23
-     */
     public CsvLoader intCol(String column) {
         colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.fromString()));
         return this;
     }
 
-    /**
-     * @since 1.0.0-M23
-     */
     public CsvLoader intCol(int column, int forNull) {
         colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.fromString(forNull)));
         return this;
     }
 
-    /**
-     * @since 1.0.0-M23
-     */
     public CsvLoader intCol(String column, int forNull) {
         colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.fromString(forNull)));
         return this;
     }
 
-    /**
-     * @since 0.6
-     */
     public CsvLoader longCol(int column) {
         colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.fromString()));
         return this;
     }
 
-    /**
-     * @since 0.6
-     */
     public CsvLoader longCol(String column) {
         colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.fromString()));
         return this;
     }
 
-    /**
-     * @since 0.6
-     */
     public CsvLoader longCol(int column, long forNull) {
         colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.fromString(forNull)));
         return this;
     }
 
-    /**
-     * @since 0.6
-     */
     public CsvLoader longCol(String column, long forNull) {
         colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.fromString(forNull)));
         return this;
     }
 
-    /**
-     * @since 1.0.0-M23
-     */
     public CsvLoader doubleCol(int column) {
         colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.fromString()));
         return this;
     }
 
-    /**
-     * @since 1.0.0-M23
-     */
     public CsvLoader doubleCol(String column) {
         colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.fromString()));
         return this;
     }
 
-    /**
-     * @since 1.0.0-M23
-     */
     public CsvLoader doubleCol(int column, double forNull) {
         colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.fromString(forNull)));
         return this;
     }
 
-    /**
-     * @since 1.0.0-M23
-     */
     public CsvLoader doubleCol(String column, double forNull) {
         colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.fromString(forNull)));
         return this;
@@ -351,8 +288,6 @@ public class CsvLoader {
 
     /**
      * Will convert values of a CSV column at a given position to BigDecimals.
-     *
-     * @since 1.0.0-M23
      */
     public CsvLoader decimalCol(int column) {
         colConfigurators.add(ColConfigurator.objectCol(column, ValueMapper.stringToBigDecimal(), false));
@@ -361,8 +296,6 @@ public class CsvLoader {
 
     /**
      * Will convert values of a CSV column at a given position to BigDecimals.
-     *
-     * @since 1.0.0-M23
      */
     public CsvLoader decimalCol(String column) {
         colConfigurators.add(ColConfigurator.objectCol(column, ValueMapper.stringToBigDecimal(), false));
@@ -371,8 +304,6 @@ public class CsvLoader {
 
     /**
      * Will convert values of a CSV column at a given position to primitive booleans.
-     *
-     * @since 1.0.0-M23
      */
     public CsvLoader boolCol(int column) {
         colConfigurators.add(ColConfigurator.boolCol(column));
@@ -381,8 +312,6 @@ public class CsvLoader {
 
     /**
      * Will convert values of a CSV column at a given position to primitive booleans.
-     *
-     * @since 1.0.0-M23
      */
     public CsvLoader boolCol(String column) {
         colConfigurators.add(ColConfigurator.boolCol(column));
@@ -393,16 +322,11 @@ public class CsvLoader {
      * Instructs the loader to convert values in the specified column to numbers of the specified type. This method will
      * result in "object" columns (and hence can store nulls). If you want a column with primitive numbers, use methods
      * like {@link #intCol(int)}, etc. instead.
-     *
-     * @since 1.0.0-M23
      */
     public CsvLoader numCol(int column, Class<? extends Number> type) {
         return col(column, numericMapper(type));
     }
 
-    /**
-     * @since 1.0.0-M23
-     */
     public CsvLoader numCol(String column, Class<? extends Number> type) {
         return col(column, numericMapper(type));
     }
@@ -436,59 +360,35 @@ public class CsvLoader {
         throw new IllegalArgumentException("Can't map numeric type to a string converter: " + type);
     }
 
-    /**
-     * @since 1.0.0-M23
-     */
     public CsvLoader dateCol(int column) {
         return col(column, ValueMapper.stringToDate());
     }
 
-    /**
-     * @since 1.0.0-M23
-     */
     public CsvLoader dateCol(String column) {
         return col(column, ValueMapper.stringToDate());
     }
 
-    /**
-     * @since 1.0.0-M23
-     */
     public CsvLoader dateCol(int column, DateTimeFormatter formatter) {
         return col(column, ValueMapper.stringToDate(formatter));
     }
 
-    /**
-     * @since 1.0.0-M23
-     */
     public CsvLoader dateCol(String column, DateTimeFormatter formatter) {
         return col(column, ValueMapper.stringToDate(formatter));
     }
 
-    /**
-     * @since 1.0.0-M23
-     */
     public CsvLoader dateTimeCol(int column) {
         return col(column, ValueMapper.stringToDateTime());
     }
 
-    /**
-     * @since 1.0.0-M23
-     */
     public CsvLoader dateTimeCol(String column) {
         return col(column, ValueMapper.stringToDateTime());
     }
 
 
-    /**
-     * @since 1.0.0-M23
-     */
     public CsvLoader dateTimeCol(int column, DateTimeFormatter formatter) {
         return col(column, ValueMapper.stringToDateTime(formatter));
     }
 
-    /**
-     * @since 1.0.0-M23
-     */
     public CsvLoader dateTimeCol(String column, DateTimeFormatter formatter) {
         return col(column, ValueMapper.stringToDateTime(formatter));
     }
@@ -508,17 +408,13 @@ public class CsvLoader {
 
     /**
      * If called, the loader will convert missing values to nulls instead of empty strings.
-     *
-     * @since 0.6
      */
     public CsvLoader emptyStringIsNull() {
         this.format = format.withNullString("");
         return this;
     }
 
-    /**
-     * @since 0.11
-     */
+
     public DataFrame load(Path filePath) {
         return load(filePath.toFile());
     }

@@ -9,8 +9,6 @@ import java.util.Set;
 
 /**
  * Renders {@link EChartHtml} object as HTML with embedded JS.
- *
- * @since 1.0.0-M21
  */
 public class EChartRenderer implements RenderFunction<EChartHtml> {
 

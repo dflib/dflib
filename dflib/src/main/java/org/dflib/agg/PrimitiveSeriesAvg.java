@@ -1,8 +1,6 @@
 package org.dflib.agg;
 
-/**
- * @since 0.11
- */
+
 public class PrimitiveSeriesAvg {
 
     public static double avgOfRange(int first, int lastExclusive) {

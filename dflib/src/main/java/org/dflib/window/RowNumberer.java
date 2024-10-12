@@ -8,9 +8,6 @@ import org.dflib.series.IntSequenceSeries;
 import org.dflib.sort.DataFrameSorter;
 import org.dflib.sort.IntComparator;
 
-/**
- * @since 0.8
- */
 public class RowNumberer {
 
     static final int START_NUMBER = 1;
@@ -25,9 +22,7 @@ public class RowNumberer {
         }
     }
 
-    /**
-     * @since 0.11
-     */
+
     public static IntSeries rowNumber(DataFrame dataFrame, IntComparator sorter) {
 
         // note how we are calling "sortIndex(sortIndex(..))"
@@ -45,9 +40,6 @@ public class RowNumberer {
         return (IntSeries) RowNumberer.sequence(dataFrame.height()).select(rowPositions);
     }
 
-    /**
-     * @since 1.0.0-M21
-     */
     public static IntSeries rowNumber(DataFrame dataFrame, IntSeries[] partitionsIndex) {
 
         int[] rowNumbers = new int[dataFrame.height()];

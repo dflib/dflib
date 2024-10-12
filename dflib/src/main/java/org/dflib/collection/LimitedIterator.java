@@ -3,9 +3,6 @@ package org.dflib.collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-/**
- * @since 1.0.0-M20
- */
 class LimitedIterator<T> implements Iterator<T> {
 
     private final int limit;

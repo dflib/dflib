@@ -12,8 +12,6 @@ import java.util.Map;
 
 /**
  * An abstraction over various numeric types allowing to mix and match different types in a given operation.
- *
- * @since 0.11
  */
 public abstract class NumericExpFactory {
 
@@ -97,9 +95,7 @@ public abstract class NumericExpFactory {
         return factory;
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     public static NumericExpFactory factory(Class<? extends Number> one, Class<? extends Number> two, Class<? extends Number> three) {
 
         Class<? extends Number> type = factoryType(factoryType(one, two), three);
@@ -140,9 +136,7 @@ public abstract class NumericExpFactory {
 
     public abstract NumExp<?> abs(Exp<? extends Number> exp);
 
-    /**
-     * @since 0.14
-     */
+
     public abstract NumExp<?> cumSum(Exp<? extends Number> exp);
 
     public abstract NumExp<?> sum(Exp<? extends Number> exp);
@@ -155,32 +149,24 @@ public abstract class NumericExpFactory {
 
     public abstract NumExp<?> median(Exp<? extends Number> exp);
 
-    /**
-     * @since 0.16
-     */
+
     public NumExp<Integer> castAsInt(NumExp<?> exp) {
         return IntExp1.mapVal("castAsInt", exp, Number::intValue);
     }
 
-    /**
-     * @since 0.16
-     */
+
     public NumExp<Long> castAsLong(NumExp<?> exp) {
         return LongExp1.mapVal("castAsLong", exp, Number::longValue);
     }
 
-    /**
-     * @since 0.16
-     */
+
     public NumExp<Double> castAsDouble(NumExp<?> exp) {
         return DoubleExp1.mapVal("castAsDouble", exp, Number::doubleValue);
     }
 
     public abstract DecimalExp castAsDecimal(NumExp<?> exp);
 
-    /**
-     * @since 0.16
-     */
+
     public <E extends Enum<E>> Exp<E> castAsEnum(NumExp<?> exp, Class<E> type) {
         E[] allValues = type.getEnumConstants();
         // TODO: ugly generics stripping. Any better way to design this?
@@ -200,8 +186,6 @@ public abstract class NumericExpFactory {
 
     public abstract Condition ge(Exp<? extends Number> left, Exp<? extends Number> right);
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     public abstract Condition between(Exp<? extends Number> left, Exp<? extends Number> from, Exp<? extends Number> to);
 }

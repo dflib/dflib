@@ -16,8 +16,6 @@ import java.util.function.Predicate;
 
 /**
  * A {@link org.dflib.RowSet} based on {@link IntSeries} row selection index.
- *
- * @since 1.0.0-M19
  */
 public class IndexedRowSet extends BaseRowSet {
 

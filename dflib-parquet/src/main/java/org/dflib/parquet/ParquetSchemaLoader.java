@@ -10,9 +10,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
-/**
- * @since 1.0.0-M23
- */
+
+
 public class ParquetSchemaLoader {
 
     public MessageType load(Path filePath) {

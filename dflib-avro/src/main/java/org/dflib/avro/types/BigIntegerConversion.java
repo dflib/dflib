@@ -6,9 +6,7 @@ import org.apache.avro.Schema;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 
-/**
- * @since 0.11
- */
+
 public class BigIntegerConversion extends SingleSchemaConversion<BigInteger> {
 
     static final String NAME = "dflib-biginteger";

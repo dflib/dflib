@@ -4,9 +4,6 @@ import org.dflib.jdbc.connector.metadata.DbColumnMetadata;
 
 import java.sql.PreparedStatement;
 
-/**
- * @since 0.6
- */
 public class FixedParamsBinderFactory implements StatementBinderFactory {
 
     protected ValueConverterFactory converterFactory;

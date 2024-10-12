@@ -7,9 +7,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 
-/**
- * @since 0.11
- */
+
 // Avro has its own "decimal" logical type mapping to BigDecimal. But it requires predefined scale and precision.
 // This would be too limiting for a DataFrame column
 public class BigDecimalConversion extends SingleSchemaConversion<BigDecimal> {

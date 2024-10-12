@@ -8,9 +8,7 @@ import org.dflib.series.DoubleSingleValueSeries;
 
 import java.util.function.Function;
 
-/**
- * @since 0.11
- */
+
 public class DoubleExpAggregator<F> extends Exp1<F, Double> implements NumExp<Double> {
 
     private final Function<Series<F>, Double> aggregator;

@@ -8,9 +8,7 @@ import org.dflib.exp.map.MapExpScalar2;
 import java.math.BigDecimal;
 import java.util.function.BiFunction;
 
-/**
- * @since 0.11
- */
+
 public class DecimalExpScalar2<R> extends MapExpScalar2<BigDecimal, R, BigDecimal> implements DecimalExp {
 
     public static <R> DecimalExpScalar2<R> mapVal(String opName, Exp<BigDecimal> left, R right, BiFunction<BigDecimal, R, BigDecimal> op) {

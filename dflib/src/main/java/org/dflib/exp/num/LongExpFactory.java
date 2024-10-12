@@ -12,9 +12,7 @@ import org.dflib.exp.agg.LongExpAggregator;
 
 import java.math.BigDecimal;
 
-/**
- * @since 0.11
- */
+
 public class LongExpFactory extends NumericExpFactory {
 
     protected static Exp<Long> cast(Exp<?> exp) {

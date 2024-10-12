@@ -21,9 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * @since 0.14
- */
 public class ExcelSaver {
 
     private boolean createMissingDirs;

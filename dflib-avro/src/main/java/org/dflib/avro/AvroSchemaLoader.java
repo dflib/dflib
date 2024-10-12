@@ -9,9 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 
-/**
- * @since 0.11
- */
+
 public class AvroSchemaLoader {
 
     static {

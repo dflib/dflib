@@ -6,9 +6,6 @@ import org.dflib.agg.PrimitiveSeriesMedian;
 import org.dflib.agg.PrimitiveSeriesMinMax;
 import org.dflib.agg.PrimitiveSeriesSum;
 
-/**
- * @since 0.6
- */
 public class LongArraySeries extends LongBaseSeries {
 
     private final long[] data;

@@ -9,7 +9,6 @@ import org.dflib.jdbc.connector.TableSaver;
  * {@link TableSaver#save(DataFrame)}
  *
  * @see TableSaver#save(DataFrame)
- * @since 0.6
  */
 public enum SaveOp {
 

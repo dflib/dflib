@@ -5,9 +5,6 @@ import org.dflib.series.BooleanArraySeries;
 
 import java.util.Arrays;
 
-/**
- * @since 0.16
- */
 public class BoolAccum implements ValueAccum<Boolean> {
 
     // TODO: bitmap?
@@ -23,9 +20,7 @@ public class BoolAccum implements ValueAccum<Boolean> {
         this.data = new boolean[capacity];
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     public void fill(BooleanSeries values, int valuesOffset, int accumOffset, int len) {
         if (len <= 0) {
             return;
@@ -56,17 +51,12 @@ public class BoolAccum implements ValueAccum<Boolean> {
         size += to - from;
     }
 
-    /**
-     * @since 0.8
-     */
     @Override
     public void push(Boolean v) {
         pushBool(v != null ? v : false);
     }
 
-    /**
-     * @since 0.16
-     */
+
     @Override
     public void pushBool(boolean value) {
 

@@ -13,8 +13,6 @@ import java.util.regex.Pattern;
 
 /**
  * An expression applied to String columns.
- *
- * @since 0.11
  */
 public interface StrExp extends Exp<String> {
 
@@ -28,16 +26,12 @@ public interface StrExp extends Exp<String> {
         return MapCondition1.mapVal("castAsBool", this, Boolean::valueOf);
     }
 
-    /**
-     * @since 0.16
-     */
+
     default <E extends Enum<E>> Exp<E> castAsEnum(Class<E> type) {
         return MapExp1.mapVal("castAsEnum", type, this, s -> Enum.valueOf(type, s));
     }
 
-    /**
-     * @since 0.16
-     */
+
     @Override
     default NumExp<Integer> castAsInt() {
         // Need to do an extra decimal conversion, so that we can properly cast any number format.
@@ -45,9 +39,7 @@ public interface StrExp extends Exp<String> {
         return castAsDecimal().castAsInt();
     }
 
-    /**
-     * @since 0.16
-     */
+
     @Override
     default NumExp<Long> castAsLong() {
         // Need to do an extra decimal conversion, so that we can properly cast any number format.
@@ -60,9 +52,7 @@ public interface StrExp extends Exp<String> {
         return DoubleExp1.mapVal("castAsDouble", this, Double::parseDouble);
     }
 
-    /**
-     * @since 0.16
-     */
+
     @Override
     default DecimalExp castAsDecimal() {
         return DecimalExp1.mapVal("castAsDecimal", this, BigDecimal::new);
@@ -82,9 +72,6 @@ public interface StrExp extends Exp<String> {
         return MapExpScalarCondition2.mapVal("endsWith", this, suffix, (s, p) -> s.endsWith(suffix));
     }
 
-    /**
-     * @since 0.18
-     */
     default Condition contains(String suffix) {
         return MapExpScalarCondition2.mapVal("contains", this, suffix, (s, p) -> s.contains(suffix));
     }
@@ -95,7 +82,6 @@ public interface StrExp extends Exp<String> {
      *
      * @param fromInclusive a zero-based substring starting position. Can be negative, in which case the index is counted
      *                      from the end of the String.
-     * @since 1.0.0-M21
      */
     default StrExp substr(int fromInclusive) {
         if (fromInclusive == 0) {
@@ -115,7 +101,6 @@ public interface StrExp extends Exp<String> {
      *
      * @param fromInclusive a zero-based substring starting position
      * @param len           a max length of the substring.
-     * @since 1.0.0-M21
      */
     default StrExp substr(int fromInclusive, int len) {
         if (len < 0) {
@@ -134,9 +119,7 @@ public interface StrExp extends Exp<String> {
         }
     }
 
-    /**
-     * @since 0.16
-     */
+
     default StrExp trim() {
         return StrExp1.mapVal("trim", this, s -> {
             String trimmed = s.trim();
@@ -146,8 +129,6 @@ public interface StrExp extends Exp<String> {
 
     /**
      * An expression that splits this String into a String array using the specified regex as a delimiter.
-     *
-     * @since 1.0.0-M19
      */
     default Exp<String[]> split(char delimiter) {
         return split(delimiter, 0);
@@ -159,8 +140,6 @@ public interface StrExp extends Exp<String> {
      * regex evaluated at most the "limit" number of times, "zero" limit results in the regex evaluated as many times as
      * needed, but trailing empty elements removed, while negative limit is the same as zero, except no trimming of
      * the trailing empty elements.     *
-     *
-     * @since 1.0.0-M19
      */
     default Exp<String[]> split(char delimiter, int limit) {
         return StrSplitExp.splitOnChar(this, delimiter, limit);
@@ -168,8 +147,6 @@ public interface StrExp extends Exp<String> {
 
     /**
      * An expression that splits this String into a String array using the specified regex as a delimiter.
-     *
-     * @since 1.0.0-M19
      */
     default Exp<String[]> split(String regex) {
         return StrSplitExp.splitOnRegex(this, regex);
@@ -181,8 +158,6 @@ public interface StrExp extends Exp<String> {
      * regex evaluated at most the "limit" number of times, "zero" limit results in the regex evaluated as many times as
      * needed, but trailing empty elements removed, while negative limit is the same as zero, except no trimming of
      * the trailing empty elements.
-     *
-     * @since 1.0.0-M19
      */
     default Exp<String[]> split(String regex, int limit) {
         return StrSplitExp.splitOnRegex(this, regex, limit);

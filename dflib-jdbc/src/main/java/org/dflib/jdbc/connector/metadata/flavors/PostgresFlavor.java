@@ -4,9 +4,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 
-/**
- * @since 0.8
- */
 public class PostgresFlavor extends GenericFlavor {
 
     protected PostgresFlavor() {

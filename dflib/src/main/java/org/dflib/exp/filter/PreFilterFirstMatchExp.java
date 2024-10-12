@@ -7,8 +7,6 @@ import org.dflib.Exp;
 
 /**
  * An aggregator similar to {@link PreFilteredExp}, only optimized for returning the first matched item.
- *
- * @since 0.11
  */
 public class PreFilterFirstMatchExp<T> implements Exp<T> {
 

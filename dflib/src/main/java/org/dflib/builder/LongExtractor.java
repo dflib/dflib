@@ -3,9 +3,6 @@ package org.dflib.builder;
 import org.dflib.LongValueMapper;
 import org.dflib.Extractor;
 
-/**
- * @since 0.8
- */
 public class LongExtractor<F> implements Extractor<F, Long> {
 
     private final LongValueMapper<F> mapper;

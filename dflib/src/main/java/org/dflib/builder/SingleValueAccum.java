@@ -2,9 +2,6 @@ package org.dflib.builder;
 
 import org.dflib.Series;
 
-/**
- * @since 1.0.0-M19
- */
 public class SingleValueAccum<T> implements ValueAccum<T> {
 
     private final T value;

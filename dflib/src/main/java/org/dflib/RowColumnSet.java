@@ -5,8 +5,6 @@ import java.util.function.UnaryOperator;
 
 /**
  * A column set within a {@link RowSet}.
- *
- * @since 1.0.0-M19
  */
 public interface RowColumnSet {
 

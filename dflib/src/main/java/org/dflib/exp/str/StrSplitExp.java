@@ -11,8 +11,6 @@ import java.util.regex.Pattern;
  * An expression that splits Strings into arrays based on a delimiter. Similar to {@link Pattern#split(CharSequence)},
  * it generates empty entries in the returned array for leading or repeating delimiters, but skips trailing empty
  * entries.
- *
- * @since 1.0.0-M19
  */
 public class StrSplitExp extends MapExp1<String, String[]> {
 

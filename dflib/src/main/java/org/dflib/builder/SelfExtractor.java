@@ -2,9 +2,6 @@ package org.dflib.builder;
 
 import org.dflib.Extractor;
 
-/**
- * @since 0.16
- */
 public class SelfExtractor<T> implements Extractor<T, T> {
 
     @Override

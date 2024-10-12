@@ -7,13 +7,12 @@ import javax.sql.DataSource;
 
 /**
  * An entry point to JDBC access functionality. Allows callers to build a {@link JdbcConnector} that can be reused for
- * loading one or more DataFrames from the database.
+ * loading or saving DataFrames from/to a database.
  */
 public class Jdbc {
 
     /**
      * @return a new JdbcConnectorBuilder
-     * @since 0.8
      */
     public static JdbcConnectorBuilder connector() {
         return new JdbcConnectorBuilder();

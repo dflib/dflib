@@ -6,9 +6,6 @@ import org.dflib.IntSeries;
 import org.dflib.RowMapper;
 import org.dflib.Series;
 
-/**
- * @since 1.0.0-M19
- */
 public abstract class RowSetMapper {
 
     public static RowSetMapper of(IntSeries rowIndex) {

@@ -10,14 +10,9 @@ import java.util.concurrent.Future;
 
 /**
  * Defines aggregation operations over DataFrames.
- *
- * @since 0.14
  */
 public class DataFrameAggregator {
 
-    /**
-     * @since 1.0.0-M20
-     */
     public static Series<?>[] agg(DataFrame df, Exp<?>... aggregators) {
 
         int aggW = aggregators.length;

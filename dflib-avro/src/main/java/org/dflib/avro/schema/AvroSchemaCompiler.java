@@ -16,8 +16,6 @@ import java.util.stream.Collectors;
 
 /**
  * Creates Avro Schema from DataFrame structure.
- *
- * @since 0.11
  */
 public class AvroSchemaCompiler {
 

@@ -79,9 +79,7 @@ public class DefaultJdbcConnector implements JdbcConnector {
         return tableSaver(getMetadata().parseTableName(tableName));
     }
 
-    /**
-     * @since 0.7
-     */
+
     @Override
     public TableSaver tableSaver(TableFQName tableName) {
         return new TableSaver(this, tableName);
@@ -92,25 +90,17 @@ public class DefaultJdbcConnector implements JdbcConnector {
         return tableLoader(getMetadata().parseTableName(tableName));
     }
 
-    /**
-     * @since 0.7
-     */
+
     @Override
     public TableLoader tableLoader(TableFQName tableName) {
         return new TableLoader(this, tableName);
     }
 
-    /**
-     * @since 0.8
-     */
     @Override
     public TableDeleter tableDeleter(TableFQName tableName) {
         return new TableDeleter(this, tableName);
     }
 
-    /**
-     * @since 0.8
-     */
     @Override
     public TableDeleter tableDeleter(String tableName) {
         return tableDeleter(getMetadata().parseTableName(tableName));
@@ -152,49 +142,32 @@ public class DefaultJdbcConnector implements JdbcConnector {
         return factory.createExtractor(resultSetPosition);
     }
 
-    /**
-     * @since 0.6
-     */
     @Override
     public StatementBuilder createStatementBuilder(String sql) {
         return new StatementBuilder(this).sql(sql);
     }
 
-    /**
-     * @since 0.6
-     */
     @Override
     public ValueConverterFactory getBindConverterFactory() {
         return preBindConverterFactory;
     }
 
-    /**
-     * @since 0.6
-     */
     @Override
     public DbMetadata getMetadata() {
         return metadata;
     }
 
-    /**
-     * @since 0.6
-     */
     @Override
     public SqlLogger getSqlLogger() {
         return sqlLogger;
     }
 
-    /**
-     * @since 0.7
-     */
+
     @Override
     public DataSource getDataSource() {
         return dataSource;
     }
 
-    /**
-     * @since 0.6
-     */
     @Override
     public Connection getConnection() {
 
@@ -220,17 +193,12 @@ public class DefaultJdbcConnector implements JdbcConnector {
         return connection;
     }
 
-    /**
-     * @since 0.6
-     */
     @Override
     public String quoteIdentifier(String bareIdentifier) {
         return quoter.quoted(bareIdentifier);
     }
 
-    /**
-     * @since 0.7
-     */
+
     @Override
     public String quoteTableName(TableFQName tableName) {
 

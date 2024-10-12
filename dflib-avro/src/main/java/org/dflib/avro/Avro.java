@@ -14,9 +14,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
 
-/**
- * @since 0.11
- */
+
 public class Avro {
 
     /**

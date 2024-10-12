@@ -5,9 +5,6 @@ import org.dflib.Extractor;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @since 0.16
- */
 public class CompactSelfExtractor<T> implements Extractor<T, T> {
 
     private final Map<T, T> valueCache;

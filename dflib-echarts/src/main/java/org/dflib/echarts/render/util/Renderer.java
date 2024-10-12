@@ -1,8 +1,5 @@
 package org.dflib.echarts.render.util;
 
-/**
- * @since 1.0.0-M21
- */
 public class Renderer {
 
     public static String quotedValue(Object value) {

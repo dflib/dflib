@@ -7,9 +7,6 @@ import org.dflib.Series;
 
 import java.util.Objects;
 
-/**
- * @since 0.16
- */
 public class DataFrameByColumnBuilder extends BaseDataFrameBuilder {
 
     public DataFrameByColumnBuilder(Index columnsIndex) {

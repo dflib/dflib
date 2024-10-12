@@ -1,8 +1,5 @@
 package org.dflib.builder;
 
-/**
- * @since 0.8
- */
 public class LongHolder implements ValueHolder<Long> {
 
     private long v;

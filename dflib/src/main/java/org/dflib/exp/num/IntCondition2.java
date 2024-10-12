@@ -9,9 +9,7 @@ import org.dflib.exp.map.MapCondition2;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
-/**
- * @since 0.11
- */
+
 public class IntCondition2 extends MapCondition2<Integer, Integer> {
 
     public static IntCondition2 mapVal(

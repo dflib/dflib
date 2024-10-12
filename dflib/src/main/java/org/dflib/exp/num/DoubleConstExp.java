@@ -5,9 +5,6 @@ import org.dflib.NumExp;
 import org.dflib.exp.ExpScalar1;
 import org.dflib.series.DoubleSingleValueSeries;
 
-/**
- * @since 1.0.0-M19
- */
 public class DoubleConstExp extends ExpScalar1<Double> implements NumExp<Double> {
 
     private final double doubleValue;

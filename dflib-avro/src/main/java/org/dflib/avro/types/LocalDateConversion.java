@@ -5,9 +5,7 @@ import org.apache.avro.Schema;
 
 import java.time.LocalDate;
 
-/**
- * @since 0.11
- */
+
 public class LocalDateConversion extends SingleSchemaConversion<LocalDate> {
 
     static final String NAME = "dflib-localdate";

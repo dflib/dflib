@@ -10,9 +10,6 @@ import org.dflib.RowToValueMapper;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
-/**
- * @since 1.0.0-M19
- */
 public class AllRowColumnSet implements RowColumnSet {
 
     private final ColumnSet columnSet;

@@ -5,9 +5,6 @@ import org.dflib.NumExp;
 import org.dflib.exp.ExpScalar1;
 import org.dflib.series.IntSingleValueSeries;
 
-/**
- * @since 1.0.0-M19
- */
 public class IntConstExp extends ExpScalar1<Integer> implements NumExp<Integer> {
 
     private final int intValue;

@@ -9,8 +9,6 @@ import java.util.function.UnaryOperator;
  * transformation can increase or decrease the number of columns (or leave it unchanged), and may result in a change
  * of values in those columns. A "merge" scenario either replaces the existing columns by name and/or produces new
  * columns.
- *
- * @since 1.0.0-M19
  */
 public interface ColumnSet {
 
@@ -94,8 +92,6 @@ public interface ColumnSet {
      * Returns a transformed DataFrame that contains columns from this DataFrame and added / replaced columns
      * produced by the specified expressions. Expressions are matched with the result columns using the algorithm
      * defined in this specific ColumnSet.
-     *
-     * @since 1.0.0-M22
      */
     DataFrame merge(Exp<?>... exps);
 
@@ -103,8 +99,6 @@ public interface ColumnSet {
      * Returns a transformed DataFrame that contains columns from this DataFrame and added / replaced columns
      * based on the specified Series. Series are matched with the result columns using the algorithm
      * defined in this specific ColumnSet.
-     *
-     * @since 1.0.0-M22
      */
     DataFrame merge(Series<?>... columns);
 
@@ -112,8 +106,6 @@ public interface ColumnSet {
      * Returns a transformed DataFrame that contains columns from this DataFrame and added / replaced columns
      * produced by the specified mappers. Mappers are matched with the result columns using the algorithm
      * defined in this specific ColumnSet.
-     *
-     * @since 1.0.0-M22
      */
     DataFrame merge(RowToValueMapper<?>... mappers);
 
@@ -121,8 +113,6 @@ public interface ColumnSet {
      * Returns a DataFrame that contains columns from the source DataFrame merged with the result of the RowMapper
      * transformation of this ColumnSet. Column names in the RowMapper's RowBuilder will be the same as column names
      * from this ColumnSet.
-     *
-     * @since 1.0.0-M22
      */
     DataFrame merge(RowMapper mapper);
 
@@ -215,8 +205,6 @@ public interface ColumnSet {
     /**
      * Returns a single-row DataFrame with columns from this ColumnSet that are produced by the specified aggregating
      * expressions.
-     *
-     * @since 1.0.0-M20
      */
     DataFrame agg(Exp<?>... aggregators);
 }

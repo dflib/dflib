@@ -5,8 +5,6 @@ import org.dflib.echarts.render.option.series.RadiusModel;
 
 /**
  * A model for rendering EChart script "series" element
- *
- * @since 1.0.0-M21
  */
 public class SeriesModel {
 
@@ -75,9 +73,6 @@ public class SeriesModel {
         return encode;
     }
 
-    /**
-     * @since 1.0.0-M22
-     */
     public LabelModel getLabel() {
         return label;
     }
@@ -90,58 +85,34 @@ public class SeriesModel {
         return areaStyle != null && areaStyle;
     }
 
-    /**
-     * @since 1.0.0-M22
-     */
     public boolean dontShowSymbol() {
         return showSymbol != null && !showSymbol;
     }
 
-    /**
-     * @since 1.0.0-M22
-     */
     public Integer getXAxisIndex() {
         return xAxisIndex;
     }
 
-    /**
-     * @since 1.0.0-M22
-     */
     public Integer getYAxisIndex() {
         return yAxisIndex;
     }
 
-    /**
-     * @since 1.0.0-M22
-     */
     public RadiusModel getRadius() {
         return radius;
     }
 
-    /**
-     * @since 1.0.0-M22
-     */
     public CenterModel getCenter() {
         return center;
     }
 
-    /**
-     * @since 1.0.0-M22
-     */
     public Integer getStartAngle() {
         return startAngle;
     }
 
-    /**
-     * @since 1.0.0-M22
-     */
     public Integer getEndAngle() {
         return endAngle;
     }
 
-    /**
-     * @since 1.0.0-M22
-     */
     public String getRoseType() {
         return roseType;
     }

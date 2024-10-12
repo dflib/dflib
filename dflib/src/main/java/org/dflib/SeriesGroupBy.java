@@ -7,9 +7,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * @since 0.6
- */
 // TODO: common inheritance hierarchy between GroupBy and SeriesGroupBy (will likely need a DataFrameGroupBy)
 public class SeriesGroupBy<T> {
 

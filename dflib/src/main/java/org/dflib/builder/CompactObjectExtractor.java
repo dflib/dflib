@@ -6,9 +6,6 @@ import org.dflib.ValueMapper;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @since 0.8
- */
 public class CompactObjectExtractor<F, T> implements Extractor<F, T> {
 
     private final ValueMapper<F, T> mapper;

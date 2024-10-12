@@ -10,8 +10,6 @@ import java.util.Random;
  * An object that provides random sampling facilities to DFLib. By default, uses {@link SecureRandom} that may create
  * contention in multi-threaded environments. If this becomes a problem, use the variants of Sampler methods that take
  * a custom Random.
- *
- * @since 0.7
  */
 public class Sampler {
 

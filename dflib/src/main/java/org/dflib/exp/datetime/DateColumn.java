@@ -5,9 +5,7 @@ import org.dflib.exp.Column;
 
 import java.time.LocalDate;
 
-/**
- * @since 0.11
- */
+
 public class DateColumn extends Column<LocalDate> implements DateExp {
 
     public DateColumn(String name) {

@@ -4,9 +4,6 @@ import org.dflib.echarts.render.option.axis.AxisModel;
 
 import java.util.Objects;
 
-/**
- * @since 1.0.0-M21
- */
 public abstract class Axis<T extends Axis<T>> {
 
     protected Integer gridIndex;
@@ -29,9 +26,6 @@ public abstract class Axis<T extends Axis<T>> {
         return (T) this;
     }
 
-    /**
-     * @since 1.0.0-M22
-     */
     public T alignTicks(boolean alignTicks) {
         this.alignTicks = alignTicks;
         return (T) this;
@@ -54,9 +48,7 @@ public abstract class Axis<T extends Axis<T>> {
     }
 
     /**
-     * Specifies which grid position this axis belongs to. 0 is the default. TODO: will only make sense once we support grids.
-     *
-     * @since 1.0.0-M22
+     * Specifies which grid position this axis belongs to. 0 is the default.
      */
     public T gridIndex(int gridIndex) {
         this.gridIndex = gridIndex;

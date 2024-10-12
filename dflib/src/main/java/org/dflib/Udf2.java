@@ -6,8 +6,6 @@ import static org.dflib.Exp.$col;
 /**
  * A user-defined function that produces an {@link Exp} based on two columnar arguments. The arguments can be either
  * expressions or DataFrame column references.
- *
- * @since 1.0.0-M20
  */
 @FunctionalInterface
 public interface Udf2<A1, A2, R> {

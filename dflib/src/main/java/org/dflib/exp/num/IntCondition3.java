@@ -8,9 +8,6 @@ import org.dflib.exp.map.MapCondition3;
 import org.dflib.f.Function3;
 import org.dflib.f.Predicate3;
 
-/**
- * @since 1.0.0-M19
- */
 public class IntCondition3 extends MapCondition3<Integer, Integer, Integer> {
 
     public static IntCondition3 mapVal(

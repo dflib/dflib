@@ -32,14 +32,9 @@ import java.util.function.Predicate;
 
 /**
  * A base implementation of various boilerplate methods for {@link LongSeries}.
- *
- * @since 0.6
  */
 public abstract class LongBaseSeries implements LongSeries {
 
-    /**
-     * @since 0.18
-     */
     @Override
     public <S> Series<S> castAs(Class<S> type) {
         if (!type.isAssignableFrom(Long.class) && !type.equals(Long.TYPE)) {
@@ -569,17 +564,13 @@ public abstract class LongBaseSeries implements LongSeries {
         return new SeriesGrouper<>(by).group(this);
     }
 
-    /**
-     * @since 0.7
-     */
+
     @Override
     public LongSeries sample(int size) {
         return selectAsLongSeries(Sampler.sampleIndex(size, size()));
     }
 
-    /**
-     * @since 0.7
-     */
+
     @Override
     public LongSeries sample(int size, Random random) {
         return selectAsLongSeries(Sampler.sampleIndex(size, size(), random));

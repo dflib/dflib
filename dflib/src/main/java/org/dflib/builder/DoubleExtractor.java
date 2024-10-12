@@ -3,9 +3,6 @@ package org.dflib.builder;
 import org.dflib.DoubleValueMapper;
 import org.dflib.Extractor;
 
-/**
- * @since 0.16
- */
 public class DoubleExtractor<F> implements Extractor<F, Double> {
 
     private final DoubleValueMapper<F> mapper;

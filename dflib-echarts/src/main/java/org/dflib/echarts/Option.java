@@ -10,8 +10,6 @@ import java.util.Objects;
 
 /**
  * A builder of the EChart "option" object - the main chart configuration.
- *
- * @since 1.0.0-M21
  */
 public class Option {
 
@@ -25,9 +23,6 @@ public class Option {
 
     final List<SeriesBuilder<?>> series;
 
-    /**
-     * @since 1.0.0-M22
-     */
     public static Option of() {
         return new Option();
     }
@@ -41,9 +36,6 @@ public class Option {
         return this;
     }
 
-    /**
-     * @since 1.0.0-M22
-     */
     public Option tooltip(Tooltip tooltip) {
         this.tooltip = tooltip;
         return this;
@@ -52,8 +44,6 @@ public class Option {
     /**
      * Adds a Grid to the chart. Grids are used to plot multiple charts in cartesian coordinates. Axis objects can
      * optionally have grid references.
-     *
-     * @since 1.0.0-M22
      */
     public Option grid(Grid grid) {
         Objects.requireNonNull(grid);
@@ -91,8 +81,6 @@ public class Option {
 
     /**
      * Adds one or more Y axes to the chart.
-     *
-     * @since 1.0.0-M22
      */
     public Option yAxes(YAxis... axes) {
         for (YAxis a : axes) {
@@ -118,8 +106,6 @@ public class Option {
 
     /**
      * Specifies a DataFrame column to be plotted as individual series and configuration for series display.
-     *
-     * @since 1.0.0-M23
      */
     public Option series(SeriesOpts opts, Index dataColumns) {
         series.add(new SeriesBuilder(opts, dataColumns));

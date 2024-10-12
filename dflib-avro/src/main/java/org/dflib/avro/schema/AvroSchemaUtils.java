@@ -4,9 +4,7 @@ import org.dflib.avro.types.AvroTypeExtensions;
 import org.apache.avro.LogicalType;
 import org.apache.avro.Schema;
 
-/**
- * @since 0.11
- */
+
 public class AvroSchemaUtils {
 
     public static Schema unpackUnion(Schema union) {

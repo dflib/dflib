@@ -10,8 +10,6 @@ import org.dflib.range.Range;
 /**
  * A specialized LongSeries that maps to a slice of an array. Calculating offsets during every operation has some
  * performance overhead, so this Series is somewhat slower than {@link LongArraySeries}.
- *
- * @since 1.0.0-M19
  */
 public class LongArrayRangeSeries extends LongBaseSeries {
 

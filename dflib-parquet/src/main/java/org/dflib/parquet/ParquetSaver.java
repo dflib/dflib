@@ -20,9 +20,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @since 1.0.0-M23
- */
+
+
 public class ParquetSaver {
 
     private boolean createMissingDirs;

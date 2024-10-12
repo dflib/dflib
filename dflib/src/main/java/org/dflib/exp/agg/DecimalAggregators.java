@@ -9,17 +9,13 @@ import org.dflib.builder.ObjectAccum;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-/**
- * @since 0.11
- */
+
 public class DecimalAggregators {
 
     private static final Condition notNullExp = Exp.$decimal(0).isNotNull();
     private static final Sorter asc = Exp.$decimal(0).asc();
 
-    /**
-     * @since 0.14
-     */
+
     public static Series<BigDecimal> cumSum(Series<BigDecimal> s) {
 
         int h = s.size();

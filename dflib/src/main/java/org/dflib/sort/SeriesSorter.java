@@ -9,9 +9,7 @@ import org.dflib.series.IntArraySeries;
 import java.util.Arrays;
 import java.util.Comparator;
 
-/**
- * @since 0.11
- */
+
 public class SeriesSorter<T> {
 
     private final Series<T> s;

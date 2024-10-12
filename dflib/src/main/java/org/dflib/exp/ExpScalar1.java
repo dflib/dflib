@@ -8,8 +8,6 @@ import java.util.Objects;
 
 /**
  * A unary expression with a scalar argument.
- *
- * @since 0.11
  */
 public abstract class ExpScalar1<T> implements Exp<T> {
 

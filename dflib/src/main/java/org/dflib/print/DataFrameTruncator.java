@@ -2,9 +2,6 @@ package org.dflib.print;
 
 import org.dflib.DataFrame;
 
-/**
- * @since 0.6
- */
 public class DataFrameTruncator {
 
     DataFrame dataFrame;

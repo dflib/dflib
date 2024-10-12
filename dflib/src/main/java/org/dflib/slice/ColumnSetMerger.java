@@ -5,15 +5,10 @@ import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.Series;
 
-/**
- * @since 1.0.0-M19
- */
 public class ColumnSetMerger {
 
     /**
      * Merges an array of named columns into a DataFrame, adding to or replacing the existing columns.
-     *
-     * @since 1.0.0-M22
      */
     public static DataFrame merge(
             DataFrame source,
@@ -25,8 +20,6 @@ public class ColumnSetMerger {
 
     /**
      * Merges an array of named columns into a DataFrame, adding to or replacing the existing columns.
-     *
-     * @since 1.0.0-M22
      */
     public static DataFrame mergeAs(
             DataFrame source,

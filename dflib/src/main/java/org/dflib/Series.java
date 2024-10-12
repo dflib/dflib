@@ -41,24 +41,18 @@ import static java.util.Arrays.asList;
  */
 public interface Series<T> extends Iterable<T> {
 
-    /**
-     * @since 0.16
-     */
+
     static <S, T> SeriesByElementBuilder<S, T> byElement(Extractor<S, T> extractor) {
         return new SeriesByElementBuilder<>(extractor);
     }
 
-    /**
-     * @since 0.16
-     */
+
     @SafeVarargs
     static <T> Series<T> of(T... data) {
         return data != null && data.length > 0 ? new ArraySeries<>(data) : new EmptySeries<>();
     }
 
-    /**
-     * @since 0.16
-     */
+
     static <T> Series<T> ofIterable(Iterable<T> data) {
 
         return byElement(Extractor.<T>$col())
@@ -68,38 +62,28 @@ public interface Series<T> extends Iterable<T> {
                 .toSeries();
     }
 
-    /**
-     * @since 0.16
-     */
+
     static BooleanSeries ofBool(boolean... bools) {
         return new BooleanArraySeries(bools);
     }
 
-    /**
-     * @since 0.16
-     */
+
     static IntSeries ofInt(int... ints) {
         return new IntArraySeries(ints);
     }
 
-    /**
-     * @since 0.16
-     */
+
     static DoubleSeries ofDouble(double... doubles) {
         return new DoubleArraySeries(doubles);
     }
 
-    /**
-     * @since 0.16
-     */
+
     static LongSeries ofLong(long... longs) {
         return new LongArraySeries(longs);
     }
 
     /**
      * Returns a Series of the specified size filled with a single value.
-     *
-     * @since 1.0.0-M19
      */
     static <T> Series<T> ofVal(T value, int size) {
         if (value == null) {
@@ -123,7 +107,6 @@ public interface Series<T> extends Iterable<T> {
      * {@link #getInferredType()} to check the real type of series values.
      *
      * @return the nominal type of values in the series
-     * @since 0.6
      */
     Class<?> getNominalType();
 
@@ -133,7 +116,6 @@ public interface Series<T> extends Iterable<T> {
      * Series values.
      *
      * @return the most specific common superclass of the values in this Series object.
-     * @since 0.8
      */
     Class<?> getInferredType();
 
@@ -143,36 +125,27 @@ public interface Series<T> extends Iterable<T> {
 
     void copyTo(Object[] to, int fromOffset, int toOffset, int len);
 
-
     /**
      * Finds a position of the first occurrence of the value. Returns -1, if the value is not found. Most Series are not
      * indexed, so this operation will have an O(N) performance (unlike O(1) performance of {@link Index#contains(String)}).
-     *
-     * @since 1.0.0-M21
      */
     int position(T value);
 
     /**
      * Returns true if the value is found in the Series. Most Series are not indexed, so this operation will have an
      * O(N) performance (unlike O(1) performance of {@link Index#contains(String)}).
-     *
-     * @since 1.0.0-M21
      */
     default boolean contains(T value) {
         return position(value) >= 0;
     }
 
-    /**
-     * @since 0.16
-     */
+
     default <V> Series<V> map(Exp<V> mapper) {
         return mapper.eval(this);
     }
 
     /**
      * Extends the Series, adding extra values to the end of this Series.
-     *
-     * @since 1.0.0-M21
      */
     default Series<?> expand(Object... values) {
         int rlen = values.length;
@@ -195,7 +168,6 @@ public interface Series<T> extends Iterable<T> {
      * @param mapper a function that maps each Series value to some other value
      * @param <V>    value type produced by the mapper
      * @return a Series produced by applying a mapper to this Series
-     * @since 0.6
      */
     default <V> Series<V> map(ValueMapper<T, V> mapper) {
         return new ColumnMappedSeries<>(this, mapper);
@@ -203,8 +175,6 @@ public interface Series<T> extends Iterable<T> {
 
     /**
      * Converts the Series to a BooleanSeries of the same length, applying the provided function.
-     *
-     * @since 0.16
      */
     // TODO: functionally, this is a duplicate of "locate()"
     default BooleanSeries mapAsBool(BoolValueMapper<? super T> converter) {
@@ -220,8 +190,6 @@ public interface Series<T> extends Iterable<T> {
 
     /**
      * Converts the Series to an IntSeries of the same length, applying the provided function.
-     *
-     * @since 0.16
      */
     default IntSeries mapAsInt(IntValueMapper<? super T> converter) {
         int len = size();
@@ -236,8 +204,6 @@ public interface Series<T> extends Iterable<T> {
 
     /**
      * Converts the Series to a LongSeries of the same length, applying the provided function.
-     *
-     * @since 0.16
      */
     default LongSeries mapAsLong(LongValueMapper<? super T> converter) {
         int len = size();
@@ -251,8 +217,6 @@ public interface Series<T> extends Iterable<T> {
 
     /**
      * Converts the Series to a DoubleSeries of the same length, applying the provided function.
-     *
-     * @since 0.16
      */
     default DoubleSeries mapAsDouble(DoubleValueMapper<? super T> converter) {
         int len = size();
@@ -272,7 +236,6 @@ public interface Series<T> extends Iterable<T> {
      * invocations "fluent".
      *
      * @see #castAs(Class)
-     * @since 0.18
      */
     default <S> Series<S> unsafeCastAs(Class<S> type) {
         return (Series<S>) this;
@@ -284,34 +247,21 @@ public interface Series<T> extends Iterable<T> {
      * Series from DataFrames. Applying a cast allows to keep Series transformation invocations "fluent".
      *
      * @see #unsafeCastAs(Class)
-     * @since 0.18
      */
     <S> Series<S> castAs(Class<S> type) throws ClassCastException;
 
-    /**
-     * @since 0.18
-     */
     default BooleanSeries castAsBool() throws ClassCastException {
         throw new ClassCastException("Can't cast to BooleanSeries");
     }
 
-    /**
-     * @since 0.18
-     */
     default DoubleSeries castAsDouble() throws ClassCastException {
         throw new ClassCastException("Can't cast to DoubleSeries");
     }
 
-    /**
-     * @since 0.18
-     */
     default IntSeries castAsInt() throws ClassCastException {
         throw new ClassCastException("Can't cast to IntSeries");
     }
 
-    /**
-     * @since 0.18
-     */
     default LongSeries castAsLong() throws ClassCastException {
         throw new ClassCastException("Can't cast to LongSeries");
     }
@@ -321,7 +271,6 @@ public interface Series<T> extends Iterable<T> {
      * which each row produced by applying the map function to each Series value.
      *
      * @return a new DataFrame built from Series values.
-     * @since 0.7
      */
     DataFrame map(Index resultColumns, ValueToRowMapper<T> mapper);
 
@@ -331,7 +280,6 @@ public interface Series<T> extends Iterable<T> {
      * @param fromInclusive a left boundary index of the returned range (included in the returned range)
      * @param toExclusive   a right boundary index (excluded in the returned range)
      * @return a Series that contains a sub-range of data from this Series.
-     * @since 1.0.0-M21
      */
     Series<T> selectRange(int fromInclusive, int toExclusive);
 
@@ -345,7 +293,6 @@ public interface Series<T> extends Iterable<T> {
     /**
      * @param values a Series to take null replacement values from
      * @return a new Series with nulls replaced with values from another Series with matching positions
-     * @since 0.6
      */
     Series<T> fillNullsFromSeries(Series<? extends T> values);
 
@@ -361,16 +308,12 @@ public interface Series<T> extends Iterable<T> {
     /**
      * Returns a Series with elements from this Series that are not present in another Series. This is an operation
      * similar to SQL "EXCEPT".
-     *
-     * @since 1.0.0-M19
      */
     Series<T> diff(Series<? extends T> other);
 
     /**
      * Returns a Series with elements that are present in this and another Series. This is an operation similar to
      * SQL "INTERSECT".
-     *
-     * @since 1.0.0-M19
      */
     Series<T> intersect(Series<? extends T> other);
 
@@ -388,9 +331,6 @@ public interface Series<T> extends Iterable<T> {
      */
     Series<T> tail(int len);
 
-    /**
-     * @since 0.11
-     */
     Series<T> select(Condition condition);
 
     default Series<T> select(int... positions) {
@@ -399,14 +339,8 @@ public interface Series<T> extends Iterable<T> {
 
     Series<T> select(IntSeries positions);
 
-    /**
-     * @since 0.11
-     */
     Series<T> select(Predicate<T> p);
 
-    /**
-     * @since 0.11
-     */
     Series<T> select(BooleanSeries positions);
 
     // TODO: can't have "select(boolean...)" as it conflicts with "select(int...)". Should we change to "select(int, int...)" ?
@@ -420,16 +354,12 @@ public interface Series<T> extends Iterable<T> {
      */
     IntSeries index(Predicate<T> predicate);
 
-    /**
-     * @since 0.11
-     */
     Series<T> sort(Sorter... sorters);
 
     /**
      * Returns a sorted copy of this Series using provided Comparator.
      *
      * @return sorted copy of this series.
-     * @since 0.6
      */
     Series<T> sort(Comparator<? super T> comparator);
 
@@ -441,7 +371,6 @@ public interface Series<T> extends Iterable<T> {
      *
      * @param comparator value comparator for sorting¬
      * @return an IntSeries representing element indices from the original Series
-     * @since 0.8
      */
     default IntSeries sortIndex(Comparator<? super T> comparator) {
         return new SeriesSorter<>(this).sortIndex(comparator);
@@ -451,7 +380,6 @@ public interface Series<T> extends Iterable<T> {
      * @param s a Series to compare with.
      * @return a BooleanSeries with true/false elements corresponding to the result of comparison of this Series with
      * another.
-     * @since 0.6
      */
     default BooleanSeries eq(Series<?> s) {
         int len = size();
@@ -473,7 +401,6 @@ public interface Series<T> extends Iterable<T> {
      * @param s a Series to compare with.
      * @return a BooleanSeries with true/false elements corresponding to the result of comparison of this Series with
      * another.
-     * @since 0.6
      */
     default BooleanSeries ne(Series<?> s) {
         int len = size();
@@ -490,24 +417,12 @@ public interface Series<T> extends Iterable<T> {
         return new BooleanArraySeries(data);
     }
 
-    /**
-     * @since 0.11
-     */
     BooleanSeries isNull();
 
-    /**
-     * @since 0.11
-     */
     BooleanSeries isNotNull();
 
-    /**
-     * @since 0.18
-     */
     BooleanSeries in(Object... values);
 
-    /**
-     * @since 0.18
-     */
     BooleanSeries notIn(Object... values);
 
     /**
@@ -516,7 +431,6 @@ public interface Series<T> extends Iterable<T> {
      * @param predicate match condition
      * @return a BooleanSeries with true/false elements corresponding whether a given position in "this" Series matched
      * the predicate.
-     * @since 0.6
      */
     default BooleanSeries locate(Predicate<T> predicate) {
 
@@ -536,8 +450,6 @@ public interface Series<T> extends Iterable<T> {
     /**
      * Replaces values at positions with values from another Series. "with" Series should have the same size as
      * the "positions" Series.
-     *
-     * @since 1.0.0-M19
      */
     Series<T> replace(IntSeries positions, Series<T> with);
 
@@ -545,14 +457,11 @@ public interface Series<T> extends Iterable<T> {
      * @param condition a BooleanSeries that determines which cells need to be replaced.
      * @param with      a value to replace matching cells with
      * @return a new series with replaced values
-     * @since 0.6
      */
     Series<T> replace(BooleanSeries condition, T with);
 
     /**
      * Replaces Series values that match map keys with map values.
-     *
-     * @since 1.0.0-M21
      */
     Series<T> replace(Map<T, T> oldToNewValues);
 
@@ -563,42 +472,32 @@ public interface Series<T> extends Iterable<T> {
      * @param condition a BooleanSeries that determines which cells need not be replaced.
      * @param with      a value to replace non-matching cells with
      * @return a new series with replaced values
-     * @since 1.0.0-M21
      */
     Series<T> replaceExcept(BooleanSeries condition, T with);
 
     /**
      * @return a Series that contains non-repeating values from this Series.
-     * @since 0.6
      */
     Series<T> unique();
 
     /**
      * Returns a 2-column DataFrame that provides counts of distinct values present in the Series. Null values are
      * not included in the counts.
-     *
-     * @since 0.6
      */
     DataFrame valueCounts();
 
     /**
      * Groups Series by its values.
-     *
-     * @since 0.6
      */
     SeriesGroupBy<T> group();
 
     /**
      * Groups Series, using the provided function to calculate grouping key.
-     *
-     * @since 0.6
      */
     SeriesGroupBy<T> group(ValueMapper<T, ?> by);
 
     /**
      * Returns a scalar value that is a result of applying provided aggregator to Series.
-     *
-     * @since 0.6
      */
     default <R> Series<R> agg(Exp<R> aggregator) {
         return aggregator.eval(this);
@@ -607,23 +506,16 @@ public interface Series<T> extends Iterable<T> {
     /**
      * Returns a Series, with each value corresponding to the result of aggregation with each aggregator out of the
      * provided array of aggregators.
-     *
-     * @since 0.6
      */
     default DataFrame aggMultiple(Exp<?>... aggregators) {
         return SeriesAggregator.aggAsDataFrame(this, aggregators);
     }
 
-    /**
-     * @since 0.7
-     */
+
     default T first() {
         return size() > 0 ? get(0) : null;
     }
 
-    /**
-     * @since 0.18
-     */
     default T last() {
         int size = size();
         return size > 0 ? get(size - 1) : null;
@@ -631,8 +523,6 @@ public interface Series<T> extends Iterable<T> {
 
     /**
      * Aggregating operation, concatenating Series values into a single String using the provided element separator.
-     *
-     * @since 0.7
      */
     default String concat(String separator) {
         return agg(Exp.$col("").vConcat(separator)).get(0);
@@ -641,8 +531,6 @@ public interface Series<T> extends Iterable<T> {
     /**
      * Aggregating operation, concatenating Series values into a single String using the provided element separator,
      * prefix and suffix.
-     *
-     * @since 0.7
      */
     default String concat(String separator, String prefix, String suffix) {
         return agg(Exp.$col("").vConcat(separator, prefix, suffix)).get(0);
@@ -655,7 +543,6 @@ public interface Series<T> extends Iterable<T> {
      *
      * @param size the size of the sample. Can't be bigger than the size of this Series.
      * @return a Series object that is a sample of values from this object
-     * @since 0.7
      */
     Series<T> sample(int size);
 
@@ -665,7 +552,6 @@ public interface Series<T> extends Iterable<T> {
      * @param size   the size of the sample. Can't be bigger than the size of this Series.
      * @param random a custom random number generator
      * @return a Series object that is a sample of values from this object
-     * @since 0.7
      */
     Series<T> sample(int size, Random random);
 
@@ -675,7 +561,6 @@ public interface Series<T> extends Iterable<T> {
      *
      * @param identity    Identity value for the accumulator
      * @param accumulator Associative operator to combine two values
-     * @since 1.0.0-RC1
      */
     default T reduce(T identity, BinaryOperator<T> accumulator) {
         Objects.requireNonNull(identity);
@@ -692,8 +577,6 @@ public interface Series<T> extends Iterable<T> {
     /**
      * Produces a Series with the same size as this Series, with values shifted forward or backwards depending on the
      * sign of the offset parameter. Head or tail gaps produced by the shift are filled with nulls.
-     *
-     * @since 0.9
      */
     default Series<T> shift(int offset) {
         return shift(offset, null);
@@ -702,8 +585,6 @@ public interface Series<T> extends Iterable<T> {
     /**
      * Produces a Series with the same size as this Series, with values shifted forward or backwards depending on the
      * sign of the offset parameter. Head or tail gaps produced by the shift are filled with the provided filler value.
-     *
-     * @since 0.9
      */
     default Series<T> shift(int offset, T filler) {
         if (offset > 0) {
@@ -715,16 +596,10 @@ public interface Series<T> extends Iterable<T> {
         }
     }
 
-    /**
-     * @since 0.11
-     */
     default <V> Series<V> eval(Exp<V> exp) {
         return exp.eval(this);
     }
 
-    /**
-     * @since 0.7
-     */
     @Override
     default Iterator<T> iterator() {
 
@@ -755,7 +630,6 @@ public interface Series<T> extends Iterable<T> {
      * modifying it will not affect the underlying Series.
      *
      * @return a new List with data from this Series
-     * @since 0.7
      */
     default List<T> toList() {
         int len = size();
@@ -769,7 +643,6 @@ public interface Series<T> extends Iterable<T> {
      * modifying it will not affect the underlying Series.
      *
      * @return a new Set with data from this Series
-     * @since 0.7
      */
     default Set<T> toSet() {
         int len = size();
@@ -795,7 +668,6 @@ public interface Series<T> extends Iterable<T> {
      *          a new array of the same  runtime type is allocated for this purpose. This is similar to
      *          {@link java.util.Collection#toArray(Object[])} behavior.
      * @return a new array with data from this Series
-     * @since 0.7
      */
     default T[] toArray(T[] a) {
         int len = size();

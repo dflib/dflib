@@ -1,8 +1,6 @@
 package org.dflib.agg;
 
-/**
- * @since 0.11
- */
+
 public class PrimitiveSeriesCount {
 
     public static int countTrueInArray(boolean[] booleans, int start, int len) {

@@ -7,14 +7,10 @@ import org.dflib.exp.map.MapExp1;
 
 import java.util.function.Function;
 
-/**
- * @since 0.11
- */
+
 public class IntExp1<F> extends MapExp1<F, Integer> implements NumExp<Integer> {
 
-    /**
-     * @since 0.14
-     */
+
     public static <F> IntExp1<F> map(String opName, Exp<F> exp, Function<Series<F>, Series<Integer>> op) {
         return new IntExp1<>(opName, exp, op);
     }

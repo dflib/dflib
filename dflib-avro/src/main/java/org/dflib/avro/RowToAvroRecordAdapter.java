@@ -7,8 +7,6 @@ import org.apache.avro.generic.GenericRecord;
 /**
  * A wrapper around RowProxy flyweight for efficient data copy from DataFrame to Avro. Also performs any needed type
  * conversions.
- *
- * @since 0.11
  */
 class RowToAvroRecordAdapter implements GenericRecord {
 

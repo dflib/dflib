@@ -12,33 +12,20 @@ import java.sql.ResultSet;
 /**
  * An abstraction on top of JDBC DataSource that smoothens a variety of cross-DB portability issues. All DB-aware
  * operations in DFLib use JdbcConnector for access.
- *
- * @since 0.6
  */
 public interface JdbcConnector {
 
     TableSaver tableSaver(String tableName);
 
-    /**
-     * @since 0.7
-     */
     TableSaver tableSaver(TableFQName tableName);
 
     TableLoader tableLoader(String tableName);
 
-    /**
-     * @since 0.7
-     */
+
     TableLoader tableLoader(TableFQName tableName);
 
-    /**
-     * @since 0.8
-     */
     TableDeleter tableDeleter(String tableName);
 
-    /**
-     * @since 0.8
-     */
     TableDeleter tableDeleter(TableFQName tableName);
 
     /**
@@ -57,7 +44,6 @@ public interface JdbcConnector {
      * @param sql a parameterized SQL statement. Format of the SQL String should correspond to the JDBC
      *            {@link java.sql.PreparedStatement}. So it may contain "?" placeholders for bound parameters.
      * @return a new {@link SqlSaver}
-     * @since 0.8
      */
     SqlSaver sqlSaver(String sql);
 
@@ -69,7 +55,6 @@ public interface JdbcConnector {
      * Returns Connector's internal DataSource
      *
      * @return Connector's internal DataSource
-     * @since 0.7
      */
     DataSource getDataSource();
 
@@ -79,8 +64,6 @@ public interface JdbcConnector {
 
     /**
      * Quotes all parts of the fully qualified table name.
-     *
-     * @since 0.7
      */
     String quoteTableName(TableFQName tableName);
 
@@ -91,7 +74,6 @@ public interface JdbcConnector {
      * @param type              JDBC type of the value per {@link java.sql.Types}
      * @param mandatory         whether the value is mandatory. This information helps to optimize produced columns,
      *                          using primitive Series for mandatory numeric / boolean columns.
-     * @since 0.16
      */
     Extractor<ResultSet, ?> createExtractor(int resultSetPosition, int type, boolean mandatory);
 

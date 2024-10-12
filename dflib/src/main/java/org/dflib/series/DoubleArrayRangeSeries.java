@@ -9,8 +9,6 @@ import org.dflib.agg.PrimitiveSeriesSum;
 /**
  * A specialized DoubleSeries that maps to a slice of an array. Calculating offsets during every operation has some
  * performance overhead, so this Series is somewhat slower than {@link DoubleArraySeries}.
- *
- * @since 1.0.0-M19
  */
 public class DoubleArrayRangeSeries extends DoubleBaseSeries {
 

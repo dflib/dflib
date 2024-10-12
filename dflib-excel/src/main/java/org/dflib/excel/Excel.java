@@ -9,9 +9,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 /**
- * An entry point to work with Excel files.
- *
- * @since 0.13
+ * An entry point to load and save Excel files.
  */
 public class Excel {
 
@@ -69,67 +67,49 @@ public class Excel {
         return new ExcelLoader();
     }
 
-    /**
-     * @since 0.14
-     */
+
     public static void save(Map<String, DataFrame> dfBySheet, File file) {
         saver().save(dfBySheet, file);
     }
 
-    /**
-     * @since 0.14
-     */
+
     public static void save(Map<String, DataFrame> dfBySheet, Path filePath) {
         saver().save(dfBySheet, filePath);
     }
 
-    /**
-     * @since 0.14
-     */
+
     public static void save(Map<String, DataFrame> dfBySheet, String fileName) {
         saver().save(dfBySheet, fileName);
     }
 
 
-    /**
-     * @since 0.14
-     */
+
     public static void save(Map<String, DataFrame> dfBySheet, OutputStream out) {
         saver().save(dfBySheet, out);
     }
 
-    /**
-     * @since 0.14
-     */
+
     public static void saveSheet(DataFrame df, File file, String sheetName) {
         saver().saveSheet(df, file, sheetName);
     }
 
-    /**
-     * @since 0.14
-     */
+
     public static void saveSheet(DataFrame df, Path filePath, String sheetName) {
         saver().saveSheet(df, filePath, sheetName);
     }
 
-    /**
-     * @since 0.14
-     */
+
     public static void saveSheet(DataFrame df, String fileName, String sheetName) {
         saver().saveSheet(df, fileName, sheetName);
     }
 
 
-    /**
-     * @since 0.14
-     */
+
     public static void saveSheet(DataFrame df, OutputStream out, String sheetName) {
         saver().saveSheet(df, out, sheetName);
     }
 
-    /**
-     * @since 0.14
-     */
+
     public static ExcelSaver saver() {
         return new ExcelSaver();
     }

@@ -23,8 +23,6 @@ import java.util.concurrent.Executor;
  * A wrapper of a JDBC connection that is attached to a transaction. The behavior of this object to delegate all method
  * calls to the underlying connection, except for a few methods like {@link #close()}, {@link #commit()}, etc., that do
  * nothing in hope that a transaction manager will handle the underlying connection state when appropriate.
- *
- * @since 0.7
  */
 // based on Cayenne TransactionConnectionDecorator
 public class TxDataSourceConnection implements Connection {

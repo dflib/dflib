@@ -6,8 +6,6 @@ import org.dflib.Series;
 
 /**
  * A binary expression with Exp on the left side and a scalar - on the right.
- *
- * @since 0.11
  */
 public abstract class ExpScalar2<L, R, T> implements Exp<T> {
 

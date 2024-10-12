@@ -6,10 +6,6 @@ import org.dflib.range.Range;
 import java.util.Arrays;
 import java.util.Objects;
 
-/**
- * @param <T>
- * @since 0.6
- */
 public class SingleValueSeries<T> extends ObjectSeries<T> {
 
     private final T value;

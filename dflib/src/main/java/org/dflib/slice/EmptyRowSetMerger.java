@@ -3,9 +3,6 @@ package org.dflib.slice;
 import org.dflib.BooleanSeries;
 import org.dflib.Series;
 
-/**
- * @since 1.0.0-M19
- */
 public class EmptyRowSetMerger extends RowSetMerger {
 
     static final EmptyRowSetMerger instance = new EmptyRowSetMerger();

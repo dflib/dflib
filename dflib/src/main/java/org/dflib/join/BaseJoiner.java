@@ -6,9 +6,6 @@ import org.dflib.JoinType;
 
 import java.util.Objects;
 
-/**
- * @since 0.6
- */
 public abstract class BaseJoiner {
 
     private final JoinType semantics;
@@ -17,9 +14,7 @@ public abstract class BaseJoiner {
         this.semantics = Objects.requireNonNull(semantics);
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     public IntSeries[] rowSelectors(DataFrame lf, DataFrame rf) {
 
         switch (semantics) {

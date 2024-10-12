@@ -5,9 +5,8 @@ import org.apache.parquet.hadoop.api.ReadSupport;
 import org.apache.parquet.io.InputFile;
 import org.apache.parquet.schema.MessageType;
 
-/**
- * @since 1.0.0-M23
- */
+
+
 public class DataFrameParquetReaderBuilder extends ParquetReader.Builder<Object[]> {
 
     private final MessageType projection;

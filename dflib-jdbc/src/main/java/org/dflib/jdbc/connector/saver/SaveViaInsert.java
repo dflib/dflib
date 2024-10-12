@@ -9,9 +9,6 @@ import org.dflib.series.SingleValueSeries;
 
 import java.util.function.Supplier;
 
-/**
- * @since 0.6
- */
 public class SaveViaInsert extends TableSaveStrategy {
 
     public SaveViaInsert(JdbcConnector connector, TableFQName tableName, int batchSize) {

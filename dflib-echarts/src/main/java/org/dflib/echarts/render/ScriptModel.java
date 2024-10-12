@@ -4,8 +4,6 @@ import java.util.Objects;
 
 /**
  * A model for rendering EChart script
- *
- * @since 1.0.0-M21
  */
 public class ScriptModel {
 

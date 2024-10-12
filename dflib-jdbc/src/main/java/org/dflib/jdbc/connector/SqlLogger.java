@@ -6,9 +6,6 @@ import org.dflib.print.Printer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @since 0.6
- */
 public class SqlLogger {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SqlLogger.class);

@@ -32,14 +32,9 @@ import java.util.function.Predicate;
 
 /**
  * A base implementation of various boilerplate methods for {@link IntSeries}.
- *
- * @since 0.6
  */
 public abstract class IntBaseSeries implements IntSeries {
 
-    /**
-     * @since 0.18
-     */
     @Override
     public <S> Series<S> castAs(Class<S> type) {
         if (!type.isAssignableFrom(Integer.class) && !type.equals(Integer.TYPE)) {
@@ -598,17 +593,13 @@ public abstract class IntBaseSeries implements IntSeries {
         return new SeriesGrouper<>(by).group(this);
     }
 
-    /**
-     * @since 0.7
-     */
+
     @Override
     public IntSeries sample(int size) {
         return selectAsIntSeries(Sampler.sampleIndex(size, size()));
     }
 
-    /**
-     * @since 0.7
-     */
+
     @Override
     public IntSeries sample(int size, Random random) {
         return selectAsIntSeries(Sampler.sampleIndex(size, size(), random));

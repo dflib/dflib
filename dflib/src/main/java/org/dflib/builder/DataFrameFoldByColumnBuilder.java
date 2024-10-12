@@ -15,9 +15,6 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-/**
- * @since 0.16
- */
 public class DataFrameFoldByColumnBuilder extends BaseDataFrameBuilder {
 
     public DataFrameFoldByColumnBuilder(Index columnsIndex) {

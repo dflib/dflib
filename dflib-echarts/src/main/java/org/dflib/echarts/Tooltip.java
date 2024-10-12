@@ -2,9 +2,6 @@ package org.dflib.echarts;
 
 import org.dflib.echarts.render.option.tooltip.TooltipModel;
 
-/**
- * @since 1.0.0-M22
- */
 public class Tooltip {
 
     private TooltipAxisPointer axisPointer;

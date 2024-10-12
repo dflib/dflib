@@ -5,9 +5,7 @@ import org.apache.avro.Schema;
 
 import java.util.Objects;
 
-/**
- * @since 0.11
- */
+
 public class SingleSchemaLogicalType extends LogicalType {
 
     private final Schema.Type avroType;

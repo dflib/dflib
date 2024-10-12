@@ -9,9 +9,6 @@ import org.dflib.Series;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * @since 1.0.0-M19
- */
 public class Intersect {
 
     public static <T> Series<T> intersect(Series<T> s1, Series<? extends T> s2) {

@@ -13,8 +13,6 @@ import java.util.function.Supplier;
  * A thin wrapper around a <code>Series&gt;SaveOp></code> that provides a view of the save operation per-row statistics.
  * Useful when {@link TableSaver#save(DataFrame)} merges the data, generating a combination of inserts, updates, with some
  * rows possibly skipped.
- *
- * @since 0.6
  */
 public class SaveStats {
 

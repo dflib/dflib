@@ -21,9 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @since 1.0.0-M23
- */
+
+
 public class ParquetLoader {
 
     private SchemaProjector schemaProjector;
@@ -72,8 +71,6 @@ public class ParquetLoader {
      * Configures a Parquet column to be loaded with value compaction. Should be used to save memory for low-cardinality
      * columns. Note that Parquet already does compaction on String columns by default, but some other column types
      * can take advantage of an explicit compaction.
-     *
-     * @since 1.0.0-RC1
      */
     public ParquetLoader compactCol(int column) {
         colConfigurators.add(ColConfigurator.objectCol(column, true));
@@ -84,8 +81,6 @@ public class ParquetLoader {
      * Configures a Parquet column to be loaded with value compaction. Should be used to save memory for low-cardinality
      * columns. Note that Parquet already does compaction on String columns by default, but some other column types
      * can take advantage of an explicit compaction.
-     *
-     * @since 1.0.0-RC1
      */
     public ParquetLoader compactCol(String column) {
         colConfigurators.add(ColConfigurator.objectCol(column, true));

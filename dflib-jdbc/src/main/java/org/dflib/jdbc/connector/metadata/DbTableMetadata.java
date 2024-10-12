@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @since 0.6
- */
 public class DbTableMetadata {
 
     private TableFQName name;
@@ -30,9 +27,7 @@ public class DbTableMetadata {
         }
     }
 
-    /**
-     * @since 0.7
-     */
+
     public TableFQName getName() {
         return name;
     }
@@ -58,9 +53,6 @@ public class DbTableMetadata {
         return pk;
     }
 
-    /**
-     * @since 0.8
-     */
     public boolean hasColumn(String name) {
         return columnsByName.containsKey(name);
     }

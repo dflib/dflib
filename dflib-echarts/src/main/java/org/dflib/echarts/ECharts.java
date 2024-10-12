@@ -3,8 +3,6 @@ package org.dflib.echarts;
 /**
  * An entry point to EChart builder. The builder would create HTML/JS code that renders DataFrame data using ECharts
  * library.
- *
- * @since 1.0.0-M21
  */
 public class ECharts {
 

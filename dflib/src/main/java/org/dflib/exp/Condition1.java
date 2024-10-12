@@ -7,9 +7,7 @@ import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Series;
 
-/**
- * @since 0.11
- */
+
 public abstract class Condition1<F> implements Condition {
 
     private final String opName;

@@ -1,8 +1,5 @@
 package org.dflib.echarts.render.option.tooltip;
 
-/**
- * @since 1.0.0-M22
- */
 public class TooltipModel {
 
     private final String trigger;

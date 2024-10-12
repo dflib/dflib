@@ -1,8 +1,5 @@
 package org.dflib.builder;
 
-/**
- * @since 0.16
- */
 public class BoolHolder implements ValueHolder<Boolean> {
 
     private boolean v;

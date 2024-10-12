@@ -14,7 +14,6 @@ import java.util.Objects;
  * Sorting processor for GroupBy objects.
  *
  * @see Comparators
- * @since 0.11
  */
 public class GroupBySorter {
 

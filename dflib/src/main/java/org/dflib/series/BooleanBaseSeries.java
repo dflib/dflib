@@ -29,14 +29,9 @@ import java.util.function.Predicate;
 
 /**
  * A base implementation of various boilerplate methods for {@link BooleanSeries}.
- *
- * @since 0.6
  */
 public abstract class BooleanBaseSeries implements BooleanSeries {
 
-    /**
-     * @since 0.18
-     */
     @Override
     public <S> Series<S> castAs(Class<S> type) {
         if (!type.equals(Boolean.class) && !type.equals(Boolean.TYPE)) {
@@ -583,17 +578,13 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         return new SeriesGrouper<>(by).group(this);
     }
 
-    /**
-     * @since 0.7
-     */
+
     @Override
     public BooleanSeries sample(int size) {
         return selectAsBooleanSeries(Sampler.sampleIndex(size, size()));
     }
 
-    /**
-     * @since 0.7
-     */
+
     @Override
     public BooleanSeries sample(int size, Random random) {
         return selectAsBooleanSeries(Sampler.sampleIndex(size, size(), random));

@@ -17,8 +17,6 @@ import java.util.function.Predicate;
 /**
  * A Series optimized to store and access primitive int values without <code>java.lang.Integer</code> wrapper. Can also
  * pose as "Series&lt;Integer>", although this is not the most efficient way of using it.
- *
- * @since 0.6
  */
 public interface IntSeries extends Series<Integer> {
 
@@ -82,8 +80,6 @@ public interface IntSeries extends Series<Integer> {
 
     /**
      * Creates a new Series with a provided values appended to the end of this Series.
-     *
-     * @since 1.0.0-M21
      */
     default IntSeries expandInt(int... values) {
         int rlen = values.length;
@@ -112,9 +108,7 @@ public interface IntSeries extends Series<Integer> {
         return Intersect.intersectInt(this, other);
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     IntSeries rangeInt(int fromInclusive, int toExclusive);
 
     @Override
@@ -152,9 +146,7 @@ public interface IntSeries extends Series<Integer> {
         return IntIndexedSeries.of(this, positions);
     }
 
-    /**
-     * @since 0.11
-     */
+
     IntSeries selectInt(IntPredicate p);
 
     @Override
@@ -167,14 +159,8 @@ public interface IntSeries extends Series<Integer> {
 
     IntSeries sortInt(IntComparator comparator);
 
-    /**
-     * @since 0.8
-     */
     IntSeries sortIndexInt();
 
-    /**
-     * @since 0.8
-     */
     IntSeries sortIndexInt(IntComparator comparator);
 
     /**
@@ -203,21 +189,15 @@ public interface IntSeries extends Series<Integer> {
     @Override
     IntSeries unique();
 
-    /**
-     * @since 0.7
-     */
+
     @Override
     IntSeries sample(int size);
 
-    /**
-     * @since 0.7
-     */
+
     @Override
     IntSeries sample(int size, Random random);
 
-    /**
-     * @since 0.7
-     */
+
     default int[] toIntArray() {
         int len = size();
         int[] copy = new int[len];
@@ -225,41 +205,28 @@ public interface IntSeries extends Series<Integer> {
         return copy;
     }
 
-    /**
-     * @since 0.14
-     */
+
     LongSeries cumSum();
 
-    /**
-     * @since 0.7
-     */
+
     int max();
 
-    /**
-     * @since 0.7
-     */
+
     int min();
 
-    /**
-     * @since 0.7
-     */
+
     long sum();
 
-    /**
-     * @since 0.11
-     */
+
     double avg();
 
-    /**
-     * @since 0.7
-     */
+
     double median();
 
     /**
      * Compute the standard deviation
      *
      * @param usePopulationStdDev Use the Population variant if true, Sample variant if false
-     * @since 1.0.0-RC1
      */
     default double stdDev(boolean usePopulationStdDev) {
         double variance = variance(usePopulationStdDev);
@@ -268,8 +235,6 @@ public interface IntSeries extends Series<Integer> {
 
     /**
      * Compute the standard deviation, using the population variant
-     *
-     * @since 1.0.0-RC1
      */
     default double stdDev() {
         return stdDev(true);
@@ -279,7 +244,6 @@ public interface IntSeries extends Series<Integer> {
      * Compute the variance
      *
      * @param usePopulationVariance Use the Population variant if true, Sample variant if false
-     * @since 1.0.0-RC1
      */
     default double variance(boolean usePopulationVariance) {
         int len = size();
@@ -297,8 +261,6 @@ public interface IntSeries extends Series<Integer> {
 
     /**
      * Compute the variance, using the population variant
-     *
-     * @since 1.0.0-RC1
      */
     default double variance() {
         return variance(true);
@@ -349,8 +311,6 @@ public interface IntSeries extends Series<Integer> {
     /**
      * Performs per-element addition between this and another IntSeries, returning the Series of the same
      * length.
-     *
-     * @since 0.11
      */
     default IntSeries add(IntSeries s) {
         int len = size();
@@ -370,8 +330,6 @@ public interface IntSeries extends Series<Integer> {
     /**
      * Performs per-element addition between this and a constant value, returning the Series of the same
      * length.
-     *
-     * @since 1.0.0-RC1
      */
     default IntSeries add(int v) {
         int len = size();
@@ -387,8 +345,6 @@ public interface IntSeries extends Series<Integer> {
 
     /**
      * Performs subtraction operation between this and another IntSeries.
-     *
-     * @since 0.11
      */
     default IntSeries sub(IntSeries s) {
         int len = size();
@@ -407,8 +363,6 @@ public interface IntSeries extends Series<Integer> {
 
     /**
      * Performs multiplication operation between this and another IntSeries.
-     *
-     * @since 0.11
      */
     default IntSeries mul(IntSeries s) {
         int len = size();
@@ -427,8 +381,6 @@ public interface IntSeries extends Series<Integer> {
 
     /**
      * Performs multiplication operation between this and another IntSeries.
-     *
-     * @since 1.0.0-RC1
      */
     default IntSeries mul(int v) {
         int len = size();
@@ -444,8 +396,6 @@ public interface IntSeries extends Series<Integer> {
 
     /**
      * Performs division operation between this and another IntSeries.
-     *
-     * @since 0.11
      */
     default IntSeries div(IntSeries s) {
         int len = size();
@@ -464,8 +414,6 @@ public interface IntSeries extends Series<Integer> {
 
     /**
      * Performs modulo operation between this and another IntSeries.
-     *
-     * @since 0.11
      */
     default IntSeries mod(IntSeries s) {
         int len = size();
@@ -482,9 +430,7 @@ public interface IntSeries extends Series<Integer> {
         return new IntArraySeries(data);
     }
 
-    /**
-     * @since 0.11
-     */
+
     default BooleanSeries lt(IntSeries s) {
         int len = size();
         if (len != s.size()) {
@@ -500,9 +446,7 @@ public interface IntSeries extends Series<Integer> {
         return new BooleanArraySeries(data);
     }
 
-    /**
-     * @since 0.11
-     */
+
     default BooleanSeries le(IntSeries s) {
         int len = size();
         if (len != s.size()) {
@@ -518,9 +462,7 @@ public interface IntSeries extends Series<Integer> {
         return new BooleanArraySeries(data);
     }
 
-    /**
-     * @since 0.11
-     */
+
     default BooleanSeries gt(IntSeries s) {
         int len = size();
         if (len != s.size()) {
@@ -536,9 +478,7 @@ public interface IntSeries extends Series<Integer> {
         return new BooleanArraySeries(data);
     }
 
-    /**
-     * @since 0.11
-     */
+
     default BooleanSeries ge(IntSeries s) {
         int len = size();
         if (len != s.size()) {
@@ -554,9 +494,7 @@ public interface IntSeries extends Series<Integer> {
         return new BooleanArraySeries(data);
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     default BooleanSeries between(IntSeries from, IntSeries to) {
         int len = size();
         if (len != from.size()) {

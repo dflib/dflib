@@ -8,14 +8,10 @@ import org.dflib.exp.map.MapExp1;
 import java.math.BigDecimal;
 import java.util.function.Function;
 
-/**
- * @since 0.11
- */
+
 public class DecimalExp1<F> extends MapExp1<F, BigDecimal> implements DecimalExp {
 
-    /**
-     * @since 0.14
-     */
+
     public static <F> DecimalExp1<F> map(String opName, Exp<F> exp, Function<Series<F>, Series<BigDecimal>> op) {
         return new DecimalExp1<>(opName, exp, op);
     }

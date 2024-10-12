@@ -17,9 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * @since 0.8
- */
 public class DataFrameAsserts {
 
     private String[] expectedColumns;
@@ -146,9 +143,6 @@ public class DataFrameAsserts {
         return this;
     }
 
-    /**
-     * @since 0.8
-     */
     @SafeVarargs
     public final DataFrameAsserts assertRow(int pos, Consumer<?>... valueAsserts) {
         Objects.requireNonNull(valueAsserts);

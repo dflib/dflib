@@ -6,9 +6,7 @@ import org.dflib.Exp;
 import org.dflib.Series;
 import org.dflib.series.IntSingleValueSeries;
 
-/**
- * @since 0.11
- */
+
 public class PreFilteredCountExp implements Exp<Integer> {
 
     private final Condition filter;

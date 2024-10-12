@@ -11,8 +11,6 @@ import org.dflib.range.Range;
 
 /**
  * An {@link IntSeries} that represents a range of sequential integers.
- *
- * @since 0.6
  */
 public class IntSequenceSeries extends IntBaseSeries {
 

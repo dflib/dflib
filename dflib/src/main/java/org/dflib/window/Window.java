@@ -24,8 +24,6 @@ import java.util.function.Predicate;
 
 /**
  * A mutable builder of a window function. Returned by {@link DataFrame#over()} method.
- *
- * @since 1.0.0-M22
  */
 public class Window {
 
@@ -43,8 +41,6 @@ public class Window {
     /**
      * Returns the unchanged original DataFrame that was used to build the window, that does not have GroupBy sorting,
      * trimming and other changes applied.
-     *
-     * @since 1.0.0-M22
      */
     public DataFrame getSource() {
         return source;
@@ -52,8 +48,6 @@ public class Window {
 
     /**
      * Specifies the columns of the aggregation or select result.
-     *
-     * @since 1.0.0-M22
      */
     public Window cols(Predicate<String> colsPredicate) {
         Index srcIndex = source.getColumnsIndex();
@@ -63,8 +57,6 @@ public class Window {
 
     /**
      * Specifies the columns of the aggregation or select result.
-     *
-     * @since 1.0.0-M22
      */
     public Window cols(String... cols) {
         this.columnSetIndex = FixedColumnSetIndex.of(cols);
@@ -73,8 +65,6 @@ public class Window {
 
     /**
      * Specifies the columns for the select result.
-     *
-     * @since 1.0.0-M22
      */
     public Window cols(int... cols) {
         Index srcIndex = source.getColumnsIndex();
@@ -82,23 +72,14 @@ public class Window {
         return this;
     }
 
-    /**
-     * @since 1.0.0-M22
-     */
     public Window colsExcept(String... cols) {
         return cols(source.getColumnsIndex().positionsExcept(cols));
     }
 
-    /**
-     * @since 1.0.0-M22
-     */
     public Window colsExcept(int... cols) {
         return cols(source.getColumnsIndex().positionsExcept(cols));
     }
 
-    /**
-     * @since 1.0.0-M22
-     */
     public Window colsExcept(Predicate<String> colsPredicate) {
         return cols(colsPredicate.negate());
     }
@@ -140,9 +121,7 @@ public class Window {
         return this;
     }
 
-    /**
-     * @since 0.11
-     */
+
     public Window sorted(Sorter... sorters) {
         this.sorter = sorters.length == 0 ? null : Comparators.of(source, sorters);
         return this;
@@ -169,10 +148,7 @@ public class Window {
     }
 
     /**
-     * Sets an explicit row range for the window. The default is {@link WindowRange#all}. Only has effect on the
-     * {@link #mapColumn(Exp)} operation.
-     *
-     * @since 0.14
+     * Sets an explicit row range for the window. The default is {@link WindowRange#all}.
      */
     public Window range(WindowRange range) {
         this.range = range;
@@ -183,8 +159,6 @@ public class Window {
      * Generates a DataFrame of the same height as the source DataFrame, with columns generated from the provided
      * aggregating expressions. Aggregating expressions are invoked once per each row, and are passed the range of rows
      * corresponding to the partitioning, sorting and range settings.
-     *
-     * @since 1.0.0-M22
      */
     public DataFrame select(Exp<?>... aggregators) {
         return new ColumnDataFrame(null,
@@ -196,8 +170,6 @@ public class Window {
      * Generates a DataFrame of the same height as the source DataFrame, combining columns generated from the provided
      * aggregating expressions with the original DataFrame columns. Aggregating expressions are invoked once per each
      * row, and are passed the range of rows corresponding to the partitioning, sorting and range settings.
-     *
-     * @since 1.0.0-M22
      */
     public DataFrame merge(Exp<?>... aggregators) {
         String[] labels = selectLabels(aggregators);
@@ -239,31 +211,19 @@ public class Window {
         }
     }
 
-    /**
-     * @since 0.9
-     */
     public <T> Series<T> shift(String column, int offset) {
         return shift(column, offset, null);
     }
 
-    /**
-     * @since 0.9
-     */
     public <T> Series<T> shift(String column, int offset, T filler) {
         int pos = source.getColumnsIndex().position(column);
         return shift(pos, offset, filler);
     }
 
-    /**
-     * @since 0.9
-     */
     public <T> Series<T> shift(int column, int offset) {
         return shift(column, offset, null);
     }
 
-    /**
-     * @since 0.9
-     */
     public <T> Series<T> shift(int column, int offset, T filler) {
 
         if (offset == 0) {

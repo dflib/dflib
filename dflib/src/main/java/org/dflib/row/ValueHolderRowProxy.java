@@ -6,8 +6,7 @@ import org.dflib.builder.ValueHolder;
 
 /**
  * A {@link RowProxy} with a resettable internal buffer to store a single row.
- *
- * @since 0.16
+
  */
 public class ValueHolderRowProxy<S> implements RowProxy {
 

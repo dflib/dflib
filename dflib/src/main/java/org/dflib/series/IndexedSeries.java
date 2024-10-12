@@ -21,9 +21,7 @@ public class IndexedSeries<T> extends ObjectSeries<T> {
         this.raw = new Raw<>(source, includePositions);
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     public boolean isMaterialized() {
         return materialized != null;
     }

@@ -7,8 +7,6 @@ import org.dflib.exp.bool.OrCondition;
 /**
  * A {@link Exp} that evaluates to a BooleanSeries indicating whether the condition is true for any given
  * row of the source DataFrame.
- *
- * @since 0.11
  */
 public interface Condition extends Exp<Boolean> {
 
@@ -43,9 +41,6 @@ public interface Condition extends Exp<Boolean> {
         return Boolean.class;
     }
 
-    /**
-     * @since 0.14
-     */
     @Override
     default Condition castAsBool() {
         return this;

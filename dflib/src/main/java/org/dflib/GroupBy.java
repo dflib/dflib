@@ -54,8 +54,6 @@ public class GroupBy {
     /**
      * Returns the unchanged original DataFrame that was used in the grouping, that does not have GroupBy sorting,
      * trimming and other changes applied.
-     *
-     * @since 1.0.0-M21
      */
     public DataFrame getSource() {
         return source;
@@ -84,30 +82,18 @@ public class GroupBy {
         return new GroupBy(source, groupsIndex, sorter, FixedColumnSetIndex.of(srcIndex, cols));
     }
 
-    /**
-     * @since 1.0.0-M21
-     */
     public GroupBy colsExcept(String... cols) {
         return cols(source.getColumnsIndex().positionsExcept(cols));
     }
 
-    /**
-     * @since 1.0.0-M21
-     */
     public GroupBy colsExcept(int... cols) {
         return cols(source.getColumnsIndex().positionsExcept(cols));
     }
 
-    /**
-     * @since 1.0.0-M21
-     */
     public GroupBy colsExcept(Predicate<String> colsPredicate) {
         return cols(colsPredicate.negate());
     }
 
-    /**
-     * @since 1.0.0-M21
-     */
     public Set<Object> getGroupKeys() {
         return groupsIndex.keySet();
     }
@@ -136,7 +122,6 @@ public class GroupBy {
      *
      * @return a new Series object with rankings of each row within its group. The order matches the order of the
      * original DataFrame that was used to build the grouping.
-     * @since 0.8
      */
     public IntSeries rank() {
 
@@ -159,7 +144,6 @@ public class GroupBy {
      *
      * @return a new Series object with rankings of each row within its group. The order matches the order of the
      * original DataFrame that was used to build the grouping.
-     * @since 0.8
      */
     public IntSeries denseRank() {
 
@@ -180,8 +164,6 @@ public class GroupBy {
      * Produces a Series with the same size as the original DataFrame height, with values shifted forward or backwards
      * within each group depending on the sign of the offset parameter. Gaps produced by the shift are filled with the
      * provided filler value.
-     *
-     * @since 0.9
      */
     public <T> Series<T> shift(String column, int offset, T filler) {
         int pos = source.getColumnsIndex().position(column);
@@ -193,8 +175,6 @@ public class GroupBy {
      * specified number. Produces a Series with the same size as the original DataFrame height, with values shifted
      * forward or backwards within each group depending on the sign of the offset parameter. Gaps produced by the shift
      * are filled with the provided filler value.
-     *
-     * @since 0.9
      */
     public <T> Series<T> shift(int column, int offset, T filler) {
         if (groupsIndex.isEmpty()) {
@@ -255,16 +235,12 @@ public class GroupBy {
         return new GroupBy(source, trimmed, sorter);
     }
 
-    /**
-     * @since 0.11
-     */
+
     public GroupBy sort(Sorter... sorters) {
         return new GroupBySorter(this).sort(sorters);
     }
 
-    /**
-     * @since 0.11
-     */
+
     public GroupBy sort(IntComparator sorter) {
         return new GroupBySorter(this).sort(sorter);
     }
@@ -290,7 +266,6 @@ public class GroupBy {
      * truncation and other operations.
      *
      * @return a new DataFrame made from recombined groups.
-     * @since 1.0.0-M21
      */
     public DataFrame select() {
         IntSeries index = SeriesConcat.intConcat(groupsIndex.values());
@@ -306,7 +281,6 @@ public class GroupBy {
      * preserves the effects of the grouping, per-group sorting, truncation and other operations.
      *
      * @return a new DataFrame made from recombined groups after applying provided expressions
-     * @since 1.0.0-M21
      */
     public DataFrame select(Exp<?>... exps) {
 
@@ -335,7 +309,6 @@ public class GroupBy {
      * truncation and other operations.
      *
      * @return a new DataFrame made from recombined groups after applying provided expressions
-     * @since 1.0.0-M22
      */
     public DataFrame merge(Exp<?>... exps) {
 

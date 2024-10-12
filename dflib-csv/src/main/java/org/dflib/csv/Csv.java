@@ -12,9 +12,7 @@ public class Csv {
         return loader().load(file);
     }
 
-    /**
-     * @since 0.11
-     */
+
     public static DataFrame load(Path filePath) {
         return loader().load(filePath);
     }
@@ -23,9 +21,6 @@ public class Csv {
         return loader().load(filePath);
     }
 
-    /**
-     * @since 0.8
-     */
     public static DataFrame load(Reader reader) {
         return loader().load(reader);
     }
@@ -34,9 +29,7 @@ public class Csv {
         return new CsvLoader();
     }
 
-    /**
-     * @since 0.11
-     */
+
     public static void save(DataFrame df, Path filePath) {
         saver().save(df, filePath);
     }
@@ -49,9 +42,6 @@ public class Csv {
         saver().save(df, file);
     }
 
-    /**
-     * @since 0.8
-     */
     public static void save(DataFrame df, Appendable out) {
         saver().save(df, out);
     }

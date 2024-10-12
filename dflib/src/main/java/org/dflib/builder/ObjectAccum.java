@@ -5,9 +5,6 @@ import org.dflib.series.ArraySeries;
 
 import java.util.Arrays;
 
-/**
- * @since 0.6
- */
 public class ObjectAccum<T> implements ValueAccum<T> {
 
     private T[] data;
@@ -27,9 +24,7 @@ public class ObjectAccum<T> implements ValueAccum<T> {
         return size;
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     public void fill(Series<T> values, int valuesOffset, int accumOffset, int len) {
 
         if (len <= 0) {

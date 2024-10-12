@@ -2,8 +2,7 @@ package org.dflib.builder;
 
 /**
  * An abstraction of a mutable primitives-aware store of values.
- *
- * @since 0.16
+
  */
 public interface ValueStore<T> {
 

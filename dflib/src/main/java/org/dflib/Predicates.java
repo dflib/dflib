@@ -7,8 +7,6 @@ import java.util.function.Predicate;
 
 /**
  * Contains static methods to create a few useful predicates.
- *
- * @since 1.0.0-M21
  */
 public final class Predicates {
 

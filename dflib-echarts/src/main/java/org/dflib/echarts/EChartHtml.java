@@ -2,8 +2,6 @@ package org.dflib.echarts;
 
 /**
  * Contains parts of an EChart in HTML format.
- *
- * @since 1.0.0-M21
  */
 public class EChartHtml {
 

@@ -9,8 +9,6 @@ import org.dflib.sort.IntComparator;
 
 /**
  * A Sorter based on an expression that should evaluate to Comparable.
- *
- * @since 0.11
  */
 public class ExpSorter implements Sorter {
 

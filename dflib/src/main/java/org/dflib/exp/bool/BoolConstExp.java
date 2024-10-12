@@ -5,9 +5,6 @@ import org.dflib.exp.ExpScalarCondition1;
 import org.dflib.series.FalseSeries;
 import org.dflib.series.TrueSeries;
 
-/**
- * @since 1.0.0-M19
- */
 public class BoolConstExp extends ExpScalarCondition1<Boolean> {
 
     private final boolean boolValue;

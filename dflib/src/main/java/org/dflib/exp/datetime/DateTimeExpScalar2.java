@@ -8,9 +8,6 @@ import org.dflib.exp.map.MapExpScalar2;
 import java.time.LocalDateTime;
 import java.util.function.BiFunction;
 
-/**
- * @since 0.16
- */
 public class DateTimeExpScalar2<L, R> extends MapExpScalar2<L, R, LocalDateTime> implements DateTimeExp {
 
     public static <L, R> DateTimeExpScalar2<L, R> mapVal(String opName, Exp<L> left, R right, BiFunction<L, R, LocalDateTime> op) {

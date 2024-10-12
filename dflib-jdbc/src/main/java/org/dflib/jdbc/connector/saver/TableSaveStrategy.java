@@ -22,9 +22,6 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-/**
- * @since 0.6
- */
 public abstract class TableSaveStrategy {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TableSaveStrategy.class);

@@ -14,9 +14,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * @since 0.13
- */
 public class ExcelLoader {
 
     private final SheetLoader defaultSheetLoader;
@@ -32,8 +29,6 @@ public class ExcelLoader {
     /**
      * Generates header index from the first row. If {@link #offset(int)} is in use, this will be the first non-skipped
      * row.
-     *
-     * @since 0.14
      */
     public ExcelLoader firstRowAsHeader() {
         defaultSheetLoader.firstRowAsHeader();
@@ -42,8 +37,6 @@ public class ExcelLoader {
 
     /**
      * Sets configuration specific to a given sheet.
-     *
-     * @since 1.0.0-RC1
      */
     public ExcelLoader sheet(String sheetName, SheetLoader sheetLoader) {
         sheetLoaders.put(sheetName, sheetLoader);
@@ -53,8 +46,6 @@ public class ExcelLoader {
     /**
      * Skips the specified number of rows. This counter only applies to non-phantom rows. I.e., those rows that have
      * non-empty cells. Phantom rows are skipped automatically.
-     *
-     * @since 1.0.0-M20
      */
     public ExcelLoader offset(int len) {
         defaultSheetLoader.offset(len);
@@ -64,17 +55,13 @@ public class ExcelLoader {
     /**
      * Limits the max number of rows to the provided value. This counter only applies to non-phantom rows. I.e., those
      * rows that have non-empty cells. Phantom rows are skipped automatically.
-     *
-     * @since 1.0.0-M20
      */
     public ExcelLoader limit(int len) {
         defaultSheetLoader.limit(len);
         return this;
     }
 
-    /**
-     * @since 0.14
-     */
+
     public DataFrame loadSheet(Sheet sheet) {
         SheetLoader storedSl = sheetLoaders.get(sheet.getSheetName());
 
@@ -150,9 +137,7 @@ public class ExcelLoader {
         return loadSheet(new File(filePath), sheetNum);
     }
 
-    /**
-     * @since 0.14
-     */
+
     public Map<String, DataFrame> load(Workbook wb) {
 
         // preserve sheet ordering

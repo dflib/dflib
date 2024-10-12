@@ -6,9 +6,6 @@ import org.dflib.Series;
 
 import java.util.Arrays;
 
-/**
- * @since 1.0.0-M19
- */
 public abstract class RowSetMerger {
 
     public static RowSetMerger of(int srcLen, IntSeries rowIndex) {

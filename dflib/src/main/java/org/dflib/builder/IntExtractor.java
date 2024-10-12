@@ -3,9 +3,6 @@ package org.dflib.builder;
 import org.dflib.IntValueMapper;
 import org.dflib.Extractor;
 
-/**
- * @since 0.8
- */
 public class IntExtractor<F> implements Extractor<F, Integer> {
 
     private final IntValueMapper<F> mapper;

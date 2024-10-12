@@ -5,9 +5,7 @@ import org.dflib.avro.types.AvroTypeExtensions;
 
 import java.io.File;
 
-/**
- * @since 0.11
- */
+
 public abstract class BaseSaver<SELF extends BaseSaver<SELF>> {
 
     static {

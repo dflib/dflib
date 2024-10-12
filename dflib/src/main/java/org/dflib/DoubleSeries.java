@@ -16,8 +16,6 @@ import java.util.function.Predicate;
 /**
  * A Series optimized to store and access primitive double values without <code>java.lang.Double</code> wrapper. Can also
  * pose as "Series&lt;Double>", although this is not the most efficient way of using it.
- *
- * @since 0.6
  */
 public interface DoubleSeries extends Series<Double> {
 
@@ -81,8 +79,6 @@ public interface DoubleSeries extends Series<Double> {
 
     /**
      * Creates a new Series with a provided values appended to the end of this Series.
-     *
-     * @since 1.0.0-M21
      */
     default DoubleSeries expandDouble(double... values) {
         int rlen = values.length;
@@ -111,9 +107,7 @@ public interface DoubleSeries extends Series<Double> {
         return Intersect.intersectDouble(this, other);
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     DoubleSeries rangeDouble(int fromInclusive, int toExclusive);
 
     @Override
@@ -151,9 +145,6 @@ public interface DoubleSeries extends Series<Double> {
         return DoubleIndexedSeries.of(this, positions);
     }
 
-    /**
-     * @since 0.11
-     */
     DoubleSeries selectDouble(DoublePredicate p);
 
     @Override
@@ -191,21 +182,13 @@ public interface DoubleSeries extends Series<Double> {
     @Override
     DoubleSeries unique();
 
-    /**
-     * @since 0.7
-     */
     @Override
     DoubleSeries sample(int size);
 
-    /**
-     * @since 0.7
-     */
     @Override
     DoubleSeries sample(int size, Random random);
 
-    /**
-     * @since 0.7
-     */
+
     default double[] toDoubleArray() {
         int len = size();
         double[] copy = new double[len];
@@ -213,42 +196,23 @@ public interface DoubleSeries extends Series<Double> {
         return copy;
     }
 
-    /**
-     * @since 0.14
-     */
     DoubleSeries cumSum();
 
-    /**
-     * @since 0.7
-     */
     double max();
 
-    /**
-     * @since 0.7
-     */
     double min();
 
-    /**
-     * @since 0.7
-     */
     // TODO: deal with overflow?
     double sum();
 
-    /**
-     * @since 0.11
-     */
     double avg();
 
-    /**
-     * @since 0.7
-     */
     double median();
 
     /**
      * Compute the standard deviation
      *
      * @param usePopulationStdDev Use the Population variant if true, Sample variant if false
-     * @since 1.0.0-RC1
      */
     default double stdDev(boolean usePopulationStdDev) {
         double variance = variance(usePopulationStdDev);
@@ -257,8 +221,6 @@ public interface DoubleSeries extends Series<Double> {
 
     /**
      * Compute the standard deviation, using the population variant
-     *
-     * @since 1.0.0-RC1
      */
     default double stdDev() {
         return stdDev(true);
@@ -268,7 +230,6 @@ public interface DoubleSeries extends Series<Double> {
      * Compute the variance
      *
      * @param usePopulationVariance Use the Population variant if true, Sample variant if false
-     * @since 1.0.0-RC1
      */
     default double variance(boolean usePopulationVariance) {
         int len = size();
@@ -285,9 +246,7 @@ public interface DoubleSeries extends Series<Double> {
     }
 
     /**
-     * Compute the variance, using the population variant
-     *
-     * @since 1.0.0-RC1
+     * Compute the variance, using the population variantC1
      */
     default double variance() {
         return variance(true);
@@ -337,8 +296,6 @@ public interface DoubleSeries extends Series<Double> {
 
     /**
      * Performs per-element addition between this and another DoubleSeries, returning the Series of the same length.
-     *
-     * @since 0.11
      */
     default DoubleSeries add(DoubleSeries s) {
         int len = size();
@@ -357,8 +314,6 @@ public interface DoubleSeries extends Series<Double> {
 
     /**
      * Performs per-element addition between this and a constant value returning the Series of the same length.
-     *
-     * @since 1.0.0-RC1
      */
     default DoubleSeries add(double v) {
         int len = size();
@@ -374,8 +329,6 @@ public interface DoubleSeries extends Series<Double> {
 
     /**
      * Performs subtraction operation between this and another DoubleSeries.
-     *
-     * @since 0.11
      */
     default DoubleSeries sub(DoubleSeries s) {
         int len = size();
@@ -393,9 +346,7 @@ public interface DoubleSeries extends Series<Double> {
     }
 
     /**
-     * Performs multiplication operation between this and another DoubleSeries.
-     *
-     * @since 0.11
+     * Performs multiplication operation between this and another DoubleSeries
      */
     default DoubleSeries mul(DoubleSeries s) {
         int len = size();
@@ -414,8 +365,6 @@ public interface DoubleSeries extends Series<Double> {
 
     /**
      * Performs multiplication operation between this and a constant value.
-     *
-     * @since 1.0.0-RC1
      */
     default DoubleSeries mul(double v) {
         int len = size();
@@ -431,8 +380,6 @@ public interface DoubleSeries extends Series<Double> {
 
     /**
      * Performs division operation between this and another DoubleSeries.
-     *
-     * @since 0.11
      */
     default DoubleSeries div(DoubleSeries s) {
         int len = size();
@@ -449,9 +396,7 @@ public interface DoubleSeries extends Series<Double> {
         return new DoubleArraySeries(data);
     }
 
-    /**
-     * @since 0.11
-     */
+
     default DoubleSeries mod(DoubleSeries s) {
         int len = size();
         if (len != s.size()) {
@@ -467,9 +412,6 @@ public interface DoubleSeries extends Series<Double> {
         return new DoubleArraySeries(data);
     }
 
-    /**
-     * @since 0.11
-     */
     default BooleanSeries lt(DoubleSeries s) {
         int len = size();
         if (len != s.size()) {
@@ -485,9 +427,6 @@ public interface DoubleSeries extends Series<Double> {
         return new BooleanArraySeries(data);
     }
 
-    /**
-     * @since 0.11
-     */
     default BooleanSeries le(DoubleSeries s) {
         int len = size();
         if (len != s.size()) {
@@ -503,9 +442,6 @@ public interface DoubleSeries extends Series<Double> {
         return new BooleanArraySeries(data);
     }
 
-    /**
-     * @since 0.11
-     */
     default BooleanSeries gt(DoubleSeries s) {
         int len = size();
         if (len != s.size()) {
@@ -521,9 +457,7 @@ public interface DoubleSeries extends Series<Double> {
         return new BooleanArraySeries(data);
     }
 
-    /**
-     * @since 0.11
-     */
+
     default BooleanSeries ge(DoubleSeries s) {
         int len = size();
         if (len != s.size()) {
@@ -539,9 +473,6 @@ public interface DoubleSeries extends Series<Double> {
         return new BooleanArraySeries(data);
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
     default BooleanSeries between(DoubleSeries from, DoubleSeries to) {
         int len = size();
         if (len != from.size()) {

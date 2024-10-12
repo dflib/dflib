@@ -3,9 +3,6 @@ package org.dflib.slice;
 import org.dflib.Index;
 import org.dflib.index.StringDeduplicator;
 
-/**
- * @since 1.0.0-M22
- */
 public class FixedColumnSetIndex {
 
     protected final String[] labels;

@@ -8,9 +8,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 /**
- * A  N-ary expression with multiple {@link Exp} arguments.
- *
- * @since 0.11
+ * N-ary expression with multiple {@link Exp} arguments.
  */
 public abstract class ExpN<T> implements Exp<T> {
 

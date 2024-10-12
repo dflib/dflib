@@ -10,9 +10,7 @@ import org.dflib.Series;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
-/**
- * @since 0.11
- */
+
 public class LongCondition2 extends MapCondition2<Long, Long> {
 
     public static LongCondition2 mapVal(

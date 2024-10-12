@@ -4,8 +4,6 @@ import org.dflib.echarts.render.util.Renderer;
 
 /**
  * A wrapper for a collection item that stores a value and the "last" position indicator.
- *
- * @since 1.0.0-M21
  */
 public class ValueModel<T> {
 

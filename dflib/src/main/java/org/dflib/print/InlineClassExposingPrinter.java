@@ -3,9 +3,6 @@ package org.dflib.print;
 import org.dflib.DataFrame;
 import org.dflib.Series;
 
-/**
- * @since 1.0.0-M20
- */
 public class InlineClassExposingPrinter extends InlinePrinter {
 
     @Override

@@ -2,8 +2,6 @@ package org.dflib.echarts.render.option.toolbox;
 
 /**
  * A model for rendering EChart toolbox
- *
- * @since 1.0.0-M21
  */
 public class ToolboxModel {
 

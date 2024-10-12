@@ -2,9 +2,6 @@ package org.dflib.echarts;
 
 import org.dflib.echarts.render.option.Distance;
 
-/**
- * @since 1.0.0-M22
- */
 public class PieSeriesOpts extends SeriesOpts<PieSeriesOpts> {
 
     Distance[] radius;

@@ -38,7 +38,6 @@ public class Index implements Iterable<String> {
      *
      * @param columns enum type that defines Index columns
      * @return a new Index with columns matching the provided Enum
-     * @since 1.0.0-M19
      */
     public static <E extends Enum<E>> Index of(Class<E> columns) {
 
@@ -51,16 +50,12 @@ public class Index implements Iterable<String> {
         return of(values);
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     public static Index of(String... values) {
         return new Index(values);
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     public static Index of(Series<String> values) {
         return new Index(values.toArray(new String[0]));
     }
@@ -68,8 +63,6 @@ public class Index implements Iterable<String> {
     /**
      * Creates an index from an array of values. Duplicate values will be renamed by appending one or more underscore
      * characters to ensure uniqueness.
-     *
-     * @since 1.0.0-M19
      */
     public static Index ofDeduplicated(String... values) {
         String[] nonConflicted = StringDeduplicator.of(values.length).nonConflicting(values);
@@ -87,7 +80,6 @@ public class Index implements Iterable<String> {
      *
      * @param mapper a function that is passed each value in turn, altering it in some way
      * @return a new Index with renamed values
-     * @since 0.6
      */
     public Index replace(UnaryOperator<String> mapper) {
 
@@ -101,9 +93,6 @@ public class Index implements Iterable<String> {
         return new Index(newVals);
     }
 
-    /**
-     * @since 1.0.0-M21
-     */
     public Index replace(Map<String, String> oldToNewValues) {
 
         int len = size();
@@ -129,8 +118,6 @@ public class Index implements Iterable<String> {
     /**
      * Extends the index, adding extra values to it. The newly added values are deduplicated using "_" suffix to
      * make sure they do not conflict with the existing values and with each other.
-     *
-     * @since 1.0.0-M21
      */
     public Index expand(String... values) {
         int rlen = values.length;
@@ -147,9 +134,6 @@ public class Index implements Iterable<String> {
         return Index.ofDeduplicated(expanded);
     }
 
-    /**
-     * @since 1.0.0-M21
-     */
     public Index select(IntSeries positions) {
         int len = positions.size();
         String[] selected = new String[len];
@@ -169,9 +153,6 @@ public class Index implements Iterable<String> {
         return Index.of(selected);
     }
 
-    /**
-     * @since 1.0.0-M21
-     */
     public Index select(int... positions) {
         int len = positions.length;
         String[] selected = new String[len];
@@ -195,7 +176,6 @@ public class Index implements Iterable<String> {
      * @param fromInclusive position of the first value from this Index to include in the new Index.
      * @param toExclusive   position of the value from this Index following the last included position.
      * @return a new index with values from this Index in the range specified
-     * @since 1.0.0-M19
      */
     public Index selectRange(int fromInclusive, int toExclusive) {
 
@@ -208,9 +188,6 @@ public class Index implements Iterable<String> {
         return Index.of(newValues);
     }
 
-    /**
-     * @since 1.0.0-M21
-     */
     public Index select(Predicate<String> condition) {
         int len = values.length;
         List<String> selected = new ArrayList<>(len);
@@ -224,9 +201,6 @@ public class Index implements Iterable<String> {
         return selected.size() == size() ? this : Index.of(selected.toArray(new String[0]));
     }
 
-    /**
-     * @since 1.0.0-M21
-     */
     public Index selectExcept(String... values) {
 
         if (values.length == 0) {
@@ -256,9 +230,6 @@ public class Index implements Iterable<String> {
         return Index.of(toKeep);
     }
 
-    /**
-     * @since 1.0.0-M21
-     */
     public Index selectExcept(Predicate<String> condition) {
 
         int len = values.length;
@@ -279,9 +250,6 @@ public class Index implements Iterable<String> {
         return values;
     }
 
-    /**
-     * @since 1.0.0-M21
-     */
     public String[] toArray() {
         int len = values.length;
         String[] copy = new String[len];
@@ -291,8 +259,6 @@ public class Index implements Iterable<String> {
 
     /**
      * Returns a String value at the given position.
-     *
-     * @since 1.0.0-M21
      */
     public String get(int pos) {
         return values[pos];
@@ -317,8 +283,6 @@ public class Index implements Iterable<String> {
 
     /**
      * Returns Index positions corresponding to the array of values
-     *
-     * @since 1.0.0-M19
      */
     public int[] positions(String... value) {
 
@@ -347,8 +311,6 @@ public class Index implements Iterable<String> {
 
     /**
      * Returns Index positions for all index values except the ones specified as the argument
-     *
-     * @since 1.0.0-M19
      */
     public int[] positionsExcept(String... exceptVals) {
 
@@ -368,8 +330,6 @@ public class Index implements Iterable<String> {
 
     /**
      * Returns Index positions for all Index values except the positions specified as the argument
-     *
-     * @since 1.0.0-M19
      */
     public int[] positionsExcept(int... exceptPositions) {
 
@@ -395,9 +355,7 @@ public class Index implements Iterable<String> {
         return positions;
     }
 
-    /**
-     * @since 1.0.0-M19
-     */
+
     public int[] positions(Predicate<String> condition) {
         if (valueIndex == null) {
             this.valueIndex = computeIndex();
@@ -420,9 +378,6 @@ public class Index implements Iterable<String> {
         return intPositions;
     }
 
-    /**
-     * @since 1.0.0-M21
-     */
     public boolean contains(String value) {
         if (valueIndex == null) {
             this.valueIndex = computeIndex();
@@ -451,23 +406,18 @@ public class Index implements Iterable<String> {
         return Arrays.hashCode(values);
     }
 
-    /**
-     * @since 0.7
-     */
+
     public Index sample(int size) {
         return select(Sampler.sampleIndex(size, size()));
     }
 
-    /**
-     * @since 0.7
-     */
+
     public Index sample(int size, Random random) {
         return select(Sampler.sampleIndex(size, size(), random));
     }
 
     /**
      * @return a Series object with Index values as elements.
-     * @since 0.7
      */
     public Series<String> toSeries() {
         return Series.of(values);

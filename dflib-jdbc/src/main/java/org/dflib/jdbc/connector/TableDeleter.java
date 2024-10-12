@@ -8,9 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-/**
- * @since 0.8
- */
 public class TableDeleter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TableDeleter.class);

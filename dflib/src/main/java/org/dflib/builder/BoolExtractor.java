@@ -3,9 +3,6 @@ package org.dflib.builder;
 import org.dflib.BoolValueMapper;
 import org.dflib.Extractor;
 
-/**
- * @since 0.16
- */
 public class BoolExtractor<F> implements Extractor<F, Boolean> {
 
     private final BoolValueMapper<F> mapper;

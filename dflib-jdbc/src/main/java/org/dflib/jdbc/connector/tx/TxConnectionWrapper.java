@@ -23,8 +23,6 @@ import java.util.concurrent.Executor;
  * A wrapper for a JDBC {@link Connection} that delegates all calls to the underlying connection, except for
  * those that close the connection or change the state of the transaction. This connection is used to chain multiple
  * operations in a single transaction.
- *
- * @since 0.6
  */
 public class TxConnectionWrapper implements Connection {
 

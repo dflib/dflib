@@ -6,9 +6,6 @@ import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-/**
- * @since 0.6
- */
 public class CompiledFromStatementBinderFactory implements StatementBinderFactory {
 
     protected DbFlavor flavor;

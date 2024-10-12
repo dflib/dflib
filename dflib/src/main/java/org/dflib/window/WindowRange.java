@@ -6,8 +6,6 @@ import java.util.Objects;
 
 /**
  * A relative row offset used when applying window functions.
- *
- * @since 0.14
  */
 public class WindowRange {
 

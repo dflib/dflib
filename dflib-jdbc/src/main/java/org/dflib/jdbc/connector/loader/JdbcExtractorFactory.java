@@ -18,10 +18,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Calendar;
 
-/**
- * @param <T>
- * @since 0.16
- */
 @FunctionalInterface
 public interface JdbcExtractorFactory<T> {
 

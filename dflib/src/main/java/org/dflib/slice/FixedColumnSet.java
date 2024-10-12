@@ -30,9 +30,6 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-/**
- * @since 1.0.0-M19
- */
 public class FixedColumnSet implements ColumnSet {
 
     protected final DataFrame source;
@@ -65,8 +62,6 @@ public class FixedColumnSet implements ColumnSet {
 
     /**
      * Returns the index of this column set. This is the index produced by various "select" operations
-     *
-     * @since 1.0.0-M22
      */
     public Index getColumnSetIndex() {
         return Index.ofDeduplicated(csIndex);

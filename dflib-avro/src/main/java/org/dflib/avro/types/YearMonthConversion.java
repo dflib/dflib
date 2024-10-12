@@ -5,9 +5,7 @@ import org.apache.avro.Schema;
 
 import java.time.YearMonth;
 
-/**
- * @since 0.11
- */
+
 public class YearMonthConversion extends SingleSchemaConversion<YearMonth> {
 
     static final String NAME = "dflib-yearmonth";

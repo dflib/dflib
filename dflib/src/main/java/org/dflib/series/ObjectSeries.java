@@ -105,9 +105,6 @@ public abstract class ObjectSeries<T> implements Series<T> {
         return Mapper.map(this, resultColumns, mapper);
     }
 
-    /**
-     * @since 0.18
-     */
     @Override
     public <S> Series<S> castAs(Class<S> type) {
         Class<?> inferredType = getInferredType();

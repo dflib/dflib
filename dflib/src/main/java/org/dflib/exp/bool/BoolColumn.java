@@ -7,9 +7,7 @@ import org.dflib.Series;
 import org.dflib.exp.Column;
 import org.dflib.Condition;
 
-/**
- * @since 0.11
- */
+
 public class BoolColumn extends Column<Boolean> implements Condition {
 
     public BoolColumn(String name) {

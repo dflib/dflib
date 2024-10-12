@@ -10,9 +10,7 @@ import org.dflib.exp.Condition2;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
-/**
- * @since 0.11
- */
+
 public class MapCondition2<L, R> extends Condition2<L, R> {
 
     private final BiFunction<Series<L>, Series<R>, BooleanSeries> op;

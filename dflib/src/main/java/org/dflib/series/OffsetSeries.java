@@ -2,9 +2,6 @@ package org.dflib.series;
 
 import org.dflib.Series;
 
-/**
- * @since 0.9
- */
 public abstract class OffsetSeries<T> extends ObjectSeries<T> {
 
     protected Series<T> delegate;

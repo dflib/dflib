@@ -5,9 +5,6 @@ import org.dflib.jdbc.connector.JdbcConnector;
 import org.dflib.jdbc.connector.TableDeleter;
 import org.dflib.jdbc.connector.metadata.TableFQName;
 
-/**
- * @since 0.8
- */
 public class SaveViaDeleteThenUpsert extends SaveViaUpsert {
 
     public SaveViaDeleteThenUpsert(JdbcConnector connector, TableFQName tableName, String[] keyColumns) {

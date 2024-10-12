@@ -6,8 +6,6 @@ import org.dflib.Series;
 
 /**
  * A unary expression with an {@link Exp} argument.
- *
- * @since 0.11
  */
 public abstract class Exp1<F, T> implements Exp<T> {
 

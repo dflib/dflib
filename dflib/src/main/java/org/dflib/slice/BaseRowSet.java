@@ -22,9 +22,6 @@ import org.dflib.sort.IntComparator;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
-/**
- * @since 1.0.0-M19
- */
 public abstract class BaseRowSet implements RowSet {
 
     protected final DataFrame source;

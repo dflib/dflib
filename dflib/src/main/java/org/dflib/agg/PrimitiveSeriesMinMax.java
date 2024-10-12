@@ -1,8 +1,6 @@
 package org.dflib.agg;
 
-/**
- * @since 0.11
- */
+
 public class PrimitiveSeriesMinMax {
 
     public static int minOfRange(int first) {

@@ -7,9 +7,7 @@ import org.dflib.exp.Exp2;
 
 import java.util.function.BiFunction;
 
-/**
- * @since 0.11
- */
+
 public class MapExp2<L, R, T> extends Exp2<L, R, T> {
 
     private final BiFunction<Series<L>, Series<R>, Series<T>> op;

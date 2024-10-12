@@ -3,9 +3,6 @@ package org.dflib.series;
 import org.dflib.BooleanSeries;
 import org.dflib.agg.PrimitiveSeriesCount;
 
-/**
- * @since 0.6
- */
 public class BooleanArraySeries extends BooleanBaseSeries {
 
     private final boolean[] data;

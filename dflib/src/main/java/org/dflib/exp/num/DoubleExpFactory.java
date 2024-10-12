@@ -10,9 +10,7 @@ import org.dflib.exp.agg.DoubleExpAggregator;
 
 import java.math.BigDecimal;
 
-/**
- * @since 0.11
- */
+
 public class DoubleExpFactory extends NumericExpFactory {
 
     protected static Exp<Double> cast(Exp<?> exp) {

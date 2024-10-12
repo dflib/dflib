@@ -6,9 +6,7 @@ import org.dflib.Series;
 
 import java.util.Objects;
 
-/**
- * @since 0.11
- */
+
 // inheriting from ExpScalar2 (and treating "name" as the scalar argument) for the sake of proper "toQL" method
 public class AsExp<T> extends ExpScalar2<T, String, T> {
 

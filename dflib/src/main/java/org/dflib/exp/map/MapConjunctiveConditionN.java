@@ -6,9 +6,7 @@ import org.dflib.exp.ConjunctiveConditionN;
 
 import java.util.function.Function;
 
-/**
- * @since 0.11
- */
+
 public class MapConjunctiveConditionN extends ConjunctiveConditionN {
 
     private final Function<BooleanSeries[], BooleanSeries> op;

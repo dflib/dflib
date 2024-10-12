@@ -40,7 +40,6 @@ public class CsvSaver {
      * Instructs the saver to create any missing directories in the file path.
      *
      * @return this saver instance
-     * @since 0.6
      */
     public CsvSaver createMissingDirs() {
         this.createMissingDirs = true;
@@ -52,7 +51,6 @@ public class CsvSaver {
      * in a file.
      *
      * @return this saver instance
-     * @since 0.8
      */
     public CsvSaver noHeader() {
         this.printHeader = false;
@@ -75,9 +73,7 @@ public class CsvSaver {
         }
     }
 
-    /**
-     * @since 0.11
-     */
+
     public void save(DataFrame df, Path filePath) {
         save(df, filePath.toFile());
     }
