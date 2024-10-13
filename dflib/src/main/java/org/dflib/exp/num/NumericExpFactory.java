@@ -47,6 +47,9 @@ public abstract class NumericExpFactory {
 
         factories.put(BigDecimal.class, decimalFactory);
 
+        factories.put(Float.class, new FloatExpFactory());
+        factories.put(Float.TYPE, factories.get(Float.class));
+
         factories.put(Double.class, new DoubleExpFactory());
         factories.put(Double.TYPE, factories.get(Double.class));
 

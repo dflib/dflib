@@ -3,7 +3,7 @@ package org.dflib;
 import org.dflib.unit.FloatSeriesAsserts;
 import org.junit.jupiter.api.Test;
 
-import static org.dflib.Exp.$double;
+import static org.dflib.Exp.$float;
 
 public class FloatSeries_SortTest {
 
@@ -21,7 +21,7 @@ public class FloatSeries_SortTest {
 
     @Test
     public void sort_Sorter() {
-        FloatSeries s = Series.ofFloat(5f, -1f, 5f, 3f, 28f, 1f).sort($double(0).desc());
+        FloatSeries s = Series.ofFloat(5f, -1f, 5f, 3f, 28f, 1f).sort($float(0).desc());
         new FloatSeriesAsserts(s).expectData(28f, 5f, 5f, 3f, 1f, -1f);
     }
 }

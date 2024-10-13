@@ -5,6 +5,7 @@ import org.dflib.exp.map.MapExp1;
 import org.dflib.exp.map.MapExpScalarCondition2;
 import org.dflib.exp.num.DecimalExp1;
 import org.dflib.exp.num.DoubleExp1;
+import org.dflib.exp.num.FloatExp1;
 import org.dflib.exp.str.StrExp1;
 import org.dflib.exp.str.StrSplitExp;
 
@@ -39,7 +40,6 @@ public interface StrExp extends Exp<String> {
         return castAsDecimal().castAsInt();
     }
 
-
     @Override
     default NumExp<Long> castAsLong() {
         // Need to do an extra decimal conversion, so that we can properly cast any number format.
@@ -48,10 +48,14 @@ public interface StrExp extends Exp<String> {
     }
 
     @Override
+    default NumExp<Float> castAsFloat() {
+        return FloatExp1.mapVal("castAsFloat", this, Float::parseFloat);
+    }
+
+    @Override
     default NumExp<Double> castAsDouble() {
         return DoubleExp1.mapVal("castAsDouble", this, Double::parseDouble);
     }
-
 
     @Override
     default DecimalExp castAsDecimal() {

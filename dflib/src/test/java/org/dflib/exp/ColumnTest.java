@@ -41,6 +41,13 @@ public class ColumnTest {
     }
 
     @Test
+    public void castAsFloat() {
+        NumExp<Float> exp = $col(0).castAsFloat();
+        Series<Object> s = Series.of(new BigDecimal("5.01"), null, 12L, 1);
+        new SeriesAsserts(exp.eval(s)).expectData(5.01f, null, 12f, 1f);
+    }
+
+    @Test
     public void castAsDouble() {
         NumExp<Double> exp = $col(0).castAsDouble();
         Series<Object> s = Series.of(new BigDecimal("5.01"), null, 12L, 1);

@@ -33,6 +33,7 @@ import org.dflib.exp.map.MapExp2;
 import org.dflib.exp.num.DecimalColumn;
 import org.dflib.exp.num.DoubleColumn;
 import org.dflib.exp.num.DoubleConstExp;
+import org.dflib.exp.num.FloatColumn;
 import org.dflib.exp.num.IntColumn;
 import org.dflib.exp.num.IntConstExp;
 import org.dflib.exp.num.LongColumn;
@@ -183,6 +184,24 @@ public interface Exp<T> {
      */
     static NumExp<Long> $long(int position) {
         return new LongColumn(position);
+    }
+
+    /**
+     * Returns an expression that evaluates to a named DataFrame Float column.
+     *
+     * @since 1.1.0
+     */
+    static NumExp<Float> $float(String name) {
+        return new FloatColumn(name);
+    }
+
+    /**
+     * Returns an expression that evaluates to a DataFrame Float column at a given position.
+     *
+     * @since 1.1.0
+     */
+    static NumExp<Float> $float(int position) {
+        return new FloatColumn(position);
     }
 
     /**
@@ -635,16 +654,13 @@ public interface Exp<T> {
         return castAsDateTime(DateTimeFormatter.ofPattern(format));
     }
 
-
     default DateTimeExp castAsDateTime(DateTimeFormatter formatter) {
         return DateTimeExp1.mapVal("castAsDateTime", this.castAsStr(), s -> LocalDateTime.parse(s, formatter));
     }
 
-
     default StrExp castAsStr() {
         return StrExp1.mapVal("castAsStr", this, o -> o.toString());
     }
-
 
     default NumExp<Integer> castAsInt() {
         // Need to do multiple conversions, so that we can properly cast any number format.
@@ -652,18 +668,22 @@ public interface Exp<T> {
         return castAsStr().castAsDecimal().castAsInt();
     }
 
-
     default NumExp<Long> castAsLong() {
         // Need to do multiple conversions, so that we can properly cast any number format.
         // Long expressions must override this method to return "this"
         return castAsStr().castAsDecimal().castAsLong();
     }
 
+    /**
+     * @since 1.1.0
+     */
+    default NumExp<Float> castAsFloat() {
+        return castAsStr().castAsFloat();
+    }
 
     default NumExp<Double> castAsDouble() {
         return castAsStr().castAsDouble();
     }
-
 
     default DecimalExp castAsDecimal() {
         return castAsStr().castAsDecimal();

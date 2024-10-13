@@ -1,8 +1,8 @@
 package org.dflib.exp.agg;
 
 import org.dflib.Condition;
-import org.dflib.DoubleSeries;
 import org.dflib.Exp;
+import org.dflib.FloatSeries;
 import org.dflib.Series;
 import org.dflib.Sorter;
 import org.dflib.builder.ObjectAccum;
@@ -11,14 +11,17 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-public class DoubleAggregators {
+/**
+ * @since 1.1.0
+ */
+public class FloatAggregators {
 
     private static final Condition notNullExp = Exp.$col(0).isNotNull();
     private static final Sorter asc = Exp.$col(0).asc();
     private static final Function<Series<? extends Number>, Double> avg =
-            CollectorAggregator.create((Collector) Collectors.averagingDouble(Number::doubleValue));
+            CollectorAggregator.create((Collector) Collectors.averagingDouble(Number::floatValue));
     private static final Function<Series<? extends Number>, Double> sum =
-            CollectorAggregator.create((Collector) Collectors.summingDouble(Number::doubleValue));
+            CollectorAggregator.create((Collector) Collectors.summingDouble(Number::floatValue));
 
 
     public static Series<Double> cumSum(Series<? extends Number> s) {
@@ -28,8 +31,8 @@ public class DoubleAggregators {
             return Series.ofDouble();
         }
 
-        if (s instanceof DoubleSeries) {
-            return ((DoubleSeries) s).cumSum();
+        if (s instanceof FloatSeries) {
+            return ((FloatSeries) s).cumSum();
         }
 
         ObjectAccum<Double> accum = new ObjectAccum<>(h);
@@ -68,20 +71,20 @@ public class DoubleAggregators {
         return s.size() == 0 ? 0. : sum.apply(s);
     }
 
-    public static double min(Series<? extends Number> s) {
+    public static float min(Series<? extends Number> s) {
 
         int size = s.size();
         if (size == 0) {
-            return 0.;
+            return 0f;
         }
 
-        double min = Double.MAX_VALUE;
+        float min = Float.MAX_VALUE;
 
         for (int i = 0; i < size; i++) {
 
             Number n = s.get(i);
             if (n != null) {
-                double in = n.doubleValue();
+                float in = n.floatValue();
                 if (in < min) {
                     min = in;
                 }
@@ -91,19 +94,19 @@ public class DoubleAggregators {
         return min;
     }
 
-    public static double max(Series<? extends Number> s) {
+    public static float max(Series<? extends Number> s) {
         int size = s.size();
         if (size == 0) {
-            return 0.;
+            return 0f;
         }
 
-        double max = Double.MIN_VALUE;
+        float max = Float.MIN_VALUE;
 
         for (int i = 0; i < size; i++) {
 
             Number n = s.get(i);
             if (n != null) {
-                double in = n.doubleValue();
+                float in = n.floatValue();
                 if (in > max) {
                     max = in;
                 }
@@ -113,20 +116,20 @@ public class DoubleAggregators {
         return max;
     }
 
-    public static double avg(Series<? extends Number> s) {
-        return s.size() == 0 ? 0. : avg.apply(s);
+    public static float avg(Series<? extends Number> s) {
+        return s.size() == 0 ? 0f : avg.apply(s).floatValue();
     }
 
-    public static double median(Series<? extends Number> s) {
+    public static float median(Series<? extends Number> s) {
 
         int size = s.size();
 
         switch (size) {
             case 0:
-                return 0.;
+                return 0f;
             case 1:
                 Number d = s.get(0);
-                return d != null ? d.doubleValue() : 0.;
+                return d != null ? d.floatValue() : 0f;
             default:
 
                 Series<? extends Number> sorted = s.select(notNullExp).sort(asc);
@@ -136,12 +139,12 @@ public class DoubleAggregators {
 
                 int odd = nonNullSize % 2;
                 if (odd == 1) {
-                    return sorted.get(m).doubleValue();
+                    return sorted.get(m).floatValue();
                 }
 
-                double d1 = sorted.get(m - 1).doubleValue();
-                double d2 = sorted.get(m).doubleValue();
-                return d1 + (d2 - d1) / 2.;
+                float d1 = sorted.get(m - 1).floatValue();
+                float d2 = sorted.get(m).floatValue();
+                return d1 + (d2 - d1) / 2f;
         }
     }
 }

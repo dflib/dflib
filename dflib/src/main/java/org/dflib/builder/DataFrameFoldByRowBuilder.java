@@ -6,6 +6,7 @@ import org.dflib.Index;
 import org.dflib.Series;
 import org.dflib.series.ArraySeries;
 import org.dflib.series.DoubleArraySeries;
+import org.dflib.series.FloatArraySeries;
 import org.dflib.series.IntArraySeries;
 import org.dflib.series.LongArraySeries;
 
@@ -54,6 +55,40 @@ public class DataFrameFoldByRowBuilder extends BaseDataFrameBuilder {
 
     public <T> DataFrame ofStream(Stream<T> stream) {
         return of(stream.toArray());
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public DataFrame ofFloats(float padWith, float... data) {
+
+        Geometry g = geometry(data.length);
+        float[][] columnarData = new float[g.width][g.height];
+
+        for (int i = 0; i < g.fullRowsHeight; i++) {
+            for (int j = 0; j < g.width; j++) {
+                columnarData[j][i] = data[i * g.width + j];
+            }
+        }
+
+        if (g.isLastRowPartial()) {
+            int lastRowIndex = g.fullRowsHeight;
+            for (int j = 0; j < g.partialRowWidth; j++) {
+                columnarData[j][lastRowIndex] = data[lastRowIndex * g.width + j];
+            }
+
+            for (int j = g.partialRowWidth; j < g.width; j++) {
+                columnarData[j][lastRowIndex] = padWith;
+            }
+        }
+
+        Series[] series = new Series[g.width];
+
+        for (int i = 0; i < g.width; i++) {
+            series[i] = new FloatArraySeries(columnarData[i]);
+        }
+
+        return new ColumnDataFrame(null, columnsIndex, series);
     }
 
     public DataFrame ofDoubles(double padWith, double... data) {
