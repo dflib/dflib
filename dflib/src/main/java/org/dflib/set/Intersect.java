@@ -2,6 +2,7 @@ package org.dflib.set;
 
 import org.dflib.BooleanSeries;
 import org.dflib.DoubleSeries;
+import org.dflib.FloatSeries;
 import org.dflib.IntSeries;
 import org.dflib.LongSeries;
 import org.dflib.Series;
@@ -78,6 +79,22 @@ public class Intersect {
 
         Set<? extends Long> s2Vals = s2.toSet();
         return s1.selectLong(v -> s2Vals.contains(v));
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public static FloatSeries intersectFloat(FloatSeries s1, Series<? extends Float> s2) {
+
+        int l1 = s1.size();
+        if (l1 == 0) {
+            return s1;
+        } else if (s2.size() == 0) {
+            return Series.ofFloat();
+        }
+
+        Set<? extends Float> s2Vals = s2.toSet();
+        return s1.selectFloat(v -> s2Vals.contains(v));
     }
 
     public static DoubleSeries intersectDouble(DoubleSeries s1, Series<? extends Double> s2) {

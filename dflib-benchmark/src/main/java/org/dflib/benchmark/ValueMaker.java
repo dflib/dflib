@@ -2,11 +2,13 @@ package org.dflib.benchmark;
 
 import org.dflib.BooleanSeries;
 import org.dflib.DoubleSeries;
+import org.dflib.FloatSeries;
 import org.dflib.IntSeries;
 import org.dflib.LongSeries;
 import org.dflib.Series;
 import org.dflib.builder.BoolAccum;
 import org.dflib.builder.DoubleAccum;
+import org.dflib.builder.FloatAccum;
 import org.dflib.builder.IntAccum;
 import org.dflib.builder.LongAccum;
 import org.dflib.builder.ObjectAccum;
@@ -34,6 +36,12 @@ public interface ValueMaker<T> {
     static ValueMaker<Integer> reverseIntSeq() {
         int[] val = new int[]{Integer.MAX_VALUE};
         return () -> val[0]--;
+    }
+
+    static ValueMaker<Float> floatSeq() {
+        float[] val = new float[1];
+        val[0] = 0.01f;
+        return () -> val[0]++;
     }
 
     static ValueMaker<Double> doubleSeq() {
@@ -147,6 +155,17 @@ public interface ValueMaker<T> {
         }
 
         return vals.toSeries();
+    }
+
+    default FloatSeries floatSeries(int len) {
+
+        FloatAccum ds = new FloatAccum(len);
+
+        for (int i = 0; i < len; i++) {
+            ds.push((Float) get());
+        }
+
+        return ds.toSeries();
     }
 
     default DoubleSeries doubleSeries(int len) {

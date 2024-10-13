@@ -1,3 +1,7 @@
+## Release 1.1.0
+
+* #357 Primitive FloatSeries
+
 ## Release 1.0.0-RC1
 
 * #314 ECharts: "candlestick" series

@@ -9,6 +9,7 @@ import org.dflib.series.DoubleArraySeries;
 import org.dflib.series.DoubleSingleValueSeries;
 import org.dflib.series.EmptySeries;
 import org.dflib.series.FalseSeries;
+import org.dflib.series.FloatArraySeries;
 import org.dflib.series.IntArraySeries;
 import org.dflib.series.IntSingleValueSeries;
 import org.dflib.series.LongArraySeries;
@@ -41,17 +42,14 @@ import static java.util.Arrays.asList;
  */
 public interface Series<T> extends Iterable<T> {
 
-
     static <S, T> SeriesByElementBuilder<S, T> byElement(Extractor<S, T> extractor) {
         return new SeriesByElementBuilder<>(extractor);
     }
-
 
     @SafeVarargs
     static <T> Series<T> of(T... data) {
         return data != null && data.length > 0 ? new ArraySeries<>(data) : new EmptySeries<>();
     }
-
 
     static <T> Series<T> ofIterable(Iterable<T> data) {
 
@@ -62,21 +60,24 @@ public interface Series<T> extends Iterable<T> {
                 .toSeries();
     }
 
-
     static BooleanSeries ofBool(boolean... bools) {
         return new BooleanArraySeries(bools);
     }
-
 
     static IntSeries ofInt(int... ints) {
         return new IntArraySeries(ints);
     }
 
+    /**
+     * @since 1.1.0
+     */
+    static FloatSeries ofFloat(float... floats) {
+        return new FloatArraySeries(floats);
+    }
 
     static DoubleSeries ofDouble(double... doubles) {
         return new DoubleArraySeries(doubles);
     }
-
 
     static LongSeries ofLong(long... longs) {
         return new LongArraySeries(longs);
@@ -252,6 +253,13 @@ public interface Series<T> extends Iterable<T> {
 
     default BooleanSeries castAsBool() throws ClassCastException {
         throw new ClassCastException("Can't cast to BooleanSeries");
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    default FloatSeries castAsFloat() throws ClassCastException {
+        throw new ClassCastException("Can't cast to FloatSeries");
     }
 
     default DoubleSeries castAsDouble() throws ClassCastException {

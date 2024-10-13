@@ -38,6 +38,20 @@ public interface ValueStore<T> {
         throw new UnsupportedOperationException("No support for 'long' values");
     }
 
+    /**
+     * @since 1.1.0
+     */
+    default void pushFloat(float v) {
+        throw new UnsupportedOperationException("No support for 'float' values");
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    default void replaceFloat(int pos, float v) {
+        throw new UnsupportedOperationException("No support for 'float' values");
+    }
+
     default void pushDouble(double v) {
         throw new UnsupportedOperationException("No support for 'double' values");
     }

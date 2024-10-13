@@ -113,6 +113,21 @@ public class PrimitiveSeriesSum {
         return s;
     }
 
+    /**
+     * @since 1.1.0
+     */
+    public static double[] cumSumOfArray(float[] values, int start, int len) {
+
+        double[] cumSum = new double[len];
+
+        double s = 0.;
+        for (int i = 0; i < len; i++) {
+            s += values[i + start];
+            cumSum[i] = s;
+        }
+
+        return cumSum;
+    }
 
     public static double[] cumSumOfArray(double[] doubles, int start, int len) {
 
@@ -125,6 +140,22 @@ public class PrimitiveSeriesSum {
         }
 
         return cumSum;
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public static double sumOfArray(float[] vals, int start, int len) {
+
+        // TODO: deal with rounding errors... convert to BigDecimal?
+        //   Is this method any worse than Collectors.summingDouble() as far as rounding?
+
+        double s = 0;
+        for (int i = 0; i < len; i++) {
+            s += vals[i + start];
+        }
+
+        return s;
     }
 
     public static double sumOfArray(double[] doubles, int start, int len) {

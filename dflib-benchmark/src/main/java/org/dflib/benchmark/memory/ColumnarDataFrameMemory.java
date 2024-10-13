@@ -19,6 +19,8 @@ public class ColumnarDataFrameMemory extends MemoryTest {
         test.run("int (object)", test::intCells, cells);
         test.run("int (object, repeating)", test::repeatingIntCells, cells);
         test.run("int (primitive)", test::primitiveIntCells, cells);
+        test.run("float (object)", test::floatCells, cells);
+        test.run("float (primitive)", test::primitiveFloatCells, cells);
         test.run("double (object)", test::doubleCells, cells);
         test.run("double (primitive)", test::primitiveDoubleCells, cells);
         test.run("long (object)", test::longCells, cells);
@@ -36,6 +38,18 @@ public class ColumnarDataFrameMemory extends MemoryTest {
         return DataFrame.byColumn("c0", "c1").of(
                 ValueMaker.nullSeq().series(ROWS),
                 ValueMaker.nullSeq().series(ROWS)).materialize();
+    }
+
+    public DataFrame floatCells() {
+        return DataFrame.byColumn("c0", "c1").of(
+                ValueMaker.floatSeq().series(ROWS),
+                ValueMaker.floatSeq().series(ROWS)).materialize();
+    }
+
+    public DataFrame primitiveFloatCells() {
+        return DataFrame.byColumn("c0", "c1").of(
+                ValueMaker.floatSeq().floatSeries(ROWS),
+                ValueMaker.floatSeq().floatSeries(ROWS)).materialize();
     }
 
     public DataFrame doubleCells() {
