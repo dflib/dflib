@@ -3,6 +3,7 @@ package org.dflib.json;
 import org.dflib.BoolValueMapper;
 import org.dflib.DoubleValueMapper;
 import org.dflib.Extractor;
+import org.dflib.FloatValueMapper;
 import org.dflib.IntValueMapper;
 import org.dflib.LongValueMapper;
 import org.dflib.ValueMapper;
@@ -43,6 +44,22 @@ class ColConfigurator {
     public static Extractor<Map<String, Object>, ?> longCol(String name, long fillNullsWith) {
         LongValueMapper mapper = LongValueMapper.fromObject(fillNullsWith);
         return Extractor.$long(r -> mapper.map(value(r, name)));
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public static Extractor<Map<String, Object>, ?> floatCol(String name) {
+        FloatValueMapper mapper = FloatValueMapper.fromObject();
+        return Extractor.$float(r -> mapper.map(value(r, name)));
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public static Extractor<Map<String, Object>, ?> floatCol(String name, float fillNullsWith) {
+        FloatValueMapper mapper = FloatValueMapper.fromObject(fillNullsWith);
+        return Extractor.$float(map -> mapper.map(value(map, name)));
     }
 
     public static Extractor<Map<String, Object>, ?> doubleCol(String name) {

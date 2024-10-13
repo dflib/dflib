@@ -3,17 +3,14 @@ package org.dflib.unit;
 import org.dflib.BooleanSeries;
 import org.dflib.DataFrame;
 import org.dflib.DoubleSeries;
+import org.dflib.FloatSeries;
 import org.dflib.Index;
 import org.dflib.IntSeries;
 import org.dflib.LongSeries;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DataFrameAsserts {
 
@@ -77,6 +74,13 @@ public class DataFrameAsserts {
 
         for (int i = 0; i < positions.length; i++) {
             assertTrue(df.getColumn(positions[i]).unsafeCastAs(Double.class) instanceof DoubleSeries);
+        }
+        return this;
+    }
+
+    public DataFrameAsserts expectFloatColumns(String... labels) {
+        for (int i = 0; i < labels.length; i++) {
+            assertTrue(df.getColumn(labels[i]).unsafeCastAs(Float.class) instanceof FloatSeries);
         }
         return this;
     }

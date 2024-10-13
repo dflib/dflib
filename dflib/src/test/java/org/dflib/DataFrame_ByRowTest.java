@@ -40,6 +40,7 @@ public class DataFrame_ByRowTest {
                         Extractor.$col(From::getS),
                         Extractor.$int(From::getI),
                         Extractor.$long(From::getL),
+                        Extractor.$float(From::getF),
                         Extractor.$double(From::getD),
                         Extractor.$bool(From::isB)
                 )
@@ -50,18 +51,19 @@ public class DataFrame_ByRowTest {
                 .append(data)
                 .toDataFrame();
 
-        new DataFrameAsserts(df, "0", "1", "2", "3", "4").expectHeight(5)
+        new DataFrameAsserts(df, "0", "1", "2", "3", "4", "5").expectHeight(5)
 
                 .expectIntColumns("1")
                 .expectLongColumns("2")
-                .expectDoubleColumns("3")
-                .expectBooleanColumns("4")
+                .expectFloatColumns("3")
+                .expectDoubleColumns("4")
+                .expectBooleanColumns("5")
 
-                .expectRow(0, "a", 1, 10_000_000_001L, 1.01, false)
-                .expectRow(1, "b", 2, 10_000_000_002L, 2.01, true)
-                .expectRow(2, "c", 3, 10_000_000_003L, 3.01, false)
-                .expectRow(3, "L1", -1, 9_999_999_999L, -0.99, false)
-                .expectRow(4, "L2", -2, 9_999_999_998L, -1.99, true);
+                .expectRow(0, "a", 1, 10_000_000_001L, 1.12f, 1.01, false)
+                .expectRow(1, "b", 2, 10_000_000_002L, 2.12f, 2.01, true)
+                .expectRow(2, "c", 3, 10_000_000_003L, 3.12f, 3.01, false)
+                .expectRow(3, "L1", -1, 9_999_999_999L, -0.88f, -0.99, false)
+                .expectRow(4, "L2", -2, 9_999_999_998L, -1.88f, -1.99, true);
     }
 
     @Test
@@ -199,6 +201,10 @@ public class DataFrame_ByRowTest {
 
         public double getD() {
             return i + 0.01;
+        }
+
+        public float getF() {
+            return i + 0.12f;
         }
 
         public long getL() {

@@ -48,6 +48,8 @@ class ColConfigurator {
             // as numeric nullable types are declared as unions and will fall under the "default" case
             case INT:
                 return Extractor.$int(r -> (Integer) r.get(pos));
+            case FLOAT:
+                return Extractor.$float(r -> (Float) r.get(pos));
             case DOUBLE:
                 return Extractor.$double(r -> (Double) r.get(pos));
             case LONG:

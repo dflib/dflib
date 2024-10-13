@@ -2,6 +2,7 @@ package org.dflib;
 
 import org.dflib.builder.BoolExtractor;
 import org.dflib.builder.DoubleExtractor;
+import org.dflib.builder.FloatExtractor;
 import org.dflib.builder.IntExtractor;
 import org.dflib.builder.LongExtractor;
 import org.dflib.builder.ObjectExtractor;
@@ -59,6 +60,13 @@ public interface Extractor<F, T> {
 
     static <F> LongExtractor<F> $long(LongValueMapper<F> mapper) {
         return new LongExtractor<>(mapper);
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    static <F> FloatExtractor<F> $float(FloatValueMapper<F> mapper) {
+        return new FloatExtractor<>(mapper);
     }
 
     static <F> DoubleExtractor<F> $double(DoubleValueMapper<F> mapper) {

@@ -68,7 +68,7 @@ class ColConfigurator {
             case INT64:
                 return Extractor.$long(r -> (Long) r[pos]);
             case FLOAT:
-                return Extractor.$col(r -> r[pos]);
+                return Extractor.$float(r -> (Float) r[pos]);
             case DOUBLE:
                 return Extractor.$double(r -> (Double) r[pos]);
             case BOOLEAN:

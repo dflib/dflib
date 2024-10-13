@@ -3,6 +3,7 @@ package org.dflib.jdbc.connector.loader;
 import org.dflib.BoolValueMapper;
 import org.dflib.DoubleValueMapper;
 import org.dflib.Extractor;
+import org.dflib.FloatValueMapper;
 import org.dflib.IntValueMapper;
 import org.dflib.LongValueMapper;
 import org.dflib.ValueMapper;
@@ -55,6 +56,21 @@ public interface JdbcExtractorFactory<T> {
         };
 
         return Extractor.$long(mapper);
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    static Extractor<ResultSet, Float> $float(int pos) {
+        FloatValueMapper<ResultSet> mapper = rs -> {
+            try {
+                return rs.getFloat(pos);
+            } catch (SQLException e) {
+                throw new RuntimeException("Error performing SQL operation", e);
+            }
+        };
+
+        return Extractor.$float(mapper);
     }
 
     static Extractor<ResultSet, Double> $double(int pos) {

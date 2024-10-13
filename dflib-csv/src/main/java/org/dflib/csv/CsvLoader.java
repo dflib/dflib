@@ -5,6 +5,7 @@ import org.apache.commons.csv.CSVRecord;
 import org.dflib.DataFrame;
 import org.dflib.DoubleValueMapper;
 import org.dflib.Extractor;
+import org.dflib.FloatValueMapper;
 import org.dflib.Index;
 import org.dflib.IntValueMapper;
 import org.dflib.LongValueMapper;
@@ -263,6 +264,22 @@ public class CsvLoader {
 
     public CsvLoader longCol(String column, long forNull) {
         colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.fromString(forNull)));
+        return this;
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public CsvLoader floatCol(int column) {
+        colConfigurators.add(ColConfigurator.floatCol(column, FloatValueMapper.fromString()));
+        return this;
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public CsvLoader floatCol(String column) {
+        colConfigurators.add(ColConfigurator.floatCol(column, FloatValueMapper.fromString()));
         return this;
     }
 

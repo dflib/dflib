@@ -1,13 +1,14 @@
 package org.dflib.csv;
 
+import org.apache.commons.csv.CSVRecord;
 import org.dflib.BoolValueMapper;
 import org.dflib.DoubleValueMapper;
 import org.dflib.Extractor;
+import org.dflib.FloatValueMapper;
 import org.dflib.Index;
 import org.dflib.IntValueMapper;
 import org.dflib.LongValueMapper;
 import org.dflib.ValueMapper;
-import org.apache.commons.csv.CSVRecord;
 
 import java.util.function.IntFunction;
 
@@ -79,6 +80,26 @@ class ColConfigurator {
         ColConfigurator config = new ColConfigurator();
         config.srcColName = name;
         config.extractorMaker = i -> Extractor.$long(r -> mapper.map(r.get(i)));
+        return config;
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public static ColConfigurator floatCol(int pos, FloatValueMapper<String> mapper) {
+        ColConfigurator config = new ColConfigurator();
+        config.srcColPos = pos;
+        config.extractorMaker = i -> Extractor.$float(r -> mapper.map(r.get(i)));
+        return config;
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public static ColConfigurator floatCol(String name, FloatValueMapper<String> mapper) {
+        ColConfigurator config = new ColConfigurator();
+        config.srcColName = name;
+        config.extractorMaker = i -> Extractor.$float(r -> mapper.map(r.get(i)));
         return config;
     }
 
