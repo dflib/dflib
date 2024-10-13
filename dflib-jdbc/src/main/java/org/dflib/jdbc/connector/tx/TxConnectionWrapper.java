@@ -26,7 +26,7 @@ import java.util.concurrent.Executor;
  */
 public class TxConnectionWrapper implements Connection {
 
-    private Connection delegate;
+    private final Connection delegate;
 
     public TxConnectionWrapper(Connection delegate) {
         this.delegate = delegate;

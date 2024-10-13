@@ -11,7 +11,7 @@ import java.util.function.Function;
  */
 public class Tx {
 
-    private JdbcConnector connector;
+    private final JdbcConnector connector;
     private TxIsolation isolation;
 
     protected Tx(JdbcConnector connector) {

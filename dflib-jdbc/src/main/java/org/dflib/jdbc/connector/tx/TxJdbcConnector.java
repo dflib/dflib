@@ -31,7 +31,7 @@ public class TxJdbcConnector implements JdbcConnector, AutoCloseable {
     private final JdbcConnector delegate;
     private final boolean nestedTx;
 
-    private TxIsolation isolation;
+    private final TxIsolation isolation;
     private volatile TxConnectionWrapper connection;
 
     public TxJdbcConnector(JdbcConnector delegate, TxIsolation isolation) {

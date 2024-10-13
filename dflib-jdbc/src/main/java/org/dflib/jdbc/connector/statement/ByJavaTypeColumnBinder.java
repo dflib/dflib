@@ -15,8 +15,8 @@ public class ByJavaTypeColumnBinder implements ColumnBinder {
     // MySQL returns VARCHAR as the fake type for all parameters, and seems to allow binding most values as such
     private static final int FAKE_JDBC_TYPE = Types.VARCHAR;
 
-    private PreparedStatement statement;
-    private int position;
+    private final PreparedStatement statement;
+    private final int position;
 
     public ByJavaTypeColumnBinder(PreparedStatement statement, int position) {
         this.statement = statement;

@@ -12,8 +12,8 @@ import java.util.logging.Logger;
  */
 public class TxDataSource implements DataSource {
 
-    private Connection txConnection;
-    private DataSource delegate;
+    private final Connection txConnection;
+    private final DataSource delegate;
 
     public TxDataSource(Connection txConnection, DataSource delegate) {
         this.txConnection = txConnection;

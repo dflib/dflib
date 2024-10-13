@@ -5,10 +5,10 @@ import java.util.Calendar;
 
 public class DefaultColumnBinder implements ColumnBinder {
 
-    private PreparedStatement statement;
-    private int type;
-    private int position;
-    private ValueConverter valueConverter;
+    private final PreparedStatement statement;
+    private final int type;
+    private final int position;
+    private final ValueConverter valueConverter;
 
     public DefaultColumnBinder(
             PreparedStatement statement,
