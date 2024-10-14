@@ -476,6 +476,7 @@ public abstract class IntBaseSeries implements IntSeries {
         return new IntArraySeries(data);
     }
 
+    // TODO: use new IntegerSeries here
     private Series<Integer> nullify(BooleanSeries condition) {
         int len = size();
         int r = Math.min(len, condition.size());
@@ -493,6 +494,7 @@ public abstract class IntBaseSeries implements IntSeries {
         return new ArraySeries<>(data);
     }
 
+    // TODO: use new IntegerSeries here
     private Series<Integer> nullifyNoMatch(BooleanSeries condition) {
         int len = size();
         int r = Math.min(len, condition.size());

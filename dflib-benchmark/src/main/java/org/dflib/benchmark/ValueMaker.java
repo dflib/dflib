@@ -8,8 +8,10 @@ import org.dflib.Series;
 import org.dflib.builder.BoolAccum;
 import org.dflib.builder.DoubleAccum;
 import org.dflib.builder.IntAccum;
+import org.dflib.builder.IntegerAccum;
 import org.dflib.builder.LongAccum;
 import org.dflib.builder.ObjectAccum;
+import org.dflib.series.IntegerSeries;
 
 import java.util.Random;
 import java.util.function.UnaryOperator;
@@ -29,6 +31,25 @@ public interface ValueMaker<T> {
     static ValueMaker<Integer> intSeq() {
         int[] val = new int[1];
         return () -> val[0]++;
+    }
+
+    static ValueMaker<Integer> integerSeq() {
+        Integer[] val = new Integer[1];
+        val[0] = 1;
+        return () -> val[0]++;
+    }
+
+    static ValueMaker<Integer> integerSeq(double nullFraction) {
+        Random random = new Random();
+        Integer[] val = new Integer[1];
+        val[0] = 1;
+        return () -> {
+            val[0]++;
+            if(random.nextDouble() < nullFraction) {
+                return null;
+            }
+            return val[0];
+        };
     }
 
     static ValueMaker<Integer> reverseIntSeq() {
@@ -130,6 +151,17 @@ public interface ValueMaker<T> {
     default IntSeries intSeries(int len) {
 
         IntAccum ints = new IntAccum(len);
+
+        for (int i = 0; i < len; i++) {
+            ints.push((Integer) get());
+        }
+
+        return ints.toSeries();
+    }
+
+    default IntegerSeries integerSeries(int len) {
+
+        IntegerAccum ints = new IntegerAccum(len);
 
         for (int i = 0; i < len; i++) {
             ints.push((Integer) get());
