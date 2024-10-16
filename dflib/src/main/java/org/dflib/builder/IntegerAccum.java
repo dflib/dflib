@@ -3,15 +3,17 @@ package org.dflib.builder;
 import org.dflib.series.FixedSizeBitSet;
 import org.dflib.series.IntegerSeries;
 
+import java.util.BitSet;
+
 public class IntegerAccum implements ValueAccum<Integer> {
 
     private int[] data;
-    private FixedSizeBitSet nulls;
+    private BitSet nulls;
     private int size;
 
     public IntegerAccum(int len) {
         data = new int[len];
-        nulls = new FixedSizeBitSet(len);
+        nulls = new BitSet(len);
         size = 0;
     }
 
@@ -41,8 +43,10 @@ public class IntegerAccum implements ValueAccum<Integer> {
     @Override
     public IntegerSeries toSeries() {
         int[] data = compactData();
+        FixedSizeBitSet bitSet = new FixedSizeBitSet(nulls.toLongArray(), size);
         this.data = null;
-        return new IntegerSeries(data, nulls.resize(size));
+        this.nulls = null;
+        return new IntegerSeries(data, bitSet);
     }
 
     @Override
@@ -53,9 +57,7 @@ public class IntegerAccum implements ValueAccum<Integer> {
     private void expand(int newCapacity) {
         int[] newData = new int[newCapacity];
         System.arraycopy(data, 0, newData, 0, size);
-
         this.data = newData;
-        this.nulls = nulls.resize(newCapacity);
     }
 
     private int[] compactData() {

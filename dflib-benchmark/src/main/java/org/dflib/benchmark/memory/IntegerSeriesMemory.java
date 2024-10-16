@@ -8,6 +8,7 @@ import org.dflib.series.FixedSizeBitSet;
 import org.dflib.series.IntArraySeries;
 import org.dflib.series.IntegerSeries;
 
+import java.util.BitSet;
 import java.util.Random;
 
 public class IntegerSeriesMemory extends MemoryTest {
@@ -47,11 +48,11 @@ public class IntegerSeriesMemory extends MemoryTest {
 
     public IntegerSeries getIntegerSeries() {
         int[] data = new int[ROWS];
-        FixedSizeBitSet nulls = new FixedSizeBitSet(ROWS);
+        BitSet nulls = new BitSet(ROWS);
         for(int i=0; i<ROWS; i++) {
             data[i] = i;
         }
-        return new IntegerSeries(data, nulls);
+        return new IntegerSeries(data, new FixedSizeBitSet(nulls.toLongArray(), ROWS));
     }
 
     public Series<Integer> getObjectSeries25PercentNulls() {
@@ -70,7 +71,7 @@ public class IntegerSeriesMemory extends MemoryTest {
     public IntegerSeries getIntegerSeries25PercentNulls() {
         Random random = new Random();
         int[] data = new int[ROWS];
-        FixedSizeBitSet nulls = new FixedSizeBitSet(ROWS);
+        BitSet nulls = new BitSet(ROWS);
         for(int i=0; i<ROWS; i++) {
             if(random.nextDouble() < 0.25) {
                 nulls.set(i);
@@ -78,7 +79,7 @@ public class IntegerSeriesMemory extends MemoryTest {
                 data[i] = i;
             }
         }
-        return new IntegerSeries(data, nulls);
+        return new IntegerSeries(data, new FixedSizeBitSet(nulls.toLongArray(), ROWS));
     }
 
     public Series<Integer> getObjectSeries75PercentNulls() {
@@ -97,7 +98,7 @@ public class IntegerSeriesMemory extends MemoryTest {
     public IntegerSeries getIntegerSeries75PercentNulls() {
         Random random = new Random();
         int[] data = new int[ROWS];
-        FixedSizeBitSet nulls = new FixedSizeBitSet(ROWS);
+        BitSet nulls = new BitSet(ROWS);
         for(int i=0; i<ROWS; i++) {
             if(random.nextDouble() < 0.75) {
                 nulls.set(i);
@@ -105,7 +106,7 @@ public class IntegerSeriesMemory extends MemoryTest {
                 data[i] = i;
             }
         }
-        return new IntegerSeries(data, nulls);
+        return new IntegerSeries(data, new FixedSizeBitSet(nulls.toLongArray(), ROWS));
     }
 
     public Series<Integer> getObjectSeries100PercentNulls() {
@@ -116,13 +117,13 @@ public class IntegerSeriesMemory extends MemoryTest {
     public IntegerSeries getIntegerSeries100PercentNulls() {
         Random random = new Random();
         int[] data = new int[ROWS];
-        FixedSizeBitSet nulls = new FixedSizeBitSet(ROWS);
+        BitSet nulls = new BitSet(ROWS);
         for(int i=0; i<ROWS; i++) {
             if(random.nextDouble() < 0.75) {
                 nulls.set(i);
             }
         }
-        return new IntegerSeries(data, nulls);
+        return new IntegerSeries(data, new FixedSizeBitSet(nulls.toLongArray(), ROWS));
     }
 }
 

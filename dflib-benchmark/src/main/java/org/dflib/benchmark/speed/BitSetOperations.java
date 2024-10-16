@@ -27,6 +27,8 @@ public class BitSetOperations {
     @Param("500000")
     public int size;
 
+    public int sizeInLong;
+
     @Param("123456")
     public int index;
 
@@ -39,23 +41,20 @@ public class BitSetOperations {
 
     @Setup
     public void setUp() {
+        sizeInLong = ((size - 1) >> 6) + 1;
+
         boolSet = new boolean[size];
-        bitSet = new FixedSizeBitSet(size);
         javaBitSet = new BitSet(size);
 
         boolSet[index + 1] = true;
-        bitSet.set(index + 1);
         javaBitSet.set(index + 1);
+
+        bitSet = new FixedSizeBitSet(javaBitSet.toLongArray(), size);
     }
 
     @Benchmark
     public FixedSizeBitSet bitSet_create() {
-        return new FixedSizeBitSet(size);
-    }
-
-    @Benchmark
-    public void bitSet_set() {
-        bitSet.set(index, true);
+        return new FixedSizeBitSet(new long[sizeInLong], size);
     }
 
     @Benchmark
@@ -103,30 +102,3 @@ public class BitSetOperations {
         return new BitSet(size);
     }
 }
-
-/*
- * Benchmark                          (index)  (size)  Mode  Cnt     Score     Error  Units
- * BitSetOperations.bitSet_create      123456  500000  avgt    6   500.422 ±  47.380  ns/op
- * BitSetOperations.bitSet_get         123456  500000  avgt    6     0.747 ±   0.013  ns/op
- * BitSetOperations.bitSet_set         123456  500000  avgt    6     0.748 ±   0.016  ns/op
- * BitSetOperations.boolArray_create   123456  500000  avgt    6  3810.983 ± 188.951  ns/op
- * BitSetOperations.boolArray_get      123456  500000  avgt    6     0.669 ±   0.037  ns/op
- * BitSetOperations.boolArray_set      123456  500000  avgt    6     0.574 ±   0.058  ns/op
- *
- * Memory bytes/index
- *    BitSet   0.10
- * boolean[]   1.68
- *
- * Benchmark                             (size)  Mode  Cnt     Score    Error  Units
- * BitSetOperations.bitSet_create        500000  avgt    6   485.833 ±  2.659  ns/op
- * BitSetOperations.bitSet_get           500000  avgt    6     0.755 ±  0.030  ns/op
- * BitSetOperations.bitSet_getEmpty      500000  avgt    6     0.746 ±  0.002  ns/op
- * BitSetOperations.bitSet_set           500000  avgt    6     0.772 ±  0.100  ns/op
- * BitSetOperations.boolArray_create     500000  avgt    6  3659.246 ± 49.309  ns/op
- * BitSetOperations.boolArray_get        500000  avgt    6     0.646 ±  0.001  ns/op
- * BitSetOperations.boolArray_set        500000  avgt    6     0.561 ±  0.043  ns/op
- * BitSetOperations.javaBitSet_create    500000  avgt    6   487.792 ±  3.683  ns/op
- * BitSetOperations.javaBitSet_get       500000  avgt    6     0.840 ±  0.029  ns/op
- * BitSetOperations.javaBitSet_getEmpty  500000  avgt    6     0.554 ±  0.001  ns/op
- * BitSetOperations.javaBitSet_set       500000  avgt    6     0.831 ±  0.003  ns/op
- */

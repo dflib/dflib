@@ -319,7 +319,7 @@ public class IntegerSeries implements Series<Integer> {
         if(nullsCount == size()) {
             return new TrueSeries(size());
         }
-        return new BooleanBitSetSeries(nulls);
+        return new BooleanBitsetSeries(nulls);
     }
 
     @Override
@@ -331,7 +331,7 @@ public class IntegerSeries implements Series<Integer> {
         if(nullsCount == size()) {
             return new FalseSeries(size());
         }
-        return new BooleanBitSetSeries(nulls.not());
+        return new BooleanBitsetSeries(nulls.not());
     }
 
     @Override
@@ -404,15 +404,27 @@ public class IntegerSeries implements Series<Integer> {
         if (len != s.size()) {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
-
         int[] data = new int[len];
-        FixedSizeBitSet nulls = new FixedSizeBitSet(len);
         for (int i = 0; i < len; i++) {
             data[i] = this.data[i] + s.data[i];
-            if(nulls.get(i) && s.nulls.get(i)) {
-                nulls.set(i);
-            }
         }
-        return new IntegerSeries(data, nulls);
+        return new IntegerSeries(data, this.nulls.and(s.nulls));
+    }
+
+    /**
+     * Performs per-element addition between this and another IntegerSeries, returning the Series of the same length.
+     * <p>
+     * <b>NOTE:</b> nulls are treated as 0, however if both arguments are null, result is null
+     */
+    public IntSeries add(IntSeries s) {
+        int len = size();
+        if (len != s.size()) {
+            throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
+        }
+        int[] data = new int[len];
+        for (int i = 0; i < len; i++) {
+            data[i] = this.data[i] + s.getInt(i);
+        }
+        return new IntArraySeries(data);
     }
 }
