@@ -3,7 +3,7 @@ name: 'create release'
 on:
   push:
     tags:
-      - '[0-9]+.[0-9]+*'
+      - 'dflib-parent-*'
 
 permissions:
   # allow a write access to GitHub Releases
@@ -37,7 +37,7 @@ jobs:
         run: |
           RELEASE_TAG=${GITHUB_REF#refs/*/}
           echo "tag=${RELEASE_TAG}" >> $GITHUB_OUTPUT
-          echo "version=${RELEASE_TAG}" >> $GITHUB_OUTPUT
+          echo "version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
 
       - name: Create release...
         id: create_release
