@@ -3,18 +3,21 @@ package org.dflib;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
-public class RowColumnSet_Map_RowMapperTest {
+public class RowColumnSet_Merge_RowToValueTest {
 
     @Test
-    public void rowsAll_colsByName() {
+    public void all() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
                 .cols(0).compactInt(0)
-                .rows().cols("b", "a")
-                .map((f, t) -> t.set(0, f.get(1, String.class) + f.get(2)).set(1, f.getInt(0) * 3));
+                .rows()
+                .cols("b", "a")
+                .merge(
+                        f -> f.get(1, String.class) + f.get(2),
+                        f -> f.getInt(0) * 3);
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(3)
@@ -24,15 +27,18 @@ public class RowColumnSet_Map_RowMapperTest {
     }
 
     @Test
-    public void rowsByIndex_colsByName() {
+    public void byIndex() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
                 .cols(0).compactInt(0)
-                .rows(Series.ofInt(0, 2)).cols("b", "a")
-                .map((f, t) -> t.set(0, f.get(1, String.class) + f.get(2)).set(1, f.getInt(0) * 3));
+                .rows(Series.ofInt(0, 2))
+                .cols("b", "a")
+                .merge(
+                        f -> f.get(1, String.class) + f.get(2),
+                        f -> f.getInt(0) * 3);
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(3)
@@ -42,15 +48,18 @@ public class RowColumnSet_Map_RowMapperTest {
     }
 
     @Test
-    public void rowsByCondition_colsByName() {
+    public void byCondition() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
                 .cols(0).compactInt(0)
-                .rows(Series.ofBool(true, false, true)).cols("b", "a")
-                .map((f, t) -> t.set(0, f.get(1, String.class) + f.get(2)).set(1, f.getInt(0) * 3));
+                .rows(Series.ofBool(true, false, true))
+                .cols("b", "a")
+                .merge(
+                        f -> f.get(1, String.class) + f.get(2),
+                        f -> f.getInt(0) * 3);
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(3)
