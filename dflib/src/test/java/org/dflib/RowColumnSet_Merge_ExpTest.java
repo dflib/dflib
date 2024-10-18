@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class RowColumnSet_Map_ExpTest {
+public class RowColumnSet_Merge_ExpTest {
 
     @Test
     public void rowsAll_colsDeferred() {
@@ -15,7 +15,7 @@ public class RowColumnSet_Map_ExpTest {
                         2, "y", "b",
                         -1, "m", "n")
                 .rows().cols()
-                .map(
+                .merge(
                         Exp.concat(Exp.$str(1), Exp.$str(2)).as("a"),
                         Exp.$int(0).mul(3)
                 );
@@ -35,7 +35,7 @@ public class RowColumnSet_Map_ExpTest {
                         2, "y", "b",
                         -1, "m", "n")
                 .rows().cols("b", "a")
-                .map(
+                .merge(
                         Exp.concat(Exp.$str(1), Exp.$str(2)),
                         Exp.$int(0).mul(3)
                 );
@@ -55,7 +55,7 @@ public class RowColumnSet_Map_ExpTest {
                         2, "y", "b",
                         -1, "m", "n")
                 .cols("b", "a").rows()
-                .map(
+                .merge(
                         Exp.concat(Exp.$str(1), Exp.$str(2)),
                         Exp.$int(0).mul(3)
                 );
@@ -75,7 +75,7 @@ public class RowColumnSet_Map_ExpTest {
                         2, "y", "b",
                         -1, "m", "n")
                 .rows().cols(1, 0)
-                .map(
+                .merge(
                         Exp.concat(Exp.$str(1), Exp.$str(2)),
                         Exp.$int(0).mul(3)
                 );
@@ -95,7 +95,7 @@ public class RowColumnSet_Map_ExpTest {
                         2, "y", "b",
                         -1, "m", "n")
                 .rows(0, 2).cols("b", "a")
-                .map(
+                .merge(
                         Exp.concat(Exp.$str(1), Exp.$str(2)),
                         Exp.$int(0).mul(3)
                 );
@@ -115,7 +115,7 @@ public class RowColumnSet_Map_ExpTest {
                         2, "y", "b",
                         -1, "m", "n")
                 .cols("b", "a").rows(0, 2)
-                .map(
+                .merge(
                         Exp.concat(Exp.$str(1), Exp.$str(2)),
                         Exp.$int(0).mul(3)
                 );
@@ -135,7 +135,7 @@ public class RowColumnSet_Map_ExpTest {
                         2, "y", "b",
                         -1, "m", "n")
                 .rows(Series.ofInt(0, 2)).cols(1, 0)
-                .map(
+                .merge(
                         Exp.concat(Exp.$str(1), Exp.$str(2)),
                         Exp.$int(0).mul(3)
                 );
@@ -155,7 +155,7 @@ public class RowColumnSet_Map_ExpTest {
                         2, "y", "b",
                         -1, "m", "n")
                 .rows(Series.ofInt(0, 2)).cols()
-                .map(
+                .merge(
                         Exp.$int(0).mul(3).as("a"),
                         Exp.concat(Exp.$str(1), Exp.$str(2)).as("b")
                 );
@@ -175,7 +175,7 @@ public class RowColumnSet_Map_ExpTest {
                         2, "y", "b",
                         -1, "m", "n")
                 .rows(0, 2).cols(c -> List.of("a", "b").contains(c))
-                .map(
+                .merge(
                         Exp.concat(Exp.$str(1), Exp.$str(2)),
                         Exp.$int(0).mul(3)
                 );
@@ -196,7 +196,7 @@ public class RowColumnSet_Map_ExpTest {
                         -1, "m", "n")
                 .rows(2, 0, 2)
                 .cols("b", "a", "x")
-                .map(
+                .merge(
                         Exp.concat(Exp.$str(1), Exp.$str(2)),
                         Exp.$int(0).mul(3),
                         Exp.rowNum()
@@ -218,7 +218,7 @@ public class RowColumnSet_Map_ExpTest {
                         2, "y", "b",
                         -1, "m", "n")
                 .rows(Series.ofInt()).cols("b", "a")
-                .map(
+                .merge(
                         Exp.concat(Exp.$str(1), Exp.$str(2)),
                         Exp.$int(0).mul(3)
                 );
@@ -238,7 +238,7 @@ public class RowColumnSet_Map_ExpTest {
                         2, "y", "b",
                         -1, "m", "n")
                 .rows(Series.ofBool(true, false, true)).cols("b", "a")
-                .map(
+                .merge(
                         Exp.concat(Exp.$str(1), Exp.$str(2)),
                         Exp.$int(0).mul(3)
                 );

@@ -38,21 +38,21 @@ public class DefaultRowColumnSet implements RowColumnSet {
     }
 
     @Override
-    public DataFrame map(Exp<?>... exps) {
+    public DataFrame merge(Exp<?>... exps) {
         DataFrame rowsResolved = rowSet.select();
         DataFrame hSlice = columnSetMaker.apply(rowsResolved).merge(exps);
         return mergeRows(hSlice);
     }
 
     @Override
-    public DataFrame map(RowMapper mapper) {
+    public DataFrame merge(RowMapper mapper) {
         DataFrame rowsResolved = rowSet.select();
         DataFrame hSlice = columnSetMaker.apply(rowsResolved).merge(mapper);
         return mergeRows(hSlice);
     }
 
     @Override
-    public DataFrame map(RowToValueMapper<?>... mappers) {
+    public DataFrame merge(RowToValueMapper<?>... mappers) {
         DataFrame rowsResolved = rowSet.select();
         DataFrame hSlice = columnSetMaker.apply(rowsResolved).merge(mappers);
         return mergeRows(hSlice);

@@ -1,3 +1,7 @@
+## Release 1.0.0-RC2
+
+* #360 RowColumnSet: rename "map" to "merge"
+
 ## Release 1.0.0-RC1
 
 * #314 ECharts: "candlestick" series

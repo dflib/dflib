@@ -10,11 +10,44 @@ import java.util.function.UnaryOperator;
  */
 public interface RowColumnSet {
 
-    DataFrame map(Exp<?>... exps);
+    /**
+     * @deprecated use {@link #merge(Exp[])}
+     */
+    @Deprecated(since = "1.0.0-RC2", forRemoval = true)
+    default DataFrame map(Exp<?>... exps) {
+        return merge(exps);
+    }
 
-    DataFrame map(RowMapper mapper);
+    /**
+     * @deprecated use {@link #merge(RowMapper)} 
+     */
+    @Deprecated(since = "1.0.0-RC2", forRemoval = true)
+    default DataFrame map(RowMapper mapper) {
+        return merge(mapper);
+    }
+    
+    /**
+     * @deprecated use {@link #merge(RowToValueMapper[])}
+     */
+    @Deprecated(since = "1.0.0-RC2", forRemoval = true)
+    default DataFrame map(RowToValueMapper<?>... mappers) {
+        return merge(mappers);
+    }
 
-    DataFrame map(RowToValueMapper<?>... mappers);
+    /**
+     * @since 1.0.0-RC2
+     */
+    DataFrame merge(Exp<?>... exps);
+
+    /**
+     * @since 1.0.0-RC2
+     */
+    DataFrame merge(RowMapper mapper);
+
+    /**
+     * @since 1.0.0-RC2
+     */
+    DataFrame merge(RowToValueMapper<?>... mappers);
 
     /**
      * Returns the original DataFrame with rows and columns matched by this RowColumnSet removed.
