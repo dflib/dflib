@@ -74,6 +74,23 @@ public class MapCondition3<One, Two, Three> extends Exp3<One, Two, Three, Boolea
     }
 
     @Override
+    public Boolean reduce(DataFrame df) {
+        return doEval(
+                Series.ofVal(one.reduce(df), 1),
+                Series.ofVal(two.reduce(df), 1),
+                Series.ofVal(three.reduce(df), 1)
+        ).get(0);
+    }
+
+    @Override
+    public Boolean reduce(Series<?> s) {
+        return doEval(
+                Series.ofVal(one.reduce(s), 1),
+                Series.ofVal(two.reduce(s), 1),
+                Series.ofVal(three.reduce(s), 1)
+        ).get(0);
+    }
+
     protected BooleanSeries doEval(Series<One> one, Series<Two> two, Series<Three> three) {
         return op.apply(one, two, three);
     }

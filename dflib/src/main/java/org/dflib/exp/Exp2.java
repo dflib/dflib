@@ -2,7 +2,6 @@ package org.dflib.exp;
 
 import org.dflib.DataFrame;
 import org.dflib.Exp;
-import org.dflib.Series;
 
 /**
  * A binary expression with two {@link Exp} arguments.
@@ -40,16 +39,4 @@ public abstract class Exp2<L, R, T> implements Exp<T> {
     public String toQL(DataFrame df) {
         return left.toQL(df) + " " + opName + " " + right.toQL(df);
     }
-
-    @Override
-    public Series<T> eval(DataFrame df) {
-        return doEval(left.eval(df), right.eval(df));
-    }
-
-    @Override
-    public Series<T> eval(Series<?> s) {
-        return doEval(left.eval(s), right.eval(s));
-    }
-
-    protected abstract Series<T> doEval(Series<L> left, Series<R> right);
 }

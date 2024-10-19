@@ -45,15 +45,21 @@ public class ScalarExp<T> implements Exp<T> {
 
     @Override
     public Series<T> eval(DataFrame df) {
-        return doEval(df.height());
+        return Series.ofVal(value, df.height());
     }
 
     @Override
     public Series<T> eval(Series<?> s) {
-        return doEval(s.size());
+        return Series.ofVal(value, s.size());
     }
 
-    protected Series<T> doEval(int height) {
-        return Series.ofVal(value, height);
+    @Override
+    public T reduce(DataFrame df) {
+        return value;
+    }
+
+    @Override
+    public T reduce(Series<?> s) {
+        return value;
     }
 }

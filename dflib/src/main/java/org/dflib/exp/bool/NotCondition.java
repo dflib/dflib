@@ -5,18 +5,17 @@ import org.dflib.Condition;
 import org.dflib.DataFrame;
 import org.dflib.Series;
 
-
 public class NotCondition implements Condition {
 
-    private final Condition delegate;
+    private final Condition exp;
 
-    public NotCondition(Condition delegate) {
-        this.delegate = delegate;
+    public NotCondition(Condition exp) {
+        this.exp = exp;
     }
 
     @Override
     public Condition not() {
-        return delegate;
+        return exp;
     }
 
     @Override
@@ -26,21 +25,31 @@ public class NotCondition implements Condition {
 
     @Override
     public String toQL() {
-        return "not (" + delegate.toQL() + ")";
+        return "not (" + exp.toQL() + ")";
     }
 
     @Override
     public String toQL(DataFrame df) {
-        return "not (" + delegate.toQL(df) + ")";
+        return "not (" + exp.toQL(df) + ")";
     }
 
     @Override
     public BooleanSeries eval(DataFrame df) {
-        return delegate.eval(df).not();
+        return exp.eval(df).not();
     }
 
     @Override
     public BooleanSeries eval(Series<?> s) {
-        return delegate.eval(s).not();
+        return exp.eval(s).not();
+    }
+
+    @Override
+    public Boolean reduce(DataFrame df) {
+        return !exp.reduce(df);
+    }
+
+    @Override
+    public Boolean reduce(Series<?> s) {
+        return !exp.reduce(s);
     }
 }

@@ -57,6 +57,21 @@ public class MapCondition2<L, R> extends Exp2<L, R, Boolean> implements Conditio
     }
 
     @Override
+    public Boolean reduce(DataFrame df) {
+        return doEval(
+                Series.ofVal(left.reduce(df), 1),
+                Series.ofVal(right.reduce(df), 1)
+        ).get(0);
+    }
+
+    @Override
+    public Boolean reduce(Series<?> s) {
+        return doEval(
+                Series.ofVal(left.reduce(s), 1),
+                Series.ofVal(right.reduce(s), 1)
+        ).get(0);
+    }
+
     protected BooleanSeries doEval(Series<L> left, Series<R> right) {
         return op.apply(left, right);
     }

@@ -83,4 +83,36 @@ public class ColumnSet_AggMinMaxTest {
                 .expectHeight(1)
                 .expectRow(0, 15.7, 2.0, 6.5, -1.2);
     }
+
+    @Test
+    public void min_div_mul() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                2, 1L,
+                6, 7L,
+                -3, 5L);
+
+        DataFrame agg = df.cols("A", "B").agg(
+                $int("a").min().div(2),
+                $long(1).min().mul(2));
+
+        new DataFrameAsserts(agg, "A", "B")
+                .expectHeight(1)
+                .expectRow(0, -1, 2L);
+    }
+
+    @Test
+    public void max_div_mul() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                2, 1L,
+                6, 7L,
+                -3, 5L);
+
+        DataFrame agg = df.cols("A", "B").agg(
+                $int("a").max().div(2),
+                $long(1).max().mul(2));
+
+        new DataFrameAsserts(agg, "A", "B")
+                .expectHeight(1)
+                .expectRow(0, 3, 14L);
+    }
 }

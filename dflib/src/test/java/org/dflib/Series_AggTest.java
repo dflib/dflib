@@ -10,10 +10,18 @@ import static org.dflib.Exp.*;
 
 public class Series_AggTest {
 
+    @Deprecated
     @ParameterizedTest
     @EnumSource(SeriesType.class)
     public void agg(SeriesType type) {
         String aggregated = type.createSeries("a", "b", "cd", "e", "fg").agg(Exp.$col("").vConcat("_")).get(0);
+        assertEquals("a_b_cd_e_fg", aggregated);
+    }
+
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void reduce(SeriesType type) {
+        String aggregated = type.createSeries("a", "b", "cd", "e", "fg").reduce(Exp.$col("").vConcat("_"));
         assertEquals("a_b_cd_e_fg", aggregated);
     }
 

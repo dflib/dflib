@@ -28,4 +28,14 @@ public class RowNumExp extends Exp0<Integer> implements NumExp<Integer> {
     public Series<Integer> eval(Series<?> s) {
         return new IntSequenceSeries(START_NUMBER, START_NUMBER + s.size());
     }
+
+    @Override
+    public Integer reduce(Series<?> s) {
+        return START_NUMBER;
+    }
+
+    @Override
+    public Integer reduce(DataFrame df) {
+        return START_NUMBER;
+    }
 }

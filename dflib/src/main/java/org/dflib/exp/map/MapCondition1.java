@@ -61,16 +61,21 @@ public class MapCondition1<F> extends Exp1<F, Boolean> implements Condition {
 
     @Override
     public BooleanSeries eval(DataFrame df) {
-        return doEval(exp.eval(df));
+        return op.apply(exp.eval(df));
     }
 
     @Override
     public BooleanSeries eval(Series<?> s) {
-        return doEval(exp.eval(s));
+        return op.apply(exp.eval(s));
     }
 
     @Override
-    protected BooleanSeries doEval(Series<F> s) {
-        return op.apply(s);
+    public Boolean reduce(DataFrame df) {
+        return op.apply(Series.ofVal(exp.reduce(df), 1)).get(0);
+    }
+
+    @Override
+    public Boolean reduce(Series<?> s) {
+        return op.apply(Series.ofVal(exp.reduce(s), 1)).get(0);
     }
 }

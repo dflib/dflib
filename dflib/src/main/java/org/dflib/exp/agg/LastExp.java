@@ -19,19 +19,25 @@ public class LastExp<T> extends Exp1<T, T> {
     }
 
     @Override
-    public Series<T> eval(DataFrame df) {
-        return super.eval(prefilter(df));
-    }
-
-    @Override
     public Series<T> eval(Series<?> s) {
-        return super.eval(prefilter(s));
+        return Series.ofVal(reduce(s), s.size());
     }
 
     @Override
-    protected Series<T> doEval(Series<T> s) {
-        return Series.ofVal(s.last(), 1);
+    public Series<T> eval(DataFrame df) {
+        return Series.ofVal(reduce(df), df.height());
     }
+
+    @Override
+    public T reduce(Series<?> s) {
+        return exp.eval(prefilter(s)).last();
+    }
+
+    @Override
+    public T reduce(DataFrame df) {
+        return exp.eval(prefilter(df)).last();
+    }
+
 
     private DataFrame prefilter(DataFrame df) {
         if (filter == null) {

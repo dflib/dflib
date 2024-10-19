@@ -1,5 +1,6 @@
 package org.dflib.exp.map;
 
+import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Series;
 import org.dflib.exp.Exp1;
@@ -41,7 +42,22 @@ public class MapExp1<F, T> extends Exp1<F, T> {
     }
 
     @Override
-    protected Series<T> doEval(Series<F> s) {
-        return op.apply(s);
+    public Series<T> eval(DataFrame df) {
+        return op.apply(exp.eval(df));
+    }
+
+    @Override
+    public Series<T> eval(Series<?> s) {
+        return op.apply(exp.eval(s));
+    }
+
+    @Override
+    public T reduce(DataFrame df) {
+        return op.apply(Series.ofVal(exp.reduce(df), 1)).get(0);
+    }
+
+    @Override
+    public T reduce(Series<?> s) {
+        return op.apply(Series.ofVal(exp.reduce(s), 1)).get(0);
     }
 }

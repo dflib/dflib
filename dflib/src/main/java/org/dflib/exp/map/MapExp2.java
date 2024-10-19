@@ -1,5 +1,6 @@
 package org.dflib.exp.map;
 
+import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Series;
 import org.dflib.builder.ObjectAccum;
@@ -41,6 +42,31 @@ public class MapExp2<L, R, T> extends Exp2<L, R, T> {
     }
 
     @Override
+    public Series<T> eval(DataFrame df) {
+        return doEval(left.eval(df), right.eval(df));
+    }
+
+    @Override
+    public Series<T> eval(Series<?> s) {
+        return doEval(left.eval(s), right.eval(s));
+    }
+
+    @Override
+    public T reduce(DataFrame df) {
+        return doEval(
+                Series.ofVal(left.reduce(df), 1),
+                Series.ofVal(right.reduce(df), 1)
+        ).get(0);
+    }
+
+    @Override
+    public T reduce(Series<?> s) {
+        return doEval(
+                Series.ofVal(left.reduce(s), 1),
+                Series.ofVal(right.reduce(s), 1)
+        ).get(0);
+    }
+
     protected Series<T> doEval(Series<L> left, Series<R> right) {
         return op.apply(left, right);
     }

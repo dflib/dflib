@@ -509,9 +509,21 @@ public interface Series<T> extends Iterable<T> {
 
     /**
      * Returns a scalar value that is a result of applying provided aggregator to Series.
+     *
+     * @deprecated in favor of {@link #reduce(Exp)}
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     default <R> Series<R> agg(Exp<R> aggregator) {
-        return aggregator.eval(this);
+        return Series.ofVal(aggregator.reduce(this), 1);
+    }
+
+    /**
+     * Returns a scalar value that is a result of applying provided aggregator to Series.
+     *
+     * @since 2.0.0
+     */
+    default <R> R reduce(Exp<R> reducer) {
+        return reducer.reduce(this);
     }
 
     /**
@@ -536,7 +548,7 @@ public interface Series<T> extends Iterable<T> {
      * Aggregating operation, concatenating Series values into a single String using the provided element separator.
      */
     default String concat(String separator) {
-        return agg(Exp.$col("").vConcat(separator)).get(0);
+        return reduce(Exp.$col("").vConcat(separator));
     }
 
     /**
@@ -544,7 +556,7 @@ public interface Series<T> extends Iterable<T> {
      * prefix and suffix.
      */
     default String concat(String separator, String prefix, String suffix) {
-        return agg(Exp.$col("").vConcat(separator, prefix, suffix)).get(0);
+        return reduce(Exp.$col("").vConcat(separator, prefix, suffix));
     }
 
     /**

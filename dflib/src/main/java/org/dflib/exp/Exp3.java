@@ -2,7 +2,6 @@ package org.dflib.exp;
 
 import org.dflib.DataFrame;
 import org.dflib.Exp;
-import org.dflib.Series;
 
 /**
  * A ternary expression with three {@link Exp} arguments.
@@ -46,16 +45,4 @@ public abstract class Exp3<One, Two, Three, T> implements Exp<T> {
     public String toQL(DataFrame df) {
         return one.toQL(df) + " " + opName1 + " " + two.toQL(df) + " " + opName2 + " " + three.toQL(df);
     }
-
-    @Override
-    public Series<T> eval(DataFrame df) {
-        return doEval(one.eval(df), two.eval(df), three.eval(df));
-    }
-
-    @Override
-    public Series<T> eval(Series<?> s) {
-        return doEval(one.eval(s), two.eval(s), three.eval(s));
-    }
-
-    protected abstract Series<T> doEval(Series<One> one, Series<Two> two, Series<Three> three);
 }

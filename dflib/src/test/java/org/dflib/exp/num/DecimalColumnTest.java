@@ -126,7 +126,7 @@ public class DecimalColumnTest {
                 new BigDecimal("2.0100287"),
                 new BigDecimal("4.5"));
 
-        new SeriesAsserts(exp.eval(df)).expectData(new BigDecimal("6.51"));
+        assertEquals(new BigDecimal("6.51"), exp.reduce(df));
     }
 
     @Test
@@ -138,7 +138,7 @@ public class DecimalColumnTest {
                 null,
                 new BigDecimal("4.5"));
 
-        new SeriesAsserts(exp.eval(df)).expectData(new BigDecimal("6.51"));
+        assertEquals(new BigDecimal("6.51"), exp.reduce(df));
     }
 
     @Test
@@ -147,7 +147,7 @@ public class DecimalColumnTest {
 
         Series<BigDecimal> s = Series.of(new BigDecimal("100.01"), new BigDecimal("55.5"), new BigDecimal("0."));
 
-        new SeriesAsserts(exp.eval(s)).expectData(new BigDecimal("55.500"));
+        assertEquals(new BigDecimal("55.500"), exp.reduce(s));
     }
 
     @Test
@@ -157,7 +157,7 @@ public class DecimalColumnTest {
         Series<BigDecimal> s = Series.of(
                 new BigDecimal("100.01"), new BigDecimal("55.5"), new BigDecimal("0."), new BigDecimal("5."));
 
-        new SeriesAsserts(exp.eval(s)).expectData(new BigDecimal("30.3"));
+        assertEquals(new BigDecimal("30.3"), exp.reduce(s));
     }
 
     @Test
@@ -167,7 +167,7 @@ public class DecimalColumnTest {
         Series<BigDecimal> s = Series.of(
                 new BigDecimal("100.01"), null, new BigDecimal("55.5"), new BigDecimal("0."));
 
-        new SeriesAsserts(exp.eval(s)).expectData(new BigDecimal("55.500"));
+        assertEquals(new BigDecimal("55.500"), exp.reduce(s));
     }
 
     @Test

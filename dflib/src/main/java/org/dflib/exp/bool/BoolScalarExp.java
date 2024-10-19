@@ -30,8 +30,7 @@ public class BoolScalarExp extends ScalarExp<Boolean> implements Condition {
         return doEval(s.size());
     }
 
-    @Override
-    protected BooleanSeries doEval(int height) {
+    private BooleanSeries doEval(int height) {
         return boolValue ? new TrueSeries(height) : new FalseSeries(height);
     }
 }

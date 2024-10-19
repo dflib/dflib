@@ -23,22 +23,6 @@ public class ReduceExp2<L, R, T> extends Exp2<L, R, T> {
     }
 
     @Override
-    public Series<T> eval(DataFrame df) {
-        return super.eval(filter != null ? df.rows(filter).select() : df);
-    }
-
-    @Override
-    public Series<T> eval(Series<?> s) {
-        return super.eval(filter != null ? s.select(filter) : s);
-    }
-
-    @Override
-    protected Series<T> doEval(Series<L> left, Series<R> right) {
-        T val = op.apply(left, right);
-        return Series.ofVal(val, 1);
-    }
-
-    @Override
     public String toQL() {
         // aggregators are usually functions, not operators. So redefine super...
         return opName + "(" + left.toQL() + "," + right.toQL() + ")";
@@ -48,5 +32,27 @@ public class ReduceExp2<L, R, T> extends Exp2<L, R, T> {
     public String toQL(DataFrame df) {
         // aggregators are usually functions, not operators. So redefine super...
         return opName + "(" + left.toQL(df) + "," + right.toQL(df) + ")";
+    }
+
+    @Override
+    public Series<T> eval(Series<?> s) {
+        return Series.ofVal(reduce(s), s.size());
+    }
+
+    @Override
+    public Series<T> eval(DataFrame df) {
+        return Series.ofVal(reduce(df), df.height());
+    }
+
+    @Override
+    public T reduce(DataFrame df) {
+        DataFrame dff = filter != null ? df.rows(filter).select() : df;
+        return op.apply(left.eval(dff), right.eval(dff));
+    }
+
+    @Override
+    public T reduce(Series<?> s) {
+        Series<?> sf = filter != null ? s.select(filter) : s;
+        return op.apply(left.eval(sf), right.eval(sf));
     }
 }

@@ -61,4 +61,14 @@ public class Column<T> implements Exp<T> {
     public Series<T> eval(Series<?> s) {
         return (Series<T>) s;
     }
+
+    @Override
+    public T reduce(DataFrame df) {
+        throw new UnsupportedOperationException("Column expression '" + name + ":" + getType().getSimpleName() + "' does not define a 'reduce' operation");
+    }
+
+    @Override
+    public T reduce(Series<?> s) {
+        throw new UnsupportedOperationException("Column expression '" + name + ":" + getType().getSimpleName() + "' does not define a 'reduce' operation");
+    }
 }

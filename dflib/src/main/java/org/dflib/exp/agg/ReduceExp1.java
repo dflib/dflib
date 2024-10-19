@@ -25,18 +25,22 @@ public class ReduceExp1<F, T> extends Exp1<F, T> {
     }
 
     @Override
-    public Series<T> eval(DataFrame df) {
-        return super.eval(filter != null ? df.rows(filter).select() : df);
-    }
-
-    @Override
     public Series<T> eval(Series<?> s) {
-        return super.eval(filter != null ? s.select(filter) : s);
+        return Series.ofVal(reduce(s), s.size());
     }
 
     @Override
-    protected Series<T> doEval(Series<F> s) {
-        T val = op.apply(s);
-        return Series.ofVal(val, 1);
+    public Series<T> eval(DataFrame df) {
+        return Series.ofVal(reduce(df), df.height());
+    }
+
+    @Override
+    public T reduce(DataFrame df) {
+        return op.apply(exp.eval(filter != null ? df.rows(filter).select() : df));
+    }
+
+    @Override
+    public T reduce(Series<?> s) {
+        return op.apply(exp.eval(filter != null ? s.select(filter) : s));
     }
 }

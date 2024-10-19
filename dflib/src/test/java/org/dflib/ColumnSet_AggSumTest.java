@@ -82,4 +82,35 @@ public class ColumnSet_AggSumTest {
         assertEquals(5.95, (Double) agg.getColumn("sum(a)").get(0), 0.000000001);
     }
 
+    @Test
+    public void sum_div_mul() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                1, 1L,
+                -3, 5L);
+
+        DataFrame agg = df.cols().agg(
+                $int("a").sum().div(2),
+                $long(1).sum().mul(2));
+
+        new DataFrameAsserts(agg, "sum(a) / 2", "sum(b) * castAsLong(2)")
+                .expectHeight(1)
+                .expectRow(0, -1, 12L);
+    }
+
+    @Test
+    public void sum_div_median() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                2, 1L,
+                6, 7L,
+                -3, 5L);
+
+        DataFrame agg = df.cols("A", "B").agg(
+                $int("a").sum().div($int("a").median()),
+                $long("b").sum().div($long("b").median()));
+
+        new DataFrameAsserts(agg, "A", "B")
+                .expectHeight(1)
+                .expectRow(0, 2.5, 2.6);
+    }
+
 }

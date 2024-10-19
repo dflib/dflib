@@ -3,6 +3,7 @@ package org.dflib.exp.agg;
 import org.dflib.Condition;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
+import org.dflib.LongSeries;
 import org.dflib.NumExp;
 import org.dflib.Series;
 import org.dflib.exp.Exp1;
@@ -15,31 +16,36 @@ import java.util.function.Function;
  */
 public class LongReduceExp1<F> extends Exp1<F, Long> implements NumExp<Long> {
 
-    private final Function<Series<F>, Long> aggregator;
+    private final Function<Series<F>, Long> op;
     private final Condition filter;
 
-    public LongReduceExp1(String opName, Exp<F> exp, Function<Series<F>, Long> aggregator, Condition filter) {
+    public LongReduceExp1(String opName, Exp<F> exp, Function<Series<F>, Long> op, Condition filter) {
         super(opName, Long.class, exp);
-        this.aggregator = aggregator;
+        this.op = op;
         this.filter = filter;
     }
 
     @Override
-    public Series<Long> eval(Series<?> s) {
-        return super.eval(filter != null ? s.select(filter) : s);
+    public LongSeries eval(Series<?> s) {
+        return new LongSingleValueSeries(reduce(s), s.size());
     }
 
     @Override
-    public Series<Long> eval(DataFrame df) {
-        return super.eval(filter != null ? df.rows(filter).select() : df);
+    public LongSeries eval(DataFrame df) {
+        return new LongSingleValueSeries(reduce(df), df.height());
     }
 
     @Override
-    protected Series<Long> doEval(Series<F> s) {
+    public Long reduce(DataFrame df) {
         // TODO: optimize for primitive series.
-        //  E.g. "IntSeries.average()" is faster than "AggregatorFunctions.averageDouble()"
+        //  E.g. "DoubleSeries.avg()" is faster than "AggregatorFunctions.averageDouble()"
+        return op.apply(exp.eval(filter != null ? df.rows(filter).select() : df));
+    }
 
-        long val = aggregator.apply(s);
-        return new LongSingleValueSeries(val, 1);
+    @Override
+    public Long reduce(Series<?> s) {
+        // TODO: optimize for primitive series.
+        //  E.g. "DoubleSeries.avg()" is faster than "AggregatorFunctions.averageDouble()"
+        return op.apply(exp.eval(filter != null ? s.select(filter) : s));
     }
 }

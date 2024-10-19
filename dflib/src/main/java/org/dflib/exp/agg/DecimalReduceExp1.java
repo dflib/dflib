@@ -26,18 +26,22 @@ public class DecimalReduceExp1<F> extends Exp1<F, BigDecimal> implements Decimal
     }
 
     @Override
-    public Series<BigDecimal> eval(DataFrame df) {
-        return super.eval(filter != null ? df.rows(filter).select() : df);
-    }
-
-    @Override
     public Series<BigDecimal> eval(Series<?> s) {
-        return super.eval(filter != null ? s.select(filter) : s);
+        return new SingleValueSeries<>(reduce(s), s.size());
     }
 
     @Override
-    protected Series<BigDecimal> doEval(Series<F> s) {
-        BigDecimal val = op.apply(s);
-        return new SingleValueSeries<>(val, 1);
+    public Series<BigDecimal> eval(DataFrame df) {
+        return new SingleValueSeries<>(reduce(df), df.height());
+    }
+
+    @Override
+    public BigDecimal reduce(DataFrame df) {
+        return op.apply(exp.eval(filter != null ? df.rows(filter).select() : df));
+    }
+
+    @Override
+    public BigDecimal reduce(Series<?> s) {
+        return op.apply(exp.eval(filter != null ? s.select(filter) : s));
     }
 }

@@ -61,7 +61,7 @@ public class GroupByAggregator {
             DataFrame group = groupBy.getGroup(key);
 
             // expecting 1-element Series. Unpack them and add to the accum
-            columnBuilder.push(agg.eval(group).get(0));
+            columnBuilder.push(agg.reduce(group));
         }
 
         return columnBuilder.toSeries();

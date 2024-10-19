@@ -2,7 +2,6 @@ package org.dflib.exp;
 
 import org.dflib.DataFrame;
 import org.dflib.Exp;
-import org.dflib.Series;
 
 /**
  * A unary expression with an {@link Exp} argument.
@@ -40,16 +39,4 @@ public abstract class Exp1<F, T> implements Exp<T> {
     public Class<T> getType() {
         return type;
     }
-
-    @Override
-    public Series<T> eval(Series<?> s) {
-        return doEval(exp.eval(s));
-    }
-
-    @Override
-    public Series<T> eval(DataFrame df) {
-        return doEval(exp.eval(df));
-    }
-
-    protected abstract Series<T> doEval(Series<F> s);
 }

@@ -4,6 +4,7 @@ import org.dflib.DataFrame;
 import org.dflib.Environment;
 import org.dflib.Exp;
 import org.dflib.Series;
+import org.dflib.series.SingleValueSeries;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -27,7 +28,7 @@ public class DataFrameAggregator {
 
         if (aggW <= 1 || df.height() < env.parallelExecThreshold()) {
             for (int i = 0; i < aggW; i++) {
-                aggColumns[i] = aggregators[i].eval(df);
+                aggColumns[i] = new SingleValueSeries(aggregators[i].reduce(df), 1);
             }
         } else {
             ExecutorService pool = env.threadPool();
@@ -35,7 +36,7 @@ public class DataFrameAggregator {
 
             for (int i = 0; i < aggW; i++) {
                 Exp<?> aggregator = aggregators[i];
-                aggTasks[i] = pool.submit(() -> aggregator.eval(df));
+                aggTasks[i] = pool.submit(() -> new SingleValueSeries(aggregator.reduce(df), 1));
             }
 
             for (int i = 0; i < aggW; i++) {

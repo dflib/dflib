@@ -65,6 +65,16 @@ public class IfNullExp<T> implements Exp<T> {
         return evalMergeReplacements(data, ifNullExp.eval(s.select(nullsIndex)), nullsIndex);
     }
 
+    @Override
+    public T reduce(DataFrame df) {
+        throw new UnsupportedOperationException("IF expression '" + getType().getSimpleName() + " does not define a 'reduce' operation");
+    }
+
+    @Override
+    public T reduce(Series<?> s) {
+        throw new UnsupportedOperationException("IF expression '" + getType().getSimpleName() + " does not define a 'reduce' operation");
+    }
+
     protected Series<T> evalMergeReplacements(Series<T> data, Series<T> nullReplacements, IntSeries nullsIndex) {
         // TODO: "data" is not a primitive Series by definition, but replacing nulls may produce a primitive-compatible
         //  Series. See if we can exploit this fact for performance optimization

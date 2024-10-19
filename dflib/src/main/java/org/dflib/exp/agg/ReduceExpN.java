@@ -9,7 +9,7 @@ import org.dflib.exp.ExpN;
 import java.util.function.Function;
 
 /**
- * @since 1.1.0
+ * @since 2.0.0
  */
 public class ReduceExpN<T> extends ExpN<T> {
 
@@ -23,18 +23,39 @@ public class ReduceExpN<T> extends ExpN<T> {
     }
 
     @Override
-    public Series<T> eval(DataFrame df) {
-        return super.eval(filter != null ? df.rows(filter).select() : df);
-    }
-
-    @Override
     public Series<T> eval(Series<?> s) {
-        return super.eval(filter != null ? s.select(filter) : s);
+        return Series.ofVal(reduce(s), s.size());
     }
 
     @Override
-    protected Series<T> doEval(int height, Series<?>[] args) {
-        T val = op.apply(args);
-        return Series.ofVal(val, 1);
+    public Series<T> eval(DataFrame df) {
+        return Series.ofVal(reduce(df), df.height());
+    }
+
+    @Override
+    public T reduce(DataFrame df) {
+
+        DataFrame dff = filter != null ? df.rows(filter).select() : df;
+
+        int w = args.length;
+        Series<?>[] columns = new Series[w];
+        for (int i = 0; i < w; i++) {
+            columns[i] = args[i].eval(dff);
+        }
+
+        return op.apply(columns);
+    }
+
+    @Override
+    public T reduce(Series<?> s) {
+
+        Series<?> sf = filter != null ? s.select(filter) : s;
+        int w = args.length;
+        Series<?>[] columns = new Series[w];
+        for (int i = 0; i < w; i++) {
+            columns[i] = args[i].eval(sf);
+        }
+
+        return op.apply(columns);
     }
 }

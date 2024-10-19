@@ -57,17 +57,21 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * A columnar expression that produces a Series out of either a DataFrame or a Series. Non-aggregating expressions
- * produce Series that are the same size as the source data structure, aggregating - a Series with fewer elements
- * (usually just one element).
+ * A columnar expression that operates either on a Series or a DataFrame.
  * <p>
- * Contains static factory methods to create various types of expressions. By convention expressions referencing
- * columns start with "$".
+ * Contains static factory methods to create various types of expressions. By convention, expressions referencing
+ * columns start with a "$".
+ * <p>
+ * Expressions can be invoked in one of the two modes: "eval" or "reduce". The former is essentially a per-row
+ * transformation producing a Series of the same size as its input Series or DataFrame. The latter is an aggregator,
+ * producing a single value. Some expressions (e.g. "column" references) only work in an "eval" mode and would throw
+ * when calling "reduce".
  */
 public interface Exp<T> {
 
     /**
-     * Returns an expression that evaluates to a Series containing a single value.
+     * Returns an expression whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * returns the value itself.
      */
     static <T> Exp<T> $val(T value) {
 
@@ -79,28 +83,32 @@ public interface Exp<T> {
     }
 
     /**
-     * Returns an expression that evaluates to a Series containing a single LocalDate value.
+     * Returns a DateExp whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * returns the value itself.
      */
     static DateExp $dateVal(LocalDate value) {
         return new DateScalarExp(value);
     }
 
     /**
-     * Returns an expression that evaluates to a Series containing a single LocalTime value.
+     * Returns a TimeExp whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * returns the value itself.
      */
     static TimeExp $timeVal(LocalTime value) {
         return new TimeScalarExp(value);
     }
 
     /**
-     * Returns an expression that evaluates to a Series containing a single LocalDateTime value.
+     * Returns a DateTimeExp whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * returns the value itself.
      */
     static DateTimeExp $dateTimeVal(LocalDateTime value) {
         return new DateTimeScalarExp(value);
     }
 
     /**
-     * Returns an expression that evaluates to a Series containing a single value.
+     * Returns an expression whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * returns the value itself. Type argument allows DFLib to optimize the expression for a specific Java type.
      */
     static <T, V extends T> Exp<T> $val(V value, Class<T> type) {
 
@@ -121,77 +129,88 @@ public interface Exp<T> {
     }
 
     /**
-     * Returns an expression that evaluates to a named DataFrame column.
+     * Returns an expression whose "eval" returns a named DataFrame column (or the input Series object when called
+     * on a Series). "reduce" operation is undefined and throws an exception.
      */
     static <T> Exp<T> $col(String name) {
         return new Column(name, Object.class);
     }
 
     /**
-     * Returns an expression that evaluates to a DataFrame column at a given position
+     * Returns an expression whose "eval" returns a DataFrame column in the specified position (or the input Series
+     * object when called on a Series). "reduce" operation is undefined and throws an exception.
      */
     static <T> Exp<T> $col(int position) {
         return new Column(position, Object.class);
     }
 
     /**
-     * Returns an expression that evaluates to a named DataFrame column.
+     * Returns an expression whose "eval" returns a named DataFrame column (or the input Series object when called
+     * on a Series). "reduce" operation is undefined and throws an exception.
      */
     static <T> Exp<T> $col(String name, Class<T> type) {
         return new Column<>(name, type);
     }
 
     /**
-     * Returns an expression that evaluates to a DataFrame column at a given position
+     * Returns an expression whose "eval" returns a DataFrame column in the specified position (or the input Series
+     * object when called on a Series). "reduce" operation is undefined and throws an exception.
      */
     static <T> Exp<T> $col(int position, Class<T> type) {
         return new Column<>(position, type);
     }
 
     /**
-     * Returns an expression that evaluates to a named DataFrame String column.
+     * Returns an expression whose "eval" returns a named DataFrame String column (or the input Series object when called
+     * on a Series). "reduce" operation is undefined and throws an exception.
      */
     static StrExp $str(String name) {
         return new StrColumn(name);
     }
 
     /**
-     * Returns an expression that evaluates to a DataFrame String column at a given position.
+     * Returns an expression whose "eval" returns a DataFrame String column in the specified position (or the input Series
+     * object when called on a Series). "reduce" operation is undefined and throws an exception.
      */
     static StrExp $str(int position) {
         return new StrColumn(position);
     }
 
     /**
-     * Returns an expression that evaluates to a named DataFrame Integer column.
+     * Returns an expression whose "eval" returns a named DataFrame Integer column (or the input Series object when called
+     * on a Series). "reduce" operation is undefined and throws an exception.
      */
     static NumExp<Integer> $int(String name) {
         return new IntColumn(name);
     }
 
     /**
-     * Returns an expression that evaluates to a DataFrame Integer column at a given position.
+     * Returns an expression whose "eval" returns a DataFrame Integer column in the specified position (or the input Series
+     * object when called on a Series). "reduce" operation is undefined and throws an exception.
      */
     static NumExp<Integer> $int(int position) {
         return new IntColumn(position);
     }
 
     /**
-     * Returns an expression that evaluates to a named DataFrame Long column.
+     * Returns an expression whose "eval" returns a named DataFrame Long column (or the input Series object when called
+     * on a Series). "reduce" operation is undefined and throws an exception.
      */
     static NumExp<Long> $long(String name) {
         return new LongColumn(name);
     }
 
     /**
-     * Returns an expression that evaluates to a DataFrame Long column at a given position.
+     * Returns an expression whose "eval" returns a DataFrame Long column in the specified position (or the input Series
+     * object when called on a Series). "reduce" operation is undefined and throws an exception.
      */
     static NumExp<Long> $long(int position) {
         return new LongColumn(position);
     }
 
     /**
-     * Returns an expression that evaluates to a named DataFrame Float column.
+     * Returns an expression whose "eval" returns a named DataFrame Float column (or the input Series object when called
+     * on a Series). "reduce" operation is undefined and throws an exception.
      *
      * @since 1.1.0
      */
@@ -200,7 +219,8 @@ public interface Exp<T> {
     }
 
     /**
-     * Returns an expression that evaluates to a DataFrame Float column at a given position.
+     * Returns an expression whose "eval" returns a DataFrame Float column in the specified position (or the input Series
+     * object when called on a Series). "reduce" operation is undefined and throws an exception.
      *
      * @since 1.1.0
      */
@@ -209,28 +229,32 @@ public interface Exp<T> {
     }
 
     /**
-     * Returns an expression that evaluates to a named DataFrame Double column.
+     * Returns an expression whose "eval" returns a named DataFrame Double column (or the input Series object when called
+     * on a Series). "reduce" operation is undefined and throws an exception.
      */
     static NumExp<Double> $double(String name) {
         return new DoubleColumn(name);
     }
 
     /**
-     * Returns an expression that evaluates to a DataFrame Double column at a given position.
+     * Returns an expression whose "eval" returns a DataFrame Double column in the specified position (or the input Series
+     * object when called on a Series). "reduce" operation is undefined and throws an exception.
      */
     static NumExp<Double> $double(int position) {
         return new DoubleColumn(position);
     }
 
     /**
-     * Returns an expression that evaluates to a named DataFrame BigDecimal column.
+     * Returns an expression whose "eval" returns a named DataFrame BigDecimal column (or the input Series object when called
+     * on a Series). "reduce" operation is undefined and throws an exception.
      */
     static DecimalExp $decimal(String name) {
         return new DecimalColumn(name);
     }
 
     /**
-     * Returns an expression that evaluates to a BigDecimal column at a given position.
+     * Returns an expression whose "eval" returns a DataFrame BigDecimal column in the specified position (or the input Series
+     * object when called on a Series). "reduce" operation is undefined and throws an exception.
      */
     static DecimalExp $decimal(int position) {
         return new DecimalColumn(position);
@@ -248,28 +272,32 @@ public interface Exp<T> {
     }
 
     /**
-     * Returns an expression that evaluates to a named date column.
+     * Returns DateExp whose "eval" returns a named DataFrame LocalDate column (or the input Series object when called
+     * on a Series). "reduce" operation is undefined and throws an exception.
      */
     static DateExp $date(String name) {
         return new DateColumn(name);
     }
 
     /**
-     * Returns an expression that evaluates to a date column at a given position.
+     * Returns a DateExp whose "eval" returns a DataFrame LocalDate column in the specified position (or the input Series
+     * object when called on a Series). "reduce" operation is undefined and throws an exception.
      */
     static DateExp $date(int position) {
         return new DateColumn(position);
     }
 
     /**
-     * Returns an expression that evaluates to a named time column.
+     * Returns a TimeExp whose "eval" returns a named DataFrame LocalTime column (or the input Series object when called
+     * on a Series). "reduce" operation is undefined and throws an exception.
      */
     static TimeExp $time(String name) {
         return new TimeColumn(name);
     }
 
     /**
-     * Returns an expression that evaluates to a time column at a given position.
+     * Returns a TimeExp whose "eval" returns a DataFrame LocalTime column in the specified position (or the input Series
+     * object when called on a Series). "reduce" operation is undefined and throws an exception.
      */
     static TimeExp $time(int position) {
         return new TimeColumn(position);
@@ -277,14 +305,16 @@ public interface Exp<T> {
 
 
     /**
-     * Returns an expression that evaluates to a named date column.
+     * Returns a DateTimeExp whose "eval" returns a named DataFrame LocalDateTime column (or the input Series object when called
+     * on a Series). "reduce" operation is undefined and throws an exception.
      */
     static DateTimeExp $dateTime(String name) {
         return new DateTimeColumn(name);
     }
 
     /**
-     * Returns an expression that evaluates to a date column at a given position.
+     * Returns a DateTimeExp whose "eval" returns a DataFrame LocalDateTime column in the specified position (or the input Series
+     * object when called on a Series). "reduce" operation is undefined and throws an exception.
      */
     static DateTimeExp $dateTime(int position) {
         return new DateTimeColumn(position);
@@ -336,7 +366,7 @@ public interface Exp<T> {
     }
 
     /**
-     * Aggregating function that returns a single-value Series with the count of rows in the input.
+     * Aggregating expression whose "reduce" operation returns the count of rows in the input.
      */
     static Exp<Integer> count() {
         return CountExp.getInstance();
@@ -404,14 +434,28 @@ public interface Exp<T> {
     String toQL(DataFrame df);
 
     /**
-     * Evaluates expression against the DataFrame argument, returning a Series result.
+     * Evaluates self against the DataFrame argument, returning a Series result of the same size as the DataFrame height.
      */
     Series<T> eval(DataFrame df);
 
     /**
-     * Evaluates expression against the Series argument, returning a Series result.
+     * Evaluates self against the Series argument, returning a Series result of the same size as argument Series.
      */
     Series<T> eval(Series<?> s);
+
+    /**
+     * Evaluates self as an "aggregating" expression against the DataFrame argument, returning a single value.
+     *
+     * @since 2.0.0
+     */
+    T reduce(DataFrame df);
+
+    /**
+     * Evaluates self as an "aggregating" expression against the Series argument, returning a single value.
+     *
+     * @since 2.0.0
+     */
+    T reduce(Series<?> s);
 
     /**
      * Returns a sorter that will use this expression for an ascending sort.
@@ -526,14 +570,17 @@ public interface Exp<T> {
     }
 
     /**
-     * Creates an aggregating expression based on this Exp and a custom aggregation function.
+     * Creates an aggregating expression whose "reduce" operation returns applies a custom aggregation function to the
+     * result of this expression.
      */
     default <A> Exp<A> agg(Function<Series<T>, A> aggregator) {
         return new ReduceExp1<>("_custom", (Class<A>) Object.class, this, aggregator, null);
     }
 
     /**
-     * Creates an aggregating expression based on this Exp, a filter and a custom aggregation function.
+     * Creates an aggregating expression whose "reduce" operation returns applies a custom aggregation function to the
+     * result of this expression. Provided filter is applied to the input before evaluating this expression and
+     * passing the result to the aggregator function.
      */
     default <A> Exp<A> agg(Condition filter, Function<Series<T>, A> aggregator) {
         return new ReduceExp1<>("_custom", (Class<A>) Object.class, this, aggregator, filter);
@@ -552,8 +599,8 @@ public interface Exp<T> {
     }
 
     /**
-     * Aggregating operation that returns a single-value Series with a String of concatenated values separated by
-     * the delimiter.
+     * Creates an aggregating expression whose "reduce" operation returns a String of concatenated Series values
+     * separated by the delimiter.
      */
     default Exp<String> vConcat(String delimiter) {
         Function f = StringAggregators.vConcat(delimiter);
@@ -566,8 +613,8 @@ public interface Exp<T> {
     }
 
     /**
-     * Aggregating operation that returns a single-value Series with a String of concatenated values separated by the
-     * delimiter, preceded by the prefix and followed by the suffix.
+     * Creates an aggregating expression whose "reduce" operation returns a String of concatenated Series values
+     * separated by the delimiter preceded by the prefix and followed by the suffix.
      */
     default Exp<String> vConcat(String delimiter, String prefix, String suffix) {
         Function f = StringAggregators.vConcat(delimiter, prefix, suffix);
@@ -590,7 +637,7 @@ public interface Exp<T> {
     }
 
     /**
-     * Aggregating operation that returns a single-value Series with all the values gathered into a single Set.
+     * Creates an aggregating expression whose "reduce" operation returns a Set containing all Series values.
      */
     default Exp<Set<T>> set() {
         Class setClass = Set.class;
@@ -598,7 +645,7 @@ public interface Exp<T> {
     }
 
     /**
-     * Aggregating operation that returns a single-value Series with all the values gathered into a single List.
+     * Creates an aggregating expression whose "reduce" operation returns a List containing all Series values.
      */
     default Exp<List<T>> list() {
         Class listClass = List.class;
@@ -606,7 +653,7 @@ public interface Exp<T> {
     }
 
     /**
-     * Aggregating operation that returns a single-value Series with all the values gathered into a single List.
+     * Creates an aggregating expression whose "reduce" operation returns an array containing all Series values.
      */
     default Exp<T[]> array(T[] template) {
         Class arrayClass = template.getClass();

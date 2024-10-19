@@ -89,6 +89,16 @@ public class IfExp<T> implements Exp<T> {
         );
     }
 
+    @Override
+    public T reduce(DataFrame df) {
+        throw new UnsupportedOperationException("IF expression '" + getType().getSimpleName() + " does not define a 'reduce' operation");
+    }
+
+    @Override
+    public T reduce(Series<?> s) {
+        throw new UnsupportedOperationException("IF expression '" + getType().getSimpleName() + " does not define a 'reduce' operation");
+    }
+
     protected Series<T> evalMerge(
             Series<T> dataIfTrue,
             Series<T> dataIfFalse,
@@ -110,4 +120,5 @@ public class IfExp<T> implements Exp<T> {
 
         return (Series<T>) Series.of(vals);
     }
+
 }

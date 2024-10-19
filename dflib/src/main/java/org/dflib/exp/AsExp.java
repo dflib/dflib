@@ -26,6 +26,16 @@ public class AsExp<T> implements Exp<T>  {
     }
 
     @Override
+    public T reduce(Series<?> s) {
+        return delegate.reduce(s);
+    }
+
+    @Override
+    public T reduce(DataFrame df) {
+        return delegate.reduce(df);
+    }
+
+    @Override
     public Exp<T> as(String name) {
         return Objects.equals(name, this.name) ? this : new AsExp<>(name, delegate);
     }

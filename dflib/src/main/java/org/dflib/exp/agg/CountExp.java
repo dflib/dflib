@@ -5,7 +5,6 @@ import org.dflib.DataFrame;
 import org.dflib.NumExp;
 import org.dflib.Series;
 import org.dflib.exp.Exp0;
-import org.dflib.series.IntSingleValueSeries;
 
 
 public class CountExp extends Exp0<Integer> implements NumExp<Integer> {
@@ -25,13 +24,21 @@ public class CountExp extends Exp0<Integer> implements NumExp<Integer> {
 
     @Override
     public Series<Integer> eval(DataFrame df) {
-        int c = filter != null ? filter.eval(df).countTrue() : df.height();
-        return new IntSingleValueSeries(c, 1);
+        return Series.ofVal(reduce(df), df.height());
     }
 
     @Override
     public Series<Integer> eval(Series<?> s) {
-        int c = filter != null ? filter.eval(s).countTrue() : s.size();
-        return new IntSingleValueSeries(c, 1);
+        return Series.ofVal(reduce(s), s.size());
+    }
+
+    @Override
+    public Integer reduce(DataFrame df) {
+        return filter != null ? filter.eval(df).countTrue() : df.height();
+    }
+
+    @Override
+    public Integer reduce(Series<?> s) {
+        return filter != null ? filter.eval(s).countTrue() : s.size();
     }
 }

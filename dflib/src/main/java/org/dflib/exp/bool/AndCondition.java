@@ -16,8 +16,11 @@ public class AndCondition extends ExpN<Boolean> implements Condition {
         return combined;
     }
 
+    private final Condition[] conditionArgs;
+
     public AndCondition(Condition... args) {
         super("and", Boolean.class, args);
+        this.conditionArgs = args;
     }
 
     @Override
@@ -35,11 +38,10 @@ public class AndCondition extends ExpN<Boolean> implements Condition {
         int w = args.length;
         BooleanSeries[] columns = new BooleanSeries[w];
         for (int i = 0; i < w; i++) {
-            // we can safely do this cast, as constructor only allows args that are BooleanSeries
-            columns[i] = ((Condition) args[i]).eval(s);
+            columns[i] = conditionArgs[i].eval(s);
         }
 
-        return doEval(s.size(), columns);
+        return BooleanSeries.andAll(columns);
     }
 
     @Override
@@ -47,16 +49,31 @@ public class AndCondition extends ExpN<Boolean> implements Condition {
         int w = args.length;
         BooleanSeries[] columns = new BooleanSeries[w];
         for (int i = 0; i < w; i++) {
-            // we can safely do this cast, as constructor only allows args that are BooleanSeries
-            columns[i] = ((Condition) args[i]).eval(df);
+            columns[i] = conditionArgs[i].eval(df);
         }
 
-        return doEval(df.height(), columns);
+        return BooleanSeries.andAll(columns);
     }
 
     @Override
-    protected BooleanSeries doEval(int height, Series<?>[] args) {
-        // we can safely do this cast, as eval(..) always passes BooleanSeries
-        return BooleanSeries.andAll((BooleanSeries[]) args);
+    public Boolean reduce(Series<?> s) {
+        int w = args.length;
+        BooleanSeries[] columns = new BooleanSeries[w];
+        for (int i = 0; i < w; i++) {
+            columns[i] = Series.ofBool(conditionArgs[i].reduce(s));
+        }
+
+        return BooleanSeries.andAll(columns).get(0);
+    }
+
+    @Override
+    public Boolean reduce(DataFrame df) {
+        int w = args.length;
+        BooleanSeries[] columns = new BooleanSeries[w];
+        for (int i = 0; i < w; i++) {
+            columns[i] = Series.ofBool(conditionArgs[i].reduce(df));
+        }
+
+        return BooleanSeries.andAll(columns).get(0);
     }
 }

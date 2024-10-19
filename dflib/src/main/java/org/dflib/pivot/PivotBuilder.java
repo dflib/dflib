@@ -173,9 +173,9 @@ public class PivotBuilder {
 
                 // capture a column with dynamically defined name
                 Exp.$col(valueColumnName)
-                        // and then pass the resulting Series (not DataFrame)
+                        // and then pass the resulting Series (not the DataFrame)
                         // to the column name-agnostic aggregator exp
-                        .map(aggregator::eval)
+                        .agg(aggregator::reduce)
                         // restore the column name
                         .as(valueColumnName)
         );

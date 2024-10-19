@@ -84,7 +84,7 @@ public abstract class RangeAggregator {
                 Exp<?> agg = aggregators[i];
 
                 for (int j = 0; j < h; j++) {
-                    accum.push(agg.eval(ranges[j]).get(0));
+                    accum.push(agg.reduce(ranges[j]));
                 }
 
                 data[i] = accum.toSeries();

@@ -1,5 +1,6 @@
 package org.dflib.exp.str;
 
+import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Series;
 import org.dflib.StrExp;
@@ -40,8 +41,52 @@ public class ConcatExp extends ExpN<String> implements StrExp {
         super("concat", String.class, args);
     }
 
+
     @Override
-    protected Series<String> doEval(int height, Series<?>[] args) {
+    public Series<String> eval(Series<?> s) {
+        int w = args.length;
+        Series<?>[] columns = new Series[w];
+        for (int i = 0; i < w; i++) {
+            columns[i] = args[i].eval(s);
+        }
+
+        return doEval(s.size(), columns);
+    }
+
+    @Override
+    public Series<String> eval(DataFrame df) {
+        int w = args.length;
+        Series<?>[] columns = new Series[w];
+        for (int i = 0; i < w; i++) {
+            columns[i] = args[i].eval(df);
+        }
+
+        return doEval(df.height(), columns);
+    }
+
+    @Override
+    public String reduce(Series<?> s) {
+        int w = args.length;
+        Series<?>[] columns = new Series[w];
+        for (int i = 0; i < w; i++) {
+            columns[i] = Series.ofVal(args[i].reduce(s), 1);
+        }
+
+        return doEval(s.size(), columns).get(0);
+    }
+
+    @Override
+    public String reduce(DataFrame df) {
+        int w = args.length;
+        Series<?>[] columns = new Series[w];
+        for (int i = 0; i < w; i++) {
+            columns[i] = Series.ofVal(args[i].reduce(df), 1);
+        }
+
+        return doEval(df.height(), columns).get(0);
+    }
+
+    private Series<String> doEval(int height, Series<?>[] args) {
 
         StringBuilder row = new StringBuilder();
         ObjectAccum<String> accum = new ObjectAccum<>(height);

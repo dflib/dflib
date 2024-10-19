@@ -97,4 +97,36 @@ public class ColumnSet_AggFirstLastTest {
                 .expectHeight(1)
                 .expectRow(0, 2, 5);
     }
+
+    @Test
+    public void first_div_mul() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                2, 1L,
+                6, 7L,
+                -3, 5L);
+
+        DataFrame agg = df.cols("A", "B").agg(
+                $int(0).first().castAsInt().div(2),
+                $long(1).first().castAsLong().mul(2));
+
+        new DataFrameAsserts(agg, "A", "B")
+                .expectHeight(1)
+                .expectRow(0, 1, 2L);
+    }
+
+    @Test
+    public void last_div_mul() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                2, 1L,
+                6, 7L,
+                -3, 5L);
+
+        DataFrame agg = df.cols("A", "B").agg(
+                $int(0).last().castAsInt().div(2),
+                $long(1).last().castAsLong().mul(2));
+
+        new DataFrameAsserts(agg, "A", "B")
+                .expectHeight(1)
+                .expectRow(0, -1, 10L);
+    }
 }
