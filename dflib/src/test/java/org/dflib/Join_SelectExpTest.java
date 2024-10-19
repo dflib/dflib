@@ -25,7 +25,7 @@ public class Join_SelectExpTest {
         DataFrame df = df1.innerJoin(df2).on(0, 1)
                 .select($col("a").as("a1"), $int("a").mul(2).as("a2"), concat($str("c"), $str("b")));
 
-        new DataFrameAsserts(df, "a1", "a2", "concat(c, b)")
+        new DataFrameAsserts(df, "a1", "a2", "concat(c,b)")
                 .expectHeight(2)
                 .expectRow(0, 2, 4, "ay")
                 .expectRow(1, 4, 8, "xz");

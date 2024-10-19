@@ -15,7 +15,7 @@ public class GroupBy_AggTest {
                 $long("a").sum(),
                 $str(1).vConcat(";"));
 
-        new DataFrameAsserts(df, "sum(a)", "b").expectHeight(0);
+        new DataFrameAsserts(df, "sum(a)", "vConcat(b,';')").expectHeight(0);
     }
 
     @Test
@@ -31,7 +31,7 @@ public class GroupBy_AggTest {
                 $long("a").sum(),
                 $str(1).vConcat(";"));
 
-        new DataFrameAsserts(df, "sum(a)", "b")
+        new DataFrameAsserts(df, "sum(a)", "vConcat(b,';')")
                 .expectHeight(3)
                 .expectRow(0, 3L, "x;z;x")
                 .expectRow(1, 2L, "y")
@@ -54,7 +54,7 @@ public class GroupBy_AggTest {
                         $long("a").sum(),
                         $double("a").median());
 
-        new DataFrameAsserts(df, "b", "sum(a)", "median(a)")
+        new DataFrameAsserts(df, "first(b)", "sum(a)", "median(a)")
                 .expectHeight(3)
                 .expectRow(0, "x", 2L, 1.)
                 .expectRow(1, "y", 3L, 1.5)

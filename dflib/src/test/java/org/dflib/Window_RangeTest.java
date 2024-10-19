@@ -157,7 +157,7 @@ public class Window_RangeTest {
                         $int("val").sum(),
                         $str("label").first());
 
-        new DataFrameAsserts(r, "sum(val)", "label").expectHeight(6)
+        new DataFrameAsserts(r, "sum(val)", "first(label)").expectHeight(6)
                 .expectRow(0, 3, "a")
                 .expectRow(1, 25, "a")
                 .expectRow(2, 15, "b")

@@ -3,7 +3,7 @@ package org.dflib;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
-public class IntSeries_ValueCounts {
+public class IntSeries_ValueCountsTest {
 
     @Test
     public void valueCounts() {

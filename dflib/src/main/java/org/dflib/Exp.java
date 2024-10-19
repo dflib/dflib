@@ -6,6 +6,8 @@ import org.dflib.exp.ConstExp;
 import org.dflib.exp.RowNumExp;
 import org.dflib.exp.agg.CountExp;
 import org.dflib.exp.agg.ExpAggregator;
+import org.dflib.exp.agg.ExpAggregator2;
+import org.dflib.exp.agg.ExpAggregatorN;
 import org.dflib.exp.agg.StringAggregators;
 import org.dflib.exp.bool.AndCondition;
 import org.dflib.exp.bool.BoolColumn;
@@ -528,7 +530,7 @@ public interface Exp<T> {
      * Creates an aggregating expression based on this Exp and a custom aggregation function.
      */
     default <A> Exp<A> agg(Function<Series<T>, A> aggregator) {
-        return new ExpAggregator<>(this, aggregator);
+        return new ExpAggregator<>("_custom", (Class<A>) Object.class, this, aggregator);
     }
 
     /**
@@ -539,11 +541,11 @@ public interface Exp<T> {
     }
 
     default Exp<T> first() {
-        return agg(Series::first);
+        return new ExpAggregator<>("first", getType(), this, Series::first);
     }
 
     default Exp<T> last() {
-        return agg(Series::last);
+        return new ExpAggregator<>("last", getType(), this, Series::last);
     }
 
     default Exp<T> first(Condition filter) {
@@ -556,11 +558,12 @@ public interface Exp<T> {
      * the delimiter.
      */
     default Exp<String> vConcat(String delimiter) {
-        return agg(StringAggregators.vConcat(delimiter));
+        Function f = StringAggregators.vConcat(delimiter);
+        return new ExpAggregator2<>("vConcat", String.class, this, $val(delimiter), (s, d) -> (String) f.apply(s));
     }
 
     default Exp<String> vConcat(Condition filter, String delimiter) {
-        return agg(filter, StringAggregators.vConcat(delimiter));
+        return new PreFilteredExp<>(filter, vConcat(delimiter));
     }
 
     /**
@@ -568,32 +571,40 @@ public interface Exp<T> {
      * delimiter, preceded by the prefix and followed by the suffix.
      */
     default Exp<String> vConcat(String delimiter, String prefix, String suffix) {
-        return agg(StringAggregators.vConcat(delimiter, prefix, suffix));
+        Function f = StringAggregators.vConcat(delimiter, prefix, suffix);
+        return new ExpAggregatorN<>(
+                "vConcat",
+                String.class,
+                new Exp[]{this, $val(delimiter), $val(prefix), $val(suffix)},
+                ss -> (String) f.apply(ss[0]));
     }
 
     default Exp<String> vConcat(Condition filter, String delimiter, String prefix, String suffix) {
-        return agg(filter, StringAggregators.vConcat(delimiter, prefix, suffix));
+        return new PreFilteredExp<>(filter, vConcat(delimiter, prefix, suffix));
     }
 
     /**
      * Aggregating operation that returns a single-value Series with all the values gathered into a single Set.
      */
     default Exp<Set<T>> set() {
-        return agg(Series::toSet);
+        Class setClass = Set.class;
+        return new ExpAggregator<>("set", setClass, this, Series::toSet);
     }
 
     /**
      * Aggregating operation that returns a single-value Series with all the values gathered into a single List.
      */
     default Exp<List<T>> list() {
-        return agg(Series::toList);
+        Class listClass = List.class;
+        return new ExpAggregator<>("list", listClass, this, Series::toList);
     }
 
     /**
      * Aggregating operation that returns a single-value Series with all the values gathered into a single List.
      */
     default Exp<T[]> array(T[] template) {
-        return agg(s -> s.toArray(template));
+        Class arrayClass = template.getClass();
+        return new ExpAggregator<>("array", arrayClass, this, s -> s.toArray(template));
     }
 
     /**

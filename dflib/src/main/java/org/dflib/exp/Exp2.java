@@ -9,7 +9,7 @@ import org.dflib.Series;
  */
 public abstract class Exp2<L, R, T> implements Exp<T> {
 
-    private final String opName;
+    protected final String opName;
     private final Class<T> type;
     protected final Exp<L> left;
     protected final Exp<R> right;

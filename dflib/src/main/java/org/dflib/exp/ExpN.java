@@ -34,12 +34,12 @@ public abstract class ExpN<T> implements Exp<T> {
 
     @Override
     public String toQL() {
-        return Arrays.stream(args).map(a -> a.toQL()).collect(Collectors.joining(", ", opName + "(", ")"));
+        return Arrays.stream(args).map(a -> a.toQL()).collect(Collectors.joining(",", opName + "(", ")"));
     }
 
     @Override
     public String toQL(DataFrame df) {
-        return Arrays.stream(args).map(a -> a.toQL(df)).collect(Collectors.joining(", ", opName + "(", ")"));
+        return Arrays.stream(args).map(a -> a.toQL(df)).collect(Collectors.joining(",", opName + "(", ")"));
     }
 
     @Override
