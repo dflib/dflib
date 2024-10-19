@@ -34,6 +34,7 @@ import org.dflib.exp.num.DecimalColumn;
 import org.dflib.exp.num.DoubleColumn;
 import org.dflib.exp.num.DoubleConstExp;
 import org.dflib.exp.num.FloatColumn;
+import org.dflib.exp.num.FloatConstExp;
 import org.dflib.exp.num.IntColumn;
 import org.dflib.exp.num.IntConstExp;
 import org.dflib.exp.num.LongColumn;
@@ -111,6 +112,8 @@ public interface Exp<T> {
             return (Exp<T>) new DoubleConstExp((Double) value);
         } else if (Boolean.class.equals(type) || Boolean.TYPE.equals(type)) {
             return (Exp<T>) new BoolConstExp((Boolean) value);
+        } else if (Float.class.equals(type) || Float.TYPE.equals(type)) {
+            return (Exp<T>) new FloatConstExp((Float) value);
         } else {
             return new ConstExp<>(value, type);
         }
