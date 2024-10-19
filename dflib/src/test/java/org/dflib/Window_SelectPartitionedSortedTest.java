@@ -25,7 +25,7 @@ public class Window_SelectPartitionedSortedTest {
                         $col("b").first()
                 );
 
-        new DataFrameAsserts(r, "sum(a)", "b")
+        new DataFrameAsserts(r, "sum(a)", "first(b)")
                 .expectHeight(5)
                 .expectRow(0, 3, "x")
                 .expectRow(1, 2, "y")

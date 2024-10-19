@@ -24,6 +24,8 @@ public abstract class Exp1<F, T> implements Exp<T> {
         return toQL();
     }
 
+    // TODO: Exp1 and ExpN uses function syntax, Exp2 uses operator syntax... Unify, and deal with syntax changes in
+    //  subclasses
     @Override
     public String toQL() {
         return opName + "(" + exp.toQL() + ")";

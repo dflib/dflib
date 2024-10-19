@@ -24,7 +24,7 @@ public class Window_SelectSortedTest {
                         $col("b").first()
                 );
 
-        new DataFrameAsserts(r, "sum(a)", "b")
+        new DataFrameAsserts(r, "sum(a)", "first(b)")
                 .expectHeight(5)
                 .expectRow(0, 5, "a")
                 .expectRow(1, 5, "a")

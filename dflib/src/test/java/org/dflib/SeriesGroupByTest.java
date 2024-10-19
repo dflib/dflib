@@ -31,9 +31,9 @@ public class SeriesGroupByTest {
         DataFrame aggregated = Series.of("a", "b", "cd", "e", "fg")
                 .group((String s) -> s.length())
                 .aggMultiple(
-                        $col("first").first(),
-                        $col("pipe").vConcat("|"),
-                        $col("underscore").vConcat("_"));
+                        $col("first").first().as("first"),
+                        $col("pipe").vConcat("|").as("pipe"),
+                        $col("underscore").vConcat("_").as("underscore"));
 
         new DataFrameAsserts(aggregated, "first", "pipe", "underscore")
                 .expectHeight(2)

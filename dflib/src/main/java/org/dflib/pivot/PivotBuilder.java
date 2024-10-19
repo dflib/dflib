@@ -169,7 +169,7 @@ public class PivotBuilder {
         String valueColumnName = chunk.getColumnsIndex().get(1);
 
         return chunk.group(rowColumnName).agg(
-                Exp.$col(rowColumnName).first(),
+                Exp.$col(rowColumnName).first().as(rowColumnName),
 
                 // capture a column with dynamically defined name
                 Exp.$col(valueColumnName)

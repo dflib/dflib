@@ -13,9 +13,9 @@ public class ColumnSet_AggFunctionTest {
                 1, 100,
                 2, 5);
 
-        DataFrame agg = df.cols().agg($col(1).agg(Series::size));
+        DataFrame agg = df.cols("B").agg($col(1).agg(Series::size));
 
-        new DataFrameAsserts(agg, "b")
+        new DataFrameAsserts(agg, "B")
                 .expectHeight(1)
                 .expectRow(0, 2);
     }

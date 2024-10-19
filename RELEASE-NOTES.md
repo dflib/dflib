@@ -1,6 +1,7 @@
 ## Release 1.1.0
 
 * #357 Primitive FloatSeries
+* #362 Aggregating expressions do not generate proper QL
 
 ## Release 1.0.0-RC2
 

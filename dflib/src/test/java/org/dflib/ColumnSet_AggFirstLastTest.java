@@ -13,11 +13,11 @@ public class ColumnSet_AggFirstLastTest {
                 1, 100,
                 2, 5);
 
-        DataFrame agg = df.cols().agg(
+        DataFrame agg = df.cols("A", "B").agg(
                 $col("a").first(),
                 $col(1).first());
 
-        new DataFrameAsserts(agg, "a", "b")
+        new DataFrameAsserts(agg, "A", "B")
                 .expectHeight(1)
                 .expectRow(0, 1, 100);
     }
@@ -26,11 +26,11 @@ public class ColumnSet_AggFirstLastTest {
     public void firstEmpty() {
         DataFrame df = DataFrame.empty("a", "b");
 
-        DataFrame agg = df.cols().agg(
+        DataFrame agg = df.cols("A", "B").agg(
                 $col("a").first(),
                 $col(1).first());
 
-        new DataFrameAsserts(agg, "a", "b")
+        new DataFrameAsserts(agg, "A", "B")
                 .expectHeight(1)
                 .expectRow(0, null, null);
     }
@@ -41,11 +41,11 @@ public class ColumnSet_AggFirstLastTest {
                 1, null,
                 null, 5);
 
-        DataFrame agg = df.cols().agg(
+        DataFrame agg = df.cols("A", "B").agg(
                 $col("a").first(),
                 $col(1).first());
 
-        new DataFrameAsserts(agg, "a", "b")
+        new DataFrameAsserts(agg, "A", "B")
                 .expectHeight(1)
                 .expectRow(0, 1, null);
     }
@@ -57,11 +57,11 @@ public class ColumnSet_AggFirstLastTest {
                 -1, 5,
                 -4, 5);
 
-        DataFrame agg = df.cols().agg(
+        DataFrame agg = df.cols("B", "A").agg(
                 $col(1).first($int(0).mod(2).eq(0)),
                 $col("a").first($int("b").mod(2).eq(1)));
 
-        new DataFrameAsserts(agg, "b", "a")
+        new DataFrameAsserts(agg, "B", "A")
                 .expectHeight(1)
                 .expectRow(0, 5, 7);
     }
@@ -73,11 +73,11 @@ public class ColumnSet_AggFirstLastTest {
                 -1, 5,
                 -4, 5);
 
-        DataFrame agg = df.cols().agg(
+        DataFrame agg = df.cols("B", "A").agg(
                 $col(1).first($val(false).castAsBool()),
                 $col("a").first($int("b").mod(2).eq(1)));
 
-        new DataFrameAsserts(agg, "b", "a")
+        new DataFrameAsserts(agg, "B", "A")
                 .expectHeight(1)
                 .expectRow(0, null, 7);
     }
@@ -89,11 +89,11 @@ public class ColumnSet_AggFirstLastTest {
                 1, 100,
                 2, 5);
 
-        DataFrame agg = df.cols().agg(
+        DataFrame agg = df.cols("A", "B").agg(
                 $col("a").last(),
                 $col(1).last());
 
-        new DataFrameAsserts(agg, "a", "b")
+        new DataFrameAsserts(agg, "A", "B")
                 .expectHeight(1)
                 .expectRow(0, 2, 5);
     }
