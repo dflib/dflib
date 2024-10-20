@@ -142,16 +142,70 @@ public abstract class NumericExpFactory {
 
     public abstract NumExp<?> cumSum(Exp<? extends Number> exp);
 
-    public abstract NumExp<?> sum(Exp<? extends Number> exp);
+    /**
+     * @deprecated in favor of {@link #sum(Exp, Condition)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public NumExp<?> sum(Exp<? extends Number> exp) {
+        return sum(exp, null);
+    }
 
-    public abstract NumExp<?> min(Exp<? extends Number> exp);
+    /**
+     * @since 2.0.0
+     */
+    public abstract NumExp<?> sum(Exp<? extends Number> exp, Condition filter);
 
-    public abstract NumExp<?> max(Exp<? extends Number> exp);
+    /**
+     * @deprecated in favor of {@link #min(Exp, Condition)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public NumExp<?> min(Exp<? extends Number> exp) {
+        return min(exp, null);
+    }
 
-    public abstract NumExp<?> avg(Exp<? extends Number> exp);
+    /**
+     * @since 2.0.0
+     */
+    public abstract NumExp<?> min(Exp<? extends Number> exp, Condition filter);
 
-    public abstract NumExp<?> median(Exp<? extends Number> exp);
+    /**
+     * @deprecated in favor of {@link #max(Exp, Condition)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public NumExp<?> max(Exp<? extends Number> exp) {
+        return max(exp, null);
+    }
 
+    /**
+     * @since 2.0.0
+     */
+    public abstract NumExp<?> max(Exp<? extends Number> exp, Condition filter);
+
+    /**
+     * @deprecated in favor of {@link #avg(Exp, Condition)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public NumExp<?> avg(Exp<? extends Number> exp) {
+        return avg(exp, null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public abstract NumExp<?> avg(Exp<? extends Number> exp, Condition filter);
+
+    /**
+     * @deprecated in favor of {@link #median(Exp, Condition)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    public NumExp<?> median(Exp<? extends Number> exp) {
+        return median(exp, null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public abstract NumExp<?> median(Exp<? extends Number> exp, Condition filter);
 
     public NumExp<Integer> castAsInt(NumExp<?> exp) {
         return IntExp1.mapVal("castAsInt", exp, Number::intValue);

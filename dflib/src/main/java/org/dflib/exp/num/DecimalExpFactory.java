@@ -7,8 +7,8 @@ import org.dflib.NumExp;
 import org.dflib.exp.agg.ComparableAggregators;
 import org.dflib.exp.agg.DecimalAggregators;
 import org.dflib.exp.agg.DecimalReduceExp1;
-import org.dflib.exp.map.MapCondition3;
 import org.dflib.exp.map.MapCondition2;
+import org.dflib.exp.map.MapCondition3;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -121,30 +121,60 @@ public class DecimalExpFactory extends NumericExpFactory {
         return DecimalExp1.map("cumSum", cast(exp), DecimalAggregators::cumSum);
     }
 
+    @Deprecated
     @Override
     public DecimalExp sum(Exp<? extends Number> exp) {
-        return new DecimalReduceExp1<>("sum", cast(exp), DecimalAggregators::sum);
+        return sum(exp, null);
     }
 
+    @Override
+    public DecimalExp sum(Exp<? extends Number> exp, Condition filter) {
+        return new DecimalReduceExp1<>("sum", cast(exp), DecimalAggregators::sum, filter);
+    }
+
+    @Deprecated
     @Override
     public DecimalExp min(Exp<? extends Number> exp) {
-        return new DecimalReduceExp1<>("min", cast(exp), ComparableAggregators::min);
+        return min(exp, null);
     }
 
+    @Override
+    public DecimalExp min(Exp<? extends Number> exp, Condition filter) {
+        return new DecimalReduceExp1<>("min", cast(exp), ComparableAggregators::min, filter);
+    }
+
+    @Deprecated
     @Override
     public DecimalExp max(Exp<? extends Number> exp) {
-        return new DecimalReduceExp1<>("max", cast(exp), ComparableAggregators::max);
+        return max(exp, null);
     }
 
     @Override
+    public DecimalExp max(Exp<? extends Number> exp, Condition filter) {
+        return new DecimalReduceExp1<>("max", cast(exp), ComparableAggregators::max, filter);
+    }
+
+    @Deprecated
+    @Override
     public DecimalExp avg(Exp<? extends Number> exp) {
+        return avg(exp, null);
+    }
+
+    @Override
+    public DecimalExp avg(Exp<? extends Number> exp, Condition filter) {
         // TODO
         throw new UnsupportedOperationException("TODO: support for BigDecimal.avg");
     }
 
+    @Deprecated
     @Override
     public DecimalExp median(Exp<? extends Number> exp) {
-        return new DecimalReduceExp1<>("median", cast(exp), DecimalAggregators::median);
+        return median(exp, null);
+    }
+
+    @Override
+    public DecimalExp median(Exp<? extends Number> exp, Condition filter) {
+        return new DecimalReduceExp1<>("median", cast(exp), DecimalAggregators::median, filter);
     }
 
     @Override

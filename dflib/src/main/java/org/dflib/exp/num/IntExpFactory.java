@@ -78,28 +78,28 @@ public class IntExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public NumExp<Integer> sum(Exp<? extends Number> exp) {
-        return new IntReduceExp1<>("sum", exp, IntAggregators::sum);
+    public NumExp<Integer> sum(Exp<? extends Number> exp, Condition filter) {
+        return new IntReduceExp1<>("sum", exp, IntAggregators::sum, filter);
     }
 
     @Override
-    public NumExp<?> min(Exp<? extends Number> exp) {
-        return new IntReduceExp1<>("min", exp, IntAggregators::min);
+    public NumExp<?> min(Exp<? extends Number> exp, Condition filter) {
+        return new IntReduceExp1<>("min", exp, IntAggregators::min, filter);
     }
 
     @Override
-    public NumExp<?> max(Exp<? extends Number> exp) {
-        return new IntReduceExp1<>("max", exp, IntAggregators::max);
+    public NumExp<?> max(Exp<? extends Number> exp, Condition filter) {
+        return new IntReduceExp1<>("max", exp, IntAggregators::max, filter);
     }
 
     @Override
-    public NumExp<?> avg(Exp<? extends Number> exp) {
-        return new DoubleReduceExp1<>("avg", exp, DoubleAggregators::avg);
+    public NumExp<?> avg(Exp<? extends Number> exp, Condition filter) {
+        return new DoubleReduceExp1<>("avg", exp, DoubleAggregators::avg, filter);
     }
 
     @Override
-    public NumExp<?> median(Exp<? extends Number> exp) {
-        return new DoubleReduceExp1<>("median", exp, DoubleAggregators::median);
+    public NumExp<?> median(Exp<? extends Number> exp, Condition filter) {
+        return new DoubleReduceExp1<>("median", exp, DoubleAggregators::median, filter);
     }
 
     @Override

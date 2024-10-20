@@ -92,21 +92,41 @@ public interface DecimalExp extends NumExp<BigDecimal> {
 
     @Override
     default DecimalExp sum() {
-        return NumericExpFactory.decimalFactory().sum(this);
+        return sum(null);
+    }
+
+    @Override
+    default DecimalExp sum(Condition filter) {
+        return NumericExpFactory.decimalFactory().sum(this, filter);
     }
 
     @Override
     default DecimalExp min() {
-        return NumericExpFactory.decimalFactory().min(this);
+        return min(null);
+    }
+
+    @Override
+    default DecimalExp min(Condition filter) {
+        return NumericExpFactory.decimalFactory().min(this, filter);
     }
 
     @Override
     default DecimalExp max() {
-        return NumericExpFactory.decimalFactory().max(this);
+        return max(null);
+    }
+
+    @Override
+    default DecimalExp max(Condition filter) {
+        return NumericExpFactory.decimalFactory().max(this, filter);
     }
 
     @Override
     default DecimalExp median() {
-        return NumericExpFactory.decimalFactory().median(this);
+        return median(null);
+    }
+
+    @Override
+    default DecimalExp median(Condition filter) {
+        return NumericExpFactory.decimalFactory().median(this, filter);
     }
 }

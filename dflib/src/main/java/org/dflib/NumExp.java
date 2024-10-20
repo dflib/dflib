@@ -1,7 +1,6 @@
 package org.dflib;
 
 import org.dflib.exp.bool.ConditionFactory;
-import org.dflib.exp.filter.PreFilteredNumExp;
 import org.dflib.exp.num.NumericExpFactory;
 
 /**
@@ -191,45 +190,44 @@ public interface NumExp<N extends Number> extends Exp<N> {
     }
 
     default NumExp<?> sum() {
-        return NumericExpFactory.factory(this).sum(this);
+        return sum(null);
     }
 
     default NumExp<?> sum(Condition filter) {
-        return new PreFilteredNumExp<>(filter, sum());
+        return NumericExpFactory.factory(this).sum(this, filter);
     }
 
     default NumExp<?> min() {
-        return NumericExpFactory.factory(this).min(this);
+        return min(null);
     }
 
     default NumExp<?> min(Condition filter) {
-        return new PreFilteredNumExp<>(filter, min());
+        return NumericExpFactory.factory(this).min(this, filter);
     }
 
     default NumExp<?> max() {
-        return NumericExpFactory.factory(this).max(this);
+        return max(null);
     }
 
     default NumExp<?> max(Condition filter) {
-        return new PreFilteredNumExp<>(filter, max());
+        return NumericExpFactory.factory(this).max(this, filter);
     }
 
     default NumExp<?> avg() {
-        return NumericExpFactory.factory(this).avg(this);
+        return avg(null);
     }
 
     default NumExp<?> avg(Condition filter) {
-        return new PreFilteredNumExp<>(filter, avg());
+        return NumericExpFactory.factory(this).avg(this, filter);
     }
 
     default NumExp<?> median() {
-        return NumericExpFactory.factory(this).median(this);
+        return median(null);
     }
 
     default NumExp<?> median(Condition filter) {
-        return new PreFilteredNumExp<>(filter, median());
+        return NumericExpFactory.factory(this).median(this, null);
     }
-
 
     @Override
     default Condition castAsBool() {

@@ -2,9 +2,11 @@ package org.dflib;
 
 import org.dflib.exp.AsExp;
 import org.dflib.exp.Column;
-import org.dflib.exp.ScalarExp;
 import org.dflib.exp.RowNumExp;
+import org.dflib.exp.ScalarExp;
 import org.dflib.exp.agg.CountExp;
+import org.dflib.exp.agg.FirstExp;
+import org.dflib.exp.agg.LastExp;
 import org.dflib.exp.agg.ReduceExp1;
 import org.dflib.exp.agg.ReduceExp2;
 import org.dflib.exp.agg.ReduceExpN;
@@ -15,17 +17,14 @@ import org.dflib.exp.bool.BoolScalarExp;
 import org.dflib.exp.bool.ConditionFactory;
 import org.dflib.exp.bool.OrCondition;
 import org.dflib.exp.datetime.DateColumn;
-import org.dflib.exp.datetime.DateScalarExp;
 import org.dflib.exp.datetime.DateExp1;
+import org.dflib.exp.datetime.DateScalarExp;
 import org.dflib.exp.datetime.DateTimeColumn;
-import org.dflib.exp.datetime.DateTimeScalarExp;
 import org.dflib.exp.datetime.DateTimeExp1;
+import org.dflib.exp.datetime.DateTimeScalarExp;
 import org.dflib.exp.datetime.TimeColumn;
-import org.dflib.exp.datetime.TimeScalarExp;
 import org.dflib.exp.datetime.TimeExp1;
-import org.dflib.exp.filter.PreFilterFirstMatchExp;
-import org.dflib.exp.filter.PreFilteredCountExp;
-import org.dflib.exp.filter.PreFilteredExp;
+import org.dflib.exp.datetime.TimeScalarExp;
 import org.dflib.exp.flow.IfExp;
 import org.dflib.exp.flow.IfNullExp;
 import org.dflib.exp.map.MapCondition1;
@@ -344,7 +343,7 @@ public interface Exp<T> {
     }
 
     static Exp<Integer> count(Condition filter) {
-        return new PreFilteredCountExp(filter);
+        return new CountExp(filter);
     }
 
     /**
@@ -530,27 +529,26 @@ public interface Exp<T> {
      * Creates an aggregating expression based on this Exp and a custom aggregation function.
      */
     default <A> Exp<A> agg(Function<Series<T>, A> aggregator) {
-        return new ReduceExp1<>("_custom", (Class<A>) Object.class, this, aggregator);
+        return new ReduceExp1<>("_custom", (Class<A>) Object.class, this, aggregator, null);
     }
 
     /**
      * Creates an aggregating expression based on this Exp, a filter and a custom aggregation function.
      */
     default <A> Exp<A> agg(Condition filter, Function<Series<T>, A> aggregator) {
-        return new PreFilteredExp<>(filter, agg(aggregator));
+        return new ReduceExp1<>("_custom", (Class<A>) Object.class, this, aggregator, filter);
     }
 
     default Exp<T> first() {
-        return new ReduceExp1<>("first", getType(), this, Series::first);
+        return new FirstExp<>(getType(), this, null);
     }
 
     default Exp<T> last() {
-        return new ReduceExp1<>("last", getType(), this, Series::last);
+        return new LastExp<>(getType(), this, null);
     }
 
     default Exp<T> first(Condition filter) {
-        // special handling of "first" that avoids full condition eval
-        return new PreFilterFirstMatchExp<>(filter, first());
+        return new FirstExp<>(getType(), this, filter);
     }
 
     /**
@@ -559,11 +557,12 @@ public interface Exp<T> {
      */
     default Exp<String> vConcat(String delimiter) {
         Function f = StringAggregators.vConcat(delimiter);
-        return new ReduceExp2<>("vConcat", String.class, this, $val(delimiter), (s, d) -> (String) f.apply(s));
+        return new ReduceExp2<>("vConcat", String.class, this, $val(delimiter), (s, d) -> (String) f.apply(s), null);
     }
 
     default Exp<String> vConcat(Condition filter, String delimiter) {
-        return new PreFilteredExp<>(filter, vConcat(delimiter));
+        Function f = StringAggregators.vConcat(delimiter);
+        return new ReduceExp2<>("vConcat", String.class, this, $val(delimiter), (s, d) -> (String) f.apply(s), filter);
     }
 
     /**
@@ -576,11 +575,18 @@ public interface Exp<T> {
                 "vConcat",
                 String.class,
                 new Exp[]{this, $val(delimiter), $val(prefix), $val(suffix)},
-                ss -> (String) f.apply(ss[0]));
+                ss -> (String) f.apply(ss[0]),
+                null);
     }
 
     default Exp<String> vConcat(Condition filter, String delimiter, String prefix, String suffix) {
-        return new PreFilteredExp<>(filter, vConcat(delimiter, prefix, suffix));
+        Function f = StringAggregators.vConcat(delimiter, prefix, suffix);
+        return new ReduceExpN<>(
+                "vConcat",
+                String.class,
+                new Exp[]{this, $val(delimiter), $val(prefix), $val(suffix)},
+                ss -> (String) f.apply(ss[0]),
+                filter);
     }
 
     /**
@@ -588,7 +594,7 @@ public interface Exp<T> {
      */
     default Exp<Set<T>> set() {
         Class setClass = Set.class;
-        return new ReduceExp1<>("set", setClass, this, Series::toSet);
+        return new ReduceExp1<>("set", setClass, this, Series::toSet, null);
     }
 
     /**
@@ -596,7 +602,7 @@ public interface Exp<T> {
      */
     default Exp<List<T>> list() {
         Class listClass = List.class;
-        return new ReduceExp1<>("list", listClass, this, Series::toList);
+        return new ReduceExp1<>("list", listClass, this, Series::toList, null);
     }
 
     /**
@@ -604,7 +610,7 @@ public interface Exp<T> {
      */
     default Exp<T[]> array(T[] template) {
         Class arrayClass = template.getClass();
-        return new ReduceExp1<>("array", arrayClass, this, s -> s.toArray(template));
+        return new ReduceExp1<>("array", arrayClass, this, s -> s.toArray(template), null);
     }
 
     /**
