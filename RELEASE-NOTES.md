@@ -1,6 +1,7 @@
 ## Release 1.0.0-RC2
 
 * #360 RowColumnSet: rename "map" to "merge"
+* #364 Empty series isTrue(..) should return "false"
 
 ## Release 1.0.0-RC1
 

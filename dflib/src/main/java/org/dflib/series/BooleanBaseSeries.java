@@ -486,6 +486,11 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     public boolean isTrue() {
         int s = size();
 
+        // empty series is neither true nor false
+        if (s == 0) {
+            return false;
+        }
+
         for (int i = 0; i < s; i++) {
             if (!getBool(i)) {
                 return false;
@@ -499,7 +504,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     public boolean isFalse() {
         int s = size();
 
-        // empty series is considered true
+        // empty series is neither true nor false
         if (s == 0) {
             return false;
         }
