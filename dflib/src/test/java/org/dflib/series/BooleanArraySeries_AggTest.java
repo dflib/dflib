@@ -1,6 +1,5 @@
 package org.dflib.series;
 
-import org.dflib.series.BooleanArraySeries;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
