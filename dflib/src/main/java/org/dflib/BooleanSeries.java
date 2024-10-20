@@ -152,9 +152,16 @@ public interface BooleanSeries extends Series<Boolean> {
     BooleanSeries sort(Comparator<? super Boolean> comparator);
 
     /**
-     * Returns the index of a first "true" value in the series, or -1 if all values are false.
+     * Returns the index of a first "true" value in the Series, or -1 if all values are false.
      */
     int firstTrue();
+
+    /**
+     * Returns the index of a first "false" value in the Series, or -1 if all values are true.
+     *
+     * @since 1.1.0
+     */
+    int firstFalse();
 
     /**
      * Returns an IntSeries that represents positions in the Series that contain true values. The returned value can be
