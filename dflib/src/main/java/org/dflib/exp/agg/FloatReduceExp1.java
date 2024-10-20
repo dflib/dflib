@@ -9,22 +9,22 @@ import org.dflib.series.FloatSingleValueSeries;
 import java.util.function.Function;
 
 /**
- * @since 1.1.0
+ * @since 2.0.0
  */
-public class FloatExpAggregator<F> extends Exp1<F, Float> implements NumExp<Float> {
+public class FloatReduceExp1<F> extends Exp1<F, Float> implements NumExp<Float> {
 
-    private final Function<Series<F>, Float> aggregator;
+    private final Function<Series<F>, Float> op;
 
-    public FloatExpAggregator(String opName, Exp<F> exp, Function<Series<F>, Float> aggregator) {
+    public FloatReduceExp1(String opName, Exp<F> exp, Function<Series<F>, Float> op) {
         super(opName, Float.class, exp);
-        this.aggregator = aggregator;
+        this.op = op;
     }
 
     @Override
     protected Series<Float> doEval(Series<F> s) {
         // TODO: optimize for primitive series.
         //  E.g. "IntSeries.average()" is faster than "AggregatorFunctions.averageDouble()"
-        float val = aggregator.apply(s);
+        float val = op.apply(s);
         return new FloatSingleValueSeries(val, 1);
     }
 }

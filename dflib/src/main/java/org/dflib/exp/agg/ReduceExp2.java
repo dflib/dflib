@@ -10,18 +10,18 @@ import java.util.function.BiFunction;
 /**
  * @since 1.1.0
  */
-public class ExpAggregator2<L, R, T> extends Exp2<L, R, T> {
+public class ReduceExp2<L, R, T> extends Exp2<L, R, T> {
 
-    private final BiFunction<Series<L>, Series<R>, T> aggregator;
+    private final BiFunction<Series<L>, Series<R>, T> op;
 
-    public ExpAggregator2(String opName, Class<T> type, Exp<L> left, Exp<R> right, BiFunction<Series<L>, Series<R>, T> aggregator) {
+    public ReduceExp2(String opName, Class<T> type, Exp<L> left, Exp<R> right, BiFunction<Series<L>, Series<R>, T> op) {
         super(opName, type, left, right);
-        this.aggregator = aggregator;
+        this.op = op;
     }
 
     @Override
     protected Series<T> doEval(Series<L> left, Series<R> right) {
-        T val = aggregator.apply(left, right);
+        T val = op.apply(left, right);
         return Series.ofVal(val, 1);
     }
 

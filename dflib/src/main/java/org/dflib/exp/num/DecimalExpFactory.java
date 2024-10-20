@@ -6,7 +6,7 @@ import org.dflib.Exp;
 import org.dflib.NumExp;
 import org.dflib.exp.agg.ComparableAggregators;
 import org.dflib.exp.agg.DecimalAggregators;
-import org.dflib.exp.agg.DecimalExpAggregator;
+import org.dflib.exp.agg.DecimalReduceExp1;
 import org.dflib.exp.map.MapCondition3;
 import org.dflib.exp.map.MapCondition2;
 
@@ -123,17 +123,17 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public DecimalExp sum(Exp<? extends Number> exp) {
-        return new DecimalExpAggregator<>("sum", cast(exp), DecimalAggregators::sum);
+        return new DecimalReduceExp1<>("sum", cast(exp), DecimalAggregators::sum);
     }
 
     @Override
     public DecimalExp min(Exp<? extends Number> exp) {
-        return new DecimalExpAggregator<>("min", cast(exp), ComparableAggregators::min);
+        return new DecimalReduceExp1<>("min", cast(exp), ComparableAggregators::min);
     }
 
     @Override
     public DecimalExp max(Exp<? extends Number> exp) {
-        return new DecimalExpAggregator<>("max", cast(exp), ComparableAggregators::max);
+        return new DecimalReduceExp1<>("max", cast(exp), ComparableAggregators::max);
     }
 
     @Override
@@ -144,7 +144,7 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public DecimalExp median(Exp<? extends Number> exp) {
-        return new DecimalExpAggregator<>("median", cast(exp), DecimalAggregators::median);
+        return new DecimalReduceExp1<>("median", cast(exp), DecimalAggregators::median);
     }
 
     @Override

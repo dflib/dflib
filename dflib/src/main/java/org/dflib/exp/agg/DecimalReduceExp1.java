@@ -9,19 +9,21 @@ import org.dflib.series.SingleValueSeries;
 import java.math.BigDecimal;
 import java.util.function.Function;
 
+/**
+ * @since 2.0.0
+ */
+public class DecimalReduceExp1<F> extends Exp1<F, BigDecimal> implements DecimalExp {
 
-public class DecimalExpAggregator<F> extends Exp1<F, BigDecimal> implements DecimalExp {
+    private final Function<Series<F>, BigDecimal> op;
 
-    private final Function<Series<F>, BigDecimal> aggregator;
-
-    public DecimalExpAggregator(String opName, Exp<F> exp, Function<Series<F>, BigDecimal> aggregator) {
+    public DecimalReduceExp1(String opName, Exp<F> exp, Function<Series<F>, BigDecimal> op) {
         super(opName, BigDecimal.class, exp);
-        this.aggregator = aggregator;
+        this.op = op;
     }
 
     @Override
     protected Series<BigDecimal> doEval(Series<F> s) {
-        BigDecimal val = aggregator.apply(s);
+        BigDecimal val = op.apply(s);
         return new SingleValueSeries<>(val, 1);
     }
 }

@@ -5,9 +5,9 @@ import org.dflib.DecimalExp;
 import org.dflib.Exp;
 import org.dflib.FloatSeries;
 import org.dflib.NumExp;
-import org.dflib.exp.agg.DoubleExpAggregator;
+import org.dflib.exp.agg.DoubleReduceExp1;
 import org.dflib.exp.agg.FloatAggregators;
-import org.dflib.exp.agg.FloatExpAggregator;
+import org.dflib.exp.agg.FloatReduceExp1;
 
 import java.math.BigDecimal;
 
@@ -100,27 +100,27 @@ public class FloatExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<Double> sum(Exp<? extends Number> exp) {
-        return new DoubleExpAggregator<>("sum", exp, FloatAggregators::sum);
+        return new DoubleReduceExp1<>("sum", exp, FloatAggregators::sum);
     }
 
     @Override
     public NumExp<?> min(Exp<? extends Number> exp) {
-        return new FloatExpAggregator<>("min", exp, FloatAggregators::min);
+        return new FloatReduceExp1<>("min", exp, FloatAggregators::min);
     }
 
     @Override
     public NumExp<?> max(Exp<? extends Number> exp) {
-        return new FloatExpAggregator<>("max", exp, FloatAggregators::max);
+        return new FloatReduceExp1<>("max", exp, FloatAggregators::max);
     }
 
     @Override
     public NumExp<?> avg(Exp<? extends Number> exp) {
-        return new FloatExpAggregator<>("avg", exp, FloatAggregators::avg);
+        return new FloatReduceExp1<>("avg", exp, FloatAggregators::avg);
     }
 
     @Override
     public NumExp<?> median(Exp<? extends Number> exp) {
-        return new FloatExpAggregator<>("median", exp, FloatAggregators::median);
+        return new FloatReduceExp1<>("median", exp, FloatAggregators::median);
     }
 
     @Override

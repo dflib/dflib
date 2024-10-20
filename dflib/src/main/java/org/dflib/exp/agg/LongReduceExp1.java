@@ -8,12 +8,14 @@ import org.dflib.series.LongSingleValueSeries;
 
 import java.util.function.Function;
 
-
-public class LongExpAggregator<F> extends Exp1<F, Long> implements NumExp<Long> {
+/**
+ * @since 2.0.0
+ */
+public class LongReduceExp1<F> extends Exp1<F, Long> implements NumExp<Long> {
 
     private final Function<Series<F>, Long> aggregator;
 
-    public LongExpAggregator(String opName, Exp<F> exp, Function<Series<F>, Long> aggregator) {
+    public LongReduceExp1(String opName, Exp<F> exp, Function<Series<F>, Long> aggregator) {
         super(opName, Long.class, exp);
         this.aggregator = aggregator;
     }

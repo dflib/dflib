@@ -5,9 +5,9 @@ import org.dflib.exp.Column;
 import org.dflib.exp.ScalarExp;
 import org.dflib.exp.RowNumExp;
 import org.dflib.exp.agg.CountExp;
-import org.dflib.exp.agg.ExpAggregator;
-import org.dflib.exp.agg.ExpAggregator2;
-import org.dflib.exp.agg.ExpAggregatorN;
+import org.dflib.exp.agg.ReduceExp1;
+import org.dflib.exp.agg.ReduceExp2;
+import org.dflib.exp.agg.ReduceExpN;
 import org.dflib.exp.agg.StringAggregators;
 import org.dflib.exp.bool.AndCondition;
 import org.dflib.exp.bool.BoolColumn;
@@ -530,7 +530,7 @@ public interface Exp<T> {
      * Creates an aggregating expression based on this Exp and a custom aggregation function.
      */
     default <A> Exp<A> agg(Function<Series<T>, A> aggregator) {
-        return new ExpAggregator<>("_custom", (Class<A>) Object.class, this, aggregator);
+        return new ReduceExp1<>("_custom", (Class<A>) Object.class, this, aggregator);
     }
 
     /**
@@ -541,11 +541,11 @@ public interface Exp<T> {
     }
 
     default Exp<T> first() {
-        return new ExpAggregator<>("first", getType(), this, Series::first);
+        return new ReduceExp1<>("first", getType(), this, Series::first);
     }
 
     default Exp<T> last() {
-        return new ExpAggregator<>("last", getType(), this, Series::last);
+        return new ReduceExp1<>("last", getType(), this, Series::last);
     }
 
     default Exp<T> first(Condition filter) {
@@ -559,7 +559,7 @@ public interface Exp<T> {
      */
     default Exp<String> vConcat(String delimiter) {
         Function f = StringAggregators.vConcat(delimiter);
-        return new ExpAggregator2<>("vConcat", String.class, this, $val(delimiter), (s, d) -> (String) f.apply(s));
+        return new ReduceExp2<>("vConcat", String.class, this, $val(delimiter), (s, d) -> (String) f.apply(s));
     }
 
     default Exp<String> vConcat(Condition filter, String delimiter) {
@@ -572,7 +572,7 @@ public interface Exp<T> {
      */
     default Exp<String> vConcat(String delimiter, String prefix, String suffix) {
         Function f = StringAggregators.vConcat(delimiter, prefix, suffix);
-        return new ExpAggregatorN<>(
+        return new ReduceExpN<>(
                 "vConcat",
                 String.class,
                 new Exp[]{this, $val(delimiter), $val(prefix), $val(suffix)},
@@ -588,7 +588,7 @@ public interface Exp<T> {
      */
     default Exp<Set<T>> set() {
         Class setClass = Set.class;
-        return new ExpAggregator<>("set", setClass, this, Series::toSet);
+        return new ReduceExp1<>("set", setClass, this, Series::toSet);
     }
 
     /**
@@ -596,7 +596,7 @@ public interface Exp<T> {
      */
     default Exp<List<T>> list() {
         Class listClass = List.class;
-        return new ExpAggregator<>("list", listClass, this, Series::toList);
+        return new ReduceExp1<>("list", listClass, this, Series::toList);
     }
 
     /**
@@ -604,7 +604,7 @@ public interface Exp<T> {
      */
     default Exp<T[]> array(T[] template) {
         Class arrayClass = template.getClass();
-        return new ExpAggregator<>("array", arrayClass, this, s -> s.toArray(template));
+        return new ReduceExp1<>("array", arrayClass, this, s -> s.toArray(template));
     }
 
     /**
