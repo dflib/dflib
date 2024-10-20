@@ -6,7 +6,10 @@ import org.dflib.agg.PrimitiveSeriesCount;
 /**
  * A specialized DoubleSeries that maps to a slice of an array. Calculating offsets during every operation has some
  * performance overhead, so this Series is somewhat slower than {@link DoubleArraySeries}.
+ *
+ * @deprecated in favor of {@link BooleanBitsetSeries}
  */
+@Deprecated(since = "2.0.0", forRemoval = true)
 public class BooleanArrayRangeSeries extends BooleanBaseSeries {
 
     private final boolean[] data;

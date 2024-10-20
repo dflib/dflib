@@ -60,6 +60,11 @@ public interface ValueMaker<T> {
         return () -> val[0]++;
     }
 
+    static ValueMaker<Long> randomLongSeq() {
+        Random random = new Random();
+        return () -> random.nextLong();
+    }
+
     static ValueMaker<Boolean> booleanSeq() {
         int[] val = new int[1];
         return () -> val[0]++ % 2 == 0;

@@ -3,6 +3,10 @@ package org.dflib.series;
 import org.dflib.BooleanSeries;
 import org.dflib.agg.PrimitiveSeriesCount;
 
+/**
+ * @deprecated in favor of {@link BooleanBitsetSeries}
+ */
+@Deprecated(since = "2.0.0", forRemoval = true)
 public class BooleanArraySeries extends BooleanBaseSeries {
 
     private final boolean[] data;

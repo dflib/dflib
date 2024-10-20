@@ -3,21 +3,21 @@ package org.dflib.series;
 import org.dflib.BooleanSeries;
 import org.dflib.IntSeries;
 import org.dflib.Sorter;
-import org.dflib.builder.BitsetAccum;
+import org.dflib.builder.BoolAccum;
 import org.dflib.sort.SeriesSorter;
 
 import java.util.Comparator;
 
 /**
- * Implementation of {@link BooleanSeries} based on {@link FixedSizeBitSet}
+ * Implementation of {@link BooleanSeries} based on {@link BitSet}
  *
  * @since 2.0.0
  */
 public class BooleanBitsetSeries extends BooleanBaseSeries {
 
-    private final FixedSizeBitSet data;
+    private final BitSet data;
 
-    public BooleanBitsetSeries(FixedSizeBitSet data) {
+    public BooleanBitsetSeries(BitSet data) {
         this.data = data;
     }
 
@@ -58,7 +58,7 @@ public class BooleanBitsetSeries extends BooleanBaseSeries {
     @Override
     public BooleanSeries select(BooleanSeries positions) {
         int h = positions.size();
-        BitsetAccum accum = new BitsetAccum(h);
+        BoolAccum accum = new BoolAccum(h);
         for (int i = 0; i < h; i++) {
             if (positions.getBool(i)) {
                 if (this.data.get(i)) {
@@ -81,7 +81,7 @@ public class BooleanBitsetSeries extends BooleanBaseSeries {
 
     private BooleanSeries selectAsBooleanSeries(IntSeries positions) {
         int h = positions.size();
-        BitsetAccum accum = new BitsetAccum(h);
+        BoolAccum accum = new BoolAccum(h);
         for (int i = 0; i < h; i++) {
             int index = positions.getInt(i);
             if (this.data.get(index)) {

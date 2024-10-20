@@ -12,7 +12,7 @@ import java.util.Objects;
  *
  * @since 2.0.0
  */
-public class FixedSizeBitSet {
+public class BitSet {
 
     /**
      * Shift bits that's equivalent of a divide by {@link Long#SIZE} op
@@ -20,7 +20,7 @@ public class FixedSizeBitSet {
     private static final int INDEX_BIT_SHIFT = 6;
     private static final long LONG_BITS_MASK = 0xFFFFFFFF_FFFFFFFFL;
 
-    public static final FixedSizeBitSet EMPTY = new FixedSizeBitSet(new long[0], 0);
+    public static final BitSet EMPTY = new BitSet(new long[0], 0);
 
     /**
      * Packed long array that holds actual meaningful bits
@@ -40,7 +40,7 @@ public class FixedSizeBitSet {
      * @param data bits packed to a long[]
      * @param size desired size of the bit set
      */
-    public FixedSizeBitSet(long[] data, int size) {
+    public BitSet(long[] data, int size) {
         if (arraySize(size) < data.length) {
             throw new IllegalArgumentException("Size mismatch");
         }
@@ -106,7 +106,7 @@ public class FixedSizeBitSet {
         return size;
     }
 
-    public FixedSizeBitSet range(int from, int to) {
+    public BitSet range(int from, int to) {
         if (size <= from || from == to) {
             return EMPTY;
         }
@@ -136,18 +136,18 @@ public class FixedSizeBitSet {
                         ? ((data[startIndex] >>> from) | (data[startIndex + 1] & lastElementMask) << -from)
                         : ((data[startIndex] & lastElementMask) >>> from);
 
-        return new FixedSizeBitSet(result, setSize);
+        return new BitSet(result, setSize);
     }
 
-    public FixedSizeBitSet not() {
+    public BitSet not() {
         long[] newData = new long[data.length];
         for (int i = 0; i < data.length; i++) {
             newData[i] = ~data[i];
         }
-        return new FixedSizeBitSet(newData, getSize());
+        return new BitSet(newData, getSize());
     }
 
-    public FixedSizeBitSet or(FixedSizeBitSet bitSet) {
+    public BitSet or(BitSet bitSet) {
         Objects.requireNonNull(bitSet);
         if (bitSet.getSize() != getSize()) {
             throw new IllegalArgumentException("Argument differ in size");
@@ -156,10 +156,10 @@ public class FixedSizeBitSet {
         for (int i = 0; i < data.length; i++) {
             newData[i] = data[i] | bitSet.data[i];
         }
-        return new FixedSizeBitSet(newData, getSize());
+        return new BitSet(newData, getSize());
     }
 
-    public FixedSizeBitSet and(FixedSizeBitSet bitSet) {
+    public BitSet and(BitSet bitSet) {
         Objects.requireNonNull(bitSet);
         if (bitSet.getSize() != getSize()) {
             throw new IllegalArgumentException("Argument differ in size");
@@ -168,7 +168,7 @@ public class FixedSizeBitSet {
         for (int i = 0; i < data.length; i++) {
             newData[i] = data[i] & bitSet.data[i];
         }
-        return new FixedSizeBitSet(newData, getSize());
+        return new BitSet(newData, getSize());
     }
 
     /**

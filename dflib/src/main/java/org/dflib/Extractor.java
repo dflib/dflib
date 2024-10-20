@@ -1,6 +1,5 @@
 package org.dflib;
 
-import org.dflib.builder.BitsetExtractor;
 import org.dflib.builder.BoolExtractor;
 import org.dflib.builder.DoubleExtractor;
 import org.dflib.builder.FloatExtractor;
@@ -76,15 +75,5 @@ public interface Extractor<F, T> {
 
     static <F> BoolExtractor<F> $bool(BoolValueMapper<F> mapper) {
         return new BoolExtractor<>(mapper);
-    }
-
-    /**
-     * Returns an extractor that generates a boolean column with a bitset-backed storage.
-     *
-     * @see #$bool(BoolValueMapper)
-     * @since 1.1.0
-     */
-    static <F> BitsetExtractor<F> $bitset(BoolValueMapper<F> mapper) {
-        return new BitsetExtractor<>(mapper);
     }
 }

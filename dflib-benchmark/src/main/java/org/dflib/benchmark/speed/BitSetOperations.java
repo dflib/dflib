@@ -1,6 +1,6 @@
 package org.dflib.benchmark.speed;
 
-import org.dflib.series.FixedSizeBitSet;
+import org.dflib.series.BitSet;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -13,7 +13,6 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 
-import java.util.BitSet;
 import java.util.concurrent.TimeUnit;
 
 @Warmup(iterations = 3, time = 1)
@@ -35,26 +34,26 @@ public class BitSetOperations {
     @Param("123556")
     public int indexEmpty;
 
-    FixedSizeBitSet bitSet;
+    BitSet bitSet;
     boolean[] boolSet;
-    BitSet javaBitSet;
+    java.util.BitSet javaBitSet;
 
     @Setup
     public void setUp() {
         sizeInLong = ((size - 1) >> 6) + 1;
 
         boolSet = new boolean[size];
-        javaBitSet = new BitSet(size);
+        javaBitSet = new java.util.BitSet(size);
 
         boolSet[index + 1] = true;
         javaBitSet.set(index + 1);
 
-        bitSet = new FixedSizeBitSet(javaBitSet.toLongArray(), size);
+        bitSet = new BitSet(javaBitSet.toLongArray(), size);
     }
 
     @Benchmark
-    public FixedSizeBitSet bitSet_create() {
-        return new FixedSizeBitSet(new long[sizeInLong], size);
+    public BitSet bitSet_create() {
+        return new BitSet(new long[sizeInLong], size);
     }
 
     @Benchmark
@@ -98,7 +97,7 @@ public class BitSetOperations {
     }
 
     @Benchmark
-    public BitSet javaBitSet_create() {
-        return new BitSet(size);
+    public java.util.BitSet javaBitSet_create() {
+        return new java.util.BitSet(size);
     }
 }

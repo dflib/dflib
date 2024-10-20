@@ -1,9 +1,7 @@
 package org.dflib.benchmark.memory;
 
 import org.dflib.benchmark.memory.benchmark.MemoryTest;
-import org.dflib.series.FixedSizeBitSet;
-
-import java.util.BitSet;
+import org.dflib.series.BitSet;
 
 public class BitSetMemory extends MemoryTest {
 
@@ -17,15 +15,15 @@ public class BitSetMemory extends MemoryTest {
         test.run("       boolean[]", test::createBooleanArray, size);
     }
 
-    FixedSizeBitSet createBitSet() {
-        return new FixedSizeBitSet(new long[size >> 6], size);
+    BitSet createBitSet() {
+        return new BitSet(new long[size >> 6], size);
     }
 
     boolean[] createBooleanArray() {
         return new boolean[size];
     }
 
-    BitSet createJavaBitSet() {
-        return new BitSet(size);
+    java.util.BitSet createJavaBitSet() {
+        return new java.util.BitSet(size);
     }
 }
