@@ -50,4 +50,12 @@ public class BooleanSeries_EqTest {
 
         new SeriesAsserts(s1.ne(s2)).expectData(false, true, false);
     }
+
+    @Test
+    public void eq_IncompatibleSeries() {
+        BooleanSeries s1 = Series.ofBool(true, false, true);
+        LongSeries s2 = Series.ofLong(1L, 2L, 3L);
+
+        new SeriesAsserts(s1.eq(s2)).expectData(false, false, false);
+    }
 }

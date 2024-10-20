@@ -2,6 +2,7 @@
 
 * #360 RowColumnSet: rename "map" to "merge"
 * #364 Empty series isTrue(..) should return "false"
+* #365 BooleanSeries.eq(..) : inefficiency and potential ClassCastException
 
 ## Release 1.0.0-RC1
 
