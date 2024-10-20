@@ -229,7 +229,7 @@ public interface BooleanSeries extends Series<Boolean> {
 
     @Override
     default BooleanSeries eq(Series<?> s) {
-        if (!(s instanceof LongSeries)) {
+        if (!(s instanceof BooleanSeries)) {
             return Series.super.eq(s);
         }
 
