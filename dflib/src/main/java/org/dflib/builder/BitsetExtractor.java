@@ -4,7 +4,7 @@ import org.dflib.BoolValueMapper;
 import org.dflib.Extractor;
 
 /**
- * @since 1.1.0
+ * @since 2.0.0
  */
 public class BitsetExtractor<F> implements Extractor<F, Boolean> {
 

@@ -9,21 +9,21 @@ import org.dflib.sort.SeriesSorter;
 import java.util.Comparator;
 
 /**
- * Implementation of the {@link BooleanSeries} based on the {@link FixedSizeBitSet}
+ * Implementation of {@link BooleanSeries} based on {@link FixedSizeBitSet}
  *
- * @since 1.1.0
+ * @since 2.0.0
  */
 public class BooleanBitsetSeries extends BooleanBaseSeries {
 
-    FixedSizeBitSet bitSet;
+    private final FixedSizeBitSet data;
 
-    public BooleanBitsetSeries(FixedSizeBitSet bitSet) {
-        this.bitSet = bitSet;
+    public BooleanBitsetSeries(FixedSizeBitSet data) {
+        this.data = data;
     }
 
     @Override
     public boolean getBool(int index) {
-        return bitSet.get(index);
+        return data.get(index);
     }
 
     @Override
@@ -31,29 +31,14 @@ public class BooleanBitsetSeries extends BooleanBaseSeries {
         if (fromOffset + len > size()) {
             throw new ArrayIndexOutOfBoundsException(fromOffset + len);
         }
-        for(int i=0; i<len; i++) {
-            to[toOffset + i] = bitSet.get(fromOffset + i);
+        for (int i = 0; i < len; i++) {
+            to[toOffset + i] = data.get(fromOffset + i);
         }
     }
 
     @Override
     public int size() {
-        return bitSet.getSize();
-    }
-
-    @Override
-    public Boolean get(int index) {
-        return bitSet.get(index);
-    }
-
-    @Override
-    public void copyTo(Object[] to, int fromOffset, int toOffset, int len) {
-        if (fromOffset + len > size()) {
-            throw new ArrayIndexOutOfBoundsException(fromOffset + len);
-        }
-        for(int i=0; i<len; i++) {
-            to[toOffset + i] = bitSet.get(fromOffset + i);
-        }
+        return data.getSize();
     }
 
     @Override
@@ -61,15 +46,13 @@ public class BooleanBitsetSeries extends BooleanBaseSeries {
         return this;
     }
 
-    @Override
-    public BooleanSeries concatBool(BooleanSeries... other) {
-        // TODO: could we optimize this for a case others are Bitset-based too
-        return super.concatBool(other);
-    }
+    // TODO: could we override and optimize "concatBool" for a case others are Bitset-based too
 
     @Override
     public BooleanSeries rangeBool(int fromInclusive, int toExclusive) {
-        return new BooleanBitsetSeries(bitSet.range(fromInclusive, toExclusive));
+        return fromInclusive == 0 && toExclusive == size()
+                ? this
+                : new BooleanBitsetSeries(data.range(fromInclusive, toExclusive));
     }
 
     @Override
@@ -77,8 +60,8 @@ public class BooleanBitsetSeries extends BooleanBaseSeries {
         int h = positions.size();
         BitsetAccum accum = new BitsetAccum(h);
         for (int i = 0; i < h; i++) {
-            if(positions.getBool(i)) {
-                if (this.bitSet.get(i)) {
+            if (positions.getBool(i)) {
+                if (this.data.get(i)) {
                     accum.pushBool(true);
                 }
             }
@@ -101,7 +84,7 @@ public class BooleanBitsetSeries extends BooleanBaseSeries {
         BitsetAccum accum = new BitsetAccum(h);
         for (int i = 0; i < h; i++) {
             int index = positions.getInt(i);
-            if(this.bitSet.get(index)) {
+            if (this.data.get(index)) {
                 accum.pushBool(true);
             }
         }
@@ -110,49 +93,42 @@ public class BooleanBitsetSeries extends BooleanBaseSeries {
 
     @Override
     public int firstTrue() {
-        return bitSet.firstTrue();
+        return data.firstTrue();
     }
 
     @Override
-    public boolean isTrue() {
-        int firstFalse = bitSet.firstFalse();
-        return firstFalse == -1;
-    }
-
-    @Override
-    public boolean isFalse() {
-        int firstTrue = bitSet.firstTrue();
-        return firstTrue == -1;
+    public int firstFalse() {
+        return data.firstFalse();
     }
 
     @Override
     public BooleanSeries and(BooleanSeries another) {
-        if(another instanceof BooleanBitsetSeries) {
-            return new BooleanBitsetSeries(bitSet.and(((BooleanBitsetSeries) another).bitSet));
+        if (another instanceof BooleanBitsetSeries) {
+            return new BooleanBitsetSeries(data.and(((BooleanBitsetSeries) another).data));
         }
         return super.and(another);
     }
 
     @Override
     public BooleanSeries or(BooleanSeries another) {
-        if(another instanceof BooleanBitsetSeries) {
-            return new BooleanBitsetSeries(bitSet.or(((BooleanBitsetSeries) another).bitSet));
+        if (another instanceof BooleanBitsetSeries) {
+            return new BooleanBitsetSeries(data.or(((BooleanBitsetSeries) another).data));
         }
         return super.or(another);
     }
 
     @Override
     public BooleanBitsetSeries not() {
-        return new BooleanBitsetSeries(bitSet.not());
+        return new BooleanBitsetSeries(data.not());
     }
 
     @Override
     public int countTrue() {
-        return bitSet.countTrue();
+        return data.countTrue();
     }
 
     @Override
     public int countFalse() {
-        return bitSet.countFalse();
+        return data.countFalse();
     }
 }

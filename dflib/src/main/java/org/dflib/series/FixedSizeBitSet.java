@@ -10,7 +10,7 @@ import java.util.Objects;
  * Optimized for the internal usage in Series implementations,
  * so this class skips some checks (like a range check) and provides some dirtier API than a {@link java.util.BitSet}
  *
- * @since 1.1.0
+ * @since 2.0.0
  */
 public class FixedSizeBitSet {
 
