@@ -10,8 +10,6 @@ import java.util.function.BiFunction;
 
 public class MapExp2<L, R, T> extends Exp2<L, R, T> {
 
-    private final BiFunction<Series<L>, Series<R>, Series<T>> op;
-
     public static <L, R, T> MapExp2<L, R, T> map(
             String opName, Class<T> type, Exp<L> left, Exp<R> right, BiFunction<Series<L>, Series<R>, Series<T>> op) {
         return new MapExp2<>(opName, type, left, right, op);
@@ -34,6 +32,8 @@ public class MapExp2<L, R, T> extends Exp2<L, R, T> {
             return accum.toSeries();
         };
     }
+
+    private final BiFunction<Series<L>, Series<R>, Series<T>> op;
 
     protected MapExp2(String opName, Class<T> type, Exp<L> left, Exp<R> right, BiFunction<Series<L>, Series<R>, Series<T>> op) {
         super(opName, type, left, right);

@@ -1,10 +1,12 @@
 package org.dflib;
 
-import org.dflib.exp.num.DecimalExpScalar2;
+import org.dflib.exp.num.DecimalExp2;
 import org.dflib.exp.num.NumericExpFactory;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+
+import static org.dflib.Exp.$val;
 
 public interface DecimalExp extends NumExp<BigDecimal> {
 
@@ -17,7 +19,7 @@ public interface DecimalExp extends NumExp<BigDecimal> {
      * Creates an expression that guarantees specific scale for the BigDecimal result of this expression.
      */
     default DecimalExp scale(int scale) {
-        return DecimalExpScalar2.mapVal("scale", this, scale, (bd, s) -> bd.setScale(s, RoundingMode.HALF_UP));
+        return DecimalExp2.mapVal("scale", this, $val(scale), (bd, s) -> bd.setScale(s, RoundingMode.HALF_UP));
     }
 
     // override super operations that return BigDecimal to return DecimalExp. This would allow caller to invoke

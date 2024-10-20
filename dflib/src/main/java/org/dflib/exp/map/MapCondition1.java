@@ -1,23 +1,22 @@
 package org.dflib.exp.map;
 
 import org.dflib.BooleanSeries;
+import org.dflib.Condition;
+import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Series;
 import org.dflib.builder.BoolAccum;
-import org.dflib.exp.Condition1;
+import org.dflib.exp.Exp1;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 
-public class MapCondition1<F> extends Condition1<F> {
-
-    private final Function<Series<F>, BooleanSeries> op;
+public class MapCondition1<F> extends Exp1<F, Boolean> implements Condition {
 
     public static <F> MapCondition1<F> map(String opName, Exp<F> exp, Function<Series<F>, BooleanSeries> op) {
         return new MapCondition1<>(opName, exp, op);
     }
-
 
     public static <F> MapCondition1<F> mapValWithNulls(String opName, Exp<F> exp, Predicate<F> predicate) {
         return new MapCondition1<>(opName, exp, valToSeriesWithNulls(predicate));
@@ -53,9 +52,21 @@ public class MapCondition1<F> extends Condition1<F> {
         };
     }
 
+    private final Function<Series<F>, BooleanSeries> op;
+
     protected MapCondition1(String opName, Exp<F> exp, Function<Series<F>, BooleanSeries> op) {
-        super(opName, exp);
+        super(opName, Boolean.class, exp);
         this.op = op;
+    }
+
+    @Override
+    public BooleanSeries eval(DataFrame df) {
+        return doEval(exp.eval(df));
+    }
+
+    @Override
+    public BooleanSeries eval(Series<?> s) {
+        return doEval(exp.eval(s));
     }
 
     @Override

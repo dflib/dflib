@@ -2,7 +2,7 @@ package org.dflib;
 
 import org.dflib.exp.AsExp;
 import org.dflib.exp.Column;
-import org.dflib.exp.ConstExp;
+import org.dflib.exp.ScalarExp;
 import org.dflib.exp.RowNumExp;
 import org.dflib.exp.agg.CountExp;
 import org.dflib.exp.agg.ExpAggregator;
@@ -11,17 +11,17 @@ import org.dflib.exp.agg.ExpAggregatorN;
 import org.dflib.exp.agg.StringAggregators;
 import org.dflib.exp.bool.AndCondition;
 import org.dflib.exp.bool.BoolColumn;
-import org.dflib.exp.bool.BoolConstExp;
+import org.dflib.exp.bool.BoolScalarExp;
 import org.dflib.exp.bool.ConditionFactory;
 import org.dflib.exp.bool.OrCondition;
 import org.dflib.exp.datetime.DateColumn;
-import org.dflib.exp.datetime.DateConstExp;
+import org.dflib.exp.datetime.DateScalarExp;
 import org.dflib.exp.datetime.DateExp1;
 import org.dflib.exp.datetime.DateTimeColumn;
-import org.dflib.exp.datetime.DateTimeConstExp;
+import org.dflib.exp.datetime.DateTimeScalarExp;
 import org.dflib.exp.datetime.DateTimeExp1;
 import org.dflib.exp.datetime.TimeColumn;
-import org.dflib.exp.datetime.TimeConstExp;
+import org.dflib.exp.datetime.TimeScalarExp;
 import org.dflib.exp.datetime.TimeExp1;
 import org.dflib.exp.filter.PreFilterFirstMatchExp;
 import org.dflib.exp.filter.PreFilteredCountExp;
@@ -34,13 +34,13 @@ import org.dflib.exp.map.MapExp1;
 import org.dflib.exp.map.MapExp2;
 import org.dflib.exp.num.DecimalColumn;
 import org.dflib.exp.num.DoubleColumn;
-import org.dflib.exp.num.DoubleConstExp;
+import org.dflib.exp.num.DoubleScalarExp;
 import org.dflib.exp.num.FloatColumn;
-import org.dflib.exp.num.FloatConstExp;
+import org.dflib.exp.num.FloatScalarExp;
 import org.dflib.exp.num.IntColumn;
-import org.dflib.exp.num.IntConstExp;
+import org.dflib.exp.num.IntScalarExp;
 import org.dflib.exp.num.LongColumn;
-import org.dflib.exp.num.LongConstExp;
+import org.dflib.exp.num.LongScalarExp;
 import org.dflib.exp.sort.ExpSorter;
 import org.dflib.exp.str.ConcatExp;
 import org.dflib.exp.str.StrColumn;
@@ -83,21 +83,21 @@ public interface Exp<T> {
      * Returns an expression that evaluates to a Series containing a single LocalDate value.
      */
     static DateExp $dateVal(LocalDate value) {
-        return new DateConstExp(value);
+        return new DateScalarExp(value);
     }
 
     /**
      * Returns an expression that evaluates to a Series containing a single LocalTime value.
      */
     static TimeExp $timeVal(LocalTime value) {
-        return new TimeConstExp(value);
+        return new TimeScalarExp(value);
     }
 
     /**
      * Returns an expression that evaluates to a Series containing a single LocalDateTime value.
      */
     static DateTimeExp $dateTimeVal(LocalDateTime value) {
-        return new DateTimeConstExp(value);
+        return new DateTimeScalarExp(value);
     }
 
     /**
@@ -107,17 +107,17 @@ public interface Exp<T> {
 
         // create primitive Series aware expressions for faster ops
         if (Integer.class.equals(type) || Integer.TYPE.equals(type)) {
-            return (Exp<T>) new IntConstExp((Integer) value);
+            return (Exp<T>) new IntScalarExp((Integer) value);
         } else if (Long.class.equals(type) || Long.TYPE.equals(type)) {
-            return (Exp<T>) new LongConstExp((Long) value);
+            return (Exp<T>) new LongScalarExp((Long) value);
         } else if (Double.class.equals(type) || Double.TYPE.equals(type)) {
-            return (Exp<T>) new DoubleConstExp((Double) value);
+            return (Exp<T>) new DoubleScalarExp((Double) value);
         } else if (Boolean.class.equals(type) || Boolean.TYPE.equals(type)) {
-            return (Exp<T>) new BoolConstExp((Boolean) value);
+            return (Exp<T>) new BoolScalarExp((Boolean) value);
         } else if (Float.class.equals(type) || Float.TYPE.equals(type)) {
-            return (Exp<T>) new FloatConstExp((Float) value);
+            return (Exp<T>) new FloatScalarExp((Float) value);
         } else {
-            return new ConstExp<>(value, type);
+            return new ScalarExp<>(value, type);
         }
     }
 

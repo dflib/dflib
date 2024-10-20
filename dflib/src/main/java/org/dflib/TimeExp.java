@@ -1,14 +1,16 @@
 package org.dflib;
 
-import org.dflib.exp.datetime.TimeExpScalar2;
-import org.dflib.exp.map.MapCondition2;
+import org.dflib.exp.datetime.TimeExp2;
 import org.dflib.exp.map.MapCondition3;
+import org.dflib.exp.map.MapCondition2;
 import org.dflib.exp.num.IntExp1;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
+
+import static org.dflib.Exp.$val;
 
 public interface TimeExp extends Exp<LocalTime> {
 
@@ -45,23 +47,23 @@ public interface TimeExp extends Exp<LocalTime> {
 
 
     default TimeExp plusHours(int hours) {
-        return TimeExpScalar2.mapVal("plusHours", this, hours, (lt, hrs) -> lt.plusHours(hours));
+        return TimeExp2.mapVal("plusHours", this, $val(hours), (lt, hrs) -> lt.plusHours(hours));
     }
 
     default TimeExp plusMinutes(int minutes) {
-        return TimeExpScalar2.mapVal("plusMinutes", this, minutes, (lt, m) -> lt.plusMinutes(minutes));
+        return TimeExp2.mapVal("plusMinutes", this, $val(minutes), (lt, m) -> lt.plusMinutes(minutes));
     }
 
     default TimeExp plusSeconds(int seconds) {
-        return TimeExpScalar2.mapVal("plusSeconds", this, seconds, (lt, s) -> lt.plusSeconds(seconds));
+        return TimeExp2.mapVal("plusSeconds", this, $val(seconds), (lt, s) -> lt.plusSeconds(seconds));
     }
 
     default TimeExp plusMilliseconds(int ms) {
-        return TimeExpScalar2.mapVal("plusMilliseconds", this, ms, (lt, m) -> lt.plus(ms, ChronoUnit.MILLIS));
+        return TimeExp2.mapVal("plusMilliseconds", this, $val(ms), (lt, m) -> lt.plus(ms, ChronoUnit.MILLIS));
     }
 
     default TimeExp plusNanos(int nanos) {
-        return TimeExpScalar2.mapVal("plusNanos", this, nanos, (lt, n) -> lt.plusNanos(nanos));
+        return TimeExp2.mapVal("plusNanos", this, $val(nanos), (lt, n) -> lt.plusNanos(nanos));
     }
 
     default Condition lt(Exp<LocalTime> exp) {

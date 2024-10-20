@@ -1,22 +1,27 @@
 package org.dflib.exp;
 
-import org.dflib.BooleanSeries;
-import org.dflib.Condition;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Series;
 
-public abstract class Condition3<One, Two, Three> implements Condition {
+/**
+ * A ternary expression with three {@link Exp} arguments.
+ *
+ * @since 2.0.0
+ */
+public abstract class Exp3<One, Two, Three, T> implements Exp<T> {
 
     private final String opName1;
     private final String opName2;
+    private final Class<T> type;
     protected final Exp<One> one;
     protected final Exp<Two> two;
     protected final Exp<Three> three;
 
-    public Condition3(String opName1, String opName2, Exp<One> one, Exp<Two> two, Exp<Three> three) {
+    public Exp3(String opName1, String opName2, Class<T> type, Exp<One> one, Exp<Two> two, Exp<Three> three) {
         this.opName1 = opName1;
         this.opName2 = opName2;
+        this.type = type;
         this.one = one;
         this.two = two;
         this.three = three;
@@ -27,6 +32,12 @@ public abstract class Condition3<One, Two, Three> implements Condition {
         return toQL();
     }
 
+    @Override
+    public Class<T> getType() {
+        return type;
+    }
+
+    @Override
     public String toQL() {
         return one.toQL() + " " + opName1 + " " + two.toQL() + " " + opName2 + " " + three.toQL();
     }
@@ -37,14 +48,14 @@ public abstract class Condition3<One, Two, Three> implements Condition {
     }
 
     @Override
-    public BooleanSeries eval(DataFrame df) {
+    public Series<T> eval(DataFrame df) {
         return doEval(one.eval(df), two.eval(df), three.eval(df));
     }
 
     @Override
-    public BooleanSeries eval(Series<?> s) {
+    public Series<T> eval(Series<?> s) {
         return doEval(one.eval(s), two.eval(s), three.eval(s));
     }
 
-    protected abstract BooleanSeries doEval(Series<One> one, Series<Two> two, Series<Three> three);
+    protected abstract Series<T> doEval(Series<One> one, Series<Two> two, Series<Three> three);
 }

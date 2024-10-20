@@ -7,8 +7,8 @@ import org.dflib.NumExp;
 import org.dflib.exp.agg.ComparableAggregators;
 import org.dflib.exp.agg.DecimalAggregators;
 import org.dflib.exp.agg.DecimalExpAggregator;
-import org.dflib.exp.map.MapCondition2;
 import org.dflib.exp.map.MapCondition3;
+import org.dflib.exp.map.MapCondition2;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

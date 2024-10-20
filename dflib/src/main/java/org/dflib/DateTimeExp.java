@@ -1,16 +1,18 @@
 package org.dflib;
 
 import org.dflib.exp.datetime.DateExp1;
-import org.dflib.exp.datetime.DateTimeExpScalar2;
+import org.dflib.exp.datetime.DateTimeExp2;
 import org.dflib.exp.datetime.TimeExp1;
-import org.dflib.exp.map.MapCondition2;
 import org.dflib.exp.map.MapCondition3;
+import org.dflib.exp.map.MapCondition2;
 import org.dflib.exp.num.IntExp1;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
+
+import static org.dflib.Exp.$val;
 
 /**
  * An expression applied to datetime columns.
@@ -119,38 +121,38 @@ public interface DateTimeExp extends Exp<LocalDateTime> {
     }
 
     default DateTimeExp plusHours(int hours) {
-        return DateTimeExpScalar2.mapVal("plusHours", this, hours, (lt, hrs) -> lt.plusHours(hours));
+        return DateTimeExp2.mapVal("plusHours", this, $val(hours), (lt, hrs) -> lt.plusHours(hours));
     }
 
     default DateTimeExp plusMinutes(int minutes) {
-        return DateTimeExpScalar2.mapVal("plusMinutes", this, minutes, (lt, m) -> lt.plusMinutes(minutes));
+        return DateTimeExp2.mapVal("plusMinutes", this, $val(minutes), (lt, m) -> lt.plusMinutes(minutes));
     }
 
     default DateTimeExp plusSeconds(int seconds) {
-        return DateTimeExpScalar2.mapVal("plusSeconds", this, seconds, (lt, s) -> lt.plusSeconds(seconds));
+        return DateTimeExp2.mapVal("plusSeconds", this, $val(seconds), (lt, s) -> lt.plusSeconds(seconds));
     }
 
     default DateTimeExp plusMilliseconds(int ms) {
-        return DateTimeExpScalar2.mapVal("plusMilliseconds", this, ms, (lt, m) -> lt.plus(ms, ChronoUnit.MILLIS));
+        return DateTimeExp2.mapVal("plusMilliseconds", this, $val(ms), (lt, m) -> lt.plus(ms, ChronoUnit.MILLIS));
     }
 
     default DateTimeExp plusNanos(int nanos) {
-        return DateTimeExpScalar2.mapVal("plusNanos", this, nanos, (lt, n) -> lt.plusNanos(nanos));
+        return DateTimeExp2.mapVal("plusNanos", this, $val(nanos), (lt, n) -> lt.plusNanos(nanos));
     }
 
     default DateTimeExp plusDays(int days) {
-        return DateTimeExpScalar2.mapVal("plusDays", this, days, (ld, d) -> ld.plusDays(days));
+        return DateTimeExp2.mapVal("plusDays", this, $val(days), (ld, d) -> ld.plusDays(days));
     }
 
     default DateTimeExp plusWeeks(int weeks) {
-        return DateTimeExpScalar2.mapVal("plusWeeks", this, weeks, (ld, w) -> ld.plusWeeks(w));
+        return DateTimeExp2.mapVal("plusWeeks", this, $val(weeks), (ld, w) -> ld.plusWeeks(w));
     }
 
     default DateTimeExp plusMonths(int months) {
-        return DateTimeExpScalar2.mapVal("plusMonths", this, months, (ld, m) -> ld.plusMonths(m));
+        return DateTimeExp2.mapVal("plusMonths", this, $val(months), (ld, m) -> ld.plusMonths(m));
     }
 
     default DateTimeExp plusYears(int years) {
-        return DateTimeExpScalar2.mapVal("plusYears", this, years, (ld, y) -> ld.plusYears(y));
+        return DateTimeExp2.mapVal("plusYears", this, $val(years), (ld, y) -> ld.plusYears(y));
     }
 }

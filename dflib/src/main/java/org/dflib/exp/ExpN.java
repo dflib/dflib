@@ -14,7 +14,7 @@ public abstract class ExpN<T> implements Exp<T> {
 
     private final String opName;
     private final Class<T> type;
-    private final Exp<?>[] args;
+    protected final Exp<?>[] args;
 
     public ExpN(String opName, Class<T> type, Exp<?>... args) {
         this.opName = opName;

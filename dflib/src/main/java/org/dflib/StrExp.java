@@ -2,7 +2,7 @@ package org.dflib;
 
 import org.dflib.exp.map.MapCondition1;
 import org.dflib.exp.map.MapExp1;
-import org.dflib.exp.map.MapExpScalarCondition2;
+import org.dflib.exp.map.MapCondition2;
 import org.dflib.exp.num.DecimalExp1;
 import org.dflib.exp.num.DoubleExp1;
 import org.dflib.exp.num.FloatExp1;
@@ -11,6 +11,8 @@ import org.dflib.exp.str.StrSplitExp;
 
 import java.math.BigDecimal;
 import java.util.regex.Pattern;
+
+import static org.dflib.Exp.$val;
 
 /**
  * An expression applied to String columns.
@@ -65,19 +67,19 @@ public interface StrExp extends Exp<String> {
     default Condition matches(String regex) {
         // precompile pattern..
         Pattern p = Pattern.compile(regex);
-        return MapExpScalarCondition2.mapVal("matches", this, regex, (s, r) -> p.matcher(s).matches());
+        return MapCondition2.mapVal("matches", this, $val(regex), (s, r) -> p.matcher(s).matches());
     }
 
     default Condition startsWith(String prefix) {
-        return MapExpScalarCondition2.mapVal("startsWith", this, prefix, (s, p) -> s.startsWith(prefix));
+        return MapCondition2.mapVal("startsWith", this, $val(prefix), (s, p) -> s.startsWith(prefix));
     }
 
     default Condition endsWith(String suffix) {
-        return MapExpScalarCondition2.mapVal("endsWith", this, suffix, (s, p) -> s.endsWith(suffix));
+        return MapCondition2.mapVal("endsWith", this, $val(suffix), (s, p) -> s.endsWith(suffix));
     }
 
     default Condition contains(String suffix) {
-        return MapExpScalarCondition2.mapVal("contains", this, suffix, (s, p) -> s.contains(suffix));
+        return MapCondition2.mapVal("contains", this, $val(suffix), (s, p) -> s.contains(suffix));
     }
 
     /**

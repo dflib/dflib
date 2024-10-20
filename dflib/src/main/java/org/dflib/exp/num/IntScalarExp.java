@@ -2,14 +2,14 @@ package org.dflib.exp.num;
 
 import org.dflib.IntSeries;
 import org.dflib.NumExp;
-import org.dflib.exp.ExpScalar1;
+import org.dflib.exp.ScalarExp;
 import org.dflib.series.IntSingleValueSeries;
 
-public class IntConstExp extends ExpScalar1<Integer> implements NumExp<Integer> {
+public class IntScalarExp extends ScalarExp<Integer> implements NumExp<Integer> {
 
     private final int intValue;
 
-    public IntConstExp(int value) {
+    public IntScalarExp(int value) {
         super(value, Integer.class);
         this.intValue = value;
     }

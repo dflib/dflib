@@ -2,14 +2,17 @@ package org.dflib.exp.num;
 
 import org.dflib.LongSeries;
 import org.dflib.NumExp;
-import org.dflib.exp.ExpScalar1;
+import org.dflib.exp.ScalarExp;
 import org.dflib.series.LongSingleValueSeries;
 
-public class LongConstExp extends ExpScalar1<Long> implements NumExp<Long> {
+/**
+ * @since 2.0.0
+ */
+public class LongScalarExp extends ScalarExp<Long> implements NumExp<Long> {
 
     private final long longValue;
 
-    public LongConstExp(long value) {
+    public LongScalarExp(long value) {
         super(value, Long.class);
         this.longValue = value;
     }

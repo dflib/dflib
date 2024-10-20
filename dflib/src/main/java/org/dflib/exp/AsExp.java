@@ -6,31 +6,52 @@ import org.dflib.Series;
 
 import java.util.Objects;
 
+public class AsExp<T> implements Exp<T>  {
 
-// inheriting from ExpScalar2 (and treating "name" as the scalar argument) for the sake of proper "toQL" method
-public class AsExp<T> extends ExpScalar2<T, String, T> {
+    private final Exp<T> delegate;
+    private final String name;
 
     public AsExp(String name, Exp<T> delegate) {
-        super("as", delegate.getType(), delegate, name);
+        this.name = name;
+        this.delegate = delegate;
+    }
+
+    public Series<T> eval(Series<?> s) {
+        return delegate.eval(s);
     }
 
     @Override
-    protected Series<T> doEval(Series<T> s) {
-        return s;
+    public Series<T> eval(DataFrame df) {
+        return delegate.eval(df);
     }
 
     @Override
     public Exp<T> as(String name) {
-        return Objects.equals(name, this.right) ? this : new AsExp<>(name, left);
+        return Objects.equals(name, this.name) ? this : new AsExp<>(name, delegate);
     }
 
     @Override
     public String getColumnName() {
-        return right;
+        return name;
     }
 
     @Override
     public String getColumnName(DataFrame df) {
-        return right;
+        return name;
+    }
+
+    @Override
+    public Class<T> getType() {
+        return delegate.getType();
+    }
+
+    @Override
+    public String toQL() {
+        return delegate.toQL() + " as " + name;
+    }
+
+    @Override
+    public String toQL(DataFrame df) {
+        return delegate.toQL(df) + " as " + name;
     }
 }

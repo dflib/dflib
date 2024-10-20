@@ -13,6 +13,7 @@ import org.dflib.builder.IntAccum;
 import org.dflib.builder.LongAccum;
 import org.dflib.builder.ObjectAccum;
 
+import java.time.LocalDate;
 import java.util.Random;
 import java.util.function.UnaryOperator;
 
@@ -26,6 +27,12 @@ public interface ValueMaker<T> {
 
     static ValueMaker<Integer> nullSeq() {
         return () -> null;
+    }
+
+
+    static ValueMaker<LocalDate> dateSeq() {
+        long[] val = new long[1];
+        return () -> LocalDate.ofEpochDay(val[0]++);
     }
 
     static ValueMaker<Integer> intSeq() {
@@ -149,6 +156,17 @@ public interface ValueMaker<T> {
         }
 
         return ints.toSeries();
+    }
+
+    default Series<LocalDate> dateSeries(int len) {
+
+        ObjectAccum<LocalDate> vals = new ObjectAccum<>(len);
+
+        for (int i = 0; i < len; i++) {
+            vals.push((LocalDate) get());
+        }
+
+        return vals.toSeries();
     }
 
     default LongSeries longSeries(int len) {

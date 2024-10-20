@@ -1,24 +1,34 @@
 package org.dflib.exp;
 
-import org.dflib.BooleanSeries;
-import org.dflib.Condition;
 import org.dflib.DataFrame;
+import org.dflib.Exp;
 import org.dflib.Series;
 
-/**
- * A unary condition with a single scalar argument.
- */
-public abstract class ExpScalarCondition1<T> implements Condition {
+import java.util.Objects;
 
+/**
+ * A unary expression with a scalar argument.
+ *
+ * @since 2.0.0
+ */
+public class ScalarExp<T> implements Exp<T> {
+
+    private final Class<T> type;
     protected final T value;
 
-    public ExpScalarCondition1(T value) {
+    public ScalarExp(T value, Class<T> type) {
         this.value = value;
+        this.type = Objects.requireNonNull(type);
     }
 
     @Override
     public String toString() {
         return toQL();
+    }
+
+    @Override
+    public Class<T> getType() {
+        return type;
     }
 
     @Override
@@ -34,14 +44,16 @@ public abstract class ExpScalarCondition1<T> implements Condition {
     }
 
     @Override
-    public BooleanSeries eval(DataFrame df) {
+    public Series<T> eval(DataFrame df) {
         return doEval(df.height());
     }
 
     @Override
-    public BooleanSeries eval(Series<?> s) {
+    public Series<T> eval(Series<?> s) {
         return doEval(s.size());
     }
 
-    protected abstract BooleanSeries doEval(int height);
+    protected Series<T> doEval(int height) {
+        return Series.ofVal(value, height);
+    }
 }

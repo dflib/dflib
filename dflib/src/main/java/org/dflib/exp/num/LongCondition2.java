@@ -1,11 +1,11 @@
 package org.dflib.exp.num;
 
 
-import org.dflib.exp.map.MapCondition2;
 import org.dflib.BooleanSeries;
 import org.dflib.Exp;
 import org.dflib.LongSeries;
 import org.dflib.Series;
+import org.dflib.exp.map.MapCondition2;
 
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;

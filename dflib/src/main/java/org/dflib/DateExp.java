@@ -1,12 +1,14 @@
 package org.dflib;
 
-import org.dflib.exp.datetime.DateExpScalar2;
-import org.dflib.exp.map.MapCondition2;
+import org.dflib.exp.datetime.DateExp2;
 import org.dflib.exp.map.MapCondition3;
+import org.dflib.exp.map.MapCondition2;
 import org.dflib.exp.num.IntExp1;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
+import static org.dflib.Exp.$val;
 
 /**
  * An expression applied to date columns.
@@ -88,18 +90,18 @@ public interface DateExp extends Exp<LocalDate> {
     }
 
     default DateExp plusDays(int days) {
-        return DateExpScalar2.mapVal("plusDays", this, days, (ld, d) -> ld.plusDays(days));
+        return DateExp2.mapVal("plusDays", this, $val(days), (ld, d) -> ld.plusDays(d));
     }
 
     default DateExp plusWeeks(int weeks) {
-        return DateExpScalar2.mapVal("plusWeeks", this, weeks, (ld, w) -> ld.plusWeeks(w));
+        return DateExp2.mapVal("plusWeeks", this, $val(weeks), (ld, w) -> ld.plusWeeks(w));
     }
 
     default DateExp plusMonths(int months) {
-        return DateExpScalar2.mapVal("plusMonths", this, months, (ld, m) -> ld.plusMonths(m));
+        return DateExp2.mapVal("plusMonths", this, $val(months), (ld, m) -> ld.plusMonths(m));
     }
 
     default DateExp plusYears(int years) {
-        return DateExpScalar2.mapVal("plusYears", this, years, (ld, y) -> ld.plusYears(y));
+        return DateExp2.mapVal("plusYears", this, $val(years), (ld, y) -> ld.plusYears(y));
     }
 }

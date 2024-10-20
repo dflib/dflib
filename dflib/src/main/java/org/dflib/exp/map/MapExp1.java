@@ -12,8 +12,6 @@ import java.util.function.Function;
  */
 public class MapExp1<F, T> extends Exp1<F, T> {
 
-    private final Function<Series<F>, Series<T>> op;
-
     public static <F, T> MapExp1<F, T> map(String opName, Class<T> type, Exp<F> exp, Function<Series<F>, Series<T>> op) {
         return new MapExp1<>(opName, type, exp, op);
     }
@@ -34,6 +32,8 @@ public class MapExp1<F, T> extends Exp1<F, T> {
     protected static <F, T> Function<Series<F>, Series<T>> valToSeries(Function<F, T> op) {
         return s -> s.map(v -> v != null ? op.apply(v) : null);
     }
+
+    private final Function<Series<F>, Series<T>> op;
 
     protected MapExp1(String opName, Class<T> type, Exp<F> exp, Function<Series<F>, Series<T>> op) {
         super(opName, type, exp);

@@ -2,14 +2,17 @@ package org.dflib.exp.num;
 
 import org.dflib.DoubleSeries;
 import org.dflib.NumExp;
-import org.dflib.exp.ExpScalar1;
+import org.dflib.exp.ScalarExp;
 import org.dflib.series.DoubleSingleValueSeries;
 
-public class DoubleConstExp extends ExpScalar1<Double> implements NumExp<Double> {
+/**
+ * @since 2.0.0
+ */
+public class DoubleScalarExp extends ScalarExp<Double> implements NumExp<Double> {
 
     private final double doubleValue;
 
-    public DoubleConstExp(double value) {
+    public DoubleScalarExp(double value) {
         super(value, Double.class);
         this.doubleValue = value;
     }

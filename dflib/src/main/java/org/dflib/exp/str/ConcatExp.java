@@ -16,7 +16,7 @@ public class ConcatExp extends ExpN<String> implements StrExp {
         int len = valuesOrExps.length;
         if (len == 0) {
             // No exps to concat means null result
-            return new StrConstExp(null);
+            return new StrScalarExp(null);
         }
 
         Exp<?>[] args = new Exp[len];
@@ -25,7 +25,7 @@ public class ConcatExp extends ExpN<String> implements StrExp {
             Object v = valuesOrExps[i];
             if (v == null) {
                 // Any null argument to concat will produce null CONCAT result regardless of other values
-                return new StrConstExp(null);
+                return new StrScalarExp(null);
             } else if (v instanceof Exp) {
                 args[i] = (Exp<?>) v;
             } else {

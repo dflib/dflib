@@ -2,17 +2,17 @@ package org.dflib.exp.num;
 
 import org.dflib.FloatSeries;
 import org.dflib.NumExp;
-import org.dflib.exp.ExpScalar1;
+import org.dflib.exp.ScalarExp;
 import org.dflib.series.FloatSingleValueSeries;
 
 /**
- * @since 1.1.0
+ * @since 2.0.0
  */
-public class FloatConstExp extends ExpScalar1<Float> implements NumExp<Float> {
+public class FloatScalarExp extends ScalarExp<Float> implements NumExp<Float> {
 
     private final float floatValue;
 
-    public FloatConstExp(float value) {
+    public FloatScalarExp(float value) {
         super(value, Float.class);
         this.floatValue = value;
     }

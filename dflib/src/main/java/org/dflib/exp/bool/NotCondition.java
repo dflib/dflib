@@ -2,22 +2,45 @@ package org.dflib.exp.bool;
 
 import org.dflib.BooleanSeries;
 import org.dflib.Condition;
-import org.dflib.exp.ConjunctiveCondition1;
+import org.dflib.DataFrame;
+import org.dflib.Series;
 
 
-public class NotCondition extends ConjunctiveCondition1 {
+public class NotCondition implements Condition {
 
-    public NotCondition(Condition arg) {
-        super("not", arg);
-    }
+    private final Condition delegate;
 
-    @Override
-    protected BooleanSeries doEval(BooleanSeries s) {
-        return s.not();
+    public NotCondition(Condition delegate) {
+        this.delegate = delegate;
     }
 
     @Override
     public Condition not() {
-        return arg;
+        return delegate;
+    }
+
+    @Override
+    public String toString() {
+        return toQL();
+    }
+
+    @Override
+    public String toQL() {
+        return "not (" + delegate.toQL() + ")";
+    }
+
+    @Override
+    public String toQL(DataFrame df) {
+        return "not (" + delegate.toQL(df) + ")";
+    }
+
+    @Override
+    public BooleanSeries eval(DataFrame df) {
+        return delegate.eval(df).not();
+    }
+
+    @Override
+    public BooleanSeries eval(Series<?> s) {
+        return delegate.eval(s).not();
     }
 }
