@@ -479,11 +479,13 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
     @Override
     public boolean isTrue() {
+        // empty series is neither true nor false
         return size() > 0 && firstFalse() == -1;
     }
 
     @Override
     public boolean isFalse() {
+        // empty series is neither true nor false
         return size() > 0 && firstTrue() == -1;
     }
 
