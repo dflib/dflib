@@ -10,6 +10,7 @@ import org.dflib.series.DoubleSingleValueSeries;
 import org.dflib.series.EmptySeries;
 import org.dflib.series.FalseSeries;
 import org.dflib.series.FloatArraySeries;
+import org.dflib.series.FloatSingleValueSeries;
 import org.dflib.series.IntArraySeries;
 import org.dflib.series.IntSingleValueSeries;
 import org.dflib.series.LongArraySeries;
@@ -97,6 +98,8 @@ public interface Series<T> extends Iterable<T> {
             return (Series<T>) new DoubleSingleValueSeries((double) value, size);
         } else if (value instanceof Boolean) {
             return (boolean) value ? (Series<T>) new TrueSeries(size) : (Series<T>) new FalseSeries(size);
+        } else if (value instanceof Float) {
+            return (Series<T>) new FloatSingleValueSeries((float) value, size);
         } else {
             return new SingleValueSeries<>(value, size);
         }
