@@ -2,6 +2,7 @@
 
 * #357 Primitive FloatSeries
 * #362 Aggregating expressions do not generate proper QL
+* #363 BooleanSeries.firstFalse()
 
 ## Release 1.0.0-RC2
 

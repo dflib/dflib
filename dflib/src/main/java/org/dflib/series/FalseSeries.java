@@ -42,7 +42,7 @@ public class FalseSeries extends BooleanBaseSeries {
 
     @Override
     public boolean isFalse() {
-        return true;
+        return size > 0;
     }
 
     @Override
@@ -53,6 +53,11 @@ public class FalseSeries extends BooleanBaseSeries {
     @Override
     public int firstTrue() {
         return -1;
+    }
+
+    @Override
+    public int firstFalse() {
+        return size > 0 ? 0 : -1;
     }
 
     @Override

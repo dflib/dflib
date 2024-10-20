@@ -71,6 +71,16 @@ public class BooleanArrayRangeSeries extends BooleanBaseSeries {
     }
 
     @Override
+    public int firstFalse() {
+        for (int i = 0; i < size; i++) {
+            if (!data[offset + i]) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Override
     public int countTrue() {
         return PrimitiveSeriesCount.countTrueInArray(data, offset, size);
     }

@@ -54,6 +54,17 @@ public class BooleanArraySeries extends BooleanBaseSeries {
     }
 
     @Override
+    public int firstFalse() {
+        int size = size();
+        for (int i = 0; i < size; i++) {
+            if (!data[i]) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Override
     public int countTrue() {
         return PrimitiveSeriesCount.countTrueInArray(data, 0, size());
     }

@@ -479,33 +479,12 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
     @Override
     public boolean isTrue() {
-        int s = size();
-
-        for (int i = 0; i < s; i++) {
-            if (!getBool(i)) {
-                return false;
-            }
-        }
-
-        return true;
+        return size() > 0 && firstFalse() == -1;
     }
 
     @Override
     public boolean isFalse() {
-        int s = size();
-
-        // empty series is considered true
-        if (s == 0) {
-            return false;
-        }
-
-        for (int i = 0; i < s; i++) {
-            if (getBool(i)) {
-                return false;
-            }
-        }
-
-        return true;
+        return size() > 0 && firstTrue() == -1;
     }
 
     @Override

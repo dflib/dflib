@@ -89,6 +89,17 @@ public class BooleanIndexedSeries extends BooleanBaseSeries {
     }
 
     @Override
+    public int firstFalse() {
+        int size = size();
+        for (int i = 0; i < size; i++) {
+            if (!getBool(i)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Override
     public int countTrue() {
         return materialize().countTrue();
     }
