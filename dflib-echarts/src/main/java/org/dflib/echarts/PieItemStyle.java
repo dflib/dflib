@@ -60,6 +60,7 @@ public class PieItemStyle {
                 null,
                 borderWidth,
                 borderRadius != null ? borderRadius.asString() : null,
+                null,
                 opacity);
     }
 }

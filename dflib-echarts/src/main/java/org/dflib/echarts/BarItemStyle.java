@@ -67,6 +67,7 @@ public class BarItemStyle {
                 null,
                 borderWidth,
                 borderRadius,
+                null,
                 opacity);
     }
 }

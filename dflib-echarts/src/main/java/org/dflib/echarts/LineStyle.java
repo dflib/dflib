@@ -10,6 +10,7 @@ public class LineStyle {
     private String color;
     private Integer width;
     private Double opacity;
+    private LineType type;
 
     public static LineStyle of() {
         return new LineStyle();
@@ -30,10 +31,17 @@ public class LineStyle {
         return this;
     }
 
+    public LineStyle type(LineType type) {
+        this.type = type;
+        return this;
+    }
+
     LineStyleModel resolve() {
         return new LineStyleModel(
                 color,
                 width,
-                opacity);
+                opacity,
+                type != null ? type.name() : null
+        );
     }
 }

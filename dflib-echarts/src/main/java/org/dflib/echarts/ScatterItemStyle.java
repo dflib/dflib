@@ -45,6 +45,7 @@ public class ScatterItemStyle {
                 null,
                 borderWidth,
                 null,
+                null,
                 opacity);
     }
 }

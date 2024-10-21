@@ -8,11 +8,13 @@ public class LineStyleModel {
     private final String color;
     private final Integer width;
     private final Double opacity;
+    private final String type;
 
-    public LineStyleModel(String color, Integer width, Double opacity) {
+    public LineStyleModel(String color, Integer width, Double opacity, String type) {
         this.color = color;
         this.width = width;
         this.opacity = opacity;
+        this.type = type;
     }
 
     public String getColor() {
@@ -25,5 +27,9 @@ public class LineStyleModel {
 
     public Double getOpacity() {
         return opacity;
+    }
+
+    public String getType() {
+        return type;
     }
 }

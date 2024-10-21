@@ -63,6 +63,7 @@ public class CandlestickItemStyle {
                 borderColorDoji,
                 borderWidth,
                 null,
+                null,
                 opacity);
     }
 }

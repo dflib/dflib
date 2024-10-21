@@ -12,6 +12,7 @@ public class ItemStyleModel {
     private final String borderColorDoji;
     private final Integer borderWidth;
     private final String borderRadius;
+    private final String borderType;
     private final Double opacity;
 
     public ItemStyleModel(
@@ -22,6 +23,7 @@ public class ItemStyleModel {
             String borderColorDoji,
             Integer borderWidth,
             String borderRadius,
+            String borderType,
             Double opacity) {
 
         this.borderColor0 = borderColor0;
@@ -31,7 +33,7 @@ public class ItemStyleModel {
         this.borderColorDoji = borderColorDoji;
         this.borderWidth = borderWidth;
         this.borderRadius = borderRadius;
-
+        this.borderType = borderType;
         this.opacity = opacity;
     }
 
@@ -61,6 +63,10 @@ public class ItemStyleModel {
 
     public String getBorderRadius() {
         return borderRadius;
+    }
+
+    public String getBorderType() {
+        return borderType;
     }
 
     public Double getOpacity() {

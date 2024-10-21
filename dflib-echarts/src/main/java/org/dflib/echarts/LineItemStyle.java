@@ -8,8 +8,6 @@ import org.dflib.echarts.render.option.series.ItemStyleModel;
 public class LineItemStyle {
 
     private String color;
-    private String borderColor;
-    private Integer borderWidth;
     private Double opacity;
 
     public static LineItemStyle of() {
@@ -18,16 +16,6 @@ public class LineItemStyle {
 
     public LineItemStyle color(String color) {
         this.color = color;
-        return this;
-    }
-
-    public LineItemStyle borderColor(String borderColor) {
-        this.borderColor = borderColor;
-        return this;
-    }
-
-    public LineItemStyle borderWidth(int borderWidth) {
-        this.borderWidth = borderWidth;
         return this;
     }
 
@@ -41,10 +29,11 @@ public class LineItemStyle {
         return new ItemStyleModel(
                 color,
                 null,
-                borderColor,
                 null,
                 null,
-                borderWidth,
+                null,
+                null,
+                null,
                 null,
                 opacity);
     }
