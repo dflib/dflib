@@ -6,6 +6,7 @@
 * #363 BooleanSeries.firstFalse()
 * #367 ECharts: support "itemStyle" for "bar" series
 * #368 ECharts: support "itemStyle" for "scatter" series
+* #369 ECharts: support "itemStyle" for "pie" series
 
 ## Release 1.0.0-RC2
 
