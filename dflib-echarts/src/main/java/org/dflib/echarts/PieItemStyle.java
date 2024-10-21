@@ -12,6 +12,7 @@ public class PieItemStyle {
     private String borderColor;
     private Integer borderWidth;
     private Distance borderRadius;
+    private LineType borderType;
     private Double opacity;
 
     public static PieItemStyle of() {
@@ -46,6 +47,11 @@ public class PieItemStyle {
         return this;
     }
 
+    public PieItemStyle borderType(LineType borderType) {
+        this.borderType = borderType;
+        return this;
+    }
+
     public PieItemStyle opacity(double opacity) {
         this.opacity = opacity;
         return this;
@@ -60,7 +66,7 @@ public class PieItemStyle {
                 null,
                 borderWidth,
                 borderRadius != null ? borderRadius.asString() : null,
-                null,
+                borderType != null ? borderType.name() : null,
                 opacity);
     }
 }
