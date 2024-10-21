@@ -41,9 +41,6 @@ public class BitSet {
      * @param size desired size of the bit set
      */
     public BitSet(long[] data, int size) {
-        if (arraySize(size) < data.length) {
-            throw new IllegalArgumentException("Size mismatch");
-        }
         this.data = data;
         this.size = size;
     }
