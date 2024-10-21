@@ -3,6 +3,7 @@ package org.dflib.echarts;
 public class ScatterSeriesOpts extends CartesianSeriesOpts<ScatterSeriesOpts> {
 
     Label label;
+    ScatterItemStyle itemStyle;
 
     @Override
     public ChartType getType() {
@@ -19,4 +20,11 @@ public class ScatterSeriesOpts extends CartesianSeriesOpts<ScatterSeriesOpts> {
         return this;
     }
 
+    /**
+     * @since 1.1.0
+     */
+    public ScatterSeriesOpts itemStyle(ScatterItemStyle itemStyle) {
+        this.itemStyle = itemStyle;
+        return this;
+    }
 }

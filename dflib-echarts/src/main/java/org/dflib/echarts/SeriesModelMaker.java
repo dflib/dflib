@@ -90,7 +90,7 @@ class SeriesModelMaker {
                 null,
                 null,
                 null,
-                null
+                sb.seriesOpts.itemStyle != null ? sb.seriesOpts.itemStyle.resolve() : null
         );
     }
 
