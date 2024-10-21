@@ -229,6 +229,28 @@
                 {{/itemName}}
                 },
             {{/encode}}
+            {{#itemStyle}}
+                itemStyle: {
+                {{#color}}
+                    color: '{{.}}',
+                {{/color}}
+                {{#color0}}
+                    color0: '{{.}}',
+                {{/color0}}
+                {{#borderColor}}
+                    borderColor: '{{.}}',
+                {{/borderColor}}
+                {{#borderColor0}}
+                    borderColor0: '{{.}}',
+                {{/borderColor0}}
+                {{#borderColorDoji}}
+                    borderColorDoji: '{{.}}',
+                {{/borderColorDoji}}
+                {{#borderWidth}}
+                    borderWidth: {{.}}
+                {{/borderWidth}}
+                },
+            {{/itemStyle}}
             {{#label}}
                 label: {
                 {{#showPresent}}

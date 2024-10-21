@@ -45,6 +45,7 @@ class SeriesModelMaker {
                 null,
                 null,
                 null,
+                null,
                 null
         );
     }
@@ -62,6 +63,7 @@ class SeriesModelMaker {
                 sb.seriesOpts.smooth,
                 sb.seriesOpts.xAxisIndex,
                 sb.seriesOpts.yAxisIndex,
+                null,
                 null,
                 null,
                 null,
@@ -87,6 +89,7 @@ class SeriesModelMaker {
                 null,
                 null,
                 null,
+                null,
                 null
         );
     }
@@ -108,7 +111,8 @@ class SeriesModelMaker {
                 null,
                 null,
                 null,
-                null
+                null,
+                sb.seriesOpts.itemStyle != null ? sb.seriesOpts.itemStyle.resolve() : null
         );
     }
 
@@ -125,6 +129,7 @@ class SeriesModelMaker {
                 null,
                 sb.seriesOpts.xAxisIndex,
                 sb.seriesOpts.yAxisIndex,
+                null,
                 null,
                 null,
                 null,
@@ -156,7 +161,8 @@ class SeriesModelMaker {
                 sb.seriesOpts.center != null ? new CenterModel(sb.seriesOpts.center[0], sb.seriesOpts.center[1]) : null,
                 sb.seriesOpts.startAngle,
                 sb.seriesOpts.endAngle,
-                sb.seriesOpts.roseType != null ? sb.seriesOpts.roseType.name() : null
+                sb.seriesOpts.roseType != null ? sb.seriesOpts.roseType.name() : null,
+                null
         );
     }
 }

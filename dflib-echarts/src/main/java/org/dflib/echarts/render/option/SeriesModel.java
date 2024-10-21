@@ -1,6 +1,7 @@
 package org.dflib.echarts.render.option;
 
 import org.dflib.echarts.render.option.series.CenterModel;
+import org.dflib.echarts.render.option.series.ItemStyleModel;
 import org.dflib.echarts.render.option.series.RadiusModel;
 
 /**
@@ -24,7 +25,12 @@ public class SeriesModel {
     private final Integer startAngle;
     private final Integer endAngle;
     private final String roseType;
+    private final ItemStyleModel itemStyle;
 
+    /**
+     * @deprecated in favor of a constructor that takes an extra ItemStyleModel argument
+     */
+    @Deprecated(since = "1.1.0", forRemoval = true)
     public SeriesModel(
             String name,
             String type,
@@ -43,6 +49,32 @@ public class SeriesModel {
             Integer endAngle,
             String roseType) {
 
+        this(name, type, encode, label, seriesLayoutBy, areaStyle, showSymbol, stack, smooth, xAxisIndex, yAxisIndex,
+                radius, center, startAngle, endAngle, roseType, null);
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public SeriesModel(
+            String name,
+            String type,
+            EncodeModel encode,
+            LabelModel label,
+            String seriesLayoutBy,
+            Boolean areaStyle,
+            Boolean showSymbol,
+            Boolean stack,
+            Boolean smooth,
+            Integer xAxisIndex,
+            Integer yAxisIndex,
+            RadiusModel radius,
+            CenterModel center,
+            Integer startAngle,
+            Integer endAngle,
+            String roseType,
+            ItemStyleModel itemStyle) {
+
         this.name = name;
         this.type = type;
         this.encode = encode;
@@ -59,6 +91,7 @@ public class SeriesModel {
         this.startAngle = startAngle;
         this.endAngle = endAngle;
         this.roseType = roseType;
+        this.itemStyle = itemStyle;
     }
 
     public String getName() {
@@ -123,5 +156,9 @@ public class SeriesModel {
 
     public boolean isSmooth() {
         return smooth != null && smooth;
+    }
+
+    public ItemStyleModel getItemStyle() {
+        return itemStyle;
     }
 }
