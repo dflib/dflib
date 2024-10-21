@@ -2,7 +2,9 @@ package org.dflib.echarts;
 
 import org.dflib.DataFrame;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CandlestickSeriesTest {
 
@@ -48,5 +50,35 @@ public class CandlestickSeriesTest {
 
         assertTrue(s2.contains("x: 0,"), s2);
         assertTrue(s2.contains("y: [1,2,3,4]"), s2);
+    }
+
+    @Test
+    public void itemStyle() {
+
+        CandlestickItemStyle style = CandlestickItemStyle.of()
+                .color("#ffffff")
+                .color0("#000000")
+                .borderColor("#eeeeeee")
+                .borderColor0("#dddddd")
+                .borderColorDoji("#444444")
+                .borderWidth(2);
+
+        String s1 = ECharts.chart()
+                .series(SeriesOpts.ofCandlestick(), "open", "close", "low", "high")
+                .generateScriptHtml("_tid", df);
+        assertFalse(s1.contains("itemStyle"), s1);
+
+        String s2 = ECharts.chart()
+                .series(SeriesOpts.ofCandlestick().itemStyle(style), "open", "close", "low", "high")
+                .generateScriptHtml("_tid", df);
+
+        assertTrue(s2.contains("type: 'candlestick'"), s2);
+        assertTrue(s2.contains("itemStyle"), s2);
+        assertTrue(s2.contains("color: '#ffffff'"), s2);
+        assertTrue(s2.contains("color0: '#000000'"), s2);
+        assertTrue(s2.contains("borderColor: '#eeeeeee'"), s2);
+        assertTrue(s2.contains("borderColor0: '#dddddd'"), s2);
+        assertTrue(s2.contains("borderColorDoji: '#444444'"), s2);
+        assertTrue(s2.contains("borderWidth: 2"), s2);
     }
 }

@@ -5,6 +5,7 @@
 
 ## Release 1.1.0
 
+* #356 ECharts: "candlestick" should allow color selection
 * #357 Primitive FloatSeries
 * #362 Aggregating expressions do not generate proper QL
 * #363 BooleanSeries.firstFalse()
