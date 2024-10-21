@@ -4,6 +4,7 @@
 * #357 Primitive FloatSeries
 * #362 Aggregating expressions do not generate proper QL
 * #363 BooleanSeries.firstFalse()
+* #367 ECharts: support "itemStyle" for "bar" series
 
 ## Release 1.0.0-RC2
 
