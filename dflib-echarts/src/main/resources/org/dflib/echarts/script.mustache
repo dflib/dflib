@@ -252,6 +252,9 @@
                 {{#borderWidth}}
                     borderWidth: {{.}},
                 {{/borderWidth}}
+                {{#borderType}}
+                    borderType: '{{.}}',
+                {{/borderType}}
                 {{#opacity}}
                     opacity: {{.}}
                 {{/opacity}}
@@ -279,8 +282,11 @@
                     width: {{.}},
                 {{/width}}
                 {{#opacity}}
-                    opacity: {{.}}
+                    opacity: {{.}},
                 {{/opacity}}
+                {{#type}}
+                    type: '{{.}}'
+                {{/type}}
                 },
             {{/lineStyle}}
             {{#seriesLayoutBy}}

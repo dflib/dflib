@@ -98,8 +98,6 @@ public class LineSeriesTest extends GenerateScriptHtmlTest {
 
         LineItemStyle style = LineItemStyle.of()
                 .color("#ffffff")
-                .borderColor("#eeeeeee")
-                .borderWidth(2)
                 .opacity(0.55);
 
         String s1 = ECharts.chart().series("y1").generateScriptHtml("_tid", df2);
@@ -110,8 +108,6 @@ public class LineSeriesTest extends GenerateScriptHtmlTest {
         assertTrue(s2.contains("type: 'line'"), s2);
         assertTrue(s2.contains("itemStyle"), s2);
         assertTrue(s2.contains("color: '#ffffff',"), s2);
-        assertTrue(s2.contains("borderColor: '#eeeeeee',"), s2);
-        assertTrue(s2.contains("borderWidth: 2,"), s2);
         assertTrue(s2.contains("opacity: 0.55"), s2);
     }
 
@@ -121,7 +117,8 @@ public class LineSeriesTest extends GenerateScriptHtmlTest {
         LineStyle style = LineStyle.of()
                 .color("#ffffff")
                 .width(2)
-                .opacity(0.55);
+                .opacity(0.55)
+                .type(LineType.dotted);
 
         String s1 = ECharts.chart().series("y1").generateScriptHtml("_tid", df2);
         assertFalse(s1.contains("lineStyle"), s1);
@@ -133,6 +130,7 @@ public class LineSeriesTest extends GenerateScriptHtmlTest {
         assertTrue(s2.contains("color: '#ffffff',"), s2);
         assertTrue(s2.contains("width: 2,"), s2);
         assertTrue(s2.contains("opacity: 0.55"), s2);
+        assertTrue(s2.contains("type: 'dotted'"), s2);
     }
 
     @Test
