@@ -13,6 +13,7 @@ public class CandlestickItemStyle {
     private String borderColor0;
     private String borderColorDoji;
     private Integer borderWidth;
+    private Double opacity;
 
     public static CandlestickItemStyle of() {
         return new CandlestickItemStyle();
@@ -48,6 +49,11 @@ public class CandlestickItemStyle {
         return this;
     }
 
+    public CandlestickItemStyle opacity(double opacity) {
+        this.opacity = opacity;
+        return this;
+    }
+
     ItemStyleModel resolve() {
         return new ItemStyleModel(
                 color,
@@ -56,6 +62,7 @@ public class CandlestickItemStyle {
                 borderColor0,
                 borderColorDoji,
                 borderWidth,
-                null);
+                null,
+                opacity);
     }
 }

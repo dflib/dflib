@@ -11,6 +11,7 @@ public class BarItemStyle {
     private String borderColor;
     private Integer borderWidth;
     private int[] borderRadius;
+    private Double opacity;
 
     public static BarItemStyle of() {
         return new BarItemStyle();
@@ -41,6 +42,11 @@ public class BarItemStyle {
         return this;
     }
 
+    public BarItemStyle opacity(double opacity) {
+        this.opacity = opacity;
+        return this;
+    }
+
     ItemStyleModel resolve() {
         return new ItemStyleModel(
                 color,
@@ -49,6 +55,7 @@ public class BarItemStyle {
                 null,
                 null,
                 borderWidth,
-                borderRadius);
+                borderRadius,
+                opacity);
     }
 }

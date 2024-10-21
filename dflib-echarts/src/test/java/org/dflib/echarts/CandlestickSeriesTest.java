@@ -61,7 +61,8 @@ public class CandlestickSeriesTest {
                 .borderColor("#eeeeeee")
                 .borderColor0("#dddddd")
                 .borderColorDoji("#444444")
-                .borderWidth(2);
+                .borderWidth(2)
+                .opacity(0.55);
 
         String s1 = ECharts.chart()
                 .series(SeriesOpts.ofCandlestick(), "open", "close", "low", "high")
@@ -79,6 +80,7 @@ public class CandlestickSeriesTest {
         assertTrue(s2.contains("borderColor: '#eeeeeee'"), s2);
         assertTrue(s2.contains("borderColor0: '#dddddd'"), s2);
         assertTrue(s2.contains("borderColorDoji: '#444444'"), s2);
-        assertTrue(s2.contains("borderWidth: 2"), s2);
+        assertTrue(s2.contains("borderWidth: 2,"), s2);
+        assertTrue(s2.contains("opacity: 0.55"), s2);
     }
 }
