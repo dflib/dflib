@@ -270,6 +270,19 @@
                 {{/position}}
                 },
             {{/label}}
+            {{#lineStyle}}
+                lineStyle: {
+                {{#color}}
+                    color: '{{.}}',
+                {{/color}}
+                {{#width}}
+                    width: {{.}},
+                {{/width}}
+                {{#opacity}}
+                    opacity: {{.}}
+                {{/opacity}}
+                },
+            {{/lineStyle}}
             {{#seriesLayoutBy}}
                 seriesLayoutBy: '{{.}}',
             {{/seriesLayoutBy}}
@@ -282,6 +295,9 @@
             {{#stack}}
                 stack: 'total',
             {{/stack}}
+            {{#symbolSize}}
+                symbolSize: {{{.}}},
+            {{/symbolSize}}
             {{#xAxisIndex}}
                 xAxisIndex: {{.}},
             {{/xAxisIndex}}

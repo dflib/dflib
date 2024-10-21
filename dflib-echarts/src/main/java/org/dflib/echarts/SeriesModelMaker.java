@@ -39,6 +39,7 @@ class SeriesModelMaker {
                 null,
                 sb.seriesOpts.stack,
                 null,
+                null,
                 sb.seriesOpts.xAxisIndex,
                 sb.seriesOpts.yAxisIndex,
                 null,
@@ -46,7 +47,8 @@ class SeriesModelMaker {
                 null,
                 null,
                 null,
-                sb.seriesOpts.itemStyle != null ? sb.seriesOpts.itemStyle.resolve() : null
+                sb.seriesOpts.itemStyle != null ? sb.seriesOpts.itemStyle.resolve() : null,
+                null
         );
     }
 
@@ -61,6 +63,7 @@ class SeriesModelMaker {
                 sb.seriesOpts.showSymbol,
                 sb.seriesOpts.stack,
                 sb.seriesOpts.smooth,
+                sb.seriesOpts.symbolSize,
                 sb.seriesOpts.xAxisIndex,
                 sb.seriesOpts.yAxisIndex,
                 null,
@@ -68,9 +71,10 @@ class SeriesModelMaker {
                 null,
                 null,
                 null,
-                null);
+                sb.seriesOpts.itemStyle != null ? sb.seriesOpts.itemStyle.resolve() : null,
+                sb.seriesOpts.lineStyle != null ? sb.seriesOpts.lineStyle.resolve() : null
+        );
     }
-
 
     private SeriesModel scatterModel(SeriesBuilder<ScatterSeriesOpts> sb) {
         return new SeriesModel(
@@ -83,6 +87,7 @@ class SeriesModelMaker {
                 null,
                 null,
                 null,
+                null,
                 sb.seriesOpts.xAxisIndex,
                 sb.seriesOpts.yAxisIndex,
                 null,
@@ -90,7 +95,8 @@ class SeriesModelMaker {
                 null,
                 null,
                 null,
-                sb.seriesOpts.itemStyle != null ? sb.seriesOpts.itemStyle.resolve() : null
+                sb.seriesOpts.itemStyle != null ? sb.seriesOpts.itemStyle.resolve() : null,
+                null
         );
     }
 
@@ -105,6 +111,7 @@ class SeriesModelMaker {
                 null,
                 null,
                 null,
+                null,
                 sb.seriesOpts.xAxisIndex,
                 sb.seriesOpts.yAxisIndex,
                 null,
@@ -112,7 +119,8 @@ class SeriesModelMaker {
                 null,
                 null,
                 null,
-                sb.seriesOpts.itemStyle != null ? sb.seriesOpts.itemStyle.resolve() : null
+                sb.seriesOpts.itemStyle != null ? sb.seriesOpts.itemStyle.resolve() : null,
+                null
         );
     }
 
@@ -127,8 +135,10 @@ class SeriesModelMaker {
                 null,
                 null,
                 null,
+                null,
                 sb.seriesOpts.xAxisIndex,
                 sb.seriesOpts.yAxisIndex,
+                null,
                 null,
                 null,
                 null,
@@ -157,12 +167,14 @@ class SeriesModelMaker {
                 null,
                 null,
                 null,
+                null,
                 sb.seriesOpts.radius != null ? new RadiusModel(sb.seriesOpts.radius) : null,
                 sb.seriesOpts.center != null ? new CenterModel(sb.seriesOpts.center[0], sb.seriesOpts.center[1]) : null,
                 sb.seriesOpts.startAngle,
                 sb.seriesOpts.endAngle,
                 sb.seriesOpts.roseType != null ? sb.seriesOpts.roseType.name() : null,
-                sb.seriesOpts.itemStyle != null ? sb.seriesOpts.itemStyle.resolve() : null
+                sb.seriesOpts.itemStyle != null ? sb.seriesOpts.itemStyle.resolve() : null,
+                null
         );
     }
 }
