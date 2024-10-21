@@ -2,6 +2,9 @@ package org.dflib.echarts;
 
 import org.dflib.echarts.render.option.series.ItemStyleModel;
 
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 /**
  * @since 1.1.0
  */
@@ -10,7 +13,8 @@ public class BarItemStyle {
     private String color;
     private String borderColor;
     private Integer borderWidth;
-    private int[] borderRadius;
+    private Integer singleBorderRadius;
+    private int[] fourBorderRadius;
     private Double opacity;
 
     public static BarItemStyle of() {
@@ -33,12 +37,14 @@ public class BarItemStyle {
     }
 
     public BarItemStyle borderRadius(int borderRadius) {
-        this.borderRadius = new int[]{borderRadius, borderRadius, borderRadius, borderRadius};
+        this.singleBorderRadius = borderRadius;
+        this.fourBorderRadius = null;
         return this;
     }
 
     public BarItemStyle borderRadius(int upperLeft, int upperRight, int bottomRight, int bottomLeft) {
-        this.borderRadius = new int[]{upperLeft, upperRight, bottomRight, bottomLeft};
+        this.singleBorderRadius = null;
+        this.fourBorderRadius = new int[]{upperLeft, upperRight, bottomRight, bottomLeft};
         return this;
     }
 
@@ -48,6 +54,11 @@ public class BarItemStyle {
     }
 
     ItemStyleModel resolve() {
+
+        String borderRadius = singleBorderRadius != null
+                ? String.valueOf(singleBorderRadius)
+                : (fourBorderRadius != null ? IntStream.of(fourBorderRadius).mapToObj(String::valueOf).collect(Collectors.joining(",", "[", "]")) : null);
+
         return new ItemStyleModel(
                 color,
                 null,
