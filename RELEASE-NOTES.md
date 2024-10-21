@@ -1,5 +1,6 @@
 ## Release 2.0.0
 
+* #359 Exp: IllegalArgumentException on arithmetics ops following aggregation
 * #361 Introduce aggregating semantics in Exp
 
 ## Release 1.1.0
