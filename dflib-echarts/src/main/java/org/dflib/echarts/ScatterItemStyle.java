@@ -10,6 +10,7 @@ public class ScatterItemStyle {
     private String color;
     private String borderColor;
     private Integer borderWidth;
+    private LineType borderType;
     private Double opacity;
 
     public static ScatterItemStyle of() {
@@ -31,6 +32,11 @@ public class ScatterItemStyle {
         return this;
     }
 
+    public ScatterItemStyle borderType(LineType borderType) {
+        this.borderType = borderType;
+        return this;
+    }
+
     public ScatterItemStyle opacity(double opacity) {
         this.opacity = opacity;
         return this;
@@ -45,7 +51,7 @@ public class ScatterItemStyle {
                 null,
                 borderWidth,
                 null,
-                null,
+                borderType != null ? borderType.name() : null,
                 opacity);
     }
 }

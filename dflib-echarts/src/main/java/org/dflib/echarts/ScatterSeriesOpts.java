@@ -4,6 +4,7 @@ public class ScatterSeriesOpts extends CartesianSeriesOpts<ScatterSeriesOpts> {
 
     Label label;
     ScatterItemStyle itemStyle;
+    Integer symbolSize;
 
     @Override
     public ChartType getType() {
@@ -25,6 +26,14 @@ public class ScatterSeriesOpts extends CartesianSeriesOpts<ScatterSeriesOpts> {
      */
     public ScatterSeriesOpts itemStyle(ScatterItemStyle itemStyle) {
         this.itemStyle = itemStyle;
+        return this;
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public ScatterSeriesOpts symbolSize(int symbolSize) {
+        this.symbolSize = symbolSize;
         return this;
     }
 }
