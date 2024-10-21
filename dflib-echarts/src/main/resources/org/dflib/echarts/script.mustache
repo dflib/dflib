@@ -250,8 +250,11 @@
                     borderRadius: {{borderRadiusString}},
                 {{/borderRadiusPresent}}
                 {{#borderWidth}}
-                    borderWidth: {{.}}
+                    borderWidth: {{.}},
                 {{/borderWidth}}
+                {{#opacity}}
+                    opacity: {{.}}
+                {{/opacity}}
                 },
             {{/itemStyle}}
             {{#label}}

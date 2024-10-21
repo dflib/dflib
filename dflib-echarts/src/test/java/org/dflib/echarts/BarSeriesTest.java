@@ -34,7 +34,8 @@ public class BarSeriesTest extends GenerateScriptHtmlTest {
                 .color("#ffffff")
                 .borderColor("#eeeeeee")
                 .borderWidth(2)
-                .borderRadius(6, 5, 4, 7);
+                .borderRadius(6, 5, 4, 7)
+                .opacity(0.55);
 
         String s1 = ECharts.chart().series(SeriesOpts.ofBar(), "y1").generateScriptHtml("_tid", df2);
         assertFalse(s1.contains("itemStyle"), s1);
@@ -46,6 +47,7 @@ public class BarSeriesTest extends GenerateScriptHtmlTest {
         assertTrue(s2.contains("color: '#ffffff',"), s2);
         assertTrue(s2.contains("borderColor: '#eeeeeee',"), s2);
         assertTrue(s2.contains("borderRadius: [6,5,4,7],"), s2);
-        assertTrue(s2.contains("borderWidth: 2"), s2);
+        assertTrue(s2.contains("borderWidth: 2,"), s2);
+        assertTrue(s2.contains("opacity: 0.55"), s2);
     }
 }

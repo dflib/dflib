@@ -17,6 +17,7 @@ public class ItemStyleModel {
     private final String borderColorDoji;
     private final Integer borderWidth;
     private final int[] borderRadius;
+    private final Double opacity;
 
     public ItemStyleModel(
             String color,
@@ -25,7 +26,8 @@ public class ItemStyleModel {
             String borderColor0,
             String borderColorDoji,
             Integer borderWidth,
-            int[] borderRadius) {
+            int[] borderRadius,
+            Double opacity) {
 
         this.borderColor0 = borderColor0;
         this.color = color;
@@ -38,6 +40,8 @@ public class ItemStyleModel {
             throw new IllegalArgumentException("'borderRadius' must contain exactly " + BORDER_RADIUS_LENGTH + " items. Instead got " + borderRadius.length);
         }
         this.borderRadius = borderRadius;
+
+        this.opacity = opacity;
     }
 
     public String getColor() {
@@ -78,5 +82,9 @@ public class ItemStyleModel {
 
         // render as one value
         return String.valueOf(borderRadius[0]);
+    }
+
+    public Double getOpacity() {
+        return opacity;
     }
 }
