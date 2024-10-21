@@ -89,6 +89,7 @@ public class PieSeriesTest extends GenerateScriptHtmlTest {
                 .color("#ffffff")
                 .borderColor("#eeeeeee")
                 .borderWidth(2)
+                .borderRadiusPct(35)
                 .opacity(0.55);
 
         String s1 = ECharts.chart().series(SeriesOpts.ofPie(), "y1").generateScriptHtml("_tid", df2);
@@ -101,6 +102,7 @@ public class PieSeriesTest extends GenerateScriptHtmlTest {
         assertTrue(s2.contains("color: '#ffffff',"), s2);
         assertTrue(s2.contains("borderColor: '#eeeeeee',"), s2);
         assertTrue(s2.contains("borderWidth: 2,"), s2);
+        assertTrue(s2.contains("borderRadius: '35.0%',"), s2);
         assertTrue(s2.contains("opacity: 0.55"), s2);
     }
 
