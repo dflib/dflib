@@ -5,7 +5,7 @@
 * #362 Aggregating expressions do not generate proper QL
 * #363 BooleanSeries.firstFalse()
 * #367 ECharts: support "itemStyle" for "bar" series
-* #368 ECharts: support "itemStyle" for "scatter" series
+* #368 ECharts: support "itemStyle", "symbolSize" for "scatter" series #368 
 * #369 ECharts: support "itemStyle" for "pie" series
 * #370 ECharts: support "itemStyle", "symbolSize", "lineStyle" for "line" series
 

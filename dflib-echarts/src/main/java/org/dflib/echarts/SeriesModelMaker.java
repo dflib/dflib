@@ -87,7 +87,7 @@ class SeriesModelMaker {
                 null,
                 null,
                 null,
-                null,
+                sb.seriesOpts.symbolSize,
                 sb.seriesOpts.xAxisIndex,
                 sb.seriesOpts.yAxisIndex,
                 null,
