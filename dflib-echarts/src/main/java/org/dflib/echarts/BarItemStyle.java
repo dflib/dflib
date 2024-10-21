@@ -13,6 +13,7 @@ public class BarItemStyle {
     private String color;
     private String borderColor;
     private Integer borderWidth;
+    private LineType borderType;
     private Integer singleBorderRadius;
     private int[] fourBorderRadius;
     private Double opacity;
@@ -48,6 +49,11 @@ public class BarItemStyle {
         return this;
     }
 
+    public BarItemStyle borderType(LineType borderType) {
+        this.borderType = borderType;
+        return this;
+    }
+
     public BarItemStyle opacity(double opacity) {
         this.opacity = opacity;
         return this;
@@ -67,7 +73,7 @@ public class BarItemStyle {
                 null,
                 borderWidth,
                 borderRadius,
-                null,
+                borderType != null ? borderType.name() : null,
                 opacity);
     }
 }
