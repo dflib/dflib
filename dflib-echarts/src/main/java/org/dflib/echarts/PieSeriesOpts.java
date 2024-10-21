@@ -10,6 +10,7 @@ public class PieSeriesOpts extends SeriesOpts<PieSeriesOpts> {
     Integer startAngle;
     Integer endAngle;
     RoseType roseType;
+    PieItemStyle itemStyle;
 
     @Override
     public ChartType getType() {
@@ -73,6 +74,14 @@ public class PieSeriesOpts extends SeriesOpts<PieSeriesOpts> {
 
     public PieSeriesOpts roseType(RoseType roseType) {
         this.roseType = roseType;
+        return this;
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public PieSeriesOpts itemStyle(PieItemStyle itemStyle) {
+        this.itemStyle = itemStyle;
         return this;
     }
 

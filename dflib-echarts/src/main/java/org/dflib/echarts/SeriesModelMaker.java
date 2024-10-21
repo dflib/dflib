@@ -162,7 +162,7 @@ class SeriesModelMaker {
                 sb.seriesOpts.startAngle,
                 sb.seriesOpts.endAngle,
                 sb.seriesOpts.roseType != null ? sb.seriesOpts.roseType.name() : null,
-                null
+                sb.seriesOpts.itemStyle != null ? sb.seriesOpts.itemStyle.resolve() : null
         );
     }
 }

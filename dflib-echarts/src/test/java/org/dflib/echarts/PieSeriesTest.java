@@ -83,6 +83,28 @@ public class PieSeriesTest extends GenerateScriptHtmlTest {
     }
 
     @Test
+    public void itemStyle() {
+
+        PieItemStyle style = PieItemStyle.of()
+                .color("#ffffff")
+                .borderColor("#eeeeeee")
+                .borderWidth(2)
+                .opacity(0.55);
+
+        String s1 = ECharts.chart().series(SeriesOpts.ofPie(), "y1").generateScriptHtml("_tid", df2);
+        assertFalse(s1.contains("itemStyle:"), s1);
+
+        String s2 = ECharts.chart().series(SeriesOpts.ofPie().itemStyle(style), "y1").generateScriptHtml("_tid", df2);
+
+        assertTrue(s2.contains("type: 'pie'"), s2);
+        assertTrue(s2.contains("itemStyle"), s2);
+        assertTrue(s2.contains("color: '#ffffff',"), s2);
+        assertTrue(s2.contains("borderColor: '#eeeeeee',"), s2);
+        assertTrue(s2.contains("borderWidth: 2,"), s2);
+        assertTrue(s2.contains("opacity: 0.55"), s2);
+    }
+
+    @Test
     public void data() {
         String s2 = ECharts.chart().series(SeriesOpts.ofPie(), "y1").generateScriptHtml("_tid", df2);
         assertTrue(s2.contains("['L0',1,2,3],"), s2);
