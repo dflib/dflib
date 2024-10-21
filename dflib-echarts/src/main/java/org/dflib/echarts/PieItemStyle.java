@@ -1,5 +1,6 @@
 package org.dflib.echarts;
 
+import org.dflib.echarts.render.option.Distance;
 import org.dflib.echarts.render.option.series.ItemStyleModel;
 
 /**
@@ -10,6 +11,7 @@ public class PieItemStyle {
     private String color;
     private String borderColor;
     private Integer borderWidth;
+    private Distance borderRadius;
     private Double opacity;
 
     public static PieItemStyle of() {
@@ -31,6 +33,19 @@ public class PieItemStyle {
         return this;
     }
 
+    // TODO: there are more borderRadius options availble for Pie:
+    //  https://echarts.apache.org/en/option.html#series-pie.itemStyle.borderRadius
+
+    public PieItemStyle borderRadiusPx(int radius) {
+        this.borderRadius = Distance.ofPx(radius);
+        return this;
+    }
+
+    public PieItemStyle borderRadiusPct(double percent) {
+        this.borderRadius = Distance.ofPct(percent);
+        return this;
+    }
+
     public PieItemStyle opacity(double opacity) {
         this.opacity = opacity;
         return this;
@@ -44,9 +59,7 @@ public class PieItemStyle {
                 null,
                 null,
                 borderWidth,
-
-                // TODO: "borderRadius" is supported by Pie, but it has different structure compared to "bar"
-                null,
+                borderRadius != null ? borderRadius.asString() : null,
                 opacity);
     }
 }
