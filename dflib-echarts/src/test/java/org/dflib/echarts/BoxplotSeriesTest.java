@@ -24,7 +24,7 @@ public class BoxplotSeriesTest {
         String s2 = ECharts.chart()
                 .xAxis("on")
                 .xAxis("on2")
-                .series(SeriesOpts.ofBoxplot().xAxisIndex(1),  "min", "q1", "median", "q3", "max")
+                .series(SeriesOpts.ofBoxplot().xAxisIndex(1), "min", "q1", "median", "q3", "max")
                 .generateScriptHtml("_tid", df);
         assertTrue(s2.contains("['L0','2024-08-12','2024-08-13','2024-08-14'],"), s2);
         assertTrue(s2.contains("['L1','2024-07-12','2024-07-13','2024-07-14']"), s2);
@@ -35,12 +35,42 @@ public class BoxplotSeriesTest {
     }
 
     @Test
+    public void itemStyle() {
+
+        BoxplotItemStyle style = BoxplotItemStyle.of()
+                .color("#ffffff")
+                .borderColor("#eeeeeee")
+                .borderWidth(2)
+                .borderType(LineType.dotted)
+                .opacity(0.55);
+
+        String s1 = ECharts.chart()
+                .series(SeriesOpts.ofBoxplot(), "min", "q1", "median", "q3", "max")
+                .generateScriptHtml("_tid", df);
+        assertFalse(s1.contains("itemStyle:"), s1);
+
+        String s2 = ECharts.chart()
+                .xAxis("on")
+                .xAxis("on2")
+                .series(SeriesOpts.ofBoxplot().itemStyle(style), "min", "q1", "median", "q3", "max")
+                .generateScriptHtml("_tid", df);
+
+        assertTrue(s2.contains("type: 'boxplot'"), s2);
+        assertTrue(s2.contains("itemStyle"), s2);
+        assertTrue(s2.contains("color: '#ffffff',"), s2);
+        assertTrue(s2.contains("borderColor: '#eeeeeee',"), s2);
+        assertTrue(s2.contains("borderWidth: 2,"), s2);
+        assertTrue(s2.contains("borderType: 'dotted'"), s2);
+        assertTrue(s2.contains("opacity: 0.55"), s2);
+    }
+
+    @Test
     public void data() {
 
         String s1 = ECharts.chart().generateScriptHtml("_tid", df);
         assertTrue(s1.contains("dataset"), s1);
 
-        String s2 = ECharts.chart().series(SeriesOpts.ofBoxplot(),  "min", "q1", "median", "q3", "max").generateScriptHtml("_tid", df);
+        String s2 = ECharts.chart().series(SeriesOpts.ofBoxplot(), "min", "q1", "median", "q3", "max").generateScriptHtml("_tid", df);
         assertTrue(s2.contains("dataset"), s2);
         assertTrue(s2.contains("['L0',1,2,3]"), s2);
         assertTrue(s2.contains("['min',15,18,15],"), s2);
