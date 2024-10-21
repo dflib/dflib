@@ -3,7 +3,7 @@ package org.dflib.f;
 import java.util.Objects;
 
 /**
- * @since 1.1.1
+ * @since 1.1.0
  */
 // There's no Float analog for java.util.function.DoublePredicate, so providing it on the DFLib side
 @FunctionalInterface
