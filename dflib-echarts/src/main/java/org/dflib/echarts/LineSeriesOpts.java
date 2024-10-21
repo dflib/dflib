@@ -5,8 +5,11 @@ public class LineSeriesOpts extends CartesianSeriesOpts<LineSeriesOpts> {
     Label label;
     Boolean areaStyle;
     Boolean showSymbol;
+    Integer symbolSize;
     Boolean smooth;
     Boolean stack;
+    LineItemStyle itemStyle;
+    LineStyle lineStyle;
 
     @Override
     public ChartType getType() {
@@ -28,6 +31,14 @@ public class LineSeriesOpts extends CartesianSeriesOpts<LineSeriesOpts> {
         return this;
     }
 
+    /**
+     * @since 1.1.0
+     */
+    public LineSeriesOpts symbolSize(int symbolSize) {
+        this.symbolSize = symbolSize;
+        return this;
+    }
+
     public LineSeriesOpts stack() {
         this.stack = true;
         return this;
@@ -43,4 +54,19 @@ public class LineSeriesOpts extends CartesianSeriesOpts<LineSeriesOpts> {
         return this;
     }
 
+    /**
+     * @since 1.1.0
+     */
+    public LineSeriesOpts itemStyle(LineItemStyle itemStyle) {
+        this.itemStyle = itemStyle;
+        return this;
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public LineSeriesOpts lineStyle(LineStyle lineStyle) {
+        this.lineStyle = lineStyle;
+        return this;
+    }
 }
