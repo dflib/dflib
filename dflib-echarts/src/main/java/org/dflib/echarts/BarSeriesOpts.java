@@ -4,6 +4,7 @@ public class BarSeriesOpts extends CartesianSeriesOpts<BarSeriesOpts> {
 
     Label label;
     boolean stack;
+    BarItemStyle itemStyle;
 
     public BarSeriesOpts() {
         // ECharts defaults
@@ -27,6 +28,14 @@ public class BarSeriesOpts extends CartesianSeriesOpts<BarSeriesOpts> {
 
     public BarSeriesOpts label(Label label) {
         this.label = label;
+        return this;
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public BarSeriesOpts itemStyle(BarItemStyle itemStyle) {
+        this.itemStyle = itemStyle;
         return this;
     }
 }

@@ -49,6 +49,13 @@ public class CandlestickItemStyle {
     }
 
     ItemStyleModel resolve() {
-        return new ItemStyleModel(color, color0, borderColor, borderColor0, borderColorDoji, borderWidth);
+        return new ItemStyleModel(
+                color,
+                color0,
+                borderColor,
+                borderColor0,
+                borderColorDoji,
+                borderWidth,
+                null);
     }
 }
