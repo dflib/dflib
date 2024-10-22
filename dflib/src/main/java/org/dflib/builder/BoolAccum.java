@@ -24,20 +24,36 @@ public class BoolAccum implements ValueAccum<Boolean> {
             return;
         }
 
-        int toIdx = (toOffset + len - 1) >> INDEX_BIT_SHIFT;
-        ensureCapacity(toIdx);
-        // TODO: unwrap this, to eliminate repetitive checks
+        int endPos = toOffset + len - 1;
+        ensureCapacity(endPos >> INDEX_BIT_SHIFT);
         for (int i = 0; i < len; i++) {
-            replaceBool(toOffset + i, values.getBool(fromOffset + i));
+            int pos = toOffset + i;
+            if (values.getBool(fromOffset + i)) {
+                data[pos >> INDEX_BIT_SHIFT] |= (1L << pos);
+            } else {
+                data[pos >> INDEX_BIT_SHIFT] &= ~(1L << pos);
+            }
+        }
+
+        if (endPos >= size) {
+            size = endPos + 1;
         }
     }
 
     public void fill(int from, int to, boolean value) {
         int toIdx = (to - 1) >> INDEX_BIT_SHIFT;
         ensureCapacity(toIdx);
-        // TODO: replace with a bit-logic to improve performance
+
         for (int i = from; i < to; i++) {
-            replaceBool(i, value);
+            if (value) {
+                data[i >> INDEX_BIT_SHIFT] |= (1L << i);
+            } else {
+                data[i >> INDEX_BIT_SHIFT] &= ~(1L << i);
+            }
+        }
+
+        if(to > size) {
+            size = to;
         }
     }
 
