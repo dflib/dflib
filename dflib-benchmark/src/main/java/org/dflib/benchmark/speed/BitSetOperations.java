@@ -1,6 +1,6 @@
 package org.dflib.benchmark.speed;
 
-import org.dflib.series.BitSet;
+import org.dflib.series.BooleanBitsetSeries;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -34,7 +34,7 @@ public class BitSetOperations {
     @Param("123556")
     public int indexEmpty;
 
-    BitSet bitSet;
+    BooleanBitsetSeries bitSet;
     boolean[] boolSet;
     java.util.BitSet javaBitSet;
 
@@ -48,12 +48,12 @@ public class BitSetOperations {
         boolSet[index + 1] = true;
         javaBitSet.set(index + 1);
 
-        bitSet = new BitSet(javaBitSet.toLongArray(), size);
+        bitSet = new BooleanBitsetSeries(javaBitSet.toLongArray(), size);
     }
 
     @Benchmark
-    public BitSet bitSet_create() {
-        return new BitSet(new long[sizeInLong], size);
+    public BooleanBitsetSeries bitSet_create() {
+        return new BooleanBitsetSeries(new long[sizeInLong], size);
     }
 
     @Benchmark

@@ -9,21 +9,38 @@ import org.dflib.sort.SeriesSorter;
 import java.util.Comparator;
 
 /**
- * Implementation of {@link BooleanSeries} based on {@link BitSet}
+ * Implementation of {@link BooleanSeries} based on a bit set logic over {@code long[]}
  *
  * @since 2.0.0
  */
 public class BooleanBitsetSeries extends BooleanBaseSeries {
 
-    private final BitSet data;
+    /**
+     * Shift bits that's equivalent of a divide by {@link Long#SIZE} op
+     */
+    private static final int INDEX_BIT_SHIFT = 6;
+    private static final long LONG_BITS_MASK = 0xFFFFFFFF_FFFFFFFFL;
 
-    public BooleanBitsetSeries(BitSet data) {
+    // package private for testing
+    final long[] data;
+    private final int size;
+
+    public BooleanBitsetSeries(long[] data, int size) {
         this.data = data;
+        this.size = size;
     }
 
     @Override
     public boolean getBool(int index) {
-        return data.get(index);
+        int i = index >> INDEX_BIT_SHIFT;
+        if(i >= data.length) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + data.length);
+        }
+        return (this.data[i] & (1L << index)) != 0;
+    }
+
+    private boolean getUnchecked(int index) {
+        return (this.data[index >> INDEX_BIT_SHIFT] & (1L << index)) != 0;
     }
 
     @Override
@@ -32,13 +49,13 @@ public class BooleanBitsetSeries extends BooleanBaseSeries {
             throw new ArrayIndexOutOfBoundsException(fromOffset + len);
         }
         for (int i = 0; i < len; i++) {
-            to[toOffset + i] = data.get(fromOffset + i);
+            to[toOffset + i] = getUnchecked(fromOffset + i);
         }
     }
 
     @Override
     public int size() {
-        return data.getSize();
+        return size;
     }
 
     @Override
@@ -50,20 +67,52 @@ public class BooleanBitsetSeries extends BooleanBaseSeries {
 
     @Override
     public BooleanSeries rangeBool(int fromInclusive, int toExclusive) {
-        return fromInclusive == 0 && toExclusive == size()
-                ? this
-                : new BooleanBitsetSeries(data.range(fromInclusive, toExclusive));
+        if (fromInclusive == 0 && toExclusive == size()) {
+            return this;
+        }
+
+        if (size <= fromInclusive || fromInclusive == toExclusive) {
+            return new FalseSeries(0);
+        }
+
+        if (toExclusive > size) {
+            toExclusive = size;
+        }
+
+        int resultSize = arraySize(toExclusive - fromInclusive);
+        int setSize = toExclusive - fromInclusive;
+        long[] result = new long[resultSize];
+        int startIndex = fromInclusive >> INDEX_BIT_SHIFT;
+        // is bits boundaries are shifted in the result
+        boolean indexAligned = ((fromInclusive & ((1 << INDEX_BIT_SHIFT) - 1)) == 0);
+
+        // copy all elements except the last
+        for (int i = 0; i < resultSize - 1; i++, startIndex++) {
+            result[i] = indexAligned
+                    ? data[startIndex]
+                    : (data[startIndex] >>> fromInclusive) | (data[startIndex + 1] << -fromInclusive);
+        }
+
+        // copy the last element
+        long lastElementMask = LONG_BITS_MASK >>> -toExclusive;
+        result[resultSize - 1] =
+                ((toExclusive - 1) & ((1 << INDEX_BIT_SHIFT) - 1)) < (fromInclusive & ((1 << INDEX_BIT_SHIFT) - 1))
+                        ? ((data[startIndex] >>> fromInclusive) | (data[startIndex + 1] & lastElementMask) << -fromInclusive)
+                        : ((data[startIndex] & lastElementMask) >>> fromInclusive);
+
+        return new BooleanBitsetSeries(result, setSize);
     }
 
     @Override
     public BooleanSeries select(BooleanSeries positions) {
-        int h = positions.size();
-        BoolAccum accum = new BoolAccum(h);
-        for (int i = 0; i < h; i++) {
+        int len = positions.size();
+        if (size != positions.size()) {
+            throw new IllegalArgumentException("Positions size " + positions.size() + " is not the same as this size " + len);
+        }
+        BoolAccum accum = new BoolAccum(len);
+        for (int i = 0; i < len; i++) {
             if (positions.getBool(i)) {
-                if (this.data.get(i)) {
-                    accum.pushBool(true);
-                }
+                accum.pushBool(getUnchecked(i));
             }
         }
         return accum.toSeries();
@@ -80,31 +129,54 @@ public class BooleanBitsetSeries extends BooleanBaseSeries {
     }
 
     private BooleanSeries selectAsBooleanSeries(IntSeries positions) {
-        int h = positions.size();
-        BoolAccum accum = new BoolAccum(h);
-        for (int i = 0; i < h; i++) {
+        int len = positions.size();
+        BoolAccum accum = new BoolAccum(len);
+        for (int i = 0; i < len; i++) {
             int index = positions.getInt(i);
-            if (this.data.get(index)) {
-                accum.pushBool(true);
-            }
+            accum.pushBool(getUnchecked(index));
         }
         return accum.toSeries();
     }
 
     @Override
     public int firstTrue() {
-        return data.firstTrue();
+        for (int i = 0; i < data.length; i++) {
+            long next = data[i];
+            if (next != 0) {
+                int index = Long.numberOfTrailingZeros(next);
+                int realIndex = (i << INDEX_BIT_SHIFT) + index;
+                return realIndex < size ? realIndex : -1;
+            }
+        }
+        return -1;
     }
 
     @Override
     public int firstFalse() {
-        return data.firstFalse();
+        for (int i = 0; i < data.length; i++) {
+            long next = data[i];
+            if (next == 0) {
+                return i << INDEX_BIT_SHIFT;
+            } else if (next != LONG_BITS_MASK) {
+                int index = Long.numberOfTrailingZeros(~next);
+                int realIndex = (i << INDEX_BIT_SHIFT) + index;
+                return realIndex < size ? realIndex : -1;
+            }
+        }
+        return -1;
     }
 
     @Override
     public BooleanSeries and(BooleanSeries another) {
         if (another instanceof BooleanBitsetSeries) {
-            return new BooleanBitsetSeries(data.and(((BooleanBitsetSeries) another).data));
+            if (another.size() != size()) {
+                throw new IllegalArgumentException("Argument differ in size");
+            }
+            long[] newData = new long[data.length];
+            for (int i = 0; i < data.length; i++) {
+                newData[i] = data[i] & ((BooleanBitsetSeries) another).data[i];
+            }
+            return new BooleanBitsetSeries(newData, size);
         }
         return super.and(another);
     }
@@ -112,23 +184,56 @@ public class BooleanBitsetSeries extends BooleanBaseSeries {
     @Override
     public BooleanSeries or(BooleanSeries another) {
         if (another instanceof BooleanBitsetSeries) {
-            return new BooleanBitsetSeries(data.or(((BooleanBitsetSeries) another).data));
+            if (another.size() != size()) {
+                throw new IllegalArgumentException("Argument differ in size");
+            }
+            long[] newData = new long[data.length];
+            for (int i = 0; i < data.length; i++) {
+                newData[i] = data[i] | ((BooleanBitsetSeries) another).data[i];
+            }
+            return new BooleanBitsetSeries(newData, size);
         }
         return super.or(another);
     }
 
     @Override
     public BooleanBitsetSeries not() {
-        return new BooleanBitsetSeries(data.not());
+        long[] newData = new long[data.length];
+        for (int i = 0; i < data.length; i++) {
+            newData[i] = ~data[i];
+        }
+        return new BooleanBitsetSeries(newData, size);
     }
 
     @Override
     public int countTrue() {
-        return data.countTrue();
+        int count = 0;
+        for (long next : data) {
+            if (next != 0) {
+                count += Long.bitCount(next);
+            }
+        }
+        return count;
     }
 
     @Override
     public int countFalse() {
-        return data.countFalse();
+        int count = size;
+        for (long next : data) {
+            if (next != 0) {
+                count -= Long.bitCount(next);
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Calculate the size of the set in longs, just a {@code ceil(size / Long.SIZE)}
+     *
+     * @param setSize desired size of the set in bits
+     * @return number of the longs to use
+     */
+    private static int arraySize(int setSize) {
+        return 1 + ((setSize - 1) >> INDEX_BIT_SHIFT);
     }
 }

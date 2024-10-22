@@ -1,8 +1,8 @@
 package org.dflib.builder;
 
 import org.dflib.BooleanSeries;
+import org.dflib.Series;
 import org.dflib.series.BooleanBitsetSeries;
-import org.dflib.series.BitSet;
 
 public class BoolAccum implements ValueAccum<Boolean> {
 
@@ -58,7 +58,7 @@ public class BoolAccum implements ValueAccum<Boolean> {
 
     @Override
     public void replace(int pos, Boolean v) {
-        replaceBool(pos,  v != null ? v : false);
+        replaceBool(pos, v != null ? v : false);
     }
 
     @Override
@@ -80,21 +80,22 @@ public class BoolAccum implements ValueAccum<Boolean> {
     }
 
     @Override
-    public BooleanBitsetSeries toSeries() {
-        BitSet bitSet = size == 0
-                ? BitSet.EMPTY
-                : new BitSet(data, size);
+    public BooleanSeries toSeries() {
+        if (size == 0) {
+            return Series.ofBool();
+        }
+        BooleanBitsetSeries booleans = new BooleanBitsetSeries(data, size);
         data = null; // nullify reference to avoid array (and eventually series) mutation
-        return new BooleanBitsetSeries(bitSet);
+        return booleans;
     }
 
     void ensureCapacity(int capacity) {
-        if(capacity < data.length) {
+        if (capacity < data.length) {
             return;
         }
         int capacityToSet = data.length * 2;
         while (capacity >= capacityToSet) {
-            capacity = capacity * 2;
+            capacityToSet = capacityToSet * 2;
         }
         long[] newData = new long[capacityToSet];
         System.arraycopy(data, 0, newData, 0, data.length);
