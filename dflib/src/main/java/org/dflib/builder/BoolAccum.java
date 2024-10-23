@@ -6,17 +6,21 @@ import org.dflib.series.BooleanBitsetSeries;
 
 public class BoolAccum implements ValueAccum<Boolean> {
 
-    private static final int INDEX_BIT_SHIFT = 6;
+    /**
+     * Default capacity is in longs, the real capacity is DEFAULT_CAPACITY * 64
+     */
+    private static final int DEFAULT_CAPACITY = 1;
+    private static final int INDEX_BIT_SHIFT = 6; // log2(64)
 
     private long[] data;
     private int size;
 
     public BoolAccum() {
-        data = new long[1];
+        this(DEFAULT_CAPACITY);
     }
 
     public BoolAccum(int capacity) {
-        data = new long[1 + ((capacity - 1) >> INDEX_BIT_SHIFT)];
+        this.data = new long[1 + ((capacity - 1) >> INDEX_BIT_SHIFT)];
     }
 
     public void fill(BooleanSeries values, int fromOffset, int toOffset, int len) {
@@ -52,7 +56,7 @@ public class BoolAccum implements ValueAccum<Boolean> {
             }
         }
 
-        if(to > size) {
+        if (to > size) {
             size = to;
         }
     }
@@ -100,9 +104,20 @@ public class BoolAccum implements ValueAccum<Boolean> {
         if (size == 0) {
             return Series.ofBool();
         }
-        BooleanBitsetSeries booleans = new BooleanBitsetSeries(data, size);
-        data = null; // nullify reference to avoid array (and eventually series) mutation
-        return booleans;
+
+        long[] data = compactData();
+        this.data = null; // nullify reference to avoid array (and eventually series) mutation
+        return new BooleanBitsetSeries(data, size);
+    }
+
+    private long[] compactData() {
+        int realSize = (size >> INDEX_BIT_SHIFT) + 1;
+        if (realSize == data.length) {
+            return data;
+        }
+        long[] newData = new long[realSize];
+        System.arraycopy(data, 0, newData, 0, realSize);
+        return newData;
     }
 
     void ensureCapacity(int capacity) {

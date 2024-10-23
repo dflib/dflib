@@ -1,6 +1,7 @@
 package org.dflib.builder;
 
 import org.dflib.BooleanSeries;
+import org.dflib.series.BooleanBitsetSeries;
 import org.dflib.series.TrueSeries;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +21,29 @@ class BoolAccumTest {
         BoolAccum accum = new BoolAccum(10);
         BooleanSeries series = accum.toSeries();
         assertEquals(0, series.size());
+    }
+
+    @Test
+    void compact() {
+        BoolAccum accum = new BoolAccum(300);
+        accum.pushBool(true);
+        BooleanSeries series = accum.toSeries();
+        assertInstanceOf(BooleanBitsetSeries.class, series);
+        assertEquals(1, series.size());
+        assertTrue(series.get(0));
+    }
+
+    @Test
+    void compact2() {
+        BoolAccum accum = new BoolAccum(300);
+        for(int i=0; i<Long.SIZE + 1; i++) {
+            accum.pushBool(true);
+        }
+        BooleanSeries series = accum.toSeries();
+        assertInstanceOf(BooleanBitsetSeries.class, series);
+        assertEquals(Long.SIZE + 1, series.size());
+        assertTrue(series.get(0));
+        assertTrue(series.get(Long.SIZE));
     }
 
     @Test
