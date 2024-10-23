@@ -7,6 +7,7 @@ import org.dflib.builder.BoolAccum;
 import org.dflib.sort.SeriesSorter;
 
 import java.util.Comparator;
+import java.util.function.Predicate;
 
 /**
  * Implementation of {@link BooleanSeries} based on a bit set logic over {@code long[]}
@@ -33,7 +34,7 @@ public class BooleanBitsetSeries extends BooleanBaseSeries {
     @Override
     public boolean getBool(int index) {
         int i = index >> INDEX_BIT_SHIFT;
-        if(i >= data.length) {
+        if (i >= data.length) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + data.length);
         }
         return (this.data[i] & (1L << index)) != 0;
@@ -104,15 +105,38 @@ public class BooleanBitsetSeries extends BooleanBaseSeries {
     }
 
     @Override
+    public BooleanSeries select(Predicate<Boolean> p) {
+        return selectAsBooleanSeries(index(p));
+    }
+
+    @Override
     public BooleanSeries select(BooleanSeries positions) {
         int len = positions.size();
         if (size != positions.size()) {
             throw new IllegalArgumentException("Positions size " + positions.size() + " is not the same as this size " + len);
         }
-        BoolAccum accum = new BoolAccum(len);
-        for (int i = 0; i < len; i++) {
-            if (positions.getBool(i)) {
-                accum.pushBool(getUnchecked(i));
+
+        // trim down final accum size, but keep it at maximum size, to minimize resize operations
+        int firstTrue = firstTrue();
+        BoolAccum accum = new BoolAccum(len - firstTrue);
+
+        if (positions instanceof BooleanBitsetSeries) {
+            BooleanBitsetSeries bitPositions = (BooleanBitsetSeries) positions;
+            for (int i = 0; i < data.length; i++) {
+                long pos = bitPositions.data[i];
+                long val = data[i];
+                for (int j = 0; j < Long.SIZE; j++) {
+                    long mask = 1L << j;
+                    if ((pos & mask) != 0) {
+                        accum.pushBool((val & mask) != 0);
+                    }
+                }
+            }
+        } else {
+            for (int i = firstTrue; i < len; i++) {
+                if (positions.getBool(i)) {
+                    accum.pushBool(getUnchecked(i));
+                }
             }
         }
         return accum.toSeries();
