@@ -1,5 +1,6 @@
 package org.dflib;
 
+import org.dflib.builder.BoolBuilder;
 import org.dflib.series.BooleanArraySeries;
 import org.dflib.series.FalseSeries;
 import org.dflib.series.LongArraySeries;
@@ -269,14 +270,8 @@ public interface LongSeries extends Series<Long> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-        LongSeries anotherInt = (LongSeries) s;
-
-        for (int i = 0; i < len; i++) {
-            data[i] = getLong(i) == anotherInt.getLong(i);
-        }
-
-        return new BooleanArraySeries(data);
+        LongSeries anotherLong = (LongSeries) s;
+        return BoolBuilder.buildSeries(i -> getLong(i) == anotherLong.getLong(i), len);
     }
 
     @Override

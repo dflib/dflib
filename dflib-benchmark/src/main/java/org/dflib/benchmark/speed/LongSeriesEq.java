@@ -42,4 +42,9 @@ public class LongSeriesEq {
     public Object eq() {
         return s1.eq(s2);
     }
+
+    @Benchmark
+    public Object ne() {
+        return s1.ne(s2);
+    }
 }
