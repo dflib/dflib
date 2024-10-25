@@ -49,4 +49,31 @@ class BoolBuilderTest {
         assertFalse(booleans.get(129));
     }
 
+    @Test
+    void fillFalse1() {
+        BooleanSeries booleans = BoolBuilder.buildSeries(i -> false, 1);
+
+        assertEquals(1, booleans.size());
+        assertFalse(booleans.get(0));
+    }
+
+    @Test
+    void fillFalse10() {
+        BooleanSeries booleans = BoolBuilder.buildSeries(i -> false, 10);
+
+        assertEquals(10, booleans.size());
+        assertFalse(booleans.get(0));
+        assertFalse(booleans.get(9));
+    }
+
+    @Test
+    void fillFalseFirst10() {
+        BooleanSeries booleans = BoolBuilder.buildSeries(i -> i >= 10, 20);
+
+        assertEquals(20, booleans.size());
+        assertFalse(booleans.get(0));
+        assertFalse(booleans.get(9));
+        assertTrue(booleans.get(11));
+        assertTrue(booleans.get(19));
+    }
 }
