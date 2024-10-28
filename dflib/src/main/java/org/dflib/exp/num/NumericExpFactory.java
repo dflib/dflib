@@ -64,6 +64,9 @@ public abstract class NumericExpFactory {
      * Provides direct access to the DecimalExpFactory, that can be used to return {@link DecimalExp} instead of
      * {@link NumExp}.
      */
+    // note that using individual factories directly, bypassing "NumericExpFactory.factory(type)" method is going to
+    // break widening conversions. It is only possible for DecimalExpFactory, that has precedence over every other
+    // factory
     public static DecimalExpFactory decimalFactory() {
         return decimalFactory;
     }
