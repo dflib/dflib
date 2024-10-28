@@ -1,14 +1,25 @@
 package org.dflib;
 
+import org.dflib.exp.num.DecimalAsExp;
 import org.dflib.exp.num.DecimalExp2;
 import org.dflib.exp.num.NumericExpFactory;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 import static org.dflib.Exp.$val;
 
 public interface DecimalExp extends NumExp<BigDecimal> {
+
+    /**
+     * @since 2.0.0
+     */
+    @Override
+    default DecimalExp as(String name) {
+        Objects.requireNonNull(name, "Null 'name'");
+        return new DecimalAsExp(name, this);
+    }
 
     @Override
     default DecimalExp castAsDecimal() {

@@ -31,6 +31,12 @@ public class FloatColumnTest {
     }
 
     @Test
+    public void chainStaysNumeric() {
+        NumExp<?> exp = $float("b").as("x").as("y").sum().as("SUM(x)");
+        assertEquals("SUM(x)", exp.getColumnName(mock(DataFrame.class)));
+    }
+
+    @Test
     public void as() {
         NumExp<Float> e = $float("b");
         assertEquals("b", e.getColumnName(mock(DataFrame.class)));
@@ -46,6 +52,12 @@ public class FloatColumnTest {
                 "4", Float.MAX_VALUE, 6f);
 
         new SeriesAsserts(e.eval(df)).expectData(2.1f, Float.MAX_VALUE);
+    }
+
+    @Test
+    public void castAsFloat() {
+        NumExp<Float> e = $float("a");
+        assertSame(e, e.castAsFloat());
     }
 
     @Test

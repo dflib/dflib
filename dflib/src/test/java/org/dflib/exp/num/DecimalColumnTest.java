@@ -45,6 +45,12 @@ public class DecimalColumnTest {
     }
 
     @Test
+    public void chainStaysDecimal() {
+        DecimalExp exp = $decimal("b").as("x").as("y").sum().as("SUM(x)");
+        assertEquals("SUM(x)", exp.getColumnName(mock(DataFrame.class)));
+    }
+
+    @Test
     public void as() {
         DecimalExp exp = $decimal("b");
         assertEquals("b", exp.getColumnName(mock(DataFrame.class)));

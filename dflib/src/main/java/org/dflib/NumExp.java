@@ -1,13 +1,25 @@
 package org.dflib;
 
 import org.dflib.exp.bool.ConditionFactory;
+import org.dflib.exp.num.NumAsExp;
 import org.dflib.exp.num.NumericExpFactory;
+
+import java.util.Objects;
 
 /**
  * An expression applied to any Java primitive or object numeric columns. Provides various arithmetic, comparison and
  * statistical operations. Allows to combine arguments of different numeric types in a single expression.
  */
 public interface NumExp<N extends Number> extends Exp<N> {
+
+    /**
+     * @since 2.0.0
+     */
+    @Override
+    default NumExp<N> as(String name) {
+        Objects.requireNonNull(name, "Null 'name'");
+        return new NumAsExp<>(name, this);
+    }
 
     default NumExp<?> add(Exp<? extends Number> exp) {
         return NumericExpFactory.factory(this, exp).add(this, exp);

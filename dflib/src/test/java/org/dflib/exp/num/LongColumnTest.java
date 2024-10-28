@@ -33,6 +33,12 @@ public class LongColumnTest {
     }
 
     @Test
+    public void chainStaysNumeric() {
+        NumExp<?> exp = $long("b").as("x").as("y").sum().as("SUM(x)");
+        assertEquals("SUM(x)", exp.getColumnName(mock(DataFrame.class)));
+    }
+
+    @Test
     public void as() {
         NumExp<Long> e = $long("b");
         assertEquals("b", e.getColumnName(mock(DataFrame.class)));
@@ -48,6 +54,12 @@ public class LongColumnTest {
                 "4", Long.MAX_VALUE, 6L);
 
         new SeriesAsserts(e.eval(df)).expectData(2L, Long.MAX_VALUE);
+    }
+
+    @Test
+    public void castAsLong() {
+        NumExp<Long> e = $long("a");
+        assertSame(e, e.castAsLong());
     }
 
     @Test

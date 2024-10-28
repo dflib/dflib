@@ -32,6 +32,12 @@ public class DoubleColumnTest {
     }
 
     @Test
+    public void chainStaysNumeric() {
+        NumExp<?> exp = $double("b").as("x").as("y").sum().as("SUM(x)");
+        assertEquals("SUM(x)", exp.getColumnName(mock(DataFrame.class)));
+    }
+
+    @Test
     public void as() {
         NumExp<Double> e = $double("b");
         assertEquals("b", e.getColumnName(mock(DataFrame.class)));
@@ -47,6 +53,12 @@ public class DoubleColumnTest {
                 "4", Double.MAX_VALUE, 6.);
 
         new SeriesAsserts(e.eval(df)).expectData(2.1, Double.MAX_VALUE);
+    }
+
+    @Test
+    public void castAsDouble() {
+        NumExp<Double> e = $double("a");
+        assertSame(e, e.castAsDouble());
     }
 
     @Test

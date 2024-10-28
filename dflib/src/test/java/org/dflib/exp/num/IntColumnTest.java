@@ -35,6 +35,12 @@ public class IntColumnTest {
     }
 
     @Test
+    public void chainStaysNumeric() {
+        NumExp<?> exp = $int("b").as("x").as("y").sum().as("SUM(x)");
+        assertEquals("SUM(x)", exp.getColumnName(mock(DataFrame.class)));
+    }
+
+    @Test
     public void as() {
         NumExp<Integer> e = $int("b");
         assertEquals("b", e.getColumnName(mock(DataFrame.class)));
@@ -50,6 +56,12 @@ public class IntColumnTest {
                 "4", Integer.MAX_VALUE, 6);
 
         new SeriesAsserts(e.eval(df)).expectData(2, Integer.MAX_VALUE);
+    }
+
+    @Test
+    public void castAsInt() {
+        NumExp<Integer> e = $int("a");
+        assertSame(e, e.castAsInt());
     }
 
     @Test
