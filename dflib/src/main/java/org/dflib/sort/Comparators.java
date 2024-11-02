@@ -3,6 +3,7 @@ package org.dflib.sort;
 import org.dflib.BooleanSeries;
 import org.dflib.DataFrame;
 import org.dflib.DoubleSeries;
+import org.dflib.FloatSeries;
 import org.dflib.IntSeries;
 import org.dflib.LongSeries;
 import org.dflib.Series;
@@ -98,6 +99,15 @@ public final class Comparators {
                 : (i1, i2) -> Long.compare(s.getLong(i2), s.getLong(i1));
     }
 
+    /**
+     * @since 1.1.0
+     */
+    public static IntComparator of(FloatSeries s, boolean ascending) {
+        return ascending
+                ? (i1, i2) -> Float.compare(s.getFloat(i1), s.getFloat(i2))
+                : (i1, i2) -> Float.compare(s.getFloat(i2), s.getFloat(i1));
+    }
+
     public static IntComparator of(DoubleSeries s, boolean ascending) {
         return ascending
                 ? (i1, i2) -> Double.compare(s.getDouble(i1), s.getDouble(i2))
@@ -125,6 +135,8 @@ public final class Comparators {
             return of((LongSeries) s, ascending);
         } else if (s instanceof BooleanSeries) {
             return of((BooleanSeries) s, ascending);
+        } else if (s instanceof FloatSeries) {
+            return of((FloatSeries) s, ascending);
         }
 
         return ascending
