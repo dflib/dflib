@@ -1,8 +1,11 @@
 package org.dflib;
 
+import org.dflib.exp.agg.ComparableAggregators;
+import org.dflib.exp.agg.TimeAggregators;
+import org.dflib.exp.agg.TimeReduceExp1;
 import org.dflib.exp.datetime.TimeExp2;
-import org.dflib.exp.map.MapCondition3;
 import org.dflib.exp.map.MapCondition2;
+import org.dflib.exp.map.MapCondition3;
 import org.dflib.exp.num.IntExp1;
 
 import java.time.LocalTime;
@@ -109,8 +112,63 @@ public interface TimeExp extends Exp<LocalTime> {
                 (t1, t2, t3) -> t1.compareTo(t2) >= 0 && t1.compareTo(t3) <= 0);
     }
 
-
     default Condition between(LocalTime from, LocalTime to) {
         return between(Exp.$val(from), Exp.$val(to));
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default TimeExp min() {
+        return min(null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default TimeExp min(Condition filter) {
+        return new TimeReduceExp1<>("min", this, s -> ComparableAggregators.min(s), filter);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default TimeExp max() {
+        return max(null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default TimeExp max(Condition filter) {
+        return new TimeReduceExp1<>("max", this, s -> ComparableAggregators.max(s), filter);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default TimeExp avg() {
+        return avg(null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default TimeExp avg(Condition filter) {
+        return new TimeReduceExp1<>("avg", this, TimeAggregators::avg, filter);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default TimeExp median() {
+        return median(null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default TimeExp median(Condition filter) {
+        return new TimeReduceExp1<>("median", this, TimeAggregators::median, filter);
     }
 }

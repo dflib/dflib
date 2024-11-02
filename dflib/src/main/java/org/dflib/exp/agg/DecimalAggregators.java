@@ -73,9 +73,12 @@ public class DecimalAggregators {
 
         switch (size) {
             case 0:
+                // TODO: why 0 instead of null?
                 return BigDecimal.ZERO;
             case 1:
                 BigDecimal d = s.get(0);
+
+                // TODO: why 0 instead of null?
                 return d != null ? d : BigDecimal.ZERO;
             default:
 

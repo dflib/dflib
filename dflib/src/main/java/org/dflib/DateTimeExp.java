@@ -1,10 +1,13 @@
 package org.dflib;
 
+import org.dflib.exp.agg.ComparableAggregators;
+import org.dflib.exp.agg.DateTimeAggregators;
+import org.dflib.exp.agg.DateTimeReduceExp1;
 import org.dflib.exp.datetime.DateExp1;
 import org.dflib.exp.datetime.DateTimeExp2;
 import org.dflib.exp.datetime.TimeExp1;
-import org.dflib.exp.map.MapCondition3;
 import org.dflib.exp.map.MapCondition2;
+import org.dflib.exp.map.MapCondition3;
 import org.dflib.exp.num.IntExp1;
 
 import java.time.LocalDateTime;
@@ -154,5 +157,61 @@ public interface DateTimeExp extends Exp<LocalDateTime> {
 
     default DateTimeExp plusYears(int years) {
         return DateTimeExp2.mapVal("plusYears", this, $val(years), (ld, y) -> ld.plusYears(y));
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default DateTimeExp min() {
+        return min(null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default DateTimeExp min(Condition filter) {
+        return new DateTimeReduceExp1<>("min", this, s -> (LocalDateTime) ComparableAggregators.min(s), filter);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default DateTimeExp max() {
+        return max(null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default DateTimeExp max(Condition filter) {
+        return new DateTimeReduceExp1<>("max", this, s -> (LocalDateTime) ComparableAggregators.max(s), filter);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default DateTimeExp avg() {
+        return avg(null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default DateTimeExp avg(Condition filter) {
+        return new DateTimeReduceExp1<>("avg", this, DateTimeAggregators::avg, filter);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default DateTimeExp median() {
+        return median(null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default DateTimeExp median(Condition filter) {
+        return new DateTimeReduceExp1<>("median", this, DateTimeAggregators::median, filter);
     }
 }

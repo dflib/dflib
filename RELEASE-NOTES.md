@@ -3,6 +3,7 @@
 * #359 Exp: IllegalArgumentException on arithmetics ops following aggregation
 * #361 Introduce aggregating semantics in Exp
 * #372 NumExp.as() should return a NumExp
+* #374 "min", "max", "avg", "median" aggregating functions for date and time expressions
 
 ## Release 1.1.0
 

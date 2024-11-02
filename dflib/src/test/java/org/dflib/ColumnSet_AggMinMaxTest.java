@@ -3,6 +3,10 @@ package org.dflib;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 import static org.dflib.Exp.*;
 
 public class ColumnSet_AggMinMaxTest {
@@ -114,5 +118,85 @@ public class ColumnSet_AggMinMaxTest {
         new DataFrameAsserts(agg, "A", "B")
                 .expectHeight(1)
                 .expectRow(0, 3, 14L);
+    }
+
+    @Test
+    public void date() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                LocalDate.of(2000, 1, 2), LocalDate.of(2001, 5, 10),
+                LocalDate.of(2000, 2, 2), LocalDate.of(2001, 6, 10),
+                LocalDate.of(2000, 3, 2), LocalDate.of(2001, 3, 2));
+
+        DataFrame agg = df.cols().agg(
+                $date("a").min(),
+                $date("b").max());
+
+        new DataFrameAsserts(agg, "min(a)", "max(b)")
+                .expectHeight(1)
+                .expectRow(0, LocalDate.of(2000, 1, 2), LocalDate.of(2001, 6, 10));
+    }
+
+    @Test
+    public void dateFiltered() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                LocalDate.of(2000, 1, 2), LocalDate.of(2001, 5, 10),
+                LocalDate.of(2000, 2, 2), LocalDate.of(2001, 6, 10),
+                LocalDate.of(2000, 3, 2), LocalDate.of(2001, 3, 2));
+
+        DataFrame agg = df.cols().agg(
+                $date("a").min($date("a").gt(LocalDate.of(2000, 1, 2))),
+                $date("b").max($date("a").gt(LocalDate.of(2000, 2, 2))));
+
+        new DataFrameAsserts(agg, "min(a)", "max(b)")
+                .expectHeight(1)
+                .expectRow(0, LocalDate.of(2000, 2, 2), LocalDate.of(2001, 3, 2));
+    }
+
+    @Test
+    public void time() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                LocalTime.of(2, 1, 2), LocalTime.of(3, 5, 10),
+                LocalTime.of(2, 2, 2), LocalTime.of(3, 6, 10),
+                LocalTime.of(2, 3, 2), LocalTime.of(3, 3, 2));
+
+        DataFrame agg = df.cols().agg(
+                $time("a").min(),
+                $time("b").max());
+
+        new DataFrameAsserts(agg, "min(a)", "max(b)")
+                .expectHeight(1)
+                .expectRow(0, LocalTime.of(2, 1, 2), LocalTime.of(3, 6, 10));
+    }
+
+    @Test
+    public void timeFiltered() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                LocalTime.of(2, 1, 2), LocalTime.of(3, 5, 10),
+                LocalTime.of(2, 2, 2), LocalTime.of(3, 6, 10),
+                LocalTime.of(2, 3, 2), LocalTime.of(3, 3, 2));
+
+        DataFrame agg = df.cols().agg(
+                $time("a").min($time("a").gt(LocalTime.of(2, 1, 2))),
+                $time("b").max($time("a").gt(LocalTime.of(2, 2, 2))));
+
+        new DataFrameAsserts(agg, "min(a)", "max(b)")
+                .expectHeight(1)
+                .expectRow(0, LocalTime.of(2, 2, 2), LocalTime.of(3, 3, 2));
+    }
+
+    @Test
+    public void dateTime() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                LocalDateTime.of(2000, 1, 2, 2, 1, 2), LocalDateTime.of(2001, 5, 6, 3, 5, 10),
+                LocalDateTime.of(2000, 1, 2, 2, 2, 2), LocalDateTime.of(2001, 5, 6, 3, 6, 10),
+                LocalDateTime.of(2000, 1, 2, 2, 3, 2), LocalDateTime.of(2001, 5, 6, 3, 3, 2));
+
+        DataFrame agg = df.cols().agg(
+                $dateTime("a").min(),
+                $dateTime("b").max());
+
+        new DataFrameAsserts(agg, "min(a)", "max(b)")
+                .expectHeight(1)
+                .expectRow(0, LocalDateTime.of(2000, 1, 2, 2, 1, 2), LocalDateTime.of(2001, 5, 6, 3, 6, 10));
     }
 }

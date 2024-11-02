@@ -1,8 +1,11 @@
 package org.dflib;
 
+import org.dflib.exp.agg.ComparableAggregators;
+import org.dflib.exp.agg.DateAggregators;
+import org.dflib.exp.agg.DateReduceExp1;
 import org.dflib.exp.datetime.DateExp2;
-import org.dflib.exp.map.MapCondition3;
 import org.dflib.exp.map.MapCondition2;
+import org.dflib.exp.map.MapCondition3;
 import org.dflib.exp.num.IntExp1;
 
 import java.time.LocalDate;
@@ -14,7 +17,7 @@ import static org.dflib.Exp.$val;
  * An expression applied to date columns.
  */
 public interface DateExp extends Exp<LocalDate> {
-    
+
     default NumExp<Integer> year() {
         return IntExp1.mapVal("year", this, LocalDate::getYear);
     }
@@ -26,15 +29,15 @@ public interface DateExp extends Exp<LocalDate> {
     default NumExp<Integer> day() {
         return IntExp1.mapVal("year", this, LocalDate::getDayOfMonth);
     }
-    
+
     default Condition lt(Exp<LocalDate> exp) {
         return MapCondition2.mapVal("<", this, exp.castAsDate(), (d1, d2) -> d1.compareTo(d2) < 0);
     }
-    
+
     default Condition lt(LocalDate val) {
         return lt(Exp.$dateVal(val));
     }
-    
+
     default Condition le(Exp<LocalDate> exp) {
         return MapCondition2.mapVal("<=", this, exp.castAsDate(), (d1, d2) -> d1.compareTo(d2) <= 0);
     }
@@ -72,12 +75,12 @@ public interface DateExp extends Exp<LocalDate> {
     default Condition between(LocalDate from, LocalDate to) {
         return between(Exp.$val(from), Exp.$val(to));
     }
-    
+
     @Override
     default DateExp castAsDate() {
         return this;
     }
-    
+
     @Override
     default DateExp castAsDate(String format) {
         return this;
@@ -103,5 +106,61 @@ public interface DateExp extends Exp<LocalDate> {
 
     default DateExp plusYears(int years) {
         return DateExp2.mapVal("plusYears", this, $val(years), (ld, y) -> ld.plusYears(y));
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default DateExp min() {
+        return min(null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default DateExp min(Condition filter) {
+        return new DateReduceExp1<>("min", this, s -> (LocalDate) ComparableAggregators.min(s), filter);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default DateExp max() {
+        return max(null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default DateExp max(Condition filter) {
+        return new DateReduceExp1<>("max", this, s -> (LocalDate) ComparableAggregators.max(s), filter);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default DateExp avg() {
+        return avg(null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default DateExp avg(Condition filter) {
+        return new DateReduceExp1<>("avg", this, DateAggregators::avg, filter);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default DateExp median() {
+        return median(null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default DateExp median(Condition filter) {
+        return new DateReduceExp1<>("median", this, DateAggregators::median, filter);
     }
 }
