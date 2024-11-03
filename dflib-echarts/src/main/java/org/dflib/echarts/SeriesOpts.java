@@ -1,7 +1,8 @@
 package org.dflib.echarts;
 
 /**
- * A configuration of a single data series.
+ * A single visual data series. It has a number of subclasses, each corresponding to a chart type. A full list of
+ * supported types is defined in {@link ChartType} enum.
  */
 public abstract class SeriesOpts<SO extends SeriesOpts<SO>> {
 
