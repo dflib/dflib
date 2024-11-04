@@ -6,6 +6,7 @@
 * #374 "min", "max", "avg", "median" aggregating functions for date and time expressions
 * #377 Upgrade SLF4J to 2.0.16
 * #378 Upgrade commons-compress to 1.27.1
+* #379 Upgrade Apache POI to 5.3.0
 
 ## Release 1.1.0
 
