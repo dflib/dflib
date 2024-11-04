@@ -4,6 +4,7 @@
 * #361 Introduce aggregating semantics in Exp
 * #372 NumExp.as() should return a NumExp
 * #374 "min", "max", "avg", "median" aggregating functions for date and time expressions
+* #377 Upgrade SLF4J to 2.0.16
 
 ## Release 1.1.0
 
