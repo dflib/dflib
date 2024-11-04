@@ -58,6 +58,7 @@
         <jackson.databind.version>2.15.4</jackson.databind.version>
         <poi.version>5.2.5</poi.version>
         <commons.csv.version>1.11.0</commons.csv.version>
+        <commons.compress.version>1.26.0</commons.compress.version>
         <mustache.version>0.9.10</mustache.version>
         <parquet.version>1.14.2</parquet.version>
         <hadoop.version>3.4.0</hadoop.version>
@@ -201,7 +202,17 @@
                         <groupId>org.apache.logging.log4j</groupId>
                         <artifactId>*</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.commons</groupId>
+                        <artifactId>commons-compress</artifactId>
+                    </exclusion>
                 </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>1.26.0</version>
             </dependency>
 
             <dependency>
