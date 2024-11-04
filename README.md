@@ -25,7 +25,7 @@ code and work in Jupyter as well as regular web applications.
 ![dflib-bar-chart](https://dflib.org/images/charts/dflib-bar-chart_v2.svg)
 ![dflib-timeseries-chart](https://dflib.org/images/charts/dflib-timeseries-chart_v2.svg)
 
-While DFLib works in any Java application, it has a [special intergation](https://dflib.org/docs/1.x/#jupyter) with 
+While DFLib works in any Java application, it has a [special intergation](https://dflib.org/jjava/docs/1.x/) with 
 [Jupyter Notebook](https://jupyter.org/), a browser-based interactive environment for data exploration and analysis popular 
 among data scientists and data engineers. In fact, our community maintains a [Java "kernel" for Jupyter](https://github.com/dflib/jjava) 
 as a sister project to DFLib.
