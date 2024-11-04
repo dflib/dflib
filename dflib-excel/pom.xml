@@ -28,6 +28,11 @@
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
         </dependency>
+        <!-- Overriding POI transitive dependency with a newer version -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+        </dependency>
         <!-- Bridging POI Log4J to SLF4J -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
