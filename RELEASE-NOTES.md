@@ -19,6 +19,7 @@
 * #369 ECharts: support "itemStyle" for "pie" series
 * #370 ECharts: support "itemStyle", "symbolSize", "lineStyle" for "line" series
 * #371 ECharts: support "itemStyle" for "boxplot" series
+* #382 $bool(..).cumSum()
 
 ## Release 1.0.0-RC2
 

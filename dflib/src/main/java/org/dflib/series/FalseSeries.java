@@ -1,6 +1,7 @@
 package org.dflib.series;
 
 import org.dflib.BooleanSeries;
+import org.dflib.IntSeries;
 
 import java.util.Arrays;
 
@@ -68,5 +69,10 @@ public class FalseSeries extends BooleanBaseSeries {
     @Override
     public int countFalse() {
         return size;
+    }
+
+    @Override
+    public IntSeries cumSum() {
+        return new IntSingleValueSeries(0, size);
     }
 }

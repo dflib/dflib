@@ -109,6 +109,11 @@ public class BooleanIndexedSeries extends BooleanBaseSeries {
         return materialize().countFalse();
     }
 
+    @Override
+    public IntSeries cumSum() {
+        return materialize().cumSum();
+    }
+
     protected static class Raw {
         final BooleanSeries source;
         final IntSeries includePositions;

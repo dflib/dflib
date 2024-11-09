@@ -261,7 +261,7 @@ public interface Exp<T> {
     }
 
     // TODO: inconsistency - unlike numeric columns that support nulls, BooleanColumn is a "Condition",
-    //  that can have no nulls, and will internally convert all nulls to "false"..
+    //  that can't have nulls, and will internally convert all nulls to "false"..
     //  Perhaps we need a distinction between a "condition" and a "boolean value expression"?
     static Condition $bool(String name) {
         return new BoolColumn(name);

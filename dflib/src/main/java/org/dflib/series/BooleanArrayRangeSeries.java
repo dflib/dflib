@@ -1,7 +1,9 @@
 package org.dflib.series;
 
 import org.dflib.BooleanSeries;
+import org.dflib.IntSeries;
 import org.dflib.agg.PrimitiveSeriesCount;
+import org.dflib.agg.PrimitiveSeriesSum;
 
 /**
  * A specialized DoubleSeries that maps to a slice of an array. Calculating offsets during every operation has some
@@ -91,5 +93,11 @@ public class BooleanArrayRangeSeries extends BooleanBaseSeries {
     @Override
     public int countFalse() {
         return PrimitiveSeriesCount.countFalseInArray(data, offset, size);
+    }
+
+    @Override
+    public IntSeries cumSum() {
+        int[] cumSum = PrimitiveSeriesSum.cumSumOfArray(data, offset, size);
+        return new IntArraySeries(cumSum);
     }
 }

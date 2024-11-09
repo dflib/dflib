@@ -1,7 +1,9 @@
 package org.dflib.series;
 
 import org.dflib.BooleanSeries;
+import org.dflib.IntSeries;
 import org.dflib.agg.PrimitiveSeriesCount;
+import org.dflib.agg.PrimitiveSeriesSum;
 
 /**
  * @deprecated in favor of {@link BooleanBitsetSeries}
@@ -76,5 +78,11 @@ public class BooleanArraySeries extends BooleanBaseSeries {
     @Override
     public int countFalse() {
         return PrimitiveSeriesCount.countFalseInArray(data, 0, size());
+    }
+
+    @Override
+    public IntSeries cumSum() {
+        int[] cumSum = PrimitiveSeriesSum.cumSumOfArray(data, 0, size());
+        return new IntArraySeries(cumSum);
     }
 }
