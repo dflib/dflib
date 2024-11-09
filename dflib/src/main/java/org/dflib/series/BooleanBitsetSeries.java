@@ -251,6 +251,20 @@ public class BooleanBitsetSeries extends BooleanBaseSeries {
         return count;
     }
 
+    @Override
+    public IntSeries cumSum() {
+
+        int[] cumSum = new int[size];
+
+        int s = 0;
+        for (int i = 0; i < size; i++) {
+            s += getBool(i) ? 1 : 0;
+            cumSum[i] = s;
+        }
+
+        return new IntArraySeries(cumSum);
+    }
+
     /**
      * Calculate the size of the set in longs, just a {@code ceil(size / Long.SIZE)}
      *

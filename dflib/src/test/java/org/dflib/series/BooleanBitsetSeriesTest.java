@@ -1,6 +1,7 @@
 package org.dflib.series;
 
 import org.dflib.BooleanSeries;
+import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -186,5 +187,11 @@ class BooleanBitsetSeriesTest {
         assertTrue(s3.get(1));
         assertFalse(s3.get(2));
         assertTrue(s3.get(3));
+    }
+
+    @Test
+    public void cumSum() {
+        BooleanBitsetSeries s = new BooleanBitsetSeries(new long[]{0b1001L}, 4);
+        new SeriesAsserts(s.cumSum()).expectData(1, 1, 1, 2);
     }
 }
