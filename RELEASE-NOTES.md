@@ -18,6 +18,7 @@
 * #365 BooleanSeries.eq(..) : inefficiency and potential ClassCastException
 * #375 Exception printing empty columns
 * #376 dflib-excel: upgrade commons-compress to 1.26.0
+* #383 ArrayRangeSeries.selectRange(..) is broken
 
 ## Release 1.0.0-RC1
 
