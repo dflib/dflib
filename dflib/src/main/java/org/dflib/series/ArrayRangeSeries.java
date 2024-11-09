@@ -151,6 +151,6 @@ public class ArrayRangeSeries<T> extends ObjectSeries<T> {
     public Series<T> selectRange(int fromInclusive, int toExclusive) {
         return fromInclusive == 0 && toExclusive == size()
                 ? this
-                : new ArrayRangeSeries<>(getNominalType(), data, fromInclusive, toExclusive - fromInclusive);
+                : new ArrayRangeSeries<>(getNominalType(), data, offset + fromInclusive, toExclusive - fromInclusive);
     }
 }
