@@ -1,8 +1,10 @@
 package org.dflib;
 
+import org.dflib.exp.agg.BoolAggregators;
 import org.dflib.exp.bool.AndCondition;
 import org.dflib.exp.bool.NotCondition;
 import org.dflib.exp.bool.OrCondition;
+import org.dflib.exp.num.IntExp1;
 
 /**
  * A {@link Exp} that evaluates to a BooleanSeries indicating whether the condition is true for any given
@@ -34,6 +36,16 @@ public interface Condition extends Exp<Boolean> {
 
     default Condition not() {
         return new NotCondition(this);
+    }
+
+    /**
+     * A "running total" function that produces a cumulative sum of each row from the beginning of the DataFrame or
+     * Series. "true" value is assumed to be 1, and "false" - 0.
+     *
+     * @since 1.1.0
+     */
+    default NumExp<Integer> cumSum() {
+        return IntExp1.map("cumSum", this, BoolAggregators::cumSum);
     }
 
     @Override

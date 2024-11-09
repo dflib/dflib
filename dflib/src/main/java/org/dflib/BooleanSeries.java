@@ -227,6 +227,14 @@ public interface BooleanSeries extends Series<Boolean> {
         return copy;
     }
 
+    /**
+     * Returns a series with produces a cumulative sum of each row from the beginning of the Series. "true" value is
+     * assumed to be 1, and "false" - 0.
+     *
+     * @since 1.1.0
+     */
+    IntSeries cumSum();
+
     @Override
     default BooleanSeries eq(Series<?> s) {
         if (!(s instanceof BooleanSeries)) {

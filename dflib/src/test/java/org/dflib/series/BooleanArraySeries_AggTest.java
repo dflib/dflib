@@ -1,9 +1,9 @@
 package org.dflib.series;
 
-import org.dflib.series.BooleanArraySeries;
+import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BooleanArraySeries_AggTest {
 
@@ -17,5 +17,11 @@ public class BooleanArraySeries_AggTest {
     public void countFalse() {
         BooleanArraySeries s = new BooleanArraySeries(true, true, false, true, false);
         assertEquals(2, s.countFalse());
+    }
+
+    @Test
+    public void cumSum() {
+        BooleanArraySeries s = new BooleanArraySeries(true, false, true, true);
+        new SeriesAsserts(s.cumSum()).expectData(1, 1, 2, 3);
     }
 }

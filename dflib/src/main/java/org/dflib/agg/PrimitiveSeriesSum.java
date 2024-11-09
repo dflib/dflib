@@ -170,4 +170,20 @@ public class PrimitiveSeriesSum {
 
         return s;
     }
+
+    /**
+     * @since 1.1.0
+     */
+    public static int[] cumSumOfArray(boolean[] bools, int start, int len) {
+
+        int[] cumSum = new int[len];
+
+        int s = 0;
+        for (int i = 0; i < len; i++) {
+            s += bools[i + start] ? 1 : 0;
+            cumSum[i] = s;
+        }
+
+        return cumSum;
+    }
 }
