@@ -3,8 +3,9 @@ package org.dflib.echarts;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.dflib.echarts.EChartTestDatasets.*;
 
-public class SeriesTest extends GenerateScriptHtmlTest {
+public class SeriesTest {
 
     @Test
     public void series() {

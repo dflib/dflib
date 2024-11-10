@@ -3,8 +3,9 @@ package org.dflib.echarts;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.dflib.echarts.EChartTestDatasets.*;
 
-public class CartesianSeriesTest extends GenerateScriptHtmlTest {
+public class CartesianSeriesTest {
 
     @Test
     public void xAxisIndex() {

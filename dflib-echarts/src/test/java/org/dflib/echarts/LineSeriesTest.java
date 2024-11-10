@@ -4,8 +4,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.dflib.echarts.EChartTestDatasets.*;
 
-public class LineSeriesTest extends GenerateScriptHtmlTest {
+public class LineSeriesTest {
 
     @Test
     public void name() {

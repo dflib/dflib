@@ -2,10 +2,11 @@ package org.dflib.echarts;
 
 import org.junit.jupiter.api.Test;
 
+import static org.dflib.echarts.EChartTestDatasets.df2;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class BarSeriesTest extends GenerateScriptHtmlTest {
+public class BarSeriesTest {
 
     @Test
     public void test() {

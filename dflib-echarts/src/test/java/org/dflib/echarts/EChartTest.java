@@ -3,8 +3,9 @@ package org.dflib.echarts;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.dflib.echarts.EChartTestDatasets.*;
 
-public class EChartTest extends GenerateScriptHtmlTest {
+public class EChartTest {
 
     @Test
     public void plot() {

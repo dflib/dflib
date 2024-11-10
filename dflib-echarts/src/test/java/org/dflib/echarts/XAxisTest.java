@@ -3,8 +3,9 @@ package org.dflib.echarts;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.dflib.echarts.EChartTestDatasets.*;
 
-public class XAxisTest extends GenerateScriptHtmlTest {
+public class XAxisTest {
 
     @Test
     public void data() {
