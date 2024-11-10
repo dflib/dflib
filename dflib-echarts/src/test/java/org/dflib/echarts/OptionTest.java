@@ -25,15 +25,34 @@ public class OptionTest {
     }
 
     @Test
+    public void legend_default() {
+
+        String s1 = ECharts.chart().generateScriptHtml("_tid", df1);
+        assertFalse(s1.contains("legend:"), s1);
+
+        String s2 = ECharts.chart().legend().generateScriptHtml("_tid", df1);
+        assertTrue(s2.contains("legend: {"), s2);
+        assertTrue(s2.contains("type: 'plain'"), s2);
+    }
+
+    @Test
     public void legend() {
 
         String s1 = ECharts.chart().generateScriptHtml("_tid", df1);
-        assertFalse(s1.contains("legend: {}"), s1);
+        assertFalse(s1.contains("legend:"), s1);
 
-        String s2 = ECharts.chart().legend().generateScriptHtml("_tid", df1);
-        assertTrue(s2.contains("legend: {}"), s2);
+        String s2 = ECharts.chart().legend(
+                Legend.ofScroll().vertical().bottomPct(4.5).leftLeft().topPx(10).unselected("y")
+        ).generateScriptHtml("_tid", df1);
+        assertTrue(s2.contains("legend: {"), s2);
+        assertTrue(s2.contains("type: 'scroll'"), s2);
+        assertTrue(s2.contains("orient: 'vertical'"), s2);
+        assertTrue(s2.contains("bottom: '4.5%'"), s2);
+        assertTrue(s2.contains("left: 'left'"), s2);
+        assertTrue(s2.contains("top: 10"), s2);
+        assertTrue(s2.contains("selected: {"), s2);
+        assertTrue(s2.contains("'y': false"), s2);
     }
-
 
     @Test
     public void toolbox() {

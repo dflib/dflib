@@ -8,6 +8,7 @@
 * #378 Upgrade commons-compress to 1.27.1
 * #379 Upgrade Apache POI to 5.3.0
 * #384 EChartHtmlSaver to save charts to HTML
+* #385 ECharts: "legend" display parameters
 
 ## Release 1.1.0
 

@@ -48,7 +48,36 @@
         },
     {{/toolbox}}
     {{#legend}}
-        legend: {},
+        legend: {
+        {{#show}}
+            show: {{show}},
+        {{/show}}
+        {{#orient}}
+            orient: '{{orient}}',
+        {{/orient}}
+        {{#top}}
+            top: {{{top}}},
+        {{/top}}
+        {{#bottom}}
+            bottom: {{{bottom}}},
+        {{/bottom}}
+        {{#left}}
+            left: {{{left}}},
+        {{/left}}
+        {{#right}}
+            right: {{{right}}},
+        {{/right}}
+        {{#unselectedPresent}}
+            selected: {
+            {{#unselected}}
+                '{{{.}}}': false,
+            {{/unselected}}
+            },
+        {{/unselectedPresent}}
+        {{#type}}
+            type: '{{type}}'
+        {{/type}}
+        },
     {{/legend}}
     {{#gridPresent}}
         grid: [

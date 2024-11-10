@@ -3,8 +3,6 @@ package org.dflib.echarts;
 import org.dflib.echarts.render.option.Distance;
 import org.dflib.echarts.render.option.GridModel;
 
-import java.util.Objects;
-
 public class Grid {
 
     private LeftDistance left;
@@ -32,17 +30,17 @@ public class Grid {
     }
 
     public Grid leftLeft() {
-        this.left = new LeftDistance(AutoLeftDistance.left);
+        this.left = new LeftDistance(LeftDistance.AutoLeftDistance.left);
         return this;
     }
 
     public Grid leftRight() {
-        this.left = new LeftDistance(AutoLeftDistance.right);
+        this.left = new LeftDistance(LeftDistance.AutoLeftDistance.right);
         return this;
     }
 
     public Grid leftCenter() {
-        this.left = new LeftDistance(AutoLeftDistance.center);
+        this.left = new LeftDistance(LeftDistance.AutoLeftDistance.center);
         return this;
     }
 
@@ -67,17 +65,17 @@ public class Grid {
     }
 
     public Grid topTop() {
-        this.top = new TopDistance(AutoTopDistance.top);
+        this.top = new TopDistance(TopDistance.AutoTopDistance.top);
         return this;
     }
 
     public Grid topMiddle() {
-        this.top = new TopDistance(AutoTopDistance.middle);
+        this.top = new TopDistance(TopDistance.AutoTopDistance.middle);
         return this;
     }
 
     public Grid topBottom() {
-        this.top = new TopDistance(AutoTopDistance.bottom);
+        this.top = new TopDistance(TopDistance.AutoTopDistance.bottom);
         return this;
     }
 
@@ -122,49 +120,4 @@ public class Grid {
         );
     }
 
-    static class LeftDistance {
-        private final Distance distance;
-        private final AutoLeftDistance autoDistance;
-
-        LeftDistance(AutoLeftDistance autoDistance) {
-            this.autoDistance = Objects.requireNonNull(autoDistance);
-            this.distance = null;
-        }
-
-        LeftDistance(Distance distance) {
-            this.distance = Objects.requireNonNull(distance);
-            this.autoDistance = null;
-        }
-
-        String asString() {
-            return distance != null ? distance.asString() : "'" + autoDistance.name() + "'";
-        }
-    }
-
-    enum AutoLeftDistance {
-        left, center, right
-    }
-
-    static class TopDistance {
-        private final Distance distance;
-        private final AutoTopDistance autoDistance;
-
-        TopDistance(AutoTopDistance autoDistance) {
-            this.autoDistance = Objects.requireNonNull(autoDistance);
-            this.distance = null;
-        }
-
-        TopDistance(Distance distance) {
-            this.distance = Objects.requireNonNull(distance);
-            this.autoDistance = null;
-        }
-
-        String asString() {
-            return distance != null ? distance.asString() : "'" + autoDistance.name() + "'";
-        }
-    }
-
-    enum AutoTopDistance {
-        top, middle, bottom
-    }
 }

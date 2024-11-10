@@ -1,9 +1,10 @@
 package org.dflib.echarts.render;
 
-import org.dflib.echarts.render.option.dataset.DatasetModel;
 import org.dflib.echarts.render.option.GridModel;
+import org.dflib.echarts.render.option.LegendModel;
 import org.dflib.echarts.render.option.SeriesModel;
 import org.dflib.echarts.render.option.axis.AxisModel;
+import org.dflib.echarts.render.option.dataset.DatasetModel;
 import org.dflib.echarts.render.option.toolbox.ToolboxModel;
 import org.dflib.echarts.render.option.tooltip.TooltipModel;
 
@@ -12,7 +13,7 @@ import java.util.List;
 public class OptionModel {
 
     private final DatasetModel dataset;
-    private final boolean legend;
+    private final LegendModel legend;
     private final List<GridModel> grid;
     private final List<SeriesModel> series;
     private final String title;
@@ -21,9 +22,35 @@ public class OptionModel {
     private final List<AxisModel> xAxes;
     private final List<AxisModel> yAxes;
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public OptionModel(
             DatasetModel dataset,
             boolean legend,
+            List<GridModel> grid,
+            List<SeriesModel> series,
+            String title,
+            ToolboxModel toolbox,
+            TooltipModel tooltip,
+            List<AxisModel> xAxes,
+            List<AxisModel> yAxes) {
+        this(
+                dataset,
+                legend ? new LegendModel(null, "plain", null, null, null, null, null, null) : null,
+                grid,
+                series,
+                title,
+                toolbox,
+                tooltip,
+                xAxes,
+                yAxes);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public OptionModel(
+            DatasetModel dataset,
+            LegendModel legend,
             List<GridModel> grid,
             List<SeriesModel> series,
             String title,
@@ -87,7 +114,15 @@ public class OptionModel {
         return series;
     }
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public boolean isLegend() {
+        return legend != null;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public LegendModel getLegend() {
         return legend;
     }
 }

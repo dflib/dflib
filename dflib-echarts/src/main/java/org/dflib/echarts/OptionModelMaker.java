@@ -41,7 +41,7 @@ class OptionModelMaker {
 
         return new OptionModel(
                 dsb.datasetModel(),
-                opt.legend != null ? opt.legend : false,
+                opt.legend != null ? opt.legend.resolve() : null,
                 grids(),
                 seriesModels(series),
                 opt.title,

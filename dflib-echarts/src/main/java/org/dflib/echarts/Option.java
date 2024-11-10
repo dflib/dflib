@@ -14,7 +14,7 @@ import java.util.Objects;
 public class Option {
 
     String title;
-    Boolean legend;
+    Legend legend;
     Toolbox toolbox;
     Tooltip tooltip;
     List<Grid> grids;
@@ -118,7 +118,14 @@ public class Option {
     }
 
     public Option legend() {
-        this.legend = Boolean.TRUE;
+        return legend(Legend.ofPlain());
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public Option legend(Legend legend) {
+        this.legend = legend;
         return this;
     }
 

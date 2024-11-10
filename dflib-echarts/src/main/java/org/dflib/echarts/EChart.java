@@ -252,6 +252,14 @@ public class EChart {
         return this;
     }
 
+    /**
+     * @since 2.0.0
+     */
+    public EChart legend(Legend legend) {
+        option.legend(legend);
+        return this;
+    }
+
     public EChartHtml plot(DataFrame dataFrame) {
         String id = newId();
         return new EChartHtml(
