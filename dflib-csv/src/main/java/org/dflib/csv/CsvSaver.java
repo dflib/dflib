@@ -44,7 +44,7 @@ public class CsvSaver {
     public CsvSaver createMissingDirs() {
         this.createMissingDirs = true;
         return this;
-    }   
+    }
 
     /**
      * Instructs the saver to omit saving the Index of a DataFrame. By default, the Index will be saved as a first row
@@ -67,7 +67,7 @@ public class CsvSaver {
         }
 
         try (FileWriter out = new FileWriter(file)) {
-            save(df, out);
+            doSave(df, out);
         } catch (IOException e) {
             throw new RuntimeException("Error writing CSV to " + file + ": " + e.getMessage(), e);
         }
@@ -83,28 +83,30 @@ public class CsvSaver {
     }
 
     public void save(DataFrame df, Appendable out) {
-
         try {
-            CSVPrinter printer = new CSVPrinter(out, format);
-            if (printHeader) {
-                printHeader(printer, df.getColumnsIndex());
-            }
-
-            int len = df.width();
-            for (RowProxy r : df) {
-                printRow(printer, r, len);
-            }
-
+            doSave(df, out);
         } catch (IOException e) {
             throw new RuntimeException("Error writing CSV: " + e.getMessage(), e);
         }
     }
 
     public String saveToString(DataFrame df) {
-
         StringWriter out = new StringWriter();
         save(df, out);
         return out.toString();
+    }
+
+    private void doSave(DataFrame df, Appendable out) throws IOException {
+
+        CSVPrinter printer = new CSVPrinter(out, format);
+        if (printHeader) {
+            printHeader(printer, df.getColumnsIndex());
+        }
+
+        int len = df.width();
+        for (RowProxy r : df) {
+            printRow(printer, r, len);
+        }
     }
 
     private void printHeader(CSVPrinter printer, Index index) throws IOException {
