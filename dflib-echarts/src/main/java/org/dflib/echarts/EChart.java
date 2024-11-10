@@ -8,15 +8,14 @@ import org.dflib.echarts.render.ContainerModel;
 import org.dflib.echarts.render.ExternalScriptModel;
 import org.dflib.echarts.render.InitOptsModel;
 import org.dflib.echarts.render.ScriptModel;
+import org.dflib.echarts.render.util.ElementIdGenerator;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
-import java.security.SecureRandom;
 import java.util.Objects;
-import java.util.Random;
 
 /**
  * A builder of HTML/JS code that renders DataFrame data using ECharts library. Created via {@link ECharts#chart()} and
@@ -45,7 +44,7 @@ public class EChart {
         }
     }
 
-    private final Random rnd;
+    private final ElementIdGenerator idGenerator;
     private final Option option;
     private String theme;
     private RendererType renderer;
@@ -53,8 +52,13 @@ public class EChart {
     private Integer width;
     private Integer height;
 
+    @Deprecated(since = "2.0.0", forRemoval = true)
     protected EChart() {
-        this.rnd = new SecureRandom();
+        this(ElementIdGenerator.random());
+    }
+
+    protected EChart(ElementIdGenerator idGenerator) {
+        this.idGenerator = idGenerator;
         this.option = Option.of();
     }
 
@@ -285,6 +289,6 @@ public class EChart {
     }
 
     protected String newId() {
-        return "dfl_ech_" + Math.abs(rnd.nextInt(10_000));
+        return idGenerator.nextId();
     }
 }
