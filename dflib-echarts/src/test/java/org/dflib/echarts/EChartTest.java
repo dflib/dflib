@@ -33,10 +33,10 @@ public class EChartTest {
     public void generateContainerHtml() {
 
         String s1 = ECharts.chart().generateContainerHtml("_tid");
-        assertEquals("<div id='_tid' style='width: 600px;height:400px;'></div>\n", s1);
+        assertEquals("<div id='_tid' class='dfl_ech' style='width: 600px;height:400px;'></div>\n", s1);
 
         String s2 = ECharts.chart().sizePx(20, 10).generateContainerHtml("_tid");
-        assertEquals("<div id='_tid' style='width: 20px;height:10px;'></div>\n", s2);
+        assertEquals("<div id='_tid' class='dfl_ech' style='width: 20px;height:10px;'></div>\n", s2);
     }
 
     @Test

@@ -20,6 +20,7 @@ public class EChartHtmlSaver {
 
     private boolean createMissingDirs;
     private String title;
+    private String chartStyle;
 
     /**
      * Instructs the saver to create any missing directories in the file path.
@@ -28,6 +29,15 @@ public class EChartHtmlSaver {
      */
     public EChartHtmlSaver createMissingDirs() {
         this.createMissingDirs = true;
+        return this;
+    }
+
+    /**
+     * Overrides the default style of the chart "div" containers with the provided inline CSS snippet. The style argument
+     * will be inserted inside the <code>.dfl_ech { .. }</code> block and will be applied to each chart.
+     */
+    public EChartHtmlSaver chartStyle(String style) {
+        this.chartStyle = style;
         return this;
     }
 
@@ -74,6 +84,7 @@ public class EChartHtmlSaver {
         HtmlPageModel model = new HtmlPageModel(
                 this.title != null ? this.title : "DFLib Chart",
                 scriptImport,
+                chartStyle != null ? chartStyle : "margin: 50px auto; padding: 20px;",
                 Arrays.asList(charts)
         );
 
