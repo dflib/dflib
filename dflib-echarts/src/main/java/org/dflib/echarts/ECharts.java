@@ -37,10 +37,16 @@ public class ECharts {
         return new EChartHtmlSaver();
     }
 
+    /**
+     * @since 2.0.0
+     */
     public static void save(Path path, EChartHtml... charts) {
         saver().save(path, charts);
     }
 
+    /**
+     * @since 2.0.0
+     */
     public static void save(String file, EChartHtml... charts) {
         saver().save(file, charts);
     }
