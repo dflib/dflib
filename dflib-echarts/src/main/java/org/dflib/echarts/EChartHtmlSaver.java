@@ -40,6 +40,10 @@ public class EChartHtmlSaver {
         save(path.toFile(), charts);
     }
 
+    public void save(String file, EChartHtml... charts) {
+        save(new File(file), charts);
+    }
+
     public void save(File file, EChartHtml... charts) {
         if (createMissingDirs) {
             File dir = file.getParentFile();

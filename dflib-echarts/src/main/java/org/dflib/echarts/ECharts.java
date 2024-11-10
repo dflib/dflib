@@ -41,6 +41,10 @@ public class ECharts {
         saver().save(path, charts);
     }
 
+    public void save(String file, EChartHtml... charts) {
+        saver().save(file, charts);
+    }
+
     /**
      * @since 2.0.0
      */
