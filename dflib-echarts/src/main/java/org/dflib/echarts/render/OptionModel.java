@@ -3,6 +3,7 @@ package org.dflib.echarts.render;
 import org.dflib.echarts.render.option.GridModel;
 import org.dflib.echarts.render.option.LegendModel;
 import org.dflib.echarts.render.option.SeriesModel;
+import org.dflib.echarts.render.option.TitleModel;
 import org.dflib.echarts.render.option.axis.AxisModel;
 import org.dflib.echarts.render.option.dataset.DatasetModel;
 import org.dflib.echarts.render.option.toolbox.ToolboxModel;
@@ -16,7 +17,7 @@ public class OptionModel {
     private final LegendModel legend;
     private final List<GridModel> grid;
     private final List<SeriesModel> series;
-    private final String title;
+    private final TitleModel title;
     private final ToolboxModel toolbox;
     private final TooltipModel tooltip;
     private final List<AxisModel> xAxes;
@@ -38,7 +39,7 @@ public class OptionModel {
                 legend ? new LegendModel(null, "plain", null, null, null, null, null, null) : null,
                 grid,
                 series,
-                title,
+                title != null ? new TitleModel(title, null, null, null, null, null) : null,
                 toolbox,
                 tooltip,
                 xAxes,
@@ -53,7 +54,7 @@ public class OptionModel {
             LegendModel legend,
             List<GridModel> grid,
             List<SeriesModel> series,
-            String title,
+            TitleModel title,
             ToolboxModel toolbox,
             TooltipModel tooltip,
             List<AxisModel> xAxes,
@@ -70,7 +71,7 @@ public class OptionModel {
         this.legend = legend;
     }
 
-    public String getTitle() {
+    public TitleModel getTitle() {
         return title;
     }
 

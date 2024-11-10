@@ -247,6 +247,14 @@ public class EChart {
         return this;
     }
 
+    /**
+     * @since 2.0.0
+     */
+    public EChart title(Title title) {
+        option.title(title);
+        return this;
+    }
+
     public EChart legend() {
         option.legend();
         return this;

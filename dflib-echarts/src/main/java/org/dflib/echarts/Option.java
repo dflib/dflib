@@ -13,7 +13,7 @@ import java.util.Objects;
  */
 public class Option {
 
-    String title;
+    Title title;
     Legend legend;
     Toolbox toolbox;
     Tooltip tooltip;
@@ -113,6 +113,13 @@ public class Option {
     }
 
     public Option title(String title) {
+        return title(Title.of(title));
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public Option title(Title title) {
         this.title = title;
         return this;
     }

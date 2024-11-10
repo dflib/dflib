@@ -9,7 +9,7 @@ import static org.dflib.echarts.EChartTestDatasets.*;
 public class OptionTest {
 
     @Test
-    public void title() {
+    public void title_default() {
 
         String s1 = ECharts.chart().generateScriptHtml("_tid", df1);
         assertFalse(s1.contains("title: {"), s1);
@@ -22,6 +22,24 @@ public class OptionTest {
         String s3 = ECharts.chart("My chart").generateScriptHtml("_tid", df1);
         assertTrue(s3.contains("title: {"), s3);
         assertTrue(s3.contains("text: 'My chart'"), s3);
+    }
+
+    @Test
+    public void title() {
+
+        String s1 = ECharts.chart().generateScriptHtml("_tid", df1);
+        assertFalse(s1.contains("title: {"), s1);
+
+        String s2 = ECharts.chart().title(
+                Title.of("My chart").subtext("about my chart").bottomPct(4.5).leftLeft().topPx(10)
+        ).generateScriptHtml("_tid", df1);
+
+        assertTrue(s2.contains("title: {"), s2);
+        assertTrue(s2.contains("text: 'My chart'"), s2);
+        assertTrue(s2.contains("subtext: 'about my chart'"), s2);
+        assertTrue(s2.contains("bottom: '4.5%'"), s2);
+        assertTrue(s2.contains("left: 'left'"), s2);
+        assertTrue(s2.contains("top: 10"), s2);
     }
 
     @Test

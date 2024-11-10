@@ -25,7 +25,10 @@ public class ECharts {
 
     /**
      * Starts a builder for a new named chart.
+     *
+     * @deprecated in favor of {@link #chart()} and {@link EChart#title(Title)}
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static EChart chart(String title) {
         return chart().title(title);
     }

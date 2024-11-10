@@ -44,7 +44,7 @@ class OptionModelMaker {
                 opt.legend != null ? opt.legend.resolve() : null,
                 grids(),
                 seriesModels(series),
-                opt.title,
+                opt.title != null ? opt.title.resolve() : null,
                 opt.toolbox != null ? opt.toolbox.resolve() : null,
                 opt.tooltip != null ? opt.tooltip.resolve() : null,
                 xs != null ? xs.stream().map(XAxisBuilder::getAxis).map(XAxis::resolve).collect(Collectors.toList()) : null,

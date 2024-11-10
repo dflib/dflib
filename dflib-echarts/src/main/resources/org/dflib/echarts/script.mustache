@@ -11,7 +11,24 @@
 {{#option}}
     {{#title}}
         title: {
-            text: '{{.}}'
+        {{#text}}
+            text: '{{.}}',
+        {{/text}}
+        {{#subtext}}
+            subtext: '{{.}}',
+        {{/subtext}}
+        {{#top}}
+            top: {{{top}}},
+        {{/top}}
+        {{#bottom}}
+            bottom: {{{bottom}}},
+        {{/bottom}}
+        {{#left}}
+            left: {{{left}}},
+        {{/left}}
+        {{#right}}
+            right: {{{right}}},
+        {{/right}}
         },
     {{/title}}
     {{#tooltip}}

@@ -9,6 +9,7 @@
 * #379 Upgrade Apache POI to 5.3.0
 * #384 EChartHtmlSaver to save charts to HTML
 * #385 ECharts: "legend" display parameters
+* #386 ECharts: "title" subtext and positioning parameters
 
 ## Release 1.1.0
 
