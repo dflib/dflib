@@ -1,49 +1,12 @@
-<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Test Charts</title>
+    <title>Templated charts 1</title>
     <script type='text/javascript' src='https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js'></script>
 </head>
 <body>
-<style>.dfl_ech { margin: 50px auto; padding: 20px; }</style>
-<div id='dfl_ech_1' class='dfl_ech' style='width: 600px;height:400px;'></div>
-<script type='text/javascript'>var chart_dfl_ech_1 = echarts.init(
-        document.getElementById('dfl_ech_1'),
-        null,
-   );
-    var option_dfl_ech_1 = {
-        dataset: {
-            source: [
-                ['L0','A','B','C'],
-                ['y1',10,11,14]
-            ]
-        },
-        xAxis: [
-        {
-            type: 'category'
-        },
-        ],
-        yAxis: [
-        {
-            type: 'value'
-        },
-        ],
-        series: [
-            {
-                name: 'Y1',
-                encode: {
-                    x: 0,
-                    y: 1,
-                },
-                seriesLayoutBy: 'row',
-                type: 'line'
-            },
-        ]
-    };
-    option_dfl_ech_1 && chart_dfl_ech_1.setOption(option_dfl_ech_1);</script>
-<div id='dfl_ech_2' class='dfl_ech' style='width: 600px;height:400px;'></div>
-<script type='text/javascript'>var chart_dfl_ech_2 = echarts.init(
+<div id="c2">
+    <div id='dfl_ech_2' class='dfl_ech' style='width: 600px;height:400px;'></div>
+    <script type='text/javascript'>var chart_dfl_ech_2 = echarts.init(
         document.getElementById('dfl_ech_2'),
         null,
    );
@@ -77,5 +40,47 @@
         ]
     };
     option_dfl_ech_2 && chart_dfl_ech_2.setOption(option_dfl_ech_2);</script>
+</div>
+<div id="c1">
+    <div id='dfl_ech_1' class='dfl_ech' style='width: 600px;height:400px;'></div>
+    <script type='text/javascript'>var chart_dfl_ech_1 = echarts.init(
+        document.getElementById('dfl_ech_1'),
+        null,
+   );
+    var option_dfl_ech_1 = {
+        dataset: {
+            source: [
+                ['L0','A','B','C'],
+                ['y1',10,11,14]
+            ]
+        },
+        xAxis: [
+        {
+            type: 'category'
+        },
+        ],
+        yAxis: [
+        {
+            type: 'value'
+        },
+        ],
+        series: [
+            {
+                name: 'Y1',
+                encode: {
+                    x: 0,
+                    y: 1,
+                },
+                seriesLayoutBy: 'row',
+                type: 'line'
+            },
+        ]
+    };
+    option_dfl_ech_1 && chart_dfl_ech_1.setOption(option_dfl_ech_1);</script>
+</div>
+<div id="c30">
+    
+    <script type='text/javascript'></script>
+</div>
 </body>
 </html>

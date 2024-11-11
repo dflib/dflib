@@ -18,14 +18,14 @@ public class CandlestickSeriesTest {
 
         String s1 = ECharts.chart()
                 .series(SeriesOpts.ofCandlestick(), "open", "close", "low", "high")
-                .generateScriptHtml("_tid", df);
+                .generateScript("_tid", df);
         assertFalse(s1.contains("xAxisIndex"), s1);
 
         String s2 = ECharts.chart()
                 .xAxis("on")
                 .xAxis("on2")
                 .series(SeriesOpts.ofCandlestick().xAxisIndex(1), "open", "close", "low", "high")
-                .generateScriptHtml("_tid", df);
+                .generateScript("_tid", df);
         assertTrue(s2.contains("['L0','2024-08-12','2024-08-13','2024-08-14'],"), s2);
         assertTrue(s2.contains("['L1','2024-07-12','2024-07-13','2024-07-14']"), s2);
         assertTrue(s2.contains("type: 'candlestick'"), s2);
@@ -37,10 +37,10 @@ public class CandlestickSeriesTest {
     @Test
     public void data() {
 
-        String s1 = ECharts.chart().generateScriptHtml("_tid", df);
+        String s1 = ECharts.chart().generateScript("_tid", df);
         assertTrue(s1.contains("dataset"), s1);
 
-        String s2 = ECharts.chart().series(SeriesOpts.ofCandlestick(), "open", "close", "low", "high").generateScriptHtml("_tid", df);
+        String s2 = ECharts.chart().series(SeriesOpts.ofCandlestick(), "open", "close", "low", "high").generateScript("_tid", df);
         assertTrue(s2.contains("dataset"), s2);
         assertTrue(s2.contains("['L0',1,2,3]"), s2);
         assertTrue(s2.contains("['open',15,18,15],"), s2);
@@ -66,12 +66,12 @@ public class CandlestickSeriesTest {
 
         String s1 = ECharts.chart()
                 .series(SeriesOpts.ofCandlestick(), "open", "close", "low", "high")
-                .generateScriptHtml("_tid", df);
+                .generateScript("_tid", df);
         assertFalse(s1.contains("itemStyle"), s1);
 
         String s2 = ECharts.chart()
                 .series(SeriesOpts.ofCandlestick().itemStyle(style), "open", "close", "low", "high")
-                .generateScriptHtml("_tid", df);
+                .generateScript("_tid", df);
 
         assertTrue(s2.contains("type: 'candlestick'"), s2);
         assertTrue(s2.contains("itemStyle"), s2);

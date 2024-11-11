@@ -1,5 +1,4 @@
-<script type='text/javascript'>
-    var chart_{{id}} = echarts.init(
+var chart_{{id}} = echarts.init(
         document.getElementById('{{id}}'),
         {{{themeOrNull}}},
     {{#initOpts}}
@@ -377,4 +376,4 @@
         ]
 {{/option}}
     };
-    option_{{id}} && chart_{{id}}.setOption(option_{{id}});</script>
+    option_{{id}} && chart_{{id}}.setOption(option_{{id}});

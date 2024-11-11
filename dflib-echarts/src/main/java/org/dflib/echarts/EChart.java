@@ -5,7 +5,6 @@ import com.github.mustachejava.Mustache;
 import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.echarts.render.ContainerModel;
-import org.dflib.echarts.render.ExternalScriptModel;
 import org.dflib.echarts.render.InitOptsModel;
 import org.dflib.echarts.render.ScriptModel;
 import org.dflib.echarts.render.util.ElementIdGenerator;
@@ -15,6 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -25,22 +25,26 @@ public class EChart {
     private static final String DEFAULT_ECHARTS_SCRIPT_URL = "https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js";
 
     private static final Mustache CONTAINER_TEMPLATE = loadTemplate("container.mustache");
-    private static final Mustache EXTERNAL_SCRIPT_TEMPLATE = loadTemplate("external_script.mustache");
     private static final Mustache SCRIPT_TEMPLATE = loadTemplate("script.mustache");
 
     static Mustache loadTemplate(String name) {
-        try (InputStream in = ECharts.class.getResourceAsStream(name)) {
+        return loadTemplate(ECharts.class.getResource(name));
+    }
+
+    static Mustache loadTemplate(URL url) {
+
+        try (InputStream in = url.openStream()) {
 
             if (in == null) {
                 throw new RuntimeException("ECharts 'cell.mustache' template is not found");
             }
 
-            // not providing an explicit resolver of subtemplates.. assuming a single flat template for now
+            // not providing an explicit resolver of subtemplates. assuming a single flat template for now
             try (Reader reader = new InputStreamReader(in)) {
-                return new DefaultMustacheFactory().compile(reader, name);
+                return new DefaultMustacheFactory().compile(reader, url.getFile());
             }
         } catch (IOException e) {
-            throw new RuntimeException("Error loading muustache template: " + name, e);
+            throw new RuntimeException("Error loading mustache template: " + url, e);
         }
     }
 
@@ -271,9 +275,9 @@ public class EChart {
     public EChartHtml plot(DataFrame dataFrame) {
         String id = newId();
         return new EChartHtml(
+                scriptUrl(),
                 generateContainerHtml(id),
-                generateExternalScriptHtml(),
-                generateScriptHtml(id, dataFrame)
+                generateScript(id, dataFrame)
         );
     }
 
@@ -286,14 +290,26 @@ public class EChart {
         return CONTAINER_TEMPLATE.execute(new StringWriter(), model).toString();
     }
 
-    protected String generateExternalScriptHtml() {
-        ExternalScriptModel model = new ExternalScriptModel(
-                this.scriptUrl != null ? this.scriptUrl : DEFAULT_ECHARTS_SCRIPT_URL
-        );
-        return EXTERNAL_SCRIPT_TEMPLATE.execute(new StringWriter(), model).toString();
+    /**
+     * @since 2.0.0
+     */
+    protected String scriptUrl() {
+        return scriptUrl != null ? scriptUrl : DEFAULT_ECHARTS_SCRIPT_URL;
     }
 
-    protected String generateScriptHtml(String id, DataFrame df) {
+    /**
+     * @deprecated unused
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    protected String generateExternalScriptHtml() {
+        return new EChartHtml(
+                scriptUrl != null ? scriptUrl : DEFAULT_ECHARTS_SCRIPT_URL,
+                "",
+                ""
+        ).getExternalScript();
+    }
+
+    protected String generateScript(String id, DataFrame df) {
 
         ScriptModel model = new ScriptModel(
                 id,
@@ -302,6 +318,18 @@ public class EChart {
                 option.resolve(df)
         );
         return SCRIPT_TEMPLATE.execute(new StringWriter(), model).toString();
+    }
+
+    /**
+     * @deprecated unused
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    protected String generateScriptHtml(String id, DataFrame df) {
+        return new EChartHtml(
+                "",
+                "",
+                generateScript(id, df)
+        ).getScript();
     }
 
     protected String newId() {

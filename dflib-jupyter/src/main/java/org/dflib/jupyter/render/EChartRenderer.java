@@ -25,6 +25,9 @@ public class EChartRenderer implements RenderFunction<EChartHtml> {
     }
 
     private String toString(EChartHtml chart) {
-        return chart.getExternalScript() + chart.getContainer() + chart.getScript();
+        return
+                "<script type='text/javascript' src='" + chart.getEchartsUrl() + "'></script>"
+                        + chart.getChartDiv()
+                        + "<script type='text/javascript'>" + chart.getChartScript() + "</script>";
     }
 }

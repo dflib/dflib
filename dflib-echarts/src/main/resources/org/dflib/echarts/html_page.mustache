@@ -2,12 +2,14 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>{{title}}</title>
-    {{{scriptImport}}}</head>
+    <title>{{pageTitle}}</title>
+    <script type='text/javascript' src='{{{echartsUrl}}}'></script>
+</head>
 <body>
-<style>.dfl_ech { {{{chartStyle}}} }</style>
+<style>.dfl_ech { margin: 50px auto; padding: 20px; }</style>
 {{#charts}}
-{{{container}}}{{{script}}}
+{{{chartDiv}}}
+<script type='text/javascript'>{{{chartScript}}}</script>
 {{/charts}}
 </body>
 </html>

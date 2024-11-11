@@ -10,6 +10,7 @@
 * #384 EChartHtmlSaver to save charts to HTML
 * #385 ECharts: "legend" display parameters
 * #386 ECharts: "title" subtext and positioning parameters
+* #387 EChartsHtmlSaver and custom HTML templates
 
 ## Release 1.1.0
 
