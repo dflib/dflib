@@ -64,11 +64,11 @@ public class Column<T> implements Exp<T> {
 
     @Override
     public T reduce(DataFrame df) {
-        throw new UnsupportedOperationException("Column expression '" + name + ":" + getType().getSimpleName() + "' does not define a 'reduce' operation");
+        return eval(df).first();
     }
 
     @Override
     public T reduce(Series<?> s) {
-        throw new UnsupportedOperationException("Column expression '" + name + ":" + getType().getSimpleName() + "' does not define a 'reduce' operation");
+        return eval(s).first();
     }
 }
