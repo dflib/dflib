@@ -4,6 +4,7 @@ import org.dflib.exp.AsExp;
 import org.dflib.exp.Column;
 import org.dflib.exp.ConstExp;
 import org.dflib.exp.RowNumExp;
+import org.dflib.exp.ShiftExp;
 import org.dflib.exp.agg.CountExp;
 import org.dflib.exp.agg.ExpAggregator;
 import org.dflib.exp.agg.ExpAggregator2;
@@ -524,6 +525,26 @@ public interface Exp<T> {
 
     default Condition isNotNull() {
         return ConditionFactory.isNotNull(this);
+    }
+
+    /**
+     * An expression that produces a Series with the same size as the source, but values shifted forward or
+     * backwards depending on the sign of the offset parameter. Head or tail gaps produced by the shift are filled
+     * with nulls.
+     *
+     * @since 1.1.0
+     */
+    default Exp<T> shift(int offset) {
+        return shift(offset, null);
+    }
+
+    /**
+     * An expression that produces a Series with the same size as the source, but values shifted forward or backwards
+     * depending on the sign of the offset parameter. Head or tail gaps produced by the shift are filled with the
+     * provided filler value.
+     */
+    default Exp<T> shift(int offset, T filler) {
+        return new ShiftExp<>(this, offset, filler);
     }
 
     /**

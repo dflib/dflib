@@ -1,5 +1,6 @@
 ## Release 1.1.0
 
+* #245 Exp.shift(..)
 * #356 ECharts: "candlestick" should allow color selection
 * #357 Primitive FloatSeries
 * #362 Aggregating expressions do not generate proper QL
