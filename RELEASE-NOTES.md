@@ -19,6 +19,7 @@
 * #375 Exception printing empty columns
 * #376 dflib-excel: upgrade commons-compress to 1.26.0
 * #383 ArrayRangeSeries.selectRange(..) is broken
+* #390 "Series.shift()" with out of bounds negative shift results in ArrayIndexOutOfBoundsException
 
 ## Release 1.0.0-RC1
 
