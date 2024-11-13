@@ -51,16 +51,20 @@ public class OffsetLagSeries<T> extends OffsetSeries<T> {
             throw new ArrayIndexOutOfBoundsException(fromOffset + len);
         }
 
-        int len1 = Math.min(size + offset - fromOffset, len);
-        int len2 = len - len1;
-        int off1 = fromOffset - offset;
-
-        if (len1 > 0) {
-            delegate.copyTo(to, off1, toOffset, len1);
+        // copy delegate values
+        int delegateLen = Math.max(size - fromOffset + offset, 0);
+        if (delegateLen > 0) {
+            delegate.copyTo(
+                    to,
+                    fromOffset - offset,
+                    toOffset,
+                    Math.min(len, delegateLen)
+            );
         }
 
-        if (len2 > 0) {
-            Arrays.fill(to, toOffset + len1, toOffset + len, filler);
+        // copy the remaining filler
+        if (len > delegateLen) {
+            Arrays.fill(to, toOffset + delegateLen, toOffset + len, filler);
         }
     }
 

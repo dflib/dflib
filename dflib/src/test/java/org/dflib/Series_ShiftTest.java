@@ -22,9 +22,23 @@ public class Series_ShiftTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
+    public void positiveOutOfBounds(SeriesType type) {
+        Series<String> s = type.createSeries("a", "b", "c", "d").shift(100, "X");
+        new SeriesAsserts(s).expectData("X", "X", "X", "X");
+    }
+
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
     public void negative(SeriesType type) {
         Series<String> s = type.createSeries("a", "b", "c", "d").shift(-2, "X");
         new SeriesAsserts(s).expectData("c", "d", "X", "X");
+    }
+
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void negativeOutOfBounds(SeriesType type) {
+        Series<String> s = type.createSeries("a", "b", "c", "d").shift(-100, "X");
+        new SeriesAsserts(s).expectData("X", "X", "X", "X");
     }
 
     @ParameterizedTest
