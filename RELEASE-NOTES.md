@@ -11,6 +11,7 @@
 * #385 ECharts: "legend" display parameters
 * #386 ECharts: "title" subtext and positioning parameters
 * #387 EChartsHtmlSaver and custom HTML templates
+* #388 Column expressions ".reduce(..)" to behave as ".first()"
 
 ## Release 1.1.0
 
