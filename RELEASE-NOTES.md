@@ -12,6 +12,7 @@
 * #386 ECharts: "title" subtext and positioning parameters
 * #387 EChartsHtmlSaver and custom HTML templates
 * #388 Column expressions ".reduce(..)" to behave as ".first()"
+* #381 DFLibJupyterExtension to auto-load root imports of each "dflib-xyz" module
 
 ## Release 1.1.0
 
