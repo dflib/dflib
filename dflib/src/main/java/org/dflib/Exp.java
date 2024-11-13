@@ -4,6 +4,7 @@ import org.dflib.exp.AsExp;
 import org.dflib.exp.Column;
 import org.dflib.exp.RowNumExp;
 import org.dflib.exp.ScalarExp;
+import org.dflib.exp.ShiftExp;
 import org.dflib.exp.agg.CountExp;
 import org.dflib.exp.agg.FirstExp;
 import org.dflib.exp.agg.LastExp;
@@ -570,7 +571,27 @@ public interface Exp<T> {
     }
 
     /**
-     * Creates an aggregating expression whose "reduce" operation returns applies a custom aggregation function to the
+     * An expression that produces a Series with the same size as the source, but values shifted forward or
+     * backwards depending on the sign of the offset parameter. Head or tail gaps produced by the shift are filled
+     * with nulls.
+     *
+     * @since 1.1.0
+     */
+    default Exp<T> shift(int offset) {
+        return shift(offset, null);
+    }
+
+    /**
+     * An expression that produces a Series with the same size as the source, but values shifted forward or backwards
+     * depending on the sign of the offset parameter. Head or tail gaps produced by the shift are filled with the
+     * provided filler value.
+     */
+    default Exp<T> shift(int offset, T filler) {
+        return new ShiftExp<>(this, offset, filler);
+    }
+
+    /**
+     * Creates an aggregating expression whose "reduce" operation applies a custom aggregation function to the
      * result of this expression.
      */
     default <A> Exp<A> agg(Function<Series<T>, A> aggregator) {
@@ -578,7 +599,7 @@ public interface Exp<T> {
     }
 
     /**
-     * Creates an aggregating expression whose "reduce" operation returns applies a custom aggregation function to the
+     * Creates an aggregating expression whose "reduce" operation applies a custom aggregation function to the
      * result of this expression. Provided filter is applied to the input before evaluating this expression and
      * passing the result to the aggregator function.
      */

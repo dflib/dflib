@@ -16,6 +16,14 @@ public class ScalarExp<T> implements Exp<T> {
     private final Class<T> type;
     protected final T value;
 
+    static String scalarToQL(Object val) {
+        // TODO: val is a bare object and may produce an ugly toString(). Need to be smarter about it
+
+        boolean quotes = val != null && !(val instanceof Number);
+        String unquoted = String.valueOf(val);
+        return quotes ? "'" + unquoted + "'" : unquoted;
+    }
+
     public ScalarExp(T value, Class<T> type) {
         this.value = value;
         this.type = Objects.requireNonNull(type);
@@ -33,9 +41,7 @@ public class ScalarExp<T> implements Exp<T> {
 
     @Override
     public String toQL() {
-        boolean quotes = value != null && !(value instanceof Number);
-        String unquoted = String.valueOf(value);
-        return quotes ? "'" + unquoted + "'" : unquoted;
+        return scalarToQL(value);
     }
 
     @Override
