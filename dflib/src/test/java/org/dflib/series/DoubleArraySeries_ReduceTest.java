@@ -101,6 +101,15 @@ public class DoubleArraySeries_ReduceTest {
     }
 
     @Test
+    public void quantile00() {
+        DoubleArraySeries s1 = new DoubleArraySeries(1.5, -2.1, 3.7, 56.6, 8.8);
+        assertEquals(-2.1, s1.quantile(0.0), 0.0000001);
+
+        DoubleArraySeries s2 = new DoubleArraySeries(100., 55.5, 0., 5.0);
+        assertEquals(0., s2.quantile(0.0), 0.0000001);
+    }
+
+    @Test
     public void quantile025() {
         DoubleArraySeries s1 = new DoubleArraySeries(1.5, -2.1, 3.7, 56.6, 8.8);
         assertEquals(1.5, s1.quantile(0.25), 0.0000001);

@@ -28,6 +28,8 @@ public class Percentiles {
         }
     }
 
+    // TODO: should we check for edge conditions (q = 0.0, q = 1.0) and use "min" and "max" respectively?
+
     public static double ofRange(double quantile, int first, int lastExclusive) {
 
         checkIsPercentile(quantile);
