@@ -30,31 +30,4 @@ public class DateAggregators {
                 return first.plusDays(Math.round(days / (double) size));
         }
     }
-
-    public static LocalDate median(Series<LocalDate> s) {
-
-        int size = s.size();
-
-        switch (size) {
-            case 0:
-                return null;
-            case 1:
-                return s.get(0);
-            default:
-
-                Series<LocalDate> sorted = s.select(DateTimeAggregators.notNullExp).sort(DateTimeAggregators.asc);
-
-                int nonNullSize = sorted.size();
-                int m = nonNullSize / 2;
-
-                int odd = nonNullSize % 2;
-                if (odd == 1) {
-                    return sorted.get(m);
-                }
-
-                LocalDate d1 = sorted.get(m - 1);
-                LocalDate d2 = sorted.get(m);
-                return d1.plusDays(Math.round(ChronoUnit.DAYS.between(d1, d2) / 2.));
-        }
-    }
 }

@@ -210,6 +210,11 @@ public abstract class NumericExpFactory {
      */
     public abstract NumExp<?> median(Exp<? extends Number> exp, Condition filter);
 
+    /**
+     * @since 2.0.0
+     */
+    public abstract NumExp<?> quantile(Exp<? extends Number> exp, double q, Condition filter);
+
     public NumExp<Integer> castAsInt(NumExp<?> exp) {
         return IntExp1.mapVal("castAsInt", exp, Number::intValue);
     }

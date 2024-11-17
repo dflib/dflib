@@ -132,4 +132,9 @@ public class FloatSingleValueSeries extends FloatBaseSeries {
     public float median() {
         return value;
     }
+
+    @Override
+    public float quantile(double q) {
+        return value;
+    }
 }

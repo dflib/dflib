@@ -177,6 +177,16 @@ public class DecimalColumnTest {
     }
 
     @Test
+    public void quantile_Nulls() {
+        DecimalExp exp = $decimal(0).quantile(0.75).scale(3);
+
+        Series<BigDecimal> s = Series.of(
+                new BigDecimal("100.01"), null, new BigDecimal("55.5"), new BigDecimal("0."), new BigDecimal("-220.2"), new BigDecimal("34.8"), new BigDecimal("8.1"));
+
+        assertEquals(new BigDecimal("50.325"), exp.reduce(s));
+    }
+
+    @Test
     public void add_Decimal() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 new BigDecimal("1.01"), new BigDecimal("2."),

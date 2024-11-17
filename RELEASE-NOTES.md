@@ -7,12 +7,13 @@
 * #377 Upgrade SLF4J to 2.0.16
 * #378 Upgrade commons-compress to 1.27.1
 * #379 Upgrade Apache POI to 5.3.0
+* #381 DFLibJupyterExtension to auto-load root imports of each "dflib-xyz" module
 * #384 EChartHtmlSaver to save charts to HTML
 * #385 ECharts: "legend" display parameters
 * #386 ECharts: "title" subtext and positioning parameters
 * #387 EChartsHtmlSaver and custom HTML templates
 * #388 Column expressions ".reduce(..)" to behave as ".first()"
-* #381 DFLibJupyterExtension to auto-load root imports of each "dflib-xyz" module
+* #392 Quantile series method and expression
 
 ## Release 1.1.0
 

@@ -4,6 +4,7 @@ import org.dflib.Condition;
 import org.dflib.DecimalExp;
 import org.dflib.Exp;
 import org.dflib.NumExp;
+import org.dflib.agg.Percentiles;
 import org.dflib.exp.agg.ComparableAggregators;
 import org.dflib.exp.agg.DecimalAggregators;
 import org.dflib.exp.agg.DecimalReduceExp1;
@@ -174,7 +175,12 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public DecimalExp median(Exp<? extends Number> exp, Condition filter) {
-        return new DecimalReduceExp1<>("median", cast(exp), DecimalAggregators::median, filter);
+        return new DecimalReduceExp1<>("median", cast(exp), s -> Percentiles.ofDecimals(s, 0.5), filter);
+    }
+
+    @Override
+    public DecimalExp quantile(Exp<? extends Number> exp, double q, Condition filter) {
+        return new DecimalReduceExp1<>("quantile", cast(exp), s -> Percentiles.ofDecimals(s, q), filter);
     }
 
     @Override

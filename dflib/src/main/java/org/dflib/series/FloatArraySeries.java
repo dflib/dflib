@@ -3,8 +3,8 @@ package org.dflib.series;
 import org.dflib.DoubleSeries;
 import org.dflib.FloatSeries;
 import org.dflib.agg.PrimitiveSeriesAvg;
-import org.dflib.agg.PrimitiveSeriesMedian;
 import org.dflib.agg.PrimitiveSeriesMinMax;
+import org.dflib.agg.Percentiles;
 import org.dflib.agg.PrimitiveSeriesSum;
 
 /**
@@ -195,8 +195,8 @@ public class FloatArraySeries extends FloatBaseSeries {
     }
 
     @Override
-    public float median() {
-        return PrimitiveSeriesMedian.medianOfArray(data, 0, size());
+    public float quantile(double q) {
+        return Percentiles.ofArray(q, 0, size(), data);
     }
 
     @Override

@@ -207,7 +207,17 @@ public interface DoubleSeries extends Series<Double> {
 
     double avg();
 
-    double median();
+    default double median() {
+        return quantile(0.5);
+    }
+
+    /**
+     * Returns a value of the specified quantile. If the argument is "0.5", the result is the same as calling
+     * {@link #median()}
+     *
+     * @since 2.0.0
+     */
+    double quantile(double q);
 
     /**
      * Compute the standard deviation

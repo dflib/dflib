@@ -140,4 +140,14 @@ public interface DecimalExp extends NumExp<BigDecimal> {
     default DecimalExp median(Condition filter) {
         return NumericExpFactory.decimalFactory().median(this, filter);
     }
+
+    @Override
+    default DecimalExp quantile(double q) {
+        return quantile(q, null);
+    }
+
+    @Override
+    default DecimalExp quantile(double q, Condition filter) {
+        return NumericExpFactory.decimalFactory().quantile(this, q, filter);
+    }
 }

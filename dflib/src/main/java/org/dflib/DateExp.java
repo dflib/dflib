@@ -1,5 +1,6 @@
 package org.dflib;
 
+import org.dflib.agg.Percentiles;
 import org.dflib.exp.agg.ComparableAggregators;
 import org.dflib.exp.agg.DateAggregators;
 import org.dflib.exp.agg.DateReduceExp1;
@@ -161,6 +162,20 @@ public interface DateExp extends Exp<LocalDate> {
      * @since 2.0.0
      */
     default DateExp median(Condition filter) {
-        return new DateReduceExp1<>("median", this, DateAggregators::median, filter);
+        return new DateReduceExp1<>("median", this, s -> Percentiles.ofDates(s, 0.5), filter);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default DateExp quantile(double q) {
+        return quantile(q, null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default DateExp quantile(double q, Condition filter) {
+        return new DateReduceExp1<>("quantile", this, s -> Percentiles.ofDates(s, q), filter);
     }
 }

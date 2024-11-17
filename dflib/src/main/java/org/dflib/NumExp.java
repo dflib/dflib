@@ -241,6 +241,20 @@ public interface NumExp<N extends Number> extends Exp<N> {
         return NumericExpFactory.factory(this).median(this, null);
     }
 
+    /**
+     * @since 2.0.0
+     */
+    default NumExp<?> quantile(double q) {
+        return quantile(q, null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default NumExp<?> quantile(double q, Condition filter) {
+        return NumericExpFactory.factory(this).quantile(this, q, null);
+    }
+
     @Override
     default Condition castAsBool() {
         return ConditionFactory.castAsBool(this);

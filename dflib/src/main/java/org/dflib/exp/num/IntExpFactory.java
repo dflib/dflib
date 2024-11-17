@@ -5,6 +5,7 @@ import org.dflib.DecimalExp;
 import org.dflib.Exp;
 import org.dflib.IntSeries;
 import org.dflib.NumExp;
+import org.dflib.agg.Percentiles;
 import org.dflib.exp.agg.DoubleAggregators;
 import org.dflib.exp.agg.DoubleReduceExp1;
 import org.dflib.exp.agg.IntAggregators;
@@ -99,7 +100,13 @@ public class IntExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<?> median(Exp<? extends Number> exp, Condition filter) {
-        return new DoubleReduceExp1<>("median", exp, DoubleAggregators::median, filter);
+        return new DoubleReduceExp1<>("median", exp, s -> Percentiles.ofDoubles(s, 0.5), filter);
+    }
+
+    @Override
+    public NumExp<?> quantile(Exp<? extends Number> exp, double q, Condition filter) {
+        // TODO: display "q" argument in the exp signature
+        return new DoubleReduceExp1<>("quantile", exp, s -> Percentiles.ofDoubles(s, q), filter);
     }
 
     @Override

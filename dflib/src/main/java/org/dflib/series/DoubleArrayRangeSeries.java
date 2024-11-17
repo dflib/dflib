@@ -2,8 +2,8 @@ package org.dflib.series;
 
 import org.dflib.DoubleSeries;
 import org.dflib.agg.PrimitiveSeriesAvg;
-import org.dflib.agg.PrimitiveSeriesMedian;
 import org.dflib.agg.PrimitiveSeriesMinMax;
+import org.dflib.agg.Percentiles;
 import org.dflib.agg.PrimitiveSeriesSum;
 
 /**
@@ -269,8 +269,8 @@ public class DoubleArrayRangeSeries extends DoubleBaseSeries {
     }
 
     @Override
-    public double median() {
-        return PrimitiveSeriesMedian.medianOfArray(data, offset, size);
+    public double quantile(double q) {
+        return Percentiles.ofArray(data, offset, size, q);
     }
 
     @Override

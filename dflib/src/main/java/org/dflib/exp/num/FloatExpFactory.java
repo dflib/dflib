@@ -5,6 +5,7 @@ import org.dflib.DecimalExp;
 import org.dflib.Exp;
 import org.dflib.FloatSeries;
 import org.dflib.NumExp;
+import org.dflib.agg.Percentiles;
 import org.dflib.exp.agg.DoubleReduceExp1;
 import org.dflib.exp.agg.FloatAggregators;
 import org.dflib.exp.agg.FloatReduceExp1;
@@ -120,7 +121,13 @@ public class FloatExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<?> median(Exp<? extends Number> exp, Condition filter) {
-        return new FloatReduceExp1<>("median", exp, FloatAggregators::median, filter);
+        return new FloatReduceExp1<>("median", exp,  s -> Percentiles.ofFloats(s, 0.5), filter);
+    }
+
+    @Override
+    public NumExp<?> quantile(Exp<? extends Number> exp, double q, Condition filter) {
+        // TODO: display "q" argument in the exp signature
+        return new FloatReduceExp1<>("quantile", exp, s -> Percentiles.ofFloats(s, q), filter);
     }
 
     @Override

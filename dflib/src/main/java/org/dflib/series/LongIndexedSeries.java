@@ -87,8 +87,8 @@ public class LongIndexedSeries extends LongBaseSeries {
     }
 
     @Override
-    public double median() {
-        return materialize().median();
+    public double quantile(double q) {
+        return materialize().quantile(q);
     }
 
     @Override

@@ -1,20 +1,13 @@
 package org.dflib.exp.agg;
 
-import org.dflib.Condition;
-import org.dflib.Exp;
 import org.dflib.Series;
-import org.dflib.Sorter;
+import org.dflib.agg.Percentiles;
 import org.dflib.builder.ObjectAccum;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 
 public class DecimalAggregators {
-
-    private static final Condition notNullExp = Exp.$decimal(0).isNotNull();
-    private static final Sorter asc = Exp.$decimal(0).asc();
-
 
     public static Series<BigDecimal> cumSum(Series<BigDecimal> s) {
 
@@ -67,34 +60,11 @@ public class DecimalAggregators {
         return sum;
     }
 
+    /**
+     * @deprecated in favor of {@link Percentiles#ofDecimals(Series, double)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static BigDecimal median(Series<BigDecimal> s) {
-
-        int size = s.size();
-
-        switch (size) {
-            case 0:
-                // TODO: why 0 instead of null?
-                return BigDecimal.ZERO;
-            case 1:
-                BigDecimal d = s.get(0);
-
-                // TODO: why 0 instead of null?
-                return d != null ? d : BigDecimal.ZERO;
-            default:
-
-                Series<BigDecimal> sorted = s.select(notNullExp).sort(asc);
-
-                int nonNullSize = sorted.size();
-                int m = nonNullSize / 2;
-
-                int odd = nonNullSize % 2;
-                if (odd == 1) {
-                    return sorted.get(m);
-                }
-
-                BigDecimal d1 = sorted.get(m - 1);
-                BigDecimal d2 = sorted.get(m);
-                return d2.subtract(d1).divide(new BigDecimal("2.0"), RoundingMode.HALF_UP).add(d1);
-        }
+        return Percentiles.ofDecimals(s, 0.5);
     }
 }

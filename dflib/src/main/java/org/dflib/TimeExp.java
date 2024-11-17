@@ -1,5 +1,6 @@
 package org.dflib;
 
+import org.dflib.agg.Percentiles;
 import org.dflib.exp.agg.ComparableAggregators;
 import org.dflib.exp.agg.TimeAggregators;
 import org.dflib.exp.agg.TimeReduceExp1;
@@ -169,6 +170,21 @@ public interface TimeExp extends Exp<LocalTime> {
      * @since 2.0.0
      */
     default TimeExp median(Condition filter) {
-        return new TimeReduceExp1<>("median", this, TimeAggregators::median, filter);
+        return new TimeReduceExp1<>("median", this, s -> Percentiles.ofTimes(s, 0.5), filter);
+    }
+
+
+    /**
+     * @since 2.0.0
+     */
+    default TimeExp quantile(double q) {
+        return quantile(q, null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default TimeExp quantile(double q, Condition filter) {
+        return new TimeReduceExp1<>("quantile", this, s -> Percentiles.ofTimes(s, q), filter);
     }
 }

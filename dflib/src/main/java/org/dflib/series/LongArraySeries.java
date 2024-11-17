@@ -2,8 +2,8 @@ package org.dflib.series;
 
 import org.dflib.LongSeries;
 import org.dflib.agg.PrimitiveSeriesAvg;
-import org.dflib.agg.PrimitiveSeriesMedian;
 import org.dflib.agg.PrimitiveSeriesMinMax;
+import org.dflib.agg.Percentiles;
 import org.dflib.agg.PrimitiveSeriesSum;
 
 public class LongArraySeries extends LongBaseSeries {
@@ -192,13 +192,13 @@ public class LongArraySeries extends LongBaseSeries {
     }
 
     @Override
-    public double median() {
-        return PrimitiveSeriesMedian.medianOfArray(data, 0, size());
-    }
-
-    @Override
     public LongSeries cumSum() {
         long[] cumSum = PrimitiveSeriesSum.cumSumOfArray(data, 0, size());
         return new LongArraySeries(cumSum);
+    }
+
+    @Override
+    public double quantile(double q) {
+        return Percentiles.ofArray(data, 0, size(), q);
     }
 }

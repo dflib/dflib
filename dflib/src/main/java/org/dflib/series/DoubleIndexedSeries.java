@@ -87,8 +87,8 @@ public class DoubleIndexedSeries extends DoubleBaseSeries {
     }
 
     @Override
-    public double median() {
-        return materialize().median();
+    public double quantile(double q) {
+        return materialize().quantile(q);
     }
 
     @Override

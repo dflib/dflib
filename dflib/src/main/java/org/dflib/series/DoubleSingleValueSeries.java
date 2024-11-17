@@ -128,4 +128,9 @@ public class DoubleSingleValueSeries extends DoubleBaseSeries {
     public double median() {
         return value;
     }
+
+    @Override
+    public double quantile(double q) {
+        return value;
+    }
 }

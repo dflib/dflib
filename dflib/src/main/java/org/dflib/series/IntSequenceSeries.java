@@ -4,8 +4,8 @@ import org.dflib.IntSeries;
 import org.dflib.LongSeries;
 import org.dflib.Series;
 import org.dflib.agg.PrimitiveSeriesAvg;
-import org.dflib.agg.PrimitiveSeriesMedian;
 import org.dflib.agg.PrimitiveSeriesMinMax;
+import org.dflib.agg.Percentiles;
 import org.dflib.agg.PrimitiveSeriesSum;
 import org.dflib.range.Range;
 
@@ -153,8 +153,8 @@ public class IntSequenceSeries extends IntBaseSeries {
     }
 
     @Override
-    public double median() {
-        return PrimitiveSeriesMedian.medianOfRange(fromInclusive, toExclusive);
+    public double quantile(double q) {
+        return Percentiles.ofRange(q, fromInclusive, toExclusive);
     }
 
     @Override

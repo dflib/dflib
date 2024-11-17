@@ -204,7 +204,17 @@ public interface FloatSeries extends Series<Float> {
 
     float avg();
 
-    float median();
+    default float median() {
+        return quantile(0.5);
+    }
+
+    /**
+     * Returns a value of the specified quantile. If the argument is "0.5", the result is the same as calling
+     * {@link #median()}
+     *
+     * @since 2.0.0
+     */
+    float quantile(double q);
 
     /**
      * Compute the standard deviation

@@ -90,8 +90,8 @@ public class FloatIndexedSeries extends FloatBaseSeries {
     }
 
     @Override
-    public float median() {
-        return materialize().median();
+    public float quantile(double q) {
+        return materialize().quantile(q);
     }
 
     @Override

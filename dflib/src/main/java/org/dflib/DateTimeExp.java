@@ -1,5 +1,6 @@
 package org.dflib;
 
+import org.dflib.agg.Percentiles;
 import org.dflib.exp.agg.ComparableAggregators;
 import org.dflib.exp.agg.DateTimeAggregators;
 import org.dflib.exp.agg.DateTimeReduceExp1;
@@ -212,6 +213,20 @@ public interface DateTimeExp extends Exp<LocalDateTime> {
      * @since 2.0.0
      */
     default DateTimeExp median(Condition filter) {
-        return new DateTimeReduceExp1<>("median", this, DateTimeAggregators::median, filter);
+        return new DateTimeReduceExp1<>("median", this, s -> Percentiles.ofDateTimes(s, 0.5), filter);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default DateTimeExp quantile(double q) {
+        return quantile(q, null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default DateTimeExp quantile(double q, Condition filter) {
+        return new DateTimeReduceExp1<>("quantile", this, s -> Percentiles.ofDateTimes(s, q), filter);
     }
 }

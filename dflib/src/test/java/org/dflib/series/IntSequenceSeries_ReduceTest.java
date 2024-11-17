@@ -96,17 +96,17 @@ public class IntSequenceSeries_ReduceTest {
     }
 
     @Test
+    public void cumSum() {
+        IntSequenceSeries s = new IntSequenceSeries(6, 9);
+        new SeriesAsserts(s.cumSum()).expectData(6L, 13L, 21L);
+    }
+
+    @Test
     public void median() {
         IntSequenceSeries s1 = new IntSequenceSeries(-1, 5);
         assertEquals(1.5, s1.median(), 0.000001);
 
         IntSequenceSeries s2 = new IntSequenceSeries(-1, 4);
         assertEquals(1, s2.median(), 0.000001);
-    }
-
-    @Test
-    public void cumSum() {
-        IntSequenceSeries s = new IntSequenceSeries(6, 9);
-        new SeriesAsserts(s.cumSum()).expectData(6L, 13L, 21L);
     }
 }

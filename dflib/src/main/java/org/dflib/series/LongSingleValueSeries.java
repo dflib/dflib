@@ -127,4 +127,9 @@ public class LongSingleValueSeries extends LongBaseSeries {
     public double median() {
         return value;
     }
+
+    @Override
+    public double quantile(double q) {
+        return value;
+    }
 }

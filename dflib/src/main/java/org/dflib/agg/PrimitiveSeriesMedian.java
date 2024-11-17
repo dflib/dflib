@@ -3,6 +3,10 @@ package org.dflib.agg;
 import java.util.Arrays;
 
 
+/**
+ * @deprecated in favor of {@link Percentiles}
+ */
+@Deprecated(since = "2.0.0", forRemoval = true)
 public class PrimitiveSeriesMedian {
 
     public static double medianOfRange(int first, int lastExclusive) {

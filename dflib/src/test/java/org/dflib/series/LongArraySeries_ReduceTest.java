@@ -100,7 +100,34 @@ public class LongArraySeries_ReduceTest {
 
     @Test
     public void median() {
-        LongArraySeries s = new LongArraySeries(1, -2, 3, 56, 8);
-        assertEquals(3, s.median(), 0.000001);
+        LongArraySeries s1 = new LongArraySeries(1, -2, 3, 56, 8);
+        assertEquals(3., s1.median(), 0.000001);
+
+        LongArraySeries s2 = new LongArraySeries(1, -2, 56, 8);
+        assertEquals(4.5, s2.median(), 0.000001);
+    }
+
+    @Test
+    public void quantile025() {
+        LongArraySeries s1 = new LongArraySeries(1, -2, 3, 56, 8);
+        assertEquals(1., s1.quantile(0.25), 0.0000001);
+
+        LongArraySeries s2 = new LongArraySeries(1, -2, 56, 8);
+        assertEquals(0.25, s2.quantile(0.25), 0.0000001);
+    }
+
+    @Test
+    public void quantile075() {
+        LongArraySeries s1 = new LongArraySeries(1, -2, 3, 56, 8);
+        assertEquals(8., s1.quantile(0.75), 0.0000001);
+
+        LongArraySeries s2 = new LongArraySeries(1, -2, 56, 8);
+        assertEquals(20., s2.quantile(0.75), 0.0000001);
+    }
+
+    @Test
+    public void quantile090() {
+        LongArraySeries s = new LongArraySeries(1, -2, 56, 8);
+        assertEquals(41.6, s.quantile(0.90), 0.0000001);
     }
 }

@@ -5,6 +5,7 @@ import org.dflib.DoubleSeries;
 import org.dflib.Exp;
 import org.dflib.Series;
 import org.dflib.Sorter;
+import org.dflib.agg.Percentiles;
 import org.dflib.builder.ObjectAccum;
 
 import java.util.function.Function;
@@ -117,31 +118,11 @@ public class DoubleAggregators {
         return s.size() == 0 ? 0. : avg.apply(s);
     }
 
+    /**
+     * @deprecated in favor of {@link Percentiles#ofDoubles(Series, double)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static double median(Series<? extends Number> s) {
-
-        int size = s.size();
-
-        switch (size) {
-            case 0:
-                return 0.;
-            case 1:
-                Number d = s.get(0);
-                return d != null ? d.doubleValue() : 0.;
-            default:
-
-                Series<? extends Number> sorted = s.select(notNullExp).sort(asc);
-
-                int nonNullSize = sorted.size();
-                int m = nonNullSize / 2;
-
-                int odd = nonNullSize % 2;
-                if (odd == 1) {
-                    return sorted.get(m).doubleValue();
-                }
-
-                double d1 = sorted.get(m - 1).doubleValue();
-                double d2 = sorted.get(m).doubleValue();
-                return d1 + (d2 - d1) / 2.;
-        }
+        return Percentiles.ofDoubles(s, 0.5);
     }
 }

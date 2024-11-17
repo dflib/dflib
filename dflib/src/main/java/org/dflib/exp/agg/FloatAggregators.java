@@ -5,6 +5,7 @@ import org.dflib.Exp;
 import org.dflib.FloatSeries;
 import org.dflib.Series;
 import org.dflib.Sorter;
+import org.dflib.agg.Percentiles;
 import org.dflib.builder.ObjectAccum;
 
 import java.util.function.Function;
@@ -120,31 +121,11 @@ public class FloatAggregators {
         return s.size() == 0 ? 0f : avg.apply(s).floatValue();
     }
 
+    /**
+     * @deprecated in favor of {@link Percentiles#ofFloats(Series, double)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static float median(Series<? extends Number> s) {
-
-        int size = s.size();
-
-        switch (size) {
-            case 0:
-                return 0f;
-            case 1:
-                Number d = s.get(0);
-                return d != null ? d.floatValue() : 0f;
-            default:
-
-                Series<? extends Number> sorted = s.select(notNullExp).sort(asc);
-
-                int nonNullSize = sorted.size();
-                int m = nonNullSize / 2;
-
-                int odd = nonNullSize % 2;
-                if (odd == 1) {
-                    return sorted.get(m).floatValue();
-                }
-
-                float d1 = sorted.get(m - 1).floatValue();
-                float d2 = sorted.get(m).floatValue();
-                return d1 + (d2 - d1) / 2f;
-        }
+        return Percentiles.ofFloats(s, 0.5);
     }
 }

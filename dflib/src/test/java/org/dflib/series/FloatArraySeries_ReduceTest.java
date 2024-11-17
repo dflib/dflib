@@ -93,7 +93,34 @@ public class FloatArraySeries_ReduceTest {
 
     @Test
     public void median() {
-        FloatArraySeries s = new FloatArraySeries(1.5f, -2.1f, 3.7f, 56.6f, 8.8f);
-        assertEquals(3.7f, s.median(), 0.0000001f);
+        FloatArraySeries s1 = new FloatArraySeries(1.5f, -2.1f, 3.7f, 56.6f, 8.8f);
+        assertEquals(3.7f, s1.median(), 0.0000001);
+
+        FloatArraySeries s2 = new FloatArraySeries(100.f, 55.5f, 0f, 5f);
+        assertEquals(30.25f, s2.median(), 0.0000001);
+    }
+
+    @Test
+    public void quantile025() {
+        FloatArraySeries s1 = new FloatArraySeries(1.5f, -2.1f, 3.7f, 56.6f, 8.8f);
+        assertEquals(1.5f, s1.quantile(0.25), 0.0000001);
+
+        FloatArraySeries s2 = new FloatArraySeries(100.f, 55.5f, 0f, 5f);
+        assertEquals(3.75f, s2.quantile(0.25), 0.0000001);
+    }
+
+    @Test
+    public void quantile075() {
+        FloatArraySeries s1 = new FloatArraySeries(1.5f, -2.1f, 3.7f, 56.6f, 8.8f);
+        assertEquals(8.8f, s1.quantile(0.75), 0.0000001);
+
+        FloatArraySeries s2 = new FloatArraySeries(100.f, 55.5f, 0f, 5f);
+        assertEquals(66.625f, s2.quantile(0.75), 0.0000001);
+    }
+
+    @Test
+    public void quantile090() {
+        FloatArraySeries s = new FloatArraySeries(100.f, 55.5f, 0f, 5f);
+        assertEquals(86.65f, s.quantile(0.90), 0.0000001);
     }
 }
