@@ -220,6 +220,21 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
+     * Converts the Series to a FloatSeries of the same length, applying the provided function.
+     *
+     * @since 1.1.0
+     */
+    default FloatSeries mapAsFloat(FloatValueMapper<? super T> converter) {
+        int len = size();
+        float[] data = new float[len];
+        for (int i = 0; i < len; i++) {
+            data[i] = converter.map(get(i));
+        }
+
+        return new FloatArraySeries(data);
+    }
+
+    /**
      * Converts the Series to a DoubleSeries of the same length, applying the provided function.
      */
     default DoubleSeries mapAsDouble(DoubleValueMapper<? super T> converter) {
