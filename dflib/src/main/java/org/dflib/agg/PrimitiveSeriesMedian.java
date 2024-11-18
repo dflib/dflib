@@ -11,6 +11,8 @@ public class PrimitiveSeriesMedian {
 
         switch (len) {
             case 0:
+                return 0.;
+            case 1:
                 return first;
             default:
                 int m = len / 2;
