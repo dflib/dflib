@@ -7,6 +7,7 @@
 * #376 dflib-excel: upgrade commons-compress to 1.26.0
 * #383 ArrayRangeSeries.selectRange(..) is broken
 * #390 "Series.shift()" with out of bounds negative shift results in ArrayIndexOutOfBoundsException
+* #393 IntSequenceSeries.median(..) returns invalid value for empty series
 
 ## Release 1.0.0-RC1
 
