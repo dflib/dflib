@@ -14,8 +14,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 
 import static org.dflib.Exp.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 public class DecimalColumnTest {
@@ -145,6 +144,20 @@ public class DecimalColumnTest {
                 new BigDecimal("4.5"));
 
         assertEquals(new BigDecimal("6.51"), exp.reduce(df));
+    }
+
+    @Test
+    public void median_Zero() {
+        DecimalExp exp = $decimal(0).median().scale(3);
+        Series<BigDecimal> s = Series.of();
+        assertNull(exp.reduce(s));
+    }
+
+    @Test
+    public void median_One() {
+        DecimalExp exp = $decimal(0).median().scale(3);
+        Series<BigDecimal> s = Series.of(new BigDecimal("100.01"));
+        assertEquals(new BigDecimal("100.010"), exp.reduce(s));
     }
 
     @Test

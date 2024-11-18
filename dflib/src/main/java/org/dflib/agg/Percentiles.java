@@ -171,8 +171,7 @@ public class Percentiles {
         int len = noNulls.size();
         switch (len) {
             case 0:
-                // TODO: why 0 instead of null?
-                return BigDecimal.ZERO;
+                return null;
             case 1:
                 return noNulls.get(0);
             default:
