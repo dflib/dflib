@@ -142,6 +142,24 @@ public class DecimalColumnTest {
     }
 
     @Test
+    public void median_Zero() {
+        DecimalExp exp = $decimal(0).median().scale(3);
+
+        Series<BigDecimal> s = Series.of();
+
+        new SeriesAsserts(exp.eval(s)).expectData(new Object[] {null});
+    }
+
+    @Test
+    public void median_One() {
+        DecimalExp exp = $decimal(0).median().scale(3);
+
+        Series<BigDecimal> s = Series.of(new BigDecimal("100.01"));
+
+        new SeriesAsserts(exp.eval(s)).expectData(new BigDecimal("100.010"));
+    }
+
+    @Test
     public void median_Odd() {
         DecimalExp exp = $decimal(0).median().scale(3);
 
