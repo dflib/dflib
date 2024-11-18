@@ -103,6 +103,13 @@ public class IntSequenceSeries_ReduceTest {
 
     @Test
     public void median() {
+
+        IntSequenceSeries se = new IntSequenceSeries(5, 5);
+        assertEquals(0., se.median(), 0.000001);
+
+        IntSequenceSeries s0 = new IntSequenceSeries(5, 6);
+        assertEquals(5., s0.median(), 0.000001);
+
         IntSequenceSeries s1 = new IntSequenceSeries(-1, 5);
         assertEquals(1.5, s1.median(), 0.000001);
 
