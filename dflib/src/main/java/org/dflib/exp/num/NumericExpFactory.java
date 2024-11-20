@@ -167,6 +167,13 @@ public abstract class NumericExpFactory {
         return DoubleExp1.mapVal("castAsDouble", exp, Number::doubleValue);
     }
 
+    /**
+     * @since 1.1.x
+     */
+    public NumExp<Float> castAsFloat(NumExp<?> exp) {
+        return FloatExp1.mapVal("castAsFloat", exp, Number::floatValue);
+    }
+
     public abstract DecimalExp castAsDecimal(NumExp<?> exp);
 
 
