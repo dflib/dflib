@@ -260,6 +260,13 @@ public interface NumExp<N extends Number> extends Exp<N> {
         return NumericExpFactory.factory(this).quantile(this, q, null);
     }
 
+    /**
+     * @since 2.0.0
+     */
+    default NumExp<?> round() {
+        return NumericExpFactory.factory(this).round(this);
+    }
+
     @Override
     default Condition castAsBool() {
         return ConditionFactory.castAsBool(this);

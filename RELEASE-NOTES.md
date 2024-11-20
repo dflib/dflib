@@ -14,6 +14,7 @@
 * #387 EChartsHtmlSaver and custom HTML templates
 * #388 Column expressions ".reduce(..)" to behave as ".first()"
 * #392 Quantile series method and expression
+* #396 NumExp.round()
 
 ## Release 1.1.0
 

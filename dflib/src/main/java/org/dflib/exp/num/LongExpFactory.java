@@ -110,6 +110,11 @@ public class LongExpFactory extends NumericExpFactory {
     }
 
     @Override
+    public NumExp<Long> round(Exp<? extends Number> exp) {
+        return cast(exp).castAsLong();
+    }
+
+    @Override
     public Condition eq(Exp<? extends Number> left, Exp<? extends Number> right) {
         return LongCondition2.mapVal("=", cast(left), cast(right), Long::equals, LongSeries::eq);
     }

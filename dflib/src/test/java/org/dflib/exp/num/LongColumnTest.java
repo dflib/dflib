@@ -57,6 +57,19 @@ public class LongColumnTest {
     }
 
     @Test
+    public void round() {
+        DataFrame df = DataFrame.foldByRow("a").of(
+                2L,
+                5L,
+                0L,
+                1L,
+                -2L);
+
+        Series<? extends Number> s = $long("a").round().eval(df);
+        new SeriesAsserts(s).expectData(2L, 5L, 0L, 1L, -2L);
+    }
+
+    @Test
     public void castAsLong() {
         NumExp<Long> e = $long("a");
         assertSame(e, e.castAsLong());

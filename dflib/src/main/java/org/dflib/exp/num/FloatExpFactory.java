@@ -131,6 +131,11 @@ public class FloatExpFactory extends NumericExpFactory {
     }
 
     @Override
+    public NumExp<Integer> round(Exp<? extends Number> exp) {
+        return IntExp1.mapVal("round", cast(exp), n -> Math.round(n));
+    }
+
+    @Override
     public Condition eq(Exp<? extends Number> left, Exp<? extends Number> right) {
         return FloatCondition2.mapVal("=", cast(left), cast(right), Float::equals, FloatSeries::eq);
     }

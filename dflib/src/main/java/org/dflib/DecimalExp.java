@@ -150,4 +150,9 @@ public interface DecimalExp extends NumExp<BigDecimal> {
     default DecimalExp quantile(double q, Condition filter) {
         return NumericExpFactory.decimalFactory().quantile(this, q, filter);
     }
+
+    @Override
+    default DecimalExp round() {
+        return NumericExpFactory.decimalFactory().round(this);
+    }
 }

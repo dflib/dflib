@@ -184,6 +184,11 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
+    public DecimalExp round(Exp<? extends Number> exp) {
+        return DecimalExp1.mapVal("round", cast(exp), n -> n.setScale(0, RoundingMode.HALF_UP));
+    }
+
+    @Override
     public Condition eq(Exp<? extends Number> left, Exp<? extends Number> right) {
         // TODO: should we apply ".stripTrailingZeros()" for consistency, but at the expense of performance?
         return MapCondition2.mapVal("=", cast(left), cast(right), BigDecimal::equals);

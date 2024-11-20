@@ -11,8 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.util.stream.DoubleStream;
 
-import static org.dflib.Exp.$double;
-import static org.dflib.Exp.$int;
+import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
@@ -53,6 +52,20 @@ public class DoubleColumnTest {
                 "4", Double.MAX_VALUE, 6.);
 
         new SeriesAsserts(e.eval(df)).expectData(2.1, Double.MAX_VALUE);
+    }
+
+    @Test
+    public void round() {
+        DataFrame df = DataFrame.foldByRow("a").of(
+                2.0100287,
+                4.5,
+                0.00005,
+                1.4999999,
+                -0.00005,
+                -2.0100287);
+
+        Series<? extends Number> s = $double("a").round().eval(df);
+        new SeriesAsserts(s).expectData(2L, 5L, 0L, 1L, 0L, -2L);
     }
 
     @Test

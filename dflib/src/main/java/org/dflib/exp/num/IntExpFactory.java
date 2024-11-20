@@ -110,6 +110,11 @@ public class IntExpFactory extends NumericExpFactory {
     }
 
     @Override
+    public NumExp<Integer> round(Exp<? extends Number> exp) {
+        return cast(exp).castAsInt();
+    }
+
+    @Override
     public Condition eq(Exp<? extends Number> left, Exp<? extends Number> right) {
         return IntCondition2.mapVal("=", cast(left), cast(right), Integer::equals, IntSeries::eq);
     }

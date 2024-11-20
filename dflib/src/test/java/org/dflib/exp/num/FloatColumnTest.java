@@ -55,6 +55,20 @@ public class FloatColumnTest {
     }
 
     @Test
+    public void round() {
+        DataFrame df = DataFrame.foldByRow("a").of(
+                2.0100287f,
+                4.5f,
+                0.00005f,
+                1.4999999f,
+                -0.00005f,
+                -2.0100287f);
+
+        Series<? extends Number> s = $float("a").round().eval(df);
+        new SeriesAsserts(s).expectData(2, 5, 0, 1, 0, -2);
+    }
+
+    @Test
     public void castAsFloat() {
         NumExp<Float> e = $float("a");
         assertSame(e, e.castAsFloat());

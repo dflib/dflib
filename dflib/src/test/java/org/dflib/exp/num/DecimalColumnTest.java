@@ -57,6 +57,26 @@ public class DecimalColumnTest {
     }
 
     @Test
+    public void round() {
+        DataFrame df = DataFrame.foldByRow("a").of(
+                new BigDecimal("2.0100287"),
+                new BigDecimal("4.5"),
+                new BigDecimal("0.00005"),
+                new BigDecimal("1.4999999"),
+                new BigDecimal("-0.00005"),
+                new BigDecimal("-2.0100287"));
+
+        Series<BigDecimal> s = $decimal("a").round().eval(df);
+        new SeriesAsserts(s).expectData(
+                new BigDecimal("2"),
+                new BigDecimal("5"),
+                new BigDecimal("0"),
+                new BigDecimal("1"),
+                new BigDecimal("0"),
+                new BigDecimal("-2"));
+    }
+
+    @Test
     public void scale() {
         DataFrame df = DataFrame.foldByRow("a").of(
                 new BigDecimal("2.0100287"),

@@ -59,6 +59,19 @@ public class IntColumnTest {
     }
 
     @Test
+    public void round() {
+        DataFrame df = DataFrame.foldByRow("a").of(
+                2,
+                5,
+                0,
+                1,
+                -2);
+
+        Series<? extends Number> s = $int("a").round().eval(df);
+        new SeriesAsserts(s).expectData(2, 5, 0, 1, -2);
+    }
+
+    @Test
     public void castAsInt() {
         NumExp<Integer> e = $int("a");
         assertSame(e, e.castAsInt());
