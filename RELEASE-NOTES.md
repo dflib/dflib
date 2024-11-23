@@ -15,6 +15,7 @@
 * #388 Column expressions ".reduce(..)" to behave as ".first()"
 * #392 Quantile series method and expression
 * #396 NumExp.round()
+* #398 Deprecate "DataFrame.convertColumn(..)"
 
 ## Release 1.1.0
 

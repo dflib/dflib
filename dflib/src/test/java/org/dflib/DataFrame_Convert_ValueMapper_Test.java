@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@Deprecated(forRemoval = true)
 public class DataFrame_Convert_ValueMapper_Test {
 
     @Test

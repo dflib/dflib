@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
@@ -203,13 +204,22 @@ public interface DataFrame extends Iterable<RowProxy> {
      * @param <V>         expected input column value
      * @param <VR>        output column value
      * @return a new DataFrame
+     * @deprecated use <code>cols(..).merge($col("x").mapVal(..))</code> with either {@link Exp#mapVal(Function)} or
+     * {@link Exp#mapVal(Function, boolean)}
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     default <V, VR> DataFrame convertColumn(String columnLabel, ValueMapper<V, VR> converter) {
-        int pos = getColumnsIndex().position(columnLabel);
-        return convertColumn(pos, converter);
+        return cols(columnLabel).merge(Exp.$col(columnLabel).mapVal(v -> converter.map((V) v), false));
     }
 
-    <V, VR> DataFrame convertColumn(int pos, ValueMapper<V, VR> converter);
+    /**
+     * @deprecated use <code>cols(..).merge($col("x").mapVal(..))</code> with either {@link Exp#mapVal(Function)} or
+     * {@link Exp#mapVal(Function, boolean)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    default <V, VR> DataFrame convertColumn(int pos, ValueMapper<V, VR> converter) {
+        return cols(pos).merge(Exp.$col(pos).mapVal(v -> converter.map((V) v), false));
+    }
 
     /**
      * Appends a single row in the bottom of the DataFrame. The row is specified as a map of column names to values.

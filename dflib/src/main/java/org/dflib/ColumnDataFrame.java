@@ -171,12 +171,6 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
-    public <V, VR> DataFrame convertColumn(int pos, ValueMapper<V, VR> converter) {
-        // do not use Exp.mapVal(..) as it will not pass null values to the mapper
-        return replaceColumn(pos, dataColumns[pos].map(converter));
-    }
-
-    @Override
     public GroupBy group(Hasher by) {
         return new Grouper(by).group(this);
     }
