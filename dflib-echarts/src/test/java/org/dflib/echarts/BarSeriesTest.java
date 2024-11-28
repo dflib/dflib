@@ -9,13 +9,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class BarSeriesTest {
 
     @Test
-    public void test() {
+    public void type() {
+
+        String s1 = ECharts.chart().generateScript("_tid", df2);
+        assertFalse(s1.contains("type: 'bar'"), s1);
 
         String s2 = ECharts.chart().series(SeriesOpts.ofBar(), "y1").generateScript("_tid", df2);
         assertTrue(s2.contains("type: 'bar'"), s2);
-
-        String s3 = ECharts.chart().series(SeriesOpts.ofBar(), "y1").generateScript("_tid", df2);
-        assertTrue(s3.contains("type: 'bar'"), s3);
     }
 
     @Test

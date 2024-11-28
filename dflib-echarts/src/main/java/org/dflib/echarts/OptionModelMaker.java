@@ -95,7 +95,7 @@ class OptionModelMaker {
 
     private boolean useCartesianDefaults(List<SeriesBuilder<?>> series) {
         return series.isEmpty()
-                || series.stream().anyMatch(sb -> sb.seriesOpts.getType().isCartesian());
+                || series.stream().anyMatch(sb -> sb.seriesOpts.getCoordinateSystemType().isCartesian());
     }
 
     // updates both "dsb" (new dataset rows) and "xs" (label indices)
@@ -156,7 +156,7 @@ class OptionModelMaker {
     }
 
     private int xAxisIndex(SeriesOpts<?> series) {
-        if (!series.getType().isCartesian()) {
+        if (!series.getCoordinateSystemType().isCartesian()) {
             return -1;
         }
 

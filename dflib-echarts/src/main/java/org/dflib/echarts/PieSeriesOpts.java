@@ -17,6 +17,12 @@ public class PieSeriesOpts extends SeriesOpts<PieSeriesOpts> {
         return ChartType.pie;
     }
 
+    @Override
+    public CoordinateSystemType getCoordinateSystemType() {
+        // TODO: pie seems to also support "geo" and "calendar"
+        return CoordinateSystemType.none;
+    }
+
     public PieSeriesOpts label(String labelColumn) {
         this.label = new BoundLabel(labelColumn, null);
         return this;

@@ -50,7 +50,7 @@ public abstract class SeriesOpts<SO extends SeriesOpts<SO>> {
     public static BoxplotSeriesOpts ofBoxplot() {
         return new BoxplotSeriesOpts();
     }
-
+    
     protected SeriesOpts() {
     }
 
@@ -64,4 +64,11 @@ public abstract class SeriesOpts<SO extends SeriesOpts<SO>> {
     }
 
     public abstract ChartType getType();
+
+    /**
+     * Returns the type of coordinate system used by the series.
+     *
+     * @since 2.0.0
+     */
+    public abstract CoordinateSystemType getCoordinateSystemType();
 }

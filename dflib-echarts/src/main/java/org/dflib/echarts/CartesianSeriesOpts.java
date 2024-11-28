@@ -5,6 +5,11 @@ public abstract class CartesianSeriesOpts<SO extends CartesianSeriesOpts<SO>> ex
     protected Integer xAxisIndex;
     protected Integer yAxisIndex;
 
+    @Override
+    public CoordinateSystemType getCoordinateSystemType() {
+        return CoordinateSystemType.cartesian2d;
+    }
+
     /**
      * Sets an index of X axis to use for this Series. There can be one or more X axes, so this method allows to
      * pick one. If not set, 0 is assumed.
