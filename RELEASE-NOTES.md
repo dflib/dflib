@@ -31,6 +31,10 @@
 * #371 ECharts: support "itemStyle" for "boxplot" series
 * #382 $bool(..).cumSum()
 
+## Release 1.0.0
+
+* #402 ECharts: multiple X axes tied to a single series
+
 ## Release 1.0.0-RC2
 
 * #360 RowColumnSet: rename "map" to "merge"

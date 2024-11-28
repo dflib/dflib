@@ -112,7 +112,7 @@ class OptionModelMaker {
                         : dsb.appendRow(new IntSequenceSeries(1, dataFrame.height() + 1));
 
                 for (SeriesBuilder<?> sb : series) {
-                    if (sb.seriesOpts.getType().isCartesian()) {
+                    if (xAxisIndex(sb.seriesOpts) == i) {
                         sb.xDimension(pos);
                     }
                 }
@@ -153,5 +153,19 @@ class OptionModelMaker {
                 sb.datasetSeriesLayoutBy("row");
             }
         }
+    }
+
+    private int xAxisIndex(SeriesOpts<?> series) {
+        if (!series.getType().isCartesian()) {
+            return -1;
+        }
+
+        Integer i = null;
+        if (series instanceof CartesianSeriesOpts) {
+            i = ((CartesianSeriesOpts) series).xAxisIndex;
+        }
+
+        // by default should pick the first X axis
+        return i != null ? i : 0;
     }
 }
