@@ -255,6 +255,13 @@ var chart_{{id}} = echarts.init(
             {{#areaStyle}}
                 areaStyle: {},
             {{/areaStyle}}
+            {{#data}}
+                data: [
+                {{#rows}}
+                    [{{#value}}{{{quotedValue}}}{{^last}},{{/last}}{{/value}}]{{^last}},{{/last}}
+                {{/rows}}
+                ],
+            {{/data}}
             {{#encode}}
                 encode: {
                 {{#x}}
@@ -337,6 +344,9 @@ var chart_{{id}} = echarts.init(
             {{#seriesLayoutBy}}
                 seriesLayoutBy: '{{.}}',
             {{/seriesLayoutBy}}
+            {{#coordinateSystem}}
+                coordinateSystem: '{{.}}',
+            {{/coordinateSystem}}
             {{#dontShowSymbol}}
                 showSymbol: false,
             {{/dontShowSymbol}}
@@ -355,6 +365,9 @@ var chart_{{id}} = echarts.init(
             {{#yAxisIndex}}
                 yAxisIndex: {{.}},
             {{/yAxisIndex}}
+            {{#calendarIndex}}
+                calendarIndex: {{.}},
+            {{/calendarIndex}}
             {{#radius}}
                 radius: {{{radius}}},
             {{/radius}}

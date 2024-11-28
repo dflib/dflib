@@ -197,6 +197,16 @@ public class EChart {
         return singleColumnSeries(seriesOpts, dataColumns);
     }
 
+    /**
+     * Adds one or more "heatmap" series to the plot with data coming from DataFrame columns passed as method arguments.
+     * Series configuration is specified via the {@link HeatmapSeriesOpts} argument.
+     *
+     * @since 2.0.0
+     */
+    public EChart series(HeatmapSeriesOpts seriesOpts, String... dataColumns) {
+        return singleColumnSeries(seriesOpts, dataColumns);
+    }
+
     private EChart singleColumnSeries(SeriesOpts<?> seriesOpts, String... dataColumns) {
         for (String c : dataColumns) {
             option.series(seriesOpts, Index.of(c));

@@ -2,6 +2,7 @@ package org.dflib.echarts.render;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * An adapter for a list of values that simplifies stripping trailing commas when rendering a list in a Mustache template
@@ -15,7 +16,7 @@ public class ValueModels<T> implements Iterable<ValueModel<T>> {
     }
 
     private ValueModels(List<T> values) {
-        this.values = values;
+        this.values = Objects.requireNonNull(values);
     }
 
     public int size() {

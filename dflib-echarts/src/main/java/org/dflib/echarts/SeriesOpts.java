@@ -50,7 +50,16 @@ public abstract class SeriesOpts<SO extends SeriesOpts<SO>> {
     public static BoxplotSeriesOpts ofBoxplot() {
         return new BoxplotSeriesOpts();
     }
-    
+
+    /**
+     * Starts a builder for a heatmap series options object.
+     *
+     * @since 2.0.0
+     */
+    public static HeatmapSeriesOpts ofHeatmap() {
+        return new HeatmapSeriesOpts();
+    }
+
     protected SeriesOpts() {
     }
 

@@ -81,6 +81,8 @@ class SeriesModelBuilder {
                 return boxplotModel((BoxplotSeriesOpts) seriesOpts);
             case pie:
                 return pieModel((PieSeriesOpts) seriesOpts);
+            case heatmap:
+                return heatmapModel((HeatmapSeriesOpts) seriesOpts);
             default:
                 throw new UnsupportedOperationException("Unexpected ChartType: " + seriesOpts.getType());
         }
@@ -90,9 +92,11 @@ class SeriesModelBuilder {
         return new SeriesModel(
                 name,
                 so.getType().name(),
+                null,
                 new EncodeModel(xDimension, ValueModels.of(yDimensions), null, null),
                 so.label != null ? so.label.resolve() : null,
                 datasetSeriesLayoutBy,
+                null,
                 null,
                 null,
                 so.stack,
@@ -100,6 +104,7 @@ class SeriesModelBuilder {
                 null,
                 so.xAxisIndex,
                 so.yAxisIndex,
+                null,
                 null,
                 null,
                 null,
@@ -114,9 +119,11 @@ class SeriesModelBuilder {
         return new SeriesModel(
                 name,
                 so.getType().name(),
+                null,
                 new EncodeModel(xDimension, ValueModels.of(yDimensions), null, null),
                 so.label != null ? so.label.resolve() : null,
                 datasetSeriesLayoutBy,
+                null,
                 so.areaStyle,
                 so.showSymbol,
                 so.stack,
@@ -124,6 +131,7 @@ class SeriesModelBuilder {
                 so.symbolSize,
                 so.xAxisIndex,
                 so.yAxisIndex,
+                null,
                 null,
                 null,
                 null,
@@ -138,6 +146,7 @@ class SeriesModelBuilder {
         return new SeriesModel(
                 name,
                 so.getType().name(),
+                null,
                 new EncodeModel(xDimension, ValueModels.of(yDimensions), null, null),
                 so.label != null ? so.label.resolve() : null,
                 datasetSeriesLayoutBy,
@@ -145,9 +154,11 @@ class SeriesModelBuilder {
                 null,
                 null,
                 null,
+                null,
                 so.symbolSize,
                 so.xAxisIndex,
                 so.yAxisIndex,
+                null,
                 null,
                 null,
                 null,
@@ -162,6 +173,7 @@ class SeriesModelBuilder {
         return new SeriesModel(
                 name,
                 so.getType().name(),
+                null,
                 new EncodeModel(xDimension, ValueModels.of(yDimensions), null, null),
                 null,
                 datasetSeriesLayoutBy,
@@ -170,8 +182,10 @@ class SeriesModelBuilder {
                 null,
                 null,
                 null,
+                null,
                 so.xAxisIndex,
                 so.yAxisIndex,
+                null,
                 null,
                 null,
                 null,
@@ -186,6 +200,7 @@ class SeriesModelBuilder {
         return new SeriesModel(
                 name,
                 so.getType().name(),
+                null,
                 new EncodeModel(xDimension, ValueModels.of(yDimensions), null, null),
                 null,
                 datasetSeriesLayoutBy,
@@ -194,8 +209,10 @@ class SeriesModelBuilder {
                 null,
                 null,
                 null,
+                null,
                 so.xAxisIndex,
                 so.yAxisIndex,
+                null,
                 null,
                 null,
                 null,
@@ -214,11 +231,12 @@ class SeriesModelBuilder {
         return new SeriesModel(
                 name,
                 so.getType().name(),
-
+                null,
                 new EncodeModel(null, null, pieLabelsDimension, dataDim),
-
                 so.label != null && so.label.label != null ? so.label.label.resolve() : null,
                 datasetSeriesLayoutBy,
+                null,
+                null,
                 null,
                 null,
                 null,
@@ -232,6 +250,33 @@ class SeriesModelBuilder {
                 so.endAngle,
                 so.roseType != null ? so.roseType.name() : null,
                 so.itemStyle != null ? so.itemStyle.resolve() : null,
+                null
+        );
+    }
+
+    private SeriesModel heatmapModel(HeatmapSeriesOpts so) {
+        return new SeriesModel(
+                name,
+                so.getType().name(),
+                null, // TODO: "data"
+                null,
+                null,
+                datasetSeriesLayoutBy,
+                so.coordinateSystem != null ? so.coordinateSystem.name() : null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                so.xAxisIndex,
+                so.yAxisIndex,
+                so.calendarIndex,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
                 null
         );
     }

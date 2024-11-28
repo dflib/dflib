@@ -24,7 +24,7 @@ class OptionModelBuilder {
         SeriesModelBuilders sb = SeriesModelBuilders.of(opt, dsb);
 
         return new OptionModel(
-                dsb.resolve(),
+                dsb != null ? dsb.resolve() : null,
                 opt.legend != null ? opt.legend.resolve() : null,
                 grids(),
                 sb.resolve(),

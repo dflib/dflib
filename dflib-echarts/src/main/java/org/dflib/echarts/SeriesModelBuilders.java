@@ -45,7 +45,9 @@ class SeriesModelBuilders {
             series.add(new SeriesModelBuilder(name, so, dataColumns));
         }
 
-        linkSeriesToRows(series, dsb.rows);
+        if (dsb != null) {
+            linkSeriesToRows(series, dsb.rows);
+        }
 
         return new SeriesModelBuilders(series);
     }

@@ -1,5 +1,6 @@
 package org.dflib.echarts.render.option;
 
+import org.dflib.echarts.render.option.data.DataModel;
 import org.dflib.echarts.render.option.series.CenterModel;
 import org.dflib.echarts.render.option.series.ItemStyleModel;
 import org.dflib.echarts.render.option.series.LineStyleModel;
@@ -12,9 +13,11 @@ public class SeriesModel {
 
     private final String name;
     private final String type;
+    private final DataModel data;
     private final EncodeModel encode;
     private final LabelModel label;
     private final String seriesLayoutBy;
+    private final String coordinateSystem;
     private final Boolean areaStyle;
     private final Boolean showSymbol;
     private final Boolean smooth;
@@ -22,6 +25,7 @@ public class SeriesModel {
     private final Integer symbolSize;
     private final Integer xAxisIndex;
     private final Integer yAxisIndex;
+    private final Integer calendarIndex;
     private final RadiusModel radius;
     private final CenterModel center;
     private final Integer startAngle;
@@ -29,6 +33,57 @@ public class SeriesModel {
     private final String roseType;
     private final ItemStyleModel itemStyle;
     private final LineStyleModel lineStyle;
+
+    /**
+     * @since 2.0.0
+     */
+    public SeriesModel(
+            String name,
+            String type,
+            DataModel data,
+            EncodeModel encode,
+            LabelModel label,
+            String seriesLayoutBy,
+            String coordinateSystem,
+            Boolean areaStyle,
+            Boolean showSymbol,
+            Boolean stack,
+            Boolean smooth,
+            Integer symbolSize,
+            Integer xAxisIndex,
+            Integer yAxisIndex,
+            Integer calendarIndex,
+            RadiusModel radius,
+            CenterModel center,
+            Integer startAngle,
+            Integer endAngle,
+            String roseType,
+            ItemStyleModel itemStyle,
+            LineStyleModel lineStyle) {
+
+        this.name = name;
+        this.type = type;
+        this.data = data;
+        this.encode = encode;
+        this.label = label;
+        this.seriesLayoutBy = seriesLayoutBy;
+        this.coordinateSystem = coordinateSystem;
+        this.areaStyle = areaStyle;
+        this.showSymbol = showSymbol;
+        this.stack = stack;
+        this.smooth = smooth;
+        this.symbolSize = symbolSize;
+        this.xAxisIndex = xAxisIndex;
+        this.yAxisIndex = yAxisIndex;
+        this.calendarIndex = calendarIndex;
+        this.radius = radius;
+        this.center = center;
+        this.startAngle = startAngle;
+        this.endAngle = endAngle;
+        this.roseType = roseType;
+        this.itemStyle = itemStyle;
+        this.lineStyle = lineStyle;
+    }
 
     /**
      * @deprecated in favor of a constructor that takes an extra "itemStyle", "symbolSize", etc. arguments
@@ -52,14 +107,15 @@ public class SeriesModel {
             Integer endAngle,
             String roseType) {
 
-        this(name, type, encode, label, seriesLayoutBy, areaStyle, showSymbol, stack, smooth, null,
-                xAxisIndex, yAxisIndex,
-                radius, center, startAngle, endAngle, roseType, null, null);
+        this(name, type, null, encode, label, seriesLayoutBy, null, areaStyle, showSymbol, stack, smooth, null,
+                xAxisIndex, yAxisIndex, null, radius, center, startAngle, endAngle, roseType, null, null);
     }
 
     /**
      * @since 1.1.0
+     * @deprecated in favor of a constructor that takes an extra "itemStyle", "symbolSize", etc. arguments
      */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public SeriesModel(
             String name,
             String type,
@@ -80,26 +136,8 @@ public class SeriesModel {
             String roseType,
             ItemStyleModel itemStyle,
             LineStyleModel lineStyle) {
-
-        this.name = name;
-        this.type = type;
-        this.encode = encode;
-        this.label = label;
-        this.seriesLayoutBy = seriesLayoutBy;
-        this.areaStyle = areaStyle;
-        this.showSymbol = showSymbol;
-        this.stack = stack;
-        this.smooth = smooth;
-        this.symbolSize = symbolSize;
-        this.xAxisIndex = xAxisIndex;
-        this.yAxisIndex = yAxisIndex;
-        this.radius = radius;
-        this.center = center;
-        this.startAngle = startAngle;
-        this.endAngle = endAngle;
-        this.roseType = roseType;
-        this.itemStyle = itemStyle;
-        this.lineStyle = lineStyle;
+        this(name, type, null, encode, label, seriesLayoutBy, null, areaStyle, showSymbol, stack, smooth, symbolSize,
+                xAxisIndex, yAxisIndex, null, radius, center, startAngle, endAngle, roseType, itemStyle, lineStyle);
     }
 
     public String getName() {
@@ -108,6 +146,13 @@ public class SeriesModel {
 
     public String getType() {
         return type;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public DataModel getData() {
+        return data;
     }
 
     public EncodeModel getEncode() {
@@ -185,5 +230,19 @@ public class SeriesModel {
      */
     public LineStyleModel getLineStyle() {
         return lineStyle;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public Integer getCalendarIndex() {
+        return calendarIndex;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public String getCoordinateSystem() {
+        return coordinateSystem;
     }
 }

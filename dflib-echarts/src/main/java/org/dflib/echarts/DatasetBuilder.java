@@ -21,6 +21,17 @@ class DatasetBuilder {
     public static DatasetBuilder of(
             Option opt, DataFrame dataFrame) {
 
+        // a default for no series is to show empty cartesian coordinates. So "dataset" is still needed
+        boolean needsDataset = opt.seriesOpts.isEmpty() || opt.seriesOpts.stream()
+                .filter(so -> so.getType().supportsDataset())
+                .findFirst()
+                .map(so -> so != null)
+                .orElse(false);
+
+        if (!needsDataset) {
+            return null;
+        }
+
         DatasetBuilder dsb = new DatasetBuilder(dataFrame);
         appendXAxesLabels(dsb, opt.xAxes);
         appendPieChartLabels(dsb, opt.seriesOpts);
