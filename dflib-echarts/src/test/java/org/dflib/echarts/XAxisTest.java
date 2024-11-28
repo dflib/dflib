@@ -32,6 +32,20 @@ public class XAxisTest extends GenerateScriptHtmlTest {
         assertTrue(s1.contains("['L0','A','B','C'],"), s1);
         assertTrue(s1.contains("['L1','X','Y','Z'],"), s1);
         assertTrue(s1.contains("type: 'category'"), s1);
+        assertTrue(s1.contains("x: 0,"), s1);
+        assertFalse(s1.contains("x: 1,"), s1);
+
+        String s2 = ECharts.chart()
+                .xAxis("x1")
+                .xAxis("x2")
+                .series(SeriesOpts.ofLine().xAxisIndex(0), "y1")
+                .series(SeriesOpts.ofLine().xAxisIndex(1), "y2")
+                .generateScriptHtml("_tid", df4);
+        assertTrue(s2.contains("['L0','A','B','C'],"), s1);
+        assertTrue(s2.contains("['L1','X','Y','Z'],"), s1);
+        assertTrue(s2.contains("type: 'category'"), s1);
+        assertTrue(s2.contains("x: 0,"), s1);
+        assertTrue(s2.contains("x: 1,"), s1);
     }
 
     @Test
