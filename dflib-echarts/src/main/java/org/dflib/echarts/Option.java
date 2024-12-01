@@ -21,14 +21,16 @@ public class Option {
     List<XAxisBuilder> xAxes;
     List<YAxis> yAxes;
 
-    final List<SeriesBuilder<?>> series;
+    final List<SeriesOpts<?>> seriesOpts;
+    final List<Index> seriesDataColumns;
 
     public static Option of() {
         return new Option();
     }
 
     protected Option() {
-        this.series = new ArrayList<>();
+        this.seriesOpts = new ArrayList<>();
+        this.seriesDataColumns = new ArrayList<>();
     }
 
     public Option toolbox(Toolbox toolbox) {
@@ -108,7 +110,8 @@ public class Option {
      * Specifies a DataFrame column to be plotted as individual series and configuration for series display.
      */
     public Option series(SeriesOpts opts, Index dataColumns) {
-        series.add(new SeriesBuilder(opts, dataColumns));
+        seriesOpts.add(opts);
+        seriesDataColumns.add(dataColumns);
         return this;
     }
 
@@ -139,5 +142,4 @@ public class Option {
     protected OptionModel resolve(DataFrame df) {
         return new OptionModelMaker(this, df).resolve();
     }
-
 }
