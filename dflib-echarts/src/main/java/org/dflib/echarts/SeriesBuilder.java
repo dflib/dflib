@@ -2,6 +2,7 @@ package org.dflib.echarts;
 
 import org.dflib.Index;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -51,8 +52,12 @@ class SeriesBuilder<T extends SeriesOpts<T>> {
         return this;
     }
 
-    SeriesBuilder yDimensions(List<Integer> dims) {
-        this.yDimensions = Objects.requireNonNull(dims);
+    SeriesBuilder yDimension(int dim) {
+        if (this.yDimensions == null) {
+            this.yDimensions = new ArrayList<>();
+        }
+
+        this.yDimensions.add(dim);
         return this;
     }
 

@@ -6,7 +6,6 @@ import org.dflib.echarts.render.option.GridModel;
 import org.dflib.echarts.render.option.SeriesModel;
 import org.dflib.series.IntSequenceSeries;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -34,10 +33,9 @@ class OptionModelMaker {
                 : (cartesianDefaults ? List.of(new XAxisBuilder(null, XAxis.ofDefault())) : null);
         List<YAxis> ys = opt.yAxes != null ? opt.yAxes : (cartesianDefaults ? List.of(YAxis.ofDefault()) : null);
 
-        DatasetBuilder dsb = new DatasetBuilder(dataFrame);
-        appendXAxesLabels(dsb, series, xs);
-        appendPieChartLabels(dsb, series);
-        appendDatasetRows(dsb, series);
+        DatasetBuilder dsb = dataset(series, xs);
+
+        dsb.linkSeriesToRows(series);
 
         return new OptionModel(
                 dsb.datasetModel(),
@@ -98,74 +96,64 @@ class OptionModelMaker {
                 || series.stream().anyMatch(sb -> sb.seriesOpts.getCoordinateSystemType().isCartesian());
     }
 
-    // updates both "dsb" (new dataset rows) and "xs" (label indices)
-    private void appendXAxesLabels(DatasetBuilder dsb, List<SeriesBuilder<?>> series, List<XAxisBuilder> xs) {
+    private DatasetBuilder dataset(List<SeriesBuilder<?>> series, List<XAxisBuilder> xs) {
+        DatasetBuilder dsb = new DatasetBuilder(dataFrame);
+        appendXAxesLabels(dsb, xs);
+        appendPieChartLabels(dsb, series);
+        appendDatasetRows(dsb, series);
+
+        return dsb;
+    }
+
+    private void appendXAxesLabels(DatasetBuilder dsb, List<XAxisBuilder> xs) {
 
         if (xs != null) {
             int len = xs.size();
             for (int i = 0; i < len; i++) {
                 XAxisBuilder ab = xs.get(i);
-                int pos = ab.columnName != null
-                        // TODO: appending X data as a Series to prevent column reuse which is not possible until
-                        //  https://github.com/apache/echarts/issues/20330 is fixed
-                        ? dsb.appendRow(dataFrame.getColumn(ab.columnName))
-                        : dsb.appendRow(new IntSequenceSeries(1, dataFrame.height() + 1));
-
-                for (SeriesBuilder<?> sb : series) {
-                    if (xAxisIndex(sb.seriesOpts) == i) {
-                        sb.xDimension(pos);
-                    }
+                if(ab.columnName != null) {
+                    dsb.append(dataFrame.getColumn(ab.columnName), DatasetBuilder.DatasetRowType.xAxisLabels, i);
+                }
+                else {
+                    // TODO: appending X data as a Series to prevent column reuse which is not possible until
+                    //  https://github.com/apache/echarts/issues/20330 is fixed
+                    dsb.append(new IntSequenceSeries(1, dataFrame.height() + 1), DatasetBuilder.DatasetRowType.xAxisLabels, i);
                 }
             }
         }
     }
 
-    // updates both "dsb" (new dataset rows) and some "series" (index of pie labels)
     private void appendPieChartLabels(DatasetBuilder dsb, List<SeriesBuilder<?>> series) {
 
-        for (SeriesBuilder<?> sb : series) {
+        int len = series.size();
+        for (int i = 0; i < len; i++) {
 
-            if (sb.seriesOpts instanceof PieSeriesOpts) {
-                PieSeriesOpts pco = (PieSeriesOpts) sb.seriesOpts;
-                int pos = pco.getLabelColumn() != null
-                        // TODO: appending pie label data as a Series to prevent column reuse which is not possible until
-                        //   https://github.com/apache/echarts/issues/20330 is fixed
-                        ? dsb.appendRow(dataFrame.getColumn(pco.getLabelColumn()))
-                        : dsb.appendRow(new IntSequenceSeries(1, dataFrame.height() + 1));
+            SeriesOpts<?> opts = series.get(i).seriesOpts;
 
-                sb.pieLabelsDimension(pos);
+            if (opts instanceof PieSeriesOpts) {
+                PieSeriesOpts pco = (PieSeriesOpts) opts;
+                if (pco.getLabelColumn() != null) {
+                    dsb.append(dataFrame.getColumn(pco.getLabelColumn()), DatasetBuilder.DatasetRowType.pieItemName, i);
+                } else {
+                    // TODO: appending pie label data as a Series to prevent column reuse which is not possible until
+                    //   https://github.com/apache/echarts/issues/20330 is fixed
+                    dsb.append(new IntSequenceSeries(1, dataFrame.height() + 1), DatasetBuilder.DatasetRowType.pieItemName, i);
+                }
             }
         }
     }
 
     // updates both "dsb" (new dataset rows) and "series" (indices of dataset rows)
     private void appendDatasetRows(DatasetBuilder dsb, List<SeriesBuilder<?>> series) {
-        for (SeriesBuilder<?> sb : series) {
+        int len = series.size();
+        for (int i = 0; i < len; i++) {
 
+            SeriesBuilder<?> sb = series.get(i);
             if (sb.dataColumns != null) {
-
-                List<Integer> ys = new ArrayList<>(sb.dataColumns.size());
-                sb.dataColumns.forEach(dc -> ys.add(dsb.appendRow(dc)));
-                sb.yDimensions(ys);
-
-                // we are laying out DataFrame series as horizontal rows that are somewhat more readable when
-                // laid out in JS
-                sb.datasetSeriesLayoutBy("row");
+                for (String dc : sb.dataColumns) {
+                    dsb.append(dc, DatasetBuilder.DatasetRowType.seriesData, i);
+                }
             }
         }
-    }
-
-    private int xAxisIndex(SeriesOpts<?> series) {
-        if (!series.getCoordinateSystemType().isCartesian()) {
-            return -1;
-        }
-
-        Integer i = null;
-        if (series instanceof CartesianSeriesOpts) {
-            i = ((CartesianSeriesOpts) series).xAxisIndex;
-        }
-
-        // by default should pick the first X axis
-        return i != null ? i : 0;
     }
 }
