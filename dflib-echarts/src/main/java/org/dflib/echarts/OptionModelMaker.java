@@ -26,7 +26,9 @@ class OptionModelMaker {
         List<XAxisBuilder> xs = opt.xAxes != null
                 ? opt.xAxes
                 : (cartesianDefaults ? List.of(new XAxisBuilder(null, XAxis.ofDefault())) : null);
-        List<YAxis> ys = opt.yAxes != null ? opt.yAxes : (cartesianDefaults ? List.of(YAxis.ofDefault()) : null);
+        List<YAxis> ys = opt.yAxes != null
+                ? opt.yAxes
+                : (cartesianDefaults ? List.of(YAxis.ofDefault()) : null);
 
         DatasetBuilder dsb = DatasetBuilder.of(dataFrame, opt, xs);
         List<SeriesModel> series = SeriesModelBuilders.of(opt, dsb).build();
