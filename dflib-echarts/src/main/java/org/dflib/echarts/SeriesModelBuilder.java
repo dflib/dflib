@@ -82,7 +82,7 @@ class SeriesModelBuilder {
             case pie:
                 return pieModel((PieSeriesOpts) seriesOpts);
             default:
-                throw new UnsupportedOperationException("Unexpected ChartType: " + this);
+                throw new UnsupportedOperationException("Unexpected ChartType: " + seriesOpts.getType());
         }
     }
 
