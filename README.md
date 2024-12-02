@@ -39,7 +39,7 @@ as a sister project to DFLib.
 
 ## Presentation Videos
 
-* [DataFrame, a Swiss Army Knife of Java Data Processing](https://youtu.be/1P1UtWxwdYM?t=429), JUG Milano, Italy 09/2024
+* [DataFrame, a Swiss Army Knife of Java Data Processing](https://youtu.be/1P1UtWxwdYM?t=548), JUG Milano, Italy 09/2024
 * [Data visualization with Apache ECharts and DFLib](https://www.youtube.com/live/IWLwcxqkYDM), New York Java SIG, 07/2024
 
 
