@@ -36,7 +36,7 @@ class BoolAccumTest {
     @Test
     void compact2() {
         BoolAccum accum = new BoolAccum(300);
-        for(int i=0; i<Long.SIZE + 1; i++) {
+        for (int i = 0; i < Long.SIZE + 1; i++) {
             accum.pushBool(true);
         }
         BooleanSeries series = accum.toSeries();
