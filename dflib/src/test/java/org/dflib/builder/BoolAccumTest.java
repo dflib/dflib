@@ -3,6 +3,7 @@ package org.dflib.builder;
 import org.dflib.BooleanSeries;
 import org.dflib.series.BooleanBitsetSeries;
 import org.dflib.series.TrueSeries;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,6 +45,22 @@ class BoolAccumTest {
         assertEquals(Long.SIZE + 1, series.size());
         assertTrue(series.get(0));
         assertTrue(series.get(Long.SIZE));
+    }
+
+    @Disabled
+    @Test
+    void compact3() {
+
+        // if we start with BoolAccum with capacity <= 64, the error from #403 happens
+        BoolAccum accum = new BoolAccum(10);
+        for(int i = 0; i < 64; i++) {
+            accum.pushBool(true);
+        }
+
+        BooleanSeries series = accum.toSeries();
+        assertInstanceOf(BooleanBitsetSeries.class, series);
+        assertEquals(64, series.size());
+        assertTrue(series.get(0));
     }
 
     @Test
