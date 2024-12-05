@@ -3,7 +3,6 @@ package org.dflib.builder;
 import org.dflib.BooleanSeries;
 import org.dflib.series.BooleanBitsetSeries;
 import org.dflib.series.TrueSeries;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,7 +46,6 @@ class BoolAccumTest {
         assertTrue(series.get(Long.SIZE));
     }
 
-    @Disabled
     @Test
     void compact3() {
 
@@ -61,6 +59,7 @@ class BoolAccumTest {
         assertInstanceOf(BooleanBitsetSeries.class, series);
         assertEquals(64, series.size());
         assertTrue(series.get(0));
+        assertTrue(series.get(63));
     }
 
     @Test
@@ -165,6 +164,23 @@ class BoolAccumTest {
 
         assertEquals(1, series.size());
         assertTrue(series.get(0));
+    }
+
+    @Test
+    void testSizeInLongs() {
+        assertEquals(0, BoolAccum.sizeInLongs(0));
+        assertEquals(1, BoolAccum.sizeInLongs(1));
+        assertEquals(1, BoolAccum.sizeInLongs(10));
+        assertEquals(1, BoolAccum.sizeInLongs(63));
+        assertEquals(1, BoolAccum.sizeInLongs(64));
+        assertEquals(2, BoolAccum.sizeInLongs(65));
+        assertEquals(2, BoolAccum.sizeInLongs(100));
+        assertEquals(2, BoolAccum.sizeInLongs(127));
+        assertEquals(2, BoolAccum.sizeInLongs(128));
+        assertEquals(3, BoolAccum.sizeInLongs(129));
+        assertEquals(3, BoolAccum.sizeInLongs(192));
+        assertEquals(4, BoolAccum.sizeInLongs(200));
+        assertEquals(5, BoolAccum.sizeInLongs(300));
     }
 
 }

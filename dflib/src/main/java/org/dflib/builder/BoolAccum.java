@@ -20,7 +20,7 @@ public class BoolAccum implements ValueAccum<Boolean> {
     }
 
     public BoolAccum(int capacity) {
-        this.data = new long[1 + ((capacity - 1) >> INDEX_BIT_SHIFT)];
+        this.data = new long[sizeInLongs(capacity)];
     }
 
     public void fill(BooleanSeries values, int fromOffset, int toOffset, int len) {
@@ -111,7 +111,7 @@ public class BoolAccum implements ValueAccum<Boolean> {
     }
 
     private long[] compactData() {
-        int realSize = (size >> INDEX_BIT_SHIFT) + 1;
+        int realSize = sizeInLongs(size);
         if (realSize == data.length) {
             return data;
         }
@@ -136,5 +136,9 @@ public class BoolAccum implements ValueAccum<Boolean> {
     @Override
     public int size() {
         return size;
+    }
+
+    static int sizeInLongs(int capacity) {
+        return ((capacity - 1) >> INDEX_BIT_SHIFT) + 1;
     }
 }

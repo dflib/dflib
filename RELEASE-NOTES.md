@@ -16,6 +16,7 @@
 * #392 Quantile series method and expression
 * #396 NumExp.round()
 * #398 Deprecate "DataFrame.convertColumn(..)"
+* #403 BoolAccum - java.lang.ArrayIndexOutOfBoundsException 
 
 ## Release 1.1.0
 
