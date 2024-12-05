@@ -385,6 +385,18 @@ public interface Exp<T> {
     }
 
     /**
+     * Returns an expression created from the string representation
+     *
+     * @param str string to parse
+     * @return expression parsed from the string
+     *
+     * @since 2.0.0
+     */
+    static Exp<?> exp(String str) {
+        return null;
+    }
+
+    /**
      * Returns the type of the evaluation result. The type is used internally by the DBLib expression engine to compile
      * the most optimal evaluation path.
      *

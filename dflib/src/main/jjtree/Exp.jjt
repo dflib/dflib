@@ -1,0 +1,234 @@
+options {
+    STATIC = false ;
+}
+
+// Parser
+PARSER_BEGIN(ExpressionParser)
+
+package org.dflib.exp.parser;
+
+/**
+  * Parser of the {@link org.dflib.Exp}.
+  *
+  * @since 2.0
+  */
+@Generated("JavaCC")
+public class ExpressionParser extends ExpressionParserBase {
+}
+
+PARSER_END(ExpressionParser)
+
+// Rules
+
+SimpleNode expression() : {}
+{
+    numExp()        #NumExp
+    | strExp()      #StrExp
+    | boolExp()     #BoolExp
+    | temporalExp() #TemporalExp
+    | aggregateExp()  #AggregateExp
+    | ifExp()       #IfExp
+    | ifNullExp()   #IfNullExp
+    {
+        return (SimpleNode) jjtree.rootNode();
+    }
+}
+
+void numExp() : {}
+{
+    (
+        numScalar()
+        | numType()
+        | numFn()
+        | numAgg()
+        | (<LPAREN> numExp() <RPAREN>)
+    ) (math() numExp())? // TODO: does this fix left recursion? Is it even correct grammar?
+}
+
+void boolExp() : {}
+{
+
+}
+
+void numScalar() : {}
+{
+    <LONG_LITERAL>
+    | <INTEGER_LITERAL>
+    | <FLOATING_POINT_LITERAL>
+}
+
+void numType() : {}
+{
+    intType()       #IntExp
+    | longType()    #LongExp
+    | floatType()   #FloatExp
+}
+
+void numFn() : {}
+{
+
+}
+
+void numAgg() : {}
+{
+
+}
+
+void math() : {}
+{
+
+}
+
+void intType() : {}
+{
+    <INT> <LPAREN> columnId() <RPAREN>
+}
+
+void longType() : {}
+{
+    <LONG> <LPAREN> columnId() <RPAREN>
+}
+
+void floatType() : {}
+{
+    <FLOAT> <LPAREN> columnId() <RPAREN>
+}
+
+void columnId() : {}
+{
+    <INTEGER_LITERAL>
+    | <IDENTIFIER>
+    | strScalar()
+}
+
+void strScalar() : {}
+{
+    <CHARACTER_LITERAL>
+    | <STRING_LITERAL>
+}
+
+// Token Manager
+TOKEN_MGR_DECLS:
+{
+
+}
+
+// Tokens
+
+TOKEN :
+{
+    <LPAREN: "(">
+  | <RPAREN: ")">
+  | <LBRACE: "{">
+  | <RBRACE: "}">
+  | <LBRACKET: "[">
+  | <RBRACKET: "]">
+  | <SEMICOLON: ";">
+  | <COMMA: ",">
+  | <DOT: ".">
+}
+
+// Case operators
+
+TOKEN :
+{
+	<INT: "int" >
+	| <LONG: "long" >
+	| <FLOAT: "float" >
+	| <STR: "str" >
+	| <BOOL: "bool" >
+	| <DATE: "date" >
+	| <TIME: "time" >
+	| <DATETIME: "datetime" >
+}
+
+// Literals
+
+TOKEN :
+{
+  < LONG_LITERAL:
+        <DECIMAL_LITERAL> (["l","L"])
+      | <HEX_LITERAL> (["l","L"])
+      | <OCTAL_LITERAL> (["l","L"])
+      | <BINARY_LITERAL> (["l","L"])
+  >
+| < INTEGER_LITERAL:
+        <DECIMAL_LITERAL>
+      | <HEX_LITERAL>
+      | <OCTAL_LITERAL>
+      | <BINARY_LITERAL>
+  >
+| < #DECIMAL_LITERAL: ["0"-"9"]((["0"-"9","_"])*["0"-"9"])? >
+| < #HEX_LITERAL: "0" ["x","X"] <HEX_DIGITS> >
+| < #OCTAL_LITERAL: "0" ["0"-"7"]((["0"-"7","_"])*["0"-"7"])? >
+| < #BINARY_LITERAL: "0" ["b","B"] ["0","1"]((["0","1","_"])*["0","1"])? >
+| < FLOATING_POINT_LITERAL:
+        <DECIMAL_FLOATING_POINT_LITERAL>
+      | <HEXADECIMAL_FLOATING_POINT_LITERAL>
+  >
+| < #DECIMAL_FLOATING_POINT_LITERAL:
+        <DECIMAL_LITERAL> "." (<DECIMAL_LITERAL>)? (<DECIMAL_EXPONENT>)? (["f","F","d","D"])?
+      | "." <DECIMAL_LITERAL> (<DECIMAL_EXPONENT>)? (["f","F","d","D"])?
+      | <DECIMAL_LITERAL> <DECIMAL_EXPONENT> (["f","F","d","D"])?
+      | <DECIMAL_LITERAL> (<DECIMAL_EXPONENT>)? ["f","F","d","D"]
+  >
+| < #DECIMAL_EXPONENT: ["e","E"] (["+","-"])? (<DECIMAL_LITERAL>)+ >
+| < #HEXADECIMAL_FLOATING_POINT_LITERAL:
+        <HEX_LITERAL> (".")? <HEXADECIMAL_EXPONENT> (["f","F","d","D"])?
+      | "0" ["x","X"] (<HEX_DIGITS>)? "." <HEX_DIGITS> <HEXADECIMAL_EXPONENT> (["f","F","d","D"])?
+  >
+| < #HEXADECIMAL_EXPONENT: ["p","P"] (["+","-"])? <DECIMAL_LITERAL> >
+| < #HEX_DIGITS: ["0"-"9","a"-"f","A"-"F"]((["0"-"9","a"-"f","A"-"F","_"])*["0"-"9","a"-"f","A"-"F"])? >
+| < #ESCAPE :
+    "\\"
+    (
+      ["s","n","t","b","r","f","\\","'","\""]
+    | ["0"-"7"] ( ["0"-"7"] )?
+    | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+    ) >
+| < #UNICODE_ESCAPE:
+    "\\u"
+    ["0"-"9","A"-"F","a"-"f"]
+    ["0"-"9","A"-"F","a"-"f"]
+    ["0"-"9","A"-"F","a"-"f"]
+    ["0"-"9","A"-"F","a"-"f"] >
+| < CHARACTER_LITERAL:
+      "'"
+      (
+         (~["'","\\","\n","\r"])
+       | <ESCAPE>
+       | <UNICODE_ESCAPE>
+      )
+      "'"
+  >
+| < STRING_LITERAL:
+      "\""
+      (
+         (~["\"","\\","\n","\r"])
+       | <ESCAPE>
+       | <UNICODE_ESCAPE>
+      )*
+      "\""
+  >
+}
+
+// Identifier
+TOKEN : {
+  <IDENTIFIER: <LETTER> (<PART_LETTER>)*>
+| <#LETTER: ["$","A"-"Z","_","a"-"z"]>
+| <#PART_LETTER: ["$","0"-"9","A"-"Z","_","a"-"z"]>
+}
+
+SKIP : { " " | "\t" | "\n" | "\r" }
+SKIP :
+{
+  "/*" : WithinComment
+}
+<WithinComment> SKIP :
+{
+  "*/" : DEFAULT
+}
+<WithinComment> MORE :
+{
+  <~[]>
+}
