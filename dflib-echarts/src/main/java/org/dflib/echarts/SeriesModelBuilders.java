@@ -115,7 +115,7 @@ class SeriesModelBuilders {
         this.builders = builders;
     }
 
-    public List<SeriesModel> build() {
+    public List<SeriesModel> resolve() {
         return builders.isEmpty()
                 ? null
                 : builders.stream().map(SeriesModelBuilder::build).collect(Collectors.toList());

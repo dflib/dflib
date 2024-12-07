@@ -117,7 +117,7 @@ class DatasetBuilder {
         return pos;
     }
 
-    public DatasetModel datasetModel() {
+    public DatasetModel resolve() {
 
         if (rows.isEmpty()) {
             return null;
