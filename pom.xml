@@ -63,6 +63,7 @@
         <parquet.version>1.14.2</parquet.version>
         <hadoop.version>3.4.0</hadoop.version>
         <jjava.version>1.0-M3</jjava.version>
+        <mysql.version>9.1.0</mysql.version>
     </properties>
 
     <url>https://github.com/dflib/dflib</url>
@@ -162,9 +163,9 @@
             </dependency>
 
             <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>8.0.33</version>
+                <groupId>com.mysql</groupId>
+                <artifactId>mysql-connector-j</artifactId>
+                <version>${mysql.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.postgresql</groupId>
