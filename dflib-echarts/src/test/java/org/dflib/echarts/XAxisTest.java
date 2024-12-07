@@ -20,6 +20,10 @@ public class XAxisTest extends GenerateScriptHtmlTest {
         String s3 = ECharts.chart().xAxis("x").series(SeriesOpts.ofLine(), "y1").generateScriptHtml("_tid", df2);
         assertTrue(s3.contains("['L0','A','B','C']"), s3);
         assertTrue(s3.contains("type: 'category'"), s3);
+
+        String s4 = ECharts.chart().xAxis(XAxis.ofCategory()).series("y1").generateScriptHtml("_tid", df2);
+        assertTrue(s4.contains("['L0',1,2,3]"), s4);
+        assertTrue(s4.contains("type: 'category'"), s4);
     }
 
     @Test
