@@ -141,7 +141,7 @@ public class Option {
 
     protected OptionModel resolve(DataFrame df) {
         resolveDefaults();
-        return new OptionModelMaker(this, df).resolve();
+        return new OptionModelBuilder(this, df).resolve();
     }
 
     private void resolveDefaults() {

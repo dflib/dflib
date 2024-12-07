@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-class OptionModelMaker {
+class OptionModelBuilder {
 
     private final Option opt;
     private final DataFrame dataFrame;
 
-    OptionModelMaker(Option opt, DataFrame dataFrame) {
+    OptionModelBuilder(Option opt, DataFrame dataFrame) {
         this.opt = Objects.requireNonNull(opt);
         this.dataFrame = Objects.requireNonNull(dataFrame);
     }
