@@ -68,7 +68,6 @@ class DatasetBuilder {
         }
     }
 
-    // updates both "dsb" (new dataset rows) and "series" (indices of dataset rows)
     private static void appendDatasetRows(DatasetBuilder dsb, List<Index> seriesDataColumns) {
         int len = seriesDataColumns.size();
         for (int i = 0; i < len; i++) {
