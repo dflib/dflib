@@ -110,7 +110,6 @@ public class Option {
     }
 
     public Option xAxis(String dataColumn, XAxis axis) {
-        Objects.requireNonNull(dataColumn);
 
         if (xAxes == null) {
             xAxes = new ArrayList<>(3);

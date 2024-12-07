@@ -36,6 +36,7 @@
 ## Release 1.0.0
 
 * #402 ECharts: multiple X axes tied to a single series
+* #405 ECharts: NPE when passing XAxis without a column name
 
 ## Release 1.0.0-RC2
 
