@@ -228,13 +228,31 @@ public class EChart {
     }
 
     /**
-     * Adds one or more "heatmap" series to the plot with data coming from DataFrame columns passed as method arguments.
-     * Series configuration is specified via the {@link HeatmapSeriesOpts} argument.
+     * Adds a "heatmap" series to the plot with data coming from the DataFrame column passed as method arguments.
+     * The plot will be done on a calendar coordinate system.  Series configuration is specified via the
+     * {@link HeatmapCalendarSeriesOpts} argument.
      *
      * @since 2.0.0
      */
-    public EChart series(HeatmapSeriesOpts seriesOpts, String... dataColumns) {
-        return singleColumnSeries(seriesOpts, dataColumns);
+    public EChart series(HeatmapCalendarSeriesOpts seriesOpts, String dataColumn) {
+        option.series(seriesOpts, Index.of(
+                Objects.requireNonNull(dataColumn, "Null 'dataColumn' column")));
+        return this;
+    }
+
+    /**
+     * Adds a "heatmap" series to the plot with data coming from the DataFrame column passed as method arguments.
+     * The plot will be done on a cartesian coordinate system and requires columns for "x", "y", and "heat" values.
+     * Series configuration is specified via the {@link HeatmapCartesian2DSeriesOpts} argument.
+     *
+     * @since 2.0.0
+     */
+    public EChart series(HeatmapCartesian2DSeriesOpts seriesOpts, String xColumn, String yColumn, String heatColumn) {
+        option.series(seriesOpts, Index.of(
+                Objects.requireNonNull(xColumn, "Null 'xColumn' column"),
+                Objects.requireNonNull(yColumn, "Null 'yColumn' column"),
+                Objects.requireNonNull(heatColumn, "Null 'heatColumn' column")));
+        return this;
     }
 
     private EChart singleColumnSeries(SeriesOpts<?> seriesOpts, String... dataColumns) {

@@ -7,7 +7,6 @@ import org.dflib.echarts.render.option.SeriesModel;
 import org.dflib.echarts.render.option.data.DataModel;
 import org.dflib.echarts.render.option.series.CenterModel;
 import org.dflib.echarts.render.option.series.RadiusModel;
-import org.dflib.series.IntSequenceSeries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +92,7 @@ class SeriesModelBuilder {
             case pie:
                 return pieModel((PieSeriesOpts) seriesOpts);
             case heatmap:
-                return heatmapModel((HeatmapSeriesOpts) seriesOpts);
+                return heatmapModel(seriesOpts);
             default:
                 throw new UnsupportedOperationException("Unexpected ChartType: " + seriesOpts.getType());
         }
@@ -265,15 +264,21 @@ class SeriesModelBuilder {
         );
     }
 
-    private SeriesModel heatmapModel(HeatmapSeriesOpts so) {
+    private SeriesModel heatmapModel(SeriesOpts<?> so) {
+        return so instanceof HeatmapCartesian2DSeriesOpts
+                ? heatmapCartesian2dModel((HeatmapCartesian2DSeriesOpts) so)
+                : heatmapCalendarModel((HeatmapCalendarSeriesOpts) so);
+    }
+
+    private SeriesModel heatmapCartesian2dModel(HeatmapCartesian2DSeriesOpts so) {
         return new SeriesModel(
                 name,
                 so.getType().name(),
-                heatmapDataModel(so),
+                heatmapCartesian2dDataModel(),
                 null,
                 null,
                 datasetSeriesLayoutBy,
-                so.coordinateSystem != null ? so.coordinateSystem.name() : null,
+                CoordinateSystemType.cartesian2d.name(),
                 null,
                 null,
                 null,
@@ -281,6 +286,33 @@ class SeriesModelBuilder {
                 null,
                 so.xAxisIndex,
                 so.yAxisIndex,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
+    private SeriesModel heatmapCalendarModel(HeatmapCalendarSeriesOpts so) {
+        return new SeriesModel(
+                name,
+                so.getType().name(),
+                heatmapCalendarDataModel(),
+                null,
+                null,
+                datasetSeriesLayoutBy,
+                CoordinateSystemType.calendar.name(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
                 so.calendarIndex,
                 null,
                 null,
@@ -292,44 +324,27 @@ class SeriesModelBuilder {
         );
     }
 
-    private DataModel heatmapDataModel(HeatmapSeriesOpts so) {
+    private DataModel heatmapCartesian2dDataModel() {
+        InlineDataBuilder db = InlineDataBuilder.of(dataFrame);
+        opt.seriesDataColumns.get(seriesPosInOpt).forEach(db::appendCol);
+        return db.dataModel();
+    }
+
+    private DataModel heatmapCalendarDataModel() {
         InlineDataBuilder db = InlineDataBuilder.of(dataFrame);
 
-        // TODO: preserve symmetry with DatasetBuilder and move this to a static method in InlineDataBuilder?
-
-        switch (so.getCoordinateSystemType()) {
-            case calendar:
-                if (opt.calendars != null) {
-                    int len = opt.calendars.size();
-                    for (int i = 0; i < len; i++) {
-                        CalendarCoordsBuilder ab = opt.calendars.get(i);
-                        if (ab.columnName != null) {
-                            db.appendCol(dataFrame.getColumn(ab.columnName));
-                        }
-                        // else: doesn't seem like there's a reasonable default for the calendar column.
-                    }
+        if (opt.calendars != null) {
+            int len = opt.calendars.size();
+            for (int i = 0; i < len; i++) {
+                CalendarCoordsBuilder ab = opt.calendars.get(i);
+                if (ab.columnName != null) {
+                    db.appendCol(dataFrame.getColumn(ab.columnName));
                 }
-
-            case cartesian2d:
-                if (opt.xAxes != null) {
-                    int len = opt.xAxes.size();
-                    for (int i = 0; i < len; i++) {
-                        XAxisBuilder ab = opt.xAxes.get(i);
-                        if (ab.columnName != null) {
-                            db.appendCol(dataFrame.getColumn(ab.columnName));
-                        } else {
-                            // TODO: appending X data as a Series to prevent column reuse which is not possible until
-                            //  https://github.com/apache/echarts/issues/20330 is fixed
-                            db.appendCol(new IntSequenceSeries(1, dataFrame.height() + 1));
-                        }
-                    }
-                }
-                break;
+                // else: doesn't seem like there's a reasonable default for the calendar column.
+            }
         }
 
-
         opt.seriesDataColumns.get(seriesPosInOpt).forEach(db::appendCol);
-
         return db.dataModel();
     }
 }

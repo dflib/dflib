@@ -52,12 +52,21 @@ public abstract class SeriesOpts<SO extends SeriesOpts<SO>> {
     }
 
     /**
-     * Starts a builder for a heatmap series options object.
+     * Starts a builder for a heatmap series options object rendered in cartesian coordinates.
      *
      * @since 2.0.0
      */
-    public static HeatmapSeriesOpts ofHeatmap() {
-        return new HeatmapSeriesOpts();
+    public static HeatmapCartesian2DSeriesOpts ofHeatmapCartesian2d() {
+        return new HeatmapCartesian2DSeriesOpts();
+    }
+
+    /**
+     * Starts a builder for a heatmap series options object rendered in calendar coordinates.
+     *
+     * @since 2.0.0
+     */
+    public static HeatmapCalendarSeriesOpts ofHeatmapCalendar() {
+        return new HeatmapCalendarSeriesOpts();
     }
 
     protected SeriesOpts() {
