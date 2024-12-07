@@ -21,16 +21,7 @@ class OptionModelMaker {
 
     OptionModel resolve() {
 
-        boolean cartesianDefaults = useCartesianDefaults(opt.seriesOpts);
-
-        List<XAxisBuilder> xs = opt.xAxes != null
-                ? opt.xAxes
-                : (cartesianDefaults ? List.of(new XAxisBuilder(null, XAxis.ofDefault())) : null);
-        List<YAxis> ys = opt.yAxes != null
-                ? opt.yAxes
-                : (cartesianDefaults ? List.of(YAxis.ofDefault()) : null);
-
-        DatasetBuilder dsb = DatasetBuilder.of(dataFrame, opt, xs);
+        DatasetBuilder dsb = DatasetBuilder.of(dataFrame, opt);
         List<SeriesModel> series = SeriesModelBuilders.of(opt, dsb).build();
 
         return new OptionModel(
@@ -41,8 +32,8 @@ class OptionModelMaker {
                 opt.title != null ? opt.title.resolve() : null,
                 opt.toolbox != null ? opt.toolbox.resolve() : null,
                 opt.tooltip != null ? opt.tooltip.resolve() : null,
-                xs != null ? xs.stream().map(XAxisBuilder::getAxis).map(XAxis::resolve).collect(Collectors.toList()) : null,
-                ys != null ? ys.stream().map(YAxis::resolve).collect(Collectors.toList()) : null
+                opt.xAxes != null ? opt.xAxes.stream().map(XAxisBuilder::getAxis).map(XAxis::resolve).collect(Collectors.toList()) : null,
+                opt.yAxes != null ? opt.yAxes.stream().map(YAxis::resolve).collect(Collectors.toList()) : null
         );
     }
 
@@ -50,10 +41,5 @@ class OptionModelMaker {
         return opt.grids != null
                 ? opt.grids.stream().map(Grid::resolve).collect(Collectors.toList())
                 : null;
-    }
-
-    private boolean useCartesianDefaults(List<SeriesOpts<?>> series) {
-        return series.isEmpty()
-                || series.stream().anyMatch(s -> s.getCoordinateSystemType().isCartesian());
     }
 }

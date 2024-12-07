@@ -140,6 +140,24 @@ public class Option {
     }
 
     protected OptionModel resolve(DataFrame df) {
+        resolveDefaults();
         return new OptionModelMaker(this, df).resolve();
+    }
+
+    private void resolveDefaults() {
+        boolean cartesianDefaults = useCartesianDefaults();
+
+        if (xAxes == null && cartesianDefaults) {
+            xAxes = List.of(new XAxisBuilder(null, XAxis.ofDefault()));
+        }
+
+        if (yAxes == null && cartesianDefaults) {
+            yAxes = List.of(YAxis.ofDefault());
+        }
+    }
+
+    private boolean useCartesianDefaults() {
+        return seriesOpts.isEmpty()
+                || seriesOpts.stream().anyMatch(s -> s.getCoordinateSystemType().isCartesian());
     }
 }

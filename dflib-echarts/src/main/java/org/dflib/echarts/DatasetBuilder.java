@@ -20,11 +20,10 @@ class DatasetBuilder {
 
     public static DatasetBuilder of(
             DataFrame dataFrame,
-            Option opt,
-            List<XAxisBuilder> xs) {
+            Option opt) {
 
         DatasetBuilder dsb = new DatasetBuilder(dataFrame);
-        appendXAxesLabels(dsb, xs);
+        appendXAxesLabels(dsb, opt.xAxes);
         appendPieChartLabels(dsb, opt.seriesOpts);
         appendDatasetRows(dsb, opt.seriesDataColumns);
 
