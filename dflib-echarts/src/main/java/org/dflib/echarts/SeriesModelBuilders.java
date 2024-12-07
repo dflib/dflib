@@ -1,5 +1,6 @@
 package org.dflib.echarts;
 
+import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.echarts.render.option.SeriesModel;
 
@@ -14,6 +15,7 @@ class SeriesModelBuilders {
 
     public static SeriesModelBuilders of(
             Option opt,
+            DataFrame dataFrame,
             DatasetBuilder dsb) {
 
         // a stateful function. Can only be used inside the method scope
@@ -42,7 +44,7 @@ class SeriesModelBuilders {
             Index dataColumns = opt.seriesDataColumns.get(i);
             String name = nameDeduplicator.apply(defaultName(so, dataColumns));
 
-            series.add(new SeriesModelBuilder(name, so, dataColumns));
+            series.add(new SeriesModelBuilder(name, opt, dataFrame, i));
         }
 
         if (dsb != null) {
@@ -85,7 +87,7 @@ class SeriesModelBuilders {
                     break;
                 case xAxisLabels:
                     for (SeriesModelBuilder sb : series) {
-                        if (xAxisIndex(sb.seriesOpts) == row.xAxisIndex) {
+                        if (xAxisIndex(sb.seriesOpts()) == row.xAxisIndex) {
                             sb.xDimension(i);
                         }
                     }

@@ -117,6 +117,36 @@ public class EChart {
     }
 
     /**
+     * @since 2.0.0
+     */
+    public EChart visualMap(VisualMap visualMap) {
+        option.visualMap(visualMap);
+        return this;
+    }
+
+    /**
+     * Adds a calendar coordinate system to the chart, that will use the specified DataFrame column to plot dates.
+     * Since we don't specify a date range for the calendar in this method, the period of the last 12 months back
+     * from the current date is assumed. Use {@link #calendar(String, CalendarCoords)} to set the exact range.
+     *
+     * @since 2.0.0
+     */
+    public EChart calendar(String dataColumn) {
+        option.calendar(dataColumn);
+        return this;
+    }
+
+    /**
+     * Adds a calendar coordinate system to the chart, that will use the specified DataFrame column to plot dates.
+     *
+     * @since 2.0.0
+     */
+    public EChart calendar(String dataColumn, CalendarCoords calendar) {
+        option.calendar(dataColumn, calendar);
+        return this;
+    }
+
+    /**
      * Adds an X axis to the chart, that will use the specified DataFrame column as axis labels. If this or other
      * "xAxis" methods are not invoked, a default categorical X axis will be generated using element indices for labels
      */

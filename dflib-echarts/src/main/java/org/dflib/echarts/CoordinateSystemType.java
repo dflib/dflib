@@ -10,4 +10,8 @@ public enum CoordinateSystemType {
     public boolean isCartesian() {
         return this == cartesian2d;
     }
+
+    public boolean isCalendar() {
+        return this == calendar;
+    }
 }

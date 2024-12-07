@@ -47,11 +47,11 @@ class DatasetBuilder {
             for (int i = 0; i < len; i++) {
                 XAxisBuilder ab = xs.get(i);
                 if (ab.columnName != null) {
-                    dsb.append(dsb.dataFrame.getColumn(ab.columnName), DatasetBuilder.DatasetRowType.xAxisLabels, i);
+                    dsb.appendRow(dsb.dataFrame.getColumn(ab.columnName), DatasetBuilder.DatasetRowType.xAxisLabels, i);
                 } else {
                     // TODO: appending X data as a Series to prevent column reuse which is not possible until
                     //  https://github.com/apache/echarts/issues/20330 is fixed
-                    dsb.append(new IntSequenceSeries(1, dsb.dataFrame.height() + 1), DatasetBuilder.DatasetRowType.xAxisLabels, i);
+                    dsb.appendRow(new IntSequenceSeries(1, dsb.dataFrame.height() + 1), DatasetBuilder.DatasetRowType.xAxisLabels, i);
                 }
             }
         }
@@ -67,11 +67,11 @@ class DatasetBuilder {
             if (opts instanceof PieSeriesOpts) {
                 PieSeriesOpts pco = (PieSeriesOpts) opts;
                 if (pco.getLabelColumn() != null) {
-                    dsb.append(dsb.dataFrame.getColumn(pco.getLabelColumn()), DatasetBuilder.DatasetRowType.pieItemName, i);
+                    dsb.appendRow(dsb.dataFrame.getColumn(pco.getLabelColumn()), DatasetBuilder.DatasetRowType.pieItemName, i);
                 } else {
                     // TODO: appending pie label data as a Series to prevent column reuse which is not possible until
                     //   https://github.com/apache/echarts/issues/20330 is fixed
-                    dsb.append(new IntSequenceSeries(1, dsb.dataFrame.height() + 1), DatasetBuilder.DatasetRowType.pieItemName, i);
+                    dsb.appendRow(new IntSequenceSeries(1, dsb.dataFrame.height() + 1), DatasetBuilder.DatasetRowType.pieItemName, i);
                 }
             }
         }
@@ -84,7 +84,7 @@ class DatasetBuilder {
             Index dataColumns = seriesDataColumns.get(i);
             if (dataColumns != null) {
                 for (String dc : dataColumns) {
-                    dsb.append(dc, DatasetBuilder.DatasetRowType.seriesData, i);
+                    dsb.appendRow(dc, DatasetBuilder.DatasetRowType.seriesData, i);
                 }
             }
         }
@@ -107,13 +107,13 @@ class DatasetBuilder {
 
     // Append a row that is not present in the DataFrame.
     // Such rows may get duplicated, as there's no key that we can use to cache it
-    private int append(Series<?> row, DatasetRowType type, int seriesPos) {
+    private int appendRow(Series<?> row, DatasetRowType type, int seriesPos) {
         int pos = rows.size();
         rows.add(new DatasetRow(Objects.requireNonNull(row), type, seriesPos));
         return pos;
     }
 
-    private int append(String dataColumnName, DatasetRowType type, int seriesPos) {
+    private int appendRow(String dataColumnName, DatasetRowType type, int seriesPos) {
         Objects.requireNonNull(dataColumnName);
 
         Integer existingPos = rowPosByDataColumn.get(dataColumnName);

@@ -21,7 +21,7 @@ class OptionModelBuilder {
     OptionModel resolve() {
 
         DatasetBuilder dsb = DatasetBuilder.of(opt, dataFrame);
-        SeriesModelBuilders sb = SeriesModelBuilders.of(opt, dsb);
+        SeriesModelBuilders sb = SeriesModelBuilders.of(opt, dataFrame, dsb);
 
         return new OptionModel(
                 dsb != null ? dsb.resolve() : null,
@@ -32,7 +32,9 @@ class OptionModelBuilder {
                 opt.toolbox != null ? opt.toolbox.resolve() : null,
                 opt.tooltip != null ? opt.tooltip.resolve() : null,
                 opt.xAxes != null ? opt.xAxes.stream().map(XAxisBuilder::getAxis).map(XAxis::resolve).collect(Collectors.toList()) : null,
-                opt.yAxes != null ? opt.yAxes.stream().map(YAxis::resolve).collect(Collectors.toList()) : null
+                opt.yAxes != null ? opt.yAxes.stream().map(YAxis::resolve).collect(Collectors.toList()) : null,
+                opt.calendars != null ? opt.calendars.stream().map(CalendarCoordsBuilder::getCalendar).map(CalendarCoords::resolve).collect(Collectors.toList()) : null,
+                opt.visualMaps != null ? opt.visualMaps.stream().map(VisualMap::resolve).collect(Collectors.toList()) : null
         );
     }
 

@@ -130,6 +130,80 @@ var chart_{{id}} = echarts.init(
             ]
         },
     {{/dataset}}
+    {{#visualMapsPresent}}
+        visualMap: [
+        {{#visualMaps}}
+            {
+            {{#type}}
+                type: '{{.}}',
+            {{/type}}
+            {{#min}}
+                min: {{.}},
+            {{/min}}
+            {{#max}}
+                max: {{.}},
+            {{/max}}
+            {{#calculable}}
+                calculable: {{.}},
+            {{/calculable}}
+            {{#orient}}
+                orient: '{{.}}',
+            {{/orient}}
+            {{#left}}
+                left: {{{.}}},
+            {{/left}}
+            {{#right}}
+                right: {{{.}}},
+            {{/right}}
+            {{#top}}
+                top: {{{.}}},
+            {{/top}}
+            {{#bottom}}
+                bottom: {{{.}}},
+            {{/bottom}}
+            {{#itemWidth}}
+                itemWidth: {{{.}}},
+            {{/itemWidth}}
+            {{#itemHeight}}
+                itemHeight: {{{.}}}
+            {{/itemHeight}}
+            },
+        {{/visualMaps}}
+        ],
+    {{/visualMapsPresent}}
+    {{#calendarsPresent}}
+        calendar: [
+        {{#calendars}}
+        {
+            range: ['{{rangeFrom}}','{{rangeTo}}'],
+        {{#cellSize}}
+            cellSize: {{{.}}},
+        {{/cellSize}}
+        {{#orient}}
+            orient: '{{.}}',
+        {{/orient}}
+        {{#left}}
+            left: {{{.}}},
+        {{/left}}
+        {{#right}}
+            right: {{{.}}},
+        {{/right}}
+        {{#top}}
+            top: {{{.}}},
+        {{/top}}
+        {{#bottom}}
+            bottom: {{{.}}},
+        {{/bottom}}
+        {{#width}}
+            width: {{{.}}},
+        {{/width}}
+        {{#height}}
+            height: {{{.}}}
+        {{/height}}
+        },
+        {{/calendars}}
+        ],
+    {{/calendarsPresent}}
     {{#xAxesPresent}}
         xAxis: [
         {{#xAxes}}

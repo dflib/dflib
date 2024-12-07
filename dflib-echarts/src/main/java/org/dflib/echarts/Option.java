@@ -18,6 +18,8 @@ public class Option {
     Toolbox toolbox;
     Tooltip tooltip;
     List<Grid> grids;
+    List<VisualMap> visualMaps;
+    List<CalendarCoordsBuilder> calendars;
     List<XAxisBuilder> xAxes;
     List<YAxis> yAxes;
 
@@ -55,6 +57,43 @@ public class Option {
         }
 
         this.grids.add(grid);
+        return this;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public Option visualMap(VisualMap visualMap) {
+        if (visualMaps == null) {
+            visualMaps = new ArrayList<>(3);
+        }
+
+        visualMaps.add(visualMap);
+        return this;
+    }
+
+    /**
+     * Adds a calendar coordinate system to the chart, that will use the specified DataFrame column to plot dates.
+     * Since we don't specify a date range for the calendar in this method, the period of the last 12 months back
+     * from the current date is assumed. Use {@link #calendar(String, CalendarCoords)} to set the exact range.
+     *
+     * @since 2.0.0
+     */
+    public Option calendar(String dataColumn) {
+        return calendar(dataColumn, CalendarCoords.ofLast12Months());
+    }
+
+    /**
+     * Adds a calendar coordinate system to the chart, that will use the specified DataFrame column to plot dates.
+     *
+     * @since 2.0.0
+     */
+    public Option calendar(String dataColumn, CalendarCoords calendar) {
+        if (calendars == null) {
+            calendars = new ArrayList<>(3);
+        }
+
+        calendars.add(new CalendarCoordsBuilder(dataColumn, calendar));
         return this;
     }
 
@@ -154,10 +193,18 @@ public class Option {
         if (yAxes == null && cartesianDefaults) {
             yAxes = List.of(YAxis.ofDefault());
         }
+
+        if (calendars == null && useCalendarDefaults()) {
+            calendars = List.of(new CalendarCoordsBuilder(null, CalendarCoords.ofLast12Months()));
+        }
     }
 
     private boolean useCartesianDefaults() {
         return seriesOpts.isEmpty()
                 || seriesOpts.stream().anyMatch(s -> s.getCoordinateSystemType().isCartesian());
+    }
+
+    private boolean useCalendarDefaults() {
+        return seriesOpts.stream().anyMatch(s -> s.getCoordinateSystemType().isCalendar());
     }
 }

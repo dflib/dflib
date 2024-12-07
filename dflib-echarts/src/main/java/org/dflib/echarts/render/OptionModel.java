@@ -5,9 +5,11 @@ import org.dflib.echarts.render.option.LegendModel;
 import org.dflib.echarts.render.option.SeriesModel;
 import org.dflib.echarts.render.option.TitleModel;
 import org.dflib.echarts.render.option.axis.AxisModel;
+import org.dflib.echarts.render.option.calendar.CalendarModel;
 import org.dflib.echarts.render.option.dataset.DatasetModel;
 import org.dflib.echarts.render.option.toolbox.ToolboxModel;
 import org.dflib.echarts.render.option.tooltip.TooltipModel;
+import org.dflib.echarts.render.option.visualmap.VisualMapModel;
 
 import java.util.List;
 
@@ -22,6 +24,37 @@ public class OptionModel {
     private final TooltipModel tooltip;
     private final List<AxisModel> xAxes;
     private final List<AxisModel> yAxes;
+    private final List<CalendarModel> calendars;
+    private final List<VisualMapModel> visualMaps;
+
+    /**
+     * @since 2.0.0
+     */
+    public OptionModel(
+            DatasetModel dataset,
+            LegendModel legend,
+            List<GridModel> grid,
+            List<SeriesModel> series,
+            TitleModel title,
+            ToolboxModel toolbox,
+            TooltipModel tooltip,
+            List<AxisModel> xAxes,
+            List<AxisModel> yAxes,
+            List<CalendarModel> calendars,
+            List<VisualMapModel> visualMaps) {
+
+        this.title = title;
+        this.toolbox = toolbox;
+        this.tooltip = tooltip;
+        this.dataset = dataset;
+        this.visualMaps = visualMaps;
+        this.calendars = calendars;
+        this.xAxes = xAxes;
+        this.yAxes = yAxes;
+        this.grid = grid;
+        this.series = series;
+        this.legend = legend;
+    }
 
     @Deprecated(since = "2.0.0", forRemoval = true)
     public OptionModel(
@@ -43,32 +76,9 @@ public class OptionModel {
                 toolbox,
                 tooltip,
                 xAxes,
-                yAxes);
-    }
-
-    /**
-     * @since 2.0.0
-     */
-    public OptionModel(
-            DatasetModel dataset,
-            LegendModel legend,
-            List<GridModel> grid,
-            List<SeriesModel> series,
-            TitleModel title,
-            ToolboxModel toolbox,
-            TooltipModel tooltip,
-            List<AxisModel> xAxes,
-            List<AxisModel> yAxes) {
-
-        this.title = title;
-        this.toolbox = toolbox;
-        this.tooltip = tooltip;
-        this.dataset = dataset;
-        this.xAxes = xAxes;
-        this.yAxes = yAxes;
-        this.grid = grid;
-        this.series = series;
-        this.legend = legend;
+                yAxes,
+                null,
+                null);
     }
 
     public TitleModel getTitle() {
@@ -93,6 +103,34 @@ public class OptionModel {
 
     public DatasetModel getDataset() {
         return dataset;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public boolean isCalendarsPresent() {
+        return calendars != null;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public List<CalendarModel> getCalendars() {
+        return calendars;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public boolean isVisualMapsPresent() {
+        return visualMaps != null;
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public List<VisualMapModel> getVisualMaps() {
+        return visualMaps;
     }
 
     public boolean isXAxesPresent() {

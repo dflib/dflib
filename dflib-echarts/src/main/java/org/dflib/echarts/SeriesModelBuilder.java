@@ -1,11 +1,13 @@
 package org.dflib.echarts;
 
-import org.dflib.Index;
+import org.dflib.DataFrame;
 import org.dflib.echarts.render.ValueModels;
 import org.dflib.echarts.render.option.EncodeModel;
 import org.dflib.echarts.render.option.SeriesModel;
+import org.dflib.echarts.render.option.data.DataModel;
 import org.dflib.echarts.render.option.series.CenterModel;
 import org.dflib.echarts.render.option.series.RadiusModel;
+import org.dflib.series.IntSequenceSeries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +15,11 @@ import java.util.Objects;
 
 class SeriesModelBuilder {
 
-    final SeriesOpts<?> seriesOpts;
-    final Index dataColumns;
+    final Option opt;
+    final DataFrame dataFrame;
+    final int seriesPosInOpt;
+
+
     String name;
 
     // dimensions are references to row numbers in the dataset
@@ -26,11 +31,11 @@ class SeriesModelBuilder {
 
     String datasetSeriesLayoutBy;
 
-
-    public SeriesModelBuilder(String name, SeriesOpts<?> seriesOpts, Index dataColumns) {
-        this.seriesOpts = Objects.requireNonNull(seriesOpts);
-        this.dataColumns = Objects.requireNonNull(dataColumns);
+    public SeriesModelBuilder(String name, Option opt, DataFrame dataFrame, int seriesPosInOpt) {
         this.name = name;
+        this.seriesPosInOpt = seriesPosInOpt;
+        this.dataFrame = Objects.requireNonNull(dataFrame);
+        this.opt = opt;
     }
 
     public SeriesModelBuilder name(String name) {
@@ -66,7 +71,13 @@ class SeriesModelBuilder {
         return this;
     }
 
+    public SeriesOpts<?> seriesOpts() {
+        return opt.seriesOpts.get(seriesPosInOpt);
+    }
+
     public SeriesModel resolve() {
+
+        SeriesOpts<?> seriesOpts = seriesOpts();
 
         switch (seriesOpts.getType()) {
             case line:
@@ -258,7 +269,7 @@ class SeriesModelBuilder {
         return new SeriesModel(
                 name,
                 so.getType().name(),
-                null, // TODO: "data"
+                heatmapDataModel(so),
                 null,
                 null,
                 datasetSeriesLayoutBy,
@@ -279,5 +290,46 @@ class SeriesModelBuilder {
                 null,
                 null
         );
+    }
+
+    private DataModel heatmapDataModel(HeatmapSeriesOpts so) {
+        InlineDataBuilder db = InlineDataBuilder.of(dataFrame);
+
+        // TODO: preserve symmetry with DatasetBuilder and move this to a static method in InlineDataBuilder?
+
+        switch (so.getCoordinateSystemType()) {
+            case calendar:
+                if (opt.calendars != null) {
+                    int len = opt.calendars.size();
+                    for (int i = 0; i < len; i++) {
+                        CalendarCoordsBuilder ab = opt.calendars.get(i);
+                        if (ab.columnName != null) {
+                            db.appendCol(dataFrame.getColumn(ab.columnName));
+                        }
+                        // else: doesn't seem like there's a reasonable default for the calendar column.
+                    }
+                }
+
+            case cartesian2d:
+                if (opt.xAxes != null) {
+                    int len = opt.xAxes.size();
+                    for (int i = 0; i < len; i++) {
+                        XAxisBuilder ab = opt.xAxes.get(i);
+                        if (ab.columnName != null) {
+                            db.appendCol(dataFrame.getColumn(ab.columnName));
+                        } else {
+                            // TODO: appending X data as a Series to prevent column reuse which is not possible until
+                            //  https://github.com/apache/echarts/issues/20330 is fixed
+                            db.appendCol(new IntSequenceSeries(1, dataFrame.height() + 1));
+                        }
+                    }
+                }
+                break;
+        }
+
+
+        opt.seriesDataColumns.get(seriesPosInOpt).forEach(db::appendCol);
+
+        return db.dataModel();
     }
 }

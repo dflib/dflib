@@ -34,28 +34,7 @@ public class HeatmapSeriesTest {
     @Test
     public void dataCartesian() {
 
-        // heatmap doesn't properly as of ECHarts 5.5.1, so we are encoding data inside the series instead of
-        // using a dataset
-
         String s1 = ECharts.chart().series(SeriesOpts.ofHeatmap().cartesian2D(), "y1", "y2").generateScript("_tid", df2);
-
-        assertFalse(s1.contains("dataset"), s1);
-        assertFalse(s1.contains("encode"), s1);
-
-        assertTrue(s1.contains("data: ["), s1);
-        assertTrue(s1.contains("['L0','y1','y2'],"), s1);
-        assertTrue(s1.contains("[1,10,20],"), s1);
-        assertTrue(s1.contains("[2,11,25]"), s1);
-        assertTrue(s1.contains("[3,14,28]"), s1);
-    }
-
-    @Test
-    public void dataCalendar() {
-
-        // heatmap doesn't properly as of ECHarts 5.5.1, so we are encoding data inside the series instead of
-        // using a dataset
-
-        String s1 = ECharts.chart().series(SeriesOpts.ofHeatmap().calendar(), "y1").generateScript("_tid", df2);
 
         assertFalse(s1.contains("dataset"), s1);
         assertFalse(s1.contains("encode"), s1);
@@ -63,8 +42,32 @@ public class HeatmapSeriesTest {
         assertTrue(s1.contains("data: ["), s1);
         assertTrue(s1.contains("['L0','y1'],"), s1);
         assertTrue(s1.contains("[1,10],"), s1);
-        assertTrue(s1.contains("[2,11]"), s1);
+        assertTrue(s1.contains("[2,11],"), s1);
         assertTrue(s1.contains("[3,14]"), s1);
+
+        assertTrue(s1.contains("['L0','y2'],"), s1);
+        assertTrue(s1.contains("[1,20],"), s1);
+        assertTrue(s1.contains("[2,25],"), s1);
+        assertTrue(s1.contains("[3,28]"), s1);
+    }
+
+    @Test
+    public void dataCalendar() {
+
+        String s1 = ECharts.chart()
+                .calendar("x")
+                .series(SeriesOpts.ofHeatmap().calendar(), "y1").generateScript("_tid", df2);
+
+        assertFalse(s1.contains("dataset"), s1);
+        assertFalse(s1.contains("encode"), s1);
+        assertTrue(s1.contains("calendar: ["), s1);
+        assertTrue(s1.contains("cellSize: ['auto',20]"), s1);
+
+        assertTrue(s1.contains("data: ["), s1);
+        assertTrue(s1.contains("['L0','y1'],"), s1);
+        assertTrue(s1.contains("['A',10],"), s1);
+        assertTrue(s1.contains("['B',11]"), s1);
+        assertTrue(s1.contains("['C',14]"), s1);
     }
 
     @Test
