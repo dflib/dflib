@@ -118,6 +118,6 @@ class SeriesModelBuilders {
     public List<SeriesModel> resolve() {
         return builders.isEmpty()
                 ? null
-                : builders.stream().map(SeriesModelBuilder::build).collect(Collectors.toList());
+                : builders.stream().map(SeriesModelBuilder::resolve).collect(Collectors.toList());
     }
 }

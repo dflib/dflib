@@ -66,7 +66,7 @@ class SeriesModelBuilder {
         return this;
     }
 
-    public SeriesModel build() {
+    public SeriesModel resolve() {
 
         switch (seriesOpts.getType()) {
             case line:
