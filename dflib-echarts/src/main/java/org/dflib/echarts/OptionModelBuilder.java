@@ -21,7 +21,7 @@ class OptionModelBuilder {
 
     OptionModel resolve() {
 
-        DatasetBuilder dsb = DatasetBuilder.of(dataFrame, opt);
+        DatasetBuilder dsb = DatasetBuilder.of(opt, dataFrame);
         List<SeriesModel> series = SeriesModelBuilders.of(opt, dsb).build();
 
         return new OptionModel(

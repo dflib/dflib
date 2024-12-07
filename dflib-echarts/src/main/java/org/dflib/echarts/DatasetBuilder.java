@@ -19,8 +19,7 @@ import java.util.function.Supplier;
 class DatasetBuilder {
 
     public static DatasetBuilder of(
-            DataFrame dataFrame,
-            Option opt) {
+            Option opt, DataFrame dataFrame) {
 
         DatasetBuilder dsb = new DatasetBuilder(dataFrame);
         appendXAxesLabels(dsb, opt.xAxes);
