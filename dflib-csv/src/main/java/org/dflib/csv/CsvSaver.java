@@ -1,26 +1,42 @@
 package org.dflib.csv;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.row.RowProxy;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.file.Path;
+import java.util.zip.GZIPOutputStream;
 
 public class CsvSaver {
 
     private CSVFormat format;
     private boolean createMissingDirs;
     private boolean printHeader;
+    private CompressionCodec compressionCodec;
 
     public CsvSaver() {
         this.format = CSVFormat.DEFAULT;
         this.printHeader = true;
+    }
+
+    /**
+     * Sets a compression codec for this saver. If not set, the saver will try to determine compression preferences
+     * using the target file extension. So this method is especially useful if the target is not a file.
+     *
+     * @since 2.0.0
+     */
+    public CsvSaver compression(CompressionCodec compressionCodec) {
+        this.compressionCodec = compressionCodec;
+        return this;
     }
 
     /**
@@ -66,7 +82,7 @@ public class CsvSaver {
             }
         }
 
-        try (FileWriter out = new FileWriter(file)) {
+        try (Writer out = new OutputStreamWriter(compressIfNeeded(new FileOutputStream(file), file.getName()))) {
             doSave(df, out);
         } catch (IOException e) {
             throw new RuntimeException("Error writing CSV to " + file + ": " + e.getMessage(), e);
@@ -84,6 +100,7 @@ public class CsvSaver {
 
     public void save(DataFrame df, Appendable out) {
         try {
+            // producing a char stream, so no compression by definition
             doSave(df, out);
         } catch (IOException e) {
             throw new RuntimeException("Error writing CSV: " + e.getMessage(), e);
@@ -91,13 +108,13 @@ public class CsvSaver {
     }
 
     public String saveToString(DataFrame df) {
+        // producing a String, so no compression by definition
         StringWriter out = new StringWriter();
         save(df, out);
         return out.toString();
     }
 
     private void doSave(DataFrame df, Appendable out) throws IOException {
-
         CSVPrinter printer = new CSVPrinter(out, format);
         if (printHeader) {
             printHeader(printer, df.getColumnsIndex());
@@ -106,6 +123,25 @@ public class CsvSaver {
         int len = df.width();
         for (RowProxy r : df) {
             printRow(printer, r, len);
+        }
+    }
+
+    private OutputStream compressIfNeeded(OutputStream out, String fileName) throws IOException {
+        CompressionCodec compression = this.compressionCodec != null
+                ? this.compressionCodec
+                : CompressionCodec.ofFileName(fileName);
+
+        if (compression == null) {
+            return out;
+        }
+
+        switch (compression) {
+            case ZIP:
+                throw new UnsupportedOperationException("TODO: zip");
+            case GZIP:
+                return new GZIPOutputStream(out);
+            default:
+                throw new UnsupportedOperationException("Unrecognized compression: " + compression);
         }
     }
 
