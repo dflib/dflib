@@ -199,4 +199,36 @@ public class ColumnSet_AggMinMaxTest {
                 .expectHeight(1)
                 .expectRow(0, LocalDateTime.of(2000, 1, 2, 2, 1, 2), LocalDateTime.of(2001, 5, 6, 3, 6, 10));
     }
+
+    @Test
+    public void str() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                "A", "b",
+                "B", "B",
+                "C", "A");
+
+        DataFrame agg = df.cols().agg(
+                $str("a").min(),
+                $str("b").max());
+
+        new DataFrameAsserts(agg, "min(a)", "max(b)")
+                .expectHeight(1)
+                .expectRow(0, "A", "b");
+    }
+
+    @Test
+    public void strFiltered() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                "A", "b",
+                "b", "B",
+                "c", "A");
+
+        DataFrame agg = df.cols().agg(
+                $str("a").min($str("a").mapBoolVal(s -> Character.isLowerCase(s.charAt(0)))),
+                $str("b").max($str("b").mapBoolVal(s -> Character.isUpperCase(s.charAt(0)))));
+
+        new DataFrameAsserts(agg, "min(a)", "max(b)")
+                .expectHeight(1)
+                .expectRow(0, "b", "B");
+    }
 }

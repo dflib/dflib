@@ -1,8 +1,10 @@
 package org.dflib;
 
+import org.dflib.exp.agg.ComparableAggregators;
+import org.dflib.exp.agg.StrReduceExp1;
 import org.dflib.exp.map.MapCondition1;
-import org.dflib.exp.map.MapExp1;
 import org.dflib.exp.map.MapCondition2;
+import org.dflib.exp.map.MapExp1;
 import org.dflib.exp.num.DecimalExp1;
 import org.dflib.exp.num.DoubleExp1;
 import org.dflib.exp.num.FloatExp1;
@@ -168,4 +170,33 @@ public interface StrExp extends Exp<String> {
     default Exp<String[]> split(String regex, int limit) {
         return StrSplitExp.splitOnRegex(this, regex, limit);
     }
+
+    /**
+     * @since 2.0.0
+     */
+    default StrExp min() {
+        return min(null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default StrExp min(Condition filter) {
+        return new StrReduceExp1<>("min", this, s -> ComparableAggregators.min(s), filter);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default StrExp max() {
+        return max(null);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default StrExp max(Condition filter) {
+        return new StrReduceExp1<>("max", this, s -> ComparableAggregators.max(s), filter);
+    }
+
 }
