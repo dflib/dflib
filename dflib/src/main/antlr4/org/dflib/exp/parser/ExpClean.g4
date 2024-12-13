@@ -1,31 +1,37 @@
 grammar ExpClean;
 
+root
+    : exp EOF
+    ;
+
 exp
-    :
-    (
-      numExp
+    : boolExp
+    | numExp
     | strExp
-    | boolExp
     | temporalExp
     | aggregates
     | if
     | ifNull
-    ) EOF
+    | null
     ;
 
 numExp
     : numScalar
     | numType
-    | numExp math numExp
+    | numExp mathOp numExp
     | numFn
     | numAgg
     | '(' numExp ')'
     ;
 
+/**
+ * Functions returning numeric type
+ */
 numFn
     : count
     | rowNum
-    | abs '(' arg ')'
+    | abs '(' numExp ')'
+    | len '(' strExp ')'
     ;
 
 numAgg
@@ -38,16 +44,19 @@ strExp
     : strScalar
     | strType
     | strFn
-    | strAgg
+//    | strAgg
     ;
 
+/**
+ * Functions returning string type
+ */
 strFn
-    : trim
+    : trim '(' strExp ')'
     ;
 
-strAgg
-    :
-    ;
+//strAgg
+//    :
+//    ;
 
 temporalExp
     : temporalType
@@ -66,8 +75,9 @@ boolExp
     ;
 
 // special functions
-if : IF '(' boolExp ',' arg ',' arg ')' ;
-ifNull : IF_NULL '(' arg ',' arg ')' ;
+if : IF '(' boolExp ',' exp ',' exp ')' ;
+ifNull : IF_NULL '(' exp ',' exp ')' ;
+
 aggregates
     : last
     | first
@@ -76,24 +86,6 @@ aggregates
 comparison
     : numExp comparisonOp numExp
     | strExp comparisonOp strExp
-    ;
-
-arg
-    : column
-    | scalar
-    | exp
-    ;
-
-column
-    : typedColumn
-    | id
-    ;
-
-typedColumn
-    : strType
-    | numType
-    | boolType
-    // TODO: other casts
     ;
 
 strType : STR '(' columnId ')' ;
@@ -118,33 +110,7 @@ temporalFn
     :
     ;
 
-id
-    : COL '(' columnId ')'
-    | ID // TODO: in JavaCC this clashes with function names
-    ;
-
 columnId : INTEGER | ID | strScalar;
-
-scalar
-    : numScalar
-    | strScalar
-    | datetimeScalar
-    | boolScalar
-    | null
-    ;
-
-aggExp
-    : sum
-    | avg
-    | median
-    | last
-    | first
-    ;
-
-infixOp
-    : math
-    | ifNull
-    ;
 
 comparisonOp
     : eq
@@ -155,7 +121,7 @@ comparisonOp
     ;
 
 // TODO: bit math,
-math
+mathOp
     : add
     | sub
     | mul
@@ -172,6 +138,7 @@ first: FIRST;
 last: LAST;
 abs: ABS;
 trim: TRIM;
+len: LEN;
 eq: EQ;
 le: LE;
 ge: GE;
@@ -225,6 +192,7 @@ BOOL: 'bool' ;
 // functions
 SUBSTR: 'substr' ;
 TRIM: 'trim' ;
+LEN: 'len' ;
 DATE: 'date' ;
 TIME: 'time' ;
 DATETIME: 'datetime' ;
