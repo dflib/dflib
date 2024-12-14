@@ -16,7 +16,7 @@
 * #392 Quantile series method and expression
 * #396 NumExp.round()
 * #398 Deprecate "DataFrame.convertColumn(..)"
-* #399 CsvLoader / CsvSaver GZIP compression
+* #399 CSV GZIP (de)compression
 * #401 ECharts: heatmap chart
 * #403 BoolAccum - java.lang.ArrayIndexOutOfBoundsException 
 * #407 "min", "max" aggregating functions for StrExp
