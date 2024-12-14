@@ -13,8 +13,8 @@ public class CsvLoader_GzipCompressionTest {
 
     @Test
     void loadFromFile() throws URISyntaxException {
-        File in = new File(getClass().getResource("compressed.csv.gz").toURI());
-        DataFrame df = Csv.loader().load(in);
+        File in = new File(getClass().getResource("compressed.comma-separated-and-gzipped").toURI());
+        DataFrame df = Csv.loader().compression(CompressionCodec.GZIP).load(in);
 
         new DataFrameAsserts(df, "A", "B")
                 .expectHeight(2)
