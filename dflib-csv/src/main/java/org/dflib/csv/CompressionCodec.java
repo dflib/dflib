@@ -3,10 +3,12 @@ package org.dflib.csv;
 import java.util.Objects;
 
 /**
+ * A list of supported compression codecs. For now only supports GZIP, but we'll be adding others later.
+ *
  * @since 2.0.0
  */
 public enum CompressionCodec {
-    GZIP, ZIP;
+    GZIP;
 
     public static CompressionCodec ofFileName(String fileName) {
         Objects.requireNonNull(fileName);
@@ -21,8 +23,6 @@ public enum CompressionCodec {
             case "gz":
             case "gzip":
                 return GZIP;
-            case "zip":
-                return ZIP;
             default:
                 return null;
         }

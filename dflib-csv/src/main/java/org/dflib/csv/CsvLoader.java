@@ -17,8 +17,10 @@ import org.dflib.collection.Iterators;
 import org.dflib.sample.Sampler;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -31,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import java.util.zip.GZIPInputStream;
 
 /**
  * A configurable loader of CSV files.
@@ -49,9 +52,22 @@ public class CsvLoader {
     private int offset;
     private int limit = -1;
 
+    private CompressionCodec compressionCodec;
+
     public CsvLoader() {
         this.format = CSVFormat.DEFAULT;
         this.colConfigurators = new ArrayList<>();
+    }
+
+    /**
+     * Sets a compression codec for this saver. If not set, the saver will try to determine compression preferences
+     * using the target file extension. So this method is especially useful if the target is not a file.
+     *
+     * @since 2.0.0
+     */
+    public CsvLoader compression(CompressionCodec compressionCodec) {
+        this.compressionCodec = compressionCodec;
+        return this;
     }
 
     /**
@@ -431,24 +447,19 @@ public class CsvLoader {
         return this;
     }
 
+    public DataFrame load(String filePath) {
+        return load(new File(filePath));
+    }
 
     public DataFrame load(Path filePath) {
         return load(filePath.toFile());
     }
 
     public DataFrame load(File file) {
-        try (Reader r = new FileReader(file)) {
+        try (Reader r = new InputStreamReader(decompressIfNeeded(new FileInputStream(file), file.getName()))) {
             return load(r);
         } catch (IOException e) {
             throw new RuntimeException("Error reading file: " + file, e);
-        }
-    }
-
-    public DataFrame load(String filePath) {
-        try (Reader r = new FileReader(filePath)) {
-            return load(r);
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading file: " + filePath, e);
         }
     }
 
@@ -542,5 +553,22 @@ public class CsvLoader {
         }
 
         return extractors;
+    }
+
+    private InputStream decompressIfNeeded(InputStream in, String fileName) throws IOException {
+        CompressionCodec compression = this.compressionCodec != null
+                ? this.compressionCodec
+                : CompressionCodec.ofFileName(fileName);
+
+        if (compression == null) {
+            return in;
+        }
+
+        switch (compression) {
+            case GZIP:
+                return new GZIPInputStream(in);
+            default:
+                throw new UnsupportedOperationException("Unrecognized compression: " + compression);
+        }
     }
 }

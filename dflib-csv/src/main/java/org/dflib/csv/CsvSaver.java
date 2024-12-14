@@ -136,8 +136,6 @@ public class CsvSaver {
         }
 
         switch (compression) {
-            case ZIP:
-                throw new UnsupportedOperationException("TODO: zip");
             case GZIP:
                 return new GZIPOutputStream(out);
             default:
