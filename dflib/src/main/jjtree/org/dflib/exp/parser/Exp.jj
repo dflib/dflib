@@ -1,0 +1,458 @@
+options {
+    STATIC = false;
+    DEBUG_PARSER = false;
+    DEBUG_LOOKAHEAD = false;
+    DEBUG_TOKEN_MANAGER = false;
+    JAVA_UNICODE_ESCAPE = true;
+    GENERATE_ANNOTATIONS = true; // @SupressWarning
+    GENERATE_STRING_BUILDER = true;
+    UNICODE_INPUT = true;
+    CACHE_TOKENS = true;
+    JAVA_TEMPLATE_TYPE = "modern";
+    SUPPORT_CLASS_VISIBILITY_PUBLIC = false; // package-private
+    OUTPUT_DIRECTORY = "../../../../../java/org/dflib/exp/parser/";
+}
+
+// Parser
+PARSER_BEGIN(ExpParser)
+
+package org.dflib.exp.parser;
+
+import org.dflib.Exp;
+
+/**
+  * Parser of the {@link org.dflib.Exp}.
+  *
+  * @since 2.0
+  */
+@SuppressWarnings("all")
+public class ExpParser {
+
+    private final ExpTreeBuilder tree = new ExpTreeBuilder();
+
+}
+
+PARSER_END(ExpParser)
+
+Exp<?> root() : {}
+{
+    exp() <EOF>
+    {
+        return tree.root();
+    }
+}
+
+void exp() : {}
+{
+    boolExp() // this is also an entry for a other expressions like Numerics and Strings
+    | aggregate()
+    | ifExp()
+}
+
+void boolExp() : {}
+{
+    // Entry point for the boolean expressions
+    // start of an operators chain, ends with simpleBoolExp() rule
+    orExp()
+}
+
+void aggregate() : {}
+{
+    // aggregates that support different types
+    {
+        boolean hasCondition = false;
+    }
+    (
+    "first" "(" boolExp() ( "," boolExp() { hasCondition = true; } )? ")"
+    {
+        tree.firstExp(hasCondition);
+    }
+    |
+    "last" "(" boolExp() ")" // TODO: there's no varian of last() with condition
+    {
+        tree.lastExp();
+    }
+    |
+    "min" "(" (numExp() | strExp()) ( "," boolExp() { hasCondition = true; } )? ")"
+    {
+        tree.minExp(hasCondition);
+    }
+    |
+    "max" "(" (numExp() | strExp()) ( "," boolExp() { hasCondition = true; } )? ")"
+    {
+        tree.maxExp(hasCondition);
+    }
+    )
+}
+
+void ifExp() : {}
+{
+    "if" "(" boolExp() "," exp() "," exp() ")"
+    {
+        tree.ifExp();
+    }
+}
+
+void orExp() : {}
+{
+    andExp()
+    ( "or" andExp()
+    {
+         tree.orExp();
+    }
+    )*
+}
+
+void andExp() : {}
+{
+    notExp()
+    ( "and" notExp()
+    {
+        tree.andExp();
+    }
+    )*
+}
+
+void notExp() : {}
+{
+    ( "not" | "!" ) baseBoolExp()
+    {
+        tree.notExp();
+    }
+    | baseBoolExp()
+}
+
+void baseBoolExp() : {}
+{
+    boolScalar()
+    | comparison()
+    | boolType()
+}
+
+void comparison() : {}
+{
+    numExp() (
+        ">" numExp()
+        {
+            tree.gtExp();
+        }
+        | ">=" numExp()
+        {
+            tree.geExp();
+        }
+        | "<" numExp()
+        {
+            tree.ltExp();
+        }
+        | "<=" numExp()
+        {
+            tree.leExp();
+        }
+        | "=" numExp()
+        {
+            tree.eqExp();
+        }
+        | "!=" numExp()
+        {
+            tree.neExp();
+        }
+    )?
+    | strExp() (
+        "=" strExp()
+        {
+            tree.eqExp();
+        }
+        | "!=" strExp()
+        {
+            tree.neExp();
+        }
+    )?
+
+}
+
+void numExp() : {}
+{
+    // Entry point for the numeric operators chain
+    plusMinusExp()
+}
+
+void plusMinusExp() : {}
+{
+    multiplyDivideExp()
+    (
+        "+" multiplyDivideExp()
+        {
+            tree.addExp();
+        }
+        | "-" multiplyDivideExp()
+        {
+            tree.subExp();
+        }
+    )*
+}
+
+void multiplyDivideExp() : {}
+{
+    numericNegate()
+    (
+        "*" numericNegate()
+        {
+            tree.mulExp();
+        }
+        | "/" numericNegate()
+        {
+            tree.divExp();
+        }
+        | "%" numericNegate()
+        {
+            tree.modExp();
+        }
+    )*
+}
+
+void numericNegate() : {}
+{
+    ( "+" )? numericBetween()
+    | "-"  numericNegate()
+    {
+        tree.negateExp();
+    }
+}
+
+void numericBetween() : {}
+{
+    "between" baseNumExp() "and" baseNumExp()
+    {
+        tree.betweenExp();
+    }
+    | baseNumExp()
+}
+
+void baseNumExp() : {}
+{
+    numScalar()
+    | numType()
+    | numFn()
+    | numAgg()
+    | parenExp()
+}
+
+void numFn() : {}
+{
+    "abs" "(" baseNumExp() ")"
+    {
+        tree.absExp();
+    }
+}
+
+void numAgg() : {}
+{
+    "sum" "(" numExp() ")"
+    {
+        tree.sumExp();
+    }
+    | "cumsum" "(" numExp() ")" // TODO: cumSum?
+    {
+        tree.cumSumExp();
+    }
+    | "avg" "(" numExp() ")"
+    {
+        tree.avgExp();
+    }
+    | "median" "(" numExp() ")"
+    {
+        tree.medianExp();
+    }
+}
+
+void strExp() : {}
+{
+    strScalar()
+    | strType()
+}
+
+void parenExp() : {}
+{
+    // common prefix for all expressions
+    "(" boolExp() ")"
+    {
+        tree.validateParenExp();
+    }
+}
+
+void numType() : {}
+{
+    intType()
+    | longType()
+    | floatType()
+}
+
+void intType() : {}
+{
+    "int" "(" columnId() ")"
+    {
+        tree.intCol();
+    }
+}
+
+void longType() : {}
+{
+    "long" "(" columnId() ")"
+    {
+        tree.longCol();
+    }
+}
+
+void floatType() : {}
+{
+    "float" "(" columnId() ")"
+    {
+        tree.floatCol();
+    }
+}
+
+void boolType() : {}
+{
+     "bool" "(" columnId() ")"
+     {
+        tree.boolCol();
+     }
+}
+
+void strType() : {}
+{
+     "str" "(" columnId() ")"
+     {
+        tree.strCol();
+     }
+}
+
+void boolScalar() : {}
+{
+    <TRUE> {
+        tree.trueExp();
+    }
+    | <FALSE> {
+        tree.falseExp();
+    }
+}
+
+void numScalar() : {}
+{
+    <LONG_LITERAL>
+    {
+        tree.longVal(token.image);
+    }
+    | <INTEGER_LITERAL>
+    {
+        tree.intVal(token.image);
+    }
+    | <FLOATING_POINT_LITERAL>
+    {
+        tree.floatVal(token.image);
+    }
+}
+
+void columnId() : {}
+{
+    <INTEGER_LITERAL>
+    {
+        tree.intVal(token.image);
+    }
+    | <IDENTIFIER>
+    {
+        tree.strVal(token.image);
+    }
+    | strScalar()
+}
+
+void strScalar() : {}
+{
+    (
+    <CHARACTER_LITERAL>
+    | <STRING_LITERAL>
+    )
+    {
+        tree.strVal(token.image, true);
+    }
+}
+
+TOKEN :
+{
+	<NULL: "null">
+    | <TRUE: "true">
+    | <FALSE: "false">
+}
+TOKEN :
+{
+  < LONG_LITERAL:
+        <DECIMAL_LITERAL> (["l","L"])
+      | <HEX_LITERAL> (["l","L"])
+      | <OCTAL_LITERAL> (["l","L"])
+      | <BINARY_LITERAL> (["l","L"])
+  >
+| < INTEGER_LITERAL:
+        <DECIMAL_LITERAL>
+      | <HEX_LITERAL>
+      | <OCTAL_LITERAL>
+      | <BINARY_LITERAL>
+  >
+| < #DECIMAL_LITERAL: ["0"-"9"]((["0"-"9","_"])*["0"-"9"])? >
+| < #HEX_LITERAL: "0" ["x","X"] <HEX_DIGITS> >
+| < #OCTAL_LITERAL: "0" ["0"-"7"]((["0"-"7","_"])*["0"-"7"])? >
+| < #BINARY_LITERAL: "0" ["b","B"] ["0","1"]((["0","1","_"])*["0","1"])? >
+| < FLOATING_POINT_LITERAL:
+        <DECIMAL_FLOATING_POINT_LITERAL>
+      | <HEXADECIMAL_FLOATING_POINT_LITERAL>
+  >
+| < #DECIMAL_FLOATING_POINT_LITERAL:
+        <DECIMAL_LITERAL> "." (<DECIMAL_LITERAL>)? (<DECIMAL_EXPONENT>)? (["f","F","d","D"])?
+      | "." <DECIMAL_LITERAL> (<DECIMAL_EXPONENT>)? (["f","F","d","D"])?
+      | <DECIMAL_LITERAL> <DECIMAL_EXPONENT> (["f","F","d","D"])?
+      | <DECIMAL_LITERAL> (<DECIMAL_EXPONENT>)? ["f","F","d","D"]
+  >
+| < #DECIMAL_EXPONENT: ["e","E"] (["+","-"])? (<DECIMAL_LITERAL>)+ >
+| < #HEXADECIMAL_FLOATING_POINT_LITERAL:
+        <HEX_LITERAL> (".")? <HEXADECIMAL_EXPONENT> (["f","F","d","D"])?
+      | "0" ["x","X"] (<HEX_DIGITS>)? "." <HEX_DIGITS> <HEXADECIMAL_EXPONENT> (["f","F","d","D"])?
+  >
+| < #HEXADECIMAL_EXPONENT: ["p","P"] (["+","-"])? <DECIMAL_LITERAL> >
+| < #HEX_DIGITS: ["0"-"9","a"-"f","A"-"F"]((["0"-"9","a"-"f","A"-"F","_"])*["0"-"9","a"-"f","A"-"F"])? >
+| < #ESCAPE :
+    "\\"
+    (
+      ["s","n","t","b","r","f","\\","'","\""]
+    | ["0"-"7"] ( ["0"-"7"] )?
+    | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+    ) >
+| < #UNICODE_ESCAPE:
+    "\\u"
+    ["0"-"9","A"-"F","a"-"f"]
+    ["0"-"9","A"-"F","a"-"f"]
+    ["0"-"9","A"-"F","a"-"f"]
+    ["0"-"9","A"-"F","a"-"f"] >
+| < CHARACTER_LITERAL:
+      "'"
+      (
+         (~["'","\\","\n","\r"])
+       | <ESCAPE>
+       | <UNICODE_ESCAPE>
+      )
+      "'"
+  >
+| < STRING_LITERAL:
+      "\""
+      (
+         (~["\"","\\","\n","\r"])
+       | <ESCAPE>
+       | <UNICODE_ESCAPE>
+      )*
+      "\""
+  >
+}
+TOKEN : {
+  <IDENTIFIER: <LETTER> (<PART_LETTER>)*>
+| <#LETTER: ["$","A"-"Z","_","a"-"z"]>
+| <#PART_LETTER: ["$","0"-"9","A"-"Z","_","a"-"z"]>
+}
+SKIP : { " " | "\t" | "\n" | "\r" }

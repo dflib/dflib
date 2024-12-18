@@ -1,0 +1,467 @@
+options {
+    // JavaCC options
+    MULTI = true;
+    NODE_DEFAULT_VOID = true;
+    STATIC = false;
+    DEBUG_PARSER = false;
+    DEBUG_LOOKAHEAD = false;
+    DEBUG_TOKEN_MANAGER = false;
+    JAVA_UNICODE_ESCAPE = true;
+    UNICODE_INPUT = true;
+    CACHE_TOKENS = true;
+    JAVA_TEMPLATE_TYPE = "modern";
+    OUTPUT_DIRECTORY = "../../../../../java/org/dflib/exp/parser/";
+
+    // JJTree options
+    NODE_CLASS = "BaseExp"; // This is a custom base class for AST nodes
+    NODE_PREFIX = "Exp";
+}
+
+// Parser
+PARSER_BEGIN(ExpParser)
+
+package org.dflib.exp.parser;
+
+/**
+  * Parser of the {@link org.dflib.Exp}.
+  *
+  * @since 2.0
+  */
+public class ExpParser extends BaseExpParser {
+}
+
+PARSER_END(ExpParser)
+
+// ============= start of top-level rules =============
+
+SimpleNode exp() : {}
+{
+    boolExp()
+//    | temporalExp()
+    | aggregateExp()
+//    | ifExp()
+//    | ifNullExp()
+    <EOF>
+    {
+        return (SimpleNode) jjtree.rootNode();
+    }
+}
+
+// Entry point for the numeric expressions
+void numExp() : {}
+{
+    // start of an operators chain, ends with simpleNumExp() rule
+    bitwiseOr()
+}
+
+void simpleNumExp() : {}
+{
+    numScalar()                                     #NumVal
+    | numType()
+    | numFn()
+    | numAgg()
+    | parenExp() // This rule goes as simpleBoolExp -> "(" boolExp() ")"
+}
+
+// Entry point for the boolean expressions
+void boolExp() : {}
+{
+    // start of an operators chain, ends with simpleBoolExp() rule
+    orExp()
+}
+
+// this rule should be validated at runtime
+// it consumes all expressions that could be grouped with parenthesis
+void parenExp() : {}
+{
+    <LPAREN> boolExp() <RPAREN>
+}
+
+void simpleBoolExp() : {}
+{
+    boolScalar()
+    | comparison() // this rule expands not only into comparison but into type-specific expressions
+    | boolType()
+}
+
+void strExp() : {}
+{
+    strScalar()                                     #StrVal
+    | strType()
+    | strFn()
+    | strAgg()
+}
+
+// column identifier could be a number for a possitional column or a string for a column name with special characters
+void columnId() : {}
+{
+    <INTEGER_LITERAL>                               #IntVal
+    | <IDENTIFIER> {
+        jjtThis.jjtSetValue(token.getValue());
+    }                                               #Id
+    | strScalar()                                   #StrVal
+}
+
+
+void aggregateExp() : {}
+{
+    <MIN> <LPAREN> ( numExp() | strExp() ) <RPAREN> #Min(1)
+}
+
+// ============= end of top-level rules =============
+
+// ============= start of numerical operators =============
+
+void bitwiseOr() : {}
+{
+    bitwiseXor()
+    (
+        "|" bitwiseXor()                            #BitOr(2)
+    )*
+}
+
+void bitwiseXor() : {}
+{
+    bitwiseAnd()
+    (
+        "^" bitwiseAnd()                            #BitXor(2)
+    )*
+}
+
+void bitwiseAnd() : {}
+{
+    bitwiseShift()
+    (
+        "&" bitwiseShift()                          #BitAnd(2)
+    )*
+}
+
+void bitwiseShift(): {}
+{
+    plusMinusExp()
+    (
+        "<<" plusMinusExp()                        #BitLShift(2)
+        | ">>" plusMinusExp()                      #BitRShift(2)
+    )*
+}
+
+void plusMinusExp() : {}
+{
+    multiplyDivideExp()
+    (
+        "+" multiplyDivideExp()                   #Add(2)
+        | "-" multiplyDivideExp()                 #Sub(2)
+    )*
+}
+
+void multiplyDivideExp() : {}
+{
+    bitwiseNotExp()
+    (
+        "*" bitwiseNotExp()                         #Mul(2)
+        | "/" bitwiseNotExp()                       #Div(2)
+        | "%" bitwiseNotExp()                       #Mod(2) // TODO: check this, it could require a separate rule
+    )*
+}
+
+void bitwiseNotExp() : {}
+{
+    numericNegate()
+    | "~" numericNegate()                           #BitNot(1)
+}
+
+void numericNegate() : {}
+{
+    ( "+" )? numericBetween()
+    | "-"  numericNegate()                          #Negate(1)
+}
+
+void numericBetween() : {}
+{
+    "between" simpleNumExp() "and" simpleNumExp()   #Between(3)
+    | simpleNumExp()
+}
+
+// ============= end of numerical operators =============
+
+// ============= start of numerical expressions =============
+
+void numScalar() : {}
+{
+    <LONG_LITERAL>
+    | <INTEGER_LITERAL>
+    | <FLOATING_POINT_LITERAL>
+}
+
+void numType() : {}
+{
+    intType()
+    | longType()
+    | floatType()
+}
+
+void numFn() : {}
+{
+    <COUNT>                                         #Count    // TODO: this is not exactly a numeric function
+    | <ROWNUM>                                      #RowNum   // TODO: this is not exactly a numeric function
+    | (<ABS> <LPAREN> numExp() <RPAREN>)            #Abs
+}
+
+void numAgg() : {}
+{
+    (<MIN> <LPAREN> numExp() <RPAREN>)              #Min
+    | (<MAX> <LPAREN> numExp() <RPAREN>)            #Max
+    | (<SUM> <LPAREN> numExp() <RPAREN>)            #Sum
+    | (<CUMSUM> <LPAREN> numExp() <RPAREN>)         #CumSum
+    | (<AVG> <LPAREN> numExp() <RPAREN>)            #Avg
+    | (<MEDIAN> <LPAREN> numExp() <RPAREN>)         #Median
+}
+
+void intType() : {}
+{
+    <INT> <LPAREN> columnId() <RPAREN>              #IntCol(1)
+}
+
+void longType() : {}
+{
+    <LONG> <LPAREN> columnId() <RPAREN>             #LongCol(1)
+}
+
+void floatType() : {}
+{
+    <FLOAT> <LPAREN> columnId() <RPAREN>            #FloatCol(1)
+}
+
+// ============= end of numerical expressions =============
+
+// ============= start of boolean operators =============
+
+void orExp() : {}
+{
+    andExp() ( "or" andExp() #Or(2) )*
+}
+
+void andExp() : {}
+{
+    notExp() ( "and" notExp() #And(2) )*
+}
+
+void notExp() : {}
+{
+    ( "not" | "!" ) simpleBoolExp()                 #Not(1)
+    | simpleBoolExp()
+}
+
+void comparison() : {}
+{
+    numExp() (
+        ">" numExp()                                #Gt(2)
+        | ">=" numExp()                             #Ge(2)
+        | "<" numExp()                              #Lt(2)
+        | "<=" numExp()                             #Le(2)
+        | "=" numExp()                              #Eq(2)
+        | "!=" numExp()                             #Ne(2)
+    )?
+    | strExp() (
+        ">" strExp()                                #Gt(2)
+        | ">=" strExp()                             #Ge(2)
+        | "<" strExp()                              #Lt(2)
+        | "<=" strExp()                             #Le(2)
+        | "=" strExp()                              #Eq(2)
+        | "!=" strExp()                             #Ne(2)
+    )?
+    // TODO: strExp() and possibly temporalExp()
+}
+
+// ============= end of boolean operators =============
+
+// ============= start of boolean expressions =============
+
+void boolScalar() : {}
+{
+    <TRUE>                                          #True
+    | <FALSE>                                       #False
+}
+
+void boolType() : {}
+{
+     <BOOL> <LPAREN> columnId() <RPAREN>            #BoolCol(1)
+}
+
+// ============= end of boolean expressions =============
+
+// ============= start of string expressions =============
+
+void strScalar() : {}
+{
+    <CHARACTER_LITERAL>
+    | <STRING_LITERAL>
+}
+
+void strType() : {}
+{
+    <STR> <LPAREN> columnId() <RPAREN>              #StrCol(1)
+}
+
+void strFn() : {}
+{
+    <LEN>                                           #Len
+    // TODO: CONCAT
+}
+
+void strAgg() : {}
+{
+    (<MIN> <LPAREN> strExp() <RPAREN>)              #Min
+    | (<MAX> <LPAREN> strExp() <RPAREN>)            #Max
+}
+
+
+// ============= end of string expressions =============
+
+// Token Manager
+TOKEN_MGR_DECLS:
+{
+
+}
+
+// Tokens
+
+TOKEN :
+{
+    <LPAREN: "(">
+  | <RPAREN: ")">
+  | <LBRACE: "{">
+  | <RBRACE: "}">
+  | <LBRACKET: "[">
+  | <RBRACKET: "]">
+  | <SEMICOLON: ";">
+  | <COMMA: ",">
+  | <DOT: ".">
+}
+
+// Case operators
+
+TOKEN :
+{
+	<INT: "int" >
+	| <LONG: "long" >
+	| <FLOAT: "float" >
+	| <STR: "str" >
+	| <BOOL: "bool" >
+	| <DATE: "date" >
+	| <TIME: "time" >
+	| <DATETIME: "datetime" >
+}
+
+// Literals
+
+TOKEN :
+{
+	<ABS: "abs">
+    | <COUNT: "count">
+    | <ROWNUM: "rowNum">
+	| <AVG: "avg">
+    | <MIN: "min">
+    | <MAX: "max">
+    | <SUM: "sum">
+    | <CUMSUM: "cumSum">
+    | <MEDIAN: "median">
+    | <LEN: "len">
+}
+
+
+TOKEN :
+{
+	<NULL: "null">
+    | <TRUE: "true">
+    | <FALSE: "false">
+}
+
+TOKEN :
+{
+  < LONG_LITERAL:
+        <DECIMAL_LITERAL> (["l","L"])
+      | <HEX_LITERAL> (["l","L"])
+      | <OCTAL_LITERAL> (["l","L"])
+      | <BINARY_LITERAL> (["l","L"])
+  >
+| < INTEGER_LITERAL:
+        <DECIMAL_LITERAL>
+      | <HEX_LITERAL>
+      | <OCTAL_LITERAL>
+      | <BINARY_LITERAL>
+  >
+| < #DECIMAL_LITERAL: ["0"-"9"]((["0"-"9","_"])*["0"-"9"])? >
+| < #HEX_LITERAL: "0" ["x","X"] <HEX_DIGITS> >
+| < #OCTAL_LITERAL: "0" ["0"-"7"]((["0"-"7","_"])*["0"-"7"])? >
+| < #BINARY_LITERAL: "0" ["b","B"] ["0","1"]((["0","1","_"])*["0","1"])? >
+| < FLOATING_POINT_LITERAL:
+        <DECIMAL_FLOATING_POINT_LITERAL>
+      | <HEXADECIMAL_FLOATING_POINT_LITERAL>
+  >
+| < #DECIMAL_FLOATING_POINT_LITERAL:
+        <DECIMAL_LITERAL> "." (<DECIMAL_LITERAL>)? (<DECIMAL_EXPONENT>)? (["f","F","d","D"])?
+      | "." <DECIMAL_LITERAL> (<DECIMAL_EXPONENT>)? (["f","F","d","D"])?
+      | <DECIMAL_LITERAL> <DECIMAL_EXPONENT> (["f","F","d","D"])?
+      | <DECIMAL_LITERAL> (<DECIMAL_EXPONENT>)? ["f","F","d","D"]
+  >
+| < #DECIMAL_EXPONENT: ["e","E"] (["+","-"])? (<DECIMAL_LITERAL>)+ >
+| < #HEXADECIMAL_FLOATING_POINT_LITERAL:
+        <HEX_LITERAL> (".")? <HEXADECIMAL_EXPONENT> (["f","F","d","D"])?
+      | "0" ["x","X"] (<HEX_DIGITS>)? "." <HEX_DIGITS> <HEXADECIMAL_EXPONENT> (["f","F","d","D"])?
+  >
+| < #HEXADECIMAL_EXPONENT: ["p","P"] (["+","-"])? <DECIMAL_LITERAL> >
+| < #HEX_DIGITS: ["0"-"9","a"-"f","A"-"F"]((["0"-"9","a"-"f","A"-"F","_"])*["0"-"9","a"-"f","A"-"F"])? >
+| < #ESCAPE :
+    "\\"
+    (
+      ["s","n","t","b","r","f","\\","'","\""]
+    | ["0"-"7"] ( ["0"-"7"] )?
+    | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+    ) >
+| < #UNICODE_ESCAPE:
+    "\\u"
+    ["0"-"9","A"-"F","a"-"f"]
+    ["0"-"9","A"-"F","a"-"f"]
+    ["0"-"9","A"-"F","a"-"f"]
+    ["0"-"9","A"-"F","a"-"f"] >
+| < CHARACTER_LITERAL:
+      "'"
+      (
+         (~["'","\\","\n","\r"])
+       | <ESCAPE>
+       | <UNICODE_ESCAPE>
+      )
+      "'"
+  >
+| < STRING_LITERAL:
+      "\""
+      (
+         (~["\"","\\","\n","\r"])
+       | <ESCAPE>
+       | <UNICODE_ESCAPE>
+      )*
+      "\""
+  >
+}
+
+// Identifier
+TOKEN : {
+  <IDENTIFIER: <LETTER> (<PART_LETTER>)*>
+| <#LETTER: ["$","A"-"Z","_","a"-"z"]>
+| <#PART_LETTER: ["$","0"-"9","A"-"Z","_","a"-"z"]>
+}
+
+SKIP : { " " | "\t" | "\n" | "\r" }
+SKIP :
+{
+  "/*" : WithinComment
+}
+<WithinComment> SKIP :
+{
+  "*/" : DEFAULT
+}
+<WithinComment> MORE :
+{
+  <~[]>
+}
