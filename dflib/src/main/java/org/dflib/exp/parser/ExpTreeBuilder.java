@@ -76,7 +76,10 @@ public class ExpTreeBuilder {
     }
 
     void ifExp() {
-        push(Exp.ifExp(popCondition(), pop(), pop()));
+        Exp<Object> right = pop();
+        Exp<Object> left = pop();
+        Condition condition = popCondition();
+        push(Exp.ifExp(condition, left, right));
     }
 
     void notExp() {
@@ -93,7 +96,9 @@ public class ExpTreeBuilder {
 
     void gtExp() {
         if (isNum()) {
-            push(popNum().gt(popNum()));
+            NumExp<?> right = popNum();
+            NumExp<?> left = popNum();
+            push(left.gt(right));
         } else {
             throw new IllegalStateException("Not a num");
         }
@@ -101,7 +106,9 @@ public class ExpTreeBuilder {
 
     void geExp() {
         if (isNum()) {
-            push(popNum().ge(popNum()));
+            NumExp<?> right = popNum();
+            NumExp<?> left = popNum();
+            push(left.ge(right));
         } else {
             throw new IllegalStateException("Not a num");
         }
@@ -109,7 +116,9 @@ public class ExpTreeBuilder {
 
     void ltExp() {
         if (isNum()) {
-            push(popNum().lt(popNum()));
+            NumExp<?> right = popNum();
+            NumExp<?> left = popNum();
+            push(left.lt(right));
         } else {
             throw new IllegalStateException("Not a num");
         }
@@ -117,7 +126,9 @@ public class ExpTreeBuilder {
 
     void leExp() {
         if (isNum()) {
-            push(popNum().le(popNum()));
+            NumExp<?> right = popNum();
+            NumExp<?> left = popNum();
+            push(left.le(right));
         } else {
             throw new IllegalStateException("Not a num");
         }
@@ -125,9 +136,13 @@ public class ExpTreeBuilder {
 
     void eqExp() {
         if (isNum()) {
-            push(popNum().eq(popNum()));
+            NumExp<?> right = popNum();
+            NumExp<?> left = popNum();
+            push(left.eq(right));
         } else if(isStr()) {
-            push(popStr().eq(popStr()));
+            StrExp right = popStr();
+            StrExp left = popStr();
+            push(left.eq(right));
         } else {
             throw new IllegalStateException("Numeric or String expression expected");
         }
@@ -135,32 +150,46 @@ public class ExpTreeBuilder {
 
     void neExp() {
         if (isNum()) {
-            push(popNum().ne(popNum()));
+            NumExp<?> right = popNum();
+            NumExp<?> left = popNum();
+            push(left.ne(right));
         } else if(isStr()) {
-            push(popStr().ne(popStr()));
+            StrExp right = popStr();
+            StrExp left = popStr();
+            push(left.ne(right));
         } else {
             throw new IllegalStateException("Numeric or String expression expected");
         }
     }
 
     void addExp() {
-        push(popNum().add(popNum()));
+        NumExp<?> right = popNum();
+        NumExp<?> left = popNum();
+        push(left.add(right));
     }
 
     void subExp() {
-        push(popNum().sub(popNum()));
+        NumExp<?> right = popNum();
+        NumExp<?> left = popNum();
+        push(left.sub(right));
     }
 
     void mulExp() {
-        push(popNum().mul(popNum()));
+        NumExp<?> right = popNum();
+        NumExp<?> left = popNum();
+        push(left.mul(right));
     }
 
     void divExp() {
-        push(popNum().div(popNum()));
+        NumExp<?> right = popNum();
+        NumExp<?> left = popNum();
+        push(left.div(right));
     }
 
     void modExp() {
-        push(popNum().mod(popNum()));
+        NumExp<?> right = popNum();
+        NumExp<?> left = popNum();
+        push(left.mod(right));
     }
 
     void negateExp() {
@@ -171,7 +200,10 @@ public class ExpTreeBuilder {
 
 
     void betweenExp() {
-        push(popNum().between(popNum(), popNum()));
+        NumExp<?> right = popNum();
+        NumExp<?> left = popNum();
+        NumExp<?> arg = popNum();
+        push(arg.between(left, right));
     }
 
     void absExp() {

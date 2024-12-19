@@ -17,9 +17,8 @@ class ExpParserTest {
                 "true or false",
                 "true or false and not true",
                 "42 + 12 * 3.0 > 23 % 12",
-                "int(a) + 12 * int(b) / 2 > long(c) - 12 * 23",
+                "int(a) + (12 * int(b) / 2) > (long(c) - 12) * 23",
                 "(bool(a) or bool(b)) and (str(c) != \"abc\")",
-//                "(int(a) + 12) * (int(b) >> 2)",
                 "min(int(a), int(a) > 10)",
                 "avg(long(a))",
                 "max(str(b))"
@@ -28,8 +27,6 @@ class ExpParserTest {
         for(String exp : expressions) {
             ExpParser parser = new ExpParser(exp);
             Exp<?> expression = parser.root();
-//            ExpParser parser = new ExpParser(exp);
-//            SimpleNode expression = parser.exp();
             assertNotNull(expression);
         }
 

@@ -68,7 +68,7 @@ void aggregate() : {}
         tree.firstExp(hasCondition);
     }
     |
-    "last" "(" boolExp() ")" // TODO: there's no varian of last() with condition
+    "last" "(" boolExp() ")" // TODO: there's no variant of last() with condition
     {
         tree.lastExp();
     }
@@ -167,7 +167,6 @@ void comparison() : {}
             tree.neExp();
         }
     )?
-
 }
 
 void numExp() : {}
@@ -273,7 +272,7 @@ void strExp() : {}
 
 void parenExp() : {}
 {
-    // common prefix for all expressions
+    // we collapse everything to a bool exp to not handle really long LOOKAHEADs
     "(" boolExp() ")"
     {
         tree.validateParenExp();
