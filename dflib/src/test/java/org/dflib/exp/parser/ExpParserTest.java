@@ -21,7 +21,8 @@ class ExpParserTest {
                 "(bool(a) or bool(b)) and (str(c) != \"abc\")",
                 "min(int(a), int(a) > 10)",
                 "avg(long(a))",
-                "max(str(b))"
+                "max(str(b), len(str(b)) < 20)",
+                "matches(str(b), \"abc\")"
         );
 
         for(String exp : expressions) {

@@ -45,8 +45,8 @@ Exp<?> root() : {}
 void exp() : {}
 {
     boolExp() // this is also an entry for a other expressions like Numerics and Strings
-    | aggregate()
-    | ifExp()
+    | genericAgg()
+    | genericFn()
 }
 
 void boolExp() : {}
@@ -56,7 +56,7 @@ void boolExp() : {}
     orExp()
 }
 
-void aggregate() : {}
+void genericAgg() : {}
 {
     // aggregates that support different types
     {
@@ -85,7 +85,24 @@ void aggregate() : {}
     )
 }
 
-void ifExp() : {}
+void genericFn() : {}
+{
+    splitFn()
+    | ifFn()
+}
+
+void splitFn() : {}
+{
+    {
+        boolean useLimit = false;
+    }
+    "split" "(" strExp() "," strScalar() ("," intScalar() { useLimit = true; })? ")"
+    {
+        tree.splitExp(useLimit);
+    }
+}
+
+void ifFn() : {}
 {
     "if" "(" boolExp() "," exp() "," exp() ")"
     {
@@ -125,8 +142,22 @@ void notExp() : {}
 void baseBoolExp() : {}
 {
     boolScalar()
-    | comparison()
     | boolType()
+    | boolFn()
+    | comparison()
+}
+
+void boolFn() : {}
+{
+    matchesFn()
+}
+
+void matchesFn() : {}
+{
+    "matches" "(" strExp() "," strScalar() ")"
+    {
+        tree.matchesExp();
+    }
 }
 
 void comparison() : {}
@@ -242,6 +273,10 @@ void numFn() : {}
     {
         tree.absExp();
     }
+    | "len" "(" strExp() ")"
+    {
+        tree.lenExp();
+    }
 }
 
 void numAgg() : {}
@@ -338,15 +373,30 @@ void boolScalar() : {}
 
 void numScalar() : {}
 {
+    intScalar()
+    | longScalar()
+    | floatScalar()
+}
+
+void intScalar() : {}
+{
+    <INTEGER_LITERAL>
+    {
+        tree.intVal(token.image);
+    }
+}
+
+void longScalar() : {}
+{
     <LONG_LITERAL>
     {
         tree.longVal(token.image);
     }
-    | <INTEGER_LITERAL>
-    {
-        tree.intVal(token.image);
-    }
-    | <FLOATING_POINT_LITERAL>
+}
+
+void floatScalar() : {}
+{
+    <FLOATING_POINT_LITERAL>
     {
         tree.floatVal(token.image);
     }

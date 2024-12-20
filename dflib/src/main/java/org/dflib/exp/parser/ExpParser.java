@@ -23,12 +23,11 @@ return tree.root();
   final public void exp() throws ParseException {
     switch (jj_nt.kind) {
     case 2:
-    case 11:
     case 12:
-    case 19:
-    case 20:
-    case 24:
-    case 25:
+    case 13:
+    case 14:
+    case 21:
+    case 22:
     case 26:
     case 27:
     case 28:
@@ -38,6 +37,9 @@ return tree.root();
     case 32:
     case 33:
     case 34:
+    case 35:
+    case 36:
+    case 37:
     case TRUE:
     case FALSE:
     case LONG_LITERAL:
@@ -52,11 +54,12 @@ return tree.root();
     case 5:
     case 6:
     case 7:{
-      aggregate();
+      genericAgg();
       break;
       }
-    case 8:{
-      ifExp();
+    case 8:
+    case 9:{
+      genericFn();
       break;
       }
     default:
@@ -70,7 +73,7 @@ return tree.root();
     orExp();
 }
 
-  final public void aggregate() throws ParseException {
+  final public void genericAgg() throws ParseException {
 boolean hasCondition = false;
     switch (jj_nt.kind) {
     case 1:{
@@ -105,10 +108,8 @@ tree.lastExp();
       jj_consume_token(2);
       switch (jj_nt.kind) {
       case 2:
-      case 19:
-      case 20:
-      case 24:
-      case 25:
+      case 21:
+      case 22:
       case 26:
       case 27:
       case 28:
@@ -116,13 +117,16 @@ tree.lastExp();
       case 30:
       case 31:
       case 32:
+      case 33:
+      case 34:
+      case 35:
       case LONG_LITERAL:
       case INTEGER_LITERAL:
       case FLOATING_POINT_LITERAL:{
         numExp();
         break;
         }
-      case 34:
+      case 37:
       case CHARACTER_LITERAL:
       case STRING_LITERAL:{
         strExp();
@@ -153,10 +157,8 @@ tree.minExp(hasCondition);
       jj_consume_token(2);
       switch (jj_nt.kind) {
       case 2:
-      case 19:
-      case 20:
-      case 24:
-      case 25:
+      case 21:
+      case 22:
       case 26:
       case 27:
       case 28:
@@ -164,13 +166,16 @@ tree.minExp(hasCondition);
       case 30:
       case 31:
       case 32:
+      case 33:
+      case 34:
+      case 35:
       case LONG_LITERAL:
       case INTEGER_LITERAL:
       case FLOATING_POINT_LITERAL:{
         numExp();
         break;
         }
-      case 34:
+      case 37:
       case CHARACTER_LITERAL:
       case STRING_LITERAL:{
         strExp();
@@ -203,16 +208,47 @@ tree.maxExp(hasCondition);
     }
 }
 
-  final public void ifExp() throws ParseException {
-    jj_consume_token(8);
-    jj_consume_token(2);
-    boolExp();
-    jj_consume_token(3);
-    exp();
-    jj_consume_token(3);
-    exp();
-    jj_consume_token(4);
+  final public void genericFn() throws ParseException {
+    switch (jj_nt.kind) {
+    case 8:{
+boolean useLimit = false;
+      jj_consume_token(8);
+      jj_consume_token(2);
+      strExp();
+      jj_consume_token(3);
+      strScalar();
+      switch (jj_nt.kind) {
+      case 3:{
+        jj_consume_token(3);
+        intScalar();
+useLimit = true;
+        break;
+        }
+      default:
+        jj_la1[7] = jj_gen;
+        ;
+      }
+      jj_consume_token(4);
+tree.splitExp(useLimit);
+      break;
+      }
+    case 9:{
+      jj_consume_token(9);
+      jj_consume_token(2);
+      boolExp();
+      jj_consume_token(3);
+      exp();
+      jj_consume_token(3);
+      exp();
+      jj_consume_token(4);
 tree.ifExp();
+      break;
+      }
+    default:
+      jj_la1[8] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
 }
 
   final public void orExp() throws ParseException {
@@ -220,15 +256,15 @@ tree.ifExp();
     label_1:
     while (true) {
       switch (jj_nt.kind) {
-      case 9:{
+      case 10:{
         ;
         break;
         }
       default:
-        jj_la1[7] = jj_gen;
+        jj_la1[9] = jj_gen;
         break label_1;
       }
-      jj_consume_token(9);
+      jj_consume_token(10);
       andExp();
 tree.orExp();
     }
@@ -239,15 +275,15 @@ tree.orExp();
     label_2:
     while (true) {
       switch (jj_nt.kind) {
-      case 10:{
+      case 11:{
         ;
         break;
         }
       default:
-        jj_la1[8] = jj_gen;
+        jj_la1[10] = jj_gen;
         break label_2;
       }
-      jj_consume_token(10);
+      jj_consume_token(11);
       notExp();
 tree.andExp();
     }
@@ -255,19 +291,19 @@ tree.andExp();
 
   final public void notExp() throws ParseException {
     switch (jj_nt.kind) {
-    case 11:
-    case 12:{
+    case 12:
+    case 13:{
       switch (jj_nt.kind) {
-      case 11:{
-        jj_consume_token(11);
-        break;
-        }
       case 12:{
         jj_consume_token(12);
         break;
         }
+      case 13:{
+        jj_consume_token(13);
+        break;
+        }
       default:
-        jj_la1[9] = jj_gen;
+        jj_la1[11] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -276,10 +312,9 @@ tree.notExp();
       break;
       }
     case 2:
-    case 19:
-    case 20:
-    case 24:
-    case 25:
+    case 14:
+    case 21:
+    case 22:
     case 26:
     case 27:
     case 28:
@@ -289,6 +324,9 @@ tree.notExp();
     case 32:
     case 33:
     case 34:
+    case 35:
+    case 36:
+    case 37:
     case TRUE:
     case FALSE:
     case LONG_LITERAL:
@@ -300,7 +338,7 @@ tree.notExp();
       break;
       }
     default:
-      jj_la1[10] = jj_gen;
+      jj_la1[12] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -313,11 +351,17 @@ tree.notExp();
       boolScalar();
       break;
       }
+    case 36:{
+      boolType();
+      break;
+      }
+    case 14:{
+      boolFn();
+      break;
+      }
     case 2:
-    case 19:
-    case 20:
-    case 24:
-    case 25:
+    case 21:
+    case 22:
     case 26:
     case 27:
     case 28:
@@ -325,7 +369,10 @@ tree.notExp();
     case 30:
     case 31:
     case 32:
+    case 33:
     case 34:
+    case 35:
+    case 37:
     case LONG_LITERAL:
     case INTEGER_LITERAL:
     case FLOATING_POINT_LITERAL:
@@ -334,24 +381,28 @@ tree.notExp();
       comparison();
       break;
       }
-    case 33:{
-      boolType();
-      break;
-      }
     default:
-      jj_la1[11] = jj_gen;
+      jj_la1[13] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
 }
 
+  final public void boolFn() throws ParseException {
+    jj_consume_token(14);
+    jj_consume_token(2);
+    strExp();
+    jj_consume_token(3);
+    strScalar();
+    jj_consume_token(4);
+tree.matchesExp();
+}
+
   final public void comparison() throws ParseException {
     switch (jj_nt.kind) {
     case 2:
-    case 19:
-    case 20:
-    case 24:
-    case 25:
+    case 21:
+    case 22:
     case 26:
     case 27:
     case 28:
@@ -359,84 +410,54 @@ tree.notExp();
     case 30:
     case 31:
     case 32:
+    case 33:
+    case 34:
+    case 35:
     case LONG_LITERAL:
     case INTEGER_LITERAL:
     case FLOATING_POINT_LITERAL:{
       numExp();
       switch (jj_nt.kind) {
-      case 13:
-      case 14:
       case 15:
       case 16:
       case 17:
-      case 18:{
+      case 18:
+      case 19:
+      case 20:{
         switch (jj_nt.kind) {
-        case 13:{
-          jj_consume_token(13);
-          numExp();
-tree.gtExp();
-          break;
-          }
-        case 14:{
-          jj_consume_token(14);
-          numExp();
-tree.geExp();
-          break;
-          }
         case 15:{
           jj_consume_token(15);
           numExp();
-tree.ltExp();
+tree.gtExp();
           break;
           }
         case 16:{
           jj_consume_token(16);
           numExp();
+tree.geExp();
+          break;
+          }
+        case 17:{
+          jj_consume_token(17);
+          numExp();
+tree.ltExp();
+          break;
+          }
+        case 18:{
+          jj_consume_token(18);
+          numExp();
 tree.leExp();
           break;
           }
-        case 17:{
-          jj_consume_token(17);
+        case 19:{
+          jj_consume_token(19);
           numExp();
 tree.eqExp();
           break;
           }
-        case 18:{
-          jj_consume_token(18);
+        case 20:{
+          jj_consume_token(20);
           numExp();
-tree.neExp();
-          break;
-          }
-        default:
-          jj_la1[12] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-        break;
-        }
-      default:
-        jj_la1[13] = jj_gen;
-        ;
-      }
-      break;
-      }
-    case 34:
-    case CHARACTER_LITERAL:
-    case STRING_LITERAL:{
-      strExp();
-      switch (jj_nt.kind) {
-      case 17:
-      case 18:{
-        switch (jj_nt.kind) {
-        case 17:{
-          jj_consume_token(17);
-          strExp();
-tree.eqExp();
-          break;
-          }
-        case 18:{
-          jj_consume_token(18);
-          strExp();
 tree.neExp();
           break;
           }
@@ -453,8 +474,41 @@ tree.neExp();
       }
       break;
       }
+    case 37:
+    case CHARACTER_LITERAL:
+    case STRING_LITERAL:{
+      strExp();
+      switch (jj_nt.kind) {
+      case 19:
+      case 20:{
+        switch (jj_nt.kind) {
+        case 19:{
+          jj_consume_token(19);
+          strExp();
+tree.eqExp();
+          break;
+          }
+        case 20:{
+          jj_consume_token(20);
+          strExp();
+tree.neExp();
+          break;
+          }
+        default:
+          jj_la1[16] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        break;
+        }
+      default:
+        jj_la1[17] = jj_gen;
+        ;
+      }
+      break;
+      }
     default:
-      jj_la1[16] = jj_gen;
+      jj_la1[18] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -469,30 +523,30 @@ tree.neExp();
     label_3:
     while (true) {
       switch (jj_nt.kind) {
-      case 19:
-      case 20:{
+      case 21:
+      case 22:{
         ;
         break;
         }
       default:
-        jj_la1[17] = jj_gen;
+        jj_la1[19] = jj_gen;
         break label_3;
       }
       switch (jj_nt.kind) {
-      case 19:{
-        jj_consume_token(19);
+      case 21:{
+        jj_consume_token(21);
         multiplyDivideExp();
 tree.addExp();
         break;
         }
-      case 20:{
-        jj_consume_token(20);
+      case 22:{
+        jj_consume_token(22);
         multiplyDivideExp();
 tree.subExp();
         break;
         }
       default:
-        jj_la1[18] = jj_gen;
+        jj_la1[20] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -504,37 +558,37 @@ tree.subExp();
     label_4:
     while (true) {
       switch (jj_nt.kind) {
-      case 21:
-      case 22:
-      case 23:{
+      case 23:
+      case 24:
+      case 25:{
         ;
         break;
         }
       default:
-        jj_la1[19] = jj_gen;
+        jj_la1[21] = jj_gen;
         break label_4;
       }
       switch (jj_nt.kind) {
-      case 21:{
-        jj_consume_token(21);
+      case 23:{
+        jj_consume_token(23);
         numericNegate();
 tree.mulExp();
         break;
         }
-      case 22:{
-        jj_consume_token(22);
+      case 24:{
+        jj_consume_token(24);
         numericNegate();
 tree.divExp();
         break;
         }
-      case 23:{
-        jj_consume_token(23);
+      case 25:{
+        jj_consume_token(25);
         numericNegate();
 tree.modExp();
         break;
         }
       default:
-        jj_la1[20] = jj_gen;
+        jj_la1[22] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -544,9 +598,7 @@ tree.modExp();
   final public void numericNegate() throws ParseException {
     switch (jj_nt.kind) {
     case 2:
-    case 19:
-    case 24:
-    case 25:
+    case 21:
     case 26:
     case 27:
     case 28:
@@ -554,29 +606,32 @@ tree.modExp();
     case 30:
     case 31:
     case 32:
+    case 33:
+    case 34:
+    case 35:
     case LONG_LITERAL:
     case INTEGER_LITERAL:
     case FLOATING_POINT_LITERAL:{
       switch (jj_nt.kind) {
-      case 19:{
-        jj_consume_token(19);
+      case 21:{
+        jj_consume_token(21);
         break;
         }
       default:
-        jj_la1[21] = jj_gen;
+        jj_la1[23] = jj_gen;
         ;
       }
       numericBetween();
       break;
       }
-    case 20:{
-      jj_consume_token(20);
+    case 22:{
+      jj_consume_token(22);
       numericNegate();
 tree.negateExp();
       break;
       }
     default:
-      jj_la1[22] = jj_gen;
+      jj_la1[24] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -584,23 +639,24 @@ tree.negateExp();
 
   final public void numericBetween() throws ParseException {
     switch (jj_nt.kind) {
-    case 24:{
-      jj_consume_token(24);
+    case 26:{
+      jj_consume_token(26);
       baseNumExp();
-      jj_consume_token(10);
+      jj_consume_token(11);
       baseNumExp();
 tree.betweenExp();
       break;
       }
     case 2:
-    case 25:
-    case 26:
     case 27:
     case 28:
     case 29:
     case 30:
     case 31:
     case 32:
+    case 33:
+    case 34:
+    case 35:
     case LONG_LITERAL:
     case INTEGER_LITERAL:
     case FLOATING_POINT_LITERAL:{
@@ -608,7 +664,7 @@ tree.betweenExp();
       break;
       }
     default:
-      jj_la1[23] = jj_gen;
+      jj_la1[25] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -622,20 +678,21 @@ tree.betweenExp();
       numScalar();
       break;
       }
-    case 30:
-    case 31:
-    case 32:{
+    case 33:
+    case 34:
+    case 35:{
       numType();
       break;
       }
-    case 25:{
+    case 27:
+    case 28:{
       numFn();
       break;
       }
-    case 26:
-    case 27:
-    case 28:
-    case 29:{
+    case 29:
+    case 30:
+    case 31:
+    case 32:{
       numAgg();
       break;
       }
@@ -644,48 +701,65 @@ tree.betweenExp();
       break;
       }
     default:
-      jj_la1[24] = jj_gen;
+      jj_la1[26] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
 }
 
   final public void numFn() throws ParseException {
-    jj_consume_token(25);
-    jj_consume_token(2);
-    baseNumExp();
-    jj_consume_token(4);
+    switch (jj_nt.kind) {
+    case 27:{
+      jj_consume_token(27);
+      jj_consume_token(2);
+      baseNumExp();
+      jj_consume_token(4);
 tree.absExp();
+      break;
+      }
+    case 28:{
+      jj_consume_token(28);
+      jj_consume_token(2);
+      strExp();
+      jj_consume_token(4);
+tree.lenExp();
+      break;
+      }
+    default:
+      jj_la1[27] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
 }
 
   final public void numAgg() throws ParseException {
     switch (jj_nt.kind) {
-    case 26:{
-      jj_consume_token(26);
+    case 29:{
+      jj_consume_token(29);
       jj_consume_token(2);
       numExp();
       jj_consume_token(4);
 tree.sumExp();
       break;
       }
-    case 27:{
-      jj_consume_token(27);
+    case 30:{
+      jj_consume_token(30);
       jj_consume_token(2);
       numExp();
       jj_consume_token(4);
 tree.cumSumExp();
       break;
       }
-    case 28:{
-      jj_consume_token(28);
+    case 31:{
+      jj_consume_token(31);
       jj_consume_token(2);
       numExp();
       jj_consume_token(4);
 tree.avgExp();
       break;
       }
-    case 29:{
-      jj_consume_token(29);
+    case 32:{
+      jj_consume_token(32);
       jj_consume_token(2);
       numExp();
       jj_consume_token(4);
@@ -693,7 +767,7 @@ tree.medianExp();
       break;
       }
     default:
-      jj_la1[25] = jj_gen;
+      jj_la1[28] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -706,12 +780,12 @@ tree.medianExp();
       strScalar();
       break;
       }
-    case 34:{
+    case 37:{
       strType();
       break;
       }
     default:
-      jj_la1[26] = jj_gen;
+      jj_la1[29] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -726,27 +800,27 @@ tree.validateParenExp();
 
   final public void numType() throws ParseException {
     switch (jj_nt.kind) {
-    case 30:{
+    case 33:{
       intType();
       break;
       }
-    case 31:{
+    case 34:{
       longType();
       break;
       }
-    case 32:{
+    case 35:{
       floatType();
       break;
       }
     default:
-      jj_la1[27] = jj_gen;
+      jj_la1[30] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
 }
 
   final public void intType() throws ParseException {
-    jj_consume_token(30);
+    jj_consume_token(33);
     jj_consume_token(2);
     columnId();
     jj_consume_token(4);
@@ -754,7 +828,7 @@ tree.intCol();
 }
 
   final public void longType() throws ParseException {
-    jj_consume_token(31);
+    jj_consume_token(34);
     jj_consume_token(2);
     columnId();
     jj_consume_token(4);
@@ -762,7 +836,7 @@ tree.longCol();
 }
 
   final public void floatType() throws ParseException {
-    jj_consume_token(32);
+    jj_consume_token(35);
     jj_consume_token(2);
     columnId();
     jj_consume_token(4);
@@ -770,7 +844,7 @@ tree.floatCol();
 }
 
   final public void boolType() throws ParseException {
-    jj_consume_token(33);
+    jj_consume_token(36);
     jj_consume_token(2);
     columnId();
     jj_consume_token(4);
@@ -778,7 +852,7 @@ tree.boolCol();
 }
 
   final public void strType() throws ParseException {
-    jj_consume_token(34);
+    jj_consume_token(37);
     jj_consume_token(2);
     columnId();
     jj_consume_token(4);
@@ -798,7 +872,7 @@ tree.falseExp();
       break;
       }
     default:
-      jj_la1[28] = jj_gen;
+      jj_la1[31] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -812,8 +886,7 @@ tree.longVal(token.image);
       break;
       }
     case INTEGER_LITERAL:{
-      jj_consume_token(INTEGER_LITERAL);
-tree.intVal(token.image);
+      intScalar();
       break;
       }
     case FLOATING_POINT_LITERAL:{
@@ -822,10 +895,15 @@ tree.floatVal(token.image);
       break;
       }
     default:
-      jj_la1[29] = jj_gen;
+      jj_la1[32] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
+}
+
+  final public void intScalar() throws ParseException {
+    jj_consume_token(INTEGER_LITERAL);
+tree.intVal(token.image);
 }
 
   final public void columnId() throws ParseException {
@@ -846,7 +924,7 @@ tree.strVal(token.image);
       break;
       }
     default:
-      jj_la1[30] = jj_gen;
+      jj_la1[33] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -863,7 +941,7 @@ tree.strVal(token.image);
       break;
       }
     default:
-      jj_la1[31] = jj_gen;
+      jj_la1[34] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -878,7 +956,7 @@ tree.strVal(token.image, true);
   /** Next token. */
   public Token jj_nt;
   private int jj_gen;
-  final private int[] jj_la1 = new int[32];
+  final private int[] jj_la1 = new int[35];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -886,10 +964,10 @@ tree.strVal(token.image, true);
 	   jj_la1_init_1();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0xff1819e6,0x8,0xff180004,0x8,0xff180004,0x8,0xe2,0x200,0x400,0x1800,0xff181804,0xff180004,0x7e000,0x7e000,0x60000,0x60000,0xff180004,0x180000,0x180000,0xe00000,0xe00000,0x80000,0xff180004,0xff000004,0xfe000004,0x3c000000,0x0,0xc0000000,0x0,0x0,0x0,0x0,};
+	   jj_la1_0 = new int[] {0xfc6073e6,0x8,0xfc600004,0x8,0xfc600004,0x8,0xe2,0x8,0x300,0x400,0x800,0x3000,0xfc607004,0xfc604004,0x1f8000,0x1f8000,0x180000,0x180000,0xfc600004,0x600000,0x600000,0x3800000,0x3800000,0x200000,0xfc600004,0xfc000004,0xf8000004,0x18000000,0xe0000000,0x0,0x0,0x0,0x0,0x0,0x0,};
 	}
 	private static void jj_la1_init_1() {
-	   jj_la1_1 = new int[] {0x3010f7,0x0,0x3010c5,0x0,0x3010c5,0x0,0x0,0x0,0x0,0x0,0x3010f7,0x3010f7,0x0,0x0,0x0,0x0,0x3010c5,0x0,0x0,0x0,0x0,0x0,0x10c1,0x10c1,0x10c1,0x0,0x300004,0x1,0x30,0x10c0,0x700080,0x300000,};
+	   jj_la1_1 = new int[] {0x18087bf,0x0,0x180862f,0x0,0x180862f,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x18087bf,0x18087bf,0x0,0x0,0x0,0x0,0x180862f,0x0,0x0,0x0,0x0,0x0,0x860f,0x860f,0x860f,0x0,0x1,0x1800020,0xe,0x180,0x8600,0x3800400,0x1800000,};
 	}
 
   /** Constructor. */
@@ -899,7 +977,7 @@ tree.strVal(token.image, true);
 	 token = new Token();
 	 token.next = jj_nt = token_source.getNextToken();
 	 jj_gen = 0;
-	 for (int i = 0; i < 32; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 35; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -925,7 +1003,7 @@ tree.strVal(token.image, true);
 	 token = new Token();
 	 token.next = jj_nt = token_source.getNextToken();
 	 jj_gen = 0;
-	 for (int i = 0; i < 32; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 35; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -934,7 +1012,7 @@ tree.strVal(token.image, true);
 	 token = new Token();
 	 token.next = jj_nt = token_source.getNextToken();
 	 jj_gen = 0;
-	 for (int i = 0; i < 32; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 35; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -943,7 +1021,7 @@ tree.strVal(token.image, true);
 	 token = new Token();
 	 token.next = jj_nt = token_source.getNextToken();
 	 jj_gen = 0;
-	 for (int i = 0; i < 32; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 35; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -986,12 +1064,12 @@ tree.strVal(token.image, true);
   /** Generate ParseException. */
   public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[61];
+	 boolean[] la1tokens = new boolean[64];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
 	 }
-	 for (int i = 0; i < 32; i++) {
+	 for (int i = 0; i < 35; i++) {
 	   if (jj_la1[i] == jj_gen) {
 		 for (int j = 0; j < 32; j++) {
 		   if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -1003,7 +1081,7 @@ tree.strVal(token.image, true);
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 61; i++) {
+	 for (int i = 0; i < 64; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;

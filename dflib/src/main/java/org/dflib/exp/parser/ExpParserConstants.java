@@ -11,49 +11,49 @@ interface ExpParserConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int NULL = 35;
+  int NULL = 38;
   /** RegularExpression Id. */
-  int TRUE = 36;
+  int TRUE = 39;
   /** RegularExpression Id. */
-  int FALSE = 37;
+  int FALSE = 40;
   /** RegularExpression Id. */
-  int LONG_LITERAL = 38;
+  int LONG_LITERAL = 41;
   /** RegularExpression Id. */
-  int INTEGER_LITERAL = 39;
+  int INTEGER_LITERAL = 42;
   /** RegularExpression Id. */
-  int DECIMAL_LITERAL = 40;
+  int DECIMAL_LITERAL = 43;
   /** RegularExpression Id. */
-  int HEX_LITERAL = 41;
+  int HEX_LITERAL = 44;
   /** RegularExpression Id. */
-  int OCTAL_LITERAL = 42;
+  int OCTAL_LITERAL = 45;
   /** RegularExpression Id. */
-  int BINARY_LITERAL = 43;
+  int BINARY_LITERAL = 46;
   /** RegularExpression Id. */
-  int FLOATING_POINT_LITERAL = 44;
+  int FLOATING_POINT_LITERAL = 47;
   /** RegularExpression Id. */
-  int DECIMAL_FLOATING_POINT_LITERAL = 45;
+  int DECIMAL_FLOATING_POINT_LITERAL = 48;
   /** RegularExpression Id. */
-  int DECIMAL_EXPONENT = 46;
+  int DECIMAL_EXPONENT = 49;
   /** RegularExpression Id. */
-  int HEXADECIMAL_FLOATING_POINT_LITERAL = 47;
+  int HEXADECIMAL_FLOATING_POINT_LITERAL = 50;
   /** RegularExpression Id. */
-  int HEXADECIMAL_EXPONENT = 48;
+  int HEXADECIMAL_EXPONENT = 51;
   /** RegularExpression Id. */
-  int HEX_DIGITS = 49;
+  int HEX_DIGITS = 52;
   /** RegularExpression Id. */
-  int ESCAPE = 50;
+  int ESCAPE = 53;
   /** RegularExpression Id. */
-  int UNICODE_ESCAPE = 51;
+  int UNICODE_ESCAPE = 54;
   /** RegularExpression Id. */
-  int CHARACTER_LITERAL = 52;
+  int CHARACTER_LITERAL = 55;
   /** RegularExpression Id. */
-  int STRING_LITERAL = 53;
+  int STRING_LITERAL = 56;
   /** RegularExpression Id. */
-  int IDENTIFIER = 54;
+  int IDENTIFIER = 57;
   /** RegularExpression Id. */
-  int LETTER = 55;
+  int LETTER = 58;
   /** RegularExpression Id. */
-  int PART_LETTER = 56;
+  int PART_LETTER = 59;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -68,11 +68,13 @@ interface ExpParserConstants {
     "\"last\"",
     "\"min\"",
     "\"max\"",
+    "\"split\"",
     "\"if\"",
     "\"or\"",
     "\"and\"",
     "\"not\"",
     "\"!\"",
+    "\"matches\"",
     "\">\"",
     "\">=\"",
     "\"<\"",
@@ -86,6 +88,7 @@ interface ExpParserConstants {
     "\"%\"",
     "\"between\"",
     "\"abs\"",
+    "\"len\"",
     "\"sum\"",
     "\"cumsum\"",
     "\"avg\"",
