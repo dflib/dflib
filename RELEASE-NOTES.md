@@ -12,6 +12,7 @@
 * #371 ECharts: support "itemStyle" for "boxplot" series
 * #382 $bool(..).cumSum()
 * #415 CsvLoader to support an explicit encoding
+* #418 Exception printing null columns
 
 ## Release 1.0.0
 

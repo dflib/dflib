@@ -89,4 +89,23 @@ public class TabularPrinter_DataFrameTest {
                 "two   " + LS +
                 "[df0] 2 rows x 2 columns", p.toString(df.as("df0")));
     }
+
+    @Test
+    public void nullColumn() {
+
+        DataFrame df = DataFrame
+                .byColumn("col1", null)
+                .of(
+                        Series.of("one", "two"),
+                        Series.of("", ""));
+
+        TabularPrinter p = new TabularPrinter(5, 10);
+
+        assertEquals(LS +
+                "col1 null" + LS +
+                "---- ----" + LS +
+                "one      " + LS +
+                "two      " + LS +
+                "[df0] 2 rows x 2 columns", p.toString(df.as("df0")));
+    }
 }

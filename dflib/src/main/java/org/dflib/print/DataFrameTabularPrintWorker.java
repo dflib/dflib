@@ -33,7 +33,8 @@ public class DataFrameTabularPrintWorker extends BasePrintWorker {
         DataFrameTruncator truncator = DataFrameTruncator.create(df, maxDisplayRows);
 
         for (int i = 0; i < w; i++) {
-            columnWidth[i] = columns.get(i).length();
+            // "4" is the length of String "null"
+            columnWidth[i] = columns.get(i) != null? columns.get(i).length() : 4;
         }
 
         DataFrame head = truncator.head();
