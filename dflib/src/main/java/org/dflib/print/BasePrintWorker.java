@@ -42,7 +42,7 @@ public abstract class BasePrintWorker {
 
     protected StringBuilder appendFixedWidth(String value, int width, String columnFormat) {
 
-        if (value.length() <= width) {
+        if (value == null || value.length() <= width) {
             return out.append(String.format(columnFormat, value));
         } else {
             return out.append(truncate(value, width));
