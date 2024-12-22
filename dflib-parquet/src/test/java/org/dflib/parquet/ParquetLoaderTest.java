@@ -1,6 +1,8 @@
 package org.dflib.parquet;
 
 import org.dflib.DataFrame;
+import org.dflib.connector.ByteSource;
+import org.dflib.connector.ByteSources;
 import org.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -13,10 +15,12 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Map;
 import java.util.UUID;
 
 import static java.time.Instant.ofEpochSecond;
 import static java.time.ZoneOffset.ofHours;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test Parquet deserialization. Given that saver has been tested, we can use it to generate content to read and test
@@ -25,6 +29,47 @@ public class ParquetLoaderTest {
 
     @TempDir
     Path outBase;
+
+    @Test
+    public void fromByteSource() {
+        DataFrame df = Parquet.loader().load(ByteSource.ofUrl(getClass().getResource("test1.parquet")));
+
+        new DataFrameAsserts(df, "a", "b")
+                .expectHeight(6)
+                .expectRow(0, 1, "ab")
+                .expectRow(1, 40000, "ab")
+                .expectRow(2, 40000, "bc")
+                .expectRow(3, 30000, "bc")
+                .expectRow(4, 30000, null)
+                .expectRow(5, null, "bc");
+    }
+
+    @Test
+    public void fromByteSources() {
+        Map<String, DataFrame> dfs = Parquet
+                .loader()
+                .loadAll(ByteSources.of(Map.of(
+                        "f1", ByteSource.ofUrl(getClass().getResource("test1.parquet")),
+                        "f2", ByteSource.ofUrl(getClass().getResource("4col.parquet"))
+                )));
+
+        assertEquals(2, dfs.size());
+
+        new DataFrameAsserts(dfs.get("f1"), "a", "b")
+                .expectHeight(6)
+                .expectRow(0, 1, "ab")
+                .expectRow(1, 40000, "ab")
+                .expectRow(2, 40000, "bc")
+                .expectRow(3, 30000, "bc")
+                .expectRow(4, 30000, null)
+                .expectRow(5, null, "bc");
+
+        new DataFrameAsserts(dfs.get("f2"), "a", "b", "c", "d")
+                .expectHeight(3)
+                .expectRow(0, 1, 2, 3, 4)
+                .expectRow(1, 5, 6, 7, 8)
+                .expectRow(2, 9, 10, 11, 12);
+    }
 
     @Test
     @DisplayName("Integer Column")

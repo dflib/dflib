@@ -3,6 +3,8 @@ package org.dflib.csv;
 import org.apache.commons.csv.CSVFormat;
 import org.dflib.DataFrame;
 import org.dflib.ValueMapper;
+import org.dflib.connector.ByteSource;
+import org.dflib.connector.ByteSources;
 import org.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 import static org.dflib.Exp.$col;
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,6 +47,49 @@ public class CsvLoaderTest extends BaseCsvTest {
                 .expectHeight(2)
                 .expectRow(0, "1", "2")
                 .expectRow(1, "3", "4");
+    }
+
+    @Test
+    public void fromByteSource() {
+        byte[] csvBytes = "A,b,C\n1,2,3\n4,5,6".getBytes();
+        DataFrame df = new CsvLoader().load(ByteSource.of(csvBytes));
+
+        new DataFrameAsserts(df, "A", "b", "C")
+                .expectHeight(2)
+                .expectRow(0, "1", "2", "3")
+                .expectRow(1, "4", "5", "6");
+    }
+
+    @Test
+    public void fromByteSource_Encoding() {
+        byte[] csvBytes = "A,b,C\n1,2,3\n4,5,6".getBytes(StandardCharsets.UTF_16BE);
+        DataFrame df = new CsvLoader().encoding("UTF-16BE").load(ByteSource.of(csvBytes));
+
+        new DataFrameAsserts(df, "A", "b", "C")
+                .expectHeight(2)
+                .expectRow(0, "1", "2", "3")
+                .expectRow(1, "4", "5", "6");
+    }
+
+    @Test
+    public void fromByteSources() {
+        byte[] csvBytes1 = "A,b,C\n1,2,3\n4,5,6".getBytes();
+        byte[] csvBytes2 = "X,y,Z\n7,8,9\n10,11,12".getBytes();
+
+        Map<String, DataFrame> dfs = new CsvLoader().loadAll(ByteSources.of(
+                Map.of("b1", ByteSource.of(csvBytes1), "b2", ByteSource.of(csvBytes2))));
+
+        assertEquals(2, dfs.size());
+
+        new DataFrameAsserts(dfs.get("b1"), "A", "b", "C")
+                .expectHeight(2)
+                .expectRow(0, "1", "2", "3")
+                .expectRow(1, "4", "5", "6");
+
+        new DataFrameAsserts(dfs.get("b2"), "X", "y", "Z")
+                .expectHeight(2)
+                .expectRow(0, "7", "8", "9")
+                .expectRow(1, "10", "11", "12");
     }
 
     @Test

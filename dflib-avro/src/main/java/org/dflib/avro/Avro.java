@@ -8,11 +8,14 @@ import org.apache.avro.LogicalType;
 import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
+import org.dflib.connector.ByteSource;
+import org.dflib.connector.ByteSources;
 
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
+import java.util.Map;
 
 
 public class Avro {
@@ -56,6 +59,20 @@ public class Avro {
 
     public static DataFrame load(byte[] bytes) {
         return loader().load(bytes);
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public static DataFrame load(ByteSource src) {
+        return loader().load(src);
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public static Map<String, DataFrame> loadAll(ByteSources src) {
+        return loader().loadAll(src);
     }
 
     public static AvroLoader loader() {

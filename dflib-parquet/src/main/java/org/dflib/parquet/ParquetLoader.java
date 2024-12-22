@@ -9,8 +9,11 @@ import org.dflib.DataFrame;
 import org.dflib.Extractor;
 import org.dflib.Index;
 import org.dflib.builder.DataFrameAppender;
+import org.dflib.connector.ByteSource;
+import org.dflib.connector.ByteSources;
 import org.dflib.parquet.read.DataFrameParquetReaderBuilder;
 import org.dflib.parquet.read.SchemaProjector;
+import org.dflib.parquet.read.BytesInputFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -118,6 +121,44 @@ public class ParquetLoader {
             return appender.toDataFrame();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
+        }
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public DataFrame load(ByteSource src) {
+        return src.processStream(st -> loadFromBytes(src.asBytes(), "?"));
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public Map<String, DataFrame> loadAll(ByteSources src) {
+        return src.process((name, s) -> loadFromBytes(s.asBytes(), name));
+    }
+
+    private DataFrame loadFromBytes(byte[] bytes, String resourceId) {
+        try {
+            MessageType fileSchema = Parquet.schemaLoader().load(bytes);
+            MessageType projectedSchema = projectSchema(fileSchema);
+
+            Index index = createIndex(projectedSchema);
+
+            DataFrameAppender<Object[]> appender = DataFrame.byArrayRow(extractors(index, projectedSchema))
+                    .columnIndex(index)
+                    .appender();
+
+            BytesInputFile inputFile = new BytesInputFile(bytes);
+            ParquetReader<Object[]> reader = new DataFrameParquetReaderBuilder(inputFile, projectedSchema).build();
+
+            Object[] row;
+            while ((row = reader.read()) != null) {
+                appender.append(row);
+            }
+            return appender.toDataFrame();
+        } catch (IOException e) {
+            throw new UncheckedIOException("Error reading source: " + resourceId, e);
         }
     }
 
