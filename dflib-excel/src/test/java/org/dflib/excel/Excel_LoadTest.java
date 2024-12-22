@@ -1,6 +1,6 @@
 package org.dflib.excel;
 
-import org.dflib.connector.ByteSource;
+import org.dflib.ByteSource;
 import org.dflib.junit5.DataFrameAsserts;
 import org.dflib.DataFrame;
 import org.junit.jupiter.api.Test;

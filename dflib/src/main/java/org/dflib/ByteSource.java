@@ -1,4 +1,4 @@
-package org.dflib.connector;
+package org.dflib;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -8,7 +8,10 @@ import java.net.URL;
 import java.util.function.Function;
 
 /**
- * Represents a binary resource. It can be a lot of things: a file, an HTTP URL, a byte[], etc.
+ * Represents a binary resource that provides data for DataFrame(s). It is an abstraction between DataFrame
+ * loaders and data storages. ByteSource helps to locate and read the resource, but does not interpret its data.
+ * A ByteSource can be a file, an HTTP URL, a byte[], a cloud resource, etc. DFLib provides a number of ByteSource
+ * types out of the box.
  *
  * @since 1.1.0
  */

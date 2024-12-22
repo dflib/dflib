@@ -14,8 +14,8 @@ import org.dflib.ValueMapper;
 import org.dflib.builder.DataFrameAppender;
 import org.dflib.builder.DataFrameByRowBuilder;
 import org.dflib.collection.Iterators;
-import org.dflib.connector.ByteSource;
-import org.dflib.connector.ByteSources;
+import org.dflib.ByteSource;
+import org.dflib.ByteSources;
 import org.dflib.sample.Sampler;
 
 import java.io.File;

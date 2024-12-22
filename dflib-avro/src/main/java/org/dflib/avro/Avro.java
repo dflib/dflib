@@ -8,8 +8,8 @@ import org.apache.avro.LogicalType;
 import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
-import org.dflib.connector.ByteSource;
-import org.dflib.connector.ByteSources;
+import org.dflib.ByteSource;
+import org.dflib.ByteSources;
 
 import java.io.File;
 import java.io.InputStream;

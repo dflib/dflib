@@ -3,8 +3,8 @@ package org.dflib.csv;
 import org.apache.commons.csv.CSVFormat;
 import org.dflib.DataFrame;
 import org.dflib.ValueMapper;
-import org.dflib.connector.ByteSource;
-import org.dflib.connector.ByteSources;
+import org.dflib.ByteSource;
+import org.dflib.ByteSources;
 import org.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 

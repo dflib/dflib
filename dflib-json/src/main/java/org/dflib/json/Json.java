@@ -1,8 +1,8 @@
 package org.dflib.json;
 
 import org.dflib.DataFrame;
-import org.dflib.connector.ByteSource;
-import org.dflib.connector.ByteSources;
+import org.dflib.ByteSource;
+import org.dflib.ByteSources;
 
 import java.io.File;
 import java.io.InputStream;
