@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -48,6 +49,15 @@ public class CsvLoaderTest extends BaseCsvTest {
     @Test
     public void fromFile() {
         DataFrame df = new CsvLoader().load(inPath("f1.csv"));
+        new DataFrameAsserts(df, "A", "b", "C")
+                .expectHeight(2)
+                .expectRow(0, "1", "2", "3")
+                .expectRow(1, "4", "5", "6");
+    }
+
+    @Test
+    public void fromFile_Encoding() {
+        DataFrame df = new CsvLoader().encoding(StandardCharsets.UTF_16BE).load(inPath("f1_UTF16BE.csv"));
         new DataFrameAsserts(df, "A", "b", "C")
                 .expectHeight(2)
                 .expectRow(0, "1", "2", "3")
