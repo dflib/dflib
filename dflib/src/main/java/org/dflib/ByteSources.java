@@ -1,6 +1,4 @@
-package org.dflib.connector;
-
-import org.dflib.Environment;
+package org.dflib;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -11,8 +9,11 @@ import java.util.concurrent.Future;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+
 /**
- * Represents a collection of binary resource. This can be a filesystem folder, a zip archive, a cloud drive folder, etc.
+ * Represents a collection of binary resources that provide data for DataFrames. It is an abstract interface between
+ * DataFrame loaders and data storages. A ByteSources can be a filesystem folder, a zip archive, a cloud drive folder,
+ * or some other "catalog" of resources. DFLib provides a number of ByteSources types out of the box.
  *
  * @since 1.1.0
  */

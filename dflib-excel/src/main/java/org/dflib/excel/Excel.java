@@ -1,7 +1,7 @@
 package org.dflib.excel;
 
 import org.dflib.DataFrame;
-import org.dflib.connector.ByteSource;
+import org.dflib.ByteSource;
 
 import java.io.File;
 import java.io.InputStream;

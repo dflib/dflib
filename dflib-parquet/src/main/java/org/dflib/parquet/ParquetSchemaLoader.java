@@ -6,7 +6,7 @@ import org.apache.parquet.hadoop.ParquetFileReader;
 import org.apache.parquet.io.InputFile;
 import org.apache.parquet.io.LocalInputFile;
 import org.apache.parquet.schema.MessageType;
-import org.dflib.connector.ByteSource;
+import org.dflib.ByteSource;
 import org.dflib.parquet.read.BytesInputFile;
 
 import java.io.File;

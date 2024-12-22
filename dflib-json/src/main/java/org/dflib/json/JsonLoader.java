@@ -7,8 +7,8 @@ import com.jayway.jsonpath.Option;
 import org.dflib.DataFrame;
 import org.dflib.Extractor;
 import org.dflib.ValueMapper;
-import org.dflib.connector.ByteSource;
-import org.dflib.connector.ByteSources;
+import org.dflib.ByteSource;
+import org.dflib.ByteSources;
 
 import java.io.File;
 import java.io.IOException;

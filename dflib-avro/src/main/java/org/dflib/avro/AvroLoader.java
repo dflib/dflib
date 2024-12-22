@@ -13,8 +13,8 @@ import org.dflib.Extractor;
 import org.dflib.Index;
 import org.dflib.avro.types.AvroTypeExtensions;
 import org.dflib.builder.DataFrameAppender;
-import org.dflib.connector.ByteSource;
-import org.dflib.connector.ByteSources;
+import org.dflib.ByteSource;
+import org.dflib.ByteSources;
 
 import java.io.File;
 import java.io.IOException;
