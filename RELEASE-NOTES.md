@@ -20,6 +20,7 @@
 * #401 ECharts: heatmap chart
 * #403 BoolAccum - java.lang.ArrayIndexOutOfBoundsException 
 * #407 "min", "max" aggregating functions for StrExp
+* #416 Zip ByteSource(s)
 
 ## Release 1.1.0
 

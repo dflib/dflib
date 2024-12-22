@@ -1,5 +1,7 @@
 package org.dflib;
 
+import org.dflib.zip.Zip;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +27,15 @@ public interface ByteSource {
 
     default <T> T processStream(Function<InputStream, T> processor) {
         return processor.apply(stream());
+    }
+
+    /**
+     * Assuming this source represents a ZIP archive, returns a {@link ByteSources} catalog of the archive entries.
+     *
+     * @since 2.0.0
+     */
+    default ByteSources unzip() {
+        return Zip.of(this).sources();
     }
 
     default byte[] asBytes() {

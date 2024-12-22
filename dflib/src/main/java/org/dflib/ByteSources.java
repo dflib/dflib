@@ -29,7 +29,7 @@ public interface ByteSources {
     /**
      * Creates a sources object from a collection of {@link ByteSource} objects. The sources will be resolved in parallel.
      */
-    static ByteSources of(Map<String, ByteSource> sources) {
+    static ByteSources of(Map<String, ? extends ByteSource> sources) {
 
         switch (sources.size()) {
             case 0:
@@ -41,7 +41,7 @@ public interface ByteSources {
                 };
 
             case 1:
-                Map.Entry<String, ByteSource> s1 = sources.entrySet().iterator().next();
+                Map.Entry<String, ? extends ByteSource> s1 = sources.entrySet().iterator().next();
                 return new ByteSources() {
                     @Override
                     public <T> Map<String, T> process(BiFunction<String, ByteSource, T> processor) {
@@ -55,9 +55,9 @@ public interface ByteSources {
                 String[] keys = new String[len];
                 ByteSource[] srcs = new ByteSource[len];
 
-                Iterator<Map.Entry<String, ByteSource>> it = sources.entrySet().iterator();
+                Iterator<? extends Map.Entry<String, ? extends ByteSource>> it = sources.entrySet().iterator();
                 for (int i = 0; i < len; i++) {
-                    Map.Entry<String, ByteSource> e = it.next();
+                    Map.Entry<String, ? extends ByteSource> e = it.next();
                     keys[i] = e.getKey();
                     srcs[i] = e.getValue();
                 }
