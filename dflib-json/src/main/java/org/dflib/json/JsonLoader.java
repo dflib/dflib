@@ -7,6 +7,8 @@ import com.jayway.jsonpath.Option;
 import org.dflib.DataFrame;
 import org.dflib.Extractor;
 import org.dflib.ValueMapper;
+import org.dflib.connector.ByteSource;
+import org.dflib.connector.ByteSources;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,7 +63,7 @@ public class JsonLoader {
         return this;
     }
 
-    
+
     public JsonLoader col(String column, ValueMapper<Object, ?> mapper) {
         extractors.put(column, ColConfigurator.objectCol(column, mapper, false));
         return this;
@@ -195,6 +197,20 @@ public class JsonLoader {
     public DataFrame load(InputStream in) {
         DocumentContext context = JsonPath.parse(in, buildJSONPathConfiguration());
         return load(context);
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public DataFrame load(ByteSource src) {
+        return src.processStream(st -> load(st));
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public Map<String, DataFrame> loadAll(ByteSources src) {
+        return src.processStreams((name, st) -> load(st));
     }
 
     public DataFrame load(Reader reader) {

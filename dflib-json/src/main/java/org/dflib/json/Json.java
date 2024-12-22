@@ -1,11 +1,14 @@
 package org.dflib.json;
 
 import org.dflib.DataFrame;
+import org.dflib.connector.ByteSource;
+import org.dflib.connector.ByteSources;
 
 import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
 import java.nio.file.Path;
+import java.util.Map;
 
 /**
  * The main entry point to the code that can load and save DataFrames from/to JSON.
@@ -49,6 +52,20 @@ public class Json {
 
     public DataFrame load(Reader reader) {
         return loader().load(reader);
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public static DataFrame load(ByteSource src) {
+        return loader().load(src);
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public static Map<String, DataFrame> loadAll(ByteSources src) {
+        return loader().loadAll(src);
     }
 
     public static JsonSaver saver() {

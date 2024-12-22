@@ -1,6 +1,7 @@
 package org.dflib.excel;
 
 import org.dflib.DataFrame;
+import org.dflib.connector.ByteSource;
 import org.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -111,5 +112,20 @@ public class ExcelLoader_LoadSourcesTest {
                     .expectHeight(1)
                     .expectRow(0, "Five", "Six", "Seven", "Eight");
         }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"one-sheet.xls", "one-sheet.xlsx"})
+    public void fromByteSource(String source) {
+
+        Map<String, DataFrame> data = new ExcelLoader().load(ByteSource.ofUrl(getClass().getResource(source)));
+        assertEquals(1, data.size());
+        DataFrame df = data.get("Sheet1");
+        assertNotNull(df);
+
+        new DataFrameAsserts(df, "A", "B")
+                .expectHeight(2)
+                .expectRow(0, "One", "Two")
+                .expectRow(1, "Three", "Four");
     }
 }

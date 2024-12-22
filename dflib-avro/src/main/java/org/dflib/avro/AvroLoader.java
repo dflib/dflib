@@ -2,6 +2,7 @@ package org.dflib.avro;
 
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileReader;
+import org.apache.avro.file.DataFileStream;
 import org.apache.avro.file.SeekableByteArrayInput;
 import org.apache.avro.file.SeekableFileInput;
 import org.apache.avro.file.SeekableInput;
@@ -12,9 +13,12 @@ import org.dflib.Extractor;
 import org.dflib.Index;
 import org.dflib.avro.types.AvroTypeExtensions;
 import org.dflib.builder.DataFrameAppender;
+import org.dflib.connector.ByteSource;
+import org.dflib.connector.ByteSources;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,6 +80,20 @@ public class AvroLoader {
         return load(new File(filePath));
     }
 
+    /**
+     * @since 1.1.0
+     */
+    public DataFrame load(ByteSource src) {
+        return src.processStream(st -> loadFromStream(st, "?"));
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public Map<String, DataFrame> loadAll(ByteSources src) {
+        return src.processStreams((name, st) -> loadFromStream(st, name));
+    }
+
     public DataFrame load(byte[] bytes) {
         try (SeekableByteArrayInput in = new SeekableByteArrayInput(bytes)) {
             return load(in);
@@ -84,7 +102,48 @@ public class AvroLoader {
         }
     }
 
+    /**
+     * @deprecated this API will become non-public
+     */
+    @Deprecated(since = "1.1.0", forRemoval = true)
     protected DataFrame load(SeekableInput in) throws IOException {
+        return loadFromSeekable(in);
+    }
+
+    // presumably slower than "loadFromSeekable"
+    private DataFrame loadFromStream(InputStream in, String resourceId) {
+
+        // Passing "reader" schema to GenericDatumReader. It is allowed to be null.
+        // If not null, Avro will try to convert the file "writer" schema to the reader's expected format
+        // See: https://avro.apache.org/docs/current/spec.html#Schema+Resolution
+
+        try {
+            GenericDatumReader<GenericRecord> reader = new GenericDatumReader<>(schema);
+            DataFileStream<GenericRecord> inReader = new DataFileStream<>(in, reader);
+            Schema schema = reader.getExpected();
+
+            Index index = createIndex(schema);
+            DataFrameAppender<GenericRecord> appender = DataFrame
+                    .byRow(extractors(index, schema))
+                    .columnIndex(index)
+                    .appender();
+
+            // reuse "record" flyweight
+            GenericRecord record = null;
+            while (inReader.hasNext()) {
+                record = inReader.next(record);
+                appender.append(record);
+            }
+
+            return appender.toDataFrame();
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading source: " + resourceId, e);
+        }
+    }
+
+    // TODO: once the caller (load(SeekableInput in)) is removed, make this symmetrical with "loadFromStream",
+    //   i.e. take "resourceId" argument and catch exceptions
+    private DataFrame loadFromSeekable(SeekableInput in) throws IOException {
 
         // Passing "reader" schema to GenericDatumReader. It is allowed to be null.
         // If not null, Avro will try to convert the file "writer" schema to the reader's expected format
@@ -131,7 +190,7 @@ public class AvroLoader {
         int w = schema.getFields().size();
         Extractor<GenericRecord, ?>[] extractors = new Extractor[w];
         for (int i = 0; i < w; i++) {
-            ColConfigurator  cc = configurators.computeIfAbsent(i, ii -> ColConfigurator.objectCol(ii, false));
+            ColConfigurator cc = configurators.computeIfAbsent(i, ii -> ColConfigurator.objectCol(ii, false));
             extractors[i] = cc.extractor(i, schema);
         }
 

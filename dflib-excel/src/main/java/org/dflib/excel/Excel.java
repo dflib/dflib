@@ -1,6 +1,7 @@
 package org.dflib.excel;
 
 import org.dflib.DataFrame;
+import org.dflib.connector.ByteSource;
 
 import java.io.File;
 import java.io.InputStream;
@@ -29,6 +30,20 @@ public class Excel {
         return loader().load(path);
     }
 
+    /**
+     * @since 1.1.0
+     */
+    public static Map<String, DataFrame> load(ByteSource source) {
+        return loader().load(source);
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public static DataFrame loadSheet(ByteSource src, String sheetName) {
+        return loader().loadSheet(src, sheetName);
+    }
+
     public static DataFrame loadSheet(InputStream in, String sheetName) {
         return loader().loadSheet(in, sheetName);
     }
@@ -45,6 +60,12 @@ public class Excel {
         return loader().loadSheet(path, sheetName);
     }
 
+    /**
+     * @since 1.1.0
+     */
+    public static DataFrame loadSheet(ByteSource src, int sheetNum) {
+        return loader().loadSheet(src, sheetNum);
+    }
 
     public static DataFrame loadSheet(InputStream in, int sheetNum) {
         return loader().loadSheet(in, sheetNum);

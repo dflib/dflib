@@ -1,5 +1,6 @@
 package org.dflib.excel;
 
+import org.dflib.connector.ByteSource;
 import org.dflib.junit5.DataFrameAsserts;
 import org.dflib.DataFrame;
 import org.junit.jupiter.api.Test;
@@ -77,5 +78,19 @@ public class Excel_LoadTest {
                     .expectRow(0, "One", "Two")
                     .expectRow(1, "Three", "Four");
         }
+    }
+
+    @Test
+    public void fromByteSource() {
+
+        Map<String, DataFrame> data = Excel.load(ByteSource.ofUrl(getClass().getResource("one-sheet.xlsx")));
+        assertEquals(1, data.size());
+        DataFrame df = data.get("Sheet1");
+        assertNotNull(df);
+
+        new DataFrameAsserts(df, "A", "B")
+                .expectHeight(2)
+                .expectRow(0, "One", "Two")
+                .expectRow(1, "Three", "Four");
     }
 }

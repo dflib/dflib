@@ -4,6 +4,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.dflib.DataFrame;
+import org.dflib.connector.ByteSource;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,6 +72,21 @@ public class ExcelLoader {
         return sl.load(sheet);
     }
 
+    /**
+     * @since 1.1.0
+     */
+    public DataFrame loadSheet(ByteSource src, String sheetName) {
+        try (Workbook wb = src.processStream(this::loadWorkbook)) {
+            Sheet sheet = wb.getSheet(sheetName);
+            if (sheet == null) {
+                throw new RuntimeException("No sheet '" + sheetName + "' in workbook");
+            }
+            return loadSheet(sheet);
+        } catch (IOException e) {
+            throw new RuntimeException("Error closing Excel workbook", e);
+        }
+    }
+
     public DataFrame loadSheet(InputStream in, String sheetName) {
         try (Workbook wb = loadWorkbook(in)) {
             Sheet sheet = wb.getSheet(sheetName);
@@ -102,6 +118,21 @@ public class ExcelLoader {
 
     public DataFrame loadSheet(String filePath, String sheetName) {
         return loadSheet(new File(filePath), sheetName);
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public DataFrame loadSheet(ByteSource src, int sheetNum) {
+        try (Workbook wb = src.processStream(this::loadWorkbook)) {
+            Sheet sheet = wb.getSheetAt(sheetNum);
+            if (sheet == null) {
+                throw new RuntimeException("No sheet " + sheetNum + " in workbook");
+            }
+            return loadSheet(sheet);
+        } catch (IOException e) {
+            throw new RuntimeException("Error closing Excel workbook", e);
+        }
     }
 
     public DataFrame loadSheet(InputStream in, int sheetNum) {
@@ -148,6 +179,13 @@ public class ExcelLoader {
         }
 
         return data;
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public Map<String, DataFrame> load(ByteSource src) {
+        return src.processStream(this::load);
     }
 
     public Map<String, DataFrame> load(InputStream in) {

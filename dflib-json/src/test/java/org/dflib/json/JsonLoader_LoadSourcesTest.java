@@ -1,6 +1,7 @@
 package org.dflib.json;
 
 import org.dflib.DataFrame;
+import org.dflib.connector.ByteSource;
 import org.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -80,5 +81,16 @@ public class JsonLoader_LoadSourcesTest {
                     .expectRow(1, 2)
                     .expectRow(2, 3);
         }
+    }
+
+    @Test
+    public void fromByteSource() {
+
+        DataFrame df = new JsonLoader().load(ByteSource.ofUrl(getClass().getResource("list-of-values.json")));
+        new DataFrameAsserts(df, "_val")
+                .expectHeight(3)
+                .expectRow(0, 1)
+                .expectRow(1, 2)
+                .expectRow(2, 3);
     }
 }

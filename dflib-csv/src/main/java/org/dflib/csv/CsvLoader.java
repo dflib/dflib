@@ -14,6 +14,8 @@ import org.dflib.ValueMapper;
 import org.dflib.builder.DataFrameAppender;
 import org.dflib.builder.DataFrameByRowBuilder;
 import org.dflib.collection.Iterators;
+import org.dflib.connector.ByteSource;
+import org.dflib.connector.ByteSources;
 import org.dflib.sample.Sampler;
 
 import java.io.File;
@@ -472,6 +474,20 @@ public class CsvLoader {
         } catch (IOException e) {
             throw new RuntimeException("Error reading file: " + filePath, e);
         }
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public DataFrame load(ByteSource src) {
+        return src.processStream(st -> load(st, "?"));
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public Map<String, DataFrame> loadAll(ByteSources src) {
+        return src.processStreams((name, st) -> load(st, name));
     }
 
     private DataFrame load(InputStream in, String resourceId) {
