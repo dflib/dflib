@@ -34,6 +34,7 @@
 * #370 ECharts: support "itemStyle", "symbolSize", "lineStyle" for "line" series
 * #371 ECharts: support "itemStyle" for "boxplot" series
 * #382 $bool(..).cumSum()
+* #415 CsvLoader to support an explicit encoding
 
 ## Release 1.0.0
 

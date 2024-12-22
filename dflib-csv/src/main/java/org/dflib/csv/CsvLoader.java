@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class CsvLoader {
     private final List<ColConfigurator> colConfigurators;
 
     private CSVFormat format;
+    private Charset encoding;
 
     private RowPredicate rowCondition;
     private int rowSampleSize;
@@ -67,6 +69,24 @@ public class CsvLoader {
      */
     public CsvLoader compression(CompressionCodec compressionCodec) {
         this.compressionCodec = compressionCodec;
+	return this;
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    public CsvLoader encoding(String encoding) {
+        return encoding(encoding != null ? Charset.forName(encoding) : null);
+    }
+
+    /**
+     * Allow to change the encoding from the platoform default. Ignored if the DataFrame is loaded from a Reader
+     * (that performs character decoding on its own).
+     *
+     * @since 1.1.0
+     */
+    public CsvLoader encoding(Charset encoding) {
+        this.encoding = encoding;
         return this;
     }
 
@@ -456,10 +476,19 @@ public class CsvLoader {
     }
 
     public DataFrame load(File file) {
-        try (Reader r = new InputStreamReader(decompressIfNeeded(new FileInputStream(file), file.getName()))) {
-            return load(r);
+        try (InputStream in = decompressIfNeeded(new FileInputStream(file), file.getName())) {
+            return load(in, file.getPath());
         } catch (IOException e) {
             throw new RuntimeException("Error reading file: " + file, e);
+        }
+    }
+
+    private DataFrame load(InputStream in, String resourceId) {
+        Charset encoding = this.encoding != null ? this.encoding : Charset.defaultCharset();
+        try (Reader r = new InputStreamReader(in, encoding)) {
+            return load(r);
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading source: " + resourceId, e);
         }
     }
 
