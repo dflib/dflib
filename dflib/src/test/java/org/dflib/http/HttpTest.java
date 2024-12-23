@@ -1,4 +1,4 @@
-package org.dflib.connector.http;
+package org.dflib.http;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
