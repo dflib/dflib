@@ -10,6 +10,8 @@ public class DFLibJupyterExtension implements Extension {
     private static final String STARTUP_SCRIPT = "" +
             "import org.dflib.jupyter .*;\n" +
             "import org.dflib.*;\n" +
+            "import org.dflib.http.*;\n" +
+
             "import static org.dflib.Exp.*;\n" +
 
             // must call init method here, to process everything in order inside code executor
