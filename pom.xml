@@ -145,6 +145,11 @@
                 <artifactId>bootique-jdbc-junit5-testcontainers</artifactId>
                 <version>${bootique.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.bootique.jetty</groupId>
+                <artifactId>bootique-jetty-jakarta-junit5</artifactId>
+                <version>${bootique.version}</version>
+            </dependency>
 
             <!--
            Importing individual Testcontainers modules for tests instead of a BOM, as BOM would be treated as a

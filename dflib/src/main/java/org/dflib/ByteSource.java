@@ -52,7 +52,10 @@ public interface ByteSource {
     }
 
     /**
-     * Returns a ByteSource mapped to a URL.
+     * Returns a ByteSource mapped to a URL. For HTTP URLs also consider using {@link org.dflib.connector.http.Http}
+     * connector that supports setting headers and building URLs incrementally.
+     *
+     * @see org.dflib.connector.http.Http
      */
     static ByteSource ofUrl(URL url) {
         return () -> {
