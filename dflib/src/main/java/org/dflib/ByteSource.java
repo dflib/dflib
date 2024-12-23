@@ -1,5 +1,7 @@
 package org.dflib;
 
+import org.dflib.http.Http;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,10 +54,10 @@ public interface ByteSource {
     }
 
     /**
-     * Returns a ByteSource mapped to a URL. For HTTP URLs also consider using {@link org.dflib.connector.http.Http}
+     * Returns a ByteSource mapped to a URL. For HTTP URLs also consider using {@link Http}
      * connector that supports setting headers and building URLs incrementally.
      *
-     * @see org.dflib.connector.http.Http
+     * @see Http
      */
     static ByteSource ofUrl(URL url) {
         return () -> {
