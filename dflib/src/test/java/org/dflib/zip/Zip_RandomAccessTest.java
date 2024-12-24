@@ -8,9 +8,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 
@@ -72,7 +73,8 @@ public class Zip_RandomAccessTest {
         ByteSources srcs = zip.sources();
         assertNotNull(srcs);
 
-        Map<String, String> texts = new HashMap<>();
+        // the map must be safe for parallel access
+        ConcurrentMap<String, String> texts = new ConcurrentHashMap<>();
         srcs.processStreams((n, st) -> {
             try {
                 return texts.put(n, new String(st.readAllBytes()));
