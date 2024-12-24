@@ -73,8 +73,7 @@ public class Http {
 
     private HttpRequest createRequest() {
         HttpRequest.Builder builder = HttpRequest
-                .newBuilder(URI.create(createURI()))
-                ;
+                .newBuilder(URI.create(createURI()));
 
         headers.forEach((n, vs) -> vs.forEach(v -> builder.header(n, encodeHeader(v))));
 
@@ -87,8 +86,11 @@ public class Http {
         }
 
         StringBuilder uri = new StringBuilder(url);
-        if (!url.endsWith("?")) {
-            uri.append("?");
+
+        // if the base URL already contains query parameters, respect that...
+        String tail = uri.indexOf("?") > 0 ? "&" : "?";
+        if (!url.endsWith(tail)) {
+            uri.append(tail);
         }
 
         queryParams.forEach((n, vs) -> vs.forEach(v -> uri.append(n).append("=").append(encodeQueryParam(v)).append("&")));

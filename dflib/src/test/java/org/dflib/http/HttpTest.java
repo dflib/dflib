@@ -62,6 +62,7 @@ public class HttpTest {
         assertEquals("http://a?a=B&a=C", Http.of("http://a").queryParam("a", "B", "C").createURI());
         assertEquals("http://a?a=B+C", Http.of("http://a").queryParam("a", "B C").createURI());
         assertEquals("http://a?a=B%26C", Http.of("http://a").queryParam("a", "B&C").createURI());
+        assertEquals("http://a?a=B&a=C&b=D", Http.of("http://a?a=B").queryParam("a", "C").queryParam("b", "D").createURI());
     }
 
     @Test
