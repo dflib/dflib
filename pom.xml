@@ -49,9 +49,9 @@
 
         <slf4j.version>1.7.25</slf4j.version>
         <log4j.version>2.23.1</log4j.version>
-        <bootique.version>3.0.M2</bootique.version>
-        <testcontainers.version>1.19.8</testcontainers.version>
-        <junit5.version>5.10.3</junit5.version>
+        <bootique.version>3.0-M6</bootique.version>
+        <testcontainers.version>1.20.3</testcontainers.version>
+        <junit5.version>5.11.3</junit5.version>
         <jsonpath.version>2.9.0</jsonpath.version>
         <avro.version>1.12.0</avro.version>
         <jackson.version>2.15.4</jackson.version>
