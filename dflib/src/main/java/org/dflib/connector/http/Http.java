@@ -65,17 +65,14 @@ public class Http {
     }
 
     private HttpClient createClient() {
-        // TODO: cache the client? Allow to configure client settings?
+        // TODO: Expose some of the client settings like timeouts?
         return HttpClient.newBuilder()
                 .followRedirects(HttpClient.Redirect.ALWAYS)
                 .build();
     }
 
     private HttpRequest createRequest() {
-        HttpRequest.Builder builder = HttpRequest
-                .newBuilder(URI.create(createURI()))
-                ;
-
+        HttpRequest.Builder builder = HttpRequest.newBuilder(URI.create(createURI()));
         headers.forEach((n, vs) -> vs.forEach(v -> builder.header(n, encodeHeader(v))));
 
         return builder.build();
