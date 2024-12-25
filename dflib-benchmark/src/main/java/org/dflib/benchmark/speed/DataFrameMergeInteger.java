@@ -40,7 +40,7 @@ public class DataFrameMergeInteger {
     public Object mapCast() {
         return df
                 .cols()
-                .merge((r, t) -> t.set(0, ((int) r.get(0)) * 10))
+                .merge((r, t) -> t.set("c0", ((int) r.get(0)) * 10))
                 .materialize()
                 .iterator();
     }
@@ -49,7 +49,7 @@ public class DataFrameMergeInteger {
     public Object mapApiCast() {
         return df
                 .cols()
-                .merge((r, t) -> t.set(0, r.get(0, Integer.class) * 10))
+                .merge((r, t) -> t.set("c0", r.get(0, Integer.class) * 10))
                 .materialize()
                 .iterator();
     }
