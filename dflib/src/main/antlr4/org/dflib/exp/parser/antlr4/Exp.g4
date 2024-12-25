@@ -31,11 +31,28 @@ private static Number floatingPointScalar(String token) {
 }
 
 /// **Parser rules**
+///
+/// This section defines the parser rules (grammar entry points) used to parse the
+/// input expressions into Abstract Syntax Tree (AST) elements. These rules
+/// represent high-level language constructs such as numeric, string, conditional,
+/// temporal, and aggregate expressions.
 
+/**
+ * This is the grammar root.
+ *
+ * The root rule serves as the main entry point for processing expressions.
+ * The input expression must conform to the grammar structure and ends (EOF).
+ */
 root returns [Exp<?> exp]
     : expression EOF { $exp = $expression.exp; }
     ;
 
+/**
+ * This rule parses any valid expression.
+ *
+ * It enables a wide array of subtypes including null, nested expressions, aggregation,
+ * boolean, numeric, string, temporal, conditional, and other supported constructs.
+ */
 expression returns [Exp<?> exp]
     : NULL { $exp = Exp.\$val(null); }
     | '(' expression ')' { $exp = $expression.exp; }
@@ -49,8 +66,15 @@ expression returns [Exp<?> exp]
     | split { $exp = $split.exp; }
     ;
 
-/// *Numeric expressions*
+/// **Numeric expressions**
+///
+/// This section defines constructs used for numeric expressions, which
+/// include scalars, columns, functions, and arithmetic operations.
 
+/**
+ * Parses numeric expressions, enabling combinations of calculations,
+ * nested sub-expressions, or references to columns and scalar values.
+ */
 numExp returns [NumExp<?> exp]
     : '(' numExp ')' { $exp = $numExp.exp; }
     | numScalar { $exp = (NumExp<?>) Exp.\$val($numScalar.value); }
@@ -66,8 +90,15 @@ numExp returns [NumExp<?> exp]
     )
     ;
 
-/// *Boolean expressions*
+/// **Boolean expressions**
+///
+/// This section defines boolean operators, enabling logical combinations,
+/// scalar values, conditions, and relations.
 
+/**
+ * Parses boolean expressions that may reference scalar values,
+ * columns, logical combinations (AND, OR), and conditions.
+ */
 boolExp returns [Condition exp]
     : '(' boolExp ')' { $exp = $boolExp.exp; }
     | boolScalar { $exp = (BoolScalarExp) Exp.\$val($boolScalar.value); }
@@ -81,8 +112,15 @@ boolExp returns [Condition exp]
     )
     ;
 
-/// *String expressions*
+/// **String expressions**
+///
+/// This section defines string operators, scalar values, column references,
+/// and applicable functions.
 
+/**
+ * Parses string expressions, allowing concatenations,
+ * scalar assignments, column references, and function invocations.
+ */
 strExp returns [StrExp exp]
     : '(' strExp ')' { $exp = $strExp.exp; }
     | strScalar { $exp = (StrScalarExp) Exp.\$val($strScalar.value); }
@@ -90,8 +128,15 @@ strExp returns [StrExp exp]
     | strFn { $exp = $strFn.exp; }
     ;
 
-/// *Temporal expressions*
+/// **Temporal expressions**
+///
+/// This section defines temporal-oriented operations (time, date, datetime),
+/// as well as their scalar and column components.
 
+/**
+ * Parses general temporal expressions.
+ * Temporal types include time, date, or date-time values.
+ */
 temporalExp returns [Exp<? extends Temporal> exp]
     : '(' temporalExp ')' { $exp = $temporalExp.exp; }
     | timeExp { $exp = $timeExp.exp; }
@@ -99,53 +144,95 @@ temporalExp returns [Exp<? extends Temporal> exp]
     | dateTimeExp { $exp = $dateTimeExp.exp; }
     ;
 
+/**
+ * Constructs expressions specific to time-based functions and columns.
+ */
 timeExp returns [TimeExp exp]
     : timeColumn { $exp = $timeColumn.exp; }
     | timeFn { $exp = $timeFn.exp; }
     ;
 
+/**
+ * Constructs expressions specific to date-based manipulations.
+ */
 dateExp returns [DateExp exp]
     : dateColumn { $exp = $dateColumn.exp; }
     | dateFn { $exp = $dateFn.exp; }
     ;
 
+/**
+ * Supports expressions using date-time for advanced operations.
+ */
 dateTimeExp returns [DateTimeExp exp]
     : dateTimeColumn { $exp = $dateTimeColumn.exp; }
     | dateTimeFn { $exp = $dateTimeFn.exp; }
     ;
 
-/// *Scalar expressions*
+/// **Scalar expressions**
+///
+/// Defines scalar values such as numbers, booleans, and strings that
+/// are single literals or constants.
 
+/**
+ * Represents numeric scalar values (e.g., integers, floating points).
+ */
 numScalar returns [Number value]
     : longScalar { $value = $longScalar.value; }
     | integerScalar { $value = $integerScalar.value; }
     | floatingPointScalar { $value = $floatingPointScalar.value; }
     ;
 
+/**
+ * Represents individual long scalar values.
+ */
 longScalar returns [Long value]
     : LONG_LITERAL { $value = Long.parseLong($text); }
     ;
 
+/**
+ * Represents individual integer scalar values.
+ * These are numerical constants that can be directly used in expressions.
+ */
 integerScalar returns [Integer value]
     : INTEGER_LITERAL { $value = Integer.parseInt($text); }
     ;
 
+/**
+ * Represents floating-point scalar values.
+ * Includes both single-precision (float) and double-precision (double) values.
+ */
 floatingPointScalar returns [Number value]
     : FLOATING_POINT_LITERAL { $value = floatingPointScalar($text); }
     ;
 
+/**
+ * Represents boolean scalar values. Can be either `true` or `false`.
+ */
 boolScalar returns [Boolean value]
     : TRUE { $value = true; }
     | FALSE { $value = false; }
     ;
 
+/**
+ * Represents string scalar values, such as words or longer text.
+ * Can be enclosed in quotes as single characters or string literals.
+ */
 strScalar returns [String value]
     : CHARACTER_LITERAL { $value = $text.substring(1, $text.length() - 1); }
     | STRING_LITERAL { $value = $text.substring(1, $text.length() - 1); }
     ;
 
-/// *Column expressions*
+/// **Column expressions**
+///
+/// This section handles expressions that operate on columns, allowing
+/// users to reference and manipulate numeric, boolean, string, date,
+/// time, or datetime data at the column level.
 
+/**
+ * Represents numeric column expressions, allowing references to columns
+ * containing integer, long, float, double, or decimal data.
+ * Each column type maps to a corresponding subtype of `NumExp<?>`.
+ */
 numColumn returns [NumExp<?> exp]
     : intColumn { $exp = $intColumn.exp; }
     | longColumn { $exp = $longColumn.exp; }
@@ -154,58 +241,105 @@ numColumn returns [NumExp<?> exp]
     | decimalColumn { $exp = $decimalColumn.exp; }
     ;
 
+/**
+ * Represents references to integer columns by their ID.
+ * An integer column is defined by its relationship to the schema.
+ */
 intColumn returns [IntColumn exp]
     : INT '(' columnId ')' { $exp = (IntColumn) col($columnId.id, Exp::\$int, Exp::\$int); }
     ;
 
+/**
+ * Represents references to long columns by their ID.
+ */
 longColumn returns [LongColumn exp]
     : LONG '(' columnId ')' { $exp = (LongColumn) col($columnId.id, Exp::\$long, Exp::\$long); }
     ;
 
+/**
+ * Represents references to float columns by their ID.
+ */
 floatColumn returns [FloatColumn exp]
     : FLOAT '(' columnId ')' { $exp = (FloatColumn) col($columnId.id, Exp::\$float, Exp::\$float); }
     ;
 
+/**
+ * Represents references to double columns by their ID.
+ */
 doubleColumn returns [DoubleColumn exp]
     : DOUBLE '(' columnId ')' { $exp = (DoubleColumn) col($columnId.id, Exp::\$double, Exp::\$double); }
     ;
 
+/**
+ * Represents references to decimal columns by their ID.
+ */
 decimalColumn returns [DecimalColumn exp]
     : DECIMAL '(' columnId ')' { $exp = (DecimalColumn) col($columnId.id, Exp::\$decimal, Exp::\$decimal); }
     ;
 
+/**
+ * Represents references to boolean columns by their ID.
+ */
 boolColumn returns [BoolColumn exp]
     : BOOL '(' columnId ')' { $exp = (BoolColumn) col($columnId.id, Exp::\$bool, Exp::\$bool); }
     ;
 
-strColumn returns [StrColumn exp]:
-    STR '(' columnId ')' { $exp = (StrColumn) col($columnId.id, Exp::\$str, Exp::\$str); }
+/**
+ * Represents references to string columns by their ID.
+ */
+strColumn returns [StrColumn exp]
+    : STR '(' columnId ')' { $exp = (StrColumn) col($columnId.id, Exp::\$str, Exp::\$str); }
     ;
 
+/**
+ * Represents references to date columns by their ID.
+ */
 dateColumn returns [DateColumn exp]
     : DATE '(' columnId ')' { $exp = (DateColumn) col($columnId.id, Exp::\$date, Exp::\$date); }
     ;
 
+/**
+ * Represents references to time columns by their ID.
+ */
 timeColumn returns [TimeColumn exp]
     : TIME '(' columnId ')' { $exp = (TimeColumn) col($columnId.id, Exp::\$time, Exp::\$time); }
     ;
 
+/**
+ * Represents references to datetime columns by their ID.
+ */
 dateTimeColumn returns [DateTimeColumn exp]
     : DATETIME '(' columnId ')' { $exp = (DateTimeColumn) col($columnId.id, Exp::\$dateTime, Exp::\$dateTime); }
     ;
 
+/**
+ * Represents a column ID, which can be an integer, string, or identifier.
+ * Column IDs help locate specific data in a table schema.
+ */
 columnId returns [Object id]
     : integerScalar { $id = $integerScalar.value; }
     | strScalar { $id = $strScalar.value; }
     | identifier { $id = $identifier.id; }
     ;
 
+/**
+ * Represents identifiers, which are user-defined names for columns, functions, or variables.
+ */
 identifier returns [String id]
     : IDENTIFIER { $id = $text; }
     ;
 
-/// *Relational expresions*
+/// **Relational expressions**
+///
+/// Defines rules for relational expressions and operations.
+///
+/// These include comparisons (e.g., greater than, equal to),
+/// as well as more complex relationships such as "between" conditions.
 
+/**
+ * Represents relational expression rules, covering numeric, string, time,
+ * date, and datetime comparisons.
+ */
 relation returns [Condition exp]
     : numRelation { $exp = $numRelation.exp; }
     | strRelation { $exp = $strRelation.exp; }
@@ -214,6 +348,9 @@ relation returns [Condition exp]
     | dateTimeRelation { $exp = $dateTimeRelation.exp; }
     ;
 
+/**
+ * Handles numeric comparisons, such as equality, inequality, or range checks.
+ */
 numRelation returns [Condition exp]
     : a=numExp (
         : GT b=numExp { $exp = $a.exp.gt($b.exp); }
@@ -226,6 +363,9 @@ numRelation returns [Condition exp]
     )
     ;
 
+/**
+ * Represents relationships between string expressions, such as equality and inequality.
+ */
 strRelation returns [Condition exp]
     : a=strExp (
         : EQ b=strExp { $exp = $a.exp.eq($b.exp); }
@@ -233,6 +373,9 @@ strRelation returns [Condition exp]
     )
     ;
 
+/**
+ * Handles time-based comparisons, e.g., checking if one time is less than another.
+ */
 timeRelation returns [Condition exp]
     : a=timeExp (
         : GT b=timeExp { $exp = $a.exp.gt($b.exp); }
@@ -245,6 +388,9 @@ timeRelation returns [Condition exp]
     )
     ;
 
+/**
+ * Defines relational comparisons for date-based expressions, such as range checks.
+ */
 dateRelation returns [Condition exp]
     : a=dateExp (
         : GT b=dateExp { $exp = $a.exp.gt($b.exp); }
@@ -257,6 +403,9 @@ dateRelation returns [Condition exp]
     )
     ;
 
+/**
+ * Parses comparisons for datetime expressions, including equality and range checks.
+ */
 dateTimeRelation returns [Condition exp]
     : a=dateTimeExp (
         : GT b=dateTimeExp { $exp = $a.exp.gt($b.exp); }
@@ -269,8 +418,19 @@ dateTimeRelation returns [Condition exp]
     )
     ;
 
-/// *Functions*
+/// **Functions**
+///
+/// Defines built-in functions supported by the grammar.
+///
+/// Functions include numeric utilities (`ABS`, `ROUND`), temporal utilities
+/// (`PLUS_DAYS`, `YEAR`), string utilities (`TRIM`, `SUBSTR`), and more.
 
+/**
+ * Represents numerical functions, such as `ABS` or `ROUND`.
+ * These functions are applied directly to numeric expressions.
+ * They also include capabilities to retrieve row numbers or length
+ * of a string and to extract components from temporal expressions.
+ */
 numFn returns [NumExp<?> exp]
     : COUNT ('()' | '(' b=boolExp ')') { $exp = $ctx.b != null ? Exp.count($b.exp) : Exp.count(); }
     | ROW_NUM '()' { $exp = Exp.rowNum(); }
@@ -282,6 +442,10 @@ numFn returns [NumExp<?> exp]
     | dateTimeFieldFn { $exp = $dateTimeFieldFn.exp; }
     ;
 
+/**
+ * Extracts unit-specific fields from time-based expressions, such as hour, minute, second, or millisecond.
+ * These functions allow breaking down time expressions into granular parts for calculations or comparisons.
+ */
 timeFieldFn returns [NumExp<Integer> exp]
     : HOUR '(' timeExp ')' { $exp = $timeExp.exp.hour(); }
     | MINUTE '(' timeExp ')' { $exp = $timeExp.exp.minute(); }
@@ -289,12 +453,21 @@ timeFieldFn returns [NumExp<Integer> exp]
     | MILLISECOND '(' timeExp ')' { $exp = $timeExp.exp.millisecond(); }
     ;
 
+/**
+ * Extracts unit-specific fields from date expressions, such as year, month, or day.
+ * These functions enable fine-grained access to the components of a date for analysis or formatting.
+ */
 dateFieldFn returns [NumExp<Integer> exp]
     : YEAR '(' dateExp ')' { $exp = $dateExp.exp.year(); }
     | MONTH '(' dateExp ')' { $exp = $dateExp.exp.month(); }
     | DAY '(' dateExp ')' { $exp = $dateExp.exp.day(); }
     ;
 
+/**
+ * Extracts unit-specific fields from datetime expressions,
+ * such as year, month, day, hour, minute, second, or millisecond.
+ * Useful for date-time manipulation where both date and time parts are considered.
+ */
 dateTimeFieldFn returns [NumExp<Integer> exp]
     : YEAR '(' dateTimeExp ')' { $exp = $dateTimeExp.exp.year(); }
     | MONTH '(' dateTimeExp ')' { $exp = $dateTimeExp.exp.month(); }
@@ -305,10 +478,19 @@ dateTimeFieldFn returns [NumExp<Integer> exp]
     | MILLISECOND '(' dateTimeExp ')' { $exp = $dateTimeExp.exp.millisecond(); }
     ;
 
+/**
+ * Represents string-based functions that return boolean results.
+ * Example includes matching one string to a specific pattern.
+ */
 boolFn returns [Condition exp]
     : MATCHES '(' strExp ',' strScalar ')' { $exp = $strExp.exp.matches($strScalar.value); }
     ;
 
+/**
+ * Represents time manipulation functions.
+ * These include addition of units such as hours, minutes, seconds,
+ * milliseconds, or nanoseconds to base time expressions.
+ */
 timeFn returns [TimeExp exp]
     : PLUS_HOURS '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusHours($b.value); }
     | PLUS_MINUTES '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMinutes($b.value); }
@@ -317,6 +499,10 @@ timeFn returns [TimeExp exp]
     | PLUS_NANOS '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusNanos($b.value); }
     ;
 
+/**
+ * Represents date manipulation functions.
+ * These cover the addition of various units such as years, months, weeks, or days to date expressions.
+ */
 dateFn returns [DateExp exp]
     : PLUS_YEARS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusYears($b.value); }
     | PLUS_MONTHS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusMonths($b.value); }
@@ -324,6 +510,11 @@ dateFn returns [DateExp exp]
     | PLUS_DAYS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusDays($b.value); }
     ;
 
+/**
+ * Represents datetime manipulation functions.
+ * These allow adding units such as years, months, days, hours, minutes, seconds,
+ * milliseconds, or nanoseconds to datetime expressions.
+ */
 dateTimeFn returns [DateTimeExp exp]
     : PLUS_YEARS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusYears($b.value); }
     | PLUS_MONTHS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMonths($b.value); }
@@ -336,30 +527,73 @@ dateTimeFn returns [DateTimeExp exp]
     | PLUS_NANOS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusNanos($b.value); }
     ;
 
+/**
+ * Represents string manipulation functions.
+ * These include trimming or extracting substrings from string expressions.
+ */
 strFn returns [StrExp exp]
-    : TRIM '(' strExp ')' { $exp = $strExp.exp.trim(); }
-    | SUBSTR '(' s=strExp ',' a=integerScalar ',' b=integerScalar ')' { $exp = $s.exp.substr($a.value, $b.value); }
+    : trimFn { $exp = $trimFn.exp; }
+    | substrFn { $exp = $substrFn.exp; }
     ;
 
+/**
+ * Trims leading and trailing whitespace from a string expression.
+ * Useful for cleaning input data or formatting strings.
+ */
+trimFn returns [StrExp exp]
+    : TRIM '(' strExp ')' { $exp = $strExp.exp.trim(); }
+    ;
 
-/// *Special functions*
+/**
+ * Extracts a substring from the given string expression.
+ * The substring starts from a specified index and has a specified length.
+ */
+substrFn returns [StrExp exp]
+    : SUBSTR '(' s=strExp ',' a=integerScalar ',' b=integerScalar ')' { $exp = $s.exp.substr($a.value, $b.value); }
+    ;
 
+/// **Special expressions**
+///
+/// This section defines special expressions which include conditional
+/// constructs like `if`-statements, null-checking (`ifNull`), and
+/// string splitting operations for granular control of expressions.
+
+/**
+ * Parses conditional expressions where an `if` logic is used.
+ * Allows branches depending on a boolean condition.
+ */
 ifExp returns [Exp<?> exp]
     : IF '(' a=boolExp ',' b=expression ',' c=expression ')' { $exp = Exp.ifExp($a.exp, $b.exp, (Exp) $c.exp); }
     ;
 
+/**
+ * Parses null-checking expressions where a default value is
+ * assigned if the primary expression evaluates to null.
+ */
 ifNull returns [Exp<?> exp]
     : IF_NULL '(' a=expression ',' b=expression ')' { $exp = Exp.ifNull($a.exp, (Exp) $b.exp); }
     ;
 
+/**
+ * Parses splitting of string expressions based on a delimiter.
+ * An optional limit can be specified to control the split operation.
+ */
 split returns [Exp<String[]> exp]
     : SPLIT '(' a=strExp ',' b=strScalar (',' c=integerScalar)? ')' {
         $exp = $ctx.c != null ? $a.exp.split($b.value, $c.value) : $a.exp.split($b.value);
         }
     ;
 
-/// *Aggregates*
+/// **Aggregate expressions**
+///
+/// This section defines aggregation expressions including positional aggregates
+/// (`first`, `last`), numeric aggregates (`sum`, `avg`, `median`), and other
+/// domain-specific aggregators for numeric, string, and temporal data types.
 
+/**
+ * Parses aggregate expressions which allow combining or summarizing
+ * sets of values into a single scalar output.
+ */
 agg returns [Exp<?> exp]
     : positionalAgg { $exp = $positionalAgg.exp; }
     | numAgg { $exp = $numAgg.exp; }
@@ -369,11 +603,19 @@ agg returns [Exp<?> exp]
     | strAgg { $exp = $strAgg.exp; }
     ;
 
+/**
+ * Parses positional aggregate expressions such as `FIRST` and `LAST`,
+ * which process elements based on position in the dataset.
+ */
 positionalAgg returns [Exp<?> exp]
     : FIRST '(' e=expression (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $e.exp.first($b.exp) : $e.exp.first(); }
     | LAST '(' e=expression ')' { $exp = $e.exp.last(); } // TODO: bool condition
     ;
 
+/**
+ * Parses numeric aggregate expressions including `SUM`, `MIN`, `MAX`,
+ * and more advanced operations like quantiles and cumulative sums.
+ */
 numAgg returns [NumExp<?> exp]
     : MIN '(' c=numColumn (',' b=boolExp)? ')' { $exp = $c.exp.min($ctx.b != null ? $b.exp : null); }
     | MAX '(' c=numColumn (',' b=boolExp)? ')' { $exp = $c.exp.max($ctx.b != null ? $b.exp : null); }
@@ -388,6 +630,10 @@ numAgg returns [NumExp<?> exp]
             }
     ;
 
+/**
+ * Parses aggregation of time expressions, enabling operations like `MIN`,
+ * `MAX`, `AVG` (average), and advanced aggregation such as quantiles.
+ */
 timeAgg returns [TimeExp exp]
     : MIN '(' c=timeColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.min($b.exp) : $c.exp.min(); }
     | MAX '(' c=timeColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.max($b.exp) : $c.exp.max(); }
@@ -400,6 +646,10 @@ timeAgg returns [TimeExp exp]
         }
     ;
 
+/**
+ * Parses aggregation of date expressions for operations similar to
+ * time-based aggregations, but applied to dates such as `MIN`, `MAX`.
+ */
 dateAgg returns [DateExp exp]
     : MIN '(' c=dateColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.min($b.exp) : $c.exp.min(); }
     | MAX '(' c=dateColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.max($b.exp) : $c.exp.max(); }
@@ -412,6 +662,10 @@ dateAgg returns [DateExp exp]
         }
     ;
 
+/**
+ * Handles aggregation of datetime elements, allowing operations like
+ * `AVG`, `MEDIAN`, and `QUANTILE` over datetime values in datasets.
+ */
 dateTimeAgg returns [DateTimeExp exp]
     : MIN '(' c=dateTimeColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.min($b.exp) : $c.exp.min(); }
     | MAX '(' c=dateTimeColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.max($b.exp) : $c.exp.max(); }
@@ -424,6 +678,10 @@ dateTimeAgg returns [DateTimeExp exp]
         }
     ;
 
+/**
+ * Processes aggregations over string expressions, providing support
+ * for finding lexicographical `MIN` or `MAX` values.
+ */
 strAgg returns [StrExp exp]
     : MIN '(' e=strExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $e.exp.min($b.exp) : $e.exp.min(); }
     | MAX '(' e=strExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $e.exp.max($b.exp) : $e.exp.max(); }
