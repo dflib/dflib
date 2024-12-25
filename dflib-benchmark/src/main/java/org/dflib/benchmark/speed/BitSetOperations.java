@@ -1,5 +1,7 @@
 package org.dflib.benchmark.speed;
 
+import org.dflib.Series;
+import org.dflib.builder.BoolAccum;
 import org.dflib.series.BooleanBitsetSeries;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -29,10 +31,10 @@ public class BitSetOperations {
     public int sizeInLong;
 
     @Param("123456")
-    public int index;
+    public int indexTrue;
 
     @Param("123556")
-    public int indexEmpty;
+    public int indexFalse;
 
     BooleanBitsetSeries bitSet;
     boolean[] boolSet;
@@ -40,15 +42,19 @@ public class BitSetOperations {
 
     @Setup
     public void setUp() {
+
+        // see "BoolAccum.sizeInLongs(int)"
         sizeInLong = ((size - 1) >> 6) + 1;
 
         boolSet = new boolean[size];
         javaBitSet = new java.util.BitSet(size);
 
-        boolSet[index + 1] = true;
-        javaBitSet.set(index + 1);
+        boolSet[indexTrue] = true;
+        javaBitSet.set(indexTrue);
 
-        bitSet = new BooleanBitsetSeries(javaBitSet.toLongArray(), size);
+        BoolAccum accum = new BoolAccum(size);
+        accum.fill(Series.ofBool(boolSet), 0, 0, size);
+        bitSet = (BooleanBitsetSeries) accum.toSeries();
     }
 
     @Benchmark
@@ -57,13 +63,13 @@ public class BitSetOperations {
     }
 
     @Benchmark
-    public boolean bitSet_get() {
-        return bitSet.get(index);
+    public boolean bitSet_getTrue() {
+        return bitSet.get(indexTrue);
     }
 
     @Benchmark
-    public boolean bitSet_getEmpty() {
-        return bitSet.get(indexEmpty);
+    public boolean bitSet_getFalse() {
+        return bitSet.get(indexFalse);
     }
 
     @Benchmark
@@ -73,27 +79,27 @@ public class BitSetOperations {
 
     @Benchmark
     public void boolArray_set() {
-        boolSet[index] = true;
+        boolSet[indexTrue] = true;
     }
 
     @Benchmark
-    public boolean boolArray_get() {
-        return boolSet[index];
+    public boolean boolArray_getTrue() {
+        return boolSet[indexTrue];
     }
 
     @Benchmark
     public void javaBitSet_set() {
-        javaBitSet.set(index, true);
+        javaBitSet.set(indexTrue, true);
     }
 
     @Benchmark
-    public boolean javaBitSet_get() {
-        return javaBitSet.get(index);
+    public boolean javaBitSet_getTrue() {
+        return javaBitSet.get(indexTrue);
     }
 
     @Benchmark
-    public boolean javaBitSet_getEmpty() {
-        return javaBitSet.get(indexEmpty);
+    public boolean javaBitSet_getFalse() {
+        return javaBitSet.get(indexFalse);
     }
 
     @Benchmark
