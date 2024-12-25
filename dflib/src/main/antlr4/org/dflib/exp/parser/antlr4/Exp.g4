@@ -13,41 +13,20 @@ import org.dflib.exp.datetime.*;
 }
 
 @members {
-private static Exp<?> col(Exp<?> columnId, Function<Integer, Exp<?>> byIndex, Function<String, Exp<?>> byName) {
-    if (Integer.class.equals(columnId.getType())) {
-        return byIndex.apply((Integer) columnId.reduce((DataFrame) null));
-    } else if (String.class.equals(columnId.getType())) {
-        return byName.apply((String) columnId.reduce((DataFrame) null));
+private static Exp<?> col(Object columnId, Function<Integer, Exp<?>> byIndex, Function<String, Exp<?>> byName) {
+    if (columnId instanceof Integer) {
+        return byIndex.apply((Integer) columnId);
+    } else if (columnId instanceof String) {
+        return byName.apply((String) columnId);
     } else {
         throw new IllegalArgumentException("An integer or a string expected");
     }
 }
-private static Exp<?> minAgg(Exp<?> exp, Condition condition) {
-    if (exp instanceof NumExp) {
-        NumExp numExp = (NumExp) exp;
-        return condition != null ? numExp.min(condition) : numExp.max();
-    } else if (exp instanceof StrExp) {
-        StrExp strExp = (StrExp) exp;
-        return condition != null ? strExp.min(condition) : strExp.max();
-    } else {
-        throw new IllegalArgumentException("A number or a string is expected");
-    }
-}
-private static Exp<?> maxAgg(Exp<?> exp, Condition condition) {
-    if (exp instanceof NumExp) {
-        NumExp numExp = (NumExp) exp;
-        return condition != null ? numExp.max(condition) : numExp.max();
-    } else if (exp instanceof StrExp) {
-        StrExp strExp = (StrExp) exp;
-        return condition != null ? strExp.max(condition) : strExp.max();
-    } else {
-        throw new IllegalArgumentException("A number or a string is expected");
-    }
-}
-private static NumExp<?> floatingPointScalar(String token) {
+
+private static Number floatingPointScalar(String token) {
     return token.toLowerCase().endsWith("f")
-            ? (FloatScalarExp) Exp.\$val(Float.parseFloat(token))
-            : (DoubleScalarExp) Exp.\$val(Double.parseDouble(token));
+            ? Float.parseFloat(token)
+            : Double.parseDouble(token);
 }
 }
 
@@ -59,6 +38,7 @@ root returns [Exp<?> exp]
 
 expression returns [Exp<?> exp]
     : NULL { $exp = Exp.\$val(null); }
+    | '(' expression ')' { $exp = $expression.exp; }
     | agg { $exp = $agg.exp; }
     | boolExp { $exp = $boolExp.exp; }
     | numExp { $exp = $numExp.exp; }
@@ -69,99 +49,102 @@ expression returns [Exp<?> exp]
     | split { $exp = $split.exp; }
     ;
 
-boolExp returns [Condition exp]
-    : '(' boolExp ')' { $exp = $boolExp.exp; }
-    | boolScalar { $exp = $boolScalar.exp; }
-    | boolColumn { $exp = $boolColumn.exp; }
-    | boolFn { $exp = $boolFn.exp; }
-    | comparison { $exp = $comparison.exp; }
-    | NOT boolExp { $exp = Exp.not($boolExp.exp); }
-    | boolExp (OR boolExp)+ { $exp = Exp.or($boolExp.exp); }
-    | boolExp (AND boolExp)+ { $exp = Exp.and($boolExp.exp); }
-    ;
+/// *Numeric expressions*
 
 numExp returns [NumExp<?> exp]
     : '(' numExp ')' { $exp = $numExp.exp; }
-    | numScalar { $exp = $numScalar.exp; }
+    | numScalar { $exp = (NumExp<?>) Exp.\$val($numScalar.value); }
     | numColumn { $exp = $numColumn.exp; }
     | numFn { $exp = $numFn.exp; }
     | numAgg { $exp = $numAgg.exp; }
-    | a=numExp MUL b=numExp { $exp = $a.exp.mul($b.exp); }
-    | a=numExp DIV b=numExp { $exp = $a.exp.div($b.exp); }
-    | a=numExp MOD b=numExp { $exp = $a.exp.mod($b.exp); }
-    | a=numExp ADD b=numExp { $exp = $a.exp.add($b.exp); }
-    | a=numExp SUB b=numExp { $exp = $a.exp.sub($b.exp); }
+    | a=numExp (
+        : MUL b=numExp { $exp = $a.exp.mul($b.exp); }
+        | DIV b=numExp { $exp = $a.exp.div($b.exp); }
+        | MOD b=numExp { $exp = $a.exp.mod($b.exp); }
+        | ADD b=numExp { $exp = $a.exp.add($b.exp); }
+        | SUB b=numExp { $exp = $a.exp.sub($b.exp); }
+    )
     ;
 
-numFn returns [NumExp<?> exp]
-    : COUNT ('(' b=boolExp? ')') { $exp = (NumExp<?>) ($ctx.b != null ? Exp.count($b.exp) : Exp.count()); }
-    | ROW_NUM '()' { $exp = Exp.rowNum(); }
-    | ABS '(' numExp ')' { $exp = $numExp.exp.abs(); }
-    | LEN '(' strExp ')' { $exp = $strExp.exp.mapVal(String::length).castAsInt(); }
+/// *Boolean expressions*
+
+boolExp returns [Condition exp]
+    : '(' boolExp ')' { $exp = $boolExp.exp; }
+    | boolScalar { $exp = (BoolScalarExp) Exp.\$val($boolScalar.value); }
+    | boolColumn { $exp = $boolColumn.exp; }
+    | boolFn { $exp = $boolFn.exp; }
+    | relation { $exp = $relation.exp; }
+    | NOT boolExp { $exp = Exp.not($boolExp.exp); }
+    | a=boolExp (
+        : AND b=boolExp { $exp = Exp.and($a.exp, $b.exp); }
+        | OR b=boolExp { $exp = Exp.or($a.exp, $b.exp); }
+    )
     ;
 
-boolFn returns [Condition exp]
-    : MATCHES '(' strExp ',' strScalar ')' { $exp = $strExp.exp.matches($strScalar.exp.reduce((DataFrame) null)); }
-    ;
-
-agg returns [Exp<?> exp]
-    : FIRST '(' e=expression (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $e.exp.first($b.exp) : $e.exp.first(); }
-    | LAST '(' e=expression ')' { $exp = $e.exp.last(); } // TODO: bool condition
-    | MIN '(' e=expression (',' b=boolExp)? ')' { $exp = minAgg($e.exp, $ctx.b != null ? $b.exp : null); }
-    | MAX '(' e=expression (',' b=boolExp)? ')' { $exp = maxAgg($e.exp, $ctx.b != null ? $b.exp : null); }
-    ;
-
-numAgg returns [NumExp<?> exp]
-    : SUM '(' n=numColumn (',' b=boolExp)? ')' { $exp = $n.exp.sum($ctx.b != null ? $b.exp : null); }
-    | CUMSUM '(' n=numColumn ')' { $exp = $n.exp.cumSum(); }
-    | AVG '(' n=numColumn (',' b=boolExp)? ')' { $exp = $n.exp.avg($ctx.b != null ? $b.exp : null); }
-    | MEDIAN '(' n=numColumn (',' b=boolExp)? ')' { $exp = $n.exp.median($ctx.b != null ? $b.exp : null); }
-    ;
+/// *String expressions*
 
 strExp returns [StrExp exp]
-    : strScalar { $exp = $strScalar.exp; }
+    : '(' strExp ')' { $exp = $strExp.exp; }
+    | strScalar { $exp = (StrScalarExp) Exp.\$val($strScalar.value); }
     | strColumn { $exp = $strColumn.exp; }
+    | strFn { $exp = $strFn.exp; }
     ;
 
-temporalExp returns [Exp<?> exp]
-    : temporalColumn { $exp = $temporalColumn.exp; }
-    | temporalFn { $exp = $temporalFn.exp; }
+/// *Temporal expressions*
+
+temporalExp returns [Exp<? extends Temporal> exp]
+    : '(' temporalExp ')' { $exp = $temporalExp.exp; }
+    | timeExp { $exp = $timeExp.exp; }
+    | dateExp { $exp = $dateExp.exp; }
+    | dateTimeExp { $exp = $dateTimeExp.exp; }
     ;
 
-temporalFn returns [Exp<?> exp]
-    :
+timeExp returns [TimeExp exp]
+    : timeColumn { $exp = $timeColumn.exp; }
+    | timeFn { $exp = $timeFn.exp; }
     ;
 
-ifExp returns [Exp<?> exp]
-    : IF '(' a=boolExp ',' b=expression ',' c=expression ')' { $exp = Exp.ifExp($a.exp, $b.exp, (Exp) $c.exp); }
+dateExp returns [DateExp exp]
+    : dateColumn { $exp = $dateColumn.exp; }
+    | dateFn { $exp = $dateFn.exp; }
     ;
 
-ifNull returns [Exp<?> exp]
-    : IF_NULL '(' a=expression ',' b=expression ')' { $exp = Exp.ifNull($a.exp, (Exp) $b.exp); }
+dateTimeExp returns [DateTimeExp exp]
+    : dateTimeColumn { $exp = $dateTimeColumn.exp; }
+    | dateTimeFn { $exp = $dateTimeFn.exp; }
     ;
 
-split returns [Exp<String[]> exp] locals [String regex, Integer limit]
-    : SPLIT '(' a=strExp ',' b=strScalar (',' c=integerScalar)? ')' {
-        $regex = $b.exp.reduce((DataFrame) null);
-        $limit = $ctx.c != null ? $c.exp.reduce((DataFrame) null) : 0;
-        $exp = $a.exp.split($regex, $limit);
-        }
+/// *Scalar expressions*
+
+numScalar returns [Number value]
+    : longScalar { $value = $longScalar.value; }
+    | integerScalar { $value = $integerScalar.value; }
+    | floatingPointScalar { $value = $floatingPointScalar.value; }
     ;
 
-comparison returns [Condition exp]
-    : na=numExp (
-        GT nb=numExp { $exp = $ctx.numExp(0).exp.gt($ctx.numExp(1).exp); }
-        | GE nb=numExp { $exp = $na.exp.ge($nb.exp); }
-        | LT nb=numExp { $exp = $na.exp.lt($nb.exp); }
-        | LE nb=numExp { $exp = $na.exp.le($nb.exp); }
-        | EQ nb=numExp { $exp = $na.exp.eq($nb.exp); }
-        | NE nb=numExp { $exp = $na.exp.ne($nb.exp); }
-    )
-    | sa=strExp (
-        EQ sb=strExp { $exp = $sa.exp.eq($sb.exp); }
-        | NE sb=strExp { $exp = $sb.exp.ne($sb.exp); }
-    )
+longScalar returns [Long value]
+    : LONG_LITERAL { $value = Long.parseLong($text); }
     ;
+
+integerScalar returns [Integer value]
+    : INTEGER_LITERAL { $value = Integer.parseInt($text); }
+    ;
+
+floatingPointScalar returns [Number value]
+    : FLOATING_POINT_LITERAL { $value = floatingPointScalar($text); }
+    ;
+
+boolScalar returns [Boolean value]
+    : TRUE { $value = true; }
+    | FALSE { $value = false; }
+    ;
+
+strScalar returns [String value]
+    : CHARACTER_LITERAL { $value = $text.substring(1, $text.length() - 1); }
+    | STRING_LITERAL { $value = $text.substring(1, $text.length() - 1); }
+    ;
+
+/// *Column expressions*
 
 numColumn returns [NumExp<?> exp]
     : intColumn { $exp = $intColumn.exp; }
@@ -172,108 +155,281 @@ numColumn returns [NumExp<?> exp]
     ;
 
 intColumn returns [IntColumn exp]
-    : INT '(' columnId ')' { $exp = (IntColumn) col($columnId.exp, Exp::\$int, Exp::\$int); }
+    : INT '(' columnId ')' { $exp = (IntColumn) col($columnId.id, Exp::\$int, Exp::\$int); }
     ;
 
 longColumn returns [LongColumn exp]
-    : LONG '(' columnId ')' { $exp = (LongColumn) col($columnId.exp, Exp::\$long, Exp::\$long); }
+    : LONG '(' columnId ')' { $exp = (LongColumn) col($columnId.id, Exp::\$long, Exp::\$long); }
     ;
 
 floatColumn returns [FloatColumn exp]
-    : FLOAT '(' columnId ')' { $exp = (FloatColumn) col($columnId.exp, Exp::\$float, Exp::\$float); }
+    : FLOAT '(' columnId ')' { $exp = (FloatColumn) col($columnId.id, Exp::\$float, Exp::\$float); }
     ;
 
 doubleColumn returns [DoubleColumn exp]
-    : DOUBLE '(' columnId ')' { $exp = (DoubleColumn) col($columnId.exp, Exp::\$double, Exp::\$double); }
+    : DOUBLE '(' columnId ')' { $exp = (DoubleColumn) col($columnId.id, Exp::\$double, Exp::\$double); }
     ;
 
 decimalColumn returns [DecimalColumn exp]
-    : DECIMAL '(' columnId ')' { $exp = (DecimalColumn) col($columnId.exp, Exp::\$decimal, Exp::\$decimal); }
+    : DECIMAL '(' columnId ')' { $exp = (DecimalColumn) col($columnId.id, Exp::\$decimal, Exp::\$decimal); }
     ;
 
 boolColumn returns [BoolColumn exp]
-    : BOOL '(' columnId ')' { $exp = (BoolColumn) col($columnId.exp, Exp::\$bool, Exp::\$bool); }
+    : BOOL '(' columnId ')' { $exp = (BoolColumn) col($columnId.id, Exp::\$bool, Exp::\$bool); }
     ;
 
 strColumn returns [StrColumn exp]:
-    STR '(' columnId ')' { $exp = (StrColumn) col($columnId.exp, Exp::\$str, Exp::\$str); }
-    ;
-
-temporalColumn returns [Column<? extends Temporal> exp]
-    : dateColumn { $exp = $dateColumn.exp; }
-    | timeColumn { $exp = $timeColumn.exp; }
-    | dateTimeColumn { $exp = $dateTimeColumn.exp; }
+    STR '(' columnId ')' { $exp = (StrColumn) col($columnId.id, Exp::\$str, Exp::\$str); }
     ;
 
 dateColumn returns [DateColumn exp]
-    : DATE '(' columnId ')' { $exp = (DateColumn) col($columnId.exp, Exp::\$date, Exp::\$date); }
+    : DATE '(' columnId ')' { $exp = (DateColumn) col($columnId.id, Exp::\$date, Exp::\$date); }
     ;
 
 timeColumn returns [TimeColumn exp]
-    : TIME '(' columnId ')' { $exp = (TimeColumn) col($columnId.exp, Exp::\$time, Exp::\$time); }
+    : TIME '(' columnId ')' { $exp = (TimeColumn) col($columnId.id, Exp::\$time, Exp::\$time); }
     ;
 
 dateTimeColumn returns [DateTimeColumn exp]
-    : DATETIME '(' columnId ')' { $exp = (DateTimeColumn) col($columnId.exp, Exp::\$dateTime, Exp::\$dateTime); }
+    : DATETIME '(' columnId ')' { $exp = (DateTimeColumn) col($columnId.id, Exp::\$dateTime, Exp::\$dateTime); }
     ;
 
-columnId returns [ScalarExp<?> exp]
-    : integerScalar { $exp = $integerScalar.exp; }
-    | identifier { $exp = $identifier.exp; }
-    | strScalar { $exp = $strScalar.exp; }
+columnId returns [Object id]
+    : integerScalar { $id = $integerScalar.value; }
+    | strScalar { $id = $strScalar.value; }
+    | identifier { $id = $identifier.id; }
     ;
 
-boolScalar returns [BoolScalarExp exp]
-    : TRUE { $exp = (BoolScalarExp) Exp.\$val(true); }
-    | FALSE { $exp = (BoolScalarExp) Exp.\$val(false); }
+identifier returns [String id]
+    : IDENTIFIER { $id = $text; }
     ;
 
-numScalar returns [NumExp<?> exp]
-    : longScalar { $exp = $longScalar.exp; }
-    | integerScalar { $exp = $integerScalar.exp; }
-    | floatingPointScalar { $exp = $floatingPointScalar.exp; }
+/// *Relational expresions*
+
+relation returns [Condition exp]
+    : numRelation { $exp = $numRelation.exp; }
+    | strRelation { $exp = $strRelation.exp; }
+    | timeRelation { $exp = $timeRelation.exp; }
+    | dateRelation { $exp = $dateRelation.exp; }
+    | dateTimeRelation { $exp = $dateTimeRelation.exp; }
     ;
 
-longScalar returns [LongScalarExp exp]
-    : LONG_LITERAL { $exp = (LongScalarExp) Exp.\$val(Long.parseLong($text)); }
+numRelation returns [Condition exp]
+    : a=numExp (
+        : GT b=numExp { $exp = $a.exp.gt($b.exp); }
+        | GE b=numExp { $exp = $a.exp.ge($b.exp); }
+        | LT b=numExp { $exp = $a.exp.lt($b.exp); }
+        | LE b=numExp { $exp = $a.exp.le($b.exp); }
+        | EQ b=numExp { $exp = $a.exp.eq($b.exp); }
+        | NE b=numExp { $exp = $a.exp.ne($b.exp); }
+        | BETWEEN b=numExp AND c=numExp { $exp = $a.exp.between($b.exp, $c.exp); }
+    )
     ;
 
-integerScalar returns [IntScalarExp exp]
-    : INTEGER_LITERAL { $exp = (IntScalarExp) Exp.\$val(Integer.parseInt($text)); }
+strRelation returns [Condition exp]
+    : a=strExp (
+        : EQ b=strExp { $exp = $a.exp.eq($b.exp); }
+        | NE b=strExp { $exp = $a.exp.ne($b.exp); }
+    )
     ;
 
-floatingPointScalar returns [NumExp<?> exp]
-    : FLOATING_POINT_LITERAL { $exp = floatingPointScalar($text); }
+timeRelation returns [Condition exp]
+    : a=timeExp (
+        : GT b=timeExp { $exp = $a.exp.gt($b.exp); }
+        | GE b=timeExp { $exp = $a.exp.ge($b.exp); }
+        | LT b=timeExp { $exp = $a.exp.lt($b.exp); }
+        | LE b=timeExp { $exp = $a.exp.le($b.exp); }
+        | EQ b=timeExp { $exp = $a.exp.eq($b.exp); }
+        | NE b=timeExp { $exp = $a.exp.ne($b.exp); }
+        | BETWEEN b=timeExp AND c=timeExp { $exp = $a.exp.between($b.exp, $c.exp); }
+    )
     ;
 
-strScalar returns [StrScalarExp exp]
-    : CHARACTER_LITERAL { $exp = new StrScalarExp($text.substring(1, $text.length() - 1)); }
-    | STRING_LITERAL { $exp = new StrScalarExp($text.substring(1, $text.length() - 1)); }
+dateRelation returns [Condition exp]
+    : a=dateExp (
+        : GT b=dateExp { $exp = $a.exp.gt($b.exp); }
+        | GE b=dateExp { $exp = $a.exp.ge($b.exp); }
+        | LT b=dateExp { $exp = $a.exp.lt($b.exp); }
+        | LE b=dateExp { $exp = $a.exp.le($b.exp); }
+        | EQ b=dateExp { $exp = $a.exp.eq($b.exp); }
+        | NE b=dateExp { $exp = $a.exp.ne($b.exp); }
+        | BETWEEN b=dateExp AND c=dateExp { $exp = $a.exp.between($b.exp, $c.exp); }
+    )
     ;
 
-identifier returns [StrScalarExp exp]
-    : IDENTIFIER { $exp = new StrScalarExp($text); }
+dateTimeRelation returns [Condition exp]
+    : a=dateTimeExp (
+        : GT b=dateTimeExp { $exp = $a.exp.gt($b.exp); }
+        | GE b=dateTimeExp { $exp = $a.exp.ge($b.exp); }
+        | LT b=dateTimeExp { $exp = $a.exp.lt($b.exp); }
+        | LE b=dateTimeExp { $exp = $a.exp.le($b.exp); }
+        | EQ b=dateTimeExp { $exp = $a.exp.eq($b.exp); }
+        | NE b=dateTimeExp { $exp = $a.exp.ne($b.exp); }
+        | BETWEEN b=dateTimeExp AND c=dateTimeExp { $exp = $a.exp.between($b.exp, $c.exp); }
+    )
+    ;
+
+/// *Functions*
+
+numFn returns [NumExp<?> exp]
+    : COUNT ('()' | '(' b=boolExp ')') { $exp = $ctx.b != null ? Exp.count($b.exp) : Exp.count(); }
+    | ROW_NUM '()' { $exp = Exp.rowNum(); }
+    | ABS '(' numExp ')' { $exp = $numExp.exp.abs(); }
+    | ROUND '(' numExp ')' { $exp = $numExp.exp.round(); }
+    | LEN '(' strExp ')' { $exp = $strExp.exp.mapVal(String::length).castAsInt(); }
+    | timeFieldFn { $exp = $timeFieldFn.exp; }
+    | dateFieldFn { $exp = $dateFieldFn.exp; }
+    | dateTimeFieldFn { $exp = $dateTimeFieldFn.exp; }
+    ;
+
+timeFieldFn returns [NumExp<Integer> exp]
+    : HOUR '(' timeExp ')' { $exp = $timeExp.exp.hour(); }
+    | MINUTE '(' timeExp ')' { $exp = $timeExp.exp.minute(); }
+    | SECOND '(' timeExp ')' { $exp = $timeExp.exp.second(); }
+    | MILLISECOND '(' timeExp ')' { $exp = $timeExp.exp.millisecond(); }
+    ;
+
+dateFieldFn returns [NumExp<Integer> exp]
+    : YEAR '(' dateExp ')' { $exp = $dateExp.exp.year(); }
+    | MONTH '(' dateExp ')' { $exp = $dateExp.exp.month(); }
+    | DAY '(' dateExp ')' { $exp = $dateExp.exp.day(); }
+    ;
+
+dateTimeFieldFn returns [NumExp<Integer> exp]
+    : YEAR '(' dateTimeExp ')' { $exp = $dateTimeExp.exp.year(); }
+    | MONTH '(' dateTimeExp ')' { $exp = $dateTimeExp.exp.month(); }
+    | DAY '(' dateTimeExp ')' { $exp = $dateTimeExp.exp.day(); }
+    | HOUR '(' dateTimeExp ')' { $exp = $dateTimeExp.exp.hour(); }
+    | MINUTE '(' dateTimeExp ')' { $exp = $dateTimeExp.exp.minute(); }
+    | SECOND '(' dateTimeExp ')' { $exp = $dateTimeExp.exp.second(); }
+    | MILLISECOND '(' dateTimeExp ')' { $exp = $dateTimeExp.exp.millisecond(); }
+    ;
+
+boolFn returns [Condition exp]
+    : MATCHES '(' strExp ',' strScalar ')' { $exp = $strExp.exp.matches($strScalar.value); }
+    ;
+
+timeFn returns [TimeExp exp]
+    : PLUS_HOURS '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusHours($b.value); }
+    | PLUS_MINUTES '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMinutes($b.value); }
+    | PLUS_SECONDS '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusSeconds($b.value); }
+    | PLUS_MILLISECONDS '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMilliseconds($b.value); }
+    | PLUS_NANOS '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusNanos($b.value); }
+    ;
+
+dateFn returns [DateExp exp]
+    : PLUS_YEARS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusYears($b.value); }
+    | PLUS_MONTHS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusMonths($b.value); }
+    | PLUS_WEEKS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusWeeks($b.value); }
+    | PLUS_DAYS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusDays($b.value); }
+    ;
+
+dateTimeFn returns [DateTimeExp exp]
+    : PLUS_YEARS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusYears($b.value); }
+    | PLUS_MONTHS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMonths($b.value); }
+    | PLUS_WEEKS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusWeeks($b.value); }
+    | PLUS_DAYS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusDays($b.value); }
+    | PLUS_HOURS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusHours($b.value); }
+    | PLUS_MINUTES '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMinutes($b.value); }
+    | PLUS_SECONDS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusSeconds($b.value); }
+    | PLUS_MILLISECONDS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMilliseconds($b.value); }
+    | PLUS_NANOS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusNanos($b.value); }
+    ;
+
+strFn returns [StrExp exp]
+    : TRIM '(' strExp ')' { $exp = $strExp.exp.trim(); }
+    | SUBSTR '(' s=strExp ',' a=integerScalar ',' b=integerScalar ')' { $exp = $s.exp.substr($a.value, $b.value); }
+    ;
+
+
+/// *Special functions*
+
+ifExp returns [Exp<?> exp]
+    : IF '(' a=boolExp ',' b=expression ',' c=expression ')' { $exp = Exp.ifExp($a.exp, $b.exp, (Exp) $c.exp); }
+    ;
+
+ifNull returns [Exp<?> exp]
+    : IF_NULL '(' a=expression ',' b=expression ')' { $exp = Exp.ifNull($a.exp, (Exp) $b.exp); }
+    ;
+
+split returns [Exp<String[]> exp]
+    : SPLIT '(' a=strExp ',' b=strScalar (',' c=integerScalar)? ')' {
+        $exp = $ctx.c != null ? $a.exp.split($b.value, $c.value) : $a.exp.split($b.value);
+        }
+    ;
+
+/// *Aggregates*
+
+agg returns [Exp<?> exp]
+    : positionalAgg { $exp = $positionalAgg.exp; }
+    | numAgg { $exp = $numAgg.exp; }
+    | timeAgg { $exp = $timeAgg.exp; }
+    | dateAgg { $exp = $dateAgg.exp; }
+    | dateTimeAgg { $exp = $dateTimeAgg.exp; }
+    | strAgg { $exp = $strAgg.exp; }
+    ;
+
+positionalAgg returns [Exp<?> exp]
+    : FIRST '(' e=expression (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $e.exp.first($b.exp) : $e.exp.first(); }
+    | LAST '(' e=expression ')' { $exp = $e.exp.last(); } // TODO: bool condition
+    ;
+
+numAgg returns [NumExp<?> exp]
+    : MIN '(' c=numColumn (',' b=boolExp)? ')' { $exp = $c.exp.min($ctx.b != null ? $b.exp : null); }
+    | MAX '(' c=numColumn (',' b=boolExp)? ')' { $exp = $c.exp.max($ctx.b != null ? $b.exp : null); }
+    | SUM '(' c=numColumn (',' b=boolExp)? ')' { $exp = $c.exp.sum($ctx.b != null ? $b.exp : null); }
+    | CUMSUM '(' c=numColumn ')' { $exp = $c.exp.cumSum(); }
+    | AVG '(' c=numColumn (',' b=boolExp)? ')' { $exp = $c.exp.avg($ctx.b != null ? $b.exp : null); }
+    | MEDIAN '(' c=numColumn (',' b=boolExp)? ')' { $exp = $c.exp.median($ctx.b != null ? $b.exp : null); }
+    | QUANTILE '(' c=numColumn ',' q=numScalar (',' b=boolExp)? ')' {
+            $exp = $ctx.b != null
+                ? $c.exp.quantile($q.value.doubleValue(), $b.exp)
+                : $c.exp.quantile($q.value.doubleValue());
+            }
+    ;
+
+timeAgg returns [TimeExp exp]
+    : MIN '(' c=timeColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.min($b.exp) : $c.exp.min(); }
+    | MAX '(' c=timeColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.max($b.exp) : $c.exp.max(); }
+    | AVG '(' c=timeColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.avg($b.exp) : $c.exp.avg(); }
+    | MEDIAN '(' c=timeColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.median($b.exp) : $c.exp.median(); }
+    | QUANTILE '(' c=timeColumn ',' q=numScalar (',' b=boolExp)? ')' {
+        $exp = $ctx.b != null
+            ? $c.exp.quantile($q.value.doubleValue(), $b.exp)
+            : $c.exp.quantile($q.value.doubleValue());
+        }
+    ;
+
+dateAgg returns [DateExp exp]
+    : MIN '(' c=dateColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.min($b.exp) : $c.exp.min(); }
+    | MAX '(' c=dateColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.max($b.exp) : $c.exp.max(); }
+    | AVG '(' c=dateColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.avg($b.exp) : $c.exp.avg(); }
+    | MEDIAN '(' c=dateColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.median($b.exp) : $c.exp.median(); }
+    | QUANTILE '(' c=dateColumn ',' q=numScalar (',' b=boolExp)? ')' {
+        $exp = $ctx.b != null
+            ? $c.exp.quantile($q.value.doubleValue(), $b.exp)
+            : $c.exp.quantile($q.value.doubleValue());
+        }
+    ;
+
+dateTimeAgg returns [DateTimeExp exp]
+    : MIN '(' c=dateTimeColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.min($b.exp) : $c.exp.min(); }
+    | MAX '(' c=dateTimeColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.max($b.exp) : $c.exp.max(); }
+    | AVG '(' c=dateTimeColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.avg($b.exp) : $c.exp.avg(); }
+    | MEDIAN '(' c=dateTimeColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.median($b.exp) : $c.exp.median(); }
+    | QUANTILE '(' c=dateTimeColumn ',' q=numScalar (',' b=boolExp)? ')' {
+        $exp = $ctx.b != null
+            ? $c.exp.quantile($q.value.doubleValue(), $b.exp)
+            : $c.exp.quantile($q.value.doubleValue());
+        }
+    ;
+
+strAgg returns [StrExp exp]
+    : MIN '(' e=strExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $e.exp.min($b.exp) : $e.exp.min(); }
+    | MAX '(' e=strExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $e.exp.max($b.exp) : $e.exp.max(); }
     ;
 
 /// **Lexer rules**
-
-//@ doc:inline
-NULL: 'null';
-
-//@ doc:inline
-TRUE: 'true';
-
-//@ doc:inline
-FALSE: 'false';
-
-//@ doc:inline
-IF: 'if';
-
-//@ doc:inline
-ELSE: 'else';
-
-//@ doc:inline
-SPLIT: 'split';
 
 // *General operators*
 
@@ -299,6 +455,9 @@ LT: '<';
 GT: '>';
 
 //@ doc:inline
+BETWEEN: 'between';
+
+//@ doc:inline
 ADD: '+';
 
 //@ doc:inline
@@ -322,32 +481,38 @@ OR: 'or';
 // *Column operators*
 
 //@ doc:inline
-COL: 'col';
-
-//@ doc:inline
 BOOL: 'bool';
 
 //@ doc:inline
-INT : 'int';
+INT: 'int';
 
 //@ doc:inline
 
 //@ doc:inline
-LONG : 'long';
+LONG: 'long';
 
 //@ doc:inline
-FLOAT : 'float';
+FLOAT: 'float';
 
 //@ doc:inline
-DOUBLE : 'double';
+DOUBLE: 'double';
 
 //@ doc:inline
-DECIMAL : 'decimal';
+DECIMAL: 'decimal';
 
 //@ doc:inline
-STR : 'str';
+STR: 'str';
 
 // *Functions*
+
+//@ doc:inline
+IF: 'if';
+
+//@ doc:inline
+IF_NULL: 'ifNull';
+
+//@ doc:inline
+SPLIT: 'split';
 
 //@ doc:inline
 SUBSTR: 'substr';
@@ -371,13 +536,61 @@ TIME: 'time';
 DATETIME: 'datetime';
 
 //@ doc:inline
+YEAR: 'year';
+
+//@ doc:inline
+MONTH: 'month';
+
+//@ doc:inline
+DAY: 'day';
+
+//@ doc:inline
+HOUR: 'hour';
+
+//@ doc:inline
+MINUTE: 'minute';
+
+//@ doc:inline
+SECOND: 'second';
+
+//@ doc:inline
+MILLISECOND: 'millisecond';
+
+//@ doc:inline
+PLUS_YEARS: 'plusYears';
+
+//@ doc:inline
+PLUS_MONTHS: 'plusMonths';
+
+//@ doc:inline
+PLUS_WEEKS: 'plusWeeks';
+
+//@ doc:inline
+PLUS_DAYS: 'plusDays';
+
+//@ doc:inline
+PLUS_HOURS: 'plusHours';
+
+//@ doc:inline
+PLUS_MINUTES: 'plusMinutes';
+
+//@ doc:inline
+PLUS_SECONDS: 'plusSeconds';
+
+//@ doc:inline
+PLUS_MILLISECONDS: 'plusMilliseconds';
+
+//@ doc:inline
+PLUS_NANOS: 'plusNanos';
+
+//@ doc:inline
 ABS: 'abs';
 
 //@ doc:inline
-ROW_NUM: 'rowNum';
+ROUND: 'round';
 
 //@ doc:inline
-IF_NULL: 'ifNull';
+ROW_NUM: 'rowNum';
 
 // *Aggregates*
 
@@ -400,9 +613,10 @@ MAX: 'max';
 AVG: 'avg';
 
 //@ doc:inline
+MEDIAN: 'median';
 
 //@ doc:inline
-MEDIAN: 'median';
+QUANTILE: 'quantile';
 
 //@ doc:inline
 FIRST: 'first';
@@ -413,13 +627,48 @@ LAST: 'last';
 /// *Literals*
 
 //@ doc:inline
-LONG_LITERAL: DECIMAL_LITERAL [lL] | HEX_LITERAL [lL] | OCTAL_LITERAL [lL] | BINARY_LITERAL [lL];
+NULL: 'null';
 
 //@ doc:inline
-INTEGER_LITERAL: DECIMAL_LITERAL | HEX_LITERAL | OCTAL_LITERAL | BINARY_LITERAL;
+TRUE: 'true';
 
 //@ doc:inline
-FLOATING_POINT_LITERAL: DECIMAL_FLOATING_POINT_LITERAL | HEXADECIMAL_FLOATING_POINT_LITERAL;
+FALSE: 'false';
+
+//@ doc:inline
+LONG_LITERAL
+    : [+-]? (
+          DECIMAL_LITERAL [lL]
+        | HEX_LITERAL [lL]
+        | OCTAL_LITERAL [lL]
+        | BINARY_LITERAL [lL]
+    )
+    ;
+
+//@ doc:inline
+INTEGER_LITERAL
+    : [+-]? (
+          DECIMAL_LITERAL
+        | HEX_LITERAL
+        | OCTAL_LITERAL
+        | BINARY_LITERAL
+    )
+    ;
+
+//@ doc:inline
+FLOATING_POINT_LITERAL
+    : [+-]? (
+          DECIMAL_FLOATING_POINT_LITERAL
+        | HEXADECIMAL_FLOATING_POINT_LITERAL
+    )
+    ;
+
+CHARACTER_LITERAL: '\'' (~['\\\n\r] | ESCAPE | UNICODE_ESCAPE) '\'';
+
+STRING_LITERAL: '"' (~["\\\n\r] | ESCAPE | UNICODE_ESCAPE)* '"';
+
+//@ doc:inline
+IDENTIFIER: LETTER PART_LETTER*;
 
 fragment DECIMAL_LITERAL: [0-9] ([0-9_]* [0-9])?;
 
@@ -429,27 +678,27 @@ fragment OCTAL_LITERAL: '0' [0-7] ([0-7_]* [0-7])?;
 
 fragment BINARY_LITERAL: '0' [bB] [01] ([01_]* [01])?;
 
-fragment DECIMAL_FLOATING_POINT_LITERAL: DECIMAL_LITERAL '.' DECIMAL_LITERAL? DECIMAL_EXPONENT? [fFdD]? | '.' DECIMAL_LITERAL DECIMAL_EXPONENT? [fFdD]? | DECIMAL_LITERAL DECIMAL_EXPONENT [fFdD]? | DECIMAL_LITERAL DECIMAL_EXPONENT?;
+fragment DECIMAL_FLOATING_POINT_LITERAL
+    : DECIMAL_LITERAL '.' DECIMAL_LITERAL? DECIMAL_EXPONENT? [fFdD]?
+    | '.' DECIMAL_LITERAL DECIMAL_EXPONENT? [fFdD]?
+    | DECIMAL_LITERAL DECIMAL_EXPONENT [fFdD]?
+    | DECIMAL_LITERAL DECIMAL_EXPONENT?;
 
 fragment DECIMAL_EXPONENT: [eE] [+-]? DECIMAL_LITERAL;
 
-fragment HEXADECIMAL_FLOATING_POINT_LITERAL: HEX_LITERAL '.'? HEXADECIMAL_EXPONENT [fFdD]? | '0' [xX] HEX_DIGITS? '.' HEX_DIGITS HEXADECIMAL_EXPONENT [fFdD]?;
+fragment HEXADECIMAL_FLOATING_POINT_LITERAL
+    : HEX_LITERAL '.'? HEXADECIMAL_EXPONENT [fFdD]?
+    | '0' [xX] HEX_DIGITS? '.' HEX_DIGITS HEXADECIMAL_EXPONENT [fFdD]?;
 
 fragment HEXADECIMAL_EXPONENT: [pP] [+-]? DECIMAL_LITERAL;
 
 fragment HEX_DIGITS: [0-9a-fA-F] ([0-9a-fA-F_]* [0-9a-fA-F])?;
-
-CHARACTER_LITERAL: '\'' (~['\\\n\r] | ESCAPE | UNICODE_ESCAPE) '\'';
-STRING_LITERAL: '"' (~["\\\n\r] | ESCAPE | UNICODE_ESCAPE)* '"';
 
 //@ doc:inline
 fragment ESCAPE: '\\' ([sntrbf\\"'] | [0-7] [0-7]? | [0-3] [0-7] [0-7]);
 
 //@ doc:inline
 fragment UNICODE_ESCAPE: '\\u' HEX_DIGITS;
-
-//@ doc:inline
-IDENTIFIER: LETTER PART_LETTER*;
 
 //@ doc:inline
 fragment LETTER: [$A-Z_a-z];
