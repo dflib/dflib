@@ -3,6 +3,8 @@ package org.dflib.exp;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 
+import java.util.Objects;
+
 /**
  * A binary expression with two {@link Exp} arguments.
  */
@@ -18,6 +20,26 @@ public abstract class Exp2<L, R, T> implements Exp<T> {
         this.type = type;
         this.left = left;
         this.right = right;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Exp2<?, ?, ?> exp2 = (Exp2<?, ?, ?>) o;
+        return Objects.equals(opName, exp2.opName)
+                && Objects.equals(type, exp2.type)
+                && Objects.equals(left, exp2.left)
+                && Objects.equals(right, exp2.right);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(opName, type, left, right);
     }
 
     @Override
