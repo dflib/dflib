@@ -1,8 +1,8 @@
 # Benchmarks
 
 A set of DFLib JMH benchmarks. They are not particularly systematic, and often are ad-hoc things to check the 
-performance of individual features. Yet keeping them all together and running all at once provides a way to 
-check for cross-release and cross-JDK performance trends.
+performance of individual features. Yet, keeping them together and running all at once provides a way to 
+detect cross-release and cross-JDK performance trends.
 
 All commands below assume you are in the parent directory of benchmarks (i.e. in the `dflib` source root directory).
 
@@ -11,7 +11,7 @@ All commands below assume you are in the parent directory of benchmarks (i.e. in
 ```bash
 mvn clean package
 ```
-Or, to compile with a particular JDK bytecode target:
+Or, to compile with a particular JDK bytecode target...
 
 ```bash
 mvn clean package -Dmaven.compiler.release=23
@@ -19,17 +19,17 @@ mvn clean package -Dmaven.compiler.release=23
 
 ## Run
 
-Run all benchmarks:
+Run all benchmarks...
 ```bash
 java -jar dflib-benchmark/target/dflib-benchmark.jar
 ```
 
-List available benchmarks:
+List available benchmarks...
 ```bash
 java -jar dflib-benchmark/target/dflib-benchmark.jar -l
 ```
 
-Filter benchmarks to run:
+Filter benchmarks to run...
 ```bash
 java -jar dflib-benchmark/target/dflib-benchmark.jar [regexp]
 ```
@@ -38,7 +38,7 @@ java -jar dflib-benchmark/target/dflib-benchmark.jar [regexp]
 
 Data set: 5 000 000 rows with 4 columns
 
-_Disclaimer: this was run at one time in the past on a specific hardware and some specific version of DFLib and pandas_
+_Disclaimer: this was run at one time in the past on a specific hardware and specific versions of DFLib and pandas_
 
  &nbsp;          | DFLib     | Pandas  
 -----------------|-----------|---------
