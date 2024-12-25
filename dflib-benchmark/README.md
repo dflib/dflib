@@ -4,7 +4,7 @@ A set of DFLib JMH benchmarks. They are not particularly systematic, and often a
 performance of individual features. Yet, keeping them together and running all at once provides a way to 
 detect cross-release and cross-JDK performance trends.
 
-All commands below assume you are in the parent directory of benchmarks (i.e. in the `dflib` source root directory).
+_All the commands below assume you are in the parent directory of benchmarks (i.e. in the `dflib` source root directory)._
 
 ## Build
 
