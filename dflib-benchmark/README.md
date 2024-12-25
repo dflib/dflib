@@ -1,29 +1,35 @@
-# Benchmark suit
+# Benchmarks
 
-This module is a set of JMH benchmarks for the **DFLib**
+A set of DFLib JMH benchmarks. They are not particularly systematic, and often are ad-hoc things to check the 
+performance of individual features. Yet keeping them all together and running all at once provides a way to 
+check for cross-release and cross-JDK performance trends.
 
-### Build
+All commands below assume you are in the parent directory of benchmarks (i.e. in the `dflib` source root directory).
+
+## Build
 
 ```bash
-mvn package
+mvn clean package
+```
+Or, to compile with a particular JDK bytecode target:
+
+```bash
+mvn clean package -Dmaven.compiler.release=23
 ```
 
-### Usage
+## Run
 
 Run all benchmarks:
-
 ```bash
 java -jar dflib-benchmark/target/dflib-benchmark.jar
 ```
 
 List available benchmarks:
-
 ```bash
 java -jar dflib-benchmark/target/dflib-benchmark.jar -l
 ```
 
 Filter benchmarks to run:
-
 ```bash
 java -jar dflib-benchmark/target/dflib-benchmark.jar [regexp]
 ```
@@ -31,6 +37,8 @@ java -jar dflib-benchmark/target/dflib-benchmark.jar [regexp]
 ### Comparison with Pandas
 
 Data set: 5 000 000 rows with 4 columns
+
+_Disclaimer: this was run at one time in the past on a specific hardware and some specific version of DFLib and pandas_
 
  &nbsp;          | DFLib     | Pandas  
 -----------------|-----------|---------
