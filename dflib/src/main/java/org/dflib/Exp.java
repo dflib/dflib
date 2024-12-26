@@ -21,6 +21,9 @@ import org.dflib.exp.datetime.DateExp1;
 import org.dflib.exp.datetime.DateTimeColumn;
 import org.dflib.exp.datetime.DateTimeConstExp;
 import org.dflib.exp.datetime.DateTimeExp1;
+import org.dflib.exp.datetime.OffsetDateTimeColumn;
+import org.dflib.exp.datetime.OffsetDateTimeConstExp;
+import org.dflib.exp.datetime.OffsetDateTimeExp1;
 import org.dflib.exp.datetime.TimeColumn;
 import org.dflib.exp.datetime.TimeConstExp;
 import org.dflib.exp.datetime.TimeExp1;
@@ -50,6 +53,7 @@ import org.dflib.exp.str.StrExp1;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
@@ -99,6 +103,15 @@ public interface Exp<T> {
      */
     static DateTimeExp $dateTimeVal(LocalDateTime value) {
         return new DateTimeConstExp(value);
+    }
+
+    /**
+     * Returns an expression that evaluates to a Series containing a single OffsetDateTime value.
+     *
+     * @since 1.1.0
+     */
+    static OffsetDateTimeExp $offsetDateTimeVal(OffsetDateTime value) {
+        return new OffsetDateTimeConstExp(value);
     }
 
     /**
@@ -292,6 +305,19 @@ public interface Exp<T> {
         return new DateTimeColumn(position);
     }
 
+    /**
+     * Returns an expression that evaluates to a named OffsetDateTime column.
+     */
+    static OffsetDateTimeExp $offsetDateTime(String name) {
+        return new OffsetDateTimeColumn(name);
+    }
+
+    /**
+     * Returns an expression that evaluates to a OffsetDateTime column at a given position.
+     */
+    static OffsetDateTimeExp $offsetDateTime(int position) {
+        return new OffsetDateTimeColumn(position);
+    }
 
     static Condition or(Condition... conditions) {
         return conditions.length == 1
@@ -691,6 +717,27 @@ public interface Exp<T> {
 
     default DateTimeExp castAsDateTime(DateTimeFormatter formatter) {
         return DateTimeExp1.mapVal("castAsDateTime", this.castAsStr(), s -> LocalDateTime.parse(s, formatter));
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    default OffsetDateTimeExp castAsOffsetDateTime() {
+        return OffsetDateTimeExp1.mapVal("castAsOffsetDateTime", this.castAsStr(), OffsetDateTime::parse);
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    default OffsetDateTimeExp castAsOffsetDateTime(String format) {
+        return castAsOffsetDateTime(DateTimeFormatter.ofPattern(format));
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    default OffsetDateTimeExp castAsOffsetDateTime(DateTimeFormatter formatter) {
+        return OffsetDateTimeExp1.mapVal("castAsOffsetDateTime", this.castAsStr(), s -> OffsetDateTime.parse(s, formatter));
     }
 
     default StrExp castAsStr() {

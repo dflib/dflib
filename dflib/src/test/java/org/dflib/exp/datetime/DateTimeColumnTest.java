@@ -2,7 +2,6 @@ package org.dflib.exp.datetime;
 
 import org.dflib.Condition;
 import org.dflib.DataFrame;
-import org.dflib.DateExp;
 import org.dflib.DateTimeExp;
 import org.dflib.NumExp;
 import org.dflib.Series;
@@ -13,7 +12,8 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static org.dflib.Exp.*;
+import static org.dflib.Exp.$col;
+import static org.dflib.Exp.$dateTime;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
@@ -173,17 +173,17 @@ public class DateTimeColumnTest {
 
     @Test
     public void plusDays() {
-        DateExp exp = $date(0).plusDays(4);
+        DateTimeExp exp = $dateTime(0).plusDays(4);
 
-        Series<LocalDate> s = Series.of(LocalDate.of(2007, 1, 8), LocalDate.of(2011, 12, 31));
-        new SeriesAsserts(exp.eval(s)).expectData(LocalDate.of(2007, 1, 12), LocalDate.of(2012, 1, 4));
+        Series<LocalDateTime> s = Series.of(LocalDateTime.of(2007, 1, 8, 0, 1, 0), LocalDateTime.of(2011, 12, 31, 1, 0, 1));
+        new SeriesAsserts(exp.eval(s)).expectData(LocalDateTime.of(2007, 1, 12, 0, 1, 0), LocalDateTime.of(2012, 1, 4, 1, 0, 1));
     }
 
     @Test
     public void opsChain() {
-        DateExp exp = $date(0).plusDays(4).plusWeeks(1);
+        DateTimeExp exp = $dateTime(0).plusDays(4).plusWeeks(1);
 
-        Series<LocalDate> s = Series.of(LocalDate.of(2007, 1, 8), LocalDate.of(2011, 12, 31));
-        new SeriesAsserts(exp.eval(s)).expectData(LocalDate.of(2007, 1, 19), LocalDate.of(2012, 1, 11));
+        Series<LocalDateTime> s = Series.of(LocalDateTime.of(2007, 1, 8, 1, 1, 1), LocalDateTime.of(2011, 12, 31, 2, 2, 2));
+        new SeriesAsserts(exp.eval(s)).expectData(LocalDateTime.of(2007, 1, 19, 1, 1, 1), LocalDateTime.of(2012, 1, 11, 2, 2, 2));
     }
 }
