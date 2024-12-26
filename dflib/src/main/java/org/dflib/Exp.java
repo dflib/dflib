@@ -23,6 +23,9 @@ import org.dflib.exp.datetime.DateScalarExp;
 import org.dflib.exp.datetime.DateTimeColumn;
 import org.dflib.exp.datetime.DateTimeExp1;
 import org.dflib.exp.datetime.DateTimeScalarExp;
+import org.dflib.exp.datetime.OffsetDateTimeColumn;
+import org.dflib.exp.datetime.OffsetDateTimeExp1;
+import org.dflib.exp.datetime.OffsetDateTimeScalarExp;
 import org.dflib.exp.datetime.TimeColumn;
 import org.dflib.exp.datetime.TimeExp1;
 import org.dflib.exp.datetime.TimeScalarExp;
@@ -49,6 +52,7 @@ import org.dflib.exp.str.StrExp1;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
@@ -108,6 +112,16 @@ public interface Exp<T> {
     }
 
     /**
+     * Returns an expression that evaluates to a Series containing a single OffsetDateTime value.
+     *
+     * @since 1.1.0
+     */
+    static OffsetDateTimeExp $offsetDateTimeVal(OffsetDateTime value) {
+        return new OffsetDateTimeScalarExp(value);
+    }
+
+    /**
+     * Returns an expression that evaluates to a Series containing a single value.
      * Returns an expression whose "eval" returns a Series with the value argument at each position, and "reduce"
      * returns the value itself. Type argument allows DFLib to optimize the expression for a specific Java type.
      */
@@ -321,6 +335,19 @@ public interface Exp<T> {
         return new DateTimeColumn(position);
     }
 
+    /**
+     * Returns an expression that evaluates to a named OffsetDateTime column.
+     */
+    static OffsetDateTimeExp $offsetDateTime(String name) {
+        return new OffsetDateTimeColumn(name);
+    }
+
+    /**
+     * Returns an expression that evaluates to a OffsetDateTime column at a given position.
+     */
+    static OffsetDateTimeExp $offsetDateTime(int position) {
+        return new OffsetDateTimeColumn(position);
+    }
 
     static Condition or(Condition... conditions) {
         return conditions.length == 1
@@ -744,6 +771,27 @@ public interface Exp<T> {
 
     default DateTimeExp castAsDateTime(DateTimeFormatter formatter) {
         return DateTimeExp1.mapVal("castAsDateTime", this.castAsStr(), s -> LocalDateTime.parse(s, formatter));
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    default OffsetDateTimeExp castAsOffsetDateTime() {
+        return OffsetDateTimeExp1.mapVal("castAsOffsetDateTime", this.castAsStr(), OffsetDateTime::parse);
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    default OffsetDateTimeExp castAsOffsetDateTime(String format) {
+        return castAsOffsetDateTime(DateTimeFormatter.ofPattern(format));
+    }
+
+    /**
+     * @since 1.1.0
+     */
+    default OffsetDateTimeExp castAsOffsetDateTime(DateTimeFormatter formatter) {
+        return OffsetDateTimeExp1.mapVal("castAsOffsetDateTime", this.castAsStr(), s -> OffsetDateTime.parse(s, formatter));
     }
 
     default StrExp castAsStr() {
