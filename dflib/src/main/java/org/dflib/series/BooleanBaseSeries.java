@@ -124,19 +124,6 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         return new BooleanArraySeries(data);
     }
 
-    private Series<Boolean> selectAsObjectSeries(IntSeries positions) {
-
-        int h = positions.size();
-        Boolean[] data = new Boolean[h];
-
-        for (int i = 0; i < h; i++) {
-            int index = positions.getInt(i);
-            data[i] = index < 0 ? null : getBool(index);
-        }
-
-        return new ArraySeries<>(data);
-    }
-
     @Override
     public BooleanSeries concatBool(BooleanSeries... other) {
         if (other.length == 0) {
