@@ -2,7 +2,7 @@ package org.dflib;
 
 import org.dflib.builder.BoolAccum;
 import org.dflib.op.BooleanSeriesOps;
-import org.dflib.op.SetOp;
+import org.dflib.op.ReplaceOp;
 import org.dflib.series.BooleanArraySeries;
 import org.dflib.series.BooleanIndexedSeries;
 import org.dflib.series.FalseSeries;
@@ -48,17 +48,17 @@ public interface BooleanSeries extends Series<Boolean> {
     boolean getBool(int index);
 
     @Override
-    default Series<Boolean> set(int index, Boolean newVal) {
-        return newVal != null ? setBool(index, newVal) : SetOp.set(this, index, newVal);
+    default Series<Boolean> replace(int index, Boolean with) {
+        return with != null ? replaceBool(index, with) : ReplaceOp.replace(this, index, with);
     }
 
     /**
-     * Returns a new Series with a single value of the original Series replaced with the provided value.
+     * Returns a new Series with the value in the original Series at a given index replaced with the provided value.
      *
      * @since 2.0.0
      */
-    default BooleanSeries setBool(int index, boolean newVal) {
-        if (getBool(index) == newVal) {
+    default BooleanSeries replaceBool(int index, boolean with) {
+        if (getBool(index) == with) {
             return this;
         }
 
@@ -66,7 +66,7 @@ public interface BooleanSeries extends Series<Boolean> {
 
         BoolAccum accum = new BoolAccum(len);
         accum.fill(this, 0, 0, len);
-        accum.fill(index, index + 1, newVal);
+        accum.fill(index, index + 1, with);
 
         return accum.toSeries();
     }

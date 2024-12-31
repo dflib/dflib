@@ -1,6 +1,6 @@
 package org.dflib;
 
-import org.dflib.op.SetOp;
+import org.dflib.op.ReplaceOp;
 import org.dflib.series.BooleanArraySeries;
 import org.dflib.series.FalseSeries;
 import org.dflib.series.LongArraySeries;
@@ -43,17 +43,17 @@ public interface LongSeries extends Series<Long> {
     long getLong(int index);
 
     @Override
-    default Series<Long> set(int index, Long newVal) {
-        return newVal != null ? setLong(index, newVal) : SetOp.set(this, index, newVal);
+    default Series<Long> replace(int index, Long with) {
+        return with != null ? replaceLong(index, with) : ReplaceOp.replace(this, index, with);
     }
 
     /**
-     * Returns a new Series with a single value of the original Series replaced with the provided value.
+     * Returns a new Series with the value in the original Series at a given index replaced with the provided value.
      *
      * @since 2.0.0
      */
-    default LongSeries setLong(int index, long newVal) {
-        if (getLong(index) == newVal) {
+    default LongSeries replaceLong(int index, long with) {
+        if (getLong(index) == with) {
             return this;
         }
 
@@ -61,7 +61,7 @@ public interface LongSeries extends Series<Long> {
 
         long[] longs = new long[len];
         copyToLong(longs, 0, 0, len);
-        longs[index] = newVal;
+        longs[index] = with;
 
         return Series.ofLong(longs);
     }

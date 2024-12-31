@@ -12,17 +12,17 @@ public class Series_SetTest {
     @EnumSource(SeriesType.class)
     void set(SeriesType type) {
         Series<String> s = type.createSeries("a", "b", "c");
-        assertSame(s, s.set(1, "b"));
+        assertSame(s, s.replace(1, "b"));
 
-        new SeriesAsserts(s.set(0, "A")).expectData("A", "b", "c");
+        new SeriesAsserts(s.replace(0, "A")).expectData("A", "b", "c");
     }
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
     void set_Nulls(SeriesType type) {
         Series<String> s = type.createSeries("a", null, "c");
-        assertSame(s, s.set(1, null));
+        assertSame(s, s.replace(1, null));
 
-        new SeriesAsserts(s.set(0, null).set(1, "B")).expectData(null, "B", "c");
+        new SeriesAsserts(s.replace(0, null).replace(1, "B")).expectData(null, "B", "c");
     }
 }

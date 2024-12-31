@@ -8,9 +8,9 @@ import java.util.Objects;
 /**
  * @since 2.0.0
  */
-public class SetOp {
+public class ReplaceOp {
 
-    public static <T> Series<T> set(Series<T> src, int index, T newVal) {
+    public static <T> Series<T> replace(Series<T> src, int index, T newVal) {
         if (Objects.equals(src.get(index), newVal)) {
             return src;
         }

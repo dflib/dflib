@@ -11,6 +11,28 @@ import static org.junit.jupiter.api.Assertions.*;
 public class LongSeries_ReplaceTest {
 
     @Test
+    void replace_Single() {
+        LongSeries s = Series.ofLong(5L, 4L);
+        assertSame(s, s.replace(1, 4L));
+
+        new SeriesAsserts(s.replace(0, 3L)).expectData(3L, 4L);
+    }
+
+    @Test
+    void replace_Single_Nulls() {
+        LongSeries s = Series.ofLong(5L, 4L);
+        new SeriesAsserts(s.replace(0, null)).expectData(null, 4L);
+    }
+
+    @Test
+    void replaceInt_Single() {
+        LongSeries s = Series.ofLong(5L, 4L);
+        assertSame(s, s.replaceLong(1, 4L));
+
+        new SeriesAsserts(s.replaceLong(0, 3L)).expectData(3L, 4L);
+    }
+
+    @Test
     public void replace_positions() {
 
         Series<Long> s1 = Series.ofLong(1, 0, 2, -1).replace(

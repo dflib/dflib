@@ -7,8 +7,31 @@ import java.util.Collections;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class FloatSeries_ReplaceTest {
+
+    @Test
+    void replace_Single() {
+        FloatSeries s = Series.ofFloat(5.1f, 4.01f);
+        assertSame(s, s.replace(1, 4.01f));
+
+        new SeriesAsserts(s.replace(0, 3.1f)).expectData(3.1f, 4.01f);
+    }
+
+    @Test
+    void replace_Single_Nulls() {
+        FloatSeries s = Series.ofFloat(5.1f, 4.01f);
+        new SeriesAsserts(s.replace(0, null)).expectData(null, 4.01f);
+    }
+
+    @Test
+    void replaceFloat_Single() {
+        FloatSeries s = Series.ofFloat(5.1f, 4.01f);
+        assertSame(s, s.replaceFloat(1, 4.01f));
+
+        new SeriesAsserts(s.replaceFloat(0, 3.1f)).expectData(3.1f, 4.01f);
+    }
 
     @Test
     public void replace_positions() {

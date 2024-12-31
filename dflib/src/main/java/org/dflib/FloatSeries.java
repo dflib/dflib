@@ -1,7 +1,7 @@
 package org.dflib;
 
 import org.dflib.f.FloatPredicate;
-import org.dflib.op.SetOp;
+import org.dflib.op.ReplaceOp;
 import org.dflib.series.BooleanArraySeries;
 import org.dflib.series.FalseSeries;
 import org.dflib.series.FloatArraySeries;
@@ -45,17 +45,17 @@ public interface FloatSeries extends Series<Float> {
     float getFloat(int index);
 
     @Override
-    default Series<Float> set(int index, Float newVal) {
-        return newVal != null ? setFloat(index, newVal) : SetOp.set(this, index, newVal);
+    default Series<Float> replace(int index, Float with) {
+        return with != null ? replaceFloat(index, with) : ReplaceOp.replace(this, index, with);
     }
 
     /**
-     * Returns a new Series with a single value of the original Series replaced with the provided value.
+     * Returns a new Series with the value in the original Series at a given index replaced with the provided value.
      *
      * @since 2.0.0
      */
-    default FloatSeries setFloat(int index, float newVal) {
-        if (getFloat(index) == newVal) {
+    default FloatSeries replaceFloat(int index, float with) {
+        if (getFloat(index) == with) {
             return this;
         }
 
@@ -63,7 +63,7 @@ public interface FloatSeries extends Series<Float> {
 
         float[] floats = new float[len];
         copyToFloat(floats, 0, 0, len);
-        floats[index] = newVal;
+        floats[index] = with;
 
         return Series.ofFloat(floats);
     }

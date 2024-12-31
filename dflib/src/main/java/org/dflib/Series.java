@@ -2,7 +2,7 @@ package org.dflib;
 
 import org.dflib.agg.SeriesAggregator;
 import org.dflib.builder.SeriesByElementBuilder;
-import org.dflib.op.SetOp;
+import org.dflib.op.ReplaceOp;
 import org.dflib.series.ArraySeries;
 import org.dflib.series.BooleanArraySeries;
 import org.dflib.series.ColumnMappedSeries;
@@ -127,15 +127,6 @@ public interface Series<T> extends Iterable<T> {
     int size();
 
     T get(int index);
-
-    /**
-     * Returns a new Series with a single value of the original Series replaced with the provided value.
-     *
-     * @since 2.0.0
-     */
-    default Series<T> set(int index, T newVal) {
-        return SetOp.set(this, index, newVal);
-    }
 
     void copyTo(Object[] to, int fromOffset, int toOffset, int len);
 
@@ -481,6 +472,15 @@ public interface Series<T> extends Iterable<T> {
         }
 
         return new BooleanArraySeries(matches);
+    }
+
+    /**
+     * Returns a new Series with the value in the original Series at a given index replaced with the provided value.
+     *
+     * @since 2.0.0
+     */
+    default Series<T> replace(int index, T with) {
+        return ReplaceOp.replace(this, index, with);
     }
 
     /**

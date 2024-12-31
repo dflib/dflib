@@ -1,6 +1,6 @@
 package org.dflib;
 
-import org.dflib.op.SetOp;
+import org.dflib.op.ReplaceOp;
 import org.dflib.series.BooleanArraySeries;
 import org.dflib.series.FalseSeries;
 import org.dflib.series.IntArraySeries;
@@ -44,17 +44,17 @@ public interface IntSeries extends Series<Integer> {
     int getInt(int index);
 
     @Override
-    default Series<Integer> set(int index, Integer newVal) {
-        return newVal != null ? setInt(index, newVal) : SetOp.set(this, index, newVal);
+    default Series<Integer> replace(int index, Integer with) {
+        return with != null ? replaceInt(index, with) : ReplaceOp.replace(this, index, with);
     }
 
     /**
-     * Returns a new Series with a single value of the original Series replaced with the provided value.
+     * Returns a new Series with the value in the original Series at a given index replaced with the provided value.
      *
      * @since 2.0.0
      */
-    default IntSeries setInt(int index, int newVal) {
-        if (getInt(index) == newVal) {
+    default IntSeries replaceInt(int index, int with) {
+        if (getInt(index) == with) {
             return this;
         }
 
@@ -62,7 +62,7 @@ public interface IntSeries extends Series<Integer> {
 
         int[] ints = new int[len];
         copyToInt(ints, 0, 0, len);
-        ints[index] = newVal;
+        ints[index] = with;
 
         return Series.ofInt(ints);
     }

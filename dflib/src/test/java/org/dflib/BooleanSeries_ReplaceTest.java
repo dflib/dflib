@@ -11,6 +11,20 @@ import static org.junit.jupiter.api.Assertions.*;
 public class BooleanSeries_ReplaceTest {
 
     @Test
+    void replace_Single() {
+        BooleanSeries s = Series.ofBool(true, false);
+        assertSame(s, s.replace(1, false));
+
+        new SeriesAsserts(s.replace(0, false)).expectData(false, false);
+    }
+
+    @Test
+    void replaceSingle_Nulls() {
+        BooleanSeries s = Series.ofBool(true, false);
+        new SeriesAsserts(s.replace(0, null)).expectData(null, false);
+    }
+
+    @Test
     public void replace_positions() {
 
         Series<Boolean> s1 = Series.ofBool(true, false, false, true).replace(

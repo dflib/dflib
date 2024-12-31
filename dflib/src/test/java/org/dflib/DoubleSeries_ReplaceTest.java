@@ -11,6 +11,28 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DoubleSeries_ReplaceTest {
 
     @Test
+    void replace_Single() {
+        DoubleSeries s = Series.ofDouble(5.1d, 4.01d);
+        assertSame(s, s.replace(1, 4.01d));
+
+        new SeriesAsserts(s.replace(0, 3.1d)).expectData(3.1d, 4.01d);
+    }
+
+    @Test
+    void replace_Single_Nulls() {
+        DoubleSeries s = Series.ofDouble(5.1d, 4.01d);
+        new SeriesAsserts(s.replace(0, null)).expectData(null, 4.01d);
+    }
+
+    @Test
+    void replaceDouble_Single() {
+        DoubleSeries s = Series.ofDouble(5.1d, 4.01d);
+        assertSame(s, s.replaceDouble(1, 4.01d));
+
+        new SeriesAsserts(s.replaceDouble(0, 3.1d)).expectData(3.1d, 4.01d);
+    }
+
+    @Test
     public void replace_positions() {
 
         Series<Double> s1 = Series.ofDouble(1, 0, 2, -1).replace(

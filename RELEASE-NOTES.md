@@ -21,6 +21,7 @@
 * #403 BoolAccum - java.lang.ArrayIndexOutOfBoundsException 
 * #407 "min", "max" aggregating functions for StrExp
 * #416 Zip ByteSource(s)
+* #425 Series.replace(int,T)
 
 ## Release 1.1.0
 
@@ -40,7 +41,6 @@
 * #414 HTTP connector with ByteSource
 * #415 CsvLoader to support an explicit encoding
 * #418 Exception printing null columns
-* #425 Series.set(int,T) 
 
 ## Release 1.0.0
 
