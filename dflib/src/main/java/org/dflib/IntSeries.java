@@ -1,5 +1,6 @@
 package org.dflib;
 
+import org.dflib.op.SetOp;
 import org.dflib.series.BooleanArraySeries;
 import org.dflib.series.FalseSeries;
 import org.dflib.series.IntArraySeries;
@@ -35,7 +36,36 @@ public interface IntSeries extends Series<Integer> {
         return this;
     }
 
+    @Override
+    default Integer get(int index) {
+        return getInt(index);
+    }
+
     int getInt(int index);
+
+    @Override
+    default Series<Integer> set(int index, Integer newVal) {
+        return newVal != null ? setInt(index, newVal) : SetOp.set(this, index, newVal);
+    }
+
+    /**
+     * Returns a new Series with a single value of the original Series replaced with the provided value.
+     *
+     * @since 2.0.0
+     */
+    default IntSeries setInt(int index, int newVal) {
+        if (getInt(index) == newVal) {
+            return this;
+        }
+
+        int len = size();
+
+        int[] ints = new int[len];
+        copyToInt(ints, 0, 0, len);
+        ints[index] = newVal;
+
+        return Series.ofInt(ints);
+    }
 
     void copyToInt(int[] to, int fromOffset, int toOffset, int len);
 

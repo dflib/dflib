@@ -253,11 +253,6 @@ public abstract class FloatBaseSeries implements FloatSeries {
     }
 
     @Override
-    public Float get(int index) {
-        return getFloat(index);
-    }
-
-    @Override
     public void copyTo(Object[] to, int fromOffset, int toOffset, int len) {
         for (int i = 0; i < len; i++) {
             to[toOffset + i] = getFloat(fromOffset + i);

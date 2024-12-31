@@ -190,11 +190,6 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
-    public Boolean get(int index) {
-        return getBool(index);
-    }
-
-    @Override
     public void copyTo(Object[] to, int fromOffset, int toOffset, int len) {
         if (fromOffset + len > size()) {
             throw new ArrayIndexOutOfBoundsException(fromOffset + len);

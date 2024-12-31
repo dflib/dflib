@@ -40,6 +40,7 @@
 * #414 HTTP connector with ByteSource
 * #415 CsvLoader to support an explicit encoding
 * #418 Exception printing null columns
+* #425 Series.set(int,T) 
 
 ## Release 1.0.0
 

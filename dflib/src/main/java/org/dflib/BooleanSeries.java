@@ -1,6 +1,8 @@
 package org.dflib;
 
+import org.dflib.builder.BoolAccum;
 import org.dflib.op.BooleanSeriesOps;
+import org.dflib.op.SetOp;
 import org.dflib.series.BooleanArraySeries;
 import org.dflib.series.BooleanIndexedSeries;
 import org.dflib.series.FalseSeries;
@@ -38,7 +40,36 @@ public interface BooleanSeries extends Series<Boolean> {
         return this;
     }
 
+    @Override
+    default Boolean get(int index) {
+        return getBool(index);
+    }
+
     boolean getBool(int index);
+
+    @Override
+    default Series<Boolean> set(int index, Boolean newVal) {
+        return newVal != null ? setBool(index, newVal) : SetOp.set(this, index, newVal);
+    }
+
+    /**
+     * Returns a new Series with a single value of the original Series replaced with the provided value.
+     *
+     * @since 2.0.0
+     */
+    default BooleanSeries setBool(int index, boolean newVal) {
+        if (getBool(index) == newVal) {
+            return this;
+        }
+
+        int len = size();
+
+        BoolAccum accum = new BoolAccum(len);
+        accum.fill(this, 0, 0, len);
+        accum.fill(index, index + 1, newVal);
+
+        return accum.toSeries();
+    }
 
     void copyToBool(boolean[] to, int fromOffset, int toOffset, int len);
 

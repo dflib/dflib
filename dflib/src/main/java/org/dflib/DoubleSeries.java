@@ -1,5 +1,6 @@
 package org.dflib;
 
+import org.dflib.op.SetOp;
 import org.dflib.series.BooleanArraySeries;
 import org.dflib.series.DoubleArraySeries;
 import org.dflib.series.DoubleIndexedSeries;
@@ -34,7 +35,36 @@ public interface DoubleSeries extends Series<Double> {
         return this;
     }
 
+    @Override
+    default Double get(int index) {
+        return getDouble(index);
+    }
+
     double getDouble(int index);
+
+    @Override
+    default Series<Double> set(int index, Double newVal) {
+        return newVal != null ? setDouble(index, newVal) : SetOp.set(this, index, newVal);
+    }
+
+    /**
+     * Returns a new Series with a single value of the original Series replaced with the provided value.
+     *
+     * @since 2.0.0
+     */
+    default DoubleSeries setDouble(int index, double newVal) {
+        if (getDouble(index) == newVal) {
+            return this;
+        }
+
+        int len = size();
+
+        double[] doubles = new double[len];
+        copyToDouble(doubles, 0, 0, len);
+        doubles[index] = newVal;
+
+        return Series.ofDouble(doubles);
+    }
 
     void copyToDouble(double[] to, int fromOffset, int toOffset, int len);
 

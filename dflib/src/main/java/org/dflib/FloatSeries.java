@@ -1,6 +1,7 @@
 package org.dflib;
 
 import org.dflib.f.FloatPredicate;
+import org.dflib.op.SetOp;
 import org.dflib.series.BooleanArraySeries;
 import org.dflib.series.FalseSeries;
 import org.dflib.series.FloatArraySeries;
@@ -36,7 +37,36 @@ public interface FloatSeries extends Series<Float> {
         return this;
     }
 
+    @Override
+    default Float get(int index) {
+        return getFloat(index);
+    }
+
     float getFloat(int index);
+
+    @Override
+    default Series<Float> set(int index, Float newVal) {
+        return newVal != null ? setFloat(index, newVal) : SetOp.set(this, index, newVal);
+    }
+
+    /**
+     * Returns a new Series with a single value of the original Series replaced with the provided value.
+     *
+     * @since 2.0.0
+     */
+    default FloatSeries setFloat(int index, float newVal) {
+        if (getFloat(index) == newVal) {
+            return this;
+        }
+
+        int len = size();
+
+        float[] floats = new float[len];
+        copyToFloat(floats, 0, 0, len);
+        floats[index] = newVal;
+
+        return Series.ofFloat(floats);
+    }
 
     void copyToFloat(float[] to, int fromOffset, int toOffset, int len);
 

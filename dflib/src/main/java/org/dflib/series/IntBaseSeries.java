@@ -286,11 +286,6 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public Integer get(int index) {
-        return getInt(index);
-    }
-
-    @Override
     public void copyTo(Object[] to, int fromOffset, int toOffset, int len) {
         for (int i = 0; i < len; i++) {
             to[toOffset + i] = getInt(fromOffset + i);
