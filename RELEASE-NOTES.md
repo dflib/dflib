@@ -22,6 +22,7 @@
 * #407 "min", "max" aggregating functions for StrExp
 * #416 Zip ByteSource(s)
 * #425 Series.replace(int,T)
+* #426 All "Json.load(..)" and "Json.save(..)" methods must be static
 
 ## Release 1.1.0
 

@@ -25,32 +25,32 @@ public class Json {
     /**
      * Loads a DataFrame from the provided JSON String.
      */
-    public DataFrame load(String json) {
+    public static DataFrame load(String json) {
         return loader().load(json);
     }
 
     /**
      * Loads a DataFrame from a JSON file at the specified path.
      */
-    public DataFrame load(Path filePath) {
+    public static DataFrame load(Path filePath) {
         return loader().load(filePath);
     }
 
     /**
      * Loads a DataFrame from a JSON file.
      */
-    public DataFrame load(File file) {
+    public static DataFrame load(File file) {
         return loader().load(file);
     }
 
     /**
      * Loads a DataFrame from the provided InputStream
      */
-    public DataFrame load(InputStream in) {
+    public static DataFrame load(InputStream in) {
         return loader().load(in);
     }
 
-    public DataFrame load(Reader reader) {
+    public static DataFrame load(Reader reader) {
         return loader().load(reader);
     }
 
@@ -72,19 +72,19 @@ public class Json {
         return new JsonSaver();
     }
 
-    public void save(DataFrame df, Appendable out) {
+    public static void save(DataFrame df, Appendable out) {
         saver().save(df, out);
     }
     
-    public void save(DataFrame df, File file) {
+    public static void save(DataFrame df, File file) {
         saver().save(df, file);
     }
     
-    public void save(DataFrame df, Path filePath) {
+    public static void save(DataFrame df, Path filePath) {
         saver().save(df, filePath);
     }
     
-    public void save(DataFrame df, String fileName) {
+    public static void save(DataFrame df, String fileName) {
         saver().save(df, fileName);
     }
 
