@@ -1,6 +1,7 @@
 grammar Exp;
 
 @header {
+import java.math.*;
 import java.time.temporal.*;
 import java.util.function.*;
 
@@ -10,6 +11,8 @@ import org.dflib.exp.bool.*;
 import org.dflib.exp.num.*;
 import org.dflib.exp.str.*;
 import org.dflib.exp.datetime.*;
+
+import org.apache.commons.text.*;
 }
 
 @members {
@@ -23,10 +26,48 @@ private static Exp<?> col(Object columnId, Function<Integer, Exp<?>> byIndex, Fu
     }
 }
 
+private static int radix(String token) {
+    int offset = token.startsWith("+") || token.startsWith("-") ? 1 : 0;
+    int dotPosition = token.indexOf(".");
+    String lowerToken = token.toLowerCase();
+    if (lowerToken.startsWith("0x", offset)) {
+        return 16;
+    }
+    if (lowerToken.startsWith("0b", offset)) {
+        return 2;
+    }
+    if (token.indexOf(".") == -1 && lowerToken.startsWith("0", offset) && token.length() > offset + 1) {
+        return 8;
+    }
+    return 10;
+}
+
+private static String sanitizeNumScalar(String token, int radix) {
+    return sanitizeNumScalar(token, radix, null);
+}
+
+private static String sanitizeNumScalar(String token, int radix, String postfix) {
+    String scalar = token.toLowerCase();
+    scalar = postfix != null ? scalar.replaceAll(postfix.toLowerCase() + "$", "") : scalar;
+    switch (radix) {
+        case 2:
+            return scalar.replaceFirst("0b", "");
+        case 8:
+            return scalar.replaceFirst("0(?=.)", "");
+        case 16:
+            return scalar.replaceFirst("0x", "");
+        default:
+            return scalar;
+    }
+}
+
+
 private static Number floatingPointScalar(String token) {
-    return token.toLowerCase().endsWith("f")
-            ? Float.parseFloat(token)
-            : Double.parseDouble(token);
+    if (token.toLowerCase().endsWith("f")) {
+        return Float.valueOf(token);
+    } else {
+        return Double.valueOf(token);
+    }
 }
 }
 
@@ -61,9 +102,7 @@ expression returns [Exp<?> exp]
     | numExp { $exp = $numExp.exp; }
     | strExp { $exp = $strExp.exp; }
     | temporalExp { $exp = $temporalExp.exp; }
-    | ifExp { $exp = $ifExp.exp; }
-    | ifNull { $exp = $ifNull.exp; }
-    | split { $exp = $split.exp; }
+    | specialFn { $exp = $specialFn.exp; }
     ;
 
 /// **Numeric expressions**
@@ -173,28 +212,40 @@ dateTimeExp returns [DateTimeExp exp]
 /// Defines scalar values such as numbers, booleans, and strings that
 /// are single literals or constants.
 
+scalar returns [Object value]
+    : numScalar { $value = $numScalar.value; }
+    | boolScalar { $value = $boolScalar.value; }
+    | strScalar { $value = $strScalar.value; }
+    ;
+
 /**
  * Represents numeric scalar values (e.g., integers, floating points).
  */
 numScalar returns [Number value]
-    : longScalar { $value = $longScalar.value; }
-    | integerScalar { $value = $integerScalar.value; }
+    : integerScalar { $value = $integerScalar.value; }
+    | longScalar { $value = $longScalar.value; }
     | floatingPointScalar { $value = $floatingPointScalar.value; }
     ;
 
 /**
  * Represents individual long scalar values.
  */
-longScalar returns [Long value]
-    : LONG_LITERAL { $value = Long.parseLong($text); }
+longScalar returns [Long value] locals [int radix]
+    : LONG_LITERAL {
+        $radix = radix($text);
+        $value = Long.valueOf(sanitizeNumScalar($text, $radix, "l"), $radix);
+        }
     ;
 
 /**
  * Represents individual integer scalar values.
  * These are numerical constants that can be directly used in expressions.
  */
-integerScalar returns [Integer value]
-    : INTEGER_LITERAL { $value = Integer.parseInt($text); }
+integerScalar returns [Integer value] locals [int radix]
+    : INTEGER_LITERAL {
+        $radix = radix($text);
+        $value = Integer.valueOf(sanitizeNumScalar($text, $radix), $radix);
+        }
     ;
 
 /**
@@ -218,8 +269,8 @@ boolScalar returns [Boolean value]
  * Can be enclosed in quotes as single characters or string literals.
  */
 strScalar returns [String value]
-    : CHARACTER_LITERAL { $value = $text.substring(1, $text.length() - 1); }
-    | STRING_LITERAL { $value = $text.substring(1, $text.length() - 1); }
+    : SINGLE_QUOTE_STRING_LITERAL { $value = StringEscapeUtils.unescapeJava($text.substring(1, $text.length() - 1)); }
+    | DOUBLE_QUOTE_STRING_LITERAL { $value = StringEscapeUtils.unescapeJava($text.substring(1, $text.length() - 1)); }
     ;
 
 /// **Column expressions**
@@ -341,7 +392,8 @@ identifier returns [String id]
  * date, and datetime comparisons.
  */
 relation returns [Condition exp]
-    : numRelation { $exp = $numRelation.exp; }
+    : '(' relation ')' { $exp = $relation.exp; }
+    | numRelation { $exp = $numRelation.exp; }
     | strRelation { $exp = $strRelation.exp; }
     | timeRelation { $exp = $timeRelation.exp; }
     | dateRelation { $exp = $dateRelation.exp; }
@@ -432,7 +484,12 @@ dateTimeRelation returns [Condition exp]
  * of a string and to extract components from temporal expressions.
  */
 numFn returns [NumExp<?> exp]
-    : COUNT ('()' | '(' b=boolExp ')') { $exp = $ctx.b != null ? Exp.count($b.exp) : Exp.count(); }
+    : castAsInt { $exp = $castAsInt.exp; }
+    | castAsLong { $exp = $castAsLong.exp; }
+    | castAsFloat { $exp = $castAsFloat.exp; }
+    | castAsDouble { $exp = $castAsDouble.exp; }
+    | castAsDecimal { $exp = $castAsDecimal.exp; }
+    | COUNT ('()' | '(' b=boolExp ')') { $exp = $ctx.b != null ? Exp.count($b.exp) : Exp.count(); }
     | ROW_NUM '()' { $exp = Exp.rowNum(); }
     | ABS '(' numExp ')' { $exp = $numExp.exp.abs(); }
     | ROUND '(' numExp ')' { $exp = $numExp.exp.round(); }
@@ -483,7 +540,11 @@ dateTimeFieldFn returns [NumExp<Integer> exp]
  * Example includes matching one string to a specific pattern.
  */
 boolFn returns [Condition exp]
-    : MATCHES '(' strExp ',' strScalar ')' { $exp = $strExp.exp.matches($strScalar.value); }
+    : castAsBool { $exp = $castAsBool.exp; }
+    | MATCHES '(' strExp ',' strScalar ')' { $exp = $strExp.exp.matches($strScalar.value); }
+    | STARTS_WITH '(' strExp ',' strScalar ')' { $exp = $strExp.exp.startsWith($strScalar.value); }
+    | ENDS_WITH '(' strExp ',' strScalar ')' { $exp = $strExp.exp.endsWith($strScalar.value); }
+    | CONTAINS '(' strExp ',' strScalar ')' { $exp = $strExp.exp.contains($strScalar.value); }
     ;
 
 /**
@@ -492,7 +553,8 @@ boolFn returns [Condition exp]
  * milliseconds, or nanoseconds to base time expressions.
  */
 timeFn returns [TimeExp exp]
-    : PLUS_HOURS '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusHours($b.value); }
+    : castAsTime { $exp = $castAsTime.exp; }
+    | PLUS_HOURS '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusHours($b.value); }
     | PLUS_MINUTES '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMinutes($b.value); }
     | PLUS_SECONDS '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusSeconds($b.value); }
     | PLUS_MILLISECONDS '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMilliseconds($b.value); }
@@ -504,7 +566,8 @@ timeFn returns [TimeExp exp]
  * These cover the addition of various units such as years, months, weeks, or days to date expressions.
  */
 dateFn returns [DateExp exp]
-    : PLUS_YEARS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusYears($b.value); }
+    : castAsDate { $exp = $castAsDate.exp; }
+    | PLUS_YEARS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusYears($b.value); }
     | PLUS_MONTHS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusMonths($b.value); }
     | PLUS_WEEKS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusWeeks($b.value); }
     | PLUS_DAYS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusDays($b.value); }
@@ -516,7 +579,8 @@ dateFn returns [DateExp exp]
  * milliseconds, or nanoseconds to datetime expressions.
  */
 dateTimeFn returns [DateTimeExp exp]
-    : PLUS_YEARS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusYears($b.value); }
+    : castAsDateTime { $exp = $castAsDateTime.exp; }
+    | PLUS_YEARS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusYears($b.value); }
     | PLUS_MONTHS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMonths($b.value); }
     | PLUS_WEEKS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusWeeks($b.value); }
     | PLUS_DAYS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusDays($b.value); }
@@ -532,38 +596,91 @@ dateTimeFn returns [DateTimeExp exp]
  * These include trimming or extracting substrings from string expressions.
  */
 strFn returns [StrExp exp]
-    : trimFn { $exp = $trimFn.exp; }
-    | substrFn { $exp = $substrFn.exp; }
+    : castAsStr { $exp = $castAsStr.exp; }
+    | TRIM '(' strExp ')' { $exp = $strExp.exp.trim(); }
+    | SUBSTR '(' s=strExp ',' a=integerScalar (',' b=integerScalar)? ')' {
+        $exp = $ctx.b != null ? $s.exp.substr($a.value, $b.value) : $s.exp.substr($a.value);
+        }
     ;
 
-/**
- * Trims leading and trailing whitespace from a string expression.
- * Useful for cleaning input data or formatting strings.
- */
-trimFn returns [StrExp exp]
-    : TRIM '(' strExp ')' { $exp = $strExp.exp.trim(); }
-    ;
-
-/**
- * Extracts a substring from the given string expression.
- * The substring starts from a specified index and has a specified length.
- */
-substrFn returns [StrExp exp]
-    : SUBSTR '(' s=strExp ',' a=integerScalar ',' b=integerScalar ')' { $exp = $s.exp.substr($a.value, $b.value); }
-    ;
-
-/// **Special expressions**
+/// **Cast functions**
 ///
-/// This section defines special expressions which include conditional
+/// This section defines cast functions.
+
+castAsBool returns [Condition exp]
+    : CAST_AS_BOOL '(' expression ')' { $exp = $expression.exp.castAsBool(); }
+    ;
+
+castAsInt returns [NumExp<Integer> exp]
+    : CAST_AS_INT '(' expression ')' { $exp = $expression.exp.castAsInt(); }
+    ;
+
+castAsLong returns [NumExp<Long> exp]
+    : CAST_AS_LONG '(' expression ')' { $exp = $expression.exp.castAsLong(); }
+    ;
+
+castAsFloat returns [NumExp<Float> exp]
+    : CAST_AS_FLOAT '(' expression ')' { $exp = $expression.exp.castAsFloat(); }
+    ;
+
+castAsDouble returns [NumExp<Double> exp]
+    : CAST_AS_DOUBLE '(' expression ')' { $exp = $expression.exp.castAsDouble(); }
+    ;
+
+castAsDecimal returns [NumExp<BigDecimal> exp]
+    : CAST_AS_DECIMAL '(' expression ')' { $exp = $expression.exp.castAsDecimal(); }
+    ;
+
+castAsStr returns [StrExp exp]
+    : CAST_AS_STR '(' expression ')' { $exp = $expression.exp.castAsStr(); }
+    ;
+
+castAsTime returns [TimeExp exp]
+    : CAST_AS_TIME '(' e=expression (',' f=strScalar )? ')' {
+        $exp = $ctx.f != null ? $e.exp.castAsTime($f.value) : $e.exp.castAsTime();
+        }
+    ;
+
+castAsDate returns [DateExp exp]
+    : CAST_AS_DATE '(' e=expression (',' f=strScalar )? ')' {
+        $exp = $ctx.f != null ? $e.exp.castAsDate($f.value) : $e.exp.castAsDate();
+        }
+    ;
+
+castAsDateTime returns [DateTimeExp exp]
+    : CAST_AS_DATETIME '(' e=expression (',' f=strScalar )? ')' {
+        $exp = $ctx.f != null ? $e.exp.castAsDateTime($f.value) : $e.exp.castAsDateTime();
+        }
+    ;
+
+/// **Special functions**
+///
+/// This section defines special functions which include conditional
 /// constructs like `if`-statements, null-checking (`ifNull`), and
 /// string splitting operations for granular control of expressions.
+
+specialFn returns [Exp<?> exp]
+    : ifExp { $exp = $ifExp.exp; }
+    | ifNull { $exp = $ifNull.exp; }
+    | split { $exp = $split.exp; }
+    | shift { $exp = $shift.exp; }
+    ;
 
 /**
  * Parses conditional expressions where an `if` logic is used.
  * Allows branches depending on a boolean condition.
  */
 ifExp returns [Exp<?> exp]
-    : IF '(' a=boolExp ',' b=expression ',' c=expression ')' { $exp = Exp.ifExp($a.exp, $b.exp, (Exp) $c.exp); }
+    : IF '(' (
+          a=boolExp ',' b1=boolExp ',' b2=boolExp { $exp = Exp.ifExp($a.exp, $b1.exp, $b2.exp); }
+        | a=boolExp ',' s1=strExp ',' s2=strExp { $exp = Exp.ifExp($a.exp, $s1.exp, $s2.exp); }
+        | a=boolExp ',' t1=timeExp ',' t2=timeExp { $exp = Exp.ifExp($a.exp, $t1.exp, $t2.exp); }
+        | a=boolExp ',' d1=dateExp ',' d2=dateExp { $exp = Exp.ifExp($a.exp, $d1.exp, $d2.exp); }
+        | a=boolExp ',' dt1=dateTimeExp ',' dt2=dateTimeExp { $exp = Exp.ifExp($a.exp, $dt1.exp, $dt2.exp); }
+        | a=boolExp ',' n1=numExp ',' n2=numExp {
+            $exp = Exp.ifExp($a.exp, (NumExp<Number>) $n1.exp, (NumExp<Number>) $n2.exp);
+            }
+    ) ')'
     ;
 
 /**
@@ -571,7 +688,14 @@ ifExp returns [Exp<?> exp]
  * assigned if the primary expression evaluates to null.
  */
 ifNull returns [Exp<?> exp]
-    : IF_NULL '(' a=expression ',' b=expression ')' { $exp = Exp.ifNull($a.exp, (Exp) $b.exp); }
+    : IF_NULL '(' (
+          b1=boolExp ',' b2=boolExp { $exp = Exp.ifNull($b1.exp, $b2.exp); }
+        | s1=strExp ',' s2=strExp { $exp = Exp.ifNull($s1.exp, $s2.exp); }
+        | t1=timeExp ',' t2=timeExp { $exp = Exp.ifNull($t1.exp, $t2.exp); }
+        | d1=dateExp ',' d2=dateExp { $exp = Exp.ifNull($d1.exp, $d2.exp); }
+        | dt1=dateTimeExp ',' dt2=dateTimeExp { $exp = Exp.ifNull($dt1.exp, $dt2.exp); }
+        | n1=numExp ',' n2=numExp { $exp = Exp.ifNull((NumExp<Number>) $n1.exp, (NumExp<Number>) $n2.exp); }
+    ) ')'
     ;
 
 /**
@@ -582,6 +706,20 @@ split returns [Exp<String[]> exp]
     : SPLIT '(' a=strExp ',' b=strScalar (',' c=integerScalar)? ')' {
         $exp = $ctx.c != null ? $a.exp.split($b.value, $c.value) : $a.exp.split($b.value);
         }
+    ;
+
+shift returns [Exp<?> exp]
+    : SHIFT '(' (
+          be=boolExp ',' i=integerScalar (',' bs=boolScalar)? {
+            $exp = $ctx.bs != null ? $be.exp.shift($i.value, $bs.value) : $be.exp.shift($i.value);
+            }
+        | ne=numExp ',' i=integerScalar (',' ns=numScalar)? {
+            $exp = $ctx.ns != null ? ((NumExp<Number>) $ne.exp).shift($i.value, (Number) $ns.value) : $ne.exp.shift($i.value);
+            }
+        | se=strExp ',' i=integerScalar (',' ss=strScalar)? {
+            $exp = $ctx.ss != null ? $se.exp.shift($i.value, $ss.value) : $se.exp.shift($i.value);
+            }
+    ) ')'
     ;
 
 /// **Aggregate expressions**
@@ -761,6 +899,38 @@ DECIMAL: 'decimal';
 //@ doc:inline
 STR: 'str';
 
+// *Cast functions*
+
+//@ doc:inline
+CAST_AS_BOOL: 'castAsBool';
+
+//@ doc:inline
+CAST_AS_INT: 'castAsInt';
+
+//@ doc:inline
+CAST_AS_LONG: 'castAsLong';
+
+//@ doc:inline
+CAST_AS_FLOAT: 'castAsFloat';
+
+//@ doc:inline
+CAST_AS_DOUBLE: 'castAsDouble';
+
+//@ doc:inline
+CAST_AS_DECIMAL: 'castAsDecimal';
+
+//@ doc:inline
+CAST_AS_STR: 'castAsStr';
+
+//@ doc:inline
+CAST_AS_TIME: 'castAsTime';
+
+//@ doc:inline
+CAST_AS_DATE: 'castAsDate';
+
+//@ doc:inline
+CAST_AS_DATETIME: 'castAsDateTime';
+
 // *Functions*
 
 //@ doc:inline
@@ -771,6 +941,9 @@ IF_NULL: 'ifNull';
 
 //@ doc:inline
 SPLIT: 'split';
+
+//@ doc:inline
+SHIFT: 'shift';
 
 //@ doc:inline
 SUBSTR: 'substr';
@@ -785,13 +958,22 @@ LEN: 'len';
 MATCHES: 'matches';
 
 //@ doc:inline
+STARTS_WITH: 'startsWith';
+
+//@ doc:inline
+ENDS_WITH: 'endsWith';
+
+//@ doc:inline
+CONTAINS: 'contains';
+
+//@ doc:inline
 DATE: 'date';
 
 //@ doc:inline
 TIME: 'time';
 
 //@ doc:inline
-DATETIME: 'datetime';
+DATETIME: 'dateTime';
 
 //@ doc:inline
 YEAR: 'year';
@@ -896,11 +1078,11 @@ FALSE: 'false';
 //@ doc:inline
 LONG_LITERAL
     : [+-]? (
-          DECIMAL_LITERAL [lL]
-        | HEX_LITERAL [lL]
-        | OCTAL_LITERAL [lL]
-        | BINARY_LITERAL [lL]
-    )
+          DECIMAL_LITERAL
+        | HEX_LITERAL
+        | OCTAL_LITERAL
+        | BINARY_LITERAL
+    ) [lL]
     ;
 
 //@ doc:inline
@@ -921,14 +1103,16 @@ FLOATING_POINT_LITERAL
     )
     ;
 
-CHARACTER_LITERAL: '\'' (~['\\\n\r] | ESCAPE | UNICODE_ESCAPE) '\'';
+SINGLE_QUOTE_STRING_LITERAL: '\'' (~['\\\n\r] | ESCAPE | UNICODE_ESCAPE)* '\'';
 
-STRING_LITERAL: '"' (~["\\\n\r] | ESCAPE | UNICODE_ESCAPE)* '"';
+DOUBLE_QUOTE_STRING_LITERAL: '"' (~["\\\n\r] | ESCAPE | UNICODE_ESCAPE)* '"';
 
 //@ doc:inline
 IDENTIFIER: LETTER PART_LETTER*;
 
-fragment DECIMAL_LITERAL: [0-9] ([0-9_]* [0-9])?;
+fragment DECIMAL_LITERAL: '0' | [1-9] ([0-9_]* [0-9])?;
+
+fragment DECIMAL_LITERAL_LEADING_ZEROS: [0-9] ([0-9_]* [0-9])?;
 
 fragment HEX_LITERAL: '0' [xX] HEX_DIGITS;
 
@@ -937,16 +1121,17 @@ fragment OCTAL_LITERAL: '0' [0-7] ([0-7_]* [0-7])?;
 fragment BINARY_LITERAL: '0' [bB] [01] ([01_]* [01])?;
 
 fragment DECIMAL_FLOATING_POINT_LITERAL
-    : DECIMAL_LITERAL '.' DECIMAL_LITERAL? DECIMAL_EXPONENT? [fFdD]?
-    | '.' DECIMAL_LITERAL DECIMAL_EXPONENT? [fFdD]?
-    | DECIMAL_LITERAL DECIMAL_EXPONENT [fFdD]?
-    | DECIMAL_LITERAL DECIMAL_EXPONENT?;
+    : DECIMAL_LITERAL_LEADING_ZEROS '.' DECIMAL_LITERAL_LEADING_ZEROS? DECIMAL_EXPONENT? [fFdD]?
+    | '.' DECIMAL_LITERAL_LEADING_ZEROS DECIMAL_EXPONENT? [fFdD]?
+    | DECIMAL_LITERAL_LEADING_ZEROS DECIMAL_EXPONENT [fFdD]?
+    ;
 
 fragment DECIMAL_EXPONENT: [eE] [+-]? DECIMAL_LITERAL;
 
 fragment HEXADECIMAL_FLOATING_POINT_LITERAL
     : HEX_LITERAL '.'? HEXADECIMAL_EXPONENT [fFdD]?
-    | '0' [xX] HEX_DIGITS? '.' HEX_DIGITS HEXADECIMAL_EXPONENT [fFdD]?;
+    | '0' [xX] HEX_DIGITS? '.' HEX_DIGITS HEXADECIMAL_EXPONENT [fFdD]?
+    ;
 
 fragment HEXADECIMAL_EXPONENT: [pP] [+-]? DECIMAL_LITERAL;
 
