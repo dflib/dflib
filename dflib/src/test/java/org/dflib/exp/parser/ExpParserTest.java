@@ -3,7 +3,6 @@ package org.dflib.exp.parser;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.dflib.Exp;
 import org.dflib.exp.parser.antlr4.LexerCancellationException;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -1056,7 +1055,6 @@ class ExpParserTest {
         assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
     }
 
-    @Disabled
     @ParameterizedTest
     @MethodSource
     void numAgg(String text, Exp<?> expected) {
