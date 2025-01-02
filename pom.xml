@@ -58,6 +58,7 @@
         <jackson.databind.version>2.15.4</jackson.databind.version>
         <poi.version>5.3.0</poi.version>
         <commons.csv.version>1.11.0</commons.csv.version>
+        <commons.text.version>1.13.0</commons.text.version>
         <commons.compress.version>1.27.1</commons.compress.version>
         <mustache.version>0.9.10</mustache.version>
         <parquet.version>1.14.2</parquet.version>
@@ -115,6 +116,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-csv</artifactId>
                 <version>${commons.csv.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>${commons.text.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
