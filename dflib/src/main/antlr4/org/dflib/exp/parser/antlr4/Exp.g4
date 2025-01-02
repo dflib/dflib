@@ -1134,7 +1134,7 @@ COUNT: 'count';
 SUM: 'sum';
 
 //@ doc:inline
-CUMSUM: 'cumsum';
+CUMSUM: 'cumSum';
 
 //@ doc:inline
 MIN: 'min';
