@@ -754,15 +754,13 @@ specialFn returns [Exp<?> exp]
  * Returns: *Exp<?>* - The parsed if expression.
  */
 ifExp returns [Exp<?> exp]
-    : IF '(' (
-          a=boolExp ',' b1=boolExp ',' b2=boolExp { $exp = Exp.ifExp($a.exp, $b1.exp, $b2.exp); }
-        | a=boolExp ',' s1=strExp ',' s2=strExp { $exp = Exp.ifExp($a.exp, $s1.exp, $s2.exp); }
-        | a=boolExp ',' t1=timeExp ',' t2=timeExp { $exp = Exp.ifExp($a.exp, $t1.exp, $t2.exp); }
-        | a=boolExp ',' d1=dateExp ',' d2=dateExp { $exp = Exp.ifExp($a.exp, $d1.exp, $d2.exp); }
-        | a=boolExp ',' dt1=dateTimeExp ',' dt2=dateTimeExp { $exp = Exp.ifExp($a.exp, $dt1.exp, $dt2.exp); }
-        | a=boolExp ',' n1=numExp ',' n2=numExp {
-            $exp = Exp.ifExp($a.exp, (NumExp<Number>) $n1.exp, (NumExp<Number>) $n2.exp);
-            }
+    : IF '(' a=boolExp ',' (
+          b1=boolExp ',' b2=boolExp { $exp = Exp.ifExp($a.exp, $b1.exp, $b2.exp); }
+        | s1=strExp ',' s2=strExp { $exp = Exp.ifExp($a.exp, $s1.exp, $s2.exp); }
+        | t1=timeExp ',' t2=timeExp { $exp = Exp.ifExp($a.exp, $t1.exp, $t2.exp); }
+        | d1=dateExp ',' d2=dateExp { $exp = Exp.ifExp($a.exp, $d1.exp, $d2.exp); }
+        | dt1=dateTimeExp ',' dt2=dateTimeExp { $exp = Exp.ifExp($a.exp, $dt1.exp, $dt2.exp); }
+        | n1=numExp ',' n2=numExp { $exp = Exp.ifExp($a.exp, (NumExp<Number>) $n1.exp, (NumExp<Number>) $n2.exp); }
     ) ')'
     ;
 
