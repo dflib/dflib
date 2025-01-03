@@ -58,12 +58,14 @@
         <jackson.databind.version>2.15.4</jackson.databind.version>
         <poi.version>5.3.0</poi.version>
         <commons.csv.version>1.11.0</commons.csv.version>
+        <commons.text.version>1.13.0</commons.text.version>
         <commons.compress.version>1.27.1</commons.compress.version>
         <mustache.version>0.9.10</mustache.version>
         <parquet.version>1.14.2</parquet.version>
         <hadoop.version>3.4.0</hadoop.version>
         <jjava.version>1.0-M3</jjava.version>
         <mysql.version>9.1.0</mysql.version>
+        <antlr4.version>4.13.0</antlr4.version>
     </properties>
 
     <url>https://github.com/dflib/dflib</url>
@@ -114,6 +116,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-csv</artifactId>
                 <version>${commons.csv.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>${commons.text.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -334,6 +341,11 @@
                     <groupId>org.sonatype.plugins</groupId>
                     <artifactId>nexus-staging-maven-plugin</artifactId>
                     <version>1.6.14</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.antlr</groupId>
+                    <artifactId>antlr4-maven-plugin</artifactId>
+                    <version>${antlr4.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

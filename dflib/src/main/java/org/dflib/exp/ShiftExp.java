@@ -22,6 +22,25 @@ public class ShiftExp<T> implements Exp<T> {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ShiftExp<?> shiftExp = (ShiftExp<?>) o;
+        return offset == shiftExp.offset
+                && Objects.equals(delegate, shiftExp.delegate)
+                && Objects.equals(filler, shiftExp.filler);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(delegate, offset, filler);
+    }
+
+    @Override
     public Class<T> getType() {
         return delegate.getType();
     }

@@ -1,7 +1,11 @@
 package org.dflib;
 
+import org.antlr.v4.runtime.BailErrorStrategy;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.dflib.exp.AsExp;
 import org.dflib.exp.Column;
+import org.dflib.exp.parser.antlr4.ExpExtractor;
 import org.dflib.exp.RowNumExp;
 import org.dflib.exp.ScalarExp;
 import org.dflib.exp.ShiftExp;
@@ -44,10 +48,14 @@ import org.dflib.exp.num.IntColumn;
 import org.dflib.exp.num.IntScalarExp;
 import org.dflib.exp.num.LongColumn;
 import org.dflib.exp.num.LongScalarExp;
+import org.dflib.exp.parser.antlr4.ExpLexer;
+import org.dflib.exp.parser.antlr4.ExpParser;
+import org.dflib.exp.parser.antlr4.ExpStrictLexer;
 import org.dflib.exp.sort.ExpSorter;
 import org.dflib.exp.str.ConcatExp;
 import org.dflib.exp.str.StrColumn;
 import org.dflib.exp.str.StrExp1;
+import org.dflib.exp.str.StrScalarExp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -88,7 +96,55 @@ public interface Exp<T> {
     }
 
     /**
-     * Returns a DateExp whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * Returns a {@code NumExp<Integer>} whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * returns the value itself.
+     */
+    static IntScalarExp $intVal(int value) {
+        return new IntScalarExp(value);
+    }
+
+    /**
+     * Returns a {@code NumExp<Long>} whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * returns the value itself.
+     */
+    static LongScalarExp $longVal(long value) {
+        return new LongScalarExp(value);
+    }
+
+    /**
+     * Returns a {@code NumExp<Float>} whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * returns the value itself.
+     */
+    static FloatScalarExp $floatVal(float value) {
+        return new FloatScalarExp(value);
+    }
+
+    /**
+     * Returns a {@code NumExp<Double>} whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * returns the value itself.
+     */
+    static DoubleScalarExp $doubleVal(double value) {
+        return new DoubleScalarExp(value);
+    }
+
+    /**
+     * Returns a {@code Condition} whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * returns the value itself.
+     */
+    static BoolScalarExp $boolVal(boolean value) {
+        return value ? BoolScalarExp.TRUE : BoolScalarExp.FALSE;
+    }
+
+    /**
+     * Returns a {@code StrExp} whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * returns the value itself.
+     */
+    static StrScalarExp $strVal(String value) {
+        return new StrScalarExp(value);
+    }
+
+    /**
+     * Returns a {@code DateExp} whose "eval" returns a Series with the value argument at each position, and "reduce"
      * returns the value itself.
      */
     static DateExp $dateVal(LocalDate value) {
@@ -96,7 +152,7 @@ public interface Exp<T> {
     }
 
     /**
-     * Returns a TimeExp whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * Returns a {@code TimeExp} whose "eval" returns a Series with the value argument at each position, and "reduce"
      * returns the value itself.
      */
     static TimeExp $timeVal(LocalTime value) {
@@ -104,7 +160,7 @@ public interface Exp<T> {
     }
 
     /**
-     * Returns a DateTimeExp whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * Returns a {@code DateTimeExp} whose "eval" returns a Series with the value argument at each position, and "reduce"
      * returns the value itself.
      */
     static DateTimeExp $dateTimeVal(LocalDateTime value) {
@@ -129,15 +185,23 @@ public interface Exp<T> {
 
         // create primitive Series aware expressions for faster ops
         if (Integer.class.equals(type) || Integer.TYPE.equals(type)) {
-            return (Exp<T>) new IntScalarExp((Integer) value);
+            return (Exp<T>) $intVal((Integer) value);
         } else if (Long.class.equals(type) || Long.TYPE.equals(type)) {
-            return (Exp<T>) new LongScalarExp((Long) value);
+            return (Exp<T>) $longVal((Long) value);
         } else if (Double.class.equals(type) || Double.TYPE.equals(type)) {
-            return (Exp<T>) new DoubleScalarExp((Double) value);
+            return (Exp<T>) $doubleVal((Double) value);
         } else if (Boolean.class.equals(type) || Boolean.TYPE.equals(type)) {
-            return (Exp<T>) new BoolScalarExp((Boolean) value);
+            return (Exp<T>) $boolVal((Boolean) value);
         } else if (Float.class.equals(type) || Float.TYPE.equals(type)) {
-            return (Exp<T>) new FloatScalarExp((Float) value);
+            return (Exp<T>) $floatVal((Float) value);
+        } else if (String.class.equals(type)) {
+            return (Exp<T>) $strVal((String) value);
+        } else if (LocalTime.class.equals(type)) {
+            return (Exp<T>) $timeVal((LocalTime) value);
+        } else if (LocalDate.class.equals(type)) {
+            return (Exp<T>) $dateVal((LocalDate) value);
+        } else if (LocalDateTime.class.equals(type)) {
+            return (Exp<T>) $dateTimeVal((LocalDateTime) value);
         } else {
             return new ScalarExp<>(value, type);
         }
@@ -396,11 +460,11 @@ public interface Exp<T> {
     /**
      * Aggregating expression whose "reduce" operation returns the count of rows in the input.
      */
-    static Exp<Integer> count() {
+    static NumExp<Integer> count() {
         return CountExp.getInstance();
     }
 
-    static Exp<Integer> count(Condition filter) {
+    static NumExp<Integer> count(Condition filter) {
         return new CountExp(filter);
     }
 
@@ -409,6 +473,24 @@ public interface Exp<T> {
      */
     static NumExp<Integer> rowNum() {
         return RowNumExp.getInstance();
+    }
+
+    /**
+     * Returns an expression created from the string representation
+     *
+     * @param str string to parse
+     * @return expression parsed from the string
+     *
+     * @since 2.0.0
+     */
+    static Exp<?> exp(String str) {
+        ExpLexer lexer = new ExpStrictLexer(CharStreams.fromString(str));
+        ExpParser parser = new ExpParser(new CommonTokenStream(lexer));
+        parser.setErrorHandler(new BailErrorStrategy());
+        ExpExtractor extractor = new ExpExtractor();
+
+        ExpParser.RootContext context = parser.root();
+        return extractor.visit(context);
     }
 
     /**

@@ -16,6 +16,24 @@ public class AsExp<T> implements Exp<T>  {
         this.delegate = delegate;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AsExp<?> asExp = (AsExp<?>) o;
+        return Objects.equals(delegate, asExp.delegate)
+                && Objects.equals(name, asExp.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(delegate, name);
+    }
+
     public Series<T> eval(Series<?> s) {
         return delegate.eval(s);
     }

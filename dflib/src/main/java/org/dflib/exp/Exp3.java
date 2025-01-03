@@ -3,6 +3,8 @@ package org.dflib.exp;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 
+import java.util.Objects;
+
 /**
  * A ternary expression with three {@link Exp} arguments.
  *
@@ -24,6 +26,24 @@ public abstract class Exp3<One, Two, Three, T> implements Exp<T> {
         this.one = one;
         this.two = two;
         this.three = three;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Exp3<?, ?, ?, ?> exp3 = (Exp3<?, ?, ?, ?>) o;
+        return Objects.equals(opName1, exp3.opName1)
+                && Objects.equals(opName2, exp3.opName2)
+                && Objects.equals(type, exp3.type)
+                && Objects.equals(one, exp3.one)
+                && Objects.equals(two, exp3.two)
+                && Objects.equals(three, exp3.three);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(opName1, opName2, type, one, two, three);
     }
 
     @Override

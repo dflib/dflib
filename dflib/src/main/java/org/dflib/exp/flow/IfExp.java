@@ -27,6 +27,25 @@ public class IfExp<T> implements Exp<T> {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        IfExp<?> ifExp = (IfExp<?>) o;
+        return Objects.equals(condition, ifExp.condition)
+                && Objects.equals(ifTrueExp, ifExp.ifTrueExp)
+                && Objects.equals(ifFalseExp, ifExp.ifFalseExp);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(condition, ifTrueExp, ifFalseExp);
+    }
+
+    @Override
     public String toString() {
         return toQL();
     }
