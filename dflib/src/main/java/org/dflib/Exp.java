@@ -1,5 +1,6 @@
 package org.dflib;
 
+import org.antlr.v4.runtime.BailErrorStrategy;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.dflib.exp.AsExp;
@@ -49,6 +50,7 @@ import org.dflib.exp.num.LongColumn;
 import org.dflib.exp.num.LongScalarExp;
 import org.dflib.exp.parser.antlr4.ExpLexer;
 import org.dflib.exp.parser.antlr4.ExpParser;
+import org.dflib.exp.parser.antlr4.ExpStrictLexer;
 import org.dflib.exp.sort.ExpSorter;
 import org.dflib.exp.str.ConcatExp;
 import org.dflib.exp.str.StrColumn;
@@ -484,8 +486,9 @@ public interface Exp<T> {
      * @since 2.0.0
      */
     static Exp<?> exp(String str) {
-        ExpLexer lexer = new ExpLexer(CharStreams.fromString(str));
+        ExpLexer lexer = new ExpStrictLexer(CharStreams.fromString(str));
         ExpParser parser = new ExpParser(new CommonTokenStream(lexer));
+        parser.setErrorHandler(new BailErrorStrategy());
         ExpExtractor extractor = new ExpExtractor();
 
         ExpParser.RootContext context = parser.root();
