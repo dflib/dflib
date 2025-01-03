@@ -15,6 +15,9 @@ public class BoolScalarExp extends ScalarExp<Boolean> implements Condition {
 
     private final boolean boolValue;
 
+    public static final BoolScalarExp TRUE = new BoolScalarExp(true);
+    public static final BoolScalarExp FALSE = new BoolScalarExp(false);
+
     public BoolScalarExp(boolean value) {
         super(value, Boolean.class);
         this.boolValue = value;
