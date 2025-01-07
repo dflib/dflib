@@ -166,6 +166,7 @@ temporalExp returns [Exp<? extends Temporal> exp]
     | timeExp { $exp = $timeExp.exp; }
     | dateExp { $exp = $dateExp.exp; }
     | dateTimeExp { $exp = $dateTimeExp.exp; }
+    | offsetDateTimeExp { $exp = $offsetDateTimeExp.exp; }
     ;
 
 /**
@@ -196,6 +197,19 @@ dateExp returns [DateExp exp]
 dateTimeExp returns [DateTimeExp exp]
     : dateTimeColumn { $exp = $dateTimeColumn.exp; }
     | dateTimeFn { $exp = $dateTimeFn.exp; }
+    ;
+
+/**
+ * Parses datetime expressions with an offset from UTC/Greenwich.
+ *
+ * This rule handles columns and functions that define a datetime
+ * value adjusted for timezone offsets.
+ *
+ * Returns: *OffsetDateTimeExp* - A parsed OffsetDateTime expression.
+ */
+offsetDateTimeExp returns [OffsetDateTimeExp exp]
+    : offsetDateTimeColumn { $exp = $offsetDateTimeColumn.exp; }
+    | offsetDateTimeFn { $exp = $offsetDateTimeFn.exp; }
     ;
 
 /// **Scalar expressions**
@@ -383,6 +397,15 @@ dateTimeColumn returns [DateTimeExp exp]
     ;
 
 /**
+ * Parses datetime column expressions with an offset from UTC/Greenwich.
+ *
+ * Returns: *OffsetDateTimeExp* - The parsed datetime column expression with an offset.
+ */
+offsetDateTimeColumn returns [OffsetDateTimeExp exp]
+    : OFFSET_DATETIME '(' columnId ')' { $exp = col($columnId.id, Exp::\$offsetDateTime, Exp::\$offsetDateTime); }
+    ;
+
+/**
  * Parses column identifiers which can be integers, strings, or identifiers.
  * 
  * Returns: *Object* - The parsed column identifier.
@@ -520,6 +543,7 @@ numFn returns [NumExp<?> exp]
     | timeFieldFn { $exp = $timeFieldFn.exp; }
     | dateFieldFn { $exp = $dateFieldFn.exp; }
     | dateTimeFieldFn { $exp = $dateTimeFieldFn.exp; }
+    | offsetDateTimeFieldFn { $exp = $offsetDateTimeFieldFn.exp; }
     ;
 
 /**
@@ -558,6 +582,24 @@ dateTimeFieldFn returns [NumExp<Integer> exp]
     | MINUTE '(' dateTimeExp ')' { $exp = $dateTimeExp.exp.minute(); }
     | SECOND '(' dateTimeExp ')' { $exp = $dateTimeExp.exp.second(); }
     | MILLISECOND '(' dateTimeExp ')' { $exp = $dateTimeExp.exp.millisecond(); }
+    ;
+
+/**
+ * Parses field extraction functions for OffsetDateTime values.
+ *
+ * Supports extracting fields like year, month, day, hour, minute, second,
+ * and millisecond from OffsetDateTime expressions.
+ *
+ * Returns: *NumExp<Integer>* - The value of the extracted field.
+ */
+offsetDateTimeFieldFn returns [NumExp<Integer> exp]
+    : YEAR '(' offsetDateTimeExp ')' { $exp = $offsetDateTimeExp.exp.year(); }
+    | MONTH '(' offsetDateTimeExp ')' { $exp = $offsetDateTimeExp.exp.month(); }
+    | DAY '(' offsetDateTimeExp ')' { $exp = $offsetDateTimeExp.exp.day(); }
+    | HOUR '(' offsetDateTimeExp ')' { $exp = $offsetDateTimeExp.exp.hour(); }
+    | MINUTE '(' offsetDateTimeExp ')' { $exp = $offsetDateTimeExp.exp.minute(); }
+    | SECOND '(' offsetDateTimeExp ')' { $exp = $offsetDateTimeExp.exp.second(); }
+    | MILLISECOND '(' offsetDateTimeExp ')' { $exp = $offsetDateTimeExp.exp.millisecond(); }
     ;
 
 /**
@@ -616,6 +658,32 @@ dateTimeFn returns [DateTimeExp exp]
     | PLUS_SECONDS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusSeconds($b.value); }
     | PLUS_MILLISECONDS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMilliseconds($b.value); }
     | PLUS_NANOS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusNanos($b.value); }
+    ;
+
+/**
+ * Parses datetime functions with an offset from UTC/Greenwich.
+ *
+ * This rule supports casting and performing various arithmetic operations
+ * on datetime values with timezone offsets, such as adding or subtracting
+ * years, months, days, hours, minutes, seconds, milliseconds, or nanoseconds.
+ *
+ * Parameters:
+ * - `a`: The base OffsetDateTime expression.
+ * - `b`: The integer scalar representing the amount to add to the base datetime.
+ *
+ * Returns: *OffsetDateTimeExp* - The resulting OffsetDateTime expression after applying the operation.
+ */
+offsetDateTimeFn returns [OffsetDateTimeExp exp]
+    : castAsOffsetDateTime { $exp = $castAsOffsetDateTime.exp; }
+    | PLUS_YEARS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusYears($b.value); }
+    | PLUS_MONTHS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMonths($b.value); }
+    | PLUS_WEEKS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusWeeks($b.value); }
+    | PLUS_DAYS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusDays($b.value); }
+    | PLUS_HOURS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusHours($b.value); }
+    | PLUS_MINUTES '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMinutes($b.value); }
+    | PLUS_SECONDS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusSeconds($b.value); }
+    | PLUS_MILLISECONDS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMilliseconds($b.value); }
+    | PLUS_NANOS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusNanos($b.value); }
     ;
 
 /**
@@ -726,6 +794,21 @@ castAsDate returns [DateExp exp]
 castAsDateTime returns [DateTimeExp exp]
     : CAST_AS_DATETIME '(' e=expression (',' f=strScalar )? ')' {
         $exp = $ctx.f != null ? $e.exp.castAsDateTime($f.value) : $e.exp.castAsDateTime();
+        }
+    ;
+
+/**
+ * Parses a cast operation to convert an expression into an OffsetDateTime.
+ *
+ * Parameters:
+ * - e: The input expression to cast.
+ * - f (optional): A string scalar representing the desired offset format.
+ *
+ * Returns: *OffsetDateTimeExp* - A parsed OffsetDateTime cast operation.
+ */
+castAsOffsetDateTime returns [OffsetDateTimeExp exp]
+    : CAST_AS_OFFSET_DATETIME '(' e=expression (',' f=strScalar )? ')' {
+        $exp = $ctx.f != null ? $e.exp.castAsOffsetDateTime($f.value) : $e.exp.castAsOffsetDateTime();
         }
     ;
 
@@ -1017,6 +1100,9 @@ CAST_AS_DATE: 'castAsDate';
 //@ doc:inline
 CAST_AS_DATETIME: 'castAsDateTime';
 
+//@ doc:inline
+CAST_AS_OFFSET_DATETIME: 'castAsOffsetDateTime';
+
 // *Functions*
 
 //@ doc:inline
@@ -1060,6 +1146,9 @@ TIME: 'time';
 
 //@ doc:inline
 DATETIME: 'dateTime';
+
+//@ doc:inline
+OFFSET_DATETIME: 'offsetDateTime';
 
 //@ doc:inline
 YEAR: 'year';

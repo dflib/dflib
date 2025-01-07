@@ -698,6 +698,36 @@ class ExpParserTest {
 
     @ParameterizedTest
     @MethodSource
+    void offsetDateTimeFieldFn(String text, Exp<?> expected) {
+        Exp<?> exp = Exp.exp(text);
+        assertEquals(expected, exp);
+    }
+
+    static Stream<Arguments> offsetDateTimeFieldFn() {
+        return Stream.of(
+                arguments("year(offsetDateTime(1))", Exp.$offsetDateTime(1).year()),
+                arguments("month(offsetDateTime(1))", Exp.$offsetDateTime(1).month()),
+                arguments("day(offsetDateTime(1))", Exp.$offsetDateTime(1).day()),
+                arguments("hour(offsetDateTime(1))", Exp.$offsetDateTime(1).hour()),
+                arguments("minute(offsetDateTime(1))", Exp.$offsetDateTime(1).minute()),
+                arguments("second(offsetDateTime(1))", Exp.$offsetDateTime(1).second()),
+                arguments("millisecond(offsetDateTime(1))", Exp.$offsetDateTime(1).millisecond()),
+                arguments("year(castAsOffsetDateTime('1970-01-01T12:00:00Z+01:00'))",
+                        Exp.$val("1970-01-01T12:00:00Z+01:00").castAsOffsetDateTime().year())
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "year('1970-01-01T12:34:56Z+01:00')",
+            "day(castAsOffsetDateTime('1970-01-01T12:00:00Z+01:00'), 2)"
+    })
+    void offsetDateTimeFieldFn_parsingError(String text) {
+        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    }
+
+    @ParameterizedTest
+    @MethodSource
     void boolFn(String text, Exp<?> expected) {
         Exp<?> exp = Exp.exp(text);
         assertEquals(expected, exp);
@@ -827,6 +857,42 @@ class ExpParserTest {
 
     @ParameterizedTest
     @MethodSource
+    void offsetDateTimeFn(String text, Exp<?> expected) {
+        Exp<?> exp = Exp.exp(text);
+        assertEquals(expected, exp);
+    }
+
+    static Stream<Arguments> offsetDateTimeFn() {
+        return Stream.of(
+                arguments("plusYears(offsetDateTime(1), 2)", Exp.$offsetDateTime(1).plusYears(2)),
+                arguments("plusMonths(offsetDateTime(1), 6)", Exp.$offsetDateTime(1).plusMonths(6)),
+                arguments("plusWeeks(offsetDateTime(1), 3)", Exp.$offsetDateTime(1).plusWeeks(3)),
+                arguments("plusDays(offsetDateTime(1), 10)", Exp.$offsetDateTime(1).plusDays(10)),
+                arguments("plusHours(offsetDateTime(1), 2)", Exp.$offsetDateTime(1).plusHours(2)),
+                arguments("plusMinutes(offsetDateTime(1), 30)", Exp.$offsetDateTime(1).plusMinutes(30)),
+                arguments("plusSeconds(offsetDateTime(1), 45)", Exp.$offsetDateTime(1).plusSeconds(45)),
+                arguments("plusMilliseconds(offsetDateTime(1), 500)", Exp.$offsetDateTime(1).plusMilliseconds(500)),
+                arguments("plusNanos(offsetDateTime(1), 1000)", Exp.$offsetDateTime(1).plusNanos(1000)),
+                arguments("plusYears(offsetDateTime(1), -2)", Exp.$offsetDateTime(1).plusYears(-2)),
+                arguments("plusYears(castAsOffsetDateTime('1970-01-01T12:00:00Z+01:00'), 2)",
+                        Exp.$val("1970-01-01T12:00:00Z+01:00").castAsOffsetDateTime().plusYears(2))
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "plusYears('1970-01-01T12:00:00Z+01:00')",
+            "plusMonths(offsetDateTime(1))",
+            "plusWeeks(offsetDateTime(1), 1 + 2)",
+            "plusDays(offsetDateTime(1), '3')",
+            "plusHours(offsetDateTime(1), null)",
+    })
+    void offsetDateTimeFn_parsingError(String text) {
+        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    }
+
+    @ParameterizedTest
+    @MethodSource
     void strFn(String text, Exp<?> expected) {
         Exp<?> exp = Exp.exp(text);
         assertEquals(expected, exp);
@@ -882,6 +948,8 @@ class ExpParserTest {
                 arguments("castAsDate('1970-01-01')", Exp.$val("1970-01-01").castAsDate()),
                 arguments("castAsDateTime('1970-01-01T12:00:00Z')",
                         Exp.$val("1970-01-01T12:00:00Z").castAsDateTime()),
+                arguments("castAsOffsetDateTime('1970-01-01T12:00:00Z+01:00')",
+                        Exp.$val("1970-01-01T12:00:00Z+01:00").castAsOffsetDateTime()),
                 arguments("castAsStr(null)", Exp.$val(null).castAsStr()),
                 arguments("castAsStr(1 + 2)", Exp.$intVal(1).add(2).castAsStr()),
                 arguments("castAsStr(true)", Exp.$val(true).castAsStr()),
