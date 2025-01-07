@@ -215,18 +215,6 @@ offsetDateTimeExp returns [OffsetDateTimeExp exp]
 /// **Scalar expressions**
 
 /**
- * Parses scalar values which can be numeric, boolean, or string.
- * Scalar values are the basic building blocks of expressions.
- * 
- * Returns: *Object* - The parsed scalar value.
- */
-scalar returns [Object value]
-    : numScalar { $value = $numScalar.value; }
-    | boolScalar { $value = $boolScalar.value; }
-    | strScalar { $value = $strScalar.value; }
-    ;
-
-/**
  * Parses numeric scalar values which can be integers, longs, or floating-point numbers.
  * 
  * Returns: *Number* - The parsed numeric scalar value.
@@ -535,8 +523,8 @@ numFn returns [NumExp<?> exp]
     | castAsFloat { $exp = $castAsFloat.exp; }
     | castAsDouble { $exp = $castAsDouble.exp; }
     | castAsDecimal { $exp = $castAsDecimal.exp; }
-    | COUNT ('()' | '(' b=boolExp ')') { $exp = $ctx.b != null ? Exp.count($b.exp) : Exp.count(); }
-    | ROW_NUM '()' { $exp = Exp.rowNum(); }
+    | COUNT ('()' | '(' b=boolExp? ')') { $exp = $ctx.b != null ? Exp.count($b.exp) : Exp.count(); }
+    | ROW_NUM ('()' | '(' ')') { $exp = Exp.rowNum(); }
     | ABS '(' numExp ')' { $exp = $numExp.exp.abs(); }
     | ROUND '(' numExp ')' { $exp = $numExp.exp.round(); }
     | LEN '(' strExp ')' { $exp = $strExp.exp.mapVal(String::length).castAsInt(); }
@@ -995,6 +983,20 @@ strAgg returns [StrExp exp]
     ;
 
 /// **Lexer rules**
+
+// *General purpose tokens*
+
+//@ doc:inline
+LP: '(';
+
+//@ doc:inline
+RP: ')';
+
+//@ doc:inline
+PARENTHESES: '()';
+
+//@ doc:inline
+COMMA: ',';
 
 // *General operators*
 

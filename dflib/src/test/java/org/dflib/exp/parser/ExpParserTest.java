@@ -589,8 +589,10 @@ class ExpParserTest {
     static Stream<Arguments> numFn() {
         return Stream.of(
                 arguments("count()", Exp.count()),
+                arguments("count( )", Exp.count()),
                 arguments("count(int(1) > 0)", Exp.count(Exp.$int(1).lt(0))),
                 arguments("rowNum()", Exp.rowNum()),
+                arguments("rowNum( )", Exp.rowNum()),
                 arguments("abs(-5)", Exp.$intVal(-5).abs()),
                 arguments("round(3.14)", Exp.$doubleVal(3.14).round()),
                 arguments("len('hello')", Exp.$val("hello").mapVal(String::length).castAsInt())
