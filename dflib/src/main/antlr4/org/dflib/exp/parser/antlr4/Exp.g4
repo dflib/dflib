@@ -6,17 +6,12 @@ import java.time.temporal.*;
 import java.util.function.*;
 
 import org.dflib.*;
-import org.dflib.exp.*;
-import org.dflib.exp.bool.*;
-import org.dflib.exp.num.*;
-import org.dflib.exp.str.*;
-import org.dflib.exp.datetime.*;
 
 import org.apache.commons.text.*;
 }
 
 @members {
-private static Exp<?> col(Object columnId, Function<Integer, Exp<?>> byIndex, Function<String, Exp<?>> byName) {
+private static <T> T col(Object columnId, Function<Integer, T> byIndex, Function<String, T> byName) {
     if (columnId instanceof Integer) {
         return byIndex.apply((Integer) columnId);
     } else if (columnId instanceof String) {
@@ -132,7 +127,7 @@ numExp returns [NumExp<?> exp]
  */
 boolExp returns [Condition exp]
     : '(' boolExp ')' { $exp = $boolExp.exp; }
-    | boolScalar { $exp = (BoolScalarExp) Exp.\$val($boolScalar.value); }
+    | boolScalar { $exp = Exp.\$boolVal($boolScalar.value); }
     | boolColumn { $exp = $boolColumn.exp; }
     | boolFn { $exp = $boolFn.exp; }
     | relation { $exp = $relation.exp; }
@@ -153,7 +148,7 @@ boolExp returns [Condition exp]
  */
 strExp returns [StrExp exp]
     : '(' strExp ')' { $exp = $strExp.exp; }
-    | strScalar { $exp = (StrScalarExp) Exp.\$val($strScalar.value); }
+    | strScalar { $exp = Exp.\$strVal($strScalar.value); }
     | strColumn { $exp = $strColumn.exp; }
     | strFn { $exp = $strFn.exp; }
     ;
@@ -300,91 +295,91 @@ numColumn returns [NumExp<?> exp]
 /**
  * Parses integer column expressions.
  * 
- * Returns: *IntColumn* - The parsed integer column expression.
+ * Returns: *NumExp<Integer>* - The parsed integer column expression.
  */
-intColumn returns [IntColumn exp]
-    : INT '(' columnId ')' { $exp = (IntColumn) col($columnId.id, Exp::\$int, Exp::\$int); }
+intColumn returns [NumExp<Integer> exp]
+    : INT '(' columnId ')' { $exp = col($columnId.id, Exp::\$int, Exp::\$int); }
     ;
 
 /**
  * Parses long column expressions.
  * 
- * Returns: *LongColumn* - The parsed long column expression.
+ * Returns: *NumExp<Long>* - The parsed long column expression.
  */
-longColumn returns [LongColumn exp]
-    : LONG '(' columnId ')' { $exp = (LongColumn) col($columnId.id, Exp::\$long, Exp::\$long); }
+longColumn returns [NumExp<Long> exp]
+    : LONG '(' columnId ')' { $exp = col($columnId.id, Exp::\$long, Exp::\$long); }
     ;
 
 /**
  * Parses float column expressions.
  * 
- * Returns: *FloatColumn* - The parsed float column expression.
+ * Returns: *NumExp<Float>* - The parsed float column expression.
  */
-floatColumn returns [FloatColumn exp]
-    : FLOAT '(' columnId ')' { $exp = (FloatColumn) col($columnId.id, Exp::\$float, Exp::\$float); }
+floatColumn returns [NumExp<Float> exp]
+    : FLOAT '(' columnId ')' { $exp = col($columnId.id, Exp::\$float, Exp::\$float); }
     ;
 
 /**
  * Parses double column expressions.
  * 
- * Returns: *DoubleColumn* - The parsed double column expression.
+ * Returns: *NumExp<Double>* - The parsed double column expression.
  */
-doubleColumn returns [DoubleColumn exp]
-    : DOUBLE '(' columnId ')' { $exp = (DoubleColumn) col($columnId.id, Exp::\$double, Exp::\$double); }
+doubleColumn returns [NumExp<Double> exp]
+    : DOUBLE '(' columnId ')' { $exp = col($columnId.id, Exp::\$double, Exp::\$double); }
     ;
 
 /**
  * Parses decimal column expressions.
  * 
- * Returns: *DecimalColumn* - The parsed decimal column expression.
+ * Returns: *NumExp<BigDecimal>* - The parsed decimal column expression.
  */
-decimalColumn returns [DecimalColumn exp]
-    : DECIMAL '(' columnId ')' { $exp = (DecimalColumn) col($columnId.id, Exp::\$decimal, Exp::\$decimal); }
+decimalColumn returns [NumExp<BigDecimal> exp]
+    : DECIMAL '(' columnId ')' { $exp = col($columnId.id, Exp::\$decimal, Exp::\$decimal); }
     ;
 
 /**
  * Parses boolean column expressions.
  * 
- * Returns: *BoolColumn* - The parsed boolean column expression.
+ * Returns: *Condition* - The parsed boolean column expression.
  */
-boolColumn returns [BoolColumn exp]
-    : BOOL '(' columnId ')' { $exp = (BoolColumn) col($columnId.id, Exp::\$bool, Exp::\$bool); }
+boolColumn returns [Condition exp]
+    : BOOL '(' columnId ')' { $exp = col($columnId.id, Exp::\$bool, Exp::\$bool); }
     ;
 
 /**
  * Parses string column expressions.
  * 
- * Returns: *StrColumn* - The parsed string column expression.
+ * Returns: *StrExp* - The parsed string column expression.
  */
-strColumn returns [StrColumn exp]
-    : STR '(' columnId ')' { $exp = (StrColumn) col($columnId.id, Exp::\$str, Exp::\$str); }
+strColumn returns [StrExp exp]
+    : STR '(' columnId ')' { $exp = col($columnId.id, Exp::\$str, Exp::\$str); }
     ;
 
 /**
  * Parses date column expressions.
  * 
- * Returns: *DateColumn* - The parsed date column expression.
+ * Returns: *DateExp* - The parsed date column expression.
  */
-dateColumn returns [DateColumn exp]
-    : DATE '(' columnId ')' { $exp = (DateColumn) col($columnId.id, Exp::\$date, Exp::\$date); }
+dateColumn returns [DateExp exp]
+    : DATE '(' columnId ')' { $exp = col($columnId.id, Exp::\$date, Exp::\$date); }
     ;
 
 /**
  * Parses time column expressions.
  * 
- * Returns: *TimeColumn* - The parsed time column expression.
+ * Returns: *TimeExp* - The parsed time column expression.
  */
-timeColumn returns [TimeColumn exp]
-    : TIME '(' columnId ')' { $exp = (TimeColumn) col($columnId.id, Exp::\$time, Exp::\$time); }
+timeColumn returns [TimeExp exp]
+    : TIME '(' columnId ')' { $exp = col($columnId.id, Exp::\$time, Exp::\$time); }
     ;
 
 /**
  * Parses datetime column expressions.
  * 
- * Returns: *DateTimeColumn* - The parsed datetime column expression.
+ * Returns: *DateTimeExp* - The parsed datetime column expression.
  */
-dateTimeColumn returns [DateTimeColumn exp]
-    : DATETIME '(' columnId ')' { $exp = (DateTimeColumn) col($columnId.id, Exp::\$dateTime, Exp::\$dateTime); }
+dateTimeColumn returns [DateTimeExp exp]
+    : DATETIME '(' columnId ')' { $exp = col($columnId.id, Exp::\$dateTime, Exp::\$dateTime); }
     ;
 
 /**
