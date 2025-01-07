@@ -902,6 +902,10 @@ class ExpParserTest {
 
     static Stream<Arguments> strFn() {
         return Stream.of(
+                arguments("concat(str(1), 'example')", Exp.concat(Exp.$str(1), Exp.$strVal("example"))),
+                arguments("concat(str(1))", Exp.concat(Exp.$str(1))),
+                arguments("concat( )", Exp.concat()),
+                arguments("concat()", Exp.concat()),
                 arguments("trim('  example  ')", Exp.$strVal("  example  ").trim()),
                 arguments("substr('example', 2)", Exp.$strVal("example").substr(2)),
                 arguments("substr('example', 2, 3)", Exp.$strVal("example").substr(2, 3)),

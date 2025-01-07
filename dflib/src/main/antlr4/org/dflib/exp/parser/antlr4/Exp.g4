@@ -675,7 +675,7 @@ offsetDateTimeFn returns [OffsetDateTimeExp exp]
     ;
 
 /**
- * Parses string functions which can include casting, trimming, and substring operations.
+ * Parses string functions which can include casting, trimming, substring operations and concatenation.
  * 
  * Returns: *StrExp* - The parsed string function.
  */
@@ -684,6 +684,9 @@ strFn returns [StrExp exp]
     | TRIM '(' strExp ')' { $exp = $strExp.exp.trim(); }
     | SUBSTR '(' s=strExp ',' a=integerScalar (',' b=integerScalar)? ')' {
         $exp = $ctx.b != null ? $s.exp.substr($a.value, $b.value) : $s.exp.substr($a.value);
+        }
+    | CONCAT ('()' | '(' (args+=strExp (',' args+=strExp)*)? ')') {
+        $exp = !$args.isEmpty() ? Exp.concat($args.stream().map(a -> a.exp).toArray()) : Exp.concat();
         }
     ;
 
@@ -1118,6 +1121,9 @@ SPLIT: 'split';
 
 //@ doc:inline
 SHIFT: 'shift';
+
+//@ doc:inline
+CONCAT: 'concat';
 
 //@ doc:inline
 SUBSTR: 'substr';
