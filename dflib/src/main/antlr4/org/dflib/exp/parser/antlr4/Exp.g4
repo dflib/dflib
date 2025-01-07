@@ -56,7 +56,6 @@ private static String sanitizeNumScalar(String token, int radix, String postfix)
     }
 }
 
-
 private static Number floatingPointScalar(String token) {
     if (token.toLowerCase().endsWith("f")) {
         return Float.valueOf(token);
@@ -333,9 +332,9 @@ doubleColumn returns [NumExp<Double> exp]
 /**
  * Parses decimal column expressions.
  * 
- * Returns: *NumExp<BigDecimal>* - The parsed decimal column expression.
+ * Returns: *DecimalExp* - The parsed decimal column expression.
  */
-decimalColumn returns [NumExp<BigDecimal> exp]
+decimalColumn returns [DecimalExp exp]
     : DECIMAL '(' columnId ')' { $exp = col($columnId.id, Exp::\$decimal, Exp::\$decimal); }
     ;
 
@@ -740,9 +739,9 @@ castAsDouble returns [NumExp<Double> exp]
 /**
  * Parses cast to decimal function.
  * 
- * Returns: *NumExp<BigDecimal>* - The parsed cast to decimal function.
+ * Returns: *DecimalExp* - The parsed cast to decimal function.
  */
-castAsDecimal returns [NumExp<BigDecimal> exp]
+castAsDecimal returns [DecimalExp exp]
     : CAST_AS_DECIMAL '(' expression ')' { $exp = $expression.exp.castAsDecimal(); }
     ;
 
