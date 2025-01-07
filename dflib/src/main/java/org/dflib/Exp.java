@@ -195,6 +195,8 @@ public interface Exp<T> {
             return (Exp<T>) $dateVal((LocalDate) value);
         } else if (LocalDateTime.class.equals(type)) {
             return (Exp<T>) $dateTimeVal((LocalDateTime) value);
+        } else if (OffsetDateTime.class.equals(type)) {
+            return (Exp<T>) $offsetDateTimeVal((OffsetDateTime) value);
         } else {
             return new ScalarExp<>(value, type);
         }
