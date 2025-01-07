@@ -92,7 +92,7 @@ public interface Exp<T> {
      * Returns a {@code NumExp<Integer>} whose "eval" returns a Series with the value argument at each position, and "reduce"
      * returns the value itself.
      */
-    static IntScalarExp $intVal(int value) {
+    static NumExp<Integer> $intVal(int value) {
         return new IntScalarExp(value);
     }
 
@@ -100,7 +100,7 @@ public interface Exp<T> {
      * Returns a {@code NumExp<Long>} whose "eval" returns a Series with the value argument at each position, and "reduce"
      * returns the value itself.
      */
-    static LongScalarExp $longVal(long value) {
+    static NumExp<Long> $longVal(long value) {
         return new LongScalarExp(value);
     }
 
@@ -108,7 +108,7 @@ public interface Exp<T> {
      * Returns a {@code NumExp<Float>} whose "eval" returns a Series with the value argument at each position, and "reduce"
      * returns the value itself.
      */
-    static FloatScalarExp $floatVal(float value) {
+    static NumExp<Float> $floatVal(float value) {
         return new FloatScalarExp(value);
     }
 
@@ -116,7 +116,7 @@ public interface Exp<T> {
      * Returns a {@code NumExp<Double>} whose "eval" returns a Series with the value argument at each position, and "reduce"
      * returns the value itself.
      */
-    static DoubleScalarExp $doubleVal(double value) {
+    static NumExp<Double> $doubleVal(double value) {
         return new DoubleScalarExp(value);
     }
 
@@ -124,15 +124,15 @@ public interface Exp<T> {
      * Returns a {@code Condition} whose "eval" returns a Series with the value argument at each position, and "reduce"
      * returns the value itself.
      */
-    static BoolScalarExp $boolVal(boolean value) {
-        return value ? BoolScalarExp.TRUE : BoolScalarExp.FALSE;
+    static Condition $boolVal(boolean value) {
+        return value ? BoolScalarExp.getTrue() : BoolScalarExp.getFalse();
     }
 
     /**
      * Returns a {@code StrExp} whose "eval" returns a Series with the value argument at each position, and "reduce"
      * returns the value itself.
      */
-    static StrScalarExp $strVal(String value) {
+    static StrExp $strVal(String value) {
         return new StrScalarExp(value);
     }
 
@@ -183,10 +183,10 @@ public interface Exp<T> {
             return (Exp<T>) $longVal((Long) value);
         } else if (Double.class.equals(type) || Double.TYPE.equals(type)) {
             return (Exp<T>) $doubleVal((Double) value);
-        } else if (Boolean.class.equals(type) || Boolean.TYPE.equals(type)) {
-            return (Exp<T>) $boolVal((Boolean) value);
         } else if (Float.class.equals(type) || Float.TYPE.equals(type)) {
             return (Exp<T>) $floatVal((Float) value);
+        } else if (Boolean.class.equals(type) || Boolean.TYPE.equals(type)) {
+            return (Exp<T>) $boolVal((Boolean) value);
         } else if (String.class.equals(type)) {
             return (Exp<T>) $strVal((String) value);
         } else if (LocalTime.class.equals(type)) {
