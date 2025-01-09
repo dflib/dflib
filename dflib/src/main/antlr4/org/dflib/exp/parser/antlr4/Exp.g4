@@ -6,8 +6,6 @@ import java.time.temporal.*;
 import java.util.function.*;
 
 import org.dflib.*;
-
-import org.apache.commons.text.*;
 }
 
 @members {
@@ -19,6 +17,47 @@ private static <T> T col(Object columnId, Function<Integer, T> byIndex, Function
     } else {
         throw new IllegalArgumentException("An integer or a string expected");
     }
+}
+
+private static String unescapeString(String raw) {
+    if (raw == null) {
+        return null;
+    }
+
+    StringBuilder result = new StringBuilder();
+    for (int i = 0; i < raw.length(); i++) {
+        char currentChar = raw.charAt(i);
+        if (currentChar != '\\' || i + 1 >= raw.length()) {
+            result.append(currentChar);
+            continue;
+        }
+
+        char nextChar = raw.charAt(i + 1);
+        if (nextChar == 'u' && i + 5 < raw.length()) {
+            String hex = raw.substring(i + 2, i + 6);
+            try {
+                int unicodeValue = Integer.parseInt(hex, 16);
+                result.append((char) unicodeValue);
+                i += 5;
+                continue;
+            } catch (NumberFormatException e) {
+                result.append("\\u");
+                i++;
+                continue;
+            }
+        }
+
+        if (nextChar == '"') {
+            result.append('"');
+        } else if (nextChar == '\'') {
+            result.append('\'');
+        } else {
+            result.append(currentChar);
+            result.append(nextChar);
+        }
+        i++;
+    }
+    return result.toString();
 }
 
 private static int radix(String token) {
@@ -280,6 +319,8 @@ boolScalar returns [Boolean value]
 strScalar returns [String value]
     : SINGLE_QUOTE_STRING_LITERAL { $value = StringEscapeUtils.unescapeJava($text.substring(1, $text.length() - 1)); }
     | DOUBLE_QUOTE_STRING_LITERAL { $value = StringEscapeUtils.unescapeJava($text.substring(1, $text.length() - 1)); }
+    : SINGLE_QUOTE_STRING_LITERAL { $value = unescapeString($text.substring(1, $text.length() - 1)); }
+    | DOUBLE_QUOTE_STRING_LITERAL { $value = unescapeString($text.substring(1, $text.length() - 1)); }
     ;
 
 /// **Column expressions**
