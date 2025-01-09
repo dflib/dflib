@@ -486,9 +486,25 @@ public interface Exp<T> {
      * @since 2.0.0
      */
     static Exp<?> exp(String str) {
-        ExpLexer lexer = new ExpStrictLexer(CharStreams.fromString(str));
-        ExpParser parser = new ExpParser(new CommonTokenStream(lexer));
-        parser.setErrorHandler(new BailErrorStrategy());
+        return exp(str, s -> {
+            ExpLexer lexer = new ExpStrictLexer(CharStreams.fromString(str));
+            ExpParser parser = new ExpParser(new CommonTokenStream(lexer));
+            parser.setErrorHandler(new BailErrorStrategy());
+            return parser;
+        });
+    }
+
+    /**
+     * Returns an expression created from the string representation
+     *
+     * @param str string to parse
+     * @param parserProvider provider of a configured parser, that will parse the string
+     * @return expression parsed from the string
+     *
+     * @since 2.0.0
+     */
+    static Exp<?> exp(String str, Function<String, ExpParser> parserProvider) {
+        ExpParser parser = parserProvider.apply(str);
         ExpExtractor extractor = new ExpExtractor();
 
         ExpParser.RootContext context = parser.root();
