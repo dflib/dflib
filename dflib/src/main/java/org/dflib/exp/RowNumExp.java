@@ -16,7 +16,7 @@ public class RowNumExp extends Exp0<Integer> implements NumExp<Integer> {
     }
 
     public RowNumExp() {
-        super("rowNum()", Integer.class);
+        super("rowNum", Integer.class);
     }
 
     @Override
