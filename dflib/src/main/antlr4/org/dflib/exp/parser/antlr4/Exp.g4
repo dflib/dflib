@@ -569,6 +569,28 @@ dateTimeRelation returns [Condition exp]
     )
     ;
 
+/**
+ * Parses an OffsetDateTime relational expression. Compares two OffsetDateTimeExp values.
+ *
+ * Parameters:
+ *  - The left-hand OffsetDateTimeExp.
+ *  - The right-hand OffsetDateTimeExp.
+ *  - The upper bound OffsetDateTimeExp (for BETWEEN).
+ *
+ * Returns: *Condition* - The boolean condition representing the result of the OffsetDateTime relation.
+ */
+offsetDateTimeRelation returns [Condition exp]
+    : a=offsetDateTimeExp (
+        : GT b=offsetDateTimeExp { $exp = $a.exp.gt($b.exp); }
+        | GE b=offsetDateTimeExp { $exp = $a.exp.ge($b.exp); }
+        | LT b=offsetDateTimeExp { $exp = $a.exp.lt($b.exp); }
+        | LE b=offsetDateTimeExp { $exp = $a.exp.le($b.exp); }
+        | EQ b=offsetDateTimeExp { $exp = $a.exp.eq($b.exp); }
+        | NE b=offsetDateTimeExp { $exp = $a.exp.ne($b.exp); }
+        | BETWEEN b=offsetDateTimeExp AND c=offsetDateTimeExp { $exp = $a.exp.between($b.exp, $c.exp); }
+    )
+    ;
+
 /// **Functions**
 
 /**

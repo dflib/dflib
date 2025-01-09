@@ -91,6 +91,43 @@ public class OffsetDateTimeExpTest {
 
     @ParameterizedTest
     @MethodSource
+    void relation(String text, Exp<?> expected) {
+        Exp<?> exp = Exp.exp(text);
+        assertInstanceOf(Condition.class, exp);
+        assertEquals(expected, exp);
+    }
+
+    static Stream<Arguments> relation() {
+        return Stream.of(
+                arguments("offsetDateTime(1) > offsetDateTime(2)", Exp.$offsetDateTime(1).gt(Exp.$offsetDateTime(2))),
+                arguments("offsetDateTime(1) >= offsetDateTime(2)", Exp.$offsetDateTime(1).ge(Exp.$offsetDateTime(2))),
+                arguments("offsetDateTime(1) < offsetDateTime(2)", Exp.$offsetDateTime(1).lt(Exp.$offsetDateTime(2))),
+                arguments("offsetDateTime(1) <= offsetDateTime(2)", Exp.$offsetDateTime(1).le(Exp.$offsetDateTime(2))),
+                arguments("offsetDateTime(1) = offsetDateTime(2)", Exp.$offsetDateTime(1).eq(Exp.$offsetDateTime(2))),
+                arguments("offsetDateTime(1) != offsetDateTime(2)", Exp.$offsetDateTime(1).ne(Exp.$offsetDateTime(2))),
+                arguments("offsetDateTime(1) between offsetDateTime(2) and offsetDateTime(3)",
+                        Exp.$offsetDateTime(1).between(Exp.$offsetDateTime(2), Exp.$offsetDateTime(3))),
+                arguments("castAsOffsetDateTime('1970-01-01T12:00:00+01:00') = offsetDateTime(2)",
+                        Exp.$val("1970-01-01T12:00:00+01:00").castAsOffsetDateTime().eq(Exp.$offsetDateTime(2))),
+                arguments("offsetDateTime(1) = plusDays(offsetDateTime(2), 1)",
+                        Exp.$offsetDateTime(1).eq(Exp.$offsetDateTime(2).plusDays(1)))
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "offsetDateTime(1) = '1970-01-01T12:00:00Z'",
+            "offsetDateTime(1) = time(2)",
+            "offsetDateTime(1) = date(2)",
+            "offsetDateTime(1) = true",
+            "offsetDateTime(1) = null",
+    })
+    void relation_parsingError(String text) {
+        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    }
+
+    @ParameterizedTest
+    @MethodSource
     void fieldFunction(String text, Exp<?> expected) {
         Exp<?> exp = Exp.exp(text);
         assertInstanceOf(NumExp.class, exp);
