@@ -63,6 +63,7 @@ public class NumExpTest {
         return Stream.of(
                 arguments("123", Exp.$val(123)),
                 arguments("-456", Exp.$val(-456)),
+                arguments("123_456", Exp.$val(123_456)),
                 arguments("+0", Exp.$val(0)),
                 arguments("0", Exp.$val(0)),
                 arguments("0X1A3F", Exp.$val(0x1A3F)),
@@ -115,6 +116,7 @@ public class NumExpTest {
         return Stream.of(
                 arguments("123L", Exp.$val(123L)),
                 arguments("-456L", Exp.$val(-456L)),
+                arguments("123_456L", Exp.$val(123_456L)),
                 arguments("+0L", Exp.$val(0L)),
                 arguments("0x1A3FL", Exp.$val(0x1A3FL)),
                 arguments("-0xFFL", Exp.$val(-0xFFL)),
@@ -166,6 +168,7 @@ public class NumExpTest {
         return Stream.of(
                 arguments("123.45f", Exp.$val(123.45f)),
                 arguments("-456.78f", Exp.$val(-456.78f)),
+                arguments("123_456.78_9f", Exp.$val(123_456.78_9f)),
                 arguments("+0.0f", Exp.$val(0.0f)),
                 arguments("0.0f", Exp.$val(0.0f)),
                 arguments(".5f", Exp.$val(0.5f)),
@@ -227,6 +230,7 @@ public class NumExpTest {
         return Stream.of(
                 arguments("123.45", Exp.$val(123.45)),
                 arguments("-456.78", Exp.$val(-456.78)),
+                arguments("123_456.78_9", Exp.$val(123_456.78_9)),
                 arguments("+0.0", Exp.$val(0.0)),
                 arguments("0.0", Exp.$val(0.0)),
                 arguments(".5", Exp.$val(0.5)),

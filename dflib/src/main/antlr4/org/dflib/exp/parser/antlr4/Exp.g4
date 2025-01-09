@@ -43,6 +43,7 @@ private static String sanitizeNumScalar(String token, int radix) {
 
 private static String sanitizeNumScalar(String token, int radix, String postfix) {
     String scalar = token.toLowerCase();
+    scalar = scalar.replaceAll("_+", "");
     scalar = postfix != null ? scalar.replaceAll(postfix.toLowerCase() + "$", "") : scalar;
     switch (radix) {
         case 2:
@@ -57,10 +58,12 @@ private static String sanitizeNumScalar(String token, int radix, String postfix)
 }
 
 private static Number floatingPointScalar(String token) {
-    if (token.toLowerCase().endsWith("f")) {
-        return Float.valueOf(token);
+    String scalar = token.toLowerCase();
+    scalar = scalar.replaceAll("_+", "");
+    if (scalar.endsWith("f")) {
+        return Float.valueOf(scalar);
     } else {
-        return Double.valueOf(token);
+        return Double.valueOf(scalar);
     }
 }
 }
