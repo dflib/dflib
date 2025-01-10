@@ -315,8 +315,6 @@ boolScalar returns [Boolean value]
  * Returns: *String* - The parsed string literal.
  */
 strScalar returns [String value]
-    : SINGLE_QUOTE_STRING_LITERAL { $value = StringEscapeUtils.unescapeJava($text.substring(1, $text.length() - 1)); }
-    | DOUBLE_QUOTE_STRING_LITERAL { $value = StringEscapeUtils.unescapeJava($text.substring(1, $text.length() - 1)); }
     : SINGLE_QUOTE_STRING_LITERAL { $value = unescapeString($text.substring(1, $text.length() - 1)); }
     | DOUBLE_QUOTE_STRING_LITERAL { $value = unescapeString($text.substring(1, $text.length() - 1)); }
     ;
@@ -1540,12 +1538,12 @@ FLOATING_POINT_LITERAL
 /**
  * Matches a string literal enclosed in single quotes. Supports standard Java escape sequences.
  */
-SINGLE_QUOTE_STRING_LITERAL: '\'' (~['\\\n\r] | ESCAPE | UNICODE_ESCAPE)* '\'';
+SINGLE_QUOTE_STRING_LITERAL: '\'' ('\\\'' | ~['] | UNICODE_ESCAPE)* '\'';
 
 /**
  * Matches a string literal enclosed in double quotes. Supports Java escape sequences.
  */
-DOUBLE_QUOTE_STRING_LITERAL: '"' (~["\\\n\r] | ESCAPE | UNICODE_ESCAPE)* '"';
+DOUBLE_QUOTE_STRING_LITERAL: '"' ('\\"' | ~["] | UNICODE_ESCAPE)* '"';
 
 /**
  * Matches an identifier. Identifiers start with a letter and can be followed by letters or digits.
@@ -1580,10 +1578,7 @@ fragment HEXADECIMAL_EXPONENT: [pP] [+-]? DECIMAL_LITERAL;
 fragment HEX_DIGITS: [0-9a-fA-F] ([0-9a-fA-F_]* [0-9a-fA-F])?;
 
 //@ doc:inline
-fragment ESCAPE: '\\' ([sntrbf\\"'] | [0-7] [0-7]? | [0-3] [0-7] [0-7]);
-
-//@ doc:inline
-fragment UNICODE_ESCAPE: '\\u' HEX_DIGITS;
+fragment UNICODE_ESCAPE: '\\u' [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F];
 
 //@ doc:inline
 fragment LETTER: [$A-Z_a-z];

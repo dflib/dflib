@@ -30,10 +30,13 @@ public class StrExpTest {
     static Stream<Arguments> scalar() {
         return Stream.of(
                 arguments("'single quotes'", Exp.$val("single quotes")),
+                arguments("'^\\d+$'", Exp.$val("^\\d+$")),
                 arguments("\"double quotes\"", Exp.$val("double quotes")),
                 arguments("\"unicode \\u1234\"", Exp.$val("unicode ሴ")),
                 arguments("\"escaped \\\"quote\\\"\"", Exp.$val("escaped \"quote\"")),
-                arguments("\"newline\\nnew\"", Exp.$val("newline\nnew")),
+                arguments("\"newline\nline\"", Exp.$val("newline\nline")),
+                arguments("\"newline\\not\"", Exp.$val("newline\\not")),
+                arguments("\"\\tab\"", Exp.$val("\\tab")),
                 arguments("\"\"", Exp.$val(""))
         );
     }
@@ -45,11 +48,11 @@ public class StrExpTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"\"missing quote", "'mismatched quotes\"", "\"multi\nline\""})
+    @ValueSource(strings = {"\"missing quote", "'mismatched quotes\""})
     void scalar_lexicalError(String text) {
         assertThrows(LexerCancellationException.class, () -> Exp.exp(text));
     }
-    
+
     @ParameterizedTest
     @MethodSource
     void column(String text, Exp<?> expected) {
