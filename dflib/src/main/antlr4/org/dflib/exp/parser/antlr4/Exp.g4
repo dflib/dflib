@@ -47,10 +47,8 @@ private static String unescapeString(String raw) {
             }
         }
 
-        if (nextChar == '"') {
-            result.append('"');
-        } else if (nextChar == '\'') {
-            result.append('\'');
+        if (nextChar == '"' || nextChar == '\'') {
+            result.append(nextChar);
         } else {
             result.append(currentChar);
             result.append(nextChar);
