@@ -1,108 +1,11 @@
 grammar Exp;
 
 @header {
-import java.math.*;
-import java.time.temporal.*;
-import java.util.function.*;
+import java.time.temporal.Temporal;
 
 import org.dflib.*;
-}
 
-@members {
-private static <T> T col(Object columnId, Function<Integer, T> byIndex, Function<String, T> byName) {
-    if (columnId instanceof Integer) {
-        return byIndex.apply((Integer) columnId);
-    } else if (columnId instanceof String) {
-        return byName.apply((String) columnId);
-    } else {
-        throw new IllegalArgumentException("An integer or a string expected");
-    }
-}
-
-private static String unescapeString(String raw) {
-    if (raw == null) {
-        return null;
-    }
-
-    StringBuilder result = new StringBuilder();
-    for (int i = 0; i < raw.length(); i++) {
-        char currentChar = raw.charAt(i);
-        if (currentChar != '\\' || i + 1 >= raw.length()) {
-            result.append(currentChar);
-            continue;
-        }
-
-        char nextChar = raw.charAt(i + 1);
-        if (nextChar == 'u' && i + 5 < raw.length()) {
-            String hex = raw.substring(i + 2, i + 6);
-            try {
-                int unicodeValue = Integer.parseInt(hex, 16);
-                result.append((char) unicodeValue);
-                i += 5;
-                continue;
-            } catch (NumberFormatException e) {
-                result.append("\\u");
-                i++;
-                continue;
-            }
-        }
-
-        if (nextChar == '"' || nextChar == '\'') {
-            result.append(nextChar);
-        } else {
-            result.append(currentChar);
-            result.append(nextChar);
-        }
-        i++;
-    }
-    return result.toString();
-}
-
-private static int radix(String token) {
-    int offset = token.startsWith("+") || token.startsWith("-") ? 1 : 0;
-    int dotPosition = token.indexOf(".");
-    String lowerToken = token.toLowerCase();
-    if (lowerToken.startsWith("0x", offset)) {
-        return 16;
-    }
-    if (lowerToken.startsWith("0b", offset)) {
-        return 2;
-    }
-    if (token.indexOf(".") == -1 && lowerToken.startsWith("0", offset) && token.length() > offset + 1) {
-        return 8;
-    }
-    return 10;
-}
-
-private static String sanitizeNumScalar(String token, int radix) {
-    return sanitizeNumScalar(token, radix, null);
-}
-
-private static String sanitizeNumScalar(String token, int radix, String postfix) {
-    String scalar = token.toLowerCase();
-    scalar = scalar.replaceAll("_+", "");
-    scalar = postfix != null ? scalar.replaceAll(postfix.toLowerCase() + "$", "") : scalar;
-    switch (radix) {
-        case 2:
-            return scalar.replaceFirst("0b", "");
-        case 8:
-            return scalar.replaceFirst("0(?=.)", "");
-        case 16:
-            return scalar.replaceFirst("0x", "");
-        default:
-            return scalar;
-    }
-}
-
-private static Number floatingPointScalar(String token) {
-    String scalar = token.toLowerCase();
-    scalar = scalar.replaceAll("_+", "");
-    if (scalar.endsWith("f")) {
-        return Float.valueOf(scalar);
-    } else {
-        return Double.valueOf(scalar);
-    }
-}
+import static org.dflib.exp.parser.antlr4.ExpParserUtils.*;
 }
 
 /// **Parser rules**
@@ -132,6 +35,7 @@ expression returns [Exp<?> exp]
     | strExp { $exp = $strExp.exp; }
     | temporalExp { $exp = $temporalExp.exp; }
     | specialFn { $exp = $specialFn.exp; }
+    | genericExp { $exp = $genericExp.exp; }
     ;
 
 /// **Numeric expressions**
@@ -241,7 +145,7 @@ dateTimeExp returns [DateTimeExp exp]
     ;
 
 /**
- * Parses datetime expressions with an offset from UTC/Greenwich.
+ * Parses datetime expressions with an offset from UTC+0.
  *
  * This is essential for handling timezones correctly.
  *
@@ -250,6 +154,16 @@ dateTimeExp returns [DateTimeExp exp]
 offsetDateTimeExp returns [OffsetDateTimeExp exp]
     : offsetDateTimeColumn { $exp = $offsetDateTimeColumn.exp; }
     | offsetDateTimeFn { $exp = $offsetDateTimeFn.exp; }
+    ;
+
+/// **Generic expressions**
+
+/**
+ *  Parses expressions with no specific type.
+ */
+genericExp returns [Exp<?> exp]
+    : '(' genericExp ')' { $exp = $genericExp.exp; }
+    | genericColumn { $exp = $genericColumn.exp; }
     ;
 
 /// **Scalar expressions**
@@ -272,10 +186,7 @@ numScalar returns [Number value]
  * Returns: *Long* - The parsed long scalar value.
  */
 longScalar returns [Long value] locals [int radix]
-    : LONG_LITERAL {
-        $radix = radix($text);
-        $value = Long.valueOf(sanitizeNumScalar($text, $radix, "l"), $radix);
-        }
+    : LONG_LITERAL { $value = parseLongValue($text); }
     ;
 
 /**
@@ -283,11 +194,8 @@ longScalar returns [Long value] locals [int radix]
  *
  * Returns: *Integer* - The parsed integer scalar value.
  */
-integerScalar returns [Integer value] locals [int radix]
-    : INTEGER_LITERAL {
-        $radix = radix($text);
-        $value = Integer.valueOf(sanitizeNumScalar($text, $radix), $radix);
-        }
+integerScalar returns [Integer value]
+    : INTEGER_LITERAL { $value = parseIntegerValue($text); }
     ;
 
 /**
@@ -296,7 +204,7 @@ integerScalar returns [Integer value] locals [int radix]
  * Returns: *Number* - The parsed floating-point scalar value.
  */
 floatingPointScalar returns [Number value]
-    : FLOATING_POINT_LITERAL { $value = floatingPointScalar($text); }
+    : FLOATING_POINT_LITERAL { $value = parseFloatingPointValue($text); }
     ;
 
 /**
@@ -343,7 +251,7 @@ numColumn returns [NumExp<?> exp]
  * Returns: *NumExp<Integer>* - The parsed column expression, producing Integer values.
  */
 intColumn returns [NumExp<Integer> exp]
-    : INT '(' columnId ')' { $exp = col($columnId.id, Exp::\$int, Exp::\$int); }
+    : INT '(' columnId ')' { $exp = intCol($columnId.id); }
     ;
 
 /**
@@ -355,7 +263,7 @@ intColumn returns [NumExp<Integer> exp]
  * Returns: *NumExp<Long>* - The parsed column expression, producing Long values.
  */
 longColumn returns [NumExp<Long> exp]
-    : LONG '(' columnId ')' { $exp = col($columnId.id, Exp::\$long, Exp::\$long); }
+    : LONG '(' columnId ')' { $exp = longCol($columnId.id); }
     ;
 
 /**
@@ -367,7 +275,7 @@ longColumn returns [NumExp<Long> exp]
  * Returns: *NumExp<Float>* - The parsed column expression, producing Float values.
  */
 floatColumn returns [NumExp<Float> exp]
-    : FLOAT '(' columnId ')' { $exp = col($columnId.id, Exp::\$float, Exp::\$float); }
+    : FLOAT '(' columnId ')' { $exp = floatCol($columnId.id); }
     ;
 
 /**
@@ -379,7 +287,7 @@ floatColumn returns [NumExp<Float> exp]
  * Returns: *NumExp<Double>* - The parsed column expression, producing Double values.
  */
 doubleColumn returns [NumExp<Double> exp]
-    : DOUBLE '(' columnId ')' { $exp = col($columnId.id, Exp::\$double, Exp::\$double); }
+    : DOUBLE '(' columnId ')' { $exp = doubleCol($columnId.id); }
     ;
 
 /**
@@ -391,7 +299,7 @@ doubleColumn returns [NumExp<Double> exp]
  * Returns: *DecimalExp* - The parsed column expression, producing Decimal values.
  */
 decimalColumn returns [DecimalExp exp]
-    : DECIMAL '(' columnId ')' { $exp = col($columnId.id, Exp::\$decimal, Exp::\$decimal); }
+    : DECIMAL '(' columnId ')' { $exp = decimalCol($columnId.id); }
     ;
 
 /**
@@ -403,7 +311,7 @@ decimalColumn returns [DecimalExp exp]
  * Returns: *Condition* - The parsed column expression, producing Boolean values.
  */
 boolColumn returns [Condition exp]
-    : BOOL '(' columnId ')' { $exp = col($columnId.id, Exp::\$bool, Exp::\$bool); }
+    : BOOL '(' columnId ')' { $exp = boolCol($columnId.id); }
     ;
 
 /**
@@ -415,7 +323,7 @@ boolColumn returns [Condition exp]
  * Returns: *StrExp* - The parsed column expression, producing String values
  */
 strColumn returns [StrExp exp]
-    : STR '(' columnId ')' { $exp = col($columnId.id, Exp::\$str, Exp::\$str); }
+    : STR '(' columnId ')' { $exp = strCol($columnId.id); }
     ;
 
 /**
@@ -427,7 +335,7 @@ strColumn returns [StrExp exp]
  * Returns: *DateExp* - The parsed column expression, producing Date values.
  */
 dateColumn returns [DateExp exp]
-    : DATE '(' columnId ')' { $exp = col($columnId.id, Exp::\$date, Exp::\$date); }
+    : DATE '(' columnId ')' { $exp = dateCol($columnId.id); }
     ;
 
 /**
@@ -439,7 +347,7 @@ dateColumn returns [DateExp exp]
  * Returns: *TimeExp* - The parsed column expression, producing Time values.
  */
 timeColumn returns [TimeExp exp]
-    : TIME '(' columnId ')' { $exp = col($columnId.id, Exp::\$time, Exp::\$time); }
+    : TIME '(' columnId ')' { $exp = timeCol($columnId.id); }
     ;
 
 /**
@@ -451,7 +359,7 @@ timeColumn returns [TimeExp exp]
  * Returns: *DateTimeExp* - The parsed column expression, producing DateTime values.
  */
 dateTimeColumn returns [DateTimeExp exp]
-    : DATETIME '(' columnId ')' { $exp = col($columnId.id, Exp::\$dateTime, Exp::\$dateTime); }
+    : DATETIME '(' columnId ')' { $exp = dateTimeCol($columnId.id); }
     ;
 
 /**
@@ -463,7 +371,19 @@ dateTimeColumn returns [DateTimeExp exp]
  * Returns: *OffsetDateTimeExp* - The parsed column expression, producing OffsetDateTime values.
  */
 offsetDateTimeColumn returns [OffsetDateTimeExp exp]
-    : OFFSET_DATETIME '(' columnId ')' { $exp = col($columnId.id, Exp::\$offsetDateTime, Exp::\$offsetDateTime); }
+    : OFFSET_DATETIME '(' columnId ')' { $exp = offsetCol($columnId.id); }
+    ;
+
+/**
+ * Parses an expression referencing a column with a non-specified type.
+ *
+ * Parameters:
+ *  - The identifier of the column (integer index or string name).
+ *
+ * Returns: *Exp<?>* - The parsed column expression.
+ */
+genericColumn returns [Exp<?> exp]
+    : COL '(' columnId ')' { $exp = col($columnId.id); }
     ;
 
 /**
@@ -502,6 +422,7 @@ relation returns [Condition exp]
     | dateRelation { $exp = $dateRelation.exp; }
     | dateTimeRelation { $exp = $dateTimeRelation.exp; }
     | offsetDateTimeRelation { $exp = $offsetDateTimeRelation.exp; }
+    | genericRelation { $exp = $genericRelation.exp; }
     ;
 
 /**
@@ -632,6 +553,22 @@ offsetDateTimeRelation returns [Condition exp]
     )
     ;
 
+/**
+ * Parses a generic relational expression. Compares two expressions.
+ *
+ * Parameters:
+ *  - The left-hand expression.
+ *  - The right-hand expression.
+ *
+ * Returns: *Condition* - The boolean condition representing the result of the relation.
+ */
+genericRelation returns [Condition exp]
+    : a=genericExp (
+        : EQ b=expression { $exp = $a.exp.eq($b.exp); }
+        | NE b=expression { $exp = $a.exp.ne($b.exp); }
+    )
+    ;
+
 /// **Functions**
 
 /**
@@ -646,8 +583,9 @@ numFn returns [NumExp<?> exp]
     | castAsFloat { $exp = $castAsFloat.exp; }
     | castAsDouble { $exp = $castAsDouble.exp; }
     | castAsDecimal { $exp = $castAsDecimal.exp; }
-    | COUNT ('()' | '(' b=boolExp? ')') { $exp = $ctx.b != null ? Exp.count($b.exp) : Exp.count(); }
-    | ROW_NUM ('()' | '(' ')') { $exp = Exp.rowNum(); }
+    // TODO: check out COUNT and ROW_NUM functions
+    | COUNT ('(' b=boolExp? ')') { $exp = $ctx.b != null ? Exp.count($b.exp) : Exp.count(); }
+    | ROW_NUM ('(' ')') { $exp = Exp.rowNum(); }
     | ABS '(' numExp ')' { $exp = $numExp.exp.abs(); }
     | ROUND '(' numExp ')' { $exp = $numExp.exp.round(); }
     | timeFieldFn { $exp = $timeFieldFn.exp; }
@@ -847,10 +785,10 @@ strFn returns [StrExp exp]
     | TRIM '(' strExp ')' { $exp = $strExp.exp.trim(); }
     | SUBSTR '(' s=strExp ',' a=integerScalar (',' b=integerScalar)? ')' {
         $exp = $ctx.b != null ? $s.exp.substr($a.value, $b.value) : $s.exp.substr($a.value);
-        }
-    | CONCAT ('()' | '(' (args+=strExp (',' args+=strExp)*)? ')') {
+    }
+    | CONCAT ('(' (args+=strExp (',' args+=strExp)*)? ')') {
         $exp = !$args.isEmpty() ? Exp.concat($args.stream().map(a -> a.exp).toArray()) : Exp.concat();
-        }
+    }
     ;
 
 /// **Cast functions**
@@ -951,7 +889,7 @@ castAsStr returns [StrExp exp]
 castAsTime returns [TimeExp exp]
     : CAST_AS_TIME '(' e=expression (',' f=strScalar )? ')' {
         $exp = $ctx.f != null ? $e.exp.castAsTime($f.value) : $e.exp.castAsTime();
-        }
+    }
     ;
 
 /**
@@ -966,7 +904,7 @@ castAsTime returns [TimeExp exp]
 castAsDate returns [DateExp exp]
     : CAST_AS_DATE '(' e=expression (',' f=strScalar )? ')' {
         $exp = $ctx.f != null ? $e.exp.castAsDate($f.value) : $e.exp.castAsDate();
-        }
+    }
     ;
 
 /**
@@ -981,7 +919,7 @@ castAsDate returns [DateExp exp]
 castAsDateTime returns [DateTimeExp exp]
     : CAST_AS_DATETIME '(' e=expression (',' f=strScalar )? ')' {
         $exp = $ctx.f != null ? $e.exp.castAsDateTime($f.value) : $e.exp.castAsDateTime();
-        }
+    }
     ;
 
 /**
@@ -996,7 +934,7 @@ castAsDateTime returns [DateTimeExp exp]
 castAsOffsetDateTime returns [OffsetDateTimeExp exp]
     : CAST_AS_OFFSET_DATETIME '(' e=expression (',' f=strScalar )? ')' {
         $exp = $ctx.f != null ? $e.exp.castAsOffsetDateTime($f.value) : $e.exp.castAsOffsetDateTime();
-        }
+    }
     ;
 
 /// **Special functions**
@@ -1014,24 +952,19 @@ specialFn returns [Exp<?> exp]
     ;
 
 /**
- * Parses an IF expression, a conditional expression that returns one of two values based on a boolean condition.
+ * Parses an IF expression, a conditional expression that returns one of two values based on a condition.
  *
  * Parameters:
  *  - The boolean condition.
  *  - The expression to return if the condition is true.
- *  - The expression to return if the condition is false. Must be the same type as the true branch.
+ *  - The expression to return if the condition is false.
  *
- * Returns: *Exp<?>* - The parsed IF expression. The result type matches the type of the branch expressions.
+ * Returns: *Exp<?>* - The parsed IF expression.
  */
 ifExp returns [Exp<?> exp]
-    : IF '(' a=boolExp ',' (
-          b1=boolExp ',' b2=boolExp { $exp = Exp.ifExp($a.exp, $b1.exp, $b2.exp); }
-        | s1=strExp ',' s2=strExp { $exp = Exp.ifExp($a.exp, $s1.exp, $s2.exp); }
-        | t1=timeExp ',' t2=timeExp { $exp = Exp.ifExp($a.exp, $t1.exp, $t2.exp); }
-        | d1=dateExp ',' d2=dateExp { $exp = Exp.ifExp($a.exp, $d1.exp, $d2.exp); }
-        | dt1=dateTimeExp ',' dt2=dateTimeExp { $exp = Exp.ifExp($a.exp, $dt1.exp, $dt2.exp); }
-        | n1=numExp ',' n2=numExp { $exp = Exp.ifExp($a.exp, (NumExp<Number>) $n1.exp, (NumExp<Number>) $n2.exp); }
-    ) ')'
+    : IF '(' condition=boolExp ',' trueExp=expression ',' elseExpression=expression ')' {
+        $exp = Exp.ifExp($condition.exp, (Exp)$trueExp.exp, (Exp)$elseExpression.exp);
+    }
     ;
 
 /**
@@ -1045,14 +978,14 @@ ifExp returns [Exp<?> exp]
  * Returns:  *Exp<?>* - The parsed IF_NULL expression. The result type is the same as the input expressions.
  */
 ifNull returns [Exp<?> exp]
-    : IF_NULL '(' (
-          b1=boolExp ',' b2=boolExp { $exp = Exp.ifNull($b1.exp, $b2.exp); }
-        | s1=strExp ',' s2=strExp { $exp = Exp.ifNull($s1.exp, $s2.exp); }
-        | t1=timeExp ',' t2=timeExp { $exp = Exp.ifNull($t1.exp, $t2.exp); }
-        | d1=dateExp ',' d2=dateExp { $exp = Exp.ifNull($d1.exp, $d2.exp); }
-        | dt1=dateTimeExp ',' dt2=dateTimeExp { $exp = Exp.ifNull($dt1.exp, $dt2.exp); }
-        | n1=numExp ',' n2=numExp { $exp = Exp.ifNull((NumExp<Number>) $n1.exp, (NumExp<Number>) $n2.exp); }
-    ) ')'
+    : IF_NULL '(' nullableExp ',' expression ')' { $exp = ifNullExp($nullableExp.exp, $expression.exp); }
+    ;
+
+//@ doc:no-diagram
+//@ doc:nodoc
+//@ doc:name nullable expression
+nullableExp returns [Exp<?> exp]
+    : expression { $exp = $expression.exp; }
     ;
 
 /**
@@ -1068,7 +1001,7 @@ ifNull returns [Exp<?> exp]
 split returns [Exp<String[]> exp]
     : SPLIT '(' a=strExp ',' b=strScalar (',' c=integerScalar)? ')' {
         $exp = $ctx.c != null ? $a.exp.split($b.value, $c.value) : $a.exp.split($b.value);
-        }
+    }
     ;
 
 /**
@@ -1082,17 +1015,18 @@ split returns [Exp<String[]> exp]
  *
  * Returns: *Exp<?>* - The parsed SHIFT expression. The result type matches the input expression type.
  */
+ // TODO: check this expression and add generic exp support
 shift returns [Exp<?> exp]
     : SHIFT '(' (
-          be=boolExp ',' i=integerScalar (',' bs=boolScalar)? {
+        be=boolExp ',' i=integerScalar (',' bs=boolScalar)? {
             $exp = $ctx.bs != null ? $be.exp.shift($i.value, $bs.value) : $be.exp.shift($i.value);
-            }
+        }
         | ne=numExp ',' i=integerScalar (',' ns=numScalar)? {
             $exp = $ctx.ns != null ? ((NumExp<Number>) $ne.exp).shift($i.value, (Number) $ns.value) : $ne.exp.shift($i.value);
-            }
+        }
         | se=strExp ',' i=integerScalar (',' ss=strScalar)? {
             $exp = $ctx.ss != null ? $se.exp.shift($i.value, $ss.value) : $se.exp.shift($i.value);
-            }
+        }
     ) ')'
     ;
 
@@ -1149,7 +1083,7 @@ numAgg returns [NumExp<?> exp]
         $exp = $ctx.b != null
             ? $c.exp.quantile($q.value.doubleValue(), $b.exp)
             : $c.exp.quantile($q.value.doubleValue());
-        }
+    }
     ;
 
 /**
@@ -1169,7 +1103,7 @@ timeAgg returns [TimeExp exp]
     | MEDIAN '(' c=timeColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.median($b.exp) : $c.exp.median(); }
     | QUANTILE '(' c=timeColumn ',' q=numScalar (',' b=boolExp)? ')' {  // Quantile of times
         $exp = $ctx.b != null ? $c.exp.quantile($q.value.doubleValue(), $b.exp) : $c.exp.quantile($q.value.doubleValue());
-        }
+    }
     ;
 
 /**
@@ -1191,7 +1125,7 @@ dateAgg returns [DateExp exp]
         $exp = $ctx.b != null
             ? $c.exp.quantile($q.value.doubleValue(), $b.exp)
             : $c.exp.quantile($q.value.doubleValue());
-        }
+    }
     ;
 
 /**
@@ -1213,7 +1147,7 @@ dateTimeAgg returns [DateTimeExp exp]
         $exp = $ctx.b != null
             ? $c.exp.quantile($q.value.doubleValue(), $b.exp)
             : $c.exp.quantile($q.value.doubleValue());
-        }
+    }
     ;
 
 /**
@@ -1239,9 +1173,6 @@ LP: '(';
 
 //@ doc:inline
 RP: ')';
-
-//@ doc:inline
-PARENTHESES: '()';
 
 //@ doc:inline
 COMMA: ',';
@@ -1315,6 +1246,9 @@ DECIMAL: 'decimal';
 
 //@ doc:inline
 STR: 'str';
+
+//@ doc:inline
+COL: 'col';
 
 // *Cast functions*
 

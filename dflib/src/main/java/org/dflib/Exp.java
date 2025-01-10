@@ -1,11 +1,8 @@
 package org.dflib;
 
-import org.antlr.v4.runtime.BailErrorStrategy;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.dflib.exp.AsExp;
 import org.dflib.exp.Column;
-import org.dflib.exp.parser.antlr4.ExpExtractor;
+import org.dflib.exp.parser.ExpParser;
 import org.dflib.exp.RowNumExp;
 import org.dflib.exp.ScalarExp;
 import org.dflib.exp.ShiftExp;
@@ -48,9 +45,6 @@ import org.dflib.exp.num.IntColumn;
 import org.dflib.exp.num.IntScalarExp;
 import org.dflib.exp.num.LongColumn;
 import org.dflib.exp.num.LongScalarExp;
-import org.dflib.exp.parser.antlr4.ExpLexer;
-import org.dflib.exp.parser.antlr4.ExpParser;
-import org.dflib.exp.parser.antlr4.ExpStrictLexer;
 import org.dflib.exp.sort.ExpSorter;
 import org.dflib.exp.str.ConcatExp;
 import org.dflib.exp.str.StrColumn;
@@ -486,29 +480,7 @@ public interface Exp<T> {
      * @since 2.0.0
      */
     static Exp<?> exp(String str) {
-        return exp(str, s -> {
-            ExpLexer lexer = new ExpStrictLexer(CharStreams.fromString(str));
-            ExpParser parser = new ExpParser(new CommonTokenStream(lexer));
-            parser.setErrorHandler(new BailErrorStrategy());
-            return parser;
-        });
-    }
-
-    /**
-     * Returns an expression created from the string representation
-     *
-     * @param str string to parse
-     * @param parserProvider provider of a configured parser, that will parse the string
-     * @return expression parsed from the string
-     *
-     * @since 2.0.0
-     */
-    static Exp<?> exp(String str, Function<String, ExpParser> parserProvider) {
-        ExpParser parser = parserProvider.apply(str);
-        ExpExtractor extractor = new ExpExtractor();
-
-        ExpParser.RootContext context = parser.root();
-        return extractor.visit(context);
+        return ExpParser.parse(str);
     }
 
     /**
