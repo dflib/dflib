@@ -634,7 +634,7 @@ offsetDateTimeRelation returns [Condition exp]
 /// **Functions**
 
 /**
- * Parses numeric functions, including casting, counting, row number, absolute value, rounding, length, and field functions.
+ * Parses numeric functions, including casting, counting, row number, absolute value, rounding, and field functions.
  * These functions operate on or produce numeric values.
  *
  * Returns: *NumExp<?>* - The parsed numeric function expression.
@@ -649,7 +649,6 @@ numFn returns [NumExp<?> exp]
     | ROW_NUM ('()' | '(' ')') { $exp = Exp.rowNum(); }
     | ABS '(' numExp ')' { $exp = $numExp.exp.abs(); }
     | ROUND '(' numExp ')' { $exp = $numExp.exp.round(); }
-    | LEN '(' strExp ')' { $exp = $strExp.exp.mapVal(String::length).castAsInt(); }
     | timeFieldFn { $exp = $timeFieldFn.exp; }
     | dateFieldFn { $exp = $dateFieldFn.exp; }
     | dateTimeFieldFn { $exp = $dateTimeFieldFn.exp; }

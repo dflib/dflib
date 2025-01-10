@@ -406,8 +406,7 @@ public class NumExpTest {
                 arguments("rowNum()", Exp.rowNum()),
                 arguments("rowNum( )", Exp.rowNum()),
                 arguments("abs(-5)", Exp.$intVal(-5).abs()),
-                arguments("round(3.14)", Exp.$doubleVal(3.14).round()),
-                arguments("len('hello')", Exp.$val("hello").mapVal(String::length).castAsInt())
+                arguments("round(3.14)", Exp.$doubleVal(3.14).round())
         );
     }
 
