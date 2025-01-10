@@ -1,6 +1,7 @@
 package org.dflib.exp.parser;
 
 import org.antlr.v4.runtime.misc.ParseCancellationException;
+import org.dflib.Condition;
 import org.dflib.Exp;
 import org.dflib.NumExp;
 import org.dflib.OffsetDateTimeExp;

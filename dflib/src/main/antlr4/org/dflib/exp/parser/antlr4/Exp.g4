@@ -501,6 +501,7 @@ relation returns [Condition exp]
     | timeRelation { $exp = $timeRelation.exp; }
     | dateRelation { $exp = $dateRelation.exp; }
     | dateTimeRelation { $exp = $dateTimeRelation.exp; }
+    | offsetDateTimeRelation { $exp = $offsetDateTimeRelation.exp; }
     ;
 
 /**
