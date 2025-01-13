@@ -27,15 +27,15 @@ root returns [Exp<?> exp]
  * Returns: *Exp<?>* - The parsed expression, potentially of any supported type.
  */
 expression returns [Exp<?> exp]
-    : NULL { $exp = Exp.\$val(null); }
-    | '(' expression ')' { $exp = $expression.exp; }
-    | agg { $exp = $agg.exp; }
-    | boolExp { $exp = $boolExp.exp; }
+    : boolExp { $exp = $boolExp.exp; }
     | numExp { $exp = $numExp.exp; }
     | strExp { $exp = $strExp.exp; }
     | temporalExp { $exp = $temporalExp.exp; }
-    | specialFn { $exp = $specialFn.exp; }
     | genericExp { $exp = $genericExp.exp; }
+    | aggregateFn { $exp = $aggregateFn.exp; }
+    | specialFn { $exp = $specialFn.exp; }
+    | NULL { $exp = Exp.\$val(null); }
+    | '(' expression ')' { $exp = $expression.exp; }
     ;
 
 /// **Numeric expressions**
@@ -47,8 +47,7 @@ expression returns [Exp<?> exp]
  * Returns: *NumExp<?>* - The parsed numeric expression, representing a numeric computation.
  */
 numExp returns [NumExp<?> exp]
-    : '(' numExp ')' { $exp = $numExp.exp; }
-    | numScalar { $exp = (NumExp<?>) Exp.\$val($numScalar.value); }
+    : numScalar { $exp = (NumExp<?>) Exp.\$val($numScalar.value); }
     | numColumn { $exp = $numColumn.exp; }
     | numFn { $exp = $numFn.exp; }
     | numAgg { $exp = $numAgg.exp; }
@@ -59,6 +58,7 @@ numExp returns [NumExp<?> exp]
         | ADD b=numExp { $exp = $a.exp.add($b.exp); }
         | SUB b=numExp { $exp = $a.exp.sub($b.exp); }
     )
+    | '(' numExp ')' { $exp = $numExp.exp; }
     ;
 
 /// **Boolean expressions**
@@ -71,8 +71,7 @@ numExp returns [NumExp<?> exp]
  * Returns: *Condition* - The parsed boolean expression, representing a logical condition.
  */
 boolExp returns [Condition exp]
-    : '(' boolExp ')' { $exp = $boolExp.exp; }
-    | boolScalar { $exp = Exp.\$boolVal($boolScalar.value); }
+    : boolScalar { $exp = Exp.\$boolVal($boolScalar.value); }
     | boolColumn { $exp = $boolColumn.exp; }
     | boolFn { $exp = $boolFn.exp; }
     | relation { $exp = $relation.exp; }
@@ -81,6 +80,7 @@ boolExp returns [Condition exp]
         : AND b=boolExp { $exp = Exp.and($a.exp, $b.exp); }
         | OR b=boolExp { $exp = Exp.or($a.exp, $b.exp); }
     )
+    | '(' boolExp ')' { $exp = $boolExp.exp; }
     ;
 
 /// **String expressions**
@@ -92,10 +92,10 @@ boolExp returns [Condition exp]
  * Returns: *StrExp* - The parsed string expression.
  */
 strExp returns [StrExp exp]
-    : '(' strExp ')' { $exp = $strExp.exp; }
-    | strScalar { $exp = Exp.\$strVal($strScalar.value); }
+    : strScalar { $exp = Exp.\$strVal($strScalar.value); }
     | strColumn { $exp = $strColumn.exp; }
     | strFn { $exp = $strFn.exp; }
+    | '(' strExp ')' { $exp = $strExp.exp; }
     ;
 
 /// **Temporal expressions**
@@ -106,11 +106,11 @@ strExp returns [StrExp exp]
  * Returns: *Exp<? extends Temporal>* - The parsed temporal expression, representing a time-related value.
  */
 temporalExp returns [Exp<? extends Temporal> exp]
-    : '(' temporalExp ')' { $exp = $temporalExp.exp; }
-    | timeExp { $exp = $timeExp.exp; }
+    : timeExp { $exp = $timeExp.exp; }
     | dateExp { $exp = $dateExp.exp; }
     | dateTimeExp { $exp = $dateTimeExp.exp; }
     | offsetDateTimeExp { $exp = $offsetDateTimeExp.exp; }
+    | '(' temporalExp ')' { $exp = $temporalExp.exp; }
     ;
 
 /**
@@ -162,11 +162,27 @@ offsetDateTimeExp returns [OffsetDateTimeExp exp]
  *  Parses expressions with no specific type.
  */
 genericExp returns [Exp<?> exp]
-    : '(' genericExp ')' { $exp = $genericExp.exp; }
-    | genericColumn { $exp = $genericColumn.exp; }
+    : genericColumn { $exp = $genericColumn.exp; }
+    | '(' genericExp ')' { $exp = $genericExp.exp; }
     ;
 
 /// **Scalar expressions**
+
+anyScalar returns [Object value]
+    : boolScalar { $value = $boolScalar.value; }
+    | numScalar { $value = $numScalar.value; }
+    | strScalar { $value = $strScalar.value; }
+    ;
+
+/**
+ * Parses a boolean scalar value (true or false).
+ *
+ * Returns: *Boolean* - The parsed boolean scalar value.
+ */
+boolScalar returns [Boolean value]
+    : TRUE { $value = true; }
+    | FALSE { $value = false; }
+    ;
 
 /**
  * Parses numeric scalar values (literals), which can be integers, longs,
@@ -205,16 +221,6 @@ integerScalar returns [Integer value]
  */
 floatingPointScalar returns [Number value]
     : FLOATING_POINT_LITERAL { $value = parseFloatingPointValue($text); }
-    ;
-
-/**
- * Parses a boolean scalar value (true or false).
- *
- * Returns: *Boolean* - The parsed boolean scalar value.
- */
-boolScalar returns [Boolean value]
-    : TRUE { $value = true; }
-    | FALSE { $value = false; }
     ;
 
 /**
@@ -402,6 +408,7 @@ columnId returns [Object id]
  *
  * Returns: *String* - The parsed identifier.
  */
+//@ doc:inline
 identifier returns [String id]
     : IDENTIFIER { $id = $text; }
     ;
@@ -415,14 +422,14 @@ identifier returns [String id]
  * Returns: *Condition* - The parsed relational expression, representing a logical condition.
  */
 relation returns [Condition exp]
-    : '(' relation ')' { $exp = $relation.exp; }
-    | numRelation { $exp = $numRelation.exp; }
+    : numRelation { $exp = $numRelation.exp; }
     | strRelation { $exp = $strRelation.exp; }
     | timeRelation { $exp = $timeRelation.exp; }
     | dateRelation { $exp = $dateRelation.exp; }
     | dateTimeRelation { $exp = $dateTimeRelation.exp; }
     | offsetDateTimeRelation { $exp = $offsetDateTimeRelation.exp; }
     | genericRelation { $exp = $genericRelation.exp; }
+    | '(' relation ')' { $exp = $relation.exp; }
     ;
 
 /**
@@ -1027,7 +1034,18 @@ shift returns [Exp<?> exp]
         | se=strExp ',' i=integerScalar (',' ss=strScalar)? {
             $exp = $ctx.ss != null ? $se.exp.shift($i.value, $ss.value) : $se.exp.shift($i.value);
         }
+        | ge=genericShiftExp ',' i=integerScalar (',' s=anyScalar)? {
+            $exp = $ctx.ss != null ? ((Exp)$ge.exp).shift($i.value, (Object)$s.value) : $ge.exp.shift($i.value);
+        }
     ) ')'
+    ;
+
+//@ doc:inline
+genericShiftExp returns [Exp<?> exp]
+    : genericExp { $exp = $genericExp.exp; }
+    | aggregateFn { $exp = $aggregateFn.exp; }
+    | specialFn { $exp = $specialFn.exp; }
+    // TODO: temporal exp here, or a special case in the shift rule
     ;
 
 /// **Aggregate expressions**
@@ -1038,7 +1056,7 @@ shift returns [Exp<?> exp]
  *
  * Returns: *Exp<?>* - The parsed aggregate expression.
  */
-agg returns [Exp<?> exp]
+aggregateFn returns [Exp<?> exp]
     : positionalAgg { $exp = $positionalAgg.exp; }
     | numAgg { $exp = $numAgg.exp; }
     | timeAgg { $exp = $timeAgg.exp; }
