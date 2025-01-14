@@ -14,6 +14,8 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static java.util.Arrays.asList;
+
 /**
  * Represents a folder on a locally-available filesystem. Allows to work with multiple files in the folder as
  * {@link ByteSources}, list and filter folder contents, etc.
@@ -31,17 +33,28 @@ public class FSFolder {
     }
 
     public static FSFolder of(Path path) {
-        return new FSFolder(path, false, null);
+        return new FSFolder(
+                path,
+                false,
+                null,
+                FSFolder::notHiddenFilter);
     }
 
     private final Path folderPath;
     private final boolean includeSubfolders;
-    private final Predicate<Path> filter;
+    private final Predicate<Path> extFilter;
+    private final Predicate<Path> notHiddenFilter;
 
-    private FSFolder(Path folderPath, boolean includeSubfolders, Predicate<Path> filter) {
+    private FSFolder(
+            Path folderPath,
+            boolean includeSubfolders,
+            Predicate<Path> extFilter,
+            Predicate<Path> notHiddenFilter) {
+
         this.folderPath = Objects.requireNonNull(folderPath);
-        this.filter = filter;
         this.includeSubfolders = includeSubfolders;
+        this.extFilter = extFilter;
+        this.notHiddenFilter = notHiddenFilter;
     }
 
     public Path getFolderPath() {
@@ -58,12 +71,15 @@ public class FSFolder {
         }
 
         Path subfolderPath = folderPath.resolve(other);
-        return new FSFolder(subfolderPath, includeSubfolders, filter);
+        return new FSFolder(subfolderPath, includeSubfolders, extFilter, notHiddenFilter);
+    }
+
+    public FSFolder includeHidden() {
+        return new FSFolder(folderPath, includeSubfolders, extFilter, null);
     }
 
     /**
-     * Returns an instance of FSFolder that will filter folder files by extension. All the existing filters of this
-     * folder will be ignored.
+     * Returns an instance of FSFolder that will filter folder files by extension.
      */
     public FSFolder includeExtension(String ext) {
         Objects.requireNonNull(ext);
@@ -72,14 +88,18 @@ public class FSFolder {
         }
 
         String normalizedExt = ext.startsWith(".") ? ext : "." + ext;
-        return new FSFolder(folderPath, includeSubfolders, p -> p.getFileName().toString().endsWith(normalizedExt));
+        return new FSFolder(
+                folderPath,
+                includeSubfolders,
+                p -> matchesExtension(p, normalizedExt),
+                notHiddenFilter);
     }
 
     /**
      * Returns an instance of FSFolder that will include files in subfolders.
      */
     public FSFolder includeSubfolders() {
-        return this.includeSubfolders ? this : new FSFolder(folderPath, true, filter);
+        return this.includeSubfolders ? this : new FSFolder(folderPath, true, extFilter, notHiddenFilter);
     }
 
     /**
@@ -107,10 +127,10 @@ public class FSFolder {
         // TODO: configurable symlink option
         // The defaults are to allow symlinks for files but not for directories
 
-        Predicate<Path> fileFilter = p -> Files.isRegularFile(p);
-        Predicate<Path> filter = this.filter != null
-                ? fileFilter.and(this.filter)
-                : fileFilter;
+        Predicate<Path> filter = asList(extFilter, notHiddenFilter)
+                .stream()
+                .filter(f -> f != null)
+                .reduce(p -> Files.isRegularFile(p), Predicate::and);
 
         try {
             return Files.walk(folderPath, includeSubfolders ? Integer.MAX_VALUE : 1)
@@ -119,5 +139,14 @@ public class FSFolder {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static boolean notHiddenFilter(Path path) {
+        String name = path.getFileName().toString();
+        return name.length() > 1 && name.charAt(0) != '.';
+    }
+
+    private static boolean matchesExtension(Path path, String ext) {
+        return path.getFileName().toString().endsWith(ext);
     }
 }

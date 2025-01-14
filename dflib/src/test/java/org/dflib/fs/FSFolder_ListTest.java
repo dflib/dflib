@@ -19,6 +19,13 @@ public class FSFolder_ListTest {
         assertEquals(Set.of(p.resolve("test1.txt"), p.resolve("test2.md")), Set.copyOf(f.list()));
     }
 
+    @Test
+    void hidden() throws URISyntaxException {
+        Path p = Path.of(getClass().getResource("test1").toURI());
+        FSFolder f = FSFolder.of(p).includeHidden();
+        assertEquals(Set.of(p.resolve(".test_hidden.txt"), p.resolve("test1.txt"), p.resolve("test2.md")), Set.copyOf(f.list()));
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"md", ".md"})
     void noSubfolders_ext(String ext) throws URISyntaxException {
