@@ -25,6 +25,7 @@
 * #425 Series.replace(int,T)
 * #426 All "Json.load(..)" and "Json.save(..)" methods must be static
 * #427 Type-specific versions of Exp.$val(..)
+* #429 Invalid column names for CSVs with leading BOM char
 * #432 Unify map-to-primitive-Series API with ColumnSets
 * #433 Primitive ValueMappers consistency
 * #436 ByteSource.uri()

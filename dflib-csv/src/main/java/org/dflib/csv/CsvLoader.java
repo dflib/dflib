@@ -21,7 +21,6 @@ import org.dflib.sample.Sampler;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -55,7 +54,8 @@ public class CsvLoader {
     private int offset;
     private int limit = -1;
 
-    private Codec codec;
+    private Codec compressionCodec;
+    private boolean checkByteOrderMark;
 
     public CsvLoader() {
         this.format = CSVFormat.DEFAULT;
@@ -69,7 +69,22 @@ public class CsvLoader {
      * @since 2.0.0
      */
     public CsvLoader compression(Codec codec) {
-        this.codec = codec;
+        this.compressionCodec = codec;
+        return this;
+    }
+
+    /**
+     * Checks the source leading bytes for "byte order mark" (BOM) placed there by certain CSV generators, and, if
+     * present, uses it to determine content encoding. If the encoding is set explicitly by the user, the BOM is
+     * stripped from the stream and is otherwise ignored. Without this setting, the BOM bytes will be treated as content
+     * and usually prepended to the name of the first column in the resulting DataFrame. This is highly confusing, since
+     * those symbols are invisible.
+     *
+     * <p>This setting is "safe" in a sense that it works with files with or without a BOM. It is not a default in
+     * {@link CsvLoader} though, as it creates some minor overhead on load.
+     */
+    public CsvLoader checkByteOrderMark() {
+        this.checkByteOrderMark = true;
         return this;
     }
 
@@ -496,12 +511,15 @@ public class CsvLoader {
      * @since 1.1.0
      */
     public DataFrame load(ByteSource src) {
-        Charset encoding = this.encoding != null ? this.encoding : Charset.defaultCharset();
-        Codec codec = this.codec != null ? this.codec : Codec.ofUri(src.uri().orElse("")).orElse(null);
+
+        Codec codec = this.compressionCodec != null
+                ? this.compressionCodec
+                : Codec.ofUri(src.uri().orElse("")).orElse(null);
+
         ByteSource plainSrc = codec != null ? src.decompress(codec) : src;
 
-        try (InputStream in = plainSrc.stream()) {
-            return load(new InputStreamReader(in, encoding));
+        try (Reader in = createReader(plainSrc)) {
+            return load(in);
         } catch (IOException e) {
             throw new RuntimeException("Error reading source: " + plainSrc.uri().orElse("?"), e);
         }
@@ -559,6 +577,15 @@ public class CsvLoader {
         }
 
         return appender.toDataFrame();
+    }
+
+    private Reader createReader(ByteSource src) throws IOException {
+        return checkByteOrderMark ? BOM.reader(src, encoding) : createNonBomReader(src);
+    }
+
+    private Reader createNonBomReader(ByteSource src) {
+        Charset encoding = this.encoding != null ? this.encoding : Charset.defaultCharset();
+        return new InputStreamReader(src.stream(), encoding);
     }
 
     private Iterator<CSVRecord> read(Reader reader) {
