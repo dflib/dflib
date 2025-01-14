@@ -11,20 +11,15 @@ import static org.dflib.exp.parser.antlr4.ExpParserUtils.*;
 /// **Parser rules**
 
 /**
- * The root rule of the grammar. Parses a complete expression,
- * expecting the end of the file afterward.
- *
- * Returns: *Exp<?>* - The parsed expression representing the entire input.
+ * The root rule of the grammar.
  */
 root returns [Exp<?> exp]
     : expression EOF { $exp = $expression.exp; }
     ;
 
 /**
- * Parses an expression, which can be of various types including null, aggregate, boolean, numeric, string, temporal, or special functions.
+ * An expression, which can be of various types including null, aggregate, boolean, numeric, string, temporal, or special functions.
  * An expression represents a single value or a combination of values, operators, and functions.
- *
- * Returns: *Exp<?>* - The parsed expression, potentially of any supported type.
  */
 expression returns [Exp<?> exp]
     : boolExp { $exp = $boolExp.exp; }
@@ -41,10 +36,8 @@ expression returns [Exp<?> exp]
 /// **Numeric expressions**
 
 /**
- * Parses numeric expressions, encompassing scalar values, column references, functions,
+ * Numeric expressions, encompassing scalar values, column references, functions,
  * aggregates, and arithmetic operations.
- *
- * Returns: *NumExp<?>* - The parsed numeric expression, representing a numeric computation.
  */
 numExp returns [NumExp<?> exp]
     : numScalar { $exp = (NumExp<?>) Exp.\$val($numScalar.value); }
@@ -64,11 +57,9 @@ numExp returns [NumExp<?> exp]
 /// **Boolean expressions**
 
 /**
- * Parses boolean expressions, which evaluate to true or false. These can include
+ * Boolean expressions, which evaluate to true or false. These can include
  * boolean scalar values, column references, boolean functions, comparisons (relations),
  * and logical operations (AND, OR, NOT).
- *
- * Returns: *Condition* - The parsed boolean expression, representing a logical condition.
  */
 boolExp returns [Condition exp]
     : boolScalar { $exp = Exp.\$boolVal($boolScalar.value); }
@@ -86,10 +77,8 @@ boolExp returns [Condition exp]
 /// **String expressions**
 
 /**
- * Parses string expressions, including string literals, column references, and
+ * String expressions, including string literals, column references, and
  * string manipulation functions.
- *
- * Returns: *StrExp* - The parsed string expression.
  */
 strExp returns [StrExp exp]
     : strScalar { $exp = Exp.\$strVal($strScalar.value); }
@@ -101,9 +90,7 @@ strExp returns [StrExp exp]
 /// **Temporal expressions**
 
 /**
- * Parses temporal expressions, encompassing time, date, and datetime values.
- *
- * Returns: *Exp<? extends Temporal>* - The parsed temporal expression, representing a time-related value.
+ * Temporal expressions, encompassing time, date, and datetime values.
  */
 temporalExp returns [Exp<? extends Temporal> exp]
     : timeExp { $exp = $timeExp.exp; }
@@ -114,10 +101,8 @@ temporalExp returns [Exp<? extends Temporal> exp]
     ;
 
 /**
- * Parses expressions representing a time of day. These may include column references
+ * Expressions representing a time of day. These may include column references
  * and time functions.
- *
- * Returns: *TimeExp* - The parsed time expression.
  */
 timeExp returns [TimeExp exp]
     : timeColumn { $exp = $timeColumn.exp; }
@@ -125,9 +110,7 @@ timeExp returns [TimeExp exp]
     ;
 
 /**
- * Parses date expressions, which can include references to date columns and date functions.
- *
- * Returns: *DateExp* - The parsed date expression.
+ * Date expressions, which can include references to date columns and date functions.
  */
 dateExp returns [DateExp exp]
     : dateColumn { $exp = $dateColumn.exp; }
@@ -135,9 +118,7 @@ dateExp returns [DateExp exp]
     ;
 
 /**
- * Parses datetime expressions, which can refer to datetime columns and utilize datetime functions.
- *
- * Returns: *DateTimeExp* - The parsed datetime expression.
+ * Datetime expressions, which can refer to datetime columns and utilize datetime functions.
  */
 dateTimeExp returns [DateTimeExp exp]
     : dateTimeColumn { $exp = $dateTimeColumn.exp; }
@@ -145,11 +126,9 @@ dateTimeExp returns [DateTimeExp exp]
     ;
 
 /**
- * Parses datetime expressions with an offset from UTC+0.
+ * Datetime expressions with an offset from UTC+0.
  *
  * This is essential for handling timezones correctly.
- *
- * Returns: *OffsetDateTimeExp* - The parsed OffsetDateTime expression.
  */
 offsetDateTimeExp returns [OffsetDateTimeExp exp]
     : offsetDateTimeColumn { $exp = $offsetDateTimeColumn.exp; }
@@ -159,7 +138,7 @@ offsetDateTimeExp returns [OffsetDateTimeExp exp]
 /// **Generic expressions**
 
 /**
- *  Parses expressions with no specific type.
+ *  Expressions with no type specified.
  */
 genericExp returns [Exp<?> exp]
     : genericColumn { $exp = $genericColumn.exp; }
@@ -175,9 +154,7 @@ anyScalar returns [Object value]
     ;
 
 /**
- * Parses a boolean scalar value (true or false).
- *
- * Returns: *Boolean* - The parsed boolean scalar value.
+ * Boolean scalar value (true or false).
  */
 boolScalar returns [Boolean value]
     : TRUE { $value = true; }
@@ -185,10 +162,8 @@ boolScalar returns [Boolean value]
     ;
 
 /**
- * Parses numeric scalar values (literals), which can be integers, longs,
+ * Numeric scalar values (literals), which can be integers, longs,
  * or floating-point numbers.
- *
- * Returns: *Number* - The parsed numeric scalar value.
  */
 numScalar returns [Number value]
     : integerScalar { $value = $integerScalar.value; }
@@ -197,36 +172,28 @@ numScalar returns [Number value]
     ;
 
 /**
- * Parses a long integer scalar value.
- *
- * Returns: *Long* - The parsed long scalar value.
+ * A long integer scalar value.
  */
 longScalar returns [Long value] locals [int radix]
     : LONG_LITERAL { $value = parseLongValue($text); }
     ;
 
 /**
- * Parses an integer scalar value.
- *
- * Returns: *Integer* - The parsed integer scalar value.
+ * An integer scalar value.
  */
 integerScalar returns [Integer value]
     : INTEGER_LITERAL { $value = parseIntegerValue($text); }
     ;
 
 /**
- * Parses a floating-point scalar value (float or double).
- *
- * Returns: *Number* - The parsed floating-point scalar value.
+ * A floating-point scalar value (float or double).
  */
 floatingPointScalar returns [Number value]
     : FLOATING_POINT_LITERAL { $value = parseFloatingPointValue($text); }
     ;
 
 /**
- * Parses a string literal, enclosed in single or double quotes.
- *
- * Returns: *String* - The parsed string literal.
+ * A string literal.
  */
 strScalar returns [String value]
     : SINGLE_QUOTE_STRING_LITERAL { $value = unescapeString($text.substring(1, $text.length() - 1)); }
@@ -236,9 +203,7 @@ strScalar returns [String value]
 /// **Column expressions**
 
 /**
- * Parses an expression referencing a numeric column.  Supports various numeric types.
- *
- * Returns: *NumExp<?>* - The parsed numeric column expression, representing the column's numeric data.
+ * An expression referencing a numeric column.  Supports various numeric types.
  */
 numColumn returns [NumExp<?> exp]
     : intColumn { $exp = $intColumn.exp; }
@@ -249,153 +214,127 @@ numColumn returns [NumExp<?> exp]
     ;
 
 /**
- * Parses an expression referencing a column of integer values.
+ * An expression referencing a column of integer values.
  *
  * Parameters:
  *  - The identifier of the column (integer index or string name).
- *
- * Returns: *NumExp<Integer>* - The parsed column expression, producing Integer values.
  */
 intColumn returns [NumExp<Integer> exp]
     : INT '(' columnId ')' { $exp = intCol($columnId.id); }
     ;
 
 /**
- * Parses an expression referencing a column containing long integer values.
+ * An expression referencing a column containing long integer values.
  *
  * Parameters:
  *  - The identifier of the column (integer index or string name).
- *
- * Returns: *NumExp<Long>* - The parsed column expression, producing Long values.
  */
 longColumn returns [NumExp<Long> exp]
     : LONG '(' columnId ')' { $exp = longCol($columnId.id); }
     ;
 
 /**
- * Parses an expression that references a column of float values.
+ * An expression that references a column of float values.
  *
  * Parameters:
  *  - The identifier of the column (integer index or string name).
- *
- * Returns: *NumExp<Float>* - The parsed column expression, producing Float values.
  */
 floatColumn returns [NumExp<Float> exp]
     : FLOAT '(' columnId ')' { $exp = floatCol($columnId.id); }
     ;
 
 /**
- * Parses an expression referencing a column containing double-precision floating-point numbers.
+ * An expression referencing a column containing double-precision floating-point numbers.
  *
  * Parameters:
  *  - The identifier of the column (integer index or string name).
- *
- * Returns: *NumExp<Double>* - The parsed column expression, producing Double values.
  */
 doubleColumn returns [NumExp<Double> exp]
     : DOUBLE '(' columnId ')' { $exp = doubleCol($columnId.id); }
     ;
 
 /**
- * Parses an expression referencing a column of Decimal values (for high-precision arithmetic).
+ * An expression referencing a column of Decimal values (for high-precision arithmetic).
  *
  * Parameters:
  *  - The identifier of the column (integer index or string name)n.
- *
- * Returns: *DecimalExp* - The parsed column expression, producing Decimal values.
  */
 decimalColumn returns [DecimalExp exp]
     : DECIMAL '(' columnId ')' { $exp = decimalCol($columnId.id); }
     ;
 
 /**
- * Parses an expression that accesses a column of boolean values.
+ * An expression that accesses a column of boolean values.
  *
  * Parameters:
  *  - The identifier of the column (integer index or string name).
- *
- * Returns: *Condition* - The parsed column expression, producing Boolean values.
  */
 boolColumn returns [Condition exp]
     : BOOL '(' columnId ')' { $exp = boolCol($columnId.id); }
     ;
 
 /**
- * Parses an expression referring to a column containing string values.
+ * An expression referring to a column containing string values.
  *
  * Parameters:
  *  - The identifier of the column (integer index or string name).
- *
- * Returns: *StrExp* - The parsed column expression, producing String values
  */
 strColumn returns [StrExp exp]
     : STR '(' columnId ')' { $exp = strCol($columnId.id); }
     ;
 
 /**
- * Parses an expression referencing a column containing Date values.
+ * An expression referencing a column containing Date values.
  *
  * Parameters:
  *  - The identifier of the column (integer index or string name).
- *
- * Returns: *DateExp* - The parsed column expression, producing Date values.
  */
 dateColumn returns [DateExp exp]
     : DATE '(' columnId ')' { $exp = dateCol($columnId.id); }
     ;
 
 /**
- * Parses an expression that refers to a column containing Time values.
+ * An expression that refers to a column containing Time values.
  *
  * Parameters:
  *  - The identifier of the column (integer index or string name).
- *
- * Returns: *TimeExp* - The parsed column expression, producing Time values.
  */
 timeColumn returns [TimeExp exp]
     : TIME '(' columnId ')' { $exp = timeCol($columnId.id); }
     ;
 
 /**
- * Parses an expression referencing a column storing DateTime values.
+ * An expression referencing a column storing DateTime values.
  *
  * Parameters:
  *  - The identifier of the column (integer index or string name).
- *
- * Returns: *DateTimeExp* - The parsed column expression, producing DateTime values.
  */
 dateTimeColumn returns [DateTimeExp exp]
     : DATETIME '(' columnId ')' { $exp = dateTimeCol($columnId.id); }
     ;
 
 /**
- * Parses an expression referencing a column containing OffsetDateTime values (datetime with timezone offset).
+ * An expression referencing a column containing OffsetDateTime values (datetime with timezone offset).
  *
  * Parameters:
  *  - The identifier of the column (integer index or string name).
- *
- * Returns: *OffsetDateTimeExp* - The parsed column expression, producing OffsetDateTime values.
  */
 offsetDateTimeColumn returns [OffsetDateTimeExp exp]
     : OFFSET_DATETIME '(' columnId ')' { $exp = offsetCol($columnId.id); }
     ;
 
 /**
- * Parses an expression referencing a column with a non-specified type.
+ * An expression referencing a column with a non-specified type.
  *
  * Parameters:
  *  - The identifier of the column (integer index or string name).
- *
- * Returns: *Exp<?>* - The parsed column expression.
  */
 genericColumn returns [Exp<?> exp]
     : COL '(' columnId ')' { $exp = col($columnId.id); }
     ;
 
 /**
- * Parses a column identifier, which can be an integer representing the column index or a string representing the column name.
- *
- * Returns: *Object* - The parsed column identifier (either an Integer or a String).
+ * A column identifier, which can be an integer representing the column index or a string representing the column name.
  */
 columnId returns [Object id]
     : integerScalar { $id = $integerScalar.value; }
@@ -404,9 +343,7 @@ columnId returns [Object id]
     ;
 
 /**
- * Parses an identifier, which is a sequence of letters and digits starting with a letter.
- *
- * Returns: *String* - The parsed identifier.
+ * An identifier, which is a sequence of letters and digits starting with a letter.
  */
 //@ doc:inline
 identifier returns [String id]
@@ -416,10 +353,8 @@ identifier returns [String id]
 /// **Relational expressions**
 
 /**
- * Parses relational expressions, which can include numeric, string, time, date, and datetime relations.
+ * Relational expressions, which can include numeric, string, time, date, and datetime relations.
  * These expressions compare two values using operators like >, <, =, !=, etc.
- *
- * Returns: *Condition* - The parsed relational expression, representing a logical condition.
  */
 relation returns [Condition exp]
     : numRelation { $exp = $numRelation.exp; }
@@ -433,15 +368,13 @@ relation returns [Condition exp]
     ;
 
 /**
- * Parses a numeric relational expression. This compares two numeric expressions
+ * A numeric relational expression. This compares two numeric expressions
  * using comparison operators (>, >=, <, <=, =, !=, BETWEEN).
  *
  * Parameters:
  *  - The left-hand side numeric expression.
  *  - The right-hand side numeric expression.
  *  - The upper bound numeric expression (for BETWEEN).
- *
- * Returns: *Condition* - The resulting boolean condition from the comparison.
  */
 numRelation returns [Condition exp]
     : a=numExp (
@@ -456,14 +389,12 @@ numRelation returns [Condition exp]
     ;
 
 /**
- * Parses string relational expressions. Compares two string expressions using either
+ * String relational expressions. Compares two string expressions using either
  * equality (=) or inequality (!=).
  *
  * Parameters:
  *  - The left-hand side string expression.
  *  - The right-hand side string expression.
- *
- * Returns: *Condition* - The boolean condition representing the result of the string relation.
  */
 strRelation returns [Condition exp]
     : a=strExp (
@@ -473,14 +404,12 @@ strRelation returns [Condition exp]
     ;
 
 /**
- * Parses time relational expressions. Compares two time expressions using comparison operators.
+ * Time relational expressions. Compares two time expressions using comparison operators.
  *
  * Parameters:
  *  - The left-hand TimeExp.
  *  - The right-hand TimeExp.
  *  - The upper bound TimeExp (for BETWEEN).
- *
- * Returns: *Condition* - The boolean condition representing the result of the time relation.
  */
 timeRelation returns [Condition exp]
     : a=timeExp (
@@ -495,14 +424,12 @@ timeRelation returns [Condition exp]
     ;
 
 /**
- * Parses date relational expressions, comparing two DateExps.
+ * Date relational expressions, comparing two DateExps.
  *
  * Parameters:
  *  - The left-hand DateExp.
  *  - The right-hand DateExp.
  *  - The upper bound DateExp (for BETWEEN).
- *
- * Returns: *Condition* - The boolean condition representing the result of the date relation.
  */
 dateRelation returns [Condition exp]
     : a=dateExp (
@@ -517,14 +444,12 @@ dateRelation returns [Condition exp]
     ;
 
 /**
- * Parses a datetime relational expression. Compares two DateTimeExp values.
+ * A datetime relational expression. Compares two DateTimeExp values.
  *
  * Parameters:
  *  - The left-hand DateTimeExp.
  *  - The right-hand DateTimeExp.
  *  - The upper bound DateTimeExp (for BETWEEN).
- *
- * Returns: *Condition* - The boolean condition representing the result of the datetime relation.
  */
 dateTimeRelation returns [Condition exp]
     : a=dateTimeExp (
@@ -539,14 +464,12 @@ dateTimeRelation returns [Condition exp]
     ;
 
 /**
- * Parses an OffsetDateTime relational expression. Compares two OffsetDateTimeExp values.
+ * An OffsetDateTime relational expression. Compares two OffsetDateTimeExp values.
  *
  * Parameters:
  *  - The left-hand OffsetDateTimeExp.
  *  - The right-hand OffsetDateTimeExp.
  *  - The upper bound OffsetDateTimeExp (for BETWEEN).
- *
- * Returns: *Condition* - The boolean condition representing the result of the OffsetDateTime relation.
  */
 offsetDateTimeRelation returns [Condition exp]
     : a=offsetDateTimeExp (
@@ -561,13 +484,11 @@ offsetDateTimeRelation returns [Condition exp]
     ;
 
 /**
- * Parses a generic relational expression. Compares two expressions.
+ * A generic relational expression. Compares two expressions.
  *
  * Parameters:
  *  - The left-hand expression.
  *  - The right-hand expression.
- *
- * Returns: *Condition* - The boolean condition representing the result of the relation.
  */
 genericRelation returns [Condition exp]
     : a=genericExp (
@@ -579,10 +500,8 @@ genericRelation returns [Condition exp]
 /// **Functions**
 
 /**
- * Parses numeric functions, including casting, counting, row number, absolute value, rounding, and field functions.
+ * Numeric functions, including casting, counting, row number, absolute value, rounding, and field functions.
  * These functions operate on or produce numeric values.
- *
- * Returns: *NumExp<?>* - The parsed numeric function expression.
  */
 numFn returns [NumExp<?> exp]
     : castAsInt { $exp = $castAsInt.exp; }
@@ -602,14 +521,12 @@ numFn returns [NumExp<?> exp]
     ;
 
 /**
- * Parses time field functions.
+ * Time field functions.
  *
  * Supports extracting fields like hour, minute, second and millisecond from Time expressions.
  *
  * Parameters:
  *  - The TimeExp from which to extract the field.
- *
- * Returns: *NumExp<Integer>* - The parsed time field function, producing an Integer result.
  */
 timeFieldFn returns [NumExp<Integer> exp]
     : HOUR '(' timeExp ')' { $exp = $timeExp.exp.hour(); }
@@ -619,14 +536,12 @@ timeFieldFn returns [NumExp<Integer> exp]
     ;
 
 /**
- * Parses date field functions.
+ * Date field functions.
  *
  * Supports extracting fields like year, month, and day from Date expressions.
  *
  * Parameters:
  *  - The DateExp from which to extract the field.
- *
- * Returns: *NumExp<Integer>* - The parsed date field function, producing an Integer result.
  */
 dateFieldFn returns [NumExp<Integer> exp]
     : YEAR '(' dateExp ')' { $exp = $dateExp.exp.year(); }
@@ -635,15 +550,13 @@ dateFieldFn returns [NumExp<Integer> exp]
     ;
 
 /**
- * Parses datetime field functions.
+ * Datetime field functions.
  *
  * Supports extracting fields like year, month, day, hour, minute, second,
  * and millisecond from DateTime expressions.
  *
  * Parameters:
  *  - The DateTimeExp from which to extract the field.
- *
- * Returns: *NumExp<Integer>* - The parsed datetime field function, producing an Integer result.
  */
 dateTimeFieldFn returns [NumExp<Integer> exp]
     : YEAR '(' dateTimeExp ')' { $exp = $dateTimeExp.exp.year(); }
@@ -656,15 +569,13 @@ dateTimeFieldFn returns [NumExp<Integer> exp]
     ;
 
 /**
- * Parses OffsetDateTime field functions.
+ * OffsetDateTime field functions.
  *
  * Supports extracting fields like year, month, day, hour, minute, second,
  * and millisecond from OffsetDateTime expressions.
  *
  * Parameters:
  *  - The OffsetDateTimeExp from which to extract the field.
- *
- * Returns: *NumExp<Integer>* - The parsed OffsetDateTime field function, producing an Integer result.
  */
 offsetDateTimeFieldFn returns [NumExp<Integer> exp]
     : YEAR '(' offsetDateTimeExp ')' { $exp = $offsetDateTimeExp.exp.year(); }
@@ -677,14 +588,12 @@ offsetDateTimeFieldFn returns [NumExp<Integer> exp]
     ;
 
 /**
- * Parses boolean functions, which can include casting, matches, starts with, ends with, and contains.
+ * Boolean functions, which can include casting, matches, starts with, ends with, and contains.
  * These functions produce boolean results.
  *
  * Parameters:
  *  - The input expression(s) for the boolean function. The types and number of parameters depend on the specific function.
  *    For example, `matches` takes a string expression and a string literal, while `castAsBool` takes a single expression of any type.
- *
- * Returns: *Condition* - The parsed boolean function, representing a condition that evaluates to true or false.
  */
 boolFn returns [Condition exp]
     : castAsBool { $exp = $castAsBool.exp; }
@@ -696,14 +605,12 @@ boolFn returns [Condition exp]
 
 
 /**
- * Parses time functions, including casting and arithmetic operations. These
+ * Time functions, including casting and arithmetic operations. These
  * functions operate on time values.
  *
  * Parameters:
  *  - The base TimeExp.
  *  - An integer representing the value to add (e.g., hours, minutes).
- *
- * Returns: *TimeExp* - The parsed time function.
  */
 timeFn returns [TimeExp exp]
     : castAsTime { $exp = $castAsTime.exp; }
@@ -715,13 +622,11 @@ timeFn returns [TimeExp exp]
     ;
 
 /**
- * Parses date functions, enabling casting and arithmetic operations on date values.
+ * Date functions, enabling casting and arithmetic operations on date values.
  *
  * Parameters:
  *  - The base DateExp.
  *  - An integer representing the value to add (e.g., years, months).
- *
- * Returns: *DateExp* - The parsed date function.
  */
 dateFn returns [DateExp exp]
     : castAsDate { $exp = $castAsDate.exp; }
@@ -732,13 +637,11 @@ dateFn returns [DateExp exp]
     ;
 
 /**
- * Parses datetime functions, including casting and arithmetic operations for datetime values.
+ * Datetime functions, including casting and arithmetic operations for datetime values.
  *
  * Parameters:
  *  - The base DateTimeExp.
  *  - An integer representing the value to add (e.g., years, hours).
- *
- * Returns: *DateTimeExp* - The parsed datetime function.
  */
 dateTimeFn returns [DateTimeExp exp]
     : castAsDateTime { $exp = $castAsDateTime.exp; }
@@ -754,14 +657,12 @@ dateTimeFn returns [DateTimeExp exp]
     ;
 
 /**
- * Parses datetime functions with an offset from UTC/Greenwich.  Supports casting and
+ * Datetime functions with an offset from UTC/Greenwich.  Supports casting and
  * arithmetic operations on timezone-aware datetime values.
  *
  * Parameters:
  *  - The base OffsetDateTimeExp.
  *  - An integer representing the value to add (e.g., years, hours).
- *
- * Returns: *OffsetDateTimeExp* - The parsed OffsetDateTime function.
  */
 offsetDateTimeFn returns [OffsetDateTimeExp exp]
     : castAsOffsetDateTime { $exp = $castAsOffsetDateTime.exp; }
@@ -777,15 +678,13 @@ offsetDateTimeFn returns [OffsetDateTimeExp exp]
     ;
 
 /**
- * Parses string functions, covering casting, trimming, substrings, and concatenation.
+ * String functions, covering casting, trimming, substrings, and concatenation.
  *
  * Parameters:
  *  - The input StrExp (for functions like SUBSTR, TRIM).
  *  - The starting position (an integer, for SUBSTR).
  *  - The length (an integer, optional for SUBSTR).
  *  - A variable number of StrExp arguments (for CONCAT).
- *
- * Returns: *StrExp* - The parsed string function.
  */
 strFn returns [StrExp exp]
     : castAsStr { $exp = $castAsStr.exp; }
@@ -801,24 +700,20 @@ strFn returns [StrExp exp]
 /// **Cast functions**
 
 /**
- * Parses the cast-to-boolean function, converting an expression to a boolean value.
+ * The cast-to-boolean function, converting an expression to a boolean value.
  *
  * Parameters:
  *  - The expression to be cast.
- *
- * Returns: *Condition* - The boolean condition resulting from the cast.
  */
 castAsBool returns [Condition exp]
     : CAST_AS_BOOL '(' expression ')' { $exp = $expression.exp.castAsBool(); }
     ;
 
 /**
- * Parses the cast-to-integer function, converting an expression to an integer.
+ * The cast-to-integer function, converting an expression to an integer.
  *
  * Parameters:
  *  - The expression to be cast.
- *
- * Returns: *NumExp<Integer>* - The integer representation of the expression.
  */
 castAsInt returns [NumExp<Integer> exp]
     : CAST_AS_INT '(' expression ')' { $exp = $expression.exp.castAsInt(); }
@@ -829,8 +724,6 @@ castAsInt returns [NumExp<Integer> exp]
  *
  * Parameters:
  *  - The expression to be cast.
- *
- * Returns:  *NumExp<Long>* -  The long integer representation of the expression.
  */
 castAsLong returns [NumExp<Long> exp]
     : CAST_AS_LONG '(' expression ')' { $exp = $expression.exp.castAsLong(); }
@@ -841,8 +734,6 @@ castAsLong returns [NumExp<Long> exp]
  *
  * Parameters:
  *  - The expression to be cast.
- *
- * Returns: *NumExp<Float>* - The float representation of the expression.
  */
 castAsFloat returns [NumExp<Float> exp]
     : CAST_AS_FLOAT '(' expression ')' { $exp = $expression.exp.castAsFloat(); }
@@ -853,8 +744,6 @@ castAsFloat returns [NumExp<Float> exp]
  *
  * Parameters:
  *  - The expression to be cast.
- *
- * Returns: *NumExp<Double>* - The double-precision float representation of the expression.
  */
 castAsDouble returns [NumExp<Double> exp]
     : CAST_AS_DOUBLE '(' expression ')' { $exp = $expression.exp.castAsDouble(); }
@@ -865,8 +754,6 @@ castAsDouble returns [NumExp<Double> exp]
  *
  * Parameters:
  *  - The expression to be cast.
- *
- * Returns: *DecimalExp* - The decimal representation of the expression.
  */
 castAsDecimal returns [DecimalExp exp]
     : CAST_AS_DECIMAL '(' expression ')' { $exp = $expression.exp.castAsDecimal(); }
@@ -877,8 +764,6 @@ castAsDecimal returns [DecimalExp exp]
  *
  * Parameters:
  *  - The expression to be cast.
- *
- * Returns: *StrExp* - The string representation of the expression.
  */
 castAsStr returns [StrExp exp]
     : CAST_AS_STR '(' expression ')' { $exp = $expression.exp.castAsStr(); }
@@ -890,8 +775,6 @@ castAsStr returns [StrExp exp]
  * Parameters:
  *  - The expression to be cast.
  *  - A format string specifying how to interpret the time (optional).
- *
- * Returns: *TimeExp* - The time representation of the expression.
  */
 castAsTime returns [TimeExp exp]
     : CAST_AS_TIME '(' e=expression (',' f=strScalar )? ')' {
@@ -905,8 +788,6 @@ castAsTime returns [TimeExp exp]
  * Parameters:
  *  - The expression to be cast.
  *  - A format string specifying how to interpret the date (optional).
- *
- * Returns: *DateExp* - The date representation of the expression.
  */
 castAsDate returns [DateExp exp]
     : CAST_AS_DATE '(' e=expression (',' f=strScalar )? ')' {
@@ -920,8 +801,6 @@ castAsDate returns [DateExp exp]
  * Parameters:
  *  - The expression to be cast.
  *  - A format string specifying how to interpret the datetime (optional).
- *
- * Returns: *DateTimeExp* - The datetime representation of the expression.
  */
 castAsDateTime returns [DateTimeExp exp]
     : CAST_AS_DATETIME '(' e=expression (',' f=strScalar )? ')' {
@@ -930,13 +809,11 @@ castAsDateTime returns [DateTimeExp exp]
     ;
 
 /**
- * Parses a cast operation to convert an expression into an OffsetDateTime.
+ * A cast operation to convert an expression into an OffsetDateTime.
  *
  * Parameters:
  *  - The expression to be cast.
  *  - A format string specifying how to interpret the OffsetDateTime (optional).
- *
- * Returns: *OffsetDateTimeExp* - The OffsetDateTime representation of the expression.
  */
 castAsOffsetDateTime returns [OffsetDateTimeExp exp]
     : CAST_AS_OFFSET_DATETIME '(' e=expression (',' f=strScalar )? ')' {
@@ -947,9 +824,7 @@ castAsOffsetDateTime returns [OffsetDateTimeExp exp]
 /// **Special functions**
 
 /**
- * Parses special functions that provide control flow, data manipulation, or other specialized operations.
- *
- * Returns: *Exp<?>* - The parsed special function.  The result type depends on the function.
+ * Special functions that provide control flow, data manipulation, or other specialized operations.
  */
 specialFn returns [Exp<?> exp]
     : ifExp { $exp = $ifExp.exp; }
@@ -959,14 +834,12 @@ specialFn returns [Exp<?> exp]
     ;
 
 /**
- * Parses an IF expression, a conditional expression that returns one of two values based on a condition.
+ * An IF expression, a conditional expression that returns one of two values based on a condition.
  *
  * Parameters:
  *  - The boolean condition.
  *  - The expression to return if the condition is true.
  *  - The expression to return if the condition is false.
- *
- * Returns: *Exp<?>* - The parsed IF expression.
  */
 ifExp returns [Exp<?> exp]
     : IF '(' condition=boolExp ',' trueExp=expression ',' elseExpression=expression ')' {
@@ -975,14 +848,12 @@ ifExp returns [Exp<?> exp]
     ;
 
 /**
- * Parses an IF_NULL expression. This function returns the first expression if it is not null;
+ * An IF_NULL expression. This function returns the first expression if it is not null;
  * otherwise, it returns the second expression.
  *
  * Parameters:
  *  - The expression to check for null.
  *  - The expression to return if the first expression is null. Must be the same type as the first expression.
- *
- * Returns:  *Exp<?>* - The parsed IF_NULL expression. The result type is the same as the input expressions.
  */
 ifNull returns [Exp<?> exp]
     : IF_NULL '(' nullableExp ',' expression ')' { $exp = ifNullExp($nullableExp.exp, $expression.exp); }
@@ -996,14 +867,12 @@ nullableExp returns [Exp<?> exp]
     ;
 
 /**
- * Parses a SPLIT expression, which splits a string into an array of substrings based on a delimiter.
+ * A SPLIT expression, which splits a string into an array of substrings based on a delimiter.
  *
  * Parameters:
  *  - The string expression to split.
  *  - The delimiter string to split the string by.
  *  - An integer that limits the maximum number of substrings (optional).
- *
- * Returns: *Exp<String[]>* - The SPLIT expression, which produces an array of strings.
  */
 split returns [Exp<String[]> exp]
     : SPLIT '(' a=strExp ',' b=strScalar (',' c=integerScalar)? ')' {
@@ -1012,17 +881,14 @@ split returns [Exp<String[]> exp]
     ;
 
 /**
- * Parses a SHIFT expression, shifting values in a sequence forward or backward.
+ * A SHIFT expression, shifting values in a sequence forward or backward.
  * Head or tail gaps produced by the shift are filled with the provided filler value or null.
  *
  * Parameters:
  *  - The expression to shift.
  *  - The integer shift amount (positive for forward, negative for backward).
  *  - The default value to use for positions that become empty after shifting (optional).
- *
- * Returns: *Exp<?>* - The parsed SHIFT expression. The result type matches the input expression type.
  */
- // TODO: check this expression and add generic exp support
 shift returns [Exp<?> exp]
     : SHIFT '(' (
         be=boolExp ',' i=integerScalar (',' bs=boolScalar)? {
@@ -1051,10 +917,8 @@ genericShiftExp returns [Exp<?> exp]
 /// **Aggregate expressions**
 
 /**
- * Parses aggregate expressions, such as MIN, MAX, SUM, AVG, etc.
+ * Aggregate expressions, such as MIN, MAX, SUM, AVG, etc.
  * Aggregates perform calculations across multiple rows of data.
- *
- * Returns: *Exp<?>* - The parsed aggregate expression.
  */
 aggregateFn returns [Exp<?> exp]
     : positionalAgg { $exp = $positionalAgg.exp; }
@@ -1066,14 +930,12 @@ aggregateFn returns [Exp<?> exp]
     ;
 
 /**
- * Parses positional aggregate expressions, like FIRST and LAST. These functions
+ * Positional aggregate expressions, like FIRST and LAST. These functions
  * return the first or last value encountered in a sequence.
  *
  * Parameters:
  *  - The expression from which to get the first or last value.
  *  - A boolean expression to filter the data before finding the first element (optional).
- *
- * Returns: *Exp<?>* - The parsed positional aggregate expression. The result type matches the input expression type.
  */
 positionalAgg returns [Exp<?> exp]
     : FIRST '(' e=expression (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $e.exp.first($b.exp) : $e.exp.first(); }
@@ -1081,23 +943,21 @@ positionalAgg returns [Exp<?> exp]
     ;
 
 /**
- * Parses numeric aggregate expressions, calculating aggregates like MIN, MAX, SUM, AVG, MEDIAN, and QUANTILE.
+ * Numeric aggregate expressions, calculating aggregates like MIN, MAX, SUM, AVG, MEDIAN, and QUANTILE.
  *
  * Parameters:
  *  - The numeric column expression to aggregate.
  *  - A boolean expression to filter the rows involved in the aggregation (optional).
  *  - The quantile value to compute (between 0 and 1, for QUANTILE).
- *
- * Returns: *NumExp<?>* - The parsed numeric aggregate expression. The result type is generally numeric, though COUNT produces a Long.
  */
 numAgg returns [NumExp<?> exp]
-    : MIN '(' c=numColumn (',' b=boolExp)? ')' { $exp = $c.exp.min($ctx.b != null ? $b.exp : null); }
-    | MAX '(' c=numColumn (',' b=boolExp)? ')' { $exp = $c.exp.max($ctx.b != null ? $b.exp : null); }
-    | SUM '(' c=numColumn (',' b=boolExp)? ')' { $exp = $c.exp.sum($ctx.b != null ? $b.exp : null); }
-    | CUMSUM '(' c=numColumn ')' { $exp = $c.exp.cumSum(); } // Cumulative Sum, no filter currently supported
-    | AVG '(' c=numColumn (',' b=boolExp)? ')' { $exp = $c.exp.avg($ctx.b != null ? $b.exp : null); }
-    | MEDIAN '(' c=numColumn (',' b=boolExp)? ')' { $exp = $c.exp.median($ctx.b != null ? $b.exp : null); }
-    | QUANTILE '(' c=numColumn ',' q=numScalar (',' b=boolExp)? ')' {
+    : MIN '(' c=numExp (',' b=boolExp)? ')' { $exp = $c.exp.min($ctx.b != null ? $b.exp : null); }
+    | MAX '(' c=numExp (',' b=boolExp)? ')' { $exp = $c.exp.max($ctx.b != null ? $b.exp : null); }
+    | SUM '(' c=numExp (',' b=boolExp)? ')' { $exp = $c.exp.sum($ctx.b != null ? $b.exp : null); }
+    | CUMSUM '(' c=numExp ')' { $exp = $c.exp.cumSum(); } // Cumulative Sum, no filter currently supported
+    | AVG '(' c=numExp (',' b=boolExp)? ')' { $exp = $c.exp.avg($ctx.b != null ? $b.exp : null); }
+    | MEDIAN '(' c=numExp (',' b=boolExp)? ')' { $exp = $c.exp.median($ctx.b != null ? $b.exp : null); }
+    | QUANTILE '(' c=numExp ',' q=numScalar (',' b=boolExp)? ')' {
         $exp = $ctx.b != null
             ? $c.exp.quantile($q.value.doubleValue(), $b.exp)
             : $c.exp.quantile($q.value.doubleValue());
@@ -1105,41 +965,37 @@ numAgg returns [NumExp<?> exp]
     ;
 
 /**
- * Parses time aggregate expressions, performing operations like MIN, MAX, AVG, MEDIAN and QUANTILE on time values.
+ * Time aggregate expressions, performing operations like MIN, MAX, AVG, MEDIAN and QUANTILE on time values.
  *
  * Parameters:
  *  - The time column expression to aggregate.
  *  - A boolean expression to filter the rows involved in the aggregation (optional).
  *  - The quantile value to compute (between 0 and 1, for QUANTILE).
- *
- * Returns: *TimeExp* - The resulting time aggregate expression.
  */
 timeAgg returns [TimeExp exp]
-    : MIN '(' c=timeColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.min($b.exp) : $c.exp.min(); }
-    | MAX '(' c=timeColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.max($b.exp) : $c.exp.max(); }
-    | AVG '(' c=timeColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.avg($b.exp) : $c.exp.avg(); }
-    | MEDIAN '(' c=timeColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.median($b.exp) : $c.exp.median(); }
-    | QUANTILE '(' c=timeColumn ',' q=numScalar (',' b=boolExp)? ')' {  // Quantile of times
+    : MIN '(' c=timeExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.min($b.exp) : $c.exp.min(); }
+    | MAX '(' c=timeExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.max($b.exp) : $c.exp.max(); }
+    | AVG '(' c=timeExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.avg($b.exp) : $c.exp.avg(); }
+    | MEDIAN '(' c=timeExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.median($b.exp) : $c.exp.median(); }
+    | QUANTILE '(' c=timeExp ',' q=numScalar (',' b=boolExp)? ')' {  // Quantile of times
         $exp = $ctx.b != null ? $c.exp.quantile($q.value.doubleValue(), $b.exp) : $c.exp.quantile($q.value.doubleValue());
     }
     ;
 
 /**
- * Parses date aggregate expressions, computing aggregates like MIN, MAX, AVG, MEDIAN, and QUANTILE over dates.
+ * Date aggregate expressions, computing aggregates like MIN, MAX, AVG, MEDIAN, and QUANTILE over dates.
  *
  * Parameters:
  *  - The date column expression to aggregate.
  *  - A boolean expression to filter the rows involved in the aggregation (optional).
  *  - The quantile value to compute (between 0 and 1, for QUANTILE).
- *
- * Returns: *DateExp* - The resulting date aggregate expression.
  */
 dateAgg returns [DateExp exp]
-    : MIN '(' c=dateColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.min($b.exp) : $c.exp.min(); }
-    | MAX '(' c=dateColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.max($b.exp) : $c.exp.max(); }
-    | AVG '(' c=dateColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.avg($b.exp) : $c.exp.avg(); }
-    | MEDIAN '(' c=dateColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.median($b.exp) : $c.exp.median(); }
-    | QUANTILE '(' c=dateColumn ',' q=numScalar (',' b=boolExp)? ')' {
+    : MIN '(' c=dateExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.min($b.exp) : $c.exp.min(); }
+    | MAX '(' c=dateExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.max($b.exp) : $c.exp.max(); }
+    | AVG '(' c=dateExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.avg($b.exp) : $c.exp.avg(); }
+    | MEDIAN '(' c=dateExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.median($b.exp) : $c.exp.median(); }
+    | QUANTILE '(' c=dateExp ',' q=numScalar (',' b=boolExp)? ')' {
         $exp = $ctx.b != null
             ? $c.exp.quantile($q.value.doubleValue(), $b.exp)
             : $c.exp.quantile($q.value.doubleValue());
@@ -1147,21 +1003,19 @@ dateAgg returns [DateExp exp]
     ;
 
 /**
- * Parses datetime aggregate expressions, performing MIN, MAX, AVG, MEDIAN, or QUANTILE calculations over datetime values.
+ * Datetime aggregate expressions, performing MIN, MAX, AVG, MEDIAN, or QUANTILE calculations over datetime values.
  *
  * Parameters:
  *  - The datetime column expression to aggregate.
  *  - A boolean expression to filter the rows involved in the aggregation (optional).
  *  - The quantile value to compute (between 0 and 1, for QUANTILE).
- *
- * Returns: *DateTimeExp* - The resulting datetime aggregate expression.
  */
 dateTimeAgg returns [DateTimeExp exp]
-    : MIN '(' c=dateTimeColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.min($b.exp) : $c.exp.min(); }
-    | MAX '(' c=dateTimeColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.max($b.exp) : $c.exp.max(); }
-    | AVG '(' c=dateTimeColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.avg($b.exp) : $c.exp.avg(); }
-    | MEDIAN '(' c=dateTimeColumn (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.median($b.exp) : $c.exp.median(); }
-    | QUANTILE '(' c=dateTimeColumn ',' q=numScalar (',' b=boolExp)? ')' {
+    : MIN '(' c=dateTimeExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.min($b.exp) : $c.exp.min(); }
+    | MAX '(' c=dateTimeExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.max($b.exp) : $c.exp.max(); }
+    | AVG '(' c=dateTimeExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.avg($b.exp) : $c.exp.avg(); }
+    | MEDIAN '(' c=dateTimeExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.median($b.exp) : $c.exp.median(); }
+    | QUANTILE '(' c=dateTimeExp ',' q=numScalar (',' b=boolExp)? ')' {
         $exp = $ctx.b != null
             ? $c.exp.quantile($q.value.doubleValue(), $b.exp)
             : $c.exp.quantile($q.value.doubleValue());
@@ -1169,13 +1023,11 @@ dateTimeAgg returns [DateTimeExp exp]
     ;
 
 /**
- * Parses string aggregate expressions, specifically MIN and MAX. These find the lexicographically minimum or maximum string value.
+ * String aggregate expressions, specifically MIN and MAX. These find the lexicographically minimum or maximum string value.
  *
  * Parameters:
  *  - The string expression to aggregate.
  *  - A filtering condition (optional).
- *
- * Returns: *StrExp* - The string aggregate expression, producing the MIN/MAX string value.
  */
 strAgg returns [StrExp exp]
     : MIN '(' e=strExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $e.exp.min($b.exp) : $e.exp.min(); }
@@ -1501,6 +1353,11 @@ DOUBLE_QUOTE_STRING_LITERAL: '"' ('\\"' | ~["] | UNICODE_ESCAPE)* '"';
  * Matches an identifier. Identifiers start with a letter and can be followed by letters or digits.
  */
 IDENTIFIER: LETTER PART_LETTER*;
+
+/**
+ * ISO-8601 Date format
+ */
+DATE_LITERAL: YEAR_LITERAL '-' MONTH_LITERAL '-' DAY_LITERAL ;
 
 fragment DECIMAL_LITERAL: '0' | [1-9] ([0-9_]* [0-9])?;
 
