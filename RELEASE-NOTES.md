@@ -24,6 +24,10 @@
 * #425 Series.replace(int,T)
 * #426 All "Json.load(..)" and "Json.save(..)" methods must be static
 
+## Release 1.2.0
+
+* #430 CsvLoader.nullString(String)
+
 ## Release 1.1.0
 
 * #245 Exp.shift(..)
