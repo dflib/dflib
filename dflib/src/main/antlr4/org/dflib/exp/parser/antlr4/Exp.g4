@@ -1354,11 +1354,6 @@ DOUBLE_QUOTE_STRING_LITERAL: '"' ('\\"' | ~["] | UNICODE_ESCAPE)* '"';
  */
 IDENTIFIER: LETTER PART_LETTER*;
 
-/**
- * ISO-8601 Date format
- */
-DATE_LITERAL: YEAR_LITERAL '-' MONTH_LITERAL '-' DAY_LITERAL ;
-
 fragment DECIMAL_LITERAL: '0' | [1-9] ([0-9_]* [0-9])?;
 
 fragment DECIMAL_LITERAL_LEADING_ZEROS: [0-9] ([0-9_]* [0-9])?;
