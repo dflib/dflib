@@ -1,13 +1,16 @@
 package org.dflib;
 
-import org.dflib.zip.Zip;
 import org.dflib.http.Http;
+import org.dflib.zip.Zip;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.function.Function;
 
 /**
@@ -88,5 +91,38 @@ public interface ByteSource {
         } catch (MalformedURLException e) {
             throw new RuntimeException("Bad URL:" + url, e);
         }
+    }
+
+    /**
+     * Returns a ByteSource based on the Path to a local file.
+     *
+     * @since 2.0.0
+     */
+    static ByteSource ofPath(Path path) {
+        return ofFile(path.toFile());
+    }
+
+    /**
+     * Returns a ByteSource based on the local file.
+     *
+     * @since 2.0.0
+     */
+    static ByteSource ofFile(String file) {
+        return ofFile(new File(file));
+    }
+
+    /**
+     * Returns a ByteSource based on the local file.
+     *
+     * @since 2.0.0
+     */
+    static ByteSource ofFile(File file) {
+        return () -> {
+            try {
+                return new FileInputStream(file);
+            } catch (IOException e) {
+                throw new RuntimeException("Error reading file:" + file, e);
+            }
+        };
     }
 }

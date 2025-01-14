@@ -2,12 +2,15 @@ package org.dflib;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ByteSourceTest {
 
@@ -15,6 +18,26 @@ public class ByteSourceTest {
     void of_bytes() {
         byte[] b = "abcd".getBytes();
         assertArrayEquals(b, ByteSource.of(b).asBytes());
+    }
+
+    @Test
+    void ofPath() throws URISyntaxException {
+        Path p = Path.of(getClass().getResource("test.txt").toURI());
+        assertTrue(Files.isRegularFile(p));
+
+        assertArrayEquals("test text".getBytes(), ByteSource.ofPath(p).asBytes());
+    }
+
+    @Test
+    void ofFile() throws URISyntaxException {
+        File f = new File(getClass().getResource("test.txt").toURI());
+        assertArrayEquals("test text".getBytes(), ByteSource.ofFile(f).asBytes());
+    }
+
+    @Test
+    void ofFileName() throws URISyntaxException {
+        String f = new File(getClass().getResource("test.txt").toURI()).getAbsoluteFile().getPath();
+        assertArrayEquals("test text".getBytes(), ByteSource.ofFile(f).asBytes());
     }
 
     @Test
