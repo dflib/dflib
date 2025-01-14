@@ -2,6 +2,8 @@ package org.dflib.csv;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.dflib.ByteSource;
+import org.dflib.ByteSources;
 import org.dflib.DataFrame;
 import org.dflib.DoubleValueMapper;
 import org.dflib.Extractor;
@@ -14,8 +16,6 @@ import org.dflib.ValueMapper;
 import org.dflib.builder.DataFrameAppender;
 import org.dflib.builder.DataFrameByRowBuilder;
 import org.dflib.collection.Iterators;
-import org.dflib.ByteSource;
-import org.dflib.ByteSources;
 import org.dflib.sample.Sampler;
 
 import java.io.File;
@@ -443,15 +443,27 @@ public class CsvLoader {
      * @return this loader instance
      */
     public CsvLoader format(CSVFormat format) {
-        this.format = format;
+        this.format = format != null ? format : CSVFormat.DEFAULT;
         return this;
     }
 
     /**
-     * If called, the loader will convert missing values to nulls instead of empty strings.
+     * Convert missing values to nulls instead of empty strings. Equivalent to calling <code>nullString("")</code>
+     * 
+     * @see #nullString(String) 
      */
     public CsvLoader emptyStringIsNull() {
-        this.format = format.withNullString("");
+        return nullString("");
+    }
+
+    /**
+     * Configures the loader to treat the <code>nullString</code> value as a null in tbe resulting DataFrame
+     *
+     * @see #emptyStringIsNull()
+     * @since 1.2.0
+     */
+    public CsvLoader nullString(String nullString) {
+        this.format = format.builder().setNullString(Objects.requireNonNull(nullString)).build();
         return this;
     }
 

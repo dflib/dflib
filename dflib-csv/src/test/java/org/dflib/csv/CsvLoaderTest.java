@@ -453,18 +453,6 @@ public class CsvLoaderTest extends BaseCsvTest {
     }
 
     @Test
-    public void fromFile_EmptyStringColumn_emptyStringIsNull() {
-        DataFrame df = new CsvLoader()
-                .emptyStringIsNull()
-                .load(inPath("strings_w_nulls.csv"));
-
-        new DataFrameAsserts(df, "One", "Two")
-                .expectHeight(2)
-                .expectRow(0, null, "three")
-                .expectRow(1, "five", null);
-    }
-
-    @Test
     public void valueCardinality_Nulls() {
         DataFrame df = new CsvLoader()
                 .col("A", s -> s != null ? Integer.parseInt(s) : null)

@@ -1,3 +1,7 @@
+## Release 1.2.0
+
+* #430 CsvLoader.nullString(String)
+
 ## Release 1.1.0
 
 * #245 Exp.shift(..)
