@@ -34,14 +34,18 @@ public class FSFolder {
         return new FSFolder(path, false, null);
     }
 
-    private final Path folder;
+    private final Path folderPath;
     private final boolean includeSubfolders;
     private final Predicate<Path> filter;
 
-    private FSFolder(Path folder, boolean includeSubfolders, Predicate<Path> filter) {
-        this.folder = Objects.requireNonNull(folder);
+    private FSFolder(Path folderPath, boolean includeSubfolders, Predicate<Path> filter) {
+        this.folderPath = Objects.requireNonNull(folderPath);
         this.filter = filter;
         this.includeSubfolders = includeSubfolders;
+    }
+
+    public Path getFolderPath() {
+        return folderPath;
     }
 
     /**
@@ -53,7 +57,7 @@ public class FSFolder {
             throw new IllegalArgumentException("Subfolder path can not use absolute path: " + subfolder);
         }
 
-        Path subfolderPath = folder.resolve(other);
+        Path subfolderPath = folderPath.resolve(other);
         return new FSFolder(subfolderPath, includeSubfolders, filter);
     }
 
@@ -68,27 +72,25 @@ public class FSFolder {
         }
 
         String normalizedExt = ext.startsWith(".") ? ext : "." + ext;
-        return new FSFolder(folder, includeSubfolders, p -> p.getFileName().toString().endsWith(normalizedExt));
+        return new FSFolder(folderPath, includeSubfolders, p -> p.getFileName().toString().endsWith(normalizedExt));
     }
 
     /**
      * Returns an instance of FSFolder that will include files in subfolders.
      */
     public FSFolder includeSubfolders() {
-        return this.includeSubfolders ? this : new FSFolder(folder, true, filter);
+        return this.includeSubfolders ? this : new FSFolder(folderPath, true, filter);
     }
 
     /**
      * Returns all files contained in the folder represented as {@link ByteSources}. The contents are filtered
      * according to FSFolder configuration.
-     *
-     * @return
      */
     public ByteSources sources() {
         Map<String, ByteSource> sources = new HashMap<>();
 
         // The key must be a relative to the folder, whereas the Path for ByteSource must be the full Path
-        list().stream().forEach(p -> sources.put(folder.relativize(p).toString(), ByteSource.ofPath(p)));
+        list().stream().forEach(p -> sources.put(folderPath.relativize(p).toString(), ByteSource.ofPath(p)));
         return ByteSources.of(sources);
     }
 
@@ -97,9 +99,9 @@ public class FSFolder {
      */
     public List<Path> list() {
 
-        File root = folder.toFile();
+        File root = folderPath.toFile();
         if (!root.isDirectory()) {
-            throw new RuntimeException("Not a folder: " + folder);
+            throw new RuntimeException("Not a folder: " + folderPath);
         }
 
         // TODO: configurable symlink option
@@ -111,7 +113,7 @@ public class FSFolder {
                 : fileFilter;
 
         try {
-            return Files.walk(folder, includeSubfolders ? Integer.MAX_VALUE : 1)
+            return Files.walk(folderPath, includeSubfolders ? Integer.MAX_VALUE : 1)
                     .filter(filter)
                     .collect(Collectors.toList());
         } catch (IOException e) {
