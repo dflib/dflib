@@ -11,6 +11,11 @@ import org.dflib.StrExp;
 import org.dflib.TimeExp;
 import org.dflib.exp.flow.IfNullExp;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.function.Function;
 
 class ExpParserUtils {
@@ -86,6 +91,22 @@ class ExpParserUtils {
         } else {
             return Double.valueOf(scalar);
         }
+    }
+    
+    static LocalDate parseDateValue(String token) {
+        return LocalDate.parse(token, DateTimeFormatter.ISO_LOCAL_DATE);
+    }
+
+    static LocalTime parseTimeValue(String token) {
+        return LocalTime.parse(token, DateTimeFormatter.ISO_LOCAL_TIME);
+    }
+
+    static LocalDateTime parseDateTimeValue(String token) {
+        return LocalDateTime.parse(token, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    }
+
+    static OffsetDateTime parseOffsetDateTimeValue(String token) {
+        return OffsetDateTime.parse(token, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     }
 
     private static <T> T col(Object columnId, Function<Integer, T> byIndex, Function<String, T> byName) {

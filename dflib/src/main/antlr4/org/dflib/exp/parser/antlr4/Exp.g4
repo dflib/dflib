@@ -1,6 +1,10 @@
 grammar Exp;
 
 @header {
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 
 import org.dflib.*;
@@ -105,7 +109,8 @@ temporalExp returns [Exp<? extends Temporal> exp]
  * and time functions.
  */
 timeExp returns [TimeExp exp]
-    : timeColumn { $exp = $timeColumn.exp; }
+    : timeScalar { $exp = Exp.\$timeVal($timeScalar.value); }
+    | timeColumn { $exp = $timeColumn.exp; }
     | timeFn { $exp = $timeFn.exp; }
     ;
 
@@ -113,7 +118,8 @@ timeExp returns [TimeExp exp]
  * Date expressions, which can include references to date columns and date functions.
  */
 dateExp returns [DateExp exp]
-    : dateColumn { $exp = $dateColumn.exp; }
+    : dateScalar { $exp = Exp.\$dateVal($dateScalar.value); }
+    | dateColumn { $exp = $dateColumn.exp; }
     | dateFn { $exp = $dateFn.exp; }
     ;
 
@@ -121,7 +127,8 @@ dateExp returns [DateExp exp]
  * Datetime expressions, which can refer to datetime columns and utilize datetime functions.
  */
 dateTimeExp returns [DateTimeExp exp]
-    : dateTimeColumn { $exp = $dateTimeColumn.exp; }
+    : dateTimeScalar { $exp = Exp.\$dateTimeVal($dateTimeScalar.value); }
+    | dateTimeColumn { $exp = $dateTimeColumn.exp; }
     | dateTimeFn { $exp = $dateTimeFn.exp; }
     ;
 
@@ -131,7 +138,8 @@ dateTimeExp returns [DateTimeExp exp]
  * This is essential for handling timezones correctly.
  */
 offsetDateTimeExp returns [OffsetDateTimeExp exp]
-    : offsetDateTimeColumn { $exp = $offsetDateTimeColumn.exp; }
+    : offsetDateTimeScalar { $exp = Exp.\$offsetDateTimeVal($offsetDateTimeScalar.value); }
+    | offsetDateTimeColumn { $exp = $offsetDateTimeColumn.exp; }
     | offsetDateTimeFn { $exp = $offsetDateTimeFn.exp; }
     ;
 
@@ -198,6 +206,34 @@ floatingPointScalar returns [Number value]
 strScalar returns [String value]
     : SINGLE_QUOTE_STRING_LITERAL { $value = unescapeString($text.substring(1, $text.length() - 1)); }
     | DOUBLE_QUOTE_STRING_LITERAL { $value = unescapeString($text.substring(1, $text.length() - 1)); }
+    ;
+
+/**
+ * A time literal in ISO-8601 compatible format (`hh:mm`, `hh:mm:ss` and `hh:mm:ss.sss`)
+ */
+timeScalar returns [LocalTime value]
+    : TIME_LITERAL { $value = parseTimeValue($text); }
+    ;
+
+/**
+ * A date literal in ISO-8601 compatible format (`YYYY-MM-DD`)
+ */
+dateScalar returns [LocalDate value]
+    : DATE_LITERAL { $value = parseDateValue($text); }
+    ;
+
+/**
+ * A dateTime literal in ISO-8601 compatible format (`<date>T<time>`)
+ */
+dateTimeScalar returns [LocalDateTime value]
+    : DATE_TIME_LITERAL { $value = parseDateTimeValue($text); }
+    ;
+
+/**
+ *  A dateTime with offset literal in ISO-8601 compatible format (`<date>T<time>`)
+ */
+offsetDateTimeScalar returns [OffsetDateTime value]
+    : OFFSET_DATE_TIME_LITERAL { $value = parseOffsetDateTimeValue($text); }
     ;
 
 /// **Column expressions**
@@ -1354,6 +1390,26 @@ DOUBLE_QUOTE_STRING_LITERAL: '"' ('\\"' | ~["] | UNICODE_ESCAPE)* '"';
  */
 IDENTIFIER: LETTER PART_LETTER*;
 
+/**
+ * ISO-8601 Time format
+ */
+TIME_LITERAL: HOUR_LITERAL ':' MINUTE_LITERAL (':' SECOND_LITERAL ('.' MILLIS_LITERAL)?)? ;
+
+/**
+ * ISO-8601 Date format
+ */
+DATE_LITERAL: YEAR_LITERAL '-' MONTH_LITERAL '-' DAY_LITERAL ;
+
+/**
+ * ISO-8601 DateTime format
+ */
+DATE_TIME_LITERAL: DATE_LITERAL 'T' TIME_LITERAL ;
+
+/**
+ * ISO-8601 DateTime with offset foramt
+ */
+OFFSET_DATE_TIME_LITERAL: DATE_LITERAL 'T' TIME_LITERAL ('Z' | ('+'|'-')  HOUR_LITERAL (':' MINUTE_LITERAL)? );
+
 fragment DECIMAL_LITERAL: '0' | [1-9] ([0-9_]* [0-9])?;
 
 fragment DECIMAL_LITERAL_LEADING_ZEROS: [0-9] ([0-9_]* [0-9])?;
@@ -1389,6 +1445,20 @@ fragment LETTER: [$A-Z_a-z];
 
 //@ doc:inline
 fragment PART_LETTER: [$0-9A-Z_a-z];
+
+fragment HOUR_LITERAL: [0-1][0-9] | '2' [0-3];
+
+fragment MINUTE_LITERAL: [0-5][0-9];
+
+fragment SECOND_LITERAL: [0-5][0-9];
+
+fragment MILLIS_LITERAL: [0-9][0-9][0-9];
+
+fragment YEAR_LITERAL: [0-9][0-9][0-9][0-9] ;
+
+fragment MONTH_LITERAL: '0' [1-9] | '1' [0-2] ;
+
+fragment DAY_LITERAL: '01' | [1-2] [0-9] | [3] [0-1] ;
 
 /**
  * Skipped symbols: Whitespace and tabs.
