@@ -15,6 +15,9 @@ public class BoolScalarExp extends ScalarExp<Boolean> implements Condition {
 
     private final boolean boolValue;
 
+    private static final BoolScalarExp TRUE = new BoolScalarExp(true);
+    private static final BoolScalarExp FALSE = new BoolScalarExp(false);
+
     public BoolScalarExp(boolean value) {
         super(value, Boolean.class);
         this.boolValue = value;
@@ -28,6 +31,14 @@ public class BoolScalarExp extends ScalarExp<Boolean> implements Condition {
     @Override
     public BooleanSeries eval(Series<?> s) {
         return doEval(s.size());
+    }
+
+    public static Condition getTrue() {
+        return BoolScalarExp.TRUE;
+    }
+
+    public static Condition getFalse() {
+        return BoolScalarExp.FALSE;
     }
 
     private BooleanSeries doEval(int height) {
