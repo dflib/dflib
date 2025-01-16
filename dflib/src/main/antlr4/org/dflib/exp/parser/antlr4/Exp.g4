@@ -33,7 +33,7 @@ expression returns [Exp<?> exp]
     | genericExp { $exp = $genericExp.exp; }
     | aggregateFn { $exp = $aggregateFn.exp; }
     | specialFn { $exp = $specialFn.exp; }
-    | NULL { $exp = Exp.\$val(null); }
+    | NULL { $exp = val(null); }
     | '(' expression ')' { $exp = $expression.exp; }
     ;
 
@@ -44,7 +44,7 @@ expression returns [Exp<?> exp]
  * aggregates, and arithmetic operations.
  */
 numExp returns [NumExp<?> exp]
-    : numScalar { $exp = (NumExp<?>) Exp.\$val($numScalar.value); }
+    : numScalar { $exp = (NumExp<?>) val($numScalar.value); }
     | numColumn { $exp = $numColumn.exp; }
     | numFn { $exp = $numFn.exp; }
     | numAgg { $exp = $numAgg.exp; }

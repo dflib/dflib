@@ -20,6 +20,39 @@ import java.util.function.Function;
 
 class ExpParserUtils {
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    static <T> Exp<T> val(T value) {
+        Class type = value != null ? value.getClass() : Object.class;
+        return val(value, type);
+    }
+
+    @SuppressWarnings("unchecked")
+    static <T, V extends T> Exp<T> val(V value, Class<T> type) {
+        if (Integer.class.equals(type) || Integer.TYPE.equals(type)) {
+            return (Exp<T>) Exp.$intVal((Integer) value);
+        } else if (Long.class.equals(type) || Long.TYPE.equals(type)) {
+            return (Exp<T>) Exp.$longVal((Long) value);
+        } else if (Float.class.equals(type) || Float.TYPE.equals(type)) {
+            return (Exp<T>) Exp.$floatVal((Float) value);
+        } else if (Double.class.equals(type) || Double.TYPE.equals(type)) {
+            return (Exp<T>) Exp.$doubleVal((Double) value);
+        } else if (Boolean.class.equals(type) || Boolean.TYPE.equals(type)) {
+            return (Exp<T>) Exp.$boolVal((Boolean) value);
+        } else if (String.class.equals(type)) {
+            return (Exp<T>) Exp.$strVal((String) value);
+        } else if (LocalTime.class.equals(type)) {
+            return (Exp<T>) Exp.$timeVal((LocalTime) value);
+        } else if (LocalDate.class.equals(type)) {
+            return (Exp<T>) Exp.$dateVal((LocalDate) value);
+        } else if (LocalDateTime.class.equals(type)) {
+            return (Exp<T>) Exp.$dateTimeVal((LocalDateTime) value);
+        } else if (OffsetDateTime.class.equals(type)) {
+            return (Exp<T>) Exp.$offsetDateTimeVal((OffsetDateTime) value);
+        } else {
+            return Exp.$val(value);
+        }
+    }
+
     static NumExp<Integer> intCol(Object columnId) {
         return col(columnId, Exp::$int, Exp::$int);
     }
