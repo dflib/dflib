@@ -10,6 +10,10 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -102,17 +106,14 @@ public class StrExpTest {
         return Stream.of(
                 arguments("castAsStr(null)", Exp.$val(null).castAsStr()),
                 arguments("castAsStr(1)", Exp.$val(1).castAsStr()),
-                arguments("castAsStr(1L)", Exp.$val(1L).castAsStr()),
-                arguments("castAsStr(1f)", Exp.$val(1f).castAsStr()),
-                arguments("castAsStr(1d)", Exp.$val(1d).castAsStr()),
                 arguments("castAsStr(true)", Exp.$val(true).castAsStr()),
-                arguments("castAsStr('1')", Exp.$val("1").castAsStr()),
-                arguments("castAsStr(castAsTime('12:00:00'))", Exp.$val("12:00:00").castAsTime().castAsStr()),
-                arguments("castAsStr(castAsDate('2024-01-15'))", Exp.$val("2024-01-15").castAsDate().castAsStr()),
-                arguments("castAsStr(castAsDateTime('2024-01-15T12:00:00Z'))",
-                        Exp.$val("2024-01-15T12:00:00Z").castAsDateTime().castAsStr()),
-                arguments("castAsStr(castAsOffsetDateTime('2024-01-15T12:00:00Z+01:00'))",
-                        Exp.$val("2024-01-15T12:00:00Z+01:00").castAsOffsetDateTime().castAsStr())
+                arguments("castAsStr('1')", Exp.$strVal("1").castAsStr()),
+                arguments("castAsStr(12:00:00)", Exp.$val(LocalTime.parse("12:00:00")).castAsStr()),
+                arguments("castAsStr(2024-01-15)", Exp.$val(LocalDate.parse("2024-01-15")).castAsStr()),
+                arguments("castAsStr(2024-01-15T12:00:00)",
+                        Exp.$val(LocalDateTime.parse("2024-01-15T12:00:00")).castAsStr()),
+                arguments("castAsStr(2024-01-15T12:00:00+01:00)",
+                        Exp.$val(OffsetDateTime.parse("2024-01-15T12:00:00+01:00")).castAsStr())
         );
     }
 

@@ -34,7 +34,7 @@ public class ScalarExp<T> implements Exp<T> {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof ScalarExp)) {
             return false;
         }
         ScalarExp<?> scalarExp = (ScalarExp<?>) o;

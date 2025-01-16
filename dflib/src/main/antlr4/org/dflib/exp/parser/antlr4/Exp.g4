@@ -170,31 +170,22 @@ boolScalar returns [Boolean value]
     ;
 
 /**
- * Numeric scalar values (literals), which can be integers, longs,
- * or floating-point numbers.
+ * Numeric scalar values (literals), which can be integer or floating-point numbers.
  */
 numScalar returns [Number value]
     : integerScalar { $value = $integerScalar.value; }
-    | longScalar { $value = $longScalar.value; }
     | floatingPointScalar { $value = $floatingPointScalar.value; }
     ;
 
 /**
- * A long integer scalar value.
+ * An integer scalar value of any size.
  */
-longScalar returns [Long value] locals [int radix]
-    : LONG_LITERAL { $value = parseLongValue($text); }
-    ;
-
-/**
- * An integer scalar value.
- */
-integerScalar returns [Integer value]
+integerScalar returns [Number value]
     : INTEGER_LITERAL { $value = parseIntegerValue($text); }
     ;
 
 /**
- * A floating-point scalar value (float or double).
+ * A floating-point scalar value of any scale and precision.
  */
 floatingPointScalar returns [Number value]
     : FLOATING_POINT_LITERAL { $value = parseFloatingPointValue($text); }
@@ -650,11 +641,11 @@ boolFn returns [Condition exp]
  */
 timeFn returns [TimeExp exp]
     : castAsTime { $exp = $castAsTime.exp; }
-    | PLUS_HOURS '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusHours($b.value); }
-    | PLUS_MINUTES '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMinutes($b.value); }
-    | PLUS_SECONDS '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusSeconds($b.value); }
-    | PLUS_MILLISECONDS '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMilliseconds($b.value); }
-    | PLUS_NANOS '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusNanos($b.value); }
+    | PLUS_HOURS '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusHours($b.value.intValue()); }
+    | PLUS_MINUTES '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMinutes($b.value.intValue()); }
+    | PLUS_SECONDS '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusSeconds($b.value.intValue()); }
+    | PLUS_MILLISECONDS '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMilliseconds($b.value.intValue()); }
+    | PLUS_NANOS '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusNanos($b.value.intValue()); }
     ;
 
 /**
@@ -666,10 +657,10 @@ timeFn returns [TimeExp exp]
  */
 dateFn returns [DateExp exp]
     : castAsDate { $exp = $castAsDate.exp; }
-    | PLUS_YEARS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusYears($b.value); }
-    | PLUS_MONTHS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusMonths($b.value); }
-    | PLUS_WEEKS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusWeeks($b.value); }
-    | PLUS_DAYS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusDays($b.value); }
+    | PLUS_YEARS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusYears($b.value.intValue()); }
+    | PLUS_MONTHS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusMonths($b.value.intValue()); }
+    | PLUS_WEEKS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusWeeks($b.value.intValue()); }
+    | PLUS_DAYS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusDays($b.value.intValue()); }
     ;
 
 /**
@@ -681,15 +672,15 @@ dateFn returns [DateExp exp]
  */
 dateTimeFn returns [DateTimeExp exp]
     : castAsDateTime { $exp = $castAsDateTime.exp; }
-    | PLUS_YEARS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusYears($b.value); }
-    | PLUS_MONTHS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMonths($b.value); }
-    | PLUS_WEEKS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusWeeks($b.value); }
-    | PLUS_DAYS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusDays($b.value); }
-    | PLUS_HOURS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusHours($b.value); }
-    | PLUS_MINUTES '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMinutes($b.value); }
-    | PLUS_SECONDS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusSeconds($b.value); }
-    | PLUS_MILLISECONDS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMilliseconds($b.value); }
-    | PLUS_NANOS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusNanos($b.value); }
+    | PLUS_YEARS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusYears($b.value.intValue()); }
+    | PLUS_MONTHS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMonths($b.value.intValue()); }
+    | PLUS_WEEKS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusWeeks($b.value.intValue()); }
+    | PLUS_DAYS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusDays($b.value.intValue()); }
+    | PLUS_HOURS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusHours($b.value.intValue()); }
+    | PLUS_MINUTES '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMinutes($b.value.intValue()); }
+    | PLUS_SECONDS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusSeconds($b.value.intValue()); }
+    | PLUS_MILLISECONDS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMilliseconds($b.value.intValue()); }
+    | PLUS_NANOS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusNanos($b.value.intValue()); }
     ;
 
 /**
@@ -702,15 +693,15 @@ dateTimeFn returns [DateTimeExp exp]
  */
 offsetDateTimeFn returns [OffsetDateTimeExp exp]
     : castAsOffsetDateTime { $exp = $castAsOffsetDateTime.exp; }
-    | PLUS_YEARS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusYears($b.value); }
-    | PLUS_MONTHS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMonths($b.value); }
-    | PLUS_WEEKS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusWeeks($b.value); }
-    | PLUS_DAYS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusDays($b.value); }
-    | PLUS_HOURS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusHours($b.value); }
-    | PLUS_MINUTES '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMinutes($b.value); }
-    | PLUS_SECONDS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusSeconds($b.value); }
-    | PLUS_MILLISECONDS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMilliseconds($b.value); }
-    | PLUS_NANOS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusNanos($b.value); }
+    | PLUS_YEARS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusYears($b.value.intValue()); }
+    | PLUS_MONTHS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMonths($b.value.intValue()); }
+    | PLUS_WEEKS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusWeeks($b.value.intValue()); }
+    | PLUS_DAYS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusDays($b.value.intValue()); }
+    | PLUS_HOURS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusHours($b.value.intValue()); }
+    | PLUS_MINUTES '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMinutes($b.value.intValue()); }
+    | PLUS_SECONDS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusSeconds($b.value.intValue()); }
+    | PLUS_MILLISECONDS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMilliseconds($b.value.intValue()); }
+    | PLUS_NANOS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusNanos($b.value.intValue()); }
     ;
 
 /**
@@ -726,7 +717,7 @@ strFn returns [StrExp exp]
     : castAsStr { $exp = $castAsStr.exp; }
     | TRIM '(' strExp ')' { $exp = $strExp.exp.trim(); }
     | SUBSTR '(' s=strExp ',' a=integerScalar (',' b=integerScalar)? ')' {
-        $exp = $ctx.b != null ? $s.exp.substr($a.value, $b.value) : $s.exp.substr($a.value);
+        $exp = $ctx.b != null ? $s.exp.substr($a.value.intValue(), $b.value.intValue()) : $s.exp.substr($a.value.intValue());
     }
     | CONCAT ('(' (args+=strExp (',' args+=strExp)*)? ')') {
         $exp = !$args.isEmpty() ? Exp.concat($args.stream().map(a -> a.exp).toArray()) : Exp.concat();
@@ -912,7 +903,7 @@ nullableExp returns [Exp<?> exp]
  */
 split returns [Exp<String[]> exp]
     : SPLIT '(' a=strExp ',' b=strScalar (',' c=integerScalar)? ')' {
-        $exp = $ctx.c != null ? $a.exp.split($b.value, $c.value) : $a.exp.split($b.value);
+        $exp = $ctx.c != null ? $a.exp.split($b.value, $c.value.intValue()) : $a.exp.split($b.value);
     }
     ;
 
@@ -928,16 +919,16 @@ split returns [Exp<String[]> exp]
 shift returns [Exp<?> exp]
     : SHIFT '(' (
         be=boolExp ',' i=integerScalar (',' bs=boolScalar)? {
-            $exp = $ctx.bs != null ? $be.exp.shift($i.value, $bs.value) : $be.exp.shift($i.value);
+            $exp = $ctx.bs != null ? $be.exp.shift($i.value.intValue(), $bs.value) : $be.exp.shift($i.value.intValue());
         }
         | ne=numExp ',' i=integerScalar (',' ns=numScalar)? {
-            $exp = $ctx.ns != null ? ((NumExp<Number>) $ne.exp).shift($i.value, (Number) $ns.value) : $ne.exp.shift($i.value);
+            $exp = $ctx.ns != null ? ((NumExp<Number>) $ne.exp).shift($i.value.intValue(), (Number) $ns.value) : $ne.exp.shift($i.value.intValue());
         }
         | se=strExp ',' i=integerScalar (',' ss=strScalar)? {
-            $exp = $ctx.ss != null ? $se.exp.shift($i.value, $ss.value) : $se.exp.shift($i.value);
+            $exp = $ctx.ss != null ? $se.exp.shift($i.value.intValue(), $ss.value) : $se.exp.shift($i.value.intValue());
         }
         | ge=genericShiftExp ',' i=integerScalar (',' s=anyScalar)? {
-            $exp = $ctx.ss != null ? ((Exp)$ge.exp).shift($i.value, (Object)$s.value) : $ge.exp.shift($i.value);
+            $exp = $ctx.ss != null ? ((Exp)$ge.exp).shift($i.value.intValue(), (Object)$s.value) : $ge.exp.shift($i.value.intValue());
         }
     ) ')'
     ;
@@ -1342,18 +1333,6 @@ TRUE: 'true';
 FALSE: 'false';
 
 /**
- * Matches a long integer literal, supporting decimal, hexadecimal, octal, and binary formats.
- */
-LONG_LITERAL
-    : [+-]? (
-          DECIMAL_LITERAL
-        | HEX_LITERAL
-        | OCTAL_LITERAL
-        | BINARY_LITERAL
-    ) [lL]
-    ;
-
-/**
  * Matches an integer literal in decimal, hexadecimal, octal, or binary format.
  */
 INTEGER_LITERAL
@@ -1421,16 +1400,15 @@ fragment OCTAL_LITERAL: '0' [0-7] ([0-7_]* [0-7])?;
 fragment BINARY_LITERAL: '0' [bB] [01] ([01_]* [01])?;
 
 fragment DECIMAL_FLOATING_POINT_LITERAL
-    : DECIMAL_LITERAL_LEADING_ZEROS [fFdD]
-    | DECIMAL_LITERAL_LEADING_ZEROS DECIMAL_EXPONENT [fFdD]?
-    | DECIMAL_LITERAL_LEADING_ZEROS? '.' DECIMAL_LITERAL_LEADING_ZEROS DECIMAL_EXPONENT? [fFdD]?
+    : DECIMAL_LITERAL_LEADING_ZEROS DECIMAL_EXPONENT?
+    | DECIMAL_LITERAL_LEADING_ZEROS? '.' DECIMAL_LITERAL_LEADING_ZEROS DECIMAL_EXPONENT?
     ;
 
 fragment DECIMAL_EXPONENT: [eE] [+-]? DECIMAL_LITERAL;
 
 fragment HEXADECIMAL_FLOATING_POINT_LITERAL
-    : HEX_LITERAL '.'? HEXADECIMAL_EXPONENT [fFdD]?
-    | '0' [xX] HEX_DIGITS? '.' HEX_DIGITS HEXADECIMAL_EXPONENT [fFdD]?
+    : HEX_LITERAL '.'? HEXADECIMAL_EXPONENT
+    | '0' [xX] HEX_DIGITS? '.' HEX_DIGITS HEXADECIMAL_EXPONENT
     ;
 
 fragment HEXADECIMAL_EXPONENT: [pP] [+-]? DECIMAL_LITERAL;

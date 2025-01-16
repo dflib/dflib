@@ -10,6 +10,10 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -67,18 +71,15 @@ public class DateExpTest {
     static Stream<Arguments> cast() {
         return Stream.of(
                 arguments("castAsDate(null)", Exp.$val(null).castAsDate()),
-                arguments("castAsDate(1)", Exp.$val(1).castAsDate()),
-                arguments("castAsDate(1L)", Exp.$val(1L).castAsDate()),
-                arguments("castAsDate(1f)", Exp.$val(1f).castAsDate()),
-                arguments("castAsDate(1d)", Exp.$val(1d).castAsDate()),
-                arguments("castAsDate(true)", Exp.$val(true).castAsDate()),
-                arguments("castAsDate('1')", Exp.$val("1").castAsDate()),
-                arguments("castAsDate(castAsTime('12:00:00'))", Exp.$val("12:00:00").castAsTime().castAsDate()),
-                arguments("castAsDate(castAsDate('2024-01-15'))", Exp.$val("2024-01-15").castAsDate().castAsDate()),
-                arguments("castAsDate(castAsDateTime('2024-01-15T12:00:00Z'))",
-                        Exp.$val("2024-01-15T12:00:00Z").castAsDateTime().castAsDate()),
-                arguments("castAsDate(castAsOffsetDateTime('2024-01-15T12:00:00Z+01:00'))",
-                        Exp.$val("2024-01-15T12:00:00Z+01:00").castAsOffsetDateTime().castAsDate())
+                arguments("castAsDate(1)", Exp.$intVal(1).castAsDate()),
+                arguments("castAsDate(true)", Exp.$boolVal(true).castAsDate()),
+                arguments("castAsDate('1')", Exp.$strVal("1").castAsDate()),
+                arguments("castAsDate(12:00:00)", Exp.$timeVal(LocalTime.parse("12:00:00")).castAsDate()),
+                arguments("castAsDate(2024-01-15)", Exp.$dateVal(LocalDate.parse("2024-01-15")).castAsDate()),
+                arguments("castAsDate(2024-01-15T12:00:00)",
+                        Exp.$dateTimeVal(LocalDateTime.parse("2024-01-15T12:00:00")).castAsDate()),
+                arguments("castAsDate(2024-01-15T12:00:00+01:00)",
+                        Exp.$offsetDateTimeVal(OffsetDateTime.parse("2024-01-15T12:00:00+01:00")).castAsDate())
         );
     }
 
@@ -106,12 +107,9 @@ public class DateExpTest {
                 arguments("date(1) <= date(2)", Exp.$date(1).le(Exp.$date(2))),
                 arguments("date(1) = date(2)", Exp.$date(1).eq(Exp.$date(2))),
                 arguments("date(1) != date(2)", Exp.$date(1).ne(Exp.$date(2))),
-                arguments("date(1) between date(2) and date(3)",
-                        Exp.$date(1).between(Exp.$date(2), Exp.$date(3))),
-                arguments("castAsDate('1970-01-01') = date(2)",
-                        Exp.$val("1970-01-01").castAsDate().eq(Exp.$date(2))),
-                arguments("date(1) = plusDays(date(2), 1)",
-                        Exp.$date(1).eq(Exp.$date(2).plusDays(1)))
+                arguments("date(1) between date(2) and date(3)", Exp.$date(1).between(Exp.$date(2), Exp.$date(3))),
+                arguments("1970-01-01 = date(2)", Exp.$dateVal(LocalDate.parse("1970-01-01")).eq(Exp.$date(2))),
+                arguments("date(1) = plusDays(date(2), 1)", Exp.$date(1).eq(Exp.$date(2).plusDays(1)))
         );
     }
 
@@ -139,7 +137,7 @@ public class DateExpTest {
                 arguments("year(date(1))", Exp.$date(1).year()),
                 arguments("month(date(1))", Exp.$date(1).month()),
                 arguments("day(date(1))", Exp.$date(1).day()),
-                arguments("year(castAsDate('1970-01-01'))", Exp.$val("1970-01-01").castAsDate().year())
+                arguments("year(1970-01-01)", Exp.$dateVal(LocalDate.parse("1970-01-01")).year())
         );
     }
 
@@ -170,7 +168,7 @@ public class DateExpTest {
                 arguments("plusWeeks(date(1), 3)", Exp.$date(1).plusWeeks(3)),
                 arguments("plusDays(date(1), 10)", Exp.$date(1).plusDays(10)),
                 arguments("plusYears(date(1), -2)", Exp.$date(1).plusYears(-2)),
-                arguments("plusYears(castAsDate('1970-01-01'), 2)", Exp.$val("1970-01-01").castAsDate().plusYears(2))
+                arguments("plusYears(1970-01-01, 2)", Exp.$dateVal(LocalDate.parse("1970-01-01")).plusYears(2))
         );
     }
 

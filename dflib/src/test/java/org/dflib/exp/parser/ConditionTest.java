@@ -8,6 +8,10 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -125,17 +129,14 @@ public class ConditionTest {
         return Stream.of(
                 arguments("castAsBool(null)", Exp.$val(null).castAsBool()),
                 arguments("castAsBool(1)", Exp.$val(1).castAsBool()),
-                arguments("castAsBool(1L)", Exp.$val(1L).castAsBool()),
-                arguments("castAsBool(1f)", Exp.$val(1f).castAsBool()),
-                arguments("castAsBool(1d)", Exp.$val(1d).castAsBool()),
-                arguments("castAsBool(true)", Exp.$val(true).castAsBool()),
-                arguments("castAsBool('1')", Exp.$val("1").castAsBool()),
-                arguments("castAsBool(castAsTime('12:00:00'))", Exp.$val("12:00:00").castAsTime().castAsBool()),
-                arguments("castAsBool(castAsDate('2024-01-15'))", Exp.$val("2024-01-15").castAsDate().castAsBool()),
-                arguments("castAsBool(castAsDateTime('2024-01-15T12:00:00Z'))",
-                        Exp.$val("2024-01-15T12:00:00Z").castAsDateTime().castAsBool()),
-                arguments("castAsBool(castAsOffsetDateTime('2024-01-15T12:00:00Z+01:00'))",
-                        Exp.$val("2024-01-15T12:00:00Z+01:00").castAsOffsetDateTime().castAsBool())
+                arguments("castAsBool(true)", Exp.$boolVal(true).castAsBool()),
+                arguments("castAsBool('1')", Exp.$strVal("1").castAsBool()),
+                arguments("castAsBool(12:00:00)", Exp.$val(LocalTime.parse("12:00:00")).castAsBool()),
+                arguments("castAsBool(2024-01-15)", Exp.$val(LocalDate.parse("2024-01-15")).castAsBool()),
+                arguments("castAsBool(2024-01-15T12:00:00)",
+                        Exp.$val(LocalDateTime.parse("2024-01-15T12:00:00")).castAsBool()),
+                arguments("castAsBool(2024-01-15T12:00:00+01:00)",
+                        Exp.$val(OffsetDateTime.parse("2024-01-15T12:00:00+01:00")).castAsBool())
         );
     }
 

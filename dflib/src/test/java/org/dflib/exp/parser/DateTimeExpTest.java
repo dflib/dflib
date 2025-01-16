@@ -10,6 +10,10 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -67,18 +71,15 @@ public class DateTimeExpTest {
     static Stream<Arguments> cast() {
         return Stream.of(
                 arguments("castAsDateTime(null)", Exp.$val(null).castAsDateTime()),
-                arguments("castAsDateTime(1)", Exp.$val(1).castAsDateTime()),
-                arguments("castAsDateTime(1L)", Exp.$val(1L).castAsDateTime()),
-                arguments("castAsDateTime(1f)", Exp.$val(1f).castAsDateTime()),
-                arguments("castAsDateTime(1d)", Exp.$val(1d).castAsDateTime()),
-                arguments("castAsDateTime(true)", Exp.$val(true).castAsDateTime()),
-                arguments("castAsDateTime('1')", Exp.$val("1").castAsDateTime()),
-                arguments("castAsDateTime(castAsTime('12:00:00'))", Exp.$val("12:00:00").castAsTime().castAsDateTime()),
-                arguments("castAsDateTime(castAsDate('2024-01-15'))", Exp.$val("2024-01-15").castAsDate().castAsDateTime()),
-                arguments("castAsDateTime(castAsDateTime('2024-01-15T12:00:00Z'))",
-                        Exp.$val("2024-01-15T12:00:00Z").castAsDateTime().castAsDateTime()),
-                arguments("castAsDateTime(castAsOffsetDateTime('2024-01-15T12:00:00Z+01:00'))",
-                        Exp.$val("2024-01-15T12:00:00Z+01:00").castAsOffsetDateTime().castAsDateTime())
+                arguments("castAsDateTime(1)", Exp.$intVal(1).castAsDateTime()),
+                arguments("castAsDateTime(true)", Exp.$boolVal(true).castAsDateTime()),
+                arguments("castAsDateTime('1')", Exp.$strVal("1").castAsDateTime()),
+                arguments("castAsDateTime(12:00:00)", Exp.$timeVal(LocalTime.parse("12:00:00")).castAsDateTime()),
+                arguments("castAsDateTime(2024-01-15)", Exp.$dateVal(LocalDate.parse("2024-01-15")).castAsDateTime()),
+                arguments("castAsDateTime(2024-01-15T12:00:00)",
+                        Exp.$dateTimeVal(LocalDateTime.parse("2024-01-15T12:00:00")).castAsDateTime()),
+                arguments("castAsDateTime(2024-01-15T12:00:00+01:00)",
+                        Exp.$offsetDateTimeVal(OffsetDateTime.parse("2024-01-15T12:00:00+01:00")).castAsDateTime())
         );
     }
 
@@ -108,10 +109,9 @@ public class DateTimeExpTest {
                 arguments("dateTime(1) != dateTime(2)", Exp.$dateTime(1).ne(Exp.$dateTime(2))),
                 arguments("dateTime(1) between dateTime(2) and dateTime(3)",
                         Exp.$dateTime(1).between(Exp.$dateTime(2), Exp.$dateTime(3))),
-                arguments("castAsDateTime('1970-01-01T12:00:00Z') = dateTime(2)",
-                        Exp.$val("1970-01-01T12:00:00Z").castAsDateTime().eq(Exp.$dateTime(2))),
-                arguments("dateTime(1) = plusDays(dateTime(2), 1)",
-                        Exp.$dateTime(1).eq(Exp.$dateTime(2).plusDays(1)))
+                arguments("1970-01-01T12:00:00 = dateTime(2)",
+                        Exp.$val(LocalDateTime.parse("1970-01-01T12:00:00")).eq(Exp.$dateTime(2))),
+                arguments("dateTime(1) = plusDays(dateTime(2), 1)", Exp.$dateTime(1).eq(Exp.$dateTime(2).plusDays(1)))
         );
     }
 
@@ -145,8 +145,8 @@ public class DateTimeExpTest {
                 arguments("minute(dateTime(1))", Exp.$dateTime(1).minute()),
                 arguments("second(dateTime(1))", Exp.$dateTime(1).second()),
                 arguments("millisecond(dateTime(1))", Exp.$dateTime(1).millisecond()),
-                arguments("year(castAsDateTime('1970-01-01T12:00:00Z'))",
-                        Exp.$val("1970-01-01T12:00:00Z").castAsDateTime().year())
+                arguments("year(1970-01-01T12:00:00)",
+                        Exp.$dateTimeVal(LocalDateTime.parse("1970-01-01T12:00:00")).year())
         );
     }
 
@@ -176,8 +176,8 @@ public class DateTimeExpTest {
                 arguments("plusMilliseconds(dateTime(1), 500)", Exp.$dateTime(1).plusMilliseconds(500)),
                 arguments("plusNanos(dateTime(1), 1000)", Exp.$dateTime(1).plusNanos(1000)),
                 arguments("plusYears(dateTime(1), -2)", Exp.$dateTime(1).plusYears(-2)),
-                arguments("plusYears(castAsDateTime('1970-01-01T12:00:00Z'), 2)",
-                        Exp.$val("1970-01-01T12:00:00Z").castAsDateTime().plusYears(2))
+                arguments("plusYears(1970-01-01T12:00:00, 2)",
+                        Exp.$dateTimeVal(LocalDateTime.parse("1970-01-01T12:00:00")).plusYears(2))
         );
     }
 

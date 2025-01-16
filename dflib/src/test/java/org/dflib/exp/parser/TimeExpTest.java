@@ -10,6 +10,10 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -66,18 +70,16 @@ public class TimeExpTest {
 
     static Stream<Arguments> cast() {
         return Stream.of(
-                arguments("castAsTime(1)", Exp.$val(1).castAsTime()),
-                arguments("castAsTime(1L)", Exp.$val(1L).castAsTime()),
-                arguments("castAsTime(1f)", Exp.$val(1f).castAsTime()),
-                arguments("castAsTime(1d)", Exp.$val(1d).castAsTime()),
-                arguments("castAsTime(true)", Exp.$val(true).castAsTime()),
-                arguments("castAsTime('1')", Exp.$val("1").castAsTime()),
-                arguments("castAsTime(castAsTime('12:00:00'))", Exp.$val("12:00:00").castAsTime().castAsTime()),
-                arguments("castAsTime(castAsDate('2024-01-15'))", Exp.$val("2024-01-15").castAsDate().castAsTime()),
-                arguments("castAsTime(castAsDateTime('2024-01-15T12:00:00Z'))",
-                        Exp.$val("2024-01-15T12:00:00Z").castAsDateTime().castAsTime()),
-                arguments("castAsTime(castAsOffsetDateTime('2024-01-15T12:00:00Z+01:00'))",
-                        Exp.$val("2024-01-15T12:00:00Z+01:00").castAsOffsetDateTime().castAsTime())
+                arguments("castAsTime(null)", Exp.$val(null).castAsTime()),
+                arguments("castAsTime(1)", Exp.$intVal(1).castAsTime()),
+                arguments("castAsTime(true)", Exp.$boolVal(true).castAsTime()),
+                arguments("castAsTime('1')", Exp.$strVal("1").castAsTime()),
+                arguments("castAsTime(12:00:00)", Exp.$timeVal(LocalTime.parse("12:00:00")).castAsTime()),
+                arguments("castAsTime(2024-01-15)", Exp.$dateVal(LocalDate.parse("2024-01-15")).castAsTime()),
+                arguments("castAsTime(2024-01-15T12:00:00)",
+                        Exp.$dateTimeVal(LocalDateTime.parse("2024-01-15T12:00:00")).castAsTime()),
+                arguments("castAsTime(2024-01-15T12:00:00+01:00)",
+                        Exp.$offsetDateTimeVal(OffsetDateTime.parse("2024-01-15T12:00:00+01:00")).castAsTime())
         );
     }
 
@@ -106,7 +108,7 @@ public class TimeExpTest {
                 arguments("time(1) = time(2)", Exp.$time(1).eq(Exp.$time(2))),
                 arguments("time(1) != time(2)", Exp.$time(1).ne(Exp.$time(2))),
                 arguments("time(1) between time(2) and time(3)", Exp.$time(1).between(Exp.$time(2), Exp.$time(3))),
-                arguments("castAsTime('12:00:00') = time(2)", Exp.$val("12:00:00").castAsTime().eq(Exp.$time(2))),
+                arguments("12:00:00 = time(2)", Exp.$val(LocalTime.parse("12:00:00")).eq(Exp.$time(2))),
                 arguments("time(1) = plusHours(time(2), 1)", Exp.$time(1).eq(Exp.$time(2).plusHours(1)))
         );
     }
@@ -136,7 +138,7 @@ public class TimeExpTest {
                 arguments("minute(time(1))", Exp.$time(1).minute()),
                 arguments("second(time(1))", Exp.$time(1).second()),
                 arguments("millisecond(time(1))", Exp.$time(1).millisecond()),
-                arguments("hour(castAsTime('12:34:56'))", Exp.$val("12:34:56").castAsTime().hour())
+                arguments("hour(12:34:56)", Exp.$timeVal(LocalTime.parse("12:34:56")).hour())
         );
     }
 

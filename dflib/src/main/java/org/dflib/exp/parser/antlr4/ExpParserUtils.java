@@ -11,6 +11,8 @@ import org.dflib.StrExp;
 import org.dflib.TimeExp;
 import org.dflib.exp.flow.IfNullExp;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -19,6 +21,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.function.Function;
 
 class ExpParserUtils {
+
+    private static final BigInteger INT_MIN = BigInteger.valueOf(Integer.MIN_VALUE);
+    private static final BigInteger INT_MAX = BigInteger.valueOf(Integer.MAX_VALUE);
+    private static final BigInteger LONG_MIN = BigInteger.valueOf(Long.MIN_VALUE);
+    private static final BigInteger LONG_MAX = BigInteger.valueOf(Long.MAX_VALUE);
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     static <T> Exp<T> val(T value) {
@@ -106,26 +113,35 @@ class ExpParserUtils {
         return new IfNullExp<>(a, b);
     }
 
-    static int parseIntegerValue(String token) {
+    static Number parseIntegerValue(String token) {
         int radix = radix(token);
-        return Integer.valueOf(sanitizeNumScalar(token, radix), radix);
-    }
-
-    static long parseLongValue(String token) {
-        int radix = radix(token);
-        return Long.valueOf(sanitizeNumScalar(token, radix, "l"), radix);
+        String sanitizedToken = sanitizeNumScalar(token, radix);
+        BigInteger value = new BigInteger(sanitizedToken, radix);
+        if (value.compareTo(INT_MIN) >= 0 && value.compareTo(INT_MAX) <= 0) {
+            return value.intValue();
+        }
+        if (value.compareTo(LONG_MIN) >= 0 && value.compareTo(LONG_MAX) <= 0) {
+            return value.longValue();
+        }
+        return value;
     }
 
     static Number parseFloatingPointValue(String token) {
         String scalar = token.toLowerCase();
         scalar = scalar.replaceAll("_+", "");
-        if (scalar.endsWith("f")) {
-            return Float.valueOf(scalar);
-        } else {
-            return Double.valueOf(scalar);
+        BigDecimal value = new BigDecimal(scalar);
+
+        float floatValue = value.floatValue();
+        if (Float.isFinite(floatValue) && new BigDecimal(floatValue).compareTo(value) == 0) {
+            return floatValue;
         }
+        double doubleValue = value.doubleValue();
+        if (Double.isFinite(doubleValue) && new BigDecimal(doubleValue).compareTo(value) == 0) {
+            return doubleValue;
+        }
+        return value;
     }
-    
+
     static LocalDate parseDateValue(String token) {
         return LocalDate.parse(token, DateTimeFormatter.ISO_LOCAL_DATE);
     }
@@ -154,7 +170,6 @@ class ExpParserUtils {
 
     private static int radix(String token) {
         int offset = token.startsWith("+") || token.startsWith("-") ? 1 : 0;
-        int dotPosition = token.indexOf(".");
         String lowerToken = token.toLowerCase();
         if (lowerToken.startsWith("0x", offset)) {
             return 16;

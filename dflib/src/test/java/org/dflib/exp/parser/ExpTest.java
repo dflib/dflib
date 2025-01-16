@@ -86,8 +86,8 @@ class ExpTest {
         return Stream.of(
                 arguments("ifNull(int(1), 0)", Exp.ifNull(Exp.$int(1), 0)),
                 arguments("ifNull(str(1), 'unknown')", Exp.ifNull(Exp.$str(1), Exp.$strVal("unknown"))),
-                arguments("ifNull(date(1), castAsDate('1970-01-01'))",
-                        Exp.ifNull(Exp.$date(1), Exp.$val("1970-01-01").castAsDate()))
+                arguments("ifNull(date(1), 1970-01-01)",
+                        Exp.ifNull(Exp.$date(1), Exp.$val(LocalDate.parse("1970-01-01"))))
         );
     }
 
