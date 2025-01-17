@@ -131,12 +131,16 @@ class ExpParserUtils {
         scalar = scalar.replaceAll("_+", "");
         BigDecimal value = new BigDecimal(scalar);
 
+        if (value.compareTo(BigDecimal.ZERO) == 0) {
+            return value.floatValue();
+        }
+
         float floatValue = value.floatValue();
-        if (Float.isFinite(floatValue) && new BigDecimal(floatValue).compareTo(value) == 0) {
+        if (Float.isFinite(floatValue) && floatValue != 0) {
             return floatValue;
         }
         double doubleValue = value.doubleValue();
-        if (Double.isFinite(doubleValue) && new BigDecimal(doubleValue).compareTo(value) == 0) {
+        if (Double.isFinite(doubleValue) && doubleValue != 0) {
             return doubleValue;
         }
         return value;
