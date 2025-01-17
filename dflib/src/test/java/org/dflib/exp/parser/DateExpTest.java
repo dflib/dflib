@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,6 +23,44 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public class DateExpTest {
+
+    @ParameterizedTest
+    @MethodSource
+    void localDateScalar(String text, Exp<?> expected) {
+        Exp<?> exp = Exp.exp(text);
+        assertInstanceOf(DateExp.class, exp);
+        assertEquals(expected, exp);
+    }
+
+    static Stream<Arguments> localDateScalar() {
+        return Stream.of(
+                arguments("2023-01-17", Exp.$val(LocalDate.parse("2023-01-17"))),
+                arguments("2000-02-29", Exp.$val(LocalDate.parse("2000-02-29"))), // Leap year
+                arguments("1900-01-01", Exp.$val(LocalDate.parse("1900-01-01"))),
+                arguments("9999-12-31", Exp.$val(LocalDate.parse("9999-12-31"))),
+                arguments("1970-01-01", Exp.$val(LocalDate.parse("1970-01-01")))
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "10000-12-01",
+            "2023-13-01",
+            "2024-11-32",
+            "9999-00-01",
+            "9999-12-00",
+    })
+    void localDateScalar_parsingError(String text) {
+        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "2000-02-30",
+    })
+    void localDateScalar_invalidField(String text) {
+        assertThrows(DateTimeParseException.class, () -> Exp.exp(text));
+    }
 
     @ParameterizedTest
     @MethodSource

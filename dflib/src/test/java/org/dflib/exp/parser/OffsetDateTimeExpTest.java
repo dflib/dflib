@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,6 +23,51 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public class OffsetDateTimeExpTest {
+
+    @ParameterizedTest
+    @MethodSource
+    void offsetDateTimeScalar(String text, Exp<?> expected) {
+        Exp<?> exp = Exp.exp(text);
+        assertInstanceOf(OffsetDateTimeExp.class, exp);
+        assertEquals(expected, exp);
+    }
+
+    static Stream<Arguments> offsetDateTimeScalar() {
+        return Stream.of(
+                arguments("2023-01-17T12:34+01:00", Exp.$val(OffsetDateTime.parse("2023-01-17T12:34+01:00"))),
+                arguments("2000-02-29T08:30:45-05:00", Exp.$val(OffsetDateTime.parse("2000-02-29T08:30:45-05:00"))),
+                arguments("1900-01-01T00:00Z", Exp.$val(OffsetDateTime.parse("1900-01-01T00:00Z"))),
+                arguments("1970-01-01T00:00-12:00", Exp.$val(OffsetDateTime.parse("1970-01-01T00:00-12:00"))),
+                arguments("9999-12-31T23:59:59.999999999+14:00",
+                        Exp.$val(OffsetDateTime.parse("9999-12-31T23:59:59.999999999+14:00")))
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "10000-01-17T12:34+01:00",
+            "2023-00-17T12:34+01:00",
+            "2024-01-00T12:34+01:00",
+            "2025-01-17T24:34+01:00",
+            "2026-01-17T12:60+01:00",
+            "2027-01-17T12:34:60+01:00",
+            "2028-01-17T12:34+24:00",
+            "2029-01-17T12:34+01:60",
+            "2030-01-17T12:34+01:00:10",
+            "9999-12-31T23:59Z+01:00",
+            "9999-12-31T23:59z",
+    })
+    void offsetDateTimeScalar_parsingError(String text) {
+        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "2000-02-30T08:30-05:00",
+    })
+    void offsetDateTimeScalar_invalidField(String text) {
+        assertThrows(DateTimeParseException.class, () -> Exp.exp(text));
+    }
 
     @ParameterizedTest
     @MethodSource

@@ -5,6 +5,7 @@ import org.dflib.Condition;
 import org.dflib.Exp;
 import org.dflib.NumExp;
 import org.dflib.TimeExp;
+import org.dflib.exp.parser.antlr4.LexerCancellationException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -22,6 +23,44 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public class TimeExpTest {
+
+    @ParameterizedTest
+    @MethodSource
+    void localTimeScalar(String text, Exp<?> expected) {
+        Exp<?> exp = Exp.exp(text);
+        assertInstanceOf(TimeExp.class, exp);
+        assertEquals(expected, exp);
+    }
+
+    static Stream<Arguments> localTimeScalar() {
+        return Stream.of(
+                arguments("12:34", Exp.$val(LocalTime.parse("12:34"))),
+                arguments("00:00", Exp.$val(LocalTime.parse("00:00"))),
+                arguments("23:59", Exp.$val(LocalTime.parse("23:59"))),
+                arguments("08:30:45", Exp.$val(LocalTime.parse("08:30:45"))),
+                arguments("15:45:30.123", Exp.$val(LocalTime.parse("15:45:30.123"))),
+                arguments("09:08:07.000123456", Exp.$val(LocalTime.parse("09:08:07.000123456")))
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "09:08:45.9999999999",
+            "15:45.67",
+    })
+    void localTimeScalar_parsingError(String text) {
+        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "24:00",
+            "12:60",
+            "08:30:60",
+    })
+    void localTimeScalar_lexicalError(String text) {
+        assertThrows(LexerCancellationException.class, () -> Exp.exp(text));
+    }
 
     @ParameterizedTest
     @MethodSource

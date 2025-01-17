@@ -5,6 +5,7 @@ import org.dflib.Condition;
 import org.dflib.DateTimeExp;
 import org.dflib.Exp;
 import org.dflib.NumExp;
+import org.dflib.exp.parser.antlr4.LexerCancellationException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,6 +24,66 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public class DateTimeExpTest {
+
+    @ParameterizedTest
+    @MethodSource
+    void localDateTimeScalar(String text, Exp<?> expected) {
+        Exp<?> exp = Exp.exp(text);
+        assertInstanceOf(DateTimeExp.class, exp);
+        assertEquals(expected, exp);
+    }
+
+    static Stream<Arguments> localDateTimeScalar() {
+        return Stream.of(
+                arguments("2023-01-17T12:34", Exp.$val(LocalDateTime.parse("2023-01-17T12:34"))),
+                arguments("2000-02-29T08:30:45", Exp.$val(LocalDateTime.parse("2000-02-29T08:30:45"))),
+                arguments("1900-01-01T00:00", Exp.$val(LocalDateTime.parse("1900-01-01T00:00"))),
+                arguments("1970-01-01T00:00:00", Exp.$val(LocalDateTime.parse("1970-01-01T00:00:00"))),
+                arguments("9999-12-31T23:59:59.999999999",
+                        Exp.$val(LocalDateTime.parse("9999-12-31T23:59:59.999999999")))
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "10000-11-14T21:00",
+            "2023-00-01T12:00",
+            "2024-01-00T14:00",
+            "2025-01-01T25:00:00",
+            "1970-01-01t00:00",
+            "1970-01-01 00:00",
+    })
+    void localDateTimeScalar_parsingError(String text) {
+        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    }
+
+    static Stream<Arguments> localDateTimeScalar() {
+        return Stream.of(
+                arguments("2023-01-17T12:34", Exp.$val(LocalDateTime.parse("2023-01-17T12:34"))),
+                arguments("2000-02-29T08:30:45", Exp.$val(LocalDateTime.parse("2000-02-29T08:30:45"))),
+                arguments("1900-01-01T00:00", Exp.$val(LocalDateTime.parse("1900-01-01T00:00"))),
+                arguments("1970-01-01T00:00:00", Exp.$val(LocalDateTime.parse("1970-01-01T00:00:00"))),
+                arguments("9999-12-31T23:59:59.999999999",
+                        Exp.$val(LocalDateTime.parse("9999-12-31T23:59:59.999999999")))
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "2026-01-01T02:60:00",
+            "2027-01-01T04:24:60",
+    })
+    void localDateTimeScalar_lexicalError(String text) {
+        assertThrows(LexerCancellationException.class, () -> Exp.exp(text));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "2000-02-30T08:30",
+    })
+    void localDateTimeScalar_invalidField(String text) {
+        assertThrows(DateTimeParseException.class, () -> Exp.exp(text));
+    }
 
     @ParameterizedTest
     @MethodSource
