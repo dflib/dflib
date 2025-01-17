@@ -64,7 +64,7 @@
         <hadoop.version>3.4.0</hadoop.version>
         <jjava.version>1.0-M3</jjava.version>
         <mysql.version>9.1.0</mysql.version>
-        <antlr4.version>4.13.0</antlr4.version>
+        <antlr4.version>4.13.2</antlr4.version>
     </properties>
 
     <url>https://github.com/dflib/dflib</url>

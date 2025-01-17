@@ -358,6 +358,7 @@ offsetDateTimeColumn returns [OffsetDateTimeExp exp]
  */
 genericColumn returns [Exp<?> exp]
     : COL '(' columnId ')' { $exp = col($columnId.id); }
+    | identifier { $exp = Exp.\$col($identifier.id); }
     ;
 
 /**
@@ -1367,7 +1368,7 @@ DOUBLE_QUOTE_STRING_LITERAL: '"' ('\\"' | ~["] | UNICODE_ESCAPE)* '"';
 /**
  * Matches an identifier. Identifiers start with a letter and can be followed by letters or digits.
  */
-IDENTIFIER: LETTER PART_LETTER*;
+IDENTIFIER: IDENTIFIER_START IDENTIFIER_PART*;
 
 /**
  * ISO-8601 Time format
@@ -1419,10 +1420,10 @@ fragment HEX_DIGITS: [0-9a-fA-F] ([0-9a-fA-F_]* [0-9a-fA-F])?;
 fragment UNICODE_ESCAPE: '\\u' [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F];
 
 //@ doc:inline
-fragment LETTER: [$A-Z_a-z];
+fragment IDENTIFIER_START: [$A-Z_a-z\u0080-\uFFFF];
 
 //@ doc:inline
-fragment PART_LETTER: [$0-9A-Z_a-z];
+fragment IDENTIFIER_PART: [$A-Z_a-z0-9\u0080-\uFFFF;?!#|`[\]{}@^\\];
 
 fragment HOUR_LITERAL: [0-1][0-9] | '2' [0-3];
 
