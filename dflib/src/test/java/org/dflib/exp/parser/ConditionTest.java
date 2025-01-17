@@ -54,8 +54,8 @@ public class ConditionTest {
             "1 >",
             "int(1) and int(2)",
     })
-    void exp_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void exp_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -75,8 +75,8 @@ public class ConditionTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"TRUE", "FALSE", "True", "False"})
-    void scalar_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void scalar_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -104,17 +104,10 @@ public class ConditionTest {
             "bool(null)",
             "bool(true)",
             "bool(int(1))",
-    })
-    void column_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
             "bool(-1)",
     })
-    void column_apiError(String text) {
-        assertThrows(IllegalArgumentException.class, () -> Exp.exp(text));
+    void column_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -144,8 +137,8 @@ public class ConditionTest {
     @ValueSource(strings = {
             "CASTASBOOL(1)",
     })
-    void cast_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void cast_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -176,7 +169,7 @@ public class ConditionTest {
             "startsWith(true, 'prefix')",
             "endsWith('hello', null)",
     })
-    void function_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void function_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 }

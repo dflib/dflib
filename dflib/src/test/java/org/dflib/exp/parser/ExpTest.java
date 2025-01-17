@@ -35,8 +35,8 @@ class ExpTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"NULL", "Null", "None", "nil", "void"})
-    void nullScalar_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void nullScalar_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -71,8 +71,8 @@ class ExpTest {
             "if(true, 1)",
             "if(true, 1, 0, 2)",
     })
-    void ifExp_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void ifExp_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -101,8 +101,8 @@ class ExpTest {
 //            "ifNull(int(1), ifNull(int(2), 0))",
 //            "ifNull(int(1), null)",
     })
-    void ifNull_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void ifNull_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -133,8 +133,8 @@ class ExpTest {
             "shift(int(1), 2, 'replace')",
             "shift(plusDays(date(1), 1), 1)",
     })
-    void shift_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void shift_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -163,8 +163,8 @@ class ExpTest {
             "first(int(1), 0)",
             "last(int(1), int(1) > 0)",
     })
-    void positionalAggregate_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void positionalAggregate_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest

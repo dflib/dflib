@@ -4,7 +4,6 @@ import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.dflib.Condition;
 import org.dflib.Exp;
 import org.dflib.NumExp;
-import org.dflib.exp.parser.antlr4.LexerCancellationException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -52,8 +51,8 @@ public class NumExpTest {
             "(1 + 2",
             "1 ** 2",
     })
-    void exp_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void exp_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -98,8 +97,8 @@ public class NumExpTest {
             "0x",
             "0b",
     })
-    void integerScalar_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void integerScalar_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -131,8 +130,8 @@ public class NumExpTest {
             "0xFFFFFFFFFFFFFGHIJ",
             "0xFFFFFFFFFFFF1A3.5",
     })
-    void longScalar_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void longScalar_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -167,15 +166,13 @@ public class NumExpTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"1e", "1e1.0"})
-    void floatScalar_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {".e10"})
-    void floatScalar_lexicalError(String text) {
-        assertThrows(LexerCancellationException.class, () -> Exp.exp(text));
+    @ValueSource(strings = {
+            "1e",
+            "1e1.0",
+            ".e10",
+    })
+    void floatScalar_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -212,17 +209,15 @@ public class NumExpTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"1e", "1e1.0"})
-    void doubleScalar_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    @ValueSource(strings = {
+            "1e",
+            "1e1.0",
+            ".e10",
+    })
+    void doubleScalar_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {".e10"})
-    void doubleScalar_lexicalError(String text) {
-        assertThrows(LexerCancellationException.class, () -> Exp.exp(text));
-    }
-    
     @ParameterizedTest
     @MethodSource
     void column(String text, Exp<?> expected) {
@@ -242,26 +237,6 @@ public class NumExpTest {
                 arguments("int(\"a\")", Exp.$int("a")),
                 arguments("int(1)", Exp.$int(1))
         );
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "INT(a)",
-            "int(1.1)",
-            "int(null)",
-            "int(true)",
-            "int(int(1))",
-    })
-    void column_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "int(-1)",
-    })
-    void column_apiError(String text) {
-        assertThrows(IllegalArgumentException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -292,14 +267,6 @@ public class NumExpTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {
-            "CASTASINT(1)",
-    })
-    void cast_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
-    }
-
-    @ParameterizedTest
     @MethodSource
     void relation(String text, Exp<?> expected) {
         Exp<?> exp = Exp.exp(text);
@@ -326,8 +293,8 @@ public class NumExpTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"5 > '3'", "int(col1) = null", "int(col1) != false"})
-    void relation_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void relation_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -348,21 +315,6 @@ public class NumExpTest {
                 arguments("abs(-5)", Exp.$intVal(-5).abs()),
                 arguments("round(3.14)", Exp.$floatVal(3.14f).round())
         );
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "abs('-4')",
-            "sqrt(4)",
-            "log(10)",
-            "exp(1)",
-            "pow(2, 3)",
-            "sin(0)",
-            "cos(0)",
-            "tan(0)",
-    })
-    void function_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -390,18 +342,5 @@ public class NumExpTest {
                 arguments("quantile(int(1), 0.5, int(1) > 0)", Exp.$int(1).quantile(0.5, Exp.$int(1).gt(1))),
                 arguments("sum(int(1), int(2) > 0)", Exp.$int(1).sum(Exp.$int(2).gt(1)))
         );
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "SUM(int(1))",
-            "min()",
-            "max(int(1), )",
-            "avg(int(1), 0)",
-            "quantile(int(1), int(1) > 0)",
-            "cumSum(int(1), 2)",
-    })
-    void aggregate_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
     }
 }

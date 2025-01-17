@@ -1,11 +1,9 @@
 package org.dflib.exp.parser;
 
-import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.dflib.Condition;
 import org.dflib.DateTimeExp;
 import org.dflib.Exp;
 import org.dflib.NumExp;
-import org.dflib.exp.parser.antlr4.LexerCancellationException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -15,7 +13,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeParseException;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,13 +24,13 @@ public class DateTimeExpTest {
 
     @ParameterizedTest
     @MethodSource
-    void localDateTimeScalar(String text, Exp<?> expected) {
+    void scalar(String text, Exp<?> expected) {
         Exp<?> exp = Exp.exp(text);
         assertInstanceOf(DateTimeExp.class, exp);
         assertEquals(expected, exp);
     }
 
-    static Stream<Arguments> localDateTimeScalar() {
+    static Stream<Arguments> scalar() {
         return Stream.of(
                 arguments("2023-01-17T12:34", Exp.$val(LocalDateTime.parse("2023-01-17T12:34"))),
                 arguments("2000-02-29T08:30:45", Exp.$val(LocalDateTime.parse("2000-02-29T08:30:45"))),
@@ -52,37 +49,12 @@ public class DateTimeExpTest {
             "2025-01-01T25:00:00",
             "1970-01-01t00:00",
             "1970-01-01 00:00",
-    })
-    void localDateTimeScalar_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
-    }
-
-    static Stream<Arguments> localDateTimeScalar() {
-        return Stream.of(
-                arguments("2023-01-17T12:34", Exp.$val(LocalDateTime.parse("2023-01-17T12:34"))),
-                arguments("2000-02-29T08:30:45", Exp.$val(LocalDateTime.parse("2000-02-29T08:30:45"))),
-                arguments("1900-01-01T00:00", Exp.$val(LocalDateTime.parse("1900-01-01T00:00"))),
-                arguments("1970-01-01T00:00:00", Exp.$val(LocalDateTime.parse("1970-01-01T00:00:00"))),
-                arguments("9999-12-31T23:59:59.999999999",
-                        Exp.$val(LocalDateTime.parse("9999-12-31T23:59:59.999999999")))
-        );
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
             "2026-01-01T02:60:00",
             "2027-01-01T04:24:60",
-    })
-    void localDateTimeScalar_lexicalError(String text) {
-        assertThrows(LexerCancellationException.class, () -> Exp.exp(text));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
             "2000-02-30T08:30",
     })
-    void localDateTimeScalar_invalidField(String text) {
-        assertThrows(DateTimeParseException.class, () -> Exp.exp(text));
+    void scalar_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -109,17 +81,10 @@ public class DateTimeExpTest {
             "dateTime(null)",
             "dateTime(true)",
             "dateTime(int(1))",
-    })
-    void column_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
             "dateTime(-1)",
     })
-    void column_apiError(String text) {
-        assertThrows(IllegalArgumentException.class, () -> Exp.exp(text));
+    void column_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -149,8 +114,8 @@ public class DateTimeExpTest {
     @ValueSource(strings = {
             "CASTASDATETIME(1)",
     })
-    void cast_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void cast_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -185,9 +150,8 @@ public class DateTimeExpTest {
             "dateTime(1) = true",
             "dateTime(1) = null",
     })
-
-    void relation_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void relation_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -213,9 +177,12 @@ public class DateTimeExpTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"year('1970-01-01T12:34:56Z')", "day(castAsDateTime('1970-01-01T12:00:00Z'), 2)"})
-    void fieldFunction_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    @ValueSource(strings = {
+            "year('1970-01-01T12:34:56Z')",
+            "day(castAsDateTime('1970-01-01T12:00:00Z'), 2)"
+    })
+    void fieldFunction_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -251,8 +218,8 @@ public class DateTimeExpTest {
             "plusDays(dateTime(1), '3')",
             "plusHours(dateTime(1), null)",
     })
-    void function_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void function_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -292,7 +259,7 @@ public class DateTimeExpTest {
             "avg(dateTime(1), 0)",
             "quantile(dateTime(1), dateTime(1) > 0)",
     })
-    void aggregate_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void aggregate_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 }

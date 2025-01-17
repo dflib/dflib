@@ -1,11 +1,9 @@
 package org.dflib.exp.parser;
 
-import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.dflib.Condition;
 import org.dflib.Exp;
 import org.dflib.NumExp;
 import org.dflib.TimeExp;
-import org.dflib.exp.parser.antlr4.LexerCancellationException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -26,13 +24,13 @@ public class TimeExpTest {
 
     @ParameterizedTest
     @MethodSource
-    void localTimeScalar(String text, Exp<?> expected) {
+    void scalar(String text, Exp<?> expected) {
         Exp<?> exp = Exp.exp(text);
         assertInstanceOf(TimeExp.class, exp);
         assertEquals(expected, exp);
     }
 
-    static Stream<Arguments> localTimeScalar() {
+    static Stream<Arguments> scalar() {
         return Stream.of(
                 arguments("12:34", Exp.$val(LocalTime.parse("12:34"))),
                 arguments("00:00", Exp.$val(LocalTime.parse("00:00"))),
@@ -47,19 +45,12 @@ public class TimeExpTest {
     @ValueSource(strings = {
             "09:08:45.9999999999",
             "15:45.67",
-    })
-    void localTimeScalar_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
             "24:00",
             "12:60",
             "08:30:60",
     })
-    void localTimeScalar_lexicalError(String text) {
-        assertThrows(LexerCancellationException.class, () -> Exp.exp(text));
+    void scalar_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -86,17 +77,10 @@ public class TimeExpTest {
             "time(null)",
             "time(true)",
             "time(int(1))",
-    })
-    void column_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
             "time(-1)",
     })
-    void column_apiError(String text) {
-        assertThrows(IllegalArgumentException.class, () -> Exp.exp(text));
+    void column_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -126,8 +110,8 @@ public class TimeExpTest {
     @ValueSource(strings = {
             "CASTASTIME(1)",
     })
-    void cast_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void cast_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -159,8 +143,8 @@ public class TimeExpTest {
             "time(1) = true",
             "time(1) = null",
     })
-    void timeRelation_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void timeRelation_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -189,8 +173,8 @@ public class TimeExpTest {
             "minute()",
             "hour(castAsTime('12:34:56'), 2)",
     })
-    void timeFieldFn_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void timeFieldFn_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -222,8 +206,8 @@ public class TimeExpTest {
             "plusNanos(time(1), '1000')",
             "plusNanos(time(1), null)",
     })
-    void timeFn_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void timeFn_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -259,7 +243,7 @@ public class TimeExpTest {
             "avg(time(1), 0)",
             "quantile(time(1), time(1) > 0)",
     })
-    void timeAgg_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void timeAgg_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 }

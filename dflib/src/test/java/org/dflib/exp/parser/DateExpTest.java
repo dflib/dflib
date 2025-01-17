@@ -1,6 +1,5 @@
 package org.dflib.exp.parser;
 
-import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.dflib.Condition;
 import org.dflib.DateExp;
 import org.dflib.Exp;
@@ -14,7 +13,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeParseException;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,13 +24,13 @@ public class DateExpTest {
 
     @ParameterizedTest
     @MethodSource
-    void localDateScalar(String text, Exp<?> expected) {
+    void scalar(String text, Exp<?> expected) {
         Exp<?> exp = Exp.exp(text);
         assertInstanceOf(DateExp.class, exp);
         assertEquals(expected, exp);
     }
 
-    static Stream<Arguments> localDateScalar() {
+    static Stream<Arguments> scalar() {
         return Stream.of(
                 arguments("2023-01-17", Exp.$val(LocalDate.parse("2023-01-17"))),
                 arguments("2000-02-29", Exp.$val(LocalDate.parse("2000-02-29"))), // Leap year
@@ -49,17 +47,10 @@ public class DateExpTest {
             "2024-11-32",
             "9999-00-01",
             "9999-12-00",
-    })
-    void localDateScalar_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
             "2000-02-30",
     })
-    void localDateScalar_invalidField(String text) {
-        assertThrows(DateTimeParseException.class, () -> Exp.exp(text));
+    void scalar_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -86,17 +77,10 @@ public class DateExpTest {
             "date(null)",
             "date(true)",
             "date(int(1))",
-    })
-    void column_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
             "date(-1)",
     })
-    void column_apiError(String text) {
-        assertThrows(IllegalArgumentException.class, () -> Exp.exp(text));
+    void column_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -126,8 +110,8 @@ public class DateExpTest {
     @ValueSource(strings = {
             "CASTASDATE(1)",
     })
-    void cast_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void cast_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -159,8 +143,8 @@ public class DateExpTest {
             "date(1) = true",
             "date(1) = null",
     })
-    void relation_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void relation_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -188,8 +172,8 @@ public class DateExpTest {
             "year()",
             "day(castAsDate('1970-01-01'), 2)",
     })
-    void filedFunction_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void filedFunction_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -219,8 +203,8 @@ public class DateExpTest {
             "plusDays(date(1), '3')",
             "plusDays(date(1), null)",
     })
-    void function_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void function_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -256,7 +240,7 @@ public class DateExpTest {
             "avg(date(1), 0)",
             "quantile(date(1), date(1) > 0)",
     })
-    void aggregate_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void aggregate_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 }

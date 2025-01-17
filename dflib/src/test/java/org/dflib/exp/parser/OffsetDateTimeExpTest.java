@@ -1,6 +1,5 @@
 package org.dflib.exp.parser;
 
-import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.dflib.Condition;
 import org.dflib.Exp;
 import org.dflib.NumExp;
@@ -14,7 +13,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeParseException;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -56,17 +54,10 @@ public class OffsetDateTimeExpTest {
             "2030-01-17T12:34+01:00:10",
             "9999-12-31T23:59Z+01:00",
             "9999-12-31T23:59z",
-    })
-    void offsetDateTimeScalar_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
             "2000-02-30T08:30-05:00",
     })
-    void offsetDateTimeScalar_invalidField(String text) {
-        assertThrows(DateTimeParseException.class, () -> Exp.exp(text));
+    void scalar_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -93,17 +84,10 @@ public class OffsetDateTimeExpTest {
             "offsetDateTime(null)",
             "offsetDateTime(true)",
             "offsetDateTime(int(1))",
-    })
-    void column_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
             "offsetDateTime(-1)",
     })
-    void column_apiError(String text) {
-        assertThrows(IllegalArgumentException.class, () -> Exp.exp(text));
+    void column_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -135,8 +119,8 @@ public class OffsetDateTimeExpTest {
     @ValueSource(strings = {
             "CASTASOFFSETDATETIME(1)",
     })
-    void cast_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void cast_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -172,8 +156,8 @@ public class OffsetDateTimeExpTest {
             "offsetDateTime(1) = true",
             "offsetDateTime(1) = null",
     })
-    void relation_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void relation_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -203,8 +187,8 @@ public class OffsetDateTimeExpTest {
             "year('1970-01-01T12:34:56Z+01:00')",
             "day(castAsOffsetDateTime('1970-01-01T12:00:00Z+01:00'), 2)"
     })
-    void fieldFunction_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void fieldFunction_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -240,7 +224,7 @@ public class OffsetDateTimeExpTest {
             "plusDays(offsetDateTime(1), '3')",
             "plusHours(offsetDateTime(1), null)",
     })
-    void function_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void function_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 }

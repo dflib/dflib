@@ -4,7 +4,6 @@ import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.dflib.Condition;
 import org.dflib.Exp;
 import org.dflib.StrExp;
-import org.dflib.exp.parser.antlr4.LexerCancellationException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -46,15 +45,9 @@ public class StrExpTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"\"missing \" escape\""})
-    void scalar_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"\"missing quote", "'mismatched quotes\""})
-    void scalar_lexicalError(String text) {
-        assertThrows(LexerCancellationException.class, () -> Exp.exp(text));
+    @ValueSource(strings = {"\"missing \" escape\"", "\"missing quote", "'mismatched quotes\""})
+    void scalar_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -81,17 +74,10 @@ public class StrExpTest {
             "str(null)",
             "str(true)",
             "str(int(1))",
-    })
-    void column_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
             "str(-1)",
     })
-    void column_apiError(String text) {
-        assertThrows(IllegalArgumentException.class, () -> Exp.exp(text));
+    void column_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -121,8 +107,8 @@ public class StrExpTest {
     @ValueSource(strings = {
             "CASTASSTR(1)",
     })
-    void cast_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void cast_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -151,8 +137,8 @@ public class StrExpTest {
             "'hello' between 'a' and 'z'",
             "len(str(col1)) = '4'",
     })
-    void relation_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void relation_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -183,8 +169,8 @@ public class StrExpTest {
             "startsWith(true, 'prefix')",
             "endsWith('hello', null)",
     })
-    void function_returnsCondition_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void function_returnsCondition_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -218,17 +204,10 @@ public class StrExpTest {
             "substr('example')",
             "substr('example', 1 + 2)",
             "substr('example', 2, null)",
-    })
-    void function_returnsStrExp_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
             "substr('example', 2, -1)",
     })
-    void function_returnsStrExp_apiError(String text) {
-        assertThrows(IllegalArgumentException.class, () -> Exp.exp(text));
+    void function_returnsStrExp_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -255,8 +234,8 @@ public class StrExpTest {
             "split(, ',')",
             "split(time(1), ':')",
     })
-    void split_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void split_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
     @ParameterizedTest
@@ -284,7 +263,7 @@ public class StrExpTest {
             "min(str(1), )",
             "max(str(1), 0)",
     })
-    void aggregate_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+    void aggregate_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 }
