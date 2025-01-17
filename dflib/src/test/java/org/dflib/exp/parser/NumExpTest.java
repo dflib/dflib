@@ -144,24 +144,24 @@ public class NumExpTest {
 
     static Stream<Arguments> floatScalar() {
         return Stream.of(
-                arguments("123.4", Exp.$val(123.4f)),
-                arguments("-456.7", Exp.$val(-456.7f)),
-                arguments("123_456.7", Exp.$val(123_456.7f)),
-                arguments("+0.0", Exp.$val(0.0f)),
-                arguments("0.0", Exp.$val(0.0f)),
-                arguments(".5", Exp.$val(0.5f)),
-                arguments("-.5", Exp.$val(-0.5f)),
-                arguments("+.0", Exp.$val(0.0f)),
-                arguments("123.4000", Exp.$val(123.4f)),
-                arguments("0.0000", Exp.$val(0.0f)),
-                arguments("1e10", Exp.$val(1e10f)),
-                arguments("1E10", Exp.$val(1e10f)),
-                arguments("-1e-10", Exp.$val(-1e-10f)),
-                arguments("+1.23e+4", Exp.$val(1.23e4f)),
-                arguments("3.4028235e38", Exp.$val(Float.MAX_VALUE)),
-                arguments("-3.4028235e38", Exp.$val(-Float.MAX_VALUE)),
-                arguments("1.4e-45", Exp.$val(Float.MIN_VALUE)),
-                arguments("-1.4e-45", Exp.$val(-Float.MIN_VALUE))
+                arguments("123.4", Exp.$floatVal(123.4f)),
+                arguments("-456.7", Exp.$floatVal(-456.7f)),
+                arguments("123_456.7", Exp.$floatVal(123_456.7f)),
+                arguments("+0.0", Exp.$floatVal(0.0f)),
+                arguments("0.0", Exp.$floatVal(0.0f)),
+                arguments(".5", Exp.$floatVal(.5f)),
+                arguments("-.5", Exp.$floatVal(-.5f)),
+                arguments("+.0", Exp.$floatVal(.0f)),
+                arguments("123.4000", Exp.$floatVal(123.4f)),
+                arguments("0.0000", Exp.$floatVal(0.0f)),
+                arguments("1e10", Exp.$floatVal(1e10f)),
+                arguments("1E10", Exp.$floatVal(1e10f)),
+                arguments("-1e-10", Exp.$floatVal(-1e-10f)),
+                arguments("+1.23e+4", Exp.$floatVal(1.23e4f)),
+                arguments("3.4028235e38", Exp.$floatVal(Float.MAX_VALUE)),
+                arguments("-3.4028235e38", Exp.$floatVal(-Float.MAX_VALUE)),
+                arguments("1.4e-45", Exp.$floatVal(Float.MIN_VALUE)),
+                arguments("-1.4e-45", Exp.$floatVal(-Float.MIN_VALUE))
         );
     }
 
@@ -185,26 +185,21 @@ public class NumExpTest {
 
     static Stream<Arguments> doubleScalar() {
         return Stream.of(
-                arguments("123.45", Exp.$val(123.45)),
-                arguments("-456.78", Exp.$val(-456.78)),
-                arguments("123_456.78_9", Exp.$val(123_456.78_9)),
-                arguments("+0.0", Exp.$val(0.0)),
-                arguments("0.0", Exp.$val(0.0)),
-                arguments(".5", Exp.$val(0.5)),
-                arguments("-.5", Exp.$val(-0.5)),
-                arguments("+.0", Exp.$val(0.0)),
-                arguments("123.45000", Exp.$val(123.45)),
-                arguments("0.0000", Exp.$val(0.0)),
-                arguments("1e10", Exp.$val(1e10)),
-                arguments("1E10", Exp.$val(1e10)),
-                arguments("-1e-10", Exp.$val(-1e-10)),
-                arguments("+1.23e+4", Exp.$val(1.23e4)),
-                arguments("123.45", Exp.$val(123.45)),
-                arguments("-456.78", Exp.$val(-456.78)),
-                arguments("1.7976931348623157e308", Exp.$val(Double.MAX_VALUE)),
-                arguments("-1.7976931348623157e308", Exp.$val(-Double.MAX_VALUE)),
-                arguments("4.9e-324", Exp.$val(Double.MIN_VALUE)),
-                arguments("-4.9e-324", Exp.$val(-Double.MIN_VALUE))
+                arguments("123.45e50", Exp.$doubleVal(123.45e50)),
+                arguments("-456.78e50", Exp.$doubleVal(-456.78e50)),
+                arguments("123_456.78_9e50", Exp.$doubleVal(123_456.78_9e50)),
+                arguments("+0.0", Exp.$doubleVal(0.0)),
+                arguments("0.0", Exp.$doubleVal(0.0)),
+                arguments(".5e50", Exp.$doubleVal(.5e50)),
+                arguments("-.5e50", Exp.$doubleVal(-.5e50)),
+                arguments("123.45000e50", Exp.$doubleVal(123.45e50)),
+                arguments("1e50", Exp.$doubleVal(1e50)),
+                arguments("1E50", Exp.$doubleVal(1E50)),
+                arguments("-1e-50", Exp.$doubleVal(-1e-50)),
+                arguments("1.7976931348623157e308", Exp.$doubleVal(Double.MAX_VALUE)),
+                arguments("-1.7976931348623157e308", Exp.$doubleVal(-Double.MAX_VALUE)),
+                arguments("4.9e-324", Exp.$doubleVal(Double.MIN_VALUE)),
+                arguments("-4.9e-324", Exp.$doubleVal(-Double.MIN_VALUE))
         );
     }
 
@@ -252,7 +247,7 @@ public class NumExpTest {
                 arguments("castAsInt(1)", Exp.$intVal(1).castAsInt()),
                 arguments("castAsLong(9999999999)", Exp.$longVal(9999999999L).castAsLong()),
                 arguments("castAsFloat(1.1)", Exp.$floatVal(1.1f).castAsFloat()),
-                arguments("castAsDouble(1e-50)", Exp.$doubleVal(1e-50).castAsDouble()),
+                arguments("castAsDouble(1e-100)", Exp.$doubleVal(1e-100).castAsDouble()),
                 arguments("castAsDecimal(1e1000)", Exp.$val(BigDecimal.valueOf(1, 1000)).castAsDecimal()),
                 arguments("castAsInt(null)", Exp.$val(null).castAsInt()),
                 arguments("castAsInt(true)", Exp.$boolVal(true).castAsInt()),
