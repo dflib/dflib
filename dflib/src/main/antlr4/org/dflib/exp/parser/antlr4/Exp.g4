@@ -1430,7 +1430,7 @@ fragment MINUTE_LITERAL: [0-5][0-9];
 
 fragment SECOND_LITERAL: [0-5][0-9];
 
-fragment MILLIS_LITERAL: [0-9][0-9][0-9];
+fragment MILLIS_LITERAL: [0-9] [0-9]? [0-9]? [0-9]? [0-9]? [0-9]? [0-9]? [0-9]? [0-9]?;
 
 fragment YEAR_LITERAL: [0-9][0-9][0-9][0-9] ;
 
