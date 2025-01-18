@@ -71,7 +71,7 @@ public class CsvLoader {
      */
     public CsvLoader compression(CompressionCodec compressionCodec) {
         this.compressionCodec = compressionCodec;
-	return this;
+        return this;
     }
 
     /**
@@ -266,42 +266,42 @@ public class CsvLoader {
     }
 
     public CsvLoader intCol(int column) {
-        colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.fromString()));
+        colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.ofStr()));
         return this;
     }
 
     public CsvLoader intCol(String column) {
-        colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.fromString()));
+        colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.ofStr()));
         return this;
     }
 
     public CsvLoader intCol(int column, int forNull) {
-        colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.fromString(forNull)));
+        colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.ofStr(forNull)));
         return this;
     }
 
     public CsvLoader intCol(String column, int forNull) {
-        colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.fromString(forNull)));
+        colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.ofStr(forNull)));
         return this;
     }
 
     public CsvLoader longCol(int column) {
-        colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.fromString()));
+        colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.ofStr()));
         return this;
     }
 
     public CsvLoader longCol(String column) {
-        colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.fromString()));
+        colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.ofStr()));
         return this;
     }
 
     public CsvLoader longCol(int column, long forNull) {
-        colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.fromString(forNull)));
+        colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.ofStr(forNull)));
         return this;
     }
 
     public CsvLoader longCol(String column, long forNull) {
-        colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.fromString(forNull)));
+        colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.ofStr(forNull)));
         return this;
     }
 
@@ -309,7 +309,7 @@ public class CsvLoader {
      * @since 1.1.0
      */
     public CsvLoader floatCol(int column) {
-        colConfigurators.add(ColConfigurator.floatCol(column, FloatValueMapper.fromString()));
+        colConfigurators.add(ColConfigurator.floatCol(column, FloatValueMapper.ofStr()));
         return this;
     }
 
@@ -317,27 +317,27 @@ public class CsvLoader {
      * @since 1.1.0
      */
     public CsvLoader floatCol(String column) {
-        colConfigurators.add(ColConfigurator.floatCol(column, FloatValueMapper.fromString()));
+        colConfigurators.add(ColConfigurator.floatCol(column, FloatValueMapper.ofStr()));
         return this;
     }
 
     public CsvLoader doubleCol(int column) {
-        colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.fromString()));
+        colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.ofStr()));
         return this;
     }
 
     public CsvLoader doubleCol(String column) {
-        colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.fromString()));
+        colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.ofStr()));
         return this;
     }
 
     public CsvLoader doubleCol(int column, double forNull) {
-        colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.fromString(forNull)));
+        colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.ofStr(forNull)));
         return this;
     }
 
     public CsvLoader doubleCol(String column, double forNull) {
-        colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.fromString(forNull)));
+        colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.ofStr(forNull)));
         return this;
     }
 
@@ -463,8 +463,8 @@ public class CsvLoader {
 
     /**
      * Convert missing values to nulls instead of empty strings. Equivalent to calling <code>nullString("")</code>
-     * 
-     * @see #nullString(String) 
+     *
+     * @see #nullString(String)
      */
     public CsvLoader emptyStringIsNull() {
         return nullString("");

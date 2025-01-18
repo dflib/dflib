@@ -260,7 +260,7 @@ public class FixedColumnSet implements ColumnSet {
 
         for (int i = 0; i < w; i++) {
             Series s = getOrCreateColumn(i);
-            columns[i] = s instanceof BooleanSeries ? s.castAsBool() : s.mapAsBool(BoolValueMapper.fromObject());
+            columns[i] = s instanceof BooleanSeries ? s.castAsBool() : s.mapAsBool(BoolValueMapper.of());
         }
 
         return doMerge(columns);
@@ -284,7 +284,7 @@ public class FixedColumnSet implements ColumnSet {
         int w = csIndex.length;
         Series<?>[] columns = new Series[w];
 
-        IntValueMapper<?> converter = IntValueMapper.fromObject(forNull);
+        IntValueMapper<?> converter = IntValueMapper.of(forNull);
 
         for (int i = 0; i < w; i++) {
             Series s = getOrCreateColumn(i);
@@ -312,7 +312,7 @@ public class FixedColumnSet implements ColumnSet {
         int w = csIndex.length;
         Series<?>[] columns = new Series[w];
 
-        LongValueMapper<?> converter = LongValueMapper.fromObject(forNull);
+        LongValueMapper<?> converter = LongValueMapper.of(forNull);
 
         for (int i = 0; i < w; i++) {
             Series s = getOrCreateColumn(i);
@@ -340,7 +340,7 @@ public class FixedColumnSet implements ColumnSet {
         int w = csIndex.length;
         Series<?>[] columns = new Series[w];
 
-        DoubleValueMapper<?> converter = DoubleValueMapper.fromObject(forNull);
+        DoubleValueMapper<?> converter = DoubleValueMapper.of(forNull);
 
         for (int i = 0; i < w; i++) {
             Series s = getOrCreateColumn(i);

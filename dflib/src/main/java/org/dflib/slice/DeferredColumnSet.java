@@ -207,7 +207,7 @@ public class DeferredColumnSet implements ColumnSet {
 
         for (int i = 0; i < w; i++) {
             Series s = source.getColumn(i);
-            columns[i] = s instanceof BooleanSeries ? s.castAsBool() : s.mapAsBool(BoolValueMapper.fromObject());
+            columns[i] = s instanceof BooleanSeries ? s.castAsBool() : s.mapAsBool(BoolValueMapper.of());
         }
 
         return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
@@ -231,7 +231,7 @@ public class DeferredColumnSet implements ColumnSet {
         int w = source.width();
         Series<?>[] columns = new Series[w];
 
-        IntValueMapper<?> converter = IntValueMapper.fromObject(forNull);
+        IntValueMapper<?> converter = IntValueMapper.of(forNull);
 
         for (int i = 0; i < w; i++) {
             Series s = source.getColumn(i);
@@ -259,7 +259,7 @@ public class DeferredColumnSet implements ColumnSet {
         int w = source.width();
         Series<?>[] columns = new Series[w];
 
-        LongValueMapper<?> converter = LongValueMapper.fromObject(forNull);
+        LongValueMapper<?> converter = LongValueMapper.of(forNull);
 
         for (int i = 0; i < w; i++) {
             Series s = source.getColumn(i);
@@ -287,7 +287,7 @@ public class DeferredColumnSet implements ColumnSet {
         int w = source.width();
         Series<?>[] columns = new Series[w];
 
-        DoubleValueMapper<?> converter = DoubleValueMapper.fromObject(forNull);
+        DoubleValueMapper<?> converter = DoubleValueMapper.of(forNull);
 
         for (int i = 0; i < w; i++) {
             Series s = source.getColumn(i);

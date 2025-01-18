@@ -24,6 +24,7 @@
 * #425 Series.replace(int,T)
 * #426 All "Json.load(..)" and "Json.save(..)" methods must be static
 * #427 Type-specific versions of Exp.$val(..)
+* #433 Primitive ValueMappers consistency
 
 ## Release 1.2.0
 
