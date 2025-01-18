@@ -43,14 +43,14 @@ public class BooleanValueMapperTest {
 
     @Test
     void ofString() {
-        assertFalse(BoolValueMapper.ofString().map(null));
+        assertFalse(BoolValueMapper.ofStr().map(null));
 
-        assertTrue(BoolValueMapper.ofString().map("true"));
-        assertFalse(BoolValueMapper.ofString().map("false"));
+        assertTrue(BoolValueMapper.ofStr().map("true"));
+        assertFalse(BoolValueMapper.ofStr().map("false"));
 
-        assertTrue(BoolValueMapper.ofString().map("TRUE"));
-        assertFalse(BoolValueMapper.ofString().map("FALSE"));
+        assertTrue(BoolValueMapper.ofStr().map("TRUE"));
+        assertFalse(BoolValueMapper.ofStr().map("FALSE"));
 
-        assertFalse(BoolValueMapper.ofString().map("OTHER"));
+        assertFalse(BoolValueMapper.ofStr().map("OTHER"));
     }
 }

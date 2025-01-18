@@ -5,6 +5,11 @@ package org.dflib.map;
  */
 public class StringToPrimitiveMappers {
 
+    public static boolean toBool(String s) {
+        // null-safe... "parseBoolean" returns false for null
+        return Boolean.parseBoolean(s);
+    }
+
     public static int toInt(String s) {
         if (s == null) {
             throw new IllegalArgumentException("Can't convert a null to a primitive int");

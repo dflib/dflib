@@ -2,6 +2,21 @@ package org.dflib.map;
 
 public class AnyToPrimitiveMappers {
 
+    public static boolean toBool(Object o) {
+        if (o instanceof Boolean) {
+            return ((Boolean) o).booleanValue();
+        }
+
+        if (o instanceof Number) {
+            return ((Number) o).intValue() != 0;
+        }
+
+        String s = o != null ? o.toString() : null;
+
+        // null-safe... "parseBoolean" returns false for null
+        return Boolean.parseBoolean(s);
+    }
+
     public static int toInt(Object o) {
         if (o == null) {
             throw new IllegalArgumentException("Can't convert a null to a primitive int");
