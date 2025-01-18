@@ -182,12 +182,12 @@ public interface Series<T> extends Iterable<T> {
      * Converts the Series to a BooleanSeries of the same length, applying the provided function.
      */
     // TODO: functionally, this is a duplicate of "locate()"
-    default BooleanSeries mapAsBool(BoolValueMapper<? super T> converter) {
+    default BooleanSeries mapAsBool(BoolValueMapper<? super T> mapper) {
         int len = size();
 
         boolean[] data = new boolean[len];
         for (int i = 0; i < len; i++) {
-            data[i] = converter.map(get(i));
+            data[i] = mapper.map(get(i));
         }
 
         return new BooleanArraySeries(data);
@@ -196,12 +196,12 @@ public interface Series<T> extends Iterable<T> {
     /**
      * Converts the Series to an IntSeries of the same length, applying the provided function.
      */
-    default IntSeries mapAsInt(IntValueMapper<? super T> converter) {
+    default IntSeries mapAsInt(IntValueMapper<? super T> mapper) {
         int len = size();
 
         int[] data = new int[len];
         for (int i = 0; i < len; i++) {
-            data[i] = converter.map(get(i));
+            data[i] = mapper.map(get(i));
         }
 
         return new IntArraySeries(data);
@@ -210,11 +210,11 @@ public interface Series<T> extends Iterable<T> {
     /**
      * Converts the Series to a LongSeries of the same length, applying the provided function.
      */
-    default LongSeries mapAsLong(LongValueMapper<? super T> converter) {
+    default LongSeries mapAsLong(LongValueMapper<? super T> mapper) {
         int len = size();
         long[] data = new long[len];
         for (int i = 0; i < len; i++) {
-            data[i] = converter.map(get(i));
+            data[i] = mapper.map(get(i));
         }
 
         return new LongArraySeries(data);
@@ -225,11 +225,11 @@ public interface Series<T> extends Iterable<T> {
      *
      * @since 1.1.0
      */
-    default FloatSeries mapAsFloat(FloatValueMapper<? super T> converter) {
+    default FloatSeries mapAsFloat(FloatValueMapper<? super T> mapper) {
         int len = size();
         float[] data = new float[len];
         for (int i = 0; i < len; i++) {
-            data[i] = converter.map(get(i));
+            data[i] = mapper.map(get(i));
         }
 
         return new FloatArraySeries(data);
@@ -238,11 +238,11 @@ public interface Series<T> extends Iterable<T> {
     /**
      * Converts the Series to a DoubleSeries of the same length, applying the provided function.
      */
-    default DoubleSeries mapAsDouble(DoubleValueMapper<? super T> converter) {
+    default DoubleSeries mapAsDouble(DoubleValueMapper<? super T> mapper) {
         int len = size();
         double[] data = new double[len];
         for (int i = 0; i < len; i++) {
-            data[i] = converter.map(get(i));
+            data[i] = mapper.map(get(i));
         }
 
         return new DoubleArraySeries(data);
