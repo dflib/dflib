@@ -267,13 +267,13 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     @Override
-    public <V> DataFrame compactBool(BoolValueMapper<V> converter) {
+    public <V> DataFrame compactBool(BoolValueMapper<V> mapper) {
         int w = csIndex.length;
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
             Series s = getOrCreateColumn(i);
-            columns[i] = s.mapAsBool(converter);
+            columns[i] = s.mapAsBool(mapper);
         }
 
         return doMerge(columns);
@@ -284,24 +284,24 @@ public class FixedColumnSet implements ColumnSet {
         int w = csIndex.length;
         Series<?>[] columns = new Series[w];
 
-        IntValueMapper<?> converter = IntValueMapper.of(forNull);
+        IntValueMapper<?> mapper = IntValueMapper.of(forNull);
 
         for (int i = 0; i < w; i++) {
             Series s = getOrCreateColumn(i);
-            columns[i] = s instanceof IntSeries ? s.castAsInt() : s.mapAsInt(converter);
+            columns[i] = s instanceof IntSeries ? s.castAsInt() : s.mapAsInt(mapper);
         }
 
         return doMerge(columns);
     }
 
     @Override
-    public <V> DataFrame compactInt(IntValueMapper<V> converter) {
+    public <V> DataFrame compactInt(IntValueMapper<V> mapper) {
         int w = csIndex.length;
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
             Series s = getOrCreateColumn(i);
-            columns[i] = s.mapAsInt(converter);
+            columns[i] = s.mapAsInt(mapper);
         }
 
         return doMerge(columns);
@@ -312,24 +312,24 @@ public class FixedColumnSet implements ColumnSet {
         int w = csIndex.length;
         Series<?>[] columns = new Series[w];
 
-        LongValueMapper<?> converter = LongValueMapper.of(forNull);
+        LongValueMapper<?> mapper = LongValueMapper.of(forNull);
 
         for (int i = 0; i < w; i++) {
             Series s = getOrCreateColumn(i);
-            columns[i] = s instanceof LongSeries ? s.castAsLong() : s.mapAsLong(converter);
+            columns[i] = s instanceof LongSeries ? s.castAsLong() : s.mapAsLong(mapper);
         }
 
         return doMerge(columns);
     }
 
     @Override
-    public <V> DataFrame compactLong(LongValueMapper<V> converter) {
+    public <V> DataFrame compactLong(LongValueMapper<V> mapper) {
         int w = csIndex.length;
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
             Series s = getOrCreateColumn(i);
-            columns[i] = s.mapAsLong(converter);
+            columns[i] = s.mapAsLong(mapper);
         }
 
         return doMerge(columns);
@@ -340,24 +340,24 @@ public class FixedColumnSet implements ColumnSet {
         int w = csIndex.length;
         Series<?>[] columns = new Series[w];
 
-        DoubleValueMapper<?> converter = DoubleValueMapper.of(forNull);
+        DoubleValueMapper<?> mapper = DoubleValueMapper.of(forNull);
 
         for (int i = 0; i < w; i++) {
             Series s = getOrCreateColumn(i);
-            columns[i] = s instanceof DoubleSeries ? s.castAsDouble() : s.mapAsDouble(converter);
+            columns[i] = s instanceof DoubleSeries ? s.castAsDouble() : s.mapAsDouble(mapper);
         }
 
         return doMerge(columns);
     }
 
     @Override
-    public <V> DataFrame compactDouble(DoubleValueMapper<V> converter) {
+    public <V> DataFrame compactDouble(DoubleValueMapper<V> mapper) {
         int w = csIndex.length;
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
             Series s = getOrCreateColumn(i);
-            columns[i] = s.mapAsDouble(converter);
+            columns[i] = s.mapAsDouble(mapper);
         }
 
         return doMerge(columns);

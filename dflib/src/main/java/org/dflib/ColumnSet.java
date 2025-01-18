@@ -56,7 +56,7 @@ public interface ColumnSet {
      * "Compacts" the internal representation of each column in a set, converting it to a {@link BooleanSeries}.
      * For this to work, each column in the ColumnSet must be compatible with the supplied converter.
      */
-    <V> DataFrame compactBool(BoolValueMapper<V> converter);
+    <V> DataFrame compactBool(BoolValueMapper<V> mapper);
 
     /**
      * "Compacts" the internal representation of each column in a set, converting it to an {@link IntSeries}.
@@ -66,7 +66,7 @@ public interface ColumnSet {
     /**
      * "Compacts" the internal representation of each column in a set, converting it to an {@link IntSeries}.
      */
-    <V> DataFrame compactInt(IntValueMapper<V> converter);
+    <V> DataFrame compactInt(IntValueMapper<V> mapper);
 
     /**
      * "Compacts" the internal representation of each column in a set, converting it to an {@link LongSeries}.
@@ -76,7 +76,7 @@ public interface ColumnSet {
     /**
      * "Compacts" the internal representation of each column in a set, converting it to an {@link LongSeries}.
      */
-    <V> DataFrame compactLong(LongValueMapper<V> converter);
+    <V> DataFrame compactLong(LongValueMapper<V> mapper);
 
     /**
      * "Compacts" the internal representation of each column in a set, converting it to an {@link DoubleSeries}.
@@ -86,7 +86,7 @@ public interface ColumnSet {
     /**
      * "Compacts" the internal representation of each column in a set, converting it to an {@link DoubleSeries}.
      */
-    <V> DataFrame compactDouble(DoubleValueMapper<V> converter);
+    <V> DataFrame compactDouble(DoubleValueMapper<V> mapper);
 
     /**
      * Returns a transformed DataFrame that contains columns from this DataFrame and added / replaced columns
