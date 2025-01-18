@@ -58,11 +58,11 @@ public class ConditionFactory {
             return (BooleanSeries) s;
         }
 
-        return s.mapAsBool(b -> b != null ? b : false);
+        return s.compactBool(b -> b != null ? b : false);
     }
 
     private static BooleanSeries castNumber(Series<? extends Number> s) {
-        return s.mapAsBool(n -> n != null ? n.intValue() != 0 : false);
+        return s.compactBool(n -> n != null ? n.intValue() != 0 : false);
     }
 
     private static boolean isTrue(Object o) {

@@ -15,8 +15,8 @@ public class IntSeries_MapTest {
     }
 
     @Test
-    public void mapAsInt() {
-        Series<Integer> s = Series.ofInt(3, 28).mapAsInt(i -> i + 10);
+    public void compactInt() {
+        Series<Integer> s = Series.ofInt(3, 28).compactInt(i -> i + 10);
         assertTrue(s instanceof IntSeries);
         new IntSeriesAsserts((IntSeries) s).expectData(13, 38);
     }

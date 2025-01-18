@@ -3,23 +3,23 @@ package org.dflib;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
-public class ColumnSet_CompactDoubleTest {
+public class ColumnSet_CompactFloatTest {
 
     @Test
     public void all_forNull() {
         DataFrame df = DataFrame.byColumn("a", "b", "c").of(
-                        Series.ofDouble(1, 2),
+                        Series.ofFloat(1, 2),
                         Series.of(null, "5"),
                         Series.of(Boolean.TRUE, Boolean.FALSE)
                 )
                 .cols()
-                .compactDouble(-1);
+                .compactFloat(-1f);
 
         new DataFrameAsserts(df, "a", "b", "c")
-                .expectDoubleColumns("a", "b", "c")
+                .expectFloatColumns("a", "b", "c")
                 .expectHeight(2)
-                .expectRow(0, 1., -1., 1.)
-                .expectRow(1, 2., 5., 0.);
+                .expectRow(0, 1.f, -1.f, 1.f)
+                .expectRow(1, 2.f, 5.f, 0.f);
     }
 
     @Test
@@ -29,13 +29,13 @@ public class ColumnSet_CompactDoubleTest {
                         Series.of("abc", "abcd")
                 )
                 .cols()
-                .compactDouble((String o) -> o.length() + 0.1);
+                .compactFloat((String o) -> o.length() + 0.1f);
 
         new DataFrameAsserts(df, "a", "b")
-                .expectDoubleColumns("a", "b")
+                .expectFloatColumns("a", "b")
                 .expectHeight(2)
-                .expectRow(0, 1.1, 3.1)
-                .expectRow(1, 2.1, 4.1);
+                .expectRow(0, 1.1f, 3.1f)
+                .expectRow(1, 2.1f, 4.1f);
     }
 
     @Test
@@ -47,13 +47,13 @@ public class ColumnSet_CompactDoubleTest {
                         Series.of("one", "two")
                 )
                 .cols("a", "b", "c")
-                .compactDouble(-1);
+                .compactFloat(-1f);
 
         new DataFrameAsserts(df, "a", "b", "c", "d")
-                .expectDoubleColumns("a", "b", "c")
+                .expectFloatColumns("a", "b", "c")
                 .expectHeight(2)
-                .expectRow(0, 1., -1., 1., "one")
-                .expectRow(1, 2., 5., 0., "two");
+                .expectRow(0, 1.f, -1.f, 1.f, "one")
+                .expectRow(1, 2.f, 5.f, 0.f, "two");
     }
 
     @Test
@@ -64,13 +64,13 @@ public class ColumnSet_CompactDoubleTest {
                         Series.of("abc", "abcd")
                 )
                 .cols("a", "c")
-                .compactDouble((String o) -> o.length() + 0.1);
+                .compactFloat((String o) -> o.length() + 0.1f);
 
         new DataFrameAsserts(df, "a", "b", "c")
-                .expectDoubleColumns("a", "c")
+                .expectFloatColumns("a", "c")
                 .expectHeight(2)
-                .expectRow(0, 1.1, "one", 3.1)
-                .expectRow(1, 2.1, "two", 4.1);
+                .expectRow(0, 1.1f, "one", 3.1f)
+                .expectRow(1, 2.1f, "two", 4.1f);
     }
 
 }

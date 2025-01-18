@@ -68,7 +68,7 @@ public class IntSeriesAdd {
     }
 
     @Benchmark
-    public Object mapAsInt_Add() {
-        return s1.mapAsInt(i -> i + 10);
+    public Object compactInt_Add() {
+        return s1.compactInt(i -> i + 10);
     }
 }
