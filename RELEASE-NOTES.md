@@ -1,6 +1,7 @@
 ## Release 1.2.0
 
 * #430 CsvLoader.nullString(String)
+* #435 ByteSources.process() exception for single-entry source
 
 ## Release 1.1.0
 
