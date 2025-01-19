@@ -26,12 +26,19 @@ public interface ByteSource {
     InputStream stream();
 
     default <T> T processStream(Function<InputStream, T> processor) {
-        return processor.apply(stream());
+        try (InputStream in = stream()) {
+            return processor.apply(in);
+        } catch (IOException e) {
+
+            // presumably IOException in this situation is only possible on close. All other exceptions won't be of the
+            // checked kind
+            throw new RuntimeException("Error closing stream", e);
+        }
     }
 
     default byte[] asBytes() {
-        try {
-            return stream().readAllBytes();
+        try (InputStream in = stream()) {
+            return in.readAllBytes();
         } catch (IOException e) {
             throw new RuntimeException("Error reading stream", e);
         }
