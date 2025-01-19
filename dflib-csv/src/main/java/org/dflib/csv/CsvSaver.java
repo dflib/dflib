@@ -4,6 +4,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.dflib.DataFrame;
 import org.dflib.Index;
+import org.dflib.codec.Codec;
 import org.dflib.row.RowProxy;
 
 import java.io.File;
@@ -14,14 +15,13 @@ import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.file.Path;
-import java.util.zip.GZIPOutputStream;
 
 public class CsvSaver {
 
     private CSVFormat format;
     private boolean createMissingDirs;
     private boolean printHeader;
-    private CompressionCodec compressionCodec;
+    private Codec codec;
 
     public CsvSaver() {
         this.format = CSVFormat.DEFAULT;
@@ -34,8 +34,8 @@ public class CsvSaver {
      *
      * @since 2.0.0
      */
-    public CsvSaver compression(CompressionCodec compressionCodec) {
-        this.compressionCodec = compressionCodec;
+    public CsvSaver compression(Codec codec) {
+        this.codec = codec;
         return this;
     }
 
@@ -127,20 +127,8 @@ public class CsvSaver {
     }
 
     private OutputStream compressIfNeeded(OutputStream out, String fileName) throws IOException {
-        CompressionCodec compression = this.compressionCodec != null
-                ? this.compressionCodec
-                : CompressionCodec.ofFileName(fileName);
-
-        if (compression == null) {
-            return out;
-        }
-
-        switch (compression) {
-            case GZIP:
-                return new GZIPOutputStream(out);
-            default:
-                throw new UnsupportedOperationException("Unrecognized compression: " + compression);
-        }
+        Codec codec = this.codec != null ? this.codec : Codec.ofUri(fileName).orElse(null);
+        return codec != null ? codec.compress(out) : out;
     }
 
     private void printHeader(CSVPrinter printer, Index index) throws IOException {

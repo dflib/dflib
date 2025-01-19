@@ -187,7 +187,7 @@ public interface ByteSource {
                 try {
                     return new FileInputStream(file);
                 } catch (IOException e) {
-                    throw new RuntimeException("Error reading file:" + file, e);
+                    throw new RuntimeException("Error reading file: " + file, e);
                 }
             }
         };

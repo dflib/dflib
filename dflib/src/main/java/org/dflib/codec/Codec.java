@@ -2,6 +2,7 @@ package org.dflib.codec;
 
 import org.dflib.ByteSource;
 
+import java.io.OutputStream;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -34,4 +35,10 @@ public interface Codec {
     }
 
     ByteSource decompress(ByteSource compressed);
+
+    /**
+     * @deprecated a placeholder until we implement ByteTarget analog of ByteSource
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    OutputStream compress(OutputStream uncompressed);
 }

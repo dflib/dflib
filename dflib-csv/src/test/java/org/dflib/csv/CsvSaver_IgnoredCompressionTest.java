@@ -1,18 +1,23 @@
 package org.dflib.csv;
 
 import org.dflib.DataFrame;
+import org.dflib.codec.Codec;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.StringWriter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CsvSaver_IgnoredCompressionTest {
 
     @ParameterizedTest
-    @EnumSource(CompressionCodec.class)
-    public void saveToString_IgnoreCompression(CompressionCodec c) {
+    @ValueSource(strings = "a.gz")
+    public void saveToString_IgnoreCompression(String fakeFileName) {
+        Codec c = Codec.ofUri(fakeFileName).orElse(null);
+        assertNotNull(c);
+
         DataFrame df = DataFrame.foldByRow("A", "B").of(
                 1, 2,
                 3, 4);
@@ -23,8 +28,11 @@ public class CsvSaver_IgnoredCompressionTest {
     }
 
     @ParameterizedTest
-    @EnumSource(CompressionCodec.class)
-    public void save_ToWriter_IgnoreCompression(CompressionCodec c) {
+    @ValueSource(strings = "a.gz")
+    public void save_ToWriter_IgnoreCompression(String fakeFileName) {
+
+        Codec c = Codec.ofUri(fakeFileName).orElse(null);
+        assertNotNull(c);
 
         DataFrame df = DataFrame.foldByRow("A", "B").of(
                 1, 2,
