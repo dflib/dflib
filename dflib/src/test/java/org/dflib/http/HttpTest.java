@@ -34,7 +34,7 @@ public class HttpTest {
             .createRuntime();
 
     private static String fixUrlPort(String template) {
-        return String.format(template, jetty.getPort());
+        return String.format(template, jetty.getUrl());
     }
 
     @Test
@@ -72,9 +72,9 @@ public class HttpTest {
     @Test
     void source_uri() {
         Http connector = Http.of(jetty.getUrl());
-        assertEquals(fixUrlPort("http://127.0.0.1:%s"), connector.source().uri().orElse(null));
-        assertEquals(fixUrlPort("http://127.0.0.1:%s/b"), connector.path("b").source().uri().orElse(null));
-        assertEquals(fixUrlPort("http://127.0.0.1:%s?p1=v1&p1=v2"), connector.queryParam("p1", "v1", "v2").source().uri().orElse(null));
+        assertEquals(fixUrlPort("%s"), connector.source().uri().orElse(null));
+        assertEquals(fixUrlPort("%s/b"), connector.path("b").source().uri().orElse(null));
+        assertEquals(fixUrlPort("%s?p1=v1&p1=v2"), connector.queryParam("p1", "v1", "v2").source().uri().orElse(null));
     }
 
     @Test
