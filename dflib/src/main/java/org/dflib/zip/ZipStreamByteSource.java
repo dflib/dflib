@@ -4,6 +4,8 @@ import org.dflib.ByteSource;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -13,10 +15,17 @@ class ZipStreamByteSource implements ByteSource {
 
     private final InputStream in;
     private final AtomicBoolean streamUsed;
+    private final String uri;
 
-    public ZipStreamByteSource(InputStream in) {
-        this.in = in;
+    public ZipStreamByteSource(InputStream in, String uri) {
+        this.in = Objects.requireNonNull(in);
+        this.uri = uri;
         this.streamUsed = new AtomicBoolean(false);
+    }
+
+    @Override
+    public Optional<String> uri() {
+        return Optional.ofNullable(uri);
     }
 
     @Override

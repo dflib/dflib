@@ -38,7 +38,7 @@ class ZipStreamByteSources implements ByteSources {
                     continue;
                 }
 
-                T val = processor.apply(entry.getName(), new ZipStreamByteSource(in));
+                T val = processor.apply(entry.getName(), new ZipStreamByteSource(in, entry.getName()));
                 result.put(entry.getName(), val);
                 in.closeEntry();
             }

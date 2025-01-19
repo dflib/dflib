@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -29,6 +31,16 @@ public interface ByteSource {
      * Returns source data as a stream.
      */
     InputStream stream();
+
+    /**
+     * Returns an optional identifier or a resource. This can be a file name, HTTP URL and such. If present, it helps
+     * the processor auto-detect compression options, provide better error messages, etc.
+     *
+     * @since 2.0.0
+     */
+    default Optional<String> uri() {
+        return Optional.empty();
+    }
 
     default <T> T processStream(Function<InputStream, T> processor) {
         try (InputStream in = stream()) {
@@ -91,11 +103,21 @@ public interface ByteSource {
      * @see Http
      */
     static ByteSource ofUrl(URL url) {
-        return () -> {
-            try {
-                return url.openStream();
-            } catch (IOException e) {
-                throw new RuntimeException("Error reading the URL:" + url, e);
+        Objects.requireNonNull(url);
+        return new ByteSource() {
+
+            @Override
+            public Optional<String> uri() {
+                return Optional.of(url.toString());
+            }
+
+            @Override
+            public InputStream stream() {
+                try {
+                    return url.openStream();
+                } catch (IOException e) {
+                    throw new RuntimeException("Error reading the URL:" + url, e);
+                }
             }
         };
     }
@@ -104,11 +126,26 @@ public interface ByteSource {
      * Returns a ByteSource mapped to a URL.
      */
     static ByteSource ofUrl(String url) {
-        try {
-            return ofUrl(new URL(url));
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("Bad URL:" + url, e);
-        }
+        Objects.requireNonNull(url);
+
+        return new ByteSource() {
+
+            @Override
+            public Optional<String> uri() {
+                return Optional.of(url);
+            }
+
+            @Override
+            public InputStream stream() {
+                try {
+                    return new URL(url).openStream();
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException("Bad URL:" + url, e);
+                } catch (IOException e) {
+                    throw new RuntimeException("Error reading the URL:" + url, e);
+                }
+            }
+        };
     }
 
     /**
@@ -135,11 +172,23 @@ public interface ByteSource {
      * @since 2.0.0
      */
     static ByteSource ofFile(File file) {
-        return () -> {
-            try {
-                return new FileInputStream(file);
-            } catch (IOException e) {
-                throw new RuntimeException("Error reading file:" + file, e);
+
+        Objects.requireNonNull(file);
+
+        return new ByteSource() {
+
+            @Override
+            public Optional<String> uri() {
+                return Optional.of(file.getAbsolutePath());
+            }
+
+            @Override
+            public InputStream stream() {
+                try {
+                    return new FileInputStream(file);
+                } catch (IOException e) {
+                    throw new RuntimeException("Error reading file:" + file, e);
+                }
             }
         };
     }

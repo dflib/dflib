@@ -33,6 +33,10 @@ public class HttpTest {
                     .addServlet(TestServlet.class))
             .createRuntime();
 
+    private static String fixUrlPort(String template) {
+        return String.format(template, jetty.getPort());
+    }
+
     @Test
     void concatUrls_Root() {
         assertEquals("/", Http.concatUrls("", null));
@@ -63,6 +67,14 @@ public class HttpTest {
         assertEquals("http://a?a=B+C", Http.of("http://a").queryParam("a", "B C").createURI());
         assertEquals("http://a?a=B%26C", Http.of("http://a").queryParam("a", "B&C").createURI());
         assertEquals("http://a?a=B&a=C&b=D", Http.of("http://a?a=B").queryParam("a", "C").queryParam("b", "D").createURI());
+    }
+
+    @Test
+    void source_uri() {
+        Http connector = Http.of(jetty.getUrl());
+        assertEquals(fixUrlPort("http://127.0.0.1:%s"), connector.source().uri().orElse(null));
+        assertEquals(fixUrlPort("http://127.0.0.1:%s/b"), connector.path("b").source().uri().orElse(null));
+        assertEquals(fixUrlPort("http://127.0.0.1:%s?p1=v1&p1=v2"), connector.queryParam("p1", "v1", "v2").source().uri().orElse(null));
     }
 
     @Test

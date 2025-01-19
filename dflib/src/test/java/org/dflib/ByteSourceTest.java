@@ -26,19 +26,40 @@ public class ByteSourceTest {
         Path p = Path.of(getClass().getResource("test.txt").toURI());
         assertTrue(Files.isRegularFile(p));
 
-        assertArrayEquals("test text".getBytes(), ByteSource.ofPath(p).asBytes());
+        ByteSource s = ByteSource.ofPath(p);
+        assertEquals(p.toAbsolutePath().toString(), s.uri().orElse(null));
+
+        assertArrayEquals("test text".getBytes(), s.asBytes());
     }
 
     @Test
     void ofFile() throws URISyntaxException {
         File f = new File(getClass().getResource("test.txt").toURI());
-        assertArrayEquals("test text".getBytes(), ByteSource.ofFile(f).asBytes());
+        ByteSource s = ByteSource.ofFile(f);
+        assertEquals(f.getAbsolutePath(), s.uri().orElse(null));
+        assertArrayEquals("test text".getBytes(), s.asBytes());
     }
 
     @Test
     void ofFileName() throws URISyntaxException {
         String f = new File(getClass().getResource("test.txt").toURI()).getAbsoluteFile().getPath();
-        assertArrayEquals("test text".getBytes(), ByteSource.ofFile(f).asBytes());
+        ByteSource s = ByteSource.ofFile(f);
+        assertEquals(f, s.uri().orElse(null));
+        assertArrayEquals("test text".getBytes(), s.asBytes());
+    }
+
+    @Test
+    void ofUrl() {
+        ByteSource s = ByteSource.ofUrl(getClass().getResource("test.txt"));
+        assertEquals(getClass().getResource("test.txt").toString(), s.uri().orElse(null));
+        assertArrayEquals("test text".getBytes(), s.asBytes());
+    }
+
+    @Test
+    void ofUrlString() {
+        ByteSource s = ByteSource.ofUrl(getClass().getResource("test.txt").toString());
+        assertEquals(getClass().getResource("test.txt").toString(), s.uri().orElse(null));
+        assertArrayEquals("test text".getBytes(), s.asBytes());
     }
 
     @Test
