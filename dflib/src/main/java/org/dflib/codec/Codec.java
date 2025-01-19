@@ -20,7 +20,7 @@ public interface Codec {
 
         int dot = uri.lastIndexOf('.');
         if (dot < 0 || dot == uri.length() - 1) {
-            return null;
+            return Optional.empty();
         }
 
         String extension = uri.substring(dot + 1);
