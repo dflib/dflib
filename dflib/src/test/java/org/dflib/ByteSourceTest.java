@@ -1,5 +1,6 @@
 package org.dflib;
 
+import org.dflib.codec.Codec;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -59,5 +60,11 @@ public class ByteSourceTest {
                 "a/test3.txt", "test 3 file contents",
                 "a/test2.txt", "test 2 file contents",
                 "b/c/test4.txt", "test 4 file contents"), texts);
+    }
+
+    @Test
+    void decompress() {
+        ByteSource src = ByteSource.ofUrl(getClass().getResource("compressed.txt.gz")).decompress(Codec.GZIP);
+        assertEquals("will be decompressed", new String(src.asBytes()));
     }
 }

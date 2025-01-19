@@ -27,6 +27,7 @@
 * #427 Type-specific versions of Exp.$val(..)
 * #432 Unify map-to-primitive-Series API with ColumnSets
 * #433 Primitive ValueMappers consistency
+* #438 ByteSource.decompress()
 
 ## Release 1.2.0
 

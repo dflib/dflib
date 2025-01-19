@@ -1,5 +1,6 @@
 package org.dflib;
 
+import org.dflib.codec.Codec;
 import org.dflib.http.Http;
 import org.dflib.zip.Zip;
 
@@ -47,6 +48,16 @@ public interface ByteSource {
      */
     default ByteSources unzip() {
         return Zip.of(this).sources();
+    }
+
+    /**
+     * Assuming the source represents a compressed stream, returns another source that will provide decompressed streams
+     * to the callers. See {@link Codec} for supported decompression algorithms.
+     *
+     * @since 2.0.0
+     */
+    default ByteSource decompress(Codec codec) {
+        return codec.decompress(this);
     }
 
     default byte[] asBytes() {
