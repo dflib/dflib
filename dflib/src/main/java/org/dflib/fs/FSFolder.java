@@ -114,10 +114,14 @@ public class FSFolder {
         return ByteSources.of(sources);
     }
 
+    public List<Path> list() {
+        return list(false);
+    }
+
     /**
      * Returns the list of all paths contained in the folder, filtered according to FSFolder configuration.
      */
-    public List<Path> list() {
+    public List<Path> list(boolean includeFolders) {
 
         File root = folderPath.toFile();
         if (!root.isDirectory()) {
@@ -127,14 +131,19 @@ public class FSFolder {
         // TODO: configurable symlink option
         // The defaults are to allow symlinks for files but not for directories
 
+        Predicate<Path> pathTypeFilter = includeFolders ? p -> true : Files::isRegularFile;
         Predicate<Path> filter = asList(extFilter, notHiddenFilter)
                 .stream()
                 .filter(f -> f != null)
-                .reduce(p -> Files.isRegularFile(p), Predicate::and);
+                .reduce(pathTypeFilter, Predicate::and);
 
         try {
             return Files.walk(folderPath, includeSubfolders ? Integer.MAX_VALUE : 1)
                     .filter(filter)
+
+                    // ensure stable, predictable processing order
+                    .sorted()
+
                     .collect(Collectors.toList());
         } catch (IOException e) {
             throw new RuntimeException(e);
