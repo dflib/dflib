@@ -78,12 +78,30 @@ public interface TimeExp extends Exp<LocalTime> {
         return lt(Exp.$timeVal(val));
     }
 
+    /**
+     * @param val a time value in ISO-8601 format (HH:mm:ss)
+     * @return `less then` condition
+     * @since 2.0.0
+     */
+    default Condition lt(String val) {
+        return lt(LocalTime.parse(val));
+    }
+
     default Condition le(Exp<LocalTime> exp) {
         return MapCondition2.mapVal("<=", this, exp.castAsTime(), (t1, t2) -> t1.compareTo(t2) <= 0);
     }
 
     default Condition le(LocalTime val) {
         return le(Exp.$timeVal(val));
+    }
+
+    /**
+     * @param val a time value in ISO-8601 format (HH:mm:ss)
+     * @return `less or equals` condition
+     * @since 2.0.0
+     */
+    default Condition le(String val) {
+        return le(LocalTime.parse(val));
     }
 
     default Condition gt(Exp<LocalTime> exp) {
@@ -94,6 +112,15 @@ public interface TimeExp extends Exp<LocalTime> {
         return gt(Exp.$timeVal(val));
     }
 
+    /**
+     * @param val a time value in ISO-8601 format (HH:mm:ss)
+     * @return `greater then` condition
+     * @since 2.0.0
+     */
+    default Condition gt(String val) {
+        return gt(LocalTime.parse(val));
+    }
+
     default Condition ge(Exp<LocalTime> exp) {
         return MapCondition2.mapVal(">=", this, exp.castAsTime(), (t1, t2) -> t1.compareTo(t2) >= 0);
     }
@@ -102,6 +129,14 @@ public interface TimeExp extends Exp<LocalTime> {
         return ge(Exp.$timeVal(val));
     }
 
+    /**
+     * @param val a time value in ISO-8601 format (HH:mm:ss)
+     * @return `greater or equals` condition
+     * @since 2.0.0
+     */
+    default Condition ge(String val) {
+        return ge(LocalTime.parse(val));
+    }
 
     default Condition between(Exp<LocalTime> from, Exp<LocalTime> to) {
         return MapCondition3.mapVal(
@@ -115,6 +150,34 @@ public interface TimeExp extends Exp<LocalTime> {
 
     default Condition between(LocalTime from, LocalTime to) {
         return between(Exp.$val(from), Exp.$val(to));
+    }
+
+    /**
+     * @param from a time value in ISO-8601 format (HH:mm:ss)
+     * @param to a time value in ISO-8601 format (HH:mm:ss)
+     * @return `between` condition
+     * @since 2.0.0
+     */
+    default Condition between(String from, String to) {
+        return between(LocalTime.parse(from), LocalTime.parse(to));
+    }
+
+    /**
+     * @param val a time value in ISO-8601 format (HH:mm:ss)
+     * @return `equals to` condition
+     * @since 2.0.0
+     */
+    default Condition eq(String val) {
+        return Exp.super.eq(val == null ? null : LocalTime.parse(val));
+    }
+
+    /**
+     * @param val a time value in ISO-8601 format (HH:mm:ss)
+     * @return `not equals to` condition
+     * @since 2.0.0
+     */
+    default Condition ne(String val) {
+        return Exp.super.ne(val == null ? null : LocalTime.parse(val));
     }
 
     /**

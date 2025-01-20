@@ -64,12 +64,30 @@ public interface OffsetDateTimeExp extends Exp<OffsetDateTime> {
         return lt(Exp.$offsetDateTimeVal(val));
     }
 
+    /**
+     * @param val a date-time with an offset value in ISO-8601 format (YYYY-MM-DD`T`HH:mm:ss±Z)
+     * @return `less then` condition
+     * @since 2.0.0
+     */
+    default Condition lt(String val) {
+        return lt(OffsetDateTime.parse(val));
+    }
+
     default Condition le(Exp<OffsetDateTime> exp) {
         return MapCondition2.mapVal("<=", this, exp.castAsOffsetDateTime(), (d1, d2) -> d1.compareTo(d2) <= 0);
     }
 
     default Condition le(OffsetDateTime val) {
         return le(Exp.$offsetDateTimeVal(val));
+    }
+
+    /**
+     * @param val a date-time with an offset value in ISO-8601 format (YYYY-MM-DD`T`HH:mm:ss±Z)
+     * @return `less or equals` condition
+     * @since 2.0.0
+     */
+    default Condition le(String val) {
+        return le(OffsetDateTime.parse(val));
     }
 
     default Condition gt(Exp<OffsetDateTime> exp) {
@@ -80,6 +98,15 @@ public interface OffsetDateTimeExp extends Exp<OffsetDateTime> {
         return gt(Exp.$offsetDateTimeVal(val));
     }
 
+    /**
+     * @param val a date-time with an offset value in ISO-8601 format (YYYY-MM-DD`T`HH:mm:ss±Z)
+     * @return `greater then` condition
+     * @since 2.0.0
+     */
+    default Condition gt(String val) {
+        return gt(OffsetDateTime.parse(val));
+    }
+
     default Condition ge(Exp<OffsetDateTime> exp) {
         return MapCondition2.mapVal(">=", this, exp.castAsOffsetDateTime(), (d1, d2) -> d1.compareTo(d2) >= 0);
     }
@@ -88,6 +115,14 @@ public interface OffsetDateTimeExp extends Exp<OffsetDateTime> {
         return ge(Exp.$offsetDateTimeVal(val));
     }
 
+    /**
+     * @param val a date-time with an offset value in ISO-8601 format (YYYY-MM-DD`T`HH:mm:ss±Z)
+     * @return `greater or equals` condition
+     * @since 2.0.0
+     */
+    default Condition ge(String val) {
+        return ge(OffsetDateTime.parse(val));
+    }
 
     default Condition between(Exp<OffsetDateTime> from, Exp<OffsetDateTime> to) {
         return MapCondition3.mapVal(
@@ -102,6 +137,34 @@ public interface OffsetDateTimeExp extends Exp<OffsetDateTime> {
 
     default Condition between(OffsetDateTime from, OffsetDateTime to) {
         return between(Exp.$val(from), Exp.$val(to));
+    }
+
+    /**
+     * @param from a date-time with an offset value in ISO-8601 format (YYYY-MM-DD`T`HH:mm:ss±Z)
+     * @param to a date-time with an offset value in ISO-8601 format (YYYY-MM-DD`T`HH:mm:ss±Z)
+     * @return `between` condition
+     * @since 2.0.0
+     */
+    default Condition between(String from, String to) {
+        return between(OffsetDateTime.parse(from), OffsetDateTime.parse(to));
+    }
+
+    /**
+     * @param val a date-time with an offset value in ISO-8601 format (YYYY-MM-DD`T`HH:mm:ss±Z)
+     * @return `equals to` condition
+     * @since 2.0.0
+     */
+    default Condition eq(String val) {
+        return Exp.super.eq(val == null ? null : OffsetDateTime.parse(val));
+    }
+
+    /**
+     * @param val a date-time with an offset value in ISO-8601 format (YYYY-MM-DD`T`HH:mm:ss±Z)
+     * @return `not equals to` condition
+     * @since 2.0.0
+     */
+    default Condition ne(String val) {
+        return Exp.super.ne(val == null ? null : OffsetDateTime.parse(val));
     }
 
     @Override

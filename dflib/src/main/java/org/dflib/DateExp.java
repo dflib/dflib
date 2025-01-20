@@ -39,12 +39,30 @@ public interface DateExp extends Exp<LocalDate> {
         return lt(Exp.$dateVal(val));
     }
 
+    /**
+     * @param val a date value in ISO-8601 format (YYYY-MM-DD)
+     * @return `less then` condition
+     * @since 2.0.0
+     */
+    default Condition lt(String val) {
+        return lt(LocalDate.parse(val));
+    }
+
     default Condition le(Exp<LocalDate> exp) {
         return MapCondition2.mapVal("<=", this, exp.castAsDate(), (d1, d2) -> d1.compareTo(d2) <= 0);
     }
 
     default Condition le(LocalDate val) {
         return le(Exp.$dateVal(val));
+    }
+
+    /**
+     * @param val a date value in ISO-8601 format (YYYY-MM-DD)
+     * @return `less or equals` condition
+     * @since 2.0.0
+     */
+    default Condition le(String val) {
+        return le(LocalDate.parse(val));
     }
 
     default Condition gt(Exp<LocalDate> exp) {
@@ -55,12 +73,30 @@ public interface DateExp extends Exp<LocalDate> {
         return gt(Exp.$dateVal(val));
     }
 
+    /**
+     * @param val a date value in ISO-8601 format (YYYY-MM-DD)
+     * @return `greater then` condition
+     * @since 2.0.0
+     */
+    default Condition gt(String val) {
+        return gt(LocalDate.parse(val));
+    }
+
     default Condition ge(Exp<LocalDate> exp) {
         return MapCondition2.mapVal(">=", this, exp.castAsDate(), (d1, d2) -> d1.compareTo(d2) >= 0);
     }
 
     default Condition ge(LocalDate val) {
         return ge(Exp.$dateVal(val));
+    }
+
+    /**
+     * @param val a date value in ISO-8601 format (YYYY-MM-DD)
+     * @return `greater or equals` condition
+     * @since 2.0.0
+     */
+    default Condition ge(String val) {
+        return ge(LocalDate.parse(val));
     }
 
     default Condition between(Exp<LocalDate> from, Exp<LocalDate> to) {
@@ -75,6 +111,34 @@ public interface DateExp extends Exp<LocalDate> {
 
     default Condition between(LocalDate from, LocalDate to) {
         return between(Exp.$val(from), Exp.$val(to));
+    }
+
+    /**
+     * @param from a date value in ISO-8601 format (YYYY-MM-DD)
+     * @param to a date value in ISO-8601 format (YYYY-MM-DD)
+     * @return `between` condition
+     * @since 2.0.0
+     */
+    default Condition between(String from, String to) {
+        return between(LocalDate.parse(from), LocalDate.parse(to));
+    }
+
+    /**
+     * @param val a date value in ISO-8601 format (YYYY-MM-DD)
+     * @return `equals to` condition
+     * @since 2.0.0
+     */
+    default Condition eq(String val) {
+        return Exp.super.eq(val == null ? null : LocalDate.parse(val));
+    }
+
+    /**
+     * @param val a date value in ISO-8601 format (YYYY-MM-DD)
+     * @return `not equals to` condition
+     * @since 2.0.0
+     */
+    default Condition ne(String val) {
+        return Exp.super.ne(val == null ? null : LocalDate.parse(val));
     }
 
     @Override

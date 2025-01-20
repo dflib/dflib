@@ -11,8 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
 
-import static org.dflib.Exp.$col;
-import static org.dflib.Exp.$time;
+import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
@@ -121,6 +120,30 @@ public class TimeColumnTest {
     }
 
     @Test
+    public void eqVal() {
+        Condition eq = $time("b").eq(LocalTime.of(4, 10, 1));
+
+        Series<LocalTime> s = Series.of(
+                LocalTime.of(3, 12, 11),
+                LocalTime.of(4, 10, 1),
+                LocalTime.of(14, 59, 59));
+
+        new BoolSeriesAsserts(eq.eval(s)).expectData(false, true, false);
+    }
+
+    @Test
+    public void eqStrVal() {
+        Condition eq = $time("b").eq("04:10:01");
+
+        Series<LocalTime> s = Series.of(
+                LocalTime.of(3, 12, 11),
+                LocalTime.of(4, 10, 1),
+                LocalTime.of(14, 59, 59));
+
+        new BoolSeriesAsserts(eq.eval(s)).expectData(false, true, false);
+    }
+
+    @Test
     public void ne() {
         Condition exp = $time("b").ne($col("c"));
 
@@ -129,6 +152,30 @@ public class TimeColumnTest {
                 LocalTime.of(4, 12, 11), LocalTime.of(14, 59, 59));
 
         new BoolSeriesAsserts(exp.eval(df)).expectData(false, true);
+    }
+
+    @Test
+    public void neVal() {
+        Condition ne = $time("b").ne(LocalTime.of(4, 10, 1));
+
+        Series<LocalTime> s = Series.of(
+                LocalTime.of(3, 12, 11),
+                LocalTime.of(4, 10, 1),
+                LocalTime.of(14, 59, 59));
+
+        new BoolSeriesAsserts(ne.eval(s)).expectData(true, false, true);
+    }
+
+    @Test
+    public void neStrVal() {
+        Condition ne = $time("b").ne("04:10:01");
+
+        Series<LocalTime> s = Series.of(
+                LocalTime.of(3, 12, 11),
+                LocalTime.of(4, 10, 1),
+                LocalTime.of(14, 59, 59));
+
+        new BoolSeriesAsserts(ne.eval(s)).expectData(true, false, true);
     }
 
     @Test
@@ -143,6 +190,30 @@ public class TimeColumnTest {
     }
 
     @Test
+    public void ltVal() {
+        Condition lt = $time("b").lt(LocalTime.of(4, 10, 1));
+
+        Series<LocalTime> s = Series.of(
+                LocalTime.of(3, 12, 11),
+                LocalTime.of(4, 10, 1),
+                LocalTime.of(14, 59, 59));
+
+        new BoolSeriesAsserts(lt.eval(s)).expectData(true, false, false);
+    }
+
+    @Test
+    public void ltStrVal() {
+        Condition lt = $time("b").lt(LocalTime.of(4, 10, 1));
+
+        Series<LocalTime> s = Series.of(
+                LocalTime.of(3, 12, 11),
+                LocalTime.of(4, 10, 1),
+                LocalTime.of(14, 59, 59));
+
+        new BoolSeriesAsserts(lt.eval(s)).expectData(true, false, false);
+    }
+
+    @Test
     public void le() {
         Condition le = $time("b").le($col("c"));
 
@@ -151,5 +222,57 @@ public class TimeColumnTest {
                 LocalTime.of(4, 12, 11), LocalTime.of(14, 59, 59));
 
         new BoolSeriesAsserts(le.eval(df)).expectData(true, true);
+    }
+
+    @Test
+    public void leVal() {
+        Condition le = $time("b").le(LocalTime.of(4, 10, 1));
+
+        Series<LocalTime> s = Series.of(
+                LocalTime.of(3, 12, 11),
+                LocalTime.of(4, 10, 1),
+                LocalTime.of(14, 59, 59));
+
+        new BoolSeriesAsserts(le.eval(s)).expectData(true, true, false);
+    }
+
+    @Test
+    public void leStrVal() {
+        Condition le = $time("b").le("04:10:01");
+
+        Series<LocalTime> s = Series.of(
+                LocalTime.of(3, 12, 11),
+                LocalTime.of(4, 10, 1),
+                LocalTime.of(14, 59, 59));
+
+        new BoolSeriesAsserts(le.eval(s)).expectData(true, true, false);
+    }
+
+    @Test
+    public void betweenVal() {
+        Condition le = $time("b").between(LocalTime.of(4, 10, 0), LocalTime.of(8, 10, 0));
+
+        Series<LocalTime> s = Series.of(
+                LocalTime.of(3, 12, 11),
+                LocalTime.of(4, 10, 1),
+                LocalTime.of(6, 10, 1),
+                LocalTime.of(8, 10, 1),
+                LocalTime.of(14, 59, 59));
+
+        new BoolSeriesAsserts(le.eval(s)).expectData(false, true, true, false, false);
+    }
+
+    @Test
+    public void betweenStrVal() {
+        Condition le = $time("b").between("04:10", "08:10");
+
+        Series<LocalTime> s = Series.of(
+                LocalTime.of(3, 12, 11),
+                LocalTime.of(4, 10, 1),
+                LocalTime.of(6, 10, 1),
+                LocalTime.of(8, 10, 1),
+                LocalTime.of(14, 59, 59));
+
+        new BoolSeriesAsserts(le.eval(s)).expectData(false, true, true, false, false);
     }
 }
