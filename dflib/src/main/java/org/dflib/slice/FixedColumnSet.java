@@ -6,13 +6,12 @@ import org.dflib.ColumnDataFrame;
 import org.dflib.ColumnSet;
 import org.dflib.Condition;
 import org.dflib.DataFrame;
-import org.dflib.DoubleSeries;
 import org.dflib.DoubleValueMapper;
 import org.dflib.Exp;
+import org.dflib.FloatValueMapper;
 import org.dflib.Index;
 import org.dflib.IntSeries;
 import org.dflib.IntValueMapper;
-import org.dflib.LongSeries;
 import org.dflib.LongValueMapper;
 import org.dflib.RowColumnSet;
 import org.dflib.RowMapper;
@@ -260,20 +259,20 @@ public class FixedColumnSet implements ColumnSet {
 
         for (int i = 0; i < w; i++) {
             Series s = getOrCreateColumn(i);
-            columns[i] = s instanceof BooleanSeries ? s.castAsBool() : s.mapAsBool(BoolValueMapper.fromObject());
+            columns[i] = s.compactBool();
         }
 
         return doMerge(columns);
     }
 
     @Override
-    public <V> DataFrame compactBool(BoolValueMapper<V> converter) {
+    public <V> DataFrame compactBool(BoolValueMapper<V> mapper) {
         int w = csIndex.length;
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
             Series s = getOrCreateColumn(i);
-            columns[i] = s.mapAsBool(converter);
+            columns[i] = s.compactBool(mapper);
         }
 
         return doMerge(columns);
@@ -284,24 +283,22 @@ public class FixedColumnSet implements ColumnSet {
         int w = csIndex.length;
         Series<?>[] columns = new Series[w];
 
-        IntValueMapper<?> converter = IntValueMapper.fromObject(forNull);
-
         for (int i = 0; i < w; i++) {
             Series s = getOrCreateColumn(i);
-            columns[i] = s instanceof IntSeries ? s.castAsInt() : s.mapAsInt(converter);
+            columns[i] = s.compactInt(forNull);
         }
 
         return doMerge(columns);
     }
 
     @Override
-    public <V> DataFrame compactInt(IntValueMapper<V> converter) {
+    public <V> DataFrame compactInt(IntValueMapper<V> mapper) {
         int w = csIndex.length;
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
             Series s = getOrCreateColumn(i);
-            columns[i] = s.mapAsInt(converter);
+            columns[i] = s.compactInt(mapper);
         }
 
         return doMerge(columns);
@@ -312,24 +309,48 @@ public class FixedColumnSet implements ColumnSet {
         int w = csIndex.length;
         Series<?>[] columns = new Series[w];
 
-        LongValueMapper<?> converter = LongValueMapper.fromObject(forNull);
-
         for (int i = 0; i < w; i++) {
             Series s = getOrCreateColumn(i);
-            columns[i] = s instanceof LongSeries ? s.castAsLong() : s.mapAsLong(converter);
+            columns[i] = s.compactLong(forNull);
         }
 
         return doMerge(columns);
     }
 
     @Override
-    public <V> DataFrame compactLong(LongValueMapper<V> converter) {
+    public <V> DataFrame compactLong(LongValueMapper<V> mapper) {
         int w = csIndex.length;
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
             Series s = getOrCreateColumn(i);
-            columns[i] = s.mapAsLong(converter);
+            columns[i] = s.compactLong(mapper);
+        }
+
+        return doMerge(columns);
+    }
+
+    @Override
+    public DataFrame compactFloat(float forNull) {
+        int w = csIndex.length;
+        Series<?>[] columns = new Series[w];
+
+        for (int i = 0; i < w; i++) {
+            Series s = getOrCreateColumn(i);
+            columns[i] = s.compactFloat(forNull);
+        }
+
+        return doMerge(columns);
+    }
+
+    @Override
+    public <V> DataFrame compactFloat(FloatValueMapper<V> mapper) {
+        int w = csIndex.length;
+        Series<?>[] columns = new Series[w];
+
+        for (int i = 0; i < w; i++) {
+            Series s = getOrCreateColumn(i);
+            columns[i] = s.compactFloat(mapper);
         }
 
         return doMerge(columns);
@@ -340,24 +361,22 @@ public class FixedColumnSet implements ColumnSet {
         int w = csIndex.length;
         Series<?>[] columns = new Series[w];
 
-        DoubleValueMapper<?> converter = DoubleValueMapper.fromObject(forNull);
-
         for (int i = 0; i < w; i++) {
             Series s = getOrCreateColumn(i);
-            columns[i] = s instanceof DoubleSeries ? s.castAsDouble() : s.mapAsDouble(converter);
+            columns[i] = s.compactDouble(forNull);
         }
 
         return doMerge(columns);
     }
 
     @Override
-    public <V> DataFrame compactDouble(DoubleValueMapper<V> converter) {
+    public <V> DataFrame compactDouble(DoubleValueMapper<V> mapper) {
         int w = csIndex.length;
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
             Series s = getOrCreateColumn(i);
-            columns[i] = s.mapAsDouble(converter);
+            columns[i] = s.compactDouble(mapper);
         }
 
         return doMerge(columns);

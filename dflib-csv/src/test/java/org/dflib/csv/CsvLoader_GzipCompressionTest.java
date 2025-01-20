@@ -1,6 +1,7 @@
 package org.dflib.csv;
 
 import org.dflib.DataFrame;
+import org.dflib.codec.Codec;
 import org.dflib.junit5.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,7 +15,7 @@ public class CsvLoader_GzipCompressionTest {
     @Test
     void loadFromFile() throws URISyntaxException {
         File in = new File(getClass().getResource("compressed.comma-separated-and-gzipped").toURI());
-        DataFrame df = Csv.loader().compression(CompressionCodec.GZIP).load(in);
+        DataFrame df = Csv.loader().compression(Codec.GZIP).load(in);
 
         new DataFrameAsserts(df, "A", "B")
                 .expectHeight(2)

@@ -59,12 +59,30 @@ public interface DateTimeExp extends Exp<LocalDateTime> {
         return lt(Exp.$dateTimeVal(val));
     }
 
+    /**
+     * @param val a date-time value in ISO-8601 format (YYYY-MM-DD`T`HH:mm:ss)
+     * @return `less then` condition
+     * @since 2.0.0
+     */
+    default Condition lt(String val) {
+        return lt(LocalDateTime.parse(val));
+    }
+
     default Condition le(Exp<LocalDateTime> exp) {
         return MapCondition2.mapVal("<=", this, exp.castAsDateTime(), (d1, d2) -> d1.compareTo(d2) <= 0);
     }
 
     default Condition le(LocalDateTime val) {
         return le(Exp.$dateTimeVal(val));
+    }
+
+    /**
+     * @param val a date-time value in ISO-8601 format (YYYY-MM-DD`T`HH:mm:ss)
+     * @return `less or equals` condition
+     * @since 2.0.0
+     */
+    default Condition le(String val) {
+        return le(LocalDateTime.parse(val));
     }
 
     default Condition gt(Exp<LocalDateTime> exp) {
@@ -75,6 +93,15 @@ public interface DateTimeExp extends Exp<LocalDateTime> {
         return gt(Exp.$dateTimeVal(val));
     }
 
+    /**
+     * @param val a date-time value in ISO-8601 format (YYYY-MM-DD`T`HH:mm:ss)
+     * @return `greater then` condition
+     * @since 2.0.0
+     */
+    default Condition gt(String val) {
+        return gt(LocalDateTime.parse(val));
+    }
+
     default Condition ge(Exp<LocalDateTime> exp) {
         return MapCondition2.mapVal(">=", this, exp.castAsDateTime(), (d1, d2) -> d1.compareTo(d2) >= 0);
     }
@@ -83,6 +110,14 @@ public interface DateTimeExp extends Exp<LocalDateTime> {
         return ge(Exp.$dateTimeVal(val));
     }
 
+    /**
+     * @param val a date-time value in ISO-8601 format (YYYY-MM-DD`T`HH:mm:ss)
+     * @return `greater or equals` condition
+     * @since 2.0.0
+     */
+    default Condition ge(String val) {
+        return ge(LocalDateTime.parse(val));
+    }
 
     default Condition between(Exp<LocalDateTime> from, Exp<LocalDateTime> to) {
         return MapCondition3.mapVal(
@@ -97,6 +132,34 @@ public interface DateTimeExp extends Exp<LocalDateTime> {
 
     default Condition between(LocalDateTime from, LocalDateTime to) {
         return between(Exp.$val(from), Exp.$val(to));
+    }
+
+    /**
+     * @param from a date-time value in ISO-8601 format (YYYY-MM-DD`T`HH:mm:ss)
+     * @param to a date-time value in ISO-8601 format (YYYY-MM-DD`T`HH:mm:ss)
+     * @return `between` condition
+     * @since 2.0.0
+     */
+    default Condition between(String from, String to) {
+        return between(LocalDateTime.parse(from), LocalDateTime.parse(to));
+    }
+
+    /**
+     * @param val a date-time value in ISO-8601 format (YYYY-MM-DD`T`HH:mm:ss)
+     * @return `equals to` condition
+     * @since 2.0.0
+     */
+    default Condition eq(String val) {
+        return Exp.super.eq(val == null ? null : LocalDateTime.parse(val));
+    }
+
+    /**
+     * @param val a date-time value in ISO-8601 format (YYYY-MM-DD`T`HH:mm:ss)
+     * @return `not equals to` condition
+     * @since 2.0.0
+     */
+    default Condition ne(String val) {
+        return Exp.super.ne(val == null ? null : LocalDateTime.parse(val));
     }
 
     @Override

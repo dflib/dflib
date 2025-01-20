@@ -1,5 +1,14 @@
 # UPGRADE INSTRUCTIONS
 
+## 2.0.0
+
+* [dflib #433](https://github.com/bootique/bootique-agrest/issues/433): Primitive value mappers (e.g. `IntValueMapper`) 
+now consistently handle nulls and default object-to-primitive conversions. The old conversion methods were deprecated 
+with proper notes in Javadocs. However, internally DFLib switched to the new methods for a number of operations. 
+Specifically, the behavior of `$bool(..)` column expression, `ColumnSet.compactBool(..)`, and `JsonLoader.boolCol(..)` 
+is now different in regard to numbers. Where previously it would evaluate a number to `false`, now it will evaluate
+to `true` all numbers except `0`.
+
 ## 1.1.0
 
 * [dflib #362](https://github.com/bootique/bootique-agrest/issues/362): Due to the changes in the aggregated column name generation algorithm, default aggregated column names are no longer equal to aggregation source column names. E.g. `$int("a").first()` would previously be called `a`, and now is called `first(a)`. This may cause an exception like the following: `java.lang.IllegalArgumentException: Value 'my_column' is not present in the Index`. To address this, you will need to either explicitly name your columns when specifying a column set (e.g., `df.group("a").cols("a", ...)`) or use `as` on a column-generating  expression  (e.g., `$int("a").first().as("a")`)

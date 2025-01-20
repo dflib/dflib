@@ -37,6 +37,11 @@ public interface IntSeries extends Series<Integer> {
     }
 
     @Override
+    default IntSeries compactInt(int forNull) {
+        return this;
+    }
+
+    @Override
     default Integer get(int index) {
         return getInt(index);
     }

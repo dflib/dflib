@@ -1,6 +1,7 @@
 package org.dflib.csv;
 
 import org.dflib.DataFrame;
+import org.dflib.codec.Codec;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -44,7 +45,7 @@ public class CsvSaver_GzipCompressionTest {
                 3, 4);
 
         Path out = outBase.resolve("save_ToFile");
-        Csv.saver().compression(CompressionCodec.GZIP).save(df, out.toFile());
+        Csv.saver().compression(Codec.GZIP).save(df, out.toFile());
 
         String csv = readAndUncompress(out);
         assertEquals("A,B\r\n" +
@@ -78,7 +79,7 @@ public class CsvSaver_GzipCompressionTest {
                 3, 4);
 
         Path out = outBase.resolve("save_ToFilePath.csv");
-        Csv.saver().compression(CompressionCodec.GZIP).save(df, out.toFile().getAbsolutePath());
+        Csv.saver().compression(Codec.GZIP).save(df, out.toFile().getAbsolutePath());
         String csv = readAndUncompress(out);
 
         assertEquals("A,B\r\n" +
@@ -94,7 +95,7 @@ public class CsvSaver_GzipCompressionTest {
                 3, 4);
 
         Path out = outBase.resolve("save_ToPath.csv");
-        Csv.saver().compression(CompressionCodec.GZIP).save(df, out);
+        Csv.saver().compression(Codec.GZIP).save(df, out);
         String csv = readAndUncompress(out);
 
         assertEquals("A,B\r\n" +

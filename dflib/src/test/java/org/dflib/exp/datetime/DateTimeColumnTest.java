@@ -12,8 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static org.dflib.Exp.$col;
-import static org.dflib.Exp.$dateTime;
+import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
@@ -116,6 +115,30 @@ public class DateTimeColumnTest {
     }
 
     @Test
+    public void eqVal() {
+        Condition eq = $dateTime("b").eq(LocalDateTime.of(2008, 1, 1, 1, 1));
+
+        Series<LocalDateTime> s = Series.of(
+                LocalDateTime.of(2007, 1, 8, 1, 1),
+                LocalDateTime.of(2008, 1, 1, 1, 1),
+                LocalDateTime.of(2009, 1, 8, 1, 1));
+
+        new BoolSeriesAsserts(eq.eval(s)).expectData(false, true, false);
+    }
+
+    @Test
+    public void eqStrVal() {
+        Condition eq = $dateTime("b").eq("2008-01-01T01:01");
+
+        Series<LocalDateTime> s = Series.of(
+                LocalDateTime.of(2007, 1, 8, 1, 1),
+                LocalDateTime.of(2008, 1, 1, 1, 1),
+                LocalDateTime.of(2009, 1, 8, 1, 1));
+
+        new BoolSeriesAsserts(eq.eval(s)).expectData(false, true, false);
+    }
+
+    @Test
     public void ne() {
         Condition ne = $dateTime("b").ne($col("c"));
 
@@ -125,6 +148,30 @@ public class DateTimeColumnTest {
                 LocalDateTime.of(2009, 3, 5, 1, 1, 1), LocalDateTime.of(2005, 3, 5, 1, 1, 2));
 
         new BoolSeriesAsserts(ne.eval(df)).expectData(false, true, true);
+    }
+
+    @Test
+    public void neVal() {
+        Condition ne = $dateTime("b").ne(LocalDateTime.of(2008, 1, 1, 1, 1));
+
+        Series<LocalDateTime> s = Series.of(
+                LocalDateTime.of(2007, 1, 8, 1, 1),
+                LocalDateTime.of(2008, 1, 1, 1, 1),
+                LocalDateTime.of(2009, 1, 8, 1, 1));
+
+        new BoolSeriesAsserts(ne.eval(s)).expectData(true, false, true);
+    }
+
+    @Test
+    public void neStrVal() {
+        Condition ne = $dateTime("b").ne("2008-01-01T01:01");
+
+        Series<LocalDateTime> s = Series.of(
+                LocalDateTime.of(2007, 1, 8, 1, 1),
+                LocalDateTime.of(2008, 1, 1, 1, 1),
+                LocalDateTime.of(2009, 1, 8, 1, 1));
+
+        new BoolSeriesAsserts(ne.eval(s)).expectData(true, false, true);
     }
 
     @Test
@@ -149,6 +196,16 @@ public class DateTimeColumnTest {
     }
 
     @Test
+    public void ltStrVal() {
+        Condition lt = $dateTime(0).lt("2008-01-01T01:01");
+        Series<LocalDateTime> s = Series.of(
+                LocalDateTime.of(2007, 1, 8, 1, 1),
+                LocalDateTime.of(2008, 1, 1, 1, 1),
+                LocalDateTime.of(2009, 1, 8, 1, 1));
+        new BoolSeriesAsserts(lt.eval(s)).expectData(true, false, false);
+    }
+
+    @Test
     public void leVal() {
         Condition le = $dateTime(0).le(LocalDateTime.of(2008, 1, 1, 1, 1));
         Series<LocalDateTime> s = Series.of(
@@ -159,8 +216,31 @@ public class DateTimeColumnTest {
     }
 
     @Test
+    public void leStrVal() {
+        Condition le = $dateTime(0).le("2008-01-01T01:01");
+        Series<LocalDateTime> s = Series.of(
+                LocalDateTime.of(2007, 1, 8, 1, 1),
+                LocalDateTime.of(2008, 1, 1, 1, 1),
+                LocalDateTime.of(2009, 1, 8, 1, 1));
+        new BoolSeriesAsserts(le.eval(s)).expectData(true, true, false);
+    }
+
+    @Test
     public void betweenVal() {
         Condition le = $dateTime(0).between(LocalDateTime.of(2008, 1, 1, 1, 1), LocalDateTime.of(2012, 1, 1, 1, 1));
+        Series<LocalDateTime> s = Series.of(
+                LocalDateTime.of(2008, 1, 1, 1, 0),
+                LocalDateTime.of(2008, 1, 1, 1, 1),
+                LocalDateTime.of(2008, 5, 8, 5, 6),
+                LocalDateTime.of(2012, 1, 1, 1, 1),
+                LocalDateTime.of(2012, 1, 1, 1, 2));
+
+        new BoolSeriesAsserts(le.eval(s)).expectData(false, true, true, true, false);
+    }
+
+    @Test
+    public void betweenStrVal() {
+        Condition le = $dateTime(0).between("2008-01-01T01:01", "2012-01-01T01:01");
         Series<LocalDateTime> s = Series.of(
                 LocalDateTime.of(2008, 1, 1, 1, 0),
                 LocalDateTime.of(2008, 1, 1, 1, 1),

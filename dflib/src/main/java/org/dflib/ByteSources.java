@@ -1,6 +1,7 @@
 package org.dflib;
 
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -45,7 +46,8 @@ public interface ByteSources {
                 return new ByteSources() {
                     @Override
                     public <T> Map<String, T> process(BiFunction<String, ByteSource, T> processor) {
-                        return Map.of(s1.getKey(), processor.apply(s1.getKey(), s1.getValue()));
+                        // since the result can contain nulls, we can't use Map.of()
+                        return Collections.singletonMap(s1.getKey(), processor.apply(s1.getKey(), s1.getValue()));
                     }
                 };
 

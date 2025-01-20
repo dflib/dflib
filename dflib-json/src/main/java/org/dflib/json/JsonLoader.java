@@ -164,31 +164,17 @@ public class JsonLoader {
     }
 
     /**
-     * Loads a DataFrame from the provided JSON String.
-     */
-    public DataFrame load(String json) {
-        DocumentContext context = JsonPath.parse(json, buildJSONPathConfiguration());
-        return load(context);
-    }
-
-
-    /**
      * Loads a DataFrame from a JSON file at the specified path.
      */
     public DataFrame load(Path filePath) {
-        return load(filePath.toFile());
+        return load(ByteSource.ofPath(filePath));
     }
 
     /**
      * Loads a DataFrame from a JSON file.
      */
     public DataFrame load(File file) {
-        try {
-            DocumentContext context = JsonPath.parse(file, buildJSONPathConfiguration());
-            return load(context);
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading JSON file: " + file, e);
-        }
+        return load(ByteSource.ofFile(file));
     }
 
     /**
@@ -196,14 +182,14 @@ public class JsonLoader {
      */
     public DataFrame load(InputStream in) {
         DocumentContext context = JsonPath.parse(in, buildJSONPathConfiguration());
-        return load(context);
+        return loadFromContext(context);
     }
 
     /**
      * @since 1.1.0
      */
     public DataFrame load(ByteSource src) {
-        return src.processStream(st -> load(st));
+        return src.processStream(this::load);
     }
 
     /**
@@ -214,7 +200,25 @@ public class JsonLoader {
     }
 
     public DataFrame load(Reader reader) {
-        StringBuilder json = new StringBuilder();
+        return load(loadJsonFromReader(reader));
+    }
+
+    /**
+     * Loads a DataFrame from the provided JSON String. Note that unlike a few other loaders, the String here denotes
+     * JSON content, not the file name.
+     */
+    public DataFrame load(String json) {
+        DocumentContext context = JsonPath.parse(json, buildJSONPathConfiguration());
+        return loadFromContext(context);
+    }
+
+    protected DataFrame loadFromContext(DocumentContext context) {
+        List<?> parsed = context.read(pathExpression);
+        return new JsonLoaderWorker(extractors).load(parsed);
+    }
+
+    private String loadJsonFromReader(Reader reader) {
+        StringBuilder buf = new StringBuilder();
 
         int len = 8192;
         char[] chars = new char[len];
@@ -222,19 +226,13 @@ public class JsonLoader {
 
         try {
             while ((read = reader.read(chars, 0, len)) != -1) {
-                json.append(chars, 0, read);
+                buf.append(chars, 0, read);
             }
         } catch (IOException e) {
             throw new RuntimeException("Error reading JSON", e);
         }
 
-        DocumentContext context = JsonPath.parse(json.toString(), buildJSONPathConfiguration());
-        return load(context);
-    }
-
-    protected DataFrame load(DocumentContext context) {
-        List<?> parsed = context.read(pathExpression);
-        return new JsonLoaderWorker(extractors).load(parsed);
+        return buf.toString();
     }
 
     protected Configuration buildJSONPathConfiguration() {

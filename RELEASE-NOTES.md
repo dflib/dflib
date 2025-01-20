@@ -21,13 +21,22 @@
 * #403 BoolAccum - java.lang.ArrayIndexOutOfBoundsException 
 * #407 "min", "max" aggregating functions for StrExp
 * #416 Zip ByteSource(s)
+* #417 Filesystem ByteSource(s)
 * #425 Series.replace(int,T)
 * #426 All "Json.load(..)" and "Json.save(..)" methods must be static
 * #427 Type-specific versions of Exp.$val(..)
+* #429 Invalid column names for CSVs with leading BOM char
+* #431 Datetime expressions' comparison operations to take String arguments 
+* #432 Unify map-to-primitive-Series API with ColumnSets
+* #433 Primitive ValueMappers consistency
+* #436 ByteSource.uri()
+* #438 ByteSource.decompress()
 
 ## Release 1.2.0
 
 * #430 CsvLoader.nullString(String)
+* #435 ByteSources.process() exception for single-entry source
+* #437 ByteSource doesn't close streams in internal methods
 
 ## Release 1.1.0
 

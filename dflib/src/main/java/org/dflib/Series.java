@@ -179,73 +179,177 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
-     * Converts the Series to a BooleanSeries of the same length, applying the provided function.
+     * Produces a primitive BooleanSeries by converting each series value to a boolean. This can be thought
+     * as a specific flavor of {@link #map(ValueMapper)} operation.
+     *
+     * @since 2.0.0
+     */
+    default BooleanSeries compactBool() {
+        return compactBool(BoolValueMapper.of());
+    }
+
+    /**
+     * Produces a primitive BooleanSeries by applying the provided mapper to each Series value. This can be thought
+     * as a specific flavor of {@link #map(ValueMapper)} operation.
+     *
+     * @since 2.0.0
      */
     // TODO: functionally, this is a duplicate of "locate()"
-    default BooleanSeries mapAsBool(BoolValueMapper<? super T> converter) {
+    default BooleanSeries compactBool(BoolValueMapper<? super T> mapper) {
         int len = size();
 
         boolean[] data = new boolean[len];
         for (int i = 0; i < len; i++) {
-            data[i] = converter.map(get(i));
+            data[i] = mapper.map(get(i));
         }
 
         return new BooleanArraySeries(data);
     }
 
     /**
-     * Converts the Series to an IntSeries of the same length, applying the provided function.
+     * @deprecated in favor of {@link #compactBool(BoolValueMapper)}
      */
-    default IntSeries mapAsInt(IntValueMapper<? super T> converter) {
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    default BooleanSeries mapAsBool(BoolValueMapper<? super T> mapper) {
+        return compactBool(mapper);
+    }
+
+    /**
+     * Produces a primitive IntSeries by converting each series value to an int and replacing nulls with the
+     * "forNull" argument. This can be thought as a specific flavor of {@link #map(ValueMapper)} operation.
+     *
+     * @since 2.0.0
+     */
+    default IntSeries compactInt(int forNull) {
+        return compactInt(IntValueMapper.of(forNull));
+    }
+
+    /**
+     * Produces a primitive IntSeries by applying the provided mapper to each Series value. This can be thought
+     * as a specific flavor of {@link #map(ValueMapper)} operation.
+     *
+     * @since 2.0.0
+     */
+    default IntSeries compactInt(IntValueMapper<? super T> mapper) {
         int len = size();
 
         int[] data = new int[len];
         for (int i = 0; i < len; i++) {
-            data[i] = converter.map(get(i));
+            data[i] = mapper.map(get(i));
         }
 
         return new IntArraySeries(data);
     }
 
     /**
-     * Converts the Series to a LongSeries of the same length, applying the provided function.
+     * @deprecated in favor of {@link #compactInt(IntValueMapper)}
      */
-    default LongSeries mapAsLong(LongValueMapper<? super T> converter) {
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    default IntSeries mapAsInt(IntValueMapper<? super T> mapper) {
+        return compactInt(mapper);
+    }
+
+    /**
+     * Produces a primitive LongSeries by converting each series value to a long and replacing nulls with the
+     * "forNull" argument. This can be thought as a specific flavor of {@link #map(ValueMapper)} operation.
+     *
+     * @since 2.0.0
+     */
+    default LongSeries compactLong(long forNull) {
+        return compactLong(LongValueMapper.of(forNull));
+    }
+
+    /**
+     * Produces a primitive LongSeries by applying the provided mapper to each Series value. This can be thought
+     * as a specific flavor of {@link #map(ValueMapper)} operation.
+     *
+     * @since 2.0.0
+     */
+    default LongSeries compactLong(LongValueMapper<? super T> mapper) {
         int len = size();
         long[] data = new long[len];
         for (int i = 0; i < len; i++) {
-            data[i] = converter.map(get(i));
+            data[i] = mapper.map(get(i));
         }
 
         return new LongArraySeries(data);
     }
 
     /**
-     * Converts the Series to a FloatSeries of the same length, applying the provided function.
-     *
-     * @since 1.1.0
+     * @deprecated in favor of {@link #compactLong(LongValueMapper)}
      */
-    default FloatSeries mapAsFloat(FloatValueMapper<? super T> converter) {
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    default LongSeries mapAsLong(LongValueMapper<? super T> mapper) {
+        return compactLong(mapper);
+    }
+
+    /**
+     * Produces a primitive FloatSeries by converting each series value to a long and replacing nulls with the
+     * "forNull" argument. This can be thought as a specific flavor of {@link #map(ValueMapper)} operation.
+     *
+     * @since 2.0.0
+     */
+    default FloatSeries compactFloat(float forNull) {
+        return compactFloat(FloatValueMapper.of(forNull));
+    }
+
+    /**
+     * Produces a primitive FloatSeries by applying the provided mapper to each Series value. This can be thought
+     * as a specific flavor of {@link #map(ValueMapper)} operation.
+     *
+     * @since 2.0.0
+     */
+    default FloatSeries compactFloat(FloatValueMapper<? super T> mapper) {
         int len = size();
         float[] data = new float[len];
         for (int i = 0; i < len; i++) {
-            data[i] = converter.map(get(i));
+            data[i] = mapper.map(get(i));
         }
 
         return new FloatArraySeries(data);
     }
 
     /**
-     * Converts the Series to a DoubleSeries of the same length, applying the provided function.
+     * @since 1.1.0
+     * @deprecated in favor of {@link #compactFloat(FloatValueMapper)}
      */
-    default DoubleSeries mapAsDouble(DoubleValueMapper<? super T> converter) {
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    default FloatSeries mapAsFloat(FloatValueMapper<? super T> mapper) {
+        return compactFloat(mapper);
+    }
+
+    /**
+     * Produces a primitive DoubleSeries by converting each series value to a long and replacing nulls with the
+     * "forNull" argument. This can be thought as a specific flavor of {@link #map(ValueMapper)} operation.
+     *
+     * @since 2.0.0
+     */
+    default DoubleSeries compactDouble(double forNull) {
+        return compactDouble(DoubleValueMapper.of(forNull));
+    }
+
+    /**
+     * Produces a primitive DoubleSeries by applying the provided mapper to each Series value. This can be thought
+     * as a specific flavor of {@link #map(ValueMapper)} operation.
+     *
+     * @since 2.0.0
+     */
+    default DoubleSeries compactDouble(DoubleValueMapper<? super T> mapper) {
         int len = size();
         double[] data = new double[len];
         for (int i = 0; i < len; i++) {
-            data[i] = converter.map(get(i));
+            data[i] = mapper.map(get(i));
         }
 
         return new DoubleArraySeries(data);
+    }
+
+    /**
+     * @deprecated in favor of {@link #compactDouble(DoubleValueMapper)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    default DoubleSeries mapAsDouble(DoubleValueMapper<? super T> mapper) {
+        return compactDouble(mapper);
     }
 
     /**

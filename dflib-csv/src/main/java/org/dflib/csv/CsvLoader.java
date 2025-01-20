@@ -15,13 +15,12 @@ import org.dflib.RowPredicate;
 import org.dflib.ValueMapper;
 import org.dflib.builder.DataFrameAppender;
 import org.dflib.builder.DataFrameByRowBuilder;
+import org.dflib.codec.Codec;
 import org.dflib.collection.Iterators;
 import org.dflib.sample.Sampler;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -36,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
-import java.util.zip.GZIPInputStream;
 
 /**
  * A configurable loader of CSV files.
@@ -56,7 +54,8 @@ public class CsvLoader {
     private int offset;
     private int limit = -1;
 
-    private CompressionCodec compressionCodec;
+    private Codec compressionCodec;
+    private boolean checkByteOrderMark;
 
     public CsvLoader() {
         this.format = CSVFormat.DEFAULT;
@@ -69,9 +68,24 @@ public class CsvLoader {
      *
      * @since 2.0.0
      */
-    public CsvLoader compression(CompressionCodec compressionCodec) {
-        this.compressionCodec = compressionCodec;
-	return this;
+    public CsvLoader compression(Codec codec) {
+        this.compressionCodec = codec;
+        return this;
+    }
+
+    /**
+     * Checks the source leading bytes for "byte order mark" (BOM) placed there by certain CSV generators, and, if
+     * present, uses it to determine content encoding. If the encoding is set explicitly by the user, the BOM is
+     * stripped from the stream and is otherwise ignored. Without this setting, the BOM bytes will be treated as content
+     * and usually prepended to the name of the first column in the resulting DataFrame. This is highly confusing, since
+     * those symbols are invisible.
+     *
+     * <p>This setting is "safe" in a sense that it works with files with or without a BOM. It is not a default in
+     * {@link CsvLoader} though, as it creates some minor overhead on load.
+     */
+    public CsvLoader checkByteOrderMark() {
+        this.checkByteOrderMark = true;
+        return this;
     }
 
     /**
@@ -266,42 +280,42 @@ public class CsvLoader {
     }
 
     public CsvLoader intCol(int column) {
-        colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.fromString()));
+        colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.ofStr()));
         return this;
     }
 
     public CsvLoader intCol(String column) {
-        colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.fromString()));
+        colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.ofStr()));
         return this;
     }
 
     public CsvLoader intCol(int column, int forNull) {
-        colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.fromString(forNull)));
+        colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.ofStr(forNull)));
         return this;
     }
 
     public CsvLoader intCol(String column, int forNull) {
-        colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.fromString(forNull)));
+        colConfigurators.add(ColConfigurator.intCol(column, IntValueMapper.ofStr(forNull)));
         return this;
     }
 
     public CsvLoader longCol(int column) {
-        colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.fromString()));
+        colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.ofStr()));
         return this;
     }
 
     public CsvLoader longCol(String column) {
-        colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.fromString()));
+        colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.ofStr()));
         return this;
     }
 
     public CsvLoader longCol(int column, long forNull) {
-        colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.fromString(forNull)));
+        colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.ofStr(forNull)));
         return this;
     }
 
     public CsvLoader longCol(String column, long forNull) {
-        colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.fromString(forNull)));
+        colConfigurators.add(ColConfigurator.longCol(column, LongValueMapper.ofStr(forNull)));
         return this;
     }
 
@@ -309,7 +323,7 @@ public class CsvLoader {
      * @since 1.1.0
      */
     public CsvLoader floatCol(int column) {
-        colConfigurators.add(ColConfigurator.floatCol(column, FloatValueMapper.fromString()));
+        colConfigurators.add(ColConfigurator.floatCol(column, FloatValueMapper.ofStr()));
         return this;
     }
 
@@ -317,27 +331,27 @@ public class CsvLoader {
      * @since 1.1.0
      */
     public CsvLoader floatCol(String column) {
-        colConfigurators.add(ColConfigurator.floatCol(column, FloatValueMapper.fromString()));
+        colConfigurators.add(ColConfigurator.floatCol(column, FloatValueMapper.ofStr()));
         return this;
     }
 
     public CsvLoader doubleCol(int column) {
-        colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.fromString()));
+        colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.ofStr()));
         return this;
     }
 
     public CsvLoader doubleCol(String column) {
-        colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.fromString()));
+        colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.ofStr()));
         return this;
     }
 
     public CsvLoader doubleCol(int column, double forNull) {
-        colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.fromString(forNull)));
+        colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.ofStr(forNull)));
         return this;
     }
 
     public CsvLoader doubleCol(String column, double forNull) {
-        colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.fromString(forNull)));
+        colConfigurators.add(ColConfigurator.doubleCol(column, DoubleValueMapper.ofStr(forNull)));
         return this;
     }
 
@@ -463,8 +477,8 @@ public class CsvLoader {
 
     /**
      * Convert missing values to nulls instead of empty strings. Equivalent to calling <code>nullString("")</code>
-     * 
-     * @see #nullString(String) 
+     *
+     * @see #nullString(String)
      */
     public CsvLoader emptyStringIsNull() {
         return nullString("");
@@ -482,42 +496,40 @@ public class CsvLoader {
     }
 
     public DataFrame load(Path filePath) {
-        return load(filePath.toFile());
+        return load(ByteSource.ofPath(filePath));
     }
 
     public DataFrame load(File file) {
-        try (InputStream in = decompressIfNeeded(new FileInputStream(file), file.getName())) {
-            return load(in, file.getPath());
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading file: " + file, e);
-        }
+        return load(ByteSource.ofFile(file));
     }
 
     public DataFrame load(String filePath) {
-        return load(new File(filePath));
+        return load(ByteSource.ofFile(filePath));
     }
 
     /**
      * @since 1.1.0
      */
     public DataFrame load(ByteSource src) {
-        return src.processStream(st -> load(st, "?"));
+
+        Codec codec = this.compressionCodec != null
+                ? this.compressionCodec
+                : Codec.ofUri(src.uri().orElse("")).orElse(null);
+
+        ByteSource plainSrc = codec != null ? src.decompress(codec) : src;
+
+        try (Reader in = createReader(plainSrc)) {
+            return load(in);
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading source: " + plainSrc.uri().orElse("?"), e);
+        }
     }
 
     /**
      * @since 1.1.0
      */
-    public Map<String, DataFrame> loadAll(ByteSources src) {
-        return src.processStreams((name, st) -> load(st, name));
-    }
-
-    private DataFrame load(InputStream in, String resourceId) {
-        Charset encoding = this.encoding != null ? this.encoding : Charset.defaultCharset();
-        try (Reader r = new InputStreamReader(in, encoding)) {
-            return load(r);
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading source: " + resourceId, e);
-        }
+    public Map<String, DataFrame> loadAll(ByteSources srcs) {
+        return srcs.process((name, src) -> load(src));
     }
 
     public DataFrame load(Reader reader) {
@@ -567,6 +579,15 @@ public class CsvLoader {
         return appender.toDataFrame();
     }
 
+    private Reader createReader(ByteSource src) throws IOException {
+        return checkByteOrderMark ? BOM.reader(src, encoding) : createNonBomReader(src);
+    }
+
+    private Reader createNonBomReader(ByteSource src) {
+        Charset encoding = this.encoding != null ? this.encoding : Charset.defaultCharset();
+        return new InputStreamReader(src.stream(), encoding);
+    }
+
     private Iterator<CSVRecord> read(Reader reader) {
         try {
             return format.parse(reader).iterator();
@@ -612,20 +633,5 @@ public class CsvLoader {
         return extractors;
     }
 
-    private InputStream decompressIfNeeded(InputStream in, String fileName) throws IOException {
-        CompressionCodec compression = this.compressionCodec != null
-                ? this.compressionCodec
-                : CompressionCodec.ofFileName(fileName);
 
-        if (compression == null) {
-            return in;
-        }
-
-        switch (compression) {
-            case GZIP:
-                return new GZIPInputStream(in);
-            default:
-                throw new UnsupportedOperationException("Unrecognized compression: " + compression);
-        }
-    }
 }

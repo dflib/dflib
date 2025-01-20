@@ -81,6 +81,30 @@ public class DateColumnTest {
     }
 
     @Test
+    public void eqVal() {
+        Condition eq = $date("b").eq(LocalDate.of(2007, 1, 8));
+
+        Series<LocalDate> s = Series.of(
+                LocalDate.of(2007, 1, 8),
+                LocalDate.of(2008, 1, 1),
+                LocalDate.of(2009, 1, 8));
+
+        new BoolSeriesAsserts(eq.eval(s)).expectData(true, false, false);
+    }
+
+    @Test
+    public void eqStrVal() {
+        Condition eq = $date("b").eq("2009-01-08");
+
+        Series<LocalDate> s = Series.of(
+                LocalDate.of(2007, 1, 8),
+                LocalDate.of(2008, 1, 1),
+                LocalDate.of(2009, 1, 8));
+
+        new BoolSeriesAsserts(eq.eval(s)).expectData(false, false, true);
+    }
+
+    @Test
     public void ne() {
         Condition ne = $date("b").ne($col("c"));
 
@@ -89,6 +113,30 @@ public class DateColumnTest {
                 LocalDate.of(2009, 2, 2), LocalDate.of(2005, 3, 5));
 
         new BoolSeriesAsserts(ne.eval(df)).expectData(false, true);
+    }
+
+    @Test
+    public void neVal() {
+        Condition ne = $date("b").ne(LocalDate.of(2007, 1, 8));
+
+        Series<LocalDate> s = Series.of(
+                LocalDate.of(2007, 1, 8),
+                LocalDate.of(2008, 1, 1),
+                LocalDate.of(2009, 1, 8));
+
+        new BoolSeriesAsserts(ne.eval(s)).expectData(false, true, true);
+    }
+
+    @Test
+    public void neStrVal() {
+        Condition ne = $date("b").ne("2009-01-08");
+
+        Series<LocalDate> s = Series.of(
+                LocalDate.of(2007, 1, 8),
+                LocalDate.of(2008, 1, 1),
+                LocalDate.of(2009, 1, 8));
+
+        new BoolSeriesAsserts(ne.eval(s)).expectData(true, true, false);
     }
 
     @Test
@@ -110,6 +158,13 @@ public class DateColumnTest {
     }
 
     @Test
+    public void ltStrVal() {
+        Condition lt = $date(0).lt("2008-01-01");
+        Series<LocalDate> s = Series.of(LocalDate.of(2007, 1, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 1, 8));
+        new BoolSeriesAsserts(lt.eval(s)).expectData(true, false, false);
+    }
+
+    @Test
     public void leVal() {
         Condition le = $date(0).le(LocalDate.of(2008, 1, 1));
         Series<LocalDate> s = Series.of(LocalDate.of(2007, 1, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 1, 8));
@@ -117,8 +172,28 @@ public class DateColumnTest {
     }
 
     @Test
+    public void leStrVal() {
+        Condition le = $date(0).le("2008-01-01");
+        Series<LocalDate> s = Series.of(LocalDate.of(2007, 1, 8), LocalDate.of(2008, 1, 1), LocalDate.of(2009, 1, 8));
+        new BoolSeriesAsserts(le.eval(s)).expectData(true, true, false);
+    }
+
+    @Test
     public void betweenVal() {
         Condition le = $date(0).between(LocalDate.of(2008, 1, 1), LocalDate.of(2012, 1, 1));
+        Series<LocalDate> s = Series.of(
+                LocalDate.of(2007, 12, 31),
+                LocalDate.of(2008, 1, 1),
+                LocalDate.of(2008, 5, 8),
+                LocalDate.of(2012, 1, 1),
+                LocalDate.of(2012, 1, 2));
+
+        new BoolSeriesAsserts(le.eval(s)).expectData(false, true, true, true, false);
+    }
+
+    @Test
+    public void betweenStrVal() {
+        Condition le = $date(0).between("2008-01-01", "2012-01-01");
         Series<LocalDate> s = Series.of(
                 LocalDate.of(2007, 12, 31),
                 LocalDate.of(2008, 1, 1),
