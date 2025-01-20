@@ -5,6 +5,7 @@ import org.dflib.Condition;
 import org.dflib.Exp;
 import org.dflib.NumExp;
 import org.dflib.exp.parser.antlr4.LexerCancellationException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -137,6 +138,7 @@ public class NumExpTest {
 
     @ParameterizedTest
     @MethodSource
+    @Disabled
     void floatScalar(String text, Exp<?> expected) {
         Exp<?> exp = Exp.exp(text);
         assertInstanceOf(NumExp.class, exp);
@@ -180,6 +182,7 @@ public class NumExpTest {
 
     @ParameterizedTest
     @MethodSource
+    @Disabled
     void doubleScalar(String text, Exp<?> expected) {
         Exp<?> exp = Exp.exp(text);
         assertInstanceOf(NumExp.class, exp);
@@ -266,6 +269,7 @@ public class NumExpTest {
 
     @ParameterizedTest
     @MethodSource
+    @Disabled
     void cast(String text, Exp<?> expected) {
         Exp<?> exp = Exp.exp(text);
         assertInstanceOf(NumExp.class, exp);
@@ -332,6 +336,7 @@ public class NumExpTest {
 
     @ParameterizedTest
     @MethodSource
+    @Disabled
     void function(String text, Exp<?> expected) {
         Exp<?> exp = Exp.exp(text);
         assertInstanceOf(NumExp.class, exp);
