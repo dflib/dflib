@@ -10,10 +10,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -73,13 +69,7 @@ public class DateExpTest {
                 arguments("castAsDate(null)", Exp.$val(null).castAsDate()),
                 arguments("castAsDate(1)", Exp.$intVal(1).castAsDate()),
                 arguments("castAsDate(true)", Exp.$boolVal(true).castAsDate()),
-                arguments("castAsDate('1')", Exp.$strVal("1").castAsDate()),
-                arguments("castAsDate(12:00:00)", Exp.$timeVal(LocalTime.parse("12:00:00")).castAsDate()),
-                arguments("castAsDate(2024-01-15)", Exp.$dateVal(LocalDate.parse("2024-01-15")).castAsDate()),
-                arguments("castAsDate(2024-01-15T12:00:00)",
-                        Exp.$dateTimeVal(LocalDateTime.parse("2024-01-15T12:00:00")).castAsDate()),
-                arguments("castAsDate(2024-01-15T12:00:00+01:00)",
-                        Exp.$offsetDateTimeVal(OffsetDateTime.parse("2024-01-15T12:00:00+01:00")).castAsDate())
+                arguments("castAsDate('1')", Exp.$strVal("1").castAsDate())
         );
     }
 
@@ -108,14 +98,13 @@ public class DateExpTest {
                 arguments("date(1) = date(2)", Exp.$date(1).eq(Exp.$date(2))),
                 arguments("date(1) != date(2)", Exp.$date(1).ne(Exp.$date(2))),
                 arguments("date(1) between date(2) and date(3)", Exp.$date(1).between(Exp.$date(2), Exp.$date(3))),
-                arguments("1970-01-01 = date(2)", Exp.$dateVal(LocalDate.parse("1970-01-01")).eq(Exp.$date(2))),
-                arguments("date(1) = plusDays(date(2), 1)", Exp.$date(1).eq(Exp.$date(2).plusDays(1)))
+                arguments("date(1) = plusDays(date(2), 1)", Exp.$date(1).eq(Exp.$date(2).plusDays(1))),
+                arguments("date(1) = '1970-01-01'", Exp.$date(1).eq("1970-01-01"))
         );
     }
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "date(1) = '1970-01-01'",
             "date(1) = dateTime(2)",
             "date(1) = true",
             "date(1) = null",
@@ -136,8 +125,7 @@ public class DateExpTest {
         return Stream.of(
                 arguments("year(date(1))", Exp.$date(1).year()),
                 arguments("month(date(1))", Exp.$date(1).month()),
-                arguments("day(date(1))", Exp.$date(1).day()),
-                arguments("year(1970-01-01)", Exp.$dateVal(LocalDate.parse("1970-01-01")).year())
+                arguments("day(date(1))", Exp.$date(1).day())
         );
     }
 
@@ -167,8 +155,7 @@ public class DateExpTest {
                 arguments("plusMonths(date(1), 6)", Exp.$date(1).plusMonths(6)),
                 arguments("plusWeeks(date(1), 3)", Exp.$date(1).plusWeeks(3)),
                 arguments("plusDays(date(1), 10)", Exp.$date(1).plusDays(10)),
-                arguments("plusYears(date(1), -2)", Exp.$date(1).plusYears(-2)),
-                arguments("plusYears(1970-01-01, 2)", Exp.$dateVal(LocalDate.parse("1970-01-01")).plusYears(2))
+                arguments("plusYears(date(1), -2)", Exp.$date(1).plusYears(-2))
         );
     }
 

@@ -10,10 +10,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -73,13 +69,7 @@ public class TimeExpTest {
                 arguments("castAsTime(null)", Exp.$val(null).castAsTime()),
                 arguments("castAsTime(1)", Exp.$intVal(1).castAsTime()),
                 arguments("castAsTime(true)", Exp.$boolVal(true).castAsTime()),
-                arguments("castAsTime('1')", Exp.$strVal("1").castAsTime()),
-                arguments("castAsTime(12:00:00)", Exp.$timeVal(LocalTime.parse("12:00:00")).castAsTime()),
-                arguments("castAsTime(2024-01-15)", Exp.$dateVal(LocalDate.parse("2024-01-15")).castAsTime()),
-                arguments("castAsTime(2024-01-15T12:00:00)",
-                        Exp.$dateTimeVal(LocalDateTime.parse("2024-01-15T12:00:00")).castAsTime()),
-                arguments("castAsTime(2024-01-15T12:00:00+01:00)",
-                        Exp.$offsetDateTimeVal(OffsetDateTime.parse("2024-01-15T12:00:00+01:00")).castAsTime())
+                arguments("castAsTime('1')", Exp.$strVal("1").castAsTime())
         );
     }
 
@@ -108,14 +98,13 @@ public class TimeExpTest {
                 arguments("time(1) = time(2)", Exp.$time(1).eq(Exp.$time(2))),
                 arguments("time(1) != time(2)", Exp.$time(1).ne(Exp.$time(2))),
                 arguments("time(1) between time(2) and time(3)", Exp.$time(1).between(Exp.$time(2), Exp.$time(3))),
-                arguments("12:00:00 = time(2)", Exp.$val(LocalTime.parse("12:00:00")).eq(Exp.$time(2))),
+                arguments("time(2) = '12:00:00'", Exp.$time(2).eq("12:00:00")),
                 arguments("time(1) = plusHours(time(2), 1)", Exp.$time(1).eq(Exp.$time(2).plusHours(1)))
         );
     }
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "time(1) = '11:00:00'",
             "time(1) = dateTime(2)",
             "time(1) = true",
             "time(1) = null",
@@ -137,8 +126,7 @@ public class TimeExpTest {
                 arguments("hour(time(1))", Exp.$time(1).hour()),
                 arguments("minute(time(1))", Exp.$time(1).minute()),
                 arguments("second(time(1))", Exp.$time(1).second()),
-                arguments("millisecond(time(1))", Exp.$time(1).millisecond()),
-                arguments("hour(12:34:56)", Exp.$timeVal(LocalTime.parse("12:34:56")).hour())
+                arguments("millisecond(time(1))", Exp.$time(1).millisecond())
         );
     }
 

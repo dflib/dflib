@@ -8,10 +8,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -76,7 +72,7 @@ public class ConditionTest {
     @ParameterizedTest
     @ValueSource(strings = {"TRUE", "FALSE", "True", "False"})
     void scalar_parsingError(String text) {
-        assertThrows(ParseCancellationException.class, () -> Exp.exp(text));
+        assertEquals(Exp.exp(text), Exp.$col(text));
     }
 
     @ParameterizedTest
@@ -130,13 +126,7 @@ public class ConditionTest {
                 arguments("castAsBool(null)", Exp.$val(null).castAsBool()),
                 arguments("castAsBool(1)", Exp.$val(1).castAsBool()),
                 arguments("castAsBool(true)", Exp.$boolVal(true).castAsBool()),
-                arguments("castAsBool('1')", Exp.$strVal("1").castAsBool()),
-                arguments("castAsBool(12:00:00)", Exp.$val(LocalTime.parse("12:00:00")).castAsBool()),
-                arguments("castAsBool(2024-01-15)", Exp.$val(LocalDate.parse("2024-01-15")).castAsBool()),
-                arguments("castAsBool(2024-01-15T12:00:00)",
-                        Exp.$val(LocalDateTime.parse("2024-01-15T12:00:00")).castAsBool()),
-                arguments("castAsBool(2024-01-15T12:00:00+01:00)",
-                        Exp.$val(OffsetDateTime.parse("2024-01-15T12:00:00+01:00")).castAsBool())
+                arguments("castAsBool('1')", Exp.$strVal("1").castAsBool())
         );
     }
 
