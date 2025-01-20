@@ -5,13 +5,10 @@ import org.dflib.ByteSources;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 
@@ -52,6 +49,7 @@ public class Zip_RandomAccessTest {
     void source() throws URISyntaxException {
         Zip zip = Zip.of(Path.of(getClass().getResource("test.zip").toURI()));
         ByteSource src = zip.source("a/test2.txt");
+        assertEquals("a/test2.txt", src.uri().orElse(null));
         assertEquals("test 2 file contents", new String(src.asBytes()));
     }
 
@@ -73,22 +71,14 @@ public class Zip_RandomAccessTest {
         ByteSources srcs = zip.sources();
         assertNotNull(srcs);
 
-        // the map must be safe for parallel access
-        ConcurrentMap<String, String> texts = new ConcurrentHashMap<>();
-        srcs.processStreams((n, st) -> {
-            try {
-                return texts.put(n, new String(st.readAllBytes()));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        // capturing both source names and contents
+        Map<String, String> labeledTexts = srcs.process((n, s) -> s.uri().orElse("") + ":" + new String(s.asBytes()));
 
         // directories must be skipped
         assertEquals(Map.of(
-                "test.txt", "test file contents",
-                "a/test3.txt", "test 3 file contents",
-                "a/test2.txt", "test 2 file contents",
-                "b/c/test4.txt", "test 4 file contents"), texts);
-
+                "test.txt", "test.txt:test file contents",
+                "a/test3.txt", "a/test3.txt:test 3 file contents",
+                "a/test2.txt", "a/test2.txt:test 2 file contents",
+                "b/c/test4.txt", "b/c/test4.txt:test 4 file contents"), labeledTexts);
     }
 }

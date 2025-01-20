@@ -1,6 +1,5 @@
 package org.dflib.exp.parser;
 
-import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.dflib.Condition;
 import org.dflib.Exp;
 import org.dflib.StrExp;
@@ -9,10 +8,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -93,13 +88,7 @@ public class StrExpTest {
                 arguments("castAsStr(null)", Exp.$val(null).castAsStr()),
                 arguments("castAsStr(1)", Exp.$val(1).castAsStr()),
                 arguments("castAsStr(true)", Exp.$val(true).castAsStr()),
-                arguments("castAsStr('1')", Exp.$strVal("1").castAsStr()),
-                arguments("castAsStr(12:00:00)", Exp.$val(LocalTime.parse("12:00:00")).castAsStr()),
-                arguments("castAsStr(2024-01-15)", Exp.$val(LocalDate.parse("2024-01-15")).castAsStr()),
-                arguments("castAsStr(2024-01-15T12:00:00)",
-                        Exp.$val(LocalDateTime.parse("2024-01-15T12:00:00")).castAsStr()),
-                arguments("castAsStr(2024-01-15T12:00:00+01:00)",
-                        Exp.$val(OffsetDateTime.parse("2024-01-15T12:00:00+01:00")).castAsStr())
+                arguments("castAsStr('1')", Exp.$strVal("1").castAsStr())
         );
     }
 

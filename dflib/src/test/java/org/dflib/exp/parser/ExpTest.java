@@ -1,17 +1,11 @@
 package org.dflib.exp.parser;
 
-import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.dflib.Exp;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,8 +29,8 @@ class ExpTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"NULL", "Null", "None", "nil", "void"})
-    void nullScalar_throws(String text) {
-        assertThrows(ExpParserException.class, () -> Exp.exp(text));
+    void nullScalar_parsingErrorAsGenericColumn(String text) {
+        assertEquals(Exp.exp(text), Exp.$col(text));
     }
 
     @ParameterizedTest
@@ -85,9 +79,7 @@ class ExpTest {
     static Stream<Arguments> ifNull() {
         return Stream.of(
                 arguments("ifNull(int(1), 0)", Exp.ifNull(Exp.$int(1), 0)),
-                arguments("ifNull(str(1), 'unknown')", Exp.ifNull(Exp.$str(1), Exp.$strVal("unknown"))),
-                arguments("ifNull(date(1), 1970-01-01)",
-                        Exp.ifNull(Exp.$date(1), Exp.$val(LocalDate.parse("1970-01-01"))))
+                arguments("ifNull(str(1), 'unknown')", Exp.ifNull(Exp.$str(1), Exp.$strVal("unknown")))
         );
     }
 
@@ -165,86 +157,5 @@ class ExpTest {
     })
     void positionalAggregate_throws(String text) {
         assertThrows(ExpParserException.class, () -> Exp.exp(text));
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    void timeLiterals(String text, Exp<?> expected) {
-        Exp<?> exp = Exp.exp(text);
-        assertEquals(expected, exp);
-    }
-
-    static Stream<Arguments> timeLiterals() {
-        return Stream.of(
-                arguments("00:00", Exp.$timeVal(LocalTime.of(0, 0))),
-                arguments("00:00:00", Exp.$timeVal(LocalTime.of(0, 0, 0))),
-                arguments("00:00:00.000", Exp.$timeVal(LocalTime.of(0, 0, 0, 0))),
-                arguments("23:59", Exp.$timeVal(LocalTime.of(23, 59))),
-                arguments("23:59:59", Exp.$timeVal(LocalTime.of(23, 59, 59))),
-                arguments("23:59:59.999", Exp.$timeVal(LocalTime.of(23, 59, 59, 999_000_000)))
-        );
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    void dateLiterals(String text, Exp<?> expected) {
-        Exp<?> exp = Exp.exp(text);
-        assertEquals(expected, exp);
-    }
-
-    static Stream<Arguments> dateLiterals() {
-        return Stream.of(
-                arguments("0000-01-01", Exp.$dateVal(LocalDate.of(0, 1, 1))),
-                arguments("9999-12-31", Exp.$dateVal(LocalDate.of(9999, 12, 31))),
-                arguments("2025-08-15", Exp.$dateVal(LocalDate.of(2025, 8, 15)))
-        );
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    void dateTimeLiterals(String text, Exp<?> expected) {
-        Exp<?> exp = Exp.exp(text);
-        assertEquals(expected, exp);
-    }
-
-    static Stream<Arguments> dateTimeLiterals() {
-        return Stream.of(
-                arguments("0000-01-01T00:00", Exp.$dateTimeVal(LocalDateTime.of(
-                        LocalDate.of(0, 1, 1),
-                        LocalTime.of(0, 0)))),
-                arguments("9999-12-31T23:59:59", Exp.$dateTimeVal(LocalDateTime.of(
-                        LocalDate.of(9999, 12, 31),
-                        LocalTime.of(23, 59, 59))))
-        );
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    void dateTimeWithOffsetLiterals(String text, Exp<?> expected) {
-        Exp<?> exp = Exp.exp(text);
-        assertEquals(expected, exp);
-    }
-
-    static Stream<Arguments> dateTimeWithOffsetLiterals() {
-        return Stream.of(
-                arguments("0000-01-01T00:00Z", Exp.$offsetDateTimeVal(OffsetDateTime.of(
-                        LocalDateTime.of(
-                            LocalDate.of(0, 1, 1),
-                            LocalTime.of(0, 0)
-                        ),
-                        ZoneOffset.ofHours(0)))),
-                arguments("9999-12-31T23:59:59+12:30", Exp.$offsetDateTimeVal(OffsetDateTime.of(
-                        LocalDateTime.of(
-                                LocalDate.of(9999, 12, 31),
-                                LocalTime.of(23, 59, 59)
-                        ),
-                        ZoneOffset.ofHoursMinutes(12, 30)))),
-                arguments("9999-12-31T23:59:59-12:30", Exp.$offsetDateTimeVal(OffsetDateTime.of(
-                        LocalDateTime.of(
-                                LocalDate.of(9999, 12, 31),
-                                LocalTime.of(23, 59, 59)
-                        ),
-                        ZoneOffset.ofHoursMinutes(-12, -30))))
-        );
     }
 }

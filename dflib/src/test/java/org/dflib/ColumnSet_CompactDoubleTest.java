@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class ColumnSet_CompactDoubleTest {
 
     @Test
-    public void all_compactLong() {
+    public void all_forNull() {
         DataFrame df = DataFrame.byColumn("a", "b", "c").of(
                         Series.ofDouble(1, 2),
                         Series.of(null, "5"),
@@ -23,7 +23,7 @@ public class ColumnSet_CompactDoubleTest {
     }
 
     @Test
-    public void all_compactDoubleConverter() {
+    public void all_mapper() {
         DataFrame df = DataFrame.byColumn("a", "b").of(
                         Series.of("a", "ab"),
                         Series.of("abc", "abcd")
@@ -39,7 +39,7 @@ public class ColumnSet_CompactDoubleTest {
     }
 
     @Test
-    public void compactDouble() {
+    public void some_forNull() {
         DataFrame df = DataFrame.byColumn("a", "b", "c", "d").of(
                         Series.ofDouble(1, 2),
                         Series.of(null, "5"),
@@ -57,7 +57,7 @@ public class ColumnSet_CompactDoubleTest {
     }
 
     @Test
-    public void compactDoubleConverter() {
+    public void some_mapper() {
         DataFrame df = DataFrame.byColumn("a", "b", "c").of(
                         Series.of("a", "ab"),
                         Series.of("one", "two"),

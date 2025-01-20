@@ -1,13 +1,19 @@
 package org.dflib;
 
-import org.dflib.zip.Zip;
+import org.dflib.codec.Codec;
 import org.dflib.http.Http;
+import org.dflib.zip.Zip;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -26,8 +32,25 @@ public interface ByteSource {
      */
     InputStream stream();
 
+    /**
+     * Returns an optional identifier or a resource. This can be a file name, HTTP URL and such. If present, it helps
+     * the processor auto-detect compression options, provide better error messages, etc.
+     *
+     * @since 2.0.0
+     */
+    default Optional<String> uri() {
+        return Optional.empty();
+    }
+
     default <T> T processStream(Function<InputStream, T> processor) {
-        return processor.apply(stream());
+        try (InputStream in = stream()) {
+            return processor.apply(in);
+        } catch (IOException e) {
+
+            // presumably IOException in this situation is only possible on close. All other exceptions won't be of the
+            // checked kind
+            throw new RuntimeException("Error closing stream", e);
+        }
     }
 
     /**
@@ -39,9 +62,19 @@ public interface ByteSource {
         return Zip.of(this).sources();
     }
 
+    /**
+     * Assuming the source represents a compressed stream, returns another source that will provide decompressed streams
+     * to the callers. See {@link Codec} for supported decompression algorithms.
+     *
+     * @since 2.0.0
+     */
+    default ByteSource decompress(Codec codec) {
+        return codec.decompress(this);
+    }
+
     default byte[] asBytes() {
-        try {
-            return stream().readAllBytes();
+        try (InputStream in = stream()) {
+            return in.readAllBytes();
         } catch (IOException e) {
             throw new RuntimeException("Error reading stream", e);
         }
@@ -70,11 +103,21 @@ public interface ByteSource {
      * @see Http
      */
     static ByteSource ofUrl(URL url) {
-        return () -> {
-            try {
-                return url.openStream();
-            } catch (IOException e) {
-                throw new RuntimeException("Error reading the URL:" + url, e);
+        Objects.requireNonNull(url);
+        return new ByteSource() {
+
+            @Override
+            public Optional<String> uri() {
+                return Optional.of(url.toString());
+            }
+
+            @Override
+            public InputStream stream() {
+                try {
+                    return url.openStream();
+                } catch (IOException e) {
+                    throw new RuntimeException("Error reading the URL:" + url, e);
+                }
             }
         };
     }
@@ -83,10 +126,70 @@ public interface ByteSource {
      * Returns a ByteSource mapped to a URL.
      */
     static ByteSource ofUrl(String url) {
-        try {
-            return ofUrl(new URL(url));
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("Bad URL:" + url, e);
-        }
+        Objects.requireNonNull(url);
+
+        return new ByteSource() {
+
+            @Override
+            public Optional<String> uri() {
+                return Optional.of(url);
+            }
+
+            @Override
+            public InputStream stream() {
+                try {
+                    return new URL(url).openStream();
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException("Bad URL:" + url, e);
+                } catch (IOException e) {
+                    throw new RuntimeException("Error reading the URL:" + url, e);
+                }
+            }
+        };
+    }
+
+    /**
+     * Returns a ByteSource based on the Path to a local file.
+     *
+     * @since 2.0.0
+     */
+    static ByteSource ofPath(Path path) {
+        return ofFile(path.toFile());
+    }
+
+    /**
+     * Returns a ByteSource based on the local file.
+     *
+     * @since 2.0.0
+     */
+    static ByteSource ofFile(String file) {
+        return ofFile(new File(file));
+    }
+
+    /**
+     * Returns a ByteSource based on the local file.
+     *
+     * @since 2.0.0
+     */
+    static ByteSource ofFile(File file) {
+
+        Objects.requireNonNull(file);
+
+        return new ByteSource() {
+
+            @Override
+            public Optional<String> uri() {
+                return Optional.of(file.getAbsolutePath());
+            }
+
+            @Override
+            public InputStream stream() {
+                try {
+                    return new FileInputStream(file);
+                } catch (IOException e) {
+                    throw new RuntimeException("Error reading file: " + file, e);
+                }
+            }
+        };
     }
 }

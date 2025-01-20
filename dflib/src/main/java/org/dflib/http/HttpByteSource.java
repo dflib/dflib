@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Optional;
 
 /**
  * @since 2.0.0
@@ -18,6 +19,11 @@ class HttpByteSource implements ByteSource {
     public HttpByteSource(HttpClient client, HttpRequest request) {
         this.client = client;
         this.request = request;
+    }
+
+    @Override
+    public Optional<String> uri() {
+        return Optional.of(request.uri().toString());
     }
 
     @Override

@@ -11,6 +11,7 @@ public class DFLibJupyterExtension implements Extension {
     private static final String STARTUP_SCRIPT = "" +
             "import org.dflib.*;\n" +
             "import org.dflib.http.*;\n" +
+            "import org.dflib.fs.*;\n" +
             "import org.dflib.zip.*;\n" +
             "import org.dflib.avro.*;\n" +
             "import org.dflib.csv.*;\n" +

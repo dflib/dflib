@@ -4,6 +4,7 @@ import org.dflib.ByteSource;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -20,6 +21,12 @@ class ZipFileByteSource implements ByteSource {
     public ZipFileByteSource(ZipFile zipFile, ZipEntry zipEntry) {
         this.zipEntry = zipEntry;
         this.zipFile = zipFile;
+    }
+
+    @Override
+    public Optional<String> uri() {
+        // TODO: should we include the name of the ZipFile to provide the full identifier?
+        return Optional.of(zipEntry.getName());
     }
 
     public ZipEntry getZipEntry() {

@@ -27,22 +27,22 @@ class ColConfigurator {
     }
 
     public static Extractor<Map<String, Object>, ?> intCol(String name) {
-        IntValueMapper mapper = IntValueMapper.fromObject();
+        IntValueMapper mapper = IntValueMapper.of();
         return Extractor.$int(map -> mapper.map(value(map, name)));
     }
 
-    public static Extractor<Map<String, Object>, ?> intCol(String name, int fillNullsWith) {
-        IntValueMapper mapper = IntValueMapper.fromObject(fillNullsWith);
+    public static Extractor<Map<String, Object>, ?> intCol(String name, int forNull) {
+        IntValueMapper mapper = IntValueMapper.of(forNull);
         return Extractor.$int(r -> mapper.map(value(r, name)));
     }
 
     public static Extractor<Map<String, Object>, ?> longCol(String name) {
-        LongValueMapper mapper = LongValueMapper.fromObject();
+        LongValueMapper mapper = LongValueMapper.of();
         return Extractor.$long(r -> mapper.map(value(r, name)));
     }
 
-    public static Extractor<Map<String, Object>, ?> longCol(String name, long fillNullsWith) {
-        LongValueMapper mapper = LongValueMapper.fromObject(fillNullsWith);
+    public static Extractor<Map<String, Object>, ?> longCol(String name, long forNull) {
+        LongValueMapper mapper = LongValueMapper.of(forNull);
         return Extractor.$long(r -> mapper.map(value(r, name)));
     }
 
@@ -50,15 +50,15 @@ class ColConfigurator {
      * @since 1.1.0
      */
     public static Extractor<Map<String, Object>, ?> floatCol(String name) {
-        FloatValueMapper mapper = FloatValueMapper.fromObject();
+        FloatValueMapper mapper = FloatValueMapper.of();
         return Extractor.$float(r -> mapper.map(value(r, name)));
     }
 
     /**
      * @since 1.1.0
      */
-    public static Extractor<Map<String, Object>, ?> floatCol(String name, float fillNullsWith) {
-        FloatValueMapper mapper = FloatValueMapper.fromObject(fillNullsWith);
+    public static Extractor<Map<String, Object>, ?> floatCol(String name, float forNull) {
+        FloatValueMapper mapper = FloatValueMapper.of(forNull);
         return Extractor.$float(map -> mapper.map(value(map, name)));
     }
 
@@ -67,13 +67,13 @@ class ColConfigurator {
         return Extractor.$double(r -> mapper.map(value(r, name)));
     }
 
-    public static Extractor<Map<String, Object>, ?> doubleCol(String name, double fillNullsWith) {
-        DoubleValueMapper mapper = DoubleValueMapper.fromObject(fillNullsWith);
+    public static Extractor<Map<String, Object>, ?> doubleCol(String name, double forNull) {
+        DoubleValueMapper mapper = DoubleValueMapper.of(forNull);
         return Extractor.$double(map -> mapper.map(value(map, name)));
     }
 
     public static Extractor<Map<String, Object>, ?> boolCol(String name) {
-        BoolValueMapper<Object> mapper = BoolValueMapper.fromObject();
+        BoolValueMapper<Object> mapper = BoolValueMapper.of();
         return Extractor.$bool(map -> mapper.map(value(map, name)));
     }
 

@@ -149,7 +149,7 @@ public class Percentiles {
     public static double ofDoubles(Series<? extends Number> s, double quantile) {
         DoubleSeries ds = (s instanceof DoubleSeries)
                 ? (DoubleSeries) s
-                : s.select(notNullExp).mapAsDouble(Number::doubleValue);
+                : s.select(notNullExp).compactDouble(Number::doubleValue);
 
         return ds.quantile(quantile);
     }
@@ -157,7 +157,7 @@ public class Percentiles {
     public static float ofFloats(Series<? extends Number> s, double quantile) {
         FloatSeries ps = (s instanceof FloatSeries)
                 ? (FloatSeries) s
-                : s.select(notNullExp).mapAsFloat(Number::floatValue);
+                : s.select(notNullExp).compactFloat(Number::floatValue);
 
         return ps.quantile(quantile);
     }

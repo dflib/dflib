@@ -120,14 +120,14 @@ class ColConfigurator {
     public static ColConfigurator boolCol(int pos) {
         ColConfigurator config = new ColConfigurator();
         config.srcColPos = pos;
-        config.extractorMaker = i -> Extractor.$bool(r -> BoolValueMapper.fromString().map(r.get(i)));
+        config.extractorMaker = i -> Extractor.$bool(r -> BoolValueMapper.ofStr().map(r.get(i)));
         return config;
     }
 
     public static ColConfigurator boolCol(String name) {
         ColConfigurator config = new ColConfigurator();
         config.srcColName = name;
-        config.extractorMaker = i -> Extractor.$bool(r -> BoolValueMapper.fromString().map(r.get(i)));
+        config.extractorMaker = i -> Extractor.$bool(r -> BoolValueMapper.ofStr().map(r.get(i)));
         return config;
     }
 

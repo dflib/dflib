@@ -6,13 +6,12 @@ import org.dflib.ColumnDataFrame;
 import org.dflib.ColumnSet;
 import org.dflib.Condition;
 import org.dflib.DataFrame;
-import org.dflib.DoubleSeries;
 import org.dflib.DoubleValueMapper;
 import org.dflib.Exp;
+import org.dflib.FloatValueMapper;
 import org.dflib.Index;
 import org.dflib.IntSeries;
 import org.dflib.IntValueMapper;
-import org.dflib.LongSeries;
 import org.dflib.LongValueMapper;
 import org.dflib.RowColumnSet;
 import org.dflib.RowMapper;
@@ -207,20 +206,20 @@ public class DeferredColumnSet implements ColumnSet {
 
         for (int i = 0; i < w; i++) {
             Series s = source.getColumn(i);
-            columns[i] = s instanceof BooleanSeries ? s.castAsBool() : s.mapAsBool(BoolValueMapper.fromObject());
+            columns[i] = s.compactBool();
         }
 
         return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
     }
 
     @Override
-    public <V> DataFrame compactBool(BoolValueMapper<V> converter) {
+    public <V> DataFrame compactBool(BoolValueMapper<V> mapper) {
         int w = source.width();
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
             Series s = source.getColumn(i);
-            columns[i] = s.mapAsBool(converter);
+            columns[i] = s.compactBool(mapper);
         }
 
         return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
@@ -231,24 +230,22 @@ public class DeferredColumnSet implements ColumnSet {
         int w = source.width();
         Series<?>[] columns = new Series[w];
 
-        IntValueMapper<?> converter = IntValueMapper.fromObject(forNull);
-
         for (int i = 0; i < w; i++) {
             Series s = source.getColumn(i);
-            columns[i] = s instanceof IntSeries ? s.castAsInt() : s.mapAsInt(converter);
+            columns[i] = s.compactInt(forNull);
         }
 
         return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
     }
 
     @Override
-    public <V> DataFrame compactInt(IntValueMapper<V> converter) {
+    public <V> DataFrame compactInt(IntValueMapper<V> mapper) {
         int w = source.width();
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
             Series s = source.getColumn(i);
-            columns[i] = s.mapAsInt(converter);
+            columns[i] = s.compactInt(mapper);
         }
 
         return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
@@ -259,24 +256,48 @@ public class DeferredColumnSet implements ColumnSet {
         int w = source.width();
         Series<?>[] columns = new Series[w];
 
-        LongValueMapper<?> converter = LongValueMapper.fromObject(forNull);
-
         for (int i = 0; i < w; i++) {
             Series s = source.getColumn(i);
-            columns[i] = s instanceof LongSeries ? s.castAsLong() : s.mapAsLong(converter);
+            columns[i] = s.compactLong(forNull);
         }
 
         return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
     }
 
     @Override
-    public <V> DataFrame compactLong(LongValueMapper<V> converter) {
+    public <V> DataFrame compactLong(LongValueMapper<V> mapper) {
         int w = source.width();
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
             Series s = source.getColumn(i);
-            columns[i] = s.mapAsLong(converter);
+            columns[i] = s.compactLong(mapper);
+        }
+
+        return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
+    }
+
+    @Override
+    public DataFrame compactFloat(float forNull) {
+        int w = source.width();
+        Series<?>[] columns = new Series[w];
+
+        for (int i = 0; i < w; i++) {
+            Series s = source.getColumn(i);
+            columns[i] = s.compactFloat(forNull);
+        }
+
+        return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
+    }
+
+    @Override
+    public <V> DataFrame compactFloat(FloatValueMapper<V> mapper) {
+        int w = source.width();
+        Series<?>[] columns = new Series[w];
+
+        for (int i = 0; i < w; i++) {
+            Series s = source.getColumn(i);
+            columns[i] = s.compactFloat(mapper);
         }
 
         return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
@@ -287,24 +308,22 @@ public class DeferredColumnSet implements ColumnSet {
         int w = source.width();
         Series<?>[] columns = new Series[w];
 
-        DoubleValueMapper<?> converter = DoubleValueMapper.fromObject(forNull);
-
         for (int i = 0; i < w; i++) {
             Series s = source.getColumn(i);
-            columns[i] = s instanceof DoubleSeries ? s.castAsDouble() : s.mapAsDouble(converter);
+            columns[i] = s.compactDouble(forNull);
         }
 
         return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
     }
 
     @Override
-    public <V> DataFrame compactDouble(DoubleValueMapper<V> converter) {
+    public <V> DataFrame compactDouble(DoubleValueMapper<V> mapper) {
         int w = source.width();
         Series<?>[] columns = new Series[w];
 
         for (int i = 0; i < w; i++) {
             Series s = source.getColumn(i);
-            columns[i] = s.mapAsDouble(converter);
+            columns[i] = s.compactDouble(mapper);
         }
 
         return new ColumnDataFrame(null, source.getColumnsIndex(), columns);

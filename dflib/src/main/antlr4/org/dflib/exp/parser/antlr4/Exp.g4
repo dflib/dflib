@@ -109,8 +109,7 @@ temporalExp returns [Exp<? extends Temporal> exp]
  * and time functions.
  */
 timeExp returns [TimeExp exp]
-    : timeScalar { $exp = Exp.\$timeVal($timeScalar.value); }
-    | timeColumn { $exp = $timeColumn.exp; }
+    : timeColumn { $exp = $timeColumn.exp; }
     | timeFn { $exp = $timeFn.exp; }
     ;
 
@@ -118,8 +117,7 @@ timeExp returns [TimeExp exp]
  * Date expressions, which can include references to date columns and date functions.
  */
 dateExp returns [DateExp exp]
-    : dateScalar { $exp = Exp.\$dateVal($dateScalar.value); }
-    | dateColumn { $exp = $dateColumn.exp; }
+    : dateColumn { $exp = $dateColumn.exp; }
     | dateFn { $exp = $dateFn.exp; }
     ;
 
@@ -127,8 +125,7 @@ dateExp returns [DateExp exp]
  * Datetime expressions, which can refer to datetime columns and utilize datetime functions.
  */
 dateTimeExp returns [DateTimeExp exp]
-    : dateTimeScalar { $exp = Exp.\$dateTimeVal($dateTimeScalar.value); }
-    | dateTimeColumn { $exp = $dateTimeColumn.exp; }
+    : dateTimeColumn { $exp = $dateTimeColumn.exp; }
     | dateTimeFn { $exp = $dateTimeFn.exp; }
     ;
 
@@ -138,8 +135,7 @@ dateTimeExp returns [DateTimeExp exp]
  * This is essential for handling timezones correctly.
  */
 offsetDateTimeExp returns [OffsetDateTimeExp exp]
-    : offsetDateTimeScalar { $exp = Exp.\$offsetDateTimeVal($offsetDateTimeScalar.value); }
-    | offsetDateTimeColumn { $exp = $offsetDateTimeColumn.exp; }
+    : offsetDateTimeColumn { $exp = $offsetDateTimeColumn.exp; }
     | offsetDateTimeFn { $exp = $offsetDateTimeFn.exp; }
     ;
 
@@ -192,6 +188,38 @@ floatingPointScalar returns [Number value]
     ;
 
 /**
+ * Time string in ISO-8601 compatible format (`hh:mm[:ss[.sss]]`)
+ */
+timeStrScalar returns [String value]
+    // this is just an alias for a string, validation done in runtime
+    : strScalar { $value = $strScalar.value; }
+    ;
+
+/**
+ * Time string in ISO-8601 compatible format (`YYYY-MM-DD`)
+ */
+dateStrScalar returns [String value]
+    // this is just an alias for a string, validation done in runtime
+    : strScalar { $value = $strScalar.value; }
+    ;
+
+/**
+ * Time string in ISO-8601 compatible format (`<date>T<time>`)
+ */
+dateTimeStrScalar returns [String value]
+    // this is just an alias for a string, validation done in runtime
+    : strScalar { $value = $strScalar.value; }
+    ;
+
+/**
+ * A dateTime with offset string in ISO-8601 compatible format  (`<date>T<time>Z`)
+ */
+offsetDateTimeStrScalar returns [String value]
+    // this is just an alias for a string, validation done in runtime
+    : strScalar { $value = $strScalar.value; }
+    ;
+
+/**
  * A string literal.
  */
 strScalar returns [String value]
@@ -199,33 +227,6 @@ strScalar returns [String value]
     | DOUBLE_QUOTE_STRING_LITERAL { $value = unescapeString($text.substring(1, $text.length() - 1)); }
     ;
 
-/**
- * A time literal in ISO-8601 compatible format (`hh:mm`, `hh:mm:ss` and `hh:mm:ss.sss`)
- */
-timeScalar returns [LocalTime value]
-    : TIME_LITERAL { $value = parseTimeValue($text); }
-    ;
-
-/**
- * A date literal in ISO-8601 compatible format (`YYYY-MM-DD`)
- */
-dateScalar returns [LocalDate value]
-    : DATE_LITERAL { $value = parseDateValue($text); }
-    ;
-
-/**
- * A dateTime literal in ISO-8601 compatible format (`<date>T<time>`)
- */
-dateTimeScalar returns [LocalDateTime value]
-    : DATE_TIME_LITERAL { $value = parseDateTimeValue($text); }
-    ;
-
-/**
- *  A dateTime with offset literal in ISO-8601 compatible format (`<date>T<time>`)
- */
-offsetDateTimeScalar returns [OffsetDateTime value]
-    : OFFSET_DATE_TIME_LITERAL { $value = parseOffsetDateTimeValue($text); }
-    ;
 
 /// **Column expressions**
 
@@ -358,6 +359,7 @@ offsetDateTimeColumn returns [OffsetDateTimeExp exp]
  */
 genericColumn returns [Exp<?> exp]
     : COL '(' columnId ')' { $exp = col($columnId.id); }
+    | identifier { $exp = Exp.\$col($identifier.id); }
     ;
 
 /**
@@ -440,13 +442,16 @@ strRelation returns [Condition exp]
  */
 timeRelation returns [Condition exp]
     : a=timeExp (
-        : GT b=timeExp { $exp = $a.exp.gt($b.exp); }
-        | GE b=timeExp { $exp = $a.exp.ge($b.exp); }
-        | LT b=timeExp { $exp = $a.exp.lt($b.exp); }
-        | LE b=timeExp { $exp = $a.exp.le($b.exp); }
-        | EQ b=timeExp { $exp = $a.exp.eq($b.exp); }
-        | NE b=timeExp { $exp = $a.exp.ne($b.exp); }
-        | BETWEEN b=timeExp AND c=timeExp { $exp = $a.exp.between($b.exp, $c.exp); }
+        : GT (b=timeExp { $exp = $a.exp.gt($b.exp); } | s=timeStrScalar { $exp = $a.exp.gt($s.value); } )
+        | GE (b=timeExp { $exp = $a.exp.ge($b.exp); } | s=timeStrScalar { $exp = $a.exp.ge($s.value); } )
+        | LT (b=timeExp { $exp = $a.exp.lt($b.exp); } | s=timeStrScalar { $exp = $a.exp.lt($s.value); } )
+        | LE (b=timeExp { $exp = $a.exp.le($b.exp); } | s=timeStrScalar { $exp = $a.exp.le($s.value); } )
+        | EQ (b=timeExp { $exp = $a.exp.eq($b.exp); } | s=timeStrScalar { $exp = $a.exp.eq($s.value); } )
+        | NE (b=timeExp { $exp = $a.exp.ne($b.exp); } | s=timeStrScalar { $exp = $a.exp.ne($s.value); } )
+        | BETWEEN (
+            b=timeExp AND c=timeExp { $exp = $a.exp.between($b.exp, $c.exp); }
+            | s1=timeStrScalar AND s2=timeStrScalar { $exp = $a.exp.between($s1.value, $s2.value); }
+        )
     )
     ;
 
@@ -460,13 +465,16 @@ timeRelation returns [Condition exp]
  */
 dateRelation returns [Condition exp]
     : a=dateExp (
-        : GT b=dateExp { $exp = $a.exp.gt($b.exp); }
-        | GE b=dateExp { $exp = $a.exp.ge($b.exp); }
-        | LT b=dateExp { $exp = $a.exp.lt($b.exp); }
-        | LE b=dateExp { $exp = $a.exp.le($b.exp); }
-        | EQ b=dateExp { $exp = $a.exp.eq($b.exp); }
-        | NE b=dateExp { $exp = $a.exp.ne($b.exp); }
-        | BETWEEN b=dateExp AND c=dateExp { $exp = $a.exp.between($b.exp, $c.exp); }
+        : GT (b=dateExp { $exp = $a.exp.gt($b.exp); } | s=dateStrScalar { $exp = $a.exp.gt($s.value); } )
+        | GE (b=dateExp { $exp = $a.exp.ge($b.exp); } | s=dateStrScalar { $exp = $a.exp.ge($s.value); } )
+        | LT (b=dateExp { $exp = $a.exp.lt($b.exp); } | s=dateStrScalar { $exp = $a.exp.lt($s.value); } )
+        | LE (b=dateExp { $exp = $a.exp.le($b.exp); } | s=dateStrScalar { $exp = $a.exp.le($s.value); } )
+        | EQ (b=dateExp { $exp = $a.exp.eq($b.exp); } | s=dateStrScalar { $exp = $a.exp.eq($s.value); } )
+        | NE (b=dateExp { $exp = $a.exp.ne($b.exp); } | s=dateStrScalar { $exp = $a.exp.ne($s.value); } )
+        | BETWEEN (
+            b=dateExp AND c=dateExp { $exp = $a.exp.between($b.exp, $c.exp); }
+            | s1=dateStrScalar AND s2=dateStrScalar { $exp = $a.exp.between($s1.value, $s2.value); }
+        )
     )
     ;
 
@@ -480,13 +488,16 @@ dateRelation returns [Condition exp]
  */
 dateTimeRelation returns [Condition exp]
     : a=dateTimeExp (
-        : GT b=dateTimeExp { $exp = $a.exp.gt($b.exp); }
-        | GE b=dateTimeExp { $exp = $a.exp.ge($b.exp); }
-        | LT b=dateTimeExp { $exp = $a.exp.lt($b.exp); }
-        | LE b=dateTimeExp { $exp = $a.exp.le($b.exp); }
-        | EQ b=dateTimeExp { $exp = $a.exp.eq($b.exp); }
-        | NE b=dateTimeExp { $exp = $a.exp.ne($b.exp); }
-        | BETWEEN b=dateTimeExp AND c=dateTimeExp { $exp = $a.exp.between($b.exp, $c.exp); }
+        : GT (b=dateTimeExp { $exp = $a.exp.gt($b.exp); } | s=dateTimeStrScalar { $exp = $a.exp.gt($s.value); } )
+        | GE (b=dateTimeExp { $exp = $a.exp.ge($b.exp); } | s=dateTimeStrScalar { $exp = $a.exp.ge($s.value); } )
+        | LT (b=dateTimeExp { $exp = $a.exp.lt($b.exp); } | s=dateTimeStrScalar { $exp = $a.exp.lt($s.value); } )
+        | LE (b=dateTimeExp { $exp = $a.exp.le($b.exp); } | s=dateTimeStrScalar { $exp = $a.exp.le($s.value); } )
+        | EQ (b=dateTimeExp { $exp = $a.exp.eq($b.exp); } | s=dateTimeStrScalar { $exp = $a.exp.eq($s.value); } )
+        | NE (b=dateTimeExp { $exp = $a.exp.ne($b.exp); } | s=dateTimeStrScalar { $exp = $a.exp.ne($s.value); } )
+        | BETWEEN (
+            b=dateTimeExp AND c=dateTimeExp { $exp = $a.exp.between($b.exp, $c.exp); }
+            | s1=dateTimeStrScalar AND s2=dateTimeStrScalar { $exp = $a.exp.between($s1.value, $s2.value); }
+        )
     )
     ;
 
@@ -500,13 +511,16 @@ dateTimeRelation returns [Condition exp]
  */
 offsetDateTimeRelation returns [Condition exp]
     : a=offsetDateTimeExp (
-        : GT b=offsetDateTimeExp { $exp = $a.exp.gt($b.exp); }
-        | GE b=offsetDateTimeExp { $exp = $a.exp.ge($b.exp); }
-        | LT b=offsetDateTimeExp { $exp = $a.exp.lt($b.exp); }
-        | LE b=offsetDateTimeExp { $exp = $a.exp.le($b.exp); }
-        | EQ b=offsetDateTimeExp { $exp = $a.exp.eq($b.exp); }
-        | NE b=offsetDateTimeExp { $exp = $a.exp.ne($b.exp); }
-        | BETWEEN b=offsetDateTimeExp AND c=offsetDateTimeExp { $exp = $a.exp.between($b.exp, $c.exp); }
+        : GT (b=offsetDateTimeExp { $exp = $a.exp.gt($b.exp); } | s=offsetDateTimeStrScalar { $exp = $a.exp.gt($s.value); } )
+        | GE (b=offsetDateTimeExp { $exp = $a.exp.ge($b.exp); } | s=offsetDateTimeStrScalar { $exp = $a.exp.ge($s.value); } )
+        | LT (b=offsetDateTimeExp { $exp = $a.exp.lt($b.exp); } | s=offsetDateTimeStrScalar { $exp = $a.exp.lt($s.value); } )
+        | LE (b=offsetDateTimeExp { $exp = $a.exp.le($b.exp); } | s=offsetDateTimeStrScalar { $exp = $a.exp.le($s.value); } )
+        | EQ (b=offsetDateTimeExp { $exp = $a.exp.eq($b.exp); } | s=offsetDateTimeStrScalar { $exp = $a.exp.eq($s.value); } )
+        | NE (b=offsetDateTimeExp { $exp = $a.exp.ne($b.exp); } | s=offsetDateTimeStrScalar { $exp = $a.exp.ne($s.value); } )
+        | BETWEEN (
+            b=offsetDateTimeExp AND c=offsetDateTimeExp { $exp = $a.exp.between($b.exp, $c.exp); }
+            | s1=offsetDateTimeStrScalar AND s2=offsetDateTimeStrScalar { $exp = $a.exp.between($s1.value, $s2.value); }
+        )
     )
     ;
 
@@ -1367,27 +1381,7 @@ DOUBLE_QUOTE_STRING_LITERAL: '"' ('\\"' | ~["] | UNICODE_ESCAPE)* '"';
 /**
  * Matches an identifier. Identifiers start with a letter and can be followed by letters or digits.
  */
-IDENTIFIER: LETTER PART_LETTER*;
-
-/**
- * ISO-8601 Time format
- */
-TIME_LITERAL: HOUR_LITERAL ':' MINUTE_LITERAL (':' SECOND_LITERAL ('.' MILLIS_LITERAL)?)? ;
-
-/**
- * ISO-8601 Date format
- */
-DATE_LITERAL: YEAR_LITERAL '-' MONTH_LITERAL '-' DAY_LITERAL ;
-
-/**
- * ISO-8601 DateTime format
- */
-DATE_TIME_LITERAL: DATE_LITERAL 'T' TIME_LITERAL ;
-
-/**
- * ISO-8601 DateTime with offset foramt
- */
-OFFSET_DATE_TIME_LITERAL: DATE_LITERAL 'T' TIME_LITERAL ('Z' | ('+'|'-')  HOUR_LITERAL (':' MINUTE_LITERAL)? );
+IDENTIFIER: IDENTIFIER_START IDENTIFIER_PART*;
 
 fragment DECIMAL_LITERAL: '0' | [1-9] ([0-9_]* [0-9])?;
 
@@ -1419,24 +1413,10 @@ fragment HEX_DIGITS: [0-9a-fA-F] ([0-9a-fA-F_]* [0-9a-fA-F])?;
 fragment UNICODE_ESCAPE: '\\u' [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F];
 
 //@ doc:inline
-fragment LETTER: [$A-Z_a-z];
+fragment IDENTIFIER_START: [$A-Z_a-z\u0080-\uFFFF];
 
 //@ doc:inline
-fragment PART_LETTER: [$0-9A-Z_a-z];
-
-fragment HOUR_LITERAL: [0-1][0-9] | '2' [0-3];
-
-fragment MINUTE_LITERAL: [0-5][0-9];
-
-fragment SECOND_LITERAL: [0-5][0-9];
-
-fragment MILLIS_LITERAL: [0-9] [0-9]? [0-9]? [0-9]? [0-9]? [0-9]? [0-9]? [0-9]? [0-9]?;
-
-fragment YEAR_LITERAL: [0-9][0-9][0-9][0-9] ;
-
-fragment MONTH_LITERAL: '0' [1-9] | '1' [0-2] ;
-
-fragment DAY_LITERAL: '01' | [1-2] [0-9] | [3] [0-1] ;
+fragment IDENTIFIER_PART: [$A-Z_a-z0-9\u0080-\uFFFF;?!#|`[\]{}@^\\];
 
 /**
  * Skipped symbols: Whitespace and tabs.

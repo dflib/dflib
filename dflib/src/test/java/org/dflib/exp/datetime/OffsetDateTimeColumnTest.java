@@ -139,6 +139,30 @@ public class OffsetDateTimeColumnTest {
     }
 
     @Test
+    public void eqVal() {
+        Condition eq = $offsetDateTime("b").eq(OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 1), ZoneOffset.ofHours(2)));
+
+        Series<OffsetDateTime> s = Series.of(
+                OffsetDateTime.of(LocalDateTime.of(2007, 1, 8, 1, 1), ZoneOffset.UTC),
+                OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 1), ZoneOffset.ofHours(2)),
+                OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 1), ZoneOffset.ofHours(1)));
+
+        new BoolSeriesAsserts(eq.eval(s)).expectData(false, true, false);
+    }
+
+    @Test
+    public void eqStrVal() {
+        Condition eq = $offsetDateTime("b").eq("2008-01-01T01:01+02");
+
+        Series<OffsetDateTime> s = Series.of(
+                OffsetDateTime.of(LocalDateTime.of(2007, 1, 8, 1, 1), ZoneOffset.UTC),
+                OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 1), ZoneOffset.ofHours(2)),
+                OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 1), ZoneOffset.ofHours(1)));
+
+        new BoolSeriesAsserts(eq.eval(s)).expectData(false, true, false);
+    }
+
+    @Test
     public void ne() {
         Condition ne = $offsetDateTime("b").ne($col("c"));
 
@@ -148,6 +172,30 @@ public class OffsetDateTimeColumnTest {
                 OffsetDateTime.of(2009, 12, 8, 7, 59, 59, 0, ZoneOffset.ofHours(4)), OffsetDateTime.of(2009, 12, 8, 7, 59, 59, 0, ZoneOffset.ofHours(3)));
 
         new BoolSeriesAsserts(ne.eval(df)).expectData(false, true, true);
+    }
+
+    @Test
+    public void neVal() {
+        Condition ne = $offsetDateTime("b").ne(OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 1), ZoneOffset.ofHours(2)));
+
+        Series<OffsetDateTime> s = Series.of(
+                OffsetDateTime.of(LocalDateTime.of(2007, 1, 8, 1, 1), ZoneOffset.UTC),
+                OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 1), ZoneOffset.ofHours(2)),
+                OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 1), ZoneOffset.ofHours(1)));
+
+        new BoolSeriesAsserts(ne.eval(s)).expectData(true, false, true);
+    }
+
+    @Test
+    public void neStrVal() {
+        Condition ne = $offsetDateTime("b").ne("2008-01-01T01:01+02");
+
+        Series<OffsetDateTime> s = Series.of(
+                OffsetDateTime.of(LocalDateTime.of(2007, 1, 8, 1, 1), ZoneOffset.UTC),
+                OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 1), ZoneOffset.ofHours(2)),
+                OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 1), ZoneOffset.ofHours(1)));
+
+        new BoolSeriesAsserts(ne.eval(s)).expectData(true, false, true);
     }
 
     @Test
@@ -174,10 +222,31 @@ public class OffsetDateTimeColumnTest {
     }
 
     @Test
+    public void ltStrVal() {
+        Condition lt = $offsetDateTime(0).lt("2008-01-01T01:01+02");
+
+        Series<OffsetDateTime> s = Series.of(
+                OffsetDateTime.of(LocalDateTime.of(2007, 1, 8, 1, 1), ZoneOffset.UTC),
+                OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 1), ZoneOffset.ofHours(2)),
+                OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 1), ZoneOffset.ofHours(1)));
+        new BoolSeriesAsserts(lt.eval(s)).expectData(true, false, false);
+    }
+
+    @Test
     public void leVal() {
         Condition le = $offsetDateTime(0).le(
                 OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 1), ZoneOffset.ofHours(2)));
 
+        Series<OffsetDateTime> s = Series.of(
+                OffsetDateTime.of(LocalDateTime.of(2007, 1, 8, 1, 1), ZoneOffset.UTC),
+                OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 1), ZoneOffset.ofHours(2)),
+                OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 1), ZoneOffset.ofHours(1)));
+        new BoolSeriesAsserts(le.eval(s)).expectData(true, true, false);
+    }
+
+    @Test
+    public void leStrVal() {
+        Condition le = $offsetDateTime(0).le("2008-01-01T01:01+02");
         Series<OffsetDateTime> s = Series.of(
                 OffsetDateTime.of(LocalDateTime.of(2007, 1, 8, 1, 1), ZoneOffset.UTC),
                 OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 1), ZoneOffset.ofHours(2)),
@@ -192,6 +261,22 @@ public class OffsetDateTimeColumnTest {
         Condition le = $offsetDateTime(0).between(
                 OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 1), ZoneOffset.ofHours(2)),
                 OffsetDateTime.of(LocalDateTime.of(2012, 1, 1, 1, 1), ZoneOffset.ofHours(2)));
+
+        Series<OffsetDateTime> s = Series.of(
+                OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 0), ZoneOffset.ofHours(2)),
+                OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 1), ZoneOffset.ofHours(2)),
+                OffsetDateTime.of(LocalDateTime.of(2008, 5, 8, 5, 6), ZoneOffset.ofHours(2)),
+                OffsetDateTime.of(LocalDateTime.of(2012, 1, 1, 1, 1), ZoneOffset.ofHours(2)),
+                OffsetDateTime.of(LocalDateTime.of(2012, 1, 1, 1, 1), ZoneOffset.ofHours(-1)));
+
+        new BoolSeriesAsserts(le.eval(s)).expectData(false, true, true, true, false);
+    }
+
+    @Test
+    public void betweenStrVal() {
+        assertTrue(LocalDateTime.of(2012, 1, 1, 1, 2).isAfter(LocalDateTime.of(2012, 1, 1, 1, 1)));
+
+        Condition le = $offsetDateTime(0).between("2008-01-01T01:01+02", "2012-01-01T01:01+02");
 
         Series<OffsetDateTime> s = Series.of(
                 OffsetDateTime.of(LocalDateTime.of(2008, 1, 1, 1, 0), ZoneOffset.ofHours(2)),

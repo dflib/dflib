@@ -5,6 +5,7 @@ import org.dflib.ByteSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -21,6 +22,12 @@ class ZipStreamSeekByteSource implements ByteSource {
     public ZipStreamSeekByteSource(ByteSource zipSource, String zipEntryName) {
         this.zipEntryName = Objects.requireNonNull(zipEntryName);
         this.zipSource = Objects.requireNonNull(zipSource);
+    }
+
+    @Override
+    public Optional<String> uri() {
+        // TODO: should we include the name of the zipSource to provide the full identifier?
+        return Optional.of(zipEntryName);
     }
 
     @Override

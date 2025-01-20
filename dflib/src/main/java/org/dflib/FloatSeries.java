@@ -38,6 +38,11 @@ public interface FloatSeries extends Series<Float> {
     }
 
     @Override
+    default FloatSeries compactFloat(float forNull) {
+        return this;
+    }
+
+    @Override
     default Float get(int index) {
         return getFloat(index);
     }
