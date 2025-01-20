@@ -31,7 +31,7 @@ public class ExpParser {
             org.dflib.exp.parser.antlr4.ExpParser.RootContext context = parser.root();
             return extractor.visit(context);
         } catch (ParseCancellationException | LexerCancellationException | DateTimeParseException e) {
-            throw new ExpParserException("Error parsing exception: " + e.getMessage(), e);
+            throw new ExpParserException(e.getMessage(), e);
         } catch (Exception e) {
             throw new ExpParserException("Unexpected exception during parsing: " + e.getMessage(), e);
         }
