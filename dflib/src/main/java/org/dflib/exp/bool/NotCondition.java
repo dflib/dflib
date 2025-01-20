@@ -5,12 +5,31 @@ import org.dflib.Condition;
 import org.dflib.DataFrame;
 import org.dflib.Series;
 
+import java.util.Objects;
+
 public class NotCondition implements Condition {
 
     private final Condition exp;
 
     public NotCondition(Condition exp) {
         this.exp = exp;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        NotCondition that = (NotCondition) o;
+        return Objects.equals(exp, that.exp);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(exp);
     }
 
     @Override

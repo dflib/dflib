@@ -2,6 +2,7 @@ package org.dflib;
 
 import org.dflib.exp.AsExp;
 import org.dflib.exp.Column;
+import org.dflib.exp.parser.ExpParser;
 import org.dflib.exp.RowNumExp;
 import org.dflib.exp.ScalarExp;
 import org.dflib.exp.ShiftExp;
@@ -456,6 +457,18 @@ public interface Exp<T> {
      */
     static NumExp<Integer> rowNum() {
         return RowNumExp.getInstance();
+    }
+
+    /**
+     * Returns an expression created from the string representation
+     *
+     * @param str string to parse
+     * @return expression parsed from the string
+     *
+     * @since 2.0.0
+     */
+    static Exp<?> exp(String str) {
+        return ExpParser.parse(str);
     }
 
     /**

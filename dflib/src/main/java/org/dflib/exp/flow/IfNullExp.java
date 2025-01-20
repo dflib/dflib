@@ -21,6 +21,24 @@ public class IfNullExp<T> implements Exp<T> {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        IfNullExp<?> ifNullExp1 = (IfNullExp<?>) o;
+        return Objects.equals(exp, ifNullExp1.exp)
+                && Objects.equals(ifNullExp, ifNullExp1.ifNullExp);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(exp, ifNullExp);
+    }
+
+    @Override
     public String toString() {
         return toQL();
     }
@@ -32,12 +50,12 @@ public class IfNullExp<T> implements Exp<T> {
 
     @Override
     public String toQL() {
-        return "ifnull(" + exp.toQL() + "," + ifNullExp.toQL() + ")";
+        return "ifNull(" + exp.toQL() + ", " + ifNullExp.toQL() + ")";
     }
 
     @Override
     public String toQL(DataFrame df) {
-        return "ifnull(" + exp.toQL(df) + "," + ifNullExp.toQL(df) + ")";
+        return "ifNull(" + exp.toQL(df) + ", " + ifNullExp.toQL(df) + ")";
     }
 
     @Override

@@ -3,6 +3,8 @@ package org.dflib.exp;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 
+import java.util.Objects;
+
 /**
  * A base class for expressions that are not composed of other expressions.
  */
@@ -14,6 +16,24 @@ public abstract class Exp0<T> implements Exp<T> {
     public Exp0(String opName, Class<T> type) {
         this.opName = opName;
         this.type = type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Exp0<?> exp0 = (Exp0<?>) o;
+        return Objects.equals(opName, exp0.opName)
+                && Objects.equals(type, exp0.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(opName, type);
     }
 
     @Override

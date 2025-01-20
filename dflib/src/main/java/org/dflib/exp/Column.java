@@ -33,6 +33,25 @@ public class Column<T> implements Exp<T> {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Column<?> column = (Column<?>) o;
+        return position == column.position
+                && Objects.equals(name, column.name)
+                && Objects.equals(type, column.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(position, name, type);
+    }
+
+    @Override
     public String toString() {
         return toQL();
     }
