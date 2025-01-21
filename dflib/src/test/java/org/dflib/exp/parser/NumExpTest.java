@@ -3,6 +3,11 @@ package org.dflib.exp.parser;
 import org.dflib.Condition;
 import org.dflib.Exp;
 import org.dflib.NumExp;
+import org.dflib.exp.num.DecimalScalarExp;
+import org.dflib.exp.num.DoubleScalarExp;
+import org.dflib.exp.num.FloatScalarExp;
+import org.dflib.exp.num.IntScalarExp;
+import org.dflib.exp.num.LongScalarExp;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -54,13 +59,15 @@ public class NumExpTest {
     @MethodSource
     void integerScalar(String text, Exp<?> expected) {
         Exp<?> exp = Exp.exp(text);
-        assertInstanceOf(NumExp.class, exp);
+        assertInstanceOf(IntScalarExp.class, exp);
         assertEquals(expected, exp);
     }
 
     static Stream<Arguments> integerScalar() {
         return Stream.of(
                 arguments("123", Exp.$val(123)),
+                arguments("123i", Exp.$val(123)),
+                arguments("123I", Exp.$val(123)),
                 arguments("-456", Exp.$val(-456)),
                 arguments("123_456", Exp.$val(123_456)),
                 arguments("+0", Exp.$val(0)),
@@ -84,6 +91,7 @@ public class NumExpTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
+            "999999999999999i",
             "123abc",
             "0xGHIJ",
             "0x1A3.5",
@@ -100,13 +108,15 @@ public class NumExpTest {
     @MethodSource
     void longScalar(String text, Exp<?> expected) {
         Exp<?> exp = Exp.exp(text);
-        assertInstanceOf(NumExp.class, exp);
+        assertInstanceOf(LongScalarExp.class, exp);
         assertEquals(expected, exp);
     }
 
     static Stream<Arguments> longScalar() {
         return Stream.of(
                 arguments("999999999999999", Exp.$val(999999999999999L)),
+                arguments("999999999999999l", Exp.$val(999999999999999L)),
+                arguments("999999999999999L", Exp.$val(999999999999999L)),
                 arguments("-999999999999999", Exp.$val(-999999999999999L)),
                 arguments("+999999999999999", Exp.$val(999999999999999L)),
                 arguments("999_999_987_654_321", Exp.$val(999_999_987_654_321L)),
@@ -121,6 +131,7 @@ public class NumExpTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
+            "9999999999999999999999999l",
             "99999999999999abc",
             "0xFFFFFFFFFFFFFGHIJ",
             "0xFFFFFFFFFFFF1A3.5",
@@ -129,17 +140,22 @@ public class NumExpTest {
         assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
+    // TODO: BigIntScalarExp ???
+
     @ParameterizedTest
     @MethodSource
     void floatScalar(String text, Exp<?> expected) {
         Exp<?> exp = Exp.exp(text);
-        assertInstanceOf(NumExp.class, exp);
+        assertInstanceOf(FloatScalarExp.class, exp);
         assertEquals(expected, exp);
     }
 
     static Stream<Arguments> floatScalar() {
         return Stream.of(
+                arguments("1f", Exp.$floatVal(1f)),
                 arguments("123.4", Exp.$floatVal(123.4f)),
+                arguments("123.4f", Exp.$floatVal(123.4f)),
+                arguments("123.4F", Exp.$floatVal(123.4f)),
                 arguments("-456.7", Exp.$floatVal(-456.7f)),
                 arguments("123_456.7", Exp.$floatVal(123_456.7f)),
                 arguments("+0.0", Exp.$floatVal(0.0f)),
@@ -157,10 +173,10 @@ public class NumExpTest {
                 arguments("-9.999999E37", Exp.$floatVal(-9.999999E37f)),
                 arguments("1E-37", Exp.$floatVal(1E-37f)),
                 arguments("-1E-37", Exp.$floatVal(-1E-37f)),
-                arguments("0x1.0p-122", Exp.$floatVal(0x1.0p-122f)),
-                arguments("-0x1.0p-122", Exp.$floatVal(-0x1.0p-122f)),
-                arguments("0x1.fffffeP+123", Exp.$floatVal(0x1.fffffeP+123f)),
-                arguments("-0x1.fffffep+123", Exp.$floatVal(-0x1.fffffeP+123f))
+                arguments("0x1.0p-12f", Exp.$floatVal(0x1.0p-12f)),
+                arguments("-0x1.0p-12f", Exp.$floatVal(-0x1.0p-12f)),
+                arguments("0x1.fffffeP+12f", Exp.$floatVal(0x1.fffffeP+12f)),
+                arguments("-0x1.fffffep+12f", Exp.$floatVal(-0x1.fffffeP+12f))
         );
     }
 
@@ -178,13 +194,16 @@ public class NumExpTest {
     @MethodSource
     void doubleScalar(String text, Exp<?> expected) {
         Exp<?> exp = Exp.exp(text);
-        assertInstanceOf(NumExp.class, exp);
+        assertInstanceOf(DoubleScalarExp.class, exp);
         assertEquals(expected, exp);
     }
 
     static Stream<Arguments> doubleScalar() {
         return Stream.of(
+                arguments("1d", Exp.$doubleVal(1)),
                 arguments("123.45e50", Exp.$doubleVal(123.45e50)),
+                arguments("123.45e50d", Exp.$doubleVal(123.45e50)),
+                arguments("123.45e50D", Exp.$doubleVal(123.45e50)),
                 arguments("-456.78e50", Exp.$doubleVal(-456.78e50)),
                 arguments("123_456.78_9e50", Exp.$doubleVal(123_456.78_9e50)),
                 arguments(".5e50", Exp.$doubleVal(.5e50)),
@@ -197,20 +216,56 @@ public class NumExpTest {
                 arguments("-9.999999999999999E307", Exp.$doubleVal(-9.999999999999999E307)),
                 arguments("1E-307", Exp.$doubleVal(1E-307)),
                 arguments("-1E-307", Exp.$doubleVal(-1E-307)),
-                arguments("0x1.0p-1018", Exp.$doubleVal(0x1.0p-1018)),
-                arguments("-0x1.0p-1018", Exp.$doubleVal(-0x1.0p-1018)),
-                arguments("0x1.fffffeP+1019", Exp.$doubleVal(0x1.fffffeP+1019)),
-                arguments("-0x1.fffffep+1019", Exp.$doubleVal(-0x1.fffffeP+1019))
+                arguments("0x1.0p-122d", Exp.$doubleVal(0x1.0p-122)),
+                arguments("-0x1.0p-122d", Exp.$doubleVal(-0x1.0p-122)),
+                arguments("0x1.fffffeP+123d", Exp.$doubleVal(0x1.fffffeP+123)),
+                arguments("-0x1.fffffep+123d", Exp.$doubleVal(-0x1.fffffeP+123))
         );
     }
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "1e",
-            "1e1.0",
-            ".e10",
+            "1ed",
+            "1e1.0d",
+            ".e10d",
     })
     void doubleScalar_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void decimalScalar(String text, Exp<?> expected) {
+        Exp<?> exp = Exp.exp(text);
+        assertInstanceOf(DecimalScalarExp.class, exp);
+        assertEquals(expected, exp);
+    }
+
+    static Stream<Arguments> decimalScalar() {
+        return Stream.of(
+                arguments("1m", Exp.$decimalVal(new BigDecimal(1))),
+                arguments("123.45e1000m", Exp.$decimalVal(new BigDecimal("123.45e1000"))),
+                arguments("123.45e1000M", Exp.$decimalVal(new BigDecimal("123.45e1000"))),
+                arguments("-456.78e1000", Exp.$decimalVal(new BigDecimal("-456.78e1000"))),
+                arguments("123_456.78_9e1000", Exp.$decimalVal(new BigDecimal("123456.789e1000"))),
+                arguments(".5e1000", Exp.$decimalVal(new BigDecimal(".5e1000"))),
+                arguments("-.5e1000", Exp.$decimalVal(new BigDecimal("-.5e1000"))),
+                arguments("123.45000e1000", Exp.$decimalVal(new BigDecimal("123.45e1000"))),
+                arguments("1e1000", Exp.$decimalVal(new BigDecimal("1e1000"))),
+                arguments("1E1000", Exp.$decimalVal(new BigDecimal("1E1000"))),
+                arguments("-1e-1000", Exp.$decimalVal(new BigDecimal("-1e-1000"))),
+                arguments("0x1.0p-1044", Exp.$decimalVal(new BigDecimal("5.30498947741318078777846E-315"))),
+                arguments("-0x1.0p-1044", Exp.$decimalVal(new BigDecimal("-5.30498947741318078777846E-315")))
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "1em",
+            "1e1.0m",
+            ".e10m",
+    })
+    void decimalScalar_throws(String text) {
         assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
