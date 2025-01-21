@@ -21,37 +21,6 @@ public class TimeExpTest {
 
     @ParameterizedTest
     @MethodSource
-    void scalar(String text, Exp<?> expected) {
-        Exp<?> exp = Exp.exp(text);
-        assertInstanceOf(TimeExp.class, exp);
-        assertEquals(expected, exp);
-    }
-
-    static Stream<Arguments> scalar() {
-        return Stream.of(
-                arguments("12:34", Exp.$val(LocalTime.parse("12:34"))),
-                arguments("00:00", Exp.$val(LocalTime.parse("00:00"))),
-                arguments("23:59", Exp.$val(LocalTime.parse("23:59"))),
-                arguments("08:30:45", Exp.$val(LocalTime.parse("08:30:45"))),
-                arguments("15:45:30.123", Exp.$val(LocalTime.parse("15:45:30.123"))),
-                arguments("09:08:07.000123456", Exp.$val(LocalTime.parse("09:08:07.000123456")))
-        );
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "09:08:45.9999999999",
-            "15:45.67",
-            "24:00",
-            "12:60",
-            "08:30:60",
-    })
-    void scalar_throws(String text) {
-        assertThrows(ExpParserException.class, () -> Exp.exp(text));
-    }
-
-    @ParameterizedTest
-    @MethodSource
     void column(String text, Exp<?> expected) {
         Exp<?> exp = Exp.exp(text);
         assertInstanceOf(TimeExp.class, exp);

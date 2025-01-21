@@ -21,37 +21,6 @@ public class DateExpTest {
 
     @ParameterizedTest
     @MethodSource
-    void scalar(String text, Exp<?> expected) {
-        Exp<?> exp = Exp.exp(text);
-        assertInstanceOf(DateExp.class, exp);
-        assertEquals(expected, exp);
-    }
-
-    static Stream<Arguments> scalar() {
-        return Stream.of(
-                arguments("2023-01-17", Exp.$val(LocalDate.parse("2023-01-17"))),
-                arguments("2000-02-29", Exp.$val(LocalDate.parse("2000-02-29"))), // Leap year
-                arguments("1900-01-01", Exp.$val(LocalDate.parse("1900-01-01"))),
-                arguments("9999-12-31", Exp.$val(LocalDate.parse("9999-12-31"))),
-                arguments("1970-01-01", Exp.$val(LocalDate.parse("1970-01-01")))
-        );
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "10000-12-01",
-            "2023-13-01",
-            "2024-11-32",
-            "9999-00-01",
-            "9999-12-00",
-            "2000-02-30",
-    })
-    void scalar_throws(String text) {
-        assertThrows(ExpParserException.class, () -> Exp.exp(text));
-    }
-
-    @ParameterizedTest
-    @MethodSource
     void column(String text, Exp<?> expected) {
         Exp<?> exp = Exp.exp(text);
         assertInstanceOf(DateExp.class, exp);

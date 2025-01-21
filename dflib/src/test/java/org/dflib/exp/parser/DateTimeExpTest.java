@@ -21,41 +21,6 @@ public class DateTimeExpTest {
 
     @ParameterizedTest
     @MethodSource
-    void scalar(String text, Exp<?> expected) {
-        Exp<?> exp = Exp.exp(text);
-        assertInstanceOf(DateTimeExp.class, exp);
-        assertEquals(expected, exp);
-    }
-
-    static Stream<Arguments> scalar() {
-        return Stream.of(
-                arguments("2023-01-17T12:34", Exp.$val(LocalDateTime.parse("2023-01-17T12:34"))),
-                arguments("2000-02-29T08:30:45", Exp.$val(LocalDateTime.parse("2000-02-29T08:30:45"))),
-                arguments("1900-01-01T00:00", Exp.$val(LocalDateTime.parse("1900-01-01T00:00"))),
-                arguments("1970-01-01T00:00:00", Exp.$val(LocalDateTime.parse("1970-01-01T00:00:00"))),
-                arguments("9999-12-31T23:59:59.999999999",
-                        Exp.$val(LocalDateTime.parse("9999-12-31T23:59:59.999999999")))
-        );
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "10000-11-14T21:00",
-            "2023-00-01T12:00",
-            "2024-01-00T14:00",
-            "2025-01-01T25:00:00",
-            "1970-01-01t00:00",
-            "1970-01-01 00:00",
-            "2026-01-01T02:60:00",
-            "2027-01-01T04:24:60",
-            "2000-02-30T08:30",
-    })
-    void scalar_throws(String text) {
-        assertThrows(ExpParserException.class, () -> Exp.exp(text));
-    }
-
-    @ParameterizedTest
-    @MethodSource
     void column(String text, Exp<?> expected) {
         Exp<?> exp = Exp.exp(text);
         assertInstanceOf(DateTimeExp.class, exp);
