@@ -26,6 +26,17 @@ class ExpParserUtils {
     private static final BigInteger INT_MAX = BigInteger.valueOf(Integer.MAX_VALUE);
     private static final BigInteger LONG_MIN = BigInteger.valueOf(Long.MIN_VALUE);
     private static final BigInteger LONG_MAX = BigInteger.valueOf(Long.MAX_VALUE);
+    private static final BigDecimal FLOAT_MIN = BigDecimal.valueOf(Float.MIN_NORMAL);
+    private static final BigDecimal FLOAT_MAX = BigDecimal.valueOf(Float.MAX_VALUE);
+    private static final BigDecimal DOUBLE_MIN = BigDecimal.valueOf(Double.MIN_NORMAL);
+    private static final BigDecimal DOUBLE_MAX = BigDecimal.valueOf(Double.MAX_VALUE);
+
+    private static final int FLOAT_SIGNIFICAND = 24;
+    private static final int FLOAT_MIN_EXPONENT = -37;
+    private static final int FLOAT_MAX_EXPONENT = 37;
+    private static final int DOUBLE_SIGNIFICAND = 53;
+    private static final int DOUBLE_MIN_EXPONENT = -307;
+    private static final int DOUBLE_MAX_EXPONENT = 307;
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     static <T> Exp<T> val(T value) {
@@ -43,6 +54,8 @@ class ExpParserUtils {
             return (Exp<T>) Exp.$floatVal((Float) value);
         } else if (Double.class.equals(type) || Double.TYPE.equals(type)) {
             return (Exp<T>) Exp.$doubleVal((Double) value);
+        } else if (BigDecimal.class.equals(type)) {
+            return (Exp<T>) Exp.$decimalVal((BigDecimal) value);
         } else if (Boolean.class.equals(type) || Boolean.TYPE.equals(type)) {
             return (Exp<T>) Exp.$boolVal((Boolean) value);
         } else if (String.class.equals(type)) {
@@ -127,21 +140,16 @@ class ExpParserUtils {
     }
 
     static Number parseFloatingPointValue(String token) {
-        String scalar = token.toLowerCase();
-        scalar = scalar.replaceAll("_+", "");
-        BigDecimal value = new BigDecimal(scalar);
+        String normalizedToken = token.replaceAll("_+", "").toLowerCase();
+        BigDecimal value = normalizedToken.matches("^[+-]?0x.*")
+                ? BigDecimal.valueOf(Double.parseDouble(normalizedToken))
+                : new BigDecimal(normalizedToken);
 
-        if (value.compareTo(BigDecimal.ZERO) == 0) {
+        if (mayFitFloat(value)) {
             return value.floatValue();
         }
-
-        float floatValue = value.floatValue();
-        if (Float.isFinite(floatValue) && floatValue != 0) {
-            return floatValue;
-        }
-        double doubleValue = value.doubleValue();
-        if (Double.isFinite(doubleValue) && doubleValue != 0) {
-            return doubleValue;
+        if (mayFitDouble(value)) {
+            return value.doubleValue();
         }
         return value;
     }
@@ -160,6 +168,32 @@ class ExpParserUtils {
 
     static OffsetDateTime parseOffsetDateTimeValue(String token) {
         return OffsetDateTime.parse(token, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+    }
+
+    private static boolean mayFitFloat(BigDecimal value) {
+        int significand = value.precision();
+        int exponent = value.precision() - value.scale() - 1;
+        if (significand > FLOAT_SIGNIFICAND || exponent < FLOAT_MIN_EXPONENT || exponent > FLOAT_MAX_EXPONENT) {
+            return false;
+        }
+        if (value.compareTo(BigDecimal.ZERO) == 0) {
+            return true;
+        }
+        BigDecimal abs = value.abs();
+        return abs.compareTo(FLOAT_MIN) >= 0 && abs.compareTo(FLOAT_MAX) <= 0;
+    }
+
+    private static boolean mayFitDouble(BigDecimal value) {
+        int significand = value.precision();
+        int exponent = value.precision() - value.scale() - 1;
+        if (significand > DOUBLE_SIGNIFICAND || exponent < DOUBLE_MIN_EXPONENT || exponent > DOUBLE_MAX_EXPONENT) {
+            return false;
+        }
+        if (value.compareTo(BigDecimal.ZERO) == 0) {
+            return true;
+        }
+        BigDecimal abs = value.abs();
+        return abs.compareTo(DOUBLE_MIN) >= 0 && abs.compareTo(DOUBLE_MAX) <= 0;
     }
 
     private static <T> T col(Object columnId, Function<Integer, T> byIndex, Function<String, T> byName) {

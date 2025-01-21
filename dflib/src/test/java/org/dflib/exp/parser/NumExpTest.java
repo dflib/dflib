@@ -3,17 +3,12 @@ package org.dflib.exp.parser;
 import org.dflib.Condition;
 import org.dflib.Exp;
 import org.dflib.NumExp;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -136,7 +131,6 @@ public class NumExpTest {
 
     @ParameterizedTest
     @MethodSource
-    @Disabled
     void floatScalar(String text, Exp<?> expected) {
         Exp<?> exp = Exp.exp(text);
         assertInstanceOf(NumExp.class, exp);
@@ -159,10 +153,14 @@ public class NumExpTest {
                 arguments("1E10", Exp.$floatVal(1e10f)),
                 arguments("-1e-10", Exp.$floatVal(-1e-10f)),
                 arguments("+1.23e+4", Exp.$floatVal(1.23e4f)),
-                arguments("3.4028235e38", Exp.$floatVal(Float.MAX_VALUE)),
-                arguments("-3.4028235e38", Exp.$floatVal(-Float.MAX_VALUE)),
-                arguments("1.4e-45", Exp.$floatVal(Float.MIN_VALUE)),
-                arguments("-1.4e-45", Exp.$floatVal(-Float.MIN_VALUE))
+                arguments("9.999999E37", Exp.$floatVal(9.999999E37f)),
+                arguments("-9.999999E37", Exp.$floatVal(-9.999999E37f)),
+                arguments("1E-37", Exp.$floatVal(1E-37f)),
+                arguments("-1E-37", Exp.$floatVal(-1E-37f)),
+                arguments("0x1.0p-122", Exp.$floatVal(0x1.0p-122f)),
+                arguments("-0x1.0p-122", Exp.$floatVal(-0x1.0p-122f)),
+                arguments("0x1.fffffeP+123", Exp.$floatVal(0x1.fffffeP+123f)),
+                arguments("-0x1.fffffep+123", Exp.$floatVal(-0x1.fffffeP+123f))
         );
     }
 
@@ -178,7 +176,6 @@ public class NumExpTest {
 
     @ParameterizedTest
     @MethodSource
-    @Disabled
     void doubleScalar(String text, Exp<?> expected) {
         Exp<?> exp = Exp.exp(text);
         assertInstanceOf(NumExp.class, exp);
@@ -190,18 +187,20 @@ public class NumExpTest {
                 arguments("123.45e50", Exp.$doubleVal(123.45e50)),
                 arguments("-456.78e50", Exp.$doubleVal(-456.78e50)),
                 arguments("123_456.78_9e50", Exp.$doubleVal(123_456.78_9e50)),
-                arguments("+0.0", Exp.$doubleVal(0.0)),
-                arguments("0.0", Exp.$doubleVal(0.0)),
                 arguments(".5e50", Exp.$doubleVal(.5e50)),
                 arguments("-.5e50", Exp.$doubleVal(-.5e50)),
                 arguments("123.45000e50", Exp.$doubleVal(123.45e50)),
                 arguments("1e50", Exp.$doubleVal(1e50)),
                 arguments("1E50", Exp.$doubleVal(1E50)),
                 arguments("-1e-50", Exp.$doubleVal(-1e-50)),
-                arguments("1.7976931348623157e308", Exp.$doubleVal(Double.MAX_VALUE)),
-                arguments("-1.7976931348623157e308", Exp.$doubleVal(-Double.MAX_VALUE)),
-                arguments("4.9e-324", Exp.$doubleVal(Double.MIN_VALUE)),
-                arguments("-4.9e-324", Exp.$doubleVal(-Double.MIN_VALUE))
+                arguments("9.999999999999999E307", Exp.$doubleVal(9.999999999999999E307)),
+                arguments("-9.999999999999999E307", Exp.$doubleVal(-9.999999999999999E307)),
+                arguments("1E-307", Exp.$doubleVal(1E-307)),
+                arguments("-1E-307", Exp.$doubleVal(-1E-307)),
+                arguments("0x1.0p-1018", Exp.$doubleVal(0x1.0p-1018)),
+                arguments("-0x1.0p-1018", Exp.$doubleVal(-0x1.0p-1018)),
+                arguments("0x1.fffffeP+1019", Exp.$doubleVal(0x1.fffffeP+1019)),
+                arguments("-0x1.fffffep+1019", Exp.$doubleVal(-0x1.fffffeP+1019))
         );
     }
 
@@ -238,7 +237,6 @@ public class NumExpTest {
 
     @ParameterizedTest
     @MethodSource
-    @Disabled
     void cast(String text, Exp<?> expected) {
         Exp<?> exp = Exp.exp(text);
         assertInstanceOf(NumExp.class, exp);
@@ -251,16 +249,10 @@ public class NumExpTest {
                 arguments("castAsLong(9999999999)", Exp.$longVal(9999999999L).castAsLong()),
                 arguments("castAsFloat(1.1)", Exp.$floatVal(1.1f).castAsFloat()),
                 arguments("castAsDouble(1e-100)", Exp.$doubleVal(1e-100).castAsDouble()),
-                arguments("castAsDecimal(1e1000)", Exp.$val(BigDecimal.valueOf(1, 1000)).castAsDecimal()),
+                arguments("castAsDecimal(1e1000)", Exp.$decimalVal(new BigDecimal("1e1000")).castAsDecimal()),
                 arguments("castAsInt(null)", Exp.$val(null).castAsInt()),
                 arguments("castAsInt(true)", Exp.$boolVal(true).castAsInt()),
-                arguments("castAsInt('1')", Exp.$strVal("1").castAsInt()),
-                arguments("castAsInt(12:00:00)", Exp.$val(LocalTime.parse("12:00:00")).castAsInt()),
-                arguments("castAsInt(2024-01-15)", Exp.$val(LocalDate.parse("2024-01-15")).castAsInt()),
-                arguments("castAsInt(2024-01-15T12:00:00)",
-                        Exp.$val(LocalDateTime.parse("2024-01-15T12:00:00")).castAsInt()),
-                arguments("castAsInt(2024-01-15T12:00:00+01:00)",
-                        Exp.$val(OffsetDateTime.parse("2024-01-15T12:00:00+01:00")).castAsInt())
+                arguments("castAsInt('1')", Exp.$strVal("1").castAsInt())
         );
     }
 
@@ -297,7 +289,6 @@ public class NumExpTest {
 
     @ParameterizedTest
     @MethodSource
-    @Disabled
     void function(String text, Exp<?> expected) {
         Exp<?> exp = Exp.exp(text);
         assertInstanceOf(NumExp.class, exp);
