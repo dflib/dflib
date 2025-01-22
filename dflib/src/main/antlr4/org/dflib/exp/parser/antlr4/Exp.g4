@@ -48,13 +48,11 @@ numExp returns [NumExp<?> exp]
     | numColumn { $exp = $numColumn.exp; }
     | numFn { $exp = $numFn.exp; }
     | numAgg { $exp = $numAgg.exp; }
-    | a=numExp (
-        : MUL b=numExp { $exp = $a.exp.mul($b.exp); }
-        | DIV b=numExp { $exp = $a.exp.div($b.exp); }
-        | MOD b=numExp { $exp = $a.exp.mod($b.exp); }
-        | ADD b=numExp { $exp = $a.exp.add($b.exp); }
-        | SUB b=numExp { $exp = $a.exp.sub($b.exp); }
-    )
+    | a=numExp MUL b=numExp { $exp = $a.exp.mul($b.exp); }
+    | a=numExp DIV b=numExp { $exp = $a.exp.div($b.exp); }
+    | a=numExp MOD b=numExp { $exp = $a.exp.mod($b.exp); }
+    | a=numExp ADD b=numExp { $exp = $a.exp.add($b.exp); }
+    | a=numExp SUB b=numExp { $exp = $a.exp.sub($b.exp); }
     | '(' numExp ')' { $exp = $numExp.exp; }
     ;
 
@@ -71,10 +69,8 @@ boolExp returns [Condition exp]
     | boolFn { $exp = $boolFn.exp; }
     | relation { $exp = $relation.exp; }
     | NOT boolExp { $exp = Exp.not($boolExp.exp); }
-    | a=boolExp (
-        : AND b=boolExp { $exp = Exp.and($a.exp, $b.exp); }
-        | OR b=boolExp { $exp = Exp.or($a.exp, $b.exp); }
-    )
+    | a=boolExp AND b=boolExp { $exp = Exp.and($a.exp, $b.exp); }
+    | a=boolExp OR b=boolExp { $exp = Exp.or($a.exp, $b.exp); }
     | '(' boolExp ')' { $exp = $boolExp.exp; }
     ;
 

@@ -39,6 +39,7 @@ public class NumExpTest {
                 arguments("6 / 2", Exp.$intVal(6).div(2)),
                 arguments("5 % 2", Exp.$intVal(5).mod(2)),
                 arguments("1 + 2 * 3", Exp.$intVal(1).add(Exp.$intVal(2).mul(3))),
+                arguments("1 * 2 + 3", Exp.$intVal(1).mul(2).add(3)),
                 arguments("(1 + 2) * 3", Exp.$intVal(1).add(2).mul(3)),
                 arguments("sum(int(1)) + abs(int(2))", Exp.$int(1).sum().add(Exp.$int(2).abs())),
                 arguments("int(1) + castAsDouble('3.0')", Exp.$int(1).add(Exp.$strVal("3.0").castAsDouble()))

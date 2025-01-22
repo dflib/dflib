@@ -34,6 +34,9 @@ public class ConditionTest {
                 arguments("1 != 0", Exp.$intVal(1).ne(Exp.$val(0))),
                 arguments("true and false", Exp.$boolVal(true).and(Exp.$boolVal(false))),
                 arguments("true or false", Exp.$boolVal(true).or(Exp.$boolVal(false))),
+                arguments("true or false and true", Exp.$boolVal(true).or(Exp.$boolVal(false).and(Exp.$boolVal(true)))),
+                arguments("true and false or true", Exp.$boolVal(true).and(Exp.$boolVal(false)).or(Exp.$boolVal(true))),
+                arguments("true and (false or true)", Exp.$boolVal(true).and(Exp.$boolVal(false).or(Exp.$boolVal(true)))),
                 arguments("not true", Exp.$boolVal(true).not()),
                 arguments("not bool(1)", Exp.$bool(1).not()),
                 arguments("not int(1) > 0", Exp.$int(1).gt(0).not())
