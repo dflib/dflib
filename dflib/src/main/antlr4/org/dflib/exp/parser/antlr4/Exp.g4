@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
+import java.util.function.Function;
+import java.util.function.BiFunction;
 
 import org.dflib.*;
 
@@ -401,14 +403,16 @@ relation returns [Condition exp]
  *  - The right-hand side numeric expression.
  *  - The upper bound numeric expression (for BETWEEN).
  */
-numRelation returns [Condition exp]
+numRelation returns [Condition exp] locals [BiFunction<NumExp<?>, NumExp<?>, Condition> rel]
     : a=numExp (
-        : GT b=numExp { $exp = $a.exp.gt($b.exp); }
-        | GE b=numExp { $exp = $a.exp.ge($b.exp); }
-        | LT b=numExp { $exp = $a.exp.lt($b.exp); }
-        | LE b=numExp { $exp = $a.exp.le($b.exp); }
-        | EQ b=numExp { $exp = $a.exp.eq($b.exp); }
-        | NE b=numExp { $exp = $a.exp.ne($b.exp); }
+        : (
+            : GT { $rel = (a, b) -> a.gt(b); }
+            | GE { $rel = (a, b) -> a.ge(b); }
+            | LT { $rel = (a, b) -> a.lt(b); }
+            | LE { $rel = (a, b) -> a.le(b); }
+            | EQ { $rel = (a, b) -> a.eq(b); }
+            | NE { $rel = (a, b) -> a.ne(b); }
+        ) b=numExp { $exp = $rel.apply($a.exp, $b.exp); }
         | BETWEEN b=numExp AND c=numExp { $exp = $a.exp.between($b.exp, $c.exp); }
     )
     ;
@@ -421,11 +425,11 @@ numRelation returns [Condition exp]
  *  - The left-hand side string expression.
  *  - The right-hand side string expression.
  */
-strRelation returns [Condition exp]
+strRelation returns [Condition exp] locals [BiFunction<StrExp, StrExp, Condition> rel]
     : a=strExp (
-        : EQ b=strExp { $exp = $a.exp.eq($b.exp); }
-        | NE b=strExp { $exp = $a.exp.ne($b.exp); }
-    )
+        : EQ { $rel = (a, b) -> a.eq(b); }
+        | NE { $rel = (a, b) -> a.ne(b); }
+    ) b=strExp { $exp = $rel.apply($a.exp, $b.exp); }
     ;
 
 /**
@@ -436,14 +440,19 @@ strRelation returns [Condition exp]
  *  - The right-hand TimeExp.
  *  - The upper bound TimeExp (for BETWEEN).
  */
-timeRelation returns [Condition exp]
+timeRelation returns [Condition exp] locals [BiFunction<TimeExp, TimeExp, Condition> rel]
     : a=timeExp (
-        : GT (b=timeExp { $exp = $a.exp.gt($b.exp); } | s=timeStrScalar { $exp = $a.exp.gt($s.value); } )
-        | GE (b=timeExp { $exp = $a.exp.ge($b.exp); } | s=timeStrScalar { $exp = $a.exp.ge($s.value); } )
-        | LT (b=timeExp { $exp = $a.exp.lt($b.exp); } | s=timeStrScalar { $exp = $a.exp.lt($s.value); } )
-        | LE (b=timeExp { $exp = $a.exp.le($b.exp); } | s=timeStrScalar { $exp = $a.exp.le($s.value); } )
-        | EQ (b=timeExp { $exp = $a.exp.eq($b.exp); } | s=timeStrScalar { $exp = $a.exp.eq($s.value); } )
-        | NE (b=timeExp { $exp = $a.exp.ne($b.exp); } | s=timeStrScalar { $exp = $a.exp.ne($s.value); } )
+        : (
+            : GT { $rel = (a, b) -> a.gt(b); }
+            | GE { $rel = (a, b) -> a.ge(b); }
+            | LT { $rel = (a, b) -> a.lt(b); }
+            | LE { $rel = (a, b) -> a.le(b); }
+            | EQ { $rel = (a, b) -> a.eq(b); }
+            | NE { $rel = (a, b) -> a.ne(b); }
+        ) (
+            : b=timeExp { $exp = $rel.apply($a.exp, $b.exp); }
+            | s=timeStrScalar { $exp = $rel.apply($a.exp, Exp.\$timeVal(LocalTime.parse($s.value))); }
+        )
         | BETWEEN (
             b=timeExp AND c=timeExp { $exp = $a.exp.between($b.exp, $c.exp); }
             | s1=timeStrScalar AND s2=timeStrScalar { $exp = $a.exp.between($s1.value, $s2.value); }
@@ -459,14 +468,19 @@ timeRelation returns [Condition exp]
  *  - The right-hand DateExp.
  *  - The upper bound DateExp (for BETWEEN).
  */
-dateRelation returns [Condition exp]
+dateRelation returns [Condition exp] locals [BiFunction<DateExp, DateExp, Condition> rel]
     : a=dateExp (
-        : GT (b=dateExp { $exp = $a.exp.gt($b.exp); } | s=dateStrScalar { $exp = $a.exp.gt($s.value); } )
-        | GE (b=dateExp { $exp = $a.exp.ge($b.exp); } | s=dateStrScalar { $exp = $a.exp.ge($s.value); } )
-        | LT (b=dateExp { $exp = $a.exp.lt($b.exp); } | s=dateStrScalar { $exp = $a.exp.lt($s.value); } )
-        | LE (b=dateExp { $exp = $a.exp.le($b.exp); } | s=dateStrScalar { $exp = $a.exp.le($s.value); } )
-        | EQ (b=dateExp { $exp = $a.exp.eq($b.exp); } | s=dateStrScalar { $exp = $a.exp.eq($s.value); } )
-        | NE (b=dateExp { $exp = $a.exp.ne($b.exp); } | s=dateStrScalar { $exp = $a.exp.ne($s.value); } )
+        : (
+            : GT { $rel = (a, b) -> a.gt(b); }
+            | GE { $rel = (a, b) -> a.ge(b); }
+            | LT { $rel = (a, b) -> a.lt(b); }
+            | LE { $rel = (a, b) -> a.le(b); }
+            | EQ { $rel = (a, b) -> a.eq(b); }
+            | NE { $rel = (a, b) -> a.ne(b); }
+        ) (
+            : b=dateExp { $exp = $rel.apply($a.exp, $b.exp); }
+            | s=dateStrScalar { $exp = $rel.apply($a.exp, Exp.\$dateVal(LocalDate.parse($s.value))); }
+        )
         | BETWEEN (
             b=dateExp AND c=dateExp { $exp = $a.exp.between($b.exp, $c.exp); }
             | s1=dateStrScalar AND s2=dateStrScalar { $exp = $a.exp.between($s1.value, $s2.value); }
@@ -482,14 +496,19 @@ dateRelation returns [Condition exp]
  *  - The right-hand DateTimeExp.
  *  - The upper bound DateTimeExp (for BETWEEN).
  */
-dateTimeRelation returns [Condition exp]
+dateTimeRelation returns [Condition exp] locals [BiFunction<DateTimeExp, DateTimeExp, Condition> rel]
     : a=dateTimeExp (
-        : GT (b=dateTimeExp { $exp = $a.exp.gt($b.exp); } | s=dateTimeStrScalar { $exp = $a.exp.gt($s.value); } )
-        | GE (b=dateTimeExp { $exp = $a.exp.ge($b.exp); } | s=dateTimeStrScalar { $exp = $a.exp.ge($s.value); } )
-        | LT (b=dateTimeExp { $exp = $a.exp.lt($b.exp); } | s=dateTimeStrScalar { $exp = $a.exp.lt($s.value); } )
-        | LE (b=dateTimeExp { $exp = $a.exp.le($b.exp); } | s=dateTimeStrScalar { $exp = $a.exp.le($s.value); } )
-        | EQ (b=dateTimeExp { $exp = $a.exp.eq($b.exp); } | s=dateTimeStrScalar { $exp = $a.exp.eq($s.value); } )
-        | NE (b=dateTimeExp { $exp = $a.exp.ne($b.exp); } | s=dateTimeStrScalar { $exp = $a.exp.ne($s.value); } )
+        : (
+            : GT { $rel = (a, b) -> a.gt(b); }
+            | GE { $rel = (a, b) -> a.ge(b); }
+            | LT { $rel = (a, b) -> a.lt(b); }
+            | LE { $rel = (a, b) -> a.le(b); }
+            | EQ { $rel = (a, b) -> a.eq(b); }
+            | NE { $rel = (a, b) -> a.ne(b); }
+        ) (
+            : b=dateTimeExp { $exp = $rel.apply($a.exp, $b.exp); }
+            | s=dateTimeStrScalar { $exp = $rel.apply($a.exp, Exp.\$dateTimeVal(LocalDateTime.parse($s.value))); }
+        )
         | BETWEEN (
             b=dateTimeExp AND c=dateTimeExp { $exp = $a.exp.between($b.exp, $c.exp); }
             | s1=dateTimeStrScalar AND s2=dateTimeStrScalar { $exp = $a.exp.between($s1.value, $s2.value); }
@@ -505,16 +524,21 @@ dateTimeRelation returns [Condition exp]
  *  - The right-hand OffsetDateTimeExp.
  *  - The upper bound OffsetDateTimeExp (for BETWEEN).
  */
-offsetDateTimeRelation returns [Condition exp]
+offsetDateTimeRelation returns [Condition exp] locals [BiFunction<OffsetDateTimeExp, OffsetDateTimeExp, Condition> rel]
     : a=offsetDateTimeExp (
-        : GT (b=offsetDateTimeExp { $exp = $a.exp.gt($b.exp); } | s=offsetDateTimeStrScalar { $exp = $a.exp.gt($s.value); } )
-        | GE (b=offsetDateTimeExp { $exp = $a.exp.ge($b.exp); } | s=offsetDateTimeStrScalar { $exp = $a.exp.ge($s.value); } )
-        | LT (b=offsetDateTimeExp { $exp = $a.exp.lt($b.exp); } | s=offsetDateTimeStrScalar { $exp = $a.exp.lt($s.value); } )
-        | LE (b=offsetDateTimeExp { $exp = $a.exp.le($b.exp); } | s=offsetDateTimeStrScalar { $exp = $a.exp.le($s.value); } )
-        | EQ (b=offsetDateTimeExp { $exp = $a.exp.eq($b.exp); } | s=offsetDateTimeStrScalar { $exp = $a.exp.eq($s.value); } )
-        | NE (b=offsetDateTimeExp { $exp = $a.exp.ne($b.exp); } | s=offsetDateTimeStrScalar { $exp = $a.exp.ne($s.value); } )
+        : (
+            : GT { $rel = (a, b) -> a.gt(b); }
+            | GE { $rel = (a, b) -> a.ge(b); }
+            | LT { $rel = (a, b) -> a.lt(b); }
+            | LE { $rel = (a, b) -> a.le(b); }
+            | EQ { $rel = (a, b) -> a.eq(b); }
+            | NE { $rel = (a, b) -> a.ne(b); }
+        ) (
+            : b=offsetDateTimeExp { $exp = $rel.apply($a.exp, $b.exp); }
+            | s=offsetDateTimeStrScalar { $exp = $rel.apply($a.exp, Exp.\$offsetDateTimeVal(OffsetDateTime.parse($s.value))); }
+        )
         | BETWEEN (
-            b=offsetDateTimeExp AND c=offsetDateTimeExp { $exp = $a.exp.between($b.exp, $c.exp); }
+            : b=offsetDateTimeExp AND c=offsetDateTimeExp { $exp = $a.exp.between($b.exp, $c.exp); }
             | s1=offsetDateTimeStrScalar AND s2=offsetDateTimeStrScalar { $exp = $a.exp.between($s1.value, $s2.value); }
         )
     )
@@ -527,11 +551,11 @@ offsetDateTimeRelation returns [Condition exp]
  *  - The left-hand expression.
  *  - The right-hand expression.
  */
-genericRelation returns [Condition exp]
+genericRelation returns [Condition exp] locals [BiFunction<Exp<?>, Exp<?>, Condition> rel]
     : a=genericExp (
-        : EQ b=expression { $exp = $a.exp.eq($b.exp); }
-        | NE b=expression { $exp = $a.exp.ne($b.exp); }
-    )
+        : EQ { $rel = (a, b) -> a.eq(b); }
+        | NE { $rel = (a, b) -> a.ne(b); }
+    ) b=expression { $rel.apply($a.exp, $b.exp); }
     ;
 
 /// **Functions**
@@ -540,21 +564,23 @@ genericRelation returns [Condition exp]
  * Numeric functions, including casting, counting, row number, absolute value, rounding, and field functions.
  * These functions operate on or produce numeric values.
  */
-numFn returns [NumExp<?> exp]
+numFn returns [NumExp<?> exp] locals [Function<NumExp<?>, NumExp<?>> fn]
     : castAsInt { $exp = $castAsInt.exp; }
     | castAsLong { $exp = $castAsLong.exp; }
     | castAsFloat { $exp = $castAsFloat.exp; }
     | castAsDouble { $exp = $castAsDouble.exp; }
     | castAsDecimal { $exp = $castAsDecimal.exp; }
-    // TODO: check out COUNT and ROW_NUM functions
-    | COUNT ('(' b=boolExp? ')') { $exp = $ctx.b != null ? Exp.count($b.exp) : Exp.count(); }
-    | ROW_NUM ('(' ')') { $exp = Exp.rowNum(); }
-    | ABS '(' numExp ')' { $exp = $numExp.exp.abs(); }
-    | ROUND '(' numExp ')' { $exp = $numExp.exp.round(); }
     | timeFieldFn { $exp = $timeFieldFn.exp; }
     | dateFieldFn { $exp = $dateFieldFn.exp; }
     | dateTimeFieldFn { $exp = $dateTimeFieldFn.exp; }
     | offsetDateTimeFieldFn { $exp = $offsetDateTimeFieldFn.exp; }
+    // TODO: check out COUNT and ROW_NUM functions
+    | COUNT ('(' b=boolExp? ')') { $exp = $ctx.b != null ? Exp.count($b.exp) : Exp.count(); }
+    | ROW_NUM ('(' ')') { $exp = Exp.rowNum(); }
+    | (
+        : ABS { $fn = e -> e.abs(); }
+        | ROUND { $fn = e -> e.round(); }
+    ) '(' e=numExp ')' { $exp = $fn.apply($e.exp); }
     ;
 
 /**
@@ -565,12 +591,14 @@ numFn returns [NumExp<?> exp]
  * Parameters:
  *  - The TimeExp from which to extract the field.
  */
-timeFieldFn returns [NumExp<Integer> exp]
-    : HOUR '(' timeExp ')' { $exp = $timeExp.exp.hour(); }
-    | MINUTE '(' timeExp ')' { $exp = $timeExp.exp.minute(); }
-    | SECOND '(' timeExp ')' { $exp = $timeExp.exp.second(); }
-    | MILLISECOND '(' timeExp ')' { $exp = $timeExp.exp.millisecond(); }
-    ;
+timeFieldFn returns [NumExp<Integer> exp] locals [Function<TimeExp, NumExp<Integer>> fn]
+     : (
+         : HOUR { $fn = e -> e.hour(); }
+         | MINUTE { $fn = e -> e.minute(); }
+         | SECOND { $fn = e -> e.second(); }
+         | MILLISECOND { $fn = e -> e.millisecond(); }
+     ) '(' e=timeExp ')' { $exp = $fn.apply($e.exp); }
+     ;
 
 /**
  * Date field functions.
@@ -580,11 +608,13 @@ timeFieldFn returns [NumExp<Integer> exp]
  * Parameters:
  *  - The DateExp from which to extract the field.
  */
-dateFieldFn returns [NumExp<Integer> exp]
-    : YEAR '(' dateExp ')' { $exp = $dateExp.exp.year(); }
-    | MONTH '(' dateExp ')' { $exp = $dateExp.exp.month(); }
-    | DAY '(' dateExp ')' { $exp = $dateExp.exp.day(); }
-    ;
+dateFieldFn returns [NumExp<Integer> exp] locals [Function<DateExp, NumExp<Integer>> fn]
+     : (
+         : YEAR { $fn = e -> e.year(); }
+         | MONTH { $fn = e -> e.month(); }
+         | DAY { $fn = e -> e.day(); }
+     ) '(' e=dateExp ')' { $exp = $fn.apply($e.exp); }
+     ;
 
 /**
  * Datetime field functions.
@@ -595,15 +625,17 @@ dateFieldFn returns [NumExp<Integer> exp]
  * Parameters:
  *  - The DateTimeExp from which to extract the field.
  */
-dateTimeFieldFn returns [NumExp<Integer> exp]
-    : YEAR '(' dateTimeExp ')' { $exp = $dateTimeExp.exp.year(); }
-    | MONTH '(' dateTimeExp ')' { $exp = $dateTimeExp.exp.month(); }
-    | DAY '(' dateTimeExp ')' { $exp = $dateTimeExp.exp.day(); }
-    | HOUR '(' dateTimeExp ')' { $exp = $dateTimeExp.exp.hour(); }
-    | MINUTE '(' dateTimeExp ')' { $exp = $dateTimeExp.exp.minute(); }
-    | SECOND '(' dateTimeExp ')' { $exp = $dateTimeExp.exp.second(); }
-    | MILLISECOND '(' dateTimeExp ')' { $exp = $dateTimeExp.exp.millisecond(); }
-    ;
+dateTimeFieldFn returns [NumExp<Integer> exp] locals [Function<DateTimeExp, NumExp<Integer>> fn]
+     : (
+         : YEAR { $fn = e -> e.year(); }
+         | MONTH { $fn = e -> e.month(); }
+         | DAY { $fn = e -> e.day(); }
+         | HOUR { $fn = e -> e.hour(); }
+         | MINUTE { $fn = e -> e.minute(); }
+         | SECOND { $fn = e -> e.second(); }
+         | MILLISECOND { $fn = e -> e.millisecond(); }
+     ) '(' e=dateTimeExp ')' { $exp = $fn.apply($e.exp); }
+     ;
 
 /**
  * OffsetDateTime field functions.
@@ -614,14 +646,16 @@ dateTimeFieldFn returns [NumExp<Integer> exp]
  * Parameters:
  *  - The OffsetDateTimeExp from which to extract the field.
  */
-offsetDateTimeFieldFn returns [NumExp<Integer> exp]
-    : YEAR '(' offsetDateTimeExp ')' { $exp = $offsetDateTimeExp.exp.year(); }
-    | MONTH '(' offsetDateTimeExp ')' { $exp = $offsetDateTimeExp.exp.month(); }
-    | DAY '(' offsetDateTimeExp ')' { $exp = $offsetDateTimeExp.exp.day(); }
-    | HOUR '(' offsetDateTimeExp ')' { $exp = $offsetDateTimeExp.exp.hour(); }
-    | MINUTE '(' offsetDateTimeExp ')' { $exp = $offsetDateTimeExp.exp.minute(); }
-    | SECOND '(' offsetDateTimeExp ')' { $exp = $offsetDateTimeExp.exp.second(); }
-    | MILLISECOND '(' offsetDateTimeExp ')' { $exp = $offsetDateTimeExp.exp.millisecond(); }
+offsetDateTimeFieldFn returns [NumExp<Integer> exp] locals [Function<OffsetDateTimeExp, NumExp<Integer>> fn]
+    : (
+        : YEAR { $fn = e -> e.year(); }
+        | MONTH { $fn = e -> e.month(); }
+        | DAY { $fn = e -> e.day(); }
+        | HOUR { $fn = e -> e.hour(); }
+        | MINUTE { $fn = e -> e.minute(); }
+        | SECOND { $fn = e -> e.second(); }
+        | MILLISECOND { $fn = e -> e.millisecond(); }
+    ) '(' e=offsetDateTimeExp ')' { $exp = $fn.apply($e.exp); }
     ;
 
 /**
@@ -632,12 +666,14 @@ offsetDateTimeFieldFn returns [NumExp<Integer> exp]
  *  - The input expression(s) for the boolean function. The types and number of parameters depend on the specific function.
  *    For example, `matches` takes a string expression and a string literal, while `castAsBool` takes a single expression of any type.
  */
-boolFn returns [Condition exp]
+boolFn returns [Condition exp] locals [BiFunction<StrExp, String, Condition> fn]
     : castAsBool { $exp = $castAsBool.exp; }
-    | MATCHES '(' strExp ',' strScalar ')' { $exp = $strExp.exp.matches($strScalar.value); }
-    | STARTS_WITH '(' strExp ',' strScalar ')' { $exp = $strExp.exp.startsWith($strScalar.value); }
-    | ENDS_WITH '(' strExp ',' strScalar ')' { $exp = $strExp.exp.endsWith($strScalar.value); }
-    | CONTAINS '(' strExp ',' strScalar ')' { $exp = $strExp.exp.contains($strScalar.value); }
+    | (
+        : MATCHES { $fn = (a, b) -> a.matches(b); }
+        | STARTS_WITH { $fn = (a, b) -> a.startsWith(b); }
+        | ENDS_WITH { $fn = (a, b) -> a.endsWith(b); }
+        | CONTAINS { $fn = (a, b) -> a.contains(b); }
+    ) '(' a=strExp ',' b=strScalar ')' { $exp = $fn.apply($a.exp, $b.value); }
     ;
 
 
@@ -649,13 +685,15 @@ boolFn returns [Condition exp]
  *  - The base TimeExp.
  *  - An integer representing the value to add (e.g., hours, minutes).
  */
-timeFn returns [TimeExp exp]
+timeFn returns [TimeExp exp] locals [BiFunction<TimeExp, Integer, TimeExp> fn]
     : castAsTime { $exp = $castAsTime.exp; }
-    | PLUS_HOURS '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusHours($b.value.intValue()); }
-    | PLUS_MINUTES '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMinutes($b.value.intValue()); }
-    | PLUS_SECONDS '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusSeconds($b.value.intValue()); }
-    | PLUS_MILLISECONDS '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMilliseconds($b.value.intValue()); }
-    | PLUS_NANOS '(' a=timeExp ',' b=integerScalar ')' { $exp = $a.exp.plusNanos($b.value.intValue()); }
+    | (
+        : PLUS_HOURS { $fn = (a, b) -> a.plusHours(b); }
+        | PLUS_MINUTES { $fn = (a, b) -> a.plusMinutes(b); }
+        | PLUS_SECONDS { $fn = (a, b) -> a.plusSeconds(b); }
+        | PLUS_MILLISECONDS { $fn = (a, b) -> a.plusMilliseconds(b); }
+        | PLUS_NANOS { $fn = (a, b) -> a.plusNanos(b); }
+    ) '(' a=timeExp ',' b=integerScalar ')' { $exp = $fn.apply($a.exp, $b.value.intValue()); }
     ;
 
 /**
@@ -665,12 +703,14 @@ timeFn returns [TimeExp exp]
  *  - The base DateExp.
  *  - An integer representing the value to add (e.g., years, months).
  */
-dateFn returns [DateExp exp]
+dateFn returns [DateExp exp] locals [BiFunction<DateExp, Integer, DateExp> fn]
     : castAsDate { $exp = $castAsDate.exp; }
-    | PLUS_YEARS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusYears($b.value.intValue()); }
-    | PLUS_MONTHS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusMonths($b.value.intValue()); }
-    | PLUS_WEEKS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusWeeks($b.value.intValue()); }
-    | PLUS_DAYS '(' a=dateExp ',' b=integerScalar ')' { $exp = $a.exp.plusDays($b.value.intValue()); }
+    | (
+        : PLUS_YEARS { $fn = (a, b) -> a.plusYears(b); }
+        | PLUS_MONTHS { $fn = (a, b) -> a.plusMonths(b); }
+        | PLUS_WEEKS { $fn = (a, b) -> a.plusWeeks(b); }
+        | PLUS_DAYS { $fn = (a, b) -> a.plusDays(b); }
+    ) '(' a=dateExp ',' b=integerScalar ')' { $exp = $fn.apply($a.exp, $b.value.intValue()); }
     ;
 
 /**
@@ -680,17 +720,19 @@ dateFn returns [DateExp exp]
  *  - The base DateTimeExp.
  *  - An integer representing the value to add (e.g., years, hours).
  */
-dateTimeFn returns [DateTimeExp exp]
+dateTimeFn returns [DateTimeExp exp] locals [BiFunction<DateTimeExp, Integer, DateTimeExp> fn]
     : castAsDateTime { $exp = $castAsDateTime.exp; }
-    | PLUS_YEARS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusYears($b.value.intValue()); }
-    | PLUS_MONTHS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMonths($b.value.intValue()); }
-    | PLUS_WEEKS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusWeeks($b.value.intValue()); }
-    | PLUS_DAYS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusDays($b.value.intValue()); }
-    | PLUS_HOURS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusHours($b.value.intValue()); }
-    | PLUS_MINUTES '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMinutes($b.value.intValue()); }
-    | PLUS_SECONDS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusSeconds($b.value.intValue()); }
-    | PLUS_MILLISECONDS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMilliseconds($b.value.intValue()); }
-    | PLUS_NANOS '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusNanos($b.value.intValue()); }
+    | (
+        : PLUS_YEARS { $fn = (a, b) -> a.plusYears(b); }
+        | PLUS_MONTHS { $fn = (a, b) -> a.plusMonths(b); }
+        | PLUS_WEEKS { $fn = (a, b) -> a.plusWeeks(b); }
+        | PLUS_DAYS { $fn = (a, b) -> a.plusDays(b); }
+        | PLUS_HOURS { $fn = (a, b) -> a.plusHours(b); }
+        | PLUS_MINUTES { $fn = (a, b) -> a.plusMinutes(b); }
+        | PLUS_SECONDS { $fn = (a, b) -> a.plusSeconds(b); }
+        | PLUS_MILLISECONDS { $fn = (a, b) -> a.plusMilliseconds(b); }
+        | PLUS_NANOS { $fn = (a, b) -> a.plusNanos(b); }
+    ) '(' a=dateTimeExp ',' b=integerScalar ')' { $exp = $fn.apply($a.exp, $b.value.intValue()); }
     ;
 
 /**
@@ -701,17 +743,19 @@ dateTimeFn returns [DateTimeExp exp]
  *  - The base OffsetDateTimeExp.
  *  - An integer representing the value to add (e.g., years, hours).
  */
-offsetDateTimeFn returns [OffsetDateTimeExp exp]
+offsetDateTimeFn returns [OffsetDateTimeExp exp] locals [BiFunction<OffsetDateTimeExp, Integer, OffsetDateTimeExp> fn]
     : castAsOffsetDateTime { $exp = $castAsOffsetDateTime.exp; }
-    | PLUS_YEARS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusYears($b.value.intValue()); }
-    | PLUS_MONTHS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMonths($b.value.intValue()); }
-    | PLUS_WEEKS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusWeeks($b.value.intValue()); }
-    | PLUS_DAYS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusDays($b.value.intValue()); }
-    | PLUS_HOURS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusHours($b.value.intValue()); }
-    | PLUS_MINUTES '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMinutes($b.value.intValue()); }
-    | PLUS_SECONDS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusSeconds($b.value.intValue()); }
-    | PLUS_MILLISECONDS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusMilliseconds($b.value.intValue()); }
-    | PLUS_NANOS '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $a.exp.plusNanos($b.value.intValue()); }
+    | (
+        : PLUS_YEARS { $fn = (a, b) -> a.plusYears(b); }
+        | PLUS_MONTHS { $fn = (a, b) -> a.plusMonths(b); }
+        | PLUS_WEEKS { $fn = (a, b) -> a.plusWeeks(b); }
+        | PLUS_DAYS { $fn = (a, b) -> a.plusDays(b); }
+        | PLUS_HOURS { $fn = (a, b) -> a.plusHours(b); }
+        | PLUS_MINUTES { $fn = (a, b) -> a.plusMinutes(b); }
+        | PLUS_SECONDS { $fn = (a, b) -> a.plusSeconds(b); }
+        | PLUS_MILLISECONDS { $fn = (a, b) -> a.plusMilliseconds(b); }
+        | PLUS_NANOS { $fn = (a, b) -> a.plusNanos(b); }
+    ) '(' a=offsetDateTimeExp ',' b=integerScalar ')' { $exp = $fn.apply($a.exp, $b.value.intValue()); }
     ;
 
 /**
@@ -987,13 +1031,15 @@ positionalAgg returns [Exp<?> exp]
  *  - A boolean expression to filter the rows involved in the aggregation (optional).
  *  - The quantile value to compute (between 0 and 1, for QUANTILE).
  */
-numAgg returns [NumExp<?> exp]
-    : MIN '(' c=numExp (',' b=boolExp)? ')' { $exp = $c.exp.min($ctx.b != null ? $b.exp : null); }
-    | MAX '(' c=numExp (',' b=boolExp)? ')' { $exp = $c.exp.max($ctx.b != null ? $b.exp : null); }
-    | SUM '(' c=numExp (',' b=boolExp)? ')' { $exp = $c.exp.sum($ctx.b != null ? $b.exp : null); }
+numAgg returns [NumExp<?> exp] locals [BiFunction<NumExp, Condition, NumExp> aggFn]
+    : (
+        : MIN { $aggFn = (c, b) -> c.min(b); }
+        | MAX { $aggFn = (c, b) -> c.max(b); }
+        | SUM { $aggFn = (c, b) -> c.sum(b); }
+        | AVG { $aggFn = (c, b) -> c.avg(b); }
+        | MEDIAN { $aggFn = (c, b) -> c.median(b); }
+    ) '(' c=numExp (',' b=boolExp)? ')' { $exp = $aggFn.apply($c.exp, $ctx.b != null ? $b.exp: null); }
     | CUMSUM '(' c=numExp ')' { $exp = $c.exp.cumSum(); } // Cumulative Sum, no filter currently supported
-    | AVG '(' c=numExp (',' b=boolExp)? ')' { $exp = $c.exp.avg($ctx.b != null ? $b.exp : null); }
-    | MEDIAN '(' c=numExp (',' b=boolExp)? ')' { $exp = $c.exp.median($ctx.b != null ? $b.exp : null); }
     | QUANTILE '(' c=numExp ',' q=numScalar (',' b=boolExp)? ')' {
         $exp = $ctx.b != null
             ? $c.exp.quantile($q.value.doubleValue(), $b.exp)
@@ -1009,11 +1055,13 @@ numAgg returns [NumExp<?> exp]
  *  - A boolean expression to filter the rows involved in the aggregation (optional).
  *  - The quantile value to compute (between 0 and 1, for QUANTILE).
  */
-timeAgg returns [TimeExp exp]
-    : MIN '(' c=timeExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.min($b.exp) : $c.exp.min(); }
-    | MAX '(' c=timeExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.max($b.exp) : $c.exp.max(); }
-    | AVG '(' c=timeExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.avg($b.exp) : $c.exp.avg(); }
-    | MEDIAN '(' c=timeExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.median($b.exp) : $c.exp.median(); }
+timeAgg returns [TimeExp exp] locals [BiFunction<TimeExp, Condition, TimeExp> aggFn]
+    : (
+        : MIN { $aggFn = (c, b) -> c.min(b); }
+        | MAX { $aggFn = (c, b) -> c.max(b); }
+        | AVG { $aggFn = (c, b) -> c.avg(b); }
+        | MEDIAN { $aggFn = (c, b) -> c.median(b); }
+    ) '(' c=timeExp (',' b=boolExp)? ')' { $exp = $aggFn.apply($c.exp, $ctx.b != null ? $b.exp: null); }
     | QUANTILE '(' c=timeExp ',' q=numScalar (',' b=boolExp)? ')' {  // Quantile of times
         $exp = $ctx.b != null ? $c.exp.quantile($q.value.doubleValue(), $b.exp) : $c.exp.quantile($q.value.doubleValue());
     }
@@ -1027,11 +1075,13 @@ timeAgg returns [TimeExp exp]
  *  - A boolean expression to filter the rows involved in the aggregation (optional).
  *  - The quantile value to compute (between 0 and 1, for QUANTILE).
  */
-dateAgg returns [DateExp exp]
-    : MIN '(' c=dateExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.min($b.exp) : $c.exp.min(); }
-    | MAX '(' c=dateExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.max($b.exp) : $c.exp.max(); }
-    | AVG '(' c=dateExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.avg($b.exp) : $c.exp.avg(); }
-    | MEDIAN '(' c=dateExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.median($b.exp) : $c.exp.median(); }
+dateAgg returns [DateExp exp] locals [BiFunction<DateExp, Condition, DateExp> aggFn]
+    : (
+        : MIN { $aggFn = (c, b) -> c.min(b); }
+        | MAX { $aggFn = (c, b) -> c.max(b); }
+        | AVG { $aggFn = (c, b) -> c.avg(b); }
+        | MEDIAN { $aggFn = (c, b) -> c.median(b); }
+    ) '(' c=dateExp (',' b=boolExp)? ')' { $exp = $aggFn.apply($c.exp, $ctx.b != null ? $b.exp: null); }
     | QUANTILE '(' c=dateExp ',' q=numScalar (',' b=boolExp)? ')' {
         $exp = $ctx.b != null
             ? $c.exp.quantile($q.value.doubleValue(), $b.exp)
@@ -1047,11 +1097,13 @@ dateAgg returns [DateExp exp]
  *  - A boolean expression to filter the rows involved in the aggregation (optional).
  *  - The quantile value to compute (between 0 and 1, for QUANTILE).
  */
-dateTimeAgg returns [DateTimeExp exp]
-    : MIN '(' c=dateTimeExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.min($b.exp) : $c.exp.min(); }
-    | MAX '(' c=dateTimeExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.max($b.exp) : $c.exp.max(); }
-    | AVG '(' c=dateTimeExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.avg($b.exp) : $c.exp.avg(); }
-    | MEDIAN '(' c=dateTimeExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $c.exp.median($b.exp) : $c.exp.median(); }
+dateTimeAgg returns [DateTimeExp exp] locals [BiFunction<DateTimeExp, Condition, DateTimeExp> aggFn]
+    : (
+        : MIN { $aggFn = (c, b) -> c.min(b); }
+        | MAX { $aggFn = (c, b) -> c.max(b); }
+        | AVG { $aggFn = (c, b) -> c.avg(b); }
+        | MEDIAN { $aggFn = (c, b) -> c.median(b); }
+    ) '(' c=dateTimeExp (',' b=boolExp)? ')' { $exp = $aggFn.apply($c.exp, $ctx.b != null ? $b.exp: null); }
     | QUANTILE '(' c=dateTimeExp ',' q=numScalar (',' b=boolExp)? ')' {
         $exp = $ctx.b != null
             ? $c.exp.quantile($q.value.doubleValue(), $b.exp)
@@ -1066,9 +1118,11 @@ dateTimeAgg returns [DateTimeExp exp]
  *  - The string expression to aggregate.
  *  - A filtering condition (optional).
  */
-strAgg returns [StrExp exp]
-    : MIN '(' e=strExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $e.exp.min($b.exp) : $e.exp.min(); }
-    | MAX '(' e=strExp (',' b=boolExp)? ')' { $exp = $ctx.b != null ? $e.exp.max($b.exp) : $e.exp.max(); }
+strAgg returns [StrExp exp] locals [BiFunction<StrExp, Condition, StrExp> aggFn]
+    : (
+        : MIN { $aggFn = (c, b) -> c.min(b); }
+        | MAX { $aggFn = (c, b) -> c.max(b); }
+    ) '(' c=strExp (',' b=boolExp)? ')' { $exp = $aggFn.apply($c.exp, $ctx.b != null ? $b.exp: null); }
     ;
 
 /// **Lexer rules**
