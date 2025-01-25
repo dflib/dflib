@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Random;
 
-@Deprecated
-public class RowSet_SelectExpandTest {
+public class RowSet_Expand_SelectTest {
 
     @Test
     public void all() {
@@ -19,7 +18,9 @@ public class RowSet_SelectExpandTest {
                         0, List.of("f1", "f2"), "g",
                         1, List.of("m1", "m2"), "n",
                         5, null, "x")
-                .rows().selectExpand("b");
+                .rows()
+                .expand("b")
+                .select();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(11)
@@ -46,7 +47,9 @@ public class RowSet_SelectExpandTest {
                         0, List.of("f1", "f2"), "g", // <--
                         1, List.of("m1", "m2"), "n", // <--
                         5, null, "x") // <--
-                .rows(Series.ofInt(0, 3, 4, 5)).selectExpand("b");
+                .rows(Series.ofInt(0, 3, 4, 5))
+                .expand("b")
+                .select();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(7)
@@ -60,6 +63,30 @@ public class RowSet_SelectExpandTest {
     }
 
     @Test
+    public void byIndex_AddRows() {
+        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+                .of(
+                        1, List.of("x1", "x2"), "a", // <--
+                        2, List.of("y1", "y2"), "b",
+                        4, List.of("e1", "e2"), "k", // <-- 2x
+                        0, List.of("f1", "f2"), "g",
+                        1, List.of("m1", "m2"), "n",
+                        5, null, "x")
+
+                .rows(0, 2, 2).expand("b")
+                .select();
+
+        new DataFrameAsserts(df, "a", "b", "c")
+                .expectHeight(6)
+                .expectRow(0, 1, "x1", "a")
+                .expectRow(1, 1, "x2", "a")
+                .expectRow(2, 4, "e1", "k")
+                .expectRow(3, 4, "e2", "k")
+                .expectRow(4, 4, "e1", "k")
+                .expectRow(5, 4, "e2", "k");
+    }
+
+    @Test
     public void byRange() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(
@@ -69,7 +96,7 @@ public class RowSet_SelectExpandTest {
                         0, List.of("f1", "f2"), "g", // <--
                         1, List.of("m1", "m2"), "n", // <--
                         5, null, "x")
-                .rowsRange(2, 5).selectExpand("b");
+                .rowsRange(2, 5).expand("b").select();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(6)
@@ -91,7 +118,7 @@ public class RowSet_SelectExpandTest {
                         0, List.of("f1", "f2"), "g", // <--
                         1, List.of("m1", "m2"), "n", // <--
                         5, null, "x") // <--
-                .rows(Series.ofBool(true, false, false, true, true, true)).selectExpand("b");
+                .rows(Series.ofBool(true, false, false, true, true, true)).expand("b").select();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(7)
@@ -104,6 +131,7 @@ public class RowSet_SelectExpandTest {
                 .expectRow(6, 5, null, "x");
     }
 
+
     @Test
     public void sample() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
@@ -115,7 +143,7 @@ public class RowSet_SelectExpandTest {
                         1, List.of("m1", "m2"), "n",
                         5, null, "x")
                 // using fixed seed to get reproducible result
-                .rowsSample(2, new Random(9)).selectExpand("b");
+                .rowsSample(2, new Random(9)).expand("b").select();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(4)

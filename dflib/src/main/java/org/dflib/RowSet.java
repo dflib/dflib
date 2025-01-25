@@ -15,6 +15,25 @@ import static org.dflib.Exp.$col;
  */
 public interface RowSet {
 
+    /**
+     * For the specified column, expands its Iterable or array objects, creating new rows from the existing one.
+     * Expansion will be applied after applying all row set conditions. So all expanded rows will be included in the
+     * result. If the RowSet terminates in "merge", the new rows are added at the bottom of the returned DataFrame.
+     *
+     * @since 2.0.0
+     */
+    RowSet expand(String columnName);
+
+    /**
+     * For the specified column, expands its Iterable or array objects, creating new rows from the existing one.
+     * Expansion will be applied after applying all row set conditions. So all expanded rows will be included in the
+     * result. If the RowSet terminates in "merge", the new rows are added at the bottom of the returned DataFrame.
+     *
+     * @since 2.0.0
+     */
+    RowSet expand(int columnPos);
+
+
     RowColumnSet cols();
 
     RowColumnSet cols(Index columnsIndex);
@@ -33,20 +52,6 @@ public interface RowSet {
      * Returns the original DataFrame with the RowSet rows removed.
      */
     DataFrame drop();
-
-    /**
-     * A flavor of "merge" that for the specified column, expands its Iterable or array objects, creating new rows for
-     * each collection element. All other columns in the newly produced rows will be populated with values of the source
-     * rows. The new rows are added at the bottom of the returned DataFrame.
-     */
-    DataFrame expand(String columnName);
-
-    /**
-     * A flavor of "merge" that for the specified column, expands its Iterable or array objects, creating new rows for
-     * each collection element. All other columns in the newly produced rows will be populated with values of the
-     * source rows. The new rows are added at the bottom of the returned DataFrame.
-     */
-    DataFrame expand(int columnPos);
 
     /**
      * Returns data from the original DataFrame without transformation. This is often a no-op, returning the original
@@ -111,8 +116,8 @@ public interface RowSet {
     DataFrame unique(int... uniqueKeyColumns);
 
     /**
-     * Returns a new DataFrame with the RowSet rows only and without any transformation. If the RowSet contains rows
-     * not present in the source, they are appended in the bottom the result DataFrame.
+     * Returns a new DataFrame with the RowSet rows only. No transformation is applied to columns. If the RowSet
+     * contains rows not present in the source, they are appended in the bottom the result DataFrame.
      */
     DataFrame select();
 
@@ -141,15 +146,25 @@ public interface RowSet {
      * Returns a DataFrame with RowSet rows "expanded" based on a column with array or Iterable objects. New rows are
      * created for each collection element in the specified "expansion" column. All other columns are populated with
      * values of the "unexpanded" rows.
+     *
+     * @deprecated in favor of {@link #expand(String)} followed by {@link #select()}.
      */
-    DataFrame selectExpand(String columnName);
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    default DataFrame selectExpand(String columnName) {
+        return expand(columnName).select();
+    }
 
     /**
      * Returns a DataFrame with RowSet rows "expanded" based on a column with array or Iterable objects. New rows are
      * created for each collection element in the specified "expansion" column. All other columns are populated with
      * values of the "unexpanded" rows.
+     *
+     * @deprecated in favor of {@link #expand(String)} followed by {@link #select()}.
      */
-    DataFrame selectExpand(int columnPos);
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    default DataFrame selectExpand(int columnPos) {
+        return expand(columnPos).select();
+    }
 
     DataFrame selectUnique();
 

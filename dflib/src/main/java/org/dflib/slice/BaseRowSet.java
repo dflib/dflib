@@ -5,14 +5,14 @@ import org.dflib.ColumnDataFrame;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Index;
+import org.dflib.RowColumnSet;
 import org.dflib.RowMapper;
 import org.dflib.RowSet;
 import org.dflib.RowToValueMapper;
 import org.dflib.Series;
 import org.dflib.Sorter;
 import org.dflib.f.IntObjectFunction2;
-import org.dflib.row.ColumnsRowProxy;
-import org.dflib.row.MultiArrayRowBuilder;
+import org.dflib.f.Tuple2;
 import org.dflib.series.IntSingleValueSeries;
 import org.dflib.series.RowMappedSeries;
 import org.dflib.sort.Comparators;
@@ -20,6 +20,7 @@ import org.dflib.sort.DataFrameSorter;
 import org.dflib.sort.IntComparator;
 
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 public abstract class BaseRowSet implements RowSet {
@@ -27,35 +28,53 @@ public abstract class BaseRowSet implements RowSet {
     protected final DataFrame source;
     protected final Index sourceColumnsIndex;
     protected final Series[] sourceColumns;
+    protected final int expansionColumn;
 
-    protected BaseRowSet(DataFrame source, Series<?>[] sourceColumns) {
+    protected BaseRowSet(DataFrame source, Series<?>[] sourceColumns, int expansionColumn) {
         this.source = source;
         this.sourceColumnsIndex = source.getColumnsIndex();
         this.sourceColumns = sourceColumns;
+        this.expansionColumn = expansionColumn;
     }
 
     @Override
-    public DataFrame expand(String columnName) {
+    public RowColumnSet cols() {
+        return new DefaultRowColumnSet(source, this, df -> df.cols(), this::merger);
+    }
+
+    @Override
+    public RowColumnSet cols(String... columns) {
+        return new DefaultRowColumnSet(source, this, df -> df.cols(columns), this::merger);
+    }
+
+    @Override
+    public RowColumnSet cols(Index columnsIndex) {
+        return new DefaultRowColumnSet(source, this, df -> df.cols(columnsIndex), this::merger);
+    }
+
+    @Override
+    public RowColumnSet cols(int... columns) {
+        return new DefaultRowColumnSet(source, this, df -> df.cols(columns), this::merger);
+    }
+
+    @Override
+    public RowColumnSet cols(Predicate<String> condition) {
+        return new DefaultRowColumnSet(source, this, df -> df.cols(condition), this::merger);
+    }
+
+    @Override
+    public RowColumnSet colsExcept(String... columns) {
+        return new DefaultRowColumnSet(source, this, df -> df.colsExcept(columns), this::merger);
+    }
+
+    @Override
+    public RowColumnSet colsExcept(int... columns) {
+        return new DefaultRowColumnSet(source, this, df -> df.colsExcept(columns), this::merger);
+    }
+
+    @Override
+    public RowSet expand(String columnName) {
         return expand(sourceColumnsIndex.position(columnName));
-    }
-
-    @Override
-    public DataFrame expand(int columnPos) {
-
-        ColumnExpander expander = ColumnExpander.expand(doSelect(sourceColumns[columnPos]));
-
-        RowSetMerger merger = merger();
-        RowSetMerger expandMerger = merger.expandCols(expander);
-        RowSetMerger stretchMerger = merger.stretchCols(expander);
-
-        int w = source.width();
-        Series[] explodedColumns = new Series[w];
-        for (int i = 0; i < w; i++) {
-            RowSetMerger m = i == columnPos ? expandMerger : stretchMerger;
-            explodedColumns[i] = m.merge(source.getColumn(i), expander.getExpanded());
-        }
-
-        return DataFrame.byColumn(sourceColumnsIndex).of(explodedColumns);
     }
 
     @Override
@@ -87,8 +106,32 @@ public abstract class BaseRowSet implements RowSet {
 
     @Override
     public DataFrame merge(RowMapper mapper) {
-        Series<?>[] mapped = mapper().map(sourceColumnsIndex, sourceColumns, mapper);
-        return DataFrame.byColumn(sourceColumnsIndex).of(mapped);
+
+        // TODO: duplicating "mergeByColumn" almost verbatim, except the mapper transform happens on top of row set
+        //   DataFrame instead of column by column ... Unify?
+        if (sourceColumns.length == 0) {
+            return source;
+        }
+
+        if (sourceColumns[0].size() == 0) {
+            return source;
+        }
+
+        // this will do expansion within the RowSet scope if needed
+        Tuple2<Series<?>[], ColumnExpander> rows = doSelect();
+
+        RowSetMerger merger = expansionColumn >= 0 ? merger().expandCols(rows.two) : merger();
+
+        DataFrame rowsAsDf = new ColumnDataFrame(null, sourceColumnsIndex, rows.one)
+                .cols(sourceColumnsIndex).merge(mapper);
+
+        int w = sourceColumnsIndex.size();
+        Series[] resultColumns = new Series[w];
+        for (int i = 0; i < w; i++) {
+            resultColumns[i] = merger.merge(sourceColumns[i], rowsAsDf.getColumn(i));
+        }
+
+        return DataFrame.byColumn(sourceColumnsIndex).of(resultColumns);
     }
 
     @Override
@@ -194,22 +237,22 @@ public abstract class BaseRowSet implements RowSet {
 
     @Override
     public DataFrame select() {
-        return new ColumnDataFrame(null, sourceColumnsIndex, doSelect());
+        return new ColumnDataFrame(null, sourceColumnsIndex, doSelect().one);
     }
 
     @Override
     public DataFrame selectAs(Map<String, String> oldToNewNames) {
-        return new ColumnDataFrame(null, sourceColumnsIndex.replace(oldToNewNames), doSelect());
+        return new ColumnDataFrame(null, sourceColumnsIndex.replace(oldToNewNames), doSelect().one);
     }
 
     @Override
     public DataFrame selectAs(UnaryOperator<String> renamer) {
-        return new ColumnDataFrame(null, sourceColumnsIndex.replace(renamer), doSelect());
+        return new ColumnDataFrame(null, sourceColumnsIndex.replace(renamer), doSelect().one);
     }
 
     @Override
     public DataFrame selectAs(String... newColumnNames) {
-        return new ColumnDataFrame(null, Index.of(newColumnNames), doSelect());
+        return new ColumnDataFrame(null, Index.of(newColumnNames), doSelect().one);
     }
 
     @Override
@@ -224,15 +267,20 @@ public abstract class BaseRowSet implements RowSet {
 
     @Override
     public DataFrame select(RowMapper mapper) {
-        int h = sourceColumns[0].size();
-        int ih = size();
+        // TODO: duplicating "selectByColumn" logic, except the mapper transform happens on top of row set
+        //   DataFrame instead of column by column ... Unify?
+        if (sourceColumns.length == 0) {
+            return source;
+        }
 
-        ColumnsRowProxy from = new ColumnsRowProxy(sourceColumnsIndex, sourceColumns, h);
-        MultiArrayRowBuilder to = new MultiArrayRowBuilder(sourceColumnsIndex, ih);
+        if (sourceColumns[0].size() == 0) {
+            return source;
+        }
 
-        doSelectByRow(mapper, from, to);
-
-        return DataFrame.byColumn(sourceColumnsIndex).of(to.getData());
+        // this will do expansion within the RowSet scope if needed
+        Tuple2<Series<?>[], ColumnExpander> rows = doSelect();
+        return new ColumnDataFrame(null, sourceColumnsIndex, rows.one)
+                .cols(sourceColumnsIndex).merge(mapper);
     }
 
     @Override
@@ -243,29 +291,6 @@ public abstract class BaseRowSet implements RowSet {
         }
 
         return selectByColumn((i, rowsAsDf) -> new RowMappedSeries<>(rowsAsDf, mappers[i]));
-    }
-
-    @Override
-    public DataFrame selectExpand(String columnName) {
-        return selectExpand(sourceColumnsIndex.position(columnName));
-    }
-
-    @Override
-    public DataFrame selectExpand(int columnPos) {
-
-        Series<?>[] rowSetCols = doSelect();
-        ColumnExpander expander = ColumnExpander.expand(rowSetCols[columnPos]);
-        int[] stretchIndex = expander.getStretchIndex();
-
-        int w = source.width();
-        Series[] explodedColumns = new Series[w];
-        for (int i = 0; i < w; i++) {
-            explodedColumns[i] = i == columnPos
-                    ? expander.getExpanded()
-                    : rowSetCols[i].select(stretchIndex);
-        }
-
-        return DataFrame.byColumn(sourceColumnsIndex).of(explodedColumns);
     }
 
     @Override
@@ -315,16 +340,19 @@ public abstract class BaseRowSet implements RowSet {
             return source;
         }
 
-        DataFrame rowsAsDf = select();
+        // this will do expansion within the RowSet scope if needed
+        Tuple2<Series<?>[], ColumnExpander> rows = doSelect();
 
-        RowSetMerger merger = merger();
+        RowSetMerger merger = expansionColumn >= 0 ? merger().expandCols(rows.two) : merger();
         int w = sourceColumnsIndex.size();
-        Series[] to = new Series[w];
+
+        Series[] resultColumns = new Series[w];
+        DataFrame rowsAsDf = new ColumnDataFrame(null, sourceColumnsIndex, rows.one);
         for (int i = 0; i < w; i++) {
-            to[i] = merger.merge(sourceColumns[i], columnMaker.apply(i, rowsAsDf));
+            resultColumns[i] = merger.merge(sourceColumns[i], columnMaker.apply(i, rowsAsDf));
         }
 
-        return DataFrame.byColumn(sourceColumnsIndex).of(to);
+        return DataFrame.byColumn(sourceColumnsIndex).of(resultColumns);
     }
 
     protected DataFrame selectByColumn(IntObjectFunction2<DataFrame, Series<?>> columnMaker) {
@@ -337,7 +365,9 @@ public abstract class BaseRowSet implements RowSet {
             return source;
         }
 
-        DataFrame rowsAsDf = select();
+        // this will do expansion within the RowSet scope if needed
+        Tuple2<Series<?>[], ColumnExpander> rows = doSelect();
+        DataFrame rowsAsDf = new ColumnDataFrame(null, sourceColumnsIndex, rows.one);
 
         int w = sourceColumnsIndex.size();
         Series[] to = new Series[w];
@@ -350,20 +380,31 @@ public abstract class BaseRowSet implements RowSet {
 
     protected abstract int size();
 
-    protected Series<?>[] doSelect() {
+    protected Tuple2<Series<?>[], ColumnExpander> doSelect() {
         int w = sourceColumns.length;
         Series<?>[] to = new Series[w];
+
         for (int i = 0; i < w; i++) {
             to[i] = doSelect(sourceColumns[i]);
         }
-        return to;
+
+        if (expansionColumn >= 0) {
+            ColumnExpander expander = ColumnExpander.expand(to[expansionColumn]);
+            int[] stretchIndex = expander.getStretchIndex();
+
+            for (int i = 0; i < w; i++) {
+                to[i] = i == expansionColumn
+                        ? expander.getExpanded()
+                        : to[i].select(stretchIndex);
+            }
+
+            return new Tuple2<>(to, expander);
+        }
+
+        return new Tuple2<>(to, null);
     }
 
-    protected abstract void doSelectByRow(RowMapper mapper, ColumnsRowProxy from, MultiArrayRowBuilder to);
-
     protected abstract <T> Series<T> doSelect(Series<T> sourceColumn);
-
-    protected abstract RowSetMapper mapper();
 
     protected abstract RowSetMerger merger();
 }

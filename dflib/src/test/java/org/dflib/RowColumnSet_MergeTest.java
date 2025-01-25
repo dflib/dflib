@@ -66,7 +66,7 @@ public class RowColumnSet_MergeTest {
                 .expectRow(1, 2, "y", "b", null)
                 .expectRow(2, -1, "m", "n", null)
 
-                // TODO: is this logically correct? This rows was added by duplicating row 2, yet column "c" is not
+                // TODO: is this logically correct? This row was added by duplicating row 2, yet column "c" is not
                 //  in the column set, so should it be "null" instead of "n"?
                 .expectRow(3, -1, "m", "n", null);
     }

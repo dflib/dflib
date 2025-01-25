@@ -6,9 +6,9 @@ import org.dflib.Exp;
 import org.dflib.Index;
 import org.dflib.RowColumnSet;
 import org.dflib.RowMapper;
-import org.dflib.RowSet;
 import org.dflib.RowToValueMapper;
 import org.dflib.Series;
+import org.dflib.f.Tuple2;
 import org.dflib.series.SingleValueSeries;
 
 import java.util.Map;
@@ -19,13 +19,13 @@ import java.util.function.UnaryOperator;
 public class DefaultRowColumnSet implements RowColumnSet {
 
     private final DataFrame source;
-    private final RowSet rowSet;
+    private final BaseRowSet rowSet;
     private final Function<DataFrame, ColumnSet> columnSetMaker;
     private final Supplier<RowSetMerger> rowSetMergerMaker;
 
     public DefaultRowColumnSet(
             DataFrame source,
-            RowSet rowSet,
+            BaseRowSet rowSet,
             Function<DataFrame, ColumnSet> columnSetMaker,
             Supplier<RowSetMerger> rowSetMergerMaker) {
         this.source = source;
@@ -36,30 +36,37 @@ public class DefaultRowColumnSet implements RowColumnSet {
 
     @Override
     public DataFrame merge() {
-        DataFrame rowsResolved = rowSet.select();
-        DataFrame hSlice = columnSetMaker.apply(rowsResolved).merge();
-        return mergeRows(hSlice);
+        Tuple2<Series<?>[], ColumnExpander> rows = rowSet.doSelect();
+        DataFrame rowsAsDf = DataFrame.byColumn(source.getColumnsIndex()).of(rows.one);
+        DataFrame hSlice = columnSetMaker.apply(rowsAsDf).merge();
+        return mergeRows(hSlice, rows.two);
     }
 
     @Override
     public DataFrame merge(Exp<?>... exps) {
-        DataFrame rowsResolved = rowSet.select();
-        DataFrame hSlice = columnSetMaker.apply(rowsResolved).merge(exps);
-        return mergeRows(hSlice);
+        Tuple2<Series<?>[], ColumnExpander> rows = rowSet.doSelect();
+        DataFrame rowsAsDf = DataFrame.byColumn(source.getColumnsIndex()).of(rows.one);
+
+        DataFrame hSlice = columnSetMaker.apply(rowsAsDf).merge(exps);
+        return mergeRows(hSlice, rows.two);
     }
 
     @Override
     public DataFrame merge(RowMapper mapper) {
-        DataFrame rowsResolved = rowSet.select();
-        DataFrame hSlice = columnSetMaker.apply(rowsResolved).merge(mapper);
-        return mergeRows(hSlice);
+        Tuple2<Series<?>[], ColumnExpander> rows = rowSet.doSelect();
+        DataFrame rowsAsDf = DataFrame.byColumn(source.getColumnsIndex()).of(rows.one);
+
+        DataFrame hSlice = columnSetMaker.apply(rowsAsDf).merge(mapper);
+        return mergeRows(hSlice, rows.two);
     }
 
     @Override
     public DataFrame merge(RowToValueMapper<?>... mappers) {
-        DataFrame rowsResolved = rowSet.select();
-        DataFrame hSlice = columnSetMaker.apply(rowsResolved).merge(mappers);
-        return mergeRows(hSlice);
+        Tuple2<Series<?>[], ColumnExpander> rows = rowSet.doSelect();
+        DataFrame rowsAsDf = DataFrame.byColumn(source.getColumnsIndex()).of(rows.one);
+
+        DataFrame hSlice = columnSetMaker.apply(rowsAsDf).merge(mappers);
+        return mergeRows(hSlice, rows.two);
     }
 
     @Override
@@ -102,34 +109,35 @@ public class DefaultRowColumnSet implements RowColumnSet {
         return columnSetMaker.apply(rowSet.select()).selectAs(newColumnNames);
     }
 
-    private DataFrame mergeRows(DataFrame hSlice) {
+    private DataFrame mergeRows(DataFrame rowSetRowsResultCols, ColumnExpander expander) {
 
-        Index hSliceIndex = hSlice.getColumnsIndex();
-        DataFrame sourceExpanded = pickColumns(hSliceIndex);
+        Series<?>[] resultAlignedSourceCols = resultAlignedSourceCols(rowSetRowsResultCols.getColumnsIndex());
 
-        RowSetMerger merger = rowSetMergerMaker.get();
+        RowSetMerger merger = expander != null
+                ? rowSetMergerMaker.get().expandCols(expander)
+                : rowSetMergerMaker.get();
 
-        int w = hSliceIndex.size();
+        int w = resultAlignedSourceCols.length;
         Series<?>[] columns = new Series[w];
         for (int i = 0; i < w; i++) {
-            columns[i] = merger.merge(sourceExpanded.getColumn(i), hSlice.getColumn(i));
+            columns[i] = merger.merge(resultAlignedSourceCols[i], rowSetRowsResultCols.getColumn(i));
         }
 
-        return DataFrame.byColumn(hSliceIndex).of(columns);
+        return DataFrame.byColumn(rowSetRowsResultCols.getColumnsIndex()).of(columns);
     }
 
-    private DataFrame pickColumns(Index hSliceIndex) {
+    private Series<?>[] resultAlignedSourceCols(Index resultIndex) {
 
         Index index = source.getColumnsIndex();
-        int w = hSliceIndex.size();
+        int w = resultIndex.size();
         Series<?>[] columns = new Series[w];
         for (int i = 0; i < w; i++) {
-            String name = hSliceIndex.get(i);
+            String name = resultIndex.get(i);
             columns[i] = index.contains(name)
                     ? source.getColumn(name)
                     : new SingleValueSeries<>(null, source.height());
         }
 
-        return DataFrame.byColumn(hSliceIndex).of(columns);
+        return columns;
     }
 }

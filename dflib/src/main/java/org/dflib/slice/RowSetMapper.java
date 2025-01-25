@@ -6,6 +6,10 @@ import org.dflib.IntSeries;
 import org.dflib.RowMapper;
 import org.dflib.Series;
 
+/**
+ * @deprecated unused
+ */
+@Deprecated(since = "2.0.0", forRemoval = true)
 public abstract class RowSetMapper {
 
     public static RowSetMapper of(IntSeries rowIndex) {

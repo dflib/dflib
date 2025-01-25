@@ -23,6 +23,7 @@
 * #411 ECharts Jupyter: Can't render the same chart multiple times
 * #416 Zip ByteSource(s)
 * #417 Filesystem ByteSource(s)
+* #421 "RowSet.expand()" as a non-terminal operation
 * #425 Series.replace(int,T)
 * #426 All "Json.load(..)" and "Json.save(..)" methods must be static
 * #427 Type-specific versions of Exp.$val(..)
