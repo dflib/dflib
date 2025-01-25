@@ -20,6 +20,7 @@
 * #401 ECharts: heatmap chart
 * #403 BoolAccum - java.lang.ArrayIndexOutOfBoundsException 
 * #407 "min", "max" aggregating functions for StrExp
+* #411 ECharts Jupyter: Can't render the same chart multiple times
 * #416 Zip ByteSource(s)
 * #417 Filesystem ByteSource(s)
 * #425 Series.replace(int,T)

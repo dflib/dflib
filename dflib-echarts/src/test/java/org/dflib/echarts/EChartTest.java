@@ -22,8 +22,8 @@ public class EChartTest {
     @Test
     public void scriptUrl() {
 
-        assertEquals("https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js", ECharts.chart().scriptUrl());
-        assertEquals("https://example.org/x.js", ECharts.chart().scriptUrl("https://example.org/x.js").scriptUrl());
+        assertEquals("https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js", ECharts.chart().echartsUrl());
+        assertEquals("https://example.org/x.js", ECharts.chart().scriptUrl("https://example.org/x.js").echartsUrl());
     }
 
     @Deprecated
@@ -37,6 +37,7 @@ public class EChartTest {
         assertTrue(s2.contains("<script type='text/javascript' src='https://example.org/x.js'></script>"), s2);
     }
 
+    @Deprecated
     @Test
     public void generateContainerHtml() {
 
@@ -50,31 +51,31 @@ public class EChartTest {
     @Test
     public void darkTheme() {
 
-        String s1 = ECharts.chart().generateScript("_tid", df1);
+        String s1 = ECharts.chart().plot(df1, "_tid").getChartScript();
         assertFalse(s1.contains("'dark'"), s1);
 
-        String s2 = ECharts.chart().darkTheme().generateScript("_tid", df1);
+        String s2 = ECharts.chart().darkTheme().plot(df1, "_tid").getChartScript();
         assertTrue(s2.contains("'dark',"), s2);
     }
 
     @Test
     public void svgRenderer() {
 
-        String s1 = ECharts.chart().generateScript("_tid", df1);
+        String s1 = ECharts.chart().plot(df1, "_tid").getChartScript();
         assertFalse(s1.contains("renderer: 'svg'"), s1);
 
-        String s2 = ECharts.chart().renderAsSvg().generateScript("_tid", df1);
+        String s2 = ECharts.chart().renderAsSvg().plot(df1, "_tid").getChartScript();
         assertTrue(s2.contains("renderer: 'svg'"), s2);
     }
 
     @Test
     public void svgRenderer_DarkTheme() {
 
-        String s1 = ECharts.chart().generateScript("_tid", df1);
+        String s1 = ECharts.chart().plot(df1, "_tid").getChartScript();
         assertFalse(s1.contains("'dark'"), s1);
         assertFalse(s1.contains("renderer: 'svg'"), s1);
 
-        String s2 = ECharts.chart().renderAsSvg().darkTheme().generateScript("_tid", df1);
+        String s2 = ECharts.chart().renderAsSvg().darkTheme().plot(df1, "_tid").getChartScript();
         assertTrue(s2.contains("'dark',"), s2);
         assertTrue(s2.contains("renderer: 'svg'"), s2);
     }

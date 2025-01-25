@@ -1,20 +1,13 @@
 package org.dflib.echarts;
 
-import com.github.mustachejava.DefaultMustacheFactory;
-import com.github.mustachejava.Mustache;
 import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.echarts.render.ContainerModel;
 import org.dflib.echarts.render.InitOptsModel;
 import org.dflib.echarts.render.ScriptModel;
 import org.dflib.echarts.render.util.ElementIdGenerator;
+import org.dflib.echarts.render.util.Renderer;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -22,31 +15,8 @@ import java.util.Objects;
  * {@link ECharts#chart(String)} methods.
  */
 public class EChart {
+
     private static final String DEFAULT_ECHARTS_SCRIPT_URL = "https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js";
-
-    private static final Mustache CONTAINER_TEMPLATE = loadTemplate("container.mustache");
-    private static final Mustache SCRIPT_TEMPLATE = loadTemplate("script.mustache");
-
-    static Mustache loadTemplate(String name) {
-        return loadTemplate(ECharts.class.getResource(name));
-    }
-
-    static Mustache loadTemplate(URL url) {
-
-        try (InputStream in = url.openStream()) {
-
-            if (in == null) {
-                throw new RuntimeException("ECharts 'cell.mustache' template is not found");
-            }
-
-            // not providing an explicit resolver of subtemplates. assuming a single flat template for now
-            try (Reader reader = new InputStreamReader(in)) {
-                return new DefaultMustacheFactory().compile(reader, url.getFile());
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Error loading mustache template: " + url, e);
-        }
-    }
 
     private final ElementIdGenerator idGenerator;
     private final Option option;
@@ -330,29 +300,61 @@ public class EChart {
         return this;
     }
 
+    /**
+     * Returns an object with chart HTML / JavaScript components. Assigns a random ID to the HTML div container
+     */
     public EChartHtml plot(DataFrame dataFrame) {
-        String id = newId();
+        return plot(dataFrame, newId());
+    }
+
+    /**
+     * Returns an object with chart HTML / JavaScript components. Assigns the specified ID to the HTML div container
+     *
+     * @since 2.0.0
+     */
+    public EChartHtml plot(DataFrame dataFrame, String divContainerId) {
+        ContainerModel containerModel = new ContainerModel(
+                divContainerId,
+                this.width != null ? this.width : 600,
+                this.height != null ? this.height : 400
+        );
+
+        ScriptModel scriptModel = new ScriptModel(
+                divContainerId,
+                this.theme,
+                this.renderer != null ? new InitOptsModel(renderer.name()) : null,
+                option.resolve(dataFrame)
+        );
+
         return new EChartHtml(
-                scriptUrl(),
-                generateContainerHtml(id),
-                generateScript(id, dataFrame)
+                divContainerId,
+                echartsUrl(),
+                Renderer.renderContainer(containerModel),
+                Renderer.renderScript(scriptModel),
+                idGenerator,
+                containerModel,
+                scriptModel
         );
     }
 
+    /**
+     * @since 2.0.0
+     */
+    protected String echartsUrl() {
+        return scriptUrl != null ? scriptUrl : DEFAULT_ECHARTS_SCRIPT_URL;
+    }
+
+    /**
+     * @deprecated unused
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     protected String generateContainerHtml(String id) {
         ContainerModel model = new ContainerModel(
                 id,
                 this.width != null ? this.width : 600,
                 this.height != null ? this.height : 400
         );
-        return CONTAINER_TEMPLATE.execute(new StringWriter(), model).toString();
-    }
-
-    /**
-     * @since 2.0.0
-     */
-    protected String scriptUrl() {
-        return scriptUrl != null ? scriptUrl : DEFAULT_ECHARTS_SCRIPT_URL;
+        return Renderer.renderContainer(model);
     }
 
     /**
@@ -361,21 +363,14 @@ public class EChart {
     @Deprecated(since = "2.0.0", forRemoval = true)
     protected String generateExternalScriptHtml() {
         return new EChartHtml(
+                "-",
                 scriptUrl != null ? scriptUrl : DEFAULT_ECHARTS_SCRIPT_URL,
                 "",
-                ""
+                "",
+                idGenerator,
+                null,
+                null
         ).getExternalScript();
-    }
-
-    protected String generateScript(String id, DataFrame df) {
-
-        ScriptModel model = new ScriptModel(
-                id,
-                this.theme,
-                this.renderer != null ? new InitOptsModel(renderer.name()) : null,
-                option.resolve(df)
-        );
-        return SCRIPT_TEMPLATE.execute(new StringWriter(), model).toString();
     }
 
     /**
@@ -384,10 +379,29 @@ public class EChart {
     @Deprecated(since = "2.0.0", forRemoval = true)
     protected String generateScriptHtml(String id, DataFrame df) {
         return new EChartHtml(
+                id,
                 "",
                 "",
-                generateScript(id, df)
+                generateScript(id, df),
+                idGenerator,
+                null,
+                null
         ).getScript();
+    }
+
+    /**
+     * @deprecated unused
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    protected String generateScript(String id, DataFrame df) {
+
+        ScriptModel model = new ScriptModel(
+                id,
+                this.theme,
+                this.renderer != null ? new InitOptsModel(renderer.name()) : null,
+                option.resolve(df)
+        );
+        return Renderer.renderScript(model);
     }
 
     protected String newId() {

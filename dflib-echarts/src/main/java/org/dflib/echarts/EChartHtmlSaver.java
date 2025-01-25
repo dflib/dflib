@@ -1,6 +1,7 @@
 package org.dflib.echarts;
 
 import com.github.mustachejava.Mustache;
+import org.dflib.echarts.render.util.Renderer;
 import org.dflib.echarts.saver.HtmlChartModel;
 import org.dflib.echarts.saver.HtmlPageModel;
 
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
  */
 public class EChartHtmlSaver {
 
-    private static final Mustache DEFAULT_PAGE_TEMPLATE = EChart.loadTemplate("html_page.mustache");
+    private static final Mustache DEFAULT_PAGE_TEMPLATE = Renderer.loadTemplate("html_page.mustache");
 
     private boolean createMissingDirs;
     private String title;
@@ -144,6 +145,6 @@ public class EChartHtmlSaver {
 
     private Mustache htmlTemplate() {
         // TODO: cache precompiled templates for cases of mass chart generation for a single template?
-        return this.htmlTemplate != null ? EChart.loadTemplate(htmlTemplate) : DEFAULT_PAGE_TEMPLATE;
+        return this.htmlTemplate != null ? Renderer.loadTemplate(htmlTemplate) : DEFAULT_PAGE_TEMPLATE;
     }
 }
