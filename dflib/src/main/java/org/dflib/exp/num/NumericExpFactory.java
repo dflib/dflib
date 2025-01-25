@@ -1,5 +1,6 @@
 package org.dflib.exp.num;
 
+import org.dflib.BigIntegerExp;
 import org.dflib.Condition;
 import org.dflib.DecimalExp;
 import org.dflib.Exp;
@@ -7,6 +8,7 @@ import org.dflib.NumExp;
 import org.dflib.exp.map.MapExp1;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,10 +19,12 @@ public abstract class NumericExpFactory {
 
     protected static final Map<Class<? extends Number>, Integer> typeConversionRank;
     protected static final Map<Class<? extends Number>, NumericExpFactory> factories;
+    protected static final BigIntegerExpFactory bigIntegerFactory;
     protected static final DecimalExpFactory decimalFactory;
 
     static {
 
+        bigIntegerFactory = new BigIntegerExpFactory();
         decimalFactory = new DecimalExpFactory();
 
         typeConversionRank = new HashMap<>();
@@ -45,6 +49,7 @@ public abstract class NumericExpFactory {
 
         factories = new HashMap<>();
 
+        factories.put(BigInteger.class, decimalFactory);
         factories.put(BigDecimal.class, decimalFactory);
 
         factories.put(Float.class, new FloatExpFactory());
@@ -69,6 +74,14 @@ public abstract class NumericExpFactory {
     // factory
     public static DecimalExpFactory decimalFactory() {
         return decimalFactory;
+    }
+
+    /**
+     * Provides direct access to the BigIntegerExpFactory, that can be used to return {@link BigIntegerExp} instead of
+     * {@link NumExp}.
+     */
+    public static BigIntegerExpFactory bigIntegerFactory() {
+        return bigIntegerFactory;
     }
 
     public static NumericExpFactory factory(Exp<? extends Number> exp) {
@@ -240,6 +253,8 @@ public abstract class NumericExpFactory {
     public NumExp<Float> castAsFloat(NumExp<?> exp) {
         return FloatExp1.mapVal("castAsFloat", exp, Number::floatValue);
     }
+
+    public abstract BigIntegerExp castAsBigInteger(NumExp<?> exp);
 
     public abstract DecimalExp castAsDecimal(NumExp<?> exp);
 

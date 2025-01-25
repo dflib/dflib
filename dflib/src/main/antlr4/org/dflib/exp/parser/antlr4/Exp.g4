@@ -234,6 +234,7 @@ strScalar returns [String value]
 numColumn returns [NumExp<?> exp]
     : intColumn { $exp = $intColumn.exp; }
     | longColumn { $exp = $longColumn.exp; }
+    | bigIntegerColumn { $exp = $bigIntegerColumn.exp; }
     | floatColumn { $exp = $floatColumn.exp; }
     | doubleColumn { $exp = $doubleColumn.exp; }
     | decimalColumn { $exp = $decimalColumn.exp; }
@@ -257,6 +258,16 @@ intColumn returns [NumExp<Integer> exp]
  */
 longColumn returns [NumExp<Long> exp]
     : LONG '(' columnId ')' { $exp = longCol($columnId.id); }
+    ;
+
+/**
+ * An expression referencing a column containing BigInteger values.
+ *
+ * Parameters:
+ *  - The identifier of the column (integer index or string name).
+ */
+bigIntegerColumn returns [BigIntegerExp exp]
+    : BIG_INTEGER '(' columnId ')' { $exp = bigIntegerCol($columnId.id); }
     ;
 
 /**
@@ -567,6 +578,7 @@ genericRelation returns [Condition exp] locals [BiFunction<Exp<?>, Exp<?>, Condi
 numFn returns [NumExp<?> exp] locals [Function<NumExp<?>, NumExp<?>> fn]
     : castAsInt { $exp = $castAsInt.exp; }
     | castAsLong { $exp = $castAsLong.exp; }
+    | castAsBigInteger { $exp = $castAsBigInteger.exp; }
     | castAsFloat { $exp = $castAsFloat.exp; }
     | castAsDouble { $exp = $castAsDouble.exp; }
     | castAsDecimal { $exp = $castAsDecimal.exp; }
@@ -808,6 +820,16 @@ castAsInt returns [NumExp<Integer> exp]
  */
 castAsLong returns [NumExp<Long> exp]
     : CAST_AS_LONG '(' expression ')' { $exp = $expression.exp.castAsLong(); }
+    ;
+
+/**
+ * Casts an expression to a BigInteger value.
+ *
+ * Parameters:
+ *  - The expression to be cast.
+ */
+castAsBigInteger returns [BigIntegerExp exp]
+    : CAST_AS_BIG_INTEGER '(' expression ')' { $exp = $expression.exp.castAsBigInteger(); }
     ;
 
 /**
@@ -1197,6 +1219,9 @@ INT: 'int';
 LONG: 'long';
 
 //@ doc:inline
+BIG_INTEGER: 'bigInteger';
+
+//@ doc:inline
 FLOAT: 'float';
 
 //@ doc:inline
@@ -1221,6 +1246,9 @@ CAST_AS_INT: 'castAsInt';
 
 //@ doc:inline
 CAST_AS_LONG: 'castAsLong';
+
+//@ doc:inline
+CAST_AS_BIG_INTEGER: 'castAsBigInteger';
 
 //@ doc:inline
 CAST_AS_FLOAT: 'castAsFloat';

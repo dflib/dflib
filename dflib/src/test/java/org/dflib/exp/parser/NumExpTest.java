@@ -1,5 +1,6 @@
 package org.dflib.exp.parser;
 
+import org.dflib.BigIntegerExp;
 import org.dflib.Condition;
 import org.dflib.Exp;
 import org.dflib.NumExp;
@@ -14,6 +15,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -141,7 +143,38 @@ public class NumExpTest {
         assertThrows(ExpParserException.class, () -> Exp.exp(text));
     }
 
-    // TODO: BigIntScalarExp ???
+    @ParameterizedTest
+    @MethodSource
+    void bigIntegerScalar(String text, Exp<?> expected) {
+        Exp<?> exp = Exp.exp(text);
+        assertInstanceOf(BigIntegerExp.class, exp);
+        assertEquals(expected, exp);
+    }
+
+    static Stream<Arguments> bigIntegerScalar() {
+        return Stream.of(
+                arguments("999999999999999999999", Exp.$val(new BigInteger("999999999999999999999"))),
+                arguments("999999999999999999999h", Exp.$val(new BigInteger("999999999999999999999"))),
+                arguments("999999999999999999999H", Exp.$val(new BigInteger("999999999999999999999"))),
+                arguments("-999999999999999999999", Exp.$val(new BigInteger("-999999999999999999999"))),
+                arguments("+999999999999999999999", Exp.$val(new BigInteger("999999999999999999999"))),
+                arguments("999_999_999_999_987_654_321", Exp.$val(new BigInteger("999999999999987654321"))),
+                arguments("0x999999999999999999A3F", Exp.$val(new BigInteger("11605687868300440077179455"))),
+                arguments("-0xFFFFFFFFFFFFFFFFF", Exp.$val(new BigInteger("-295147905179352825855"))),
+                arguments("0123123123123123123123123", Exp.$val(new BigInteger("767038000152995210835"))),
+                arguments("-0123123123123123123123123", Exp.$val(new BigInteger("-767038000152995210835")))
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "99999999999999999999abc",
+            "0xFFFFFFFFFFFFFFFFFFFGHIJ",
+            "0xFFFFFFFFFFFFFFFFFF1A3.5",
+    })
+    void bigIntegerScalar_throws(String text) {
+        assertThrows(ExpParserException.class, () -> Exp.exp(text));
+    }
 
     @ParameterizedTest
     @MethodSource
@@ -305,6 +338,8 @@ public class NumExpTest {
                 arguments("castAsLong(9999999999)", Exp.$longVal(9999999999L).castAsLong()),
                 arguments("castAsFloat(1.1)", Exp.$floatVal(1.1f).castAsFloat()),
                 arguments("castAsDouble(1e-100)", Exp.$doubleVal(1e-100).castAsDouble()),
+                arguments("castAsBigInteger(1" + "0".repeat(20) + ")",
+                        Exp.$bigIntegerVal(new BigInteger("1" + "0".repeat(20))).castAsBigInteger()),
                 arguments("castAsDecimal(1e1000)", Exp.$decimalVal(new BigDecimal("1e1000")).castAsDecimal()),
                 arguments("castAsInt(null)", Exp.$val(null).castAsInt()),
                 arguments("castAsInt(true)", Exp.$boolVal(true).castAsInt()),

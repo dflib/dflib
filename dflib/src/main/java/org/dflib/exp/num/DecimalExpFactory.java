@@ -1,5 +1,6 @@
 package org.dflib.exp.num;
 
+import org.dflib.BigIntegerExp;
 import org.dflib.Condition;
 import org.dflib.DecimalExp;
 import org.dflib.Exp;
@@ -110,6 +111,11 @@ public class DecimalExpFactory extends NumericExpFactory {
     @Override
     public DecimalExp abs(Exp<? extends Number> exp) {
         return DecimalExp1.mapVal("abs", cast(exp), BigDecimal::abs);
+    }
+
+    @Override
+    public BigIntegerExp castAsBigInteger(NumExp<?> exp) {
+        return BigIntegerExpFactory.cast(exp);
     }
 
     @Override

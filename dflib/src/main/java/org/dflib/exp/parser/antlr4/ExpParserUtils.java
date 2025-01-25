@@ -1,5 +1,6 @@
 package org.dflib.exp.parser.antlr4;
 
+import org.dflib.BigIntegerExp;
 import org.dflib.Condition;
 import org.dflib.DateExp;
 import org.dflib.DateTimeExp;
@@ -57,6 +58,8 @@ class ExpParserUtils {
             return (Exp<T>) Exp.$floatVal((Float) value);
         } else if (Double.class.equals(type) || Double.TYPE.equals(type)) {
             return (Exp<T>) Exp.$doubleVal((Double) value);
+        } else if (BigInteger.class.equals(type)) {
+            return (Exp<T>) Exp.$bigIntegerVal((BigInteger) value);
         } else if (BigDecimal.class.equals(type)) {
             return (Exp<T>) Exp.$decimalVal((BigDecimal) value);
         } else if (Boolean.class.equals(type) || Boolean.TYPE.equals(type)) {
@@ -94,6 +97,10 @@ class ExpParserUtils {
 
     static DecimalExp decimalCol(Object columnId) {
         return col(columnId, Exp::$decimal, Exp::$decimal);
+    }
+
+    static BigIntegerExp bigIntegerCol(Object columnId) {
+        return col(columnId, Exp::$bigInteger, Exp::$bigInteger);
     }
 
     static StrExp strCol(Object columnId) {

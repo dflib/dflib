@@ -2,6 +2,8 @@ package org.dflib;
 
 import org.dflib.exp.AsExp;
 import org.dflib.exp.Column;
+import org.dflib.exp.num.BigIntegerColumn;
+import org.dflib.exp.num.BigIntegerScalarExp;
 import org.dflib.exp.num.DecimalScalarExp;
 import org.dflib.exp.parser.ExpParser;
 import org.dflib.exp.RowNumExp;
@@ -53,6 +55,7 @@ import org.dflib.exp.str.StrExp1;
 import org.dflib.exp.str.StrScalarExp;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -129,6 +132,16 @@ public interface Exp<T> {
      */
     static NumExp<Double> $doubleVal(double value) {
         return new DoubleScalarExp(value);
+    }
+
+    /**
+     * Returns a {@code NumExp<BigInteger>} whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * returns the value itself.
+     *
+     * @since 2.0.0
+     */
+    static NumExp<BigInteger> $bigIntegerVal(BigInteger value) {
+        return new BigIntegerScalarExp(value);
     }
 
     /**
@@ -317,6 +330,22 @@ public interface Exp<T> {
      */
     static NumExp<Double> $double(int position) {
         return new DoubleColumn(position);
+    }
+
+    /**
+     * Returns an expression whose "eval" returns a named DataFrame BigInteger column (or the input Series object when called
+     * on a Series). "reduce" operation is undefined and throws an exception.
+     */
+    static BigIntegerExp $bigInteger(String name) {
+        return new BigIntegerColumn(name);
+    }
+
+    /**
+     * Returns an expression whose "eval" returns a DataFrame BigInteger column in the specified position (or the input Series
+     * object when called on a Series). "reduce" operation is undefined and throws an exception.
+     */
+    static BigIntegerExp $bigInteger(int position) {
+        return new BigIntegerColumn(position);
     }
 
     /**
@@ -891,6 +920,10 @@ public interface Exp<T> {
 
     default NumExp<Double> castAsDouble() {
         return castAsStr().castAsDouble();
+    }
+
+    default BigIntegerExp castAsBigInteger() {
+        return castAsStr().castAsBigInteger();
     }
 
     default DecimalExp castAsDecimal() {
