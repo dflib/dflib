@@ -8,6 +8,7 @@ import org.dflib.Series;
 import org.dflib.Sorter;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -160,6 +161,38 @@ public class Percentiles {
                 : s.select(notNullExp).compactFloat(Number::floatValue);
 
         return ps.quantile(quantile);
+    }
+
+    public static BigInteger ofBigIntegers(Series<BigInteger> s, double quantile) {
+
+        Percentiles.checkIsPercentile(quantile);
+
+        Series<BigInteger> noNulls = s.select(notNullExp);
+
+        int len = noNulls.size();
+        switch (len) {
+            case 0:
+                return null;
+            case 1:
+                return noNulls.get(0);
+            default:
+                Series<BigInteger> sorted = noNulls.sort(asc);
+
+                double di = quantile * (len - 1);
+                int lower = (int) Math.floor(di);
+                int upper = (int) Math.ceil(di);
+
+                if (lower == upper) {
+                    return sorted.get(lower);
+                }
+
+                BigInteger lbi = sorted.get(lower);
+                BigInteger ubi = sorted.get(upper);
+                BigDecimal fraction = new BigDecimal(di - lower);
+
+                // sorted[lower] + (di - lower) * (sorted[upper] - sorted[lower])
+                return lbi.add(new BigDecimal(ubi.subtract(lbi)).multiply(fraction).toBigInteger());
+        }
     }
 
     public static BigDecimal ofDecimals(Series<BigDecimal> s, double quantile) {
