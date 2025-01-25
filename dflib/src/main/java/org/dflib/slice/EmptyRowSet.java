@@ -112,6 +112,11 @@ public class EmptyRowSet implements RowSet {
     }
 
     @Override
+    public DataFrame merge() {
+        return source;
+    }
+
+    @Override
     public DataFrame merge(Exp<?>... exps) {
         return source;
     }

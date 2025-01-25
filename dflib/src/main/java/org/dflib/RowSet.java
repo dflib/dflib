@@ -48,6 +48,14 @@ public interface RowSet {
      */
     DataFrame expand(int columnPos);
 
+    /**
+     * Returns from the original DataFrame. In most cases this is a no-op, returning the original DataFrame, but if a
+     * row operation expands the row set, the newly produced rows will be included.
+     *
+     * @since 2.0.0
+     */
+    DataFrame merge();
+
     DataFrame merge(Exp<?>... exps);
 
     DataFrame merge(RowMapper mapper);

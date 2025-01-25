@@ -59,6 +59,11 @@ public abstract class BaseRowSet implements RowSet {
     }
 
     @Override
+    public DataFrame merge() {
+        return mapByColumn((i, rowsAsDf) -> rowsAsDf.getColumn(i));
+    }
+
+    @Override
     public DataFrame merge(Exp<?>... exps) {
 
         int w = exps.length;
