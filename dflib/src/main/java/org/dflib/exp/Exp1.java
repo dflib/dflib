@@ -3,6 +3,8 @@ package org.dflib.exp;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 
+import java.util.Objects;
+
 /**
  * A unary expression with an {@link Exp} argument.
  */
@@ -16,6 +18,25 @@ public abstract class Exp1<F, T> implements Exp<T> {
         this.opName = opName;
         this.exp = exp;
         this.type = type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Exp1<?, ?> exp1 = (Exp1<?, ?>) o;
+        return Objects.equals(opName, exp1.opName)
+                && Objects.equals(exp, exp1.exp)
+                && Objects.equals(type, exp1.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(opName, exp, type);
     }
 
     @Override
