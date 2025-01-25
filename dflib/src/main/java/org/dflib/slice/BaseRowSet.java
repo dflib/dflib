@@ -60,7 +60,7 @@ public abstract class BaseRowSet implements RowSet {
 
     @Override
     public DataFrame merge() {
-        return mapByColumn((i, rowsAsDf) -> rowsAsDf.getColumn(i));
+        return mergeByColumn((i, rowsAsDf) -> rowsAsDf.getColumn(i));
     }
 
     @Override
@@ -71,7 +71,7 @@ public abstract class BaseRowSet implements RowSet {
             throw new IllegalArgumentException("The number of column expressions (" + w + ") is different from the DataFrame width (" + sourceColumnsIndex.size() + ")");
         }
 
-        return mapByColumn((i, rowsAsDf) -> exps[i].eval(rowsAsDf));
+        return mergeByColumn((i, rowsAsDf) -> exps[i].eval(rowsAsDf));
     }
 
     @Override
@@ -82,7 +82,7 @@ public abstract class BaseRowSet implements RowSet {
             throw new IllegalArgumentException("The number of column mappers (" + w + ") is different from the DataFrame width (" + sourceColumnsIndex.size() + ")");
         }
 
-        return mapByColumn((i, rowsAsDf) -> new RowMappedSeries<>(rowsAsDf, mappers[i]));
+        return mergeByColumn((i, rowsAsDf) -> new RowMappedSeries<>(rowsAsDf, mappers[i]));
     }
 
     @Override
@@ -305,7 +305,7 @@ public abstract class BaseRowSet implements RowSet {
         return rowsAsDf.rows(uniqueIndex).select();
     }
 
-    protected DataFrame mapByColumn(IntObjectFunction2<DataFrame, Series<?>> columnMaker) {
+    protected DataFrame mergeByColumn(IntObjectFunction2<DataFrame, Series<?>> columnMaker) {
 
         if (sourceColumns.length == 0) {
             return source;
