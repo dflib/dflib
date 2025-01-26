@@ -67,6 +67,21 @@ public class WindowRange {
     }
 
     /**
+     * Returns an offset of "rowIndex" from the start of the range. Not checking whether "rowIndex" is outside the range.
+     *
+     * @since 2.0.0
+     */
+    public int rowOffset(int rowIndex) {
+
+        if (rowIndex < 0) {
+            throw new ArrayIndexOutOfBoundsException("Negative row index: " + rowIndex);
+        }
+
+        int fromInclusive = Math.max(0, rowIndex - startOffsetInclusive);
+        return rowIndex - fromInclusive;
+    }
+
+    /**
      * Returns a slice of the DataFrame rows that are within the range defined relative to the DataFrame row index.
      */
     public DataFrame selectRows(DataFrame dataFrame, int rowIndex) {

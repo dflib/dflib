@@ -16,7 +16,7 @@ public class Window_SelectRangeTest {
             15,
             2);
 
-    static final DataFrame TWO_COL_TEST_DF =  DataFrame.foldByRow("order", "val").of(
+    static final DataFrame TWO_COL_TEST_DF = DataFrame.foldByRow("order", "val").of(
             2, 1,
             4, 22,
             1, 15,
@@ -65,24 +65,43 @@ public class Window_SelectRangeTest {
     @Test
     public void preceding_MultiExp() {
         DataFrame r = SINGLE_COL_TEST_DF.over().range(WindowRange.allPreceding).select(
-                $int("val").sum(),
-                $int("val").max());
+                $int("val").sum(), // aggregating
+                $int("val").max(), // aggregating
+                rowNum());  // non-aggregating
 
-        new DataFrameAsserts(r, "sum(val)", "max(val)").expectHeight(4)
-                .expectRow(0, 1, 1)
-                .expectRow(1, 23, 22)
-                .expectRow(2, 38, 22)
-                .expectRow(3, 40, 22);
+        new DataFrameAsserts(r, "sum(val)", "max(val)", "rowNum()")
+                .expectHeight(4)
+                .expectRow(0, 1, 1, 1)
+                .expectRow(1, 23, 22, 2)
+                .expectRow(2, 38, 22, 3)
+                .expectRow(3, 40, 22, 4);
     }
 
     @Test
     public void following() {
         DataFrame r = SINGLE_COL_TEST_DF.over().range(WindowRange.allFollowing).select($int("val").sum());
-        new DataFrameAsserts(r, "sum(val)").expectHeight(4)
+        new DataFrameAsserts(r, "sum(val)")
+                .expectHeight(4)
                 .expectRow(0, 40)
                 .expectRow(1, 39)
                 .expectRow(2, 17)
                 .expectRow(3, 2);
+    }
+
+    @Test
+    public void following_MultiExp() {
+        DataFrame r = SINGLE_COL_TEST_DF.over().range(WindowRange.allFollowing).select(
+                $col("val"), // non-aggregating
+                $int("val").sum(), // aggregating
+                $int("val").max(), // aggregating
+                rowNum());  // non-aggregating
+
+        new DataFrameAsserts(r, "val", "sum(val)", "max(val)", "rowNum()")
+                .expectHeight(4)
+                .expectRow(0, 1, 40, 22, 1)
+                .expectRow(1, 22, 39, 22, 1)
+                .expectRow(2, 15, 17, 15, 1)
+                .expectRow(3, 2, 2, 2, 1);
     }
 
     @Test
