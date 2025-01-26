@@ -53,21 +53,22 @@ public class Window_SelectTest {
     public void byName_MultiExp() {
 
         DataFrame r = TEST_DF.over()
-                .cols("a", "s", "rn", "cs")
+                .cols("a", "la", "s", "rn", "cs")
                 .select(
                         $col("a"), // non-aggregating
+                        $col("a").first(), // aggregating
                         $int("a").sum(), // aggregating
                         rowNum(), // non-aggregating
                         $int("a").cumSum() // non-aggregating
                 );
 
-        new DataFrameAsserts(r, "a", "s", "rn", "cs")
+        new DataFrameAsserts(r, "a", "la", "s", "rn", "cs")
                 .expectHeight(5)
-                .expectRow(0, 1, 5, 1, 1L)
-                .expectRow(1, 2, 5, 2, 3L)
-                .expectRow(2, 1, 5, 3, 4L)
-                .expectRow(3, 0, 5, 4, 4L)
-                .expectRow(4, 1, 5, 5, 5L);
+                .expectRow(0, 1, 1, 5, 1, 1L)
+                .expectRow(1, 2, 1, 5, 2, 3L)
+                .expectRow(2, 1, 1, 5, 3, 4L)
+                .expectRow(3, 0, 1, 5, 4, 4L)
+                .expectRow(4, 1, 1, 5, 5, 5L);
     }
 
     @Test
