@@ -19,6 +19,11 @@ public class AllRowColumnSet implements RowColumnSet {
     }
 
     @Override
+    public DataFrame merge() {
+        return columnSet.merge();
+    }
+
+    @Override
     public DataFrame merge(Exp<?>... exps) {
         return columnSet.merge(exps);
     }

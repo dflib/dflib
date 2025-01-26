@@ -35,6 +35,13 @@ public class DefaultRowColumnSet implements RowColumnSet {
     }
 
     @Override
+    public DataFrame merge() {
+        DataFrame rowsResolved = rowSet.select();
+        DataFrame hSlice = columnSetMaker.apply(rowsResolved).merge();
+        return mergeRows(hSlice);
+    }
+
+    @Override
     public DataFrame merge(Exp<?>... exps) {
         DataFrame rowsResolved = rowSet.select();
         DataFrame hSlice = columnSetMaker.apply(rowsResolved).merge(exps);
