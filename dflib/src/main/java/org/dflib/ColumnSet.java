@@ -125,6 +125,14 @@ public interface ColumnSet {
     <V> DataFrame compactDouble(DoubleValueMapper<V> mapper);
 
     /**
+     * Returns a DataFrame that contains columns from this DataFrame plus any extra columns specified in this column
+     * set. Column data is returned without transformation.
+     *
+     * @since 2.0.0
+     */
+    DataFrame merge();
+
+    /**
      * Returns a transformed DataFrame that contains columns from this DataFrame and added / replaced columns
      * produced by the specified expressions. Expressions are matched with the result columns using the algorithm
      * defined in this specific ColumnSet.
@@ -191,7 +199,7 @@ public interface ColumnSet {
 
 
     /**
-     * Returns a new DataFrame based on the specified columns from the source DataFrame used without transformation.
+     * Returns a new DataFrame based on the specified columns from the source DataFrame without transformation.
      * If the column set contains a column not present in the source, a column with null values will be returned. If
      * column set is dynamic (has no explicit columns defined), the source DataFrame is returned unchanged.
      */

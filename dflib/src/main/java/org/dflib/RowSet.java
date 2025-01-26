@@ -49,8 +49,8 @@ public interface RowSet {
     DataFrame expand(int columnPos);
 
     /**
-     * Returns from the original DataFrame. In most cases this is a no-op, returning the original DataFrame, but if a
-     * row operation expands the row set, the newly produced rows will be included.
+     * Returns data from the original DataFrame without transformation. This is often a no-op, returning the original
+     * DataFrame, but if the RowSet has expansions, the newly produced rows will be included.
      *
      * @since 2.0.0
      */

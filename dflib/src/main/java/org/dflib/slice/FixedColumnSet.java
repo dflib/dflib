@@ -383,6 +383,11 @@ public class FixedColumnSet implements ColumnSet {
     }
 
     @Override
+    public DataFrame merge() {
+        return doMerge(doSelect());
+    }
+
+    @Override
     public DataFrame select() {
         return new ColumnDataFrame(null, Index.ofDeduplicated(csIndex), doSelect());
     }

@@ -32,7 +32,7 @@
 * #433 Primitive ValueMappers consistency
 * #436 ByteSource.uri()
 * #438 ByteSource.decompress()
-* #445 RowSet.merge()
+* #445 RowSet.merge(), ColumnSet.merge(), RowColumnSet.merge()
 
 ## Release 1.2.0
 
