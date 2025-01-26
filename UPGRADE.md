@@ -2,6 +2,12 @@
 
 ## 2.0.0
 
+* [dflib #421](https://github.com/dflib/dflib/issues/421): `RowSet.expand(..)` pair of methods became "non-terminal",
+so it no longer returns a `DataFrame`, but rather returns a `RowSet`. As a result you may get a compilation error.
+You will need to rewrite this code as `rs.expand(..).merge()`. While doing that, note that you will now have extra
+capabilities. E.g. you can pass column transformation expressions to the `merge(..)` method, potentially simplifying
+your code.
+
 * [dflib #433](https://github.com/dflib/dflib/issues/433): Primitive value mappers (e.g. `IntValueMapper`) 
 now consistently handle nulls and default object-to-primitive conversions. The old conversion methods were deprecated 
 with proper notes in Javadocs. However, internally DFLib switched to the new methods for a number of operations. 
