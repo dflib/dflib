@@ -9,7 +9,7 @@ Specifically, the behavior of `$bool(..)` column expression, `ColumnSet.compactB
 is now different in regard to numbers. Where previously it would evaluate a number to `false`, now it will evaluate
 to `true` all numbers except `0`.
 
-* [dflib #447](https://github.com/dflib/dflib/issues/47): _Non-aggregating_ expressions when applied to a `Window`
+* [dflib #447](https://github.com/dflib/dflib/issues/447): _Non-aggregating_ expressions when applied to a `Window`
 previously returned the last value of a partition or range. This was incorrect, and it was changed to return the value 
 corresponding to the result row. In an unlikely event that your code calling `Window.select(..)` or `Window.merge(..)`,
 relied on that incorrect value, you will need to revisit and tweak the expression arguments to those methods to match
