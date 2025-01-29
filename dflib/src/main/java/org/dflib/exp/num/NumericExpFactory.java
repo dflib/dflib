@@ -37,11 +37,13 @@ public abstract class NumericExpFactory {
         typeConversionRank.put(Float.class, 2);
         typeConversionRank.put(Float.TYPE, 2);
 
-        typeConversionRank.put(Long.class, 3);
-        typeConversionRank.put(Long.TYPE, 3);
+        typeConversionRank.put(BigInteger.class, 3);
 
-        typeConversionRank.put(Integer.class, 4);
-        typeConversionRank.put(Integer.TYPE, 4);
+        typeConversionRank.put(Long.class, 4);
+        typeConversionRank.put(Long.TYPE, 4);
+
+        typeConversionRank.put(Integer.class, 5);
+        typeConversionRank.put(Integer.TYPE, 5);
 
         // we don't have factories for these yet
         // typeConversionRank.put(Short.class, 5);
