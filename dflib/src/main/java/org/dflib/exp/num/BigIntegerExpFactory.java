@@ -9,6 +9,7 @@ import org.dflib.agg.Percentiles;
 import org.dflib.exp.agg.ComparableAggregators;
 import org.dflib.exp.agg.BigIntegerAggregators;
 import org.dflib.exp.agg.BigIntegerReduceExp1;
+import org.dflib.exp.agg.DecimalReduceExp1;
 import org.dflib.exp.map.MapCondition2;
 import org.dflib.exp.map.MapCondition3;
 
@@ -158,18 +159,18 @@ public class BigIntegerExpFactory extends NumericExpFactory {
 
     @Deprecated
     @Override
-    public BigIntegerExp median(Exp<? extends Number> exp) {
+    public DecimalExp median(Exp<? extends Number> exp) {
         return median(exp, null);
     }
 
     @Override
-    public BigIntegerExp median(Exp<? extends Number> exp, Condition filter) {
-        return new BigIntegerReduceExp1<>("median", cast(exp), s -> Percentiles.ofBigIntegers(s, 0.5), filter);
+    public DecimalExp median(Exp<? extends Number> exp, Condition filter) {
+        return new DecimalReduceExp1<>("median", cast(exp), s -> Percentiles.ofBigIntegers(s, 0.5), filter);
     }
 
     @Override
-    public BigIntegerExp quantile(Exp<? extends Number> exp, double q, Condition filter) {
-        return new BigIntegerReduceExp1<>("quantile", cast(exp), s -> Percentiles.ofBigIntegers(s, q), filter);
+    public DecimalExp quantile(Exp<? extends Number> exp, double q, Condition filter) {
+        return new DecimalReduceExp1<>("quantile", cast(exp), s -> Percentiles.ofBigIntegers(s, q), filter);
     }
 
     @Override

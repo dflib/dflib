@@ -163,7 +163,7 @@ public class Percentiles {
         return ps.quantile(quantile);
     }
 
-    public static BigInteger ofBigIntegers(Series<BigInteger> s, double quantile) {
+    public static BigDecimal ofBigIntegers(Series<BigInteger> s, double quantile) {
 
         Percentiles.checkIsPercentile(quantile);
 
@@ -174,7 +174,7 @@ public class Percentiles {
             case 0:
                 return null;
             case 1:
-                return noNulls.get(0);
+                return new BigDecimal(noNulls.get(0));
             default:
                 Series<BigInteger> sorted = noNulls.sort(asc);
 
@@ -183,15 +183,15 @@ public class Percentiles {
                 int upper = (int) Math.ceil(di);
 
                 if (lower == upper) {
-                    return sorted.get(lower);
+                    return new BigDecimal(sorted.get(lower));
                 }
 
-                BigInteger lbi = sorted.get(lower);
-                BigInteger ubi = sorted.get(upper);
+                BigDecimal lbd = new BigDecimal(sorted.get(lower));
+                BigDecimal ubd = new BigDecimal(sorted.get(upper));
                 BigDecimal fraction = new BigDecimal(di - lower);
 
                 // sorted[lower] + (di - lower) * (sorted[upper] - sorted[lower])
-                return lbi.add(new BigDecimal(ubi.subtract(lbi)).multiply(fraction).toBigInteger());
+                return lbd.add(ubd.subtract(lbd).multiply(fraction));
         }
     }
 

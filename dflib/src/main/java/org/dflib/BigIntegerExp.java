@@ -43,11 +43,6 @@ public interface BigIntegerExp extends NumExp<BigInteger> {
     }
 
     @Override
-    default BigIntegerExp div(Exp<? extends Number> exp) {
-        return NumericExpFactory.bigIntegerFactory().div(this, exp);
-    }
-
-    @Override
     default BigIntegerExp div(Number val) {
         return NumericExpFactory.bigIntegerFactory().div(this, Exp.$val(val));
     }
@@ -118,22 +113,22 @@ public interface BigIntegerExp extends NumExp<BigInteger> {
     }
 
     @Override
-    default BigIntegerExp median() {
+    default DecimalExp median() {
         return median(null);
     }
 
     @Override
-    default BigIntegerExp median(Condition filter) {
+    default DecimalExp median(Condition filter) {
         return NumericExpFactory.bigIntegerFactory().median(this, filter);
     }
 
     @Override
-    default BigIntegerExp quantile(double q) {
+    default DecimalExp quantile(double q) {
         return quantile(q, null);
     }
 
     @Override
-    default BigIntegerExp quantile(double q, Condition filter) {
+    default DecimalExp quantile(double q, Condition filter) {
         return NumericExpFactory.bigIntegerFactory().quantile(this, q, filter);
     }
 

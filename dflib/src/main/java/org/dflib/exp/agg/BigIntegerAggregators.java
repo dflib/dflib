@@ -1,7 +1,6 @@
 package org.dflib.exp.agg;
 
 import org.dflib.Series;
-import org.dflib.agg.Percentiles;
 import org.dflib.builder.ObjectAccum;
 
 import java.math.BigInteger;
@@ -57,13 +56,5 @@ public class BigIntegerAggregators {
         }
 
         return sum;
-    }
-
-    /**
-     * @deprecated in favor of {@link Percentiles#ofBigIntegers(Series, double)}
-     */
-    @Deprecated(since = "2.0.0", forRemoval = true)
-    public static BigInteger median(Series<BigInteger> s) {
-        return Percentiles.ofBigIntegers(s, 0.5);
     }
 }
