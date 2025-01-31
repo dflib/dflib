@@ -34,7 +34,7 @@ public class BoolBuilder {
      */
     public static BooleanSeries buildSeries(BoolGenerator generator, int size) {
         if (size == 0) {
-            return Series.ofBool();
+            return new BooleanBitsetSeries(new long[0], 0);
         }
         long[] data = fill(generator, size);
         if(data.length == 0) {

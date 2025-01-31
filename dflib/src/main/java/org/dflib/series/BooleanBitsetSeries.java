@@ -33,10 +33,10 @@ public class BooleanBitsetSeries extends BooleanBaseSeries {
 
     @Override
     public boolean getBool(int index) {
-        int i = index >> INDEX_BIT_SHIFT;
-        if (i >= data.length) {
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + data.length);
+        if (index >= size) {
+            throw new ArrayIndexOutOfBoundsException("Index: " + index + ", Size: " + size);
         }
+        int i = index >> INDEX_BIT_SHIFT;
         return (this.data[i] & (1L << index)) != 0;
     }
 

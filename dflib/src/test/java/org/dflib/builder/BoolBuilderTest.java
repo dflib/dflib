@@ -56,7 +56,6 @@ class BoolBuilderTest {
         assertTrue(booleans.get(64));
         assertTrue(booleans.get(127));
         assertTrue(booleans.get(128));
-        assertFalse(booleans.get(129));
     }
 
     @Test

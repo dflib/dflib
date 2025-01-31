@@ -10,6 +10,7 @@ import org.dflib.SeriesGroupBy;
 import org.dflib.Sorter;
 import org.dflib.ValueMapper;
 import org.dflib.ValueToRowMapper;
+import org.dflib.builder.BoolBuilder;
 import org.dflib.builder.IntAccum;
 import org.dflib.builder.ObjectAccum;
 import org.dflib.builder.UniqueIntAccum;
@@ -333,15 +334,7 @@ public abstract class IntBaseSeries implements IntSeries {
 
     @Override
     public BooleanSeries locateInt(IntPredicate predicate) {
-        int len = size();
-
-        boolean[] data = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            data[i] = predicate.test(getInt(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> predicate.test(getInt(i)), size());
     }
 
     @Override
@@ -520,12 +513,7 @@ public abstract class IntBaseSeries implements IntSeries {
             return new FalseSeries(len);
         }
 
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = set.contains(get(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> set.contains(get(i)), len);
     }
 
     @Override
@@ -548,12 +536,7 @@ public abstract class IntBaseSeries implements IntSeries {
             return new TrueSeries(len);
         }
 
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = !set.contains(get(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> !set.contains(get(i)), len);
     }
 
     @Override

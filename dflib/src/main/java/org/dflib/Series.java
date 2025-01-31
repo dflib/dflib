@@ -1,6 +1,7 @@
 package org.dflib;
 
 import org.dflib.agg.SeriesAggregator;
+import org.dflib.builder.BoolBuilder;
 import org.dflib.builder.SeriesByElementBuilder;
 import org.dflib.op.ReplaceOp;
 import org.dflib.series.ArraySeries;
@@ -63,7 +64,7 @@ public interface Series<T> extends Iterable<T> {
     }
 
     static BooleanSeries ofBool(boolean... bools) {
-        return new BooleanArraySeries(bools);
+        return BoolBuilder.buildSeries(i -> bools[i], bools.length);
     }
 
     static IntSeries ofInt(int... ints) {
@@ -197,13 +198,7 @@ public interface Series<T> extends Iterable<T> {
     // TODO: functionally, this is a duplicate of "locate()"
     default BooleanSeries compactBool(BoolValueMapper<? super T> mapper) {
         int len = size();
-
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = mapper.map(get(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> mapper.map(get(i)), len);
     }
 
     /**
@@ -519,13 +514,7 @@ public interface Series<T> extends Iterable<T> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            data[i] = Objects.equals(get(i), s.get(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> Objects.equals(get(i), s.get(i)), len);
     }
 
     /**
@@ -540,12 +529,7 @@ public interface Series<T> extends Iterable<T> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = !Objects.equals(get(i), s.get(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> !Objects.equals(get(i), s.get(i)), len);
     }
 
     BooleanSeries isNull();
@@ -564,18 +548,9 @@ public interface Series<T> extends Iterable<T> {
      * the predicate.
      */
     default BooleanSeries locate(Predicate<T> predicate) {
-
         // even for primitive Series it is slightly faster to implement "locate" directly than delegating
         // to "locateXyz", because the predicate signature requires primitive boxing
-
-        int len = size();
-        boolean[] matches = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            matches[i] = predicate.test(get(i));
-        }
-
-        return new BooleanArraySeries(matches);
+        return BoolBuilder.buildSeries(i -> predicate.test(get(i)), size());
     }
 
     /**
