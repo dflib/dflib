@@ -64,11 +64,6 @@ class RangeRowSetMerger extends RowSetMerger {
         return delegate().expandCols(expander);
     }
 
-    @Override
-    public RowSetMerger stretchCols(ColumnExpander expander) {
-        return delegate().stretchCols(expander);
-    }
-
     private RowSetMerger delegate() {
         if (delegate == null) {
             delegate = RowSetMerger.of(srcLen, new IntSequenceSeries(fromInclusive, toExclusive));

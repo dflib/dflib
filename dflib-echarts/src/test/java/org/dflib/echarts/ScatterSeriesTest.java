@@ -11,10 +11,10 @@ public class ScatterSeriesTest {
     @Test
     public void symbolSize() {
 
-        String s1 = ECharts.chart().series(SeriesOpts.ofScatter(), "y1").generateScript("_tid", df2);
+        String s1 = ECharts.chart().series(SeriesOpts.ofScatter(), "y1").plot(df2, "_tid").getChartScript();
         assertFalse(s1.contains("symbolSize"), s1);
 
-        String s2 = ECharts.chart().series(SeriesOpts.ofScatter().symbolSize(56), "y1").generateScript("_tid", df2);
+        String s2 = ECharts.chart().series(SeriesOpts.ofScatter().symbolSize(56), "y1").plot(df2, "_tid").getChartScript();
         assertTrue(s2.contains("symbolSize: 56,"), s2);
     }
 
@@ -28,10 +28,10 @@ public class ScatterSeriesTest {
                 .borderType(LineType.dotted)
                 .opacity(0.55);
 
-        String s1 = ECharts.chart().series(SeriesOpts.ofScatter(), "y1").generateScript("_tid", df2);
+        String s1 = ECharts.chart().series(SeriesOpts.ofScatter(), "y1").plot(df2, "_tid").getChartScript();
         assertFalse(s1.contains("itemStyle"), s1);
 
-        String s2 = ECharts.chart().series(SeriesOpts.ofScatter().itemStyle(style), "y1").generateScript("_tid", df2);
+        String s2 = ECharts.chart().series(SeriesOpts.ofScatter().itemStyle(style), "y1").plot(df2, "_tid").getChartScript();
 
         assertTrue(s2.contains("itemStyle"), s2);
         assertTrue(s2.contains("color: '#ffffff',"), s2);

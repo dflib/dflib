@@ -60,7 +60,7 @@ public class RowColumnSet_DropTest {
     }
 
     @Test
-    public void rowsByIndex_colsByName_ExpandRows_ExpandCols() {
+    public void rowsByIndex_colsByName_AddRows_AddCols() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(
                         1, "x", "a",

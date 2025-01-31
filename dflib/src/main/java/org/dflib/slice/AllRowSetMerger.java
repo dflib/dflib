@@ -4,8 +4,6 @@ import org.dflib.BooleanSeries;
 import org.dflib.IntSeries;
 import org.dflib.Series;
 
-import java.util.Arrays;
-
 class AllRowSetMerger extends RowSetMerger {
 
     static final AllRowSetMerger instance = new AllRowSetMerger();
@@ -53,33 +51,5 @@ class AllRowSetMerger extends RowSetMerger {
         }
 
         return new DefaultRowSetMerger(explodeIndex);
-    }
-
-    @Override
-    public RowSetMerger stretchCols(ColumnExpander expander) {
-
-        IntSeries rsStretchCounts = expander.getStretchCounts();
-        int rsLen = expander.getExpanded().size();
-
-        int ch = rsStretchCounts.size();
-
-        int[] stretchIndex = new int[rsLen];
-
-        for (int i = 0, si = 0, rsi = 0; i < ch; i++) {
-
-            // unlike "explode", the returned index here will ignore the row set Series, and will fill
-            // everything from the source, thus "stretching" values to fill exploded ranges
-
-            int stretchBy = rsStretchCounts.getInt(rsi++);
-            if (stretchBy > 1) {
-                Arrays.fill(stretchIndex, si, si + stretchBy, i);
-                si += stretchBy;
-            } else {
-                stretchIndex[si++] = i;
-            }
-        }
-
-        // TODO: a custom RowSetMerger that ignores row set on merge, as all indices above are known non-negative
-        return new DefaultRowSetMerger(stretchIndex);
     }
 }

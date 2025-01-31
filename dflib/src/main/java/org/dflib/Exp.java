@@ -38,6 +38,7 @@ import org.dflib.exp.map.MapCondition2;
 import org.dflib.exp.map.MapExp1;
 import org.dflib.exp.map.MapExp2;
 import org.dflib.exp.num.DecimalColumn;
+import org.dflib.exp.num.DecimalScalarExp;
 import org.dflib.exp.num.DoubleColumn;
 import org.dflib.exp.num.DoubleScalarExp;
 import org.dflib.exp.num.FloatColumn;
@@ -53,6 +54,7 @@ import org.dflib.exp.str.StrExp1;
 import org.dflib.exp.str.StrScalarExp;
 
 import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -139,6 +141,16 @@ public interface Exp<T> {
      */
     static NumExp<BigInteger> $bigIntegerVal(BigInteger value) {
         return new BigIntegerScalarExp(value);
+    }
+  
+    /**
+     * Returns a {@code NumExp<BigDecimal>} whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * returns the value itself.
+     *
+     * @since 2.0.0
+     */
+    static NumExp<BigDecimal> $decimalVal(BigDecimal value) {
+        return new DecimalScalarExp(value);
     }
 
     /**

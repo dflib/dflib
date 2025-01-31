@@ -7,6 +7,10 @@ import org.dflib.Series;
 import org.dflib.row.ColumnsRowProxy;
 import org.dflib.row.MultiArrayRowBuilder;
 
+/**
+ * @deprecated unused
+ */
+@Deprecated(since = "2.0.0", forRemoval = true)
 public class ConditionalRowSetMapper extends RowSetMapper {
 
     private final BooleanSeries conditionalIndex;

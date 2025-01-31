@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Random;
 
-public class RowSet_ExpandTest {
+public class RowSet_Expand_MergeTest {
 
     @Test
     public void all() {
@@ -19,7 +19,8 @@ public class RowSet_ExpandTest {
                         1, List.of("m1", "m2"), "n",
                         5, null, "x")
                 .rows()
-                .expand("b");
+                .expand("b")
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(11)
@@ -46,7 +47,9 @@ public class RowSet_ExpandTest {
                         0, List.of("f1", "f2"), "g", // <--
                         1, List.of("m1", "m2"), "n", // <--
                         5, null, "x") // <--
-                .rows(Series.ofInt(0, 3, 4, 5)).expand("b");
+                .rows(Series.ofInt(0, 3, 4, 5))
+                .expand("b")
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(9)
@@ -61,6 +64,7 @@ public class RowSet_ExpandTest {
                 .expectRow(8, 5, null, "x");
     }
 
+
     @Test
     public void byRange() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
@@ -71,7 +75,9 @@ public class RowSet_ExpandTest {
                         0, List.of("f1", "f2"), "g", // <--
                         1, List.of("m1", "m2"), "n", // <--
                         5, null, "x")
-                .rowsRange(2, 5).expand("b");
+                .rowsRange(2, 5)
+                .expand("b")
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(9)
@@ -96,7 +102,9 @@ public class RowSet_ExpandTest {
                         0, List.of("f1", "f2"), "g", // <--
                         1, List.of("m1", "m2"), "n", // <--
                         5, null, "x") // <--
-                .rows(Series.ofBool(true, false, false, true, true, true)).expand("b");
+                .rows(Series.ofBool(true, false, false, true, true, true))
+                .expand("b")
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(9)
@@ -111,6 +119,7 @@ public class RowSet_ExpandTest {
                 .expectRow(8, 5, null, "x");
     }
 
+
     @Test
     public void sample() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
@@ -122,7 +131,9 @@ public class RowSet_ExpandTest {
                         1, List.of("m1", "m2"), "n",
                         5, null, "x")
                 // using fixed seed to get reproducible result
-                .rowsSample(2, new Random(9)).expand("b");
+                .rowsSample(2, new Random(9))
+                .expand("b")
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(8)
@@ -135,4 +146,6 @@ public class RowSet_ExpandTest {
                 .expectRow(6, 1, List.of("m1", "m2"), "n")
                 .expectRow(7, 5, null, "x");
     }
+
+
 }

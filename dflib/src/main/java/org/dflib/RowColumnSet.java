@@ -32,6 +32,11 @@ public interface RowColumnSet {
         return merge(mappers);
     }
 
+    /**
+     * @since 2.0.0
+     */
+    DataFrame merge();
+
     DataFrame merge(Exp<?>... exps);
 
     DataFrame merge(RowMapper mapper);
