@@ -33,6 +33,7 @@
 * #433 Primitive ValueMappers consistency
 * #436 ByteSource.uri()
 * #438 ByteSource.decompress()
+* #442 Add DecimalScalarExp
 * #445 RowSet.merge(), ColumnSet.merge(), RowColumnSet.merge()
 * #447 Window.select(..), Window.merge(..) do not work with non-aggregating functions
 
