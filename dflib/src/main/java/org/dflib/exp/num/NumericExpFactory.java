@@ -1,6 +1,5 @@
 package org.dflib.exp.num;
 
-import org.dflib.BigIntegerExp;
 import org.dflib.Condition;
 import org.dflib.DecimalExp;
 import org.dflib.Exp;
@@ -19,12 +18,10 @@ public abstract class NumericExpFactory {
 
     protected static final Map<Class<? extends Number>, Integer> typeConversionRank;
     protected static final Map<Class<? extends Number>, NumericExpFactory> factories;
-    protected static final BigIntegerExpFactory bigIntegerFactory;
     protected static final DecimalExpFactory decimalFactory;
 
     static {
 
-        bigIntegerFactory = new BigIntegerExpFactory();
         decimalFactory = new DecimalExpFactory();
 
         typeConversionRank = new HashMap<>();
@@ -51,8 +48,8 @@ public abstract class NumericExpFactory {
 
         factories = new HashMap<>();
 
-        factories.put(BigInteger.class, decimalFactory);
         factories.put(BigDecimal.class, decimalFactory);
+        factories.put(BigInteger.class, new BigintExpFactory());
 
         factories.put(Float.class, new FloatExpFactory());
         factories.put(Float.TYPE, factories.get(Float.class));
@@ -76,14 +73,6 @@ public abstract class NumericExpFactory {
     // factory
     public static DecimalExpFactory decimalFactory() {
         return decimalFactory;
-    }
-
-    /**
-     * Provides direct access to the BigIntegerExpFactory, that can be used to return {@link BigIntegerExp} instead of
-     * {@link NumExp}.
-     */
-    public static BigIntegerExpFactory bigIntegerFactory() {
-        return bigIntegerFactory;
     }
 
     public static NumericExpFactory factory(Exp<? extends Number> exp) {
@@ -256,7 +245,12 @@ public abstract class NumericExpFactory {
         return FloatExp1.mapVal("castAsFloat", exp, Number::floatValue);
     }
 
-    public abstract BigIntegerExp castAsBigInteger(NumExp<?> exp);
+    /**
+     * @since 2.0.0
+     */
+    public NumExp<BigInteger> castAsBigint(NumExp<?> exp) {
+        return BigintExp1.mapVal("castAsBigint", exp, n -> BigInteger.valueOf(n.longValue()));
+    }
 
     public abstract DecimalExp castAsDecimal(NumExp<?> exp);
 

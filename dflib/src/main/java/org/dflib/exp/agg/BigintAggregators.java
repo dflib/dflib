@@ -5,7 +5,10 @@ import org.dflib.builder.ObjectAccum;
 
 import java.math.BigInteger;
 
-public class BigIntegerAggregators {
+/**
+ * @since 2.0.0
+ */
+public class BigintAggregators {
 
     public static Series<BigInteger> cumSum(Series<BigInteger> s) {
 

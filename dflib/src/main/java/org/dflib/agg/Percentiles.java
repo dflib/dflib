@@ -163,7 +163,10 @@ public class Percentiles {
         return ps.quantile(quantile);
     }
 
-    public static BigDecimal ofBigIntegers(Series<BigInteger> s, double quantile) {
+    /**
+     * @since 2.0.0
+     */
+    public static BigDecimal ofBigints(Series<BigInteger> s, double quantile) {
 
         Percentiles.checkIsPercentile(quantile);
 

@@ -2,8 +2,8 @@ package org.dflib;
 
 import org.dflib.exp.AsExp;
 import org.dflib.exp.Column;
-import org.dflib.exp.num.BigIntegerColumn;
-import org.dflib.exp.num.BigIntegerScalarExp;
+import org.dflib.exp.num.BigintColumn;
+import org.dflib.exp.num.BigintScalarExp;
 import org.dflib.exp.RowNumExp;
 import org.dflib.exp.ScalarExp;
 import org.dflib.exp.ShiftExp;
@@ -139,8 +139,8 @@ public interface Exp<T> {
      *
      * @since 2.0.0
      */
-    static NumExp<BigInteger> $bigIntegerVal(BigInteger value) {
-        return new BigIntegerScalarExp(value);
+    static NumExp<BigInteger> $bigintVal(BigInteger value) {
+        return new BigintScalarExp(value);
     }
   
     /**
@@ -334,17 +334,21 @@ public interface Exp<T> {
     /**
      * Returns an expression whose "eval" returns a named DataFrame BigInteger column (or the input Series object when called
      * on a Series). "reduce" operation is undefined and throws an exception.
+     *
+     * @since 2.0.0
      */
-    static BigIntegerExp $bigInteger(String name) {
-        return new BigIntegerColumn(name);
+    static NumExp<BigInteger> $bigint(String name) {
+        return new BigintColumn(name);
     }
 
     /**
      * Returns an expression whose "eval" returns a DataFrame BigInteger column in the specified position (or the input Series
      * object when called on a Series). "reduce" operation is undefined and throws an exception.
+     *
+     * @since 2.0.0
      */
-    static BigIntegerExp $bigInteger(int position) {
-        return new BigIntegerColumn(position);
+    static NumExp<BigInteger> $bigint(int position) {
+        return new BigintColumn(position);
     }
 
     /**
@@ -909,8 +913,11 @@ public interface Exp<T> {
         return castAsStr().castAsDouble();
     }
 
-    default BigIntegerExp castAsBigInteger() {
-        return castAsStr().castAsBigInteger();
+    /**
+     * @since 2.0.0
+     */
+    default NumExp<BigInteger> castAsBigint() {
+        return castAsStr().castAsBigint();
     }
 
     default DecimalExp castAsDecimal() {

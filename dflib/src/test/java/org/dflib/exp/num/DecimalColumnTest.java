@@ -12,6 +12,7 @@ import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -228,6 +229,17 @@ public class DecimalColumnTest {
         Series<? extends Number> s = $decimal("b").add($decimal("a")).eval(df);
         new SeriesAsserts(s).expectData(new BigDecimal("3.01"), new BigDecimal("7.5"));
     }
+
+    @Test
+    public void add_Bigint() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                new BigInteger("101"), new BigDecimal("2.001"),
+                new BigInteger("3"), new BigDecimal("45.3"));
+
+        Series<? extends Number> s = $decimal("b").add($bigint("a")).eval(df);
+        new SeriesAsserts(s).expectData(new BigDecimal("103.001"), new BigDecimal("48.3"));
+    }
+
 
     @Test
     public void divide_Int() {

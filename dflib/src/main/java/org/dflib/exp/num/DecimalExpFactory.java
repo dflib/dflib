@@ -1,6 +1,5 @@
 package org.dflib.exp.num;
 
-import org.dflib.BigIntegerExp;
 import org.dflib.Condition;
 import org.dflib.DecimalExp;
 import org.dflib.Exp;
@@ -54,7 +53,7 @@ public class DecimalExpFactory extends NumericExpFactory {
             return DecimalExp1.mapVal("castAsDecimal", sExp, BigDecimal::new);
         }
 
-        throw new IllegalArgumentException("Expression type '" + t.getName() + "' can't be converted to Double");
+        throw new IllegalArgumentException("Expression type '" + t.getName() + "' can't be converted to 'decimal'");
     }
 
     @Override
@@ -114,8 +113,8 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public BigIntegerExp castAsBigInteger(NumExp<?> exp) {
-        return BigIntegerExpFactory.cast(exp);
+    public NumExp<BigInteger> castAsBigint(NumExp<?> exp) {
+        return BigintExp1.mapVal("castAsBigint", cast(exp), BigDecimal::toBigInteger);
     }
 
     @Override

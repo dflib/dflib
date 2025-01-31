@@ -1,6 +1,5 @@
 package org.dflib.exp.num;
 
-import org.dflib.BigIntegerExp;
 import org.dflib.Condition;
 import org.dflib.DecimalExp;
 import org.dflib.Exp;
@@ -12,7 +11,6 @@ import org.dflib.exp.agg.FloatAggregators;
 import org.dflib.exp.agg.FloatReduceExp1;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 /**
  * @since 1.1.0
@@ -94,11 +92,6 @@ public class FloatExpFactory extends NumericExpFactory {
     @Override
     public DecimalExp castAsDecimal(NumExp<?> exp) {
         return DecimalExp1.mapVal("castAsDecimal", cast(exp), BigDecimal::valueOf);
-    }
-
-    @Override
-    public BigIntegerExp castAsBigInteger(NumExp<?> exp) {
-        return BigIntegerExp1.mapVal("castAsBigInteger", cast(exp), val -> BigDecimal.valueOf(val).toBigInteger());
     }
 
     @Override
