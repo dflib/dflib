@@ -150,6 +150,22 @@ public class ExpEqualsHashCodeTest {
     }
 
     @Test
+    public void expN() {
+        Exp<?> e1 = Exp.concat($str("a"), $str("b"), $str("c"));
+        Exp<?> e2 = Exp.concat($str("a"), $str("b"), $str("c"));
+        Exp<?> e3 = Exp.concat($str("a"), $str("b"), $str("c"));
+
+        Exp<?> different1 = Exp.concat($str("x"), $str("b"), $str("c"));
+        Exp<?> different2 = Exp.concat($str("a"), $str("b"));
+        Exp<?> different3 = Exp.concat($str("a"), $str("b"), $int("c"));
+
+        assertEqualsContract(e1, e2, e3);
+        assertNotEquals(e1, different1, "Should not equal expression with a different argument");
+        assertNotEquals(e1, different2, "Should not equal expression with fewer arguments");
+        assertNotEquals(e1, different3, "Should not equal expression with different argument types");
+    }
+
+    @Test
     public void ifExp() {
         Exp<Integer> e1 = Exp.ifExp($col("a").eq("test"), $int(1), $int(2));
         Exp<Integer> e2 = Exp.ifExp($col("a").eq("test"), $int(1), $int(2));
