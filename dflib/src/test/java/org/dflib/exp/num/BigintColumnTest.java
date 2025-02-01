@@ -7,6 +7,7 @@ import org.dflib.Exp;
 import org.dflib.NumExp;
 import org.dflib.Series;
 import org.dflib.StrExp;
+import org.dflib.exp.ExpBaseTest;
 import org.dflib.unit.BoolSeriesAsserts;
 import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
-public class BigintColumnTest {
+public class BigintColumnTest extends ExpBaseTest {
 
     @Test
     public void getColumnName() {
@@ -372,5 +373,16 @@ public class BigintColumnTest {
 
         // run and verify the calculation
         new BoolSeriesAsserts(c.eval(s)).expectData(false, true, true, true, false);
+    }
+
+    @Test
+    public void equalsHashCode() {
+        NumExp<?> e1 = $bigint("a");
+        NumExp<?> e2 = $bigint("a");
+        NumExp<?> e3 = $bigint("a");
+        NumExp<?> different = $bigint("b");
+
+        assertEqualsContract(e1, e2, e3);
+        assertNotEquals(e1, different);
     }
 }

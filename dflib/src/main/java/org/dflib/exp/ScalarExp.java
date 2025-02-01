@@ -30,6 +30,24 @@ public class ScalarExp<T> implements Exp<T> {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ScalarExp)) {
+            return false;
+        }
+        ScalarExp<?> scalarExp = (ScalarExp<?>) o;
+        return Objects.equals(type, scalarExp.type)
+                && Objects.equals(value, scalarExp.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, value);
+    }
+
+    @Override
     public String toString() {
         return toQL();
     }

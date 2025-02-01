@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class RowNumExpTest {
+public class RowNumExpTest extends ExpBaseTest {
 
     @Test
     public void eval() {
@@ -29,5 +29,14 @@ public class RowNumExpTest {
     @Test
     public void as() {
         assertEquals("NUMBER", Exp.rowNum().as("NUMBER").getColumnName());
+    }
+
+    @Test
+    public void equalsHashCode() {
+        Exp<Integer> e1 = Exp.rowNum();
+        Exp<Integer> e2 = Exp.rowNum();
+        Exp<Integer> e3 = Exp.rowNum();
+
+        assertEqualsContract(e1, e2, e3);
     }
 }

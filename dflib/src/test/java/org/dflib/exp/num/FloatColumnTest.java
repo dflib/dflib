@@ -6,6 +6,7 @@ import org.dflib.DoubleSeries;
 import org.dflib.FloatSeries;
 import org.dflib.NumExp;
 import org.dflib.Series;
+import org.dflib.exp.ExpBaseTest;
 import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +16,7 @@ import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
-public class FloatColumnTest {
+public class FloatColumnTest extends ExpBaseTest {
 
     @Test
     public void getColumnName() {
@@ -197,5 +198,16 @@ public class FloatColumnTest {
     public void sum_getColumnName() {
         NumExp<?> exp = $float("a").sum();
         assertEquals("sum(a)", exp.getColumnName());
+    }
+
+    @Test
+    public void equalsHashCode() {
+        NumExp<?> e1 = $float("a");
+        NumExp<?> e2 = $float("a");
+        NumExp<?> e3 = $float("a");
+        NumExp<?> different = $float("b");
+
+        assertEqualsContract(e1, e2, e3);
+        assertNotEquals(e1, different);
     }
 }

@@ -7,6 +7,7 @@ import org.dflib.DecimalExp;
 import org.dflib.NumExp;
 import org.dflib.Series;
 import org.dflib.StrExp;
+import org.dflib.exp.ExpBaseTest;
 import org.dflib.unit.BoolSeriesAsserts;
 import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
-public class DecimalColumnTest {
+public class DecimalColumnTest extends ExpBaseTest {
 
     @Test
     public void getColumnName() {
@@ -395,5 +396,16 @@ public class DecimalColumnTest {
 
         // run and verify the calculation
         new BoolSeriesAsserts(c.eval(s)).expectData(false, true, true, true, false);
+    }
+
+    @Test
+    public void equalsHashCode() {
+        DecimalExp e1 = $decimal("a");
+        DecimalExp e2 = $decimal("a");
+        DecimalExp e3 = $decimal("a");
+        DecimalExp different = $decimal("b");
+
+        assertEqualsContract(e1, e2, e3);
+        assertNotEquals(e1, different);
     }
 }

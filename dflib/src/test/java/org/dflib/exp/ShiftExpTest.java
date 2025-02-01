@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ShiftExpTest {
+public class ShiftExpTest extends ExpBaseTest {
 
     @Test
     public void toQL() {
@@ -26,5 +26,18 @@ public class ShiftExpTest {
 
         new SeriesAsserts(s1.eval(Exp.$str("a").shift(-1))).expectData("b", "c", null);
         new SeriesAsserts(s1.eval(Exp.$str("a").shift(-100))).expectData(null, null, null);
+    }
+
+    @Test
+    public void equalsHashCode() {
+        Exp<?> e1 = Exp.$col("a").shift(1);
+        Exp<?> e2 = Exp.$col("a").shift(1);
+        Exp<?> e3 = Exp.$col("a").shift(1);
+        Exp<?> different1 = Exp.$col("b").shift(1);
+        Exp<?> different2 = Exp.$col("a").shift(2);
+
+        assertEqualsContract(e1, e2, e3);
+        assertNotEquals(e1, different1);
+        assertNotEquals(e1, different2);
     }
 }

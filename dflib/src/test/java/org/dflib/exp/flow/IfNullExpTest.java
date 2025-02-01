@@ -2,12 +2,14 @@ package org.dflib.exp.flow;
 
 import org.dflib.DataFrame;
 import org.dflib.Exp;
+import org.dflib.exp.ExpBaseTest;
 import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import static org.dflib.Exp.*;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class IfNullExpTest {
+public class IfNullExpTest extends ExpBaseTest {
 
     @Test
     public void string() {
@@ -46,5 +48,18 @@ public class IfNullExpTest {
                 null);
 
         new SeriesAsserts(noNulls.eval(df)).expectData(1, 77, 8, 77);
+    }
+
+    @Test
+    public void equalsHashCode() {
+        Exp<Integer> e1 = ifNull($int("a"), $int(1));
+        Exp<Integer> e2 = ifNull($int("a"), $int(1));
+        Exp<Integer> e3 = ifNull($int("a"), $int(1));
+        Exp<Integer> different1 = ifNull($int("b"), $int(1));
+        Exp<Integer> different2 = ifNull($int("a"), $int(2));
+
+        assertEqualsContract(e1, e2, e3);
+        assertNotEquals(e1, different1);
+        assertNotEquals(e1, different2);
     }
 }
