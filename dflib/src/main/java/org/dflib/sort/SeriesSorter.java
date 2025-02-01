@@ -3,6 +3,7 @@ package org.dflib.sort;
 import org.dflib.IntSeries;
 import org.dflib.Series;
 import org.dflib.Sorter;
+import org.dflib.collection.JavaArrays;
 import org.dflib.series.ArraySeries;
 import org.dflib.series.IntArraySeries;
 
@@ -51,7 +52,7 @@ public class SeriesSorter<T> {
         //  than this specialized impl (an extra int[] allocation)
 
         int size = s.size();
-        T[] sorted = (T[]) new Object[size];
+        T[] sorted = JavaArrays.newArray(s.getNominalType(), size);
         s.copyTo(sorted, 0, 0, size);
         Arrays.sort(sorted, comparator);
         return new ArraySeries<>(sorted);

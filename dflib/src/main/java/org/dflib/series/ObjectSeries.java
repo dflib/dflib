@@ -12,6 +12,7 @@ import org.dflib.ValueMapper;
 import org.dflib.ValueToRowMapper;
 import org.dflib.builder.IntAccum;
 import org.dflib.builder.ObjectAccum;
+import org.dflib.collection.JavaArrays;
 import org.dflib.concat.SeriesConcat;
 import org.dflib.groupby.SeriesGrouper;
 import org.dflib.map.Mapper;
@@ -31,7 +32,7 @@ import java.util.function.Predicate;
 
 public abstract class ObjectSeries<T> implements Series<T> {
 
-    protected Class<?> nominalType;
+    protected final Class<?> nominalType;
     protected Class<?> inferredType;
 
     protected ObjectSeries(Class<?> nominalType) {
@@ -52,6 +53,9 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
         // Check value types and use the most specific common superclass...
         Class<?> type = null;
+
+        // not using "nominalType" as terminal, as it can be an interface
+        // TODO: any other special cases that would prevent us from using "nominalType" as terminal?
         Class<?> terminal = Object.class;
         int size = size();
 
@@ -309,7 +313,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
     @Override
     public Series<T> replace(Map<T, T> oldToNewValues) {
         int len = size();
-        T[] replaced = (T[]) new Object[len];
+        T[] replaced = JavaArrays.newArray(nominalType, len);
 
         for (int i = 0; i < len; i++) {
             T val = get(i);
@@ -425,7 +429,9 @@ public abstract class ObjectSeries<T> implements Series<T> {
         }
 
         Set<T> unique = toSet();
-        return unique.size() < size() ? new ArraySeries<>(unique.toArray(s -> (T[]) new Object[s])) : this;
+        return unique.size() < size()
+                ? new ArraySeries<>(unique.toArray(len -> JavaArrays.newArray(nominalType, len)))
+                : this;
     }
 
     @Override
