@@ -215,7 +215,7 @@ public class IntColumnTest extends BaseExpTest {
     }
 
     @Test
-    public void lT_Double() {
+    public void th_Double() {
         Condition c = $int("b").lt($double("a"));
 
         DataFrame df = DataFrame.foldByRow("a", "b").of(
@@ -227,7 +227,7 @@ public class IntColumnTest extends BaseExpTest {
     }
 
     @Test
-    public void gT_Int() {
+    public void gt_Int() {
         Condition c = $int("a").gt($int("b"));
 
         DataFrame df = DataFrame.foldByRow("a", "b").of(
@@ -240,7 +240,7 @@ public class IntColumnTest extends BaseExpTest {
 
 
     @Test
-    public void gE_Int() {
+    public void ge_Int() {
 
         Condition c = $int("a").ge($int("b"));
 
@@ -253,7 +253,7 @@ public class IntColumnTest extends BaseExpTest {
     }
 
     @Test
-    public void eQ_IntVal() {
+    public void eq_IntVal() {
 
         Condition c = $int("a").eq(3);
 
@@ -266,7 +266,7 @@ public class IntColumnTest extends BaseExpTest {
     }
 
     @Test
-    public void eQ_LongVal() {
+    public void eq_LongVal() {
 
         Condition c = $int("a").eq(3L);
 
@@ -276,6 +276,32 @@ public class IntColumnTest extends BaseExpTest {
                 3, 4);
 
         new BoolSeriesAsserts(c.eval(df)).expectData(false, true, true);
+    }
+
+    @Test
+    public void eq_Decimal() {
+
+        Condition c = $int("a").eq(new BigDecimal("3"));
+
+        DataFrame df = DataFrame.foldByRow("a").of(
+                1,
+                3,
+                3);
+
+        new BoolSeriesAsserts(c.eval(df)).expectData(false, true, true);
+    }
+
+    @Test
+    public void ne_Decimal() {
+
+        Condition c = $int("a").ne(new BigDecimal("3"));
+
+        DataFrame df = DataFrame.foldByRow("a").of(
+                1,
+                3,
+                3);
+
+        new BoolSeriesAsserts(c.eval(df)).expectData(true, false, false);
     }
 
     @Test

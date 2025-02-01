@@ -38,6 +38,7 @@
 * #444 BigInteger expressions
 * #445 RowSet.merge(), ColumnSet.merge(), RowColumnSet.merge()
 * #447 Window.select(..), Window.merge(..) do not work with non-aggregating functions
+* #450 Unexpected decimal operations precision
 
 ## Release 1.2.0
 

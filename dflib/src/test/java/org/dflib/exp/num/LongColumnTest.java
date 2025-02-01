@@ -194,7 +194,7 @@ public class LongColumnTest extends BaseExpTest {
 
 
     @Test
-    public void nE_Decimal() {
+    public void ne_Decimal() {
 
         Condition c = $long("a").ne(new BigDecimal("3"));
 

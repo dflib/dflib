@@ -21,7 +21,7 @@ import java.util.function.Function;
 public class DecimalExpFactory extends NumericExpFactory {
 
     private static MathContext divisionContext(BigDecimal n1, BigDecimal n2) {
-        return new MathContext(Math.max(15, 1 + Math.max(n1.scale(), n2.scale())), RoundingMode.HALF_UP);
+        return new MathContext(Math.max(15, 1 + Math.max(n1.precision(), n2.precision())), RoundingMode.HALF_UP);
     }
 
     protected static DecimalExp cast(Exp<?> exp) {
@@ -45,7 +45,10 @@ public class DecimalExpFactory extends NumericExpFactory {
 
         if (Number.class.isAssignableFrom(t)) {
             Exp<Number> nExp = (Exp<Number>) exp;
-            return DecimalExp1.mapVal("castAsDecimal", nExp, n -> new BigDecimal(n.doubleValue()));
+
+            // "BigDecimal.valueOf(double)" is slower but preferable to "new BigDecimal(double)". The former
+            // deals with double precision correctly
+            return DecimalExp1.mapVal("castAsDecimal", nExp, n -> BigDecimal.valueOf(n.doubleValue()).stripTrailingZeros());
         }
 
         if (t.equals(String.class)) {

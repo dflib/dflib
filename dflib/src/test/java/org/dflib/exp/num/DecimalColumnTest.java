@@ -243,7 +243,7 @@ public class DecimalColumnTest extends BaseExpTest {
 
 
     @Test
-    public void divide_Int() {
+    public void div_Int() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 new BigDecimal("35"), 2,
                 new BigDecimal("3.3"), 3);
@@ -253,18 +253,35 @@ public class DecimalColumnTest extends BaseExpTest {
     }
 
     @Test
-    public void divide_Double() {
+    public void div_Double() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 new BigDecimal("5.0"), 2.5,
+                new BigDecimal("5"), 3.33,
                 new BigDecimal("3.3"), 3.33);
 
         Series<? extends Number> s = $decimal("a").div($double("b")).eval(df);
-        new SeriesAsserts(s).expectData(new BigDecimal("2"), new BigDecimal("0.99099099099099096984560210653599037467692134485397"));
+        new SeriesAsserts(s).expectData(
+                new BigDecimal("2"),
+                new BigDecimal("1.5015015015015"),
+                new BigDecimal("0.990990990990991"));
     }
 
+    @Test
+    public void div_Precision() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                new BigDecimal("22222222222222222222"), new BigDecimal("2"),
+                new BigDecimal("22222222222222222222.2222222222222222"), new BigDecimal("2"),
+                new BigDecimal("11111111111111111111"), new BigDecimal("3"));
+
+        Series<? extends Number> s = $decimal("a").div($decimal("b")).eval(df);
+        new SeriesAsserts(s).expectData(
+                new BigDecimal("11111111111111111111"),
+                new BigDecimal("11111111111111111111.1111111111111111"),
+                new BigDecimal("3703703703703703703.67"));
+    }
 
     @Test
-    public void gT_Decimal() {
+    public void gt_Decimal() {
         Condition c = $decimal("a").gt($decimal("b"));
 
         DataFrame df = DataFrame.foldByRow("a", "b").of(
