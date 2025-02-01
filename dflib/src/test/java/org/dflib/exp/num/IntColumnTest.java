@@ -10,7 +10,7 @@ import org.dflib.Exp;
 import org.dflib.IntSeries;
 import org.dflib.NumExp;
 import org.dflib.Series;
-import org.dflib.exp.ExpBaseTest;
+import org.dflib.exp.BaseExpTest;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -20,7 +20,7 @@ import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
-public class IntColumnTest extends ExpBaseTest {
+public class IntColumnTest extends BaseExpTest {
 
     @Test
     public void getColumnName() {
@@ -377,13 +377,18 @@ public class IntColumnTest extends ExpBaseTest {
     }
 
     @Test
-    public void equalsHashCode() {
-        NumExp<?> e1 = $int("a");
-        NumExp<?> e2 = $int("a");
-        NumExp<?> e3 = $int("a");
-        NumExp<?> different = $int("b");
+    public void testEquals() {
+        assertExpEquals(
+                $int("a"),
+                $int("a"),
+                $int("b"));
+    }
 
-        assertEqualsContract(e1, e2, e3);
-        assertNotEquals(e1, different);
+    @Test
+    public void testHashCode() {
+        assertExpHashCode(
+                $int("a"),
+                $int("a"),
+                $int("b"));
     }
 }

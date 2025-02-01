@@ -1,4 +1,4 @@
-package org.dflib.exp.condition;
+package org.dflib.exp.bool;
 
 import org.dflib.BooleanSeries;
 import org.dflib.Condition;

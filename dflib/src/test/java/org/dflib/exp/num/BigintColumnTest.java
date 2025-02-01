@@ -7,7 +7,7 @@ import org.dflib.Exp;
 import org.dflib.NumExp;
 import org.dflib.Series;
 import org.dflib.StrExp;
-import org.dflib.exp.ExpBaseTest;
+import org.dflib.exp.BaseExpTest;
 import org.dflib.unit.BoolSeriesAsserts;
 import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
-public class BigintColumnTest extends ExpBaseTest {
+public class BigintColumnTest extends BaseExpTest {
 
     @Test
     public void getColumnName() {
@@ -53,7 +53,7 @@ public class BigintColumnTest extends ExpBaseTest {
 
     @Test
     public void as() {
-        NumExp<BigInteger> exp =  $bigint("b");
+        NumExp<BigInteger> exp = $bigint("b");
         assertEquals("b", exp.getColumnName(mock(DataFrame.class)));
         assertEquals("c", exp.as("c").getColumnName(mock(DataFrame.class)));
     }
@@ -62,7 +62,7 @@ public class BigintColumnTest extends ExpBaseTest {
     public void round() {
         DataFrame df = DataFrame.foldByRow("a").of(new BigInteger("4"), new BigInteger("-2"));
 
-        Series<?> s =  $bigint("a").round().eval(df);
+        Series<?> s = $bigint("a").round().eval(df);
         new SeriesAsserts(s).expectData(new BigInteger("4"), new BigInteger("-2"));
     }
 
@@ -376,13 +376,18 @@ public class BigintColumnTest extends ExpBaseTest {
     }
 
     @Test
-    public void equalsHashCode() {
-        NumExp<?> e1 = $bigint("a");
-        NumExp<?> e2 = $bigint("a");
-        NumExp<?> e3 = $bigint("a");
-        NumExp<?> different = $bigint("b");
+    public void testEquals() {
+        assertExpEquals(
+                $bigint("a"),
+                $bigint("a"),
+                $bigint("b"));
+    }
 
-        assertEqualsContract(e1, e2, e3);
-        assertNotEquals(e1, different);
+    @Test
+    public void testHashCode() {
+        assertExpHashCode(
+                $bigint("a"),
+                $bigint("a"),
+                $bigint("b"));
     }
 }

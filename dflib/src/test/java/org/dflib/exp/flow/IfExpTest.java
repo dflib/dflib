@@ -2,18 +2,17 @@ package org.dflib.exp.flow;
 
 import org.dflib.DataFrame;
 import org.dflib.Exp;
-import org.dflib.exp.ExpBaseTest;
+import org.dflib.exp.BaseExpTest;
 import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import static org.dflib.Exp.*;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class IfExpTest extends ExpBaseTest {
+public class IfExpTest extends BaseExpTest {
 
     @Test
     public void mix() {
-        Exp<String> exp = Exp.ifExp($col("c").eq("x"), $str("a"), $str("b"));
+        Exp<String> exp = ifExp($col("c").eq("x"), $str("a"), $str("b"));
 
         DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 "1", "2", "x",
@@ -27,7 +26,7 @@ public class IfExpTest extends ExpBaseTest {
 
     @Test
     public void allTrue() {
-        Exp<String> exp = Exp.ifExp($col("c").eq("x"), $str("a"), $str("b"));
+        Exp<String> exp = ifExp($col("c").eq("x"), $str("a"), $str("b"));
 
         DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 "1", "2", "x",
@@ -41,7 +40,7 @@ public class IfExpTest extends ExpBaseTest {
 
     @Test
     public void allFalse() {
-        Exp<String> exp = Exp.ifExp($col("c").eq("y"), $str("a"), $str("b"));
+        Exp<String> exp = ifExp($col("c").eq("y"), $str("a"), $str("b"));
 
         DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 "1", "2", "x",
@@ -54,13 +53,36 @@ public class IfExpTest extends ExpBaseTest {
     }
 
     @Test
-    public void equalsHashCode() {
-        Exp<Integer> e1 = Exp.ifExp($col("a").eq("test"), $int(1), $int(2));
-        Exp<Integer> e2 = Exp.ifExp($col("a").eq("test"), $int(1), $int(2));
-        Exp<Integer> e3 = Exp.ifExp($col("a").eq("test"), $int(1), $int(2));
-        Exp<Integer> different = Exp.ifExp($col("a").eq("test"), $int(1), $int(3));
-
-        assertEqualsContract(e1, e2, e3);
-        assertNotEquals(e1, different);
+    public void testEquals() {
+        assertExpEquals(
+                ifExp($col("a").eq("test"), $int(1), $int(2)),
+                ifExp($col("a").eq("test"), $int(1), $int(2)),
+                ifExp($col("a").eq("test"), $int(1), $int(3)));
     }
+
+    @Test
+    public void testEquals_Nested() {
+        assertExpEquals(
+                ifExp(
+                        ifExp($bool("a"), $int(1), $int(2)).castAsBool(),
+                        ifExp($bool("b"), $int(3), $int(4)),
+                        $int(5)),
+                ifExp(
+                        ifExp($bool("a"), $int(1), $int(2)).castAsBool(),
+                        ifExp($bool("b"), $int(3), $int(4)),
+                        $int(5)),
+                ifExp(
+                        ifExp($bool("a"), $int(1), $int(2)).castAsBool(),
+                        ifExp($bool("b"), $int(3), $int(4)),
+                        $int(6)));
+    }
+
+    @Test
+    public void testHashCode() {
+        assertExpHashCode(
+                ifExp($col("a").eq("test"), $int(1), $int(2)),
+                ifExp($col("a").eq("test"), $int(1), $int(2)),
+                ifExp($col("a").eq("test"), $int(1), $int(3)));
+    }
+
 }

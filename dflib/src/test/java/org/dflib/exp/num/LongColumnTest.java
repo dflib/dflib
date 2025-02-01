@@ -8,7 +8,7 @@ import org.dflib.DecimalExp;
 import org.dflib.LongSeries;
 import org.dflib.NumExp;
 import org.dflib.Series;
-import org.dflib.exp.ExpBaseTest;
+import org.dflib.exp.BaseExpTest;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -18,7 +18,7 @@ import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
-public class LongColumnTest extends ExpBaseTest {
+public class LongColumnTest extends BaseExpTest {
 
     @Test
     public void getColumnName() {
@@ -241,13 +241,18 @@ public class LongColumnTest extends ExpBaseTest {
     }
 
     @Test
-    public void equalsHashCode() {
-        NumExp<?> e1 = $long("a");
-        NumExp<?> e2 = $long("a");
-        NumExp<?> e3 = $long("a");
-        NumExp<?> different = $long("b");
+    public void testEquals() {
+        assertExpEquals(
+                $long("a"),
+                $long("a"),
+                $long("b"));
+    }
 
-        assertEqualsContract(e1, e2, e3);
-        assertNotEquals(e1, different);
+    @Test
+    public void testHashCode() {
+        assertExpHashCode(
+                $long("a"),
+                $long("a"),
+                $long("b"));
     }
 }

@@ -1,17 +1,14 @@
 package org.dflib.exp.num;
 
+import org.dflib.Exp;
+import org.dflib.exp.BaseExpTest;
+import org.dflib.exp.map.MapCondition3;
 import org.junit.jupiter.api.Test;
 
 import static org.dflib.Exp.$double;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.dflib.Exp;
-import org.dflib.exp.ExpBaseTest;
-import org.dflib.exp.map.MapCondition3;
-
-public class DoubleTernaryExpTest extends ExpBaseTest {
+public class DoubleTernaryExpTest extends BaseExpTest {
 
     @Test
     public void creation() {
@@ -25,13 +22,18 @@ public class DoubleTernaryExpTest extends ExpBaseTest {
     }
 
     @Test
-    public void equalsHashCode() {
-        Exp<?> e1 = $double(1).between($double(2), $double(3));
-        Exp<?> e2 = $double(1).between($double(2), $double(3));
-        Exp<?> e3 = $double(1).between($double(2), $double(3));
-        Exp<?> different = $double(1).between($double(2), $double(4));
+    public void testEquals() {
+        assertExpEquals(
+                $double(1).between($double(2), $double(3)),
+                $double(1).between($double(2), $double(3)),
+                $double(1).between($double(2), $double(4)));
+    }
 
-        assertEqualsContract(e1, e2, e3);
-        assertNotEquals(e1, different);
+    @Test
+    public void testHashCode() {
+        assertExpHashCode(
+                $double(1).between($double(2), $double(3)),
+                $double(1).between($double(2), $double(3)),
+                $double(1).between($double(2), $double(4)));
     }
 }

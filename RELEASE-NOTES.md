@@ -34,6 +34,7 @@
 * #436 ByteSource.uri()
 * #438 ByteSource.decompress()
 * #442 Add DecimalScalarExp
+* #443 Implement equals() and hashCode() for expressions
 * #444 BigInteger expressions
 * #445 RowSet.merge(), ColumnSet.merge(), RowColumnSet.merge()
 * #447 Window.select(..), Window.merge(..) do not work with non-aggregating functions

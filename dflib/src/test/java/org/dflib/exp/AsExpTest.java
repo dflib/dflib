@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.dflib.Exp.$str;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AsExpTest extends ExpBaseTest {
+public class AsExpTest extends BaseExpTest {
 
     @Test
     public void toQL() {
@@ -26,14 +26,18 @@ public class AsExpTest extends ExpBaseTest {
     }
 
     @Test
-    public void equalsHashCode() {
-        Exp<String> e1 = $str("test").as("a");
-        Exp<String> e2 = $str("test").as("a");
-        Exp<String> e3 = $str("test").as("a");
-        Exp<String> different = $str("test").as("b");
-
-        assertEqualsContract(e1, e2, e3);
-        assertNotEquals(e1, different);
+    public void testEquals() {
+        assertExpEquals(
+                $str("test").as("a"),
+                $str("test").as("a"),
+                $str("test").as("b"));
     }
 
+    @Test
+    public void testHashCode() {
+        assertExpHashCode(
+                $str("test").as("a"),
+                $str("test").as("a"),
+                $str("test").as("b"));
+    }
 }

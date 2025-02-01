@@ -3,16 +3,15 @@ package org.dflib.exp.str;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Series;
-import org.dflib.exp.ExpBaseTest;
+import org.dflib.exp.BaseExpTest;
 import org.dflib.unit.DataFrameAsserts;
 import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import static org.dflib.Exp.$str;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class StrSplitExpTest extends ExpBaseTest {
+public class StrSplitExpTest extends BaseExpTest {
 
     @Test
     public void toQL() {
@@ -122,13 +121,18 @@ public class StrSplitExpTest extends ExpBaseTest {
     }
 
     @Test
-    public void equalsHashCode() {
-        Exp<String[]> e1 = Exp.$str("a").split(',');
-        Exp<String[]> e2 = Exp.$str("a").split(',');
-        Exp<String[]> e3 = Exp.$str("a").split(',');
-        Exp<String[]> different = Exp.$str("b").split(',');
+    public void testEquals() {
+        assertExpEquals(
+                $str("a").split(','),
+                $str("a").split(','),
+                $str("b").split(','));
+    }
 
-        assertEqualsContract(e1, e2, e3);
-        assertNotEquals(e1, different);
+    @Test
+    public void testHashCode() {
+        assertExpHashCode(
+                $str("a").split(','),
+                $str("a").split(','),
+                $str("b").split(','));
     }
 }

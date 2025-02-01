@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class RowNumExpTest extends ExpBaseTest {
+public class RowNumExpTest extends BaseExpTest {
 
     @Test
     public void eval() {
@@ -32,11 +32,12 @@ public class RowNumExpTest extends ExpBaseTest {
     }
 
     @Test
-    public void equalsHashCode() {
-        Exp<Integer> e1 = Exp.rowNum();
-        Exp<Integer> e2 = Exp.rowNum();
-        Exp<Integer> e3 = Exp.rowNum();
+    public void testEquals() {
+        assertExpEquals(Exp.rowNum(), Exp.rowNum(), Exp.$col("a"));
+    }
 
-        assertEqualsContract(e1, e2, e3);
+    @Test
+    public void testHashCode() {
+        assertExpHashCode(Exp.rowNum(), Exp.rowNum(), Exp.$col("a"));
     }
 }
