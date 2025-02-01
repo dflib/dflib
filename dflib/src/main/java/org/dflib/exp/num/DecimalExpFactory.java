@@ -171,8 +171,7 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public DecimalExp avg(Exp<? extends Number> exp, Condition filter) {
-        // TODO
-        throw new UnsupportedOperationException("TODO: support for BigDecimal.avg");
+        return new DecimalReduceExp1<>("avg", cast(exp), DecimalAggregators::avg, filter);
     }
 
     @Deprecated

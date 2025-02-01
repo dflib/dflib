@@ -142,8 +142,7 @@ public class BigintExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<BigDecimal> avg(Exp<? extends Number> exp, Condition filter) {
-        // TODO
-        throw new UnsupportedOperationException("TODO: support for BigInteger.avg");
+        return new DecimalReduceExp1<>("avg", cast(exp), BigintAggregators::avg, filter);
     }
 
     @Override

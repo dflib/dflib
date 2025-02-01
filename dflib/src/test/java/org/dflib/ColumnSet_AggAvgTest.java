@@ -3,6 +3,8 @@ package org.dflib;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -40,6 +42,42 @@ public class ColumnSet_AggAvgTest {
         new DataFrameAsserts(agg, "avg(a)", "avg(b)")
                 .expectHeight(1)
                 .expectRow(0, 0.5, 29.75);
+    }
+
+    @Test
+    public void bigint() {
+        DataFrame df = DataFrame.foldByRow("a").of(
+                new BigInteger("10223372036854775807"),
+                new BigInteger("-3000"),
+                new BigInteger("10000001"));
+
+        DataFrame agg = df.cols().agg(
+                $bigint("a").avg(),
+                $bigint(0).avg($bigint(0).ne(-3000)));
+
+        new DataFrameAsserts(agg, "avg(a)", "avg(a)_")
+                .expectHeight(1)
+                .expectRow(0,
+                        new BigDecimal("3407790678954924269.33"),
+                        new BigDecimal("5111686018432387904"));
+    }
+
+    @Test
+    public void decimal() {
+        DataFrame df = DataFrame.foldByRow("a").of(
+                new BigDecimal("10223372036854775807.12"),
+                new BigDecimal("-3000"),
+                new BigDecimal("10000001"));
+
+        DataFrame agg = df.cols().agg(
+                $decimal("a").avg(),
+                $decimal(0).avg($decimal(0).ne(-3000)));
+
+        new DataFrameAsserts(agg, "avg(a)", "avg(a)_")
+                .expectHeight(1)
+                .expectRow(0,
+                        new BigDecimal("3407790678954924269.3733"),
+                        new BigDecimal("5111686018432387904.06"));
     }
 
     @Test
