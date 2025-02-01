@@ -257,25 +257,45 @@ public class DecimalColumnTest extends BaseExpTest {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 new BigDecimal("5.0"), 2.5,
                 new BigDecimal("5"), 3.33,
+                new BigDecimal("-5"), 3.33,
                 new BigDecimal("3.3"), 3.33);
 
         Series<? extends Number> s = $decimal("a").div($double("b")).eval(df);
         new SeriesAsserts(s).expectData(
                 new BigDecimal("2"),
                 new BigDecimal("1.5015015015015"),
+                new BigDecimal("-1.5015015015015"),
                 new BigDecimal("0.990990990990991"));
+    }
+
+    @Test
+    public void div_IntVal() {
+        DataFrame df = DataFrame.foldByRow("a").of(
+                new BigDecimal("5.0"),
+                new BigDecimal("5"),
+                new BigDecimal("-5"),
+                new BigDecimal("3.3"));
+
+        Series<? extends Number> s = $decimal("a").div($val(-2)).eval(df);
+        new SeriesAsserts(s).expectData(
+                new BigDecimal("-2.5"),
+                new BigDecimal("-2.5"),
+                new BigDecimal("2.5"),
+                new BigDecimal("-1.65"));
     }
 
     @Test
     public void div_Precision() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 new BigDecimal("22222222222222222222"), new BigDecimal("2"),
+                new BigDecimal("-22222222222222222222"), new BigDecimal("2"),
                 new BigDecimal("22222222222222222222.2222222222222222"), new BigDecimal("2"),
                 new BigDecimal("11111111111111111111"), new BigDecimal("3"));
 
         Series<? extends Number> s = $decimal("a").div($decimal("b")).eval(df);
         new SeriesAsserts(s).expectData(
                 new BigDecimal("11111111111111111111"),
+                new BigDecimal("-11111111111111111111"),
                 new BigDecimal("11111111111111111111.1111111111111111"),
                 new BigDecimal("3703703703703703703.67"));
     }
@@ -326,6 +346,22 @@ public class DecimalColumnTest extends BaseExpTest {
         BooleanSeries s = $decimal("a").eq(new BigDecimal("11.5")).eval(df);
         new BoolSeriesAsserts(s).expectData(false, false, true);
     }
+
+    @Test
+    public void eq_Int() {
+
+        DataFrame df = DataFrame.foldByRow("a").of(
+                new BigDecimal("50.1"),
+                new BigDecimal("-50"),
+                new BigDecimal("50"),
+                new BigDecimal("50.0"),
+                BigDecimal.ZERO,
+                new BigDecimal("11"));
+
+        BooleanSeries s = $decimal("a").eq(50).eval(df);
+        new BoolSeriesAsserts(s).expectData(false, false, true, true, false, false);
+    }
+
 
     @Test
     public void eq_Zero() {
