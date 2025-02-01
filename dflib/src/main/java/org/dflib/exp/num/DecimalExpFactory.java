@@ -198,13 +198,14 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public Condition eq(Exp<? extends Number> left, Exp<? extends Number> right) {
-        // TODO: should we apply ".stripTrailingZeros()" for consistency, but at the expense of performance?
-        return MapCondition2.mapVal("=", cast(left), cast(right), BigDecimal::equals);
+        // using "compareTo" instead of "equals" to ensure trailing fractional zeros are ignored
+        return MapCondition2.mapVal("=", cast(left), cast(right), (n1, n2) -> n1.compareTo(n2) == 0);
     }
 
     @Override
     public Condition ne(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return MapCondition2.mapVal("!=", cast(left), cast(right), (n1, n2) -> !n1.equals(n2));
+        // using "compareTo" instead of "equals" to ensure trailing fractional zeros are ignored
+        return MapCondition2.mapVal("!=", cast(left), cast(right), (n1, n2) -> n1.compareTo(n2) != 0);
     }
 
     @Override

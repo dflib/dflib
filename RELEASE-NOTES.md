@@ -45,6 +45,7 @@
 * #430 CsvLoader.nullString(String)
 * #435 ByteSources.process() exception for single-entry source
 * #437 ByteSource doesn't close streams in internal methods
+* #451 Decimal equality should work if two decimals only differ in trailing fractional zeros
 
 ## Release 1.1.0
 
