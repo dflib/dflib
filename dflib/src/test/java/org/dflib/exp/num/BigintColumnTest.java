@@ -376,11 +376,11 @@ public class BigintColumnTest extends ExpBaseTest {
     }
 
     @Test
-    public void equalsHashCode_exp3() {
-        Condition e1 = $bigint(1).between($int(2), $int(3));
-        Condition e2 = $bigint(1).between($int(2), $int(3));
-        Condition e3 = $bigint(1).between($int(2), $int(3));
-        Condition different = $bigint(1).between($int(2), $int(4));
+    public void equalsHashCode() {
+        NumExp<?> e1 = $bigint("a");
+        NumExp<?> e2 = $bigint("a");
+        NumExp<?> e3 = $bigint("a");
+        NumExp<?> different = $bigint("b");
 
         assertEqualsContract(e1, e2, e3);
         assertNotEquals(e1, different);

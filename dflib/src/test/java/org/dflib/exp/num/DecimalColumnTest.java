@@ -408,15 +408,4 @@ public class DecimalColumnTest extends ExpBaseTest {
         assertEqualsContract(e1, e2, e3);
         assertNotEquals(e1, different);
     }
-
-    @Test
-    public void equalsHashCode_exp3() {
-        Condition e1 = $decimal(1).between($int(2), $int(3));
-        Condition e2 = $decimal(1).between($int(2), $int(3));
-        Condition e3 = $decimal(1).between($int(2), $int(3));
-        Condition different = $decimal(1).between($int(2), $int(4));
-
-        assertEqualsContract(e1, e2, e3);
-        assertNotEquals(e1, different);
-    }
 }
