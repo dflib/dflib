@@ -260,10 +260,12 @@ public class DecimalColumnTest {
         DataFrame df = DataFrame.foldByRow("a").of(
                 new BigDecimal("-5.1"),
                 BigDecimal.ZERO,
-                new BigDecimal("11.5"));
+                new BigDecimal("11.5"),
+                new BigDecimal("11.50"),
+                new BigDecimal("11.5000001"));
 
         BooleanSeries s = $decimal("a").eq(new BigDecimal("11.5")).eval(df);
-        new BoolSeriesAsserts(s).expectData(false, false, true);
+        new BoolSeriesAsserts(s).expectData(false, false, true, true, false);
     }
 
     @Test
