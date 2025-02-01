@@ -2,7 +2,6 @@ package org.dflib.exp;
 
 import org.dflib.Exp;
 import org.dflib.NumExp;
-import org.dflib.exp.num.IntScalarExp;
 import org.junit.jupiter.api.Test;
 
 import static org.dflib.Exp.$bool;
