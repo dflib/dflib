@@ -4,6 +4,7 @@ import org.dflib.exp.bool.ConditionFactory;
 import org.dflib.exp.num.NumAsExp;
 import org.dflib.exp.num.NumericExpFactory;
 
+import java.math.BigInteger;
 import java.util.Objects;
 
 /**
@@ -111,10 +112,14 @@ public interface NumExp<N extends Number> extends Exp<N> {
     }
 
     @Override
+    default NumExp<BigInteger> castAsBigint() {
+        return NumericExpFactory.factory(this).castAsBigint(this);
+    }
+
+    @Override
     default DecimalExp castAsDecimal() {
         return NumericExpFactory.factory(this).castAsDecimal(this);
     }
-
 
     default <E extends Enum<E>> Exp<E> castAsEnum(Class<E> type) {
         return NumericExpFactory.factory(this).castAsEnum(this, type);

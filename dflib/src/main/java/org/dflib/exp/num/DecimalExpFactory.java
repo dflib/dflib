@@ -53,7 +53,7 @@ public class DecimalExpFactory extends NumericExpFactory {
             return DecimalExp1.mapVal("castAsDecimal", sExp, BigDecimal::new);
         }
 
-        throw new IllegalArgumentException("Expression type '" + t.getName() + "' can't be converted to Double");
+        throw new IllegalArgumentException("Expression type '" + t.getName() + "' can't be converted to 'decimal'");
     }
 
     @Override
@@ -110,6 +110,11 @@ public class DecimalExpFactory extends NumericExpFactory {
     @Override
     public DecimalExp abs(Exp<? extends Number> exp) {
         return DecimalExp1.mapVal("abs", cast(exp), BigDecimal::abs);
+    }
+
+    @Override
+    public NumExp<BigInteger> castAsBigint(NumExp<?> exp) {
+        return BigintExp1.mapVal("castAsBigint", cast(exp), BigDecimal::toBigInteger);
     }
 
     @Override

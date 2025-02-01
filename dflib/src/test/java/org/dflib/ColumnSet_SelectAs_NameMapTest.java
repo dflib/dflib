@@ -34,7 +34,7 @@ public class ColumnSet_SelectAs_NameMapTest {
     }
 
     @Test
-    public void newColumnsAndPartialRename() {
+    public void byName_AddCols_PartialRename() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(1, "x", "a", 2, "y", "b")
                 .cols("a", "c", "new")

@@ -2,6 +2,8 @@ package org.dflib;
 
 import org.dflib.exp.AsExp;
 import org.dflib.exp.Column;
+import org.dflib.exp.num.BigintColumn;
+import org.dflib.exp.num.BigintScalarExp;
 import org.dflib.exp.RowNumExp;
 import org.dflib.exp.ScalarExp;
 import org.dflib.exp.ShiftExp;
@@ -36,6 +38,7 @@ import org.dflib.exp.map.MapCondition2;
 import org.dflib.exp.map.MapExp1;
 import org.dflib.exp.map.MapExp2;
 import org.dflib.exp.num.DecimalColumn;
+import org.dflib.exp.num.DecimalScalarExp;
 import org.dflib.exp.num.DoubleColumn;
 import org.dflib.exp.num.DoubleScalarExp;
 import org.dflib.exp.num.FloatColumn;
@@ -50,6 +53,8 @@ import org.dflib.exp.str.StrColumn;
 import org.dflib.exp.str.StrExp1;
 import org.dflib.exp.str.StrScalarExp;
 
+import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -126,6 +131,26 @@ public interface Exp<T> {
      */
     static NumExp<Double> $doubleVal(double value) {
         return new DoubleScalarExp(value);
+    }
+
+    /**
+     * Returns a {@code NumExp<BigInteger>} whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * returns the value itself.
+     *
+     * @since 2.0.0
+     */
+    static NumExp<BigInteger> $bigintVal(BigInteger value) {
+        return new BigintScalarExp(value);
+    }
+  
+    /**
+     * Returns a {@code NumExp<BigDecimal>} whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * returns the value itself.
+     *
+     * @since 2.0.0
+     */
+    static NumExp<BigDecimal> $decimalVal(BigDecimal value) {
+        return new DecimalScalarExp(value);
     }
 
     /**
@@ -304,6 +329,26 @@ public interface Exp<T> {
      */
     static NumExp<Double> $double(int position) {
         return new DoubleColumn(position);
+    }
+
+    /**
+     * Returns an expression whose "eval" returns a named DataFrame BigInteger column (or the input Series object when called
+     * on a Series). "reduce" operation is undefined and throws an exception.
+     *
+     * @since 2.0.0
+     */
+    static NumExp<BigInteger> $bigint(String name) {
+        return new BigintColumn(name);
+    }
+
+    /**
+     * Returns an expression whose "eval" returns a DataFrame BigInteger column in the specified position (or the input Series
+     * object when called on a Series). "reduce" operation is undefined and throws an exception.
+     *
+     * @since 2.0.0
+     */
+    static NumExp<BigInteger> $bigint(int position) {
+        return new BigintColumn(position);
     }
 
     /**
@@ -866,6 +911,13 @@ public interface Exp<T> {
 
     default NumExp<Double> castAsDouble() {
         return castAsStr().castAsDouble();
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    default NumExp<BigInteger> castAsBigint() {
+        return castAsStr().castAsBigint();
     }
 
     default DecimalExp castAsDecimal() {

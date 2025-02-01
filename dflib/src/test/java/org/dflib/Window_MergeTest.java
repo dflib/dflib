@@ -3,28 +3,29 @@ package org.dflib;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
-import static org.dflib.Exp.$col;
-import static org.dflib.Exp.$int;
+import static org.dflib.Exp.*;
 
 public class Window_MergeTest {
 
+    static final DataFrame EMPTY_TEST_DF = DataFrame.empty("a", "b", "c");
+
+    static final DataFrame TEST_DF = DataFrame.foldByRow("a", "b").of(
+            1, "x",
+            2, "y",
+            1, "z",
+            0, "a",
+            1, "x");
+
     @Test
-    public void empty() {
-        DataFrame df = DataFrame.empty("a", "b", "c");
-        DataFrame r = df.over().cols("a", "d").merge($col("a"), $int("a").sum());
+    public void all_Empty_AddCol() {
+        DataFrame r = EMPTY_TEST_DF.over().cols("a", "d").merge($col("a"), $int("a").sum());
         new DataFrameAsserts(r, "a", "b", "c", "d").expectHeight(0);
     }
 
     @Test
-    public void cols_Implicit() {
-        DataFrame df = DataFrame.foldByRow("a", "b").of(
-                1, "x",
-                2, "y",
-                1, "z",
-                0, "a",
-                1, "x");
+    public void implicit() {
 
-        DataFrame r = df.over().merge($int("a").sum());
+        DataFrame r = TEST_DF.over().merge($int("a").sum());
         new DataFrameAsserts(r, "a", "b", "sum(a)")
                 .expectHeight(5)
                 .expectRow(0, 1, "x", 5)
@@ -35,40 +36,45 @@ public class Window_MergeTest {
     }
 
     @Test
-    public void cols_ByName() {
-        DataFrame df = DataFrame.foldByRow("a", "b").of(
-                1, "x",
-                2, "y",
-                1, "z",
-                0, "a",
-                1, "x");
-
-        DataFrame r = df.over()
-                .cols("b", "c")
-                .merge(
-                        $col("b").first(),
-                        $int("a").sum()
-                );
+    public void byName() {
+        DataFrame r = TEST_DF.over()
+                .cols("c")
+                .merge($int("a").sum());
 
         new DataFrameAsserts(r, "a", "b", "c")
                 .expectHeight(5)
                 .expectRow(0, 1, "x", 5)
-                .expectRow(1, 2, "x", 5)
-                .expectRow(2, 1, "x", 5)
-                .expectRow(3, 0, "x", 5)
+                .expectRow(1, 2, "y", 5)
+                .expectRow(2, 1, "z", 5)
+                .expectRow(3, 0, "a", 5)
                 .expectRow(4, 1, "x", 5);
     }
 
     @Test
-    public void cols_ByPos() {
-        DataFrame df = DataFrame.foldByRow("a", "b").of(
-                1, "x",
-                2, "y",
-                1, "z",
-                0, "a",
-                1, "x");
+    public void byName_MultiExp() {
 
-        DataFrame r = df.over()
+        DataFrame r = TEST_DF.over()
+                .cols("a", "s", "rn", "cs")
+                .merge(
+                        $col("a"), // non-aggregating
+                        $int("a").sum(), // aggregating
+                        rowNum(), // non-aggregating
+                        $int("a").cumSum() // non-aggregating
+                );
+
+        new DataFrameAsserts(r, "a", "b", "s", "rn", "cs")
+                .expectHeight(5)
+                .expectRow(0, 1, "x", 5, 1, 1L)
+                .expectRow(1, 2, "y", 5, 2, 3L)
+                .expectRow(2, 1, "z", 5, 3, 4L)
+                .expectRow(3, 0, "a", 5, 4, 4L)
+                .expectRow(4, 1, "x", 5, 5, 5L);
+    }
+
+    @Test
+    public void byPos() {
+
+        DataFrame r = TEST_DF.over()
                 .cols(1, 2)
                 .merge(
                         $col("b").first(),
@@ -85,15 +91,9 @@ public class Window_MergeTest {
     }
 
     @Test
-    public void cols_ByPredicate() {
-        DataFrame df = DataFrame.foldByRow("a", "b").of(
-                1, "x",
-                2, "y",
-                1, "z",
-                0, "a",
-                1, "x");
+    public void byPredicate() {
 
-        DataFrame r = df.over()
+        DataFrame r = TEST_DF.over()
                 .cols("a"::equals)
                 .merge($int("a").sum());
 
@@ -107,15 +107,9 @@ public class Window_MergeTest {
     }
 
     @Test
-    public void colsExcept_ByName() {
-        DataFrame df = DataFrame.foldByRow("a", "b").of(
-                1, "x",
-                2, "y",
-                1, "z",
-                0, "a",
-                1, "x");
+    public void except_ByName() {
 
-        DataFrame r = df.over()
+        DataFrame r = TEST_DF.over()
                 .colsExcept("b")
                 .merge($int("a").sum());
 
@@ -129,15 +123,8 @@ public class Window_MergeTest {
     }
 
     @Test
-    public void colsExcept_ByIndex() {
-        DataFrame df = DataFrame.foldByRow("a", "b").of(
-                1, "x",
-                2, "y",
-                1, "z",
-                0, "a",
-                1, "x");
-
-        DataFrame r = df.over()
+    public void except_ByIndex() {
+        DataFrame r = TEST_DF.over()
                 .colsExcept(1)
                 .merge($int("a").sum());
 
@@ -151,15 +138,9 @@ public class Window_MergeTest {
     }
 
     @Test
-    public void colsExcept_ByPredicate() {
-        DataFrame df = DataFrame.foldByRow("a", "b").of(
-                1, "x",
-                2, "y",
-                1, "z",
-                0, "a",
-                1, "x");
+    public void except_ByPredicate() {
 
-        DataFrame r = df.over()
+        DataFrame r = TEST_DF.over()
                 .colsExcept("b"::equals)
                 .merge($int("a").sum());
 

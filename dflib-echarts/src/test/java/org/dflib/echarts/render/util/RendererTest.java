@@ -1,5 +1,6 @@
 package org.dflib.echarts.render.util;
 
+import org.dflib.echarts.render.ContainerModel;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -7,6 +8,16 @@ import java.math.BigDecimal;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RendererTest {
+
+    @Test
+    public void renderContainer() {
+
+        String s1 = Renderer.renderContainer(new ContainerModel("_tid", 600, 400));
+        assertEquals("<div id='_tid' class='dfl_ech' style='width: 600px;height:400px;'></div>", s1);
+
+        String s2 =Renderer.renderContainer(new ContainerModel("_tid", 20, 10));
+        assertEquals("<div id='_tid' class='dfl_ech' style='width: 20px;height:10px;'></div>", s2);
+    }
 
     @Test
     void quoteAndEscape() {

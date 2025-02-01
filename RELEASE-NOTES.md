@@ -20,8 +20,10 @@
 * #401 ECharts: heatmap chart
 * #403 BoolAccum - java.lang.ArrayIndexOutOfBoundsException 
 * #407 "min", "max" aggregating functions for StrExp
+* #411 ECharts Jupyter: Can't render the same chart multiple times
 * #416 Zip ByteSource(s)
 * #417 Filesystem ByteSource(s)
+* #421 "RowSet.expand()" as a non-terminal operation
 * #425 Series.replace(int,T)
 * #426 All "Json.load(..)" and "Json.save(..)" methods must be static
 * #427 Type-specific versions of Exp.$val(..)
@@ -31,6 +33,10 @@
 * #433 Primitive ValueMappers consistency
 * #436 ByteSource.uri()
 * #438 ByteSource.decompress()
+* #442 Add DecimalScalarExp
+* #444 BigInteger expressions
+* #445 RowSet.merge(), ColumnSet.merge(), RowColumnSet.merge()
+* #447 Window.select(..), Window.merge(..) do not work with non-aggregating functions
 
 ## Release 1.2.0
 

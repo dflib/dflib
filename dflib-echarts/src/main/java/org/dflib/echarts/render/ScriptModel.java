@@ -24,6 +24,10 @@ public class ScriptModel {
         this.option = option;
     }
 
+    public ScriptModel id(String id) {
+        return new ScriptModel(id, this.theme, this.initOpts, this.option);
+    }
+
     public String getId() {
         return id;
     }

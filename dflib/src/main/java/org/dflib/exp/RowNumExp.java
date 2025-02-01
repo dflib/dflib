@@ -31,11 +31,13 @@ public class RowNumExp extends Exp0<Integer> implements NumExp<Integer> {
 
     @Override
     public Integer reduce(Series<?> s) {
+        // TODO: returning series size seems to make more sense
         return START_NUMBER;
     }
 
     @Override
     public Integer reduce(DataFrame df) {
+        // TODO: returning DF height seems to make more sense
         return START_NUMBER;
     }
 }

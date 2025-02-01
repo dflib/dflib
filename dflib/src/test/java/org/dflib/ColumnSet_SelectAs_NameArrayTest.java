@@ -32,7 +32,7 @@ public class ColumnSet_SelectAs_NameArrayTest {
     }
 
     @Test
-    public void newColumns() {
+    public void byName_AddCols() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(1, "x", "a", 2, "y", "b")
                 .cols("a", "c", "new")

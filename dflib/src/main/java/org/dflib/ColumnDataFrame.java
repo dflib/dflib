@@ -301,12 +301,12 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     public RowSet rows() {
-        return height() > 0 ? new AllRowSet(this, dataColumns) : new EmptyRowSet(this);
+        return height() > 0 ? new AllRowSet(this, dataColumns) : new EmptyRowSet(this, dataColumns);
     }
 
     @Override
     public RowSet rows(IntSeries positions) {
-        return positions.size() > 0 ? new IndexedRowSet(this, dataColumns, positions) : new EmptyRowSet(this);
+        return positions.size() > 0 ? new IndexedRowSet(this, dataColumns, positions) : new EmptyRowSet(this, dataColumns);
     }
 
     @Override

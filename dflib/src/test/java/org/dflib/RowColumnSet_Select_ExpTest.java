@@ -48,7 +48,7 @@ public class RowColumnSet_Select_ExpTest {
     }
 
     @Test
-    public void byIndex_ExpandRows_ExpandCols() {
+    public void byIndex_AddRows_AddCols() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(
                         1, "x", "a",

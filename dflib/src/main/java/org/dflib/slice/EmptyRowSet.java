@@ -5,7 +5,6 @@ import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Index;
 import org.dflib.IntSeries;
-import org.dflib.RowColumnSet;
 import org.dflib.RowMapper;
 import org.dflib.RowSet;
 import org.dflib.RowToValueMapper;
@@ -13,79 +12,50 @@ import org.dflib.Series;
 import org.dflib.Sorter;
 import org.dflib.series.FalseSeries;
 
+import java.util.Arrays;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
-public class EmptyRowSet implements RowSet {
+public class EmptyRowSet extends BaseRowSet {
 
-    private final DataFrame source;
+    @Deprecated
+    private static Series<?>[] emptyCols(int w) {
+        Series<?> empty = Series.of();
+        Series<?>[] emptyCols = new Series[w];
+        Arrays.fill(emptyCols, 0, w, empty);
+        return emptyCols;
+    }
 
+    /**
+     * @deprecated in favor of a 2-arg constructor
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public EmptyRowSet(DataFrame source) {
-        this.source = source;
+        this(source, emptyCols(source.width()));
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public EmptyRowSet(
+            DataFrame source,
+            Series<?>[] sourceColumns) {
+        super(source, sourceColumns, -1);
     }
 
     @Override
-    public RowColumnSet cols() {
-        return new DefaultRowColumnSet(
-                source,
-                this,
-                df -> df.cols(),
-                () -> EmptyRowSetMerger.instance);
+    protected RowSetMerger merger() {
+        return EmptyRowSetMerger.instance;
     }
 
     @Override
-    public RowColumnSet cols(String... columns) {
-        return new DefaultRowColumnSet(
-                source,
-                this,
-                df -> df.cols(columns),
-                () -> EmptyRowSetMerger.instance);
+    protected int size() {
+        return 0;
     }
 
     @Override
-    public RowColumnSet cols(Index columnsIndex) {
-        return new DefaultRowColumnSet(
-                source,
-                this,
-                df -> df.cols(columnsIndex),
-                () -> EmptyRowSetMerger.instance);
-    }
-
-    @Override
-    public RowColumnSet cols(int... columns) {
-        return new DefaultRowColumnSet(
-                source,
-                this,
-                df -> df.cols(columns),
-                () -> EmptyRowSetMerger.instance);
-    }
-
-    @Override
-    public RowColumnSet cols(Predicate<String> condition) {
-        return new DefaultRowColumnSet(
-                source,
-                this,
-                df -> df.cols(condition),
-                () -> EmptyRowSetMerger.instance);
-    }
-
-    @Override
-    public RowColumnSet colsExcept(String... columns) {
-        return new DefaultRowColumnSet(
-                source,
-                this,
-                df -> df.colsExcept(columns),
-                () -> EmptyRowSetMerger.instance);
-    }
-
-    @Override
-    public RowColumnSet colsExcept(int... columns) {
-        return new DefaultRowColumnSet(
-                source,
-                this,
-                df -> df.colsExcept(columns),
-                () -> EmptyRowSetMerger.instance);
+    protected <T> Series<T> doSelect(Series<T> sourceColumn) {
+        return Series.of();
     }
 
     @Override
@@ -94,20 +64,16 @@ public class EmptyRowSet implements RowSet {
     }
 
     @Override
-    public DataFrame expand(String columnName) {
-
-        // validate the argument, even though the operation does nothing
-        source.getColumnsIndex().position(columnName);
-
-        return source;
-    }
-
-    @Override
-    public DataFrame expand(int columnPos) {
+    public RowSet expand(int columnPos) {
 
         // validate the argument, even though the operation does nothing
         source.getColumnsIndex().get(columnPos);
 
+        return this;
+    }
+
+    @Override
+    public DataFrame merge() {
         return source;
     }
 
@@ -178,23 +144,6 @@ public class EmptyRowSet implements RowSet {
 
     @Override
     public DataFrame select(RowToValueMapper<?>... mappers) {
-        return DataFrame.empty(source.getColumnsIndex());
-    }
-
-    @Override
-    public DataFrame selectExpand(int columnPos) {
-
-        // validate the argument, even though the operation does nothing
-        source.getColumnsIndex().get(columnPos);
-
-        return DataFrame.empty(source.getColumnsIndex());
-    }
-
-    @Override
-    public DataFrame selectExpand(String columnName) {
-        // validate the argument, even though the operation does nothing
-        source.getColumnsIndex().position(columnName);
-
         return DataFrame.empty(source.getColumnsIndex());
     }
 

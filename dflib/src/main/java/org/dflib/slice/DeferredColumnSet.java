@@ -330,6 +330,11 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
+    public DataFrame merge() {
+        return source;
+    }
+
+    @Override
     public DataFrame select() {
         return source;
     }

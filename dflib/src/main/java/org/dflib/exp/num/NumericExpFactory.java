@@ -7,6 +7,7 @@ import org.dflib.NumExp;
 import org.dflib.exp.map.MapExp1;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,11 +34,13 @@ public abstract class NumericExpFactory {
         typeConversionRank.put(Float.class, 2);
         typeConversionRank.put(Float.TYPE, 2);
 
-        typeConversionRank.put(Long.class, 3);
-        typeConversionRank.put(Long.TYPE, 3);
+        typeConversionRank.put(BigInteger.class, 3);
 
-        typeConversionRank.put(Integer.class, 4);
-        typeConversionRank.put(Integer.TYPE, 4);
+        typeConversionRank.put(Long.class, 4);
+        typeConversionRank.put(Long.TYPE, 4);
+
+        typeConversionRank.put(Integer.class, 5);
+        typeConversionRank.put(Integer.TYPE, 5);
 
         // we don't have factories for these yet
         // typeConversionRank.put(Short.class, 5);
@@ -46,6 +49,7 @@ public abstract class NumericExpFactory {
         factories = new HashMap<>();
 
         factories.put(BigDecimal.class, decimalFactory);
+        factories.put(BigInteger.class, new BigintExpFactory());
 
         factories.put(Float.class, new FloatExpFactory());
         factories.put(Float.TYPE, factories.get(Float.class));
@@ -239,6 +243,13 @@ public abstract class NumericExpFactory {
      */
     public NumExp<Float> castAsFloat(NumExp<?> exp) {
         return FloatExp1.mapVal("castAsFloat", exp, Number::floatValue);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public NumExp<BigInteger> castAsBigint(NumExp<?> exp) {
+        return BigintExp1.mapVal("castAsBigint", exp, n -> BigInteger.valueOf(n.longValue()));
     }
 
     public abstract DecimalExp castAsDecimal(NumExp<?> exp);
