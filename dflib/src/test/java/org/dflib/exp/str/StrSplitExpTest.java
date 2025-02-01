@@ -3,14 +3,16 @@ package org.dflib.exp.str;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Series;
+import org.dflib.exp.ExpBaseTest;
 import org.dflib.unit.DataFrameAsserts;
 import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import static org.dflib.Exp.$str;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class StrSplitExpTest {
+public class StrSplitExpTest extends ExpBaseTest {
 
     @Test
     public void toQL() {
@@ -117,5 +119,16 @@ public class StrSplitExpTest {
                 new String[]{"", "ef g ", ""},
                 new String[]{"AB"},
                 null);
+    }
+
+    @Test
+    public void equalsHashCode() {
+        Exp<String[]> e1 = Exp.$str("a").split(',');
+        Exp<String[]> e2 = Exp.$str("a").split(',');
+        Exp<String[]> e3 = Exp.$str("a").split(',');
+        Exp<String[]> different = Exp.$str("b").split(',');
+
+        assertEqualsContract(e1, e2, e3);
+        assertNotEquals(e1, different);
     }
 }

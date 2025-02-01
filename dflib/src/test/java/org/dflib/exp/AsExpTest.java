@@ -3,9 +3,10 @@ package org.dflib.exp;
 import org.dflib.Exp;
 import org.junit.jupiter.api.Test;
 
+import static org.dflib.Exp.$str;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AsExpTest {
+public class AsExpTest extends ExpBaseTest {
 
     @Test
     public void toQL() {
@@ -23,4 +24,16 @@ public class AsExpTest {
         assertSame(as, as.as("b"));
         assertNotSame(as, as.as("c"));
     }
+
+    @Test
+    public void equalsHashCode() {
+        Exp<String> e1 = $str("test").as("a");
+        Exp<String> e2 = $str("test").as("a");
+        Exp<String> e3 = $str("test").as("a");
+        Exp<String> different = $str("test").as("b");
+
+        assertEqualsContract(e1, e2, e3);
+        assertNotEquals(e1, different);
+    }
+
 }
