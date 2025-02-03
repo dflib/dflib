@@ -103,6 +103,24 @@ public class FSFolder {
     }
 
     /**
+     * Returns a single resource within the folder. Since the name is explicit, the resource doesn't need to match
+     * folder filters. E.g., a hidden file can be resolved even if the folder listing is not showing them. Same goes
+     * for extension filters, etc.
+     */
+    public ByteSource source(String path) {
+        return source(Path.of(path));
+    }
+
+    /**
+     * Returns a single resource within the folder. Since the name is explicit, the resource doesn't need to match
+     * folder filters. E.g., a hidden file can be resolved even if the folder listing is not showing them. Same goes
+     * for extension filters, etc.
+     */
+    public ByteSource source(Path subPath) {
+        return ByteSource.ofPath(folderPath.resolve(subPath));
+    }
+
+    /**
      * Returns all files contained in the folder represented as {@link ByteSources}. The contents are filtered
      * according to FSFolder configuration.
      */
