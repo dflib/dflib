@@ -1,10 +1,13 @@
 package org.dflib.exp.num;
 
+import org.dflib.Condition;
 import org.dflib.DataFrame;
 import org.dflib.DecimalExp;
 import org.dflib.DoubleSeries;
 import org.dflib.NumExp;
 import org.dflib.Series;
+import org.dflib.exp.BaseExpTest;
+import org.dflib.unit.BoolSeriesAsserts;
 import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +18,7 @@ import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
-public class DoubleColumnTest {
+public class DoubleColumnTest extends BaseExpTest {
 
     @Test
     public void getColumnName() {
@@ -184,5 +187,47 @@ public class DoubleColumnTest {
     public void sum_getColumnName() {
         NumExp<?> exp = $double("a").sum();
         assertEquals("sum(a)", exp.getColumnName());
+    }
+
+    @Test
+    public void eq_Decimal() {
+
+        Condition c = $double("a").eq(new BigDecimal("3"));
+
+        DataFrame df = DataFrame.foldByRow("a").of(
+                1.,
+                3.,
+                3.1);
+
+        new BoolSeriesAsserts(c.eval(df)).expectData(false, true, false);
+    }
+
+    @Test
+    public void ne_Decimal() {
+
+        Condition c = $double("a").ne(new BigDecimal("3"));
+
+        DataFrame df = DataFrame.foldByRow("a").of(
+                1.,
+                3.,
+                3.1);
+
+        new BoolSeriesAsserts(c.eval(df)).expectData(true, false, true);
+    }
+
+    @Test
+    public void testEquals() {
+        assertExpEquals(
+                $double("a"),
+                $double("a"),
+                $double("b"));
+    }
+
+    @Test
+    public void testHashCode() {
+        assertExpHashCode(
+                $double("a"),
+                $double("a"),
+                $double("b"));
     }
 }

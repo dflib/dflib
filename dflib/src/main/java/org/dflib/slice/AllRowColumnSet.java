@@ -10,12 +10,23 @@ import org.dflib.RowToValueMapper;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
+/**
+ * A {@link RowColumnSet} over the entire DataFrame with no filters, expansions or other row changes.
+ *
+ * @deprecated unused
+ */
+@Deprecated(since = "2.0.0", forRemoval = true)
 public class AllRowColumnSet implements RowColumnSet {
 
     private final ColumnSet columnSet;
 
     public AllRowColumnSet(ColumnSet columnSet) {
         this.columnSet = columnSet;
+    }
+
+    @Override
+    public DataFrame merge() {
+        return columnSet.merge();
     }
 
     @Override

@@ -11,21 +11,21 @@ public class HeatmapCalendarSeriesTest {
     @Test
     public void type() {
 
-        String s1 = ECharts.chart().generateScript("_tid", df2);
+        String s1 = ECharts.chart().plot(df2, "_tid").getChartScript();
         assertFalse(s1.contains("type: 'heatmap'"), s1);
 
-        String s2 = ECharts.chart().series(SeriesOpts.ofHeatmapCalendar(), "y1").generateScript("_tid", df2);
+        String s2 = ECharts.chart().series(SeriesOpts.ofHeatmapCalendar(), "y1").plot(df2, "_tid").getChartScript();
         assertTrue(s2.contains("type: 'heatmap'"), s2);
     }
 
     @Test
     public void name() {
 
-        String s2 = ECharts.chart().series(SeriesOpts.ofHeatmapCalendar(), "y2").generateScript("_tid", df2);
+        String s2 = ECharts.chart().series(SeriesOpts.ofHeatmapCalendar(), "y2").plot(df2, "_tid").getChartScript();
         assertFalse(s2.contains("name: 'Y2',"), s2);
         assertTrue(s2.contains("name: 'y2',"), s2);
 
-        String s3 = ECharts.chart().series(SeriesOpts.ofHeatmapCalendar().name("Y2"), "y2").generateScript("_tid", df2);
+        String s3 = ECharts.chart().series(SeriesOpts.ofHeatmapCalendar().name("Y2"), "y2").plot(df2, "_tid").getChartScript();
         assertTrue(s3.contains("name: 'Y2',"), s3);
         assertFalse(s3.contains("name: 'y2',"), s3);
     }
@@ -35,7 +35,7 @@ public class HeatmapCalendarSeriesTest {
 
         String s1 = ECharts.chart()
                 .calendar("x")
-                .series(SeriesOpts.ofHeatmapCalendar(), "y1").generateScript("_tid", df2);
+                .series(SeriesOpts.ofHeatmapCalendar(), "y1").plot(df2, "_tid").getChartScript();
 
         assertFalse(s1.contains("dataset"), s1);
         assertFalse(s1.contains("encode"), s1);
@@ -51,13 +51,13 @@ public class HeatmapCalendarSeriesTest {
 
     @Test
     public void coordinateSystem() {
-        String s2 = ECharts.chart().series(SeriesOpts.ofHeatmapCalendar(), "y1").generateScript("_tid", df2);
+        String s2 = ECharts.chart().series(SeriesOpts.ofHeatmapCalendar(), "y1").plot(df2, "_tid").getChartScript();
         assertTrue(s2.contains("coordinateSystem: 'calendar'"), s2);
     }
 
     @Test
     public void calendarIndex() {
-        String s1 = ECharts.chart().series(SeriesOpts.ofHeatmapCalendar().calendarIndex(2), "y1").generateScript("_tid", df2);
+        String s1 = ECharts.chart().series(SeriesOpts.ofHeatmapCalendar().calendarIndex(2), "y1").plot(df2, "_tid").getChartScript();
         assertTrue(s1.contains("calendarIndex: 2,"), s1);
     }
 }

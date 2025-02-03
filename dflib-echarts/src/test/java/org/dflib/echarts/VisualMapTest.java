@@ -14,14 +14,14 @@ public class VisualMapTest {
     public void visualMap() {
         String s1 = ECharts.chart()
                 .visualMap(VisualMap.ofContinuous())
-                .generateScript("_tid", df4);
+                .plot(df4, "_tid").getChartScript();
 
         assertTrue(s1.contains("visualMap: ["), s1);
         assertTrue(s1.contains("type: 'continuous'"), s1);
 
         String s2 = ECharts.chart()
                 .visualMap(VisualMap.ofPiecewise())
-                .generateScript("_tid", df4);
+                .plot(df4, "_tid").getChartScript();
 
         assertTrue(s2.contains("visualMap: ["), s2);
         assertTrue(s2.contains("type: 'piecewise'"), s2);
@@ -32,7 +32,7 @@ public class VisualMapTest {
     public void min() {
         String s1 = ECharts.chart()
                 .visualMap(VisualMap.ofContinuous().min(100))
-                .generateScript("_tid", df4);
+                .plot(df4, "_tid").getChartScript();
 
         assertTrue(s1.contains("visualMap: ["), s1);
         assertTrue(s1.contains("min: 100"), s1);
@@ -42,7 +42,7 @@ public class VisualMapTest {
     public void max() {
         String s1 = ECharts.chart()
                 .visualMap(VisualMap.ofContinuous().max(100))
-                .generateScript("_tid", df4);
+                .plot(df4, "_tid").getChartScript();
 
         assertTrue(s1.contains("visualMap: ["), s1);
         assertTrue(s1.contains("max: 100"), s1);
@@ -52,7 +52,7 @@ public class VisualMapTest {
     public void orient() {
         String s1 = ECharts.chart()
                 .visualMap(VisualMap.ofContinuous())
-                .generateScript("_tid", df4);
+                .plot(df4, "_tid").getChartScript();
 
 
         assertTrue(s1.contains("visualMap: ["), s1);
@@ -60,7 +60,7 @@ public class VisualMapTest {
 
         String s2 = ECharts.chart()
                 .visualMap(VisualMap.ofContinuous().vertical())
-                .generateScript("_tid", df4);
+                .plot(df4, "_tid").getChartScript();
 
         assertTrue(s2.contains("visualMap: ["), s2);
         assertTrue(s2.contains("orient: 'vertical'"), s2);
@@ -69,34 +69,34 @@ public class VisualMapTest {
     @Test
     public void left() {
 
-        String s1 = ECharts.chart().visualMap(VisualMap.ofContinuous()).generateScript("_tid", df1);
+        String s1 = ECharts.chart().visualMap(VisualMap.ofContinuous()).plot(df1, "_tid").getChartScript();
         assertTrue(s1.contains("visualMap: ["), s1);
         assertFalse(s1.contains("left:"), s1);
 
-        String s2 = ECharts.chart().visualMap(VisualMap.ofContinuous().leftLeft()).generateScript("_tid", df1);
+        String s2 = ECharts.chart().visualMap(VisualMap.ofContinuous().leftLeft()).plot(df1, "_tid").getChartScript();
         assertTrue(s2.contains("left: 'left'"), s2);
 
-        String s3 = ECharts.chart().visualMap(VisualMap.ofContinuous().leftCenter()).generateScript("_tid", df1);
+        String s3 = ECharts.chart().visualMap(VisualMap.ofContinuous().leftCenter()).plot(df1, "_tid").getChartScript();
         assertTrue(s3.contains("left: 'center'"), s3);
 
-        String s4 = ECharts.chart().visualMap(VisualMap.ofContinuous().leftPx(1)).generateScript("_tid", df1);
+        String s4 = ECharts.chart().visualMap(VisualMap.ofContinuous().leftPx(1)).plot(df1, "_tid").getChartScript();
         assertTrue(s4.contains("left: 1"), s4);
 
-        String s5 = ECharts.chart().visualMap(VisualMap.ofContinuous().leftPct(10.1)).generateScript("_tid", df1);
+        String s5 = ECharts.chart().visualMap(VisualMap.ofContinuous().leftPct(10.1)).plot(df1, "_tid").getChartScript();
         assertTrue(s5.contains("left: '10.1%'"), s5);
     }
 
     @Test
     public void itemWidth() {
 
-        String s1 = ECharts.chart().visualMap(VisualMap.ofContinuous()).generateScript("_tid", df1);
+        String s1 = ECharts.chart().visualMap(VisualMap.ofContinuous()).plot(df1, "_tid").getChartScript();
         assertTrue(s1.contains("visualMap: ["), s1);
         assertFalse(s1.contains("itemWidth:"), s1);
 
-        String s4 = ECharts.chart().visualMap(VisualMap.ofContinuous().itemWidthPx(1)).generateScript("_tid", df1);
+        String s4 = ECharts.chart().visualMap(VisualMap.ofContinuous().itemWidthPx(1)).plot(df1, "_tid").getChartScript();
         assertTrue(s4.contains("itemWidth: 1"), s4);
 
-        String s5 = ECharts.chart().visualMap(VisualMap.ofContinuous().itemWidthPct(10.1)).generateScript("_tid", df1);
+        String s5 = ECharts.chart().visualMap(VisualMap.ofContinuous().itemWidthPct(10.1)).plot(df1, "_tid").getChartScript();
         assertTrue(s5.contains("itemWidth: '10.1%'"), s5);
     }
 }

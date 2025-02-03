@@ -2,12 +2,13 @@ package org.dflib.exp.flow;
 
 import org.dflib.DataFrame;
 import org.dflib.Exp;
+import org.dflib.exp.BaseExpTest;
 import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import static org.dflib.Exp.*;
 
-public class IfNullExpTest {
+public class IfNullExpTest extends BaseExpTest {
 
     @Test
     public void string() {
@@ -46,5 +47,31 @@ public class IfNullExpTest {
                 null);
 
         new SeriesAsserts(noNulls.eval(df)).expectData(1, 77, 8, 77);
+    }
+
+    @Test
+    public void testEquals() {
+        assertExpEquals(
+                ifNull($int("a"), $int(1)),
+                ifNull($int("a"), $int(1)),
+                ifNull($int("b"), $int(1)));
+
+        assertExpEquals(
+                ifNull($int("a"), $int(1)),
+                ifNull($int("a"), $int(1)),
+                ifNull($int("a"), $int(2)));
+    }
+
+    @Test
+    public void testHashCode() {
+        assertExpHashCode(
+                ifNull($int("a"), $int(1)),
+                ifNull($int("a"), $int(1)),
+                ifNull($int("b"), $int(1)));
+
+        assertExpHashCode(
+                ifNull($int("a"), $int(1)),
+                ifNull($int("a"), $int(1)),
+                ifNull($int("a"), $int(2)));
     }
 }

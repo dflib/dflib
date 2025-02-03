@@ -1,17 +1,17 @@
-package org.dflib.exp.condition;
+package org.dflib.exp.bool;
 
 import org.dflib.BooleanSeries;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Series;
-import org.dflib.exp.bool.OrCondition;
+import org.dflib.exp.BaseExpTest;
 import org.dflib.unit.BoolSeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class OrConditionTest {
+public class OrConditionTest extends BaseExpTest {
 
     @Test
     public void or_Multiple() {
@@ -53,5 +53,21 @@ public class OrConditionTest {
 
         Series<Boolean> s2 = Series.ofBool(false, true);
         assertEquals(1, c.firstMatch(s2));
+    }
+
+    @Test
+    public void testEquals() {
+        assertExpEquals(
+                or($bool("a"), $bool("b")),
+                or($bool("a"), $bool("b")),
+                or($bool("a"), $bool("b"), $bool("c")));
+    }
+
+    @Test
+    public void testHashCode() {
+        assertExpHashCode(
+                or($bool("a"), $bool("b")),
+                or($bool("a"), $bool("b")),
+                or($bool("a"), $bool("b"), $bool("c")));
     }
 }

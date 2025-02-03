@@ -10,6 +10,7 @@ import org.dflib.Exp;
 import org.dflib.IntSeries;
 import org.dflib.NumExp;
 import org.dflib.Series;
+import org.dflib.exp.BaseExpTest;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -19,7 +20,7 @@ import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
-public class IntColumnTest {
+public class IntColumnTest extends BaseExpTest {
 
     @Test
     public void getColumnName() {
@@ -214,7 +215,7 @@ public class IntColumnTest {
     }
 
     @Test
-    public void lT_Double() {
+    public void th_Double() {
         Condition c = $int("b").lt($double("a"));
 
         DataFrame df = DataFrame.foldByRow("a", "b").of(
@@ -226,7 +227,7 @@ public class IntColumnTest {
     }
 
     @Test
-    public void gT_Int() {
+    public void gt_Int() {
         Condition c = $int("a").gt($int("b"));
 
         DataFrame df = DataFrame.foldByRow("a", "b").of(
@@ -239,7 +240,7 @@ public class IntColumnTest {
 
 
     @Test
-    public void gE_Int() {
+    public void ge_Int() {
 
         Condition c = $int("a").ge($int("b"));
 
@@ -252,7 +253,7 @@ public class IntColumnTest {
     }
 
     @Test
-    public void eQ_IntVal() {
+    public void eq_IntVal() {
 
         Condition c = $int("a").eq(3);
 
@@ -265,7 +266,7 @@ public class IntColumnTest {
     }
 
     @Test
-    public void eQ_LongVal() {
+    public void eq_LongVal() {
 
         Condition c = $int("a").eq(3L);
 
@@ -275,6 +276,32 @@ public class IntColumnTest {
                 3, 4);
 
         new BoolSeriesAsserts(c.eval(df)).expectData(false, true, true);
+    }
+
+    @Test
+    public void eq_Decimal() {
+
+        Condition c = $int("a").eq(new BigDecimal("3"));
+
+        DataFrame df = DataFrame.foldByRow("a").of(
+                1,
+                3,
+                3);
+
+        new BoolSeriesAsserts(c.eval(df)).expectData(false, true, true);
+    }
+
+    @Test
+    public void ne_Decimal() {
+
+        Condition c = $int("a").ne(new BigDecimal("3"));
+
+        DataFrame df = DataFrame.foldByRow("a").of(
+                1,
+                3,
+                3);
+
+        new BoolSeriesAsserts(c.eval(df)).expectData(true, false, false);
     }
 
     @Test
@@ -373,5 +400,21 @@ public class IntColumnTest {
     public void sum_getColumnName() {
         NumExp<?> exp = $int("a").sum();
         assertEquals("sum(a)", exp.getColumnName());
+    }
+
+    @Test
+    public void testEquals() {
+        assertExpEquals(
+                $int("a"),
+                $int("a"),
+                $int("b"));
+    }
+
+    @Test
+    public void testHashCode() {
+        assertExpHashCode(
+                $int("a"),
+                $int("a"),
+                $int("b"));
     }
 }

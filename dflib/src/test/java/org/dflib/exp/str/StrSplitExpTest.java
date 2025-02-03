@@ -3,6 +3,7 @@ package org.dflib.exp.str;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Series;
+import org.dflib.exp.BaseExpTest;
 import org.dflib.unit.DataFrameAsserts;
 import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
@@ -10,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import static org.dflib.Exp.$str;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class StrSplitExpTest {
+public class StrSplitExpTest extends BaseExpTest {
 
     @Test
     public void toQL() {
@@ -117,5 +118,21 @@ public class StrSplitExpTest {
                 new String[]{"", "ef g ", ""},
                 new String[]{"AB"},
                 null);
+    }
+
+    @Test
+    public void testEquals() {
+        assertExpEquals(
+                $str("a").split(','),
+                $str("a").split(','),
+                $str("b").split(','));
+    }
+
+    @Test
+    public void testHashCode() {
+        assertExpHashCode(
+                $str("a").split(','),
+                $str("a").split(','),
+                $str("b").split(','));
     }
 }

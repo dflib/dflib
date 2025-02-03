@@ -1,105 +1,100 @@
 package org.dflib.exp.num;
 
 import org.dflib.Condition;
-import org.dflib.BigIntegerExp;
 import org.dflib.DecimalExp;
 import org.dflib.Exp;
 import org.dflib.NumExp;
 import org.dflib.agg.Percentiles;
+import org.dflib.exp.agg.BigintAggregators;
+import org.dflib.exp.agg.BigintReduceExp1;
 import org.dflib.exp.agg.ComparableAggregators;
-import org.dflib.exp.agg.BigIntegerAggregators;
-import org.dflib.exp.agg.BigIntegerReduceExp1;
 import org.dflib.exp.agg.DecimalReduceExp1;
 import org.dflib.exp.map.MapCondition2;
 import org.dflib.exp.map.MapCondition3;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.function.Function;
 
+/**
+ * @since 2.0.0
+ */
+public class BigintExpFactory extends NumericExpFactory {
 
-public class BigIntegerExpFactory extends NumericExpFactory {
-
-    protected static BigIntegerExp cast(Exp<?> exp) {
-
-        if (exp instanceof BigIntegerExp) {
-            return (BigIntegerExp) exp;
-        }
+    protected static Exp<BigInteger> cast(Exp<?> exp) {
 
         // TODO: a map of casting converters
 
         Class<?> t = exp.getType();
-        if (t.equals(BigDecimal.class)) {
-            Exp<BigDecimal> bdExp = (Exp<BigDecimal>) exp;
-            return BigIntegerExp1.mapVal("castAsBigInteger", bdExp, BigDecimal::toBigInteger);
+        if (t.equals(BigInteger.class)) {
+            return (Exp<BigInteger>) exp;
         }
 
-        if (t.equals(BigInteger.class)) {
-            Exp<BigInteger> biExp = (Exp<BigInteger>) exp;
-            return BigIntegerExp1.mapVal("castAsDecimal", biExp, Function.identity());
+        if (t.equals(BigDecimal.class)) {
+            Exp<BigDecimal> bdExp = (Exp<BigDecimal>) exp;
+            return BigintExp1.mapVal("castAsBigint", bdExp, BigDecimal::toBigInteger);
         }
 
         if (Number.class.isAssignableFrom(t)) {
             Exp<Number> nExp = (Exp<Number>) exp;
-            return BigIntegerExp1.mapVal("castAsBigInteger", nExp, n -> BigDecimal.valueOf(n.doubleValue()).toBigInteger());
+            return BigintExp1.mapVal("castAsBigint", nExp, n -> BigInteger.valueOf(n.longValue()));
         }
 
         if (t.equals(String.class)) {
             Exp<String> sExp = (Exp<String>) exp;
-            return BigIntegerExp1.mapVal("castAsBigInteger", sExp, BigInteger::new);
+            return BigintExp1.mapVal("castAsBigint", sExp, BigInteger::new);
         }
 
-        throw new IllegalArgumentException("Expression type '" + t.getName() + "' can't be converted to Double");
+        throw new IllegalArgumentException("Expression type '" + t.getName() + "' can't be converted to 'bigint'");
     }
 
     @Override
-    public BigIntegerExp add(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return BigIntegerExp2.mapVal("+",
+    public NumExp<BigInteger> add(Exp<? extends Number> left, Exp<? extends Number> right) {
+        return BigintExp2.mapVal("+",
                 cast(left),
                 cast(right),
                 BigInteger::add);
     }
 
     @Override
-    public BigIntegerExp sub(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return BigIntegerExp2.mapVal("-",
+    public NumExp<BigInteger> sub(Exp<? extends Number> left, Exp<? extends Number> right) {
+        return BigintExp2.mapVal("-",
                 cast(left),
                 cast(right),
                 BigInteger::subtract);
     }
 
     @Override
-    public BigIntegerExp mul(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return BigIntegerExp2.mapVal("*",
+    public NumExp<BigInteger> mul(Exp<? extends Number> left, Exp<? extends Number> right) {
+        return BigintExp2.mapVal("*",
                 cast(left),
                 cast(right),
                 BigInteger::multiply);
     }
 
     @Override
-    public BigIntegerExp div(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return BigIntegerExp2.mapVal("/",
+    public NumExp<BigInteger> div(Exp<? extends Number> left, Exp<? extends Number> right) {
+        return BigintExp2.mapVal("/",
                 cast(left),
                 cast(right),
                 BigInteger::divide);
     }
 
     @Override
-    public BigIntegerExp mod(Exp<? extends Number> left, Exp<? extends Number> right) {
-        return BigIntegerExp2.mapVal("%",
+    public NumExp<BigInteger> mod(Exp<? extends Number> left, Exp<? extends Number> right) {
+        return BigintExp2.mapVal("%",
                 cast(left),
                 cast(right),
                 BigInteger::remainder);
     }
 
     @Override
-    public BigIntegerExp abs(Exp<? extends Number> exp) {
-        return BigIntegerExp1.mapVal("abs", cast(exp), BigInteger::abs);
+    public NumExp<BigInteger> abs(Exp<? extends Number> exp) {
+        return BigintExp1.mapVal("abs", cast(exp), BigInteger::abs);
     }
 
     @Override
-    public BigIntegerExp castAsBigInteger(NumExp<?> exp) {
-        return cast(exp);
+    public NumExp<BigInteger> castAsBigint(NumExp<?> exp) {
+        return (NumExp<BigInteger>) cast(exp);
     }
 
     @Override
@@ -108,74 +103,61 @@ public class BigIntegerExpFactory extends NumericExpFactory {
     }
 
     @Override
-    public BigIntegerExp cumSum(Exp<? extends Number> exp) {
-        return BigIntegerExp1.map("cumSum", cast(exp), BigIntegerAggregators::cumSum);
+    public NumExp<BigInteger> cumSum(Exp<? extends Number> exp) {
+        return BigintExp1.map("cumSum", cast(exp), BigintAggregators::cumSum);
     }
 
     @Deprecated
     @Override
-    public BigIntegerExp sum(Exp<? extends Number> exp) {
+    public NumExp<BigInteger> sum(Exp<? extends Number> exp) {
         return sum(exp, null);
     }
 
     @Override
-    public BigIntegerExp sum(Exp<? extends Number> exp, Condition filter) {
-        return new BigIntegerReduceExp1<>("sum", cast(exp), BigIntegerAggregators::sum, filter);
+    public NumExp<BigInteger> sum(Exp<? extends Number> exp, Condition filter) {
+        return new BigintReduceExp1<>("sum", cast(exp), BigintAggregators::sum, filter);
     }
 
     @Deprecated
     @Override
-    public BigIntegerExp min(Exp<? extends Number> exp) {
+    public NumExp<BigInteger> min(Exp<? extends Number> exp) {
         return min(exp, null);
     }
 
     @Override
-    public BigIntegerExp min(Exp<? extends Number> exp, Condition filter) {
-        return new BigIntegerReduceExp1<>("min", cast(exp), ComparableAggregators::min, filter);
+    public NumExp<BigInteger> min(Exp<? extends Number> exp, Condition filter) {
+        return new BigintReduceExp1<>("min", cast(exp), ComparableAggregators::min, filter);
     }
 
     @Deprecated
     @Override
-    public BigIntegerExp max(Exp<? extends Number> exp) {
+    public NumExp<BigInteger> max(Exp<? extends Number> exp) {
         return max(exp, null);
     }
 
     @Override
-    public BigIntegerExp max(Exp<? extends Number> exp, Condition filter) {
-        return new BigIntegerReduceExp1<>("max", cast(exp), ComparableAggregators::max, filter);
-    }
-
-    @Deprecated
-    @Override
-    public BigIntegerExp avg(Exp<? extends Number> exp) {
-        return avg(exp, null);
+    public NumExp<BigInteger> max(Exp<? extends Number> exp, Condition filter) {
+        return new BigintReduceExp1<>("max", cast(exp), ComparableAggregators::max, filter);
     }
 
     @Override
-    public BigIntegerExp avg(Exp<? extends Number> exp, Condition filter) {
-        // TODO
-        throw new UnsupportedOperationException("TODO: support for BigInteger.avg");
-    }
-
-    @Deprecated
-    @Override
-    public DecimalExp median(Exp<? extends Number> exp) {
-        return median(exp, null);
+    public NumExp<BigDecimal> avg(Exp<? extends Number> exp, Condition filter) {
+        return new DecimalReduceExp1<>("avg", cast(exp), BigintAggregators::avg, filter);
     }
 
     @Override
     public DecimalExp median(Exp<? extends Number> exp, Condition filter) {
-        return new DecimalReduceExp1<>("median", cast(exp), s -> Percentiles.ofBigIntegers(s, 0.5), filter);
+        return new DecimalReduceExp1<>("median", cast(exp), s -> Percentiles.ofBigints(s, 0.5), filter);
     }
 
     @Override
     public DecimalExp quantile(Exp<? extends Number> exp, double q, Condition filter) {
-        return new DecimalReduceExp1<>("quantile", cast(exp), s -> Percentiles.ofBigIntegers(s, q), filter);
+        return new DecimalReduceExp1<>("quantile", cast(exp), s -> Percentiles.ofBigints(s, q), filter);
     }
 
     @Override
-    public BigIntegerExp round(Exp<? extends Number> exp) {
-        return cast(exp);
+    public NumExp<BigInteger> round(Exp<? extends Number> exp) {
+        return (NumExp<BigInteger>) cast(exp);
     }
 
     @Override

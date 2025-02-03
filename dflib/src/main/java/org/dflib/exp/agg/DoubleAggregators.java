@@ -1,10 +1,7 @@
 package org.dflib.exp.agg;
 
-import org.dflib.Condition;
 import org.dflib.DoubleSeries;
-import org.dflib.Exp;
 import org.dflib.Series;
-import org.dflib.Sorter;
 import org.dflib.agg.Percentiles;
 import org.dflib.builder.ObjectAccum;
 
@@ -14,8 +11,6 @@ import java.util.stream.Collectors;
 
 public class DoubleAggregators {
 
-    private static final Condition notNullExp = Exp.$col(0).isNotNull();
-    private static final Sorter asc = Exp.$col(0).asc();
     private static final Function<Series<? extends Number>, Double> avg =
             CollectorAggregator.create((Collector) Collectors.averagingDouble(Number::doubleValue));
     private static final Function<Series<? extends Number>, Double> sum =

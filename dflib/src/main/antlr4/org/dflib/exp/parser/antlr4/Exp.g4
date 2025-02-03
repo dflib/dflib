@@ -1,6 +1,7 @@
 grammar Exp;
 
 @header {
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -234,7 +235,7 @@ strScalar returns [String value]
 numColumn returns [NumExp<?> exp]
     : intColumn { $exp = $intColumn.exp; }
     | longColumn { $exp = $longColumn.exp; }
-    | bigIntegerColumn { $exp = $bigIntegerColumn.exp; }
+    | bigintColumn { $exp = $bigintColumn.exp; }
     | floatColumn { $exp = $floatColumn.exp; }
     | doubleColumn { $exp = $doubleColumn.exp; }
     | decimalColumn { $exp = $decimalColumn.exp; }
@@ -266,8 +267,8 @@ longColumn returns [NumExp<Long> exp]
  * Parameters:
  *  - The identifier of the column (integer index or string name).
  */
-bigIntegerColumn returns [BigIntegerExp exp]
-    : BIG_INTEGER '(' columnId ')' { $exp = bigIntegerCol($columnId.id); }
+bigintColumn returns [NumExp<BigInteger> exp]
+    : BIGINT '(' columnId ')' { $exp = bigintCol($columnId.id); }
     ;
 
 /**
@@ -578,7 +579,7 @@ genericRelation returns [Condition exp] locals [BiFunction<Exp<?>, Exp<?>, Condi
 numFn returns [NumExp<?> exp] locals [Function<NumExp<?>, NumExp<?>> fn]
     : castAsInt { $exp = $castAsInt.exp; }
     | castAsLong { $exp = $castAsLong.exp; }
-    | castAsBigInteger { $exp = $castAsBigInteger.exp; }
+    | castAsBigint { $exp = $castAsBigint.exp; }
     | castAsFloat { $exp = $castAsFloat.exp; }
     | castAsDouble { $exp = $castAsDouble.exp; }
     | castAsDecimal { $exp = $castAsDecimal.exp; }
@@ -828,8 +829,8 @@ castAsLong returns [NumExp<Long> exp]
  * Parameters:
  *  - The expression to be cast.
  */
-castAsBigInteger returns [BigIntegerExp exp]
-    : CAST_AS_BIG_INTEGER '(' expression ')' { $exp = $expression.exp.castAsBigInteger(); }
+castAsBigint returns [NumExp<BigInteger> exp]
+    : CAST_AS_BIGINT '(' expression ')' { $exp = $expression.exp.castAsBigint(); }
     ;
 
 /**
@@ -1219,7 +1220,7 @@ INT: 'int';
 LONG: 'long';
 
 //@ doc:inline
-BIG_INTEGER: 'bigInteger';
+BIGINT: 'bigint';
 
 //@ doc:inline
 FLOAT: 'float';
@@ -1248,7 +1249,7 @@ CAST_AS_INT: 'castAsInt';
 CAST_AS_LONG: 'castAsLong';
 
 //@ doc:inline
-CAST_AS_BIG_INTEGER: 'castAsBigInteger';
+CAST_AS_BIGINT: 'castAsBigint';
 
 //@ doc:inline
 CAST_AS_FLOAT: 'castAsFloat';

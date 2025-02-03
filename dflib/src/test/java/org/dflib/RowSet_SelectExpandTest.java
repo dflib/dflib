@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Random;
 
+@Deprecated
 public class RowSet_SelectExpandTest {
 
     @Test

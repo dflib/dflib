@@ -9,7 +9,6 @@ import org.dflib.Index;
 import org.dflib.IntSeries;
 import org.dflib.Series;
 import org.dflib.Sorter;
-import org.dflib.agg.RangeAggregator;
 import org.dflib.exp.Exps;
 import org.dflib.series.IntSequenceSeries;
 import org.dflib.slice.ColumnSetMerger;
@@ -157,23 +156,24 @@ public class Window {
 
     /**
      * Generates a DataFrame of the same height as the source DataFrame, with columns generated from the provided
-     * aggregating expressions. Aggregating expressions are invoked once per each row, and are passed the range of rows
-     * corresponding to the partitioning, sorting and range settings.
+     * expressions. Expressions can be a mix of per-row and aggregating. They are invoked per each row, and are passed
+     * the range of rows corresponding to the partitioning, sorting and range settings.
      */
-    public DataFrame select(Exp<?>... aggregators) {
+    public DataFrame select(Exp<?>... exps) {
         return new ColumnDataFrame(null,
-                Index.ofDeduplicated(selectLabels(aggregators)),
-                selectColumns(aggregators));
+                Index.ofDeduplicated(selectLabels(exps)),
+                selectColumns(exps));
     }
 
     /**
      * Generates a DataFrame of the same height as the source DataFrame, combining columns generated from the provided
-     * aggregating expressions with the original DataFrame columns. Aggregating expressions are invoked once per each
-     * row, and are passed the range of rows corresponding to the partitioning, sorting and range settings.
+     * expressions with the original DataFrame columns. Expressions can be a mix of per-row and aggregating. They are
+     * invoked per each row, and are passed the range of rows corresponding to the partitioning, sorting and range
+     * settings.
      */
-    public DataFrame merge(Exp<?>... aggregators) {
-        String[] labels = selectLabels(aggregators);
-        return ColumnSetMerger.merge(source, labels, selectColumns(aggregators));
+    public DataFrame merge(Exp<?>... exps) {
+        String[] labels = selectLabels(exps);
+        return ColumnSetMerger.merge(source, labels, selectColumns(exps));
     }
 
     public IntSeries rank() {
@@ -287,7 +287,7 @@ public class Window {
 
         for (Object key : gb.getGroupKeys()) {
 
-            Series<?>[] gAggs = RangeAggregator.of(gb.getGroup(key), resolveRange()).agg(aggregators);
+            Series<?>[] gAggs = WindowColumnEvaluator.of(gb.getGroup(key), resolveRange()).eval(aggregators);
 
             IntSeries gIndex = gb.getGroupIndex(key);
             int ih = gIndex.size();
@@ -312,7 +312,7 @@ public class Window {
                 ? source.rows(DataFrameSorter.sort(sorter, source.height())).select()
                 : source;
 
-        return RangeAggregator.of(df, resolveRange()).agg(aggregators);
+        return WindowColumnEvaluator.of(df, resolveRange()).eval(aggregators);
     }
 
     private WindowRange resolveRange() {

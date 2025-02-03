@@ -1,9 +1,5 @@
 DFLib
-Copyright 2019 ObjectStyle LLC and Individual Authors
-
-
-* This software includes commons-csv library developed by The Apache Software Foundation
-(https://commons.apache.org/proper/commons-csv/)
+Copyright 2025 ObjectStyle LLC and Individual Authors
 
 * This software includes TimSort class based on Android TimSort developed by The Android Open Source Project
 (https://android.googlesource.com/platform/libcore/+/jb-mr2-release/luni/src/main/java/java/util/TimSort.java)

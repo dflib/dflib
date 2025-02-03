@@ -21,6 +21,10 @@ public class ContainerModel {
         this.height = height;
     }
 
+    public ContainerModel id(String id) {
+        return new ContainerModel(id, this.width, this.height);
+    }
+
     public String getId() {
         return id;
     }

@@ -7,17 +7,19 @@ import org.dflib.DecimalExp;
 import org.dflib.NumExp;
 import org.dflib.Series;
 import org.dflib.StrExp;
+import org.dflib.exp.BaseExpTest;
 import org.dflib.unit.BoolSeriesAsserts;
 import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import static org.dflib.Exp.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
-public class DecimalColumnTest {
+public class DecimalColumnTest extends BaseExpTest {
 
     @Test
     public void getColumnName() {
@@ -230,7 +232,18 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void divide_Int() {
+    public void add_Bigint() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                new BigInteger("101"), new BigDecimal("2.001"),
+                new BigInteger("3"), new BigDecimal("45.3"));
+
+        Series<? extends Number> s = $decimal("b").add($bigint("a")).eval(df);
+        new SeriesAsserts(s).expectData(new BigDecimal("103.001"), new BigDecimal("48.3"));
+    }
+
+
+    @Test
+    public void div_Int() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 new BigDecimal("35"), 2,
                 new BigDecimal("3.3"), 3);
@@ -240,18 +253,55 @@ public class DecimalColumnTest {
     }
 
     @Test
-    public void divide_Double() {
+    public void div_Double() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 new BigDecimal("5.0"), 2.5,
+                new BigDecimal("5"), 3.33,
+                new BigDecimal("-5"), 3.33,
                 new BigDecimal("3.3"), 3.33);
 
         Series<? extends Number> s = $decimal("a").div($double("b")).eval(df);
-        new SeriesAsserts(s).expectData(new BigDecimal("2"), new BigDecimal("0.99099099099099096984560210653599037467692134485397"));
+        new SeriesAsserts(s).expectData(
+                new BigDecimal("2"),
+                new BigDecimal("1.5015015015015"),
+                new BigDecimal("-1.5015015015015"),
+                new BigDecimal("0.990990990990991"));
     }
 
+    @Test
+    public void div_IntVal() {
+        DataFrame df = DataFrame.foldByRow("a").of(
+                new BigDecimal("5.0"),
+                new BigDecimal("5"),
+                new BigDecimal("-5"),
+                new BigDecimal("3.3"));
+
+        Series<? extends Number> s = $decimal("a").div($val(-2)).eval(df);
+        new SeriesAsserts(s).expectData(
+                new BigDecimal("-2.5"),
+                new BigDecimal("-2.5"),
+                new BigDecimal("2.5"),
+                new BigDecimal("-1.65"));
+    }
 
     @Test
-    public void gT_Decimal() {
+    public void div_Precision() {
+        DataFrame df = DataFrame.foldByRow("a", "b").of(
+                new BigDecimal("22222222222222222222"), new BigDecimal("2"),
+                new BigDecimal("-22222222222222222222"), new BigDecimal("2"),
+                new BigDecimal("22222222222222222222.2222222222222222"), new BigDecimal("2"),
+                new BigDecimal("11111111111111111111"), new BigDecimal("3"));
+
+        Series<? extends Number> s = $decimal("a").div($decimal("b")).eval(df);
+        new SeriesAsserts(s).expectData(
+                new BigDecimal("11111111111111111111"),
+                new BigDecimal("-11111111111111111111"),
+                new BigDecimal("11111111111111111111.1111111111111111"),
+                new BigDecimal("3703703703703703703.67"));
+    }
+
+    @Test
+    public void gt_Decimal() {
         Condition c = $decimal("a").gt($decimal("b"));
 
         DataFrame df = DataFrame.foldByRow("a", "b").of(
@@ -291,11 +341,29 @@ public class DecimalColumnTest {
         DataFrame df = DataFrame.foldByRow("a").of(
                 new BigDecimal("-5.1"),
                 BigDecimal.ZERO,
-                new BigDecimal("11.5"));
+                new BigDecimal("11.5"),
+                new BigDecimal("11.50"),
+                new BigDecimal("11.5000001"));
 
         BooleanSeries s = $decimal("a").eq(new BigDecimal("11.5")).eval(df);
-        new BoolSeriesAsserts(s).expectData(false, false, true);
+        new BoolSeriesAsserts(s).expectData(false, false, true, true, false);
     }
+
+    @Test
+    public void eq_Int() {
+
+        DataFrame df = DataFrame.foldByRow("a").of(
+                new BigDecimal("50.1"),
+                new BigDecimal("-50"),
+                new BigDecimal("50"),
+                new BigDecimal("50.0"),
+                BigDecimal.ZERO,
+                new BigDecimal("11"));
+
+        BooleanSeries s = $decimal("a").eq(50).eval(df);
+        new BoolSeriesAsserts(s).expectData(false, false, true, true, false, false);
+    }
+
 
     @Test
     public void eq_Zero() {
@@ -383,5 +451,21 @@ public class DecimalColumnTest {
 
         // run and verify the calculation
         new BoolSeriesAsserts(c.eval(s)).expectData(false, true, true, true, false);
+    }
+
+    @Test
+    public void testEquals() {
+        assertExpEquals(
+                $decimal("a"),
+                $decimal("a"),
+                $decimal("b"));
+    }
+
+    @Test
+    public void testHashCode() {
+        assertExpHashCode(
+                $decimal("a"),
+                $decimal("a"),
+                $decimal("b"));
     }
 }

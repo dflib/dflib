@@ -8,6 +8,10 @@ import org.dflib.window.WindowRange;
 
 import java.util.Arrays;
 
+/**
+ * @deprecated unused
+ */
+@Deprecated(since = "2.0.0", forRemoval = true)
 public abstract class RangeAggregator {
 
     public static RangeAggregator of(DataFrame df, WindowRange range) {

@@ -21,9 +21,4 @@ public class EmptyRowSetMerger extends RowSetMerger {
     public RowSetMerger expandCols(ColumnExpander expander) {
         return this;
     }
-
-    @Override
-    public RowSetMerger stretchCols(ColumnExpander expander) {
-        return this;
-    }
 }

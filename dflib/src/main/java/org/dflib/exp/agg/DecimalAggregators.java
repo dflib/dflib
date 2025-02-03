@@ -1,13 +1,18 @@
 package org.dflib.exp.agg;
 
+import org.dflib.DecimalExp;
 import org.dflib.Series;
 import org.dflib.agg.Percentiles;
 import org.dflib.builder.ObjectAccum;
 
 import java.math.BigDecimal;
 
+import static org.dflib.Exp.*;
+
 
 public class DecimalAggregators {
+
+    private static final DecimalExp avg = $decimal(0).sum().div(count());
 
     public static Series<BigDecimal> cumSum(Series<BigDecimal> s) {
 
@@ -66,5 +71,12 @@ public class DecimalAggregators {
     @Deprecated(since = "2.0.0", forRemoval = true)
     public static BigDecimal median(Series<BigDecimal> s) {
         return Percentiles.ofDecimals(s, 0.5);
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public static BigDecimal avg(Series<BigDecimal> s) {
+        return s.size() == 0 ? BigDecimal.ZERO : avg.reduce(s);
     }
 }

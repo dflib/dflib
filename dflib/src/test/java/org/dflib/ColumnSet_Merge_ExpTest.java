@@ -8,7 +8,19 @@ import static org.dflib.Exp.*;
 public class ColumnSet_Merge_ExpTest {
 
     @Test
-    public void cols_ByName() {
+    public void all() {
+        DataFrame df = DataFrame.foldByRow("a", "b")
+                .of(1, "x", 2, "y")
+                .cols().merge($int(0).mul(100).as("b"), $int(0).mul(10));
+
+        new DataFrameAsserts(df, "a", "b", "a * 10")
+                .expectHeight(2)
+                .expectRow(0, 1, 100, 10)
+                .expectRow(1, 2, 200, 20);
+    }
+
+    @Test
+    public void byName() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")
                 .cols("b", "c").merge($int(0).mul(100), $int(0).mul(10));
@@ -20,7 +32,7 @@ public class ColumnSet_Merge_ExpTest {
     }
 
     @Test
-    public void cols_ByName_Duplicate() {
+    public void byName_Duplicate() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")
                 .cols("b", "b").merge($int(0).mul(100), $int(0).mul(10));
@@ -32,7 +44,7 @@ public class ColumnSet_Merge_ExpTest {
     }
 
     @Test
-    public void cols_ByPos() {
+    public void byPos() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")
                 .cols(1, 2).merge($int(0).mul(100), $int(0).mul(10));
@@ -44,7 +56,7 @@ public class ColumnSet_Merge_ExpTest {
     }
 
     @Test
-    public void colsAppend() {
+    public void append() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")
                 .colsAppend("b", "c", "b").merge(
@@ -59,19 +71,7 @@ public class ColumnSet_Merge_ExpTest {
     }
 
     @Test
-    public void cols() {
-        DataFrame df = DataFrame.foldByRow("a", "b")
-                .of(1, "x", 2, "y")
-                .cols().merge($int(0).mul(100).as("b"), $int(0).mul(10));
-
-        new DataFrameAsserts(df, "a", "b", "a * 10")
-                .expectHeight(2)
-                .expectRow(0, 1, 100, 10)
-                .expectRow(1, 2, 200, 20);
-    }
-
-    @Test
-    public void colsExcept_ByName() {
+    public void except_ByName() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(1, "x", "z", 2, "y", "a")
                 .colsExcept("a").merge($int(0).mul(100), $int(0).mul(10));
@@ -83,7 +83,7 @@ public class ColumnSet_Merge_ExpTest {
     }
 
     @Test
-    public void colsExcept_ByPos() {
+    public void except_ByPos() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c")
                 .of(1, "x", "z", 2, "y", "a")
                 .colsExcept(1).merge($int(0).mul(100), $int(0).mul(10));

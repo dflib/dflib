@@ -2,12 +2,13 @@ package org.dflib.exp.flow;
 
 import org.dflib.DataFrame;
 import org.dflib.Exp;
+import org.dflib.exp.BaseExpTest;
 import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.api.Test;
 
 import static org.dflib.Exp.*;
 
-public class IfExpTest {
+public class IfExpTest extends BaseExpTest {
 
     @Test
     public void mix() {
@@ -50,4 +51,38 @@ public class IfExpTest {
 
         new SeriesAsserts(exp.eval(df)).expectData("2", "5", "6", null, "9");
     }
+
+    @Test
+    public void testEquals() {
+        assertExpEquals(
+                ifExp($col("a").eq("test"), $int(1), $int(2)),
+                ifExp($col("a").eq("test"), $int(1), $int(2)),
+                ifExp($col("a").eq("test"), $int(1), $int(3)));
+    }
+
+    @Test
+    public void testEquals_Nested() {
+        assertExpEquals(
+                ifExp(
+                        ifExp($bool("a"), $int(1), $int(2)).castAsBool(),
+                        ifExp($bool("b"), $int(3), $int(4)),
+                        $int(5)),
+                ifExp(
+                        ifExp($bool("a"), $int(1), $int(2)).castAsBool(),
+                        ifExp($bool("b"), $int(3), $int(4)),
+                        $int(5)),
+                ifExp(
+                        ifExp($bool("a"), $int(1), $int(2)).castAsBool(),
+                        ifExp($bool("b"), $int(3), $int(4)),
+                        $int(6)));
+    }
+
+    @Test
+    public void testHashCode() {
+        assertExpHashCode(
+                ifExp($col("a").eq("test"), $int(1), $int(2)),
+                ifExp($col("a").eq("test"), $int(1), $int(2)),
+                ifExp($col("a").eq("test"), $int(1), $int(3)));
+    }
+
 }
