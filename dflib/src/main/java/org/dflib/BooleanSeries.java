@@ -4,7 +4,6 @@ import org.dflib.builder.BoolAccum;
 import org.dflib.builder.BoolBuilder;
 import org.dflib.op.BooleanSeriesOps;
 import org.dflib.op.ReplaceOp;
-import org.dflib.series.BooleanArraySeries;
 import org.dflib.series.BooleanIndexedSeries;
 import org.dflib.series.FalseSeries;
 import org.dflib.series.TrueSeries;

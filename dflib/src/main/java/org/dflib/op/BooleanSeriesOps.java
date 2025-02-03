@@ -1,7 +1,7 @@
 package org.dflib.op;
 
 import org.dflib.BooleanSeries;
-import org.dflib.series.BooleanArraySeries;
+import org.dflib.builder.BoolBuilder;
 
 public class BooleanSeriesOps {
 
@@ -22,18 +22,13 @@ public class BooleanSeriesOps {
             }
         }
 
-        boolean[] and = new boolean[h];
-        for (int i = 0; i < h; i++) {
-
+        return BoolBuilder.buildSeries(i -> {
             boolean b = series[0].getBool(i);
             for (int j = 1; j < w; j++) {
                 b = b && series[j].getBool(i);
             }
-
-            and[i] = b;
-        }
-
-        return new BooleanArraySeries(and);
+            return b;
+        }, h);
     }
 
     public static BooleanSeries orAll(BooleanSeries... series) {
@@ -53,17 +48,12 @@ public class BooleanSeriesOps {
             }
         }
 
-        boolean[] or = new boolean[h];
-        for (int i = 0; i < h; i++) {
-
+        return BoolBuilder.buildSeries(i -> {
             boolean b = series[0].getBool(i);
             for (int j = 1; j < w; j++) {
                 b = b || series[j].getBool(i);
             }
-
-            or[i] = b;
-        }
-
-        return new BooleanArraySeries(or);
+            return b;
+        }, h);
     }
 }

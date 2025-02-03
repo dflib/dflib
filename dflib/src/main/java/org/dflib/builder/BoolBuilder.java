@@ -1,7 +1,6 @@
 package org.dflib.builder;
 
 import org.dflib.BooleanSeries;
-import org.dflib.Series;
 import org.dflib.series.BooleanBitsetSeries;
 import org.dflib.series.FalseSeries;
 

@@ -339,34 +339,15 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     private BooleanSeries replaceBoolean(BooleanSeries condition, boolean with) {
         int len = size();
         int r = Math.min(len, condition.size());
-        boolean[] bools = new boolean[len];
 
-        for (int i = 0; i < r; i++) {
-            bools[i] = condition.getBool(i) ? with : getBool(i);
-        }
-
-        for (int i = r; i < len; i++) {
-            bools[i] = getBool(i);
-        }
-
-        return new BooleanArraySeries(bools);
+        return BoolBuilder.buildSeries(i -> i < r && condition.getBool(i) ? with : getBool(i), len);
     }
 
     private BooleanSeries replaceNoMatchBoolean(BooleanSeries condition, boolean with) {
-
         int len = size();
         int r = Math.min(len, condition.size());
-        boolean[] bools = new boolean[len];
 
-        for (int i = 0; i < r; i++) {
-            bools[i] = condition.getBool(i) ? getBool(i) : with;
-        }
-
-        if (len > r) {
-            Arrays.fill(bools, r, len, with);
-        }
-
-        return new BooleanArraySeries(bools);
+        return BoolBuilder.buildSeries(i -> i < r && condition.getBool(i) ? getBool(i) : with, len);
     }
 
     private Series<Boolean> nullify(BooleanSeries condition) {
