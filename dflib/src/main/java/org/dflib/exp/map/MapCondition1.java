@@ -5,7 +5,7 @@ import org.dflib.Condition;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Series;
-import org.dflib.builder.BoolAccum;
+import org.dflib.builder.BoolBuilder;
 import org.dflib.exp.Exp1;
 
 import java.util.function.Function;
@@ -27,29 +27,17 @@ public class MapCondition1<F> extends Exp1<F, Boolean> implements Condition {
     }
 
     protected static <F> Function<Series<F>, BooleanSeries> valToSeriesWithNulls(Predicate<F> predicate) {
-        return s -> {
-            int len = s.size();
-            BoolAccum accum = new BoolAccum(len);
-            for (int i = 0; i < len; i++) {
-                F v = s.get(i);
-                accum.pushBool(predicate.test(v));
-            }
-
-            return accum.toSeries();
-        };
+        return s -> BoolBuilder.buildSeries(i -> {
+            F v = s.get(i);
+            return predicate.test(v);
+        }, s.size());
     }
 
     protected static <F> Function<Series<F>, BooleanSeries> valToSeries(Predicate<F> predicate) {
-        return s -> {
-            int len = s.size();
-            BoolAccum accum = new BoolAccum(len);
-            for (int i = 0; i < len; i++) {
-                F v = s.get(i);
-                accum.pushBool(v != null ? predicate.test(v) : false);
-            }
-
-            return accum.toSeries();
-        };
+        return s -> BoolBuilder.buildSeries(i -> {
+            F v = s.get(i);
+            return v != null && predicate.test(v);
+        }, s.size());
     }
 
     private final Function<Series<F>, BooleanSeries> op;

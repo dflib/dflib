@@ -5,7 +5,7 @@ import org.dflib.Condition;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Series;
-import org.dflib.builder.BoolAccum;
+import org.dflib.builder.BoolBuilder;
 import org.dflib.exp.Exp3;
 import org.dflib.f.Function3;
 import org.dflib.f.Predicate3;
@@ -36,18 +36,12 @@ public class MapCondition3<One, Two, Three> extends Exp3<One, Two, Three, Boolea
 
     protected static <One, Two, Three>
     Function3<Series<One>, Series<Two>, Series<Three>, BooleanSeries> valToSeries(Predicate3<One, Two, Three> predicate) {
-        return (s1, s2, s3) -> {
-            int len = s1.size();
-            BoolAccum accum = new BoolAccum(len);
-            for (int i = 0; i < len; i++) {
-                One one = s1.get(i);
-                Two two = s2.get(i);
-                Three three = s3.get(i);
-                accum.pushBool(one != null && two != null && three != null ? predicate.test(one, two, three) : false);
-            }
-
-            return accum.toSeries();
-        };
+        return (s1, s2, s3) -> BoolBuilder.buildSeries(i -> {
+            One one = s1.get(i);
+            Two two = s2.get(i);
+            Three three = s3.get(i);
+            return one != null && two != null && three != null && predicate.test(one, two, three);
+        }, s1.size());
     }
 
     private final Function3<Series<One>, Series<Two>, Series<Three>, BooleanSeries> op;

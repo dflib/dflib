@@ -4,6 +4,7 @@ import org.dflib.BooleanSeries;
 import org.dflib.IntSeries;
 import org.dflib.Sorter;
 import org.dflib.builder.BoolAccum;
+import org.dflib.builder.BoolBuilder;
 import org.dflib.sort.SeriesSorter;
 
 import java.util.Comparator;
@@ -153,13 +154,7 @@ public class BooleanBitsetSeries extends BooleanBaseSeries {
     }
 
     private BooleanSeries selectAsBooleanSeries(IntSeries positions) {
-        int len = positions.size();
-        BoolAccum accum = new BoolAccum(len);
-        for (int i = 0; i < len; i++) {
-            int index = positions.getInt(i);
-            accum.pushBool(getUnchecked(index));
-        }
-        return accum.toSeries();
+        return BoolBuilder.buildSeries(i -> getUnchecked(positions.getInt(i)), positions.size());
     }
 
     @Override

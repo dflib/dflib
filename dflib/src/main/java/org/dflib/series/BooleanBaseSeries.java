@@ -479,9 +479,11 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         }
 
         if (iTrue < 0) {
-            return new BooleanArraySeries(iFalse < 0 ? new boolean[0] : new boolean[]{false});
+            return iFalse < 0 ? Series.ofBool() : Series.ofBool(false);
         } else {
-            return new BooleanArraySeries(iFalse < 0 ? new boolean[]{true} : iTrue < iFalse ? new boolean[]{true, false} : new boolean[]{false, true});
+            return iFalse < 0
+                    ? Series.ofBool(true)
+                    : iTrue < iFalse ? Series.ofBool(true, false) : Series.ofBool(false, true);
         }
     }
 
