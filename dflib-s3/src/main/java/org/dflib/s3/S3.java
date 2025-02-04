@@ -1,19 +1,17 @@
 package org.dflib.s3;
 
-import org.dflib.ByteSource;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
-import software.amazon.awssdk.services.s3.model.S3Object;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.dflib.ByteSource;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
+import software.amazon.awssdk.services.s3.model.S3Object;
+
 /**
- * A connector to work with Amazon S3 objects.
- * Provides a {@link ByteSource} implementation that can be used with various
- * DFLib loaders to read data in different formats.
+ * An S3 connector that provides access to objects in an S3 bucket.
  *
  * @since 2.0.0
  */
@@ -30,18 +28,24 @@ public class S3 {
     }
 
     /**
-     * Returns a new connector with the provided path appended to this connector's key.
+     * Creates a new builder for configuring an S3 connector.
      */
-    public S3 path(String path) {
+    public static S3Builder builder() {
+        return new S3Builder();
+    }
+
+    /**
+     * Creates a new S3 connector by resolving a path relative to this connector's key.
+     */
+    public S3 resolve(String path) {
         if (path == null || path.isEmpty()) {
             return this;
         }
 
         String newKey = key;
         if (!newKey.endsWith("/")) {
-            newKey = newKey + "/";
+            newKey += "/";
         }
-
         if (path.startsWith("/")) {
             path = path.substring(1);
         }
@@ -63,7 +67,7 @@ public class S3 {
         if (!key.endsWith("/")) {
             result = listObjectsUnderPrefix(key);
         }
-        if(result.isEmpty()) {
+        if (result.isEmpty()) {
             result = listObjectsUnderPrefix(key.endsWith("/") ? key : key + "/");
         }
         return result;
@@ -74,13 +78,6 @@ public class S3 {
      */
     public ByteSource source() {
         return new S3ByteSource(s3Client, bucket, key);
-    }
-
-    /**
-     * Creates a new builder for configuring S3 connector.
-     */
-    public static S3Builder builder() {
-        return new S3Builder();
     }
 
     private List<S3Object> listObjectsUnderPrefix(String prefix) {

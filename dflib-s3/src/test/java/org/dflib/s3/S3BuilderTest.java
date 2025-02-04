@@ -110,7 +110,7 @@ class S3BuilderTest {
                 .key("base")
                 .build();
 
-        S3 withPath = connector.path("subdir/file.csv");
+        S3 withPath = connector.resolve("subdir/file.csv");
         assertEquals("s3://" + TEST_BUCKET + "/base/subdir/file.csv", withPath.source().uri().orElse(null));
     }
 
@@ -122,7 +122,7 @@ class S3BuilderTest {
                 .key("base")
                 .build();
 
-        S3 withPath = connector.path("/subdir/file.csv");
+        S3 withPath = connector.resolve("/subdir/file.csv");
         assertEquals("s3://" + TEST_BUCKET + "/base/subdir/file.csv", withPath.source().uri().orElse(null));
     }
 
@@ -134,7 +134,7 @@ class S3BuilderTest {
                 .key("base/")
                 .build();
 
-        S3 withPath = connector.path("subdir/file.csv");
+        S3 withPath = connector.resolve("subdir/file.csv");
         assertEquals("s3://" + TEST_BUCKET + "/base/subdir/file.csv", withPath.source().uri().orElse(null));
     }
 
@@ -146,7 +146,7 @@ class S3BuilderTest {
                 .key("base")
                 .build();
 
-        S3 withPath = connector.path("");
+        S3 withPath = connector.resolve("");
         assertEquals("s3://" + TEST_BUCKET + "/base", withPath.source().uri().orElse(null));
     }
 
@@ -158,7 +158,7 @@ class S3BuilderTest {
                 .key("base")
                 .build();
 
-        S3 withPath = connector.path(null);
+        S3 withPath = connector.resolve(null);
         assertEquals("s3://" + TEST_BUCKET + "/base", withPath.source().uri().orElse(null));
     }
 }
