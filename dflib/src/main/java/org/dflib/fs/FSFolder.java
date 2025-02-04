@@ -13,8 +13,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import static java.util.Arrays.asList;
+import java.util.stream.Stream;
 
 /**
  * Represents a folder on a locally-available filesystem. Allows to work with multiple files in the folder as
@@ -83,7 +82,7 @@ public class FSFolder {
      */
     public FSFolder includeExtension(String ext) {
         Objects.requireNonNull(ext);
-        if (ext.length() == 0) {
+        if (ext.isEmpty()) {
             throw new IllegalArgumentException("Empty extension");
         }
 
@@ -128,7 +127,7 @@ public class FSFolder {
         Map<String, ByteSource> sources = new HashMap<>();
 
         // The key must be a relative to the folder, whereas the Path for ByteSource must be the full Path
-        list().stream().forEach(p -> sources.put(folderPath.relativize(p).toString(), ByteSource.ofPath(p)));
+        list().forEach(p -> sources.put(folderPath.relativize(p).toString(), ByteSource.ofPath(p)));
         return ByteSources.of(sources);
     }
 
@@ -150,8 +149,7 @@ public class FSFolder {
         // The defaults are to allow symlinks for files but not for directories
 
         Predicate<Path> pathTypeFilter = includeFolders ? p -> true : Files::isRegularFile;
-        Predicate<Path> filter = asList(extFilter, notHiddenFilter)
-                .stream()
+        Predicate<Path> filter = Stream.of(extFilter, notHiddenFilter)
                 .filter(f -> f != null)
                 .reduce(pathTypeFilter, Predicate::and);
 
