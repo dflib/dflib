@@ -1,10 +1,7 @@
 package org.dflib.s3;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.testcontainers.containers.localstack.LocalStackContainer;
 import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.checksums.RequestChecksumCalculation;
@@ -14,9 +11,10 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import org.testcontainers.containers.localstack.LocalStackContainer;
+import org.testcontainers.utility.DockerImageName;
 
-@Testcontainers
-public class S3LocalTest {
+public abstract class S3LocalTest {
 
     protected static final String TEST_BUCKET = "test-bucket";
     protected static final String TEST_KEY = "test/data.csv";
@@ -24,13 +22,17 @@ public class S3LocalTest {
 
     @Container
     private static final LocalStackContainer localStack = new LocalStackContainer(
-            DockerImageName.parse("localstack/localstack:2.3"))
+            DockerImageName.parse("localstack/localstack:4"))
             .withServices(LocalStackContainer.Service.S3);
 
     private static S3Client s3Client;
 
+    protected S3Client testClient() {
+        return s3Client;
+    }
+
     @BeforeAll
-    static void setupS3Client() {
+    static void setUp() {
         s3Client = S3Client.builder()
                 .credentialsProvider(StaticCredentialsProvider.create(
                         AwsBasicCredentials.create(localStack.getAccessKey(), localStack.getSecretKey())))
@@ -40,13 +42,32 @@ public class S3LocalTest {
                 .responseChecksumValidation(ResponseChecksumValidation.WHEN_REQUIRED)
                 .build();
 
-        s3Client.createBucket(CreateBucketRequest.builder().bucket(TEST_BUCKET).build());
-        s3Client.putObject(
-                PutObjectRequest.builder().bucket(TEST_BUCKET).key(TEST_KEY).build(),
-                RequestBody.fromString(TEST_DATA));
+        s3Client.createBucket(CreateBucketRequest.builder()
+                .bucket(TEST_BUCKET)
+                .build());
+
+        putData();
     }
 
-    protected S3Client client() {
-        return s3Client;
+    private static void putData() {
+        putTestObject(TEST_KEY, TEST_DATA);
+        createListTestData();
+    }
+
+    private static void createListTestData() {
+        putTestObject("test/data1.csv", "data1");
+        putTestObject("test/data2.csv", "data2");
+        putTestObject("test/subdir/data1.csv", "nested-data1");
+        putTestObject("test/subdir/nested/data2.csv", "nested-data2");
+        putTestObject("test/subdir", "file-named-subdir");
+        putTestObject("test/subdir/more/data3.csv", "more-data");
+    }
+
+    private static void putTestObject(String key, String content) {
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(TEST_BUCKET)
+                .key(key)
+                .build();
+        s3Client.putObject(putObjectRequest, RequestBody.fromString(content));
     }
 }
