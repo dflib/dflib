@@ -3,15 +3,14 @@ package org.dflib.s3;
 import org.dflib.DataFrame;
 import org.dflib.csv.Csv;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import software.amazon.awssdk.services.s3.model.S3Object;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Testcontainers
 public class S3Test extends S3LocalTest {
 
     private S3Builder defaultBuilder() {
@@ -40,6 +39,44 @@ public class S3Test extends S3LocalTest {
         assertEquals("value2", df.getColumn("col2").get(0));
         assertEquals("value3", df.getColumn("col1").get(1));
         assertEquals("value4", df.getColumn("col2").get(1));
+    }
+
+    @Test
+    void sources_content() {
+        S3 connector = S3.builder()
+                .client(testClient())
+                .bucket(TEST_BUCKET)
+                .key("test")
+                .build();
+
+        Map<String, String> contents = connector.sources()
+                .process((key, source) -> new String(source.asBytes(), StandardCharsets.UTF_8));
+
+        assertTrue(contents.size() >= 2);
+        assertEquals("data1", contents.get("test/data1.csv"));
+        assertEquals("data2", contents.get("test/data2.csv"));
+    }
+
+    @Test
+    void sources_withCsvLoader() {
+        S3 connector = S3.builder()
+                .client(testClient())
+                .bucket(TEST_BUCKET)
+                .key("test")
+                .build();
+
+        Map<String, DataFrame> dataFrames = connector.sources()
+                .process((key, source) -> {
+                    try {
+                        return Csv.load(source);
+                    } catch (Exception e) {
+                        return null;
+                    }
+                });
+
+        assertTrue(dataFrames.size() >= 2);
+        assertNotNull(dataFrames.get("test/data1.csv"));
+        assertNotNull(dataFrames.get("test/data2.csv"));
     }
 
     @Test

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.dflib.ByteSource;
+import org.dflib.ByteSources;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.model.S3Object;
@@ -77,7 +78,18 @@ public class S3 {
      * Creates a {@link ByteSource} to read data from S3.
      */
     public ByteSource source() {
+        return source(key);
+    }
+
+    ByteSource source(String key) {
         return new S3ByteSource(s3Client, bucket, key);
+    }
+
+    /**
+     * Creates a {@link ByteSources} to read data from S3.
+     */
+    public ByteSources sources() {
+        return new S3ByteSources(this);
     }
 
     private List<S3Object> listObjectsUnderPrefix(String prefix) {
