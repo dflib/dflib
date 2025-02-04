@@ -1,6 +1,7 @@
 package org.dflib.s3;
 
 import org.dflib.ByteSource;
+
 import software.amazon.awssdk.services.s3.S3Client;
 
 import java.util.Objects;
@@ -18,15 +19,7 @@ public class S3 {
     private final String bucket;
     private final String key;
 
-    public static S3 of(String bucket, String key) {
-        return new S3(S3Client.builder().build(), bucket, key);
-    }
-
-    public static S3 of(S3Client s3Client, String bucket, String key) {
-        return new S3(s3Client, bucket, key);
-    }
-
-    private S3(S3Client s3Client, String bucket, String key) {
+    S3(S3Client s3Client, String bucket, String key) {
         this.s3Client = Objects.requireNonNull(s3Client);
         this.bucket = Objects.requireNonNull(bucket);
         this.key = Objects.requireNonNull(key);
@@ -57,5 +50,12 @@ public class S3 {
      */
     public ByteSource source() {
         return new S3ByteSource(s3Client, bucket, key);
+    }
+
+    /**
+     * Creates a new builder for configuring S3 connector.
+     */
+    public static S3Builder builder() {
+        return new S3Builder();
     }
 }

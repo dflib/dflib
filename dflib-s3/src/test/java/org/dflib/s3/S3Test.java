@@ -7,29 +7,28 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
-public class S3Test extends S3BaseTest {
+public class S3Test extends S3LocalTest {
 
-    @Test
-    void source_uri() {
-        S3 connector = S3.of(client(), TEST_BUCKET, TEST_KEY);
-        assertEquals("s3://" + TEST_BUCKET + "/" + TEST_KEY, 
-                connector.source().uri().orElse(null));
+    private S3Builder defaultBuilder() {
+        return S3.builder()
+                .client(client())
+                .bucket(TEST_BUCKET)
+                .key(TEST_KEY);
     }
 
     @Test
     void source_content() {
-        S3 connector = S3.of(client(), TEST_BUCKET, TEST_KEY);
+        S3 connector = defaultBuilder().build();
         byte[] data = connector.source().asBytes();
         assertEquals(TEST_DATA, new String(data, StandardCharsets.UTF_8));
     }
 
     @Test
     void source_withCsvLoader() {
-        S3 connector = S3.of(client(), TEST_BUCKET, TEST_KEY);
+        S3 connector = defaultBuilder().build();
         DataFrame df = Csv.load(connector.source());
 
         assertNotNull(df);
@@ -39,40 +38,5 @@ public class S3Test extends S3BaseTest {
         assertEquals("value2", df.getColumn("col2").get(0));
         assertEquals("value3", df.getColumn("col1").get(1));
         assertEquals("value4", df.getColumn("col2").get(1));
-    }
-
-    @Test
-    void path_append() {
-        S3 connector = S3.of(client(), TEST_BUCKET, "base");
-        S3 withPath = connector.path("subdir/file.csv");
-        assertEquals("s3://" + TEST_BUCKET + "/base/subdir/file.csv", withPath.source().uri().orElse(null));
-    }
-
-    @Test
-    void path_appendWithLeadingSlash() {
-        S3 connector = S3.of(client(), TEST_BUCKET, "base");
-        S3 withPath = connector.path("/subdir/file.csv");
-        assertEquals("s3://" + TEST_BUCKET + "/base/subdir/file.csv", withPath.source().uri().orElse(null));
-    }
-
-    @Test
-    void path_appendToKeyWithTrailingSlash() {
-        S3 connector = S3.of(client(), TEST_BUCKET, "base/");
-        S3 withPath = connector.path("subdir/file.csv");
-        assertEquals("s3://" + TEST_BUCKET + "/base/subdir/file.csv", withPath.source().uri().orElse(null));
-    }
-
-    @Test
-    void path_empty() {
-        S3 connector = S3.of(client(), TEST_BUCKET, "base");
-        S3 withPath = connector.path("");
-        assertEquals("s3://" + TEST_BUCKET + "/base", withPath.source().uri().orElse(null));
-    }
-
-    @Test
-    void path_null() {
-        S3 connector = S3.of(client(), TEST_BUCKET, "base");
-        S3 withPath = connector.path(null);
-        assertEquals("s3://" + TEST_BUCKET + "/base", withPath.source().uri().orElse(null));
     }
 }

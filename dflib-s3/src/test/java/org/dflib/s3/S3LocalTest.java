@@ -12,19 +12,18 @@ import software.amazon.awssdk.core.checksums.ResponseChecksumValidation;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @Testcontainers
-public class S3BaseTest {
+public class S3LocalTest {
 
     protected static final String TEST_BUCKET = "test-bucket";
     protected static final String TEST_KEY = "test/data.csv";
     protected static final String TEST_DATA = "col1,col2\nvalue1,value2\nvalue3,value4";
 
     @Container
-    private static final LocalStackContainer localstack = new LocalStackContainer(
+    private static final LocalStackContainer localStack = new LocalStackContainer(
             DockerImageName.parse("localstack/localstack:2.3"))
             .withServices(LocalStackContainer.Service.S3);
 
@@ -33,15 +32,12 @@ public class S3BaseTest {
     @BeforeAll
     static void setupS3Client() {
         s3Client = S3Client.builder()
-                .endpointOverride(localstack.getEndpointOverride(LocalStackContainer.Service.S3))
                 .credentialsProvider(StaticCredentialsProvider.create(
-                        AwsBasicCredentials.create(localstack.getAccessKey(), localstack.getSecretKey())))
-                .region(Region.of(localstack.getRegion()))
+                        AwsBasicCredentials.create(localStack.getAccessKey(), localStack.getSecretKey())))
+                .region(Region.of(localStack.getRegion()))
+                .endpointOverride(localStack.getEndpointOverride(LocalStackContainer.Service.S3))
                 .requestChecksumCalculation(RequestChecksumCalculation.WHEN_REQUIRED)
                 .responseChecksumValidation(ResponseChecksumValidation.WHEN_REQUIRED)
-                .serviceConfiguration(S3Configuration.builder()
-                        .pathStyleAccessEnabled(true)
-                        .build())
                 .build();
 
         s3Client.createBucket(CreateBucketRequest.builder().bucket(TEST_BUCKET).build());
