@@ -36,7 +36,8 @@ public class S3 {
     }
 
     /**
-     * Creates a new S3 connector by resolving a path relative to this connector's key.
+     * Creates a new S3 connector by resolving a path relative to this connector's
+     * key.
      */
     public S3 resolve(String path) {
         if (path == null || path.isEmpty()) {
@@ -58,18 +59,37 @@ public class S3 {
      * Lists S3 objects matching this connector's key.
      * <p>
      * For keys not ending with "/", tries to find objects with exact key first,
-     * then with key + "/" if none found. For keys ending with "/", lists all objects
+     * then with key + "/" if none found. For keys ending with "/", lists all
+     * objects
      * under that prefix.
      *
-     * @return a list of S3 objects with their metadata, empty list if no objects found
+     * @return a list of S3 objects with their metadata, empty list if no objects
+     *         found
      */
     public List<S3Object> list() {
+        return list(false);
+    }
+
+    /**
+     * Lists S3 objects matching this connector's key.
+     * <p>
+     * For keys not ending with "/", tries to find objects with exact key first,
+     * then with key + "/" if none found. For keys ending with "/", lists all
+     * objects
+     * under that prefix.
+     *
+     * @param recursive if true, lists objects in subdirectories recursively. If
+     *                  false, only lists objects in the current directory.
+     * @return a list of S3 objects with their metadata, empty list if no objects
+     *         found
+     */
+    public List<S3Object> list(boolean recursive) {
         List<S3Object> result = Collections.emptyList();
         if (!key.endsWith("/")) {
-            result = listObjectsUnderPrefix(key);
+            result = listObjectsUnderPrefix(key, recursive);
         }
         if (result.isEmpty()) {
-            result = listObjectsUnderPrefix(key.endsWith("/") ? key : key + "/");
+            result = listObjectsUnderPrefix(key.endsWith("/") ? key : key + "/", recursive);
         }
         return result;
     }
@@ -92,14 +112,17 @@ public class S3 {
         return new S3ByteSources(this);
     }
 
-    private List<S3Object> listObjectsUnderPrefix(String prefix) {
-        ListObjectsV2Request request = ListObjectsV2Request.builder()
+    private List<S3Object> listObjectsUnderPrefix(String prefix, boolean recursive) {
+        ListObjectsV2Request.Builder requestBuilder = ListObjectsV2Request.builder()
                 .bucket(bucket)
-                .prefix(prefix)
-                .build();
+                .prefix(prefix);
+
+        if (!recursive) {
+            requestBuilder.delimiter("/");
+        }
 
         List<S3Object> results = new ArrayList<>();
-        s3Client.listObjectsV2Paginator(request)
+        s3Client.listObjectsV2Paginator(requestBuilder.build())
                 .contents()
                 .forEach(results::add);
         return results;

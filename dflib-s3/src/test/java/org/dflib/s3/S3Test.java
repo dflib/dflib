@@ -49,7 +49,7 @@ public class S3Test extends S3LocalTest {
 
         Map<String, String> contents = connector.sources().process((key, source) -> PROCESSOR.apply(source));
 
-        assertEquals(5, contents.size());
+        assertEquals(3, contents.size());
         assertEquals("test_data1", contents.get(ROOT + "/data1.txt"));
         assertEquals("test_data2", contents.get(ROOT + "/data2.txt"));
     }
@@ -79,6 +79,23 @@ public class S3Test extends S3LocalTest {
 
         List<S3Object> objects = connector.list();
 
+        assertEquals(3, objects.size());
+        assertTrue(objects.stream().anyMatch(o -> o.key().equals(ROOT + "/data1.txt")));
+        assertTrue(objects.stream().anyMatch(o -> o.key().equals(ROOT + "/data2.txt")));
+        assertTrue(objects.stream().anyMatch(o -> o.key().equals(ROOT + "/subdir")));
+        assertTrue(objects.stream().noneMatch(o -> o.key().contains("nested")));
+    }
+
+    @Test
+    void list_prefixMatch_recursive() {
+        S3 connector = S3.builder()
+                .client(testClient())
+                .bucket(TEST_BUCKET)
+                .key(ROOT)
+                .build();
+
+        List<S3Object> objects = connector.list(true);
+
         assertEquals(5, objects.size());
         assertTrue(objects.stream().anyMatch(o -> o.key().equals(ROOT + "/data1.txt")));
         assertTrue(objects.stream().anyMatch(o -> o.key().equals(ROOT + "/data2.txt")));
@@ -93,6 +110,23 @@ public class S3Test extends S3LocalTest {
                 .build();
 
         List<S3Object> objects = connector.list();
+
+        assertEquals(3, objects.size());
+        assertTrue(objects.stream().anyMatch(o -> o.key().equals(ROOT + "/data1.txt")));
+        assertTrue(objects.stream().anyMatch(o -> o.key().equals(ROOT + "/data2.txt")));
+        assertTrue(objects.stream().anyMatch(o -> o.key().equals(ROOT + "/subdir")));
+        assertTrue(objects.stream().noneMatch(o -> o.key().contains("nested")));
+    }
+
+    @Test
+    void list_prefixMatch_withSlash_recursive() {
+        S3 connector = S3.builder()
+                .client(testClient())
+                .bucket(TEST_BUCKET)
+                .key(ROOT + "/")
+                .build();
+
+        List<S3Object> objects = connector.list(true);
 
         assertEquals(5, objects.size());
         assertTrue(objects.stream().anyMatch(o -> o.key().equals(ROOT + "/data1.txt")));
@@ -119,7 +153,7 @@ public class S3Test extends S3LocalTest {
                 .key(ROOT + "/subdir")
                 .build();
 
-        List<S3Object> objects = connector.list();
+        List<S3Object> objects = connector.list(true);
 
         assertEquals(3, objects.size());
         assertTrue(objects.stream().anyMatch(o -> o.key().equals(ROOT + "/subdir")));
@@ -137,9 +171,9 @@ public class S3Test extends S3LocalTest {
 
         List<S3Object> objects = connector.list();
 
-        assertEquals(2, objects.size());
-        assertTrue(objects.stream().noneMatch(o -> o.key().equals(ROOT + "/subdir")));
+        assertEquals(1, objects.size());
         assertTrue(objects.stream().anyMatch(o -> o.key().equals(ROOT + "/subdir/data3.txt")));
-        assertTrue(objects.stream().anyMatch(o -> o.key().equals(ROOT + "/subdir/nested/data4.txt")));
+        assertTrue(objects.stream().noneMatch(o -> o.key().equals(ROOT + "/subdir")));
+        assertTrue(objects.stream().noneMatch(o -> o.key().equals(ROOT + "/subdir/nested/data4.txt")));
     }
 }
