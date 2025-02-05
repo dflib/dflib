@@ -40,23 +40,13 @@ public abstract class S3FormatTest extends S3LocalTest {
     }
 
     protected DataFrame saveToPath(String key) {
-        S3 connector = S3.builder()
-                .client(testClient())
-                .bucket(TEST_BUCKET)
-                .key(key)
-                .build();
-
+        S3 connector = S3.of(testClient(), TEST_BUCKET, key);
         ByteSource source = connector.source();
         return processor().apply(key, source);
     }
 
     protected Map<String, DataFrame> loadAllData(String key) {
-        S3 connector = S3.builder()
-                .client(testClient())
-                .bucket(TEST_BUCKET)
-                .key(key)
-                .build();
-
+        S3 connector = S3.of(testClient(), TEST_BUCKET, key);
         return connector.sources().process(processor());
     }
 }

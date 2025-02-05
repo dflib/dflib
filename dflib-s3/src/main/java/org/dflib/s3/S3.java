@@ -1,15 +1,17 @@
 package org.dflib.s3;
 
+import org.dflib.ByteSource;
+import org.dflib.ByteSources;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
+import software.amazon.awssdk.services.s3.model.S3Object;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import org.dflib.ByteSource;
-import org.dflib.ByteSources;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
-import software.amazon.awssdk.services.s3.model.S3Object;
 
 /**
  * An S3 connector that provides access to objects in an S3 bucket.
@@ -22,22 +24,41 @@ public class S3 {
     private final String bucket;
     private final String key;
 
-    S3(S3Client s3Client, String bucket, String key) {
+    private S3(S3Client s3Client, String bucket, String key) {
         this.s3Client = Objects.requireNonNull(s3Client);
         this.bucket = Objects.requireNonNull(bucket);
         this.key = Objects.requireNonNull(key);
     }
 
     /**
-     * Creates a new builder for configuring an S3 connector.
+     * Creates a new S3 connector with the default S3 client.
+     * <p>
+     * The default client is created using {@link S3Client#create()}, which uses the default configuration chain.
      */
-    public static S3Builder builder() {
-        return new S3Builder();
+    public static S3 of(String bucket, String key) {
+        return new S3(S3Client.create(), bucket, key);
     }
 
     /**
-     * Creates a new S3 connector by resolving a path relative to this connector's
-     * key.
+     * Creates a new S3 connector with the specified region and credentials.
+     */
+    public static S3 of(Region region, AwsCredentialsProvider credentialsProvider, String bucket, String key) {
+        S3Client client = S3Client.builder()
+                .region(region)
+                .credentialsProvider(credentialsProvider)
+                .build();
+        return new S3(client, bucket, key);
+    }
+
+    /**
+     * Creates a new S3 connector with the specified S3 client.
+     */
+    public static S3 of(S3Client s3Client, String bucket, String key) {
+        return new S3(s3Client, bucket, key);
+    }
+
+    /**
+     * Creates a new S3 connector by resolving a path relative to this connector's key.
      */
     public S3 resolve(String path) {
         if (path == null || path.isEmpty()) {
@@ -58,13 +79,10 @@ public class S3 {
     /**
      * Lists S3 objects matching this connector's key.
      * <p>
-     * For keys not ending with "/", tries to find objects with exact key first,
-     * then with key + "/" if none found. For keys ending with "/", lists all
-     * objects
-     * under that prefix.
+     * For keys not ending with "/", tries to find objects with exact key first, then with key + "/" if none found.
+     * For keys ending with "/", lists all objects under that prefix.
      *
-     * @return a list of S3 objects with their metadata, empty list if no objects
-     *         found
+     * @return a list of S3 objects with their metadata, empty list if no objects found
      */
     public List<S3Object> list() {
         return list(false);
@@ -73,15 +91,12 @@ public class S3 {
     /**
      * Lists S3 objects matching this connector's key.
      * <p>
-     * For keys not ending with "/", tries to find objects with exact key first,
-     * then with key + "/" if none found. For keys ending with "/", lists all
-     * objects
-     * under that prefix.
+     * For keys not ending with "/", tries to find objects with exact key first, then with key + "/" if none found.
+     * For keys ending with "/", lists all objects under that prefix.
      *
-     * @param recursive if true, lists objects in subdirectories recursively. If
-     *                  false, only lists objects in the current directory.
-     * @return a list of S3 objects with their metadata, empty list if no objects
-     *         found
+     * @param recursive if true, lists objects in subdirectories recursively.
+     *                  If false, only lists objects in the current directory.
+     * @return a list of S3 objects with their metadata, empty list if no objects found
      */
     public List<S3Object> list(boolean recursive) {
         List<S3Object> result = Collections.emptyList();

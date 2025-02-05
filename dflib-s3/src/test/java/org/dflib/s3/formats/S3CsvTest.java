@@ -3,11 +3,9 @@ package org.dflib.s3.formats;
 import org.dflib.ByteSource;
 import org.dflib.DataFrame;
 import org.dflib.csv.Csv;
-import org.dflib.s3.S3;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.Path;
 import java.util.Map;
 import java.util.function.BiFunction;
 

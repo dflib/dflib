@@ -3,6 +3,8 @@ package org.dflib.s3;
 import org.dflib.ByteSource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.model.S3Object;
 
 import java.nio.charset.StandardCharsets;
@@ -14,8 +16,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class S3Test extends S3LocalTest {
 
-    private static final String ROOT = "test";
-    private static final Function<ByteSource, String> PROCESSOR = source -> new String(source.asBytes(), StandardCharsets.UTF_8);
+    private static final String TEST_BUCKET = "test-bucket";
+    private static final String TEST_KEY = "test/data.csv";
+
+    private static final String ROOT = "plain";
+    private static final Function<ByteSource, String> PROCESSOR = source -> new String(source.asBytes(),
+            StandardCharsets.UTF_8);
 
     @BeforeAll
     static void setUp() {
@@ -27,12 +33,60 @@ public class S3Test extends S3LocalTest {
     }
 
     @Test
+    void builder_missingBucket() {
+        assertThrows(NullPointerException.class, () -> S3.of(testClient(), null, TEST_KEY));
+    }
+
+    @Test
+    void builder_missingKey() {
+        assertThrows(NullPointerException.class, () -> S3.of(testClient(), TEST_BUCKET, null));
+    }
+
+    @Test
+    void builder_withRegionAndCredentials() {
+        S3 connector = S3.of(Region.US_EAST_1, DefaultCredentialsProvider.create(), "accessKey", "secretKey");
+        assertNotNull(connector);
+    }
+
+    @Test
+    void source_uri() {
+        S3 connector = S3.of(testClient(), TEST_BUCKET, TEST_KEY);
+        assertEquals("s3://" + TEST_BUCKET + "/" + TEST_KEY, connector.source().uri().orElse(null));
+    }
+
+    @Test
+    void resolve_append() {
+        S3 connector = S3.of(testClient(), TEST_BUCKET, "base").resolve("subdir/file.csv");
+        assertEquals("s3://" + TEST_BUCKET + "/base/subdir/file.csv", connector.source().uri().orElse(null));
+    }
+
+    @Test
+    void resolve_appendWithLeadingSlash() {
+        S3 connector = S3.of(testClient(), TEST_BUCKET, "base").resolve("/subdir/file.csv");
+        assertEquals("s3://" + TEST_BUCKET + "/base/subdir/file.csv", connector.source().uri().orElse(null));
+    }
+
+    @Test
+    void resolve_appendToKeyWithTrailingSlash() {
+        S3 connector = S3.of(testClient(), TEST_BUCKET, "base/").resolve("subdir/file.csv");
+        assertEquals("s3://" + TEST_BUCKET + "/base/subdir/file.csv", connector.source().uri().orElse(null));
+    }
+
+    @Test
+    void resolve_empty() {
+        S3 connector = S3.of(testClient(), TEST_BUCKET, "base/").resolve("");
+        assertEquals("s3://" + TEST_BUCKET + "/base/", connector.source().uri().orElse(null));
+    }
+
+    @Test
+    void resolve_null() {
+        S3 connector = S3.of(testClient(), TEST_BUCKET, "base").resolve(null);
+        assertEquals("s3://" + TEST_BUCKET + "/base", connector.source().uri().orElse(null));
+    }
+
+    @Test
     void source_content() {
-        S3 connector = S3.builder()
-                .client(testClient())
-                .bucket(TEST_BUCKET)
-                .key(ROOT + "/data1.txt")
-                .build();
+        S3 connector = S3.of(testClient(), TEST_BUCKET, ROOT + "/data1.txt");
 
         String data = PROCESSOR.apply(connector.source());
 
@@ -41,11 +95,7 @@ public class S3Test extends S3LocalTest {
 
     @Test
     void sources_content() {
-        S3 connector = S3.builder()
-                .client(testClient())
-                .bucket(TEST_BUCKET)
-                .key(ROOT)
-                .build();
+        S3 connector = S3.of(testClient(), TEST_BUCKET, ROOT);
 
         Map<String, String> contents = connector.sources().process((key, source) -> PROCESSOR.apply(source));
 
@@ -56,11 +106,7 @@ public class S3Test extends S3LocalTest {
 
     @Test
     void list_exactKeyMatch() {
-        S3 connector = S3.builder()
-                .client(testClient())
-                .bucket(TEST_BUCKET)
-                .key(ROOT + "/data1.txt")
-                .build();
+        S3 connector = S3.of(testClient(), TEST_BUCKET, ROOT + "/data1.txt");
 
         List<S3Object> objects = connector.list();
 
@@ -71,11 +117,7 @@ public class S3Test extends S3LocalTest {
 
     @Test
     void list_prefixMatch() {
-        S3 connector = S3.builder()
-                .client(testClient())
-                .bucket(TEST_BUCKET)
-                .key(ROOT)
-                .build();
+        S3 connector = S3.of(testClient(), TEST_BUCKET, ROOT);
 
         List<S3Object> objects = connector.list();
 
@@ -88,11 +130,7 @@ public class S3Test extends S3LocalTest {
 
     @Test
     void list_prefixMatch_recursive() {
-        S3 connector = S3.builder()
-                .client(testClient())
-                .bucket(TEST_BUCKET)
-                .key(ROOT)
-                .build();
+        S3 connector = S3.of(testClient(), TEST_BUCKET, ROOT);
 
         List<S3Object> objects = connector.list(true);
 
@@ -103,11 +141,7 @@ public class S3Test extends S3LocalTest {
 
     @Test
     void list_prefixMatch_withSlash() {
-        S3 connector = S3.builder()
-                .client(testClient())
-                .bucket(TEST_BUCKET)
-                .key(ROOT + "/")
-                .build();
+        S3 connector = S3.of(testClient(), TEST_BUCKET, ROOT + "/");
 
         List<S3Object> objects = connector.list();
 
@@ -120,11 +154,7 @@ public class S3Test extends S3LocalTest {
 
     @Test
     void list_prefixMatch_withSlash_recursive() {
-        S3 connector = S3.builder()
-                .client(testClient())
-                .bucket(TEST_BUCKET)
-                .key(ROOT + "/")
-                .build();
+        S3 connector = S3.of(testClient(), TEST_BUCKET, ROOT + "/");
 
         List<S3Object> objects = connector.list(true);
 
@@ -135,11 +165,7 @@ public class S3Test extends S3LocalTest {
 
     @Test
     void list_noMatch() {
-        S3 connector = S3.builder()
-                .client(testClient())
-                .bucket(TEST_BUCKET)
-                .key("nonexistent")
-                .build();
+        S3 connector = S3.of(testClient(), TEST_BUCKET, "nonexistent");
 
         List<S3Object> objects = connector.list();
         assertTrue(objects.isEmpty());
@@ -147,11 +173,7 @@ public class S3Test extends S3LocalTest {
 
     @Test
     void list_mixedMatch() {
-        S3 connector = S3.builder()
-                .client(testClient())
-                .bucket(TEST_BUCKET)
-                .key(ROOT + "/subdir")
-                .build();
+        S3 connector = S3.of(testClient(), TEST_BUCKET, ROOT + "/subdir");
 
         List<S3Object> objects = connector.list(true);
 
@@ -163,17 +185,13 @@ public class S3Test extends S3LocalTest {
 
     @Test
     void list_mixedMatch_withSlash() {
-        S3 connector = S3.builder()
-                .client(testClient())
-                .bucket(TEST_BUCKET)
-                .key(ROOT + "/subdir/")
-                .build();
+        S3 connector = S3.of(testClient(), TEST_BUCKET, ROOT + "/subdir/");
 
-        List<S3Object> objects = connector.list();
+        List<S3Object> objects = connector.list(true);
 
-        assertEquals(1, objects.size());
+        assertEquals(2, objects.size());
         assertTrue(objects.stream().anyMatch(o -> o.key().equals(ROOT + "/subdir/data3.txt")));
+        assertTrue(objects.stream().anyMatch(o -> o.key().equals(ROOT + "/subdir/nested/data4.txt")));
         assertTrue(objects.stream().noneMatch(o -> o.key().equals(ROOT + "/subdir")));
-        assertTrue(objects.stream().noneMatch(o -> o.key().equals(ROOT + "/subdir/nested/data4.txt")));
     }
 }
