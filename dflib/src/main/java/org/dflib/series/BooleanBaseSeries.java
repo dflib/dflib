@@ -122,25 +122,23 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
             return this;
         }
 
-        // TODO: use SeriesConcat
-
         int size = size();
         int h = size;
         for (BooleanSeries s : other) {
             h += s.size();
         }
 
-        boolean[] data = new boolean[h];
-        copyToBool(data, 0, 0, size);
+        BoolAccum accum = new BoolAccum(h);
+        accum.fill(this, 0, 0, size);
 
         int offset = size;
         for (BooleanSeries s : other) {
             int len = s.size();
-            s.copyToBool(data, 0, offset, len);
+            accum.fill(s, 0, offset, len);
             offset += len;
         }
 
-        return new BooleanArraySeries(data);
+        return accum.toSeries();
     }
 
     @Override
@@ -171,8 +169,6 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         if (other.length == 0) {
             return this;
         }
-
-        // TODO: use SeriesConcat
 
         Series<Boolean>[] combined = new Series[other.length + 1];
         combined[0] = this;

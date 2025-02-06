@@ -13,7 +13,6 @@ import org.dflib.series.FalseSeries;
  *
  * @see BooleanBitsetSeries
  * @see BoolAccum
- *
  * @since 2.0.0
  */
 public class BoolBuilder {
@@ -28,28 +27,28 @@ public class BoolBuilder {
      * Generator function will be called with values from 0 to size - 1 as a parameter.
      *
      * @param generator function that generates values, must be capable of providing at least {@code size} elements
-     * @param size target size of the generated series
+     * @param size      target size of the generated series
      * @return boolean series
      */
     public static BooleanSeries buildSeries(BoolGenerator generator, int size) {
         if (size == 0) {
             return new BooleanBitsetSeries(new long[0], 0);
         }
+
         long[] data = fill(generator, size);
-        if(data.length == 0) {
-            return new FalseSeries(size);
-        }
-        return new BooleanBitsetSeries(data, size);
+        return data.length == 0
+                ? new FalseSeries(size)
+                : new BooleanBitsetSeries(data, size);
     }
 
     private static long[] fill(BoolGenerator generator, int size) {
-        int i=0;
-        while(i < size && !generator.get(i)) {
+        int i = 0;
+        while (i < size && !generator.get(i)) {
             // noop, just skip initial `false` values
             i++;
         }
         // no values at all
-        if(i == size){
+        if (i == size) {
             return new long[0];
         }
 

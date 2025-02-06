@@ -5,7 +5,6 @@ import org.dflib.builder.BoolBuilder;
 import org.dflib.builder.SeriesByElementBuilder;
 import org.dflib.op.ReplaceOp;
 import org.dflib.series.ArraySeries;
-import org.dflib.series.BooleanArraySeries;
 import org.dflib.series.ColumnMappedSeries;
 import org.dflib.series.DoubleArraySeries;
 import org.dflib.series.DoubleSingleValueSeries;

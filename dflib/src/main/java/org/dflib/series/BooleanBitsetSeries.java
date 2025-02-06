@@ -153,7 +153,8 @@ public class BooleanBitsetSeries extends BooleanBaseSeries {
         int h = size;
         for (BooleanSeries s : other) {
             if(!(s instanceof BooleanBitsetSeries)) {
-                // TODO: sanity check, shouldn't be a case anymore, so may as well just throw an exception
+                // most "other" will be BooleanBitsetSeries too, but there are exceptions
+                // (indexed series, TrueSeries, FalseSeries)
                 return super.concatBool(other);
             }
             h += s.size();
