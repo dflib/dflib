@@ -1,5 +1,6 @@
 ## Release 2.0.0
 
+* #326 Memory-efficient bitset-based BooleanSeries
 * #359 Exp: IllegalArgumentException on arithmetics ops following aggregation
 * #361 Introduce aggregating semantics in Exp
 * #372 NumExp.as() should return a NumExp
