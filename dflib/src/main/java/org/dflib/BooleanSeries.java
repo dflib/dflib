@@ -1,9 +1,9 @@
 package org.dflib;
 
 import org.dflib.builder.BoolAccum;
+import org.dflib.builder.BoolBuilder;
 import org.dflib.op.BooleanSeriesOps;
 import org.dflib.op.ReplaceOp;
-import org.dflib.series.BooleanArraySeries;
 import org.dflib.series.BooleanIndexedSeries;
 import org.dflib.series.FalseSeries;
 import org.dflib.series.TrueSeries;
@@ -282,14 +282,8 @@ public interface BooleanSeries extends Series<Boolean> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
         BooleanSeries anotherBool = (BooleanSeries) s;
-
-        for (int i = 0; i < len; i++) {
-            data[i] = getBool(i) == anotherBool.getBool(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getBool(i) == anotherBool.getBool(i), len);
     }
 
     @Override
@@ -303,13 +297,7 @@ public interface BooleanSeries extends Series<Boolean> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
         BooleanSeries anotherBool = (BooleanSeries) s;
-
-        for (int i = 0; i < len; i++) {
-            data[i] = getBool(i) != anotherBool.getBool(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getBool(i) != anotherBool.getBool(i), len);
     }
 }

@@ -1,8 +1,8 @@
 package org.dflib;
 
+import org.dflib.builder.BoolBuilder;
 import org.dflib.f.FloatPredicate;
 import org.dflib.op.ReplaceOp;
-import org.dflib.series.BooleanArraySeries;
 import org.dflib.series.FalseSeries;
 import org.dflib.series.FloatArraySeries;
 import org.dflib.series.FloatIndexedSeries;
@@ -305,14 +305,8 @@ public interface FloatSeries extends Series<Float> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
         FloatSeries as = (FloatSeries) s;
-
-        for (int i = 0; i < len; i++) {
-            data[i] = getFloat(i) == as.getFloat(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getFloat(i) == as.getFloat(i), len);
     }
 
     @Override
@@ -326,14 +320,8 @@ public interface FloatSeries extends Series<Float> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
         FloatSeries as = (FloatSeries) s;
-
-        for (int i = 0; i < len; i++) {
-            data[i] = getFloat(i) != as.getFloat(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getFloat(i) != as.getFloat(i), len);
     }
 
     /**
@@ -454,12 +442,7 @@ public interface FloatSeries extends Series<Float> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = this.getFloat(i) < s.getFloat(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getFloat(i) < s.getFloat(i), len);
     }
 
     default BooleanSeries le(FloatSeries s) {
@@ -468,12 +451,7 @@ public interface FloatSeries extends Series<Float> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = this.getFloat(i) <= s.getFloat(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getFloat(i) <= s.getFloat(i), len);
     }
 
     default BooleanSeries gt(FloatSeries s) {
@@ -482,12 +460,7 @@ public interface FloatSeries extends Series<Float> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = this.getFloat(i) > s.getFloat(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getFloat(i) > s.getFloat(i), len);
     }
 
 
@@ -497,12 +470,7 @@ public interface FloatSeries extends Series<Float> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = this.getFloat(i) >= s.getFloat(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getFloat(i) >= s.getFloat(i), len);
     }
 
     default BooleanSeries between(FloatSeries from, FloatSeries to) {
@@ -513,13 +481,9 @@ public interface FloatSeries extends Series<Float> {
             throw new IllegalArgumentException("'to' Series size " + to.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            float d = this.getFloat(i);
-            data[i] = d >= from.getFloat(i) && d <= to.getFloat(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> {
+            float v = this.getFloat(i);
+            return v >= from.getFloat(i) && v <= to.getFloat(i);
+        }, len);
     }
 }

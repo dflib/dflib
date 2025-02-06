@@ -1,7 +1,7 @@
 package org.dflib;
 
+import org.dflib.builder.BoolBuilder;
 import org.dflib.op.ReplaceOp;
-import org.dflib.series.BooleanArraySeries;
 import org.dflib.series.FalseSeries;
 import org.dflib.series.LongArraySeries;
 import org.dflib.series.LongIndexedSeries;
@@ -314,14 +314,8 @@ public interface LongSeries extends Series<Long> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-        LongSeries anotherInt = (LongSeries) s;
-
-        for (int i = 0; i < len; i++) {
-            data[i] = getLong(i) == anotherInt.getLong(i);
-        }
-
-        return new BooleanArraySeries(data);
+        LongSeries anotherLong = (LongSeries) s;
+        return BoolBuilder.buildSeries(i -> getLong(i) == anotherLong.getLong(i), len);
     }
 
     @Override
@@ -335,14 +329,8 @@ public interface LongSeries extends Series<Long> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-        LongSeries anotherInt = (LongSeries) s;
-
-        for (int i = 0; i < len; i++) {
-            data[i] = getLong(i) != anotherInt.getLong(i);
-        }
-
-        return new BooleanArraySeries(data);
+        LongSeries anotherLong = (LongSeries) s;
+        return BoolBuilder.buildSeries(i -> getLong(i) != anotherLong.getLong(i), len);
     }
 
     /**
@@ -473,13 +461,7 @@ public interface LongSeries extends Series<Long> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            data[i] = this.getLong(i) < s.getLong(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getLong(i) < s.getLong(i), len);
     }
 
 
@@ -489,13 +471,7 @@ public interface LongSeries extends Series<Long> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            data[i] = this.getLong(i) <= s.getLong(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getLong(i) <= s.getLong(i), len);
     }
 
 
@@ -505,13 +481,7 @@ public interface LongSeries extends Series<Long> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            data[i] = this.getLong(i) > s.getLong(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getLong(i) > s.getLong(i), len);
     }
 
 
@@ -521,13 +491,7 @@ public interface LongSeries extends Series<Long> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            data[i] = this.getLong(i) >= s.getLong(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getLong(i) >= s.getLong(i), len);
     }
 
 
@@ -539,13 +503,9 @@ public interface LongSeries extends Series<Long> {
             throw new IllegalArgumentException("'to' Series size " + to.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            long v = this.getLong(i);
-            data[i] = v >= from.getLong(i) && v <= to.getLong(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> {
+           long v = getLong(i);
+           return v >= from.getLong(i) && v <= to.getLong(i);
+        }, len);
     }
 }

@@ -11,6 +11,7 @@ import org.dflib.Sorter;
 import org.dflib.ValueMapper;
 import org.dflib.ValueToRowMapper;
 import org.dflib.builder.BoolAccum;
+import org.dflib.builder.BoolBuilder;
 import org.dflib.builder.IntAccum;
 import org.dflib.builder.ObjectAccum;
 import org.dflib.concat.SeriesConcat;
@@ -110,18 +111,9 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
     private BooleanSeries selectAsBooleanSeries(IntSeries positions) {
 
-        int h = positions.size();
-
-        boolean[] data = new boolean[h];
-
-        for (int i = 0; i < h; i++) {
-            // unlike SelectSeries, we do not expect negative ints in the index.
-            // So if it happens, let it fall through to "getLong()" and fail there
-            int index = positions.getInt(i);
-            data[i] = getBool(index);
-        }
-
-        return new BooleanArraySeries(data);
+        // unlike SelectSeries, we do not expect negative ints in the index.
+        // So if it happens, let it fall through to "getLong()" and fail there
+        return BoolBuilder.buildSeries(i -> getBool(positions.getInt(i)), positions.size());
     }
 
     @Override
@@ -347,34 +339,15 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     private BooleanSeries replaceBoolean(BooleanSeries condition, boolean with) {
         int len = size();
         int r = Math.min(len, condition.size());
-        boolean[] bools = new boolean[len];
 
-        for (int i = 0; i < r; i++) {
-            bools[i] = condition.getBool(i) ? with : getBool(i);
-        }
-
-        for (int i = r; i < len; i++) {
-            bools[i] = getBool(i);
-        }
-
-        return new BooleanArraySeries(bools);
+        return BoolBuilder.buildSeries(i -> i < r && condition.getBool(i) ? with : getBool(i), len);
     }
 
     private BooleanSeries replaceNoMatchBoolean(BooleanSeries condition, boolean with) {
-
         int len = size();
         int r = Math.min(len, condition.size());
-        boolean[] bools = new boolean[len];
 
-        for (int i = 0; i < r; i++) {
-            bools[i] = condition.getBool(i) ? getBool(i) : with;
-        }
-
-        if (len > r) {
-            Arrays.fill(bools, r, len, with);
-        }
-
-        return new BooleanArraySeries(bools);
+        return BoolBuilder.buildSeries(i -> i < r && condition.getBool(i) ? getBool(i) : with, len);
     }
 
     private Series<Boolean> nullify(BooleanSeries condition) {
@@ -428,12 +401,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
             return new FalseSeries(len);
         }
 
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = set.contains(get(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> set.contains(get(i)), len);
     }
 
     @Override
@@ -455,12 +423,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
             return new TrueSeries(len);
         }
 
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = !set.contains(get(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> !set.contains(get(i)), len);
     }
 
     @Override
@@ -497,9 +460,11 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         }
 
         if (iTrue < 0) {
-            return new BooleanArraySeries(iFalse < 0 ? new boolean[0] : new boolean[]{false});
+            return iFalse < 0 ? Series.ofBool() : Series.ofBool(false);
         } else {
-            return new BooleanArraySeries(iFalse < 0 ? new boolean[]{true} : iTrue < iFalse ? new boolean[]{true, false} : new boolean[]{false, true});
+            return iFalse < 0
+                    ? Series.ofBool(true)
+                    : iTrue < iFalse ? Series.ofBool(true, false) : Series.ofBool(false, true);
         }
     }
 
@@ -520,12 +485,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
             return this;
         }
 
-        boolean[] not = new boolean[size];
-        for (int i = 0; i < size; i++) {
-            not[i] = !getBool(i);
-        }
-
-        return new BooleanArraySeries(not);
+        return BoolBuilder.buildSeries(i -> !getBool(i), size);
     }
 
     @Override

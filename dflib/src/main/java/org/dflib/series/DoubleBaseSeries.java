@@ -11,6 +11,7 @@ import org.dflib.SeriesGroupBy;
 import org.dflib.Sorter;
 import org.dflib.ValueMapper;
 import org.dflib.ValueToRowMapper;
+import org.dflib.builder.BoolBuilder;
 import org.dflib.builder.DoubleAccum;
 import org.dflib.builder.IntAccum;
 import org.dflib.builder.ObjectAccum;
@@ -300,15 +301,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
 
     @Override
     public BooleanSeries locateDouble(DoublePredicate predicate) {
-        int len = size();
-
-        boolean[] data = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            data[i] = predicate.test(getDouble(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> predicate.test(getDouble(i)), size());
     }
 
     @Override
@@ -487,12 +480,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
             return new FalseSeries(len);
         }
 
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = set.contains(get(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> set.contains(get(i)), len);
     }
 
     @Override
@@ -515,12 +503,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
             return new TrueSeries(len);
         }
 
-        boolean[] data = new boolean[len];
-        for (int i = 0; i < len; i++) {
-            data[i] = !set.contains(get(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> !set.contains(get(i)), len);
     }
 
     @Override

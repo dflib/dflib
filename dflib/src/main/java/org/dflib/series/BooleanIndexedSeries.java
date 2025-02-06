@@ -3,6 +3,7 @@ package org.dflib.series;
 import org.dflib.BooleanSeries;
 import org.dflib.IntSeries;
 import org.dflib.Series;
+import org.dflib.builder.BoolBuilder;
 
 import java.util.Objects;
 
@@ -132,16 +133,8 @@ public class BooleanIndexedSeries extends BooleanBaseSeries {
         }
 
         BooleanSeries materialize() {
-
             int h = includePositions.size();
-
-            boolean[] data = new boolean[h];
-
-            for (int i = 0; i < h; i++) {
-                data[i] = getBool(i);
-            }
-
-            return new BooleanArraySeries(data);
+            return BoolBuilder.buildSeries(this::getBool, h);
         }
     }
 }

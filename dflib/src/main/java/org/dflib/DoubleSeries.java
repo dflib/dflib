@@ -1,7 +1,7 @@
 package org.dflib;
 
+import org.dflib.builder.BoolBuilder;
 import org.dflib.op.ReplaceOp;
-import org.dflib.series.BooleanArraySeries;
 import org.dflib.series.DoubleArraySeries;
 import org.dflib.series.DoubleIndexedSeries;
 import org.dflib.series.FalseSeries;
@@ -308,14 +308,8 @@ public interface DoubleSeries extends Series<Double> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
         DoubleSeries as = (DoubleSeries) s;
-
-        for (int i = 0; i < len; i++) {
-            data[i] = getDouble(i) == as.getDouble(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getDouble(i) == as.getDouble(i), len);
     }
 
     @Override
@@ -329,14 +323,8 @@ public interface DoubleSeries extends Series<Double> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
         DoubleSeries as = (DoubleSeries) s;
-
-        for (int i = 0; i < len; i++) {
-            data[i] = getDouble(i) != as.getDouble(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getDouble(i) != as.getDouble(i), len);
     }
 
     /**
@@ -463,13 +451,7 @@ public interface DoubleSeries extends Series<Double> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            data[i] = this.getDouble(i) < s.getDouble(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getDouble(i) < s.getDouble(i), len);
     }
 
     default BooleanSeries le(DoubleSeries s) {
@@ -478,13 +460,7 @@ public interface DoubleSeries extends Series<Double> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            data[i] = this.getDouble(i) <= s.getDouble(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getDouble(i) <= s.getDouble(i), len);
     }
 
     default BooleanSeries gt(DoubleSeries s) {
@@ -493,13 +469,7 @@ public interface DoubleSeries extends Series<Double> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            data[i] = this.getDouble(i) > s.getDouble(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getDouble(i) > s.getDouble(i), len);
     }
 
 
@@ -509,13 +479,7 @@ public interface DoubleSeries extends Series<Double> {
             throw new IllegalArgumentException("Another Series size " + s.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            data[i] = this.getDouble(i) >= s.getDouble(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> getDouble(i) >= s.getDouble(i), len);
     }
 
     default BooleanSeries between(DoubleSeries from, DoubleSeries to) {
@@ -526,13 +490,9 @@ public interface DoubleSeries extends Series<Double> {
             throw new IllegalArgumentException("'to' Series size " + to.size() + " is not the same as this size " + len);
         }
 
-        boolean[] data = new boolean[len];
-
-        for (int i = 0; i < len; i++) {
-            double d = this.getDouble(i);
-            data[i] = d >= from.getDouble(i) && d <= to.getDouble(i);
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> {
+            double v = this.getDouble(i);
+            return v >= from.getDouble(i) && v <= to.getDouble(i);
+        }, len);
     }
 }

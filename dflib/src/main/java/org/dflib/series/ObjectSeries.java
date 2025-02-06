@@ -10,6 +10,7 @@ import org.dflib.SeriesGroupBy;
 import org.dflib.Sorter;
 import org.dflib.ValueMapper;
 import org.dflib.ValueToRowMapper;
+import org.dflib.builder.BoolBuilder;
 import org.dflib.builder.IntAccum;
 import org.dflib.builder.ObjectAccum;
 import org.dflib.concat.SeriesConcat;
@@ -356,26 +357,12 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
     @Override
     public BooleanSeries isNull() {
-        int s = size();
-
-        boolean[] data = new boolean[s];
-        for (int i = 0; i < s; i++) {
-            data[i] = get(i) == null;
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> get(i) == null, size());
     }
 
     @Override
     public BooleanSeries isNotNull() {
-        int s = size();
-
-        boolean[] data = new boolean[s];
-        for (int i = 0; i < s; i++) {
-            data[i] = get(i) != null;
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> get(i) != null, size());
     }
 
     @Override
@@ -388,13 +375,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
         }
 
         Set<?> set = new HashSet<>(Arrays.asList(values));
-
-        boolean[] data = new boolean[s];
-        for (int i = 0; i < s; i++) {
-            data[i] = set.contains(get(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> set.contains(get(i)), s);
     }
 
     @Override
@@ -407,13 +388,7 @@ public abstract class ObjectSeries<T> implements Series<T> {
         }
 
         Set<?> set = new HashSet<>(Arrays.asList(values));
-
-        boolean[] data = new boolean[s];
-        for (int i = 0; i < s; i++) {
-            data[i] = !set.contains(get(i));
-        }
-
-        return new BooleanArraySeries(data);
+        return BoolBuilder.buildSeries(i -> !set.contains(get(i)), s);
     }
 
     @Override
