@@ -310,9 +310,6 @@ class ExpParserUtils {
         if (lowerToken.startsWith("0b", offset)) {
             return 2;
         }
-        if (!token.contains(".") && lowerToken.startsWith("0", offset) && token.length() > offset + 1) {
-            return 8;
-        }
         return 10;
     }
 

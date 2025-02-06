@@ -25,7 +25,7 @@ root returns [Exp<?> exp]
     ;
 
 /**
- * An expression, which can be of various types including null, aggregate, boolean, numeric, string, temporal, or special functions.
+ * An expression, which can be of various types including null, aggregate, boolean, numeric, string, temporal, or type-agnostic functions.
  * An expression represents a single value or a combination of values, operators, and functions.
  */
 expression returns [Exp<?> exp]
@@ -35,7 +35,7 @@ expression returns [Exp<?> exp]
     | temporalExp { $exp = $temporalExp.exp; }
     | genericExp { $exp = $genericExp.exp; }
     | aggregateFn { $exp = $aggregateFn.exp; }
-    | specialFn { $exp = $specialFn.exp; }
+    | genericFn { $exp = $genericFn.exp; }
     | NULL { $exp = val(null); }
     | '(' expression ')' { $exp = $expression.exp; }
     ;
@@ -183,7 +183,7 @@ integerScalar returns [Number value]
  * A floating-point scalar value of any scale and precision.
  */
 floatingPointScalar returns [Number value]
-    : FLOATING_POINT_LITERAL { $value = parseFloatingPointValue($text); }
+    : FLOAT_LITERAL { $value = parseFloatingPointValue($text); }
     ;
 
 /**
@@ -928,9 +928,9 @@ castAsOffsetDateTime returns [OffsetDateTimeExp exp]
 /// **Special functions**
 
 /**
- * Special functions that provide control flow, data manipulation, or other specialized operations.
+ * Special functions that provide control flow, data manipulation, or other type-agnostic operations.
  */
-specialFn returns [Exp<?> exp]
+genericFn returns [Exp<?> exp]
     : ifExp { $exp = $ifExp.exp; }
     | ifNull { $exp = $ifNull.exp; }
     | split { $exp = $split.exp; }
@@ -1014,7 +1014,7 @@ shift returns [Exp<?> exp]
 genericShiftExp returns [Exp<?> exp]
     : genericExp { $exp = $genericExp.exp; }
     | aggregateFn { $exp = $aggregateFn.exp; }
-    | specialFn { $exp = $specialFn.exp; }
+    | genericFn { $exp = $genericFn.exp; }
     // TODO: temporal exp here, or a special case in the shift rule
     ;
 
@@ -1428,23 +1428,17 @@ FALSE: 'false';
 /**
  * Matches an integer literal in decimal, hexadecimal, octal, or binary format.
  */
+//@ doc:inline
 INTEGER_LITERAL
-    : [+-]? (
-          DECIMAL_LITERAL
-        | HEX_LITERAL
-        | OCTAL_LITERAL
-        | BINARY_LITERAL
-    ) [iIlLhH]?
+    : [+-]? ( DEC_LITERAL | HEX_LITERAL ) [iIlLhH]?
     ;
 
 /**
  * Matches a floating-point literal, supporting both decimal and hexadecimal representations.
  */
-FLOATING_POINT_LITERAL
-    : [+-]? (
-          DECIMAL_FLOATING_POINT_LITERAL
-        | HEXADECIMAL_FLOATING_POINT_LITERAL
-    )
+//@ doc:inline
+FLOAT_LITERAL
+    : [+-]? ( DEC_FLOAT_LITERAL| HEX_FLOAT_LITERAL )
     ;
 
 /**
@@ -1462,29 +1456,23 @@ DOUBLE_QUOTE_STRING_LITERAL: '"' ('\\"' | ~["] | UNICODE_ESCAPE)* '"';
  */
 IDENTIFIER: IDENTIFIER_START IDENTIFIER_PART*;
 
-fragment DECIMAL_LITERAL: '0' | [1-9] ([0-9_]* [0-9])?;
-
-fragment DECIMAL_LITERAL_LEADING_ZEROS: [0-9] ([0-9_]* [0-9])?;
+fragment DEC_LITERAL: [0-9] ([0-9_]* [0-9])?;
 
 fragment HEX_LITERAL: '0' [xX] HEX_DIGITS;
 
-fragment OCTAL_LITERAL: '0' [0-7] ([0-7_]* [0-7])?;
-
-fragment BINARY_LITERAL: '0' [bB] [01] ([01_]* [01])?;
-
-fragment DECIMAL_FLOATING_POINT_LITERAL
-    : DECIMAL_LITERAL_LEADING_ZEROS DECIMAL_EXPONENT? [fFdDmM]?
-    | DECIMAL_LITERAL_LEADING_ZEROS? '.' DECIMAL_LITERAL_LEADING_ZEROS DECIMAL_EXPONENT? [fFdDmM]?
+fragment DEC_FLOAT_LITERAL
+    : DEC_LITERAL DEC_EXPONENT? [fFdDmM]?
+    | DEC_LITERAL? '.' DEC_LITERAL DEC_EXPONENT? [fFdDmM]?
     ;
 
-fragment DECIMAL_EXPONENT: [eE] [+-]? DECIMAL_LITERAL;
+fragment DEC_EXPONENT: [eE] [+-]? DEC_LITERAL;
 
-fragment HEXADECIMAL_FLOATING_POINT_LITERAL
-    : HEX_LITERAL '.'? HEXADECIMAL_EXPONENT [fFdDmM]?
-    | '0' [xX] HEX_DIGITS? '.' HEX_DIGITS HEXADECIMAL_EXPONENT [fFdDmM]?
+fragment HEX_FLOAT_LITERAL
+    : HEX_LITERAL '.'? HEX_EXPONENT [fFdDmM]?
+    | '0' [xX] HEX_DIGITS? '.' HEX_DIGITS HEX_EXPONENT [fFdDmM]?
     ;
 
-fragment HEXADECIMAL_EXPONENT: [pP] [+-]? DECIMAL_LITERAL;
+fragment HEX_EXPONENT: [pP] [+-]? DEC_LITERAL;
 
 fragment HEX_DIGITS: [0-9a-fA-F] ([0-9a-fA-F_]* [0-9a-fA-F])?;
 

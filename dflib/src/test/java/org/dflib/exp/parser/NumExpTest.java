@@ -78,12 +78,6 @@ public class NumExpTest {
                 arguments("0xabc", Exp.$val(0xABC)),
                 arguments("-0xFF", Exp.$val(-0xFF)),
                 arguments("+0x10", Exp.$val(0x10)),
-                arguments("0b1010", Exp.$val(0b1010)),
-                arguments("0B1101", Exp.$val(0b1101)),
-                arguments("-0b11111111", Exp.$val(-0b11111111)),
-                arguments("+0b1", Exp.$val(0b1)),
-                arguments("0123", Exp.$val(0123)),
-                arguments("-077", Exp.$val(-077)),
                 arguments("2147483647", Exp.$val(Integer.MAX_VALUE)),
                 arguments("-2147483648", Exp.$val(Integer.MIN_VALUE)),
                 arguments("000", Exp.$val(0)),
@@ -124,8 +118,8 @@ public class NumExpTest {
                 arguments("999_999_987_654_321", Exp.$val(999_999_987_654_321L)),
                 arguments("0x999999999999A3F", Exp.$val(0x999999999999A3FL)),
                 arguments("-0xFFFFFFFFFFF", Exp.$val(-0xFFFFFFFFFFFL)),
-                arguments("0123123123123123", Exp.$val(0123123123123123L)),
-                arguments("-0123123123123123", Exp.$val(-0123123123123123L)),
+                arguments("0123123123123123", Exp.$val(123123123123123L)),
+                arguments("-0123123123123123", Exp.$val(-123123123123123L)),
                 arguments("9223372036854775807", Exp.$val(Long.MAX_VALUE)),
                 arguments("-9223372036854775808", Exp.$val(Long.MIN_VALUE))
         );
@@ -160,8 +154,8 @@ public class NumExpTest {
                 arguments("999_999_999_999_987_654_321", Exp.$val(new BigInteger("999999999999987654321"))),
                 arguments("0x999999999999999999A3F", Exp.$val(new BigInteger("11605687868300440077179455"))),
                 arguments("-0xFFFFFFFFFFFFFFFFF", Exp.$val(new BigInteger("-295147905179352825855"))),
-                arguments("0123123123123123123123123", Exp.$val(new BigInteger("767038000152995210835"))),
-                arguments("-0123123123123123123123123", Exp.$val(new BigInteger("-767038000152995210835")))
+                arguments("0123123123123123123123123", Exp.$val(new BigInteger("123123123123123123123123"))),
+                arguments("-0123123123123123123123123", Exp.$val(new BigInteger("-123123123123123123123123")))
         );
     }
 
