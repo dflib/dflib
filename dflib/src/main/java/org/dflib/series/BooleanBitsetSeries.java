@@ -144,6 +144,45 @@ public class BooleanBitsetSeries extends BooleanBaseSeries {
     }
 
     @Override
+    public BooleanSeries concatBool(BooleanSeries... other) {
+        if (other.length == 0) {
+            return this;
+        }
+
+        int size = size();
+        int h = size;
+        for (BooleanSeries s : other) {
+            if(!(s instanceof BooleanBitsetSeries)) {
+                // TODO: sanity check, shouldn't be a case anymore, so may as well just throw an exception
+                return super.concatBool(other);
+            }
+            h += s.size();
+        }
+
+        long[] result = new long[arraySize(h)];
+        // copy this series as is
+        System.arraycopy(this.data, 0, result, 0, this.data.length);
+
+        // shift and pack other series
+        int currentSizeInBits = size;
+        for(BooleanSeries s : other) {
+            BooleanBitsetSeries nextBitsetSeries = (BooleanBitsetSeries) s;
+            int bitsLeft = nextBitsetSeries.size();
+            for(long nextLong : nextBitsetSeries.data) {
+                int nextIndex = arraySize(currentSizeInBits);
+                result[nextIndex - 1] |= nextLong << currentSizeInBits;
+                if(nextIndex < result.length) {
+                    result[nextIndex] |= nextLong >>> -currentSizeInBits;
+                }
+                currentSizeInBits += Math.min(bitsLeft, Long.SIZE);
+                bitsLeft -= Long.SIZE;
+            }
+        }
+
+        return new BooleanBitsetSeries(result, h);
+    }
+
+    @Override
     public BooleanSeries sort(Sorter... sorters) {
         return selectAsBooleanSeries(new SeriesSorter<>(this).sortIndex(sorters));
     }
