@@ -132,6 +132,56 @@ public interface FloatSeries extends Series<Float> {
         return Series.ofFloat(expanded);
     }
 
+    @Override
+    default Series<?> insert(int pos, Object... values) {
+
+        int ilen = values.length;
+        float[] floats = new float[ilen];
+        for (int i = 0; i < ilen; i++) {
+            if (values[i] instanceof Float) {
+                floats[i] = (Float) values[i];
+            } else {
+                return Series.super.insert(pos, values);
+            }
+        }
+
+        return insertFloat(pos, floats);
+    }
+
+    /**
+     * @since 1.2.0
+     */
+    default FloatSeries insertFloat(int pos, float... values) {
+
+        if (pos < 0) {
+            // TODO: treat it as offset from the end?
+            throw new IllegalArgumentException("Negative insert position: " + pos);
+        }
+
+        int slen = size();
+        if (pos > slen) {
+            throw new IllegalArgumentException("Insert position past the end of the Series: " + pos + ", len: " + slen);
+        }
+
+        int ilen = values.length;
+        if (ilen == 0) {
+            return this;
+        }
+
+        float[] expanded = new float[slen + ilen];
+        if (pos > 0) {
+            this.copyToFloat(expanded, 0, 0, pos);
+        }
+
+        System.arraycopy(values, 0, expanded, pos, ilen);
+
+        if (pos < slen) {
+            this.copyToFloat(expanded, pos, pos + ilen, slen - pos);
+        }
+
+        return Series.ofFloat(expanded);
+    }
+
     FloatSeries concatFloat(FloatSeries... other);
 
     @Override

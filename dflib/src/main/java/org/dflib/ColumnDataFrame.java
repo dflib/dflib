@@ -171,6 +171,18 @@ public class ColumnDataFrame implements DataFrame {
     }
 
     @Override
+    public DataFrame insertRow(int pos, Map<String, Object> row) {
+        int w = width();
+        Series<?>[] newColumns = new Series[w];
+
+        for (int i = 0; i < w; i++) {
+            newColumns[i] = dataColumns[i].insert(pos, row.get(columnsIndex.get(i)));
+        }
+
+        return DataFrame.byColumn(getColumnsIndex()).of(newColumns);
+    }
+
+    @Override
     public GroupBy group(Hasher by) {
         return new Grouper(by).group(this);
     }

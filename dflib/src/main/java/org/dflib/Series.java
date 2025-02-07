@@ -150,8 +150,9 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
-     * Extends the Series, adding extra values to the end of this Series.
+     * Extends the Series, adding provided values to the end of this Series.
      */
+    // Didn't name this "add", as "add" in numeric series is an operation for summing two series together
     default Series<?> expand(Object... values) {
         int rlen = values.length;
         if (rlen == 0) {
@@ -163,6 +164,42 @@ public interface Series<T> extends Iterable<T> {
         Object[] expanded = new Object[llen + rlen];
         this.copyTo(expanded, 0, 0, llen);
         System.arraycopy(values, 0, expanded, llen, rlen);
+
+        return Series.of(expanded);
+    }
+
+    /**
+     * Extends the Series, inserting provided values at the specified position.
+     *
+     * @since 1.2.0
+     */
+    default Series<?> insert(int pos, Object... values) {
+
+        if (pos < 0) {
+            // TODO: treat it as offset from the end?
+            throw new IllegalArgumentException("Negative insert position: " + pos);
+        }
+
+        int slen = size();
+        if (pos > slen) {
+            throw new IllegalArgumentException("Insert position past the end of the Series: " + pos + ", len: " + slen);
+        }
+
+        int ilen = values.length;
+        if (ilen == 0) {
+            return this;
+        }
+
+        Object[] expanded = new Object[slen + ilen];
+        if (pos > 0) {
+            this.copyTo(expanded, 0, 0, pos);
+        }
+
+        System.arraycopy(values, 0, expanded, pos, ilen);
+
+        if (pos < slen) {
+            this.copyTo(expanded, pos, pos + ilen, slen - pos);
+        }
 
         return Series.of(expanded);
     }

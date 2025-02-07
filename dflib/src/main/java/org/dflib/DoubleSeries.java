@@ -130,6 +130,56 @@ public interface DoubleSeries extends Series<Double> {
         return Series.ofDouble(expanded);
     }
 
+    @Override
+    default Series<?> insert(int pos, Object... values) {
+
+        int ilen = values.length;
+        double[] doubles = new double[ilen];
+        for (int i = 0; i < ilen; i++) {
+            if (values[i] instanceof Double) {
+                doubles[i] = (Double) values[i];
+            } else {
+                return Series.super.insert(pos, values);
+            }
+        }
+
+        return insertDouble(pos, doubles);
+    }
+
+    /**
+     * @since 1.2.0
+     */
+    default DoubleSeries insertDouble(int pos, double... values) {
+
+        if (pos < 0) {
+            // TODO: treat it as offset from the end?
+            throw new IllegalArgumentException("Negative insert position: " + pos);
+        }
+
+        int slen = size();
+        if (pos > slen) {
+            throw new IllegalArgumentException("Insert position past the end of the Series: " + pos + ", len: " + slen);
+        }
+
+        int ilen = values.length;
+        if (ilen == 0) {
+            return this;
+        }
+
+        double[] expanded = new double[slen + ilen];
+        if (pos > 0) {
+            this.copyToDouble(expanded, 0, 0, pos);
+        }
+
+        System.arraycopy(values, 0, expanded, pos, ilen);
+
+        if (pos < slen) {
+            this.copyToDouble(expanded, pos, pos + ilen, slen - pos);
+        }
+
+        return Series.ofDouble(expanded);
+    }
+
     DoubleSeries concatDouble(DoubleSeries... other);
 
     @Override

@@ -230,6 +230,17 @@ public interface DataFrame extends Iterable<RowProxy> {
      */
     DataFrame addRow(Map<String, Object> row);
 
+    /**
+     * Inserts a single row in the specified position of the DataFrame. The row is specified as a map of column names to values.
+     * Missing values will be represented as nulls, and extra values with no matching DataFrame columns will be ignored.
+     * Be aware that this operation can be really slow, as DataFrame is optimized for columnar operations, not row appends.
+     * If you are appending more than one row, consider creating a new DataFrame and then concatenating it with this one
+     * using {@link #vConcat(DataFrame...)}.
+     *
+     * @since 1.2.0
+     */
+    DataFrame insertRow(int pos, Map<String, Object> row);
+
     default DataFrame sort(Sorter... sorters) {
         return rows().sort(sorters);
     }
