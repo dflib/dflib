@@ -92,6 +92,56 @@ public interface LongSeries extends Series<Long> {
         return Series.ofLong(expanded);
     }
 
+    @Override
+    default Series<?> insert(int pos, Object... values) {
+
+        int ilen = values.length;
+        long[] longs = new long[ilen];
+        for (int i = 0; i < ilen; i++) {
+            if (values[i] instanceof Long) {
+                longs[i] = (Long) values[i];
+            } else {
+                return Series.super.insert(pos, values);
+            }
+        }
+
+        return insertLong(pos, longs);
+    }
+
+    /**
+     * @since 1.2.0
+     */
+    default LongSeries insertLong(int pos, long... values) {
+
+        if (pos < 0) {
+            // TODO: treat it as offset from the end?
+            throw new IllegalArgumentException("Negative insert position: " + pos);
+        }
+
+        int slen = size();
+        if (pos > slen) {
+            throw new IllegalArgumentException("Insert position past the end of the Series: " + pos + ", len: " + slen);
+        }
+
+        int ilen = values.length;
+        if (ilen == 0) {
+            return this;
+        }
+
+        long[] expanded = new long[slen + ilen];
+        if (pos > 0) {
+            this.copyToLong(expanded, 0, 0, pos);
+        }
+
+        System.arraycopy(values, 0, expanded, pos, ilen);
+
+        if (pos < slen) {
+            this.copyToLong(expanded, pos, pos + ilen, slen - pos);
+        }
+
+        return Series.ofLong(expanded);
+    }
+
     LongSeries concatLong(LongSeries... other);
 
     @Override

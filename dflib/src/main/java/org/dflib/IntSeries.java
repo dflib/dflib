@@ -96,6 +96,56 @@ public interface IntSeries extends Series<Integer> {
         return Series.ofInt(expanded);
     }
 
+    @Override
+    default Series<?> insert(int pos, Object... values) {
+
+        int ilen = values.length;
+        int[] ints = new int[ilen];
+        for (int i = 0; i < ilen; i++) {
+            if (values[i] instanceof Integer) {
+                ints[i] = (Integer) values[i];
+            } else {
+                return Series.super.insert(pos, values);
+            }
+        }
+
+        return insertInt(pos, ints);
+    }
+
+    /**
+     * @since 1.2.0
+     */
+    default IntSeries insertInt(int pos, int... values) {
+
+        if (pos < 0) {
+            // TODO: treat it as offset from the end?
+            throw new IllegalArgumentException("Negative insert position: " + pos);
+        }
+
+        int slen = size();
+        if (pos > slen) {
+            throw new IllegalArgumentException("Insert position past the end of the Series: " + pos + ", len: " + slen);
+        }
+
+        int ilen = values.length;
+        if (ilen == 0) {
+            return this;
+        }
+
+        int[] expanded = new int[slen + ilen];
+        if (pos > 0) {
+            this.copyToInt(expanded, 0, 0, pos);
+        }
+
+        System.arraycopy(values, 0, expanded, pos, ilen);
+
+        if (pos < slen) {
+            this.copyToInt(expanded, pos, pos + ilen, slen - pos);
+        }
+
+        return Series.ofInt(expanded);
+    }
+
     IntSeries concatInt(IntSeries... other);
 
     @Override

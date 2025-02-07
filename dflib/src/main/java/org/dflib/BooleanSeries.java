@@ -96,6 +96,58 @@ public interface BooleanSeries extends Series<Boolean> {
         return Series.ofBool(expanded);
     }
 
+    @Override
+    default Series<?> insert(int pos, Object... values) {
+
+        int ilen = values.length;
+        boolean[] bools = new boolean[ilen];
+        for (int i = 0; i < ilen; i++) {
+            if (values[i] instanceof Boolean) {
+                bools[i] = (Boolean) values[i];
+            } else {
+                return Series.super.insert(pos, values);
+            }
+        }
+
+        return insertBool(pos, bools);
+    }
+
+    /**
+     * @since 1.2.0
+     */
+    default BooleanSeries insertBool(int pos, boolean... values) {
+
+        if (pos < 0) {
+            // TODO: treat it as offset from the end?
+            throw new IllegalArgumentException("Negative insert position: " + pos);
+        }
+
+        int slen = size();
+        if (pos > slen) {
+            throw new IllegalArgumentException("Insert position past the end of the Series: " + pos + ", len: " + slen);
+        }
+
+        int ilen = values.length;
+        if (ilen == 0) {
+            return this;
+        }
+
+        // TODO: in 2.0 use bitsets here, as the size is known, avoiding a separate compaction step.
+        //  For this we'll need an appendable
+        boolean[] expanded = new boolean[slen + ilen];
+        if (pos > 0) {
+            this.copyToBool(expanded, 0, 0, pos);
+        }
+
+        System.arraycopy(values, 0, expanded, pos, ilen);
+
+        if (pos < slen) {
+            this.copyToBool(expanded, pos, pos + ilen, slen - pos);
+        }
+
+        return Series.ofBool(expanded);
+    }
+
     BooleanSeries concatBool(BooleanSeries... other);
 
     @Override
