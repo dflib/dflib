@@ -80,8 +80,8 @@ public interface StrExp extends Exp<String> {
         return MapCondition2.mapVal("endsWith", this, $val(suffix), (s, p) -> s.endsWith(suffix));
     }
 
-    default Condition contains(String suffix) {
-        return MapCondition2.mapVal("contains", this, $val(suffix), (s, p) -> s.contains(suffix));
+    default Condition contains(String substring) {
+        return MapCondition2.mapVal("contains", this, $val(substring), (s, p) -> s.contains(substring));
     }
 
     /**
