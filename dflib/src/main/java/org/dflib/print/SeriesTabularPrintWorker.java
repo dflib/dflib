@@ -51,7 +51,8 @@ public class SeriesTabularPrintWorker extends BasePrintWorker {
         }
 
         // constrain column width
-        columnWidth = Math.min(columnWidth, maxDisplayColumnWidth);
+        // sometimes we get "0" width for empty columns, need to bump those to 1
+        columnWidth = Math.max(1, Math.min(columnWidth, maxDisplayColumnWidth));
         columnFormat = columnFormat(columnWidth, s.getInferredType());
 
         // since tabular printer is multiline, start with a line break to ensure logger-induced prefixes don't break

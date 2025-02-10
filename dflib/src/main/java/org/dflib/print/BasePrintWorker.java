@@ -31,6 +31,10 @@ public abstract class BasePrintWorker {
     }
 
     protected String columnFormat(int width, Class<?> valueType) {
+        if (width <= 0) {
+            throw new IllegalArgumentException("Column width must be positive: " + width);
+        }
+
         return valueType.isPrimitive()
                 || Number.class.isAssignableFrom(valueType)
                 || Boolean.class.isAssignableFrom(valueType)

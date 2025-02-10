@@ -42,6 +42,10 @@
 * #449 "$decimal(..).avg()", "$bigint(..).avg()"
 * #450 Unexpected decimal operations precision
 
+## Release 1.3.0
+
+* #457 MissingFormatWidthException when printing Series with all empty strings
+
 ## Release 1.2.0
 
 * #430 CsvLoader.nullString(String)
