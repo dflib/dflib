@@ -4,8 +4,6 @@ import org.dflib.DataFrame;
 import org.dflib.benchmark.ValueMaker;
 import org.dflib.benchmark.memory.benchmark.MemoryTest;
 
-import java.util.BitSet;
-
 public class ColumnarDataFrameMemory extends MemoryTest {
 
     private static final int ROWS = 1_000_000;
@@ -26,11 +24,11 @@ public class ColumnarDataFrameMemory extends MemoryTest {
         test.run("long (object)", test::longCells, cells);
         test.run("long (primitive)", test::primitiveLongCells, cells);
         test.run("boolean (object)", test::boolCells, cells);
-        test.run("boolean (primitive)", test::primitiveBoolCells, cells);
+        test.run("boolean (primitive, array)", test::primitiveArrayBoolCells, cells);
+        test.run("boolean (primitive, bitset)", test::primitiveBitsetBoolCells, cells);
         test.run("string (repeating)", test::repeatingStringCells, cells);
         test.run("string (interned)", test::internedStringCells, cells);
         test.run("string (random)", test::randStringCells, cells);
-        test.run("bitSet", test::bitSetCells, cells);
         test.run("enum", test::enumCells, cells);
     }
 
@@ -100,7 +98,13 @@ public class ColumnarDataFrameMemory extends MemoryTest {
                 ValueMaker.booleanSeq().series(ROWS)).materialize();
     }
 
-    public DataFrame primitiveBoolCells() {
+    public DataFrame primitiveBitsetBoolCells() {
+        return DataFrame.byColumn("c0", "c1").of(
+                ValueMaker.booleanSeq().booleanArraySeries(ROWS),
+                ValueMaker.booleanSeq().booleanArraySeries(ROWS)).materialize();
+    }
+
+    public DataFrame primitiveArrayBoolCells() {
         return DataFrame.byColumn("c0", "c1").of(
                 ValueMaker.booleanSeq().booleanSeries(ROWS),
                 ValueMaker.booleanSeq().booleanSeries(ROWS)).materialize();
@@ -122,20 +126,6 @@ public class ColumnarDataFrameMemory extends MemoryTest {
         return DataFrame.byColumn("c0", "c1").of(
                 ValueMaker.semiRandomStringSeq("abc", ROWS).series(ROWS),
                 ValueMaker.semiRandomStringSeq("xyz", ROWS).series(ROWS)).materialize();
-    }
-
-    public DataFrame bitSetCells() {
-        ValueMaker<Integer> intMaker = ValueMaker.intSeq(0, 1024);
-        ValueMaker<BitSet> bitsMaker = () -> {
-            BitSet s = new BitSet();
-            s.set(intMaker.get());
-            return s;
-
-        };
-
-        return DataFrame.byColumn("c0", "c1").of(
-                bitsMaker.series(ROWS),
-                bitsMaker.series(ROWS)).materialize();
     }
 
     public DataFrame enumCells() {

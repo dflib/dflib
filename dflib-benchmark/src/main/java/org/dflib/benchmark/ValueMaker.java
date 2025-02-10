@@ -12,6 +12,7 @@ import org.dflib.builder.FloatAccum;
 import org.dflib.builder.IntAccum;
 import org.dflib.builder.LongAccum;
 import org.dflib.builder.ObjectAccum;
+import org.dflib.series.BooleanArraySeries;
 
 import java.time.LocalDate;
 import java.util.Random;
@@ -145,6 +146,17 @@ public interface ValueMaker<T> {
         }
 
         return vals.toSeries();
+    }
+
+    default BooleanSeries booleanArraySeries(int len) {
+
+        boolean[] bools = new boolean[len];
+
+        for (int i = 0; i < len; i++) {
+            bools[i] = (Boolean) get();
+        }
+
+        return new BooleanArraySeries(bools);
     }
 
     default IntSeries intSeries(int len) {

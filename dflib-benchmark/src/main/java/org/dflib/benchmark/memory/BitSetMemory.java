@@ -12,7 +12,6 @@ public class BitSetMemory extends MemoryTest {
         BitSetMemory test = new BitSetMemory();
 
         test.run("BooleanBitsetSeries", test::createBitsetSeries, size);
-        test.run("   java.util.BitSet", test::createJavaBitSet, size);
         test.run("          boolean[]", test::createBooleanArray, size);
     }
 
@@ -22,9 +21,5 @@ public class BitSetMemory extends MemoryTest {
 
     boolean[] createBooleanArray() {
         return new boolean[size];
-    }
-
-    java.util.BitSet createJavaBitSet() {
-        return new java.util.BitSet(size);
     }
 }
