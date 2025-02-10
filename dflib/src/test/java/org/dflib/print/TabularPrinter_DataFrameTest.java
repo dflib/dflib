@@ -91,7 +91,7 @@ public class TabularPrinter_DataFrameTest {
     }
 
     @Test
-    public void nullColumn() {
+    public void nullIndexLabel() {
 
         DataFrame df = DataFrame
                 .byColumn("col1", null)

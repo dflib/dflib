@@ -76,4 +76,15 @@ public class TabularPrinter_SeriesTest {
                 "four" + System.lineSeparator() +
                 "4 elements", p.toString(Series.of("one", "two", "three", "four")));
     }
+
+    @Test
+    public void toString_EmptyStringsOnly() {
+
+        TabularPrinter p = new TabularPrinter(5, 10);
+
+        assertEquals(System.lineSeparator() +
+                " " + System.lineSeparator() +
+                " " + System.lineSeparator() +
+                "2 elements", p.toString(Series.of("", "")));
+    }
 }
