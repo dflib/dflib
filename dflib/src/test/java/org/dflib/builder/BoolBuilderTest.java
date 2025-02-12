@@ -36,23 +36,6 @@ class BoolBuilderTest {
         assertTrue(booleans.get(64));
     }
 
-    @Disabled
-    @Test
-    public void fillTrue65_2() {
-
-        int len = 65;
-        BooleanSeries booleans = BoolBuilder.buildSeries(i -> i > 2, len);
-        assertEquals(len, booleans.size());
-
-        for (int i = 0; i < 3; i++) {
-            assertFalse(booleans.get(i));
-        }
-
-        for (int i = 3; i < len; i++) {
-            assertTrue(booleans.get(i));
-        }
-    }
-
     @Test
     void fillTrue128() {
         BooleanSeries booleans = BoolBuilder.buildSeries(i -> true, 128);
@@ -102,5 +85,22 @@ class BoolBuilderTest {
         assertFalse(booleans.get(9));
         assertTrue(booleans.get(11));
         assertTrue(booleans.get(19));
+    }
+
+    @Disabled
+    @Test
+    public void fillMixed65() {
+
+        int len = 65;
+        BooleanSeries booleans = BoolBuilder.buildSeries(i -> i > 2, len);
+        assertEquals(len, booleans.size());
+
+        for (int i = 0; i < 3; i++) {
+            assertFalse(booleans.get(i));
+        }
+
+        for (int i = 3; i < len; i++) {
+            assertTrue(booleans.get(i));
+        }
     }
 }
