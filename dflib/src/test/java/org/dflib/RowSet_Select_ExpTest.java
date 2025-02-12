@@ -3,6 +3,8 @@ package org.dflib;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
+import static org.dflib.Exp.*;
+
 public class RowSet_Select_ExpTest {
 
     @Test
@@ -14,9 +16,9 @@ public class RowSet_Select_ExpTest {
                         -1, "m", "n")
                 .rows()
                 .select(
-                        Exp.$int(0).mul(3),
-                        Exp.concat(Exp.$str(1), Exp.$str(2)),
-                        Exp.$str(2)
+                        $int(0).mul(3),
+                        concat($str(1), $str(2)),
+                        $str(2)
                 );
 
         new DataFrameAsserts(df, "a", "b", "c")
@@ -35,9 +37,9 @@ public class RowSet_Select_ExpTest {
                         -1, "m", "n")
                 .rows(Series.ofInt(0, 2))
                 .select(
-                        Exp.$int(0).mul(3),
-                        Exp.concat(Exp.$str(1), Exp.$str(2)),
-                        Exp.$str(2)
+                        $int(0).mul(3),
+                        concat($str(1), $str(2)),
+                        $str(2)
                 );
 
         new DataFrameAsserts(df, "a", "b", "c")
@@ -55,9 +57,9 @@ public class RowSet_Select_ExpTest {
                         -1, "m", "n")
                 .rows(0, 2, 0, 2)
                 .select(
-                        Exp.$int(0).mul(3),
-                        Exp.concat(Exp.$str(1), Exp.$str(2)),
-                        Exp.$str(2)
+                        $int(0).mul(3),
+                        concat($str(1), $str(2)),
+                        $str(2)
                 );
 
         new DataFrameAsserts(df, "a", "b", "c")
@@ -77,9 +79,9 @@ public class RowSet_Select_ExpTest {
                         -1, "m", "n")
                 .rows(Series.ofInt())
                 .select(
-                        Exp.$int(0).mul(3),
-                        Exp.concat(Exp.$str(1), Exp.$str(2)),
-                        Exp.$str(2)
+                        $int(0).mul(3),
+                        concat($str(1), $str(2)),
+                        $str(2)
                 );
 
         new DataFrameAsserts(df, "a", "b", "c").expectHeight(0);
@@ -94,9 +96,9 @@ public class RowSet_Select_ExpTest {
                         -1, "m", "n")
                 .rows(0, 2, 2, 0)
                 .select(
-                        Exp.$int(0).mul(3),
-                        Exp.concat(Exp.$str(1), Exp.$str(2)),
-                        Exp.$str(2)
+                        $int(0).mul(3),
+                        concat($str(1), $str(2)),
+                        $str(2)
                 );
 
         new DataFrameAsserts(df, "a", "b", "c")
@@ -116,9 +118,9 @@ public class RowSet_Select_ExpTest {
                         -1, "m", "n")
                 .rowsRange(1, 2)
                 .select(
-                        Exp.$int(0).mul(3),
-                        Exp.concat(Exp.$str(1), Exp.$str(2)),
-                        Exp.$str(2)
+                        $int(0).mul(3),
+                        concat($str(1), $str(2)),
+                        $str(2)
                 );
 
         new DataFrameAsserts(df, "a", "b", "c")
@@ -135,9 +137,9 @@ public class RowSet_Select_ExpTest {
                         -1, "m", "n")
                 .rowsRange(1, 1)
                 .select(
-                        Exp.$int(0).mul(3),
-                        Exp.concat(Exp.$str(1), Exp.$str(2)),
-                        Exp.$str(2)
+                        $int(0).mul(3),
+                        concat($str(1), $str(2)),
+                        $str(2)
                 );
 
         new DataFrameAsserts(df, "a", "b", "c").expectHeight(0);
@@ -152,9 +154,9 @@ public class RowSet_Select_ExpTest {
                         -1, "m", "n")
                 .rows(Series.ofBool(true, false, true))
                 .select(
-                        Exp.$int(0).mul(3),
-                        Exp.concat(Exp.$str(1), Exp.$str(2)),
-                        Exp.$str(2)
+                        $int(0).mul(3),
+                        concat($str(1), $str(2)),
+                        $str(2)
                 );
 
         new DataFrameAsserts(df, "a", "b", "c")
@@ -170,11 +172,11 @@ public class RowSet_Select_ExpTest {
                         1, "x", "a",
                         2, "y", "b",
                         -1, "m", "n")
-                .rows(Exp.$int("a").mod(2).ne(0))
+                .rows($int("a").mod(2).ne(0))
                 .select(
-                        Exp.$int(0).mul(3),
-                        Exp.concat(Exp.$str(1), Exp.$str(2)),
-                        Exp.$str(2)
+                        $int(0).mul(3),
+                        concat($str(1), $str(2)),
+                        $str(2)
                 );
 
         new DataFrameAsserts(df, "a", "b", "c")
@@ -193,9 +195,9 @@ public class RowSet_Select_ExpTest {
                 .cols(0).compactInt(0)
                 .rows(r -> r.getInt(0) % 2 != 0)
                 .select(
-                        Exp.$int(0).mul(3),
-                        Exp.concat(Exp.$str(1), Exp.$str(2)),
-                        Exp.$str(2)
+                        $int(0).mul(3),
+                        concat($str(1), $str(2)),
+                        $str(2)
                 );
 
         new DataFrameAsserts(df, "a", "b", "c")
@@ -214,9 +216,9 @@ public class RowSet_Select_ExpTest {
                 .cols(0).compactInt(0)
                 .rowsExcept(r -> r.getInt(0) % 2 != 0)
                 .select(
-                        Exp.$int(0).mul(3),
-                        Exp.concat(Exp.$str(1), Exp.$str(2)),
-                        Exp.$str(2)
+                        $int(0).mul(3),
+                        concat($str(1), $str(2)),
+                        $str(2)
                 );
 
         new DataFrameAsserts(df, "a", "b", "c")
@@ -234,9 +236,9 @@ public class RowSet_Select_ExpTest {
                 .cols(0).compactInt(0)
                 .rows(r -> true)
                 .select(
-                        Exp.$int(0).mul(3),
-                        Exp.concat(Exp.$str(1), Exp.$str(2)),
-                        Exp.$str(2)
+                        $int(0).mul(3),
+                        concat($str(1), $str(2)),
+                        $str(2)
                 );
 
         new DataFrameAsserts(df, "a", "b", "c")
