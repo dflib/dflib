@@ -1,6 +1,7 @@
 package org.dflib.builder;
 
 import org.dflib.BooleanSeries;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,6 +34,23 @@ class BoolBuilderTest {
         assertTrue(booleans.get(0));
         assertTrue(booleans.get(63));
         assertTrue(booleans.get(64));
+    }
+
+    @Disabled
+    @Test
+    public void fillTrue65_2() {
+
+        int len = 65;
+        BooleanSeries booleans = BoolBuilder.buildSeries(i -> i > 2, len);
+        assertEquals(len, booleans.size());
+
+        for (int i = 0; i < 3; i++) {
+            assertFalse(booleans.get(i));
+        }
+
+        for (int i = 3; i < len; i++) {
+            assertTrue(booleans.get(i));
+        }
     }
 
     @Test
