@@ -1,0 +1,17 @@
+<script type='text/javascript'>
+    if (window.require) {
+        require.config({
+            paths: {
+                'echarts': '{{{echartsUrlBase}}}'
+            },
+        });
+        require(['echarts'], function(echarts) {
+            window.echarts = echarts;
+        });
+    } else {
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = '{{{echartsUrlFull}}}';
+        document.head.appendChild(script);
+    }
+</script>

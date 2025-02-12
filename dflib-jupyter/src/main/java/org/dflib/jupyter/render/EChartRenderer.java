@@ -1,10 +1,13 @@
 package org.dflib.jupyter.render;
 
+import com.github.mustachejava.Mustache;
 import org.dflib.echarts.EChartHtml;
+import org.dflib.echarts.render.util.Renderer;
 import org.dflib.jjava.jupyter.kernel.display.RenderContext;
 import org.dflib.jjava.jupyter.kernel.display.RenderFunction;
 import org.dflib.jjava.jupyter.kernel.display.mime.MIMEType;
 
+import java.io.StringWriter;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -14,6 +17,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Renders {@link EChartHtml} object as HTML with embedded JS.
  */
 public class EChartRenderer implements RenderFunction<EChartHtml> {
+
+    private static final Mustache ECHART_IMPORT_TEMPLATE = Renderer.loadTemplate(EChartRenderer.class.getResource("echart_import.mustache"));
 
     static final Set<MIMEType> SUPPORTED_TYPES = Set.of(MIMEType.TEXT_HTML, MIMEType.TEXT_PLAIN);
 
@@ -64,9 +69,15 @@ public class EChartRenderer implements RenderFunction<EChartHtml> {
     }
 
     private String toString(EChartHtml chart) {
-        return
-                "<script type='text/javascript' src='" + chart.getEchartsUrl() + "'></script>"
-                        + chart.getChartDiv()
-                        + "<script type='text/javascript'>" + chart.getChartScript() + "</script>";
+
+        String importHtml = ECHART_IMPORT_TEMPLATE
+                .execute(
+                        new StringWriter(),
+                        EChartScriptImportModel.of(chart.getEchartsUrl()))
+                .toString();
+
+        return importHtml
+                + chart.getChartDiv()
+                + "<script type='text/javascript'>" + chart.getChartScript() + "</script>";
     }
 }
