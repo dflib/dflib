@@ -54,7 +54,7 @@ public class GroupBy_AggTest {
                         $long("a").sum(),
                         $double("a").median());
 
-        new DataFrameAsserts(df, "first(b)", "sum(a)", "median(a)")
+        new DataFrameAsserts(df, "b", "sum(a)", "median(a)")
                 .expectHeight(3)
                 .expectRow(0, "x", 2L, 1.)
                 .expectRow(1, "y", 3L, 1.5)
