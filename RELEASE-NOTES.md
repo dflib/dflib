@@ -1,4 +1,8 @@
-## Release 2.0.0
+## Release 2.0.0-M2
+
+* #459 `BoolBuilder.buildSeries()` produces incorrect first element for size greater than 64 
+
+## Release 2.0.0-M1
 
 * #326 Memory-efficient bitset-based BooleanSeries
 * #359 Exp: IllegalArgumentException on arithmetics ops following aggregation
@@ -41,7 +45,6 @@
 * #447 Window.select(..), Window.merge(..) do not work with non-aggregating functions
 * #449 "$decimal(..).avg()", "$bigint(..).avg()"
 * #450 Unexpected decimal operations precision
-* #459 `BoolBuilder.buildSeries()` produces incorrect first element for size greater than 64 
 
 ## Release 1.3.0
 
