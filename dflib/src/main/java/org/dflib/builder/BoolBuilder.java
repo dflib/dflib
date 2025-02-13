@@ -57,7 +57,8 @@ public class BoolBuilder {
 
         // init first element out of the loop, to align boundaries in the main loop below
         int idx = i >> INDEX_BIT_SHIFT;
-        for(; i < (idx + 1) << INDEX_BIT_SHIFT; i++) {
+        int end = Math.min((idx + 1) << INDEX_BIT_SHIFT, size);
+        for(; i < end; i++) {
             if (generator.get(i)) {
                 data[idx] |= 1L << i;
             }

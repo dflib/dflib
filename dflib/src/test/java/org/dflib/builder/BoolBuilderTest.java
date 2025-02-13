@@ -34,22 +34,37 @@ class BoolBuilderTest {
     @ParameterizedTest
     @ValueSource(ints = {1, 4, 20, 64, 65, 128, 129, 200, 1000})
     void fillMixed(int len) {
-        BooleanSeries booleans = BoolBuilder.buildSeries(i -> i / 2 == 0, len);
+        BooleanSeries booleans = BoolBuilder.buildSeries(i -> i % 2 == 0, len);
         assertEquals(len, booleans.size());
 
         for (int i = 0; i < len; i++) {
-            assertEquals(i / 2 == 0, booleans.get(i), i + " element of " + len);
+            assertEquals(i % 2 == 0, booleans.get(i), i + " element of " + len);
         }
     }
 
     @ParameterizedTest
     @ValueSource(ints = {1, 4, 20, 64, 65, 128, 129, 200, 1000})
     void fillMixedInverted(int len) {
-        BooleanSeries booleans = BoolBuilder.buildSeries(i -> i / 2 != 0, len);
+        BooleanSeries booleans = BoolBuilder.buildSeries(i -> i % 2 != 0, len);
         assertEquals(len, booleans.size());
 
         for (int i = 0; i < len; i++) {
-            assertEquals(i / 2 != 0, booleans.get(i), i + " element of " + len);
+            assertEquals(i % 2 != 0, booleans.get(i), i + " element of " + len);
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2, 4, 20, 64, 65, 128, 129, 200, 1000})
+    void fillMixedLimitedSource(int len) {
+        boolean[] source = new boolean[len];
+        for(int i=0; i<len; i++) {
+            source[i] = i % 2 == 0;
+        }
+        BooleanSeries booleans = BoolBuilder.buildSeries(i -> source[i], source.length);
+
+        assertEquals(source.length, booleans.size());
+        for(int i=0; i<source.length; i++) {
+            assertEquals(source[i], booleans.get(i));
         }
     }
 
