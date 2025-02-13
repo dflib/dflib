@@ -54,6 +54,15 @@ public class BoolBuilder {
 
         long[] data = new long[1 + ((size - 1) >> INDEX_BIT_SHIFT)];
         long element = 0L;
+
+        // init first element out of the loop, to align boundaries in the main loop below
+        int idx = i >> INDEX_BIT_SHIFT;
+        for(; i < (idx + 1) << INDEX_BIT_SHIFT; i++) {
+            if (generator.get(i)) {
+                data[idx] |= 1L << i;
+            }
+        }
+
         for (; i < size; i += Long.SIZE) {
             for (int j = i; j < i + Long.SIZE && j < size; j++) {
                 if (generator.get(j)) {

@@ -1,106 +1,155 @@
 package org.dflib.builder;
 
 import org.dflib.BooleanSeries;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class BoolBuilderTest {
 
-    @Test
-    void fillTrue1() {
-        BooleanSeries booleans = BoolBuilder.buildSeries(i -> true, 1);
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2, 4, 20, 64, 65, 128, 129, 200, 1000})
+    void fillTrue(int len) {
+        BooleanSeries booleans = BoolBuilder.buildSeries(i -> true, len);
 
-        assertEquals(1, booleans.size());
-        assertTrue(booleans.get(0));
+        assertEquals(len, booleans.size());
+        for(int i = 0; i < len; i++) {
+            assertTrue(booleans.get(0), i + " element of " + len);
+        }
     }
 
-    @Test
-    void fillTrue64() {
-        BooleanSeries booleans = BoolBuilder.buildSeries(i -> true, 64);
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2, 4, 20, 64, 65, 128, 129, 200, 1000})
+    void fillFalse(int len) {
+        BooleanSeries booleans = BoolBuilder.buildSeries(i -> false, len);
 
-        assertEquals(64, booleans.size());
-        assertTrue(booleans.get(0));
-        assertTrue(booleans.get(62));
-        assertTrue(booleans.get(63));
+        assertEquals(len, booleans.size());
+        for(int i = 0; i < len; i++) {
+            assertFalse(booleans.get(0), i + " element of " + len);
+        }
     }
 
-    @Test
-    void fillTrue65() {
-        BooleanSeries booleans = BoolBuilder.buildSeries(i -> true, 65);
-
-        assertEquals(65, booleans.size());
-        assertTrue(booleans.get(0));
-        assertTrue(booleans.get(63));
-        assertTrue(booleans.get(64));
-    }
-
-    @Test
-    void fillTrue128() {
-        BooleanSeries booleans = BoolBuilder.buildSeries(i -> true, 128);
-
-        assertEquals(128, booleans.size());
-        assertTrue(booleans.get(0));
-        assertTrue(booleans.get(63));
-        assertTrue(booleans.get(64));
-        assertTrue(booleans.get(127));
-    }
-
-    @Test
-    void fillTrue129() {
-        BooleanSeries booleans = BoolBuilder.buildSeries(i -> true, 129);
-
-        assertEquals(129, booleans.size());
-        assertTrue(booleans.get(0));
-        assertTrue(booleans.get(63));
-        assertTrue(booleans.get(64));
-        assertTrue(booleans.get(127));
-        assertTrue(booleans.get(128));
-    }
-
-    @Test
-    void fillFalse1() {
-        BooleanSeries booleans = BoolBuilder.buildSeries(i -> false, 1);
-
-        assertEquals(1, booleans.size());
-        assertFalse(booleans.get(0));
-    }
-
-    @Test
-    void fillFalse10() {
-        BooleanSeries booleans = BoolBuilder.buildSeries(i -> false, 10);
-
-        assertEquals(10, booleans.size());
-        assertFalse(booleans.get(0));
-        assertFalse(booleans.get(9));
-    }
-
-    @Test
-    void fillFalseFirst10() {
-        BooleanSeries booleans = BoolBuilder.buildSeries(i -> i >= 10, 20);
-
-        assertEquals(20, booleans.size());
-        assertFalse(booleans.get(0));
-        assertFalse(booleans.get(9));
-        assertTrue(booleans.get(11));
-        assertTrue(booleans.get(19));
-    }
-
-    @Disabled
-    @Test
-    public void fillMixed65() {
-
-        int len = 65;
-        BooleanSeries booleans = BoolBuilder.buildSeries(i -> i > 2, len);
+    @ParameterizedTest
+    @ValueSource(ints = {1, 4, 20, 64, 65, 128, 129, 200, 1000})
+    void fillMixed(int len) {
+        BooleanSeries booleans = BoolBuilder.buildSeries(i -> i / 2 == 0, len);
         assertEquals(len, booleans.size());
 
-        for (int i = 0; i < 3; i++) {
-            assertFalse(booleans.get(i));
+        for (int i = 0; i < len; i++) {
+            assertEquals(i / 2 == 0, booleans.get(i), i + " element of " + len);
         }
+    }
 
-        for (int i = 3; i < len; i++) {
-            assertTrue(booleans.get(i));
+    @ParameterizedTest
+    @ValueSource(ints = {1, 4, 20, 64, 65, 128, 129, 200, 1000})
+    void fillMixedInverted(int len) {
+        BooleanSeries booleans = BoolBuilder.buildSeries(i -> i / 2 != 0, len);
+        assertEquals(len, booleans.size());
+
+        for (int i = 0; i < len; i++) {
+            assertEquals(i / 2 != 0, booleans.get(i), i + " element of " + len);
+        }
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "1, 1",
+            "1, 10",
+            "1, 64",
+            "1, 65",
+            "1, 128",
+            "1, 129",
+            "1, 200",
+
+            "10, 10",
+            "10, 64",
+            "10, 65",
+            "10, 128",
+            "10, 129",
+            "10, 200",
+
+            "64, 64",
+            "64, 65",
+            "64, 128",
+            "64, 129",
+            "64, 200",
+
+            "65, 65",
+            "65, 128",
+            "65, 129",
+            "65, 200",
+
+            "128, 128",
+            "128, 129",
+            "128, 200",
+
+            "129, 129",
+            "129, 200",
+
+            "200, 200",
+            "200, 1000",
+    })
+    void fillNTrueFirst(int countTrue, int len) {
+        BooleanSeries booleans = BoolBuilder.buildSeries(i -> i < countTrue, len);
+
+        assertEquals(len, booleans.size());
+        for(int i = 0; i < countTrue; i++) {
+            assertTrue(booleans.get(i), i + " element of " + len);
+        }
+        for(int i = countTrue; i < len; i++) {
+            assertFalse(booleans.get(i), i + " element of " + len);
+        }
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "1, 1",
+            "1, 10",
+            "1, 64",
+            "1, 65",
+            "1, 128",
+            "1, 129",
+            "1, 200",
+
+            "10, 10",
+            "10, 64",
+            "10, 65",
+            "10, 128",
+            "10, 129",
+            "10, 200",
+
+            "64, 64",
+            "64, 65",
+            "64, 128",
+            "64, 129",
+            "64, 200",
+
+            "65, 65",
+            "65, 128",
+            "65, 129",
+            "65, 200",
+
+            "128, 128",
+            "128, 129",
+            "128, 200",
+
+            "129, 129",
+            "129, 200",
+
+            "200, 200",
+            "200, 1000",
+    })
+    void fillNFalseFirst(int countFalse, int len) {
+        BooleanSeries booleans = BoolBuilder.buildSeries(i -> i >= countFalse, len);
+
+        assertEquals(len, booleans.size());
+        for(int i = 0; i < countFalse; i++) {
+            assertFalse(booleans.get(i), i + " element of " + len);
+        }
+        for(int i = countFalse; i < len; i++) {
+            assertTrue(booleans.get(i), i + " element of " + len);
         }
     }
 }

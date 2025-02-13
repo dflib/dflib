@@ -41,6 +41,7 @@
 * #447 Window.select(..), Window.merge(..) do not work with non-aggregating functions
 * #449 "$decimal(..).avg()", "$bigint(..).avg()"
 * #450 Unexpected decimal operations precision
+* #459 `BoolBuilder.buildSeries()` produces incorrect first element for size greater than 64 
 
 ## Release 1.3.0
 
