@@ -16,7 +16,14 @@ public class ArrayRangeSeries<T> extends ObjectSeries<T> {
     private final int offset;
     private final int size;
 
-    public ArrayRangeSeries(Class<?> nominalType, T[] data, int offset, int size) {
+    /**
+     * @since 2.0.0
+     */
+    public ArrayRangeSeries(T[] data, int offset, int size) {
+        this(data.getClass().getComponentType(), data, offset, size);
+    }
+
+    ArrayRangeSeries(Class<?> nominalType, T[] data, int offset, int size) {
         super(nominalType);
         this.data = data;
         this.offset = offset;
@@ -50,12 +57,11 @@ public class ArrayRangeSeries<T> extends ObjectSeries<T> {
     public Series<T> materialize() {
 
         if (offset == 0 && size == data.length) {
-            return new ArraySeries(data);
+            return new ArraySeries<>(nominalType, data);
         }
 
-        Object[] data = new Object[size];
-        copyTo(data, 0, 0, size);
-        return new ArraySeries(data);
+        T[] copy = Arrays.copyOfRange(data, offset, offset + size);
+        return new ArraySeries<>(nominalType, copy);
     }
 
     @Override
@@ -67,8 +73,7 @@ public class ArrayRangeSeries<T> extends ObjectSeries<T> {
             if (data[offset + i] == null) {
 
                 if (copy == null) {
-                    copy = (T[]) new Object[size];
-                    System.arraycopy(data, offset, copy, 0, size);
+                    copy = Arrays.copyOfRange(data, offset, offset + size);
                 }
 
                 copy[i] = value;
@@ -86,8 +91,7 @@ public class ArrayRangeSeries<T> extends ObjectSeries<T> {
             if (data[offset + i] == null) {
 
                 if (copy == null) {
-                    copy = (T[]) new Object[size];
-                    System.arraycopy(data, offset, copy, 0, size);
+                    copy = Arrays.copyOfRange(data, offset, offset + size);
                 }
 
                 copy[i] = values.get(i);
@@ -106,8 +110,7 @@ public class ArrayRangeSeries<T> extends ObjectSeries<T> {
             if (data[offset + i] == null) {
 
                 if (copy == null) {
-                    copy = (T[]) new Object[size];
-                    System.arraycopy(data, offset, copy, 0, size);
+                    copy = Arrays.copyOfRange(data, offset, offset + size);
                 }
 
                 if (fillFrom < 0) {
@@ -135,8 +138,7 @@ public class ArrayRangeSeries<T> extends ObjectSeries<T> {
                 }
 
                 if (copy == null) {
-                    copy = (T[]) new Object[size];
-                    System.arraycopy(data, offset, copy, 0, size);
+                    copy = Arrays.copyOfRange(data, offset, offset + size);
                 }
 
                 copy[i] = copy[i - 1];
@@ -150,6 +152,6 @@ public class ArrayRangeSeries<T> extends ObjectSeries<T> {
     public Series<T> selectRange(int fromInclusive, int toExclusive) {
         return fromInclusive == 0 && toExclusive == size()
                 ? this
-                : new ArrayRangeSeries<>(getNominalType(), data, offset + fromInclusive, toExclusive - fromInclusive);
+                : new ArrayRangeSeries<>(nominalType, data, offset + fromInclusive, toExclusive - fromInclusive);
     }
 }

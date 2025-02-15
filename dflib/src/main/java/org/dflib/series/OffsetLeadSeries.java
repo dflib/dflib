@@ -1,6 +1,7 @@
 package org.dflib.series;
 
 import org.dflib.Series;
+import org.dflib.collection.JavaArrays;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -65,14 +66,14 @@ public class OffsetLeadSeries<T> extends OffsetSeries<T> {
     public Series<T> materialize() {
 
         int size = size();
-        Object[] buffer = new Object[size];
+        T[] data = JavaArrays.newArray(nominalType, size);
 
         if (filler != null) {
-            Arrays.fill(buffer, 0, offset, filler);
+            Arrays.fill(data, 0, offset, filler);
         }
 
-        delegate.copyTo(buffer, 0, offset, size - offset);
+        delegate.copyTo(data, 0, offset, size - offset);
 
-        return new ArraySeries<>((T[]) buffer);
+        return new ArraySeries<>(data);
     }
 }

@@ -2,6 +2,7 @@ package org.dflib.slice;
 
 import org.dflib.BooleanSeries;
 import org.dflib.Series;
+import org.dflib.collection.JavaArrays;
 import org.dflib.range.Range;
 import org.dflib.series.IntSequenceSeries;
 
@@ -39,7 +40,7 @@ class RangeRowSetMerger extends RowSetMerger {
         }
 
         // TODO: primitive Series
-        T[] values = (T[]) new Object[srcLen];
+        T[] values = JavaArrays.newArray(rsColumn.getNominalType(), srcLen);
 
         if (fromInclusive > 0) {
             srcColumn.copyTo(values, 0, 0, fromInclusive);

@@ -1,6 +1,7 @@
 package org.dflib.series;
 
 import org.dflib.Series;
+import org.dflib.collection.JavaArrays;
 import org.dflib.range.Range;
 
 /**
@@ -46,9 +47,9 @@ public class RangeSeries<T> extends ObjectSeries<T> {
 
     @Override
     public Series<T> materialize() {
-        Object[] range = new Object[size];
+        T[] range = JavaArrays.newArray(nominalType, size);
         delegate.copyTo(range, this.offset, 0, size);
-        return new ArraySeries<>((T[]) range);
+        return new ArraySeries<>(range);
     }
 
     @Override

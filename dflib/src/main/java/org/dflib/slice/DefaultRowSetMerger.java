@@ -3,6 +3,7 @@ package org.dflib.slice;
 import org.dflib.BooleanSeries;
 import org.dflib.IntSeries;
 import org.dflib.Series;
+import org.dflib.collection.JavaArrays;
 
 class DefaultRowSetMerger extends RowSetMerger {
 
@@ -27,7 +28,7 @@ class DefaultRowSetMerger extends RowSetMerger {
         int h = mergeIndex.length;
 
         // TODO: primitive Series
-        T[] values = (T[]) new Object[h];
+        T[] values = JavaArrays.newArray(srcColumn.getNominalType(), h);
 
         for (int i = 0; i < h; i++) {
             int si = mergeIndex[i];

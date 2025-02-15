@@ -10,6 +10,7 @@ public class ColumnMappedSeries<S, T> extends ObjectSeries<T> {
     private Series<T> materialized;
 
     public ColumnMappedSeries(Series<S> source, ValueMapper<S, T> mapper) {
+        // TODO: we can't infer the target type from the ValueMapper, so using Object
         super(Object.class);
         this.source = source;
         this.mapper = mapper;
@@ -44,9 +45,10 @@ public class ColumnMappedSeries<S, T> extends ObjectSeries<T> {
     }
 
     protected ArraySeries<T> doMaterialize() {
-        Object[] data = new Object[size()];
+        // TODO: see the constructor note.. They type of array is always Object
+        T[] data = (T[]) new Object[size()];
 
-        for(int i = 0; i < data.length; i++) {
+        for (int i = 0; i < data.length; i++) {
             data[i] = mapper.map(source.get(i));
         }
 
@@ -54,7 +56,7 @@ public class ColumnMappedSeries<S, T> extends ObjectSeries<T> {
         source = null;
         mapper = null;
 
-        return new ArraySeries<>((T[]) data);
+        return new ArraySeries<>(data);
     }
 
     @Override

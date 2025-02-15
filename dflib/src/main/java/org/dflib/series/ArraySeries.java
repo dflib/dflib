@@ -10,7 +10,12 @@ public class ArraySeries<T> extends ObjectSeries<T> {
 
     @SafeVarargs
     public ArraySeries(T... data) {
-        super(Object.class);
+        this(data.getClass().getComponentType(), data);
+    }
+
+    @SafeVarargs
+    ArraySeries(Class<?> nominalType, T... data) {
+        super(nominalType);
         this.data = data;
     }
 
@@ -44,15 +49,14 @@ public class ArraySeries<T> extends ObjectSeries<T> {
             if (data[i] == null) {
 
                 if (copy == null) {
-                    copy = (T[]) new Object[len];
-                    System.arraycopy(data, 0, copy, 0, len);
+                    copy = Arrays.copyOf(data, len);
                 }
 
                 copy[i] = value;
             }
         }
 
-        return copy != null ? new ArraySeries<>(copy) : this;
+        return copy != null ? new ArraySeries<>(nominalType, copy) : this;
     }
 
     @Override
@@ -64,15 +68,14 @@ public class ArraySeries<T> extends ObjectSeries<T> {
             if (data[i] == null) {
 
                 if (copy == null) {
-                    copy = (T[]) new Object[len];
-                    System.arraycopy(data, 0, copy, 0, len);
+                    copy = Arrays.copyOf(data, len);
                 }
 
                 copy[i] = values.get(i);
             }
         }
 
-        return copy != null ? new ArraySeries<>(copy) : this;
+        return copy != null ? new ArraySeries<>(nominalType, copy) : this;
     }
 
     @Override
@@ -85,8 +88,7 @@ public class ArraySeries<T> extends ObjectSeries<T> {
             if (data[i] == null) {
 
                 if (copy == null) {
-                    copy = (T[]) new Object[len];
-                    System.arraycopy(data, 0, copy, 0, len);
+                    copy = Arrays.copyOf(data, len);
                 }
 
                 if (fillFrom < 0) {
@@ -98,7 +100,7 @@ public class ArraySeries<T> extends ObjectSeries<T> {
             }
         }
 
-        return copy != null ? new ArraySeries<>(copy) : this;
+        return copy != null ? new ArraySeries<>(nominalType, copy) : this;
     }
 
     @Override
@@ -115,21 +117,20 @@ public class ArraySeries<T> extends ObjectSeries<T> {
                 }
 
                 if (copy == null) {
-                    copy = (T[]) new Object[len];
-                    System.arraycopy(data, 0, copy, 0, len);
+                    copy = Arrays.copyOf(data, len);
                 }
 
                 copy[i] = copy[i - 1];
             }
         }
 
-        return copy != null ? new ArraySeries<>(copy) : this;
+        return copy != null ? new ArraySeries<>(nominalType, copy) : this;
     }
 
     @Override
     public Series<T> selectRange(int fromInclusive, int toExclusive) {
         return fromInclusive == 0 && toExclusive == size()
                 ? this
-                : new ArrayRangeSeries(getNominalType(), data, fromInclusive, toExclusive - fromInclusive);
+                : new ArrayRangeSeries<>(nominalType, data, fromInclusive, toExclusive - fromInclusive);
     }
 }
