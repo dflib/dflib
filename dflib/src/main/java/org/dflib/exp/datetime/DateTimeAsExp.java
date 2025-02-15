@@ -18,6 +18,6 @@ public class DateTimeAsExp extends AsExp<LocalDateTime> implements DateTimeExp {
 
     @Override
     public DateTimeExp as(String name) {
-        return Objects.equals(name, this.name) ? this : DateTimeExp.super.as(name);
+        return Objects.equals(name, this.name) ? this : new DateTimeAsExp(name, delegate);
     }
 }

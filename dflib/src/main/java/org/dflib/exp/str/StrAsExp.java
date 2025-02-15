@@ -17,6 +17,6 @@ public class StrAsExp extends AsExp<String> implements StrExp {
 
     @Override
     public StrExp as(String name) {
-        return Objects.equals(name, this.name) ? this : StrExp.super.as(name);
+        return Objects.equals(name, this.name) ? this : new StrAsExp(name, delegate);
     }
 }

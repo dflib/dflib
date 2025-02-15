@@ -2,7 +2,6 @@ package org.dflib.exp.num;
 
 import org.dflib.DecimalExp;
 import org.dflib.Exp;
-import org.dflib.NumExp;
 import org.dflib.exp.AsExp;
 
 import java.math.BigDecimal;
@@ -19,6 +18,6 @@ public class DecimalAsExp extends AsExp<BigDecimal> implements DecimalExp {
 
     @Override
     public DecimalExp as(String name) {
-        return Objects.equals(name, this.name) ? this : DecimalExp.super.as(name);
+        return Objects.equals(name, this.name) ? this : new DecimalAsExp(name, delegate);
     }
 }

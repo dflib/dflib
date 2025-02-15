@@ -18,6 +18,6 @@ public class TimeAsExp extends AsExp<LocalTime> implements TimeExp {
 
     @Override
     public TimeExp as(String name) {
-        return Objects.equals(name, this.name) ? this : TimeExp.super.as(name);
+        return Objects.equals(name, this.name) ? this : new TimeAsExp(name, delegate);
     }
 }

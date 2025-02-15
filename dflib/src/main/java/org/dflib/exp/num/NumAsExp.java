@@ -17,6 +17,6 @@ public class NumAsExp<N extends Number> extends AsExp<N> implements NumExp<N> {
 
     @Override
     public NumExp<N> as(String name) {
-        return Objects.equals(name, this.name) ? this : NumExp.super.as(name);
+        return Objects.equals(name, this.name) ? this : new NumAsExp<>(name, delegate);
     }
 }

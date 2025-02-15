@@ -18,6 +18,6 @@ public class OffsetDateTimeAsExp extends AsExp<OffsetDateTime> implements Offset
 
     @Override
     public OffsetDateTimeExp as(String name) {
-        return Objects.equals(name, this.name) ? this : OffsetDateTimeExp.super.as(name);
+        return Objects.equals(name, this.name) ? this : new OffsetDateTimeAsExp(name, delegate);
     }
 }
