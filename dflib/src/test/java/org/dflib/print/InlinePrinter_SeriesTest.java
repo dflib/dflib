@@ -1,7 +1,6 @@
 package org.dflib.print;
 
 import org.dflib.Series;
-import org.dflib.print.InlinePrinter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,21 +16,21 @@ public class InlinePrinter_SeriesTest {
     }
 
     @Test
-    public void toString_Normal() {
+    public void print_Normal() {
         InlinePrinter p = new InlinePrinter(5, 10);
 
-        assertEquals("one,two,three,four", p.toString(s1));
+        assertEquals("one,two,three,four", p.print(s1));
     }
 
     @Test
-    public void toString_TruncateRows() {
+    public void print_TruncateRows() {
         InlinePrinter p = new InlinePrinter(2, 10);
-        assertEquals("one,...,four", p.toString(s1));
+        assertEquals("one,...,four", p.print(s1));
     }
 
     @Test
-    public void toString_TruncateColumns() {
+    public void print_TruncateColumns() {
         InlinePrinter p = new InlinePrinter(5, 4);
-        assertEquals("one,two,t..e,four", p.toString(s1));
+        assertEquals("one,two,t..e,four", p.print(s1));
     }
 }

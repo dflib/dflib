@@ -17,7 +17,7 @@ public class TabularPrinter_DataFrameTest {
                     Series.ofInt(1, 2, 3, 44));
 
     @Test
-    public void toString_Normal() {
+    public void print_Normal() {
         TabularPrinter p = new TabularPrinter(5, 10);
 
         assertEquals(LS +
@@ -27,11 +27,11 @@ public class TabularPrinter_DataFrameTest {
                 "two         2" + LS +
                 "three       3" + LS +
                 "four       44" + LS +
-                "4 rows x 2 columns", p.toString(df));
+                "4 rows x 2 columns", p.print(df));
     }
 
     @Test
-    public void toString_Name() {
+    public void print_Name() {
         TabularPrinter p = new TabularPrinter(5, 10);
 
         assertEquals(LS +
@@ -41,11 +41,11 @@ public class TabularPrinter_DataFrameTest {
                 "two         2" + LS +
                 "three       3" + LS +
                 "four       44" + LS +
-                "[df0] 4 rows x 2 columns", p.toString(df.as("df0")));
+                "[df0] 4 rows x 2 columns", p.print(df.as("df0")));
     }
 
     @Test
-    public void toString_TruncateRows() {
+    public void print_TruncateRows() {
         TabularPrinter p = new TabularPrinter(2, 10);
 
         assertEquals(LS +
@@ -54,11 +54,11 @@ public class TabularPrinter_DataFrameTest {
                 "one        1" + LS +
                 "..." + LS +
                 "four      44" + LS +
-                "4 rows x 2 columns", p.toString(df));
+                "4 rows x 2 columns", p.print(df));
     }
 
     @Test
-    public void toString_TruncateColumns() {
+    public void print_TruncateColumns() {
         TabularPrinter p = new TabularPrinter(5, 4);
 
         assertEquals(LS +
@@ -68,7 +68,7 @@ public class TabularPrinter_DataFrameTest {
                 "two     2" + LS +
                 "t..e    3" + LS +
                 "four   44" + LS +
-                "4 rows x 2 columns", p.toString(df));
+                "4 rows x 2 columns", p.print(df));
     }
 
     @Test
@@ -87,7 +87,7 @@ public class TabularPrinter_DataFrameTest {
                 "---- -" + LS +
                 "one   " + LS +
                 "two   " + LS +
-                "[df0] 2 rows x 2 columns", p.toString(df.as("df0")));
+                "[df0] 2 rows x 2 columns", p.print(df.as("df0")));
     }
 
     @Test
@@ -106,6 +106,6 @@ public class TabularPrinter_DataFrameTest {
                 "---- ----" + LS +
                 "one      " + LS +
                 "two      " + LS +
-                "[df0] 2 rows x 2 columns", p.toString(df.as("df0")));
+                "[df0] 2 rows x 2 columns", p.print(df.as("df0")));
     }
 }

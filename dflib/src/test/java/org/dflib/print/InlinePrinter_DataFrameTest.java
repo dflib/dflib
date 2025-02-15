@@ -19,6 +19,6 @@ public class InlinePrinter_DataFrameTest {
 
         InlinePrinter p = new InlinePrinter(5, 10);
 
-        assertEquals("{col1:one,:},{col1:two,:}", p.toString(df));
+        assertEquals("{col1:one,:},{col1:two,:}", p.print(df));
     }
 }

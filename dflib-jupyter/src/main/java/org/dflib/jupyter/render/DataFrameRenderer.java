@@ -16,6 +16,6 @@ public class DataFrameRenderer implements RenderFunction<DataFrame> {
 
     @Override
     public void render(DataFrame df, RenderContext context) {
-        context.renderIfRequested(MIMEType.TEXT_PLAIN, () -> printer.toString(df));
+        context.renderIfRequested(MIMEType.TEXT_PLAIN, () -> printer.print(df));
     }
 }
