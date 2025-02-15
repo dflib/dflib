@@ -3,6 +3,7 @@
 * #462 "Exp.shift(..)" in specialized expressions must return the type of that expression
 * #463 "Exp.as(..)" in specialized expressions must return the type of that expression
 * #464 Printer.toString(..) -> Printer.print(..)
+* #465 Align display defaults between core Printers and Jupyter
 
 ## Release 2.0.0-M2
 

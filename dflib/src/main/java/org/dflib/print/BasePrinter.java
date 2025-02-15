@@ -2,8 +2,8 @@ package org.dflib.print;
 
 public abstract class BasePrinter implements Printer {
 
-    private static final int MAX_DISPLAY_ROWS = 6;
-    private static final int MAX_DISPLAY_COLUMN_WIDTH = 30;
+    private static final int MAX_DISPLAY_ROWS = 5;
+    private static final int MAX_DISPLAY_COLUMN_WIDTH = 50;
 
     protected int maxDisplayRows;
     protected int maxDisplayColumnWidth;

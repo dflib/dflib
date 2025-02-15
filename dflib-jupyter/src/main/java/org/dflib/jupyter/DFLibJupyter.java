@@ -36,7 +36,10 @@ public class DFLibJupyter {
      */
     // While this method may show as unused in an IDE, it is called inside the script in DFLibJupyterExtension
     public static void init(BaseKernel kernel) {
-        MutableTabularPrinter printer = new MutableTabularPrinter(10, 50);
+
+        // not passing explicit display parameters, relying on DFLib default instead
+        MutableTabularPrinter printer = new MutableTabularPrinter();
+
         DFLibJupyter jupyterBridge = new DFLibJupyter(printer);
         jupyterBridge.doInit(kernel);
 

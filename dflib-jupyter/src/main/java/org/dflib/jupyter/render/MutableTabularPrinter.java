@@ -4,6 +4,13 @@ import org.dflib.print.TabularPrinter;
 
 public class MutableTabularPrinter extends TabularPrinter {
 
+    /**
+     * @since 2.0.0
+     */
+    public MutableTabularPrinter() {
+        // using regular printer defaults
+    }
+
     public MutableTabularPrinter(int maxDisplayRows, int maxDisplayColumnWidth) {
         super(maxDisplayRows, maxDisplayColumnWidth);
     }
