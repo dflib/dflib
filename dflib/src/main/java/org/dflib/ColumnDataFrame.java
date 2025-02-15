@@ -346,7 +346,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public String toString() {
-        return Environment.commonEnv().printer().print(new StringBuilder(), this).toString();
+        return Environment.commonEnv().printer().print(this);
     }
 
     protected DataFrame replaceColumn(int pos, Series<?> newColumn) {

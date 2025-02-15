@@ -3,30 +3,34 @@ package org.dflib.print;
 import org.dflib.DataFrame;
 import org.dflib.Series;
 
+import java.io.IOException;
+
 public class InlineClassExposingPrinter extends InlinePrinter {
 
     @Override
-    public StringBuilder print(StringBuilder out, Series<?> s) {
+    public void printTo(Appendable sink, Series<?> s) throws IOException {
 
         if (s == null) {
-            return out.append("null");
+            sink.append("null");
+            return;
         }
 
         String name = s.getClass().getSimpleName();
-        out.append(name).append(" [");
-        super.print(out, s);
-        return out.append("]");
+        sink.append(name).append(" [");
+        super.printTo(sink, s);
+        sink.append("]");
     }
 
     @Override
-    public StringBuilder print(StringBuilder out, DataFrame df) {
+    public void printTo(Appendable sink, DataFrame df) throws IOException {
         if (df == null) {
-            return out.append("null");
+            sink.append("null");
+            return;
         }
 
         String name = df.getClass().getSimpleName();
-        out.append(name).append(" [");
-        super.print(out, df);
-        return out.append("]");
+        sink.append(name).append(" [");
+        super.printTo(sink, df);
+        sink.append("]");
     }
 }

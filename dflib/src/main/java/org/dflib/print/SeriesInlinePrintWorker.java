@@ -2,17 +2,19 @@ package org.dflib.print;
 
 import org.dflib.Series;
 
+import java.io.IOException;
+
 public class SeriesInlinePrintWorker extends BasePrintWorker {
 
-    public SeriesInlinePrintWorker(StringBuilder out, int maxDisplayRows, int maxDisplayColumnWidth) {
+    public SeriesInlinePrintWorker(Appendable out, int maxDisplayRows, int maxDisplayColumnWidth) {
         super(out, maxDisplayRows, maxDisplayColumnWidth);
     }
 
-    public StringBuilder print(Series<?> s) {
+    public void print(Series<?> s) throws IOException {
 
         if (s == null) {
             out.append("null");
-            return out;
+            return;
         }
 
         SeriesTruncator truncator = SeriesTruncator.create(s, maxDisplayRows);
@@ -40,7 +42,5 @@ public class SeriesInlinePrintWorker extends BasePrintWorker {
                 appendTruncate(val);
             }
         }
-
-        return out;
     }
 }

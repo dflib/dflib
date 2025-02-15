@@ -1,12 +1,14 @@
 package org.dflib.print;
 
+import java.io.IOException;
+
 public abstract class BasePrintWorker {
 
-    protected StringBuilder out;
+    protected Appendable out;
     protected int maxDisplayColumnWidth;
     protected int maxDisplayRows;
 
-    public BasePrintWorker(StringBuilder out, int maxDisplayRows, int maxDisplayColumnWidth) {
+    public BasePrintWorker(Appendable out, int maxDisplayRows, int maxDisplayColumnWidth) {
         this.out = out;
         this.maxDisplayColumnWidth = maxDisplayColumnWidth;
         this.maxDisplayRows = maxDisplayRows;
@@ -44,20 +46,20 @@ public abstract class BasePrintWorker {
                 : "%1$-" + width + "s";
     }
 
-    protected StringBuilder appendFixedWidth(String value, int width, String columnFormat) {
+    protected void appendFixedWidth(String value, int width, String columnFormat) throws IOException {
 
         if (value == null || value.length() <= width) {
-            return out.append(String.format(columnFormat, value));
+            out.append(String.format(columnFormat, value));
         } else {
-            return out.append(truncate(value, width));
+            out.append(truncate(value, width));
         }
     }
 
-    protected StringBuilder appendNewLine() {
-        return out.append(System.lineSeparator());
+    protected void appendNewLine() throws IOException {
+        out.append(System.lineSeparator());
     }
 
-    protected StringBuilder appendTruncate(String value) {
-        return out.append(truncate(value, maxDisplayColumnWidth));
+    protected void appendTruncate(String value) throws IOException {
+        out.append(truncate(value, maxDisplayColumnWidth));
     }
 }

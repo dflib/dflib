@@ -3,6 +3,8 @@ package org.dflib.print;
 import org.dflib.DataFrame;
 import org.dflib.Series;
 
+import java.io.IOException;
+
 /**
  * A utility class for outputting DataFrames and DataRows on a single line.
  */
@@ -16,12 +18,12 @@ public class InlinePrinter extends BasePrinter {
     }
 
     @Override
-    public StringBuilder print(StringBuilder out, Series<?> s) {
-        return new SeriesInlinePrintWorker(out, maxDisplayRows, maxDisplayColumnWidth).print(s);
+    public void printTo(Appendable sink, Series<?> s) throws IOException {
+        new SeriesInlinePrintWorker(sink, maxDisplayRows, maxDisplayColumnWidth).print(s);
     }
 
     @Override
-    public StringBuilder print(StringBuilder out, DataFrame df) {
-        return new DataFrameInlinePrintWorker(out, maxDisplayRows, maxDisplayColumnWidth).print(df);
+    public void printTo(Appendable sink, DataFrame df) throws IOException {
+        new DataFrameInlinePrintWorker(sink, maxDisplayRows, maxDisplayColumnWidth).print(df);
     }
 }

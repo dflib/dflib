@@ -2,29 +2,32 @@ package org.dflib.print;
 
 import org.dflib.Series;
 
+import java.io.IOException;
+
 public class SeriesTabularPrintWorker extends BasePrintWorker {
 
-    public SeriesTabularPrintWorker(StringBuilder out, int maxDisplayRows, int maxDisplayColumnWidth) {
+    public SeriesTabularPrintWorker(Appendable out, int maxDisplayRows, int maxDisplayColumnWidth) {
         super(out, maxDisplayRows, maxDisplayColumnWidth);
     }
 
-    public StringBuilder print(Series<?> s) {
+    public void print(Series<?> s) throws IOException {
 
         if (s == null) {
             out.append("null");
-            return out;
+            return;
         }
 
         int h = s.size();
         if (h == 0) {
-            appendNewLine().append("0 elements");
-            return out;
+            appendNewLine();
+            out.append("0 elements");
+            return;
         }
 
         int columnWidth = 0;
         String columnFormat;
 
-        SeriesTruncator truncator = SeriesTruncator.create(s, maxDisplayRows);
+        SeriesTruncator<?> truncator = SeriesTruncator.create(s, maxDisplayRows);
 
         // need to accumulate all values to calculate column width
         String[] values = new String[truncator.size()];
@@ -68,8 +71,7 @@ public class SeriesTabularPrintWorker extends BasePrintWorker {
         }
 
         String rowsLabel = h == 1 ? " element" : " elements";
-        appendNewLine().append(h).append(rowsLabel);
-
-        return out;
+        appendNewLine();
+        out.append(Integer.toString(h)).append(rowsLabel);
     }
 }

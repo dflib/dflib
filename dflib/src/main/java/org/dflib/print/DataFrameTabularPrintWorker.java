@@ -4,27 +4,28 @@ import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.row.RowProxy;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DataFrameTabularPrintWorker extends BasePrintWorker {
 
-    public DataFrameTabularPrintWorker(StringBuilder out, int maxDisplayRows, int maxDisplayColumnWith) {
+    public DataFrameTabularPrintWorker(Appendable out, int maxDisplayRows, int maxDisplayColumnWith) {
         super(out, maxDisplayRows, maxDisplayColumnWith);
     }
 
-    public StringBuilder print(DataFrame df) {
+    public void print(DataFrame df) throws IOException {
 
         if (df == null) {
             out.append("null");
-            return out;
+            return;
         }
 
         Index columns = df.getColumnsIndex();
 
         int w = columns.size();
         if (w == 0) {
-            return out;
+            return;
         }
 
         int[] columnWidth = new int[w];
@@ -34,7 +35,7 @@ public class DataFrameTabularPrintWorker extends BasePrintWorker {
 
         for (int i = 0; i < w; i++) {
             // "4" is the length of String "null"
-            columnWidth[i] = columns.get(i) != null? columns.get(i).length() : 4;
+            columnWidth[i] = columns.get(i) != null ? columns.get(i).length() : 4;
         }
 
         DataFrame head = truncator.head();
@@ -112,7 +113,8 @@ public class DataFrameTabularPrintWorker extends BasePrintWorker {
         }
 
         if (truncator.isTruncated()) {
-            appendNewLine().append("...");
+            appendNewLine();
+            out.append("...");
 
             for (String[] row : tailData) {
                 appendNewLine();
@@ -130,15 +132,13 @@ public class DataFrameTabularPrintWorker extends BasePrintWorker {
         String nameLabel = df.getName() != null ? "[" + df.getName() + "] " : "";
         String rowsLabel = h == 1 ? " row x " : " rows x ";
         String columnsLabel = w == 1 ? " column" : " columns";
-        appendNewLine()
-                .append(nameLabel)
-                .append(h).append(rowsLabel)
-                .append(w).append(columnsLabel);
-
-        return out;
+        appendNewLine();
+        out.append(nameLabel)
+                .append(Integer.toString(h)).append(rowsLabel)
+                .append(Integer.toString(w)).append(columnsLabel);
     }
 
-    StringBuilder append(String string) {
-        return out.append(string);
+    void append(String string) throws IOException {
+        out.append(string);
     }
 }

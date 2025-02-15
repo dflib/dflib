@@ -4,17 +4,19 @@ import org.dflib.DataFrame;
 import org.dflib.Index;
 import org.dflib.row.RowProxy;
 
+import java.io.IOException;
+
 public class DataFrameInlinePrintWorker extends BasePrintWorker {
 
-    public DataFrameInlinePrintWorker(StringBuilder out, int maxDisplayRows, int maxDisplayColumnWith) {
+    public DataFrameInlinePrintWorker(Appendable out, int maxDisplayRows, int maxDisplayColumnWith) {
         super(out, maxDisplayRows, maxDisplayColumnWith);
     }
 
-    public StringBuilder print(DataFrame df) {
+    public void print(DataFrame df) throws IOException {
 
         if (df == null) {
             out.append("null");
-            return out;
+            return;
         }
 
         DataFrameTruncator truncator = DataFrameTruncator.create(df, maxDisplayRows);
@@ -34,8 +36,6 @@ public class DataFrameInlinePrintWorker extends BasePrintWorker {
                 appendTruncate(columns.get(j));
                 out.append(":");
             }
-
-            return out;
         }
 
         boolean comma = false;
@@ -85,8 +85,6 @@ public class DataFrameInlinePrintWorker extends BasePrintWorker {
                 out.append("}");
             }
         }
-
-        return out;
     }
 
 }
