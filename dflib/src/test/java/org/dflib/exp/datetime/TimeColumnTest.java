@@ -278,7 +278,7 @@ public class TimeColumnTest {
 
     @Test
     public void shift_plus() {
-        TimeExp e = $time("b").shift(-1).plusHours(3);
+        TimeExp e = $time("b").shift(-1).shift(-1).plusHours(3);
 
         Series<LocalTime> s = Series.of(
                 LocalTime.of(3, 12, 11),
@@ -287,8 +287,9 @@ public class TimeColumnTest {
                 LocalTime.of(8, 10, 1));
 
         new SeriesAsserts(e.eval(s)).expectData(
-                LocalTime.of(7, 10, 1),
                 LocalTime.of(9, 10, 1),
-                LocalTime.of(11, 10, 1), null);
+                LocalTime.of(11, 10, 1),
+                null,
+                null);
     }
 }
