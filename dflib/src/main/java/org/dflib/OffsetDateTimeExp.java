@@ -2,6 +2,7 @@ package org.dflib;
 
 import org.dflib.exp.datetime.DateExp1;
 import org.dflib.exp.datetime.DateTimeExp1;
+import org.dflib.exp.datetime.OffsetDateTimeAsExp;
 import org.dflib.exp.datetime.OffsetDateTimeExp2;
 import org.dflib.exp.datetime.OffsetDateTimeShiftExp;
 import org.dflib.exp.datetime.TimeExp1;
@@ -15,6 +16,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 
 import static org.dflib.Exp.$val;
 
@@ -24,6 +26,15 @@ import static org.dflib.Exp.$val;
  * @since 1.1.0
  */
 public interface OffsetDateTimeExp extends Exp<OffsetDateTime> {
+
+    /**
+     * @since 2.0.0
+     */
+    @Override
+    default OffsetDateTimeExp as(String name) {
+        Objects.requireNonNull(name, "Null 'name'");
+        return new OffsetDateTimeAsExp(name, this);
+    }
 
     default NumExp<Integer> year() {
         return IntExp1.mapVal("year", this, OffsetDateTime::getYear);

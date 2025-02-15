@@ -1,6 +1,7 @@
 ## Release 2.0.0-M3
 
 * #462 "Exp.shift(..)" in specialized expressions must return the type of that expression
+* #463 "Exp.as(..)" in specialized expressions must return the type of that expression
 
 ## Release 2.0.0-M2
 

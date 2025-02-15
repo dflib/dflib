@@ -8,11 +8,13 @@ import org.dflib.exp.map.MapExp1;
 import org.dflib.exp.num.DecimalExp1;
 import org.dflib.exp.num.DoubleExp1;
 import org.dflib.exp.num.FloatExp1;
+import org.dflib.exp.str.StrAsExp;
 import org.dflib.exp.str.StrExp1;
 import org.dflib.exp.str.StrShiftExp;
 import org.dflib.exp.str.StrSplitExp;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import static org.dflib.Exp.$val;
@@ -21,6 +23,15 @@ import static org.dflib.Exp.$val;
  * An expression applied to String columns.
  */
 public interface StrExp extends Exp<String> {
+
+    /**
+     * @since 2.0.0
+     */
+    @Override
+    default StrExp as(String name) {
+        Objects.requireNonNull(name, "Null 'name'");
+        return new StrAsExp(name, this);
+    }
 
     @Override
     default StrExp castAsStr() {

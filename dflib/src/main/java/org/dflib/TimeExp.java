@@ -4,6 +4,7 @@ import org.dflib.agg.Percentiles;
 import org.dflib.exp.agg.ComparableAggregators;
 import org.dflib.exp.agg.TimeAggregators;
 import org.dflib.exp.agg.TimeReduceExp1;
+import org.dflib.exp.datetime.TimeAsExp;
 import org.dflib.exp.datetime.TimeExp2;
 import org.dflib.exp.datetime.TimeShiftExp;
 import org.dflib.exp.map.MapCondition2;
@@ -14,10 +15,20 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 
 import static org.dflib.Exp.$val;
 
 public interface TimeExp extends Exp<LocalTime> {
+
+    /**
+     * @since 2.0.0
+     */
+    @Override
+    default TimeExp as(String name) {
+        Objects.requireNonNull(name, "Null 'name'");
+        return new TimeAsExp(name, this);
+    }
 
     @Override
     default TimeExp castAsTime() {
