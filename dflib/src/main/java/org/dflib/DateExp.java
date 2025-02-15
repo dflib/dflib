@@ -5,6 +5,7 @@ import org.dflib.exp.agg.ComparableAggregators;
 import org.dflib.exp.agg.DateAggregators;
 import org.dflib.exp.agg.DateReduceExp1;
 import org.dflib.exp.datetime.DateExp2;
+import org.dflib.exp.datetime.DateShiftExp;
 import org.dflib.exp.map.MapCondition2;
 import org.dflib.exp.map.MapCondition3;
 import org.dflib.exp.num.IntExp1;
@@ -115,7 +116,7 @@ public interface DateExp extends Exp<LocalDate> {
 
     /**
      * @param from a date value in ISO-8601 format (YYYY-MM-DD)
-     * @param to a date value in ISO-8601 format (YYYY-MM-DD)
+     * @param to   a date value in ISO-8601 format (YYYY-MM-DD)
      * @return `between` condition
      * @since 2.0.0
      */
@@ -241,5 +242,15 @@ public interface DateExp extends Exp<LocalDate> {
      */
     default DateExp quantile(double q, Condition filter) {
         return new DateReduceExp1<>("quantile", this, s -> Percentiles.ofDates(s, q), filter);
+    }
+
+    @Override
+    default DateExp shift(int offset) {
+        return shift(offset, null);
+    }
+
+    @Override
+    default DateExp shift(int offset, LocalDate filler) {
+        return new DateShiftExp(this, offset, filler);
     }
 }

@@ -3,6 +3,7 @@ package org.dflib;
 import org.dflib.exp.datetime.DateExp1;
 import org.dflib.exp.datetime.DateTimeExp1;
 import org.dflib.exp.datetime.OffsetDateTimeExp2;
+import org.dflib.exp.datetime.OffsetDateTimeShiftExp;
 import org.dflib.exp.datetime.TimeExp1;
 import org.dflib.exp.map.MapCondition2;
 import org.dflib.exp.map.MapCondition3;
@@ -231,5 +232,15 @@ public interface OffsetDateTimeExp extends Exp<OffsetDateTime> {
 
     default OffsetDateTimeExp plusYears(int years) {
         return OffsetDateTimeExp2.mapVal("plusYears", this, $val(years), (ld, y) -> ld.plusYears(y));
+    }
+
+    @Override
+    default OffsetDateTimeExp shift(int offset) {
+        return shift(offset, null);
+    }
+
+    @Override
+    default OffsetDateTimeExp shift(int offset, OffsetDateTime filler) {
+        return new OffsetDateTimeShiftExp(this, offset, filler);
     }
 }

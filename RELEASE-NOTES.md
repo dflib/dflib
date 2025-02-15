@@ -1,3 +1,7 @@
+## Release 2.0.0-M3
+
+* #462 "Exp.shift(..)" in specialized expressions must return the type of that expression
+
 ## Release 2.0.0-M2
 
 * #459 `BoolBuilder.buildSeries()` produces incorrect first element for size greater than 64 

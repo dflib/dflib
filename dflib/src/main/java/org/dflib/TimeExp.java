@@ -5,6 +5,7 @@ import org.dflib.exp.agg.ComparableAggregators;
 import org.dflib.exp.agg.TimeAggregators;
 import org.dflib.exp.agg.TimeReduceExp1;
 import org.dflib.exp.datetime.TimeExp2;
+import org.dflib.exp.datetime.TimeShiftExp;
 import org.dflib.exp.map.MapCondition2;
 import org.dflib.exp.map.MapCondition3;
 import org.dflib.exp.num.IntExp1;
@@ -249,5 +250,15 @@ public interface TimeExp extends Exp<LocalTime> {
      */
     default TimeExp quantile(double q, Condition filter) {
         return new TimeReduceExp1<>("quantile", this, s -> Percentiles.ofTimes(s, q), filter);
+    }
+
+    @Override
+    default TimeExp shift(int offset) {
+        return shift(offset, null);
+    }
+
+    @Override
+    default TimeExp shift(int offset, LocalTime filler) {
+        return new TimeShiftExp(this, offset, filler);
     }
 }

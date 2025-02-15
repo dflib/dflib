@@ -9,6 +9,7 @@ import org.dflib.exp.num.DecimalExp1;
 import org.dflib.exp.num.DoubleExp1;
 import org.dflib.exp.num.FloatExp1;
 import org.dflib.exp.str.StrExp1;
+import org.dflib.exp.str.StrShiftExp;
 import org.dflib.exp.str.StrSplitExp;
 
 import java.math.BigDecimal;
@@ -199,4 +200,13 @@ public interface StrExp extends Exp<String> {
         return new StrReduceExp1<>("max", this, s -> ComparableAggregators.max(s), filter);
     }
 
+    @Override
+    default StrExp shift(int offset) {
+        return shift(offset, null);
+    }
+
+    @Override
+    default StrExp shift(int offset, String filler) {
+        return new StrShiftExp(this, offset, filler);
+    }
 }

@@ -89,6 +89,10 @@ public interface NumExp<N extends Number> extends Exp<N> {
         return (NumExp<N>) NumericExpFactory.factory(this).abs(this);
     }
 
+    @Override
+    default Condition castAsBool() {
+        return ConditionFactory.castAsBool(this);
+    }
 
     @Override
     default NumExp<Integer> castAsInt() {
@@ -273,7 +277,12 @@ public interface NumExp<N extends Number> extends Exp<N> {
     }
 
     @Override
-    default Condition castAsBool() {
-        return ConditionFactory.castAsBool(this);
+    default NumExp<N> shift(int offset) {
+        return shift(offset, null);
+    }
+
+    @Override
+    default NumExp<N> shift(int offset, N filler) {
+        return NumericExpFactory.factory(this).shift(this, offset, filler);
     }
 }

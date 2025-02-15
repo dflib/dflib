@@ -224,15 +224,20 @@ public abstract class NumericExpFactory {
      */
     public abstract NumExp<?> round(Exp<? extends Number> exp);
 
+    /**
+     * @since 2.0.0
+     */
+    public <N extends Number> NumExp<N> shift(Exp<N> exp, int offset, N filler) {
+        return new NumShiftExp<>(exp, offset, filler);
+    }
+
     public NumExp<Integer> castAsInt(NumExp<?> exp) {
         return IntExp1.mapVal("castAsInt", exp, Number::intValue);
     }
 
-
     public NumExp<Long> castAsLong(NumExp<?> exp) {
         return LongExp1.mapVal("castAsLong", exp, Number::longValue);
     }
-
 
     public NumExp<Double> castAsDouble(NumExp<?> exp) {
         return DoubleExp1.mapVal("castAsDouble", exp, Number::doubleValue);
