@@ -244,6 +244,38 @@ public class Index implements Iterable<String> {
         return selected.size() == size() ? this : Index.of(selected.toArray(new String[0]));
     }
 
+    /**
+     * Returns an Index with the first <code>len</code> elements of this Index. If this Index is shorter than the
+     * requested length, then the entire Index is returned. If <code>len</code> is negative, instead of returning the
+     * leading elements, they are skipped, and the rest of the Index is returned.
+     *
+     * @since 2.0.0
+     */
+    public Index head(int len) {
+        if (Math.abs(len) >= size()) {
+            return this;
+        }
+
+        return len < 0 ? tail(size() + len) : selectRange(0, len);
+    }
+
+    /**
+     * Returns an Index with the last <code>len</code> elements of this Index. If this Index is shorter than the
+     * requested length, then the entire Index is returned. If <code>len</code> is negative, instead of returning the
+     * trailing elements, they are skipped, and the rest of the Index is returned.
+     *
+     * @since 2.0.0
+     */
+    public Index tail(int len) {
+        int size = size();
+
+        if (Math.abs(len) >= size()) {
+            return this;
+        }
+
+        return len < 0 ? head(size + len) : selectRange(size - len, size);
+    }
+
     // not-public direct accessor to mutable values ... Saves on data copy, but the callers should be
     // careful not to alter the values
     String[] toArrayNoCopy() {
