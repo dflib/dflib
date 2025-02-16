@@ -32,7 +32,7 @@ public abstract class BasePrintWorker {
         return string.substring(0, startOffset) + ".." + string.substring(endOffset);
     }
 
-    protected String columnFormat(int width, Class<?> valueType) {
+    protected CellFormatter columnFormat(int width, Class<?> valueType) {
         if (width <= 0) {
             throw new IllegalArgumentException("Column width must be positive: " + width);
         }
@@ -40,16 +40,14 @@ public abstract class BasePrintWorker {
         return valueType.isPrimitive()
                 || Number.class.isAssignableFrom(valueType)
                 || Boolean.class.isAssignableFrom(valueType)
-                // numbers are right-aligned
-                ? "%1$" + width + "s"
-                // the rest are left-aligned
-                : "%1$-" + width + "s";
+
+                // numbers are right-aligned, the rest are left-aligned
+                ? CellFormatter.leftPad(width) : CellFormatter.rightPad(width);
     }
 
-    protected void appendFixedWidth(String value, int width, String columnFormat) throws IOException {
-
+    protected void appendFixedWidth(String value, int width, CellFormatter cellFormatter) throws IOException {
         if (value == null || value.length() <= width) {
-            out.append(String.format(columnFormat, value));
+            out.append(cellFormatter.format(value));
         } else {
             out.append(truncate(value, width));
         }

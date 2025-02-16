@@ -29,7 +29,7 @@ public class DataFrameTabularPrintWorker extends BasePrintWorker {
         }
 
         int[] columnWidth = new int[w];
-        String[] columnFormat = new String[w];
+        CellFormatter[] columnFormat = new CellFormatter[w];
 
         DataFrameTruncator truncator = DataFrameTruncator.create(df, maxDisplayRows);
 

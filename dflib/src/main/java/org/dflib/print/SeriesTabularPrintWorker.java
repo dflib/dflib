@@ -25,7 +25,7 @@ public class SeriesTabularPrintWorker extends BasePrintWorker {
         }
 
         int columnWidth = 0;
-        String columnFormat;
+        CellFormatter columnFormat;
 
         SeriesTruncator<?> truncator = SeriesTruncator.create(s, maxDisplayRows);
 

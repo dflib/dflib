@@ -23,28 +23,28 @@ public class DataFrameTabularPrintWorkerTest {
     @Test
     public void appendFixedWidth1() throws IOException {
         StringBuilder out = new StringBuilder();
-        new DataFrameTabularPrintWorker(out, 3, 20).appendFixedWidth("a", 3, "%1$-3s");
+        new DataFrameTabularPrintWorker(out, 3, 20).appendFixedWidth("a", 3, CellFormatter.rightPad(3));
         assertEquals("a  ", out.toString());
     }
 
     @Test
     public void appendFixedWidth2() throws IOException {
         StringBuilder out = new StringBuilder();
-        new DataFrameTabularPrintWorker(out, 3, 20).appendFixedWidth("a", 2, "%1$-2s");
+        new DataFrameTabularPrintWorker(out, 3, 20).appendFixedWidth("a", 2, CellFormatter.rightPad(2));
         assertEquals("a ", out.toString());
     }
 
     @Test
     public void appendFixedWidth3() throws IOException {
         StringBuilder out = new StringBuilder();
-        new DataFrameTabularPrintWorker(out, 3, 20).appendFixedWidth("a", 1, "%1$-1s");
+        new DataFrameTabularPrintWorker(out, 3, 20).appendFixedWidth("a", 1, CellFormatter.rightPad(1));
         assertEquals("a", out.toString());
     }
 
     @Test
     public void appendFixedWidth4() throws IOException {
         StringBuilder out = new StringBuilder();
-        new DataFrameTabularPrintWorker(out, 3, 20).appendFixedWidth("abc", 2, "%1$-2s");
+        new DataFrameTabularPrintWorker(out, 3, 20).appendFixedWidth("abc", 2, CellFormatter.rightPad(2));
         assertEquals("..", out.toString());
     }
 

@@ -5,6 +5,7 @@
 * #464 Printer.toString(..) -> Printer.print(..)
 * #465 Align display defaults between core Printers and Jupyter
 * #467 Index.head(..), tail(..)
+* #468 Faster tabular printers
 
 ## Release 2.0.0-M2
 
