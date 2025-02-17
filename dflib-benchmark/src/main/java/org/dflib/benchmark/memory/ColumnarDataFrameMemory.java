@@ -100,14 +100,14 @@ public class ColumnarDataFrameMemory extends MemoryTest {
 
     public DataFrame primitiveBitsetBoolCells() {
         return DataFrame.byColumn("c0", "c1").of(
-                ValueMaker.booleanSeq().booleanArraySeries(ROWS),
-                ValueMaker.booleanSeq().booleanArraySeries(ROWS)).materialize();
+                ValueMaker.booleanSeq().booleanSeries(ROWS),
+                ValueMaker.booleanSeq().booleanSeries(ROWS)).materialize();
     }
 
     public DataFrame primitiveArrayBoolCells() {
         return DataFrame.byColumn("c0", "c1").of(
-                ValueMaker.booleanSeq().booleanSeries(ROWS),
-                ValueMaker.booleanSeq().booleanSeries(ROWS)).materialize();
+                ValueMaker.booleanSeq().booleanArraySeries(ROWS),
+                ValueMaker.booleanSeq().booleanArraySeries(ROWS)).materialize();
     }
 
     public DataFrame repeatingStringCells() {
