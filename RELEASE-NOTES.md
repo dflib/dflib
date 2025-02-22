@@ -6,6 +6,7 @@
 * #465 Align display defaults between core Printers and Jupyter
 * #467 Index.head(..), tail(..)
 * #468 Faster tabular printers
+* #469 Exp.mapBool(..) and Exp.mapBoolVal(..) with binary predicate
 
 ## Release 2.0.0-M2
 
