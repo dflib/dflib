@@ -14,7 +14,7 @@ abstract class TabularAppendable {
         this.maxDisplayRows = maxDisplayRows;
     }
 
-    protected void appendNewLine() throws IOException {
+    protected void printNewLine() throws IOException {
         out.append(System.lineSeparator());
     }
 }

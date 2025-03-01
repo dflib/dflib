@@ -21,7 +21,26 @@ class DataFrameTabularAppendable extends TabularAppendable {
 
         int w = df.width();
         if (w > 0) {
-            printNonZeroWidth(df, w);
+            DataFrameTruncator truncator = DataFrameTruncator.create(df, maxDisplayRows);
+            DataFrame top = truncator.top();
+            DataFrame bottom = truncator.bottom();
+
+            TabularColumnData[] strings = makeStrings(w, df, top, bottom);
+
+            // since tabular printer is multiline, start with a line break to ensure logger-induced prefixes don't break
+            // table alignment
+            printNewLine();
+            printHeader(strings);
+            printNewLine();
+            printHeaderSeparator(strings);
+            printData(strings, 1, top.height());
+
+            // print separator if needed
+            if (truncator.isTruncated()) {
+                printRowsSeparator();
+            }
+
+            printData(strings, 1 + top.height(), bottom.height());
         }
 
         int h = df.height();
@@ -29,33 +48,24 @@ class DataFrameTabularAppendable extends TabularAppendable {
         String nameLabel = df.getName() != null ? "[" + df.getName() + "] " : "";
         String rowsLabel = h == 1 ? " row x " : " rows x ";
         String columnsLabel = w == 1 ? " column" : " columns";
-        appendNewLine();
+        printNewLine();
         out.append(nameLabel)
                 .append(Integer.toString(h)).append(rowsLabel)
                 .append(Integer.toString(w)).append(columnsLabel);
     }
 
-    private void printNonZeroWidth(DataFrame df, int w) throws IOException {
-
-        DataFrameTruncator truncator = DataFrameTruncator.create(df, maxDisplayRows);
-        DataFrame top = truncator.top();
-        DataFrame bottom = truncator.bottom();
-        TabularColumnData[] strings = makeStrings(w, df, top, bottom);
-
-        // since tabular printer is multiline, start with a line break to ensure logger-induced prefixes don't break
-        // table alignment
-        appendNewLine();
-
-        // print header
+    private void printHeader(TabularColumnData[] strings) throws IOException {
+        int w = strings.length;
         for (int i = 0; i < w; i++) {
             if (i > 0) {
                 out.append(" ");
             }
             strings[i].printTo(out, 0);
         }
+    }
 
-        // print header separator
-        appendNewLine();
+    private void printHeaderSeparator(TabularColumnData[] strings) throws IOException {
+        int w = strings.length;
         for (int i = 0; i < w; i++) {
             if (i > 0) {
                 out.append(" ");
@@ -63,35 +73,17 @@ class DataFrameTabularAppendable extends TabularAppendable {
 
             strings[i].printSeparatorTo(out);
         }
+    }
 
-        int offset = 1;
-        int topH = top.height();
-        int bottomH = bottom.height();
+    private void printRowsSeparator() throws IOException {
+        printNewLine();
+        out.append("...");
+    }
 
-        // print top
-        for (int i = 0; i < topH; i++) {
-            appendNewLine();
-            for (int j = 0; j < w; j++) {
-                if (j > 0) {
-                    out.append(" ");
-                }
-
-                strings[j].printTo(out, offset);
-            }
-
-            offset++;
-        }
-
-        // print separator if needed
-        if (truncator.isTruncated()) {
-            appendNewLine();
-            out.append("...");
-        }
-
-        // print bottom
-
-        for (int i = 0; i < bottomH; i++) {
-            appendNewLine();
+    private void printData(TabularColumnData[] strings, int offset, int len) throws IOException {
+        int w = strings.length;
+        for (int i = 0; i < len; i++) {
+            printNewLine();
             for (int j = 0; j < w; j++) {
                 if (j > 0) {
                     out.append(" ");

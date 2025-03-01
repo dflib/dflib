@@ -21,58 +21,52 @@ class DataFrameInlineAppendable extends InlineAppendable {
 
         DataFrameTruncator truncator = DataFrameTruncator.create(df, maxDisplayRows);
 
-        Index columns = df.getColumnsIndex();
-        int width = columns.size();
-        int h = truncator.height();
-
         // if no data, print column labels once
-        if (h == 0) {
-            for (int j = 0; j < width; j++) {
-
-                if (j > 0) {
-                    out.append(",");
-                }
-
-                appendTruncate(columns.get(j));
-                out.append(":");
-            }
+        if (truncator.height() == 0) {
+            printColumnLabels(df.getColumnsIndex());
+            return;
         }
 
-        boolean comma = false;
-        for (RowProxy p : truncator.top()) {
-
-            if (comma) {
-                out.append(",");
-            } else {
-                comma = true;
-            }
-
-            out.append("{");
-            for (int j = 0; j < width; j++) {
-
-                if (j > 0) {
-                    out.append(",");
-                }
-
-                appendTruncate(columns.get(j));
-                out.append(":");
-                appendTruncate(String.valueOf(p.get(j)));
-            }
-
-            out.append("}");
-        }
+        printData(truncator.top(), false);
 
         if (truncator.isTruncated()) {
-            if (comma) {
+            printRowsSeparator();
+        }
+
+        printData(truncator.bottom(), true);
+    }
+
+    private void printColumnLabels(Index columns) throws IOException {
+        int w = columns.size();
+        for (int j = 0; j < w; j++) {
+
+            if (j > 0) {
                 out.append(",");
             }
 
-            out.append("...");
+            appendTruncate(columns.get(j));
+            out.append(":");
         }
+    }
 
-        for (RowProxy p : truncator.bottom()) {
-            out.append(",{");
-            for (int j = 0; j < width; j++) {
+    private void printRowsSeparator() throws IOException {
+        out.append(",...");
+    }
+
+    private void printData(DataFrame data, boolean startWithComma) throws IOException {
+        Index columns = data.getColumnsIndex();
+        int w = columns.size();
+
+        boolean comma = startWithComma;
+        for (RowProxy p : data) {
+            if (comma) {
+                out.append(",{");
+            } else {
+                comma = true;
+                out.append("{");
+            }
+
+            for (int j = 0; j < w; j++) {
 
                 if (j > 0) {
                     out.append(",");

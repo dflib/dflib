@@ -19,7 +19,7 @@ class SeriesTabularAppendable extends TabularAppendable {
 
         int h = s.size();
         if (h == 0) {
-            appendNewLine();
+            printNewLine();
             out.append("0 elements");
             return;
         }
@@ -27,34 +27,29 @@ class SeriesTabularAppendable extends TabularAppendable {
         SeriesTruncator truncator = SeriesTruncator.create(s, maxDisplayRows);
         Series<?> top = truncator.top();
         Series<?> bottom = truncator.bottom();
-
         TabularColumnData strings = makeStrings(s, top, bottom);
 
-        int offset = 0;
-        int topH = top.size();
-        int bottomH = bottom.size();
-
-        // print top
-        for (int i = 0; i < topH; i++) {
-            appendNewLine();
-            strings.printTo(out, offset++);
-        }
-
-        // print separator if needed
+        printData(strings, 0, top.size());
         if (truncator.isTruncated()) {
-            appendNewLine();
-            out.append("...");
+            printRowsSeparator();
         }
-
-        // print bottom
-        for (int i = 0; i < bottomH; i++) {
-            appendNewLine();
-            strings.printTo(out, offset++);
-        }
+        printData(strings, top.size(), bottom.size());
 
         String rowsLabel = h == 1 ? " element" : " elements";
-        appendNewLine();
+        printNewLine();
         out.append(Integer.toString(h)).append(rowsLabel);
+    }
+
+    private void printRowsSeparator() throws IOException {
+        printNewLine();
+        out.append("...");
+    }
+
+    private void printData(TabularColumnData strings, int offset, int len) throws IOException {
+        for (int i = 0; i < len; i++) {
+            printNewLine();
+            strings.printTo(out, offset++);
+        }
     }
 
     private TabularColumnData makeStrings(Series<?> s, Series<?> top, Series<?> bottom) {

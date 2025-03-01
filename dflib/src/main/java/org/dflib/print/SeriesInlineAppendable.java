@@ -18,29 +18,31 @@ public class SeriesInlineAppendable extends InlineAppendable {
         }
 
         SeriesTruncator truncator = SeriesTruncator.create(s, maxDisplayRows);
-        Series<?> head = truncator.top();
-        int hs = head.size();
 
-        for (int i = 0; i < hs; i++) {
-
-            if (i > 0) {
-                out.append(",");
-            }
-
-            appendTruncate(String.valueOf(s.get(i)));
-        }
+        printData(truncator.top(), false);
 
         if (truncator.isTruncated()) {
-            out.append(",...");
+            printRowsSeparator();
         }
 
-        Series<?> tail = truncator.bottom();
-        int ts = tail.size();
+        printData(truncator.bottom(), true);
+    }
 
-        for (int i = 0; i < ts; i++) {
-            out.append(",");
-            String val = String.valueOf(tail.get(i));
-            appendTruncate(val);
+    private void printRowsSeparator() throws IOException {
+        out.append(",...");
+    }
+
+    private void printData(Series<?> data, boolean startWithComma) throws IOException {
+
+        boolean comma = startWithComma;
+        for (Object o : data) {
+            if (comma) {
+                out.append(",");
+            } else {
+                comma = true;
+            }
+
+            appendTruncate(String.valueOf(o));
         }
     }
 }
