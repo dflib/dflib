@@ -17,7 +17,7 @@ public class TabularPrinter_DataFrameTest {
                     Series.ofInt(1, 2, 3, 44));
 
     @Test
-    public void print_Normal() {
+    public void print() {
         TabularPrinter p = new TabularPrinter(5, 10);
 
         assertEquals(LS +
@@ -58,7 +58,7 @@ public class TabularPrinter_DataFrameTest {
     }
 
     @Test
-    public void print_TruncateColumns() {
+    public void print_TruncatedVals() {
         TabularPrinter p = new TabularPrinter(5, 4);
 
         assertEquals(LS +
@@ -72,7 +72,20 @@ public class TabularPrinter_DataFrameTest {
     }
 
     @Test
-    public void emptyColumn() {
+    public void print_NoCols() {
+
+        DataFrame df = DataFrame
+                .byColumn()
+                .of();
+
+        TabularPrinter p = new TabularPrinter(5, 10);
+
+        assertEquals(LS +
+                "0 rows x 0 columns", p.print(df));
+    }
+
+    @Test
+    public void print_EmptyColumn() {
 
         DataFrame df = DataFrame
                 .byColumn("col1", "")
@@ -91,7 +104,7 @@ public class TabularPrinter_DataFrameTest {
     }
 
     @Test
-    public void nullIndexLabel() {
+    public void print_NullIndexLabel() {
 
         DataFrame df = DataFrame
                 .byColumn("col1", null)

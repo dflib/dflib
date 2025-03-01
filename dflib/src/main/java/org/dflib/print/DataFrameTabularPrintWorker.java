@@ -21,13 +21,25 @@ public class DataFrameTabularPrintWorker extends BasePrintWorker {
             return;
         }
 
-        Index columns = df.getColumnsIndex();
-
-        int w = columns.size();
-        if (w == 0) {
-            return;
+        int w = df.width();
+        if (w > 0) {
+            printNonZeroWidth(df, w);
         }
 
+        int h = df.height();
+
+        String nameLabel = df.getName() != null ? "[" + df.getName() + "] " : "";
+        String rowsLabel = h == 1 ? " row x " : " rows x ";
+        String columnsLabel = w == 1 ? " column" : " columns";
+        appendNewLine();
+        out.append(nameLabel)
+                .append(Integer.toString(h)).append(rowsLabel)
+                .append(Integer.toString(w)).append(columnsLabel);
+    }
+
+    private void printNonZeroWidth(DataFrame df, int w) throws IOException {
+
+        Index columns = df.getColumnsIndex();
         int[] columnWidth = new int[w];
         CellFormatter[] columnFormat = new CellFormatter[w];
 
@@ -126,16 +138,6 @@ public class DataFrameTabularPrintWorker extends BasePrintWorker {
                 }
             }
         }
-
-        int h = df.height();
-
-        String nameLabel = df.getName() != null ? "[" + df.getName() + "] " : "";
-        String rowsLabel = h == 1 ? " row x " : " rows x ";
-        String columnsLabel = w == 1 ? " column" : " columns";
-        appendNewLine();
-        out.append(nameLabel)
-                .append(Integer.toString(h)).append(rowsLabel)
-                .append(Integer.toString(w)).append(columnsLabel);
     }
 
     void append(String string) throws IOException {
