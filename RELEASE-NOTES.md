@@ -4,6 +4,7 @@
 * #463 "Exp.as(..)" in specialized expressions must return the type of that expression
 * #464 Printer.toString(..) -> Printer.print(..)
 * #465 Align display defaults between core Printers and Jupyter
+* #466 Add max columns limit to Printers
 * #467 Index.head(..), tail(..)
 * #468 Faster tabular printers
 * #469 Exp.mapBool(..) and Exp.mapBoolVal(..) with binary predicate
