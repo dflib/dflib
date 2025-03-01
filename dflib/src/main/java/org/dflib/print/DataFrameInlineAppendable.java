@@ -44,7 +44,7 @@ class DataFrameInlineAppendable extends InlineAppendable {
                 out.append(",");
             }
 
-            appendTruncate(columns.get(j));
+            printTruncate(columns.get(j));
             out.append(":");
         }
     }
@@ -72,9 +72,9 @@ class DataFrameInlineAppendable extends InlineAppendable {
                     out.append(",");
                 }
 
-                appendTruncate(columns.get(j));
+                printTruncate(columns.get(j));
                 out.append(":");
-                appendTruncate(String.valueOf(p.get(j)));
+                printTruncate(String.valueOf(p.get(j)));
             }
 
             out.append("}");

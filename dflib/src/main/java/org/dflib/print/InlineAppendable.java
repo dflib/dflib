@@ -32,7 +32,7 @@ abstract class InlineAppendable {
         return string.substring(0, startOffset) + ".." + string.substring(endOffset);
     }
 
-    protected void appendTruncate(String value) throws IOException {
+    protected void printTruncate(String value) throws IOException {
         out.append(truncate(value, maxDisplayColumnWidth));
     }
 }
