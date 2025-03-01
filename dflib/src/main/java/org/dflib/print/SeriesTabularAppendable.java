@@ -40,15 +40,16 @@ class SeriesTabularAppendable extends TabularAppendable {
             strings.printTo(out, offset++);
         }
 
-        // print bottom
-        if (bottomH > 0) {
+        // print separator if needed
+        if (truncator.isTruncated()) {
             appendNewLine();
             out.append("...");
+        }
 
-            for (int i = 0; i < bottomH; i++) {
-                appendNewLine();
-                strings.printTo(out, offset++);
-            }
+        // print bottom
+        for (int i = 0; i < bottomH; i++) {
+            appendNewLine();
+            strings.printTo(out, offset++);
         }
 
         String rowsLabel = h == 1 ? " element" : " elements";

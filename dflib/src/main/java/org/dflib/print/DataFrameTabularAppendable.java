@@ -82,23 +82,25 @@ class DataFrameTabularAppendable extends TabularAppendable {
             offset++;
         }
 
-        // print bottom
-        if (bottomH > 0) {
+        // print separator if needed
+        if (truncator.isTruncated()) {
             appendNewLine();
             out.append("...");
+        }
 
-            for (int i = 0; i < bottomH; i++) {
-                appendNewLine();
-                for (int j = 0; j < w; j++) {
-                    if (j > 0) {
-                        out.append(" ");
-                    }
+        // print bottom
 
-                    strings[j].printTo(out, offset);
+        for (int i = 0; i < bottomH; i++) {
+            appendNewLine();
+            for (int j = 0; j < w; j++) {
+                if (j > 0) {
+                    out.append(" ");
                 }
 
-                offset++;
+                strings[j].printTo(out, offset);
             }
+
+            offset++;
         }
     }
 

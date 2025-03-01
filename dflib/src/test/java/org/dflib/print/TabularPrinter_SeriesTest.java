@@ -66,6 +66,16 @@ public class TabularPrinter_SeriesTest {
     }
 
     @Test
+    public void print_TruncateToOneRow() {
+        TabularPrinter p = new TabularPrinter(1, 10);
+
+        assertEquals(System.lineSeparator() +
+                "one" + System.lineSeparator() +
+                "..." + System.lineSeparator() +
+                "4 elements", p.print(Series.of("one", "two", "three", "four")));
+    }
+
+    @Test
     public void print_TruncateColumns() {
         TabularPrinter p = new TabularPrinter(5, 4);
 

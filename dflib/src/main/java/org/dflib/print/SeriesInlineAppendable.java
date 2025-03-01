@@ -30,17 +30,17 @@ public class SeriesInlineAppendable extends InlineAppendable {
             appendTruncate(String.valueOf(s.get(i)));
         }
 
-        if(truncator.isTruncated()) {
+        if (truncator.isTruncated()) {
             out.append(",...");
+        }
 
-            Series<?> tail = truncator.bottom();
-            int ts = tail.size();
+        Series<?> tail = truncator.bottom();
+        int ts = tail.size();
 
-            for (int i = 0; i < ts; i++) {
-                out.append(",");
-                String val = String.valueOf(tail.get(i));
-                appendTruncate(val);
-            }
+        for (int i = 0; i < ts; i++) {
+            out.append(",");
+            String val = String.valueOf(tail.get(i));
+            appendTruncate(val);
         }
     }
 }

@@ -7,6 +7,7 @@
 * #467 Index.head(..), tail(..)
 * #468 Faster tabular printers
 * #469 Exp.mapBool(..) and Exp.mapBoolVal(..) with binary predicate
+* #470 Tabular Printers should output "..." for a row limit of 1
 
 ## Release 2.0.0-M2
 

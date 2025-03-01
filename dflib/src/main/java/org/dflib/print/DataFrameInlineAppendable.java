@@ -68,22 +68,22 @@ class DataFrameInlineAppendable extends InlineAppendable {
             }
 
             out.append("...");
+        }
 
-            for (RowProxy p : truncator.bottom()) {
-                out.append(",{");
-                for (int j = 0; j < width; j++) {
+        for (RowProxy p : truncator.bottom()) {
+            out.append(",{");
+            for (int j = 0; j < width; j++) {
 
-                    if (j > 0) {
-                        out.append(",");
-                    }
-
-                    appendTruncate(columns.get(j));
-                    out.append(":");
-                    appendTruncate(String.valueOf(p.get(j)));
+                if (j > 0) {
+                    out.append(",");
                 }
 
-                out.append("}");
+                appendTruncate(columns.get(j));
+                out.append(":");
+                appendTruncate(String.valueOf(p.get(j)));
             }
+
+            out.append("}");
         }
     }
 

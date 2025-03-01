@@ -58,6 +58,18 @@ public class TabularPrinter_DataFrameTest {
     }
 
     @Test
+    public void print_TruncateToOneRow() {
+        TabularPrinter p = new TabularPrinter(1, 10);
+
+        assertEquals(LS +
+                "col1 column2" + LS +
+                "---- -------" + LS +
+                "one        1" + LS +
+                "..." + LS +
+                "4 rows x 2 columns", p.print(df));
+    }
+
+    @Test
     public void print_TruncatedVals() {
         TabularPrinter p = new TabularPrinter(5, 4);
 
