@@ -24,28 +24,28 @@ public class DataFrameInlineAppendableTest {
     @Test
     public void toString_NoRows() throws IOException {
         StringBuilder out = new StringBuilder();
-        new DataFrameInlineAppendable(out, 5, 10).print(DataFrame.empty("a", "b"));
+        new DataFrameInlineAppendable(out, 5, 6, 10).print(DataFrame.empty("a", "b"));
         assertEquals("a:,b:", out.toString());
     }
 
     @Test
     public void toString_Normal() throws IOException {
         StringBuilder out = new StringBuilder();
-        new DataFrameInlineAppendable(out, 5, 10).print(df);
+        new DataFrameInlineAppendable(out, 5, 6, 10).print(df);
         assertEquals("{col1:one,column2:1},{col1:two,column2:2},{col1:three,column2:3},{col1:four,column2:4}", out.toString());
     }
 
     @Test
     public void toString_TruncateRows() throws IOException {
         StringBuilder out = new StringBuilder();
-        new DataFrameInlineAppendable(out, 2, 10).print(df);
+        new DataFrameInlineAppendable(out, 2, 6, 10).print(df);
         assertEquals("{col1:one,column2:1},...,{col1:four,column2:4}", out.toString());
     }
 
     @Test
-    public void toString_TruncateColumns() throws IOException {
+    public void toString_TruncateValues() throws IOException {
         StringBuilder out = new StringBuilder();
-        new DataFrameInlineAppendable(out, 5, 4).print(df);
+        new DataFrameInlineAppendable(out, 5, 6, 4).print(df);
         assertEquals("{col1:one,c..2:1},{col1:two,c..2:2},{col1:t..e,c..2:3},{col1:four,c..2:4}", out.toString());
     }
 }

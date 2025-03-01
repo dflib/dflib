@@ -5,13 +5,13 @@ import java.io.IOException;
 abstract class TabularAppendable {
 
     protected Appendable out;
-    protected int maxDisplayColumnWidth;
-    protected int maxDisplayRows;
+    protected int maxColumnChars;
+    protected int maxRows;
 
-    public TabularAppendable(Appendable out, int maxDisplayRows, int maxDisplayColumnWidth) {
+    public TabularAppendable(Appendable out, int maxRows, int maxColumnChars) {
         this.out = out;
-        this.maxDisplayColumnWidth = maxDisplayColumnWidth;
-        this.maxDisplayRows = maxDisplayRows;
+        this.maxColumnChars = maxColumnChars;
+        this.maxRows = maxRows;
     }
 
     protected void printNewLine() throws IOException {

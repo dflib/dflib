@@ -5,13 +5,13 @@ import java.io.IOException;
 abstract class InlineAppendable {
 
     protected final Appendable out;
-    protected final int maxDisplayColumnWidth;
-    protected final int maxDisplayRows;
+    protected final int maxColumnChars;
+    protected final int maxRows;
 
-    public InlineAppendable(Appendable out, int maxDisplayRows, int maxDisplayColumnWidth) {
+    public InlineAppendable(Appendable out, int maxRows, int maxColumnChars) {
         this.out = out;
-        this.maxDisplayColumnWidth = maxDisplayColumnWidth;
-        this.maxDisplayRows = maxDisplayRows;
+        this.maxColumnChars = maxColumnChars;
+        this.maxRows = maxRows;
     }
 
     protected static String truncate(String string, int width) {
@@ -33,6 +33,6 @@ abstract class InlineAppendable {
     }
 
     protected void printTruncate(String value) throws IOException {
-        out.append(truncate(value, maxDisplayColumnWidth));
+        out.append(truncate(value, maxColumnChars));
     }
 }

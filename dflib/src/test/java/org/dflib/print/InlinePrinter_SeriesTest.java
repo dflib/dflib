@@ -17,26 +17,26 @@ public class InlinePrinter_SeriesTest {
 
     @Test
     public void print_Normal() {
-        InlinePrinter p = new InlinePrinter(5, 10);
+        InlinePrinter p = new InlinePrinter(5, 100, 10);
 
         assertEquals("one,two,three,four", p.print(s1));
     }
 
     @Test
     public void print_TruncateRows() {
-        InlinePrinter p = new InlinePrinter(2, 10);
+        InlinePrinter p = new InlinePrinter(2, 100, 10);
         assertEquals("one,...,four", p.print(s1));
     }
 
     @Test
     public void print_TruncateToOneRow() {
-        InlinePrinter p = new InlinePrinter(1, 10);
+        InlinePrinter p = new InlinePrinter(1, 100, 10);
         assertEquals("one,...", p.print(s1));
     }
 
     @Test
     public void print_TruncateColumns() {
-        InlinePrinter p = new InlinePrinter(5, 4);
+        InlinePrinter p = new InlinePrinter(5, 100, 4);
         assertEquals("one,two,t..e,four", p.print(s1));
     }
 }

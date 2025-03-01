@@ -1,51 +1,40 @@
 package org.dflib.print;
 
+import org.dflib.Index;
 import org.dflib.Series;
 import org.dflib.series.EmptySeries;
 
-class SeriesTruncator {
+class SeriesTruncator<T> {
 
-    final Series<?> series;
-    final boolean truncated;
-    final int top;
-    final int bottom;
-
-    private SeriesTruncator(Series<?> series, boolean truncated, int top, int bottom) {
-        this.series = series;
-        this.truncated = truncated;
-        this.top = top;
-        this.bottom = bottom;
+    public static SeriesTruncator<String> create(Index index, int maxSize) {
+        return create(index.toSeries(), maxSize);
     }
 
-    public static SeriesTruncator create(Series<?> series, int maxSize) {
+    public static <T> SeriesTruncator<T> create(Series<T> series, int maxSize) {
 
-        if (maxSize < 0) {
-            maxSize = 0;
+        if (maxSize <= 0) {
+            maxSize = 1;
         }
 
         int h = series.size();
         if (h <= maxSize) {
-            return new SeriesTruncator(series, false, h, 0);
+            return new SeriesTruncator(series, series, new EmptySeries(), false);
         }
 
         int head = maxSize / 2 + maxSize % 2;
         int tail = maxSize - head;
-        return new SeriesTruncator(series, true, head, tail);
+        return new SeriesTruncator(series, series.head(head), series.tail(tail), true);
     }
 
-    public Series<?> top() {
-        return truncated ? series.head(top) : series;
-    }
+    final Series<T> series;
+    final Series<T> head;
+    final Series<T> tail;
+    final boolean truncated;
 
-    public Series<?> bottom() {
-        return truncated ? series.tail(bottom) : new EmptySeries();
-    }
-
-    public boolean isTruncated() {
-        return truncated;
-    }
-
-    public int size() {
-        return truncated ? top + bottom + 1 : series.size();
+    private SeriesTruncator(Series<T> series, Series<T> head, Series<T> tail, boolean truncated) {
+        this.series = series;
+        this.head = head;
+        this.tail = tail;
+        this.truncated = truncated;
     }
 }

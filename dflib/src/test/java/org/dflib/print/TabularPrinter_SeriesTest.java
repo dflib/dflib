@@ -9,7 +9,7 @@ public class TabularPrinter_SeriesTest {
 
     @Test
     public void print_Double() {
-        TabularPrinter p = new TabularPrinter(5, 10);
+        TabularPrinter p = new TabularPrinter(5, 100, 10);
 
         assertEquals(System.lineSeparator() +
                 "      1.0" + System.lineSeparator() +
@@ -21,7 +21,7 @@ public class TabularPrinter_SeriesTest {
 
     @Test
     public void print_Int() {
-        TabularPrinter p = new TabularPrinter(5, 10);
+        TabularPrinter p = new TabularPrinter(5, 100, 10);
 
         assertEquals(System.lineSeparator() +
                 "      1" + System.lineSeparator() +
@@ -33,7 +33,7 @@ public class TabularPrinter_SeriesTest {
 
     @Test
     public void print_Boolean() {
-        TabularPrinter p = new TabularPrinter(5, 10);
+        TabularPrinter p = new TabularPrinter(5, 100, 10);
 
         assertEquals(System.lineSeparator() +
                 " true" + System.lineSeparator() +
@@ -43,7 +43,7 @@ public class TabularPrinter_SeriesTest {
 
     @Test
     public void print_Full() {
-        TabularPrinter p = new TabularPrinter(5, 10);
+        TabularPrinter p = new TabularPrinter(5, 100, 10);
 
         assertEquals(System.lineSeparator() +
                 "one  " + System.lineSeparator() +
@@ -56,7 +56,7 @@ public class TabularPrinter_SeriesTest {
     @Test
     public void print_TruncateRows() {
 
-        TabularPrinter p = new TabularPrinter(2, 10);
+        TabularPrinter p = new TabularPrinter(2, 100, 10);
 
         assertEquals(System.lineSeparator() +
                 "one " + System.lineSeparator() +
@@ -67,7 +67,7 @@ public class TabularPrinter_SeriesTest {
 
     @Test
     public void print_TruncateToOneRow() {
-        TabularPrinter p = new TabularPrinter(1, 10);
+        TabularPrinter p = new TabularPrinter(1, 100, 10);
 
         assertEquals(System.lineSeparator() +
                 "one" + System.lineSeparator() +
@@ -76,8 +76,8 @@ public class TabularPrinter_SeriesTest {
     }
 
     @Test
-    public void print_TruncateColumns() {
-        TabularPrinter p = new TabularPrinter(5, 4);
+    public void print_TruncateVals() {
+        TabularPrinter p = new TabularPrinter(5, 100, 4);
 
         assertEquals(System.lineSeparator() +
                 "one " + System.lineSeparator() +
@@ -90,7 +90,7 @@ public class TabularPrinter_SeriesTest {
     @Test
     public void print_EmptyStringsOnly() {
 
-        TabularPrinter p = new TabularPrinter(5, 10);
+        TabularPrinter p = new TabularPrinter(5, 100, 10);
 
         assertEquals(System.lineSeparator() +
                 " " + System.lineSeparator() +

@@ -4,47 +4,31 @@ import org.dflib.DataFrame;
 
 class DataFrameTruncator {
 
-    DataFrame dataFrame;
-    boolean truncated;
-    int top;
-    int bottom;
-
-    private DataFrameTruncator(DataFrame dataFrame, boolean truncated, int top, int bottom) {
-        this.dataFrame = dataFrame;
-        this.truncated = truncated;
-        this.top = top;
-        this.bottom = bottom;
-    }
-
     public static DataFrameTruncator create(DataFrame dataFrame, int maxHeight) {
 
-        if (maxHeight < 0) {
-            maxHeight = 0;
+        if (maxHeight <= 0) {
+            maxHeight = 1;
         }
 
         int h = dataFrame.height();
         if (h <= maxHeight) {
-            return new DataFrameTruncator(dataFrame, false, h, 0);
+            return new DataFrameTruncator(dataFrame, dataFrame, DataFrame.empty(dataFrame.getColumnsIndex()), false);
         }
 
         int head = maxHeight / 2 + maxHeight % 2;
         int tail = maxHeight - head;
-        return new DataFrameTruncator(dataFrame, true, head, tail);
+        return new DataFrameTruncator(dataFrame, dataFrame.head(head), dataFrame.tail(tail), true);
     }
 
-    public DataFrame top() {
-        return truncated ? dataFrame.head(top) : dataFrame;
-    }
+    final DataFrame dataFrame;
+    final DataFrame head;
+    final DataFrame tail;
+    final boolean truncated;
 
-    public DataFrame bottom() {
-        return truncated ? dataFrame.tail(bottom) : DataFrame.empty(dataFrame.getColumnsIndex());
-    }
-
-    public boolean isTruncated() {
-        return truncated;
-    }
-
-    public int height() {
-        return truncated ? top + bottom + 1 : dataFrame.height();
+    private DataFrameTruncator(DataFrame dataFrame, DataFrame head, DataFrame tail, boolean truncated) {
+        this.tail = tail;
+        this.dataFrame = dataFrame;
+        this.head = head;
+        this.truncated = truncated;
     }
 }

@@ -13,17 +13,17 @@ public class TabularPrinter extends BasePrinter {
     public TabularPrinter() {
     }
 
-    public TabularPrinter(int maxDisplayRows, int maxDisplayColumnWidth) {
-        super(maxDisplayRows, maxDisplayColumnWidth);
+    public TabularPrinter(int maxRows, int maxCols, int maxValueChars) {
+        super(maxRows, maxCols, maxValueChars);
     }
 
     @Override
     public void printTo(Appendable sink, DataFrame df) throws IOException {
-        new DataFrameTabularAppendable(sink, maxDisplayRows, maxDisplayColumnWidth).print(df);
+        new DataFrameTabularAppendable(sink, maxRows, maxCols, maxValueChars).print(df);
     }
 
     @Override
     public void printTo(Appendable sink, Series<?> s) throws IOException {
-        new SeriesTabularAppendable(sink, maxDisplayRows, maxDisplayColumnWidth).print(s);
+        new SeriesTabularAppendable(sink, maxRows, maxValueChars).print(s);
     }
 }

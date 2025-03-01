@@ -24,16 +24,14 @@ class SeriesTabularAppendable extends TabularAppendable {
             return;
         }
 
-        SeriesTruncator truncator = SeriesTruncator.create(s, maxDisplayRows);
-        Series<?> top = truncator.top();
-        Series<?> bottom = truncator.bottom();
-        TabularColumnData strings = makeStrings(s, top, bottom);
+        SeriesTruncator<?> truncator = SeriesTruncator.create(s, maxRows);
+        TabularColumnData strings = makeStrings(s, truncator.head, truncator.tail);
 
-        printData(strings, 0, top.size());
-        if (truncator.isTruncated()) {
+        printData(strings, 0, truncator.head.size());
+        if (truncator.truncated) {
             printRowsSeparator();
         }
-        printData(strings, top.size(), bottom.size());
+        printData(strings, truncator.head.size(), truncator.tail.size());
 
         String rowsLabel = h == 1 ? " element" : " elements";
         printNewLine();
@@ -57,7 +55,7 @@ class SeriesTabularAppendable extends TabularAppendable {
         int workerH = top.size() + bottom.size();
 
         TabularColumnData.Builder builder = TabularColumnData
-                .builder(s.getInferredType(), workerH, maxDisplayColumnWidth);
+                .builder(s.getInferredType(), workerH, maxColumnChars);
 
         for (Object o : top) {
             builder.append(o);

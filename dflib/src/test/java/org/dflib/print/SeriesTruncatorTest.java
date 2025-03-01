@@ -11,55 +11,55 @@ public class SeriesTruncatorTest {
     @Test
     public void create_Odd() {
         Series<Integer> s = new IntSequenceSeries(0, 10);
-        SeriesTruncator tr = SeriesTruncator.create(s, 5);
+        SeriesTruncator<?> tr = SeriesTruncator.create(s, 5);
 
         assertSame(s, tr.series);
         assertTrue(tr.truncated);
-        assertEquals(3, tr.top);
-        assertEquals(2, tr.bottom);
+        assertEquals(3, tr.head.size());
+        assertEquals(2, tr.tail.size());
     }
 
     @Test
     public void create_Even() {
         Series<Integer> s = new IntSequenceSeries(0, 10);
-        SeriesTruncator tr = SeriesTruncator.create(s, 6);
+        SeriesTruncator<?> tr = SeriesTruncator.create(s, 6);
 
         assertSame(s, tr.series);
         assertTrue(tr.truncated);
-        assertEquals(3, tr.top);
-        assertEquals(3, tr.bottom);
+        assertEquals(3, tr.head.size());
+        assertEquals(3, tr.tail.size());
     }
 
     @Test
     public void create_Two() {
         Series<Integer> s = new IntSequenceSeries(0, 10);
-        SeriesTruncator tr = SeriesTruncator.create(s, 2);
+        SeriesTruncator<?> tr = SeriesTruncator.create(s, 2);
 
         assertSame(s, tr.series);
         assertTrue(tr.truncated);
-        assertEquals(1, tr.top);
-        assertEquals(1, tr.bottom);
+        assertEquals(1, tr.head.size());
+        assertEquals(1, tr.tail.size());
     }
 
     @Test
     public void create_One() {
         Series<Integer> s = new IntSequenceSeries(0, 10);
-        SeriesTruncator tr = SeriesTruncator.create(s, 1);
+        SeriesTruncator<?> tr = SeriesTruncator.create(s, 1);
 
         assertSame(s, tr.series);
         assertTrue(tr.truncated);
-        assertEquals(1, tr.top);
-        assertEquals(0, tr.bottom);
+        assertEquals(1, tr.head.size());
+        assertEquals(0, tr.tail.size());
     }
 
     @Test
     public void create_Zero() {
         Series<Integer> s = new IntSequenceSeries(0, 10);
-        SeriesTruncator tr = SeriesTruncator.create(s, 0);
+        SeriesTruncator<?> tr = SeriesTruncator.create(s, 0);
 
         assertSame(s, tr.series);
         assertTrue(tr.truncated);
-        assertEquals(0, tr.top);
-        assertEquals(0, tr.bottom);
+        assertEquals(1, tr.head.size());
+        assertEquals(0, tr.tail.size());
     }
 }

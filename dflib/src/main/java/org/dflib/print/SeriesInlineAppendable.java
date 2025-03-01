@@ -6,8 +6,8 @@ import java.io.IOException;
 
 public class SeriesInlineAppendable extends InlineAppendable {
 
-    public SeriesInlineAppendable(Appendable out, int maxDisplayRows, int maxDisplayColumnWidth) {
-        super(out, maxDisplayRows, maxDisplayColumnWidth);
+    public SeriesInlineAppendable(Appendable out, int maxRows, int maxValueChars) {
+        super(out, maxRows, maxValueChars);
     }
 
     public void print(Series<?> s) throws IOException {
@@ -17,15 +17,15 @@ public class SeriesInlineAppendable extends InlineAppendable {
             return;
         }
 
-        SeriesTruncator truncator = SeriesTruncator.create(s, maxDisplayRows);
+        SeriesTruncator<?> truncator = SeriesTruncator.create(s, maxRows);
 
-        printData(truncator.top(), false);
+        printData(truncator.head, false);
 
-        if (truncator.isTruncated()) {
+        if (truncator.truncated) {
             printRowsSeparator();
         }
 
-        printData(truncator.bottom(), true);
+        printData(truncator.tail, true);
     }
 
     private void printRowsSeparator() throws IOException {
