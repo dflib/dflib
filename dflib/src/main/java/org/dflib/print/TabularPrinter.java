@@ -19,11 +19,11 @@ public class TabularPrinter extends BasePrinter {
 
     @Override
     public void printTo(Appendable sink, DataFrame df) throws IOException {
-        new DataFrameTabularPrintWorker(sink, maxDisplayRows, maxDisplayColumnWidth).print(df);
+        new DataFrameTabularAppendable(sink, maxDisplayRows, maxDisplayColumnWidth).print(df);
     }
 
     @Override
     public void printTo(Appendable sink, Series<?> s) throws IOException {
-        new SeriesTabularPrintWorker(sink, maxDisplayRows, maxDisplayColumnWidth).print(s);
+        new SeriesTabularAppendable(sink, maxDisplayRows, maxDisplayColumnWidth).print(s);
     }
 }

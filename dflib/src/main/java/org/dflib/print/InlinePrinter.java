@@ -19,11 +19,11 @@ public class InlinePrinter extends BasePrinter {
 
     @Override
     public void printTo(Appendable sink, Series<?> s) throws IOException {
-        new SeriesInlinePrintWorker(sink, maxDisplayRows, maxDisplayColumnWidth).print(s);
+        new SeriesInlineAppendable(sink, maxDisplayRows, maxDisplayColumnWidth).print(s);
     }
 
     @Override
     public void printTo(Appendable sink, DataFrame df) throws IOException {
-        new DataFrameInlinePrintWorker(sink, maxDisplayRows, maxDisplayColumnWidth).print(df);
+        new DataFrameInlineAppendable(sink, maxDisplayRows, maxDisplayColumnWidth).print(df);
     }
 }

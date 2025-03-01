@@ -60,7 +60,7 @@ public class TabularPrinter_SeriesTest {
 
         assertEquals(System.lineSeparator() +
                 "one " + System.lineSeparator() +
-                "... " + System.lineSeparator() +
+                "..." + System.lineSeparator() +
                 "four" + System.lineSeparator() +
                 "4 elements", p.print(Series.of("one", "two", "three", "four")));
     }

@@ -4,9 +4,9 @@ import org.dflib.Series;
 
 import java.io.IOException;
 
-public class SeriesInlinePrintWorker extends BasePrintWorker {
+public class SeriesInlineAppendable extends InlineAppendable {
 
-    public SeriesInlinePrintWorker(Appendable out, int maxDisplayRows, int maxDisplayColumnWidth) {
+    public SeriesInlineAppendable(Appendable out, int maxDisplayRows, int maxDisplayColumnWidth) {
         super(out, maxDisplayRows, maxDisplayColumnWidth);
     }
 
@@ -18,7 +18,7 @@ public class SeriesInlinePrintWorker extends BasePrintWorker {
         }
 
         SeriesTruncator truncator = SeriesTruncator.create(s, maxDisplayRows);
-        Series<?> head = truncator.head();
+        Series<?> head = truncator.top();
         int hs = head.size();
 
         for (int i = 0; i < hs; i++) {
@@ -33,7 +33,7 @@ public class SeriesInlinePrintWorker extends BasePrintWorker {
         if(truncator.isTruncated()) {
             out.append(",...");
 
-            Series<?> tail = truncator.tail();
+            Series<?> tail = truncator.bottom();
             int ts = tail.size();
 
             for (int i = 0; i < ts; i++) {

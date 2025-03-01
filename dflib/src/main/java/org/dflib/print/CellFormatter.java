@@ -36,7 +36,6 @@ interface CellFormatter {
             }
 
             char[] padded = new char[w];
-            int pl = w - ul;
 
             // original chars
             unpadded.getChars(0, ul, padded, 0);

@@ -6,9 +6,9 @@ import org.dflib.row.RowProxy;
 
 import java.io.IOException;
 
-public class DataFrameInlinePrintWorker extends BasePrintWorker {
+class DataFrameInlineAppendable extends InlineAppendable {
 
-    public DataFrameInlinePrintWorker(Appendable out, int maxDisplayRows, int maxDisplayColumnWith) {
+    public DataFrameInlineAppendable(Appendable out, int maxDisplayRows, int maxDisplayColumnWith) {
         super(out, maxDisplayRows, maxDisplayColumnWith);
     }
 
@@ -39,13 +39,13 @@ public class DataFrameInlinePrintWorker extends BasePrintWorker {
         }
 
         boolean comma = false;
-        for (RowProxy p : truncator.head()) {
+        for (RowProxy p : truncator.top()) {
 
             if (comma) {
                 out.append(",");
+            } else {
+                comma = true;
             }
-
-            comma = true;
 
             out.append("{");
             for (int j = 0; j < width; j++) {
@@ -69,7 +69,7 @@ public class DataFrameInlinePrintWorker extends BasePrintWorker {
 
             out.append("...");
 
-            for (RowProxy p : truncator.tail()) {
+            for (RowProxy p : truncator.bottom()) {
                 out.append(",{");
                 for (int j = 0; j < width; j++) {
 

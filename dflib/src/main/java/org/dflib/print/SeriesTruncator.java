@@ -3,21 +3,21 @@ package org.dflib.print;
 import org.dflib.Series;
 import org.dflib.series.EmptySeries;
 
-public class SeriesTruncator<T> {
+class SeriesTruncator {
 
-    Series<T> series;
-    boolean truncated;
-    int head;
-    int tail;
+    final Series<?> series;
+    final boolean truncated;
+    final int top;
+    final int bottom;
 
-    private SeriesTruncator(Series<T> series, boolean truncated, int head, int tail) {
+    private SeriesTruncator(Series<?> series, boolean truncated, int top, int bottom) {
         this.series = series;
         this.truncated = truncated;
-        this.head = head;
-        this.tail = tail;
+        this.top = top;
+        this.bottom = bottom;
     }
 
-    public static <T> SeriesTruncator<T> create(Series<T> series, int maxSize) {
+    public static SeriesTruncator create(Series<?> series, int maxSize) {
 
         if (maxSize < 0) {
             maxSize = 0;
@@ -25,20 +25,20 @@ public class SeriesTruncator<T> {
 
         int h = series.size();
         if (h <= maxSize) {
-            return new SeriesTruncator<>(series, false, h, 0);
+            return new SeriesTruncator(series, false, h, 0);
         }
 
         int head = maxSize / 2 + maxSize % 2;
         int tail = maxSize - head;
-        return new SeriesTruncator<>(series, true, head, tail);
+        return new SeriesTruncator(series, true, head, tail);
     }
 
-    public Series<T> head() {
-        return truncated ? series.head(head) : series;
+    public Series<?> top() {
+        return truncated ? series.head(top) : series;
     }
 
-    public Series<T> tail() {
-        return truncated ? series.tail(tail) : new EmptySeries();
+    public Series<?> bottom() {
+        return truncated ? series.tail(bottom) : new EmptySeries();
     }
 
     public boolean isTruncated() {
@@ -46,6 +46,6 @@ public class SeriesTruncator<T> {
     }
 
     public int size() {
-        return truncated ? head + tail + 1 : series.size();
+        return truncated ? top + bottom + 1 : series.size();
     }
 }

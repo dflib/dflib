@@ -2,18 +2,18 @@ package org.dflib.print;
 
 import org.dflib.DataFrame;
 
-public class DataFrameTruncator {
+class DataFrameTruncator {
 
     DataFrame dataFrame;
     boolean truncated;
-    int head;
-    int tail;
+    int top;
+    int bottom;
 
-    private DataFrameTruncator(DataFrame dataFrame, boolean truncated, int head, int tail) {
+    private DataFrameTruncator(DataFrame dataFrame, boolean truncated, int top, int bottom) {
         this.dataFrame = dataFrame;
         this.truncated = truncated;
-        this.head = head;
-        this.tail = tail;
+        this.top = top;
+        this.bottom = bottom;
     }
 
     public static DataFrameTruncator create(DataFrame dataFrame, int maxHeight) {
@@ -32,12 +32,12 @@ public class DataFrameTruncator {
         return new DataFrameTruncator(dataFrame, true, head, tail);
     }
 
-    public DataFrame head() {
-        return truncated ? dataFrame.head(head) : dataFrame;
+    public DataFrame top() {
+        return truncated ? dataFrame.head(top) : dataFrame;
     }
 
-    public DataFrame tail() {
-        return truncated ? dataFrame.tail(tail) : DataFrame.empty(dataFrame.getColumnsIndex());
+    public DataFrame bottom() {
+        return truncated ? dataFrame.tail(bottom) : DataFrame.empty(dataFrame.getColumnsIndex());
     }
 
     public boolean isTruncated() {
@@ -45,6 +45,6 @@ public class DataFrameTruncator {
     }
 
     public int height() {
-        return truncated ? head + tail + 1 : dataFrame.height();
+        return truncated ? top + bottom + 1 : dataFrame.height();
     }
 }
