@@ -38,8 +38,8 @@ public class Window {
     }
 
     /**
-     * Returns the unchanged original DataFrame that was used to build the window, that does not have GroupBy sorting,
-     * trimming and other changes applied.
+     * Returns the unchanged original DataFrame that was used to build the window, that does not have Window sorting,
+     * or other changes applied.
      */
     public DataFrame getSource() {
         return source;
@@ -105,7 +105,7 @@ public class Window {
     }
 
     /**
-     * @deprecated in favor of {@link #partition(Hasher)} 
+     * @deprecated in favor of {@link #partition(Hasher)}
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
     public Window partitioned(Hasher partitioner) {
