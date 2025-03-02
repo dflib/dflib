@@ -114,17 +114,17 @@ public class EmptyRowSet extends BaseRowSet {
 
     @Override
     public DataFrame select() {
-        return DataFrame.empty(source.getColumnsIndex());
+        return DataFrame.empty(sourceColumnsIndex);
     }
 
     @Override
     public DataFrame selectAs(Map<String, String> oldToNewNames) {
-        return DataFrame.empty(source.getColumnsIndex().replace(oldToNewNames));
+        return DataFrame.empty(sourceColumnsIndex.replace(oldToNewNames));
     }
 
     @Override
     public DataFrame selectAs(UnaryOperator<String> renamer) {
-        return DataFrame.empty(source.getColumnsIndex().replace(renamer));
+        return DataFrame.empty(sourceColumnsIndex.replace(renamer));
     }
 
     @Override
@@ -134,23 +134,23 @@ public class EmptyRowSet extends BaseRowSet {
 
     @Override
     public DataFrame select(Exp<?>... exps) {
-        return DataFrame.empty(source.getColumnsIndex());
+        return DataFrame.empty(sourceColumnsIndex);
     }
 
     @Override
     public DataFrame select(RowMapper mapper) {
-        return DataFrame.empty(source.getColumnsIndex());
+        return DataFrame.empty(sourceColumnsIndex);
     }
 
     @Override
     public DataFrame select(RowToValueMapper<?>... mappers) {
-        return DataFrame.empty(source.getColumnsIndex());
+        return DataFrame.empty(sourceColumnsIndex);
     }
 
     @Override
     public DataFrame selectUnique(String... uniqueKeyColumns) {
         // validate the argument, even though the operation does nothing
-        source.getColumnsIndex().positions(uniqueKeyColumns);
+        sourceColumnsIndex.positions(uniqueKeyColumns);
         return DataFrame.empty(source.getColumnsIndex());
     }
 
@@ -166,7 +166,7 @@ public class EmptyRowSet extends BaseRowSet {
 
     @Override
     public DataFrame selectUnique() {
-        return selectUnique(source.getColumnsIndex().toArray());
+        return selectUnique(sourceColumnsIndex.toArray());
     }
 
     @Override
