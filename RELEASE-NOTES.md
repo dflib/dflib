@@ -10,6 +10,7 @@
 * #469 Exp.mapBool(..) and Exp.mapBoolVal(..) with binary predicate
 * #470 Tabular Printers should output "..." for a row limit of 1
 * #471 Align Window API with GroupBy
+* #472 "df.cols().merge(Series)" overrides columns with numeric names
 
 ## Release 2.0.0-M2
 
@@ -62,7 +63,6 @@
 ## Release 1.3.0
 
 * #457 MissingFormatWidthException when printing Series with all empty strings
-* #472 "df.cols().merge(Series)" overrides columns with numeric names
 
 ## Release 1.2.0
 
