@@ -20,6 +20,7 @@ import org.dflib.RowToValueMapper;
 import org.dflib.Series;
 import org.dflib.agg.DataFrameAggregator;
 import org.dflib.exp.Exps;
+import org.dflib.index.StringDeduplicator;
 import org.dflib.row.DynamicColsRowBuilder;
 import org.dflib.series.RowMappedSeries;
 
@@ -362,7 +363,10 @@ public class DeferredColumnSet implements ColumnSet {
     @Override
     public DataFrame merge(Series<?>... columns) {
 
+        // behaves as "colsAppend(..)"
         int w = columns.length;
+        StringDeduplicator deduplicator = StringDeduplicator.of(source.getColumnsIndex(), w);
+
         int h = source.height();
         int srcW = source.width();
         String[] labels = new String[w];
@@ -373,7 +377,7 @@ public class DeferredColumnSet implements ColumnSet {
                 throw new IllegalArgumentException("The mapped column height (" + columns[i].size() + ") is different from the DataFrame height (" + h + ")");
             }
 
-            labels[i] = String.valueOf(srcW + i);
+            labels[i] = deduplicator.nonConflictingName(String.valueOf(srcW + i));
         }
 
         return delegate(labels).merge(columns);
