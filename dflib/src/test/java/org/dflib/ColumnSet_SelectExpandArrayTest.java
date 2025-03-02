@@ -4,6 +4,7 @@ import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 import static org.dflib.Exp.*;
 
+@Deprecated
 public class ColumnSet_SelectExpandArrayTest {
 
     @Test

@@ -44,15 +44,16 @@ public class StrSplitExpTest extends BaseExpTest {
                         4, " ef g ",
                         5, "no_space",
                         8, null)
-                .cols("b1", "b2").expandArray(exp)
-                .colsExcept("b").select();
+                .colsExcept("b")
+                .expandArray(exp)
+                .select();
 
-        new DataFrameAsserts(df, "a", "b1", "b2")
+        new DataFrameAsserts(df, "a", "2", "3", "4")
                 .expectHeight(4)
-                .expectRow(0, 1, "ab", "cd")
-                .expectRow(1, 4, "", "ef")
-                .expectRow(2, 5, "no_space", null)
-                .expectRow(3, 8, null, null);
+                .expectRow(0, 1, "ab", "cd", null)
+                .expectRow(1, 4, "", "ef", "g")
+                .expectRow(2, 5, "no_space", null, null)
+                .expectRow(3, 8, null, null, null);
     }
 
     @Test

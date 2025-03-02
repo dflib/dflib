@@ -3,10 +3,19 @@
 ## 2.0.0
 
 * [dflib #421](https://github.com/dflib/dflib/issues/421): `RowSet.expand(..)` pair of methods became "non-terminal",
-so it no longer returns a `DataFrame`, but rather returns a `RowSet`. As a result you may get a compilation error.
-You will need to rewrite this code as `rs.expand(..).merge()`. While doing that, note that you will now have extra
+so it no longer returns a `DataFrame`, but rather a `RowSet`. As a result you may get a compilation error.
+You will need to rewrite this code as `df.rows(..).expand(..).merge()`. While doing that, note that you will now have extra
 capabilities. E.g. you can pass column transformation expressions to the `merge(..)` method, potentially simplifying
 your code.
+
+* [dflib #422](https://github.com/dflib/dflib/issues/422): `ColumnSet.expand(..)` / `ColumnSet.expandArray(..)` pair of 
+methods became "non-terminal", so it no longer returns a `DataFrame`, but rather a `ColumnSet`. As a result, you may get
+a compilation error. Since now the expanded columns are internally combined with the original DataFrame instead of being
+the sole columns of the column set, the upgrade path depends on how the column set was defined. If you are using 
+`df.cols()` (i.e. not explicitly specifying column set columns), it is as simple as `df.cols().expand(..).merge()`. 
+Otherwise, you will need to explicitly list all desired result columns in `df.cols(..)` and use `.select(..)` instead 
+of `.merge(..)`. The advantage of the new expansion API though is that both `.select(..)` and `.merge(..)` can take 
+column transformation expressions, usually simplifying the overall code.
 
 * [dflib #433](https://github.com/dflib/dflib/issues/433): Primitive value mappers (e.g. `IntValueMapper`) 
 now consistently handle nulls and default object-to-primitive conversions. The old conversion methods were deprecated 

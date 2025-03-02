@@ -24,9 +24,6 @@ import org.dflib.index.StringDeduplicator;
 import org.dflib.row.DynamicColsRowBuilder;
 import org.dflib.series.RowMappedSeries;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
@@ -44,6 +41,16 @@ public class DeferredColumnSet implements ColumnSet {
     public DeferredColumnSet(DataFrame source, Series<?>[] sourceColumns) {
         this.source = source;
         this.sourceColumns = sourceColumns;
+    }
+
+    @Override
+    public ColumnSet expand(Exp<? extends Iterable<?>> splitExp) {
+        return doExpand(ColumnSets.mapIterables(source, splitExp));
+    }
+
+    @Override
+    public ColumnSet expandArray(Exp<? extends Object[]> splitExp) {
+        return doExpand(ColumnSets.mapArrays(source, splitExp));
     }
 
     @Override
@@ -434,24 +441,10 @@ public class DeferredColumnSet implements ColumnSet {
         return new ColumnDataFrame(null, Index.of(b.getLabels()), b.getData());
     }
 
-    @Override
-    public DataFrame expand(Exp<? extends Iterable<?>> splitExp) {
-        Series<?>[] columns = doMapIterables(splitExp);
-
-        int w = columns.length;
-        int srcW = source.width();
-
-        int[] positions = new int[w];
-        for (int i = 0; i < w; i++) {
-            positions[i] = srcW + i;
-        }
-
-        return delegate(positions).expand(splitExp);
-    }
-
+    @Deprecated
     @Override
     public DataFrame selectExpand(Exp<? extends Iterable<?>> splitExp) {
-        Series<?>[] columns = doMapIterables(splitExp);
+        Series<?>[] columns = ColumnSets.mapIterables(source, splitExp);
 
         int w = columns.length;
         String[] labels = new String[w];
@@ -463,65 +456,17 @@ public class DeferredColumnSet implements ColumnSet {
         return new ColumnDataFrame(null, Index.of(labels), columns);
     }
 
-    private Series<?>[] doMapIterables(Exp<? extends Iterable<?>> mapper) {
-        Series<? extends Iterable<?>> ranges = mapper.eval(source);
-
-        int h = source.height();
-        List<Object[]> data = new ArrayList<>();
-
-        for (int i = 0; i < h; i++) {
-
-            Iterable<?> r = ranges.get(i);
-            if (r == null) {
-                continue;
-            }
-
-            Iterator<?> rit = r.iterator();
-            for (int j = 0; rit.hasNext(); j++) {
-
-                if (j >= data.size()) {
-                    data.add(new Object[h]);
-                }
-
-                data.get(j)[i] = rit.next();
-            }
-        }
-
-        int w = data.size();
-        Series<?>[] columns = new Series[w];
-
-        for (int i = 0; i < w; i++) {
-            columns[i] = Series.of(data.get(i));
-        }
-
-        return columns;
-    }
-
-    @Override
-    public DataFrame expandArray(Exp<? extends Object[]> splitExp) {
-
-        Series<?>[] columns = doMapArrays(splitExp);
-        int w = columns.length;
-        int[] positions = new int[w];
-        int srcW = source.width();
-
-        for (int i = 0; i < w; i++) {
-            positions[i] = srcW + i;
-        }
-
-        return delegate(positions).expandArray(splitExp);
-    }
-
+    @Deprecated
     @Override
     public DataFrame selectExpandArray(Exp<? extends Object[]> splitExp) {
-        Series<?>[] columns = doMapArrays(splitExp);
+        Series<?>[] columns = ColumnSets.mapArrays(source, splitExp);
         int w = columns.length;
         String[] labels = new String[w];
         for (int i = 0; i < w; i++) {
             labels[i] = String.valueOf(i);
         }
 
-        return new ColumnDataFrame(null, Index.of(labels), doMapArrays(splitExp));
+        return new ColumnDataFrame(null, Index.of(labels), ColumnSets.mapArrays(source, splitExp));
     }
 
     @Override
@@ -531,44 +476,11 @@ public class DeferredColumnSet implements ColumnSet {
         return new ColumnDataFrame(null, index, aggregated);
     }
 
-    private Series<?>[] doMapArrays(Exp<? extends Object[]> mapper) {
-        Series<? extends Object[]> ranges = mapper.eval(source);
-
-        int h = source.height();
-        List<Object[]> data = new ArrayList<>();
-
-        for (int i = 0; i < h; i++) {
-
-            Object[] r = ranges.get(i);
-            if (r == null) {
-                continue;
-            }
-
-            int rw = r.length;
-            for (int j = 0; j < rw; j++) {
-
-                if (j >= data.size()) {
-                    data.add(new Object[h]);
-                }
-
-                data.get(j)[i] = r[j];
-            }
-        }
-
-        int w = data.size();
-        Series<?>[] columns = new Series[w];
-        for (int i = 0; i < w; i++) {
-            columns[i] = Series.of(data.get(i));
-        }
-
-        return columns;
-    }
-
     private ColumnSet delegate(String[] csIndex) {
         return FixedColumnSet.of(source, csIndex);
     }
 
-    private ColumnSet delegate(int[] csIndex) {
-        return FixedColumnSet.of(source, csIndex);
+    private ColumnSet doExpand(Series[] expansionColumns) {
+        return source.cols().merge(expansionColumns).cols();
     }
 }

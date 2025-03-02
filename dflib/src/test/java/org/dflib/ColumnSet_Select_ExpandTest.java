@@ -5,17 +5,18 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.dflib.Exp.*;
+import static org.dflib.Exp.$int;
+import static org.dflib.Exp.$val;
 
-public class ColumnSet_ExpandTest {
+public class ColumnSet_Select_ExpandTest {
 
     @Test
-    public void list() {
+    public void fixedSize() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y")
-                .cols("c", "b").expand($val(List.of("one", "two")));
+                .cols("a", "3", "2").expand($val(List.of("one", "two"))).select();
 
-        new DataFrameAsserts(df, "a", "b", "c")
+        new DataFrameAsserts(df, "a", "3", "2")
                 .expectHeight(2)
                 .expectRow(0, 1, "two", "one")
                 .expectRow(1, 2, "two", "one");
@@ -25,7 +26,7 @@ public class ColumnSet_ExpandTest {
     public void list_VaryingSize() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y", 3, "z")
-                .cols("b", "c").expand($int("a").mapVal(i -> {
+                .cols("a", "2", "3").expand($int("a").mapVal(i -> {
                     switch (i) {
                         case 1:
                             return List.of("one");
@@ -36,9 +37,9 @@ public class ColumnSet_ExpandTest {
                         default:
                             return null;
                     }
-                }));
+                })).select();
 
-        new DataFrameAsserts(df, "a", "b", "c")
+        new DataFrameAsserts(df, "a", "2", "3")
                 .expectHeight(3)
                 .expectRow(0, 1, "one", null)
                 .expectRow(1, 2, "one", "two")
@@ -49,7 +50,7 @@ public class ColumnSet_ExpandTest {
     public void list_WithNulls() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y", 3, "z")
-                .cols("b", "c").expand($int("a").mapVal(i -> {
+                .cols("a", "2", "3").expand($int("a").mapVal(i -> {
                     switch (i) {
                         case 1:
                             return List.of("one");
@@ -58,9 +59,9 @@ public class ColumnSet_ExpandTest {
                         default:
                             return null;
                     }
-                }));
+                })).select();
 
-        new DataFrameAsserts(df, "a", "b", "c")
+        new DataFrameAsserts(df, "a", "2", "3")
                 .expectHeight(3)
                 .expectRow(0, 1, "one", null)
                 .expectRow(1, 2, null, null)
@@ -71,7 +72,8 @@ public class ColumnSet_ExpandTest {
     public void list_DynamicSize() {
         DataFrame df = DataFrame.foldByRow("a", "b")
                 .of(1, "x", 2, "y", 3, "z")
-                .cols().expand($int("a").mapVal(i -> {
+                .cols()
+                .expand($int("a").mapVal(i -> {
                     switch (i) {
                         case 1:
                             return List.of("one");
@@ -82,7 +84,8 @@ public class ColumnSet_ExpandTest {
                         default:
                             return null;
                     }
-                }));
+                }))
+                .select();
 
         new DataFrameAsserts(df, "a", "b", "2", "3", "4")
                 .expectHeight(3)

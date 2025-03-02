@@ -504,25 +504,21 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Creates a ColumnSet with columns from this DataFrame excluding specified columns.
      */
     default ColumnSet colsExcept(String... columns) {
-        // all positions here will be within the existing DataFrame, so we are not losing any labels by delegating to
-        // an index-based method
-        return cols(getColumnsIndex().positionsExcept(columns));
+        return FixedColumnSet.ofColsExcept(this, columns);
     }
 
     /**
      * Creates a ColumnSet with columns from this DataFrame that match the specified condition.
      */
     default ColumnSet cols(Predicate<String> condition) {
-        // all positions here will be within the existing DataFrame, so we are not losing any labels by delegating to
-        // an index-based method
-        return cols(getColumnsIndex().positions(condition));
+        return FixedColumnSet.of(this, condition);
     }
 
     /**
      * Creates a ColumnSet with columns from this DataFrame that do not match the specified condition.
      */
     default ColumnSet colsExcept(Predicate<String> condition) {
-        return cols(condition.negate());
+        return FixedColumnSet.ofColsExcept(this, condition);
     }
 
     /**
@@ -538,7 +534,7 @@ public interface DataFrame extends Iterable<RowProxy> {
      * Creates a ColumnSet with columns from this DataFrame excluding specified column positions.
      */
     default ColumnSet colsExcept(int... columns) {
-        return cols(getColumnsIndex().positionsExcept(columns));
+        return FixedColumnSet.ofColsExcept(this, columns);
     }
 
     default ColumnSet colsSample(int size) {
