@@ -49,7 +49,7 @@ public class Window_ShiftTest {
     }
 
     @Test
-    public void partitioned() {
+    public void partition() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
@@ -58,15 +58,15 @@ public class Window_ShiftTest {
                 2, "y",
                 1, "x");
 
-        Series<String> sa = df.over().partitioned("a").shift("b", 1);
+        Series<String> sa = df.over().partition("a").shift("b", 1);
         new SeriesAsserts(sa).expectData(null, null, "x", null, "y", "z");
 
-        Series<String> sb = df.over().partitioned("b").shift("b", -1);
+        Series<String> sb = df.over().partition("b").shift("b", -1);
         new SeriesAsserts(sb).expectData("x", "y", null, null, null, null);
     }
 
     @Test
-    public void sorted() {
+    public void sort() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 1, "x",
                 2, "y",
@@ -74,15 +74,15 @@ public class Window_ShiftTest {
                 0, "a",
                 1, "x");
 
-        Series<String> sa = df.over().sorted("a", true).shift("b", 1);
+        Series<String> sa = df.over().sort("a", true).shift("b", 1);
         new SeriesAsserts(sa).expectData("a", "x", "x", null, "z");
 
-        Series<String> sb = df.over().sorted("b", true).shift("b", 1);
+        Series<String> sb = df.over().sort("b", true).shift("b", 1);
         new SeriesAsserts(sb).expectData("a", "x", "y", null, "x");
     }
 
     @Test
-    public void partitioned_Sorted() {
+    public void partition_sort() {
         DataFrame df = DataFrame.foldByRow("a", "b").of(
                 2, "x",
                 2, "y",
@@ -90,10 +90,10 @@ public class Window_ShiftTest {
                 0, "a",
                 1, "x");
 
-        Series<String> sa = df.over().partitioned("a").sorted("b", true).shift("b", 1);
+        Series<String> sa = df.over().partition("a").sort("b", true).shift("b", 1);
         new SeriesAsserts(sa).expectData(null, "x", "x", null, null);
 
-        Series<String> sb = df.over().partitioned("b").sorted("a", true).shift("b", 1);
+        Series<String> sb = df.over().partition("b").sort("a", true).shift("b", 1);
         new SeriesAsserts(sb).expectData("x", null, null, null, null);
     }
 }

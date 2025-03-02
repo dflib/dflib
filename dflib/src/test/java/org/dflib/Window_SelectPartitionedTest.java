@@ -17,7 +17,7 @@ public class Window_SelectPartitionedTest {
     @Test
     public void implicit() {
 
-        DataFrame r = TEST_DF.over().partitioned("a").select($int("a").sum());
+        DataFrame r = TEST_DF.over().partition("a").select($int("a").sum());
         new DataFrameAsserts(r, "sum(a)")
                 .expectHeight(5)
                 .expectRow(0, 3)
@@ -31,7 +31,7 @@ public class Window_SelectPartitionedTest {
     public void byName_MultiExp() {
 
         DataFrame r = TEST_DF.over()
-                .partitioned("a")
+                .partition("a")
                 .cols("a", "rn")
                 .select(
                         $col("a"),

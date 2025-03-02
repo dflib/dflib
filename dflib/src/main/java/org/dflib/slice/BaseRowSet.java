@@ -186,7 +186,7 @@ public abstract class BaseRowSet implements RowSet {
 
         DataFrame rowsAsDf = select();
         BooleanSeries uniqueIndex = rowsAsDf
-                .over().partitioned(uniqueKeyColumns).rowNumber()
+                .over().partition(uniqueKeyColumns).rowNumber()
                 .eq(new IntSingleValueSeries(1, rowsAsDf.height()));
 
         if (uniqueIndex.isTrue()) {
@@ -219,7 +219,7 @@ public abstract class BaseRowSet implements RowSet {
 
         DataFrame rowsAsDf = select();
         BooleanSeries uniqueIndex = rowsAsDf
-                .over().partitioned(uniqueKeyColumns).rowNumber()
+                .over().partition(uniqueKeyColumns).rowNumber()
                 .eq(new IntSingleValueSeries(1, rowsAsDf.height()));
 
         if (uniqueIndex.isTrue()) {
@@ -320,7 +320,7 @@ public abstract class BaseRowSet implements RowSet {
 
         DataFrame rowsAsDf = select();
         BooleanSeries uniqueIndex = rowsAsDf
-                .over().partitioned(uniqueKeyColumns).rowNumber()
+                .over().partition(uniqueKeyColumns).rowNumber()
                 .eq(new IntSingleValueSeries(1, rowsAsDf.height()));
 
         if (uniqueIndex.isTrue()) {

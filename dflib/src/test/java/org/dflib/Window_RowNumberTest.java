@@ -26,7 +26,7 @@ public class Window_RowNumberTest {
     }
 
     @Test
-    public void partitioned() {
+    public void partition() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 1, "x", "m",
                 2, "y", "n",
@@ -34,15 +34,15 @@ public class Window_RowNumberTest {
                 0, "a", "f",
                 1, "x", "s");
 
-        IntSeries rna = df.over().partitioned("a").rowNumber();
+        IntSeries rna = df.over().partition("a").rowNumber();
         new IntSeriesAsserts(rna).expectData(1, 1, 2, 1, 3);
 
-        IntSeries rnb = df.over().partitioned("b").rowNumber();
+        IntSeries rnb = df.over().partition("b").rowNumber();
         new IntSeriesAsserts(rnb).expectData(1, 1, 1, 1, 2);
     }
 
     @Test
-    public void sorted() {
+    public void sort() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 1, "x", "3",
                 2, "y", "4",
@@ -50,18 +50,18 @@ public class Window_RowNumberTest {
                 0, "a", "1",
                 1, "x", "5");
 
-        IntSeries rn1 = df.over().sorted("c", true).rowNumber();
+        IntSeries rn1 = df.over().sort("c", true).rowNumber();
         new IntSeriesAsserts(rn1).expectData(3, 4, 2, 1, 5);
 
-        IntSeries rn2 = df.over().sorted("b", true).rowNumber();
+        IntSeries rn2 = df.over().sort("b", true).rowNumber();
         new IntSeriesAsserts(rn2).expectData(2, 4, 5, 1, 3);
 
-        IntSeries rn3 = df.over().sorted("a", true).rowNumber();
+        IntSeries rn3 = df.over().sort("a", true).rowNumber();
         new IntSeriesAsserts(rn3).expectData(2, 5, 3, 1, 4);
     }
 
     @Test
-    public void partitioned_Sorted() {
+    public void partition_sort() {
         DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
                 1, "x", "m",
                 2, "y", "n",
@@ -69,10 +69,10 @@ public class Window_RowNumberTest {
                 0, "a", "f",
                 1, "x", "s");
 
-        IntSeries rn1 = df.over().partitioned("a").sorted("c", true).rowNumber();
+        IntSeries rn1 = df.over().partition("a").sort("c", true).rowNumber();
         new IntSeriesAsserts(rn1).expectData(2, 1, 1, 1, 3);
 
-        IntSeries rn2 = df.over().partitioned("a").sorted("b", true).rowNumber();
+        IntSeries rn2 = df.over().partition("a").sort("b", true).rowNumber();
         new IntSeriesAsserts(rn2).expectData(1, 1, 3, 1, 2);
     }
 }
