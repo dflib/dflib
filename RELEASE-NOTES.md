@@ -1,6 +1,7 @@
 ## Release 1.3.0
 
 * #457 MissingFormatWidthException when printing Series with all empty strings
+* #472 "df.cols().merge(Series)" overrides columns with numeric names
 
 ## Release 1.2.0
 
