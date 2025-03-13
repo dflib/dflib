@@ -12,6 +12,7 @@
 * #470 Tabular Printers should output "..." for a row limit of 1
 * #471 Align Window API with GroupBy
 * #472 "df.cols().merge(Series)" overrides columns with numeric names
+* #474 "$decimalVal(..)" improvements
 
 ## Release 2.0.0-M2
 

@@ -150,8 +150,18 @@ public interface Exp<T> {
      *
      * @since 2.0.0
      */
-    static NumExp<BigDecimal> $decimalVal(BigDecimal value) {
+    static DecimalExp $decimalVal(BigDecimal value) {
         return new DecimalScalarExp(value);
+    }
+
+    /**
+     * Returns a {@code NumExp<BigDecimal>} whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * returns the value itself.
+     *
+     * @since 2.0.0
+     */
+    static DecimalExp $decimalVal(String value) {
+        return Exp.$decimalVal(value != null ? new BigDecimal(value) : null);
     }
 
     /**
