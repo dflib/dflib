@@ -13,6 +13,7 @@
 * #471 Align Window API with GroupBy
 * #472 "df.cols().merge(Series)" overrides columns with numeric names
 * #474 "$decimalVal(..)" improvements
+* #475 "$bigintVal(..)" String argument flavor
 
 ## Release 2.0.0-M2
 

@@ -145,7 +145,17 @@ public interface Exp<T> {
     }
 
     /**
-     * Returns a {@code NumExp<BigDecimal>} whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * Returns a {@code NumExp<BigInteger>} whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * returns the value itself.
+     *
+     * @since 2.0.0
+     */
+    static NumExp<BigInteger> $bigintVal(String value) {
+        return Exp.$bigintVal(value != null ? new BigInteger(value) : null);
+    }
+
+    /**
+     * Returns a {@link DecimalExp} whose "eval" returns a Series with the value argument at each position, and "reduce"
      * returns the value itself.
      *
      * @since 2.0.0
@@ -155,7 +165,7 @@ public interface Exp<T> {
     }
 
     /**
-     * Returns a {@code NumExp<BigDecimal>} whose "eval" returns a Series with the value argument at each position, and "reduce"
+     * Returns a {@code DecimalExp} whose "eval" returns a Series with the value argument at each position, and "reduce"
      * returns the value itself.
      *
      * @since 2.0.0
