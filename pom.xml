@@ -18,6 +18,7 @@
         <module>dflib-jdbc</module>
         <module>dflib-json</module>
         <module>dflib-parquet</module>
+        <module>dflib-s3</module>
         <module>dflib-junit5</module>
         <module>dflib-jupyter</module>
         <module>dflib-benchmark</module>
@@ -52,6 +53,7 @@
         <bootique.version>3.0-M6</bootique.version>
         <testcontainers.version>1.20.4</testcontainers.version>
         <junit5.version>5.11.3</junit5.version>
+        <mockito.version>5.14.1</mockito.version>
         <jsonpath.version>2.9.0</jsonpath.version>
         <avro.version>1.12.0</avro.version>
         <jackson.version>2.15.4</jackson.version>
@@ -64,6 +66,7 @@
         <hadoop.version>3.4.0</hadoop.version>
         <jjava.version>1.0-M3</jjava.version>
         <mysql.version>9.1.0</mysql.version>
+        <s3.version>2.30.7</s3.version>
     </properties>
 
     <url>https://github.com/dflib/dflib</url>
@@ -108,7 +111,12 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>5.14.1</version>
+                <version>${mockito.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-junit-jupiter</artifactId>
+                <version>${mockito.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -164,6 +172,16 @@
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>postgresql</artifactId>
+                <version>${testcontainers.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${testcontainers.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>localstack</artifactId>
                 <version>${testcontainers.version}</version>
             </dependency>
 
@@ -267,7 +285,7 @@
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-common</artifactId>
                 <version>${hadoop.version}</version>
-            </dependency>            
+            </dependency>
             <dependency>
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-client</artifactId>
@@ -277,6 +295,12 @@
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-mapreduce-client-core</artifactId>
                 <version>${hadoop.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>s3</artifactId>
+                <version>${s3.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
