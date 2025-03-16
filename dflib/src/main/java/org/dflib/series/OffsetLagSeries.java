@@ -1,6 +1,7 @@
 package org.dflib.series;
 
 import org.dflib.Series;
+import org.dflib.collection.JavaArrays;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -68,16 +69,16 @@ public class OffsetLagSeries<T> extends OffsetSeries<T> {
     @Override
     public Series<T> materialize() {
 
-        int size = size();
-        int splitPoint = size + offset;
-        Object[] buffer = new Object[size];
+        int len = size();
+        int splitPoint = len + offset;
+        T[] data = JavaArrays.newArray(nominalType, len);
 
-        delegate.copyTo(buffer, -offset, 0, splitPoint);
+        delegate.copyTo(data, -offset, 0, splitPoint);
 
         if (filler != null) {
-            Arrays.fill(buffer, splitPoint, size, filler);
+            Arrays.fill(data, splitPoint, len, filler);
         }
 
-        return new ArraySeries<>((T[]) buffer);
+        return new ArraySeries<>(data);
     }
 }

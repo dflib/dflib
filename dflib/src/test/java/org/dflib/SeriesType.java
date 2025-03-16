@@ -19,7 +19,7 @@ public enum SeriesType {
             case RANGE:
                 return new RangeSeries<>(new ArraySeries<>(data), 0, data.length);
             case ARRAY_RANGE:
-                return new ArrayRangeSeries<>(Object.class, data, 0, data.length);
+                return new ArrayRangeSeries<>(data, 0, data.length);
             default:
                 throw new IllegalStateException("Unknown series type: " + this);
         }
