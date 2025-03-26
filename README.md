@@ -1,5 +1,6 @@
 [![Maven Central](https://img.shields.io/maven-central/v/org.dflib/dflib.svg)](https://maven-badges.herokuapp.com/maven-central/org.dflib/dflib/)
 [![build test deploy](https://github.com/dflib/dflib/workflows/build%20test%20deploy/badge.svg)](https://github.com/dflib/dflib/actions)
+[![libs.tech recommends](https://libs.tech/project/164392211/badge.svg)](https://libs.tech/project/164392211/dflib)
 
 
 # DFLib
