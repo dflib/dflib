@@ -15,7 +15,6 @@ import org.dflib.builder.IntAccum;
 import org.dflib.builder.LongAccum;
 import org.dflib.builder.ObjectAccum;
 import org.dflib.builder.UniqueLongAccum;
-import org.dflib.concat.SeriesConcat;
 import org.dflib.groupby.SeriesGrouper;
 import org.dflib.map.Mapper;
 import org.dflib.sample.Sampler;
@@ -188,33 +187,6 @@ public abstract class LongBaseSeries implements LongSeries {
     }
 
     @Override
-    public LongSeries concatLong(LongSeries... other) {
-        if (other.length == 0) {
-            return this;
-        }
-
-        // TODO: use SeriesConcat
-
-        int size = size();
-        int h = size;
-        for (LongSeries s : other) {
-            h += s.size();
-        }
-
-        long[] data = new long[h];
-        copyToLong(data, 0, 0, size);
-
-        int offset = size;
-        for (LongSeries s : other) {
-            int len = s.size();
-            s.copyToLong(data, 0, offset, len);
-            offset += len;
-        }
-
-        return new LongArraySeries(data);
-    }
-
-    @Override
     public Series<Long> fillNulls(Long value) {
         // primitive series has no nulls
         return this;
@@ -236,23 +208,6 @@ public abstract class LongBaseSeries implements LongSeries {
     public Series<Long> fillNullsForward() {
         // primitive series has no nulls
         return this;
-    }
-
-    @SafeVarargs
-    @Override
-    public final Series<Long> concat(Series<? extends Long>... other) {
-        // concatenating as Double... to concat as DoubleSeries, "concatDouble" should be used
-        if (other.length == 0) {
-            return this;
-        }
-
-        // TODO: use SeriesConcat
-
-        Series<Long>[] combined = new Series[other.length + 1];
-        combined[0] = this;
-        System.arraycopy(other, 0, combined, 1, other.length);
-
-        return SeriesConcat.concat(combined);
     }
 
     @Override

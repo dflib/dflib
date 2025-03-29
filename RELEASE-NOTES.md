@@ -1,6 +1,7 @@
 ## Release 1.3.0
 
 * #457 MissingFormatWidthException when printing Series with all empty strings
+* #477 vConcat loses the type of the column
 
 ## Release 1.2.0
 

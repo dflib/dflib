@@ -13,7 +13,6 @@ import org.dflib.ValueToRowMapper;
 import org.dflib.builder.BoolAccum;
 import org.dflib.builder.IntAccum;
 import org.dflib.builder.ObjectAccum;
-import org.dflib.concat.SeriesConcat;
 import org.dflib.groupby.SeriesGrouper;
 import org.dflib.map.Mapper;
 import org.dflib.sample.Sampler;
@@ -138,33 +137,6 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
-    public BooleanSeries concatBool(BooleanSeries... other) {
-        if (other.length == 0) {
-            return this;
-        }
-
-        // TODO: use SeriesConcat
-
-        int size = size();
-        int h = size;
-        for (BooleanSeries s : other) {
-            h += s.size();
-        }
-
-        boolean[] data = new boolean[h];
-        copyToBool(data, 0, 0, size);
-
-        int offset = size;
-        for (BooleanSeries s : other) {
-            int len = s.size();
-            s.copyToBool(data, 0, offset, len);
-            offset += len;
-        }
-
-        return new BooleanArraySeries(data);
-    }
-
-    @Override
     public Series<Boolean> fillNullsFromSeries(Series<? extends Boolean> values) {
         // primitive series has no nulls
         return this;
@@ -184,22 +156,6 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     @Override
     public Series<Boolean> fillNullsForward() {
         return this;
-    }
-
-    @SafeVarargs
-    @Override
-    public final Series<Boolean> concat(Series<? extends Boolean>... other) {
-        if (other.length == 0) {
-            return this;
-        }
-
-        // TODO: use SeriesConcat
-
-        Series<Boolean>[] combined = new Series[other.length + 1];
-        combined[0] = this;
-        System.arraycopy(other, 0, combined, 1, other.length);
-
-        return SeriesConcat.concat(combined);
     }
 
     @Override

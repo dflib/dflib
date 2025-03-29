@@ -1,5 +1,6 @@
 package org.dflib;
 
+import org.dflib.concat.SeriesConcat;
 import org.dflib.series.BooleanArraySeries;
 import org.dflib.series.FalseSeries;
 import org.dflib.series.IntArraySeries;
@@ -146,7 +147,17 @@ public interface IntSeries extends Series<Integer> {
         return Series.ofInt(expanded);
     }
 
-    IntSeries concatInt(IntSeries... other);
+    default IntSeries concatInt(IntSeries... other) {
+        if (other.length == 0) {
+            return this;
+        }
+
+        IntSeries[] combined = new IntSeries[other.length + 1];
+        combined[0] = this;
+        System.arraycopy(other, 0, combined, 1, other.length);
+
+        return SeriesConcat.intConcat(combined);
+    }
 
     @Override
     default IntSeries diff(Series<? extends Integer> other) {

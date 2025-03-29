@@ -15,7 +15,6 @@ import org.dflib.builder.DoubleAccum;
 import org.dflib.builder.IntAccum;
 import org.dflib.builder.ObjectAccum;
 import org.dflib.builder.UniqueDoubleAccum;
-import org.dflib.concat.SeriesConcat;
 import org.dflib.groupby.SeriesGrouper;
 import org.dflib.map.Mapper;
 import org.dflib.sample.Sampler;
@@ -185,33 +184,6 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     }
 
     @Override
-    public DoubleSeries concatDouble(DoubleSeries... other) {
-        if (other.length == 0) {
-            return this;
-        }
-
-        // TODO: use SeriesConcat
-
-        int size = size();
-        int h = size;
-        for (DoubleSeries s : other) {
-            h += s.size();
-        }
-
-        double[] data = new double[h];
-        copyToDouble(data, 0, 0, size);
-
-        int offset = size;
-        for (DoubleSeries s : other) {
-            int len = s.size();
-            s.copyToDouble(data, 0, offset, len);
-            offset += len;
-        }
-
-        return new DoubleArraySeries(data);
-    }
-
-    @Override
     public Series<Double> fillNulls(Double value) {
         // primitive series has no nulls
         return this;
@@ -233,23 +205,6 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
     public Series<Double> fillNullsForward() {
         // primitive series has no nulls
         return this;
-    }
-
-    @SafeVarargs
-    @Override
-    public final Series<Double> concat(Series<? extends Double>... other) {
-        // concatenating as Double... to concat as DoubleSeries, "concatDouble" should be used
-        if (other.length == 0) {
-            return this;
-        }
-
-        // TODO: use SeriesConcat
-
-        Series<Double>[] combined = new Series[other.length + 1];
-        combined[0] = this;
-        System.arraycopy(other, 0, combined, 1, other.length);
-
-        return SeriesConcat.concat(combined);
     }
 
     @Override

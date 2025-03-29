@@ -13,7 +13,6 @@ import org.dflib.ValueToRowMapper;
 import org.dflib.builder.IntAccum;
 import org.dflib.builder.ObjectAccum;
 import org.dflib.builder.UniqueIntAccum;
-import org.dflib.concat.SeriesConcat;
 import org.dflib.groupby.SeriesGrouper;
 import org.dflib.map.Mapper;
 import org.dflib.sample.Sampler;
@@ -218,33 +217,6 @@ public abstract class IntBaseSeries implements IntSeries {
     }
 
     @Override
-    public IntSeries concatInt(IntSeries... other) {
-
-        if (other.length == 0) {
-            return this;
-        }
-
-        // TODO: use SeriesConcat
-        int size = size();
-        int h = size;
-        for (IntSeries s : other) {
-            h += s.size();
-        }
-
-        int[] data = new int[h];
-        copyToInt(data, 0, 0, size);
-
-        int offset = size;
-        for (IntSeries s : other) {
-            int len = s.size();
-            s.copyToInt(data, 0, offset, len);
-            offset += len;
-        }
-
-        return new IntArraySeries(data);
-    }
-
-    @Override
     public Series<Integer> fillNulls(Integer value) {
         // primitive series has no nulls
         return this;
@@ -266,23 +238,6 @@ public abstract class IntBaseSeries implements IntSeries {
     public Series<Integer> fillNullsForward() {
         // primitive series has no nulls
         return this;
-    }
-
-    @SafeVarargs
-    @Override
-    public final Series<Integer> concat(Series<? extends Integer>... other) {
-        // concatenating as Integer... to concat as IntSeries, "concatInt" should be used
-        if (other.length == 0) {
-            return this;
-        }
-
-        // TODO: use SeriesConcat
-
-        Series<Integer>[] combined = new Series[other.length + 1];
-        combined[0] = this;
-        System.arraycopy(other, 0, combined, 1, other.length);
-
-        return SeriesConcat.concat(combined);
     }
 
     @Override
