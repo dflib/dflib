@@ -13,7 +13,6 @@ import org.dflib.ValueToRowMapper;
 import org.dflib.builder.BoolBuilder;
 import org.dflib.builder.IntAccum;
 import org.dflib.builder.ObjectAccum;
-import org.dflib.concat.SeriesConcat;
 import org.dflib.groupby.SeriesGrouper;
 import org.dflib.map.Mapper;
 import org.dflib.sample.Sampler;
@@ -129,20 +128,6 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
                 // RangeSeries constructor does range checking
                 : new RangeSeries<>(this, fromInclusive, toExclusive - fromInclusive);
-    }
-
-    @SafeVarargs
-    @Override
-    public final Series<T> concat(Series<? extends T>... other) {
-        if (other.length == 0) {
-            return this;
-        }
-
-        Series<T>[] combined = new Series[other.length + 1];
-        combined[0] = this;
-        System.arraycopy(other, 0, combined, 1, other.length);
-
-        return SeriesConcat.concat(combined);
     }
 
     @Override

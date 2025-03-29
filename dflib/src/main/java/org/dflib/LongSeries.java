@@ -2,6 +2,7 @@ package org.dflib;
 
 import org.dflib.builder.BoolBuilder;
 import org.dflib.op.ReplaceOp;
+import org.dflib.concat.SeriesConcat;
 import org.dflib.series.FalseSeries;
 import org.dflib.series.LongArraySeries;
 import org.dflib.series.LongIndexedSeries;
@@ -177,7 +178,17 @@ public interface LongSeries extends Series<Long> {
         return Series.ofLong(expanded);
     }
 
-    LongSeries concatLong(LongSeries... other);
+    default LongSeries concatLong(LongSeries... other) {
+        if (other.length == 0) {
+            return this;
+        }
+
+        LongSeries[] combined = new LongSeries[other.length + 1];
+        combined[0] = this;
+        System.arraycopy(other, 0, combined, 1, other.length);
+
+        return SeriesConcat.longConcat(combined);
+    }
 
     @Override
     default LongSeries diff(Series<? extends Long> other) {

@@ -1,6 +1,7 @@
 package org.dflib;
 
 import org.dflib.builder.BoolBuilder;
+import org.dflib.concat.SeriesConcat;
 import org.dflib.f.FloatPredicate;
 import org.dflib.op.ReplaceOp;
 import org.dflib.series.FalseSeries;
@@ -182,7 +183,17 @@ public interface FloatSeries extends Series<Float> {
         return Series.ofFloat(expanded);
     }
 
-    FloatSeries concatFloat(FloatSeries... other);
+    default FloatSeries concatFloat(FloatSeries... other) {
+        if (other.length == 0) {
+            return this;
+        }
+
+        FloatSeries[] combined = new FloatSeries[other.length + 1];
+        combined[0] = this;
+        System.arraycopy(other, 0, combined, 1, other.length);
+
+        return SeriesConcat.floatConcat(combined);
+    }
 
     @Override
     default FloatSeries diff(Series<? extends Float> other) {

@@ -16,7 +16,6 @@ import org.dflib.builder.FloatAccum;
 import org.dflib.builder.IntAccum;
 import org.dflib.builder.ObjectAccum;
 import org.dflib.builder.UniqueFloatAccum;
-import org.dflib.concat.SeriesConcat;
 import org.dflib.f.FloatPredicate;
 import org.dflib.groupby.SeriesGrouper;
 import org.dflib.map.Mapper;
@@ -186,33 +185,6 @@ public abstract class FloatBaseSeries implements FloatSeries {
     }
 
     @Override
-    public FloatSeries concatFloat(FloatSeries... other) {
-        if (other.length == 0) {
-            return this;
-        }
-
-        // TODO: use SeriesConcat
-
-        int size = size();
-        int h = size;
-        for (FloatSeries s : other) {
-            h += s.size();
-        }
-
-        float[] data = new float[h];
-        copyToFloat(data, 0, 0, size);
-
-        int offset = size;
-        for (FloatSeries s : other) {
-            int len = s.size();
-            s.copyToFloat(data, 0, offset, len);
-            offset += len;
-        }
-
-        return new FloatArraySeries(data);
-    }
-
-    @Override
     public Series<Float> fillNulls(Float value) {
         // primitive series has no nulls
         return this;
@@ -234,23 +206,6 @@ public abstract class FloatBaseSeries implements FloatSeries {
     public Series<Float> fillNullsForward() {
         // primitive series has no nulls
         return this;
-    }
-
-    @SafeVarargs
-    @Override
-    public final Series<Float> concat(Series<? extends Float>... other) {
-        // concatenating as Float... to concat as FloatSeries, "concatFloat" should be used
-        if (other.length == 0) {
-            return this;
-        }
-
-        // TODO: use SeriesConcat
-
-        Series<Float>[] combined = new Series[other.length + 1];
-        combined[0] = this;
-        System.arraycopy(other, 0, combined, 1, other.length);
-
-        return SeriesConcat.concat(combined);
     }
 
     @Override

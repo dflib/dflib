@@ -3,9 +3,8 @@ package org.dflib.concat;
 import org.dflib.ColumnDataFrame;
 import org.dflib.DataFrame;
 import org.dflib.Index;
-import org.dflib.Series;
 import org.dflib.JoinType;
-import org.dflib.series.ArraySeries;
+import org.dflib.Series;
 
 import java.util.EnumMap;
 import java.util.Iterator;
@@ -109,57 +108,41 @@ public class VConcat {
         return indices[indices.length - 1];
     }
 
-    public DataFrame concat(DataFrame... dfs) {
-        Index[] indices = new Index[dfs.length];
-        for (int i = 0; i < indices.length; i++) {
-            indices[i] = dfs[i].getColumnsIndex();
+    public DataFrame concat(DataFrame... concat) {
+
+        int clen = concat.length;
+        if (clen == 0) {
+            return DataFrame.empty();
+        } else if (clen == 1) {
+            return concat[0];
         }
 
-
-        int h = 0;
-        for (int i = 0; i < dfs.length; i++) {
-            h += dfs[i].height();
+        Index[] indices = new Index[clen];
+        for (int i = 0; i < clen; i++) {
+            indices[i] = concat[i].getColumnsIndex();
         }
 
-        Index concatColumns = zipper.apply(indices);
-        int w = concatColumns.size();
-
-        Object[][] data = new Object[w][h];
-        int voffset = 0;
-
-        for (int i = 0; i < dfs.length; i++) {
-
-            Index dfc = dfs[i].getColumnsIndex();
-            int dfw = dfc.size();
-
-            for (int j = 0; j < dfw; j++) {
-
-                // need to rewind the iterator even if we exclude the series from copy
-                Series<?> next = dfs[i].getColumn(j);
-                int pos = mapSeriesPosition(concatColumns, dfc.get(j));
-
-                if (pos >= 0) {
-                    next.copyTo(data[pos], 0, voffset, next.size());
-                }
-            }
-
-            voffset += dfs[i].height();
-        }
-
-        return new ColumnDataFrame(null, concatColumns, toSeries(w, data));
-    }
-
-    private Series<?>[] toSeries(int w, Object[][] data) {
-        Series[] series = new Series[w];
+        Index concatIndex = zipper.apply(indices);
+        int w = concatIndex.size();
+        Series[] concatCols = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            series[i] = new ArraySeries(data[i]);
+
+            String col = concatIndex.get(i);
+
+            Series[] concatColData = new Series[clen];
+
+            for (int j = 0; j < clen; j++) {
+
+                DataFrame df = concat[j];
+                concatColData[j] = df.getColumnsIndex().contains(col)
+                        ? df.getColumn(col)
+                        : Series.ofVal(null, df.height());
+            }
+
+            concatCols[i] = SeriesConcat.concat(concatColData);
         }
 
-        return series;
-    }
-
-    private int mapSeriesPosition(Index concatColumns, String dfColumn) {
-        return concatColumns.contains(dfColumn) ? concatColumns.position(dfColumn) : -1;
+        return new ColumnDataFrame(null, concatIndex, concatCols);
     }
 }

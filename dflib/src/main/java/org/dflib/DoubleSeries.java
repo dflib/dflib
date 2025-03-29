@@ -2,6 +2,7 @@ package org.dflib;
 
 import org.dflib.builder.BoolBuilder;
 import org.dflib.op.ReplaceOp;
+import org.dflib.concat.SeriesConcat;
 import org.dflib.series.DoubleArraySeries;
 import org.dflib.series.DoubleIndexedSeries;
 import org.dflib.series.FalseSeries;
@@ -180,7 +181,17 @@ public interface DoubleSeries extends Series<Double> {
         return Series.ofDouble(expanded);
     }
 
-    DoubleSeries concatDouble(DoubleSeries... other);
+    default DoubleSeries concatDouble(DoubleSeries... other) {
+        if (other.length == 0) {
+            return this;
+        }
+
+        DoubleSeries[] combined = new DoubleSeries[other.length + 1];
+        combined[0] = this;
+        System.arraycopy(other, 0, combined, 1, other.length);
+
+        return SeriesConcat.doubleConcat(combined);
+    }
 
     @Override
     default DoubleSeries diff(Series<? extends Double> other) {

@@ -117,31 +117,6 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
     }
 
     @Override
-    public BooleanSeries concatBool(BooleanSeries... other) {
-        if (other.length == 0) {
-            return this;
-        }
-
-        int size = size();
-        int h = size;
-        for (BooleanSeries s : other) {
-            h += s.size();
-        }
-
-        BoolAccum accum = new BoolAccum(h);
-        accum.fill(this, 0, 0, size);
-
-        int offset = size;
-        for (BooleanSeries s : other) {
-            int len = s.size();
-            accum.fill(s, 0, offset, len);
-            offset += len;
-        }
-
-        return accum.toSeries();
-    }
-
-    @Override
     public Series<Boolean> fillNullsFromSeries(Series<? extends Boolean> values) {
         // primitive series has no nulls
         return this;

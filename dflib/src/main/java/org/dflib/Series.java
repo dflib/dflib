@@ -4,6 +4,7 @@ import org.dflib.agg.SeriesAggregator;
 import org.dflib.builder.BoolBuilder;
 import org.dflib.builder.SeriesByElementBuilder;
 import org.dflib.op.ReplaceOp;
+import org.dflib.concat.SeriesConcat;
 import org.dflib.series.ArraySeries;
 import org.dflib.series.ColumnMappedSeries;
 import org.dflib.series.DoubleArraySeries;
@@ -465,7 +466,17 @@ public interface Series<T> extends Iterable<T> {
     /**
      * Combines this Series with multiple other Series. This is an operation similar to SQL "UNION"
      */
-    Series<T> concat(Series<? extends T>... other);
+    default Series<T> concat(Series<? extends T>... other) {
+        if (other.length == 0) {
+            return this;
+        }
+
+        Series<T>[] combined = new Series[other.length + 1];
+        combined[0] = this;
+        System.arraycopy(other, 0, combined, 1, other.length);
+
+        return SeriesConcat.concat(combined);
+    }
 
     /**
      * Returns a Series with elements from this Series that are not present in another Series. This is an operation

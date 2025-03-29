@@ -2,6 +2,7 @@ package org.dflib;
 
 import org.dflib.builder.BoolAccum;
 import org.dflib.builder.BoolBuilder;
+import org.dflib.concat.SeriesConcat;
 import org.dflib.op.BooleanSeriesOps;
 import org.dflib.op.ReplaceOp;
 import org.dflib.series.BooleanIndexedSeries;
@@ -184,7 +185,17 @@ public interface BooleanSeries extends Series<Boolean> {
         return Series.ofBool(expanded);
     }
 
-    BooleanSeries concatBool(BooleanSeries... other);
+    default BooleanSeries concatBool(BooleanSeries... other) {
+        if (other.length == 0) {
+            return this;
+        }
+
+        BooleanSeries[] combined = new BooleanSeries[other.length + 1];
+        combined[0] = this;
+        System.arraycopy(other, 0, combined, 1, other.length);
+
+        return SeriesConcat.boolConcat(combined);
+    }
 
     @Override
     default BooleanSeries diff(Series<? extends Boolean> other) {
