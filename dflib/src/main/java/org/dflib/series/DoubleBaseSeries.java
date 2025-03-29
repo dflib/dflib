@@ -169,20 +169,7 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
 
         return new DoubleArraySeries(data);
     }
-
-    private Series<Double> selectAsObjectSeries(IntSeries positions) {
-
-        int h = positions.size();
-        Double[] data = new Double[h];
-
-        for (int i = 0; i < h; i++) {
-            int index = positions.getInt(i);
-            data[i] = index < 0 ? null : getDouble(index);
-        }
-
-        return new ArraySeries<>(data);
-    }
-
+    
     @Override
     public Series<Double> fillNulls(Double value) {
         // primitive series has no nulls
