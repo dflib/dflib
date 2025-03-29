@@ -184,33 +184,6 @@ public abstract class FloatBaseSeries implements FloatSeries {
     }
 
     @Override
-    public FloatSeries concatFloat(FloatSeries... other) {
-        if (other.length == 0) {
-            return this;
-        }
-
-        // TODO: use SeriesConcat
-
-        int size = size();
-        int h = size;
-        for (FloatSeries s : other) {
-            h += s.size();
-        }
-
-        float[] data = new float[h];
-        copyToFloat(data, 0, 0, size);
-
-        int offset = size;
-        for (FloatSeries s : other) {
-            int len = s.size();
-            s.copyToFloat(data, 0, offset, len);
-            offset += len;
-        }
-
-        return new FloatArraySeries(data);
-    }
-
-    @Override
     public Series<Float> fillNulls(Float value) {
         // primitive series has no nulls
         return this;
