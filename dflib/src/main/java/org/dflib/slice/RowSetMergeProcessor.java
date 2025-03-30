@@ -3,6 +3,7 @@ package org.dflib.slice;
 import org.dflib.ColumnDataFrame;
 import org.dflib.DataFrame;
 import org.dflib.Index;
+import org.dflib.IntSeries;
 import org.dflib.Series;
 import org.dflib.f.IntObjectFunction2;
 import org.dflib.series.SingleValueSeries;
@@ -12,6 +13,7 @@ import java.util.function.UnaryOperator;
 class RowSetMergeProcessor extends RowSetSelectProcessor {
 
     private final RowSetMerger merger;
+    private IntSeries stretchCounts;
 
     public static RowSetMergeProcessor of(Series<?>[] rowSetSelection, RowSetMerger merger) {
         return new RowSetMergeProcessor(rowSetSelection, merger);
@@ -25,6 +27,12 @@ class RowSetMergeProcessor extends RowSetSelectProcessor {
     @Override
     public RowSetMergeProcessor expansion(int expansionCol) {
         return (RowSetMergeProcessor) super.expansion(expansionCol);
+    }
+
+    @Override
+    protected void doExpansion(int expansionCol, ColumnExpander expander) {
+        super.doExpansion(expansionCol, expander);
+        this.stretchCounts = expander.getStretchCounts();
     }
 
     @Override

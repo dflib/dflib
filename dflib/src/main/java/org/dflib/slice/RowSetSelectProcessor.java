@@ -4,7 +4,6 @@ import org.dflib.BooleanSeries;
 import org.dflib.ColumnDataFrame;
 import org.dflib.DataFrame;
 import org.dflib.Index;
-import org.dflib.IntSeries;
 import org.dflib.Series;
 import org.dflib.f.IntObjectFunction2;
 import org.dflib.series.IntSingleValueSeries;
@@ -15,7 +14,6 @@ import java.util.function.UnaryOperator;
 class RowSetSelectProcessor {
 
     protected final Series<?>[] rowSelection;
-    protected IntSeries stretchCounts;
     protected BooleanSeries uniqueIndex;
     protected IntObjectFunction2<DataFrame, Series<?>> colMapper;
     private UnaryOperator<DataFrame> mapper;
@@ -34,20 +32,20 @@ class RowSetSelectProcessor {
             return this;
         }
 
-        int w = rowSelection.length;
+        doExpansion(expansionCol, ColumnExpander.expand(rowSelection[expansionCol]));
+        return this;
+    }
 
-        ColumnExpander expander = ColumnExpander.expand(rowSelection[expansionCol]);
+    protected void doExpansion(int expansionCol, ColumnExpander expander) {
+
         int[] stretchIndex = expander.getStretchIndex();
+        int w = rowSelection.length;
 
         for (int i = 0; i < w; i++) {
             rowSelection[i] = i == expansionCol
                     ? expander.getExpanded()
                     : rowSelection[i].select(stretchIndex);
         }
-
-        this.stretchCounts = expander.getStretchCounts();
-
-        return this;
     }
 
     public RowSetSelectProcessor unique(Index sourceColumnsIndex, int[] uniqueKeyColumns) {
