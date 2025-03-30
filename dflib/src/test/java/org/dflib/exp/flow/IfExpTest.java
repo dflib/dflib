@@ -11,6 +11,20 @@ import static org.dflib.Exp.*;
 public class IfExpTest extends BaseExpTest {
 
     @Test
+    public void col() {
+        Exp<?> exp = ifExp($col("c").eq("x"), $col("a"), $col("b"));
+
+        DataFrame df = DataFrame.foldByRow("a", "b", "c").of(
+                "1", "2", "x",
+                null, "5", "y",
+                null, "6", "x",
+                "7", null, "x",
+                "8", "9", "z");
+
+        new SeriesAsserts(exp.eval(df)).expectData("1", "5", null, "7", "9");
+    }
+
+    @Test
     public void mix() {
         Exp<String> exp = ifExp($col("c").eq("x"), $str("a"), $str("b"));
 

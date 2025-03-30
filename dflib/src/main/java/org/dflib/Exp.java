@@ -494,7 +494,7 @@ public interface Exp<T> {
     /**
      * A function that evaluates "exp", replacing any null values with "ifNull" value.
      */
-    static <T> Exp<T> ifNull(Exp<T> exp, T ifNull) {
+    static <T> Exp<T> ifNullVal(Exp<T> exp, T ifNull) {
         return new IfNullExp<>(exp, $val(ifNull));
     }
 

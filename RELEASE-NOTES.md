@@ -14,6 +14,7 @@
 * #472 "df.cols().merge(Series)" overrides columns with numeric names
 * #474 "$decimalVal(..)" improvements
 * #475 "$bigintVal(..)" String argument flavor
+* #478 ifNull($col(...), $col(...)) does not compile
 
 ## Release 2.0.0-M2
 
