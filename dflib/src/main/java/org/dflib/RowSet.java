@@ -214,7 +214,7 @@ public interface RowSet {
     BooleanSeries locate();
 
     /**
-     * Returns a IntSeries of the source DataFrame positions thta re included in the RowSet. Can be
+     * Returns a IntSeries of the source DataFrame positions that are included in the RowSet. Can be
      * utilized as a reusable "selector" of RowSets from other DataFrames.
      */
     IntSeries index();
