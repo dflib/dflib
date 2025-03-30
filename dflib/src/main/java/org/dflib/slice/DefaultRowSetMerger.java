@@ -66,12 +66,10 @@ class DefaultRowSetMerger extends RowSetMerger {
     }
 
     @Override
-    public RowSetMerger expandCols(ColumnExpander expander) {
-        IntSeries rsStretchCounts = expander.getStretchCounts();
-        int rsLen = expander.getExpanded().size();
+    public RowSetMerger expandCols(IntSeries stretchCounts, int stretchedSize) {
 
         int ch = mergeIndex.length;
-        int nn = mergeIndex.length - rsStretchCounts.size() + rsLen;
+        int nn = mergeIndex.length - stretchCounts.size() + stretchedSize;
 
         int[] explodeIndex = new int[nn];
 
@@ -79,7 +77,7 @@ class DefaultRowSetMerger extends RowSetMerger {
             int mv = mergeIndex[i];
 
             if (mv < 0) {
-                int explodeBy = rsStretchCounts.getInt(rsi++);
+                int explodeBy = stretchCounts.getInt(rsi++);
                 for (int j = 0; j < explodeBy; j++) {
                     explodeIndex[si++] = mv - et - j;
                 }

@@ -1,6 +1,7 @@
 ## Release 2.0.0-M3
 
 * #422 "ColumnSet.expand()" as a non-terminal operation
+* #446 "RowSet.unique()" as a non-terminal operation
 * #462 "Exp.shift(..)" in specialized expressions must return the type of that expression
 * #463 "Exp.as(..)" in specialized expressions must return the type of that expression
 * #464 Printer.toString(..) -> Printer.print(..)

@@ -73,5 +73,5 @@ public abstract class RowSetMerger {
      */
     public abstract RowSetMerger removeUnmatchedRows(BooleanSeries rsCondition);
 
-    public abstract RowSetMerger expandCols(ColumnExpander expander);
+    public abstract RowSetMerger expandCols(IntSeries stretchCounts, int stretchedSize);
 }

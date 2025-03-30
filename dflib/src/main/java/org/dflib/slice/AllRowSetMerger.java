@@ -30,18 +30,14 @@ class AllRowSetMerger extends RowSetMerger {
     }
 
     @Override
-    public RowSetMerger expandCols(ColumnExpander expander) {
+    public RowSetMerger expandCols(IntSeries stretchCounts, int stretchedSize) {
 
-        IntSeries rsStretchCounts = expander.getStretchCounts();
-        int rsLen = expander.getExpanded().size();
-
-        int ch = rsStretchCounts.size();
-
-        int[] explodeIndex = new int[rsLen];
+        int ch = stretchCounts.size();
+        int[] explodeIndex = new int[stretchedSize];
 
         for (int i = 0, si = 0, rsi = 0, et = 0; i < ch; i++) {
 
-            int explodeBy = rsStretchCounts.getInt(rsi++);
+            int explodeBy = stretchCounts.getInt(rsi++);
             for (int j = 0; j < explodeBy; j++) {
                 explodeIndex[si++] = -i - 1 - et - j;
             }

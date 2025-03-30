@@ -40,7 +40,7 @@ public class EmptyRowSet extends BaseRowSet {
     public EmptyRowSet(
             DataFrame source,
             Series<?>[] sourceColumns) {
-        super(source, sourceColumns, -1);
+        super(source, sourceColumns, -1, null);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class EmptyRowSet extends BaseRowSet {
     }
 
     @Override
-    protected <T> Series<T> doSelect(Series<T> sourceColumn) {
+    protected <T> Series<T> selectCol(Series<T> sourceColumn) {
         return Series.of();
     }
 
@@ -98,18 +98,18 @@ public class EmptyRowSet extends BaseRowSet {
     }
 
     @Override
-    public DataFrame unique() {
-        return source;
+    public RowSet unique() {
+        return this;
     }
 
     @Override
-    public DataFrame unique(String... uniqueKeyColumns) {
-        return source;
-    }
+    public RowSet unique(int... uniqueKeyColumns) {
+        // validate the argument, even though the operation does nothing
+        for (int p : uniqueKeyColumns) {
+            sourceColumnsIndex.get(p);
+        }
 
-    @Override
-    public DataFrame unique(int... uniqueKeyColumns) {
-        return source;
+        return this;
     }
 
     @Override
@@ -145,28 +145,6 @@ public class EmptyRowSet extends BaseRowSet {
     @Override
     public DataFrame select(RowToValueMapper<?>... mappers) {
         return DataFrame.empty(sourceColumnsIndex);
-    }
-
-    @Override
-    public DataFrame selectUnique(String... uniqueKeyColumns) {
-        // validate the argument, even though the operation does nothing
-        sourceColumnsIndex.positions(uniqueKeyColumns);
-        return DataFrame.empty(source.getColumnsIndex());
-    }
-
-    @Override
-    public DataFrame selectUnique(int... uniqueKeyColumns) {
-        // validate the argument, even though the operation does nothing
-        for (int p : uniqueKeyColumns) {
-            source.getColumnsIndex().get(p);
-        }
-
-        return DataFrame.empty(source.getColumnsIndex());
-    }
-
-    @Override
-    public DataFrame selectUnique() {
-        return selectUnique(sourceColumnsIndex.toArray());
     }
 
     @Override

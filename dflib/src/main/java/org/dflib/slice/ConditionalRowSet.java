@@ -14,23 +14,29 @@ public class ConditionalRowSet extends BaseRowSet {
     private final BooleanSeries conditionalIndex;
 
     public ConditionalRowSet(DataFrame source, Series<?>[] sourceColumns, BooleanSeries conditionalIndex) {
-        this(source, sourceColumns, -1, conditionalIndex);
+        this(source, sourceColumns, -1, null, conditionalIndex);
     }
 
     protected ConditionalRowSet(
             DataFrame source,
             Series<?>[] sourceColumns,
             int expansionColumn,
+            int[] uniqueColumns,
             BooleanSeries conditionalIndex) {
-        super(source, sourceColumns, expansionColumn);
+        super(source, sourceColumns, expansionColumn, uniqueColumns);
         this.conditionalIndex = conditionalIndex;
     }
 
     @Override
     public RowSet expand(int columnPos) {
         return this.expansionColumn != columnPos
-                ? new ConditionalRowSet(source, sourceColumns, columnPos, conditionalIndex)
+                ? new ConditionalRowSet(source, sourceColumns, columnPos, uniqueKeyColumns, conditionalIndex)
                 : this;
+    }
+
+    @Override
+    public RowSet unique(int... uniqueKeyColumns) {
+        return new ConditionalRowSet(source, sourceColumns, expansionColumn, uniqueKeyColumns, conditionalIndex);
     }
 
     @Override
@@ -54,7 +60,7 @@ public class ConditionalRowSet extends BaseRowSet {
     }
 
     @Override
-    protected <T> Series<T> doSelect(Series<T> sourceColumn) {
+    protected <T> Series<T> selectCol(Series<T> sourceColumn) {
         // TODO: an implicitly lazy impl instead of Series.select(..) to avoid evaluation of unneeded columns when
         //  calculating DefaultRowColumnSet
         return sourceColumn.select(conditionalIndex);

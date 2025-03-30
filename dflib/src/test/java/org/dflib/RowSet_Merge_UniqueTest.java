@@ -5,17 +5,17 @@ import org.junit.jupiter.api.Test;
 
 import static org.dflib.Exp.$col;
 
-public class RowSet_UniqueTest {
+public class RowSet_Merge_UniqueTest {
 
     @Test
     public void emptyAll() {
-        DataFrame df = DataFrame.empty("a", "b", "c").rows().unique("a");
+        DataFrame df = DataFrame.empty("a", "b", "c").rows().unique("a").merge();
         new DataFrameAsserts(df, "a", "b", "c").expectHeight(0);
     }
 
     @Test
     public void empty_ByCondition() {
-        DataFrame df = DataFrame.empty("a", "b", "c").rows($col("a").isNotNull()).unique("a");
+        DataFrame df = DataFrame.empty("a", "b", "c").rows($col("a").isNotNull()).unique("a").merge();
         new DataFrameAsserts(df, "a", "b", "c").expectHeight(0);
     }
 
@@ -29,7 +29,8 @@ public class RowSet_UniqueTest {
                         1, "f", "g",
                         1, "m", "n")
                 .rows()
-                .unique("a");
+                .unique("a")
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(2)
@@ -47,7 +48,8 @@ public class RowSet_UniqueTest {
                         1, "f", "g",
                         1, "m", "n")
                 .rows()
-                .unique("a", "b");
+                .unique("a", "b")
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(4)
@@ -67,7 +69,8 @@ public class RowSet_UniqueTest {
                         1, "f", "g",
                         1, "m", "n")
                 .rows(Series.ofInt(0, 3, 4))
-                .unique("a");
+                .unique("a")
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(3)
@@ -86,7 +89,8 @@ public class RowSet_UniqueTest {
                         1, "x", "g", // <--
                         1, "m", "n") // <--
                 .rows(Series.ofInt(0, 2, 3, 4))
-                .unique("a", "b");
+                .unique("a", "b")
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(4)
@@ -106,7 +110,8 @@ public class RowSet_UniqueTest {
                         1, "f", "g",
                         1, "m", "n")
                 .rows(Series.ofInt(0, 3, 4))
-                .unique(0);
+                .unique(0)
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(3)
@@ -125,7 +130,8 @@ public class RowSet_UniqueTest {
                         4, "f", "g",
                         5, "m", "n")
                 .rows(Series.ofInt(0, 3, 4))
-                .unique("a");
+                .unique("a")
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(5)
@@ -146,7 +152,8 @@ public class RowSet_UniqueTest {
                         3, "f", "g",
                         1, "x", "a") // <--
                 .rows(Series.ofInt(1, 2, 4))
-                .unique();
+                .unique()
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(4)
@@ -166,7 +173,8 @@ public class RowSet_UniqueTest {
                         1, "f", "g", // <-
                         1, "m", "n")
                 .rowsRange(0, 4)
-                .unique(0);
+                .unique(0)
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(3)
@@ -186,7 +194,8 @@ public class RowSet_UniqueTest {
                         3, "o", "p",
                         1, "m", "n")
                 .rows(Series.ofBool(true, false, false, true, true, true))
-                .unique("a");
+                .unique("a")
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(4)
@@ -207,7 +216,8 @@ public class RowSet_UniqueTest {
                         3, "o", "p",
                         1, "m", "n")
                 .rows(Series.ofBool(true, false, false, true, true, true))
-                .unique(0);
+                .unique(0)
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(4)
@@ -228,7 +238,8 @@ public class RowSet_UniqueTest {
                         4, "f", "g",
                         5, "m", "n")
                 .rows(Series.ofBool(true, false, false, true, true))
-                .unique("a");
+                .unique("a")
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(5)
@@ -249,7 +260,8 @@ public class RowSet_UniqueTest {
                         3, "f", "g",
                         1, "x", "a") // <--
                 .rows(Series.ofBool(false, true, true, false, true))
-                .unique();
+                .unique()
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(4)

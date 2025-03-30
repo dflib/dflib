@@ -17,19 +17,24 @@ public class IndexedRowSet extends BaseRowSet {
     private final IntSeries intIndex;
 
     public IndexedRowSet(DataFrame source, Series<?>[] sourceColumns, IntSeries intIndex) {
-        this(source, sourceColumns, -1, intIndex);
+        this(source, sourceColumns, -1, null, intIndex);
     }
 
-    protected IndexedRowSet(DataFrame source, Series<?>[] sourceColumns, int expansionColumn, IntSeries intIndex) {
-        super(source, sourceColumns, expansionColumn);
+    protected IndexedRowSet(DataFrame source, Series<?>[] sourceColumns, int expansionColumn, int[] uniqueKeyColumns, IntSeries intIndex) {
+        super(source, sourceColumns, expansionColumn, uniqueKeyColumns);
         this.intIndex = intIndex;
     }
 
     @Override
     public RowSet expand(int columnPos) {
         return this.expansionColumn != columnPos
-                ? new IndexedRowSet(source, sourceColumns, columnPos, intIndex)
+                ? new IndexedRowSet(source, sourceColumns, columnPos, null, intIndex)
                 : this;
+    }
+
+    @Override
+    public RowSet unique(int... uniqueKeyColumns) {
+        return new IndexedRowSet(source, sourceColumns, expansionColumn, uniqueKeyColumns, intIndex);
     }
 
     @Override
@@ -83,7 +88,7 @@ public class IndexedRowSet extends BaseRowSet {
     }
 
     @Override
-    protected <T> Series<T> doSelect(Series<T> sourceColumn) {
+    protected <T> Series<T> selectCol(Series<T> sourceColumn) {
         return sourceColumn.select(intIndex);
     }
 

@@ -19,11 +19,11 @@ public class RangeRowSet extends BaseRowSet {
     private final int toExclusive;
 
     public RangeRowSet(DataFrame source, Series<?>[] sourceColumns, int fromInclusive, int toExclusive) {
-        this(source, sourceColumns, -1, fromInclusive, toExclusive);
+        this(source, sourceColumns, -1, null, fromInclusive, toExclusive);
     }
 
-    protected RangeRowSet(DataFrame source, Series<?>[] sourceColumns, int expansionColumn, int fromInclusive, int toExclusive) {
-        super(source, sourceColumns, expansionColumn);
+    protected RangeRowSet(DataFrame source, Series<?>[] sourceColumns, int expansionColumn, int[] uniqueKeyColumns, int fromInclusive, int toExclusive) {
+        super(source, sourceColumns, expansionColumn, uniqueKeyColumns);
 
         Range.checkRange(fromInclusive, toExclusive - fromInclusive, source.height());
 
@@ -34,8 +34,13 @@ public class RangeRowSet extends BaseRowSet {
     @Override
     public RowSet expand(int columnPos) {
         return this.expansionColumn != columnPos
-                ? new RangeRowSet(source, sourceColumns, columnPos, fromInclusive, toExclusive)
+                ? new RangeRowSet(source, sourceColumns, columnPos, uniqueKeyColumns, fromInclusive, toExclusive)
                 : this;
+    }
+
+    @Override
+    public RowSet unique(int... uniqueKeyColumns) {
+        return new RangeRowSet(source, sourceColumns, expansionColumn, uniqueKeyColumns, fromInclusive, toExclusive);
     }
 
     @Override
@@ -74,7 +79,7 @@ public class RangeRowSet extends BaseRowSet {
     }
 
     @Override
-    protected <T> Series<T> doSelect(Series<T> sourceColumn) {
+    protected <T> Series<T> selectCol(Series<T> sourceColumn) {
         return sourceColumn.selectRange(fromInclusive, toExclusive);
     }
 

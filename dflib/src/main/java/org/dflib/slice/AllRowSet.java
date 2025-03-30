@@ -14,18 +14,23 @@ import org.dflib.series.TrueSeries;
 public class AllRowSet extends BaseRowSet {
 
     public AllRowSet(DataFrame source, Series<?>[] sourceColumns) {
-        this(source, sourceColumns, -1);
+        this(source, sourceColumns, -1, null);
     }
 
-    protected AllRowSet(DataFrame source, Series<?>[] sourceColumns, int expansionColumn) {
-        super(source, sourceColumns, expansionColumn);
+    protected AllRowSet(DataFrame source, Series<?>[] sourceColumns, int expansionColumn, int[] uniqueColumns) {
+        super(source, sourceColumns, expansionColumn, uniqueColumns);
     }
 
     @Override
     public RowSet expand(int columnPos) {
         return this.expansionColumn != columnPos
-                ? new AllRowSet(source, sourceColumns, columnPos)
+                ? new AllRowSet(source, sourceColumns, columnPos, uniqueKeyColumns)
                 : this;
+    }
+
+    @Override
+    public RowSet unique(int... uniqueKeyColumns) {
+        return new AllRowSet(source, sourceColumns, expansionColumn, uniqueKeyColumns);
     }
 
     @Override
@@ -49,7 +54,7 @@ public class AllRowSet extends BaseRowSet {
     }
 
     @Override
-    protected <T> Series<T> doSelect(Series<T> sourceColumn) {
+    protected <T> Series<T> selectCol(Series<T> sourceColumn) {
         return sourceColumn;
     }
 

@@ -5,18 +5,17 @@ import org.junit.jupiter.api.Test;
 
 import static org.dflib.Exp.$col;
 
-@Deprecated
-public class RowSet_SelectUniqueTest {
+public class RowSet_Select_UniqueTest {
 
     @Test
     public void emptyAll() {
-        DataFrame df = DataFrame.empty("a", "b", "c").rows().selectUnique("a");
+        DataFrame df = DataFrame.empty("a", "b", "c").rows().unique("a").select();
         new DataFrameAsserts(df, "a", "b", "c").expectHeight(0);
     }
 
     @Test
     public void empty_ByCondition() {
-        DataFrame df = DataFrame.empty("a", "b", "c").rows($col("a").isNotNull()).selectUnique("a");
+        DataFrame df = DataFrame.empty("a", "b", "c").rows($col("a").isNotNull()).unique("a").select();
         new DataFrameAsserts(df, "a", "b", "c").expectHeight(0);
     }
 
@@ -29,7 +28,7 @@ public class RowSet_SelectUniqueTest {
                         1, "e", "k",
                         1, "f", "g",
                         1, "m", "n")
-                .rows().selectUnique("a");
+                .rows().unique("a").select();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(2)
@@ -46,7 +45,7 @@ public class RowSet_SelectUniqueTest {
                         1, "x", "k",
                         1, "f", "g",
                         1, "m", "n")
-                .rows().selectUnique("a", "b");
+                .rows().unique("a", "b").select();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(4)
@@ -65,7 +64,7 @@ public class RowSet_SelectUniqueTest {
                         1, "e", "k",
                         1, "f", "g", // <--
                         1, "m", "n") // <--
-                .rows(0, 3, 4).selectUnique("a");
+                .rows(0, 3, 4).unique("a").select();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(1)
@@ -79,9 +78,9 @@ public class RowSet_SelectUniqueTest {
                         1, "x", "a", // <--
                         1, "x", "b",
                         1, "e", "k", // <--
-                        1, "x", "g", // <--
+                        1, "x", "g",
                         1, "m", "n") // <--
-                .rows(0, 2, 3, 4).selectUnique("a", "b");
+                .rows(0, 2, 3, 4).unique("a", "b").select();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(3)
@@ -99,7 +98,7 @@ public class RowSet_SelectUniqueTest {
                         1, "e", "k",
                         1, "f", "g", // <--
                         1, "m", "n") // <--
-                .rows(0, 3, 4).selectUnique(0);
+                .rows(0, 3, 4).unique(0).select();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(1)
@@ -115,7 +114,7 @@ public class RowSet_SelectUniqueTest {
                         3, "e", "k",
                         4, "f", "g", // <--
                         5, "m", "n") // <--
-                .rows(0, 3, 4).selectUnique("a");
+                .rows(0, 3, 4).unique("a").select();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(3)
@@ -133,7 +132,7 @@ public class RowSet_SelectUniqueTest {
                         1, "x", "a", // <--
                         3, "f", "g",
                         1, "x", "a") // <--
-                .rows(Series.ofInt(1, 2, 4)).selectUnique();
+                .rows(Series.ofInt(1, 2, 4)).unique().select();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(2)
@@ -150,7 +149,7 @@ public class RowSet_SelectUniqueTest {
                         1, "e", "k", // <-
                         1, "f", "g", // <-
                         1, "m", "n")
-                .rowsRange(0, 4).selectUnique(0);
+                .rowsRange(0, 4).unique(0).select();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(2)
@@ -168,7 +167,7 @@ public class RowSet_SelectUniqueTest {
                         1, "f", "g", // <--
                         3, "o", "p", // <--
                         1, "m", "n") // <--
-                .rows(Series.ofBool(true, false, false, true, true, true)).selectUnique("a");
+                .rows(Series.ofBool(true, false, false, true, true, true)).unique("a").select();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(2)
@@ -186,7 +185,7 @@ public class RowSet_SelectUniqueTest {
                         1, "f", "g",
                         3, "o", "p",
                         1, "m", "n")
-                .rows(Series.ofBool(true, false, false, true, true, true)).selectUnique(0);
+                .rows(Series.ofBool(true, false, false, true, true, true)).unique(0).select();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(2)
@@ -204,7 +203,7 @@ public class RowSet_SelectUniqueTest {
                         3, "e", "k",
                         4, "f", "g",
                         5, "m", "n")
-                .rows(Series.ofBool(true, false, false, true, true)).selectUnique("a");
+                .rows(Series.ofBool(true, false, false, true, true)).unique("a").select();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(3)
@@ -222,7 +221,7 @@ public class RowSet_SelectUniqueTest {
                         1, "x", "a", // <--
                         3, "f", "g",
                         1, "x", "a") // <--
-                .rows(Series.ofBool(false, true, true, false, true)).selectUnique();
+                .rows(Series.ofBool(false, true, true, false, true)).unique().select();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectHeight(2)

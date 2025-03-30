@@ -33,6 +33,28 @@ public interface RowSet {
      */
     RowSet expand(int columnPos);
 
+    /**
+     * Configures the row set to filters out repeating rows from the row set. Uniqueness is checked across all columns.
+     *
+     * @since 2.0.0
+     */
+    RowSet unique();
+
+    /**
+     * Configures the row set to filters out repeating rows from the row set. Uniqueness is checked only for the
+     * specified columns.
+     *
+     * @since 2.0.0
+     */
+    RowSet unique(String... uniqueKeyColumns);
+
+    /**
+     * Configures the row set to filters out repeating rows from the row set. Uniqueness is checked only for the
+     * specified columns.
+     *
+     * @since 2.0.0
+     */
+    RowSet unique(int... uniqueKeyColumns);
 
     RowColumnSet cols();
 
@@ -109,11 +131,6 @@ public interface RowSet {
         return sort(sorters);
     }
 
-    DataFrame unique();
-
-    DataFrame unique(String... uniqueKeyColumns);
-
-    DataFrame unique(int... uniqueKeyColumns);
 
     /**
      * Returns a new DataFrame with the RowSet rows only. No transformation is applied to columns. If the RowSet
@@ -166,11 +183,29 @@ public interface RowSet {
         return expand(columnPos).select();
     }
 
-    DataFrame selectUnique();
+    /**
+     * @deprecated in favor of {@link #unique()} and then {@link #select()}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    default DataFrame selectUnique() {
+        return unique().select();
+    }
 
-    DataFrame selectUnique(String... uniqueKeyColumns);
+    /**
+     * @deprecated in favor of {@link #unique(String...)} and then {@link #select()}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    default DataFrame selectUnique(String... uniqueKeyColumns) {
+        return unique(uniqueKeyColumns).select();
+    }
 
-    DataFrame selectUnique(int... uniqueKeyColumns);
+    /**
+     * @deprecated in favor of {@link #unique(int...)} and then {@link #select()}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    default DataFrame selectUnique(int... uniqueKeyColumns) {
+        return unique(uniqueKeyColumns).select();
+    }
 
     /**
      * Returns a BooleanSeries indicating whether each source DataFrame position is included in the RowSet. Can be

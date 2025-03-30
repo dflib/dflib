@@ -1,7 +1,5 @@
 package org.dflib.slice;
 
-import org.dflib.BooleanSeries;
-import org.dflib.ColumnDataFrame;
 import org.dflib.DataFrame;
 import org.dflib.Exp;
 import org.dflib.Index;
@@ -12,8 +10,6 @@ import org.dflib.RowToValueMapper;
 import org.dflib.Series;
 import org.dflib.Sorter;
 import org.dflib.f.IntObjectFunction2;
-import org.dflib.f.Tuple2;
-import org.dflib.series.IntSingleValueSeries;
 import org.dflib.series.RowMappedSeries;
 import org.dflib.sort.Comparators;
 import org.dflib.sort.DataFrameSorter;
@@ -29,12 +25,14 @@ public abstract class BaseRowSet implements RowSet {
     protected final Index sourceColumnsIndex;
     protected final Series[] sourceColumns;
     protected final int expansionColumn;
+    protected final int[] uniqueKeyColumns;
 
-    protected BaseRowSet(DataFrame source, Series<?>[] sourceColumns, int expansionColumn) {
+    protected BaseRowSet(DataFrame source, Series<?>[] sourceColumns, int expansionColumn, int[] uniqueKeyColumns) {
         this.source = source;
         this.sourceColumnsIndex = source.getColumnsIndex();
         this.sourceColumns = sourceColumns;
         this.expansionColumn = expansionColumn;
+        this.uniqueKeyColumns = uniqueKeyColumns;
     }
 
     @Override
@@ -107,8 +105,6 @@ public abstract class BaseRowSet implements RowSet {
     @Override
     public DataFrame merge(RowMapper mapper) {
 
-        // TODO: duplicating "mergeByColumn" almost verbatim, except the mapper transform happens on top of row set
-        //   DataFrame instead of column by column ... Unify?
         if (sourceColumns.length == 0) {
             return source;
         }
@@ -117,21 +113,9 @@ public abstract class BaseRowSet implements RowSet {
             return source;
         }
 
-        // this will do expansion within the RowSet scope if needed
-        Tuple2<Series<?>[], ColumnExpander> rows = doSelect();
-
-        RowSetMerger merger = expansionColumn >= 0 ? merger().expandCols(rows.two) : merger();
-
-        DataFrame rowsAsDf = new ColumnDataFrame(null, sourceColumnsIndex, rows.one)
-                .cols(sourceColumnsIndex).merge(mapper);
-
-        int w = sourceColumnsIndex.size();
-        Series[] resultColumns = new Series[w];
-        for (int i = 0; i < w; i++) {
-            resultColumns[i] = merger.merge(sourceColumns[i], rowsAsDf.getColumn(i));
-        }
-
-        return DataFrame.byColumn(sourceColumnsIndex).of(resultColumns);
+        return mergeProcessor(merger())
+                .mapper(df -> df.cols(sourceColumnsIndex).merge(mapper))
+                .merge(source, false);
     }
 
     @Override
@@ -165,94 +149,33 @@ public abstract class BaseRowSet implements RowSet {
     }
 
     @Override
-    public DataFrame unique() {
-        return unique(sourceColumnsIndex.toArray());
+    public RowSet unique() {
+        return unique(sourceColumnsIndex.positions(c -> true));
     }
 
     @Override
-    public DataFrame unique(String... uniqueKeyColumns) {
-        if (uniqueKeyColumns.length == 0) {
-            throw new IllegalArgumentException("No 'columnNamesToCompare' for uniqueness checks");
-        }
-
-        int w = sourceColumns.length;
-        if (w == 0) {
-            return source;
-        }
-
-        if (sourceColumns[0].size() == 0) {
-            return source;
-        }
-
-        DataFrame rowsAsDf = select();
-        BooleanSeries uniqueIndex = rowsAsDf
-                .over().partition(uniqueKeyColumns).rowNumber()
-                .eq(new IntSingleValueSeries(1, rowsAsDf.height()));
-
-        if (uniqueIndex.isTrue()) {
-            return source;
-        }
-
-        RowSetMerger merger = merger().removeUnmatchedRows(uniqueIndex);
-        Series[] to = new Series[w];
-        for (int i = 0; i < w; i++) {
-            to[i] = merger.merge(sourceColumns[i], rowsAsDf.getColumn(i));
-        }
-
-        return DataFrame.byColumn(sourceColumnsIndex).of(to);
-    }
-
-    @Override
-    public DataFrame unique(int... uniqueKeyColumns) {
-        if (uniqueKeyColumns.length == 0) {
-            throw new IllegalArgumentException("No 'columnPositionsToCompare' for uniqueness checks");
-        }
-
-        int w = sourceColumns.length;
-        if (w == 0) {
-            return source;
-        }
-
-        if (sourceColumns[0].size() == 0) {
-            return source;
-        }
-
-        DataFrame rowsAsDf = select();
-        BooleanSeries uniqueIndex = rowsAsDf
-                .over().partition(uniqueKeyColumns).rowNumber()
-                .eq(new IntSingleValueSeries(1, rowsAsDf.height()));
-
-        if (uniqueIndex.isTrue()) {
-            return source;
-        }
-
-        RowSetMerger merger = merger().removeUnmatchedRows(uniqueIndex);
-        Series[] to = new Series[w];
-        for (int i = 0; i < w; i++) {
-            to[i] = merger.merge(sourceColumns[i], rowsAsDf.getColumn(i));
-        }
-
-        return DataFrame.byColumn(sourceColumnsIndex).of(to);
+    public RowSet unique(String... uniqueKeyColumns) {
+        return unique(sourceColumnsIndex.positions(uniqueKeyColumns));
     }
 
     @Override
     public DataFrame select() {
-        return new ColumnDataFrame(null, sourceColumnsIndex, doSelect().one);
+        return selectProcessor().select(sourceColumnsIndex);
     }
 
     @Override
     public DataFrame selectAs(Map<String, String> oldToNewNames) {
-        return new ColumnDataFrame(null, sourceColumnsIndex.replace(oldToNewNames), doSelect().one);
+        return selectProcessor().select(sourceColumnsIndex.replace(oldToNewNames));
     }
 
     @Override
     public DataFrame selectAs(UnaryOperator<String> renamer) {
-        return new ColumnDataFrame(null, sourceColumnsIndex.replace(renamer), doSelect().one);
+        return selectProcessor().select(sourceColumnsIndex.replace(renamer));
     }
 
     @Override
     public DataFrame selectAs(String... newColumnNames) {
-        return new ColumnDataFrame(null, Index.of(newColumnNames), doSelect().one);
+        return selectProcessor().select(Index.of(newColumnNames));
     }
 
     @Override
@@ -277,10 +200,7 @@ public abstract class BaseRowSet implements RowSet {
             return source;
         }
 
-        // this will do expansion within the RowSet scope if needed
-        Tuple2<Series<?>[], ColumnExpander> rows = doSelect();
-        return new ColumnDataFrame(null, sourceColumnsIndex, rows.one)
-                .cols(sourceColumnsIndex).merge(mapper);
+        return selectProcessor().mapper(df -> df.cols(sourceColumnsIndex).merge(mapper)).select(sourceColumnsIndex);
     }
 
     @Override
@@ -293,44 +213,7 @@ public abstract class BaseRowSet implements RowSet {
         return selectByColumn((i, rowsAsDf) -> new RowMappedSeries<>(rowsAsDf, mappers[i]));
     }
 
-    @Override
-    public DataFrame selectUnique() {
-        return selectUnique(source.getColumnsIndex().toArray());
-    }
-
-    @Override
-    public DataFrame selectUnique(String... uniqueKeyColumns) {
-        return selectUnique(sourceColumnsIndex.positions(uniqueKeyColumns));
-    }
-
-    @Override
-    public DataFrame selectUnique(int... uniqueKeyColumns) {
-        if (uniqueKeyColumns.length == 0) {
-            throw new IllegalArgumentException("No 'columnPositionsToCompare' for uniqueness checks");
-        }
-
-        int w = sourceColumns.length;
-        if (w == 0) {
-            return source;
-        }
-
-        if (sourceColumns[0].size() == 0) {
-            return source;
-        }
-
-        DataFrame rowsAsDf = select();
-        BooleanSeries uniqueIndex = rowsAsDf
-                .over().partition(uniqueKeyColumns).rowNumber()
-                .eq(new IntSingleValueSeries(1, rowsAsDf.height()));
-
-        if (uniqueIndex.isTrue()) {
-            return rowsAsDf;
-        }
-
-        return rowsAsDf.rows(uniqueIndex).select();
-    }
-
-    protected DataFrame mergeByColumn(IntObjectFunction2<DataFrame, Series<?>> columnMaker) {
+    private DataFrame mergeByColumn(IntObjectFunction2<DataFrame, Series<?>> columnMaker) {
 
         if (sourceColumns.length == 0) {
             return source;
@@ -340,22 +223,10 @@ public abstract class BaseRowSet implements RowSet {
             return source;
         }
 
-        // this will do expansion within the RowSet scope if needed
-        Tuple2<Series<?>[], ColumnExpander> rows = doSelect();
-
-        RowSetMerger merger = expansionColumn >= 0 ? merger().expandCols(rows.two) : merger();
-        int w = sourceColumnsIndex.size();
-
-        Series[] resultColumns = new Series[w];
-        DataFrame rowsAsDf = new ColumnDataFrame(null, sourceColumnsIndex, rows.one);
-        for (int i = 0; i < w; i++) {
-            resultColumns[i] = merger.merge(sourceColumns[i], columnMaker.apply(i, rowsAsDf));
-        }
-
-        return DataFrame.byColumn(sourceColumnsIndex).of(resultColumns);
+        return mergeProcessor(merger()).colMapper(columnMaker).merge(source, false);
     }
 
-    protected DataFrame selectByColumn(IntObjectFunction2<DataFrame, Series<?>> columnMaker) {
+    private DataFrame selectByColumn(IntObjectFunction2<DataFrame, Series<?>> columnMaker) {
 
         if (sourceColumns.length == 0) {
             return source;
@@ -365,46 +236,49 @@ public abstract class BaseRowSet implements RowSet {
             return source;
         }
 
-        // this will do expansion within the RowSet scope if needed
-        Tuple2<Series<?>[], ColumnExpander> rows = doSelect();
-        DataFrame rowsAsDf = new ColumnDataFrame(null, sourceColumnsIndex, rows.one);
-
-        int w = sourceColumnsIndex.size();
-        Series[] to = new Series[w];
-        for (int i = 0; i < w; i++) {
-            to[i] = columnMaker.apply(i, rowsAsDf);
-        }
-
-        return DataFrame.byColumn(sourceColumnsIndex).of(to);
+        return selectProcessor().colMapper(columnMaker).select(sourceColumnsIndex);
     }
 
     protected abstract int size();
 
-    protected Tuple2<Series<?>[], ColumnExpander> doSelect() {
+    protected RowSetMergeProcessor mergeProcessor(RowSetMerger merger) {
+        return RowSetMergeProcessor.of(selectRows(), merger)
+                .expansion(expansionColumn)
+
+                // TODO: should we apply "unique" before or after expansion depending
+                //  whether it was called before or after "expand(..)"? If we go this way, I suppose we should also allow
+                //  any sequence of expansions / unique calls and respect their order. Seems confusing?
+
+                .unique(sourceColumnsIndex, uniqueKeyColumns);
+    }
+
+    // TODO: We are rebuilding all columns to match the RowSet condition and applying expansion to the result. This
+    //  was done to simplify downstream "merge(..)" algorithm, but it will result in poor merge performance as we are
+    //  rebuilding columns twice. To improve it, we should skip selection all together, let merge work purely based on
+    //  indices. Note that uniquing is already done correctly; we don't apply it here, and return an index instead.
+    protected RowSetSelectProcessor selectProcessor() {
+        return RowSetSelectProcessor.of(selectRows())
+                .expansion(expansionColumn)
+
+                // TODO: should we apply "unique" before or after expansion depending
+                //  whether it was called before or after "expand(..)"? If we go this way, I suppose we should also allow
+                //  any sequence of expansions / unique calls and respect their order. Seems confusing?
+
+                .unique(sourceColumnsIndex, uniqueKeyColumns);
+    }
+
+    private Series[] selectRows() {
         int w = sourceColumns.length;
         Series<?>[] to = new Series[w];
 
         for (int i = 0; i < w; i++) {
-            to[i] = doSelect(sourceColumns[i]);
+            to[i] = selectCol(sourceColumns[i]);
         }
 
-        if (expansionColumn >= 0) {
-            ColumnExpander expander = ColumnExpander.expand(to[expansionColumn]);
-            int[] stretchIndex = expander.getStretchIndex();
-
-            for (int i = 0; i < w; i++) {
-                to[i] = i == expansionColumn
-                        ? expander.getExpanded()
-                        : to[i].select(stretchIndex);
-            }
-
-            return new Tuple2<>(to, expander);
-        }
-
-        return new Tuple2<>(to, null);
+        return to;
     }
 
-    protected abstract <T> Series<T> doSelect(Series<T> sourceColumn);
+    protected abstract <T> Series<T> selectCol(Series<T> sourceColumn);
 
     protected abstract RowSetMerger merger();
 }
