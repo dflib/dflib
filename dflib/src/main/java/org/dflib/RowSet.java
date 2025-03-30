@@ -34,14 +34,14 @@ public interface RowSet {
     RowSet expand(int columnPos);
 
     /**
-     * Configures the row set to filters out repeating rows from the row set. Uniqueness is checked across all columns.
+     * Configures the row set to filter out repeating rows from the row set. Uniqueness is checked across all columns.
      *
      * @since 2.0.0
      */
     RowSet unique();
 
     /**
-     * Configures the row set to filters out repeating rows from the row set. Uniqueness is checked only for the
+     * Configures the row set to filter out repeating rows from the row set. Uniqueness is checked only for the
      * specified columns.
      *
      * @since 2.0.0
@@ -49,7 +49,7 @@ public interface RowSet {
     RowSet unique(String... uniqueKeyColumns);
 
     /**
-     * Configures the row set to filters out repeating rows from the row set. Uniqueness is checked only for the
+     * Configures the row set to filter out repeating rows from the row set. Uniqueness is checked only for the
      * specified columns.
      *
      * @since 2.0.0
