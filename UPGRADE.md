@@ -30,6 +30,9 @@ corresponding to the result row. In an unlikely event that your code calling `Wi
 relied on that incorrect value, you will need to revisit and tweak the expression arguments to those methods to match
 your expectations.
 
+* [dflib #478](https://github.com/dflib/dflib/issues/478): `Exp.ifNull(Exp<T> exp, T ifNull)` was renamed without 
+deprecation to `ifNullVal(Exp<T> exp, T ifNull)` to avoid compilation conflict with the other `ifNull(..)` variant. 
+
 ## 1.1.0
 
 * [dflib #362](https://github.com/dflib/dflib/issues/362): Due to the changes in the aggregated column name generation algorithm, default aggregated column names are no longer equal to aggregation source column names. E.g. `$int("a").first()` would previously be called `a`, and now is called `first(a)`. This may cause an exception like the following: `java.lang.IllegalArgumentException: Value 'my_column' is not present in the Index`. To address this, you will need to either explicitly name your columns when specifying a column set (e.g., `df.group("a").cols("a", ...)`) or use `as` on a column-generating  expression  (e.g., `$int("a").first().as("a")`)
