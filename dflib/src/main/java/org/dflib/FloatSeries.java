@@ -1,6 +1,5 @@
 package org.dflib;
 
-import org.dflib.concat.SeriesConcat;
 import org.dflib.f.FloatPredicate;
 import org.dflib.series.BooleanArraySeries;
 import org.dflib.series.FalseSeries;
@@ -151,27 +150,35 @@ public interface FloatSeries extends Series<Float> {
     @Override
     default Series<Float> concat(Series<? extends Float>... other) {
 
-        int len = other.length;
-        if (len == 0) {
+        int olen = other.length;
+        if (olen == 0) {
             return this;
         }
 
-        for (int i = 0; i < len; i++) {
+        for (int i = 0; i < olen; i++) {
             if (!(other[i] instanceof FloatSeries)) {
-
-                Series[] combined = new Series[len + 1];
-                combined[0] = this;
-                System.arraycopy(other, 0, combined, 1, len);
-
-                return SeriesConcat.concatAsObjects(combined);
+                return Series.super.concat(other);
             }
         }
 
-        FloatSeries[] combined = new FloatSeries[other.length + 1];
-        combined[0] = this;
-        System.arraycopy(other, 0, combined, 1, other.length);
+        int size = size();
 
-        return SeriesConcat.floatConcat(combined);
+        int h = size;
+        for (Series<? extends Float> s : other) {
+            h += s.size();
+        }
+
+        float[] data = new float[h];
+        copyToFloat(data, 0, 0, size);
+
+        int offset = size;
+        for (Series<? extends Float> s : other) {
+            int len = s.size();
+            ((FloatSeries) s).copyToFloat(data, 0, offset, len);
+            offset += len;
+        }
+
+        return Series.ofFloat(data);
     }
 
     default FloatSeries concatFloat(FloatSeries... other) {
@@ -179,11 +186,24 @@ public interface FloatSeries extends Series<Float> {
             return this;
         }
 
-        FloatSeries[] combined = new FloatSeries[other.length + 1];
-        combined[0] = this;
-        System.arraycopy(other, 0, combined, 1, other.length);
+        int size = size();
 
-        return SeriesConcat.floatConcat(combined);
+        int h = size;
+        for (FloatSeries s : other) {
+            h += s.size();
+        }
+
+        float[] data = new float[h];
+        copyToFloat(data, 0, 0, size);
+
+        int offset = size;
+        for (FloatSeries s : other) {
+            int len = s.size();
+            s.copyToFloat(data, 0, offset, len);
+            offset += len;
+        }
+
+        return Series.ofFloat(data);
     }
 
     @Override

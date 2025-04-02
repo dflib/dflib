@@ -1,6 +1,5 @@
 package org.dflib;
 
-import org.dflib.concat.SeriesConcat;
 import org.dflib.series.BooleanArraySeries;
 import org.dflib.series.FalseSeries;
 import org.dflib.series.IntArraySeries;
@@ -150,27 +149,35 @@ public interface IntSeries extends Series<Integer> {
     @Override
     default Series<Integer> concat(Series<? extends Integer>... other) {
 
-        int len = other.length;
-        if (len == 0) {
+        int olen = other.length;
+        if (olen == 0) {
             return this;
         }
 
-        for (int i = 0; i < len; i++) {
+        for (int i = 0; i < olen; i++) {
             if (!(other[i] instanceof IntSeries)) {
-
-                Series[] combined = new Series[len + 1];
-                combined[0] = this;
-                System.arraycopy(other, 0, combined, 1, len);
-
-                return SeriesConcat.concatAsObjects(combined);
+                return Series.super.concat(other);
             }
         }
 
-        IntSeries[] combined = new IntSeries[other.length + 1];
-        combined[0] = this;
-        System.arraycopy(other, 0, combined, 1, other.length);
+        int size = size();
 
-        return SeriesConcat.intConcat(combined);
+        int h = size;
+        for (Series<? extends Integer> s : other) {
+            h += s.size();
+        }
+
+        int[] data = new int[h];
+        copyToInt(data, 0, 0, size);
+
+        int offset = size;
+        for (Series<? extends Integer> s : other) {
+            int len = s.size();
+            ((IntSeries) s).copyToInt(data, 0, offset, len);
+            offset += len;
+        }
+
+        return Series.ofInt(data);
     }
 
     default IntSeries concatInt(IntSeries... other) {
@@ -178,11 +185,24 @@ public interface IntSeries extends Series<Integer> {
             return this;
         }
 
-        IntSeries[] combined = new IntSeries[other.length + 1];
-        combined[0] = this;
-        System.arraycopy(other, 0, combined, 1, other.length);
+        int size = size();
 
-        return SeriesConcat.intConcat(combined);
+        int h = size;
+        for (IntSeries s : other) {
+            h += s.size();
+        }
+
+        int[] data = new int[h];
+        copyToInt(data, 0, 0, size);
+
+        int offset = size;
+        for (IntSeries s : other) {
+            int len = s.size();
+            s.copyToInt(data, 0, offset, len);
+            offset += len;
+        }
+
+        return Series.ofInt(data);
     }
 
     @Override

@@ -20,7 +20,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public abstract class TableSaveStrategy {
 
@@ -65,7 +64,7 @@ public abstract class TableSaveStrategy {
                 results.add(doInsertOrUpdate(c, sdf));
             }
 
-            return () -> SeriesConcat.concat(results.stream().map(Supplier::get).collect(Collectors.toList()));
+            return () -> SeriesConcat.concat(results.stream().map(Supplier::get).toArray(Series[]::new));
         });
     }
 
