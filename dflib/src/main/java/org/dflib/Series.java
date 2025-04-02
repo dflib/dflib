@@ -4,7 +4,6 @@ import org.dflib.agg.SeriesAggregator;
 import org.dflib.builder.BoolBuilder;
 import org.dflib.builder.SeriesByElementBuilder;
 import org.dflib.op.ReplaceOp;
-import org.dflib.concat.SeriesConcat;
 import org.dflib.series.ArraySeries;
 import org.dflib.series.ColumnMappedSeries;
 import org.dflib.series.DoubleArraySeries;
@@ -471,11 +470,24 @@ public interface Series<T> extends Iterable<T> {
             return this;
         }
 
-        Series<T>[] combined = new Series[other.length + 1];
-        combined[0] = this;
-        System.arraycopy(other, 0, combined, 1, other.length);
+        int size = size();
 
-        return SeriesConcat.concat(combined);
+        int h = size;
+        for (Series<? extends T> s : other) {
+            h += s.size();
+        }
+
+        T[] data = (T[]) new Object[h];
+        copyTo(data, 0, 0, size);
+
+        int offset = size;
+        for (Series<? extends T> s : other) {
+            int len = s.size();
+            s.copyTo(data, 0, offset, len);
+            offset += len;
+        }
+
+        return new ArraySeries<>(data);
     }
 
     /**

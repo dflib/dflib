@@ -2,7 +2,6 @@ package org.dflib;
 
 import org.dflib.builder.BoolBuilder;
 import org.dflib.op.ReplaceOp;
-import org.dflib.concat.SeriesConcat;
 import org.dflib.series.DoubleArraySeries;
 import org.dflib.series.DoubleIndexedSeries;
 import org.dflib.series.FalseSeries;
@@ -184,27 +183,35 @@ public interface DoubleSeries extends Series<Double> {
     @Override
     default Series<Double> concat(Series<? extends Double>... other) {
 
-        int len = other.length;
-        if (len == 0) {
+        int olen = other.length;
+        if (olen == 0) {
             return this;
         }
 
-        for (int i = 0; i < len; i++) {
+        for (int i = 0; i < olen; i++) {
             if (!(other[i] instanceof DoubleSeries)) {
-
-                Series[] combined = new Series[len + 1];
-                combined[0] = this;
-                System.arraycopy(other, 0, combined, 1, len);
-
-                return SeriesConcat.concatAsObjects(combined);
+                return Series.super.concat(other);
             }
         }
 
-        DoubleSeries[] combined = new DoubleSeries[other.length + 1];
-        combined[0] = this;
-        System.arraycopy(other, 0, combined, 1, other.length);
+        int size = size();
 
-        return SeriesConcat.doubleConcat(combined);
+        int h = size;
+        for (Series<? extends Double> s : other) {
+            h += s.size();
+        }
+
+        double[] data = new double[h];
+        copyToDouble(data, 0, 0, size);
+
+        int offset = size;
+        for (Series<? extends Double> s : other) {
+            int len = s.size();
+            ((DoubleSeries) s).copyToDouble(data, 0, offset, len);
+            offset += len;
+        }
+
+        return Series.ofDouble(data);
     }
 
     default DoubleSeries concatDouble(DoubleSeries... other) {
@@ -212,11 +219,24 @@ public interface DoubleSeries extends Series<Double> {
             return this;
         }
 
-        DoubleSeries[] combined = new DoubleSeries[other.length + 1];
-        combined[0] = this;
-        System.arraycopy(other, 0, combined, 1, other.length);
+        int size = size();
 
-        return SeriesConcat.doubleConcat(combined);
+        int h = size;
+        for (DoubleSeries s : other) {
+            h += s.size();
+        }
+
+        double[] data = new double[h];
+        copyToDouble(data, 0, 0, size);
+
+        int offset = size;
+        for (DoubleSeries s : other) {
+            int len = s.size();
+            s.copyToDouble(data, 0, offset, len);
+            offset += len;
+        }
+
+        return Series.ofDouble(data);
     }
 
     @Override

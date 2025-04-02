@@ -2,7 +2,6 @@ package org.dflib;
 
 import org.dflib.builder.BoolBuilder;
 import org.dflib.op.ReplaceOp;
-import org.dflib.concat.SeriesConcat;
 import org.dflib.series.FalseSeries;
 import org.dflib.series.LongArraySeries;
 import org.dflib.series.LongIndexedSeries;
@@ -181,27 +180,35 @@ public interface LongSeries extends Series<Long> {
     @Override
     default Series<Long> concat(Series<? extends Long>... other) {
 
-        int len = other.length;
-        if (len == 0) {
+        int olen = other.length;
+        if (olen == 0) {
             return this;
         }
 
-        for (int i = 0; i < len; i++) {
+        for (int i = 0; i < olen; i++) {
             if (!(other[i] instanceof LongSeries)) {
-
-                Series[] combined = new Series[len + 1];
-                combined[0] = this;
-                System.arraycopy(other, 0, combined, 1, len);
-
-                return SeriesConcat.concatAsObjects(combined);
+                return Series.super.concat(other);
             }
         }
 
-        LongSeries[] combined = new LongSeries[other.length + 1];
-        combined[0] = this;
-        System.arraycopy(other, 0, combined, 1, other.length);
+        int size = size();
 
-        return SeriesConcat.longConcat(combined);
+        int h = size;
+        for (Series<? extends Long> s : other) {
+            h += s.size();
+        }
+
+        long[] data = new long[h];
+        copyToLong(data, 0, 0, size);
+
+        int offset = size;
+        for (Series<? extends Long> s : other) {
+            int len = s.size();
+            ((LongSeries) s).copyToLong(data, 0, offset, len);
+            offset += len;
+        }
+
+        return Series.ofLong(data);
     }
 
     default LongSeries concatLong(LongSeries... other) {
@@ -209,11 +216,24 @@ public interface LongSeries extends Series<Long> {
             return this;
         }
 
-        LongSeries[] combined = new LongSeries[other.length + 1];
-        combined[0] = this;
-        System.arraycopy(other, 0, combined, 1, other.length);
+        int size = size();
 
-        return SeriesConcat.longConcat(combined);
+        int h = size;
+        for (LongSeries s : other) {
+            h += s.size();
+        }
+
+        long[] data = new long[h];
+        copyToLong(data, 0, 0, size);
+
+        int offset = size;
+        for (LongSeries s : other) {
+            int len = s.size();
+            s.copyToLong(data, 0, offset, len);
+            offset += len;
+        }
+
+        return Series.ofLong(data);
     }
 
     @Override

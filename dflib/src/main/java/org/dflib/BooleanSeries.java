@@ -2,7 +2,6 @@ package org.dflib;
 
 import org.dflib.builder.BoolAccum;
 import org.dflib.builder.BoolBuilder;
-import org.dflib.concat.SeriesConcat;
 import org.dflib.op.BooleanSeriesOps;
 import org.dflib.op.ReplaceOp;
 import org.dflib.series.BooleanIndexedSeries;
@@ -188,27 +187,35 @@ public interface BooleanSeries extends Series<Boolean> {
     @Override
     default Series<Boolean> concat(Series<? extends Boolean>... other) {
 
-        int len = other.length;
-        if (len == 0) {
+        int olen = other.length;
+        if (olen == 0) {
             return this;
         }
 
-        for (int i = 0; i < len; i++) {
+        for (int i = 0; i < olen; i++) {
             if (!(other[i] instanceof BooleanSeries)) {
-
-                Series[] combined = new Series[len + 1];
-                combined[0] = this;
-                System.arraycopy(other, 0, combined, 1, len);
-
-                return SeriesConcat.concatAsObjects(combined);
+                return Series.super.concat(other);
             }
         }
 
-        BooleanSeries[] combined = new BooleanSeries[other.length + 1];
-        combined[0] = this;
-        System.arraycopy(other, 0, combined, 1, other.length);
+        int size = size();
 
-        return SeriesConcat.boolConcat(combined);
+        int h = size;
+        for (Series<? extends Boolean> s : other) {
+            h += s.size();
+        }
+
+        boolean[] data = new boolean[h];
+        copyToBool(data, 0, 0, size);
+
+        int offset = size;
+        for (Series<? extends Boolean> s : other) {
+            int len = s.size();
+            ((BooleanSeries) s).copyToBool(data, 0, offset, len);
+            offset += len;
+        }
+
+        return Series.ofBool(data);
     }
 
     default BooleanSeries concatBool(BooleanSeries... other) {
@@ -216,11 +223,24 @@ public interface BooleanSeries extends Series<Boolean> {
             return this;
         }
 
-        BooleanSeries[] combined = new BooleanSeries[other.length + 1];
-        combined[0] = this;
-        System.arraycopy(other, 0, combined, 1, other.length);
+        int size = size();
 
-        return SeriesConcat.boolConcat(combined);
+        int h = size;
+        for (BooleanSeries s : other) {
+            h += s.size();
+        }
+
+        boolean[] data = new boolean[h];
+        copyToBool(data, 0, 0, size);
+
+        int offset = size;
+        for (BooleanSeries s : other) {
+            int len = s.size();
+            s.copyToBool(data, 0, offset, len);
+            offset += len;
+        }
+
+        return Series.ofBool(data);
     }
 
     @Override
