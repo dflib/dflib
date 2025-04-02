@@ -129,20 +129,23 @@ public class VConcat {
         for (int i = 0; i < w; i++) {
 
             String col = concatIndex.get(i);
+            Series<?> s0 = concatColumn(concat[0], col);
 
-            Series[] concatColData = new Series[clen];
+            Series[] s1Plus = new Series[clen - 1];
 
-            for (int j = 0; j < clen; j++) {
-
-                DataFrame df = concat[j];
-                concatColData[j] = df.getColumnsIndex().contains(col)
-                        ? df.getColumn(col)
-                        : Series.ofVal(null, df.height());
+            for (int j = 1; j < clen; j++) {
+                s1Plus[j - 1] = concatColumn(concat[j], col);
             }
 
-            concatCols[i] = SeriesConcat.concat(concatColData);
+            concatCols[i] = s0.concat(s1Plus);
         }
 
         return new ColumnDataFrame(null, concatIndex, concatCols);
+    }
+
+    private Series<?> concatColumn(DataFrame df, String col) {
+        return df.getColumnsIndex().contains(col)
+                ? df.getColumn(col)
+                : Series.ofVal(null, df.height());
     }
 }
