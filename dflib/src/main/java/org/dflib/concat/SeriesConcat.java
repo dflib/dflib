@@ -25,6 +25,10 @@ public class SeriesConcat {
         return concat[0].concat(other);
     }
 
+    /**
+     * @deprecated unused internally; use either {@link #concat(Series[])} or {@link Series#concat(Series[])}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static <T> Series<T> concat(Iterable<Series<T>> concat) {
         return concat(StreamSupport.stream(concat.spliterator(), false).toArray(Series[]::new));
     }
