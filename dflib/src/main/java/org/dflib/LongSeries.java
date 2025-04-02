@@ -143,6 +143,32 @@ public interface LongSeries extends Series<Long> {
         return Series.ofLong(expanded);
     }
 
+    @Override
+    default Series<Long> concat(Series<? extends Long>... other) {
+
+        int len = other.length;
+        if (len == 0) {
+            return this;
+        }
+
+        for (int i = 0; i < len; i++) {
+            if (!(other[i] instanceof LongSeries)) {
+
+                Series[] combined = new Series[len + 1];
+                combined[0] = this;
+                System.arraycopy(other, 0, combined, 1, len);
+
+                return SeriesConcat.concatAsObjects(combined);
+            }
+        }
+
+        LongSeries[] combined = new LongSeries[other.length + 1];
+        combined[0] = this;
+        System.arraycopy(other, 0, combined, 1, other.length);
+
+        return SeriesConcat.longConcat(combined);
+    }
+
     default LongSeries concatLong(LongSeries... other) {
         if (other.length == 0) {
             return this;

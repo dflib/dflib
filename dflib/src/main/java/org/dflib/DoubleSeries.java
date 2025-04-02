@@ -146,6 +146,32 @@ public interface DoubleSeries extends Series<Double> {
         return Series.ofDouble(expanded);
     }
 
+    @Override
+    default Series<Double> concat(Series<? extends Double>... other) {
+
+        int len = other.length;
+        if (len == 0) {
+            return this;
+        }
+
+        for (int i = 0; i < len; i++) {
+            if (!(other[i] instanceof DoubleSeries)) {
+
+                Series[] combined = new Series[len + 1];
+                combined[0] = this;
+                System.arraycopy(other, 0, combined, 1, len);
+
+                return SeriesConcat.concatAsObjects(combined);
+            }
+        }
+
+        DoubleSeries[] combined = new DoubleSeries[other.length + 1];
+        combined[0] = this;
+        System.arraycopy(other, 0, combined, 1, other.length);
+
+        return SeriesConcat.doubleConcat(combined);
+    }
+
     default DoubleSeries concatDouble(DoubleSeries... other) {
         if (other.length == 0) {
             return this;

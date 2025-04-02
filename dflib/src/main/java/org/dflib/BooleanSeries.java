@@ -149,6 +149,32 @@ public interface BooleanSeries extends Series<Boolean> {
         return Series.ofBool(expanded);
     }
 
+    @Override
+    default Series<Boolean> concat(Series<? extends Boolean>... other) {
+
+        int len = other.length;
+        if (len == 0) {
+            return this;
+        }
+
+        for (int i = 0; i < len; i++) {
+            if (!(other[i] instanceof BooleanSeries)) {
+
+                Series[] combined = new Series[len + 1];
+                combined[0] = this;
+                System.arraycopy(other, 0, combined, 1, len);
+
+                return SeriesConcat.concatAsObjects(combined);
+            }
+        }
+
+        BooleanSeries[] combined = new BooleanSeries[other.length + 1];
+        combined[0] = this;
+        System.arraycopy(other, 0, combined, 1, other.length);
+
+        return SeriesConcat.boolConcat(combined);
+    }
+
     default BooleanSeries concatBool(BooleanSeries... other) {
         if (other.length == 0) {
             return this;
