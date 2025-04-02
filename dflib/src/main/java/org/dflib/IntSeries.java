@@ -182,6 +182,32 @@ public interface IntSeries extends Series<Integer> {
         return Series.ofInt(expanded);
     }
 
+    @Override
+    default Series<Integer> concat(Series<? extends Integer>... other) {
+
+        int len = other.length;
+        if (len == 0) {
+            return this;
+        }
+
+        for (int i = 0; i < len; i++) {
+            if (!(other[i] instanceof IntSeries)) {
+
+                Series[] combined = new Series[len + 1];
+                combined[0] = this;
+                System.arraycopy(other, 0, combined, 1, len);
+
+                return SeriesConcat.concatAsObjects(combined);
+            }
+        }
+
+        IntSeries[] combined = new IntSeries[other.length + 1];
+        combined[0] = this;
+        System.arraycopy(other, 0, combined, 1, other.length);
+
+        return SeriesConcat.intConcat(combined);
+    }
+
     default IntSeries concatInt(IntSeries... other) {
         if (other.length == 0) {
             return this;
@@ -203,7 +229,6 @@ public interface IntSeries extends Series<Integer> {
     default IntSeries intersect(Series<? extends Integer> other) {
         return Intersect.intersectInt(this, other);
     }
-
 
     IntSeries rangeInt(int fromInclusive, int toExclusive);
 

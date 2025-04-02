@@ -8,8 +8,14 @@ import org.dflib.LongSeries;
 import org.dflib.Series;
 import org.dflib.series.ArraySeries;
 
+import java.util.stream.StreamSupport;
+
 public class SeriesConcat {
 
+    /**
+     * Concatenates multiple Series of various length into one. Attempts to optimize the operation for cases when all
+     * Series arguments are of the same primitive type.
+     */
     public static <T> Series<T> concat(Series<T>... concat) {
 
         int clen = concat.length;
@@ -25,7 +31,7 @@ public class SeriesConcat {
         if (concat[0] instanceof IntSeries) {
             for (int i = 1; i < clen; i++) {
                 if (!(concat[i] instanceof IntSeries)) {
-                    return quickConcatAsObjects(concat);
+                    return concatAsObjects(concat);
                 }
             }
 
@@ -37,7 +43,7 @@ public class SeriesConcat {
         if (concat[0] instanceof LongSeries) {
             for (int i = 1; i < clen; i++) {
                 if (!(concat[i] instanceof LongSeries)) {
-                    return quickConcatAsObjects(concat);
+                    return concatAsObjects(concat);
                 }
             }
 
@@ -49,7 +55,7 @@ public class SeriesConcat {
         if (concat[0] instanceof BooleanSeries) {
             for (int i = 1; i < clen; i++) {
                 if (!(concat[i] instanceof BooleanSeries)) {
-                    return quickConcatAsObjects(concat);
+                    return concatAsObjects(concat);
                 }
             }
 
@@ -61,7 +67,7 @@ public class SeriesConcat {
         if (concat[0] instanceof FloatSeries) {
             for (int i = 1; i < clen; i++) {
                 if (!(concat[i] instanceof FloatSeries)) {
-                    return quickConcatAsObjects(concat);
+                    return concatAsObjects(concat);
                 }
             }
 
@@ -73,7 +79,7 @@ public class SeriesConcat {
         if (concat[0] instanceof DoubleSeries) {
             for (int i = 1; i < clen; i++) {
                 if (!(concat[i] instanceof DoubleSeries)) {
-                    return quickConcatAsObjects(concat);
+                    return concatAsObjects(concat);
                 }
             }
 
@@ -82,24 +88,11 @@ public class SeriesConcat {
             return (Series<T>) doubleConcat(doubles);
         }
 
-        return quickConcatAsObjects(concat);
+        return concatAsObjects(concat);
     }
 
     public static <T> Series<T> concat(Iterable<Series<T>> concat) {
-        int h = 0;
-        for (Series<? extends T> s : concat) {
-            h += s.size();
-        }
-
-        T[] data = (T[]) new Object[h];
-        int offset = 0;
-        for (Series<? extends T> s : concat) {
-            int len = s.size();
-            s.copyTo(data, 0, offset, len);
-            offset += len;
-        }
-
-        return new ArraySeries<>(data);
+        return concat(StreamSupport.stream(concat.spliterator(), false).toArray(Series[]::new));
     }
 
     public static IntSeries intConcat(IntSeries... concat) {
@@ -262,7 +255,12 @@ public class SeriesConcat {
         return Series.ofBool(data);
     }
 
-    private static <T> Series<T> quickConcatAsObjects(Series<T>... concat) {
+    /**
+     * Performs concatenation of Series without checking for possible optimizations related to primitive series.
+     *
+     * @since 1.3.0
+     */
+    public static <T> Series<T> concatAsObjects(Series<T>... concat) {
 
         int h = 0;
         for (Series<? extends T> s : concat) {

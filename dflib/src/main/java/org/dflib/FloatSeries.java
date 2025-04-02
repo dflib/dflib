@@ -183,6 +183,32 @@ public interface FloatSeries extends Series<Float> {
         return Series.ofFloat(expanded);
     }
 
+    @Override
+    default Series<Float> concat(Series<? extends Float>... other) {
+
+        int len = other.length;
+        if (len == 0) {
+            return this;
+        }
+
+        for (int i = 0; i < len; i++) {
+            if (!(other[i] instanceof FloatSeries)) {
+
+                Series[] combined = new Series[len + 1];
+                combined[0] = this;
+                System.arraycopy(other, 0, combined, 1, len);
+
+                return SeriesConcat.concatAsObjects(combined);
+            }
+        }
+
+        FloatSeries[] combined = new FloatSeries[other.length + 1];
+        combined[0] = this;
+        System.arraycopy(other, 0, combined, 1, other.length);
+
+        return SeriesConcat.floatConcat(combined);
+    }
+
     default FloatSeries concatFloat(FloatSeries... other) {
         if (other.length == 0) {
             return this;
