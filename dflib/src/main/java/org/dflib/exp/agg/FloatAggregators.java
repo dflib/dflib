@@ -78,7 +78,7 @@ public class FloatAggregators {
             return 0f;
         }
 
-        float min = Float.MAX_VALUE;
+        float min = Float.POSITIVE_INFINITY;
 
         for (int i = 0; i < size; i++) {
 
@@ -100,7 +100,7 @@ public class FloatAggregators {
             return 0f;
         }
 
-        float max = Float.MIN_VALUE;
+        float max = Float.NEGATIVE_INFINITY;
 
         for (int i = 0; i < size; i++) {
 

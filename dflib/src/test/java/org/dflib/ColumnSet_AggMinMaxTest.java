@@ -83,4 +83,22 @@ public class ColumnSet_AggMinMaxTest {
                 .expectHeight(1)
                 .expectRow(0, 15.7, 2.0, 6.5, -1.2);
     }
+
+    @Test
+    public void max_of_neg() {
+        DataFrame df = DataFrame.foldByRow("int", "long", "float", "double").of(
+                -1, -5L, -1.5f, -1.5,
+                -2, -4L, -2.5f, -2.5,
+                -3, -3L, -3.5f, -3.5);
+
+        DataFrame agg = df.cols("A", "B", "C", "D").agg(
+                $int("int").max(),
+                $long("long").max(),
+                $float("float").max(),
+                $double("double").max());
+
+        new DataFrameAsserts(agg, "A", "B", "C", "D")
+                .expectHeight(1)
+                .expectRow(0, -1, -3L, -1.5f, -1.5);
+    }
 }

@@ -75,7 +75,7 @@ public class DoubleAggregators {
             return 0.;
         }
 
-        double min = Double.MAX_VALUE;
+        double min = Double.POSITIVE_INFINITY;
 
         for (int i = 0; i < size; i++) {
 
@@ -97,7 +97,7 @@ public class DoubleAggregators {
             return 0.;
         }
 
-        double max = Double.MIN_VALUE;
+        double max = Double.NEGATIVE_INFINITY;
 
         for (int i = 0; i < size; i++) {
 
