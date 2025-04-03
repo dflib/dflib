@@ -17,6 +17,7 @@
 * #475 "$bigintVal(..)" String argument flavor
 * #478 ifNull($col(...), $col(...)) does not compile
 * #483 Upgrade ECharts to 5.6.0
+* #484 Upgrade Parquet and Hadoop
 
 ## Release 2.0.0-M2
 
