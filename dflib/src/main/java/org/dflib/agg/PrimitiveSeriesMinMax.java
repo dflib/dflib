@@ -17,17 +17,16 @@ public class PrimitiveSeriesMinMax {
             return 0; // is this reasonable?
         }
 
-        int max = Integer.MAX_VALUE;
+        int min = ints[start];
 
-        for (int i = 0; i < len; i++) {
-
+        for (int i = 1; i < len; i++) {
             int in = ints[start + i];
-            if (in < max) {
-                max = in;
+            if (in < min) {
+                min = in;
             }
         }
 
-        return max;
+        return min;
     }
 
     public static int maxOfArray(int[] ints, int start, int len) {
@@ -36,9 +35,9 @@ public class PrimitiveSeriesMinMax {
             return 0; // is this reasonable?
         }
 
-        int max = Integer.MIN_VALUE;
+        int max = ints[start];
 
-        for (int i = 0; i < len; i++) {
+        for (int i = 1; i < len; i++) {
 
             int in = ints[start + i];
             if (in > max) {
@@ -55,17 +54,16 @@ public class PrimitiveSeriesMinMax {
             return 0; // is this reasonable?
         }
 
-        long max = Long.MAX_VALUE;
+        long min = longs[start];
 
-        for (int i = 0; i < len; i++) {
-
+        for (int i = 1; i < len; i++) {
             long in = longs[start + i];
-            if (in < max) {
-                max = in;
+            if (in < min) {
+                min = in;
             }
         }
 
-        return max;
+        return min;
     }
 
     public static long maxOfArray(long[] longs, int start, int len) {
@@ -74,9 +72,9 @@ public class PrimitiveSeriesMinMax {
             return 0L; // is this reasonable?
         }
 
-        long max = Long.MIN_VALUE;
+        long max = longs[start];
 
-        for (int i = 0; i < len; i++) {
+        for (int i = 1; i < len; i++) {
 
             long in = longs[start + i];
             if (in > max) {
@@ -96,9 +94,9 @@ public class PrimitiveSeriesMinMax {
             return 0; // is this reasonable?
         }
 
-        float min = Float.MAX_VALUE;
+        float min = vals[1];
 
-        for (int i = 0; i < len; i++) {
+        for (int i = start; i < len; i++) {
 
             float in = vals[start + i];
             if (in < min) {
@@ -115,17 +113,17 @@ public class PrimitiveSeriesMinMax {
             return 0; // is this reasonable?
         }
 
-        double max = Double.MAX_VALUE;
+        double min = doubles[start];
 
-        for (int i = 0; i < len; i++) {
+        for (int i = 1; i < len; i++) {
 
             double in = doubles[start + i];
-            if (in < max) {
-                max = in;
+            if (in < min) {
+                min = in;
             }
         }
 
-        return max;
+        return min;
     }
 
     /**
@@ -137,9 +135,9 @@ public class PrimitiveSeriesMinMax {
             return 0L; // is this reasonable?
         }
 
-        float max = Float.MIN_VALUE;
+        float max = vals[start];
 
-        for (int i = 0; i < len; i++) {
+        for (int i = 1; i < len; i++) {
 
             float in = vals[start + i];
             if (in > max) {
@@ -156,9 +154,9 @@ public class PrimitiveSeriesMinMax {
             return 0L; // is this reasonable?
         }
 
-        double max = Double.MIN_VALUE;
+        double max = doubles[start];
 
-        for (int i = 0; i < len; i++) {
+        for (int i = 1; i < len; i++) {
 
             double in = doubles[start + i];
             if (in > max) {
