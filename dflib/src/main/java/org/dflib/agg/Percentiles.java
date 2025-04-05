@@ -99,7 +99,7 @@ public class Percentiles {
         }
     }
 
-    public static float ofArray(double quantile, int start, int len, float[] vals) {
+    public static float ofArray(float[] vals, int start, int len, double quantile) {
 
         checkIsPercentile(quantile);
 

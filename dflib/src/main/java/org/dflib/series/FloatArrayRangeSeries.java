@@ -273,7 +273,7 @@ public class FloatArrayRangeSeries extends FloatBaseSeries {
 
     @Override
     public float quantile(double q) {
-        return Percentiles.ofArray(q, offset, size, data);
+        return Percentiles.ofArray(data, offset, size, q);
     }
 
     @Override
