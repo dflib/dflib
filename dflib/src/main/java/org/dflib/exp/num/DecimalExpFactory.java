@@ -149,12 +149,12 @@ public class DecimalExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<?> variance(Exp<? extends Number> exp, boolean usePopulationVariance) {
-        throw new UnsupportedOperationException("TODO");
+        return new DecimalExpAggregator<>("variance", cast(exp), s -> DecimalAggregators.variance(s, usePopulationVariance));
     }
 
     @Override
     public NumExp<?> stdDev(Exp<? extends Number> exp, boolean usePopulationStdDev) {
-        throw new UnsupportedOperationException("TODO");
+        return new DecimalExpAggregator<>("stdDev", cast(exp), s -> DecimalAggregators.stdDev(s, usePopulationStdDev));
     }
 
     @Override

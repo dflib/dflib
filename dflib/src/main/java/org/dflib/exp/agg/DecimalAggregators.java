@@ -1,20 +1,26 @@
 package org.dflib.exp.agg;
 
 import org.dflib.Condition;
+import org.dflib.DecimalExp;
 import org.dflib.Exp;
 import org.dflib.Series;
 import org.dflib.Sorter;
 import org.dflib.builder.ObjectAccum;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 
 
 public class DecimalAggregators {
 
+    // TODO: unify with the context in the DecimalExpFactory
+    private static MathContext op1Context(BigDecimal n) {
+        return new MathContext(Math.max(15, 1 + n.scale()), RoundingMode.HALF_UP);
+    }
+
     private static final Condition notNullExp = Exp.$decimal(0).isNotNull();
     private static final Sorter asc = Exp.$decimal(0).asc();
-
 
     public static Series<BigDecimal> cumSum(Series<BigDecimal> s) {
 
@@ -93,5 +99,41 @@ public class DecimalAggregators {
                 BigDecimal d2 = sorted.get(m);
                 return d2.subtract(d1).divide(new BigDecimal("2.0"), RoundingMode.HALF_UP).add(d1);
         }
+    }
+
+    public static BigDecimal variance(Series<BigDecimal> s, boolean usePopulationVariance) {
+
+        int size = s.size();
+        BigDecimal avg = DecimalAggregators.avg(s);
+        MathContext mc = op1Context(avg);
+        BigDecimal denominator = new BigDecimal(usePopulationVariance ? size : size - 1);
+
+        // TODO: ignoring a possibility of nulls... e.g., numpy throws when calculating a variance of array with Nones
+        //  Should we be smarter?
+
+        BigDecimal acc = BigDecimal.ZERO;
+        for (int i = 0; i < size; i++) {
+            BigDecimal x = s.get(i);
+
+
+            BigDecimal dev = x.subtract(avg, mc);
+            BigDecimal square = dev.multiply(dev, mc);
+
+            acc = acc.add(square, mc);
+        }
+
+        return acc.divide(denominator, mc);
+    }
+
+    public static BigDecimal stdDev(Series<BigDecimal> s, boolean usePopulationStdDev) {
+        BigDecimal variance = variance(s, usePopulationStdDev);
+        return variance.sqrt(op1Context(variance));
+    }
+
+    // this was made public in 2.0.0
+    private static final DecimalExp avg = Exp.$decimal(0).sum().div(Exp.count());
+
+    private static BigDecimal avg(Series<BigDecimal> s) {
+        return s.size() == 0 ? BigDecimal.ZERO : avg.eval(s).get(0);
     }
 }
