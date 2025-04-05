@@ -76,13 +76,22 @@ public class LongAggregators {
     public static long min(Series<? extends Number> s) {
 
         int size = s.size();
-        if (size == 0) {
-            return 0L;
+
+        // "0L" will be returned if size == 0 or all series values are nulls
+        long min = 0L;
+        int i;
+
+        // init "min" with the first non-null value
+        for (i = 0; i < size; i++) {
+            Number n = s.get(i);
+            if (n != null) {
+                min = n.longValue();
+                break;
+            }
         }
 
-        long min = Long.MAX_VALUE;
-
-        for (int i = 0; i < size; i++) {
+        // now find the "min"
+        for (; i < size; i++) {
 
             Number n = s.get(i);
             if (n != null) {
@@ -98,13 +107,22 @@ public class LongAggregators {
 
     public static long max(Series<? extends Number> s) {
         int size = s.size();
-        if (size == 0) {
-            return 0L;
+
+        // "0L" will be returned if size == 0 or all series values are nulls
+        long max = 0L;
+        int i;
+
+        // init "max" with the first non-null value
+        for (i = 0; i < size; i++) {
+            Number n = s.get(i);
+            if (n != null) {
+                max = n.longValue();
+                break;
+            }
         }
 
-        long max = Long.MIN_VALUE;
-
-        for (int i = 0; i < size; i++) {
+        // now find the "max"
+        for (; i < size; i++) {
 
             Number n = s.get(i);
             if (n != null) {

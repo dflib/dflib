@@ -78,13 +78,22 @@ public class IntAggregators {
     public static int min(Series<? extends Number> s) {
 
         int size = s.size();
-        if (size == 0) {
-            return 0;
+
+        // "0" will be returned if size == 0 or all series values are nulls
+        int min = 0;
+        int i;
+
+        // init "min" with the first non-null value
+        for (i = 0; i < size; i++) {
+            Number n = s.get(i);
+            if (n != null) {
+                min = n.intValue();
+                break;
+            }
         }
 
-        int min = Integer.MAX_VALUE;
-
-        for (int i = 0; i < size; i++) {
+        // now find the "min"
+        for (; i < size; i++) {
 
             Number n = s.get(i);
             if (n != null) {
@@ -100,13 +109,22 @@ public class IntAggregators {
 
     public static int max(Series<? extends Number> s) {
         int size = s.size();
-        if (size == 0) {
-            return 0;
+
+        // "0" will be returned if size == 0 or all series values are nulls
+        int max = 0;
+        int i;
+
+        // init "max" with the first non-null value
+        for (i = 0; i < size; i++) {
+            Number n = s.get(i);
+            if (n != null) {
+                max = n.intValue();
+                break;
+            }
         }
 
-        int max = Integer.MIN_VALUE;
-
-        for (int i = 0; i < size; i++) {
+        // now find the "max"
+        for (; i < size; i++) {
 
             Number n = s.get(i);
             if (n != null) {

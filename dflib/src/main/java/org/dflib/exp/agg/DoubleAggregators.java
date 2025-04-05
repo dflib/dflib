@@ -71,13 +71,22 @@ public class DoubleAggregators {
     public static double min(Series<? extends Number> s) {
 
         int size = s.size();
-        if (size == 0) {
-            return 0.;
+
+        // "0." will be returned if size == 0 or all series values are nulls
+        double min = 0.;
+        int i;
+
+        // init "min" with the first non-null value
+        for (i = 0; i < size; i++) {
+            Number n = s.get(i);
+            if (n != null) {
+                min = n.doubleValue();
+                break;
+            }
         }
 
-        double min = Double.POSITIVE_INFINITY;
-
-        for (int i = 0; i < size; i++) {
+        // now find the "min"
+        for (; i < size; i++) {
 
             Number n = s.get(i);
             if (n != null) {
@@ -93,13 +102,22 @@ public class DoubleAggregators {
 
     public static double max(Series<? extends Number> s) {
         int size = s.size();
-        if (size == 0) {
-            return 0.;
+
+        // "0." will be returned if size == 0 or all series values are nulls
+        double max = 0.;
+        int i;
+
+        // init "max" with the first non-null value
+        for (i = 0; i < size; i++) {
+            Number n = s.get(i);
+            if (n != null) {
+                max = n.doubleValue();
+                break;
+            }
         }
 
-        double max = Double.NEGATIVE_INFINITY;
-
-        for (int i = 0; i < size; i++) {
+        // now find the "max"
+        for (; i < size; i++) {
 
             Number n = s.get(i);
             if (n != null) {

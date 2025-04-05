@@ -74,13 +74,22 @@ public class FloatAggregators {
     public static float min(Series<? extends Number> s) {
 
         int size = s.size();
-        if (size == 0) {
-            return 0f;
+
+        // "0f" will be returned if size == 0 or all series values are nulls
+        float min = 0f;
+        int i;
+
+        // init "min" with the first non-null value
+        for (i = 0; i < size; i++) {
+            Number n = s.get(i);
+            if (n != null) {
+                min = n.floatValue();
+                break;
+            }
         }
 
-        float min = Float.POSITIVE_INFINITY;
-
-        for (int i = 0; i < size; i++) {
+        // now find the "min"
+        for (; i < size; i++) {
 
             Number n = s.get(i);
             if (n != null) {
@@ -96,13 +105,22 @@ public class FloatAggregators {
 
     public static float max(Series<? extends Number> s) {
         int size = s.size();
-        if (size == 0) {
-            return 0f;
+
+        // "0f" will be returned if size == 0 or all series values are nulls
+        float max = 0f;
+        int i;
+
+        // init "max" with the first non-null value
+        for (i = 0; i < size; i++) {
+            Number n = s.get(i);
+            if (n != null) {
+                max = n.floatValue();
+                break;
+            }
         }
 
-        float max = Float.NEGATIVE_INFINITY;
-
-        for (int i = 0; i < size; i++) {
+        // now find the "max"
+        for (; i < size; i++) {
 
             Number n = s.get(i);
             if (n != null) {
