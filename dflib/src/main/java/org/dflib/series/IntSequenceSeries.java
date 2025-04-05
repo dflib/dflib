@@ -154,7 +154,7 @@ public class IntSequenceSeries extends IntBaseSeries {
 
     @Override
     public double quantile(double q) {
-        return Percentiles.ofRange(q, fromInclusive, toExclusive);
+        return Percentiles.ofRange(fromInclusive, toExclusive, q);
     }
 
     @Override
