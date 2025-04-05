@@ -22,7 +22,7 @@ public class ColumnSet_AggStdDevTest {
                 $int("a").stdDev(),
                 $double(1).stdDev());
 
-        new DataFrameAsserts(agg, "variance(a)", "variance(b)")
+        new DataFrameAsserts(agg, "stdDev(a)", "stdDev(b)")
                 .expectHeight(1)
                 .expectRow(0, 10.338708279513881d, 10.823632688858826);
     }
@@ -41,7 +41,7 @@ public class ColumnSet_AggStdDevTest {
                 $int("a").stdDev(true),
                 $double(1).stdDev(true));
 
-        new DataFrameAsserts(agg, "variance(a)", "variance(b)")
+        new DataFrameAsserts(agg, "stdDev(a)", "stdDev(b)")
                 .expectHeight(1)
                 .expectRow(0, 10.338708279513881d, 10.823632688858826);
     }
@@ -60,7 +60,7 @@ public class ColumnSet_AggStdDevTest {
                 $int("a").stdDev(false),
                 $double(1).stdDev(false));
 
-        new DataFrameAsserts(agg, "variance(a)", "variance(b)")
+        new DataFrameAsserts(agg, "stdDev(a)", "stdDev(b)")
                 .expectHeight(1)
                 .expectRow(0, 11.325487480310358d, 11.856695555676549d);
     }

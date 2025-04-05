@@ -127,7 +127,7 @@ public class DoubleExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<?> stdDev(Exp<? extends Number> exp, boolean usePopulationStdDev) {
-        return new DoubleExpAggregator<>("variance", exp, s -> DoubleAggregators.stdDev(s, usePopulationStdDev));
+        return new DoubleExpAggregator<>("stdDev", exp, s -> DoubleAggregators.stdDev(s, usePopulationStdDev));
     }
 
     @Override
