@@ -156,6 +156,16 @@ public class BigintExpFactory extends NumericExpFactory {
     }
 
     @Override
+    public NumExp<?> variance(Exp<? extends Number> exp, boolean usePopulationVariance) {
+        throw new UnsupportedOperationException("TODO");
+    }
+
+    @Override
+    public NumExp<?> stdDev(Exp<? extends Number> exp, boolean usePopulationStdDev) {
+        throw new UnsupportedOperationException("TODO");
+    }
+
+    @Override
     public NumExp<BigInteger> round(Exp<? extends Number> exp) {
         return (NumExp<BigInteger>) cast(exp);
     }

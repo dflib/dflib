@@ -191,6 +191,16 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
+    public NumExp<?> variance(Exp<? extends Number> exp, boolean usePopulationVariance) {
+        return new DecimalReduceExp1<>("variance", cast(exp), s -> DecimalAggregators.variance(s, usePopulationVariance), null);
+    }
+
+    @Override
+    public NumExp<?> stdDev(Exp<? extends Number> exp, boolean usePopulationStdDev) {
+        return new DecimalReduceExp1<>("stdDev", cast(exp), s -> DecimalAggregators.stdDev(s, usePopulationStdDev), null);
+    }
+
+    @Override
     public DecimalExp round(Exp<? extends Number> exp) {
         return DecimalExp1.mapVal("round", cast(exp), n -> n.setScale(0, RoundingMode.HALF_UP));
     }

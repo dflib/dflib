@@ -112,6 +112,16 @@ public class IntExpFactory extends NumericExpFactory {
     }
 
     @Override
+    public NumExp<?> variance(Exp<? extends Number> exp, boolean usePopulationVariance) {
+        return new DoubleReduceExp1<>("variance", exp, s -> DoubleAggregators.variance(s, usePopulationVariance), null);
+    }
+
+    @Override
+    public NumExp<?> stdDev(Exp<? extends Number> exp, boolean usePopulationStdDev) {
+        return new DoubleReduceExp1<>("stdDev", exp, s -> DoubleAggregators.stdDev(s, usePopulationStdDev), null);
+    }
+
+    @Override
     public NumExp<Integer> round(Exp<? extends Number> exp) {
         return cast(exp).castAsInt();
     }

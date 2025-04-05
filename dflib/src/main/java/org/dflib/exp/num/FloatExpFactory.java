@@ -8,6 +8,7 @@ import org.dflib.NumExp;
 import org.dflib.agg.Max;
 import org.dflib.agg.Min;
 import org.dflib.agg.Percentiles;
+import org.dflib.exp.agg.DoubleAggregators;
 import org.dflib.exp.agg.DoubleReduceExp1;
 import org.dflib.exp.agg.FloatAggregators;
 import org.dflib.exp.agg.FloatReduceExp1;
@@ -130,6 +131,16 @@ public class FloatExpFactory extends NumericExpFactory {
     public NumExp<?> quantile(Exp<? extends Number> exp, double q, Condition filter) {
         // TODO: display "q" argument in the exp signature
         return new FloatReduceExp1<>("quantile", exp, s -> Percentiles.ofFloats(s, q), filter);
+    }
+
+    @Override
+    public NumExp<?> variance(Exp<? extends Number> exp, boolean usePopulationVariance) {
+        return new DoubleReduceExp1<>("variance", exp, s -> DoubleAggregators.variance(s, usePopulationVariance), null);
+    }
+
+    @Override
+    public NumExp<?> stdDev(Exp<? extends Number> exp, boolean usePopulationStdDev) {
+        return new DoubleReduceExp1<>("stdDev", exp, s -> DoubleAggregators.stdDev(s, usePopulationStdDev), null);
     }
 
     @Override

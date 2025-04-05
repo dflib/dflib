@@ -71,6 +71,7 @@
 
 * #457 MissingFormatWidthException when printing Series with all empty strings
 * #477 vConcat loses the type of the column
+* #480 Add "NumExp.variance(..)" and "NumExp.sdtDev(..)"
 * #481 NumExp.max() for double can't handle all negative numbers
 
 ## Release 1.2.0

@@ -231,6 +231,16 @@ public abstract class NumericExpFactory {
         return new NumShiftExp<>(exp, offset, filler);
     }
 
+    /**
+     * @since 1.3.0
+     */
+    public abstract NumExp<?> variance(Exp<? extends Number> exp, boolean usePopulationVariance);
+
+    /**
+     * @since 1.3.0
+     */
+    public abstract NumExp<?> stdDev(Exp<? extends Number> exp, boolean usePopulationStdDev);
+
     public NumExp<Integer> castAsInt(NumExp<?> exp) {
         return IntExp1.mapVal("castAsInt", exp, Number::intValue);
     }
