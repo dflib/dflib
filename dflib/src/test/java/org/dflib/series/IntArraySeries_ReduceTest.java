@@ -78,6 +78,18 @@ public class IntArraySeries_ReduceTest {
     }
 
     @Test
+    public void min_AllPositive() {
+        IntArraySeries s = new IntArraySeries(3, 2, 30, 56, 8);
+        assertEquals(2, s.min());
+    }
+
+    @Test
+    public void min_AllNegative() {
+        IntArraySeries s = new IntArraySeries(-3, -2, -30, -56, -8);
+        assertEquals(-56, s.min());
+    }
+
+    @Test
     public void reduce_MinInt() {
         IntArraySeries s = new IntArraySeries(1, -2, 3, 56, 8);
         assertEquals(-2, s.reduce(Exp.$int("").min()));

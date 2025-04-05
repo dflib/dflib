@@ -39,6 +39,12 @@ public class IntArraySeries_AggTest {
     }
 
     @Test
+    public void max_AllNegative() {
+        IntArraySeries s = new IntArraySeries(-3, -2, -30, -56, -8);
+        assertEquals(-2, s.max());
+    }
+
+    @Test
     public void aggMaxLong() {
         IntArraySeries s = new IntArraySeries(1, -2, 3, 56, 8);
         assertEquals(56L, s.agg(Exp.$long("").max()).get(0));
