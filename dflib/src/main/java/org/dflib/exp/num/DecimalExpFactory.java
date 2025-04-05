@@ -148,6 +148,16 @@ public class DecimalExpFactory extends NumericExpFactory {
     }
 
     @Override
+    public NumExp<?> variance(Exp<? extends Number> exp, boolean usePopulationVariance) {
+        throw new UnsupportedOperationException("TODO");
+    }
+
+    @Override
+    public NumExp<?> stdDev(Exp<? extends Number> exp, boolean usePopulationStdDev) {
+        throw new UnsupportedOperationException("TODO");
+    }
+
+    @Override
     public Condition eq(Exp<? extends Number> left, Exp<? extends Number> right) {
         // using "compareTo" instead of "equals" to ensure trailing fractional zeros are ignored
         return MapCondition2.mapVal("=", cast(left), cast(right), (n1, n2) -> n1.compareTo(n2) == 0);

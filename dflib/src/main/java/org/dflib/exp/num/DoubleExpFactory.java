@@ -121,6 +121,16 @@ public class DoubleExpFactory extends NumericExpFactory {
     }
 
     @Override
+    public NumExp<?> variance(Exp<? extends Number> exp, boolean usePopulationVariance) {
+        return new DoubleExpAggregator<>("variance", exp, s -> DoubleAggregators.variance(s, usePopulationVariance));
+    }
+
+    @Override
+    public NumExp<?> stdDev(Exp<? extends Number> exp, boolean usePopulationStdDev) {
+        return new DoubleExpAggregator<>("variance", exp, s -> DoubleAggregators.stdDev(s, usePopulationStdDev));
+    }
+
+    @Override
     public Condition eq(Exp<? extends Number> left, Exp<? extends Number> right) {
         return DoubleCondition2.mapVal("=", cast(left), cast(right), Double::equals, DoubleSeries::eq);
     }

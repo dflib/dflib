@@ -350,7 +350,7 @@ public interface FloatSeries extends Series<Float> {
     }
 
     /**
-     * Compute the variance, using the population variantC1
+     * Compute the variance, using the population variant.
      */
     default double variance() {
         return variance(true);

@@ -5,6 +5,7 @@ import org.dflib.DecimalExp;
 import org.dflib.Exp;
 import org.dflib.FloatSeries;
 import org.dflib.NumExp;
+import org.dflib.exp.agg.DoubleAggregators;
 import org.dflib.exp.agg.DoubleExpAggregator;
 import org.dflib.exp.agg.FloatAggregators;
 import org.dflib.exp.agg.FloatExpAggregator;
@@ -121,6 +122,16 @@ public class FloatExpFactory extends NumericExpFactory {
     @Override
     public NumExp<?> median(Exp<? extends Number> exp) {
         return new FloatExpAggregator<>("median", exp, FloatAggregators::median);
+    }
+
+    @Override
+    public NumExp<?> variance(Exp<? extends Number> exp, boolean usePopulationVariance) {
+        return new DoubleExpAggregator<>("variance", exp, s -> DoubleAggregators.variance(s, usePopulationVariance));
+    }
+
+    @Override
+    public NumExp<?> stdDev(Exp<? extends Number> exp, boolean usePopulationStdDev) {
+        return new DoubleExpAggregator<>("variance", exp, s -> DoubleAggregators.stdDev(s, usePopulationStdDev));
     }
 
     @Override

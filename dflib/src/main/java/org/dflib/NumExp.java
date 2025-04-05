@@ -235,6 +235,43 @@ public interface NumExp<N extends Number> extends Exp<N> {
         return new PreFilteredNumExp<>(filter, median());
     }
 
+    /**
+     * Aggregating expression that calculates Series variance using "population" variant.
+     *
+     * @since 1.3.0
+     */
+    default NumExp<?> variance() {
+        return variance(true);
+    }
+
+    /**
+     * Aggregating expression that calculates Series variance.
+     *
+     * @param usePopulationVariance Use the population variant if true, sample variant if false
+     * @since 1.3.0
+     */
+    default NumExp<?> variance(boolean usePopulationVariance) {
+        return NumericExpFactory.factory(this).variance(this, usePopulationVariance);
+    }
+
+    /**
+     * Aggregating expression that calculates Series standard deviation using "population" variant.
+     *
+     * @since 1.3.0
+     */
+    default NumExp<?> stdDev() {
+        return stdDev(true);
+    }
+
+    /**
+     * Aggregating expression that calculates Series standard deviation.
+     *
+     * @param usePopulationStdDev Use the population variant if true, sample variant if false
+     * @since 1.3.0
+     */
+    default NumExp<?> stdDev(boolean usePopulationStdDev) {
+        return NumericExpFactory.factory(this).stdDev(this, usePopulationStdDev);
+    }
 
     @Override
     default Condition castAsBool() {

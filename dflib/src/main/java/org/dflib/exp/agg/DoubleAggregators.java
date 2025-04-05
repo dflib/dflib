@@ -162,4 +162,27 @@ public class DoubleAggregators {
                 return d1 + (d2 - d1) / 2.;
         }
     }
+
+    public static double variance(Series<? extends Number> s, boolean usePopulationVariance) {
+
+        int size = s.size();
+        double avg = DoubleAggregators.avg(s);
+        double denominator = usePopulationVariance ? size : size - 1;
+
+        // TODO: ignoring a possibility of nulls... e.g., numpy throws when calculating a variance of array with Nones
+        //  Should we be smarter?
+
+        double acc = 0;
+        for (int i = 0; i < size; i++) {
+            double x = s.get(i).doubleValue();
+            acc += (x - avg) * (x - avg);
+        }
+
+        return acc / denominator;
+    }
+
+    public static double stdDev(Series<? extends Number> s, boolean usePopulationStdDev) {
+        double variance = variance(s, usePopulationStdDev);
+        return Math.sqrt(variance);
+    }
 }
