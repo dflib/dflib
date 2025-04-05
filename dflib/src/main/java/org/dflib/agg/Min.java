@@ -86,15 +86,23 @@ public class Min {
     }
 
     public static double ofDoubles(Series<? extends Number> s) {
-
         int size = s.size();
-        if (size == 0) {
-            return 0.;
+
+        // "0." will be returned if size == 0 or all series values are nulls
+        double min = 0.;
+        int i;
+
+        // init "min" with the first non-null value
+        for (i = 0; i < size; i++) {
+            Number n = s.get(i);
+            if (n != null) {
+                min = n.doubleValue();
+                break;
+            }
         }
 
-        double min = Double.POSITIVE_INFINITY;
-
-        for (int i = 0; i < size; i++) {
+        // now find the "min"
+        for (; i < size; i++) {
 
             Number n = s.get(i);
             if (n != null) {
@@ -109,15 +117,23 @@ public class Min {
     }
 
     public static float ofFloats(Series<? extends Number> s) {
-
         int size = s.size();
-        if (size == 0) {
-            return 0f;
+
+        // "0f" will be returned if size == 0 or all series values are nulls
+        float min = 0f;
+        int i;
+
+        // init "min" with the first non-null value
+        for (i = 0; i < size; i++) {
+            Number n = s.get(i);
+            if (n != null) {
+                min = n.floatValue();
+                break;
+            }
         }
 
-        float min = Float.POSITIVE_INFINITY;
-
-        for (int i = 0; i < size; i++) {
+        // now find the "min"
+        for (; i < size; i++) {
 
             Number n = s.get(i);
             if (n != null) {
@@ -132,15 +148,23 @@ public class Min {
     }
 
     public static int ofInts(Series<? extends Number> s) {
-
         int size = s.size();
-        if (size == 0) {
-            return 0;
+
+        // "0" will be returned if size == 0 or all series values are nulls
+        int min = 0;
+        int i;
+
+        // init "min" with the first non-null value
+        for (i = 0; i < size; i++) {
+            Number n = s.get(i);
+            if (n != null) {
+                min = n.intValue();
+                break;
+            }
         }
 
-        int min = Integer.MAX_VALUE;
-
-        for (int i = 0; i < size; i++) {
+        // now find the "min"
+        for (; i < size; i++) {
 
             Number n = s.get(i);
             if (n != null) {
@@ -157,13 +181,22 @@ public class Min {
     public static long ofLongs(Series<? extends Number> s) {
 
         int size = s.size();
-        if (size == 0) {
-            return 0L;
+
+        // "0L" will be returned if size == 0 or all series values are nulls
+        long min = 0L;
+        int i;
+
+        // init "min" with the first non-null value
+        for (i = 0; i < size; i++) {
+            Number n = s.get(i);
+            if (n != null) {
+                min = n.longValue();
+                break;
+            }
         }
 
-        long min = Long.MAX_VALUE;
-
-        for (int i = 0; i < size; i++) {
+        // now find the "min"
+        for (; i < size; i++) {
 
             Number n = s.get(i);
             if (n != null) {

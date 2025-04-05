@@ -121,7 +121,6 @@ public class ColumnSet_AggMinMaxTest {
     }
 
 
-    /* For issue 481 */
     @Test
     public void max_of_neg() {
         DataFrame df = DataFrame.foldByRow("int", "long", "float", "double").of(
@@ -138,6 +137,26 @@ public class ColumnSet_AggMinMaxTest {
         new DataFrameAsserts(agg, "A", "B", "C", "D")
                 .expectHeight(1)
                 .expectRow(0, -1, -3L, -1.5f, -1.5);
+    }
+
+    @Test
+    public void max_of_null() {
+        DataFrame df = DataFrame.foldByRow("int", "long", "float", "double", "all_null").of(
+                null, null, null, null, null,
+                -2, -4L, -2.5f, -2.5, null,
+                -3, -3L, -3.5f, -3.5, null);
+
+        DataFrame agg = df.cols("A", "B", "C", "D", "E").agg(
+                $int("int").max(),
+                $long("long").max(),
+                $float("float").max(),
+                $double("double").max(),
+                $double("all_null").max());
+
+        new DataFrameAsserts(agg, "A", "B", "C", "D", "E")
+                .expectHeight(1)
+                // no-value for "max" is "0.". Is this a reasonable assumption? Should be a NaN or "null"?
+                .expectRow(0, -2, -3L, -2.5f, -2.5, 0.);
     }
 
     @Test

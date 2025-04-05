@@ -89,13 +89,22 @@ public class Max {
 
     public static double ofDoubles(Series<? extends Number> s) {
         int size = s.size();
-        if (size == 0) {
-            return 0.;
+
+        // "0." will be returned if size == 0 or all series values are nulls
+        double max = 0.;
+        int i;
+
+        // init "max" with the first non-null value
+        for (i = 0; i < size; i++) {
+            Number n = s.get(i);
+            if (n != null) {
+                max = n.doubleValue();
+                break;
+            }
         }
 
-        double max = Double.NEGATIVE_INFINITY;
-
-        for (int i = 0; i < size; i++) {
+        // now find the "max"
+        for (; i < size; i++) {
 
             Number n = s.get(i);
             if (n != null) {
@@ -111,13 +120,22 @@ public class Max {
 
     public static float ofFloats(Series<? extends Number> s) {
         int size = s.size();
-        if (size == 0) {
-            return 0f;
+
+        // "0f" will be returned if size == 0 or all series values are nulls
+        float max = 0f;
+        int i;
+
+        // init "max" with the first non-null value
+        for (i = 0; i < size; i++) {
+            Number n = s.get(i);
+            if (n != null) {
+                max = n.floatValue();
+                break;
+            }
         }
 
-        float max = Float.NEGATIVE_INFINITY;
-
-        for (int i = 0; i < size; i++) {
+        // now find the "max"
+        for (; i < size; i++) {
 
             Number n = s.get(i);
             if (n != null) {
@@ -133,13 +151,22 @@ public class Max {
 
     public static int ofInts(Series<? extends Number> s) {
         int size = s.size();
-        if (size == 0) {
-            return 0;
+
+        // "0" will be returned if size == 0 or all series values are nulls
+        int max = 0;
+        int i;
+
+        // init "max" with the first non-null value
+        for (i = 0; i < size; i++) {
+            Number n = s.get(i);
+            if (n != null) {
+                max = n.intValue();
+                break;
+            }
         }
 
-        int max = Integer.MIN_VALUE;
-
-        for (int i = 0; i < size; i++) {
+        // now find the "max"
+        for (; i < size; i++) {
 
             Number n = s.get(i);
             if (n != null) {
@@ -155,13 +182,22 @@ public class Max {
 
     public static long ofLongs(Series<? extends Number> s) {
         int size = s.size();
-        if (size == 0) {
-            return 0L;
+
+        // "0L" will be returned if size == 0 or all series values are nulls
+        long max = 0L;
+        int i;
+
+        // init "max" with the first non-null value
+        for (i = 0; i < size; i++) {
+            Number n = s.get(i);
+            if (n != null) {
+                max = n.longValue();
+                break;
+            }
         }
 
-        long max = Long.MIN_VALUE;
-
-        for (int i = 0; i < size; i++) {
+        // now find the "max"
+        for (; i < size; i++) {
 
             Number n = s.get(i);
             if (n != null) {
