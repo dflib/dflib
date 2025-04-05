@@ -44,6 +44,12 @@ public class FloatArraySeries_AggTest {
     }
 
     @Test
+    public void max_AllNegative() {
+        FloatArraySeries s = new FloatArraySeries(-3, -2, -30, -56, -8);
+        assertEquals(-2f, s.max());
+    }
+
+    @Test
     public void agg_MaxInt() {
         FloatArraySeries s = new FloatArraySeries(1, -2, 3, 56.1f, 8);
         assertEquals(56, s.agg(Exp.$int("").max()).get(0));
@@ -65,6 +71,18 @@ public class FloatArraySeries_AggTest {
     public void min() {
         FloatArraySeries s = new FloatArraySeries(1, -2.9f, 3, 56, 8);
         assertEquals(-2.9f, s.min(), 0.00000001f);
+    }
+
+    @Test
+    public void min_AllPositive() {
+        FloatArraySeries s = new FloatArraySeries(3, 2, 30, 56, 8);
+        assertEquals(2f, s.min());
+    }
+
+    @Test
+    public void min_AllNegative() {
+        FloatArraySeries s = new FloatArraySeries(-3, -2, -30, -56, -8);
+        assertEquals(-56f, s.min());
     }
 
     @Test

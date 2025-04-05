@@ -1,7 +1,6 @@
 package org.dflib.series;
 
 import org.dflib.Exp;
-import org.dflib.series.IntArraySeries;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -61,6 +60,12 @@ public class IntArraySeries_AggTest {
     }
 
     @Test
+    public void max_AllNegative() {
+        IntArraySeries s = new IntArraySeries(-3, -2, -30, -56, -8);
+        assertEquals(-2, s.max());
+    }
+
+    @Test
     public void aggMaxLong() {
         IntArraySeries s = new IntArraySeries(1, -2, 3, 56, 8);
         assertEquals(56L, s.agg(Exp.$long("").max()).get(0));
@@ -76,6 +81,18 @@ public class IntArraySeries_AggTest {
     public void min() {
         IntArraySeries s = new IntArraySeries(1, -2, 3, 56, 8);
         assertEquals(-2, s.min());
+    }
+
+    @Test
+    public void min_AllPositive() {
+        IntArraySeries s = new IntArraySeries(3, 2, 30, 56, 8);
+        assertEquals(2, s.min());
+    }
+
+    @Test
+    public void min_AllNegative() {
+        IntArraySeries s = new IntArraySeries(-3, -2, -30, -56, -8);
+        assertEquals(-56, s.min());
     }
 
     @Test
