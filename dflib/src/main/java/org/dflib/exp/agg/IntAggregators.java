@@ -2,6 +2,8 @@ package org.dflib.exp.agg;
 
 import org.dflib.IntSeries;
 import org.dflib.Series;
+import org.dflib.agg.Max;
+import org.dflib.agg.Min;
 import org.dflib.builder.ObjectAccum;
 
 
@@ -75,48 +77,19 @@ public class IntAggregators {
         return sum;
     }
 
+    /**
+     * @deprecated in favor of {@link Min#ofInts(Series)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static int min(Series<? extends Number> s) {
-
-        int size = s.size();
-        if (size == 0) {
-            return 0;
-        }
-
-        int min = Integer.MAX_VALUE;
-
-        for (int i = 0; i < size; i++) {
-
-            Number n = s.get(i);
-            if (n != null) {
-                int in = n.intValue();
-                if (in < min) {
-                    min = in;
-                }
-            }
-        }
-
-        return min;
+        return Min.ofInts(s);
     }
 
+    /**
+     * @deprecated in favor of {@link Max#ofInts(Series)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static int max(Series<? extends Number> s) {
-        int size = s.size();
-        if (size == 0) {
-            return 0;
-        }
-
-        int max = Integer.MIN_VALUE;
-
-        for (int i = 0; i < size; i++) {
-
-            Number n = s.get(i);
-            if (n != null) {
-                int in = n.intValue();
-                if (in > max) {
-                    max = in;
-                }
-            }
-        }
-
-        return max;
+        return Max.ofInts(s);
     }
 }

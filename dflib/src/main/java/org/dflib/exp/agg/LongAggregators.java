@@ -2,6 +2,8 @@ package org.dflib.exp.agg;
 
 import org.dflib.LongSeries;
 import org.dflib.Series;
+import org.dflib.agg.Max;
+import org.dflib.agg.Min;
 import org.dflib.builder.ObjectAccum;
 
 
@@ -73,48 +75,19 @@ public class LongAggregators {
         return sum;
     }
 
+    /**
+     * @deprecated in favor of {@link Min#ofLongs(Series)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static long min(Series<? extends Number> s) {
-
-        int size = s.size();
-        if (size == 0) {
-            return 0L;
-        }
-
-        long min = Long.MAX_VALUE;
-
-        for (int i = 0; i < size; i++) {
-
-            Number n = s.get(i);
-            if (n != null) {
-                long in = n.longValue();
-                if (in < min) {
-                    min = in;
-                }
-            }
-        }
-
-        return min;
+        return Min.ofLongs(s);
     }
 
+    /**
+     * @deprecated in favor of {@link Max#ofLongs(Series)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static long max(Series<? extends Number> s) {
-        int size = s.size();
-        if (size == 0) {
-            return 0L;
-        }
-
-        long max = Long.MIN_VALUE;
-
-        for (int i = 0; i < size; i++) {
-
-            Number n = s.get(i);
-            if (n != null) {
-                long in = n.longValue();
-                if (in > max) {
-                    max = in;
-                }
-            }
-        }
-
-        return max;
+        return Max.ofLongs(s);
     }
 }

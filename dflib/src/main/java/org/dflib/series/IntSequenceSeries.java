@@ -3,9 +3,10 @@ package org.dflib.series;
 import org.dflib.IntSeries;
 import org.dflib.LongSeries;
 import org.dflib.Series;
-import org.dflib.agg.PrimitiveSeriesAvg;
-import org.dflib.agg.PrimitiveSeriesMinMax;
+import org.dflib.agg.Max;
+import org.dflib.agg.Min;
 import org.dflib.agg.Percentiles;
+import org.dflib.agg.PrimitiveSeriesAvg;
 import org.dflib.agg.PrimitiveSeriesSum;
 import org.dflib.range.Range;
 
@@ -134,12 +135,12 @@ public class IntSequenceSeries extends IntBaseSeries {
 
     @Override
     public int max() {
-        return PrimitiveSeriesMinMax.maxOfRange(toExclusive);
+        return Max.ofRange(toExclusive);
     }
 
     @Override
     public int min() {
-        return PrimitiveSeriesMinMax.minOfRange(fromInclusive);
+        return Min.ofRange(fromInclusive);
     }
 
     @Override

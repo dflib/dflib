@@ -5,6 +5,8 @@ import org.dflib.DecimalExp;
 import org.dflib.Exp;
 import org.dflib.LongSeries;
 import org.dflib.NumExp;
+import org.dflib.agg.Max;
+import org.dflib.agg.Min;
 import org.dflib.agg.Percentiles;
 import org.dflib.exp.agg.DoubleAggregators;
 import org.dflib.exp.agg.DoubleReduceExp1;
@@ -85,12 +87,12 @@ public class LongExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<?> min(Exp<? extends Number> exp, Condition filter) {
-        return new LongReduceExp1<>("min", exp, LongAggregators::min, filter);
+        return new LongReduceExp1<>("min", exp, Min::ofLongs, filter);
     }
 
     @Override
     public NumExp<?> max(Exp<? extends Number> exp, Condition filter) {
-        return new LongReduceExp1<>("max", exp, LongAggregators::max, filter);
+        return new LongReduceExp1<>("max", exp, Max::ofLongs, filter);
     }
 
     @Override

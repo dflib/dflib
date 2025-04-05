@@ -2,6 +2,8 @@ package org.dflib.exp.agg;
 
 import org.dflib.DoubleSeries;
 import org.dflib.Series;
+import org.dflib.agg.Max;
+import org.dflib.agg.Min;
 import org.dflib.agg.Percentiles;
 import org.dflib.builder.ObjectAccum;
 
@@ -64,49 +66,20 @@ public class DoubleAggregators {
         return s.size() == 0 ? 0. : sum.apply(s);
     }
 
+    /**
+     * @deprecated use {@link org.dflib.agg.Min#ofDoubles(Series)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static double min(Series<? extends Number> s) {
-
-        int size = s.size();
-        if (size == 0) {
-            return 0.;
-        }
-
-        double min = Double.POSITIVE_INFINITY;
-
-        for (int i = 0; i < size; i++) {
-
-            Number n = s.get(i);
-            if (n != null) {
-                double in = n.doubleValue();
-                if (in < min) {
-                    min = in;
-                }
-            }
-        }
-
-        return min;
+        return Min.ofDoubles(s);
     }
 
+    /**
+     * @deprecated use {@link org.dflib.agg.Max#ofDoubles(Series)}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public static double max(Series<? extends Number> s) {
-        int size = s.size();
-        if (size == 0) {
-            return 0.;
-        }
-
-        double max = Double.NEGATIVE_INFINITY;
-
-        for (int i = 0; i < size; i++) {
-
-            Number n = s.get(i);
-            if (n != null) {
-                double in = n.doubleValue();
-                if (in > max) {
-                    max = in;
-                }
-            }
-        }
-
-        return max;
+        return Max.ofDoubles(s);
     }
 
     public static double avg(Series<? extends Number> s) {

@@ -5,6 +5,8 @@ import org.dflib.DecimalExp;
 import org.dflib.Exp;
 import org.dflib.FloatSeries;
 import org.dflib.NumExp;
+import org.dflib.agg.Max;
+import org.dflib.agg.Min;
 import org.dflib.agg.Percentiles;
 import org.dflib.exp.agg.DoubleReduceExp1;
 import org.dflib.exp.agg.FloatAggregators;
@@ -106,12 +108,12 @@ public class FloatExpFactory extends NumericExpFactory {
 
     @Override
     public NumExp<?> min(Exp<? extends Number> exp, Condition filter) {
-        return new FloatReduceExp1<>("min", exp, FloatAggregators::min, filter);
+        return new FloatReduceExp1<>("min", exp, Min::ofFloats, filter);
     }
 
     @Override
     public NumExp<?> max(Exp<? extends Number> exp, Condition filter) {
-        return new FloatReduceExp1<>("max", exp, FloatAggregators::max, filter);
+        return new FloatReduceExp1<>("max", exp, Max::ofFloats, filter);
     }
 
     @Override
