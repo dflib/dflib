@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.dflib</groupId>
         <artifactId>dflib-parent</artifactId>
-        <version>1.3.0</version>
+        <version>1.3.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>dflib-avro</artifactId>
