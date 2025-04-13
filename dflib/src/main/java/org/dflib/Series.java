@@ -3,6 +3,7 @@ package org.dflib;
 import org.dflib.agg.SeriesAggregator;
 import org.dflib.builder.BoolBuilder;
 import org.dflib.builder.SeriesByElementBuilder;
+import org.dflib.builder.ValueCompactor;
 import org.dflib.op.ReplaceOp;
 import org.dflib.series.ArraySeries;
 import org.dflib.series.ColumnMappedSeries;
@@ -216,8 +217,26 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
-     * Produces a primitive BooleanSeries by converting each series value to a boolean. This can be thought
-     * as a specific flavor of {@link #map(ValueMapper)} operation.
+     * Returns this or equivalent Series with "compacted" values. Internally, values will be checked for equality, and
+     * any duplicates replaced with a single value. Should be used to save memory for low-cardinality columns.
+     *
+     * @since 2.0.0
+     */
+    default Series<T> compact() {
+        ValueCompactor<T> compactor = new ValueCompactor<>();
+
+        int s = size();
+        Object[] data = new Object[s];
+
+        for (int i = 0; i < s; i++) {
+            data[i] = compactor.get(get(i));
+        }
+
+        return new ArraySeries(data);
+    }
+
+    /**
+     * Produces a primitive BooleanSeries by converting each series value to a boolean.
      *
      * @since 2.0.0
      */
@@ -226,8 +245,7 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
-     * Produces a primitive BooleanSeries by applying the provided mapper to each Series value. This can be thought
-     * as a specific flavor of {@link #map(ValueMapper)} operation.
+     * Produces a primitive BooleanSeries by applying the provided mapper to each Series value.
      *
      * @since 2.0.0
      */
@@ -247,7 +265,7 @@ public interface Series<T> extends Iterable<T> {
 
     /**
      * Produces a primitive IntSeries by converting each series value to an int and replacing nulls with the
-     * "forNull" argument. This can be thought as a specific flavor of {@link #map(ValueMapper)} operation.
+     * "forNull" argument.
      *
      * @since 2.0.0
      */
@@ -256,8 +274,7 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
-     * Produces a primitive IntSeries by applying the provided mapper to each Series value. This can be thought
-     * as a specific flavor of {@link #map(ValueMapper)} operation.
+     * Produces a primitive IntSeries by applying the provided mapper to each Series value.
      *
      * @since 2.0.0
      */
@@ -282,7 +299,7 @@ public interface Series<T> extends Iterable<T> {
 
     /**
      * Produces a primitive LongSeries by converting each series value to a long and replacing nulls with the
-     * "forNull" argument. This can be thought as a specific flavor of {@link #map(ValueMapper)} operation.
+     * "forNull" argument.
      *
      * @since 2.0.0
      */
@@ -291,8 +308,7 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
-     * Produces a primitive LongSeries by applying the provided mapper to each Series value. This can be thought
-     * as a specific flavor of {@link #map(ValueMapper)} operation.
+     * Produces a primitive LongSeries by applying the provided mapper to each Series value.
      *
      * @since 2.0.0
      */
@@ -316,7 +332,7 @@ public interface Series<T> extends Iterable<T> {
 
     /**
      * Produces a primitive FloatSeries by converting each series value to a long and replacing nulls with the
-     * "forNull" argument. This can be thought as a specific flavor of {@link #map(ValueMapper)} operation.
+     * "forNull" argument.
      *
      * @since 2.0.0
      */
@@ -325,8 +341,7 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
-     * Produces a primitive FloatSeries by applying the provided mapper to each Series value. This can be thought
-     * as a specific flavor of {@link #map(ValueMapper)} operation.
+     * Produces a primitive FloatSeries by applying the provided mapper to each Series value.
      *
      * @since 2.0.0
      */
@@ -351,7 +366,7 @@ public interface Series<T> extends Iterable<T> {
 
     /**
      * Produces a primitive DoubleSeries by converting each series value to a long and replacing nulls with the
-     * "forNull" argument. This can be thought as a specific flavor of {@link #map(ValueMapper)} operation.
+     * "forNull" argument.
      *
      * @since 2.0.0
      */
@@ -360,8 +375,7 @@ public interface Series<T> extends Iterable<T> {
     }
 
     /**
-     * Produces a primitive DoubleSeries by applying the provided mapper to each Series value. This can be thought
-     * as a specific flavor of {@link #map(ValueMapper)} operation.
+     * Produces a primitive DoubleSeries by applying the provided mapper to each Series value.
      *
      * @since 2.0.0
      */
@@ -446,7 +460,8 @@ public interface Series<T> extends Iterable<T> {
     Series<T> selectRange(int fromInclusive, int toExclusive);
 
     /**
-     * Resolves the Series executing any lazy calculations. If called more than once, the first evaluation result is reused.
+     * Finalizes any lazy calculations that might be still pending in the Series. If called more than once, the first
+     * evaluation result is reused.
      */
     Series<T> materialize();
 

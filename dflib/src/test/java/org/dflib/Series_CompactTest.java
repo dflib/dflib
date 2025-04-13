@@ -5,10 +5,26 @@ import org.dflib.unit.DoubleSeriesAsserts;
 import org.dflib.unit.FloatSeriesAsserts;
 import org.dflib.unit.IntSeriesAsserts;
 import org.dflib.unit.LongSeriesAsserts;
+import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class Series_CompactTest {
+
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void compact(SeriesType type) {
+        Series<String> s = type.createSeries(
+                new String("A"),
+                new String("B"),
+                new String("a"),
+                new String("A")).compact();
+        new SeriesAsserts(s).expectData("A", "B", "a", "A");
+
+        assertEquals(3, s.map(System::identityHashCode).unique().size());
+    }
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)

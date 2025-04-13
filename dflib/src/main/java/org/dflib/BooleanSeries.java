@@ -41,6 +41,11 @@ public interface BooleanSeries extends Series<Boolean> {
     }
 
     @Override
+    default BooleanSeries compact() {
+        return this;
+    }
+
+    @Override
     default BooleanSeries compactBool() {
         return this;
     }

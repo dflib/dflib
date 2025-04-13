@@ -62,6 +62,11 @@ public class EmptySeries<T> extends ObjectSeries<T> {
     }
 
     @Override
+    public Series<T> compact() {
+        return this;
+    }
+
+    @Override
     public Series<T> materialize() {
         return this;
     }

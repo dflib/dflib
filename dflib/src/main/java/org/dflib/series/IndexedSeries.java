@@ -2,6 +2,7 @@ package org.dflib.series;
 
 import org.dflib.IntSeries;
 import org.dflib.Series;
+import org.dflib.builder.ValueCompactor;
 
 import java.util.Objects;
 
@@ -15,6 +16,7 @@ public class IndexedSeries<T> extends ObjectSeries<T> {
 
     protected volatile Raw<T> raw;
     protected volatile Series<T> materialized;
+    private volatile boolean materializedCompacted;
 
     public IndexedSeries(Series<T> source, IntSeries includePositions) {
         super(source.getNominalType());
@@ -49,6 +51,26 @@ public class IndexedSeries<T> extends ObjectSeries<T> {
         return raw != null
                 ? new IndexedSeries(raw.source, raw.includePositions.rangeInt(fromInclusive, toExclusive))
                 : materialized.selectRange(fromInclusive, toExclusive);
+    }
+
+    @Override
+    public Series<T> compact() {
+
+        if (!materializedCompacted) {
+            synchronized (this) {
+                if (!materializedCompacted) {
+                    Series<T> compact = materialized != null ? materialized.compact() : raw.compact();
+
+                    materializedCompacted = true;
+                    this.materialized = compact;
+
+                    // reset source reference, allowing to free up memory
+                    raw = null;
+                }
+            }
+        }
+
+        return materialized;
     }
 
     @Override
@@ -106,6 +128,21 @@ public class IndexedSeries<T> extends ObjectSeries<T> {
 
             // skipped positions (index < 0) are found in joins
             return i < 0 ? null : source.get(i);
+        }
+
+        ArraySeries<T> compact() {
+
+            ValueCompactor<T> compactor = new ValueCompactor<>();
+
+            int h = includePositions.size();
+
+            Object[] data = new Object[h];
+
+            for (int i = 0; i < h; i++) {
+                data[i] = compactor.get(get(i));
+            }
+
+            return new ArraySeries(data);
         }
 
         ArraySeries<T> materialize() {

@@ -36,6 +36,11 @@ public interface LongSeries extends Series<Long> {
     }
 
     @Override
+    default LongSeries compact() {
+        return this;
+    }
+
+    @Override
     default LongSeries compactLong(long forNull) {
         return this;
     }

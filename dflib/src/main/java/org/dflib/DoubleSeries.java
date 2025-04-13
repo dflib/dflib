@@ -36,6 +36,11 @@ public interface DoubleSeries extends Series<Double> {
     }
 
     @Override
+    default DoubleSeries compact() {
+        return this;
+    }
+
+    @Override
     default DoubleSeries compactDouble(double forNull) {
         return this;
     }
