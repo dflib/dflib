@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A thread-unsafe value compactor
+ * A thread-unsafe value compactor used as a helper to produce optimized Series where each combination of duplicated
+ * values is replaced with a single value.
  */
 public class ValueCompactor<T> {
 
