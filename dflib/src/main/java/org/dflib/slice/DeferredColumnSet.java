@@ -38,19 +38,37 @@ public class DeferredColumnSet implements ColumnSet {
     // direct access to source columns speeds up some operations, like "rename"
     private final Series<?>[] sourceColumns;
 
+    private final boolean compact;
+
+    /**
+     * @since 2.0.0
+     */
+    public static DeferredColumnSet of(DataFrame source, Series<?>[] sourceColumns) {
+        return new DeferredColumnSet(source, sourceColumns, false);
+    }
+
+    /**
+     * @deprecated in favor of {@link #of(DataFrame, Series[])}
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     public DeferredColumnSet(DataFrame source, Series<?>[] sourceColumns) {
+        this(source, sourceColumns, false);
+    }
+
+    private DeferredColumnSet(DataFrame source, Series<?>[] sourceColumns, boolean compact) {
         this.source = source;
         this.sourceColumns = sourceColumns;
+        this.compact = compact;
     }
 
     @Override
     public ColumnSet expand(Exp<? extends Iterable<?>> splitExp) {
-        return doExpand(ColumnSets.mapIterables(source, splitExp));
+        return expandedDelegate(ColumnSets.mapIterables(source, splitExp));
     }
 
     @Override
     public ColumnSet expandArray(Exp<? extends Object[]> splitExp) {
-        return doExpand(ColumnSets.mapArrays(source, splitExp));
+        return expandedDelegate(ColumnSets.mapArrays(source, splitExp));
     }
 
     @Override
@@ -93,7 +111,7 @@ public class DeferredColumnSet implements ColumnSet {
         return new ColumnDataFrame(
                 null,
                 Index.of(newColumnNames),
-                sourceColumns);
+                compactColsIfNeeded(sourceColumns));
     }
 
     @Override
@@ -101,7 +119,7 @@ public class DeferredColumnSet implements ColumnSet {
         return new ColumnDataFrame(
                 null,
                 Index.of(newColumnNames),
-                sourceColumns);
+                compactColsIfNeeded(sourceColumns));
     }
 
     @Override
@@ -109,7 +127,7 @@ public class DeferredColumnSet implements ColumnSet {
         return new ColumnDataFrame(
                 null,
                 source.getColumnsIndex().replace(renamer),
-                sourceColumns);
+                compactColsIfNeeded(sourceColumns));
     }
 
     @Override
@@ -117,7 +135,7 @@ public class DeferredColumnSet implements ColumnSet {
         return new ColumnDataFrame(
                 null,
                 source.getColumnsIndex().replace(renamer),
-                sourceColumns);
+                compactColsIfNeeded(sourceColumns));
     }
 
     @Override
@@ -125,7 +143,7 @@ public class DeferredColumnSet implements ColumnSet {
         return new ColumnDataFrame(
                 null,
                 source.getColumnsIndex().replace(oldToNewNames),
-                sourceColumns);
+                compactColsIfNeeded(sourceColumns));
     }
 
     @Override
@@ -133,7 +151,7 @@ public class DeferredColumnSet implements ColumnSet {
         return new ColumnDataFrame(
                 null,
                 source.getColumnsIndex().replace(oldToNewNames),
-                sourceColumns);
+                compactColsIfNeeded(sourceColumns));
     }
 
     @Override
@@ -151,7 +169,10 @@ public class DeferredColumnSet implements ColumnSet {
             columns[i] = Series.ofVal(values[i], h);
         }
 
-        return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
+        return new ColumnDataFrame(
+                null,
+                source.getColumnsIndex(),
+                compactColsIfNeeded(columns));
     }
 
     @Override
@@ -163,7 +184,10 @@ public class DeferredColumnSet implements ColumnSet {
             columns[i] = source.getColumn(i).fillNulls(value);
         }
 
-        return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
+        return new ColumnDataFrame(
+                null,
+                source.getColumnsIndex(),
+                compactColsIfNeeded(columns));
     }
 
     @Override
@@ -175,7 +199,10 @@ public class DeferredColumnSet implements ColumnSet {
             columns[i] = source.getColumn(i).fillNullsBackwards();
         }
 
-        return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
+        return new ColumnDataFrame(
+                null,
+                source.getColumnsIndex(),
+                compactColsIfNeeded(columns));
     }
 
     @Override
@@ -187,7 +214,10 @@ public class DeferredColumnSet implements ColumnSet {
             columns[i] = source.getColumn(i).fillNullsForward();
         }
 
-        return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
+        return new ColumnDataFrame(
+                null,
+                source.getColumnsIndex(),
+                compactColsIfNeeded(columns));
     }
 
     @Override
@@ -199,12 +229,20 @@ public class DeferredColumnSet implements ColumnSet {
             columns[i] = source.getColumn(i).fillNullsFromSeries(series);
         }
 
-        return new ColumnDataFrame(null, source.getColumnsIndex(), columns);
+        return new ColumnDataFrame(
+                null,
+                source.getColumnsIndex(),
+                compactColsIfNeeded(columns));
     }
 
     @Override
     public DataFrame fillNullsWithExp(Exp<?> replacementValuesExp) {
         return fillNullsFromSeries(replacementValuesExp.eval(source));
+    }
+
+    @Override
+    public ColumnSet compact() {
+        return this.compact ? this : new DeferredColumnSet(source, sourceColumns, true);
     }
 
     @Override
@@ -339,32 +377,12 @@ public class DeferredColumnSet implements ColumnSet {
 
     @Override
     public DataFrame merge() {
-        return source;
-    }
-
-    @Override
-    public DataFrame select() {
-        return source;
+        return compactDFIfNeeded();
     }
 
     @Override
     public DataFrame merge(Exp<?>... exps) {
         return delegate(Exps.labels(source, exps)).merge(exps);
-    }
-
-    @Override
-    public DataFrame select(Exp<?>... exps) {
-        int w = exps.length;
-
-        Series<?>[] columns = new Series[w];
-
-        for (int i = 0; i < w; i++) {
-            columns[i] = exps[i].eval(source);
-        }
-
-        return new ColumnDataFrame(null,
-                Index.ofDeduplicated(Exps.labels(source, exps)),
-                columns);
     }
 
     @Override
@@ -404,21 +422,6 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
-    public DataFrame select(RowToValueMapper<?>... mappers) {
-        int w = mappers.length;
-
-        String[] labels = new String[w];
-        Series<?>[] columns = new Series[w];
-
-        for (int i = 0; i < w; i++) {
-            labels[i] = String.valueOf(i);
-            columns[i] = new RowMappedSeries<>(source, mappers[i]);
-        }
-
-        return new ColumnDataFrame(null, Index.of(labels), columns);
-    }
-
-    @Override
     public DataFrame merge(RowMapper mapper) {
 
         DynamicColsRowBuilder b = new DynamicColsRowBuilder(source.height());
@@ -431,6 +434,45 @@ public class DeferredColumnSet implements ColumnSet {
     }
 
     @Override
+    public DataFrame select() {
+        return compactDFIfNeeded();
+    }
+
+    @Override
+    public DataFrame select(Exp<?>... exps) {
+        int w = exps.length;
+
+        Series<?>[] columns = new Series[w];
+
+        for (int i = 0; i < w; i++) {
+            columns[i] = exps[i].eval(source);
+        }
+
+        return new ColumnDataFrame(
+                null,
+                Index.ofDeduplicated(Exps.labels(source, exps)),
+                compactColsIfNeeded(columns));
+    }
+
+    @Override
+    public DataFrame select(RowToValueMapper<?>... mappers) {
+        int w = mappers.length;
+
+        String[] labels = new String[w];
+        Series<?>[] columns = new Series[w];
+
+        for (int i = 0; i < w; i++) {
+            labels[i] = String.valueOf(i);
+            columns[i] = new RowMappedSeries<>(source, mappers[i]);
+        }
+
+        return new ColumnDataFrame(
+                null,
+                Index.of(labels),
+                compactColsIfNeeded(columns));
+    }
+
+    @Override
     public DataFrame select(RowMapper mapper) {
         DynamicColsRowBuilder b = new DynamicColsRowBuilder(source.height());
         source.forEach(from -> {
@@ -438,7 +480,10 @@ public class DeferredColumnSet implements ColumnSet {
             mapper.map(from, b);
         });
 
-        return new ColumnDataFrame(null, Index.of(b.getLabels()), b.getData());
+        return new ColumnDataFrame(
+                null,
+                Index.of(b.getLabels()),
+                compactColsIfNeeded(b.getData()));
     }
 
     @Deprecated
@@ -453,7 +498,10 @@ public class DeferredColumnSet implements ColumnSet {
             labels[i] = String.valueOf(i);
         }
 
-        return new ColumnDataFrame(null, Index.of(labels), columns);
+        return new ColumnDataFrame(
+                null,
+                Index.of(labels),
+                compactColsIfNeeded(columns));
     }
 
     @Deprecated
@@ -466,21 +514,60 @@ public class DeferredColumnSet implements ColumnSet {
             labels[i] = String.valueOf(i);
         }
 
-        return new ColumnDataFrame(null, Index.of(labels), ColumnSets.mapArrays(source, splitExp));
+        return new ColumnDataFrame(
+                null,
+                Index.of(labels),
+                compactColsIfNeeded(ColumnSets.mapArrays(source, splitExp)));
     }
 
     @Override
     public DataFrame agg(Exp<?>... aggregators) {
         Series<?>[] aggregated = DataFrameAggregator.agg(source, aggregators);
         Index index = Exps.index(source, aggregators);
-        return new ColumnDataFrame(null, index, aggregated);
+        return new ColumnDataFrame(
+                null,
+                index,
+                compactColsIfNeeded(aggregated));
     }
 
     private ColumnSet delegate(String[] csIndex) {
-        return FixedColumnSet.of(source, csIndex);
+        return compactCSIfNeeded(FixedColumnSet.of(source, csIndex));
     }
 
-    private ColumnSet doExpand(Series[] expansionColumns) {
-        return source.cols().merge(expansionColumns).cols();
+    private ColumnSet expandedDelegate(Series[] expansionColumns) {
+        return compactCSIfNeeded(source.cols().merge(expansionColumns).cols());
+    }
+
+    private ColumnSet compactCSIfNeeded(ColumnSet cs) {
+        return compact ? cs.compact() : cs;
+    }
+
+    private DataFrame compactDFIfNeeded() {
+        if (!compact) {
+            return source;
+        }
+
+        int w = sourceColumns.length;
+        Series<?>[] compact = new Series[w];
+
+        for (int i = 0; i < w; i++) {
+            compact[i] = sourceColumns[i].compact();
+        }
+        return new ColumnDataFrame(null, source.getColumnsIndex(), compact);
+    }
+
+    private Series<?>[] compactColsIfNeeded(Series<?>[] columns) {
+        if (!compact) {
+            return columns;
+        }
+
+        int w = columns.length;
+        Series<?>[] compact = new Series[w];
+
+        for (int i = 0; i < w; i++) {
+            compact[i] = columns[i].compact();
+        }
+
+        return compact;
     }
 }

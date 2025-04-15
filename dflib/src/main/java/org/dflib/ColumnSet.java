@@ -57,6 +57,10 @@ public interface ColumnSet {
      */
     DataFrame drop();
 
+    /**
+     * Fills each column in the ColumnSet with a single value taken from the vararg argument at position corresponding
+     * to the column position.
+     */
     DataFrame fill(Object... values);
 
     DataFrame fillNulls(Object value);
@@ -68,6 +72,14 @@ public interface ColumnSet {
     DataFrame fillNullsFromSeries(Series<?> series);
 
     DataFrame fillNullsWithExp(Exp<?> replacementValuesExp);
+
+    /**
+     * Will compact the result columns of this ColumnSet. Internally, values will be checked for equality, and
+     * any duplicates replaced with a single value. Should be used to save memory for low-cardinality columns.
+     *
+     * @since 2.0.0
+     */
+    ColumnSet compact();
 
     /**
      * Returns a transformed DataFrame that contains columns from this DataFrame and added / replaced columns

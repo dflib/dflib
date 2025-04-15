@@ -309,7 +309,7 @@ public class ColumnDataFrame implements DataFrame {
 
     @Override
     public ColumnSet cols() {
-        return new DeferredColumnSet(this, dataColumns);
+        return DeferredColumnSet.of(this, dataColumns);
     }
 
     public RowSet rows() {
