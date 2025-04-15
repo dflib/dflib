@@ -5,18 +5,28 @@ import org.dflib.unit.SeriesAsserts;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
+import static org.dflib.Exp.$col;
+import static org.dflib.Exp.concat;
+
 public class Series_MapTest {
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void map_Value(SeriesType type) {
+    public void exp(SeriesType type) {
+        Series<String> s = type.createSeries("x", "b", "c", "a").map(concat(Exp.$col(""),", ", $col("")));
+        new SeriesAsserts(s).expectData("x, x", "b, b", "c, c", "a, a");
+    }
+
+    @ParameterizedTest
+    @EnumSource(SeriesType.class)
+    public void valueMapper(SeriesType type) {
         Series<String> s = type.createSeries("a", "b", "c").map(String::toUpperCase);
         new SeriesAsserts(s).expectData("A", "B", "C");
     }
 
     @ParameterizedTest
     @EnumSource(SeriesType.class)
-    public void map_DataFrame(SeriesType type) {
+    public void toDataFrame(SeriesType type) {
         DataFrame df = type.createSeries("a", "b", "c").map(Index.of("upper", "is_c"), (v, r) -> r
                 .set(0, v.toUpperCase())
                 .set(1, v.equals("c")));

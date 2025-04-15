@@ -797,8 +797,12 @@ public interface Series<T> extends Iterable<T> {
         }
     }
 
+    /**
+     * @deprecated in favor of an identical {@link #map(Exp)} method.
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
     default <V> Series<V> eval(Exp<V> exp) {
-        return exp.eval(this);
+        return map(exp);
     }
 
     @Override

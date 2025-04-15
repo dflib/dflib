@@ -22,19 +22,19 @@ public class NumShiftExpTest extends BaseExpTest {
     @Test
     public void shiftOffset() {
         Series<Integer> s1 = Series.of(1, 2, 3);
-        new SeriesAsserts(s1.eval($int(0).shift(1))).expectData(null, 1, 2);
-        new SeriesAsserts(s1.eval($int(0).shift(2))).expectData(null, null, 1);
-        new SeriesAsserts(s1.eval($int(0).shift(6))).expectData(null, null, null);
-        new SeriesAsserts(s1.eval($int(0).shift(100))).expectData(null, null, null);
+        new SeriesAsserts(s1.map($int(0).shift(1))).expectData(null, 1, 2);
+        new SeriesAsserts(s1.map($int(0).shift(2))).expectData(null, null, 1);
+        new SeriesAsserts(s1.map($int(0).shift(6))).expectData(null, null, null);
+        new SeriesAsserts(s1.map($int(0).shift(100))).expectData(null, null, null);
 
-        new SeriesAsserts(s1.eval($int(0).shift(-1))).expectData(2, 3, null);
-        new SeriesAsserts(s1.eval($int(0).shift(-100))).expectData(null, null, null);
+        new SeriesAsserts(s1.map($int(0).shift(-1))).expectData(2, 3, null);
+        new SeriesAsserts(s1.map($int(0).shift(-100))).expectData(null, null, null);
     }
 
     @Test
     public void shift_NumChain() {
         Series<Integer> s1 = Series.of(1, 2, 3);
-        new SeriesAsserts(s1.eval($int(0).shift(1).add(3))).expectData(null, 4, 5);
+        new SeriesAsserts(s1.map($int(0).shift(1).add(3))).expectData(null, 4, 5);
     }
 
     @Test
