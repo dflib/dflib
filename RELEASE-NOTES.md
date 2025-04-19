@@ -19,6 +19,7 @@
 * #483 Upgrade ECharts to 5.6.0
 * #484 Upgrade Parquet and Hadoop
 * #487 Series.compact()
+* #488 Upgrade Apache POI to 5.4.1
 
 ## Release 2.0.0-M2
 
