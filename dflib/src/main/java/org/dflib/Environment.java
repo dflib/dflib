@@ -1,12 +1,15 @@
 package org.dflib;
 
+import org.dflib.f.CachingSupplier;
 import org.dflib.print.InlineClassExposingPrinter;
 import org.dflib.print.Printer;
 
+import java.net.http.HttpClient;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 /**
@@ -22,7 +25,11 @@ public class Environment {
         Environment defaultEnv = new Environment(
                 ForkJoinPool.commonPool(),
                 5000,
-                new InlineClassExposingPrinter());
+                new InlineClassExposingPrinter(),
+                new CachingSupplier<>(() ->
+                        HttpClient.newBuilder()
+                                .followRedirects(HttpClient.Redirect.ALWAYS)
+                                .build()));
 
         commonEnv = new AtomicReference<>(defaultEnv);
     }
@@ -31,6 +38,7 @@ public class Environment {
     private final ExecutorService threadPool;
     private final int parallelExecThreshold;
     private final Printer printer;
+    private final Supplier<HttpClient> lazyHttpClient;
 
     public static Environment commonEnv() {
         return commonEnv.get();
@@ -42,21 +50,55 @@ public class Environment {
      */
     public static void setThreadPool(ExecutorService threadPool) {
         Objects.requireNonNull(threadPool);
-        resetEnv(old -> new Environment(threadPool, old.parallelExecThreshold, old.printer));
+        resetEnv(old -> new Environment(
+                threadPool,
+                old.parallelExecThreshold,
+                old.printer,
+                old.lazyHttpClient));
     }
 
     /**
      * Sets a common minimal size threshold for operations that can be split and run in parallel.
      */
     public static void setParallelExecThreshold(int parallelExecThreshold) {
-        resetEnv(old -> new Environment(old.threadPool, parallelExecThreshold, old.printer));
+        resetEnv(old -> new Environment(
+                old.threadPool,
+                parallelExecThreshold,
+                old.printer,
+                old.lazyHttpClient));
     }
 
     /**
      * Sets a common printer for Series and DataFrames
      */
     public static void setPrinter(Printer printer) {
-        resetEnv(old -> new Environment(old.threadPool, old.parallelExecThreshold, printer));
+        resetEnv(old -> new Environment(
+                old.threadPool,
+                old.parallelExecThreshold,
+                printer,
+                old.lazyHttpClient));
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public static void setHttpClient(HttpClient client) {
+        resetEnv(old -> new Environment(
+                old.threadPool,
+                old.parallelExecThreshold,
+                old.printer,
+                () -> client));
+    }
+
+    /**
+     * @since 2.0.0
+     */
+    public static void setHttpClient(Supplier<HttpClient> clientSupplier) {
+        resetEnv(old -> new Environment(
+                old.threadPool,
+                old.parallelExecThreshold,
+                old.printer,
+                new CachingSupplier<>(clientSupplier)));
     }
 
     static void resetEnv(UnaryOperator<Environment> envFactory) {
@@ -71,10 +113,12 @@ public class Environment {
     protected Environment(
             ExecutorService threadPool,
             int parallelExecThreshold,
-            Printer printer) {
+            Printer printer,
+            Supplier<HttpClient> lazyHttpClient) {
         this.threadPool = threadPool;
         this.parallelExecThreshold = parallelExecThreshold;
         this.printer = printer;
+        this.lazyHttpClient = lazyHttpClient;
     }
 
     public ExecutorService threadPool() {
@@ -90,6 +134,15 @@ public class Environment {
 
     public Printer printer() {
         return printer;
+    }
+
+    /**
+     * Returns a lazily-created reusable HttpClient
+     *
+     * @since 2.0.0
+     */
+    public HttpClient httpClient() {
+        return lazyHttpClient.get();
     }
 
     // only used by tests

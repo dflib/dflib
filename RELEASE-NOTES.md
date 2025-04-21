@@ -20,6 +20,7 @@
 * #484 Upgrade Parquet and Hadoop
 * #487 Series.compact()
 * #488 Upgrade Apache POI to 5.4.1
+* #489 Fix resource management for HttpByteSource
 
 ## Release 2.0.0-M2
 

@@ -14,9 +14,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.net.http.HttpClient;
 import java.util.Base64;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @BQTest
 public class HttpTest {
@@ -106,6 +107,22 @@ public class HttpTest {
         String basicAuth = "Basic: " + Base64.getEncoder().encodeToString("admin:test".getBytes());
         byte[] r2 = connector.path("_headers").header("Authorization", basicAuth).source().asBytes();
         assertEquals("auth: [Basic: YWRtaW46dGVzdA==]", new String(r2));
+    }
+
+    @Test
+    void source_client() {
+        HttpClient customClient = HttpClient.newBuilder()
+                .followRedirects(HttpClient.Redirect.NEVER).build();
+        Http connector = Http.of(jetty.getUrl()).client(customClient);
+
+        // custom client doesn't allow redirects
+        try {
+            connector.path("_redirect").source().asBytes();
+            fail();
+        } catch (RuntimeException e) {
+            assertTrue(e.getMessage().contains("Bad response from the server"));
+            assertTrue(e.getMessage().contains("_redirect': 302"));
+        }
     }
 
     @WebServlet(urlPatterns = "/_text/*")
