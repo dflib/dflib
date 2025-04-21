@@ -12,7 +12,7 @@ public class CachingSupplier<T> implements Supplier<T> {
     private volatile T value;
 
     public CachingSupplier(Supplier<T> delegate) {
-        this.delegate = delegate;
+        this.delegate = Objects.requireNonNull(delegate);
     }
 
     @Override

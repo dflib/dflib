@@ -26,22 +26,29 @@ public class Environment {
                 ForkJoinPool.commonPool(),
                 5000,
                 new InlineClassExposingPrinter(),
-                new CachingSupplier<>(() ->
-                        HttpClient.newBuilder()
-                                .followRedirects(HttpClient.Redirect.ALWAYS)
-                                .build()));
+                createDefaultHttpClientSupplier());
 
         commonEnv = new AtomicReference<>(defaultEnv);
     }
 
-
     private final ExecutorService threadPool;
     private final int parallelExecThreshold;
     private final Printer printer;
+
+    // HttpClient creates at least 2 threads active until it is garbage collected. So create it lazily.
+    // Note that HttpClient doesn't require an explicit shutdown.
     private final Supplier<HttpClient> lazyHttpClient;
 
     public static Environment commonEnv() {
         return commonEnv.get();
+    }
+
+    private static Supplier<HttpClient> createDefaultHttpClientSupplier() {
+        Supplier<HttpClient> s = () -> HttpClient.newBuilder()
+                .followRedirects(HttpClient.Redirect.ALWAYS)
+                .build();
+
+        return new CachingSupplier<>(s);
     }
 
     /**
@@ -83,11 +90,13 @@ public class Environment {
      * @since 2.0.0
      */
     public static void setHttpClient(HttpClient client) {
+        Supplier<HttpClient> supplier = client != null ? () -> client : createDefaultHttpClientSupplier();
+
         resetEnv(old -> new Environment(
                 old.threadPool,
                 old.parallelExecThreshold,
                 old.printer,
-                () -> client));
+                supplier));
     }
 
     /**
