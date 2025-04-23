@@ -31,7 +31,12 @@ relied on that incorrect value, you will need to revisit and tweak the expressio
 your expectations.
 
 * [dflib #478](https://github.com/dflib/dflib/issues/478): `Exp.ifNull(Exp<T> exp, T ifNull)` was renamed without 
-deprecation to `ifNullVal(Exp<T> exp, T ifNull)` to avoid compilation conflict with the other `ifNull(..)` variant. 
+deprecation to `ifNullVal(Exp<T> exp, T ifNull)` to avoid compilation conflict with the other `ifNull(..)` variant.
+
+* [dflib #486](https://github.com/dflib/dflib/issues/486): `ColumnSet.compactInt(..)`, `ColumnSet.compactLong(..)` and
+other primitive compaction methods became "non-terminal", so they no longer return a `DataFrame`, but rather a 
+`ColumnSet`. As a result, you may get a compilation error. You should add a "merge" step to them, like: 
+`ColumnSet.compactInt(..).merge()`
 
 ## 1.1.0
 

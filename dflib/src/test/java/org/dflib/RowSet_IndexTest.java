@@ -7,11 +7,11 @@ public class RowSet_IndexTest {
 
     @Test
     public void all() {
-        IntSeries index = DataFrame.foldByRow("a", "b", "c")
+        IntSeries index = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows()
                 .index();
 
@@ -20,11 +20,11 @@ public class RowSet_IndexTest {
 
     @Test
     public void byIndex() {
-        IntSeries index = DataFrame.foldByRow("a", "b", "c")
+        IntSeries index = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(Series.ofInt(0, 2))
                 .index();
 
@@ -33,12 +33,11 @@ public class RowSet_IndexTest {
 
     @Test
     public void byIndex_Duplicate() {
-        IntSeries index = DataFrame.foldByRow("a", "b", "c")
+        IntSeries index = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(Series.ofInt(0, 2, 2, 0))
                 .index();
 
@@ -48,11 +47,11 @@ public class RowSet_IndexTest {
 
     @Test
     public void byRange() {
-        IntSeries index = DataFrame.foldByRow("a", "b", "c")
+        IntSeries index = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rowsRange(1, 3)
                 .index();
 
@@ -61,11 +60,11 @@ public class RowSet_IndexTest {
 
     @Test
     public void byCondition() {
-        IntSeries index = DataFrame.foldByRow("a", "b", "c")
+        IntSeries index = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(Series.ofBool(true, false, true))
                 .index();
 
@@ -74,12 +73,11 @@ public class RowSet_IndexTest {
 
     @Test
     public void byConditionExp() {
-        IntSeries index = DataFrame.foldByRow("a", "b", "c")
+        IntSeries index = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(r -> Math.abs(r.getInt(0)) == 1).index();
 
         new IntSeriesAsserts(index).expectData(0, 2);
@@ -87,12 +85,11 @@ public class RowSet_IndexTest {
 
     @Test
     public void byConditionExp_NoMatches() {
-        IntSeries index = DataFrame.foldByRow("a", "b", "c")
+        IntSeries index = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(r -> false).index();
 
         new IntSeriesAsserts(index).expectData();

@@ -125,16 +125,13 @@ public class Join_HashTest {
     @Test
     public void select_full_IntColumn() {
 
-        DataFrame df1 = DataFrame.foldByRow("a", "b").of(
-                1, "x",
-                2, "y")
-                .cols(0).compactInt(0);
+        DataFrame df1 = DataFrame.byColumn("a", "b").of(
+                Series.ofInt(1, 2),
+                Series.of("x", "y"));
 
-        DataFrame df2 = DataFrame.foldByRow("c", "d").of(
-                2, "a",
-                2, "b",
-                3, "c")
-                .cols(0).compactInt(0);
+        DataFrame df2 = DataFrame.byColumn("c", "d").of(
+                Series.ofInt(2, 2, 3),
+                Series.of("a", "b", "c"));
 
         DataFrame df = df1.fullJoin(df2)
                 .on(0)

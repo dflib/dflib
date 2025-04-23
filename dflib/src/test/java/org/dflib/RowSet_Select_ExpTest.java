@@ -187,12 +187,11 @@ public class RowSet_Select_ExpTest {
 
     @Test
     public void byRowPredicate() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(r -> r.getInt(0) % 2 != 0)
                 .select(
                         $int(0).mul(3),
@@ -208,12 +207,11 @@ public class RowSet_Select_ExpTest {
 
     @Test
     public void rowsExcept_byRowPredicate() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rowsExcept(r -> r.getInt(0) % 2 != 0)
                 .select(
                         $int(0).mul(3),
@@ -228,12 +226,11 @@ public class RowSet_Select_ExpTest {
 
     @Test
     public void byRowPredicate_All() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(r -> true)
                 .select(
                         $int(0).mul(3),

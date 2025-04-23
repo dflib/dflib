@@ -18,6 +18,7 @@
 * #478 ifNull($col(...), $col(...)) does not compile
 * #483 Upgrade ECharts to 5.6.0
 * #484 Upgrade Parquet and Hadoop
+* #486 ColumnSet.compact()
 * #487 Series.compact()
 * #488 Upgrade Apache POI to 5.4.1
 * #489 Fix resource management for HttpByteSource

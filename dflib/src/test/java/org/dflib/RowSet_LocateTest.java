@@ -41,12 +41,11 @@ public class RowSet_LocateTest {
 
     @Test
     public void byIndex_Duplicate() {
-        BooleanSeries index = DataFrame.foldByRow("a", "b", "c")
+        BooleanSeries index = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(Series.ofInt(0, 2, 2, 0))
                 .locate();
 
@@ -94,12 +93,11 @@ public class RowSet_LocateTest {
 
     @Test
     public void byConditionExp() {
-        BooleanSeries index = DataFrame.foldByRow("a", "b", "c")
+        BooleanSeries index = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(r -> Math.abs(r.getInt(0)) == 1).locate();
 
         new BoolSeriesAsserts(index).expectData(true, false, true);
@@ -107,12 +105,11 @@ public class RowSet_LocateTest {
 
     @Test
     public void byConditionExp_NoMatches() {
-        BooleanSeries index = DataFrame.foldByRow("a", "b", "c")
+        BooleanSeries index = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(r -> false).locate();
 
         new BoolSeriesAsserts(index).expectData(false, false, false);

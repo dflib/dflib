@@ -3,74 +3,78 @@ package org.dflib;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
-public class ColumnSet_CompactFloatTest {
+public class ColumnSet_CompactIntMergeTest {
 
     @Test
-    public void all_forNull() {
+    public void all_compactInt() {
         DataFrame df = DataFrame.byColumn("a", "b", "c").of(
-                        Series.ofFloat(1, 2),
+                        Series.ofInt(1, 2),
                         Series.of(null, "5"),
                         Series.of(Boolean.TRUE, Boolean.FALSE)
                 )
                 .cols()
-                .compactFloat(-1f);
+                .compactInt(-1)
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
-                .expectFloatColumns("a", "b", "c")
+                .expectIntColumns("a", "b", "c")
                 .expectHeight(2)
-                .expectRow(0, 1.f, -1.f, 1.f)
-                .expectRow(1, 2.f, 5.f, 0.f);
+                .expectRow(0, 1, -1, 1)
+                .expectRow(1, 2, 5, 0);
     }
 
     @Test
-    public void all_mapper() {
+    public void all_compactIntConverter() {
         DataFrame df = DataFrame.byColumn("a", "b").of(
                         Series.of("a", "ab"),
                         Series.of("abc", "abcd")
                 )
                 .cols()
-                .compactFloat((String o) -> o.length() + 0.1f);
+                .compactInt((String o) -> o.length())
+                .merge();
 
         new DataFrameAsserts(df, "a", "b")
-                .expectFloatColumns("a", "b")
+                .expectIntColumns("a", "b")
                 .expectHeight(2)
-                .expectRow(0, 1.1f, 3.1f)
-                .expectRow(1, 2.1f, 4.1f);
+                .expectRow(0, 1, 3)
+                .expectRow(1, 2, 4);
     }
 
     @Test
-    public void some_forNull() {
+    public void compactInt() {
         DataFrame df = DataFrame.byColumn("a", "b", "c", "d").of(
-                        Series.ofDouble(1, 2),
+                        Series.ofInt(1, 2),
                         Series.of(null, "5"),
                         Series.of(Boolean.TRUE, Boolean.FALSE),
                         Series.of("one", "two")
                 )
                 .cols("a", "b", "c")
-                .compactFloat(-1f);
+                .compactInt(-1)
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c", "d")
-                .expectFloatColumns("a", "b", "c")
+                .expectIntColumns("a", "b", "c")
                 .expectHeight(2)
-                .expectRow(0, 1.f, -1.f, 1.f, "one")
-                .expectRow(1, 2.f, 5.f, 0.f, "two");
+                .expectRow(0, 1, -1, 1, "one")
+                .expectRow(1, 2, 5, 0, "two");
     }
 
     @Test
-    public void some_mapper() {
+    public void compactIntConverter() {
         DataFrame df = DataFrame.byColumn("a", "b", "c").of(
                         Series.of("a", "ab"),
                         Series.of("one", "two"),
                         Series.of("abc", "abcd")
                 )
                 .cols("a", "c")
-                .compactFloat((String o) -> o.length() + 0.1f);
+                .compactInt((String o) -> o.length())
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
-                .expectFloatColumns("a", "c")
+                .expectIntColumns("a", "c")
                 .expectHeight(2)
-                .expectRow(0, 1.1f, "one", 3.1f)
-                .expectRow(1, 2.1f, "two", 4.1f);
+                .expectRow(0, 1, "one", 3)
+                .expectRow(1, 2, "two", 4);
     }
 
 }

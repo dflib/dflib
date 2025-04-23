@@ -7,12 +7,11 @@ public class RowSet_Select_RowMapperTest {
 
     @Test
     public void all() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows()
                 .select((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -29,12 +28,11 @@ public class RowSet_Select_RowMapperTest {
 
     @Test
     public void byIndex() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(Series.ofInt(0, 2))
                 .select((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -50,12 +48,11 @@ public class RowSet_Select_RowMapperTest {
 
     @Test
     public void byIndex_Duplicate() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(Series.ofInt(0, 2, 2, 0))
                 .select((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -73,12 +70,11 @@ public class RowSet_Select_RowMapperTest {
 
     @Test
     public void byIndex_Empty() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(Series.ofInt())
                 .select((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -91,12 +87,11 @@ public class RowSet_Select_RowMapperTest {
 
     @Test
     public void byIndex_ExpandWithDupes() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(0, 2, 2, 0)
                 .select((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -114,12 +109,11 @@ public class RowSet_Select_RowMapperTest {
 
     @Test
     public void byRange() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rowsRange(1, 2)
                 .select((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -134,12 +128,11 @@ public class RowSet_Select_RowMapperTest {
 
     @Test
     public void byRange_Empty() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rowsRange(1, 1)
                 .select((f, t) -> {
                     t.set(0, f.getInt(0) * 3);
@@ -152,12 +145,11 @@ public class RowSet_Select_RowMapperTest {
 
     @Test
     public void byCondition() {
-        DataFrame df = DataFrame.foldByRow("a", "b", "c")
+        DataFrame df = DataFrame.byColumn("a", "b", "c")
                 .of(
-                        1, "x", "a",
-                        2, "y", "b",
-                        -1, "m", "n")
-                .cols(0).compactInt(0)
+                        Series.ofInt(1, 2, -1),
+                        Series.of("x", "y", "m"),
+                        Series.of("a", "b", "n"))
                 .rows(Series.ofBool(true, false, true))
                 .select((f, t) -> {
                     t.set(0, f.getInt(0) * 3);

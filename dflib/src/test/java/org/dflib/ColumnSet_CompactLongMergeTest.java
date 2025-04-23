@@ -3,7 +3,7 @@ package org.dflib;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
-public class ColumnSet_CompactLongTest {
+public class ColumnSet_CompactLongMergeTest {
 
     @Test
     public void all_compactLong() {
@@ -13,7 +13,8 @@ public class ColumnSet_CompactLongTest {
                         Series.of(Boolean.TRUE, Boolean.FALSE)
                 )
                 .cols()
-                .compactLong(-1);
+                .compactLong(-1)
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectLongColumns("a", "b", "c")
@@ -29,7 +30,8 @@ public class ColumnSet_CompactLongTest {
                         Series.of("abc", "abcd")
                 )
                 .cols()
-                .compactLong((String o) -> o.length());
+                .compactLong((String o) -> o.length())
+                .merge();
 
         new DataFrameAsserts(df, "a", "b")
                 .expectLongColumns("a", "b")
@@ -47,7 +49,8 @@ public class ColumnSet_CompactLongTest {
                         Series.of("one", "two")
                 )
                 .cols("a", "b", "c")
-                .compactLong(-1);
+                .compactLong(-1)
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c", "d")
                 .expectLongColumns("a", "b", "c")
@@ -64,7 +67,8 @@ public class ColumnSet_CompactLongTest {
                         Series.of("abc", "abcd")
                 )
                 .cols("a", "c")
-                .compactLong((String o) -> o.length());
+                .compactLong((String o) -> o.length())
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectLongColumns("a", "c")

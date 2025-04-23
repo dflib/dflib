@@ -3,7 +3,7 @@ package org.dflib;
 import org.dflib.unit.DataFrameAsserts;
 import org.junit.jupiter.api.Test;
 
-public class ColumnSet_CompactBoolTest {
+public class ColumnSet_CompactBoolMergeTest {
 
     @Test
     public void all_compactBool() {
@@ -13,7 +13,8 @@ public class ColumnSet_CompactBoolTest {
                         Series.of(Boolean.TRUE, Boolean.FALSE)
                 )
                 .cols()
-                .compactBool();
+                .compactBool()
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectBooleanColumns("a", "b", "c")
@@ -29,7 +30,8 @@ public class ColumnSet_CompactBoolTest {
                         Series.ofInt(8, 9)
                 )
                 .cols()
-                .compactBool((Integer o) -> o % 2 == 0);
+                .compactBool((Integer o) -> o % 2 == 0)
+                .merge();
 
         new DataFrameAsserts(df, "a", "b")
                 .expectBooleanColumns("a", "b")
@@ -47,7 +49,8 @@ public class ColumnSet_CompactBoolTest {
                         Series.of("one", "two")
                 )
                 .cols("a", "b", "c")
-                .compactBool();
+                .compactBool()
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c", "d")
                 .expectBooleanColumns("a", "b", "c")
@@ -64,7 +67,8 @@ public class ColumnSet_CompactBoolTest {
                         Series.ofInt(8, 9)
                 )
                 .cols("a", "c")
-                .compactBool((Integer o) -> o % 2 == 0);
+                .compactBool((Integer o) -> o % 2 == 0)
+                .merge();
 
         new DataFrameAsserts(df, "a", "b", "c")
                 .expectBooleanColumns("a", "c")

@@ -75,90 +75,96 @@ public interface ColumnSet {
 
     /**
      * Will compact the result columns of this ColumnSet. Internally, values will be checked for equality, and
-     * any duplicates replaced with a single value. Should be used to save memory for low-cardinality columns.
+     * any duplicates replaced with a single value. It should be used to save memory for low-cardinality columns.
      *
      * @since 2.0.0
      */
     ColumnSet compact();
 
     /**
-     * Returns a transformed DataFrame that contains columns from this DataFrame and added / replaced columns
-     * produced by "compacting" the internal representation of the set columns to {@link BooleanSeries}. For this to
+     * Will compact the result columns of this ColumnSet converting them to {@link BooleanSeries}. For this to
      * work, each column in the ColumnSet must contain Booleans or values that can be converted to a String and parsed
      * as booleans.
+     *
+     * @since 2.0.0
      */
-    DataFrame compactBool();
+    ColumnSet compactBool();
 
     /**
-     * Returns a transformed DataFrame that contains columns from this DataFrame and added / replaced columns
-     * produced by "compacting" the internal representation of the set columns to {@link BooleanSeries} using the provided
+     * Will compact the result columns of this ColumnSet converting them to {@link BooleanSeries} using the provided
      * mapper.
+     *
+     * @since 2.0.0
      */
-    <V> DataFrame compactBool(BoolValueMapper<V> mapper);
+    <V> ColumnSet compactBool(BoolValueMapper<V> mapper);
 
     /**
-     * Returns a transformed DataFrame that contains columns from this DataFrame and added / replaced columns
-     * produced by "compacting" the internal representation of the set columns to {@link IntSeries}. For this to
+     * Will compact the result columns of this ColumnSet converting them to {@link IntSeries}. For this to
      * work, each column in the ColumnSet must contain Numbers or values that can be converted to a String and parsed
      * as integers.
+     *
+     * @since 2.0.0
      */
-    DataFrame compactInt(int forNull);
+    ColumnSet compactInt(int forNull);
 
     /**
-     * Returns a transformed DataFrame that contains columns from this DataFrame and added / replaced columns
-     * produced by "compacting" the internal representation of the set columns to {@link IntSeries} using the provided
+     * Will compact the result columns of this ColumnSet converting them to {@link IntSeries} using the provided
      * mapper.
+     *
+     * @since 2.0.0
      */
-    <V> DataFrame compactInt(IntValueMapper<V> mapper);
+    <V> ColumnSet compactInt(IntValueMapper<V> mapper);
 
     /**
-     * Returns a transformed DataFrame that contains columns from this DataFrame and added / replaced columns
-     * produced by "compacting" the internal representation of the set columns to {@link LongSeries}. For this to
+     * Will compact the result columns of this ColumnSet converting them to {@link LongSeries}. For this to
      * work, each column in the ColumnSet must contain Numbers or values that can be converted to a String and parsed
      * as longs.
+     *
+     * @since 2.0.0
      */
-    DataFrame compactLong(long forNull);
+    ColumnSet compactLong(long forNull);
 
     /**
-     * Returns a transformed DataFrame that contains columns from this DataFrame and added / replaced columns
-     * produced by "compacting" the internal representation of the set columns to {@link LongSeries} using the provided
+     * Will compact the result columns of this ColumnSet converting them to {@link LongSeries} using the provided
      * mapper.
+     *
+     * @since 2.0.0
      */
-    <V> DataFrame compactLong(LongValueMapper<V> mapper);
+    <V> ColumnSet compactLong(LongValueMapper<V> mapper);
 
     /**
-     * Returns a transformed DataFrame that contains columns from this DataFrame and added / replaced columns
-     * produced by "compacting" the internal representation of the set columns to {@link FloatSeries}. For this to
+     * Will compact the result columns of this ColumnSet converting them to {@link FloatSeries}. For this to
+     * work, each column in the ColumnSet must contain Numbers or values that can be converted to a String and parsed
+     * as floats.
+     *
+     * @since 2.0.0
+     */
+    ColumnSet compactFloat(float forNull);
+
+    /**
+     * Will compact the result columns of this ColumnSet converting them to {@link FloatSeries} using the
+     * provided mapper.
+     *
+     * @since 2.0.0
+     */
+    <V> ColumnSet compactFloat(FloatValueMapper<V> mapper);
+
+    /**
+     * Will compact the result columns of this ColumnSet converting them to {@link DoubleSeries}. For this to
      * work, each column in the ColumnSet must contain Numbers or values that can be converted to a String and parsed
      * as doubles.
      *
      * @since 2.0.0
      */
-    DataFrame compactFloat(float forNull);
+    ColumnSet compactDouble(double forNull);
 
     /**
-     * Returns a transformed DataFrame that contains columns from this DataFrame and added / replaced columns
-     * produced by "compacting" the internal representation of the set columns to {@link FloatSeries} using the provided
+     * Will compact the result columns of this ColumnSet converting them to {@link DoubleSeries} using the provided
      * mapper.
      *
      * @since 2.0.0
      */
-    <V> DataFrame compactFloat(FloatValueMapper<V> mapper);
-
-    /**
-     * Returns a transformed DataFrame that contains columns from this DataFrame and added / replaced columns
-     * produced by "compacting" the internal representation of the set columns to {@link DoubleSeries}. For this to
-     * work, each column in the ColumnSet must contain Numbers or values that can be converted to a String and parsed
-     * as doubles.
-     */
-    DataFrame compactDouble(double forNull);
-
-    /**
-     * Returns a transformed DataFrame that contains columns from this DataFrame and added / replaced columns
-     * produced by "compacting" the internal representation of the set columns to {@link DoubleSeries} using the provided
-     * mapper.
-     */
-    <V> DataFrame compactDouble(DoubleValueMapper<V> mapper);
+    <V> ColumnSet compactDouble(DoubleValueMapper<V> mapper);
 
     /**
      * Returns a DataFrame that contains columns from this DataFrame plus any extra columns specified in this column

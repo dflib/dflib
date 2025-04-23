@@ -12,15 +12,12 @@ public class RowColumnSet_Expand_MergeRowMapperTest {
 
     static final DataFrame EMPTY_TEST_DF = DataFrame.foldByRow("a", "b", "c").of();
 
-    static final DataFrame TEST_DF = DataFrame.foldByRow("a", "b", "c")
+    static final DataFrame TEST_DF = DataFrame.byColumn("a", "b", "c")
             .of(
-                    1, List.of("x1", "x2"), "a",
-                    2, List.of("y1", "y2"), "b",
-                    4, List.of("e1", "e2"), "k",
-                    0, List.of("f1", "f2"), "g",
-                    1, List.of("m1", "m2"), "n",
-                    5, null, "x")
-            .cols(0).compactInt(0);
+                    Series.ofInt(1, 2, 4, 0, 1, 5),
+                    Series.of(List.of("x1", "x2"), List.of("y1", "y2"), List.of("e1", "e2"), List.of("f1", "f2"), List.of("m1", "m2"), null),
+                    Series.of("a", "b", "k", "g", "n", "x")
+            );
 
     @Test
     public void empty() {
