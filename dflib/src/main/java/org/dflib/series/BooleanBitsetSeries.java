@@ -5,7 +5,7 @@ import org.dflib.IntSeries;
 import org.dflib.Sorter;
 import org.dflib.builder.BoolAccum;
 import org.dflib.builder.BoolBuilder;
-import org.dflib.sort.SeriesSorter;
+import org.dflib.sort.IntComparator;
 
 import java.util.Comparator;
 import java.util.function.Predicate;
@@ -185,12 +185,13 @@ public class BooleanBitsetSeries extends BooleanBaseSeries {
 
     @Override
     public BooleanSeries sort(Sorter... sorters) {
-        return selectAsBooleanSeries(new SeriesSorter<>(this).sortIndex(sorters));
+        IntSeries index = IntComparator.of(this, sorters).sortIndex(size());
+        return selectAsBooleanSeries(index);
     }
 
     @Override
     public BooleanSeries sort(Comparator<? super Boolean> comparator) {
-        return selectAsBooleanSeries(new SeriesSorter<>(this).sortIndex(comparator));
+        return selectAsBooleanSeries(sortIndex(comparator));
     }
 
     private BooleanSeries selectAsBooleanSeries(IntSeries positions) {

@@ -19,7 +19,7 @@ import org.dflib.builder.UniqueDoubleAccum;
 import org.dflib.groupby.SeriesGrouper;
 import org.dflib.map.Mapper;
 import org.dflib.sample.Sampler;
-import org.dflib.sort.SeriesSorter;
+import org.dflib.sort.IntComparator;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -133,14 +133,15 @@ public abstract class DoubleBaseSeries implements DoubleSeries {
 
     @Override
     public DoubleSeries sort(Sorter... sorters) {
-        return selectAsDoubleSeries(new SeriesSorter<>(this).sortIndex(sorters));
+        IntSeries index = IntComparator.of(this, sorters).sortIndex(size());
+        return selectAsDoubleSeries(index);
     }
 
     // TODO: implement 'sortDouble(DoubleComparator)' similar to how IntBaseSeries does "sortInt(IntComparator)"
     //   Reimplement this method to delegate to 'sortDouble'
     @Override
     public DoubleSeries sort(Comparator<? super Double> comparator) {
-        return selectAsDoubleSeries(new SeriesSorter<>(this).sortIndex(comparator));
+        return selectAsDoubleSeries(sortIndex(comparator));
     }
 
     @Override

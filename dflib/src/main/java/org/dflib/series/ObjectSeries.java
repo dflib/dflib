@@ -18,7 +18,7 @@ import org.dflib.map.Mapper;
 import org.dflib.sample.Sampler;
 import org.dflib.set.Diff;
 import org.dflib.set.Intersect;
-import org.dflib.sort.SeriesSorter;
+import org.dflib.sort.IntComparator;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -242,12 +242,18 @@ public abstract class ObjectSeries<T> implements Series<T> {
 
     @Override
     public Series<T> sort(Sorter... sorters) {
-        return new SeriesSorter<>(this).sort(sorters);
+        return sorters.length == 0
+                ? this
+                : select(IntComparator.of(this, sorters).sortIndex(size()));
     }
 
     @Override
     public Series<T> sort(Comparator<? super T> comparator) {
-        return new SeriesSorter<>(this).sort(comparator);
+        int size = size();
+        T[] sorted = (T[]) new Object[size];
+        copyTo(sorted, 0, 0, size);
+        Arrays.sort(sorted, comparator);
+        return new ArraySeries<>(sorted);
     }
 
     @Override

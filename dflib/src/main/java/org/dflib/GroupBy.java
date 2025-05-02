@@ -6,13 +6,13 @@ import org.dflib.concat.VConcat;
 import org.dflib.exp.Exps;
 import org.dflib.series.EmptySeries;
 import org.dflib.slice.FixedColumnSetIndex;
-import org.dflib.sort.GroupBySorter;
 import org.dflib.sort.IntComparator;
 import org.dflib.window.DenseRanker;
 import org.dflib.window.Ranker;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -237,28 +237,37 @@ public class GroupBy {
 
 
     public GroupBy sort(Sorter... sorters) {
-        return new GroupBySorter(this).sort(sorters);
+        return sorters.length == 0 ? this : sort(IntComparator.of(source, sorters));
     }
 
-
     public GroupBy sort(IntComparator sorter) {
-        return new GroupBySorter(this).sort(sorter);
+        Objects.requireNonNull(sorter, "Null 'sorter'");
+
+        Map<Object, IntSeries> sorted = new LinkedHashMap<>((int) (size() / 0.75));
+
+        for (Object groupKey : getGroupKeys()) {
+            IntSeries groupIndex = getGroupIndex(groupKey);
+            IntSeries sortedGroup = groupIndex.sortInt(sorter);
+            sorted.put(groupKey, sortedGroup);
+        }
+
+        return new GroupBy(source, sorted, sorter);
     }
 
     public GroupBy sort(String column, boolean ascending) {
-        return new GroupBySorter(this).sort(column, ascending);
+        return sort(IntComparator.of(source.getColumn(column), ascending));
     }
 
     public GroupBy sort(int column, boolean ascending) {
-        return new GroupBySorter(this).sort(column, ascending);
+        return sort(IntComparator.of(source.getColumn(column), ascending));
     }
 
     public GroupBy sort(String[] columns, boolean[] ascending) {
-        return new GroupBySorter(this).sort(columns, ascending);
+        return sort(IntComparator.of(source, columns, ascending));
     }
 
     public GroupBy sort(int[] columns, boolean[] ascending) {
-        return new GroupBySorter(this).sort(columns, ascending);
+        return sort(IntComparator.of(source, columns, ascending));
     }
 
     /**

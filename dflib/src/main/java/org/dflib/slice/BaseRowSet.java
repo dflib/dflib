@@ -11,8 +11,6 @@ import org.dflib.Series;
 import org.dflib.Sorter;
 import org.dflib.f.IntObjectFunction2;
 import org.dflib.series.RowMappedSeries;
-import org.dflib.sort.Comparators;
-import org.dflib.sort.DataFrameSorter;
 import org.dflib.sort.IntComparator;
 
 import java.util.Map;
@@ -134,8 +132,8 @@ public abstract class BaseRowSet implements RowSet {
         }
 
         DataFrame rsDf = select();
-        IntComparator comparator = Comparators.of(rsDf, sorters);
-        DataFrame rowsAsDf = rsDf.rows(DataFrameSorter.sort(comparator, rsDf.height())).select();
+        IntComparator comparator = IntComparator.of(rsDf, sorters);
+        DataFrame rowsAsDf = rsDf.rows(comparator.sortIndex(rsDf.height())).select();
 
         RowSetMerger merger = merger();
 

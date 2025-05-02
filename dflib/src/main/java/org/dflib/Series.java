@@ -21,7 +21,7 @@ import org.dflib.series.OffsetLagSeries;
 import org.dflib.series.OffsetLeadSeries;
 import org.dflib.series.SingleValueSeries;
 import org.dflib.series.TrueSeries;
-import org.dflib.sort.SeriesSorter;
+import org.dflib.sort.IntComparator;
 
 import java.lang.reflect.Array;
 import java.util.Comparator;
@@ -573,7 +573,7 @@ public interface Series<T> extends Iterable<T> {
      * @return an IntSeries representing element indices from the original Series
      */
     default IntSeries sortIndex(Comparator<? super T> comparator) {
-        return new SeriesSorter<>(this).sortIndex(comparator);
+        return IntComparator.of(this, comparator).sortIndex(size());
     }
 
     /**

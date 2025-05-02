@@ -19,7 +19,6 @@ import org.dflib.map.Mapper;
 import org.dflib.sample.Sampler;
 import org.dflib.sort.IntComparator;
 import org.dflib.sort.IntTimSort;
-import org.dflib.sort.SeriesSorter;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -136,9 +135,8 @@ public abstract class IntBaseSeries implements IntSeries {
 
     @Override
     public IntSeries sort(Sorter... sorters) {
-        // TODO: can't use "sortInt(IntComparator), as "Comparators.of(s, sorters)" is not compatible.
-        //   Need to analyze why.
-        return selectAsIntSeries(new SeriesSorter<>(this).sortIndex(sorters));
+        IntSeries index = IntComparator.of(this, sorters).sortIndex(size());
+        return selectAsIntSeries(index);
     }
 
     @Override
@@ -174,18 +172,14 @@ public abstract class IntBaseSeries implements IntSeries {
 
     @Override
     public IntSeries sortIndexInt() {
-        return doSortIndexInt((i1, i2) -> getInt(i1) - getInt(i2));
+        IntComparator comparator = (i1, i2) -> getInt(i1) - getInt(i2);
+        return comparator.sortIndex(size());
     }
 
     @Override
     public IntSeries sortIndexInt(IntComparator comparator) {
-        return doSortIndexInt((i1, i2) -> comparator.compare(getInt(i1), getInt(i2)));
-    }
-
-    private IntSeries doSortIndexInt(IntComparator comparator) {
-        int[] mutableIndex = SeriesSorter.rowNumberSequence(size());
-        IntTimSort.sort(mutableIndex, comparator);
-        return new IntArraySeries(mutableIndex);
+        IntComparator resolvedComparator = (i1, i2) -> comparator.compare(getInt(i1), getInt(i2));
+        return resolvedComparator.sortIndex(size());
     }
 
     private IntSeries selectAsIntSeries(IntSeries positions) {

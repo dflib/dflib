@@ -4,22 +4,31 @@ import org.dflib.IntSeries;
 import org.dflib.series.IntArraySeries;
 
 /**
- * Sorting processor for DataFrames.
- *
- * @see Comparators
+ * @deprecated in favor of {@link IntComparator#sortIndex(int)} and {@link IntSeries#sortInt(IntComparator)}.
  */
+@Deprecated(since = "2.0.0", forRemoval = true)
 public class DataFrameSorter {
 
-    public static IntSeries sort(IntComparator comparator, int height) {
-        return doSort(comparator, SeriesSorter.rowNumberSequence(height));
+    /**
+     * Creates an int sequence of a given size, and then sorts it with the provided comparator.
+     *
+     * @deprecated in favor of {@link IntComparator#sortIndex(int)}
+     */
+    public static IntSeries sort(IntComparator comparator, int size) {
+        return doSort(comparator, rowNumberSequence(size));
     }
 
-    public static IntSeries sort(IntComparator comparator, IntSeries range) {
+    /**
+     * Sorts the Series it with the provided comparator.
+     *
+     * @deprecated in favor of {@link IntSeries#sortInt(IntComparator)}
+     */
+    public static IntSeries sort(IntComparator comparator, IntSeries ints) {
 
         // copy range to avoid modification of the source list
-        int len = range.size();
+        int len = ints.size();
         int[] index = new int[len];
-        range.copyToInt(index, 0, 0, len);
+        ints.copyToInt(index, 0, 0, len);
 
         return doSort(comparator, index);
     }
@@ -27,5 +36,14 @@ public class DataFrameSorter {
     private static IntSeries doSort(IntComparator comparator, int[] mutableIndex) {
         IntTimSort.sort(mutableIndex, comparator);
         return new IntArraySeries(mutableIndex);
+    }
+
+    private static int[] rowNumberSequence(int h) {
+        int[] rn = new int[h];
+        for (int i = 0; i < h; i++) {
+            rn[i] = i;
+        }
+
+        return rn;
     }
 }

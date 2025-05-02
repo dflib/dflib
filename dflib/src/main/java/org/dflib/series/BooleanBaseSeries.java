@@ -18,7 +18,7 @@ import org.dflib.concat.SeriesConcat;
 import org.dflib.groupby.SeriesGrouper;
 import org.dflib.map.Mapper;
 import org.dflib.sample.Sampler;
-import org.dflib.sort.SeriesSorter;
+import org.dflib.sort.IntComparator;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -101,12 +101,13 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
 
     @Override
     public BooleanSeries sort(Sorter... sorters) {
-        return selectAsBooleanSeries(new SeriesSorter<>(this).sortIndex(sorters));
+        IntSeries index = IntComparator.of(this, sorters).sortIndex(size());
+        return selectAsBooleanSeries(index);
     }
 
     @Override
     public BooleanSeries sort(Comparator<? super Boolean> comparator) {
-        return selectAsBooleanSeries(new SeriesSorter<>(this).sortIndex(comparator));
+        return selectAsBooleanSeries(sortIndex(comparator));
     }
 
     private BooleanSeries selectAsBooleanSeries(IntSeries positions) {
@@ -157,7 +158,7 @@ public abstract class BooleanBaseSeries implements BooleanSeries {
         if (fromOffset + len > size()) {
             throw new ArrayIndexOutOfBoundsException(fromOffset + len);
         }
-        
+
         for (int i = 0; i < len; i++) {
             to[toOffset + i] = getBool(fromOffset + i);
         }

@@ -13,8 +13,6 @@ import org.dflib.exp.Exps;
 import org.dflib.series.IntSequenceSeries;
 import org.dflib.slice.ColumnSetMerger;
 import org.dflib.slice.FixedColumnSetIndex;
-import org.dflib.sort.Comparators;
-import org.dflib.sort.DataFrameSorter;
 import org.dflib.sort.IntComparator;
 
 import java.util.Objects;
@@ -193,7 +191,7 @@ public class Window {
      * @since 2.0.0
      */
     public Window sort(Sorter... sorters) {
-        this.sorter = sorters.length == 0 ? null : Comparators.of(source, sorters);
+        this.sorter = sorters.length == 0 ? null : IntComparator.of(source, sorters);
         return this;
     }
 
@@ -201,7 +199,7 @@ public class Window {
      * @since 2.0.0
      */
     public Window sort(String column, boolean ascending) {
-        this.sorter = Comparators.of(source.getColumn(column), ascending);
+        this.sorter = IntComparator.of(source.getColumn(column), ascending);
         return this;
     }
 
@@ -209,7 +207,7 @@ public class Window {
      * @since 2.0.0
      */
     public Window sort(int column, boolean ascending) {
-        this.sorter = Comparators.of(source.getColumn(column), ascending);
+        this.sorter = IntComparator.of(source.getColumn(column), ascending);
         return this;
     }
 
@@ -217,7 +215,7 @@ public class Window {
      * @since 2.0.0
      */
     public Window sort(String[] columns, boolean[] ascending) {
-        this.sorter = Comparators.of(source, columns, ascending);
+        this.sorter = IntComparator.of(source, columns, ascending);
         return this;
     }
 
@@ -225,7 +223,7 @@ public class Window {
      * @since 2.0.0
      */
     public Window sort(int[] columns, boolean[] ascending) {
-        this.sorter = Comparators.of(source, columns, ascending);
+        this.sorter = IntComparator.of(source, columns, ascending);
         return this;
     }
 
@@ -333,7 +331,7 @@ public class Window {
     private <T> Series<T> shiftUnPartitioned(int column, int offset, T filler) {
         if (sorter != null) {
             IntSeries index = new IntSequenceSeries(0, source.height());
-            IntSeries sortedPositions = DataFrameSorter.sort(sorter, index);
+            IntSeries sortedPositions = index.sortInt(sorter);
             Series<T> s = source.getColumn(column);
             return s.select(sortedPositions).shift(offset, filler).select(sortedPositions.sortIndexInt());
         } else {
@@ -392,7 +390,7 @@ public class Window {
 
     private Series<?>[] selectUnPartitioned(Exp<?>... aggregators) {
         DataFrame df = sorter != null
-                ? source.rows(DataFrameSorter.sort(sorter, source.height())).select()
+                ? source.rows(sorter.sortIndex(source.height())).select()
                 : source;
 
         return WindowColumnEvaluator.of(df, resolveRange()).eval(aggregators);

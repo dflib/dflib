@@ -19,7 +19,7 @@ import org.dflib.builder.UniqueLongAccum;
 import org.dflib.groupby.SeriesGrouper;
 import org.dflib.map.Mapper;
 import org.dflib.sample.Sampler;
-import org.dflib.sort.SeriesSorter;
+import org.dflib.sort.IntComparator;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -136,14 +136,15 @@ public abstract class LongBaseSeries implements LongSeries {
 
     @Override
     public LongSeries sort(Sorter... sorters) {
-        return selectAsLongSeries(new SeriesSorter<>(this).sortIndex(sorters));
+        IntSeries index = IntComparator.of(this, sorters).sortIndex(size());
+        return selectAsLongSeries(index);
     }
 
     // TODO: implement 'sortLong(LongComparator)' similar to how IntBaseSeries does "sortInt(IntComparator)"
     //   Reimplement this method to delegate to 'sortLong'
     @Override
     public LongSeries sort(Comparator<? super Long> comparator) {
-        return selectAsLongSeries(new SeriesSorter<>(this).sortIndex(comparator));
+        return selectAsLongSeries(sortIndex(comparator));
     }
 
     @Override

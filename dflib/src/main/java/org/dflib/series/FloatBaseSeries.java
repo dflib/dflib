@@ -20,7 +20,7 @@ import org.dflib.f.FloatPredicate;
 import org.dflib.groupby.SeriesGrouper;
 import org.dflib.map.Mapper;
 import org.dflib.sample.Sampler;
-import org.dflib.sort.SeriesSorter;
+import org.dflib.sort.IntComparator;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -136,12 +136,13 @@ public abstract class FloatBaseSeries implements FloatSeries {
 
     @Override
     public FloatSeries sort(Sorter... sorters) {
-        return selectAsFloatSeries(new SeriesSorter<>(this).sortIndex(sorters));
+        IntSeries index = IntComparator.of(this, sorters).sortIndex(size());
+        return selectAsFloatSeries(index);
     }
 
     @Override
     public FloatSeries sort(Comparator<? super Float> comparator) {
-        return selectAsFloatSeries(new SeriesSorter<>(this).sortIndex(comparator));
+        return selectAsFloatSeries(sortIndex(comparator));
     }
 
     @Override
